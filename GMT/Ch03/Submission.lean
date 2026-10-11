@@ -665,13 +665,6 @@ theorem Submission.gaussGreenVar_measure_le_ofReal_integral_inner_add : ∀ (N :
       ENNReal.ofReal_add_le
     _ = ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) + μ (V \ C) := by
       rw [ofReal_measureReal hμVC]
-
-/-- The frozen Chapter 3 contract. -/
-theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
-
-end GMT.Ch03
-
-
 /-- **Total-variation formula** (step 7 of the uniqueness in `GaussGreenRepresentation`; the
 characterization of `|Du|` by Simon Ch. 2, (2.4), `chapter-02.txt` lines 518–526, behind
 "`μ_E (= |D χ_E|)`" in Ch. 3, (4.1)). Let `O ⊆ ℝᴺ` be open, `μ` finite on compact subsets of `O`
@@ -754,3 +747,8 @@ theorem Submission.gaussGreenRep_measure_eq_iSup_pairing : ∀ (N : ℕ) (O : Se
     refine iSup_le fun g ↦ iSup_le fun _ ↦ iSup_le fun _ ↦ iSup_le fun hgO ↦ iSup_le fun hg1 ↦ ?_
     exact Submission.gaussGreenVar_ofReal_integral_inner_le_measure N O μ ν g hO.measurableSet
       hν1' hgO hg1
+
+/-- The frozen Chapter 3 contract. -/
+theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
+
+end GMT.Ch03
