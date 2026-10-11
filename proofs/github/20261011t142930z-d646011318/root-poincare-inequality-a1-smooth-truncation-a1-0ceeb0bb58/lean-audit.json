@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a10ed62d36405a4e2d2bba64326df8729e01920380af873a733be3775ac07f58",
+  "git_delta": {
+    "base_commit": "f23b0f76c478ee3f4d481d539fc32b2e9efac39e",
+    "candidate_commit": "05ffb84a08d276a8c4193864b502e03caddb63e0",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "smooth_step_truncation_exists",
+    "diff_sha256": "d2349733a704a56ae99919d22be209f09de528a1cce9d24b53c68da89f496f42",
+    "source_sha256": "7103461298cc498d515f151f09855c6086f13f15c9ca40eb87754924b37fdefc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smooth_step_truncation_exists",
+      "statement": "∀ ε : ℝ, 0 < ε → ∃ ψ : ℝ → ℝ, ContDiff ℝ 1 ψ ∧ (∀ x, 0 ≤ ψ x ∧ ψ x ≤ 1) ∧ (∀ x, x ≤ 0 → ψ x = 0) ∧ (∀ x, ε ≤ x → ψ x = 1) ∧ (∀ x, 0 ≤ deriv ψ x) ∧ (∃ M : ℝ, ∀ x, deriv ψ x ≤ M) ∧ ∀ a : ℝ, ∫⁻ t in Ioi 0, ENNReal.ofReal (deriv ψ (a - t)) ≤ 1",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
