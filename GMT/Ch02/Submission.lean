@@ -519,12 +519,6 @@ theorem Submission.eilenberg_fiber_open_content_upperSemicontinuous : ∀ (X : T
   exact lt_of_le_of_lt (iInf_le_of_le I <| iInf_le_of_le O <| iInf_le_of_le hO <|
     iInf_le_of_le hcov' le_rfl) hS
 
-/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
-theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
-
-end GMT.Ch02
-
-
 /-- **Simon Ch. 2, Theorem 1.9 (pp. 45–46), measurability of `y ↦ Hᵏ(A ∩ f⁻¹y)`**, for compact
 `A = Q` (Simon leaves this measurability as an exercise). For `f` continuous on `Q` every fibre
 `Q ∩ f⁻¹{y}` is compact, so its `μH[k]` is the countable supremum over `n` of its finite open-cover
@@ -543,3 +537,8 @@ theorem Submission.eilenberg_compact_fiber_measurable : ∀ (X : Type) [MetricSp
       (Submission.eilenberg_fiber_open_content_upperSemicontinuous X m k _ Q f hQ hf).measurable
   simp only [Chapter01.simonHausdorffMeasureReal, Measure.smul_apply, smul_eq_mul]
   exact hμ.const_mul _
+
+/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
+theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
+
+end GMT.Ch02
