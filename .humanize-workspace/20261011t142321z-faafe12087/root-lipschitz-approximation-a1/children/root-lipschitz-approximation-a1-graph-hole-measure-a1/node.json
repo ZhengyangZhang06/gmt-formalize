@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.graph_hole_measure-a1",
+  "parent_id": "root.lipschitz_approximation-a1",
+  "depth": 2,
+  "title": "Hausdorff measure of the part of a flat Lipschitz graph off the support (Simon 5.2.6, (8) and (11))",
+  "statement": "For n >= 1, l, p > n there are eps > 0, delta_0 > 0 and C_0 >= 0 such that: if 0 < delta <= delta_0, 2.3 holds, sigma_0 = delta rho, q is a linear isometry with T_0 = rotatedPlane q and P = p_(T_0), and f : R^n -> R^l satisfies |f(x) - f(z)| <= eps |x - z| for all x, z and |f(x)| <= sigma_0/32 for |x| <= sigma_0/2, then H^n(B_(sigma_0/2)(0) cap (q(graph f over B^n_(sigma_0/2)(0)) minus spt V)) <= C_0 [mu(B_(3 sigma_0/4)(0) minus q(graph f over R^n)) + integral_(B_(sigma_0)(0)) hsNormSq(p_x - P) dmu].",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ ε δ₀ C₀ : ℝ, 0 < ε ∧ 0 < δ₀ ∧ 0 ≤ C₀ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₀ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), (∀ x z, ‖f x - f z‖ ≤ ε * ‖x - z‖) → (∀ x ∈ closedBall (0 : Rn n) (δ * ρ / 2), ‖f x‖ ≤ δ * ρ / 32) → (μHE[n] : Measure (Amb n ℓ)) (closedBall 0 (δ * ρ / 2) ∩ (q '' graphOver f (closedBall 0 (δ * ρ / 2)) \\ V.support)) ≤ ENNReal.ofReal C₀ * (V.weight (closedBall 0 (3 * (δ * ρ) / 4) \\ q '' graphOver f univ) + ENNReal.ofReal (∫ x in closedBall 0 (δ * ρ), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight))",
+  "lean_name": "lip_approx_graph_hole_measure",
+  "depends_on": [
+    "root.lipschitz_approximation-a1.graph_coordinates-a1",
+    "root.lipschitz_approximation-a1.tangent_structure-a1",
+    "root.lipschitz_approximation-a1.vitali_bound-a1",
+    "root.lipschitz_approximation-a1.graph_measure-a1",
+    "root.lipschitz_approximation-a1.hole_estimate-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_approximation-a1.graph_coordinates-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_approximation-a1.tangent_structure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_approximation-a1.vitali_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_approximation-a1.graph_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_approximation-a1.hole_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-graph-hole-measure-a1-a1"
+}
