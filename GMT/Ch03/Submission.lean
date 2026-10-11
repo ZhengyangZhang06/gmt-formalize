@@ -335,6 +335,81 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **The slab around a cone point is covered by two cones**: the covering step in the proof of
+P. Mattila, *Geometry of Sets and Measures in Euclidean Spaces*, Lemma 15.14 (M. G. Dall'Alba,
+*The Besicovitch–Federer Projection Theorem*, Lemma 4.6), used for Simon Ch. 3, Theorem 3.6
+(`chapter-03.txt` lines 530–536, which defers the proof to [Fed69]). With
+`Y = {y ∈ S : |P(y - x)| < (s/4)|y - x|} ≠ ∅`, `h = sup_{y ∈ Y} |y - x| ∈ (0, R]` and `x' ∈ Y`
+with `|x' - x| > 3h/4`, a point `z ≠ x` of `S` with `|P(z - x)| < sh/4` has `|z - x| ≤ h` by
+maximality of `h`; if it is not in the `s`-cone at `x'`, linearity of `P` gives `|z - x'| < h/2`,
+hence `|z - x| > h/4` and `z` is in the `s`-cone at `x`. -/
+theorem Submission.bf_coneMass_slab_cover : ∀ (N : ℕ) (P : Rn N →L[ℝ] Rn N) (s R : ℝ) (S : Set (Rn N)) (x : Rn N), 0 < s → (∃ y ∈ S, ‖P (y - x)‖ < s / 4 * ‖y - x‖) → (∀ y ∈ S, ‖y - x‖ ≤ R) → ∃ h : ℝ, 0 < h ∧ h ≤ R ∧ ∃ x' ∈ S, S ∩ {z | ‖P (z - x)‖ < s * h / 4} ⊆ insert x ({y | ‖P (y - x)‖ < s * ‖y - x‖} ∩ Metric.ball x (3 * h) ∪ {y | ‖P (y - x')‖ < s * ‖y - x'‖} ∩ Metric.ball x' (3 * h)) := by
+  intro N P s R S x hs ⟨y₀, hy₀S, hy₀⟩ hR
+  -- Step 1: the cone points `Y` all differ from `x`, since `P 0 = 0`.
+  set Y : Set (Rn N) := {y | y ∈ S ∧ ‖P (y - x)‖ < s / 4 * ‖y - x‖}
+  have hy₀Y : y₀ ∈ Y := ⟨hy₀S, hy₀⟩
+  have hYpos : ∀ y ∈ Y, 0 < ‖y - x‖ := by
+    intro y hy
+    refine lt_of_le_of_ne (norm_nonneg _) fun h0 ↦ ?_
+    have hc := hy.2
+    rw [← h0, mul_zero] at hc
+    exact (norm_nonneg _).not_gt hc
+  -- Step 2: `h = sup {|y - x| : y ∈ Y}` satisfies `0 < h ≤ R` and `|y - x| ≤ h` on `Y`.
+  set D : Set ℝ := (fun y ↦ ‖y - x‖) '' Y
+  have hDne : D.Nonempty := ⟨_, y₀, hy₀Y, rfl⟩
+  have hDbdd : BddAbove D := ⟨R, by rintro _ ⟨y, hy, rfl⟩; exact hR y hy.1⟩
+  set h := sSup D
+  have hle : ∀ y ∈ Y, ‖y - x‖ ≤ h := fun y hy ↦ le_csSup hDbdd ⟨y, hy, rfl⟩
+  have hpos : 0 < h := (hYpos y₀ hy₀Y).trans_le (hle y₀ hy₀Y)
+  have hhR : h ≤ R := csSup_le hDne (by rintro _ ⟨y, hy, rfl⟩; exact hR y hy.1)
+  -- Step 3: a far cone point `x' ∈ Y` with `3h/4 < |x' - x| ≤ h`.
+  obtain ⟨_, ⟨x', hx'Y, rfl⟩, hx'far⟩ :=
+    exists_lt_of_lt_csSup hDne (show 3 * h / 4 < h by linarith)
+  have hx'le : ‖x' - x‖ ≤ h := hle x' hx'Y
+  refine ⟨h, hpos, hhR, x', hx'Y.1, ?_⟩
+  -- Step 4: the slab inclusion.
+  rintro z ⟨hzS, hz : ‖P (z - x)‖ < s * h / 4⟩
+  rw [Set.mem_insert_iff]
+  by_cases hzx : z = x
+  · exact Or.inl hzx
+  right
+  -- (a) By maximality of `h`, `|z - x| ≤ h`; hence `z ∈ B(x, 3h)` and `z ∈ B(x', 3h)`.
+  have hzle : ‖z - x‖ ≤ h := by
+    by_contra hcon
+    have hsh := mul_lt_mul_of_pos_left (not_le.mp hcon) hs
+    exact hcon (hle z ⟨hzS, by linarith⟩)
+  have hzball : z ∈ Metric.ball x (3 * h) := by
+    rw [Metric.mem_ball, dist_eq_norm]
+    linarith
+  have hzball' : z ∈ Metric.ball x' (3 * h) := by
+    rw [Metric.mem_ball, dist_eq_norm]
+    have htri := norm_sub_le_norm_sub_add_norm_sub z x x'
+    rw [norm_sub_rev x x'] at htri
+    linarith
+  by_cases hzc : ‖P (z - x')‖ < s * ‖z - x'‖
+  · -- (c) `z` lies in the cone at `x'`.
+    exact Or.inr ⟨hzc, hzball'⟩
+  · -- (d) Otherwise `|z - x'| < h/2`, so `|z - x| > h/4` and `z` lies in the cone at `x`.
+    left
+    refine ⟨?_, hzball⟩
+    have hsplit : P (z - x') = P (z - x) - P (x' - x) := by
+      rw [← map_sub]
+      congr 1
+      abel
+    have hPtri : ‖P (z - x')‖ ≤ ‖P (z - x)‖ + ‖P (x' - x)‖ := by
+      rw [hsplit]
+      exact norm_sub_le _ _
+    have hx'cone : ‖P (x' - x)‖ < s / 4 * ‖x' - x‖ := hx'Y.2
+    have hsx' := mul_le_mul_of_nonneg_left hx'le hs.le
+    have h1 : s * ‖z - x'‖ < s * (h / 2) := by linarith [not_lt.mp hzc]
+    have h2 : ‖z - x'‖ < h / 2 := lt_of_mul_lt_mul_left h1 hs.le
+    have h3 : ‖x' - x‖ ≤ ‖z - x'‖ + ‖z - x‖ := by
+      have htri := norm_sub_le_norm_sub_add_norm_sub x' z x
+      rwa [norm_sub_rev x' z] at htri
+    have h4 := mul_lt_mul_of_pos_left (show h / 4 < ‖z - x‖ by linarith) hs
+    show ‖P (z - x)‖ < s * ‖z - x‖
+    linarith
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
