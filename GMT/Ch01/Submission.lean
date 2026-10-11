@@ -246,14 +246,13 @@ def RadonNikodymTheorem : Prop :=
           μ ({x | Tendsto (fun ρ : ℝ => μ (closedBall x ρ) / μ₀ (closedBall x ρ)) (𝓝[>] 0)
             (𝓝 ∞)} ∩ A))
 
-/-- Node `root.radon_nikodym_theorem-a1`: Simon 3.24 with clause (0) from 3.23(ii).
-
-The four clauses are the kernel-checked `Poincare.SimonGMT` theorems `simon_theorem_3_23_ii`
-and `simon_theorem_3_24_i`/`_ii`/`_iii`, whose integrals are taken against the Borel measure
-`hμ₀.toBorelMeasure`.  That measure is the trim of `caratheodoryMeasure μ₀` to `borel X`, and
-the upper density is a.e. equal to the Borel function `rnDeriv`, so `setLIntegral_trim_ae`
-identifies the two set integrals over every Borel set. -/
-theorem _root_.Submission.radon_nikodym_theorem : RadonNikodymTheorem.{u} := by
+/-- Simon Ch. 1, Theorem 3.24 with clause (0) from 3.23(ii), from the pinned `Poincare.SimonGMT`
+library: `simon_theorem_3_23_ii` and `simon_theorem_3_24_i`/`_ii`/`_iii`, whose integrals are
+taken against the Borel measure `hμ₀.toBorelMeasure`.  That measure is the trim of
+`caratheodoryMeasure μ₀` to `borel X`, and the upper density is a.e. equal to the Borel function
+`rnDeriv` (`ae_outerRelativeUpperDensity_eq_rnDeriv`), so `setLIntegral_trim_ae` identifies the
+two set integrals over every Borel set. -/
+theorem Submission.radon_nikodym_theorem : RadonNikodymTheorem := by
   intro X _ μ μ₀ hμ hopenμ hμ₀ hopenμ₀ hV₀
   have hle : borel X ≤ μ₀.caratheodory := hμ₀.borel_le_caratheodory
   have htrim : (caratheodoryMeasure μ₀).trim hle = hμ₀.toBorelMeasure := by
