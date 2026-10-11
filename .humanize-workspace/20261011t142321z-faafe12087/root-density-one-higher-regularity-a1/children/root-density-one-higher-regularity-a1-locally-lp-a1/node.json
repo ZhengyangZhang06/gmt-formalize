@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.locally_lp-a1",
+  "parent_id": "root.density_one_higher_regularity-a1",
+  "depth": 2,
+  "title": "Continuous mean curvature is locally L^p (Step 1)",
+  "statement": "Let n, l be natural numbers, U a subset of R^(n+l), V = v(M, theta) a rectifiable n-varifold in U (contract structure RectifiableVarifold n l U) with weight mu_V, and H, h : R^(n+l) -> R^(n+l) with h continuous on U and H = h mu_V-a.e. Then for every real p > 0, H is locally in L^p(mu_V) in U: the integral over K of |H|^p dmu_V is finite for every compact K contained in U (V.LocallyLp H p).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H h : Amb n ℓ → Amb n ℓ), ContinuousOn h U → (∀ᵐ x ∂V.weight, H x = h x) → ∀ p : ℝ, 0 < p → V.LocallyLp H p",
+  "lean_name": "dohr_locally_lp_of_continuous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-locally-lp-a1-a1"
+}

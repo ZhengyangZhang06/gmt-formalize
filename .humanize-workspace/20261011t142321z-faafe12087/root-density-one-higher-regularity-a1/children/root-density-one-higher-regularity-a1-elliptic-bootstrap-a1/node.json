@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1",
+  "parent_id": "root.density_one_higher_regularity-a1",
+  "depth": 2,
+  "title": "Schauder bootstrap for C^{1,beta} solutions of the prescribed-mean-curvature graph system (Step 5)",
+  "statement": "Let n >= 1, q in N, 0 < alpha < 1, alpha <= beta <= 1, r > 0, O open in R^(n+l), F : R^(n+l) -> R^(n+l) locally C^{q,alpha} on O, and u : R^n -> R^l C^1 on the open ball of radius r about 0 with (x, u(x)) in O there, Du(0) = 0, Du beta-Hoelder on that ball, and u a weak solution there of integral DJ(Du)[Dphi] dx = - integral J(Du) <(0, phi), F(x, u(x))> dx for all C^1 compactly supported phi with tsupport phi in the ball, where J(P) = sqrt(det(I_n + (<P e_a, P e_b>)_{a,b})). Then there is r' in (0, r] such that u is C^{q+2,alpha} on the open ball of radius r' in the sense of IsHolderCkα (q + 2) alpha: C^{q+2}, all derivatives of order <= q+2 bounded, and the (q+2)-th derivative alpha-Hoelder.",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (q : ℕ) (α β : ℝ), 0 < α → α < 1 → α ≤ β → β ≤ 1 → ∀ (r : ℝ) (u : Rn n → Rn ℓ) (F : Amb n ℓ → Amb n ℓ) (O : Set (Amb n ℓ)), 0 < r → IsOpen O → IsLocallyHolderCkα q α F O → (∀ x ∈ ball (0 : Rn n) r, graphPoint x (u x) ∈ O) → ContDiffOn ℝ 1 u (ball 0 r) → fderiv ℝ u 0 = 0 → (∃ K : ℝ, ∀ x ∈ ball (0 : Rn n) r, ∀ y ∈ ball (0 : Rn n) r, ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ K * ‖x - y‖ ^ β) → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 r → ∫ x in ball (0 : Rn n) r, fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in ball (0 : Rn n) r, Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ))))) * inner ℝ (graphPoint 0 (φ x)) (F (graphPoint x (u x)))) → ∃ r' > 0, r' ≤ r ∧ IsHolderCkα (q + 2) α u (ball 0 r')",
+  "lean_name": "dohr_elliptic_bootstrap",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-a1"
+}

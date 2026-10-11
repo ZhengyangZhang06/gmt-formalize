@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.local_monotonicity-a1",
+  "parent_id": "root.density_one_higher_regularity-a1",
+  "depth": 2,
+  "title": "Monotonicity formula for L^p mean curvature on balls with a.e. n-dimensional tangent planes (Simon 4.1-4.9)",
+  "statement": "Let n >= 1, U open in R^(n+l), V = v(M, theta) with generalized mean curvature H in U, p > n, y in R^(n+l), R > 0 with the closed ball B_R(y) contained in U, and suppose that for mu_V-a.e. x in the open ball Bo_R(y), V.tangentProj x is the orthogonal projection onto some n-dimensional subspace, and that x -> V.tangentProj x is a.e.-strongly measurable for mu_V restricted to Bo_R(y). If 0 < Lambda <= 1 and (R^(p-n) integral over B_R(y) of |H|^p dmu_V)^(1/p) <= kappa Lambda with kappa = (p - n)/(4p), then there is F : R -> R with |F(r) - 1| <= Lambda and e^(-Lambda) <= F(r) <= e^(Lambda) for r in (0, R) and F(r) -> 1 as r -> 0+, such that Phi(r) := F(r) r^(-n) mu_V(B_r(y)) + F(r) - 1 is nondecreasing on (0, R), and there is t >= 0 with Theta^n(mu_V, y) = t (V.HasDensity y t) and Phi(r) -> omega_n t as r -> 0+.",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → ∀ (y : Amb n ℓ) (R Λ : ℝ), 0 < R → closedBall y R ⊆ U → (∀ᵐ x ∂V.weight, x ∈ ball y R → ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → AEStronglyMeasurable (fun x => V.tangentProj x) (V.weight.restrict (ball y R)) → 0 < Λ → Λ ≤ 1 → V.scaledLpNorm H p y R ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → ∃ F : ℝ → ℝ, (∀ r ∈ Ioo 0 R, |F r - 1| ≤ Λ ∧ Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ) ∧ Tendsto F (𝓝[>] 0) (𝓝 1) ∧ MonotoneOn (fun r => F r * (r ^ n)⁻¹ * (V.weight (closedBall y r)).toReal + F r - 1) (Ioo 0 R) ∧ ∃ t : ℝ, 0 ≤ t ∧ V.HasDensity y t ∧ Tendsto (fun r => F r * (r ^ n)⁻¹ * (V.weight (closedBall y r)).toReal + F r - 1) (𝓝[>] 0) (𝓝 (unitBallVolume n * t))",
+  "lean_name": "dohr_local_monotonicity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-local-monotonicity-a1-a1"
+}

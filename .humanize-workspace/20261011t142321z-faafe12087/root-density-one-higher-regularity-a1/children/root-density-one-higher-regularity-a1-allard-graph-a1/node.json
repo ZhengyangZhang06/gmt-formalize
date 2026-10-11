@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.allard_graph-a1",
+  "parent_id": "root.density_one_higher_regularity-a1",
+  "depth": 2,
+  "title": "Allard regularity at a density-one point gives a C^{1,1-n/p} graph (Step 2)",
+  "statement": "Assume Allard's regularity theorem (AllardRegularityTheorem, Simon 5.2). Let n >= 1, U open in R^(n+l), V = v(M, theta) with generalized mean curvature H in U, p > n, H locally in L^p(mu_V) in U, theta >= 1 mu_V-a.e., and xi in U with Theta^n(mu_V, xi) = 1 (V.HasDensity xi 1). Then there are R > 0, a linear isometry Q of R^(n+l) and u : R^n -> R^l such that the closed ball B_R(xi) lies in U, u is C^1 on the open ball of radius R about 0 in R^n, u(0) = 0, Du(0) = 0, ||Du(x) - Du(y)|| <= K |x - y|^(1 - n/p) for some K and all x, y in that open ball, and Q(spt V - xi) cap (open ball B_R(0)) = graph of u over the open ball of radius R cap (open ball B_R(0)).",
+  "lean_statement": "AllardRegularityTheorem → ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ∀ ξ ∈ U, V.HasDensity ξ 1 → ∃ R > 0, ∃ (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), closedBall ξ R ⊆ U ∧ ContDiffOn ℝ 1 u (ball 0 R) ∧ u 0 = 0 ∧ fderiv ℝ u 0 = 0 ∧ (∃ K : ℝ, ∀ x ∈ ball (0 : Rn n) R, ∀ y ∈ ball (0 : Rn n) R, ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ K * ‖x - y‖ ^ (1 - (n : ℝ) / p)) ∧ Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R",
+  "lean_name": "dohr_allard_graph_at_density_one",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.translate_varifold-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.translate_varifold-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-allard-graph-a1-a1"
+}
