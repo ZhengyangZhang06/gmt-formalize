@@ -335,6 +335,35 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Pairing upper bound** (the easy half `sup ≤ μ(O)` of the total-variation formula behind
+Simon Ch. 2, (2.4) (`chapter-02.txt` lines 517–521), used for the uniqueness in Ch. 3, (4.1)):
+if `|ν| ≤ 1` `μ`-a.e., `O` is Borel, `tsupport g ⊆ O` and `|g| ≤ 1`, then
+`ofReal(∫ ⟨g, ν⟩ dμ) ≤ μ(O)`. On `O` Cauchy–Schwarz gives `|⟨g, ν⟩| ≤ 1`, and off `O` we have
+`g = 0`, so `|⟨g, ν⟩| ≤ 1_O` `μ`-a.e. Hence
+`ofReal(∫ ⟨g, ν⟩ dμ) ≤ ‖∫ ⟨g, ν⟩ dμ‖ₑ ≤ ∫⁻ ‖⟨g, ν⟩‖ₑ dμ ≤ ∫⁻ 1_O dμ = μ(O)`. No integrability is
+needed: the Bochner integral of a non-integrable function is `0`. -/
+theorem Submission.gaussGreenVar_ofReal_integral_inner_le_measure : ∀ (N : ℕ) (O : Set (Rn N)) (μ : Measure (Rn N)) (ν g : Rn N → Rn N), MeasurableSet O → (∀ᵐ x ∂μ, ‖ν x‖ ≤ 1) → tsupport g ⊆ O → (∀ x, ‖g x‖ ≤ 1) → ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) ≤ μ O := by
+  intro N O μ ν g hO hν hgO hg
+  -- Step 1: `‖⟨g x, ν x⟩‖ₑ ≤ 1_O(x)` for `μ`-a.e. `x`.
+  have hbound : ∀ᵐ x ∂μ, ‖inner ℝ (g x) (ν x)‖ₑ ≤ O.indicator 1 x := by
+    filter_upwards [hν] with x hx
+    by_cases hxO : x ∈ O
+    · -- (a) On `O`, Cauchy–Schwarz: `|⟨g x, ν x⟩| ≤ ‖g x‖ ‖ν x‖ ≤ 1`.
+      rw [indicator_of_mem hxO, Pi.one_apply, Real.enorm_eq_ofReal_abs, ENNReal.ofReal_le_one]
+      calc |inner ℝ (g x) (ν x)| ≤ ‖g x‖ * ‖ν x‖ := abs_real_inner_le_norm _ _
+        _ ≤ 1 * 1 := mul_le_mul (hg x) hx (norm_nonneg _) zero_le_one
+        _ = 1 := one_mul 1
+    · -- (b) Off `O`, `x ∉ tsupport g`, so `g x = 0` and the pairing vanishes.
+      rw [image_eq_zero_of_notMem_tsupport fun h ↦ hxO (hgO h), inner_zero_left, enorm_zero]
+      exact zero_le
+  -- Steps 2–5: `ofReal(∫ f) ≤ ‖∫ f‖ₑ ≤ ∫⁻ ‖f‖ₑ ≤ ∫⁻ 1_O = μ(O)`, with no integrability needed.
+  calc ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) ≤ ‖∫ x, inner ℝ (g x) (ν x) ∂μ‖ₑ := by
+        rw [Real.enorm_eq_ofReal_abs]
+        exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ ≤ ∫⁻ x, ‖inner ℝ (g x) (ν x)‖ₑ ∂μ := enorm_integral_le_lintegral_enorm _
+    _ ≤ ∫⁻ x, O.indicator 1 x ∂μ := lintegral_mono_ae hbound
+    _ = μ O := lintegral_indicator_one hO
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
