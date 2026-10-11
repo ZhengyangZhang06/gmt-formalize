@@ -1,0 +1,112 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.support_convex_hull-a1.support_in_ball-a1`
+- Child DAG node: `root.support_convex_hull-a1.support_in_ball-a1.radial_cutoff_test_field-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. B(ξ, ρ) = ball ξ ρ is the open ball and B_ρ(ξ) = closedBall ξ ρ the closed ball; |·| is the Euclidean norm; ∇f(x) = gradient f x is the Riesz representative of the Fréchet derivative Df(x) (the image of Df(x) under the inverse of the linear isometric equivalence toDual); IsTestField U X means X is C¹ (ContDiff ℝ 1 X), HasCompactSupport X and tsupport X ⊆ U. This is steps 2–4 of the parent proof (Simon 6.1), with W := B(ξ, ρ₀) in step 2 and the radial profile of option (i) of the parent's step-3 remark.
+
+1. Choice of W. K is compact, hence bounded, so there is ρ ∈ ℝ with K ⊆ B(ξ, ρ). Put ρ₀ := |ρ| + 1 > 0 and W := B(ξ, ρ₀). W is open and K ⊆ B(ξ, ρ) ⊆ W because ρ ≤ |ρ| < ρ₀.
+
+2. The cutoff ζ. E is a finite-dimensional real inner product space, so it has smooth bump functions (Mathlib HasContDiffBump). Let f be the bump function centred at ξ with inner radius rIn = ρ₀ and outer radius rOut = ρ₀ + 1 (Mathlib ContDiffBump ξ; the requirements 0 < rIn < rOut hold). Then f is C^∞ (ContDiffBump.contDiff), f(x) = 1 for every x ∈ B_{ρ₀}(ξ) (ContDiffBump.one_of_mem_closedBall), and f has compact support (ContDiffBump.hasCompactSupport). Put ζ := f. In particular ζ ∈ C¹(E), which is (i).
+
+3. Property (ii). Let x ∈ K. Then x ∈ W, W is open and W ⊆ B_{ρ₀}(ξ), so ζ ≡ 1 on the neighbourhood W of x. Hence ζ(x) = 1, and since ζ agrees with the constant function 1 on a neighbourhood of x, Dζ(x) = D(const 1)(x) = 0 (Filter.EventuallyEq.fderiv_eq, fderiv_const). The gradient is the image of Dζ(x) under a linear map, so ∇ζ(x) = 0.
+
+4. The profile γ. Put c := R + ε; then c > 0 because R ≥ 0 and ε > 0. Let g := expNegInvGlue, i.e. g(s) = 0 for s ≤ 0 and g(s) = exp(−1/s) for s > 0. Mathlib provides: g ∈ C^∞(ℝ) (expNegInvGlue.contDiff), g is monotone (expNegInvGlue.monotone), g(s) ≥ 0 for all s (expNegInvGlue.nonneg), g(s) = 0 for s ≤ 0 (expNegInvGlue.zero_of_nonpos) and g(s) > 0 for s > 0 (expNegInvGlue.pos_of_pos). Define γ(t) := g(t² − c²). As the composition of the C^∞ map g with the polynomial t ↦ t² − c², γ is C^∞, in particular γ ∈ C¹(ℝ), which is (iii).
+
+5. Property (iv). γ(t) = g(t² − c²) ≥ 0 for every t. By the chain rule (g is differentiable everywhere and t ↦ t² − c² has derivative 2t), γ'(t) = g'(t² − c²)·2t for every t ∈ ℝ. A monotone function ℝ → ℝ has nonnegative derivative at every point (Monotone.deriv_nonneg), so g'(s) ≥ 0 for every s. Hence γ'(t) ≥ 0 for every t ≥ 0.
+
+6. Property (v). If 0 ≤ t ≤ c then t² ≤ c², i.e. t² − c² ≤ 0, so γ(t) = g(t² − c²) = 0.
+
+7. Property (vi). If t > c then t > c > 0, so t² > c², i.e. t² − c² > 0, and γ(t) = g(t² − c²) > 0.
+
+8. Property (vii): X is C¹. For every x ∈ E, γ(|x − ξ|) = g(|x − ξ|² − c²). The map x ↦ |x − ξ|² is C^∞ on E (the squared Euclidean norm is C^∞, Mathlib contDiff_norm_sq, composed with the affine map x ↦ x − ξ), so x ↦ γ(|x − ξ|) = g(|x − ξ|² − c²) is C^∞ on E; no differentiability of the norm at ξ is needed. Hence the scalar function x ↦ ζ(x)γ(|x − ξ|) is C¹ (product of C¹ functions), and X(x) = (ζ(x)γ(|x − ξ|))·(x − ξ) is C¹ (scalar multiplication is a continuous bilinear map and x ↦ x − ξ is C^∞).
+
+9. Property (vii): compact support. If X(x) ≠ 0 then the scalar factor ζ(x)γ(|x − ξ|) is nonzero, so ζ(x) ≠ 0. Thus supp X ⊆ supp ζ, and since ζ has compact support, X has compact support (HasCompactSupport.mono).
+
+10. Property (vii): tsupport X ⊆ U. Let F_c := {x ∈ E : |x − ξ| ≥ c}; it is closed, being the preimage of [c, ∞) under the continuous map x ↦ |x − ξ|. If |x − ξ| < c then γ(|x − ξ|) = 0 by (v) (applied to t = |x − ξ| ≥ 0), hence X(x) = 0; therefore supp X ⊆ F_c. As F_c is closed, tsupport X = closure(supp X) ⊆ F_c. Finally F_c ⊆ U: if |x − ξ| ≥ c = R + ε > R then x ∉ B_R(ξ). Hence tsupport X ⊆ U.
+
+11. Steps 2–10 provide ζ and γ satisfying (i)–(vii). ∎
+
+## Key steps
+
+1. K ⊆ W := B(ξ, ρ₀) with ρ₀ = |ρ| + 1 > 0; ζ := ContDiffBump at ξ with rIn = ρ₀, rOut = ρ₀ + 1 (C^∞, compactly supported, ζ = 1 on B_{ρ₀}(ξ) ⊇ W)
+2. For x ∈ K, ζ ≡ 1 on the open set W ∋ x, so ζ(x) = 1, Dζ(x) = 0 and ∇ζ(x) = 0
+3. γ(t) := expNegInvGlue(t² − (R + ε)²) is C^∞, γ ≥ 0, γ'(t) = 2t·g'(t² − (R + ε)²) ≥ 0 for t ≥ 0 (g monotone), γ = 0 on [0, R + ε], γ > 0 on (R + ε, ∞)
+4. x ↦ γ(|x − ξ|) = g(|x − ξ|² − (R + ε)²) is C^∞, so X = (ζ·γ(|· − ξ|))·(· − ξ) is C¹; supp X ⊆ supp ζ gives compact support
+5. supp X ⊆ {|x − ξ| ≥ R + ε} (closed) ⊆ E ∖ B_R(ξ), hence tsupport X ⊆ U
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json (project ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum <snapshot>/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean; git -C <snapshot>/mathlib rev-parse HEAD`
+- `rg -n 'lemma support_mem_ae\b|lemma subset_compl_support_of_isOpen|lemma support_subset_of_isClosed|lemma measure_compl_support\b' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `rg -n 'theorem IntegrableOn.of_ae_sdiff_eq_zero|theorem LocallyIntegrableOn.integrableOn_compact_subset|theorem integral_eq_zero_iff_of_nonneg_ae|theorem ContinuousLinearMap.aestronglyMeasurable_comp₂|lemma starProjection_orthogonal.|theorem norm_starProjection_apply_le|theorem contDiff_norm_sq|theorem Filter.EventuallyEq.fderiv_eq|theorem ContDiff.continuous_deriv' <snapshot>/mathlib/Mathlib`
+- `rg -n 'protected theorem monotone|theorem zero_of_nonpos|theorem pos_of_pos|theorem nonneg|protected theorem contDiff' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean; rg -n 'lemma Monotone.deriv_nonneg' <snapshot>/mathlib/Mathlib; rg -n 'theorem one_of_mem_closedBall|protected theorem hasCompactSupport' <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean; rg -n 'theorem abs_real_inner_le_norm' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `rg -n 'AEStronglyMeasurable.inner' <snapshot-equivalent .lake/packages/mathlib>/Mathlib (found only in MeasureTheory/Function/StronglyMeasurable/Inner.lean, not imported by the contract: #check fails in comparator scope)`
+- `cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/CompactSupportMaximum.lean; rg -n 'support_subset_closedBall_of_radial_lt|integral_eq_zero_iff_of_nonneg_ae|support_mem_ae|support_subset_of_isClosed' that file`
+- `python3 -I scan of dag.json lean_names/lean_statements (normalRadialSq, IsTestField, support) and of every nodes/*/decomposition-v*.json and parent-child-handoff.json (reserved names; any stand-alone normalRadialSq measurability statement)`
+- `rg -l --no-ignore -F -e exists_radial_cutoff_test_field -e aestronglyMeasurable_normalRadialSq_and_bounds -e support_subset_closedBall_of_radial_identity .humanize GMT simongmt/Poincare mathlib/Mathlib <snapshot>/project (no match)`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/sib-a1-split/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/sib-a1-split/olean lean /tmp/sib-a1-split/check/{Probe1,Probe2,Assembly1,ChildC1,ChildC2,ChildC3,Final,FinalSorry}.lean`
+- `python3 -I verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch04.main_theorem'); verifier/lean_contract.py validate_lean_statement on the three child statements and the parent statement`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.lake/packages/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/CompactSupportMaximum.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-support-convex-hull-a1-support-in-ball-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-support-convex-hull-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/sib-a1-split/check/Final.lean`
+- `/tmp/sib-a1-split/check/FinalSorry.lean`
+- `/tmp/sib-a1-split/check/Assembly1.lean`
+
+Snapshot: project ff75f52, mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 6e58e5dd…0f4770b).
+
+The snapshot Mathlib supplies every ingredient the three children need:
+- Measure.support_mem_ae, measure_compl_support, subset_compl_support_of_isOpen and support_subset_of_isClosed (Measure/Support.lean).
+- Submodule.starProjection_orthogonal' and norm_starProjection_apply_le (Projection/Basic.lean).
+- ContDiffBump.one_of_mem_closedBall, hasCompactSupport and contDiff (BumpFunction/Basic.lean).
+- expNegInvGlue.contDiff, monotone, nonneg, zero_of_nonpos and pos_of_pos (SmoothTransition.lean).
+- Monotone.deriv_nonneg, ContDiff.continuous_deriv, Filter.EventuallyEq.fderiv_eq, contDiff_norm_sq and abs_real_inner_le_norm.
+- LocallyIntegrableOn.integrableOn_compact_subset, IntegrableOn.of_ae_sdiff_eq_zero, integral_eq_zero_iff_of_nonneg_ae, ContinuousLinearMap.aestronglyMeasurable_comp₂, Integrable.of_bound and IsCompact.exists_bound_of_continuousOn.
+
+AEStronglyMeasurable.inner is defined only in StronglyMeasurable/Inner.lean, which the contract does not import. The children therefore use continuous_inner.comp_aestronglyMeasurable instead.
+
+The pinned SimonGMT Chapter04/CompactSupportMaximum.lean proves 6.1 only for SimonGMT's own varifold structure, using an expNegInvGlue/smoothTransition profile, integral_eq_zero_iff_of_nonneg_ae and support_subset_of_isClosed. It serves as a pattern only and is not reusable for the contract's RectifiableVarifold.
+
+Nothing is reused from other DAG nodes:
+- No declaration in the snapshot, project, SimonGMT or the DAG has any of the three child names (no matches).
+- None of the 73 DAG nodes states normalRadialSq measurability on its own. weighted_mono_cutoff_first_variation embeds a restricted version inside a larger conclusion.
+- weighted_mono_radial_test_field has different hypotheses: γ is constant near 0 and vanishes beyond b.
+
+Lean checks against a freshly compiled Submission olean, in the comparator scope:
+- All three child types elaborate and pass validate_lean_statement.
+- All three are proved without sorry.
+- The exact frozen parent type is proved from them.
+- The comparator targets compile.
+- #print axioms reports only propext, Classical.choice and Quot.sound.
