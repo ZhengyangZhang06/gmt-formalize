@@ -416,6 +416,79 @@ theorem Submission.rc_diagonal_subseq : ∀ (ι : Type u) [Countable ι] (a : �
     hK.tendsto_subseq (x := a) fun k => Set.mem_univ_pi.mpr fun i => abs_le.mp (hC i k)
   exact ⟨φ, hφ, fun i => ⟨b i, tendsto_pi_nhds.mp hlim i⟩⟩
 
+/-- Simon Ch. 1, Theorem 4.16 (corrected), proof Steps 1–4 and the convergence in Step 5: one
+subsequence `φ` along which `∫ f dμ_{φ(k)}` converges for every `f ∈ C_c(X, ℝ)`.  `X` is
+σ-compact, so it has a compact exhaustion `K j` (`CompactExhaustion.choice`), and
+`M j = sup_k μ_k(K j) < ∞`.  `rc_cc_countable_dense` gives countable families `D j`, uniformly
+dense among the test functions supported in `K j`; their integrals are bounded by
+`M j · sup |g|` (`rc_cc_integral_abs_le`), so `rc_diagonal_subseq` makes them all converge along
+one `φ`.  If `tsupport f ⊆ K j` and `|f - g| ≤ η` with `g ∈ D j`, then
+`|∫ f dμ_k - ∫ g dμ_k| ≤ M j · η` (`rc_cc_integrable`, `rc_cc_integral_abs_le`), hence
+`∫ f dμ_{φ(k)}` is Cauchy. -/
+theorem Submission.rc_subseq_integrals_converge : ∀ (X : Type u) [TopologicalSpace X] [T2Space X]
+    [LocallyCompactSpace X] [SecondCountableTopology X] (μ : ℕ → OuterMeasure X),
+    (∀ k, IsRadonOuterMeasure (μ k)) → (∀ K : Set X, IsCompact K → ⨆ k, μ k K < ∞) →
+    ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ f : C_c(X, ℝ), ∃ l : ℝ,
+      Tendsto (fun k => ∫ x, f x ∂caratheodoryMeasure (μ (φ k))) atTop (𝓝 l) := by
+  intro X _ _ _ _ μ hμ hbdd
+  -- Step 1: a compact exhaustion `K j` of the σ-compact space `X`.
+  let K := CompactExhaustion.choice X
+  -- Step 2: `M j = sup_k μ_k(K j) < ∞` bounds `μ_k(A)` for all `k` and `A ⊆ K j`.
+  let M : ℕ → ℝ := fun j => (⨆ k, μ k (K j)).toReal
+  have hM : ∀ j k (A : Set X), A ⊆ K j → (μ k A).toReal ≤ M j := fun j k A hA =>
+    ENNReal.toReal_mono (hbdd _ (K.isCompact j)).ne
+      ((measure_mono (μ := μ k) hA).trans (le_iSup (fun k => μ k (K j)) k))
+  -- Step 1: countable families `D j` of test functions in `K j`, uniformly dense among them.
+  choose D hDc hDK hDdense using fun j =>
+    Submission.rc_cc_countable_dense X (K j) (K.isCompact j)
+  let DD := ⋃ j, D j
+  have : Countable DD := (countable_iUnion hDc).to_subtype
+  -- Steps 2–3: for `g ∈ D j` and every `k`, `|∫ g dμ_k| ≤ M j · sup |g|`.
+  have hbound : ∀ g : DD, ∃ C : ℝ, ∀ k,
+      |∫ x, (g : C_c(X, ℝ)) x ∂caratheodoryMeasure (μ k)| ≤ C := by
+    intro g
+    obtain ⟨j, hj⟩ := mem_iUnion.1 g.2
+    obtain ⟨C, hC⟩ := (map_continuous (g : C_c(X, ℝ))).bounded_above_of_compact_support
+      (g : C_c(X, ℝ)).hasCompactSupport
+    refine ⟨M j * |C|, fun k => ?_⟩
+    calc |∫ x, (g : C_c(X, ℝ)) x ∂caratheodoryMeasure (μ k)|
+        ≤ (μ k (tsupport (g : C_c(X, ℝ)))).toReal * |C| :=
+          Submission.rc_cc_integral_abs_le X (μ k) (hμ k) g |C| fun x =>
+            ((Real.norm_eq_abs _).symm.trans_le (hC x)).trans (le_abs_self C)
+      _ ≤ M j * |C| := mul_le_mul_of_nonneg_right (hM j k _ (hDK j g hj)) (abs_nonneg C)
+  -- Step 4: a diagonal subsequence along which `∫ g dμ_{φ(k)}` converges for every `g ∈ D`.
+  obtain ⟨φ, hφ, hconv⟩ := Submission.rc_diagonal_subseq DD
+    (fun k g => ∫ x, (g : C_c(X, ℝ)) x ∂caratheodoryMeasure (μ k)) hbound
+  refine ⟨φ, hφ, fun f => ?_⟩
+  -- Step 5: if `tsupport f ⊆ K j`, approximate `f` uniformly within `D j`; the sequence
+  -- `∫ f dμ_{φ(k)}` is Cauchy, hence convergent.
+  obtain ⟨j, hfK⟩ := K.exists_superset_of_isCompact f.hasCompactSupport.isCompact
+  refine cauchySeq_tendsto_of_complete (Metric.cauchySeq_iff.2 fun ε hε => ?_)
+  obtain ⟨η, hη, hMη⟩ := exists_pos_mul_lt (div_pos hε three_pos) (M j)
+  obtain ⟨g, hgD, hfg⟩ := hDdense j f hfK η hη
+  have hfgK : tsupport (f - g : C_c(X, ℝ)) ⊆ K j :=
+    (tsupport_sub f g).trans (union_subset hfK (hDK j g hgD))
+  have hclose : ∀ k, |∫ x, f x ∂caratheodoryMeasure (μ k) -
+      ∫ x, g x ∂caratheodoryMeasure (μ k)| < ε / 3 := fun k => by
+    rw [← integral_sub (Submission.rc_cc_integrable X (μ k) (hμ k) f)
+      (Submission.rc_cc_integrable X (μ k) (hμ k) g)]
+    calc |∫ x, f x - g x ∂caratheodoryMeasure (μ k)|
+        ≤ (μ k (tsupport (f - g : C_c(X, ℝ)))).toReal * η :=
+          Submission.rc_cc_integral_abs_le X (μ k) (hμ k) (f - g) η hfg
+      _ ≤ M j * η := mul_le_mul_of_nonneg_right (hM j k _ hfgK) hη.le
+      _ < ε / 3 := hMη
+  obtain ⟨lg, hlg⟩ := hconv ⟨g, mem_iUnion.2 ⟨j, hgD⟩⟩
+  obtain ⟨N, hN⟩ := Metric.cauchySeq_iff.1 hlg.cauchySeq (ε / 3) (div_pos hε three_pos)
+  refine ⟨N, fun m hm n hn => ?_⟩
+  have hg : |∫ x, g x ∂caratheodoryMeasure (μ (φ m)) -
+      ∫ x, g x ∂caratheodoryMeasure (μ (φ n))| < ε / 3 := by
+    simpa only [Real.dist_eq] using hN m hm n hn
+  have h₁ := abs_lt.1 (hclose (φ m))
+  have h₂ := abs_lt.1 (hclose (φ n))
+  have h₃ := abs_lt.1 hg
+  rw [Real.dist_eq, abs_lt]
+  constructor <;> linarith [h₁.1, h₁.2, h₂.1, h₂.2, h₃.1, h₃.2]
+
 /-- The headline results of Simon, *Introduction to GMT*, Chapter 1 (pp. 1–38). -/
 theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
 
