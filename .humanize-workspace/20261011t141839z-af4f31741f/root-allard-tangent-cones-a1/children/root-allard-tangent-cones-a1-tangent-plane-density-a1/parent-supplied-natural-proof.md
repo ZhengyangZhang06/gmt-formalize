@@ -1,0 +1,91 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.allard_tangent_cones-a1`
+- Child DAG node: `root.allard_tangent_cones-a1.tangent_plane_density-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step B3(b) of the supplied proof ("approximating 1_{B_1(0)} from above and below … μ_C(B_t(y))/(ω_n t^n) → θ H^n(T ∩ B_1(0))/ω_n = θ"). Uses the sibling child flat_blowup_ball_limits (Lean: Submission.allard_tc_flat_blowup_ball_limits).
+
+Notation. μ := V.weight. ω := (unitBallVolume n).toReal. Since unitBallVolume n is the volume of the open unit ball of ℝ^n, it lies in (0,∞), so ω > 0 and unitBallVolume n = ofReal ω.
+
+1. HasTangentPlane V x T θ gives x ∈ U, θ > 0, and Tendsto (t ↦ ∫ f d(rescaledMeasure V x t)) (𝓝[>]0) (𝓝 (θ·∫ f dv(T))) for every f ∈ C_c(ℝ^N × G).
+ Apply flat_blowup_ball_limits with ι := ℝ, l := 𝓝[>]0 and t := id; here Tendsto id (𝓝[>]0) (𝓝[>]0) holds. Its second conclusion is b(ρ) := (μ(B_ρ(x))).toReal/ρ^n → θ·ω as ρ ↓ 0.
+
+2. Real form of the density ratio. U is open and x ∈ U, so there is δ > 0 with B_δ(x) ⊆ U. For 0 < ρ < δ the closed ball B_ρ(x) is a compact subset of U, so μ(B_ρ(x)) < ∞ (Varifold.weight_finite_on_compact). For such ρ:
+ densityRatio n μ x ρ = μ(B_ρ(x))/(unitBallVolume n·ofReal(ρ)^n) = ofReal((μ(B_ρ(x))).toReal)/ofReal(ω·ρ^n) = ofReal(b(ρ)/ω).
+ The second equality uses ENNReal.ofReal_toReal (finite value), unitBallVolume n = ofReal ω, ofReal(ρ)^n = ofReal(ρ^n) (ENNReal.ofReal_pow, ρ ≥ 0) and ofReal a·ofReal c = ofReal(a·c) for a ≥ 0. The third uses ENNReal.ofReal_div_of_pos, since ω·ρ^n > 0.
+
+3. b(ρ)/ω → θ (ω ≠ 0), and ENNReal.ofReal is continuous. So ofReal(b(ρ)/ω) → ofReal θ. By step 2 the two functions agree on (0,δ), which belongs to 𝓝[>]0 (Tendsto.congr'). Hence densityRatio n μ x ρ → ofReal θ as ρ ↓ 0, i.e. HasDensity n μ x (ofReal θ). ∎
+
+## Key steps
+
+1. Apply flat_blowup_ball_limits with ι = ℝ, l = 𝓝[>]0, t = id: (μ_V(B_ρ(x))).toReal/ρ^n → θω_n.
+2. For small ρ (B_ρ(x) ⊆ U compact) rewrite densityRatio as ofReal of the real quotient divided by ω_n.
+3. Continuity of ENNReal.ofReal gives densityRatio → ofReal θ, i.e. HasDensity n μ_V x (ofReal θ).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum project/GMT/Ch08/Contract.lean GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487); git rev-parse HEAD in .lake/packages/simongmt (2b3663083f3fe399b6296fb8eaee52169170e197)`
+- `sed -n 480,700p book/chapter-08.txt (printed 5.1-5.9, proofs of 5.5 and 5.7)`
+- `python3 dag.json dump of node ids, lean_names, lean_statements (siblings varifold_tangent_theorems, plane_disintegration, first_rectifiability_theorem, monotonicity_and_density_theorems, constancy_theorem, first_variation_theorems)`
+- `contract_scope(Contract.lean, 'GMT.Ch08.main_theorem') and validate_lean_statement from verifier/gmt-compare.py and verifier/lean_contract.py`
+- `grep -n '^def|^structure|^theorem' Chapter08/Varifold.lean; grep 'def Stationary|Stationary.hasLocallyBoundedFirstVariation|instCompactSpace'`
+- `grep 'def HasWeightedApproximateTangentSpaceAt|def CountablyRectifiable|HasWeightedApproximateTangentSpaceAt.unique|support_euclideanHausdorffMeasure_restrict_submodule|regular_euclideanHausdorffMeasure_restrict_submodule' Chapter03/Rectifiable.lean`
+- `grep '^theorem' Chapter08/TangentRadialRigidity.lean Chapter08/TangentRescaling.lean Chapter08/ConstancyTangentGraph.lean Chapter08/TangentScalingCounterexample.lean`
+- `grep 'simon_theorem_3_3|simon_theorem_3_6|dimensionalUpperDensity|realUnitBallVolume_nat_eq|volume_euclidean_ball_eq|measure_toOuterMeasure_isBorelRegular|simonHausdorffMeasureReal_toOuterMeasure|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|eq_of_plane_eq|continuous_normalProject|ae_exists_ballFirstVariationBound_inside|IsSimonSubmanifold' (SimonGMT Chapter01/02/08)`
+- `grep 'theorem ae_tendsto_measure_inter_div_of_measurableSet|theorem ae_tendsto_measure_inter_div' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `grep 'theorem' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (Isometry.euclideanHausdorffMeasure_image, euclideanHausdorffMeasure_smul0, EuclideanSpace.euclideanHausdorffMeasure_eq_volume)`
+- `grep 'restrict_congr_set|restrict_apply0'|restrict_restrict_of_subset|MeasurableEquiv.restrict_map|lintegral_map_equiv|ext_of_integral_eq_on_compactlySupported|addHaar_closedBall|measure_toMeasurable_inter_of_sFinite|hausdorffMeasure_image_le|smul_closedBall|ofReal_div_of_pos|tendsto_measure_iInter_atTop' mathlib/Mathlib`
+- `grep -rl allard_tc_ over the run directory, GMT/ and .swarm-worktrees (no matches); dag.json lean_name collision check (45 nodes, none)`
+- `lake env lean GMT/Ch08/Submission.lean -o /tmp/allard-a1-decomp/olean/GMT/Ch08/Submission.olean`
+- `lean /tmp/allard-a1-decomp/scratch/Final.lean (import GMT.Ch08.Submission + replayed contract scope, autoImplicit false: 10 child statements, 6 verbatim sibling statements, parent assembly, comparator target)`
+- `lean /tmp/allard-a1-decomp/scratch/Skel2.lean (sorry-free Part B glue from children 8-9; Part A glue skeleton; s = 1 uniqueness and dilation interface checks)`
+- `lean /tmp/allard-a1-decomp/scratch/Axioms2.lean (#print axioms for 13 cited SimonGMT lemmas)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRadialRigidity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRescaling.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangentGraph.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangent.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/BallVariationBound.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/tmp/allard-a1-decomp/scratch/Final.lean`
+- `/tmp/allard-a1-decomp/scratch/Skel2.lean`
+- `/tmp/allard-a1-decomp/scratch/Axioms2.lean`
+
+The snapshot is project 63436ae6 with Mathlib 25730c7c. Its project/GMT/Ch08/Contract.lean is byte-identical to the workspace Contract and Submission, and the pinned SimonGMT is 2b366308. Mathlib has no varifold theory, so the Ch. 8 facts enter the children only as explicit hypotheses copied verbatim from the frozen sibling statements in dag.json, or as the contract's named Props. SimonGMT supplies the needed library lemmas: Varifold.weight_support_eq_fst_image_support, Stationary.hasLocallyBoundedFirstVariation, Grassmannian.eq_of_plane_eq, Grassmannian.continuous_normalProject, Chapter03.HasWeightedApproximateTangentSpaceAt (no r^{-n} factor) with .unique, support/regular_euclideanHausdorffMeasure_restrict_submodule, Chapter01.simon_theorem_3_3, measure_toOuterMeasure_isBorelRegular, realUnitBallVolume_nat_eq, volume_euclidean_ball_eq, simonHausdorffMeasureReal_toOuterMeasure, Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure and ae_exists_ballFirstVariationBound_inside. #print axioms for all 13 shows only propext, Classical.choice and Quot.sound. Several of them need extra imports in Submission: Chapter08.{RadialFirstVariation,ConstancyTangent,ConstancyTangentGraph}, Chapter01.{DensityComparison,EuclideanHausdorffUpper} and Chapter02.AreaLiteral. Mathlib supplies Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet, Isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.euclideanHausdorffMeasure_smul₀, Measure.ext_of_integral_eq_on_compactlySupported, Measure.restrict_congr_set and restrict_apply₀' (both for arbitrary sets), MeasurableEquiv.restrict_map, lintegral_map_equiv, Measure.measure_toMeasurable_inter_of_sFinite and LipschitzWith.hausdorffMeasure_image_le. Grassmannian N n has a CompactSpace instance but no MetricSpace instance, so plane uniqueness uses matrix-entry test functions. All 10 child lean_statements pass validate_lean_statement and elaborate after import GMT.Ch08.Submission in the comparator's replayed scope, also with autoImplicit false. The parent term, built from the 6 verbatim sibling interfaces and the 10 children, checks against AllardRectifiabilityTheorem ∧ TangentConesAreRectifiableCones and adds no sorry of its own. The names allard_tc_* occur nowhere else in the run, GMT/ or dag.json (45 nodes).

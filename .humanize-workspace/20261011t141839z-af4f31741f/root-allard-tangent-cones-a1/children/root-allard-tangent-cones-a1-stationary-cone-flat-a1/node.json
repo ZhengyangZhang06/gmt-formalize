@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1",
+  "parent_id": "root.allard_tangent_cones-a1",
+  "depth": 2,
+  "title": "A stationary cone with density ≥ its density at 0 almost everywhere is a multiple of a plane",
+  "statement": "Assume StationaryMonotonicityIdentity (Simon 8.3.4) and ConstancyTheorem (Simon 8.4.1, corrected). Let C be an n-varifold on ℝ^N and θ0 > 0. Suppose C is stationary, μ_C(B_ρ(0)) = θ0 ω_n ρ^n for every ρ > 0, and for μ_C-a.e. y the density Θ^n(μ_C, y) exists and is ≥ θ0. Then there is T ∈ G(N,n) with C = θ0 v(T), i.e. C.measure = ofReal θ0 • planeVarifoldMeasure T.",
+  "lean_statement": "StationaryMonotonicityIdentity → ConstancyTheorem → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (θ₀ : ℝ), 0 < θ₀ → C.Stationary → (∀ ρ : ℝ, 0 < ρ → C.weight (closedBall 0 ρ) = ENNReal.ofReal θ₀ * unitBallVolume n * ENNReal.ofReal ρ ^ n) → (∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal θ₀ ≤ θ) → ∃ T : Grassmannian N n, C.measure = ENNReal.ofReal θ₀ • planeVarifoldMeasure T",
+  "lean_name": "allard_tc_stationary_cone_flat",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-stationary-cone-flat-a1-a1"
+}

@@ -1,0 +1,100 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "sha256sum project/GMT/Ch08/Contract.lean GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487); git rev-parse HEAD in .lake/packages/simongmt (2b3663083f3fe399b6296fb8eaee52169170e197)",
+        "sed -n 480,700p book/chapter-08.txt (printed 5.1-5.9, proofs of 5.5 and 5.7)",
+        "python3 dag.json dump of node ids, lean_names, lean_statements (siblings varifold_tangent_theorems, plane_disintegration, first_rectifiability_theorem, monotonicity_and_density_theorems, constancy_theorem, first_variation_theorems)",
+        "contract_scope(Contract.lean, 'GMT.Ch08.main_theorem') and validate_lean_statement from verifier/gmt-compare.py and verifier/lean_contract.py",
+        "grep -n '^def|^structure|^theorem' Chapter08/Varifold.lean; grep 'def Stationary|Stationary.hasLocallyBoundedFirstVariation|instCompactSpace'",
+        "grep 'def HasWeightedApproximateTangentSpaceAt|def CountablyRectifiable|HasWeightedApproximateTangentSpaceAt.unique|support_euclideanHausdorffMeasure_restrict_submodule|regular_euclideanHausdorffMeasure_restrict_submodule' Chapter03/Rectifiable.lean",
+        "grep '^theorem' Chapter08/TangentRadialRigidity.lean Chapter08/TangentRescaling.lean Chapter08/ConstancyTangentGraph.lean Chapter08/TangentScalingCounterexample.lean",
+        "grep 'simon_theorem_3_3|simon_theorem_3_6|dimensionalUpperDensity|realUnitBallVolume_nat_eq|volume_euclidean_ball_eq|measure_toOuterMeasure_isBorelRegular|simonHausdorffMeasureReal_toOuterMeasure|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|eq_of_plane_eq|continuous_normalProject|ae_exists_ballFirstVariationBound_inside|IsSimonSubmanifold' (SimonGMT Chapter01/02/08)",
+        "grep 'theorem ae_tendsto_measure_inter_div_of_measurableSet|theorem ae_tendsto_measure_inter_div' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "grep 'theorem' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (Isometry.euclideanHausdorffMeasure_image, euclideanHausdorffMeasure_smul0, EuclideanSpace.euclideanHausdorffMeasure_eq_volume)",
+        "grep 'restrict_congr_set|restrict_apply0'|restrict_restrict_of_subset|MeasurableEquiv.restrict_map|lintegral_map_equiv|ext_of_integral_eq_on_compactlySupported|addHaar_closedBall|measure_toMeasurable_inter_of_sFinite|hausdorffMeasure_image_le|smul_closedBall|ofReal_div_of_pos|tendsto_measure_iInter_atTop' mathlib/Mathlib",
+        "grep -rl allard_tc_ over the run directory, GMT/ and .swarm-worktrees (no matches); dag.json lean_name collision check (45 nodes, none)",
+        "lake env lean GMT/Ch08/Submission.lean -o /tmp/allard-a1-decomp/olean/GMT/Ch08/Submission.olean",
+        "lean /tmp/allard-a1-decomp/scratch/Final.lean (import GMT.Ch08.Submission + replayed contract scope, autoImplicit false: 10 child statements, 6 verbatim sibling statements, parent assembly, comparator target)",
+        "lean /tmp/allard-a1-decomp/scratch/Skel2.lean (sorry-free Part B glue from children 8-9; Part A glue skeleton; s = 1 uniqueness and dilation interface checks)",
+        "lean /tmp/allard-a1-decomp/scratch/Axioms2.lean (#print axioms for 13 cited SimonGMT lemmas)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/problem.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRadialRigidity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRescaling.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangentGraph.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangent.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/BallVariationBound.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/tmp/allard-a1-decomp/scratch/Final.lean",
+        "/tmp/allard-a1-decomp/scratch/Skel2.lean",
+        "/tmp/allard-a1-decomp/scratch/Axioms2.lean"
+      ],
+      "conclusion": "The snapshot is project 63436ae6 with Mathlib 25730c7c. Its project/GMT/Ch08/Contract.lean is byte-identical to the workspace Contract and Submission, and the pinned SimonGMT is 2b366308. Mathlib has no varifold theory, so the Ch. 8 facts enter the children only as explicit hypotheses copied verbatim from the frozen sibling statements in dag.json, or as the contract's named Props. SimonGMT supplies the needed library lemmas: Varifold.weight_support_eq_fst_image_support, Stationary.hasLocallyBoundedFirstVariation, Grassmannian.eq_of_plane_eq, Grassmannian.continuous_normalProject, Chapter03.HasWeightedApproximateTangentSpaceAt (no r^{-n} factor) with .unique, support/regular_euclideanHausdorffMeasure_restrict_submodule, Chapter01.simon_theorem_3_3, measure_toOuterMeasure_isBorelRegular, realUnitBallVolume_nat_eq, volume_euclidean_ball_eq, simonHausdorffMeasureReal_toOuterMeasure, Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure and ae_exists_ballFirstVariationBound_inside. #print axioms for all 13 shows only propext, Classical.choice and Quot.sound. Several of them need extra imports in Submission: Chapter08.{RadialFirstVariation,ConstancyTangent,ConstancyTangentGraph}, Chapter01.{DensityComparison,EuclideanHausdorffUpper} and Chapter02.AreaLiteral. Mathlib supplies Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet, Isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.euclideanHausdorffMeasure_smul₀, Measure.ext_of_integral_eq_on_compactlySupported, Measure.restrict_congr_set and restrict_apply₀' (both for arbitrary sets), MeasurableEquiv.restrict_map, lintegral_map_equiv, Measure.measure_toMeasurable_inter_of_sFinite and LipschitzWith.hausdorffMeasure_image_le. Grassmannian N n has a CompactSpace instance but no MetricSpace instance, so plane uniqueness uses matrix-entry test functions. All 10 child lean_statements pass validate_lean_statement and elaborate after import GMT.Ch08.Submission in the comparator's replayed scope, also with autoImplicit false. The parent term, built from the 6 verbatim sibling interfaces and the 10 children, checks against AllardRectifiabilityTheorem ∧ TangentConesAreRectifiableCones and adds no sorry of its own. The names allard_tc_* occur nowhere else in the run, GMT/ or dag.json (45 nodes)."
+    }
+  ],
+  "parent_id": "root.allard_tangent_cones-a1",
+  "child_id": "root.allard_tangent_cones-a1.tangent_cones_rectifiable-a1",
+  "subproblem": {
+    "key": "tangent_cones_rectifiable",
+    "title": "Corollary 8.5.7 (tangent cones are rectifiable cones), from the sibling results",
+    "statement": "Assume VarifoldTangentCones, the blow-up density lower bound (second conjunct of the sibling varifold_tangents), AllardRectifiabilityTheorem and FirstRectifiabilityTheorem. The blow-up density lower bound says: if V has locally bounded first variation, x ∈ U, τ > 0, ρ^{1−n}‖δV‖(B_ρ(x)) → 0 and ρ^{-n}μ_V({y ∈ B_ρ(x) : not (Θ^n(μ_V,y) exists and ≥ ofReal τ)}) → 0, then every C ∈ VarTan(V,x) has Θ^n(μ_C,·) ≥ ofReal τ μ_C-a.e. Then TangentConesAreRectifiableCones holds. That is, let V have locally bounded first variation, x ∈ U, θ0 > 0, Θ^n(μ_V,x) = θ0, ρ^{1−n}‖δV‖(B_ρ(x)) → 0 and ρ^{-n}μ_V({y ∈ B_ρ(x) : not (Θ^n(μ_V,y) exists and ≥ 1)}) → 0. Then every C ∈ VarTan(V,x) is rectifiable and rescaledMeasure C 0 s = C.measure for all s > 0.",
+    "lean_statement": "VarifoldTangentCones → (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (τ : ℝ), V.HasLocallyBoundedFirstVariation → x ∈ U → 0 < τ → Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧ ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ} / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → ∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C → ∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal τ ≤ θ) → AllardRectifiabilityTheorem → FirstRectifiabilityTheorem → TangentConesAreRectifiableCones",
+    "lean_name": "allard_tc_tangent_cones_rectifiable",
+    "depends_on": [
+      "tangent_point_representation",
+      "cone_rescaling_invariance"
+    ],
+    "natural_proof": "Source: Simon 8.5.7 and its printed proof (p. 216), i.e. Steps B1–B2 of the supplied proof. Step B3 is the sibling child tangent_point_representation and Steps B4–B6 are the sibling child cone_rescaling_invariance (Lean: Submission.allard_tc_tangent_point_representation, Submission.allard_tc_cone_rescaling_invariance). As in the contract, \"{y ∈ B_ρ(x) : Θ^n(μ_V,y) < 1}\" is read as the set where \"Θ^n(μ_V,y) exists and is ≥ 1\" fails. 5.3 is used in its corrected form μ_C(sA) = s^nμ_C(A).\n\n1. Let N, n, U, V, x and θ0 satisfy: V.HasLocallyBoundedFirstVariation, x ∈ U, θ0 > 0, HasDensity n μ_V x (ofReal θ0), 5.1 (ofReal ρ·‖δV‖(B_ρ(x))/ofReal(ρ)^n → 0), and the decay hypothesis for the set where \"∃ θ, HasDensity n μ_V y θ ∧ 1 ≤ θ\" fails. Let C ∈ VarTan(V,x), i.e. IsVarifoldTangent V x C.\n\n2. Step B1: \"From the hypothesis … and the Semi-continuity 3.7, Θ^n(μ_C,y) ≥ 1 for μ_C-a.e. y\". Since ENNReal.ofReal 1 = 1, the decay hypothesis is the decay hypothesis of the blow-up density lower bound with τ = 1. Applying the lower bound to (N, n, U, V, x, 1), with hV, x ∈ U, 0 < 1, 5.1, the decay, C and C ∈ VarTan(V,x), gives: for μ_C-a.e. y there is θ with HasDensity n μ_C y θ and 1 ≤ θ. In particular θ > 0.\n\n3. Step B2: \"Hence by 5.5 C is n-rectifiable\". VarifoldTangentCones(N, n, U, V, x, θ0), part (b), applied to C gives that C is stationary and satisfies (Hom): μ_C(s•A) = ofReal(s)^n·μ_C(A) for all s > 0 and A. Stationary varifolds have locally bounded first variation (SimonGMT Varifold.Stationary.hasLocallyBoundedFirstVariation). So AllardRectifiabilityTheorem(N, n, univ, C) applies, with the a.e. positive density of step 2. It gives IsRectifiable C, the first conclusion, and (T): for μ_C-a.e. y there are T and θ with HasTangentPlane C y T θ.\n\n4. Step B3: canonical representation. tangent_point_representation(FirstRectifiabilityTheorem, N, n, C, (T)) gives M and θ with IsVarifoldOf C M θ, HasTangentPlane at every point of M with multiplicity θ, and (★): C(A) = ∫⁻ over {x ∈ M : ∃ T, HasTangentPlane C x T (θ x) ∧ (x,T) ∈ A} of ofReal θ dH^n for every Borel A.\n\n5. Steps B4–B6: \"and hence η_{0,λ#}C = C\". cone_rescaling_invariance(N, n, C, M, θ), applied with the three facts of step 4 and (Hom), gives rescaledMeasure C 0 s = C.measure for every s > 0. This is the second conclusion. ∎",
+    "proof_key_steps": [
+      "B1: the blow-up density lower bound with τ = 1 (ofReal 1 = 1) gives Θ(μ_C,·) ≥ 1 μ_C-a.e.",
+      "B2: VarifoldTangentCones(b) makes C stationary (hence LBFV) with μ_C(sA) = s^nμ_C(A); AllardRectifiabilityTheorem on C gives IsRectifiable C and tangent planes μ_C-a.e.",
+      "B3: tangent_point_representation gives (M, θ) with IsVarifoldOf, tangent planes on M and the representation (★).",
+      "B4–B6: cone_rescaling_invariance gives rescaledMeasure C 0 s = C.measure for s > 0."
+    ]
+  },
+  "audit": {
+    "key": "tangent_cones_rectifiable",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The lower-density bound at τ=1 and tangent-cone stationarity justify applying the explicit Allard hypothesis. The two declared children then establish rescaling invariance. The parent supplies Allard independently through allard_rectifiability, so this conditional obligation introduces no cycle and proves the selected second conjunct."
+  },
+  "resolved_dependencies": [
+    "root.allard_tangent_cones-a1.tangent_point_representation-a1",
+    "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-tangent-cones-rectifiable-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-tangent-cones-rectifiable-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-tangent-cones-rectifiable-a1/parent-supplied-natural-proof.json"
+}
