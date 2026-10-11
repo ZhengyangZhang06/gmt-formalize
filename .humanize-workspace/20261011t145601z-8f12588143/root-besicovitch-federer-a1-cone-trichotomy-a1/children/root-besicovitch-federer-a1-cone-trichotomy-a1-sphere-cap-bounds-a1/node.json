@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1",
+  "depth": 3,
+  "title": "Two-sided cap estimates for Hⁿ on the unit sphere of an (n+1)-plane (Step 2.1)",
+  "statement": "Let n ≥ 1, ℓ ∈ ℕ, E := ℝ^{n+ℓ} = EuclideanSpace ℝ (Fin (n+ℓ)), H ⊆ E a linear subspace of dimension n + 1, and S(H) := {θ ∈ H : |θ| = 1}. There are real constants c > 0 and C such that for every ζ ∈ S(H) and every ρ > 0: if ρ ≤ 2 then cρⁿ ≤ Hⁿ(S(H) ∩ B(ζ, ρ)); and Hⁿ(S(H) ∩ B(ζ, ρ)) ≤ Cρⁿ. Here Hⁿ = μHE[n], B is the open ball, and comparisons are in [0, ∞] via ENNReal.ofReal.",
+  "lean_statement": "∀ (n ℓ : ℕ), 0 < n → ∀ H : Submodule ℝ (Rn (n + ℓ)), finrank ℝ H = n + 1 → ∃ c C : ℝ, 0 < c ∧ ∀ ζ ∈ H, ‖ζ‖ = 1 → ∀ ρ : ℝ, 0 < ρ → (ρ ≤ 2 → ENNReal.ofReal (c * ρ ^ n) ≤ μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ)) ∧ μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ) ≤ ENNReal.ofReal (C * ρ ^ n)",
+  "lean_name": "bf_sphereCap_measure_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-sphere-cap-bounds-a1-a1"
+}

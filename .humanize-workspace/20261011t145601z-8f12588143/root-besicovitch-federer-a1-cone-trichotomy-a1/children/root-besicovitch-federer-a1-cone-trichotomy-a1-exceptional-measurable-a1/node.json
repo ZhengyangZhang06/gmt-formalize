@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.exceptional_measurable-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1",
+  "depth": 3,
+  "title": "Borel measurability of the exceptional set of the generalized cone trichotomy along a continuous family (Steps 1 and 4.2)",
+  "statement": "Let n, ℓ ∈ ℕ, E := ℝ^{n+ℓ} = EuclideanSpace ℝ (Fin (n+ℓ)), Hⁿ := μHE[n], and let X be a finite-dimensional real normed space with its Borel σ-algebra. Let A ⊆ E be compact with Hⁿ(A) < ∞, δ > 0, α : X → E continuous, and F₁, F₂ : X → E → E such that (ξ, y) ↦ F₁ ξ y and (ξ, y) ↦ F₂ ξ y are continuous on X × E. For ξ ∈ X and r, s ∈ ℝ let C(ξ, r, s) := {x : |F₁ ξ (x − αξ)| < s|F₂ ξ (x − αξ)|} ∩ B(αξ, r) and m(ξ, r, s) := Hⁿ(A ∩ C(ξ, r, s)). Say GT(ξ) holds if one of the following holds. (Φ0) For every c > 0 there is ε > 0 with m(ξ, r, s) ≤ c(rs)ⁿ for all 0 < s < ε and 0 < r < δ. (Φ∞) For every K ∈ ℝ and ε > 0 there are 0 < s < ε and 0 < r < δ with K(rs)ⁿ ≤ m(ξ, r, s). (Ax) Some b ∈ A has b ≠ αξ, |b − αξ| < δ and F₁ ξ (b − αξ) = 0. Numerical bounds are compared in [0, ∞] via ENNReal.ofReal. Then {ξ ∈ X : αξ ∈ A and not GT(ξ)} is a measurable (Borel) subset of X.",
+  "lean_statement": "∀ (n ℓ : ℕ) {X : Type} [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X] [MeasurableSpace X] [BorelSpace X] (A : Set (Rn (n + ℓ))), IsCompact A → μHE[n] A < ∞ → ∀ δ : ℝ, 0 < δ → ∀ (α : X → Rn (n + ℓ)) (F₁ F₂ : X → Rn (n + ℓ) → Rn (n + ℓ)), Continuous α → Continuous (fun q : X × Rn (n + ℓ) ↦ F₁ q.1 q.2) → Continuous (fun q : X × Rn (n + ℓ) ↦ F₂ q.1 q.2) → MeasurableSet {ξ : X | α ξ ∈ A ∧ ¬ ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μHE[n] (A ∩ ({x | ‖F₁ ξ (x - α ξ)‖ < s * ‖F₂ ξ (x - α ξ)‖} ∩ Metric.ball (α ξ) r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨ (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μHE[n] (A ∩ ({x | ‖F₁ ξ (x - α ξ)‖ < s * ‖F₂ ξ (x - α ξ)‖} ∩ Metric.ball (α ξ) r))) ∨ ∃ b ∈ A, b ≠ (α ξ) ∧ dist b (α ξ) < δ ∧ F₁ ξ (b - α ξ) = 0)}",
+  "lean_name": "bf_coneExceptional_measurableSet",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-exceptional-measurable-a1-a1"
+}

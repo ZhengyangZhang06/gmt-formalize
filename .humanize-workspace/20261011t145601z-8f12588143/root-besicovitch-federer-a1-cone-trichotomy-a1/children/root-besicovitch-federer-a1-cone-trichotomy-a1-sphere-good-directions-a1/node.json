@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_good_directions-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1",
+  "depth": 3,
+  "title": "Sphere lemma: Hⁿ-almost every direction on the unit sphere of an (n+1)-plane is good for the slab cones (Step 2; Dall'Alba Theorem 4.16)",
+  "statement": "Let n ≥ 1, ℓ ∈ ℕ, E := ℝ^{n+ℓ}, H ⊆ E a subspace of dimension n + 1 with orthogonal projection p_H := H.starProjection, A ⊆ E compact with Hⁿ(A) < ∞, δ > 0 and a ∈ E. For θ ∈ E and s > 0 let Z_θ(s) := {x : |p_H(x − a) − (p_H(x − a)·θ)θ| < s|p_H(x − a)|} and m′(θ, r, s) := Hⁿ(A ∩ (Z_θ(s) ∩ B(a, r))). Call θ good if one of the following holds. (Ψ0) For every c > 0 there is ε > 0 with m′(θ, r, s) ≤ c(rs)ⁿ for all 0 < s < ε and 0 < r < δ. (Ψ∞) For every K ∈ ℝ and ε > 0 there are 0 < s < ε and 0 < r < δ with K(rs)ⁿ ≤ m′(θ, r, s). (Ax′) Some b ∈ A has b ≠ a, |b − a| < δ and p_H(b − a) − (p_H(b − a)·θ)θ = 0. Numerical bounds are compared in [0, ∞] via ENNReal.ofReal, and Hⁿ = μHE[n]. Then Hⁿ({θ ∈ H : |θ| = 1 and θ is not good}) = 0.",
+  "lean_statement": "∀ (n ℓ : ℕ), 0 < n → ∀ H : Submodule ℝ (Rn (n + ℓ)), finrank ℝ H = n + 1 → ∀ A : Set (Rn (n + ℓ)), IsCompact A → μHE[n] A < ∞ → ∀ δ : ℝ, 0 < δ → ∀ a : Rn (n + ℓ), μHE[n] {θ | θ ∈ H ∧ ‖θ‖ = 1 ∧ ¬ ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μHE[n] (A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ < s * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨ (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μHE[n] (A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ < s * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r))) ∨ ∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ H.starProjection (b - a) - inner ℝ (H.starProjection (b - a)) θ • θ = 0)} = 0",
+  "lean_name": "bf_sphere_ae_slabGood",
+  "depends_on": [
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-sphere-good-directions-a1-a1"
+}
