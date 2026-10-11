@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bf1222777145b8c59808c2b3745e47f81021f92036a813e7a31d7982c397ead5",
+  "git_delta": {
+    "base_commit": "2c2428f36c8f3bdaac44dc6032cfddd1a1693dd7",
+    "candidate_commit": "1202b096ceba02e5d0d007c658e35e2ac1012473",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenRep_divergence_integral_local_bound",
+    "diff_sha256": "4eab598bd9ca33266343e6a376cef6dadb1f8c6d5911ab7314f33ab60769c10e",
+    "source_sha256": "8b6a4de871f91d509ecd59e9666a8abe629e6485aab9e4842b5e6eb972077993",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenRep_divergence_integral_local_bound",
+      "statement": "∀ (N : ℕ) (U E : Set (Rn N)), IsOpen U → NullMeasurableSet E volume → HasLocallyFinitePerimeter U E → ∀ K : Set (Rn N), IsCompact K → K ⊆ U → ∃ C : ℝ, 0 ≤ C ∧ ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ K → ∀ M : ℝ, (∀ x, ‖g x‖ ≤ M) → |∫ x in E ∩ U, Poincare.SimonGMT.Chapter02.euclideanDivergence g x| ≤ C * M",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
