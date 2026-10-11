@@ -105,6 +105,12 @@ def BorelRegularApproximation : Prop :=
       (∀ A : Set X, μ.IsCaratheodory A →
         μ A = ⨆ (C : Set X) (_ : C ⊆ A) (_ : IsClosed C), μ C)
 
+/-- Simon Ch. 1, Theorem 1.15, from the pinned `Poincare.SimonGMT` library:
+`IsBorelRegularOuterMeasure.simon_theorem_1_15`, whose topological hypothesis
+`ClosedSetsAreGDelta X` is the contract's `G_δ` hypothesis by `closedSetsAreGDelta_iff`. -/
+theorem Submission.borel_regular_approximation : BorelRegularApproximation :=
+  fun _ _ hX _ hμ hopen => hμ.simon_theorem_1_15 hopen (closedSetsAreGDelta_iff.mpr hX)
+
 /-- **Lusin's theorem.** Simon Ch. 1, Theorem 1.17 (p. 8).
 
 Let `μ` be a Borel-regular outer measure on a topological space `X` in which every closed set is
