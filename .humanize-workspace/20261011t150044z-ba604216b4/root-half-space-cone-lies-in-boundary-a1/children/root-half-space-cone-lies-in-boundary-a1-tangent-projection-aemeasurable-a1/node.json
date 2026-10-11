@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+  "depth": 2,
+  "title": "The approximate tangent plane field of an integer multiplicity triple is measurable",
+  "statement": "Let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ n) with weight μ = θH^n⌞M (R.measure). For x ∈ ℝ^P let T_x = approxTangentPlane n M x (the approximate tangent n-plane of M at x where it exists, {0} otherwise) and p_x the orthogonal projection onto T_x. Then x ↦ p_x is μ-a.e. measurable as a map ℝ^P → L(ℝ^P, ℝ^P) (Borel σ-algebra).",
+  "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure",
+  "lean_name": "imrep_univ_tangent_starProjection_aemeasurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1-a1"
+}

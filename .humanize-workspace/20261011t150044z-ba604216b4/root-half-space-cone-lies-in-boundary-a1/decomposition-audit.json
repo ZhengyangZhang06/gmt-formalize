@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(import|open|namespace)|structure IMRep|def (measure|Represents|firstVariation|HalfSpaceConeLiesInBoundary|MinimizingImpliesStationary|IsConeCurrent)|IsUnitOrientationOf|tangentialDivergence|blowUp|tangentSpace|local",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero|integral_withDensity_eq_integral_smul|aemeasurable_of_tendsto_metrizable_ae|euclideanHausdorffMeasure_smul₀|map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume|measure_compl_support",
+        "satisfiesStationaryMonotonicity|monotonicityDefect_eq_zero|^def |^theorem ",
+        "instMeasurableSpace|instBorelSpace|borel",
+        "\"lean_name\": \"(imrep_represents_support_eq_inter_measure_support|imrep_measure_eq_of_represents_same_current|cone_current_imrep_measure_smul_image|imrep_univ_tangent_starProjection_aemeasurable|stationary_imrep_radial_tangency_of_ball_ratio|stationary_radial_imrep_weighted_moment_eq_zero)\"",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/hs-independent-audit-rfboc_aa/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/hs-independent-audit-rfboc_aa/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/hs-independent-audit-rfboc_aa/Axioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/hs-independent-audit-rfboc_aa/RadialTangency.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/hs-independent-audit-rfboc_aa/RadialMoment.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/hs-independent-audit-rfboc_aa/ConePullback.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metrizable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/hs-independent-audit-rfboc_aa/Types.lean",
+        "/tmp/hs-independent-audit-rfboc_aa/Assembly.lean",
+        "/tmp/hs-independent-audit-rfboc_aa/Axioms.lean",
+        "/tmp/hs-independent-audit-rfboc_aa/RadialTangency.lean",
+        "/tmp/hs-independent-audit-rfboc_aa/RadialMoment.lean",
+        "/tmp/hs-independent-audit-rfboc_aa/ConePullback.lean"
+      ],
+      "conclusion": "The six-way split is appropriate for the selected HalfSpaceConeLiesInBoundary contract. Snapshot definitions match the workspace; installed Mathlib and SimonGMT match their pinned revisions. All six exact one-line propositions independently elaborate before implementation. The projection codomain uses ContinuousLinearMap's Borel instance; no matrix-unit construction occurs. All names are bare and unreserved: the current DAG has deeper branches, but none collide. Dependencies are acyclic and correctly directed; uniqueness is used by cone homogeneity, while the analytic children explicitly assume the properties supplied during parent assembly. Recompiling the conditional assembly with child statements as explicit hypotheses proves exactly HalfSpaceConeLiesInBoundary using the authorized stationarity sibling. The assembly, supplied radial-tangency and radial-moment checks, cone pullback check, and checked library lemmas depend only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "imrep_support_eq_measure_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including openness and the intersection with U. Compact integrability justifies the Banach-valued fundamental lemma; determinant test covectors establish nonvanishing of orientations. Both support inclusions follow without assuming a mass identity or the parent theorem, including in degree zero."
+    },
+    {
+      "key": "imrep_measure_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact representation-independence statement is proved. Testing the locally integrable vector-density difference gives equality almost everywhere; nonzero orientations identify carriers, null-set invariance of blow-ups identifies tangent planes, and determinant signs identify multiplicities. These steps establish global measure equality without circular reliance."
+    },
+    {
+      "key": "cone_measure_homogeneous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The rescaled triple satisfies every IMRep field, and the literal affine pullback supplies the correct inverse-power factor. Representation uniqueness is the sole declared child dependency and is used in the correct direction. The lower-integral calculation proves the stated ENNReal equality even when the Borel set has infinite measure."
+    },
+    {
+      "key": "tangent_projection_aemeasurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies measurable approximants through continuous blow-up integrals, with local finiteness providing the required domination. Plane moments recover projection norms with a positive constant; polarization and finite basis expansion recover the Borel-measurable operator field. The separate degree-zero argument handles the degenerate case."
+    },
+    {
+      "key": "radial_tangency_of_ball_ratio",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three hypotheses match the prose. The constructed varifold supplies the library's actual required fields, and trace cyclicity identifies first variations. The checked closed-ball monotonicity identity and finite constant ratios force zero annular defects; a countable annular cover and the separate origin observation prove the exact conclusion in every degree."
+    },
+    {
+      "key": "radial_moment_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The squared positive-part profile is C¹ and yields compact support in the ball of radius |ρ|, so every real ρ is covered. The derivative, rank-one trace, self-adjointness and almost-everywhere radial tangency give exactly minus four times the stated integrand. The justified change of measure and stationarity complete the proof."
+    }
+  ],
+  "required_changes": []
+}

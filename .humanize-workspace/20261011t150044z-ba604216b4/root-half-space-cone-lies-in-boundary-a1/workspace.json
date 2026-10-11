@@ -1,0 +1,599 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-half-space-cone-lies-in-boundary-a1",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1",
+      "key": "imrep_measure_unique",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sed -n 680,745p book/chapter-07.txt (7.4.5 and proof); sed -n 560,640p and 290,335p book/chapter-04.txt (5.1, 3.6); sed -n 290,305p, 400,415p, 730,830p book/chapter-06.txt (2.11-2.12, 2.23, 3.1-3.6); sed -n 75,100p book/chapter-03.txt (1.4-1.5)",
+              "grep -n '^theorem \\|^def ' simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean; sed -n 60,620p and 1130,1331p FirstVariation.lean",
+              "sed -n 1,227p simongmt/Poincare/SimonGMT/Chapter04/Basic.lean; cat simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+              "sed -n 1,365p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "sed -n 1,160p and 460,560p simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; cat Chapter06/Mass.lean Chapter06/CurrentLocalEquality.lean Chapter06/AffineCurrentPushforward.lean",
+              "grep -rn 'ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib; sed -n 1,60p and 150,240p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n 'lemma\\|theorem' mathlib/Mathlib/MeasureTheory/Measure/Support.lean; sed -n 186,205p Support.lean",
+              "grep -rln 'Hadamard\\|Binet' mathlib/Mathlib; grep -rn 'abs_det_le\\|det_le_prod' mathlib/Mathlib/LinearAlgebra mathlib/Mathlib/Analysis",
+              "grep -rn 'hausdorffMeasure_smul₀\\|euclideanHausdorffMeasure_homothety_image\\|det_to_matrix_orthonormalBasis_real\\|aemeasurable_of_tendsto_metrizable_ae\\|integral_withDensity_eq_integral_smul\\|euclideanHausdorffMeasure_eq_volume\\|eq_smul_basis_det' mathlib/Mathlib; sed -n 60,200p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "grep -rhoE '\"lean_name\": *\"[^\"]+\"' nodes dag.json problem.json (reserved DAG names)",
+              "lake env lean /tmp/hs-decomp/Stmts.lean and /tmp/hs-decomp/Final.lean (six child types, #synth MeasurableSpace/BorelSpace on Euclid P →L[ℝ] Euclid P, conditional parent assembly, #print axioms)",
+              "lake env lean /tmp/hs-decomp-review/Child4Check.lean, Child5Check.lean, Child2StepCheck.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Hadamard.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metrizable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/tmp/hs-decomp/Stmts.lean",
+              "/tmp/hs-decomp/Final.lean",
+              "/tmp/hs-decomp-review/Child4Check.lean",
+              "/tmp/hs-decomp-review/Child5Check.lean",
+              "/tmp/hs-decomp-review/Child2StepCheck.lean"
+            ],
+            "conclusion": "The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. All six child Lean types elaborate in namespace GMT.Ch07 with the contract's opens; the measurable space on Euclid P →L[ℝ] Euclid P is the Borel instance (ContinuousLinearMap.instMeasurableSpace / instBorelSpace) that SimonGMT also uses; the conditional parent assembly from the six children and the sibling MinimizingImpliesStationary compiles with axioms propext, sorryAx, Classical.choice, Quot.sound. Library support: SimonGMT Chapter04/FirstVariation.lean proves Simon 4.3.6 (IsStationaryIn.satisfiesStationaryMonotonicity, monotonicityDefect_eq_zero, closed balls, all n) for Chapter04.RectifiableVarifold, whose fields (Basic.lean) include an a.e.-measurable tangent projection — hence the separate measurability child; Chapter03/Rectifiable.lean gives HasApproximateTangentSpaceAt (Simon 3.1.4 blow-up definition) and HasApproximateTangentSpaceAt.unique; Chapter06 gives support = U \\ zeroRegion, massOn with the Euclidean coefficient norm and the proper affine push-forward used by blowUp. Mathlib (snapshot) supplies IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (Banach-valued, no local finiteness needed), Measure.support with measure_compl_support and mem_support_iff_forall, euclideanHausdorffMeasure_smul₀ / euclideanHausdorffMeasure_homothety_image / Isometry.euclideanHausdorffMeasure_image / EuclideanSpace.euclideanHausdorffMeasure_eq_volume, OrthonormalBasis.det_to_matrix_orthonormalBasis_real, aemeasurable_of_tendsto_metrizable_ae', integral_withDensity_eq_integral_smul. There is no Hadamard determinant inequality or Cauchy–Binet formula (Matrix/Hadamard.lean is the Hadamard product), so Simon 6.3.2(3) (M_W(T) = μ(W)) is bypassed by fundamental-lemma arguments in the support and uniqueness children. Reviewer scratch proofs of radial_tangency_of_ball_ratio and radial_moment_vanishes (exact frozen types) and of the cone pull-back step compile with only propext, Classical.choice, Quot.sound. No other DAG branch has reserved names below depth 1; the six proposed names are new."
+          }
+        ],
+        "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+        "child_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1",
+        "subproblem": {
+          "key": "imrep_measure_unique",
+          "title": "The weight θH^n⌞M of an integer multiplicity current is independent of the representation (Simon 6.3.2(3))",
+          "statement": "Let U ⊆ ℝ^P be open, n ∈ ℕ, T ∈ 𝒟_n(U), and let R_1 = (M_1, θ_1, ξ_1) and R_2 = (M_2, θ_2, ξ_2) be integer multiplicity triples in U (IMRep U n) both representing T (T = τ(M_1, θ_1, ξ_1) = τ(M_2, θ_2, ξ_2)). Then θ_1H^n⌞M_1 = θ_2H^n⌞M_2, i.e. R_1.measure = R_2.measure.",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R₁ R₂ : IMRep U n), IsOpen U → R₁.Represents T → R₂.Represents T → R₁.measure = R₂.measure",
+          "lean_name": "imrep_measure_eq_of_represents_same_current",
+          "depends_on": [],
+          "natural_proof": "Source: the parent's step 3 speaks of \"the mass measure\" μ of C; that it does not depend on the chosen representation is Simon Ch. 6, 3.2(3) (chapter-06.txt lines 763–768: M_W(T) = ∫_{M∩W} θ dH^n for open W ⊆ U, the right side therefore being determined by T). Simon states 3.2(3) without proof. We prove the needed consequence (representation independence of θH^n⌞M) directly by the fundamental lemma of the calculus of variations; this avoids comparing the contract's Euclidean coefficient norm with unit simple n-vectors (which would need Cauchy–Binet, absent from Mathlib).\n\nNotation. R_i = (M_i, θ_i, ξ_i) (carrier, mult, orient), H^n = μHE[n], μ_i := R_i.measure = (H^n⌞M_i).withDensity θ_i, ν := H^n⌞(M_1 ∪ M_2).\n1. Preliminaries.\n (a) θ_i ≥ 1 on M_i, so H^n(M_i ∩ K) ≤ μ_i(K) < ∞ for compact K ⊆ U (R_i.locallyIntegrable_mult); hence ν(K) < ∞ for compact K ⊆ U.\n (b) For an orthonormal family τ = (τ_1,…,τ_n) let δ_τ(w_1,…,w_n) := det(⟨τ_i, w_j⟩)_{i,j}: a continuous alternating n-linear form (row-determinant of the vectors (⟨τ_i,w_j⟩)_i ∈ ℝ^n) with δ_τ(τ) = 1 (δ_τ ≡ 1 if n = 0). If τ' is another orthonormal family with span τ' = span τ, put O := (⟨τ_i, τ'_j⟩)_{i,j}. Since τ is an orthonormal basis of the common span, τ'_j = Σ_i O_{ij} τ_i, so δ_{jk} = ⟨τ'_j, τ'_k⟩ = Σ_i O_{ij}O_{ik}, i.e. OᵀO = I; hence δ_τ(τ') = det O ∈ {−1, +1}.\n (c) For orthonormal τ and any n-covector α, |α(τ)| ≤ ‖α‖ (operator norm, ‖τ_i‖ = 1). Hence every unit orientation ξ_0 of an n-plane satisfies ‖ξ_0‖ ≤ 1.\n (d) By R_i.orients, for H^n-a.e. x ∈ M_i there are an n-plane Q_i(x) with HasApproximateTangentSpaceAt n M_i x Q_i(x), an orthonormal family τ^i(x) spanning Q_i(x) and ε_i(x) ∈ {−1, +1} with ξ_i(x)(α) = ε_i(x)·α(τ^i(x)) for all covectors α. In particular ‖ξ_i(x)‖ ≤ 1 and ξ_i(x)(δ_{τ^i(x)}) = ε_i(x) ≠ 0 there.\n2. Equality of the vector densities. Put f(x) := 1_{M_1}(x)θ_1(x)ξ_1(x) − 1_{M_2}(x)θ_2(x)ξ_2(x), a function with values in the Banach space Λ_n = MultiVector P n. f is a.e.-strongly measurable for ν (indicators of measurable sets times functions that are a.e.-strongly measurable for H^n⌞M_i), ‖f‖ ≤ 1_{M_1}θ_1 + 1_{M_2}θ_2 ν-a.e. by 1(d), and ∫_K (1_{M_1}θ_1 + 1_{M_2}θ_2) dν = μ_1(K) + μ_2(K) < ∞ for compact K ⊆ U; so f is locally integrable on U with respect to ν. Let g ∈ C^∞(ℝ^P) have compact support with spt g ⊆ U and put I_g := ∫ g f dν ∈ Λ_n. For every n-covector α the form ω := gα lies in 𝒟^n(U); evaluation at α commutes with the Bochner integral (Mathlib ContinuousLinearMap.integral_apply), and by linearity of ξ_i(x),\n I_g(α) = ∫_{M_1} θ_1 ξ_1(ω) dH^n − ∫_{M_2} θ_2 ξ_2(ω) dH^n = R_1.action(ω) − R_2.action(ω) = T(ω) − T(ω) = 0\n (both integrands are integrable, being bounded by sup|g|·‖α‖·θ_i on the compact set spt g ⊆ U). Hence I_g = 0 for all such g, and by the fundamental lemma on the open set U for Banach-valued functions (Mathlib IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero, which needs no local finiteness of ν), f = 0 ν-a.e. on U, hence ν-a.e. (ν is carried by M_1 ∪ M_2 ⊆ U). That is, for ν-a.e. x,\n (★) 1_{M_1}(x)θ_1(x)ξ_1(x) = 1_{M_2}(x)θ_2(x)ξ_2(x) as n-vectors (linear functionals on n-covectors).\n Since ν = H^n⌞(M_1 ∪ M_2), (★) holds for H^n-a.e. x ∈ M_1 ∪ M_2.\n3. The carriers agree up to null sets. For H^n-a.e. x ∈ M_1 ∖ M_2, (★) reads θ_1(x)ξ_1(x) = 0, so ξ_1(x) = 0 (θ_1 ≥ 1); by 1(d) this fails for H^n-a.e. x ∈ M_1. Hence H^n(M_1 ∖ M_2) = 0, and symmetrically H^n(M_2 ∖ M_1) = 0.\n4. The approximate tangent planes agree. For x ∈ ℝ^P and r > 0 the map b_{x,r}(y) = r^{-1}(y − x) (blowUpMap x r) is injective and is a translation followed by the dilation by r^{-1}, so H^n(b_{x,r}(B)) = r^{-n}H^n(B) for every set B (translation invariance of μHE[n], Mathlib Isometry.euclideanHausdorffMeasure_image, and Mathlib euclideanHausdorffMeasure_smul₀ / euclideanHausdorffMeasure_homothety_image). Hence b_{x,r}(M_1) Δ b_{x,r}(M_2) = b_{x,r}(M_1 Δ M_2) has H^n-measure r^{-n}H^n(M_1 Δ M_2) = 0. Hence ∫_{b_{x,r}(M_1)} f dH^n = ∫_{b_{x,r}(M_2)} f dH^n for all f ∈ C_c(ℝ^P) and r > 0, and therefore, for every x and every subspace Q, HasApproximateTangentSpaceAt n M_1 x Q ⟺ HasApproximateTangentSpaceAt n M_2 x Q. For H^n-a.e. x ∈ M_1 ∩ M_2 both statements 1(d) hold; at such x, HasApproximateTangentSpaceAt n M_2 x Q_1(x) and HasApproximateTangentSpaceAt n M_2 x Q_2(x), so Q_1(x) = Q_2(x) by uniqueness (Simon Ch. 3, 1.5(1); SimonGMT HasApproximateTangentSpaceAt.unique).\n5. The multiplicities agree. Let x ∈ M_1 ∩ M_2 be such that (★) and steps 1(d), 4 hold (H^n-a.e. point of M_1 ∩ M_2). Then τ^1(x) and τ^2(x) are orthonormal families spanning the same plane, so s := δ_{τ^1(x)}(τ^2(x)) ∈ {±1} by 1(b). Evaluating (★) at the covector δ := δ_{τ^1(x)} gives θ_1(x)ε_1(x) = θ_2(x)ε_2(x)s; taking absolute values, θ_1(x) = θ_2(x). Thus θ_1 = θ_2 H^n-a.e. on M_1 ∩ M_2.\n6. Conclusion. For every measurable A, using steps 3 and 5:\n μ_1(A) = ∫_{M_1∩A} θ_1 dH^n = ∫_{M_1∩M_2∩A} θ_1 dH^n = ∫_{M_1∩M_2∩A} θ_2 dH^n = ∫_{M_2∩A} θ_2 dH^n = μ_2(A).\n Measures that agree on all measurable sets are equal, so R_1.measure = R_2.measure.",
+          "proof_key_steps": [
+            "Testing T on ω = gα for all covectors α and the Banach-valued fundamental lemma give 1_{M_1}θ_1ξ_1 = 1_{M_2}θ_2ξ_2 H^n-a.e. on M_1 ∪ M_2.",
+            "ξ_i ≠ 0 a.e. (ξ_i(δ_τ) = ±1), so H^n(M_1 Δ M_2) = 0.",
+            "Blow-ups of a.e.-equal sets coincide, so the approximate tangent planes agree a.e. on M_1 ∩ M_2.",
+            "Two orthonormal frames of one plane have det(⟨τ^1_i,τ^2_j⟩) = ±1; evaluating at δ_{τ^1} gives θ_1 = θ_2 a.e.; hence θ_1H^n⌞M_1 = θ_2H^n⌞M_2."
+          ]
+        },
+        "audit": {
+          "key": "imrep_measure_unique",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exact representation-independence statement is proved. Testing the locally integrable vector-density difference gives equality almost everywhere; nonzero orientations identify carriers, null-set invariance of blow-ups identifies tangent planes, and determinant signs identify multiplicities. These steps establish global measure equality without circular reliance."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1",
+      "key": "imrep_support_eq_measure_support",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sed -n 680,745p book/chapter-07.txt (7.4.5 and proof); sed -n 560,640p and 290,335p book/chapter-04.txt (5.1, 3.6); sed -n 290,305p, 400,415p, 730,830p book/chapter-06.txt (2.11-2.12, 2.23, 3.1-3.6); sed -n 75,100p book/chapter-03.txt (1.4-1.5)",
+              "grep -n '^theorem \\|^def ' simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean; sed -n 60,620p and 1130,1331p FirstVariation.lean",
+              "sed -n 1,227p simongmt/Poincare/SimonGMT/Chapter04/Basic.lean; cat simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+              "sed -n 1,365p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "sed -n 1,160p and 460,560p simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; cat Chapter06/Mass.lean Chapter06/CurrentLocalEquality.lean Chapter06/AffineCurrentPushforward.lean",
+              "grep -rn 'ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib; sed -n 1,60p and 150,240p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n 'lemma\\|theorem' mathlib/Mathlib/MeasureTheory/Measure/Support.lean; sed -n 186,205p Support.lean",
+              "grep -rln 'Hadamard\\|Binet' mathlib/Mathlib; grep -rn 'abs_det_le\\|det_le_prod' mathlib/Mathlib/LinearAlgebra mathlib/Mathlib/Analysis",
+              "grep -rn 'hausdorffMeasure_smul₀\\|euclideanHausdorffMeasure_homothety_image\\|det_to_matrix_orthonormalBasis_real\\|aemeasurable_of_tendsto_metrizable_ae\\|integral_withDensity_eq_integral_smul\\|euclideanHausdorffMeasure_eq_volume\\|eq_smul_basis_det' mathlib/Mathlib; sed -n 60,200p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "grep -rhoE '\"lean_name\": *\"[^\"]+\"' nodes dag.json problem.json (reserved DAG names)",
+              "lake env lean /tmp/hs-decomp/Stmts.lean and /tmp/hs-decomp/Final.lean (six child types, #synth MeasurableSpace/BorelSpace on Euclid P →L[ℝ] Euclid P, conditional parent assembly, #print axioms)",
+              "lake env lean /tmp/hs-decomp-review/Child4Check.lean, Child5Check.lean, Child2StepCheck.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Hadamard.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metrizable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/tmp/hs-decomp/Stmts.lean",
+              "/tmp/hs-decomp/Final.lean",
+              "/tmp/hs-decomp-review/Child4Check.lean",
+              "/tmp/hs-decomp-review/Child5Check.lean",
+              "/tmp/hs-decomp-review/Child2StepCheck.lean"
+            ],
+            "conclusion": "The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. All six child Lean types elaborate in namespace GMT.Ch07 with the contract's opens; the measurable space on Euclid P →L[ℝ] Euclid P is the Borel instance (ContinuousLinearMap.instMeasurableSpace / instBorelSpace) that SimonGMT also uses; the conditional parent assembly from the six children and the sibling MinimizingImpliesStationary compiles with axioms propext, sorryAx, Classical.choice, Quot.sound. Library support: SimonGMT Chapter04/FirstVariation.lean proves Simon 4.3.6 (IsStationaryIn.satisfiesStationaryMonotonicity, monotonicityDefect_eq_zero, closed balls, all n) for Chapter04.RectifiableVarifold, whose fields (Basic.lean) include an a.e.-measurable tangent projection — hence the separate measurability child; Chapter03/Rectifiable.lean gives HasApproximateTangentSpaceAt (Simon 3.1.4 blow-up definition) and HasApproximateTangentSpaceAt.unique; Chapter06 gives support = U \\ zeroRegion, massOn with the Euclidean coefficient norm and the proper affine push-forward used by blowUp. Mathlib (snapshot) supplies IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (Banach-valued, no local finiteness needed), Measure.support with measure_compl_support and mem_support_iff_forall, euclideanHausdorffMeasure_smul₀ / euclideanHausdorffMeasure_homothety_image / Isometry.euclideanHausdorffMeasure_image / EuclideanSpace.euclideanHausdorffMeasure_eq_volume, OrthonormalBasis.det_to_matrix_orthonormalBasis_real, aemeasurable_of_tendsto_metrizable_ae', integral_withDensity_eq_integral_smul. There is no Hadamard determinant inequality or Cauchy–Binet formula (Matrix/Hadamard.lean is the Hadamard product), so Simon 6.3.2(3) (M_W(T) = μ(W)) is bypassed by fundamental-lemma arguments in the support and uniqueness children. Reviewer scratch proofs of radial_tangency_of_ball_ratio and radial_moment_vanishes (exact frozen types) and of the cone pull-back step compile with only propext, Classical.choice, Quot.sound. No other DAG branch has reserved names below depth 1; the six proposed names are new."
+          }
+        ],
+        "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+        "child_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1",
+        "subproblem": {
+          "key": "imrep_support_eq_measure_support",
+          "title": "Support of an integer multiplicity current equals the support of its weight (Simon 6.2.12 with 6.3.2(3))",
+          "statement": "Let U ⊆ ℝ^P be open, n ∈ ℕ, T ∈ 𝒟_n(U) a current (GeometricCurrentOn U n) and R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n: M ⊆ U Borel, countably n-rectifiable, θ ≥ 1 on M integer valued and locally H^n-integrable in U, ξ an H^n-measurable unit orientation of the approximate tangent planes H^n-a.e. on M) with T = τ(M, θ, ξ), i.e. T(ω) = ∫_M θ⟨ω, ξ⟩ dH^n for all ω ∈ 𝒟^n(U). Let μ = θH^n⌞M (R.measure). Then spt T = U ∩ spt μ, where spt μ is the set of points all of whose neighbourhoods have positive μ-measure.",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → T.support = U ∩ R.measure.support",
+          "lean_name": "imrep_represents_support_eq_inter_measure_support",
+          "depends_on": [],
+          "natural_proof": "Source: parent step 1 (\"spt C = spt μ\"), i.e. Simon Ch. 6, 2.11–2.12 (chapter-06.txt lines 296–305: spt T = spt μ_T) together with Ch. 6, 3.2(3) (chapter-06.txt lines 763–768: μ_T = θH^n⌞M). Simon gives no proof of 3.2(3). Instead of the mass identity M_W(T) = ∫_{M∩W} θ dH^n (whose proof with the contract's Euclidean coefficient norm would need a Cauchy–Binet comparison of covectors with unit simple n-vectors, not available in Mathlib) we prove both inclusions directly from the integral representation; the inclusion U ∩ spt μ ⊆ spt T uses the fundamental lemma of the calculus of variations, which is exactly the consequence \"T vanishes on W ⇒ μ(W) = 0\" of 3.2(3) that the parent uses (\"if C vanishes on all forms supported in B, M_B(C) = μ(B) = 0\").\n\nNotation. M = R.carrier, θ = R.mult (θ ≥ 1 on M), ξ = R.orient, H^n = μHE[n], μ = R.measure = (H^n⌞M).withDensity θ; thus μ(A) = ∫_{M∩A} θ dH^n for Borel A and ∫ f dμ = ∫_M θ f dH^n. By definition (SimonGMT GeometricCurrentOn.support), spt T = U ∖ Z, where Z is the union of all open W with closure W compact, closure W ⊆ U, and T(ω) = 0 for every ω ∈ 𝒟^n(U) (TestFormOn U n) with spt ω ⊆ W (\"T vanishes on W\"). spt μ (Measure.support) is the set of x such that μ(N) > 0 for every neighbourhood N of x.\n\n1. Preliminaries.\n (a) Since θ ≥ 1 on M, H^n(M ∩ A) ≤ μ(A) for every Borel A; and μ(K) = ∫_{M∩K} θ dH^n < ∞ for every compact K ⊆ U (R.locallyIntegrable_mult).\n (b) For an orthonormal family τ = (τ_1,…,τ_n) in ℝ^P define δ_τ(w_1,…,w_n) := det(⟨τ_i, w_j⟩)_{i,j=1..n}. It is the row-determinant of the n vectors L(w_j) ∈ ℝ^n, L(w) := (⟨τ_i, w⟩)_i, hence n-linear and alternating in (w_j); it is continuous (finite dimension), so δ_τ is an n-covector, and δ_τ(τ) = det(⟨τ_i,τ_j⟩) = det(I) = 1 (for n = 0, δ_τ is the constant form 1).\n (c) For orthonormal τ and every n-covector α, |α(τ)| ≤ ‖α‖·∏_i‖τ_i‖ = ‖α‖ (operator norm). Hence if ξ_0 is a unit orientation of an n-plane (IsUnitOrientationOf ξ_0 Q: ξ_0(α) = ±α(τ) with τ orthonormal spanning Q), then ‖ξ_0‖ ≤ 1 and ξ_0(δ_τ) = ±1 ≠ 0.\n (d) By R.orients, for H^n-a.e. x ∈ M, ξ(x) is a unit orientation of an n-plane; since μ ≪ H^n⌞M, (c) gives ‖ξ(x)‖ ≤ 1 and ξ(x) ≠ 0 for μ-a.e. x.\n2. spt T ⊆ U ∩ spt μ. Let x ∈ spt T; then x ∈ U. Suppose x ∉ spt μ, so μ(N) = 0 for some neighbourhood N of x. Since U is open, choose ε > 0 with closedBall(x, ε) ⊆ N ∩ U and put W := ball(x, ε). W is open, closure W ⊆ closedBall(x, ε) is compact and contained in U. Let ω ∈ 𝒟^n(U) with spt ω ⊆ W. Then ω(y) = 0 for y ∉ W, while H^n(M ∩ W) ≤ μ(W) ≤ μ(N) = 0 by 1(a). Hence y ↦ θ(y)·ξ(y)(ω(y)) vanishes H^n-a.e. on M and T(ω) = R.action(ω) = ∫_M θ ξ(ω) dH^n = 0. So T vanishes on W, i.e. x ∈ W ⊆ Z, contradicting x ∈ spt T = U ∖ Z. Therefore x ∈ U ∩ spt μ.\n3. Claim: if W is open, closure W is compact, closure W ⊆ U and T vanishes on W, then μ(W) = 0.\n Consider f(y) := ξ(y), a function with values in the Banach space Λ_n = MultiVector P n (continuous linear functionals on n-covectors). f is μ-a.e. strongly measurable (ξ is for H^n⌞M, and μ ≪ H^n⌞M) and ‖f‖ ≤ 1 μ-a.e. by 1(d); since μ(W) ≤ μ(closure W) < ∞ by 1(a), f is integrable on W, in particular locally integrable on the open set W. Let g : ℝ^P → ℝ be C^∞ with compact support and spt g ⊆ W, and put I_g := ∫ g f dμ ∈ Λ_n. For every n-covector α the form ω := gα (ω(y) = g(y)·α) is C^∞, compactly supported, spt ω ⊆ spt g ⊆ W ⊆ U, so ω ∈ 𝒟^n(U) and T(ω) = 0; evaluation at α is a continuous linear functional on Λ_n and commutes with the Bochner integral (Mathlib ContinuousLinearMap.integral_apply / integral_comp_comm), so, by the representation and linearity of ξ(y),\n I_g(α) = ∫ g(y) ξ(y)(α) dμ(y) = ∫_M θ(y) ξ(y)(g(y)α) dH^n(y) = R.action(ω) = T(ω) = 0\n (the middle equality is ∫ F dμ = ∫_M θ F dH^n, Mathlib integral_withDensity_eq_integral_smul). Hence I_g = 0 for all such g. By the fundamental lemma of the calculus of variations on an open set, for functions with values in a complete normed space (Mathlib IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero, which needs no local finiteness of μ), ξ(y) = f(y) = 0 for μ-a.e. y ∈ W. (Equivalently one may test against the members of a basis of the finite-dimensional space of n-covectors; that space embeds linearly and injectively into the finite-dimensional space of n-linear maps, Mathlib Module.Finite for multilinear maps.) By 1(d), ξ(y) ≠ 0 for μ-a.e. y. Therefore μ-a.e. point lies outside W, i.e. μ(W) = 0.\n4. U ∩ spt μ ⊆ spt T. Let x ∈ U ∩ spt μ and suppose x ∉ spt T, i.e. x ∈ Z; then x ∈ W for some open W with closure W compact, closure W ⊆ U, on which T vanishes. By step 3, μ(W) = 0; but W is an open neighbourhood of x and x ∈ spt μ, so μ(W) > 0. Contradiction; hence x ∈ U ∖ Z = spt T.\n5. Steps 2 and 4 give spt T = U ∩ spt μ, i.e. T.support = U ∩ R.measure.support.",
+          "proof_key_steps": [
+            "θ ≥ 1 on M: a μ-null ball meets M in an H^n-null set, so T vanishes on it; hence spt T ⊆ U ∩ spt μ.",
+            "For g ∈ C^∞_c(W): (∫ gξ dμ)(α) = T(gα) = 0 for every covector α, so ∫ gξ dμ = 0 and the (Banach-valued) fundamental lemma gives ξ = 0 μ-a.e. on any W on which T vanishes.",
+            "ξ ≠ 0 μ-a.e. (ξ(δ_τ) = ±1 for δ_τ = det(⟨τ_i,·⟩)), so μ(W) = 0 for every piece W of the zero region; hence U ∩ spt μ ⊆ spt T."
+          ]
+        },
+        "audit": {
+          "key": "imrep_support_eq_measure_support",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and type agree, including openness and the intersection with U. Compact integrability justifies the Banach-valued fundamental lemma; determinant test covectors establish nonvanishing of orientations. Both support inclusions follow without assuming a mass identity or the parent theorem, including in degree zero."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.radial_moment_vanishes-a1",
+      "key": "radial_moment_vanishes",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-radial-moment-vanishes-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-radial-moment-vanishes-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sed -n 680,745p book/chapter-07.txt (7.4.5 and proof); sed -n 560,640p and 290,335p book/chapter-04.txt (5.1, 3.6); sed -n 290,305p, 400,415p, 730,830p book/chapter-06.txt (2.11-2.12, 2.23, 3.1-3.6); sed -n 75,100p book/chapter-03.txt (1.4-1.5)",
+              "grep -n '^theorem \\|^def ' simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean; sed -n 60,620p and 1130,1331p FirstVariation.lean",
+              "sed -n 1,227p simongmt/Poincare/SimonGMT/Chapter04/Basic.lean; cat simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+              "sed -n 1,365p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "sed -n 1,160p and 460,560p simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; cat Chapter06/Mass.lean Chapter06/CurrentLocalEquality.lean Chapter06/AffineCurrentPushforward.lean",
+              "grep -rn 'ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib; sed -n 1,60p and 150,240p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n 'lemma\\|theorem' mathlib/Mathlib/MeasureTheory/Measure/Support.lean; sed -n 186,205p Support.lean",
+              "grep -rln 'Hadamard\\|Binet' mathlib/Mathlib; grep -rn 'abs_det_le\\|det_le_prod' mathlib/Mathlib/LinearAlgebra mathlib/Mathlib/Analysis",
+              "grep -rn 'hausdorffMeasure_smul₀\\|euclideanHausdorffMeasure_homothety_image\\|det_to_matrix_orthonormalBasis_real\\|aemeasurable_of_tendsto_metrizable_ae\\|integral_withDensity_eq_integral_smul\\|euclideanHausdorffMeasure_eq_volume\\|eq_smul_basis_det' mathlib/Mathlib; sed -n 60,200p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "grep -rhoE '\"lean_name\": *\"[^\"]+\"' nodes dag.json problem.json (reserved DAG names)",
+              "lake env lean /tmp/hs-decomp/Stmts.lean and /tmp/hs-decomp/Final.lean (six child types, #synth MeasurableSpace/BorelSpace on Euclid P →L[ℝ] Euclid P, conditional parent assembly, #print axioms)",
+              "lake env lean /tmp/hs-decomp-review/Child4Check.lean, Child5Check.lean, Child2StepCheck.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Hadamard.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metrizable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/tmp/hs-decomp/Stmts.lean",
+              "/tmp/hs-decomp/Final.lean",
+              "/tmp/hs-decomp-review/Child4Check.lean",
+              "/tmp/hs-decomp-review/Child5Check.lean",
+              "/tmp/hs-decomp-review/Child2StepCheck.lean"
+            ],
+            "conclusion": "The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. All six child Lean types elaborate in namespace GMT.Ch07 with the contract's opens; the measurable space on Euclid P →L[ℝ] Euclid P is the Borel instance (ContinuousLinearMap.instMeasurableSpace / instBorelSpace) that SimonGMT also uses; the conditional parent assembly from the six children and the sibling MinimizingImpliesStationary compiles with axioms propext, sorryAx, Classical.choice, Quot.sound. Library support: SimonGMT Chapter04/FirstVariation.lean proves Simon 4.3.6 (IsStationaryIn.satisfiesStationaryMonotonicity, monotonicityDefect_eq_zero, closed balls, all n) for Chapter04.RectifiableVarifold, whose fields (Basic.lean) include an a.e.-measurable tangent projection — hence the separate measurability child; Chapter03/Rectifiable.lean gives HasApproximateTangentSpaceAt (Simon 3.1.4 blow-up definition) and HasApproximateTangentSpaceAt.unique; Chapter06 gives support = U \\ zeroRegion, massOn with the Euclidean coefficient norm and the proper affine push-forward used by blowUp. Mathlib (snapshot) supplies IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (Banach-valued, no local finiteness needed), Measure.support with measure_compl_support and mem_support_iff_forall, euclideanHausdorffMeasure_smul₀ / euclideanHausdorffMeasure_homothety_image / Isometry.euclideanHausdorffMeasure_image / EuclideanSpace.euclideanHausdorffMeasure_eq_volume, OrthonormalBasis.det_to_matrix_orthonormalBasis_real, aemeasurable_of_tendsto_metrizable_ae', integral_withDensity_eq_integral_smul. There is no Hadamard determinant inequality or Cauchy–Binet formula (Matrix/Hadamard.lean is the Hadamard product), so Simon 6.3.2(3) (M_W(T) = μ(W)) is bypassed by fundamental-lemma arguments in the support and uniqueness children. Reviewer scratch proofs of radial_tangency_of_ball_ratio and radial_moment_vanishes (exact frozen types) and of the cone pull-back step compile with only propext, Classical.choice, Quot.sound. No other DAG branch has reserved names below depth 1; the six proposed names are new."
+          }
+        ],
+        "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+        "child_id": "root.half_space_cone_lies_in_boundary-a1.radial_moment_vanishes-a1",
+        "subproblem": {
+          "key": "radial_moment_vanishes",
+          "title": "Stationarity plus radial tangency make the weighted first moments vanish (Simon 7.4.5, lines 708–719)",
+          "statement": "Let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ n), μ = θH^n⌞M (R.measure), and p_x the orthogonal projection onto approxTangentPlane n M x. Assume (i) R.firstVariation X = 0 for every C¹ vector field X : ℝ^P → ℝ^P with compact support, and (ii) p_x(x) = x for μ-a.e. x. Then for every e ∈ ℝ^P and ρ ∈ ℝ, ∫ max(ρ² − |x|², 0)·⟨e, x⟩ dμ(x) = 0.",
+          "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x) → ∀ (e : Euclid P) (ρ : ℝ), ∫ x, max (ρ ^ 2 - ‖x‖ ^ 2) 0 * inner ℝ e x ∂R.measure = 0",
+          "lean_name": "stationary_radial_imrep_weighted_moment_eq_zero",
+          "depends_on": [],
+          "natural_proof": "Source: parent steps 4–6, along the direct route recorded in the parent's step 5 (\"Since x^T = x a.e., the same computation shows directly ∫hφ(r/ρ)dμ = ∫div_M Y_ρ dμ = 0\"), i.e. Simon 7.4.5, proof lines 708–719 (chapter-07.txt): with h(x) = ⟨e, x⟩ (the book takes e = e_1), x·∇^V h = e·x^T, the right side of (1) equals ∫ e·∇^V Ψ dμ = ∫ div_V(Ψe) dμ, and this vanishes because V is stationary. Here we use the profile φ(s) := 4ρ²·max(1 − s², 0), for which the parent's primitive is Ψ_ρ(s) = −∫_s^∞ tφ(t/ρ)dt = −max(ρ² − s², 0)², so Y_ρ(x) = Ψ_ρ(|x|)e = −max(ρ² − |x|², 0)² e; we work with Y := −Y_ρ. The parent's requirements \"φ ∈ C¹, constant near 0\" only served the field X_ρ of its step 4, which is not used on this route; that Y is C¹ is checked directly.\n\nNotation. M = R.carrier, θ = R.mult, μ = R.measure, H^n = μHE[n], p_x := orthogonal projection onto approxTangentPlane n M x, m(x) := max(ρ² − |x|², 0). Fix e ∈ ℝ^P and ρ ∈ ℝ.\n1. The profile g(t) := (max(t, 0))² is C¹ on ℝ with g'(t) = 2max(t, 0): for t < 0, g ≡ 0 near t; for t > 0, g(s) = s² near t; at t = 0, |g(h) − g(0)| ≤ h², so g'(0) = 0; and t ↦ 2max(t,0) is continuous.\n2. The field Y(x) := g(ρ² − |x|²)·e is C¹ (composition of g with the smooth map x ↦ ρ² − |x|², times the constant vector e) with\n DY(x)w = g'(ρ² − |x|²)·(−2⟨x, w⟩)·e = −4m(x)⟨x, w⟩e.\n If |x| ≥ |ρ| then ρ² − |x|² ≤ 0 and Y(x) = 0, so spt Y ⊆ closedBall(0, |ρ|) and Y has compact support.\n3. Tangential divergence. tangentialDivergence n M Y x = trace(p_x ∘ DY(x)). The map p_x ∘ DY(x) is w ↦ −4m(x)⟨x, w⟩ p_x(e), and the trace of w ↦ ⟨a, w⟩b equals ⟨a, b⟩ (rank-one map); hence\n tangentialDivergence n M Y x = −4m(x)⟨x, p_x e⟩ = −4m(x)⟨p_x x, e⟩ (p_x is self-adjoint).\n By hypothesis (ii), p_x x = x for μ-a.e. x, so tangentialDivergence n M Y x = −4m(x)⟨e, x⟩ for μ-a.e. x. (This is the identity div_V Y_ρ = φ(r/ρ)e·x^T of the parent's step 5, with x^T = x.)\n4. Stationarity. By hypothesis (i), 0 = R.firstVariation Y = ∫_M θ·tangentialDivergence n M Y dH^n = ∫ tangentialDivergence n M Y dμ (Mathlib integral_withDensity_eq_integral_smul; μ = (H^n⌞M).withDensity θ with θ a measurable ℕ-valued density). Since the integrand agrees μ-a.e. with x ↦ −4m(x)⟨e, x⟩ (step 3), the Bochner integrals agree (integral_congr_ae; no integrability needs to be checked for this), so 0 = ∫ −4m(x)⟨e, x⟩ dμ = −4∫ m(x)⟨e, x⟩ dμ.\n5. Therefore ∫ max(ρ² − |x|², 0)·⟨e, x⟩ dμ(x) = 0.",
+          "proof_key_steps": [
+            "Y(x) = max(ρ² − |x|², 0)² e is a C¹ compactly supported field with DY(x)w = −4max(ρ² − |x|², 0)⟨x,w⟩e.",
+            "div_M Y = trace(p_x∘DY) = −4max(ρ² − |x|², 0)⟨p_x x, e⟩ = −4max(ρ² − |x|², 0)⟨e, x⟩ μ-a.e. by radial tangency.",
+            "Stationarity: 0 = R.firstVariation Y = ∫ div_M Y dμ = −4∫max(ρ² − |x|², 0)⟨e,x⟩dμ."
+          ]
+        },
+        "audit": {
+          "key": "radial_moment_vanishes",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The squared positive-part profile is C¹ and yields compact support in the ball of radius |ρ|, so every real ρ is covered. The derivative, rank-one trace, self-adjointness and almost-everywhere radial tangency give exactly minus four times the stated integrand. The justified change of measure and stationarity complete the proof."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-radial-moment-vanishes-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-radial-moment-vanishes-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-radial-moment-vanishes-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.radial_tangency_of_ball_ratio-a1",
+      "key": "radial_tangency_of_ball_ratio",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-radial-tangency-of-ball-ratio-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-radial-tangency-of-ball-ratio-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sed -n 680,745p book/chapter-07.txt (7.4.5 and proof); sed -n 560,640p and 290,335p book/chapter-04.txt (5.1, 3.6); sed -n 290,305p, 400,415p, 730,830p book/chapter-06.txt (2.11-2.12, 2.23, 3.1-3.6); sed -n 75,100p book/chapter-03.txt (1.4-1.5)",
+              "grep -n '^theorem \\|^def ' simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean; sed -n 60,620p and 1130,1331p FirstVariation.lean",
+              "sed -n 1,227p simongmt/Poincare/SimonGMT/Chapter04/Basic.lean; cat simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+              "sed -n 1,365p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "sed -n 1,160p and 460,560p simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; cat Chapter06/Mass.lean Chapter06/CurrentLocalEquality.lean Chapter06/AffineCurrentPushforward.lean",
+              "grep -rn 'ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib; sed -n 1,60p and 150,240p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n 'lemma\\|theorem' mathlib/Mathlib/MeasureTheory/Measure/Support.lean; sed -n 186,205p Support.lean",
+              "grep -rln 'Hadamard\\|Binet' mathlib/Mathlib; grep -rn 'abs_det_le\\|det_le_prod' mathlib/Mathlib/LinearAlgebra mathlib/Mathlib/Analysis",
+              "grep -rn 'hausdorffMeasure_smul₀\\|euclideanHausdorffMeasure_homothety_image\\|det_to_matrix_orthonormalBasis_real\\|aemeasurable_of_tendsto_metrizable_ae\\|integral_withDensity_eq_integral_smul\\|euclideanHausdorffMeasure_eq_volume\\|eq_smul_basis_det' mathlib/Mathlib; sed -n 60,200p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "grep -rhoE '\"lean_name\": *\"[^\"]+\"' nodes dag.json problem.json (reserved DAG names)",
+              "lake env lean /tmp/hs-decomp/Stmts.lean and /tmp/hs-decomp/Final.lean (six child types, #synth MeasurableSpace/BorelSpace on Euclid P →L[ℝ] Euclid P, conditional parent assembly, #print axioms)",
+              "lake env lean /tmp/hs-decomp-review/Child4Check.lean, Child5Check.lean, Child2StepCheck.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Hadamard.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metrizable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/tmp/hs-decomp/Stmts.lean",
+              "/tmp/hs-decomp/Final.lean",
+              "/tmp/hs-decomp-review/Child4Check.lean",
+              "/tmp/hs-decomp-review/Child5Check.lean",
+              "/tmp/hs-decomp-review/Child2StepCheck.lean"
+            ],
+            "conclusion": "The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. All six child Lean types elaborate in namespace GMT.Ch07 with the contract's opens; the measurable space on Euclid P →L[ℝ] Euclid P is the Borel instance (ContinuousLinearMap.instMeasurableSpace / instBorelSpace) that SimonGMT also uses; the conditional parent assembly from the six children and the sibling MinimizingImpliesStationary compiles with axioms propext, sorryAx, Classical.choice, Quot.sound. Library support: SimonGMT Chapter04/FirstVariation.lean proves Simon 4.3.6 (IsStationaryIn.satisfiesStationaryMonotonicity, monotonicityDefect_eq_zero, closed balls, all n) for Chapter04.RectifiableVarifold, whose fields (Basic.lean) include an a.e.-measurable tangent projection — hence the separate measurability child; Chapter03/Rectifiable.lean gives HasApproximateTangentSpaceAt (Simon 3.1.4 blow-up definition) and HasApproximateTangentSpaceAt.unique; Chapter06 gives support = U \\ zeroRegion, massOn with the Euclidean coefficient norm and the proper affine push-forward used by blowUp. Mathlib (snapshot) supplies IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (Banach-valued, no local finiteness needed), Measure.support with measure_compl_support and mem_support_iff_forall, euclideanHausdorffMeasure_smul₀ / euclideanHausdorffMeasure_homothety_image / Isometry.euclideanHausdorffMeasure_image / EuclideanSpace.euclideanHausdorffMeasure_eq_volume, OrthonormalBasis.det_to_matrix_orthonormalBasis_real, aemeasurable_of_tendsto_metrizable_ae', integral_withDensity_eq_integral_smul. There is no Hadamard determinant inequality or Cauchy–Binet formula (Matrix/Hadamard.lean is the Hadamard product), so Simon 6.3.2(3) (M_W(T) = μ(W)) is bypassed by fundamental-lemma arguments in the support and uniqueness children. Reviewer scratch proofs of radial_tangency_of_ball_ratio and radial_moment_vanishes (exact frozen types) and of the cone pull-back step compile with only propext, Classical.choice, Quot.sound. No other DAG branch has reserved names below depth 1; the six proposed names are new."
+          }
+        ],
+        "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+        "child_id": "root.half_space_cone_lies_in_boundary-a1.radial_tangency_of_ball_ratio-a1",
+        "subproblem": {
+          "key": "radial_tangency_of_ball_ratio",
+          "title": "Constant density ratio of a stationary integer multiplicity varifold forces radial tangency (monotonicity identity, parent step 3)",
+          "statement": "Let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ n), μ = θH^n⌞M (R.measure), and p_x the orthogonal projection onto T_x = approxTangentPlane n M x. Assume (i) v(M, θ) is stationary in ℝ^P: R.firstVariation X = ∫_M θ div_M X dH^n = 0 for every C¹ vector field X : ℝ^P → ℝ^P with compact support (div_M X(x) = trace(p_x ∘ DX(x))); (ii) x ↦ p_x is μ-a.e. measurable; (iii) μ(B̄_ρ(0)) = ρ^n μ(B̄_1(0)) for every ρ > 0 (closed balls). Then p_x(x) = x for μ-a.e. x.",
+          "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → (∀ ρ : ℝ, 0 < ρ → R.measure (closedBall (0 : Euclid P) ρ) = ENNReal.ofReal (ρ ^ n) * R.measure (closedBall (0 : Euclid P) 1)) → ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x",
+          "lean_name": "stationary_imrep_radial_tangency_of_ball_ratio",
+          "depends_on": [],
+          "natural_proof": "Source: parent step 3, second half: \"The monotonicity identity (Ch. 4, 3.6, H = 0) ρ^{−n}μ(B_ρ(0)) − σ^{−n}μ(B_σ(0)) = ∫_{B_ρ(0)∖B_σ(0)}|D^⊥r|²r^{−n}dμ (r = |x|, D^⊥r the projection of Dr = x/r onto (T_xM)^⊥) therefore gives D^⊥r = 0 μ-a.e., i.e. x^T := p_{T_xM}(x) = x for μ-a.e. x\" — Simon Ch. 4, 3.6 (chapter-04.txt lines 290–312; B_ρ denotes a closed ball in Simon's notation), formalized in SimonGMT as Chapter04.RectifiableVarifold.IsStationaryIn.satisfiesStationaryMonotonicity with Chapter04.RectifiableVarifold.monotonicityDefect_eq_zero. The identity holds for every n ≥ 0 (for n = 0 it reads μ(B̄_ρ) = μ(B̄_σ) + μ(B̄_ρ ∖ B̄_σ)), so no case distinction is needed.\n\nNotation. M = R.carrier, θ = R.mult, μ = R.measure = θH^n⌞M (H^n = μHE[n]), T_x := approxTangentPlane n M x, p_x its orthogonal projection, B̄_ρ := closedBall(0, ρ).\n1. Local finiteness. μ(K) = ∫_{M∩K} θ dH^n < ∞ for compact K (R.locallyIntegrable_mult with U = ℝ^P). Since θ ≥ 1 on M, a statement holds μ-a.e. iff it holds H^n-a.e. on M.\n2. Tangent planes. By R.orients, for H^n-a.e. x ∈ M some n-plane Q satisfies HasApproximateTangentSpaceAt n M x Q; at such x the defining \"if\" of approxTangentPlane holds, so HasApproximateTangentSpaceAt n M x T_x and dim T_x = n.\n3. The varifold V = v(M, θ). The data — M (Borel, countably n-rectifiable: R.measurableSet_carrier, R.rectifiable), the real multiplicity x ↦ θ(x) (positive on M, measurable, integrable on M ∩ K for compact K by step 1), the tangent field x ↦ T_x (an approximate tangent plane H^n-a.e. on M by step 2), whose projection x ↦ p_x is measurable for the weight by hypothesis (ii), and the weight μHE[n].withDensity(1_M θ) = (H^n⌞M).withDensity θ = μ, locally finite by step 1 — form a rectifiable n-varifold in the sense of Simon Ch. 4 §1 (precisely the fields of SimonGMT Chapter04.RectifiableVarifold, with weight equal to R.measure).\n4. V is stationary in ℝ^P (Simon Ch. 4, 2.4). For X ∈ C¹ with compact support, the first variation of V is ∫ div_M X dμ with div_M X(x) = trace(DX(x) ∘ p_x) (SimonGMT convention), which equals trace(p_x ∘ DX(x)) = tangentialDivergence n M X x because trace(AB) = trace(BA). By ∫ f dμ = ∫_M θ f dH^n (Mathlib integral_withDensity_eq_integral_smul, θ a measurable ℕ-valued density), ∫ div_M X dμ = ∫_M θ·tangentialDivergence n M X dH^n = R.firstVariation X = 0 by hypothesis (i).\nImplementation note: the SimonGMT monotonicity results live in Poincare.SimonGMT.Chapter04.FirstVariation, which the contract does not import; the implementation file imports it. The weight identity of step 3 is μHE[n].withDensity(1_M·ofReal θ) = (μHE[n]⌞M).withDensity θ = R.measure (Mathlib withDensity_indicator, ENNReal.ofReal_natCast).\n5. Monotonicity identity (Simon Ch. 4, 3.6 with centre 0; the condition B̄_{R_0}(0) ⊆ U holds for every R_0 since U = ℝ^P). For 0 < σ ≤ ρ:\n ρ^{-n}μ(B̄_ρ) = σ^{-n}μ(B̄_σ) + ∫_{B̄_ρ∖B̄_σ} |D^⊥r|²(x) |x|^{-n} dμ(x), where |D^⊥r|²(x) := |(id − p_x)(x/|x|)|² for x ≠ 0;\n all terms are finite and nonnegative, and the integrand is μ-measurable by hypothesis (ii).\n6. Constant ratio. By hypothesis (iii), ρ^{-n}μ(B̄_ρ) = μ(B̄_1) = σ^{-n}μ(B̄_σ) < ∞ for all ρ, σ > 0. Hence ∫_{B̄_ρ∖B̄_σ} |D^⊥r|² |x|^{-n} dμ = 0 (SimonGMT monotonicityDefect_eq_zero). The integrand is ≥ 0 and |x|^{-n} > 0 on the annulus, so |D^⊥r|²(x) = 0 for μ-a.e. x with σ < |x| ≤ ρ.\n7. Conclusion. Apply step 6 with σ = 1/j, ρ = j for j = 1, 2, …; the union of these annuli is ℝ^P ∖ {0}, so (id − p_x)(x/|x|) = 0, i.e. (multiplying by |x|) p_x(x) = x, for μ-a.e. x ≠ 0. For x = 0, p_0(0) = 0 = x. Hence (approxTangentPlane n R.carrier x).starProjection x = x for μ-a.e. x.",
+          "proof_key_steps": [
+            "V = v(M,θ) with tangent field approxTangentPlane, measurable projection (hypothesis) and weight R.measure is a rectifiable n-varifold.",
+            "trace(DX∘p) = trace(p∘DX), so hypothesis (i) makes V stationary in ℝ^P.",
+            "Monotonicity identity (Ch. 4, 3.6; SimonGMT satisfiesStationaryMonotonicity) with constant ratio ρ^{-n}μ(B̄_ρ) forces ∫_{annulus}|D^⊥r|²r^{-n}dμ = 0.",
+            "Hence (id − p_x)(x) = 0 μ-a.e. on every annulus, so p_x x = x μ-a.e."
+          ]
+        },
+        "audit": {
+          "key": "radial_tangency_of_ball_ratio",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "All three hypotheses match the prose. The constructed varifold supplies the library's actual required fields, and trace cyclicity identifies first variations. The checked closed-ball monotonicity identity and finite constant ratios force zero annular defects; a countable annular cover and the separate origin observation prove the exact conclusion in every degree."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-radial-tangency-of-ball-ratio-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-radial-tangency-of-ball-ratio-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-radial-tangency-of-ball-ratio-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1",
+      "key": "tangent_projection_aemeasurable",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sed -n 680,745p book/chapter-07.txt (7.4.5 and proof); sed -n 560,640p and 290,335p book/chapter-04.txt (5.1, 3.6); sed -n 290,305p, 400,415p, 730,830p book/chapter-06.txt (2.11-2.12, 2.23, 3.1-3.6); sed -n 75,100p book/chapter-03.txt (1.4-1.5)",
+              "grep -n '^theorem \\|^def ' simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean; sed -n 60,620p and 1130,1331p FirstVariation.lean",
+              "sed -n 1,227p simongmt/Poincare/SimonGMT/Chapter04/Basic.lean; cat simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+              "sed -n 1,365p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "sed -n 1,160p and 460,560p simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; cat Chapter06/Mass.lean Chapter06/CurrentLocalEquality.lean Chapter06/AffineCurrentPushforward.lean",
+              "grep -rn 'ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib; sed -n 1,60p and 150,240p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n 'lemma\\|theorem' mathlib/Mathlib/MeasureTheory/Measure/Support.lean; sed -n 186,205p Support.lean",
+              "grep -rln 'Hadamard\\|Binet' mathlib/Mathlib; grep -rn 'abs_det_le\\|det_le_prod' mathlib/Mathlib/LinearAlgebra mathlib/Mathlib/Analysis",
+              "grep -rn 'hausdorffMeasure_smul₀\\|euclideanHausdorffMeasure_homothety_image\\|det_to_matrix_orthonormalBasis_real\\|aemeasurable_of_tendsto_metrizable_ae\\|integral_withDensity_eq_integral_smul\\|euclideanHausdorffMeasure_eq_volume\\|eq_smul_basis_det' mathlib/Mathlib; sed -n 60,200p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "grep -rhoE '\"lean_name\": *\"[^\"]+\"' nodes dag.json problem.json (reserved DAG names)",
+              "lake env lean /tmp/hs-decomp/Stmts.lean and /tmp/hs-decomp/Final.lean (six child types, #synth MeasurableSpace/BorelSpace on Euclid P →L[ℝ] Euclid P, conditional parent assembly, #print axioms)",
+              "lake env lean /tmp/hs-decomp-review/Child4Check.lean, Child5Check.lean, Child2StepCheck.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Hadamard.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metrizable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/tmp/hs-decomp/Stmts.lean",
+              "/tmp/hs-decomp/Final.lean",
+              "/tmp/hs-decomp-review/Child4Check.lean",
+              "/tmp/hs-decomp-review/Child5Check.lean",
+              "/tmp/hs-decomp-review/Child2StepCheck.lean"
+            ],
+            "conclusion": "The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. All six child Lean types elaborate in namespace GMT.Ch07 with the contract's opens; the measurable space on Euclid P →L[ℝ] Euclid P is the Borel instance (ContinuousLinearMap.instMeasurableSpace / instBorelSpace) that SimonGMT also uses; the conditional parent assembly from the six children and the sibling MinimizingImpliesStationary compiles with axioms propext, sorryAx, Classical.choice, Quot.sound. Library support: SimonGMT Chapter04/FirstVariation.lean proves Simon 4.3.6 (IsStationaryIn.satisfiesStationaryMonotonicity, monotonicityDefect_eq_zero, closed balls, all n) for Chapter04.RectifiableVarifold, whose fields (Basic.lean) include an a.e.-measurable tangent projection — hence the separate measurability child; Chapter03/Rectifiable.lean gives HasApproximateTangentSpaceAt (Simon 3.1.4 blow-up definition) and HasApproximateTangentSpaceAt.unique; Chapter06 gives support = U \\ zeroRegion, massOn with the Euclidean coefficient norm and the proper affine push-forward used by blowUp. Mathlib (snapshot) supplies IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (Banach-valued, no local finiteness needed), Measure.support with measure_compl_support and mem_support_iff_forall, euclideanHausdorffMeasure_smul₀ / euclideanHausdorffMeasure_homothety_image / Isometry.euclideanHausdorffMeasure_image / EuclideanSpace.euclideanHausdorffMeasure_eq_volume, OrthonormalBasis.det_to_matrix_orthonormalBasis_real, aemeasurable_of_tendsto_metrizable_ae', integral_withDensity_eq_integral_smul. There is no Hadamard determinant inequality or Cauchy–Binet formula (Matrix/Hadamard.lean is the Hadamard product), so Simon 6.3.2(3) (M_W(T) = μ(W)) is bypassed by fundamental-lemma arguments in the support and uniqueness children. Reviewer scratch proofs of radial_tangency_of_ball_ratio and radial_moment_vanishes (exact frozen types) and of the cone pull-back step compile with only propext, Classical.choice, Quot.sound. No other DAG branch has reserved names below depth 1; the six proposed names are new."
+          }
+        ],
+        "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+        "child_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1",
+        "subproblem": {
+          "key": "tangent_projection_aemeasurable",
+          "title": "The approximate tangent plane field of an integer multiplicity triple is measurable",
+          "statement": "Let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ n) with weight μ = θH^n⌞M (R.measure). For x ∈ ℝ^P let T_x = approxTangentPlane n M x (the approximate tangent n-plane of M at x where it exists, {0} otherwise) and p_x the orthogonal projection onto T_x. Then x ↦ p_x is μ-a.e. measurable as a map ℝ^P → L(ℝ^P, ℝ^P) (Borel σ-algebra).",
+          "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure",
+          "lean_name": "imrep_univ_tangent_starProjection_aemeasurable",
+          "depends_on": [],
+          "natural_proof": "Source: Simon uses the approximate tangent planes T_xV of V = v(M,θ) as measurable data in all integrands of Ch. 4 (e.g. |D^⊥r|² in the monotonicity identity Ch. 4, 3.6, chapter-04.txt lines 290–312, used in parent step 3), and Ch. 6, 3.1 (chapter-06.txt lines 733–753) requires ξ to orient the approximate tangent spaces \"in an H^n-measurable way\". This measurability is implicit in the parent's step 3; it is proved here from Definition Ch. 3, 1.4 (chapter-03.txt lines 77–86).\n\nNotation. M = R.carrier, θ = R.mult, μ = R.measure, H^n = μHE[n], ν := H^n⌞M, T_x := approxTangentPlane n M x, p_x := orthogonal projection onto T_x (starProjection), b_{x,r}(y) := r^{-1}(y − x) (blowUpMap x r).\n0. Degenerate case n = 0. In the definition of approxTangentPlane, the chosen subspace in the \"if\" branch has finrank n = 0 (HasApproximateTangentSpaceAt includes finrank Q = n), hence equals ⊥, and the \"else\" branch is ⊥. So x ↦ p_x is constant and measurable. Assume n ≥ 1 from now on.\n1. Local finiteness. θ ≥ 1 on M, so ν(K) ≤ μ(K) < ∞ for every compact K (R.locallyIntegrable_mult with U = ℝ^P).\n2. Tangent planes exist a.e. By R.orients there is, for H^n-a.e. x ∈ M (hence, as μ ≪ ν, for μ-a.e. x), an n-plane Q with HasApproximateTangentSpaceAt n M x Q; at such x the defining \"if\" of approxTangentPlane holds, so HasApproximateTangentSpaceAt n M x T_x and dim T_x = n. Let G be the set of these x; μ-a.e. x lies in G.\n3. Test functions. χ(t) := max(1 − t, 0); for u ∈ ℝ^P let f_u(y) := χ(|y|²)⟨u, y⟩². f_u is continuous with support in the closed unit ball, i.e. f_u ∈ C_c(ℝ^P).\n4. Integrals over planes. For every n-plane Q: ∫_Q f_u dH^n = c_n |p_Q u|², with c_n := ∫_{ℝ^n} χ(|z|²) z_1² dz ∈ (0, ∞).\n Proof. Choose an orthonormal basis τ_1,…,τ_n of Q and the linear isometry ι : ℝ^n → ℝ^P, ι(z) = Σ z_iτ_i, with range Q. Then H^n⌞Q is the push-forward of H^n on ℝ^n, which is Lebesgue measure L^n (Mathlib Isometry.map_euclideanHausdorffMeasure and EuclideanSpace.euclideanHausdorffMeasure_eq_volume). Hence, with a_i := ⟨u, τ_i⟩,\n ∫_Q f_u dH^n = ∫ χ(|z|²)(Σ_i a_i z_i)² dL^n(z) = Σ_{i,j} a_i a_j ∫ χ(|z|²) z_i z_j dL^n(z).\n For i ≠ j the reflection z_i ↦ −z_i is a linear isometry of ℝ^n, preserves L^n and |z|, and changes the sign of z_iz_j, so the integral vanishes; for i = j the coordinate swap z_i ↔ z_1 shows ∫ χ(|z|²) z_i² dL^n = c_n. So the integral equals c_n Σ_i a_i² = c_n|p_Q u|². Finally c_n < ∞ (continuous integrand with compact support) and c_n > 0 (the integrand is continuous, ≥ 0 and positive at (1/2, 0, …, 0)).\n5. Blow-up integrals are continuous in x. Fix f ∈ C_c(ℝ^P) and r > 0, and let Φ_{f,r}(x) := ∫_{b_{x,r}(M)} f dH^n (the integral occurring in HasApproximateTangentSpaceAt). Since b_{x,r} is a translation followed by the dilation by r^{-1}, H^n(b_{x,r}(B)) = r^{-n}H^n(B) for all B (translation invariance and Mathlib euclideanHausdorffMeasure_smul₀), and as in a change of variables Φ_{f,r}(x) = r^{-n} ∫_M f(r^{-1}(y − x)) dH^n(y). Let spt f ⊆ closedBall(0, R_f). For x in ball(x_0, 1) the integrand is bounded by sup|f| and vanishes unless y ∈ closedBall(x_0, 1 + rR_f), a set of finite ν-measure; it is continuous in x for each y. By dominated convergence Φ_{f,r} is continuous, hence Borel measurable.\n6. Limits. For x ∈ G, HasApproximateTangentSpaceAt n M x T_x applied to f_u along r_k := 1/(k+1) → 0⁺ gives Φ_{f_u, r_k}(x) → ∫_{T_x} f_u dH^n = c_n|p_x u|² (step 4). Since μ-a.e. x lies in G, the function x ↦ c_n|p_x u|² is the μ-a.e. limit of the measurable functions Φ_{f_u, r_k}, hence μ-AEMeasurable (Mathlib aemeasurable_of_tendsto_metrizable_ae'); dividing by c_n > 0, x ↦ |p_x u|² is μ-AEMeasurable for every u ∈ ℝ^P.\n7. Polarization. p_x is self-adjoint and idempotent, so ⟨p_x u, w⟩ = ⟨p_x u, p_x w⟩ = (|p_x(u + w)|² − |p_x(u − w)|²)/4. Hence x ↦ ⟨p_x u, w⟩ is μ-AEMeasurable for all u, w.\n8. Assembly. With the standard orthonormal basis e_1,…,e_P, p_x = Σ_{a,b} ⟨p_x e_a, e_b⟩ · L_{ab}, where L_{ab} ∈ L(ℝ^P, ℝ^P), L_{ab}(v) := ⟨e_a, v⟩e_b (indeed p_x v = Σ_b ⟨p_x v, e_b⟩e_b and v = Σ_a ⟨e_a, v⟩e_a). A finite sum of μ-AEMeasurable scalar functions times constant continuous linear maps is μ-AEMeasurable for the Borel σ-algebra of L(ℝ^P, ℝ^P); hence x ↦ p_x = (approxTangentPlane n R.carrier x).starProjection is AEMeasurable with respect to R.measure.",
+          "proof_key_steps": [
+            "n = 0: the tangent-plane field is identically ⊥; assume n ≥ 1.",
+            "For f_u(y) = max(1 − |y|², 0)⟨u,y⟩², ∫_Q f_u dH^n = c_n|p_Q u|² with c_n > 0 (isometry to ℝ^n and coordinate symmetries).",
+            "x ↦ ∫_{b_{x,r}(M)} f dH^n is continuous (rescaling + dominated convergence); at a.e. x it tends to ∫_{T_x} f dH^n as r = 1/(k+1) → 0.",
+            "Hence x ↦ |p_x u|² is a.e.-measurable; polarization and a basis expansion give AEMeasurable x ↦ p_x."
+          ]
+        },
+        "audit": {
+          "key": "tangent_projection_aemeasurable",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proof supplies measurable approximants through continuous blow-up integrals, with local finiteness providing the required domination. Plane moments recover projection norms with a positive constant; polarization and finite basis expansion recover the Borel-measurable operator field. The separate degree-zero argument handles the degenerate case."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+      "key": "cone_measure_homogeneous",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sed -n 680,745p book/chapter-07.txt (7.4.5 and proof); sed -n 560,640p and 290,335p book/chapter-04.txt (5.1, 3.6); sed -n 290,305p, 400,415p, 730,830p book/chapter-06.txt (2.11-2.12, 2.23, 3.1-3.6); sed -n 75,100p book/chapter-03.txt (1.4-1.5)",
+              "grep -n '^theorem \\|^def ' simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean; sed -n 60,620p and 1130,1331p FirstVariation.lean",
+              "sed -n 1,227p simongmt/Poincare/SimonGMT/Chapter04/Basic.lean; cat simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+              "sed -n 1,365p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "sed -n 1,160p and 460,560p simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; cat Chapter06/Mass.lean Chapter06/CurrentLocalEquality.lean Chapter06/AffineCurrentPushforward.lean",
+              "grep -rn 'ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib; sed -n 1,60p and 150,240p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "grep -n 'lemma\\|theorem' mathlib/Mathlib/MeasureTheory/Measure/Support.lean; sed -n 186,205p Support.lean",
+              "grep -rln 'Hadamard\\|Binet' mathlib/Mathlib; grep -rn 'abs_det_le\\|det_le_prod' mathlib/Mathlib/LinearAlgebra mathlib/Mathlib/Analysis",
+              "grep -rn 'hausdorffMeasure_smul₀\\|euclideanHausdorffMeasure_homothety_image\\|det_to_matrix_orthonormalBasis_real\\|aemeasurable_of_tendsto_metrizable_ae\\|integral_withDensity_eq_integral_smul\\|euclideanHausdorffMeasure_eq_volume\\|eq_smul_basis_det' mathlib/Mathlib; sed -n 60,200p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "grep -rhoE '\"lean_name\": *\"[^\"]+\"' nodes dag.json problem.json (reserved DAG names)",
+              "lake env lean /tmp/hs-decomp/Stmts.lean and /tmp/hs-decomp/Final.lean (six child types, #synth MeasurableSpace/BorelSpace on Euclid P →L[ℝ] Euclid P, conditional parent assembly, #print axioms)",
+              "lake env lean /tmp/hs-decomp-review/Child4Check.lean, Child5Check.lean, Child2StepCheck.lean (#print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Hadamard.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metrizable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+              "/tmp/hs-decomp/Stmts.lean",
+              "/tmp/hs-decomp/Final.lean",
+              "/tmp/hs-decomp-review/Child4Check.lean",
+              "/tmp/hs-decomp-review/Child5Check.lean",
+              "/tmp/hs-decomp-review/Child2StepCheck.lean"
+            ],
+            "conclusion": "The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. All six child Lean types elaborate in namespace GMT.Ch07 with the contract's opens; the measurable space on Euclid P →L[ℝ] Euclid P is the Borel instance (ContinuousLinearMap.instMeasurableSpace / instBorelSpace) that SimonGMT also uses; the conditional parent assembly from the six children and the sibling MinimizingImpliesStationary compiles with axioms propext, sorryAx, Classical.choice, Quot.sound. Library support: SimonGMT Chapter04/FirstVariation.lean proves Simon 4.3.6 (IsStationaryIn.satisfiesStationaryMonotonicity, monotonicityDefect_eq_zero, closed balls, all n) for Chapter04.RectifiableVarifold, whose fields (Basic.lean) include an a.e.-measurable tangent projection — hence the separate measurability child; Chapter03/Rectifiable.lean gives HasApproximateTangentSpaceAt (Simon 3.1.4 blow-up definition) and HasApproximateTangentSpaceAt.unique; Chapter06 gives support = U \\ zeroRegion, massOn with the Euclidean coefficient norm and the proper affine push-forward used by blowUp. Mathlib (snapshot) supplies IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (Banach-valued, no local finiteness needed), Measure.support with measure_compl_support and mem_support_iff_forall, euclideanHausdorffMeasure_smul₀ / euclideanHausdorffMeasure_homothety_image / Isometry.euclideanHausdorffMeasure_image / EuclideanSpace.euclideanHausdorffMeasure_eq_volume, OrthonormalBasis.det_to_matrix_orthonormalBasis_real, aemeasurable_of_tendsto_metrizable_ae', integral_withDensity_eq_integral_smul. There is no Hadamard determinant inequality or Cauchy–Binet formula (Matrix/Hadamard.lean is the Hadamard product), so Simon 6.3.2(3) (M_W(T) = μ(W)) is bypassed by fundamental-lemma arguments in the support and uniqueness children. Reviewer scratch proofs of radial_tangency_of_ball_ratio and radial_moment_vanishes (exact frozen types) and of the cone pull-back step compile with only propext, Classical.choice, Quot.sound. No other DAG branch has reserved names below depth 1; the six proposed names are new."
+          }
+        ],
+        "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+        "child_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+        "subproblem": {
+          "key": "cone_measure_homogeneous",
+          "title": "The weight of a cone current is homogeneous of degree n (parent step 3, first half)",
+          "statement": "Let C ∈ 𝒟_n(ℝ^P) be a cone, i.e. η_{0,λ#}C = C for every λ > 0 (IsConeCurrent C), and let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ n) representing C, with weight μ = θH^n⌞M (R.measure). Then for every λ > 0 and every Borel set A ⊆ ℝ^P, μ(λA) = λ^n μ(A), where λA = {λa : a ∈ A}.",
+          "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsConeCurrent C → R.Represents C → ∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * R.measure A",
+          "lean_name": "cone_current_imrep_measure_smul_image",
+          "depends_on": [
+            "imrep_measure_unique"
+          ],
+          "natural_proof": "Source: parent step 3, first half: \"IsConeCurrent C gives η_{0,λ#}C = C for λ > 0; the mass measure of η_{0,λ#}C is λ^{−n}(η_{0,λ})_#μ (area formula for the homothety), so μ(λA) = λ^nμ(A) for Borel A\" — Simon 7.4.5, proof line 698 (\"by virtue of the fact that C is a cone\", chapter-07.txt lines 697–699), push-forward Ch. 6, 2.23 (chapter-06.txt line 408) and the push-forward of integer multiplicity currents by the area formula Ch. 6, 3.3–3.6 (chapter-06.txt lines 770–830), and the representation independence of the mass measure, which is the sibling imrep_measure_unique (Simon 6.3.2(3)).\n\nNotation. M = R.carrier, θ = R.mult, ξ = R.orient, H^n = μHE[n], μ = R.measure. Fix λ > 0 and put S(y) := λ^{-1}y; for a set A, λA := {λa : a ∈ A} = (x ↦ λx) '' A.\n1. Scaling of H^n. For every set B and c > 0, H^n(cB) = c^n H^n(B) (Mathlib euclideanHausdorffMeasure_smul₀). Consequently the push-forward of H^n⌞M under the homeomorphism S is λ^n·H^n⌞S(M): for Borel B, H^n(M ∩ S^{-1}(B)) = H^n(λ(S(M) ∩ B)) = λ^n H^n(S(M) ∩ B). Hence for every function F on ℝ^P (Bochner integral, or lower integral of F ≥ 0):\n (1.1) ∫_{S(M)} F dH^n = λ^{-n} ∫_M F(S(y)) dH^n(y),\n using the change of variables formula for the measurable embedding S (Mathlib integral_map_equiv / lintegral_map_equiv) and linearity in the measure.\n2. The cone identity in terms of forms. For an n-covector α and c ∈ ℝ, α∘(c·id) = c^n α (multilinearity: α(cv_1,…,cv_n) = c^nα(v)). By the contract, blowUp C 0 λ is the push-forward of C by the proper affine map η(y) = −λ^{-1}·0 + λ^{-1}y = S(y), acting by (blowUp C 0 λ)(ω) = C(η^#ω) with (η^#ω)(y) = ω(S(y))∘(λ^{-1}id) = λ^{-n}ω(λ^{-1}y) (affinePullbackForm with L = λ^{-1}id, b = 0); η^#ω is again a test form because η is a proper affine isomorphism. The domain of blowUp C 0 λ is dilation 0 λ '' univ = univ, so every test form ω on ℝ^P satisfies the test-form condition in currentEval, and IsConeCurrent C gives\n (2.1) C(ω) = C(η^#ω) for every ω ∈ 𝒟^n(ℝ^P).\n3. The rescaled triple R_λ := (M', θ', ξ') with M' := S(M) = λ^{-1}M, θ'(z) := θ(λz), ξ'(z) := ξ(λz) is an IMRep univ n:\n - M' is Borel (image of a Borel set under the homeomorphism S) and M' ⊆ univ.\n - M' is countably n-rectifiable: if M ⊆ M_0 ∪ ⋃_j F_j(ℝ^n) with H^n(M_0) = 0 and F_j Lipschitz, then M' ⊆ S(M_0) ∪ ⋃_j (S∘F_j)(ℝ^n), H^n(S(M_0)) = λ^{-n}H^n(M_0) = 0, and S∘F_j is Lipschitz.\n - θ' is measurable and θ'(z) = θ(λz) > 0 for z ∈ M' (since λz ∈ M).\n - For compact K: ∫_{M'∩K} θ' dH^n = λ^{-n} ∫_{M∩λK} θ dH^n < ∞ by (1.1) (M' ∩ K = S(M ∩ λK)) and the local integrability of θ on the compact set λK.\n - ξ' is a.e.-strongly measurable for H^n⌞M': the map z ↦ λz carries H^n⌞M' to λ^{-n}·H^n⌞M (by step 1), so composing the H^n⌞M-a.e.-strongly measurable ξ with it gives an H^n⌞M'-a.e.-strongly measurable function.\n - Orientation: let E ⊆ M be the H^n-null set off which R.orients holds. S(E) is H^n-null by step 1. For z ∈ M' ∖ S(E), y := λz ∈ M ∖ E, so there is an n-plane Q with HasApproximateTangentSpaceAt n M y Q and IsUnitOrientationOf (ξ y) Q. For r > 0, blowUpMap z r '' M' = {r^{-1}(λ^{-1}m − z) : m ∈ M} = {(λr)^{-1}(m − λz) : m ∈ M} = blowUpMap y (λr) '' M, and λr → 0⁺ as r → 0⁺; hence HasApproximateTangentSpaceAt n M' z Q, and ξ'(z) = ξ(y) is a unit orientation of Q.\n4. R_λ represents C. For ω ∈ 𝒟^n(ℝ^P), by (1.1) with F(z) = θ(λz)ξ(λz)(ω(z)) and linearity of ξ(y):\n R_λ.action(ω) = ∫_{M'} θ(λz) ξ(λz)(ω(z)) dH^n(z) = λ^{-n} ∫_M θ(y) ξ(y)(ω(λ^{-1}y)) dH^n(y) = ∫_M θ(y) ξ(y)(λ^{-n}ω(λ^{-1}y)) dH^n(y) = R.action(η^#ω) = C(η^#ω) = C(ω),\n the last two equalities by R.Represents C (η^#ω is a test form on ℝ^P) and (2.1).\n5. By the sibling imrep_measure_unique (applied with U = ℝ^P, which is open, to the two representations R_λ and R of C): R_λ.measure = R.measure.\n6. For measurable A, M' ∩ A = S(M ∩ λA), so by (1.1) R_λ.measure(A) = ∫_{M'∩A} θ' dH^n = λ^{-n}∫_{M∩λA} θ dH^n = λ^{-n}·R.measure(λA). With step 5, R.measure(λA) = λ^n·R.measure(A), i.e. R.measure((x ↦ λx) '' A) = ENNReal.ofReal(λ^n)·R.measure(A).",
+          "proof_key_steps": [
+            "Pull-back by the dilation scales n-covectors by λ^{-n}; the cone property gives C(ω) = C(λ^{-n}ω(λ^{-1}·)) for all test forms.",
+            "The rescaled triple (λ^{-1}M, θ(λ·), ξ(λ·)) is an IMRep (rectifiability, integrability and approximate tangent planes rescale).",
+            "Change of variables (H^n(cB) = c^nH^n(B)) shows the rescaled triple represents C.",
+            "Uniqueness of the weight (sibling) gives λ^{-n}μ(λA) = μ(A)."
+          ]
+        },
+        "audit": {
+          "key": "cone_measure_homogeneous",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The rescaled triple satisfies every IMRep field, and the literal affine pullback supplies the correct inverse-power factor. Representation uniqueness is the sole declared child dependency and is used in the correct direction. The lower-integral calculation proves the stated ENNReal equality even when the Borel set has infinite measure."
+        },
+        "resolved_dependencies": [
+          "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/decomposition.json": "e7d58f6135dc4110083fbae708a208c30cb8abf52f8a2129e22655644b4fcfc4",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/decomposition-audit.json": "ef748038a595939f85b472c9fceac97eb1d7e91be405c28182ceaa7105e4b84b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1/parent-child-handoff.json": "b3692875e0b67f5cb4160418e12dfdc31cea95a9f7357b3890242ca5a478345d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1/parent-supplied-plan.md": "6280f4c575b577afd017ddfafe8d543e66717f3ce8e3138991ad08df3c171d8c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1/parent-supplied-natural-proof.md": "162c7f46544472e4abb658cea0282a39c3613dd588efdb1acb5b77d8f6dea06f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1/parent-supplied-natural-proof.json": "137bae2361d7af7e6a5851f4426e39f9f23863bf84b9cfb3839324cf633685ab",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1/node.json": "383844e0fe495fa365383f83535391204f6b2e31e03fb746cc3f9b48525f55cf",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1/parent-child-handoff.json": "2ecbc6f8530aca1d53d41d11b3718a6c1a0ccb1c522268668a5ec3f59b192c84",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1/parent-supplied-plan.md": "e1a9b0317c0b59934f383e77b14828ccd104ee6c995a0b6aa05b35424511b24d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1/parent-supplied-natural-proof.md": "4d6be7543e29a2e07fd4a7b7edd0c418229c5b0fd616aa92d053c49bb5b887bd",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1/parent-supplied-natural-proof.json": "6b8b985c21177611ff07a9b9bf3b711c794577e157a6643e39336dd2db5e24e4",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1/node.json": "286ec6673ea85d83d9f44c477ef5cd619c04161de4db46ebfe53b89b49066baa",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-radial-moment-vanishes-a1/parent-child-handoff.json": "6a134e7f2c79bda0bb27f652b16de4588934a2b6d1da7c8992660b8f2aa59594",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-radial-moment-vanishes-a1/parent-supplied-plan.md": "5eea9bcedba6edb5e1ce458057dba72cd0490b888d2c71b548e269a9a486a5f0",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-radial-moment-vanishes-a1/parent-supplied-natural-proof.md": "8cf24da1c98d40a6f6be6277050471dfdab43b1320a0e436bda29d6239c4659b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-radial-moment-vanishes-a1/parent-supplied-natural-proof.json": "380d56eb061bbdf523c0dda715c50752111023d3a15a393639b50baaadbf88d0",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-radial-moment-vanishes-a1/node.json": "056549e5e06c3aa84767cced40ae93e0c8e93e13c911c095b04548a1234d0aad",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-radial-tangency-of-ball-ratio-a1/parent-child-handoff.json": "4651cd85b1959fd97660cb7745d00a71c539e387a5e0d0bbf6c42074f8eae161",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-radial-tangency-of-ball-ratio-a1/parent-supplied-plan.md": "20b41e7b620d6ba852d560d24481cf5090cfd0c29684705e48616a2dcdb0591f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-radial-tangency-of-ball-ratio-a1/parent-supplied-natural-proof.md": "fbcef788c8e43f905bfa1b3808dc0771f5507cf6478eeda9d07a429bafb0cecf",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-radial-tangency-of-ball-ratio-a1/parent-supplied-natural-proof.json": "82fc624036c506a08d490f1338e8a19e602b8ff3bd700d3a576ac58b1a7062da",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-radial-tangency-of-ball-ratio-a1/node.json": "4ab993601658ee279b3a8c18cebd2d3904d229bc485b5e04f8683cbe66712a1d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-child-handoff.json": "7bde0ad618233c94d079c4f2944030539d0a233607ee3c6dec4d183662db96f1",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-plan.md": "45d949b173e364a359343789cca2ed58bc1c5792400999e53be829935013e8a1",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-natural-proof.md": "ede61d3b38db61b050d82c8a4b0b7ec5a6f6d037c2d978fcdd67239ab7ccdca7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-natural-proof.json": "921825186bc56c87d528dccb8c4f9a0c9f8e8f0ba7cf838979636060265e93f9",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/node.json": "003f9dd732ed670d7a057569220e7e887c197b7c79413795ad2959e3eec49ce4",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/parent-child-handoff.json": "5242ab56a3a96b92f6889a768691f4b64303ad67d3f4f9b5d3cfb1db134232c9",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/parent-supplied-plan.md": "f63fb85e435d7fdf5bedc843aa1c94a7a557bdea63f4d0d98a17a9e8eb32d1fa",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/parent-supplied-natural-proof.md": "6602384af57f484a1b1c72ac4a70456776f2411a0ae206924c50c89f465e6ea5",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/parent-supplied-natural-proof.json": "c0626bd234388c766b17e69e7c51a8cdc79180c4655c0133c98db214d994714e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1/children/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/node.json": "4bb34a1e4edfa27ec63ad6596118ba6d70b07611b3cceba51dc1eab27e0f39f5"
+  }
+}

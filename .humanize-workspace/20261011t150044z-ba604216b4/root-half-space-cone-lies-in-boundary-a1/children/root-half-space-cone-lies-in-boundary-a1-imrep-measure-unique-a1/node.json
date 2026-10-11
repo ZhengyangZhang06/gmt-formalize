@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+  "depth": 2,
+  "title": "The weight θH^n⌞M of an integer multiplicity current is independent of the representation (Simon 6.3.2(3))",
+  "statement": "Let U ⊆ ℝ^P be open, n ∈ ℕ, T ∈ 𝒟_n(U), and let R_1 = (M_1, θ_1, ξ_1) and R_2 = (M_2, θ_2, ξ_2) be integer multiplicity triples in U (IMRep U n) both representing T (T = τ(M_1, θ_1, ξ_1) = τ(M_2, θ_2, ξ_2)). Then θ_1H^n⌞M_1 = θ_2H^n⌞M_2, i.e. R_1.measure = R_2.measure.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R₁ R₂ : IMRep U n), IsOpen U → R₁.Represents T → R₂.Represents T → R₁.measure = R₂.measure",
+  "lean_name": "imrep_measure_eq_of_represents_same_current",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+  "depth": 2,
+  "title": "Support of an integer multiplicity current equals the support of its weight (Simon 6.2.12 with 6.3.2(3))",
+  "statement": "Let U ⊆ ℝ^P be open, n ∈ ℕ, T ∈ 𝒟_n(U) a current (GeometricCurrentOn U n) and R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n: M ⊆ U Borel, countably n-rectifiable, θ ≥ 1 on M integer valued and locally H^n-integrable in U, ξ an H^n-measurable unit orientation of the approximate tangent planes H^n-a.e. on M) with T = τ(M, θ, ξ), i.e. T(ω) = ∫_M θ⟨ω, ξ⟩ dH^n for all ω ∈ 𝒟^n(U). Let μ = θH^n⌞M (R.measure). Then spt T = U ∩ spt μ, where spt μ is the set of points all of whose neighbourhoods have positive μ-measure.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → T.support = U ∩ R.measure.support",
+  "lean_name": "imrep_represents_support_eq_inter_measure_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1-a1"
+}
