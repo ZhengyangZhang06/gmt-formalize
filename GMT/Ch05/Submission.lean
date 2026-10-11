@@ -458,6 +458,37 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Least integer density in a ball** (proof of Simon Ch. 5, Corollary 7.3, step 4: the choice
+`N = min{j ≥ 1 : Θⁿ(μ_V, x) = j for some x ∈ B̆_r(ξ)}`).  If `Θⁿ(μ_V, x) = θ(x)` and `θ(x)` is a
+positive integer for `μ_V`-a.e. `x`, then for `ξ ∈ spt V` and `r > 0` some `x₀ ∈ B̆_r(ξ)` has
+`Θⁿ(μ_V, x₀) = N` for an integer `N ≥ 1` with `θ ≥ N` `μ_V`-a.e. on `B̆_r(ξ)`. -/
+theorem rsod_exists_least_integer_density_point : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U), (∀ᵐ x ∂V.weight, V.HasDensity x (V.mult x)) →
+    (∀ᵐ x ∂V.weight, ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k) → ∀ ξ ∈ V.support, ∀ r : ℝ, 0 < r →
+    ∃ (N : ℕ) (x₀ : Amb n ℓ), 1 ≤ N ∧ x₀ ∈ ball ξ r ∧ V.HasDensity x₀ N ∧
+      ∀ᵐ x ∂V.weight, x ∈ ball ξ r → (N : ℝ) ≤ V.mult x := by
+  intro n ℓ U V hdens hint ξ hξ r hr
+  classical
+  -- `μ_V(B̆_r(ξ)) > 0`, since `ξ ∈ spt μ_V` and `B̆_r(ξ)` is a neighbourhood of `ξ`.
+  have hpos : 0 < V.weight (ball ξ r) :=
+    (Measure.mem_support_iff_forall ξ).1 hξ.2 _ (ball_mem_nhds ξ hr)
+  -- Otherwise `μ_V`-a.e. point, having integer density `θ(x) ≥ 1`, would lie outside the ball.
+  have hJ : ∃ k : ℕ, 1 ≤ k ∧ ∃ x ∈ ball ξ r, V.HasDensity x k := by
+    by_contra hJ
+    refine hpos.ne' (measure_eq_zero_iff_ae_notMem.2 ?_)
+    filter_upwards [hdens, hint] with x hx ⟨k, hk, hxk⟩ hxB
+    exact hJ ⟨k, hk, x, hxB, hxk ▸ hx⟩
+  -- The least such `N` is attained at some `x₀`, and bounds `θ` below `μ_V`-a.e. on the ball.
+  obtain ⟨hN, x₀, hx₀, hx₀N⟩ := Nat.find_spec hJ
+  refine ⟨Nat.find hJ, x₀, hN, hx₀, hx₀N, ?_⟩
+  filter_upwards [hdens, hint] with x hx ⟨k, hk, hxk⟩ hxB
+  rw [hxk]
+  exact Nat.cast_le.2 (Nat.find_min' hJ ⟨hk, x, hxB, hxk ▸ hx⟩)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
