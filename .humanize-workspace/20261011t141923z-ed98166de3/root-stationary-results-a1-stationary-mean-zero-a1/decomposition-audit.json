@@ -1,0 +1,50 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsCompact \\(M ∩|LocallyCompact|locallyCompact|exists.*closedBall",
+        "theorem setIntegral_pos_iff_support_of_nonneg_ae|one_of_mem_closedBall|zero_of_le_dist|tsupport_eq|hasCompactSupport|protected theorem contDiff|HasCompactSupport.smul_right|tsupport_smul_subset_left|ae_eq_zero_of_integral_contDiff_smul_eq_zero",
+        "HasContDiffBump|instance",
+        "ae_restrict_of_forall_mem",
+        "simon_submanifold_exists_closedBall_isCompact_inter|vector_field_eq_zero_of_integral_inner_test_fields",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean InlineChallenge0.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean InlineChallenge1.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean InlineProofAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-stationary-mean-zero-a1/parent-child-handoff.json",
+        "/tmp/stationarity-decomposition-audit-eysgne7y/InlineChallenge0.lean",
+        "/tmp/stationarity-decomposition-audit-eysgne7y/InlineChallenge1.lean",
+        "/tmp/stationarity-decomposition-audit-eysgne7y/InlineProofAudit.lean"
+      ],
+      "conclusion": "The split appropriately isolates local compactness and the localization/positivity argument for the selected stationary_imp_mean_curvature_zero contract. Simon's definitions provide exactly the relative properness and continuity needed; the searched SimonGMT files contain no corresponding closed-ball lemma. Mathlib's integral-positivity criterion requires integrability and almost-everywhere nonnegativity, without finite-measure or sigma-finiteness assumptions. Its existing distributional fundamental lemma has a different interface. Snapshot compatibility and pinned dependency revisions were checked. Neither proposed name occurs in another DAG node, another decomposition, the searched libraries, or the 220 searched Git refs. Dependencies are acyclic. Both exact child types independently elaborate in the replayed frozen scope without either child declaration. Recompiled parent-supplied child proofs and the parent assembly, with the four exact sibling contracts made explicit hypotheses, use only propext, Classical.choice and Quot.sound. The assembly proves the selected frozen parent conclusion without a global compactness assumption."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_compact_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches all prose hypotheses and conclusions. The proof correctly chooses a closed ball inside the open chart target, establishes the image/preimage identity in both directions, applies relative properness, and takes a continuous image of the compact preimage. It needs no closedness assumption on M and no parent or sibling theorem. The bare name is unreserved, and the complete proof is sufficient for direct formalization."
+    },
+    {
+      "key": "test_field_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly expresses measurability, openness, continuity, P, L, T and pointwise vanishing. Each proof step is valid: continuity gives the strict inner-product bound; L localizes the bump; intersecting the compact localized portion of M with closed tsupport establishes test admissibility; T supplies integrability; measurability supplies restricted almost-everywhere nonnegativity; P and support inclusion yield a strictly positive integral, contradicting T. The Euclidean bump and scalar-action instances are valid, including dimension zero. No measure-finiteness hypothesis is hidden. L is an explicit assumption, so the empty child dependency list is correct; the parent discharges L using local_compact_ball. The bare name is unreserved, and no circular reliance or deferred proof construction occurs."
+    }
+  ],
+  "required_changes": []
+}

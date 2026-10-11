@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.stationary_mean_zero-a1.test_field_vanishing-a1",
+  "parent_id": "root.stationary_results-a1.stationary_mean_zero-a1",
+  "depth": 3,
+  "title": "Fundamental lemma: a continuous field orthogonal to all localized test fields vanishes on M ∩ U",
+  "statement": "Let N ∈ ℕ, ℝᴺ := EuclideanSpace ℝ (Fin N) with its Borel σ-algebra, μ a measure on ℝᴺ, M ⊆ ℝᴺ a measurable set, U ⊆ ℝᴺ open and F : ℝᴺ → ℝᴺ continuous on M. Assume:\n(P) μ(M ∩ O) > 0 for every y ∈ M and every open O ⊆ ℝᴺ with y ∈ O;\n(L) for every y ∈ M and every open O ∋ y there is ρ > 0 with B̄(y, ρ) ⊆ O and M ∩ B̄(y, ρ) compact;\n(T) for every Y : ℝᴺ → ℝᴺ of class C² with compact support, tsupport Y ⊆ U and M ∩ tsupport Y compact, the function y ↦ ⟨Y(y), F(y)⟩ is μ-integrable on M and ∫_M ⟨Y(y), F(y)⟩ dμ(y) = 0.\nThen F(y) = 0 for every y ∈ M ∩ U.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (M U : Set (Rn N)) (F : Rn N → Rn N), MeasurableSet M → IsOpen U → ContinuousOn F M → (∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → 0 < μ (M ∩ O)) → (∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → ∃ ρ : ℝ, 0 < ρ ∧ closedBall y ρ ⊆ O ∧ IsCompact (M ∩ closedBall y ρ)) → (∀ Y : Rn N → Rn N, ContDiff ℝ 2 Y → HasCompactSupport Y → tsupport Y ⊆ U → IsCompact (M ∩ tsupport Y) → IntegrableOn (fun y ↦ inner ℝ (Y y) (F y)) M μ ∧ ∫ y in M, inner ℝ (Y y) (F y) ∂μ = 0) → ∀ y ∈ M ∩ U, F y = 0",
+  "lean_name": "vector_field_eq_zero_of_integral_inner_test_fields",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1-test-field-vanishing-a1-a1"
+}
