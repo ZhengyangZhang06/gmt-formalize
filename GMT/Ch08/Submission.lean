@@ -410,6 +410,136 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 2, 4.3** (child `classical_tangent` of the constancy theorem): at a point `φ a`
+of a `C²` local representation, the classical tangent space (velocities of `C¹` curves in `M`) is
+the range of `L = Dφ(a)`.  `⊇`: the curve `t ↦ φ (a + (ε sin (t/ε)) w)` stays in the chart and has
+velocity `L w`.  `⊆`: relative properness makes the chart parameter `β t` of `γ t` tend to `a`,
+`L` is antilipschitz so `β t - a = O(t)`, and then the component of `γ` normal to `range L` has
+derivative `0` at `0`. -/
+theorem Submission.simon_chart_classicalTangentSpace_eq_range :
+    ∀ (N n : ℕ) (M W : Set (Euclidean N)) (D : Set (Euclidean n)) (φ : Euclidean n → Euclidean N)
+      (a : Euclidean n), Chapter02.IsSimonLocalRepresentation 2 M D W φ → a ∈ D →
+      classicalTangentSpace M (φ a) = Set.range (fderiv ℝ φ a) := by
+  intro N n M W D φ a hφ ha
+  have hφ1 : ContDiffOn ℝ 1 φ D := hφ.contDiffOn.of_le (by norm_num)
+  have hL : HasFDerivAt φ (fderiv ℝ φ a) a :=
+    ((hφ1.contDiffAt (hφ.isOpen_source.mem_nhds ha)).differentiableAt one_ne_zero).hasFDerivAt
+  ext ξ
+  constructor
+  · rintro ⟨γ, -, hmaps, hγ0, hder⟩
+    have hφa : φ a ∈ W ∩ M := hφ.image_eq ▸ Set.mem_image_of_mem φ ha
+    obtain ⟨r, hr, hrW⟩ := Metric.isOpen_iff.mp hφ.isOpen_target (φ a) hφa.1
+    have hKW : closedBall (φ a) (r / 2) ⊆ W :=
+      (closedBall_subset_ball (half_lt_self hr)).trans hrW
+    have hS : IsCompact (D ∩ φ ⁻¹' closedBall (φ a) (r / 2)) :=
+      hφ.isCompact_source_inter_preimage _ (isCompact_closedBall _ _) hKW
+    have hev : ∀ᶠ t in 𝓝 (0 : ℝ), γ t ∈ closedBall (φ a) (r / 2) ∧ γ t ∈ M := by
+      filter_upwards [hder.continuousAt.preimage_mem_nhds
+          (by rw [hγ0]; exact closedBall_mem_nhds _ (half_pos hr)),
+        Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0) (by norm_num : (0 : ℝ) < 1)] with t ht1 ht2
+      exact ⟨ht1, hmaps ht2⟩
+    -- `β t` is the chart parameter of `γ t`; it exists for `t` near `0`.
+    set β : ℝ → Euclidean n := fun t ↦ Function.invFunOn φ D (γ t)
+    have hβ : ∀ᶠ t in 𝓝 (0 : ℝ), β t ∈ D ∩ φ ⁻¹' closedBall (φ a) (r / 2) ∧ φ (β t) = γ t := by
+      filter_upwards [hev] with t ht
+      have hex : γ t ∈ φ '' D := hφ.image_eq ▸ ⟨hKW ht.1, ht.2⟩
+      obtain ⟨h1, h2⟩ := Function.invFunOn_pos hex
+      exact ⟨⟨h1, by rw [Set.mem_preimage, h2]; exact ht.1⟩, h2⟩
+    -- Relative properness: `β t → a`.
+    have hβa : Tendsto β (𝓝 0) (𝓝 a) := by
+      refine hS.tendsto_nhds_of_unique_mapClusterPt (hβ.mono fun t ht ↦ ht.1) fun b hb hcl ↦ ?_
+      have hφb : ContinuousAt φ b :=
+        hφ.contDiffOn.continuousOn.continuousAt (hφ.isOpen_source.mem_nhds hb.1)
+      have h1 : MapClusterPt (φ b) (𝓝 0) (φ ∘ β) := hcl.continuousAt_comp hφb
+      have h2 : ClusterPt (φ b) (map γ (𝓝 0)) := by
+        rw [← Filter.map_congr (hβ.mono fun t ht ↦ ht.2)]
+        exact h1
+      have h3 : φ b = γ 0 := eq_of_nhds_neBot (h2.mono hder.continuousAt.tendsto).neBot
+      exact hφ.injOn hb.1 ha (h3.trans hγ0)
+    -- `L = Dφ(a)` is injective, hence antilipschitz, so `β t - a = O(t)`.
+    obtain ⟨C, -, hC⟩ := (fderiv ℝ φ a : Euclidean n →ₗ[ℝ] Euclidean N).exists_antilipschitzWith
+      (LinearMap.ker_eq_bot.mpr (hφ.injective_fderiv ha))
+    have hrev : (fun u ↦ u - a) =O[𝓝 a] fun u ↦ φ u - φ a := by
+      have A : (fun u ↦ u - a) =O[𝓝 a] fun u ↦ fderiv ℝ φ a (u - a) :=
+        Asymptotics.isBigO_iff.mpr ⟨C, Eventually.of_forall fun u ↦ by
+          have := hC.le_mul_dist 0 (u - a)
+          rwa [map_zero, dist_zero_left, dist_zero_left] at this⟩
+      have B : Asymptotics.IsEquivalent (𝓝 a) (fun u ↦ φ u - φ a)
+          fun u ↦ fderiv ℝ φ a (u - a) :=
+        hL.isLittleO.trans_isBigO A
+      exact A.trans B.isBigO_symm
+    have hγφ : (fun t ↦ φ (β t) - φ a) =ᶠ[𝓝 (0 : ℝ)] fun t ↦ γ t - γ 0 := by
+      filter_upwards [hβ] with t ht
+      rw [ht.2, hγ0]
+    have hβO : (fun t ↦ β t - a) =O[𝓝 (0 : ℝ)] fun t ↦ t := by
+      have h1 : (fun t ↦ β t - a) =O[𝓝 (0 : ℝ)] fun t ↦ φ (β t) - φ a := hrev.comp_tendsto hβa
+      have h2 : (fun t ↦ γ t - γ 0) =O[𝓝 (0 : ℝ)] fun t ↦ t - 0 := hder.isBigO_sub
+      simpa only [sub_zero] using (h1.congr' EventuallyEq.rfl hγφ).trans h2
+    -- The normal part `Q = id - P_{range L}` of `γ` has zero derivative at `0`.
+    set K : Submodule ℝ (Euclidean N) :=
+      LinearMap.range (fderiv ℝ φ a : Euclidean n →ₗ[ℝ] Euclidean N)
+    set Q : Euclidean N →L[ℝ] Euclidean N := ContinuousLinearMap.id ℝ _ - K.starProjection with hQ
+    have hQL : Q.comp (fderiv ℝ φ a) = 0 := by
+      ext1 v
+      have hv : K.starProjection (fderiv ℝ φ a v) = fderiv ℝ φ a v :=
+        Submodule.starProjection_eq_self_iff.mpr (LinearMap.mem_range_self _ v)
+      simp [hQ, hv]
+    have hQφ : (fun u ↦ Q (φ u) - Q (φ a)) =o[𝓝 a] fun u ↦ u - a := by
+      simpa [hQL] using (Q.hasFDerivAt.comp a hL).isLittleO
+    have hQγ : HasDerivAt (fun t ↦ Q (γ t)) 0 0 := by
+      refine hasDerivAt_iff_isLittleO.mpr ?_
+      have h1 := (hQφ.comp_tendsto hβa).trans_isBigO hβO
+      have h2 : (fun t ↦ Q (φ (β t)) - Q (φ a)) =ᶠ[𝓝 (0 : ℝ)] fun t ↦ Q (γ t) - Q (γ 0) := by
+        filter_upwards [hβ] with t ht
+        rw [ht.2, hγ0]
+      simpa using h1.congr' h2 EventuallyEq.rfl
+    have hQξ : Q ξ = 0 := (Q.hasFDerivAt.comp_hasDerivAt 0 hder).unique hQγ
+    have hξK : ξ ∈ K := by
+      rw [← Submodule.starProjection_eq_self_iff]
+      have : ξ - K.starProjection ξ = 0 := by simpa [hQ] using hQξ
+      exact (sub_eq_zero.mp this).symm
+    obtain ⟨w, hw⟩ := LinearMap.mem_range.mp hξK
+    exact ⟨w, hw⟩
+  · rintro ⟨w, rfl⟩
+    obtain ⟨r, hr, hrD⟩ := Metric.isOpen_iff.mp hφ.isOpen_source a ha
+    have hw1 : 0 < ‖w‖ + 1 := by positivity
+    set ε : ℝ := r / (‖w‖ + 1) with hε
+    have hε0 : 0 < ε := div_pos hr hw1
+    -- `c t = a + (ε sin (t / ε)) w` stays in `B(a, r) ⊆ D` and has velocity `w` at `0`.
+    have hcD : ∀ t : ℝ, a + (ε * Real.sin (t / ε)) • w ∈ D := by
+      intro t
+      apply hrD
+      rw [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+        abs_mul, abs_of_pos hε0]
+      calc ε * |Real.sin (t / ε)| * ‖w‖ ≤ ε * 1 * ‖w‖ := by
+            gcongr
+            exact Real.abs_sin_le_one _
+        _ < r := by
+            rw [mul_one, hε, div_mul_eq_mul_div, div_lt_iff₀ hw1]
+            nlinarith [norm_nonneg w]
+    have hcd : ContDiff ℝ 1 fun t : ℝ ↦ a + (ε * Real.sin (t / ε)) • w :=
+      contDiff_const.add <|
+        (contDiff_const.mul (Real.contDiff_sin.comp (contDiff_id.div_const ε))).smul contDiff_const
+    have hcder : HasDerivAt (fun t : ℝ ↦ a + (ε * Real.sin (t / ε)) • w) w 0 := by
+      have hdiv : HasDerivAt (fun t : ℝ ↦ t / ε) (1 / ε) 0 := (hasDerivAt_id (0 : ℝ)).div_const ε
+      have hsin : HasDerivAt (fun t : ℝ ↦ ε * Real.sin (t / ε))
+          (ε * (Real.cos (0 / ε) * (1 / ε))) 0 :=
+        hdiv.sin.const_mul ε
+      have h1 : ε * (Real.cos (0 / ε) * (1 / ε)) = 1 := by
+        rw [zero_div, Real.cos_zero]
+        field_simp
+      rw [h1] at hsin
+      simpa using (hsin.smul_const w).const_add a
+    refine ⟨φ ∘ fun t : ℝ ↦ a + (ε * Real.sin (t / ε)) • w, ?_, ?_, ?_, ?_⟩
+    · exact (hφ1.comp_contDiff hcd hcD).contDiffOn
+    · intro t _
+      exact (hφ.image_eq ▸ Set.mem_image_of_mem φ (hcD t) : φ _ ∈ W ∩ M).2
+    · simp
+    · have hL' : HasFDerivAt φ (fderiv ℝ φ a)
+          ((fun t : ℝ ↦ a + (ε * Real.sin (t / ε)) • w) 0) := by
+        simpa using hL
+      exact hL'.comp_hasDerivAt 0 hcder
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
