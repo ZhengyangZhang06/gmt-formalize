@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def divM|def TiltExcessHeightEstimate|hsNormSq|tangentProj|structure RectifiableVarifold",
+        "rectifiableVarifold_ae_tangentProj_starProjection|exists_smooth_cutoff_half_ball_grad_le|hsNorm_starProjection_trace_identities|divM_height_test_field_eq",
+        "CountablyRectifiable|HasWeightedApproximateTangentSpaceAt|HasApproximateTangentSpaceAt|unique|not asserted",
+        "smoothTransition|contDiff_infty_iff_deriv|norm_fderiv_le_of_lipschitz|dist_starProjection_eq_infDist|starProjection_add_starProjection_orthogonal|trace_smulRight|theorem IsProj.trace",
+        "sed -n '158,312p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "sed -n '284,326p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gmt-tilt-independent-audit-sklhxxda/CheckTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gmt-tilt-independent-audit-sklhxxda/CheckAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/gmt-tilt-independent-audit-sklhxxda/CheckTypes.lean",
+        "/tmp/gmt-tilt-independent-audit-sklhxxda/CheckTypes.log",
+        "/tmp/gmt-tilt-independent-audit-sklhxxda/CheckAxioms.lean",
+        "/tmp/gmt-tilt-independent-audit-sklhxxda/CheckAxioms.log"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical contract. No existing declaration matching any proposed name was found in the searched project/package sources; none conflicts with the 13 reserved DAG names or other inspected proposals. All four exact one-line propositions independently elaborate in the comparator's replayed scope without declaring the children. Fourteen checked supporting declarations use only propext, Classical.choice and Quot.sound. These checks establish type validity and library axiom compatibility, not completed Lean proofs. The tangent-existence theorem remains a genuine obligation; the cited C¹ approximation theorem is supported by the supplied book text. The split is appropriate: its sole dependency, height_field_divergence on projection_algebra, is correctly directed and acyclic. Together with the retained first-variation, integrability, Young and ENNReal arguments, the children establish the selected TiltExcessHeightEstimate with C = 146 * 2^(n+1)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ae_tangent_planes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses match the contract, including completed measurability and integrability only on compact subsets of U. The supplied proof establishes the C¹ cover, controlled blow-ups, density-error estimates, Lusin localization and weighted convergence, then constructs a Borel projection representative and identifies it using uniqueness. Its exceptional set is independent of the test function. For n ≥ 1, the Lean rank-n projection conclusion also rules out tangentProj's zero fallback, matching the prose existence assertion. The proof is non-circular and sufficiently detailed; the bare name is unreserved."
+    },
+    {
+      "key": "smooth_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches every stated property, including closed-ball equality and the Fréchet operator-norm bound, for all m. The explicit bump gives c ≥ 1/3; its normalized primitive has derivative bounded by 3. Local constancy handles the center, smoothness of the norm handles other points, and the Lipschitz estimate gives 3/ρ. This is a complete independent construction with an unreserved bare name."
+    },
+    {
+      "key": "projection_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three conjuncts match the prose and the contract's Hilbert–Schmidt definitions. Cauchy–Schwarz proves the operator bound; orthogonal decomposition proves the distance formula; self-adjointness, idempotence and equal ranks give the trace identity with the correct factor 1/2. The inferred projection and composition instances are the intended linear-map instances, including zero-dimensional cases. No circular dependency or name collision occurs."
+    },
+    {
+      "key": "height_field_divergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiability at x suffices for the stated product-rule calculation. Trace linearity and the rank-one trace formula produce Dζ(x)(p_P x′); orthogonality gives p_T x′ = 0, and projection_algebra supplies the remaining trace term. All rank and projection hypotheses are used correctly. The exact type matches the prose, its sole sibling dependency is correctly directed, and its bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}
