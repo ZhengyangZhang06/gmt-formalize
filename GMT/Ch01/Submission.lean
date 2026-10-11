@@ -309,6 +309,21 @@ def RadonCompactness : Prop :=
       ∀ f : C_c(X, ℝ), Tendsto (fun k => ∫ x, f x ∂caratheodoryMeasure (μ (φ k))) atTop
         (𝓝 (∫ x, f x ∂caratheodoryMeasure μlim))
 
+/-- Simon Ch. 1, Theorem 4.16 (corrected), proof Step 3: every `f ∈ C_c(X, ℝ)` is integrable
+for the Carathéodory measure of a Radon outer measure `μ`.  Borel regularity (R1) makes open sets
+`μ`-measurable, and finiteness on compacts passes to `caratheodoryMeasure μ` by the pinned
+`IsRadonOuterMeasure.toCaratheodoryMeasure_apply_all`; Mathlib's
+`Continuous.integrable_of_hasCompactSupport` concludes. -/
+theorem Submission.rc_cc_integrable : ∀ (X : Type u) [TopologicalSpace X] (μ : OuterMeasure X),
+    IsRadonOuterMeasure μ → ∀ f : C_c(X, ℝ), Integrable (fun x => f x) (caratheodoryMeasure μ) := by
+  intro X _ μ hμ f
+  let : MeasurableSpace X := μ.caratheodory
+  have : OpensMeasurableSpace X := ⟨hμ.borel_regular.borel_le_caratheodory⟩
+  have : IsFiniteMeasureOnCompacts (caratheodoryMeasure μ) := ⟨fun K hK => by
+    rw [show caratheodoryMeasure μ K = μ K from hμ.toCaratheodoryMeasure_apply_all K]
+    exact hμ.finite_compacts hK⟩
+  exact (map_continuous f).integrable_of_hasCompactSupport f.hasCompactSupport
+
 /-- The headline results of Simon, *Introduction to GMT*, Chapter 1 (pp. 1–38). -/
 theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
 
