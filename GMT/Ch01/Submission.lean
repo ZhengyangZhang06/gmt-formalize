@@ -324,12 +324,6 @@ theorem Submission.rc_cc_integrable : ∀ (X : Type u) [TopologicalSpace X] (μ 
     exact hμ.finite_compacts hK⟩
   exact (map_continuous f).integrable_of_hasCompactSupport f.hasCompactSupport
 
-/-- The headline results of Simon, *Introduction to GMT*, Chapter 1 (pp. 1–38). -/
-theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
-
-end GMT.Ch01
-
-
 /-- Step 6 of the proof of Simon Ch. 1, Theorem 4.16 (corrected): given Theorem 4.12
 (`RieszPositive`), a positive `ℝ`-linear `Λ : C_c(X, ℝ) → ℝ` is integration against a Radon
 outer measure. On `C_c(X, ℝ≥0)`, `Λ` is the `ℝ≥0`-linear map
@@ -353,3 +347,8 @@ theorem Submission.rc_riesz_real : RieszPositive.{u} → ∀ (X : Type u) [Topol
   simp only [CompactlySupportedContinuousMap.sub_apply]
   rw [integral_sub (Submission.rc_cc_integrable X μ hμ _) (Submission.rc_cc_integrable X μ hμ _),
     hrep, hrep]
+
+/-- The headline results of Simon, *Introduction to GMT*, Chapter 1 (pp. 1–38). -/
+theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
+
+end GMT.Ch01
