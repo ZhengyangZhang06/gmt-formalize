@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pieces-a1.regular_set_cover-a1",
+  "parent_id": "root.lipschitz_pieces-a1",
+  "depth": 2,
+  "title": "Regular points of a continuous map lie in countably many bounded Borel sets with a uniform lower Lipschitz bound (parent Steps 1–2)",
+  "statement": "Let n, ℓ ∈ ℕ, ℝⁿ := EuclideanSpace ℝ (Fin n), E := Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)), and let f: ℝⁿ → E be continuous. Let R := {w ∈ ℝⁿ : f is (Fréchet) differentiable at w and its derivative Df(w) = fderiv ℝ f w is injective}. Then there are sets T_p ⊆ ℝⁿ (p ∈ ℕ) with R ⊆ ⋃_p T_p such that, for every p: T_p is a Borel set; T_p is bounded; at every w ∈ T_p the map f is differentiable and Df(w) is injective (i.e. T_p ⊆ R); and there is c > 0 with c|v − w| ≤ |f(v) − f(w)| for all v, w ∈ T_p.",
+  "lean_statement": "∀ (n ℓ : ℕ) (f : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), Continuous f → ∃ T : ℕ → Set (EuclideanSpace ℝ (Fin n)), {w | DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)} ⊆ ⋃ p, T p ∧ ∀ p, MeasurableSet (T p) ∧ Bornology.IsBounded (T p) ∧ (∀ w ∈ T p, DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)) ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ T p, ∀ w ∈ T p, c * ‖v - w‖ ≤ ‖f v - f w‖",
+  "lean_name": "regular_set_lower_lipschitz_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-lipschitz-pieces-a1-regular-set-cover-a1-a1"
+}
