@@ -335,6 +335,83 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Zero extension of a functional on admissible fields** (Steps 1–4 of the proof of the
+Gauss–Green representation on an open `U`, passing from `ℝᴺ` to `U` to apply Simon Ch. 1,
+Theorem 4.14, `chapter-01.txt` lines 1654–1663, in Ch. 2 (2.1)–(2.2), `chapter-02.txt`
+lines 485–496). For `f ∈ C_c(U; ℝᴺ)` the zero extension `f̃ = extend ι f 0` (`ι : U → ℝᴺ`) is
+continuous since `U` is open (`HasCompactSupport.continuous_extend_zero`), has
+`tsupport f̃ ⊆ ι(tsupport f) ⊆ U` (`tsupport_extend_zero_subset`) and is linear in `f`, so
+`L f := Λ f̃` is linear and inherits the bound of `Λ` on `ι(K)`. For admissible `g`, the
+restriction `g ∘ ι` vanishes off the compact `ι⁻¹(tsupport g)` and its zero extension is `g`. -/
+theorem Submission.gaussGreenRep_riesz_zero_extension_functional : ∀ (N : ℕ) (U : Set (Rn N)) (Λ : (Rn N → Rn N) → ℝ), IsOpen U → (∀ g h : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Continuous h → HasCompactSupport h → tsupport h ⊆ U → Λ (g + h) = Λ g + Λ h) → (∀ (c : ℝ) (g : Rn N → Rn N), Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ (c • g) = c * Λ g) → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ g : Rn N → Rn N, Continuous g → tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → Λ g ≤ C) → ∃ L : C_c(U, Rn N) →ₗ[ℝ] ℝ, (∀ K : Set U, IsCompact K → ∃ C : ℝ, ∀ f : C_c(U, Rn N), (∀ x, ‖f x‖ ≤ 1) → tsupport f ⊆ K → L f ≤ C) ∧ ∀ g : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → ∃ f : C_c(U, Rn N), (∀ y : U, f y = g ↑y) ∧ L f = Λ g := by
+  intro N U Λ hU hadd hsmul hbd
+  -- The zero extension `f̃ = extend ι f 0` of `f ∈ C_c(U; ℝᴺ)`, `ι : U → ℝᴺ` the inclusion.
+  let E : C_c(U, Rn N) → Rn N → Rn N := fun f ↦ Subtype.val.extend (⇑f) 0
+  have hEval : ∀ (f : C_c(U, Rn N)) (y : U), E f y = f y := fun f y ↦
+    Subtype.val_injective.extend_apply _ _ y
+  have hEout : ∀ (f : C_c(U, Rn N)) (x : Rn N), x ∉ U → E f x = 0 := fun f x hx ↦
+    Function.extend_apply' _ _ x fun ⟨y, hy⟩ ↦ hx (hy ▸ y.2)
+  -- `f̃` is admissible: continuous (`U` is open), compactly supported, `tsupport f̃ ⊆ ι(tsupport f)`.
+  have hEcont : ∀ f : C_c(U, Rn N), Continuous (E f) := fun f ↦
+    HasCompactSupport.continuous_extend_zero hU f.continuous f.hasCompactSupport
+  have hEcs : ∀ f : C_c(U, Rn N), HasCompactSupport (E f) := fun f ↦
+    f.hasCompactSupport.extend_zero continuous_subtype_val
+  have hEsupp : ∀ f : C_c(U, Rn N), tsupport (E f) ⊆ Subtype.val '' tsupport f := fun f ↦
+    f.hasCompactSupport.tsupport_extend_zero_subset continuous_subtype_val
+  have hEU : ∀ f : C_c(U, Rn N), tsupport (E f) ⊆ U := fun f ↦
+    (hEsupp f).trans (Subtype.coe_image_subset _ _)
+  -- The extension is linear in `f`.
+  have hEadd : ∀ f f' : C_c(U, Rn N), E (f + f') = E f + E f' := by
+    intro f f'
+    funext x
+    by_cases hx : x ∈ U
+    · lift x to U using hx
+      simp [hEval]
+    · simp [hEout _ _ hx]
+  have hEsmul : ∀ (c : ℝ) (f : C_c(U, Rn N)), E (c • f) = c • E f := by
+    intro c f
+    funext x
+    by_cases hx : x ∈ U
+    · lift x to U using hx
+      simp [hEval]
+    · simp [hEout _ _ hx]
+  refine ⟨{ toFun := fun f ↦ Λ (E f)
+            map_add' := fun f f' ↦ by
+              simp only [hEadd]
+              exact hadd _ _ (hEcont f) (hEcs f) (hEU f) (hEcont f') (hEcs f') (hEU f')
+            map_smul' := fun c f ↦ by
+              simp only [hEsmul, RingHom.id_apply, smul_eq_mul]
+              exact hsmul c _ (hEcont f) (hEcs f) (hEU f) }, ?_, ?_⟩
+  · -- (i) the local bound, from the bound for `Λ` on `ι(K)`.
+    intro K hK
+    obtain ⟨C, hC⟩ := hbd (Subtype.val '' K) (hK.image continuous_subtype_val)
+      (Subtype.coe_image_subset _ _)
+    refine ⟨C, fun f hf1 hfK ↦ hC (E f) (hEcont f) ((hEsupp f).trans (image_mono hfK)) ?_⟩
+    intro x
+    by_cases hx : x ∈ U
+    · lift x to U using hx
+      rw [hEval]
+      exact hf1 x
+    · rw [hEout _ _ hx, norm_zero]
+      exact zero_le_one
+  · -- (ii) the restriction `g ∘ ι` lies in `C_c(U; ℝᴺ)` and its zero extension is `g`.
+    intro g hg hgc hgU
+    have hK₀ : IsCompact (Subtype.val ⁻¹' tsupport g : Set U) := by
+      rw [Subtype.isCompact_iff, Subtype.image_preimage_coe, inter_eq_right.mpr hgU]
+      exact hgc
+    let f : C_c(U, Rn N) :=
+      ⟨⟨g ∘ Subtype.val, hg.comp continuous_subtype_val⟩,
+        HasCompactSupport.intro hK₀ fun y hy ↦ image_eq_zero_of_notMem_tsupport (f := g) hy⟩
+    have hEf : E f = g := by
+      funext x
+      by_cases hx : x ∈ U
+      · lift x to U using hx
+        rw [hEval]
+        rfl
+      · rw [hEout _ _ hx]
+        exact (image_eq_zero_of_notMem_tsupport fun h ↦ hx (hgU h)).symm
+    exact ⟨f, fun y ↦ rfl, show Λ (E f) = Λ g by rw [hEf]⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
