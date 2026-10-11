@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1.ball_cover_count-a1.packing_bound-a1",
+  "parent_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1.ball_cover_count-a1",
+  "depth": 4,
+  "title": "Volume packing bound for r-separated finite subsets of a bounded set in ℝⁿ",
+  "statement": "Let n ∈ ℕ and let K ⊆ ℝⁿ = EuclideanSpace ℝ (Fin n) be bounded. Then there is a constant C ∈ ℝ with the following property. For every r ∈ ℝ with 0 < r ≤ 1, and every finite set F ⊆ K that is r-separated (r < dist(x, y) for all distinct x, y ∈ F), card(F)·rⁿ ≤ C.",
+  "lean_statement": "∀ (n : ℕ) (K : Set (Rn n)), Bornology.IsBounded K → ∃ C : ℝ, ∀ r : ℝ, 0 < r → r ≤ 1 → ∀ F : Finset (Rn n), (↑F : Set (Rn n)) ⊆ K → (∀ x ∈ F, ∀ y ∈ F, x ≠ y → r < dist x y) → (F.card : ℝ) * r ^ n ≤ C",
+  "lean_name": "bounded_set_separated_finset_card_mul_pow_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-critical-fibers-euclidean-a1-ball-cover-count-ee86537fd7-a1"
+}

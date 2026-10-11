@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1.ball_cover_count-a1.maximal_separated_cover-a1",
+  "parent_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1.ball_cover_count-a1",
+  "depth": 4,
+  "title": "A maximal-cardinality r-separated finite subset covers the set by closed r-balls",
+  "statement": "Let X be a pseudometric space (X : Type), K ⊆ X, r ∈ ℝ with 0 ≤ r, and N ∈ ℕ. Assume every finite r-separated set F ⊆ K (r < dist(x, y) for all distinct x, y ∈ F) has card(F) ≤ N. Then there is a finite r-separated set F ⊆ K with K ⊆ ⋃_{x∈F} B̄(x, r), where B̄(x, r) = {z : dist(z, x) ≤ r} is the closed ball.",
+  "lean_statement": "∀ (X : Type) [PseudoMetricSpace X] (K : Set X) (r : ℝ) (N : ℕ), 0 ≤ r → (∀ F : Finset X, (↑F : Set X) ⊆ K → (∀ x ∈ F, ∀ y ∈ F, x ≠ y → r < dist x y) → F.card ≤ N) → ∃ F : Finset X, (↑F : Set X) ⊆ K ∧ (∀ x ∈ F, ∀ y ∈ F, x ≠ y → r < dist x y) ∧ K ⊆ ⋃ x ∈ F, closedBall x r",
+  "lean_name": "exists_separated_finset_subset_cover_closedBall",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-critical-fibers-euclidean-a1-ball-cover-count-37d623ba8d-a1"
+}
