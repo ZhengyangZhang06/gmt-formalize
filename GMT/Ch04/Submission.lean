@@ -553,6 +553,34 @@ theorem Submission.tangentialDiv_weighted_radial_field : ∀ (n ℓ : ℕ) (V : 
   simp only [add_apply, smul_apply, innerSL_apply_apply, smul_eq_mul, hgrad, hpw]
   linear_combination h x * key
 
+/-- Simon 3.2–3.3 and 5.1 (pp. 89–90, 96) with Definition 3.14 (p. 92): the first variation
+formula for the radial field `X(x) = h(x) γ(r) (x - ξ)`, `r = |x - ξ|`. If `dim T_x V = n` for
+`μ_V`-a.e. `x`, `V` has generalized mean curvature `H` in the open set `U`, `h ∈ C¹(U)`,
+`γ ∈ C¹(ℝ)` and `X ∈ C¹_c(U; ℝ^{n+ℓ})`, then `∫_U (h (n γ(r) + r γ'(r) (1 - |D^⊥ r|²)) +
+γ(r) (x - ξ) · ∇^M h) dμ_V = -∫_U h γ(r) (x - ξ) · H dμ_V`. -/
+theorem Submission.radial_first_variation : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ : Ambient n ℓ), (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → ContDiff ℝ 1 γ → IsTestField U (fun x ↦ (h x * γ ‖x - ξ‖) • (x - ξ)) → ∫ x in U, (h x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient h x)) ∂V.weight = -∫ x in U, h x * γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂V.weight := by
+  intro n ℓ V U H h γ ξ hdim hU hH hh hγ hX
+  -- `X` vanishes near every point off `U`, since `tsupport X ⊆ U`.
+  have hout : ∀ x ∉ U, x ∉ tsupport fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ) :=
+    fun x hxU hx ↦ hxU (hX.2.2 hx)
+  have hX0 : ∀ x ∉ U, (h x * γ ‖x - ξ‖) • (x - ξ) = 0 :=
+    fun x hxU ↦ (image_eq_zero_of_notMem_tsupport (hout x hxU) :)
+  calc _ = ∫ x in U, V.tangentialDiv (fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ)) x ∂V.weight := by
+        -- Simon 3.2 and 5.1: the integrand is `div_M X` wherever `dim T_x V = n`.
+        refine setIntegral_congr_ae hU.measurableSet ?_
+        filter_upwards [hdim] with x hx hxU
+        exact (Submission.tangentialDiv_weighted_radial_field n ℓ V h γ ξ x hx
+          (hh.differentiableOn_one.differentiableAt (hU.mem_nhds hxU)) hγ).symm
+    _ = ∫ x, V.tangentialDiv (fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ)) x ∂V.weight :=
+        setIntegral_eq_integral_of_forall_compl_eq_zero fun x hxU ↦ by
+          rw [tangentialDiv, fderiv_of_notMem_tsupport ℝ (hout x hxU)]
+          simp
+    _ = -∫ x, inner ℝ ((h x * γ ‖x - ξ‖) • (x - ξ)) (H x) ∂V.weight := hH.2 _ hX
+    _ = _ := by
+        rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := U) fun x hxU ↦ ?_]
+        · simp_rw [real_inner_smul_left]
+        · rw [hX0 x hxU, inner_zero_left]
+
 end
 
 end GMT.Ch04
