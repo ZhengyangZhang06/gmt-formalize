@@ -434,6 +434,51 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Upper semicontinuity of the density from the ratio bound (Simon 3.11).** Let `μ_V` be finite
+on compact sets and `U` open. If `Θⁿ(μ_V, ξ)` exists at every `ξ ∈ U`, and
+`Θⁿ(μ_V, η) ≤ μ_V(B_ρ(η))/(ωₙρⁿ)` whenever `B_R(η) ⊆ U` and `0 < ρ < R`, then `Θⁿ(μ_V, ·)` is
+upper semicontinuous on `U`. -/
+theorem Submission.stationary_density_usc_of_ratio_bound : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), IsOpen U → IsFiniteMeasureOnCompacts V.weight → (∀ ξ ∈ U, V.HasDensityAt ξ (V.density ξ)) → (∀ (η : Ambient n ℓ) (R ρ : ℝ), closedBall η R ⊆ U → 0 < ρ → ρ < R → V.density η ≤ V.weight.real (closedBall η ρ) / (omega n * ρ ^ n)) → UpperSemicontinuousOn V.density U := by
+  intro n ℓ V U hU _ hdens hbound
+  refine upperSemicontinuousOn_iff.2 fun ξ hξ ↦ upperSemicontinuousWithinAt_iff.2 fun t ht ↦ ?_
+  -- Step 1: a radius `R > 0` with `B_{2R}(ξ) ⊆ U`, since `U` is open.
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU ξ hξ
+  obtain ⟨R, hR0, hRε⟩ : ∃ R : ℝ, 0 < R ∧ 2 * R < ε := ⟨ε / 4, by positivity, by linarith⟩
+  have h2R : closedBall ξ (2 * R) ⊆ U := (closedBall_subset_ball hRε).trans hεU
+  -- Step 2: `ρ ∈ (0, R/2)` with `μ_V(B_ρ(ξ))/(ωₙρⁿ) < t`, as this quotient tends to `Θ(ξ) < t`.
+  have hξd : Tendsto (fun r ↦ V.weight.real (closedBall ξ r) / (omega n * r ^ n)) (𝓝[>] 0)
+      (𝓝 (V.density ξ)) := hdens ξ hξ
+  obtain ⟨ρ, hρt, hρ0, hρR⟩ :=
+    ((hξd.eventually (gt_mem_nhds ht)).and (Ioo_mem_nhdsGT (half_pos hR0))).exists
+  -- Step 3: continuity from above, `μ_V(B_{ρ+δ}(ξ)) → μ_V(B_ρ(ξ))` as `δ ↓ 0` (`μ_V` is finite on
+  -- the compact balls), gives `δ ∈ (0, R/2)` with `μ_V(B_{ρ+δ}(ξ))/(ωₙρⁿ) < t`.
+  have hinter : ⋂ δ > (0 : ℝ), closedBall ξ (ρ + δ) = closedBall ξ ρ := by
+    ext x
+    simp only [mem_iInter, mem_closedBall]
+    exact ⟨fun h ↦ le_of_forall_pos_le_add h, fun h δ hδ ↦ by linarith⟩
+  have hcont : Tendsto (fun δ ↦ V.weight.real (closedBall ξ (ρ + δ)) / (omega n * ρ ^ n))
+      (𝓝[>] 0) (𝓝 (V.weight.real (closedBall ξ ρ) / (omega n * ρ ^ n))) := by
+    have h := tendsto_measure_biInter_gt (μ := V.weight) (s := fun δ : ℝ ↦ closedBall ξ (ρ + δ))
+      (a := 0) (fun _ _ ↦ measurableSet_closedBall.nullMeasurableSet)
+      (fun _ _ _ hij ↦ closedBall_subset_closedBall (by linarith))
+      ⟨1, one_pos, measure_closedBall_lt_top.ne⟩
+    rw [hinter] at h
+    exact ((ENNReal.tendsto_toReal measure_closedBall_lt_top.ne).comp h).div_const _
+  obtain ⟨δ, hδt, hδ0, hδR⟩ :=
+    ((hcont.eventually (gt_mem_nhds hρt)).and (Ioo_mem_nhdsGT (half_pos hR0))).exists
+  -- Step 4: for `|η - ξ| < δ`, `B_R(η) ⊆ B_{2R}(ξ) ⊆ U` and `B_ρ(η) ⊆ B_{ρ+δ}(ξ)`, hence
+  -- `Θ(η) ≤ μ_V(B_ρ(η))/(ωₙρⁿ) ≤ μ_V(B_{ρ+δ}(ξ))/(ωₙρⁿ) < t`.
+  have hω : 0 ≤ omega n * ρ ^ n := mul_nonneg ENNReal.toReal_nonneg (pow_nonneg hρ0.le n)
+  filter_upwards [mem_nhdsWithin_of_mem_nhds (ball_mem_nhds ξ hδ0)] with η hη
+  rw [mem_ball] at hη
+  have hball : closedBall η R ⊆ U := (closedBall_subset_closedBall' (by linarith)).trans h2R
+  have hsub : closedBall η ρ ⊆ closedBall ξ (ρ + δ) := closedBall_subset_closedBall' (by linarith)
+  calc V.density η ≤ V.weight.real (closedBall η ρ) / (omega n * ρ ^ n) :=
+        hbound η R ρ hball hρ0 (by linarith)
+    _ ≤ V.weight.real (closedBall ξ (ρ + δ)) / (omega n * ρ ^ n) :=
+        div_le_div_of_nonneg_right (measureReal_mono hsub measure_closedBall_lt_top.ne) hω
+    _ < t := hδt
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
