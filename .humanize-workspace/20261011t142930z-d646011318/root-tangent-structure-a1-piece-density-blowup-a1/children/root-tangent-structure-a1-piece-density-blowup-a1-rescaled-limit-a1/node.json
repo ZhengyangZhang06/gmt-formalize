@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_density_blowup-a1.rescaled_limit-a1",
+  "parent_id": "root.tangent_structure-a1.piece_density_blowup-a1",
+  "depth": 3,
+  "title": "Blow-up of a Jacobian-weighted Lebesgue integral at a density point",
+  "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ, ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ. Let C ⊆ ℝⁿ be compact, F: ℝⁿ → E continuous, J: ℝⁿ → ℝ continuous on C, w ∈ C, and A: ℝⁿ → E an injective continuous linear map with F differentiable at w with derivative A. Suppose c > 0 and c|v − w| ≤ |F(v) − F(w)| for all v ∈ C, and Lⁿ(C ∩ B_r(w))/Lⁿ(B_r(w)) → 1 in [0, ∞] as r ↓ 0 (closed balls). Then for every f ∈ C_c(E, ℝ), (tⁿ)⁻¹∫_C J(v)·f(t⁻¹(F(v) − F(w))) dLⁿ(v) → J(w)·∫_{ℝⁿ} f(A(u)) dLⁿ(u) as t ↓ 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (J : EuclideanSpace ℝ (Fin n) → ℝ) (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) (w : EuclideanSpace ℝ (Fin n)) (c : ℝ), IsCompact C → Continuous F → ContinuousOn J C → w ∈ C → HasFDerivAt F A w → Function.Injective A → 0 < c → (∀ v ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1) → ∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ v in C, J v * f (t⁻¹ • (F v - F w))) (𝓝[>] 0) (𝓝 (J w * ∫ u, f (A u)))",
+  "lean_name": "ts_pdb_density_point_rescaled_limit",
+  "depends_on": [
+    "root.tangent_structure-a1.piece_density_blowup-a1.density_complement-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tangent_structure-a1.piece_density_blowup-a1.density_complement-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-density-blowup-a1-rescaled-limit-a1-a1"
+}
