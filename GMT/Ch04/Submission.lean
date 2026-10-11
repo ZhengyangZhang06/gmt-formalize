@@ -579,13 +579,6 @@ theorem Submission.mcm_density_usc_of_monotone : ∀ (n ℓ : ℕ) (V : Rectifia
         _ < omega n * t := hδt
     exact lt_of_mul_lt_mul_left hlt hω.le
 
-theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
-
-end
-
-end GMT.Ch04
-
-
 /-- **Simon 4.9 (p. 95) from 4.5 and 4.8.** Under (GF) (of which only the finiteness of `μ_V` on
 compact sets is used), `LpMonotonicity` implies `LpDensity`. For `ξ ∈ U` pick `R > 0` with
 `B_{2R}(ξ) ⊆ U`; the `Lᵖ` bound on the compact ball `B_{2R}(ξ)` gives one `Λ ≥ 0` for which 4.8
@@ -644,3 +637,9 @@ theorem Submission.mcm_lp_density_of_monotonicity : (∀ (n ℓ : ℕ) (V : Rect
       Real.exp (Λ / 2) * Λ * (ρ / R) ^ (1 - (n : ℝ) / p) := by nlinarith
   exact ⟨⟨(Real.exp_le_exp.2 (neg_le_neg h₁)).trans hF₁, hF₂.trans (Real.exp_le_exp.2 h₁)⟩,
     hF₃.trans h₂⟩
+
+theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
+
+end
+
+end GMT.Ch04
