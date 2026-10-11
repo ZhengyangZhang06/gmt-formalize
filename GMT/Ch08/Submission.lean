@@ -2,6 +2,8 @@ import Poincare.SimonGMT.Chapter08.VarifoldConvergence
 import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter02.Submanifold
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Poincare.SimonGMT.Chapter08.ConstancyCorrected
+import Poincare.SimonGMT.Chapter02.AreaLiteral
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 8 (printed pp. 205–224)
@@ -409,6 +411,35 @@ def IntegralCompactnessTheorem : Prop :=
         variationMeasure V W ≤ liminf (fun j ↦ variationMeasure (Vj (φ j)) W) atTop) ∧
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
+
+/-- **Simon Ch. 8, 4.1 in measure form** (child `tangent_graph_measure` of `constancy_theorem`;
+corrected hypothesis: `M ∩ U` preconnected).  A stationary `V` with `U ∩ spt μ_V ⊆ M` is
+`c H^n ⌞ (M ∩ U)`, `c < ∞`, pushed onto the graph of a Borel plane field `T`; if `c ≠ 0`, then
+`T(x)` is the classical tangent space `T_x M` at every `x ∈ M ∩ U`.  The printed proof, (1)–(5)
+and its final paragraph, is SimonGMT's kernel-checked corrected constancy theorem, stated with
+Simon's literal `H^n` (which is `μHE[n]`) and chart tangents `range Dφ(a)`; the sibling
+`classical_tangent` identifies `range Dφ(a)` with `classicalTangentSpace M (φ a)`. -/
+theorem Submission.stationary_constancy_tangentGraph_measure :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)),
+      V.Stationary → Chapter02.IsSimonSubmanifold (E := Euclidean n) 2 M →
+      U ∩ V.weight.support ⊆ M → IsPreconnected (M ∩ U) → M.Nonempty →
+      ∃ (c : ℝ≥0∞) (T : Euclidean N → Grassmannian N n), c ≠ ∞ ∧ Measurable T ∧
+        V.measure = (c • (μHE[n] : Measure (Euclidean N)).restrict (M ∩ U)).map
+          (fun x ↦ (x, T x)) ∧
+        (c ≠ 0 → ∀ x ∈ M ∩ U, ((T x).plane : Set (Euclidean N)) = classicalTangentSpace M x) := by
+  intro N n U V M hV hSM hM hconn hne
+  obtain ⟨c, T, hc, hTm, -, -, hmeas, hchart⟩ :=
+    hV.exists_const_tangentGraph_connectedCarrier hSM hM hne hconn
+  rw [Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure] at hmeas
+  refine ⟨c, T, hc, hTm, hmeas, fun hc0 x hx ↦ ?_⟩
+  -- In a Simon chart `x = φ a`, and `T x` is the chart tangent `range Dφ(a)` since `c ≠ 0`.
+  obtain ⟨D, W, φ, hxW, hφ⟩ := hSM.exists_localRepresentation hx.1
+  obtain ⟨a, ha, rfl⟩ : x ∈ φ '' D := by
+    rw [hφ.image_eq]
+    exact ⟨hxW, hx.1⟩
+  rw [Submission.simon_chart_classicalTangentSpace_eq_range N n M W D φ a hφ ha,
+    hchart hφ a ha hx.2 hc0]
+  exact LinearMap.coe_range _
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
