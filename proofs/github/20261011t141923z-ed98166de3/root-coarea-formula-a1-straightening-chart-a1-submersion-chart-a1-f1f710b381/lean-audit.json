@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c11f8af1cc8f3dcbcc66b50b40f2dfed27c681d399f1e6420ee4bb40b308faed",
+  "git_delta": {
+    "base_commit": "7da97e054dcb8f662bb502bf4a0ffa03f9e55879",
+    "candidate_commit": "6c4f6400385c90ec44d21de5d2df646355b159be",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "coarea_straightening_submersion_chart",
+    "diff_sha256": "b226828ab191bc7ec3ecc8e15abe045271c3a46050c4b54b4b4f8eccdc566671",
+    "source_sha256": "606b072a27f290e0bbaf8952a86fbc6da5f94ffda3d4367118d940cb518e25aa",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.coarea_straightening_submersion_chart",
+      "statement": "∀ (m k : ℕ) (V : Set (Rn (m + k))) (G : Rn (m + k) → Rn m) (a : Rn (m + k)), IsOpen V → ContDiffOn ℝ 1 G V → a ∈ V → Function.Surjective (fderiv ℝ G a) → ∃ (Ω : Set (WithLp 2 (Rn m × Rn k))) (Λ : WithLp 2 (Rn m × Rn k) → Rn (m + k)), IsOpen Ω ∧ ContDiffOn ℝ 1 Λ Ω ∧ InjOn Λ Ω ∧ IsOpen (Λ '' Ω) ∧ a ∈ Λ '' Ω ∧ Λ '' Ω ⊆ V ∧ (∀ p ∈ Ω, Function.Bijective (fderiv ℝ Λ p)) ∧ ∀ p ∈ Ω, G (Λ p) = WithLp.fst p",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
