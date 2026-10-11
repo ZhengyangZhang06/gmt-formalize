@@ -611,3 +611,54 @@ theorem Submission.lipschitzImage_iSup_pieceCount_eq_fiberCount : ∀ (X Y : Typ
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
 end GMT.Ch02
+
+
+/-- **Simon Ch. 2, Theorem 1.8 (p. 44).** (i) is the two image results applied to `A`. (ii): cut `A`
+along nested Borel partitions `P i ·` of `X` of mesh `< 1/(i+1)`. The piece counts
+`N_i(y) = ∑'_j 1_{f(A ∩ P i j)}(y)` are a.e.-measurable (each `f(A ∩ P i j)` is null-measurable by
+(i)) and increase to `fiberCount A f`, so by monotone convergence `∫ N = sup_i ∫ N_i`, where
+`∫ N_i = ∑'_j Hᵐ(f(A ∩ P i j)) ≤ Kᵐ ∑'_j Hᵐ(A ∩ P i j) = Kᵐ Hᵐ(A)`. -/
+theorem Submission.lipschitz_image_hausdorff_theorem : LipschitzImageHausdorff := by
+  intro X Y _ _ _ _ _ _ _ m A f K hm hA hAfin hf
+  refine ⟨⟨Submission.lipschitzImage_nullMeasurableSet_image X Y m A f K hm hA hAfin hf,
+    Submission.lipschitzImage_hausdorff_image_le X Y m A f K hm hf⟩, ?_⟩
+  obtain ⟨P, hPmeas, hPdisj, hPcover, hPdiam, hPnest⟩ :=
+    Submission.lipschitzImage_exists_nested_partitions X
+  have hcount := Submission.lipschitzImage_iSup_pieceCount_eq_fiberCount X Y A f P hPdisj hPcover
+    hPdiam hPnest
+  have hpiece (i j : ℕ) : NullMeasurableSet (A ∩ P i j) (Chapter01.simonHausdorffMeasureReal m) :=
+    hA.inter (hPmeas i j).nullMeasurableSet
+  have himage (i j : ℕ) :
+      NullMeasurableSet (f '' (A ∩ P i j)) (Chapter01.simonHausdorffMeasureReal m) :=
+    Submission.lipschitzImage_nullMeasurableSet_image X Y m (A ∩ P i j) f K hm (hpiece i j)
+      ((measure_mono Set.inter_subset_left).trans_lt hAfin) (hf.mono Set.inter_subset_left)
+  have hind (i j : ℕ) : AEMeasurable ((f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞))
+      (Chapter01.simonHausdorffMeasureReal m) :=
+    aemeasurable_one.indicator₀ (himage i j)
+  have hN (i : ℕ) : AEMeasurable (fun y ↦ ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y)
+      (Chapter01.simonHausdorffMeasureReal m) :=
+    AEMeasurable.tsum (hind i)
+  have hfib : fiberCount A f =
+      fun y ↦ ⨆ i, ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y :=
+    funext fun y ↦ (hcount y).2.symm
+  refine ⟨by rw [hfib]; exact AEMeasurable.iSup hN, ?_⟩
+  calc ∫⁻ y, fiberCount A f y ∂Chapter01.simonHausdorffMeasureReal m
+      = ⨆ i, ∫⁻ y, ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y
+          ∂Chapter01.simonHausdorffMeasureReal m := by
+        rw [hfib]
+        exact lintegral_iSup' hN (ae_of_all _ fun y ↦ (hcount y).1)
+    _ ≤ (K : ℝ≥0∞) ^ m * Chapter01.simonHausdorffMeasureReal m A := by
+        refine iSup_le fun i ↦ ?_
+        calc ∫⁻ y, ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y
+              ∂Chapter01.simonHausdorffMeasureReal m
+            = ∑' j, Chapter01.simonHausdorffMeasureReal m (f '' (A ∩ P i j)) := by
+              rw [lintegral_tsum (hind i)]
+              exact tsum_congr fun j ↦ lintegral_indicator_one₀ (himage i j)
+          _ ≤ ∑' j, (K : ℝ≥0∞) ^ m * Chapter01.simonHausdorffMeasureReal m (A ∩ P i j) :=
+              ENNReal.tsum_le_tsum fun j ↦ Submission.lipschitzImage_hausdorff_image_le X Y m
+                (A ∩ P i j) f K hm (hf.mono Set.inter_subset_left)
+          _ = (K : ℝ≥0∞) ^ m * Chapter01.simonHausdorffMeasureReal m A := by
+              rw [ENNReal.tsum_mul_left, ← measure_iUnion₀ (f := fun j ↦ A ∩ P i j)
+                (fun j k hjk ↦ ((hPdisj i j k hjk).mono Set.inter_subset_right
+                  Set.inter_subset_right).aedisjoint) (hpiece i), ← Set.inter_iUnion, hPcover i,
+                Set.inter_univ]
