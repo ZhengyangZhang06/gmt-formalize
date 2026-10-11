@@ -736,13 +736,6 @@ theorem tendsto_integral_tangentialDiv_of_tendstoUniformly_fderiv : ∀ (n ℓ :
 
 end Submission
 
-theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
-
-end
-
-end GMT.Ch04
-
-
 /-- **Stationarity** (Ch. 4, 2.4). Given (GF) and the first variation formula 2.2, the integral
 and variational forms of stationarity agree: the initial velocity of a compact variation with
 `K ⊆ U` is a test field in `U`; a smooth compactly supported `X` is the initial velocity of the
@@ -779,3 +772,9 @@ theorem Submission.stationary_iff_variational_of_first_variation :
         (fun k ↦ ⟨(hY k).1.of_le (WithTop.coe_le_coe.mpr le_top), (hY k).2.2⟩) hYX) ?_
     exact tendsto_const_nhds.congr fun k ↦
       (hsmooth (Y k) (hY k).1 (hY k).2.1 ((hY k).2.2.trans hKU)).symm
+
+theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
+
+end
+
+end GMT.Ch04
