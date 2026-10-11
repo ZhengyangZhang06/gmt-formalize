@@ -143,6 +143,15 @@ def IsodiametricInequality : Prop :=
   ∀ (n : ℕ) (A : Set (EuclideanSpace ℝ (Fin n))),
     volume A ≤ realUnitBallVolume (n : ℝ) * (ediam A / 2) ^ n
 
+/-- Simon Ch. 1, Theorems 2.9 and 2.10, from the pinned `Poincare.SimonGMT` library:
+`simon_theorem_2_9` at the positive scale `ENNReal.ofReal δ`, and `simon_theorem_2_10`, whose
+real exponent `(n : ℝ)` becomes the natural power `n` by `ENNReal.rpow_natCast`. -/
+theorem Submission.lebesgue_eq_hausdorff_and_isodiametric :
+    LebesgueEqHausdorff ∧ IsodiametricInequality := by
+  refine ⟨fun n δ hδ A => ?_, fun n A => ?_⟩
+  · exact simon_theorem_2_9 n (ENNReal.ofReal_pos.mpr hδ) A
+  · simpa only [ENNReal.rpow_natCast] using simon_theorem_2_10 n A
+
 /-! ## §3 Densities -/
 
 /-- **Upper density comparison theorem.** Simon Ch. 1, Theorem 3.3 (p. 14).
