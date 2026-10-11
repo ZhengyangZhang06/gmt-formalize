@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "41bd8a4ab0bfa65545d81584f45301e785c017da5d14099415f87ec94f3040bf",
+  "git_delta": {
+    "base_commit": "81e07832ddaee7a309d3e2c45c2c1cda818e6fab",
+    "candidate_commit": "8cc6267ef9f547bdffd458221404e539d3fb6c57",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_plane_vitali_disjoint_cover",
+    "diff_sha256": "4c9f9fec1f9744588075a4bbe75db3726500b332aff5668d617c78b42c5e6e26",
+    "source_sha256": "2604944b59eb0402bc9873e33a55ba9440054eb5e647377bf52f309f99fc68e3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_plane_vitali_disjoint_cover",
+      "statement": "∀ (n N : ℕ) (W : Submodule ℝ (Rn N)), finrank ℝ W = n → ∀ (ι : Type) (S : Set (Rn N)) (t : Set ι) (c : ι → Rn N) (ρ : ι → ℝ), S ⊆ (W : Set (Rn N)) → (∀ i ∈ t, c i ∈ W ∧ 0 < ρ i) → (∀ x ∈ S, ∀ ε : ℝ, 0 < ε → ∃ i ∈ t, c i = x ∧ ρ i ≤ ε) → ∃ u ⊆ t, u.Countable ∧ u.PairwiseDisjoint (fun i ↦ (W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i)) ∧ μHE[n] (S \\ ⋃ i ∈ u, ((W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i))) = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
