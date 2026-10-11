@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8c967fe4b18e0d4788fe41ae587382171bd40543ec4e4ecc298ab60a3a975d59",
+  "git_delta": {
+    "base_commit": "df701776cb50a2fcd2d2c79e66f88fb414eecd5c",
+    "candidate_commit": "b5bacfbfcc90fd947967330a65e8dce533203547",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "lebesgue_eq_hausdorff_and_isodiametric",
+    "diff_sha256": "b3afd47721927543c4270218f0f3d0f20aba187d81f49f3f1b1856a1a63ad501",
+    "source_sha256": "c9dd85354d5c166c8be2ae160ee81a19104af6395645c89ee0d9ed53f31d0712",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lebesgue_eq_hausdorff_and_isodiametric",
+      "statement": "LebesgueEqHausdorff ∧ IsodiametricInequality",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
