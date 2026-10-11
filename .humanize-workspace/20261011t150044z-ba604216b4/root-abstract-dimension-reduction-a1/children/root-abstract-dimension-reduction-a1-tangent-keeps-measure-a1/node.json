@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.tangent_keeps_measure-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1",
+  "depth": 2,
+  "title": "Book (1): tangent functions at H^ℓ-a.e. singular point keep positive H^ℓ measure",
+  "statement": "Let P, n, Q ∈ ℕ, let F be a set of functions ℝ^P → ℝ^Q, and let sing map functions to subsets of ℝ^P. Write φ_{y,λ}(x) := φ(y + λx), and φ_k ⇀ φ for convergence of ∫ f·φ_k dμH[n] to ∫ f·φ dμH[n] for every continuous compactly supported f. Assume:\n(A.1) φ_{y,λ} ∈ F for φ ∈ F, 0 < λ < 1, |y| ≤ 1 − λ;\n(A.2) for φ ∈ F, |y| < 1 and every strictly decreasing λ_k > 0 with λ_k → 0, there are a strictly increasing sequence of indices sub and ψ ∈ F with φ_{y,λ_{sub(k)}} ⇀ ψ and ψ(λx) = ψ(x) for all λ > 0 and x;\n(A.3c) sing φ is closed for φ ∈ F;\n(A.3(2)) sing φ_{y,λ} = {x : y + λx ∈ sing φ} for φ ∈ F, 0 < λ < 1, |y| ≤ 1 − λ;\n(A.3(3)) if φ, φ_k ∈ F and φ_k ⇀ φ, then for each ε > 0 there is k₀ with B_1(0) ∩ sing φ_k ⊆ {x : ∃ z ∈ sing φ, |x − z| < ε} for all k ≥ k₀.\nLet ℓ > 0 and φ ∈ F. Then the set of x ∈ sing φ ∩ B_1(0) for which the following fails is μH[ℓ]-null: there are λ_k (k ∈ ℕ) and ψ with 0 < λ_k < 1 and |x| ≤ 1 − λ_k for all k, λ_k → 0, ψ ∈ F, φ_{x,λ_k} ⇀ ψ, ψ(λz) = ψ(z) for all λ > 0 and z, and μH[ℓ](sing ψ ∩ B_1(0)) > 0.",
+  "lean_statement": "∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → (∀ φ ∈ F, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ k, 0 < lams k) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ψ : Euclid P → Euclid Q), StrictMono sub ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φ (y + lams (sub k) • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) ∧ ∀ lam : ℝ, 0 < lam → ∀ x, ψ (lam • x) = ψ x) → (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → sing (fun x => φ (y + lam • x)) = (fun x => y + lam • x) ⁻¹' sing φ) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → ∀ ℓ : ℝ, 0 < ℓ → ∀ φ ∈ F, μH[ℓ] {x | x ∈ sing φ ∩ ball (0 : Euclid P) 1 ∧ ¬ ∃ (lams : ℕ → ℝ) (ψ : Euclid P → Euclid Q), (∀ k, 0 < lams k) ∧ (∀ k, lams k < 1) ∧ (∀ k, ‖x‖ ≤ 1 - lams k) ∧ Tendsto lams atTop (𝓝 0) ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ z, f z • φ (x + lams k • z) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ z, f z • ψ z ∂μH[(n : ℝ)]))) ∧ (∀ lam : ℝ, 0 < lam → ∀ z, ψ (lam • z) = ψ z) ∧ 0 < μH[ℓ] (sing ψ ∩ ball (0 : Euclid P) 1)} = 0",
+  "lean_name": "adr_tangent_keeps_measure",
+  "depends_on": [
+    "root.abstract_dimension_reduction-a1.content_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.abstract_dimension_reduction-a1.content_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-tangent-keeps-measure-a1-a1"
+}

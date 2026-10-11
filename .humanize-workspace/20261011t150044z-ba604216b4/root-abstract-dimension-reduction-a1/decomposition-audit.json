@@ -1,0 +1,111 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ae_eq_of_integral_contDiff_smul_eq|ae_eq_zero_of_integral",
+        "hausdorffMeasure_smul₀|map_homothety_hausdorffMeasure|hausdorffMeasure_segment|IsAddLeftInvariant",
+        "hausdorffMeasure_of_finrank_lt|dimH_eq_finrank_vectorSpan|hausdorffMeasure_of_lt_dimH",
+        "banach_steinhaus",
+        "finrank_sup_span_singleton|disjoint_span_singleton",
+        "simon_theorem_3_26_ii_of_totallyBounded|hausdorff_eq_zero_of_uniform_content_ball_bound|namespace",
+        "exists_isOpen_superset_ediam_rpow_lt|namespace",
+        "simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure",
+        "adr_|abstract_dimension_reduction",
+        "python3 /tmp/adr-independent-audit/run_lean.py /tmp/adr-independent-audit/Types.lean /tmp/adr-independent-audit/Assembly.lean",
+        "python3 /tmp/adr-independent-audit/run_lean.py /tmp/adr-independent-audit/ReferenceAxioms.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/tmp/adr-independent-audit/Types.lean",
+        "/tmp/adr-independent-audit/Types.log",
+        "/tmp/adr-independent-audit/Assembly.lean",
+        "/tmp/adr-independent-audit/Assembly.log",
+        "/tmp/adr-independent-audit/ReferenceAxioms.lean",
+        "/tmp/adr-independent-audit/ReferenceAxioms.log"
+      ],
+      "conclusion": "Verified the pinned project/mathlib revisions and compatibility of the inspected sources; the inspected SimonGMT files match revision 2b3663083f3fe399b6296fb8eaee52169170e197. The snapshot supplies the required analytic and geometric lemmas, including ae_eq_of_integral_contDiff_smul_eq and Real.Convex.dimH_eq_finrank_vectorSpan. Independent axiom checks of the reused principal lemmas report only propext, Classical.choice and Quot.sound. No adr_* or abstract_dimension_reduction declaration was found in snapshot project/GMT/Ch07; AppendixA/Foundations explicitly leaves A.4 open. All ten exact child strings independently elaborate as Prop without declaring the children. Their inferred Euclidean scalar actions, submodule operations and ENNReal diameter powers match the prose; no matrix-unit construction occurs. All names are bare, distinct and unreserved. Dependencies are acyclic and correctly directed. The split is appropriate: its distinct obligations support this selected theorem, and the supplied parent assembly, checked with child propositions as explicit parameters, proves the exact frozen parent type using only standard axioms and no sorryAx."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "sing_mem_of_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all stated hypotheses. Upper semicontinuity with ε/2 and convergence of the singular points place the limit in the closure of sing ψ; closedness proves membership. The argument also correctly excludes an empty limiting singular set."
+    },
+    {
+      "key": "affine_invariant_closed_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly expresses both conclusions. Composition and inversion generate all positive dilations and subspace translations from the permitted maps. Closedness then gives L ⊆ S by letting the dilation tend to zero."
+    },
+    {
+      "key": "invariant_eq_indicator",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the pointwise indicator conclusion. The proof constructs an n-dimensional subspace inside L and shows that any nonzero value outside it would persist on a relatively open (n+1)-dimensional piece of infinite μH[n] measure, contradicting local integrability. The zero-dimensional and full-subspace cases are covered."
+    },
+    {
+      "key": "weak_tendsto_comp_affine",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract permits arbitrary g, as does the proof: affine change of variables remains valid for totalized Bochner integrals. Local integrability of each g_k supplies bounded operators on the complete fixed-support test-function space; Banach–Steinhaus and uniform convergence of the moving tests establish the claimed limit without an unstated local-finiteness assumption."
+    },
+    {
+      "key": "content_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Lean proposition faithfully uses extended diameters, real powers and outer-null exceptional sets. The self-contained covering argument is complete: boundedness gives finite fixed-scale content, intersection with small-diameter sets identifies the two contents, and the contraction estimate forces each exceptional set N_m to be Hausdorff-null. No finite Hausdorff-measure assumption is needed."
+    },
+    {
+      "key": "tangent_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and conclusion match exactly. Homogeneity and A.1 put all translates of ψ in F; H1 and the fundamental lemma give a.e. uniqueness, and H0 upgrades it to equality. The eventual positive factors 1/(1+βλ_k), together with the declared affine-convergence dependency, justify the added direction without circularity."
+    },
+    {
+      "key": "tangent_keeps_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exceptional-set formulation and every scale condition match the prose. Choosing λ_k = 2ρ_sub(k), covering the null limiting singular set inside the closed half-unit ball, and using compact separation correctly localize A.3(3). Rescaling gives ρ^ℓ ≤ 2Σ diam(C_j)^ℓ < ρ^ℓ/4, a contradiction. Empty-set cases are handled and no undeclared cone lemma is required."
+    },
+    {
+      "key": "dimension_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly assumes only a uniform upper bound d on invariance dimensions. At each induction step, both the exceptional set and the current subspace are μH[d+α]-null, so a good point outside that subspace exists. The two declared dependencies produce a tangent with positive measure and one additional invariance direction, contradicting the bound at d+1."
+    },
+    {
+      "key": "extremal_sing_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes the rank equality, invariance, nonempty singular set and uniform dimension bound required by the proof. The closed-set lemma gives L ⊆ sing φ. Any singular point outside L rescales to norm 1/2 and yields a singular homogeneous tangent invariant under L + ℝx, contradicting the bound. All sibling uses are declared."
+    },
+    {
+      "key": "finite_of_dim_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract matches the sufficient hypothesis that every unit-ball singular set is μH[1]-null. The proof obtains an interior accumulation point, admissible strictly decreasing scales and convergent directions. The declared lemmas produce a singular ray containing a segment of measure 1/4, contradicting nullity. For σ ≤ 0 the ball is empty."
+    }
+  ],
+  "required_changes": []
+}

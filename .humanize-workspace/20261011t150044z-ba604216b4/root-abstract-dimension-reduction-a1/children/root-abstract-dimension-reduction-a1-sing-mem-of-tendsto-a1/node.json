@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.sing_mem_of_tendsto-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1",
+  "depth": 2,
+  "title": "Lemma T: limits of singular points are singular for the weak limit",
+  "statement": "Let P, n, Q ∈ ℕ, let F be a set of functions ℝ^P → ℝ^Q and let sing map functions ℝ^P → ℝ^Q to subsets of ℝ^P. Write φ_k ⇀ φ if ∫ f·φ_k dμH[n] → ∫ f·φ dμH[n] for every continuous compactly supported f : ℝ^P → ℝ. Assume (A.3c) sing φ is closed for every φ ∈ F, and (A.3(3)) whenever φ ∈ F, φ_k ∈ F and φ_k ⇀ φ, for every ε > 0 there is k₀ with B_1(0) ∩ sing φ_k ⊆ {x : ∃ z ∈ sing φ, |x − z| < ε} for all k ≥ k₀. If ψ ∈ F, φ_k ∈ F for all k, φ_k ⇀ ψ, z_k ∈ B_1(0) ∩ sing φ_k for every k and z_k → z, then z ∈ sing ψ.",
+  "lean_statement": "∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → ∀ ψ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) → ∀ (zs : ℕ → Euclid P) (z : Euclid P), (∀ k, zs k ∈ ball (0 : Euclid P) 1 ∩ sing (φs k)) → Tendsto zs atTop (𝓝 z) → z ∈ sing ψ",
+  "lean_name": "adr_sing_mem_of_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-sing-mem-of-tendsto-a1-a1"
+}
