@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.density_ge_one-a1",
+  "parent_id": "root.affine_approximation-a1",
+  "depth": 2,
+  "title": "Density at least one on the support inside B_rho(0) (Simon Ch. 4, 3.11, 4.9, 4.10(1))",
+  "statement": "Let n >= 1, l >= 0, p > n, U open in R^(n+l), V a RectifiableVarifold n l U, H : R^(n+l) -> R^(n+l), delta, rho real numbers with AllardHypotheses H p delta rho (rho > 0, V has generalized mean curvature H in U, theta >= 1 mu-a.e., 0 in spt V, B_rho(0) contained in U, mu(B_rho(0)) <= (1+delta) omega_n rho^n, (rho^(p-n) integral_{B_rho(0)} |H|^p dmu)^(1/p) <= delta). Then for every y in spt V with |y| < rho and every epsilon > 0 there is s_0 > 0 such that mu(B_s(y)) >= (1 - epsilon) omega_n s^n for all s in (0, s_0).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), V.AllardHypotheses H p δ ρ → ∀ y ∈ V.support ∩ ball (0 : Amb n ℓ) ρ, ∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), ENNReal.ofReal ((1 - ε) * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s)",
+  "lean_name": "aal_density_ge_one",
+  "depends_on": [
+    "root.affine_approximation-a1.tangent_structure-a1",
+    "root.affine_approximation-a1.lp_monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.affine_approximation-a1.tangent_structure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.affine_approximation-a1.lp_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-density-ge-one-a1-a1"
+}

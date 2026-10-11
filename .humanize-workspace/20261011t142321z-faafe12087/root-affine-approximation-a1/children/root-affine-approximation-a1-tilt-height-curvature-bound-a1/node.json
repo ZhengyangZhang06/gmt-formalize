@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.tilt_height_curvature_bound-a1",
+  "parent_id": "root.affine_approximation-a1",
+  "depth": 2,
+  "title": "First inequality of (double dagger) for every n-plane (corrected Simon 5.2.5, via Lemma A)",
+  "statement": "Let n >= 1, l >= 0, p > n. There is C_2 > 0 depending only on n, l and p (the proof gives dependence on n and p only) such that: if U is open, V is a RectifiableVarifold n l U, H : R^(n+l) -> R^(n+l), 0 < delta <= 1/4 and AllardHypotheses H p delta rho hold, xi in spt V with |xi| <= delta rho, 0 < sigma <= 2 delta rho, and T is ANY n-dimensional subspace, then C_2^(-1) (sigma^(-n) integral_{B_{sigma/2}(xi)} |p_x - p_T|^2 dmu)^(1/2) <= sigma^(-1) h + (sigma^(p-n) integral_{B_sigma(xi)} |H|^p dmu)^(1/p) in [0,infinity], where h = sup{dist(x - xi, T) : x in spt V cap B_sigma(xi)} (heightSup).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C₂ : ℝ, 0 < C₂ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ 1 / 4 → V.AllardHypotheses H p δ ρ → ∀ ξ ∈ V.support ∩ closedBall (0 : Amb n ℓ) (δ * ρ), ∀ σ : ℝ, 0 < σ → σ ≤ 2 * δ * ρ → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → ENNReal.ofReal (C₂⁻¹ * Real.sqrt ((σ ^ n)⁻¹ * ∫ x in closedBall ξ (σ / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight)) ≤ ENNReal.ofReal σ⁻¹ * V.heightSup ξ σ T + V.scaledLpNorm H p ξ σ",
+  "lean_name": "aal_tilt_height_curvature_bound",
+  "depends_on": [
+    "root.affine_approximation-a1.mass_upper_bound-a1",
+    "root.affine_approximation-a1.l1_tilt_height-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.affine_approximation-a1.mass_upper_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.affine_approximation-a1.l1_tilt_height-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-tilt-height-curvature-bound-a1-a1"
+}

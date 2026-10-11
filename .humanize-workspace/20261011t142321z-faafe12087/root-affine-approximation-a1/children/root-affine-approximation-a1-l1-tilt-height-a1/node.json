@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.l1_tilt_height-a1",
+  "parent_id": "root.affine_approximation-a1",
+  "depth": 2,
+  "title": "L^1 tilt-height estimate (Lemma A: L^1 form of the computation proving Simon 5.2.1)",
+  "statement": "Let n >= 1, l >= 0, U open in R^(n+l), V a RectifiableVarifold n l U with generalized mean curvature H in U, z in R^(n+l), r > 0 with B_r(z) contained in U, h >= 0, and T an n-dimensional subspace with dist(x - z, T) <= h for every x in spt V cap B_r(z). Then integral_{B_{r/2}(z)} |p_x - p_T|^2 dmu <= 144 r^(-2) integral_{B_r(z)} dist(x - z, T)^2 dmu + 4 h integral_{B_r(z)} |H| dmu (Bochner integrals; |.| the Hilbert-Schmidt norm, i.e. hsNormSq).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (z : Amb n ℓ) (r h : ℝ), 0 < r → closedBall z r ⊆ U → 0 ≤ h → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → (∀ x ∈ V.support ∩ closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ≤ h) → ∫ x in closedBall z (r / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight ≤ 144 * (r ^ 2)⁻¹ * ∫ x in closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight + 4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight",
+  "lean_name": "aal_l1_tilt_height",
+  "depends_on": [
+    "root.affine_approximation-a1.tangent_structure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.affine_approximation-a1.tangent_structure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-l1-tilt-height-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.tangent_structure-a1",
+  "parent_id": "root.affine_approximation-a1",
+  "depth": 2,
+  "title": "Tangent planes, measurability and density of a rectifiable varifold (Simon Ch. 3, 1.2-1.9)",
+  "statement": "Let n >= 1, l >= 0, U an open subset of R^(n+l) and V = v(M,theta) a RectifiableVarifold n l U (M = V.carrier contained in U, countably n-rectifiable and H^n-null-measurable; theta = V.mult positive on M, H^n-measurable on M, with integral_{M cap K} theta dH^n < infinity for every compact K contained in U). Let mu = V.weight = theta H^n restricted to M and p_x = V.tangentProj x (orthogonal projection onto the approximate tangent space of M with respect to theta at x where it exists, 0 otherwise). Then (a) for mu-a.e. x there is an n-dimensional subspace P with p_x = orthogonal projection onto P; (b) x -> p_x is mu-a.e. strongly measurable; (c) for mu-a.e. x, mu(B_r(x))/(omega_n r^n) -> theta(x) as r -> 0+ (V.HasDensity x (theta x)).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ V : RectifiableVarifold n ℓ U, (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) ∧ AEStronglyMeasurable V.tangentProj V.weight ∧ (∀ᵐ x ∂V.weight, V.HasDensity x (V.mult x))",
+  "lean_name": "aal_tangent_structure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-tangent-structure-a1-a1"
+}

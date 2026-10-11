@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'aal_|affine_approximation_lemma' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project --glob '*.lean'",
+        "CountablyRectifiable|HasWeightedApproximateTangentSpaceAt|simon_theorem_3_6|simon_theorem_1_17",
+        "measure_compl_support|lintegral_mul_le_Lp_mul_Lq|mul_meas_ge_le_lintegral₀|hausdorffMeasure_homothety_image|finrank_span_eq_card|theorem volume_ball|dist_starProjection_eq_infDist",
+        "lpMeanCurvatureKappa|structure LpAnnularCorrection|exists_lpAnnularCorrection",
+        "simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure|simonHausdorffMeasureReal_source_eq_smul_volume",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/codex-aal-audit/Check.lean > /tmp/codex-aal-audit/Check.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/codex-aal-audit/Instances.lean > /tmp/codex-aal-audit/Instances.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/codex-aal-audit/References.lean > /tmp/codex-aal-audit/References.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/codex-aal-audit/WhitneyCheck.lean > /tmp/codex-aal-audit/WhitneyCheck.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1/decomposition-v1.json",
+        "/tmp/codex-aal-audit/Check.lean",
+        "/tmp/codex-aal-audit/Instances.lean",
+        "/tmp/codex-aal-audit/References.lean",
+        "/tmp/codex-aal-audit/WhitneyCheck.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected AffineApproximationLemma. All eight children contribute through an acyclic, correctly directed dependency graph. Their supplied proofs are substantive and non-circular. Each exact one-line type independently elaborates as Prop before any child declaration exists; all names are bare, distinct, and unreserved in the checked DAG and other branch proposals. No prior aal_ declarations were found in the snapshot. Projection, inverse, and exponent instance checks pass; no Matrix/IsUnit construction occurs. The assembly compiles against the unchanged frozen contract with only the two final children as nonstandard assumptions, plus propext, Classical.choice, and Quot.sound. This verifies implication, not implementation of the children. Snapshot project ea5607598f3133b40a13241f2e51517a8c6423cd and mathlib 25730c7c759d108ef87ab70af2342a196760f79d were verified; inspected compiler files match the snapshot. SimonGMT matches the frozen package revision 2b3663083f3fe399b6296fb8eaee52169170e197. Checked library declarations, including a direct compilation of WhitneyExtension, use only standard axioms. The Hausdorff normalization conversion is a positive finite scalar, and the supplied monotonicity proof does not assume a bridge to SimonGMT's stronger varifold structure."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all three asserted conclusions and hypotheses. Localization, the C¹ cover, Lusin compact sets, and upper-density estimates establish the weighted tangent limit; uniqueness identifies tangentProj. The Borel representative and ball-squeezing arguments then prove measurability and density without assuming either conclusion."
+    },
+    {
+      "key": "lp_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The enlarged-ball hypotheses and closed-radius endpoints match the type. Radial first variation, Hölder, integrating factors, and dominated convergence produce simultaneous F and G with the stated bounds. Annular integrability and the zero-integral case are justified, and the corrected kappa is used correctly."
+    },
+    {
+      "key": "density_ge_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The eventual Lean inequality matches the prose. Uniform local monotonicity yields finite densities and upper semicontinuity; the a.e. multiplicity bound then excludes density below one on the support. The choice using max(delta,0) handles the unrestricted delta binder."
+    },
+    {
+      "key": "mass_upper_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Quantifiers and constant dependence match. The radii 2rho/3 and 3rho/4 satisfy the monotonicity contract. The general exponential error estimate gives the stated uniform mass bound for every allowed delta, without incorrectly assuming Lambda ≤ 1."
+    },
+    {
+      "key": "pinched_density_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit constants satisfy the required positivity and smallness conditions. The chosen radii cover every asserted center and scale. Monotonicity and the density child prove both mass bounds; annular integrability and monotone convergence prove the exact lower-integral bound, with the center contributing zero."
+    },
+    {
+      "key": "l1_tilt_height",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type uses the intended squared Hilbert–Schmidt norm and Bochner integrals. Integrability and admissibility of the cutoff field are established. The equal-rank projection identity and absorption calculation give precisely the coefficients 144 and 4h, without an L² curvature assumption."
+    },
+    {
+      "key": "tilt_height_curvature_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly quantifies over every n-plane. Finite height and curvature, the L¹ estimate, the mass bound, and Hölder for p > n ≥ 1 yield the stated normalization and positive C₂. The square-root and ENNReal conversions are justified."
+    },
+    {
+      "key": "height_bound_small_delta",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the uniform pointwise height conclusion. All centers and radii satisfy the pinched-bound hypotheses. The packing bound ensures a maximal finite cover; Chebyshev leaves positive measure for a valid tangent-plane choice. The exponent identity and triangle inequalities establish the asserted bound with fixed positive constants."
+    }
+  ],
+  "required_changes": []
+}
