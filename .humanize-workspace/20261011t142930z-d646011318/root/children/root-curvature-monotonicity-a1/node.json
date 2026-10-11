@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.curvature_monotonicity-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Monotonicity with mean curvature: bounded (3.17), logarithmic error (3.18), Lᵖ (4.5–4.8) and Lᵖ density (4.9)",
+  "statement": "Assume (GF). Then: BoundedCurvatureMonotonicity (if V has mean curvature H in open U with |H| ≤ Λ μ_V-a.e. in U, Λ ≥ 0, then for every B_R(ξ) ⊆ U there are F with F(ρ) ∈ [e^{-Λρ}, e^{Λρ}] (0 < ρ < R) and G with G(σ,ρ) ∈ [e^{-ΛR}, e^{ΛR}] such that F(ρ)ρ^{-n}μ_V(B_ρ) − F(σ)σ^{-n}μ_V(B_σ) = G(σ,ρ)∫_{B_ρ∖B_σ} q_ξ r^{-n}dμ_V for 0 < σ ≤ ρ < R, and Θ exists and is u.s.c. on U); LogarithmicMonotonicityError (3.18); LpMonotonicity (4.5, 4.7, 4.8 with κ = (p − n)/(4p), closed endpoint ρ = R); and LpDensity (4.9).",
+  "lean_statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity",
+  "lean_name": "mean_curvature_monotonicity",
+  "depends_on": [
+    "root.weighted_monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.weighted_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-curvature-monotonicity-a1-a1"
+}

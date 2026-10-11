@@ -1,0 +1,93 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root`
+- Child DAG node: `root.canonical_representatives-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions (used throughout). n ≥ 1 and ℓ ≥ 0 are integers, E = Ambient n ℓ = ℝ^{n+ℓ}, Hⁿ = μHE[n] (equal to Simon's Hⁿ), B_ρ(ξ) = closedBall ξ ρ (closed ball), ω_n = omega n ∈ (0, ∞), and Hⁿ(P ∩ B_s(0)) = ω_n sⁿ for every n-dimensional subspace P. For a rectifiable n-varifold V: μ = μ_V = V.weight; T_x = V.tangentSpace x; p_x and p_x^⊥ are the orthogonal projections onto T_x and T_x^⊥; div_M X(x) = V.tangentialDiv X x = trace(DX(x)∘p_x); ∇^M h(x) = V.tangentialGradient h x = p_x(∇h(x)); r = |x − ξ|; q_ξ(x) = V.normalRadialSq ξ x = |p_x^⊥(x − ξ)|²/|x − ξ|² ∈ [0, 1] (q_ξ(ξ) = 0 because division by 0 is 0); w_ξ(x) = q_ξ(x)/|x − ξ|ⁿ (w_ξ(ξ) = 0); a_ξ(ρ) = μ(B_ρ(ξ))/ρⁿ (a real number); Θ(ξ) = V.density ξ. A test field in U is a C¹ map X: E → E with compact support and tsupport X ⊆ U (IsTestField). 'V has mean curvature H in U' (HasMeanCurvatureIn) means H ∈ L¹_loc(U, μ) and ∫div_M X dμ = −∫⟨X, H⟩dμ for every test field X in U; 'stationary in U' means ∫div_M X dμ = 0 for every test field X in U. (FV) for V means: (FV1) μ(K) < ∞ for every compact K; (FV2) dim T_x = n for μ-a.e. x; (FV3) x ↦ p_x is μ-a.e. strongly measurable. (GF) is the statement that (FV) holds for every n ≥ 1, every ℓ and every V : RectifiableVarifold n ℓ (exactly the second conjunct of the sibling tangent_structure_first_variation); (AT) is the contract Prop ApproxTangentAE. Under (FV): q_ξ, w_ξ, ∇^M h (for h ∈ C¹(U), on U) and div_M X (for X ∈ C¹) are μ-a.e. strongly measurable, being continuous functions of p_x and of continuous data; |div_M X| ≤ (n+ℓ)‖DX‖ and div_M X = 0 off tsupport X, so div_M X is μ-integrable for every test field X; μ is a locally finite, hence outer regular, Borel measure, and μ(E ∖ spt μ) = 0 (spt V = spt μ).
+
+Source: Simon Ch. 4, 3.12–3.13 and 4.10(1): 'Since V = v(M, θ) and Θⁿ(V, x) = θ(x) for Hⁿ-a.e. x ∈ M (by Remark 1.8(2)), 3.11 enables us to choose canonical representatives M_V, θ_V …'. The equality Θ = θ Hⁿ-a.e. on M is the hypothesis ApproxTangentAE; the null set M_V ∖ M is handled with Ch. 1, Thm 3.3 (if Θ^{*n}(μ, A_2, x) ≥ t for all x ∈ A_1 ⊆ A_2 then t Hⁿ(A_1) ≤ μ(A_2)). The printed argument is expanded into a Lemma that uses only existence and upper semicontinuity of Θ on U, and is then applied with 3.9/3.11 (sibling stationary_monotonicity_density) and with 4.9 (sibling mean_curvature_monotonicity).
+
+Assume (AT) and (GF).
+
+Lemma. Let n ≥ 1, V a rectifiable n-varifold, μ = μ_V, U open, and suppose (a) V.HasDensityAt ξ (Θ(ξ)) for every ξ ∈ U and (b) Θ is upper semicontinuous on U. Let M_V := V.canonicalCarrier U = {x ∈ U : Θ(x) > 0}. Then (i) IsRectifiablePair n M_V Θ; (ii) pairWeight n M_V Θ = μ⌞U; (iii) for α > 0 there is a closed C with {x ∈ M_V : α ≤ Θ(x)} = C ∩ U; (iv) if α > 0 and V.MultiplicityGE α U, then M_V = spt V ∩ U and Θ ≥ α on M_V.
+Proof of the Lemma.
+1. Choose a pair a = (M, θ) with mk a = V; then μ = pairWeight n M θ. By (AT) for a, V.HasDensityAt x (θ x) for Hⁿ-a.e. x ∈ M; limits along 𝓝[>]0 are unique, so Θ(x) = θ(x) > 0 for Hⁿ-a.e. x ∈ M. (∗)
+2. For α ∈ ℝ let S_α := {x ∈ U : α ≤ Θ(x)} and C_α := closure of S_α. Then S_α = C_α ∩ U: if x ∈ C_α ∩ U and t > Θ(x), by (b) there is a neighbourhood W of x with Θ < t on W ∩ U; W meets S_α ⊆ U, so α < t; as t > Θ(x) is arbitrary, α ≤ Θ(x). Consequently M_V = ⋃_{k≥1} (C_{1/k} ∩ U) is a Borel set, and the restriction of Θ to U is Borel measurable. For α > 0, {x ∈ M_V : α ≤ Θ(x)} = S_α = C_α ∩ U, which is (iii).
+3. Hⁿ(M_V ∖ M) = 0. μ is concentrated on M (μ(E ∖ M) = 0 because μ = (Hⁿ⌞M) with density θ and M is Hⁿ-null-measurable), and μ is locally finite by (FV1), hence outer regular. Fix k, R ≥ 1 and A := {x ∈ U ∖ M : Θ(x) ≥ 1/k} ∩ B_R(0). Then A ⊆ E ∖ M, so A has outer μ-measure 0 and is contained in a Borel set B with μ(B) = 0 (a measurable hull); by outer regularity, for every δ > 0 there is an open O ⊇ B ⊇ A with μ(O) < δ. For x ∈ A the set O is a neighbourhood of x, so Θ^{*n}(μ, O, x) = limsup_{ρ↓0} μ(O ∩ B_ρ(x))/(ω_nρⁿ) = Θ(x) ≥ 1/k by (a). Ch. 1, Thm 3.3 [SimonGMT Chapter01.simon_theorem_3_3] (A_1 = A, A_2 = O) gives (1/k)Hⁿ(A) ≤ μ(O) < δ; hence Hⁿ(A) = 0. Taking the union over k and R, Hⁿ(M_V ∖ M) = 0.
+4. By (∗), Hⁿ((M ∩ U) ∖ M_V) = 0. Hence M_V and M ∩ U differ by an Hⁿ-null set, and Θ = θ Hⁿ-a.e. on M_V.
+5. (i): M_V ⊆ M ∪ (M_V ∖ M), M is countably n-rectifiable and Hⁿ(M_V ∖ M) = 0; adding this null set to the exceptional set M_0 of Ch. 3, 1.1, M_V is countably n-rectifiable. M_V is Borel, hence Hⁿ-null-measurable. Θ > 0 on M_V by definition. For compact K, Θ is measurable on M_V ∩ K (step 2) and by step 4 ∫_{M_V∩K} Θ dHⁿ = ∫_{M_V∩K∩M} θ dHⁿ ≤ ∫_{M∩K} θ dHⁿ < ∞, so IntegrableOn Θ (M_V ∩ K) Hⁿ.
+6. (ii): for Borel B, pairWeight n M_V Θ (B) = ∫_{B∩M_V} ofReal(Θ) dHⁿ = ∫_{B∩M∩U} θ dHⁿ = μ(B ∩ U) by step 4; measures agreeing on Borel sets are equal.
+7. (iv): MultiplicityGE α U gives a pair b = (M', θ') with mk b = V and θ' ≥ α Hⁿ-a.e. on M' ∩ U. Step 1 applied to b gives Θ = θ' ≥ α Hⁿ-a.e. on M' ∩ U, and μ = pairWeight n M' θ' is absolutely continuous with respect to Hⁿ⌞M', so Θ ≥ α μ-a.e. on U. (α) spt V ∩ U ⊆ {Θ ≥ α}: if x ∈ spt V ∩ U had Θ(x) < α, by (b) there would be an open W ∋ x, W ⊆ U, with Θ < α on W; μ(W) > 0 since x ∈ spt μ, contradicting Θ ≥ α μ-a.e. on U. (β) M_V ⊆ spt V: if Θ(x) > 0 then μ(B_ρ(x)) > 0 for all small ρ > 0 (the quotients μ(B_ρ(x))/(ω_nρⁿ) tend to Θ(x) > 0) and hence for all ρ > 0, so every neighbourhood of x has positive measure. Therefore M_V ⊆ spt V ∩ U ⊆ {x ∈ U : Θ(x) ≥ α} ⊆ M_V (α > 0), so M_V = spt V ∩ U and Θ ≥ α on M_V. This proves the Lemma.
+
+8. CanonicalRepresentative. Let n ≥ 1 and V stationary in the open U. The sibling stationary_monotonicity_density, applied with (GF), gives StationaryDensity: (a) and (b). The Lemma gives the four conjuncts (i)–(iv) of CanonicalRepresentative.
+
+9. LpSupportRepresentation. Let n ≥ 1, V with mean curvature H in the open U, p > n, IsLocallyLp U H p, and MultiplicityGE 1 U. The sibling mean_curvature_monotonicity, applied with (GF), gives LpDensity: (a) and (b). By (iv) with α = 1, M_V = spt V ∩ U and 1 ≤ Θ(x) for every x ∈ spt V ∩ U. Substituting M_V = spt V ∩ U into (i) and (ii) gives IsRectifiablePair n (spt V ∩ U) Θ and pairWeight n (spt V ∩ U) Θ = μ⌞U.
+
+## Key steps
+
+1. From ApproxTangentAE: Θ = θ Hⁿ-a.e. on M for every representative (M, θ)
+2. Upper semicontinuity makes {Θ ≥ α} relatively closed in U, so M_V is Borel and Θ|U Borel
+3. Outer regularity and Ch. 1 Thm 3.3 give Hⁿ(M_V ∖ M) = 0; with Θ = θ a.e., M_V = M ∩ U up to null sets
+4. Hence (M_V, Θ) is an admissible pair with weight μ_V⌞U
+5. If θ ≥ α a.e. in U: Θ ≥ α μ-a.e. in U, u.s.c. gives Θ ≥ α on spt V ∩ U, and Θ > 0 forces x ∈ spt V; so M_V = spt V ∩ U
+6. Apply the Lemma with StationaryDensity (sibling) and with LpDensity (sibling, α = 1)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `rg -n 'def C1Approximation|def WhitneyExtension|def Rademacher' <snapshot>/project/GMT`
+- `rg -n 'theorem .*[Ll]usin' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem ae_tendsto_measure_inter_div|theorem exists_measurable_superset_of_null|theorem measurableSet_of_differentiableAt |theorem measurable_fderiv |euclideanHausdorffMeasure_eq_volume' <snapshot>/mathlib/Mathlib`
+- `rg -n 'exists_disjoint_subfamily_covering_enlargement_closedBall|geometric_hahn_banach_point_closed|lintegral_eq_lintegral_meas_lt|eq_pos_convex_span_of_mem_convexHull|isCompact_convexHull|measure_compl_support|normDet_comp|exists_isClosed_diff_lt|ext_of_integral_eq_on_compactlySupported' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' <snapshot>/mathlib/Mathlib`
+- `grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter02/{Lipschitz,AreaLipschitz,AreaCritical,WhitneyExtension}.lean Chapter01/{Lusin,DensityComparison}.lean Chapter03/Rectifiable.lean`
+- `grep -n 'Whitney' simongmt/Poincare/SimonGMT.lean; test -f simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter02/WhitneyExtension.olean`
+- `git -C lake-packages-25730c7c/simongmt rev-parse HEAD`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/ch04-v2-audit/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/ch04-v2-audit/olean lean /tmp/ch04-v2-audit/ChildTypes.lean`
+- `LEAN_PATH=... lean /tmp/ch04-v2-audit/Inspect.lean (rfl check of the elaborated piece-cover type; #print axioms of Mathlib lemmas)`
+- `lake env lean /tmp/ch04-v2-audit/Axioms.lean (#print axioms of the cited SimonGMT lemmas)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/LocallyConvex/Separation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Convex/Caratheodory.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root/decomposition-audit-v1.json`
+- `/tmp/ch04-v2-audit/ChildTypes.lean`
+- `/tmp/ch04-v2-audit/Axioms.lean`
+
+The snapshot contract (sha256 6e58e5dd…0f4770b) is byte-identical to the workspace Contract.lean and Submission.lean; the pinned SimonGMT revision is 2b3663083f3fe399b6296fb8eaee52169170e197 as in project/lake-manifest.json. No axiom-checked C¹ approximation or Whitney extension is available: project/GMT/Ch02/Contract.lean has C1Approximation and WhitneyExtension only as Props inside the sorry'd Ch. 2 main theorem, SimonGMT's Chapter02/WhitneyExtension.lean is not imported by Poincare/SimonGMT.lean and has no built olean, and the snapshot Mathlib has no Lusin-type C¹ approximation (no 'theorem …Lusin' match). The v2 split therefore replaces that step by the new child rectifiable_lipschitz_piece_cover, whose cited inputs exist and depend only on propext, Classical.choice and Quot.sound (#print axioms): SimonGMT Chapter02.rademacher_ae_differentiableAt, euclideanHausdorffMeasure_image_le_of_lipschitzOn, measurableSet_areaRegularSet, area_image_compl_regularSet_eq_zero, weighted_area_formula_lipschitz_injOn, Chapter01.exists_isClosed_continuousOn_of_measurable, ae_dimensionalUpperDensity_eq_zero_outside, simon_theorem_3_3, Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure, Chapter03.support_euclideanHausdorffMeasure_restrict_submodule; Mathlib Besicovitch.ae_tendsto_measure_inter_div, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, measurable_fderiv, Measure.ext_of_integral_eq_on_compactlySupported. Also present: Mathlib LinearMap.normDet_comp, MeasurableSet.exists_isClosed_sdiff_lt, Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall, geometric_hahn_banach_point_closed, eq_pos_convex_span_of_mem_convexHull, lintegral_eq_lintegral_meas_lt, Measure.measure_compl_support; SimonGMT Chapter01.measure_toOuterMeasure_isBorelRegular, Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule, Chapter02.areaJacobian_comp_eq_parametrization_mul_tangential. No compact-convex-hull-of-compact-set lemma was found (only Set.Finite.isCompact_convexHull), so support_convex_hull proves compactness of conv K via Carathéodory. With GMT.Ch04.Submission compiled to an olean, all twelve child types elaborate after `import GMT.Ch04.Submission` inside `namespace GMT.Ch04` with the contract's opens and `open RectifiableVarifold`, the elaborated piece-cover type is checked by rfl against a fully explicit form (μHE[n] on Ambient n ℓ, fderiv on EuclideanSpace ℝ (Fin n)), and the parent assembly from the twelve sorry'd children typechecks with exactly the type of GMT.Ch04.main_theorem; the only diagnostics are the expected sorry warnings.

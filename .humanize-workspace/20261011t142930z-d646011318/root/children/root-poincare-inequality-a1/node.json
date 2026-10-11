@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.poincare_inequality-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Poincaré inequality for varifolds with bounded mean curvature (Simon 5.6)",
+  "statement": "Assume ApproxTangentAE and (GF). Then PoincareInequality holds: for n ≥ 1, α ∈ (0, 1) and Γ > 0 there are β ∈ (0, ½) and c > 0, depending only on n, α and Γ and chosen before ℓ and all other data (the frozen order ∀ α Γ, ∃ β c), such that for every ℓ, every V with mean curvature H in an open U with |H| ≤ Λ μ_V-a.e. in U and θ ≥ 1 μ_V-a.e. in U, every h ∈ C¹(U) with h ≥ 0 on U, every ξ and ρ > 0 with B_{2ρ}(ξ) ⊆ U, μ_V({x ∈ B_ρ(ξ) : h(x) > 0}) ≤ (1 − α)ω_nρⁿ, e^{Λρ} ≤ 1 + α and μ_V(B_{2ρ}(ξ)) ≤ Γρⁿ, one has ∫_{B_{βρ}(ξ)} h dμ_V ≤ cρ∫_{B_ρ(ξ)}|∇^M h| dμ_V.",
+  "lean_statement": "ApproxTangentAE → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → PoincareInequality",
+  "lean_name": "poincare_inequality",
+  "depends_on": [
+    "root.weighted_monotonicity-a1",
+    "root.curvature_monotonicity-a1",
+    "root.canonical_representatives-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.weighted_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.curvature_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.canonical_representatives-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-poincare-inequality-a1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.sobolev_inequality-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Michael–Simon Sobolev inequality (Simon 5.7–5.9, corrected Lemma 5.8, n ≥ 2)",
+  "statement": "Assume ApproxTangentAE and (GF). Then SobolevInequality holds: for n ≥ 2 there is c = c(n) > 0 (one may take c = 5^{n+1}ω_n^{−1/n}), independent of ℓ, such that if V has generalized mean curvature H (merely L¹_loc) in an open U, θ ≥ 1 μ_V-a.e. in U, and h ∈ C¹(U) is nonnegative with compact support in U, then (∫ h^{n/(n−1)} dμ_V)^{(n−1)/n} ≤ c∫(|∇^M h| + h|H|) dμ_V.",
+  "lean_statement": "ApproxTangentAE → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → SobolevInequality",
+  "lean_name": "sobolev_inequality",
+  "depends_on": [
+    "root.weighted_monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.weighted_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-sobolev-inequality-a1-a1"
+}

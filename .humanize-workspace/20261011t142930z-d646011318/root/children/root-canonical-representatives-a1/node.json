@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.canonical_representatives-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Canonical representative (Simon 3.12–3.13) and the support representation 4.10(1)",
+  "statement": "Assume ApproxTangentAE and (GF). Then CanonicalRepresentative holds (for V stationary in open U: (M_V, Θ) with M_V = {x ∈ U : Θ(x) > 0} is an admissible pair with pairWeight n M_V Θ = μ_V⌞U; {x ∈ M_V : Θ(x) ≥ α} is relatively closed in U for α > 0; and if θ ≥ α > 0 μ_V-a.e. in U then M_V = spt V ∩ U and Θ ≥ α on M_V), and LpSupportRepresentation holds (for V with mean curvature H ∈ L^p_loc in open U, p > n, θ ≥ 1 μ_V-a.e. in U: Θ ≥ 1 on spt V ∩ U, (spt V ∩ U, Θ) is an admissible pair, and its weight is μ_V⌞U).",
+  "lean_statement": "ApproxTangentAE → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → CanonicalRepresentative ∧ LpSupportRepresentation",
+  "lean_name": "canonical_representatives",
+  "depends_on": [
+    "root.stationary_monotonicity-a1",
+    "root.curvature_monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.stationary_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.curvature_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-canonical-representatives-a1-a1"
+}

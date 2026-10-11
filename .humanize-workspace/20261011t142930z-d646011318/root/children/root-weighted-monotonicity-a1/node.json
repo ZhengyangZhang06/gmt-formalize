@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.weighted_monotonicity-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Weighted monotonicity identity with mean curvature error (Simon 3.3–3.6, 3.16, 4.1, 5.1 integrated)",
+  "statement": "Let n ≥ 1, V a rectifiable n-varifold in ℝ^{n+ℓ} satisfying (FV) (μ_V finite on compacts, dim T_xV = n μ_V-a.e., x ↦ p_{T_xV} μ_V-a.e. strongly measurable), U open, H a generalized mean curvature of V in U, h ∈ C¹(U) real-valued, ξ ∈ ℝ^{n+ℓ}, 0 < σ ≤ ρ, and tsupport h ∩ B_ρ(ξ) ⊆ U. Then τ ↦ τ^{-n-1}∫_{B_τ(ξ)}⟨x − ξ, ∇^M h + hH⟩dμ_V is integrable on (σ, ρ], h·q_ξ/|x − ξ|ⁿ is μ_V-integrable on B_ρ(ξ) ∖ B_σ(ξ), and\nρ^{-n}∫_{B_ρ(ξ)}h dμ_V − σ^{-n}∫_{B_σ(ξ)}h dμ_V = ∫_{B_ρ(ξ)∖B_σ(ξ)} h q_ξ |x − ξ|^{-n} dμ_V + ∫_{(σ,ρ]} τ^{-n-1}∫_{B_τ(ξ)}⟨x − ξ, ∇^M h + hH⟩dμ_V dτ.",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsFiniteMeasureOnCompacts V.weight → (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → tsupport h ∩ closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n)) (closedBall ξ ρ \\ closedBall ξ σ) V.weight ∧ (∫ x in closedBall ξ ρ, h x ∂V.weight) / ρ ^ n - (∫ x in closedBall ξ σ, h x ∂V.weight) / σ ^ n = ∫ x in closedBall ξ ρ \\ closedBall ξ σ, h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)",
+  "lean_name": "weighted_monotonicity_identity",
+  "depends_on": [
+    "root.radial_first_variation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.radial_first_variation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-weighted-monotonicity-a1-a1"
+}
