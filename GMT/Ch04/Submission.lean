@@ -741,3 +741,41 @@ theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryI
 end
 
 end GMT.Ch04
+
+
+/-- **Stationarity** (Ch. 4, 2.4). Given (GF) and the first variation formula 2.2, the integral
+and variational forms of stationarity agree: the initial velocity of a compact variation with
+`K ⊆ U` is a test field in `U`; a smooth compactly supported `X` is the initial velocity of the
+compact variation `y + tX(y)`; and a `C¹` test field is the `C¹` limit of smooth fields supported
+in one compact subset of `U`, along which `∫ div_M` converges by (GF). -/
+theorem Submission.stationary_iff_variational_of_first_variation :
+    (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧
+      (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧
+      AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) →
+    FirstVariationFormula → StationaryIffVariational := by
+  intro hGF hFVF n ℓ a U hn hU
+  refine ⟨fun hstat φ ε K hφ hKU ↦ ?_, fun hvar ↦ ?_⟩
+  · -- (⇒) The initial velocity of `φ` is a test field in `U`, so the first variation vanishes.
+    exact (hFVF n ℓ a φ ε K hn hφ).congr_deriv
+      (hstat _ (Submission.compactVariation_velocity_isTestField n ℓ U φ ε K hφ hKU))
+  · -- (⇐), smooth fields: `Z` is the initial velocity of `y + t • Z y`, and derivatives are unique.
+    have hsmooth : ∀ Z : Ambient n ℓ → Ambient n ℓ, ContDiff ℝ ∞ Z → HasCompactSupport Z →
+        tsupport Z ⊆ U → ∫ x, (mk a).tangentialDiv Z x ∂(mk a).weight = 0 := by
+      intro Z hZ hZc hZU
+      obtain ⟨ε, hφ, hvel⟩ := Submission.exists_isCompactVariation_add_smul n ℓ Z hZ hZc
+      calc ∫ x, (mk a).tangentialDiv Z x ∂(mk a).weight
+          = ∫ x, (mk a).tangentialDiv (fun y ↦ deriv (fun t : ℝ ↦ y + t • Z y) 0) x
+              ∂(mk a).weight :=
+            congrArg (fun W ↦ ∫ x, (mk a).tangentialDiv W x ∂(mk a).weight) hvel.symm
+        _ = 0 := (hFVF n ℓ a _ ε _ hn hφ).unique (hvar _ ε _ hφ hZU)
+    -- (⇐), `C¹` fields: approximate `X` in `C¹` by smooth `Y k` supported in a compact `K ⊆ U`.
+    intro X hX
+    obtain ⟨K, Y, hK, hKU, hXK, hY, hYX⟩ :=
+      Submission.exists_smooth_approx_testField_fderiv n ℓ U X hU hX
+    obtain ⟨hfin, -, hmeas⟩ := hGF n ℓ (mk a) hn
+    refine tendsto_nhds_unique
+      (Submission.tendsto_integral_tangentialDiv_of_tendstoUniformly_fderiv n ℓ (mk a) K X Y
+        hfin hmeas hK hX.1 hXK
+        (fun k ↦ ⟨(hY k).1.of_le (WithTop.coe_le_coe.mpr le_top), (hY k).2.2⟩) hYX) ?_
+    exact tendsto_const_nhds.congr fun k ↦
+      (hsmooth (Y k) (hY k).1 (hY k).2.1 ((hY k).2.2.trans hKU)).symm
