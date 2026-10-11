@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.section3_consequences-a1.coordinate_projection_injective-a1",
+  "parent_id": "root.section3_consequences-a1",
+  "depth": 2,
+  "title": "Some coordinate projection is injective on a given n-plane",
+  "statement": "For all N, n ∈ ℕ and every linear subspace L ⊆ ℝᴺ = EuclideanSpace ℝ (Fin N) with dim L = n, there is a set J ⊆ Fin N with exactly n elements such that coordinateProjection J is injective on L. Here coordinateProjection J is the orthogonal projection of ℝᴺ onto span{e_j : j ∈ J}.",
+  "lean_statement": "∀ (N n : ℕ) (L : Submodule ℝ (Rn N)), finrank ℝ L = n → ∃ J : Finset (Fin N), J.card = n ∧ Set.InjOn (coordinateProjection J) (L : Set (Rn N))",
+  "lean_name": "section3_exists_coordinateProjection_injOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-section3-consequences-a1-coordinate-projection-injective-a1-a1"
+}

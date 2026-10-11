@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n \"^def (coordinateProjection|IsC1Submanifold|RectifiableDecomposition|CoordinateProjectionCriterion|BesicovitchFedererProjectionTheorem|RectifiabilityTheoremForSets|SubmanifoldCoverCharacterization|ForAlmostAllProjections)|^noncomputable def coordinateProjection\" project/GMT/Ch03/Contract.lean",
+        "cmp local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean",
+        "rg -n \"theorem (exists_mem_forall_mem_nhdsWithin_pos_measure|measure_null_of_locally_null)\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "rg -n \"theorem comap_apply\" mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+        "rg -n \"theorem (le_hausdorffMeasure_image|hausdorffMeasure_image_le|hausdorffMeasure_image) \" mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "rg -n \"theorem (MeasureTheory.Measure.euclideanHausdorffMeasure_def|EuclideanSpace.euclideanHausdorffMeasure_eq_volume|MeasureTheory.Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero)\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "rg -n \"theorem LinearMap.exists_antilipschitzWith\" mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "rg -n \"theorem approximates_deriv_on_nhds\" mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "rg -n \"theorem ContDiffAt.hasStrictFDerivAt |theorem HasStrictFDerivAt.exists_lipschitzOnWith \" mathlib/Mathlib/Analysis/Calculus",
+        "rg -n \"theorem eq_starProjection_of_mem_of_inner_eq_zero\" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "rg -n \"theorem (span_eq_top_of_ne_zero|exists_fun_fin_finrank_span_eq)\" mathlib/Mathlib/LinearAlgebra",
+        "rg -n \"theorem LinearMap.finrank_range_of_inj\" mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+        "rg -n \"theorem isOpen_iUnion_countable\" mathlib/Mathlib/Topology/Bases.lean",
+        "grep -n of_le_mul_dist mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+        "rg -n -i \"coordinateProjection|PurelyUnrectifiable|besicovitch.?federer|CountablyRectifiable\" mathlib/Mathlib (no match)",
+        "rg -n \"theorem (simon_lemma_3_2|countablyRectifiable_of_measure_zero|exists_bijective_selectedCoordinateMap|countablyRectifiable_of_submanifold_cover|PurelyUnrectifiable.mono)\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03",
+        "rg -n \"exists_ae_subset_biUnion_countable\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "rg -n -i \"besicovitch.?federer|structure theorem|null.?projection\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT (no match)",
+        "ls lake-packages-25730c7c/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter03/ | grep CoordinateProjection (no match: module not built)",
+        "lake env lean /tmp/s3c-decomp/final/Challenge{0..5}.lean and /tmp/s3c-decomp/final/EndToEnd.lean (elaboration of exact frozen statements and full child/parent proofs)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dual/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/StrongRankCondition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/CoordinateProjection.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt"
+      ],
+      "conclusion": "The snapshot (project d09bc8a, Mathlib 25730c7c) has a Contract.lean byte-identical to the workspace. It fixes coordinateProjection as the starProjection onto span{e_j : j ∈ J}, IsC1Submanifold, ForAlmostAllProjections, and the three conjunct Props.\n\nAvailable and used:\n- SimonGMT simon_lemma_3_2, imported by the contract via Chapter03/Rectifiable.lean: closes Lemma 3.2 directly. Its proof uses Measure.exists_ae_subset_biUnion_countable.\n- SimonGMT countablyRectifiable_of_measure_zero.\n- Mathlib exists_mem_forall_mem_nhdsWithin_pos_measure and measure_null_of_locally_null, plus OuterMeasure.comap_apply.\n- Mathlib LipschitzOnWith.hausdorffMeasure_image_le, AntilipschitzWith.le_hausdorffMeasure_image and Isometry.hausdorffMeasure_image.\n- Mathlib euclideanHausdorffMeasure_def (μHE[n] = c_n·μH[n], c_n ∈ ℝ≥0) and EuclideanSpace.euclideanHausdorffMeasure_eq_volume.\n- Mathlib LinearMap.exists_antilipschitzWith, HasStrictFDerivAt.approximates_deriv_on_nhds, ContDiffAt.hasStrictFDerivAt and HasStrictFDerivAt.exists_lipschitzOnWith.\n- Mathlib Submodule.eq_starProjection_of_mem_of_inner_eq_zero, Submodule.span_eq_top_of_ne_zero, Submodule.exists_fun_fin_finrank_span_eq, LinearMap.finrank_range_of_inj and TopologicalSpace.isOpen_iUnion_countable.\n\nNo match:\n- Mathlib has no coordinateProjection, CountablyRectifiable, PurelyUnrectifiable or Besicovitch–Federer theorem.\n- SimonGMT has no Besicovitch–Federer theorem, so it is consumed as a hypothesis.\n- SimonGMT's exists_bijective_selectedCoordinateMap (Chapter03/CoordinateProjection.lean) is not built in the pinned package (no CoordinateProjection.olean) and not imported, so the child reproduces it. A full reproduction compiles with only import GMT.Ch03.Submission.\n\nWith these, all six child statements were fully proved in Lean using only the standard axioms."
+    }
+  ],
+  "parent_id": "root.section3_consequences-a1",
+  "child_id": "root.section3_consequences-a1.coordinate_projection_injective-a1",
+  "subproblem": {
+    "key": "coordinate_projection_injective",
+    "title": "Some coordinate projection is injective on a given n-plane",
+    "statement": "For all N, n ∈ ℕ and every linear subspace L ⊆ ℝᴺ = EuclideanSpace ℝ (Fin N) with dim L = n, there is a set J ⊆ Fin N with exactly n elements such that coordinateProjection J is injective on L. Here coordinateProjection J is the orthogonal projection of ℝᴺ onto span{e_j : j ∈ J}.",
+    "lean_statement": "∀ (N n : ℕ) (L : Submodule ℝ (Rn N)), finrank ℝ L = n → ∃ J : Finset (Fin N), J.card = n ∧ Set.InjOn (coordinateProjection J) (L : Set (Rn N))",
+    "lean_name": "section3_exists_coordinateProjection_injOn",
+    "depends_on": [],
+    "natural_proof": "Source. Simon, Ch. 3, proof of Lemma 3.3, first claim (chapter-03.txt lines 482-489, printed pp. 78-79); parent proof Part 2, step 3.\n\nNotation.\n- ℝᴺ = Rn N = EuclideanSpace ℝ (Fin N), with standard basis vectors e_j and j-th coordinate x_j of x.\n- K_J := span{e_j : j ∈ J}.\n- p_J := coordinateProjection J, by definition the orthogonal projection (Submodule.starProjection) of ℝᴺ onto K_J.\n\nStatement. For all N, n and every subspace L ⊆ ℝᴺ with dim L = n, there is J ⊆ Fin N with #J = n such that p_J is injective on L.\n\nProof.\n\n1. Coordinate formula. Let J ⊆ Fin N and x ∈ ℝᴺ, and put y := Σ_{j∈J} x_j e_j. So y_i = x_i for i ∈ J and y_i = 0 for i ∉ J.\nEach e_j with j ∈ J lies in K_J, hence y ∈ K_J. For j ∈ J, ⟨x − y, e_j⟩ = x_j − y_j = 0. Every w ∈ K_J is a finite linear combination of such e_j, so ⟨x − y, w⟩ = 0 for all w ∈ K_J (induction on the span).\nThe orthogonal projection onto K_J is the unique v ∈ K_J with x − v ⊥ K_J (Mathlib Submodule.eq_starProjection_of_mem_of_inner_eq_zero). Hence p_J x = y, that is:\n(p_J x)_i = x_i if i ∈ J, and (p_J x)_i = 0 if i ∉ J.\n\n2. The coordinate functionals span L*. For j ∈ Fin N, let φ_j ∈ L* be φ_j(x) := x_j for x ∈ L.\nIf x ∈ L and x ≠ 0, some coordinate x_j ≠ 0, i.e. φ_j(x) ≠ 0.\nIn a finite-dimensional space, a set of linear functionals that detects every nonzero vector spans the dual (Mathlib Submodule.span_eq_top_of_ne_zero). Indeed, suppose W := span{φ_j} ≠ L*. Then some nonzero functional on L* vanishes on W. Since L → L** is an isomorphism, that functional is evaluation at some x ∈ L with x ≠ 0, and φ_j(x) = 0 for all j — a contradiction.\nSo span{φ_j : j ∈ Fin N} = L*.\n\n3. A basis of L* made of coordinate functionals. We have dim L* = dim L = n (Subspace.dual_finrank_eq). A spanning set of an n-dimensional space contains n linearly independent elements that span it (Mathlib Submodule.exists_fun_fin_finrank_span_eq, reindexed along finrank(span{φ_j}) = finrank L* = n by finCongr).\nSo there are j(1), …, j(n) ∈ Fin N such that φ_{j(1)}, …, φ_{j(n)} are linearly independent and span L*.\nThe indices are pairwise distinct: if j(a) = j(b), then φ_{j(a)} = φ_{j(b)}, and a linearly independent family is injective, so a = b.\n\n4. The selected coordinates determine elements of L. Let z ∈ L with z_{j(i)} = 0 for i = 1, …, n. The functionals f ∈ L* with f(z) = 0 form a subspace containing every φ_{j(i)}, hence all of span{φ_{j(i)}} = L*. Since evaluation L → L** is injective, z = 0.\n\n5. Put J := {j(1), …, j(n)}; by step 3, #J = n. Let x, x' ∈ L with p_J x = p_J x'. By step 1, x_{j(i)} = (p_J x)_{j(i)} = (p_J x')_{j(i)} = x'_{j(i)} for every i. Then z := x − x' ∈ L has z_{j(i)} = 0 for all i, so z = 0 by step 4, i.e. x = x'. Hence p_J is injective on L. ∎\n\nRemarks.\n(a) For n = 0 the argument works as written: L = 0, the family in step 3 is empty, and J = ∅.\n(b) Simon's printed version: a matrix whose rows form a basis v_1, …, v_n of L has n linearly independent columns j₁ < ⋯ < jₙ (a nonsingular n × n minor), so p_J(v_1), …, p_J(v_n) are independent. Steps 2-4 are the dual form of this rank statement, as in the parent proof.\n(c) SimonGMT Chapter03/CoordinateProjection.lean (exists_bijective_selectedCoordinateMap) contains steps 2-4. That module is not built in the pinned package and not imported by the contract, so the argument must be reproduced. It compiles with only import GMT.Ch03.Submission.",
+    "proof_key_steps": [
+      "Coordinate formula: (p_J x)_i = x_i for i ∈ J and 0 otherwise, by the characterization of orthogonal projection.",
+      "The restricted coordinate functionals φ_j span L*, because a nonzero vector has a nonzero coordinate.",
+      "Extract coordinate functionals φ_{j(1)}, …, φ_{j(n)} forming a basis of L*; the indices j(i) are distinct.",
+      "A vector of L whose selected coordinates all vanish is 0.",
+      "J := {j(1), …, j(n)} has #J = n, and p_J is injective on L."
+    ]
+  },
+  "audit": {
+    "key": "coordinate_projection_injective",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The type includes precisely the stated dimension hypothesis. The projection formula, dual spanning argument and basis extraction produce n distinct coordinates and prove injectivity on L. The argument includes n = 0 and requires no undeclared dependency."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-coordinate-projection-injective-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-coordinate-projection-injective-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-coordinate-projection-injective-a1/parent-supplied-natural-proof.json"
+}

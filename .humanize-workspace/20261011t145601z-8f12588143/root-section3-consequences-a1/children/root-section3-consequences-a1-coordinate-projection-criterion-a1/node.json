@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.section3_consequences-a1.coordinate_projection_criterion-a1",
+  "parent_id": "root.section3_consequences-a1",
+  "depth": 2,
+  "title": "Lemma 3.3 (coordinate projection criterion), given Lemma 1.2",
+  "statement": "Assume Simon Ch. 3, Lemma 1.2 in the form SubmanifoldCoverCharacterization: for all n, ℓ and M ⊆ ℝ^{n+ℓ}, M is countably n-rectifiable iff M ⊆ N₀ ∪ ⋃_j N_j with Hⁿ(N₀) = 0 and each N_j an n-dimensional embedded C¹ submanifold (IsC1Submanifold n). Then Lemma 3.3 (CoordinateProjectionCriterion) holds: for all n, ℓ ∈ ℕ and S ⊆ ℝ^{n+ℓ}, if Hⁿ(coordinateProjection J (S)) = 0 for every J ⊆ Fin(n+ℓ) with exactly n elements, then S is purely n-unrectifiable.",
+  "lean_statement": "SubmanifoldCoverCharacterization → CoordinateProjectionCriterion",
+  "lean_name": "section3_coordinateProjectionCriterion_of_submanifoldCover",
+  "depends_on": [
+    "root.section3_consequences-a1.c1_image_null-a1",
+    "root.section3_consequences-a1.chart_projection_positive-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.section3_consequences-a1.c1_image_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.section3_consequences-a1.chart_projection_positive-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-section3-consequences-a1-coordinate-projection-criterion-a1-a1"
+}
