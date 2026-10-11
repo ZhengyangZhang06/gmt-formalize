@@ -832,3 +832,113 @@ theorem Submission.tangentMeasure_zero_dim_carrier : ∀ (N : ℕ) (μ : Measure
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
 end GMT.Ch03
+
+
+/-! ### Measures with approximate tangent planes (Simon 1.6 "⇐", measure form) -/
+
+/-- **Simon Ch. 3, Theorem 1.6 "⇐" (pp. 72–74) with Remark 1.5(3) (p. 71), measure form.** If
+the locally finite Borel measure `μ` on `ℝ^{n+ℓ}` has an approximate tangent plane of positive
+multiplicity at `μ`-a.e. point, then `μ` is carried by a countably `n`-rectifiable Borel set.
+
+For `n = 0` the lower density bound `μ(B_ρ(x)) ≥ c > 0` makes `μ` atomic. For `n ≥ 1`, fix a
+countable `1/16`-net `(Q j)` of `n`-planes and let `E j m i` be the set where the density and cone
+bounds of Simon (9) hold for all radii `ρ < δ i`, with constants `a m` and `b m = a m / (2 · 32ⁿ)`
+and the `1/3`-cone around `(Q j)ᗮ` (which lies in the `1/2`-cone around `Pᗮ` once
+`‖q_P - q_{Q j}‖ < 1/16`). By Simon (5), (6) every good point lies in some `E j m i`; on `E j m i`
+the projection onto `Q j` is bi-Lipschitz at scale `δ i / 2` (Simon (10)), so `E j m i` is covered
+by countably many Lipschitz images of `ℝⁿ`. -/
+theorem Submission.rectifiable_of_approx_tangent_measure : (∀ (n ℓ : ℕ) (μ : Measure (Rn (n + ℓ))), (∀ K : Set (Rn (n + ℓ)), IsCompact K → μ K < ∞) → (∀ᵐ x ∂μ, ∃ (P : Submodule ℝ (Rn (n + ℓ))) (θ : ℝ), 0 < θ ∧ HasApproxTangentPlaneWithMultiplicity n μ x P θ) → ∃ R : Set (Rn (n + ℓ)), MeasurableSet R ∧ CountablyRectifiable n R ∧ μ Rᶜ = 0) := by
+  intro n ℓ μ hfin hae
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · -- zero-dimensional case: `μ(B_ρ(x)) ≥ c` near a.e. point
+    apply Submission.tangentMeasure_zero_dim_carrier (0 + ℓ) μ hfin
+    filter_upwards [hae] with x hx
+    obtain ⟨P, θ, hθ, hxP⟩ := hx
+    obtain ⟨c, hc, hev⟩ :=
+      Submission.tangentMeasure_eventually_lower_density (0 + ℓ) 0 μ x P θ hfin hθ hxP
+    exact ⟨c, hc, by simpa using hev⟩
+  · -- positive dimension
+    obtain ⟨Q, hQdim, hQnet⟩ :=
+      Submission.tangentMeasure_countable_projection_net (n + ℓ) n (1 / 16) (by omega) (by norm_num)
+    let a : ℕ → ℝ := fun m => 1 / ((m : ℝ) + 1)
+    let b : ℕ → ℝ := fun m => a m / (2 * 32 ^ n)
+    let δ : ℕ → ℝ := fun i => 1 / ((i : ℝ) + 1)
+    let E : ℕ → ℕ → ℕ → Set (Rn (n + ℓ)) := fun j m i =>
+      {x | ∀ ρ ∈ Set.Ioo 0 (δ i), ENNReal.ofReal (a m * ρ ^ n) ≤ μ (Metric.ball x ρ) ∧
+        μ ({z | ‖(Q j).starProjection (z - x)‖ ≤ ‖z - x‖ / 3} ∩ Metric.ball x ρ) ≤
+          ENNReal.ofReal (b m * ρ ^ n)}
+    have ha : ∀ m, 0 < a m := fun m => by positivity
+    have hb : ∀ m, 0 < b m := fun m => by have := ha m; positivity
+    have hab : ∀ m, 32 ^ n * b m < a m := by
+      intro m
+      have h32 : (0 : ℝ) < 32 ^ n := by positivity
+      have hb' : 32 ^ n * b m = a m / 2 := by
+        simp only [b]
+        field_simp
+      rw [hb']
+      linarith [ha m]
+    -- Simon (10) and the Lipschitz graphs: each `E j m i` is covered by Lipschitz images of `ℝⁿ`
+    have hcover : ∀ j m i, ∃ F : ℕ → Rn n → Rn (n + ℓ),
+        (∀ t, ∃ K : ℝ≥0, LipschitzWith K (F t)) ∧ E j m i ⊆ ⋃ t, Set.range (F t) := by
+      intro j m i
+      have hD := Submission.tangentMeasure_projection_lower_bound (n + ℓ) n μ (Q j) (E j m i)
+        (a m) (b m) (δ i) (ha m) (hab m) (fun x hx => hx)
+      exact Submission.tangentMeasure_lipschitz_cover_of_projection_bound (n + ℓ) n (Q j)
+        (E j m i) 4 (δ i / 2) (hQdim j) (by positivity) (fun x hx y hy hxy => hD x hx y hy hxy)
+    choose F hFlip hFcov using hcover
+    -- Simon (5), (6): a.e. point lies in some `E j m i`
+    have hmem : ∀ᵐ x ∂μ, ∃ j m i, x ∈ E j m i := by
+      filter_upwards [hae] with x hx
+      obtain ⟨P, θ, hθ, hxP⟩ := hx
+      obtain ⟨c, hc, hlow⟩ :=
+        Submission.tangentMeasure_eventually_lower_density (n + ℓ) n μ x P θ hfin hθ hxP
+      obtain ⟨m, hm⟩ := exists_nat_one_div_lt hc
+      obtain ⟨j, hj⟩ := hQnet P hxP.1
+      have hcone := Submission.tangentMeasure_eventually_cone_small (n + ℓ) n μ x P θ hfin hn hxP
+        (b m) (hb m)
+      have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal (a m * ρ ^ n) ≤ μ (Metric.ball x ρ) ∧
+          μ ({z | ‖(Q j).starProjection (z - x)‖ ≤ ‖z - x‖ / 3} ∩ Metric.ball x ρ) ≤
+            ENNReal.ofReal (b m * ρ ^ n) := by
+        filter_upwards [hlow, hcone, self_mem_nhdsWithin] with ρ h1 h2 hρ
+        refine ⟨le_trans (ENNReal.ofReal_le_ofReal ?_) h1, le_trans (measure_mono ?_) h2⟩
+        · exact mul_le_mul_of_nonneg_right hm.le (pow_nonneg (le_of_lt hρ) n)
+        · -- the `1/3`-cone around `(Q j)ᗮ` lies in the `1/2`-cone around `Pᗮ`
+          rintro z ⟨hz1, hz2⟩
+          refine ⟨?_, hz2⟩
+          simp only [Set.mem_ofPred_eq] at hz1 ⊢
+          have h1 : ‖P.starProjection (z - x)‖ ≤ ‖(Q j).starProjection (z - x)‖ +
+              ‖(P.starProjection - (Q j).starProjection) (z - x)‖ := by
+            calc ‖P.starProjection (z - x)‖
+                = ‖(Q j).starProjection (z - x) +
+                    (P.starProjection - (Q j).starProjection) (z - x)‖ := by
+                  simp
+              _ ≤ _ := norm_add_le _ _
+          have h2 : ‖(P.starProjection - (Q j).starProjection) (z - x)‖ ≤ 1 / 16 * ‖z - x‖ :=
+            le_trans (ContinuousLinearMap.le_opNorm _ _)
+              (mul_le_mul_of_nonneg_right hj.le (norm_nonneg _))
+          nlinarith [norm_nonneg (z - x)]
+      obtain ⟨δ₀, hδ₀, hδ₀'⟩ := (nhdsGT_basis (0 : ℝ)).eventually_iff.mp hev
+      obtain ⟨i, hi⟩ := exists_nat_one_div_lt hδ₀
+      exact ⟨j, m, i, fun ρ hρ => hδ₀' ⟨hρ.1, lt_trans hρ.2 hi⟩⟩
+    refine ⟨⋃ j, ⋃ m, ⋃ i, ⋃ t, Set.range (F j m i t), ?_, ?_, ?_⟩
+    · -- Lipschitz images of the σ-compact `ℝⁿ` are σ-compact, hence Borel
+      refine MeasurableSet.iUnion fun j => MeasurableSet.iUnion fun m =>
+        MeasurableSet.iUnion fun i => MeasurableSet.iUnion fun t => ?_
+      obtain ⟨K, hK⟩ := hFlip j m i t
+      obtain ⟨S, hSc, hSU⟩ := isSigmaCompact_range hK.continuous
+      rw [← hSU]
+      exact MeasurableSet.iUnion fun k => (hSc k).measurableSet
+    · refine Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun j =>
+        Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun m =>
+        Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun i =>
+        Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun t => ?_
+      obtain ⟨K, hK⟩ := hFlip j m i t
+      exact Poincare.SimonGMT.Chapter03.countablyRectifiable_range hK
+    · rw [ae_iff] at hmem
+      refine measure_mono_null ?_ hmem
+      intro x hx
+      simp only [Set.mem_compl_iff, Set.mem_iUnion, not_exists] at hx
+      simp only [Set.mem_ofPred_eq, not_exists]
+      intro j m i hxE
+      obtain ⟨t, ht⟩ := Set.mem_iUnion.mp (hFcov j m i hxE)
+      exact hx j m i t ht
