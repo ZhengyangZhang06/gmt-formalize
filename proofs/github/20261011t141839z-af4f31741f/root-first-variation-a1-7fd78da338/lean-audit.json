@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "752bcdbf86c5ce946a087069372e8427c25519e43256ff0893e56819a76afabf",
+  "git_delta": {
+    "base_commit": "c0da5d4e53f1a1e1c8f676ede5196978f7099231",
+    "candidate_commit": "3a1a0900b1035eb022c4173394415ab6f666e3cd",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "first_variation_theorems",
+    "diff_sha256": "6b824082b47ed315a0ecbb1896058740e18c60e52bec72fb2263575fa17099d9",
+    "source_sha256": "b05f545cefa21028236ba5e7f6d9df1df0343c41ec824f47b2b369d0b7ef341d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.first_variation_theorems",
+      "statement": "FirstVariationIsMassDerivative ∧ FirstVariationRepresentation",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
