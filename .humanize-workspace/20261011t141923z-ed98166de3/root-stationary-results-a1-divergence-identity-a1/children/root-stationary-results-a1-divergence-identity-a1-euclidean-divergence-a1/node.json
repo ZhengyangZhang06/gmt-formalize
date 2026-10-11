@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.divergence_identity-a1.euclidean_divergence-a1",
+  "parent_id": "root.stationary_results-a1.divergence_identity-a1",
+  "depth": 3,
+  "title": "Euclidean divergence theorem for a C¹ field on an open set vanishing off a compact subset",
+  "statement": "Let n ∈ ℕ, let ℝⁿ = EuclideanSpace ℝ (Fin n) carry Lebesgue measure Lⁿ (= volume), let V ⊆ ℝⁿ be open and Q ⊆ V compact. Let w : ℝⁿ → ℝⁿ be of class C¹ on V with w(x) = 0 for every x ∈ V ∖ Q. Then ∫_V trace Dw(x) dLⁿ(x) = 0, where trace Dw(x) is the trace of the linear map Dw(x) = fderiv ℝ w x : ℝⁿ → ℝⁿ.",
+  "lean_statement": "∀ (n : ℕ) (V Q : Set (Rn n)) (w : Rn n → Rn n), IsOpen V → IsCompact Q → Q ⊆ V → ContDiffOn ℝ 1 w V → (∀ x ∈ V, x ∉ Q → w x = 0) → ∫ x in V, LinearMap.trace ℝ (Rn n) (fderiv ℝ w x).toLinearMap = 0",
+  "lean_name": "euclidean_setIntegral_trace_fderiv_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-divergence-identity-a1-euclidean-divergence-a1-a1"
+}

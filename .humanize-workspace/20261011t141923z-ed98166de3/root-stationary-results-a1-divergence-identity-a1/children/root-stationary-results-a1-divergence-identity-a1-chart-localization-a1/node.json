@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.divergence_identity-a1.chart_localization-a1",
+  "parent_id": "root.stationary_results-a1.divergence_identity-a1",
+  "depth": 3,
+  "title": "Chart localization: ∫_M g = 0 when the Jacobian-weighted pullback of g is the divergence of a field vanishing off the chart preimage of a compact set",
+  "statement": "Let n, N ∈ ℕ, r ∈ ℕ∞ with 1 ≤ r, and M ⊆ ℝᴺ a measurable set. Let (V, W, ψ) be a Simon local representation of M of class r (Chapter02.IsSimonLocalRepresentation r M V W ψ):\n- V ⊆ ℝⁿ and W ⊆ ℝᴺ are open;\n- ψ : ℝⁿ → ℝᴺ is C^r on V and injective on V;\n- ψ(V) = W ∩ M;\n- V ∩ ψ⁻¹(K′) is compact for every compact K′ ⊆ W;\n- Dψ(x) is injective for x ∈ V.\nLet K ⊆ W be compact and g : ℝᴺ → ℝ with g(y) = 0 for all y ∈ M ∖ K. Let w : ℝⁿ → ℝⁿ be C¹ on V such that w(x) = 0 whenever x ∈ V and ψ(x) ∉ K, and trace Dw(x) = Jψ(x) · g(ψ(x)) for all x ∈ V, where Jψ(x) = Chapter02.areaJacobianAt ψ x = √det(Dψ(x)* Dψ(x)). Then ∫_M g dμHE[n] = 0.",
+  "lean_statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W K : Set (Rn N)) (ψ : Rn n → Rn N) (g : Rn N → ℝ) (w : Rn n → Rn n), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → MeasurableSet M → IsCompact K → K ⊆ W → (∀ y ∈ M, y ∉ K → g y = 0) → ContDiffOn ℝ 1 w V → (∀ x ∈ V, ψ x ∉ K → w x = 0) → (∀ x ∈ V, LinearMap.trace ℝ (Rn n) (fderiv ℝ w x).toLinearMap = Chapter02.areaJacobianAt ψ x * g (ψ x)) → ∫ y in M, g y ∂μHE[n] = 0",
+  "lean_name": "chart_setIntegral_eq_zero_of_trace_fderiv_eq",
+  "depends_on": [
+    "root.stationary_results-a1.divergence_identity-a1.euclidean_divergence-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.stationary_results-a1.divergence_identity-a1.euclidean_divergence-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-divergence-identity-a1-chart-localization-a1-a1"
+}

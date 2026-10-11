@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.divergence_identity-a1.partition_of_unity-a1",
+  "parent_id": "root.stationary_results-a1.divergence_identity-a1",
+  "depth": 3,
+  "title": "Finite C¹ partition of unity on a neighbourhood of a compact set, subordinate to locally given open sets",
+  "statement": "Let N ∈ ℕ, C ⊆ ℝᴺ = EuclideanSpace ℝ (Fin N) compact, and P a property of subsets of ℝᴺ such that every y ∈ C lies in some open set U with P(U). Then there exist p ∈ ℕ, functions ζ_q : ℝᴺ → ℝ (q ∈ Fin p) and an open set O ⊇ C such that Σ_q ζ_q(z) = 1 for every z ∈ O, and for every q: ζ_q is C¹, ζ_q has compact support, and tsupport ζ_q ⊆ U for some U with P(U).",
+  "lean_statement": "∀ (N : ℕ) (C : Set (Rn N)) (P : Set (Rn N) → Prop), IsCompact C → (∀ y ∈ C, ∃ U : Set (Rn N), IsOpen U ∧ y ∈ U ∧ P U) → ∃ (p : ℕ) (ζ : Fin p → Rn N → ℝ) (O : Set (Rn N)), IsOpen O ∧ C ⊆ O ∧ (∀ z ∈ O, ∑ q, ζ q z = 1) ∧ ∀ q, ContDiff ℝ 1 (ζ q) ∧ HasCompactSupport (ζ q) ∧ ∃ U : Set (Rn N), P U ∧ tsupport (ζ q) ⊆ U",
+  "lean_name": "exists_finite_contDiff_partition_near_compact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-divergence-identity-a1-partition-of-unity-a1-a1"
+}
