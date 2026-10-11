@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'lipschitzImage_|fiberCount|LipschitzImageHausdorff|1\\.8' project",
+        "rg -n 'lipschitzImage_' project",
+        "LipschitzOnWith.hausdorffMeasure_image_le|exists_measurable_subset_ae_eq|exists_isCompact_sdiff_lt|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|secondCountable_of_sigmaCompact|exists_dense_seq|encard_le_encard_of_injOn|exists_subset_encard_eq|tsum_set_one",
+        "lintegral_iSup.|lintegral_tsum|lintegral_indicator_one₀|AEMeasurable.indicator₀|AEMeasurable.iSup|AEMeasurable.ennreal_tsum|iUnion_disjointed|disjoint_disjointed|disjointed_subset|MeasurableSet.disjointed|unpair_pair|pair_unpair",
+        "git status --porcelain --untracked-files=no",
+        "python3 /tmp/lih-independent-audit-d3t63f2t/verify_combined.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/EMetricSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Order/Disjointed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Set/Card.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Basic/Real/ENatENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/LipschitzMeasurability.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-lipschitz-image-hausdorff-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-lipschitz-image-hausdorff-a1/decomposition-v1.json",
+        "/tmp/lih-independent-audit-d3t63f2t/CombinedChecks.lean",
+        "/tmp/lih-independent-audit-d3t63f2t/CombinedChecks.log"
+      ],
+      "conclusion": "The pinned sources support the normalization, compact approximation, partition construction, cardinality arguments, and integration steps. Mathlib and SimonGMT revisions match the frozen dependencies and have clean tracked working trees. The snapshot contains no lipschitzImage_* declarations; the final scan of 46 DAG nodes and other branch proposals found no name collisions. All four names are bare identifiers. Independently compiled all four exact one-line propositions in comparator scope with autoImplicit disabled, before implementing the children, against a freshly compiled frozen baseline. Rechecked the supplied scratch proofs and a parent assembly parameterized solely by the four child contracts: compilation succeeded, with only propext, Classical.choice, and Quot.sound as axioms. The split is appropriate; its sole dependency, image_null_measurable depending on image_measure_le, is correctly directed and acyclic. The supplied assembly establishes the selected LipschitzImageHausdorff contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "image_measure_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition match. Restricting covers to E respects the Lipschitz-on hypothesis. The pinned Hausdorff-image lemma includes m = 0 and K = 0; multiplication by the common normalization factor proves the stated bound. No measurability, sigma-compactness, or circular reliance is introduced."
+    },
+    {
+      "key": "image_null_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are explicit and used correctly. The measurable kernel has finite measure, so its restricted measure is regular on the sigma-compact metric domain. Compact approximation leaves a null residual; the declared image_measure_le dependency makes its image null. Compact images supply the Borel part. This proves exactly the requested null-measurability."
+    },
+    {
+      "key": "nested_partitions",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and Lean type agree, including allowance for empty pieces. The proof handles empty X, constructs disjoint Borel ball pieces from a dense sequence, and recursively refines them using Nat.pair/unpair. The induction verifies covering, disjointness, measurability, strict mesh bounds, and refinement without additional hypotheses."
+    },
+    {
+      "key": "fiber_count_sup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches both claimed conclusions and all partition hypotheses. Indicator sums equal coerced encard values. The two explicit injections prove the upper bound and monotonicity. Separation of arbitrary finite fiber subsets proves the reverse supremum inequality, including infinite and uncountable fibers. Empty cases and cardinality coercions are handled; no measurability assumptions or parent theorem are used."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,112 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_image_hausdorff-a1`
+- Child DAG node: `root.lipschitz_image_hausdorff-a1.image_null_measurable-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Introduction to GMT, Ch. 2, Theorem 1.8(i), second paragraph of the printed proof (p. 45). No erratum.
+
+Printed text: 'Next suppose that A is H^m-measurable and observe that the regularity property 1.15(2) of Ch. 1 together with the σ-compactness of X implies that we can take a sequence K₁, K₂, … of compact sets in X with K_j ⊆ A for each j and H^m(A∖(∪_j K_j)) = 0. By the first part above we then have H^m(f(A∖(∪_j K_j))) = 0 and hence f(A) = f(A∖(∪_j K_j)) ∪ (∪_j f(K_j)). Now f(K_j) is compact, hence Borel, for each j, and H^m(f(A∖(∪_j K_j))) ≤ (Lip f)^m H^m(A∖(∪_j K_j)) = 0, so f(A) is H^m-measurable as claimed.'
+
+Conventions: Carathéodory 𝓗^m-measurability is rendered as NullMeasurableSet for the Borel measure μ := 𝓗^m (on X and on Y). The 'first part' is the sibling theorem image_measure_le.
+
+1. Null sets have null images. Let E ⊆ A with μ(E) = 0. Then f is K-Lipschitz on E (restriction of LipschitzOnWith K f A). By image_measure_le with this E (using 0 ≤ m), μ(f(E)) ≤ K^m·μ(E) = K^m·0 = 0, so μ(f(E)) = 0.
+2. Borel kernel of A. A is μ-null-measurable, so there is a Borel set B ⊆ A with B = A μ-a.e. (Mathlib NullMeasurableSet.exists_measurable_subset_ae_eq). In particular μ(A ∖ B) = 0 (ae_le_set), and μ(B) ≤ μ(A) < ∞.
+3. Compact sets inside B (Simon's appeal to 1.15(2) and σ-compactness). Let ν := μ.restrict B. Then ν(X) = μ(B) < ∞, so ν is a finite, hence locally finite, Borel measure on the σ-compact metric space X. A locally finite Borel measure on a σ-compact pseudometrizable space is regular (Mathlib instance Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure). It is therefore inner regular by compact sets on Borel sets of finite measure, and Mathlib MeasurableSet.exists_isCompact_sdiff_lt applies (X is Hausdorff with its Borel σ-algebra). For each j ∈ ℕ, apply it to the Borel set B (ν(B) = μ(B) < ∞) with ε = (j : ℝ≥0∞)⁻¹ ≠ 0 (for j = 0 this is ∞). This gives a compact C_j ⊆ B with ν(B ∖ C_j) < 1/j.
+4. The uncovered part of A is null. Put D := A ∖ ∪_j C_j, so D ⊆ A.
+ - B ∖ ∪_j C_j is Borel (compact sets are closed, hence Borel) and contained in B. So μ(B ∖ ∪_j C_j) = ν(B ∖ ∪_j C_j) ≤ ν(B ∖ C_j) < 1/j for every j. Since 1/j → 0, μ(B ∖ ∪_j C_j) = 0.
+ - Each x ∈ D lies in A ∖ B (if x ∉ B) or in B ∖ ∪_j C_j (if x ∈ B). So D ⊆ (A ∖ B) ∪ (B ∖ ∪_j C_j), hence μ(D) ≤ 0 + 0, i.e. μ(D) = 0.
+ These C_j are Simon's K_j, with H^m(A ∖ ∪_j K_j) = 0.
+5. Borel part of the image. For each j, C_j ⊆ B ⊆ A, so f is K-Lipschitz, hence continuous, on C_j. Thus f(C_j) is compact, hence closed in the metric space Y, hence Borel. Therefore G := ∪_j f(C_j) is a Borel subset of Y with G ⊆ f(A).
+6. The rest of the image is null. Let y ∈ f(A) ∖ G and write y = f(x) with x ∈ A. If x were in some C_j, then y ∈ f(C_j) ⊆ G; so x ∉ ∪_j C_j and x ∈ D. Hence f(A) ∖ G ⊆ f(D). By steps 1 and 4 (D ⊆ A, μ(D) = 0), μ(f(A) ∖ G) ≤ μ(f(D)) = 0.
+7. Conclusion. Since G ⊆ f(A), f(A) = G ∪ (f(A) ∖ G) (Set.union_diff_cancel). G is Borel, hence μ-null-measurable. f(A) ∖ G is μ-null, hence μ-null-measurable (NullMeasurableSet.of_null). A finite union of null-measurable sets is null-measurable, so f(A) is μ-null-measurable. (This is the argument of SimonGMT Chapter02.nullMeasurableSet_image_of_lipschitzOn_sigmaCompact(_of_nullMeasurable), transferred from μHE[n] to 𝓗^m with real m ≥ 0.)
+
+## Key steps
+
+1. Null subsets E ⊆ A have null images, by image_measure_le.
+2. Borel kernel B ⊆ A with μ(A∖B) = 0 (NullMeasurableSet.exists_measurable_subset_ae_eq).
+3. μ.restrict B is finite on a σ-compact metric space, hence regular: compact C_j ⊆ B with μ(B∖C_j) < 1/j (MeasurableSet.exists_isCompact_sdiff_lt).
+4. D := A ∖ ∪C_j is μ-null.
+5. f(A) = (∪_j f(C_j)) ∪ (f(A) ∖ ∪_j f(C_j)): a Borel set (compact images) union a subset of the null set f(D), hence null-measurable.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n 'theorem LipschitzOnWith.hausdorffMeasure_image_le|theorem hausdorffMeasure_image_le' mathlib/Mathlib`
+- `rg -n 'theorem NullMeasurableSet.exists_measurable_subset_ae_eq|theorem exists_measurable_subset_ae_eq' mathlib/Mathlib`
+- `rg -n 'exists_isCompact_sdiff_lt|exists_isCompact_diff_lt' mathlib/Mathlib; rg -n 'of_sigmaCompactSpace_of_isLocallyFiniteMeasure' mathlib/Mathlib; rg -n 'secondCountable_of_sigmaCompact' mathlib/Mathlib`
+- `rg -n 'theorem (AEMeasurable\.)?ennreal_tsum|theorem AEMeasurable.indicator₀|theorem aemeasurable_indicator_iff₀|theorem AEMeasurable.iSup|theorem lintegral_iSup.|theorem lintegral_tsum|theorem lintegral_indicator_one₀|theorem measure_iUnion₀|exists_subset_encard_eq|theorem exists_dense_seq|theorem iUnion_disjointed|theorem disjoint_disjointed|theorem disjointed_subset|theorem MeasurableSet.disjointed' mathlib/Mathlib`
+- `rg -n 'theorem encard_le_encard_of_injOn|toENNReal_iSup|forall_natCast_le_iff_le|eventually_all_finset|tendsto_one_div_add_atTop_nhds_zero_nat|theorem unpair_pair|theorem pair_unpair|tsum_set_one' mathlib/Mathlib`
+- `rg -n 'toENNReal_iSup|toENNRealOrderEmbedding|theorem toENNReal_le|ne_top_iff_exists|eq_top_of_forall_nnreal_le' mathlib/Mathlib/Data/ENat mathlib/Mathlib/Basic`
+- `rg -n 'lipschitzImage|fiberCount|LipschitzImageHausdorff' project; rg -n 'lipschitzImage' simongmt/Poincare`
+- `grep -n '^theorem' simongmt/Poincare/SimonGMT/Chapter02/LipschitzMeasurability.lean Chapter02/Lipschitz.lean Chapter02/AreaMultiplicity.lean, then a full read of LipschitzMeasurability.lean and Lipschitz.lean:180-298`
+- `grep -n 'def simonHausdorffMeasureReal|def realUnitBallVolume|realUnitBallVolume_pos|realUnitBallVolume_ne_top' simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `python3 -I scope.py (gmt-compare.py contract_scope replay); python3 -I gen_children.py (lean_contract.validate_lean_statement + gmt-compare.child_modules) for the four lean_statements`
+- `lean Scratch/Check2.lean, Scratch/Dev.lean, Scratch/Faithful.lean against a scratch olean of GMT.Ch02.Submission (LEAN_PATH = pinned package oleans); #check @..., #print axioms`
+- `read dag.json lean_names and nodes/*/decomposition-v1.json subproblem lean_names for collisions`
+- `sed -n 262,330p book/chapter-02.txt (Theorem 1.8 printed proof)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/EMetricSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Order/Disjointed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Nat/Pairing.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Set/Card.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/ENat/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Basic/Real/ENatENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Algebra/Order/Floor/Extended.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Order/Filter/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/LipschitzMeasurability.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaMultiplicity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-lipschitz-image-hausdorff-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-eilenberg-inequality-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/lih-decomp-31m28w/Scratch/Faithful.lean`
+
+Snapshot Mathlib (25730c7c) supplies every tool the children and the parent assembly need:
+- LipschitzOnWith.hausdorffMeasure_image_le (Measure/Hausdorff.lean:733)
+- NullMeasurableSet.exists_measurable_subset_ae_eq (NullMeasurable.lean:214) and measure_iUnion₀ (:250)
+- MeasurableSet.exists_isCompact_sdiff_lt (Regular.lean:843) and the instance Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure (Regular.lean:1183)
+- EMetric.secondCountable_of_sigmaCompact (EMetricSpace/Basic.lean:231) and TopologicalSpace.exists_dense_seq (Bases.lean:364)
+- disjointed API (Order/Disjointed.lean:206,316,320; MeasurableSet.disjointed in Constructions.lean:113)
+- Nat.pair_unpair / Nat.unpair_pair (Pairing.lean:47,60)
+- Set.encard_le_encard_of_injOn (Card.lean:552) and Set.exists_subset_encard_eq (Card.lean:470)
+- ENat.forall_natCast_le_iff_le (ENat/Basic.lean:333), ENat.toENNReal_le / toENNReal_coe / toENNReal_top (Basic/Real/ENatENNReal.lean:50-70), ENNReal.tsum_set_one (InfiniteSum/ENNReal.lean:636)
+- lintegral_iSup' (Lebesgue/Add.lean:98), lintegral_tsum (:362), lintegral_indicator_one₀ (Lebesgue/Basic.lean:567)
+- AEMeasurable.indicator₀ (AEMeasurable.lean:345), AEMeasurable.iSup (BorelSpace/Order.lean:934), AEMeasurable.ennreal_tsum (BorelSpace/Real.lean:378, deprecated but usable)
+
+ENat.toENNReal_iSup exists only in Algebra/Order/Floor/Extended.lean, which is outside the Submission import closure, so the child-4 proof avoids it.
+
+The pinned SimonGMT package has Chapter02.nullMeasurableSet_image_of_lipschitzOn_sigmaCompact(_of_nullMeasurable) (LipschitzMeasurability.lean). Its compact-approximation argument covers only natural n (μHE[n]); child image_null_measurable transfers it to 𝓗^m = (ω_m/2^m)•μH[m] (Chapter01/Hausdorff.lean:283). SimonGMT has no multiplicity or partition lemma for 1.8(ii), and the README marks (ii) as new.
+
+No collisions: the project snapshot contains no lipschitzImage_* names; dag.json and the other nodes' decomposition-v1.json reserve none of the four bare names; Submission has no Submission.* declarations.
+
+Comparator scope replay (gmt-compare.py contract_scope) closes the 𝓗[·] local notation before main_theorem, the `on` notation is unavailable, and autoImplicit is on. Statements were written accordingly, and #check confirmed the intended binders.
+
+Scratch file /tmp/lih-decomp-31m28w/Scratch/Faithful.lean (sha256 57c32fc3...) compiles in that scope against a Submission olean byte-identical to Contract.lean. It proves the four children as GMT.Ch02.Submission.<lean_name> and LipschitzImageHausdorff from them, with #print axioms = [propext, Classical.choice, Quot.sound] and no sorry. The book text (chapter-02.txt lines 270-327) matches the parent's Part I transcription.
