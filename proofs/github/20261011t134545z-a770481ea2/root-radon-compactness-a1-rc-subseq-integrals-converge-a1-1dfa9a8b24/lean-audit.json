@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a537bd584592577b359036dca0cc4568584d40ac911856014fabbcf851f8e1bb",
+  "git_delta": {
+    "base_commit": "e49807807cfbeef5641fbfcd90b1ec819db603f6",
+    "candidate_commit": "62b632432069cb0186d462d9d2e1844f1efaebbf",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "rc_subseq_integrals_converge",
+    "diff_sha256": "1c6af4b4041b149fdbd3276c6c077e638e915ad045cae9bde050adfcdfe28359",
+    "source_sha256": "c1154d4a42b6f13475a580646693e5f25d6f163482c052a79f24b6dacc20697a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rc_subseq_integrals_converge",
+      "statement": "∀ (X : Type u) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] (μ : ℕ → OuterMeasure X), (∀ k, IsRadonOuterMeasure (μ k)) → (∀ K : Set X, IsCompact K → ⨆ k, μ k K < ∞) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ f : C_c(X, ℝ), ∃ l : ℝ, Tendsto (fun k => ∫ x, f x ∂caratheodoryMeasure (μ (φ k))) atTop (𝓝 l)",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
