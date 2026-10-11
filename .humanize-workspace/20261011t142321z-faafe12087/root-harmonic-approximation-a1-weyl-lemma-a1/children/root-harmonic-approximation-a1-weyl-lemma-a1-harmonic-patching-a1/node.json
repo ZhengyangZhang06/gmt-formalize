@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.harmonic_patching-a1",
+  "parent_id": "root.harmonic_approximation-a1.weyl_lemma-a1",
+  "depth": 3,
+  "title": "Gluing local harmonic representatives on the unit ball",
+  "statement": "Let n >= 1, B the open unit ball of R^n, and w : R^n -> R. Suppose that for every eps with 0 < eps < 1/2 there is v : R^n -> R that is harmonic near every point of ball(0, 1 - eps) with v = w almost everywhere on ball(0, 1 - 2 eps). Then there is u : R^n -> R that is harmonic near every point of B (InnerProductSpace.HarmonicOnNhd u B) with u = w almost everywhere on B.",
+  "lean_statement": "∀ n : ℕ, 1 ≤ n → ∀ w : Rn n → ℝ, (∀ ε : ℝ, 0 < ε → ε < 1 / 2 → ∃ v : Rn n → ℝ, InnerProductSpace.HarmonicOnNhd v (ball (0 : Rn n) (1 - ε)) ∧ ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) (1 - 2 * ε))), v x = w x) → ∃ u : Rn n → ℝ, InnerProductSpace.HarmonicOnNhd u (ball (0 : Rn n) 1) ∧ ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), u x = w x",
+  "lean_name": "ball_harmonic_patching",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-weyl-lemma-a1-harmonic-patching-a1-a1"
+}

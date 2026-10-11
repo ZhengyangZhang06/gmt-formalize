@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.weak_laplacian-a1",
+  "parent_id": "root.harmonic_approximation-a1.weyl_lemma-a1",
+  "depth": 3,
+  "title": "Weakly harmonic W^{1,2}(B) functions are weakly harmonic in Laplacian form",
+  "statement": "Let n >= 1, B the open unit ball of R^n, and let w : R^n -> R, g : R^n -> R^n satisfy IsW12WithGradient w g B (w, g in L^2(B) and int_B w grad zeta = - int_B zeta g for every zeta in C^infinity(R^n) with compact support and tsupport zeta in B). Suppose int_B <g, grad zeta> = 0 for every such zeta. Then int_B w Laplacian(zeta) = 0 for every such zeta.",
+  "lean_statement": "∀ n : ℕ, 1 ≤ n → ∀ (w : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient w g (ball 0 1) → (∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, inner ℝ (g x) (gradient ζ x) = 0) → ∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, w x * Laplacian.laplacian ζ x = 0",
+  "lean_name": "w12_ball_weak_laplacian_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-weyl-lemma-a1-weak-laplacian-a1-a1"
+}

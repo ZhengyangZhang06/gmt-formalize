@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.gradient_identification-a1",
+  "parent_id": "root.harmonic_approximation-a1.weyl_lemma-a1",
+  "depth": 3,
+  "title": "A C^1 representative of a W^{1,2}(B) function has gradient equal to the weak gradient",
+  "statement": "Let n >= 1, B the open unit ball of R^n, and let w : R^n -> R, g : R^n -> R^n satisfy IsW12WithGradient w g B. Let u : R^n -> R be C^1 at every point of B (ContDiffAt R 1 u x for all x in B) with u = w almost everywhere on B. Then grad u = g almost everywhere on B.",
+  "lean_statement": "∀ n : ℕ, 1 ≤ n → ∀ (w u : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient w g (ball 0 1) → (∀ x ∈ ball (0 : Rn n) 1, ContDiffAt ℝ 1 u x) → (∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), u x = w x) → ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), gradient u x = g x",
+  "lean_name": "w12_ball_gradient_ae_eq_of_contDiffAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-weyl-lemma-a1-gradient-identification-a1-a1"
+}
