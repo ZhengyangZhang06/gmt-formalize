@@ -454,6 +454,114 @@ theorem Submission.bf_plane_vitali_disjoint_cover : ∀ (n N : ℕ) (W : Submodu
     rw [hset, isometry_subtype_coe.euclideanHausdorffMeasure_image]
     exact hnull
 
+/-- **Infinite cone density has `Hⁿ`-null projection** (M. G. Dall'Alba, *The Besicovitch–Federer
+Projection Theorem*, Lemma 5.3; P. Mattila, *Geometry of Sets and Measures in Euclidean Spaces*,
+Ch. 18). Let `W ⊆ ℝ^{n+ℓ}` be an `n`-plane with orthogonal projection `P`, `A` compact with
+`Hⁿ(A) < ∞`, `δ > 0`, and `A₂` the set of `a ∈ A` with infinite cone density `Φ_δ(a, W^⊥)`: for
+every `K` and `ε > 0` there are `0 < s < ε`, `0 < r < δ` with `K (rs)ⁿ ≤ Hⁿ(A ∩ X(a, r, s))`, where
+`X(a, r, s) = {x : |P(x - a)| < s |x - a|} ∩ B_r(a)`. Then `Hⁿ(P(A₂)) = 0`. For fixed `K > 0` the
+discs `W ∩ B̄(P a, rs)` cover `P(A₂)` finely, so countably many disjoint ones cover `Hⁿ`-almost all
+of it (`bf_plane_vitali_disjoint_cover`). The cone pieces `A ∩ X(a, r, s)` project into their
+discs, hence are disjoint Borel subsets of `A`, and with `ω = Hⁿ(W ∩ B̄(0, 1))`
+(`bf_plane_closedBall_measure_eq`), `Hⁿ(P(A₂)) ≤ Σ ω (rs)ⁿ ≤ (ω / K) Hⁿ(A) → 0` as `K → ∞`. -/
+theorem Submission.bf_coneDensity_top_projection_null : ∀ (n ℓ : ℕ), 0 < n → ∀ (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∀ A : Set (Rn (n + ℓ)), IsCompact A → μHE[n] A < ∞ → ∀ δ : ℝ, 0 < δ → μHE[n] (W.starProjection '' {a | a ∈ A ∧ ∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μHE[n] (A ∩ ({x | ‖W.starProjection (x - a)‖ < s * ‖x - a‖} ∩ Metric.ball a r))}) = 0 := by
+  intro n ℓ _hn W hW A hA hAfin δ hδ
+  set P := W.starProjection
+  set A₂ := {a | a ∈ A ∧ ∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧
+    r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤
+      μHE[n] (A ∩ ({x | ‖P (x - a)‖ < s * ‖x - a‖} ∩ Metric.ball a r))}
+  set T := P '' A₂
+  obtain ⟨hωfin, hball⟩ := Submission.bf_plane_closedBall_measure_eq n (n + ℓ) W hW
+  set ω := μHE[n] ((W : Set (Rn (n + ℓ))) ∩ Metric.closedBall 0 1)
+  have hTW : T ⊆ (W : Set (Rn (n + ℓ))) := by
+    rintro _ ⟨b, -, rfl⟩
+    exact W.starProjection_apply_mem b
+  -- Step 1: a point `a y ∈ A₂` over each `y ∈ P(A₂)`
+  have hpre : ∀ y ∈ T, ∃ a, a ∈ A₂ ∧ P a = y := fun y hy ↦ hy
+  choose! a ha using hpre
+  -- the cone pieces `A ∩ X(b, r, s)` are Borel
+  let X : Rn (n + ℓ) → ℝ → ℝ → Set (Rn (n + ℓ)) := fun b r s ↦
+    {x | ‖P (x - b)‖ < s * ‖x - b‖} ∩ Metric.ball b r
+  have hXmeas : ∀ b r s, MeasurableSet (A ∩ X b r s) := by
+    intro b r s
+    refine hA.isClosed.measurableSet.inter (IsOpen.measurableSet ?_)
+    refine IsOpen.inter (isOpen_lt ?_ ?_) Metric.isOpen_ball
+    · exact (P.continuous.comp (continuous_id.sub continuous_const)).norm
+    · exact continuous_const.mul (continuous_id.sub continuous_const).norm
+  -- Step 4: `|P x - y| = |P(x - a y)| < s |x - a y| < rs`, so `P(X(a y, r, s)) ⊆ W ∩ B̄(y, rs)`
+  have hXproj : ∀ y ∈ T, ∀ r s : ℝ, 0 < s → ∀ x ∈ X (a y) r s,
+      P x ∈ (W : Set (Rn (n + ℓ))) ∩ Metric.closedBall y (r * s) := by
+    intro y hy r s hs x hx
+    refine ⟨W.starProjection_apply_mem x, ?_⟩
+    rw [Metric.mem_closedBall, dist_eq_norm,
+      show P x - y = P (x - a y) by rw [map_sub, (ha y hy).2]]
+    have h2 : ‖x - a y‖ < r := by simpa [dist_eq_norm] using hx.2
+    have h3 : ‖P (x - a y)‖ < s * ‖x - a y‖ := hx.1
+    nlinarith [norm_nonneg (x - a y)]
+  -- Steps 1–5 for a fixed `K > 0`: `Hⁿ(P(A₂)) ≤ (ω / K) Hⁿ(A)`
+  have key : ∀ K : ℝ, 0 < K → μHE[n] T ≤ ω / ENNReal.ofReal K * μHE[n] A := by
+    intro K hK
+    let t : Set (Rn (n + ℓ) × ℝ × ℝ) := {i | i.1 ∈ T ∧ 0 < i.2.1 ∧ i.2.1 < δ ∧ 0 < i.2.2 ∧
+      ENNReal.ofReal (K * (i.2.1 * i.2.2) ^ n) ≤ μHE[n] (A ∩ X (a i.1) i.2.1 i.2.2)}
+    -- Step 2: fineness, with `ε / δ` in the definition of `A₂`
+    have hfine : ∀ x ∈ T, ∀ ε : ℝ, 0 < ε → ∃ i ∈ t, i.1 = x ∧ i.2.1 * i.2.2 ≤ ε := by
+      intro x hx ε hε
+      obtain ⟨s, hs0, hsε, r, hr0, hrδ, hK'⟩ := (ha x hx).1.2 K (ε / δ) (div_pos hε hδ)
+      refine ⟨(x, r, s), ⟨hx, hr0, hrδ, hs0, hK'⟩, rfl, ?_⟩
+      have : r * s ≤ δ * (ε / δ) := mul_le_mul hrδ.le hsε.le hs0.le hδ.le
+      rwa [mul_div_cancel₀ _ hδ.ne'] at this
+    -- Step 3: a disjoint Vitali subfamily of discs covering `Hⁿ`-almost all of `P(A₂)`
+    obtain ⟨u, hut, hu, hdisj, hnull⟩ := Submission.bf_plane_vitali_disjoint_cover n (n + ℓ) W hW
+      (Rn (n + ℓ) × ℝ × ℝ) T t (fun i ↦ i.1) (fun i ↦ i.2.1 * i.2.2) hTW
+      (fun i hi ↦ ⟨hTW hi.1, mul_pos hi.2.1 hi.2.2.2.1⟩) hfine
+    let D : Rn (n + ℓ) × ℝ × ℝ → Set (Rn (n + ℓ)) := fun i ↦
+      (W : Set (Rn (n + ℓ))) ∩ Metric.closedBall i.1 (i.2.1 * i.2.2)
+    let Sp : Rn (n + ℓ) × ℝ × ℝ → Set (Rn (n + ℓ)) := fun i ↦ A ∩ X (a i.1) i.2.1 i.2.2
+    -- Step 4: the cone pieces project into the disjoint discs, so they are disjoint
+    have hSdisj : u.PairwiseDisjoint Sp := by
+      intro i hi j hj hij
+      refine Set.disjoint_left.2 fun x hxi hxj ↦ ?_
+      have hi' := hut hi
+      have hj' := hut hj
+      exact Set.disjoint_left.1 (hdisj hi hj hij)
+        (hXproj i.1 hi'.1 i.2.1 i.2.2 hi'.2.2.2.1 x hxi.2)
+        (hXproj j.1 hj'.1 j.2.1 j.2.2 hj'.2.2.2.1 x hxj.2)
+    -- Step 5: `Hⁿ(D_i) = ω (rs)ⁿ ≤ (ω / K) Hⁿ(S_i)`
+    have hDle : ∀ i ∈ u, μHE[n] (D i) ≤ ω / ENNReal.ofReal K * μHE[n] (Sp i) := by
+      intro i hi
+      have hi' := hut hi
+      have hK1 : ENNReal.ofReal K * ENNReal.ofReal ((i.2.1 * i.2.2) ^ n) ≤ μHE[n] (Sp i) := by
+        rw [← ENNReal.ofReal_mul hK.le]
+        exact hi'.2.2.2.2
+      have hKpos : ENNReal.ofReal K ≠ 0 := by simpa using hK
+      calc μHE[n] (D i) = ENNReal.ofReal ((i.2.1 * i.2.2) ^ n) * ω :=
+            hball i.1 (hTW hi'.1) _ (mul_pos hi'.2.1 hi'.2.2.2.1).le
+        _ = ω / ENNReal.ofReal K * (ENNReal.ofReal K * ENNReal.ofReal ((i.2.1 * i.2.2) ^ n)) := by
+            rw [← mul_assoc, ENNReal.div_mul_cancel hKpos ENNReal.ofReal_ne_top, mul_comm]
+        _ ≤ ω / ENNReal.ofReal K * μHE[n] (Sp i) := by gcongr
+    calc μHE[n] T ≤ μHE[n] (T \ ⋃ i ∈ u, D i) + μHE[n] (⋃ i ∈ u, D i) := by
+          refine (measure_mono fun x hx ↦ ?_).trans (measure_union_le _ _)
+          by_cases hxU : x ∈ ⋃ i ∈ u, D i
+          · exact Or.inr hxU
+          · exact Or.inl ⟨hx, hxU⟩
+      _ = μHE[n] (⋃ i ∈ u, D i) := by rw [hnull, zero_add]
+      _ ≤ ∑' i : u, μHE[n] (D i) := measure_biUnion_le _ hu _
+      _ ≤ ∑' i : u, ω / ENNReal.ofReal K * μHE[n] (Sp i) :=
+          ENNReal.tsum_le_tsum fun i ↦ hDle i i.2
+      _ = ω / ENNReal.ofReal K * ∑' i : u, μHE[n] (Sp i) := ENNReal.tsum_mul_left
+      _ = ω / ENNReal.ofReal K * μHE[n] (⋃ i ∈ u, Sp i) := by
+          rw [measure_biUnion hu hSdisj fun i _ ↦ hXmeas _ _ _]
+      _ ≤ ω / ENNReal.ofReal K * μHE[n] A := by
+          gcongr
+          exact iUnion₂_subset fun i _ ↦ inter_subset_left
+  -- Step 6: let `K → ∞`, using `ω < ∞` and `Hⁿ(A) < ∞`
+  have hlim : Tendsto (fun K : ℝ ↦ ω / ENNReal.ofReal K * μHE[n] A) atTop (𝓝 0) := by
+    have h2 : Tendsto (fun K : ℝ ↦ ω / ENNReal.ofReal K) atTop (𝓝 0) := by
+      simpa using ENNReal.Tendsto.const_div ENNReal.tendsto_ofReal_atTop (Or.inr hωfin.ne)
+    simpa using ENNReal.Tendsto.mul_const h2 (Or.inr hAfin.ne)
+  exact nonpos_iff_eq_zero.mp
+    (ge_of_tendsto hlim (by filter_upwards [eventually_gt_atTop 0] with K hK using key K hK))
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
