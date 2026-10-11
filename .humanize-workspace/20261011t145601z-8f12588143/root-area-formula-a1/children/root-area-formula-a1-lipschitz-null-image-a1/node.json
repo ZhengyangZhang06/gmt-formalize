@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.area_formula-a1.lipschitz_null_image-a1",
+  "parent_id": "root.area_formula-a1",
+  "depth": 2,
+  "title": "Locally Lipschitz maps send Hⁿ-null sets to Hⁿ-null sets",
+  "statement": "Let N, P, n ∈ ℕ, U ⊆ ℝ^N, Z ⊆ ℝ^N and f : ℝ^N → ℝ^P, where ℝ^d = EuclideanSpace ℝ (Fin d). Assume:\n- f is locally Lipschitz on U: every x ∈ U has a neighbourhood t ∈ 𝓝[U] x on which f is Lipschitz;\n- Z ⊆ U;\n- Hⁿ(Z) = 0, where Hⁿ = μHE[n] is the n-dimensional Euclidean Hausdorff outer measure.\n\nThen Hⁿ(f(Z)) = 0 in ℝ^P.",
+  "lean_statement": "∀ (N P n : ℕ) (U Z : Set (Rn N)) (f : Rn N → Rn P), LocallyLipschitzOn U f → Z ⊆ U → μHE[n] Z = 0 → μHE[n] (f '' Z) = 0",
+  "lean_name": "areaFormula_image_null_of_locallyLipschitzOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-area-formula-a1-lipschitz-null-image-a1-a1"
+}

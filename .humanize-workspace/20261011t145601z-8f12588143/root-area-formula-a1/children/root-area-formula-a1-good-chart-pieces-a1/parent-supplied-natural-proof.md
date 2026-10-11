@@ -1,0 +1,311 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.area_formula-a1`
+- Child DAG node: `root.area_formula-a1.good_chart_pieces-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Step 1 of the parent proof (“Good chart balls”). It makes explicit the local-chart argument of the “if” part of Simon Ch. 3, Lemma 1.2 (chapter-03.txt lines 25-35): “for each x ∈ N there is ρ_x > 0 such that B_{ρ_x}(x) ∩ N = ψ(V) for suitable C¹ map ψ : V → ℝ^{n+ℓ}, V ⊆ ℝⁿ open. Since such C¹ maps are automatically Lipschitz in each closed ball ⊂ V …”. The submanifolds are embedded C¹ submanifolds in the sense of Simon Ch. 2 (4.1) (contract IsC1Submanifold). The argument also uses the Lindelöf property of ℝⁿ and ℝ^N and the mean value inequality, which is the bi-Lipschitz estimate of the parent's Step 1(i).
+
+Notation.
+- ℝ^d = Rn d = EuclideanSpace ℝ (Fin d), with Euclidean norm |·| and distance.
+- B_r(u) and B̄_r(u) are the open and closed balls.
+- Dψ(u) = fderiv ℝ ψ u, and ‖·‖ is the operator norm.
+
+Of IsC1Submanifold n S_j only these parts are used: V open, W open with y ∈ W, ψ C¹ on V, ψ(V) = W ∩ S_j, and Dψ(u) injective for u ∈ V. Injectivity of ψ on V and properness are not used.
+
+Proof.
+1. Countably many charts. Fix j. For each y ∈ S_j, IsC1Submanifold n (S_j) provides V_y ⊆ ℝⁿ open, W_y ⊆ ℝ^N open with y ∈ W_y, and ψ_y : ℝⁿ → ℝ^N that is C¹ on V_y, with ψ_y(V_y) = W_y ∩ S_j and Dψ_y(u) injective for all u ∈ V_y. Since ℝ^N is second countable, there is a countable T_j ⊆ S_j with ⋃_{y∈T_j} W_y = ⋃_{y∈S_j} W_y ⊇ S_j (Mathlib TopologicalSpace.isOpen_biUnion_countable). Hence S_j = ⋃_{y∈T_j} (W_y ∩ S_j) = ⋃_{y∈T_j} ψ_y(V_y). Let 𝒞 := {(j, y) : j ∈ ℕ, y ∈ T_j}, a countable set, and write (V_c, ψ_c) for the chart of c ∈ 𝒞. Then ⋃_j S_j ⊆ ⋃_{c∈𝒞} ψ_c(V_c).
+2. A good closed ball at one parameter. Fix c ∈ 𝒞 and u₀ ∈ V_c with ψ_c(u₀) ∈ U. Write V := V_c, ψ := ψ_c, A := Dψ(u₀). We produce r > 0 and K, C ∈ ℝ≥0 with:
+ (i) B̄_r(u₀) ⊆ V;
+ (ii) ψ is K-Lipschitz on B̄_r(u₀);
+ (iii) |u − v| ≤ C|ψ(u) − ψ(v)| for all u, v ∈ B̄_r(u₀);
+ (iv) f∘ψ is K-Lipschitz on B̄_r(u₀).
+ (a) A is linear and injective on the finite-dimensional ℝⁿ, so there is K_A > 0 with |w| ≤ K_A|Aw| for all w (Mathlib LinearMap.exists_antilipschitzWith; this also covers n = 0). Put m := 1/K_A > 0. Then |Aw| ≥ m|w|.
+ (b) ψ is C¹ on the open V, so z ↦ Dψ(z) is continuous on V (Mathlib ContDiffOn.continuousOn_fderiv_of_isOpen). Choose r₁ > 0 with B̄_{r₁}(u₀) ⊆ V and ‖Dψ(z) − A‖ ≤ m/2 for z ∈ B̄_{r₁}(u₀). The map z ↦ ψ(z) − Az is differentiable at each point of the convex set B̄_{r₁}(u₀), with derivative Dψ(z) − A of norm ≤ m/2. By the mean value inequality (Mathlib Convex.norm_image_sub_le_of_norm_fderiv_le), |ψ(u) − ψ(v) − A(u − v)| ≤ (m/2)|u − v| for u, v ∈ B̄_{r₁}(u₀). Consequently, for such u, v:
+ - |ψ(u) − ψ(v)| ≥ |A(u − v)| − (m/2)|u − v| ≥ (m/2)|u − v|;
+ - |ψ(u) − ψ(v)| ≤ (‖A‖ + m/2)|u − v|.
+ (c) Let x₀ := ψ(u₀) ∈ U. Since f is locally Lipschitz on U, there are L_f ≥ 0 and t ∈ 𝓝[U] x₀ with f L_f-Lipschitz on t. As U is open and x₀ ∈ U, 𝓝[U] x₀ = 𝓝 x₀, so B_s(x₀) ⊆ t for some s > 0. ψ is continuous at u₀ (it is differentiable there), so there is r with 0 < r ≤ r₁ and ψ(B̄_r(u₀)) ⊆ B_s(x₀).
+ (d) Put K := (‖A‖ + m/2) + L_f·(‖A‖ + m/2) and C := 2K_A = 2/m. Then:
+ - (i) holds because r ≤ r₁.
+ - On B̄_r(u₀) ⊆ B̄_{r₁}(u₀), (b) gives |ψ(u) − ψ(v)| ≤ (‖A‖ + m/2)|u − v| ≤ K|u − v|, which is (ii), and |u − v| ≤ (2/m)|ψ(u) − ψ(v)|, which is (iii).
+ - For u, v ∈ B̄_r(u₀), the points ψ(u), ψ(v) lie in B_s(x₀) ⊆ t. So |f(ψ(u)) − f(ψ(v))| ≤ L_f|ψ(u) − ψ(v)| ≤ L_f(‖A‖ + m/2)|u − v| ≤ K|u − v|, which is (iv).
+3. Countably many balls per chart. For c ∈ 𝒞, the set O_c := V_c ∩ ψ_c⁻¹(U) is open, because ψ_c is continuous on the open V_c and U is open (Mathlib ContinuousOn.isOpen_inter_preimage). For u₀ ∈ O_c let r(c, u₀), K(c, u₀), C(c, u₀) be as in Step 2. The open balls B_{r(c,u₀)}(u₀), u₀ ∈ O_c, cover O_c. By second countability of ℝⁿ there is a countable Q_c ⊆ O_c with O_c ⊆ ⋃_{u₀∈Q_c} B_{r(c,u₀)}(u₀).
+4. Enumeration. The set Π := {(c, u₀) : c ∈ 𝒞, u₀ ∈ Q_c} is countable. To π = (c, u₀) ∈ Π associate V_π := V_c, ψ_π := ψ_c, D_π := B̄_{r(c,u₀)}(u₀), K_π := K(c, u₀), C_π := C(c, u₀).
+ - If Π ≠ ∅, choose a surjection α ↦ π_α from ℕ onto Π (Mathlib Set.Countable.exists_eq_range) and set (V_α, D_α, ψ_α, K_α, C_α) := (V_{π_α}, D_{π_α}, ψ_{π_α}, K_{π_α}, C_{π_α}).
+ - If Π = ∅, set V_α = D_α = ∅, ψ_α = 0 and K_α = C_α = 0 for all α.
+5. Per-piece properties.
+ - If Π = ∅, every per-piece condition holds vacuously: ∅ is open and compact, ∅ ⊆ ∅, every map is C¹ and Lipschitz on ∅, and statements quantified over u ∈ ∅ are trivially true.
+ - Otherwise π_α = (c, u₀). V_α = V_c is open, ψ_α = ψ_c is C¹ on V_α, and Dψ_α(u) is injective for u ∈ V_α (Step 1). D_α = B̄_{r(c,u₀)}(u₀) is closed and bounded in ℝⁿ, hence compact, and D_α ⊆ V_α by Step 2(i). ψ_α and f∘ψ_α are K_α-Lipschitz on D_α, and |u − v| ≤ C_α|ψ_α(u) − ψ_α(v)| on D_α, by Step 2(ii)-(iv).
+6. Covering. Let x ∈ M with x ∉ N₀. As M ⊆ N₀ ∪ ⋃_j S_j, x ∈ S_j for some j, so by Step 1 x = ψ_c(u) for some c ∈ 𝒞 and u ∈ V_c. Since x ∈ M ⊆ U, we have u ∈ O_c, so by Step 3 u ∈ B_{r(c,u₀)}(u₀) ⊆ D_{(c,u₀)} for some u₀ ∈ Q_c. In particular Π ≠ ∅ and (c, u₀) = π_α for some α, so x = ψ_α(u) ∈ ψ_α(D_α). Hence M ⊆ N₀ ∪ ⋃_α ψ_α(D_α). When Π = ∅ the same argument shows M ⊆ N₀. ∎
+
+Appendix: formalization aid, not part of the mathematical argument. Below is a kernel-checked scratch proof of exactly this statement, with a helper lemma for Step 2. It was elaborated after `import GMT.Ch03.Submission` in the contract scope and uses only the axioms propext, Classical.choice and Quot.sound. When transplanting, rename goodBall to a unique helper name (for example Submission.areaFormula_goodBall_aux) and C2check to Submission.areaFormula_good_chart_pieces.
+
+theorem goodBall {n N p : ℕ} {V : Set (Rn n)} {U : Set (Rn N)} {ψ : Rn n → Rn N}
+    {f : Rn N → Rn p}
+    (hV : IsOpen V) (hψC : ContDiffOn ℝ 1 ψ V) (hInj : ∀ u ∈ V, Function.Injective (fderiv ℝ ψ u))
+    (hU : IsOpen U) (hf : LocallyLipschitzOn U f) {u₀ : Rn n} (hu₀ : u₀ ∈ V) (hx₀ : ψ u₀ ∈ U) :
+    ∃ r > 0, Metric.closedBall u₀ r ⊆ V ∧ ∃ K C : ℝ≥0,
+      LipschitzOnWith K ψ (Metric.closedBall u₀ r) ∧
+      (∀ u ∈ Metric.closedBall u₀ r, ∀ v ∈ Metric.closedBall u₀ r,
+        dist u v ≤ (C : ℝ) * dist (ψ u) (ψ v)) ∧
+      LipschitzOnWith K (f ∘ ψ) (Metric.closedBall u₀ r) := by
+  set A := fderiv ℝ ψ u₀ with hA
+  obtain ⟨KA, hKA0, hKA⟩ := LinearMap.exists_antilipschitzWith A.toLinearMap
+    (LinearMap.ker_eq_bot.mpr (hInj u₀ hu₀))
+  have hKA0' : (0 : ℝ) < KA := by exact_mod_cast hKA0
+  set m : ℝ := (KA : ℝ)⁻¹ with hm
+  have hm0 : 0 < m := inv_pos.mpr hKA0'
+  have hAlow : ∀ w : Rn n, m * ‖w‖ ≤ ‖A w‖ := by
+    intro w
+    have h1 : dist w 0 ≤ KA * dist (A.toLinearMap w) (A.toLinearMap 0) := hKA.le_mul_dist w 0
+    rw [map_zero, dist_zero_right, dist_zero_right] at h1
+    have h2 : ‖w‖ ≤ KA * ‖A w‖ := h1
+    rw [hm, inv_mul_le_iff₀ hKA0']
+    exact h2
+  have hcont : ContinuousOn (fun z ↦ fderiv ℝ ψ z) V :=
+    hψC.continuousOn_fderiv_of_isOpen hV le_rfl
+  have hcontAt : ContinuousAt (fun z ↦ fderiv ℝ ψ z) u₀ := hcont.continuousAt (hV.mem_nhds hu₀)
+  obtain ⟨δ₁, hδ₁, hδ₁'⟩ := Metric.continuousAt_iff.mp hcontAt (m / 2) (half_pos hm0)
+  obtain ⟨δ₂, hδ₂, hδ₂'⟩ := Metric.isOpen_iff.mp hV u₀ hu₀
+  obtain ⟨Lf, t, ht, hLf⟩ := hf hx₀
+  rw [hU.nhdsWithin_eq hx₀] at ht
+  obtain ⟨s, hs, hst⟩ := Metric.mem_nhds_iff.mp ht
+  have hψcontAt : ContinuousAt ψ u₀ := hψC.continuousOn.continuousAt (hV.mem_nhds hu₀)
+  obtain ⟨δ₃, hδ₃, hδ₃'⟩ := Metric.continuousAt_iff.mp hψcontAt s hs
+  set r := min (min δ₁ δ₂) δ₃ / 2 with hr
+  have hmin0 : 0 < min (min δ₁ δ₂) δ₃ := lt_min (lt_min hδ₁ hδ₂) hδ₃
+  have hr0 : 0 < r := by rw [hr]; linarith
+  have hrmin : r < min (min δ₁ δ₂) δ₃ := by rw [hr]; linarith
+  have hrlt : ∀ u ∈ Metric.closedBall u₀ r,
+      dist u u₀ < δ₁ ∧ dist u u₀ < δ₂ ∧ dist u u₀ < δ₃ := by
+    intro u hu
+    have hu' : dist u u₀ < min (min δ₁ δ₂) δ₃ :=
+      lt_of_le_of_lt (Metric.mem_closedBall.mp hu) hrmin
+    simp only [lt_min_iff] at hu'
+    exact ⟨hu'.1.1, hu'.1.2, hu'.2⟩
+  have hBV : Metric.closedBall u₀ r ⊆ V := fun u hu ↦ hδ₂' (Metric.mem_ball.mpr (hrlt u hu).2.1)
+  have hdiffB : ∀ z ∈ Metric.closedBall u₀ r, DifferentiableAt ℝ ψ z := fun z hz ↦
+    ((hψC.differentiableOn one_ne_zero) z (hBV hz)).differentiableAt (hV.mem_nhds (hBV hz))
+  have hMV : ∀ u ∈ Metric.closedBall u₀ r, ∀ v ∈ Metric.closedBall u₀ r,
+      ‖(ψ u - A u) - (ψ v - A v)‖ ≤ m / 2 * ‖u - v‖ := by
+    intro u hu v hv
+    have hg : ∀ z ∈ Metric.closedBall u₀ r, DifferentiableAt ℝ (fun z ↦ ψ z - A z) z :=
+      fun z hz ↦ (hdiffB z hz).sub A.differentiableAt
+    have hbound : ∀ z ∈ Metric.closedBall u₀ r, ‖fderiv ℝ (fun z ↦ ψ z - A z) z‖ ≤ m / 2 := by
+      intro z hz
+      rw [fderiv_fun_sub (hdiffB z hz) A.differentiableAt, A.fderiv, ← dist_eq_norm]
+      exact (hδ₁' (hrlt z hz).1).le
+    exact Convex.norm_image_sub_le_of_norm_fderiv_le hg hbound (convex_closedBall u₀ r) hv hu
+  have hupper : ∀ u ∈ Metric.closedBall u₀ r, ∀ v ∈ Metric.closedBall u₀ r,
+      dist (ψ u) (ψ v) ≤ (‖A‖ + m / 2) * dist u v := by
+    intro u hu v hv
+    rw [dist_eq_norm, dist_eq_norm]
+    have h1 := hMV u hu v hv
+    have h2 : ‖A (u - v)‖ ≤ ‖A‖ * ‖u - v‖ := A.le_opNorm _
+    have h3 : ψ u - ψ v = ((ψ u - A u) - (ψ v - A v)) + A (u - v) := by rw [map_sub]; abel
+    calc ‖ψ u - ψ v‖ = ‖((ψ u - A u) - (ψ v - A v)) + A (u - v)‖ := by rw [← h3]
+      _ ≤ ‖(ψ u - A u) - (ψ v - A v)‖ + ‖A (u - v)‖ := norm_add_le _ _
+      _ ≤ m / 2 * ‖u - v‖ + ‖A‖ * ‖u - v‖ := add_le_add h1 h2
+      _ = (‖A‖ + m / 2) * ‖u - v‖ := by ring
+  have hlower : ∀ u ∈ Metric.closedBall u₀ r, ∀ v ∈ Metric.closedBall u₀ r,
+      dist u v ≤ ((2 * KA : ℝ≥0) : ℝ) * dist (ψ u) (ψ v) := by
+    intro u hu v hv
+    rw [dist_eq_norm, dist_eq_norm]
+    have h1 := hMV u hu v hv
+    have h2 := hAlow (u - v)
+    have h3 : A (u - v) = (ψ u - ψ v) - ((ψ u - A u) - (ψ v - A v)) := by rw [map_sub]; abel
+    have h4 : ‖A (u - v)‖ ≤ ‖ψ u - ψ v‖ + m / 2 * ‖u - v‖ := by
+      rw [h3]; exact (norm_sub_le _ _).trans (add_le_add le_rfl h1)
+    have h5 : m / 2 * ‖u - v‖ ≤ ‖ψ u - ψ v‖ := by linarith
+    have hKAeq : (KA : ℝ) * m = 1 := by rw [hm]; exact mul_inv_cancel₀ hKA0'.ne'
+    push_cast
+    calc ‖u - v‖ = (2 * KA) * (m / 2 * ‖u - v‖) := by
+          have : (2 * (KA : ℝ)) * (m / 2 * ‖u - v‖) = ((KA : ℝ) * m) * ‖u - v‖ := by ring
+          rw [this, hKAeq, one_mul]
+      _ ≤ (2 * KA) * ‖ψ u - ψ v‖ := mul_le_mul_of_nonneg_left h5 (by positivity)
+  set K0 : ℝ≥0 := ⟨‖A‖ + m / 2, by positivity⟩ with hK0
+  have hK0r : (K0 : ℝ) = ‖A‖ + m / 2 := rfl
+  refine ⟨r, hr0, hBV, K0 + Lf * K0, 2 * KA, ?_, hlower, ?_⟩
+  · refine LipschitzOnWith.of_dist_le_mul fun u hu v hv ↦ ?_
+    calc dist (ψ u) (ψ v) ≤ (‖A‖ + m / 2) * dist u v := hupper u hu v hv
+      _ ≤ ((K0 + Lf * K0 : ℝ≥0) : ℝ) * dist u v := by
+        push_cast
+        rw [hK0r]
+        have h0 : 0 ≤ (Lf : ℝ) * (‖A‖ + m / 2) := by positivity
+        exact mul_le_mul_of_nonneg_right (by linarith) dist_nonneg
+  · refine LipschitzOnWith.of_dist_le_mul fun u hu v hv ↦ ?_
+    have hψu : ψ u ∈ t := hst (Metric.mem_ball.mpr (hδ₃' (hrlt u hu).2.2))
+    have hψv : ψ v ∈ t := hst (Metric.mem_ball.mpr (hδ₃' (hrlt v hv).2.2))
+    calc dist (f (ψ u)) (f (ψ v)) ≤ Lf * dist (ψ u) (ψ v) := hLf.dist_le_mul _ hψu _ hψv
+      _ ≤ Lf * ((‖A‖ + m / 2) * dist u v) := by gcongr; exact hupper u hu v hv
+      _ ≤ ((K0 + Lf * K0 : ℝ≥0) : ℝ) * dist u v := by
+        push_cast
+        rw [hK0r]
+        have h0 : 0 ≤ (‖A‖ + m / 2) * dist u v := by positivity
+        have h1 : (‖A‖ + m / 2 + ↑Lf * (‖A‖ + m / 2)) * dist u v =
+            (‖A‖ + m / 2) * dist u v + ↑Lf * ((‖A‖ + m / 2) * dist u v) := by ring
+        rw [h1]
+        linarith
+
+theorem C2check : ∀ (n N p : ℕ) (M U N₀ : Set (Rn N)) (S : ℕ → Set (Rn N)) (f : Rn N → Rn p), IsOpen U → M ⊆ U → LocallyLipschitzOn U f → (∀ j, IsC1Submanifold n (S j)) → M ⊆ N₀ ∪ ⋃ j, S j → ∃ (V D : ℕ → Set (Rn n)) (ψ : ℕ → Rn n → Rn N) (K C : ℕ → ℝ≥0), (∀ α, IsOpen (V α) ∧ ContDiffOn ℝ 1 (ψ α) (V α) ∧ (∀ u ∈ V α, Function.Injective (fderiv ℝ (ψ α) u)) ∧ IsCompact (D α) ∧ D α ⊆ V α ∧ LipschitzOnWith (K α) (ψ α) (D α) ∧ (∀ u ∈ D α, ∀ v ∈ D α, dist u v ≤ (C α : ℝ) * dist (ψ α u) (ψ α v)) ∧ LipschitzOnWith (K α) (f ∘ ψ α) (D α)) ∧ M ⊆ N₀ ∪ ⋃ α, ψ α '' D α := by
+  intro n N p M U N₀ S f hU hMU hf hS hcov
+  classical
+  choose! Vc Wc ψc hVc hWc hyW hψC hInjOn hImg hProper hDer using hS
+  choose T hTS hTc hTU using fun j ↦
+    TopologicalSpace.isOpen_biUnion_countable (S j) (Wc j) (fun y hy ↦ hWc j y hy)
+  have hgood : ∀ j, ∀ y ∈ S j, ∀ u₀ ∈ Vc j y ∩ ψc j y ⁻¹' U, ∃ r > 0,
+      Metric.closedBall u₀ r ⊆ Vc j y ∧ ∃ K C : ℝ≥0,
+        LipschitzOnWith K (ψc j y) (Metric.closedBall u₀ r) ∧
+        (∀ u ∈ Metric.closedBall u₀ r, ∀ v ∈ Metric.closedBall u₀ r,
+          dist u v ≤ (C : ℝ) * dist (ψc j y u) (ψc j y v)) ∧
+        LipschitzOnWith K (f ∘ ψc j y) (Metric.closedBall u₀ r) := fun j y hy u₀ hu₀ ↦
+    goodBall (hVc j y hy) (hψC j y hy) (hDer j y hy) hU hf hu₀.1 hu₀.2
+  choose! r hr hrV Kb Cb hKb hCb hfKb using hgood
+  choose Q hQO hQc hQU using fun j y ↦
+    TopologicalSpace.isOpen_biUnion_countable (Vc j y ∩ ψc j y ⁻¹' U)
+      (fun u₀ ↦ Metric.ball u₀ (r j y u₀)) (fun _ _ ↦ Metric.isOpen_ball)
+  set I : Set (ℕ × Rn N × Rn n) := ⋃ j, ⋃ y ∈ T j, (fun u ↦ (j, y, u)) '' Q j y with hIdef
+  have hIc : I.Countable :=
+    Set.countable_iUnion fun j ↦ (hTc j).biUnion fun y _ ↦ (hQc j y).image _
+  have hImem : ∀ π ∈ I, π.2.1 ∈ T π.1 ∧ π.2.2 ∈ Q π.1 π.2.1 := by
+    intro π hπ
+    simp only [hIdef, mem_iUnion, mem_image] at hπ
+    obtain ⟨j, y, hy, u, hu, rfl⟩ := hπ
+    exact ⟨hy, hu⟩
+  have hpiece : ∀ π ∈ I, IsOpen (Vc π.1 π.2.1) ∧ ContDiffOn ℝ 1 (ψc π.1 π.2.1) (Vc π.1 π.2.1) ∧
+      (∀ u ∈ Vc π.1 π.2.1, Function.Injective (fderiv ℝ (ψc π.1 π.2.1) u)) ∧
+      IsCompact (Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2)) ∧
+      Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2) ⊆ Vc π.1 π.2.1 ∧
+      LipschitzOnWith (Kb π.1 π.2.1 π.2.2) (ψc π.1 π.2.1)
+        (Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2)) ∧
+      (∀ u ∈ Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2),
+        ∀ v ∈ Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2),
+          dist u v ≤ (Cb π.1 π.2.1 π.2.2 : ℝ) * dist (ψc π.1 π.2.1 u) (ψc π.1 π.2.1 v)) ∧
+      LipschitzOnWith (Kb π.1 π.2.1 π.2.2) (f ∘ ψc π.1 π.2.1)
+        (Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2)) := by
+    intro π hπ
+    obtain ⟨hyT, huQ⟩ := hImem π hπ
+    have hy : π.2.1 ∈ S π.1 := hTS π.1 hyT
+    have hu : π.2.2 ∈ Vc π.1 π.2.1 ∩ ψc π.1 π.2.1 ⁻¹' U := hQO π.1 π.2.1 huQ
+    exact ⟨hVc _ _ hy, hψC _ _ hy, hDer _ _ hy, isCompact_closedBall _ _, hrV _ _ hy _ hu,
+      hKb _ _ hy _ hu, hCb _ _ hy _ hu, hfKb _ _ hy _ hu⟩
+  have hcovI : ∀ x ∈ M, x ∉ N₀ → ∃ π ∈ I,
+      x ∈ ψc π.1 π.2.1 '' Metric.closedBall π.2.2 (r π.1 π.2.1 π.2.2) := by
+    intro x hxM hxN
+    rcases hcov hxM with hx0 | hx1
+    · exact absurd hx0 hxN
+    obtain ⟨j, hxj⟩ := mem_iUnion.mp hx1
+    have hxW : x ∈ ⋃ y ∈ T j, Wc j y := by
+      rw [hTU j]; exact mem_biUnion hxj (hyW j x hxj)
+    obtain ⟨y, hyT, hxWy⟩ := mem_iUnion₂.mp hxW
+    have hy : y ∈ S j := hTS j hyT
+    have hxim : x ∈ ψc j y '' Vc j y := by rw [hImg j y hy]; exact ⟨hxWy, hxj⟩
+    obtain ⟨u, huV, rfl⟩ := hxim
+    have huO : u ∈ Vc j y ∩ ψc j y ⁻¹' U := ⟨huV, hMU hxM⟩
+    have hu' : u ∈ ⋃ u₀ ∈ Q j y, Metric.ball u₀ (r j y u₀) := by
+      rw [hQU j y]; exact mem_biUnion huO (Metric.mem_ball_self (hr j y hy u huO))
+    obtain ⟨u₀, hu₀Q, huB⟩ := mem_iUnion₂.mp hu'
+    refine ⟨(j, y, u₀), ?_, u, Metric.ball_subset_closedBall huB, rfl⟩
+    simp only [hIdef, mem_iUnion, mem_image]
+    exact ⟨j, y, hyT, u₀, hu₀Q, rfl⟩
+  by_cases hIne : I.Nonempty
+  · obtain ⟨e, he⟩ := hIc.exists_eq_range hIne
+    have heI : ∀ α, e α ∈ I := fun α ↦ by rw [he]; exact mem_range_self α
+    refine ⟨fun α ↦ Vc (e α).1 (e α).2.1,
+      fun α ↦ Metric.closedBall (e α).2.2 (r (e α).1 (e α).2.1 (e α).2.2),
+      fun α ↦ ψc (e α).1 (e α).2.1, fun α ↦ Kb (e α).1 (e α).2.1 (e α).2.2,
+      fun α ↦ Cb (e α).1 (e α).2.1 (e α).2.2, fun α ↦ hpiece (e α) (heI α), ?_⟩
+    intro x hxM
+    by_cases hxN : x ∈ N₀
+    · exact Or.inl hxN
+    · obtain ⟨π, hπI, hxπ⟩ := hcovI x hxM hxN
+      rw [he] at hπI
+      obtain ⟨α, rfl⟩ := hπI
+      exact Or.inr (mem_iUnion.mpr ⟨α, hxπ⟩)
+  · refine ⟨fun _ ↦ ∅, fun _ ↦ ∅, fun _ ↦ 0, fun _ ↦ 0, fun _ ↦ 0, fun α ↦ ?_, ?_⟩
+    · simp
+    · intro x hxM
+      by_cases hxN : x ∈ N₀
+      · exact Or.inl hxN
+      · obtain ⟨π, hπI, -⟩ := hcovI x hxM hxN
+        exact absurd ⟨π, hπI⟩ hIne
+
+## Key steps
+
+1. Lindelöf: each S_j is a countable union of chart images ψ_c(V_c), with Dψ_c injective on V_c.
+2. At u₀ ∈ V_c with ψ_c(u₀) ∈ U: injectivity of Dψ_c(u₀), continuity of Dψ_c and the mean value inequality give a closed ball on which ψ_c is bi-Lipschitz. Local Lipschitzness of f on the open U makes f∘ψ_c Lipschitz there.
+3. Lindelöf in ℝⁿ: countably many such balls cover the open set V_c ∩ ψ_c⁻¹(U).
+4. Enumerate the countable family of pieces by ℕ, using trivial empty pieces if the family is empty. Closed balls are compact.
+5. Every x ∈ M ∖ N₀ is ψ_c(u) with u in one of the chosen balls, so M ⊆ N₀ ∪ ⋃_α ψ_α(D_α).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n "^def AreaFormula|^def IsC1Submanifold|^noncomputable def approxTangentPlane|^noncomputable def tangentialDifferential|^noncomputable def areaJacobian|^def HasTangentialDifferentialAt|^def IsPositiveLocallyIntegrableWeight|^abbrev Rn" project/GMT/Ch03/Contract.lean`
+- `rg -n "theorem normDet_comp|theorem normDet_codRestrict|theorem normDet_ne_zero_tfae|theorem normDet_nonneg|normDet_sq" mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `rg -n "theorem lintegral_iUnion₀|theorem lintegral_tsum|theorem lintegral_indicator₀" mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/`
+- `rg -n "theorem isOpen_iUnion_countable|theorem isOpen_biUnion_countable" mathlib/Mathlib/Topology/Bases.lean`
+- `rg -n "theorem HasLineDerivAt.unique" mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean`
+- `rg -n "theorem LinearMap.exists_antilipschitzWith" mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `rg -n "theorem approximates_deriv_on_nhds|protected theorem lipschitzWith" mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/`
+- `rg -n "theorem ContinuousOn.measurable_piecewise" mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `rg -n "theorem measurable_fderiv |theorem measurableSet_of_differentiableAt " mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `rg -n "exists_measurable_subset_ae_eq" mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `rg -n "lemma tsum_set_one|protected theorem tsum_biUnion" mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean`
+- `rg -n "theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n "^def LocallyLipschitzOn" mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `rg -n -l "areaFormula_|AreaFormula" mathlib/Mathlib  (no match)`
+- `rg -n -i -l "coarea|area_formula" mathlib/Mathlib  (no match)`
+- `grep -n "weighted_area_formula_lipschitzOn_fiberSum|aemeasurable_weightedAreaFiberSum_lipschitzOn|ae_eq_of_hasFDerivWithinAt|def areaJacobianWithin|def weightedAreaFiberSum|def areaFiber|theorem continuous_normDet|euclideanHausdorffMeasure_image_le_of_lipschitzOn|HasWeightedApproximateTangentSpaceAt.unique" in the pinned simongmt package lake-packages-25730c7c/simongmt/Poincare/SimonGMT`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaMultiplicity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+
+Snapshot: project d09bc8a, Mathlib 25730c7c, plus the pinned simongmt package (2b36630). The contract definitions used by the children are in Contract.lean (Rn line 56, IsC1Submanifold 68, approxTangentPlane 84, HasTangentialDifferentialAt 92, tangentialDifferential 97, areaJacobian 102, AreaFormula 218).
+
+Found and cited from Mathlib:
+- NormDet.lean: LinearMap.normDet_comp (324), normDet_comp_of_finrank_eq (348), normDet_codRestrict (365), normDet_nonneg, normDet_ne_zero_tfae / normDet_eq_zero_iff_ker_ne_bot.
+- lintegral_indicator₀ (Lebesgue/Basic.lean 518), lintegral_iUnion₀ (592), lintegral_tsum (Lebesgue/Add.lean 362).
+- TopologicalSpace.isOpen_biUnion_countable (Bases.lean 942); HasLineDerivAt.unique (LineDeriv/Basic.lean 156).
+- LinearMap.exists_antilipschitzWith (FiniteDimension.lean 231); HasStrictFDerivAt.approximates_deriv_on_nhds (InverseFunctionTheorem/FDeriv.lean 76).
+- ContinuousOn.measurable_piecewise (BorelSpace/Basic.lean 523); measurableSet_of_differentiableAt and measurable_fderiv (FDeriv/Measurable.lean 372, 378); NullMeasurableSet.exists_measurable_subset_ae_eq (NullMeasurable.lean 214).
+- ENNReal.tsum_set_one (636) and ENNReal.tsum_biUnion (94) in InfiniteSum/ENNReal.lean; EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Volume/Measure.lean 187); LocallyLipschitzOn (EMetricSpace/Lipschitz.lean 72).
+
+Found and cited from SimonGMT:
+- AreaDomain.lean: weighted_area_formula_lipschitzOn_fiberSum, aemeasurable_weightedAreaFiberSum_lipschitzOn, ae_eq_of_hasFDerivWithinAt, areaJacobianWithin (= normDet ∘ fderivWithin).
+- AreaMultiplicity.lean: areaFiber, weightedAreaFiberSum.
+- continuous_normDet (AreaApproximation.lean 28); euclideanHausdorffMeasure_image_le_of_lipschitzOn (Chapter02/Lipschitz.lean 216); HasWeightedApproximateTangentSpaceAt.unique (Chapter03/Rectifiable.lean 345).
+
+No match: rg finds no AreaFormula or areaFormula_ declaration and no area or coarea formula in the snapshot's Mathlib. The per-piece formula therefore uses SimonGMT's area formulas for Lipschitz maps on Euclidean domains (AreaDomain.lean). That file is not in the import closure of GMT.Ch03.Submission, so Submission.lean must add `import Poincare.SimonGMT.Chapter02.AreaDomain`. Its oleans are present, and the comparator does not freeze Submission's imports.
+
+Checks run against this toolchain:
+- All five child statements elaborate after `import GMT.Ch03.Submission`.
+- A scratch proof of AreaFormula from the five children plus the two siblings compiles.
+- Scratch proofs of all five children compile with the standard axioms only.

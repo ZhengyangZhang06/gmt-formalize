@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^def AreaFormula|^def IsC1Submanifold|^noncomputable def approxTangentPlane|^noncomputable def tangentialDifferential|^noncomputable def areaJacobian|^def HasTangentialDifferentialAt|^def IsPositiveLocallyIntegrableWeight|^abbrev Rn' project/GMT/Ch03/Contract.lean",
+        "rg -n 'theorem normDet_comp|theorem normDet_codRestrict|normDet_eq_zero_iff_ker_ne_bot|theorem normDet_nonneg' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "rg -n 'theorem lintegral_iUnion₀|theorem lintegral_tsum|theorem lintegral_indicator₀' mathlib/Mathlib/MeasureTheory/Integral/Lebesgue",
+        "rg -n 'weighted_area_formula_lipschitzOn_fiberSum|aemeasurable_weightedAreaFiberSum_lipschitzOn|ae_eq_of_hasFDerivWithinAt|def areaJacobianWithin|def weightedAreaFiberSum|def areaFiber|theorem continuous_normDet|euclideanHausdorffMeasure_image_le_of_lipschitzOn|theorem HasWeightedApproximateTangentSpaceAt.unique' Poincare/SimonGMT/Chapter02/{AreaDomain,AreaMultiplicity,AreaApproximation,Lipschitz}.lean Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "rg -n 'areaFormula_image_null_of_locallyLipschitzOn|areaFormula_good_chart_pieces|areaFormula_chart_jacobian_identity|areaFormula_on_chart_piece|areaFormula_glue_pieces' GMT",
+        "python3 /tmp/area-formula-independent-audit-pabynkqw/run_check.py TypesOnly.lean",
+        "python3 /tmp/area-formula-independent-audit-pabynkqw/run_check.py Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaMultiplicity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-area-formula-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-area-formula-a1/decomposition-v1.json",
+        "/tmp/area-formula-independent-audit-pabynkqw/TypesOnly.lean",
+        "/tmp/area-formula-independent-audit-pabynkqw/Assembly.lean"
+      ],
+      "conclusion": "Verified snapshot revisions and pinned SimonGMT compatibility. Found the required null-image bound, tangent uniqueness, normDet identities, domain area formulas, derivative uniqueness and integration lemmas. All five exact one-line propositions elaborate without child implementations. The supplied five proof bodies and assembly compile from the frozen definitions with main_theorem removed, using the two frozen sibling contracts as explicit assumptions; the resulting theorem depends only on propext, Classical.choice and Quot.sound. The additional AreaDomain import is already identified in the proposal. No proposed name occurs in existing GMT declarations or collides with another branch's reserved name. All names are bare identifiers, and dependencies are acyclic. The split appropriately establishes precisely the selected AreaFormula contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_null_image",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including relative local Lipschitzness and absence of openness or measurability assumptions. Relative neighborhoods, a countable open subcover, the arbitrary-set Hausdorff image bound and countable subadditivity prove the exact conclusion without circular reliance."
+    },
+    {
+      "key": "good_chart_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match. The proof constructs the required common Lipschitz constant and inverse bound, then obtains countably many compact chart pieces. It explicitly handles zero-dimensional domains and an empty indexing family. The resulting cover supplies exactly what the parent assembly needs."
+    },
+    {
+      "key": "chart_jacobian_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact assumptions suffice: nonzero weight gives tangent uniqueness, and the tangent's dimension implies injectivity of the chart derivative by rank–nullity. The constructed tangential differential is identified by line-derivative uniqueness. Equal-dimensional normDet composition and codomain restriction prove the stated product identity."
+    },
+    {
+      "key": "chart_piece_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes null-measurability of the parameter subset, transports weight measurability through the inverse chart, and derives measurability of J composed with the chart using its positive Jacobian. It justifies within-derivative replacement almost everywhere, applies the pinned domain formulas, and reindexes fibres. Both the integral identity and fibre-sum measurability follow without assuming this child or the parent."
+    },
+    {
+      "key": "glue_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The abstract prose and Lean proposition match. Disjointification preserves null-measurability; source additivity requires no measurability of g. The explicitly assumed fibre measurability justifies lintegral_tsum. Disjoint fibre regrouping and removal of the null image prove the conclusion without additional measurability or sigma-finiteness assumptions."
+    }
+  ],
+  "required_changes": []
+}
