@@ -397,6 +397,40 @@ theorem Submission.c1_injective_fderiv_local_lower_bounds : ∀ (n p : ℕ) (G :
             rw [sub_apply, sub_sub_cancel]
         _ ≤ _ := norm_sub_le _ _
     linarith [hL v]
+/-- **Simon Ch. 3, proof of Lemma 1.2 (p. 70)** (`chapter-03.txt` lines 61–64), with the
+submanifold notion of Ch. 2 (4.1): if `G` is `C¹` and injective on `B̄_r(x)` and `DG(z)` is
+injective for `z ∈ B_r(x)`, then `G(B_r(x))` is an embedded `C¹` submanifold, with the single
+local representation `(V, W, ψ) = (B_r(x), ℝᵖ ∖ G(A), G)`, `A = B̄_r(x) ∖ B_r(x)`. `G(A)` is
+compact, so `W` is open; injectivity on `B̄_r(x)` gives `G(B_r(x)) ⊆ W`; and for compact `K ⊆ W`,
+`B_r(x) ∩ G⁻¹(K) = B̄_r(x) ∩ G⁻¹(K)` is a closed subset of the compact `B̄_r(x)`. -/
+theorem Submission.isC1Submanifold_image_ball_of_injOn_closedBall : ∀ (n p : ℕ)
+    (G : Rn n → Rn p) (x : Rn n) (r : ℝ), ContDiffOn ℝ 1 G (Metric.closedBall x r) →
+    Set.InjOn G (Metric.closedBall x r) → (∀ z ∈ Metric.ball x r, Function.Injective
+    (fderiv ℝ G z)) → IsC1Submanifold n (G '' Metric.ball x r) := by
+  intro n p G x r hG hinj hD
+  have hGc : ContinuousOn G (Metric.closedBall x r) := hG.continuousOn
+  -- `A` is compact, so `G(A)` is closed and `W = G(A)ᶜ` is open.
+  have hW : IsOpen (G '' (Metric.closedBall x r \ Metric.ball x r))ᶜ :=
+    (((isCompact_closedBall x r).diff Metric.isOpen_ball).image_of_continuousOn
+      (hGc.mono sdiff_subset)).isClosed.isOpen_compl
+  -- Injectivity on `B̄_r(x)` keeps `G(B_r(x))` off `G(A)`.
+  have hsub : G '' Metric.ball x r ⊆ (G '' (Metric.closedBall x r \ Metric.ball x r))ᶜ := by
+    rintro _ ⟨z, hz, rfl⟩ ⟨a, ha, hGa⟩
+    exact ha.2 ((hinj ha.1 (Metric.ball_subset_closedBall hz) hGa).symm ▸ hz)
+  intro y hy
+  refine ⟨Metric.ball x r, (G '' (Metric.closedBall x r \ Metric.ball x r))ᶜ, G,
+    Metric.isOpen_ball, hW, hsub hy, hG.mono Metric.ball_subset_closedBall,
+    hinj.mono Metric.ball_subset_closedBall, (inter_eq_right.2 hsub).symm, fun K hK hKW ↦ ?_, hD⟩
+  -- `B_r(x) ∩ G⁻¹(K) = B̄_r(x) ∩ G⁻¹(K)` since `K ⊆ W` misses `G(A)`.
+  have heq : Metric.ball x r ∩ G ⁻¹' K = Metric.closedBall x r ∩ G ⁻¹' K := by
+    refine Subset.antisymm (inter_subset_inter_left _ Metric.ball_subset_closedBall) ?_
+    rintro z ⟨hz, hzK⟩
+    refine ⟨?_, hzK⟩
+    by_contra hzb
+    exact hKW hzK ⟨z, ⟨hz, hzb⟩, rfl⟩
+  rw [heq]
+  exact (isCompact_closedBall x r).of_isClosed_subset
+    (hGc.preimage_isClosed_of_isClosed Metric.isClosed_closedBall hK.isClosed) inter_subset_left
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
