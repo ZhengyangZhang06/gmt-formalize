@@ -335,6 +335,183 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Extension of a locally sup-bounded functional from `C¹_c` fields to `C_c` fields** (the
+remark after Simon Ch. 2, (2.1), p. 48, used for Ch. 3, (4.1)). If `Λ₀` is additive and
+homogeneous on `C¹` fields with compact support in `U` and `|Λ₀ g| ≤ C(K) sup |g|` for such fields
+supported in a compact `K ⊆ U`, and every continuous compactly supported field is a uniform limit
+of `C¹` fields supported in a fixed compact subset of any open neighbourhood of its support, then
+`Λ₀` extends to a functional `Λ` on continuous compactly supported fields in `U` that is additive,
+homogeneous and bounded above on unit fields supported in each compact `K ⊆ U`. `Λ g` is the limit
+of `Λ₀ (h_k)` along any sequence of `C¹` fields `h_k → g` uniformly with supports in one compact
+subset of `U`; this limit exists and does not depend on the sequence by the bound on `Λ₀`. -/
+theorem Submission.gaussGreenRep_extend_C1_functional : ∀ (N : ℕ) (U : Set (Rn N))
+    (Λ₀ : (Rn N → Rn N) → ℝ), IsOpen U →
+    (∀ (g : Rn N → Rn N) (W : Set (Rn N)), Continuous g → HasCompactSupport g → IsOpen W →
+      tsupport g ⊆ W → ∃ K : Set (Rn N), IsCompact K ∧ tsupport g ⊆ K ∧ K ⊆ W ∧
+        ∃ h : ℕ → Rn N → Rn N, (∀ k, ContDiff ℝ 1 (h k) ∧ HasCompactSupport (h k) ∧
+          tsupport (h k) ⊆ K) ∧ TendstoUniformly h g atTop) →
+    (∀ g h : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ U →
+      ContDiff ℝ 1 h → HasCompactSupport h → tsupport h ⊆ U → Λ₀ (g + h) = Λ₀ g + Λ₀ h) →
+    (∀ (c : ℝ) (g : Rn N → Rn N), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ U →
+      Λ₀ (c • g) = c * Λ₀ g) →
+    (∀ K : Set (Rn N), IsCompact K → K ⊆ U → ∃ C : ℝ, 0 ≤ C ∧ ∀ g : Rn N → Rn N,
+      ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ K → ∀ M : ℝ, (∀ x, ‖g x‖ ≤ M) →
+        |Λ₀ g| ≤ C * M) →
+    ∃ Λ : (Rn N → Rn N) → ℝ,
+      (∀ g h : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U →
+        Continuous h → HasCompactSupport h → tsupport h ⊆ U → Λ (g + h) = Λ g + Λ h) ∧
+      (∀ (c : ℝ) (g : Rn N → Rn N), Continuous g → HasCompactSupport g → tsupport g ⊆ U →
+        Λ (c • g) = c * Λ g) ∧
+      (∀ K : Set (Rn N), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ g : Rn N → Rn N, Continuous g →
+        tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → Λ g ≤ C) ∧
+      ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ U → Λ g = Λ₀ g := by
+  intro N U Λ₀ hU happ hadd hhom hbd
+  -- Two sequences of `C¹` fields supported in one compact `L ⊆ U` and converging uniformly to the
+  -- same `g`: `Λ₀ (s m) - Λ₀ (s' n) = Λ₀ (s m - s' n)` and `|s m - s' n| ≤ 2δ` for large `m, n`.
+  have hclose : ∀ (g : Rn N → Rn N) (s s' : ℕ → Rn N → Rn N) (L : Set (Rn N)),
+      IsCompact L → L ⊆ U →
+      (∀ k, ContDiff ℝ 1 (s k) ∧ HasCompactSupport (s k) ∧ tsupport (s k) ⊆ L) →
+      (∀ k, ContDiff ℝ 1 (s' k) ∧ HasCompactSupport (s' k) ∧ tsupport (s' k) ⊆ L) →
+      TendstoUniformly s g atTop → TendstoUniformly s' g atTop →
+      ∀ ε > 0, ∃ k₀ : ℕ, ∀ m ≥ k₀, ∀ n ≥ k₀, |Λ₀ (s m) - Λ₀ (s' n)| < ε := by
+    intro g s s' L hL hLU hs hs' hsg hs'g ε hε
+    obtain ⟨C, hC0, hC⟩ := hbd L hL hLU
+    have hC1 : 0 < C + 1 := by linarith
+    have hδ : 0 < ε / (2 * (C + 1)) := div_pos hε (by linarith)
+    obtain ⟨k₁, hk₁⟩ := eventually_atTop.mp (Metric.tendstoUniformly_iff.mp hsg _ hδ)
+    obtain ⟨k₂, hk₂⟩ := eventually_atTop.mp (Metric.tendstoUniformly_iff.mp hs'g _ hδ)
+    refine ⟨max k₁ k₂, fun m hm n hn => ?_⟩
+    have hm' := hk₁ m (le_of_max_le_left hm)
+    have hn' := hk₂ n (le_of_max_le_right hn)
+    have hd : ContDiff ℝ 1 (s m - s' n) := (hs m).1.sub (hs' n).1
+    have hdc : HasCompactSupport (s m - s' n) := (hs m).2.1.sub (hs' n).2.1
+    have hdL : tsupport (s m - s' n) ⊆ L :=
+      (tsupport_sub (s m) (s' n)).trans (union_subset (hs m).2.2 (hs' n).2.2)
+    have hsplit := hadd (s m - s' n) (s' n) hd hdc (hdL.trans hLU) (hs' n).1 (hs' n).2.1
+      ((hs' n).2.2.trans hLU)
+    rw [sub_add_cancel] at hsplit
+    have hle := hC (s m - s' n) hd hdc hdL (2 * (ε / (2 * (C + 1)))) fun x => by
+      rw [Pi.sub_apply, ← dist_eq_norm]
+      linarith [dist_triangle_left (s m x) (s' n x) (g x), hm' x, hn' x]
+    rw [hsplit, add_sub_cancel_right]
+    refine hle.trans_lt ?_
+    rw [show C * (2 * (ε / (2 * (C + 1)))) = C / (C + 1) * ε by field_simp]
+    exact mul_lt_of_lt_one_left hε ((div_lt_one hC1).mpr (lt_add_one C))
+  -- Choose, for every admissible `g`, an approximating sequence `S g` (hypothesis with `W = U`).
+  have hseq : ∀ g : Rn N → Rn N, ∃ s : ℕ → Rn N → Rn N,
+      Continuous g → HasCompactSupport g → tsupport g ⊆ U → ∃ L : Set (Rn N), IsCompact L ∧
+        L ⊆ U ∧ (∀ k, ContDiff ℝ 1 (s k) ∧ HasCompactSupport (s k) ∧ tsupport (s k) ⊆ L) ∧
+          TendstoUniformly s g atTop := by
+    intro g
+    by_cases hg : Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ U
+    · obtain ⟨K, hK, -, hKU, h, hh, hhg⟩ := happ g U hg.1 hg.2.1 hU hg.2.2
+      exact ⟨h, fun _ _ _ => ⟨K, hK, hKU, hh, hhg⟩⟩
+    · exact ⟨0, fun h₁ h₂ h₃ => absurd ⟨h₁, h₂, h₃⟩ hg⟩
+  choose S hS using hseq
+  -- `Λ₀ (s k) → lim Λ₀ (S g k)` along every approximating sequence `s` of an admissible `g`.
+  have hstar : ∀ g : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U →
+      ∀ (s : ℕ → Rn N → Rn N) (L : Set (Rn N)), IsCompact L → L ⊆ U →
+      (∀ k, ContDiff ℝ 1 (s k) ∧ HasCompactSupport (s k) ∧ tsupport (s k) ⊆ L) →
+      TendstoUniformly s g atTop →
+      Tendsto (fun k => Λ₀ (s k)) atTop (𝓝 (limUnder atTop fun k => Λ₀ (S g k))) := by
+    intro g hg hgc hgU s L hL hLU hs hsg
+    obtain ⟨L', hL', hL'U, hSg, hSgt⟩ := hS g hg hgc hgU
+    have hLL : IsCompact (L ∪ L') := hL.union hL'
+    have hLLU : L ∪ L' ⊆ U := union_subset hLU hL'U
+    have hs2 : ∀ k, ContDiff ℝ 1 (s k) ∧ HasCompactSupport (s k) ∧ tsupport (s k) ⊆ L ∪ L' :=
+      fun k => ⟨(hs k).1, (hs k).2.1, (hs k).2.2.trans subset_union_left⟩
+    have hS2 : ∀ k, ContDiff ℝ 1 (S g k) ∧ HasCompactSupport (S g k) ∧
+        tsupport (S g k) ⊆ L ∪ L' :=
+      fun k => ⟨(hSg k).1, (hSg k).2.1, (hSg k).2.2.trans subset_union_right⟩
+    have hcauchy : CauchySeq fun k => Λ₀ (S g k) := by
+      rw [Metric.cauchySeq_iff]
+      intro ε hε
+      obtain ⟨k₀, hk₀⟩ := hclose g (S g) (S g) _ hLL hLLU hS2 hS2 hSgt hSgt ε hε
+      exact ⟨k₀, fun m hm n hn => by rw [Real.dist_eq]; exact hk₀ m hm n hn⟩
+    have hlim := Metric.tendsto_atTop.mp hcauchy.tendsto_limUnder
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨k₁, hk₁⟩ := hlim (ε / 2) (half_pos hε)
+    obtain ⟨k₀, hk₀⟩ := hclose g s (S g) _ hLL hLLU hs2 hS2 hsg hSgt (ε / 2) (half_pos hε)
+    refine ⟨max k₀ k₁, fun n hn => ?_⟩
+    have h₁ := hk₁ n (le_of_max_le_right hn)
+    have h₂ := hk₀ n (le_of_max_le_left hn) n (le_of_max_le_left hn)
+    rw [Real.dist_eq] at h₁ ⊢
+    calc |Λ₀ (s n) - limUnder atTop (fun k => Λ₀ (S g k))|
+        ≤ |Λ₀ (s n) - Λ₀ (S g n)| + |Λ₀ (S g n) - limUnder atTop (fun k => Λ₀ (S g k))| :=
+          abs_sub_le _ _ _
+      _ < ε / 2 + ε / 2 := add_lt_add h₂ h₁
+      _ = ε := add_halves ε
+  refine ⟨fun g => limUnder atTop fun k => Λ₀ (S g k), ?_, ?_, ?_, ?_⟩
+  · -- Additivity: `S g + S h` approximates `g + h`.
+    intro g h hg hgc hgU hh hhc hhU
+    obtain ⟨L, hL, hLU, hSg, hSgt⟩ := hS g hg hgc hgU
+    obtain ⟨L', hL', hL'U, hSh, hSht⟩ := hS h hh hhc hhU
+    have h₁ := hstar (g + h) (hg.add hh) (hgc.add hhc)
+      ((tsupport_add g h).trans (union_subset hgU hhU)) (fun k => S g k + S h k) (L ∪ L')
+      (hL.union hL') (union_subset hLU hL'U)
+      (fun k => ⟨(hSg k).1.add (hSh k).1, (hSg k).2.1.add (hSh k).2.1,
+        (tsupport_add (S g k) (S h k)).trans (union_subset_union (hSg k).2.2 (hSh k).2.2)⟩)
+      (hSgt.add hSht)
+    have h₂ := (hstar g hg hgc hgU (S g) L hL hLU hSg hSgt).add
+      (hstar h hh hhc hhU (S h) L' hL' hL'U hSh hSht)
+    refine tendsto_nhds_unique h₁ (h₂.congr fun k => ?_)
+    exact (hadd _ _ (hSg k).1 (hSg k).2.1 ((hSg k).2.2.trans hLU) (hSh k).1 (hSh k).2.1
+      ((hSh k).2.2.trans hL'U)).symm
+  · -- Homogeneity: `c • S g` approximates `c • g`.
+    intro c g hg hgc hgU
+    obtain ⟨L, hL, hLU, hSg, hSgt⟩ := hS g hg hgc hgU
+    have hcs : TendstoUniformly (fun k => c • S g k) (c • g) atTop := by
+      rw [Metric.tendstoUniformly_iff] at hSgt ⊢
+      intro ε hε
+      have hc1 : 0 < ‖c‖ + 1 := by positivity
+      filter_upwards [hSgt (ε / (‖c‖ + 1)) (div_pos hε hc1)] with k hk x
+      show dist (c • g x) (c • S g k x) < ε
+      rw [dist_smul₀]
+      calc ‖c‖ * dist (g x) (S g k x) ≤ ‖c‖ * (ε / (‖c‖ + 1)) :=
+            mul_le_mul_of_nonneg_left (hk x).le (norm_nonneg c)
+        _ < (‖c‖ + 1) * (ε / (‖c‖ + 1)) :=
+            mul_lt_mul_of_pos_right (lt_add_one _) (div_pos hε hc1)
+        _ = ε := by field_simp
+    have h₁ := hstar (c • g) (hg.const_smul c) (hgc.mono (Function.support_const_smul_subset c g))
+      ((closure_mono (Function.support_const_smul_subset c g)).trans hgU) (fun k => c • S g k) L
+      hL hLU (fun k => ⟨(hSg k).1.const_smul c,
+        (hSg k).2.1.mono (Function.support_const_smul_subset c (S g k)),
+        (closure_mono (Function.support_const_smul_subset c (S g k))).trans (hSg k).2.2⟩) hcs
+    have h₂ := (hstar g hg hgc hgU (S g) L hL hLU hSg hSgt).const_mul c
+    refine tendsto_nhds_unique h₁ (h₂.congr fun k => ?_)
+    exact (hhom c _ (hSg k).1 (hSg k).2.1 ((hSg k).2.2.trans hLU)).symm
+  · -- Bound: approximate inside an open `W ⊇ K` with compact closure in `U`.
+    intro K hK hKU
+    obtain ⟨W, hW, hKW, hWU, hWc⟩ := exists_open_between_and_isCompact_closure hK hU hKU
+    obtain ⟨C, hC0, hC⟩ := hbd (closure W) hWc hWU
+    refine ⟨C, fun g hg hgK hg1 => ?_⟩
+    have hgc : HasCompactSupport g := hK.of_isClosed_subset (isClosed_tsupport g) hgK
+    obtain ⟨K', hK', -, hK'W, h, hh, hhg⟩ := happ g W hg hgc hW (hgK.trans hKW)
+    have hlim := hstar g hg hgc (hgK.trans hKU) h K' hK' (hK'W.trans (subset_closure.trans hWU))
+      hh hhg
+    have hC1 : 0 < C + 1 := by linarith
+    refine le_of_forall_pos_le_add fun ε hε => le_of_tendsto hlim ?_
+    filter_upwards [Metric.tendstoUniformly_iff.mp hhg (ε / (C + 1)) (div_pos hε hC1)] with k hk
+    have hbound := hC (h k) (hh k).1 (hh k).2.1 ((hh k).2.2.trans (hK'W.trans subset_closure))
+      (1 + ε / (C + 1)) fun x => by
+        have h₁ := norm_sub_norm_le (h k x) (g x)
+        rw [← dist_eq_norm, dist_comm] at h₁
+        linarith [hg1 x, hk x]
+    have h₃ : C * (ε / (C + 1)) ≤ ε := by
+      rw [mul_div_assoc', div_le_iff₀ hC1]
+      nlinarith
+    calc Λ₀ (h k) ≤ |Λ₀ (h k)| := le_abs_self _
+      _ ≤ C * (1 + ε / (C + 1)) := hbound
+      _ ≤ C + ε := by rw [mul_add, mul_one]; linarith
+  · -- Agreement on `C¹` fields: use the constant sequence.
+    intro g hg hgc hgU
+    have h₁ := hstar g hg.continuous hgc hgU (fun _ => g) (tsupport g) hgc.isCompact hgU
+      (fun _ => ⟨hg, hgc, subset_rfl⟩)
+      (Metric.tendstoUniformly_iff.mpr fun ε hε => Eventually.of_forall fun _ x => by
+        simpa using hε)
+    exact tendsto_nhds_unique h₁ tendsto_const_nhds
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
