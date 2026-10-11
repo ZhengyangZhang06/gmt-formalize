@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "sha256sum .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean",
+        "sSup_nonneg|sSup_le",
+        "theorem (measureReal_mono|MemLp.integrable_norm_rpow|setIntegral_mono_set|integral_indicator_one|setIntegral_eq_zero_of_forall_eq_zero|Continuous.integrable_of_hasCompactSupport|measure_closedBall_lt_top)\\b",
+        "infDist_le_infDist_add_dist|infDist_zero_of_mem|lipschitz_infDist_pt|continuous_infDist_pt|le_infDist|infDist_le_dist_of_mem",
+        "rg -l --hidden --no-ignore -F -e classical_tangent_uniform_lower_density -e classical_tangent_off_plane_mass_decay -e classical_tangent_support_flatness .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Ch04/Submission.lean -o /tmp/ct-a1-independent-2xx_2cv9/olean/GMT/Ch04/Submission.olean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ct-a1-independent-2xx_2cv9/Independent.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Algebra/Order/Archimedean/Real/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-classical-tangent-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-classical-tangent-a1/decomposition-v1.json",
+        "/tmp/ct-a1-independent-2xx_2cv9/Independent.lean",
+        "/tmp/ct-a1-independent-2xx_2cv9/Independent.log"
+      ],
+      "conclusion": "The pinned contract is byte-identical to workspace Contract.lean and Submission.lean; the inspected Mathlib files match the pinned revision. All three exact one-line propositions elaborate independently before child declarations, with autoImplicit disabled. Fresh compilation of the existing child proofs and the parent assembly, taking the two frozen sibling interfaces as explicit hypotheses, succeeds. All four axiom reports contain only propext, Classical.choice and Quot.sound. The three names are bare identifiers, with no reservation or occurrence outside this selected proposal found. Registered dependencies are acyclic; empty child dependency lists are correct because all mathematical inputs are explicit hypotheses. The split is appropriate: the inherited siblings supply the propositions consumed by uniform_lower_density, GF supplies compact finiteness, and support_flatness instantiated with μ = V.weight, S = V.support and a = omega n / 2 combines the other children into exactly ClassicalTangent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "uniform_lower_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type match all hypotheses and radius quantifiers. Compact Lp control supplies one Λ for every nearby centre. The density limit and monotone Ψ give the lower estimate; the explicit positive t₀ yields ρ₀ ≤ R and the claimed omega n / 2 bound. The proof is complete and uses the three contract propositions solely as explicit assumptions, without circular reliance."
+    },
+    {
+      "key": "off_plane_mass_decay",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree, including compact finiteness and allowing n = 0. The supplied cutoff is continuous, compactly supported, zero on P and one on the scaled off-plane region. Measurability and finiteness justify the indicator integral comparison. Approximate-tangent convergence and squeezing prove precisely the stated limit, without assuming support flatness."
+    },
+    {
+      "key": "support_flatness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis of the exact type. The detecting-ball inclusion works for closed balls and α ≤ 1/2; compact finiteness justifies monotonicity of μ.real. The parameter choices and radius doubling give the required supremum bound. The pinned Real.sSup lemmas cover empty sets without an omitted nonemptiness assumption. The proof is complete and independent, consuming lower density and mass decay only through H1 and H2."
+    }
+  ],
+  "required_changes": []
+}

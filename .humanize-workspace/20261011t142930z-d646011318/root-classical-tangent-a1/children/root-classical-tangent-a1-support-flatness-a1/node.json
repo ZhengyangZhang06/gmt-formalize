@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.classical_tangent-a1.support_flatness-a1",
+  "parent_id": "root.classical_tangent-a1",
+  "depth": 2,
+  "title": "Lower density plus vanishing off-plane mass imply support flatness (Simon 6.3(2) and conclusion)",
+  "statement": "Let n, ℓ be natural numbers, E = ℝ^{n+ℓ}, μ a measure on E that is finite on compact sets, S ⊆ E, x ∈ E, P a linear subspace of E, a > 0 and ρ₀ > 0. Assume:\n(H1) μ.real(B_s(ζ)) ≥ a·sⁿ for every ζ ∈ S ∩ B_{ρ₀}(x) and every s ∈ (0, ρ₀];\n(H2) for every ε > 0, (ρⁿ)⁻¹·μ.real(B_ρ(x) ∖ {y : dist(y − x, P) < ερ}) → 0 as ρ ↓ 0.\nThen sSup{ρ⁻¹·dist(y − x, P) : y ∈ S ∩ B_ρ(x)} → 0 as ρ ↓ 0. Here B denotes closed balls, dist(·, P) = infDist(·, P), μ.real(A) = (μ(A)).toReal, and sSup is the real supremum (sSup ∅ = 0).",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (S : Set (Ambient n ℓ)) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)) (a ρ₀ : ℝ), IsFiniteMeasureOnCompacts μ → 0 < a → 0 < ρ₀ → (∀ ζ ∈ S ∩ closedBall x ρ₀, ∀ s : ℝ, 0 < s → s ≤ ρ₀ → a * s ^ n ≤ μ.real (closedBall ζ s)) → (∀ ε : ℝ, 0 < ε → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * μ.real (closedBall x ρ \\ {y | infDist (y - x) (P : Set (Ambient n ℓ)) < ε * ρ})) (𝓝[>] 0) (𝓝 0)) → Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) '' (S ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "classical_tangent_support_flatness",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-classical-tangent-a1-support-flatness-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.classical_tangent-a1.uniform_lower_density-a1",
+  "parent_id": "root.classical_tangent-a1",
+  "depth": 2,
+  "title": "Uniform lower mass bound at support points near x (Simon 6.3(1)) from Lᵖ monotonicity, density and Θ ≥ 1",
+  "statement": "Assume the contract Props LpMonotonicity (Simon 4.5–4.8 with the corrected κ = (p−n)/(4p)), LpDensity (4.9) and LpSupportRepresentation (4.10(1)). Let n ≥ 1 and ℓ ≥ 0 be integers, V a rectifiable n-varifold in ℝ^{n+ℓ} with weight μ = μ_V, U ⊆ ℝ^{n+ℓ} open, H a generalized mean curvature of V in U (HasMeanCurvatureIn U H), θ ≥ 1 μ_V-a.e. in U (MultiplicityGE 1 U), p > n real with H ∈ L^p_loc(μ_V) in U (IsLocallyLp U H p), and x ∈ U. Then there is ρ₀ > 0 such that μ.real(B_s(ζ)) ≥ (ω_n/2)·sⁿ for every ζ ∈ spt V ∩ B_{ρ₀}(x) and every s ∈ (0, ρ₀]. Here B_s(ζ) is the closed ball, ω_n = omega n, spt V = V.support and μ.real(A) = (μ(A)).toReal.",
+  "lean_statement": "LpMonotonicity → LpDensity → LpSupportRepresentation → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (p : ℝ) (x : Ambient n ℓ), 0 < n → IsOpen U → V.HasMeanCurvatureIn U H → V.MultiplicityGE 1 U → (n : ℝ) < p → V.IsLocallyLp U H p → x ∈ U → ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ ∀ ζ ∈ V.support ∩ closedBall x ρ₀, ∀ s : ℝ, 0 < s → s ≤ ρ₀ → omega n / 2 * s ^ n ≤ V.weight.real (closedBall ζ s)",
+  "lean_name": "classical_tangent_uniform_lower_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-classical-tangent-a1-uniform-lower-density-a1-a1"
+}
