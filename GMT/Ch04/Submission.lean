@@ -434,6 +434,50 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- Simon §5 (p. 96), the weighted radial field `X(x) = h(x) γ(r) (x - ξ)`, `r = |x - ξ|`: if
+`h ∈ C¹(U)`, the profile `γ ∈ C¹(ℝ)` is constant on `(-∞, a]` (`a > 0`) and vanishes on
+`[b, ∞)`, and `spt h ∩ B_b(ξ) ⊆ U`, then `X ∈ C¹_c(U; ℝ^{n+ℓ})`; in fact
+`tsupport X ⊆ spt h ∩ B_b(ξ)`. -/
+theorem Submission.weighted_mono_radial_test_field : ∀ (n ℓ : ℕ) (U : Set (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ : Ambient n ℓ) (a b : ℝ), IsOpen U → ContDiffOn ℝ 1 h U → ContDiff ℝ 1 γ → 0 < a → (∀ t, t ≤ a → γ t = γ 0) → (∀ t, b ≤ t → γ t = 0) → tsupport h ∩ closedBall ξ b ⊆ U → IsTestField U (fun x ↦ (h x * γ ‖x - ξ‖) • (x - ξ)) := by
+  intro n ℓ U h γ ξ a b hU hh hγ ha hγa hγb hKU
+  -- `K = spt h ∩ B_b(ξ)` is compact: a closed subset of the compact ball `B_b(ξ)`.
+  have hK : IsCompact (tsupport h ∩ closedBall ξ b) :=
+    (isCompact_closedBall ξ b).inter_left (isClosed_tsupport h)
+  -- `X = 0` off `K`: off `spt h` since `h = 0`, outside `B_b(ξ)` since `γ(|x - ξ|) = 0`.
+  have hzero : ∀ x, x ∉ tsupport h ∩ closedBall ξ b → (h x * γ ‖x - ξ‖) • (x - ξ) = 0 := by
+    intro x hx
+    by_cases hxh : x ∈ tsupport h
+    · have hxb : b < ‖x - ξ‖ := by
+        rw [← dist_eq_norm, ← not_le, ← mem_closedBall]
+        exact fun hb ↦ hx ⟨hxh, hb⟩
+      rw [hγb _ hxb.le, mul_zero, zero_smul]
+    · rw [image_eq_zero_of_notMem_tsupport hxh, zero_mul, zero_smul]
+  have hsupp : tsupport (fun x ↦ (h x * γ ‖x - ξ‖) • (x - ξ)) ⊆ tsupport h ∩ closedBall ξ b :=
+    closure_minimal (fun x hx ↦ by_contra fun hxK ↦ hx (hzero x hxK)) hK.isClosed
+  refine ⟨?_, HasCompactSupport.intro hK hzero, hsupp.trans hKU⟩
+  rw [contDiff_iff_contDiffAt]
+  intro x₀
+  by_cases hx₀ : x₀ ∈ tsupport h ∩ closedBall ξ b
+  · -- At `x₀ ∈ K ⊆ U`: `h` is `C¹` near `x₀`, and so is `γ(|x - ξ|)`.
+    have hh₀ : ContDiffAt ℝ 1 h x₀ := hh.contDiffAt (hU.mem_nhds (hKU hx₀))
+    have hγ₀ : ContDiffAt ℝ 1 (fun x ↦ γ ‖x - ξ‖) x₀ := by
+      by_cases hξ : x₀ = ξ
+      · -- Near `ξ`, `|x - ξ| < a`, so `γ(|x - ξ|) = γ(0)` is constant.
+        subst hξ
+        refine (contDiffAt_const (c := γ 0)).congr_of_eventuallyEq ?_
+        filter_upwards [ball_mem_nhds x₀ ha] with x hx
+        rw [mem_ball, dist_eq_norm] at hx
+        exact hγa _ hx.le
+      · -- Away from `ξ` the norm is smooth at `x - ξ ≠ 0`.
+        have hr : ContDiffAt ℝ 1 (fun x ↦ ‖x - ξ‖) x₀ :=
+          (contDiffAt_norm ℝ (sub_ne_zero.mpr hξ)).comp x₀ (contDiffAt_id.sub contDiffAt_const)
+        exact hγ.contDiffAt.comp x₀ hr
+    exact (hh₀.mul hγ₀).smul (contDiffAt_id.sub contDiffAt_const)
+  · -- Off the closed set `K`, `X` vanishes on a neighbourhood of `x₀`.
+    refine (contDiffAt_const (c := (0 : Ambient n ℓ))).congr_of_eventuallyEq ?_
+    filter_upwards [hK.isClosed.isOpen_compl.mem_nhds hx₀] with x hx
+    exact hzero x hx
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
