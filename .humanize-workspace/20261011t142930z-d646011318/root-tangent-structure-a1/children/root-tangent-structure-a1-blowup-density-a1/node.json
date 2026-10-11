@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.blowup_density-a1",
+  "parent_id": "root.tangent_structure-a1",
+  "depth": 2,
+  "title": "Closed-ball density from the weighted blow-up (Simon Ch. 3, 1.8(2))",
+  "statement": "Let n ≥ 1, ℓ ≥ 0, μ a Borel measure on E = ℝ^{n+ℓ} that is finite on compact sets, x ∈ E, P an n-dimensional linear subspace and c > 0 such that t⁻ⁿ∫ f(t⁻¹(y − x)) dμ(y) → c∫_P f dHⁿ as t ↓ 0 for every f ∈ C_c(E, ℝ). Then μ(B_ρ(x))/(ω_n ρⁿ) → c as ρ ↓ 0, where B_ρ(x) is the closed ball, μ(B_ρ(x)) is taken as a real number (μ.real) and ω_n = omega n.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)) (c : ℝ), 0 < n → IsFiniteMeasureOnCompacts μ → Module.finrank ℝ P = n → 0 < c → (∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y, f (t⁻¹ • (y - x)) ∂μ) (𝓝[>] 0) (𝓝 (c * ∫ y in (P : Set (Ambient n ℓ)), f y ∂μHE[n]))) → Tendsto (fun ρ : ℝ ↦ μ.real (closedBall x ρ) / (omega n * ρ ^ n)) (𝓝[>] 0) (𝓝 c)",
+  "lean_name": "ts_blowup_closedBall_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-blowup-density-a1-a1"
+}
