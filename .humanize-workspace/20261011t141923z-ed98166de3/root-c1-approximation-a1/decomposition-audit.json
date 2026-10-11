@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem LipschitzWith.ae_differentiableAt|theorem measurableSet_of_differentiableAt|theorem measurable_fderiv|theorem tendstoUniformlyOn_of_ae_tendsto|theorem MeasurableSet.exists_isClosed_sdiff_lt|theorem Measurable.iSup|theorem IsSeparable.exists_countable_dense_subset|theorem LocallyFinite.isClosed_iUnion|theorem LocallyFinite.continuousOn_iUnion|theorem addHaar_sphere_of_ne_zero|innerSL_apply_apply|toDual_symm_apply",
+        "lusin|luzin|egorov|egoroff|remainder_modulus|c1approx_",
+        "^((local|scoped|noncomputable) )?instance|attribute.*instance|^import|^public import|^class",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean checks/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean checks/Review_adv_child1.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean checks/Review_adv_child02.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean checks/LibraryAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/LocallyFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/LinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-c1-approximation-a1/parent-child-handoff.json",
+        "/tmp/c1approx-independent-audit-26v38dkn/checks/NodeChallenge_00.lean",
+        "/tmp/c1approx-independent-audit-26v38dkn/checks/NodeChallenge_01.lean",
+        "/tmp/c1approx-independent-audit-26v38dkn/checks/NodeChallenge_02.lean",
+        "/tmp/c1approx-independent-audit-26v38dkn/checks/Assembly.lean",
+        "/tmp/c1approx-independent-audit-26v38dkn/checks/Review_adv_child1.lean",
+        "/tmp/c1approx-independent-audit-26v38dkn/checks/Review_adv_child02.lean",
+        "/tmp/c1approx-independent-audit-26v38dkn/checks/LibraryAxioms.lean"
+      ],
+      "conclusion": "The split appropriately isolates three substantial obligations of the selected C1Approximation proof. Snapshot searches found the required supporting APIs but no existing project counterparts of these three children. Pinned package revisions were verified, and finite-measure Lusin compatibility and axioms were independently checked. All three regenerated comparator challenges elaborate against a fresh frozen Submission without child implementations. The supplied scratch proofs have verbatim child types; independent reruns of all three proofs and the parent assembly succeed using only propext, Classical.choice and Quot.sound. The assembly proves exactly C1Approximation from these types and the declared Rademacher/Whitney dependencies. Typeclass checks confirm the intended real continuous linear functional, Euclidean volume, empty real supremum and dimension-independent positive-radius sphere lemma. All names are bare identifiers, remain unreserved by other branches, and the dependency graph remains acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lusin_sigma_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches all prose hypotheses and conclusions. Finite-measure scalar Lusin, coordinate intersections and the extra inner-approximation set handle every m, including zero. Locally finite shells give global closedness and continuity, with summable measure loss below ε. The n = 0 case is covered correctly. The supplied proof is complete, independently usable and non-circular."
+    },
+    {
+      "key": "remainder_modulus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type correctly permits arbitrary C and assumes only Lipschitz f and measurable ν. The countable supremum is measurable and bounded pointwise by K + ‖ν(x)‖; empty indexing is handled. Density proves remainder domination, and the stated Fréchet derivative supplies convergence through its little-o estimate. innerSL has the intended continuous-linear-map type. No measurability of C or circular theorem use is hidden."
+    },
+    {
+      "key": "egorov_closed_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the Borel hypotheses, pointwise convergence and compact-uniform conclusion. Egorov and closed inner approximation apply on finite-measure shells. Local finiteness makes their closed union closed; the two summable losses total at most ε/2. Compact subsets meet finitely many shells, so uniform convergence follows by a finite maximum. The proof covers n = 0 and requires neither another child nor the parent theorem."
+    }
+  ],
+  "required_changes": []
+}
