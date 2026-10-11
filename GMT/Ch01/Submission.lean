@@ -329,3 +329,16 @@ def RadonCompactness : Prop :=
 theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
 
 end GMT.Ch01
+
+
+/-- Simon Ch. 1, Theorem 4.14, from the pinned `Poincare.SimonGMT` library: `simon_theorem_4_14`
+has the same hypotheses (`IsLocallyBoundedCcFunctional L` unfolds to the bounded-above
+condition) and integrates against `hμ.toCaratheodoryMeasure`, which is `caratheodoryMeasure μ`.
+Its unit-norm clause holds a.e. for that measure, which agrees with `μ` on all sets
+(`IsRadonOuterMeasure.toCaratheodoryMeasure_apply_all`), hence `μ`-a.e. -/
+theorem Submission.riesz_vector : RieszVector := by
+  intro X _ _ _ H _ _ _ L hL
+  obtain ⟨μ, hμ, ν, hν, hunit, hrep⟩ := simon_theorem_4_14 L hL
+  refine ⟨μ, hμ, ν, hν, ?_, hrep⟩
+  rw [ae_iff] at hunit ⊢
+  rwa [hμ.toCaratheodoryMeasure_apply_all] at hunit
