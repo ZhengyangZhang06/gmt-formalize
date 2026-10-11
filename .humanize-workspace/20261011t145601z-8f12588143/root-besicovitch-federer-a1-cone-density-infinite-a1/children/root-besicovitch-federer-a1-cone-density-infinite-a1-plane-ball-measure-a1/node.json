@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_density_infinite-a1.plane_ball_measure-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_density_infinite-a1",
+  "depth": 3,
+  "title": "Hausdorff measure of closed discs in an n-plane (Hⁿ(W ∩ B̄(y, ρ)) = ofReal(ρⁿ)·ω, ω < ∞)",
+  "statement": "Let n, N ∈ ℕ and let W be a linear subspace of ℝ^N = EuclideanSpace ℝ (Fin N) with dim W = n. Let Hⁿ := μHE[n] (Mathlib's Euclidean-normalized n-dimensional Hausdorff measure on ℝ^N), B̄(y, ρ) := {x : |x − y| ≤ ρ} and ω := Hⁿ(W ∩ B̄(0, 1)). Then ω < ∞, and for every y ∈ W and every real ρ ≥ 0, Hⁿ(W ∩ B̄(y, ρ)) = ENNReal.ofReal(ρⁿ) · ω.",
+  "lean_statement": "∀ (n N : ℕ) (W : Submodule ℝ (Rn N)), finrank ℝ W = n → μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall 0 1) < ∞ ∧ ∀ y ∈ W, ∀ ρ : ℝ, 0 ≤ ρ → μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall y ρ) = ENNReal.ofReal (ρ ^ n) * μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall 0 1)",
+  "lean_name": "bf_plane_closedBall_measure_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-ball-measure-a1-a1"
+}

@@ -335,6 +335,42 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Hausdorff measure of closed discs in an `n`-plane** (Simon Ch. 1, Theorem 2.9,
+`chapter-01.txt` lines 445–470: `Lⁿ = Hⁿ` on `ℝⁿ`, transported to an `n`-dimensional subspace).
+For a subspace `W ⊆ ℝᴺ` with `dim W = n`, `ω = Hⁿ(W ∩ B̄(0, 1)) < ∞` and
+`Hⁿ(W ∩ B̄(y, ρ)) = ρⁿ ω` for every `y ∈ W` and `ρ ≥ 0`. The inclusion `W → ℝᴺ` is an isometry
+mapping the intrinsic ball `B̄_W(y, ρ)` onto `W ∩ B̄(y, ρ)`, and `μHE[n]` on `W` is an additive
+Haar measure, finite on the compact unit ball and scaling closed balls by `ρⁿ`. -/
+theorem Submission.bf_plane_closedBall_measure_eq : ∀ (n N : ℕ) (W : Submodule ℝ (Rn N)), finrank ℝ W = n → μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall 0 1) < ∞ ∧ ∀ y ∈ W, ∀ ρ : ℝ, 0 ≤ ρ → μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall y ρ) = ENNReal.ofReal (ρ ^ n) * μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall 0 1) := by
+  intro n N W hW
+  subst hW
+  -- The ambient disc `W ∩ B̄(y, ρ)` is the image of the intrinsic ball `B̄_W(y, ρ)`.
+  have himg : ∀ (y : W) (ρ : ℝ), (W : Set (Rn N)) ∩ Metric.closedBall (y : Rn N) ρ =
+      Subtype.val '' Metric.closedBall y ρ := by
+    intro y ρ
+    ext x
+    constructor
+    · rintro ⟨hxW, hx⟩
+      exact ⟨⟨x, hxW⟩, by simpa [Metric.mem_closedBall, Subtype.dist_eq] using hx, rfl⟩
+    · rintro ⟨z, hz, rfl⟩
+      exact ⟨z.2, by simpa [Metric.mem_closedBall, Subtype.dist_eq] using hz⟩
+  -- The inclusion is an isometry, so `Hⁿ(W ∩ B̄(y, ρ))` is the intrinsic `μHE[n]` of the ball.
+  have hmeas : ∀ (y : W) (ρ : ℝ),
+      μHE[finrank ℝ W] ((W : Set (Rn N)) ∩ Metric.closedBall (y : Rn N) ρ) =
+        (μHE[finrank ℝ W] : Measure W) (Metric.closedBall y ρ) := by
+    intro y ρ
+    rw [himg, isometry_subtype_coe.euclideanHausdorffMeasure_image]
+  have h01 := hmeas 0 1
+  simp only [ZeroMemClass.coe_zero] at h01
+  refine ⟨?_, ?_⟩
+  · -- `μHE[n]` is an additive Haar measure on `W`, hence finite on the compact unit ball.
+    rw [h01]
+    exact (isCompact_closedBall _ _).measure_lt_top
+  · -- Scaling of closed balls under the additive Haar measure `μHE[n]` on `W`.
+    intro y hy ρ hρ
+    rw [show y = ((⟨y, hy⟩ : W) : Rn N) from rfl, hmeas ⟨y, hy⟩ ρ, h01,
+      Measure.addHaar_closedBall' _ _ hρ]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
