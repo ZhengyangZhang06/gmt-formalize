@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.density_ge_one-a1",
+  "parent_id": "root.density_one_regularity-a1",
+  "depth": 2,
+  "title": "Density exists and is at least 1 on spt V under L^p mean curvature (Simon Ch. 4, 4.1-4.10(1))",
+  "statement": "Let n >= 1, U an open subset of R^(n+l), V = v(M, theta) a rectifiable n-varifold in U with weight mu, H : R^(n+l) -> R^(n+l) with V having generalized mean curvature H in U, p > n real with H locally in L^p(mu) on U (integral over K of |H|^p dmu finite for compact K contained in U), and theta >= 1 mu-a.e. Then for every xi in spt V there is a real t >= 1 with Theta^n(mu, xi) = t, i.e. mu(B_r(xi)) / (omega_n r^n) -> t as r -> 0+ (closed balls; V.HasDensity xi t).",
+  "lean_statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), 1 ≤ n → IsOpen U → (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ∀ x ∈ V.support, ∃ t : ℝ, 1 ≤ t ∧ V.HasDensity x t",
+  "lean_name": "one_le_density_on_support_of_locallyLp",
+  "depends_on": [
+    "root.density_one_regularity-a1.tangent_ae-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_regularity-a1.tangent_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-density-ge-one-a1-a1"
+}

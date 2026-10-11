@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.holder_class-a1",
+  "parent_id": "root.density_one_regularity-a1",
+  "depth": 2,
+  "title": "Finite scaled C^{1,alpha} norm gives the Hoelder class C^{1,alpha}(W)",
+  "statement": "Let u : R^n -> R^l, B and W subsets of R^n with W contained in the interior of B, alpha > 0 and rho > 0. Suppose u is C^1 on B (ContDiffOn R 1 u B) and scaledC1AlphaNorm u B alpha rho = rho^{-1} sup_B |u| + sup_B |D_B u| + rho^alpha sup_{x != y in B} |D_B u(x) - D_B u(y)| / |x - y|^alpha < infinity (D_B u = derivative within B, |.| = Hilbert-Schmidt norm on linear maps, sums and suprema in [0, infinity]). Then IsHolderCkα 1 alpha u W: u is C^1 on W, there is a real Bd with ||iteratedFDeriv^i u(x)|| <= Bd for i in {0, 1} and x in W, and there is a real K with ||iteratedFDeriv^1 u(x) - iteratedFDeriv^1 u(y)|| <= K |x - y|^alpha for all x, y in W.",
+  "lean_statement": "∀ {n ℓ : ℕ} (u : Rn n → Rn ℓ) (B W : Set (Rn n)) (α ρ : ℝ), 0 < α → 0 < ρ → ContDiffOn ℝ 1 u B → W ⊆ interior B → scaledC1AlphaNorm u B α ρ ≠ ∞ → IsHolderCkα 1 α u W",
+  "lean_name": "isHolderCk_one_of_scaledC1AlphaNorm_ne_top",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-holder-class-a1-a1"
+}

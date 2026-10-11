@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.open_graph_domain-a1",
+  "parent_id": "root.density_one_regularity-a1",
+  "depth": 2,
+  "title": "Open graph domain from the closed-ball support identity of 5.2",
+  "statement": "Let S be a subset of R^(n+l), q a linear isometry of R^(n+l), s > 0, and u : R^n -> R^l continuous on the closed ball B^n_s(0) with u(0) = 0, and suppose S cap B_s(0) = q(graph_{B^n_s(0)} u) cap B_s(0) (closed balls; graph_D u = {(x, u(x)) : x in D}, first n coordinates x, last l coordinates u(x)). Then there is an open set W in R^n with 0 in W, W contained in the open ball B'^n_s(0), and q^{-1}(S) cap B'_s(0) = graph_W u (B' = open ball).",
+  "lean_statement": "∀ {n ℓ : ℕ} (S : Set (Amb n ℓ)) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (s : ℝ), 0 < s → ContinuousOn u (closedBall 0 s) → u 0 = 0 → S ∩ closedBall 0 s = q '' graphOver u (closedBall 0 s) ∩ closedBall 0 s → ∃ W : Set (Rn n), IsOpen W ∧ (0 : Rn n) ∈ W ∧ W ⊆ ball 0 s ∧ q.symm '' S ∩ ball 0 s = graphOver u W",
+  "lean_name": "exists_open_graph_domain_of_closedBall_graph",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-open-graph-domain-a1-a1"
+}
