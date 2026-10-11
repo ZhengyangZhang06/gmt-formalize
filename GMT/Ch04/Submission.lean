@@ -434,6 +434,41 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Ch. 3, Remark 1.5(1) and Definition 1.7 (pp. 71, 74); Ch. 4, 1.3 (p. 86).** The approximate
+tangent space `T_x V` is unique when it exists: if `P` and `Q` both satisfy `V.IsApproxTangentAt x`
+(with possibly different multiplicities `c, c' > 0`), then `P = Q`. -/
+theorem Submission.ts_approx_tangent_plane_unique : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (x : Ambient n ℓ) (P Q : Submodule ℝ (Ambient n ℓ)), V.IsApproxTangentAt x P → V.IsApproxTangentAt x Q → P = Q := by
+  intro n ℓ V x P Q ⟨hP, c, hc, hPlim⟩ ⟨hQ, c', hc', hQlim⟩
+  -- `c Hⁿ ⌞ P` and `c' Hⁿ ⌞ Q` are regular with the same `C_c` integrals (uniqueness of the
+  -- blow-up limit as `λ ↓ 0`), hence equal.
+  have hmeas : ENNReal.ofReal c • (μHE[n] : Measure (Ambient n ℓ)).restrict P =
+      ENNReal.ofReal c' • (μHE[n] : Measure (Ambient n ℓ)).restrict Q := by
+    have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule hP
+    have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule hQ
+    have : (ENNReal.ofReal c • (μHE[n] : Measure (Ambient n ℓ)).restrict P).Regular :=
+      .smul ENNReal.ofReal_ne_top
+    have : (ENNReal.ofReal c' • (μHE[n] : Measure (Ambient n ℓ)).restrict Q).Regular :=
+      .smul ENNReal.ofReal_ne_top
+    refine Measure.ext_of_integral_eq_on_compactlySupported fun f ↦ ?_
+    rw [integral_smul_measure, integral_smul_measure, ENNReal.toReal_ofReal hc.le,
+      ENNReal.toReal_ofReal hc'.le, smul_eq_mul, smul_eq_mul]
+    exact tendsto_nhds_unique (hPlim f) (hQlim f)
+  -- A nonzero multiple of a measure has the same support, and `spt (Hⁿ ⌞ P) = P`.
+  have hsupp (a : ℝ≥0∞) (μ : Measure (Ambient n ℓ)) (ha : a ≠ 0) : (a • μ).support = μ.support :=
+    Measure.smul_absolutelyContinuous.support_mono.antisymm
+      (Measure.absolutelyContinuous_smul ha).support_mono
+  apply SetLike.ext'
+  calc (P : Set (Ambient n ℓ))
+      = ((μHE[n] : Measure (Ambient n ℓ)).restrict P).support :=
+        (Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hP).symm
+    _ = (ENNReal.ofReal c • (μHE[n] : Measure (Ambient n ℓ)).restrict P).support :=
+        (hsupp _ _ (ENNReal.ofReal_pos.2 hc).ne').symm
+    _ = (ENNReal.ofReal c' • (μHE[n] : Measure (Ambient n ℓ)).restrict Q).support := by
+        rw [hmeas]
+    _ = ((μHE[n] : Measure (Ambient n ℓ)).restrict Q).support :=
+        hsupp _ _ (ENNReal.ofReal_pos.2 hc').ne'
+    _ = Q := Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hQ
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
