@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2616e3fc17536c75491d1e0215e897877edaf4f4220799743071885a0431add7",
+  "git_delta": {
+    "base_commit": "56873fdd004b4b589d6f4031f27f13b5d83f8989",
+    "candidate_commit": "88882e115259d0a39da9a411fe4fa36619713353",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "c1_injective_fderiv_local_lower_bounds",
+    "diff_sha256": "b2130c149653d0ba07d584f0966a7c47a86d41fd4c8e9b42c5dad3616eeaf13a",
+    "source_sha256": "db5b1bc1db7b60599166b362ba67c98e6446563cac4e0ea7e743ffe3f8007776",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.c1_injective_fderiv_local_lower_bounds",
+      "statement": "∀ (n p : ℕ) (G : Rn n → Rn p) (U : Set (Rn n)), IsOpen U → ContDiffOn ℝ 1 G U → ∀ x ∈ U, Function.Injective (fderiv ℝ G x) → ∃ r : ℝ, 0 < r ∧ Metric.closedBall x r ⊆ U ∧ ∃ c : ℝ, 0 < c ∧ (∀ z ∈ Metric.closedBall x r, ∀ z' ∈ Metric.closedBall x r, c * ‖z - z'‖ ≤ ‖G z - G z'‖) ∧ ∀ z ∈ Metric.closedBall x r, ∀ v : Rn n, c * ‖v‖ ≤ ‖fderiv ℝ G z v‖",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
