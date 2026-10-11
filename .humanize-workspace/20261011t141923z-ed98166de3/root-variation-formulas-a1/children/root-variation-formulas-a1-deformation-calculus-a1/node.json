@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.deformation_calculus-a1",
+  "parent_id": "root.variation_formulas-a1",
+  "depth": 2,
+  "title": "Calculus of admissible deformations: vanishing off K, joint regularity of Dφ_t(x), and mixed partials ∂_t Dφ = DX, ∂²_t Dφ = DZ",
+  "statement": "Let N ∈ ℕ, U, K ⊆ ℝᴺ and φ : ℝ → ℝᴺ → ℝᴺ. Put X := initialVelocity φ, Z := initialAcceleration φ and A(t,x) := fderiv ℝ (φ t) x. (V) If IsAdmissibleDeformation r U K φ for some r ∈ ℕ∞, then X(x) = 0, Z(x) = 0, DX(x) = 0 and DZ(x) = 0 for every x ∉ K. (C2) If IsAdmissibleDeformation 2 U K φ, then (t,x) ↦ A(t,x) is C¹ at every (t,x) ∈ (−1,1) × U, and for every y ∈ U we have A(0,y) = I and t ↦ A(t,y) has derivative DX(y) at t = 0. (C3) If IsAdmissibleDeformation 3 U K φ, then (t,x) ↦ A(t,x) is C² at every (t,x) ∈ (−1,1) × U, and for every y ∈ U, t ↦ A(t,y) is differentiable at every t in a neighbourhood of 0 and t ↦ deriv (s ↦ A(s,y)) t has derivative DZ(y) at t = 0.",
+  "lean_statement": "∀ (N : ℕ) (U K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), (∀ r : ℕ∞, IsAdmissibleDeformation r U K φ → ∀ x, x ∉ K → initialVelocity φ x = 0 ∧ initialAcceleration φ x = 0 ∧ fderiv ℝ (initialVelocity φ) x = 0 ∧ fderiv ℝ (initialAcceleration φ) x = 0) ∧ (IsAdmissibleDeformation 2 U K φ → (∀ t ∈ Ioo (-1 : ℝ) 1, ∀ x ∈ U, ContDiffAt ℝ 1 (fun p : ℝ × Rn N ↦ fderiv ℝ (φ p.1) p.2) (t, x)) ∧ ∀ y ∈ U, fderiv ℝ (φ 0) y = 1 ∧ HasDerivAt (fun t ↦ fderiv ℝ (φ t) y) (fderiv ℝ (initialVelocity φ) y) 0) ∧ (IsAdmissibleDeformation 3 U K φ → (∀ t ∈ Ioo (-1 : ℝ) 1, ∀ x ∈ U, ContDiffAt ℝ 2 (fun p : ℝ × Rn N ↦ fderiv ℝ (φ p.1) p.2) (t, x)) ∧ ∀ y ∈ U, (∀ᶠ t in 𝓝 0, DifferentiableAt ℝ (fun s ↦ fderiv ℝ (φ s) y) t) ∧ HasDerivAt (deriv (fun s ↦ fderiv ℝ (φ s) y)) (fderiv ℝ (initialAcceleration φ) y) 0)",
+  "lean_name": "variation_deformation_calculus",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-deformation-calculus-a1-a1"
+}

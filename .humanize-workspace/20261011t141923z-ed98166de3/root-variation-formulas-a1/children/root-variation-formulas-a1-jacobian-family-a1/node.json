@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.jacobian_family-a1",
+  "parent_id": "root.variation_formulas-a1",
+  "depth": 2,
+  "title": "Family Jacobian g(t,(x,P)) = √det(I − P + P Dφ_t(x)* Dφ_t(x) P): smoothness at t = 0 and t-derivatives equal to the variation integrands",
+  "statement": "Let N ∈ ℕ, U, K ⊆ ℝᴺ and φ : ℝ → ℝᴺ → ℝᴺ. Put A(t,x) := fderiv ℝ (φ t) x and define g : ℝ × (ℝᴺ × L(ℝᴺ)) → ℝ by g(t,(x,P)) := √det(I − P + P A(t,x)* A(t,x) P), the determinant of an endomorphism of ℝᴺ. Let X := initialVelocity φ and P_y := tangentProjection M y. (F2) Suppose IsAdmissibleDeformation 2 U K φ. Then g is C¹ at (0,(x,P)) for every x ∈ U and every P ∈ L(ℝᴺ) with P ∘ P = P. Moreover, for every M ⊆ ℝᴺ and y ∈ U, t ↦ g(t,(y,P_y)) has derivative tangentialDivergence M X y at 0. (F3) Suppose IsAdmissibleDeformation 3 U K φ. Then g is C² at (0,(x,P)) for every x ∈ U and P with P ∘ P = P. Moreover, for every M ⊆ ℝᴺ and y ∈ U, t ↦ deriv (s ↦ g(s,(y,P_y))) t has derivative secondVariationIntegrand M φ y at 0. (FV) If IsAdmissibleDeformation r U K φ for some r, then tangentialDivergence M X y = 0 and secondVariationIntegrand M φ y = 0 for every M ⊆ ℝᴺ and y ∉ K.",
+  "lean_statement": "∀ (N : ℕ) (U K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), let g : ℝ × (Rn N × (Rn N →L[ℝ] Rn N)) → ℝ := fun p ↦ Real.sqrt ((1 - p.2.2 + p.2.2 ∘L ContinuousLinearMap.adjoint (fderiv ℝ (φ p.1) p.2.1) ∘L fderiv ℝ (φ p.1) p.2.1 ∘L p.2.2).det); (IsAdmissibleDeformation 2 U K φ → (∀ x ∈ U, ∀ P : Rn N →L[ℝ] Rn N, P ∘L P = P → ContDiffAt ℝ 1 g (0, (x, P))) ∧ ∀ (M : Set (Rn N)) (y : Rn N), y ∈ U → HasDerivAt (fun t ↦ g (t, (y, tangentProjection M y))) (tangentialDivergence M (initialVelocity φ) y) 0) ∧ (IsAdmissibleDeformation 3 U K φ → (∀ x ∈ U, ∀ P : Rn N →L[ℝ] Rn N, P ∘L P = P → ContDiffAt ℝ 2 g (0, (x, P))) ∧ ∀ (M : Set (Rn N)) (y : Rn N), y ∈ U → HasDerivAt (fun t ↦ deriv (fun s ↦ g (s, (y, tangentProjection M y))) t) (secondVariationIntegrand M φ y) 0) ∧ ∀ r : ℕ∞, IsAdmissibleDeformation r U K φ → ∀ (M : Set (Rn N)) (y : Rn N), y ∉ K → tangentialDivergence M (initialVelocity φ) y = 0 ∧ secondVariationIntegrand M φ y = 0",
+  "lean_name": "variation_jacobian_family",
+  "depends_on": [
+    "root.variation_formulas-a1.gram_det_derivatives-a1",
+    "root.variation_formulas-a1.deformation_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.variation_formulas-a1.gram_det_derivatives-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.variation_formulas-a1.deformation_calculus-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-jacobian-family-a1-a1"
+}

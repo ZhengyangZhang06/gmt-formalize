@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.image_area_formula-a1",
+  "parent_id": "root.variation_formulas-a1",
+  "depth": 2,
+  "title": "Area formula for injective C¹ images of Borel subsets of a C¹ submanifold",
+  "statement": "Let n, N, N′ ∈ ℕ (ℝᵈ = EuclideanSpace ℝ (Fin d)) and let M ⊆ ℝᴺ be an n-dimensional C¹ Simon submanifold (IsSimonSubmanifold (E := ℝⁿ) 1 M). Assume (hT): for all V ⊆ ℝⁿ, W ⊆ ℝᴺ and ψ : ℝⁿ → ℝᴺ with IsSimonLocalRepresentation 1 M V W ψ, and every x ∈ V, tangentSpace M (ψ x) = range Dψ(x). Let S ⊆ M be a Borel set and f : ℝᴺ → ℝ^{N′} a map that is differentiable at every y ∈ S, has injective derivative Df(y) for every y ∈ S, and is injective on S. Then μHE[n](f(S)) = ∫⁻_{y∈S} ofReal(areaJacobian(Df(y) ∘ ι_y)) dμHE[n](y). Here ι_y : tangentSpace M y → ℝᴺ is the inclusion (subtypeL) and areaJacobian(L) = √det(L*L).",
+  "lean_statement": "∀ (n N N' : ℕ) (M S : Set (Rn N)) (f : Rn N → Rn N'), Chapter02.IsSimonSubmanifold (E := Rn n) 1 M → (∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → MeasurableSet S → S ⊆ M → (∀ y ∈ S, DifferentiableAt ℝ f y) → (∀ y ∈ S, Function.Injective (fderiv ℝ f y)) → InjOn f S → μHE[n] (f '' S) = ∫⁻ y in S, ENNReal.ofReal (areaJacobian ((fderiv ℝ f y).comp (tangentSpace M y).subtypeL)) ∂μHE[n]",
+  "lean_name": "variation_submanifold_image_area",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-image-area-formula-a1-a1"
+}
