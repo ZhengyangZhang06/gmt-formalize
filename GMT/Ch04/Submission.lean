@@ -499,6 +499,60 @@ theorem Submission.trace_scalar_add_rankOne_comp_starProjection : ∀ (n ℓ : �
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
+/-- **Pointwise tangential divergence of the weighted radial field** (Simon Ch. 4, 3.2 and 5.1).
+If `dim T_x V = n`, `h` is differentiable at `x` and `γ` is `C¹`, then for
+`X(y) = h(y) γ(|y - ξ|)(y - ξ)` and `r = |x - ξ|`,
+`div_M X(x) = h(x)(n γ(r) + r γ'(r)(1 - |D^⊥r|²)) + γ(r) (x - ξ) · ∇^M h(x)`. -/
+theorem Submission.tangentialDiv_weighted_radial_field : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ x : Ambient n ℓ), Module.finrank ℝ (V.tangentSpace x) = n → DifferentiableAt ℝ h x → ContDiff ℝ 1 γ → V.tangentialDiv (fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ)) x = h x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient h x) := by
+  intro n ℓ V h γ ξ x hdim hh hγ
+  -- `X = h • g` with `g(y) = γ(|y - ξ|)(y - ξ)`; by the product rule and the derivative of `g`,
+  -- `DX(x) = c I + F(·)(x - ξ)` with `c = h(x)γ(r)` and `F = h(x)(γ'(r)/r)⟨x - ξ, ·⟩ + γ(r) Dh(x)`.
+  have hX : (fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ)) = fun y ↦ h y • γ ‖y - ξ‖ • (y - ξ) := by
+    funext y
+    exact mul_smul _ _ _
+  have hDX : fderiv ℝ (fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ)) x =
+      (h x * γ ‖x - ξ‖) • ContinuousLinearMap.id ℝ (Ambient n ℓ) +
+        ((h x * (deriv γ ‖x - ξ‖ / ‖x - ξ‖)) • innerSL ℝ (x - ξ) +
+          γ ‖x - ξ‖ • fderiv ℝ h x).smulRight (x - ξ) := by
+    rw [hX, (hh.hasFDerivAt.fun_smul
+      (Submission.radial_vector_field_hasFDerivAt n ℓ γ ξ x hγ)).fderiv]
+    refine ContinuousLinearMap.ext fun u ↦ ?_
+    simp only [add_apply, smul_apply, ContinuousLinearMap.id_apply,
+      ContinuousLinearMap.smulRight_apply, innerSL_apply_apply, smul_eq_mul]
+    module
+  -- Hence `div_M X(x) = c dim T_x V + F(p(x - ξ))`, with `p` the projection onto `T_x V`.
+  rw [RectifiableVarifold.tangentialDiv, hDX,
+    Submission.trace_scalar_add_rankOne_comp_starProjection n ℓ (V.tangentSpace x), hdim]
+  set P := V.tangentSpace x
+  -- Gradient term: `Dh(x)(p(x - ξ)) = ⟨∇h(x), p(x - ξ)⟩ = ⟨x - ξ, p ∇h(x)⟩ = ⟨x - ξ, ∇^M h(x)⟩`.
+  have hgrad : fderiv ℝ h x (P.starProjection (x - ξ)) =
+      inner ℝ (x - ξ) (V.tangentialGradient h x) := by
+    rw [← inner_gradient_left, ← P.inner_starProjection_left_eq_right, real_inner_comm]
+    rfl
+  -- Projection term: `⟨x - ξ, p(x - ξ)⟩ = |p(x - ξ)|²`.
+  have hpw : inner ℝ (x - ξ) (P.starProjection (x - ξ)) = ‖P.starProjection (x - ξ)‖ ^ 2 := by
+    calc inner ℝ (x - ξ) (P.starProjection (x - ξ))
+        = inner ℝ (x - ξ) (P.starProjection (P.starProjection (x - ξ))) := by
+          rw [Submodule.starProjection_eq_self_iff.mpr (P.starProjection_apply_mem _)]
+      _ = inner ℝ (P.starProjection (x - ξ)) (P.starProjection (x - ξ)) :=
+          (P.inner_starProjection_left_eq_right _ _).symm
+      _ = ‖P.starProjection (x - ξ)‖ ^ 2 := real_inner_self_eq_norm_sq _
+  -- Pythagoras: `r² = |p(x - ξ)|² + |p^⊥(x - ξ)|²`, so `(γ'(r)/r)|p(x - ξ)|² = rγ'(r)(1 - q_ξ(x))`
+  -- (both sides vanish when `r = 0`).
+  have key : deriv γ ‖x - ξ‖ / ‖x - ξ‖ * ‖P.starProjection (x - ξ)‖ ^ 2 =
+      ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x) := by
+    have hpy := P.norm_sq_eq_add_norm_sq_starProjection (x - ξ)
+    rw [RectifiableVarifold.normalRadialSq]
+    generalize ‖P.starProjection (x - ξ)‖ = a at hpy ⊢
+    generalize ‖Pᗮ.starProjection (x - ξ)‖ = b at hpy ⊢
+    generalize ‖x - ξ‖ = r at hpy ⊢
+    rcases eq_or_ne r 0 with hr | hr
+    · simp [hr]
+    · rw [show a ^ 2 = r ^ 2 - b ^ 2 by linarith]
+      field_simp
+  simp only [add_apply, smul_apply, innerSL_apply_apply, smul_eq_mul, hgrad, hpw]
+  linear_combination h x * key
+
 end
 
 end GMT.Ch04
