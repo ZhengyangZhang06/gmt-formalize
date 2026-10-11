@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radon_compactness-a1.rc_diagonal_subseq-a1",
+  "parent_id": "root.radon_compactness-a1",
+  "depth": 2,
+  "title": "Diagonal subsequence for countably many bounded real sequences",
+  "statement": "Let ι be a countable type (universe u) and let a_k(i) ∈ ℝ (k ∈ ℕ, i ∈ ι). Suppose that for every i ∈ ι the sequence (a_k(i))_{k∈ℕ} is bounded, i.e. there is C_i ∈ ℝ with |a_k(i)| ≤ C_i for all k. Then there is a strictly increasing φ : ℕ → ℕ such that for every i ∈ ι the sequence (a_{φ(k)}(i))_{k∈ℕ} converges in ℝ.",
+  "lean_statement": "∀ (ι : Type u) [Countable ι] (a : ℕ → ι → ℝ), (∀ i, ∃ C : ℝ, ∀ k, |a k i| ≤ C) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ i, ∃ l : ℝ, Tendsto (fun k => a (φ k) i) atTop (𝓝 l)",
+  "lean_name": "rc_diagonal_subseq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-radon-compactness-a1-rc-diagonal-subseq-a1-a1"
+}

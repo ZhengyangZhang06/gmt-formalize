@@ -1,0 +1,154 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.radon_compactness-a1`
+- Child DAG node: `root.radon_compactness-a1.rc_subseq_integrals_converge-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+PROOF OF `rc_subseq_integrals_converge`.
+Source: the parent proof of Simon Thm 4.16 (corrected), Steps 1–4 and the convergence assertion of Step 5: “For f ∈ C_c(X) choose j with spt f ⊆ K_j … ∫_X f dμ_{φ(k)} = F_{j,φ(k)}(f|_{K_j}) converges as k → ∞”.
+The parent runs the density argument of Step 4 on all of C(K_j). Step 5 only uses it at restrictions of test functions f with spt f ⊆ K_j, for which F_{j,k}(f|_{K_j}) = ∫_X f dμ̄_k (Step 3). We therefore run Steps 1–4 directly on such test functions, choosing the countable dense set inside that class.
+
+Sibling results used:
+- `rc_cc_integrable`: every f ∈ C_c(X, ℝ) is μ̄-integrable for a Radon outer measure μ.
+- `rc_cc_integral_abs_le`: |∫ f dμ̄| ≤ μ(tsupport f)·C whenever |f| ≤ C everywhere.
+- `rc_diagonal_subseq`: a diagonal subsequence for countably many bounded real sequences.
+- `rc_cc_countable_dense`: a countable uniformly dense family of test functions supported in a compact set, for X Hausdorff and second countable.
+
+1. (Step 1: exhaustion.)
+   - X is σ-compact. Every x ∈ X has an open neighbourhood U_x with compact closure (local compactness). A basic open set B with x ∈ B ⊆ U_x has compact closure, being a closed subset of the compact set cl U_x. The countably many basic open sets with compact closure therefore cover X, so X = ⋃_{m≥1} C_m with C_m compact.
+   - Put K_1 := C_1. Given a compact K_j, cover the compact set K_j ∪ C_{j+1} by finitely many open sets with compact closures, and let K_{j+1} be the union of their closures.
+   - Then each K_j is compact, K_j ∪ C_{j+1} ⊆ int K_{j+1}, and ⋃_j K_j = X.
+   - Every compact C ⊆ X lies in some K_j: the open sets int K_{j+1} increase with j and cover X (they contain K_1 = C_1 and every C_{j+1}), so finitely many of them, hence the largest one, cover C.
+   - Being compact in a Hausdorff space, each K_j is closed.
+2. (Step 2: bounds.) M_j := sup_k μ_k(K_j) < ∞ by hypothesis. For every k and every A ⊆ K_j, monotonicity of the outer measure μ_k gives μ_k(A) ≤ μ_k(K_j) ≤ M_j. All these numbers are finite and are compared as real numbers below.
+3. (Step 1: countable dense sets.) X is Hausdorff and second countable, and each K_j is compact. So `rc_cc_countable_dense` gives countable sets D_j ⊆ C_c(X, ℝ) such that:
+   - tsupport g ⊆ K_j for every g ∈ D_j;
+   - for every ε > 0, every f ∈ C_c(X, ℝ) with tsupport f ⊆ K_j is within ε at every point of some g ∈ D_j.
+   Let D := ⋃_j D_j; D is countable.
+4. (Steps 2–3: bounded sequences.) Let g ∈ D, say g ∈ D_j. |g| is bounded on the compact set tsupport g and vanishes outside it, so there is C_g ∈ ℝ with |g(x)| ≤ C_g for all x. By `rc_cc_integral_abs_le` and Step 2 (with A = tsupport g ⊆ K_j), for every k:
+   |∫_X g dμ̄_k| ≤ μ_k(tsupport g)·C_g ≤ μ_k(tsupport g)·|C_g| ≤ M_j·|C_g|.
+   So for each g ∈ D the real sequence (∫_X g dμ̄_k)_{k∈ℕ} is bounded.
+5. (Step 4: diagonal sequence.) Apply `rc_diagonal_subseq` to the countable index set ι := D and a_k(g) := ∫_X g dμ̄_k. This gives a strictly increasing φ : ℕ → ℕ such that (∫_X g dμ̄_{φ(k)})_k converges for every g ∈ D.
+6. (Step 4 density argument and Step 5.) Let f ∈ C_c(X, ℝ). Its support tsupport f is compact, so by Step 1 there is j with tsupport f ⊆ K_j. We show that (∫_X f dμ̄_{φ(k)})_k is a Cauchy sequence.
+   - Let ε > 0 and η := ε/(3(M_j + 1)) > 0, so that M_j·η < ε/3. By Step 3 choose g ∈ D_j with |f(x) − g(x)| ≤ η for all x ∈ X.
+   - The function f − g ∈ C_c(X, ℝ) satisfies {f − g ≠ 0} ⊆ {f ≠ 0} ∪ {g ≠ 0} ⊆ tsupport f ∪ tsupport g ⊆ K_j. Since K_j is closed, tsupport(f − g) ⊆ K_j.
+   - For every k, f and g are μ̄_k-integrable (`rc_cc_integrable`), so ∫ f dμ̄_k − ∫ g dμ̄_k = ∫ (f − g) dμ̄_k. By `rc_cc_integral_abs_le` (with C = η) and Step 2,
+     |∫ f dμ̄_k − ∫ g dμ̄_k| ≤ μ_k(tsupport(f − g))·η ≤ M_j·η < ε/3.
+   - Since g ∈ D, the sequence (∫ g dμ̄_{φ(k)})_k converges by Step 5, hence is Cauchy: there is N with |∫ g dμ̄_{φ(m)} − ∫ g dμ̄_{φ(n)}| < ε/3 for all m, n ≥ N.
+   - For m, n ≥ N the triangle inequality gives
+     |∫ f dμ̄_{φ(m)} − ∫ f dμ̄_{φ(n)}| ≤ |∫ f dμ̄_{φ(m)} − ∫ g dμ̄_{φ(m)}| + |∫ g dμ̄_{φ(m)} − ∫ g dμ̄_{φ(n)}| + |∫ g dμ̄_{φ(n)} − ∫ f dμ̄_{φ(n)}| < ε/3 + ε/3 + ε/3 = ε.
+     This is the parent's estimate |F_{j,φ(k)}(g) − F_{j,φ(l)}(g)| ≤ 2M_jη + |F_{j,φ(k)}(g′) − F_{j,φ(l)}(g′)|.
+   - Thus the sequence is Cauchy, and as ℝ is complete it converges to some l ∈ ℝ.
+7. Conclusion. φ is strictly increasing (Step 5), and for every f ∈ C_c(X, ℝ) the sequence (∫_X f dμ̄_{φ(k)})_k converges (Step 6). ∎
+
+Formalization note (non-binding). A complete proof along these lines, from the four sibling statements, elaborated in a scratch check with standard axioms only.
+- Exhaustion: `K := CompactExhaustion.choice X`, using the σ-compactness instance `sigmaCompactSpace_of_locallyCompact_secondCountable`, together with `K.isCompact` and `K.exists_superset_of_isCompact`.
+- Dense sets: `choose D hDc hDsupp hDdense using fun j => Submission.rc_cc_countable_dense X (K j) (K.isCompact j)`; then `DD := ⋃ j, D j` with `(Set.countable_iUnion hDc).to_subtype`.
+- Bounds: `g.continuous.bounded_above_of_compact_support g.hasCompactSupport` and `ENNReal.toReal_mono`.
+- Diagonal: `Submission.rc_diagonal_subseq DD (fun k (g : DD) => ∫ x, (g : C_c(X, ℝ)) x ∂caratheodoryMeasure (μ k))`.
+- Cauchy argument: `cauchySeq_tendsto_of_complete`, `Metric.cauchySeq_iff`, `integral_sub` and `closure_minimal`.
+
+## Key steps
+
+1. Compact exhaustion K_j ⊆ int K_{j+1} of the σ-compact space X; every compact set lies in some K_j, and each K_j is closed.
+2. M_j = sup_k μ_k(K_j) < ∞ bounds μ_k(A) for every A ⊆ K_j.
+3. Countable dense sets D_j of test functions supported in K_j (rc_cc_countable_dense); D = ⋃_j D_j.
+4. For g ∈ D the integrals ∫ g dμ̄_k are bounded by M_j·sup|g| (rc_cc_integral_abs_le).
+5. rc_diagonal_subseq gives one φ with ∫ g dμ̄_{φ(k)} convergent for all g ∈ D.
+6. For tsupport f ⊆ K_j: uniform η-approximation by g ∈ D_j, integrability (rc_cc_integrable) and the bound M_jη make ∫ f dμ̄_{φ(k)} Cauchy, hence convergent.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (snapshot root e8e26216f05cbb4e)`
+- `rg -n '^def RadonCompactness|^def RieszPositive|^noncomputable abbrev caratheodoryMeasure|^universe|^open|^namespace' project/GMT/Ch01/Contract.lean`
+- `cmp project/GMT/Ch01/Contract.lean project/GMT/Ch01/Submission.lean`
+- `rg -n '4.16|RadonCompactness' project/GMT/Ch01/README.md`
+- `rg -n 'theorem integral_rieszMeasure|noncomputable def rieszMeasure|instance regular_rieszMeasure' mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/NNReal.lean`
+- `rg -n 'def nnrealPart|def toReal |lemma nnrealPart_sub_nnrealPart_neg|def toNNRealLinear|lemma toNNRealLinear_apply|instance partialOrder' mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `rg -n 'def mk₀' mathlib/Mathlib/Algebra/Order/Module/PositiveLinearMap.lean`
+- `rg -n 'theorem Continuous.integrable_of_hasCompactSupport' mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `rg -n 'theorem norm_setIntegral_le_of_norm_le_const ' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `rg -n 'instance instSeparableSpace|instance instSecondCountableTopology' mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean`
+- `rg -n 'theorem IsSeparable.exists_countable_dense_subset' mathlib/Mathlib/Topology/Metrizable/Basic.lean; rg -n 'theorem IsSeparable.of_separableSpace' mathlib/Mathlib/Topology/Bases.lean`
+- `rg -n 'theorem dist_apply_le_dist' mathlib/Mathlib/Topology/ContinuousMap/Compact.lean`
+- `rg -n 'sigmaCompactSpace_of_locallyCompact_secondCountable|noncomputable def choice|theorem exists_superset_of_isCompact|theorem subset_interior_succ' mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean`
+- `rg -n 'theorem IsCompact.tendsto_subseq ' mathlib/Mathlib/Topology/Sequences.lean; rg -n -F 'FirstCountableTopology (∀ i, X i)' mathlib/Mathlib/Topology/Bases.lean; rg -n 'theorem isCompact_univ_pi' mathlib/Mathlib/Topology/`
+- `rg -n 'WeaklyLocallyCompactSpace.locallyCompactSpace' mathlib/Mathlib/Topology/Separation/Basic.lean`
+- `rg -n 'theorem subalgebra_topologicalClosure_eq_top_of_separatesPoints' mathlib/Mathlib/Topology/ContinuousMap/StoneWeierstrass.lean`
+- `rg -n -i vague mathlib/Mathlib/MeasureTheory (no match, exit 1)`
+- `rg -n 'SeparableSpace C_c' plus a C_c-SeparableSpace regex over mathlib/Mathlib (no match, exit 1)`
+- `rg -n 'theorem .*diagonal.*subseq|theorem .*subseq.*countable|tendsto_subseq_of_bounded' mathlib/Mathlib`
+- `rg -n 'SecondCountableSpace' mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/ project/GMT/Ch01/Contract.lean (no match, exit 1)`
+- `cmp -s of 14 cited snapshot Mathlib files against lake-packages-25730c7c/mathlib (all identical)`
+- `rg -n 'theorem .*[Ii]ntegrable|StrictMono|SeparableSpace|IsSeparable|nnrealPart|→ₚ' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01 (pinned simongmt, outside the snapshot)`
+- `python3 -I scan of lean_name in dag.json and nodes/*/decomposition-v1.json for the six rc_ names (no collision)`
+- `lake env lean on a scratch file outside the repo: contract text minus main_theorem plus the six frozen statements (contract imports only); then with import Mathlib.Topology.ContinuousMap.SecondCountableSpace, full child proofs, parent assembly, comparator-shaped targets and #print axioms`
+- `sed -n 1745,1778p book/chapter-01.txt (printed Theorem 4.16 and its proof)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/GMT/Ch01/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/GMT/Ch01/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/GMT/Ch01/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/NNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Algebra/Order/Module/PositiveLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Metrizable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/ContinuousMap/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Separation/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/ContinuousMap/StoneWeierstrass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/MetricSpace/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonOuterMeasure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonCaratheodoryIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Radon.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/dag.json`
+
+SNAPSHOT AND CONTRACT. The manifest pins project ec1c322 and Mathlib 25730c7c. The snapshot Contract.lean is byte-identical to Submission.lean. It defines RieszPositive (l. 267) and RadonCompactness (l. 303) in namespace GMT.Ch01, with `universe u v` (l. 69) and the opens at ll. 63–65. README row 15 marks the corrected 4.16 as New for non-compact X.
+
+NO LIBRARY SHORTCUT.
+- No 'vague' match in Mathlib MeasureTheory and no C_c separability statement.
+- For subsequence extraction there is only the single-sequence Bolzano–Weierstrass tendsto_subseq_of_bounded (Topology/MetricSpace/Sequences.lean:38).
+- The pinned simongmt Chapter01 (outside the snapshot) has:
+  - finiteMeasure_tendsto_subseq_of_compact_metrizable and simon_theorem_4_16_compact_metrizable (compact X only);
+  - the bridges IsRadonOuterMeasure.toCaratheodoryMeasure_apply_all, isRadonOuterMeasure_toOuterMeasure and integral_radonCaratheodoryMeasure;
+  - a real-RMK wrapper in Radon.lean;
+  - no C_c-integrability, diagonal-subsequence or C_c-separability lemma.
+
+THE SNAPSHOT HAS EVERYTHING THE SIX CHILDREN NEED.
+- RealRMK.rieszMeasure, integral_rieszMeasure and regular_rieszMeasure: Real.lean:65,345,357; NNRealRMK.integral_rieszMeasure: NNReal.lean:47.
+- CompactlySupported.lean: the pointwise partialOrder (444), nnrealPart (688), toReal (739), nnrealPart_sub_nnrealPart_neg (749), toNNRealLinear and toNNRealLinear_apply (775, 782).
+- PositiveLinearMap.mk₀ (PositiveLinearMap.lean:206).
+- Continuous.integrable_of_hasCompactSupport (LocallyIntegrable.lean:622) and norm_setIntegral_le_of_norm_le_const (Bochner/Set.lean:613).
+- ContinuousMap.instSeparableSpace (SecondCountableSpace.lean:108). This module is NOT in the contract's import closure: no match in the RMK files or Contract.lean, and #check fails in the contract scope. Stone–Weierstrass subalgebra_topologicalClosure_eq_top_of_separatesPoints (StoneWeierstrass.lean:264) is in the closure.
+- Separability and metrics: IsSeparable.exists_countable_dense_subset (Metrizable/Basic.lean:185), IsSeparable.of_separableSpace (Bases.lean:599), ContinuousMap.dist_apply_le_dist (ContinuousMap/Compact.lean:114).
+- Exhaustions: sigmaCompactSpace_of_locallyCompact_secondCountable (SigmaCompact.lean:187), CompactExhaustion.choice (418), exists_superset_of_isCompact (376).
+- Subsequences: IsCompact.tendsto_subseq (Sequences.lean:298), countable-pi first countability (Bases.lean:781), isCompact_univ_pi (Compactness/Compact.lean:1172).
+- WeaklyLocallyCompactSpace.locallyCompactSpace (Separation/Basic.lean:1196).
+The 14 cmp-checked snapshot Mathlib files equal the build packages.
+
+SCRATCH CHECK (outside the repo, deleted afterwards).
+- The six frozen statements elaborate with the contract imports.
+- All six children were proved, with only propext, Classical.choice and Quot.sound.
+- RadonCompactness was proved from the six children with Submission.riesz_positive stubbed.
+- Comparator-shaped `exact Submission.X` targets were accepted.
+
+COMPARATOR. gmt-compare.py elaborates child statements in the replayed contract scope (namespace GMT.Ch01, opens, `universe u v`). It byte-freezes only Contract.lean and the Lake inputs, so a candidate may add a Mathlib import.
+
+SOURCE TEXT. chapter-01.txt ll. 1750–1778 is the printed 4.16 proof, which the parent's corrected Steps 1–7 expand.

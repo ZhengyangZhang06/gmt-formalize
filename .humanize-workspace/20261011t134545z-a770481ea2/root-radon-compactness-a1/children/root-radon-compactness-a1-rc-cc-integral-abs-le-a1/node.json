@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radon_compactness-a1.rc_cc_integral_abs_le-a1",
+  "parent_id": "root.radon_compactness-a1",
+  "depth": 2,
+  "title": "Sup-norm bound for integrals of test functions against a Radon outer measure",
+  "statement": "Let X be a topological space (universe u) and μ a Radon outer measure on X (Simon Def. 4.6, Lean IsRadonOuterMeasure μ). Let μ̄ := caratheodoryMeasure μ (μ restricted to the μ-measurable sets). Let f ∈ C_c(X, ℝ) and C ∈ ℝ with |f(x)| ≤ C for all x ∈ X. Then |∫_X f dμ̄| ≤ μ(tsupport f)·C. Here μ(tsupport f), which is finite by (R1), is read as a real number (Lean ENNReal.toReal).",
+  "lean_statement": "∀ (X : Type u) [TopologicalSpace X] (μ : OuterMeasure X), IsRadonOuterMeasure μ → ∀ (f : C_c(X, ℝ)) (C : ℝ), (∀ x, |f x| ≤ C) → |∫ x, f x ∂caratheodoryMeasure μ| ≤ (μ (tsupport f)).toReal * C",
+  "lean_name": "rc_cc_integral_abs_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-radon-compactness-a1-rc-cc-integral-abs-le-a1-a1"
+}
