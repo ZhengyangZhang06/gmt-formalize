@@ -773,6 +773,60 @@ theorem Submission.tangentMeasure_lipschitz_cover_of_projection_bound : (∀ (N 
   rw [he] at hdD
   obtain ⟨i, rfl⟩ := hdD
   exact Set.mem_iUnion.mpr ⟨i, hFcov (e i) ⟨hx, by rw [Metric.mem_ball]; exact hxd⟩⟩
+/-- Zero-dimensional case `n = 0` of the measure form of Simon Ch. 3, Theorem 1.6 “⇐” (proof on
+pp. 72–74, `chapter-03.txt` lines 145–274; the book does not treat `n = 0` separately). Let `μ`
+be finite on compact subsets of `ℝᴺ` and, for `μ`-a.e. `x`, let `c > 0` bound `μ(B_ρ(x))` from
+below for all small `ρ > 0`. The balls `B_{1/(k+1)}(x)` decrease to `{x}`, so by continuity from
+above `μ({x}) ≥ c > 0` for `μ`-a.e. `x`. Since `μ` is `σ`-finite, its set `R` of atoms is
+countable, hence Borel, and `μ(ℝᴺ ∖ R) = 0`. If `R ⊆ range e` with `e : ℕ → ℝᴺ`, the constant
+(Lipschitz) maps `ℝ⁰ → ℝᴺ` with values `e j` cover `R`, so `R` is countably `0`-rectifiable
+(Def. 1.1 with `M₀ = ∅`). -/
+theorem Submission.tangentMeasure_zero_dim_carrier : ∀ (N : ℕ) (μ : Measure (Rn N)),
+    (∀ K : Set (Rn N), IsCompact K → μ K < ∞) →
+      (∀ᵐ x ∂μ, ∃ c : ℝ, 0 < c ∧ ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal c ≤ μ (Metric.ball x ρ)) →
+        ∃ R : Set (Rn N), MeasurableSet R ∧ CountablyRectifiable 0 R ∧ μ Rᶜ = 0 := by
+  intro N μ hfin hae
+  have : IsFiniteMeasureOnCompacts μ := ⟨hfin⟩
+  -- Step 1: `μ({x}) ≥ c > 0` by continuity from above along `B_{1/(k+1)}(x) ↓ {x}`
+  have hatom : ∀ᵐ x ∂μ, 0 < μ {x} := by
+    filter_upwards [hae] with x ⟨c, hc, hev⟩
+    obtain ⟨ρ₀, hρ₀, hρ₀'⟩ := (nhdsGT_basis (0 : ℝ)).eventually_iff.mp hev
+    have hall : ∀ r : ℝ, 0 < r → ENNReal.ofReal c ≤ μ (Metric.ball x r) := by
+      intro r hr
+      have hmin : min (r / 2) (ρ₀ / 2) ∈ Ioo 0 ρ₀ :=
+        ⟨by positivity, (min_le_right _ _).trans_lt (half_lt_self hρ₀)⟩
+      exact (hρ₀' hmin).trans
+        (measure_mono (Metric.ball_subset_ball ((min_le_left _ _).trans (half_le_self hr.le))))
+    have hanti : Antitone fun k : ℕ ↦ Metric.ball x (1 / ((k : ℝ) + 1)) := by
+      intro k l hkl
+      apply Metric.ball_subset_ball
+      gcongr
+    have hinter : ⋂ k : ℕ, Metric.ball x (1 / ((k : ℝ) + 1)) = {x} := by
+      ext y
+      simp only [mem_iInter, Metric.mem_ball, mem_singleton_iff]
+      refine ⟨fun h ↦ ?_, fun h k ↦ by rw [h, dist_self]; positivity⟩
+      by_contra hne
+      obtain ⟨k, hk⟩ := exists_nat_one_div_lt (dist_pos.mpr hne)
+      exact (h k).not_gt hk
+    have hlim : μ {x} = ⨅ k : ℕ, μ (Metric.ball x (1 / ((k : ℝ) + 1))) := by
+      rw [← hinter]
+      exact hanti.measure_iInter (fun k ↦ Metric.isOpen_ball.measurableSet.nullMeasurableSet)
+        ⟨0, ((measure_mono Metric.ball_subset_closedBall).trans_lt
+          (isCompact_closedBall x _).measure_lt_top).ne⟩
+    rw [hlim]
+    exact (ENNReal.ofReal_pos.mpr hc).trans_le (le_iInf fun k ↦ hall _ (by positivity))
+  -- Step 2: `μ` is `σ`-finite, so only countably many singletons have positive measure
+  set R := {x : Rn N | 0 < μ {x}}
+  have hRc : R.Countable := by
+    simpa using Measure.countable_meas_pos_of_disjoint_iUnion (μ := μ)
+      (As := fun x : Rn N ↦ ({x} : Set (Rn N))) measurableSet_singleton
+      fun x y hxy ↦ disjoint_singleton.mpr hxy
+  -- Steps 3–4: `R` is Borel, carries `μ`, and is covered by constant maps `ℝ⁰ → ℝᴺ`
+  obtain ⟨e, he⟩ := countable_iff_exists_subset_range.mp hRc
+  refine ⟨R, hRc.measurableSet, ⟨∅, measure_empty, fun j _ ↦ e j,
+    fun j ↦ ⟨0, LipschitzWith.const (e j)⟩, fun x hx ↦ ?_⟩, ae_iff.mp hatom⟩
+  obtain ⟨j, rfl⟩ := he hx
+  exact Or.inr (mem_iUnion.mpr ⟨j, 0, rfl⟩)
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
