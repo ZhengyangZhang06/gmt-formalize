@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f0de73054e8aa54138478076cd1a44754b3e7e05553810f7797b4147e567d1f6",
+  "git_delta": {
+    "base_commit": "56873fdd004b4b589d6f4031f27f13b5d83f8989",
+    "candidate_commit": "233d203367287a0f51fd406f001c982eb40106e7",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "isC1Submanifold_image_ball_of_injOn_closedBall",
+    "diff_sha256": "a61653766a927f1e02d0c53a77e2763f1b480b2a3e0de6a269d4c7ef8c1cfd4d",
+    "source_sha256": "e72f003fb6ba5ad55068ce1b6b3aa61a88a0e439b6d95337538d3de7d849e282",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.isC1Submanifold_image_ball_of_injOn_closedBall",
+      "statement": "∀ (n p : ℕ) (G : Rn n → Rn p) (x : Rn n) (r : ℝ), ContDiffOn ℝ 1 G (Metric.closedBall x r) → Set.InjOn G (Metric.closedBall x r) → (∀ z ∈ Metric.ball x r, Function.Injective (fderiv ℝ G z)) → IsC1Submanifold n (G '' Metric.ball x r)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
