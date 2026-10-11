@@ -744,6 +744,28 @@ theorem Submission.eilenberg_covering_fixed_scale_majorant : ∀ (X : Type) [Met
           (K : ℝ≥0∞) ^ m / (2 : ℝ≥0∞) ^ ((m : ℝ) + k) *
           ∑' l, ediam (C l ∩ E) ^ ((m : ℝ) + k) := ENNReal.tsum_mul_left
       _ ≤ _ := by gcongr
+/-- **Simon Ch. 2, proof of Theorem 1.9 (p. 46), limiting step**, with an explicit Borel majorant
+in place of the upper integral. If `c` times the `r i`-scale Hausdorff pre-measure of `F y` is
+bounded by measurable `g i y`, `∫⁻ g i ∂ν ≤ b i`, `r i → 0` and `b i → L`, then
+`G = liminf g i` is a measurable majorant of `c * μH[d] (F y)` with `∫⁻ G ∂ν ≤ L` (Fatou). -/
+theorem Submission.eilenberg_covering_liminf_majorant : ∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (Y : Type) [MeasurableSpace Y] (ν : Measure Y) (d : ℝ) (c : ℝ≥0∞) (F : Y → Set X) (r : ℕ → ℝ≥0∞) (g : ℕ → Y → ℝ≥0∞) (b : ℕ → ℝ≥0∞) (L : ℝ≥0∞), Tendsto r atTop (𝓝 0) → (∀ i, Measurable (g i)) → (∀ (i : ℕ) (y : Y), c * (⨅ (t : ℕ → Set X) (_ : F y ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ r i), ∑' n, ⨆ (_ : (t n).Nonempty), ediam (t n) ^ d) ≤ g i y) → (∀ i, ∫⁻ y, g i y ∂ν ≤ b i) → Tendsto b atTop (𝓝 L) → ∃ G : Y → ℝ≥0∞, Measurable G ∧ (∀ y, c * μH[d] (F y) ≤ G y) ∧ ∫⁻ y, G y ∂ν ≤ L := by
+  intro X _ _ _ Y _ ν d c F r g b L hr hg hcov hint hb
+  refine ⟨fun y ↦ liminf (fun i ↦ g i y) atTop, Measurable.liminf hg, fun y ↦ ?_, ?_⟩
+  · -- At each scale `R > 0`, eventually `r i ≤ R`, and covers at scale `r i` are admissible at `R`.
+    rw [Measure.hausdorffMeasure_apply, ENNReal.mul_iSup]
+    refine iSup_le fun R ↦ ?_
+    rw [ENNReal.mul_iSup]
+    refine iSup_le fun hR ↦ le_liminf_of_le (by isBoundedDefault) ?_
+    filter_upwards [hr.eventually_le_const hR] with i hi
+    refine le_trans ?_ (hcov i y)
+    gcongr c * ?_
+    exact le_iInf fun t ↦ le_iInf fun ht ↦ le_iInf fun htr ↦
+      iInf₂_le_of_le t ht (iInf_le_of_le (fun n ↦ (htr n).trans hi) le_rfl)
+  · -- Fatou's lemma, then `∫⁻ g i ∂ν ≤ b i → L`.
+    calc ∫⁻ y, liminf (fun i ↦ g i y) atTop ∂ν
+        ≤ liminf (fun i ↦ ∫⁻ y, g i y ∂ν) atTop := lintegral_liminf_le hg
+      _ ≤ liminf b atTop := liminf_le_liminf (Eventually.of_forall hint)
+      _ = L := hb.liminf_eq
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
