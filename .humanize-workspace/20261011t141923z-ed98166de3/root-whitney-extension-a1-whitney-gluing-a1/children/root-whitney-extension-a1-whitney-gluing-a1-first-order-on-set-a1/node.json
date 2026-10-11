@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.whitney_extension-a1.whitney_gluing-a1.first_order_on_set-a1",
+  "parent_id": "root.whitney_extension-a1.whitney_gluing-a1",
+  "depth": 3,
+  "title": "First-order Whitney estimate: derivative of the glued function on A",
+  "statement": "Let n ∈ ℕ, ℝⁿ = EuclideanSpace ℝ (Fin n), A ⊆ ℝⁿ closed, h : ℝⁿ → ℝ, and ν : ℝⁿ → ℝⁿ continuous on A, and assume (W): for every compact K ⊆ A and every ε > 0 there is δ > 0 with |h(y) − h(x) − ⟨ν(x), y − x⟩| ≤ ε|y − x| for all x ∈ K and y ∈ A with 0 < |y − x| < δ. Let ι be a type, φ_i : ℝⁿ → ℝ and p_i ∈ ℝⁿ (i ∈ ι), C ≥ 0 a real, and g : ℝⁿ → ℝ, such that p_i ∈ A for all i, g(x) = h(x) for x ∈ A, and (R) for every x ∉ A there is a finite S ⊆ ι with φ_i(x) ≥ 0 and |x − p_i| ≤ C·dist(x, A) for all i ∈ S, Σ_{i∈S} φ_i(x) = 1, and g(x) = Σ_{i∈S} φ_i(x)(h(p_i) + ⟨ν(p_i), x − p_i⟩). Then for every a ∈ A, g is Fréchet differentiable at a with derivative v ↦ ⟨ν(a), v⟩, i.e. HasFDerivAt g (innerSL ℝ (ν a)) a.",
+  "lean_statement": "∀ (n : ℕ) (A : Set (Rn n)) (h : Rn n → ℝ) (ν : Rn n → Rn n) (ι : Type) (φ : ι → Rn n → ℝ) (p : ι → Rn n) (C : ℝ) (g : Rn n → ℝ), IsClosed A → ContinuousOn ν A → (∀ K ⊆ A, IsCompact K → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ K, ∀ y ∈ A, 0 < ‖y - x‖ → ‖y - x‖ < δ → |h y - h x - inner ℝ (ν x) (y - x)| ≤ ε * ‖y - x‖) → 0 ≤ C → (∀ i, p i ∈ A) → (∀ x ∈ A, g x = h x) → (∀ x ∉ A, ∃ S : Finset ι, (∀ i ∈ S, 0 ≤ φ i x ∧ ‖x - p i‖ ≤ C * Metric.infDist x A) ∧ ∑ i ∈ S, φ i x = 1 ∧ g x = ∑ i ∈ S, φ i x * (h (p i) + inner ℝ (ν (p i)) (x - p i))) → ∀ a ∈ A, HasFDerivAt g (innerSL ℝ (ν a)) a",
+  "lean_name": "whitney_gluing_hasFDerivAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-whitney-extension-a1-whitney-gluing-a1-first-order-on-set-a1-a1"
+}
