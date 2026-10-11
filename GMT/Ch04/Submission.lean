@@ -434,6 +434,60 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Lusin exhaustion (Simon Ch. 1, 1.17).** If `Y` is a finite-dimensional real normed space,
+`g : ℝⁿ → Y` is Borel and `S ⊆ ℝⁿ` is Borel with `Lⁿ(S) < ∞`, then `S` is covered up to an
+`Lⁿ`-null set by countably many compact sets `C_j ⊆ S` on each of which `g` is continuous. -/
+theorem Submission.lusin_compact_exhaustion_of_measurable : ∀ {Y : Type} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y] (n : ℕ) (g : EuclideanSpace ℝ (Fin n) → Y) (S : Set (EuclideanSpace ℝ (Fin n))), Measurable g → MeasurableSet S → volume S ≠ ⊤ → ∃ C : ℕ → Set (EuclideanSpace ℝ (Fin n)), (∀ j, IsCompact (C j) ∧ C j ⊆ S ∧ ContinuousOn g (C j)) ∧ volume (S \ ⋃ j, C j) = 0 := by
+  intro Y _ _ _ _ _ n g S hg hS hSfin
+  -- `Lⁿ ⌞ S` is finite, hence outer regular; `Y` has a countable topological basis.
+  have : IsFiniteMeasure (volume.restrict S) := isFiniteMeasure_restrict.2 hSfin
+  have hb := TopologicalSpace.isBasis_countableBasis Y
+  have : Countable (TopologicalSpace.countableBasis Y) :=
+    (TopologicalSpace.countable_countableBasis Y).to_subtype
+  -- One compact set: `K ⊆ S` with `g` continuous on `K` and `Lⁿ(S \ K) < ε`.
+  have key : ∀ ε : ℝ≥0∞, ε ≠ 0 →
+      ∃ K, IsCompact K ∧ K ⊆ S ∧ ContinuousOn g K ∧ volume (S \ K) < ε := by
+    intro ε hε
+    obtain ⟨δ, hδ, hδε⟩ := ENNReal.exists_pos_sum_of_countable (ENNReal.half_pos hε).ne'
+      (TopologicalSpace.countableBasis Y)
+    -- Open `O_U ⊇ g⁻¹(U)` with `(Lⁿ ⌞ S)(O_U \ g⁻¹(U)) < δ_U` for each basic open `U`.
+    choose O hgO hO _ hOδ using fun U : TopologicalSpace.countableBasis Y ↦
+      (hg (hb.isOpen U.2).measurableSet).exists_isOpen_sdiff_lt (μ := volume.restrict S)
+        (measure_ne_top _ _) (ENNReal.coe_ne_zero.2 (hδ U).ne')
+    -- The bad set `B = ⋃_U (O_U \ g⁻¹(U))` has `Lⁿ(S ∩ B) < ε/2`.
+    set B := ⋃ U, (O U \ g ⁻¹' U)
+    have hBm : MeasurableSet B :=
+      MeasurableSet.iUnion fun U ↦ (hO U).measurableSet.diff (hg (hb.isOpen U.2).measurableSet)
+    have hSB : volume (S ∩ B) < ε / 2 :=
+      calc volume (S ∩ B) = volume.restrict S B := by rw [Measure.restrict_apply hBm, inter_comm]
+        _ ≤ ∑' U, volume.restrict S (O U \ g ⁻¹' U) := measure_iUnion_le _
+        _ ≤ ∑' U, (δ U : ℝ≥0∞) := ENNReal.tsum_le_tsum fun U ↦ (hOδ U).le
+        _ < ε / 2 := hδε
+    -- Inner regularity: compact `K ⊆ S \ B` with `Lⁿ((S \ B) \ K) < ε/2`.
+    obtain ⟨K, hKSB, hK, hKε⟩ := (hS.diff hBm).exists_isCompact_sdiff_lt
+      (ne_top_of_le_ne_top hSfin (measure_mono sdiff_subset)) (ENNReal.half_pos hε).ne'
+    refine ⟨K, hK, hKSB.trans sdiff_subset, fun x _ ↦ ?_, ?_⟩
+    · -- On `K`, `g⁻¹(U) ∩ K = O_U ∩ K` is relatively open, so `g` is continuous on `K`.
+      refine hb.nhds_hasBasis.tendsto_right_iff.2 fun U ⟨hUb, hxU⟩ ↦
+        mem_nhdsWithin.2 ⟨O ⟨U, hUb⟩, hO _, hgO _ hxU, fun y ⟨hyO, hyK⟩ ↦ ?_⟩
+      by_contra hyU
+      exact (hKSB hyK).2 (mem_iUnion.2 ⟨⟨U, hUb⟩, hyO, hyU⟩)
+    · calc volume (S \ K) ≤ volume (S ∩ B) + volume ((S \ B) \ K) :=
+            (measure_mono (show S \ K ⊆ (S ∩ B) ∪ ((S \ B) \ K) from fun y ⟨hyS, hyK⟩ ↦ by
+              by_cases hyB : y ∈ B
+              · exact Or.inl ⟨hyS, hyB⟩
+              · exact Or.inr ⟨⟨hyS, hyB⟩, hyK⟩)).trans (measure_union_le _ _)
+        _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hSB hKε
+        _ = ε := ENNReal.add_halves ε
+  -- Exhaustion: `C_j` with `Lⁿ(S \ C_j) < 1/j`, so `Lⁿ(S \ ⋃ C_j) = 0`.
+  choose C hC hCS hCg hCε using fun j : ℕ ↦
+    key (j : ℝ≥0∞)⁻¹ (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top j))
+  refine ⟨C, fun j ↦ ⟨hC j, hCS j, hCg j⟩, ?_⟩
+  by_contra h
+  obtain ⟨j, hj⟩ := ENNReal.exists_inv_nat_lt h
+  exact lt_asymm hj
+    ((measure_mono (sdiff_subset_sdiff_right (subset_iUnion C j))).trans_lt (hCε j))
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
