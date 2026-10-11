@@ -335,6 +335,59 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Lebesgue points of `Hⁿ ⌞ S` with the `ρⁿ` normalization** (Simon Ch. 1, Corollary 3.17;
+parent proof step (P3)). Let `Hⁿ(S) < ∞`, `w ∈ L¹(Hⁿ ⌞ S)` and `Hⁿ(S ∩ B̄_ρ(x)) ≤ Cρⁿ` for
+`x ∈ S`, `ρ > 0`. Then for `Hⁿ`-a.e. `x ∈ S`, `ρ⁻ⁿ ∫_{S ∩ B_ρ(x)} |w - w(x)| dHⁿ → 0` as `ρ ↓ 0`.
+The Lebesgue–Besicovitch differentiation theorem for the finite measure `λ₀ = Hⁿ ⌞ S` along
+closed balls gives `a(ρ) = ⨍_{B̄_ρ(x)} |w - w(x)| dλ₀ → 0` for `λ₀`-a.e. (i.e. `Hⁿ`-a.e. on `S`)
+`x`, and `ρ⁻ⁿ ∫_{S ∩ B_ρ(x)} |w - w(x)| dHⁿ ≤ ρ⁻ⁿ λ₀(B̄_ρ(x)) a(ρ) ≤ max(C, 0) a(ρ)`. -/
+theorem Submission.chartTD_lebesgue_point_ae : ∀ (n N : ℕ) (S : Set (Rn N)) (w : Rn N → ℝ) (C : ℝ), NullMeasurableSet S μHE[n] → μHE[n] S < ∞ → IntegrableOn w S μHE[n] → (∀ x ∈ S, ∀ ρ : ℝ, 0 < ρ → μHE[n] (S ∩ Metric.closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ∀ᵐ x ∂(μHE[n] : Measure (Rn N)), x ∈ S → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x ρ, |w z - w x| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) := by
+  intro n N S w C hS hSfin hw hC
+  -- `λ₀ = Hⁿ ⌞ S` is a finite measure and `w ∈ L¹(λ₀)`.
+  have : IsFiniteMeasure ((μHE[n] : Measure (Rn N)).restrict S) :=
+    ⟨by rwa [Measure.restrict_apply_univ]⟩
+  have hw' : Integrable w ((μHE[n] : Measure (Rn N)).restrict S) := hw
+  -- Lebesgue–Besicovitch differentiation for `λ₀`; `λ₀`-a.e. is `Hⁿ`-a.e. on `S`.
+  have hdiff := VitaliFamily.ae_tendsto_average_norm_sub
+    (Besicovitch.vitaliFamily ((μHE[n] : Measure (Rn N)).restrict S)) hw'.locallyIntegrable
+  filter_upwards [(ae_restrict_iff'₀ hS).1 hdiff] with x hx hxS
+  -- `max(C, 0) a(ρ) → 0` as `ρ ↓ 0`, where `a(ρ) = ⨍_{B̄_ρ(x)} |w - w(x)| dλ₀`.
+  have ha : Tendsto (fun ρ : ℝ ↦ max C 0 * ⨍ y in Metric.closedBall x ρ, ‖w y - w x‖
+      ∂((μHE[n] : Measure (Rn N)).restrict S)) (𝓝[>] 0) (𝓝 0) := by
+    simpa only [mul_zero, Function.comp_apply] using
+      ((hx hxS).comp (Besicovitch.tendsto_filterAt _ x)).const_mul (max C 0)
+  have hint : Integrable (fun z ↦ |w z - w x|) ((μHE[n] : Measure (Rn N)).restrict S) :=
+    (hw'.sub (integrable_const (w x))).abs
+  refine squeeze_zero' ?_ ?_ ha
+  · filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+    exact mul_nonneg (inv_nonneg.2 (pow_nonneg hρ.le n)) (integral_nonneg fun _ ↦ abs_nonneg _)
+  · filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+    have hρn : 0 < ρ ^ n := pow_pos hρ n
+    -- `λ₀(B̄_ρ(x)) = Hⁿ(S ∩ B̄_ρ(x)) ≤ max(C, 0) ρⁿ`.
+    have hmeas : ((μHE[n] : Measure (Rn N)).restrict S).real (Metric.closedBall x ρ) ≤
+        max C 0 * ρ ^ n := by
+      rw [measureReal_def, Measure.restrict_apply measurableSet_closedBall, inter_comm]
+      refine ENNReal.toReal_le_of_le_ofReal (by positivity) ((hC x hxS ρ hρ).trans ?_)
+      exact ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right (le_max_left _ _) hρn.le)
+    have havg : 0 ≤ ⨍ y in Metric.closedBall x ρ, ‖w y - w x‖
+        ∂((μHE[n] : Measure (Rn N)).restrict S) :=
+      average_nonneg fun _ ↦ norm_nonneg _
+    rw [inv_mul_le_iff₀ hρn]
+    calc ∫ z in S ∩ Metric.ball x ρ, |w z - w x| ∂μHE[n]
+        = ∫ z in Metric.ball x ρ, |w z - w x| ∂((μHE[n] : Measure (Rn N)).restrict S) := by
+          rw [Measure.restrict_restrict measurableSet_ball, inter_comm S]
+      _ ≤ ∫ z in Metric.closedBall x ρ, |w z - w x| ∂((μHE[n] : Measure (Rn N)).restrict S) :=
+          setIntegral_mono_set hint.integrableOn (Eventually.of_forall fun _ ↦ abs_nonneg _)
+            Metric.ball_subset_closedBall.eventuallyLE
+      _ = ((μHE[n] : Measure (Rn N)).restrict S).real (Metric.closedBall x ρ) *
+            ⨍ y in Metric.closedBall x ρ, ‖w y - w x‖ ∂((μHE[n] : Measure (Rn N)).restrict S) := by
+          rw [← smul_eq_mul, measure_smul_setAverage _ (measure_ne_top _ _)]
+          simp only [Real.norm_eq_abs]
+      _ ≤ ρ ^ n * (max C 0 * ⨍ y in Metric.closedBall x ρ, ‖w y - w x‖
+            ∂((μHE[n] : Measure (Rn N)).restrict S)) := by
+          rw [← mul_assoc, mul_comm (ρ ^ n)]
+          exact mul_le_mul_of_nonneg_right hmeas havg
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
