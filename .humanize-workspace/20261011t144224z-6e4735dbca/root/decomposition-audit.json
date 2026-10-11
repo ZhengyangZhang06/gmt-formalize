@@ -1,0 +1,121 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^def |^structure |^theorem main_theorem|^import ' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "Read manifest.json, the frozen Contract.lean and README.md; compare Contract.lean and Submission.lean bytes using Python pathlib.",
+        "Inspect dag.json and decomposition-v3.json using Python; check unique bare names, one-line propositions, dependency existence and topological ordering.",
+        "rg -n 'theorem sigmaFinite_of_countable|theorem mul_meas_ge_le_lintegral₀|theorem ae_eq_of_forall_setIntegral_eq_of_sigmaFinite|theorem Integrable.ae_eq_of_forall_setIntegral_eq|def euclideanHausdorffMeasure|infDist_empty' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace",
+        "rg -il 'coarea|co-area|Besicovitch.Federer|purely unrectifiable' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory",
+        "Inspect HasWeightedApproximateTangentSpaceAt, CountablyRectifiable, simon_theorem_4_14, nVectorPushforward_simple, covectorEuclideanNorm and GeometricCurrentOn in the pinned SimonGMT sources.",
+        "Inspect gmt-compare.py contract_scope and generate an independent, sorry-free contract and assembly check.",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/IndependentDecompositionAudit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/V3_SigmaFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/V3_Tangent.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root/decomposition-v3.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/gmt_ch06_v3_check/Scratch/IndependentDecompositionAudit.lean",
+        "/tmp/gmt_ch06_v3_check/Scratch/V3_SigmaFinite.lean",
+        "/tmp/gmt_ch06_v3_check/Scratch/V3_Tangent.lean"
+      ],
+      "conclusion": "The split appropriately separates the twelve literal conjuncts of the selected parent. All child propositions are pre-existing frozen definitions, independently usable without child implementations; their prose preserves the hypotheses and conclusions. All names are unique bare identifiers, unreserved in the active DAG, and usable under the comparator's Submission namespace. Dependencies are correctly directed and acyclic. No matrix-unit or other problematic inline instance construction occurs. Independent Lean checks passed for all twelve proposition types, exact parent assembly, and Federer–Fleming from its three declared dependencies. The repaired σ-finiteness and tangent-congruence helpers also compiled. Axiom checks for these proofs and the inspected supporting library lemmas returned only propext, Classical.choice and Quot.sound. No co-area or Besicovitch–Federer match was found in the searched Mathlib MeasureTheory source; the supplied proofs cite published mathematical background for these results rather than claiming available Lean declarations. These checks validate contracts and selected supporting arguments, not completed Lean implementations of all analytic children."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "compactness_mass_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches CompactnessUnderMassBounds, including convergence for every IsMeasureRepresentation. The exhaustion, diagonal extraction, mass-controlled extension and sequential continuity establish the limiting current. The separate representation argument justifies integrability and continuous-form convergence without imposing normalization or extra measure hypotheses."
+    },
+    {
+      "key": "constancy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches ConstancyTheorem in degree m+1. Zero boundary gives vanishing distributional derivatives; mollification yields local constants, and overlap compatibility, connectedness and a partition of unity give the stated global integration formula. No circular dependence is used."
+    },
+    {
+      "key": "lipschitz_pushforward_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches the full push-forward contract. The proof supplies the required directional derivatives, uses properness for compact-source integrability, and verifies the target rectifiable triple. The image-piece argument correctly handles overlapping sheets and common exceptional sets; integer fibre sums and degenerate dimensions are addressed."
+    },
+    {
+      "key": "slicing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Proves all four frozen conclusions: slices and support control at every level, almost-everywhere integrality, and the measurable-majorant estimate for every stipulated restriction. Representation uniqueness handles the universal restriction quantifier. The proof uses local finiteness on U and separately treats zero Lipschitz bound and infinite strip mass."
+    },
+    {
+      "key": "deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches DeformationTheorem, including uniform constants, strict support thickenings and conditional integrality. Good radii justify the normal-current push-forwards; summable estimates, facewise BV medians and scaling establish the conclusions. Repaired A3 uses only positivity and local integrability of θ′ to obtain σ-finiteness, then identifies densities, tangent spaces and push-forwards. Its declared sibling uses are non-circular."
+    },
+    {
+      "key": "isoperimetric",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches IsoperimetricTheorem. The deformation instantiation uses the correct ambient-dimension rewrite. The proof establishes finite mass, eliminates the error using zero boundary, eliminates the integer lattice chain by a single-face mass lower bound, and obtains compact support and the exact exponent. Zero-mass and zero-constant cases are covered."
+    },
+    {
+      "key": "polyhedral_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches PolyhedralApproximation, including positive antitone scales. Slicing gives admissible compact truncations with finite boundary mass. Deformation and the explicit mass-dependent scale choice give convergence on every test form after restriction to U; the lattice-chain and integer-coefficient conclusions are retained."
+    },
+    {
+      "key": "boundary_rectifiability",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches BoundaryRectifiability for all ambient dimensions. The proof obtains the necessary approximation mass bounds directly from deformation, treats top and zero dimensions separately, and applies IntegralityOfWeakLimits only to integer lattice boundaries, which are cycles. Localization and the supplied patching argument complete the proof without circular use of Federer–Fleming."
+    },
+    {
+      "key": "flat_iff_weak",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches the frozen flatDistance and both directions of the equivalence. The proof establishes convergence of localized currents, obtains integer error terms using boundary rectifiability, and uses finite lattice approximations to construct differences of summably small global mass. The resulting series give the required global decompositions with the correct sign."
+    },
+    {
+      "key": "rectifiability",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches RectifiabilityTheorem, including identification of the hypothesized mass measure and all dimension cases. The density, projection and Radon–Nikodym arguments yield the carrier and multiplicity; blow-up boundary tests establish orientation of weighted tangent spaces. The cited projection theorem has the required σ-finiteness hypotheses, as also checked in [Simon, Chapter 3, Theorem 3.6](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    },
+    {
+      "key": "integrality_weak_limits",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches IntegralityOfWeakLimits. Induction decreases the current degree and includes zero-dimensional compactness. Localization, cone reduction, slicing, support-controlled isoperimetric replacements and the covering argument establish positive density. The final blow-up selection controls rescaled masses before projection and BV compactness establish integer multiplicity. No boundary-rectifiability or Federer–Fleming cycle is introduced."
+    },
+    {
+      "key": "federer_fleming",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches FedererFlemingCompactness. The supplied argument correctly extracts mass-only bounds, obtains a weakly convergent subsequence, makes its terms integral using boundary rectifiability, and applies integrality of weak limits with inherited bounds. This exact implication was independently kernel-checked from the three declared sibling hypotheses."
+    }
+  ],
+  "required_changes": []
+}

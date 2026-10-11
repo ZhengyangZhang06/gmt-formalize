@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Integrality of weak limits of integral currents (Simon 8.2)",
+  "statement": "For all P, m ∈ ℕ and every open U ⊆ ℝ^P: if T_j ∈ D_{m+1}(U) are integral currents (T_j and ∂T_j integer multiplicity) with sup_j (M_W(T_j) + M_W(∂T_j)) < ∞ for every open W ⊂⊂ U and T_j ⇀ T ∈ D_{m+1}(U), then T is integer multiplicity.",
+  "lean_statement": "IntegralityOfWeakLimits",
+  "lean_name": "integrality_of_weak_limits",
+  "depends_on": [
+    "root.rectifiability-a1",
+    "root.isoperimetric-a1",
+    "root.slicing-a1",
+    "root.lipschitz_pushforward_im-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.isoperimetric-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-a1"
+}

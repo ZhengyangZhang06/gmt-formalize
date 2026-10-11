@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Deformation theorem, scaled version (Simon 5.1/5.3)",
+  "statement": "For all m, ℓ ∈ ℕ with ℓ ≥ 1 there is C = C(m,ℓ) ∈ [0,∞) such that for every T ∈ D_{m+1}(ℝ^{m+1+ℓ}) with M(T) + M(∂T) < ∞ and every ρ > 0 there are β : 𝓛_{m+1}(ρ) → ℝ, Pc = Σ_F β_F[[F]] (IsLatticeChain ρ β Pc), R ∈ D_{m+2}(ℝ^{m+1+ℓ}) and S ∈ D_{m+1}(ℝ^{m+1+ℓ}) with T − Pc = ∂R + S, M(Pc) ≤ C M(T), M(∂Pc) ≤ C M(∂T), M(R) ≤ CρM(T), M(S) ≤ CρM(∂T), spt Pc ∪ spt R ⊆ {dist(·, spt T) < 2√(m+1+ℓ)ρ}, spt ∂Pc ∪ spt S ⊆ {dist(·, spt ∂T) < 2√(m+1+ℓ)ρ}; if T is integer multiplicity then every β_F ∈ ℤ and Pc, R are integer multiplicity, and if moreover ∂T is integer multiplicity then S is integer multiplicity.",
+  "lean_statement": "DeformationTheorem",
+  "lean_name": "deformation_theorem",
+  "depends_on": [
+    "root.slicing-a1",
+    "root.lipschitz_pushforward_im-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-a1"
+}

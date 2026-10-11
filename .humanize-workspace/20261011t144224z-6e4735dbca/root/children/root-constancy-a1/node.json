@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Constancy theorem (Simon 2.34)",
+  "statement": "For every m ∈ ℕ, every open connected U ⊆ ℝ^{m+1} and every T ∈ D_{m+1}(U) with ∂T = 0 there is c ∈ ℝ such that T(ω) = c·∫_U ω(x)(e_1,…,e_{m+1}) dL^{m+1}(x) for every test form ω ∈ D^{m+1}(U).",
+  "lean_statement": "ConstancyTheorem",
+  "lean_name": "constancy_theorem",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-a1"
+}
