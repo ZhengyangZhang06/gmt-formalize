@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.rellich_compactness-a1",
+  "parent_id": "root.harmonic_approximation-a1",
+  "depth": 2,
+  "title": "Rellich-Kondrachov compactness on the unit ball",
+  "statement": "Let n >= 1 and A in R, and let f_k : R^n -> R and g_k : R^n -> R^n (k in N) satisfy IsW12WithGradient f_k g_k B, int_B |f_k|^2 <= A and int_B |g_k|^2 <= A for all k (bounds stated as ENNReal.ofReal A; B is the open unit ball). Then there are a strictly increasing phi : N -> N and w in L^2(B) (MemLp w 2 for Lebesgue measure restricted to B) with int_B |f_{phi(k)} - w|^2 -> 0.",
+  "lean_statement": "∀ n : ℕ, 1 ≤ n → ∀ (A : ℝ) (f : ℕ → Rn n → ℝ) (g : ℕ → Rn n → Rn n), (∀ k, IsW12WithGradient (f k) (g k) (ball 0 1)) → (∀ k, ∫⁻ x in ball (0 : Rn n) 1, ‖f k x‖ₑ ^ 2 ≤ ENNReal.ofReal A) → (∀ k, ∫⁻ x in ball (0 : Rn n) 1, ‖g k x‖ₑ ^ 2 ≤ ENNReal.ofReal A) → ∃ (φ : ℕ → ℕ) (w : Rn n → ℝ), StrictMono φ ∧ MemLp w 2 (volume.restrict (ball (0 : Rn n) 1)) ∧ Tendsto (fun k => ∫⁻ x in ball (0 : Rn n) 1, ‖f (φ k) x - w x‖ₑ ^ 2) atTop (𝓝 0)",
+  "lean_name": "w12_ball_rellich_compactness",
+  "depends_on": [
+    "root.harmonic_approximation-a1.boundary_layer_estimate-a1",
+    "root.harmonic_approximation-a1.translation_estimate-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.harmonic_approximation-a1.translation_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-rellich-compactness-a1-a1"
+}
