@@ -335,6 +335,74 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Gauss–Green identity for the blow-ups `η_{x,r}(E)`** (Simon Ch. 3, proof of Theorem 4.3,
+display (8), `chapter-03.txt` lines 662–667): for a Gauss–Green pair `(μ, ν)` of `(U, E)`, `r > 0`
+and `g ∈ C¹_c(ℝ^{n+1}; ℝ^{n+1})` with `tsupport g ⊆ η_{x,r}(U)`,
+`∫_{η_{x,r}(E)} div g dL^{n+1} = -r⁻ⁿ ∫ g(η_{x,r}(y)) · ν(y) dμ(y)`. Apply (4.1) to
+`h = g ∘ η_{x,r}` (`C¹`, compactly supported in `U`, `div h = r⁻¹ (div g) ∘ η_{x,r}`) and change
+variables `z = η_{x,r}(y)`: `η_{x,r}` pushes `L^{n+1}` forward to `r^{n+1} L^{n+1}`. -/
+theorem Submission.deGiorgi_blowUp_gaussGreen_identity : ∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)) (x : Rn (n + 1)) (r : ℝ), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → 0 < r → ∀ g : Rn (n + 1) → Rn (n + 1), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ blowUpMap x r '' U → ∫ z in blowUpMap x r '' E, Poincare.SimonGMT.Chapter02.euclideanDivergence g z = -((r ^ n)⁻¹ * ∫ y, inner ℝ (g (blowUpMap x r y)) (ν y) ∂μ) := by
+  intro n U E μ ν x r hU _ hGG hr g hg hgc hgU
+  obtain ⟨-, -, -, -, hGG⟩ := hGG
+  -- `η_{x,r} = (r⁻¹ • ·) ∘ (· - x)`, as a homeomorphism and as a measurable equivalence.
+  set φ : Rn (n + 1) ≃ₜ Rn (n + 1) :=
+    (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+  set e : Rn (n + 1) ≃ᵐ Rn (n + 1) :=
+    (MeasurableEquiv.subRight x).trans (MeasurableEquiv.smul₀ r⁻¹ (inv_ne_zero hr.ne'))
+  have he : ⇑e = blowUpMap x r := rfl
+  -- Step 1: `h = g ∘ η` is `C¹`, compactly supported, and `tsupport h ⊆ η⁻¹(η(U)) = U`.
+  have hcd : ContDiff ℝ 1 (g ∘ blowUpMap x r) :=
+    hg.comp ((contDiff_id.sub contDiff_const).const_smul r⁻¹)
+  have hcs : HasCompactSupport (g ∘ blowUpMap x r) := hgc.comp_homeomorph φ
+  have hts : tsupport (g ∘ blowUpMap x r) ⊆ U := by
+    refine (tsupport_comp_subset_preimage g φ.continuous).trans fun y hy ↦ ?_
+    obtain ⟨u, hu, huy⟩ := hgU (show φ y ∈ tsupport g from hy)
+    exact φ.injective huy ▸ hu
+  -- Step 2: `D h(y) = r⁻¹ D g(η y)`, so `div h = r⁻¹ (div g) ∘ η`.
+  have hη : ∀ y, HasFDerivAt (blowUpMap x r) (r⁻¹ • ContinuousLinearMap.id ℝ (Rn (n + 1))) y :=
+    fun y ↦ ((hasFDerivAt_id y).sub_const x).const_smul r⁻¹
+  have hdiv : ∀ y, Poincare.SimonGMT.Chapter02.euclideanDivergence (g ∘ blowUpMap x r) y =
+      r⁻¹ * Poincare.SimonGMT.Chapter02.euclideanDivergence g (blowUpMap x r y) := by
+    intro y
+    have hd := ((hg.differentiable one_ne_zero) (blowUpMap x r y)).hasFDerivAt.comp y (hη y)
+    rw [Poincare.SimonGMT.Chapter02.euclideanDivergence, hd.fderiv, ContinuousLinearMap.comp_smul,
+      ContinuousLinearMap.comp_id, ContinuousLinearMap.toLinearMap_smul, map_smul, smul_eq_mul]
+    rfl
+  -- Steps 3–4: (4.1) for `h`. As `div h` vanishes off `tsupport h ⊆ U`, `E ∩ U` may be replaced
+  -- by `E` (Step 6, done here before the change of variables instead of after it).
+  have hGG' : ∫ y in E ∩ U, Poincare.SimonGMT.Chapter02.euclideanDivergence (g ∘ blowUpMap x r) y =
+      -∫ y, inner ℝ (g (blowUpMap x r y)) (ν y) ∂μ := hGG _ hcd hcs hts
+  have hEU : ∫ y in E ∩ U, Poincare.SimonGMT.Chapter02.euclideanDivergence (g ∘ blowUpMap x r) y =
+      ∫ y in E, Poincare.SimonGMT.Chapter02.euclideanDivergence (g ∘ blowUpMap x r) y := by
+    rw [← setIntegral_indicator hU.measurableSet, Set.indicator_eq_self.2
+      ((Poincare.SimonGMT.Chapter02.support_euclideanDivergence_subset _).trans hts)]
+  -- Step 5: change of variables; `L^{n+1}(η⁻¹(T)) = L^{n+1}(r • T + x) = r^{n+1} L^{n+1}(T)`.
+  have hmap : (volume : Measure (Rn (n + 1))).map e = ENNReal.ofReal (r ^ (n + 1)) • volume := by
+    ext T -
+    have hT : ⇑e ⁻¹' T = (fun y ↦ y + -x) ⁻¹' ((fun z ↦ r⁻¹ • z) ⁻¹' T) := by
+      ext y
+      simp [he, blowUpMap, sub_eq_add_neg]
+    rw [e.map_apply, Measure.smul_apply, hT, measure_preimage_add_right,
+      Set.preimage_smul_inv₀ hr.ne', Measure.addHaar_smul, finrank_euclideanSpace_fin,
+      abs_of_pos (pow_pos hr _), smul_eq_mul]
+  have hres : ((volume : Measure (Rn (n + 1))).restrict E).map e =
+      ENNReal.ofReal (r ^ (n + 1)) • (volume : Measure (Rn (n + 1))).restrict (e '' E) := by
+    rw [← Measure.restrict_smul, ← hmap, e.restrict_map, e.preimage_image]
+  have hcov : ∫ y in E, Poincare.SimonGMT.Chapter02.euclideanDivergence g (blowUpMap x r y) =
+      r ^ (n + 1) *
+        ∫ z in blowUpMap x r '' E, Poincare.SimonGMT.Chapter02.euclideanDivergence g z := by
+    rw [← he, ← integral_map_equiv, hres, integral_smul_measure,
+      ENNReal.toReal_ofReal (pow_pos hr _).le, smul_eq_mul]
+  -- Step 7: `rⁿ ∫_{η(E)} div g = -∫ g(η y) · ν(y) dμ(y)`; divide by `rⁿ > 0`.
+  have hmain : r ^ n * ∫ z in blowUpMap x r '' E,
+      Poincare.SimonGMT.Chapter02.euclideanDivergence g z =
+        -∫ y, inner ℝ (g (blowUpMap x r y)) (ν y) ∂μ := by
+    rw [← hGG', hEU]
+    simp only [hdiv]
+    rw [integral_const_mul, hcov, ← mul_assoc, pow_succ', ← mul_assoc, inv_mul_cancel₀ hr.ne',
+      one_mul]
+  rw [neg_mul_eq_mul_neg, ← hmain, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero n hr.ne'), one_mul]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
