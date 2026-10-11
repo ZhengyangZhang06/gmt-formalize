@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "hasBasis_compactConvergenceUniformity|compactConvergenceUniformSpace",
+        "class Regular|extends.*IsFiniteMeasureOnCompacts|isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts",
+        "norm_setIntegral_le_of_norm_le_const|setIntegral_eq_integral_of_forall_compl_eq_zero|integrableOn_iff_integrable_of_support_subset|integrableOn_of_bounded",
+        "radon_compactlySupported_countable_approx|radon_exists_subseq_tendsto_integral|radon_exists_measure_of_tendsto_integral",
+        "git -C .lake/packages/mathlib status --short",
+        "git -C .lake/packages/simongmt status --short",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/radon_independent_audit/Types.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/radon_decomp_scratch/Scratch/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/UniformSpace/CompactConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-radon-compactness-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-radon-compactness-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/tmp/radon_independent_audit/Types.lean",
+        "/tmp/radon_decomp_scratch/Scratch/Full.lean"
+      ],
+      "conclusion": "Verified snapshot revisions and compatibility with the clean pinned packages; the frozen Contract and workspace Submission are byte-identical. The cited topology, integral-estimate and Riesz APIs have the required hypotheses. In particular, Mathlib's Measure.Regular includes finiteness on compact sets. All three frozen child propositions independently elaborate without child implementations in the comparator's replayed scope. Independently recompiled the supplied combined scratch proofs: their child types and selected parent type are byte-identical to the contracts, and all four proofs use only propext, Classical.choice and Quot.sound. Proposed names have no declaration matches in the searched libraries/project and no reservations in the active DAG or other branch decompositions. The split is appropriate: subtype compact-mass bounds, subsequence extraction, Riesz representation and Varifold.ofDomainMeasure establish exactly root.radon_compactness-a1, including the required ambient integral identities."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cc_countable_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line Lean proposition. Compact exhaustion, Urysohn cutoffs and compact-open separability provide the stated sequence. The fixed compact K depends only on f, and the pointwise estimate holds both inside and outside K, including empty X. The proof is complete and non-circular. The fresh bare name is valid; the additional separability import is permitted."
+    },
+    {
+      "key": "subseq_extraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including eventual rather than uniform-in-index bounds. Finite initial Bochner integral values are correctly absorbed into coordinate bounds. Compactness and first countability of the countable product yield a common strictly increasing subsequence. Eventual integrability and support-controlled approximation justify the Cauchy estimate for every test function. Its sole dependency on cc_countable_approx is correctly directed and acyclic; the bare name is fresh."
+    },
+    {
+      "key": "riesz_limit_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree without requiring second countability. Eventual integrability justifies additivity; homogeneity, positivity and uniqueness of limits correctly produce a positive linear functional. The pinned Riesz theorem supplies its representing measure, whose regularity implies local finiteness under the stated hypotheses. The argument is complete and independent: convergence is an explicit premise, so no dependency on subseq_extraction is needed. The bare name is fresh."
+    }
+  ],
+  "required_changes": []
+}
