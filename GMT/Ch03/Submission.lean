@@ -335,6 +335,156 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **The reduced boundary is a Borel set** (De Giorgi, parent Part 5b; cf. Simon Ch. 1, §3,
+`chapter-01.txt` lines 575–592). `μ` is `σ`-finite, so for fixed `ρ` the centre map
+`x ↦ normalAverage μ ν x ρ` is measurable (product measurability of `{dist < ρ}`). For `x ∈ U` the
+map `ρ ↦ normalAverage μ ν x ρ` is left-continuous for small `ρ` (continuity from below and
+dominated convergence), so the limit as `ρ ↓ 0` may be taken along rational radii. -/
+theorem Submission.deGiorgi_measurableSet_reducedBoundary : ∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → MeasurableSet (reducedBoundary U μ ν) := by
+  intro N U μ ν hU hUc hfin hν hν1
+  -- Step 1: `μ` is `σ`-finite: `U` is a countable union of compact sets and `μ Uᶜ = 0`.
+  obtain ⟨F, hFc, hFU, hFun, -⟩ := hU.exists_iUnion_isClosed
+  have : SigmaFinite μ := by
+    refine Measure.sigmaFinite_of_countable
+      (S := insert Uᶜ (Set.range fun p : ℕ × ℕ => F p.1 ∩ Metric.closedBall 0 p.2))
+      ((Set.countable_range _).insert _) ?_ ?_
+    · rintro s (rfl | ⟨⟨n, m⟩, rfl⟩)
+      · simp [hUc]
+      · exact hfin _ ((isCompact_closedBall 0 (m : ℝ)).inter_left (hFc n))
+          (Set.inter_subset_left.trans (hFU n))
+    · refine Set.eq_univ_of_forall fun y => ?_
+      by_cases hy : y ∈ U
+      · rw [← hFun] at hy
+        obtain ⟨n, hn⟩ := Set.mem_iUnion.1 hy
+        obtain ⟨m, hm⟩ := exists_nat_ge ‖y‖
+        exact Set.mem_sUnion.2 ⟨_, Or.inr ⟨(n, m), rfl⟩, hn, by simpa using hm⟩
+      · exact Set.mem_sUnion.2 ⟨Uᶜ, Or.inl rfl, hy⟩
+  -- Step 2: for fixed `ρ`, the centre map `x ↦ normalAverage μ ν x ρ` is measurable.
+  have hmeas : ∀ ρ : ℝ, Measurable fun x => normalAverage μ ν x ρ := by
+    intro ρ
+    have hS : MeasurableSet {p : Rn N × Rn N | dist p.2 p.1 < ρ} :=
+      measurableSet_lt (measurable_snd.dist measurable_fst) measurable_const
+    have h1 : Measurable fun x => μ (Metric.ball x ρ) := measurable_measure_prodMk_left hS
+    have h2 : StronglyMeasurable fun x => ∫ y in Metric.ball x ρ, ν y ∂μ := by
+      have : (fun x => ∫ y in Metric.ball x ρ, ν y ∂μ) = fun x =>
+          ∫ y, {p : Rn N × Rn N | dist p.2 p.1 < ρ}.indicator (fun p => hν.mk ν p.2) (x, y) ∂μ := by
+        funext x
+        rw [integral_congr_ae (ae_restrict_of_ae hν.ae_eq_mk),
+          ← integral_indicator measurableSet_ball]
+        rfl
+      rw [this]
+      exact StronglyMeasurable.integral_prod_right' (ν := μ)
+        ((hν.stronglyMeasurable_mk.comp_measurable measurable_snd).indicator hS)
+    exact (h1.ennreal_toReal.inv).smul h2.measurable
+  -- Step 3: for `x ∈ U`, `ρ ↦ normalAverage μ ν x ρ` is left-continuous on `(0, r)`.
+  have hleft : ∀ x ∈ U, ∃ r > 0, ∀ ρ, 0 < ρ → ρ < r →
+      Tendsto (normalAverage μ ν x) (𝓝[<] ρ) (𝓝 (normalAverage μ ν x ρ)) := by
+    intro x hx
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x hx
+    refine ⟨ε / 2, half_pos hε, fun ρ hρ hρr => ?_⟩
+    have hball : μ (Metric.ball x ρ) < ∞ :=
+      (measure_mono (Metric.ball_subset_closedBall.trans
+        (Metric.closedBall_subset_closedBall hρr.le))).trans_lt
+        (hfin _ (isCompact_closedBall x (ε / 2))
+          ((Metric.closedBall_subset_ball (half_lt_self hε)).trans hεU))
+    have key : ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (g : Rn N → E),
+        AEStronglyMeasurable g μ → (∀ᵐ y ∂μ, ‖g y‖ ≤ 1) →
+        Tendsto (fun ρ' => ∫ y, (Metric.ball x ρ').indicator g y ∂μ) (𝓝[<] ρ)
+          (𝓝 (∫ y, (Metric.ball x ρ).indicator g y ∂μ)) := by
+      intro E _ _ g hg hg1
+      refine tendsto_integral_filter_of_dominated_convergence
+        ((Metric.ball x ρ).indicator (1 : Rn N → ℝ)) ?_ ?_ ?_ ?_
+      · exact Eventually.of_forall fun ρ' => hg.indicator measurableSet_ball
+      · filter_upwards [self_mem_nhdsWithin] with ρ' hρ'
+        filter_upwards [hg1] with y hy
+        by_cases hy' : y ∈ Metric.ball x ρ'
+        · rw [Set.indicator_of_mem hy',
+            Set.indicator_of_mem (Metric.ball_subset_ball (le_of_lt hρ') hy')]
+          simpa using hy
+        · rw [Set.indicator_of_notMem hy', norm_zero]
+          exact Set.indicator_nonneg (fun _ _ => zero_le_one) y
+      · exact (integrable_indicator_iff measurableSet_ball).2 (integrableOn_const hball.ne)
+      · refine Eventually.of_forall fun y => ?_
+        by_cases hy : dist y x < ρ
+        · rw [Set.indicator_of_mem (show y ∈ Metric.ball x ρ from hy)]
+          refine tendsto_const_nhds.congr' ?_
+          filter_upwards [Ioo_mem_nhdsLT hy] with ρ' hρ'
+          exact (Set.indicator_of_mem (show y ∈ Metric.ball x ρ' from hρ'.1) g).symm
+        · rw [Set.indicator_of_notMem (show y ∉ Metric.ball x ρ from hy)]
+          refine tendsto_const_nhds.congr' ?_
+          filter_upwards [self_mem_nhdsWithin] with ρ' hρ'
+          exact (Set.indicator_of_notMem
+            (show y ∉ Metric.ball x ρ' from fun h => hy (lt_trans h hρ')) g).symm
+    have hA : Tendsto (fun ρ' => (μ (Metric.ball x ρ')).toReal) (𝓝[<] ρ)
+        (𝓝 (μ (Metric.ball x ρ)).toReal) := by
+      have := key (1 : Rn N → ℝ) aestronglyMeasurable_one (Eventually.of_forall fun _ => by simp)
+      simpa only [integral_indicator_one measurableSet_ball, measureReal_def] using this
+    have hB : Tendsto (fun ρ' => ∫ y in Metric.ball x ρ', ν y ∂μ) (𝓝[<] ρ)
+        (𝓝 (∫ y in Metric.ball x ρ, ν y ∂μ)) := by
+      have := key ν hν (by filter_upwards [hν1] with y hy using hy.le)
+      simpa only [integral_indicator measurableSet_ball] using this
+    by_cases h0 : (μ (Metric.ball x ρ)).toReal = 0
+    · have hμ0 : μ (Metric.ball x ρ) = 0 := by
+        rcases (ENNReal.toReal_eq_zero_iff _).1 h0 with h | h
+        · exact h
+        · exact absurd h hball.ne
+      have hz : ∀ ρ' ≤ ρ, normalAverage μ ν x ρ' = 0 := by
+        intro ρ' hρ'
+        have : μ (Metric.ball x ρ') = 0 := measure_mono_null (Metric.ball_subset_ball hρ') hμ0
+        simp [normalAverage, this]
+      rw [hz ρ le_rfl]
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [self_mem_nhdsWithin] with ρ' hρ'
+      exact (hz ρ' (le_of_lt hρ')).symm
+    · exact (hA.inv₀ h0).smul hB
+  -- Step 4: the limit along `ρ ↓ 0` may be taken along rational radii.
+  have hne : (Filter.comap (fun q : ℚ => (q : ℝ)) (𝓝[>] (0 : ℝ))).NeBot := by
+    rw [Filter.comap_neBot_iff]
+    intro t ht
+    obtain ⟨δ, hδ, hδt⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 ht
+    obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn (Set.mem_Ioi.1 hδ)
+    exact ⟨q, hδt ⟨hq1, hq2⟩⟩
+  have hset : reducedBoundary U μ ν = U ∩
+      ({x | ∃ c, Tendsto (fun q : ℚ => normalAverage μ ν x q)
+          (Filter.comap (fun q : ℚ => (q : ℝ)) (𝓝[>] (0 : ℝ))) (𝓝 c)} ∩
+        {x | ‖limUnder (Filter.comap (fun q : ℚ => (q : ℝ)) (𝓝[>] (0 : ℝ)))
+          (fun q : ℚ => normalAverage μ ν x q)‖ = 1}) := by
+    ext x
+    simp only [reducedBoundary, Set.mem_ofPred_eq, Set.mem_inter_iff]
+    constructor
+    · rintro ⟨hxU, v, hv, hv1⟩
+      have hq : Tendsto (fun q : ℚ => normalAverage μ ν x q)
+          (Filter.comap (fun q : ℚ => (q : ℝ)) (𝓝[>] (0 : ℝ))) (𝓝 v) := hv.comp tendsto_comap
+      exact ⟨hxU, ⟨v, hq⟩, by rw [hq.limUnder_eq]; exact hv1⟩
+    · rintro ⟨hxU, ⟨c, hc⟩, hc1⟩
+      rw [hc.limUnder_eq] at hc1
+      refine ⟨hxU, c, ?_, hc1⟩
+      obtain ⟨r, hr, hcont⟩ := hleft x hxU
+      rw [Metric.nhds_basis_closedBall.tendsto_right_iff]
+      intro ε hε
+      obtain ⟨t, ht, hts⟩ :=
+        Filter.mem_comap.1 ((Metric.nhds_basis_closedBall.tendsto_right_iff.1 hc) ε hε)
+      obtain ⟨δ, hδ, hδt⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 ht
+      filter_upwards [Ioo_mem_nhdsGT (lt_min (Set.mem_Ioi.1 hδ) hr)] with ρ hρ
+      have hρδ : ρ < δ := hρ.2.trans_le (min_le_left _ _)
+      have hρr : ρ < r := hρ.2.trans_le (min_le_right _ _)
+      have : (Filter.comap (fun q : ℚ => (q : ℝ)) (𝓝[<] ρ)).NeBot := by
+        rw [Filter.comap_neBot_iff]
+        intro s hs
+        obtain ⟨a, ha, has⟩ := mem_nhdsLT_iff_exists_Ioo_subset.1 hs
+        obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn (Set.mem_Iio.1 ha)
+        exact ⟨q, has ⟨hq1, hq2⟩⟩
+      refine Metric.isClosed_closedBall.mem_of_tendsto
+        ((hcont ρ hρ.1 hρr).comp (tendsto_comap (f := fun q : ℚ => (q : ℝ)))) ?_
+      filter_upwards [Filter.preimage_mem_comap (Ioo_mem_nhdsLT hρ.1)] with q hq
+      exact hts (hδt ⟨hq.1, hq.2.trans hρδ⟩)
+  -- Step 5: a countable description of `∂*`.
+  rw [hset]
+  refine hU.measurableSet.inter (MeasurableSet.inter ?_ ?_)
+  · exact StronglyMeasurable.measurableSet_exists_tendsto fun q : ℚ => (hmeas q).stronglyMeasurable
+  · exact (StronglyMeasurable.limUnder fun q : ℚ => (hmeas q).stronglyMeasurable).measurable.norm
+      (measurableSet_singleton 1)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
