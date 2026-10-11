@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fbb230f35042d7a1a953f581f378ac6091541432af998edf0bbc91864fa96535",
+  "git_delta": {
+    "base_commit": "752c3f61510399ed2a0f72eccf81ceef5b553e52",
+    "candidate_commit": "de4765221dd69fc0b7a7e6463bfb5ce3e3a66363",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "trace_scalar_add_rankOne_comp_starProjection",
+    "diff_sha256": "c6df29141cef342700951305ec0ccdcae5fd79531d08dcbc4f716553419865df",
+    "source_sha256": "55f042cbd33d043b09c49e9cf9364ca12710e7faa3f5415bc129d1611ebcd354",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.trace_scalar_add_rankOne_comp_starProjection",
+      "statement": "∀ (n ℓ : ℕ) (P : Submodule ℝ (Ambient n ℓ)) (c : ℝ) (F : Ambient n ℓ →L[ℝ] ℝ) (v : Ambient n ℓ), LinearMap.trace ℝ (Ambient n ℓ) ((c • ContinuousLinearMap.id ℝ (Ambient n ℓ) + F.smulRight v).toLinearMap ∘ₗ P.starProjection.toLinearMap) = c * (Module.finrank ℝ P : ℝ) + F (P.starProjection v)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
