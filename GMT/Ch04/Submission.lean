@@ -543,3 +543,82 @@ theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryI
 end
 
 end GMT.Ch04
+
+
+namespace Submission
+
+/-- Simon 3.12 (p. 91), given `ApproxTangentAE`: if `μ_V` is finite on compact sets and
+`Θⁿ(μ_V, ·)` exists at every point of the open set `U`, then `(M_V, Θⁿ(μ_V, ·))` is an
+admissible pair whose weight is `μ_V ⌞ U`. -/
+theorem canonicalCarrier_rectifiablePair_weight : ApproxTangentAE → ∀ (n ℓ : ℕ)
+    (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), 0 < n → IsOpen U →
+    IsFiniteMeasureOnCompacts V.weight → (∀ ξ ∈ U, V.HasDensityAt ξ (V.density ξ)) →
+    IsRectifiablePair n (V.canonicalCarrier U) V.density ∧
+      pairWeight n (V.canonicalCarrier U) V.density = V.weight.restrict U := by
+  intro hAT n ℓ V U hn hU hfin hdens
+  -- a representative `(M, θ)` of `V`, so that `μ_V = Hⁿ ⌞ θ`
+  obtain ⟨a, ha⟩ : ∃ a, RectifiableVarifold.mk a = V := Quot.exists_rep V
+  obtain ⟨hrect, hmeas, hpos, hint⟩ := a.isRectifiablePair
+  have hw : V.weight = pairWeight n a.M a.θ := by subst ha; rfl
+  -- `Θ = θ` `Hⁿ`-a.e. on `M`, by `ApproxTangentAE` and uniqueness of limits
+  have hN : ∀ S ⊆ a.M, V.density =ᵐ[(μHE[n] : Measure (Ambient n ℓ)).restrict S] a.θ := by
+    intro S hS
+    refine EventuallyEq.filter_mono ?_ (ae_mono (Measure.restrict_mono hS le_rfl))
+    subst ha
+    filter_upwards [hAT n ℓ a hn] with x hx
+    exact hx.2.2.limUnder_eq
+  -- `μ_V(Mᶜ) = 0`
+  have hMc : V.weight a.Mᶜ = 0 := by
+    rw [hw]
+    refine withDensity_absolutelyContinuous _ _ ?_
+    rw [Measure.restrict_apply₀' hmeas, compl_inter_self, measure_empty]
+  -- `Hⁿ(M_V \ M) = 0`: apply the density lemma to `{x ∈ U \ M : Θ(x) ≥ 1/(k+1)}`
+  have hVM : (μHE[n] : Measure (Ambient n ℓ)) (V.canonicalCarrier U \ a.M) = 0 := by
+    have hsub : V.canonicalCarrier U \ a.M ⊆
+        ⋃ k : ℕ, {x | x ∈ U ∧ x ∉ a.M ∧ 1 / ((k : ℝ) + 1) ≤ V.density x} := by
+      rintro x ⟨⟨hxU, hx⟩, hxM⟩
+      obtain ⟨k, hk⟩ := exists_nat_one_div_lt hx
+      exact mem_iUnion.2 ⟨k, hxU, hxM, hk.le⟩
+    refine measure_mono_null hsub (measure_iUnion_null fun k ↦ ?_)
+    refine Submission.hausdorff_null_of_measure_null_density_ge n ℓ _ _ (1 / ((k : ℝ) + 1)) hn
+      hfin (by positivity) (measure_mono_null (fun x hx ↦ hx.2.1) hMc) ?_
+    rintro x ⟨hxU, -, hx⟩
+    exact ⟨_, hx, hdens x hxU⟩
+  -- `Hⁿ((M ∩ U) \ M_V) = 0`, since `Θ = θ > 0` `Hⁿ`-a.e. on `M`
+  have hMV : (μHE[n] : Measure (Ambient n ℓ)) ((a.M ∩ U) \ V.canonicalCarrier U) = 0 := by
+    have h : ∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M, 0 < V.density x := by
+      filter_upwards [hN a.M subset_rfl, ae_restrict_mem₀ hmeas] with x hx hxM
+      rw [hx]
+      exact hpos x hxM
+    rw [ae_iff, Measure.restrict_apply₀' hmeas] at h
+    refine measure_mono_null ?_ h
+    rintro x ⟨⟨hxM, hxU⟩, hx⟩
+    exact ⟨fun h ↦ hx ⟨hxU, h⟩, hxM⟩
+  -- hence `M_V = M ∩ U` up to an `Hⁿ`-null set
+  have hae : V.canonicalCarrier U =ᵐ[(μHE[n] : Measure (Ambient n ℓ))] a.M ∩ U := by
+    refine ae_eq_set.2 ⟨measure_mono_null ?_ hVM, hMV⟩
+    rintro x ⟨hx, hxMU⟩
+    exact ⟨hx, fun hxM ↦ hxMU ⟨hxM, hx.1⟩⟩
+  refine ⟨⟨?_, (hmeas.inter hU.measurableSet.nullMeasurableSet).congr hae.symm,
+    fun x hx ↦ hx.2, fun K hK ↦ ?_⟩, ?_⟩
+  · -- add `M_V \ M` to the null set of a Lipschitz cover of `M`
+    obtain ⟨M₀, hM₀, F, hF, hcover⟩ := hrect
+    refine ⟨M₀ ∪ (V.canonicalCarrier U \ a.M), measure_union_null hM₀ hVM, F, hF,
+      fun x hx ↦ ?_⟩
+    by_cases hxM : x ∈ a.M
+    · rcases hcover hxM with h | h
+      · exact Or.inl (Or.inl h)
+      · exact Or.inr h
+    · exact Or.inl (Or.inr ⟨hx, hxM⟩)
+  · have h : IntegrableOn a.θ (a.M ∩ U ∩ K) μHE[n] :=
+      (hint K hK).mono_set fun x hx ↦ ⟨hx.1.1, hx.2⟩
+    exact (h.congr_fun_ae (hN _ fun x hx ↦ hx.1.1).symm).congr_set_ae (hae.inter .rfl)
+  · rw [hw]
+    unfold pairWeight
+    rw [Measure.restrict_congr_set hae, restrict_withDensity hU.measurableSet,
+      Measure.restrict_restrict hU.measurableSet, inter_comm U a.M]
+    refine withDensity_congr_ae ?_
+    filter_upwards [hN (a.M ∩ U) inter_subset_left] with x hx
+    rw [hx]
+
+end Submission
