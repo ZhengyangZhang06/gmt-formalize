@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def adjoint|adjoint_comp_self_injective_iff|eq_starProjection_of_mem_of_inner_eq_zero|class HasOrthogonalProjection|differentiableAt_inverse|theorem HasFDerivWithinAt.unique_on|theorem HasFDerivWithinAt.mapsTo_tangent_cone|tangentConeAt_of_mem_nhds|theorem ContDiffAt.fderiv_right",
+        "adjoint.*([Dd]ifferentiab|[Hh]asFDeriv|[Cc]ontDiff)|([Dd]ifferentiab|[Hh]asFDeriv|[Cc]ontDiff).*adjoint",
+        "exists_open_image_eq_inter|^import|isEmbedding_chartMap",
+        "sff_range_starProjection_differentiableAt|sff_immersion_local_left_inverse|sff_tangentProjection_local_extension|sff_projection_field_fderiv_identity|sff_fderivWithin_chart_direction",
+        "python3 -I /tmp/sff-independent-audit-j78wofsj/run_checks.py Challenge_00.lean Challenge_01.lean Challenge_02.lean",
+        "python3 -I /tmp/sff-independent-audit-j78wofsj/run_checks.py Challenge_03.lean Challenge_04.lean InstanceCheck.lean",
+        "python3 -I /tmp/sff-independent-audit-j78wofsj/run_checks.py IndependentEndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-sff-chart-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-sff-chart-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/sff-independent-audit-j78wofsj/IndependentEndToEnd.lean",
+        "/tmp/sff-independent-audit-j78wofsj/InstanceCheck.lean"
+      ],
+      "conclusion": "The five-way split is appropriate for this selected chart formula. Dependencies are acyclic and correctly directed: only tangent_projection_extension uses the first two children. All five statements pass lexical validation and fresh comparator-scope elaboration without child implementations. Their bare names have no collisions in the 134-node DAG or other pending decomposition proposals. The adjoint-differentiability search found no dedicated lemma; the supplied explicit real-linear construction fills that step. Projection-instance checks compile, and CLM multiplication is composition. Pinned package revisions match the manifest, and inspected mathlib sources match the compiled package sources. Independently rerunning the supplied trial proofs, with exact frozen-type checks for every child and the parent, succeeds; all five children, the parent assembly, and the reused localization theorem depend only on propext, Classical.choice, and Quot.sound. The assembly preserves the complete TH hypothesis and uses only TH1."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "range_projection_diff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone Lean proposition exactly matches the prose. The proof establishes real-linearity of adjoint, Gram invertibility, an open unit neighborhood, the orthogonal-projection formula there, and differentiability transferred through local equality. Inversion uses the correct CLM composition algebra. No circular reliance or missing hypothesis."
+    },
+    {
+      "key": "immersion_left_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. A continuous linear left inverse makes L ∘ ψ strictly differentiable with identity derivative; the inverse function theorem supplies k, and g = k ∘ L has both required properties. All regularity and finite-dimensionality requirements are justified, including zero-dimensional cases."
+    },
+    {
+      "key": "tangent_projection_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All chart hypotheses and the explicit tangent-space identification appear in both statements. The two declared dependencies supply exactly the required ingredients. Relative-properness localization and Q = Πr ∘ Dψ ∘ g establish differentiability and both eventual equalities. Projection-instance transport is valid. The proof does not assume the parent conclusion."
+    },
+    {
+      "key": "projection_field_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the four hypotheses and conclusion. The chain rule and two operator-application product rules compute the derivative in the specified argument order. Eventual equality and derivative uniqueness give the claimed identity after rearrangement. The supplied proof is complete and independent."
+    },
+    {
+      "key": "fderiv_within_chart_direction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statements match exactly. The proof first derives membership in M and equality at the base point, obtains two within-derivatives, then proves chart directions belong to the tangent cone before applying unique_on. It correctly avoids requiring ambient UniqueDiffWithinAt and covers degenerate cases."
+    }
+  ],
+  "required_changes": []
+}
