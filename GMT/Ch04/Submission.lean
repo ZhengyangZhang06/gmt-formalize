@@ -13,6 +13,7 @@ import Mathlib.MeasureTheory.Measure.WithDensity
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.Topology.Semicontinuity.Basic
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 4: Rectifiable `n`-varifolds (printed pp. 85–102)
@@ -433,6 +434,60 @@ def ClassicalTangent : Prop :=
     V.IsLocallyLp U H p → x ∈ U → V.IsApproxTangentAt x P →
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
+
+/-- **Compact pieces of one Lipschitz image.** If `f : ℝⁿ → ℝ^{n+ℓ}` is Lipschitz, then up to an
+`Hⁿ`-null set `Y`, `f(ℝⁿ)` is covered by images `f(C_i)` of compact sets on which `f` is
+differentiable with injective derivative, `Df` is continuous, and `f` has a lower Lipschitz
+bound. The bounded Borel pieces `T_p` of the regular set (`regular_set_lower_lipschitz_cover`)
+are exhausted by Lusin compacta `D_{p,q}` for `Df` (`lusin_compact_exhaustion_of_measurable`);
+`Y` is the image of the non-regular set (null by the area formula, Ch. 2 §3) together with the
+image of the null remainders `T_p \ ⋃_q D_{p,q}` (null by Ch. 2, 1.8(i)). -/
+theorem Submission.lipschitz_range_piece_cover : ∀ (n ℓ : ℕ) (K : NNReal)
+    (f : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), LipschitzWith K f →
+    ∃ (Y : Set (Ambient n ℓ)) (C : ℕ → Set (EuclideanSpace ℝ (Fin n))),
+      (μHE[n] : Measure (Ambient n ℓ)) Y = 0 ∧ Set.range f ⊆ Y ∪ ⋃ i, f '' C i ∧
+      ∀ i, IsCompact (C i) ∧
+        (∀ w ∈ C i, DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)) ∧
+        ContinuousOn (fderiv ℝ f) (C i) ∧
+        ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖f v - f w‖ := by
+  intro n ℓ K f hf
+  -- Bounded Borel pieces `T_p` of the regular set `R`, with lower Lipschitz bounds.
+  obtain ⟨T, hRT, hT⟩ := Submission.regular_set_lower_lipschitz_cover n ℓ f hf.continuous
+  -- `T_p` has finite measure and `Df` is Borel, so Lusin gives compacta `D_{p,q} ⊆ T_p` on
+  -- which `Df` is continuous, exhausting `T_p` up to a Lebesgue-null set.
+  choose D hD hDnull using fun p ↦
+    Submission.lusin_compact_exhaustion_of_measurable n (fderiv ℝ f) (T p)
+      (measurable_fderiv ℝ f) (hT p).1 (hT p).2.1.measure_lt_top.ne
+  -- `Y = f(ℝⁿ \ R) ∪ f(Z)` with `Z = ⋃_p (T_p \ ⋃_q D_{p,q})`; the pieces are `D_{Nat.unpair i}`.
+  refine ⟨f '' (univ \ {w | DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)}) ∪
+      f '' ⋃ p, (T p \ ⋃ q, D p q), fun i ↦ D (Nat.unpair i).1 (Nat.unpair i).2, ?_, ?_,
+      fun i ↦ ?_⟩
+  · refine measure_union_null ?_ ?_
+    · -- The area formula: the image of the non-regular set is `Hⁿ`-null.
+      have h := Poincare.SimonGMT.Chapter02.area_image_compl_regularSet_eq_zero hf univ
+      rwa [finrank_euclideanSpace_fin] at h
+    · -- Ch. 2, 1.8(i): `Hⁿ(f(Z)) ≤ Kⁿ Hⁿ(Z) = Kⁿ Lⁿ(Z) = 0`.
+      have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+        (hf.lipschitzOnWith (s := ⋃ p, (T p \ ⋃ q, D p q)))
+      rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume n, measure_iUnion_null hDnull,
+        mul_zero] at h
+      exact nonpos_iff_eq_zero.1 h
+  · rintro _ ⟨w, rfl⟩
+    by_cases hw : w ∈ {w | DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)}
+    · obtain ⟨p, hp⟩ := mem_iUnion.1 (hRT hw)
+      by_cases hq : w ∈ ⋃ q, D p q
+      · obtain ⟨q, hq⟩ := mem_iUnion.1 hq
+        refine mem_union_right _ (mem_iUnion.2 ⟨Nat.pair p q, ?_⟩)
+        simpa only [Nat.unpair_pair] using mem_image_of_mem f hq
+      · exact mem_union_left _ (mem_union_right _
+          (mem_image_of_mem f (mem_iUnion.2 ⟨p, mem_sdiff_of_mem hp hq⟩)))
+    · exact mem_union_left _ (mem_union_left _
+        (mem_image_of_mem f (mem_sdiff_of_mem (mem_univ w) hw)))
+  · -- Each piece inherits the properties of `D_{p,q} ⊆ T_p`.
+    obtain ⟨hcpt, hsub, hcont⟩ := hD (Nat.unpair i).1 (Nat.unpair i).2
+    obtain ⟨-, -, hreg, c, hc, hlow⟩ := hT (Nat.unpair i).1
+    exact ⟨hcpt, fun w hw ↦ hreg w (hsub hw), hcont, c, hc,
+      fun v hv w hw ↦ hlow v (hsub hv) w (hsub hw)⟩
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
