@@ -660,6 +660,91 @@ theorem Submission.eilenberg_covering_lipschitz_image_volume_le : ∀ (X : Type)
       rw [div_eq_mul_inv, div_eq_mul_inv, mul_pow, mul_pow, ENNReal.inv_pow]
       ring
 
+/-- **Simon Ch. 2, proof of Theorem 1.9 (pp. 45–46), one scale of the covering argument.** Put
+`s = m + k`. As `0 < r`, the size-`r` premeasure of `E` (the inner infimum of
+`hausdorffMeasure_apply`) is at most `μH[s](E) < ∞`, so some cover `C` of `E` has
+`ediam (C l) ≤ r` and `∑ (ediam (C l))^s < μH[s](E) + ε`. With `d l = ediam (C l ∩ E)`,
+`g = ∑_l (ω_k/2^k) (d l)^k 1_{closure f(C l ∩ E)}` is Borel and dominates `ω_k/2^k` times the
+size-`r` premeasure of each fibre `E ∩ f⁻¹{y}`, which is covered by the `C l ∩ E ∩ f⁻¹{y}`.
+By `eilenberg_covering_lipschitz_image_volume_le`, `∫ g ≤ ∑_l a (d l)^s ≤ a (μH[s](E) + ε)` with
+`a = ω_m ω_k K^m / 2^s`. Simon's `f(C_ij)` is replaced by the closed set `closure f(C l ∩ E)`,
+which is Borel without σ-compactness of `X`. -/
+theorem Submission.eilenberg_covering_fixed_scale_majorant : ∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (k : ℝ) (E : Set X) (f : X → Rn m) (K : ℝ≥0) (r ε : ℝ≥0∞), 0 < k → μH[(m : ℝ) + k] E < ⊤ → LipschitzOnWith K f E → 0 < r → 0 < ε → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, Chapter01.realUnitBallVolume k / (2 : ℝ≥0∞) ^ k * (⨅ (t : ℕ → Set X) (_ : E ∩ f ⁻¹' {y} ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ r), ∑' n, ⨆ (_ : (t n).Nonempty), ediam (t n) ^ k) ≤ g y) ∧ ∫⁻ y, g y ∂volume ≤ Chapter01.realUnitBallVolume (m : ℝ) * Chapter01.realUnitBallVolume k * (K : ℝ≥0∞) ^ m / (2 : ℝ≥0∞) ^ ((m : ℝ) + k) * (μH[(m : ℝ) + k] E + ε) := by
+  intro X _ _ _ m k E f K r ε hk hE hf hr hε
+  have hs : 0 < (m : ℝ) + k := add_pos_of_nonneg_of_pos (Nat.cast_nonneg m) hk
+  -- A cover `C` of `E` by sets of diameter `≤ r` with `∑ (ediam (C l))^s < μH[s](E) + ε`.
+  have hpre : (⨅ (t : ℕ → Set X) (_ : E ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ r),
+      ∑' n, ⨆ (_ : (t n).Nonempty), ediam (t n) ^ ((m : ℝ) + k)) ≤ μH[(m : ℝ) + k] E := by
+    rw [Measure.hausdorffMeasure_apply]
+    exact le_iSup₂_of_le r hr le_rfl
+  have hlt := (ENNReal.lt_add_right (ne_top_of_le_ne_top hE.ne hpre) hε.ne').trans_le
+    (add_le_add hpre le_rfl)
+  obtain ⟨C, hlt⟩ := iInf_lt_iff.1 hlt
+  obtain ⟨hEC, hlt⟩ := iInf_lt_iff.1 hlt
+  obtain ⟨hCr, hlt⟩ := iInf_lt_iff.1 hlt
+  -- The trimmed pieces `C l ∩ E` still have `∑ (ediam (C l ∩ E))^s ≤ μH[s](E) + ε`.
+  have hsum : ∑' l, ediam (C l ∩ E) ^ ((m : ℝ) + k) ≤ μH[(m : ℝ) + k] E + ε := by
+    refine le_trans (ENNReal.tsum_le_tsum fun l ↦ ?_) hlt.le
+    rcases (C l ∩ E).eq_empty_or_nonempty with h | h
+    · rw [h, Metric.ediam_empty, ENNReal.zero_rpow_of_pos hs]
+      exact zero_le
+    · rw [iSup_pos (h.mono inter_subset_left)]
+      exact ENNReal.rpow_le_rpow (Metric.ediam_mono inter_subset_left) hs.le
+  -- `(ω_k/2^k) d^k (ω_m K^m d^m / 2^m) = a d^s` for every `d ∈ [0, ∞]`.
+  have h2m₀ : (2 : ℝ≥0∞) ^ (m : ℝ) ≠ 0 := (ENNReal.rpow_pos (by norm_num) (by norm_num)).ne'
+  have h2m : (2 : ℝ≥0∞) ^ (m : ℝ) ≠ ⊤ :=
+    ENNReal.rpow_ne_top_of_nonneg (Nat.cast_nonneg m) (by norm_num)
+  have hexp (d : ℝ≥0∞) : Chapter01.realUnitBallVolume k / 2 ^ k * d ^ k *
+      (Chapter01.realUnitBallVolume (m : ℝ) * (K : ℝ≥0∞) ^ m * d ^ m / 2 ^ m) =
+      Chapter01.realUnitBallVolume (m : ℝ) * Chapter01.realUnitBallVolume k * (K : ℝ≥0∞) ^ m /
+        (2 : ℝ≥0∞) ^ ((m : ℝ) + k) * d ^ ((m : ℝ) + k) := by
+    rw [← ENNReal.rpow_natCast d m, ← ENNReal.rpow_natCast 2 m,
+      ENNReal.rpow_add_of_nonneg (x := d) _ _ (Nat.cast_nonneg m) hk.le,
+      ENNReal.rpow_add (x := 2) _ _ two_ne_zero ENNReal.ofNat_ne_top]
+    simp only [div_eq_mul_inv, ENNReal.mul_inv (Or.inl h2m₀) (Or.inl h2m)]
+    ring
+  refine ⟨fun y ↦ ∑' l, (closure (f '' (C l ∩ E))).indicator
+      (fun _ ↦ Chapter01.realUnitBallVolume k / 2 ^ k * ediam (C l ∩ E) ^ k) y,
+    Measurable.tsum fun l ↦ measurable_const.indicator isClosed_closure.measurableSet,
+    fun y ↦ ?_, ?_⟩
+  · -- The pieces `C l ∩ E ∩ f⁻¹{y}` form an admissible cover of the fibre.
+    have hcov : E ∩ f ⁻¹' {y} ⊆ ⋃ l, C l ∩ E ∩ f ⁻¹' {y} := by
+      rintro x ⟨hxE, hxy⟩
+      obtain ⟨l, hl⟩ := mem_iUnion.1 (hEC hxE)
+      exact mem_iUnion.2 ⟨l, ⟨hl, hxE⟩, hxy⟩
+    have hdiam (l : ℕ) : ediam (C l ∩ E ∩ f ⁻¹' {y}) ≤ r :=
+      (Metric.ediam_mono (inter_subset_left.trans inter_subset_left)).trans (hCr l)
+    calc _ ≤ Chapter01.realUnitBallVolume k / 2 ^ k * ∑' l,
+          ⨆ (_ : (C l ∩ E ∩ f ⁻¹' {y}).Nonempty), ediam (C l ∩ E ∩ f ⁻¹' {y}) ^ k := by
+          gcongr Chapter01.realUnitBallVolume k / 2 ^ k * ?_
+          exact iInf₂_le_of_le (fun l ↦ C l ∩ E ∩ f ⁻¹' {y}) hcov (iInf_le_of_le hdiam le_rfl)
+      _ = ∑' l, Chapter01.realUnitBallVolume k / 2 ^ k *
+          ⨆ (_ : (C l ∩ E ∩ f ⁻¹' {y}).Nonempty), ediam (C l ∩ E ∩ f ⁻¹' {y}) ^ k :=
+          ENNReal.tsum_mul_left.symm
+      _ ≤ _ := ENNReal.tsum_le_tsum fun l ↦ ?_
+    rcases (C l ∩ E ∩ f ⁻¹' {y}).eq_empty_or_nonempty with h | h
+    · simp [h]
+    · have hy : y ∈ closure (f '' (C l ∩ E)) := by
+        obtain ⟨x, hxD, hxy⟩ := h
+        exact subset_closure ⟨x, hxD, hxy⟩
+      rw [iSup_pos h, indicator_of_mem hy]
+      gcongr Chapter01.realUnitBallVolume k / 2 ^ k * ?_
+      exact ENNReal.rpow_le_rpow (Metric.ediam_mono inter_subset_left) hk.le
+  · -- `∫ g = ∑ (ω_k/2^k) (d l)^k Lᵐ(closure f(C l ∩ E)) ≤ ∑ a (d l)^s ≤ a (μH[s](E) + ε)`.
+    rw [lintegral_tsum fun l ↦
+      (measurable_const.indicator isClosed_closure.measurableSet).aemeasurable]
+    calc _ ≤ ∑' l, Chapter01.realUnitBallVolume (m : ℝ) * Chapter01.realUnitBallVolume k *
+          (K : ℝ≥0∞) ^ m / (2 : ℝ≥0∞) ^ ((m : ℝ) + k) * ediam (C l ∩ E) ^ ((m : ℝ) + k) := by
+          refine ENNReal.tsum_le_tsum fun l ↦ ?_
+          rw [lintegral_indicator_const isClosed_closure.measurableSet, ← hexp]
+          gcongr
+          exact Submission.eilenberg_covering_lipschitz_image_volume_le X m (C l ∩ E) f K
+            (hf.mono inter_subset_right)
+      _ = Chapter01.realUnitBallVolume (m : ℝ) * Chapter01.realUnitBallVolume k *
+          (K : ℝ≥0∞) ^ m / (2 : ℝ≥0∞) ^ ((m : ℝ) + k) *
+          ∑' l, ediam (C l ∩ E) ^ ((m : ℝ) + k) := ENNReal.tsum_mul_left
+      _ ≤ _ := by gcongr
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
