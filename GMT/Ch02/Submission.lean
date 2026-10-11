@@ -660,12 +660,6 @@ theorem Submission.eilenberg_covering_lipschitz_image_volume_le : ∀ (X : Type)
       rw [div_eq_mul_inv, div_eq_mul_inv, mul_pow, mul_pow, ENNReal.inv_pow]
       ring
 
-/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
-theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
-
-end GMT.Ch02
-
-
 /-- **Simon Ch. 2, proof of Theorem 1.9 (pp. 45–46), one scale of the covering argument.** Put
 `s = m + k`. As `0 < r`, the size-`r` premeasure of `E` (the inner infimum of
 `hausdorffMeasure_apply`) is at most `μH[s](E) < ∞`, so some cover `C` of `E` has
@@ -750,3 +744,8 @@ theorem Submission.eilenberg_covering_fixed_scale_majorant : ∀ (X : Type) [Met
           (K : ℝ≥0∞) ^ m / (2 : ℝ≥0∞) ^ ((m : ℝ) + k) *
           ∑' l, ediam (C l ∩ E) ^ ((m : ℝ) + k) := ENNReal.tsum_mul_left
       _ ≤ _ := by gcongr
+
+/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
+theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
+
+end GMT.Ch02
