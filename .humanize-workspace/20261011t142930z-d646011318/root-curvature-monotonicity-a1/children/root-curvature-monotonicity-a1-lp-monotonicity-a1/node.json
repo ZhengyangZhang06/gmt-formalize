@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.curvature_monotonicity-a1.lp_monotonicity-a1",
+  "parent_id": "root.curvature_monotonicity-a1",
+  "depth": 2,
+  "title": "Lᵖ mean-curvature monotonicity with corrected κ (Simon 4.2–4.8 for 0 < σ ≤ ρ ≤ R; parent Step 5)",
+  "statement": "Assume (GF) and (UI) [as in bounded_curvature]. Then LpMonotonicity holds: for n > 0, ℓ, V, open U, H such that V has generalized mean curvature H in U, p > n with H ∈ L^p_loc(U) (H ∈ L^p(μ_V⌞K) for every compact K ⊆ U), ξ, R > 0 with B_R(ξ) ⊆ U, and Λ with (R^{p−n}∫_{B_R(ξ)}|H|^p dμ_V)^{1/p} ≤ κΛ, κ = (p−n)/(4p): there are F: ℝ → ℝ and G: ℝ × ℝ → ℝ such that for ρ ∈ (0, R], e^{−(Λ/2)(ρ/R)^{1−n/p}} ≤ F(ρ) ≤ e^{(Λ/2)(ρ/R)^{1−n/p}} and |F(ρ) − 1| ≤ (e^{Λ/2}/2)Λ(ρ/R)^{1−n/p}; for 0 < σ ≤ ρ ≤ R, G(σ,ρ) ∈ [e^{−Λ}, e^{Λ}] and (F(ρ)ρ^{-n}μ_V(B_ρ(ξ)) + (F(ρ) − 1)) − (F(σ)σ^{-n}μ_V(B_σ(ξ)) + (F(σ) − 1)) = G(σ,ρ)∫_{B_ρ(ξ)∖B_σ(ξ)} q_ξ(x)/|x−ξ|ⁿ dμ_V; and ρ ↦ F(ρ)ρ^{-n}μ_V(B_ρ(ξ)) + (F(ρ) − 1) is nondecreasing on (0, R].",
+  "lean_statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsOpen U → V.HasMeanCurvatureIn U H → closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) (closedBall ξ ρ \\ closedBall ξ σ) V.weight ∧ V.weight.real (closedBall ξ ρ) / ρ ^ n - V.weight.real (closedBall ξ σ) / σ ^ n = ∫ x in closedBall ξ ρ \\ closedBall ξ σ, V.normalRadialSq ξ x / ‖x - ξ‖ ^ n ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)) → LpMonotonicity",
+  "lean_name": "mcm_lp_monotonicity_of_identity",
+  "depends_on": [
+    "root.curvature_monotonicity-a1.annulus_ibp-a1",
+    "root.curvature_monotonicity-a1.exp_integral_ftc-a1",
+    "root.curvature_monotonicity-a1.lp_holder_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.curvature_monotonicity-a1.annulus_ibp-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.curvature_monotonicity-a1.exp_integral_ftc-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.curvature_monotonicity-a1.lp_holder_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-curvature-monotonicity-a1-lp-monotonicity-a1-a1"
+}

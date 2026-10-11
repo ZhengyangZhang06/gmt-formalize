@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.curvature_monotonicity-a1.bounded_curvature-a1",
+  "parent_id": "root.curvature_monotonicity-a1",
+  "depth": 2,
+  "title": "Monotonicity with bounded mean curvature (Simon 3.16–3.17) and the density remark after 3.17 (parent Step 3)",
+  "statement": "Assume (GF): for every n > 0, ℓ and every rectifiable n-varifold V in E = ℝ^{n+ℓ}, μ_V is finite on compact sets, dim T_xV = n μ_V-a.e., and x ↦ p_{T_xV} is μ_V-a.e. strongly measurable. Assume (UI): for all n > 0, ℓ, V, open U, H such that V has generalized mean curvature H in U, ξ, and 0 < σ ≤ ρ with B_ρ(ξ) ⊆ U, the function e_ξ(τ) := τ^{-(n+1)}∫_{B_τ(ξ)}⟨x−ξ, H(x)⟩dμ_V is integrable on (σ, ρ], w_ξ(x) := q_ξ(x)/|x−ξ|ⁿ is μ_V-integrable on B_ρ(ξ)∖B_σ(ξ), and ρ^{-n}μ_V(B_ρ(ξ)) − σ^{-n}μ_V(B_σ(ξ)) = ∫_{B_ρ(ξ)∖B_σ(ξ)} w_ξ dμ_V + ∫_{(σ,ρ]} e_ξ. Then BoundedCurvatureMonotonicity holds: for n > 0, ℓ, V, open U, H and Λ ≥ 0 such that V has generalized mean curvature H in U and |H(x)| ≤ Λ for μ_V-a.e. x ∈ U: (A) for every ξ, R with B_R(ξ) ⊆ U there are F: ℝ → ℝ and G: ℝ × ℝ → ℝ with F(ρ) ∈ [e^{−Λρ}, e^{Λρ}] for ρ ∈ (0, R) and, for all 0 < σ ≤ ρ < R, G(σ,ρ) ∈ [e^{−ΛR}, e^{ΛR}] and F(ρ)ρ^{-n}μ_V(B_ρ(ξ)) − F(σ)σ^{-n}μ_V(B_σ(ξ)) = G(σ,ρ)∫_{B_ρ(ξ)∖B_σ(ξ)} q_ξ(x)/|x−ξ|ⁿ dμ_V; (B) V.HasDensityAt ξ (V.density ξ) for every ξ ∈ U; (C) V.density is upper semicontinuous on U.",
+  "lean_statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsOpen U → V.HasMeanCurvatureIn U H → closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) (closedBall ξ ρ \\ closedBall ξ σ) V.weight ∧ V.weight.real (closedBall ξ ρ) / ρ ^ n - V.weight.real (closedBall ξ σ) / σ ^ n = ∫ x in closedBall ξ ρ \\ closedBall ξ σ, V.normalRadialSq ξ x / ‖x - ξ‖ ^ n ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)) → BoundedCurvatureMonotonicity",
+  "lean_name": "mcm_bounded_curvature_of_identity",
+  "depends_on": [
+    "root.curvature_monotonicity-a1.annulus_ibp-a1",
+    "root.curvature_monotonicity-a1.exp_integral_ftc-a1",
+    "root.curvature_monotonicity-a1.density_usc-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.curvature_monotonicity-a1.annulus_ibp-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.curvature_monotonicity-a1.exp_integral_ftc-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.curvature_monotonicity-a1.density_usc-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-curvature-monotonicity-a1-bounded-curvature-a1-a1"
+}

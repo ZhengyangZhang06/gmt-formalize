@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.curvature_monotonicity-a1.log_error-a1",
+  "parent_id": "root.curvature_monotonicity-a1",
+  "depth": 2,
+  "title": "Logarithmic error in the monotonicity identity (Simon 3.18, parent Step 4)",
+  "statement": "Assume (UI) [as in bounded_curvature]. Then LogarithmicMonotonicityError holds: for n > 0, ℓ, V, open U, H such that V has generalized mean curvature H in U, ξ with B_ρ(ξ) ⊆ U, 0 < σ < ρ and δ ∈ ℝ with τ^{1−n}∫_{B_τ(ξ)}|H|dμ_V ≤ δ for all τ ∈ [σ, ρ] (real power τ^{1−n}): |ρ^{-n}μ_V(B_ρ(ξ)) − σ^{-n}μ_V(B_σ(ξ)) − ∫_{B_ρ(ξ)∖B_σ(ξ)} q_ξ(x)/|x−ξ|ⁿ dμ_V| ≤ δ log(ρ/σ).",
+  "lean_statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsOpen U → V.HasMeanCurvatureIn U H → closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) (closedBall ξ ρ \\ closedBall ξ σ) V.weight ∧ V.weight.real (closedBall ξ ρ) / ρ ^ n - V.weight.real (closedBall ξ σ) / σ ^ n = ∫ x in closedBall ξ ρ \\ closedBall ξ σ, V.normalRadialSq ξ x / ‖x - ξ‖ ^ n ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)) → LogarithmicMonotonicityError",
+  "lean_name": "mcm_log_error_of_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-curvature-monotonicity-a1-log-error-a1-a1"
+}
