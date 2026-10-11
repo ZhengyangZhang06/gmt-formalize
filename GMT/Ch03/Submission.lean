@@ -335,6 +335,83 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Lipschitz cover from a projection bound** (Simon Ch. 3, proof of Theorem 1.6 "⇐",
+`chapter-03.txt` lines 249–262: (10) together with the extension theorem 1.2 of Ch. 2 puts each
+`E_j ∩ B_{δ/4}(x₀)` in a Lipschitz graph over the plane; here countably many balls cover an
+arbitrary `E`). If `Q` is an `n`-dimensional subspace with orthogonal projection
+`q = Q.starProjection` and `|y - x| ≤ C |q(y - x)|` for all `x, y ∈ E` with `|y - x| < δ`, then
+`E ⊆ ⋃ᵢ Fᵢ(ℝⁿ)` for Lipschitz maps `Fᵢ : ℝⁿ → ℝᴺ`. With `p = ι⁻¹ ∘ π_Q : ℝᴺ → ℝⁿ` (`π_Q` the
+orthogonal projection onto `Q`, `ι : ℝⁿ ≃ Q` a linear isometry), on each piece
+`S_d = E ∩ B_{δ/2}(d)` (`d` in a countable dense set) the inverse of `p` is `max C 0`-Lipschitz
+on `p(S_d)`, and its Lipschitz extension to `ℝⁿ` has range containing `S_d`. -/
+theorem Submission.tangentMeasure_lipschitz_cover_of_projection_bound : (∀ (N n : ℕ) (Q : Submodule ℝ (Rn N)) (E : Set (Rn N)) (C δ : ℝ), finrank ℝ Q = n → 0 < δ → (∀ x ∈ E, ∀ y ∈ E, ‖y - x‖ < δ → ‖y - x‖ ≤ C * ‖Q.starProjection (y - x)‖) → ∃ F : ℕ → Rn n → Rn N, (∀ i, ∃ K : ℝ≥0, LipschitzWith K (F i)) ∧ E ⊆ ⋃ i, Set.range (F i)) := by
+  intro N n Q E C δ hQ hδ hE
+  classical
+  -- Step 1: isometric coordinates `p = ι⁻¹ ∘ π_Q : ℝᴺ → ℝⁿ` with `|p y - p y'| = |q(y - y')|`,
+  -- and the bound with the nonnegative constant `C' = max C 0`.
+  let ι : Rn n ≃ₗᵢ[ℝ] Q := ((stdOrthonormalBasis ℝ Q).reindex (finCongr hQ)).repr.symm
+  let p : Rn N → Rn n := fun y => ι.symm (Q.orthogonalProjectionOnto y)
+  have hp : ∀ y y', ‖p y - p y'‖ = ‖Q.starProjection (y - y')‖ := by
+    intro y y'
+    simp only [p, ← map_sub, LinearIsometryEquiv.norm_map]
+    rw [Q.starProjection_apply]
+    rfl
+  set C' : ℝ := max C 0
+  have hE' : ∀ x ∈ E, ∀ y ∈ E, ‖y - x‖ < δ → ‖y - x‖ ≤ C' * ‖p y - p x‖ := by
+    intro x hx y hy hxy
+    rw [hp]
+    exact (hE x hx y hy hxy).trans (mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg _))
+  -- A countable dense set `D = range e` of centres.
+  obtain ⟨D, hDc, hDd⟩ := TopologicalSpace.exists_countable_dense (Rn N)
+  have hDne : D.Nonempty := hDd.nonempty
+  obtain ⟨e, he⟩ := hDc.exists_eq_range hDne
+  have hpiece : ∀ d : Rn N, ∃ F : Rn n → Rn N, (∃ K : ℝ≥0, LipschitzWith K F) ∧
+      E ∩ Metric.ball d (δ / 2) ⊆ Set.range F := by
+    intro d
+    -- Step 2: the piece `S = E ∩ B_{δ/2}(d)` has diameter `< δ`, so `|y - y'| ≤ C' |p y - p y'|`.
+    set S := E ∩ Metric.ball d (δ / 2)
+    have hS : ∀ y ∈ S, ∀ y' ∈ S, ‖y - y'‖ ≤ C' * ‖p y - p y'‖ := by
+      intro y hy y' hy'
+      apply hE' y' hy'.1 y hy.1
+      have h1 := hy.2
+      have h2 := hy'.2
+      rw [Metric.mem_ball] at h1 h2
+      calc ‖y - y'‖ = dist y y' := (dist_eq_norm _ _).symm
+        _ ≤ dist y d + dist d y' := dist_triangle _ _ _
+        _ < δ / 2 + δ / 2 := by rw [dist_comm d y']; linarith
+        _ = δ := by ring
+    -- Step 3: a right inverse `h` of `p` on `S` is `C'`-Lipschitz on `p(S)`.
+    let h : Rn n → Rn N := Function.invFunOn p S
+    have hlip : LipschitzOnWith (Real.toNNReal C') h (p '' S) := by
+      apply LipschitzOnWith.of_dist_le_mul
+      rintro _ ⟨y, hy, rfl⟩ _ ⟨y', hy', rfl⟩
+      have hm : h (p y) ∈ S := Function.invFunOn_mem ⟨y, hy, rfl⟩
+      have hm' : h (p y') ∈ S := Function.invFunOn_mem ⟨y', hy', rfl⟩
+      have he1 : p (h (p y)) = p y := Function.invFunOn_eq ⟨y, hy, rfl⟩
+      have he2 : p (h (p y')) = p y' := Function.invFunOn_eq ⟨y', hy', rfl⟩
+      rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ (le_max_right _ _)]
+      have := hS _ hm _ hm'
+      rwa [he1, he2] at this
+    -- Step 4: extend `h` to a Lipschitz `F : ℝⁿ → ℝᴺ`; `y = F (p y)` for `y ∈ S`.
+    obtain ⟨F, hF, hFeq⟩ := hlip.extend_finite_dimension
+    refine ⟨F, ⟨_, hF⟩, ?_⟩
+    intro y hy
+    refine ⟨p y, ?_⟩
+    rw [← hFeq ⟨y, hy, rfl⟩]
+    have hm : h (p y) ∈ S := Function.invFunOn_mem ⟨y, hy, rfl⟩
+    have he1 : p (h (p y)) = p y := Function.invFunOn_eq ⟨y, hy, rfl⟩
+    have := hS _ hm _ hy
+    rw [he1, sub_self, norm_zero, mul_zero] at this
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp this)
+  -- Step 5: the pieces centred at `e i` cover `E`.
+  choose F hFlip hFcov using hpiece
+  refine ⟨fun i => F (e i), fun i => hFlip (e i), ?_⟩
+  intro x hx
+  obtain ⟨d, hdD, hxd⟩ := hDd.exists_dist_lt x (half_pos hδ)
+  rw [he] at hdD
+  obtain ⟨i, rfl⟩ := hdD
+  exact Set.mem_iUnion.mpr ⟨i, hFcov (e i) ⟨hx, by rw [Metric.mem_ball]; exact hxd⟩⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
