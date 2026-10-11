@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1",
+  "parent_id": "root.density_one_implies_regular-a1",
+  "depth": 2,
+  "title": "Uniform mean-curvature bound and monotonicity for varifolds stationary in N (Simon Ch. 4, 2.7 and 3.17)",
+  "statement": "Let ℓ ≤ k and n ≥ 1, U ⊆ ℝ^{n+k} open, N an embedded C² (n+ℓ)-dimensional submanifold of ℝ^{n+k} with (N̄ ∖ N) ∩ U = ∅, and y₀ ∈ N ∩ U. There exist r₀ > 0 and κ ≥ 0 with B̄_{3r₀}(y₀) ⊆ U such that, for every T ∈ 𝒟_n(U) and every integer multiplicity triple R = (M, θ, ξ) representing T with spt T ⊆ N and V = v(M, θ) stationary in U ∩ N (δV(X) = 0 for every C¹ vector field X with compact support, spt X ⊆ U and X(x) ∈ T_xN for all x ∈ N ∩ U), the following hold: (a) there is a μ_R-a.e. strongly measurable H : ℝ^{n+k} → ℝ^{n+k} with |H(x)| ≤ κ for all x and δV(X) = −∫⟨X, H⟩ dμ_R for every C¹ vector field X with compact support contained in B_{2r₀}(y₀); (b) for every z ∈ B_{r₀}(y₀) and 0 < σ ≤ ρ ≤ r₀, e^{κσ}σ^{−n}μ_R(B_σ(z)) ≤ e^{κρ}ρ^{−n}μ_R(B_ρ(z)). Here μ_R = θHⁿ⌞M, δV(X) = ∫_M θ div_M X dHⁿ (IMRep.firstVariation) with div_M X(x) = trace(P_{T_xM}∘DX(x)), T_xN is the classical tangent space (tangentSpace), and r₀, κ depend only on n, N, U, y₀.",
+  "lean_statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → 0 < n → ∀ (U N : Set (Euclid (n + k))) (y₀ : Euclid (n + k)), IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → y₀ ∈ N ∩ U → ∃ r₀ κ : ℝ, 0 < r₀ ∧ 0 ≤ κ ∧ closedBall y₀ (3 * r₀) ⊆ U ∧ ∀ (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → T.support ⊆ N → R.IsStationaryAlong N → (∃ H : Euclid (n + k) → Euclid (n + k), AEStronglyMeasurable H R.measure ∧ (∀ x, ‖H x‖ ≤ κ) ∧ ∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball y₀ (2 * r₀) → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) ∧ ∀ z ∈ ball y₀ r₀, ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ ≤ r₀ → ENNReal.ofReal (Real.exp (κ * σ) / σ ^ n) * R.measure (ball z σ) ≤ ENNReal.ofReal (Real.exp (κ * ρ) / ρ ^ n) * R.measure (ball z ρ)",
+  "lean_name": "dor_stationary_mean_curvature_monotonicity",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-a1"
+}
