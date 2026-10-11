@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.simple_nvector_algebra-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1",
+  "depth": 2,
+  "title": "Simple n-vectors: Gram-determinant norm and change of frame (parent P1)",
+  "statement": "For all P, n and every family v = (v₁,…,v_n) in ℝ^P, the operator norm of the simple n-vector simpleNVector v (the functional α ↦ α(v₁,…,v_n) on n-covectors, which carry the multilinear operator norm) satisfies ‖simpleNVector v‖² = det(⟨v_i, v_j⟩)_{i,j}; and for every real n×n matrix B and every τ = (τ₁,…,τ_n) in ℝ^P, simpleNVector(i ↦ Σ_j B_ij τ_j) = det(B)·simpleNVector τ.",
+  "lean_statement": "(∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ",
+  "lean_name": "lpf_simple_nvector_algebra",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-simple-nvector-algebra-a1-a1"
+}

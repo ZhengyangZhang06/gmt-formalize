@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1",
+  "depth": 2,
+  "title": "Locally Lipschitz images of null and of σ-finite measurable sets (parent P3)",
+  "statement": "For all P, Q, n, every U ⊆ ℝ^P and every f : ℝ^P → ℝ^Q locally Lipschitz on U: (i) if Z ⊆ U and Hⁿ(Z) = 0 then Hⁿ(f(Z)) = 0; (ii) if A ⊆ U is Hⁿ-null-measurable and Hⁿ⌞A is σ-finite then f(A) is Hⁿ-null-measurable in ℝ^Q.",
+  "lean_statement": "∀ (P Q n : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q), LocallyLipschitzOn U f → (∀ Z ⊆ U, (μHE[n] : Measure (Eucl P)) Z = 0 → (μHE[n] : Measure (Eucl Q)) (f '' Z) = 0) ∧ ∀ A ⊆ U, NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → SigmaFinite ((μHE[n] : Measure (Eucl P)).restrict A) → NullMeasurableSet (f '' A) (μHE[n] : Measure (Eucl Q))",
+  "lean_name": "lpf_locally_lipschitz_image",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-a1"
+}
