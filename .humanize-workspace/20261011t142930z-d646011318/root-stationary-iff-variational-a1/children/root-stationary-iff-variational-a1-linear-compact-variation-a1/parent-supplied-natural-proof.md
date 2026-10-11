@@ -1,0 +1,200 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.stationary_iff_variational-a1`
+- Child DAG node: `root.stationary_iff_variational-a1.linear_compact_variation-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. E = Ambient n ℓ = EuclideanSpace ℝ (Fin (n+ℓ)) is a finite-dimensional real inner-product space, hence a complete normed space. DX(y) ∈ L(E, E) denotes the Fréchet derivative and I = id_E. Put φ_t(y) := y + t•X(y), so the variation is φ = (fun t y ↦ y + t • X y). IsCompactVariation φ ε K consists of the fields (pos) 0 < ε; (compact) K is compact; (smooth) (t, y) ↦ φ t y is C^∞ on Ioo(−ε, ε) ×ˢ univ; (diffeo) for t ∈ Ioo(−ε, ε), φ t is bijective and Function.invFun (φ t) is C^∞; (init) φ 0 y = y; (fixed) φ t y = y for t ∈ Ioo(−ε, ε) and y ∉ K. Here K = tsupport X.
+
+1. (Bounds on X.) X is C^∞, hence C¹, so DX is continuous. DX vanishes outside the closed set tsupport X, because X vanishes on a neighbourhood of every point outside it. So DX has compact support. A continuous function with compact support is bounded: there is C with ‖DX(y)‖ ≤ C for all y. Put L := max(C, 0) ≥ 0; then ‖DX(y)‖ ≤ L for all y. By the mean value inequality, X is L-Lipschitz: ‖X(y) − X(y')‖ ≤ L‖y − y'‖ for all y, y'.
+
+2. (Choice of ε; pos and compact.) Put ε := 1/(L + 1) > 0. Field (compact) holds because HasCompactSupport X means precisely that tsupport X is compact.
+
+3. (smooth) The map (t, y) ↦ y + t•X(y) is C^∞ on ℝ × E. It is the sum of the projection (t, y) ↦ y and the product of the smooth scalar function (t, y) ↦ t with the smooth map (t, y) ↦ X(y). In particular it is C^∞ on Ioo(−ε, ε) ×ˢ univ.
+
+4. (init and fixed) φ_0(y) = y + 0•X(y) = y. If y ∉ tsupport X then y ∉ support X, so X(y) = 0 and φ_t(y) = y for every t.
+
+5. (diffeo) Fix t ∈ Ioo(−ε, ε). Then |t| < 1/(L + 1), so c := |t|L ≤ L/(L + 1) < 1.
+ 5a. (Perturbation of the identity.) For all y, y' we have φ_t(y) − φ_t(y') − (y − y') = t•(X(y) − X(y')), hence ‖φ_t(y) − φ_t(y') − (y − y')‖ ≤ |t|L‖y − y'‖ = c‖y − y'‖. Consequently ‖φ_t(y) − φ_t(y')‖ ≥ (1 − c)‖y − y'‖, so φ_t is injective.
+ 5b. (Surjectivity, homeomorphism.) Let z ∈ E. The map T_z(y) := z − t•X(y) satisfies ‖T_z(y) − T_z(y')‖ ≤ c‖y − y'‖ with c < 1. Since E is complete, the Banach fixed point theorem gives a fixed point y with y = z − t•X(y), i.e. φ_t(y) = z. So φ_t is a continuous bijection of E. By 5a its inverse is (1 − c)^{-1}-Lipschitz, so φ_t is a homeomorphism h of E. (If E = {0}, i.e. n + ℓ = 0, everything is trivial.)
+ 5c. (Invertible derivative.) φ_t is differentiable at every a ∈ E, with Dφ_t(a) = I + t DX(a), and ‖t DX(a)‖ ≤ |t|L = c < 1. In the Banach algebra L(E, E), 1 − u is invertible whenever ‖u‖ < 1 (Neumann series). Taking u := −t DX(a) shows that I + t DX(a) is invertible, i.e. a continuous linear equivalence of E.
+ 5d. (Smooth inverse.) h = φ_t is C^∞ (step 3 with t fixed), h is a homeomorphism, and its derivative at every point is a continuous linear equivalence (5c). By the inverse function theorem in the form 'a C^k homeomorphism of a Banach space whose derivative is everywhere invertible has a C^k inverse', h^{-1} is C^∞.
+ 5e. (Function.invFun.) φ_t is surjective, so for each z, Function.invFun φ_t z is a preimage of z: φ_t(Function.invFun φ_t z) = z. Also φ_t(h^{-1}(z)) = z, and φ_t is injective, so Function.invFun φ_t z = h^{-1}(z). Hence Function.invFun φ_t = h^{-1} is C^∞. Together with 5b this proves (diffeo).
+
+6. (Velocity.) For fixed y, the map t ↦ y + t•X(y) is affine in t, with derivative X(y) at every t: the derivative of t ↦ t•v is v, and adding the constant y does not change it. Hence deriv (fun t : ℝ ↦ y + t•X(y)) 0 = X(y) for every y. By function extensionality, (fun y ↦ deriv (fun t : ℝ ↦ y + t • X y) 0) = X.
+
+Steps 2–6 show that ε = 1/(L + 1) satisfies IsCompactVariation (fun t y ↦ y + t • X y) ε (tsupport X), together with the velocity identity, which proves the statement. ∎
+
+Implementation notes (pinned Mathlib 25730c7c, verified by compilation):
+- step 1: HasCompactSupport.fderiv, HasCompactSupport.exists_bound_of_continuous, ContDiff.continuous_fderiv, lipschitzWith_of_nnnorm_fderiv_le.
+- step 3: contDiff_snd.add (contDiff_fst.smul (hX.comp contDiff_snd)).
+- step 4: image_eq_zero_of_notMem_tsupport.
+- 5a–5b are packaged by ApproximatesLinearOn (fun y ↦ y + t • X y) (ContinuousLinearEquiv.refl ℝ E : E →L[ℝ] E) univ (Real.toNNReal (|t| * L)). The side condition Subsingleton E ∨ c < ‖(refl).symm‖₊⁻¹ comes from subsingleton_or_nontrivial and ContinuousLinearMap.nnnorm_id. ApproximatesLinearOn.toHomeomorph then gives h, whose coercion is definitionally φ_t.
+- 5c–5d: Homeomorph.contDiff_symm with f₀' a := ContinuousLinearEquiv.unitsEquiv ℝ E (Units.oneSub (-(t • fderiv ℝ X a)) _). The identification of the derivative uses (hasFDerivAt_id a).add (… .hasFDerivAt.const_smul t).
+- 5e: Function.invFun_eq and Homeomorph.apply_symm_apply.
+- step 6: ((hasDerivAt_id (0:ℝ)).smul_const (X y)).const_add y.
+Extra import: Mathlib.Analysis.Calculus.InverseFunctionTheorem.ApproximatesLinearOn.
+
+Verified Lean realization. Scope used for the scratch compilation (identical to the comparator's child scope): `import GMT.Ch04.Submission` plus the extra imports listed, then `open MeasureTheory Metric Set Filter Topology`, `open scoped ENNReal ContDiff CompactlySupported`, `namespace GMT.Ch04`, `noncomputable section`, `open RectifiableVarifold`, and the declaration placed in `namespace Submission`. It was compiled with Lean v4.35.0-rc3 / Mathlib 25730c7c, and `#print axioms` reported only propext, Classical.choice and Quot.sound. It is an optional implementation aid; the numbered argument above is the proof.
+
+```lean
+theorem exists_isCompactVariation_add_smul : ∀ (n ℓ : ℕ) (X : Ambient n ℓ → Ambient n ℓ), ContDiff ℝ ∞ X → HasCompactSupport X → ∃ ε : ℝ, IsCompactVariation (fun t y ↦ y + t • X y) ε (tsupport X) ∧ (fun y ↦ deriv (fun t : ℝ ↦ y + t • X y) 0) = X := by
+  intro n ℓ X hX hXc
+  have hX1 : ContDiff ℝ 1 X := hX.of_le (WithTop.coe_le_coe.mpr le_top)
+  obtain ⟨C, hC⟩ := (hXc.fderiv ℝ).exists_bound_of_continuous (hX1.continuous_fderiv one_ne_zero)
+  set L : ℝ := max C 0 with hLdef
+  have hL0 : 0 ≤ L := le_max_right _ _
+  have hDX : ∀ y, ‖fderiv ℝ X y‖ ≤ L := fun y ↦ (hC y).trans (le_max_left _ _)
+  have hLip : LipschitzWith (Real.toNNReal L) X := by
+    apply lipschitzWith_of_nnnorm_fderiv_le (hX1.differentiable one_ne_zero)
+    intro y
+    rw [← NNReal.coe_le_coe, coe_nnnorm, Real.coe_toNNReal _ hL0]
+    exact hDX y
+  have hεpos : (0 : ℝ) < 1 / (L + 1) := by positivity
+  refine ⟨1 / (L + 1), ⟨hεpos, hXc, ?_, ?_, ?_, ?_⟩, ?_⟩
+  · exact (contDiff_snd.add (contDiff_fst.smul (hX.comp contDiff_snd))).contDiffOn
+  · intro t ht
+    have hta : |t| < 1 / (L + 1) := abs_lt.mpr ⟨by linarith [ht.1], ht.2⟩
+    have htL : |t| * L < 1 := by
+      calc |t| * L ≤ 1 / (L + 1) * L := by gcongr
+        _ < 1 := by
+          rw [div_mul_eq_mul_div, one_mul, div_lt_one (by positivity)]; linarith
+    set c : NNReal := Real.toNNReal (|t| * L) with hc_def
+    have hcR : (c : ℝ) = |t| * L := by rw [hc_def, Real.coe_toNNReal _ (by positivity)]
+    have hA : ApproximatesLinearOn (fun y ↦ y + t • X y)
+        ((ContinuousLinearEquiv.refl ℝ (Ambient n ℓ) : Ambient n ℓ →L[ℝ] Ambient n ℓ)) univ c := by
+      intro x _ y _
+      have hxy : x + t • X x - (y + t • X y) -
+          (ContinuousLinearEquiv.refl ℝ (Ambient n ℓ) : Ambient n ℓ →L[ℝ] Ambient n ℓ) (x - y)
+            = t • (X x - X y) := by
+        simp only [ContinuousLinearEquiv.coe_refl, ContinuousLinearMap.id_apply, smul_sub]
+        abel
+      rw [hxy, norm_smul, Real.norm_eq_abs]
+      calc |t| * ‖X x - X y‖ ≤ |t| * (L * ‖x - y‖) := by
+            gcongr
+            have := hLip.dist_le_mul x y
+            rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ hL0] at this
+            exact this
+        _ = (c : ℝ) * ‖x - y‖ := by rw [hcR]; ring
+    have hc : Subsingleton (Ambient n ℓ) ∨
+        c < ‖((ContinuousLinearEquiv.refl ℝ (Ambient n ℓ)).symm : Ambient n ℓ →L[ℝ] Ambient n ℓ)‖₊⁻¹ := by
+      rcases subsingleton_or_nontrivial (Ambient n ℓ) with h | h
+      · exact Or.inl h
+      · right
+        rw [ContinuousLinearEquiv.refl_symm, ContinuousLinearEquiv.coe_refl,
+          ContinuousLinearMap.nnnorm_id, inv_one]
+        have : (c : ℝ) < 1 := by rw [hcR]; exact htL
+        exact_mod_cast this
+    set h := hA.toHomeomorph _ hc with hh
+    have hcoe : ∀ y, h y = y + t • X y := fun y ↦ rfl
+    have hbij : Function.Bijective (fun y : Ambient n ℓ ↦ y + t • X y) := by
+      have := h.bijective
+      exact this
+    refine ⟨hbij, ?_⟩
+    have hinv : Function.invFun (fun y : Ambient n ℓ ↦ y + t • X y) = h.symm := by
+      funext z
+      apply hbij.1
+      exact (Function.invFun_eq (hbij.2 z)).trans (h.apply_symm_apply z).symm
+    rw [hinv]
+    have hsmall : ∀ a, ‖-(t • fderiv ℝ X a)‖ < 1 := fun a ↦ by
+      rw [norm_neg, norm_smul, Real.norm_eq_abs]
+      calc |t| * ‖fderiv ℝ X a‖ ≤ |t| * L := by gcongr; exact hDX a
+        _ < 1 := htL
+    refine h.contDiff_symm
+      (f₀' := fun a ↦ ContinuousLinearEquiv.unitsEquiv ℝ _ (Units.oneSub _ (hsmall a))) ?_ ?_
+    · intro a
+      have hd : HasFDerivAt (fun y : Ambient n ℓ ↦ y + t • X y)
+          (ContinuousLinearMap.id ℝ _ + t • fderiv ℝ X a) a :=
+        (hasFDerivAt_id a).add (((hX1.differentiable one_ne_zero) a).hasFDerivAt.const_smul t)
+      rw [show (⇑h : Ambient n ℓ → Ambient n ℓ) = fun y ↦ y + t • X y from rfl]
+      convert hd using 1
+      refine ContinuousLinearMap.ext fun v ↦ ?_
+      show ((1 : Ambient n ℓ →L[ℝ] Ambient n ℓ) - -(t • fderiv ℝ X a)) v =
+        ((ContinuousLinearMap.id ℝ (Ambient n ℓ) + t • fderiv ℝ X a :
+          Ambient n ℓ →L[ℝ] Ambient n ℓ) v)
+      simp
+    · exact contDiff_id.add (hX.const_smul t)
+  · intro x; simp
+  · intro t _ x hx
+    simp [image_eq_zero_of_notMem_tsupport hx]
+  · funext y
+    have : HasDerivAt (fun t : ℝ ↦ y + t • X y) (X y) 0 := by
+      simpa using ((hasDerivAt_id (0:ℝ)).smul_const (X y)).const_add y
+    exact this.deriv
+```
+
+## Key steps
+
+1. DX is continuous with compact support, hence bounded by L ≥ 0, and X is L-Lipschitz; take ε = 1/(L+1)
+2. Fields pos, compact, smooth, init and fixed are immediate (X = 0 off tsupport X)
+3. For |t| < ε, c = |t|L < 1: φ_t − id is c-Lipschitz, so φ_t is injective (antilipschitz) and surjective (Banach contraction y ↦ z − tX(y)), i.e. a homeomorphism
+4. Dφ_t(a) = I + t DX(a) is invertible because ‖t DX(a)‖ < 1 (Neumann series), so the inverse function theorem makes the inverse C^∞
+5. Function.invFun φ_t equals the inverse because φ_t is bijective
+6. deriv (t ↦ y + tX(y)) 0 = X(y)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `rg -n 'theorem contDiff_symm|theorem Homeomorph.contDiff_symm|def toHomeomorph|theorem surjective|theorem toHomeomorph' Mathlib/Analysis/Calculus/InverseFunctionTheorem/ Mathlib/Analysis/Calculus/ContDiff/`
+- `rg -n 'theorem (HasCompactSupport\.)?(contDiff_convolution_left|contDiff_convolution_right|hasFDerivAt_convolution_right|hasFDerivAt_convolution_left)|theorem dist_normed_convolution_le|theorem support_convolution_subset|theorem support_normed_eq|theorem tsupport_normed_eq|theorem hasCompactSupport_normed' Mathlib/Analysis/Convolution.lean Mathlib/Analysis/Calculus/BumpFunction/*.lean`
+- `rg -n 'contDiff_convolution_left|hasFDerivAt_convolution_right|fderiv_convolution' Mathlib/`
+- `cat Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `rg -n 'theorem trace_eq_sum_inner|theorem starProjection_norm_le|theorem (support_fderiv_subset|fderiv_of_notMem_tsupport|HasCompactSupport.fderiv)|lipschitzWith_of_hasCompactSupport' Mathlib/`
+- `rg -n 'exists_cthickening_subset_open|IsCompact.cthickening|uniformContinuous_of_continuous|image_eq_zero_of_notMem_tsupport|lipschitzWith_of_nnnorm_fderiv_le|def Units.oneSub|def unitsEquiv|theorem invFun_eq |exists_bound_of_continuous|theorem integrableOn_const|LinearMap.continuous_of_finiteDimensional|def coeLM' Mathlib/`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/ch04-siv-audit/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/ch04-siv-audit/olean lean /tmp/ch04-siv-audit/src/ChildTypes.lean (comparator child-scope replay of the four statements)`
+- `LEAN_PATH=... lean /tmp/ch04-siv-audit/src/Assembly.lean (parent from sorry'd children; exact frozen target via exact Submission.stationary_iff_variational_of_first_variation)`
+- `LEAN_PATH=... lean /tmp/ch04-siv-audit/src/FeasA.lean, FeasB.lean, FeasC.lean, FeasD.lean, Full2.lean (#print axioms)`
+- `python3 -I validate.py verifier/lean_contract.py stmts.json (validate_lean_statement)`
+- `python3 dag.json listing of reserved lean_name values`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecificLimits/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Logic/Function/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-stationary-iff-variational-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/ch04-siv-audit/src/ChildTypes.lean`
+- `/tmp/ch04-siv-audit/src/Assembly.lean`
+- `/tmp/ch04-siv-audit/src/Full2.lean`
+
+Contract identity: the snapshot contract, the workspace Contract.lean and Submission.lean are byte-identical (sha256 6e58e5dd…0f4770b), and the lake mathlib package is at the manifest revision 25730c7c. No ready-made lemma exists for any of the four children: the snapshot Mathlib has no IsCompactVariation-style statement and no C¹-uniform mollification lemma. SmoothApprox.lean only gives C⁰ approximation (UniformContinuous.exists_contDiff_dist_le). All the building blocks are present, though:
+- ApproximatesLinearOn.surjective and .toHomeomorph, and Homeomorph.contDiff_symm (inverse function theorem for homeomorphisms).
+- Units.oneSub and ContinuousLinearEquiv.unitsEquiv.
+- ContDiffBump.normed with hasCompactSupport_normed, support_normed_eq and dist_normed_convolution_le.
+- HasCompactSupport.contDiff_convolution_left and .hasFDerivAt_convolution_right, and support_convolution_subset.
+- IsCompact.exists_cthickening_subset_open and IsCompact.cthickening.
+- HasMulCompactSupport/HasCompactSupport.uniformContinuous_of_continuous and exists_bound_of_continuous.
+- LinearMap.trace_eq_sum_inner, Submodule.starProjection_norm_le, fderiv_of_notMem_tsupport, ContDiffOn.fderiv_of_isOpen and lipschitzWith_of_nnnorm_fderiv_le.
+Required instances hold on Ambient n ℓ: HasContDiffBump, IsAddHaarMeasure volume and IsNegInvariant volume. With GMT.Ch04.Submission compiled to an olean, the four child types elaborate in the exact comparator scope, and the parent assembles from them with exactly the frozen type. Complete proofs of all four children compile in Full2.lean, and every declaration depends only on propext, Classical.choice and Quot.sound. The convolution notation needs `open scoped Convolution`. Extra Mathlib imports the children need: InverseFunctionTheorem.ApproximatesLinearOn, BumpFunction.Convolution, BumpFunction.FiniteDimension, ContDiff.Convolution and InnerProductSpace.Trace.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_iff_variational-a1.variation_velocity_test_field-a1",
+  "parent_id": "root.stationary_iff_variational-a1",
+  "depth": 2,
+  "title": "The initial velocity of a compact variation is a C¹ test field supported in K",
+  "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ = ℝ^{n+ℓ}, U ⊆ E, φ : ℝ → E → E, ε ∈ ℝ and K ⊆ E. Suppose IsCompactVariation φ ε K holds: ε > 0; K is compact; (t, x) ↦ φ t x is C^∞ on (−ε, ε) × E; for |t| < ε, φ t is bijective with C^∞ Function.invFun (φ t); φ 0 = id; and φ t x = x whenever |t| < ε and x ∉ K. Suppose also K ⊆ U. Then the initial velocity X_φ(y) := deriv (t ↦ φ t y) 0 is a test field in U: X_φ is C¹, has compact support, and tsupport X_φ ⊆ U (in fact tsupport X_φ ⊆ K).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Ambient n ℓ)) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → K ⊆ U → IsTestField U (fun y ↦ deriv (fun t ↦ φ t y) 0)",
+  "lean_name": "compactVariation_velocity_isTestField",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-stationary-iff-variational-a1-variation-velocity-test-field-a1-a1"
+}

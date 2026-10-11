@@ -434,6 +434,46 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- Simon 2.1, 2.4 (pp. 87–88): the initial velocity `X = ∂φ_t/∂t|_{t=0}` of a family as in 2.1
+with `K ⊆ U` is a test field, `X ∈ C¹_c(U; ℝ^{n+ℓ})`; in fact `tsupport X ⊆ K`. -/
+theorem Submission.compactVariation_velocity_isTestField : ∀ (n ℓ : ℕ) (U : Set (Ambient n ℓ)) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → K ⊆ U → IsTestField U (fun y ↦ deriv (fun t ↦ φ t y) 0) := by
+  intro n ℓ U φ ε K hφ hKU
+  -- `Φ(q) = φ q.1 q.2` is `C^∞` on the open set `S = (-ε, ε) × ℝ^{n+ℓ}`, and `(0, y) ∈ S`.
+  have hS : IsOpen (Ioo (-ε) ε ×ˢ (univ : Set (Ambient n ℓ))) := isOpen_Ioo.prod isOpen_univ
+  have hmem : ∀ y : Ambient n ℓ, ((0 : ℝ), y) ∈ Ioo (-ε) ε ×ˢ (univ : Set (Ambient n ℓ)) :=
+    fun y ↦ ⟨⟨neg_lt_zero.mpr hφ.pos, hφ.pos⟩, mem_univ _⟩
+  -- Chain rule along `t ↦ (t, y)`: `X(y) = DΦ(0, y)(1, 0)`.
+  have hvel : ∀ y, deriv (fun t ↦ φ t y) 0 =
+      fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) (0, y) (1, 0) := by
+    intro y
+    have hdiff : DifferentiableAt ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) (0, y) :=
+      (hφ.smooth.contDiffAt (hS.mem_nhds (hmem y))).differentiableAt (by simp)
+    have hg : HasDerivAt (fun t : ℝ ↦ (t, y)) ((1 : ℝ), (0 : Ambient n ℓ)) 0 :=
+      (hasDerivAt_id (0 : ℝ)).prodMk (hasDerivAt_const (0 : ℝ) y)
+    exact (hdiff.hasFDerivAt.comp_hasDerivAt (0 : ℝ) hg).deriv
+  -- `DΦ` is `C¹` on the open set `S`, so `y ↦ DΦ(0, y)(1, 0)` is `C¹`.
+  have hcd : ContDiff ℝ 1 (fun y ↦ deriv (fun t ↦ φ t y) 0) := by
+    have h1 : ContDiffOn ℝ 1 (fun q ↦ fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) q)
+        (Ioo (-ε) ε ×ˢ univ) :=
+      hφ.smooth.fderiv_of_isOpen hS (WithTop.coe_le_coe.mpr le_top)
+    have h2 : ContDiff ℝ 1
+        (fun y : Ambient n ℓ ↦ fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) (0, y)) := by
+      rw [← contDiffOn_univ]
+      exact h1.comp (contDiff_const.prodMk contDiff_id).contDiffOn (fun y _ ↦ hmem y)
+    simp_rw [hvel]
+    exact h2.clm_apply contDiff_const
+  -- Off `K`, `t ↦ φ t y` is constant near `0`, so `X(y) = 0`.
+  have hzero : ∀ y, y ∉ K → deriv (fun t ↦ φ t y) 0 = 0 := by
+    intro y hy
+    have : (fun t ↦ φ t y) =ᶠ[𝓝 0] fun _ ↦ y := by
+      filter_upwards [Ioo_mem_nhds (neg_lt_zero.mpr hφ.pos) hφ.pos] with t ht
+      exact hφ.fixed t ht y hy
+    rw [this.deriv_eq]; simp
+  -- `K` is compact, hence closed: `tsupport X ⊆ K ⊆ U` and `X` has compact support.
+  have hsupp : tsupport (fun y ↦ deriv (fun t ↦ φ t y) 0) ⊆ K :=
+    closure_minimal (fun y hy ↦ by_contra fun h ↦ hy (hzero y h)) hφ.compact.isClosed
+  exact ⟨hcd, HasCompactSupport.intro hφ.compact hzero, hsupp.trans hKU⟩
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
