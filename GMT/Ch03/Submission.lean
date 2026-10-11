@@ -335,6 +335,55 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Change of variables under the blow-up map** (Simon Ch. 3, fact (F1) behind Definitions 1.4
+and 1.7 and the proof of Theorem 1.6, `chapter-03.txt` lines 113–143, 290–296): for `r > 0`, every
+set `A` and every `g`, `∫_{η_{x,r}(A)} g dHⁿ = (rⁿ)⁻¹ ∫_A g ∘ η_{x,r} dHⁿ`. The blow-up
+`η = η_{x,r}` is a homeomorphism with inverse `y ↦ x + r y`, and `Hⁿ(η(S)) = (r⁻¹)ⁿ Hⁿ(S)` for
+every `S` (a translation isometry followed by a homothety), so `(η⁻¹)_#(Hⁿ⌞η(A)) = (r⁻¹)ⁿ Hⁿ⌞A`;
+conclude by `MeasurableEmbedding.integral_map` and `integral_smul_measure`. -/
+theorem Submission.setIntegral_blowUpMap_image : ∀ (n N : ℕ) (x : Rn N) (r : ℝ) (A : Set (Rn N)) (g : Rn N → ℝ), 0 < r → ∫ y in blowUpMap x r '' A, g y ∂μHE[n] = (r ^ n)⁻¹ * ∫ z in A, g (blowUpMap x r z) ∂μHE[n] := by
+  intro n N x r A g hr
+  -- Step 1: `η = η_{x,r}` is a homeomorphism of `ℝᴺ` with inverse `y ↦ x + r • y`.
+  let η : Rn N ≃ₜ Rn N :=
+    { toFun := blowUpMap x r
+      invFun := fun y ↦ x + r • y
+      left_inv := fun y ↦ by simp [blowUpMap, smul_smul, hr.ne']
+      right_inv := fun y ↦ by simp [blowUpMap, smul_smul, hr.ne']
+      continuous_toFun := by unfold blowUpMap; fun_prop
+      continuous_invFun := by fun_prop }
+  have hη : ⇑η = blowUpMap x r := rfl
+  -- Step 2: `Hⁿ(η(S)) = (r⁻¹)ⁿ Hⁿ(S)` for every set `S`, as `η` is the isometry `· - x`
+  -- followed by the homothety with centre `0` and ratio `r⁻¹`.
+  have hscale : ∀ S : Set (Rn N),
+      μHE[n] (blowUpMap x r '' S) = ENNReal.ofReal r⁻¹ ^ n * μHE[n] S := by
+    intro S
+    have hτ : Isometry fun y : Rn N ↦ y - x := (IsometryEquiv.subRight x).isometry
+    have himage : blowUpMap x r '' S =
+        AffineMap.homothety (0 : Rn N) r⁻¹ '' ((fun y : Rn N ↦ y - x) '' S) := by
+      rw [← image_comp]
+      congr 1
+      funext y
+      simp [blowUpMap, AffineMap.homothety_apply]
+    rw [himage, euclideanHausdorffMeasure_homothety_image n (0 : Rn N) (inv_ne_zero hr.ne'),
+      hτ.euclideanHausdorffMeasure_image, ENNReal.smul_def, smul_eq_mul, ENNReal.coe_pow,
+      ← ENNReal.ofReal_coe_nnreal, coe_nnnorm, Real.norm_of_nonneg (inv_pos.mpr hr).le]
+  -- Step 3: `(η⁻¹)_#(Hⁿ⌞η(A)) = (r⁻¹)ⁿ Hⁿ⌞A`, checked on Borel sets.
+  have hmap : ((μHE[n] : Measure (Rn N)).restrict (blowUpMap x r '' A)).map η.symm =
+      ENNReal.ofReal r⁻¹ ^ n • (μHE[n] : Measure (Rn N)).restrict A := by
+    ext B hB
+    rw [Measure.map_apply η.symm.continuous.measurable hB,
+      Measure.restrict_apply (η.symm.continuous.measurable hB), Measure.smul_apply,
+      Measure.restrict_apply hB, smul_eq_mul, ← hη, η.preimage_symm, ← image_inter η.injective,
+      hη, hscale]
+  -- Steps 4–5: change of variables along the measurable embedding `η⁻¹`, then scaling.
+  have hi := η.symm.measurableEmbedding.integral_map
+    (μ := (μHE[n] : Measure (Rn N)).restrict (blowUpMap x r '' A)) (fun z ↦ g (η z))
+  simp only [Homeomorph.apply_symm_apply] at hi
+  rw [hmap, integral_smul_measure, ENNReal.toReal_pow, ENNReal.toReal_ofReal (inv_pos.mpr hr).le,
+    smul_eq_mul, hη] at hi
+  -- Step 6: `(r⁻¹)ⁿ = (rⁿ)⁻¹`.
+  rw [← hi, inv_pow]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
