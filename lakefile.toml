@@ -1,0 +1,14 @@
+name = "simongmt"
+version = "0.1.0"
+defaultTargets = ["Poincare"]
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4.git"
+rev = "25730c7c759d108ef87ab70af2342a196760f79d"
+
+# Library of the earlier formalization of Simon's Introduction to GMT,
+# reused as kernel-checked infrastructure by the chapter problems.
+[[lean_lib]]
+name = "Poincare"
+roots = ["Poincare.SimonGMT"]
