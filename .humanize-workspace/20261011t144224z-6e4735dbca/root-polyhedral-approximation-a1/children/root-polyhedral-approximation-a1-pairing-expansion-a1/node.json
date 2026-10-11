@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.pairing_expansion-a1",
+  "parent_id": "root.polyhedral_approximation-a1",
+  "depth": 2,
+  "title": "Coordinate expansion of the n-vector/n-covector pairing (Simon 1.5–1.7)",
+  "statement": "For all P, n ∈ ℕ, every n-vector w ∈ Λ_n(ℝ^P) (a continuous linear functional on n-covectors, `NVector`) and every n-covector c ∈ Λ^n(ℝ^P) (a continuous alternating map, `Covector`): w(c) = Σ_I c_I · w(dx^I), where I ranges over the strictly increasing multi-indices Fin n ↪o Fin P (`SimonMultiIndex n P`), c_I := c(e_{I(0)},…,e_{I(n−1)}) (`euclideanCovectorCoordinate c I`) and dx^I := dx^{I(0)} ∧ ⋯ ∧ dx^{I(n−1)} (`wedgeCovectors n (fun j => EuclideanSpace.proj (I j))`). Moreover |c_I| ≤ |c| for every I, where |c| is Simon's Euclidean coefficient norm (`covectorEuclideanNorm c`).",
+  "lean_statement": "∀ (P n : ℕ) (w : NVector (Eucl P) n) (c : Covector (Eucl P) n), w c = ∑ I : SimonMultiIndex n P, euclideanCovectorCoordinate c I * w (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) ∧ ∀ I : SimonMultiIndex n P, |euclideanCovectorCoordinate c I| ≤ covectorEuclideanNorm c",
+  "lean_name": "polyhedral_approx_pairing_expansion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-pairing-expansion-a1-a1"
+}
