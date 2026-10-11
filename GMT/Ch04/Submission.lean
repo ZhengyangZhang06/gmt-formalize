@@ -13,6 +13,7 @@ import Mathlib.MeasureTheory.Measure.WithDensity
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.Topology.Semicontinuity.Basic
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 4: Rectifiable `n`-varifolds (printed pp. 85–102)
@@ -433,6 +434,29 @@ def ClassicalTangent : Prop :=
     V.IsLocallyLp U H p → x ∈ U → V.IsApproxTangentAt x P →
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
+
+/-- **Regular points of a continuous map.** If `f : ℝⁿ → ℝ^{n+ℓ}` is continuous, the set `R` of
+points where `f` is differentiable with injective derivative is covered by countably many bounded
+Borel sets `T_p ⊆ R`, on each of which `f` has a lower Lipschitz bound. `R` is SimonGMT's
+`Chapter02.areaRegularSet f`, hence Borel. Each `w ∈ R` has a local lower bound
+`c|u| ≤ |f(w + u) - f(w)|` for `|u| ≤ c` (`injective_fderiv_local_lower_bound`), and
+`lower_lipschitz_cover_of_local_bound` makes these bounds uniform on countably many pieces. -/
+theorem Submission.regular_set_lower_lipschitz_cover : ∀ (n ℓ : ℕ)
+    (f : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), Continuous f →
+    ∃ T : ℕ → Set (EuclideanSpace ℝ (Fin n)),
+      {w | DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)} ⊆ ⋃ p, T p ∧
+      ∀ p, MeasurableSet (T p) ∧ Bornology.IsBounded (T p) ∧
+        (∀ w ∈ T p, DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)) ∧
+        ∃ c : ℝ, 0 < c ∧ ∀ v ∈ T p, ∀ w ∈ T p, c * ‖v - w‖ ≤ ‖f v - f w‖ := by
+  intro n ℓ f hf
+  -- Every regular point has a pointwise lower bound; the cover makes the bounds uniform.
+  obtain ⟨T, hRT, hT⟩ := Submission.lower_lipschitz_cover_of_local_bound n f
+    {w | DifferentiableAt ℝ f w ∧ Function.Injective (fderiv ℝ f w)} hf
+    (Poincare.SimonGMT.Chapter02.measurableSet_areaRegularSet f)
+    (fun w hw ↦ Submission.injective_fderiv_local_lower_bound n f w hw.1 hw.2)
+  refine ⟨T, hRT, fun p ↦ ?_⟩
+  obtain ⟨hmeas, hbdd, hsub, hlower⟩ := hT p
+  exact ⟨hmeas, hbdd, fun w hw ↦ hsub hw, hlower⟩
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
