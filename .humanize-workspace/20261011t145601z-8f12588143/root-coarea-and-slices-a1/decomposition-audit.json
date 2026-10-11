@@ -1,0 +1,101 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "CoareaFormula|SlicesAreRectifiable|unfaithful|tangentialDifferential|allowed|header|axiom|sorry",
+        "normDet_comp|normDet_eq_zero_iff_ker_ne_bot|normDet_eq_norm_det_toMatrix_rangeRestrict|normDet_of_subsingleton|normDet_sq|def normDet",
+        "hausdorffMeasure_le_liminf_sum|hausdorffMeasure_le_liminf_tsum",
+        "weighted_area_formula_volume_of_injective_derivative|map_withDensity_areaJacobian_eq|weighted_area_formula_lipschitzOn_fiberSum|ae_fderivWithin_eq_of_lipschitz_extension|exists_lipschitz_extension_finiteDimensional|areaJacobianAt_eq_normDet",
+        "def LocallyLipschitzOn|exists_measurable_subset_ae_eq|theorem lintegral_iUnion |lintegral_image_eq_lintegral_abs_det_fderiv_mul|measurableSet_of_differentiableAt|theorem measurable_fderiv",
+        "rg -l -i 'coarea' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib",
+        "rg -n -i '^(theorem|lemma|axiom|def).*coarea' .lake/packages/simongmt/Poincare/SimonGMT",
+        "python3 /tmp/coarea-independent-audit/run_lean.py Combined.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/tmp/coarea-independent-audit/Combined.lean",
+        "/tmp/coarea-independent-audit/Combined.log"
+      ],
+      "conclusion": "Audited the selected contract coareaFormula_and_slices_hold : CoareaFormula ∧ SlicesAreRectifiable. The split is appropriate: every child contributes directly or transitively, and dependencies are acyclic and correctly directed. All names are bare, distinct and unreserved; sibling antecedents match the frozen DAG types verbatim. All ten one-line expressions pass validation and independently elaborate as Prop without child declarations. The supplied parent assembly compiles with the exact contracts as explicit hypotheses. Its axiom check, and checks of eleven principal reused library facts, report only propext, Classical.choice and Quot.sound. Inspected sources match the pinned revisions. Mathlib's coarea search found no match; SimonGMT provides linear/projection coarea and the required area formulas. Arbitrary-integrand transport and Euclidean product-volume normalization were verified. No unsafe inline matrix-unit construction occurs. The mathematical provenance agrees with [Simon's Chapter 2 §6 and Chapter 3 §2](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "null_slices",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean hypotheses match, including arbitrary U. Relative Lipschitz neighborhoods, countable covering, global extensions and Eilenberg majorants give null slices; countable subadditivity completes the exact conclusion without circularity."
+    },
+    {
+      "key": "critical_slices",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The covering proof is independent of coarea. Compact critical images give measurable majorants, the slab estimate gives integrals tending to zero, and shrinking-diameter covers plus Fatou yield the conclusion. Both m = 0 and the use of k > 0 are handled."
+    },
+    {
+      "key": "normdet_chain_rule",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact linear-map contract matches the prose. Equal ranges settle the nonsurjective case; orthogonal block decompositions and determinant multiplication prove the surjective case, including zero-dimensional blocks."
+    },
+    {
+      "key": "c1_parametric_coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the stated weaker parametrization hypotheses. Critical slices use the declared child; regular charts use the fully supplied determinant identity, Lipschitz area formula, Tonelli and change of variables. Borel images, joint measurability and disjoint summation are justified without assuming injective Dψ."
+    },
+    {
+      "key": "c1_level_slices_rectifiable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Implicit-function charts cover every regular slice by countably many C¹ images. The declared critical-slice result and local Lipschitz bounds make the remaining image null almost everywhere. This proves the exact rectifiability statement, including m = 0."
+    },
+    {
+      "key": "chart_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All chart and agreement properties in the Lean conclusion are constructed. Small chart balls ensure Lipschitz bounds; extension, C¹ approximation and Rademacher give Borel first-order agreement sets with null complement. Lipschitz image bounds prove the required coverage without assuming M measurable."
+    },
+    {
+      "key": "jacobian_identification",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Weighted tangent uniqueness uses precisely θ(x) ≠ 0. The inverse of A onto its range constructs the tangential differential; line-derivative uniqueness identifies the chosen differential. The declared normDet child then proves the exact Jacobian identity."
+    },
+    {
+      "key": "chart_piece_coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Borel pullback and slice correspondence are correct. The parametric formula, verified arbitrary-integrand area transport and almost-everywhere Jacobian identification prove both conclusions. The separate m = 0 argument correctly uses unit point mass and normDet = 1."
+    },
+    {
+      "key": "gluing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Borel representatives and disjointification justify summation for arbitrary w. Continuity on open U ensures Borel piece slices; NS removes both the uncovered remainder and the weight-disagreement set. The proof covers exactly null-measurable A and restricted-a.e.-measurable g."
+    },
+    {
+      "key": "tangent_existence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared chart-cover child supplies coverage and Lipschitz bounds. CT and the identification child give both required witnesses outside parameter-null sets, whose chart images are Hausdorff-null. The resulting exceptional set proves the exact ambient almost-everywhere implication."
+    }
+  ],
+  "required_changes": []
+}

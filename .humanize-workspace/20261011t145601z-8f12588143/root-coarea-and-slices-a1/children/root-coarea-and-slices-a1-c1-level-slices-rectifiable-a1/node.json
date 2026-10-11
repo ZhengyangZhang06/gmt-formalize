@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.c1_level_slices_rectifiable-a1",
+  "parent_id": "root.coarea_and_slices-a1",
+  "depth": 2,
+  "title": "C¹ images of C¹ level sets are countably k-rectifiable for Lᵐ-a.e. y (Simon Ch. 2, Thm 6.4; Ch. 3, Remark 2.10(2))",
+  "statement": "Let m, k ∈ ℕ with k > 0, n := m + k, N ∈ ℕ, D ⊆ ℝⁿ open, ψ : ℝⁿ → ℝ^N of class C¹ on D, and G : ℝⁿ → ℝᵐ of class C¹. Then for Lᵐ-a.e. y ∈ ℝᵐ the set ψ(D ∩ G⁻¹{y}) is countably k-rectifiable (SimonGMT CountablyRectifiable k in ℝ^N). Notation (as in the parent): ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hˢ = μHE[s] (applied to an arbitrary set it is the Hausdorff outer measure); Lᵈ = volume; normDet = Mathlib's LinearMap.normDet; P* = LinearMap.adjoint P; DF(u) = fderiv ℝ F u.",
+  "lean_statement": "∀ (m k N : ℕ) (D : Set (Rn (m + k))) (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m), 0 < k → IsOpen D → ContDiffOn ℝ 1 ψ D → ContDiff ℝ 1 G → ∀ᵐ y ∂(volume : Measure (Rn m)), CountablyRectifiable k (ψ '' (D ∩ G ⁻¹' {y}))",
+  "lean_name": "c1_level_slices_countablyRectifiable",
+  "depends_on": [
+    "root.coarea_and_slices-a1.critical_slices-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.coarea_and_slices-a1.critical_slices-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-c1-level-slices-rectifiable-a1-a1"
+}

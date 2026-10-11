@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.jacobian_identification-a1",
+  "parent_id": "root.coarea_and_slices-a1",
+  "depth": 2,
+  "title": "Pointwise identification of T_xM, d^Mf_x and the co-area Jacobian along a chart (Simon Ch. 3, 2.1-2.2, (2.7))",
+  "statement": "Let n, N, m ∈ ℕ, M ⊆ ℝ^N, θ : ℝ^N → ℝ, f : ℝ^N → ℝᵐ, x ∈ ℝ^N, and A : ℝⁿ → ℝ^N, Γ : ℝⁿ → ℝᵐ continuous linear maps such that θ(x) ≠ 0, A is injective, HasWeightedApproximateTangentSpaceAt n M θ x (range A), and f has line derivative Γw at x in direction Aw for every w ∈ ℝⁿ (HasLineDerivAt ℝ f (Γw) x (Aw)). Then (i) approxTangentPlane n M θ x = range A; (ii) there is a continuous linear L : range A → ℝᵐ with HasTangentialDifferentialAt (range A) f x L; (iii) coareaJacobian (approxTangentPlane n M θ x) f x · normDet(A) = normDet(A ∘ ι_{ker Γ})·normDet(Γ*). Notation (as in the parent): ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hˢ = μHE[s] (applied to an arbitrary set it is the Hausdorff outer measure); Lᵈ = volume; normDet = Mathlib's LinearMap.normDet; P* = LinearMap.adjoint P; DF(u) = fderiv ℝ F u.",
+  "lean_statement": "∀ (n N m : ℕ) (M : Set (Rn N)) (θ : Rn N → ℝ) (f : Rn N → Rn m) (x : Rn N) (A : Rn n →L[ℝ] Rn N) (Γ : Rn n →L[ℝ] Rn m), θ x ≠ 0 → Function.Injective A → HasWeightedApproximateTangentSpaceAt n M θ x (LinearMap.range A.toLinearMap) → (∀ w : Rn n, HasLineDerivAt ℝ f (Γ w) x (A w)) → approxTangentPlane n M θ x = LinearMap.range A.toLinearMap ∧ (∃ L : ↥(LinearMap.range A.toLinearMap) →L[ℝ] Rn m, HasTangentialDifferentialAt (LinearMap.range A.toLinearMap) f x L) ∧ coareaJacobian (approxTangentPlane n M θ x) f x * A.toLinearMap.normDet = (A.toLinearMap ∘ₗ (LinearMap.ker Γ.toLinearMap).subtype).normDet * (LinearMap.adjoint Γ.toLinearMap).normDet",
+  "lean_name": "chart_coarea_jacobian_identification",
+  "depends_on": [
+    "root.coarea_and_slices-a1.normdet_chain_rule-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.coarea_and_slices-a1.normdet_chain_rule-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-jacobian-identification-a1-a1"
+}

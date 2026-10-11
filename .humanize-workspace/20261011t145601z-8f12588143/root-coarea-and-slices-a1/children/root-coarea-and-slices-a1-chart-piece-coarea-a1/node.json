@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.chart_piece_coarea-a1",
+  "parent_id": "root.coarea_and_slices-a1",
+  "depth": 2,
+  "title": "Co-area formula on one C¹ chart piece of M (parent 1.5)",
+  "statement": "Assume the chart lemma in exactly the frozen form of the root-level sibling chart_approx_tangent_and_differential (CT): for M Hⁿ-measurable, θ a positive locally integrable weight, U ⊇ M open, f locally Lipschitz on U, V ⊆ ℝⁿ open and ψ C¹ on V with injective derivative, for Lⁿ-a.e. u ∈ V with ψ(u) ∈ M: HasWeightedApproximateTangentSpaceAt n M θ (ψ u) (range Dψ(u)), f ∘ ψ is differentiable at u, and HasLineDerivAt ℝ f (D(f∘ψ)(u)w) (ψ u) (Dψ(u)w) for all w. Let m, ℓ ∈ ℕ, k > 0, n := m + k, M ⊆ ℝ^{n+ℓ} Hⁿ-measurable (null-measurable), θ with IsPositiveLocallyIntegrableWeight n M θ, U ⊇ M open, f : ℝ^{n+ℓ} → ℝᵐ locally Lipschitz on U; D ⊆ ℝⁿ open, ψ : ℝⁿ → ℝ^{n+ℓ} C¹ on D, injective on D, Lipschitz on D, with Dψ(u) injective for u ∈ D; G : ℝⁿ → ℝᵐ of class C¹; E ⊆ D Borel such that for every u ∈ E, f(ψ(u)) = G(u) and f ∘ ψ has Fréchet derivative DG(u) at u. Then for every Borel B ⊆ ψ(E) ∩ M and every Borel φ : ℝ^{n+ℓ} → [0, ∞]: y ↦ ∫_{B ∩ f⁻¹{y}} φ dHᵏ is Lᵐ-a.e. measurable, and ∫_B φ·J*^M_f dHⁿ = ∫_{ℝᵐ} ∫_{B ∩ f⁻¹{y}} φ dHᵏ dLᵐ(y), where J*^M_f(x) := ENNReal.ofReal(coareaJacobian (approxTangentPlane n M θ x) f x). Notation (as in the parent): ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hˢ = μHE[s] (applied to an arbitrary set it is the Hausdorff outer measure); Lᵈ = volume; normDet = Mathlib's LinearMap.normDet; P* = LinearMap.adjoint P; DF(u) = fderiv ℝ F u.",
+  "lean_statement": "(∀ (n ℓ p : ℕ) (M U : Set (Rn (n + ℓ))) (θ : Rn (n + ℓ) → ℝ) (f : Rn (n + ℓ) → Rn p) (V : Set (Rn n)) (ψ : Rn n → Rn (n + ℓ)), NullMeasurableSet M μHE[n] → IsPositiveLocallyIntegrableWeight n M θ → IsOpen U → M ⊆ U → LocallyLipschitzOn U f → IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M → HasWeightedApproximateTangentSpaceAt n M θ (ψ u) (LinearMap.range (fderiv ℝ ψ u).toLinearMap) ∧ DifferentiableAt ℝ (f ∘ ψ) u ∧ ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w)) → ∀ (m k ℓ : ℕ) (M U : Set (Rn (m + k + ℓ))) (θ : Rn (m + k + ℓ) → ℝ) (f : Rn (m + k + ℓ) → Rn m) (D E : Set (Rn (m + k))) (ψ : Rn (m + k) → Rn (m + k + ℓ)) (G : Rn (m + k) → Rn m), 0 < k → NullMeasurableSet M μHE[m + k] → IsPositiveLocallyIntegrableWeight (m + k) M θ → IsOpen U → M ⊆ U → LocallyLipschitzOn U f → IsOpen D → ContDiffOn ℝ 1 ψ D → InjOn ψ D → (∃ K, LipschitzOnWith K ψ D) → (∀ u ∈ D, Function.Injective (fderiv ℝ ψ u)) → ContDiff ℝ 1 G → MeasurableSet E → E ⊆ D → (∀ u ∈ E, f (ψ u) = G u ∧ HasFDerivAt (f ∘ ψ) (fderiv ℝ G u) u) → ∀ B ⊆ ψ '' E ∩ M, MeasurableSet B → ∀ φ : Rn (m + k + ℓ) → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) volume ∧ ∫⁻ x in B, φ x * ENNReal.ofReal (coareaJacobian (approxTangentPlane (m + k) M θ x) f x) ∂μHE[m + k] = ∫⁻ y, (∫⁻ x in B ∩ f ⁻¹' {y}, φ x ∂μHE[k]) ∂volume",
+  "lean_name": "chart_piece_coarea_formula",
+  "depends_on": [
+    "root.coarea_and_slices-a1.c1_parametric_coarea-a1",
+    "root.coarea_and_slices-a1.jacobian_identification-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.coarea_and_slices-a1.jacobian_identification-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-chart-piece-coarea-a1-a1"
+}
