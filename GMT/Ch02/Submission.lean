@@ -639,12 +639,6 @@ theorem Submission.c1_sard_local_representation_comp : ∀ (n k N : ℕ) (M S : 
     rw [fderiv_comp z hdψ hdl, ContinuousLinearMap.coe_comp]
     exact (hψder (l z) hlz).comp (hlder z hz)
 
-/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
-theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
-
-end GMT.Ch02
-
-
 /-- **Simon Ch. 2, Theorem 6.4 (p. 67), regular fibres** (steps 6, 7 and 11 of the `C1Sard`
 proof). Fix `p ∈ Σ_y = (M ∩ f⁻¹{y}) \ {J*_f = 0}` and a Simon chart `(V, W, ψ)` of `M` with
 `p = ψ(x_p)`. On the open set `V' = {x ∈ V : J*_f(ψ x) ≠ 0}` (continuity of `J*_f` on `M`) the
@@ -716,3 +710,8 @@ theorem Submission.c1_sard_regular_fiber_submanifold : ∀ (N m k : ℕ) (M U : 
   obtain ⟨W₁, -, hW₁img, hrep⟩ := Submission.c1_sard_local_representation_comp (m + k) k N M
     S V W ψ D V₁ l hψ (fun x hx ↦ hx.1.1) (hV₁V'.trans hV'V) hl'
   exact ⟨D, W₁, ψ ∘ l, (hW₁img.subset (mem_image_of_mem ψ hxpV₁)).1, hrep⟩
+
+/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
+theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
+
+end GMT.Ch02
