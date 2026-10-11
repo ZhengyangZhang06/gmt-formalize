@@ -533,3 +533,37 @@ theorem Submission.rc_riesz_real : RieszPositive.{u} → ∀ (X : Type u) [Topol
 theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
 
 end GMT.Ch01
+
+
+/-- Simon Ch. 1, Theorem 4.16 (corrected), from its child nodes, following Steps 1–7 of the proof.
+`rc_subseq_integrals_converge` (Steps 1–4 and the convergence in Step 5) gives one subsequence
+`φ` along which every `∫ f dμ_{φ(k)}` converges. The limit functional `F` is `ℝ`-linear
+(`rc_cc_integrable` for additivity of the integral; limits are unique) and positive (Step 5).
+`rc_riesz_real`, applied to Theorem 4.12 (`riesz_positive`), represents `F` by a Radon outer
+measure (Steps 6–7). -/
+theorem Submission.radon_compactness : RadonCompactness := by
+  intro X _ _ _ _ μ hμ hbdd
+  -- Steps 1–4 and the convergence in Step 5: one subsequence for all test functions.
+  obtain ⟨φ, hφ, hconv⟩ := Submission.rc_subseq_integrals_converge X μ hμ hbdd
+  choose l hl using hconv
+  -- Step 5: `F f := lim_k ∫ f dμ_{φ(k)}` is `ℝ`-linear and positive.
+  let F : C_c(X, ℝ) →ₗ[ℝ] ℝ :=
+    { toFun := l
+      map_add' := fun f g => by
+        refine tendsto_nhds_unique (hl (f + g)) (((hl f).add (hl g)).congr fun k => ?_)
+        simp only [CompactlySupportedContinuousMap.add_apply]
+        exact (integral_add (Submission.rc_cc_integrable X _ (hμ _) f)
+          (Submission.rc_cc_integrable X _ (hμ _) g)).symm
+      map_smul' := fun c f => by
+        rw [RingHom.id_apply, smul_eq_mul]
+        refine tendsto_nhds_unique (hl (c • f)) (((hl f).const_mul c).congr fun k => ?_)
+        simp only [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul]
+        exact (integral_const_mul c _).symm }
+  have hF : ∀ f : C_c(X, ℝ), 0 ≤ f → 0 ≤ F f := fun f hf =>
+    ge_of_tendsto' (hl f) fun k => integral_nonneg fun x => hf x
+  -- Step 6: Theorem 4.12 (`riesz_positive`) represents `F` by a Radon outer measure.
+  obtain ⟨μlim, hμlim, hrep⟩ := Submission.rc_riesz_real Submission.riesz_positive X F hF
+  -- Step 7: `∫ f dμ_{φ(k)} → F f = ∫ f dμlim`.
+  refine ⟨φ, hφ, μlim, hμlim, fun f => ?_⟩
+  rw [← hrep f]
+  exact hl f
