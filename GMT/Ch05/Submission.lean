@@ -458,6 +458,68 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 5, Lemma 2.5 (Affine Approximation Lemma, p. 108)**, corrected as in the contract.
+Every `n`-plane satisfies the first inequality of (‡) with the constant `C₂` of
+`aal_tilt_height_curvature_bound`.  For `δ ≤ δ₁` the plane of `aal_height_bound_small_delta` has
+height `≤ C₁ δ^{1/(2n+2)} σ`; for `δ > δ₁` the plane `ℝⁿ × {0}` has height `≤ σ` and
+`1 ≤ δ₁^{-1/(2n+2)} δ^{1/(2n+2)}`.  So any `C ≥ max {C₂, C₁, δ₁^{-1/(2n+2)}}` works. -/
+theorem affine_approximation_lemma : AffineApproximationLemma := by
+  intro n ℓ hn p hp
+  obtain ⟨C₂, hC₂, htilt⟩ := Submission.aal_tilt_height_curvature_bound n ℓ hn p hp
+  obtain ⟨δ₁, C₁, hδ₁, -, hheight⟩ := Submission.aal_height_bound_small_delta n ℓ hn p hp
+  set a : ℝ := 1 / (2 * (n : ℝ) + 2) with ha_def
+  have ha : 0 ≤ a := by rw [ha_def]; positivity
+  have hδ₁a : 0 < δ₁ ^ a := Real.rpow_pos_of_pos hδ₁ a
+  obtain ⟨C, hC₂C, hC₁C, hδ₁C⟩ : ∃ C : ℝ, C₂ ≤ C ∧ C₁ ≤ C ∧ (δ₁ ^ a)⁻¹ ≤ C :=
+    ⟨max (max C₂ C₁) (δ₁ ^ a)⁻¹, le_max_of_le_left (le_max_left _ _),
+      le_max_of_le_left (le_max_right _ _), le_max_right _ _⟩
+  refine ⟨C, hC₂.trans_le hC₂C, ?_⟩
+  intro U hU V H δ ρ hδ hδ4 hA ξ hξ σ hσ hσδ
+  -- Step 2: the first inequality holds for every `n`-plane, since `C⁻¹ ≤ C₂⁻¹`.
+  have hfirst : ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n →
+      ENNReal.ofReal (C⁻¹ * Real.sqrt ((σ ^ n)⁻¹ *
+          ∫ x in closedBall ξ (σ / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight)) ≤
+        ENNReal.ofReal σ⁻¹ * V.heightSup ξ σ T + V.scaledLpNorm H p ξ σ := fun T hT =>
+    (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right (inv_anti₀ hC₂ hC₂C)
+      (Real.sqrt_nonneg _))).trans (htilt U hU V H δ ρ hδ hδ4 hA ξ hξ σ hσ hσδ T hT)
+  -- A height bound `b` on `spt V ∩ B_σ(ξ)` gives `σ⁻¹ h ≤ σ⁻¹ b`.
+  have hheight_le : ∀ (T : Submodule ℝ (Amb n ℓ)) (b : ℝ),
+      (∀ x ∈ V.support ∩ closedBall ξ σ, infDist (x - ξ) (T : Set (Amb n ℓ)) ≤ b) →
+        ENNReal.ofReal σ⁻¹ * V.heightSup ξ σ T ≤ ENNReal.ofReal (σ⁻¹ * b) := by
+    intro T b hb
+    rw [ENNReal.ofReal_mul (inv_nonneg.2 hσ.le)]
+    gcongr
+    exact iSup₂_le fun x hx => ENNReal.ofReal_le_ofReal (hb x hx)
+  by_cases hsmall : δ ≤ δ₁
+  · -- Steps 4–7 (`δ ≤ δ₁`): the plane of `aal_height_bound_small_delta`.
+    obtain ⟨T, hT, hTh⟩ := hheight U hU V H δ ρ hδ hsmall hA ξ hξ σ hσ hσδ
+    refine ⟨T, hT, hfirst T hT, (hheight_le T _ hTh).trans (ENNReal.ofReal_le_ofReal ?_)⟩
+    rw [show σ⁻¹ * (C₁ * δ ^ a * σ) = C₁ * δ ^ a by field_simp]
+    exact mul_le_mul_of_nonneg_right hC₁C (Real.rpow_nonneg hδ.le a)
+  · -- Step 3 (`δ > δ₁`): `T = ℝⁿ × {0}`, whose height over `B_σ(ξ)` is at most `σ`.
+    have hlarge : δ₁ < δ := not_le.1 hsmall
+    have hfin : Module.finrank ℝ (horizontalPlane n ℓ) = n := by
+      have hli : LinearIndependent ℝ
+          (fun i : Fin n => EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) : Fin n → Amb n ℓ) := by
+        simpa [Function.comp_def] using
+          (EuclideanSpace.basisFun (Fin (n + ℓ)) ℝ).orthonormal.linearIndependent.comp
+            (Fin.castAdd ℓ) (Fin.castAdd_injective n ℓ)
+      rw [horizontalPlane, finrank_span_eq_card hli, Fintype.card_fin]
+    refine ⟨horizontalPlane n ℓ, hfin, hfirst _ hfin,
+      (hheight_le _ σ fun x hx => ?_).trans (ENNReal.ofReal_le_ofReal ?_)⟩
+    · calc infDist (x - ξ) (horizontalPlane n ℓ : Set (Amb n ℓ))
+          ≤ dist (x - ξ) 0 := infDist_le_dist_of_mem (horizontalPlane n ℓ).zero_mem
+        _ = dist x ξ := by rw [dist_zero_right, dist_eq_norm]
+        _ ≤ σ := mem_closedBall.1 hx.2
+    · rw [inv_mul_cancel₀ hσ.ne']
+      calc (1 : ℝ) = (δ₁ ^ a)⁻¹ * δ₁ ^ a := (inv_mul_cancel₀ hδ₁a.ne').symm
+        _ ≤ C * δ ^ a := mul_le_mul hδ₁C (Real.rpow_le_rpow hδ₁.le hlarge.le ha) hδ₁a.le
+            (hC₂.le.trans hC₂C)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
