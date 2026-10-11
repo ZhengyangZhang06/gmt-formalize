@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Co-area formula (2.8)-(2.9) and rectifiability of slices (Remark 2.10(2))",
+  "statement": "Let m, k, ℓ ∈ ℕ with k > 0, n := m + k, M ⊆ ℝ^{n+ℓ} countably n-rectifiable, U ⊇ M open and f : ℝ^{n+ℓ} → ℝᵐ locally Lipschitz on U. (CoareaFormula) If moreover M is Hⁿ-measurable and θ is a positive locally integrable weight on M, then with J*^M_f(x) := coareaJacobian (approxTangentPlane n M θ x) f x: (a) for Hⁿ-a.e. x ∈ M there are P and L with HasWeightedApproximateTangentSpaceAt n M θ x P and HasTangentialDifferentialAt P f x L; (b) ∫_A J*^M_f dHⁿ = ∫_{ℝᵐ} Hᵏ(A ∩ f⁻¹{y}) dLᵐ(y) and (c) ∫_A g·J*^M_f dHⁿ = ∫_{ℝᵐ} ∫_{A ∩ f⁻¹{y}} g dHᵏ dLᵐ(y) for every Hⁿ-measurable A ⊆ M and every Hⁿ⌞A-measurable g : ℝ^{n+ℓ} → [0, ∞]. (SlicesAreRectifiable) If M is Hⁿ-measurable, then M ∩ f⁻¹{y} is countably k-rectifiable for Lᵐ-a.e. y ∈ ℝᵐ.",
+  "lean_statement": "CoareaFormula ∧ SlicesAreRectifiable",
+  "lean_name": "coareaFormula_and_slices_hold",
+  "depends_on": [
+    "root.submanifold_cover-a1",
+    "root.c1_approximation-a1",
+    "root.eilenberg_inequality-a1",
+    "root.chart_tangent_differential-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.submanifold_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.c1_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.eilenberg_inequality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.chart_tangent_differential-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-a1"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.area_formula-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Area formula (2.4)-(2.5) for countably n-rectifiable sets",
+  "statement": "For n, ℓ, ℓ₁ ∈ ℕ, M ⊆ ℝ^{n+ℓ} Hⁿ-measurable and countably n-rectifiable, θ a positive locally integrable weight on M, U ⊇ M open and f : ℝ^{n+ℓ} → ℝ^{n+ℓ₁} locally Lipschitz on U, with T_xM := approxTangentPlane n M θ x and J^M_f(x) := areaJacobian (T_xM) f x = normDet of the tangential differential: (a) for Hⁿ-a.e. x ∈ M there are P and a continuous linear L : P → ℝ^{n+ℓ₁} with HasWeightedApproximateTangentSpaceAt n M θ x P and HasTangentialDifferentialAt P f x L; (b) for every Hⁿ-measurable A ⊆ M, ∫_A J^M_f dHⁿ = ∫_{ℝ^{n+ℓ₁}} #(A ∩ f⁻¹{y}) dHⁿ(y) (# = encard); (c) for every Hⁿ⌞M-measurable h : ℝ^{n+ℓ} → [0, ∞], ∫_M h·J^M_f dHⁿ = ∫_{ℝ^{n+ℓ₁}} Σ_{x ∈ M ∩ f⁻¹{y}} h(x) dHⁿ(y). (This is the contract's AreaFormula; outer integrals over the target, correcting the printed ℝ^{n+ℓ}.)",
+  "lean_statement": "AreaFormula",
+  "lean_name": "areaFormula_holds",
+  "depends_on": [
+    "root.submanifold_cover-a1",
+    "root.chart_tangent_differential-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.submanifold_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.chart_tangent_differential-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-area-formula-a1-a1"
+}

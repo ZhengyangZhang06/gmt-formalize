@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.eilenberg_inequality-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Eilenberg's inequality for slices of Lipschitz maps (Simon Ch. 2, Theorems 1.8(ii)-1.9, upper-integral form)",
+  "statement": "For all N, m, k ∈ ℕ there is a constant C ≥ 0 such that for every set A ⊆ ℝ^N (not necessarily measurable), every L ≥ 0 and every L-Lipschitz map f : ℝ^N → ℝᵐ there is a Borel measurable g : ℝᵐ → [0, ∞] with Hᵏ(A ∩ f⁻¹{y}) ≤ g(y) for every y ∈ ℝᵐ and ∫ g dLᵐ ≤ C·L^m·H^{m+k}(A), where Hᵈ = μHE[d] is the Euclidean-normalized d-dimensional Hausdorff (outer) measure on ℝ^N and Lᵐ = volume on ℝᵐ.",
+  "lean_statement": "∀ (N m k : ℕ), ∃ C : ℝ≥0, ∀ (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μHE[k] (A ∩ f ⁻¹' {y}) ≤ g y) ∧ ∫⁻ y, g y ≤ ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A",
+  "lean_name": "eilenberg_upper_integral_inequality",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-eilenberg-inequality-a1-a1"
+}

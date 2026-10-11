@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_approximation-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "C¹ approximation of Lipschitz maps (Simon Ch. 2, Theorem 1.5), vector-valued",
+  "statement": "For all n, p ∈ ℕ, K ≥ 0, every K-Lipschitz map f : ℝⁿ → ℝᵖ (ℝᵈ = EuclideanSpace ℝ (Fin d)) and every ε ∈ (0, ∞], there is a map g : ℝⁿ → ℝᵖ of class C¹ such that the Lebesgue measure of {x : f(x) ≠ g(x) or Df(x) ≠ Dg(x)} is < ε, where D denotes the Fréchet derivative (Mathlib's fderiv, which is 0 at points of non-differentiability).",
+  "lean_statement": "∀ (n p : ℕ) (f : Rn n → Rn p) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → Rn p, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε",
+  "lean_name": "lipschitz_c1_approximation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-c1-approximation-a1-a1"
+}

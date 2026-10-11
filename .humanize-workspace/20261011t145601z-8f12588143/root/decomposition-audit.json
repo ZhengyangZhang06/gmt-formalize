@@ -1,0 +1,116 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^def |^noncomputable def |^abbrev |^theorem main_theorem' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "normDet_comp|normDet_sq|normDet_eq_zero",
+        "ae_tendsto_rnDeriv|ae_tendsto_average_norm_sub|tendsto_filterAt",
+        "simon_theorem_3_3|simon_theorem_3_6|simon_remark_3_7_of_openSigmaFinite|^import",
+        "rg -n -i 'besicovitch.?federer|de.?giorgi|theorem.*coarea|theorem.*c1_approx' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib .lake/packages/simongmt/Poincare/SimonGMT",
+        "rg -n '(^|\\s)(axiom|sorry|admit)\\b' .lake/packages/simongmt/Poincare/SimonGMT",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ch03-audit-a09_t13h/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ch03-audit-a09_t13h/Library.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ch03-audit-a09_t13h/WhitneyAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/ch03-audit-a09_t13h/Types.lean",
+        "/tmp/ch03-audit-a09_t13h/Library.lean",
+        "/tmp/ch03-audit-a09_t13h/WhitneyAudit.lean"
+      ],
+      "conclusion": "Confirmed the frozen project/Mathlib revisions and clean pinned simongmt revision 2b3663083f3fe399b6296fb8eaee52169170e197. All twelve one-line propositions elaborated independently after replaying the frozen definitions without main_theorem or child implementations; the proposed conjunction assembly also compiled. The fifteen checked reusable SimonGMT declarations depend only on propext, Classical.choice and Quot.sound. Searches found linear coarea support but no existing full nonlinear coarea, Besicovitch–Federer or De Giorgi theorem. The split is appropriate, every helper is used, and dependencies are correctly directed and acyclic. All names are distinct bare identifiers; the DAG contains no competing branch or reserved-name conflict. No frozen child type contains an IsUnit/Matrix construction."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including derivative agreement and infinite epsilon. The annular Lusin construction, compact-uniform Egoroff estimates and verified Whitney theorem establish the stated approximation. Vector-valued and zero-dimensional cases are handled."
+    },
+    {
+      "key": "eilenberg_inequality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type requires a measurable pointwise majorant, not measurability of the slice function. The cover construction and Fatou argument provide precisely that majorant and bound without assuming A measurable. Zero Lipschitz constant and zero target dimension are addressed."
+    },
+    {
+      "key": "rectifiable_of_tangent_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches the locally finite measure contract. Fixed-plane measurable density classes avoid an unjustified measurable tangent selection; the corrected cone estimate, Lipschitz extensions and mass-halving exhaustion prove the conclusion without invoking either tangent-characterization theorem."
+    },
+    {
+      "key": "chart_tangent_differential",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All chart, weight and ambient Lipschitz hypotheses are present. Local bi-Lipschitz charts, density estimates and chart blow-ups prove the weighted tangent assertion. Rademacher and the explicit o(t) comparison establish the exact two-sided line derivatives, without assuming ambient differentiability."
+    },
+    {
+      "key": "submanifold_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen biconditional matches the prose. C¹ approximation and the library domain-area formula dispose of the exceptional and critical images; the regular-image construction verifies relative properness explicitly. The reverse direction is compatible with the checked library submanifold predicate."
+    },
+    {
+      "key": "tangent_characterizations",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both frozen characterizations follow from the listed dependencies. The proof supplies the scaling/withDensity conversion and uses positivity of the weight to recover Hausdorff-null remainders. The constant weight gives the unweighted statement. There is no circular invocation."
+    },
+    {
+      "key": "area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes every conjunct of AreaFormula. It identifies the chosen tangent and tangential differential, applies the correct normDet factorization, and transports the verified domain-area formulas through disjoint chart pieces. Fiber measurability and null-image removal justify both summations."
+    },
+    {
+      "key": "coarea_and_slices",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact conjunction and hypotheses match. The critical-set covering estimate, implicit-function coordinates, determinant identity and Fubini argument supply the C¹ coarea proof. C¹ approximation and Eilenberg handle exceptional pieces and weights; regular and critical slices yield rectifiability. The m = 0 case is included."
+    },
+    {
+      "key": "besicovitch_federer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cone estimates, sphere dichotomy and Haar averaging establish the projection result, and the explicit frame transfer proves the frozen encoding. The sphere argument covers C equal to the whole sphere. The departure from Simon's omitted proof is documented and agrees with the inspected argument in [Dall'Alba, §§4–5](https://www.math.unipd.it/~monti/tesi/DallAlba.pdf). Reusing the existing decomposition lemma creates no DAG cycle."
+    },
+    {
+      "key": "section3_consequences",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three propositions match their prose. The checked library lemma supplies the decomposition, the local coordinate-projection argument works without measurability of S, and the declared Besicovitch–Federer dependency forces the purely unrectifiable remainder in Theorem 3.8 to be null."
+    },
+    {
+      "key": "gauss_green",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof matches the BV-based definition and inward-normal sign. Mollification and the checked vector Riesz theorem construct the pair; the converse gives the required BV bounds. The variation characterization determines the measure, and continuous test fields determine the normal almost everywhere."
+    },
+    {
+      "key": "de_giorgi",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies all frozen conclusions, including tangent multiplicity and half-space convergence at every reduced-boundary point. Compactness, two-sided volume bounds and the corrected sign identify the blow-up. Localization, density comparison and Radon–Nikodym differentiation establish rectifiability and measure equality. The n = 0 case and declared dependencies are handled."
+    }
+  ],
+  "required_changes": []
+}

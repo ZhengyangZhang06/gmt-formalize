@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiable_of_tangent_measure-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "A measure with approximate tangent planes of positive multiplicity a.e. is carried by a countably n-rectifiable Borel set (Simon 1.6 '⇐', measure form)",
+  "statement": "Let n, ℓ ∈ ℕ, N = n + ℓ, and let μ be a Borel measure on ℝ^N with μ(K) < ∞ for every compact K. Assume that for μ-a.e. x there are a subspace P and θ > 0 such that HasApproxTangentPlaneWithMultiplicity n μ x P θ holds, i.e. finrank P = n and for every f ∈ C_c(ℝ^N, ℝ), (rⁿ)⁻¹∫ f(η_{x,r}(y)) dμ(y) → θ∫_P f dHⁿ as r ↓ 0, where η_{x,r}(y) = r⁻¹(y − x). Then there is a Borel set R ⊆ ℝ^N which is countably n-rectifiable and satisfies μ(ℝ^N ∖ R) = 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Rn (n + ℓ))), (∀ K : Set (Rn (n + ℓ)), IsCompact K → μ K < ∞) → (∀ᵐ x ∂μ, ∃ (P : Submodule ℝ (Rn (n + ℓ))) (θ : ℝ), 0 < θ ∧ HasApproxTangentPlaneWithMultiplicity n μ x P θ) → ∃ R : Set (Rn (n + ℓ)), MeasurableSet R ∧ CountablyRectifiable n R ∧ μ Rᶜ = 0",
+  "lean_name": "rectifiable_of_approx_tangent_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-rectifiable-of-tangent-measure-a1-a1"
+}
