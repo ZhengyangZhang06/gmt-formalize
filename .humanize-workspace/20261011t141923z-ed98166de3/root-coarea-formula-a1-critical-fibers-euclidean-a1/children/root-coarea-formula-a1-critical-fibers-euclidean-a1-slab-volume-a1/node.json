@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1.slab_volume-a1",
+  "parent_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1",
+  "depth": 3,
+  "title": "Volume of a thin slab inside a closed ball of ℝᵐ",
+  "statement": "Let m ∈ ℕ, e, c ∈ ℝᵐ = EuclideanSpace ℝ (Fin m) with ‖e‖ = 1, and ε, R ∈ ℝ with ε ≥ 0 and R ≥ 0. Then the set S := {v ∈ ℝᵐ : ‖v − c‖ ≤ R and |⟨e, v − c⟩| ≤ ε} satisfies Lᵐ(S) ≤ ENNReal.ofReal(2ε·(2R)^{m−1}), where m − 1 is truncated natural-number subtraction and Lᵐ = volume.",
+  "lean_statement": "∀ (m : ℕ) (e c : Rn m) (ε R : ℝ), ‖e‖ = 1 → 0 ≤ ε → 0 ≤ R → volume {v : Rn m | ‖v - c‖ ≤ R ∧ |inner ℝ e (v - c)| ≤ ε} ≤ ENNReal.ofReal (2 * ε * (2 * R) ^ (m - 1))",
+  "lean_name": "euclidean_slab_inter_closedBall_volume_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-critical-fibers-euclidean-a1-slab-volume-a1-a1"
+}
