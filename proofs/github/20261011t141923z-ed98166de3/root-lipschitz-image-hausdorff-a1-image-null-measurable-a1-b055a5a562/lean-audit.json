@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "30591fd7ba0d823dc0a03af3b04ca1e3701a88790384ce630b00557f119e21e5",
+  "git_delta": {
+    "base_commit": "c865be9f1e47128cbe6528857ee58b296d09dda2",
+    "candidate_commit": "1e30b531274f66f393af8e04cebda69c7ff31be5",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "lipschitzImage_nullMeasurableSet_image",
+    "diff_sha256": "8a4f63eae8f8da0ed2a2616e1e9f9a4c5d5dd670483d1119392586d4134adbcf",
+    "source_sha256": "a2c36fbd0d6d6b894c4df611e9ce50974ba41ea26ecebbefd06e7295ecbce523",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lipschitzImage_nullMeasurableSet_image",
+      "statement": "∀ (X Y : Type) [MetricSpace X] [SigmaCompactSpace X] [MeasurableSpace X] [BorelSpace X] [MetricSpace Y] [MeasurableSpace Y] [BorelSpace Y] (m : ℝ) (A : Set X) (f : X → Y) (K : ℝ≥0), 0 ≤ m → NullMeasurableSet A (Chapter01.simonHausdorffMeasureReal m) → Chapter01.simonHausdorffMeasureReal m A < ⊤ → LipschitzOnWith K f A → NullMeasurableSet (f '' A) (Chapter01.simonHausdorffMeasureReal m)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
