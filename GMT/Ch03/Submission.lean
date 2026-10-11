@@ -374,12 +374,6 @@ theorem Submission.hausdorffMeasure_image_null_of_locallyLipschitzOn : ∀ (n N 
   -- Step 5: countable subadditivity.
   exact measure_mono_null hcover ((measure_biUnion_null_iff hTc).2 hpiece)
 
-/-- The frozen Chapter 3 contract. -/
-theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
-
-end GMT.Ch03
-
-
 /-- **Chartwise a.e. transfer** (Simon Ch. 3, Remark 1.3 and the localisation to the `C¹`
 submanifolds `N_j` in the proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 67–72 and 113–143):
 let `M ⊆ N₀ ∪ ⋃ⱼ Sⱼ` with `Hⁿ(N₀) = 0` and each `Sⱼ` an `n`-dimensional embedded `C¹`
@@ -439,3 +433,8 @@ theorem Submission.ae_of_ae_on_submanifold_charts : ∀ (n N : ℕ) (M N₀ : Se
     obtain ⟨y, hy, hxy⟩ := mem_iUnion₂.1 (hTS j hj)
     obtain ⟨u, hu, rfl⟩ := himg j y ⟨hxy, hj⟩
     exact mem_union_right _ (mem_iUnion.2 ⟨j, mem_biUnion hy ⟨u, ⟨hu, hxM, hxQ⟩, rfl⟩⟩)
+
+/-- The frozen Chapter 3 contract. -/
+theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
+
+end GMT.Ch03
