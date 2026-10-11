@@ -335,6 +335,101 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Measure-theoretic facts for a bi-Lipschitz image of a bounded open set** (parent
+`root.chart_tangent_differential-a1`, Step 2, (Σ1)–(Σ3); Simon Ch. 2, Theorem 1.8(i)). Let
+`B ⊆ ℝⁿ` be open and bounded, `ψ : ℝⁿ → ℝᴺ` `K`-Lipschitz on `B` with
+`c |u - u'| ≤ |ψ u - ψ u'|` on `B` (`c > 0`), and `Γ = ψ(B)`. Then `Γ` is `Hⁿ`-measurable and
+bounded, `Hⁿ(Γ) < ∞`, `Hⁿ(Γ ∩ B̄_ρ(x)) ≤ C ρⁿ` for `x ∈ Γ`, `ρ > 0`, and `B ∩ ψ⁻¹(Z)` is
+`Lⁿ`-null whenever `Hⁿ(Z) = 0`. The bounds follow from `Hⁿ(φ(E)) ≤ Λⁿ Hⁿ(E)` for `Λ`-Lipschitz
+`φ` (SimonGMT `euclideanHausdorffMeasure_image_le_of_lipschitzOn`) and `Hⁿ = Lⁿ` on `ℝⁿ`, applied
+to `ψ` and to the `c⁻¹`-Lipschitz inverse of `ψ|_B`; measurability is Lusin–Souslin. -/
+theorem Submission.chartTD_biLipschitz_image_measure_facts : ∀ (n N : ℕ) (B : Set (Rn n))
+    (ψ : Rn n → Rn N) (K : ℝ≥0) (c : ℝ), IsOpen B → Bornology.IsBounded B →
+    LipschitzOnWith K ψ B → 0 < c → (∀ u ∈ B, ∀ u' ∈ B, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖) →
+    NullMeasurableSet (ψ '' B) μHE[n] ∧ Bornology.IsBounded (ψ '' B) ∧ μHE[n] (ψ '' B) < ∞ ∧
+      (∃ C : ℝ, ∀ x ∈ ψ '' B, ∀ ρ : ℝ, 0 < ρ →
+        μHE[n] (ψ '' B ∩ Metric.closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) ∧
+      ∀ Z : Set (Rn N), μHE[n] Z = 0 → volume (B ∩ ψ ⁻¹' Z) = 0 := by
+  intro n N B ψ K c hBo hBb hψ hc hlow
+  -- `Hⁿ = Lⁿ` on `ℝⁿ`.
+  have hHE : (μHE[n] : Measure (Rn n)) = volume :=
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume n
+  -- Since `c > 0`, the lower bound makes `ψ` injective on `B`.
+  have hinj : InjOn ψ B := by
+    intro u hu u' hu' h
+    have h1 := hlow u hu u' hu'
+    rw [h, sub_self, norm_zero] at h1
+    have h2 : ‖u - u'‖ ≤ 0 := le_of_mul_le_mul_left (by rwa [mul_zero]) hc
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
+  -- (F2) for `ψ` on subsets `A ⊆ B`: `Hⁿ(ψ(A)) ≤ Kⁿ Lⁿ(A)`.
+  have hF2 : ∀ A ⊆ B, μHE[n] (ψ '' A) ≤ (K : ℝ≥0∞) ^ n * volume A := by
+    intro A hA
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hψ.mono hA)
+    rwa [hHE] at h
+  -- (i) Lusin–Souslin: `ψ` is continuous and injective on the Borel set `B`, so `Γ` is Borel.
+  refine ⟨(hBo.measurableSet.image_of_continuousOn_injOn hψ.continuousOn hinj).nullMeasurableSet,
+    ?_, ?_, ?_, ?_⟩
+  -- (ii) `|ψ u - ψ u'| ≤ K |u - u'| ≤ K R` on `B`.
+  · obtain ⟨R, hR⟩ := Metric.isBounded_iff.mp hBb
+    refine Metric.isBounded_iff.mpr ⟨K * R, ?_⟩
+    rintro _ ⟨u, hu, rfl⟩ _ ⟨u', hu', rfl⟩
+    calc dist (ψ u) (ψ u') ≤ K * dist u u' := hψ.dist_le_mul u hu u' hu'
+      _ ≤ K * R := mul_le_mul_of_nonneg_left (hR hu hu') K.coe_nonneg
+  -- (iii) `Hⁿ(Γ) ≤ Kⁿ Lⁿ(B) < ∞`.
+  · calc μHE[n] (ψ '' B) ≤ (K : ℝ≥0∞) ^ n * volume B := hF2 B subset_rfl
+      _ < ∞ := ENNReal.mul_lt_top (ENNReal.pow_lt_top ENNReal.coe_lt_top) hBb.measure_lt_top
+  -- (iv) `C = Kⁿ ω_n c⁻ⁿ`: `Γ ∩ B̄_ρ(ψ u) ⊆ ψ(B ∩ B̄_{ρ/c}(u))` and `Lⁿ(B̄_s(u)) = sⁿ ω_n`.
+  · set V : ℝ := (volume (Metric.ball (0 : Rn n) 1)).toReal with hV
+    refine ⟨(K : ℝ) ^ n * V * c⁻¹ ^ n, ?_⟩
+    rintro _ ⟨u, hu, rfl⟩ ρ hρ
+    have hsub : ψ '' B ∩ Metric.closedBall (ψ u) ρ ⊆ ψ '' (B ∩ Metric.closedBall u (ρ / c)) := by
+      rintro _ ⟨⟨u', hu', rfl⟩, hy⟩
+      refine ⟨u', ⟨hu', ?_⟩, rfl⟩
+      rw [Metric.mem_closedBall, dist_eq_norm] at hy ⊢
+      rw [le_div_iff₀ hc]
+      have := hlow u' hu' u hu
+      linarith
+    have hball : volume (Metric.ball (0 : Rn n) 1) = ENNReal.ofReal V := by
+      rw [hV, ENNReal.ofReal_toReal measure_ball_lt_top.ne]
+    calc μHE[n] (ψ '' B ∩ Metric.closedBall (ψ u) ρ)
+        ≤ μHE[n] (ψ '' (B ∩ Metric.closedBall u (ρ / c))) := measure_mono hsub
+      _ ≤ (K : ℝ≥0∞) ^ n * volume (B ∩ Metric.closedBall u (ρ / c)) := hF2 _ inter_subset_left
+      _ ≤ (K : ℝ≥0∞) ^ n * volume (Metric.closedBall u (ρ / c)) := by
+          gcongr; exact inter_subset_right
+      _ = (K : ℝ≥0∞) ^ n * (ENNReal.ofReal ((ρ / c) ^ n) * ENNReal.ofReal V) := by
+          rw [Measure.addHaar_closedBall _ _ (div_pos hρ hc).le, finrank_euclideanSpace_fin, hball]
+      _ = ENNReal.ofReal ((K : ℝ) ^ n * ((ρ / c) ^ n * V)) := by
+          rw [ENNReal.ofReal_mul (pow_nonneg K.coe_nonneg n),
+            ENNReal.ofReal_mul (pow_nonneg (div_pos hρ hc).le n), ENNReal.ofReal_pow K.coe_nonneg,
+            ENNReal.ofReal_coe_nnreal]
+      _ = ENNReal.ofReal ((K : ℝ) ^ n * V * c⁻¹ ^ n * ρ ^ n) := by
+          congr 1
+          rw [div_pow, div_eq_mul_inv, inv_pow]
+          ring
+  -- (v) The inverse `φ` of `ψ|_B` is `c⁻¹`-Lipschitz on `Γ` and `B ∩ ψ⁻¹(Z) ⊆ φ(Γ ∩ Z)`, so
+  -- `Lⁿ(B ∩ ψ⁻¹(Z)) ≤ c⁻ⁿ Hⁿ(Γ ∩ Z) = 0`.
+  · intro Z hZ
+    have hleft : LeftInvOn (Function.invFunOn ψ B) ψ B := hinj.leftInvOn_invFunOn
+    have hφ : LipschitzOnWith (Real.toNNReal c⁻¹) (Function.invFunOn ψ B) (ψ '' B) := by
+      apply LipschitzOnWith.of_dist_le_mul
+      rintro _ ⟨u, hu, rfl⟩ _ ⟨u', hu', rfl⟩
+      rw [hleft hu, hleft hu', Real.coe_toNNReal _ (inv_nonneg.mpr hc.le), dist_eq_norm,
+        dist_eq_norm, inv_mul_eq_div, le_div_iff₀ hc]
+      linarith [hlow u hu u' hu']
+    have hsub : B ∩ ψ ⁻¹' Z ⊆ Function.invFunOn ψ B '' (ψ '' B ∩ Z) := by
+      rintro u ⟨hu, hZu⟩
+      exact ⟨ψ u, ⟨mem_image_of_mem ψ hu, hZu⟩, hleft hu⟩
+    have h1 := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hφ.mono (inter_subset_left : ψ '' B ∩ Z ⊆ ψ '' B))
+    rw [hHE] at h1
+    refine nonpos_iff_eq_zero.mp ?_
+    calc volume (B ∩ ψ ⁻¹' Z)
+        ≤ volume (Function.invFunOn ψ B '' (ψ '' B ∩ Z)) := measure_mono hsub
+      _ ≤ (Real.toNNReal c⁻¹ : ℝ≥0∞) ^ n * μHE[n] (ψ '' B ∩ Z) := h1
+      _ ≤ (Real.toNNReal c⁻¹ : ℝ≥0∞) ^ n * μHE[n] Z := by gcongr; exact inter_subset_right
+      _ = 0 := by rw [hZ, mul_zero]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
