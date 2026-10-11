@@ -433,7 +433,7 @@ theorem Submission.c1approx_measurable_remainder_modulus : ∀ (n : ℕ) (K : �
   · -- Given `δ > 0`, the `o(|y - x|)` estimate holds on `ball x r`; once `1/(k + 1) < r`, every
     -- `φ k q x` is at most `δ / 2`.
     refine Metric.tendsto_atTop.2 fun δ hδ ↦ ?_
-    obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff.1 (hfd.isLittleO.def (half_pos hδ))
+    obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff.1 (hfd.isLittleO.bound (half_pos hδ))
     obtain ⟨k₀, hk₀⟩ := exists_nat_one_div_lt hr
     refine ⟨k₀, fun k hk ↦ ?_⟩
     have hle : η k x ≤ δ / 2 := by
