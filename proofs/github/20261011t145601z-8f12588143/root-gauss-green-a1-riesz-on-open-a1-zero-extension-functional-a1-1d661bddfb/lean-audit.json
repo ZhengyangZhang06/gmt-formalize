@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "54bbdf593196157dcb7ab87d25e643d15d6feccdd2526ebf463cc4651152d65f",
+  "git_delta": {
+    "base_commit": "a2340fc548447e3a7ab6da116dcb1e5acc7f79a4",
+    "candidate_commit": "6856c5e5263e9cbf3e08f414dcfd7bba8a0feb93",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenRep_riesz_zero_extension_functional",
+    "diff_sha256": "e74fb74580cc81ec1b0ded5248db83802cb0d47c9aaebee12d91875ce7b518f1",
+    "source_sha256": "5634557ffe8edb190a7f61aa4d172c0b44aaeece5553bc4772dacf978aa7e7bb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenRep_riesz_zero_extension_functional",
+      "statement": "∀ (N : ℕ) (U : Set (Rn N)) (Λ : (Rn N → Rn N) → ℝ), IsOpen U → (∀ g h : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Continuous h → HasCompactSupport h → tsupport h ⊆ U → Λ (g + h) = Λ g + Λ h) → (∀ (c : ℝ) (g : Rn N → Rn N), Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ (c • g) = c * Λ g) → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ g : Rn N → Rn N, Continuous g → tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → Λ g ≤ C) → ∃ L : C_c(U, Rn N) →ₗ[ℝ] ℝ, (∀ K : Set U, IsCompact K → ∃ C : ℝ, ∀ f : C_c(U, Rn N), (∀ x, ‖f x‖ ≤ 1) → tsupport f ⊆ K → L f ≤ C) ∧ ∀ g : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → ∃ f : C_c(U, Rn N), (∀ y : U, f y = g ↑y) ∧ L f = Λ g",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
