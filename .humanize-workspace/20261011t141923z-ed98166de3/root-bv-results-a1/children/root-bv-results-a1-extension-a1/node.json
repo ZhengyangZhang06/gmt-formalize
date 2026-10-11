@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.extension-a1",
+  "parent_id": "root.bv_results-a1",
+  "depth": 2,
+  "title": "Simon 2.8: BV extension estimate on convex sets (frozen BVExtensionEstimate)",
+  "statement": "(Simon Ch. 2, Lemma 2.8, frozen contract BVExtensionEstimate.) For all n ∈ ℕ and δ ∈ (0,1) there is C ≥ 0 such that for every bounded open convex U ⊆ ℝⁿ, R > 0, ξ ∈ U with closedBall(ξ,δR) ⊆ U ⊆ closedBall(ξ,R), and every u with IsBVOn univ u (u ∈ L¹(ℝⁿ), bvVariationOn u univ < ∞) and u = 0 a.e. off closure U: bvVariationOn u (closure U)ᶜ = 0 and bvVariationOn u univ ≤ ofReal C·(bvVariationOn u U + ofReal R⁻¹·∫⁻_U ‖u‖ₑ).",
+  "lean_statement": "BVExtensionEstimate",
+  "lean_name": "bv_extension_estimate_theorem",
+  "depends_on": [
+    "root.bv_results-a1.abs_variation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.bv_results-a1.abs_variation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-extension-a1-a1"
+}

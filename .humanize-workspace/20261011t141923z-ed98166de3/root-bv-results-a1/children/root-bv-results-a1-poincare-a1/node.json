@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.poincare-a1",
+  "parent_id": "root.bv_results-a1",
+  "depth": 2,
+  "title": "Simon 2.7: Poincaré inequality for BV on convex sets (frozen BVPoincare)",
+  "statement": "(Simon Ch. 2, Lemma 2.7, frozen contract BVPoincare.) For all n ∈ ℕ and θ, δ ∈ (0,1) there is C ≥ 0 such that for every bounded open convex U ⊆ ℝⁿ, R > 0, ξ ∈ U with closedBall(ξ,δR) ⊆ U ⊆ closedBall(ξ,R), every u with IsBVOn U u (U open, u integrable on U, bvVariationOn u U < ∞) and every β ∈ ℝ with ofReal θ·Lⁿ(U) ≤ min(Lⁿ{x ∈ U : β ≤ u(x)}, Lⁿ{x ∈ U : u(x) ≤ β}): ∫⁻_U ‖u(x) − β‖ₑ dx ≤ ofReal(C·R)·bvVariationOn u U.",
+  "lean_statement": "BVPoincare",
+  "lean_name": "bv_poincare_theorem",
+  "depends_on": [
+    "root.bv_results-a1.mollifier_l1-a1",
+    "root.bv_results-a1.mollifier_gradient-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.bv_results-a1.mollifier_l1-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.bv_results-a1.mollifier_gradient-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-poincare-a1-a1"
+}

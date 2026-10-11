@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.abs_variation-a1",
+  "parent_id": "root.bv_results-a1",
+  "depth": 2,
+  "title": "|D|u||(O) ≤ |Du|(O) for locally integrable u",
+  "statement": "For every n ∈ ℕ, every open O ⊆ ℝⁿ and every u : ℝⁿ → ℝ locally integrable on O: bvVariationOn (x ↦ |u(x)|) O ≤ bvVariationOn u O, i.e. |D|u||(O) ≤ |Du|(O) with SimonGMT's variational definition (2.4).",
+  "lean_statement": "∀ (n : ℕ) (O : Set (Rn n)) (u : Rn n → ℝ), IsOpen O → LocallyIntegrableOn u O volume → Chapter02.bvVariationOn (fun x ↦ |u x|) O ≤ Chapter02.bvVariationOn u O",
+  "lean_name": "bv_abs_variation_le",
+  "depends_on": [
+    "root.bv_results-a1.lipschitz_ibp-a1",
+    "root.bv_results-a1.mollifier_l1-a1",
+    "root.bv_results-a1.mollifier_gradient-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.bv_results-a1.lipschitz_ibp-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.bv_results-a1.mollifier_l1-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.bv_results-a1.mollifier_gradient-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-abs-variation-a1-a1"
+}

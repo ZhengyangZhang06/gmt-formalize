@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def BVCompactness|def BVPoincare|def BVExtensionEstimate|def IsBVOn|namespace Submission|bv_mollifier|bv_compactness_theorem",
+        "integral_lineDeriv_mul_eq|ae_differentiableAt",
+        "contDiff_convolution_left|hasFDerivAt_convolution_right|contDiff_convolution_right",
+        "def convolution|support_convolution_subset|quasiMeasurePreserving_sub",
+        "integral_normed|contDiff_normed|support_normed_eq|hasCompactSupport_normed",
+        "exists_hasCompactSupport_lintegral_sub_le",
+        "addHaar_frontier|countable_meas_pos_of_disjoint_iUnion",
+        "Poincar[eé]|BVCompactness|bvVariationOn",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convex/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/tmp/bv-independent-audit-nxzd6vtq/checks/Assembly.lean",
+        "/tmp/bv-independent-audit-nxzd6vtq/checks/LibraryAudit.lean"
+      ],
+      "conclusion": "The handoff and frozen definitions agree with the selected contract. All eight one-line types pass the statement validator and independently compile as comparator challenges against the frozen Submission without child implementations; these are type checks, not completed child proofs. Separate kernel checks confirm scalar convolution semantics, existence of kernels satisfying the proposed hypotheses, and assembly of the three concluding children into the selected conjunction. Checked library lemmas and assembly depend only on propext, Classical.choice and Quot.sound. Relevant compiler sources match the snapshot and pinned revisions. The Mathlib search found no relevant existing BV theorem. All proposed names are distinct bare identifiers with no reservation collisions. The declared dependencies are correctly directed and acyclic; every child contributes to this selected parent. Splitting the shared analytic tools and three conjuncts is appropriate."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_ibp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly matches the C¹ scalar-function and compactly supported Lipschitz-field contract. The cutoff reduction, integrability bounds, coordinate integration by parts, a.e. derivative identification and finite summation prove the identity without circular reliance."
+    },
+    {
+      "key": "mollifier_l1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All kernel and integrability hypotheses match the Lean type. Normalization forces positive radii; Tonelli gives contraction, compactly supported continuous approximation gives uniform convergence on a common compact support, and the triangle estimate proves the stated ENNReal convergence."
+    },
+    {
+      "key": "mollifier_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The reflected-kernel argument correctly removes symmetry. C² regularity suffices for the C¹ dual test field. Support control, integration by parts and compact exhaustion establish the bound; restriction monotonicity handles arbitrary, possibly nonmeasurable K. Only the declared integration-by-parts dependency is needed."
+    },
+    {
+      "key": "mollifier_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The relaxed geometric hypothesis is sufficient: on kernel support, ‖z‖ < σ leaves a positive smoothing margin. The gradient bound on translated Q, segment integration, L¹ approximation and Tonelli establish precisely the stated estimate, including infinite variation."
+    },
+    {
+      "key": "abs_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The open-set and local-integrability hypotheses match exactly. Nested compact neighbourhoods justify mollification; smooth absolute-value approximations and integration by parts bound each admissible pairing. The supplied L¹ limit argument then proves the variational supremum inequality using only declared dependencies."
+    },
+    {
+      "key": "compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "BVCompactness is the pre-existing frozen proposition. A0 correctly converts its weighted hypothesis, including empty W. The corrected finite-net estimate, diagonal extraction, compatible limit representatives, lower semicontinuity and uniform test-field bounds establish every required conclusion without assuming compactness."
+    },
+    {
+      "key": "poincare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "BVPoincare exactly matches the prose. The segment/Jacobian argument supplies the smooth inequality; convex inner sets and the declared mollifier results justify passage to BV. The level-set measure bounds correctly replace the mean by β, with finite integrals and zero dimension addressed."
+    },
+    {
+      "key": "extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "BVExtensionEstimate exactly matches both frozen conclusions. Distance concavity, the unit-gradient argument, null-level cutoffs and admissible fields establish the boundary estimate. Absolute-value variation and dominated convergence, using the null convex frontier, complete the global bound without circular reliance."
+    }
+  ],
+  "required_changes": []
+}

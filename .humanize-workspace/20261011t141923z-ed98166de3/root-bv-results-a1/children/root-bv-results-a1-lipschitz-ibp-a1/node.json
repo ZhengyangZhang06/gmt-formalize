@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.lipschitz_ibp-a1",
+  "parent_id": "root.bv_results-a1",
+  "depth": 2,
+  "title": "Integration by parts against a compactly supported Lipschitz vector field",
+  "statement": "For every n ∈ ℕ, every C¹ function F : ℝⁿ → ℝ (ℝⁿ = EuclideanSpace ℝ (Fin n)), every K ∈ ℝ≥0 and every K-Lipschitz vector field g : ℝⁿ → ℝⁿ with compact support, ∫_{ℝⁿ} F(x)·div g(x) dx = −∫_{ℝⁿ} DF(x)[g(x)] dx, where div g(x) = trace Dg(x) is SimonGMT Chapter02.euclideanDivergence g x (Dg = Mathlib fderiv, which is 0 at points of non-differentiability), DF(x) = fderiv ℝ F x, and both integrals are Bochner integrals for Lebesgue measure (volume).",
+  "lean_statement": "∀ (n : ℕ) (F : Rn n → ℝ) (g : Rn n → Rn n) (K : ℝ≥0), ContDiff ℝ 1 F → LipschitzWith K g → HasCompactSupport g → ∫ x, F x * Chapter02.euclideanDivergence g x = -∫ x, fderiv ℝ F x (g x)",
+  "lean_name": "bv_lipschitz_integration_by_parts",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-lipschitz-ibp-a1-a1"
+}

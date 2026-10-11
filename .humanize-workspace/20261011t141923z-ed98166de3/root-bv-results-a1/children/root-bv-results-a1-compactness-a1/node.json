@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.compactness-a1",
+  "parent_id": "root.bv_results-a1",
+  "depth": 2,
+  "title": "Simon 2.6: compactness theorem for BV_loc (frozen BVCompactness)",
+  "statement": "(Simon Ch. 2, Theorem 2.6, frozen contract BVCompactness.) For every n, every U ⊆ ℝⁿ and every sequence u_k (k ∈ ℕ) with each u_k locally BV on U (SimonGMT IsLocallyBV U (u k)) such that for every open W ⊂⊂ U (IsRelativelyCompactIn W U: closure W compact and ⊆ U) the quantity sup_k ∫⁻_W (‖u_k(x)‖ₑ + bvVariationOn (u k) W) dx is finite (the x-independent constant |Du_k|(W) = bvVariationOn (u k) W sits inside the integrand), there are a strictly increasing ψ : ℕ → ℕ and v : ℝⁿ → ℝ such that v is locally BV on U, u_{ψ(k)} → v in L¹_loc(U) (TendstoLocallyInL1On), and bvVariationOn v W ≤ liminf_k bvVariationOn (u (ψ k)) W for every open W ⊂⊂ U.",
+  "lean_statement": "BVCompactness",
+  "lean_name": "bv_compactness_theorem",
+  "depends_on": [
+    "root.bv_results-a1.mollifier_estimate-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.bv_results-a1.mollifier_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-compactness-a1-a1"
+}

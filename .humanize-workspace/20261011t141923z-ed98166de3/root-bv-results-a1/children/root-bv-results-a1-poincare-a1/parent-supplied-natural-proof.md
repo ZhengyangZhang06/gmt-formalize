@@ -1,0 +1,118 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.bv_results-a1`
+- Child DAG node: `root.bv_results-a1.poincare-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Introduction to GMT, Ch. 2, Lemma 2.7 (p. 51). Printed proof (cleaned transcription, as in the parent): “By rescaling x ↦ R⁻¹(x − ξ) we can assume R = 1, ξ = 0. Let β, θ be as in 2.7(*) and choose convex W ⊂⊂ U such that (*) ∫_W |u − β| ≥ ½∫_U |u − β| and such that 2.7(*) holds with W in place of U and θ/2 in place of θ (e.g. W = {x ∈ U : dist(x, ∂U) > σ} with σ small). Letting u_σ denote the mollified functions, for sufficiently small σ we have 2.7(*) with u_σ in place of u, θ/4 in place of θ and W in place of U. Hence by the usual Poincaré inequality for smooth functions we have, with suitable β(σ) → β, ∫_W |u_σ − β(σ)| ≤ c ∫_W |Du_σ|, c = c(n,θ,δ), for all sufficiently small σ. The required inequality follows by letting σ ↓ 0 and using (*) and 2.5.”
+Reading (GMT/Ch02/README.md): u ∈ BV(U) includes u ∈ L¹(U) (contract IsBVOn). The complete argument below is Section B of the parent proof. It works with the mean ū instead of β(σ), proves the smooth convex Poincaré inequality (B1), and then passes from ū to β (B5). The mollifier gradient bound (T6) and the L¹ convergence (T2) are the sibling theorems Submission.bv_mollifier_fderiv_lintegral_le and Submission.bv_mollifier_tendsto_L1.
+
+Notation. E := ℝⁿ = EuclideanSpace ℝ (Fin n), μ := volume = Lⁿ. |Du|(U) := Chapter02.bvVariationOn u U. For a kernel κ, κ * G := convolution κ G (lsmul ℝ ℝ) volume. Dw := fderiv ℝ w.
+
+Choice of constant. Given n and θ, δ ∈ (0,1), put C := 2^{n+1}(1 + θ⁻¹) ≥ 0; it does not depend on δ. Let U, R, ξ, u, β satisfy the hypotheses. Then u ∈ L¹(U) and M := |Du|(U) < ∞ (IsBVOn), and we write m := M.toReal, so ofReal m = M. Also 0 < μ(U) < ∞, because U is open and nonempty (ξ ∈ U) and U ⊆ closedBall(ξ,R). Finally diam U ≤ 2R. Put ū := μ(U)⁻¹∫_U u.
+
+Case n = 0. E is a single point of measure 1, so U = {ξ} = E and μ(U) = 1. Each of the sets {x ∈ U : β ≤ u(x)} and {x ∈ U : u(x) ≤ β} is either ∅ (measure 0) or {ξ} (measure 1). The hypothesis ofReal θ·1 ≤ min(…) with θ > 0 forces both to be {ξ}, so β ≤ u(ξ) ≤ β, i.e. u(ξ) = β. Then ∫⁻_U ‖u − β‖ₑ = 0 ≤ ofReal(C·R)·M. From now on n ≥ 1.
+
+B1. Smooth Poincaré inequality on convex sets. Let O ⊆ E be open, convex and bounded with μ(O) > 0, and let w ∈ C¹(E). Put D := diam O and w̄_O := μ(O)⁻¹∫_O w (w is bounded on the bounded set O, hence integrable there). Claim:
+   ∫_O |w − w̄_O| ≤ 2ⁿ D ∫_O ‖Dw‖.
+ Proof.
+ (a) For x, y ∈ O the segment [x,y] lies in O. By the fundamental theorem of calculus,
+   |w(y) − w(x)| ≤ ‖y − x‖ ∫_0^1 ‖Dw(x + t(y − x))‖ dt ≤ D ∫_0^1 f((1 − t)x + ty) dt,
+ where f := 1_O‖Dw‖ ≥ 0 (on the segment, f = ‖Dw‖).
+ (b) Integrate over O × O and use Tonelli; the integrand is measurable since it is continuous times indicators of open sets:
+   ∫_O∫_O |w(x) − w(y)| dy dx ≤ D ∫_0^1 ∫_O∫_O f((1 − t)x + ty) dy dx dt.
+ (c) For t ∈ [½, 1] and fixed x ∈ O, the affine map y ↦ (1 − t)x + ty has Jacobian tⁿ ≥ 2^{−n} (Lebesgue measure scales by |t|ⁿ under dilation and is translation invariant). So ∫_O f((1 − t)x + ty) dy ≤ t^{−n}∫ f ≤ 2ⁿ∫_O ‖Dw‖. For t ∈ [0, ½), swap the order of integration and fix y ∈ O; the map x ↦ (1 − t)x + ty has Jacobian (1 − t)ⁿ ≥ 2^{−n}, so the inner integral is again ≤ 2ⁿ∫_O ‖Dw‖. Hence for every t ∈ [0,1], ∫_O∫_O f((1 − t)x + ty) dy dx ≤ 2ⁿ μ(O) ∫_O ‖Dw‖, and
+   ∫_O∫_O |w(x) − w(y)| dy dx ≤ 2ⁿ D μ(O) ∫_O ‖Dw‖.
+ (d) For x ∈ O, |w(x) − w̄_O| = |μ(O)⁻¹∫_O (w(x) − w(y)) dy| ≤ μ(O)⁻¹∫_O |w(x) − w(y)| dy. Integrating over x ∈ O gives the claim.
+
+B2. Inner parallel sets. d(x) := infDist(x, Uᶜ). Since n ≥ 1 and U is bounded, Uᶜ ≠ ∅. Then d is 1-Lipschitz, d = 0 off U, and d > 0 on U (U is open). For σ > 0 put U_σ := {x : d(x) > σ}. Then:
+ - U_σ is open (d is continuous), U_σ ⊆ U, and diam U_σ ≤ diam U ≤ 2R.
+ - U_σ is convex. Let x, y ∈ U_σ and t ∈ [0,1], and pick s with σ < s < min(d(x), d(y)). Then ball(x,s) ⊆ U and ball(y,s) ⊆ U, because points at distance < d(x) from x lie in U. For ‖a‖ < s, (1 − t)x + ty + a = (1 − t)(x + a) + t(y + a) ∈ U by convexity of U. So ball((1 − t)x + ty, s) ⊆ U, hence d((1 − t)x + ty) ≥ s > σ.
+ - If x ∈ U_σ then closedBall(x,σ) ⊆ U: any p ∉ U has ‖x − p‖ ≥ d(x) > σ.
+ - U_σ increases as σ decreases, and ∪_{σ>0} U_σ = U.
+ - Since d(ξ) > 0, for σ < d(ξ) we have ξ ∈ U_σ, so μ(U_σ) > 0 (nonempty open set).
+
+B3. Approximation. Let σ_j := d(ξ)/(j + 2), so 0 < σ_j < d(ξ) and σ_j ↓ 0. Let ρ_j be a C^∞ kernel with ρ_j ≥ 0, support ρ_j ⊆ B(0,σ_j) and ∫ρ_j = 1; e.g. the normalized ContDiffBump at 0 with rIn = σ_j/2 and rOut = σ_j (Mathlib contDiff_normed, continuous_normed, nonneg_normed, support_normed_eq, integral_normed). Put w_j := ρ_j * (1_U u). It is C^∞ (HasCompactSupport.contDiff_convolution_left), in particular C¹; and ρ_j is C².
+ By B2, closedBall(x,σ_j) ⊆ U for every x ∈ U_{σ_j}. So the sibling theorem Submission.bv_mollifier_fderiv_lintegral_le (with W := U, K := U_{σ_j}, u, ρ_j, σ_j) gives ∫⁻_{U_{σ_j}} ‖Dw_j‖ₑ ≤ M; hence ∫_{U_{σ_j}} ‖Dw_j‖ ≤ m.
+ By B1 with O := U_{σ_j} (open, convex, bounded, positive measure, diameter ≤ 2R),
+   ∫_{U_{σ_j}} |w_j − c_j| ≤ 2ⁿ·2R·m = 2^{n+1}R m,  where c_j := μ(U_{σ_j})⁻¹∫_{U_{σ_j}} w_j.
+
+B4. Limit j → ∞.
+ - By the sibling theorem Submission.bv_mollifier_tendsto_L1 (with F := 1_U u ∈ L¹, kernels ρ_j, radii σ_j → 0), e_j := ∫|w_j − 1_U u| → 0.
+ - The sets U_{σ_j} increase with union U, so μ(U_{σ_j}) → μ(U) (continuity from below). Since μ(U) < ∞, μ(U ∖ U_{σ_j}) → 0, and ∫_{U∖U_{σ_j}} |g| → 0 for every g ∈ L¹(U) (dominated convergence).
+ - On U_{σ_j} ⊆ U we have 1_U u = u. Hence |∫_{U_{σ_j}} w_j − ∫_U u| ≤ e_j + ∫_{U∖U_{σ_j}}|u| → 0, and therefore c_j → ū.
+ - Moreover,
+   |∫_{U_{σ_j}} |w_j − c_j| − ∫_U |u − ū|| ≤ ∫_{U_{σ_j}} |w_j − u| + |c_j − ū| μ(U) + ∫_{U∖U_{σ_j}} |u − ū| ≤ e_j + |c_j − ū| μ(U) + ∫_{U∖U_{σ_j}} |u − ū| → 0.
+ Therefore I := ∫_U |u − ū| ≤ 2^{n+1} R m.
+
+B5. From the mean to β. Since u is a.e.-strongly measurable on the measurable set U, the sets S₊ := {x ∈ U : β ≤ u(x)} and S₋ := {x ∈ U : u(x) ≤ β} are null-measurable for μ. So their measures (as written in the contract, i.e. outer measures) may be used in Markov-type lower bounds (Mathlib mul_meas_ge_le_lintegral₀). By hypothesis ofReal θ·μ(U) ≤ μ(S₊) and ofReal θ·μ(U) ≤ μ(S₋).
+ - If β ≥ ū, then |u − ū| ≥ β − ū ≥ 0 on S₊, so (β − ū)·θμ(U) ≤ (β − ū)μ(S₊) ≤ I.
+ - If β < ū, then |u − ū| ≥ ū − β on S₋, so (ū − β)·θμ(U) ≤ I.
+ In both cases μ(U)|β − ū| ≤ θ⁻¹I. Hence
+   ∫_U |u − β| ≤ ∫_U |u − ū| + μ(U)|ū − β| ≤ (1 + θ⁻¹)I ≤ (1 + θ⁻¹)2^{n+1}R m = C·R·m.
+ Since u is integrable on U, ∫⁻_U ‖u − β‖ₑ = ofReal(∫_U |u − β|) ≤ ofReal(C·R·m) = ofReal(C·R)·ofReal(m) = ofReal(C·R)·bvVariationOn u U. Here C·R ≥ 0 and m ≥ 0, and ofReal m = M because M < ∞.
+ This proves BVPoincare with C = 2^{n+1}(1 + θ⁻¹). ∎
+
+## Key steps
+
+1. Constant C = 2^{n+1}(1 + 1/θ); dispose of n = 0 (U is a point and the β-hypothesis forces u = β).
+2. B1: smooth L¹ Poincaré on convex O: ∫_O|w − w̄_O| ≤ 2ⁿ diam(O) ∫_O|Dw| (segment FTC, split t ≤ ½ / t ≥ ½, dilation Jacobians ≥ 2^{−n}).
+3. B2–B3: convex inner parallel sets U_σ = {dist(·,Uᶜ) > σ}; mollify w_j = ρ_j * (1_U u) and use Submission.bv_mollifier_fderiv_lintegral_le on U_{σ_j} to get ∫_{U_{σ_j}}|w_j − c_j| ≤ 2^{n+1}R|Du|(U).
+4. B4: Submission.bv_mollifier_tendsto_L1 and U_{σ_j} ↑ U give c_j → ū and ∫_U|u − ū| ≤ 2^{n+1}R|Du|(U).
+5. B5: Markov on the null-measurable sets {u ≥ β}, {u ≤ β} gives θLⁿ(U)|β − ū| ≤ ∫_U|u − ū|, hence ∫_U|u − β| ≤ (1 + 1/θ)2^{n+1}R|Du|(U).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n 'theorem (normed_neg|integral_normed|nonneg_normed|support_normed_eq|tsupport_normed_eq|hasCompactSupport_normed|contDiff_normed|continuous_normed)' mathlib/Mathlib/Analysis/Calculus/BumpFunction/`
+- `rg -n 'contDiff_convolution_left|contDiff_convolution_right|hasFDerivAt_convolution_right' mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `rg -n 'convolution_tendsto_right' mathlib/Mathlib; rg -n 'notation.*convolution' mathlib/Mathlib/Analysis/Convolution.lean`
+- `rg -in 'eLpNorm.*convolution|convolution.*eLpNorm|lintegral.*convolution|young' mathlib/Mathlib; rg -iln 'mollif' mathlib/Mathlib`
+- `rg -n 'exists_hasCompactSupport' mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `rg -n 'theorem (integral_lineDeriv_mul_eq|ae_lineDeriv_sum_eq|ae_differentiableAt)' mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `rg -n 'def (infEdist|infEDist|infDist|cthickening|thickening)' mathlib/Mathlib/Topology/MetricSpace`
+- `rg -n 'exists_cthickening_subset_open|exists_infDist_eq_dist|lineDeriv_eq_fderiv|addHaar_frontier|countable_meas_pos_of_disjoint|lintegral_lintegral_swap|integral_comp_comm|support_convolution_subset|lipschitzWith_of_hasCompactSupport|exists_contDiff_tsupport_subset|exists_contMDiffMap_one_nhds_of_subset_interior' mathlib/Mathlib`
+- `grep -n 'theorem|def' simongmt/Poincare/SimonGMT/Chapter02/BV.lean, then a full read of BV.lean`
+- `grep -n 'BV|2.6|2.7|2.8|open' project/GMT/Ch02/README.md; cmp project/GMT/Ch02/Contract.lean against the workspace GMT/Ch02/Contract.lean; rg -n 'Submission.|namespace Submission' project --glob '*.lean'`
+- `lean Avail.lean: #check convolution, ContDiffBump, HasCompactSupport.contDiff_convolution_left, Metric.infDist, Metric.infEDist, lineDeriv, LipschitzWith.ae_differentiableAt, LipschitzWith.integral_lineDeriv_mul_eq, Convex.addHaar_frontier, gradient, Integrable.exists_hasCompactSupport_lintegral_sub_le after import GMT.Ch02.Submission`
+- `python3 -I gen_checks.py (verifier gmt-compare.py contract_scope and child_modules plus lean_contract.validate_lean_statement), then lean on NodeChallenge_00..07.lean, AssemblyCheck.lean and Sanity.lean against a scratch olean of GMT.Ch02.Submission`
+- `grep -rl for each of the 8 proposed lean_names in the run directory; list lean_name of every dag.json node and every nodes/*/decomposition-v1.json subproblem`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convex/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1/parent-child-handoff.json`
+- `/tmp/bvdecomp-tYsCkA/checks/NodeChallenge_00.lean`
+- `/tmp/bvdecomp-tYsCkA/checks/NodeChallenge_07.lean`
+- `/tmp/bvdecomp-tYsCkA/checks/AssemblyCheck.lean`
+- `/tmp/bvdecomp-tYsCkA/checks/Sanity.lean`
+- `/tmp/bvdecomp-tYsCkA/checks/Avail.lean`
+
+The snapshot Contract.lean is byte-identical to the workspace contract and defines BVCompactness, BVPoincare and BVExtensionEstimate exactly as split. README rows 7–9 and the errata at lines 87 and 94–95 match the readings used: open W in 2.6; u ∈ L¹ in 2.7; and in 2.8, u = 0 a.e. off Ū with the conclusion encoded as |Du|(ℝⁿ∖Ū) = 0. The pinned SimonGMT BV.lean supplies the definitions and every lemma cited: euclideanDivergence_eq_sum_inner, measurable_euclideanDivergence, norm_euclideanDivergence_le_of_lipschitz, support_euclideanDivergence_subset, ofReal_integral_le_bvVariationOn, IsC1TestField.isLipschitzTestField, bvVariationOn_le_liminf_of_locallyL1, isLocallyBV_of_locallyL1_of_uniform_bound and isLocallyBV_zero. The snapshot Mathlib supplies the analytic tools: ContDiffBump.normed (contDiff_normed, nonneg_normed, support_normed_eq, integral_normed), HasCompactSupport.contDiff_convolution_left/right, hasFDerivAt_convolution_right, support_convolution_subset, LipschitzWith.integral_lineDeriv_mul_eq, LipschitzWith.ae_differentiableAt, DifferentiableAt.lineDeriv_eq_fderiv, Integrable.exists_hasCompactSupport_lintegral_sub_le, IsCompact.exists_cthickening_subset_open, IsClosed.exists_infDist_eq_dist, Convex.addHaar_frontier and Measure.countable_meas_pos_of_disjoint_iUnion. Mathlib has no lemma for L¹ convergence of mollifiers (no 'mollif' match and no convolution lemma with eLpNorm or lintegral), and no BV compactness, Poincaré or extension theorem, so those are genuine new obligations. In the frozen import closure, ContDiffBump.normed, gradient, Convex.addHaar_frontier and Integrable.exists_hasCompactSupport_lintegral_sub_le are unavailable (unknown field or constant). The child statements therefore use only convolution, kernel hypotheses that avoid ContDiffBump, fderiv, ball/closedBall and SimonGMT names; child proofs may add Mathlib imports to the Submission, which the verifier permits. With the comparator's own scope replay and statement validator, all 8 lean_statements elaborate and all 8 generated NodeChallenge modules compile. Sanity.lean confirms that normed ContDiffBumps satisfy the kernel hypotheses and that convolution ρ F (lsmul ℝ ℝ) volume x = ∫ t, ρ t * F (x - t). The assembly ⟨Submission.bv_compactness_theorem, Submission.bv_poincare_theorem, Submission.bv_extension_estimate_theorem⟩ type-checks against the selected type; apart from the sorry placeholders, it depends only on propext, Classical.choice and Quot.sound. The project snapshot has no Submission.* declarations, and neither dag.json nor any node file mentions the 8 proposed names, so none of them collides with a reserved declaration.

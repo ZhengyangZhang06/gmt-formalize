@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_gradient-a1",
+  "parent_id": "root.bv_results-a1",
+  "depth": 2,
+  "title": "Gradient bound for mollified functions on inner parallel sets (Simon 2.5)",
+  "statement": "For every n ∈ ℕ, every open W ⊆ ℝⁿ, every set K ⊆ ℝⁿ, every u integrable on W, every σ ∈ ℝ and every kernel ρ : ℝⁿ → ℝ of class C² with ρ ≥ 0, support ρ ⊆ B(0,σ) (open ball) and ∫ρ = 1, if closedBall(x,σ) ⊆ W for every x ∈ K then, with w := ρ * (1_W u) (Mathlib convolution ρ (W.indicator u) (lsmul ℝ ℝ) volume, i.e. w(x) = ∫ ρ(t)(1_W u)(x − t) dt), ∫⁻_K ‖Dw(x)‖ dx ≤ |Du|(W) := SimonGMT bvVariationOn u W in [0,∞]; here Dw = fderiv ℝ w and ‖·‖ is the operator norm.",
+  "lean_statement": "∀ (n : ℕ) (W K : Set (Rn n)) (u ρ : Rn n → ℝ) (σ : ℝ), IsOpen W → IntegrableOn u W volume → ContDiff ℝ 2 ρ → (∀ x, 0 ≤ ρ x) → Function.support ρ ⊆ ball 0 σ → ∫ x, ρ x = 1 → (∀ x ∈ K, closedBall x σ ⊆ W) → ∫⁻ x in K, ‖fderiv ℝ (convolution ρ (W.indicator u) (ContinuousLinearMap.lsmul ℝ ℝ) volume) x‖ₑ ≤ Chapter02.bvVariationOn u W",
+  "lean_name": "bv_mollifier_fderiv_lintegral_le",
+  "depends_on": [
+    "root.bv_results-a1.lipschitz_ibp-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.bv_results-a1.lipschitz_ibp-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-gradient-a1-a1"
+}
