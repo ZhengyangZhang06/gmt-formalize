@@ -1,0 +1,127 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.rectifiable_of_tangent_measure-a1`
+- Child DAG node: `root.rectifiable_of_tangent_measure-a1.cone_estimate-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. This is Step 5 (Claim (10′)) of the parent proof, i.e. Simon's (9)–(10) (chapter-03.txt lines 212–249) with the parent's departure (a) (Simon's ε = 1/16ⁿ is too large; the parent takes a = (1 − ε)2^k ω_n, b = ε 2^k ω_n with ε = 1/(2(1 + 32ⁿ)), for which 32ⁿ b < a) and departure (b) (cones around a fixed plane Q with aperture 1/3 and the ball B_{ρ/16}(y)). Here a and b are arbitrary with a > 0 and 32ⁿ b < a.
+
+1. Let x, y ∈ E with |y − x| < δ/2, and suppose for a contradiction that |y − x| > 4 |q(y − x)|. Put ρ := |y − x|. Then ρ > 4|q(y − x)| ≥ 0, so ρ > 0 and |q(y − x)| < ρ/4; also ρ < δ/2.
+
+2. Inclusion. Let C := {z : |q(z − x)| ≤ |z − x|/3}. We claim B_{ρ/16}(y) ⊆ C ∩ B_{2ρ}(x). Let |z − y| < ρ/16. (i) |z − x| ≤ |z − y| + |y − x| < ρ/16 + ρ < 2ρ. (ii) |z − x| ≥ |y − x| − |z − y| > ρ − ρ/16 = 15ρ/16. (iii) q is linear and |q v| ≤ |v| for all v (orthogonal projection; Mathlib `Submodule.norm_starProjection_apply_le`), so |q(z − x)| ≤ |q(y − x)| + |q(z − y)| ≤ |q(y − x)| + |z − y| < ρ/4 + ρ/16 = 5ρ/16 = (15ρ/16)/3 < |z − x|/3. Hence z ∈ C ∩ B_{2ρ}(x).
+
+3. Both radii ρ/16 and 2ρ lie in (0, δ), since 0 < ρ < δ/2. Applying (9a) at y with radius ρ/16, monotonicity of μ together with step 2, and (9b) at x with radius 2ρ, we get
+   ENNReal.ofReal(a (ρ/16)ⁿ) ≤ μ(B_{ρ/16}(y)) ≤ μ(C ∩ B_{2ρ}(x)) ≤ ENNReal.ofReal(b (2ρ)ⁿ).
+
+4. Since a (ρ/16)ⁿ > 0, the inequality ENNReal.ofReal(a(ρ/16)ⁿ) ≤ ENNReal.ofReal(b(2ρ)ⁿ) implies a (ρ/16)ⁿ ≤ b (2ρ)ⁿ (Mathlib `ENNReal.ofReal_le_ofReal_iff'`). As (2ρ)ⁿ = 32ⁿ (ρ/16)ⁿ and (ρ/16)ⁿ > 0, this gives a ≤ 32ⁿ b, contradicting the hypothesis 32ⁿ b < a.
+
+5. Therefore |y − x| ≤ 4 |q(y − x)| for all x, y ∈ E with |y − x| < δ/2 (for y = x this reads 0 ≤ 0). ∎
+
+Formalization appendix (verified, supplementary to the proof above). The following Lean proof of exactly this frozen statement compiled without errors or sorry against the pinned toolchain (Lean v4.35.0-rc3, Mathlib 25730c7c, simongmt 2b366308), placed after `import GMT.Ch03.Submission` inside `namespace GMT.Ch03` with the contract's opens (`open Filter MeasureTheory Module Set`, `open scoped CompactlySupported ENNReal NNReal Topology`, `open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt HasWeightedApproximateTangentSpaceAt PurelyUnrectifiable blowUpMap)`); `#print axioms` reports only [propext, Classical.choice, Quot.sound]. It follows the numbered steps above.
+
+```lean
+theorem Submission.tangentMeasure_projection_lower_bound : (∀ (N n : ℕ) (μ : Measure (Rn N)) (Q : Submodule ℝ (Rn N)) (E : Set (Rn N)) (a b δ : ℝ), 0 < a → 32 ^ n * b < a → (∀ x ∈ E, ∀ ρ ∈ Set.Ioo 0 δ, ENNReal.ofReal (a * ρ ^ n) ≤ μ (Metric.ball x ρ) ∧ μ ({z | ‖Q.starProjection (z - x)‖ ≤ ‖z - x‖ / 3} ∩ Metric.ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)) → ∀ x ∈ E, ∀ y ∈ E, ‖y - x‖ < δ / 2 → ‖y - x‖ ≤ 4 * ‖Q.starProjection (y - x)‖) := by
+  intro N n μ Q E a b δ ha hab hE x hx y hy hxy
+  by_contra hcon
+  push_neg at hcon
+  set ρ := ‖y - x‖ with hρdef
+  have hρ : 0 < ρ := by
+    have := norm_nonneg (Q.starProjection (y - x))
+    linarith
+  have hsub : Metric.ball y (ρ / 16) ⊆
+      {z | ‖Q.starProjection (z - x)‖ ≤ ‖z - x‖ / 3} ∩ Metric.ball x (2 * ρ) := by
+    intro z hz
+    rw [Metric.mem_ball, dist_eq_norm] at hz
+    have h1 : ‖z - x‖ ≤ ‖z - y‖ + ‖y - x‖ := by
+      calc ‖z - x‖ = ‖(z - y) + (y - x)‖ := by congr 1; abel
+        _ ≤ _ := norm_add_le _ _
+    have h2 : ‖y - x‖ ≤ ‖z - x‖ + ‖z - y‖ := by
+      calc ‖y - x‖ = ‖(z - x) - (z - y)‖ := by congr 1; abel
+        _ ≤ ‖z - x‖ + ‖z - y‖ := norm_sub_le _ _
+    have h3 : ‖Q.starProjection (z - x)‖ ≤ ‖Q.starProjection (y - x)‖ + ‖z - y‖ := by
+      calc ‖Q.starProjection (z - x)‖
+          = ‖Q.starProjection (y - x) + Q.starProjection (z - y)‖ := by
+            rw [← map_add]; congr 2; abel
+        _ ≤ ‖Q.starProjection (y - x)‖ + ‖Q.starProjection (z - y)‖ := norm_add_le _ _
+        _ ≤ _ := by gcongr; exact Q.norm_starProjection_apply_le _
+    refine ⟨?_, ?_⟩
+    · show ‖Q.starProjection (z - x)‖ ≤ ‖z - x‖ / 3
+      linarith
+    · rw [Metric.mem_ball, dist_eq_norm]; linarith
+  have hy1 := (hE y hy (ρ / 16) ⟨by positivity, by linarith⟩).1
+  have hx2 := (hE x hx (2 * ρ) ⟨by positivity, by linarith⟩).2
+  have hchain : ENNReal.ofReal (a * (ρ / 16) ^ n) ≤ ENNReal.ofReal (b * (2 * ρ) ^ n) :=
+    hy1.trans ((measure_mono hsub).trans hx2)
+  have hpos : 0 < a * (ρ / 16) ^ n := by positivity
+  rcases (ENNReal.ofReal_le_ofReal_iff').mp hchain with h | h
+  · have h32 : (2 * ρ) ^ n = 32 ^ n * (ρ / 16) ^ n := by rw [← mul_pow]; ring_nf
+    rw [h32] at h
+    have hp : 0 < (ρ / 16) ^ n := by positivity
+    nlinarith
+  · linarith
+```
+
+## Key steps
+
+1. Assume |q(y − x)| < ρ/4 where ρ = |y − x| ∈ (0, δ/2).
+2. Then B_{ρ/16}(y) ⊆ {z : |q(z − x)| ≤ |z − x|/3} ∩ B_{2ρ}(x), using |q| ≤ 1.
+3. (9a) at y with radius ρ/16 and (9b) at x with radius 2ρ give a(ρ/16)ⁿ ≤ b(2ρ)ⁿ = 32ⁿ b (ρ/16)ⁿ.
+4. Hence a ≤ 32ⁿ b, contradicting 32ⁿ b < a.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/d498d77b74ea2063/manifest.json (project d09bc8a18ce60face651f042976e8465f21f0f68, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); diff project/GMT/Ch03/Contract.lean against the workspace contract (identical)`
+- `grep -n theorem/def simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (CountablyRectifiable, countablyRectifiable_iUnion, countablyRectifiable_range, blowUpMap, regular_euclideanHausdorffMeasure_restrict_submodule, support_euclideanHausdorffMeasure_restrict_submodule)`
+- `grep -n theorem simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean (locallyFinite_planeMeasure, planeMeasure_unit_closedBall, tangentDensityCutoff, one_le_density_of_approximateTangent)`
+- `grep -rn "μHE\[" mathlib/Mathlib; read mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_def, isAddHaarMeasure_euclideanHausdorffMeasure, Isometry.map_euclideanHausdorffMeasure, euclideanHausdorffMeasure_smul₀, InnerProductSpace.euclideanHausdorffMeasure_eq_volume)`
+- `grep -rn "LipschitzOnWith.extend_real|LipschitzOnWith.extend_pi|extend_finite_dimension" mathlib/Mathlib`
+- `grep -rn "IsSigmaCompact.measurableSet|isSigmaCompact_range" mathlib/Mathlib (no IsSigmaCompact.measurableSet; isSigmaCompact_range in Topology/Compactness/SigmaCompact.lean)`
+- `grep -rn "countable_meas_pos" mathlib/Mathlib (Measure.countable_meas_pos_of_disjoint_iUnion in Typeclasses/SFinite.lean); grep sigmaFinite_of_locallyFinite`
+- `grep -n "starProjection_norm_le|norm_starProjection_apply_le|starProjection_eq_self_iff|orthogonalProjectionOnto|starProjection_apply" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `grep IsSeparable.exists_countable_dense_subset, IsSeparable.of_separableSpace, exists_countable_dense, Dense.exists_dist_lt, exists_linearIndependent_of_le_finrank, finrank_span_eq_card, stdOrthonormalBasis/reindex, nhdsGT_basis, Antitone.measure_iInter, tendsto_measure_iInter_atTop, nullSingletonClass_hausdorff, mem_support_iff_forall, infDist_lt_iff, continuous_infDist_pt, integral_pos_iff_support_of_nonneg, integral_mono_of_nonneg, integral_indicator_one, integrableOn_const, Continuous.integrable_of_hasCompactSupport, ofReal_le_ofReal_iff'`
+- `sed -n 60,280p book/chapter-03.txt (Remark 1.5(3) lines 91-105; proof of 1.6 '⇐' lines 145-274)`
+- `python: contract_scope() and validate_lean_statement() from verifier/gmt-compare.py and verifier/lean_contract.py applied to every proposed lean_statement`
+- `grep -rl for each proposed lean_name over .humanize, GMT and simongmt/Poincare (no match); dag.json lean_name listing`
+- `lake env lean /tmp/rtm_scratch/Challenge.lean, /tmp/rtm_scratch/Assembly.lean, /tmp/rtm_scratch/ChildrenCDEF.lean, /tmp/rtm_scratch/ChildrenAB.lean, /tmp/rtm_scratch/Full.lean (with #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Metrizable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-rectifiable-of-tangent-measure-a1/parent-child-handoff.json`
+- `/tmp/rtm_scratch/Challenge.lean`
+- `/tmp/rtm_scratch/Assembly.lean`
+- `/tmp/rtm_scratch/Full.lean`
+
+Snapshot: project d09bc8a (Contract.lean identical to the workspace copy), Mathlib 25730c7c, pinned simongmt. Found and used: SimonGMT Chapter03 CountablyRectifiable, countablyRectifiable_iUnion, countablyRectifiable_range, blowUpMap, regular_euclideanHausdorffMeasure_restrict_submodule and support_euclideanHausdorffMeasure_restrict_submodule (plane measure Hⁿ⌞P is regular with support P when finrank P = n); Mathlib LipschitzOnWith.extend_finite_dimension (Lipschitz extension into finite-dimensional targets, replacing Simon Ch. 2 Thm 1.2), Measure.countable_meas_pos_of_disjoint_iUnion with sigmaFinite_of_locallyFinite (countable atoms), isSigmaCompact_range (Borel measurability of Lipschitz images), Measure.nullSingletonClass_hausdorff (no atoms for n ≥ 1), Submodule.norm_starProjection_apply_le / starProjection_eq_self_iff, IsSeparable.exists_countable_dense_subset, exists_linearIndependent_of_le_finrank, Antitone.measure_iInter, tendsto_measure_iInter_atTop, infDist_lt_iff, integral_pos_iff_support_of_nonneg, integral_mono_of_nonneg. No match: Mathlib has no IsSigmaCompact.measurableSet (σ-compact sets are handled by unfolding into a countable union of compacts), no countable rectifiability, and no Kirszbraun theorem (not needed: componentwise/finite-dimensional extension suffices); SimonGMT has no approximate-tangent-measure (HasApproxTangentPlaneWithMultiplicity) results. The six child propositions pass the verifier's statement validator and elaborate in the comparator's replayed contract scope; with the children as sorry stubs the parent glue compiles; and complete proofs of all six children plus the parent compile sorry-free using only propext, Classical.choice and Quot.sound. No proposed name is used elsewhere in the active DAG or the libraries.
