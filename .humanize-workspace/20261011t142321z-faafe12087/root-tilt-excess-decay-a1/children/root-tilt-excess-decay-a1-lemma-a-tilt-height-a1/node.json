@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.lemma_a_tilt_height-a1",
+  "parent_id": "root.tilt_excess_decay-a1",
+  "depth": 2,
+  "title": "Tilt bounded by L2 height and sup-height times L1 mean curvature (Lemma A)",
+  "statement": "Let n >= 1, l, U open, V with generalized mean curvature H in U, x |-> p_x mu-a.e. strongly measurable and mu-a.e. the orthogonal projection onto an n-dimensional subspace. If z in R^{n+l}, r > 0 with B_r(z) in U, h >= 0, T is an n-dimensional subspace and infDist(x - z, T) <= h for every x in spt V cap B_r(z), then int_{B_{r/2}(z)} |p_x - p_T|^2 dmu <= 144 r^{-2} int_{B_r(z)} dist(x - z, T)^2 dmu + 4 h int_{B_r(z)} |H| dmu.",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → AEStronglyMeasurable V.tangentProj V.weight → (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → ∀ (z : Amb n ℓ) (r h : ℝ), 0 < r → closedBall z r ⊆ U → 0 ≤ h → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → (∀ x ∈ V.support ∩ closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ≤ h) → ∫ x in closedBall z (r / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight ≤ 144 * (r ^ 2)⁻¹ * ∫ x in closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight + 4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight",
+  "lean_name": "ted_lemma_a_tilt_height",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-lemma-a-tilt-height-a1-a1"
+}
