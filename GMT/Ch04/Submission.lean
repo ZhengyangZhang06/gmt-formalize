@@ -434,6 +434,82 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Annulus term of the limit 3.5 → 3.6** (Simon Ch. 4, p. 90: letting the cutoff decrease to
+the indicator of `(-∞, 1]`). With `r = ‖x - ξ‖`, `x ∈ B_ρ(ξ) \ B_σ(ξ)` iff `r ∈ (σ, ρ]`, and there
+`|u (q / rⁿ)| ≤ A / σⁿ`, so the limit integrand is integrable on the annulus. The integrands
+`u q k_m(r)` vanish off `B_R(ξ)`, are dominated by `A C 1_{B_R(ξ)}`, and converge pointwise to
+`1_{B_ρ(ξ) \ B_σ(ξ)} u (q / rⁿ)`; dominated convergence and `integral_indicator` give the limit. -/
+theorem Submission.weighted_mono_kernel_term_tendsto : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (u q : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ R A C : ℝ) (k : ℕ → ℝ → ℝ), IsFiniteMeasureOnCompacts μ → 0 < σ → ρ ≤ R → AEStronglyMeasurable u (μ.restrict (closedBall ξ R)) → AEStronglyMeasurable q (μ.restrict (closedBall ξ R)) → (∀ x ∈ closedBall ξ R, |u x| ≤ A ∧ |q x| ≤ 1) → (∀ m, Measurable (k m)) → (∀ m s, 0 ≤ s → |k m s| ≤ C) → (∀ m s, R < s → k m s = 0) → (∀ s, 0 ≤ s → Tendsto (fun m ↦ k m s) atTop (𝓝 ((Ioc σ ρ).indicator (fun s ↦ (s ^ n)⁻¹) s))) → IntegrableOn (fun x ↦ u x * (q x / ‖x - ξ‖ ^ n)) (closedBall ξ ρ \ closedBall ξ σ) μ ∧ Tendsto (fun m ↦ ∫ x, u x * q x * k m ‖x - ξ‖ ∂μ) atTop (𝓝 (∫ x in closedBall ξ ρ \ closedBall ξ σ, u x * (q x / ‖x - ξ‖ ^ n) ∂μ)) := by
+  intro n ℓ μ u q ξ σ ρ R A C k hμ hσ hρR hu hq hbd hk hkC hk0 hlim
+  -- `μ (B_R(ξ)) < ∞`, the annulus lies in `B_R(ξ)`, and `x` is in it iff `‖x - ξ‖ ∈ (σ, ρ]`
+  have hBfin : μ (closedBall ξ R) < ⊤ := measure_closedBall_lt_top
+  have hAB : closedBall ξ ρ \ closedBall ξ σ ⊆ closedBall ξ R :=
+    fun x hx ↦ closedBall_subset_closedBall hρR hx.1
+  have hAm : MeasurableSet (closedBall ξ ρ \ closedBall ξ σ) :=
+    measurableSet_closedBall.diff measurableSet_closedBall
+  have hmemA : ∀ x, x ∈ closedBall ξ ρ \ closedBall ξ σ ↔ ‖x - ξ‖ ∈ Ioc σ ρ := by
+    intro x
+    simp only [Set.mem_sdiff, mem_closedBall, dist_eq_norm, mem_Ioc, not_le]
+    tauto
+  have hnotB : ∀ x, x ∉ closedBall ξ R → R < ‖x - ξ‖ := by
+    intro x hx
+    simpa [mem_closedBall, dist_eq_norm] using hx
+  -- integrability on the annulus, where the integrand is bounded by `A / σⁿ`
+  have hint : IntegrableOn (fun x ↦ u x * (q x / ‖x - ξ‖ ^ n))
+      (closedBall ξ ρ \ closedBall ξ σ) μ := by
+    have hmono : μ.restrict (closedBall ξ ρ \ closedBall ξ σ) ≤ μ.restrict (closedBall ξ R) :=
+      Measure.restrict_mono hAB le_rfl
+    have hrc : Continuous fun x : Ambient n ℓ ↦ ‖x - ξ‖ ^ n := by fun_prop
+    refine IntegrableOn.of_bound ((measure_mono hAB).trans_lt hBfin)
+      ((hu.mono_measure hmono).mul ((hq.mono_measure hmono).div₀ hrc.aestronglyMeasurable))
+      (A / σ ^ n) ?_
+    filter_upwards [ae_restrict_mem hAm] with x hx
+    obtain ⟨hux, hqx⟩ := hbd x (hAB hx)
+    have hA : 0 ≤ A := (abs_nonneg _).trans hux
+    have hσn : 0 < σ ^ n := pow_pos hσ n
+    have hrn : σ ^ n ≤ ‖x - ξ‖ ^ n := pow_le_pow_left₀ hσ.le ((hmemA x).1 hx).1.le n
+    rw [Real.norm_eq_abs, abs_mul, abs_div, abs_of_pos (hσn.trans_le hrn)]
+    calc |u x| * (|q x| / ‖x - ξ‖ ^ n) ≤ A * (1 / ‖x - ξ‖ ^ n) := by gcongr
+      _ ≤ A * (1 / σ ^ n) := by gcongr
+      _ = A / σ ^ n := by ring
+  refine ⟨hint, ?_⟩
+  -- dominated convergence with bound `A C 1_{B_R(ξ)}`
+  rw [← integral_indicator hAm]
+  refine tendsto_integral_filter_of_dominated_convergence
+    ((closedBall ξ R).indicator fun _ ↦ A * C) ?_ ?_ ?_ ?_
+  · -- `u q k_m(r)` vanishes off `B_R(ξ)` and is a.e. strongly measurable on `B_R(ξ)`
+    refine Eventually.of_forall fun m ↦ ?_
+    have hF : (fun x ↦ u x * q x * k m ‖x - ξ‖) =
+        (closedBall ξ R).indicator fun x ↦ u x * q x * k m ‖x - ξ‖ := by
+      funext x
+      by_cases hx : x ∈ closedBall ξ R
+      · rw [indicator_of_mem hx]
+      · rw [indicator_of_notMem hx, hk0 m _ (hnotB x hx), mul_zero]
+    rw [hF, aestronglyMeasurable_indicator_iff measurableSet_closedBall]
+    have hkm : Measurable fun x : Ambient n ℓ ↦ k m ‖x - ξ‖ :=
+      (hk m).comp (continuous_norm.comp (continuous_id.sub continuous_const)).measurable
+    exact (hu.mul hq).mul hkm.aestronglyMeasurable
+  · -- `|u q k_m(r)| ≤ A C` on `B_R(ξ)` and `= 0` off it
+    refine Eventually.of_forall fun m ↦ Eventually.of_forall fun x ↦ ?_
+    by_cases hx : x ∈ closedBall ξ R
+    · rw [indicator_of_mem hx]
+      obtain ⟨hux, hqx⟩ := hbd x hx
+      have hA : 0 ≤ A := (abs_nonneg _).trans hux
+      have hkx := hkC m ‖x - ξ‖ (norm_nonneg _)
+      rw [Real.norm_eq_abs, abs_mul, abs_mul]
+      calc |u x| * |q x| * |k m ‖x - ξ‖| ≤ A * 1 * C := by gcongr
+        _ = A * C := by ring
+    · rw [indicator_of_notMem hx, hk0 m _ (hnotB x hx), mul_zero, norm_zero]
+  · exact (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const hBfin.ne)
+  · -- pointwise limit `u q 1_{(σ, ρ]}(r) r⁻ⁿ = 1_{B_ρ(ξ) \ B_σ(ξ)} u (q / rⁿ)`
+    refine Eventually.of_forall fun x ↦ ?_
+    convert (hlim ‖x - ξ‖ (norm_nonneg _)).const_mul (u x * q x) using 2
+    by_cases hx : x ∈ closedBall ξ ρ \ closedBall ξ σ
+    · rw [indicator_of_mem hx, indicator_of_mem ((hmemA x).1 hx)]
+      ring
+    · rw [indicator_of_notMem hx, indicator_of_notMem fun h ↦ hx ((hmemA x).2 h)]
+      ring
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
