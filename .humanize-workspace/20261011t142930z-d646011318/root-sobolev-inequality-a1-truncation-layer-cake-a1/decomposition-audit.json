@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "integral_mono_of_nonneg",
+        "integrableOn_compact_subset|def LocallyIntegrableOn",
+        "Monotone.deriv_nonneg|tendsto_integral_of_dominated_convergence|SigmaFinite.of_isFiniteMeasureOnCompacts",
+        "theorem lintegral_rpow_eq_lintegral_meas_lt_mul",
+        "theorem lintegral_comp_eq_lintegral_meas_lt_mul",
+        "theorem lintegral_lintegral_swap",
+        "sobolev_truncation_superlevel_bound",
+        "sobolev_level_integral_bound",
+        "sobolev_of_level_integral_bounds",
+        "python3 /tmp/tlc-independent-review-u5ab69ui/check.py > /tmp/tlc-independent-review-u5ab69ui/check.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Integral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevTruncation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/LayerCake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-sobolev-inequality-a1-truncation-layer-cake-a1/parent-child-handoff.json",
+        "/tmp/tlc-independent-review-u5ab69ui/Combined.lean",
+        "/tmp/tlc-independent-review-u5ab69ui/Inspect.lean",
+        "/tmp/tlc-independent-review-u5ab69ui/check.log"
+      ],
+      "conclusion": "Verified the pinned revisions and source compatibility. The inspected APIs support the integrability, Tonelli, layer-cake, and convergence arguments. All three exact one-line types independently elaborate in freshly generated comparator challenges; explicit definitional-equality checks confirm integral parenthesization and Real.rpow. Recompiled existing scratch proofs after byte-checking their types: each child uses only propext, Classical.choice, and Quot.sound. Assembly establishes the exact selected parent type; its sole sorryAx comes from the audit stub for the already accepted, type-identical energy dependency. All names are bare identifiers, with no reservations or matches in the DAG, pinned project/SimonGMT searches, or 181 run refs. The split appropriately isolates truncation, integration over levels, and passage to the limit. Empty child dependency lists are correct because the intermediate inequalities are explicit premises; assembly is acyclic and proves this selected node."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "truncation_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. The proof establishes finite measurable superlevels, admissibility and support of the truncation, the gradient chain rule, bounded-derivative integrability, and the required mass and energy comparisons. integral_mono_of_nonneg applies with precisely the supplied hypotheses. The generalized n = 0 case is valid with exponent zero. No projection-measurability assumption or circular theorem use is hidden."
+    },
+    {
+      "key": "level_integral_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every Lean hypothesis. Restricting K to the compact support correctly supplies integrability and product measurability. The moment estimate, Tonelli calculation, shifted-derivative FTC identity, translation, and layer-cake identity yield exactly the stated coefficient and energy integral. Finite superlevel measures justify conversions to real measures. The per-level bound is an explicit premise, so no undeclared child dependency or circular reliance occurs."
+    },
+    {
+      "key": "shift_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the prose. Both dominated-convergence arguments have valid measurable integrands, integrable dominators, and pointwise limits along 1/(k+1). Continuity of the positive real power justifies the moment limit. Passing the inequality to the limit and separately treating Q = 0 and Q > 0 proves the exact exponent and constant. The supplied proof is complete and independent."
+    }
+  ],
+  "required_changes": []
+}
