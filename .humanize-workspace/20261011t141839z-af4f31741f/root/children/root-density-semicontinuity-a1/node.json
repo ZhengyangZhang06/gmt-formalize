@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_semicontinuity-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Theorem 8.3.7: semicontinuity of ‖δV‖ and of the density bound Θ^n ≥ 1 under varifold convergence",
+  "statement": "Let V_i, V be n-varifolds on open U ⊆ ℝ^N with V_i → V as Radon measures on Gₙ(U) (RadonConverges), each V_i of locally bounded first variation with liminf_i ‖δV_i‖(W) < ∞ for every open W ⊂⊂ U, and sets B_i ⊆ ℝ^N with Θ^n(μ_{V_i}, y) existing and ≥ 1 for all y ∈ U ∖ B_i and μ_{V_i}(B_i ∩ W) → 0 for every open W ⊂⊂ U. Then V has locally bounded first variation, ‖δV‖(W) ≤ liminf_i ‖δV_i‖(W) for every open W ⊂⊂ U, and for μ_V-a.e. y, Θ^n(μ_V, y) exists and is ≥ 1. (Exactly DensitySemicontinuity.)",
+  "lean_statement": "DensitySemicontinuity",
+  "lean_name": "density_semicontinuity_theorem",
+  "depends_on": [
+    "root.first_variation-a1",
+    "root.monotonicity_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.first_variation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.monotonicity_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-density-semicontinuity-a1-a1"
+}

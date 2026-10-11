@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radon_compactness-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Compactness of Radon measures on Gₙ(U) (Simon Ch. 1 4.16, corrected), with eventual local mass bounds",
+  "statement": "Let U ⊆ ℝ^N be open and μ_j (j ∈ ℕ) measures on ℝ^N × G(N,n) such that for every compact K ⊆ U there is C_K < ∞ with μ_j(K × G(N,n)) ≤ C_K for all sufficiently large j. Then there are a strictly increasing φ : ℕ → ℕ and an n-varifold V on U such that ∫ f dμ_{φ(j)} → ∫ f dV for every f ∈ C_c(ℝ^N × G(N,n), ℝ) with tsupport f ⊆ U × G(N,n).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (μ : ℕ → Measure (Euclidean N × Grassmannian N n)), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ᶠ j in atTop, μ j (K ×ˢ (univ : Set (Grassmannian N n))) ≤ C) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ V : Varifold N n U, ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ U ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun j ↦ ∫ z, f z ∂(μ (φ j))) atTop (𝓝 (∫ z, f z ∂V.measure))",
+  "lean_name": "varifold_radon_compactness",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-radon-compactness-a1-a1"
+}

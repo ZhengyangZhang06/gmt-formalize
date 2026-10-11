@@ -1,0 +1,87 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root`
+- Child DAG node: `root.radon_compactness-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Ch. 1, Theorem 4.16 (Compactness Theorem for Radon measures) and its printed proof (pp. 37–38), which Ch. 8 cites in 5.1 and 5.8, specialised to X = U × G (G = Grassmannian N n, compact metric). ERRATUM (GMT/Ch01 README; SimonGMT Chapter01.simon_theorem_4_16_counterexample): 4.16 as printed (X locally compact, σ-compact, Hausdorff) is false, because the Alaoglu step yields a subnet, not a subsequence; it holds for X locally compact and second countable (= locally compact separable metrizable), which is the case here: U × G is an open subset of the separable metric space ℝ^N × G. The proof below is the printed one with the Alaoglu step made sequential via a countable dense set of test functions. A second (immaterial) adaptation: the masses are only required to be bounded eventually on each compact set (finitely many initial terms may even be infinite there), which costs nothing in a diagonal argument.
+
+Statement. Let U ⊆ ℝ^N be open and μ_j (j ∈ ℕ) measures on ℝ^N × G such that for every compact K ⊆ U there are C_K < ∞ and j_K with μ_j(K × G) ≤ C_K for all j ≥ j_K. Then there are a strictly increasing φ : ℕ → ℕ and V : Varifold N n U such that ∫ f dμ_{φ(j)} → ∫ f dV.measure for every f ∈ C_c(ℝ^N × G) with tsupport f ⊆ U × G.
+
+1. Exhaustion. If U = ∅ take φ = id and V = 0 (then every admissible f is 0). Otherwise let K_m := {y ∈ ℝ^N : |y| ≤ m, dist(y, ℝ^N ∖ U) ≥ 1/m} (dist := +∞ if U = ℝ^N), so K_m is compact, K_m ⊆ interior K_{m+1}, ∪_m K_m = U. Put X_m := K_m × G (compact metric) and C_m := C_{K_m}, j_m := j_{K_m}. Every compact subset of U × G lies in some X_m (it projects to a compact subset of U, which lies in some K_m by the interior property).
+
+2. Countable dense family. C(X_m) (continuous real functions with sup norm) is separable since X_m is a compact metric space. Hence there is a countable family 𝔉 ⊆ C_c(ℝ^N × G) with tsupport ⊆ U × G such that for every m and every f ∈ C_c(ℝ^N × G) with tsupport f ⊆ interior(K_m) × G and every η > 0 there is g ∈ 𝔉 with tsupport g ⊆ K_{m+1} × G and sup|f − g| < η (take a countable dense subset of C(X_{m+1}) and multiply by a fixed cutoff χ_m ∈ C_c, 0 ≤ χ_m ≤ 1, χ_m = 1 on K_m × G, tsupport χ_m ⊆ interior(K_{m+1}) × G; then sup|f − χ_m h| = sup|χ_m(f − h)| ≤ sup_{X_{m+1}}|f − h|).
+
+3. Diagonal extraction (the printed “Alaoglu + diagonal sequence” step, made sequential). For g ∈ 𝔉 with tsupport g ⊆ K_m × G and j ≥ j_m: |∫ g dμ_j| ≤ C_m sup|g|. So for each g ∈ 𝔉 the real sequence (∫ g dμ_j)_{j ≥ j_m} is bounded; enumerating 𝔉 = {g_1, g_2, …} and applying Bolzano–Weierstrass successively and then taking the diagonal sequence gives a strictly increasing φ such that L(g) := lim_j ∫ g dμ_{φ(j)} exists for every g ∈ 𝔉. (Equivalently, apply SimonGMT Chapter01.simon_theorem_4_16_compact_metrizable / finiteMeasure_tendsto_subseq_of_compact_metrizable on each compact X_m to the finite measures μ_j⌞X_m, j ≥ j_m, and diagonalise over m.)
+
+4. Extension to all test functions. Let f ∈ C_c(ℝ^N × G) with tsupport f ⊆ U × G; then tsupport f ⊆ interior(K_m) × G for some m. Given η > 0 choose g ∈ 𝔉 with tsupport g ⊆ K_{m+1} × G and sup|f − g| < η. For j with φ(j) ≥ j_{m+1}: |∫ f dμ_{φ(j)} − ∫ g dμ_{φ(j)}| ≤ η C_{m+1}. Hence (∫ f dμ_{φ(j)})_j is Cauchy, and F(f) := lim_j ∫ f dμ_{φ(j)} exists. F is linear and positive (f ≥ 0 ⇒ F(f) ≥ 0) on C_c(U × G) (identify a function on the subtype U × G with compact support with its extension by zero to ℝ^N × G, which is continuous because its support is a compact subset of the open set U × G).
+
+5. Riesz representation (printed: “by applying Theorem 4.12”). U × G is locally compact Hausdorff (open subset of a locally compact space), so by the Riesz–Markov–Kakutani theorem (Ch. 1, 4.12; Mathlib RealRMK.rieszMeasure, integral_rieszMeasure) there is a Radon (regular, locally finite) measure λ on the subtype U × G with F(f) = ∫ f dλ for all f ∈ C_c(U × G).
+
+6. The varifold. Define V := Varifold.ofDomainMeasure hU λ (Chapter08/Varifold.lean:409; needs IsLocallyFiniteMeasure λ), so V.measure = λ.map Subtype.val, which vanishes on Uᶜ × G and is finite on K × G for compact K ⊆ U (V is an n-varifold on U). For f ∈ C_c(ℝ^N × G) with tsupport f ⊆ U × G: ∫ f dV.measure = ∫ f ∘ val dλ = F(f ∘ val) = lim_j ∫ f dμ_{φ(j)} (the last equality because f vanishes off U × G, so ∫ f dμ_j = ∫ (f ∘ val) d(μ_j.comap val) and this is how F was defined). This is the claim.
+
+## Key steps
+
+1. Compact exhaustion K_m of U; X_m = K_m × G compact metric.
+2. Countable family of test functions, dense (sup norm) in C(X_{m+1})·cutoff for every m (separability of C of a compact metric space).
+3. Bounded sequences (∫ g dμ_j)_{j ≥ j_m}; diagonal subsequence φ along which all converge (sequential form of the printed Alaoglu step; the erratum requires second countability).
+4. Extension to all f ∈ C_c with support in U × G by uniform approximation and the eventual mass bounds; the limit F is positive linear.
+5. Riesz–Markov–Kakutani on the locally compact space U × G gives λ; V := Varifold.ofDomainMeasure hU λ; ∫ f dV.measure = F(f).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum project/GMT/Ch08/Contract.lean workspace GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)`
+- `rg -l -i 'varifold' mathlib/Mathlib (0 files)`
+- `rg -n 'theorem ae_tendsto_measure_inter_div|theorem ae_tendsto_rnDeriv' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `rg -n 'theorem hausdorffMeasure_image_le' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n 'Isometry.euclideanHausdorffMeasure_image|EuclideanSpace.euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_homothety_image' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n 'theorem LipschitzOnWith.extend_real' mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `rg -n 'theorem withDensity_rnDeriv_eq' mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean`
+- `rg -n 'ext_of_integral_eq_on_compactlySupported' mathlib/Mathlib`
+- `rg -n 'theorem measure_toMeasurable_inter_of_sFinite|theorem restrict_toMeasurable_of_sFinite' mathlib/Mathlib`
+- `rg -n 'theorem addHaar_closedBall' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `grep -n '^theorem|^def' simongmt Chapter03/{Rectifiable,SubmanifoldCover,DisjointCover,Differential}.lean`
+- `grep -n '^theorem' simongmt Chapter02/{Area,AreaLipschitz,AreaNoninjective,AreaMultiplicity,AreaLiteral}.lean`
+- `grep -n '^theorem' simongmt Chapter01/{DensityComparison,Densities,HausdorffDensityBounds,InfiniteDensitySet}.lean`
+- `grep -rn 'theorem <name>' simongmt for hasDerivAt_pushforwardMeasure_cylinder_family_of_velocity, aemeasurable_imageMap, measurable_imageMap_domain, pushforwardMeasure_apply_of_contDiffOn, imageMap_preimage_cylinder_ae_of_fixed, eq_of_plane_eq, hasDerivAt_normalized_weightedCutoffMass, simonHausdorffMeasureReal_toOuterMeasure, volume_euclidean_ball_eq, mul_simonHausdorff_le_of_le_dimensionalUpperDensity, measurable_dimensionalUpperDensity`
+- `lake env lean Scratch/Final.lean (import GMT.Ch08.Submission + comparator scope replay; 12 child statements + parent assembly + example : type_of% GMT.Ch08.main_theorem)`
+- `lake env lean Scratch/Axioms.lean (#print axioms for 13 cited SimonGMT lemmas)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Differential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNoninjective.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/InfiniteDensitySet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DeformationIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/WeightedRadialIdentity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangent.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+
+Snapshot = project 63436ae6 + Mathlib 25730c7c; its project/GMT/Ch08/Contract.lean is byte-identical to the workspace Contract and Submission. Mathlib has no varifold theory (0 files), so every Ch. 8 result is proved in the DAG. Pinned SimonGMT Chapter03 has no Theorem 1.6/1.9 (no rectifiable ⇒ approximate tangents / density one) and no area formula on rectifiable carriers (Chapter02 area formulas have a Euclidean parameter domain) — the reason v1 was rejected — so the new decomposition avoids both: density one and the 5.9 mass/fibre comparison are proved with Lipschitz graphs of small slope from the new sibling tangent_graph_cover, using only Mathlib LipschitzOnWith.hausdorffMeasure_image_le (Hausdorff.lean:733/745), Isometry.euclideanHausdorffMeasure_image + EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:131,187), Besicovitch.ae_tendsto_measure_inter_div / ae_tendsto_rnDeriv (Covering/Besicovitch.lean:1105,1078), withDensity_rnDeriv_eq (RadonNikodym.lean:60), LipschitzOnWith.extend_real (Lipschitz.lean:308), measure_toMeasurable_inter_of_sFinite (SFinite.lean:477), and SimonGMT simon_theorem_3_3 / simon_theorem_3_6 / measurable_dimensional{Upper,Lower}Density (Chapter01). The first-variation derivative is the kernel-checked Varifold.hasDerivAt_pushforwardMeasure_cylinder_family_of_velocity (DeformationIntegral.lean:266), whose hypotheses match the contract. #print axioms for the 13 newly cited SimonGMT lemmas shows only propext, Classical.choice, Quot.sound. In a scratch copy importing GMT.Ch08.Submission with the comparator's replayed scope, all 12 child lean_statements elaborate and pass validate_lean_statement, and the parent assembly term checks against type_of% GMT.Ch08.main_theorem with no sorry of its own. The active DAG contains only root, so no name reservations conflict; all lean_names are fresh bare identifiers.

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.monotonicity_density-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Monotonicity formula 8.3.3, stationary identity 8.3.4 and a.e. existence of the density 8.3.6",
+  "statement": "(A, Simon 8.3.3) Let V have locally bounded first variation in U, x ∈ U, ρ0 > 0 with the open ball B°_{ρ0}(x) ⊆ U, Λ ≥ 0, and ‖δV‖(B_ρ(x)) ≤ Λ μ_V(B_ρ(x)) for 0 < ρ < ρ0 (closed balls, ‖δV‖ = variationMeasure V). Then ρ ↦ e^{Λρ} μ_V(B_ρ(x))/ρ^n is non-decreasing on (0,ρ0), Θ^n(μ_V,x) = θ exists and is finite, and for 0 < σ ≤ ρ < ρ0: θ ≤ e^{Λσ}ω_n^{-1}σ^{-n}μ_V(B_σ(x)) and e^{Λσ}ω_n^{-1}σ^{-n}μ_V(B_σ(x)) + ω_n^{-1}∫_{Gₙ(B_ρ(x)∖B_σ(x))} |p_{S⊥}(y−x)|²/|y−x|^{n+2} dV ≤ e^{Λρ}ω_n^{-1}ρ^{-n}μ_V(B_ρ(x)). (B, Simon 8.3.4) If B°_{ρ0}(x) ⊆ U and δV(X) = 0 for every X ∈ K(U;ℝ^N) with support in B°_{ρ0}(x) (no first-variation bound assumed), then Θ^n(μ_V,x) = θ exists and θ + ω_n^{-1}∫_{Gₙ(B_ρ(x))} |p_{S⊥}(y−x)|²/|y−x|^{n+2} dV = ω_n^{-1}ρ^{-n}μ_V(B_ρ(x)) for 0 < ρ < ρ0 (integrand 0 at y = x). (C, Simon 8.3.6) If V has locally bounded first variation in U, there is a Borel measurable Θ : ℝ^N → [0,∞] such that for μ_V-a.e. x, Θ(x) ≠ ∞ and Θ^n(μ_V, x) exists and equals Θ(x) (HasDensity n μ_V x (Θ x)). (Exactly MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE.)",
+  "lean_statement": "MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE",
+  "lean_name": "monotonicity_and_density_theorems",
+  "depends_on": [
+    "root.first_variation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.first_variation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-monotonicity-density-a1-a1"
+}
