@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dd985b2b4ceb275b61a41490f2907d8dd1d726bbead6ec3a1aadd34ef079a0bf",
+  "git_delta": {
+    "base_commit": "e89868399fd62a837adde4056aeab4e3a0e97bac",
+    "candidate_commit": "1ce17b20e57d3db854339985b1ecf8d5536e14f7",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "simon_submanifold_hausdorff_finite_pos",
+    "diff_sha256": "2f9602a9de06dc7ce7cfc2a7399c2a81f8a7c7ebbeef08f5d776ba1b80098263",
+    "source_sha256": "c100b122a265b68a15e8dc130347885a5cfc87ffe3ac6eb0ae387fe18abee4af",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.simon_submanifold_hausdorff_finite_pos",
+      "statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → (∀ C ⊆ M, IsCompact C → μHE[n] C < ⊤) ∧ ∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → 0 < μHE[n] (M ∩ O)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
