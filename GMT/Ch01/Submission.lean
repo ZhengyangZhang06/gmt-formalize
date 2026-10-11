@@ -319,3 +319,161 @@ def RadonCompactness : Prop :=
 theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
 
 end GMT.Ch01
+
+
+/-- Simon Ch. 1, Theorem 1.17, by the printed proof.  The restriction `μ ⌞ A` is Borel regular
+and finite, so Theorem 1.15(2) (`Submission.borel_regular_approximation`) gives closed inner
+approximations of the `μ`-measurable subsets of `A`.  For each mesh `1 / (i + 1)`, closed
+subsets of the level sets `{⌊(i + 1) f⌋ = j}`, truncated to finitely many `j`, form a closed
+`D i ⊆ A` with `μ (A \ D i) < δ i`, where `∑ δ i < ε`; on `⋂ i, D i` the locally constant step
+functions `⌊(i + 1) f⌋ / (i + 1)` converge uniformly to `f`. -/
+theorem Submission.lusin_theorem : LusinTheorem := by
+  intro X _ hX μ hμ A hA hAfin f hf ε hε
+  classical
+  -- The `μ`-measurable sets (Simon 1.6, 1.7) as the ambient σ-algebra; Borel sets belong to it.
+  let _ : MeasurableSpace X := μ.caratheodory
+  have : OpensMeasurableSpace X := ⟨hμ.borel_le_caratheodory⟩
+  have hAm : MeasurableSet A := hA
+  have hf' : Measurable f := hf
+  -- Step 0: the level sets `L i j = f⁻¹[j / (i + 1), (j + 1) / (i + 1))`, i.e.
+  -- `{x ∈ A : ⌊(i + 1) f x⌋ = j}`, are `μ`-measurable.
+  obtain ⟨L, hLm, hLA, hmemL⟩ : ∃ L : ℕ → ℤ → Set X, (∀ i j, MeasurableSet (L i j)) ∧
+      (∀ i j, L i j ⊆ A) ∧ ∀ i j (a : A), (a : X) ∈ L i j ↔ ⌊f a * ((i : ℝ) + 1)⌋ = j :=
+    ⟨fun i j => Subtype.val '' ((fun a : A => f a * ((i : ℝ) + 1)) ⁻¹' Ico (j : ℝ) (j + 1)),
+      fun i j => hAm.subtype_image ((hf'.mul_const _) measurableSet_Ico),
+      fun i j => Subtype.coe_image_subset A _,
+      fun i j a => Subtype.val_injective.mem_set_image.trans Int.floor_eq_iff.symm⟩
+  -- Steps 1–2: `μ ⌞ A` is Borel regular and finite, hence open σ-finite, and Theorem 1.15(2)
+  -- for it gives closed inner approximations of the `μ`-measurable subsets of `A`.
+  have hreg : ∀ E : Set X, MeasurableSet E → E ⊆ A → ∀ η : ℝ≥0∞, η ≠ 0 →
+      ∃ F : Set X, F ⊆ E ∧ IsClosed F ∧ μ (E \ F) < η := by
+    intro E hE hEA η hη
+    have hμA : IsBorelRegularOuterMeasure (OuterMeasure.restrict A μ) := hμ.restrict hA hAfin
+    have hμAσ : IsOpenSigmaFinite (OuterMeasure.restrict A μ) :=
+      (isOpenSigmaFinite_iff _).2 ⟨fun _ => univ, fun _ => ⟨isOpen_univ, by
+        rw [OuterMeasure.restrict_apply, univ_inter]; exact hAfin⟩, iUnion_const univ⟩
+    have hres : ∀ S ⊆ A, OuterMeasure.restrict A μ S = μ S := fun S hS => by
+      rw [OuterMeasure.restrict_apply, inter_eq_left.2 hS]
+    have hsup : μ E = ⨆ (F : Set X) (_ : F ⊆ E) (_ : IsClosed F), OuterMeasure.restrict A μ F := by
+      rw [← hres E hEA]
+      exact (Submission.borel_regular_approximation X hX _ hμA hμAσ).2 E
+        (isCaratheodoryMeasurable_restrict hE)
+    have hEfin : μ E ≠ ∞ := ne_top_of_le_ne_top hAfin.ne (measure_mono hEA)
+    by_cases hsmall : μ E < η
+    · exact ⟨∅, empty_subset E, isClosed_empty, by rwa [Set.sdiff_empty]⟩
+    have hE0 : μ E ≠ 0 := fun h => hsmall (by rw [h]; exact pos_iff_ne_zero.2 hη)
+    obtain ⟨F, hF⟩ := lt_iSup_iff.1 ((ENNReal.sub_lt_self hEfin hE0 hη).trans_eq hsup)
+    obtain ⟨hFE, hF⟩ := lt_iSup_iff.1 hF
+    obtain ⟨hFc, hF⟩ := lt_iSup_iff.1 hF
+    rw [hres F (hFE.trans hEA)] at hF
+    refine ⟨F, hFE, hFc, ?_⟩
+    -- `F` is Borel, hence `μ`-measurable, so `μ E = μ F + μ (E \ F)`.
+    have hsplit : μ E = μ F + μ (E \ F) := by
+      rw [(OuterMeasure.isCaratheodory_iff μ).1 hFc.measurableSet E, inter_eq_right.2 hFE]
+    have h1 : μ E < μ F + η := ENNReal.lt_add_of_sub_lt_right (Or.inl hEfin) hF
+    rw [hsplit] at h1
+    exact (ENNReal.add_lt_add_iff_left (ne_top_of_le_ne_top hEfin (measure_mono hFE))).1 h1
+  -- Weights `δ i > 0` with `∑ δ i < ε`.
+  obtain ⟨δ, hδpos, hδsum⟩ := ENNReal.exists_pos_sum_of_countable' (ENNReal.ofReal_pos.2 hε).ne' ℕ
+  -- Step 3: for each `i`, closed `C j ⊆ L i j` with `∑ μ (L i j \ C j) < δ i`, truncated to
+  -- `|j| ≤ J` by continuity from above; `⌊(i + 1) f⌋` is locally constant on the union `D`.
+  have hstep : ∀ i : ℕ, ∃ D : Set X, IsClosed D ∧ D ⊆ A ∧ μ (A \ D) < δ i ∧
+      ∀ a : A, (a : X) ∈ D → ∃ U : Set X, IsOpen U ∧ (a : X) ∈ U ∧
+        ∀ b : A, (b : X) ∈ D ∩ U → ⌊f b * ((i : ℝ) + 1)⌋ = ⌊f a * ((i : ℝ) + 1)⌋ := by
+    intro i
+    obtain ⟨η, hηpos, hηsum⟩ := ENNReal.exists_pos_sum_of_countable' (hδpos i).ne' ℤ
+    choose C hCL hCc hCμ using fun j : ℤ => hreg (L i j) (hLm i j) (hLA i j) (η j) (hηpos j).ne'
+    obtain ⟨J, hJ⟩ : ∃ J : ℕ, μ (A \ ⋃ j ∈ Finset.Icc (-(J : ℤ)) (J : ℤ), C j) < δ i := by
+      have hEm : ∀ J : ℕ, MeasurableSet (A \ ⋃ j ∈ Finset.Icc (-(J : ℤ)) (J : ℤ), C j) :=
+        fun J => hAm.diff (Finset.measurableSet_biUnion _ fun j _ => (hCc j).measurableSet)
+      have hanti : Antitone fun J : ℕ => A \ ⋃ j ∈ Finset.Icc (-(J : ℤ)) (J : ℤ), C j := by
+        intro J K hJK
+        refine sdiff_subset_sdiff_right
+          (iUnion₂_subset fun j hj => subset_iUnion₂_of_subset j ?_ subset_rfl)
+        rw [Finset.mem_Icc] at hj ⊢
+        omega
+      -- Every point of `A` outside all `C j` lies in some `L i j \ C j`.
+      have hinter : (⋂ J : ℕ, A \ ⋃ j ∈ Finset.Icc (-(J : ℤ)) (J : ℤ), C j) ⊆
+          ⋃ j, (L i j \ C j) := by
+        intro x hx
+        rw [mem_iInter] at hx
+        have hxA : x ∈ A := (hx 0).1
+        refine mem_iUnion.2 ⟨⌊f ⟨x, hxA⟩ * ((i : ℝ) + 1)⌋, (hmemL i _ ⟨x, hxA⟩).2 rfl,
+          fun hxC => (hx (⌊f ⟨x, hxA⟩ * ((i : ℝ) + 1)⌋).natAbs).2 (mem_iUnion₂.2 ⟨_, ?_, hxC⟩)⟩
+        rw [Finset.mem_Icc]
+        omega
+      have hlt : μ.toMeasure le_rfl (⋂ J : ℕ, A \ ⋃ j ∈ Finset.Icc (-(J : ℤ)) (J : ℤ), C j) <
+          δ i := by
+        rw [toMeasure_apply _ _ (MeasurableSet.iInter hEm)]
+        calc μ (⋂ J : ℕ, A \ ⋃ j ∈ Finset.Icc (-(J : ℤ)) (J : ℤ), C j)
+            ≤ μ (⋃ j, (L i j \ C j)) := measure_mono hinter
+          _ ≤ ∑' j, μ (L i j \ C j) := measure_iUnion_le _
+          _ ≤ ∑' j, η j := ENNReal.tsum_le_tsum fun j => (hCμ j).le
+          _ < δ i := hηsum
+      have hlim := tendsto_measure_iInter_atTop (μ := μ.toMeasure le_rfl)
+        (fun J => (hEm J).nullMeasurableSet) hanti
+        ⟨0, ne_top_of_le_ne_top (by rw [toMeasure_apply _ _ hAm]; exact hAfin.ne)
+          (measure_mono sdiff_subset)⟩
+      obtain ⟨J, hJ⟩ := (hlim.eventually_lt_const hlt).exists
+      exact ⟨J, (toMeasure_apply _ _ (hEm J)).symm.trans_lt hJ⟩
+    refine ⟨⋃ j ∈ Finset.Icc (-(J : ℤ)) (J : ℤ), C j, isClosed_biUnion_finset fun j _ => hCc j,
+      iUnion₂_subset fun j _ => (hCL j).trans (hLA i j), hJ, fun a ha => ?_⟩
+    -- Near a point of `C j₀`, the closed sets `C j` (`j ≠ j₀`, `|j| ≤ J`) are avoided.
+    obtain ⟨j₀, hj₀, haj₀⟩ := mem_iUnion₂.1 ha
+    have hfa : ⌊f a * ((i : ℝ) + 1)⌋ = j₀ := (hmemL i j₀ a).1 (hCL j₀ haj₀)
+    refine ⟨(⋃ j ∈ (Finset.Icc (-(J : ℤ)) (J : ℤ)).erase j₀, C j)ᶜ,
+      (isClosed_biUnion_finset fun j _ => hCc j).isOpen_compl, ?_, ?_⟩
+    · rw [mem_compl_iff, mem_iUnion₂]
+      rintro ⟨j, hj, haj⟩
+      exact (Finset.mem_erase.1 hj).1 (((hmemL i j a).1 (hCL j haj)).symm.trans hfa)
+    · rintro b ⟨hbD, hbU⟩
+      obtain ⟨j, hj, hbj⟩ := mem_iUnion₂.1 hbD
+      have hjj₀ : j = j₀ := by
+        by_contra hne
+        exact hbU (mem_iUnion₂.2 ⟨j, Finset.mem_erase.2 ⟨hne, hj⟩, hbj⟩)
+      exact ((hmemL i j b).1 (hCL j hbj)).trans (hjj₀.trans hfa.symm)
+  -- Step 4: `C := ⋂ i, D i` is closed, `C ⊆ A`, and `μ (A \ C) ≤ ∑ μ (A \ D i) < ε`.
+  choose D hDc hDA hDμ hDloc using hstep
+  have hKA : (⋂ i, D i) ⊆ A := (iInter_subset D 0).trans (hDA 0)
+  refine ⟨⋂ i, D i, hKA, isClosed_iInter hDc, ?_, ?_⟩
+  · calc μ (A \ ⋂ i, D i) = μ (⋃ i, A \ D i) := by rw [sdiff_iInter]
+      _ ≤ ∑' i, μ (A \ D i) := measure_iUnion_le _
+      _ ≤ ∑' i, δ i := ENNReal.tsum_le_tsum fun i => (hDμ i).le
+      _ < ENNReal.ofReal ε := hδsum
+  -- Step 5: on `⋂ i, D i` the step functions `⌊(i + 1) f⌋ / (i + 1)` are locally constant,
+  -- hence continuous, and converge uniformly to `f`; so `f` restricted there is continuous.
+  have hloc : ∀ (i : ℕ) (x : ↥(⋂ i, D i)), ∀ᶠ y in 𝓝 x,
+      ⌊f (Set.inclusion hKA y) * ((i : ℝ) + 1)⌋ = ⌊f (Set.inclusion hKA x) * ((i : ℝ) + 1)⌋ := by
+    intro i x
+    obtain ⟨U, hU, hxU, hconst⟩ := hDloc i (Set.inclusion hKA x) (mem_iInter.1 x.2 i)
+    filter_upwards [(hU.preimage continuous_subtype_val).mem_nhds hxU] with y hy
+    exact hconst (Set.inclusion hKA y) ⟨mem_iInter.1 y.2 i, hy⟩
+  have hunif : TendstoUniformly
+      (fun (i : ℕ) (y : ↥(⋂ i, D i)) =>
+        (⌊f (Set.inclusion hKA y) * ((i : ℝ) + 1)⌋ : ℝ) / ((i : ℝ) + 1))
+      (f ∘ Set.inclusion hKA) atTop := by
+    rw [Metric.tendstoUniformly_iff]
+    intro r hr
+    obtain ⟨N, hN⟩ := exists_nat_one_div_lt hr
+    filter_upwards [eventually_ge_atTop N] with i hi y
+    have hpos : (0 : ℝ) < (i : ℝ) + 1 := by positivity
+    have hNi : 1 / ((i : ℝ) + 1) ≤ 1 / ((N : ℝ) + 1) :=
+      one_div_le_one_div_of_le (by positivity) (by exact_mod_cast Nat.succ_le_succ hi)
+    have hlow : (⌊f (Set.inclusion hKA y) * ((i : ℝ) + 1)⌋ : ℝ) / ((i : ℝ) + 1) ≤
+        f (Set.inclusion hKA y) := by
+      rw [div_le_iff₀ hpos]
+      exact Int.floor_le _
+    have hupp : f (Set.inclusion hKA y) <
+        (⌊f (Set.inclusion hKA y) * ((i : ℝ) + 1)⌋ : ℝ) / ((i : ℝ) + 1) + 1 / ((i : ℝ) + 1) := by
+      rw [← add_div, lt_div_iff₀ hpos]
+      exact Int.lt_floor_add_one _
+    show dist (f (Set.inclusion hKA y))
+      ((⌊f (Set.inclusion hKA y) * ((i : ℝ) + 1)⌋ : ℝ) / ((i : ℝ) + 1)) < r
+    rw [Real.dist_eq, abs_lt]
+    constructor <;> linarith
+  refine hunif.continuous (Frequently.of_forall fun i => continuous_iff_continuousAt.2 fun x => ?_)
+  have h : (fun y : ↥(⋂ i, D i) => (⌊f (Set.inclusion hKA y) * ((i : ℝ) + 1)⌋ : ℝ) / ((i : ℝ) + 1))
+      =ᶠ[𝓝 x] fun _ => (⌊f (Set.inclusion hKA x) * ((i : ℝ) + 1)⌋ : ℝ) / ((i : ℝ) + 1) := by
+    filter_upwards [hloc i x] with y hy
+    rw [hy]
+  exact (continuousAt_congr h).2 continuousAt_const
