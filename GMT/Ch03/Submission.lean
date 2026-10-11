@@ -335,6 +335,32 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Simon Ch. 1, §2 (p. 10)** (`chapter-01.txt` lines 411–412), the `H⁰` of Ch. 3 (2.4):
+`H⁰` is counting measure, i.e. `H⁰(S) = #S` for every `S ⊆ ℝᴺ`, with `H⁰(S) = ∞` for infinite `S`.
+Since `μHE[0] = μH[0]` and `μH[0]{x} = 1`, additivity over the measurable singletons gives
+`H⁰(t) = #t` for finite `t`; an infinite `S` contains `⌈r⌉` points for every `r ≥ 0`, so
+`H⁰(S) = ∞` by monotonicity. -/
+theorem Submission.bf_hausdorffZero_eq_encard :
+    ∀ (N : ℕ) (S : Set (Rn N)), μHE[0] S = (S.encard : ℝ≥0∞) := by
+  intro N S
+  rw [Measure.euclideanHausdorffMeasure_zero]
+  -- Finite sets: sum the unit masses of the measurable singletons.
+  have hfin : ∀ t : Finset (Rn N), μH[0] (t : Set (Rn N)) = t.card := by
+    intro t
+    rw [← sum_measure_singleton]
+    simp
+  rcases S.finite_or_infinite with hS | hS
+  · lift S to Finset (Rn N) using hS
+    rw [hfin, Set.encard_coe_eq_coe_finsetCard]
+    rfl
+  -- Infinite sets: `S` contains `⌈r⌉₊` points for every `r`, so `μH[0] S` is unbounded.
+  · rw [Set.encard_eq_top_iff.mpr hS, ENat.toENNReal_top]
+    refine ENNReal.eq_top_of_forall_nnreal_le fun r => ?_
+    obtain ⟨t, hts, htc⟩ := hS.exists_subset_card_eq ⌈r⌉₊
+    calc (r : ℝ≥0∞) ≤ (⌈r⌉₊ : ℝ≥0∞) := by exact_mod_cast Nat.le_ceil r
+      _ = μH[0] (t : Set (Rn N)) := by rw [hfin, htc]
+      _ ≤ μH[0] S := measure_mono hts
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 

@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "euclideanHausdorffMeasure_zero|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume",
+        "hausdorffMeasure_zero_singleton",
+        "sum_measure_singleton",
+        "encard_eq_top_iff|encard_coe_eq_coe_finsetCard",
+        "Infinite.exists_subset_card_eq",
+        "def orthogonalProjectionOnto|def starProjection|lipschitzWith_orthogonalProjectionOnto|starProjection_apply",
+        "def reindex|def stdOrthonormalBasis|structure OrthonormalBasis",
+        "theorem ae_lt_top\\b|theorem ae_lt_top\\x27",
+        "eq_top_of_forall_nnreal_le|toENNReal_top",
+        "hausdorffMeasure.*count|count.*hausdorffMeasure|μH\\[0\\].*encard|encard.*μH|μHE\\[0\\].*encard|encard.*μHE\\[0\\]|starProjection.*isometricChart|starProjection.*volume",
+        "python3 /tmp/bf_infinite_fibres_audit/check_contracts.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bf_infinite_fibres_audit/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bf_infinite_fibres_audit/ParentFromContracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bf_infinite_fibres_audit/FullChecked.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Data/Set/Card.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/Real/ENatENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-infinite-fibres-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-infinite-fibres-a1/decomposition-v1.json",
+        "/tmp/bf_infinite_fibres_audit/ChallengeTypes.lean",
+        "/tmp/bf_infinite_fibres_audit/ParentFromContracts.lean",
+        "/tmp/bf_infinite_fibres_audit/FullChecked.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility of the relevant sources. The snapshot supplies all ingredients cited in both proofs; searches found no existing counting identity or combined projection-chart theorem. Both exact child propositions elaborate in comparator scope before their declarations exist and pass the statement validator unchanged. Independently reran the supplied implementations and checked the exact frozen parent using only the two child contracts as hypotheses; all checks passed with only propext, Classical.choice and Quot.sound. The 95-node DAG scan found no name collisions or identical existing declarations. The split appropriately isolates two independent reusable facts. Their empty dependency lists are correct and acyclic. Together with the unchanged Eilenberg hypothesis, they establish precisely the selected infinite-fibre projection-null statement."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hausdorff_zero_counting",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose for every dimension and arbitrary set. The ENat-to-ENNReal coercion preserves both finite cardinalities and infinity. The supplied proof establishes the finite case by measurable singleton additivity and the infinite case by arbitrarily large finite subsets and monotonicity. No measurability assumption on S, hidden gap, or parent reliance is needed. The bare name bf_hausdorffZero_eq_encard is unreserved."
+    },
+    {
+      "key": "projection_isometric_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition includes exactly the dimension hypothesis and all three advertised conclusions. Finite dimensionality supplies the projection instance; the rank equality correctly reindexes the orthonormal basis. The supplied construction proves the Lipschitz bound, fibre equivalence, and factorization through an isometric embedding. Isometry invariance and Euclidean Hausdorff measure equal to volume apply to arbitrary sets, including dimension zero. The proof is complete, independent of the other child and parent, and directly supplies the parent's required transfer. The bare name bf_starProjection_isometricChart is unreserved."
+    }
+  ],
+  "required_changes": []
+}

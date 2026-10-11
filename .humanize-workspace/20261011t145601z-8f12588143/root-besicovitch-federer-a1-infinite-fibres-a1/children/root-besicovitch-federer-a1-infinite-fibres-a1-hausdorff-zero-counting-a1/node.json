@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.infinite_fibres-a1.hausdorff_zero_counting-a1",
+  "parent_id": "root.besicovitch_federer-a1.infinite_fibres-a1",
+  "depth": 3,
+  "title": "Zero-dimensional Hausdorff measure is counting measure: H⁰(S) = #S on ℝ^N",
+  "statement": "For every N ∈ ℕ and every set S ⊆ ℝ^N = EuclideanSpace ℝ (Fin N) (arbitrary, not necessarily measurable), H⁰(S) = #S. Here H⁰ := μHE[0] is the zero-dimensional Euclidean Hausdorff (outer) measure, and #S := S.encard ∈ ℕ ∪ {∞} is the cardinality of S (∞ exactly when S is infinite), viewed in [0, ∞] via the coercion ℕ∞ → ℝ≥0∞. In particular, H⁰(S) = ∞ for every infinite S.",
+  "lean_statement": "∀ (N : ℕ) (S : Set (Rn N)), μHE[0] S = (S.encard : ℝ≥0∞)",
+  "lean_name": "bf_hausdorffZero_eq_encard",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-infinite-fibres-a1-hausdorff-zero-counting-a1-a1"
+}
