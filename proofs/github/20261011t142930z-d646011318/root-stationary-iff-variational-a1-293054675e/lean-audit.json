@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0d276adb3b4327f9c75f4f88a2054fb2fd1773dce6c915bd187b1fde8c4fd638",
+  "git_delta": {
+    "base_commit": "44a3180a3e35dad8f835ab1b991817678e4a314b",
+    "candidate_commit": "4f0a6ece26115ffbd0b96a0ab508d7c5b11c884d",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "a39a2487404fef462aff2942cfe42deb5a21621712783ca8b21b1b6ccfb0a47f",
+    "source_sha256": "615f533fdb88c017f9a2bfa9ecbb5e13e0e3f926dc2f7200004ccfa902784bb8",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.stationary_iff_variational_of_first_variation",
+      "statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → FirstVariationFormula → StationaryIffVariational",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
