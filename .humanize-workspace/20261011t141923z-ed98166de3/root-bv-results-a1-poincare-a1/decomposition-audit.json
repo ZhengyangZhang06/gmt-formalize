@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -A 12 -B 5 'mul_meas_ge_le_lintegral₀|theorem restrict_apply\\x27' mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "rg -n -A 10 -B 4 'theorem (tendsto_measure_iUnion_atTop|tendsto_setIntegral_of_monotone|setLIntegral_iUnion_of_directed)' mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "rg -n -A 6 -B 3 'map_addHaar_smul' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "sed -n '508,517p;576,593p' mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "poincare_level_set_lintegral_le|convex_poincare_smooth_lintegral_le|convex_open_exists_inner_exhaustion|mean_oscillation_lintegral_le_of_approx"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-poincare-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-poincare-a1/decomposition-v1.json",
+        "/tmp/poincare-independent-audit-feztocjd/AllProofs.lean"
+      ],
+      "conclusion": "The frozen contract and handoff match BVPoincare. Inspected Mathlib sources match the pinned build revision 25730c7c759d108ef87ab70af2342a196760f79d. Exact-name searches found no existing child declarations in the snapshot; DAG and decomposition inspection found no competing reservations. All names are valid bare identifiers. All four one-line propositions passed the statement validator and independently compiled as comparator challenges against a fresh frozen Submission without child implementations. The supplied proof types match the proposed types byte-for-byte; independently compiled proofs use only propext, Classical.choice and Quot.sound. The parent assembly also compiles with only those axioms when the two exact mollifier contracts are theorem parameters, yielding BVPoincare with C = 2^(n+1)(1+θ⁻¹). Thus the split is appropriate: all four independent leaves contribute to the selected parent, and the existing prerequisite graph remains acyclic. The parent’s additional BumpFunction.Normed import supplies the stated kernels."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "level_set_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including restricted a.e. measurability and outer-measure level sets. Markov and restrict_apply' justify both sign cases without measurable level-set assumptions. Multiplication by the finite positive reciprocal of θ is valid even for infinite integrals or measure. The proof is complete and non-circular."
+    },
+    {
+      "key": "smooth_convex_poincare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the stated C¹ inequality with the continuous-linear-map operator norm. Compact-closure integrability, segment FTC, measurable Tonelli exchanges, dilation factors and finite positive measure cancellation are justified. Empty sets and dimension zero are covered. The supplied proof is complete and independent. The optional sharper bound is corroborated by [Acosta–Durán](https://mate.dm.uba.ar/~rduran/papers/ad3.pdf)."
+    },
+    {
+      "key": "inner_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The univ case correctly avoids infDist to an empty complement. Otherwise the closed nonempty complement gives openness, exhaustion and closed-ball margins; the common-translation argument proves convexity. The explicit radii establish positivity, monotonicity of the sets and convergence. No boundedness or positive-dimension hypothesis is silently used."
+    },
+    {
+      "key": "mean_oscillation_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Measurability of U follows from the countable measurable exhaustion. The null-measure case is handled separately; otherwise measure and integral convergence justify convergence of the means, including initially null O_j. The integrated triangle inequality, fixed-set limiting argument and directed-union supremum prove the conclusion for every K, including infinity. No circular dependency or missing analytic step remains."
+    }
+  ],
+  "required_changes": []
+}
