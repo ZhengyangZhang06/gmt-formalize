@@ -770,4 +770,55 @@ theorem Submission.eilenberg_covering_liminf_majorant : ∀ (X : Type) [MetricSp
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
+/-- **Simon Ch. 2, proof of Theorem 1.9 (pp. 45–46), covering majorant**, with a Borel majorant
+`G` in place of the upper integral of Remark 1.10. Put `s = m + k`, `M = μH[s](E)` (finite, as
+`𝓗^s = (ω_s/2^s) μH[s]`) and `a = ω_m ω_k K^m / 2^s`. At the scales `δ i = (i + 1)⁻¹`,
+`eilenberg_covering_fixed_scale_majorant` gives Borel `g i` dominating `(ω_k/2^k)` times the
+size-`δ i` Hausdorff premeasure of `E ∩ f⁻¹{y}`, with `∫ g i ≤ a (M + δ i)`;
+`eilenberg_covering_liminf_majorant` turns them into `G ≥ (ω_k/2^k) μH[k](E ∩ f⁻¹{·}) = 𝓗^k(…)`
+with `∫ G ≤ a M = (ω_m ω_k / ω_s) K^m 𝓗^s(E)`. -/
+theorem Submission.eilenberg_covering_majorant : ∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (k : ℝ) (E : Set X) (f : X → Rn m) (K : ℝ≥0), 0 < k → Chapter01.simonHausdorffMeasureReal (m + k) E < ⊤ → LipschitzOnWith K f E → ∃ G : Rn m → ℝ≥0∞, Measurable G ∧ (∀ y, Chapter01.simonHausdorffMeasureReal k (E ∩ f ⁻¹' {y}) ≤ G y) ∧ ∫⁻ y, G y ∂volume ≤ Chapter01.realUnitBallVolume (m : ℝ) * Chapter01.realUnitBallVolume k / Chapter01.realUnitBallVolume (m + k) * (K : ℝ≥0∞) ^ m * Chapter01.simonHausdorffMeasureReal (m + k) E := by
+  intro X _ _ _ m k E f K hk hE hf
+  have hnorm (s : ℝ) (S : Set X) : Chapter01.simonHausdorffMeasureReal s S =
+      Chapter01.realUnitBallVolume s / 2 ^ s * μH[s] S := by
+    rw [Chapter01.simonHausdorffMeasureReal, Measure.smul_apply, smul_eq_mul]
+  have hs : (0 : ℝ) ≤ m + k := add_nonneg (Nat.cast_nonneg m) hk.le
+  have hω₀ : Chapter01.realUnitBallVolume (m + k) ≠ 0 := (Chapter01.realUnitBallVolume_pos hs).ne'
+  have hω : Chapter01.realUnitBallVolume (m + k) ≠ ⊤ := Chapter01.realUnitBallVolume_ne_top _
+  have h2₀ : (2 : ℝ≥0∞) ^ ((m : ℝ) + k) ≠ 0 := (ENNReal.rpow_pos (by norm_num) (by norm_num)).ne'
+  have h2 : (2 : ℝ≥0∞) ^ ((m : ℝ) + k) ≠ ⊤ := ENNReal.rpow_ne_top_of_nonneg hs (by norm_num)
+  have hM : μH[(m : ℝ) + k] E < ⊤ := by
+    rw [hnorm] at hE
+    exact ENNReal.lt_top_of_mul_ne_top_right hE.ne (ENNReal.div_pos hω₀ h2).ne'
+  -- Scales and slacks `δ i = (i + 1)⁻¹ → 0`, and the fixed-scale majorants `g i`.
+  set δ : ℕ → ℝ≥0∞ := fun i ↦ ((i : ℝ≥0∞) + 1)⁻¹ with hδ_def
+  have hδ₀ (i : ℕ) : 0 < δ i :=
+    ENNReal.inv_pos.2 (ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top i, ENNReal.one_ne_top⟩)
+  have hδ : Tendsto δ atTop (𝓝 0) := by
+    rw [hδ_def]
+    simpa using (tendsto_add_atTop_iff_nat 1).2 ENNReal.tendsto_inv_nat_nhds_zero
+  choose g hg hgle hgint using fun i ↦ Submission.eilenberg_covering_fixed_scale_majorant X m k E
+    f K (δ i) (δ i) hk hM hf (hδ₀ i) (hδ₀ i)
+  set a := Chapter01.realUnitBallVolume (m : ℝ) * Chapter01.realUnitBallVolume k * (K : ℝ≥0∞) ^ m /
+    (2 : ℝ≥0∞) ^ ((m : ℝ) + k) with ha_def
+  have ha : a ≠ ⊤ := ENNReal.div_ne_top (ENNReal.mul_ne_top (ENNReal.mul_ne_top
+    (Chapter01.realUnitBallVolume_ne_top _) (Chapter01.realUnitBallVolume_ne_top _))
+    (ENNReal.pow_ne_top ENNReal.coe_ne_top)) h2₀
+  have hb : Tendsto (fun i ↦ a * (μH[(m : ℝ) + k] E + δ i)) atTop
+      (𝓝 (a * μH[(m : ℝ) + k] E)) := by
+    simpa using ENNReal.Tendsto.const_mul (hδ.const_add (μH[(m : ℝ) + k] E)) (Or.inr ha)
+  obtain ⟨G, hG, hGle, hGint⟩ := Submission.eilenberg_covering_liminf_majorant X (Rn m) volume k
+    (Chapter01.realUnitBallVolume k / 2 ^ k) (fun y ↦ E ∩ f ⁻¹' {y}) δ g
+    (fun i ↦ a * (μH[(m : ℝ) + k] E + δ i)) (a * μH[(m : ℝ) + k] E) hδ hg hgle hgint hb
+  refine ⟨G, hG, fun y ↦ (hnorm k _).trans_le (hGle y), hGint.trans_eq ?_⟩
+  -- `a M = (ω_m ω_k / ω_s) K^m (ω_s / 2^s) M`: the factor `ω_s` cancels.
+  rw [hnorm, ha_def]
+  calc _ = Chapter01.realUnitBallVolume (m : ℝ) * Chapter01.realUnitBallVolume k *
+        (K : ℝ≥0∞) ^ m / (2 : ℝ≥0∞) ^ ((m : ℝ) + k) * μH[(m : ℝ) + k] E *
+        ((Chapter01.realUnitBallVolume (m + k))⁻¹ * Chapter01.realUnitBallVolume (m + k)) := by
+        rw [ENNReal.inv_mul_cancel hω₀ hω, mul_one]
+    _ = _ := by
+        simp only [div_eq_mul_inv]
+        ring
+
 end GMT.Ch02
