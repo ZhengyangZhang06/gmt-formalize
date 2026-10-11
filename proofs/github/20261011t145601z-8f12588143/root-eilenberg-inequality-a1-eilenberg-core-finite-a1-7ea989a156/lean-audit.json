@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "901c986dff0931d8b4282062774d9107d8e51840b34a7ca1bfbe6e7e6ffce33c",
+  "git_delta": {
+    "base_commit": "1d73436394a4682dba6f8654ebd45e36e607ffc8",
+    "candidate_commit": "0e92ed3bb730e9f8842fd42040b5a9d0cd596f34",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "eilenberg_hausdorff_upper_integral_of_ne_top",
+    "diff_sha256": "665c349511b3260318abafb498c6ebfc0d666c10a7038799997fcc51de885ba5",
+    "source_sha256": "3d33068cde67318a03a361da5dec8b7da8100837f69062cd9ddbb5c094c0306c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.eilenberg_hausdorff_upper_integral_of_ne_top",
+      "statement": "∀ (N m k : ℕ) (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f → μH[((m + k : ℕ) : ℝ)] A ≠ ∞ → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μH[(k : ℝ)] (A ∩ f ⁻¹' {y}) ≤ g y) ∧ ∫⁻ y, g y ≤ volume (Metric.ball (0 : Rn m) 1) * (L : ℝ≥0∞) ^ m * μH[((m + k : ℕ) : ℝ)] A",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
