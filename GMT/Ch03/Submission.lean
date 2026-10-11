@@ -335,6 +335,62 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Lusin's theorem for `ℝᴺ`-valued Borel maps on a set of finite `μ`-measure** (Simon Ch. 1,
+Theorems 1.15 and 1.17, `chapter-01.txt` lines 274–372): for any measure `μ` on `ℝᴺ`, a Borel
+`f : ℝᴺ → ℝᴺ`, a Borel `A` with `μ(A) < ∞` and `ε ∈ (0, ∞]`, some closed `C ⊆ A` has
+`μ(A ∖ C) < ε` and `f|C` continuous. `ρ = μ⌞A` is a finite Borel measure on a metric space, hence
+outer regular and closed-inner regular (Simon 1.15). For each `V` in a countable basis of `ℝᴺ`
+take an open `U_V ⊇ f⁻¹(V)` with `ρ(U_V ∖ f⁻¹(V))` small. Off `E = ⋃_V (U_V ∖ f⁻¹(V))` each
+`f⁻¹(V)` agrees with the open `U_V`, so `f` is continuous on every `C ⊆ Eᶜ`; a closed
+`C ⊆ A ∖ E` with small `ρ`-defect works. -/
+theorem Submission.gaussGreenVar_lusin_closed_subset_continuousOn : ∀ (N : ℕ) (μ : Measure (Rn N)) (f : Rn N → Rn N) (A : Set (Rn N)), Measurable f → MeasurableSet A → μ A ≠ ∞ → ∀ ε : ℝ≥0∞, 0 < ε → ∃ C ⊆ A, IsClosed C ∧ μ (A \ C) < ε ∧ ContinuousOn f C := by
+  intro N μ f A hf hA hAfin ε hε
+  -- The finite Borel measure `ρ = μ⌞A` is weakly regular (Simon 1.15).
+  set ρ := μ.restrict A
+  have : IsFiniteMeasure ρ := isFiniteMeasure_restrict.mpr hAfin
+  -- A countable basis of `ℝᴺ` and the exceptional set `E`.
+  have hε2 : ε / 2 ≠ 0 := (ENNReal.half_pos hε.ne').ne'
+  have hB := TopologicalSpace.isBasis_countableBasis (Rn N)
+  have : Countable (TopologicalSpace.countableBasis (Rn N)) :=
+    (TopologicalSpace.countable_countableBasis (Rn N)).to_subtype
+  have hpre : ∀ V : TopologicalSpace.countableBasis (Rn N),
+      MeasurableSet (f ⁻¹' (V : Set (Rn N))) :=
+    fun V ↦ hf (hB.isOpen V.2).measurableSet
+  obtain ⟨δ, hδ0, hδ⟩ :=
+    ENNReal.exists_pos_sum_of_countable hε2 (TopologicalSpace.countableBasis (Rn N))
+  have hV : ∀ V : TopologicalSpace.countableBasis (Rn N), ∃ U, U ⊇ f ⁻¹' (V : Set (Rn N)) ∧
+      IsOpen U ∧ ρ U < ∞ ∧ ρ (U \ f ⁻¹' (V : Set (Rn N))) < δ V := fun V ↦
+    (hpre V).exists_isOpen_sdiff_lt (measure_ne_top ρ _) (ENNReal.coe_ne_zero.2 (hδ0 V).ne')
+  choose U hVU hU _hUfin hUV using hV
+  set E := ⋃ V, U V \ f ⁻¹' (V : Set (Rn N))
+  have hEm : MeasurableSet E := MeasurableSet.iUnion fun V ↦ (hU V).measurableSet.diff (hpre V)
+  have hEε : ρ E < ε / 2 :=
+    calc ρ E ≤ ∑' V, ρ (U V \ f ⁻¹' (V : Set (Rn N))) := measure_iUnion_le _
+      _ ≤ ∑' V, (δ V : ℝ≥0∞) := ENNReal.tsum_le_tsum fun V ↦ (hUV V).le
+      _ < ε / 2 := hδ
+  -- A closed `C ⊆ A ∖ E` with `ρ((A ∖ E) ∖ C) < ε / 2` (Simon 1.15(2) for `ρ`).
+  obtain ⟨C, hCAE, hC, hCε⟩ :=
+    (hA.diff hEm).exists_isClosed_sdiff_lt (μ := ρ) (measure_ne_top ρ _) hε2
+  refine ⟨C, hCAE.trans sdiff_subset, hC, ?_, ?_⟩
+  · -- `μ(A ∖ C) = ρ(A ∖ C) ≤ ρ((A ∖ E) ∖ C) + ρ(E) < ε`.
+    rw [← Measure.restrict_eq_self μ sdiff_subset]
+    calc ρ (A \ C) ≤ ρ ((A \ E) \ C ∪ E) := by
+          refine measure_mono fun x hx ↦ ?_
+          by_cases hxE : x ∈ E
+          · exact Or.inr hxE
+          · exact Or.inl ⟨⟨hx.1, hxE⟩, hx.2⟩
+      _ ≤ ρ ((A \ E) \ C) + ρ E := measure_union_le _ _
+      _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hCε hEε
+      _ = ε := ENNReal.add_halves ε
+  · -- Off `E`, `f⁻¹(V) = U_V` for every basic `V`, so `f` is continuous on `C`.
+    intro x hxC
+    rw [ContinuousWithinAt, hB.nhds_hasBasis.tendsto_right_iff]
+    rintro V ⟨hVB, hfxV⟩
+    filter_upwards [mem_nhdsWithin_of_mem_nhds ((hU ⟨V, hVB⟩).mem_nhds (hVU ⟨V, hVB⟩ hfxV)),
+      self_mem_nhdsWithin] with y hyU hyC
+    by_contra hyV
+    exact (hCAE hyC).2 (mem_iUnion.2 ⟨⟨V, hVB⟩, hyU, hyV⟩)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
