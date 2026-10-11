@@ -434,6 +434,174 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Ch. 4, 6.3(1) (p. 101), uniform lower density.** Under the hypotheses of 6.3 there is
+`ρ₀ > 0` with `μ_V(B_s(ζ)) ≥ (ωₙ/2) sⁿ` for all `ζ ∈ spt V ∩ B_{ρ₀}(x)` and `0 < s ≤ ρ₀`. One `Λ`
+bounds the `Lᵖ` quantity of 4.2 at every centre `ζ ∈ B_R(x)`; letting `σ ↓ 0` in 4.7–4.8 gives
+`F(s) s⁻ⁿ μ_V(B_s(ζ)) + F(s) - 1 ≥ ωₙ Θⁿ(μ_V, ζ) ≥ ωₙ` (4.9, 4.10(1)), and `F(s) → 1`. -/
+theorem Submission.classical_tangent_uniform_lower_density : LpMonotonicity → LpDensity →
+    LpSupportRepresentation → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ))
+    (H : Ambient n ℓ → Ambient n ℓ) (p : ℝ) (x : Ambient n ℓ), 0 < n → IsOpen U →
+    V.HasMeanCurvatureIn U H → V.MultiplicityGE 1 U → (n : ℝ) < p → V.IsLocallyLp U H p →
+    x ∈ U → ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ ∀ ζ ∈ V.support ∩ closedBall x ρ₀, ∀ s : ℝ, 0 < s → s ≤ ρ₀ →
+      omega n / 2 * s ^ n ≤ V.weight.real (closedBall ζ s) := by
+  intro hMono hDensity hSupport n ℓ V U H p x hn hU hH hθ hp hLp hx
+  -- Step 1: `p > 0`, `κ = (p - n)/(4p) > 0`, `e = 1 - n/p > 0` and `ωₙ > 0`.
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hp0 : 0 < p := by linarith
+  have hκ : 0 < lpKappa n p := by
+    unfold lpKappa
+    apply div_pos <;> linarith
+  have he : 0 < 1 - (n : ℝ) / p := sub_pos.mpr ((div_lt_one hp0).mpr hp)
+  have hω : 0 < omega n := by
+    unfold omega
+    exact ENNReal.toReal_pos (measure_ball_pos volume _ one_pos).ne' measure_ball_lt_top.ne
+  -- Step 2: `R > 0` with `B_{2R}(x) ⊆ U`.
+  obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.mp hU x hx
+  obtain ⟨R, rfl⟩ : ∃ R : ℝ, r = 4 * R := ⟨r / 4, by ring⟩
+  have hR : 0 < R := by linarith
+  have h2R : closedBall x (2 * R) ⊆ U := (closedBall_subset_ball (by linarith)).trans hrU
+  -- Step 3: with `I₀ = ∫_{B_{2R}(x)} |H|^p dμ_V` and `Λ = (R^{p-n} I₀)^{1/p} / κ`,
+  -- `(R^{p-n} ∫_{B_R(ζ)} |H|^p dμ_V)^{1/p} ≤ κΛ` for every `ζ ∈ B_R(x)`.
+  have hint : IntegrableOn (fun y ↦ ‖H y‖ ^ p) (closedBall x (2 * R)) V.weight := by
+    have := (hLp _ (isCompact_closedBall x (2 * R)) h2R).integrable_norm_rpow
+      (by simpa using hp0) ENNReal.ofReal_ne_top
+    rwa [ENNReal.toReal_ofReal hp0.le] at this
+  have hI : ∀ s : Set (Ambient n ℓ), 0 ≤ R ^ (p - n) * ∫ y in s, ‖H y‖ ^ p ∂V.weight := fun s ↦
+    mul_nonneg (Real.rpow_nonneg hR.le _)
+      (integral_nonneg fun y ↦ Real.rpow_nonneg (norm_nonneg _) _)
+  obtain ⟨Λ, hΛdef⟩ : ∃ Λ : ℝ, Λ = (R ^ (p - n) *
+      ∫ y in closedBall x (2 * R), ‖H y‖ ^ p ∂V.weight) ^ (1 / p) / lpKappa n p := ⟨_, rfl⟩
+  have hΛ : 0 ≤ Λ := by
+    rw [hΛdef]
+    exact div_nonneg (Real.rpow_nonneg (hI _) _) hκ.le
+  have hball : ∀ ζ ∈ closedBall x R, closedBall ζ R ⊆ closedBall x (2 * R) := by
+    intro ζ hζ y hy
+    rw [mem_closedBall] at hζ hy ⊢
+    linarith [dist_triangle y ζ x]
+  have hbound : ∀ ζ ∈ closedBall x R,
+      (R ^ (p - n) * ∫ y in closedBall ζ R, ‖H y‖ ^ p ∂V.weight) ^ (1 / p) ≤
+        lpKappa n p * Λ := by
+    intro ζ hζ
+    rw [hΛdef, mul_div_cancel₀ _ hκ.ne']
+    refine Real.rpow_le_rpow (hI _) (mul_le_mul_of_nonneg_left ?_ (Real.rpow_nonneg hR.le _))
+      (by positivity)
+    exact setIntegral_mono_set hint
+      (Eventually.of_forall fun y ↦ Real.rpow_nonneg (norm_nonneg _) _)
+      (Eventually.of_forall (hball ζ hζ))
+  -- Steps 4–6: at `ζ ∈ spt V ∩ B_R(x)` and `0 < s ≤ R`, 4.5 and 4.8 give `F(s)` with
+  -- `e^{-Λt/2} ≤ F(s) ≤ e^{Λt/2}` and `F(s) a_ζ(s) ≥ ωₙ - C t`, where `a_ζ(s) = s⁻ⁿ μ_V(B_s(ζ))`,
+  -- `t = (s/R)^e` and `C = e^{Λ/2} Λ / 2`.
+  have key : ∀ ζ ∈ V.support ∩ closedBall x R, ∀ s : ℝ, 0 < s → s ≤ R →
+      ∃ F : ℝ, Real.exp (-(Λ / 2 * (s / R) ^ (1 - (n : ℝ) / p))) ≤ F ∧
+        F ≤ Real.exp (Λ / 2 * (s / R) ^ (1 - (n : ℝ) / p)) ∧
+        omega n - Real.exp (Λ / 2) / 2 * Λ * (s / R) ^ (1 - (n : ℝ) / p) ≤
+          F * (V.weight.real (closedBall ζ s) / s ^ n) := by
+    intro ζ hζ s hs hsR
+    have hζU : ζ ∈ U := h2R (closedBall_subset_closedBall (by linarith) hζ.2)
+    obtain ⟨F, -, hF, -, hFmono⟩ := hMono n ℓ V U H p ζ R Λ hn hU hH hp hLp hR
+      ((hball ζ hζ.2).trans h2R) (hbound ζ hζ.2)
+    have hdens : V.HasDensityAt ζ (V.density ζ) :=
+      (hDensity n ℓ V U H p hn hU hH hp hLp).1 ζ hζU
+    have hΘ : 1 ≤ V.density ζ := (hSupport n ℓ V U H p hn hU hH hp hLp hθ).1 ζ ⟨hζ.1, hζU⟩
+    -- (a) `a_ζ(t) → ωₙ Θⁿ(μ_V, ζ)` as `t ↓ 0`.
+    have ha : Tendsto (fun t ↦ V.weight.real (closedBall ζ t) / t ^ n) (𝓝[>] 0)
+        (𝓝 (omega n * V.density ζ)) := by
+      refine (hdens.const_mul (omega n)).congr' ?_
+      filter_upwards with t
+      rw [mul_div_assoc', mul_div_mul_left _ _ hω.ne']
+    -- (b) `F(t) → 1` as `t ↓ 0`, since `|F(t) - 1| ≤ C (t/R)^e` on `(0, R]`.
+    have htR : Tendsto (fun t : ℝ ↦ (t / R) ^ (1 - (n : ℝ) / p)) (𝓝[>] 0) (𝓝 0) := by
+      have hc : ContinuousAt (fun t : ℝ ↦ (t / R) ^ (1 - (n : ℝ) / p)) 0 :=
+        (continuousAt_id.div_const R).rpow_const (Or.inr he.le)
+      have := hc.tendsto
+      simp only [zero_div, Real.zero_rpow he.ne'] at this
+      exact tendsto_nhdsWithin_of_tendsto_nhds this
+    have hev : ∀ᶠ t in 𝓝[>] (0 : ℝ), t ∈ Ioc 0 R := by
+      filter_upwards [Ioo_mem_nhdsGT hR] with t ht
+      exact ⟨ht.1, ht.2.le⟩
+    have hF1 : Tendsto F (𝓝[>] 0) (𝓝 1) := by
+      have hup := (htR.const_mul (Real.exp (Λ / 2) / 2 * Λ)).const_add 1
+      have hlo := (htR.const_mul (Real.exp (Λ / 2) / 2 * Λ)).const_sub 1
+      simp only [mul_zero, add_zero, sub_zero] at hup hlo
+      refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hlo hup ?_ ?_
+      · filter_upwards [hev] with t ht
+        linarith [(abs_le.mp (hF t ht).2.2).1]
+      · filter_upwards [hev] with t ht
+        linarith [(abs_le.mp (hF t ht).2.2).2]
+    -- (c) `Ψ(t) = F(t) a_ζ(t) + (F(t) - 1) → ωₙ Θⁿ(μ_V, ζ)` as `t ↓ 0`.
+    have hΨ : Tendsto (fun t ↦ F t * (V.weight.real (closedBall ζ t) / t ^ n) + (F t - 1))
+        (𝓝[>] 0) (𝓝 (omega n * V.density ζ)) := by
+      simpa using (hF1.mul ha).add (hF1.sub_const 1)
+    -- Step 6: `Ψ` is monotone on `(0, R]`, so `ωₙ ≤ ωₙ Θⁿ(μ_V, ζ) ≤ Ψ(s)`.
+    have hle : omega n * V.density ζ ≤
+        F s * (V.weight.real (closedBall ζ s) / s ^ n) + (F s - 1) := by
+      refine le_of_tendsto hΨ ?_
+      filter_upwards [Ioo_mem_nhdsGT hs] with t ht
+      exact hFmono ⟨ht.1, ht.2.le.trans hsR⟩ ⟨hs, hsR⟩ ht.2.le
+    have hωΘ : omega n ≤ omega n * V.density ζ := le_mul_of_one_le_right hω.le hΘ
+    obtain ⟨hF₁, hF₂, hF₃⟩ := hF s ⟨hs, hsR⟩
+    refine ⟨F s, hF₁, hF₂, ?_⟩
+    linarith [(abs_le.mp hF₃).2]
+  -- Step 7: `t₀ ∈ (0, 1]` with `C t₀ ≤ ωₙ/4` and `e^{Λt₀/2} ≤ 3/2`, and `ρ₀ = R t₀^{1/e} ≤ R`,
+  -- so that `(s/R)^e ≤ t₀` for `0 < s ≤ ρ₀`.
+  have hlog : 0 < Real.log (3 / 2) := Real.log_pos (by norm_num)
+  have hC : 0 ≤ Real.exp (Λ / 2) / 2 * Λ := by positivity
+  obtain ⟨t₀, ht₀def⟩ : ∃ t₀ : ℝ, t₀ = min (min 1 (omega n / (4 * (Real.exp (Λ / 2) / 2 * Λ + 1))))
+      (Real.log (3 / 2) / (Λ / 2 + 1)) := ⟨_, rfl⟩
+  have ht₀ : 0 < t₀ := by
+    rw [ht₀def]
+    exact lt_min (lt_min one_pos (by positivity)) (by positivity)
+  have ht₀1 : t₀ ≤ 1 := by
+    rw [ht₀def]
+    exact (min_le_left _ _).trans (min_le_left _ _)
+  have ht₀C : Real.exp (Λ / 2) / 2 * Λ * t₀ ≤ omega n / 4 := by
+    have h : t₀ ≤ omega n / (4 * (Real.exp (Λ / 2) / 2 * Λ + 1)) := by
+      rw [ht₀def]
+      exact (min_le_left _ _).trans (min_le_right _ _)
+    rw [le_div_iff₀ (by positivity)] at h
+    linarith
+  have ht₀Λ : Real.exp (Λ / 2 * t₀) ≤ 3 / 2 := by
+    have h : t₀ ≤ Real.log (3 / 2) / (Λ / 2 + 1) := by
+      rw [ht₀def]
+      exact min_le_right _ _
+    rw [le_div_iff₀ (by positivity)] at h
+    calc Real.exp (Λ / 2 * t₀) ≤ Real.exp (Real.log (3 / 2)) := Real.exp_le_exp.mpr (by linarith)
+      _ = 3 / 2 := Real.exp_log (by norm_num)
+  obtain ⟨ρ₀, hρ₀def⟩ : ∃ ρ₀ : ℝ, ρ₀ = R * t₀ ^ (1 / (1 - (n : ℝ) / p)) := ⟨_, rfl⟩
+  have hρ₀ : 0 < ρ₀ := by
+    rw [hρ₀def]
+    exact mul_pos hR (Real.rpow_pos_of_pos ht₀ _)
+  have hρ₀R : ρ₀ ≤ R := by
+    rw [hρ₀def]
+    exact mul_le_of_le_one_right hR.le (Real.rpow_le_one ht₀.le ht₀1 (by positivity))
+  have hts : ∀ s, 0 < s → s ≤ ρ₀ → (s / R) ^ (1 - (n : ℝ) / p) ≤ t₀ := by
+    intro s hs hsρ
+    have h : s / R ≤ t₀ ^ (1 / (1 - (n : ℝ) / p)) := by
+      rw [div_le_iff₀ hR, mul_comm _ R, ← hρ₀def]
+      exact hsρ
+    calc (s / R) ^ (1 - (n : ℝ) / p) ≤ (t₀ ^ (1 / (1 - (n : ℝ) / p))) ^ (1 - (n : ℝ) / p) :=
+          Real.rpow_le_rpow (by positivity) h he.le
+      _ = t₀ := by rw [← Real.rpow_mul ht₀.le, one_div_mul_cancel he.ne', Real.rpow_one]
+  -- Step 8: `F(s) a_ζ(s) ≥ ωₙ - C t₀ ≥ 3ωₙ/4` and `0 < F(s) ≤ e^{Λt₀/2} ≤ 3/2`, so
+  -- `a_ζ(s) ≥ ωₙ/2`.
+  refine ⟨ρ₀, hρ₀, ?_⟩
+  rintro ζ ⟨hζs, hζx⟩ s hs hsρ
+  obtain ⟨F, hF₁, hF₂, hF₃⟩ :=
+    key ζ ⟨hζs, closedBall_subset_closedBall hρ₀R hζx⟩ s hs (hsρ.trans hρ₀R)
+  have htt := hts s hs hsρ
+  have hF0 : 0 < F := (Real.exp_pos _).trans_le hF₁
+  have hF32 : F ≤ 3 / 2 :=
+    hF₂.trans ((Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left htt (by positivity))).trans ht₀Λ)
+  have hFa : 3 / 4 * omega n ≤ F * (V.weight.real (closedBall ζ s) / s ^ n) := by
+    linarith [mul_le_mul_of_nonneg_left htt hC]
+  have ha0 : 0 < V.weight.real (closedBall ζ s) / s ^ n :=
+    pos_of_mul_pos_right (by linarith) hF0.le
+  have ha2 : omega n / 2 ≤ V.weight.real (closedBall ζ s) / s ^ n := by nlinarith
+  have hsn : 0 < s ^ n := pow_pos hs n
+  calc omega n / 2 * s ^ n ≤ V.weight.real (closedBall ζ s) / s ^ n * s ^ n :=
+        mul_le_mul_of_nonneg_right ha2 hsn.le
+    _ = V.weight.real (closedBall ζ s) := div_mul_cancel₀ _ hsn.ne'
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
