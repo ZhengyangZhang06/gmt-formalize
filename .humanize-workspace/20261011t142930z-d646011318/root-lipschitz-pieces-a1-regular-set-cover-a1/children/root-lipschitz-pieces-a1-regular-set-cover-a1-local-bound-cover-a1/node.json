@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pieces-a1.regular_set_cover-a1.local_bound_cover-a1",
+  "parent_id": "root.lipschitz_pieces-a1.regular_set_cover-a1",
+  "depth": 3,
+  "title": "Countable bounded Borel cover with uniform lower Lipschitz constants from pointwise local lower bounds (parent Steps 2, 5–8)",
+  "statement": "Let n ∈ ℕ, let ℝⁿ := EuclideanSpace ℝ (Fin n) with its Euclidean norm |·| and Borel σ-algebra, and let F be a normed additive commutative group (F : Type with NormedAddCommGroup F) with norm |·|. Let f : ℝⁿ → F be continuous, and let R ⊆ ℝⁿ be a Borel set such that for every w ∈ R there is c > 0 with c·|u| ≤ |f(w + u) − f(w)| for all u ∈ ℝⁿ with |u| ≤ c. Then there are sets T_p ⊆ ℝⁿ (p ∈ ℕ) with R ⊆ ⋃_p T_p such that, for every p: T_p is a Borel set; T_p is bounded; T_p ⊆ R; and there is c > 0 with c·|v − w| ≤ |f(v) − f(w)| for all v, w ∈ T_p.",
+  "lean_statement": "∀ (n : ℕ) {F : Type} [NormedAddCommGroup F] (f : EuclideanSpace ℝ (Fin n) → F) (R : Set (EuclideanSpace ℝ (Fin n))), Continuous f → MeasurableSet R → (∀ w ∈ R, ∃ c : ℝ, 0 < c ∧ ∀ u : EuclideanSpace ℝ (Fin n), ‖u‖ ≤ c → c * ‖u‖ ≤ ‖f (w + u) - f w‖) → ∃ T : ℕ → Set (EuclideanSpace ℝ (Fin n)), R ⊆ ⋃ p, T p ∧ ∀ p, MeasurableSet (T p) ∧ Bornology.IsBounded (T p) ∧ T p ⊆ R ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ T p, ∀ w ∈ T p, c * ‖v - w‖ ≤ ‖f v - f w‖",
+  "lean_name": "lower_lipschitz_cover_of_local_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-lipschitz-pieces-a1-regular-set-cover-a1-local-bound-cover-a1-a1"
+}
