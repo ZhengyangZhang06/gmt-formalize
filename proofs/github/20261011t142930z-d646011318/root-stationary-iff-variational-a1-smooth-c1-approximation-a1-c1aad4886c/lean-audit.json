@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ac920530ea8ef4ad1fd32de34afc110009459eabe59277f89adf78029864330b",
+  "git_delta": {
+    "base_commit": "dc7bd0cac08457574771b1372d7758052d615565",
+    "candidate_commit": "1cde5853d8bbeecc4502fef211d96e7aa0dd1a7b",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "exists_smooth_approx_testField_fderiv",
+    "diff_sha256": "47dc7e3dadbe04fc98c6da5e0e284905c42de0ec3d019e67cd73dd1e5506795a",
+    "source_sha256": "163e15e4333640ed93a23b8eb2974a86cb3151ebc8ad009651d15d99300bfba3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.exists_smooth_approx_testField_fderiv",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Ambient n ℓ)) (X : Ambient n ℓ → Ambient n ℓ), IsOpen U → IsTestField U X → ∃ (K : Set (Ambient n ℓ)) (Y : ℕ → Ambient n ℓ → Ambient n ℓ), IsCompact K ∧ K ⊆ U ∧ tsupport X ⊆ K ∧ (∀ k, ContDiff ℝ ∞ (Y k) ∧ HasCompactSupport (Y k) ∧ tsupport (Y k) ⊆ K) ∧ TendstoUniformly (fun k ↦ fderiv ℝ (Y k)) (fderiv ℝ X) atTop",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
