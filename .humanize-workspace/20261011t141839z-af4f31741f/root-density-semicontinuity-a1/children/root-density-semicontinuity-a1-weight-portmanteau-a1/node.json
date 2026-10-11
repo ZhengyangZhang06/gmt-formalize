@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_semicontinuity-a1.weight_portmanteau-a1",
+  "parent_id": "root.density_semicontinuity-a1",
+  "depth": 2,
+  "title": "Portmanteau inequalities for varifold weights under Radon convergence on G_n(U)",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, and let V_i (i ∈ ℕ) and V be n-varifolds on U with V_i → V as Radon measures on G_n(U) (Varifold.RadonConverges Vi V); write μ_i = (V_i).weight and μ = V.weight. Then (P1) μ(O) ≤ liminf_i μ_i(O) for every open O ⊆ U, and (P2) limsup_i μ_i(K) ≤ μ(K) for every compact K ⊆ U.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U), Varifold.RadonConverges Vi V → (∀ O : Set (Euclidean N), IsOpen O → O ⊆ U → V.weight O ≤ liminf (fun i ↦ (Vi i).weight O) atTop) ∧ ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → limsup (fun i ↦ (Vi i).weight K) atTop ≤ V.weight K",
+  "lean_name": "weight_portmanteau_of_radonConverges",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-density-semicontinuity-a1-weight-portmanteau-a1-a1"
+}

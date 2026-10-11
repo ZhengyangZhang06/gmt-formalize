@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_semicontinuity-a1.besicovitch_ratio_cover-a1",
+  "parent_id": "root.density_semicontinuity-a1",
+  "depth": 2,
+  "title": "Besicovitch covering estimate under a ball-wise mass ratio condition (printed step (2) of the proof of 8.3.7)",
+  "statement": "For every N ∈ ℕ there is C ∈ ℕ (depending only on N) such that, for all Borel measures μ, ν on ℝ^N = Euclidean N, every set A ⊆ ℝ^N, every ρ₀ ∈ ℝ and every t ∈ [0,∞], the following holds. If each x ∈ A admits σ with 0 < σ < ρ₀ and μ(B_σ(x)) ≤ t·ν(B_σ(x)) (closed balls), then μ(A) ≤ C·t·ν(thickening(ρ₀, A)), where thickening(ρ₀, A) = {y : dist(y, A) < ρ₀} and μ(A) is the outer measure.",
+  "lean_statement": "∀ N : ℕ, ∃ C : ℕ, ∀ (μ ν : Measure (Euclidean N)) (A : Set (Euclidean N)) (ρ₀ : ℝ) (t : ℝ≥0∞), (∀ x ∈ A, ∃ σ : ℝ, 0 < σ ∧ σ < ρ₀ ∧ μ (closedBall x σ) ≤ t * ν (closedBall x σ)) → μ A ≤ (C : ℝ≥0∞) * t * ν (thickening ρ₀ A)",
+  "lean_name": "besicovitch_ratio_cover_estimate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-density-semicontinuity-a1-besicovitch-ratio-cover-a1-a1"
+}

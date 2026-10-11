@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_semicontinuity-a1.lower_density_ae-a1",
+  "parent_id": "root.density_semicontinuity-a1",
+  "depth": 2,
+  "title": "Theorem 8.3.7, density part: liminf_{ρ↓0} μ_V(B_ρ(y))/(ω_nρ^n) ≥ 1 for μ_V-a.e. y",
+  "statement": "Assume the frozen contract proposition MonotonicityFormula (Simon 8.3.3). Let V_i (i ∈ ℕ) and V be n-varifolds on U ⊆ ℝ^N with V_i → V as Radon measures on G_n(U) (Varifold.RadonConverges Vi V). Assume each V_i has locally bounded first variation with liminf_i ‖δV_i‖(W) < ∞ for every open W ⊂⊂ U (IsRelCompactOpenIn W U, ‖δV_i‖ = variationMeasure (V_i)). Let B_i ⊆ ℝ^N be sets such that Θ^n(μ_{V_i}, y) exists and is ≥ 1 for every i and every y ∈ U ∖ B_i, and μ_{V_i}(B_i ∩ W) → 0 for every open W ⊂⊂ U. Then for μ_V-almost every y, liminf_{ρ↓0} μ_V(B_ρ(y))/(ω_n ρ^n) ≥ 1 (the liminf of densityRatio n μ_V y along 𝓝[>] 0).",
+  "lean_statement": "MonotonicityFormula → ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U) (B : ℕ → Set (Euclidean N)), Varifold.RadonConverges Vi V → (∀ i, (Vi i).HasLocallyBoundedFirstVariation) → (∀ W, IsRelCompactOpenIn W U → liminf (fun i ↦ variationMeasure (Vi i) W) atTop ≠ ∞) → (∀ i, ∀ y ∈ U \\ B i, ∃ θ : ℝ≥0∞, HasDensity n (Vi i).weight y θ ∧ 1 ≤ θ) → (∀ W, IsRelCompactOpenIn W U → Tendsto (fun i ↦ (Vi i).weight (B i ∩ W)) atTop (𝓝 0)) → ∀ᵐ y ∂V.weight, 1 ≤ liminf (densityRatio n V.weight y) (𝓝[>] 0)",
+  "lean_name": "lower_density_ge_one_ae_of_radonConverges",
+  "depends_on": [
+    "root.density_semicontinuity-a1.weight_portmanteau-a1",
+    "root.density_semicontinuity-a1.besicovitch_ratio_cover-a1",
+    "root.density_semicontinuity-a1.monotonicity_mass_lower_bound-a1",
+    "root.density_semicontinuity-a1.limit_mass_lower_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_semicontinuity-a1.weight_portmanteau-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_semicontinuity-a1.besicovitch_ratio_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_semicontinuity-a1.monotonicity_mass_lower_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_semicontinuity-a1.limit_mass_lower_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-density-semicontinuity-a1-lower-density-ae-a1-a1"
+}
