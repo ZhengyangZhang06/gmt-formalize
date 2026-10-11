@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "04e282052c1105c90e4b1a0d200f1d393c69c5ee0761efd038351bb090c5f76e",
+  "git_delta": {
+    "base_commit": "7caab4d803b83813d117d987a897c67d6f295a63",
+    "candidate_commit": "cfed1cc83a67bd9af8ad6fff8bb42a77d6554fcd",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "simon_submanifold_range_starProjection_continuousOn",
+    "diff_sha256": "83962b19543816338cecdacb1277b179655db3162faa75461354193137d1b70e",
+    "source_sha256": "5c9b993b97619ebc5daa74ae7ce0745b4621254fb98272da0c990d43ce4a7236",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.simon_submanifold_range_starProjection_continuousOn",
+      "statement": "∀ (n N : ℕ), ContinuousOn (fun A : Rn n →L[ℝ] Rn N ↦ (LinearMap.range A.toLinearMap).starProjection) {A : Rn n →L[ℝ] Rn N | Function.Injective A}",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
