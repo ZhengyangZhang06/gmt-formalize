@@ -434,6 +434,95 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- Simon Ch. 3, 1.7 and Ch. 4, 1.3 (pp. 75, 86): for `V = v(M, θ)` and `λ > 0`, the change of
+variables `y ↦ λ⁻¹(y - x)` gives
+`λ⁻ⁿ ∫ f(λ⁻¹(y - x)) dμ_V(y) = ∫_{η_{x,λ}(M)} f(y) θ(x + λy) dHⁿ(y)`. So if `dim P = n` and the
+left side tends to `θ(x) ∫_P f dHⁿ` for every `f ∈ C_c`, then `P` is the approximate tangent
+space of `M` with respect to `θ` at `x`. -/
+theorem Submission.ts_blowup_weighted_tangent : ∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)), Module.finrank ℝ P = n → (∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y, f (t⁻¹ • (y - x)) ∂(mk a).weight) (𝓝[>] 0) (𝓝 (a.θ x * ∫ y in (P : Set (Ambient n ℓ)), f y ∂μHE[n]))) → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n a.M a.θ x P := by
+  intro n ℓ a x P hP hlim
+  -- `θ` is a.e.-strongly measurable on `M = ⋃ₖ M ∩ B_k(0)`: it is integrable on each piece.
+  have hθ : AEStronglyMeasurable a.θ ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M) := by
+    have hM : a.M = ⋃ k : ℕ, a.M ∩ closedBall (0 : Ambient n ℓ) k := by
+      ext y
+      simp only [mem_iUnion, mem_inter_iff, mem_closedBall, dist_zero_right]
+      exact ⟨fun hy ↦ ⟨⌈‖y‖⌉₊, hy, Nat.le_ceil _⟩, fun ⟨_, hy, _⟩ ↦ hy⟩
+    rw [hM, aestronglyMeasurable_iUnion_iff]
+    exact fun k ↦
+      (a.isRectifiablePair.locallyIntegrable _ (isCompact_closedBall 0 k)).aestronglyMeasurable
+  -- `∫ h dμ_V = ∫_M h θ dHⁿ` for every `h`.
+  have hweight : ∀ h : Ambient n ℓ → ℝ,
+      ∫ y, h y ∂(mk a).weight = ∫ y in a.M, h y * a.θ y ∂μHE[n] := by
+    intro h
+    have hw : (mk a).weight = ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M).withDensity
+        fun y ↦ ENNReal.ofReal (a.θ y) := rfl
+    rw [hw, integral_withDensity_eq_integral_toReal_smul₀ hθ.aemeasurable.ennreal_ofReal
+      (Eventually.of_forall fun _ ↦ ENNReal.ofReal_lt_top) h]
+    apply integral_congr_ae
+    filter_upwards [ae_restrict_mem₀ a.isRectifiablePair.measurable] with y hy
+    rw [ENNReal.toReal_ofReal (a.isRectifiablePair.pos y hy).le, smul_eq_mul, mul_comm]
+  -- Change of variables under `η_{x,r} = e⁻¹`, where `e : y ↦ x + r y`.
+  have hcov : ∀ r : ℝ, 0 < r → ∀ g : Ambient n ℓ → ℝ,
+      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' a.M, g y * a.θ (x + r • y) ∂μHE[n] =
+        (r ^ n)⁻¹ * ∫ y, g (r⁻¹ • (y - x)) ∂(mk a).weight := by
+    intro r hr g
+    let e : Ambient n ℓ ≃ₜ Ambient n ℓ :=
+      { toFun := fun y ↦ x + r • y
+        invFun := fun y ↦ r⁻¹ • (y - x)
+        left_inv := fun y ↦ by simp [smul_smul, hr.ne']
+        right_inv := fun y ↦ by simp [smul_smul, hr.ne']
+        continuous_toFun := by fun_prop
+        continuous_invFun := by fun_prop }
+    change ∫ y in e.symm '' a.M, g y * a.θ (e y) ∂μHE[n] = _
+    -- `Hⁿ(η_{x,r}(S)) = r⁻ⁿ Hⁿ(S)`: a translation followed by the dilation by `r⁻¹`.
+    have hshift : Isometry (fun y : Ambient n ℓ ↦ y - x) := by
+      apply Isometry.of_dist_eq
+      intro y z
+      simp only [dist_eq_norm]
+      congr 1
+      abel
+    have hscale : ∀ S : Set (Ambient n ℓ), (μHE[n] : Measure (Ambient n ℓ)) (e.symm '' S) =
+        ENNReal.ofReal (r⁻¹) ^ n * (μHE[n] : Measure (Ambient n ℓ)) S := by
+      intro S
+      have himage : e.symm '' S =
+          AffineMap.homothety (0 : Ambient n ℓ) r⁻¹ '' ((fun y ↦ y - x) '' S) := by
+        rw [image_image]
+        congr 1
+        funext y
+        simp [e, AffineMap.homothety_apply]
+      rw [himage,
+        euclideanHausdorffMeasure_homothety_image n (0 : Ambient n ℓ) (inv_ne_zero hr.ne'),
+        hshift.euclideanHausdorffMeasure_image, ENNReal.smul_def, ENNReal.coe_pow,
+        ← ENNReal.ofReal_coe_nnreal, coe_nnnorm, Real.norm_of_nonneg (inv_pos.mpr hr).le]
+      rfl
+    -- Pushing `Hⁿ ⌞ η_{x,r}(M)` forward by `e` gives `r⁻ⁿ Hⁿ ⌞ M`.
+    have hmap : ((μHE[n] : Measure (Ambient n ℓ)).restrict (e.symm '' a.M)).map e =
+        ENNReal.ofReal (r⁻¹) ^ n • (μHE[n] : Measure (Ambient n ℓ)).restrict a.M := by
+      ext A hA
+      rw [Measure.map_apply e.continuous.measurable hA,
+        Measure.restrict_apply (e.continuous.measurable hA), Measure.smul_apply,
+        Measure.restrict_apply hA, smul_eq_mul]
+      have hset : e ⁻¹' A ∩ e.symm '' a.M = e.symm '' (A ∩ a.M) := by
+        ext z
+        constructor
+        · rintro ⟨hz, y, hy, rfl⟩
+          exact ⟨y, ⟨by simpa only [mem_preimage, e.apply_symm_apply] using hz, hy⟩, rfl⟩
+        · rintro ⟨y, ⟨hyA, hyM⟩, rfl⟩
+          exact ⟨by simpa only [mem_preimage, e.apply_symm_apply] using hyA, y, hyM, rfl⟩
+      rw [hset, hscale]
+    have hi := e.measurableEmbedding.integral_map
+      (μ := (μHE[n] : Measure (Ambient n ℓ)).restrict (e.symm '' a.M))
+      (fun z ↦ g (e.symm z) * a.θ z)
+    rw [hmap, integral_smul_measure, ENNReal.toReal_pow, ENNReal.toReal_ofReal (inv_pos.mpr hr).le,
+      smul_eq_mul] at hi
+    simp only [e.symm_apply_apply] at hi
+    rw [hweight, ← inv_pow]
+    exact hi.symm
+  -- The two blow-up functions agree on `(0, ∞) ∈ 𝓝[>] 0`.
+  refine ⟨hP, fun f ↦ (hlim f).congr' ?_⟩
+  filter_upwards [self_mem_nhdsWithin] with r hr
+  exact (hcov r hr f).symm
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
