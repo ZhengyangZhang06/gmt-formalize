@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_estimate-a1.kernel_average-a1",
+  "parent_id": "root.bv_results-a1.mollifier_estimate-a1",
+  "depth": 3,
+  "title": "Mollification error is bounded by the L¹ translation modulus over the kernel's support",
+  "statement": "For every n ∈ ℕ, every integrable F : ℝⁿ → ℝ (Integrable F volume), every σ ∈ ℝ, every continuous kernel ρ : ℝⁿ → ℝ with ρ ≥ 0, support ρ ⊆ B(0,σ) (open ball) and ∫ρ = 1, every set Q ⊆ ℝⁿ (no measurability assumed) and every C ∈ [0,∞]: if ∫⁻_Q ‖F(x − t) − F(x)‖ₑ dx ≤ C for every t ∈ ℝⁿ with ‖t‖ < σ, then ∫⁻_Q ‖(ρ * F)(x) − F(x)‖ₑ dx ≤ C. Here (ρ * F)(x) := convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x = ∫ ρ(t)F(x − t) dt, and ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure volume.",
+  "lean_statement": "∀ (n : ℕ) (F ρ : Rn n → ℝ) (Q : Set (Rn n)) (σ : ℝ) (C : ℝ≥0∞), Integrable F volume → Continuous ρ → (∀ x, 0 ≤ ρ x) → Function.support ρ ⊆ ball 0 σ → ∫ x, ρ x = 1 → (∀ t : Rn n, ‖t‖ < σ → ∫⁻ x in Q, ‖F (x - t) - F x‖ₑ ≤ C) → ∫⁻ x in Q, ‖convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x - F x‖ₑ ≤ C",
+  "lean_name": "bv_convolution_sub_lintegral_le_of_translate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-estimate-a1-kernel-average-a1-a1"
+}

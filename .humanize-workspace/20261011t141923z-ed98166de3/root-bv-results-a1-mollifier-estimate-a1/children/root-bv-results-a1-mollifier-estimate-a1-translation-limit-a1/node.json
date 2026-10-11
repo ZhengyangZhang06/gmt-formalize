@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_estimate-a1.translation_limit-a1",
+  "parent_id": "root.bv_results-a1.mollifier_estimate-a1",
+  "depth": 3,
+  "title": "L¹ translation estimates pass to L¹ limits",
+  "statement": "For every n ∈ ℕ, every a.e.-strongly measurable F : ℝⁿ → ℝ, every sequence (w_j)_{j∈ℕ} of a.e.-strongly measurable functions ℝⁿ → ℝ with ∫⁻_{ℝⁿ} ‖w_j(x) − F(x)‖ₑ dx → 0 as j → ∞, every set Q ⊆ ℝⁿ (no measurability assumed), every z ∈ ℝⁿ and every C ∈ [0,∞]: if ∫⁻_Q ‖w_j(x − z) − w_j(x)‖ₑ dx ≤ C for every j, then ∫⁻_Q ‖F(x − z) − F(x)‖ₑ dx ≤ C. Here ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure volume, and all integrals are lower Lebesgue integrals in [0,∞].",
+  "lean_statement": "∀ (n : ℕ) (F : Rn n → ℝ) (w : ℕ → Rn n → ℝ) (Q : Set (Rn n)) (z : Rn n) (C : ℝ≥0∞), AEStronglyMeasurable F volume → (∀ j, AEStronglyMeasurable (w j) volume) → Tendsto (fun j ↦ ∫⁻ x, ‖w j x - F x‖ₑ) atTop (𝓝 0) → (∀ j, ∫⁻ x in Q, ‖w j (x - z) - w j x‖ₑ ≤ C) → ∫⁻ x in Q, ‖F (x - z) - F x‖ₑ ≤ C",
+  "lean_name": "bv_translate_sub_lintegral_le_of_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-estimate-a1-translation-limit-a1-a1"
+}

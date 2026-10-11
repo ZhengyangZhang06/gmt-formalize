@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_estimate-a1.smooth_translation-a1",
+  "parent_id": "root.bv_results-a1.mollifier_estimate-a1",
+  "depth": 3,
+  "title": "L¹ translation estimate for C¹ functions from gradient bounds on the swept translates",
+  "statement": "For every n ∈ ℕ, every function w : ℝⁿ → ℝ of class C¹ (ContDiff ℝ 1 w; ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure volume), every set Q ⊆ ℝⁿ (no measurability assumed), every z ∈ ℝⁿ and every M ∈ [0,∞]: if for every s ∈ [0,1] the translate Q − s z := {x − s•z : x ∈ Q} = (x ↦ x − s•z) '' Q satisfies ∫⁻_{Q − s z} ‖Dw(y)‖ₑ dy ≤ M, where Dw(y) = fderiv ℝ w y and ‖·‖ is the operator norm, then ∫⁻_Q ‖w(x − z) − w(x)‖ₑ dx ≤ ofReal(‖z‖)·M in [0,∞].",
+  "lean_statement": "∀ (n : ℕ) (w : Rn n → ℝ) (Q : Set (Rn n)) (z : Rn n) (M : ℝ≥0∞), ContDiff ℝ 1 w → (∀ s ∈ Icc (0 : ℝ) 1, ∫⁻ y in (fun x ↦ x - s • z) '' Q, ‖fderiv ℝ w y‖ₑ ≤ M) → ∫⁻ x in Q, ‖w (x - z) - w x‖ₑ ≤ ENNReal.ofReal ‖z‖ * M",
+  "lean_name": "bv_translate_sub_lintegral_le_of_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-estimate-a1-smooth-translation-a1-a1"
+}
