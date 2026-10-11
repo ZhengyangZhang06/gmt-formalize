@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.eilenberg_inequality-a1.covering_majorant-a1",
+  "parent_id": "root.eilenberg_inequality-a1",
+  "depth": 2,
+  "title": "Eilenberg covering estimate: Borel majorant of fibre Hausdorff measures",
+  "statement": "Let X be a metric space with its Borel σ-algebra (no σ-compactness, no measurability of E), m ∈ ℕ, k > 0 real, E ⊆ X with 𝓗^{m+k}(E) < ∞ (Simon-normalized 𝓗^s = (ω_s/2^s)μH[s] = Chapter01.simonHausdorffMeasureReal s, ω_s = Chapter01.realUnitBallVolume s), K ∈ ℝ≥0 and f : X → ℝᵐ K-Lipschitz on E. Then there is a Borel measurable G : ℝᵐ → [0,∞] with 𝓗^k(E ∩ f⁻¹{y}) ≤ G(y) for every y ∈ ℝᵐ and ∫_{ℝᵐ} G dLᵐ ≤ (ω_m ω_k/ω_{m+k}) K^m 𝓗^{m+k}(E).",
+  "lean_statement": "∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (k : ℝ) (E : Set X) (f : X → Rn m) (K : ℝ≥0), 0 < k → Chapter01.simonHausdorffMeasureReal (m + k) E < ⊤ → LipschitzOnWith K f E → ∃ G : Rn m → ℝ≥0∞, Measurable G ∧ (∀ y, Chapter01.simonHausdorffMeasureReal k (E ∩ f ⁻¹' {y}) ≤ G y) ∧ ∫⁻ y, G y ∂volume ≤ Chapter01.realUnitBallVolume (m : ℝ) * Chapter01.realUnitBallVolume k / Chapter01.realUnitBallVolume (m + k) * (K : ℝ≥0∞) ^ m * Chapter01.simonHausdorffMeasureReal (m + k) E",
+  "lean_name": "eilenberg_covering_majorant",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-eilenberg-inequality-a1-covering-majorant-a1-a1"
+}
