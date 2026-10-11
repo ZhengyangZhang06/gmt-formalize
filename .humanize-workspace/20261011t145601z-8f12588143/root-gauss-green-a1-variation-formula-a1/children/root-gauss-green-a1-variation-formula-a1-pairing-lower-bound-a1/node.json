@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.variation_formula-a1.pairing_lower_bound-a1",
+  "parent_id": "root.gauss_green-a1.variation_formula-a1",
+  "depth": 3,
+  "title": "Lower bound for the pairing: μ(C) ≤ ofReal(∫⟨g, ν⟩ dμ) + μ(V ∖ C)",
+  "statement": "Let N ∈ ℕ and ℝ^N = EuclideanSpace ℝ (Fin N). Let μ be a measure on the Borel σ-algebra of ℝ^N. Let ν : ℝ^N → ℝ^N be μ-a.e. strongly measurable with |ν(x)| ≤ 1 for μ-a.e. x. Let g : ℝ^N → ℝ^N be continuous with |g(x)| ≤ 1 for every x. Let C ⊆ V ⊆ ℝ^N be Borel sets with μ(V) < ∞. Assume g(x) = 0 for every x ∉ V, and ⟨g(x), ν(x)⟩ = 1 for μ-a.e. x ∈ C. Then μ(C) ≤ ofReal(∫⟨g(x), ν(x)⟩ dμ(x)) + μ(V ∖ C) in [0, ∞], where ∫ is the Bochner integral and ofReal(t) := max(t, 0).",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (ν g : Rn N → Rn N) (C V : Set (Rn N)), MeasurableSet C → MeasurableSet V → C ⊆ V → μ V ≠ ∞ → AEStronglyMeasurable ν μ → Continuous g → (∀ᵐ x ∂μ, ‖ν x‖ ≤ 1) → (∀ x, ‖g x‖ ≤ 1) → (∀ x, x ∉ V → g x = 0) → (∀ᵐ x ∂μ, x ∈ C → inner ℝ (g x) (ν x) = 1) → μ C ≤ ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) + μ (V \\ C)",
+  "lean_name": "gaussGreenVar_measure_le_ofReal_integral_inner_add",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1-pairing-lower-bound-a1-a1"
+}

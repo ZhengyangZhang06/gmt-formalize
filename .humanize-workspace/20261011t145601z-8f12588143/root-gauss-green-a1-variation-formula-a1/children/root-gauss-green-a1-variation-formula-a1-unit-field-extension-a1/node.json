@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.variation_formula-a1.unit_field_extension-a1",
+  "parent_id": "root.gauss_green-a1.variation_formula-a1",
+  "depth": 3,
+  "title": "Tietze–Urysohn: a field continuous on compact C ⊆ V with |f| ≤ 1 extends to a compactly supported continuous unit field in V",
+  "statement": "Let N ∈ ℕ and ℝ^N = EuclideanSpace ℝ (Fin N). Let C ⊆ ℝ^N be compact, let V ⊆ ℝ^N be open with C ⊆ V, and let f : ℝ^N → ℝ^N be continuous on C with |f(x)| ≤ 1 for all x ∈ C. Then there is a continuous g : ℝ^N → ℝ^N such that g has compact support, tsupport g ⊆ V, |g(x)| ≤ 1 for every x ∈ ℝ^N, and g(x) = f(x) for every x ∈ C.",
+  "lean_statement": "∀ (N : ℕ) (C V : Set (Rn N)) (f : Rn N → Rn N), IsCompact C → IsOpen V → C ⊆ V → ContinuousOn f C → (∀ x ∈ C, ‖f x‖ ≤ 1) → ∃ g : Rn N → Rn N, Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ V ∧ (∀ x, ‖g x‖ ≤ 1) ∧ ∀ x ∈ C, g x = f x",
+  "lean_name": "gaussGreenVar_exists_unit_field_eqOn_compact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1-unit-field-extension-a1-a1"
+}

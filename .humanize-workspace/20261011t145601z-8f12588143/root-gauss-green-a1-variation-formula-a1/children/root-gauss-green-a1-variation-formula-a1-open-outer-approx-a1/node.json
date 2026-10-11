@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.variation_formula-a1.open_outer_approx-a1",
+  "parent_id": "root.gauss_green-a1.variation_formula-a1",
+  "depth": 3,
+  "title": "A compact K ⊆ O has an open neighbourhood V ⊆ O of finite measure with μ(V ∖ K) < ε",
+  "statement": "Let N ∈ ℕ, let O ⊆ ℝ^N (= EuclideanSpace ℝ (Fin N)) be open, let K ⊆ O be compact, and let μ be a measure on the Borel σ-algebra of ℝ^N with μ(L) < ∞ for every compact L ⊆ O. Then for every ε ∈ (0, ∞] there is an open set V ⊆ ℝ^N with K ⊆ V ⊆ O, μ(V) < ∞ and μ(V ∖ K) < ε.",
+  "lean_statement": "∀ (N : ℕ) (O K : Set (Rn N)) (μ : Measure (Rn N)), IsOpen O → IsCompact K → K ⊆ O → (∀ L : Set (Rn N), IsCompact L → L ⊆ O → μ L < ∞) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ V : Set (Rn N), IsOpen V ∧ K ⊆ V ∧ V ⊆ O ∧ μ V < ∞ ∧ μ (V \\ K) < ε",
+  "lean_name": "gaussGreenVar_exists_isOpen_superset_measure_sdiff_lt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1-open-outer-approx-a1-a1"
+}
