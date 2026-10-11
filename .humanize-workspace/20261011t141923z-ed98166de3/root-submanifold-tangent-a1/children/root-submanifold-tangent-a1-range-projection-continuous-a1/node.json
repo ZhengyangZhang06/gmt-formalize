@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_tangent-a1.range_projection_continuous-a1",
+  "parent_id": "root.submanifold_tangent-a1",
+  "depth": 2,
+  "title": "Orthogonal projection onto the range of an injective linear map depends continuously on the map",
+  "statement": "Let n, N ∈ ℕ. Consider the map A ↦ P_{range A} from L(ℝⁿ, ℝᴺ) to L(ℝᴺ, ℝᴺ), where L(·,·) consists of all linear maps with the operator-norm topology and P_K is the orthogonal projection of ℝᴺ onto the subspace K (Submodule.starProjection). This map is continuous on the set S = {A ∈ L(ℝⁿ, ℝᴺ) : A injective}, with its relative topology.",
+  "lean_statement": "∀ (n N : ℕ), ContinuousOn (fun A : Rn n →L[ℝ] Rn N ↦ (LinearMap.range A.toLinearMap).starProjection) {A : Rn n →L[ℝ] Rn N | Function.Injective A}",
+  "lean_name": "simon_submanifold_range_starProjection_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-submanifold-tangent-a1-range-projection-continuous-a1-a1"
+}

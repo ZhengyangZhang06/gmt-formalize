@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^def tangentSpace|^def tangentProjection|^abbrev Rn' project/GMT/Ch02/Contract.lean",
+        "rg -n 'Submission\\.' project",
+        "rg -n 'isEmbedding_chartMap|exists_open_image_eq_inter|IsSimonLocalRepresentation\\.|IsSimonSubmanifold\\.' lake-packages-25730c7c/simongmt (then full reads of Chapter02/Submanifold.lean and Chapter02/SubmanifoldTopology.lean)",
+        "rg -n 'starProjection|orthogonalProjection' -l lake-packages-25730c7c/simongmt/Poincare; sed -n 780,900p Chapter08/Varifold.lean",
+        "rg -n 'theorem IsLocallyClosed\\.(measurableSet|nullMeasurableSet)|IsLocallyClosed.measurableSet' mathlib/Mathlib; rg -n '^theorem|^lemma' mathlib/Mathlib/Topology/LocallyClosed.lean",
+        "rg -n 'class HasOrthogonalProjection|def starProjection|theorem eq_starProjection_of_mem_of_inner_eq_zero|isSymmetricProjection_iff_eq_coe_starProjection_range' mathlib/Mathlib/Analysis/InnerProductSpace/",
+        "rg -n 'theorem inverse_continuousAt' mathlib/Mathlib/Analysis/Normed/Ring/Units.lean; rg -n '^def adjoint|theorem adjoint_inner_left' mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "rg -n 'theorem ContDiffOn.continuousOn_fderiv_of_isOpen|theorem ContDiffOn.differentiableOn' mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "rg -n '^noncomputable def invFunOn|^theorem invFunOn_mem|^theorem invFunOn_eq|^theorem InjOn.leftInvOn_invFunOn' mathlib/Mathlib/Data/Set/Function.lean",
+        "rg -n 'theorem tendsto_subseq_of_bounded|theorem IsCompact.tendsto_subseq |theorem mem_closure_iff_seq_limit|theorem isOpen_iUnion_countable|theorem continuousWithinAt_inter |exists_antilipschitzWith|theorem ContinuousLinearMap.isOpen_injective|theorem HasFDerivAt.comp_hasDerivAt ' mathlib/Mathlib",
+        "python3 -I gen_checks.py (loads verifier/gmt-compare.py child_modules + contract_scope and verifier/lean_contract.py validate_lean_statement) on the five lean_statements; lake env lean final/NodeChallenge_00..04.lean against a scratch build of GMT.Ch02.Submission",
+        "lake env lean final/FinalAssembly.lean (real proofs of chart_inverse_continuous, range_projection_continuous, submanifold_measurable; sorried tangent_space_eq_range; tangent_projection_continuous from siblings; parent frozen type assembled; #print axioms)",
+        "python3 -I lean_name scan of dag.json; grep lean_name nodes/*/decomposition-v*.json; rg -l 'simon_submanifold_' lake-packages-25730c7c/simongmt/Poincare; git grep -l 'simon_submanifold_' (snapshot mathlib)",
+        "sed -n 845,875p book/chapter-02.txt (printed Simon 4.1-4.3)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Set/Function.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/LocallyClosed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-submanifold-tangent-a1/parent-child-handoff.json",
+        "/tmp/gmt-ch02-subtan-r3I2jM/final/FinalAssembly.lean"
+      ],
+      "conclusion": "Contract.lean:48/86/91 fixes Rn, tangentSpace (the span of velocities of C¹ curves (−1,1) → M) and tangentProjection (Submodule.starProjection). The project snapshot has no Submission.* declarations. The pinned SimonGMT Submanifold.lean (IsProperOnInto:30, IsSimonLocalRepresentation:37, IsSimonSubmanifold:48) matches the hypotheses used by every child. SubmanifoldTopology.lean proves isProperMap_chartMap:54, isEmbedding_chartMap:90 and exists_open_image_eq_inter:100, which state chart_inverse_continuous in closed-embedding form. That module is not imported by the Contract, but a child file under GMT/Ch02 may import it. SimonGMT has no tangentSpace = range Dψ theorem, no measurability theorem for submanifolds, and no continuity theorem for range projections. Its Chapter08/Varifold.lean projection formula is specific to matrices and its Grassmannian. Mathlib supplies everything the children need: HasOrthogonalProjection (a Prop class, Projection/Basic.lean:48), starProjection:131, eq_starProjection_of_mem_of_inner_eq_zero:180, ContinuousLinearMap.adjoint (Adjoint.lean:112), NormedRing.inverse_continuousAt (Normed/Ring/Units.lean:183), ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean:916), invFunOn and its lemmas (Data/Set/Function.lean:953-987), tendsto_subseq_of_bounded (MetricSpace/Sequences.lean:38), IsCompact.tendsto_subseq (Sequences.lean:298), mem_closure_iff_seq_limit (Sequences.lean:108), isOpen_iUnion_countable (Bases.lean:932), continuousWithinAt_inter (ContinuousOn.lean:259), LinearMap.exists_antilipschitzWith (FiniteDimension.lean:231) and HasFDerivAt.comp_hasDerivAt (Deriv/Comp.lean:374). Mathlib has no IsLocallyClosed.measurableSet. All five child statements elaborate in the comparator's replayed Contract scope, and the frozen parent type follows from them by a one-line term. Scratch Lean proofs of chart_inverse_continuous, range_projection_continuous and submanifold_measurable depend only on propext, Classical.choice and Quot.sound. tangent_projection_continuous compiles from its three sibling statements. No proposed lean_name collides with dag.json (41 nodes), with pending decompositions, or with SimonGMT or Mathlib."
+    }
+  ],
+  "parent_id": "root.submanifold_tangent-a1",
+  "child_id": "root.submanifold_tangent-a1.range_projection_continuous-a1",
+  "subproblem": {
+    "key": "range_projection_continuous",
+    "title": "Orthogonal projection onto the range of an injective linear map depends continuously on the map",
+    "statement": "Let n, N ∈ ℕ. Consider the map A ↦ P_{range A} from L(ℝⁿ, ℝᴺ) to L(ℝᴺ, ℝᴺ), where L(·,·) consists of all linear maps with the operator-norm topology and P_K is the orthogonal projection of ℝᴺ onto the subspace K (Submodule.starProjection). This map is continuous on the set S = {A ∈ L(ℝⁿ, ℝᴺ) : A injective}, with its relative topology.",
+    "lean_statement": "∀ (n N : ℕ), ContinuousOn (fun A : Rn n →L[ℝ] Rn N ↦ (LinearMap.range A.toLinearMap).starProjection) {A : Rn n →L[ℝ] Rn N | Function.Injective A}",
+    "lean_name": "simon_submanifold_range_starProjection_continuousOn",
+    "depends_on": [],
+    "natural_proof": "Source: step 7 of the parent-supplied proof of simon_submanifold_tangent_basics (projection onto the range of an injective map, Π(A) = A(A*A)⁻¹A*), written out in full.\n\nNotation. For A ∈ L(ℝⁿ, ℝᴺ), let A* ∈ L(ℝᴺ, ℝⁿ) be its adjoint, so ⟨A*v, u⟩ = ⟨v, Au⟩. All spaces are finite-dimensional, so L(ℝⁿ, ℝⁿ) is a complete normed ring with unit I. S is the set of injective A ∈ L(ℝⁿ, ℝᴺ), and P_K is the orthogonal projection onto a subspace K ⊆ ℝᴺ.\n\nProof.\n1. A*A is invertible for A ∈ S. If A*Aζ = 0, then 0 = ⟨A*Aζ, ζ⟩ = ⟨Aζ, Aζ⟩ = |Aζ|², so Aζ = 0 and hence ζ = 0. Thus A*A is an injective linear endomorphism of the finite-dimensional space ℝⁿ. It is therefore bijective, with a linear (and automatically continuous) inverse, so A*A is a unit of L(ℝⁿ, ℝⁿ).\n2. The formula. For A ∈ S, let Π(A) := A(A*A)⁻¹A* and K := range A. Fix v ∈ ℝᴺ and put p := Π(A)v = A((A*A)⁻¹A*v) ∈ K. For each element Au of K (u ∈ ℝⁿ),\n⟨v − p, Au⟩ = ⟨A*v − A*A(A*A)⁻¹A*v, u⟩ = ⟨A*v − A*v, u⟩ = 0.\nSo p ∈ K and v − p ⊥ K. The orthogonal projection P_K v is the unique point of the finite-dimensional, hence closed, subspace K whose difference from v is orthogonal to K. Therefore Π(A)v = P_K v, and Π(A) = P_{range A}. Equivalently, as stated in the parent proof, Π(A) fixes range A, since Π(A)Aζ = A(A*A)⁻¹(A*A)ζ = Aζ, and it kills (range A)^⊥ = ker A*.\n3. A globally defined extension. Let inv(B) := B⁻¹ if B ∈ L(ℝⁿ, ℝⁿ) is invertible and inv(B) := 0 otherwise (Ring.inverse). Define F(A) := A ∘ inv(A*A) ∘ A* for every A ∈ L(ℝⁿ, ℝᴺ). By steps 1–2, F(A) = Π(A) = P_{range A} for every A ∈ S.\n4. F is continuous at every A₀ ∈ S.\n(a) A ↦ A* is a linear isometry from L(ℝⁿ, ℝᴺ) onto L(ℝᴺ, ℝⁿ), hence continuous.\n(b) Composition (B, C) ↦ B ∘ C of continuous linear maps is a bounded bilinear map, hence jointly continuous. So A ↦ A*A is continuous.\n(c) In a complete normed ring, inversion is continuous at every unit, by the Neumann series: if B₀ is invertible and |B − B₀| < |B₀⁻¹|⁻¹, then B is invertible, and B⁻¹ → B₀⁻¹ as B → B₀. By step 1, A₀*A₀ is a unit, so inv is continuous at A₀*A₀, and A ↦ inv(A*A) is continuous at A₀.\n(d) Combining (a), (b) and (c) with the joint continuity of composition, A ↦ A ∘ inv(A*A) ∘ A* = F(A) is continuous at A₀.\n5. Conclusion. Let A₀ ∈ S and let A → A₀ within S. By step 4, F(A) → F(A₀). By step 3, F(A) = P_{range A} and F(A₀) = P_{range A₀}. Hence A ↦ P_{range A} is continuous within S at every A₀ ∈ S, that is, ContinuousOn (fun A ↦ (LinearMap.range A.toLinearMap).starProjection) S.\n\nFormal references (Mathlib): ContinuousLinearMap.adjoint, a linear isometry equivalence (Analysis/InnerProductSpace/Adjoint.lean:112), and adjoint_inner_left; Submodule.eq_starProjection_of_mem_of_inner_eq_zero (Analysis/InnerProductSpace/Projection/Basic.lean:180); ContinuousLinearMap.isUnit_iff_bijective; Ring.mul_inverse_cancel; NormedRing.inverse_continuousAt (Analysis/Normed/Ring/Units.lean:183); Continuous.clm_comp; ContinuousAt.clm_comp; ContinuousWithinAt.congr.",
+    "proof_key_steps": [
+      "For injective A, ⟨A*Aζ, ζ⟩ = |Aζ|² shows A*A is injective, hence invertible in L(ℝⁿ, ℝⁿ).",
+      "Π(A) = A(A*A)⁻¹A* satisfies Π(A)v ∈ range A and v − Π(A)v ⊥ range A, so Π(A) = P_{range A}.",
+      "F(A) = A ∘ Ring.inverse(A*A) ∘ A* is continuous at every injective A: the adjoint is an isometry, composition is jointly continuous, and inversion is continuous at units.",
+      "F agrees with A ↦ P_{range A} on the injective maps, so the latter is continuous on that set."
+    ]
+  },
+  "audit": {
+    "key": "range_projection_continuous",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The bundled operator type and inferred starProjection instance match the prose. The proof establishes invertibility of A*A, identifies A(A*A)⁻¹A* by orthogonality, and proves continuity using inversion at units. No pointwise matrix multiplication is selected. The formula also agrees with [Eremenko, equation (5)](https://www.math.purdue.edu/~eremenko/dvi/511/lect10.pdf)."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-submanifold-tangent-a1-range-projection-continuous-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-submanifold-tangent-a1-range-projection-continuous-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-submanifold-tangent-a1-range-projection-continuous-a1/parent-supplied-natural-proof.json"
+}

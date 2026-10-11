@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_tangent-a1.submanifold_measurable-a1",
+  "parent_id": "root.submanifold_tangent-a1",
+  "depth": 2,
+  "title": "A Simon submanifold is a Borel set (local closedness and Lindelöf)",
+  "statement": "Let n, N ∈ ℕ, r ∈ ℕ∞ and M ⊆ ℝᴺ with IsSimonSubmanifold (E := ℝⁿ) r M. That is, 1 ≤ r, and every y ∈ M lies in W for some V ⊆ ℝⁿ, W ⊆ ℝᴺ and ψ : ℝⁿ → ℝᴺ with IsSimonLocalRepresentation r M V W ψ: V and W are open, ψ is C^r on V, ψ is injective on V, ψ(V) = W ∩ M, V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W, and Dψ(x) is injective for x ∈ V. Then M is a Borel subset of ℝᴺ (MeasurableSet M).",
+  "lean_statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M",
+  "lean_name": "simon_submanifold_measurableSet",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-submanifold-tangent-a1-submanifold-measurable-a1-a1"
+}

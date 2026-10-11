@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_tangent-a1.tangent_space_eq_range-a1",
+  "parent_id": "root.submanifold_tangent-a1",
+  "depth": 2,
+  "title": "Tangent space of a Simon submanifold equals the range of the chart derivative (Simon 2.4.3)",
+  "statement": "Let n, N ∈ ℕ, r ∈ ℕ∞ with 1 ≤ r, M ⊆ ℝᴺ, V ⊆ ℝⁿ, W ⊆ ℝᴺ and ψ : ℝⁿ → ℝᴺ satisfy IsSimonLocalRepresentation r M V W ψ: V and W are open, ψ is C^r on V, ψ is injective on V, ψ(V) = W ∩ M, V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W, and Dψ(x) is injective for x ∈ V. Then for every x ∈ V, tangentSpace M (ψ x) = range Dψ(x), where Dψ(x) = fderiv ℝ ψ x. Here tangentSpace M y is the linear span of all vectors γ′(0) such that γ : ℝ → ℝᴺ is C¹ on (−1,1), maps (−1,1) into M, satisfies γ(0) = y and has derivative γ′(0) at 0.",
+  "lean_statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap",
+  "lean_name": "simon_submanifold_tangentSpace_eq_range",
+  "depends_on": [
+    "root.submanifold_tangent-a1.chart_inverse_continuous-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.submanifold_tangent-a1.chart_inverse_continuous-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-submanifold-tangent-a1-tangent-space-eq-range-a1-a1"
+}
