@@ -1,0 +1,97 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'BVExtensionEstimate|bv_ext_|bv_extension_estimate_theorem' project/GMT --glob '*.lean'",
+        "rg -n 'infDist|infEDist' mathlib/Mathlib/Analysis/Convex",
+        "countable_meas_level_set_pos|countable_meas_pos_of_disjoint",
+        "theorem (le_infDist|infDist_zero_of_mem|infDist_empty|lipschitz_infDist_pt)|exists_infDist_eq_dist|notMem_iff_infDist_pos",
+        "trace_smulRight|trace_id",
+        "theorem measurable_fderiv|theorem fderiv_fun_smul|theorem fderiv_fun_neg|theorem norm_fderiv_le_of_lipschitz",
+        "theorem Convex.addHaar_frontier|theorem addHaar_frontier",
+        "lean NodeChallenge_00.lean",
+        "lean NodeChallenge_08.lean",
+        "lean -o out/CheckedProofs.olean CheckedProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convex",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convex/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-extension-a1/parent-child-handoff.json",
+        "/tmp/bv-extension-audit-xhfb49es/CheckedProofs.lean",
+        "/tmp/bv-extension-audit-xhfb49es/VerificationSummary.json"
+      ],
+      "conclusion": "The split appropriately decomposes the selected BVExtensionEstimate into geometry, cutoffs, shared calculus/admissibility, analytic estimates, and exterior vanishing. The snapshot contract matches the workspace contract; inspected Mathlib sources match the pinned package, and the SimonGMT revision matches the dependency pin. The cited library tools have the required hypotheses. No infDist/infEDist match occurs under Analysis/Convex. All nine exact one-line propositions passed validation and independently elaborated in comparator-generated challenges without child declarations. Recompiled proofs have byte-identical child types and use only propext, Classical.choice, and Quot.sound. The assembly also compiled with only these axioms after replacing the sibling placeholder by an explicit hypothesis of its frozen type. That existing abs_variation dependency remains required; its DAG status is waiting-children, not completed. The selected prerequisite graph is acyclic, child references match declared dependencies, and no proposed name collides with another DAG branch or decomposition. Inferred norms, measures, scalar actions, and coercions match the prose; no Matrix/IsUnit construction occurs. The assembled conclusion is exactly BVExtensionEstimate, with the stated constant and both conjuncts."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "distance_concave",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches concavity without openness. The proof handles empty complement and zero distances, then uses the shifted-point contradiction and le_infDist correctly. No missing hypothesis or circular dependency."
+    },
+    {
+      "key": "distance_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Closedness, nonemptiness, properness, and differentiability justify the nearest point and directional derivative argument. The Lipschitz upper bound and unit-direction lower bound establish the exact operator-norm equality, including the vacuous zero-dimensional case."
+    },
+    {
+      "key": "boundary_direction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact-ball minimum is positive. The Riesz vector, unit derivative norm, and concavity give the claimed strict inequality with the correct sign. Both dependencies are necessary prerequisites and correctly directed."
+    },
+    {
+      "key": "cutoffs",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes all six conjuncts: Lipschitz bounds, range, compact support, support inclusion, pointwise convergence, and the a.e. derivative inequality. Countable exceptional levels and all derivative regions are handled explicitly; the empty-complement case is valid."
+    },
+    {
+      "key": "divergence_smul",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both differentiability hypotheses appear in the exact type and justify the product rule. Linearity of trace and trace_smulRight yield precisely the stated divergence identity."
+    },
+    {
+      "key": "admissible_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Packaging the field, bounding its supremum norm, and applying the defining supremum bound prove the exact statement. Arbitrary W and absence of integrability assumptions are valid for this variational definition."
+    },
+    {
+      "key": "weighted_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The normalized radial field is globally Lipschitz and admissible. The divergence identity, integrability bounds, and signed pairing estimate give the real inequality; ofReal_add_le correctly converts it to ENNReal without assuming the pairing is nonnegative. Nonpositive r and infinite variation are covered."
+    },
+    {
+      "key": "localized_pairing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the pointwise bound on g, admissibility of φg, the a.e. product identity, and integrability before integrating. The error estimate and ENNReal conversion prove exactly the frozen inequality. The redundant openness hypothesis causes no mismatch."
+    },
+    {
+      "key": "outside_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Measurability permits restriction of the a.e. hypothesis. Every defining pairing integral vanishes, so its iterated supremum is zero. No integrability assumption or reliance on the parent theorem is needed."
+    }
+  ],
+  "required_changes": []
+}

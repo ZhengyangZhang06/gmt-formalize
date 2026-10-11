@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.extension-a1.distance_gradient-a1",
+  "parent_id": "root.bv_results-a1.extension-a1",
+  "depth": 3,
+  "title": "Unit gradient of the distance function off a closed set (Simon 2.8 proof, C1(c))",
+  "statement": "For every n ∈ ℕ, every closed nonempty S ⊆ ℝⁿ and every x ∈ ℝⁿ with x ∉ S such that d_S(y) := infDist(y, S) is Fréchet differentiable at x, the operator norm of its derivative is ‖fderiv ℝ d_S x‖ = 1.",
+  "lean_statement": "∀ (n : ℕ) (S : Set (Rn n)) (x : Rn n), IsClosed S → S.Nonempty → x ∉ S → DifferentiableAt ℝ (fun y ↦ infDist y S) x → ‖fderiv ℝ (fun y ↦ infDist y S) x‖ = 1",
+  "lean_name": "bv_ext_norm_fderiv_infDist_eq_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-extension-a1-distance-gradient-a1-a1"
+}

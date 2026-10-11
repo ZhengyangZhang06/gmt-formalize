@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.extension-a1.outside_variation-a1",
+  "parent_id": "root.bv_results-a1.extension-a1",
+  "depth": 3,
+  "title": "|Du|(A) = 0 when u = 0 a.e. on a measurable A (first conjunct of Simon 2.8, C0)",
+  "statement": "For every n ∈ ℕ, every measurable set A ⊆ ℝⁿ and every u : ℝⁿ → ℝ with u(x) = 0 for Lebesgue-a.e. x ∈ A (∀ᵐ x, x ∈ A → u x = 0): bvVariationOn u A = 0.",
+  "lean_statement": "∀ (n : ℕ) (A : Set (Rn n)) (u : Rn n → ℝ), MeasurableSet A → (∀ᵐ x ∂volume, x ∈ A → u x = 0) → Chapter02.bvVariationOn u A = 0",
+  "lean_name": "bv_ext_variation_eq_zero_of_ae_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-extension-a1-outside-variation-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.extension-a1.distance_concave-a1",
+  "parent_id": "root.bv_results-a1.extension-a1",
+  "depth": 3,
+  "title": "Concavity of the distance to the complement of a convex set (Simon 2.8 proof, C1(b))",
+  "statement": "For every n ∈ ℕ and every convex set U ⊆ ℝⁿ (ℝⁿ = EuclideanSpace ℝ (Fin n)), the function d(x) := infDist(x, Uᶜ) (Metric.infDist; by Mathlib convention infDist x ∅ = 0) is concave on U in Mathlib's sense ConcaveOn ℝ U d: for all x, y ∈ U and a, b ≥ 0 with a + b = 1, a·d(x) + b·d(y) ≤ d(a•x + b•y). Openness of U is not assumed.",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Rn n)), Convex ℝ U → ConcaveOn ℝ U (fun x ↦ infDist x Uᶜ)",
+  "lean_name": "bv_ext_infDist_compl_concaveOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-extension-a1-distance-concave-a1-a1"
+}

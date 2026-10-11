@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.extension-a1.cutoffs-a1",
+  "parent_id": "root.bv_results-a1.extension-a1",
+  "depth": 3,
+  "title": "Lipschitz cut-offs φ_j = γ_{ε_j}∘d with r|Dφ_j| ≤ −Dφ_j[x − ξ] a.e. (Simon 2.8 (2)–(3), C3)",
+  "statement": "Let n ∈ ℕ, U ⊆ ℝⁿ open, bounded and convex, ξ ∈ ℝⁿ and r > 0 with closedBall(ξ, r) ⊆ U. Then there are φ_j : ℝⁿ → ℝ (j ∈ ℕ) such that: each φ_j is Lipschitz; 0 ≤ φ_j ≤ 1; each φ_j has compact support and tsupport φ_j ⊆ U; φ_j(x) → 1_U(x) for every x ∈ ℝⁿ (1_U = U.indicator 1); and for every j, for Lebesgue-a.e. x, r‖Dφ_j(x)‖ ≤ −Dφ_j(x)[x − ξ], where Dφ_j = fderiv ℝ φ_j.",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Rn n)) (ξ : Rn n) (r : ℝ), IsOpen U → Bornology.IsBounded U → Convex ℝ U → 0 < r → closedBall ξ r ⊆ U → ∃ φ : ℕ → Rn n → ℝ, (∀ j, ∃ K, LipschitzWith K (φ j)) ∧ (∀ j x, 0 ≤ φ j x ∧ φ j x ≤ 1) ∧ (∀ j, HasCompactSupport (φ j)) ∧ (∀ j, tsupport (φ j) ⊆ U) ∧ (∀ x, Tendsto (fun j ↦ φ j x) atTop (𝓝 (U.indicator (fun _ ↦ (1 : ℝ)) x))) ∧ ∀ j, ∀ᵐ x ∂volume, r * ‖fderiv ℝ (φ j) x‖ ≤ -fderiv ℝ (φ j) x (x - ξ)",
+  "lean_name": "bv_ext_exists_cutoffs",
+  "depends_on": [
+    "root.bv_results-a1.extension-a1.boundary_direction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.bv_results-a1.extension-a1.boundary_direction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-extension-a1-cutoffs-a1-a1"
+}
