@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a6d016b71199c87758df168d44f8b9a2871c721a5284a2f4bebc38718d2be706",
+  "git_delta": {
+    "base_commit": "025b69e428559faeefc423e717bdd594bebe8c24",
+    "candidate_commit": "556f326ab6126af50cb093c48702a0aefff24952",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "density_one_allard_scale",
+    "diff_sha256": "a6d14a78bceb319aa133b8908f1b60b4ebef5d8e3832f57d7b32dba3fba084b2",
+    "source_sha256": "78348c8b4ab6de400be4d2553708187e77411d79b38a55de88bfa227eb5ef0f3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.density_one_allard_scale",
+      "statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ) (ξ : Amb n ℓ) (δ : ℝ), IsOpen U → (n : ℝ) < p → V.LocallyLp H p → ξ ∈ U → V.HasDensity ξ 1 → 0 < δ → ξ ∈ V.support ∧ ∃ r : ℝ, 0 < r ∧ closedBall ξ r ⊆ U ∧ V.weight (closedBall ξ r) ≤ ENNReal.ofReal ((1 + δ) * (unitBallVolume n * r ^ n)) ∧ V.scaledLpNorm H p ξ r ≤ ENNReal.ofReal δ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
