@@ -484,6 +484,82 @@ theorem dohr_locally_lp_of_continuous : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) 
     _ = ENNReal.ofReal A ^ p * V.weight K := setLIntegral_const _ _
     _ < ∞ := ENNReal.mul_lt_top (ENNReal.rpow_lt_top_of_nonneg hp.le ENNReal.ofReal_ne_top) hμK
 
+/-- **Simon Ch. 5, Theorem 7.1, second assertion (p. 127).**  With `p = 2n/(1 − α) > n`, so that
+`β = 1 − n/p = (1 + α)/2 ∈ [α, 1]`, Allard's theorem at the density-one point `ξ` makes `spt V` a
+`C^{1,β}` graph near `ξ`; integrality of `θ` and monotonicity give `θ = 1`, `μ_V = Hⁿ ⌞ spt V` and
+`Θ = 1` on `spt V` near `ξ`; vertical test fields give the prescribed-mean-curvature system for `u`,
+and the Schauder bootstrap makes `u` of class `C^{q+2,α}` near `0`.  Finally `ρ = min(r', s)` and
+`W = {x ∈ B̆ⁿ_ρ(0) : |(x, u(x))| < ρ}`. -/
+theorem density_one_higher_regularity : DensityOneHigherRegularity := by
+  intro n ℓ hn U hU V H h q α hα0 hα1 hHmc hmult hh hHh ξ hξU hdens
+  -- Step 1: `p = 2n/(1 − α)`; `H = h` is locally `Lᵖ(μ_V)` and `θ ≥ 1` `μ_V`-a.e.
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have h1α : (0 : ℝ) < 1 - α := by linarith
+  obtain ⟨p, hp_def⟩ : ∃ p : ℝ, p = 2 * n / (1 - α) := ⟨_, rfl⟩
+  have hnp : (n : ℝ) / p = (1 - α) / 2 := by
+    rw [hp_def]
+    field_simp
+  have hp : (n : ℝ) < p := by
+    rw [hp_def, lt_div_iff₀ h1α]
+    nlinarith
+  have hαβ : α ≤ 1 - (n : ℝ) / p := by rw [hnp]; linarith
+  have hβ1 : 1 - (n : ℝ) / p ≤ 1 := by rw [hnp]; linarith
+  have hLp : V.LocallyLp H p :=
+    Submission.dohr_locally_lp_of_continuous n ℓ U V H h hh.1.continuousOn hHh p (by linarith)
+  have hmult1 : ∀ᵐ x ∂V.weight, 1 ≤ V.mult x := by
+    filter_upwards [hmult] with x hx
+    obtain ⟨k, hk, hxk⟩ := hx
+    rw [hxk]
+    exact_mod_cast hk
+  -- Step 2: Allard's theorem makes `spt V` a `C^{1,β}` graph over `B̆ⁿ_R(0)` near `ξ`.
+  obtain ⟨R, hR, Q, u, hRU, hu1, hu0, hDu0, ⟨K, hK⟩, hgraph⟩ :=
+    Submission.dohr_allard_graph_at_density_one Submission.allard_regularity_theorem n ℓ hn U hU
+      V H p hp hHmc hLp hmult1 ξ hξU hdens
+  -- Step 3: `θ = 1`, `μ_V = Hⁿ ⌞ spt V` and `Θ = 1` on `spt V` in `B̆_s(ξ)`, and `M` agrees with
+  -- the graph up to an `Hⁿ`-null set.
+  obtain ⟨s, hs, hsR, -, -, hweight, hdens1, hsymm⟩ :=
+    Submission.dohr_local_multiplicity_one n ℓ hn U hU V H p hp hHmc hLp hmult ξ hξU hdens R Q u
+      hR hRU hu1 hgraph
+  -- Step 4: `u` solves the prescribed-mean-curvature system on `B̆ⁿ_r(0)`.
+  obtain ⟨hOopen, hFhol, r, hr, hrR, hrO, hEL⟩ :=
+    Submission.dohr_vertical_euler_lagrange n ℓ hn U hU V H h q α hHmc hh hHh ξ s R Q u hs hsR
+      ((closedBall_subset_closedBall hsR).trans hRU) hu1 hu0 hgraph hweight
+  -- Step 5: the Schauder bootstrap gives `u ∈ C^{q+2,α}(B̆ⁿ_{r'}(0))`.
+  obtain ⟨r', hr', -, hhol⟩ :=
+    Submission.dohr_elliptic_bootstrap n ℓ hn q α (1 - (n : ℝ) / p) hα0 hα1 hαβ hβ1 r u
+      (fun z => Q (h (ξ + Q.symm z))) ((fun y => Q (y - ξ)) '' U) hr hOopen hFhol hrO
+      (hu1.mono (ball_subset_ball hrR)) hDu0
+      ⟨K, fun x hx y hy => hK x (ball_subset_ball hrR hx) y (ball_subset_ball hrR hy)⟩ hEL
+  -- Step 6: `ρ = min(r', s)` and `W = {x ∈ B̆ⁿ_ρ(0) : |(x, u(x))| < ρ}`.
+  obtain ⟨ρ, hρr', hρs, hρ⟩ : ∃ ρ : ℝ, ρ ≤ r' ∧ ρ ≤ s ∧ 0 < ρ :=
+    ⟨min r' s, min_le_left _ _, min_le_right _ _, lt_min hr' hs⟩
+  have hW : {x | x ∈ ball (0 : Rn n) ρ ∧ ‖graphPoint x (u x)‖ < ρ} ⊆ ball 0 r' :=
+    fun x hx => ball_subset_ball hρr' hx.1
+  refine ⟨ρ, hρ, Q, {x | x ∈ ball (0 : Rn n) ρ ∧ ‖graphPoint x (u x)‖ < ρ}, u, ?_, ?_, ?_, hu0,
+    hDu0, hsymm ρ hρ hρs, ?_⟩
+  · -- `W` is open, since `x ↦ (x, u(x))` is continuous on `B̆ⁿ_R(0)`.
+    have hG : Continuous fun z : Rn n × Rn ℓ => graphPoint z.1 z.2 := by
+      unfold graphPoint
+      fun_prop
+    have hc : ContinuousOn (fun x => ‖graphPoint x (u x)‖) (ball (0 : Rn n) ρ) :=
+      (hG.comp_continuousOn (continuousOn_id.prodMk
+        (hu1.continuousOn.mono (ball_subset_ball (hρs.trans hsR))))).norm
+    exact hc.isOpen_inter_preimage isOpen_ball isOpen_Iio
+  · -- `0 ∈ W`, as `(0, u(0)) = 0`.
+    have hG0 : graphPoint (0 : Rn n) (0 : Rn ℓ) = 0 := by
+      ext i
+      induction i using Fin.addCases <;> simp [graphPoint]
+    refine ⟨mem_ball_self hρ, ?_⟩
+    rw [hu0, hG0, norm_zero]
+    exact hρ
+  · -- The `C^{q+2,α}` bounds on `B̆ⁿ_{r'}(0)` restrict to `W`.
+    obtain ⟨hCk, ⟨B, hB⟩, ⟨L, hL⟩⟩ := hhol
+    exact ⟨hCk.mono hW, ⟨B, fun i hi x hx => hB i hi x (hW hx)⟩,
+      ⟨L, fun x hx y hy => hL x (hW hx) y (hW hy)⟩⟩
+  · -- `Θ = 1` on `B̆_ρ(ξ) ∩ spt V`.
+    rintro x ⟨hxρ, hxV⟩
+    exact hdens1 x ⟨ball_subset_ball hρs hxρ, hxV⟩
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
