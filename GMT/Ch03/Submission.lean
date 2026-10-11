@@ -407,6 +407,7 @@ theorem Submission.egorov_closed_subset_uniformOn_compact_volume : ∀ (n : ℕ)
     have hxA₀ := (hFA j hj).1
     exact ⟨⟨hxA₀.1, Metric.ball_subset_ball (by linarith [Nat.le_ceil r]) (hr hx)⟩,
       fun hxt => hxA₀.2 (mem_iUnion.2 ⟨_, hxt⟩)⟩
+
 /-- **Uniform remainder estimate 1.6(‡) on a closed set** (Simon Ch. 2, proof of Theorem 1.5,
 `chapter-02.txt` lines 251–265): let `f : ℝⁿ → ℝ` be `K`-Lipschitz, `L` Borel and `S` Borel with
 `Df(x) = L(x)` at every `x ∈ S`. Then for `ε ∈ (0, ∞]` there is a closed `A ⊆ S` with
@@ -455,7 +456,7 @@ theorem Submission.lipschitz_uniform_remainder_on_closed_subset : ∀ (n : ℕ) 
     rw [Metric.tendsto_atTop]
     intro e he
     obtain ⟨ρ, hρ, hball⟩ :=
-      Metric.eventually_nhds_iff.mp ((hdiff x hx).isLittleO.def (half_pos he))
+      Metric.eventually_nhds_iff.mp ((hdiff x hx).isLittleO.bound (half_pos he))
     obtain ⟨N, hN⟩ := exists_nat_one_div_lt hρ
     refine ⟨N, fun k hk => ?_⟩
     have hle : η k x ≤ e / 2 := by
