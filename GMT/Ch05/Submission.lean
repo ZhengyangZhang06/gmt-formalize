@@ -458,6 +458,225 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Tilt bounded by height and curvature** (Simon Ch. 5, Lemma 2.5: the first inequality of (‡),
+with the mean-curvature term of the documented erratum, for **every** `n`-dimensional subspace `T`).
+There is `C₂ > 0` such that if 2.3 holds with `δ ∈ (0, 1/4]`, `ξ ∈ spt V ∩ B_{δρ}(0)` and
+`σ ∈ (0, 2δρ]`, then
+`C₂⁻¹ (σ⁻ⁿ ∫_{B_{σ/2}(ξ)} |p_{T_x M} − p_T|² dμ_V)^{1/2}
+   ≤ σ⁻¹ sup{dist(x − ξ, T) : x ∈ spt V ∩ B_σ(ξ)} + (σ^{p−n} ∫_{B_σ(ξ)} |H|ᵖ dμ_V)^{1/p}`.
+With `h` the height supremum and `k` the curvature term (both finite), the proof applies
+`aal_l1_tilt_height` on `B_σ(ξ) ⊆ B_ρ(0)` and bounds the height integral by `h² μ_V(B_σ(ξ))`.
+The mass bound `aal_mass_upper_bound` and Hölder's inequality then give
+`∫_{B_σ(ξ)} |H| dμ_V ≤ (C₀ ω_n)^{1−1/p} k σ^{n−1}`. Hence
+`C₂ = (max {144 C₀ ω_n, 2 (C₀ ω_n)^{1−1/p}})^{1/2}`. -/
+theorem aal_tilt_height_curvature_bound : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C₂ : ℝ, 0 < C₂ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ 1 / 4 → V.AllardHypotheses H p δ ρ → ∀ ξ ∈ V.support ∩ closedBall (0 : Amb n ℓ) (δ * ρ), ∀ σ : ℝ, 0 < σ → σ ≤ 2 * δ * ρ → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → ENNReal.ofReal (C₂⁻¹ * Real.sqrt ((σ ^ n)⁻¹ * ∫ x in closedBall ξ (σ / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight)) ≤ ENNReal.ofReal σ⁻¹ * V.heightSup ξ σ T + V.scaledLpNorm H p ξ σ := by
+  intro n ℓ hn p hp
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hp0 : 0 < p := by linarith
+  have hq : 0 ≤ 1 - 1 / p := by
+    have : 1 / p ≤ 1 := by rw [div_le_one hp0]; linarith
+    linarith
+  -- Step 1: `c = C₀ ω_n`, `c' = c^{1−1/p}`, `D = max {144 c, 2 c'}` and `C₂ = √D`.
+  obtain ⟨C₀, hC₀, hmass⟩ := Submission.aal_mass_upper_bound n ℓ hn p hp
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    exact div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  obtain ⟨c, hc, hc_def⟩ : ∃ c : ℝ, 0 < c ∧ c = C₀ * unitBallVolume n := ⟨_, mul_pos hC₀ hω, rfl⟩
+  obtain ⟨c', hc', hc'_def⟩ : ∃ c' : ℝ, 0 < c' ∧ c' = c ^ (1 - 1 / p) :=
+    ⟨_, Real.rpow_pos_of_pos hc _, rfl⟩
+  obtain ⟨D, hD1, hD2⟩ : ∃ D : ℝ, 144 * c ≤ D ∧ 2 * c' ≤ D :=
+    ⟨_, le_max_left _ _, le_max_right _ _⟩
+  have hDpos : 0 < D := lt_of_lt_of_le (by positivity) hD1
+  refine ⟨Real.sqrt D, Real.sqrt_pos.2 hDpos, ?_⟩
+  intro U hU V H δ ρ hδ hδ4 hA ξ hξ σ hσ hσρ T hT
+  have hA' := hA
+  obtain ⟨hρ, hGMC, -, -, hBU, -, hK0⟩ := hA'
+  -- `B_σ(ξ) ⊆ B_ρ(0) ⊆ U` and `σ ≤ ρ/2`, since `|ξ| ≤ δρ ≤ ρ/4` and `σ ≤ 2δρ`.
+  have hξn : ‖ξ‖ ≤ δ * ρ := by
+    have := hξ.2
+    rwa [mem_closedBall, dist_zero_right] at this
+  have hδρ : δ * ρ ≤ ρ / 4 := by nlinarith
+  have hσρ2 : σ ≤ ρ / 2 := by nlinarith
+  have hBB : closedBall ξ σ ⊆ closedBall (0 : Amb n ℓ) ρ := by
+    intro x hx
+    rw [mem_closedBall, dist_eq_norm] at hx
+    rw [mem_closedBall, dist_zero_right]
+    calc ‖x‖ = ‖(x - ξ) + ξ‖ := by rw [sub_add_cancel]
+      _ ≤ ‖x - ξ‖ + ‖ξ‖ := norm_add_le _ _
+      _ ≤ σ + δ * ρ := add_le_add hx hξn
+      _ ≤ ρ := by linarith
+  -- Step 2: the height is finite: `heightSup ξ σ T = h` with `0 ≤ h` (indeed `h ≤ σ`).
+  have hs_le : V.heightSup ξ σ T ≤ ENNReal.ofReal σ := by
+    refine iSup₂_le fun x hx => ENNReal.ofReal_le_ofReal ?_
+    have hx2 : ‖x - ξ‖ ≤ σ := by
+      have := hx.2
+      rwa [mem_closedBall, dist_eq_norm] at this
+    calc infDist (x - ξ) (T : Set (Amb n ℓ)) ≤ dist (x - ξ) 0 :=
+          infDist_le_dist_of_mem T.zero_mem
+      _ = ‖x - ξ‖ := by rw [dist_zero_right]
+      _ ≤ σ := hx2
+  obtain ⟨h, hh0, hs_eq⟩ : ∃ h : ℝ, 0 ≤ h ∧ V.heightSup ξ σ T = ENNReal.ofReal h :=
+    ⟨_, ENNReal.toReal_nonneg,
+      (ENNReal.ofReal_toReal (ne_top_of_le_ne_top ENNReal.ofReal_ne_top hs_le)).symm⟩
+  have hpt : ∀ x ∈ V.support ∩ closedBall ξ σ, infDist (x - ξ) (T : Set (Amb n ℓ)) ≤ h := by
+    intro x hx
+    have hle : ENNReal.ofReal (infDist (x - ξ) (T : Set (Amb n ℓ))) ≤ V.heightSup ξ σ T :=
+      le_iSup₂ (f := fun x (_ : x ∈ V.support ∩ closedBall ξ σ) =>
+        ENNReal.ofReal (infDist (x - ξ) (T : Set (Amb n ℓ)))) x hx
+    rw [hs_eq] at hle
+    exact (ENNReal.ofReal_le_ofReal_iff hh0).1 hle
+  -- Step 3: the curvature term is finite, `K(ξ, σ) ≤ K(0, ρ) ≤ δ`; write `k = K(ξ, σ)` and
+  -- `A = ∫_{B_σ(ξ)} |H|ᵖ dμ_V`, so that `k = σ^{(p−n)/p} A^{1/p}`.
+  set A := ∫⁻ x in closedBall ξ σ, ‖H x‖ₑ ^ p ∂V.weight with hA_def
+  have hσp : 0 < σ ^ (p - n) := Real.rpow_pos_of_pos hσ _
+  have hKmono : V.scaledLpNorm H p ξ σ ≤ V.scaledLpNorm H p 0 ρ := by
+    unfold RectifiableVarifold.scaledLpNorm
+    refine ENNReal.rpow_le_rpow (mul_le_mul' ?_ (lintegral_mono_set hBB)) (by positivity)
+    exact ENNReal.ofReal_le_ofReal (Real.rpow_le_rpow hσ.le (by linarith) (sub_nonneg.2 hp.le))
+  have hK_ne : V.scaledLpNorm H p ξ σ ≠ ⊤ :=
+    ne_top_of_le_ne_top ENNReal.ofReal_ne_top (hKmono.trans hK0)
+  have hA_ne : A ≠ ⊤ := by
+    intro hAtop
+    apply hK_ne
+    unfold RectifiableVarifold.scaledLpNorm
+    rw [← hA_def, hAtop, ENNReal.mul_top (by simpa using hσp)]
+    exact ENNReal.top_rpow_of_pos (by positivity)
+  have hKeq : (V.scaledLpNorm H p ξ σ).toReal = σ ^ ((p - n) / p) * A.toReal ^ (1 / p) := by
+    unfold RectifiableVarifold.scaledLpNorm
+    rw [← hA_def, ← ENNReal.toReal_rpow, ENNReal.toReal_mul, ENNReal.toReal_ofReal hσp.le,
+      Real.mul_rpow hσp.le ENNReal.toReal_nonneg, ← Real.rpow_mul hσ.le]
+    congr 2
+    ring
+  obtain ⟨k, hk0, hk_eq⟩ : ∃ k : ℝ, 0 ≤ k ∧ V.scaledLpNorm H p ξ σ = ENNReal.ofReal k :=
+    ⟨_, ENNReal.toReal_nonneg, (ENNReal.ofReal_toReal hK_ne).symm⟩
+  have hAk : A.toReal ^ (1 / p) = σ ^ ((n - p) / p) * k := by
+    rw [hk_eq, ENNReal.toReal_ofReal hk0] at hKeq
+    rw [hKeq, ← mul_assoc, ← Real.rpow_add hσ]
+    have : (n - p) / p + (p - n) / p = 0 := by field_simp; ring
+    rw [this, Real.rpow_zero, one_mul]
+  -- Step 5: the mass bound `μ_V(B_σ(ξ)) ≤ c σⁿ` (`|ξ| ≤ ρ/4`, `σ ≤ ρ/2`).
+  have hm : V.weight (closedBall ξ σ) ≤ ENNReal.ofReal (c * σ ^ n) := by
+    have := hmass U hU V H δ ρ hδ hδ4 hA ξ (hξn.trans hδρ) σ hσ hσρ2
+    rwa [hc_def, mul_assoc]
+  have hfin : V.weight (closedBall ξ σ) < ⊤ := lt_of_le_of_lt hm ENNReal.ofReal_lt_top
+  have hm_le : (V.weight (closedBall ξ σ)).toReal ≤ c * σ ^ n :=
+    ENNReal.toReal_le_of_le_ofReal (by positivity) hm
+  -- Step 4: `aal_l1_tilt_height` on `B_σ(ξ)`, and `∫_{B_σ(ξ)} dist(x − ξ, T)² dμ_V ≤ h² c σⁿ`
+  -- because `μ_V`-a.e. point lies in `spt V`, where `dist(x − ξ, T) ≤ h` on `B_σ(ξ)`.
+  have hLA := Submission.aal_l1_tilt_height n ℓ hn U hU V H hGMC ξ σ h hσ (hBB.trans hBU) hh0 T hT
+    hpt
+  have hsupp : ∀ᵐ x ∂V.weight, x ∈ V.support := by
+    have h1 : ∀ᵐ x ∂V.weight, x ∈ V.weight.support := Measure.support_mem_ae
+    have h2 : ∀ᵐ x ∂V.weight, x ∈ V.carrier := by
+      have : ∀ᵐ x ∂((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier), x ∈ V.carrier :=
+        ae_restrict_mem₀ V.nullMeasurableSet_carrier
+      exact (withDensity_absolutelyContinuous _ _).ae_le this
+    filter_upwards [h1, h2] with x hx1 hx2
+    exact ⟨V.carrier_subset hx2, hx1⟩
+  have hheight : ∫ x in closedBall ξ σ, infDist (x - ξ) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight ≤
+      h ^ 2 * (c * σ ^ n) := by
+    have hae : ∀ᵐ x ∂(V.weight.restrict (closedBall ξ σ)), x ∈ V.support ∩ closedBall ξ σ := by
+      filter_upwards [ae_restrict_of_ae hsupp, ae_restrict_mem measurableSet_closedBall]
+        with x hx1 hx2
+      exact ⟨hx1, hx2⟩
+    have : IsFiniteMeasure (V.weight.restrict (closedBall ξ σ)) :=
+      isFiniteMeasure_restrict.2 hfin.ne
+    calc ∫ x in closedBall ξ σ, infDist (x - ξ) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight
+        ≤ ∫ x in closedBall ξ σ, h ^ 2 ∂V.weight := by
+          apply integral_mono_of_nonneg
+          · exact Eventually.of_forall fun x => sq_nonneg _
+          · exact integrable_const _
+          · filter_upwards [hae] with x hx
+            exact pow_le_pow_left₀ infDist_nonneg (hpt x hx) 2
+      _ = h ^ 2 * (V.weight (closedBall ξ σ)).toReal := by
+          rw [setIntegral_const, smul_eq_mul, measureReal_def, mul_comm]
+      _ ≤ h ^ 2 * (c * σ ^ n) := mul_le_mul_of_nonneg_left hm_le (by positivity)
+  -- Step 6: Hölder, `∫_{B_σ(ξ)} |H| dμ_V ≤ A^{1/p} μ_V(B_σ(ξ))^{1−1/p} ≤ c' k σ^{n−1}`.
+  have hHolder : ∫ x in closedBall ξ σ, ‖H x‖ ∂V.weight ≤
+      A.toReal ^ (1 / p) * (V.weight (closedBall ξ σ)).toReal ^ (1 - 1 / p) := by
+    by_cases hg : AEStronglyMeasurable (fun x => ‖H x‖) (V.weight.restrict (closedBall ξ σ))
+    · rw [integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall fun x => norm_nonneg _) hg]
+      have hcongr : ∫⁻ x in closedBall ξ σ, ENNReal.ofReal ‖H x‖ ∂V.weight =
+          ∫⁻ x in closedBall ξ σ, ‖H x‖ₑ ∂V.weight := by
+        congr 1; ext x; exact ofReal_norm (H x)
+      rw [hcongr]
+      have key := eLpNorm'_le_eLpNorm'_mul_rpow_measure_univ
+        (μ := V.weight.restrict (closedBall ξ σ)) (f := fun x => ‖H x‖) one_pos
+        (by linarith : (1 : ℝ) ≤ p) hg
+      simp only [eLpNorm'_eq_lintegral_enorm, enorm_norm, ENNReal.rpow_one, div_one,
+        Measure.restrict_apply_univ] at key
+      rw [← hA_def] at key
+      have hR : A ^ (1 / p) * V.weight (closedBall ξ σ) ^ (1 - 1 / p) ≠ ⊤ :=
+        ENNReal.mul_ne_top (ENNReal.rpow_ne_top_of_nonneg (by positivity) hA_ne)
+          (ENNReal.rpow_ne_top_of_nonneg hq hfin.ne)
+      calc (∫⁻ x in closedBall ξ σ, ‖H x‖ₑ ∂V.weight).toReal
+          ≤ (A ^ (1 / p) * V.weight (closedBall ξ σ) ^ (1 - 1 / p)).toReal :=
+            ENNReal.toReal_mono hR key
+        _ = A.toReal ^ (1 / p) * (V.weight (closedBall ξ σ)).toReal ^ (1 - 1 / p) := by
+            rw [ENNReal.toReal_mul, ← ENNReal.toReal_rpow, ← ENNReal.toReal_rpow]
+    · rw [integral_undef (fun hi => hg hi.aestronglyMeasurable)]
+      positivity
+  have hcurv : ∫ x in closedBall ξ σ, ‖H x‖ ∂V.weight ≤ c' * k * σ ^ (n - 1) := by
+    calc ∫ x in closedBall ξ σ, ‖H x‖ ∂V.weight
+        ≤ A.toReal ^ (1 / p) * (V.weight (closedBall ξ σ)).toReal ^ (1 - 1 / p) := hHolder
+      _ ≤ A.toReal ^ (1 / p) * (c * σ ^ n) ^ (1 - 1 / p) :=
+          mul_le_mul_of_nonneg_left (Real.rpow_le_rpow ENNReal.toReal_nonneg hm_le hq)
+            (by positivity)
+      _ = c' * k * σ ^ (n - 1) := by
+          rw [hAk, hc'_def, Real.mul_rpow hc.le (by positivity), ← Real.rpow_natCast σ n,
+            ← Real.rpow_mul hσ.le]
+          have hpow : (σ : ℝ) ^ (n - 1 : ℕ) = σ ^ ((n : ℝ) - 1) := by
+            rw [← Real.rpow_natCast, Nat.cast_sub hn, Nat.cast_one]
+          rw [hpow]
+          have : σ ^ ((n - p) / p) * k * (c ^ (1 - 1 / p) * σ ^ ((n : ℝ) * (1 - 1 / p)))
+              = c ^ (1 - 1 / p) * k * (σ ^ ((n - p) / p) * σ ^ ((n : ℝ) * (1 - 1 / p))) := by
+            ring
+          rw [this, ← Real.rpow_add hσ]
+          congr 2
+          field_simp
+          ring
+  -- Step 7: with `X` the tilt integral and `a = σ⁻¹ h`,
+  -- `σ⁻ⁿ X ≤ 144 c a² + 4 c' a k ≤ D (a + k)²`; take square roots.
+  set X := ∫ x in closedBall ξ (σ / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight
+    with hX_def
+  have hX : X ≤ 144 * (σ ^ 2)⁻¹ * (h ^ 2 * (c * σ ^ n)) + 4 * h * (c' * k * σ ^ (n - 1)) := by
+    have h1 : 144 * (σ ^ 2)⁻¹ * ∫ x in closedBall ξ σ, infDist (x - ξ) (T : Set (Amb n ℓ)) ^ 2
+        ∂V.weight ≤ 144 * (σ ^ 2)⁻¹ * (h ^ 2 * (c * σ ^ n)) :=
+      mul_le_mul_of_nonneg_left hheight (by positivity)
+    have h2 : 4 * h * ∫ x in closedBall ξ σ, ‖H x‖ ∂V.weight ≤ 4 * h * (c' * k * σ ^ (n - 1)) :=
+      mul_le_mul_of_nonneg_left hcurv (by positivity)
+    linarith
+  obtain ⟨a, ha0, ha_def⟩ : ∃ a : ℝ, 0 ≤ a ∧ a = σ⁻¹ * h := ⟨_, by positivity, rfl⟩
+  have hE : (σ ^ n)⁻¹ * (144 * (σ ^ 2)⁻¹ * (h ^ 2 * (c * σ ^ n)) + 4 * h * (c' * k * σ ^ (n - 1)))
+      = 144 * c * a ^ 2 + 4 * c' * a * k := by
+    obtain ⟨n', rfl⟩ : ∃ n', n = n' + 1 := ⟨n - 1, by omega⟩
+    rw [ha_def, Nat.add_sub_cancel]
+    field_simp
+    ring
+  have hcomb : (σ ^ n)⁻¹ * X ≤ D * (a + k) ^ 2 := by
+    calc (σ ^ n)⁻¹ * X
+        ≤ (σ ^ n)⁻¹ * (144 * (σ ^ 2)⁻¹ * (h ^ 2 * (c * σ ^ n)) + 4 * h * (c' * k * σ ^ (n - 1))) :=
+          mul_le_mul_of_nonneg_left hX (by positivity)
+      _ = 144 * c * a ^ 2 + 4 * c' * a * k := hE
+      _ ≤ D * (a + k) ^ 2 := by
+          linarith [mul_nonneg (sub_nonneg.2 hD1) (sq_nonneg a),
+            mul_nonneg (mul_nonneg (sub_nonneg.2 hD2) ha0) hk0, mul_nonneg hDpos.le (sq_nonneg k)]
+  have hfinal : (Real.sqrt D)⁻¹ * Real.sqrt ((σ ^ n)⁻¹ * X) ≤ σ⁻¹ * h + k := by
+    rw [inv_mul_le_iff₀ (Real.sqrt_pos.2 hDpos), ← ha_def]
+    calc Real.sqrt ((σ ^ n)⁻¹ * X) ≤ Real.sqrt (D * (a + k) ^ 2) := Real.sqrt_le_sqrt hcomb
+      _ = Real.sqrt D * (a + k) := by
+          rw [Real.sqrt_mul hDpos.le, Real.sqrt_sq (by positivity)]
+  -- Step 8: back in `[0, ∞]`, `ofReal (σ⁻¹ h + k) = ofReal σ⁻¹ * heightSup + scaledLpNorm`.
+  calc ENNReal.ofReal ((Real.sqrt D)⁻¹ * Real.sqrt ((σ ^ n)⁻¹ * X))
+      ≤ ENNReal.ofReal (σ⁻¹ * h + k) := ENNReal.ofReal_le_ofReal hfinal
+    _ = ENNReal.ofReal σ⁻¹ * V.heightSup ξ σ T + V.scaledLpNorm H p ξ σ := by
+        rw [ENNReal.ofReal_add (by positivity) hk0, ENNReal.ofReal_mul (by positivity), hs_eq,
+          hk_eq]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
