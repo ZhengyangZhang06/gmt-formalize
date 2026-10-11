@@ -416,12 +416,6 @@ theorem Submission.rc_diagonal_subseq : ∀ (ι : Type u) [Countable ι] (a : �
     hK.tendsto_subseq (x := a) fun k => Set.mem_univ_pi.mpr fun i => abs_le.mp (hC i k)
   exact ⟨φ, hφ, fun i => ⟨b i, tendsto_pi_nhds.mp hlim i⟩⟩
 
-/-- The headline results of Simon, *Introduction to GMT*, Chapter 1 (pp. 1–38). -/
-theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
-
-end GMT.Ch01
-
-
 /-- Simon Ch. 1, Theorem 4.16 (corrected), proof Steps 1–4 and the convergence in Step 5: one
 subsequence `φ` along which `∫ f dμ_{φ(k)}` converges for every `f ∈ C_c(X, ℝ)`.  `X` is
 σ-compact, so it has a compact exhaustion `K j` (`CompactExhaustion.choice`), and
@@ -494,3 +488,8 @@ theorem Submission.rc_subseq_integrals_converge : ∀ (X : Type u) [TopologicalS
   have h₃ := abs_lt.1 hg
   rw [Real.dist_eq, abs_lt]
   constructor <;> linarith [h₁.1, h₁.2, h₂.1, h₂.2, h₃.1, h₃.2]
+
+/-- The headline results of Simon, *Introduction to GMT*, Chapter 1 (pp. 1–38). -/
+theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
+
+end GMT.Ch01
