@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_covering-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Besicovitch covering lemma (Simon 3.12; proof from Evans–Gariepy)",
+  "statement": "For each n there is N = N(n) such that for every set B of pairs (centre in ℝⁿ, radius > 0) with radii bounded above, there are N subfamilies D_1, …, D_N ⊆ B, each consisting of pairwise disjoint closed balls, whose balls cover the set of centres of B.",
+  "lean_statement": "BesicovitchCovering",
+  "lean_name": "besicovitch_covering",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-besicovitch-covering-a1-a1"
+}

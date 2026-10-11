@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lebesgue_eq_hausdorff_and_isodiametric-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Lⁿ = Hⁿ = Hⁿ_δ on ℝⁿ and the isodiametric inequality (Simon 2.9, 2.10)",
+  "statement": "For every n ∈ ℕ, every real δ > 0 and every A ⊆ ℝⁿ = EuclideanSpace ℝ (Fin n): Lⁿ(A) = Hⁿ(A) and Hⁿ(A) = Hⁿ_δ(A), where Lⁿ is Lebesgue outer measure and Hⁿ, Hⁿ_δ are Simon's normalized Hausdorff measure and size-δ approximation (2.1), (2.2); and for every n ∈ ℕ and A ⊆ ℝⁿ: Lⁿ(A) ≤ ω_n (diam A / 2)ⁿ with ω_n = π^{n/2}/Γ(n/2 + 1).",
+  "lean_statement": "LebesgueEqHausdorff ∧ IsodiametricInequality",
+  "lean_name": "lebesgue_eq_hausdorff_and_isodiametric",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-lebesgue-eq-hausdorff-and-isodiametric-a1-a1"
+}

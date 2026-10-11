@@ -1,0 +1,116 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/manifest.json",
+        "sed -n '1,360p' .humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/GMT/Ch01/Contract.lean",
+        "theorem simon_theorem|def IsBorelRegularOuterMeasure|def HasSymmetricVitaliProperty|def simonHausdorffContentOuter|def IsRadonOuterMeasure",
+        "theorem borel_le_caratheodory|def IsMetric|exist_disjoint_covering_families|integral_rieszMeasure|rieszMeasure_regular|toMeasure_apply|le_toMeasure_apply",
+        "sigmaCompactSpace_of_locallyCompact_secondCountable|exists_superset_of_isCompact|instance.*SeparableSpace|metrizableSpace_of_t3_secondCountable|integral_trim_ae|setLIntegral_trim_ae",
+        "cat .humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/dag.json",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/simongmt diff --name-only HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j 1 /tmp/gmt-root-decomposition-audit-hmy5zfq2/AuditDirect.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/GMT/Ch01/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/GMT/Ch01/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/NNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityCovering.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonOuterMeasure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/dag.json",
+        "/tmp/gmt-root-decomposition-audit-hmy5zfq2/AuditDirect.lean"
+      ],
+      "conclusion": "The snapshot pins project ec1c322 and Mathlib 25730c7c; its package manifest pins SimonGMT 2b36630. Inspected build sources match these revisions and the inspected Mathlib files match the snapshot. No SimonGMT declarations were found inside the snapshot; their definitions and suggested reuse were checked in the manifest-pinned installed package. The frozen definitions match the prose, including Carathéodory integrals, normalized Hausdorff content and closed balls. Lean v4.35.0-rc3 successfully checked all twelve standalone propositions, comparator targets and conditional assembly of the exact parent, preserving all thirteen parent universe parameters. The assembly test assumes child contracts only; it does not prove or assume the parent to establish a child. All 22 inspected library declarations use only propext, Classical.choice and Quot.sound. The DAG contains only root, so no competing name reservations exist. All proposed names are distinct bare identifiers, dependencies are correctly directed and acyclic, and the twelve children cover precisely the fifteen parent conjuncts. The split is appropriate; frozen project files remain unchanged."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "caratheodory_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact contract and hypotheses. The σ-algebra argument, finite test-set reduction, separated even/odd annuli and summable tails prove Borel measurability without incorrectly assuming continuity from below for arbitrary outer measures."
+    },
+    {
+      "key": "borel_regular_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact Gδ, Borel-regularity and open σ-finiteness hypotheses. Finite intersections correctly justify the countable-intersection step. Restriction and recombination prove both approximation identities, including infinite-measure sets."
+    },
+    {
+      "key": "lusin_theorem",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches the trace-measurable subtype formulation without adding σ-finiteness. The finite restriction is proved Borel regular; closed approximations, finite truncations and uniformly convergent continuous step functions establish the exact conclusion."
+    },
+    {
+      "key": "lebesgue_eq_hausdorff_and_isodiametric",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both frozen conjuncts are established for arbitrary sets, including dimension zero. Steiner symmetrization and strict-diameter packing are sufficiently detailed. Minor unused convention issue: the open-ball volume formula requires positive radius when n=0; the separate zero-dimensional proof and subsequent steps never use the false zero-radius instance."
+    },
+    {
+      "key": "upper_density_comparison_and_theorem",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact real-dimensional statements, with no added measurability of A₁ or A₂. Radius-based selection retains zero-diameter balls; finite mass gives countability and vanishing tails. Finite restriction, locality and the declared approximation dependency then prove the second conjunct."
+    },
+    {
+      "key": "besicovitch_covering",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The dimension-dependent constant is chosen before the ball family. Greedy selection, the checked angle estimate, packing and annular coloring prove the closed-ball contract, including n=0. The geometric estimate is corroborated by [Ryzhik’s proof, §6.2](https://math.stanford.edu/~ryzhik/STANFORD/STANF205-11/notes-205-11.pdf)."
+    },
+    {
+      "key": "general_density_and_differentiation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both exact contracts follow without separability assumptions. Restriction preserves the Vitali property; null denominators are excluded correctly. The supplied finite comparison and upper-density proofs, level-set estimates, signed decomposition and integrable doubled-ball localization complete the argument using Carathéodory integrals."
+    },
+    {
+      "key": "radon_nikodym_theorem",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Proves all four clauses, including convergence to the specified upper density and the literal infinite-limit set. Finite comparison, singular decomposition, completed measurability, t-adic slicing and localization are supplied non-circularly. The two singular sets are shown equal modulo μ-null sets."
+    },
+    {
+      "key": "hausdorff_density_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches the normalized Hⁿ and Hⁿ∞ contracts. Borel regularity and the upper bound use exactly the declared dependencies. The lower-bound proof handles n=0 separately and proves vanishing at every smaller scale, correctly using the finite-content hypothesis at each scale."
+    },
+    {
+      "key": "riesz_positive",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The construction proves the exact NNReal-linear representation, including Radon regularity and the null-level-set correction. The optional library note has a non-blocking namespace typo: the verified names are NNRealRMK.integral_rieszMeasure and NNRealRMK.rieszMeasure_regular."
+    },
+    {
+      "key": "riesz_vector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Matches the full locally compact Hausdorff contract without adding σ-finiteness. Finite-measure duality, the compact-support decomposition and localization principle justify measurable gluing. The final unit-field modification gives the global a.e. conclusion without asserting that locally null sets are globally null."
+    },
+    {
+      "key": "radon_compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Uses the frozen second-countability hypothesis correctly. The cofinal compact exhaustion captures every test-function support; separable C(K) spaces, uniform bounds and diagonal extraction give one strictly increasing subsequence. The declared positive Riesz dependency supplies the Radon limit."
+    }
+  ],
+  "required_changes": []
+}
