@@ -403,12 +403,6 @@ theorem Submission.chartTD_hasLineDerivAt_of_comp_differentiableAt : ∀ (n N p 
   simp only [Function.comp_apply]
   abel
 
-/-- The frozen Chapter 3 contract. -/
-theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
-
-end GMT.Ch03
-
-
 /-- **Simon Ch. 2, Theorem 1.4 and (4.8)–(4.10)** (`chapter-02.txt` lines 59–72, 925–957), in one
 `C¹` chart `ψ` on an open `V ⊆ ℝⁿ` (injectivity of `Dψ` is not needed). Let `f` be locally
 Lipschitz on an open `U ⊆ ℝᴺ`. For `Lⁿ`-a.e. `u ∈ V` with `ψ(u) ∈ U`, `f ∘ ψ` is differentiable
@@ -423,9 +417,11 @@ theorem Submission.chartTD_comp_differentiable_lineDeriv_ae : ∀ (n N p : ℕ) 
       DifferentiableAt ℝ (f ∘ ψ) u ∧
         ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w) := by
   intro n N p U f V ψ hU hf hV hψ
+  -- Step 1: `W = V ∩ ψ⁻¹(U)` is open, since `ψ` is continuous on the open set `V`.
   have hW : IsOpen (V ∩ ψ ⁻¹' U) := hψ.continuousOn.isOpen_inter_preimage hV hU
-  -- `f ∘ ψ` is locally Lipschitz on `W`: `ψ` is Lipschitz near `u` (it is `C¹` there), `f` is
-  -- Lipschitz near `ψ(u)` (`U` is open), and `ψ` maps a neighbourhood of `u` into the latter.
+  -- Step 2: `f ∘ ψ` is locally Lipschitz on `W`: `ψ` is Lipschitz near `u` (it is `C¹` there),
+  -- `f` is Lipschitz near `ψ(u)` (`U` is open), and `ψ` maps a neighbourhood of `u` into the
+  -- latter.
   have hfψ : LocallyLipschitzOn (V ∩ ψ ⁻¹' U) (f ∘ ψ) := by
     rintro u ⟨huV, huU⟩
     have hψu : ContDiffAt ℝ 1 ψ u := hψ.contDiffAt (hV.mem_nhds huV)
@@ -435,9 +431,15 @@ theorem Submission.chartTD_comp_differentiable_lineDeriv_ae : ∀ (n N p : ℕ) 
     exact ⟨Kf * Kψ, s ∩ ψ ⁻¹' t,
       mem_nhdsWithin_of_mem_nhds (inter_mem hs (hψu.continuousAt.preimage_mem_nhds ht)),
       hft.comp (hψs.mono inter_subset_left) fun _ hx ↦ hx.2⟩
-  -- Rademacher's theorem on `W`, then (4.10) at every point of differentiability.
+  -- Steps 3–4: Rademacher's theorem on `W` (via the countable cover in the accepted child).
   filter_upwards [Submission.chartTD_ae_differentiableAt_of_locallyLipschitzOn n p _ _ hW hfψ]
     with u hu huV huU
   have hdiff : DifferentiableAt ℝ (f ∘ ψ) u := hu ⟨huV, huU⟩
+  -- Step 5 (Simon (4.10)): the line derivative at every point of differentiability.
   exact ⟨hdiff, Submission.chartTD_hasLineDerivAt_of_comp_differentiableAt n N p U f ψ u hU hf
     huU ((hψ.contDiffAt (hV.mem_nhds huV)).differentiableAt one_ne_zero) hdiff⟩
+
+/-- The frozen Chapter 3 contract. -/
+theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
+
+end GMT.Ch03
