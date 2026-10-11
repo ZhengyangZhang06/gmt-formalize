@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiable_of_tangent_measure-a1.cone_decay-a1",
+  "parent_id": "root.rectifiable_of_tangent_measure-a1",
+  "depth": 2,
+  "title": "Vanishing n-density of μ in the cone around the normal space at a tangent point (Remark 1.5(3), cone part)",
+  "statement": "Let N, n ∈ ℕ with n ≥ 1, ℝ^N = EuclideanSpace ℝ (Fin N), and let μ be a Borel measure on ℝ^N with μ(K) < ∞ for every compact K ⊆ ℝ^N. Let x ∈ ℝ^N, P a linear subspace of ℝ^N and θ ∈ ℝ such that HasApproxTangentPlaneWithMultiplicity n μ x P θ holds (finrank P = n and (rⁿ)⁻¹ ∫ f(η_{x,r}(y)) dμ(y) → θ ∫_P f dHⁿ as r ↓ 0 for every f ∈ C_c(ℝ^N, ℝ), η_{x,r}(y) = r⁻¹(y − x), Hⁿ = μHE[n]). Let q_P = P.starProjection be the orthogonal projection onto P and C_x := {z : |q_P(z − x)| ≤ |z − x|/2}. Then for every ε > 0, μ(C_x ∩ B_ρ(x)) ≤ ε ρⁿ (as ENNReal.ofReal(ερⁿ)) for all sufficiently small ρ > 0, i.e. eventually in 𝓝[>] 0.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Rn N)) (x : Rn N) (P : Submodule ℝ (Rn N)) (θ : ℝ), (∀ K : Set (Rn N), IsCompact K → μ K < ∞) → 0 < n → HasApproxTangentPlaneWithMultiplicity n μ x P θ → ∀ ε : ℝ, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μ ({z | ‖P.starProjection (z - x)‖ ≤ ‖z - x‖ / 2} ∩ Metric.ball x ρ) ≤ ENNReal.ofReal (ε * ρ ^ n)",
+  "lean_name": "tangentMeasure_eventually_cone_small",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-rectifiable-of-tangent-measure-a1-cone-decay-a1-a1"
+}
