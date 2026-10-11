@@ -1,0 +1,74 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.submanifold_tangent-a1`
+- Child DAG node: `root.submanifold_tangent-a1.submanifold_measurable-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 5–6 of the parent-supplied proof of simon_submanifold_tangent_basics (local closedness from relative properness, then Lindelöf), written out in full.
+
+Proof.
+1. Local closedness. Let (V, W, ψ) be any local representation of M, so IsSimonLocalRepresentation r M V W ψ, and let F_W := closure(W ∩ M), a closed set. We claim W ∩ F_W ⊆ M.
+Let z ∈ W ∩ F_W. Since ℝᴺ is a metric space, there are z_j ∈ W ∩ M (j ∈ ℕ) with z_j → z. The set Q := {z_j : j ∈ ℕ} ∪ {z} is compact, being a convergent sequence together with its limit, and Q ⊆ W because each z_j ∈ W and z ∈ W. By relative properness, V ∩ ψ⁻¹(Q) is compact.
+Since z_j ∈ W ∩ M = ψ(V), choose x_j ∈ V with ψ(x_j) = z_j; then x_j ∈ V ∩ ψ⁻¹(Q). By sequential compactness, some subsequence x_{j_k} converges to a point x ∈ V ∩ ψ⁻¹(Q). ψ is C^r, hence continuous, on the open set V, so it is continuous at x. Therefore ψ(x) = lim_k ψ(x_{j_k}) = lim_k z_{j_k} = z. Hence z ∈ ψ(V) = W ∩ M ⊆ M, which proves the claim.
+2. Consequently W ∩ M = W ∩ F_W. The inclusion '⊆' holds because W ∩ M ⊆ closure(W ∩ M) = F_W, and '⊇' is step 1.
+3. Countable subcover (Lindelöf). For every y ∈ M, IsSimonSubmanifold provides a local representation (V_y, W_y, ψ_y) with y ∈ W_y. The sets W_y (y ∈ M) are open and cover M. ℝᴺ is second countable, so there is a countable set C ⊆ M with ∪_{y ∈ C} W_y = ∪_{y ∈ M} W_y ⊇ M.
+4. M as a countable union. Every z ∈ M lies in W_y for some y ∈ C. Hence M = ∪_{y ∈ C} (W_y ∩ M) = ∪_{y ∈ C} (W_y ∩ F_{W_y}), using step 2 for each (V_y, W_y, ψ_y).
+5. Measurability. Each W_y ∩ F_{W_y} is the intersection of an open set and a closed set, hence Borel. A countable union of Borel sets is Borel, and the measurable structure of ℝᴺ is its Borel σ-algebra. Therefore MeasurableSet M. If M = ∅, then C = ∅ and the statement is trivial.
+
+Formal references (Mathlib): mem_closure_iff_seq_limit (Topology/Sequences.lean:108), Filter.Tendsto.isCompact_insert_range, IsCompact.tendsto_subseq (Topology/Sequences.lean:298), TopologicalSpace.isOpen_iUnion_countable (Topology/Bases.lean:932), IsOpen.measurableSet, IsClosed.measurableSet, MeasurableSet.biUnion.
+
+## Key steps
+
+1. For a local representation (V, W, ψ), relative properness and continuity of ψ on V give W ∩ closure(W ∩ M) ⊆ M. So W ∩ M = W ∩ F_W with F_W = closure(W ∩ M) closed.
+2. The open chart sets W_y (y ∈ M) cover M, and second countability of ℝᴺ gives a countable subfamily with the same union (Lindelöf).
+3. M = ∪_{y ∈ C} (W_y ∩ F_{W_y}) is a countable union of Borel sets of the form open ∩ closed, hence measurable.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n '^def tangentSpace|^def tangentProjection|^abbrev Rn' project/GMT/Ch02/Contract.lean`
+- `rg -n 'Submission\.' project`
+- `rg -n 'isEmbedding_chartMap|exists_open_image_eq_inter|IsSimonLocalRepresentation\.|IsSimonSubmanifold\.' lake-packages-25730c7c/simongmt (then full reads of Chapter02/Submanifold.lean and Chapter02/SubmanifoldTopology.lean)`
+- `rg -n 'starProjection|orthogonalProjection' -l lake-packages-25730c7c/simongmt/Poincare; sed -n 780,900p Chapter08/Varifold.lean`
+- `rg -n 'theorem IsLocallyClosed\.(measurableSet|nullMeasurableSet)|IsLocallyClosed.measurableSet' mathlib/Mathlib; rg -n '^theorem|^lemma' mathlib/Mathlib/Topology/LocallyClosed.lean`
+- `rg -n 'class HasOrthogonalProjection|def starProjection|theorem eq_starProjection_of_mem_of_inner_eq_zero|isSymmetricProjection_iff_eq_coe_starProjection_range' mathlib/Mathlib/Analysis/InnerProductSpace/`
+- `rg -n 'theorem inverse_continuousAt' mathlib/Mathlib/Analysis/Normed/Ring/Units.lean; rg -n '^def adjoint|theorem adjoint_inner_left' mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `rg -n 'theorem ContDiffOn.continuousOn_fderiv_of_isOpen|theorem ContDiffOn.differentiableOn' mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `rg -n '^noncomputable def invFunOn|^theorem invFunOn_mem|^theorem invFunOn_eq|^theorem InjOn.leftInvOn_invFunOn' mathlib/Mathlib/Data/Set/Function.lean`
+- `rg -n 'theorem tendsto_subseq_of_bounded|theorem IsCompact.tendsto_subseq |theorem mem_closure_iff_seq_limit|theorem isOpen_iUnion_countable|theorem continuousWithinAt_inter |exists_antilipschitzWith|theorem ContinuousLinearMap.isOpen_injective|theorem HasFDerivAt.comp_hasDerivAt ' mathlib/Mathlib`
+- `python3 -I gen_checks.py (loads verifier/gmt-compare.py child_modules + contract_scope and verifier/lean_contract.py validate_lean_statement) on the five lean_statements; lake env lean final/NodeChallenge_00..04.lean against a scratch build of GMT.Ch02.Submission`
+- `lake env lean final/FinalAssembly.lean (real proofs of chart_inverse_continuous, range_projection_continuous, submanifold_measurable; sorried tangent_space_eq_range; tangent_projection_continuous from siblings; parent frozen type assembled; #print axioms)`
+- `python3 -I lean_name scan of dag.json; grep lean_name nodes/*/decomposition-v*.json; rg -l 'simon_submanifold_' lake-packages-25730c7c/simongmt/Poincare; git grep -l 'simon_submanifold_' (snapshot mathlib)`
+- `sed -n 845,875p book/chapter-02.txt (printed Simon 4.1-4.3)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Set/Function.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/LocallyClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-submanifold-tangent-a1/parent-child-handoff.json`
+- `/tmp/gmt-ch02-subtan-r3I2jM/final/FinalAssembly.lean`
+
+Contract.lean:48/86/91 fixes Rn, tangentSpace (the span of velocities of C¹ curves (−1,1) → M) and tangentProjection (Submodule.starProjection). The project snapshot has no Submission.* declarations. The pinned SimonGMT Submanifold.lean (IsProperOnInto:30, IsSimonLocalRepresentation:37, IsSimonSubmanifold:48) matches the hypotheses used by every child. SubmanifoldTopology.lean proves isProperMap_chartMap:54, isEmbedding_chartMap:90 and exists_open_image_eq_inter:100, which state chart_inverse_continuous in closed-embedding form. That module is not imported by the Contract, but a child file under GMT/Ch02 may import it. SimonGMT has no tangentSpace = range Dψ theorem, no measurability theorem for submanifolds, and no continuity theorem for range projections. Its Chapter08/Varifold.lean projection formula is specific to matrices and its Grassmannian. Mathlib supplies everything the children need: HasOrthogonalProjection (a Prop class, Projection/Basic.lean:48), starProjection:131, eq_starProjection_of_mem_of_inner_eq_zero:180, ContinuousLinearMap.adjoint (Adjoint.lean:112), NormedRing.inverse_continuousAt (Normed/Ring/Units.lean:183), ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean:916), invFunOn and its lemmas (Data/Set/Function.lean:953-987), tendsto_subseq_of_bounded (MetricSpace/Sequences.lean:38), IsCompact.tendsto_subseq (Sequences.lean:298), mem_closure_iff_seq_limit (Sequences.lean:108), isOpen_iUnion_countable (Bases.lean:932), continuousWithinAt_inter (ContinuousOn.lean:259), LinearMap.exists_antilipschitzWith (FiniteDimension.lean:231) and HasFDerivAt.comp_hasDerivAt (Deriv/Comp.lean:374). Mathlib has no IsLocallyClosed.measurableSet. All five child statements elaborate in the comparator's replayed Contract scope, and the frozen parent type follows from them by a one-line term. Scratch Lean proofs of chart_inverse_continuous, range_projection_continuous and submanifold_measurable depend only on propext, Classical.choice and Quot.sound. tangent_projection_continuous compiles from its three sibling statements. No proposed lean_name collides with dag.json (41 nodes), with pending decompositions, or with SimonGMT or Mathlib.
