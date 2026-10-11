@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "33558f05b962069c77743081ad913a59a9fc7499740f4f5dd580eb18b4b33baf",
+  "git_delta": {
+    "base_commit": "cbae100144d4035b0d67385126d76792b9ddc1b3",
+    "candidate_commit": "a94d78cace26b409c910b5aa6e9e06edf9b3e62a",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenRep_c1_uniform_approx",
+    "diff_sha256": "c05fd7ea9588cc67362c6105ab0d1bfe045d4030f12caeac0408219d981fc629",
+    "source_sha256": "2427c9f32025482bab7b2e4dcec20e57005257f6dbdf665d6493e7fe4ed1d6bc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenRep_c1_uniform_approx",
+      "statement": "∀ (N : ℕ) (g : Rn N → Rn N) (W : Set (Rn N)), Continuous g → HasCompactSupport g → IsOpen W → tsupport g ⊆ W → ∃ K : Set (Rn N), IsCompact K ∧ tsupport g ⊆ K ∧ K ⊆ W ∧ ∃ h : ℕ → Rn N → Rn N, (∀ k, ContDiff ℝ 1 (h k) ∧ HasCompactSupport (h k) ∧ tsupport (h k) ⊆ K) ∧ TendstoUniformly h g atTop",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
