@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/d498d77b74ea2063/manifest.json",
+        "cmp local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean",
+        "rg -n \"theorem (exists_mem_forall_mem_nhdsWithin_pos_measure|measure_null_of_locally_null)\" mathlib/Mathlib -A4",
+        "rg -n \"theorem (le_hausdorffMeasure_image|hausdorffMeasure_image_le|hausdorffMeasure_image) \" mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "rg -n \"theorem .*euclideanHausdorffMeasure_def|theorem .*euclideanHausdorffMeasure_eq_volume|def euclideanHausdorffMeasure|notation.*μHE\" mathlib/Mathlib",
+        "rg -n \"theorem (LinearMap|ContinuousLinearMap)\\.exists_antilipschitzWith|exists_antilipschitzWith\" mathlib/Mathlib",
+        "rg -n \"theorem approximates_deriv_on_nhds|theorem approximates_deriv_on_open_nhds|protected theorem antilipschitz|theorem antilipschitz\" mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem",
+        "rg -n \"^def domRestrict|^def restrict|deprecated.*restrict\" mathlib/Mathlib/Data/Set/Restrict.lean",
+        "grep -rn \"of_le_mul_dist\\|add_lipschitzWith\\b\" mathlib/Mathlib --include=*.lean",
+        "grep -rn \"theorem LinearMap.finrank_range_of_inj\\|theorem finrank_euclideanSpace_fin\" mathlib/Mathlib",
+        "sed -n 55,70p mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean (ContDiffAt.hasStrictFDerivAt takes hn : n ≠ 0)",
+        "rg -n \"AntilipschitzWith|le_hausdorffMeasure_image|approximates_deriv_on_nhds\" lake-packages-25730c7c/simongmt/Poincare/SimonGMT",
+        "rg -n \"antilipschitz|Antilipschitz\" local-references/d498d77b74ea2063/project/GMT (no match)",
+        "rg -n \"theorem .*(antilipschitz|Antilipschitz).*(strict|Strict|fderiv)|theorem .*(strict|Strict)FDeriv.*antilipschitz\" mathlib/Mathlib (no strict-derivative local antilipschitz lemma)",
+        "env.contains `Poincare.SimonGMT.Chapter02.ApproximatesLinearOn.le_euclideanHausdorffMeasure_image after import GMT.Ch03.Submission (false)",
+        "rg -l \"section3_hasStrictFDerivAt_injective_local_antilipschitz|section3_antilipschitzOn_volume_le_euclideanHausdorff_image\" dag.json nodes GMT SimonGMT (no match)",
+        "sed -n 470,505p book/chapter-03.txt (Lemma 3.3 and its proof)",
+        "lake env lean /tmp/chartpos-decomp-a7f3/Challenge.lean and /tmp/chartpos-decomp-a7f3/Final.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Data/Set/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json"
+      ],
+      "conclusion": "Snapshot d498d77b74ea2063 (project d09bc8a, Mathlib 25730c7c): its Contract.lean is byte-identical to the workspace's GMT/Ch03/Contract.lean and Submission.lean.\n\nMathlib declarations found and used:\n- Parent assembly: exists_mem_forall_mem_nhdsWithin_pos_measure (OuterMeasure/Basic.lean:159), LinearMap.finrank_range_of_inj, finrank_euclideanSpace_fin, ContDiffAt.hasStrictFDerivAt (RCLike.lean:62; takes hn : n ≠ 0), and the chain rule with ContinuousLinearMap.hasStrictFDerivAt.\n- Child 1: LinearMap.exists_antilipschitzWith (FiniteDimension.lean:231), HasStrictFDerivAt.approximates_deriv_on_nhds (InverseFunctionTheorem/FDeriv.lean:76) and AntilipschitzWith.le_mul_dist.\n- Child 2: AntilipschitzWith.le_hausdorffMeasure_image (Hausdorff.lean:807); Isometry.hausdorffMeasure_image (Hausdorff.lean:824) with isometry_subtype_coe; euclideanHausdorffMeasure_def (Volume/Measure.lean:74); EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Volume/Measure.lean:187); Set.domRestrict (Set.restrict is deprecated since 2026-07-19); ENNReal.rpow_natCast.\n\nGaps that justify the children (no match):\n- ApproximatesLinearOn.antilipschitzWith (ApproximatesLinearOn.lean:317) needs an invertible f' : E ≃L F, so it does not cover an injective, non-surjective A.\n- Mathlib has no lemma 'injective strict derivative ⇒ locally anti-Lipschitz', and no μHE/volume lower bound for maps that are anti-Lipschitz only on a subset.\n- The project snapshot has no antilipschitz lemma.\n- SimonGMT ApproximatesLinearOn.le_euclideanHausdorffMeasure_image (Chapter02/AreaApproximation.lean) is related, but GMT.Ch03.Submission does not import it, even transitively, so it is unusable.\n- The proposed names do not occur in dag.json (73 nodes), the run nodes, GMT/ or SimonGMT.\n\nVerification: /tmp/chartpos-decomp-a7f3/Final.lean compiles with only import GMT.Ch03.Submission. It contains full proofs of both children and of the parent, assembled from them with the sibling's frozen type as a hypothesis. Axioms used: propext, Classical.choice, Quot.sound."
+    }
+  ],
+  "parent_id": "root.section3_consequences-a1.chart_projection_positive-a1",
+  "child_id": "root.section3_consequences-a1.chart_projection_positive-a1.local_antilipschitz-a1",
+  "subproblem": {
+    "key": "local_antilipschitz",
+    "title": "Injective strict derivative gives a local anti-Lipschitz bound",
+    "statement": "Let n, p ∈ ℕ and write ℝᵈ = EuclideanSpace ℝ (Fin d) with the Euclidean norm |·|. Let Φ : ℝⁿ → ℝᵖ be any map, A : ℝⁿ → ℝᵖ a continuous linear map, and u₀ ∈ ℝⁿ. Suppose Φ has strict Fréchet derivative A at u₀ (HasStrictFDerivAt Φ A u₀), i.e. Φ(x) − Φ(y) − A(x − y) = o(|x − y|) as (x, y) → (u₀, u₀). Suppose also that A is injective. Then there are a neighbourhood s of u₀ and a constant K ∈ ℝ≥0 such that |x − y| ≤ K·|Φ(x) − Φ(y)| for all x, y ∈ s.",
+    "lean_statement": "∀ (n p : ℕ) (Φ : Rn n → Rn p) (A : Rn n →L[ℝ] Rn p) (u₀ : Rn n), HasStrictFDerivAt Φ A u₀ → Function.Injective A → ∃ s ∈ 𝓝 u₀, ∃ K : ℝ≥0, ∀ x ∈ s, ∀ y ∈ s, ‖x - y‖ ≤ K * ‖Φ x - Φ y‖",
+    "lean_name": "section3_hasStrictFDerivAt_injective_local_antilipschitz",
+    "depends_on": [],
+    "natural_proof": "Source. Extracted from the parent proof of section3_chart_coordinateProjection_pos: step 4, the neighbourhood estimate of step 5 (HasStrictFDerivAt.approximates_deriv_on_nhds), and step 6. The parent follows Simon, Ch. 3, proof of Lemma 3.3, printed p. 79, where p_J restricted to N near x is used as a local C¹ diffeomorphism; the parent proof replaces the inverse function theorem by strict differentiability. Here the argument is stated for an arbitrary map Φ with strict derivative A.\n\nNotation. ℝᵈ = Rn d = EuclideanSpace ℝ (Fin d) with the Euclidean norm |·|. ℝ≥0 = [0, ∞).\n\nStatement. Let n, p ∈ ℕ, Φ : ℝⁿ → ℝᵖ, A : ℝⁿ → ℝᵖ continuous linear and injective, and u₀ ∈ ℝⁿ. Suppose Φ has strict Fréchet derivative A at u₀ (HasStrictFDerivAt Φ A u₀). Then there are a neighbourhood s of u₀ and K ∈ ℝ≥0 with |x − y| ≤ K·|Φ(x) − Φ(y)| for all x, y ∈ s.\n\nProof.\n\n1. Linear lower bound. A is linear and injective, so ker A = {0}. Since ℝⁿ is finite-dimensional, there is K₀ ∈ ℝ≥0 with K₀ > 0 such that |v − w| ≤ K₀·|Av − Aw| for all v, w ∈ ℝⁿ. By linearity, Av − Aw = A(v − w), so equivalently |v| ≤ K₀·|Av| for all v ∈ ℝⁿ.\nJustification. If n = 0, then ℝ⁰ = {0} and K₀ := 1 works. If n ≥ 1, the unit sphere Σ := {v : |v| = 1} is nonempty and compact. The function v ↦ |Av| is continuous on Σ and, by injectivity, strictly positive there. So m := min over v ∈ Σ of |Av| satisfies m > 0. For v ≠ 0, |Av| = |v|·|A(v/|v|)| ≥ m·|v|, and the case v = 0 is trivial. Hence K₀ := 1/m works.\nMathlib: apply LinearMap.exists_antilipschitzWith to A as a linear map, using LinearMap.ker_eq_bot.mpr for injectivity. This gives K₀ > 0 with AntilipschitzWith K₀ A. Then AntilipschitzWith.le_mul_dist gives dist v w ≤ K₀·dist (A v) (A w), where dist is the norm of the difference.\n\n2. Uniform linear approximation near u₀. Put c := (2K₀)⁻¹ ∈ ℝ≥0. Then c > 0 because K₀ > 0. Strict differentiability of Φ at u₀ with derivative A means Φ(x) − Φ(y) − A(x − y) = o(|x − y|) as (x, y) → (u₀, u₀). Hence there is a neighbourhood s of u₀ with |Φ(x) − Φ(y) − A(x − y)| ≤ c·|x − y| for all x, y ∈ s.\nMathlib: HasStrictFDerivAt.approximates_deriv_on_nhds with Or.inr (0 < c) gives s ∈ 𝓝 u₀ and ApproximatesLinearOn Φ A s c. This unfolds to exactly the displayed inequality for all x ∈ s and y ∈ s.\n\n3. Triangle inequality. Fix x, y ∈ s. Since A(x − y) = (Φ(x) − Φ(y)) − (Φ(x) − Φ(y) − A(x − y)), the triangle inequality and step 2 give\n|A(x − y)| ≤ |Φ(x) − Φ(y)| + |Φ(x) − Φ(y) − A(x − y)| ≤ |Φ(x) − Φ(y)| + c·|x − y|.\n\n4. Combination. Apply step 1 with v = x − y, then multiply step 3 by K₀ ≥ 0:\n|x − y| ≤ K₀·|A(x − y)| ≤ K₀·|Φ(x) − Φ(y)| + K₀·c·|x − y| = K₀·|Φ(x) − Φ(y)| + |x − y|/2.\nThe last equality holds because K₀·c = K₀/(2K₀) = 1/2, using K₀ > 0.\n\n5. Conclusion. Subtract the real number |x − y|/2 from both sides: |x − y|/2 ≤ K₀·|Φ(x) − Φ(y)|, i.e. |x − y| ≤ 2K₀·|Φ(x) − Φ(y)|. So the neighbourhood s of u₀ and K := 2K₀ ∈ ℝ≥0 satisfy |x − y| ≤ K·|Φ(x) − Φ(y)| for all x, y ∈ s. ∎\n\nRemark. Only strict differentiability at the single point u₀ is used. The case n = 0 is included: then |x − y| = 0 and the inequality is trivial.",
+    "proof_key_steps": [
+      "Injectivity of the linear map A on finite-dimensional ℝⁿ gives K₀ > 0 with |v| ≤ K₀|Av| for all v (LinearMap.exists_antilipschitzWith).",
+      "Strict differentiability gives a neighbourhood s of u₀ with |Φx − Φy − A(x − y)| ≤ (2K₀)⁻¹|x − y| for x, y ∈ s (HasStrictFDerivAt.approximates_deriv_on_nhds).",
+      "By the triangle inequality, |A(x − y)| ≤ |Φx − Φy| + (2K₀)⁻¹|x − y| on s.",
+      "Combining gives |x − y| ≤ K₀|Φx − Φy| + |x − y|/2, hence |x − y| ≤ 2K₀|Φx − Φy|; take K = 2K₀."
+    ]
+  },
+  "audit": {
+    "key": "local_antilipschitz",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and Lean proposition agree on every hypothesis and conclusion. Injectivity in finite dimension supplies K₀ > 0, including n = 0. Strict differentiability supplies a common neighborhood with error bounded by (2K₀)⁻¹ times the input distance. The triangle inequality and absorption of half that distance give the claimed bound with K = 2K₀. Each step is justified and directly formalizable without assuming the child or parent. This is precisely the local estimate needed for the projected chart."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-chart-projection-positive-a1-local-anti-1dbdee01f3/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-chart-projection-positive-a1-local-anti-1dbdee01f3/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-chart-projection-positive-a1-local-anti-1dbdee01f3/parent-supplied-natural-proof.json"
+}
