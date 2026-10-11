@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "541a9be33123a6d531b033df2c9ed7acf72ad80468897d76932c2ad3db64c4f4",
+  "git_delta": {
+    "base_commit": "367df48fe3f1c6e9bd8a815a9cd15bd0c93f9745",
+    "candidate_commit": "e9e23ec51c5292301397275820d1c50a4f6f692a",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "weighted_mono_cutoff_hasDerivAt",
+    "diff_sha256": "8a73bc3b8c21d0e1a6b42d8f0bbc6f5491982ade6bc911ad590020072e3b2f86",
+    "source_sha256": "4bcca7afca9f8e5dc7620562ad50e0f01695bf6c18115137d46216035226a7ea",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.weighted_mono_cutoff_hasDerivAt",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (f : Ambient n ℓ → ℝ) (φ : ℝ → ℝ) (ξ : Ambient n ℓ) (c R A τ : ℝ), IsFiniteMeasureOnCompacts μ → ContDiff ℝ 1 φ → (∀ t, c ≤ t → φ t = 0) → 0 < c → 0 < τ → c * τ < R → AEStronglyMeasurable f (μ.restrict (closedBall ξ R)) → (∀ x ∈ closedBall ξ R, |f x| ≤ A) → Integrable (fun x ↦ f x * φ (‖x - ξ‖ / τ)) μ ∧ Integrable (fun x ↦ f x * (-(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ))) μ ∧ HasDerivAt (fun t ↦ ∫ x, f x * φ (‖x - ξ‖ / t) ∂μ) (∫ x, f x * (-(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ)) ∂μ) τ",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
