@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.deformation_calculus-a1.vanish_off_closed-a1",
+  "parent_id": "root.variation_formulas-a1.deformation_calculus-a1",
+  "depth": 3,
+  "title": "Initial velocity, acceleration and their spatial derivatives vanish off a closed set fixed by the family",
+  "statement": "Let N ∈ ℕ (ℝᴺ = EuclideanSpace ℝ (Fin N)), let K ⊆ ℝᴺ be closed, and let φ : ℝ → ℝᴺ → ℝᴺ satisfy φ t x = x for every t ∈ (−1,1) and every x ∉ K. Put X := initialVelocity φ, X(x) = deriv (s ↦ φ s x) 0, and Z := initialAcceleration φ, Z(x) = deriv (t ↦ deriv (s ↦ φ s x) t) 0. Then for every x ∉ K: X(x) = 0, Z(x) = 0, fderiv ℝ X x = 0 and fderiv ℝ Z x = 0.",
+  "lean_statement": "∀ (N : ℕ) (K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), IsClosed K → (∀ t ∈ Ioo (-1 : ℝ) 1, ∀ x, x ∉ K → φ t x = x) → ∀ x, x ∉ K → initialVelocity φ x = 0 ∧ initialAcceleration φ x = 0 ∧ fderiv ℝ (initialVelocity φ) x = 0 ∧ fderiv ℝ (initialAcceleration φ) x = 0",
+  "lean_name": "variation_deformation_vanish_off_closed",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-deformation-calculus-a1-vanish-off-closed-a1-a1"
+}

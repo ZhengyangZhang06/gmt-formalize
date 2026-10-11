@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.deformation_calculus-a1.mixed_partial-a1",
+  "parent_id": "root.variation_formulas-a1.deformation_calculus-a1",
+  "depth": 3,
+  "title": "Interchanging time and space derivatives of a family that is C² at a point (Schwarz)",
+  "statement": "Let N ∈ ℕ, Φ : ℝ → ℝᴺ → ℝᴺ, t ∈ ℝ and y ∈ ℝᴺ, and suppose (s,x) ↦ Φ s x is C² at (t,y) (ContDiffAt ℝ 2). Then the map s ↦ fderiv ℝ (Φ s) y, from ℝ to the continuous linear maps ℝᴺ → ℝᴺ, has derivative fderiv ℝ (x ↦ deriv (s ↦ Φ s x) t) y at s = t.",
+  "lean_statement": "∀ (N : ℕ) (Φ : ℝ → Rn N → Rn N) (t : ℝ) (y : Rn N), ContDiffAt ℝ 2 (fun p : ℝ × Rn N ↦ Φ p.1 p.2) (t, y) → HasDerivAt (fun s ↦ fderiv ℝ (Φ s) y) (fderiv ℝ (fun x ↦ deriv (fun s ↦ Φ s x) t) y) t",
+  "lean_name": "variation_deformation_mixed_partial",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-deformation-calculus-a1-mixed-partial-a1-a1"
+}
