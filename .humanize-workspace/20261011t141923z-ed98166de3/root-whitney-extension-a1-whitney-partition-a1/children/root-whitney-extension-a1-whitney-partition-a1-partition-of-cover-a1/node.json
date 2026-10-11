@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.whitney_extension-a1.whitney_partition-a1.partition_of_cover-a1",
+  "parent_id": "root.whitney_extension-a1.whitney_partition-a1",
+  "depth": 3,
+  "title": "Smooth Whitney partition of unity from a bounded-overlap ball cover",
+  "statement": "Let n ∈ ℕ, let A ⊆ ℝⁿ = EuclideanSpace ℝ (Fin n) be closed and nonempty, write d(x) := Metric.infDist x A and r(x) := min{1, d(x)}/20, and let J ⊆ ℝⁿ and N ∈ ℕ satisfy: (H1) J ⊆ ℝⁿ∖A; (H2) every x ∉ A has some s ∈ J with |x − s| ≤ 5r(s); (H3) for every x ∉ A, J(x) := {s ∈ J : |x − s| < 10r(s)} is finite with at most N elements (Set.ncard ≤ N); (H4) for every x ∉ A, J'(x) := {s ∈ J : ∃ z ∈ ℝⁿ, |z − s| < 10r(s) and |z − x| < r(x)} is finite. Then there exist a type ι, functions φ_i : ℝⁿ → ℝ and points p_i ∈ ℝⁿ (i ∈ ι), and reals C ≥ 0, M ≥ 0 such that: (P1) p_i ∈ A for every i; (P2) every φ_i is C¹ at every x ∉ A; (P3) φ_i(x) ≥ 0 for every i and every x ∉ A; (P4) every x ∉ A has a finite set s ⊆ ι and a neighbourhood V of x with φ_i(y) = 0 for all i ∉ s and y ∈ V; (P5) Σᶠ_i φ_i(x) = 1 for every x ∉ A; (P6) for every i and x ∉ A, φ_i(x) ≠ 0 implies |x − p_i| ≤ C·d(x); (P7) for x ∉ A with d(x) ≤ 1, Σᶠ_i ‖Dφ_i(x)‖ ≤ M/d(x).",
+  "lean_statement": "∀ (n : ℕ) (A J : Set (Rn n)) (N : ℕ), IsClosed A → A.Nonempty → J ⊆ Aᶜ → (∀ x ∉ A, ∃ s ∈ J, ‖x - s‖ ≤ 5 * (min 1 (Metric.infDist s A) / 20)) → (∀ x ∉ A, Set.Finite {s : Rn n | s ∈ J ∧ ‖x - s‖ < 10 * (min 1 (Metric.infDist s A) / 20)} ∧ Set.ncard {s : Rn n | s ∈ J ∧ ‖x - s‖ < 10 * (min 1 (Metric.infDist s A) / 20)} ≤ N) → (∀ x ∉ A, Set.Finite {s : Rn n | s ∈ J ∧ ∃ z : Rn n, ‖z - s‖ < 10 * (min 1 (Metric.infDist s A) / 20) ∧ ‖z - x‖ < min 1 (Metric.infDist x A) / 20}) → ∃ (ι : Type) (φ : ι → Rn n → ℝ) (p : ι → Rn n) (C M : ℝ), 0 ≤ C ∧ 0 ≤ M ∧ (∀ i, p i ∈ A) ∧ (∀ i, ∀ x ∉ A, ContDiffAt ℝ 1 (φ i) x) ∧ (∀ i, ∀ x ∉ A, 0 ≤ φ i x) ∧ (∀ x ∉ A, ∃ s : Finset ι, ∃ V ∈ 𝓝 x, ∀ i ∉ s, ∀ y ∈ V, φ i y = 0) ∧ (∀ x ∉ A, ∑ᶠ i, φ i x = 1) ∧ (∀ i, ∀ x ∉ A, φ i x ≠ 0 → ‖x - p i‖ ≤ C * Metric.infDist x A) ∧ (∀ x ∉ A, Metric.infDist x A ≤ 1 → ∑ᶠ i, ‖fderiv ℝ (φ i) x‖ ≤ M / Metric.infDist x A)",
+  "lean_name": "whitney_partition_of_finite_overlap_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-whitney-extension-a1-whitney-partition-a1-partition-of-cover-a1-a1"
+}
