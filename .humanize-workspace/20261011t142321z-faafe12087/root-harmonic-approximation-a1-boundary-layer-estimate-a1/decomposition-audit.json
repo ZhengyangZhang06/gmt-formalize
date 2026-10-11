@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'ble_smooth_annulus_estimate|ble_lintegral_sq_tendsto_of_l2_tendsto|smooth_annulus|lintegral_sq_tendsto|annulus_estimate' project mathlib/Mathlib",
+        "map_addHaar_smul|theorem.*lintegral_map|restrict_map|lintegral_smul_measure",
+        "eLpNorm_nnreal_pow_eq_lintegral|eLpNorm_add_le|eLpNorm_sub_le|eLpNorm_lt_top|Tendsto.sub|Tendsto.pow|Tendsto.const_mul|continuous_rpow_const|rpow_two",
+        "lintegral_lintegral_swap|lintegral_prod_right|setLIntegral_iUnion_of_directed|lintegral_mul_le_Lp_mul_Lq|integral_eq_sub_of_hasDerivAt|continuous_fderiv",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean AuditTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean AuditChild2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean AuditDilation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean AuditAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/TriangleInequality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-boundary-layer-estimate-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-boundary-layer-estimate-a1/decomposition-v1.json",
+        "/tmp/ble-independent-audit-aygy4hx5/AuditTypes.lean",
+        "/tmp/ble-independent-audit-aygy4hx5/AuditChild2.lean",
+        "/tmp/ble-independent-audit-aygy4hx5/AuditDilation.lean",
+        "/tmp/ble-independent-audit-aygy4hx5/AuditAssembly.lean"
+      ],
+      "conclusion": "Independently consulted the pinned snapshot and confirmed its project and Mathlib revisions. Frozen Contract.lean and Submission.lean are byte-identical to the workspace copies; the compiler's Mathlib checkout matches the pinned revision and has no tracked modifications. Snapshot searches found no matching proposed declarations. The inspected sources support Haar dilation, Tonelli, the measurable norm-square identity, Minkowski, ENNReal limits, and directed exhaustion. Fresh checks in /tmp/ble-independent-audit-aygy4hx5 independently elaborate both frozen propositions before either child is declared. The supplied L2 proof and dilation helper compile with only propext, Classical.choice, and Quot.sound. A conditional assembly of the exact selected parent conclusion also compiles with only those axioms, taking the frozen smooth-approximation dependency and smooth-annulus child as explicit hypotheses. The split is appropriate: its children provide the analytic estimate and limit passage, while the parent retains the trivial range and exhaustion. DAG and proposal scans found no conflicting reservations; dependency traversal found no cycle."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "smooth_annulus_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose, including n ≥ 1, global C1 regularity, both radius bounds, Euclidean volume, gradient, and the stated constant. Its bare name is unreserved. Independently checked the dilation formula, ray FTC, Cauchy–Schwarz, averaging, measurability and Tonelli, kernel support and interval-length bound including y = 0, and positive finite cancellation. The resulting coefficients are 2^(n+3)a and 2^(n−1)a², giving the claimed inequality. The proof is complete enough to formalize and uses neither the parent nor smooth approximation; its empty dependency list is correct."
+    },
+    {
+      "key": "l2_sq_norm_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition includes exactly the stated measure-space, normed-group, MemLp, measurability, and convergence hypotheses. Its bare name is unreserved. The proof correctly obtains the norm-square identity, takes continuous ENNReal square roots, applies both triangle inequalities, checks subtraction continuity, squeezes the norms, and squares the limit. It accommodates initially infinite approximant norms without an unstated integrability or completeness assumption. The supplied exact Lean proof independently compiles with standard axioms only. It has no circular dependencies and applies to all three limit passages needed by the selected parent."
+    }
+  ],
+  "required_changes": []
+}
