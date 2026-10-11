@@ -435,7 +435,7 @@ theorem Submission.bv_mollifier_tendsto_L1 : ∀ (n : ℕ) (F : Rn n → ℝ) (�
       · exact ⟨ε.toReal, ENNReal.toReal_pos hε.ne' h, (ENNReal.ofReal_toReal h).le⟩
     set m : ℝ := (volume S).toReal with hm
     have hm0 : 0 ≤ m := ENNReal.toReal_nonneg
-    set ε' : ℝ := ε₀ / (m + 1) with hε'def
+    set ε' : ℝ := ε₀ / (m + 1) with hε'eq
     have hε' : 0 < ε' := div_pos hε₀ (by linarith)
     obtain ⟨δ, hδ, hδg⟩ := Metric.uniformContinuous_iff.1 huc ε' hε'
     have hr : (0 : ℝ) < min δ 1 := lt_min hδ one_pos
@@ -474,7 +474,7 @@ theorem Submission.bv_mollifier_tendsto_L1 : ∀ (n : ℕ) (F : Rn n → ℝ) (�
           rw [ENNReal.ofReal_mul hε'.le, hm, ENNReal.ofReal_toReal hSf]
       _ ≤ ENNReal.ofReal ε₀ := by
           apply ENNReal.ofReal_le_ofReal
-          rw [hε'def, div_mul_eq_mul_div, div_le_iff₀ (by linarith)]
+          rw [hε'eq, div_mul_eq_mul_div, div_le_iff₀ (by linarith)]
           nlinarith
       _ ≤ ε := hε₀le
   -- Step 3 (density of `C_c` in `L¹`): approximate indicators of finite-measure sets by inner
