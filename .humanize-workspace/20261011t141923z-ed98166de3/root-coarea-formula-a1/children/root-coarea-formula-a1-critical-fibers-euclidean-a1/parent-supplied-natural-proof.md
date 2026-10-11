@@ -1,0 +1,136 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.coarea_formula-a1`
+- Child DAG node: `root.coarea_formula-a1.critical_fibers_euclidean-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 1.1 of the parent proof, extended from a compact Q ⊆ V to all of V by a countable exhaustion.
+
+Notation.
+- n := m + k and C_G := {x ∈ V : fderiv ℝ G x is not surjective}.
+- Lⁿ and Lᵐ are Lebesgue measures (volume).
+- μH[k] is Mathlib's k-dimensional Hausdorff measure on ℝⁿ, and μHE[k] = c_k·μH[k] with the finite constant c_k := addHaarScalarFactor(volume, μH[k]) (euclideanHausdorffMeasure_def).
+Since G is C¹ on the open set V, G is differentiable at each x ∈ V and x ↦ DG(x) is continuous on V.
+
+1. If m = 0, every linear map into ℝ⁰ is surjective, so C_G = ∅ and the claim is trivial. Assume m ≥ 1 from now on.
+2. Reduction to compact pieces. The open set V is the union of the countably many closed balls with rational centre and positive rational radius that are contained in V; these are compact sets Q_j ⊆ V. It suffices to show: for every compact Q ⊆ V there is an Lᵐ-null set Z_Q with μH[k](Q ∩ C_G ∩ G⁻¹{y}) = 0 for all y ∉ Z_Q. Then, for y outside the null set ∪_j Z_{Q_j},
+   μHE[k](C_G ∩ G⁻¹{y}) = c_k·μH[k](C_G ∩ G⁻¹{y}) ≤ c_k·Σ_j μH[k](Q_j ∩ C_G ∩ G⁻¹{y}) = 0.
+   Fix a compact Q ⊆ V and let K′ := Q ∩ C_G. If K′ = ∅, take Z_Q = ∅; so assume K′ ≠ ∅.
+3. Constants.
+   - Choose ρ₀ > 0 with K₁ := {z : dist(z,Q) ≤ ρ₀} ⊆ V (possible since Q is compact and V open). K₁ is closed and bounded, hence compact, and Lⁿ(K₁) < ∞.
+   - Let L_G := sup_{z∈K₁} ‖DG(z)‖ < ∞.
+   - For 0 < r ≤ ρ₀ let ω(r) := sup{‖DG(z) − DG(x)‖ : x ∈ Q, |z − x| ≤ r}. All such z lie in K₁, and DG is uniformly continuous on the compact K₁, so ω(r) → 0 as r → 0⁺.
+   - Let ω_n := Lⁿ(B(0,1)) ∈ (0,∞), so that Lⁿ(B(z,s)) = ω_n sⁿ.
+4. Images of balls centred at critical points. Let x ∈ K′ and 0 < r ≤ ρ₀. The closed ball B̄(x,r) is convex and contained in K₁ ⊆ V.
+   The map z ↦ G(z) − DG(x)z is differentiable on B̄(x,r), with derivative DG(z) − DG(x) of norm ≤ ω(r). By the mean value inequality, |G(z) − G(x) − DG(x)(z − x)| ≤ ω(r)|z − x| ≤ ω(r) r for z ∈ B̄(x,r).
+   Since DG(x) is not surjective and m ≥ 1, there is a unit vector e₁ ⊥ range DG(x); complete it to an orthonormal basis e₁, …, e_m of ℝᵐ. For z ∈ B̄(x,r) put v := G(z) − G(x). Then
+   - |⟨v,e₁⟩| = |⟨v − DG(x)(z − x), e₁⟩| ≤ ω(r) r;
+   - for i ≥ 2, |⟨v,e_i⟩| ≤ |v| ≤ ‖DG(x)‖ r + ω(r) r ≤ (L_G + ω(r)) r, using x ∈ K₁.
+   Hence G(B̄(x,r)) ⊆ G(x) + Θ(R_r), where Θ is the linear isometry of ℝᵐ sending the standard basis to (e_i) and R_r := [−ω(r)r, ω(r)r] × [−(L_G+ω(r))r, (L_G+ω(r))r]^{m−1}. Translations and linear isometries preserve Lᵐ, so
+   Lᵐ(G(B̄(x,r))) ≤ Lᵐ(R_r) = 2ᵐ ω(r)(L_G + ω(r))^{m−1} rᵐ.
+   Moreover G(B̄(x,r)) is compact (a continuous image of a compact subset of V), hence Borel.
+5. Packing. Fix 0 < r ≤ ρ₀. Suppose x₁, …, x_p ∈ K′ satisfy |x_i − x_j| ≥ r for i ≠ j. Then the open balls B(x_i, r/2) are pairwise disjoint and contained in K₁ (dist(z,Q) ≤ |z − x_i| < r/2 ≤ ρ₀). So p·ω_n(r/2)ⁿ ≤ Lⁿ(K₁), i.e. p ≤ P(r) := 2ⁿ Lⁿ(K₁)/(ω_n rⁿ).
+   Since K′ ≠ ∅ and these cardinalities are bounded, choose such an r-separated family x₁, …, x_p of maximal cardinality. It cannot be enlarged, so every x ∈ K′ has |x − x_i| < r for some i. Hence K′ ⊆ ∪_{i≤p} B̄(x_i, r).
+6. Covering estimate. For δ > 0 and S ⊆ ℝⁿ let h_δ(S) be the infimum of Σ_l [t_l ≠ ∅]·(diam t_l)^k over all sequences (t_l) of sets with S ⊆ ∪_l t_l and diam t_l ≤ δ. By Mathlib's hausdorffMeasure_apply, μH[k](S) = sup_{δ>0} h_δ(S), and h_δ(S) increases as δ decreases.
+   Let y ∈ ℝᵐ and 2r ≤ δ. Put t_i := B̄(x_i,r) ∩ K′ ∩ G⁻¹{y} for i ≤ p, and t_l := ∅ for l > p. These sets cover K′ ∩ G⁻¹{y} (step 5) and have diameter ≤ 2r ≤ δ; moreover t_i ≠ ∅ only if y ∈ G(B̄(x_i,r)). Therefore
+   h_δ(K′ ∩ G⁻¹{y}) ≤ S_r(y) := Σ_{i=1}^p (2r)^k·1_{G(B̄(x_i,r))}(y).
+   S_r is Borel. By steps 4–5, and using rᵏ·rᵐ = rⁿ (since n = m + k),
+   ∫ S_r dLᵐ = Σ_{i≤p} (2r)^k Lᵐ(G(B̄(x_i,r))) ≤ P(r)(2r)^k 2ᵐ ω(r)(L_G+ω(r))^{m−1} rᵐ = ε(r),
+   where ε(r) := 2^{n+k+m} Lⁿ(K₁) ω(r)(L_G+ω(r))^{m−1}/ω_n. By step 3, ε(r) → 0 as r → 0⁺.
+7. Fatou. Take r_j ∈ (0,ρ₀] with r_j → 0 and let S_j := S_{r_j}, built from a family as in step 5 for r = r_j. By Fatou's lemma (lintegral_liminf_le),
+   ∫ liminf_j S_j dLᵐ ≤ liminf_j ∫ S_j dLᵐ ≤ liminf_j ε(r_j) = 0.
+   So Z_Q := {y : liminf_j S_j(y) ≠ 0} is a Borel Lᵐ-null set. Let y ∉ Z_Q and δ > 0. For all large j, 2r_j ≤ δ, and then h_δ(K′ ∩ G⁻¹{y}) ≤ S_j(y) by step 6. Hence h_δ(K′ ∩ G⁻¹{y}) ≤ liminf_j S_j(y) = 0. Taking the supremum over δ > 0 gives μH[k](Q ∩ C_G ∩ G⁻¹{y}) = μH[k](K′ ∩ G⁻¹{y}) = 0 for all y ∉ Z_Q.
+8. Steps 2 and 7 prove that μHE[k]({x ∈ V : DG(x) not surjective} ∩ G⁻¹{y}) = 0 for Lᵐ-almost every y.
+
+## Key steps
+
+1. m = 0 is trivial; reduce to K′ = Q ∩ C_G for compact Q ⊆ V via a countable cover of V by compact balls.
+2. Mean value inequality and a unit normal e₁ ⊥ range DG(x): G(B̄(x,r)) lies in a rotated box of Lᵐ-measure ≤ 2ᵐ ω(r)(L_G+ω(r))^{m−1} rᵐ.
+3. A maximal r-separated family in K′ has at most 2ⁿLⁿ(K₁)/(ω_n rⁿ) points, and its closed r-balls cover K′.
+4. h_δ(K′∩G⁻¹y) ≤ S_r(y) := Σ(2r)^k 1_{G(B̄(x_i,r))}(y) for 2r ≤ δ, with ∫S_r ≤ 2^{n+k+m}Lⁿ(K₁)ω(r)(L_G+ω(r))^{m−1}/ω_n → 0, using n = m+k.
+5. Fatou along r_j → 0 gives h_δ(K′∩G⁻¹y) = 0 for every δ and a.e. y, so μH[k] = 0 and μHE[k] = c_k·μH[k] = 0; take a countable union over the compact pieces.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -il 'coarea' mathlib/Mathlib`
+- `rg -n 'theorem .*[Ss]ard' mathlib/Mathlib`
+- `rg -n 'def coareaJacobian|def tangentSpace|def CoareaFormula|def C1Sard' project/GMT/Ch02/Contract.lean`
+- `rg -n 'Submission\.' project`
+- `rg -n 'theorem hausdorffMeasure_apply|theorem MeasureTheory.Measure.euclideanHausdorffMeasure_def|theorem euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib`
+- `rg -n 'theorem lintegral_liminf_le |theorem measurable_fderiv |theorem ContDiffOn.exists_lipschitzOnWith|def toOpenPartialHomeomorph|theorem OpenPartialHomeomorph.contDiffAt_symm|theorem WithLp.volume_preserving_toLp|theorem isOpen_iUnion_countable|theorem exists_surjective_nat|theorem normDet_comp |theorem normDet_codRestrict|theorem _root_.ContinuousLinearMap.normDet_sq' mathlib/Mathlib`
+- `grep -n '^theorem\|^def' mathlib/Mathlib/Analysis/Calculus/Implicit.lean`
+- `grep -rn 'theorem iUnion_disjointed\|theorem disjoint_disjointed\|theorem MeasurableSet.disjointed\|theorem lintegral_iUnion\|theorem lintegral_tsum\|theorem lintegral_union\|theorem setLIntegral_measure_zero\|theorem ContDiffOn.differentiableOn' mathlib/Mathlib`
+- `grep -n '^theorem\|^lemma\|^def\|^noncomputable def' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/*.lean`
+- `#print axioms for Chapter02.weighted_area_formula_of_injective_derivative, weighted_area_formula_volume_of_injective_derivative, IsSimonLocalRepresentation.exists_open_image_eq_inter, coareaLinearJacobian_eq_zero_iff, coareaLinearJacobian_eq_sqrt_det, coareaHorizontalLinear_normDet, euclideanHausdorffMeasure_image_le_of_lipschitzOn, continuous_normDet, measurable_areaJacobianAt, coarea_projection_lintegral, coarea_linear_lintegral`
+- `python3 -I gen_checks.py (verifier gmt-compare.py child_modules/contract_scope + lean_contract.validate_lean_statement on the six statements); lean NodeChallenge_00..05.lean against a scratch olean of GMT.Ch02.Submission`
+- `lean FinalAssembly.lean (sorried stand-ins of the six child types and the frozen simon_submanifold_tangent_basics type; sorry-free check_C, check_F, check_parent : CoareaFormula; #print axioms)`
+- `lean SkeletonE.lean; lean Inst.lean (#synth InnerProductSpace ℝ (WithLp 2 (Rn m × Rn k))); python3 -I lemmaL2.py`
+- `python3 -I: list lean_name of every node in dag.json`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Implicit.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Order/Disjointed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinear.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaProjection.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1/parent-child-handoff.json`
+- `/tmp/coarea-decomp-94z3yF/check/FinalAssembly.lean`
+- `/tmp/coarea-decomp-94z3yF/check/SkeletonE.lean`
+
+Nothing in the snapshot proves the nonlinear co-area formula or a Sard-type theorem: rg -il coarea over mathlib/Mathlib finds no file, and rg 'theorem .*[Ss]ard' finds no match.
+
+project/GMT/Ch02/Contract.lean fixes tangentSpace (l.86), coareaJacobian (l.123: √det(L∘L†) with L = fderiv f x ∘ subtypeL), CoareaFormula (l.349) and C1Sard (l.362). The project has no Submission.* declarations.
+
+Mathlib supplies:
+- the normDet API (NormDet.lean: ContinuousLinearMap.normDet_sq l.267, normDet_comp l.324, normDet_codRestrict l.365, normDet_eq_norm_det_toMatrix);
+- μHE = c·μH (Measure.lean l.74) and hausdorffMeasure_apply (Hausdorff.lean l.546);
+- the C¹ inverse function theorem (InverseFunctionTheorem/ContDiff.lean l.31; OpenPartialHomeomorph.contDiffAt_symm, Operations.lean l.881) and the implicit-function version (Implicit.lean l.457);
+- measurable_fderiv (FDeriv/Measurable.lean l.378) and ContDiffOn.exists_lipschitzOnWith (RCLike.lean l.149);
+- WithLp.volume_preserving_toLp (Haar/InnerProductSpace.lean l.211), lintegral_prod, lintegral_liminf_le (Lebesgue/Add.lean l.233), lintegral_iUnion/lintegral_tsum, disjointed, TopologicalSpace.isOpen_iUnion_countable (Bases.lean l.932) and exists_surjective_nat.
+
+The pinned SimonGMT package supplies:
+- weighted_area_formula_(volume_)of_injective_derivative (WeightedArea.lean);
+- IsSimonLocalRepresentation.exists_open_image_eq_inter (Simon 4.2, SubmanifoldTopology.lean);
+- coareaLinearJacobian_eq_zero_iff, coareaLinearJacobian_eq_sqrt_det and coareaHorizontalLinear_normDet (CoareaLinearAlgebra.lean);
+- euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz.lean) and continuous_normDet (AreaApproximation.lean).
+#print axioms reports only propext, Classical.choice and Quot.sound for all of them. These modules are not imported by the contract, so children must add the imports, which the comparator permits.
+
+No node in dag.json reserves any of the six proposed bare names.
+
+All six statements pass validate_lean_statement and elaborate in the comparator's replayed contract scope. The six generated NodeChallenge modules compile. #synth confirms that WithLp 2 (Rn m × Rn k) carries WithLp.instProdInnerProductSpace.
+
+In FinalAssembly.lean, Lean accepts sorry-free proofs of coarea_critical_fibers_null, coarea_formula_of_measurable and CoareaFormula from sorried stand-ins of exactly the child types and of the frozen sibling type. The split therefore implies the selected parent.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1",
+  "parent_id": "root.coarea_formula-a1",
+  "depth": 2,
+  "title": "Linear algebra of the co-area Jacobian: vanishing criterion and the chart identity (Lemma L)",
+  "statement": "Let N, m, n, k ∈ ℕ, M ⊆ ℝᴺ, f : ℝᴺ → ℝᵐ and x ∈ ℝᴺ. Put T := tangentSpace M x (a linear subspace of ℝᴺ with the induced inner product), D := fderiv ℝ f x and L := D|_T : T → ℝᵐ, so that coareaJacobian M f x = √det(L L*).\n(1) If A : ℝⁿ → ℝᴺ is a continuous linear map with T = range A, then coareaJacobian M f x = 0 if and only if D ∘ A : ℝⁿ → ℝᵐ is not surjective.\n(2) Let P := WithLp 2 (ℝᵐ × ℝᵏ) be the Euclidean product, with first component p₁ = WithLp.fst p. Suppose A : P → ℝᴺ is an injective continuous linear map with T = range A and D(A p) = p₁ for all p ∈ P. Suppose B : ℝᵏ → ℝᴺ is a continuous linear map with B b = A(toLp(0, b)) for all b ∈ ℝᵏ. Then coareaJacobian M f x · normDet(A) = normDet(B), where normDet is Mathlib's LinearMap.normDet, normDet(X) = √det(X*X).",
+  "lean_statement": "(∀ (N m n : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N) (A : Rn n →L[ℝ] Rn N), tangentSpace M x = LinearMap.range A.toLinearMap → (coareaJacobian M f x = 0 ↔ ¬ Function.Surjective ((fderiv ℝ f x).comp A))) ∧ ∀ (N m k : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N) (A : WithLp 2 (Rn m × Rn k) →L[ℝ] Rn N) (B : Rn k →L[ℝ] Rn N), Function.Injective A → tangentSpace M x = LinearMap.range A.toLinearMap → (∀ p, fderiv ℝ f x (A p) = WithLp.fst p) → (∀ b, B b = A (WithLp.toLp 2 (0, b))) → coareaJacobian M f x * A.toLinearMap.normDet = B.toLinearMap.normDet",
+  "lean_name": "coarea_jacobian_linear_algebra",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-jacobian-linear-algebra-a1-a1"
+}
