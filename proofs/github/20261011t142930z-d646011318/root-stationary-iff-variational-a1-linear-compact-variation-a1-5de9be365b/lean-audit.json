@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d37ac6b9d6ca4adb95a3b4da2ea74d253103dfb5b0cda470a7a9a09dffa6067c",
+  "git_delta": {
+    "base_commit": "dc7bd0cac08457574771b1372d7758052d615565",
+    "candidate_commit": "ea7d34f5e7ea46514e7c8bc4c5fcf550586939bd",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "exists_isCompactVariation_add_smul",
+    "diff_sha256": "d9e0acf54f670257723f7aff1fb5b231eabd3308049ec8181c93ebb5aab339f6",
+    "source_sha256": "0ecb6c9ae5bd30f6f7ac6504ed81aa95ecb9940d7ef203c9819066fac606a321",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.exists_isCompactVariation_add_smul",
+      "statement": "∀ (n ℓ : ℕ) (X : Ambient n ℓ → Ambient n ℓ), ContDiff ℝ ∞ X → HasCompactSupport X → ∃ ε : ℝ, IsCompactVariation (fun t y ↦ y + t • X y) ε (tsupport X) ∧ (fun y ↦ deriv (fun t : ℝ ↦ y + t • X y) 0) = X",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
