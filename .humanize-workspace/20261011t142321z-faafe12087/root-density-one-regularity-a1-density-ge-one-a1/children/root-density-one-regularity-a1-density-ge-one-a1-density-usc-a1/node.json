@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.density_ge_one-a1.density_usc-a1",
+  "parent_id": "root.density_one_regularity-a1.density_ge_one-a1",
+  "depth": 3,
+  "title": "Density exists at every point of U and is upper semicontinuous (Simon Ch. 4, 4.9 and 3.11; parent steps 6-7)",
+  "statement": "Let n >= 1, U an open subset of R^(n+l), V = v(M, theta) a rectifiable n-varifold in U with weight mu, H : R^(n+l) -> R^(n+l) such that V has generalized mean curvature H in U, p > n real with H locally in L^p(mu) on U (int_K |H|^p dmu < infinity for compact K contained in U), and assume (G2) x -> P_x := tangentProj_V(x) is mu-a.e. strongly measurable and (G1) for mu-a.e. x, P_x is the orthogonal projection onto an n-dimensional subspace. Then for every xi in U there is a real d >= 0 with Theta^n(mu, xi) = d, i.e. mu(B_r(xi))/(omega_n r^n) -> d as r -> 0+ (closed balls; V.HasDensity xi d), and Theta^n(mu, .) is upper semicontinuous at xi: for every eps > 0 there is a neighbourhood N of xi such that every y in N and every real t with V.HasDensity y t satisfy t <= d + eps.",
+  "lean_statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), 1 ≤ n → IsOpen U → (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → AEStronglyMeasurable V.tangentProj V.weight → (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → ∀ ξ ∈ U, ∃ d : ℝ, 0 ≤ d ∧ V.HasDensity ξ d ∧ ∀ ε : ℝ, 0 < ε → ∀ᶠ y in 𝓝 ξ, ∀ t : ℝ, V.HasDensity y t → t ≤ d + ε",
+  "lean_name": "exists_density_upperSemicontinuous_of_locallyLp",
+  "depends_on": [
+    "root.density_one_regularity-a1.density_ge_one-a1.lp_monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_regularity-a1.density_ge_one-a1.lp_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-density-ge-one-a1-density-usc-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.density_ge_one-a1.radial_first_variation-a1",
+  "parent_id": "root.density_one_regularity-a1.density_ge_one-a1",
+  "depth": 3,
+  "title": "First variation of a radial cutoff field (Simon Ch. 4, 3.1-3.3 with mean curvature; parent step 2a-2c)",
+  "statement": "Let n, l be natural numbers, U a subset of R^(n+l), V = v(M, theta) a rectifiable n-varifold in U (contract structure RectifiableVarifold n l U) with weight mu = mu_V, and H : R^(n+l) -> R^(n+l) such that V has generalized mean curvature H in U. Write P_x := tangentProj_V(x) and assume (G2) x -> P_x is mu-a.e. strongly measurable and (G1) for mu-a.e. x, P_x is the orthogonal projection onto some n-dimensional linear subspace. Let xi in R^(n+l), sigma > 0, b real and phi : R -> R a C^1 function with phi(t) = 1 for 0 <= t <= 1 and phi(t) = 0 for t >= b, and assume the closed ball B_{b sigma}(xi) is contained in U. With r = |x - xi|, phi' = deriv phi and |w_perp(x)|^2 := |(x - xi) - P_x(x - xi)|^2 / |x - xi|^2 (:= 0 at x = xi), the Bochner integrals satisfy: int [n phi(r/sigma) + (r/sigma) phi'(r/sigma)] dmu - int (r/sigma) phi'(r/sigma) |w_perp|^2 dmu = - int phi(r/sigma) <x - xi, H(x)> dmu.",
+  "lean_statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → AEStronglyMeasurable V.tangentProj V.weight → (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → ∀ (ξ : Amb n ℓ) (σ b : ℝ) (φ : ℝ → ℝ), 0 < σ → ContDiff ℝ 1 φ → (∀ t ∈ Icc (0 : ℝ) 1, φ t = 1) → (∀ t, b ≤ t → φ t = 0) → closedBall ξ (b * σ) ⊆ U → ∫ x, ((n : ℝ) * φ (‖x - ξ‖ / σ) + ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ)) ∂V.weight - ∫ x, ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ) * (‖(x - ξ) - V.tangentProj x (x - ξ)‖ ^ 2 / ‖x - ξ‖ ^ 2) ∂V.weight = -∫ x, φ (‖x - ξ‖ / σ) * inner ℝ (x - ξ) (H x) ∂V.weight",
+  "lean_name": "radial_cutoff_first_variation_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-density-ge-one-a1-radial-first-variation-a1-a1"
+}

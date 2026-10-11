@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def HasDensity|def LocallyLp|def scaledLpNorm|def HasGeneralizedMeanCurvature|def divM|def tangentProj|def support|def weight|integrableOn_mult|^theorem |^lemma ",
+        "radial_cutoff_first_variation_eq|lp_corrected_mass_ratio_monotoneOn|exists_density_upperSemicontinuous_of_locallyLp",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le|integral_mul_le_Lp_mul_Lq_of_nonneg|monotoneOn_of_deriv_nonneg|tendsto_integral_filter_of_dominated_convergence|tendsto_measure_cthickening_of_isClosed|withDensity_absolutelyContinuous|integrableOn_compact_subset|mem_support_iff_forall",
+        "sed -n '320,350p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "sed -n '20,95p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/density-decomposition-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/density-decomposition-independent-audit/ComparatorTypes.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-density-ge-one-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-density-ge-one-a1/decomposition-v1.json",
+        "/tmp/density-decomposition-independent-audit/ComparatorTypes.lean",
+        "/tmp/density-decomposition-independent-audit/Assembly.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical contract. No existing declaration or competing reserved name matches the three proposed bare identifiers. The split is appropriate, with acyclic prerequisite order radial_first_variation, lp_monotonicity, density_usc. Every supplied one-line proposition elaborated in the frozen comparator scope before any child declaration. The complete supplied appendices compiled, using the additional generic LpMeanCurvature import; each theorem has only propext, Classical.choice, and Quot.sound as axioms. The selected-parent assembly also compiled with only those axioms when given the exact authorized tangent_ae contract as a parameter. SimonGMT's different varifold structure prevents direct reuse of its density theorem, but the generic cutoff and factor lemmas are compatible. The mathematical conclusion is independently corroborated by [Simon, Chapter 4 §4, p. 115](https://math.stanford.edu/~lms/ntu-gmt-text.pdf#page=61)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_first_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the prose and all hypotheses. The proof establishes b > 1, compact-set finiteness, smoothness at the center, admissible support, the rank-n trace identity, and integrability before splitting integrals. Orthogonal projections and linear-map composition have the intended instances. This is an independent, non-circular obligation with an unreserved bare name."
+    },
+    {
+      "key": "lp_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the stated scaled extended-real bound and monotonicity on (0,R]. Its sole child dependency is correctly directed. The proof justifies finite Lp integrability, dominated differentiation, Hölder's estimate, the coefficient yielding the Lambda/2 integrating factor, convergence to closed-ball masses, and the endpoint R. No additional hypothesis or circular theorem is used."
+    },
+    {
+      "key": "density_usc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches density existence and the full neighborhood assertion. The proof supplies a uniform nearby-center bound, a finite monotone limit, and continuity from above of closed-ball measures. It correctly handles arbitrary real density parameters through max(t,0). Depending only on lp_monotonicity is sufficient. Together with the authorized tangent_ae contract, absolute continuity and positive measure of support neighborhoods establish the selected parent's density lower bound without circularity."
+    }
+  ],
+  "required_changes": []
+}
