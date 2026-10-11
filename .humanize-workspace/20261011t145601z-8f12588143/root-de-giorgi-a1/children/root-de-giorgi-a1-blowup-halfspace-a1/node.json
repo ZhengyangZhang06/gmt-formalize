@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.blowup_halfspace-a1",
+  "parent_id": "root.de_giorgi-a1",
+  "depth": 2,
+  "title": "(‡‡): at reduced-boundary points the blow-ups η_{x,r}(E) converge in L¹_loc to the half-space {⟨y, ν_E(x)⟩ > 0}",
+  "statement": "Let n ∈ ℕ, N := n + 1, U ⊆ ℝ^N open, E ⊆ ℝ^N Lebesgue null-measurable and (μ, ν) a Gauss-Green pair for (U, E) (IsGaussGreenPair U E μ ν). Let x ∈ ∂*E := reducedBoundary U μ ν, ν_E(x) := reducedNormal μ ν x and H := {y : ⟨y, ν_E(x)⟩ > 0}. Then for every compact K ⊆ ℝ^N, L^N(K ∩ (η_{x,r}(E) Δ H)) → 0 as r ↓ 0, where η_{x,r}(y) = r⁻¹(y − x) (blowUpMap).",
+  "lean_statement": "∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ x ∈ reducedBoundary U μ ν, ∀ K : Set (Rn (n + 1)), IsCompact K → Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E) {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "deGiorgi_blowUp_tendsto_halfSpace",
+  "depends_on": [
+    "root.de_giorgi-a1.blowup_identity-a1",
+    "root.de_giorgi-a1.density_estimates-a1",
+    "root.de_giorgi-a1.indicator_compactness-a1",
+    "root.de_giorgi-a1.halfspace_rigidity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.blowup_identity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.indicator_compactness-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.halfspace_rigidity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-blowup-halfspace-a1-a1"
+}

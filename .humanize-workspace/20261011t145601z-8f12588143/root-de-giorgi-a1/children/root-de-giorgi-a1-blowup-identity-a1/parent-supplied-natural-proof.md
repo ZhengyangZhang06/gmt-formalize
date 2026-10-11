@@ -1,0 +1,97 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.de_giorgi-a1`
+- Child DAG node: `root.de_giorgi-a1.blowup_identity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Parent proof Part 1b (with R = identity); Simon, Ch. 3, proof of Theorem 4.3, display (8), chapter-03.txt lines 668-672 ("write ζ_k(x) = ζ(ρ_k⁻¹x) and change variable x → ρ_k x; then ∫_{ρ_k⁻¹E} D_iζ = ρ_k^{−n} ∫_E D_iζ_k = ... (by 4.1)").
+
+Notation. L^N = volume; div g = euclideanDivergence g = trace(Dg). IsGaussGreenPair U E μ ν includes (GG): ∫_{E∩U} div h dL^N = −∫⟨h, ν⟩ dμ for every C¹ h with compact support and tsupport h ⊆ U.
+
+Proof. Fix the data. η(y) = r⁻¹(y − x) is an affine homeomorphism of ℝ^N with inverse η⁻¹(z) = x + rz and constant derivative Dη = r⁻¹·id.
+
+1. Put h := g ∘ η. Then h is C¹ (a C¹ map composed with an affine map). Since η is a homeomorphism, tsupport h = η⁻¹(tsupport g), which is compact (the image of the compact set tsupport g under the continuous map η⁻¹); so h has compact support. As η is injective, tsupport h ⊆ η⁻¹(η(U)) = U.
+
+2. By the chain rule Dh(y) = Dg(η(y)) ∘ (r⁻¹ id) = r⁻¹ Dg(η(y)); taking traces, div h(y) = r⁻¹ (div g)(η(y)) for every y.
+
+3. ⟨h(y), ν(y)⟩ = ⟨g(η(y)), ν(y)⟩ for every y.
+
+4. (GG) for (U, E) applied to h gives ∫_{E∩U} r⁻¹ (div g)(η(y)) dy = −∫⟨g(η(y)), ν(y)⟩ dμ(y).
+
+5. Change of variables. For Borel B, L^N(η⁻¹(B)) = L^N(x + rB) = r^N L^N(B) (translation invariance and scaling of Lebesgue measure; Mathlib Measure.addHaar_smul, Measure.addHaar_image_homothety). Hence the image measure of L^N under η is r^N L^N, and for every null-measurable A and every bounded Borel f with compact support, ∫_A f(η(y)) dy = r^N ∫_{η(A)} f(z) dz. With A := E ∩ U (null-measurable) and f := div g (continuous with compact support):
+ ∫_{E∩U} r⁻¹(div g)(η(y)) dy = r^{N−1} ∫_{η(E∩U)} div g = rⁿ ∫_{η(E) ∩ η(U)} div g,
+ because η is injective, so η(E ∩ U) = η(E) ∩ η(U).
+
+6. div g vanishes outside tsupport g ⊆ η(U), hence ∫_{η(E)∩η(U)} div g = ∫_{η(E)} div g.
+
+7. Steps 4-6 give rⁿ ∫_{η(E)} div g dL^N = −∫⟨g(η(y)), ν(y)⟩ dμ(y). Dividing by rⁿ > 0: ∫_{η(E)} div g dL^N = −(rⁿ)⁻¹ ∫⟨g(η(y)), ν(y)⟩ dμ(y). ∎
+
+## Key steps
+
+1. h := g ∘ η_{x,r} is C¹ with compact support and tsupport h = η⁻¹(tsupport g) ⊆ U.
+2. div h = r⁻¹(div g)∘η and ⟨h, ν⟩ = ⟨g∘η, ν⟩; apply (GG) for (U, E) to h.
+3. Change of variables z = η(y) (η pushes L^N to r^N L^N): ∫_{E∩U} (div g)∘η = r^N ∫_{η(E)∩η(U)} div g; div g vanishes off η(U); divide by rⁿ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean`
+- `grep -n 'def IsGaussGreenPair|def normalAverage|def reducedBoundary|def reducedNormal|def HasApproxTangentPlaneWithMultiplicity|def DeGiorgiTheorem|def ApproximateTangentCharacterization|def GaussGreenRepresentation' <snapshot>/project/GMT/Ch03/Contract.lean`
+- `grep -rn -i 'de.?giorgi|reducedBoundary' <snapshot>/mathlib/Mathlib .lake/packages/simongmt/Poincare`
+- `grep -n -i 'compactness|arzela' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/*.lean`
+- `grep -n 'def blowUpMap|def HasApproximateTangentSpaceAt|theorem countablyRectifiable_iUnion' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'def euclideanDivergence|support_euclideanDivergence_subset|euclideanDivergence_eq_sum_inner|def IsLocallyBV|isLocallyBV_of_locallyL1_of_uniform_bound' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `grep -rn 'simon_theorem_3_3|def dimensionalUpperDensity|def dimensionalDensityQuotient|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|def realUnitBallVolume' .lake/packages/simongmt/Poincare/SimonGMT`
+- `grep -n 'WeakDerivativesZero|constancyMollifier' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `grep 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_average|theorem tendsto_filterAt|protected def vitaliFamily' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering`
+- `grep 'theorem Monotone.ae_differentiableAt|theorem eLpNorm_le_eLpNorm_fderiv_of_eq|theorem LipschitzWith.ae_differentiableAt|theorem tendsto_of_subseq_tendsto|theorem arzela_ascoli|theorem integral_Ioi_of_hasDerivAt_of_tendsto' <snapshot>/mathlib/Mathlib`
+- `grep 'MonotoneOn.intervalIntegral_deriv_mem_uIcc|MonotoneOn.intervalIntegral_slope_le' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral`
+- `grep 'StronglyMeasurable.integral_prod_right|measurable_measure_prodMk_left|measurableSet_exists_tendsto|StronglyMeasurable.limUnder' <snapshot>/mathlib/Mathlib`
+- `grep 'euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_homothety_image|measurePreserving_euclideanHausdorffMeasure|theorem hausdorffMeasure_image|notation "μHE[' <snapshot>/mathlib/Mathlib`
+- `grep 'withDensity_rnDeriv_eq|addHaar_image_homothety|theorem addHaar_smul|ae_convolution_tendsto_right_of_locallyIntegrable|finrank_orthogonal_span_singleton|LinearIsometryEquiv.measurePreserving|tendsto_measure_iUnion_atTop|Filter.Tendsto.limUnder_eq|HasCompactSupport.contDiff_convolution_left|OrthonormalBasis.volume_parallelepiped' <snapshot>/mathlib/Mathlib`
+- `python3 -I (importlib of verifier/gmt-compare.py) contract_scope(Contract.lean, 'GMT.Ch03.main_theorem') -> NodeChallenge prefix; lake env lean /tmp/dg-decomp/challenges/Challenge_*.lean (10 files), /tmp/dg-decomp/Assembly.lean, /tmp/dg-decomp/Interfaces.lean`
+- `python3 -I lean_name collision check against dag.json (73 nodes)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Polish/StronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Separation/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/tmp/dg-decomp/Assembly.lean`
+- `/tmp/dg-decomp/Interfaces.lean`
+
+The snapshot contract is byte-identical to the workspace contract (project d09bc8a, Mathlib 25730c7c). Neither Mathlib nor the pinned SimonGMT has a De Giorgi theorem, BV subsequence compactness, a Lipschitz Gauss–Green identity, density estimates for the reduced boundary, half-space rigidity, or measurability of the reduced boundary. SimonGMT FinitePerimeter.lean records only the definitions, and BV.lean states that subsequence extraction 'remains the compactness obligation'. These obligations therefore become children. Library facts located for the child proofs: Besicovitch differentiation (VitaliFamily.ae_tendsto_average, Besicovitch.ae_tendsto_rnDeriv, Besicovitch.tendsto_filterAt); the Gagliardo–Nirenberg–Sobolev inequality (eLpNorm_le_eLpNorm_fderiv_of_eq); Monotone.ae_differentiableAt and MonotoneOn.intervalIntegral_deriv_mem_uIcc; Rademacher; Arzelà–Ascoli; a.e. convergence of mollifiers; product measurability; μHE scaling and isometry invariance; SimonGMT simon_theorem_3_3 with simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure; countablyRectifiable_iUnion; WeakDerivativesZero. All ten child types elaborate in the exact NodeChallenge scope. The parent assembly and the sibling-interface checks compile against stubs, with propext, Classical.choice, Quot.sound and the stubs' sorryAx as the only axioms. No lean_name collides with dag.json.

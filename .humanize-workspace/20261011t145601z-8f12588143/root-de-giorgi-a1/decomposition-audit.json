@@ -1,0 +1,106 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def (IsGaussGreenPair|normalAverage|reducedBoundary|reducedNormal|HasApproxTangentPlaneWithMultiplicity|DeGiorgiTheorem|ApproximateTangentCharacterization|GaussGreenRepresentation)|^import|^open|^namespace",
+        "de.?giorgi|reducedBoundary|BV.*compactness|compactness.*BV",
+        "ae_tendsto_average|ae_tendsto_rnDeriv|tendsto_filterAt|protected def vitaliFamily",
+        "theorem.*limUnder|tendsto_measure_iUnion_atTop|theorem.*simon_theorem_3_3",
+        "compactness obligation|support_euclideanDivergence_subset|euclideanDivergence_eq_sum_inner|isLocallyBV_of_locallyL1_of_uniform_bound",
+        "eLpNorm_le_eLpNorm_fderiv_of_eq|variable.*finrank",
+        "\\bsorry\\b|^axiom\\b|\\badmit\\b",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dg-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dg-independent-audit/AssemblyNoStubs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dg-independent-audit/Axioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Polish/StronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/tmp/dg-independent-audit/Types.lean",
+        "/tmp/dg-independent-audit/AssemblyNoStubs.lean",
+        "/tmp/dg-independent-audit/Axioms.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected DeGiorgiTheorem contract. Contract and Submission match the snapshot; inspected dependencies match the pinned Mathlib and SimonGMT revisions. Searches found no matching De Giorgi theorem or BV subsequence-extraction theorem; SimonGMT explicitly leaves extraction outstanding. All ten one-line propositions independently elaborate in comparator scope, without child implementations. A conditional assembly using the exact child and prerequisite propositions proves DeGiorgiTheorem without proof stubs. Its axiom report and the checked library lemmas contain only propext, Classical.choice and Quot.sound. Dependencies, including outer prerequisites, are correctly directed and acyclic. All names are bare identifiers, with no collisions among the 97 current DAG nodes. No problematic matrix construction occurs. Public mathematical cross-check: [Simon, Introduction to Geometric Measure Theory, Chapter 2 Theorem 2.6 and Chapter 3 Theorem 4.3](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "compl_pair",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The proof verifies every Gauss–Green clause, establishes zero total divergence, and uses the null-measurable complement partition with the correct sign. It also covers N = 0."
+    },
+    {
+      "key": "blowup_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The affine pullback, compact-support transport, divergence factor and volume Jacobian yield exactly r^(-n). Removing the transformed domain restriction is justified by divergence support; E ⊆ U is unnecessary."
+    },
+    {
+      "key": "density_estimates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes positive finite small-ball mass, averaged-normal excess, the all-radius mass bound, and both volume lower bounds. Lipschitz Gauss–Green extension and the Sobolev argument are supplied, including n = 0. Its sole child dependency is correctly declared."
+    },
+    {
+      "key": "indicator_compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The eventual distributional bounds suffice for the translation and mollification estimates. Arzelà–Ascoli, diagonal extraction, L¹ completeness and a measurable characteristic-function representative establish the exact compact-set convergence. N = 0 is handled separately."
+    },
+    {
+      "key": "halfspace_rigidity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Mollification gives horizontal constancy and nonnegative derivative along e. The monotone one-variable limit is binary almost everywhere by Fubini, and two-sided positivity excludes every threshold except zero. The resulting half-space has the required sign."
+    },
+    {
+      "key": "blowup_halfspace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four declared dependencies are used with their exact hypotheses. The extracted limit inherits horizontal invariance, vertical monotonicity and two-sided positivity. Rigidity and the subsequence criterion give precisely the frozen compact-set convergence for every reduced-boundary point."
+    },
+    {
+      "key": "tangent_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies dimension n, the correctly normalized flat-plane integral identity, and the excess error estimate. Uniform approximation extends convergence from C¹ tests to every C_c test. Multiplicity is exactly one, including the H⁰ point-mass case."
+    },
+    {
+      "key": "boundary_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact exhaustion provides σ-finiteness; a measurable normal representative and parameter integration give measurable fixed-radius averages. Local left continuity justifies the rational-radius Cauchy characterization. The cited limUnder measurability theorem supports the final Borel description."
+    },
+    {
+      "key": "boundary_full_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite restrictions satisfy the differentiation theorem's hypotheses. The unit limit ensures positive denominators, permitting passage from closed-ball to open-ball averages. Countably many localized exceptional sets prove concentration without assuming boundary measurability."
+    },
+    {
+      "key": "rectifiable_hausdorff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "RT matches its outer frozen type exactly; AT is explicitly assumed and available from the declared prerequisite. Localization, density comparison, rectifiable carrying sets, the covering bound and Radon–Nikodym differentiation prove both conclusions. Zero-dimensional and zero-diameter cases are addressed; continuity from below for the increasing A_j is supported by the pinned library."
+    }
+  ],
+  "required_changes": []
+}

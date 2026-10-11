@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.blowup_identity-a1",
+  "parent_id": "root.de_giorgi-a1",
+  "depth": 2,
+  "title": "Gauss-Green identity for the blow-ups η_{x,r}(E) (Simon (8); parent Part 1b)",
+  "statement": "Let n ∈ ℕ, N := n + 1, U ⊆ ℝ^N open, E ⊆ ℝ^N Lebesgue null-measurable, (μ, ν) a Gauss-Green pair for (U, E) (IsGaussGreenPair U E μ ν), x ∈ ℝ^N and r > 0, and let η := η_{x,r} = blowUpMap x r, η(y) = r⁻¹(y − x). Then for every C¹ map g : ℝ^N → ℝ^N with compact support and tsupport g ⊆ η(U): ∫_{η(E)} div g dL^N = −(rⁿ)⁻¹ ∫ ⟨g(η(y)), ν(y)⟩ dμ(y).",
+  "lean_statement": "∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)) (x : Rn (n + 1)) (r : ℝ), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → 0 < r → ∀ g : Rn (n + 1) → Rn (n + 1), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ blowUpMap x r '' U → ∫ z in blowUpMap x r '' E, Poincare.SimonGMT.Chapter02.euclideanDivergence g z = -((r ^ n)⁻¹ * ∫ y, inner ℝ (g (blowUpMap x r y)) (ν y) ∂μ)",
+  "lean_name": "deGiorgi_blowUp_gaussGreen_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-blowup-identity-a1-a1"
+}

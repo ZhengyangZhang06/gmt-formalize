@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.halfspace_rigidity-a1",
+  "parent_id": "root.de_giorgi-a1",
+  "depth": 2,
+  "title": "Rigidity: a horizontally invariant, vertically monotone set with two-sided positive volume near 0 is the half-space {⟨y, e⟩ > 0}",
+  "statement": "Let N ∈ ℕ, G ⊆ ℝ^N Lebesgue null-measurable and e ∈ ℝ^N with |e| = 1. Assume (H) ∫_G Dζ(y)v dy = 0 for every C¹ compactly supported ζ : ℝ^N → ℝ and every v ∈ ℝ^N with ⟨v, e⟩ = 0; (M) ∫_G Dζ(y)e dy ≤ 0 for every C¹ compactly supported ζ : ℝ^N → ℝ with ζ ≥ 0; (P) L^N(G ∩ B_R(0)) > 0 and L^N(B_R(0) ∖ G) > 0 for every R > 0. Then L^N(G Δ {y : ⟨y, e⟩ > 0}) = 0.",
+  "lean_statement": "∀ (N : ℕ) (G : Set (Rn N)) (e : Rn N), NullMeasurableSet G volume → ‖e‖ = 1 → (∀ (ζ : Rn N → ℝ) (v : Rn N), ContDiff ℝ 1 ζ → HasCompactSupport ζ → inner ℝ v e = 0 → ∫ y in G, fderiv ℝ ζ y v = 0) → (∀ ζ : Rn N → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ y, 0 ≤ ζ y) → ∫ y in G, fderiv ℝ ζ y e ≤ 0) → (∀ R : ℝ, 0 < R → 0 < volume (G ∩ Metric.ball 0 R) ∧ 0 < volume (Metric.ball 0 R \\ G)) → volume (symmDiff G {y | 0 < inner ℝ y e}) = 0",
+  "lean_name": "deGiorgi_halfSpace_rigidity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-halfspace-rigidity-a1-a1"
+}
