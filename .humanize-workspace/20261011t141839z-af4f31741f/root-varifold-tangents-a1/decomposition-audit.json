@@ -1,0 +1,93 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'DensitySemicontinuity|VarifoldTangentCones' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "rg -n 'structure Varifold|def weight|theorem weight_apply|weight_finite_on_compact|domainMeasure|structure TestVectorField|def firstVariationNormOn|def HasLocallyBoundedFirstVariation|def Stationary|continuous_tangentialDivergence|hasCompactSupport_tangentialDivergence|support_tangentialDivergence|firstVariation_const_smul' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "ext_of_integral_eq_on_compactlySupported|hasDerivAt_integral_of_dominated_loc_of_deriv_le|theorem dist_normed_convolution_le|contDiff_convolution_left|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|theorem integral_smul_measure",
+        "rg -n --hidden --no-ignore '\"lean_name\"\\s*:\\s*\"varifold_tangents_' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f -g '*.json'",
+        "rg -l --hidden --no-ignore 'varifold_tangents_' ../../cluster-state -g '*.json' -g '*.jsonl'",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Restriction.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Axioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRadialRigidity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRescaling.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/vt-independent-audit-20261011/Types.lean",
+        "/tmp/vt-independent-audit-20261011/Assembly.lean",
+        "/tmp/vt-independent-audit-20261011/Restriction.lean",
+        "/tmp/vt-independent-audit-20261011/Axioms.lean"
+      ],
+      "conclusion": "The seven-child split appropriately establishes the selected varifold_tangent_theorems contract. Snapshot revisions and installed dependencies agree; the workspace contract and Submission match the frozen contract. Varifold supplies domain openness. The cited variation, radial-rigidity, differentiation, mollification, regularity and measure-extensionality lemmas have compatible types. Axiom checks passed using only propext, Classical.choice and Quot.sound, with an explicit import of the cited mollifier module. In a fresh scratch environment, all seven frozen propositions elaborate before any child declaration exists. The assembly from child and assigned sibling hypotheses proves the selected parent verbatim and uses only standard axioms; this checks implication, not completed child implementations. The restriction proof also recompiles with standard axioms. Both dependency graphs are acyclic and correctly directed. All names are fresh bare identifiers: run matches occur only in this proposal/retry, and the cluster JSON search returned no matches. No forbidden matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "rescaled_ball_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree. The measurable preimage calculation gives the exact rescaled mass; cancellation uses positive finite normalization factors. Composing HasDensity with positive radius scaling proves the limit, including θ = ∞. No domain-membership or variation hypothesis is needed, and there is no circular reliance."
+    },
+    {
+      "key": "rescaled_divergence_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pulled-back field has the claimed derivative, compact support inside U, and norm bound. Unit-test normalization and firstVariationRieszMeasure_eq_norm apply on the relatively compact open ball. The M = 0 case and ENNReal cancellation are handled correctly, including n = 0. This proves the exact stated bound independently."
+    },
+    {
+      "key": "limit_stationary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Tangential divergence is an admissible compactly supported continuous test function. Domain openness and x ∈ U give eventual applicability of the declared divergence-bound dependency. Its right side tends to zero, and uniqueness of real limits proves stationarity for every test field. All hypotheses and dependencies match."
+    },
+    {
+      "key": "limit_ball_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement explicitly uses ofReal θ₀, matching the Lean type. Finite limiting masses justify eventual integrability of the cutoffs. The two cutoff comparisons and continuity from above prove the exact closed-ball identity without assuming sphere-nullness. The sole child dependency is correctly used."
+    },
+    {
+      "key": "radial_homogeneity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Stationarity and radial projection equality yield identity H without assuming homogeneity. The supplied domination justifies differentiation; the resulting ODE gives scaling for C¹ compactly supported functions. Mollification with a common compact support, Riesz uniqueness, and measurable-equivalence map evaluation extend this to every set A. The proof is complete and non-circular."
+    },
+    {
+      "key": "restrict_radon_converges",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Openness follows from W.isOpen_domain. The zero-extension argument establishes continuity and compact support, and the domain-measure, restriction and scalar-integral identities prove the exact RadonConverges conclusion, including c = 0. The finite-c hypothesis is harmlessly stronger than necessary. The corresponding complete Lean proof recompiles with standard axioms."
+    },
+    {
+      "key": "density_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies every frozen DensitySemicontinuity hypothesis after localization, tail selection and τ⁻¹ scaling. The divergence bound supplies local variation finiteness; ball identities transfer densities; measurable supersets correctly bound arbitrary bad sets. Rescaling densities back and exhausting space by countably many balls proves the exact conclusion. Both declared dependencies and the explicit cross-branch premise are used without circularity."
+    }
+  ],
+  "required_changes": []
+}
