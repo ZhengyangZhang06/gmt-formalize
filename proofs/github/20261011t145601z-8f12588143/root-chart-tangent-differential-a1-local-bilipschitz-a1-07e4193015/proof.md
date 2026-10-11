@@ -1,0 +1,83 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.chart_tangent_differential-a1`
+- Child DAG node: `root.chart_tangent_differential-a1.local_bilipschitz-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Parent proof Step 2 (localization): a C¹ map with injective derivative is bi-Lipschitz near each point (the standard argument behind the local representation of C¹ immersions, Simon Ch. 2 §4). The parent states it on B̄_{2r₀}(u₀); here the open ball B_r(u₀) is used, which is all that the later steps need. All lemmas cited are available after `import GMT.Ch03.Submission`.
+
+1. Since V is open and ψ is C¹ on V, ψ is differentiable at every u ∈ V with derivative Dψ(u) = fderiv ℝ ψ u, and u ↦ Dψ(u) is continuous on V for the operator norm (Mathlib ContDiffOn.differentiableOn with 1 ≠ 0, together with openness of V, and ContDiffOn.continuousOn_fderiv_of_isOpen).
+
+2. Let L := Dψ(u₀). L is an injective linear map on the finite-dimensional space ℝⁿ, hence bounded below: there is c₀ > 0 with |Lv| ≥ c₀|v| for all v ∈ ℝⁿ. (Mathlib LinearMap.exists_antilipschitzWith / LinearMap.injective_iff_antilipschitz give an antilipschitz constant m ≥ 0 with |v| ≤ m|Lv|. By hand: L induces a linear bijection L' : ℝⁿ → range L (LinearEquiv.ofInjective) whose inverse is a linear map on a finite-dimensional normed space, hence continuous, of operator norm m; then |v| = |L'⁻¹(Lv)| ≤ m|Lv|.) Put c₀ := 1/(m + 1) > 0; then c₀|v| ≤ (m/(m + 1))|Lv| ≤ |Lv|. (If n = 0, every v is 0 and any c₀ > 0 works.)
+
+3. By continuity of Dψ at u₀ (step 1) and openness of V, choose r > 0 such that B_r(u₀) ⊆ V and ‖Dψ(u) − L‖ ≤ c₀/2 for every u ∈ B_r(u₀).
+
+4. Put K := ‖L‖ + c₀/2 (a nonnegative real, viewed in ℝ≥0) and c := c₀/2 > 0. For u ∈ B_r(u₀), ‖Dψ(u)‖ ≤ ‖L‖ + ‖Dψ(u) − L‖ ≤ K.
+
+5. Upper bound. The ball B_r(u₀) is convex, ψ is differentiable at each of its points and ‖Dψ‖ ≤ K there. By the mean value inequality on convex sets (Mathlib Convex.lipschitzOnWith_of_nnnorm_fderiv_le, or Convex.norm_image_sub_le_of_norm_fderiv_le), |ψ(u) − ψ(u')| ≤ K|u − u'| for all u, u' ∈ B_r(u₀); i.e. ψ is K-Lipschitz on B_r(u₀).
+
+6. Lower bound. Let φ(v) := ψ(v) − Lv. On B_r(u₀), φ is differentiable with Dφ(v) = Dψ(v) − L, of norm ≤ c₀/2 (step 3). By the mean value inequality on the convex ball, |ψ(u) − ψ(u') − L(u − u')| = |φ(u) − φ(u')| ≤ (c₀/2)|u − u'| for u, u' ∈ B_r(u₀). Hence, using step 2, |ψ(u) − ψ(u')| ≥ |L(u − u')| − (c₀/2)|u − u'| ≥ c₀|u − u'| − (c₀/2)|u − u'| = c|u − u'|.
+
+7. Steps 3-6 provide r > 0 with B_r(u₀) ⊆ V, K ∈ ℝ≥0 and c > 0 with the two required inequalities on B_r(u₀). ∎
+
+## Key steps
+
+1. ψ is differentiable on the open V and Dψ is continuous there.
+2. The injective linear map L = Dψ(u₀) is bounded below: |Lv| ≥ c₀|v| (LinearMap.exists_antilipschitzWith).
+3. Choose r with B_r(u₀) ⊆ V and ‖Dψ(u) − L‖ ≤ c₀/2 on B_r(u₀).
+4. Mean value inequality on the convex ball: ψ is (‖L‖ + c₀/2)-Lipschitz.
+5. Mean value inequality for ψ − L: |ψ(u) − ψ(u') − L(u − u')| ≤ (c₀/2)|u − u'|, hence the lower bound with c = c₀/2.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n "^def |^noncomputable def |^abbrev " project/GMT/Ch03/Contract.lean (Rn, IsPositiveLocallyIntegrableWeight, HasTangentialDifferentialAt; contract scope replayed via verifier/gmt-compare.py contract_scope)`
+- `grep -n "def blowUpMap|def HasApproximateTangentSpaceAt|def HasWeightedApproximateTangentSpaceAt|IsLocallyIntegrableMultiplicity" simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -rn "theorem simon_theorem_3_6|simon_remark_3_7_of_openSigmaFinite|ae_dimensionalUpperDensity_eq_zero_outside_of_openSigmaFinite|def dimensionalUpperDensity|def dimensionalDensityQuotient|def IsBorelRegularOuterMeasure|def IsOpenSigmaFinite|measure_toOuterMeasure_isBorelRegular|realUnitBallVolume_pos" simongmt/Poincare/SimonGMT/Chapter01`
+- `grep -rn "injective_area_formula_lipschitzOn|weighted_area_formula_lipschitzOn_fiberSum|def weightedAreaFiberSum|def areaFiber|areaJacobianWithin|euclideanHausdorffMeasure_image_le_of_lipschitzOn|nullMeasurableSet_image_of_lipschitzOn|rademacher_ae_differentiableAt|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure" simongmt/Poincare/SimonGMT/Chapter02`
+- `rg -n "euclideanHausdorffMeasure_homothety_image|euclideanHausdorffMeasure_homothety_preimage|euclideanHausdorffMeasure_smul₀|Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n "normDet_sq|euclideanHausdorffMeasure_image_eq_normDet_mul_volume|hausdorffMeasure_image" mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `rg -n "ae_tendsto_average_norm_sub|tendsto_filterAt|ae_tendsto_rnDeriv" mathlib/Mathlib/MeasureTheory/Covering`
+- `rg -n "ae_differentiableWithinAt_of_mem|LipschitzWith.ae_differentiableAt" mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `rg -n "isOpen_biUnion_countable|ae_ball_iff|isCompact_closure|addHaar_closedBall|image_of_continuousOn_injOn|exists_antilipschitzWith|finrank_range_of_inj|integral_inter_add_sdiff₀|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|exists_measurable_subset_ae_eq|ContDiffAt.exists_lipschitzOnWith|continuousOn_fderiv_of_isOpen|lipschitzOnWith_of_nnnorm_fderiv_le|tendsto_integral_filter_of_dominated_convergence|integral_comp_smul|integral_withDensity_eq_integral_smul|measurable_fderiv" mathlib/Mathlib`
+- `lake env lean GMT/Scratch/ChartCheckAvail*.lean (#check availability of every cited lemma after `import GMT.Ch03.Submission`)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaMultiplicity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+
+Snapshot manifest: project d09bc8a (Contract.lean byte-identical to the workspace), Mathlib 25730c7c, plus the pinned simongmt package. Found and cited by the children: SimonGMT blowUpMap, HasApproximateTangentSpaceAt (Def. 1.4) and HasWeightedApproximateTangentSpaceAt (Def. 1.7). Also cited: SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn (F2) and nullMeasurableSet_image_of_lipschitzOn (Simon 1.8(i)), and weighted_area_formula_lipschitzOn_fiberSum (injective area formula on an open Lipschitz domain; needs import Chapter02.AreaDomain). Also: the density machinery ae_dimensionalUpperDensity_eq_zero_outside_of_openSigmaFinite / simon_remark_3_7_of_openSigmaFinite (Simon 1.3.6, 3.7(2); needs import Chapter01.DensityComparison), with measure_toOuterMeasure_isBorelRegular and simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure (needs import Chapter02.AreaLiteral). Mathlib: euclideanHausdorffMeasure_homothety_image/_preimage, Isometry.euclideanHausdorffMeasure_image, LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume, ContinuousLinearMap.normDet_sq, VitaliFamily.ae_tendsto_average_norm_sub with Besicovitch.vitaliFamily/tendsto_filterAt, and LipschitzOnWith.ae_differentiableWithinAt_of_mem (Rademacher). Further Mathlib lemmas: MeasurableSet.image_of_continuousOn_injOn (Lusin-Souslin), Measure.addHaar_closedBall, LinearMap.exists_antilipschitzWith, Convex.lipschitzOnWith_of_nnnorm_fderiv_le, ContDiffAt.exists_lipschitzOnWith, tendsto_integral_filter_of_dominated_convergence, Measure.integral_comp_smul, integral_withDensity_eq_integral_smul, TopologicalSpace.isOpen_biUnion_countable and ae_ball_iff. Every Mathlib lemma cited is visible after `import GMT.Ch03.Submission` (checked with #check). No match in the snapshot for: a ready-made 'C¹ chart image has the classical tangent plane as approximate tangent space' lemma, a weighted locality lemma for approximate tangent planes, a blow-up change-of-variables lemma for blowUpMap, or a ρⁿ-normalized Lebesgue-point lemma for Hⁿ⌞S. These are supplied as children blowup_scaling, chart_blowup_tangent, weighted_tangent_combination and lebesgue_points. SimonGMT's Chapter03 Differential.lean tangential notions are not used.
