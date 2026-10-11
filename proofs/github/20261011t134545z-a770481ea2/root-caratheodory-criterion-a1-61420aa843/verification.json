@@ -1,0 +1,15 @@
+{
+  "node_id": "root.caratheodory_criterion-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/9",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "e3456a59527242b1cf04233f8f4b3b5c9475e31b",
+  "integrated_commit": "",
+  "proof_base_commit": "df701776cb50a2fcd2d2c79e66f88fb414eecd5c",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ec1c322fab7585cea8deb6a95d4dae2d97d09d8e {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": []
+}

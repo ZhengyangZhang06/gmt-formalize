@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4e0d38e88fc0e43c23361a6fdea211e264679a6bdbd58c39684db3c33604380f",
+  "git_delta": {
+    "base_commit": "df701776cb50a2fcd2d2c79e66f88fb414eecd5c",
+    "candidate_commit": "e3456a59527242b1cf04233f8f4b3b5c9475e31b",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "caratheodory_criterion",
+    "diff_sha256": "dd0eb26babedf3c6e68da72c7765d5f4f871e9dfdfe0010170b2e93512ecc399",
+    "source_sha256": "3223cb675dcebcbbac9b4e18f2e4aad1daded148c32ef5628a63864cff9c193f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.caratheodory_criterion",
+      "statement": "CaratheodoryCriterion",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
