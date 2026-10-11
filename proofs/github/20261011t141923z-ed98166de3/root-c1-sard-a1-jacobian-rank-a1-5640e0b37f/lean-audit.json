@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1066710072ceeb08a736c560341259312da9cdb1e6da555fab3ec1999540df05",
+  "git_delta": {
+    "base_commit": "6aa972d49349b10fb0c80727c1c1ec9192b18702",
+    "candidate_commit": "b453c9b25c02db8067850f3bc747c665c45d709f",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "c1_sard_coarea_jacobian_eq_zero_iff",
+    "diff_sha256": "751f592908910bd5c13ff6c592bd6d06ef94b4aa045f9a9c3dd918e8cfb903fb",
+    "source_sha256": "585b4f94eaf6ed3344408dd7fefde7d2c3b0cc31fc8561ab987b4d73131278d0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.c1_sard_coarea_jacobian_eq_zero_iff",
+      "statement": "∀ (N m : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N), coareaJacobian M f x = 0 ↔ Module.finrank ℝ (LinearMap.range ((fderiv ℝ f x).toLinearMap ∘ₗ (tangentSpace M x).subtype)) < m",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

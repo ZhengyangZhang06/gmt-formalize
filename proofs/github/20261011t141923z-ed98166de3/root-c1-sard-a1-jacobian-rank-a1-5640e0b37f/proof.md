@@ -1,0 +1,124 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.c1_sard-a1`
+- Child DAG node: `root.c1_sard-a1.jacobian_rank-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof of root.c1_sard-a1, PART II steps 1-2 (Simon, Introduction to GMT, Ch. 2 §6, p. 66: "J*f(x) ≠ 0 precisely when df_x has rank m"). This lemma is pure linear algebra; it holds at every point x, with no hypothesis on M or f.
+
+Notation. Fix N, m ∈ ℕ, M ⊆ ℝᴺ, f : ℝᴺ → ℝᵐ and x ∈ ℝᴺ (ℝᵖ = EuclideanSpace ℝ (Fin p)). T := tangentSpace M x is a linear subspace of ℝᴺ; with the restricted inner product it is a finite-dimensional (hence complete) inner product space. Let A := fderiv ℝ f x : ℝᴺ →L ℝᵐ (if f is not differentiable at x this is 0; no property of A is used below), ι : T → ℝᴺ the inclusion, L := A ∘ ι : T →L ℝᵐ, and L* : ℝᵐ →L T its adjoint, ⟨L* w, t⟩ = ⟨w, L t⟩. By definition coareaJacobian M f x = √det(L ∘ L*), where L ∘ L* : ℝᵐ → ℝᵐ. The underlying linear map of L is (fderiv ℝ f x).toLinearMap ∘ₗ T.subtype, so range L is exactly the submodule in the statement.
+
+1. L L* is self-adjoint and positive semidefinite: ⟨L L* w, w⟩ = ⟨L* w, L* w⟩ = |L* w|² ≥ 0 for every w ∈ ℝᵐ. Hence its eigenvalues are ≥ 0 and det(L L*) ≥ 0.
+2. Since Real.sqrt d = 0 iff d ≤ 0, step 1 gives: coareaJacobian M f x = 0 ⟺ det(L L*) ≤ 0 ⟺ det(L L*) = 0.
+3. L L* is an endomorphism of the finite-dimensional space ℝᵐ, so det(L L*) = 0 ⟺ L L* is not invertible ⟺ L L* is not injective.
+4. L L* is not injective ⟺ there is w ≠ 0 with L L* w = 0 ⟺ there is w ≠ 0 with L* w = 0. (If L L* w = 0 then |L* w|² = ⟨L L* w, w⟩ = 0, so L* w = 0; conversely L* w = 0 gives L L* w = 0.) Thus L L* is not injective ⟺ ker L* ≠ {0}.
+5. ker L* = (range L)^⊥: w ∈ ker L* ⟺ ⟨L* w, t⟩ = 0 for all t ∈ T ⟺ ⟨w, L t⟩ = 0 for all t ∈ T. In the finite-dimensional space ℝᵐ, (range L)^⊥ = {0} ⟺ range L = ℝᵐ. Hence ker L* ≠ {0} ⟺ range L ≠ ℝᵐ, i.e. ⟺ L is not surjective.
+6. dim ℝᵐ = m (finrank_euclideanSpace_fin). Every subspace of ℝᵐ has dimension ≤ m, and a subspace of dimension m is all of ℝᵐ; so range L ≠ ℝᵐ ⟺ finrank(range L) < m.
+7. Chaining steps 2-6: coareaJacobian M f x = 0 ⟺ Module.finrank ℝ (LinearMap.range ((fderiv ℝ f x).toLinearMap ∘ₗ (tangentSpace M x).subtype)) < m. As N, m, M, f, x were arbitrary, the statement holds. ∎
+
+Formalization reference (machine-checked by the decomposer: Lean v4.35.0-rc3, Mathlib 25730c7c, simongmt 2b366308; elaborated inside `namespace GMT.Ch02` with the frozen contract's `open MeasureTheory Metric Set Filter Topology`, `open scoped ENNReal NNReal`, `open Poincare.SimonGMT`; axioms propext, Classical.choice, Quot.sound only). Steps 1-5 are packaged by SimonGMT `Chapter02.coareaLinearJacobian_eq_sqrt_det` (coareaLinearJacobian L = √det(L ∘ₗ L.adjoint)) and `Chapter02.coareaLinearJacobian_eq_zero_iff` (coareaLinearJacobian L = 0 ↔ ¬ Surjective L) in Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean, which needs the extra import `Poincare.SimonGMT.Chapter02.CoareaLinearAlgebra`. ContinuousLinearMap.det is an abbrev for LinearMap.det of the coercion and ContinuousLinearMap.adjoint_toLinearMap is rfl, so the bridge is `rw [...]; rfl`; step 6 is Submodule.finrank_lt and finrank_top.
+
+```lean
+theorem c1_sard_coarea_jacobian_eq_zero_iff : ∀ (N m : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N), coareaJacobian M f x = 0 ↔ Module.finrank ℝ (LinearMap.range ((fderiv ℝ f x).toLinearMap ∘ₗ (tangentSpace M x).subtype)) < m := by
+  intro N m M f x
+  let T := tangentSpace M x
+  let L : T →L[ℝ] Rn m := (fderiv ℝ f x).comp T.subtypeL
+  have hJ : coareaJacobian M f x = Chapter02.coareaLinearJacobian (L : T →ₗ[ℝ] Rn m) := by
+    rw [Chapter02.coareaLinearJacobian_eq_sqrt_det]
+    rfl
+  have hLlin : (L : T →ₗ[ℝ] Rn m) = (fderiv ℝ f x).toLinearMap ∘ₗ T.subtype := rfl
+  have hm : Module.finrank ℝ (Rn m) = m := finrank_euclideanSpace_fin
+  rw [hJ, Chapter02.coareaLinearJacobian_eq_zero_iff, ← LinearMap.range_eq_top, hLlin]
+  constructor
+  · intro h
+    have := Submodule.finrank_lt h
+    rwa [hm] at this
+  · intro h htop
+    rw [htop, finrank_top, hm] at h
+    exact lt_irrefl _ h
+```
+
+## Key steps
+
+1. coareaJacobian M f x = √det(L L*) with L L* positive semidefinite, so it vanishes iff det(L L*) = 0.
+2. det(L L*) = 0 iff L L* is not injective iff L* is not injective (|L* w|² = ⟨L L* w, w⟩).
+3. ker L* = (range L)^⊥, so L* is not injective iff L is not surjective.
+4. range L ≠ ℝᵐ iff finrank(range L) < m = dim ℝᵐ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n "^def C1Sard|^def CoareaFormula|^def coareaJacobian|^def tangentSpace|^def tangentProjection" project/GMT/Ch02/Contract.lean`
+- `rg -n "C1Sard|6.4" project/GMT/Ch02/README.md`
+- `rg -n "theorem toOpenPartialHomeomorph|def toOpenPartialHomeomorph|theorem mem_toOpenPartialHomeomorph_source" mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `rg -n "theorem OpenPartialHomeomorph.contDiffAt_symm" mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean; rg -n "theorem OpenPartialHomeomorph.hasFDerivAt_symm" mathlib/Mathlib/Analysis/Calculus/FDeriv/OfCompLeft.lean`
+- `rg -n "protected theorem ContinuousLinearEquiv.isOpen" mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean; rg -n "protected def restrOpen|theorem coe_restrOpen" mathlib/Mathlib/Topology/OpenPartialHomeomorph/IsImage.lean`
+- `rg -n "theorem _root_.Submodule.adjoint_subtypeL|theorem adjoint_comp|theorem _root_.ContinuousLinearMap.adjoint_toLinearMap" mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean; rg -n "^def starProjection|theorem orthogonalProjectionOnto_mem_subspace_eq_self" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `rg -n "theorem ContinuousOn.clm_comp" mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean; rg -n "theorem ContDiffOn.continuousOn_fderiv_of_isOpen" mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean; rg -n "theorem continuousOn_iff_isClosed|theorem ContinuousOn.isOpen_inter_preimage" mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `rg -n "theorem lintegral_eq_zero_iff'|theorem lintegral_indicator_one" mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/*.lean`
+- `rg -n "theorem finrank_range_add_finrank_ker|theorem injective_iff_surjective_of_finrank_eq_finrank" mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean; rg -n "lemma ball_prod_same" mathlib/Mathlib/Topology/MetricSpace/Pseudo/Constructions.lean; rg -n "theorem fderiv_comp " mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean; rg -n "theorem finrank_euclideanSpace_fin" mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `rg -n "def implicitToOpenPartialHomeomorph|def implicitFunction|theorem map_implicitFunction_eq" mathlib/Mathlib/Analysis/Calculus/Implicit.lean`
+- `rg -il "sard" mathlib/Mathlib; rg -n "Submission\." project --glob '*.lean'; rg -il "sard|regular value|implicit" lake-packages-25730c7c/simongmt/Poincare/SimonGMT/`
+- `full reads of simongmt Poincare/SimonGMT/Chapter02/{Submanifold,SubmanifoldTopology,SubmanifoldCalculus,CoareaLinearAlgebra,CoareaProjection}.lean; git rev-parse HEAD of the simongmt and mathlib package checkouts`
+- `python3 -I gen_checks.py / gen_solutions.py (replay verifier gmt-compare.py contract_scope + child_modules for the six lean_statements); lean NodeChallenge/NodeSolution modules against scratch oleans of GMT.Ch02.Submission`
+- `lean Assembly.lean, GCheck.lean, Combined.lean with #print axioms (six child proofs + parent assembly, uncle types as stand-ins)`
+- `read dag.json lean_name list for collisions with the six proposed names`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/OfCompLeft.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/OpenPartialHomeomorph/IsImage.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Implicit.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaProjection.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-c1-sard-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/c1sard-decomp-Z3BOJI/Combined.lean`
+
+Frozen contract: Contract.lean:349-374 fixes CoareaFormula and C1Sard. Conjunct (2) uses μHE[k] and volume on Rn m, and conjunct (3b) uses IsSimonSubmanifold (E := Rn k) 1. coareaJacobian (line 123) is defined with ContinuousLinearMap.adjoint and the det of L ∘L L†. README row 16 and line 103 confirm the relatively-closed reading and the rank conjunct.
+
+Snapshot Mathlib supplies everything the six children use:
+- the C¹ inverse function theorem, ContDiffAt.toOpenPartialHomeomorph (InverseFunctionTheorem/ContDiff.lean:31);
+- OpenPartialHomeomorph.contDiffAt_symm (ContDiff/Operations.lean:881) and OpenPartialHomeomorph.hasFDerivAt_symm (FDeriv/OfCompLeft.lean:214);
+- ContinuousLinearEquiv.isOpen (BoundedLinearMaps.lean:543) and restrOpen (OpenPartialHomeomorph/IsImage.lean:216; its coercions are rfl);
+- Submodule.adjoint_subtypeL (Adjoint.lean:177), adjoint_comp (Adjoint.lean:136) and starProjection (Projection/Basic.lean:131);
+- ContinuousOn.clm_comp (BoundedLinearMaps.lean:453), ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean:916) and continuousOn_iff_isClosed (Topology/ContinuousOn.lean:149);
+- lintegral_eq_zero_iff' and lintegral_indicator_one (Lebesgue/Basic.lean:322, 572);
+- rank-nullity (FiniteDimensional/Lemmas.lean:173, 204), ball_prod_same, fderiv_comp and finrank_euclideanSpace_fin.
+
+No existing result proves C1Sard or any child. Implicit.lean offers an alternative implicit-function route. The 'Sard' matches (MeasureTheory/Function/Jacobian.lean) are the equal-dimension critical-value lemma, not the coarea-based C¹ Sard theorem. The SimonGMT 'implicit' matches are unrelated comments.
+
+Pinned SimonGMT is at rev 2b3663083f3f, which matches the lakefile, and its oleans are built. It provides:
+- coareaLinearJacobian_eq_sqrt_det and coareaLinearJacobian_eq_zero_iff (CoareaLinearAlgebra.lean:35-48);
+- IsSimonLocalRepresentation.exists_open_image_eq_inter (SubmanifoldTopology.lean:100, Simon 4.2).
+All of these depend only on propext, Classical.choice and Quot.sound.
+
+The project snapshot has no Submission.* declarations, and dag.json has no c1_sard_* children, so the six names are free.
+
+Verifier replay results:
+- all six statements elaborate after import GMT.Ch02.Submission in the contract scope;
+- the assembly proves C1Sard from the children and the two uncle types;
+- complete Lean proofs of all six children compile, and the verifier-generated NodeSolution modules check against them using standard axioms only.
