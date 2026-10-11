@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.hausdorff_null_of_weight_null-a1",
+  "parent_id": "root.first_rectifiability-a1",
+  "depth": 2,
+  "title": "μ-null sets of positive upper density are H^n-null (Ch. 1, 3.3 with outer regularity)",
+  "statement": "Let U ⊆ ℝ^N be open, μ a Borel measure on ℝ^N with μ(K) < ∞ for every compact K ⊆ U, and Z ⊆ U with μ(Z) = 0 and limsup_{ρ↓0} μ(B_ρ(x))/(ω_n ρ^n) > 0 for every x ∈ Z. Then H^n(Z) = 0.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (U Z : Set (Euclidean N)), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → Z ⊆ U → μ Z = 0 → (∀ x ∈ Z, 0 < limsup (densityRatio n μ x) (𝓝[>] 0)) → μHE[n] Z = 0",
+  "lean_name": "frt_hausdorff_null_of_weight_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-hausdorff-null-of-weight-null-a1-a1"
+}
