@@ -616,6 +616,36 @@ theorem Submission.tangentMeasure_eventually_cone_small : ∀ (N n : ℕ) (μ : 
       (Eventually.of_forall hpt)
   calc μ T = ENNReal.ofReal (μ.real T) := (ENNReal.ofReal_toReal hTfin.ne).symm
     _ ≤ ENNReal.ofReal (ε * ρ ^ n) := ENNReal.ofReal_le_ofReal (by linarith)
+/-- **A countable `ε`-net of `n`-planes** for the distance `d(π, π') = ‖q_π - q_{π'}‖` of
+Simon Ch. 3, (3) (p. 72). Step 4 of the proof of Theorem 1.6 (p. 73) chooses finitely many
+planes `π₁, …, π_N` such that every plane is within `1/16` of one of them; countably many
+suffice. The projections `q_P` onto `n`-planes form a subset of the finite-dimensional, hence
+separable, space `ℝᴺ →L[ℝ] ℝᴺ`, so they contain a countable dense subset. It is nonempty because
+`n ≤ N` gives an `n`-plane, so it is the range of a sequence `q_{Q_j}`. -/
+theorem Submission.tangentMeasure_countable_projection_net : ∀ (N n : ℕ) (ε : ℝ), n ≤ N → 0 < ε → ∃ Q : ℕ → Submodule ℝ (Rn N), (∀ j, finrank ℝ (Q j) = n) ∧ ∀ P : Submodule ℝ (Rn N), finrank ℝ P = n → ∃ j, ‖P.starProjection - (Q j).starProjection‖ < ε := by
+  intro N n ε hnN hε
+  -- Step 1: the projections onto `n`-planes have a countable dense subset `D`.
+  let S : Set (Rn N →L[ℝ] Rn N) :=
+    (fun P : Submodule ℝ (Rn N) ↦ P.starProjection) '' {P | finrank ℝ P = n}
+  obtain ⟨D, hDS, hDc, hSD⟩ :=
+    (TopologicalSpace.IsSeparable.of_separableSpace S).exists_countable_dense_subset
+  -- Step 2: `n ≤ N` gives an `n`-plane `span (range f)`, so `S` is nonempty.
+  obtain ⟨f, hf⟩ := exists_linearIndependent_of_le_finrank (R := ℝ) (M := Rn N) (n := n)
+    (by rwa [finrank_euclideanSpace_fin])
+  obtain ⟨T, hT⟩ : S.Nonempty :=
+    ⟨_, Submodule.span ℝ (Set.range f), (finrank_span_eq_card hf).trans (Fintype.card_fin n), rfl⟩
+  -- Step 3: hence `D` is nonempty, and it is the range of a sequence `e`.
+  obtain ⟨e, rfl⟩ := hDc.exists_eq_range (closure_nonempty_iff.mp ⟨T, hSD hT⟩)
+  -- Step 4: each `e j` is the projection onto some `n`-plane `Q j`.
+  have he : ∀ j, ∃ Q : Submodule ℝ (Rn N), finrank ℝ Q = n ∧ Q.starProjection = e j :=
+    fun j ↦ hDS (Set.mem_range_self j)
+  choose Q hQ hQe using he
+  refine ⟨Q, hQ, fun P hP ↦ ?_⟩
+  -- Step 5: density of `range e` in `S` gives `j` with `‖q_P - q_{Q j}‖ < ε`.
+  obtain ⟨_, ⟨j, rfl⟩, hj⟩ := Metric.mem_closure_iff.mp (hSD ⟨P, hP, rfl⟩) ε hε
+  refine ⟨j, ?_⟩
+  rw [hQe j, ← dist_eq_norm]
+  exact hj
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
