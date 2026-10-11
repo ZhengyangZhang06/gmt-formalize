@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "67bad2665dda4d9b99f1244c68e8e5b1befb75c444dcdc7196b9cc7f5fa445fd",
+  "git_delta": {
+    "base_commit": "afd71d875c9982f6fe43bcee403128e34e3995ba",
+    "candidate_commit": "f5883ddf35877bf948ef0e85dcc936fc20c5c482",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_euclideanDivergence_convolution",
+    "diff_sha256": "97c54d9f7825645c7d80d71ccfc9bf59441bd32094c10ec15772aa967360313a",
+    "source_sha256": "fe24d088f4d5e064debad89fa91c6b059eae09c9d4c1082c3bb5ad53170b21a3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_euclideanDivergence_convolution",
+      "statement": "∀ (n : ℕ) (κ : Rn n → ℝ) (g : Rn n → Rn n), LocallyIntegrable κ volume → ContDiff ℝ 1 g → HasCompactSupport g → ∀ x, Chapter02.euclideanDivergence (convolution κ g (ContinuousLinearMap.lsmul ℝ ℝ) volume) x = convolution κ (Chapter02.euclideanDivergence g) (ContinuousLinearMap.lsmul ℝ ℝ) volume x",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
