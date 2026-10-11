@@ -455,12 +455,6 @@ theorem Submission.section3_exists_coordinateProjection_injOn :
       rw [PiLp.sub_apply, ← hcoord _ x (j i) hi, ← hcoord _ y (j i) hi, hxy, sub_self]
     exact sub_eq_zero.mp (congrArg Subtype.val (hzero ⟨x - y, L.sub_mem hx hy⟩ hsel))
 
-/-- The frozen Chapter 3 contract. -/
-theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
-
-end GMT.Ch03
-
-
 /-- **Simon Ch. 3, proof of Lemma 3.3, positivity step (p. 79)** (`chapter-03.txt` lines
 490–496). If `ψ` is `C¹` on an open `V ⊆ ℝⁿ` with `Dψ` injective and `T ⊆ V` has `Lⁿ(T) > 0`,
 then `Hⁿ(p_J(ψ(T))) > 0` for some `J` with `#J = n`. Every neighbourhood of some `u₀ ∈ T` meets
@@ -504,3 +498,8 @@ theorem Submission.section3_chart_coordinateProjection_pos :
   refine ⟨J, hJ, (pos_iff_ne_zero.mpr himage).trans_le (measure_mono ?_)⟩
   rw [Set.image_comp]
   exact Set.image_mono (Set.image_mono Set.inter_subset_left)
+
+/-- The frozen Chapter 3 contract. -/
+theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
+
+end GMT.Ch03
