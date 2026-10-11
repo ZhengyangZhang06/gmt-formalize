@@ -607,6 +607,64 @@ theorem Submission.gaussGreenVar_exists_unit_field_eqOn_compact : ∀ (N : ℕ) 
       _ = 1 := one_mul 1
   · simp only
     rw [hχ1 hx, Pi.one_apply, one_smul, hGC x hx]
+/-- **Lower bound for the pairing** (step 8 of the proof that the total variation `μ(O)` of the
+vector measure `ν μ` on an open set `O` is the supremum of the pairings `∫ ⟨g, ν⟩ dμ` over
+continuous unit fields `g` supported in `O`, the characterization of `|Du|` by Simon Ch. 2, (2.4)
+(`chapter-02.txt` lines 518–522)). Put `f = ⟨g, ν⟩`. By Cauchy–Schwarz `|f| ≤ 1_V` a.e., so `f`
+is integrable as `μ(V) < ∞`. A.e. `f ≥ 1_C - 1_{V ∖ C}`: `f = 1` on `C`, `f ≥ -1` on `V ∖ C` and
+`f = 0` off `V`. Integrating gives `μ(C) - μ(V ∖ C) ≤ ∫ f dμ` in `ℝ`, and since `μ(C)` and
+`μ(V ∖ C)` are finite, `μ(C) ≤ ofReal(∫ f dμ) + μ(V ∖ C)` in `[0, ∞]`. -/
+theorem Submission.gaussGreenVar_measure_le_ofReal_integral_inner_add : ∀ (N : ℕ) (μ : Measure (Rn N)) (ν g : Rn N → Rn N) (C V : Set (Rn N)), MeasurableSet C → MeasurableSet V → C ⊆ V → μ V ≠ ∞ → AEStronglyMeasurable ν μ → Continuous g → (∀ᵐ x ∂μ, ‖ν x‖ ≤ 1) → (∀ x, ‖g x‖ ≤ 1) → (∀ x, x ∉ V → g x = 0) → (∀ᵐ x ∂μ, x ∈ C → inner ℝ (g x) (ν x) = 1) → μ C ≤ ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) + μ (V \ C) := by
+  intro N μ ν g C V hC hV hCV hμV hν hg hν1 hg1 hg0 hgC
+  -- Step 1: `f = ⟨g, ν⟩` is a.e. strongly measurable (`g` continuous, `⟨·, ·⟩` continuous).
+  have hfm : AEStronglyMeasurable (fun x ↦ inner ℝ (g x) (ν x)) μ :=
+    continuous_inner.comp_aestronglyMeasurable (hg.aestronglyMeasurable.prodMk hν)
+  -- Step 2: `|f| ≤ |g| |ν| ≤ 1` wherever `|ν| ≤ 1`, and `f = 0` off `V`; so `|f| ≤ 1_V` a.e.
+  have habs : ∀ x, ‖ν x‖ ≤ 1 → |inner ℝ (g x) (ν x)| ≤ 1 := fun x hx ↦
+    (abs_real_inner_le_norm _ _).trans
+      ((mul_le_mul (hg1 x) hx (norm_nonneg _) zero_le_one).trans_eq (one_mul 1))
+  have hbound : ∀ᵐ x ∂μ, ‖inner ℝ (g x) (ν x)‖ ≤ V.indicator 1 x := by
+    filter_upwards [hν1] with x hx
+    by_cases hxV : x ∈ V
+    · rw [indicator_of_mem hxV, Pi.one_apply, Real.norm_eq_abs]
+      exact habs x hx
+    · rw [indicator_of_notMem hxV, hg0 x hxV, inner_zero_left, norm_zero]
+  -- Step 3: integrability; `μ(C) ≤ μ(V) < ∞` and `μ(V ∖ C) ≤ μ(V) < ∞`.
+  have hμC : μ C ≠ ∞ := ne_top_of_le_ne_top hμV (measure_mono hCV)
+  have hμVC : μ (V \ C) ≠ ∞ := ne_top_of_le_ne_top hμV (measure_mono sdiff_subset)
+  have hVint : Integrable (V.indicator (1 : Rn N → ℝ)) μ :=
+    (integrableOn_const hμV).integrable_indicator hV
+  have hCint : Integrable (C.indicator (1 : Rn N → ℝ)) μ :=
+    (integrableOn_const hμC).integrable_indicator hC
+  have hVCint : Integrable ((V \ C).indicator (1 : Rn N → ℝ)) μ :=
+    (integrableOn_const hμVC).integrable_indicator (hV.diff hC)
+  have hfint : Integrable (fun x ↦ inner ℝ (g x) (ν x)) μ := hVint.mono' hfm hbound
+  -- Step 4: `1_C - 1_{V ∖ C} ≤ f` a.e., by cases `x ∈ C`, `x ∈ V ∖ C`, `x ∉ V`.
+  have hlow : (fun x ↦ C.indicator 1 x - (V \ C).indicator 1 x) ≤ᵐ[μ]
+      fun x ↦ inner ℝ (g x) (ν x) := by
+    filter_upwards [hν1, hgC] with x hx hxC
+    by_cases h1 : x ∈ C
+    · rw [indicator_of_mem h1, indicator_of_notMem (fun h ↦ h.2 h1), hxC h1, Pi.one_apply,
+        sub_zero]
+    · by_cases h2 : x ∈ V
+      · rw [indicator_of_notMem h1, indicator_of_mem (show x ∈ V \ C from ⟨h2, h1⟩),
+          Pi.one_apply, zero_sub]
+        exact neg_le_of_abs_le (habs x hx)
+      · rw [indicator_of_notMem h1, indicator_of_notMem (fun h ↦ h2 h.1), hg0 x h2,
+          inner_zero_left, sub_zero]
+  -- Step 5: integrate: `μ(C) - μ(V ∖ C) ≤ ∫ f dμ` in `ℝ`.
+  have hint : μ.real C - μ.real (V \ C) ≤ ∫ x, inner ℝ (g x) (ν x) ∂μ := by
+    rw [← integral_indicator_one hC, ← integral_indicator_one (hV.diff hC),
+      ← integral_sub hCint hVCint]
+    exact integral_mono_ae (hCint.sub hVCint) hfint hlow
+  -- Step 6: pass to `[0, ∞]` through `ofReal`, using `μ(C), μ(V ∖ C) < ∞`.
+  calc μ C = ENNReal.ofReal (μ.real C) := (ofReal_measureReal hμC).symm
+    _ ≤ ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ + μ.real (V \ C)) :=
+      ENNReal.ofReal_le_ofReal (by linarith)
+    _ ≤ ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) + ENNReal.ofReal (μ.real (V \ C)) :=
+      ENNReal.ofReal_add_le
+    _ = ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) + μ (V \ C) := by
+      rw [ofReal_measureReal hμVC]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
