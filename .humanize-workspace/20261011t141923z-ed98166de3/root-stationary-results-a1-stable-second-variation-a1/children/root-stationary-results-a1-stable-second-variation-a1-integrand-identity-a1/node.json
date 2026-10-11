@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.stable_second_variation-a1.integrand_identity-a1",
+  "parent_id": "root.stationary_results-a1.stable_second_variation-a1",
+  "depth": 3,
+  "title": "Pointwise reduction of the second-variation integrand for a normal velocity with ⟨X, H⟩ = 0 (Simon 5.11 core)",
+  "statement": "Let N ∈ ℕ, M ⊆ ℝᴺ (ℝᴺ = EuclideanSpace ℝ (Fin N) = Rn N), φ : ℝ → ℝᴺ → ℝᴺ and y ∈ ℝᴺ. Write:\n- X := initialVelocity φ and Z := initialAcceleration φ;\n- T_y := tangentSpace M y;\n- B_y(τ, η) := secondFundamentalForm M y τ η;\n- H(y) := meanCurvature M y.\n\nAssume:\n(S) B_y(τ, η) = B_y(η, τ) for all τ, η ∈ T_y;\n(N) ⟨η, DX(y)τ⟩ = −⟨X(y), B_y(τ, η)⟩ for all τ, η ∈ T_y;\n(H) ⟨X(y), H(y)⟩ = 0.\n\nThen secondVariationIntegrand M φ y = tangentialDivergence M Z y + stableSecondVariationIntegrand M φ y. That is, at y:\ndiv_M Z + (div_M X)² + Σ_i |(D_{τ_i}X)^⊥|² − Σ_{i,j} (τ_i·D_{τ_j}X)(τ_j·D_{τ_i}X) = div_M Z + Σ_i |(D_{τ_i}X)^⊥|² − Σ_{i,j} (X·B(τ_i,τ_j))².",
+  "lean_statement": "∀ (N : ℕ) (M : Set (Rn N)) (φ : ℝ → Rn N → Rn N) (y : Rn N), (∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, secondFundamentalForm M y τ η = secondFundamentalForm M y η τ) → (∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, inner ℝ η (fderiv ℝ (initialVelocity φ) y τ) = -inner ℝ (initialVelocity φ y) (secondFundamentalForm M y τ η)) → inner ℝ (initialVelocity φ y) (meanCurvature M y) = 0 → secondVariationIntegrand M φ y = tangentialDivergence M (initialAcceleration φ) y + stableSecondVariationIntegrand M φ y",
+  "lean_name": "second_variation_integrand_eq_div_accel_add_stable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-stable-second-variation-a1-integrand-identity-a1-a1"
+}

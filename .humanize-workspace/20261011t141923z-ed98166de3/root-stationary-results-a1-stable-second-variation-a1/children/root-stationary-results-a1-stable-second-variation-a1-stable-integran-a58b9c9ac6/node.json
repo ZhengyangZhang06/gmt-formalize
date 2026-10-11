@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.stable_second_variation-a1.stable_integrand_integrable-a1",
+  "parent_id": "root.stationary_results-a1.stable_second_variation-a1",
+  "depth": 3,
+  "title": "The stable second-variation integrand vanishes off K and is integrable on M (frame-free trace form)",
+  "statement": "Let n, N ∈ ℕ, M, K ⊆ ℝᴺ (ℝᴺ = EuclideanSpace ℝ (Fin N) = Rn N) and φ : ℝ → ℝᴺ → ℝᴺ. Write X := initialVelocity φ, T_y := tangentSpace M y, P_y := tangentProjection M y and B_y(τ, η) := secondFundamentalForm M y τ η.\n\nAssume:\n(a) M is a measurable set;\n(b) y ↦ P_y is continuous on M;\n(c) X is C¹ on ℝᴺ;\n(d) K is closed;\n(e) X(x) = 0 for every x ∉ K;\n(f) M ∩ K is compact;\n(g) μHE[n](M ∩ K) < ∞;\n(h) for every y ∈ M and all τ, η ∈ T_y, ⟨η, DX(y)τ⟩ = −⟨X(y), B_y(τ, η)⟩.\n\nThen:\n(i) stableSecondVariationIntegrand M φ y = 0 for every y ∈ M with y ∉ K;\n(ii) stableSecondVariationIntegrand M φ is integrable on M with respect to μHE[n].",
+  "lean_statement": "∀ (n N : ℕ) (M K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), MeasurableSet M → ContinuousOn (tangentProjection M) M → ContDiff ℝ 1 (initialVelocity φ) → IsClosed K → (∀ x ∉ K, initialVelocity φ x = 0) → IsCompact (M ∩ K) → μHE[n] (M ∩ K) < ⊤ → (∀ y ∈ M, ∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, inner ℝ η (fderiv ℝ (initialVelocity φ) y τ) = -inner ℝ (initialVelocity φ y) (secondFundamentalForm M y τ η)) → (∀ y ∈ M, y ∉ K → stableSecondVariationIntegrand M φ y = 0) ∧ IntegrableOn (stableSecondVariationIntegrand M φ) M μHE[n]",
+  "lean_name": "stable_second_variation_integrand_integrableOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-stable-second-variation-a1-stable-integran-a58b9c9ac6-a1"
+}
