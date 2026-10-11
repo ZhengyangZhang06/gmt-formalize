@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.tangent_measure-a1.c1_to_cc_extension-a1",
+  "parent_id": "root.de_giorgi-a1.tangent_measure-a1",
+  "depth": 3,
+  "title": "Blow-up convergence for C¹_c test functions extends to all C_c test functions under an n-dimensional mass bound",
+  "statement": "Let N, n ∈ ℕ, μ and σ measures on ℝ^N = EuclideanSpace ℝ (Fin N), x ∈ ℝ^N, ρ₁ > 0 and C ∈ ℝ. Assume μ(B_ρ(x)) ≤ ofReal(Cρⁿ) for every ρ ∈ (0, ρ₁), and σ(B_R(0)) < ∞ for every R ∈ ℝ (open balls). Assume also that for every C¹ function φ : ℝ^N → ℝ with compact support, (rⁿ)⁻¹∫ φ(η_{x,r}(y)) dμ(y) → ∫ φ dσ as r ↓ 0, where η_{x,r}(y) = r⁻¹(y − x) (blowUpMap x r). Then for every f ∈ C_c(ℝ^N, ℝ), (rⁿ)⁻¹∫ f(η_{x,r}(y)) dμ(y) → ∫ f dσ as r ↓ 0.",
+  "lean_statement": "∀ (N n : ℕ) (μ σ : Measure (Rn N)) (x : Rn N) (ρ₁ C : ℝ), 0 < ρ₁ → (∀ ρ ∈ Ioo 0 ρ₁, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → (∀ R : ℝ, σ (Metric.ball 0 R) < ∞) → (∀ φ : Rn N → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) ∂μ) (𝓝[>] 0) (𝓝 (∫ y, φ y ∂σ))) → ∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, f (blowUpMap x r y) ∂μ) (𝓝[>] 0) (𝓝 (∫ y, f y ∂σ))",
+  "lean_name": "deGiorgiTM_blowUp_tendsto_of_contDiff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-tangent-measure-a1-c1-to-cc-extension-a1-a1"
+}

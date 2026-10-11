@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^def HasApproxTangentPlaneWithMultiplicity|^def IsGaussGreenPair|^def reducedBoundary|^noncomputable def reducedNormal|^noncomputable def normalAverage",
+        "theorem integral_Ioi_of_hasDerivAt_of_tendsto|theorem integral_prod_symm|def toSpanUnitSingleton|theorem finrank_orthogonal_span_singleton|theorem dist_convolution_le|theorem exists_contDiff_tsupport_subset|theorem HasCompactSupport.contDiff_convolution_left|theorem HasCompactSupport.convolution|theorem HasCompactSupport.fderiv_apply|theorem Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero",
+        "deGiorgiTM_halfSpace_integral_fderiv|deGiorgiTM_tendsto_setIntegral_of_symmDiff|deGiorgiTM_blowUp_defect_tendsto_zero|deGiorgiTM_blowUp_tendsto_of_contDiff",
+        "sed -n '15,145p' /tmp/tm-decomp/Full.lean",
+        "sed -n '146,259p' /tmp/tm-decomp/Full.lean",
+        "sed -n '260,319p' /tmp/tm-decomp/Full.lean",
+        "sed -n '320,461p' /tmp/tm-decomp/Full.lean",
+        "sed -n '462,589p' /tmp/tm-decomp/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tm-decomp/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/Span.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-tangent-measure-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-tangent-measure-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/tm-decomp/Full.lean",
+        "/tmp/tm-decomp/challenges/Challenge_halfspace_flux.lean",
+        "/tmp/tm-decomp/challenges/Challenge_set_convergence_integral.lean",
+        "/tmp/tm-decomp/challenges/Challenge_excess_defect.lean",
+        "/tmp/tm-decomp/challenges/Challenge_c1_to_cc_extension.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace, and Mathlib matches revision 25730c7c759d108ef87ab70af2342a196760f79d. The inspected declarations validate the Hausdorff normalization, product-measure construction, FTC, and mollification tools. All four exact one-line propositions independently elaborate in the generated comparator scope without their implementations. The supplied scratch child proofs compile using only propext, Classical.choice and Quot.sound. The selected parent assembly also compiles, conditionally on three prerequisite stubs whose types exactly match their handoffs; this is not an unconditional parent-proof acceptance. All proposed names are bare identifiers, with no matches in the searched snapshot, SimonGMT, 143-node DAG or GMT sources across 442 Git refs. The selected dependency closure is acyclic. Splitting into these four independent analytic obligations is appropriate: together with the declared prerequisites and supplied dimension/local-finiteness glue, they establish precisely the selected tangent-measure contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "halfspace_flux",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match exactly. The proof establishes integrability, uses the correct measure-preserving orthogonal product decomposition, applies FTC with the correct negative sign, and identifies subspace volume with restricted μHE[n]. The normalization and n = 0 case are covered. No parent or sibling conclusion is assumed."
+    },
+    {
+      "key": "set_convergence_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition preserves eventual null-measurability and the ENNReal-valued symmetric-difference hypothesis. The proof justifies indicator-integral subtraction, gives an integrable majorant on the compact support, converts the finite limiting measure to real values, and applies an eventual squeeze. It is complete and independent."
+    },
+    {
+      "key": "excess_defect",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in both statements and are used correctly. Local finite mass and the almost-everywhere unit bound justify both integrals before subtraction. Cauchy–Schwarz gives the localized defect estimate, and positive rescaling yields M Rⁿ Q(rR) → 0. The argument proves the exact difference-of-integrals conclusion without circularity."
+    },
+    {
+      "key": "c1_to_cc_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the arbitrary-measure extension stated in prose. The proof constructs and normalizes a mollifier, establishes uniform approximation and support control, handles possibly negative C using max(C, 0), proves the required integrability, and completes the ε estimate. C¹ convergence is an explicit hypothesis supplied by the parent assembly, so the empty child dependency list is correct."
+    }
+  ],
+  "required_changes": []
+}

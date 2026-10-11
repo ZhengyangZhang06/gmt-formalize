@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.tangent_measure-a1.set_convergence_integral-a1",
+  "parent_id": "root.de_giorgi-a1.tangent_measure-a1",
+  "depth": 3,
+  "title": "L¹_loc convergence of sets implies convergence of integrals of compactly supported continuous functions",
+  "statement": "Let N ∈ ℕ and let A : ℝ → P(ℝ^N) be a family of subsets of ℝ^N = EuclideanSpace ℝ (Fin N) such that A(r) is Lebesgue null-measurable for all r in some set belonging to the filter 𝓝[>]0 (r ↓ 0). Let H ⊆ ℝ^N be Lebesgue null-measurable and g : ℝ^N → ℝ continuous with compact support. If L^N(tsupport g ∩ (A(r) Δ H)) → 0 as r ↓ 0, then ∫_{A(r)} g dL^N → ∫_H g dL^N as r ↓ 0. Here L^N = volume and set integrals are taken against the restricted measures.",
+  "lean_statement": "∀ (N : ℕ) (A : ℝ → Set (Rn N)) (H : Set (Rn N)) (g : Rn N → ℝ), (∀ᶠ r in 𝓝[>] (0 : ℝ), NullMeasurableSet (A r) volume) → NullMeasurableSet H volume → Continuous g → HasCompactSupport g → Tendsto (fun r : ℝ ↦ volume (tsupport g ∩ symmDiff (A r) H)) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ ↦ ∫ y in A r, g y) (𝓝[>] 0) (𝓝 (∫ y in H, g y))",
+  "lean_name": "deGiorgiTM_tendsto_setIntegral_of_symmDiff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-tangent-measure-a1-set-convergence-integral-a1-a1"
+}
