@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.integer_multiplicity_sub-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1",
+  "depth": 2,
+  "title": "Differences of integer multiplicity currents are integer multiplicity (Simon Ch. 6, Remark 3.2(1))",
+  "statement": "Let U ⊆ ℝ^P be open and let S, T ∈ 𝒟_n(U) be integer multiplicity currents. Then S − T is integer multiplicity.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity S → IsIntegerMultiplicity T → IsIntegerMultiplicity (S - T)",
+  "lean_name": "regcomp_integer_multiplicity_sub",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-integer-multiplicity-sub-a1-a1"
+}

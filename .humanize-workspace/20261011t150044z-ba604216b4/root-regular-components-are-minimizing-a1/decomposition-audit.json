@@ -1,0 +1,102 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "sed -n '125,142p;217,320p;425,451p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "massAdmissibleOn|covectorEuclideanNorm|def .*massOn|def .*zeroRegion|def .*support|HasApproximateTangentSpaceAt|ae_eq_zero_of_integral_contDiff_smul_eq_zero|norm_integral_le_lintegral_norm|exists_isSubordinate",
+        "simon_theorem_3_6|simon_remark_3_7|openSigmaFinite|theorem.*hausdorff",
+        "regcomp_|regular_components_are_minimizing",
+        "Cauchy.Binet|cauchy[Bb]inet|cauchy_binet",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "#print axioms GMT.Ch07.Submission.independent_review_assembly",
+        "#synth Norm (Covector (Euclid 3) 2)",
+        "#synth Sub (GeometricCurrentOn (univ : Set (Euclid 3)) 2)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean IndependentFrozenAudit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1/decomposition-v1.json",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter07/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra",
+        "/tmp/regcomp-proj/IndependentFrozenAudit.lean",
+        "/tmp/regcomp-proj/IndependentFrozenAudit.log"
+      ],
+      "conclusion": "The frozen contract matches the workspace Contract and Submission byte-for-byte; dependency revisions match the pinned manifest. All nine exact propositions elaborate in a scratch module retaining the frozen definitions unchanged. With children supplied as hypotheses, the assembly proves exactly RegularComponentsAreMinimizing; its axiom check and checks of fourteen cited library results report only propext, Classical.choice and Quot.sound. Norm and subtraction select the intended instances; no matrix-unit construction occurs. All names are bare, distinct and unreserved. Dependencies, including the existing DAG, are acyclic and correctly directed. No proposed declaration names occur in the snapshot project; the Cauchy–Binet name search in Mathlib/LinearAlgebra returned no matches. The nine-way split is appropriate, and departure D4 still establishes both selected conclusions. Mathematical source cross-check: [Simon, Chapter 7, Corollary 5.11](https://web.stanford.edu/class/math285/ts-gmt.pdf#page=105)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "codim_one_preliminaries",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the prose. Dimension, support and boundary arguments are valid. In degree zero, removing an isolated atom constructs an admissible integer competitor with strictly smaller local mass. Measurability of E is unnecessary for these conclusions."
+    },
+    {
+      "key": "monotonicity_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes measurability and integrability of tangential divergence before applying radial first variation. The differential inequality and integrating factor give uniform constants for the exact stated bound, including degree zero and empty K."
+    },
+    {
+      "key": "approx_tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite-measure exhaustion permits the upper-density theorem. Similarity scaling makes the blow-up integral differences vanish, proving both directions for every Q outside one null set. No rectifiability assumption or circular locality argument is used."
+    },
+    {
+      "key": "imrep_mass_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Slotwise Parseval and determinant covectors establish the correct coefficient-norm normalization. The upper estimate and smooth, norm-preserving L1 approximation establish equality for every open W, including infinite mass."
+    },
+    {
+      "key": "integer_multiplicity_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared locality dependency supplies common tangent planes. The measurable sign and multiplicity construction, carrierwise integrability, and integral calculation over the three pieces produce an IMRep representing exactly S − T."
+    },
+    {
+      "key": "restriction_integer_multiplicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both constructed representations inherit approximate tangents through the declared locality dependency. Null-set removal and the multiplicity decomposition prove representation, mass additivity and local finiteness. No unproved multiplicity-one assertion is needed."
+    },
+    {
+      "key": "regular_component_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Proper charts justify the local sheets and topological conclusions. The fundamental lemma and determinant evaluations identify multiplicity and orientation on each sheet, yielding local proportionality and the carrier-null conclusion. All five conclusions match the type, without relying on the parent theorem."
+    },
+    {
+      "key": "minimizing_summand",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The constructed competitor has the required boundary and support. Subtraction closure, mass subadditivity and finite ENNReal cancellation prove the exact competitor-based minimality statement. The redundant integrality hypothesis on T − T₁ is harmless."
+    },
+    {
+      "key": "cutoff_boundary_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The covering supplies strictly admissible radii. The partition of unity proves the localized boundary identity, and the operator-norm estimate gives a finite O(ε) error. The unconditional Bochner-integral bound avoids an unstated integrability assumption. The argument includes m = 0 and empty covers."
+    }
+  ],
+  "required_changes": []
+}

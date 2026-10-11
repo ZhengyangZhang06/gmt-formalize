@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.minimizing_summand-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1",
+  "depth": 2,
+  "title": "Lemma 7.1.4 (decomposition lemma) in the competitor form of Definition 7.1.1",
+  "statement": "Let U ⊆ ℝ^P be open, A ⊆ ℝ^P, and let T ∈ 𝒟_n(U) be minimizing in A (Simon 7.1.1, IsMinimizingIn). Let T₁ ∈ 𝒟_n(U) be such that T₁ and T − T₁ are integer multiplicity and, for every open W ⊂⊂ U, M_W(T₁) + M_W(T − T₁) ≤ M_W(T) and M_W(T − T₁) < ∞. Then T₁ is minimizing in A.",
+  "lean_statement": "∀ (P n : ℕ) (U A : Set (Euclid P)) (T T₁ : GeometricCurrentOn U n), IsOpen U → IsMinimizingIn T A → IsIntegerMultiplicity T₁ → IsIntegerMultiplicity (T - T₁) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T₁.massOn W + (T - T₁).massOn W ≤ T.massOn W) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → (T - T₁).massOn W ≠ ∞) → IsMinimizingIn T₁ A",
+  "lean_name": "regcomp_minimizing_summand",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.integer_multiplicity_sub-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.integer_multiplicity_sub-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-minimizing-summand-a1-a1"
+}
