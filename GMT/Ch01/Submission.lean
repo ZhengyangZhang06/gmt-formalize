@@ -323,6 +323,22 @@ theorem Submission.rc_cc_integrable : ∀ (X : Type u) [TopologicalSpace X] (μ 
     rw [show caratheodoryMeasure μ K = μ K from hμ.toCaratheodoryMeasure_apply_all K]
     exact hμ.finite_compacts hK⟩
   exact (map_continuous f).integrable_of_hasCompactSupport f.hasCompactSupport
+/-- Simon Ch. 1, Theorem 4.16, the estimate of Steps 2–3 of its proof, for one Radon outer
+measure: `f` vanishes off the compact set `tsupport f` (`setIntegral_tsupport`), which has
+`caratheodoryMeasure μ`-measure `μ (tsupport f) < ∞` by
+`IsRadonOuterMeasure.toCaratheodoryMeasure_apply_all` and (R1), so
+`norm_setIntegral_le_of_norm_le_const` bounds the integral over it. -/
+theorem Submission.rc_cc_integral_abs_le :
+    ∀ (X : Type u) [TopologicalSpace X] (μ : OuterMeasure X), IsRadonOuterMeasure μ →
+      ∀ (f : C_c(X, ℝ)) (C : ℝ), (∀ x, |f x| ≤ C) →
+        |∫ x, f x ∂caratheodoryMeasure μ| ≤ (μ (tsupport f)).toReal * C := by
+  intro X _ μ hμ f C hC
+  have hS : caratheodoryMeasure μ (tsupport f) = μ (tsupport f) :=
+    hμ.toCaratheodoryMeasure_apply_all (tsupport f)
+  rw [← setIntegral_tsupport, mul_comm _ C, ← hS, ← measureReal_def, ← Real.norm_eq_abs]
+  exact norm_setIntegral_le_of_norm_le_const
+    (hS.trans_lt (hμ.finite_compacts f.hasCompactSupport.isCompact))
+    fun x _ => (Real.norm_eq_abs (f x)).trans_le (hC x)
 
 /-- The headline results of Simon, *Introduction to GMT*, Chapter 1 (pp. 1–38). -/
 theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
