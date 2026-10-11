@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.poincare_inequality-a1.ball_average_estimate-a1",
+  "parent_id": "root.poincare_inequality-a1",
+  "depth": 2,
+  "title": "Simon 5.4 in Gronwall form for bounded mean curvature",
+  "statement": "Assume (WMI) — the frozen statement of the sibling theorem weighted_monotonicity_identity, taken as a hypothesis exactly as displayed at the start of the Lean statement: for all n, ℓ, V : RectifiableVarifold n ℓ, U, H, h : Ambient n ℓ → ℝ, ξ and σ, ρ ∈ ℝ with n ≥ 1, (FV1) μ_V finite on compacts, (FV2) dim T_xV = n μ_V-a.e., (FV3) x ↦ p_{T_xV} μ_V-a.e. strongly measurable, U open, V has mean curvature H in U, h ∈ C¹(U), tsupport h ∩ B_ρ(ξ) ⊆ U and 0 < σ ≤ ρ: the function τ ↦ τ^{−(n+1)} ∫_{B_τ(ξ)} ⟨x − ξ, ∇^M h(x) + h(x)H(x)⟩ dμ_V(x) is integrable on (σ, ρ], the function h·q_ξ/|x − ξ|ⁿ (q_ξ = V.normalRadialSq ξ) is μ_V-integrable on B_ρ(ξ)∖B_σ(ξ), and ρ^{−n}∫_{B_ρ(ξ)} h dμ_V − σ^{−n}∫_{B_σ(ξ)} h dμ_V = ∫_{B_ρ(ξ)∖B_σ(ξ)} h q_ξ/|x − ξ|ⁿ dμ_V + ∫_{(σ,ρ]} τ^{−(n+1)} ∫_{B_τ(ξ)} ⟨x − ξ, ∇^M h + hH⟩ dμ_V dτ. Let n ≥ 1, ℓ ∈ ℕ, V : RectifiableVarifold n ℓ with μ = μ_V satisfying (FV1)–(FV3), U ⊆ ℝ^{n+ℓ} open, H a generalized mean curvature of V in U, Λ ≥ 0 with |H| ≤ Λ μ-a.e. in U, g ∈ C¹(U) with g ≥ 0 on U, y ∈ ℝ^{n+ℓ}, 0 < s ≤ r with B_r(y) ⊆ U, and assume x ↦ |∇^M g(x)| |x − y|^{1−n} is μ-integrable on B_r(y). Then s^{−n}∫_{B_s(y)} g dμ ≤ e^{Λ(r−s)} ( r^{−n}∫_{B_r(y)} g dμ + n^{−1}∫_{B_r(y)} |∇^M g(x)| |x − y|^{1−n} dμ(x) ). (Real powers; Bochner integrals.)",
+  "lean_statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsFiniteMeasureOnCompacts V.weight → (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → tsupport h ∩ closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n)) (closedBall ξ ρ \\ closedBall ξ σ) V.weight ∧ (∫ x in closedBall ξ ρ, h x ∂V.weight) / ρ ^ n - (∫ x in closedBall ξ σ, h x ∂V.weight) / σ ^ n = ∫ x in closedBall ξ ρ \\ closedBall ξ σ, h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (Λ : ℝ) (g : Ambient n ℓ → ℝ) (y : Ambient n ℓ) (r s : ℝ), 0 < n → IsFiniteMeasureOnCompacts V.weight → (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → 0 ≤ Λ → (∀ᵐ x ∂V.weight, x ∈ U → ‖H x‖ ≤ Λ) → ContDiffOn ℝ 1 g U → (∀ x ∈ U, 0 ≤ g x) → closedBall y r ⊆ U → 0 < s → s ≤ r → IntegrableOn (fun x ↦ ‖V.tangentialGradient g x‖ * ‖x - y‖ ^ (1 - (n : ℝ))) (closedBall y r) V.weight → (∫ x in closedBall y s, g x ∂V.weight) / s ^ n ≤ Real.exp (Λ * (r - s)) * ((∫ x in closedBall y r, g x ∂V.weight) / r ^ n + (n : ℝ)⁻¹ * ∫ x in closedBall y r, ‖V.tangentialGradient g x‖ * ‖x - y‖ ^ (1 - (n : ℝ)) ∂V.weight)",
+  "lean_name": "bounded_curvature_ball_average_estimate",
+  "depends_on": [
+    "root.poincare_inequality-a1.integral_gronwall-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.poincare_inequality-a1.integral_gronwall-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-poincare-inequality-a1-ball-average-estimate-a1-a1"
+}

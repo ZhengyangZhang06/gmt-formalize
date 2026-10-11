@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.poincare_inequality-a1.gradient_chain_rule-a1",
+  "parent_id": "root.poincare_inequality-a1",
+  "depth": 2,
+  "title": "Chain rule for the tangential gradient: ∇^M(ψ∘h) = ψ'(h)∇^M h",
+  "statement": "Let n, ℓ ∈ ℕ, V : RectifiableVarifold n ℓ, h : ℝ^{n+ℓ} → ℝ, ψ : ℝ → ℝ and x ∈ ℝ^{n+ℓ}. If h is differentiable at x and ψ is differentiable at h(x), then ∇^M(ψ∘h)(x) = ψ'(h(x)) ∇^M h(x), where ∇^M f(x) = V.tangentialGradient f x = p_{T_xV}(∇f(x)).",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (h : Ambient n ℓ → ℝ) (ψ : ℝ → ℝ) (x : Ambient n ℓ), DifferentiableAt ℝ h x → DifferentiableAt ℝ ψ (h x) → V.tangentialGradient (fun y ↦ ψ (h y)) x = deriv ψ (h x) • V.tangentialGradient h x",
+  "lean_name": "tangentialGradient_comp_of_differentiableAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-poincare-inequality-a1-gradient-chain-rule-a1-a1"
+}

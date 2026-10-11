@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.poincare_inequality-a1.layer_cake_bound-a1",
+  "parent_id": "root.poincare_inequality-a1",
+  "depth": 2,
+  "title": "Abstract layer-cake/Tonelli bound (Simon 5.6: integration over ζ and over t)",
+  "statement": "Let (X, 𝔐) be a measurable space, μ an s-finite measure on X, A, B ∈ 𝔐, h : X → ℝ measurable, φ : ℝ → X → [0, ∞] with (t, x) ↦ φ(t, x) measurable, G : X → [0, ∞] measurable, k : X → X → [0, ∞] with (x, ζ) ↦ k(x, ζ) measurable, κ, L ∈ [0, ∞] and ε ∈ ℝ. Assume (i) ∫_{(0,∞)} φ(t, x) dt ≤ 1 for every x ∈ B; (ii) ∫_A k(x, ζ) dμ(ζ) ≤ L for every x ∈ B; (iii) for every t > 0 and μ-a.e. ζ: if ζ ∈ A and t + ε < h(ζ) then κ ≤ ∫_B φ(t, x) G(x) k(x, ζ) dμ(x). Then κ · ∫_A ENNReal.ofReal(h(ζ) − ε) dμ(ζ) ≤ L · ∫_B G dμ (all integrals are lower Lebesgue integrals).",
+  "lean_statement": "∀ {X : Type} [MeasurableSpace X] (μ : Measure X) [SFinite μ] (A B : Set X) (h : X → ℝ) (φ : ℝ → X → ℝ≥0∞) (G : X → ℝ≥0∞) (k : X → X → ℝ≥0∞) (κ L : ℝ≥0∞) (ε : ℝ), MeasurableSet A → MeasurableSet B → Measurable h → Measurable (Function.uncurry φ) → Measurable G → Measurable (Function.uncurry k) → (∀ x ∈ B, ∫⁻ t in Ioi 0, φ t x ≤ 1) → (∀ x ∈ B, ∫⁻ ζ in A, k x ζ ∂μ ≤ L) → (∀ t : ℝ, 0 < t → ∀ᵐ ζ ∂μ, ζ ∈ A → t + ε < h ζ → κ ≤ ∫⁻ x in B, φ t x * G x * k x ζ ∂μ) → κ * ∫⁻ ζ in A, ENNReal.ofReal (h ζ - ε) ∂μ ≤ L * ∫⁻ x in B, G x ∂μ",
+  "lean_name": "layer_cake_tonelli_truncation_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-poincare-inequality-a1-layer-cake-bound-a1-a1"
+}

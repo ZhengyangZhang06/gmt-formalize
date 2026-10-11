@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.poincare_inequality-a1.kernel_bound-a1",
+  "parent_id": "root.poincare_inequality-a1",
+  "depth": 2,
+  "title": "Full-ball kernel bound from ball growth (Simon 4.10(2), σ = 0, via 4.11)",
+  "statement": "Let X be a normed additive group with its Borel σ-algebra, μ a measure on X, n ≥ 1 an integer, y ∈ X and ρ, K ∈ ℝ. Assume μ(B_s(y)) ≤ ENNReal.ofReal(K sⁿ) for every 0 < s ≤ ρ (closed balls). Then for every 0 < s ≤ ρ, ∫_{B_s(y)} ENNReal.ofReal(‖x − y‖^{1−n}) dμ(x) ≤ ENNReal.ofReal(n K s) (lower Lebesgue integral; ‖x − y‖^{1−n} is the real power, which at x = y equals 1 if n = 1 and 0 if n ≥ 2).",
+  "lean_statement": "∀ {X : Type} [NormedAddCommGroup X] [MeasurableSpace X] [BorelSpace X] (μ : Measure X) (n : ℕ) (y : X) (ρ K : ℝ), 0 < n → (∀ s : ℝ, 0 < s → s ≤ ρ → μ (closedBall y s) ≤ ENNReal.ofReal (K * s ^ n)) → ∀ s : ℝ, 0 < s → s ≤ ρ → ∫⁻ x in closedBall y s, ENNReal.ofReal (‖x - y‖ ^ (1 - (n : ℝ))) ∂μ ≤ ENNReal.ofReal (n * K * s)",
+  "lean_name": "closedBall_rpow_kernel_lintegral_le_of_growth",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-poincare-inequality-a1-kernel-bound-a1-a1"
+}
