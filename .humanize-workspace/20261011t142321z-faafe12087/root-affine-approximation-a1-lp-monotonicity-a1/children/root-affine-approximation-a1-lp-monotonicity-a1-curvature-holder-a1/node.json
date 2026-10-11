@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.lp_monotonicity-a1.curvature_holder-a1",
+  "parent_id": "root.affine_approximation-a1.lp_monotonicity-a1",
+  "depth": 3,
+  "title": "Hoelder bound for the cutoff mean-curvature pairing (Simon Ch. 4, 4.2-4.3)",
+  "statement": "Let n, l >= 0, p > 1, mu a measure on R^(n+l), H : R^(n+l) -> R^(n+l), psi : R^(n+l) -> R, y in R^(n+l) and t >= 0. Assume that mu(B_t(y)) < infinity, H is mu-integrable on the closed ball B_t(y), integral_{B_t(y)} |H|^p dmu < infinity, psi is mu-a.e. strongly measurable, 0 <= psi(x) <= 1 for all x, and psi(x) = 0 whenever |x - y| > t. Then |integral psi(x) (x - y).H(x) dmu(x)| <= t (integral_{B_t(y)} |H|^p dmu)^(1/p) (integral psi dmu)^(1 - 1/p).",
+  "lean_statement": "∀ (n ℓ : ℕ) (p : ℝ), 1 < p → ∀ (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (ψ : Amb n ℓ → ℝ) (y : Amb n ℓ) (t : ℝ), 0 ≤ t → μ (closedBall y t) < ⊤ → IntegrableOn H (closedBall y t) μ → ∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ < ⊤ → AEStronglyMeasurable ψ μ → (∀ x, 0 ≤ ψ x ∧ ψ x ≤ 1) → (∀ x, t < ‖x - y‖ → ψ x = 0) → |∫ x, ψ x * inner ℝ (x - y) (H x) ∂μ| ≤ t * (∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) * (∫ x, ψ x ∂μ) ^ (1 - 1 / p)",
+  "lean_name": "aal_curvature_pairing_holder_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-lp-monotonicity-a1-curvature-holder-a1-a1"
+}
