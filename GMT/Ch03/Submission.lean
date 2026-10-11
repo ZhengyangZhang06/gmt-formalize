@@ -354,6 +354,40 @@ theorem Submission.hausdorffMeasure_exists_cover_tsum_le_add : ∀ {X : Type} [E
   simp only [iInf_lt_iff] at hlt
   obtain ⟨t, hst, htr, hsum⟩ := hlt
   exact ⟨t, hst, htr, hsum.le⟩
+/-- **Volume–diameter bound**, the step of Simon Ch. 2, proof of Theorem 1.9
+(`chapter-02.txt` lines 401–406) where `Lᵐ(f(C_{ij})) ≤ ωₘ (diam f(C_{ij})/2)ᵐ` is taken from the
+isodiametric inequality 2.10, with the cruder constant of a closed-ball inclusion:
+`Lᵐ(closure S) ≤ ωₘ (diam S)ᵐ` for every `S ⊆ ℝᵐ`, where `ωₘ = Lᵐ(B₁(0))`. The cases `S = ∅`,
+`m = 0` (`B₁(0) = ℝ⁰`, power `1`) and `diam S = ∞` (`ωₘ > 0`) are immediate. Otherwise
+`closure S ⊆ B̄_{diam S}(s₀)` for any `s₀ ∈ S`, and `Lᵐ(B̄_D(s₀)) = Dᵐ ωₘ` by `addHaar_closedBall`. -/
+theorem Submission.volume_closure_le_unitBall_mul_ediam_pow : ∀ (m : ℕ) (S : Set (Rn m)),
+    volume (closure S) ≤ volume (Metric.ball (0 : Rn m) 1) * Metric.ediam S ^ m := by
+  intro m S
+  rcases S.eq_empty_or_nonempty with rfl | ⟨s₀, hs₀⟩
+  · simp
+  by_cases hm : m = 0
+  · -- `ℝ⁰` is a single point, so `B₁(0)` is the whole space and the power is `1`.
+    subst hm
+    have hball : Metric.ball (0 : Rn 0) 1 = univ := by
+      ext x; simp [Subsingleton.elim x 0]
+    rw [pow_zero, mul_one, hball]
+    exact measure_mono (subset_univ _)
+  have hω0 : volume (Metric.ball (0 : Rn m) 1) ≠ 0 :=
+    (Metric.measure_ball_pos volume (0 : Rn m) one_pos).ne'
+  by_cases hD : Metric.ediam S = ∞
+  · rw [hD, ENNReal.top_pow hm, ENNReal.mul_top hω0]
+    exact le_top
+  -- `S` is bounded and `closure S` has the same diameter, so it lies in `B̄_{diam S}(s₀)`.
+  have hb : Bornology.IsBounded S := Metric.isBounded_iff_ediam_ne_top.2 hD
+  have hsub : closure S ⊆ Metric.closedBall s₀ (Metric.diam S) := by
+    intro x hx
+    rw [Metric.mem_closedBall, ← Metric.diam_closure]
+    exact Metric.dist_le_diam_of_mem hb.closure hx (subset_closure hs₀)
+  calc volume (closure S) ≤ volume (Metric.closedBall s₀ (Metric.diam S)) := measure_mono hsub
+    _ = ENNReal.ofReal (Metric.diam S ^ m) * volume (Metric.ball (0 : Rn m) 1) := by
+        rw [Measure.addHaar_closedBall volume s₀ Metric.diam_nonneg, finrank_euclideanSpace_fin]
+    _ = volume (Metric.ball (0 : Rn m) 1) * Metric.ediam S ^ m := by
+        rw [mul_comm, ENNReal.ofReal_pow Metric.diam_nonneg, Metric.diam, ENNReal.ofReal_toReal hD]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
