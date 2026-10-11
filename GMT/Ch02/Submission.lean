@@ -373,6 +373,77 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, proof of Theorem 1.8(ii) (p. 45), nested partitions.** A separable metric space
+`X` has countable Borel partitions `(P i j)_j`, `i ∈ ℕ`, into pieces of mesh `< 1/(i+1)`, each
+refining the previous one. For a dense sequence `q`, level `i` uses the disjointed balls
+`Q i l = B(q l, rᵢ) \ ⋃_{l' < l} B(q l', rᵢ)`, `rᵢ = 1/(3(i+1))`; then `P 0 = Q 0` and
+`P (i+1) n = P i u ∩ Q (i+1) v`, where `(u, v) = Nat.unpair n`. -/
+theorem Submission.lipschitzImage_exists_nested_partitions : ∀ (X : Type) [MetricSpace X] [TopologicalSpace.SeparableSpace X] [MeasurableSpace X] [BorelSpace X], ∃ P : ℕ → ℕ → Set X, (∀ i j, MeasurableSet (P i j)) ∧ (∀ i j k, j ≠ k → Disjoint (P i j) (P i k)) ∧ (∀ i, ⋃ j, P i j = Set.univ) ∧ (∀ i j, ∀ x ∈ P i j, ∀ x' ∈ P i j, dist x x' < 1 / ((i : ℝ) + 1)) ∧ (∀ i j, ∃ k, P (i + 1) j ⊆ P i k) := by
+  intro X _ _ _ _
+  -- Empty `X`: all pieces are empty.
+  rcases isEmpty_or_nonempty X with hX | hX
+  · exact ⟨fun _ _ ↦ ∅, fun _ _ ↦ MeasurableSet.empty, fun _ _ _ _ ↦ empty_disjoint _,
+      fun _ ↦ eq_univ_of_forall isEmptyElim, fun _ _ x ↦ isEmptyElim x, fun _ _ ↦ ⟨0, subset_rfl⟩⟩
+  -- A dense sequence `q`, and the level-`i` pieces `Q i l`: Borel, disjoint, covering, and
+  -- contained in `B(q l, 1/(3(i+1)))`.
+  obtain ⟨q, hq⟩ := TopologicalSpace.exists_dense_seq X
+  obtain ⟨Q, hQmeas, hQdisj, hQcov, hQball⟩ : ∃ Q : ℕ → ℕ → Set X,
+      (∀ i l, MeasurableSet (Q i l)) ∧ (∀ i l l', l ≠ l' → Disjoint (Q i l) (Q i l')) ∧
+      (∀ i (x : X), ∃ l, x ∈ Q i l) ∧ ∀ i l, Q i l ⊆ ball (q l) (1 / ((i : ℝ) + 1) / 3) := by
+    refine ⟨fun i ↦ disjointed fun l ↦ ball (q l) (1 / ((i : ℝ) + 1) / 3),
+      fun i ↦ MeasurableSet.disjointed fun _ ↦ measurableSet_ball,
+      fun i _ _ h ↦ disjoint_disjointed _ h, fun i x ↦ ?_,
+      fun i ↦ disjointed_subset fun l ↦ ball (q l) (1 / ((i : ℝ) + 1) / 3)⟩
+    obtain ⟨l, hl⟩ := hq.exists_dist_lt x (by positivity : (0 : ℝ) < 1 / ((i : ℝ) + 1) / 3)
+    have hx : x ∈ ⋃ l, ball (q l) (1 / ((i : ℝ) + 1) / 3) := mem_iUnion.2 ⟨l, mem_ball.2 hl⟩
+    rw [← iUnion_disjointed] at hx
+    exact mem_iUnion.1 hx
+  -- The refinement: `P 0 = Q 0` and `P (i+1) n = P i (unpair n).1 ∩ Q (i+1) (unpair n).2`.
+  obtain ⟨P, hP0, hPsucc⟩ : ∃ P : ℕ → ℕ → Set X, (∀ n, P 0 n = Q 0 n) ∧
+      ∀ i n, P (i + 1) n = P i (Nat.unpair n).1 ∩ Q (i + 1) (Nat.unpair n).2 :=
+    ⟨fun i ↦ Nat.rec (motive := fun _ ↦ ℕ → Set X) (Q 0)
+      (fun i Pi n ↦ Pi (Nat.unpair n).1 ∩ Q (i + 1) (Nat.unpair n).2) i, fun _ ↦ rfl,
+      fun _ _ ↦ rfl⟩
+  have hPcov : ∀ i (x : X), ∃ j, x ∈ P i j := by
+    intro i x
+    induction i with
+    | zero =>
+      obtain ⟨l, hl⟩ := hQcov 0 x
+      exact ⟨l, (hP0 l).symm ▸ hl⟩
+    | succ i ih =>
+      obtain ⟨j, hj⟩ := ih
+      obtain ⟨l, hl⟩ := hQcov (i + 1) x
+      refine ⟨Nat.pair j l, ?_⟩
+      rw [hPsucc, Nat.unpair_pair]
+      exact ⟨hj, hl⟩
+  refine ⟨P, fun i ↦ ?_, fun i ↦ ?_, fun i ↦ eq_univ_of_forall fun x ↦ mem_iUnion.2 (hPcov i x),
+    fun i n x hx x' hx' ↦ ?_,
+    fun i n ↦ ⟨(Nat.unpair n).1, (hPsucc i n).subset.trans inter_subset_left⟩⟩
+  · -- Borel.
+    induction i with
+    | zero => exact fun n ↦ (hP0 n).symm ▸ hQmeas 0 n
+    | succ i ih => exact fun n ↦ (hPsucc i n).symm ▸ (ih _).inter (hQmeas _ _)
+  · -- Disjoint: distinct `n, n'` have distinct `unpair n, unpair n'`.
+    induction i with
+    | zero => intro j k hjk; rw [hP0, hP0]; exact hQdisj 0 j k hjk
+    | succ i ih =>
+      intro j k hjk
+      rw [hPsucc, hPsucc]
+      by_cases hu : (Nat.unpair j).1 = (Nat.unpair k).1
+      · have hv : (Nat.unpair j).2 ≠ (Nat.unpair k).2 := fun hv ↦
+          hjk (by rw [← Nat.pair_unpair j, ← Nat.pair_unpair k, hu, hv])
+        exact (hQdisj _ _ _ hv).mono inter_subset_right inter_subset_right
+      · exact (ih _ _ hu).mono inter_subset_left inter_subset_left
+  · -- Mesh: `P i n` lies in a ball of radius `1/(3(i+1))`.
+    obtain ⟨l, hl⟩ : ∃ l, P i n ⊆ Q i l := by
+      cases i with
+      | zero => exact ⟨n, (hP0 n).subset⟩
+      | succ i => exact ⟨(Nat.unpair n).2, (hPsucc i n).subset.trans inter_subset_right⟩
+    have h₁ := mem_ball.1 (hQball i l (hl hx))
+    have h₂ := mem_ball.1 (hQball i l (hl hx'))
+    have hi : (0 : ℝ) < 1 / ((i : ℝ) + 1) := by positivity
+    linarith [dist_triangle_right x x' (q l)]
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
