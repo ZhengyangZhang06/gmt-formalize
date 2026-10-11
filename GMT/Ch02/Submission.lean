@@ -12,6 +12,7 @@ import Mathlib.Topology.Algebra.Module.Determinant
 import Poincare.SimonGMT.Chapter01.Hausdorff
 import Poincare.SimonGMT.Chapter02.BV
 import Poincare.SimonGMT.Chapter02.Submanifold
+import Poincare.SimonGMT.Chapter02.CoareaLinearAlgebra
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 2: Some further preliminaries from analysis (pp. 39–68)
@@ -372,6 +373,80 @@ def C1Sard : Prop :=
       Chapter02.IsSimonSubmanifold (E := Rn k) 1 ((M ∩ f ⁻¹' {y}) \ {x | coareaJacobian M f x = 0})
 
 end
+
+/-- **Chart identity for the coarea Jacobian** (Simon Ch. 2, §6, 6.2). If the linear bijection
+`Φ : ℝᵐ × ℝᵏ → T` straightens `L : T → ℝᵐ` (`L ∘ Φ = WithLp.fst`) and `Ψ = Φ ∘ (0, ·)`, then
+`normDet L* · normDet Φ = normDet Ψ`. In the orthogonal coordinates `C = (π_{Qᗮ}, π_Q)`,
+`Q = ker L`, the map `C ∘ Φ` is block lower triangular with diagonal blocks
+`α = π_{Qᗮ} ∘ Φ ∘ (·, 0)` and `Ψ` (corestricted to `Q`); moreover `L|_{Qᗮ} ∘ α = id` and
+`normDet L|_{Qᗮ} = normDet L*`. -/
+theorem Submission.coarea_normDet_adjoint_mul_normDet_chart : ∀ (m k : ℕ) (T : Type) [NormedAddCommGroup T] [InnerProductSpace ℝ T] [FiniteDimensional ℝ T] (L : T →ₗ[ℝ] Rn m) (Φ : WithLp 2 (Rn m × Rn k) →ₗ[ℝ] T) (Ψ : Rn k →ₗ[ℝ] T), Function.Bijective Φ → (∀ p, L (Φ p) = WithLp.fst p) → (∀ b, Ψ b = Φ (WithLp.toLp 2 (0, b))) → (LinearMap.adjoint L).normDet * Φ.normDet = Ψ.normDet := by
+  intro m k T _ _ _ L Φ Ψ hΦ hL hΨ
+  -- `L` is onto; `dim P = dim T = m + k`, `dim Q = k` and `dim Qᗮ = m`, where `Q = ker L`.
+  have hsurj : Function.Surjective L := fun a => ⟨Φ (WithLp.toLp 2 (a, 0)), by rw [hL]; rfl⟩
+  have hP : Module.finrank ℝ (WithLp 2 (Rn m × Rn k)) = m + k := by
+    rw [(WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).finrank_eq, Module.finrank_prod]
+    simp
+  have hT : Module.finrank ℝ T = m + k := by
+    rw [← (LinearEquiv.ofBijective Φ hΦ).finrank_eq, hP]
+  have hQ : Module.finrank ℝ (LinearMap.ker L) = k := by
+    rw [Chapter02.coarea_kernel_finrank hsurj, hT, finrank_euclideanSpace_fin]
+    omega
+  have hQperp : Module.finrank ℝ (LinearMap.ker L)ᗮ = m := by
+    have := (LinearMap.ker L).finrank_add_finrank_orthogonal
+    omega
+  -- `G = C ∘ Φ` in the isometric coordinates `C t = (π_{Qᗮ} t, π_Q t)`, with diagonal blocks.
+  let C := Chapter02.coareaCoordinates L
+  let G : WithLp 2 (Rn m × Rn k) →ₗ[ℝ] WithLp 2 ((LinearMap.ker L)ᗮ × LinearMap.ker L) :=
+    C.toLinearEquiv.toLinearMap ∘ₗ Φ
+  let inl : Rn m →ₗ[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).symm.toLinearMap ∘ₗ LinearMap.inl ℝ (Rn m) (Rn k)
+  let inr : Rn k →ₗ[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).symm.toLinearMap ∘ₗ LinearMap.inr ℝ (Rn m) (Rn k)
+  let G₁₁ : Rn m →ₗ[ℝ] (LinearMap.ker L)ᗮ := (WithLp.fstL 2 ℝ _ _).toLinearMap ∘ₗ G ∘ₗ inl
+  let G₂₂ : Rn k →ₗ[ℝ] LinearMap.ker L := (WithLp.sndL 2 ℝ _ _).toLinearMap ∘ₗ G ∘ₗ inr
+  have hC : ∀ t, C t = WithLp.toLp 2 ((LinearMap.ker L)ᗮ.orthogonalProjectionOnto t,
+      (LinearMap.ker L).orthogonalProjectionOnto t) := by
+    intro t
+    simp [C, Chapter02.coareaCoordinates, LinearIsometryEquiv.withLpProdComm_apply]
+  -- `Ψ` maps into `Q`, so the upper-right block of `G` vanishes.
+  have hΨmem : ∀ b, Ψ b ∈ LinearMap.ker L := by
+    intro b; rw [LinearMap.mem_ker, hΨ, hL]; rfl
+  have h0 : ∀ b, WithLp.fst (G (WithLp.toLp 2 (0, b))) = 0 := by
+    intro b
+    simp only [G, LinearMap.comp_apply, LinearEquiv.coe_coe, LinearIsometryEquiv.coe_toLinearEquiv]
+    rw [← hΨ, hC]
+    simp [Submodule.orthogonalProjectionOnto_apply_of_mem_orthogonal
+      ((LinearMap.ker L).le_orthogonal_orthogonal (hΨmem b))]
+  have hG := Submission.coarea_normDet_block_triangular (Rn m) (Rn k) _ _ G G₁₁ G₂₂
+    (by simp [hQperp]) (by simp [hQ]) h0 (fun a => rfl) (fun b => rfl)
+  -- `normDet C = 1`, and the lower-right block is `Ψ` corestricted to `Q`.
+  have hGΦ : G.normDet = Φ.normDet := by
+    rw [LinearMap.normDet_comp_of_finrank_eq _ _ (by rw [hP, hT])]
+    have : (C.toLinearEquiv.toLinearMap).normDet = 1 := C.toLinearIsometry.normDet_eq_one
+    rw [this, one_mul]
+  have hG₂₂ : G₂₂ = Ψ.codRestrict (LinearMap.ker L) hΨmem := by
+    refine LinearMap.ext fun b => ?_
+    apply Subtype.ext
+    simp only [G₂₂, G, inr, LinearMap.comp_apply, LinearEquiv.coe_coe,
+      LinearIsometryEquiv.coe_toLinearEquiv, LinearMap.codRestrict_apply]
+    have : (WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).symm (LinearMap.inr ℝ (Rn m) (Rn k) b) =
+        WithLp.toLp 2 (0, b) := rfl
+    rw [this, ← hΨ, hC]
+    simp [Submodule.orthogonalProjectionOnto_mem_subspace_eq_self ⟨Ψ b, hΨmem b⟩]
+  -- `λ = L|_{Qᗮ}` inverts the upper-left block, and `normDet λ = normDet L*`.
+  let lam := Chapter02.coareaHorizontalLinear L
+  have hlam : lam ∘ₗ G₁₁ = LinearMap.id := by
+    refine LinearMap.ext fun a => ?_
+    have h := Chapter02.coareaHorizontalLinear_coordinates L (Φ (WithLp.toLp 2 (a, 0)))
+    simp only [LinearMap.comp_apply, LinearMap.id_apply]
+    rw [hL] at h
+    exact h
+  have h1 : lam.normDet * G₁₁.normDet = 1 := by
+    rw [← LinearMap.normDet_comp_of_finrank_eq _ _ (by simp [hQperp]), hlam, LinearMap.normDet_id]
+  have hlamJ : lam.normDet = (LinearMap.adjoint L).normDet :=
+    Chapter02.coareaHorizontalLinear_normDet hsurj
+  rw [← hGΦ, hG, hG₂₂, LinearMap.normDet_codRestrict, ← hlamJ, ← mul_assoc, h1, one_mul]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
