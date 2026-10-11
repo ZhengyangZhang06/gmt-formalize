@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radial_first_variation-a1.projection_trace-a1",
+  "parent_id": "root.radial_first_variation-a1",
+  "depth": 2,
+  "title": "Trace of (cI + F(·)v) ∘ p_P equals c·dim P + F(p_P v)",
+  "statement": "Let n, ℓ ∈ ℕ, E = ℝ^{n+ℓ} (Ambient n ℓ), P ⊆ E any linear subspace with orthogonal projection p = p_P (P.starProjection), c ∈ ℝ, F : E → ℝ a continuous linear functional and v ∈ E. Then the endomorphism A = c·I + F(·)v, A(u) = c·u + F(u)·v, satisfies trace(A ∘ p) = c·dim P + F(p v).",
+  "lean_statement": "∀ (n ℓ : ℕ) (P : Submodule ℝ (Ambient n ℓ)) (c : ℝ) (F : Ambient n ℓ →L[ℝ] ℝ) (v : Ambient n ℓ), LinearMap.trace ℝ (Ambient n ℓ) ((c • ContinuousLinearMap.id ℝ (Ambient n ℓ) + F.smulRight v).toLinearMap ∘ₗ P.starProjection.toLinearMap) = c * (Module.finrank ℝ P : ℝ) + F (P.starProjection v)",
+  "lean_name": "trace_scalar_add_rankOne_comp_starProjection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-radial-first-variation-a1-projection-trace-a1-a1"
+}
