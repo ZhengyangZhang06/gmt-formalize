@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e95b76d161fca3fe966c14dc1c1755884e95ac13a4e5db33728d31e3e0539796",
+  "git_delta": {
+    "base_commit": "dad20df4c1f3a044b91405ab83ebb1485d06a9e5",
+    "candidate_commit": "0cf4ac57c0343ee2468a843cdc7b1db8e396265c",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "lipschitz_uniform_remainder_on_closed_subset",
+    "diff_sha256": "7ef28e44e361c43f9287c457c77a23ea336474f5abb7b0fe3c9c85807ec16f7b",
+    "source_sha256": "e7242c46654d6cf89b1a91d909eb722d07224305cb31ce60772f0cddbb7ec56e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lipschitz_uniform_remainder_on_closed_subset",
+      "statement": "∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0) (L : Rn n → (Rn n →L[ℝ] ℝ)) (S : Set (Rn n)), LipschitzWith K f → Measurable L → MeasurableSet S → (∀ x ∈ S, HasFDerivAt f (L x) x) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A ⊆ S, IsClosed A ∧ volume (S \\ A) < ε ∧ ∀ Q : Set (Rn n), IsCompact Q → Q ⊆ A → ∀ ε' : ℝ, 0 < ε' → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ Q, ∀ y ∈ A, dist x y < δ → ‖f y - f x - L x (y - x)‖ ≤ ε' * ‖y - x‖",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
