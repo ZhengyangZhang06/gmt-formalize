@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "15d5e19c6b4c748676c07e5b30fcd041d60a9b77b2afc53921f27357c46d0e06",
+  "git_delta": {
+    "base_commit": "2cce809724fc09db16dc21873e5f9cd1ee6e2dfa",
+    "candidate_commit": "103a24fc845d5213c0bb5c5f2777a467305d126b",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_approx_tangent_plane_unique",
+    "diff_sha256": "b3a23889333ee4ae07bb5ead1a8162a14c785a121bf7620f23094ddb7717d078",
+    "source_sha256": "4f6f9293d4b82dcdc583cce0b9b8ce3b5a18db3bac02db0b4935ef5807b6b3e9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_approx_tangent_plane_unique",
+      "statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (x : Ambient n ℓ) (P Q : Submodule ℝ (Ambient n ℓ)), V.IsApproxTangentAt x P → V.IsApproxTangentAt x Q → P = Q",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
