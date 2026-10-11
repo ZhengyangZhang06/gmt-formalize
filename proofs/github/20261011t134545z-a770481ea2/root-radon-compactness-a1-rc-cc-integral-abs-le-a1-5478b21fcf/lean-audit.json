@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e622d40f0d8f56dae396c5693ffa6b1f2280370a7a2196a14261ed2cf55aa674",
+  "git_delta": {
+    "base_commit": "c05f4d56d1d56eae2ddcd29b725580d4cd2ea204",
+    "candidate_commit": "5c3fda1e6d8aa687baae36e12d3bd7a092a4200c",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "rc_cc_integral_abs_le",
+    "diff_sha256": "18e12ebc1d1e244e9ea072d499796acb21a584ae7e9ea24d2062636643e3d9ad",
+    "source_sha256": "c3a647b643a152e7f148a2994f95787e2512541d8595fb2e4f51078148170f9a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rc_cc_integral_abs_le",
+      "statement": "∀ (X : Type u) [TopologicalSpace X] (μ : OuterMeasure X), IsRadonOuterMeasure μ → ∀ (f : C_c(X, ℝ)) (C : ℝ), (∀ x, |f x| ≤ C) → |∫ x, f x ∂caratheodoryMeasure μ| ≤ (μ (tsupport f)).toReal * C",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
