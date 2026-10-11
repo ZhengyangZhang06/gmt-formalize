@@ -335,6 +335,79 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Egoroff's theorem on `ℝⁿ` with a closed good set** (Simon Ch. 2, proof of Theorem 1.5,
+`chapter-02.txt` lines 260–265, with closed inner regularity Ch. 1, Theorem 1.15(2)): if Borel
+`ηₖ → g` pointwise on a Borel set `S`, then for every `ε > 0` there is a closed `A ⊆ S` with
+`Lⁿ(S ∖ A) < ε` such that `ηₖ → g` uniformly on every compact `Q ⊆ A`. Egoroff on the
+finite-measure sets `S ∩ B_{j+1}(0)` gives exceptional sets `tⱼ` with `∑ Lⁿ(tⱼ) < ε/2`; closed
+`Fⱼ ⊆ (S ∖ ⋃ tᵢ) ∩ {j ≤ |x| ≤ j + 1}` with total defect `< ε/2` form a locally finite family; and
+a compact `Q ⊆ A = ⋃ Fⱼ` lies in a single good set `(S ∩ B_{J+1}(0)) ∖ t_J`. -/
+theorem Submission.egorov_closed_subset_uniformOn_compact_volume : ∀ (n : ℕ) (η : ℕ → Rn n → ℝ)
+    (g : Rn n → ℝ) (S : Set (Rn n)), (∀ k, Measurable (η k)) → Measurable g → MeasurableSet S →
+    (∀ x ∈ S, Tendsto (fun k => η k x) atTop (𝓝 (g x))) → ∀ ε : ℝ≥0∞, 0 < ε →
+    ∃ A ⊆ S, IsClosed A ∧ volume (S \ A) < ε ∧
+      ∀ Q : Set (Rn n), IsCompact Q → Q ⊆ A → TendstoUniformlyOn η g atTop Q := by
+  intro n η g S hη hg hS hconv ε hε
+  -- Error budget: positive `δ j` with `∑ δ j < ε / 2`.
+  obtain ⟨δ, hδpos, hδsum⟩ := ENNReal.exists_pos_sum_of_countable (ENNReal.half_pos hε.ne').ne' ℕ
+  have hδ0 : ∀ j, (δ j : ℝ≥0∞) ≠ 0 := fun j => ENNReal.coe_ne_zero.2 (hδpos j).ne'
+  -- Egorov on the finite-measure pieces `S ∩ B_{j+1}(0)`.
+  have hEg : ∀ j : ℕ, ∃ t ⊆ S ∩ Metric.ball (0 : Rn n) (j + 1), MeasurableSet t ∧
+      volume t ≤ δ j ∧ TendstoUniformlyOn η g atTop ((S ∩ Metric.ball (0 : Rn n) (j + 1)) \ t) :=
+    fun j => tendstoUniformlyOn_of_ae_tendsto (fun k => (hη k).stronglyMeasurable)
+      hg.stronglyMeasurable (hS.inter Metric.isOpen_ball.measurableSet)
+      (ne_top_of_le_ne_top measure_ball_lt_top.ne (measure_mono inter_subset_right))
+      (ae_of_all _ fun x hx => hconv x hx.1) (pos_iff_ne_zero.2 (hδ0 j))
+  choose t htS htm htμ htu using hEg
+  -- `A₀ = S ∖ ⋃ tⱼ` is measurable.
+  have hA₀ : MeasurableSet (S \ ⋃ i, t i) := hS.diff (MeasurableSet.iUnion htm)
+  -- Closed inner approximation of `A₀` on each annulus `{j ≤ |x| ≤ j + 1}`.
+  have hcl : ∀ j : ℕ, ∃ F ⊆ (S \ ⋃ i, t i) ∩
+      (Metric.closedBall (0 : Rn n) (j + 1) \ Metric.ball 0 j), IsClosed F ∧
+      volume (((S \ ⋃ i, t i) ∩ (Metric.closedBall (0 : Rn n) (j + 1) \ Metric.ball 0 j)) \ F) <
+        δ j :=
+    fun j => (hA₀.inter (Metric.isClosed_closedBall.measurableSet.diff
+      Metric.isOpen_ball.measurableSet)).exists_isClosed_sdiff_lt
+      (ne_top_of_le_ne_top measure_closedBall_lt_top.ne
+        (measure_mono (inter_subset_right.trans sdiff_subset))) (hδ0 j)
+  choose F hFA hFc hFμ using hcl
+  refine ⟨⋃ j, F j, iUnion_subset fun j => (hFA j).trans (inter_subset_left.trans sdiff_subset),
+    ?_, ?_, ?_⟩
+  · -- `⋃ Fⱼ` is closed: `Fⱼ` lies outside `B_j(0)`, so the family is locally finite.
+    refine LocallyFinite.isClosed_iUnion (fun x => ⟨Metric.ball x 1, Metric.ball_mem_nhds x one_pos,
+      (Set.finite_Iio ⌈‖x‖ + 1⌉₊).subset ?_⟩) hFc
+    rintro j ⟨y, hyF, hyx⟩
+    have hj : (j : ℝ) ≤ ‖y‖ := by simpa using ((hFA j hyF).2).2
+    have hyx' : ‖y - x‖ < 1 := by simpa [dist_eq_norm] using hyx
+    exact Nat.lt_ceil.2 (by linarith [norm_sub_norm_le y x])
+  · -- Measure estimate: `S ∖ ⋃ Fⱼ ⊆ ⋃ tⱼ ∪ ⋃ ((A₀ ∩ annulusⱼ) ∖ Fⱼ)`.
+    have hsub : S \ ⋃ j, F j ⊆ (⋃ j, t j) ∪ ⋃ j : ℕ, (((S \ ⋃ i, t i) ∩
+        (Metric.closedBall (0 : Rn n) (j + 1) \ Metric.ball 0 j)) \ F j) := by
+      intro x hx
+      by_cases hxt : x ∈ ⋃ j, t j
+      · exact Or.inl hxt
+      · refine Or.inr (mem_iUnion.2 ⟨⌊‖x‖⌋₊, ⟨⟨hx.1, hxt⟩, ?_, ?_⟩,
+          fun hxF => hx.2 (mem_iUnion.2 ⟨_, hxF⟩)⟩)
+        · simpa using (Nat.lt_floor_add_one ‖x‖).le
+        · simpa using Nat.floor_le (norm_nonneg x)
+    calc volume (S \ ⋃ j, F j)
+        ≤ volume (⋃ j, t j) + volume (⋃ j : ℕ, (((S \ ⋃ i, t i) ∩
+            (Metric.closedBall (0 : Rn n) (j + 1) \ Metric.ball 0 j)) \ F j)) :=
+          (measure_mono hsub).trans (measure_union_le _ _)
+      _ ≤ (∑' j, (δ j : ℝ≥0∞)) + ∑' j, (δ j : ℝ≥0∞) :=
+          add_le_add ((measure_iUnion_le _).trans (ENNReal.tsum_le_tsum htμ))
+            ((measure_iUnion_le _).trans (ENNReal.tsum_le_tsum fun j => (hFμ j).le))
+      _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hδsum hδsum
+      _ = ε := ENNReal.add_halves ε
+  · -- A compact `Q ⊆ ⋃ Fⱼ ⊆ A₀` lies in some `B_{J+1}(0)`, hence in one Egorov good set.
+    intro Q hQ hQA
+    obtain ⟨r, hr⟩ := hQ.isBounded.subset_ball 0
+    refine (htu ⌈r⌉₊).mono fun x hx => ?_
+    obtain ⟨j, hj⟩ := mem_iUnion.1 (hQA hx)
+    have hxA₀ := (hFA j hj).1
+    exact ⟨⟨hxA₀.1, Metric.ball_subset_ball (by linarith [Nat.le_ceil r]) (hr hx)⟩,
+      fun hxt => hxA₀.2 (mem_iUnion.2 ⟨_, hxt⟩)⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
