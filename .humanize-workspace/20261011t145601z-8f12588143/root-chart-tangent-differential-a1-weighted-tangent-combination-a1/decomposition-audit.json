@@ -1,0 +1,46 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "blowUpMap|HasApproximateTangentSpaceAt|HasWeightedApproximateTangentSpaceAt|IsPositiveLocallyIntegrableWeight",
+        "norm_integral_le_of_norm_le|integral_const_mul|integral_inter_add_sdiff₀|setIntegral_indicator|integrable_indicator_iff|Integrable.of_bound|integrableOn_const",
+        "blowUpMap.*tendsto_zero|blowup_integral_tendsto_zero|weighted_blowup_integral_split|tendsto_zero_of_density|integral_tendsto_zero|negligible",
+        "rg -l 'chartTD_blowup_integral_tendsto_zero|chartTD_weighted_blowup_integral_split' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes -g '*.json' -g '*.md'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/WTCIndependentAuditTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/WTC_Final.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-chart-tangent-differential-a1-weighted-tangent-combination-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/WTC_Final.lean",
+        "/tmp/WTCIndependentAuditTypes.lean"
+      ],
+      "conclusion": "Confirmed pinned project d09bc8a and Mathlib 25730c7c compatibility, including byte-identical contract, submission, and inspected core library files. Basic.lean:985 permits the integral bound without measurability of the bounded integrand; Set.lean:106 requires only null-measurability of the cutting set; Restrict.lean:205 supports localization on arbitrary S using measurable balls. The targeted search found no existing child-equivalent lemma in the snapshot Ch03 project or pinned SimonGMT Ch03 sources. Both exact child types independently elaborate as Prop without their implementations. Recompiling WTC_Final.lean verified both children and the exact frozen selected parent, using only propext, Classical.choice, and Quot.sound. Both bare names are unreserved. The split appropriately separates the repeated density estimate from integrability and splitting; its independent children and existing scaling dependency form an acyclic proof of the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_error_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line Lean proposition matches every prose hypothesis and conclusion. Independently checked compact-support localization, integrability of the indicator majorant for arbitrary S, the Bochner integral bound, positive-radius normalization, and filter composition followed by squeezing. The proof is complete and non-circular, including n = 0. Its three stated applications establish exactly the parent's error limits. The bare name is unreserved and no child dependency is missing."
+    },
+    {
+      "key": "weighted_blowup_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line Lean proposition exactly matches the stated identity and hypotheses. Compact localization and a.e. measurability establish integrability of gθ on M; finite measure establishes integrability of g on Γ. Restriction then justifies the oscillation integral and all linearity steps. Both null-measurable cuts are correctly used, and substitution gives the exact identity. Unused positivity is harmless. The complete proof uses neither child nor parent conclusions. The bare name is unreserved, and the empty dependency list is correct."
+    }
+  ],
+  "required_changes": []
+}

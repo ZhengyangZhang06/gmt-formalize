@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.weighted_tangent_combination-a1.weighted_blowup_split-a1",
+  "parent_id": "root.chart_tangent_differential-a1.weighted_tangent_combination-a1",
+  "depth": 3,
+  "title": "Exact splitting of the localized weighted integral ∫_M (f∘η_{x,r})θ along a comparison set Γ (Simon's decomposition in the proof of 1.6 '⇒', weighted; parent Steps 3-4)",
+  "statement": "Let n, N ∈ ℕ, let M, Γ ⊆ ℝ^N be Hⁿ-null-measurable (Hⁿ = μHE[n]) with Hⁿ(Γ) < ∞, let θ be a positive locally integrable weight on M (IsPositiveLocallyIntegrableWeight n M θ: θ > 0 on M, θ is Hⁿ⌞M-a.e.-measurable, θ ∈ L¹(Hⁿ⌞(M ∩ K)) for every compact K), let x ∈ ℝ^N, f ∈ C_c(ℝ^N, ℝ), r > 0, and put g(z) := f(η_{x,r}(z)) with η_{x,r}(z) = r⁻¹(z − x) (SimonGMT blowUpMap x r). Then, with Bochner integrals against the restricted measures, ∫_M g θ dHⁿ = ∫_{M∖Γ} g θ dHⁿ + θ(x)·(∫_Γ g dHⁿ − ∫_{Γ∖M} g dHⁿ) + ∫_{M∩Γ} g·(θ − θ(x)) dHⁿ.",
+  "lean_statement": "∀ (n N : ℕ) (M Γ : Set (Rn N)) (θ : Rn N → ℝ) (x : Rn N) (f : C_c(Rn N, ℝ)) (r : ℝ), 0 < r → NullMeasurableSet M μHE[n] → NullMeasurableSet Γ μHE[n] → μHE[n] Γ < ∞ → IsPositiveLocallyIntegrableWeight n M θ → ∫ z in M, f (blowUpMap x r z) * θ z ∂μHE[n] = ∫ z in M \\ Γ, f (blowUpMap x r z) * θ z ∂μHE[n] + θ x * (∫ z in Γ, f (blowUpMap x r z) ∂μHE[n] - ∫ z in Γ \\ M, f (blowUpMap x r z) ∂μHE[n]) + ∫ z in M ∩ Γ, f (blowUpMap x r z) * (θ z - θ x) ∂μHE[n]",
+  "lean_name": "chartTD_weighted_blowup_integral_split",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-weighted-tangent-combination-a1-we-e8a5369a83-a1"
+}
