@@ -1,0 +1,98 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1`
+- Child DAG node: `root.slicing-a1.mass_representation-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions (as in the parent proof). D^k(U) is the space of test k-forms on U (smooth, compact support, tsupport ⊆ U; `TestFormOn U k`), D_k(U) the currents (`GeometricCurrentOn U k`: linear, and X(ω_j) → 0 whenever ω_j → 0 in D^k(U), i.e. all tsupports lie in one compact K ⊆ U and every iterated derivative of ω_j tends to 0 uniformly on K). I(k,P) is the set of strictly increasing β : {1,…,k} → {1,…,P}; e_β := (e_{β_1},…,e_{β_k}); dx^β is the coordinate k-covector, dx^β(e_γ) = δ_{βγ} for β, γ ∈ I(k,P). Fact A: every k-covector α equals Σ_β α(e_β) dx^β, and |α|² = Σ_β α(e_β)², where |α| := covectorEuclideanNorm α. A k-vector is a continuous linear functional w on k-covectors (`NVector`); put w^β := w(dx^β), so w(α) = Σ_β α(e_β) w^β and |w(α)| ≤ |α|·|w| with |w| := (Σ_β (w^β)²)^{1/2} (Cauchy–Schwarz). For a form ω, ‖ω‖ := sup_x |ω(x)|. M_W(X) = X.massOn W is the supremum of X(ω) over ω ∈ D^k(U) with tsupport ω ⊆ W and |ω(x)| ≤ 1 for all x. ρ_ε is a standard mollifier (smooth, ≥ 0, supported in the closed ε-ball, ∫ρ_ε = 1); for a continuous compactly supported form φ, ρ_ε*φ (componentwise convolution) is smooth, supported in the closed ε-neighbourhood of tsupport φ, satisfies |ρ_ε*φ(x)| ≤ ‖φ‖ (|·| is a norm, hence convex) and ρ_ε*φ → φ uniformly as ε ↓ 0. All measures are Borel measures on ℝ^P = Eucl P.
+
+Source: Simon Ch. 6, 2.7–2.9 (pp. 136–137), with Ch. 1, Theorem 4.14 (Riesz) and Theorem 1.17 (Lusin). This is the parent proof's preliminaries R0, R1, R1′ and R3, specialized to the statement. Let P, k, U open and X ∈ D_k(U) with M_W(X) < ∞ for every open W with compact closure ⊆ U.
+
+1. (Mass estimate, R0.) If ω ∈ D^k(U) and tsupport ω ⊆ W, then |X(ω)| ≤ M_W(X)‖ω‖ (in [0,∞]). Indeed, if ‖ω‖ = 0 then ω = 0 and X(ω) = 0; otherwise ±ω/‖ω‖ are admissible for M_W(X), so ±X(ω)/‖ω‖ ≤ M_W(X).
+
+2. (Extension to continuous forms.) Let H := ℝ^{I(k,P)} with the Euclidean inner product ⟨·,·⟩_H and J : α ↦ (α(e_β))_β, a linear isometry of (k-covectors, |·|) onto H (Fact A). Let C_c(U;H) be the continuous maps U → H with compact support in U; identify φ ∈ C_c(U;H) with the continuous k-form on ℝ^P equal to J⁻¹φ on U and 0 off U (continuous because its support is a compact subset of the open set U). For φ ∈ C_c(U;H) with K := tsupport φ choose r > 0 such that the closed 2r-neighbourhood of K lies in U, and let W_K := {x : dist(x,K) < 2r}; W_K is open with compact closure ⊆ U, so M_{W_K}(X) < ∞. For 0 < ε < r, φ_ε := ρ_ε*φ ∈ D^k(U), tsupport φ_ε ⊆ W_K and φ_ε → φ uniformly. By step 1, |X(φ_ε) − X(φ_δ)| ≤ M_{W_K}(X)‖φ_ε − φ_δ‖ → 0, so X̄(φ) := lim_{ε↓0} X(φ_ε) exists. Two families of test forms supported in a common open set with compact closure in U and converging uniformly to φ have X-values whose difference tends to 0 (step 1 again), so X̄(φ) does not depend on r or on the mollifier. X̄ is linear (ρ_ε*(aφ+bψ) = aρ_ε*φ + bρ_ε*ψ), X̄(ω) = X(ω) for ω ∈ D^k(U) (ρ_ε*ω → ω uniformly with supports in a fixed W_K), and |X̄(φ)| ≤ M_{W_K}(X)‖φ‖ whenever tsupport φ ⊆ K (because ‖φ_ε‖ ≤ ‖φ‖). Hence for every compact K ⊆ U, sup{X̄(φ) : φ ∈ C_c(U;H), |φ| ≤ 1, tsupport φ ⊆ K} < ∞.
+
+3. (Riesz representation on U, R1.) U with the subspace topology is a locally compact Hausdorff space and H is a finite-dimensional real Hilbert space. By step 2, X̄ satisfies the hypothesis of the Riesz Representation Theorem (Simon Ch. 1, Theorem 4.14; in the pinned library `Poincare.SimonGMT.Chapter01.simon_theorem_4_14`, with hypothesis `IsLocallyBoundedCcFunctional`). Hence there are a Radon measure μ_U on U (Borel regular, finite on compact subsets of U) and a μ_U-measurable ν : U → H with |ν| = 1 μ_U-a.e. and X̄(φ) = ∫_U ⟨φ(x), ν(x)⟩_H dμ_U(x) for all φ ∈ C_c(U;H). Since U is σ-compact and μ_U is finite on compact subsets of U, μ_U is σ-finite; being Borel regular, every μ_U-measurable set differs from a Borel set by a μ_U-null set, so ν agrees μ_U-a.e. with a Borel map ν₀. Put ν₁(x) := ν₀(x) if |ν₀(x)| = 1 and ν₁(x) := 0 otherwise. Then ν₁ is Borel, |ν₁| ≤ 1 everywhere, ν₁ = ν and |ν₁| = 1 μ_U-a.e. Below μ_U denotes the restriction of the Radon measure to the Borel subsets of U.
+
+4. (Extension by zero to ℝ^P; conclusions (a)–(d).) Define μ(B) := μ_U(B ∩ U) for Borel B ⊆ ℝ^P (the push-forward of μ_U under the inclusion U ↪ ℝ^P, which is Borel since U is open). For x ∈ U let v(x) be the k-vector α ↦ ⟨Jα, ν₁(x)⟩_H, and let v(x) := 0 for x ∉ U (a linear functional on a finite-dimensional space, hence continuous). Then:
+ (b) μ(ℝ^P ∖ U) = μ_U(∅) = 0.
+ (c) If K ⊆ U is compact, K is a compact subset of U and μ(K) = μ_U(K) < ∞.
+ (d) |v(x)(α)| ≤ |Jα|·|ν₁(x)| ≤ |α| (Cauchy–Schwarz; 0 off U). Moreover v(x)^β = ν₁^β(x), so |v(x)| = 1 for μ-a.e. x.
+ (a) Let ω ∈ D^k(U) and K := tsupport ω (compact, ⊆ U). The function x ↦ v(x)(ω(x)) = 1_U(x)⟨Jω(x), ν₁(x)⟩_H is Borel, vanishes off K and is bounded by ‖ω‖, and μ(K) < ∞, so it is μ-integrable; and ∫ v(ω) dμ = ∫_U ⟨Jω, ν₁⟩_H dμ_U = ∫_U ⟨Jω, ν⟩_H dμ_U = X̄(ω|_U) = X(ω). Hence IsMeasureRepresentation X μ v.
+ (R1′: no finiteness of μ on compact subsets of ℝ^P meeting ∂U is claimed or used; e.g. for P = 1, U = (0,1), X(a dx) := ∫_0^1 a(x)x⁻¹dx one has M_W(X) < ∞ for W ⊂⊂ U but μ([0,1]) = ∞.)
+
+5. (Restrictions are currents, conclusion (e), Simon 2.9.) Let A ⊆ ℝ^P be Borel and S(ω) := ∫_A v(x)(ω(x)) dμ(x) for ω ∈ D^k(U); by (a) the integrand is integrable, so S is a well-defined linear functional. If ω_j → 0 in D^k(U), there is a compact K ⊆ U containing every tsupport ω_j with ω_j → 0 uniformly on K (zeroth iterated derivative); by (d), |S(ω_j)| ≤ ∫_K |ω_j(x)| dμ ≤ μ(K)·sup_K |ω_j| → 0, since |·| is a norm on the finite-dimensional space of k-covectors (hence bounded by a constant times the operator norm) and μ(K) < ∞ by (c). Thus S ∈ D_k(U) and S(ω) = ∫_A v(ω) dμ for every ω.
+
+6. (Mass of restrictions, conclusion (f), R3.) Let A be Borel, S ∈ D_k(U) with S(ω) = ∫_A v(ω) dμ for all ω, and W ⊆ U open.
+ (≤) If ω is admissible for M_W(S) (tsupport ω ⊆ W, |ω(x)| ≤ 1), then by (d) S(ω) ≤ ∫_A |v(x)(ω(x))| dμ ≤ μ(A ∩ tsupport ω) ≤ μ(W ∩ A). Taking the supremum, M_W(S) ≤ μ(W ∩ A).
+ (≥) Let 0 ≤ c < μ(W ∩ A) and η > 0. (i) Choose compacts K_j with K_j ⊆ int K_{j+1} and ⋃_j K_j = U. Each μ⌞K_j is a finite Borel measure on the Polish space ℝ^P, hence inner regular by compact sets, and μ(W ∩ A ∩ K_j) ↑ μ(W ∩ A); so there is a compact C ⊆ W ∩ A with c < μ(C) < ∞. (ii) N := {x : |v(x)| ≠ 1} is a μ-null Borel set. By Lusin's theorem (Simon Ch. 1, 1.17, applied to the finite Borel measure μ⌞C and the Borel functions v^β) and inner regularity there is a compact C′ ⊆ C ∖ N with μ(C ∖ C′) < η such that every v^β is continuous on C′. (iii) Y(x) := Σ_β v(x)^β dx^β (x ∈ C′) is a continuous covector field on C′ with |Y(x)| = 1 and v(x)(Y(x)) = Σ_β (v(x)^β)² = 1. By Tietze's theorem (applied to the coefficients) Y extends to a continuous Ỹ on ℝ^P; replacing Ỹ by π∘Ỹ with π(y) := y/max(1,|y|) (continuous, |π(y)| ≤ 1, π(y) = y for |y| ≤ 1) we may assume |Ỹ| ≤ 1, still Ỹ = Y on C′. (iv) Choose r₀ > 0 with the closed 2r₀-neighbourhood of C′ inside W. The open sets O_j := {dist(·,C′) < r₀/j} decrease to the closed set C′ and μ(O_1) ≤ μ({dist(·,C′) ≤ r₀}) < ∞ (compact ⊆ U), so there is an open O ⊇ C′ with closure O ⊆ {dist(·,C′) ≤ r₀} and μ(O ∖ C′) < η. Let ψ be continuous with 0 ≤ ψ ≤ 1, ψ = 1 on C′, tsupport ψ ⊆ O (Urysohn), and φ := ψỸ. Then φ is a continuous form with compact support in W, |φ| ≤ 1, and, since C′ ⊆ C ⊆ A, v(φ) = 1 on C′, |v(φ)| ≤ 1 on O ∖ C′ (by (d)) and φ = 0 off O:
+ ∫_A v(φ) dμ ≥ μ(C′) − μ(O ∖ C′) ≥ μ(C) − 2η.
+ (v) For 0 < ε < r₀, φ_ε := ρ_ε*φ ∈ D^k(U) has tsupport in the compact set K′ := {dist(·,C′) ≤ 2r₀} ⊆ W, |φ_ε| ≤ 1 and φ_ε → φ uniformly; thus φ_ε is admissible for M_W(S) and, by dominated convergence (|v(φ_ε)| ≤ 1_{K′}, μ(K′) < ∞), S(φ_ε) → ∫_A v(φ) dμ. Hence M_W(S) ≥ μ(C) − 2η > c − 2η. As c < μ(W ∩ A) and η > 0 are arbitrary, M_W(S) ≥ μ(W ∩ A).
+ Therefore M_W(S) = μ(W ∩ A) in [0,∞].
+
+7. (Conclusion.) The pair (μ, v) of step 4 satisfies (a) IsMeasureRepresentation X μ v, (b) μ Uᶜ = 0, (c) μ K < ∞ for compact K ⊆ U, (d) |v x α| ≤ covectorEuclideanNorm α for all x, α, (e) existence of the restriction currents (step 5) and (f) the mass formula (step 6). ∎
+
+## Key steps
+
+1. Mass estimate |X(ω)| ≤ M_W(X)‖ω‖ for tsupport ω ⊆ W (R0).
+2. Extend X by mollification to a locally bounded linear functional X̄ on C_c(U; H), H = ℝ^{I(k,P)} ≅ Λ^k with the Euclidean coefficient norm.
+3. Riesz (Simon Ch. 1, 4.14 / SimonGMT simon_theorem_4_14) on the locally compact space U: Radon μ_U and unit field ν; replace ν by a Borel field ν₁ with |ν₁| ≤ 1 everywhere, = 1 a.e.
+4. Extend by zero: μ(B) = μ_U(B ∩ U), v = 0 off U; get the representation, μ Uᶜ = 0, finiteness on compacts of U and |v x α| ≤ |α|.
+5. Restrictions ∫_A v(ω) dμ are sequentially continuous (dominated by μ(K) sup_K |ω_j|), hence currents.
+6. M_W(X⌞A) ≤ μ(W∩A) by (d); ≥ by inner regularity, Lusin, Tietze, Urysohn and mollification.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp workspaces/gmt-ch06/GMT/Ch06/Contract.lean against GMT/Ch06/Submission.lean and against snapshot project/GMT/Ch06/Contract.lean (all identical)`
+- `read project/GMT/Ch06/Contract.lean: IsMeasureRepresentation, IsRestriction, IsSlice, IsIntegerMultiplicity, IsRectifiableTriple, CompactlyContainedOpen, SlicingTheorem`
+- `read simongmt Chapter06/{Currents,Mass,FormsDuality,CurrentLocalEquality,Forms,Representation}.lean: GeometricCurrentOn, TestFormOnConverges, GeometricCurrentOn.boundary, tsupport_exteriorDerivative_subset, massOn, massAdmissibleOn, covectorEuclideanNorm, zeroRegion, support, NVector`
+- `grep -rn 'theorem simon_theorem_4_14' simongmt/Poincare/SimonGMT/Chapter01 (RadonPolarRepresentation.lean; IsLocallyBoundedCcFunctional in VectorFunctionalEnvelope.lean; IsRadonOuterMeasure in RadonOuterMeasure.lean)`
+- `grep -rln 'coarea|co-area' simongmt/Poincare/SimonGMT (only linear co-area: Chapter02/CoareaLinear.lean, CoareaProjection.lean; no co-area formula for rectifiable sets)`
+- `grep -n '^def |^theorem ' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (CountablyRectifiable, HasWeightedApproximateTangentSpaceAt)`
+- `grep -rn 'Monotone.ae_differentiableAt|MonotoneOn.intervalIntegral_deriv_mem_uIcc|MonotoneOn.intervalIntegrable_deriv' mathlib/Mathlib`
+- `grep -rn 'LipschitzOnWith.extend_real|LipschitzOnWith.ae_differentiableWithinAt_of_mem|theorem measurable_deriv|theorem ext_of_generate_finite' mathlib/Mathlib`
+- `grep -rln 'Lusin' mathlib/Mathlib/MeasureTheory (only Lusin–Souslin; Lusin's continuity theorem is cited from Simon Ch. 1, 1.17)`
+- `python3 contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') from verifier/gmt-compare.py (child scope: namespace GMT.Ch06 + opens)`
+- `lake build GMT.Ch06.Submission (scratch /tmp/slicing_split_check_r1, frozen d8d46c9, pinned shared packages)`
+- `lake env lean Scratch/Stmts.lean and Scratch/FinalChallenge.lean (6 child statements as _root_ comparator targets in the contract scope; 0 errors)`
+- `lake env lean Scratch/Assembly.lean (SlicingTheorem from slicing_exists, slicing_support_subset, slicing_mass_bound, slicing_integer_multiplicity_ae; #print axioms)`
+- `lake env lean Scratch/Glue.lean (slicing_exists from slicing_mass_representation; slicing_support_subset from slicing_representation_unique; restriction-mass identification from both; #print axioms)`
+- `python3 listing of dag.json lean_name values (20 nodes) and grep of the run's nodes/ for the six proposed names (no matches)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonOuterMeasure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinear.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1/parent-child-handoff.json`
+- `/tmp/slicing_split_check_r1/Scratch/Stmts.lean`
+- `/tmp/slicing_split_check_r1/Scratch/FinalChallenge.lean`
+- `/tmp/slicing_split_check_r1/Scratch/Assembly.lean`
+- `/tmp/slicing_split_check_r1/Scratch/Glue.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 Contract; Submission is byte-identical, so child statements may use only contract, SimonGMT and Mathlib names. SimonGMT provides currents with sequential continuity, boundary, massOn (Euclidean coefficient norm), support/zeroRegion and the vector Riesz theorem `simon_theorem_4_14` on any locally compact Hausdorff space (Radon outer measure, unit field a.e.). It has only linear co-area and no co-area for rectifiable sets, and Mathlib has neither (nor Lusin's continuity theorem), so these are cited from Simon Ch. 3 §2 and Ch. 1, 1.17. Mathlib provides McShane (`LipschitzOnWith.extend_real`), Rademacher (`LipschitzOnWith.ae_differentiableWithinAt_of_mem`), Lebesgue's theorem for monotone functions (`Monotone.ae_differentiableAt`, `MonotoneOn.intervalIntegral_deriv_mem_uIcc`) and π-system uniqueness of finite measures (`ext_of_generate_finite`). In a scratch build of the frozen project, all six child statements elaborate in the comparator's child scope. `SlicingTheorem` follows from the four property children by `choose` plus assembly. `slicing_exists` follows from `slicing_mass_representation`, `slicing_support_subset` from `slicing_representation_unique`, and the restriction-mass identification used by `slicing_mass_bound` from both. All of these are kernel-checked with axioms [propext, Classical.choice, Quot.sound]. The DAG (20 nodes) reserves none of the six proposed names; the concurrently added polyhedral children have different names and types. These checks do not certify the analytic proofs.
