@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2e34c62552811279c15470aacc796877ce727476285878d0bbfc85e50836b606",
+  "git_delta": {
+    "base_commit": "dd04578eea943e2d6667453fbc53c8528f038103",
+    "candidate_commit": "6ef8dd5f6576956c298b48062c087390130d4a0c",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_mollifier_tendsto_L1",
+    "diff_sha256": "ec8c1153465db054ae7b7ee2a4dc25f991f5d5a3d9aa10f2d82b93553b009ee1",
+    "source_sha256": "d59cfbe7adb1948f0b9e5aba1388aa5be7356c8365e396975963f653b03f62af",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_mollifier_tendsto_L1",
+      "statement": "∀ (n : ℕ) (F : Rn n → ℝ) (ρ : ℕ → Rn n → ℝ) (σ : ℕ → ℝ), Integrable F volume → (∀ j, Continuous (ρ j)) → (∀ j x, 0 ≤ ρ j x) → (∀ j, Function.support (ρ j) ⊆ ball 0 (σ j)) → (∀ j, ∫ x, ρ j x = 1) → Tendsto σ atTop (𝓝 0) → Tendsto (fun j ↦ ∫⁻ x, ‖convolution (ρ j) F (ContinuousLinearMap.lsmul ℝ ℝ) volume x - F x‖ₑ) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
