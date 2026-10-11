@@ -487,6 +487,84 @@ theorem rsod_exists_least_integer_density_point : ∀ (n ℓ : ℕ) (U : Set (Am
   rw [hxk]
   exact Nat.cast_le.2 (Nat.find_min' hJ ⟨hk, x, hxB, hxk ▸ hx⟩)
 
+/-- **Regular points are dense in `spt V`** (Simon Ch. 5, Corollary 7.3, density half, p. 129).
+Assuming Allard's theorem 5.2: if `V = v(M, θ)` has generalized mean curvature `H` in the open set
+`U`, `H` is locally in `Lᵖ(μ_V)` for some `p > n`, and `θ` is a positive integer `μ_V`-a.e. on
+`spt V`, then every open ball `B̆_r(ξ)` with `ξ ∈ spt V` meets `reg V`.  Normalize `V` by the least
+integer density `N` in a smaller ball `B̆_{r'}(ξ) ⊆ U` and apply 7.1 at a point of density `1`. -/
+theorem rsod_regularSet_meets_ball : AllardRegularityTheorem → ∀ (n ℓ : ℕ), 1 ≤ n →
+    ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U)
+    (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p → V.HasGeneralizedMeanCurvature H →
+    V.LocallyLp H p → (∀ᵐ x ∂V.weight, x ∈ V.support → ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k) →
+    ∀ ξ ∈ V.support, ∀ r : ℝ, 0 < r → (V.regularSet ∩ ball ξ r).Nonempty := by
+  intro hAllard n ℓ hn U hU V H p hp hH hLp hint ξ hξ r hr
+  -- `μ_V ≪ Hⁿ ⌞ M` and `M ⊆ U`, so `μ_V`-a.e. point lies in `U ∩ spt μ_V = spt V`.
+  have hM_ae : ∀ᵐ x ∂V.weight, x ∈ V.carrier :=
+    (withDensity_absolutelyContinuous _ _).ae_le (ae_restrict_mem₀ V.nullMeasurableSet_carrier)
+  have hU_ae : ∀ᵐ x ∂V.weight, x ∈ U := hM_ae.mono fun _ hx => V.carrier_subset hx
+  have hspt_ae : ∀ᵐ x ∂V.weight, x ∈ V.support := by
+    filter_upwards [hU_ae, Measure.support_mem_ae (μ := V.weight)] with x hxU hx
+    exact ⟨hxU, hx⟩
+  -- Hence `θ` is a positive integer `μ_V`-a.e.; in particular `θ ≥ 1` `μ_V`-a.e.
+  have hI : ∀ᵐ x ∂V.weight, ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k := by
+    filter_upwards [hint, hspt_ae] with x hx hxV using hx hxV
+  have hθ : ∀ᵐ x ∂V.weight, 1 ≤ V.mult x := by
+    filter_upwards [hI] with x ⟨k, hk, hxk⟩
+    rw [hxk]
+    exact_mod_cast hk
+  -- `Θⁿ(μ_V, x) = θ(x)` `μ_V`-a.e., via approximate tangent planes (Ch. 3, 1.9 and Remark 1.8(2)).
+  have hdens : ∀ᵐ x ∂V.weight, V.HasDensity x (V.mult x) := by
+    filter_upwards [Submission.rsod_ae_exists_approxTangent n ℓ hn U hU V hθ, hU_ae]
+      with x ⟨P, hP⟩ hxU
+    exact Submission.rsod_hasDensity_of_approxTangent n ℓ hn U hU V x P hxU hP
+  -- Shrink the ball into `U`: `B = B̆_{r'}(ξ)` with `r' ≤ r` and `B ⊆ U`.
+  obtain ⟨r₀, hr₀, hr₀U⟩ := Metric.isOpen_iff.1 hU ξ hξ.1
+  obtain ⟨r', hr', hr'r, hBU⟩ : ∃ r' : ℝ, 0 < r' ∧ r' ≤ r ∧ ball ξ r' ⊆ U :=
+    ⟨min r r₀, lt_min hr hr₀, min_le_left _ _, (ball_subset_ball (min_le_right _ _)).trans hr₀U⟩
+  -- The least integer density `N ≥ 1` in `B` is attained at some `x₀ ∈ B`, and `θ ≥ N` a.e. on `B`.
+  obtain ⟨N, x₀, hN, hx₀, hx₀N, hNθ⟩ :=
+    Submission.rsod_exists_least_integer_density_point n ℓ U V hdens hI ξ hξ r' hr'
+  have hN₀ : (0 : ℝ) < N := by exact_mod_cast hN
+  -- The normalized varifold `W = v(M ∩ B, θ / N)` in `B`.
+  obtain ⟨W, -, hWmult, hWweight, hWsupp, hWH, hWLp⟩ :=
+    Submission.rsod_exists_localized_varifold n ℓ U V (ball ξ r') (1 / (N : ℝ)) isOpen_ball hBU
+      (one_div_pos.2 hN₀)
+  -- `θ / N ≥ 1` `μ_W`-a.e.
+  have hWθ : ∀ᵐ x ∂W.weight, 1 ≤ W.mult x := by
+    rw [hWweight]
+    refine Measure.ae_smul_measure ((ae_restrict_iff' measurableSet_ball).2 ?_) _
+    filter_upwards [hNθ] with x hx hxB
+    rw [hWmult, one_div_mul_eq_div, one_le_div₀ hN₀]
+    exact hx hxB
+  -- `B_s(x₀) ⊆ B` for `s < d`, so `μ_W(B_s(x₀)) = N⁻¹ μ_V(B_s(x₀))` and `Θⁿ(μ_W, x₀) = N / N = 1`.
+  obtain ⟨d, hd, hdB⟩ := Metric.isOpen_iff.1 isOpen_ball x₀ hx₀
+  have hWdens : W.HasDensity x₀ 1 := by
+    have hc : ENNReal.ofReal (1 / (N : ℝ)) ≠ ⊤ := ENNReal.ofReal_ne_top
+    have hlim := ENNReal.Tendsto.const_mul hx₀N (Or.inr hc)
+    rw [← ENNReal.ofReal_mul (one_div_pos.2 hN₀).le, one_div_mul_cancel hN₀.ne'] at hlim
+    refine hlim.congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT hd] with s hs
+    rw [hWweight, Measure.smul_apply, smul_eq_mul, Measure.restrict_apply measurableSet_closedBall,
+      inter_eq_left.2 ((closedBall_subset_ball hs.2).trans hdB), mul_div_assoc]
+  -- By 7.1 (via Allard's theorem) `x₀` is a regular point of `W`.
+  obtain ⟨hx₀W, ρ, hρ, hC1⟩ :=
+    Submission.rsod_mem_regularSet_of_density_one hAllard n ℓ hn (ball ξ r') isOpen_ball W H p hp
+      (hWH H hH) (hWLp H p hLp) hWθ x₀ hx₀ hWdens
+  rw [hWsupp] at hx₀W hC1
+  -- Shrinking the radius to `min ρ d` transfers regularity from `W` to `V`.
+  refine ⟨x₀, ⟨hx₀W.2, min ρ d, lt_min hρ hd, ?_⟩, ball_subset_ball hr'r hx₀⟩
+  have hball : ball x₀ (min ρ d) ∩ V.support =
+      ball x₀ (min ρ d) ∩ (ball x₀ ρ ∩ (ball ξ r' ∩ V.support)) := by
+    ext y
+    constructor
+    · rintro ⟨hy, hyV⟩
+      exact ⟨hy, ball_subset_ball (min_le_left _ _) hy,
+        hdB (ball_subset_ball (min_le_right _ _) hy), hyV⟩
+    · rintro ⟨hy, -, -, hyV⟩
+      exact ⟨hy, hyV⟩
+  rw [hball]
+  exact Submission.rsod_isC1Submanifold_open_inter n (n + ℓ) _ _ hC1 isOpen_ball
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
