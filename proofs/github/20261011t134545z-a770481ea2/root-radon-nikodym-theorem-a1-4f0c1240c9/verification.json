@@ -1,0 +1,17 @@
+{
+  "node_id": "root.radon_nikodym_theorem-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/16",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "ca1e2195c9cb0e217bd091f1847577b8e01624d9",
+  "integrated_commit": "",
+  "proof_base_commit": "df701776cb50a2fcd2d2c79e66f88fb414eecd5c",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ec1c322fab7585cea8deb6a95d4dae2d97d09d8e {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.borel_regular_approximation-a1"
+  ]
+}
