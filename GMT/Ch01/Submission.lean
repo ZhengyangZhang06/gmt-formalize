@@ -179,6 +179,24 @@ def BesicovitchCovering : Prop :=
       (∀ j, D j ⊆ B) ∧ (∀ j, (D j).PairwiseDisjoint (fun b => closedBall b.1 b.2)) ∧
       Prod.fst '' B ⊆ ⋃ j, ⋃ b ∈ D j, closedBall b.1 b.2
 
+/-- Simon Ch. 1, Lemma 3.12, from the pinned `Poincare.SimonGMT` library:
+`exists_besicovitchCovering_families` (Mathlib's `Besicovitch.exist_disjoint_covering_families`
+with closed balls, `N = Besicovitch.multiplicity ℝⁿ`) for the index type `↥B`; each family is
+pushed forward along the injective `Subtype.val`. -/
+theorem Submission.besicovitch_covering : BesicovitchCovering := by
+  intro n
+  refine ⟨Besicovitch.multiplicity (EuclideanSpace ℝ (Fin n)), fun B hpos ⟨R, hR⟩ => ?_⟩
+  obtain ⟨D, hdisj, hcover⟩ := exists_besicovitchCovering_families n
+    (fun b : B => (b : EuclideanSpace ℝ (Fin n) × ℝ).1)
+    (fun b : B => (b : EuclideanSpace ℝ (Fin n) × ℝ).2) (fun b => hpos b b.2) R
+    (fun b => hR (mem_image_of_mem Prod.snd b.2))
+  refine ⟨fun j => Subtype.val '' D j, fun j => image_subset_iff.2 fun b _ => b.2,
+    fun j => Subtype.val_injective.injOn.pairwiseDisjoint_image.2 (hdisj j), ?_⟩
+  rintro _ ⟨b, hb, rfl⟩
+  obtain ⟨j, hj⟩ := mem_iUnion.1 (hcover ⟨⟨b, hb⟩, rfl⟩)
+  obtain ⟨i, hi, hbi⟩ := mem_iUnion₂.1 hj
+  exact mem_iUnion.2 ⟨j, mem_iUnion₂.2 ⟨i, mem_image_of_mem Subtype.val hi, hbi⟩⟩
+
 /-- **General density theorem.** Simon Ch. 1, Theorem 3.16 (p. 20).
 
 Let `μ` be an open σ-finite Borel-regular measure on the metric space `X` with the Symmetric
