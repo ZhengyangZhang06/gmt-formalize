@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bdf7ac2070e41ed36e78a08e90e279cb2c59d90947ed5d25bf9cf3f425bcf166",
+  "git_delta": {
+    "base_commit": "6aa972d49349b10fb0c80727c1c1ec9192b18702",
+    "candidate_commit": "a12f762894f61e2d4a8913316633f2fb57e0a558",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "c1_sard_critical_fibers_null",
+    "diff_sha256": "9c927c4782a43e3450e83290b7f91956b7facfb08488e9df6572c2199f5e704d",
+    "source_sha256": "5b6eee945cbf4cd99bc09de84f25ec8f6f2334e42b6ef6f1641fe3eeaa19bf08",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.c1_sard_critical_fibers_null",
+      "statement": "CoareaFormula → ∀ (N m k : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m), 0 < k → Chapter02.IsSimonSubmanifold (E := Rn (m + k)) 1 M → IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → MeasurableSet M → ContinuousOn (coareaJacobian M f) M → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0}) = 0",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
