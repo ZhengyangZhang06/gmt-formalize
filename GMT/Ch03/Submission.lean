@@ -392,6 +392,36 @@ theorem Submission.bf_starProjection_isometricChart : ∀ (n ℓ : ℕ) (W : Sub
       rw [LinearIsometryEquiv.symm_apply_apply, Submodule.starProjection_apply]
     rw [hP, hJ.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
 
+/-- **Infinite fibres of an `n`-plane projection project to an `Hⁿ`-null set** (Dall'Alba,
+*The Besicovitch–Federer Projection Theorem*, Lemma 5.4, p. 70), assuming Eilenberg's
+inequality (Eil). Let `P = W.starProjection`, `dim W = n`, `Hⁿ(A) < ∞` and
+`A₃ = {a ∈ A : {b ∈ A : P b = P a} infinite}`. With the `1`-Lipschitz chart `f` of `P`, (Eil)
+for `(N, m, k) = (n + ℓ, n, 0)` and `L = 1` gives a measurable `g ≥ H⁰(A ∩ f⁻¹{y})` with
+`∫ g dLⁿ ≤ C Hⁿ(A) < ∞`, so `g < ∞` `Lⁿ`-a.e. As `H⁰` is counting measure, `g = ∞` on
+`f(A₃)`, hence `Hⁿ(P(A₃)) = Lⁿ(f(A₃)) = 0`. -/
+theorem Submission.bf_infiniteFibre_projection_null : (∀ (N m k : ℕ), ∃ C : ℝ≥0, ∀ (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μHE[k] (A ∩ f ⁻¹' {y}) ≤ g y) ∧ ∫⁻ y, g y ≤ ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A) → ∀ (n ℓ : ℕ) (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∀ A : Set (Rn (n + ℓ)), μHE[n] A < ∞ → μHE[n] (W.starProjection '' {a | a ∈ A ∧ {b | b ∈ A ∧ W.starProjection b = W.starProjection a}.Infinite}) = 0 := by
+  intro hEil n ℓ W hW A hA
+  -- The chart `f`: `1`-Lipschitz, with the fibres of `P` and `Hⁿ(P(S)) = Lⁿ(f(S))`.
+  obtain ⟨f, hf, hfib, hvol⟩ := Submission.bf_starProjection_isometricChart n ℓ W hW
+  -- (Eil) with `(N, m, k) = (n + ℓ, n, 0)` and `L = 1`.
+  obtain ⟨C, hC⟩ := hEil (n + ℓ) n 0
+  obtain ⟨g, hg, hgle, hgint⟩ := hC A f 1 hf
+  -- `∫ g dLⁿ ≤ C Hⁿ(A) < ∞`, so `{g = ∞}` is `Lⁿ`-null.
+  have hnull : volume {y | ¬g y < ∞} = 0 :=
+    ae_iff.mp (ae_lt_top hg
+      (ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.coe_ne_top hA.ne) hgint))
+  -- `f(A₃) ⊆ {g = ∞}`: the fibre of `f` through `a ∈ A₃` meets `A` in infinitely many points.
+  rw [hvol]
+  refine measure_mono_null ?_ hnull
+  rintro _ ⟨a, ⟨-, hinf⟩, rfl⟩
+  have hfibre : A ∩ f ⁻¹' {f a} = {b | b ∈ A ∧ W.starProjection b = W.starProjection a} := by
+    ext b
+    simp [hfib]
+  have hfa := hgle (f a)
+  rw [hfibre, Submission.bf_hausdorffZero_eq_encard, Set.encard_eq_top_iff.mpr hinf,
+    ENat.toENNReal_top] at hfa
+  exact not_lt.mpr hfa
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
