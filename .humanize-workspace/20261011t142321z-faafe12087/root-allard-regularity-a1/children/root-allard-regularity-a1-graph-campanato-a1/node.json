@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1",
+  "parent_id": "root.allard_regularity-a1",
+  "depth": 2,
+  "title": "Campanato regularity of the Lipschitz graph from tilt-excess decay (steps 4(b)-(e))",
+  "statement": "For n >= 1, l >= 0 and p > n there are L in (0, 1/4], delta_3 > 0 and C >= 0 (depending only on n, l, p) such that: if U is open, V has generalized mean curvature H in U, 0 < delta <= delta_3, 2.3 holds (AllardHypotheses H p delta rho), q is a linear isometry, f : R^n -> R^l, 0 < R <= delta rho, f(0) = 0, f is L-Lipschitz on B^n_R(0), spt V cap B_R(0) = q(graph f over B^n_R(0)) cap B_R(0), A >= 0 and S assigns to each zeta in spt V cap B_{R/2}(0) an n-dimensional subspace S(zeta) with V.tiltExcess zeta s (S zeta) <= A (s/R)^(2(1-n/p)) for 0 < s <= R/2, then f is C^1 on the open ball B^o_{R/16}(0), hsNorm(Df(x) - Df(y)) <= C sqrt(A) (|x - y|/R)^(1-n/p) for x, y in that ball, and q(graph Df(z)) = (span{graphPoint v (Df(z) v)}).map q equals S(q(graphPoint z (f z))) for every z in that ball.",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ L δ₃ C : ℝ, 0 < L ∧ L ≤ 1 / 4 ∧ 0 < δ₃ ∧ 0 ≤ C ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₃ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (R : ℝ), 0 < R → R ≤ δ * ρ → f 0 = 0 → LipschitzOnWith (Real.toNNReal L) f (closedBall 0 R) → V.support ∩ closedBall 0 R = q '' graphOver f (closedBall 0 R) ∩ closedBall 0 R → ∀ (S : Amb n ℓ → Submodule ℝ (Amb n ℓ)) (A : ℝ), 0 ≤ A → (∀ ζ ∈ V.support ∩ closedBall 0 (R / 2), Module.finrank ℝ (S ζ) = n ∧ ∀ s : ℝ, 0 < s → s ≤ R / 2 → V.tiltExcess ζ s (S ζ) ≤ A * (s / R) ^ (2 * (1 - n / p))) → ContDiffOn ℝ 1 f (ball 0 (R / 16)) ∧ (∀ x ∈ ball (0 : Rn n) (R / 16), ∀ y ∈ ball (0 : Rn n) (R / 16), hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤ C * Real.sqrt A * (‖x - y‖ / R) ^ (1 - n / p)) ∧ ∀ z ∈ ball (0 : Rn n) (R / 16), (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f z v))).map q.toLinearEquiv.toLinearMap = S (q (graphPoint z (f z)))",
+  "lean_name": "allard52_graph_campanato",
+  "depends_on": [
+    "root.allard_regularity-a1.tangent_ae-a1",
+    "root.allard_regularity-a1.graph_plane_algebra-a1",
+    "root.allard_regularity-a1.graph_comparison-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1.tangent_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_regularity-a1.graph_comparison-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-a1"
+}

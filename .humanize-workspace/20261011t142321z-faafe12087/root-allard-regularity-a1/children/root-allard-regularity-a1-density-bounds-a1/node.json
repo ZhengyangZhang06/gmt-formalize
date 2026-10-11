@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1",
+  "parent_id": "root.allard_regularity-a1",
+  "depth": 2,
+  "title": "Density and conical-excess bounds under 2.3 (Simon 5.2.4 with explicit constants)",
+  "statement": "For n >= 1 and p > n there are delta_P in (0, 1/8] and C_P > 0 with C_P delta_P <= 1/2, depending only on n and p (the same constants serve every codimension l >= 0), such that: for every l >= 0, if U is open in R^(n+l), V is a rectifiable n-varifold in U with generalized mean curvature H, 0 < delta <= delta_P and the hypotheses 2.3 hold (AllardHypotheses H p delta rho), then for every y in R^(n+l) with |y| <= 3 delta rho and every s in (0, rho/2]: (P.i) mu(B_s(y)) <= (1 + C_P delta) omega_n s^n; and if moreover y in spt V: (P.ii) mu(B_s(y)) >= (1 - C_P delta) omega_n s^n, and (P.iii) the extended integral over B_s(y) with respect to mu of |x - y - p_x(x - y)|^2 / |x - y|^(n+2) is at most C_P omega_n delta (the integrand is 0 at x = y). Here mu = V.weight, p_x = V.tangentProj x, omega_n = unitBallVolume n, balls closed.",
+  "lean_statement": "∀ (n : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δP CP : ℝ, 0 < δP ∧ δP ≤ 1 / 8 ∧ 0 < CP ∧ CP * δP ≤ 1 / 2 ∧ ∀ (ℓ : ℕ) (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δP → V.AllardHypotheses H p δ ρ → ∀ y : Amb n ℓ, ‖y‖ ≤ 3 * δ * ρ → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → V.weight (closedBall y s) ≤ ENNReal.ofReal ((1 + CP * δ) * (unitBallVolume n * s ^ n)) ∧ (y ∈ V.support → ENNReal.ofReal ((1 - CP * δ) * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s) ∧ ∫⁻ x in closedBall y s, ENNReal.ofReal (‖x - y - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂V.weight ≤ ENNReal.ofReal (CP * unitBallVolume n * δ))",
+  "lean_name": "allard52_density_bounds",
+  "depends_on": [
+    "root.allard_regularity-a1.tangent_ae-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1.tangent_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-a1"
+}
