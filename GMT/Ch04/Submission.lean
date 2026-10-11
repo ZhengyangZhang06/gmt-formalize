@@ -473,6 +473,87 @@ theorem Submission.compactVariation_velocity_isTestField : ∀ (n ℓ : ℕ) (U 
   have hsupp : tsupport (fun y ↦ deriv (fun t ↦ φ t y) 0) ⊆ K :=
     closure_minimal (fun y hy ↦ by_contra fun h ↦ hy (hzero y h)) hφ.compact.isClosed
   exact ⟨hcd, HasCompactSupport.intro hφ.compact hzero, hsupp.trans hKU⟩
+/-- **Ch. 4, 2.1 and 2.4 (pp. 87–88), linear variations.** If `X` is `C^∞` with compact support,
+then `φ_t(y) = y + tX(y)` is a family as in 2.1 with `K = spt X` and initial velocity
+`∂φ_t/∂t|_{t=0} = X`, as used in the equivalence of 2.4. With `L ≥ sup |DX|` and
+`ε = 1/(L + 1)`: for `|t| < ε`, `φ_t - id = tX` is `|t|L`-Lipschitz with `|t|L < 1`, so `φ_t` is a
+homeomorphism, and `Dφ_t = I + t DX` is invertible (Neumann series), so `φ_t⁻¹` is smooth by the
+inverse function theorem. -/
+theorem Submission.exists_isCompactVariation_add_smul : ∀ (n ℓ : ℕ) (X : Ambient n ℓ → Ambient n ℓ), ContDiff ℝ ∞ X → HasCompactSupport X → ∃ ε : ℝ, IsCompactVariation (fun t y ↦ y + t • X y) ε (tsupport X) ∧ (fun y ↦ deriv (fun t : ℝ ↦ y + t • X y) 0) = X := by
+  intro n ℓ X hX hXc
+  have hX1 : ContDiff ℝ 1 X := hX.of_le (WithTop.coe_le_coe.mpr le_top)
+  -- `DX` is continuous with compact support, so `‖DX‖ ≤ L` for some `L ≥ 0`, and `X` is
+  -- `L`-Lipschitz.
+  obtain ⟨C, hC⟩ := (hXc.fderiv ℝ).exists_bound_of_continuous (hX1.continuous_fderiv one_ne_zero)
+  obtain ⟨L, hL0, hDX⟩ : ∃ L : ℝ, 0 ≤ L ∧ ∀ y, ‖fderiv ℝ X y‖ ≤ L :=
+    ⟨max C 0, le_max_right _ _, fun y ↦ (hC y).trans (le_max_left _ _)⟩
+  have hLip : ∀ x y, ‖X x - X y‖ ≤ L * ‖x - y‖ := fun x y ↦
+    convex_univ.norm_image_sub_le_of_norm_fderiv_le (fun z _ ↦ hX1.differentiable one_ne_zero z)
+      (fun z _ ↦ hDX z) (mem_univ y) (mem_univ x)
+  refine ⟨1 / (L + 1), ⟨by positivity, hXc.isCompact, ?_, ?_, ?_, ?_⟩, ?_⟩
+  · exact (contDiff_snd.add (contDiff_fst.smul (hX.comp contDiff_snd))).contDiffOn
+  · intro t ht
+    have htL : |t| * L < 1 := by
+      calc |t| * L ≤ 1 / (L + 1) * L := by gcongr; exact (abs_lt.mpr ⟨ht.1, ht.2⟩).le
+        _ < 1 := by
+          rw [div_mul_eq_mul_div, one_mul, div_lt_one (by positivity)]; linarith
+    -- `φ_t - id = tX` is `c`-Lipschitz with `c = |t|L < 1`, so `φ_t` is a homeomorphism `h`.
+    let c : NNReal := ⟨|t| * L, by positivity⟩
+    have hcR : (c : ℝ) = |t| * L := rfl
+    have hA : ApproximatesLinearOn (fun y ↦ y + t • X y)
+        ((ContinuousLinearEquiv.refl ℝ (Ambient n ℓ) : Ambient n ℓ →L[ℝ] Ambient n ℓ)) univ c := by
+      intro x _ y _
+      have hxy : x + t • X x - (y + t • X y) -
+          (ContinuousLinearEquiv.refl ℝ (Ambient n ℓ) : Ambient n ℓ →L[ℝ] Ambient n ℓ) (x - y)
+            = t • (X x - X y) := by
+        simp only [ContinuousLinearEquiv.coe_refl, ContinuousLinearMap.id_apply, smul_sub]
+        abel
+      rw [hxy, norm_smul, Real.norm_eq_abs, hcR, mul_assoc]
+      gcongr
+      exact hLip x y
+    have hc : Subsingleton (Ambient n ℓ) ∨ c < ‖((ContinuousLinearEquiv.refl ℝ (Ambient n ℓ)).symm :
+        Ambient n ℓ →L[ℝ] Ambient n ℓ)‖₊⁻¹ := by
+      rcases subsingleton_or_nontrivial (Ambient n ℓ) with h | h
+      · exact Or.inl h
+      · right
+        rw [ContinuousLinearEquiv.refl_symm, ContinuousLinearEquiv.coe_refl,
+          ContinuousLinearMap.nnnorm_id, inv_one, ← NNReal.coe_lt_coe, hcR, NNReal.coe_one]
+        exact htL
+    let h := hA.toHomeomorph _ hc
+    have hbij : Function.Bijective (fun y : Ambient n ℓ ↦ y + t • X y) := h.bijective
+    refine ⟨hbij, ?_⟩
+    have hinv : Function.invFun (fun y : Ambient n ℓ ↦ y + t • X y) = h.symm := by
+      funext z
+      apply hbij.1
+      exact (Function.invFun_eq (hbij.2 z)).trans (h.apply_symm_apply z).symm
+    rw [hinv]
+    -- `Dφ_t(a) = I + t DX(a) = 1 - (-t DX(a))` is a unit since `‖t DX(a)‖ ≤ |t|L < 1`.
+    have hsmall : ∀ a, ‖-(t • fderiv ℝ X a)‖ < 1 := fun a ↦ by
+      rw [norm_neg, norm_smul, Real.norm_eq_abs]
+      calc |t| * ‖fderiv ℝ X a‖ ≤ |t| * L := by gcongr; exact hDX a
+        _ < 1 := htL
+    refine h.contDiff_symm
+      (f₀' := fun a ↦ ContinuousLinearEquiv.unitsEquiv ℝ _ (Units.oneSub _ (hsmall a))) ?_ ?_
+    · intro a
+      have hd : HasFDerivAt (fun y : Ambient n ℓ ↦ y + t • X y)
+          (ContinuousLinearMap.id ℝ _ + t • fderiv ℝ X a) a :=
+        (hasFDerivAt_id a).add (((hX1.differentiable one_ne_zero) a).hasFDerivAt.const_smul t)
+      rw [show (⇑h : Ambient n ℓ → Ambient n ℓ) = fun y ↦ y + t • X y from rfl]
+      convert hd using 1
+      refine ContinuousLinearMap.ext fun v ↦ ?_
+      show ((1 : Ambient n ℓ →L[ℝ] Ambient n ℓ) - -(t • fderiv ℝ X a)) v =
+        ((ContinuousLinearMap.id ℝ (Ambient n ℓ) + t • fderiv ℝ X a :
+          Ambient n ℓ →L[ℝ] Ambient n ℓ) v)
+      simp
+    · exact contDiff_id.add (hX.const_smul t)
+  · intro x
+    simp
+  · intro t _ x hx
+    simp [image_eq_zero_of_notMem_tsupport hx]
+  · funext y
+    have : HasDerivAt (fun t : ℝ ↦ y + t • X y) (X y) 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).smul_const (X y)).const_add y
+    exact this.deriv
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
