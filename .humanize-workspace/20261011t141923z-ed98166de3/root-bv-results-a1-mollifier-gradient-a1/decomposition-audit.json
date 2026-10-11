@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'theorem (Integrable.convolution_integrand|support_convolution_subset|HasCompactSupport.convolutionExists_right)|def convolution|theorem HasCompactSupport.(hasFDerivAt_convolution_right|contDiff_convolution_right|contDiff_convolution_left)' mathlib/Mathlib/Analysis/Convolution.lean mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "rg -n 'exists_iUnion_isClosed|exists_cthickening_subset_open|theorem IsCompact.cthickening|exists_contMDiffMap_one_nhds_of_subset_interior' mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean mathlib/Mathlib/Topology/MetricSpace/Thickening.lean mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "rg -n 'convolution_neg|integral_mul_convolution|integral_convolution_mul|euclideanDivergence.*convolution' mathlib/Mathlib",
+        "rg -n 'bv_integral_convolution_mul_reflect|bv_euclideanDivergence_convolution|bv_mollifier_integral_mul_div_le|bv_exists_smooth_cutoff|bv_lintegral_norm_fderiv_le_of_dual_compact|bv_lintegral_open_le_of_compact|Submission\\.' project --glob '*.lean'",
+        "git for-each-ref --format=%(refname)",
+        "python3 /tmp/mollifier-gradient-audit-30399c57-2ds8b61g/run_checks.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-mollifier-gradient-a1/parent-child-handoff.json",
+        "/tmp/mollifier-gradient-audit-30399c57-2ds8b61g/run_checks.py",
+        "/tmp/mollifier-gradient-audit-30399c57-2ds8b61g/checks/Assembly.lean",
+        "/tmp/mollifier-gradient-audit-30399c57-2ds8b61g/checks/Semantics.lean"
+      ],
+      "conclusion": "The split is appropriate and establishes this selected parent. Dependencies are acyclic and correctly directed; integration by parts remains the parent's declared prerequisite. All six exact one-line propositions independently elaborate in the comparator scope without child implementations. Scalar/vector convolution semantics and C∞ smoothness were checked in Lean. An assembly with the child conclusions and integration-by-parts contract as explicit hypotheses proves the exact frozen parent type using only propext, Classical.choice and Quot.sound. Rechecked proofs of div_conv, smooth_cutoff and compact_exhaustion, and inspected reused declarations, have only these standard axioms. Pinned revisions and relevant source compatibility were verified. The searches found the required analytic tools but no matching convolution-transposition or divergence-convolution theorem. All six names are bare identifiers, with no collisions in the active DAG, other recorded decompositions, or 116 Git refs. Every supplied natural proof is complete enough for formalization."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "conv_adjoint",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and exact Lean type agree. Both product integrands are integrable using the L¹ hypotheses and boundedness of h. The two Fubini steps, translation and reflection establish precisely the stated identity without assuming kernel symmetry or invoking the parent."
+    },
+    {
+      "key": "div_conv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The vector and scalar convolutions elaborate with the intended scalar multiplication. C¹ regularity and compact support make Dg continuous and compactly supported. The convolution derivative formula, integrability and continuous linear trace prove the exact pointwise divergence identity."
+    },
+    {
+      "key": "dual_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose includes every hypothesis and matches the type. Only the declared conv_adjoint and div_conv dependencies are used. The reflected comparison field has compact support inside W, is Lipschitz and has norm at most one; the BV supremum therefore gives the stated extended-real bound, without a finiteness assumption."
+    },
+    {
+      "key": "smooth_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type expresses exactly the stated C∞ cutoff properties. A compact thickening inside O and the available smooth Urysohn theorem supply the function; closure containment establishes its compact topological support. The supplied argument is complete and independent."
+    },
+    {
+      "key": "smooth_duality_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact quantified dual hypothesis matches the prose and is supplied by the parent through its integration-by-parts prerequisite. Using only smooth_cutoff, the proof constructs an admissible C¹ regularized gradient field, obtains the quantitative lower bound, lets η tend to zero and converts the compact integral to the extended-norm lower integral. The infinite-M case is covered."
+    },
+    {
+      "key": "compact_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean proposition agree. Intersecting an increasing closed exhaustion with expanding closed balls gives the required compact exhaustion. Measurable indicators and monotone convergence prove the conclusion for arbitrary M, with no circular dependency."
+    }
+  ],
+  "required_changes": []
+}
