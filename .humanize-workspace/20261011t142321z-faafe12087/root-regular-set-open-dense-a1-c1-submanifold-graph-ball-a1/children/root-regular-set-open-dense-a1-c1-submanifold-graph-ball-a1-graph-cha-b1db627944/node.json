@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.c1_submanifold_graph_ball-a1.graph_chart_immersion-a1",
+  "parent_id": "root.regular_set_open_dense-a1.c1_submanifold_graph_ball-a1",
+  "depth": 3,
+  "title": "Rotated, translated graph map of a C¹ function is an injective C¹ immersion",
+  "statement": "Let n, ℓ ∈ ℕ, q a linear isometry equivalence of ℝ^{n+ℓ}, u : ℝⁿ → ℝ^ℓ, x₀ ∈ ℝ^{n+ℓ} and Ω ⊆ ℝⁿ an open set on which u is C¹ (ContDiffOn ℝ 1 u Ω). Let φ(x) := q(graphPoint x (u x)) + x₀. Then (a) φ is injective on all of ℝⁿ, (b) φ is C¹ on Ω, and (c) for every x ∈ Ω the Fréchet derivative fderiv ℝ φ x is an injective linear map.",
+  "lean_statement": "∀ {n ℓ : ℕ} (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (x₀ : Amb n ℓ) (Ω : Set (Rn n)), IsOpen Ω → ContDiffOn ℝ 1 u Ω → Function.Injective (fun x => q (graphPoint x (u x)) + x₀) ∧ ContDiffOn ℝ 1 (fun x => q (graphPoint x (u x)) + x₀) Ω ∧ ∀ x ∈ Ω, Function.Injective (fderiv ℝ (fun x => q (graphPoint x (u x)) + x₀) x)",
+  "lean_name": "rsod_graphChart_injective_contDiffOn_fderiv_injective",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.c1_submanifold_graph_ball-a1.graph_point_linear_equiv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.c1_submanifold_graph_ball-a1.graph_point_linear_equiv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1-graph-cha-b1db627944-a1"
+}
