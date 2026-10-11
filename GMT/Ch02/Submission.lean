@@ -443,6 +443,89 @@ theorem Submission.bv_euclideanDivergence_convolution : ∀ (n : ℕ) (κ : Rn n
           ContinuousLinearMap.toLinearMap_smul, map_smul, smul_eq_mul,
           Chapter02.euclideanDivergence, ContinuousLinearMap.lsmul_apply]
 
+/-- **Simon Ch. 2, proof of Lemma 2.5: the duality bound for a mollification.** Let `W ⊂ ℝⁿ` be
+open, `u ∈ L¹(W)`, `ρ ≥ 0` continuous with `ρ = 0` off the open ball `{|x| < σ}` and `∫ ρ = 1`, and
+`g` a `C¹` field with compact support, `|g| ≤ 1` and `B_σ(y) ⊂ W` for `y ∈ spt g`. Then
+`w = ρ * (1_W u)` satisfies `∫ w div g ≤ |Du|(W)` (Simon's `∫ g · ∇u_σ = -∫ u div(φ_σ * g)`).
+With `ρ̌(t) = ρ(-t)` and `G = ρ̌ * g`, transposition and `div G = ρ̌ * div g` give
+`∫ w div g = ∫_W u div G`. `G` is `C¹`, hence Lipschitz, `spt G ⊂ B_σ(0) + spt g ⊂ W` is compact and
+`|G| ≤ ∫ ρ̌ = 1`, so `G` is admissible in the supremum defining `|Du|(W)`. -/
+theorem Submission.bv_mollifier_integral_mul_div_le : ∀ (n : ℕ) (W : Set (Rn n)) (u ρ : Rn n → ℝ) (σ : ℝ) (g : Rn n → Rn n), IsOpen W → IntegrableOn u W volume → Continuous ρ → (∀ x, 0 ≤ ρ x) → Function.support ρ ⊆ ball 0 σ → ∫ x, ρ x = 1 → ContDiff ℝ 1 g → HasCompactSupport g → (∀ x, ‖g x‖ ≤ 1) → (∀ y ∈ tsupport g, closedBall y σ ⊆ W) → ENNReal.ofReal (∫ x, convolution ρ (W.indicator u) (ContinuousLinearMap.lsmul ℝ ℝ) volume x * Chapter02.euclideanDivergence g x) ≤ Chapter02.bvVariationOn u W := by
+  intro n W u ρ σ g hW hu hρ hρ0 hρs hρ1 hg hgc hg1 hgW
+  -- Step 1: `F = 1_W u` is integrable, and `ρ` vanishes off the compact ball `closedBall 0 σ`.
+  have hF : Integrable (W.indicator u) volume := (integrable_indicator_iff hW.measurableSet).2 hu
+  have hρc : HasCompactSupport ρ := HasCompactSupport.intro (isCompact_closedBall 0 σ)
+    fun x hx ↦ Function.notMem_support.1 fun h ↦ hx (ball_subset_closedBall (hρs h))
+  -- Step 2: the reflected kernel `ρ̌(t) = ρ(-t)` is supported in `closedBall 0 σ`, is integrable,
+  -- and `∫ ρ̌ = ∫ ρ = 1` by reflection invariance of `Lⁿ`.
+  have hρrs : Function.support (fun t ↦ ρ (-t)) ⊆ closedBall (0 : Rn n) σ := fun t ht ↦ by
+    have h1 : -t ∈ ball (0 : Rn n) σ := hρs (Function.mem_support.2 (Function.mem_support.1 ht))
+    rw [mem_ball_zero_iff, norm_neg] at h1
+    exact mem_closedBall_zero_iff.2 h1.le
+  have hρri : Integrable (fun t ↦ ρ (-t)) volume :=
+    (hρ.comp continuous_neg).integrable_of_hasCompactSupport
+      (HasCompactSupport.intro (isCompact_closedBall 0 σ)
+        fun x hx ↦ Function.notMem_support.1 fun h ↦ hx (hρrs h))
+  have hρr1 : ∫ t, ρ (-t) = 1 := (integral_neg_eq_self ρ volume).trans hρ1
+  -- Step 3: `div g = trace ∘ Dg` is continuous, with support in the compact `tsupport g`.
+  have hh : Continuous (Chapter02.euclideanDivergence g) := by
+    let T : (Rn n →L[ℝ] Rn n) →L[ℝ] ℝ := LinearMap.toContinuousLinearMap
+      (LinearMap.trace ℝ (Rn n) ∘ₗ ContinuousLinearMap.coeLM ℝ)
+    exact T.continuous.comp (hg.continuous_fderiv one_ne_zero)
+  have hhc : HasCompactSupport (Chapter02.euclideanDivergence g) :=
+    hgc.mono' (Chapter02.support_euclideanDivergence_subset g)
+  -- Step 4: the comparison field `G = ρ̌ * g` has `div G = ρ̌ * div g`.
+  obtain ⟨G, hG⟩ : ∃ G, G = convolution (fun t ↦ ρ (-t)) g (ContinuousLinearMap.lsmul ℝ ℝ) volume :=
+    ⟨_, rfl⟩
+  have hdivG : ∀ x, Chapter02.euclideanDivergence G x =
+      convolution (fun t ↦ ρ (-t)) (Chapter02.euclideanDivergence g)
+        (ContinuousLinearMap.lsmul ℝ ℝ) volume x := by
+    rw [hG]
+    exact Submission.bv_euclideanDivergence_convolution n _ g hρri.locallyIntegrable hg hgc
+  -- Step 5: transposing the mollification, `∫ w div g = ∫ F (ρ̌ * div g) = ∫_W u div G`.
+  have hint : ∫ x, convolution ρ (W.indicator u) (ContinuousLinearMap.lsmul ℝ ℝ) volume x *
+      Chapter02.euclideanDivergence g x = ∫ x in W, u x * Chapter02.euclideanDivergence G x := by
+    rw [Submission.bv_integral_convolution_mul_reflect n (W.indicator u) ρ _ hF hρ hρc hh hhc,
+      ← integral_indicator hW.measurableSet]
+    refine integral_congr_ae (Eventually.of_forall fun x ↦ ?_)
+    by_cases hx : x ∈ W
+    · simp only [Set.indicator_of_mem hx, hdivG]
+    · simp only [Set.indicator_of_notMem hx, zero_mul]
+  -- Step 6: `G` is `C¹`.
+  have hGd : ContDiff ℝ 1 G := by
+    rw [hG]
+    exact hgc.contDiff_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ) hρri.locallyIntegrable hg
+  -- Step 7: `tsupport G ⊆ S := closedBall 0 σ + tsupport g ⊆ W`, and `S` is compact.
+  obtain ⟨S, hS, hGS, hSW⟩ : ∃ S : Set (Rn n), IsCompact S ∧ tsupport G ⊆ S ∧ S ⊆ W := by
+    open Pointwise in
+    refine ⟨closedBall 0 σ + tsupport g, (isCompact_closedBall 0 σ).add hgc, ?_, ?_⟩
+    · rw [hG]
+      exact closure_minimal ((support_convolution_subset _).trans
+        (add_subset_add hρrs (subset_tsupport g))) ((isCompact_closedBall 0 σ).add hgc).isClosed
+    · rintro _ ⟨t, ht, y, hy, rfl⟩
+      refine hgW y hy ?_
+      rw [mem_closedBall, dist_eq_norm, add_sub_cancel_right]
+      exact mem_closedBall_zero_iff.1 ht
+  have hGc : HasCompactSupport G := hS.of_isClosed_subset (isClosed_tsupport G) hGS
+  -- Step 8: `‖G s‖ ≤ ∫ ρ̌(t) ‖g(s - t)‖ dt ≤ ∫ ρ̌ = 1`.
+  have hGle : ∀ s, ‖G s‖ ≤ 1 := by
+    intro s
+    rw [hG, convolution_def, ← hρr1]
+    refine norm_integral_le_of_norm_le hρri (Eventually.of_forall fun t ↦ ?_)
+    rw [ContinuousLinearMap.lsmul_apply, norm_smul, Real.norm_of_nonneg (hρ0 _)]
+    exact mul_le_of_le_one_right (hρ0 _) (hg1 _)
+  -- Step 9: `G` is an admissible field: Lipschitz (`C¹` with compact support), supported in `W`,
+  -- with supremum norm at most one.
+  let Gc : CompactlySupportedContinuousMap (Rn n) (Rn n) := ⟨⟨G, hGd.continuous⟩, hGc⟩
+  have hLip : Chapter02.IsLipschitzTestField Gc :=
+    ContDiff.lipschitzWith_of_hasCompactSupport hGc hGd one_ne_zero
+  have hsupp : tsupport Gc ⊆ W := hGS.trans hSW
+  have hnorm : Chapter02.compactlySupportedSupNorm Gc ≤ 1 :=
+    csSup_le (range_nonempty _) (by rintro _ ⟨x, rfl⟩; exact hGle x)
+  -- Step 10: the supremum defining `|Du|(W)` dominates the pairing with `G`.
+  rw [hint]
+  exact Chapter02.ofReal_integral_le_bvVariationOn u W Gc hLip hsupp hnorm
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
