@@ -389,6 +389,68 @@ theorem Submission.lipschitzImage_hausdorff_image_le : ∀ (X Y : Type) [MetricS
     _ = (K : ℝ≥0∞) ^ m * (Chapter01.realUnitBallVolume m / 2 ^ m * μH[m] E) :=
       mul_left_comm _ _ _
 
+/-- **Simon Ch. 2, Theorem 1.8(i) (pp. 44–45), measurability of a Lipschitz image.** If `X` is a
+σ-compact metric space, `m ≥ 0`, `A ⊆ X` is `𝓗^m`-measurable with `𝓗^m(A) < ∞` and `f` is
+`K`-Lipschitz on `A`, then `f(A)` is `𝓗^m`-measurable. A Borel kernel `B ⊆ A` with
+`𝓗^m(A \ B) = 0` has finite measure, so `𝓗^m ⌞ B` is a finite, hence regular, measure on the
+σ-compact space `X` (Simon's appeal to Ch. 1, 1.15(2)) and gives compact `C j ⊆ B` with
+`𝓗^m(B \ C j) < 1/j`. Then `f(A) = ⋃ j, f(C j) ∪ (f(A) \ ⋃ j, f(C j))`: the first set is a
+countable union of compact sets, and the second lies in the image of the `𝓗^m`-null set
+`A \ ⋃ j, C j`, which is null by the first part (`Submission.lipschitzImage_hausdorff_image_le`). -/
+theorem Submission.lipschitzImage_nullMeasurableSet_image : ∀ (X Y : Type) [MetricSpace X] [SigmaCompactSpace X] [MeasurableSpace X] [BorelSpace X] [MetricSpace Y] [MeasurableSpace Y] [BorelSpace Y] (m : ℝ) (A : Set X) (f : X → Y) (K : ℝ≥0), 0 ≤ m → NullMeasurableSet A (Chapter01.simonHausdorffMeasureReal m) → Chapter01.simonHausdorffMeasureReal m A < ⊤ → LipschitzOnWith K f A → NullMeasurableSet (f '' A) (Chapter01.simonHausdorffMeasureReal m) := by
+  intro X Y _ _ _ _ _ _ _ m A f K hm hA hAfin hf
+  -- Null subsets of `A` have null images: `𝓗^m(f(E)) ≤ K^m 𝓗^m(E) = 0`.
+  have hnull (E : Set X) (hEA : E ⊆ A) (hE : Chapter01.simonHausdorffMeasureReal m E = 0) :
+      Chapter01.simonHausdorffMeasureReal m (f '' E) = 0 := by
+    have h := Submission.lipschitzImage_hausdorff_image_le X Y m E f K hm (hf.mono hEA)
+    rwa [hE, mul_zero, nonpos_iff_eq_zero] at h
+  -- A Borel kernel `B ⊆ A` with `𝓗^m(A \ B) = 0`; it has finite measure.
+  obtain ⟨B, hBA, hBmeas, hBae⟩ := hA.exists_measurable_subset_ae_eq
+  have hAB : Chapter01.simonHausdorffMeasureReal m (A \ B) = 0 := ae_le_set.mp hBae.symm.le
+  have hBfin : Chapter01.simonHausdorffMeasureReal m B ≠ ⊤ :=
+    ne_top_of_le_ne_top hAfin.ne (measure_mono hBA)
+  -- `ν = 𝓗^m ⌞ B` is a finite Borel measure on the σ-compact metric space `X`, hence regular:
+  -- there are compact `C j ⊆ B` with `ν(B \ C j) < 1/j`.
+  let ν : Measure X := (Chapter01.simonHausdorffMeasureReal m).restrict B
+  have : IsFiniteMeasure ν := isFiniteMeasure_restrict.2 hBfin
+  have : ν.Regular := inferInstance
+  choose C hCB hCc hBC using fun j : ℕ ↦
+    hBmeas.exists_isCompact_sdiff_lt (μ := ν) (measure_ne_top ν B)
+      (show ((j : ℝ≥0∞)⁻¹) ≠ 0 by simp)
+  have hCA (j : ℕ) : C j ⊆ A := (hCB j).trans hBA
+  -- The Borel set `B \ ⋃ j, C j ⊆ B` has `𝓗^m`-measure `ν(B \ ⋃ j, C j) ≤ ν(B \ C j) < 1/j`.
+  have hBCmeas : MeasurableSet (B \ ⋃ j, C j) :=
+    hBmeas.diff (MeasurableSet.iUnion fun j ↦ (hCc j).measurableSet)
+  have hBC0 : Chapter01.simonHausdorffMeasureReal m (B \ ⋃ j, C j) = 0 := by
+    have h : ν (B \ ⋃ j, C j) = 0 := by
+      refine le_antisymm (ge_of_tendsto ENNReal.tendsto_inv_nat_nhds_zero ?_) bot_le
+      filter_upwards [] with j
+      exact (measure_mono (show B \ ⋃ i, C i ⊆ B \ C j from
+        fun x hx ↦ ⟨hx.1, fun hxC ↦ hx.2 (mem_iUnion.2 ⟨j, hxC⟩)⟩)).trans (hBC j).le
+    change (Chapter01.simonHausdorffMeasureReal m).restrict B (B \ ⋃ j, C j) = 0 at h
+    rwa [Measure.restrict_apply hBCmeas, inter_eq_left.2 sdiff_subset] at h
+  -- Hence `D = A \ ⋃ j, C j ⊆ (A \ B) ∪ (B \ ⋃ j, C j)` is `𝓗^m`-null.
+  have hD : Chapter01.simonHausdorffMeasureReal m (A \ ⋃ j, C j) = 0 := by
+    refine measure_mono_null (show A \ ⋃ j, C j ⊆ (A \ B) ∪ (B \ ⋃ j, C j) from
+      fun x hx ↦ ?_) (measure_union_null hAB hBC0)
+    by_cases hxB : x ∈ B
+    · exact mem_union_right _ ⟨hxB, hx.2⟩
+    · exact mem_union_left _ ⟨hx.1, hxB⟩
+  -- `G = ⋃ j, f(C j) ⊆ f(A)` is Borel, each `f(C j)` being compact.
+  have hGmeas : MeasurableSet (⋃ j, f '' C j) :=
+    MeasurableSet.iUnion fun j ↦
+      ((hCc j).image_of_continuousOn (hf.mono (hCA j)).continuousOn).measurableSet
+  have hGA : (⋃ j, f '' C j) ⊆ f '' A := iUnion_subset fun j ↦ image_mono (hCA j)
+  -- `f(A) \ G ⊆ f(D)`, which is `𝓗^m`-null.
+  have hrest : f '' A \ ⋃ j, f '' C j ⊆ f '' (A \ ⋃ j, C j) := by
+    rintro y ⟨⟨x, hxA, rfl⟩, hy⟩
+    refine ⟨x, ⟨hxA, fun hxC ↦ ?_⟩, rfl⟩
+    obtain ⟨j, hxj⟩ := mem_iUnion.1 hxC
+    exact hy (mem_iUnion.2 ⟨j, mem_image_of_mem f hxj⟩)
+  rw [← union_sdiff_cancel hGA]
+  exact hGmeas.nullMeasurableSet.union
+    (NullMeasurableSet.of_null (measure_mono_null hrest (hnull _ sdiff_subset hD)))
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
