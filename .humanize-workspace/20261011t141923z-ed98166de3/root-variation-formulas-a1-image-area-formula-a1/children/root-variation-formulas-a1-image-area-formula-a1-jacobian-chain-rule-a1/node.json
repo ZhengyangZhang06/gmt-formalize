@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.image_area_formula-a1.jacobian_chain_rule-a1",
+  "parent_id": "root.variation_formulas-a1.image_area_formula-a1",
+  "depth": 3,
+  "title": "Simon 4.11: Jacobian chain rule through the range of a linear map",
+  "statement": "Let n, N, N′ ∈ ℕ and ℝᵈ := EuclideanSpace ℝ (Fin d). Let L : ℝⁿ → ℝᴺ and A : ℝᴺ → ℝ^{N′} be continuous linear maps. Let T be a linear subspace of ℝᴺ with T = range L, with the inner product induced from ℝᴺ and inclusion ι_T = T.subtypeL : T → ℝᴺ. Then areaJacobian(A ∘ L) = areaJacobian(A ∘ ι_T) · areaJacobian(L). Here, as in the frozen contract, areaJacobian(K) = √det(K* ∘ K) for a continuous linear map K between finite-dimensional real inner product spaces, K* being the adjoint.",
+  "lean_statement": "∀ (n N N' : ℕ) (L : Rn n →L[ℝ] Rn N) (A : Rn N →L[ℝ] Rn N') (T : Submodule ℝ (Rn N)), T = LinearMap.range L.toLinearMap → areaJacobian (A.comp L) = areaJacobian (A.comp T.subtypeL) * areaJacobian L",
+  "lean_name": "variation_areaJacobian_chain_rule",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-image-area-formula-a1-jacobian-chain-rule-a1-a1"
+}
