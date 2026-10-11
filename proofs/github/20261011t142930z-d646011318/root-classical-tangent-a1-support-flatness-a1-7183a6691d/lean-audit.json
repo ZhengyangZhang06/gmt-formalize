@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3923e743d86783f9cbb1e75fa42c811ab46d25cd63baa80c665add32f55b9b38",
+  "git_delta": {
+    "base_commit": "75d35237fd8648b39782f502bbfd945ecba0bffa",
+    "candidate_commit": "c0d16aa65a5ff8e555e33ec6e3cdbb5e53bc8d41",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "classical_tangent_support_flatness",
+    "diff_sha256": "101651c4c1fde32971f638d0dd444c13824cec8c3f064d6b96780f38975d29e9",
+    "source_sha256": "28aad8f3c7170b4f27306f1c392bdc3818b31b4a949f30a93220a879513d14c0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.classical_tangent_support_flatness",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (S : Set (Ambient n ℓ)) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)) (a ρ₀ : ℝ), IsFiniteMeasureOnCompacts μ → 0 < a → 0 < ρ₀ → (∀ ζ ∈ S ∩ closedBall x ρ₀, ∀ s : ℝ, 0 < s → s ≤ ρ₀ → a * s ^ n ≤ μ.real (closedBall ζ s)) → (∀ ε : ℝ, 0 < ε → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * μ.real (closedBall x ρ \\ {y | infDist (y - x) (P : Set (Ambient n ℓ)) < ε * ρ})) (𝓝[>] 0) (𝓝 0)) → Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) '' (S ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
