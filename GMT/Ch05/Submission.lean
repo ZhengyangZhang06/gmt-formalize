@@ -458,6 +458,28 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 5, Corollary 7.3** (Definition 7.2 and the printed proof, pp. 128–129): `reg V` is
+relatively open in `spt V`, `O` being the union of the regular balls; every open ball centred on
+`spt V` meets `reg V` (normalize `θ` by the least integer density in the ball and apply
+Theorem 5.2 at a point of density one); and `spt V = U ∩ spt μ_V` is closed in `U`. -/
+theorem regular_set_open_dense : RegularSetOpenDense := by
+  intro n ℓ hn U hU V H p hp hH hLp hθ
+  -- Step 2: `reg V = O ∩ spt V` for an open `O`.
+  refine ⟨Submission.rsod_regularSet_relOpen n ℓ U V, Set.Subset.antisymm ?_ ?_⟩
+  · -- Steps 1 and 4–7: each `ξ ∈ spt V` lies in `U` and is a limit of regular points.
+    intro ξ hξ
+    refine ⟨Metric.mem_closure_iff.2 fun r hr => ?_, hξ.1⟩
+    obtain ⟨x, hx, hxξ⟩ := Submission.rsod_regularSet_meets_ball
+      Submission.allard_regularity_theorem n ℓ hn U hU V H p hp hH hLp hθ ξ hξ r hr
+    exact ⟨x, hx, mem_ball'.1 hxξ⟩
+  · -- Step 3: `reg V ⊆ spt μ_V`, which is closed, so `closure (reg V) ∩ U ⊆ U ∩ spt μ_V`.
+    rintro x ⟨hx, hxU⟩
+    exact ⟨hxU, closure_minimal (fun y hy => hy.1.2) V.weight.isClosed_support hx⟩
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
