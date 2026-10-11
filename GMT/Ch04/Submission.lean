@@ -434,6 +434,37 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Local lower bound at a regular point.** If `f : ℝⁿ → F` is differentiable at `w` and
+`Df(w)` is injective, then for some `c > 0`, `c |u| ≤ |f(w + u) - f(w)|` whenever `|u| ≤ c`
+(the pointwise step of the Lipschitz-piece replacement for Simon Ch. 3, Lemma 1.2). -/
+theorem Submission.injective_fderiv_local_lower_bound : ∀ (n : ℕ) {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (f : EuclideanSpace ℝ (Fin n) → F) (w : EuclideanSpace ℝ (Fin n)), DifferentiableAt ℝ f w → Function.Injective (fderiv ℝ f w) → ∃ c : ℝ, 0 < c ∧ ∀ u : EuclideanSpace ℝ (Fin n), ‖u‖ ≤ c → c * ‖u‖ ≤ ‖f (w + u) - f w‖ := by
+  intro n F _ _ f w hf hinj
+  -- `L = Df(w)` is injective on the finite-dimensional `ℝⁿ`, so `‖u‖ ≤ K ‖L u‖` with `K > 0`.
+  obtain ⟨K, hK, hKL⟩ :=
+    (fderiv ℝ f w : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] F).exists_antilipschitzWith
+      (LinearMap.ker_eq_bot.2 hinj)
+  have hK' : (0 : ℝ) < K := hK
+  -- With `m = K⁻¹`: `m ‖u‖ ≤ ‖L u‖` for all `u`.
+  have hm : ∀ u, (K : ℝ)⁻¹ * ‖u‖ ≤ ‖fderiv ℝ f w u‖ := fun u ↦
+    (inv_mul_le_iff₀ hK').2 (ZeroHomClass.bound_of_antilipschitz _ hKL u)
+  have hm2 : 0 < (K : ℝ)⁻¹ / 2 := half_pos (inv_pos.2 hK')
+  -- Differentiability: `‖f(w + u) - f(w) - L u‖ ≤ (m/2) ‖u‖` for `‖u‖ < r`.
+  obtain ⟨r, hr, hfr⟩ := Metric.eventually_nhds_iff.1
+    ((hasFDerivAt_iff_isLittleO_nhds_zero.1 hf.hasFDerivAt).def hm2)
+  -- `c = min(m/2, r/2)`.
+  refine ⟨min ((K : ℝ)⁻¹ / 2) (r / 2), lt_min hm2 (half_pos hr), fun u hu ↦ ?_⟩
+  have hur : dist u 0 < r := by
+    rw [dist_zero_right]
+    exact hu.trans_lt ((min_le_right _ _).trans_lt (half_lt_self hr))
+  have h2 : ‖f (w + u) - f w - fderiv ℝ f w u‖ ≤ (K : ℝ)⁻¹ / 2 * ‖u‖ := hfr hur
+  -- Triangle inequality: `‖L u‖ ≤ ‖f(w + u) - f(w)‖ + ‖f(w + u) - f(w) - L u‖`.
+  have h3 : ‖fderiv ℝ f w u‖ ≤ ‖f (w + u) - f w‖ + ‖f (w + u) - f w - fderiv ℝ f w u‖ := by
+    simpa only [sub_sub_cancel] using
+      norm_sub_le (f (w + u) - f w) (f (w + u) - f w - fderiv ℝ f w u)
+  calc min ((K : ℝ)⁻¹ / 2) (r / 2) * ‖u‖ ≤ (K : ℝ)⁻¹ / 2 * ‖u‖ :=
+        mul_le_mul_of_nonneg_right (min_le_left _ _) (norm_nonneg u)
+    _ ≤ ‖f (w + u) - f w‖ := by linarith [hm u]
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
