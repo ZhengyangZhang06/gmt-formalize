@@ -373,12 +373,13 @@ def C1Sard : Prop :=
 
 end
 
-/-- **Kernel average of translations (Simon Ch. 2, Lemma 2.5, mollifier estimate).** Let
-`F ∈ L¹(ℝⁿ)` and let `ρ` be a continuous kernel with `ρ ≥ 0`, `spt ρ ⊆ ball 0 σ` and `∫ ρ = 1`.
-If `∫_Q |F(x - t) - F(x)| dx ≤ C` for every `|t| < σ`, then `∫_Q |ρ * F - F| ≤ C`, for any
-`Q ⊆ ℝⁿ` and `C ∈ [0, ∞]`. Since `∫ ρ = 1`, `(ρ * F)(x) - F(x) = ∫ ρ(t) (F(x - t) - F(x)) dt`.
-Integrate over `Q`, swap the integrals by Tonelli (joint measurability via quasi-measure-preserving
-subtraction) and use the bound for each `t ∈ spt ρ`. Then `∫ ρ = 1` bounds the total by `C`. -/
+/-- **Kernel average of translations** (the mollification estimate in the proof of Simon Ch. 2,
+Theorem 2.6, p. 50; cf. [GT01, Thm 7.22]). Let `F ∈ L¹(ℝⁿ)` and let `ρ` be a continuous kernel
+with `ρ ≥ 0`, `support ρ ⊆ ball 0 σ` and `∫ ρ = 1`. If `∫_Q |F(x - t) - F(x)| dx ≤ C` for every
+`|t| < σ`, then `∫_Q |ρ * F - F| ≤ C`, for any `Q ⊆ ℝⁿ` and `C ∈ [0, ∞]`. Since `∫ ρ = 1`,
+`(ρ * F)(x) - F(x) = ∫ ρ(t) (F(x - t) - F(x)) dt`. Integrate over `Q`, swap the integrals by
+Tonelli (joint measurability via quasi-measure-preserving subtraction) and use the bound for each
+`t` with `ρ t ≠ 0`. Then `∫ ρ = 1` bounds the total by `C`. -/
 theorem Submission.bv_convolution_sub_lintegral_le_of_translate : ∀ (n : ℕ) (F ρ : Rn n → ℝ) (Q : Set (Rn n)) (σ : ℝ) (C : ℝ≥0∞), Integrable F volume → Continuous ρ → (∀ x, 0 ≤ ρ x) → Function.support ρ ⊆ ball 0 σ → ∫ x, ρ x = 1 → (∀ t : Rn n, ‖t‖ < σ → ∫⁻ x in Q, ‖F (x - t) - F x‖ₑ ≤ C) → ∫⁻ x in Q, ‖convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x - F x‖ₑ ≤ C := by
   intro n F ρ Q σ C hF hρc hρn hρs hρi hT
   -- Step 1 (kernel facts): `ρ` is supported in the compact `closedBall 0 σ`, so it is integrable.
