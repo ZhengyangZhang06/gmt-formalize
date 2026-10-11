@@ -458,6 +458,154 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Localization and rescaling (Simon Ch. 5, proof of Corollary 7.3): for an open `B ⊆ U` and
+`c > 0`, `v(M ∩ B, cθ)` is a rectifiable varifold in `B` with weight `c μ_V ⌞ B` and support
+`B ∩ spt V`.  Approximate tangent planes are local and homogeneous in `θ`, so the tangential
+divergences of the two varifolds agree on `B`; hence the first variation formula and `Lᵖ_loc`
+bounds for `H` pass from `U` to `B`. -/
+theorem rsod_exists_localized_varifold : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U) (B : Set (Amb n ℓ)) (c : ℝ), IsOpen B → B ⊆ U → 0 < c →
+    ∃ W : RectifiableVarifold n ℓ B, W.carrier = V.carrier ∩ B ∧
+      (∀ x, W.mult x = c * V.mult x) ∧ W.weight = ENNReal.ofReal c • V.weight.restrict B ∧
+      W.support = B ∩ V.support ∧
+      (∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H →
+        W.HasGeneralizedMeanCurvature H) ∧
+      (∀ (H : Amb n ℓ → Amb n ℓ) (p : ℝ), V.LocallyLp H p → W.LocallyLp H p) := by
+  intro n ℓ U V B c hB hBU hc
+  have hBm : MeasurableSet B := hB.measurableSet
+  -- The varifold `v(M ∩ B, cθ)` in `B`.
+  obtain ⟨W, hWc, hWm⟩ : ∃ W : RectifiableVarifold n ℓ B,
+      W.carrier = V.carrier ∩ B ∧ W.mult = fun x => c * V.mult x :=
+    ⟨{ carrier := V.carrier ∩ B
+       mult := fun x => c * V.mult x
+       carrier_subset := inter_subset_right
+       nullMeasurableSet_carrier := V.nullMeasurableSet_carrier.inter hBm.nullMeasurableSet
+       countablyRectifiable := V.countablyRectifiable.mono inter_subset_left
+       mult_pos := fun x hx => mul_pos hc (V.mult_pos x hx.1)
+       aemeasurable_mult := (V.aemeasurable_mult.mono_measure
+         (Measure.restrict_mono inter_subset_left le_rfl)).const_mul c
+       integrableOn_mult := fun K hK hKB =>
+         ((V.integrableOn_mult K hK (hKB.trans hBU)).mono_set
+           fun x hx => ⟨hx.1.1, hx.2⟩).const_mul c }, rfl, rfl⟩
+  -- `μ_W = c μ_V ⌞ B`.
+  have hweight : W.weight = ENNReal.ofReal c • V.weight.restrict B := by
+    simp only [RectifiableVarifold.weight, hWc, hWm]
+    rw [restrict_withDensity hBm, Measure.restrict_restrict hBm, inter_comm B,
+      ← withDensity_smul' _ _ ENNReal.ofReal_ne_top]
+    congr 1
+    funext x
+    exact ENNReal.ofReal_mul hc.le
+  -- `spt W = B ∩ spt μ_V = B ∩ spt V`, since `B` is open.
+  have hsupp : W.support = B ∩ V.support := by
+    have hsmul : (ENNReal.ofReal c • V.weight.restrict B).support =
+        (V.weight.restrict B).support :=
+      Subset.antisymm Measure.smul_absolutelyContinuous.support_mono
+        (Measure.absolutelyContinuous_smul (ENNReal.ofReal_pos.2 hc).ne').support_mono
+    rw [RectifiableVarifold.support, RectifiableVarifold.support, hweight, hsmul, ← inter_assoc,
+      inter_eq_left.2 hBU]
+    refine Subset.antisymm (fun x hx => ⟨hx.1, Measure.support_mono Measure.restrict_le_self hx.2⟩)
+      fun x hx => ⟨hx.1, Measure.interior_inter_support ⟨by rw [hB.interior_eq]; exact hx.1, hx.2⟩⟩
+  -- Approximate tangent planes are local and homogeneous in the multiplicity: at `x ∈ B` the
+  -- blow-up integrals of `(M ∩ B, cθ)` are eventually `c` times those of `(M, θ)`.
+  have key : ∀ x ∈ B, ∀ P : Submodule ℝ (Amb n ℓ),
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n W.carrier W.mult x P ↔
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P := by
+    intro x hx P
+    rw [hWc, hWm]
+    obtain ⟨d, hd, hdB⟩ := Metric.isOpen_iff.1 hB x hx
+    refine and_congr_right fun _ => forall_congr' fun f => ?_
+    obtain ⟨R, hR, hfR⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall_lt 0 0
+    have hev : (fun r : ℝ =>
+          ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (V.carrier ∩ B),
+            f y * (c * V.mult (x + r • y)) ∂μHE[n]) =ᶠ[𝓝[>] 0]
+        fun r => c * ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier,
+          f y * V.mult (x + r • y) ∂μHE[n] := by
+      filter_upwards [Ioo_mem_nhdsGT (div_pos hd hR)] with r hr
+      have hr0 : r ≠ 0 := hr.1.ne'
+      -- `η_{x,r}(S) = {y | x + r y ∈ S}`.
+      have himg : ∀ S : Set (Amb n ℓ),
+          Poincare.SimonGMT.Chapter03.blowUpMap x r '' S = (fun y => x + r • y) ⁻¹' S :=
+        fun S => congrFun (image_eq_preimage_of_inverse
+          (fun y => by simp [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hr0])
+          fun y => by simp [Poincare.SimonGMT.Chapter03.blowUpMap, hr0]) S
+      have hBr : MeasurableSet ((fun y : Amb n ℓ => x + r • y) ⁻¹' B) :=
+        (hB.preimage (by fun_prop)).measurableSet
+      -- If `f y ≠ 0` then `‖y‖ ≤ R`, so `x + r y ∈ B̆_d(x) ⊆ B`.
+      have hvan : ∀ y ∉ (fun y : Amb n ℓ => x + r • y) ⁻¹' B,
+          f y * (c * V.mult (x + r • y)) = 0 := by
+        intro y hy
+        by_cases hfy : f y = 0
+        · rw [hfy, zero_mul]
+        · refine absurd ?_ hy
+          have hyR : ‖y‖ ≤ R := mem_closedBall_zero_iff.1 (hfR (subset_tsupport f hfy))
+          apply hdB
+          rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hr.1.le]
+          calc r * ‖y‖ ≤ r * R := mul_le_mul_of_nonneg_left hyR hr.1.le
+            _ < d := (lt_div_iff₀ hR).1 hr.2
+      rw [himg, himg, preimage_inter, inter_comm, ← Measure.restrict_restrict hBr,
+        setIntegral_eq_integral_of_forall_compl_eq_zero hvan, ← integral_const_mul]
+      congr 1
+      funext y
+      ring
+    constructor
+    · intro h
+      simpa only [mul_assoc, inv_mul_cancel_left₀ hc.ne'] using (h.congr' hev).const_mul c⁻¹
+    · intro h
+      simpa only [mul_assoc] using (h.const_mul c).congr' hev.symm
+  -- Hence `W` and `V` choose the same tangent plane at each `x ∈ B`.
+  have htan : ∀ x ∈ B, W.tangentProj x = V.tangentProj x := by
+    intro x hx
+    have hchoose : ∀ (p q : Submodule ℝ (Amb n ℓ) → Prop) (h₁ : ∃ P, p P) (h₂ : ∃ P, q P),
+        p = q → Classical.choose h₁ = Classical.choose h₂ := by
+      rintro p q h₁ h₂ rfl
+      rfl
+    unfold RectifiableVarifold.tangentProj
+    by_cases h₁ : ∃ P,
+        Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n W.carrier W.mult x P
+    · have h₂ := (exists_congr (key x hx)).1 h₁
+      simp only [dite_eq_left h₁, dite_eq_left h₂]
+      congr 1
+      exact hchoose _ _ h₁ h₂ (funext fun P => propext (key x hx P))
+    · have h₂ : ¬∃ P,
+          Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P :=
+        fun h => h₁ ((exists_congr (key x hx)).2 h)
+      simp only [dite_eq_right h₁, dite_eq_right h₂]
+  have hdiv : ∀ (X : Amb n ℓ → Amb n ℓ), ∀ x ∈ B, W.divM X x = V.divM X x := by
+    intro X x hx
+    rw [RectifiableVarifold.divM, RectifiableVarifold.divM, htan x hx]
+  -- Off `tsupport X`, `DX = 0` and hence `div_M X = 0`.
+  have hdiv0 : ∀ (X : Amb n ℓ → Amb n ℓ) (x : Amb n ℓ), x ∉ tsupport X → V.divM X x = 0 := by
+    intro X x hx
+    rw [RectifiableVarifold.divM, fderiv_of_notMem_tsupport ℝ hx]
+    simp
+  refine ⟨W, hWc, fun x => by rw [hWm], hweight, hsupp, fun H hH => ⟨fun x hx => ?_, ?_⟩, ?_⟩
+  · -- `H ∈ L¹_loc(μ_W)` on `B`: `μ_W ≤ c μ_V` and `𝓝[B] x ≤ 𝓝[U] x`.
+    obtain ⟨G, hG, hHG⟩ := hH.1 x (hBU hx)
+    refine ⟨G, nhdsWithin_mono x hBU hG, ?_⟩
+    rw [hweight, IntegrableOn, Measure.restrict_smul]
+    exact (hHG.mono_measure Measure.restrict_le_self).smul_measure ENNReal.ofReal_ne_top
+  · -- First variation: both integrands vanish off `tsupport X ⊆ B`.
+    intro X hX hXc hXB
+    have h1 : ∫ x in B, W.divM X x ∂V.weight = ∫ x, V.divM X x ∂V.weight := by
+      rw [setIntegral_congr_fun hBm fun x hx => hdiv X x hx]
+      exact setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx =>
+        hdiv0 X x fun h => hx (hXB h)
+    have h2 : ∫ x in B, inner ℝ (X x) (H x) ∂V.weight = ∫ x, inner ℝ (X x) (H x) ∂V.weight :=
+      setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
+        rw [image_eq_zero_of_notMem_tsupport fun h => hx (hXB h), inner_zero_left]
+    rw [hweight, integral_smul_measure, integral_smul_measure, ENNReal.toReal_ofReal hc.le, h1, h2,
+      hH.2 X hX hXc (hXB.trans hBU), smul_neg]
+  · -- `∫_K |H|ᵖ dμ_W ≤ c ∫_K |H|ᵖ dμ_V < ∞`.
+    intro H p hL K hK hKB
+    rw [hweight, Measure.restrict_smul, lintegral_smul_measure, smul_eq_mul]
+    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (lt_of_le_of_lt
+      (lintegral_mono' (Measure.restrict_mono subset_rfl Measure.restrict_le_self) le_rfl)
+      (hL K hK (hKB.trans hBU)))
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
