@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.chart_tangent_differential-a1.chart_differential-a1.chart_line_derivative-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/221 | this PR | none |
