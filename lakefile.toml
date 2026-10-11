@@ -1,0 +1,17 @@
+name = "gmt"
+version = "0.1.0"
+defaultTargets = ["GMT"]
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4.git"
+rev = "25730c7c759d108ef87ab70af2342a196760f79d"
+
+# Earlier SimonGMT formalization, pinned on this repository's simongmt-library branch.
+[[require]]
+name = "simongmt"
+git = "https://github.com/ZhengyangZhang06/gmt-formalize.git"
+rev = "2b3663083f3fe399b6296fb8eaee52169170e197"
+
+[[lean_lib]]
+name = "GMT"
