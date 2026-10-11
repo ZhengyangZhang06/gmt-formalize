@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "78da63c0e0352fb292faab8b9afb71a33453f317ab455cd1b442cadc123382c5",
+  "git_delta": {
+    "base_commit": "5582f7721a31ba95b47c0dfa49ec7df9ae99aecb",
+    "candidate_commit": "d8256961b89de622ba30e47642dc046f1005896f",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "mcm_exp_neg_integral_ftc",
+    "diff_sha256": "925f581512d660166e251612a8e4be4845cb906b8f372b11b3ddfd9ed1098446",
+    "source_sha256": "a39c3fbff788ff9cd3cc22aff28a0811ec4ef24bfdab038d6614b4d75359b1e4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mcm_exp_neg_integral_ftc",
+      "statement": "∀ (g : ℝ → ℝ) (R : ℝ), IntegrableOn g (Ioc 0 R) → IntegrableOn (fun τ ↦ -(g τ * Real.exp (-∫ s in Ioc 0 τ, g s))) (Ioc 0 R) ∧ ∀ σ t : ℝ, 0 ≤ σ → σ ≤ t → t ≤ R → Real.exp (-∫ s in Ioc 0 t, g s) = Real.exp (-∫ s in Ioc 0 σ, g s) + ∫ τ in Ioc σ t, -(g τ * Real.exp (-∫ s in Ioc 0 τ, g s))",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
