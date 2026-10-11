@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.abs_variation-a1.exists_kernel-a1",
+  "parent_id": "root.bv_results-a1.abs_variation-a1",
+  "depth": 3,
+  "title": "Existence of smooth normalized mollifier kernels supported in B(0,σ)",
+  "statement": "For every n ∈ ℕ and every real σ > 0 there is a kernel ρ : ℝⁿ → ℝ (ℝⁿ = EuclideanSpace ℝ (Fin n)) with these properties: it is C^∞, i.e. ContDiff ℝ of order (⊤ : ℕ∞) (smooth of all finite orders, not the analytic class); it is nonnegative; its support lies in the open ball B(0,σ); and ∫_{ℝⁿ} ρ dLⁿ = 1 (Lebesgue measure volume).",
+  "lean_statement": "∀ (n : ℕ) (σ : ℝ), 0 < σ → ∃ ρ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ (∀ x, 0 ≤ ρ x) ∧ Function.support ρ ⊆ ball 0 σ ∧ ∫ x, ρ x = 1",
+  "lean_name": "bv_abs_variation_exists_kernel",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-abs-variation-a1-exists-kernel-a1-a1"
+}
