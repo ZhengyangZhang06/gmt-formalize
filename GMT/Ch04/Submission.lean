@@ -554,6 +554,88 @@ theorem Submission.exists_isCompactVariation_add_smul : ∀ (n ℓ : ℕ) (X : A
     have : HasDerivAt (fun t : ℝ ↦ y + t • X y) (X y) 0 := by
       simpa using ((hasDerivAt_id (0 : ℝ)).smul_const (X y)).const_add y
     exact this.deriv
+/-- **Smooth approximation of test fields (for Simon 2.4).** If `U` is open and
+`X ∈ C¹_c(U; ℝ^{n+ℓ})`, there are a compact `K` with `tsupport X ⊆ K ⊆ U` and `C^∞` fields `Y_k`
+with compact support in `K` such that `DY_k → DX` uniformly: `Y_k = ψ_k ⋆ X` for mollifiers
+`ψ_k` supported in `B_{r_k}(0)`, `r_k ↓ 0`. -/
+theorem Submission.exists_smooth_approx_testField_fderiv : ∀ (n ℓ : ℕ) (U : Set (Ambient n ℓ)) (X : Ambient n ℓ → Ambient n ℓ), IsOpen U → IsTestField U X → ∃ (K : Set (Ambient n ℓ)) (Y : ℕ → Ambient n ℓ → Ambient n ℓ), IsCompact K ∧ K ⊆ U ∧ tsupport X ⊆ K ∧ (∀ k, ContDiff ℝ ∞ (Y k) ∧ HasCompactSupport (Y k) ∧ tsupport (Y k) ⊆ K) ∧ TendstoUniformly (fun k ↦ fderiv ℝ (Y k)) (fderiv ℝ X) atTop := by
+  intro n ℓ U X hU hXT
+  obtain ⟨hX, hXc, hXU⟩ := hXT
+  -- `K = cthickening δ (tsupport X) ⊆ U` is compact and contains `tsupport X`.
+  obtain ⟨δ, hδ, hδU⟩ := hXc.exists_cthickening_subset_open hU hXU
+  -- Radii `r k = δ / (k + 2) ∈ (0, δ)`, tending to `0`.
+  set r : ℕ → ℝ := fun k ↦ δ / (k + 2) with hrdef
+  have hr : ∀ k, 0 < r k := fun k ↦ by simp only [hrdef]; positivity
+  have hrδ : ∀ k, r k < δ := fun k ↦ by
+    simp only [hrdef]
+    rw [div_lt_iff₀ (by positivity)]
+    nlinarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+  -- Mollifiers `ψ k = φ k / ∫ φ k` with `φ k` a smooth bump supported in `ball 0 (r k)`.
+  let φ : ℕ → ContDiffBump (0 : Ambient n ℓ) := fun k ↦
+    ⟨r k / 2, r k, half_pos (hr k), half_lt_self (hr k)⟩
+  have hφint : ∀ k, 0 < ∫ x, φ k x := fun k ↦ by
+    refine (integral_pos_iff_support_of_nonneg (φ k).nonneg'
+      ((φ k).continuous.integrable_of_hasCompactSupport (φ k).hasCompactSupport)).mpr ?_
+    rw [(φ k).support_eq]
+    exact measure_ball_pos _ _ (hr k)
+  set ψ : ℕ → Ambient n ℓ → ℝ := fun k x ↦ φ k x / ∫ y, φ k y with hψdef
+  have hψsupp : ∀ k, Function.support (ψ k) = ball 0 (r k) := fun k ↦ by
+    simp only [hψdef]
+    rw [Function.support_div, (φ k).support_eq, Function.support_const (hφint k).ne', inter_univ]
+  have hψc : ∀ k, HasCompactSupport (ψ k) := fun k ↦ by
+    rw [HasCompactSupport, tsupport, hψsupp, closure_ball _ (hr k).ne']
+    exact isCompact_closedBall _ _
+  have hψnn : ∀ k x, 0 ≤ ψ k x := fun k x ↦ div_nonneg (φ k).nonneg (hφint k).le
+  have hψ1 : ∀ k, ∫ x, ψ k x = 1 := fun k ↦ by
+    simp only [hψdef]
+    rw [integral_div, div_self (hφint k).ne']
+  have hψsmooth : ∀ k, ContDiff ℝ ∞ (ψ k) := fun k ↦ (φ k).contDiff.div_const _
+  -- `Y k = ψ k ⋆ X`.
+  set Y : ℕ → Ambient n ℓ → Ambient n ℓ := fun k ↦
+    convolution (ψ k) X (ContinuousLinearMap.lsmul ℝ ℝ) volume
+  refine ⟨cthickening δ (tsupport X), Y, hXc.cthickening, hδU, self_subset_cthickening _,
+    fun k ↦ ⟨?_, ?_, ?_⟩, ?_⟩
+  · exact (hψc k).contDiff_convolution_left _ (hψsmooth k) hX.continuous.locallyIntegrable
+  · exact (hψc k).convolution _ hXc
+  · -- `support (ψ k ⋆ X) ⊆ ball 0 (r k) + tsupport X ⊆ cthickening δ (tsupport X)`.
+    apply closure_minimal _ isClosed_cthickening
+    refine (support_convolution_subset _).trans ?_
+    rintro _ ⟨a, ha, b, hb, rfl⟩
+    rw [hψsupp, mem_ball_zero_iff] at ha
+    refine mem_cthickening_of_dist_le _ b δ _ (subset_tsupport _ hb) ?_
+    rw [dist_eq_norm, add_sub_cancel_right]
+    exact (ha.trans (hrδ k)).le
+  · -- `DY_k = ψ k ⋆ DX`, and `DX` is uniformly continuous.
+    rw [Metric.tendstoUniformly_iff]
+    intro η hη
+    have hDX : Continuous (fderiv ℝ X) := hX.continuous_fderiv one_ne_zero
+    have huc : UniformContinuous (fderiv ℝ X) :=
+      (hXc.fderiv ℝ).uniformContinuous_of_continuous hDX
+    obtain ⟨ρ, hρ, hρη⟩ := Metric.uniformContinuous_iff.mp huc (η / 2) (half_pos hη)
+    obtain ⟨N, hN⟩ := exists_nat_gt (δ / ρ)
+    have hev : ∀ᶠ k in atTop, r k < ρ := by
+      refine eventually_atTop.mpr ⟨N, fun k hk ↦ ?_⟩
+      simp only [hrdef]
+      rw [div_lt_iff₀ (by positivity)]
+      have hkN : (N : ℝ) ≤ k := by exact_mod_cast hk
+      rw [div_lt_iff₀ hρ] at hN
+      nlinarith
+    -- `(lsmul ℝ ℝ).precompR` is again scalar multiplication, now on `E →L[ℝ] E`.
+    have hpre : (ContinuousLinearMap.lsmul ℝ ℝ :
+        ℝ →L[ℝ] Ambient n ℓ →L[ℝ] Ambient n ℓ).precompR (Ambient n ℓ) =
+          ContinuousLinearMap.lsmul ℝ ℝ := by
+      ext c A v; simp
+    filter_upwards [hev] with k hk x
+    have hderiv : fderiv ℝ (Y k) x =
+        convolution (ψ k) (fderiv ℝ X) (ContinuousLinearMap.lsmul ℝ ℝ) volume x := by
+      rw [(hXc.hasFDerivAt_convolution_right _
+        (hψsmooth k).continuous.locallyIntegrable hX x).fderiv, hpre]
+    rw [hderiv, dist_comm]
+    calc dist (convolution (ψ k) (fderiv ℝ X) (ContinuousLinearMap.lsmul ℝ ℝ) volume x)
+          (fderiv ℝ X x) ≤ η / 2 :=
+        dist_convolution_le (half_pos hη).le (hψsupp k).le (hψnn k) (hψ1 k)
+          hDX.aestronglyMeasurable fun y hy ↦ (hρη ((mem_ball.mp hy).trans hk)).le
+      _ < η := half_lt_self hη
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
