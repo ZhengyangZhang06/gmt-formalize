@@ -373,6 +373,17 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, Theorems 1.2 and 1.4.** McShane's optimal Lipschitz extension and
+Rademacher's theorem. -/
+theorem Submission.lipschitz_extension_and_rademacher : LipschitzExtension ∧ Rademacher := by
+  refine ⟨?_, ?_⟩
+  · intro X _ A f hA hf
+    obtain ⟨F, hFLip, hEq, hconst⟩ :=
+      Poincare.SimonGMT.Chapter02.lipschitz_extension_real_optimal hA f hf
+    exact ⟨F, hFLip, hconst, hEq⟩
+  · rintro n f ⟨K, hK⟩
+    exact hK.ae_differentiableAt
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
