@@ -557,7 +557,7 @@ theorem Submission.coarea_chart_fiber_disintegration : ∀ (N m k : ℕ) (f : Rn
         measurableSet_closedBall (measure_closedBall_pos volume z εpos).ne'
     obtain ⟨ρ, ρpos, hρ⟩ :
         ∃ ρ > 0, ball x ρ ∩ t ⊆ {y : Rn k | ‖φ₁ y - φ₁ x - (φ₁' x) (y - x)‖ ≤ ε * ‖y - x‖} :=
-      Metric.mem_nhdsWithin_iff.1 ((hf' x xt).isLittleO.def εpos)
+      Metric.mem_nhdsWithin_iff.1 ((hf' x xt).isLittleO.bound εpos)
     open scoped Pointwise in
     have B₂ : ∀ᶠ r in 𝓝[>] (0 : ℝ), {x} + r • closedBall z ε ⊆ ball x ρ := by
       apply nhdsWithin_le_nhds
