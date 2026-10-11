@@ -335,6 +335,37 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Rademacher's theorem on an open set** (Simon Ch. 2, Theorem 1.4, applied locally as in
+(4.8)): if `g : ℝⁿ → ℝᵖ` is locally Lipschitz on the open set `W ⊆ ℝⁿ`, then `g` is
+differentiable at `Lⁿ`-a.e. point of `W`. Each point `x` of the exceptional set
+`Z = {u ∈ W : g is not differentiable at u}` has a ball `B_r(x)` on which `g` is Lipschitz;
+Rademacher for maps Lipschitz on a set (`LipschitzOnWith.ae_differentiableWithinAt_of_mem`) and
+openness of the ball give `Lⁿ(Z ∩ B_r(x)) = 0`, and second countability
+(`measure_null_of_locally_null`) gives `Lⁿ(Z) = 0`. -/
+theorem Submission.chartTD_ae_differentiableAt_of_locallyLipschitzOn : ∀ (n p : ℕ)
+    (W : Set (Rn n)) (g : Rn n → Rn p), IsOpen W → LocallyLipschitzOn W g →
+    ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ W → DifferentiableAt ℝ g u := by
+  intro n p W g hW hg
+  -- Step 1: the claim says that `Z = {u | ¬(u ∈ W → DifferentiableAt ℝ g u)}` is `Lⁿ`-null.
+  rw [ae_iff]
+  -- Step 6: by second countability, it suffices that each `x ∈ Z` has a null neighbourhood
+  -- within `Z`.
+  refine measure_null_of_locally_null _ fun x hx ↦ ?_
+  simp only [mem_ofPred_eq, not_imp] at hx
+  -- Step 2: `g` is `K`-Lipschitz on a ball `B_r(x)`, since `𝓝[W] x = 𝓝 x` for the open `W`.
+  obtain ⟨K, T, hT, hgT⟩ := hg hx.1
+  rw [hW.nhdsWithin_eq hx.1] at hT
+  obtain ⟨r, hr, hrT⟩ := Metric.mem_nhds_iff.1 hT
+  -- Step 5: `Z ∩ B_r(x)` is a neighbourhood of `x` within `Z`.
+  refine ⟨_, inter_mem_nhdsWithin _ (Metric.ball_mem_nhds x hr), ?_⟩
+  -- Step 3: Rademacher on `B_r(x)`: `g` is differentiable within the ball at a.e. point of it.
+  have hR := ae_iff.1 ((hgT.mono hrT).ae_differentiableWithinAt_of_mem
+    (μ := (volume : Measure (Rn n))))
+  -- Step 4: `Z ∩ B_r(x)` lies in the Rademacher exceptional set, because the ball is open.
+  refine measure_mono_null (fun v hv ↦ ?_) hR
+  simp only [mem_inter_iff, mem_ofPred_eq, not_imp] at hv ⊢
+  exact ⟨hv.2, fun hd ↦ hv.1.2 (hd.differentiableAt (Metric.isOpen_ball.mem_nhds hv.2))⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
