@@ -335,6 +335,36 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Compact inner approximation of open sets, for an arbitrary measure** (step 2 of the
+total-variation formula `μ_E(O) = sup ∫ g · ν dμ_E` behind Simon Ch. 3, (4.1); compare Ch. 1,
+Remark 1.16 (`chapter-01.txt` lines 287–295), where a closed subset of a `σ`-compact space is an
+increasing union of compact sets). Let `O ⊆ ℝᴺ` be open and `μ` any measure on `ℝᴺ`. If
+`μ(K) ≤ c` for every compact `K ⊆ O`, then `μ(O) ≤ c`. Write `O = ⋃ₙ Fₙ` with `Fₙ` closed and
+increasing; then `Kₙ = Fₙ ∩ B̄(0, n)` are compact, increasing and exhaust `O`, so continuity from
+below gives `μ(O) = supₙ μ(Kₙ) ≤ c`. No finiteness or regularity of `μ` is needed. -/
+theorem Submission.gaussGreenVar_measure_isOpen_le_of_isCompact : ∀ (N : ℕ) (O : Set (Rn N)) (μ : Measure (Rn N)) (c : ℝ≥0∞), IsOpen O → (∀ K : Set (Rn N), IsCompact K → K ⊆ O → μ K ≤ c) → μ O ≤ c := by
+  intro N O μ c hO hK
+  -- Step 1: closed exhaustion `F n` of `O`.
+  obtain ⟨F, hFc, hFO, hFU, hFm⟩ := hO.exists_iUnion_isClosed
+  -- Step 2: compact exhaustion `K n := F n ∩ B̄(0, n)`.
+  let K : ℕ → Set (Rn N) := fun n ↦ F n ∩ Metric.closedBall 0 n
+  have hKc : ∀ n, IsCompact (K n) := fun n ↦ (isCompact_closedBall 0 (n : ℝ)).inter_left (hFc n)
+  have hKO : ∀ n, K n ⊆ O := fun n ↦ inter_subset_left.trans (hFO n)
+  have hKm : Monotone K := fun m n hmn ↦
+    inter_subset_inter (hFm hmn) (Metric.closedBall_subset_closedBall (by exact_mod_cast hmn))
+  -- Step 3: `⋃ n, K n = O`.
+  have hKU : ⋃ n, K n = O := by
+    refine Subset.antisymm (iUnion_subset hKO) fun x hx ↦ ?_
+    rw [← hFU] at hx
+    obtain ⟨n, hn⟩ := mem_iUnion.1 hx
+    obtain ⟨m, hm⟩ := exists_nat_ge ‖x‖
+    refine mem_iUnion.2 ⟨max n m, hFm (le_max_left n m) hn, ?_⟩
+    rw [Metric.mem_closedBall, dist_zero_right]
+    exact hm.trans (by exact_mod_cast le_max_right n m)
+  -- Steps 4–5: continuity from below, and `μ (K n) ≤ c` for each compact `K n ⊆ O`.
+  rw [← hKU, hKm.measure_iUnion]
+  exact iSup_le fun n ↦ hK (K n) (hKc n) (hKO n)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
