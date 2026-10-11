@@ -335,6 +335,101 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Lusin's theorem for `Lⁿ` with closed sets and finite-dimensional targets** (Simon Ch. 2,
+proof of Theorem 1.5, `chapter-02.txt` lines 248–251: Lusin's theorem "applies to sets of
+infinite measure for `Lⁿ`"; cf. Ch. 1, Theorems 1.15 and 1.17): for a Borel `u : ℝⁿ → F`, `F`
+finite-dimensional, a Borel `S ⊆ ℝⁿ` and `ε ∈ (0, ∞]`, some closed `C ⊆ S` has `Lⁿ(S ∖ C) < ε`
+and `u|C` continuous. `Lⁿ` is outer regular on sets of finite measure, so exhausting by its
+finite-measure spanning sets gives, for every Borel `A`, an open `U ⊇ A` with `Lⁿ(U ∖ A)`
+arbitrarily small, and complements give a closed `C ⊆ A` with `Lⁿ(A ∖ C)` small (Simon 1.15).
+For each `V` in a countable basis of `F` take such a `U_V ⊇ u⁻¹(V)`. Off
+`E = ⋃_V (U_V ∖ u⁻¹(V))` each `u⁻¹(V)` agrees with the open `U_V`, so `u` is continuous on `Eᶜ`;
+a closed `C ⊆ S ∖ E` with small defect works. -/
+theorem Submission.lusin_closed_subset_continuousOn_volume : ∀ (n : ℕ) (F : Type)
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F] [MeasurableSpace F]
+    [BorelSpace F] (u : Rn n → F) (S : Set (Rn n)), Measurable u → MeasurableSet S →
+    ∀ ε : ℝ≥0∞, 0 < ε → ∃ C ⊆ S, IsClosed C ∧ volume (S \ C) < ε ∧ ContinuousOn u C := by
+  intro n F _ _ _ _ _ u S hu hS ε hε
+  -- Outer approximation of an arbitrary Borel set by open sets, through the finite-measure
+  -- spanning sets of the σ-finite measure `Lⁿ`.
+  have outer : ∀ A : Set (Rn n), MeasurableSet A → ∀ δ : ℝ≥0∞, δ ≠ 0 →
+      ∃ U, A ⊆ U ∧ IsOpen U ∧ volume (U \ A) < δ := by
+    intro A hA δ hδ
+    obtain ⟨δ', hδ'0, hδ'⟩ := ENNReal.exists_pos_sum_of_countable hδ ℕ
+    have hj : ∀ j, ∃ U, A ∩ spanningSets volume j ⊆ U ∧ IsOpen U ∧
+        volume (U \ (A ∩ spanningSets volume j)) < δ' j := fun j ↦ by
+      obtain ⟨U, hAU, hU, -, hUA⟩ :=
+        (hA.inter (measurableSet_spanningSets volume j)).exists_isOpen_sdiff_lt
+          ((measure_mono inter_subset_right).trans_lt (measure_spanningSets_lt_top volume j)).ne
+          (ENNReal.coe_ne_zero.2 (hδ'0 j).ne')
+      exact ⟨U, hAU, hU, hUA⟩
+    choose U hAU hU hUA using hj
+    refine ⟨⋃ j, U j, fun x hx ↦ ?_, isOpen_iUnion hU, ?_⟩
+    · have hx' : x ∈ ⋃ j, spanningSets (volume : Measure (Rn n)) j := by
+        rw [iUnion_spanningSets]
+        exact mem_univ x
+      obtain ⟨j, hxj⟩ := mem_iUnion.1 hx'
+      exact mem_iUnion.2 ⟨j, hAU j ⟨hx, hxj⟩⟩
+    · calc volume ((⋃ j, U j) \ A) ≤ volume (⋃ j, U j \ (A ∩ spanningSets volume j)) := by
+            refine measure_mono fun x hx ↦ ?_
+            obtain ⟨j, hxj⟩ := mem_iUnion.1 hx.1
+            exact mem_iUnion.2 ⟨j, hxj, fun h ↦ hx.2 h.1⟩
+        _ ≤ ∑' j, volume (U j \ (A ∩ spanningSets volume j)) := measure_iUnion_le _
+        _ ≤ ∑' j, (δ' j : ℝ≥0∞) := ENNReal.tsum_le_tsum fun j ↦ (hUA j).le
+        _ < δ := hδ'
+  -- Closed inner approximation, by complements.
+  have inner : ∀ A : Set (Rn n), MeasurableSet A → ∀ δ : ℝ≥0∞, δ ≠ 0 →
+      ∃ C ⊆ A, IsClosed C ∧ volume (A \ C) < δ := by
+    intro A hA δ hδ
+    obtain ⟨U, hAU, hU, hUA⟩ := outer Aᶜ hA.compl δ hδ
+    refine ⟨Uᶜ, fun x hx ↦ not_not.1 fun h ↦ hx (hAU h), hU.isClosed_compl, ?_⟩
+    have hdiff : A \ Uᶜ = U \ Aᶜ := by
+      ext x
+      simp only [Set.mem_sdiff, mem_compl_iff, not_not]
+      exact and_comm
+    rwa [hdiff]
+  -- A countable basis of `F` and the exceptional set `E`.
+  have hε2 : ε / 2 ≠ 0 := (ENNReal.half_pos hε.ne').ne'
+  have hB := TopologicalSpace.isBasis_countableBasis F
+  have : Countable (TopologicalSpace.countableBasis F) :=
+    (TopologicalSpace.countable_countableBasis F).to_subtype
+  have hpre : ∀ V : TopologicalSpace.countableBasis F, MeasurableSet (u ⁻¹' (V : Set F)) :=
+    fun V ↦ hu (hB.isOpen V.2).measurableSet
+  obtain ⟨δ', hδ'0, hδ'⟩ :=
+    ENNReal.exists_pos_sum_of_countable hε2 (TopologicalSpace.countableBasis F)
+  have hV : ∀ V : TopologicalSpace.countableBasis F, ∃ U, u ⁻¹' (V : Set F) ⊆ U ∧ IsOpen U ∧
+      volume (U \ u ⁻¹' (V : Set F)) < δ' V := fun V ↦
+    outer _ (hpre V) _ (ENNReal.coe_ne_zero.2 (hδ'0 V).ne')
+  choose U hVU hU hUV using hV
+  set E := ⋃ V, U V \ u ⁻¹' (V : Set F)
+  have hEm : MeasurableSet E := MeasurableSet.iUnion fun V ↦ (hU V).measurableSet.diff (hpre V)
+  have hEε : volume E < ε / 2 :=
+    calc volume E ≤ ∑' V, volume (U V \ u ⁻¹' (V : Set F)) := measure_iUnion_le _
+      _ ≤ ∑' V, (δ' V : ℝ≥0∞) := ENNReal.tsum_le_tsum fun V ↦ (hUV V).le
+      _ < ε / 2 := hδ'
+  -- Off `E`, `u⁻¹(V) = U_V`, so `u` is continuous on `Eᶜ`.
+  have hcont : ContinuousOn u Eᶜ := by
+    rw [continuousOn_iff_continuous_domRestrict, hB.continuous_iff]
+    intro V hVB
+    have hpreim : Eᶜ.domRestrict u ⁻¹' V = Subtype.val ⁻¹' U ⟨V, hVB⟩ := by
+      ext ⟨x, hx⟩
+      simp only [mem_preimage, Set.domRestrict_apply]
+      refine ⟨fun h ↦ hVU ⟨V, hVB⟩ h, fun h ↦ not_not.1 fun h' ↦ hx ?_⟩
+      exact mem_iUnion.2 ⟨⟨V, hVB⟩, h, h'⟩
+    rw [hpreim]
+    exact (hU _).preimage continuous_subtype_val
+  -- A closed subset of `S ∖ E` with small defect.
+  obtain ⟨C, hCS, hC, hCε⟩ := inner (S ∩ Eᶜ) (hS.inter hEm.compl) (ε / 2) hε2
+  refine ⟨C, hCS.trans inter_subset_left, hC, ?_, hcont.mono (hCS.trans inter_subset_right)⟩
+  calc volume (S \ C) ≤ volume ((S ∩ Eᶜ) \ C ∪ E) := by
+        refine measure_mono fun x hx ↦ ?_
+        by_cases hxE : x ∈ E
+        · exact Or.inr hxE
+        · exact Or.inl ⟨⟨hx.1, hxE⟩, hx.2⟩
+    _ ≤ volume ((S ∩ Eᶜ) \ C) + volume E := measure_union_le _ _
+    _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hCε hEε
+    _ = ε := ENNReal.add_halves ε
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
