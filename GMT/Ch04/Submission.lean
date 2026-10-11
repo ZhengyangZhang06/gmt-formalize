@@ -434,6 +434,70 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Ch. 4, 3.13 (p. 91) and 4.10(1) (p. 95).** Assume `ApproxTangentAE`, and that `Θⁿ(μ_V, ·)`
+exists on the open set `U` and is upper semicontinuous there. Then `{x ∈ M_V : Θⁿ(μ_V, x) ≥ α}`
+is relatively closed in `U` for every `α > 0`, and if `θ ≥ α > 0` `Hⁿ`-a.e. on `M ∩ U` then
+`M_V = spt V ∩ U` and `Θⁿ(μ_V, ·) ≥ α` at every point of `M_V`. -/
+theorem Submission.canonicalCarrier_closed_support : ApproxTangentAE → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), 0 < n → IsOpen U → (∀ ξ ∈ U, V.HasDensityAt ξ (V.density ξ)) → UpperSemicontinuousOn V.density U → (∀ α : ℝ, 0 < α → ∃ C, IsClosed C ∧ {x | x ∈ V.canonicalCarrier U ∧ α ≤ V.density x} = C ∩ U) ∧ ∀ α : ℝ, 0 < α → V.MultiplicityGE α U → V.canonicalCarrier U = V.support ∩ U ∧ ∀ x ∈ V.canonicalCarrier U, α ≤ V.density x := by
+  intro hTangent n ℓ V U hn hU hDensity hUSC
+  refine ⟨fun α hα ↦ ?_, fun α hα hθ ↦ ?_⟩
+  · -- Upper semicontinuity: `U ∩ {Θ ≥ α} = U ∩ C` with `C` closed; `Θ ≥ α > 0` gives `x ∈ M_V`.
+    obtain ⟨C, hC, hUC⟩ := upperSemicontinuousOn_iff_preimage_Ici.1 hUSC α
+    refine ⟨C, hC, Set.ext fun x ↦ ?_⟩
+    have hx := Set.ext_iff.1 hUC x
+    simp only [Set.mem_inter_iff, Set.mem_preimage, Set.mem_Ici] at hx
+    simp only [canonicalCarrier, Set.mem_ofPred_eq, Set.mem_inter_iff]
+    constructor
+    · rintro ⟨⟨hxU, -⟩, hαx⟩
+      exact ⟨(hx.1 ⟨hxU, hαx⟩).2, hxU⟩
+    · rintro ⟨hxC, hxU⟩
+      have hαx := (hx.2 ⟨hxU, hxC⟩).2
+      exact ⟨⟨hxU, hα.trans_le hαx⟩, hαx⟩
+  · obtain ⟨a, ha, hθ⟩ := hθ
+    -- `Θ ≥ α` `μ_V`-a.e. in `U`: `Θ = θ` `Hⁿ`-a.e. on `M` by `ApproxTangentAE`, and
+    -- `μ_V = (Hⁿ ⌞ M).withDensity θ ≪ Hⁿ ⌞ M`.
+    have hae : ∀ᵐ x ∂V.weight, x ∈ U → α ≤ V.density x := by
+      have hθU : ∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M, x ∈ U → α ≤ a.θ x := by
+        rw [← ae_restrict_iff' hU.measurableSet, Measure.restrict_restrict hU.measurableSet,
+          Set.inter_comm]
+        exact hθ
+      have hac : V.weight ≪ (μHE[n] : Measure (Ambient n ℓ)).restrict a.M := by
+        rw [← ha]
+        exact withDensity_absolutelyContinuous _ _
+      refine hac.ae_le ?_
+      filter_upwards [hTangent n ℓ a hn, hθU] with x hx hxθ hxU
+      have hlim : V.density x = a.θ x := by
+        rw [← ha]
+        exact Filter.Tendsto.limUnder_eq hx.2.2
+      rw [hlim]
+      exact hxθ hxU
+    -- At `x ∈ spt V ∩ U` with `Θ(x) < α`, upper semicontinuity gives a neighbourhood of `x`
+    -- of positive `μ_V`-measure inside `U ∩ {Θ < α}`, which is `μ_V`-null.
+    have hsupp : ∀ x ∈ V.support ∩ U, α ≤ V.density x := by
+      rintro x ⟨hx, hxU⟩
+      by_contra hlt
+      rw [not_le] at hlt
+      have hev := upperSemicontinuousWithinAt_iff.1 (upperSemicontinuousOn_iff.1 hUSC x hxU) α hlt
+      rw [hU.nhdsWithin_eq hxU] at hev
+      have hpos :=
+        (Measure.mem_support_iff_forall x).1 hx _ (Filter.inter_mem (hU.mem_nhds hxU) hev)
+      refine hpos.ne' (measure_mono_null ?_ (ae_iff.1 hae))
+      rintro y ⟨hyU, hy⟩ h
+      exact (not_le.2 hy) (h hyU)
+    -- `Θ(x) > 0` forces `μ_V(B_ρ(x)) > 0` for small `ρ`, so `M_V ⊆ spt V`.
+    have hcarrier : ∀ x ∈ V.canonicalCarrier U, x ∈ V.support := by
+      rintro x ⟨hxU, hx⟩
+      refine (Metric.nhds_basis_closedBall.mem_measureSupport (μ := V.weight)).2 fun r hr ↦ ?_
+      obtain ⟨ρ, hρq, hρr⟩ := ((Filter.Tendsto.eventually (hDensity x hxU) (lt_mem_nhds hx)).and
+        (Ioo_mem_nhdsGT hr)).exists
+      have hρ : V.weight (closedBall x ρ) ≠ 0 := by
+        intro h
+        rw [Measure.real, h, ENNReal.toReal_zero, zero_div] at hρq
+        exact lt_irrefl _ hρq
+      exact (pos_iff_ne_zero.2 hρ).trans_le (measure_mono (closedBall_subset_closedBall hρr.2.le))
+    refine ⟨Set.Subset.antisymm (fun x hx ↦ ⟨hcarrier x hx, hx.1⟩)
+      fun x hx ↦ ⟨hx.2, hα.trans_le (hsupp x hx)⟩, fun x hx ↦ hsupp x ⟨hcarrier x hx, hx.1⟩⟩
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
