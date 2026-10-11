@@ -646,6 +646,57 @@ theorem Submission.tangentMeasure_countable_projection_net : ∀ (N n : ℕ) (ε
   refine ⟨j, ?_⟩
   rw [hQe j, ← dist_eq_norm]
   exact hj
+/-- **Key cone estimate** (Simon Ch. 3, (9)–(10) in the proof of Theorem 1.6 "⇐",
+`chapter-03.txt` lines 212–249, with the corrected constant `32ⁿ b < a` in place of
+`ε = 1/16ⁿ` and cones of aperture `1/3` around a fixed plane `Q`): if `μ(B_ρ(x)) ≥ a ρⁿ` and
+`μ({z : |q(z - x)| ≤ |z - x|/3} ∩ B_ρ(x)) ≤ b ρⁿ` for all `x ∈ E` and `0 < ρ < δ`
+(`q = Q.starProjection`), then `|y - x| ≤ 4 |q(y - x)|` for `x, y ∈ E` with `|y - x| < δ/2`.
+Otherwise `ρ = |y - x|` has `|q(y - x)| < ρ/4`, so
+`B_{ρ/16}(y) ⊆ {z : |q(z - x)| ≤ |z - x|/3} ∩ B_{2ρ}(x)` and
+`a (ρ/16)ⁿ ≤ μ(B_{ρ/16}(y)) ≤ b (2ρ)ⁿ = 32ⁿ b (ρ/16)ⁿ`, i.e. `a ≤ 32ⁿ b`. -/
+theorem Submission.tangentMeasure_projection_lower_bound : (∀ (N n : ℕ) (μ : Measure (Rn N)) (Q : Submodule ℝ (Rn N)) (E : Set (Rn N)) (a b δ : ℝ), 0 < a → 32 ^ n * b < a → (∀ x ∈ E, ∀ ρ ∈ Set.Ioo 0 δ, ENNReal.ofReal (a * ρ ^ n) ≤ μ (Metric.ball x ρ) ∧ μ ({z | ‖Q.starProjection (z - x)‖ ≤ ‖z - x‖ / 3} ∩ Metric.ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)) → ∀ x ∈ E, ∀ y ∈ E, ‖y - x‖ < δ / 2 → ‖y - x‖ ≤ 4 * ‖Q.starProjection (y - x)‖) := by
+  intro N n μ Q E a b δ ha hab hE x hx y hy hxy
+  -- Step 1: otherwise `ρ = |y - x|` satisfies `ρ > 4 |q(y - x)| ≥ 0`, so `0 < ρ < δ/2`.
+  by_contra hcon
+  replace hcon : 4 * ‖Q.starProjection (y - x)‖ < ‖y - x‖ := not_le.mp hcon
+  set ρ := ‖y - x‖ with hρdef
+  have hρ : 0 < ρ := by
+    have := norm_nonneg (Q.starProjection (y - x))
+    linarith
+  -- Step 2: `B_{ρ/16}(y) ⊆ {z : |q(z - x)| ≤ |z - x|/3} ∩ B_{2ρ}(x)`, using `|q v| ≤ |v|`.
+  have hsub : Metric.ball y (ρ / 16) ⊆
+      {z | ‖Q.starProjection (z - x)‖ ≤ ‖z - x‖ / 3} ∩ Metric.ball x (2 * ρ) := by
+    intro z hz
+    rw [Metric.mem_ball, dist_eq_norm] at hz
+    have h1 : ‖z - x‖ ≤ ‖z - y‖ + ‖y - x‖ := by
+      calc ‖z - x‖ = ‖(z - y) + (y - x)‖ := by congr 1; abel
+        _ ≤ _ := norm_add_le _ _
+    have h2 : ‖y - x‖ ≤ ‖z - x‖ + ‖z - y‖ := by
+      calc ‖y - x‖ = ‖(z - x) - (z - y)‖ := by congr 1; abel
+        _ ≤ ‖z - x‖ + ‖z - y‖ := norm_sub_le _ _
+    have h3 : ‖Q.starProjection (z - x)‖ ≤ ‖Q.starProjection (y - x)‖ + ‖z - y‖ := by
+      calc ‖Q.starProjection (z - x)‖
+          = ‖Q.starProjection (y - x) + Q.starProjection (z - y)‖ := by
+            rw [← map_add]; congr 2; abel
+        _ ≤ ‖Q.starProjection (y - x)‖ + ‖Q.starProjection (z - y)‖ := norm_add_le _ _
+        _ ≤ _ := by gcongr; exact Q.norm_starProjection_apply_le _
+    refine ⟨?_, ?_⟩
+    · show ‖Q.starProjection (z - x)‖ ≤ ‖z - x‖ / 3
+      linarith
+    · rw [Metric.mem_ball, dist_eq_norm]; linarith
+  -- Step 3: (9a) at `y` with radius `ρ/16`, monotonicity of `μ`, (9b) at `x` with radius `2ρ`.
+  have hy1 := (hE y hy (ρ / 16) ⟨by positivity, by linarith⟩).1
+  have hx2 := (hE x hx (2 * ρ) ⟨by positivity, by linarith⟩).2
+  have hchain : ENNReal.ofReal (a * (ρ / 16) ^ n) ≤ ENNReal.ofReal (b * (2 * ρ) ^ n) :=
+    hy1.trans ((measure_mono hsub).trans hx2)
+  -- Step 4: `a (ρ/16)ⁿ > 0`, so `a (ρ/16)ⁿ ≤ b (2ρ)ⁿ = 32ⁿ b (ρ/16)ⁿ`, i.e. `a ≤ 32ⁿ b`.
+  have hpos : 0 < a * (ρ / 16) ^ n := by positivity
+  rcases (ENNReal.ofReal_le_ofReal_iff').mp hchain with h | h
+  · have h32 : (2 * ρ) ^ n = 32 ^ n * (ρ / 16) ^ n := by rw [← mul_pow]; ring_nf
+    rw [h32] at h
+    have hp : 0 < (ρ / 16) ^ n := by positivity
+    nlinarith
+  · linarith
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
