@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat manifest.json (project d09bc8a18ce60face651f042976e8465f21f0f68, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "rg -n \"^def ForAlmostAllProjections|^noncomputable def frameProjection|^def BesicovitchFedererProjectionTheorem\" project/GMT/Ch03/Contract.lean",
+        "rg -n \"theorem measurable_rectifiable_purelyUnrectifiable_decomposition|theorem PurelyUnrectifiable.mono|theorem countablyRectifiable_iUnion\" simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "rg -n \"theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn\" simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "rg -n \"theorem exists_disjoint_subfamily_covering_enlargement|theorem exists_disjoint_covering_ae\" mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "rg -n \"theorem _root_.Monotone.measure_iUnion\" mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "rg -n \"theorem LipschitzOnWith.extend_real|theorem LipschitzOnWith.extend_pi\" mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "rg -n \"theorem ae_tendsto_measure_inter_div\" mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "rg -n \"instance instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace\" mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+        "rg -n \"InnerProductSpace.euclideanHausdorffMeasure_eq_volume|Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_zero\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "rg -n \"theorem hausdorffMeasure_zero_singleton\" mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "rg -n \"theorem starProjection_norm_le\" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "rg -n \"theorem finrank_span_eq_card\" mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "rg -n \"lemma isMulInvariant_eq_smul_of_compactSpace\" mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        "rg -n \"IsTopologicalGroup \\(unitary R\\)\" mathlib/Mathlib/Topology/Algebra/Star/Unitary.lean",
+        "rg -l -i \"besicovitch.?federer|purely.?unrectifiable\" mathlib/Mathlib",
+        "rg -l -i \"CompactSpace \\(Matrix.orthogonalGroup|orthogonalGroup.*CompactSpace\" mathlib/Mathlib",
+        "rg -n -i \"orthogonalGroup|haar|grassmann\" simongmt/Poincare/SimonGMT (only Ch02 additive-Haar area lemmas and a Ch08 Grassmannian type; no O(N) Haar measure)",
+        "lake env lean on comparator-scope test files (import GMT.Ch03.Submission + replayed contract scope) elaborating all 8 child types and three Lean assemblies (parent; compact_case; cone_density_positive)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Star/Unitary.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/SymmetricVitali.lean"
+      ],
+      "conclusion": "Pinned snapshot (project d09bc8a, Mathlib 25730c7c) plus the pinned simongmt package. Reused by the children: SimonGMT measurable_rectifiable_purelyUnrectifiable_decomposition (measurable Lemma 3.2, used by compact_reduction instead of the sibling node, avoiding a cycle), PurelyUnrectifiable.mono, CountablyRectifiable.mono/countablyRectifiable_iUnion, euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz image bound for μHE); Mathlib Vitali.exists_disjoint_subfamily_covering_enlargement (5r-lemma) and Vitali.exists_disjoint_covering_ae, Monotone.measure_iUnion (continuity from below for arbitrary sets), LipschitzOnWith.extend_real/extend_pi (McShane), Besicovitch.ae_tendsto_measure_inter_div (density theorem for finite measures), InnerRegularCompactLTTop for all measures on Polish spaces, InnerProductSpace.euclideanHausdorffMeasure_eq_volume, Isometry.euclideanHausdorffMeasure_image, euclideanHausdorffMeasure_zero + hausdorffMeasure_zero_singleton, Submodule.starProjection_norm_le, finrank_span_eq_card, Haar uniqueness on compact groups (isMulInvariant_eq_smul_of_compactSpace), IsTopologicalGroup (unitary R). No match: neither Mathlib nor SimonGMT contains the Besicovitch–Federer theorem, the cone lemmas, a CompactSpace instance or Haar measure for the orthogonal group, or invariant measures on Grassmannians/spheres in Hausdorff normalization; these are supplied by the children's proofs (cone_trichotomy carries the O(N) Haar-averaging argument)."
+    }
+  ],
+  "proof": "Source. This is Step 7 of the parent proof (M. G. Dall'Alba, The Besicovitch-Federer Projection Theorem, Lemma 5.4). The parent uses the root-level sibling eilenberg_inequality there; since a child of this decomposition can only depend on its own siblings, this child takes that sibling's exact frozen statement as the explicit hypothesis (Eil), which the parent discharges with the accepted declaration eilenberg_upper_integral_inequality.\n\nNotation. N := n + ℓ, P := W.starProjection, π : ℝ^N → W the orthogonal projection viewed as a map into the subspace (so P = incl ∘ π), H⁰ := μHE[0], Hⁿ := μHE[n], Lⁿ := volume on ℝⁿ = EuclideanSpace ℝ (Fin n), and\n A₃ := {a ∈ A : {b ∈ A : Pb = Pa} is infinite} (note {b ∈ A : Pb = Pa} = A ∩ (a + W^⊥)).\n\n1. An isometric chart. Since finrank W = n, fix a linear isometric equivalence ι : ℝⁿ ≃ W and put f := ι⁻¹ ∘ π : ℝ^N → ℝⁿ and J := incl ∘ ι : ℝⁿ → ℝ^N. Since |π x − π x′| = |P(x − x′)| ≤ |x − x′| and ι⁻¹ is an isometry, f is 1-Lipschitz (LipschitzWith 1 f). For all x, b, a ∈ ℝ^N: Px = J(f x), and f b = f a ⟺ π b = π a ⟺ Pb = Pa.\n\n2. Applying (Eil). Apply (Eil) with (N, m, k) := (n + ℓ, n, 0): it gives C ≥ 0 such that, for the set A, the map f and L := 1, there is a measurable g : ℝⁿ → [0, ∞] with H⁰(A ∩ f⁻¹{y}) ≤ g(y) for every y ∈ ℝⁿ and ∫ g dLⁿ ≤ C·1ⁿ·μHE[n + 0](A) = C·Hⁿ(A) < ∞.\n\n3. g is finite almost everywhere. A measurable function with finite integral is finite a.e. (Mathlib ae_lt_top), so the measurable set {y : g(y) = ∞} is Lⁿ-null.\n\n4. Infinite sets have infinite H⁰-measure. H⁰ = μHE[0] = μH[0] (Mathlib Measure.euclideanHausdorffMeasure_zero) and μH[0]{x} = 1 (Mathlib hausdorffMeasure_zero_singleton). Singletons are Borel, so H⁰(F) = #F for every finite F by finite additivity, and if S is infinite then H⁰(S) ≥ H⁰(F) = #F for finite subsets F ⊆ S of every cardinality; hence H⁰(S) = ∞.\n\n5. For a ∈ A₃, by 1, A ∩ f⁻¹{f(a)} = {b ∈ A : Pb = Pa}, which is infinite; by 4 and 2, ∞ = H⁰(A ∩ f⁻¹{f(a)}) ≤ g(f(a)). Thus f(A₃) ⊆ {g = ∞}, and Lⁿ(f(A₃)) = 0 by 3 (monotonicity of the outer measure).\n\n6. Transfer to W. By 1, P(A₃) = J(f(A₃)). J is an isometry, so Hⁿ(P(A₃)) = Hⁿ(f(A₃)) (Mathlib Isometry.euclideanHausdorffMeasure_image), and on ℝⁿ = EuclideanSpace ℝ (Fin n), μHE[n] = volume (Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume). Therefore Hⁿ(P(A₃)) = Lⁿ(f(A₃)) = 0, i.e. μHE[n] (W.starProjection '' A₃) = 0. ∎",
+  "key_steps": [
+    "Write P = J ∘ f with f := ι⁻¹ ∘ (projection onto W) : ℝ^N → ℝⁿ 1-Lipschitz and J : ℝⁿ → ℝ^N a linear isometry onto W; fibres of f are the sets {Pb = Pa}.",
+    "Eilenberg (hypothesis, N := n+ℓ, m := n, k := 0, L := 1) gives a measurable g ≥ H⁰(A ∩ f⁻¹{y}) with ∫ g dLⁿ ≤ C·Hⁿ(A) < ∞, so g < ∞ Lⁿ-a.e.",
+    "H⁰ is counting measure, so infinite fibres force g(f(a)) = ∞: f(A₃) lies in an Lⁿ-null set.",
+    "Isometry invariance of Hⁿ and μHE[n] = volume on ℝⁿ give Hⁿ(P(A₃)) = Lⁿ(f(A₃)) = 0."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

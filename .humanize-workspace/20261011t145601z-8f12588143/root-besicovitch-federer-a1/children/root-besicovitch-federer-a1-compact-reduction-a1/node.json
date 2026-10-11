@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.compact_reduction-a1",
+  "parent_id": "root.besicovitch_federer-a1",
+  "depth": 2,
+  "title": "Reduction to compact sets: σ-finite purely unrectifiable sets are covered by a null set and countably many compact purely unrectifiable sets of finite measure",
+  "statement": "Let n, ℓ ∈ ℕ and Q ⊆ ℝ^{n+ℓ} be purely n-unrectifiable with Q = ⋃_j Q_j and Hⁿ(Q_j) < ∞ for all j. Then there are Z ⊆ ℝ^{n+ℓ} with Hⁿ(Z) = 0 and sets K_i (i ∈ ℕ), each compact, purely n-unrectifiable and with Hⁿ(K_i) < ∞, such that Q ⊆ Z ∪ ⋃_i K_i.",
+  "lean_statement": "∀ (n ℓ : ℕ) (Q : Set (Rn (n + ℓ))), PurelyUnrectifiable n Q → (∃ Qj : ℕ → Set (Rn (n + ℓ)), Q = ⋃ j, Qj j ∧ ∀ j, μHE[n] (Qj j) < ∞) → ∃ (Z : Set (Rn (n + ℓ))) (K : ℕ → Set (Rn (n + ℓ))), μHE[n] Z = 0 ∧ (∀ i, IsCompact (K i) ∧ PurelyUnrectifiable n (K i) ∧ μHE[n] (K i) < ∞) ∧ Q ⊆ Z ∪ ⋃ i, K i",
+  "lean_name": "bf_compact_cover_reduction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-compact-reduction-a1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_mass_bound-a1",
+  "parent_id": "root.besicovitch_federer-a1",
+  "depth": 2,
+  "title": "Small cone mass forces small mass (Mattila 15.14; Dall'Alba Lemma 4.6)",
+  "statement": "Let n ≥ 1, ℓ ∈ ℕ, N := n + ℓ, W ⊆ ℝ^N an n-dimensional subspace, P := W.starProjection, and for x ∈ ℝ^N, r, t > 0 let X(x, r, t) := {y : |P(y − x)| < t|y − x|} ∩ B(x, r). Let 0 < s < 1, δ > 0, c ≥ 0, and let B ⊆ ℝ^N be purely n-unrectifiable with Hⁿ(B ∩ X(x, r, s)) ≤ c(rs)ⁿ for all x ∈ B and 0 < r < δ. Then Hⁿ(B ∩ B(a, δ/8)) ≤ 2·15ⁿ·c·δⁿ for every a ∈ ℝ^N (Hⁿ = μHE[n]).",
+  "lean_statement": "∀ (n ℓ : ℕ), 0 < n → ∀ (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∀ (s δ c : ℝ), 0 < s → s < 1 → 0 < δ → 0 ≤ c → ∀ B : Set (Rn (n + ℓ)), PurelyUnrectifiable n B → (∀ x ∈ B, ∀ r : ℝ, 0 < r → r < δ → μHE[n] (B ∩ ({y | ‖W.starProjection (y - x)‖ < s * ‖y - x‖} ∩ Metric.ball x r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) → ∀ a : Rn (n + ℓ), μHE[n] (B ∩ Metric.ball a (δ / 8)) ≤ ENNReal.ofReal (2 * 15 ^ n * c * δ ^ n)",
+  "lean_name": "bf_coneMass_ball_le",
+  "depends_on": [
+    "root.besicovitch_federer-a1.cone_free_rectifiable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_free_rectifiable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-mass-bound-a1-a1"
+}

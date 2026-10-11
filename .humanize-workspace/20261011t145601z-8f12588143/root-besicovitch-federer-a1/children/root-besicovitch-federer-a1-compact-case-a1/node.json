@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.compact_case-a1",
+  "parent_id": "root.besicovitch_federer-a1",
+  "depth": 2,
+  "title": "Besicovitch–Federer for compact purely unrectifiable sets of finite measure, given Eilenberg's inequality (Dall'Alba, proof of Thm 5.1)",
+  "statement": "Assume Eilenberg's inequality in the exact frozen form of the root-level node eilenberg_upper_integral_inequality (as in the sibling infinite_fibres). Then for all n ≥ 1, ℓ ≥ 1 and every compact, purely n-unrectifiable A ⊆ ℝ^{n+ℓ} with Hⁿ(A) < ∞: for Lebesgue-a.e. v ∈ (ℝ^{n+ℓ})ⁿ, if v is linearly independent then Hⁿ(frameProjection v(A)) = 0, i.e. ForAlmostAllProjections (n+ℓ) n (fun p ↦ Hⁿ(p(A)) = 0).",
+  "lean_statement": "(∀ (N m k : ℕ), ∃ C : ℝ≥0, ∀ (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μHE[k] (A ∩ f ⁻¹' {y}) ≤ g y) ∧ ∫⁻ y, g y ≤ ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A) → ∀ (n ℓ : ℕ), 0 < n → 0 < ℓ → ∀ A : Set (Rn (n + ℓ)), IsCompact A → PurelyUnrectifiable n A → μHE[n] A < ∞ → ForAlmostAllProjections (n + ℓ) n (fun p ↦ μHE[n] (p '' A) = 0)",
+  "lean_name": "bf_compact_projection_null",
+  "depends_on": [
+    "root.besicovitch_federer-a1.cone_density_positive-a1",
+    "root.besicovitch_federer-a1.cone_density_infinite-a1",
+    "root.besicovitch_federer-a1.infinite_fibres-a1",
+    "root.besicovitch_federer-a1.cone_trichotomy-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_density_positive-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_density_infinite-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.besicovitch_federer-a1.infinite_fibres-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-compact-case-a1-a1"
+}
