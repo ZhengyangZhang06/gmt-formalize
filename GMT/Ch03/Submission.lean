@@ -335,6 +335,44 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Line derivative of a locally Lipschitz map along a chart** (Simon Ch. 2, (4.7) and (4.10)):
+let `f : ℝᴺ → ℝᵖ` be locally Lipschitz on the open set `U ⊆ ℝᴺ`, and let `ψ : ℝⁿ → ℝᴺ` and
+`f ∘ ψ` be differentiable at `u`, with `ψ(u) ∈ U`. Then for every `w ∈ ℝⁿ`, `f` has line
+derivative `D(f ∘ ψ)(u) w` at `ψ(u)` in the direction `Dψ(u) w`. The chart curve
+`t ↦ ψ(u + t w)` and the line `t ↦ ψ(u) + t Dψ(u) w` agree to first order at `t = 0`, so the
+Lipschitz bound of `f` near `ψ(u)` makes the values of `f` along them differ by `o(t)`. -/
+theorem Submission.chartTD_hasLineDerivAt_of_comp_differentiableAt : ∀ (n N p : ℕ)
+    (U : Set (Rn N)) (f : Rn N → Rn p) (ψ : Rn n → Rn N) (u : Rn n), IsOpen U →
+    LocallyLipschitzOn U f → ψ u ∈ U → DifferentiableAt ℝ ψ u → DifferentiableAt ℝ (f ∘ ψ) u →
+    ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w) := by
+  intro n N p U f ψ u hU hf hu hψ hfψ w
+  -- Step 2: `f` is `L`-Lipschitz on a neighbourhood `T` of `ψ u`, since `𝓝[U] (ψ u) = 𝓝 (ψ u)`.
+  obtain ⟨L, T, hT, hfT⟩ := hf hu
+  rw [hU.nhdsWithin_eq hu] at hT
+  -- Step 3: the line derivatives of `ψ` and of `f ∘ ψ` at `u` in the direction `w`.
+  have ha := hψ.hasFDerivAt.hasLineDerivAt w
+  have hb := hfψ.hasFDerivAt.hasLineDerivAt w
+  -- Step 1: write the two hypotheses and the goal as `o(t)` statements as `t → 0`.
+  rw [hasLineDerivAt_iff_isLittleO_nhds_zero] at ha hb ⊢
+  -- Step 4: for `t` near `0`, both `ψ (u + t • w)` and `ψ u + t • Dψ(u) w` lie in `T`.
+  have hγ : ∀ᶠ t in 𝓝 (0 : ℝ), ψ (u + t • w) ∈ T :=
+    hψ.continuousAt.tendsto.comp
+      ((by fun_prop : Continuous fun t : ℝ ↦ u + t • w).tendsto' 0 u (by simp)) hT
+  have hα : ∀ᶠ t in 𝓝 (0 : ℝ), ψ u + t • fderiv ℝ ψ u w ∈ T :=
+    (by fun_prop : Continuous fun t : ℝ ↦ ψ u + t • fderiv ℝ ψ u w).tendsto' 0 (ψ u) (by simp) hT
+  -- Step 5 (Simon (4.7)): the Lipschitz bound compares `f` along the line and along the chart
+  -- curve, and the difference of the two curves is `o(t)`.
+  have hO : (fun t : ℝ ↦ f (ψ u + t • fderiv ℝ ψ u w) - f (ψ (u + t • w))) =O[𝓝 0]
+      fun t : ℝ ↦ ψ (u + t • w) - ψ u - t • fderiv ℝ ψ u w := by
+    refine Asymptotics.IsBigO.of_bound L ?_
+    filter_upwards [hγ, hα] with t hγt hαt
+    rw [← sub_add_eq_sub_sub, norm_sub_rev (ψ (u + t • w))]
+    exact hfT.norm_sub_le hαt hγt
+  -- Step 6: the two `o(t)` terms add up to the claim.
+  refine ((hO.trans_isLittleO ha).add hb).congr_left fun t ↦ ?_
+  simp only [Function.comp_apply]
+  abel
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
