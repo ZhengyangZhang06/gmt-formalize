@@ -450,7 +450,7 @@ theorem Submission.injective_fderiv_local_lower_bound : ∀ (n : ℕ) {F : Type}
   have hm2 : 0 < (K : ℝ)⁻¹ / 2 := half_pos (inv_pos.2 hK')
   -- Differentiability: `‖f(w + u) - f(w) - L u‖ ≤ (m/2) ‖u‖` for `‖u‖ < r`.
   obtain ⟨r, hr, hfr⟩ := Metric.eventually_nhds_iff.1
-    ((hasFDerivAt_iff_isLittleO_nhds_zero.1 hf.hasFDerivAt).def hm2)
+    ((hasFDerivAt_iff_isLittleO_nhds_zero.1 hf.hasFDerivAt).bound hm2)
   -- `c = min(m/2, r/2)`.
   refine ⟨min ((K : ℝ)⁻¹ / 2) (r / 2), lt_min hm2 (half_pos hr), fun u hu ↦ ?_⟩
   have hur : dist u 0 < r := by
