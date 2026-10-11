@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.c1_submanifold_graph_ball-a1",
+  "parent_id": "root.regular_set_open_dense-a1",
+  "depth": 2,
+  "title": "Rotated, translated C¹ graph in an open ball is a C¹ submanifold",
+  "statement": "Let n, ℓ ∈ ℕ, q a linear isometry of ℝ^{n+ℓ}, u : ℝⁿ → ℝ^ℓ, x₀ ∈ ℝ^{n+ℓ}, s > 0 and S ⊆ ℝ^{n+ℓ}. If u is C¹ on the closed ball Bⁿ_s(0) and {y : y + x₀ ∈ S} ∩ B_s(0) = q(graph of u over Bⁿ_s(0)) ∩ B_s(0) (closed balls), then the intersection of the open ball B̆_s(x₀) with S is an n-dimensional C¹ submanifold (IsC1Submanifold n).",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (x₀ : Amb n ℓ) (s : ℝ) (S : Set (Amb n ℓ)), 0 < s → ContDiffOn ℝ 1 u (closedBall 0 s) → (fun y => y + x₀) ⁻¹' S ∩ closedBall 0 s = q '' graphOver u (closedBall 0 s) ∩ closedBall 0 s → IsC1Submanifold n (ball x₀ s ∩ S)",
+  "lean_name": "rsod_isC1Submanifold_ball_inter_graph",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1-a1"
+}

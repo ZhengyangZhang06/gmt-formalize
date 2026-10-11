@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.allard_hypotheses_small_scale-a1",
+  "parent_id": "root.regular_set_open_dense-a1",
+  "depth": 2,
+  "title": "Allard hypotheses 5.1 at small radii at a density-one point",
+  "statement": "Let n ≥ 1, U ⊆ ℝ^{n+ℓ} open, V a rectifiable n-varifold in U with generalized mean curvature H, H locally in Lᵖ(μ_V) with p > n, θ ≥ 1 μ_V-a.e., 0 ∈ U and Θⁿ(μ_V, 0) = 1 (HasDensity with closed balls). Then for every δ > 0 there is ρ such that the Allard hypotheses 5.1 hold: V.AllardHypotheses H p δ ρ (ρ > 0, generalized mean curvature, θ ≥ 1 a.e., 0 ∈ spt V, B_ρ(0) ⊆ U, ω_n⁻¹ρ⁻ⁿμ_V(B_ρ(0)) ≤ 1 + δ, (ρ^{p-n}∫_{B_ρ(0)}|H|ᵖ dμ_V)^{1/p} ≤ δ).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → (0 : Amb n ℓ) ∈ U → V.HasDensity 0 1 → ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, V.AllardHypotheses H p δ ρ",
+  "lean_name": "rsod_allardHypotheses_small_scale",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-allard-hypotheses-small-scale-a1-a1"
+}

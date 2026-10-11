@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.regular_set_rel_open-a1",
+  "parent_id": "root.regular_set_open_dense-a1",
+  "depth": 2,
+  "title": "reg V is relatively open in spt V (Simon 5.7.2 remark)",
+  "statement": "For every n, ℓ ∈ ℕ, every U ⊆ ℝ^{n+ℓ} and every rectifiable n-varifold V in U (contract structure RectifiableVarifold n ℓ U), there is an open set O ⊆ ℝ^{n+ℓ} with reg V = O ∩ spt V, where spt V = V.support and reg V = V.regularSet = {ξ ∈ spt V : B̆_ρ(ξ) ∩ spt V is an n-dimensional C¹ submanifold for some ρ > 0}.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), ∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support",
+  "lean_name": "rsod_regularSet_relOpen",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.c1_submanifold_open_inter-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.c1_submanifold_open_inter-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-regular-set-rel-open-a1-a1"
+}

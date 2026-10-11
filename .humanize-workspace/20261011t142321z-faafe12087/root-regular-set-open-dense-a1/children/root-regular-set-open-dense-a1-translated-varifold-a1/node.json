@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.translated_varifold-a1",
+  "parent_id": "root.regular_set_open_dense-a1",
+  "depth": 2,
+  "title": "Translation of a rectifiable varifold",
+  "statement": "Let V = v(M, θ) be a rectifiable n-varifold in U ⊆ ℝ^{n+ℓ} (U arbitrary) and x₀ ∈ ℝ^{n+ℓ}. Then there is a rectifiable n-varifold W in {y : y + x₀ ∈ U} with carrier {y : y + x₀ ∈ M} and multiplicity y ↦ θ(y + x₀), weight equal to the pushforward of μ_V under y ↦ y - x₀, support {y : y + x₀ ∈ spt V}, generalized mean curvature y ↦ H(y + x₀) whenever V has generalized mean curvature H, and y ↦ H(y + x₀) locally in Lᵖ(μ_W) whenever H is locally in Lᵖ(μ_V).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ), ∃ W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U), W.carrier = (fun y => y + x₀) ⁻¹' V.carrier ∧ (∀ y, W.mult y = V.mult (y + x₀)) ∧ W.weight = V.weight.map (fun y => y - x₀) ∧ W.support = (fun y => y + x₀) ⁻¹' V.support ∧ (∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → W.HasGeneralizedMeanCurvature (fun y => H (y + x₀))) ∧ (∀ (H : Amb n ℓ → Amb n ℓ) (p : ℝ), V.LocallyLp H p → W.LocallyLp (fun y => H (y + x₀)) p)",
+  "lean_name": "rsod_exists_translated_varifold",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-translated-varifold-a1-a1"
+}
