@@ -1221,4 +1221,66 @@ theorem Submission.lipschitz_real_c1_approximation : ∀ (n : ℕ) (f : Rn n →
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
+/-- **Simon Ch. 2, Theorem 1.5 (p. 42), `C¹` approximation of Lipschitz maps**, vector-valued
+(`chapter-02.txt` lines 165–168, proof lines 246–266; used in this form in Ch. 3, proof of
+Lemma 1.2, `chapter-03.txt` lines 39–42): for a Lipschitz `f : ℝⁿ → ℝᵖ` and `ε ∈ (0, ∞]` there is
+a `C¹` map `g` with `Lⁿ({x : f(x) ≠ g(x) or Df(x) ≠ Dg(x)}) < ε`. Simon proves the scalar case
+(`Submission.lipschitz_real_c1_approximation`); it is applied to each coordinate `fⁱ = ⟨f, eᵢ⟩`
+with error `ε / p`, and `g = Σ gⁱ eᵢ`. By Rademacher's theorem `f` is differentiable off an
+`Lⁿ`-null set, and at each differentiability point `Dfⁱ = ⟨Df, eᵢ⟩` and `Dgⁱ = ⟨Dg, eᵢ⟩`, so
+`f ≠ g` or `Df ≠ Dg` there forces `fⁱ ≠ gⁱ` or `Dfⁱ ≠ Dgⁱ` for some `i`. -/
+theorem Submission.lipschitz_c1_approximation : ∀ (n p : ℕ) (f : Rn n → Rn p) (K : ℝ≥0),
+    LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → Rn p, ContDiff ℝ 1 g ∧
+      volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε := by
+  intro n p f K hf ε hε
+  -- Each coordinate `fⁱ = ⟨f, eᵢ⟩` is Lipschitz; approximate it with error `ε / p`.
+  have hcomp : ∀ i : Fin p, ∃ gi : Rn n → ℝ, ContDiff ℝ 1 gi ∧
+      volume {x | f x i ≠ gi x ∨ fderiv ℝ (fun y ↦ f y i) x ≠ fderiv ℝ gi x} < ε / p := fun i ↦
+    Submission.lipschitz_real_c1_approximation n (fun y ↦ f y i) _
+      ((EuclideanSpace.proj (𝕜 := ℝ) i).lipschitzWith.comp hf) (ε / p)
+      (ENNReal.div_pos hε.ne' (ENNReal.natCast_ne_top p))
+  choose G hG hGε using hcomp
+  -- `g = Σ gⁱ eᵢ` is `C¹` because its coordinates are.
+  let g : Rn n → Rn p := fun x ↦ WithLp.toLp 2 fun i ↦ G i x
+  have hgC : ContDiff ℝ 1 g := contDiff_euclidean.2 hG
+  refine ⟨g, hgC, ?_⟩
+  -- Rademacher: `f` is differentiable off an `Lⁿ`-null set.
+  have hZ : volume {x | ¬DifferentiableAt ℝ f x} = 0 := ae_iff.1 hf.ae_differentiableAt
+  have hsub : {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} ⊆ {x | ¬DifferentiableAt ℝ f x} ∪
+      ⋃ i, {x | f x i ≠ G i x ∨ fderiv ℝ (fun y ↦ f y i) x ≠ fderiv ℝ (G i) x} := by
+    intro x hx
+    by_contra hx'
+    simp only [Set.mem_union, Set.mem_ofPred_eq, Set.mem_iUnion, not_or, not_exists, ne_eq,
+      not_not] at hx'
+    obtain ⟨hfx, hE⟩ := hx'
+    -- At a differentiability point, `Dfⁱ(x) = ⟨Df(x), eᵢ⟩` and `Dgⁱ(x) = ⟨Dg(x), eᵢ⟩`.
+    have hD : ∀ i, (EuclideanSpace.proj i).comp (fderiv ℝ f x) =
+        (EuclideanSpace.proj i).comp (fderiv ℝ g x) := by
+      intro i
+      have hfi : HasFDerivAt (fun y ↦ f y i) ((EuclideanSpace.proj i).comp (fderiv ℝ f x)) x :=
+        (EuclideanSpace.proj (𝕜 := ℝ) i).hasFDerivAt.comp x hfx.hasFDerivAt
+      have hgi : HasFDerivAt (G i) ((EuclideanSpace.proj i).comp (fderiv ℝ g x)) x :=
+        (EuclideanSpace.proj (𝕜 := ℝ) i).hasFDerivAt.comp x
+          (hgC.differentiable one_ne_zero x).hasFDerivAt
+      exact hfi.fderiv.symm.trans ((hE i).2.trans hgi.fderiv)
+    rcases hx with hx | hx
+    · exact hx (PiLp.ext fun i ↦ (hE i).1)
+    · exact hx (ContinuousLinearMap.ext fun v ↦ PiLp.ext fun i ↦
+        congrArg (fun L : Rn n →L[ℝ] ℝ ↦ L v) (hD i))
+  calc volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x}
+      ≤ volume {x | ¬DifferentiableAt ℝ f x} +
+          volume (⋃ i, {x | f x i ≠ G i x ∨ fderiv ℝ (fun y ↦ f y i) x ≠ fderiv ℝ (G i) x}) :=
+        (measure_mono hsub).trans (measure_union_le _ _)
+    _ ≤ ∑ i, volume {x | f x i ≠ G i x ∨ fderiv ℝ (fun y ↦ f y i) x ≠ fderiv ℝ (G i) x} := by
+        rw [hZ, zero_add]
+        exact measure_iUnion_fintype_le _ _
+    _ < ε := by
+        rcases (Finset.univ : Finset (Fin p)).eq_empty_or_nonempty with h0 | hne
+        · rw [h0, Finset.sum_empty]
+          exact hε
+        · calc _ < ∑ _i : Fin p, ε / p := ENNReal.sum_lt_sum_of_nonempty hne fun i _ ↦ hGε i
+            _ = p * (ε / p) := by
+              rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+            _ ≤ ε := ENNReal.mul_div_le
+
 end GMT.Ch03
