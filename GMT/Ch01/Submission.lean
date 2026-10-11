@@ -309,6 +309,23 @@ def RadonCompactness : Prop :=
       ∀ f : C_c(X, ℝ), Tendsto (fun k => ∫ x, f x ∂caratheodoryMeasure (μ (φ k))) atTop
         (𝓝 (∫ x, f x ∂caratheodoryMeasure μlim))
 
+/-- Simon Ch. 1, Theorem 4.16 (corrected), proof Step 4: countably many bounded real sequences
+`k ↦ a k i` have a common convergent subsequence (the diagonal argument).  This is the sequential
+compactness of a countable product of compact intervals: every `a k` lies in the box
+`∏ᵢ [-Cᵢ, Cᵢ]`, compact by Tychonoff (`isCompact_univ_pi`), and `ι → ℝ` is first countable as
+`ι` is countable, so Mathlib's `IsCompact.tendsto_subseq` extracts a subsequence converging in the
+product topology, i.e. coordinatewise (`tendsto_pi_nhds`). -/
+theorem Submission.rc_diagonal_subseq : ∀ (ι : Type u) [Countable ι] (a : ℕ → ι → ℝ),
+    (∀ i, ∃ C : ℝ, ∀ k, |a k i| ≤ C) →
+    ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ i, ∃ l : ℝ, Tendsto (fun k => a (φ k) i) atTop (𝓝 l) := by
+  intro ι _ a ha
+  choose C hC using ha
+  have hK : IsCompact (Set.pi univ fun i => Icc (-C i) (C i)) :=
+    isCompact_univ_pi fun i => isCompact_Icc
+  obtain ⟨b, -, φ, hφ, hlim⟩ :=
+    hK.tendsto_subseq (x := a) fun k => Set.mem_univ_pi.mpr fun i => abs_le.mp (hC i k)
+  exact ⟨φ, hφ, fun i => ⟨b i, tendsto_pi_nhds.mp hlim i⟩⟩
+
 /-- The headline results of Simon, *Introduction to GMT*, Chapter 1 (pp. 1–38). -/
 theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
 
