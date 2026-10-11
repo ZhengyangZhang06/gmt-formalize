@@ -1,0 +1,15 @@
+{
+  "node_id": "root.c1_approximation-a1.egorov_sigma_finite-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/51",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "0520547118cb34756a80df40da681c978e6b1464",
+  "integrated_commit": "",
+  "proof_base_commit": "52cebd177e6c754aa812ed6d9c630d52ef5da848",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.c1_approximation-a1",
+  "requires": []
+}

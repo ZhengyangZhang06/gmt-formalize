@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "96c56a2666fcc0dd30ff4c171d94053a789f249e0d01755e3ec63f309185b1ef",
+  "git_delta": {
+    "base_commit": "52cebd177e6c754aa812ed6d9c630d52ef5da848",
+    "candidate_commit": "0520547118cb34756a80df40da681c978e6b1464",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "egorov_closed_subset_uniformOn_compact_volume",
+    "diff_sha256": "d382a4da376d589850e406542ffbceb1e123823c9d0cc5634d360b1b6606fc01",
+    "source_sha256": "9204f6724b6d880d7446853307fda847a02bb33f990b4e54789aa29bf8ec69a2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.egorov_closed_subset_uniformOn_compact_volume",
+      "statement": "∀ (n : ℕ) (η : ℕ → Rn n → ℝ) (g : Rn n → ℝ) (S : Set (Rn n)), (∀ k, Measurable (η k)) → Measurable g → MeasurableSet S → (∀ x ∈ S, Tendsto (fun k => η k x) atTop (𝓝 (g x))) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A ⊆ S, IsClosed A ∧ volume (S \\ A) < ε ∧ ∀ Q : Set (Rn n), IsCompact Q → Q ⊆ A → TendstoUniformlyOn η g atTop Q",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
