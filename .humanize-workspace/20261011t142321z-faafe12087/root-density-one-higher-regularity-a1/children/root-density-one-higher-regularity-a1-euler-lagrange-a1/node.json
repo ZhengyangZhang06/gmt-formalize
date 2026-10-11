@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1",
+  "parent_id": "root.density_one_higher_regularity-a1",
+  "depth": 2,
+  "title": "Vertical first variation: the graph solves the prescribed-mean-curvature system (Step 4)",
+  "statement": "Let n >= 1, U open in R^(n+l), V = v(M, theta) with generalized mean curvature H in U, h locally C^{q,alpha} in U (IsLocallyHolderCkα q alpha h U) with H = h mu_V-a.e. Let xi in R^(n+l), 0 < s <= R, the closed ball B_s(xi) contained in U, Q a linear isometry, u : R^n -> R^l C^1 on the open ball of radius R about 0 with u(0) = 0, Q(spt V - xi) cap (open B_R(0)) = graph of u over the open ball cap (open B_R(0)), and mu_V restricted to the open ball Bs of radius s about xi equal to H^n restricted to spt V cap Bs. Put O := Q(U - xi) and F(z) := Q h(xi + Q^{-1} z). Then O is open, F is locally C^{q,alpha} on O, and there is r in (0, R] such that (x, u(x)) lies in O for |x| < r and, with J(P) := sqrt(det(I_n + (<P e_a, P e_b>)_{a,b})) the area element of the graph, integral over the open ball of radius r of DJ(Du)[Dphi] dx = - integral over that ball of J(Du) <(0, phi), F(x, u(x))> dx for every C^1 compactly supported phi : R^n -> R^l with tsupport phi in the open ball of radius r.",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H h : Amb n ℓ → Amb n ℓ) (q : ℕ) (α : ℝ), V.HasGeneralizedMeanCurvature H → IsLocallyHolderCkα q α h U → (∀ᵐ x ∂V.weight, H x = h x) → ∀ (ξ : Amb n ℓ) (s R : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), 0 < s → s ≤ R → closedBall ξ s ⊆ U → ContDiffOn ℝ 1 u (ball 0 R) → u 0 = 0 → Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → V.weight.restrict (ball ξ s) = (μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ ball ξ s) → IsOpen ((fun y => Q (y - ξ)) '' U) ∧ IsLocallyHolderCkα q α (fun z => Q (h (ξ + Q.symm z))) ((fun y => Q (y - ξ)) '' U) ∧ ∃ r > 0, r ≤ R ∧ (∀ x ∈ ball (0 : Rn n) r, graphPoint x (u x) ∈ (fun y => Q (y - ξ)) '' U) ∧ ∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 r → ∫ x in ball (0 : Rn n) r, fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in ball (0 : Rn n) r, Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ))))) * inner ℝ (graphPoint 0 (φ x)) (Q (h (ξ + Q.symm (graphPoint x (u x)))))",
+  "lean_name": "dohr_vertical_euler_lagrange",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.graph_tangent_planes-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-euler-lagrange-a1-a1"
+}
