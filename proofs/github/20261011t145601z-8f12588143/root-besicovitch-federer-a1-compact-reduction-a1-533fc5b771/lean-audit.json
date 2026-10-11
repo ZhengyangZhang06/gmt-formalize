@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9120b25222004668556115ff67eb3d370a2b8d8b0a64344eb7bc5f12be6caead",
+  "git_delta": {
+    "base_commit": "e1117ce32893a64c88fdbafb77ade2448556bedb",
+    "candidate_commit": "ed0b527e224d9e0fd4d8752e0a9f57f2bcebb305",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_compact_cover_reduction",
+    "diff_sha256": "40c56bb8a4e9f067849407d7240950e10221396eb9e10b11269387610752334c",
+    "source_sha256": "249ee832e6539ec1be7fcab2052e7d5741e40ffd407431cf45b2a6fa0a567aa8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_compact_cover_reduction",
+      "statement": "∀ (n ℓ : ℕ) (Q : Set (Rn (n + ℓ))), PurelyUnrectifiable n Q → (∃ Qj : ℕ → Set (Rn (n + ℓ)), Q = ⋃ j, Qj j ∧ ∀ j, μHE[n] (Qj j) < ∞) → ∃ (Z : Set (Rn (n + ℓ))) (K : ℕ → Set (Rn (n + ℓ))), μHE[n] Z = 0 ∧ (∀ i, IsCompact (K i) ∧ PurelyUnrectifiable n (K i) ∧ μHE[n] (K i) < ∞) ∧ Q ⊆ Z ∪ ⋃ i, K i",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
