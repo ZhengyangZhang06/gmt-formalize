@@ -392,6 +392,39 @@ theorem Submission.gaussGreenVar_measure_isOpen_le_of_isCompact : ∀ (N : ℕ) 
   -- Steps 4–5: continuity from below, and `μ (K n) ≤ c` for each compact `K n ⊆ O`.
   rw [← hKU, hKm.measure_iUnion]
   exact iSup_le fun n ↦ hK (K n) (hKc n) (hKO n)
+/-- **Open outer approximation of a compact set** (step 4 of the total-variation formula behind
+Simon Ch. 2, (2.4), `chapter-02.txt` lines 518–526, used for the uniqueness in Ch. 3, (4.1)): if
+`O` is open, `K ⊆ O` is compact and `μ` is finite on compact subsets of `O`, then for every
+`ε > 0` some open `V` with `K ⊆ V ⊆ O` has `μ(V) < ∞` and `μ(V ∖ K) < ε`. Some closed thickening
+`L₀ = {dist(·, K) ≤ δ₀}` is a compact subset of `O`, so `μ(L₀) < ∞`; the open thickenings
+`V_r = {dist(·, K) < r}` decrease to the closed set `K` as `r ↓ 0`, so `μ(V_r) → μ(K)`
+(`tendsto_measure_thickening_of_isClosed`). Take `V = V_r` with `r < δ₀` and
+`μ(V_r) < μ(K) + ε`; then `μ(V ∖ K) = μ(V) - μ(K) < ε`. -/
+theorem Submission.gaussGreenVar_exists_isOpen_superset_measure_sdiff_lt : ∀ (N : ℕ) (O K : Set (Rn N)) (μ : Measure (Rn N)), IsOpen O → IsCompact K → K ⊆ O → (∀ L : Set (Rn N), IsCompact L → L ⊆ O → μ L < ∞) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ V : Set (Rn N), IsOpen V ∧ K ⊆ V ∧ V ⊆ O ∧ μ V < ∞ ∧ μ (V \ K) < ε := by
+  intro N O K μ hO hK hKO hfin ε hε
+  -- A compact closed thickening `L₀ = cthickening δ K` inside `O`; `μ` is finite on it and on `K`.
+  obtain ⟨δ, hδ, hδO⟩ := hK.exists_cthickening_subset_open hO hKO
+  have hL₀ : μ (Metric.cthickening δ K) < ∞ := hfin _ hK.cthickening hδO
+  have hKfin : μ K < ∞ := hfin K hK hKO
+  -- Continuity from above along the open thickenings `V_r = thickening r K`, `r ↓ 0`.
+  have htend : Tendsto (fun r ↦ μ (Metric.thickening r K)) (𝓝[>] 0) (𝓝 (μ K)) :=
+    tendsto_measure_thickening_of_isClosed
+      ⟨δ, hδ, ((measure_mono (Metric.thickening_subset_cthickening δ K)).trans_lt hL₀).ne⟩
+      hK.isClosed
+  -- Choose `0 < r < δ` with `μ(V_r) < μ(K) + ε`.
+  have hlt : μ K < μ K + ε := ENNReal.lt_add_right hKfin.ne hε.ne'
+  have h₁ : ∀ᶠ r in 𝓝[>] (0 : ℝ), μ (Metric.thickening r K) < μ K + ε := htend (Iio_mem_nhds hlt)
+  have h₂ : ∀ᶠ r in 𝓝[>] (0 : ℝ), r < δ := nhdsWithin_le_nhds (Iio_mem_nhds hδ)
+  have h₃ : ∀ᶠ r in 𝓝[>] (0 : ℝ), 0 < r := self_mem_nhdsWithin
+  obtain ⟨r, hrμ, hrδ, hr⟩ := (h₁.and (h₂.and h₃)).exists
+  have hKV : K ⊆ Metric.thickening r K := Metric.self_subset_thickening hr K
+  have hVL₀ : Metric.thickening r K ⊆ Metric.cthickening δ K :=
+    Metric.thickening_subset_cthickening_of_le (le_of_lt hrδ) K
+  refine ⟨Metric.thickening r K, Metric.isOpen_thickening, hKV, hVL₀.trans hδO,
+    (measure_mono hVL₀).trans_lt hL₀, ?_⟩
+  -- `μ(V ∖ K) = μ(V) - μ(K) < ε`, as `K` is closed with `μ(K) < ∞`.
+  rw [measure_sdiff hKV hK.isClosed.measurableSet.nullMeasurableSet hKfin.ne]
+  exact ENNReal.sub_lt_of_lt_add (measure_mono hKV) (by rwa [add_comm] at hrμ)
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
