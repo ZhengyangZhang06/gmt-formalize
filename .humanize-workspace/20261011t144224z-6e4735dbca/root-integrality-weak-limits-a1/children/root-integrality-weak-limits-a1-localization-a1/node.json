@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.localization-a1",
+  "parent_id": "root.integrality_weak_limits-a1",
+  "depth": 2,
+  "title": "Localization of 8.2 to compactly supported currents in ℝ^P (Remark 8.3(1))",
+  "statement": "Assume SlicingTheorem. Fix P, m ∈ ℕ and suppose the conclusion of Theorem 8.2 holds for compactly supported sequences in ℝ^P: whenever K ⊆ ℝ^P is compact and T_j, T ∈ D_{m+1}(ℝ^P) with T_j and ∂T_j integer multiplicity, spt T_j ⊆ K, sup_j(M(T_j) + M(∂T_j)) < ∞ and T_j ⇀ T, then T is integer multiplicity. Then for every open U ⊆ ℝ^P and all T_j, T ∈ D_{m+1}(U) with T_j and ∂T_j integer multiplicity, sup_j(M_W(T_j) + M_W(∂T_j)) < ∞ for every W ⊂⊂ U, and T_j ⇀ T, the current T is integer multiplicity.",
+  "lean_statement": "∀ (P m : ℕ), SlicingTheorem → (∀ (K : Set (Eucl P)), IsCompact K → ∀ (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegralCurrent (Tj j)) → (∀ j, (Tj j).support ⊆ K) → (⨆ j, ((Tj j).mass + (Tj j).boundary.mass)) < ∞ → WeaklyConvergesOn Tj T → IsIntegerMultiplicity T) → (∀ (U : Set (Eucl P)), IsOpen U → ∀ (Tj : ℕ → GeometricCurrentOn U (m + 1)) (T : GeometricCurrentOn U (m + 1)), (∀ j, IsIntegralCurrent (Tj j)) → (∀ W, CompactlyContainedOpen W U → (⨆ j, ((Tj j).massOn W + (Tj j).boundary.massOn W)) < ∞) → WeaklyConvergesOn Tj T → IsIntegerMultiplicity T)",
+  "lean_name": "iwl_localization",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.tangent_locality-a1",
+    "root.integrality_weak_limits-a1.patching-a1",
+    "root.integrality_weak_limits-a1.restriction_theory-a1",
+    "root.integrality_weak_limits-a1.im_closure-a1",
+    "root.integrality_weak_limits-a1.restriction_limit-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.patching-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.restriction_theory-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.im_closure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.restriction_limit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-localization-a1-a1"
+}

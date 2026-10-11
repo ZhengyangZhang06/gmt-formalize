@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.top_dim-a1",
+  "parent_id": "root.integrality_weak_limits-a1",
+  "depth": 2,
+  "title": "Integrality of weak limits in top dimension (Remark 3.12)",
+  "statement": "Let m ∈ ℕ, n := m + 1 and U ⊆ ℝⁿ open. If T_j, T ∈ D_n(U), every T_j is integer multiplicity, sup_j (M_W(T_j) + M_W(∂T_j)) < ∞ for every open W ⊂⊂ U, and T_j ⇀ T, then T is integer multiplicity.",
+  "lean_statement": "∀ (m : ℕ) (U : Set (Eucl (m + 1))), IsOpen U → ∀ (Tj : ℕ → GeometricCurrentOn U (m + 1)) (T : GeometricCurrentOn U (m + 1)), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ W, CompactlyContainedOpen W U → (⨆ j, ((Tj j).massOn W + (Tj j).boundary.massOn W)) < ∞) → WeaklyConvergesOn Tj T → IsIntegerMultiplicity T",
+  "lean_name": "iwl_top_dim_integrality",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.tangent_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-top-dim-a1-a1"
+}
