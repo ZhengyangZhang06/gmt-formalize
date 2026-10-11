@@ -4,6 +4,7 @@ import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.Topology.EMetricSpace.Lipschitz
 import Poincare.SimonGMT.Chapter02.BV
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter02.AreaCritical
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 3 "Countably n-Rectifiable Sets" (pp. 69–84): contract
@@ -457,6 +458,60 @@ theorem Submission.c1_regular_point_ball_image_isC1Submanifold : ∀ (n p : ℕ)
     have h := hDG_lower z (Metric.ball_subset_closedBall hz) v
     rw [hv, norm_zero] at h
     exact norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right h hc)
+/-- **Simon Ch. 3, proof of Lemma 1.2 (p. 70)** (`chapter-03.txt` lines 61–65), for one `C¹` map
+`G : ℝⁿ → ℝᵖ`: `G(ℝⁿ)` lies in an `Hⁿ`-null set together with countably many embedded `C¹`
+`n`-submanifolds. The critical image `N₀ = G({x : DG(x) not injective})` is `Hⁿ`-null by the area
+formula (SimonGMT `area_image_criticalSet_eq_zero`). Every regular point `x` has a ball `B_σ(x)`
+with `G(B_σ(x))` a submanifold (`c1_regular_point_ball_image_isC1Submanifold`), and countably
+many of these balls cover the regular points (Lindelöf); padding with `∅`, which is vacuously a
+submanifold, indexes their images by `ℕ`. -/
+theorem Submission.c1_range_null_union_submanifolds : ∀ (n p : ℕ) (G : Rn n → Rn p),
+    ContDiff ℝ 1 G → ∃ (N₀ : Set (Rn p)) (N : ℕ → Set (Rn p)), μHE[n] N₀ = 0 ∧
+      (∀ k, IsC1Submanifold n (N k)) ∧ Set.range G ⊆ N₀ ∪ ⋃ k, N k := by
+  intro n p G hG
+  -- The critical image is `Hⁿ`-null; `G` is differentiable everywhere.
+  have hN₀ : μHE[n] (G '' {x | ¬ Function.Injective (fderiv ℝ G x)}) = 0 := by
+    have h := Poincare.SimonGMT.Chapter02.area_image_criticalSet_eq_zero G
+    rw [finrank_euclideanSpace_fin] at h
+    refine measure_mono_null (image_mono fun x hx ↦ ?_) h
+    exact ⟨hG.differentiable_one x, hx⟩
+  -- A radius `σ x > 0` at every `x`, with `G(B_{σ x}(x))` a submanifold when `DG(x)` is injective.
+  have hradius : ∀ x : Rn n, ∃ σ : ℝ, 0 < σ ∧
+      (Function.Injective (fderiv ℝ G x) → IsC1Submanifold n (G '' Metric.ball x σ)) := by
+    intro x
+    by_cases hx : Function.Injective (fderiv ℝ G x)
+    · obtain ⟨σ, hσ, hS⟩ := Submission.c1_regular_point_ball_image_isC1Submanifold n p G hG x hx
+      exact ⟨σ, hσ, fun _ ↦ hS⟩
+    · exact ⟨1, one_pos, fun h ↦ absurd h hx⟩
+  choose σ hσ hS using hradius
+  -- Lindelöf: the balls around the points of a countable `T` cover all regular points.
+  obtain ⟨T, hTR, hTc, hTU⟩ := TopologicalSpace.isOpen_biUnion_countable
+    {x | Function.Injective (fderiv ℝ G x)} (fun x ↦ Metric.ball x (σ x))
+    fun x _ ↦ Metric.isOpen_ball
+  -- Enumerate `{∅} ∪ {G(B_{σ x}(x)) : x ∈ T}` by `ℕ`.
+  obtain ⟨N, hN⟩ := ((hTc.image fun x ↦ G '' Metric.ball x (σ x)).insert ∅).exists_eq_range
+    (insert_nonempty _ _)
+  refine ⟨G '' {x | ¬ Function.Injective (fderiv ℝ G x)}, N, hN₀, fun k ↦ ?_, ?_⟩
+  · have hk : N k ∈ insert ∅ ((fun x ↦ G '' Metric.ball x (σ x)) '' T) := by
+      rw [hN]
+      exact mem_range_self k
+    rcases hk with hk | ⟨x, hxT, hx⟩
+    · rw [hk]
+      exact fun y hy ↦ absurd hy (notMem_empty y)
+    · rw [← hx]
+      exact hS x (hTR hxT)
+  · rintro _ ⟨z, rfl⟩
+    by_cases hz : Function.Injective (fderiv ℝ G z)
+    · have hzT : z ∈ ⋃ x ∈ {x | Function.Injective (fderiv ℝ G x)}, Metric.ball x (σ x) :=
+        mem_biUnion hz (Metric.mem_ball_self (hσ z))
+      rw [← hTU] at hzT
+      obtain ⟨x, hxT, hzx⟩ := mem_iUnion₂.1 hzT
+      have hx : G '' Metric.ball x (σ x) ∈ range N := by
+        rw [← hN]
+        exact mem_insert_of_mem _ (mem_image_of_mem _ hxT)
+      obtain ⟨k, hk⟩ := hx
+      exact Or.inr (mem_iUnion.2 ⟨k, by rw [hk]; exact mem_image_of_mem G hzx⟩)
+    · exact Or.inl ⟨z, hz, rfl⟩
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
