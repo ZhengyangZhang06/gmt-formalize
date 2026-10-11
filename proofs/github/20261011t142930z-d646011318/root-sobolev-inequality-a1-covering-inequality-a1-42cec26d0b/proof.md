@@ -1,0 +1,108 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.sobolev_inequality-a1`
+- Child DAG node: `root.sobolev_inequality-a1.covering_inequality-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. E = Ambient n ℓ = ℝ^{n+ℓ} with its Borel σ-algebra (a separable metric space); B_ρ(ζ) = closedBall ζ ρ; ω_n = omega n ∈ (0, ∞) (Lebesgue measure of the open unit ball of ℝⁿ: open, nonempty, bounded); μ(S) is read as a real number via Measure.real where it appears in quotients; all ∫ are Bochner integrals. Source: Steps 3 (good balls, Simon 5.7(1)) and 4 (covering, Simon Ch. 1, 3.4) of the parent proof, stated for an abstract measure μ (in the parent, μ = μ_V and φ = |∇^M g| + g|H|).
+
+1. (Preliminaries.) g is μ-integrable (continuous with compact support, μ finite on compact sets), so Γ := ∫ g dμ ≥ 0 is finite and every ∫_S g dμ, ∫_S φ dμ is finite and nonnegative. Every closed ball is compact, so μ(B_ρ(ζ)) < ∞. Put F := ω_n^{−1}Γ ≥ 0, R := 2F^{1/n} and K := 5ⁿF^{1/n}. Since ω_n^{−1} ≥ 0 and Γ ≥ 0, F^{1/n} = (ω_n^{−1})^{1/n}Γ^{1/n} = ω_n^{−1/n}Γ^{1/n} (Real.mul_rpow, Real.inv_rpow, Real.rpow_neg), so K = 5ⁿω_n^{−1/n}(∫g dμ)^{1/n}, the constant in the claim; K ≥ 0.
+2. (Good radius at a good point.) Let ζ ∈ E with g(ζ) ≥ 1 and t ≥ 1 such that μ(B_ρ(ζ))/(ω_nρⁿ) → t as ρ ↓ 0. For τ ∈ ℝ define f(τ) := ω_n^{−1}∫_{B_τ(ζ)} g dμ and k(τ) := ω_n^{−1}∫_{B_τ(ζ)} φ dμ. We verify the hypotheses of the sibling sobolev_good_radius_calculus with this F:
+ (a) f and k are nondecreasing on (0, ∞): for 0 < τ ≤ τ', B_τ(ζ) ⊆ B_{τ'}(ζ) and g, φ are nonnegative and integrable.
+ (b) For τ > 0: 0 ≤ f(τ) ≤ ω_n^{−1}∫ g dμ = F (g ≥ 0 integrable) and 0 ≤ k(τ).
+ (c) The finite-interval inequality: for 0 < s ≤ r, multiply hypothesis (i) at ζ by ω_n^{−1} > 0; since ω_n^{−1}∫_{(s,r]} Ψ = ∫_{(s,r]} ω_n^{−1}Ψ for every Ψ, this is f(s)/sⁿ ≤ f(r)/rⁿ + ∫_{(s,r]} k(τ)/τⁿ dτ.
+ (d) The lower density condition: let η < 1. If η < 0, then f(s)/sⁿ ≥ 0 > η for all s > 0. If 0 ≤ η < 1, put η_1 := (1 + η)/2, so η < η_1 < 1 and η/η_1 < 1. Since g is continuous at ζ and g(ζ) ≥ 1 > η_1, there is δ > 0 with g ≥ η_1 on B_δ(ζ); for 0 < s < δ, ∫_{B_s(ζ)} g dμ ≥ η_1μ(B_s(ζ)) (as μ(B_s(ζ)) < ∞), hence f(s)/sⁿ ≥ η_1·μ(B_s(ζ))/(ω_nsⁿ). Because μ(B_s(ζ))/(ω_nsⁿ) → t ≥ 1 > η/η_1, eventually as s ↓ 0 we have μ(B_s(ζ))/(ω_nsⁿ) > η/η_1, hence f(s)/sⁿ > η. In both cases f(s)/sⁿ > η eventually in 𝓝[>]0, hence frequently (the filter is nontrivial).
+ The sibling therefore yields F > 0 and r_ζ with 0 < r_ζ < 2F^{1/n} = R and f(5r_ζ) ≤ 5ⁿF^{1/n}k(r_ζ); multiplying by ω_n > 0:
+ (2.1) ∫_{B_{5r_ζ}(ζ)} g dμ ≤ K ∫_{B_{r_ζ}(ζ)} φ dμ, with 0 < r_ζ < R.
+3. (Removing the exceptional set.) Let Z := {ζ : g(ζ) ≥ 1 and there is no t ≥ 1 with μ(B_ρ(ζ))/(ω_nρⁿ) → t}. By hypothesis (ii), μ(Z) = 0; choose a Borel set N ⊇ Z with μ(N) = 0 (Mathlib exists_measurable_superset_of_null). The set {g ≥ 1} is closed (g continuous), so A := {g ≥ 1} ∖ N is Borel, and every ζ ∈ A satisfies the assumptions of step 2; fix such radii r_ζ for ζ ∈ A (choice). Since μ(N) = 0, ∫_{{g≥1}} g dμ = ∫_A g dμ.
+4. (Covering.) Apply the 5-times covering lemma (Simon Ch. 1, 3.4; Mathlib Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall with τ = 5 > 3 and the common radius bound R) to the closed balls B_{r_ζ}(ζ), ζ ∈ A: there is D ⊆ A such that the balls B_{r_b}(b), b ∈ D, are pairwise disjoint and for every a ∈ A there is b ∈ D with B_{r_a}(a) ⊆ B_{5r_b}(b). As a ∈ B_{r_a}(a), A ⊆ ⋃_{b∈D} B_{5r_b}(b). D is countable: the balls B_{r_b}(b) are pairwise disjoint, each has nonempty interior (it contains the open ball of radius r_b > 0), and E is separable (Mathlib Set.PairwiseDisjoint.countable_of_nonempty_interior).
+5. (Summation.) Let ν_g(S) := ∫_S g dμ and ν_φ(S) := ∫_S φ dμ (finite Borel measures, as g, φ ≥ 0 are integrable; equivalently work with lower Lebesgue integrals of ofReal g, ofReal φ). Then
+ ∫_{{g≥1}} g dμ = ν_g(A) ≤ ν_g(⋃_{b∈D} B_{5r_b}(b)) ≤ Σ_{b∈D} ν_g(B_{5r_b}(b)) [countable subadditivity, D countable] ≤ Σ_{b∈D} K ν_φ(B_{r_b}(b)) [by (2.1)] = K ν_φ(⋃_{b∈D} B_{r_b}(b)) [countable additivity on pairwise disjoint closed balls] ≤ K ν_φ(E) = K ∫ φ dμ.
+ (If A = ∅, then D = ∅ and the chain reads 0 ≤ K∫φ dμ.) With K = 5ⁿω_n^{−1/n}(∫g dμ)^{1/n} from step 1 this is the claim. (Library pointer: steps 3–5 are, in lower-integral form, the axiom-clean SimonGMT lemma Chapter04.lintegral_le_of_ae_exists_good_radius applied to ofReal∘g, ofReal∘φ, the Borel set {g ≥ 1}, the radius bound R and the constant ofReal K, whose hypothesis is (2.1) for μ-a.e. ζ ∈ {g ≥ 1}; converting back uses ofReal(∫_S u dμ) = ∫⁻_S ofReal∘u dμ for integrable u ≥ 0.) ∎
+
+## Key steps
+
+1. At a.e. point ζ of {g ≥ 1}, f(τ) = ω_n^{−1}∫_{B_τ(ζ)}g and k(τ) = ω_n^{−1}∫_{B_τ(ζ)}φ satisfy the hypotheses of good_radius_calculus with F = ω_n^{−1}∫g (lower density from continuity of g and density t ≥ 1)
+2. This gives r_ζ < R = 2F^{1/n} with ∫_{B_{5r_ζ}(ζ)} g ≤ 5ⁿω_n^{−1/n}(∫g)^{1/n}∫_{B_{r_ζ}(ζ)} φ
+3. Remove a Borel null set and apply the Vitali 5-times covering lemma (radii ≤ R) to get a countable disjoint subfamily whose 5-fold dilates cover
+4. Sum the good-ball inequalities using subadditivity for g·μ and disjoint additivity for φ·μ
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `rg -n 'theorem exists_disjoint_subfamily_covering_enlargement_closedBall' -A 12 <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `rg -n 'theorem lintegral_comp_eq_lintegral_meas_lt_mul|theorem lintegral_eq_lintegral_meas_lt|theorem lintegral_comp_eq_lintegral_meas_le_mul|theorem lintegral_rpow_eq_lintegral_meas_lt_mul' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `rg -n 'countable_of_nonempty_interior|countable_of_isOpen' <snapshot>/mathlib/Mathlib`
+- `rg -n '^theorem|^lemma|^def|^protected theorem' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `sed -n 586,880p book/chapter-04.txt (Simon 5.1-5.9 printed text)`
+- `grep -rn 'theorem contDiff_of_tsupport_subset|theorem exists_fiveTimesCovering|theorem integrableOn_norm_tangentialGradient' lake-packages-25730c7c/simongmt/Poincare/SimonGMT`
+- `cat simongmt/Poincare/SimonGMT/Chapter04/{SobolevCovering,GoodRadius,SobolevGoodRadius,SobolevTruncation,SobolevLayerCake,Sobolev,CompactWeighted}.lean Chapter01/DensityCovering.lean`
+- `git -C lake-packages-25730c7c/simongmt rev-parse HEAD`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/sobolev-a1-audit/olean/GMT/Ch04/Submission.olean`
+- `python3 -I gen_challenges.py: verifier/lean_contract.validate_lean_statement + gmt-compare.child_modules(mode=contract) for each child; LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/sobolev-a1-audit/olean lean Challenge_<name>.lean`
+- `LEAN_PATH=... lean /tmp/sobolev-a1-audit/lean/Assembly.lean (parent frozen type proved from the uncle and six sorry'd children; #print axioms)`
+- `LEAN_PATH=... lean /tmp/sobolev-a1-audit/lean/Inspect.lean (Iff.rfl against explicit @HPow.hPow ℝ ℕ ℝ / Real.rpow / Measure toReal forms)`
+- `lake env lean /tmp/sobolev-a1-audit/lean/Axioms.lean (#print axioms of cited SimonGMT and Mathlib lemmas)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-sobolev-inequality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevCovering.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/GoodRadius.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevGoodRadius.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevTruncation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevLayerCake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Sobolev.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/CompactWeighted.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityCovering.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/sobolev-a1-audit/children.json`
+- `/tmp/sobolev-a1-audit/lean/Assembly.lean`
+- `/tmp/sobolev-a1-audit/lean/Inspect.lean`
+- `/tmp/sobolev-a1-audit/lean/Axioms.lean`
+
+Contract provenance. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 6e58e5dd…0f4770b). The manifest pins project ff75f52 and Mathlib 25730c7c. The SimonGMT package is at the pinned revision 2b3663083f3fe399b6296fb8eaee52169170e197.
+
+Mathlib lemmas available in the snapshot, each depending only on propext, Classical.choice and Quot.sound:
+- Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall (requires τ > 3; used with τ = 5)
+- Set.PairwiseDisjoint.countable_of_nonempty_interior
+- the Layercake lemmas lintegral_comp_eq_lintegral_meas_lt_mul and lintegral_rpow_eq_lintegral_meas_lt_mul
+- Real.smoothTransition (smooth, monotone, values in [0,1], 0 on (−∞,0], 1 on [1,∞))
+- withDensity_absolutelyContinuous, exists_measurable_superset_of_null, Tendsto.limUnder_eq
+- LocallyIntegrableOn.integrableOn_compact_subset, Continuous.integrable_of_hasCompactSupport
+- intervalIntegral.integral_comp_mul_left, MonotoneOn.intervalIntegrable, Real.rpow_inv_natCast_pow
+- Submodule.norm_starProjection_apply_le
+
+Pinned SimonGMT. It contains a kernel-checked Sobolev proof for its own Chapter04.RectifiableVarifold. That structure differs from the contract's, so its varifold-specific lemmas cannot be applied. Its general lemmas are reusable as tools, each with the same three axioms only:
+- Chapter04.lintegral_le_of_ae_exists_good_radius (5-times covering plus summation)
+- exists_smooth_superlevel_cutoff
+- lintegral_smooth_truncation_energy_le
+- lintegral_superlevel_le_of_positive_shifts
+- rpow_one_sub_le_of_le_rpow_mul
+- intervalIntegrable_radiusQuotient_of_monotoneOn
+- RectifiableVarifold.contDiff_of_tsupport_subset (fully general despite the namespace)
+- Chapter01.exists_fiveTimesCovering
+Its calculus lemma exists_goodRadius_of_local_radius_inequality has a weaker constant (4·5ⁿM^{1/n}, r ≤ R). The corrected Lemma 5.8 child therefore keeps the parent's sharp constant and is proved directly.
+
+Child type checks. With GMT.Ch04.Submission compiled to an olean:
+- All six child types pass validate_lean_statement and elaborate in comparator-generated NodeChallenge files (contract scope: the opens, namespace GMT.Ch04, noncomputable section, open RectifiableVarifold); the only diagnostics are the expected sorry warnings.
+- Iff.rfl confirms ℕ-powers and Real.rpow where intended.
+- The parent's frozen type is proved, with no sorry in its body, from the uncle weighted_monotonicity_identity (frozen type copied byte-identically) and the six children. #print axioms shows sorryAx only through the stubs.
