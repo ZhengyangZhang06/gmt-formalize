@@ -359,6 +359,12 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
-theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
+theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by
+  exact ⟨Submission.compactness_under_mass_bounds, Submission.constancy_theorem,
+    Submission.lipschitz_pushforward_integer_multiplicity, Submission.federer_fleming_compactness,
+    Submission.slicing_theorem, Submission.deformation_theorem, Submission.isoperimetric_theorem,
+    Submission.polyhedral_approximation, Submission.boundary_rectifiability,
+    Submission.flat_convergence_iff_weak_convergence, Submission.rectifiability_theorem,
+    Submission.integrality_of_weak_limits⟩
 
 end GMT.Ch06
