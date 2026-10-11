@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.chart_divergence-a1",
+  "parent_id": "root.stationary_results-a1",
+  "depth": 2,
+  "title": "Local divergence identity in a C² chart",
+  "statement": "Assume (TH). (TH) is the frozen statement of the sibling root.submanifold_tangent-a1, taken as an explicit hypothesis: (TH1) for every Simon local representation (V, W, ψ) of class r ≥ 1 of any M ⊆ ℝᴺ, tangentSpace M (ψ x) = range Dψ(x) for x ∈ V; (TH2) every n-dimensional C^r Simon submanifold of ℝᴺ is a measurable set on which y ↦ tangentProjection M y is continuous. Let (V, W, ψ) be a Simon local representation of class 2 of M ⊆ ℝᴺ (ψ : ℝⁿ → ℝᴺ) and Y : ℝᴺ → ℝᴺ of class C¹. Then there is w : ℝⁿ → ℝⁿ, C¹ on V, with w(x) = 0 for every x ∈ V such that Y(ψ(x)) = 0, and trace Dw(x) = Jψ(x) · (div_M Y(ψ(x)) + ⟨Y(ψ(x)), H(ψ(x))⟩) for every x ∈ V, where Jψ(x) = Chapter02.areaJacobianAt ψ x = √det(Dψ(x)* Dψ(x)), div_M Y = tangentialDivergence M Y and H = meanCurvature M.",
+  "lean_statement": "((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → ∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N) (Y : Rn N → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ContDiff ℝ 1 Y → ∃ w : Rn n → Rn n, ContDiffOn ℝ 1 w V ∧ (∀ x ∈ V, Y (ψ x) = 0 → w x = 0) ∧ ∀ x ∈ V, LinearMap.trace ℝ (Rn n) (fderiv ℝ w x).toLinearMap = Chapter02.areaJacobianAt ψ x * (tangentialDivergence M Y (ψ x) + inner ℝ (Y (ψ x)) (meanCurvature M (ψ x)))",
+  "lean_name": "chart_divergence_density_formula",
+  "depends_on": [
+    "root.stationary_results-a1.sff_chart-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.stationary_results-a1.sff_chart-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-chart-divergence-a1-a1"
+}
