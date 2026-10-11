@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7d28efb9c265b64c5e91670cf741be37805ab779c8502d1df51151e772ccdb63",
+  "git_delta": {
+    "base_commit": "13f6ddbe049b27da55a0dc04340881adf0146298",
+    "candidate_commit": "fc5f3d8d92f05759364ce8aabd90eb9144ed92db",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "section3_antilipschitzOn_volume_le_euclideanHausdorff_image",
+    "diff_sha256": "9d0f9348831678f612770b300055f3b7e48a31e924409599b048a424682334d9",
+    "source_sha256": "30785d96d8bdd0e0863d0e1a7b9b780524334905ca4c8ad11492b4d1a7eb1ba6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.section3_antilipschitzOn_volume_le_euclideanHausdorff_image",
+      "statement": "∀ (n p : ℕ) (f : Rn n → Rn p) (S : Set (Rn n)) (K : ℝ≥0), (∀ x ∈ S, ∀ y ∈ S, ‖x - y‖ ≤ K * ‖f x - f y‖) → volume S ≤ (K : ℝ≥0∞) ^ n * μHE[n] (f '' S)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
