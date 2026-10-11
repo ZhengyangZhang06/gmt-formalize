@@ -1,0 +1,48 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem.*(det|Det).*(Deriv|deriv|Diff|diff)|theorem.*(Deriv|deriv|Diff).*det",
+        "theorem det_apply|theorem HasDerivAt.fun_finsetProd|theorem HasDerivAt.sqrt|theorem HasDerivAt.div |theorem HasDerivAt.congr_of_eventuallyEq|theorem normDet_sq|normDet_sq_eq_det_gram",
+        "sum_sq_inner_right|inner_orthogonalProjectionOnto_eq_of_mem_left|starProjection_inner_eq_zero|starProjection_apply|def gram|HasDerivAt.inner|HasDerivAt.clm_apply|theorem ContinuousLinearMap.normDet_sq",
+        "variation_matrix_det_derivatives_at_one|variation_sqrt_derivatives_at_one",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean ContractsAndInstances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -o ProofsAndAssembly.olean ProofsAndAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-gram-det-derivatives-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-gram-det-derivatives-a1/decomposition-v1.json",
+        "/tmp/gramdet-independent-audit-s_jw0svx/ContractsAndInstances.lean",
+        "/tmp/gramdet-independent-audit-s_jw0svx/ProofsAndAssembly.lean"
+      ],
+      "conclusion": "The split appropriately isolates two analytic obligations used by the selected parent. The snapshot supplies the stated calculus, determinant, Gram, and projection ingredients; the determinant-derivative search found no relevant general formula. Both exact child types independently elaborate as Prop against freshly compiled frozen Submission, before either child is implemented. Matrix identity, multiplication, and trace probes pass. Recompilation of the supplied child proofs reports only propext, Classical.choice, and Quot.sound. The assembly proves the exact frozen parent type with only the already-declared gram_det_identity additionally assumed. Both names are bare and unreserved in the DAG and other proposals. Dependencies are correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "det_derivatives_at_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line Lean proposition matches every prose hypothesis and both conclusions. The supplied proof fully derives the Leibniz derivative, justifies the identity/transposition reductions, and obtains the second derivative through eventual equality. The neighborhood hypothesis correctly supplies entry derivatives at zero; empty index sets are covered. Matrix multiplication is independently verified. No circular reliance or further proof-planning obligation remains."
+    },
+    {
+      "key": "sqrt_derivatives_at_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line Lean proposition exactly matches the prose. The chain rule proves the first clause. Continuity supplies local positivity, nearby differentiability identifies the derivative function, and the quotient rule gives h₂/2 − h₁²/4 with denominator 2 at zero. Eventual equality transfers this derivative correctly. Every hypothesis is used correctly, and the proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}
