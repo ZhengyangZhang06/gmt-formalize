@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.normdet_chain_rule-a1.normdet_adjoint_horizontal-a1",
+  "parent_id": "root.coarea_and_slices-a1.normdet_chain_rule-a1",
+  "depth": 3,
+  "title": "normDet of the adjoint: horizontal restriction for surjective maps, zero otherwise",
+  "statement": "Let X and Y be finite-dimensional real inner product spaces and P : X → Y a linear map with adjoint P* : Y → X. Let ι : (ker P)^⊥ → X be the inclusion of the orthogonal complement of ker P.\n(a) If P is surjective, then normDet(P*) = normDet(P ∘ ι).\n(b) If P is not surjective, then normDet(P*) = 0.\nHere normDet is Mathlib's LinearMap.normDet and P* is LinearMap.adjoint P.",
+  "lean_statement": "∀ {X Y : Type} [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y] (P : X →ₗ[ℝ] Y), (Function.Surjective P → (LinearMap.adjoint P).normDet = (P ∘ₗ (LinearMap.ker P)ᗮ.subtype).normDet) ∧ (¬ Function.Surjective P → (LinearMap.adjoint P).normDet = 0)",
+  "lean_name": "coarea_normDet_adjoint_eq_horizontal",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-normdet-chain-rule-a1-normdet-adjoint-horizontal-a1-a1"
+}
