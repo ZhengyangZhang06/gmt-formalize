@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3123bd52ac013c00fbfc4ac51e90b085e955c10dc4ddfe456571040b94353363",
+  "git_delta": {
+    "base_commit": "07fc355de43561c2564473fa671e4d88b426e92d",
+    "candidate_commit": "3c7df0b893e90519d9536cb55b51de9647c53fc3",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_allardHypotheses_small_scale",
+    "diff_sha256": "c2cc8b6b3cfadb76d2088db3e1707b4fb82b4da63641a7badf06c6679f6fb78d",
+    "source_sha256": "2882607f356cd2a1e9b6d89952a798a673d09c235e2f1626813b5d3cc55c9eb1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_allardHypotheses_small_scale",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → (0 : Amb n ℓ) ∈ U → V.HasDensity 0 1 → ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, V.AllardHypotheses H p δ ρ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
