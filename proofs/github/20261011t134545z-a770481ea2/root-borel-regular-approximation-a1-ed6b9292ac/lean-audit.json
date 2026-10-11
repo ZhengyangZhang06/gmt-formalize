@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f1a53e969bc7a5d0061f56e958427184757c214f7b78935c1e2e38852af5365f",
+  "git_delta": {
+    "base_commit": "df701776cb50a2fcd2d2c79e66f88fb414eecd5c",
+    "candidate_commit": "d2576c81905622034bc5ae662ab73831c5fe3171",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "borel_regular_approximation",
+    "diff_sha256": "5d8107b137fbf12cacc34430063d1e751a3b6b1351e7905b1f033a809ab00a75",
+    "source_sha256": "1203ae87b9d51d025e4c25baf3c0936d595f2da3ebf72c5185fdf2b757e97fc5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.borel_regular_approximation",
+      "statement": "BorelRegularApproximation",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
