@@ -1,0 +1,116 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root`
+- Child DAG node: `root.lusin_theorem-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+PROOF OF `LusinTheorem` (Simon, Ch. 1, Theorem 1.17; printed proof, transcribed and completed).
+
+Statement. Let X be a topological space in which every closed set is a countable intersection of open sets, μ a Borel regular outer measure on X (no σ-finiteness assumed), A ⊆ X μ-measurable with μ(A) < ∞, and f : A → ℝ measurable with respect to the trace σ-algebra {A ∩ E : E μ-measurable} on A (Borel σ-algebra on ℝ). Then for each real ε > 0 there is a closed set C ⊆ X with C ⊆ A, μ(A ∖ C) < ε, and f|_C continuous (i.e. f ∘ (inclusion C ↪ A) : C → ℝ is continuous for the subspace topology of C).
+
+Standard facts (Carathéodory; Simon 1.6, 1.7, 1.9): the μ-measurable sets form a σ-algebra M on which μ is countably additive; decreasing sequences in M of finite measure satisfy μ(⋂) = lim μ.
+
+Dependency. Theorem 1.15 = sibling `borel_regular_approximation` (Lean: `Submission.borel_regular_approximation : BorelRegularApproximation`).
+
+Step 0 (measurability of level sets). For a Borel set G ⊆ ℝ, f^{−1}(G) = A ∩ E for some μ-measurable E, so f^{−1}(G), viewed as a subset of X, lies in M (A ∈ M and M is a σ-algebra).
+
+Step 1 (remarks after (1.12): μ⌞A is Borel regular). Put μ_A(S) := μ(A ∩ S).
+ (a) Every μ-measurable set is μ_A-measurable: μ_A(S) = μ(S ∩ A) = μ(S ∩ A ∩ E) + μ((S ∩ A) ∖ E) = μ_A(S ∩ E) + μ_A(S ∖ E) for E ∈ M.
+ (b) Borel hulls: choose a Borel B₁ ⊇ A with μ(B₁) = μ(A); since A ∈ M and μ(A) < ∞, μ(B₁ ∖ A) = μ(B₁) − μ(A) = 0; choose a Borel B₂ ⊇ B₁ ∖ A with μ(B₂) = μ(B₁ ∖ A) = 0. Given S ⊆ X choose a Borel B₃ ⊇ S ∩ A with μ(B₃) = μ(S ∩ A). Then
+   S ⊆ (S ∩ A) ∪ (X ∖ A) ⊆ B₃ ∪ (X ∖ B₁) ∪ (B₁ ∖ A) ⊆ B := B₃ ∪ (X ∖ B₁) ∪ B₂,
+  B is Borel, and μ_A(B) = μ(A ∩ B) ≤ μ(B₃) + μ(A ∖ B₁) + μ(B₂) = μ(B₃) + 0 + 0 = μ_A(S) (A ∖ B₁ = ∅). With (a) this shows μ_A is Borel regular.
+ (c) μ_A(X) = μ(A) < ∞, so μ_A is open σ-finite (V_n := X).
+
+Step 2 (closed inner approximation). By Theorem 1.15(2) (sibling) applied to μ_A on X: for every μ_A-measurable E, μ_A(E) = sup{μ_A(C) : C closed ⊆ E}. Consequently: if E ⊆ A is μ-measurable and η > 0, there is a closed C ⊆ E with μ(E ∖ C) < η. Indeed choose closed C ⊆ E with μ_A(C) > μ_A(E) − η (μ_A(E) = μ(E) < ∞); C is Borel, hence μ_A-measurable, so μ_A(E ∖ C) = μ_A(E) − μ_A(C) < η, and μ_A(E ∖ C) = μ(A ∩ (E ∖ C)) = μ(E ∖ C) because E ⊆ A.
+
+Step 3 (printed construction). For i = 1, 2, … and j ∈ ℤ let A_ij := f^{−1}([(j−1)/i, j/i)) ⊆ A. By Step 0, A_ij ∈ M; for fixed i the sets A_ij (j ∈ ℤ) are pairwise disjoint with union A. By Step 2 choose closed C_ij ⊆ A_ij with μ(A_ij ∖ C_ij) < 2^{−i−|j|−2} ε. Then A ∖ ⋃_{l∈ℤ} C_il ⊆ ⋃_j (A_ij ∖ C_ij), so
+  μ(A ∖ ⋃_l C_il) ≤ Σ_{j∈ℤ} 2^{−i−|j|−2} ε = (3/4)·2^{−i} ε < 2^{−i} ε.
+The sets A ∖ ⋃_{|l|≤J} C_il (J = 0, 1, 2, …) belong to M, decrease to A ∖ ⋃_l C_il, and have finite measure; by (1.9) there is J(i) with
+  μ(A ∖ ⋃_{|j|≤J(i)} C_ij) < 2^{−i} ε.
+
+Step 4 (the closed set C). Let D_i := ⋃_{|j|≤J(i)} C_ij (closed, ⊆ A) and C := ⋂_{i≥1} D_i. Then C is closed, C ⊆ A, and A ∖ C = ⋃_i (A ∖ D_i), so
+  μ(A ∖ C) ≤ Σ_i μ(A ∖ D_i) ≤ μ(A ∖ D₁) + Σ_{i≥2} 2^{−i} ε < 2^{−1}ε + 2^{−1}ε = ε.
+In the formal statement the bound is μ(A ∖ C) < ENNReal.ofReal ε, which is the same since ε > 0.
+
+Step 5 (continuity). For each i define g_i : D_i → ℝ by g_i := (j−1)/i on C_ij (|j| ≤ J(i)); this is well defined because the C_ij are pairwise disjoint. The finitely many sets C_ij (|j| ≤ J(i)) are closed and pairwise disjoint, so each is relatively open in D_i (its complement in D_i is a finite union of closed sets); hence g_i is locally constant and therefore continuous on D_i, and so g_i|_C is continuous. For x ∈ C and every i we have x ∈ C_ij ⊆ A_ij for some j, hence (j−1)/i ≤ f(x) < j/i, i.e. 0 ≤ f(x) − g_i(x) < 1/i. Thus g_i|_C → f|_C uniformly on C, and a uniform limit of continuous real functions is continuous. So f|_C, i.e. f ∘ inclusion(C ⊆ A), is continuous. ∎
+
+Formalization note (non-binding): `Poincare.SimonGMT.Chapter01.IsBorelRegularOuterMeasure.simon_theorem_1_17` (Chapter01/Lusin.lean) states exactly this with `ε : ℝ≥0∞`, `ε ≠ 0` (use `ENNReal.ofReal ε`, nonzero for ε > 0), hypothesis `ClosedSetsAreGDelta X`, the subtype σ-algebra `Subtype.instMeasurableSpace` over `μ.caratheodory` (definitionally the comap), and continuity of `fun x : C => f ⟨x.1, hCA x.2⟩`, which is `f ∘ Set.inclusion hCA`.
+
+## Key steps
+
+1. Preimages f^{−1}(G) of Borel sets are μ-measurable subsets of A.
+2. μ⌞A is Borel regular (Borel hulls B₁, B₂, B₃) and finite, hence open σ-finite.
+3. Theorem 1.15(2) for μ⌞A: every μ-measurable E ⊆ A contains a closed C with μ(E ∖ C) < η.
+4. Closed C_ij ⊆ A_ij = f^{−1}[(j−1)/i, j/i) with μ(A_ij ∖ C_ij) < 2^{−i−|j|−2}ε, and a finite truncation |j| ≤ J(i) by continuity from above.
+5. C := ⋂_i ⋃_{|j|≤J(i)} C_ij is closed, C ⊆ A, and μ(A ∖ C) < ε.
+6. Step functions g_i, continuous on finite disjoint closed unions, converge uniformly to f on C, so f|_C is continuous.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (snapshot root e8e26216f05cbb4e)`
+- `rg -n '^def (CaratheodoryCriterion|BorelRegularApproximation|LusinTheorem|LebesgueEqHausdorff|IsodiametricInequality|UpperDensityComparison|UpperDensityTheorem|BesicovitchCovering|GeneralDensityTheorem|LebesgueDifferentiation|RadonNikodymTheorem|HausdorffDensityBounds|RieszPositive|RieszVector|RadonCompactness)|^theorem main_theorem|^universe|^open|^namespace' project/GMT/Ch01/Contract.lean`
+- `cmp project/GMT/Ch01/Contract.lean project/GMT/Ch01/Submission.lean`
+- `rg -n -c Poincare.SimonGMT project mathlib/Mathlib`
+- `rg -n 'theorem simon_theorem' . (no match: SimonGMT is not in the snapshot)`
+- `rg -n 'theorem borel_le_caratheodory|def IsMetric' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n '^theorem exist_disjoint_covering_families|^theorem isEmpty_satelliteConfig_multiplicity|def multiplicity' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `rg -n 'theorem integral_rieszMeasure|instance rieszMeasure_regular|instance regular_rieszMeasure' mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/NNReal.lean mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `rg -n 'theorem volume_ball|theorem volume_closedBall' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `rg -n 'def IsCaratheodory|def caratheodory |theorem isCaratheodory_iff' mathlib/Mathlib/MeasureTheory/OuterMeasure/Caratheodory.lean`
+- `rg -n 'theorem toMeasure_apply|theorem le_toMeasure_apply' mathlib/Mathlib/MeasureTheory/Measure/OuterMeasure.lean; rg -n 'theorem ae_iff' mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `rg -n 'theorem setLIntegral_trim_ae|theorem lintegral_trim_ae' mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean; rg -n 'theorem integral_trim_ae|theorem integral_trim ' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean; rg -n 'theorem restrict_trim' mathlib/Mathlib/MeasureTheory/Measure/Trim.lean`
+- `rg -n 'sigmaCompactSpace_of_locallyCompact_secondCountable|noncomputable def choice|theorem exists_superset_of_isCompact' mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean`
+- `rg -n '^instance|^theorem' mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean; rg -n 'metrizableSpace_of_t3_secondCountable' mathlib/Mathlib/Topology/Metrizable/Urysohn.lean; rg -n 'theorem exists_compact_superset' mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean`
+- `rg -n 'theorem exists_continuous_one_zero_of_isCompact' mathlib/Mathlib/Topology/UrysohnsLemma.lean; rg -n 'theorem IsCompact.tendsto_subseq' mathlib/Mathlib/Topology/Sequences.lean`
+- `rg -n 'theorem tendsto_iff_forall_integral_tendsto' mathlib/Mathlib/MeasureTheory/Measure/FiniteMeasure.lean; rg -n -F 'CompactSpace (ProbabilityMeasure' mathlib/Mathlib/MeasureTheory/Measure/Prokhorov.lean; rg -n 'theorem measure_iUnion_le|theorem measure_mono_null' mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `test -f on every cited snapshot file (all present); cmp of cited Mathlib files against lake-packages-25730c7c/mathlib (identical)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/GMT/Ch01/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/GMT/Ch01/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/GMT/Ch01/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/PROBLEM.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/lakefile.toml`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/NNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/OuterMeasure/Caratheodory.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Measure/OuterMeasure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Measure/Trim.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/UrysohnsLemma.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Metrizable/Urysohn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Measure/FiniteMeasure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Measure/Prokhorov.lean`
+
+The manifest pins project ec1c322 and Mathlib 25730c7c. In the snapshot, project/GMT/Ch01/Contract.lean is byte-identical to Submission.lean. It defines exactly the fifteen Props CaratheodoryCriterion … RadonCompactness (lines 88–303), with main_theorem at line 313, inside namespace GMT.Ch01 with `universe u v` (line 69) and the opens at lines 63–65. Each child lean_statement is one of these Props or a conjunction of two of them; the two merged children with universe parameters share the declared universe u, which the comparator replays from that scope. README.md maps the conjuncts to SimonGMT theorems and documents the 4.16 erratum (second countability). That erratum is applied in radon_compactness. The snapshot contains no SimonGMT declarations: rg finds 'Poincare.SimonGMT' only as imports and opens in the project files, and 'theorem simon_theorem' has no match. The package is pinned in project/lake-manifest.json and lives outside the snapshot, so the children cite it only in non-binding formalization notes. The snapshot's Mathlib contains the facts those notes rely on:
+- OuterMeasure.IsMetric and borel_le_caratheodory: Measure/Hausdorff.lean:137,161.
+- Besicovitch.exist_disjoint_covering_families (Covering/Besicovitch.lean:455), multiplicity and isEmpty_satelliteConfig_multiplicity (BesicovitchVectorSpace.lean:98,488).
+- NNRealRMK.integral_rieszMeasure and rieszMeasure_regular (RieszMarkovKakutani/NNReal.lean:47,66); the real RMK (Real.lean:345,357).
+- EuclideanSpace.volume_ball and volume_closedBall: Lebesgue/VolumeOfBalls.lean:307,324.
+- IsCaratheodory and the caratheodory σ-algebra: OuterMeasure/Caratheodory.lean:55,176,181.
+- toMeasure_apply and le_toMeasure_apply (Measure/OuterMeasure.lean:46,50); ae_iff (OuterMeasure/AE.lean:134).
+- setLIntegral_trim_ae (Integral/Lebesgue/Add.lean:490); integral_trim and integral_trim_ae (Bochner/Basic.lean:1301,1332); restrict_trim (Measure/Trim.lean:108).
+- σ-compactness and compact exhaustions: SigmaCompact.lean:187,376,418.
+- Urysohn's lemma: UrysohnsLemma.lean:404.
+- Separability of C(X,Y): ContinuousMap/SecondCountableSpace.lean:108. Metrizability: Metrizable/Urysohn.lean:127.
+- Compact supersets: LocallyCompact.lean:58. IsCompact.tendsto_subseq: Sequences.lean:298.
+- Weak convergence and Prokhorov: FiniteMeasure.lean:727; Prokhorov.lean:176.
+The cited Mathlib files are byte-identical to the packages used by the build. The mathematical arguments of the children are the printed proofs of the source and do not depend on these declarations.
