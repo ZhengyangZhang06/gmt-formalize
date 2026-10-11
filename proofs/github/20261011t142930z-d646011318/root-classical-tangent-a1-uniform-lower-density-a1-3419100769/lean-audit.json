@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "161f62c225cc8e38f935b61aff4b65a718eff7faee25fa59c24436793924ce26",
+  "git_delta": {
+    "base_commit": "75d35237fd8648b39782f502bbfd945ecba0bffa",
+    "candidate_commit": "037ad3ec277dfac1a87f8503365fb9b9beefff22",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "classical_tangent_uniform_lower_density",
+    "diff_sha256": "ddc2acadac0f4541d686bb6821b0b53f9c5f57964f65b6ff40f26247f96ae4e2",
+    "source_sha256": "c8a426ea5bdbfea8cb5165ae0b332495f8ea4132bfdb0d48c19e02a51fbe3804",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.classical_tangent_uniform_lower_density",
+      "statement": "LpMonotonicity → LpDensity → LpSupportRepresentation → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (p : ℝ) (x : Ambient n ℓ), 0 < n → IsOpen U → V.HasMeanCurvatureIn U H → V.MultiplicityGE 1 U → (n : ℝ) < p → V.IsLocallyLp U H p → x ∈ U → ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ ∀ ζ ∈ V.support ∩ closedBall x ρ₀, ∀ s : ℝ, 0 < s → s ≤ ρ₀ → omega n / 2 * s ^ n ≤ V.weight.real (closedBall ζ s)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
