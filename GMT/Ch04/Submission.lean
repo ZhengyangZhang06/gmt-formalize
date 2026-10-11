@@ -434,6 +434,137 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Differentiating radial cutoff integrals in the scale** (Simon Ch. 4, 3.3–3.4: `I'(ρ)` and
+`J'(ρ)` for `I(ρ) = ∫ φ(r/ρ) dμ_V`, `J(ρ) = ∫ φ(r/ρ)|D^⊥r|² dμ_V`, `r = |x - ξ|`). If `φ ∈ C¹`
+vanishes on `[c, ∞)`, `0 < c`, `0 < τ`, `cτ < R`, and `f` is `μ ⌞ B_R(ξ)`-a.e. strongly measurable
+with `|f| ≤ A` on `B_R(ξ)`, then `f φ(r/τ)` and `f · (-(r/τ²) φ'(r/τ))` are `μ`-integrable and
+`d/dt ∫ f φ(r/t) dμ = ∫ f · (-(r/τ²) φ'(r/τ)) dμ` at `t = τ`. For `t ∈ (τ/2, R/c)` both integrands
+vanish off `B_R(ξ)` (there `r/t > c`), and on it `|f · (-(r/t²) φ'(r/t))| ≤ A (4R/τ²) M₁` with
+`M₁ = max_{[0, 2R/τ]} |φ'|`, so dominated differentiation under the integral sign applies. -/
+theorem Submission.weighted_mono_cutoff_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (f : Ambient n ℓ → ℝ) (φ : ℝ → ℝ) (ξ : Ambient n ℓ) (c R A τ : ℝ), IsFiniteMeasureOnCompacts μ → ContDiff ℝ 1 φ → (∀ t, c ≤ t → φ t = 0) → 0 < c → 0 < τ → c * τ < R → AEStronglyMeasurable f (μ.restrict (closedBall ξ R)) → (∀ x ∈ closedBall ξ R, |f x| ≤ A) → Integrable (fun x ↦ f x * φ (‖x - ξ‖ / τ)) μ ∧ Integrable (fun x ↦ f x * (-(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ))) μ ∧ HasDerivAt (fun t ↦ ∫ x, f x * φ (‖x - ξ‖ / t) ∂μ) (∫ x, f x * (-(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ)) ∂μ) τ := by
+  intro n ℓ μ f φ ξ c R A τ hμ hφ hφc hc hτ hcτR hf hfA
+  -- `φ` is differentiable with continuous derivative, and `φ' = 0` on the open set `(c, ∞)`
+  have hφd : Differentiable ℝ φ := hφ.differentiable one_ne_zero
+  have hφ'c : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+  have hφ' : ∀ s, c < s → deriv φ s = 0 := by
+    intro s hs
+    have h : φ =ᶠ[𝓝 s] fun _ ↦ 0 :=
+      Filter.eventually_of_mem (Ioi_mem_nhds hs) fun u hu ↦ hφc u (le_of_lt hu)
+    rw [h.deriv_eq, deriv_const]
+  have hR : 0 < R := lt_trans (mul_pos hc hτ) hcτR
+  have hBm : MeasurableSet (closedBall ξ R) := measurableSet_closedBall
+  have hBμ : μ (closedBall ξ R) < ⊤ := (isCompact_closedBall ξ R).measure_lt_top
+  have hA : 0 ≤ A := (abs_nonneg _).trans (hfA ξ (mem_closedBall_self hR.le))
+  -- the neighbourhood `N = (τ/2, R/c)` of `τ`: there `t > 0` and `c t < R`
+  have hτN : τ ∈ Ioo (τ / 2) (R / c) := ⟨by linarith, by rw [lt_div_iff₀ hc]; linarith⟩
+  have hNnhds : Ioo (τ / 2) (R / c) ∈ 𝓝 τ := Ioo_mem_nhds hτN.1 hτN.2
+  have hNpos : ∀ t ∈ Ioo (τ / 2) (R / c), 0 < t := fun t ht ↦ by linarith [ht.1]
+  -- off `B_R(ξ)` the radial quotient `r / t` exceeds `c`
+  have hout : ∀ t ∈ Ioo (τ / 2) (R / c), ∀ x, x ∉ closedBall ξ R → c < ‖x - ξ‖ / t := by
+    intro t ht x hx
+    have ht0 : 0 < t := hNpos t ht
+    have hctR : t * c < R := (lt_div_iff₀ hc).1 ht.2
+    have hxR : R < ‖x - ξ‖ := by
+      rw [mem_closedBall, dist_eq_norm, not_le] at hx
+      exact hx
+    rw [lt_div_iff₀ ht0]
+    linarith
+  -- on `B_R(ξ)`: `0 ≤ r / t ≤ 2R/τ` and `r / t² ≤ 4R/τ²`
+  have hin : ∀ t ∈ Ioo (τ / 2) (R / c), ∀ x ∈ closedBall ξ R,
+      ‖x - ξ‖ / t ∈ Icc 0 (2 * R / τ) ∧ ‖x - ξ‖ / t ^ 2 ≤ 4 * R / τ ^ 2 := by
+    intro t ht x hx
+    have ht0 : 0 < t := hNpos t ht
+    have hxR : ‖x - ξ‖ ≤ R := by
+      rw [mem_closedBall, dist_eq_norm] at hx
+      exact hx
+    have h2t : τ < 2 * t := by linarith [ht.1]
+    have hr : 0 ≤ ‖x - ξ‖ := norm_nonneg _
+    refine ⟨⟨by positivity, ?_⟩, ?_⟩
+    · rw [div_le_div_iff₀ ht0 hτ]
+      nlinarith
+    · have h1 : ‖x - ξ‖ * τ ^ 2 ≤ R * τ ^ 2 := mul_le_mul_of_nonneg_right hxR (sq_nonneg τ)
+      have h2 : τ ^ 2 ≤ 4 * t ^ 2 := by nlinarith
+      rw [div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith
+  -- bounds for `|φ|` and `|φ'|` on the compact interval `[0, 2R/τ]`
+  obtain ⟨M₀, hM₀⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := 2 * R / τ)).exists_bound_of_continuousOn
+    hφd.continuous.continuousOn
+  obtain ⟨M₁, hM₁⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := 2 * R / τ)).exists_bound_of_continuousOn
+    hφ'c.continuousOn
+  have hM₁0 : 0 ≤ M₁ := (norm_nonneg _).trans (hM₁ 0 ⟨le_rfl, by positivity⟩)
+  -- a product `f h` with `h` continuous and vanishing off `B_R(ξ)` is a.e. strongly measurable
+  have hmeas : ∀ h : Ambient n ℓ → ℝ, Continuous h → (∀ x, x ∉ closedBall ξ R → h x = 0) →
+      AEStronglyMeasurable (fun x ↦ f x * h x) μ := by
+    intro h hcont h0
+    have heq : (fun x ↦ f x * h x) = (closedBall ξ R).indicator (fun x ↦ f x * h x) := by
+      funext x
+      by_cases hx : x ∈ closedBall ξ R
+      · rw [Set.indicator_of_mem hx]
+      · rw [Set.indicator_of_notMem hx, h0 x hx, mul_zero]
+    rw [heq, aestronglyMeasurable_indicator_iff hBm]
+    exact hf.fun_mul hcont.aestronglyMeasurable
+  -- and if `|h| ≤ C` on `B_R(ξ)`, then `|f h| ≤ A C 1_{B_R(ξ)}`
+  have hptw : ∀ (h : Ambient n ℓ → ℝ) (C : ℝ), (∀ x, x ∉ closedBall ξ R → h x = 0) →
+      (∀ x ∈ closedBall ξ R, |h x| ≤ C) →
+      ∀ x, ‖f x * h x‖ ≤ (closedBall ξ R).indicator (fun _ ↦ A * C) x := by
+    intro h C h0 hC x
+    by_cases hx : x ∈ closedBall ξ R
+    · rw [Set.indicator_of_mem hx, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+      exact mul_le_mul (hfA x hx) (hC x hx) (abs_nonneg _) hA
+    · rw [Set.indicator_of_notMem hx, h0 x hx, mul_zero, norm_zero]
+  have hind : ∀ C : ℝ, Integrable ((closedBall ξ R).indicator fun _ ↦ C) μ := fun C ↦
+    (integrable_indicator_iff hBm).2 (integrableOn_const hBμ.ne)
+  have hcr : ∀ t : ℝ, Continuous fun x : Ambient n ℓ ↦ ‖x - ξ‖ / t := fun t ↦
+    (continuous_id.sub continuous_const).norm.div_const t
+  -- the integrand `F t x = f x φ (r / t)`
+  have hF_meas : ∀ᶠ t in 𝓝 τ, AEStronglyMeasurable (fun x ↦ f x * φ (‖x - ξ‖ / t)) μ :=
+    Filter.eventually_of_mem hNnhds fun t ht ↦
+      hmeas _ (hφd.continuous.comp (hcr t)) fun x hx ↦ hφc _ (hout t ht x hx).le
+  have hF_int : Integrable (fun x ↦ f x * φ (‖x - ξ‖ / τ)) μ :=
+    (hind (A * M₀)).mono' (hmeas _ (hφd.continuous.comp (hcr τ))
+      fun x hx ↦ hφc _ (hout τ hτN x hx).le)
+      (ae_of_all _ (hptw (fun x ↦ φ (‖x - ξ‖ / τ)) M₀ (fun x hx ↦ hφc _ (hout τ hτN x hx).le)
+        fun x hx ↦ by simpa only [Real.norm_eq_abs] using hM₀ _ (hin τ hτN x hx).1))
+  -- the `t`-derivative `F' t x = f x (-(r / t²) φ' (r / t))`
+  have hF'0 : ∀ t ∈ Ioo (τ / 2) (R / c), ∀ x, x ∉ closedBall ξ R →
+      -(‖x - ξ‖ / t ^ 2) * deriv φ (‖x - ξ‖ / t) = 0 := fun t ht x hx ↦ by
+    rw [hφ' _ (hout t ht x hx), mul_zero]
+  have hF'C : ∀ t ∈ Ioo (τ / 2) (R / c), ∀ x ∈ closedBall ξ R,
+      |-(‖x - ξ‖ / t ^ 2) * deriv φ (‖x - ξ‖ / t)| ≤ 4 * R / τ ^ 2 * M₁ := by
+    intro t ht x hx
+    have ht0 : 0 < t := hNpos t ht
+    rw [abs_mul, abs_neg, abs_of_nonneg (by positivity : (0 : ℝ) ≤ ‖x - ξ‖ / t ^ 2)]
+    have h := hM₁ _ (hin t ht x hx).1
+    rw [Real.norm_eq_abs] at h
+    exact mul_le_mul (hin t ht x hx).2 h (abs_nonneg _) (by positivity)
+  have hF'_meas : AEStronglyMeasurable
+      (fun x ↦ f x * (-(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ))) μ :=
+    hmeas _ ((hcr (τ ^ 2)).neg.mul (hφ'c.comp (hcr τ))) (hF'0 τ hτN)
+  have h_bound : ∀ᵐ x ∂μ, ∀ t ∈ Ioo (τ / 2) (R / c),
+      ‖f x * (-(‖x - ξ‖ / t ^ 2) * deriv φ (‖x - ξ‖ / t))‖ ≤
+        (closedBall ξ R).indicator (fun _ ↦ A * (4 * R / τ ^ 2 * M₁)) x :=
+    ae_of_all _ fun x t ht ↦
+      hptw (fun x ↦ -(‖x - ξ‖ / t ^ 2) * deriv φ (‖x - ξ‖ / t)) _ (hF'0 t ht) (hF'C t ht) x
+  -- pointwise chain rule: `∂_t φ (r / t) = φ' (r / t) · (-(r / t²))`
+  have h_diff : ∀ᵐ x ∂μ, ∀ t ∈ Ioo (τ / 2) (R / c),
+      HasDerivAt (fun t ↦ f x * φ (‖x - ξ‖ / t))
+        (f x * (-(‖x - ξ‖ / t ^ 2) * deriv φ (‖x - ξ‖ / t))) t := by
+    refine ae_of_all _ fun x t ht ↦ ?_
+    have ht0 : t ≠ 0 := (hNpos t ht).ne'
+    have h1 : HasDerivAt (fun t ↦ ‖x - ξ‖ / t) (-(‖x - ξ‖ / t ^ 2)) t := by
+      have h := (hasDerivAt_inv ht0).const_mul ‖x - ξ‖
+      convert h using 1
+      · funext y
+        rw [div_eq_mul_inv]
+      · rw [div_eq_mul_inv, mul_neg]
+    have h2 := ((hφd (‖x - ξ‖ / t)).hasDerivAt.comp t h1).const_mul (f x)
+    convert h2 using 1
+    · rfl
+    · ring
+  obtain ⟨hint', hderiv⟩ := hasDerivAt_integral_of_dominated_loc_of_deriv_le hNnhds hF_meas
+    hF_int hF'_meas h_bound (hind _) h_diff
+  exact ⟨hF_int, hint', hderiv⟩
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
