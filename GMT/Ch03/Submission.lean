@@ -336,6 +336,22 @@ def DeGiorgiTheorem : Prop :=
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
 /-- The frozen Chapter 3 contract. -/
-theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
+theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem :=
+  -- Each conjunct is Simon's printed result (chapter-03.txt): Lemma 1.2 (ll. 25–65),
+  -- Theorems 1.6 and 1.9 (ll. 109–274, 316–323), (2.4)–(2.5) (ll. 370–401), (2.8)–(2.9) and
+  -- Remark 2.10(2) (ll. 412–442), Lemmas 3.2 and 3.3 (ll. 449–496), Theorem 3.6 (ll. 530–536),
+  -- Theorem 3.8 (ll. 540–548), (4.1) (ll. 555–573) and Theorem 4.3 (ll. 588–746).
+  ⟨Submission.submanifoldCoverCharacterization_holds,
+    Submission.approximateTangentCharacterizations_hold.1,
+    Submission.approximateTangentCharacterizations_hold.2,
+    Submission.areaFormula_holds,
+    Submission.coareaFormula_and_slices_hold.1,
+    Submission.coareaFormula_and_slices_hold.2,
+    Submission.section3_decomposition_projection_rectifiability.1,
+    Submission.section3_decomposition_projection_rectifiability.2.1,
+    Submission.besicovitchFedererProjectionTheorem_holds,
+    Submission.section3_decomposition_projection_rectifiability.2.2,
+    Submission.gaussGreenRepresentation_holds,
+    Submission.deGiorgiTheorem_holds⟩
 
 end GMT.Ch03
