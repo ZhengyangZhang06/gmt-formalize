@@ -335,6 +335,86 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Positive lower `n`-density at a point with an approximate tangent plane of positive
+multiplicity** (Simon Ch. 3, Remark 1.5(3), lower half, with multiplicity `θ`; cf. 4.3): if `μ`
+is finite on compact sets, `θ > 0` and `λ⁻ⁿ η_{x,λ#} μ → θ Hⁿ ⌞ P` (`finrank P = n`), then
+`μ(B_ρ(x)) ≥ c ρⁿ` for some `c > 0` and all small `ρ > 0`. Test with
+`g(w) = max(0, 1 - |w|) ∈ C_c(ℝᴺ)`: `Hⁿ ⌞ P` is regular with support `P ∋ 0`, so
+`L = θ ∫_P g dHⁿ > 0`; `λ⁻ⁿ ∫ g ∘ η_{x,λ} dμ → L`, and `0 ≤ g ∘ η_{x,ρ} ≤ 1_{B_ρ(x)}` gives
+`(L/2) ρⁿ < ∫ g ∘ η_{x,ρ} dμ ≤ μ(B_ρ(x))` for small `ρ`. -/
+theorem Submission.tangentMeasure_eventually_lower_density : ∀ (N n : ℕ) (μ : Measure (Rn N))
+    (x : Rn N) (P : Submodule ℝ (Rn N)) (θ : ℝ), (∀ K : Set (Rn N), IsCompact K → μ K < ∞) →
+    0 < θ → HasApproxTangentPlaneWithMultiplicity n μ x P θ → ∃ c : ℝ, 0 < c ∧
+      ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal (c * ρ ^ n) ≤ μ (Metric.ball x ρ) := by
+  intro N n μ x P θ hfin hθ hP
+  have : IsFiniteMeasureOnCompacts μ := ⟨hfin⟩
+  obtain ⟨hdim, hlim⟩ := hP
+  -- The test function `g(w) = max(0, 1 - |w|)`.
+  let g0 : Rn N → ℝ := fun w => max 0 (1 - ‖w‖)
+  have g0_cont : Continuous g0 := continuous_const.max (continuous_const.sub continuous_norm)
+  have g0_supp : HasCompactSupport g0 := by
+    apply HasCompactSupport.intro (isCompact_closedBall (0 : Rn N) 1)
+    intro w hw
+    simp only [Metric.mem_closedBall, dist_zero_right, not_le] at hw
+    exact max_eq_left (by linarith)
+  let g : C_c(Rn N, ℝ) := ⟨⟨g0, g0_cont⟩, g0_supp⟩
+  have hg : ∀ w, g w = g0 w := fun w => rfl
+  have g0_nonneg : ∀ w, 0 ≤ g0 w := fun w => le_max_left _ _
+  have g0_le_one : ∀ w, g0 w ≤ 1 := fun w => max_le zero_le_one (by linarith [norm_nonneg w])
+  -- `∫_P g dHⁿ > 0`, since `Hⁿ ⌞ P` is finite on compacts with support `P ∋ 0`.
+  have hreg := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule
+    (E := Rn N) hdim
+  have hint_pos : 0 < ∫ y in (P : Set (Rn N)), g y ∂μHE[n] := by
+    have hgi : Integrable (fun y => g y) ((μHE[n] : Measure (Rn N)).restrict (P : Set (Rn N))) :=
+      g.continuous.integrable_of_hasCompactSupport g.hasCompactSupport
+    rw [integral_pos_iff_support_of_nonneg (f := fun y => g y) (fun y => g0_nonneg y) hgi]
+    have hsub : Metric.ball (0 : Rn N) 1 ⊆ Function.support (fun y => g y) := by
+      intro w hw
+      rw [Metric.mem_ball, dist_zero_right] at hw
+      simp only [Function.mem_support, hg, g0]
+      apply ne_of_gt
+      exact lt_max_of_lt_right (by linarith)
+    refine lt_of_lt_of_le ?_ (measure_mono hsub)
+    have h0 : (0 : Rn N) ∈ ((μHE[n] : Measure (Rn N)).restrict (P : Set (Rn N))).support := by
+      rw [Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hdim]
+      exact P.zero_mem
+    exact (Measure.mem_support_iff_forall _).mp h0 _ (Metric.ball_mem_nhds 0 one_pos)
+  -- `c = L / 2` with `L = θ ∫_P g dHⁿ`.
+  set L := θ * ∫ y in (P : Set (Rn N)), g y ∂μHE[n] with hLdef
+  have hL : 0 < L := mul_pos hθ hint_pos
+  refine ⟨L / 2, half_pos hL, ?_⟩
+  have hev : ∀ᶠ r in 𝓝[>] (0 : ℝ), L / 2 < (r ^ n)⁻¹ * ∫ y, g (blowUpMap x r y) ∂μ :=
+    (hlim g).eventually (lt_mem_nhds (half_lt_self hL))
+  filter_upwards [hev, self_mem_nhdsWithin] with ρ hρ hρpos
+  have hρpos' : (0 : ℝ) < ρ := hρpos
+  have hρn : 0 < ρ ^ n := pow_pos hρpos' n
+  have h1 : L / 2 * ρ ^ n < ∫ y, g (blowUpMap x ρ y) ∂μ := by
+    have := mul_lt_mul_of_pos_left hρ hρn
+    rwa [← mul_assoc, mul_inv_cancel₀ hρn.ne', one_mul, mul_comm] at this
+  -- `0 ≤ g ∘ η_{x,ρ} ≤ 1_{B_ρ(x)}` and `μ(B_ρ(x)) < ∞`.
+  have hball : μ (Metric.ball x ρ) < ∞ :=
+    (measure_mono Metric.ball_subset_closedBall).trans_lt (isCompact_closedBall x ρ).measure_lt_top
+  have hpt : ∀ y, g (blowUpMap x ρ y) ≤ (Metric.ball x ρ).indicator 1 y := by
+    intro y
+    by_cases hy : y ∈ Metric.ball x ρ
+    · rw [Set.indicator_of_mem hy]; exact g0_le_one _
+    · rw [Set.indicator_of_notMem hy]
+      rw [Metric.mem_ball, dist_eq_norm, not_lt] at hy
+      have h1' : 1 ≤ ‖blowUpMap x ρ y‖ := by
+        simp only [blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρpos']
+        rw [le_inv_mul_iff₀ hρpos']; linarith
+      show g0 _ ≤ 0
+      exact le_of_eq (max_eq_left (by linarith))
+  have h2 : ∫ y, g (blowUpMap x ρ y) ∂μ ≤ μ.real (Metric.ball x ρ) := by
+    rw [← integral_indicator_one measurableSet_ball]
+    apply integral_mono_of_nonneg
+    · exact Eventually.of_forall fun y => g0_nonneg _
+    · exact (integrable_indicator_iff measurableSet_ball).mpr (integrableOn_const hball.ne)
+    · exact Eventually.of_forall hpt
+  calc ENNReal.ofReal (L / 2 * ρ ^ n) ≤ ENNReal.ofReal (μ.real (Metric.ball x ρ)) :=
+        ENNReal.ofReal_le_ofReal (by linarith)
+    _ = μ (Metric.ball x ρ) := ENNReal.ofReal_toReal hball.ne
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
