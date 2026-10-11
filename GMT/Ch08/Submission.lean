@@ -2,7 +2,6 @@ import Poincare.SimonGMT.Chapter08.VarifoldConvergence
 import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter02.Submanifold
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
-import Mathlib.Topology.ContinuousMap.SecondCountableSpace
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 8 (printed pp. 205–224)
@@ -581,6 +580,30 @@ gives `η`. -/
 theorem Submission.plane_disint_pointwise_measure :
     ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), ∀ᵐ x ∂V.weight, ∃ η : Measure (Grassmannian N n), IsProbabilityMeasure η ∧ ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂η)) := by
   intro N n U V
+  -- `C(G(N,n), ℝ)` is separable: the matrix entries `S ↦ S i j` separate the points of `G(N,n)`,
+  -- so by Stone–Weierstrass the subalgebra they generate is dense, and it is spanned by the
+  -- countably many monomials in these entries.
+  have : TopologicalSpace.SeparableSpace C(Grassmannian N n, ℝ) := by
+    obtain ⟨g, hg⟩ : ∃ g : Fin N × Fin N → C(Grassmannian N n, ℝ), ∀ p S, g p S = S.1 p.1 p.2 :=
+      ⟨fun p ↦ ⟨fun S ↦ S.1 p.1 p.2, continuous_subtype_val.matrix_elem p.1 p.2⟩, fun _ _ ↦ rfl⟩
+    have hsep : (Algebra.adjoin ℝ (range g)).SeparatesPoints := by
+      intro S T hST
+      obtain ⟨i, j, hij⟩ : ∃ i j, S.1 i j ≠ T.1 i j := by
+        by_contra! h
+        exact hST (Subtype.ext (Matrix.ext h))
+      refine ⟨_, ⟨g (i, j), Algebra.subset_adjoin ⟨(i, j), rfl⟩, rfl⟩, ?_⟩
+      simpa only [hg] using hij
+    have hcount : (Submonoid.closure (range g) : Set C(Grassmannian N n, ℝ)).Countable := by
+      rw [Submonoid.closure_eq_image_prod, ← Set.range_list_map_coe, ← Set.range_comp]
+      exact countable_range _
+    have hA : TopologicalSpace.IsSeparable
+        (Algebra.adjoin ℝ (range g) : Set C(Grassmannian N n, ℝ)) := by
+      rw [← Subalgebra.coe_toSubmodule, Algebra.adjoin_eq_span]
+      exact hcount.isSeparable.span
+    rw [← TopologicalSpace.isSeparable_univ_iff, ← Algebra.coe_top (R := ℝ),
+      ← ContinuousMap.subalgebra_topologicalClosure_eq_top_of_separatesPoints _ hsep,
+      Subalgebra.topologicalClosure_coe]
+    exact hA.closure
   -- A dense sequence `f_j` in `C(G(N,n), ℝ)` and the nonnegative shifts `β_j = f_j + ‖f_j‖`.
   obtain ⟨f, hf⟩ := TopologicalSpace.exists_dense_seq C(Grassmannian N n, ℝ)
   obtain ⟨β, hβ⟩ : ∃ β : ℕ → C(Grassmannian N n, ℝ), ∀ j S, β j S = f j S + ‖f j‖ :=
