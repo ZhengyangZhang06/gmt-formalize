@@ -373,6 +373,278 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, Theorem 1.6 (proof after [EG92]), Whitney partition of unity from a ball
+cover.** Let `A ⊆ ℝⁿ` be closed and nonempty, `d(x) = dist(x, A)` and `r(x) = min{1, d(x)}/20`.
+Let `J ⊆ ℝⁿ ∖ A` be such that the balls `B̄(s, 5r(s))`, `s ∈ J`, cover `ℝⁿ ∖ A`, each `x ∉ A`
+lies in at most `N` of the balls `B(s, 10r(s))`, and only finitely many of these meet
+`B(x, r(x))`. Then the normalised bumps `φ_s = θ_s / Σ_t θ_t`, with `θ_s = 1` on `B̄(s, 5r(s))`
+and `θ_s = 0` off `B(s, 9r(s))`, form a locally finite `C¹` partition of unity on `ℝⁿ ∖ A`. If
+`φ_s(x) ≠ 0` then `|x - p_s| ≤ 3d(x)` for a nearest point `p_s ∈ A` to `s`, and
+`Σ_s ‖Dφ_s(x)‖ ≤ M/d(x)` when `d(x) ≤ 1`, with `M = 30ΛN(N + 1)` for a Lipschitz constant `Λ`
+of `θ`. -/
+theorem Submission.whitney_partition_of_finite_overlap_cover : ∀ (n : ℕ) (A J : Set (Rn n)) (N : ℕ), IsClosed A → A.Nonempty → J ⊆ Aᶜ → (∀ x ∉ A, ∃ s ∈ J, ‖x - s‖ ≤ 5 * (min 1 (Metric.infDist s A) / 20)) → (∀ x ∉ A, Set.Finite {s : Rn n | s ∈ J ∧ ‖x - s‖ < 10 * (min 1 (Metric.infDist s A) / 20)} ∧ Set.ncard {s : Rn n | s ∈ J ∧ ‖x - s‖ < 10 * (min 1 (Metric.infDist s A) / 20)} ≤ N) → (∀ x ∉ A, Set.Finite {s : Rn n | s ∈ J ∧ ∃ z : Rn n, ‖z - s‖ < 10 * (min 1 (Metric.infDist s A) / 20) ∧ ‖z - x‖ < min 1 (Metric.infDist x A) / 20}) → ∃ (ι : Type) (φ : ι → Rn n → ℝ) (p : ι → Rn n) (C M : ℝ), 0 ≤ C ∧ 0 ≤ M ∧ (∀ i, p i ∈ A) ∧ (∀ i, ∀ x ∉ A, ContDiffAt ℝ 1 (φ i) x) ∧ (∀ i, ∀ x ∉ A, 0 ≤ φ i x) ∧ (∀ x ∉ A, ∃ s : Finset ι, ∃ V ∈ 𝓝 x, ∀ i ∉ s, ∀ y ∈ V, φ i y = 0) ∧ (∀ x ∉ A, ∑ᶠ i, φ i x = 1) ∧ (∀ i, ∀ x ∉ A, φ i x ≠ 0 → ‖x - p i‖ ≤ C * Metric.infDist x A) ∧ (∀ x ∉ A, Metric.infDist x A ≤ 1 → ∑ᶠ i, ‖fderiv ℝ (φ i) x‖ ≤ M / Metric.infDist x A) := by
+  intro n A J N hA hne hJ hcov hnear hwide
+  classical
+  -- The scale `r(x) = min{1, d(x)}/20`, kept opaque through its defining equation.
+  obtain ⟨r, hr⟩ : ∃ r : Rn n → ℝ, ∀ x, r x = min 1 (infDist x A) / 20 := ⟨_, fun _ => rfl⟩
+  simp only [← hr] at hcov hnear hwide
+  have hr0 : ∀ x, 0 ≤ r x := fun x => by
+    rw [hr]; exact div_nonneg (le_min zero_le_one infDist_nonneg) (by norm_num)
+  have hr20 : ∀ x, 20 * r x ≤ infDist x A := fun x => by
+    rw [hr]; linarith [min_le_right (1 : ℝ) (infDist x A)]
+  have hrpos : ∀ x, x ∉ A → 0 < r x := fun x hx => by
+    rw [hr]; exact div_pos (lt_min one_pos ((hA.notMem_iff_infDist_pos hne).mp hx)) (by norm_num)
+  have hreq : ∀ x, infDist x A ≤ 1 → r x = infDist x A / 20 := fun x h => by
+    rw [hr, min_eq_right h]
+  -- `r` is `1/20`-Lipschitz, so the radii of nearby balls are comparable.
+  have hrlip : ∀ x y, r x ≤ r y + ‖x - y‖ / 20 := fun x y => by
+    have h := ((lipschitz_infDist_pt A).const_min 1).dist_le_mul x y
+    simp only [Real.dist_eq, NNReal.coe_one, one_mul] at h
+    have h' := (abs_sub_le_iff.mp h).1
+    rw [dist_eq_norm] at h'
+    rw [hr, hr]; linarith
+  have hcomp : ∀ x s, ‖x - s‖ ≤ 10 * r s → r s ≤ 2 * r x ∧ 2 / 3 * r x ≤ r s := fun x s h => by
+    have h₁ := hrlip x s
+    have h₂ := hrlip s x
+    rw [norm_sub_rev] at h₂
+    have hs := hr0 s
+    constructor <;> linarith
+  have hJpos : ∀ s : J, 0 < r s := fun s => hrpos s (hJ s.2)
+  -- The base bump `θ`: `1` on `B̄(0, 5)`, support `B(0, 9)`, `Λ`-Lipschitz.
+  obtain ⟨θ, hθin, hθout⟩ : ∃ θ : ContDiffBump (0 : Rn n), θ.rIn = 5 ∧ θ.rOut = 9 :=
+    ⟨⟨5, 9, by norm_num, by norm_num⟩, rfl, rfl⟩
+  have hθC : ContDiff ℝ 1 θ := θ.contDiff (n := 1)
+  obtain ⟨Λ, hΛ⟩ := hθC.lipschitzWith_of_hasCompactSupport θ.hasCompactSupport one_ne_zero
+  -- The rescaled bumps `θ_s(x) = θ((x - s)/r_s)`.
+  obtain ⟨b, hb⟩ : ∃ b : Rn n → Rn n → ℝ, ∀ s x, b s x = θ ((r s)⁻¹ • (x - s)) :=
+    ⟨_, fun _ _ => rfl⟩
+  have hbC : ∀ s, ContDiff ℝ 1 (b s) := fun s => by
+    rw [show b s = fun x => θ ((r s)⁻¹ • (x - s)) from funext (hb s)]
+    exact hθC.comp ((contDiff_id.sub contDiff_const).const_smul _)
+  have hb0 : ∀ s x, 0 ≤ b s x := fun s x => by rw [hb]; exact θ.nonneg
+  have hb1 : ∀ s x, b s x ≤ 1 := fun s x => by rw [hb]; exact θ.le_one
+  have hbone : ∀ s x, 0 < r s → ‖x - s‖ ≤ 5 * r s → b s x = 1 := fun s x hs hx => by
+    rw [hb]
+    apply θ.one_of_mem_closedBall
+    rw [mem_closedBall, dist_zero_right, norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr hs.le),
+      hθin, inv_mul_le_iff₀ hs]
+    linarith
+  have hbzero : ∀ s x, 0 < r s → 9 * r s ≤ ‖x - s‖ → b s x = 0 := fun s x hs hx => by
+    rw [hb]
+    apply Function.notMem_support.mp
+    rw [θ.support_eq, mem_ball, dist_zero_right, norm_smul,
+      Real.norm_of_nonneg (inv_nonneg.mpr hs.le), hθout, not_lt, le_inv_mul_iff₀ hs]
+    linarith
+  have hbne : ∀ s x, 0 < r s → b s x ≠ 0 → ‖x - s‖ < 9 * r s := fun s x hs hx =>
+    lt_of_not_ge fun h => hx (hbzero s x hs h)
+  -- If `|x - s| ≥ 10r_s`, then `θ_s` vanishes on `B(x, r_s)`.
+  have hbev : ∀ s x, 0 < r s → 10 * r s ≤ ‖x - s‖ → b s =ᶠ[𝓝 x] fun _ => 0 := fun s x hs hx => by
+    filter_upwards [ball_mem_nhds x hs] with y hy
+    apply hbzero s y hs
+    rw [mem_ball, dist_eq_norm] at hy
+    have := norm_sub_le_norm_sub_add_norm_sub x y s
+    rw [norm_sub_rev x y] at this
+    linarith
+  -- `‖Dθ_s‖ ≤ Λ/r_s`: `θ_s` is `θ` composed with a `(1/r_s)`-Lipschitz affine map.
+  have hbder : ∀ s, 0 < r s → ∀ x, ‖fderiv ℝ (b s) x‖ ≤ Λ / r s := fun s hs x => by
+    have hf : LipschitzWith (Real.toNNReal (r s)⁻¹) (fun y : Rn n => (r s)⁻¹ • (y - s)) := by
+      apply LipschitzWith.of_dist_le_mul
+      intro y z
+      rw [Real.coe_toNNReal _ (inv_nonneg.mpr hs.le), dist_eq_norm, dist_eq_norm, ← smul_sub,
+        sub_sub_sub_cancel_right, norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr hs.le)]
+    rw [show b s = θ ∘ fun y : Rn n => (r s)⁻¹ • (y - s) from funext (hb s)]
+    refine (norm_fderiv_le_of_lipschitz ℝ (hΛ.comp hf)).trans_eq ?_
+    rw [NNReal.coe_mul, Real.coe_toNNReal _ (inv_nonneg.mpr hs.le), div_eq_mul_inv]
+  -- The finite sets `J'(x) ⊇ J(x)` of the hypotheses, as finsets of the index type `J`.
+  have hF : ∀ x, x ∉ A → ∃ F : Finset J,
+      ∀ s : J, s ∈ F ↔ ∃ z : Rn n, ‖z - s‖ < 10 * r s ∧ ‖z - x‖ < r x := fun x hx => by
+    refine ⟨((hwide x hx).preimage Subtype.val_injective.injOn).toFinset, fun s => ?_⟩
+    rw [Set.Finite.mem_toFinset, Set.mem_preimage, Set.mem_ofPred_eq]
+    exact ⟨fun h => h.2, fun h => ⟨s.2, h⟩⟩
+  choose F hFmem using hF
+  have hG : ∀ x, x ∉ A → ∃ G : Finset J,
+      (∀ s : J, s ∈ G ↔ ‖x - s‖ < 10 * r s) ∧ G.card ≤ N := fun x hx => by
+    have hfin : ((↑) ⁻¹' {s : Rn n | s ∈ J ∧ ‖x - s‖ < 10 * r s} : Set J).Finite :=
+      (hnear x hx).1.preimage Subtype.val_injective.injOn
+    refine ⟨hfin.toFinset, fun s => ?_, ?_⟩
+    · rw [Set.Finite.mem_toFinset, Set.mem_preimage, Set.mem_ofPred_eq]
+      exact ⟨fun h => h.2, fun h => ⟨s.2, h⟩⟩
+    · rw [← Set.ncard_eq_toFinset_card _ hfin,
+        Set.ncard_preimage_of_injective_subset_range Subtype.val_injective]
+      · exact (hnear x hx).2
+      · intro s hs
+        exact ⟨⟨s, hs.1⟩, rfl⟩
+  choose G hGmem hGcard using hG
+  -- For `s ∉ J'(x)`, `θ_s` vanishes on `B(x, r(x))`.
+  have hbF : ∀ x (hx : x ∉ A) y, ‖y - x‖ < r x → ∀ s : J, s ∉ F x hx → b s y = 0 :=
+    fun x hx y hy s hs => by
+      by_contra hne'
+      apply hs
+      rw [hFmem]
+      have := hbne s y (hJpos s) hne'
+      exact ⟨y, by linarith [hJpos s], hy⟩
+  -- The normalising sum `Σ = Σᶠ_s θ_s` is the finite sum over `J'(x)` on `B(x, r(x))`, so it is
+  -- `C¹` there. The cover gives `Σ ≥ 1`, and only `s ∈ J(x)` contribute to `DΣ(x)`.
+  obtain ⟨S, hS⟩ : ∃ S : Rn n → ℝ, ∀ x, S x = ∑ᶠ s : J, b s x := ⟨_, fun _ => rfl⟩
+  have hSloc : ∀ x (hx : x ∉ A) y, ‖y - x‖ < r x → S y = ∑ s ∈ F x hx, b s y :=
+    fun x hx y hy => by
+      rw [hS]
+      apply finsum_eq_sum_of_support_subset
+      intro s hs
+      by_contra h'
+      exact hs (hbF x hx y hy s h')
+  have hSev : ∀ x (hx : x ∉ A), S =ᶠ[𝓝 x] fun y => ∑ s ∈ F x hx, b s y := fun x hx => by
+    filter_upwards [ball_mem_nhds x (hrpos x hx)] with y hy
+    rw [mem_ball, dist_eq_norm] at hy
+    exact hSloc x hx y hy
+  have hSC : ∀ x, x ∉ A → ContDiffAt ℝ 1 S x := fun x hx =>
+    (ContDiff.sum (f := fun (s : J) => b s) fun s _ => hbC s).contDiffAt.congr_of_eventuallyEq
+      (hSev x hx)
+  have hS1 : ∀ x, x ∉ A → 1 ≤ S x := fun x hx => by
+    have hx0 : ‖x - x‖ < r x := by rw [sub_self, norm_zero]; exact hrpos x hx
+    rw [hSloc x hx x hx0]
+    obtain ⟨s, hs, hxs⟩ := hcov x hx
+    have hspos : 0 < r s := hrpos s (hJ hs)
+    have hi : (⟨s, hs⟩ : J) ∈ F x hx := (hFmem x hx _).2 ⟨x, by linarith, hx0⟩
+    calc (1 : ℝ) = b s x := (hbone s x hspos hxs).symm
+      _ ≤ ∑ t ∈ F x hx, b t x :=
+        Finset.single_le_sum (f := fun t : J => b t x) (fun t _ => hb0 t x) hi
+  have hSpos : ∀ x, x ∉ A → 0 < S x := fun x hx => lt_of_lt_of_le one_pos (hS1 x hx)
+  have hSder : ∀ x (hx : x ∉ A), fderiv ℝ S x = ∑ s ∈ G x hx, fderiv ℝ (b s) x := fun x hx => by
+    rw [(hSev x hx).fderiv_eq,
+      fderiv_fun_sum (A := fun (s : J) => b s) fun s _ => (hbC s).differentiable one_ne_zero x]
+    symm
+    apply Finset.sum_subset
+    · intro s hs
+      rw [hGmem] at hs
+      exact (hFmem x hx s).2 ⟨x, hs, by rw [sub_self, norm_zero]; exact hrpos x hx⟩
+    · intro s _ hs
+      rw [hGmem, not_lt] at hs
+      rw [(hbev s x (hJpos s) hs).fderiv_eq]
+      exact fderiv_const_apply 0
+  -- The partition `φ_s = θ_s/Σ` with anchors `p_s ∈ A` nearest to `s`, `C = 3`, `M = 30ΛN(N + 1)`.
+  obtain ⟨φ, hφ⟩ : ∃ φ : J → Rn n → ℝ, ∀ s x, φ s x = b s x / S x := ⟨_, fun _ _ => rfl⟩
+  choose a ha hda using fun s : J => hA.exists_infDist_eq_dist hne (s : Rn n)
+  refine ⟨J, φ, a, 3, 30 * Λ * N * (N + 1), by norm_num, by positivity, ha, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- `φ_s` is `C¹` off `A`.
+    intro s x hx
+    rw [show φ s = fun y => b s y / S y from funext (hφ s)]
+    exact (hbC s).contDiffAt.div (hSC x hx) (hSpos x hx).ne'
+  · -- `φ_s ≥ 0` off `A`.
+    intro s x hx
+    rw [hφ]
+    exact div_nonneg (hb0 s x) (hSpos x hx).le
+  · -- Near `x ∉ A`, only the `φ_s` with `s ∈ J'(x)` are nonzero.
+    intro x hx
+    refine ⟨F x hx, ball x (r x), ball_mem_nhds x (hrpos x hx), fun s hs y hy => ?_⟩
+    rw [mem_ball, dist_eq_norm] at hy
+    rw [hφ, hbF x hx y hy s hs, zero_div]
+  · -- `Σᶠ_s φ_s(x) = (Σ_{s ∈ J'(x)} θ_s(x))/Σ(x) = 1`.
+    intro x hx
+    have hx0 : ‖x - x‖ < r x := by rw [sub_self, norm_zero]; exact hrpos x hx
+    have hsupp : Function.support (fun s : J => φ s x) ⊆ ↑(F x hx) := by
+      intro s hs
+      by_contra h'
+      exact hs (by show φ s x = 0; rw [hφ, hbF x hx x hx0 s h', zero_div])
+    rw [finsum_eq_sum_of_support_subset _ hsupp]
+    simp only [hφ]
+    rw [← Finset.sum_div, ← hSloc x hx x hx0]
+    exact div_self (hSpos x hx).ne'
+  · -- `φ_s(x) ≠ 0` gives `|x - s| < 9r_s`, so `|x - p_s| ≤ |x - s| + d(s) ≤ d(x) + 2|x - s|`, and
+    -- `r_s ≤ 2r(x) ≤ d(x)/10` bounds this by `3d(x)`.
+    intro s x hx hφ0
+    have hθ : b s x ≠ 0 := fun h0 => hφ0 (by rw [hφ, h0, zero_div])
+    have hlt := hbne s x (hJpos s) hθ
+    have h1 : infDist (s : Rn n) A ≤ infDist x A + dist (s : Rn n) x :=
+      infDist_le_infDist_add_dist
+    rw [dist_eq_norm, norm_sub_rev] at h1
+    have h2 := hda s
+    rw [dist_eq_norm] at h2
+    have h3 := norm_sub_le_norm_sub_add_norm_sub x (s : Rn n) (a s)
+    have h4 := (hcomp x s (by linarith [hJpos s])).1
+    have h5 := hr20 x
+    have h6 := hr0 x
+    linarith
+  · -- For `s ∈ J(x)`, `r_s ≥ 2r(x)/3`, so `‖Dθ_s(x)‖ ≤ T = 3Λ/(2r(x))` and `‖DΣ(x)‖ ≤ NT`.
+    intro x hx hd1
+    have hrx := hrpos x hx
+    have hreqx := hreq x hd1
+    obtain ⟨T, hT⟩ : ∃ T : ℝ, T = 3 / 2 * Λ / r x := ⟨_, rfl⟩
+    have hT0 : 0 ≤ T := by rw [hT]; positivity
+    have hbump : ∀ s ∈ G x hx, ‖fderiv ℝ (b s) x‖ ≤ T := by
+      intro s hs
+      rw [hGmem] at hs
+      have hsr := hJpos s
+      have hlow := (hcomp x s hs.le).2
+      refine (hbder s hsr x).trans ?_
+      rw [hT, div_le_div_iff₀ hsr hrx]
+      have := mul_le_mul_of_nonneg_left hlow Λ.coe_nonneg
+      linarith
+    have hcard : ((G x hx).card : ℝ) ≤ N := by exact_mod_cast hGcard x hx
+    have hsum : ‖fderiv ℝ S x‖ ≤ (N : ℝ) * T := by
+      rw [hSder x hx]
+      calc ‖∑ s ∈ G x hx, fderiv ℝ (b s) x‖
+          ≤ ∑ s ∈ G x hx, ‖fderiv ℝ (b s) x‖ := norm_sum_le _ _
+        _ ≤ ∑ _s ∈ G x hx, T := Finset.sum_le_sum hbump
+        _ = ((G x hx).card : ℝ) * T := by rw [Finset.sum_const, nsmul_eq_mul]
+        _ ≤ (N : ℝ) * T := mul_le_mul_of_nonneg_right hcard hT0
+    -- Off `J(x)`, `φ_s` vanishes near `x`, so `Dφ_s(x) = 0`.
+    have hφev : ∀ s : J, s ∉ G x hx → fderiv ℝ (φ s) x = 0 := by
+      intro s hs
+      rw [hGmem, not_lt] at hs
+      have hev : φ s =ᶠ[𝓝 x] fun _ => 0 := by
+        filter_upwards [hbev s x (hJpos s) hs] with y hy
+        rw [hφ, hy, zero_div]
+      rw [hev.fderiv_eq]
+      exact fderiv_const_apply 0
+    -- Quotient rule: `‖Dφ_s(x)‖ ≤ ‖Dθ_s(x)‖ + ‖DΣ(x)‖` since `Σ(x) ≥ 1` and `0 ≤ θ_s ≤ 1`.
+    have hφder : ∀ s : J, ‖fderiv ℝ (φ s) x‖ ≤ ‖fderiv ℝ (b s) x‖ + ‖fderiv ℝ S x‖ := by
+      intro s
+      have hS1x := hS1 x hx
+      have hSx := hSpos x hx
+      have hSi : (S x)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hS1x
+      have hSi2 : (S x ^ 2)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (one_le_pow₀ hS1x)
+      have hbd := ((hbC s).differentiable one_ne_zero x).hasFDerivAt
+      have hSd := ((hSC x hx).differentiableAt one_ne_zero).hasFDerivAt
+      have hi := (hasDerivAt_inv hSx.ne').comp_hasFDerivAt x hSd
+      have hprod := hbd.fun_mul hi
+      have hder : fderiv ℝ (φ s) x =
+          b s x • (-(S x ^ 2)⁻¹ • fderiv ℝ S x) + (S x)⁻¹ • fderiv ℝ (b s) x := by
+        rw [show φ s = fun y => b s y * ((fun t : ℝ => t⁻¹) ∘ S) y from
+          funext fun y => by rw [hφ, div_eq_mul_inv, Function.comp_apply]]
+        exact hprod.fderiv
+      rw [hder]
+      have hb0x := hb0 s x
+      have hb1x := hb1 s x
+      calc ‖b s x • (-(S x ^ 2)⁻¹ • fderiv ℝ S x) + (S x)⁻¹ • fderiv ℝ (b s) x‖
+          ≤ ‖b s x • (-(S x ^ 2)⁻¹ • fderiv ℝ S x)‖ + ‖(S x)⁻¹ • fderiv ℝ (b s) x‖ :=
+            norm_add_le _ _
+        _ = b s x * ((S x ^ 2)⁻¹ * ‖fderiv ℝ S x‖) + (S x)⁻¹ * ‖fderiv ℝ (b s) x‖ := by
+          rw [norm_smul, norm_smul, norm_smul, Real.norm_of_nonneg hb0x, norm_neg,
+            Real.norm_of_nonneg (inv_nonneg.mpr (sq_nonneg (S x))),
+            Real.norm_of_nonneg (inv_nonneg.mpr hSx.le)]
+        _ ≤ ‖fderiv ℝ (b s) x‖ + ‖fderiv ℝ S x‖ := by
+          have h₁ := mul_le_mul_of_nonneg_right hSi (norm_nonneg (fderiv ℝ (b s) x))
+          have h₂ := mul_le_mul_of_nonneg_right hSi2 (norm_nonneg (fderiv ℝ S x))
+          have h₃ := mul_le_mul_of_nonneg_right hb1x
+            (mul_nonneg (inv_nonneg.mpr (sq_nonneg (S x))) (norm_nonneg (fderiv ℝ S x)))
+          linarith
+    have hsupp : Function.support (fun s : J => ‖fderiv ℝ (φ s) x‖) ⊆ ↑(G x hx) := by
+      intro s hs
+      by_contra h'
+      exact hs (by show ‖fderiv ℝ (φ s) x‖ = 0; rw [hφev s h', norm_zero])
+    rw [finsum_eq_sum_of_support_subset _ hsupp]
+    have hw : ∀ s ∈ G x hx, ‖fderiv ℝ (φ s) x‖ ≤ T + (N : ℝ) * T := fun s hs =>
+      (hφder s).trans (add_le_add (hbump s hs) hsum)
+    calc ∑ s ∈ G x hx, ‖fderiv ℝ (φ s) x‖
+        ≤ ∑ _s ∈ G x hx, (T + (N : ℝ) * T) := Finset.sum_le_sum hw
+      _ = ((G x hx).card : ℝ) * (T + (N : ℝ) * T) := by rw [Finset.sum_const, nsmul_eq_mul]
+      _ ≤ (N : ℝ) * (T + (N : ℝ) * T) := mul_le_mul_of_nonneg_right hcard (by positivity)
+      _ = 30 * Λ * N * (N + 1) / infDist x A := by
+        rw [hT, hreqx]
+        field_simp
+        ring
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
