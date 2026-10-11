@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.pair_implies_bv-a1",
+  "parent_id": "root.gauss_green-a1",
+  "depth": 2,
+  "title": "(4.1) '⇐': a Gauss–Green pair forces χ_E ∈ BV_loc(U)",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open, E ⊆ ℝ^N Lebesgue null-measurable, μ a Borel measure on ℝ^N and ν : ℝ^N → ℝ^N such that (μ, ν) is a Gauss–Green pair for (U, E) (IsGaussGreenPair: μ(ℝ^N ∖ U) = 0; μ(K) < ∞ for every compact K ⊆ U; ν is μ-a.e. strongly measurable; |ν| = 1 μ-a.e.; ∫_{E∩U} div g dL^N = −∫⟨g, ν⟩ dμ for every C¹ g : ℝ^N → ℝ^N with compact support and tsupport g ⊆ U). Then E has locally finite perimeter in U, i.e. χ_E ∈ BV_loc(U) in the sense of SimonGMT IsLocallyBV: U is open, χ_E is locally integrable on U, and for every open W with closure W̄ compact and W̄ ⊆ U there is c ≥ 0 with ∫_W χ_E div g dL^N ≤ c · sup_x |g(x)| for every C¹ compactly supported continuous g : ℝ^N → ℝ^N with tsupport g ⊆ W.",
+  "lean_statement": "∀ (N : ℕ) (U E : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → HasLocallyFinitePerimeter U E",
+  "lean_name": "gaussGreenRep_isLocallyBV_of_pair",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-pair-implies-bv-a1-a1"
+}

@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def GaussGreenRepresentation|def HasLocallyFinitePerimeter|def IsGaussGreenPair",
+        "exists_contDiff_dist_le_of_forall_mem_ball_dist_le|contDiff_convolution_left",
+        "exists_isClosed_continuousOn_of_measurable|theorem simon_theorem_1_17",
+        "^theorem.*exists_hasCompactSupport_integral_sub_le",
+        "NullMeasurable.aemeasurable|def NullMeasurable",
+        "sed -n '22,90p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/RegularityCompletion.lean",
+        "sed -n '1,230p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "lake env lean /tmp/gauss_green_independent_audit__mf4jc1y/Assembly.lean",
+        "lake env lean /tmp/gauss_green_independent_audit__mf4jc1y/References.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/lakefile.toml",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonCaratheodoryIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RegularityCompletion.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/tmp/gauss_green_independent_audit__mf4jc1y/Assembly.lean",
+        "/tmp/gauss_green_independent_audit__mf4jc1y/References.lean"
+      ],
+      "conclusion": "Verified the frozen contract and dependency revisions: project d09bc8a, Mathlib 25730c7c, SimonGMT 2b366308. Relevant installed Mathlib files match the snapshot. The cited approximation, Riesz/completion, Lusin, regularity and L¹-density results apply under the supplied hypotheses. All eight exact one-line propositions independently elaborate without child implementations. An independently written conditional assembly proves exactly GaussGreenRepresentation, including the minus sign and both uniqueness conclusions. Its axiom report and those of the audited library lemmas contain only propext, Classical.choice and Quot.sound. The split is appropriate; its two dependency edges are correctly directed and acyclic. All eight names are valid bare identifiers with no collision in the inspected 30-node live DAG. Euclidean norms, Borel measures and pointwise vector operations have the intended instances; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_uniform_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the common-compact-support uniform approximation statement. The supplied mollification construction proves smoothness, support containment and uniform convergence, with the empty-support case explicitly handled."
+    },
+    {
+      "key": "pair_implies_bv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the type. Null-measurability supplies local integrability, the divergence support identity identifies the required integral, and the finite constant μ(closure W) gives precisely the IsLocallyBV bound."
+    },
+    {
+      "key": "bv_functional_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the two-sided BV estimate, convergence and independence of approximating sequences, linearity, the compact-local bound and agreement on C¹ fields. Its sole sibling dependency is correctly declared; no representation theorem is assumed."
+    },
+    {
+      "key": "riesz_on_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Zero extension establishes the required test-space correspondence. The checked Riesz theorem covers every N, including zero. The completion-to-Borel argument and measurable push-forward supply every measure, measurability, unit-norm and integral clause of the exact type."
+    },
+    {
+      "key": "pairing_agree_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two Gauss–Green identities give equality on C¹ fields without requiring E measurable. The declared approximation sibling supplies common compact support, and finite-measure dominated convergence proves the stated continuous-field equality."
+    },
+    {
+      "key": "variation_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The ENNReal.ofReal supremum matches the prose. Compact exhaustion, Lusin for the finite restricted measure, Tietze extension and the cutoff give the required lower bound; the integrable pairing estimate gives the upper bound. Infinite μ(O) and N = 0 are covered."
+    },
+    {
+      "key": "measure_ext_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The asymmetric finiteness hypothesis is sufficient: equality on relatively compact open exhaustion sets also makes the corresponding μ' restrictions finite. Generating-π-system uniqueness, exhaustion and vanishing off U prove the exact measure equality."
+    },
+    {
+      "key": "normal_ae_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "L¹ density applies to the finite regular restriction μ⌞L. The cutoff gives admissible ambient approximants, and the a.e. bound on ν−ν' justifies passage to the squared-norm integral. Compact exhaustion and μ(Uᶜ)=0 yield global a.e. equality."
+    }
+  ],
+  "required_changes": []
+}

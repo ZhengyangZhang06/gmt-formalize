@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.riesz_on_open-a1",
+  "parent_id": "root.gauss_green-a1",
+  "depth": 2,
+  "title": "Vector Riesz representation on an open subset of ℝ^N, pushed forward to ℝ^N with a Borel normal",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open, and Λ : (ℝ^N → ℝ^N) → ℝ such that, calling g admissible when g is continuous with compact support and tsupport g ⊆ U: Λ(g + h) = Λ(g) + Λ(h) and Λ(c g) = c Λ(g) for all admissible g, h and c ∈ ℝ; and for every compact K ⊆ U there is C ∈ ℝ with Λ(g) ≤ C for every continuous g with tsupport g ⊆ K and |g(x)| ≤ 1 for all x. Then there are a Borel measure μ on ℝ^N and ν : ℝ^N → ℝ^N with μ(ℝ^N ∖ U) = 0, μ(K) < ∞ for every compact K ⊆ U, ν μ-a.e. strongly measurable, |ν| = 1 μ-a.e., and Λ(g) = ∫⟨g(x), ν(x)⟩ dμ(x) for every admissible g.",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Rn N)) (Λ : (Rn N → Rn N) → ℝ), IsOpen U → (∀ g h : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Continuous h → HasCompactSupport h → tsupport h ⊆ U → Λ (g + h) = Λ g + Λ h) → (∀ (c : ℝ) (g : Rn N → Rn N), Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ (c • g) = c * Λ g) → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ g : Rn N → Rn N, Continuous g → tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → Λ g ≤ C) → ∃ (μ : Measure (Rn N)) (ν : Rn N → Rn N), μ Uᶜ = 0 ∧ (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) ∧ AEStronglyMeasurable ν μ ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧ ∀ g : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ g = ∫ x, inner ℝ (g x) (ν x) ∂μ",
+  "lean_name": "gaussGreenRep_riesz_on_open",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-riesz-on-open-a1-a1"
+}
