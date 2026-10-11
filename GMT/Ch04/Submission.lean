@@ -434,6 +434,106 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+namespace Submission
+
+theorem tendsto_integral_tangentialDiv_of_tendstoUniformly_fderiv : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (K : Set (Ambient n ℓ)) (X : Ambient n ℓ → Ambient n ℓ) (Y : ℕ → Ambient n ℓ → Ambient n ℓ), IsFiniteMeasureOnCompacts V.weight → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsCompact K → ContDiff ℝ 1 X → tsupport X ⊆ K → (∀ k, ContDiff ℝ 1 (Y k) ∧ tsupport (Y k) ⊆ K) → TendstoUniformly (fun k ↦ fderiv ℝ (Y k)) (fderiv ℝ X) atTop → Tendsto (fun k ↦ ∫ x, V.tangentialDiv (Y k) x ∂V.weight) atTop (𝓝 (∫ x, V.tangentialDiv X x ∂V.weight)) := by
+  intro n ℓ V K X Y hfin hP hK hX hXK hY hconv
+  -- Step 1: `|trace (A ∘ P)| ≤ (n + ℓ) ‖A‖` when `‖P‖ ≤ 1`, expanding the trace in the
+  -- standard orthonormal basis `eᵢ` and bounding each `⟪eᵢ, A P eᵢ⟫` by Cauchy–Schwarz.
+  set d : ℝ := ((n + ℓ : ℕ) : ℝ)
+  have hd0 : 0 ≤ d := Nat.cast_nonneg _
+  have htrace : ∀ A P : Ambient n ℓ →L[ℝ] Ambient n ℓ, ‖P‖ ≤ 1 →
+      |LinearMap.trace ℝ (Ambient n ℓ) (A.comp P).toLinearMap| ≤ d * ‖A‖ := by
+    intro A P hP
+    set b := EuclideanSpace.basisFun (Fin (n + ℓ)) ℝ
+    rw [LinearMap.trace_eq_matrix_trace ℝ b.toBasis, Matrix.trace]
+    simp only [Matrix.diag, LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis,
+      OrthonormalBasis.coe_toBasis_repr_apply, OrthonormalBasis.repr_apply_apply]
+    calc |∑ i, inner ℝ (b i) ((A.comp P).toLinearMap (b i))|
+        ≤ ∑ i, |inner ℝ (b i) ((A.comp P).toLinearMap (b i))| := Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _i : Fin (n + ℓ), ‖A‖ := by
+          gcongr with i
+          have hb : ‖b i‖ = 1 := b.orthonormal.1 i
+          calc |inner ℝ (b i) ((A.comp P).toLinearMap (b i))|
+              ≤ ‖b i‖ * ‖(A.comp P) (b i)‖ := abs_real_inner_le_norm _ _
+            _ ≤ ‖b i‖ * (‖A.comp P‖ * ‖b i‖) := by gcongr; exact (A.comp P).le_opNorm (b i)
+            _ = ‖A.comp P‖ := by rw [hb]; ring
+            _ ≤ ‖A‖ * ‖P‖ := A.opNorm_comp_le P
+            _ ≤ ‖A‖ * 1 := by gcongr
+            _ = ‖A‖ := mul_one _
+      _ = d * ‖A‖ := by simp [d]
+  -- Step 2: `div_M Z x = T (DZ(x) ∘ p_x)` for the continuous linear functional `T = trace`,
+  -- so `div_M Z` is a continuous function of `(DZ(x), p_x)`, hence a.e. strongly measurable.
+  set T : (Ambient n ℓ →L[ℝ] Ambient n ℓ) →ₗ[ℝ] ℝ :=
+    (LinearMap.trace ℝ (Ambient n ℓ)).comp (ContinuousLinearMap.coeLM ℝ) with hT
+  have hTc : Continuous T := T.continuous_of_finiteDimensional
+  have hdiv : ∀ Z x, V.tangentialDiv Z x =
+      T ((fderiv ℝ Z x).comp (V.tangentSpace x).starProjection) := fun Z x ↦ rfl
+  have hcomp : Continuous (fun q : (Ambient n ℓ →L[ℝ] Ambient n ℓ) × (Ambient n ℓ →L[ℝ] Ambient n ℓ) ↦
+      q.1.comp q.2) := isBoundedBilinearMap_comp.continuous
+  have hmeas : ∀ Z : Ambient n ℓ → Ambient n ℓ, ContDiff ℝ 1 Z →
+      AEStronglyMeasurable (fun x ↦ V.tangentialDiv Z x) V.weight := by
+    intro Z hZ
+    have h1 : Continuous (fun x ↦ fderiv ℝ Z x) := hZ.continuous_fderiv one_ne_zero
+    exact (hTc.comp hcomp).comp_aestronglyMeasurable (h1.aestronglyMeasurable.prodMk hP)
+  have hbound : ∀ (A : Ambient n ℓ →L[ℝ] Ambient n ℓ) x,
+      |T (A.comp (V.tangentSpace x).starProjection)| ≤ d * ‖A‖ := fun A x ↦
+    htrace A _ (Submodule.starProjection_norm_le _)
+  -- Step 3: `div_M Z` vanishes off `K` when `tsupport Z ⊆ K`.
+  have hvan : ∀ Z : Ambient n ℓ → Ambient n ℓ, tsupport Z ⊆ K → ∀ x ∉ K,
+      V.tangentialDiv Z x = 0 := by
+    intro Z hZK x hx
+    rw [hdiv, fderiv_of_notMem_tsupport ℝ (fun h ↦ hx (hZK h))]
+    simp
+  -- Step 4: `div_M Z` is integrable, being bounded by `d B 1_K` with `μ(K) < ∞`.
+  have hμK : V.weight K < ⊤ := hK.measure_lt_top
+  have hint : ∀ Z : Ambient n ℓ → Ambient n ℓ, ContDiff ℝ 1 Z → tsupport Z ⊆ K →
+      Integrable (fun x ↦ V.tangentialDiv Z x) V.weight := by
+    intro Z hZ hZK
+    have hZc : HasCompactSupport Z := hK.of_isClosed_subset (isClosed_tsupport Z) hZK
+    obtain ⟨B, hB⟩ := (hZc.fderiv ℝ).exists_bound_of_continuous (hZ.continuous_fderiv one_ne_zero)
+    refine Integrable.mono' ((integrableOn_const (C := d * B) hμK.ne).integrable_indicator
+      hK.isClosed.measurableSet) (hmeas Z hZ) (Eventually.of_forall fun x ↦ ?_)
+    by_cases hx : x ∈ K
+    · rw [indicator_of_mem hx, Real.norm_eq_abs, hdiv]
+      exact (hbound _ x).trans (by gcongr; exact hB x)
+    · rw [indicator_of_notMem hx, hvan Z hZK x hx, norm_zero]
+  have hIX := hint X hX hXK
+  -- Steps 5–6: `|∫ div_M Y_k - ∫ div_M X| ≤ d sup ‖DY_k - DX‖ μ(K) → 0`.
+  rw [Metric.tendsto_atTop]
+  intro η hη
+  set m : ℝ := V.weight.real K
+  have hm0 : 0 ≤ m := measureReal_nonneg
+  obtain ⟨N, hN⟩ := (Metric.tendstoUniformly_iff.mp hconv (η / (2 * (d * m + 1)))
+    (by positivity)).exists_forall_of_atTop
+  refine ⟨N, fun k hk ↦ ?_⟩
+  have hIY := hint (Y k) (hY k).1 (hY k).2
+  rw [Real.dist_eq, ← integral_sub hIY hIX]
+  calc |∫ x, V.tangentialDiv (Y k) x - V.tangentialDiv X x ∂V.weight|
+      ≤ ∫ x, K.indicator (fun _ ↦ d * (η / (2 * (d * m + 1)))) x ∂V.weight := by
+        rw [← Real.norm_eq_abs]
+        refine norm_integral_le_of_norm_le
+          ((integrableOn_const (C := d * (η / (2 * (d * m + 1)))) hμK.ne).integrable_indicator
+          hK.isClosed.measurableSet)
+          (Eventually.of_forall fun x ↦ ?_)
+        by_cases hx : x ∈ K
+        · rw [indicator_of_mem hx, Real.norm_eq_abs, hdiv, hdiv, ← map_sub,
+            ← ContinuousLinearMap.sub_comp]
+          refine (hbound _ x).trans ?_
+          gcongr
+          rw [← dist_eq_norm, dist_comm]
+          exact (hN k hk x).le
+        · rw [indicator_of_notMem hx, hvan _ (hY k).2 x hx, hvan X hXK x hx, sub_zero, norm_zero]
+    _ = d * (η / (2 * (d * m + 1))) * m := by
+        rw [integral_indicator hK.isClosed.measurableSet, setIntegral_const, smul_eq_mul, mul_comm]
+    _ < η := by
+        have h1 : 0 < d * m + 1 := by positivity
+        have he : d * (η / (2 * (d * m + 1))) * m = η * (d * m) / (2 * (d * m + 1)) := by ring
+        rw [he, div_lt_iff₀ (by positivity)]
+        nlinarith [mul_nonneg hd0 hm0]
+
+end Submission
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
