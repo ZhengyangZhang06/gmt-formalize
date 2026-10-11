@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.compactness-a1.diagonal_subseq-a1",
+  "parent_id": "root.bv_results-a1.compactness-a1",
+  "depth": 3,
+  "title": "Finite L¹ nets on every compact subset give an L¹_loc-convergent subsequence (step A2, diagonal extraction)",
+  "statement": "For every n ∈ ℕ, every open U ⊆ ℝⁿ and every sequence u_k : ℝⁿ → ℝ (k ∈ ℕ) of functions locally integrable on U such that for every compact Q ⊆ U and every ε > 0 there is a finite set F ⊆ ℕ with: every k has some j ∈ F with ∫⁻_Q ‖u_k(x) − u_j(x)‖ₑ dx < ofReal ε, there exist a strictly increasing ψ : ℕ → ℕ and v : ℝⁿ → ℝ such that v is locally integrable on U and u_{ψ(k)} → v in L¹_loc(U), i.e. ∫⁻_K ‖u_{ψ(k)} − v‖ₑ → 0 for every compact K ⊆ U (SimonGMT Chapter02.TendstoLocallyInL1On (fun k ↦ u (ψ k)) v U atTop).",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Rn n)) (u : ℕ → Rn n → ℝ), IsOpen U → (∀ k, LocallyIntegrableOn (u k) U volume) → (∀ Q : Set (Rn n), IsCompact Q → Q ⊆ U → ∀ ε : ℝ, 0 < ε → ∃ F : Finset ℕ, ∀ k, ∃ j ∈ F, (∫⁻ x in Q, ‖u k x - u j x‖ₑ) < ENNReal.ofReal ε) → ∃ (ψ : ℕ → ℕ) (v : Rn n → ℝ), StrictMono ψ ∧ LocallyIntegrableOn v U volume ∧ Chapter02.TendstoLocallyInL1On (fun k ↦ u (ψ k)) v U atTop",
+  "lean_name": "bv_exists_subseq_tendstoLocallyInL1On",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-compactness-a1-diagonal-subseq-a1-a1"
+}

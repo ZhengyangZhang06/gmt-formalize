@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.compactness-a1.uniform_bounds-a1",
+  "parent_id": "root.bv_results-a1.compactness-a1",
+  "depth": 3,
+  "title": "Unweighted uniform L¹ and variation bounds from the frozen weighted hypothesis (step A0)",
+  "statement": "For every n ∈ ℕ, every open W ⊆ ℝⁿ (ℝⁿ = EuclideanSpace ℝ (Fin n)) with Lⁿ(W) < ∞, and every sequence u_k : ℝⁿ → ℝ (k ∈ ℕ) such that sup_k ∫⁻_W (‖u_k(x)‖ₑ + |Du_k|(W)) dx < ∞ in [0,∞], where |Du_k|(W) := SimonGMT Chapter02.bvVariationOn (u k) W ∈ [0,∞] is an x-independent constant inside the integrand, there is a real c ≥ 0 such that for every k: ∫⁻_W ‖u_k(x)‖ₑ dx ≤ ofReal c and |Du_k|(W) ≤ ofReal c.",
+  "lean_statement": "∀ (n : ℕ) (W : Set (Rn n)) (u : ℕ → Rn n → ℝ), IsOpen W → volume W < ⊤ → ⨆ k, (∫⁻ x in W, ‖u k x‖ₑ + Chapter02.bvVariationOn (u k) W) < ⊤ → ∃ c : ℝ, 0 ≤ c ∧ ∀ k, (∫⁻ x in W, ‖u k x‖ₑ) ≤ ENNReal.ofReal c ∧ Chapter02.bvVariationOn (u k) W ≤ ENNReal.ofReal c",
+  "lean_name": "bv_compactness_uniform_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-compactness-a1-uniform-bounds-a1-a1"
+}
