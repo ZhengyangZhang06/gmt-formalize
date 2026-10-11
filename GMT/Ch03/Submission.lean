@@ -335,6 +335,55 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **A bounded field is determined `μ`-a.e. by its pairings** (uniqueness of the normal in the
+Gauss–Green identity, Simon Ch. 3, (4.1)): let `U ⊆ ℝᴺ` be open, `μ` carried by `U` and finite on
+compact subsets of `U`, and `ν, ν'` `μ`-measurable with `|ν|, |ν'| ≤ 1` `μ`-a.e. If
+`∫ ⟨g, ν⟩ dμ = ∫ ⟨g, ν'⟩ dμ` for every continuous `g` compactly supported in `U`, then `ν = ν'`
+`μ`-a.e. Bounded fields are integrable on compact subsets of `U`; testing with `g = φ v` (`φ` a
+smooth scalar function compactly supported in `U`, `v ∈ ℝᴺ`) gives `∫ φ (ν - ν') dμ = 0`, so
+`ν - ν'` vanishes `μ`-a.e. on `U` by the fundamental lemma of the calculus of variations
+(`IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero`), and `μ(ℝᴺ ∖ U) = 0`. -/
+theorem Submission.gaussGreenRep_normal_ae_eq_of_pairing : ∀ (N : ℕ) (U : Set (Rn N))
+    (μ : Measure (Rn N)) (ν ν' : Rn N → Rn N), IsOpen U → μ Uᶜ = 0 →
+    (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ν μ →
+    AEStronglyMeasurable ν' μ → (∀ᵐ x ∂μ, ‖ν x‖ ≤ 1) → (∀ᵐ x ∂μ, ‖ν' x‖ ≤ 1) →
+    (∀ g : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U →
+      ∫ x, inner ℝ (g x) (ν x) ∂μ = ∫ x, inner ℝ (g x) (ν' x) ∂μ) → ν =ᵐ[μ] ν' := by
+  intro N U μ ν ν' hU hUc hK hν hν' hν1 hν'1 hpair
+  -- A field bounded by `1` is integrable on every compact subset of `U`.
+  have hloc : ∀ w : Rn N → Rn N, AEStronglyMeasurable w μ → (∀ᵐ x ∂μ, ‖w x‖ ≤ 1) →
+      LocallyIntegrableOn w U μ := fun w hw hw1 =>
+    (locallyIntegrableOn_iff hU.isLocallyClosed).2 fun k hkU hk =>
+      Measure.integrableOn_of_bounded (hK k hk hkU).ne hw (ae_restrict_of_ae hw1)
+  -- Its product with a continuous scalar function compactly supported in `U` is integrable.
+  have hint : ∀ w : Rn N → Rn N, LocallyIntegrableOn w U μ → ∀ g : Rn N → ℝ, Continuous g →
+      HasCompactSupport g → tsupport g ⊆ U → Integrable (fun x => g x • w x) μ := by
+    intro w hw g hg hgc hgU
+    refine (integrableOn_iff_integrable_of_support_subset
+      ((Function.support_smul_subset_left g w).trans (subset_tsupport g))).1 ?_
+    exact (hw.integrableOn_compact_subset hgU hgc.isCompact).continuousOn_smul hg.continuousOn
+      hgc.isCompact
+  have hlν := hloc ν hν hν1
+  have hlν' := hloc ν' hν' hν'1
+  -- `ν - ν'` integrates to zero against smooth test functions, so it vanishes a.e. on `U`.
+  have h0 : ∀ᵐ x ∂μ, x ∈ U → (ν - ν') x = 0 := by
+    refine hU.ae_eq_zero_of_integral_contDiff_smul_eq_zero (hlν.sub hlν') fun g hg hgc hgU => ?_
+    have hgν := hint ν hlν g hg.continuous hgc hgU
+    have hgν' := hint ν' hlν' g hg.continuous hgc hgU
+    simp only [Pi.sub_apply, smul_sub]
+    rw [integral_sub hgν hgν', sub_eq_zero]
+    refine ext_inner_left ℝ fun v => ?_
+    have e := (innerSL ℝ v).integral_comp_comm hgν
+    have e' := (innerSL ℝ v).integral_comp_comm hgν'
+    simp only [innerSL_apply_apply] at e e'
+    rw [← e, ← e']
+    have h := hpair (fun x => g x • v) (hg.continuous.smul continuous_const) hgc.smul_right
+      ((tsupport_smul_subset_left _ _).trans hgU)
+    simpa only [real_inner_smul_left, real_inner_smul_right] using h
+  -- `μ` is carried by `U`.
+  filter_upwards [h0, mem_ae_iff.2 hUc] with x hx hxU
+  exact sub_eq_zero.1 (hx hxU)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
