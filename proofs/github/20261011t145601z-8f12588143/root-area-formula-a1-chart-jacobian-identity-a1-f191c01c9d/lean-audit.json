@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d6cc1859f1e86a20d7cd34da704471ccbe9f51d37bb1ade68d7bc1116171ab78",
+  "git_delta": {
+    "base_commit": "67dab962008b643b53041e487ddfba490152cd84",
+    "candidate_commit": "6810e6f777068037c3ac1f50a1caf1ec2cb8a939",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "areaFormula_chart_jacobian_identity",
+    "diff_sha256": "a7d954836868cbcb3f1a8b76ba532ee89b3e94f49c634cd88f9e0c370100fd12",
+    "source_sha256": "b082af26d9f3eebe403c03a6fd456818511f5535c9c773fde40ed844f22f3089",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.areaFormula_chart_jacobian_identity",
+      "statement": "∀ (n N p : ℕ) (M : Set (Rn N)) (θ : Rn N → ℝ) (f : Rn N → Rn p) (ψ : Rn n → Rn N) (u : Rn n), θ (ψ u) ≠ 0 → HasWeightedApproximateTangentSpaceAt n M θ (ψ u) (LinearMap.range (fderiv ℝ ψ u).toLinearMap) → (∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w)) → approxTangentPlane n M θ (ψ u) = LinearMap.range (fderiv ℝ ψ u).toLinearMap ∧ (∃ L : ↥(LinearMap.range (fderiv ℝ ψ u).toLinearMap) →L[ℝ] Rn p, HasTangentialDifferentialAt (LinearMap.range (fderiv ℝ ψ u).toLinearMap) f (ψ u) L) ∧ areaJacobian (approxTangentPlane n M θ (ψ u)) f (ψ u) * (fderiv ℝ ψ u).toLinearMap.normDet = (fderiv ℝ (f ∘ ψ) u).toLinearMap.normDet",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
