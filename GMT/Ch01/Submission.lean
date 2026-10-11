@@ -215,6 +215,51 @@ def LebesgueDifferentiation : Prop :=
         (fun ρ : ℝ => (μ (closedBall x ρ)).toReal⁻¹ * ∫ y in closedBall x ρ, f y ∂caratheodoryMeasure μ)
         (𝓝[>] 0) (𝓝 (f x))
 
+/-- Simon Ch. 1, Theorem 3.16 and Corollary 3.17, from the pinned `Poincare.SimonGMT` library
+(`simon_theorem_3_16`, `simon_corollary_3_17_of_caratheodory`).  Both hold almost everywhere for
+`hμ.toBorelMeasure`, which has the same null sets as `μ` (`toBorelMeasure_apply_all`) and is the
+trim of `caratheodoryMeasure μ` to the Borel σ-algebra, so integrals over closed balls agree. -/
+theorem Submission.general_density_and_differentiation :
+    GeneralDensityTheorem.{u} ∧ LebesgueDifferentiation.{u} := by
+  refine ⟨fun X _ μ hμ hopen hV A hA => ?_, fun X _ μ hμ hopen hV f hf hloc => ?_⟩
+  · have h : ∀ᵐ x ∂μ, Tendsto (fun ρ : ℝ => μ (A ∩ closedBall x ρ) / μ (closedBall x ρ))
+        (𝓝[>] 0) (𝓝 (A.indicator (fun _ => (1 : ℝ≥0∞)) x)) := by
+      have h := simon_theorem_3_16 μ hμ hopen hV hA
+      rw [ae_iff] at h ⊢
+      rwa [hμ.toBorelMeasure_apply_all] at h
+    refine ⟨?_, ?_⟩
+    · filter_upwards [h] with x hx hxA
+      simpa only [indicator_of_mem hxA] using hx
+    · filter_upwards [h] with x hx hxA
+      simpa only [indicator_of_notMem hxA] using hx
+  · have hm : borel X ≤ μ.caratheodory := hμ.borel_le_caratheodory
+    have hball : ∀ (x : X) (ρ : ℝ), MeasurableSet[borel X] (closedBall x ρ) := fun _ _ =>
+      (MeasurableSpace.measurableSet_generateFrom isClosed_closedBall.isOpen_compl).of_compl
+    have htrim : (caratheodoryMeasure μ).trim hm = hμ.toBorelMeasure := by
+      refine @Measure.ext X (borel X) _ _ fun s hs => ?_
+      rw [trim_measurableSet_eq hm hs, hμ.toBorelMeasure_apply_all]
+      exact toMeasure_apply (ms := μ.caratheodory) μ le_rfl (hm s hs)
+    have hfae : AEMeasurable f hμ.toBorelMeasure := hμ.aemeasurable_of_caratheodory hopen hf
+    have hlint : ∀ x ρ, ∫⁻ y in closedBall x ρ, ENNReal.ofReal |f y| ∂hμ.toBorelMeasure =
+        ∫⁻ y in closedBall x ρ, ENNReal.ofReal |f y| ∂caratheodoryMeasure μ := by
+      intro x ρ
+      rw [← htrim]
+      refine setLIntegral_trim_ae hm ?_ (hball x ρ)
+      rw [htrim]
+      exact (continuous_abs.measurable.comp_aemeasurable hfae).ennreal_ofReal
+    have hint : ∀ x ρ, ∫ y in closedBall x ρ, f y ∂hμ.toBorelMeasure =
+        ∫ y in closedBall x ρ, f y ∂caratheodoryMeasure μ := by
+      intro x ρ
+      rw [← htrim, restrict_trim hm _ (hball x ρ), ← integral_trim_ae hm]
+      rw [← restrict_trim hm _ (hball x ρ), htrim]
+      exact hfae.aestronglyMeasurable.restrict
+    have h := simon_corollary_3_17_of_caratheodory μ hμ hopen hV hf fun x => by
+      obtain ⟨ρ, hρ, hfin⟩ := hloc x
+      exact ⟨ρ, hρ, (hlint x ρ).trans_lt hfin⟩
+    rw [ae_iff] at h ⊢
+    rw [hμ.toBorelMeasure_apply_all] at h
+    simpa only [hint] using h
+
 /-- **Radon–Nikodym theorem via densities.** Simon Ch. 1, Theorem 3.24 (pp. 24–25).
 
 Let `μ, μ₀` be open σ-finite Borel-regular measures on the metric space `X`, `μ₀` with the
@@ -319,49 +364,3 @@ def RadonCompactness : Prop :=
 theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
 
 end GMT.Ch01
-
-
-/-- Simon Ch. 1, Theorem 3.16 and Corollary 3.17, from the pinned `Poincare.SimonGMT` library
-(`simon_theorem_3_16`, `simon_corollary_3_17_of_caratheodory`).  Both hold almost everywhere for
-`hμ.toBorelMeasure`, which has the same null sets as `μ` (`toBorelMeasure_apply_all`) and is the
-trim of `caratheodoryMeasure μ` to the Borel σ-algebra, so integrals over closed balls agree. -/
-theorem Submission.general_density_and_differentiation :
-    GeneralDensityTheorem.{u} ∧ LebesgueDifferentiation.{u} := by
-  refine ⟨fun X _ μ hμ hopen hV A hA => ?_, fun X _ μ hμ hopen hV f hf hloc => ?_⟩
-  · have h : ∀ᵐ x ∂μ, Tendsto (fun ρ : ℝ => μ (A ∩ closedBall x ρ) / μ (closedBall x ρ))
-        (𝓝[>] 0) (𝓝 (A.indicator (fun _ => (1 : ℝ≥0∞)) x)) := by
-      have h := simon_theorem_3_16 μ hμ hopen hV hA
-      rw [ae_iff] at h ⊢
-      rwa [hμ.toBorelMeasure_apply_all] at h
-    refine ⟨?_, ?_⟩
-    · filter_upwards [h] with x hx hxA
-      simpa only [indicator_of_mem hxA] using hx
-    · filter_upwards [h] with x hx hxA
-      simpa only [indicator_of_notMem hxA] using hx
-  · have hm : borel X ≤ μ.caratheodory := hμ.borel_le_caratheodory
-    have hball : ∀ (x : X) (ρ : ℝ), MeasurableSet[borel X] (closedBall x ρ) := fun _ _ =>
-      (MeasurableSpace.measurableSet_generateFrom isClosed_closedBall.isOpen_compl).of_compl
-    have htrim : (caratheodoryMeasure μ).trim hm = hμ.toBorelMeasure := by
-      refine @Measure.ext X (borel X) _ _ fun s hs => ?_
-      rw [trim_measurableSet_eq hm hs, hμ.toBorelMeasure_apply_all]
-      exact toMeasure_apply (ms := μ.caratheodory) μ le_rfl (hm s hs)
-    have hfae : AEMeasurable f hμ.toBorelMeasure := hμ.aemeasurable_of_caratheodory hopen hf
-    have hlint : ∀ x ρ, ∫⁻ y in closedBall x ρ, ENNReal.ofReal |f y| ∂hμ.toBorelMeasure =
-        ∫⁻ y in closedBall x ρ, ENNReal.ofReal |f y| ∂caratheodoryMeasure μ := by
-      intro x ρ
-      rw [← htrim]
-      refine setLIntegral_trim_ae hm ?_ (hball x ρ)
-      rw [htrim]
-      exact (continuous_abs.measurable.comp_aemeasurable hfae).ennreal_ofReal
-    have hint : ∀ x ρ, ∫ y in closedBall x ρ, f y ∂hμ.toBorelMeasure =
-        ∫ y in closedBall x ρ, f y ∂caratheodoryMeasure μ := by
-      intro x ρ
-      rw [← htrim, restrict_trim hm _ (hball x ρ), ← integral_trim_ae hm]
-      rw [← restrict_trim hm _ (hball x ρ), htrim]
-      exact hfae.aestronglyMeasurable.restrict
-    have h := simon_corollary_3_17_of_caratheodory μ hμ hopen hV hf fun x => by
-      obtain ⟨ρ, hρ, hfin⟩ := hloc x
-      exact ⟨ρ, hρ, (hlint x ρ).trans_lt hfin⟩
-    rw [ae_iff] at h ⊢
-    rw [hμ.toBorelMeasure_apply_all] at h
-    simpa only [hint] using h
