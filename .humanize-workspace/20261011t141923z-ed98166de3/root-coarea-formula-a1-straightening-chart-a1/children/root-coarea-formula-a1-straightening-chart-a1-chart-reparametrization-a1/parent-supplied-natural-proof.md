@@ -1,0 +1,119 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.coarea_formula-a1.straightening_chart-a1`
+- Child DAG node: `root.coarea_formula-a1.straightening_chart-a1.chart_reparametrization-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 6 (a), (b), (c), (d) and (f) of the parent proof. Here Λ is an arbitrary C¹ map with the stated properties; in the parent it is the inverse chart from the local submersion theorem.
+
+Notation.
+- n := m + k, P := WithLp 2 (ℝᵐ × ℝᵏ), Ψ := ψ ∘ Λ : P → ℝᴺ, V₁ := Λ(Ω).
+- Dψ(x) := fderiv ℝ ψ x and DΛ(p) := fderiv ℝ Λ p.
+- (hTψ) is the hypothesis tangentSpace M (ψ x) = range Dψ(x) for all x ∈ V.
+
+0. Unpacking the hypothesis IsSimonLocalRepresentation 1 M V W ψ:
+   - V ⊆ ℝⁿ and W ⊆ ℝᴺ are open;
+   - ψ is C¹ on V and injective on V;
+   - ψ(V) = W ∩ M;
+   - ψ is proper relative to V and W, i.e. V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W;
+   - Dψ(x) is injective for every x ∈ V.
+1. Λ maps Ω into V. For p ∈ Ω, Λ(p) ∈ Λ(Ω) = V₁ ⊆ V.
+2. The open set O. V₁ is open and V₁ ⊆ V. Simon 4.2 is available as SimonGMT IsSimonLocalRepresentation.exists_open_image_eq_inter (module Poincare.SimonGMT.Chapter02.SubmanifoldTopology). Its proof uses the relative properness from step 0 to show that ψ is a homeomorphism of V onto W ∩ M. It gives an open O ⊆ W with ψ(V₁) = O ∩ M. Hence Ψ(Ω) = ψ(Λ(Ω)) = ψ(V₁) = O ∩ M.
+3. Ψ is C¹ on Ω. ψ is C¹ on V, Λ is C¹ on Ω, and Λ maps Ω into V (step 1). So Ψ = ψ ∘ Λ is C¹ on Ω (ContDiffOn.comp).
+4. Ψ is injective on Ω. Let p, q ∈ Ω with ψ(Λ p) = ψ(Λ q). Then Λ p, Λ q ∈ V (step 1), so Λ p = Λ q because ψ is injective on V, and then p = q because Λ is injective on Ω.
+5. Chain rule. Let p ∈ Ω.
+   - Ω is open and Λ is C¹ on Ω, so Λ is differentiable at p.
+   - Λ(p) ∈ V, V is open and ψ is C¹ on V, so ψ is differentiable at Λ(p).
+   - By the chain rule (fderiv_comp), fderiv ℝ Ψ p = Dψ(Λ p) ∘ DΛ(p).
+6. Injective derivative. Dψ(Λ p) is injective by step 0, since Λ p ∈ V. DΛ(p) is injective because it is bijective by hypothesis. So the composite fderiv ℝ Ψ p = Dψ(Λ p) ∘ DΛ(p) is injective.
+7. Tangent spaces.
+   - By (hTψ) at x = Λ(p) ∈ V: tangentSpace M (Ψ p) = tangentSpace M (ψ(Λ p)) = range Dψ(Λ p).
+   - Since DΛ(p) is surjective: range(Dψ(Λ p) ∘ DΛ(p)) = Dψ(Λ p)(range DΛ(p)) = Dψ(Λ p)(P) = range Dψ(Λ p) (LinearMap.range_comp_of_range_eq_top).
+   - By step 5 the left-hand side is range(fderiv ℝ Ψ p). Hence tangentSpace M (Ψ p) = range(fderiv ℝ Ψ p).
+8. Conclusion. For this O: O is open and Ψ(Ω) = O ∩ M (2); Ψ is C¹ on Ω (3) and injective on Ω (4); and for every p ∈ Ω, fderiv ℝ Ψ p is injective (6) and tangentSpace M (Ψ p) = range(fderiv ℝ Ψ p) (7). This is exactly the claimed statement.
+
+## Key steps
+
+1. Λ(Ω) ⊆ V, so Λ maps Ω into the chart domain V.
+2. Simon 4.2 (IsSimonLocalRepresentation.exists_open_image_eq_inter) applied to the open set V₁ = Λ(Ω) ⊆ V gives an open O with (ψ∘Λ)(Ω) = ψ(V₁) = O ∩ M.
+3. ψ∘Λ is C¹ on Ω (ContDiffOn.comp) and injective on Ω (InjOn.comp).
+4. Chain rule: D(ψ∘Λ)(p) = Dψ(Λp) ∘ DΛ(p), which is injective as a composite of injective maps.
+5. DΛ(p) is surjective, so range D(ψ∘Λ)(p) = range Dψ(Λp) = tangentSpace M (ψ(Λp)) by the tangent hypothesis at Λp ∈ V.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n "theorem continuousOn_fderiv_of_isOpen|theorem ContDiffOn.continuousOn_fderiv_of_isOpen" mathlib/Mathlib/Analysis/Calculus/ContDiff/`
+- `rg -n "isOpen_inter_preimage_symm" mathlib/Mathlib/Topology/OpenPartialHomeomorph/`
+- `rg -n "theorem isOpen\b|protected theorem isOpen\b|theorem ContinuousLinearEquiv.isOpen" mathlib/Mathlib/Analysis`
+- `rg -n "prodContinuousLinearEquiv" mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean`
+- `rg -n "^def fst|^abbrev fst|def WithLp.fst|protected def fst|fst_toLp|toLp_fst" mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean`
+- `rg -n "theorem range_comp_of_range_eq_top|theorem LinearMap.range_comp_of_range_eq_top" mathlib/Mathlib`
+- `grep -n "theorem OpenPartialHomeomorph.contDiffAt_symm\|theorem OpenPartialHomeomorph.hasFDerivAt_symm\|theorem OpenPartialHomeomorph.contDiffOn_symm" -A 12 mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean mathlib/Mathlib/Analysis/Calculus/FDeriv/*.lean`
+- `sed -n 1,140p mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `grep -n "^theorem\|^def\|^lemma" mathlib/Mathlib/Analysis/Calculus/Implicit.lean`
+- `rg -il "submersion" mathlib/Mathlib/Analysis/Calculus mathlib/Mathlib/Geometry/Manifold`
+- `grep -n "^theorem\|^lemma\|^def" mathlib/Mathlib/Geometry/Manifold/Submersion.lean`
+- `rg -n "Submission\." project`
+- `sed -n 1,200p project/GMT/Ch02/Contract.lean (tangentSpace, coareaJacobian, Rn)`
+- `read SimonGMT Chapter02/Submanifold.lean (IsSimonLocalRepresentation, IsSimonSubmanifold) and Chapter02/SubmanifoldTopology.lean (exists_open_image_eq_inter)`
+- `python3 -I scripts/gen_checks.py gen scripts/children.json (verifier gmt-compare.py layout/child_modules contract scope + lean_contract.validate_lean_statement)`
+- `lean NodeChallenge_0.lean; lean NodeChallenge_1.lean; lean Sol0.lean; lean Sol1.lean (against a scratch olean of GMT.Ch02.Submission)`
+- `lean ChildA.lean; lean ChildB.lean; lean Assembly.lean; lean Assembly2.lean; #print axioms`
+- `python3 -I: list lean_name of every dag.json node and compare stand-in types with dag.json lean_statement; grep -rl for both proposed names in the run directory`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/OfCompLeft.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/OpenPartialHomeomorph/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Algebra/Module/Submodule/Range.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Implicit.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Manifold/Submersion.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/GMT/Ch02/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-straightening-chart-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-jacobian-linear-algebra-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1/decomposition-v1.json`
+- `/tmp/straight-decomp-cThsEp/check/ChildA.lean`
+- `/tmp/straight-decomp-cThsEp/check/ChildB.lean`
+- `/tmp/straight-decomp-cThsEp/check/Assembly.lean`
+- `/tmp/straight-decomp-cThsEp/check/Assembly2.lean`
+- `/tmp/straight-decomp-cThsEp/gen/NodeChallenge_0.lean`
+- `/tmp/straight-decomp-cThsEp/gen/NodeChallenge_1.lean`
+- `/tmp/straight-decomp-cThsEp/gen/Sol0.lean`
+- `/tmp/straight-decomp-cThsEp/gen/Sol1.lean`
+- `/tmp/straight-decomp-cThsEp/scripts/gen_checks.py`
+
+The snapshot has no ready-made local submersion (rectification) theorem. mathlib/Mathlib/Geometry/Manifold/Submersion.lean defines submersions by local normal forms and says that deriving them from a surjective derivative is future work. Implicit.lean only provides implicitToOpenPartialHomeomorph(OfComplemented) for strict derivatives with codomain F x ker f'. rg 'Submission\.' project matches only README text, so there are no Submission.* declarations.
+
+All proof ingredients are present:
+- ContDiffAt.toOpenPartialHomeomorph (InverseFunctionTheorem/ContDiff.lean l.31; hypothesis hn : n ≠ 0);
+- OpenPartialHomeomorph.contDiffAt_symm (ContDiff/Operations.lean l.881);
+- OpenPartialHomeomorph.hasFDerivAt_symm (FDeriv/OfCompLeft.lean l.214);
+- ContinuousLinearEquiv.isOpen (Normed/Operator/BoundedLinearMaps.lean l.543);
+- ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean l.916);
+- OpenPartialHomeomorph.isOpen_inter_preimage_symm (OpenPartialHomeomorph/Basic.lean l.88);
+- WithLp.prodContinuousLinearEquiv (ProdLp.lean l.556) and toLp_fst (l.145);
+- LinearMap.range_comp_of_range_eq_top (Submodule/Range.lean l.421).
+SimonGMT supplies IsSimonLocalRepresentation.exists_open_image_eq_inter (Simon 4.2, SubmanifoldTopology.lean). The contract does not import that module, so child 2 must import Poincare.SimonGMT.Chapter02.SubmanifoldTopology.
+
+Verification in scratch /tmp/straight-decomp-cThsEp (pinned Lean v4.35.0-rc3, pinned mathlib/simongmt oleans, scratch olean of GMT.Ch02.Submission):
+- Both statements pass validate_lean_statement unchanged and elaborate in the replayed contract scope (NodeChallenge_0/1 report only the expected sorry warning).
+- Complete proofs ChildA.lean and ChildB.lean compile with #print axioms = [propext, Classical.choice, Quot.sound]. Sol0/Sol1 (`exact Submission.X` in the comparator scope) compile with the same axioms.
+- Assembly2.lean proves the selected frozen type sorry-free from the real child proofs plus a sorried stand-in of the sibling coarea_jacobian_linear_algebra. Both types are string-identical to dag.json.
+
+Neither proposed name is among the 30 lean_names in dag.json or occurs anywhere in the run directory. The c1_sard level_set_chart and chart_composition nodes have different types, so nothing is reused.

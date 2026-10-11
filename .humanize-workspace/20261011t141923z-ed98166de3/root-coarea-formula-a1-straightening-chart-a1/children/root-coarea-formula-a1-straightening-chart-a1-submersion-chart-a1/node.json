@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.straightening_chart-a1.submersion_chart-a1",
+  "parent_id": "root.coarea_formula-a1.straightening_chart-a1",
+  "depth": 3,
+  "title": "Local submersion (rectification) chart for a C¹ map ℝ^{m+k} → ℝᵐ with surjective derivative",
+  "statement": "Let m, k ∈ ℕ, E := ℝ^{m+k} (= Rn (m + k)) and P := WithLp 2 (ℝᵐ × ℝᵏ), the Euclidean product, with first-component map p ↦ WithLp.fst p. Let V ⊆ E be open, let G : E → ℝᵐ be of class C¹ on V, and let a ∈ V be such that the derivative fderiv ℝ G a : E → ℝᵐ is surjective. Then there are an open set Ω ⊆ P and a map Λ : P → E with the following properties: Λ is C¹ on Ω and injective on Ω; the image Λ(Ω) is open, contains a and is contained in V; for every p ∈ Ω the derivative fderiv ℝ Λ p : P → E is bijective; and G(Λ p) = WithLp.fst p for every p ∈ Ω.",
+  "lean_statement": "∀ (m k : ℕ) (V : Set (Rn (m + k))) (G : Rn (m + k) → Rn m) (a : Rn (m + k)), IsOpen V → ContDiffOn ℝ 1 G V → a ∈ V → Function.Surjective (fderiv ℝ G a) → ∃ (Ω : Set (WithLp 2 (Rn m × Rn k))) (Λ : WithLp 2 (Rn m × Rn k) → Rn (m + k)), IsOpen Ω ∧ ContDiffOn ℝ 1 Λ Ω ∧ InjOn Λ Ω ∧ IsOpen (Λ '' Ω) ∧ a ∈ Λ '' Ω ∧ Λ '' Ω ⊆ V ∧ (∀ p ∈ Ω, Function.Bijective (fderiv ℝ Λ p)) ∧ ∀ p ∈ Ω, G (Λ p) = WithLp.fst p",
+  "lean_name": "coarea_straightening_submersion_chart",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-straightening-chart-a1-submersion-chart-a1-a1"
+}
