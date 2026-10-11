@@ -1,0 +1,82 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "rg -n 'IMRep|IsIntegerMultiplicity|regularSet|HasMassDensity' local-references/123e8435b4a2469b/project -t lean -c",
+        "rg -n 'IMRep|IsIntegerMultiplicity|^def |^theorem |^structure ' local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "grep -n '^def \\|^theorem \\|^structure ' simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Representation}.lean simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "rg -n '^theorem [a-zA-Z_.]*(density|Density|ball|Ball)' simongmt/Poincare/SimonGMT/Chapter01 Chapter03 Chapter04",
+        "grep -n 'ae_tendsto_rnDeriv\\|ae_tendsto_measure_inter_div\\|ae_tendsto_average' -r local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/",
+        "grep -n 'μHE\\[' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "grep -rl 'rsd_' runs/20261011T150044Z-ba604216b4; grep -rn 'rsd_massOn_eq_measure|...|rsd_constant_multiplicity_reduction' GMT .humanize",
+        "lake env lean /tmp/rsd-a1-check/Test/Children.lean (five child types in the comparator's replayed Contract scope)",
+        "lake env lean /tmp/rsd-a1-check/Test/Assembly.lean (RegularSetDense from children 1,2,3,5 + DensityAndTangentCones + DensityOneImpliesRegular; #print axioms)",
+        "lake env lean /tmp/rsd-a1-check/Test/Axioms.lean; lake env lean /tmp/rsd-a1-review/Child5Literal.lean; lake env lean /tmp/rsd-a1-review/CompetitorSupport.lean (#print axioms)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/rsd-a1-check/Test/Children.lean",
+        "/tmp/rsd-a1-check/Test/Assembly.lean",
+        "/tmp/rsd-a1-check/Test/Axioms.lean",
+        "/tmp/rsd-a1-review/Child5Literal.lean",
+        "/tmp/rsd-a1-review/CompetitorSupport.lean"
+      ],
+      "conclusion": "The snapshot's Ch07 contract (project b4d606d, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean.\n\nNo match for the structural facts the parent proof cites:\n- GMT/Ch06/Contract.lean has its own unproved integer-multiplicity notions; they have different types and live in a separate module that Ch07 does not import.\n- The simongmt Chapter06 files provide massOn, support/zeroRegion and restrictDomain, but no mass = weight, density = multiplicity, spt T = spt mu_T, or integer-combination lemma for IMRep.\n- Representation.lean leaves the mass-representation bridge pending.\n\nReusable tools, each checked to depend only on propext, Classical.choice and Quot.sound:\n- Chapter06: GeometricCurrentOn.le_massOn, massOn_mono, support_subset_domain.\n- Chapter03: HasApproximateTangentSpaceAt.unique, CountablyRectifiable.mono, countablyRectifiable_iUnion.\n- Chapter01: ae_dimensionalUpperDensity_eq_zero_outside (Simon 1.3.6, stated for simonHausdorffMeasureReal).\n- Mathlib: Besicovitch.ae_tendsto_rnDeriv and ae_tendsto_measure_inter_div_of_measurableSet.\n- Mathlib muHE scaling and isometry lemmas (euclideanHausdorffMeasure_homothety_image, Isometry.euclideanHausdorffMeasure_image); these two were located by grep but their axioms were not printed.\n\nThe five child types elaborate in the comparator's replayed scope. The conditional assembly of RegularSetDense from children 1, 2, 3 and 5 plus DensityAndTangentCones and DensityOneImpliesRegular depends only on propext, Classical.choice and Quot.sound. No rsd_ name occurs in the run directory or workspace, so the proposed names do not collide."
+    }
+  ],
+  "parent_id": "root.regular_set_dense-a1",
+  "child_id": "root.regular_set_dense-a1.mass_eq_weight-a1",
+  "subproblem": {
+    "key": "mass_eq_weight",
+    "title": "Simon 6.3.2(3): the mass of an integer multiplicity current on an open set equals its weight",
+    "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, T ∈ 𝒟_n(U), and let R = (M, θ, ξ) be an integer multiplicity representation of T in U. That is, R is an IMRep:\n- M ⊆ U is Borel and countably n-rectifiable;\n- θ : ℝ^P → ℕ is Borel, with θ ≥ 1 on M and ∫_{M∩K} θ dH^n < ∞ for every compact K ⊆ U;\n- ξ is H^n⌞M-measurable and, for H^n-a.e. x ∈ M, ξ(x) = ±τ₁∧⋯∧τ_n for an orthonormal basis τ of an approximate tangent plane of M at x;\n- T(ω) = ∫_M θ⟨ω, ξ⟩ dH^n for every ω ∈ 𝒟^n(U).\nThen M_W(T) = μ_T(W) for every open W ⊆ U. Here M_W(T) = sup{T(ω) : ω ∈ 𝒟^n(U), spt ω ⊆ W, |ω(x)| ≤ 1 for all x} ∈ [0, ∞], with |·| the Euclidean coefficient norm of covectors (T.massOn W), and μ_T(W) = ∫_{M∩W} θ dH^n (R.measure W).",
+    "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → W ⊆ U → T.massOn W = R.measure W",
+    "lean_name": "rsd_massOn_eq_measure",
+    "depends_on": [],
+    "natural_proof": "Source: Simon Ch. 6, Remark 3.2(3) (chapter-06.txt lines 763–767, printed without proof). It is the identity μ_T(W) = M_W(T) of Ch. 6, 2.7–2.8 (lines 264–282) for T = τ(M, θ, ξ), and it is the identity μ_T(B_ρ(x)) = M_{B_ρ(x)}(T) used in steps 2–4 of the parent proof.\n\nNotation:\n- H^n = μHE[n].\n- μ := R.measure = θH^n⌞M, a Borel measure on ℝ^P that vanishes outside M ⊆ U and is finite on compact subsets of U (axiom locallyIntegrable_mult).\n- For an n-covector α, |α| := (Σ_I α(e_{I(1)}, …, e_{I(n)})²)^{1/2}, summed over strictly increasing I : {1,…,n} → {1,…,P} (covectorEuclideanNorm). This is the Euclidean norm of the coefficient vector of α, hence a norm on n-covectors.\n- ‖α‖ is the operator norm, and ⟨α, v⟩ := v(α) for an n-vector v.\n\nReplace ξ by a Borel function that agrees with it H^n-a.e. on M. This changes neither the integral formula for T nor any a.e. statement below.\n\n1. Linear algebra. Let τ₁, …, τ_n ∈ ℝ^P be orthonormal, τ_i = Σ_j A_{ij} e_j, and for strictly increasing I let A_I := (A_{i,I(k)})_{i,k}. Expand α(τ₁, …, τ_n) by multilinearity, drop the non-injective index maps (α is alternating), and group the injective ones by their image. This gives α(τ₁, …, τ_n) = Σ_I det(A_I) α(e_{I(1)}, …, e_{I(n)}). By the Cauchy–Binet formula, Σ_I det(A_I)² = det(AAᵀ) = det(⟨τ_i, τ_j⟩) = 1.\n(a) By Cauchy–Schwarz, |α(τ₁, …, τ_n)| ≤ |α| for every α.\n(b) Let J be the linear map sending an n-vector v to the n-covector J(v) with J(v)(e_{I(1)}, …, e_{I(n)}) = ⟨e^I, v⟩ for strictly increasing I. Here e^I := dx^{I(1)} ∧ ⋯ ∧ dx^{I(n)}, so e^I(v₁, …, v_n) = det(⟨e_{I(k)}, v_j⟩)_{k,j}. Suppose ⟨α, v⟩ = ε α(τ₁, …, τ_n) for all α, with ε ∈ {1, −1}. Then ⟨e^I, v⟩ = ε det(A_I), so |J(v)| = (Σ_I det(A_I)²)^{1/2} = 1 and ⟨J(v), v⟩ = ε J(v)(τ₁, …, τ_n) = ε² Σ_I det(A_I)² = 1.\nFor n = 0 these facts are immediate: α(τ) = α(()) and |α| = |α(())|.\nBy the axiom orients of R (IsUnitOrientationOf), ξ(x) has this form for H^n-a.e. x ∈ M, hence for μ-a.e. x. Therefore, μ-a.e.: |⟨α, ξ(x)⟩| ≤ |α| for every α, and β(x) := J(ξ(x)) satisfies |β(x)| = 1 and ⟨β(x), ξ(x)⟩ = 1. The map β = J∘ξ is Borel.\n\n2. M_W(T) ≤ μ(W). Let ω ∈ 𝒟^n(U) with spt ω ⊆ W and |ω(x)| ≤ 1 for all x. The integrand θ⟨ω, ξ⟩ vanishes off the compact set K := spt ω ⊆ U. By step 1 it is bounded in absolute value by θ1_{M∩K} H^n-a.e. on M, which is integrable. Hence T(ω) = ∫_M θ⟨ω, ξ⟩ dH^n ≤ ∫_{M∩W} θ|ω| dH^n ≤ μ(W). The zero form is admissible, so M_W(T) = sup ENNReal.ofReal(T(ω)) ≤ μ(W).\n\n3. Choice of K and V. Let λ be real with 0 ≤ λ < μ(W); it suffices to find an admissible ω with T(ω) > λ.\n- The sets W_j := {y ∈ W : |y| < j, dist(y, ℝ^P ∖ W) > 1/j} increase to W and have compact closures W̄_j ⊆ W. By continuity from below, μ(K) > λ for K := W̄_j with j large, and μ(K) < ∞ because K is a compact subset of U.\n- Fix ε > 0 with μ(K) > λ + 3ε.\n- Pick d > 0 with K₁ := {y : dist(y, K) ≤ d} ⊆ W. Since K₁ is compact, μ⌞K₁ is a finite Borel measure on ℝ^P, hence outer regular, so there is an open V' ⊇ K with μ(K₁ ∩ V' ∖ K) < ε.\n- Put V := V' ∩ {y : dist(y, K) < d}. Then V is open, K ⊆ V, V̄ ⊆ K₁ ⊆ W, and μ(V ∖ K) < ε.\n\n4. A smooth admissible form.\n- β is Borel with |β| = 1 μ-a.e., so β ∈ L¹(μ⌞K). Continuous compactly supported maps are dense in L¹ of the finite Borel (hence regular) measure μ⌞K on ℝ^P, so there is a continuous compactly supported g with ∫_K |g − β| dμ < ε.\n- Let π(α) := α / max(1, |α|), the nearest-point retraction onto the closed unit ball of the Euclidean norm |·|; π is 1-Lipschitz. Then g₁ := π∘g is continuous and compactly supported, |g₁| ≤ 1, and |g₁ − β| = |π(g) − π(β)| ≤ |g − β| μ-a.e. on K.\n- With a standard mollifier φ_δ ≥ 0, ∫φ_δ = 1, put g₂ := g₁ * φ_δ (coefficientwise). Then g₂ is C^∞, and |g₂(x)| ≤ ∫ |g₁(x − y)| φ_δ(y) dy ≤ 1 because |·| is a norm. Also g₂ → g₁ uniformly as δ ↓ 0 because g₁ is uniformly continuous; fix δ with sup |g₂ − g₁| ≤ ε/(μ(K) + 1).\n- Choose χ ∈ C_c^∞(ℝ^P) with 0 ≤ χ ≤ 1, χ = 1 on K and spt χ ⊆ V (smooth Urysohn lemma), and set ω := χ g₂.\nThen ω is smooth with compact support, spt ω ⊆ V ⊆ W ⊆ U, and |ω| = χ|g₂| ≤ 1. So ω is admissible for M_W(T).\n\n5. Estimate. We have ω = g₂ on K and ω = 0 off V. By step 1, μ-a.e. |⟨α, ξ⟩| ≤ |α| and ⟨β, ξ⟩ = 1. As μ = θH^n⌞M:\nT(ω) = ∫ ⟨ω, ξ⟩ dμ = ∫_K ⟨g₂, ξ⟩ dμ + ∫_{V∖K} ⟨ω, ξ⟩ dμ\n≥ ∫_K ⟨β, ξ⟩ dμ − ∫_K |g₂ − β| dμ − μ(V ∖ K)\n≥ μ(K) − (∫_K |g₂ − g₁| dμ + ∫_K |g₁ − β| dμ) − ε\n> μ(K) − 3ε > λ.\n\n6. Conclusion. By step 5, M_W(T) ≥ ENNReal.ofReal(T(ω)) > λ for every real λ ∈ [0, μ(W)). So M_W(T) ≥ μ(W), and with step 2, M_W(T) = μ(W). If n > P, then H^n = 0 on ℝ^P, so μ = 0, T = 0 and both sides vanish; step 3 is then vacuous.",
+    "proof_key_steps": [
+      "Cauchy–Binet: |α(τ₁,…,τ_n)| ≤ |α| for orthonormal τ, and J(ξ) is a unit covector with ⟨J(ξ), ξ⟩ = 1.",
+      "Upper bound M_W(T) ≤ ∫_{M∩W} θ dH^n from the integral formula.",
+      "Lower bound: inner and outer regularity, L¹-density of continuous maps, radial retraction, mollification and a cut-off give an admissible ω with T(ω) > μ(K) − 3ε > λ."
+    ]
+  },
+  "audit": {
+    "key": "mass_eq_weight",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The one-line proposition exactly matches the open-set mass/weight statement and its hypotheses. Cauchy–Binet supplies the correct Euclidean coefficient-norm bound and saturating covector. Compact localization, L¹ approximation, radial projection, mollification and cutoff justify the lower bound; the representation gives the upper bound. Infinite mass and degenerate dimensions are covered without circular reliance."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1/parent-supplied-natural-proof.json"
+}

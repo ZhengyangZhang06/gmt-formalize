@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.integer_combination-a1",
+  "parent_id": "root.regular_set_dense-a1",
+  "depth": 2,
+  "title": "Simon 6.3.2(1): integer combinations of integer multiplicity currents are integer multiplicity",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, and let T₁, T₂, S ∈ 𝒟_n(U), where T₁ and T₂ are integer multiplicity (each represented by an IMRep in U). Let p₁, p₂ ∈ ℤ with S(ω) = p₁T₁(ω) + p₂T₂(ω) for every ω ∈ 𝒟^n(U). Then S is integer multiplicity, i.e. S = τ(M', θ', ξ') for some IMRep (M', θ', ξ') in U.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T₁ T₂ S : GeometricCurrentOn U n) (p₁ p₂ : ℤ), IsOpen U → IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ → (∀ ω : TestFormOn U n, S ω = (p₁ : ℝ) * T₁ ω + (p₂ : ℝ) * T₂ ω) → IsIntegerMultiplicity S",
+  "lean_name": "rsd_isIntegerMultiplicity_int_combination",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-a1"
+}
