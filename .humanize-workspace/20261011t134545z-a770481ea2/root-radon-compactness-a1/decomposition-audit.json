@@ -1,0 +1,78 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/manifest.json",
+        "sed -n '257,319p' .humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/GMT/Ch01/Contract.lean",
+        "rg -n 'integrable_of_hasCompactSupport|norm_setIntegral_le_of_norm_le_const|setIntegral_eq_integral_of_forall_compl_eq_zero' mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "instSeparableSpace|instSecondCountableTopology|exists_countable_dense_subset|dist_apply_le_dist|sigmaCompactSpace_of_locallyCompact_secondCountable|exists_superset_of_isCompact|noncomputable def choice|IsCompact.tendsto_subseq|isCompact_univ_pi",
+        "instance partialOrder|def nnrealPart|def toReal |nnrealPart_sub_nnrealPart_neg|toNNRealLinear|def mk₀|integral_rieszMeasure|regular_rieszMeasure",
+        "rg -n -i 'vague|diagonal.*subseq|subseq.*countable' mathlib/Mathlib/MeasureTheory mathlib/Mathlib/Topology/Sequences.lean mathlib/Mathlib/Topology/MetricSpace/Sequences.lean",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/radon_decomposition_audit_nyt7z89d/Focused.lean",
+        "#print axioms audit_parent_assembly"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/GMT/Ch01/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/project/GMT/Ch01/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Metrizable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/local-references/e8e26216f05cbb4e/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch01/.humanize/github-theorem-prover/runs/20261011T134545Z-a770481ea2/nodes/root-radon-compactness-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonOuterMeasure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/radon_decomposition_audit_nyt7z89d/Focused.lean"
+      ],
+      "conclusion": "The handoff matches the selected contract radon_compactness : RadonCompactness. Manifest, revision and byte comparisons confirm compatibility with the pinned sources. The snapshot supplies the integration estimates, compact exhaustion, separability and subsequence machinery; the vague/diagonal search returned no relevant match in the searched locations. The six-way split is appropriate, and its dependency graph is acyclic and correctly directed. All names are bare, distinct and unreserved by other recorded branches. Each frozen statement is a standalone one-line proposition with no implementation-dependent reference. All six types independently elaborated in a focused harness retaining the unchanged frozen definitions and relevant pinned imports. Explicit elaboration and reflexivity checks verified the Carathéodory measurable space and pointwise C_c order. The parent assembly, with child contracts and RieszPositive as explicit hypotheses, compiled successfully. Its axiom check and the checked library results report only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "rc_cc_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including the absence of separation assumptions. Borel measurability gives strong measurability, while boundedness and finite measure of the compact tsupport give integrability. The proof is complete and independent."
+    },
+    {
+      "key": "rc_cc_integral_abs_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact bound uses the finite outer-measure value converted to ℝ, as stated. Reduction to the measurable support and the finite-measure integral estimate prove it. Empty support is handled explicitly, so no missing hypothesis C ≥ 0 remains."
+    },
+    {
+      "key": "rc_diagonal_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches the countable-family convergence obligation. The proof handles an empty index type, constructs nested subsequences, proves strict monotonicity of the diagonal, and factors each tail through a convergent coordinate subsequence. No circular step or missing convergence argument occurs."
+    },
+    {
+      "key": "rc_cc_countable_dense",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match; local compactness of X is unnecessary. Compact Hausdorff second-countable K is metrizable, and the supplied separability argument is complete. Choosing a dense subset inside the restriction image and lifting its elements preserves support in K; vanishing outside K gives the required global approximation."
+    },
+    {
+      "key": "rc_subseq_integrals_converge",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses and conclusion match the prose. The exhaustion contains every compact support, the uniform mass bounds justify the real estimates, and the four declared dependencies supply the countable diagonal and Cauchy argument. Together with positivity and linearity of the limit functional and rc_riesz_real, this establishes the selected parent."
+    },
+    {
+      "key": "rc_riesz_real",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit RieszPositive.{u} hypothesis correctly preserves the parent's external dependency. The proof constructs the NNReal-linear functional, applies that hypothesis, and uses integrable positive and negative parts to obtain the signed representation. The pointwise order was independently checked; no reliance on the parent conclusion occurs."
+    }
+  ],
+  "required_changes": []
+}
