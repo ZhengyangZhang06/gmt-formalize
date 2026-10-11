@@ -185,6 +185,83 @@ def UpperDensityTheorem : Prop :=
       ∀ᵐ x ∂simonHausdorffOuterMeasureReal (X := X) n, x ∉ A →
         dimensionalUpperDensity μ n A x = 0
 
+/-- Simon Ch. 1, Theorems 3.3 and 3.6.  Theorem 3.3 (with Lemma 3.4 and Corollary 3.5) is
+`simon_theorem_3_3` from the pinned `Poincare.SimonGMT` library, whose statement is identical.
+Theorem 3.6 follows the printed proof: `μ ⌞ A` is Borel regular and finite, so Theorem 1.15(2)
+(`Submission.borel_regular_approximation`) gives closed `C ⊆ A` with `μ (A \ C)` arbitrarily
+small, and Theorem 3.3 for `μ ⌞ A`, `S_t = {x ∉ A : Θ^{*n}(μ, A, x) ≥ t}` and `X \ C` gives
+`t · Hⁿ(S_t) ≤ μ (A \ C)`.  The exceptional set is the union of the `S_{1/(k+1)}`. -/
+theorem Submission.upper_density_comparison_and_theorem :
+    UpperDensityComparison.{u} ∧ UpperDensityTheorem.{u} := by
+  have h33 : UpperDensityComparison.{u} := by
+    intro X _ μ hμ n hn t ht A₁ A₂ hA hden
+    exact simon_theorem_3_3 μ hμ hn A₁ A₂ hA ht hden
+  refine ⟨h33, ?_⟩
+  intro X _ μ hμ n hn A hA hAfin
+  -- `μ ⌞ A` is Borel regular and finite (the remarks after (1.12)).
+  let μA : OuterMeasure X := OuterMeasure.restrict A μ
+  have hμA : IsBorelRegularOuterMeasure μA := hμ.restrict hA hAfin
+  have hμA_apply : ∀ S, μA S = μ (S ∩ A) := fun S => OuterMeasure.restrict_apply A S μ
+  -- Theorem 1.15(2) for `μ ⌞ A`, which is open σ-finite with `V_j = X`.
+  have hsup := (Submission.borel_regular_approximation X (fun _ hC => hC.isGδ) μA hμA
+    ⟨fun _ => univ, fun _ => ⟨isOpen_univ, by rwa [hμA_apply, univ_inter]⟩,
+      iUnion_const univ⟩).2 A (isCaratheodoryMeasurable_restrict hA)
+  have happrox : ∀ ε : ℝ≥0∞, 0 < ε → ∃ C, C ⊆ A ∧ IsClosed C ∧ μ (A \ C) < ε := by
+    intro ε hε
+    by_cases hsmall : μ A < ε
+    · exact ⟨∅, empty_subset A, isClosed_empty, by rwa [sdiff_empty]⟩
+    have hlt : μ A - ε < μA A := by
+      rw [hμA_apply, inter_self]
+      exact ENNReal.sub_lt_self hAfin.ne (fun h0 => hsmall (by rwa [h0])) hε.ne'
+    rw [hsup] at hlt
+    obtain ⟨C, hC⟩ := lt_iSup_iff.mp hlt
+    obtain ⟨hCA, hC⟩ := lt_iSup_iff.mp hC
+    obtain ⟨hCcl, hC⟩ := lt_iSup_iff.mp hC
+    rw [hμA_apply, inter_eq_left.mpr hCA] at hC
+    refine ⟨C, hCA, hCcl, ?_⟩
+    have hCborel : MeasurableSet[borel X] C := by
+      let : MeasurableSpace X := borel X
+      have : OpensMeasurableSpace X := ⟨le_rfl⟩
+      exact hCcl.measurableSet
+    have hCcar : μ.IsCaratheodory C := hμ.borel_le_caratheodory C hCborel
+    have hsplit : μ A = μ C + μ (A \ C) := by
+      simpa only [inter_eq_right.mpr hCA] using hCcar A
+    refine (ENNReal.add_lt_add_iff_left (ne_top_of_le_ne_top hAfin.ne (measure_mono hCA))).mp ?_
+    rw [← hsplit]
+    exact ENNReal.lt_add_of_sub_lt_right (Or.inl hAfin.ne) hC
+  -- Theorem 3.3 for `μ ⌞ A`, `S_t ⊆ X \ C`: every level set `S_t`, `t > 0`, is `Hⁿ`-null.
+  have hlevel : ∀ t : ℝ, 0 < t → simonHausdorffOuterMeasureReal n
+      {x | x ∉ A ∧ ENNReal.ofReal t ≤ dimensionalUpperDensity μ n A x} = 0 := by
+    intro t ht
+    have hmul : ENNReal.ofReal t * simonHausdorffOuterMeasureReal n
+        {x | x ∉ A ∧ ENNReal.ofReal t ≤ dimensionalUpperDensity μ n A x} = 0 := by
+      refine le_antisymm (le_of_forall_gt_imp_ge_of_dense fun ε hε => ?_) bot_le
+      obtain ⟨C, hCA, hCcl, hCε⟩ := happrox ε hε
+      have hSC : {x | x ∉ A ∧ ENNReal.ofReal t ≤ dimensionalUpperDensity μ n A x} ⊆ Cᶜ :=
+        fun x hx hxC => hx.1 (hCA hxC)
+      refine (h33 X μA hμA n hn t ht.le _ Cᶜ hSC fun x hx => ?_).trans ?_
+      · calc ENNReal.ofReal t ≤ dimensionalUpperDensity μ n A x := hx.2
+          _ = dimensionalUpperDensity μ n (A \ C) x :=
+            (dimensionalUpperDensity_sdiff_of_isClosed μ n A hCcl (hSC hx)).symm
+          _ = dimensionalUpperDensity μA n Cᶜ x := by
+            unfold dimensionalUpperDensity
+            congr 1
+            funext r
+            rw [dimensionalDensityQuotient, dimensionalDensityQuotient, hμA_apply,
+              inter_right_comm, ← Set.sdiff_eq_compl_inter]
+      · rw [hμA_apply, ← Set.sdiff_eq_compl_inter]
+        exact hCε.le
+    exact (mul_eq_zero.mp hmul).resolve_left (ENNReal.ofReal_pos.mpr ht).ne'
+  -- `{x ∉ A : Θ^{*n}(μ, A, x) ≠ 0} = ⋃ₖ S_{1/(k+1)}`.
+  rw [ae_iff]
+  apply measure_mono_null _ (measure_iUnion_null fun k : ℕ =>
+    hlevel (1 / ((k : ℝ) + 1)) Nat.one_div_pos_of_nat)
+  intro x hx
+  obtain ⟨hxA, hx0⟩ := not_imp.mp hx
+  obtain ⟨r, -, hr0, hrx⟩ := ENNReal.lt_iff_exists_real_btwn.mp (pos_iff_ne_zero.mpr hx0)
+  obtain ⟨k, hk⟩ := exists_nat_one_div_lt (ENNReal.ofReal_pos.mp hr0)
+  exact mem_iUnion.mpr ⟨k, hxA, (ENNReal.ofReal_le_ofReal hk.le).trans hrx.le⟩
+
 /-- **Besicovitch covering lemma.** Simon Ch. 1, Lemma 3.12 (p. 18).
 
 For each `n` there is `N = N(n)` such that: if `B` is any collection of closed balls in `ℝⁿ`
