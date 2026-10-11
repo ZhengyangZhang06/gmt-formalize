@@ -670,3 +670,87 @@ theorem Submission.gaussGreenVar_measure_le_ofReal_integral_inner_add : ∀ (N :
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
 end GMT.Ch03
+
+
+/-- **Total-variation formula** (step 7 of the uniqueness in `GaussGreenRepresentation`; the
+characterization of `|Du|` by Simon Ch. 2, (2.4), `chapter-02.txt` lines 518–526, behind
+"`μ_E (= |D χ_E|)`" in Ch. 3, (4.1)). Let `O ⊆ ℝᴺ` be open, `μ` finite on compact subsets of `O`
+and `ν` `μ`-a.e. strongly measurable with `|ν| = 1` `μ`-a.e. Then `μ(O)` is the supremum `S` of
+`ofReal(∫ ⟨g, ν⟩ dμ)` over continuous `g` with compact support in `O` and `|g| ≤ 1`.
+`S ≤ μ(O)` is the pairing upper bound. Conversely it suffices to show `μ(K) ≤ S + ε` for compact
+`K ⊆ O` and `ε > 0`. With `η = ε / 3` take an open `V`, `K ⊆ V ⊆ O`, `μ(V) < ∞`, `μ(V ∖ K) < η`,
+a Borel version `ν₀` of `ν` and `A = K ∩ {|ν₀| = 1}`, so `μ(K ∖ A) = 0`. Lusin gives a closed
+`C ⊆ A` with `μ(A ∖ C) < η` and `ν₀|C` continuous; the unit-field extension gives a competitor
+`g` with `tsupport g ⊆ V` and `g = ν₀` on `C`, so `⟨g, ν⟩ = |ν₀|² = 1` a.e. on `C`. The pairing
+lower bound gives `μ(C) ≤ ofReal(∫ ⟨g, ν⟩ dμ) + μ(V ∖ C)`; with `μ(K ∖ C) < η` and
+`μ(V ∖ C) < 2η` this yields `μ(K) ≤ S + 3η = S + ε`. -/
+theorem Submission.gaussGreenRep_measure_eq_iSup_pairing : ∀ (N : ℕ) (O : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen O → (∀ K : Set (Rn N), IsCompact K → K ⊆ O → μ K < ∞) → AEStronglyMeasurable ν μ → (∀ᵐ x ∂μ, ‖ν x‖ = 1) → μ O = ⨆ (g : Rn N → Rn N) (_ : Continuous g) (_ : HasCompactSupport g) (_ : tsupport g ⊆ O) (_ : ∀ x, ‖g x‖ ≤ 1), ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) := by
+  intro N O μ ν hO hfin hν hν1
+  have hν1' : ∀ᵐ x ∂μ, ‖ν x‖ ≤ 1 := hν1.mono fun x hx ↦ hx.le
+  set S := ⨆ (g : Rn N → Rn N) (_ : Continuous g) (_ : HasCompactSupport g)
+    (_ : tsupport g ⊆ O) (_ : ∀ x, ‖g x‖ ≤ 1), ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ)
+  refine le_antisymm ?_ ?_
+  · -- `μ(O) ≤ S`: by compact inner approximation it suffices that `μ(K) ≤ S + ε`.
+    refine Submission.gaussGreenVar_measure_isOpen_le_of_isCompact N O μ S hO fun K hK hKO ↦ ?_
+    refine ENNReal.le_of_forall_pos_le_add fun ε hε _ ↦ ?_
+    -- Step 1: `η = ε / 3`.
+    obtain ⟨η, hη, hη3⟩ : ∃ η : ℝ≥0∞, 0 < η ∧ η + η + η = ε :=
+      ⟨ε / 3, ENNReal.div_pos (ENNReal.coe_ne_zero.2 hε.ne') ENNReal.ofNat_ne_top,
+        ENNReal.add_thirds _⟩
+    -- Step 2: an open `V`, `K ⊆ V ⊆ O`, with `μ(V) < ∞` and `μ(V ∖ K) < η`.
+    obtain ⟨V, hVo, hKV, hVO, hVfin, hVK⟩ :=
+      Submission.gaussGreenVar_exists_isOpen_superset_measure_sdiff_lt N O K μ hO hK hKO hfin η hη
+    -- Step 3: a Borel version `ν₀` of `ν`; `A = K ∩ {|ν₀| = 1}` is Borel, finite, `μ(K ∖ A) = 0`.
+    obtain ⟨ν₀, hν₀m, hνν₀⟩ : ∃ ν₀ : Rn N → Rn N, Measurable ν₀ ∧ ν =ᵐ[μ] ν₀ :=
+      ⟨hν.mk ν, hν.measurable_mk, hν.ae_eq_mk⟩
+    set A := K ∩ {x | ‖ν₀ x‖ = 1}
+    have hAm : MeasurableSet A :=
+      hK.isClosed.measurableSet.inter (hν₀m.norm (measurableSet_singleton 1))
+    have hAfin : μ A ≠ ∞ := ((measure_mono inter_subset_left).trans_lt (hfin K hK hKO)).ne
+    have hKA : μ (K \ A) = 0 := by
+      have h : ∀ᵐ x ∂μ, ‖ν₀ x‖ = 1 := by
+        filter_upwards [hνν₀, hν1] with x hx hx1
+        rwa [← hx]
+      exact measure_mono_null (fun x hx h1 ↦ hx.2 ⟨hx.1, h1⟩) (ae_iff.1 h)
+    -- Step 4: Lusin: a closed `C ⊆ A` with `μ(A ∖ C) < η` and `ν₀` continuous on `C`.
+    obtain ⟨C, hCA, hCc, hAC, hν₀C⟩ :=
+      Submission.gaussGreenVar_lusin_closed_subset_continuousOn N μ ν₀ A hν₀m hAm hAfin η hη
+    have hCK : C ⊆ K := hCA.trans inter_subset_left
+    have hCV : C ⊆ V := hCK.trans hKV
+    have hC1 : ∀ x ∈ C, ‖ν₀ x‖ = 1 := fun x hx ↦ (hCA hx).2
+    -- Step 5: an admissible `g` with `tsupport g ⊆ V ⊆ O` and `g = ν₀` on `C`.
+    obtain ⟨g, hgc, hgcs, hgV, hg1, hgC⟩ :=
+      Submission.gaussGreenVar_exists_unit_field_eqOn_compact N C V ν₀
+        (hK.of_isClosed_subset hCc hCK) hVo hCV hν₀C fun x hx ↦ (hC1 x hx).le
+    have hgS : ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) ≤ S :=
+      le_iSup_of_le g <| le_iSup_of_le hgc <| le_iSup_of_le hgcs <|
+        le_iSup_of_le (hgV.trans hVO) <| le_iSup_of_le hg1 le_rfl
+    -- Step 6: `g = 0` off `V` and `⟨g, ν⟩ = |ν₀|² = 1` a.e. on `C`; the pairing lower bound.
+    have hg0 : ∀ x, x ∉ V → g x = 0 := fun x hx ↦
+      image_eq_zero_of_notMem_tsupport fun h ↦ hx (hgV h)
+    have hgν : ∀ᵐ x ∂μ, x ∈ C → inner ℝ (g x) (ν x) = 1 := by
+      filter_upwards [hνν₀] with x hx hxC
+      rw [hx, hgC x hxC, real_inner_self_eq_norm_sq, hC1 x hxC, one_pow]
+    have hlow : μ C ≤ ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) + μ (V \ C) :=
+      Submission.gaussGreenVar_measure_le_ofReal_integral_inner_add N μ ν g C V
+        hCc.measurableSet hVo.measurableSet hCV hVfin.ne hν hgc hν1' hg1 hg0 hgν
+    -- Step 7: `μ(K ∖ C) ≤ μ(K ∖ A) + μ(A ∖ C) < η` and `μ(V ∖ C) ≤ μ(V ∖ K) + μ(K ∖ C) < 2η`.
+    have hKC : μ (K \ C) ≤ η :=
+      calc μ (K \ C) ≤ μ (K \ A ∪ A \ C) := measure_mono (sdiff_triangle K A C)
+        _ ≤ μ (K \ A) + μ (A \ C) := measure_union_le _ _
+        _ ≤ η := by rw [hKA, zero_add]; exact hAC.le
+    have hVC : μ (V \ C) ≤ η + η :=
+      calc μ (V \ C) ≤ μ (V \ K ∪ K \ C) := measure_mono (sdiff_triangle V K C)
+        _ ≤ μ (V \ K) + μ (K \ C) := measure_union_le _ _
+        _ ≤ η + η := add_le_add hVK.le hKC
+    -- Step 8: `μ(K) ≤ μ(C) + μ(K ∖ C) ≤ S + (η + η) + η = S + ε`.
+    calc μ K ≤ μ (K ∩ C) + μ (K \ C) := measure_le_inter_add_sdiff μ K C
+      _ = μ C + μ (K \ C) := by rw [inter_eq_right.2 hCK]
+      _ ≤ ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) + μ (V \ C) + μ (K \ C) :=
+        add_le_add hlow le_rfl
+      _ ≤ S + (η + η) + η := add_le_add (add_le_add hgS hVC) hKC
+      _ = S + ε := by rw [add_assoc, hη3]
+  · -- `S ≤ μ(O)`: the pairing upper bound for every competitor.
+    refine iSup_le fun g ↦ iSup_le fun _ ↦ iSup_le fun _ ↦ iSup_le fun hgO ↦ iSup_le fun hg1 ↦ ?_
+    exact Submission.gaussGreenVar_ofReal_integral_inner_le_measure N O μ ν g hO.measurableSet
+      hν1' hgO hg1
