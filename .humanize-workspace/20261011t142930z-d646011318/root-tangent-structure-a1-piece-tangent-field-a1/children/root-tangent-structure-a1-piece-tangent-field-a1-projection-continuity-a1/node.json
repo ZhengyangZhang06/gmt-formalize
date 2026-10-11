@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.piece_tangent_field-a1.projection_continuity-a1",
+  "parent_id": "root.tangent_structure-a1.piece_tangent_field-a1",
+  "depth": 3,
+  "title": "Continuity of the orthogonal projection onto the range, on injective linear maps",
+  "statement": "For all n, ℓ ∈ ℕ, the map Π: L(ℝⁿ, ℝ^{n+ℓ}) → L(ℝ^{n+ℓ}, ℝ^{n+ℓ}) sending A to the orthogonal projection onto its range A(ℝⁿ) is continuous, for the operator-norm topologies, on the set of injective A ∈ L(ℝⁿ, ℝ^{n+ℓ}).",
+  "lean_statement": "∀ (n ℓ : ℕ), ContinuousOn (fun (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) ↦ (LinearMap.range A.toLinearMap).starProjection) {A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ | Function.Injective A}",
+  "lean_name": "ts_starProjection_range_continuousOn_injective",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-piece-tangent-field-a1-projection-continuity-a1-a1"
+}
