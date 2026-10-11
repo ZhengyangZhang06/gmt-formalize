@@ -434,6 +434,149 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Ch. 4, 3.8–3.10 (p. 91), from the annulus identity.** Write `w = |D^⊥r|²/rⁿ` and
+`a(ρ) = ρ⁻ⁿ μ_V(B_ρ(ξ))`. If for all `0 < σ ≤ ρ < R` the function `w` is `μ_V`-integrable on
+`B_ρ(ξ) \ B_σ(ξ)` and `a(ρ) - a(σ) = ∫_{B_ρ(ξ) \ B_σ(ξ)} w dμ_V`, then `a` is increasing on
+`(0, R)`; for `0 < ρ < R`, `w` is `μ_V`-integrable on `B_ρ(ξ)` and
+`(ωₙρⁿ)⁻¹ μ_V(B_ρ(ξ)) - Θⁿ(μ_V, ξ) = ωₙ⁻¹ ∫_{B_ρ(ξ)} w dμ_V`; if `R > 0` then `Θⁿ(μ_V, ξ)` exists
+as a limit; and `Θⁿ(μ_V, ξ) ≤ (ωₙρⁿ)⁻¹ μ_V(B_ρ(ξ))` for `0 < ρ < R`. -/
+theorem Submission.stationary_ratio_limit_of_annulus_identity : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (ξ : Ambient n ℓ) (R : ℝ), (∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ < R → IntegrableOn (fun x ↦ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) (closedBall ξ ρ \ closedBall ξ σ) V.weight ∧ V.weight.real (closedBall ξ ρ) / ρ ^ n - V.weight.real (closedBall ξ σ) / σ ^ n = ∫ x in closedBall ξ ρ \ closedBall ξ σ, V.normalRadialSq ξ x / ‖x - ξ‖ ^ n ∂V.weight) → MonotoneOn (fun ρ ↦ V.weight.real (closedBall ξ ρ) / ρ ^ n) (Ioo 0 R) ∧ (∀ ρ : ℝ, 0 < ρ → ρ < R → IntegrableOn (fun x ↦ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) (closedBall ξ ρ) V.weight ∧ V.weight.real (closedBall ξ ρ) / (omega n * ρ ^ n) - V.density ξ = (omega n)⁻¹ * ∫ x in closedBall ξ ρ, V.normalRadialSq ξ x / ‖x - ξ‖ ^ n ∂V.weight) ∧ (0 < R → V.HasDensityAt ξ (V.density ξ)) ∧ ∀ ρ : ℝ, 0 < ρ → ρ < R → V.density ξ ≤ V.weight.real (closedBall ξ ρ) / (omega n * ρ ^ n) := by
+  intro n ℓ V ξ R hid
+  set μ := V.weight
+  set w : Ambient n ℓ → ℝ := fun x ↦ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n with hw
+  set a : ℝ → ℝ := fun ρ ↦ μ.real (closedBall ξ ρ) / ρ ^ n with ha
+  -- Elementary facts: `w ≥ 0`, `w ξ = 0`, `a ≥ 0` on `(0, ∞)`, and the density quotient is
+  -- `ωₙ⁻¹ a` with `ωₙ⁻¹ ≥ 0`.
+  have hw0 : ∀ x, 0 ≤ w x := fun x ↦
+    div_nonneg (div_nonneg (sq_nonneg _) (sq_nonneg _)) (pow_nonneg (norm_nonneg _) _)
+  have hwξ : w ξ = 0 := by simp [hw, normalRadialSq]
+  have ha0 : ∀ ρ, 0 < ρ → 0 ≤ a ρ := fun ρ hρ ↦
+    div_nonneg measureReal_nonneg (pow_nonneg hρ.le _)
+  have hQ : ∀ ρ, μ.real (closedBall ξ ρ) / (omega n * ρ ^ n) = (omega n)⁻¹ * a ρ := by
+    intro ρ
+    simp only [ha, div_eq_mul_inv, mul_inv]
+    ring
+  have hωinv : 0 ≤ (omega n)⁻¹ := inv_nonneg.2 ENNReal.toReal_nonneg
+  -- 3.8: the annulus identity and `∫ w ≥ 0` make `a` monotone on `(0, R)`.
+  have hmono : MonotoneOn a (Ioo 0 R) := by
+    intro σ hσ ρ hρ hσρ
+    have h := (hid σ ρ hσ.1 hσρ hρ.2).2
+    have hnn : 0 ≤ ∫ x in closedBall ξ ρ \ closedBall ξ σ, w x ∂μ :=
+      setIntegral_nonneg (measurableSet_closedBall.diff measurableSet_closedBall)
+        fun x _ ↦ hw0 x
+    change a ρ - a σ = _ at h
+    linarith
+  -- 3.9: `a` is bounded below by `0`, so `a ρ → L = inf a` as `ρ ↓ 0`, and the density
+  -- quotient tends to `ωₙ⁻¹ L`, which is therefore `Θⁿ(μ_V, ξ)`.
+  set L := sInf (a '' Ioo 0 R)
+  have hbdd : BddBelow (a '' Ioo 0 R) := ⟨0, by
+    rintro _ ⟨ρ, hρ, rfl⟩
+    exact ha0 ρ hρ.1⟩
+  have hLle : ∀ s ∈ Ioo 0 R, L ≤ a s := fun s hs ↦ csInf_le hbdd (mem_image_of_mem _ hs)
+  have hlim : 0 < R → Tendsto a (𝓝[>] 0) (𝓝 L) ∧ V.density ξ = (omega n)⁻¹ * L ∧
+      Tendsto (fun ρ ↦ μ.real (closedBall ξ ρ) / (omega n * ρ ^ n)) (𝓝[>] 0)
+        (𝓝 ((omega n)⁻¹ * L)) := by
+    intro hR
+    have hT : Tendsto a (𝓝[>] 0) (𝓝 L) :=
+      MonotoneOn.tendsto_nhdsWithin_Ioo_right ⟨R / 2, by positivity, by linarith⟩ hmono hbdd
+    have hT' : Tendsto (fun ρ ↦ μ.real (closedBall ξ ρ) / (omega n * ρ ^ n)) (𝓝[>] 0)
+        (𝓝 ((omega n)⁻¹ * L)) := by
+      simp_rw [hQ]
+      exact hT.const_mul _
+    exact ⟨hT, hT'.limUnder_eq, hT'⟩
+  refine ⟨hmono, ?_, ?_, ?_⟩
+  · -- 3.10: monotone convergence on `A k = B_ρ(ξ) \ B_{ρ/(k+1)}(ξ)`, which increase to
+    -- `B_ρ(ξ) \ {ξ}`; the point `ξ` contributes nothing since `w ξ = 0`.
+    intro ρ hρ hρR
+    obtain ⟨hT, hdens, -⟩ := hlim (hρ.trans hρR)
+    set s : ℕ → ℝ := fun k ↦ ρ / (k + 1) with hs
+    have hs0 : ∀ k, 0 < s k := fun k ↦ by positivity
+    have hsρ : ∀ k, s k ≤ ρ := fun k ↦ div_le_self hρ.le (by norm_cast; omega)
+    have hsanti : Antitone s := fun i j hij ↦ by
+      simp only [hs]
+      gcongr
+    have hts : Tendsto s atTop (𝓝 0) := by
+      have := tendsto_one_div_add_atTop_nhds_zero_nat.const_mul ρ
+      rw [mul_zero] at this
+      refine this.congr fun k ↦ ?_
+      simp only [hs]
+      ring
+    have hsT : Tendsto s atTop (𝓝[>] 0) :=
+      tendsto_nhdsWithin_iff.2 ⟨hts, Eventually.of_forall hs0⟩
+    set A : ℕ → Set (Ambient n ℓ) := fun k ↦ closedBall ξ ρ \ closedBall ξ (s k) with hA
+    have hAmono : Monotone A := fun i j hij ↦
+      sdiff_subset_sdiff_right (closedBall_subset_closedBall (hsanti hij))
+    have hAmeas : ∀ k, MeasurableSet (A k) := fun k ↦
+      measurableSet_closedBall.diff measurableSet_closedBall
+    have hAint : ∀ k, IntegrableOn w (A k) μ := fun k ↦ (hid (s k) ρ (hs0 k) (hsρ k) hρR).1
+    have hAeq : ∀ k, ∫ x in A k, w x ∂μ = a ρ - a (s k) := fun k ↦
+      (hid (s k) ρ (hs0 k) (hsρ k) hρR).2.symm
+    have hUnion : (⋃ k, A k) = closedBall ξ ρ \ {ξ} := by
+      ext x
+      simp only [hA, mem_iUnion, Set.mem_sdiff, mem_closedBall, mem_singleton_iff, not_le]
+      constructor
+      · rintro ⟨k, hxρ, hxk⟩
+        refine ⟨hxρ, fun hx ↦ ?_⟩
+        rw [hx, dist_self] at hxk
+        exact lt_irrefl _ ((hs0 k).trans hxk)
+      · rintro ⟨hxρ, hxξ⟩
+        obtain ⟨k, hk⟩ := (hts.eventually (gt_mem_nhds (dist_pos.2 hxξ))).exists
+        exact ⟨k, hxρ, hk⟩
+    -- The lower integrals of `w` over the `A k` are at most `a ρ - L`, so `w` is integrable
+    -- on their union.
+    have hlin : ∀ k, ∫⁻ x in A k, ENNReal.ofReal (w x) ∂μ = ENNReal.ofReal (a ρ - a (s k)) := by
+      intro k
+      rw [← hAeq k, ofReal_integral_eq_lintegral_ofReal (hAint k)
+        (Eventually.of_forall fun x ↦ hw0 x)]
+    have hlinU : ∫⁻ x in ⋃ k, A k, ENNReal.ofReal (w x) ∂μ ≤ ENNReal.ofReal (a ρ - L) := by
+      rw [setLIntegral_iUnion_of_directed _ hAmono.directed_le]
+      refine iSup_le fun k ↦ ?_
+      rw [hlin k]
+      exact ENNReal.ofReal_le_ofReal (by linarith [hLle (s k) ⟨hs0 k, (hsρ k).trans_lt hρR⟩])
+    have hintU : IntegrableOn w (⋃ k, A k) μ := by
+      refine ⟨aestronglyMeasurable_iUnion_iff.2 fun k ↦ (hAint k).1, ?_⟩
+      rw [hasFiniteIntegral_iff_ofReal (Eventually.of_forall fun x ↦ hw0 x)]
+      exact hlinU.trans_lt ENNReal.ofReal_lt_top
+    have hintξ : IntegrableOn w {ξ} μ :=
+      (integrableOn_singleton_iff (hfx := enorm_ne_top)).2 (Or.inl (by rw [hwξ, enorm_zero]))
+    have hball : closedBall ξ ρ = (⋃ k, A k) ∪ {ξ} := by
+      rw [hUnion, sdiff_union_self, union_eq_left.2 (singleton_subset_iff.2
+        (mem_closedBall_self hρ.le))]
+    have hint : IntegrableOn w (closedBall ξ ρ) μ := by
+      rw [hball]
+      exact hintU.union hintξ
+    -- The value: `∫_{A k} w = a ρ - a (s k) → a ρ - L`, and by dominated convergence it also
+    -- tends to the integral over the union.
+    have hvalU : ∫ x in ⋃ k, A k, w x ∂μ = a ρ - L := by
+      refine tendsto_nhds_unique (tendsto_setIntegral_of_monotone hAmeas hAmono hintU) ?_
+      simp_rw [hAeq]
+      exact tendsto_const_nhds.sub (hT.comp hsT)
+    have hvalξ : ∫ x in ({ξ} : Set (Ambient n ℓ)), w x ∂μ = 0 := by
+      rw [setIntegral_congr_fun (measurableSet_singleton ξ) (g := fun _ ↦ (0 : ℝ))
+        (fun x hx ↦ by rw [mem_singleton_iff.1 hx]; exact hwξ)]
+      simp
+    have hdisj : Disjoint (⋃ k, A k) {ξ} := by
+      rw [hUnion]
+      exact disjoint_sdiff_left
+    have hval : ∫ x in closedBall ξ ρ, w x ∂μ = a ρ - L := by
+      rw [hball, setIntegral_union hdisj (measurableSet_singleton ξ) hintU hintξ, hvalU, hvalξ,
+        add_zero]
+    refine ⟨hint, ?_⟩
+    change μ.real (closedBall ξ ρ) / (omega n * ρ ^ n) - V.density ξ =
+      (omega n)⁻¹ * ∫ x in closedBall ξ ρ, w x ∂μ
+    rw [hQ, hdens, hval]
+    ring
+  · intro hR
+    obtain ⟨-, hdens, hT'⟩ := hlim hR
+    unfold HasDensityAt
+    rw [hdens]
+    exact hT'
+  · -- The ratio bound: `ωₙ Θⁿ(μ_V, ξ) = L ≤ a ρ`.
+    intro ρ hρ hρR
+    obtain ⟨-, hdens, -⟩ := hlim (hρ.trans hρR)
+    rw [hQ, hdens]
+    exact mul_le_mul_of_nonneg_left (hLle ρ ⟨hρ, hρR⟩) hωinv
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
