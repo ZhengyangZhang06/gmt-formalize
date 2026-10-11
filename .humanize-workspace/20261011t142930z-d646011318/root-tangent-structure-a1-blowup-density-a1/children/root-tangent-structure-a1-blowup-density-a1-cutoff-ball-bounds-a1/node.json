@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.blowup_density-a1.cutoff_ball_bounds-a1",
+  "parent_id": "root.tangent_structure-a1.blowup_density-a1",
+  "depth": 3,
+  "title": "Ball mass between blow-up integrals of cut-offs",
+  "statement": "Let n, ℓ ≥ 0, E = Ambient n ℓ = ℝ^{n+ℓ}, μ a Borel measure on E that is finite on compact sets, x ∈ E, f ∈ C_c(E, ℝ) and t > 0. (i) If f(z) ≤ 1 for all z and f(z) ≤ 0 whenever |z| > 1, then ∫ f(t⁻¹(y − x)) dμ(y) ≤ μ(B_t(x)). (ii) If f(z) ≥ 0 for all z and f(z) ≥ 1 whenever |z| ≤ 1, then μ(B_t(x)) ≤ ∫ f(t⁻¹(y − x)) dμ(y). Here B_t(x) is the closed ball, μ(B_t(x)) is taken as a real number (μ.real), and the integrals are Bochner integrals.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (x : Ambient n ℓ) (f : C_c(Ambient n ℓ, ℝ)) (t : ℝ), IsFiniteMeasureOnCompacts μ → 0 < t → ((∀ y : Ambient n ℓ, f y ≤ 1) → (∀ y : Ambient n ℓ, 1 < ‖y‖ → f y ≤ 0) → ∫ y, f (t⁻¹ • (y - x)) ∂μ ≤ μ.real (closedBall x t)) ∧ ((∀ y : Ambient n ℓ, 0 ≤ f y) → (∀ y : Ambient n ℓ, ‖y‖ ≤ 1 → 1 ≤ f y) → μ.real (closedBall x t) ≤ ∫ y, f (t⁻¹ • (y - x)) ∂μ)",
+  "lean_name": "ts_blowup_cutoff_closedBall_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-blowup-density-a1-cutoff-ball-bounds-a1-a1"
+}

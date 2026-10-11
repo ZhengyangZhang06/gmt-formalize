@@ -1,0 +1,125 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tangent_structure-a1.blowup_density-a1`
+- Child DAG node: `root.tangent_structure-a1.blowup_density-a1.cutoff_ball_bounds-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the parent proof, step 3 (the sandwich (3.1)). Here it is stated for an arbitrary f ∈ C_c(E, ℝ), with the two cut-off inequalities as hypotheses; the parent applies it to its cut-offs f_δ⁻ and f_δ⁺. No errata apply.
+
+Conventions. E := Ambient n ℓ = EuclideanSpace ℝ (Fin (n + ℓ)); B_t(x) := closedBall x t (closed ball); 1_A is the indicator of A, with value 1 on A and 0 elsewhere; μ.real(A) := (μ A).toReal; η(y) := t⁻¹(y − x); ∫ is the Bochner integral.
+Hypotheses: μ is a measure on the Borel σ-algebra of E with μ(K) < ∞ for every compact K (IsFiniteMeasureOnCompacts μ); x ∈ E; f ∈ C_c(E, ℝ); t > 0.
+Claim: (i) if f(z) ≤ 1 for all z and f(z) ≤ 0 whenever ‖z‖ > 1, then ∫ f(t⁻¹(y − x)) dμ(y) ≤ μ.real(B_t(x)); (ii) if f(z) ≥ 0 for all z and f(z) ≥ 1 whenever ‖z‖ ≤ 1, then μ.real(B_t(x)) ≤ ∫ f(t⁻¹(y − x)) dμ(y).
+
+Results used (pinned Mathlib; available under the frozen imports):
+- Homeomorph.subRight, Homeomorph.smulOfNeZero, HasCompactSupport.comp_homeomorph.
+- Continuous.integrable_of_hasCompactSupport: a continuous compactly supported function is integrable for a measure finite on compacts.
+- IsCompact.measure_lt_top, MeasureTheory.integrable_indicator_iff, MeasureTheory.integrableOn_const.
+- MeasureTheory.integral_indicator_one: ∫ 1_A dμ = μ.real(A) for measurable A.
+- MeasureTheory.integral_mono.
+
+Proof.
+1. Integrability of the blow-up. η is a homeomorphism of E: the translation y ↦ y − x followed by the dilation z ↦ t⁻¹z, where t⁻¹ ≠ 0 (Homeomorph.subRight, Homeomorph.smulOfNeZero). Hence F := f∘η, that is F(y) = f(t⁻¹(y − x)), is continuous. It has compact support, because tsupport(f∘η) = η⁻¹(tsupport f) is the image of the compact set tsupport f under the continuous map η⁻¹ (HasCompactSupport.comp_homeomorph). Since μ is finite on compact sets, F is μ-integrable (Continuous.integrable_of_hasCompactSupport).
+2. The ball. B_t(x) is compact, so μ(B_t(x)) < ∞ (IsCompact.measure_lt_top). It is closed, hence measurable. Therefore 1_{B_t(x)} is μ-integrable (integrable_indicator_iff, integrableOn_const), and ∫ 1_{B_t(x)} dμ = μ.real(B_t(x)) (integral_indicator_one).
+3. Key equivalence. For y ∈ E, ‖η(y)‖ = t⁻¹‖y − x‖ because t⁻¹ > 0. So ‖η(y)‖ ≤ 1 ⟺ ‖y − x‖ ≤ t ⟺ y ∈ B_t(x).
+4. Part (i). Assume f(z) ≤ 1 for all z and f(z) ≤ 0 whenever ‖z‖ > 1. Then F ≤ 1_{B_t(x)} pointwise. If y ∈ B_t(x), then F(y) = f(η(y)) ≤ 1 = 1_{B_t(x)}(y). If y ∉ B_t(x), then ‖η(y)‖ > 1 by step 3, so F(y) ≤ 0 = 1_{B_t(x)}(y). Both functions are integrable (steps 1 and 2), so integral_mono gives ∫ f(t⁻¹(y − x)) dμ(y) = ∫ F dμ ≤ ∫ 1_{B_t(x)} dμ = μ.real(B_t(x)).
+5. Part (ii). Assume f(z) ≥ 0 for all z and f(z) ≥ 1 whenever ‖z‖ ≤ 1. Then 1_{B_t(x)} ≤ F pointwise. If y ∈ B_t(x), then ‖η(y)‖ ≤ 1 by step 3, so F(y) ≥ 1 = 1_{B_t(x)}(y). If y ∉ B_t(x), then 1_{B_t(x)}(y) = 0 ≤ F(y). By integral_mono, μ.real(B_t(x)) = ∫ 1_{B_t(x)} dμ ≤ ∫ F dμ = ∫ f(t⁻¹(y − x)) dμ(y).
+6. Steps 4 and 5 are the two conjuncts of the claim. ∎
+
+Implementation note (not part of the argument): every name above is available under the frozen imports. A suitable homeomorphism is η := (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero t⁻¹ (inv_ne_zero ht.ne')); then the function y ↦ f (t⁻¹ • (y - x)) is f ∘ η.
+
+## Key steps
+
+1. y ↦ f(t⁻¹(y − x)) is f composed with a homeomorphism of E, so it is continuous with compact support and μ-integrable
+2. B_t(x) is compact, so 1_{B_t(x)} is μ-integrable with ∫ 1_{B_t(x)} dμ = μ.real(B_t(x))
+3. ‖t⁻¹(y − x)‖ ≤ 1 iff y ∈ B_t(x)
+4. Under the hypotheses of (i), f(t⁻¹(y − x)) ≤ 1_{B_t(x)}(y) pointwise; under those of (ii), the reverse inequality holds; integrate both with integral_mono
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json`
+- `sha256sum <snapshot>/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean`
+- `git -C .lake/packages/simongmt rev-parse HEAD`
+- `rg -n 'theorem volume_closedBall|theorem volume_ball|theorem euclideanHausdorffMeasure_eq_volume|map_euclideanHausdorffMeasure|theorem addHaar_closedBall_eq_addHaar_ball' <snapshot>/mathlib/Mathlib`
+- `sed -n 1,200p <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `sed -n 295,365p <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `sed -n 495,512p <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `rg -n over <snapshot>/mathlib/Mathlib for: 'theorem addHaar_closedBall ', 'theorem Isometry.euclideanHausdorffMeasure_image', 'theorem finrank_euclideanSpace_fin', 'theorem measure_ball_lt_top', 'theorem measure_ball_pos', 'theorem Continuous.integrable_of_hasCompactSupport', 'theorem integral_indicator_one', 'theorem integrable_indicator_iff', 'theorem integrableOn_const', 'theorem ofReal_toReal ', 'theorem ofReal_mul ', 'theorem toReal_pos ', 'theorem tendsto_order'`
+- `grep -n '^theorem\|^def' .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean; sed -n 1,260p of the same file`
+- `grep -rn realUnitBallVolume .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/*.lean`
+- `grep -rhoE '"lean_name": *"[^"]+"' <run dir> (name-collision check)`
+- `python3 scan of dag.json lean_statement fields mentioning closedBall together with omega or μHE`
+- `lean /tmp/tsbd/test/Avail.lean (#check of cited lemmas under the frozen imports)`
+- `lean /tmp/tsbd/test/Where.lean (defining module of every cited constant)`
+- `python3 -I /tmp/tsbd/scripts/gen.py final.json GMT/Ch04/Contract.lean gen (verifier gmt-compare.child_modules + lean_contract.validate_lean_statement)`
+- `lean /tmp/tsbd/gen/Challenge_*.lean, /tmp/tsbd/test/Assembly.lean, /tmp/tsbd/test/Full.lean against Submission oleans built from the frozen file and from a copy with extra imports`
+- `lean /tmp/tsbd/gen3/{Challenge,Solution}_*.lean against a Submission copy containing the four proofs; #print axioms`
+- `sed -n 280,316p book/chapter-03.txt (Simon Ch. 3, Remark 1.8(2))`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/CompactlySupported.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Operator/LinearIsometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-blowup-density-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-blowup-density-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/tsbd/test/Full.lean`
+- `/tmp/tsbd/test/Assembly.lean`
+- `/tmp/tsbd/test/Avail.lean`
+- `/tmp/tsbd/test/Where.lean`
+- `/tmp/tsbd/gen3/Solution_ts_blowup_closedBall_density.lean`
+
+Contract and pins:
+- The snapshot contract (sha256 6e58e5dd…0f4770b) is byte-identical to the workspace Contract.lean and Submission.lean.
+- SimonGMT is at 2b3663083f3fe399b6296fb8eaee52169170e197, and mathlib at 25730c7c759d108ef87ab70af2342a196760f79d.
+
+Lemma availability under the frozen imports:
+- Unknown constants: InnerProductSpace.volume_closedBall, InnerProductSpace.volume_ball and EuclideanSpace.volume_ball (all in VolumeOfBalls.lean), and SimonGMT Chapter04 planeMeasure_unit_closedBall and tangentDensityCutoff (TangentDensity.lean). The supplied step-1 route therefore needs an extra import.
+- Available and used by the children:
+  - Isometry.map_euclideanHausdorffMeasure, Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean).
+  - MeasureTheory.Measure.addHaar_closedBall (Lebesgue/EqHaar.lean:500), which has no Nontrivial assumption.
+  - stdOrthonormalBasis, OrthonormalBasis.reindex/repr and finrank_euclideanSpace_fin (InnerProductSpace/PiL2.lean).
+  - LinearIsometryEquiv.image_closedBall.
+  - MeasureTheory.measure_ball_lt_top and Metric.measure_ball_pos.
+  - Continuous.integrable_of_hasCompactSupport, HasCompactSupport.comp_homeomorph/intro and CompactlySupportedContinuousMap.integrable.
+  - integral_indicator_one, integrable_indicator_iff, integrableOn_const and integral_mono.
+  - tendsto_order.
+  - ENNReal.ofReal_toReal, ofReal_mul and toReal_pos.
+
+Library overlap:
+- SimonGMT planeMeasure_unit_closedBall (TangentDensity.lean:93) is the s = 1 case of child A, stated with realUnitBallVolume rather than omega n; child A adapts its isometry pattern.
+- No DAG node states the plane-ball measure.
+- The names ts_plane_closedBall_measure, ts_blowup_cutoff_closedBall_bounds and ts_unit_ball_plane_cutoff_approx are unused anywhere in the run.
+
+Lean checks:
+- The child types validate and elaborate in comparator NodeChallenge files.
+- The parent assembly compiles from the sorry'd children.
+- Complete sorry-free proofs of the three children and of the parent compile, both with the frozen imports and with extra imports, using only propext, Classical.choice and Quot.sound.
+- The comparator NodeSolution files (exact Submission.X) compile.
