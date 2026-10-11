@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.curvature_monotonicity-a1.annulus_ibp-a1.primitive_fubini-a1",
+  "parent_id": "root.curvature_monotonicity-a1.annulus_ibp-a1",
+  "depth": 3,
+  "title": "Fubini exchange for a primitive composed with a measurable radius (common core of parent Steps 8 and 9)",
+  "statement": "Let (X, 𝒜) be a measurable space (formally a type X : Type, which covers both uses X = ℝ and X = ℝ^{n+ℓ}), ν an s-finite measure on X, S ∈ 𝒜, r: X → ℝ measurable, g: X → ℝ, F, F′: ℝ → ℝ and σ, ρ ∈ ℝ. Assume r(x) ∈ (σ, ρ] for every x ∈ S, g is ν-integrable on S, F′ is Lebesgue integrable on (σ, ρ], and F(t) = F(σ) + ∫_{(σ,t]} F′(τ)dτ for every t ∈ [σ, ρ]. Then (a) x ↦ g(x)(F(r(x)) − F(σ)) is ν-integrable on S; (b) t ↦ F′(t)·∫_{S ∩ {x : t < r(x)}} g dν is Lebesgue integrable on (σ, ρ]; and (c) ∫_{(σ,ρ]} F′(t)(∫_{S ∩ {x : t < r(x)}} g dν)dt = ∫_S g(x)(F(r(x)) − F(σ))dν(x).",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (S : Set X) (r g : X → ℝ) (F F' : ℝ → ℝ) (σ ρ : ℝ), SFinite ν → MeasurableSet S → Measurable r → (∀ x ∈ S, r x ∈ Ioc σ ρ) → IntegrableOn g S ν → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun x ↦ g x * (F (r x) - F σ)) S ν ∧ IntegrableOn (fun t ↦ F' t * ∫ x in S ∩ {x | t < r x}, g x ∂ν) (Ioc σ ρ) ∧ ∫ t in Ioc σ ρ, F' t * ∫ x in S ∩ {x | t < r x}, g x ∂ν = ∫ x in S, g x * (F (r x) - F σ) ∂ν",
+  "lean_name": "mcm_primitive_radial_fubini",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-curvature-monotonicity-a1-annulus-ibp-a1-primitive-fubini-a1-a1"
+}
