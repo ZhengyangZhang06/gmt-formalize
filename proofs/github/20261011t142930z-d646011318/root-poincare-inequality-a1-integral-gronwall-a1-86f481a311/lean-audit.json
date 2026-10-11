@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d0c271d2c67ff2c634d286a33df722bf80ed226a54a9fa5314a80d4bc1a3742c",
+  "git_delta": {
+    "base_commit": "f23b0f76c478ee3f4d481d539fc32b2e9efac39e",
+    "candidate_commit": "e649baba41ca5850365188b0cbdb9b438f2ccd0c",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "backward_integral_gronwall_Ioc",
+    "diff_sha256": "aaee16b486ed2d543c50fa549c5887118569cb120fcf882f9fadf94864e3d643",
+    "source_sha256": "132b24b0bb9790a01abb0f55ca1b53ef1b191adab3a0ad919995a4fff6eae55a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.backward_integral_gronwall_Ioc",
+      "statement": "∀ (a b Λ C : ℝ) (f : ℝ → ℝ), a ≤ b → 0 ≤ Λ → IntegrableOn f (Icc a b) → (∀ s ∈ Icc a b, f s ≤ C + Λ * ∫ τ in Ioc s b, f τ) → ∀ s ∈ Icc a b, f s ≤ C * Real.exp (Λ * (b - s))",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
