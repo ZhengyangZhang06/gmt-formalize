@@ -335,6 +335,40 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **An injective strict derivative gives a local anti-Lipschitz bound**: the local step of
+Simon Ch. 3, proof of Lemma 3.3 (p. 79, `chapter-03.txt` lines 494–496: `p_J` restricted to `N`
+near `x` is a `C¹` diffeomorphism), with strict differentiability in place of the inverse function
+theorem. As `A` is injective on `ℝⁿ`, `‖v‖ ≤ K₀ ‖A v‖` for some `K₀ > 0`. Near `u₀`,
+`‖Φ x - Φ y - A (x - y)‖ ≤ (2K₀)⁻¹ ‖x - y‖`, so the triangle inequality gives
+`‖x - y‖ ≤ K₀ ‖Φ x - Φ y‖ + ‖x - y‖ / 2`, i.e. `‖x - y‖ ≤ 2K₀ ‖Φ x - Φ y‖`. -/
+theorem Submission.section3_hasStrictFDerivAt_injective_local_antilipschitz : ∀ (n p : ℕ)
+    (Φ : Rn n → Rn p) (A : Rn n →L[ℝ] Rn p) (u₀ : Rn n), HasStrictFDerivAt Φ A u₀ →
+    Function.Injective A → ∃ s ∈ 𝓝 u₀, ∃ K : ℝ≥0, ∀ x ∈ s, ∀ y ∈ s,
+      ‖x - y‖ ≤ K * ‖Φ x - Φ y‖ := by
+  intro n p Φ A u₀ hΦ hA
+  -- Step 1: `A` is injective on a finite-dimensional space, so `‖v‖ ≤ K₀ ‖A v‖` with `K₀ > 0`.
+  obtain ⟨K₀, hK₀, hAK₀⟩ :=
+    LinearMap.exists_antilipschitzWith (A : Rn n →ₗ[ℝ] Rn p) (LinearMap.ker_eq_bot.mpr hA)
+  have hK₀' : (0 : ℝ) < K₀ := hK₀
+  have h1 (v : Rn n) : ‖v‖ ≤ K₀ * ‖A v‖ := by
+    simpa [dist_eq_norm] using hAK₀.le_mul_dist v 0
+  -- Step 2: on a neighbourhood `s` of `u₀`, `Φ` approximates `A` with constant `(2K₀)⁻¹`.
+  obtain ⟨s, hs, hΦs⟩ := hΦ.approximates_deriv_on_nhds (c := (2 * K₀)⁻¹) (Or.inr (by positivity))
+  refine ⟨s, hs, 2 * K₀, fun x hx y hy ↦ ?_⟩
+  have h2 : ‖Φ x - Φ y - A (x - y)‖ ≤ (2 * K₀ : ℝ)⁻¹ * ‖x - y‖ := by
+    exact_mod_cast hΦs x hx y hy
+  -- Step 3: the triangle inequality for `A (x - y) = (Φ x - Φ y) - (Φ x - Φ y - A (x - y))`.
+  have h3 : ‖A (x - y)‖ ≤ ‖Φ x - Φ y‖ + ‖Φ x - Φ y - A (x - y)‖ := by
+    calc ‖A (x - y)‖ = ‖(Φ x - Φ y) - (Φ x - Φ y - A (x - y))‖ := by rw [sub_sub_cancel]
+      _ ≤ _ := norm_sub_le _ _
+  -- Steps 4–5: since `K₀ (2K₀)⁻¹ = 1 / 2`, half of `‖x - y‖` is absorbed into the left side.
+  have h4 : ‖x - y‖ ≤ K₀ * ‖Φ x - Φ y‖ + ‖x - y‖ / 2 :=
+    calc ‖x - y‖ ≤ K₀ * ‖A (x - y)‖ := h1 (x - y)
+      _ ≤ K₀ * (‖Φ x - Φ y‖ + (2 * K₀ : ℝ)⁻¹ * ‖x - y‖) := by gcongr; linarith
+      _ = K₀ * ‖Φ x - Φ y‖ + ‖x - y‖ / 2 := by field_simp
+  push_cast
+  linarith
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
