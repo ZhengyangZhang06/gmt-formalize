@@ -4,6 +4,7 @@ import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.Topology.EMetricSpace.Lipschitz
 import Poincare.SimonGMT.Chapter02.BV
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter02.WhitneyExtension
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 3 "Countably n-Rectifiable Sets" (pp. 69–84): contract
@@ -628,6 +629,52 @@ theorem Submission.lipschitz_uniform_remainder_on_closed_subset : ∀ (n : ℕ) 
     have h := hk₀ x hx
     rwa [Pi.zero_apply, dist_comm, Real.dist_eq, sub_zero, abs_of_nonneg (hη0 k₀ x)] at h
   exact h1.trans (mul_le_mul_of_nonneg_right h2.le (norm_nonneg _))
+/-- **Simon Ch. 2, Theorem 1.5 (C¹ approximation), scalar case** (p. 42; proof p. 44). For a
+Lipschitz `f : ℝⁿ → ℝ` and `ε ∈ (0, ∞]` there is a `C¹` function `g` with
+`Lⁿ({f ≠ g} ∪ {Df ≠ Dg}) < ε`, where `D` is `fderiv` (`0` where `f` is not differentiable).
+Rademacher, Lusin for `Df` (`ε/2`), the uniform Taylor remainder on a closed `A` (`ε/2`) and
+Whitney's extension theorem 1.6 applied on `A`. -/
+theorem Submission.lipschitz_real_c1_approximation : ∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → ℝ, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε := by
+  intro n f K hf ε hε
+  -- Rademacher: `f` is differentiable off a null set `Bᶜ`; `B` and `Df` are Borel.
+  let B : Set (Rn n) := {x | DifferentiableAt ℝ f x}
+  have hB : MeasurableSet B := measurableSet_of_differentiableAt ℝ f
+  have hBc : volume Bᶜ = 0 := ae_iff.mp (hf.ae_differentiableAt (μ := volume))
+  have hDf : Measurable (fderiv ℝ f) := measurable_fderiv ℝ f
+  have hε2 : 0 < ε / 2 := ENNReal.half_pos hε.ne'
+  -- Lusin: a closed `C ⊆ B` with `Lⁿ(B \ C) < ε/2` on which `Df` is continuous.
+  obtain ⟨C, hCB, hC, hBC, hDfC⟩ := Submission.lusin_closed_subset_continuousOn_volume n
+    (Rn n →L[ℝ] ℝ) (fderiv ℝ f) B hDf hB (ε / 2) hε2
+  -- A closed `A ⊆ C` with `Lⁿ(C \ A) < ε/2` carrying the uniform remainder estimate 1.6(‡).
+  obtain ⟨A, hAC, hA, hCA, hrem⟩ := Submission.lipschitz_uniform_remainder_on_closed_subset n f
+    K (fderiv ℝ f) C hf hDf hC.measurableSet
+    (fun x hx ↦ DifferentiableAt.hasFDerivAt (hCB hx)) (ε / 2) hε2
+  -- Whitney: `g ∈ C¹` with `g = f` and `Dg = Df` on `A`.
+  have hW : Poincare.SimonGMT.Chapter02.HasWhitneyC1Compatibility A f (fderiv ℝ f) :=
+    ⟨hf.continuous.continuousOn, hDfC.mono hAC, hrem⟩
+  obtain ⟨g, hg, hgA, hDgA⟩ :=
+    Poincare.SimonGMT.Chapter02.exists_contDiff_one_extension_of_whitney hA hW
+  refine ⟨g, hg, ?_⟩
+  -- The exceptional set misses `A ⊆ C ⊆ B`.
+  have hsub : {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} ⊆ Bᶜ ∪ (B \ C) ∪ (C \ A) := by
+    intro x hx
+    by_cases hxA : x ∈ A
+    · exfalso
+      rcases hx with h | h
+      · exact h (hgA hxA).symm
+      · exact h (hDgA x hxA).fderiv.symm
+    by_cases hxB : x ∈ B
+    · by_cases hxC : x ∈ C
+      · exact Or.inr ⟨hxC, hxA⟩
+      · exact Or.inl (Or.inr ⟨hxB, hxC⟩)
+    · exact Or.inl (Or.inl hxB)
+  calc volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x}
+      ≤ volume (Bᶜ ∪ (B \ C) ∪ (C \ A)) := measure_mono hsub
+    _ ≤ volume Bᶜ + volume (B \ C) + volume (C \ A) :=
+      (measure_union_le _ _).trans (add_le_add (measure_union_le _ _) le_rfl)
+    _ = volume (B \ C) + volume (C \ A) := by rw [hBc, zero_add]
+    _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hBC hCA
+    _ = ε := ENNReal.add_halves ε
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
