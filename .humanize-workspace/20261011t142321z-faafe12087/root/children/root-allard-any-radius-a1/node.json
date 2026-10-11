@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Allard regularity on any radius (Simon Remark 5.5.3)",
+  "statement": "For n >= 1, l, p > n and every gamma in (0,1) there are delta_0 in (0,1) and C, depending on gamma,n,l,p, such that for every open U, V with generalized mean curvature H, 0 < delta <= delta_0 and rho with AllardHypotheses H p delta rho, AllardConclusion V p delta rho gamma C holds (the conclusion of Theorem 5.2 on the ball of radius gamma rho, with constant C).",
+  "lean_statement": "AllardRegularityAnyRadius",
+  "lean_name": "allard_regularity_any_radius",
+  "depends_on": [
+    "root.allard_regularity-a1",
+    "root.conical_approximation-a1",
+    "root.tilt_excess_decay-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.conical_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-a1"
+}

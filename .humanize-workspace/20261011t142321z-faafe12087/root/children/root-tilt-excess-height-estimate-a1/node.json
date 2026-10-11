@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Tilt-excess/height estimate (Simon 5.2.1)",
+  "statement": "For every n >= 1 there is C depending only on n such that for every l, open U in R^(n+l), contract rectifiable n-varifold V = v(M,theta) in U with generalized mean curvature H in U, point xi and rho > 0 with closed B_rho(xi) in U, and n-dimensional subspace T: E(xi, rho/2, T) <= C rho^-n integral_{B_rho(xi)} (dist(x - xi, T)/rho)^2 dmu_V + C rho^(2-n) integral_{B_rho(xi)} |H|^2 dmu_V, where E(xi,s,T) = s^-n integral_{B_s(xi)} |p_{T_xM} - p_T|^2 dmu_V (Hilbert-Schmidt norm) and the |H|^2 integral is an extended integral (inequality in [0,inf]).",
+  "lean_statement": "TiltExcessHeightEstimate",
+  "lean_name": "tilt_excess_height_estimate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-a1"
+}

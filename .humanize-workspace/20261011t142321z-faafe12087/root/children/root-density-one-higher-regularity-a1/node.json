@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Density-one higher regularity (Simon 5.7.1, second assertion)",
+  "statement": "If n >= 1, U is open, V = v(M,theta) has generalized mean curvature H in U, theta is a positive integer mu_V-a.e., H = h mu_V-a.e. for some h that is locally C^{q,alpha} in U (q in N, alpha in (0,1)), xi in U and Theta^n(mu_V, xi) = 1, then there are rho > 0, a linear isometry Q, an open W in R^n containing 0 and u with IsHolderCkα (q+2) alpha u W, u(0) = 0, fderiv u 0 = 0, H^n((Q(M - xi) cap open B_rho(0)) symmetric-difference graph_W u) = 0, and Theta^n(mu_V, x) = 1 for all x in open B_rho(xi) cap spt V.",
+  "lean_statement": "DensityOneHigherRegularity",
+  "lean_name": "density_one_higher_regularity",
+  "depends_on": [
+    "root.allard_regularity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-a1"
+}

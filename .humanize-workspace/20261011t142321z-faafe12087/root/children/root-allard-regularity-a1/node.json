@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Allard regularity theorem (Simon 5.5.2)",
+  "statement": "For n >= 1, l, p > n there are delta_0, gamma in (0,1) and C, depending only on n,l,p, such that for every open U, V with generalized mean curvature H, 0 < delta <= delta_0 and rho with AllardHypotheses H p delta rho, AllardConclusion V p delta rho gamma C holds: there are a linear isometry q of R^(n+l) and u: R^n -> R^l, C^1 on the closed ball B^n_{gamma rho}(0), with u(0) = 0, Du(0) = 0 (derivative within the ball), spt V cap B_{gamma rho}(0) = q(graph u over B^n_{gamma rho}(0)) cap B_{gamma rho}(0), and rho^-1 sup|u| + sup|Du| + rho^(1-n/p) sup_{x != y} |x - y|^-(1-n/p) |Du(x) - Du(y)| <= C delta^(1/(2n+2)) (suprema over the closed ball, Hilbert-Schmidt norms, in [0,inf]).",
+  "lean_statement": "AllardRegularityTheorem",
+  "lean_name": "allard_regularity_theorem",
+  "depends_on": [
+    "root.affine_approximation-a1",
+    "root.lipschitz_graph_corollary-a1",
+    "root.tilt_excess_decay-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.affine_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_graph_corollary-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-a1"
+}

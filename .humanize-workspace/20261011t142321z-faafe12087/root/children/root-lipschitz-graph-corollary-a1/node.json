@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_graph_corollary-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Lipschitz graph corollary (Simon 5.2.7)",
+  "statement": "For n >= 1, l, p > n there is beta in (0,1/4] (depending on n,l,p) such that for all L in (0,1], K >= 0, open U, V with generalized mean curvature H, delta, rho with 0 < delta <= (beta L)^(2n+2) and AllardHypotheses H p delta rho, every linear isometry q with dist(x, T_0) <= K delta^(1/(2n+2)) delta rho on spt V cap B_{2 delta rho}(0) (T_0 := q(R^n x {0})) and with E(xi, sigma, T_0) <= beta^2 L^2 for all xi in spt V cap B_{delta rho/2}(0), sigma in (0, delta rho/2], there is f: R^n -> R^l, L-Lipschitz on B^n_{delta rho/4}(0), with |f| <= K delta^(1/(2n+2)) delta rho there and spt V cap B_{delta rho/4}(0) = q(graph f over B^n_{delta rho/4}(0)) cap B_{delta rho/4}(0).",
+  "lean_statement": "LipschitzGraphCorollary",
+  "lean_name": "lipschitz_graph_corollary",
+  "depends_on": [
+    "root.affine_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.affine_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-graph-corollary-a1-a1"
+}

@@ -1,0 +1,91 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root`
+- Child DAG node: `root.regular_set_open_dense-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Ch. 5, Definition 7.2 and Corollary 7.3 with its printed proof (p. 128-129): openness of reg V in spt V is immediate from 7.2, and density follows by normalizing the multiplicity by the least integer density N in a ball and applying 7.1 at a point of density 1. Added details: the 7.1 step is used in its support form (spt V near x_0 is a C^1 graph, obtained from Theorem 5.2 exactly as in the first paragraph of the printed proof of 7.1), the localized varifold V~ is built as a contract varifold, and the open set O is exhibited. Notation: mu = V.weight, spt V = V.support = U cap spt mu (relatively closed in U), reg V = V.regularSet.
+
+Sibling used: AllardRegularityTheorem (5.2: delta_7, gamma_7). Facts: (F1) Theta(mu, x) = theta(x) for mu-a.e. x (Ch. 3, 1.8(2) with 1.9); (F2) mu(R^(n+l) minus spt mu) = 0 and mu(R^(n+l) minus U) = 0; (M) [Ch.4 4.9, 4.10]: Theta(mu, .) exists everywhere in U and is upper semicontinuous; Theta >= 1 on spt V when theta >= 1 a.e.; (Loc) for an open ball B in U and a constant N >= 1, V~ := v(M cap B, theta/N) is a contract RectifiableVarifold n l B (carrier M cap B, multiplicity theta/N: all structure fields restrict), with weight N^-1 mu restricted to B, support B cap spt V, the same approximate tangent planes on M cap B (Definition 1.7 is local and homogeneous in theta), hence generalized mean curvature H in B, LocallyLp H p on B, and HasDensity x (Theta(mu,x)/N) at x in B; (Sub) if S is IsC1Submanifold n and B is open then S cap B is IsC1Submanifold n (restrict the charts: V' := V cap phi^-1(B), W' := W cap B; properness and injectivity are inherited); (Gr) for an isometry q, a point x_0, s > 0 and u C^1 on a neighbourhood of the closed ball B^n_s, the set x_0 + q(graphOver u W') with W' := {x in open B^n_s : |(x, u(x))| < s} is IsC1Submanifold n (chart x -> x_0 + q(x, u(x)) on W' with target open set open B_s(x_0): injective, injective derivative, image = open B_s(x_0) cap set, and preimages of compact K in open B_s(x_0) are closed subsets of the compact ball B^n_s, hence compact).
+
+Proof.
+1. Since mu-a.e. point lies in spt V (F2), the hypothesis gives theta in {1, 2, ...} mu-a.e.; in particular theta >= 1 a.e., and with H in L^p_loc, Theta >= 1 on spt V (M).
+2. Openness. For each y in reg V fix rho_y > 0 with open B_{rho_y}(y) cap spt V IsC1Submanifold n, and let O := union over y in reg V of open B_{rho_y}(y) (open). reg V is contained in O cap spt V. Conversely let z in O cap spt V, z in open B_{rho_y}(y); choose r > 0 with open B_r(z) in open B_{rho_y}(y); then open B_r(z) cap spt V = open B_r(z) cap (open B_{rho_y}(y) cap spt V) is IsC1Submanifold n by (Sub), so z in reg V. Hence reg V = O cap spt V.
+3. closure(reg V) cap U is contained in spt V: reg V is in spt V, and spt V is closed relative to U.
+4. Density. Let xi in spt V and r > 0 with B_r(xi) in U; we show reg V meets open B_r(xi). Since mu(open B_r(xi)) > 0 (xi in spt mu), by (F1) and step 1 the set of x in open B_r(xi) with Theta(mu, x) = theta(x) in {1,2,...} has positive measure; let N := min{ j >= 1 : Theta(mu, x) = j for some x in open B_r(xi) } and x_0 a point with Theta(mu, x_0) = N. Every integer value of Theta in open B_r(xi) is >= N, so theta = Theta >= N mu-a.e. in open B_r(xi).
+5. Normalized varifold (book: V~ := v(M, N^-1 theta) restricted to open B_r(xi)). By (Loc), V~ is a contract varifold on B := open B_r(xi) with generalized mean curvature H, LocallyLp H p, theta/N >= 1 mu~-a.e., spt V~ = B cap spt V, and Theta(mu~, x_0) = 1.
+6. Regular point (book: 'x_0 is in reg V~ by Theorem 7.1'; we use the support form from the proof of 7.1). x_0 is in spt V~ (density 1). Since omega_n^-1 s^-n mu~(B_s(x_0)) -> 1 and (s^(p-n) integral_{B_s(x_0)} |H|^p dmu~)^(1/p) <= (s/s_0)^(1-n/p) (s_0^(p-n) integral_{B_{s_0}(x_0)} |H|^p dmu~)^(1/p) -> 0 (LocallyLp), choose s > 0 with B_s(x_0) in B such that 5.1 holds for V~ translated by -x_0 (translation invariance) at radius s with parameter delta_7. 5.2 gives an isometry q and u, C^1 on the closed ball B^n_{gamma_7 s}, with (spt V~ - x_0) cap B_{gamma_7 s}(0) = q(graphOver u (B^n_{gamma_7 s})) cap B_{gamma_7 s}(0). Intersecting with the open ball (|(x,u(x))| >= |x|): open B_{gamma_7 s}(x_0) cap spt V = open B_{gamma_7 s}(x_0) cap spt V~ = x_0 + q(graphOver u W') with W' as in (Gr), which is IsC1Submanifold n. So x_0 in reg V cap open B_r(xi).
+7. By step 6 every xi in spt V is a limit of points of reg V, so spt V is contained in closure(reg V) cap U; with step 3, spt V = closure(reg V) cap U. Together with step 2 this is the claim.
+
+## Key steps
+
+1. theta is an integer >= 1 a.e., so Theta >= 1 on spt V
+2. O := union of the regular balls; then reg V = O cap spt V
+3. closure(reg V) cap U is contained in spt V
+4. Least integer density N in a ball and the normalized varifold V~
+5. 5.2 at a density-1 point makes spt V a C^1 graph nearby, so x_0 in reg V
+6. Hence spt V = closure(reg V) cap U
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -l 'TiltExcessHeightEstimate|AffineApproximationLemma|LipschitzApproximationLemma|LipschitzGraphCorollary|HarmonicApproximationLemma|TiltExcessDecayTheorem|AllardRegularityTheorem|AllardRegularityAnyRadius|ConicalApproximationTheorem|DensityOneRegularity|DensityOneHigherRegularity|RegularSetOpenDense' <snapshot>`
+- `for pat in Rellich Kondrachov Weyl Campanato Kirszbraun '[Cc]oarea' '[Vv]arifold' Allard Schauder 'Poincare_inequality|poincare_inequality'; do rg -l $pat <snapshot>/mathlib/Mathlib | wc -l; done`
+- `rg -n 'def HarmonicOnNhd|def HarmonicAt|theorem mk_ball' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic`
+- `rg -n 'theorem LipschitzOnWith.extend_real|lipschitzExtensionConstant' <snapshot>/mathlib/Mathlib`
+- `rg -l 'exists_disjoint_subfamily_covering_enlargement|Besicovitch|Rademacher|lintegral_image_eq_lintegral_abs_det_fderiv_mul' <snapshot>/mathlib/Mathlib`
+- `rg -n 'def lpMeanCurvatureKappa|structure LpAnnularCorrection|exists_lpAnnularCorrection|one_le_stationaryDensityReal_of_mem_support_lp|fiveTimes|lipschitz_extension_real_optimal|rademacher_ae_differentiableAt|injective_area_formula_lipschitz_simon|harmonicComparison_energy_le_sixthPower|HasWeightedApproximateTangentSpaceAt.unique' .lake/packages/simongmt/Poincare/SimonGMT`
+- `rg -c sorry .lake/packages/simongmt/Poincare/SimonGMT`
+- `lake env lean /tmp/gmt-ch05-v2-check/Check.lean (Contract.lean lines 1-460, then namespace Submission with the 12 child declarations, then the root assembly)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpLowerDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/SobolevCovering.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter05/HarmonicEnergy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/tmp/gmt-ch05-v2-check/Check.lean`
+
+Snapshot pinned at project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json).
+
+No prior proofs: the 12 conjunct names occur only in project/GMT/Ch05/{Contract,Submission}.lean and README.md.
+
+No-match searches in mathlib/Mathlib (0 files each): Rellich, Kondrachov, Campanato, Kirszbraun, coarea, varifold, Allard, Poincare_inequality. 'Weyl' matches only Lie-algebra and root-system files, and 'Schauder' only Schauder-basis files (l2Space.lean, Normed/Module/Bases.lean). So Mathlib has no Weyl lemma for harmonic functions and no Schauder PDE theory.
+
+Usable Mathlib items:
+- HarmonicAt and HarmonicOnNhd (Harmonic/Basic.lean:41,48).
+- LipschitzOnWith.extend_real (Topology/MetricSpace/Lipschitz.lean:308) and lipschitzExtensionConstant (FiniteDimension.lean:194).
+- Vitali and Besicovitch coverings.
+- Rademacher (Analysis/Calculus/Rademacher.lean).
+- Change of variables (MeasureTheory/Function/Jacobian.lean).
+
+The pinned simongmt package lies outside the snapshot; 'rg -c sorry' finds no matches. It provides:
+- lpMeanCurvatureKappa = (p-n)/(4p) (Chapter04/LpMeanCurvature.lean:76) and LpAnnularCorrection (Chapter04/LpAnnular.lean:335). These confirm the corrected monotonicity used in all revised child proofs: Lambda = 4 p delta/(p-n), factor bounds e^(-Lambda) <= F <= e^Lambda, error |F-1| <= (e^(Lambda/2)/2) Lambda (rho/R)^(1-n/p), and |F-1| <= Lambda (rho/R)^(1-n/p) when Lambda <= 1.
+- one_le_stationaryDensityReal_of_mem_support_lp (LpLowerDensity.lean:43).
+- Chapter01.exists_fiveTimesCovering (used at Chapter04/SobolevCovering.lean:39).
+- lipschitz_extension_real_optimal and rademacher_ae_differentiableAt (Chapter02/Lipschitz.lean:170,192).
+- injective_area_formula_lipschitz_simon (Chapter02/AreaLipschitz.lean:126).
+- HasWeightedApproximateTangentSpaceAt.unique (Chapter03/Rectifiable.lean:345).
+- harmonicComparison_energy_le_sixthPower (Chapter05/HarmonicEnergy.lean:94).
+The Chapter04 results are stated for the stronger Chapter04.RectifiableVarifold, which stores the tangent field as data, so reuse needs a bridge via Ch. 3, 1.9 and axiom checks.
+
+Lean check (Check.lean): all 12 child types elaborate in the contract scope, and the root assembly has exactly the type of main_theorem. The only warnings are sorry warnings for the placeholder child declarations.

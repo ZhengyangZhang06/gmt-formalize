@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.conical_approximation-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Conical approximation theorem (Simon 5.6.1)",
+  "statement": "For n >= 1, l and Lambda > 0 there is C = C(n,l,Lambda) such that: if lambda, theta, delta in (0,1/4), |xi| = 1 - theta, U is open with closed B_1(0) in U, V has generalized mean curvature H in U (mu = mu_V), |mu(B_1(0))/omega_n - mu(B_lambda(0))/(omega_n lambda^n)| + r^(1-n) integral_{B_r(0)} |H| dmu <= delta for every r in [lambda, 1], and mu(B_1(0)) <= Lambda, then for all rho in (0, theta] and tau in [2 lambda, 1]: mu(B_{(1 - delta^(1/4)) rho}(xi)) <= tau^-n mu(B_{tau rho}(tau xi)) + C delta^(1/4) |log lambda| and tau^-n mu(B_{tau rho}(tau xi)) <= mu(B_{(1 + delta^(1/4)) rho}(xi)) + C delta^(1/4) |log lambda|.",
+  "lean_statement": "ConicalApproximationTheorem",
+  "lean_name": "conical_approximation_theorem",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-conical-approximation-a1-a1"
+}
