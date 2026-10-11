@@ -246,6 +246,50 @@ def RadonNikodymTheorem : Prop :=
           μ ({x | Tendsto (fun ρ : ℝ => μ (closedBall x ρ) / μ₀ (closedBall x ρ)) (𝓝[>] 0)
             (𝓝 ∞)} ∩ A))
 
+/-- Node `root.radon_nikodym_theorem-a1`: Simon 3.24 with clause (0) from 3.23(ii).
+
+The four clauses are the kernel-checked `Poincare.SimonGMT` theorems `simon_theorem_3_23_ii`
+and `simon_theorem_3_24_i`/`_ii`/`_iii`, whose integrals are taken against the Borel measure
+`hμ₀.toBorelMeasure`.  That measure is the trim of `caratheodoryMeasure μ₀` to `borel X`, and
+the upper density is a.e. equal to the Borel function `rnDeriv`, so `setLIntegral_trim_ae`
+identifies the two set integrals over every Borel set. -/
+theorem _root_.Submission.radon_nikodym_theorem : RadonNikodymTheorem.{u} := by
+  intro X _ μ μ₀ hμ hopenμ hμ₀ hopenμ₀ hV₀
+  have hle : borel X ≤ μ₀.caratheodory := hμ₀.borel_le_caratheodory
+  have htrim : (caratheodoryMeasure μ₀).trim hle = hμ₀.toBorelMeasure := by
+    refine @Measure.ext X (borel X) _ _ fun s hs => ?_
+    rw [trim_measurableSet_eq hle hs, hμ₀.toBorelMeasure_apply hs]
+    exact toMeasure_apply (ms := μ₀.caratheodory) μ₀ le_rfl (hle s hs)
+  have hmeas : AEMeasurable (outerRelativeUpperDensity μ μ₀)
+      ((caratheodoryMeasure μ₀).trim hle) := by
+    rw [htrim]
+    exact (Measure.measurable_rnDeriv _ _).aemeasurable.congr
+      (ae_outerRelativeUpperDensity_eq_rnDeriv μ μ₀ hμ hμ₀ hopenμ hopenμ₀ hV₀).symm
+  have hint : ∀ A : Set X, MeasurableSet[borel X] A →
+      ∫⁻ x in A, outerRelativeUpperDensity μ μ₀ x ∂hμ₀.toBorelMeasure =
+        ∫⁻ x in A, outerRelativeUpperDensity μ μ₀ x ∂caratheodoryMeasure μ₀ := by
+    intro A hA
+    rw [← htrim]
+    exact setLIntegral_trim_ae hle hmeas hA
+  refine ⟨?_, fun hAC A hA => ?_, ?_, fun hV => ?_⟩
+  · obtain ⟨S, -, hS, hconv, -⟩ := simon_theorem_3_23_ii μ μ₀ hμ hμ₀ hopenμ hopenμ₀ hV₀
+    rw [ae_iff]
+    refine measure_mono_null (fun x hx => ?_) hS
+    by_contra hxS
+    exact hx (hconv x hxS).1
+  · rw [← hint A hA]
+    exact simon_theorem_3_24_i μ μ₀ hμ hμ₀ hopenμ hopenμ₀ hV₀ hAC hA
+  · obtain ⟨Z, hZ, hμ₀Z, hdec⟩ := simon_theorem_3_24_ii μ μ₀ hμ hμ₀ hopenμ hopenμ₀ hV₀
+    refine ⟨Z, hZ, hμ₀Z, fun A hA => ?_⟩
+    have h := hdec A hA
+    rw [OuterMeasure.restrict_apply, inter_comm, hint A hA] at h
+    exact h
+  · obtain ⟨hnull, hdec⟩ := simon_theorem_3_24_iii μ μ₀ hμ hμ₀ hopenμ hopenμ₀ hV₀ hV
+    refine ⟨hnull, fun A hA => ?_⟩
+    have h := hdec A hA
+    rw [OuterMeasure.restrict_apply, inter_comm, hint A hA] at h
+    exact h
+
 /-- **Density bounds for Hausdorff measure.** Simon Ch. 1, Theorem 3.26 (p. 26).
 
 Let `X` be a metric space, `n ≥ 0` real, and `A ⊆ X` an `Hⁿ`-measurable set.
