@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.tangent_ae-a1.good_points-a1",
+  "parent_id": "root.density_one_regularity-a1.tangent_ae-a1",
+  "depth": 3,
+  "title": "Weighted approximate tangent at H^n-a.e. point of a continuity piece of a chart (proof of Simon Ch. 3, 1.6 'only if', and Remark 1.8(1))",
+  "statement": "Let n >= 1, U an open subset of R^(n+l), and V = v(M, theta) a rectifiable n-varifold in U (contract structure RectifiableVarifold). Let C be a compact set contained in M with theta restricted to C continuous, N a Borel set with H^n(N) < infinity, and T a map from R^(n+l) to the linear subspaces of R^(n+l) such that for every x in N, T(x) is the approximate tangent space of N at x (SimonGMT HasApproximateTangentSpaceAt n N x (T x), Simon Ch. 3, Def. 1.4). Then for H^n-a.e. x in C cap N, T(x) is the approximate tangent space of M with respect to theta at x (SimonGMT HasWeightedApproximateTangentSpaceAt n M theta x (T x), Simon Ch. 3, Def. 1.7): dim T(x) = n and lim_{r -> 0+} int_{eta_{x,r}(M)} f(y) theta(x + r y) dH^n(y) = theta(x) int_{T(x)} f dH^n for every f in C_c(R^(n+l)).",
+  "lean_statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (C N : Set (Amb n ℓ)) (T : Amb n ℓ → Submodule ℝ (Amb n ℓ)), 1 ≤ n → IsOpen U → IsCompact C → C ⊆ V.carrier → ContinuousOn V.mult C → MeasurableSet N → (μHE[n] : Measure (Amb n ℓ)) N < ⊤ → (∀ x ∈ N, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n N x (T x)) → ∀ᵐ x ∂((μHE[n] : Measure (Amb n ℓ)).restrict (C ∩ N)), Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x (T x)",
+  "lean_name": "tae_weightedApproxTangent_ae_on_piece",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-tangent-ae-a1-good-points-a1-a1"
+}

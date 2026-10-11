@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.tangent_ae-a1.chart_tangent-a1",
+  "parent_id": "root.density_one_regularity-a1.tangent_ae-a1",
+  "depth": 3,
+  "title": "Approximate tangent spaces of a bi-Lipschitz C^1 chart image, with continuous projection field (parent step 2)",
+  "statement": "Let n >= 1, l >= 0, G : R^n -> R^(n+l) a C^1 map, c in R^n, rho in R and kappa > 0, and let B' := B'_rho(c) be the open ball. Assume DG(v) is injective for every v in B' and kappa|v - w| <= |G(v) - G(w)| for all v, w in B'. Let N := G(B'). Then N is Borel, H^n(N) < infinity, and there is a map T from R^(n+l) to the linear subspaces of R^(n+l) such that x -> p_{T(x)} (orthogonal projection onto T(x), a continuous linear map) is continuous on N, and for every x in N, T(x) is the approximate tangent space of N at x in the sense of Simon Ch. 3, Def. 1.4 (SimonGMT HasApproximateTangentSpaceAt n N x (T x): dim T(x) = n and lim_{r -> 0+} int_{eta_{x,r}(N)} f dH^n = int_{T(x)} f dH^n for every f in C_c(R^(n+l))).",
+  "lean_statement": "∀ {n ℓ : ℕ} (G : Rn n → Amb n ℓ) (c : Rn n) (ρ κ : ℝ), 1 ≤ n → ContDiff ℝ 1 G → 0 < κ → (∀ v ∈ ball c ρ, Function.Injective (fderiv ℝ G v)) → (∀ v ∈ ball c ρ, ∀ w ∈ ball c ρ, κ * ‖v - w‖ ≤ ‖G v - G w‖) → MeasurableSet (G '' ball c ρ) ∧ (μHE[n] : Measure (Amb n ℓ)) (G '' ball c ρ) < ⊤ ∧ ∃ T : Amb n ℓ → Submodule ℝ (Amb n ℓ), ContinuousOn (fun x => (T x).starProjection) (G '' ball c ρ) ∧ ∀ x ∈ G '' ball c ρ, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (G '' ball c ρ) x (T x)",
+  "lean_name": "tae_c1_chart_image_approxTangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-tangent-ae-a1-chart-tangent-a1-a1"
+}

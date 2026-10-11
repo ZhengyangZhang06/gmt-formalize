@@ -1,0 +1,82 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev Amb|abbrev Rn|structure RectifiableVarifold|def weight|def tangent|def HasDensity|unitBallVolume|import|open scoped|namespace",
+        "lusin.*continuous|lusin.*continuity|c.?1 approximation|lipschitz_c1|exists_contdiff_one_extension_of_whitney|ae_hasWeightedApproximateTangent",
+        "aestronglyMeasurable_iUnion_iff|aestronglyMeasurable_union_iff|ContinuousOn.aestronglyMeasurable",
+        "tae_lipschitz_c1_approximation|tae_rectifiable_c1_chart_cover|tae_c1_chart_image_approxTangent|tae_mult_lusin_compact_pieces|tae_weightedApproxTangent_ae_on_piece|tae_hasDensity_of_weightedApproxTangent",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tangent-ae-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tangent-ae-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tangent-ae-independent-audit/TypesAndAxioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tangent-ae-independent-audit/WhitneyAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-tangent-ae-a1/parent-child-handoff.json",
+        "/tmp/tangent-ae-independent-audit/Types.lean",
+        "/tmp/tangent-ae-independent-audit/Assembly.lean",
+        "/tmp/tangent-ae-independent-audit/TypesAndAxioms.lean",
+        "/tmp/tangent-ae-independent-audit/WhitneyAudit.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected tangent/measurability/density theorem. The contract matches the snapshot byte-for-byte; installed Mathlib and SimonGMT revisions match the pinned manifests. Searches found no existing general weighted-tangent existence theorem; SubmanifoldCover explicitly leaves the converse covering theorem separate. All six frozen propositions independently elaborate without child declarations. The supplied parent assembly compiles to the exact handoff type using five direct child assumptions, with C¹ approximation supporting the chart-cover child. Its remaining axioms are only propext, Classical.choice and Quot.sound. The checked supporting library results, including Whitney extension compiled directly from pinned source, likewise use only these standard axioms. Volume selects measureSpaceOfInnerProductSpace; starProjection has the intended continuous-linear-map type. No matrix-unit construction occurs. All names are bare identifiers, with no reservation in another DAG branch; the sole dependency c1_chart_cover → c1_approximation is acyclic and correctly directed. Public cross-check: [Simon, Chapters 2–3](https://web.stanford.edu/class/math285/ts-gmt.pdf), Theorem 2.1.5 and Remarks 3.1.8, agree with the cited mathematical inputs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition agree, including derivative agreement and n = 0. Locally finite shell constructions produce closed sets with the stated loss bounds. The countable-supremum argument establishes measurability, and Egorov supplies compact-uniform Whitney compatibility. Whitney extension then proves both required agreements. This is a complete, non-circular proof."
+    },
+    {
+      "key": "c1_chart_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract matches the prose without requiring carrier measurability or positive chart radii. Coordinatewise approximation, null Lipschitz images, the critical-image theorem, and the derivative perturbation estimate establish the cover. Lindelöf and countable enumeration complete the construction, including empty regular sets. Its only sibling reliance is the declared c1_approximation dependency."
+    },
+    {
+      "key": "chart_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly includes Borelness, finite measure, continuous orthogonal projections, and tangents at every image point. Global C¹ regularity bounds derivatives on the closed parameter ball; the lower bound supplies an inverse and uniform support control. The area formula and dominated convergence prove the exact tangent limit. The empty-ball case and projection continuity are covered."
+    },
+    {
+      "key": "lusin_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree for arbitrary natural dimensions. Borel representatives handle the null-measurable carrier and a.e.-measurable multiplicity correctly. Compact exhaustion makes each restricted weight finite; Lusin yields compact continuity pieces. Strict positivity converts the remaining weight-null sets into Hausdorff-null sets. No global integrability or tangent theorem is assumed."
+    },
+    {
+      "key": "good_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose states every hypothesis of the exact Lean proposition. Compact localization legitimizes both finite-measure density applications. Their exceptional sets are independent of test functions. The three-term decomposition, unweighted tangent limit, local mass bound, and continuity estimate prove the weighted limit for every test function, with integrability explicitly justified. No sibling conclusion is silently assumed."
+    },
+    {
+      "key": "density_from_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the pointwise density assertion and includes carrier membership. Local integrability ensures finite small-ball masses; the two explicit cutoffs sandwich them. The weighted change of variables and plane normalization yield the real density limit, and the final ENNReal conversion proves precisely V.HasDensity. The proof uses only the supplied tangent hypothesis and established measure facts."
+    }
+  ],
+  "required_changes": []
+}

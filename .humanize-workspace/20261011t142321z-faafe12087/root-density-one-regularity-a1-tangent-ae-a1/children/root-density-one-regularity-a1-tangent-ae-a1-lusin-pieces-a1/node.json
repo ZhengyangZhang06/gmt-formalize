@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.tangent_ae-a1.lusin_pieces-a1",
+  "parent_id": "root.density_one_regularity-a1.tangent_ae-a1",
+  "depth": 3,
+  "title": "Lusin decomposition of the multiplicity into compact continuity pieces (Simon Ch. 3, Remark 1.8(1), localized to U)",
+  "statement": "Let U be an open subset of R^(n+l) and V = v(M, theta) a rectifiable n-varifold in U in the sense of the contract structure RectifiableVarifold (M contained in U, H^n-null-measurable and countably n-rectifiable; theta > 0 on M; theta a.e.-measurable for H^n restricted to M; theta integrable on M cap K for every compact K contained in U). Then there are compact sets C_i (i in N), each contained in M, such that theta restricted to C_i is continuous for every i and H^n(M \\ U_i C_i) = 0.",
+  "lean_statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), IsOpen U → ∃ C : ℕ → Set (Amb n ℓ), (∀ i, IsCompact (C i) ∧ C i ⊆ V.carrier ∧ ContinuousOn V.mult (C i)) ∧ (μHE[n] : Measure (Amb n ℓ)) (V.carrier \\ ⋃ i, C i) = 0",
+  "lean_name": "tae_mult_lusin_compact_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-tangent-ae-a1-lusin-pieces-a1-a1"
+}
