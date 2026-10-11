@@ -458,6 +458,60 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 7.1, display (1) (p. 127): the closed-ball graph identity
+`S ∩ B_s(0) = q(graph u) ∩ B_s(0)` of Theorem 5.2 gives `q⁻¹(S) ∩ B̆_s(0) = graph_W u` on the open
+ball, with the open domain `W = {x ∈ B̆ⁿ_s(0) : |(x, u(x))| < s} ∋ 0`. -/
+theorem exists_open_graph_domain_of_closedBall_graph : ∀ {n ℓ : ℕ} (S : Set (Amb n ℓ))
+    (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (s : ℝ), 0 < s →
+    ContinuousOn u (closedBall 0 s) → u 0 = 0 →
+    S ∩ closedBall 0 s = q '' graphOver u (closedBall 0 s) ∩ closedBall 0 s →
+    ∃ W : Set (Rn n), IsOpen W ∧ (0 : Rn n) ∈ W ∧ W ⊆ ball 0 s ∧
+      q.symm '' S ∩ ball 0 s = graphOver u W := by
+  intro n ℓ S q u s hs hu hu0 hS
+  -- `|(x, y)|² = |x|² + |y|²`, hence `|x| ≤ |(x, y)|`.
+  have hsq : ∀ (x : Rn n) (y : Rn ℓ), ‖graphPoint x y‖ ^ 2 = ‖x‖ ^ 2 + ‖y‖ ^ 2 := by
+    intro x y
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp [graphPoint]
+  have hle : ∀ (x : Rn n) (y : Rn ℓ), ‖x‖ ≤ ‖graphPoint x y‖ := fun x y =>
+    (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1
+      ((le_add_of_nonneg_right (sq_nonneg ‖y‖)).trans (hsq x y).ge)
+  -- `x ↦ |(x, u(x))|` is continuous on the open ball.
+  have hcont : ContinuousOn (fun x => ‖graphPoint x (u x)‖) (ball (0 : Rn n) s) :=
+    ((PiLp.continuous_toLp 2 _).comp_continuousOn ((Fin.continuous_append n ℓ).comp_continuousOn
+      ((PiLp.continuous_ofLp 2 _).continuousOn.prodMk ((PiLp.continuous_ofLp 2 _).comp_continuousOn
+        (hu.mono ball_subset_closedBall))))).norm
+  refine ⟨ball 0 s ∩ (fun x => ‖graphPoint x (u x)‖) ⁻¹' Iio s,
+    hcont.isOpen_inter_preimage isOpen_ball isOpen_Iio, ⟨mem_ball_self hs, ?_⟩, inter_subset_left,
+    ?_⟩
+  · have h0 : ‖graphPoint (0 : Rn n) (0 : Rn ℓ)‖ = 0 := by
+      simpa using hsq 0 0
+    show ‖graphPoint 0 (u 0)‖ < s
+    rw [hu0, h0]
+    exact hs
+  · ext z
+    constructor
+    · rintro ⟨⟨y, hyS, rfl⟩, hz⟩
+      rw [mem_ball_zero_iff, LinearIsometryEquiv.norm_map] at hz
+      have hy : y ∈ q '' graphOver u (closedBall 0 s) ∩ closedBall 0 s :=
+        hS ▸ ⟨hyS, mem_closedBall_zero_iff.2 hz.le⟩
+      obtain ⟨⟨g, ⟨x, -, rfl⟩, rfl⟩, -⟩ := hy
+      rw [LinearIsometryEquiv.norm_map] at hz
+      rw [LinearIsometryEquiv.symm_apply_apply]
+      exact ⟨x, ⟨mem_ball_zero_iff.2 ((hle x (u x)).trans_lt hz), hz⟩, rfl⟩
+    · rintro ⟨x, ⟨hx, hxW⟩, rfl⟩
+      have hz : ‖graphPoint x (u x)‖ < s := hxW
+      have hq : q (graphPoint x (u x)) ∈ S ∩ closedBall 0 s := by
+        rw [hS]
+        exact ⟨⟨_, ⟨x, ball_subset_closedBall hx, rfl⟩, rfl⟩,
+          mem_closedBall_zero_iff.2 ((q.norm_map _).trans_le hz.le)⟩
+      exact ⟨⟨_, hq.1, q.symm_apply_apply _⟩, mem_ball_zero_iff.2 hz⟩
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
