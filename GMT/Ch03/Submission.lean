@@ -490,3 +490,72 @@ theorem Submission.eilenberg_hausdorff_upper_integral_of_ne_top :
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
 end GMT.Ch03
+
+
+/-- **Eilenberg's inequality, Simon Ch. 2, Theorem 1.9 and Remark 1.10 (pp. 45–46)**
+(`chapter-02.txt` lines 335–411; `k = 0` is Theorem 1.8(ii)), in upper-integral form for an
+arbitrary `A`: a Borel `g ≥ Hᵏ(A ∩ f⁻¹{y})` with `∫ g dLᵐ ≤ C Lᵐ H^{m+k}(A)`. Writing
+`μHE[d] = c_d • μH[d]` and `ωₘ = Lᵐ(B₁(0))`, take `C = ωₘ c_k / c_{m+k}` (any constant will do,
+so the isodiametric inequality is not needed). If `μH[m+k](A) < ∞`, then `g = c_k g₀` for the
+majorant `g₀` of `Submission.eilenberg_hausdorff_upper_integral_of_ne_top`. Otherwise
+`H^{m+k}(A) = ∞`, and `g ≡ ∞` works unless `C Lᵐ = 0`, i.e. `L = 0` and `m ≥ 1`; then `f` is
+constant, equal to `y₀` say, and `g = ∞ · 1_{y₀}` has integral `0`. -/
+theorem Submission.eilenberg_upper_integral_inequality : ∀ (N m k : ℕ), ∃ C : ℝ≥0,
+    ∀ (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f →
+      ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μHE[k] (A ∩ f ⁻¹' {y}) ≤ g y) ∧
+        ∫⁻ y, g y ≤ ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A := by
+  intro N m k
+  -- `μHE[d] = c d • μH[d]` with `c d ≠ 0`, and `ω = Lᵐ(B₁(0)) ∈ (0, ∞)`.
+  obtain ⟨c, hc_eq⟩ : ∃ c : ℕ → ℝ≥0, ∀ d, c d =
+      Measure.addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin d))) μH[d] :=
+    ⟨_, fun _ ↦ rfl⟩
+  have hc : ∀ d, c d ≠ 0 := fun d ↦ by
+    rw [hc_eq]; exact Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero d
+  have hHE : ∀ (d : ℕ) (S : Set (Rn N)), μHE[d] S = c d * μH[(d : ℝ)] S := fun d S ↦ by
+    rw [hc_eq, Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+      smul_eq_mul]
+  set ω := volume (Metric.ball (0 : Rn m) 1)
+  have hω0 : ω ≠ 0 := (Metric.measure_ball_pos volume (0 : Rn m) one_pos).ne'
+  have hω : ω ≠ ∞ := measure_ball_ne_top
+  set C : ℝ≥0 := ω.toNNReal * c k / c (m + k) with hC
+  have hC0 : C ≠ 0 :=
+    div_ne_zero (mul_ne_zero (ENNReal.toNNReal_pos hω0 hω).ne' (hc k)) (hc (m + k))
+  have hCc : (C : ℝ≥0∞) * c (m + k) = ω * c k := by
+    rw [← ENNReal.coe_mul, hC, div_mul_cancel₀ _ (hc (m + k)), ENNReal.coe_mul,
+      ENNReal.coe_toNNReal hω]
+  refine ⟨C, fun A f L hf ↦ ?_⟩
+  by_cases hA : μH[((m + k : ℕ) : ℝ)] A = ∞
+  · have hAE : μHE[m + k] A = ∞ := by
+      rw [hHE, hA, ENNReal.mul_top (ENNReal.coe_ne_zero.2 (hc (m + k)))]
+    by_cases hCL : C * L ^ m = 0
+    · -- `L = 0` and `m ≠ 0`, so `f ≡ f 0` and `{f 0}` is `Lᵐ`-null.
+      obtain ⟨rfl, hm⟩ := pow_eq_zero_iff'.1 ((mul_eq_zero.1 hCL).resolve_left hC0)
+      have hfc : ∀ x, f x = f 0 := fun x ↦ (LipschitzWith.zero_iff f).1 hf x 0
+      have : Nontrivial (Rn m) := Module.nontrivial_of_finrank_pos (R := ℝ)
+        (by rw [finrank_euclideanSpace_fin]; exact Nat.pos_of_ne_zero hm)
+      refine ⟨({f 0} : Set (Rn m)).indicator fun _ ↦ ∞,
+        measurable_const.indicator (measurableSet_singleton _), fun y ↦ ?_, ?_⟩
+      · by_cases hy : y = f 0
+        · rw [Set.indicator_of_mem (Set.mem_singleton_iff.2 hy)]
+          exact le_top
+        · have hS : A ∩ f ⁻¹' {y} = ∅ := Set.eq_empty_of_forall_notMem fun x hx ↦
+            hy ((show f x = y from hx.2).symm.trans (hfc x))
+          rw [hS, measure_empty]
+          exact zero_le
+      · rw [lintegral_indicator_const (measurableSet_singleton _), measure_singleton, mul_zero]
+        exact zero_le
+    · refine ⟨fun _ ↦ ∞, measurable_const, fun _ ↦ le_top, ?_⟩
+      rw [hAE, ENNReal.mul_top (ENNReal.coe_ne_zero.2 hCL)]
+      exact le_top
+  · obtain ⟨g₀, hg₀, hle, hint⟩ :=
+      Submission.eilenberg_hausdorff_upper_integral_of_ne_top N m k A f L hf hA
+    refine ⟨fun y ↦ c k * g₀ y, hg₀.const_mul _, fun y ↦ ?_, ?_⟩
+    · show μHE[k] (A ∩ f ⁻¹' {y}) ≤ c k * g₀ y
+      rw [hHE]
+      gcongr
+      exact hle y
+    · calc ∫⁻ y, (c k : ℝ≥0∞) * g₀ y = c k * ∫⁻ y, g₀ y := lintegral_const_mul _ hg₀
+        _ ≤ c k * (ω * L ^ m * μH[((m + k : ℕ) : ℝ)] A) := by gcongr
+        _ = C * c (m + k) * L ^ m * μH[((m + k : ℕ) : ℝ)] A := by rw [hCc]; ring
+        _ = ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A := by
+          rw [hHE, ENNReal.coe_mul, ENNReal.coe_pow]; ring
