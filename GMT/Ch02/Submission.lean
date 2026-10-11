@@ -373,6 +373,53 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, 4.3 (p. 55), velocity of a lifted curve.** If `ψ` is differentiable at `x₀`
+with injective derivative `A = Dψ(x₀)`, `c(t) → x₀` as `t → 0`, `γ = ψ ∘ c` near `0` and
+`γ'(0) = v`, then `v ∈ range A` (`c` need not be differentiable). Injectivity gives
+`|ζ| ≤ K |Aζ|`, so the remainder `e(t) = ψ(c(t)) - ψ(x₀) - A(c(t) - x₀) = o(|c(t) - x₀|)` forces
+`c(t) - x₀ = O(t)` and `e(t) = o(t)`; then `A(t⁻¹(c(t) - x₀)) = t⁻¹(γ(t) - γ(0)) - t⁻¹e(t) → v`,
+and `range A` is closed. -/
+theorem Submission.simon_lift_velocity_mem_range_fderiv : ∀ (n N : ℕ) (ψ : Rn n → Rn N) (x₀ : Rn n) (c : ℝ → Rn n) (γ : ℝ → Rn N) (v : Rn N), DifferentiableAt ℝ ψ x₀ → Function.Injective (fderiv ℝ ψ x₀) → Tendsto c (𝓝 (0 : ℝ)) (𝓝 x₀) → (∀ᶠ t in 𝓝 (0 : ℝ), γ t = ψ (c t)) → HasDerivAt γ v 0 → v ∈ LinearMap.range (fderiv ℝ ψ x₀).toLinearMap := by
+  intro n N ψ x₀ c γ v hψ hinj hc hγψ hγ
+  set A := fderiv ℝ ψ x₀
+  -- The unpunctured limit gives `c 0 = x₀`, hence `γ 0 = ψ x₀`.
+  have hc0 : c 0 = x₀ :=
+    tendsto_nhds_unique (tendsto_pure_nhds c 0) (hc.mono_left (pure_le_nhds 0))
+  have hγ0 : γ 0 = ψ x₀ := by rw [hγψ.self_of_nhds, hc0]
+  -- The remainder `e(t) = ψ(c t) - ψ x₀ - A (c t - x₀)` is `o(c t - x₀)`.
+  have he : (fun t => ψ (c t) - ψ x₀ - A (c t - x₀)) =o[𝓝 0] (fun t => c t - x₀) :=
+    hψ.hasFDerivAt.isLittleO.comp_tendsto hc
+  -- Injectivity in finite dimension: `‖ζ‖ ≤ K ‖A ζ‖`.
+  obtain ⟨K, -, hK⟩ := A.toLinearMap.exists_antilipschitzWith (LinearMap.ker_eq_bot.mpr hinj)
+  have hu : (fun t => c t - x₀) =O[𝓝 0] (fun t => A (c t - x₀)) :=
+    Asymptotics.IsBigO.of_bound (K : ℝ)
+      (Eventually.of_forall fun t => A.bound_of_antilipschitz hK _)
+  -- Hence `A (c t - x₀) = O(γ t - γ 0) = O(t)`, so `c t - x₀ = O(t)` and `e(t) = o(t)`.
+  have hAu : (fun t => A (c t - x₀)) =O[𝓝 0] (fun t => γ t - γ 0) := by
+    refine (he.trans_isBigO hu).right_isBigO_add.congr' EventuallyEq.rfl ?_
+    filter_upwards [hγψ] with t ht
+    rw [ht, hγ0, sub_add_cancel]
+  have hγO : (fun t => γ t - γ 0) =O[𝓝 0] (fun t : ℝ => t) := by
+    simpa only [sub_zero] using hγ.isBigO_sub
+  have het : (fun t => ψ (c t) - ψ x₀ - A (c t - x₀)) =o[𝓝 0] (fun t : ℝ => t) :=
+    he.trans_isBigO (hu.trans (hAu.trans hγO))
+  -- `A (t⁻¹ (c t - x₀)) = t⁻¹ (γ t - γ 0) - t⁻¹ e(t) → v` as `t → 0`, `t ≠ 0`.
+  have hslope : Tendsto (fun t : ℝ => t⁻¹ • (γ t - γ 0)) (𝓝[≠] 0) (𝓝 v) := by
+    simpa only [zero_add] using hγ.tendsto_slope_zero
+  have hlim : Tendsto (fun t : ℝ => t⁻¹ • (γ t - γ 0) - t⁻¹ • (ψ (c t) - ψ x₀ - A (c t - x₀)))
+      (𝓝[≠] 0) (𝓝 (v - 0)) :=
+    hslope.sub (het.tendsto_inv_smul_nhds_zero.mono_left nhdsWithin_le_nhds)
+  rw [sub_zero] at hlim
+  -- Every term lies in `range A`, a closed subspace.
+  refine SetLike.mem_coe.mp <|
+    (LinearMap.range A.toLinearMap).closed_of_finiteDimensional.mem_of_tendsto hlim ?_
+  filter_upwards [hγψ.filter_mono nhdsWithin_le_nhds] with t ht
+  have hAt : t⁻¹ • (γ t - γ 0) - t⁻¹ • (ψ (c t) - ψ x₀ - A (c t - x₀)) =
+      A (t⁻¹ • (c t - x₀)) := by
+    rw [ht, hγ0, ← smul_sub, map_smul, sub_sub_cancel]
+  rw [hAt]
+  exact LinearMap.mem_range_self A.toLinearMap _
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
