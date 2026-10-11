@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0be24838194fc2d5a222fbc381a3e2efef3b2b9c412c64893f12cfadfa6c21eb",
+  "git_delta": {
+    "base_commit": "f9dc5daba3af9f0a3f564bcd9fa05249eb943027",
+    "candidate_commit": "a9bea20063f00ad645028b65a206699e3f8ac52d",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "eilenberg_covering_fixed_scale_majorant",
+    "diff_sha256": "d37a5b9ace500d0cb56ad757fe8f67f48f552856056f27757e67980ebcc27f51",
+    "source_sha256": "b7e5fa0a72a6b0abf895fb0b0492d178a16b259f6935396a09023ec348803aa4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.eilenberg_covering_fixed_scale_majorant",
+      "statement": "∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (k : ℝ) (E : Set X) (f : X → Rn m) (K : ℝ≥0) (r ε : ℝ≥0∞), 0 < k → μH[(m : ℝ) + k] E < ⊤ → LipschitzOnWith K f E → 0 < r → 0 < ε → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, Chapter01.realUnitBallVolume k / (2 : ℝ≥0∞) ^ k * (⨅ (t : ℕ → Set X) (_ : E ∩ f ⁻¹' {y} ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ r), ∑' n, ⨆ (_ : (t n).Nonempty), ediam (t n) ^ k) ≤ g y) ∧ ∫⁻ y, g y ∂volume ≤ Chapter01.realUnitBallVolume (m : ℝ) * Chapter01.realUnitBallVolume k * (K : ℝ≥0∞) ^ m / (2 : ℝ≥0∞) ^ ((m : ℝ) + k) * (μH[(m : ℝ) + k] E + ε)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
