@@ -335,6 +335,65 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Simon Ch. 3, (4.1), direction "⇐"** (`chapter-03.txt` lines 555–573, with Ch. 2 (2.1),
+`chapter-02.txt` lines 477–484): a Gauss–Green pair `(μ, ν)` for `(U, E)` forces
+`χ_E ∈ BV_loc(U)`. `χ_E` is bounded and a.e. equal to the indicator of a measurable set, hence
+locally integrable. For `W ⊂⊂ U` and a `C¹` field `g` with `tsupport g ⊆ W`, `div g` vanishes off
+`tsupport g`, so `∫_W χ_E div g = ∫_{E ∩ U} div g`, which is `-∫ g · ν dμ` by (4.1). As `|ν| = 1`
+`μ`-a.e. and `g = 0` off `W̄`, this is at most `μ(W̄) sup |g|`. -/
+theorem Submission.gaussGreenRep_isLocallyBV_of_pair : ∀ (N : ℕ) (U E : Set (Rn N))
+    (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet E volume →
+    IsGaussGreenPair U E μ ν → HasLocallyFinitePerimeter U E := by
+  intro N U E μ ν hU hE hpair
+  obtain ⟨-, hμK, -, hν, hGG⟩ := hpair
+  refine ⟨hU, ?_, fun W hWo hWU ↦ ⟨(μ (closure W)).toReal, ENNReal.toReal_nonneg,
+    fun g hg hgW ↦ ?_⟩⟩
+  · -- `χ_E` is a.e. the indicator of the measurable hull of `E`.
+    exact (((locallyIntegrable_const (1 : ℝ)).indicator
+      (measurableSet_toMeasurable volume E)).congr
+        (indicator_ae_eq_of_ae_eq_set hE.toMeasurable_ae_eq)).locallyIntegrableOn U
+  -- `div g` vanishes off `tsupport g ⊆ W ⊆ U`, so both integrals have the same integrand.
+  have hgU : tsupport g ⊆ U := hgW.trans (subset_closure.trans hWU.2)
+  have hdiv : ∀ x, x ∉ tsupport g →
+      Poincare.SimonGMT.Chapter02.euclideanDivergence (⇑g) x = 0 := fun x hx ↦
+    Function.notMem_support.1 fun h ↦
+      hx (Poincare.SimonGMT.Chapter02.support_euclideanDivergence_subset _ h)
+  have hR1 : ∫ x in W, E.indicator (fun _ ↦ (1 : ℝ)) x *
+        Poincare.SimonGMT.Chapter02.euclideanDivergence (⇑g) x =
+      ∫ x in E ∩ U, Poincare.SimonGMT.Chapter02.euclideanDivergence (⇑g) x := by
+    rw [← integral_indicator hWo.measurableSet,
+      ← integral_indicator₀ (hE.inter hU.measurableSet.nullMeasurableSet)]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun x ↦ ?_)
+    by_cases hx : x ∈ tsupport g
+    · by_cases hxE : x ∈ E <;> simp [hgW hx, hgU hx, hxE]
+    · rw [Set.indicator_apply_eq_zero.2 fun _ ↦ by simp [hdiv x hx],
+        Set.indicator_apply_eq_zero.2 fun _ ↦ hdiv x hx]
+  -- `sup |g|` bounds `|g|`, and `g = 0` off `W̄`.
+  set M := Poincare.SimonGMT.Chapter02.compactlySupportedSupNorm g
+  have hM : ∀ x, ‖g x‖ ≤ M := fun x ↦
+    le_csSup ((map_continuous g).norm.bddAbove_range_of_hasCompactSupport
+      g.hasCompactSupport.norm) (Set.mem_range_self x)
+  have hbound : ∀ᵐ x ∂μ, ‖inner ℝ (g x) (ν x)‖ ≤ (closure W).indicator (fun _ ↦ M) x := by
+    filter_upwards [hν] with x hx
+    by_cases hxW : x ∈ closure W
+    · rw [Set.indicator_of_mem hxW]
+      calc ‖inner ℝ (g x) (ν x)‖ ≤ ‖g x‖ * ‖ν x‖ := norm_inner_le_norm _ _
+        _ = ‖g x‖ := by rw [hx, mul_one]
+        _ ≤ M := hM x
+    · have hgx : g x = 0 :=
+        image_eq_zero_of_notMem_tsupport fun h ↦ hxW (subset_closure (hgW h))
+      simp [Set.indicator_of_notMem hxW, hgx]
+  have hint : Integrable ((closure W).indicator fun _ ↦ M) μ :=
+    (integrable_indicator_iff isClosed_closure.measurableSet).2
+      (integrableOn_const (hμK _ hWU.1 hWU.2).ne)
+  calc ∫ x in W, E.indicator (fun _ ↦ (1 : ℝ)) x *
+        Poincare.SimonGMT.Chapter02.euclideanDivergence (⇑g) x
+      = -∫ x, inner ℝ (g x) (ν x) ∂μ := by rw [hR1, hGG g hg g.hasCompactSupport hgU]
+    _ ≤ ‖∫ x, inner ℝ (g x) (ν x) ∂μ‖ := (neg_le_abs _).trans_eq (Real.norm_eq_abs _).symm
+    _ ≤ ∫ x, (closure W).indicator (fun _ ↦ M) x ∂μ := norm_integral_le_of_norm_le hint hbound
+    _ = (μ (closure W)).toReal * M := by
+      rw [integral_indicator_const _ isClosed_closure.measurableSet, smul_eq_mul, measureReal_def]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
