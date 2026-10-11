@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "554f39319e34d77197b8720bfb633ae0b4add1be151c528e02de042483517603",
+  "git_delta": {
+    "base_commit": "025b69e428559faeefc423e717bdd594bebe8c24",
+    "candidate_commit": "2fa4e679ecc8f63ac77987a3b7b146f5a0d41c4b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "isHolderCk_one_of_scaledC1AlphaNorm_ne_top",
+    "diff_sha256": "eeb88aec867c5fdc8d82aecd842f586ef4364c148641a1d3ce95e7fb4f1a0480",
+    "source_sha256": "ad86999d06b6750f879bf15c2328a2a37aba6771b7068c25ac2f72a7e3281f5b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.isHolderCk_one_of_scaledC1AlphaNorm_ne_top",
+      "statement": "∀ {n ℓ : ℕ} (u : Rn n → Rn ℓ) (B W : Set (Rn n)) (α ρ : ℝ), 0 < α → 0 < ρ → ContDiffOn ℝ 1 u B → W ⊆ interior B → scaledC1AlphaNorm u B α ρ ≠ ∞ → IsHolderCkα 1 α u W",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
