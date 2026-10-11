@@ -434,6 +434,30 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Ch. 4, opening of §5 (statement (1.1) of the Sobolev proof).** Assume `ApproxTangentAE`.
+If `U` is open and `θ ≥ 1` `μ_V`-a.e. in `U`, then for `μ_V`-a.e. `x ∈ U` the density
+`Θⁿ(μ_V, x)` exists and `Θⁿ(μ_V, x) ≥ 1`: for a representative `(M, θ)` of `V`,
+`Θⁿ(μ_V, x) = θ(x) ≥ 1` for `Hⁿ`-a.e. `x ∈ M ∩ U`, and `μ_V = Hⁿ ⌞ θ ≪ Hⁿ ⌞ M`. -/
+theorem Submission.sobolev_density_ge_one_ae : ApproxTangentAE → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), 0 < n → IsOpen U → V.MultiplicityGE 1 U → ∀ᵐ x ∂V.weight, x ∈ U → V.HasDensityAt x (V.density x) ∧ 1 ≤ V.density x := by
+  intro hAT n ℓ V U hn hU hθ
+  -- A representative `a = (M, θ)` of `V` with `θ ≥ 1` `Hⁿ`-a.e. on `M ∩ U`.
+  obtain ⟨a, rfl, ha⟩ := hθ
+  -- `Hⁿ ⌞ (M ∩ U) = (Hⁿ ⌞ M) ⌞ U` (`U` is Borel), so `x ∈ U → 1 ≤ θ x` `Hⁿ ⌞ M`-a.e.
+  have hge : ∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M, x ∈ U → 1 ≤ a.θ x := by
+    rw [← ae_restrict_iff' hU.measurableSet, Measure.restrict_restrict hU.measurableSet,
+      Set.inter_comm U a.M]
+    exact ha
+  -- `μ_V = (Hⁿ ⌞ M).withDensity θ ≪ Hⁿ ⌞ M`, so `Hⁿ ⌞ M`-a.e. statements hold `μ_V`-a.e.
+  have hac : (mk a).weight ≪ (μHE[n] : Measure (Ambient n ℓ)).restrict a.M :=
+    withDensity_absolutelyContinuous _ _
+  refine hac.ae_le ?_
+  -- `ApproxTangentAE`: `HasDensityAt x (θ x)` for `Hⁿ ⌞ M`-a.e. `x`.
+  filter_upwards [hge, hAT n ℓ a hn] with x hx hT hxU
+  -- The limit along `𝓝[>] 0` is unique, so `Θⁿ(μ_V, x) = θ x`.
+  have hd : (mk a).density x = a.θ x := hT.2.2.limUnder_eq
+  rw [hd]
+  exact ⟨hT.2.2, hx hxU⟩
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
