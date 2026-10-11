@@ -529,12 +529,6 @@ theorem Submission.rc_riesz_real : RieszPositive.{u} → ∀ (X : Type u) [Topol
   rw [integral_sub (Submission.rc_cc_integrable X μ hμ _) (Submission.rc_cc_integrable X μ hμ _),
     hrep, hrep]
 
-/-- The headline results of Simon, *Introduction to GMT*, Chapter 1 (pp. 1–38). -/
-theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
-
-end GMT.Ch01
-
-
 /-- Simon Ch. 1, Theorem 4.16 (corrected), from its child nodes, following Steps 1–7 of the proof.
 `rc_subseq_integrals_converge` (Steps 1–4 and the convergence in Step 5) gives one subsequence
 `φ` along which every `∫ f dμ_{φ(k)}` converges. The limit functional `F` is `ℝ`-linear
@@ -567,3 +561,8 @@ theorem Submission.radon_compactness : RadonCompactness := by
   refine ⟨φ, hφ, μlim, hμlim, fun f => ?_⟩
   rw [← hrep f]
   exact hl f
+
+/-- The headline results of Simon, *Introduction to GMT*, Chapter 1 (pp. 1–38). -/
+theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
+
+end GMT.Ch01
