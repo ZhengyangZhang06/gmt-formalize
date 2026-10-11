@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.critical_part-a1",
+  "parent_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1",
+  "depth": 3,
+  "title": "Critical part of the parametric co-area formula (parent steps 0(a) and 1)",
+  "statement": "Let m, k, N ∈ ℕ and n := m + k. Let D ⊆ ℝⁿ be open, ψ : ℝⁿ → ℝᴺ of class C¹ on D, G : ℝⁿ → ℝᵐ any map (no regularity is assumed), and Crit := {u ∈ ℝⁿ : DG(u) is not surjective}. Assume Hᵏ(Crit ∩ G⁻¹{y}) = 0 for Lᵐ-a.e. y ∈ ℝᵐ. For u ∈ ℝⁿ let K(u) := ker DG(u), ι_{K(u)} its inclusion, and J(u) := normDet(Dψ(u)∘ι_{K(u)})·normDet(DG(u)*). Then for every Borel B ⊆ D with B ⊆ Crit and every Borel φ : ℝᴺ → [0, ∞]:\n- the function y ↦ ∫_{ψ(B∩G⁻¹{y})} φ dHᵏ is Lᵐ-a.e. measurable;\n- ∫_B φ(ψ(u))·J(u) dLⁿ(u) = ∫_{ℝᵐ} ∫_{ψ(B∩G⁻¹{y})} φ dHᵏ dLᵐ(y).\nNotation as in the parent: ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hᵏ = μHE[k] (applied to an arbitrary set it is the Hausdorff outer measure); Lᵈ = volume; normDet = LinearMap.normDet; P* = LinearMap.adjoint P; DF(u) = fderiv ℝ F u (the zero map at points where F is not differentiable).",
+  "lean_statement": "∀ (m k N : ℕ) (D : Set (Rn (m + k))) (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m), IsOpen D → ContDiffOn ℝ 1 ψ D → (∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] ({u | ¬ Function.Surjective (fderiv ℝ G u)} ∩ G ⁻¹' {y}) = 0) → ∀ B ⊆ D, MeasurableSet B → B ⊆ {u | ¬ Function.Surjective (fderiv ℝ G u)} → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧ ∫⁻ u in B, φ (ψ u) * ENNReal.ofReal (((fderiv ℝ ψ u).toLinearMap ∘ₗ (LinearMap.ker (fderiv ℝ G u).toLinearMap).subtype).normDet * (LinearMap.adjoint (fderiv ℝ G u).toLinearMap).normDet) = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume",
+  "lean_name": "pcoarea_critical_part",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-c1-parametric-coarea-a1-critical-part-a1-a1"
+}

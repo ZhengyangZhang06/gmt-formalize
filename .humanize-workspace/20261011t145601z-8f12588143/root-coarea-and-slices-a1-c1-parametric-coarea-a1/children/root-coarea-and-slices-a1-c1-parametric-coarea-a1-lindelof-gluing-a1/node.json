@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.lindelof_gluing-a1",
+  "parent_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1",
+  "depth": 3,
+  "title": "Lindelöf gluing of the parametric co-area identity over countably many Borel pieces (parent steps 0(b), 0(c), 5)",
+  "statement": "Let n, N, m, k ∈ ℕ. Let D ⊆ ℝⁿ be open, Z ⊆ ℝⁿ arbitrary, ψ : ℝⁿ → ℝᴺ continuous on D and injective on D, G : ℝⁿ → ℝᵐ continuous, and w : ℝⁿ → [0, ∞] arbitrary.\nCall a Borel set B ⊆ D good if, for every Borel φ : ℝᴺ → [0, ∞], the function y ↦ ∫_{ψ(B∩G⁻¹{y})} φ dHᵏ is Lᵐ-a.e. measurable and ∫_B φ(ψ(u))·w(u) dLⁿ(u) = ∫_{ℝᵐ} ∫_{ψ(B∩G⁻¹{y})} φ dHᵏ dLᵐ(y).\nAssume:\n- (Crit) every Borel B ⊆ D with B ⊆ Z is good;\n- (Loc) every p ∈ D \\ Z has an open neighbourhood O such that every Borel B ⊆ D ∩ O is good.\nThen every Borel B ⊆ D is good.\nNotation as in the parent: ℝ^d = Rn d = EuclideanSpace ℝ (Fin d); Hᵏ = μHE[k] (applied to an arbitrary set it is the Hausdorff outer measure); Lᵈ = volume.",
+  "lean_statement": "∀ (n N m k : ℕ) (D Z : Set (Rn n)) (ψ : Rn n → Rn N) (G : Rn n → Rn m) (w : Rn n → ℝ≥0∞), IsOpen D → ContinuousOn ψ D → InjOn ψ D → Continuous G → (∀ B ⊆ D, MeasurableSet B → B ⊆ Z → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧ ∫⁻ u in B, φ (ψ u) * w u = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume) → (∀ p ∈ D, p ∉ Z → ∃ O : Set (Rn n), IsOpen O ∧ p ∈ O ∧ ∀ B ⊆ D ∩ O, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧ ∫⁻ u in B, φ (ψ u) * w u = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume) → ∀ B ⊆ D, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧ ∫⁻ u in B, φ (ψ u) * w u = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume",
+  "lean_name": "pcoarea_gluing",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-c1-parametric-coarea-a1-lindelof-gluing-a1-a1"
+}
