@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f9addce5849f6d141400d5818d12532718c43f1435a95b85cbfc6141ebd9fef4",
+  "git_delta": {
+    "base_commit": "cbae100144d4035b0d67385126d76792b9ddc1b3",
+    "candidate_commit": "319413521000993c196f61f328d803e46173c13b",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "gaussGreenRep_normal_ae_eq_of_pairing",
+    "diff_sha256": "db99a8e0edbd6aedc63b7b1d62ef6b743914de7de175378897f65e7fed90a875",
+    "source_sha256": "eab9b0e1b64b5e81427c4e5b745a8cb0aa3783c72ddd5d60acd5068948f26097",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gaussGreenRep_normal_ae_eq_of_pairing",
+      "statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν ν' : Rn N → Rn N), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ν μ → AEStronglyMeasurable ν' μ → (∀ᵐ x ∂μ, ‖ν x‖ ≤ 1) → (∀ᵐ x ∂μ, ‖ν' x‖ ≤ 1) → (∀ g : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → ∫ x, inner ℝ (g x) (ν x) ∂μ = ∫ x, inner ℝ (g x) (ν' x) ∂μ) → ν =ᵐ[μ] ν'",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
