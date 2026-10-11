@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.chart_pieces-a1.first_order_agreement-a1",
+  "parent_id": "root.coarea_and_slices-a1.chart_pieces-a1",
+  "depth": 3,
+  "title": "First-order agreement of a Lipschitz map on an open set with C¹ maps off an Lⁿ-null set (Simon Ch. 2, Thms 1.2, 1.4, 1.5)",
+  "statement": "Let n, m ∈ ℕ and assume (C1_{n,m}): for every F : ℝⁿ → ℝᵐ that is K-Lipschitz for some K ∈ ℝ≥0, and every ε ∈ ℝ≥0∞ with ε > 0, there is g : ℝⁿ → ℝᵐ of class C¹ (ContDiff ℝ 1) with Lⁿ({x : F(x) ≠ g(x) or DF(x) ≠ Dg(x)}) < ε. Let D ⊆ ℝⁿ be open and let h : ℝⁿ → ℝᵐ be Lipschitz on D with some constant K ∈ ℝ≥0. Then there are maps G_i : ℝⁿ → ℝᵐ and sets E_i ⊆ ℝⁿ (i ∈ ℕ) such that, for every i:\n- G_i is C¹ on ℝⁿ;\n- E_i is Borel (MeasurableSet) and E_i ⊆ D;\n- for every u ∈ E_i, h(u) = G_i(u) and h has Fréchet derivative DG_i(u) at u (HasFDerivAt h (fderiv ℝ G_i u) u);\nand Lⁿ(D \\ ⋃_i E_i) = 0. Notation: ℝᵈ = Rn d = EuclideanSpace ℝ (Fin d); Lⁿ = volume; DF(x) = fderiv ℝ F x, which is 0 where F is not differentiable.",
+  "lean_statement": "∀ (n m : ℕ), (∀ (F : Rn n → Rn m) (K : ℝ≥0), LipschitzWith K F → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → Rn m, ContDiff ℝ 1 g ∧ volume {x | F x ≠ g x ∨ fderiv ℝ F x ≠ fderiv ℝ g x} < ε) → ∀ (D : Set (Rn n)) (h : Rn n → Rn m), IsOpen D → (∃ K, LipschitzOnWith K h D) → ∃ (G : ℕ → Rn n → Rn m) (E : ℕ → Set (Rn n)), (∀ i, ContDiff ℝ 1 (G i)) ∧ (∀ i, MeasurableSet (E i)) ∧ (∀ i, E i ⊆ D) ∧ (∀ i, ∀ u ∈ E i, h u = G i u ∧ HasFDerivAt h (fderiv ℝ (G i) u) u) ∧ volume (D \\ ⋃ i, E i) = 0",
+  "lean_name": "lipschitzOn_open_c1_first_order_agreement",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-chart-pieces-a1-first-order-agreement-a1-a1"
+}

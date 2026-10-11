@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.chart_pieces-a1.lipschitz_open_charts-a1",
+  "parent_id": "root.coarea_and_slices-a1.chart_pieces-a1",
+  "depth": 3,
+  "title": "Countably many Lipschitz open chart pieces covering a C¹-submanifold cover inside U (Simon Ch. 3, Lemma 1.2 / Remark 1.3 local representations)",
+  "statement": "Let n, N, m ∈ ℕ, M, U, N₀ ⊆ ℝᴺ, S_i ⊆ ℝᴺ (i ∈ ℕ) and f : ℝᴺ → ℝᵐ. Assume:\n- U is open and M ⊆ U.\n- f is locally Lipschitz on U (Mathlib LocallyLipschitzOn: every x ∈ U has K ∈ ℝ≥0 and a neighbourhood t of x within U on which f is K-Lipschitz).\n- Every S_i satisfies the frozen IsC1Submanifold n: every y ∈ S_i has an open V ⊆ ℝⁿ, an open W ⊆ ℝᴺ with y ∈ W, and ψ : ℝⁿ → ℝᴺ such that ψ is C¹ on V, injective on V, ψ(V) = W ∩ S_i, satisfies the properness clause, and Dψ(x) is injective for every x ∈ V.\n- M ⊆ N₀ ∪ ⋃_i S_i.\nThen there are sets D_α ⊆ ℝⁿ and maps ψ_α : ℝⁿ → ℝᴺ (α ∈ ℕ) such that, for every α:\n- D_α is open;\n- ψ_α is C¹ on D_α (ContDiffOn ℝ 1) and injective on D_α;\n- ψ_α is Lipschitz on D_α with some constant K ∈ ℝ≥0;\n- Dψ_α(u) = fderiv ℝ ψ_α u is injective for every u ∈ D_α;\n- f ∘ ψ_α is Lipschitz on D_α with some constant;\nand M ⊆ N₀ ∪ ⋃_α ψ_α(D_α). Notation: ℝᵈ = Rn d = EuclideanSpace ℝ (Fin d).",
+  "lean_statement": "∀ (n N m : ℕ) (M U N₀ : Set (Rn N)) (S : ℕ → Set (Rn N)) (f : Rn N → Rn m), IsOpen U → M ⊆ U → LocallyLipschitzOn U f → (∀ i, IsC1Submanifold n (S i)) → M ⊆ N₀ ∪ ⋃ i, S i → ∃ (D : ℕ → Set (Rn n)) (ψ : ℕ → Rn n → Rn N), (∀ α, IsOpen (D α)) ∧ (∀ α, ContDiffOn ℝ 1 (ψ α) (D α)) ∧ (∀ α, InjOn (ψ α) (D α)) ∧ (∀ α, ∃ K, LipschitzOnWith K (ψ α) (D α)) ∧ (∀ α, ∀ u ∈ D α, Function.Injective (fderiv ℝ (ψ α) u)) ∧ (∀ α, ∃ K, LipschitzOnWith K (f ∘ ψ α) (D α)) ∧ M ⊆ N₀ ∪ ⋃ α, ψ α '' D α",
+  "lean_name": "submanifold_cover_lipschitz_open_charts",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-chart-pieces-a1-lipschitz-open-charts-a1-a1"
+}
