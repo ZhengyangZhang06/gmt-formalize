@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_iff_variational-a1.smooth_c1_approximation-a1",
+  "parent_id": "root.stationary_iff_variational-a1",
+  "depth": 2,
+  "title": "Mollifier approximation of a C¹ test field by smooth fields with supports in a fixed compact subset of U and uniformly convergent derivatives",
+  "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ = ℝ^{n+ℓ}, U ⊆ E open, and X a test field in U (X : E → E is C¹, has compact support, and tsupport X ⊆ U). Then there are a compact set K with tsupport X ⊆ K ⊆ U and maps Y_k : E → E (k ∈ ℕ) such that each Y_k is C^∞ with compact support and tsupport Y_k ⊆ K, and DY_k → DX uniformly on E as k → ∞.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Ambient n ℓ)) (X : Ambient n ℓ → Ambient n ℓ), IsOpen U → IsTestField U X → ∃ (K : Set (Ambient n ℓ)) (Y : ℕ → Ambient n ℓ → Ambient n ℓ), IsCompact K ∧ K ⊆ U ∧ tsupport X ⊆ K ∧ (∀ k, ContDiff ℝ ∞ (Y k) ∧ HasCompactSupport (Y k) ∧ tsupport (Y k) ⊆ K) ∧ TendstoUniformly (fun k ↦ fderiv ℝ (Y k)) (fderiv ℝ X) atTop",
+  "lean_name": "exists_smooth_approx_testField_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-stationary-iff-variational-a1-smooth-c1-approximation-a1-a1"
+}

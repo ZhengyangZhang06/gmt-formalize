@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_iff_variational-a1.first_variation_continuity-a1",
+  "parent_id": "root.stationary_iff_variational-a1",
+  "depth": 2,
+  "title": "∫ div_M Y_k dμ_V → ∫ div_M X dμ_V when DY_k → DX uniformly with supports in a fixed compact set",
+  "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ, V a rectifiable n-varifold in E with weight μ = μ_V, and suppose μ is finite on compact sets and x ↦ p_x = (T_xV).starProjection is μ-a.e. strongly measurable. Let K ⊆ E be compact, X : E → E a C¹ map with tsupport X ⊆ K, and Y_k : E → E (k ∈ ℕ) C¹ maps with tsupport Y_k ⊆ K, such that DY_k → DX uniformly on E. Then ∫ div_M Y_k dμ → ∫ div_M X dμ, where div_M Z(x) = V.tangentialDiv Z x = trace(DZ(x) ∘ p_x).",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (K : Set (Ambient n ℓ)) (X : Ambient n ℓ → Ambient n ℓ) (Y : ℕ → Ambient n ℓ → Ambient n ℓ), IsFiniteMeasureOnCompacts V.weight → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsCompact K → ContDiff ℝ 1 X → tsupport X ⊆ K → (∀ k, ContDiff ℝ 1 (Y k) ∧ tsupport (Y k) ⊆ K) → TendstoUniformly (fun k ↦ fderiv ℝ (Y k)) (fderiv ℝ X) atTop → Tendsto (fun k ↦ ∫ x, V.tangentialDiv (Y k) x ∂V.weight) atTop (𝓝 (∫ x, V.tangentialDiv X x ∂V.weight))",
+  "lean_name": "tendsto_integral_tangentialDiv_of_tendstoUniformly_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-stationary-iff-variational-a1-first-variation-continuity-a1-a1"
+}
