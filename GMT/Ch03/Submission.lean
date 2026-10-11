@@ -335,6 +335,68 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Cone-free sets are countably `n`-rectifiable** (P. Mattila, *Geometry of Sets and Measures
+in Euclidean Spaces*, Lemma 15.13; M. G. Dall'Alba, *The Besicovitch–Federer Projection
+Theorem*, Padova 2020, Lemma 4.5), used in Step 2 of the proof of the Besicovitch–Federer
+projection theorem (Simon Ch. 3, Theorem 3.6). Let `W ⊆ ℝᴺ` be an `n`-plane with orthogonal
+projection `P`, and let `s|b - a| ≤ |P(b - a)|` for `a, b ∈ E` with `|b - a| < r`. Cover `E` by
+the pieces `E_k = E ∩ B(d_k, r/2)`, `(d_k)` dense. On `E_k` the projection `P` is injective with
+an `s⁻¹`-Lipschitz inverse `φ_k` on `P(E_k)`; extend `φ_k` to a Lipschitz `G_k : ℝᴺ → ℝᴺ`
+(McShane, `LipschitzOnWith.extend_finite_dimension`) and precompose with a linear isometry
+`J : ℝⁿ → ℝᴺ` onto `W`. Then `E_k ⊆ (G_k ∘ J)(ℝⁿ)`, and `M₀ = ∅` works. -/
+theorem Submission.bf_coneFree_countablyRectifiable :
+    ∀ (n ℓ : ℕ) (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∀ (s r : ℝ), 0 < s → 0 < r →
+      ∀ E : Set (Rn (n + ℓ)), (∀ a ∈ E, ∀ b ∈ E, dist b a < r →
+        s * ‖b - a‖ ≤ ‖W.starProjection (b - a)‖) → CountablyRectifiable n E := by
+  intro n ℓ W hW s r hs hr E hE
+  -- Step 1: the pieces `E_k = E ∩ B(d_k, r/2)` for a dense sequence `(d_k)`; points of one piece
+  -- are at distance `< r`, so `s|a - b| ≤ |Pa - Pb|` on each piece.
+  let d : ℕ → Rn (n + ℓ) := TopologicalSpace.denseSeq (Rn (n + ℓ))
+  let Ek : ℕ → Set (Rn (n + ℓ)) := fun k ↦ E ∩ Metric.ball (d k) (r / 2)
+  have hpiece : ∀ k, ∀ a ∈ Ek k, ∀ b ∈ Ek k,
+      s * ‖a - b‖ ≤ ‖W.starProjection a - W.starProjection b‖ := by
+    intro k a ha b hb
+    have hab : dist a b < r :=
+      calc dist a b ≤ dist a (d k) + dist (d k) b := dist_triangle _ _ _
+        _ < r / 2 + r / 2 := add_lt_add (Metric.mem_ball.1 ha.2) (Metric.mem_ball'.1 hb.2)
+        _ = r := add_halves r
+    rw [← map_sub]
+    exact hE b hb.1 a ha.1 hab
+  -- Step 2: `P` is injective on `E_k`, with an `s⁻¹`-Lipschitz inverse `φ_k` on `P(E_k)`.
+  have hinj : ∀ k, InjOn W.starProjection (Ek k) := by
+    intro k a ha b hb hab
+    have h := hpiece k a ha b hb
+    rw [hab, sub_self, norm_zero] at h
+    have h0 : ‖a - b‖ ≤ 0 := by nlinarith [norm_nonneg (a - b)]
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 h0)
+  let φ : ℕ → Rn (n + ℓ) → Rn (n + ℓ) := fun k ↦ Function.invFunOn W.starProjection (Ek k)
+  have hφ : ∀ k, ∀ a ∈ Ek k, φ k (W.starProjection a) = a :=
+    fun k ↦ (hinj k).leftInvOn_invFunOn
+  have hφLip : ∀ k, LipschitzOnWith (Real.toNNReal s⁻¹) (φ k) (W.starProjection '' Ek k) := by
+    intro k
+    refine LipschitzOnWith.of_dist_le_mul ?_
+    rintro _ ⟨a, ha, rfl⟩ _ ⟨b, hb, rfl⟩
+    rw [hφ k a ha, hφ k b hb, Real.coe_toNNReal _ (inv_nonneg.2 hs.le), dist_eq_norm,
+      dist_eq_norm, inv_mul_eq_div, le_div_iff₀' hs]
+    exact hpiece k a ha b hb
+  -- Step 3: extend `φ_k` to a Lipschitz map `G_k : ℝᴺ → ℝᴺ`.
+  choose G hGLip hGEq using fun k ↦ (hφLip k).extend_finite_dimension
+  -- Step 4: a linear isometry `J : ℝⁿ → ℝᴺ` onto `W`.
+  obtain ⟨ι⟩ : Nonempty (Rn n ≃ₗᵢ[ℝ] W) :=
+    ⟨((stdOrthonormalBasis ℝ W).reindex (finCongr hW)).repr.symm⟩
+  let J : Rn n →ₗᵢ[ℝ] Rn (n + ℓ) := W.subtypeₗᵢ.comp ι.toLinearIsometry
+  have hJ : ∀ x ∈ W, ∃ u, J u = x := fun x hx ↦ ⟨ι.symm ⟨x, hx⟩, by simp [J]⟩
+  -- Steps 5–6: `E_k ⊆ (G_k ∘ J)(ℝⁿ)`, so `E ⊆ ∅ ∪ ⋃_k (G_k ∘ J)(ℝⁿ)`.
+  refine ⟨∅, measure_empty, fun k ↦ G k ∘ J, fun k ↦ ⟨_, (hGLip k).comp J.lipschitzWith⟩, ?_⟩
+  intro a ha
+  obtain ⟨k, hk⟩ :=
+    (TopologicalSpace.denseRange_denseSeq (Rn (n + ℓ))).exists_dist_lt a (half_pos hr)
+  have hak : a ∈ Ek k := ⟨ha, hk⟩
+  obtain ⟨u, hu⟩ := hJ _ (W.starProjection_apply_mem a)
+  refine Or.inr (mem_iUnion.2 ⟨k, u, ?_⟩)
+  show G k (J u) = a
+  rw [hu, ← hGEq k ⟨a, hak, rfl⟩, hφ k a hak]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
