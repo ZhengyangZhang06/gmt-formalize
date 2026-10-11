@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f52a7727c5cf14547d55b8b8c8f76dc3d9e61ae429f27002576d3811cd491e41",
+  "git_delta": {
+    "base_commit": "f23b0f76c478ee3f4d481d539fc32b2e9efac39e",
+    "candidate_commit": "5351222f017387d047f507f95df7d23bbe75c752",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "closedBall_rpow_kernel_lintegral_le_of_growth",
+    "diff_sha256": "59fd03927c58d9e2c77f938211400ec0c47f5ef426c1d4f14ba076bfea25a373",
+    "source_sha256": "9cd88b2f63b7696fe238d35f6cb201367e7a8c1e3d31814798bab52fd159d39a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.closedBall_rpow_kernel_lintegral_le_of_growth",
+      "statement": "∀ {X : Type} [NormedAddCommGroup X] [MeasurableSpace X] [BorelSpace X] (μ : Measure X) (n : ℕ) (y : X) (ρ K : ℝ), 0 < n → (∀ s : ℝ, 0 < s → s ≤ ρ → μ (closedBall y s) ≤ ENNReal.ofReal (K * s ^ n)) → ∀ s : ℝ, 0 < s → s ≤ ρ → ∫⁻ x in closedBall y s, ENNReal.ofReal (‖x - y‖ ^ (1 - (n : ℝ))) ∂μ ≤ ENNReal.ofReal (n * K * s)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
