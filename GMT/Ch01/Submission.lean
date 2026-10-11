@@ -489,6 +489,30 @@ theorem Submission.rc_subseq_integrals_converge : ∀ (X : Type u) [TopologicalS
   rw [Real.dist_eq, abs_lt]
   constructor <;> linarith [h₁.1, h₁.2, h₂.1, h₂.2, h₃.1, h₃.2]
 
+/-- Step 6 of the proof of Simon Ch. 1, Theorem 4.16 (corrected): given Theorem 4.12
+(`RieszPositive`), a positive `ℝ`-linear `Λ : C_c(X, ℝ) → ℝ` is integration against a Radon
+outer measure. On `C_c(X, ℝ≥0)`, `Λ` is the `ℝ≥0`-linear map
+`toNNRealLinear (PositiveLinearMap.mk₀ Λ hΛ)`, which Theorem 4.12 represents by a Radon `μ`.
+For `f ∈ C_c(X, ℝ)` write `f = f⁺ - f⁻` (`nnrealPart_sub_nnrealPart_neg`); both parts are
+integrable (`rc_cc_integrable`), so `Λ f = ∫ f⁺ - ∫ f⁻ = ∫ f`. -/
+theorem Submission.rc_riesz_real : RieszPositive.{u} → ∀ (X : Type u) [TopologicalSpace X]
+    [T2Space X] [LocallyCompactSpace X] (Λ : C_c(X, ℝ) →ₗ[ℝ] ℝ),
+    (∀ f : C_c(X, ℝ), 0 ≤ f → 0 ≤ Λ f) → ∃ μ : OuterMeasure X, IsRadonOuterMeasure μ ∧
+      ∀ f : C_c(X, ℝ), Λ f = ∫ x, f x ∂caratheodoryMeasure μ := by
+  intro hRiesz X _ _ _ Λ hΛ
+  -- Steps 1–3: `λ h := Λ h̃` is `ℝ≥0`-linear on `C_c(X, ℝ≥0)`; Theorem 4.12 represents it.
+  obtain ⟨μ, hμ, hint⟩ := hRiesz X
+    (CompactlySupportedContinuousMap.toNNRealLinear (PositiveLinearMap.mk₀ Λ hΛ))
+  have hrep (g : C_c(X, ℝ≥0)) : Λ g.toReal = ∫ x, g.toReal x ∂caratheodoryMeasure μ := by
+    simp only [CompactlySupportedContinuousMap.toReal_apply]
+    exact hint g
+  refine ⟨μ, hμ, fun f => ?_⟩
+  -- Steps 4–6: `f = f⁺ - f⁻`, where both parts are integrable by `rc_cc_integrable`.
+  rw [← CompactlySupportedContinuousMap.nnrealPart_sub_nnrealPart_neg f, map_sub]
+  simp only [CompactlySupportedContinuousMap.sub_apply]
+  rw [integral_sub (Submission.rc_cc_integrable X μ hμ _) (Submission.rc_cc_integrable X μ hμ _),
+    hrep, hrep]
+
 /-- The headline results of Simon, *Introduction to GMT*, Chapter 1 (pp. 1–38). -/
 theorem main_theorem : CaratheodoryCriterion ∧ BorelRegularApproximation ∧ LusinTheorem ∧ LebesgueEqHausdorff ∧ IsodiametricInequality ∧ UpperDensityComparison ∧ UpperDensityTheorem ∧ BesicovitchCovering ∧ GeneralDensityTheorem ∧ LebesgueDifferentiation ∧ RadonNikodymTheorem ∧ HausdorffDensityBounds ∧ RieszPositive ∧ RieszVector ∧ RadonCompactness := by sorry
 
