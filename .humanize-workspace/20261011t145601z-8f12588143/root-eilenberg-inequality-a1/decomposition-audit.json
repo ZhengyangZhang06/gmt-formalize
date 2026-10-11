@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'hausdorffMeasure_apply|hausdorffMeasure_le_liminf_tsum' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "rg -n 'euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero|def euclideanHausdorffMeasure|μHE' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "rg -n -A 14 -B 7 'theorem addHaar_closedBall' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "rg -n -A 7 -B 4 'theorem ediam_image_le' mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean",
+        "rg -n -A 9 -B 3 'theorem lintegral_liminf_le|theorem lintegral_tsum|theorem lintegral_indicator_const|theorem lintegral_const_mul' mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "rg -n -A 7 -B 3 'theorem Measurable.liminf|theorem tendsto_inv_nat_nhds_zero|theorem Tendsto.const_mul' mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "rg -n 'hausdorffMeasure_exists_cover_tsum_le_add|volume_closure_le_unitBall_mul_ediam_pow|eilenberg_hausdorff_upper_integral_of_ne_top' project/GMT mathlib/Mathlib/MeasureTheory mathlib/Mathlib/Geometry",
+        "rg -l 'hausdorffMeasure_exists_cover_tsum_le_add|volume_closure_le_unitBall_mul_ediam_pow|eilenberg_hausdorff_upper_integral_of_ne_top' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes",
+        "sed -n '335,415p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/eilenberg-independent-audit-8fctu1l4/Children.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-eilenberg-inequality-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-eilenberg-inequality-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/eilenberg-independent-audit-8fctu1l4/Children.lean"
+      ],
+      "conclusion": "The pinned sources support the cover formula, diameter estimate, Borel liminf construction, Fatou inequality, and positive finite normalization factors. Inspected mathematical sources match the installed pinned Mathlib byte-for-byte. All three frozen types passed lexical validation and elaborated before their child declarations existed. The supplied Lean appendices compiled unchanged, including exact-type targets; each uses only propext, Classical.choice, and Quot.sound. All names are bare identifiers, with no reservation collisions in the current DAG or other branches. The split is appropriate: the two independent auxiliary obligations feed the finite-measure core. The supplied normalization and infinite-measure/zero-coefficient cases then establish exactly the selected parent contract, without ancestor reliance."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hausdorff_near_optimal_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches all prose hypotheses, including arbitrary real dimension, extended radii, positive error, and finite outer measure. The proof correctly bounds the fixed-radius infimum, obtains a strict gap using finiteness and nonzero error, and extracts witnesses through all three infima. Empty-set costs are correct. This is a complete, independent covering obligation."
+    },
+    {
+      "key": "volume_diameter_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type uses Euclidean volume, extended diameter, and natural-number powers as stated. The proof handles empty sets, dimension zero, and infinite diameter separately. In the finite case, closure preserves diameter, the closed-ball inclusion is valid, and the cited Haar-volume formula applies even at radius zero. No missing boundedness or measurability assumption is needed."
+    },
+    {
+      "key": "eilenberg_core_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly states the finite unnormalized inequality for arbitrary A. Its only child dependencies are the two preceding obligations, correctly directed and acyclic. The supplied proof constructs covers and Borel majorants, proves pointwise domination using countable fiber-indexed covers, bounds their integrals, and applies Fatou with a finite multiplier. Empty sets, m=0, k=0, L=0, and the initial infinite radius are covered. Normalization and the parent’s remaining cases recover the frozen parent statement without circularity."
+    }
+  ],
+  "required_changes": []
+}

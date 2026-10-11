@@ -335,6 +335,26 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Simon Ch. 2, proof of Theorem 1.9, choice (1)** (`chapter-02.txt` lines 366–370), for
+Mathlib's unnormalized Hausdorff measure: if `μH[d](s) < ∞`, then for every `r > 0` and `ε ≠ 0`
+some countable cover `(tₙ)` of `s` by sets of diameter `≤ r` has `∑ₙ diam(tₙ)^d ≤ μH[d](s) + ε`
+(empty `tₙ` cost `0`). By `hausdorffMeasure_apply` the infimum over such covers is at most
+`μH[d](s) < μH[d](s) + ε`, so some cover lies strictly below that bound. -/
+theorem Submission.hausdorffMeasure_exists_cover_tsum_le_add : ∀ {X : Type} [EMetricSpace X]
+    [MeasurableSpace X] [BorelSpace X] (d : ℝ) (s : Set X) (r ε : ℝ≥0∞), 0 < r → ε ≠ 0 →
+    μH[d] s ≠ ∞ → ∃ t : ℕ → Set X, s ⊆ ⋃ n, t n ∧ (∀ n, Metric.ediam (t n) ≤ r) ∧
+      ∑' n, ⨆ _ : (t n).Nonempty, Metric.ediam (t n) ^ d ≤ μH[d] s + ε := by
+  intro X _ _ _ d s r ε hr hε hs
+  -- The infimum over covers by sets of diameter `≤ r` is the `r`-term of the supremum.
+  have hle : (⨅ (t : ℕ → Set X) (_ : s ⊆ ⋃ n, t n) (_ : ∀ n, Metric.ediam (t n) ≤ r),
+      ∑' n, ⨆ _ : (t n).Nonempty, Metric.ediam (t n) ^ d) ≤ μH[d] s := by
+    rw [Measure.hausdorffMeasure_apply]
+    exact le_iSup₂_of_le r hr le_rfl
+  have hlt := hle.trans_lt (ENNReal.lt_add_right hs hε)
+  simp only [iInf_lt_iff] at hlt
+  obtain ⟨t, hst, htr, hsum⟩ := hlt
+  exact ⟨t, hst, htr, hsum.le⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 

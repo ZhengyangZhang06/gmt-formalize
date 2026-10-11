@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.eilenberg_inequality-a1.volume_diameter_bound-a1",
+  "parent_id": "root.eilenberg_inequality-a1",
+  "depth": 2,
+  "title": "Lebesgue measure of the closure of a set in ℝᵐ is at most ωₘ(diam)ᵐ",
+  "statement": "For every m ∈ ℕ and every set S ⊆ ℝᵐ = EuclideanSpace ℝ (Fin m): λₘ(closure S) ≤ λₘ(B₁(0))·(diam S)ᵐ, where λₘ is Lebesgue measure (volume) on ℝᵐ, B₁(0) is the open unit ball centred at 0, diam S ∈ [0, ∞] is the extended diameter, and the m-th power is taken in [0, ∞] (x⁰ = 1 for every x; ∞ᵐ = ∞ for m ≥ 1).",
+  "lean_statement": "∀ (m : ℕ) (S : Set (Rn m)), volume (closure S) ≤ volume (Metric.ball (0 : Rn m) 1) * Metric.ediam S ^ m",
+  "lean_name": "volume_closure_le_unitBall_mul_ediam_pow",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-eilenberg-inequality-a1-volume-diameter-bound-a1-a1"
+}
