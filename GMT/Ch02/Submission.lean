@@ -373,6 +373,45 @@ def C1Sard : Prop :=
 
 end
 
+/-- **A maximal separated set covers.** Let `K` be a subset of a pseudometric space `X`, `0 ≤ r`, and
+suppose every finite `r`-separated `F ⊆ K` (`r < dist x y` for distinct `x, y ∈ F`) has at most `N`
+points. Then some finite `r`-separated `F ⊆ K` has `K ⊆ ⋃_{x ∈ F} B̄(x, r)`. Take `F` of the greatest
+attained cardinality `Nat.findGreatest P N`, where `P c` says that such an `F` with `c` points exists.
+A point `a ∈ K` outside every `B̄(x, r)`, `x ∈ F`, is not in `F` (as `dist a a = 0 ≤ r`), so
+`insert a F` would be an `r`-separated subset of `K` with one more point. -/
+theorem Submission.exists_separated_finset_subset_cover_closedBall : ∀ (X : Type) [PseudoMetricSpace X] (K : Set X) (r : ℝ) (N : ℕ), 0 ≤ r → (∀ F : Finset X, (↑F : Set X) ⊆ K → (∀ x ∈ F, ∀ y ∈ F, x ≠ y → r < dist x y) → F.card ≤ N) → ∃ F : Finset X, (↑F : Set X) ⊆ K ∧ (∀ x ∈ F, ∀ y ∈ F, x ≠ y → r < dist x y) ∧ K ⊆ ⋃ x ∈ F, closedBall x r := by
+  intro X _ K r N hr hN
+  classical
+  -- Step 1: `P c` says that some finite `r`-separated `F ⊆ K` has `c` points; then `c ≤ N`.
+  let P : ℕ → Prop := fun c ↦ ∃ F : Finset X, (↑F : Set X) ⊆ K ∧
+    (∀ x ∈ F, ∀ y ∈ F, x ≠ y → r < dist x y) ∧ F.card = c
+  have hPN : ∀ c, P c → c ≤ N := fun c ⟨F, hFK, hFr, hFc⟩ ↦ hFc ▸ hN F hFK hFr
+  -- Step 2: `P 0` holds with `F = ∅`, so `P (Nat.findGreatest P N)`; fix a witness `F`.
+  obtain ⟨F, hFK, hFr, hFc⟩ : P (Nat.findGreatest P N) :=
+    Nat.findGreatest_spec (Nat.zero_le N) ⟨∅, by simp, by simp, rfl⟩
+  -- Step 3: no finite `r`-separated subset of `K` has `Nat.findGreatest P N + 1` points.
+  have hsucc : ¬ P (Nat.findGreatest P N + 1) := fun h ↦
+    Nat.findGreatest_is_greatest (Nat.lt_add_one _) (hPN _ h) h
+  refine ⟨F, hFK, hFr, fun a ha ↦ ?_⟩
+  -- Step 4: otherwise some `a ∈ K` has `r < dist a x` for every `x ∈ F`.
+  by_contra hcov
+  have haF : ∀ x ∈ F, r < dist a x := fun x hx ↦
+    lt_of_not_ge fun h ↦ hcov (mem_iUnion₂.2 ⟨x, hx, mem_closedBall.2 h⟩)
+  -- Step 5: `a ∉ F`, as `dist a a = 0 ≤ r`.
+  have ha' : a ∉ F := fun h ↦ (haF a h).not_ge (by rw [dist_self]; exact hr)
+  -- Steps 6–7: `insert a F` has `Nat.findGreatest P N + 1` points, contradicting step 3.
+  refine hsucc ⟨insert a F, ?_, ?_, ?_⟩
+  · rw [Finset.coe_insert]
+    exact Set.insert_subset ha hFK
+  · intro x hx y hy hxy
+    rcases Finset.mem_insert.1 hx with rfl | hxF <;> rcases Finset.mem_insert.1 hy with rfl | hyF
+    · exact (hxy rfl).elim
+    · exact haF y hyF
+    · rw [dist_comm]
+      exact haF x hxF
+    · exact hFr x hxF y hyF hxy
+  · rw [Finset.card_insert_of_notMem ha', hFc]
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
