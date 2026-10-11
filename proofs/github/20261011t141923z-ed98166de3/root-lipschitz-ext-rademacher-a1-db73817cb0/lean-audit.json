@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eec923f545944d068d0cd86774cf0f96aa7c1e357232c92bceabe647d870da30",
+  "git_delta": {
+    "base_commit": "f24d5b426f3fc56b02869001bf9b33f569563d7a",
+    "candidate_commit": "c5b5552092f2efea3beb8bb1c239154a73d207e1",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "lipschitz_extension_and_rademacher",
+    "diff_sha256": "e9260d8217971f4541e180ae60b4a13d4decbc323cb0096291cb608a9324018b",
+    "source_sha256": "ac1b34589b74366745de46f9136c7f148b0ca0721e81f25e747f9bca89ddc7fe",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lipschitz_extension_and_rademacher",
+      "statement": "LipschitzExtension ∧ Rademacher",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
