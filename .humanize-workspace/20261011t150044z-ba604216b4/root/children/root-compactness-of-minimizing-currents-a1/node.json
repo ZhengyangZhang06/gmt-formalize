@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Theorem 7.2.4: compactness of minimizing currents",
+  "statement": "Let U ⊆ ℝ^{n+k} be open and T_j ∈ 𝒟_n(U) minimizing in U (Simon 7.1.1), with sup_j (M_W(T_j) + M_W(∂T_j)) < ∞ for every open W ⊂⊂ U (∂-mass read as 0 when n = 0), and T_j ⇀ T in 𝒟_n(U). Then T is integer multiplicity and minimizing in U, and μ_{T_j} → μ_T as Radon measures in U: for all integer multiplicity representations of the T_j and of T, ∫ f dμ_{T_j} → ∫ f dμ_T for every continuous f with compact support in U.",
+  "lean_statement": "CompactnessOfMinimizingCurrents",
+  "lean_name": "compactness_of_minimizing_currents",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-a1"
+}

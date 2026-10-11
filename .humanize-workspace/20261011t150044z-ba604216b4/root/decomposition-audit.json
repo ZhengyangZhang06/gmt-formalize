@@ -1,0 +1,107 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(def|structure|theorem|namespace|open|abbrev|import)|sorry|axiom",
+        "massOn_le_liminf|minimizing_summands_source|cone_simonsDefect_lower_bound|bvVariationOn_le_liminf_of_locallyL1|open obligation|separate obligation|Allard",
+        "euclideanHausdorffMeasure|hausdorffMeasure_smul|hausdorffMeasure.*(nonpos|neg|zero)|def hausdorff",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ch07-independent-audit/Check.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ch07-independent-audit/Lib.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root/decomposition-v3.json",
+        "GMT/Ch07/README.md",
+        "GMT/Ch07/Contract.lean",
+        "GMT/Ch07/Submission.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Product.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter07/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/ch07-independent-audit/Check.lean",
+        "/tmp/ch07-independent-audit/Lib.lean"
+      ],
+      "conclusion": "Independently confirmed the pinned revisions and byte identity of the snapshot contract, workspace contract and submission. All ten exact child propositions elaborate using the frozen definitions without child implementations. The conditional assembly proves precisely GMT.Ch07.main_theorem; its axiom report and those of the four cited library lemmas contain only propext, Classical.choice and Quot.sound. The inspected library explicitly leaves Federer–Fleming compactness, Allard regularity, BV subsequence compactness and Appendix A.4 unproved; these are mathematical source inputs, not available kernel-checked shortcuts. The split is appropriate: its conclusions cover all eleven conjuncts, shared dimension-reduction work is factored coherently, and dependencies are acyclic and correctly directed. All names are unique bare identifiers; the active DAG contains only root. No child type contains a placeholder, implementation-dependent alias or matrix-instance ambiguity."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "minimizing_implies_stationary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the frozen proposition, including both submanifold support conditions and every representation. The proof handles n = 0, constructs admissible flow competitors, differentiates their mass and derives the measurable locally bounded mean-curvature field without circularity."
+    },
+    {
+      "key": "existence_of_minimizing_filling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact contract match. The positive-dimensional boundary permits the cone filling; retraction supplies uniform compact support, compactness preserves the prescribed boundary, and lower semicontinuity proves the required comparison against every admissible filling."
+    },
+    {
+      "key": "compactness_of_minimizing_currents",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes integrality, minimality and representation-independent mass convergence. The corrected slicing sign and level-set comparison are consistent; localization proves the contract's competitor inequality, and the subsequence argument supplies convergence for the original sequence."
+    },
+    {
+      "key": "density_and_tangent_cones",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The boundary-free domain and subsequence quantifiers match the frozen type. Lemma BC supplies the moving-submanifold comparison using compactly supported projected cycles. Mass convergence identifies the limiting density ratios, and stationarity plus the homotopy formula proves the current cone property."
+    },
+    {
+      "key": "dimension_reduction_results",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three expanded statements match their frozen propositions. The function-class construction verifies the abstract child's hypotheses; Parts A–C yield the exact exceptional-set bounds and local finiteness. T7 correctly requires 1 ≤ m < n. C2 establishes the projected-current identity and uniform perimeter bound on the offset affine plane before BV extraction. The two-dimensional cone input is corroborated in [Chang, Appendix A, pp. 761–762](https://www.math.stonybrook.edu/~bishop/classes/math638.F20/Chang_Reg_Min_2_currents.pdf). No circular dependence was found."
+    },
+    {
+      "key": "regular_set_dense",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact contract match. The least positive integer density and upper semicontinuity give a neighborhood of constant multiplicity. Dividing by that multiplicity preserves integrality and minimality as proved, allowing the density-one sibling to produce a regular point in every support neighborhood."
+    },
+    {
+      "key": "density_one_implies_regular",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fixed-N and uniform mass hypotheses are correctly included and used. Lemma M provides the needed upper mass estimate; the strict limsup margin gives eventual Allard hypotheses on closed balls. Projection to the base plane and constancy establish the precise oriented-current regularity conclusion."
+    },
+    {
+      "key": "half_space_cone_lies_in_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact contract match. Cone scaling and stationarity imply radial tangency. The explicitly computed compactly supported test field makes the weighted integral vanish, and nonnegativity of the half-space coordinate forces support in the boundary hyperplane."
+    },
+    {
+      "key": "regular_components_are_minimizing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary representation and prescribed component current match the frozen type. On compact subsets of U, the singular-frontier cutoff and separating cutoff justify the boundary calculation with the required integrated error estimate. Multiplicity one gives mass additivity, and finite-mass cancellation transfers minimality."
+    },
+    {
+      "key": "abstract_dimension_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition independently elaborates and matches all stated hypotheses, including H0 and decreasing scales. H0 justifies pointwise identification of weak limits; uniform boundedness handles moving dilations. The tangent-content argument, invariance induction and maximality establish the dimension bound and extremal member, while accumulation produces the contradiction needed for d = 0 finiteness."
+    }
+  ],
+  "required_changes": []
+}
