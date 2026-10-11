@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.support_convex_hull-a1.convex_hull_from_ball-a1",
+  "parent_id": "root.support_convex_hull-a1",
+  "depth": 2,
+  "title": "Convex hull property (Simon 6.2) from SupportInBall (6.1)",
+  "statement": "Assume SupportInBall: for all n ≥ 1, ℓ, rectifiable n-varifolds V in E = ℝ^{n+ℓ}, H: E → E, ξ ∈ E and R ≥ 0, if V has generalized mean curvature H in E ∖ B_R(ξ) (B_R(ξ) the closed ball), n^{-1}|⟨H(x), x − ξ⟩| < 1 for μ_V-a.e. x ∈ E ∖ B_R(ξ), and spt V is compact, then spt V ⊆ B_R(ξ). Then ConvexHullProperty holds: if n ≥ 1, K ⊆ ℝ^{n+ℓ} is compact, spt V is compact and V is stationary in ℝ^{n+ℓ} ∖ K, then spt V ⊆ conv K.",
+  "lean_statement": "SupportInBall → ConvexHullProperty",
+  "lean_name": "convex_hull_property_of_support_in_ball",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-support-convex-hull-a1-convex-hull-from-ball-a1-a1"
+}

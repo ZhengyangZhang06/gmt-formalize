@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.support_convex_hull-a1.support_in_ball-a1",
+  "parent_id": "root.support_convex_hull-a1",
+  "depth": 2,
+  "title": "Support in a ball (Simon 6.1) from the radial first variation formula and (GF)",
+  "statement": "Assume (RFV): for all n, ℓ ∈ ℕ, every rectifiable n-varifold V in E = ℝ^{n+ℓ}, every U ⊆ E, H: E → E, h: E → ℝ, γ: ℝ → ℝ and ξ ∈ E such that dim T_xV = n for μ_V-a.e. x, U is open, V has generalized mean curvature H in U, h ∈ C¹(U), γ ∈ C¹(ℝ) and X(x) = (h(x)γ(|x − ξ|))(x − ξ) is C¹ with compact support and tsupport X ⊆ U, one has ∫_U [h(nγ(r) + rγ'(r)(1 − q_ξ)) + γ(r)⟨x − ξ, ∇^M h⟩] dμ_V = −∫_U hγ(r)⟨x − ξ, H⟩ dμ_V, where r = |x − ξ|, γ' = deriv γ and q_ξ(x) = |p_{T_xV}^⊥(x − ξ)|²/|x − ξ|² (this is verbatim the frozen type of radial_first_variation, a sibling of the parent node; it is a hypothesis here, not a reference to that declaration). Assume (GF): for every n ≥ 1, every ℓ and every rectifiable n-varifold V in ℝ^{n+ℓ}, μ_V is finite on compact sets, dim T_xV = n for μ_V-a.e. x, and x ↦ p_{T_xV} is μ_V-a.e. strongly measurable. Then SupportInBall holds: if n ≥ 1, R ≥ 0, V has (L¹_loc) generalized mean curvature H in U = ℝ^{n+ℓ} ∖ B_R(ξ) (B_R(ξ) the closed ball), n^{-1}|⟨H(x), x − ξ⟩| < 1 for μ_V-a.e. x ∈ U, and spt V is compact, then spt V ⊆ B_R(ξ).",
+  "lean_statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ : Ambient n ℓ), (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → ContDiff ℝ 1 γ → IsTestField U (fun x ↦ (h x * γ ‖x - ξ‖) • (x - ξ)) → ∫ x in U, (h x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient h x)) ∂V.weight = -∫ x in U, h x * γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂V.weight) → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → SupportInBall",
+  "lean_name": "support_in_ball_of_radial_first_variation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-support-convex-hull-a1-support-in-ball-a1-a1"
+}
