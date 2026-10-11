@@ -335,6 +335,69 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Vanishing normalized density of `|w|` kills the normalized blow-up integrals of `f w`**
+(Simon Ch. 3, proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 127–140, with a weight `w` as in
+Remark 1.8(1), lines 298–306): if `w` is `Hⁿ`-integrable on `S ∩ B_ρ(x)` for every `ρ > 0` and
+`ρ⁻ⁿ ∫_{S ∩ B_ρ(x)} |w| dHⁿ → 0` as `ρ ↓ 0`, then `r⁻ⁿ ∫_S f(η_{x,r}(z)) w(z) dHⁿ(z) → 0` as
+`r ↓ 0` for every `f ∈ C_c(ℝᴺ, ℝ)`. With `|f| ≤ C` and `f(y) = 0` for `‖y‖ ≥ R`, the integrand
+vanishes off `B_{Rr}(x)`, so `|∫_S f(η_{x,r}(z)) w(z) dHⁿ(z)| ≤ C ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ`
+(`setIntegral_indicator`, `norm_integral_le_of_norm_le`), and the normalized integral is at most
+`C Rⁿ · (Rr)⁻ⁿ ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ → 0`. -/
+theorem Submission.chartTD_blowup_integral_tendsto_zero : ∀ (n N : ℕ) (S : Set (Rn N)) (w : Rn N → ℝ) (x : Rn N), (∀ ρ : ℝ, 0 < ρ → IntegrableOn w (S ∩ Metric.ball x ρ) μHE[n]) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x ρ, |w z| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) → ∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ z in S, f (blowUpMap x r z) * w z ∂μHE[n]) (𝓝[>] 0) (𝓝 0) := by
+  intro n N S w x hw hlim f
+  -- `|f| ≤ C`, and `f y = 0` whenever `R ≤ ‖y‖`, for some `R > 0`.
+  obtain ⟨C, hC⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+  obtain ⟨R, hR, hfR⟩ := f.hasCompactSupport.exists_pos_le_norm
+  -- For `r > 0` the integrand vanishes off `B_{Rr}(x)`, which gives
+  -- `|∫_S f(η_{x,r}(z)) w(z) dHⁿ(z)| ≤ C ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ`.
+  have hbound : ∀ r : ℝ, 0 < r → ‖∫ z in S, f (blowUpMap x r z) * w z ∂μHE[n]‖ ≤
+      C * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n] := by
+    intro r hr
+    have hloc : (fun z ↦ f (blowUpMap x r z) * w z) =
+        (Metric.ball x (R * r)).indicator (fun z ↦ f (blowUpMap x r z) * w z) := by
+      funext z
+      by_cases hz : z ∈ Metric.ball x (R * r)
+      · rw [Set.indicator_of_mem hz]
+      · rw [Set.indicator_of_notMem hz]
+        rw [Metric.mem_ball, not_lt, dist_eq_norm] at hz
+        have hRz : R ≤ ‖blowUpMap x r z‖ := by
+          rw [blowUpMap, norm_smul, norm_inv, Real.norm_of_nonneg hr.le, le_inv_mul_iff₀' hr]
+          exact hz
+        rw [hfR _ hRz, zero_mul]
+    rw [hloc, setIntegral_indicator measurableSet_ball]
+    calc ‖∫ z in S ∩ Metric.ball x (R * r), f (blowUpMap x r z) * w z ∂μHE[n]‖
+        ≤ ∫ z in S ∩ Metric.ball x (R * r), C * |w z| ∂μHE[n] := by
+          refine norm_integral_le_of_norm_le ((hw _ (mul_pos hR hr)).abs.const_mul C)
+            (Eventually.of_forall fun z ↦ ?_)
+          rw [norm_mul, Real.norm_eq_abs (w z)]
+          exact mul_le_mul_of_nonneg_right (hC _) (abs_nonneg _)
+      _ = C * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n] := integral_const_mul C _
+  -- `r ↦ Rr` maps `𝓝[>] 0` into itself, so `C Rⁿ · (Rr)⁻ⁿ ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ → 0`.
+  have hRr : Tendsto (fun r : ℝ ↦ R * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have h0 : Tendsto (fun r : ℝ ↦ R * r) (𝓝 0) (𝓝 (R * 0)) := tendsto_id.const_mul R
+      rw [mul_zero] at h0
+      exact h0.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hR hr
+  have hmaj : Tendsto (fun r : ℝ ↦ C * R ^ n *
+      (((R * r) ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n])) (𝓝[>] 0) (𝓝 0) := by
+    have h := (hlim.comp hRr).const_mul (C * R ^ n)
+    rw [mul_zero] at h
+    exact h
+  -- Squeeze: `|r⁻ⁿ ∫_S f(η_{x,r}(z)) w(z) dHⁿ(z)| ≤ C Rⁿ · (Rr)⁻ⁿ ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ`.
+  refine squeeze_zero_norm' ?_ hmaj
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  have hrn : 0 < r ^ n := pow_pos hr n
+  have hRn : 0 < R ^ n := pow_pos hR n
+  rw [norm_mul, norm_inv, norm_pow, Real.norm_of_nonneg hr.le]
+  calc (r ^ n)⁻¹ * ‖∫ z in S, f (blowUpMap x r z) * w z ∂μHE[n]‖
+      ≤ (r ^ n)⁻¹ * (C * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n]) :=
+        mul_le_mul_of_nonneg_left (hbound r hr) (inv_nonneg.mpr hrn.le)
+    _ = C * R ^ n * (((R * r) ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n]) := by
+        rw [mul_pow]
+        field_simp
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
