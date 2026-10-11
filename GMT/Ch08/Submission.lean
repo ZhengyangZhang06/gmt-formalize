@@ -1,4 +1,5 @@
 import Poincare.SimonGMT.Chapter08.VarifoldConvergence
+import Poincare.SimonGMT.Chapter08.TangentRadialRigidity
 import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter02.Submanifold
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
@@ -451,6 +452,60 @@ theorem Submission.first_variation_theorems :
       rw [V.firstVariation_eq_meanCurvature_add_boundary_of_locallyBounded hV X,
         Varifold.symmetricGeneralizedBoundaryMeasure,
         Measure.restrict_restrict_of_subset subset_rfl]
+
+/-- **Simon Ch. 8, 5.1–5.4 and the use of 3.7 in 5.5/5.7** (child `varifold_tangents` of
+`main_theorem`), at a point `x` where `ρ^{1-n}‖δV‖(B_ρ(x)) → 0` (5.1). First, if
+`Θ^n(μ_V, x) = θ₀ > 0`, every `λ_j ↓ 0` has a subsequence along which `V_{x,λ_j}` converges, and
+every `C ∈ VarTan(V, x)` is stationary with `μ_C(B_ρ(0)) = θ₀ ω_n ρ^n` and `μ_C(s A) = s^n μ_C(A)`
+(5.2 and 5.3, corrected). Second, if `ρ^{-n} μ_V({y ∈ B_ρ(x) : Θ^n(μ_V, y) ≥ τ fails}) → 0`, then
+`Θ^n(μ_C, ·) ≥ τ` holds `μ_C`-a.e. for every `C ∈ VarTan(V, x)`. Between 5.2 and 5.3, the constant
+ratio `μ_C(B_R(0)) / R^n` forces `y ∈ S` for `C`-a.e. `(y, S)`: this is SimonGMT's radial rigidity,
+the equality case of 3.4. -/
+theorem Submission.varifold_tangent_theorems :
+    VarifoldTangentCones ∧ ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U)
+      (x : Euclidean N) (τ : ℝ), V.HasLocallyBoundedFirstVariation → x ∈ U → 0 < τ →
+      Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) /
+        ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) →
+      Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧
+          ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ} /
+        ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) →
+      ∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C →
+        ∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal τ ≤ θ := by
+  refine ⟨fun N n U V x θ₀ hV hx _ hdens hvar ↦ ⟨fun t ht0 ht ↦ ?_, fun C hC ↦ ?_⟩,
+    Submission.varifold_tangents_density_lower_bound Submission.density_semicontinuity_theorem⟩
+  · -- (a) `V_{x,t}(B_R(0) × G) → θ₀ ω_n R^n` as `t ↓ 0`, so the masses of `V_{x,t_j}` on `K × G`
+    -- are eventually bounded and Radon compactness on `ℝ^N` extracts a convergent subsequence.
+    have htw : Tendsto t atTop (𝓝[>] 0) := tendsto_nhdsWithin_iff.2 ⟨ht, .of_forall ht0⟩
+    have hbound : ∀ K : Set (Euclidean N), IsCompact K → K ⊆ univ → ∃ M : ℝ≥0∞, M ≠ ∞ ∧
+        ∀ᶠ j in atTop, rescaledMeasure V x (t j) (K ×ˢ (univ : Set (Grassmannian N n))) ≤ M := by
+      intro K hK _
+      obtain ⟨R, hKR⟩ := hK.isBounded.subset_closedBall 0
+      have hR : 0 < max R 1 := lt_max_of_lt_right one_pos
+      have hL : ENNReal.ofReal θ₀ * unitBallVolume n * ENNReal.ofReal (max R 1) ^ n ≠ ∞ :=
+        ENNReal.mul_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top measure_ball_lt_top.ne)
+          (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+      refine ⟨_, ENNReal.add_ne_top.2 ⟨hL, ENNReal.one_ne_top⟩, ?_⟩
+      filter_upwards [((Submission.varifold_tangents_rescaled_ball_mass_tendsto N n U V x _ _ hdens
+        hR).comp htw).eventually (eventually_lt_nhds (ENNReal.lt_add_right hL one_ne_zero))]
+        with j hj
+      exact (measure_mono (prod_mono (hKR.trans (closedBall_subset_closedBall (le_max_left R 1)))
+        subset_rfl)).trans hj.le
+    obtain ⟨φ, hφ, C, hC⟩ := Submission.varifold_radon_compactness N n univ
+      (fun j ↦ rescaledMeasure V x (t j)) isOpen_univ hbound
+    exact ⟨φ, hφ, C, fun f ↦ hC f (by simp)⟩
+  · -- (b) `C` is stationary and satisfies 5.2, which makes `μ_C(B_R(0)) / R^n` constant; hence
+    -- `p_S(y) = y` for `C`-a.e. `(y, S)`, and 5.3 follows.
+    have hstat := Submission.varifold_tangents_limit_stationary N n U V x C hV hx hvar hC
+    have hmass := Submission.varifold_tangents_limit_ball_mass N n U V x θ₀ C hdens hC
+    refine ⟨hstat, hmass, Submission.varifold_tangents_radial_stationary_homogeneous N n C hstat ?_⟩
+    have hrad := hstat.ae_normalProject_eq_zero_of_constant_mass_ratio
+      (c := ENNReal.ofReal θ₀ * unitBallVolume n) fun R hR ↦ by
+        rw [Varifold.normalizedBallMass, hmass R hR, ENNReal.ofReal_pow hR.le]
+        exact ENNReal.mul_div_cancel_right (pow_ne_zero _ (ENNReal.ofReal_pos.2 hR).ne')
+          (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+    filter_upwards [hrad] with z hz
+    rw [Grassmannian.normalProject_eq_sub, sub_eq_zero] at hz
+    exact hz.symm
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
