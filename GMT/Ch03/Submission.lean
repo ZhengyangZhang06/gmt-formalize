@@ -389,6 +389,103 @@ theorem Submission.volume_closure_le_unitBall_mul_ediam_pow : ∀ (m : ℕ) (S :
     _ = volume (Metric.ball (0 : Rn m) 1) * Metric.ediam S ^ m := by
         rw [mul_comm, ENNReal.ofReal_pow Metric.diam_nonneg, Metric.diam, ENNReal.ofReal_toReal hD]
 
+/-- **Simon Ch. 2, Theorem 1.9 (pp. 45–46), Eilenberg's inequality when `H^{m+k}(A) < ∞`**
+(`chapter-02.txt` lines 366–411), for Mathlib's unnormalized Hausdorff measures `μH[·]` and an
+arbitrary `A ⊆ ℝᴺ`: an `L`-Lipschitz `f : ℝᴺ → ℝᵐ` has a Borel `g ≥ μH[k](A ∩ f⁻¹{y})` with
+`∫ g dLᵐ ≤ ωₘ Lᵐ μH[m+k](A)`, `ωₘ = Lᵐ(B₁(0))`. As in (1)–(2), take covers `Cᵢⱼ` of `A` with
+`diam Cᵢⱼ ≤ 1/i` and `∑ⱼ diam(Cᵢⱼ)^{m+k} ≤ μH[m+k](A) + 1/i`, and the Borel functions
+`gᵢ = ∑ⱼ diam(Cᵢⱼ)ᵏ 1_{closure f(Cᵢⱼ)}`. The majorant is `g = liminf gᵢ`, so Fatou's lemma
+replaces the upper integral of Remark 1.10, and `Lᵐ(closure S) ≤ ωₘ (diam S)ᵐ` replaces the
+isodiametric inequality. -/
+theorem Submission.eilenberg_hausdorff_upper_integral_of_ne_top :
+    ∀ (N m k : ℕ) (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f →
+      μH[((m + k : ℕ) : ℝ)] A ≠ ∞ → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧
+        (∀ y, μH[(k : ℝ)] (A ∩ f ⁻¹' {y}) ≤ g y) ∧
+        ∫⁻ y, g y ≤ volume (Metric.ball (0 : Rn m) 1) * (L : ℝ≥0∞) ^ m *
+          μH[((m + k : ℕ) : ℝ)] A := by
+  intro N m k A f L hf hA
+  set ω := volume (Metric.ball (0 : Rn m) 1)
+  -- (1): covers `C i j` of `A` with `diam (C i j) ≤ 1/i` and cost `≤ μH[m+k](A) + 1/i`.
+  choose C hCcov hCdiam hCsum using fun i : ℕ ↦
+    Submission.hausdorffMeasure_exists_cover_tsum_le_add ((m + k : ℕ) : ℝ) A (i : ℝ≥0∞)⁻¹
+      (i : ℝ≥0∞)⁻¹ (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top i))
+      (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top i)) hA
+  set G : ℕ → Rn m → ℝ≥0∞ := fun i y ↦
+    ∑' j, (closure (f '' C i j)).indicator (fun _ ↦ Metric.ediam (C i j) ^ (k : ℝ)) y with hG
+  have hGj : ∀ i j, Measurable ((closure (f '' C i j)).indicator
+      fun _ : Rn m ↦ Metric.ediam (C i j) ^ (k : ℝ)) := fun i j ↦
+    measurable_const.indicator isClosed_closure.measurableSet
+  have hGmeas : ∀ i, Measurable (G i) := fun i ↦ Measurable.tsum (hGj i)
+  refine ⟨fun y ↦ liminf (fun i ↦ G i y) atTop, Measurable.liminf hGmeas, fun y ↦ ?_, ?_⟩
+  · -- (2): the `C i j` with `y ∈ f '' C i j` cover `A ∩ f⁻¹{y}`, at a cost of at most `G i y`.
+    have hcov : ∀ i, A ∩ f ⁻¹' {y} ⊆ ⋃ j : {j : ℕ // y ∈ f '' C i j}, C i j := fun i x hx ↦ by
+      obtain ⟨j, hj⟩ := mem_iUnion.1 (hCcov i hx.1)
+      exact mem_iUnion.2 ⟨⟨j, x, hj, hx.2⟩, hj⟩
+    refine (Measure.hausdorffMeasure_le_liminf_tsum (ι := fun i : ℕ ↦ {j : ℕ // y ∈ f '' C i j})
+      (k : ℝ) (A ∩ f ⁻¹' {y}) (l := atTop) (fun i : ℕ ↦ (i : ℝ≥0∞)⁻¹)
+      ENNReal.tendsto_inv_nat_nhds_zero (fun i j ↦ C i j)
+      (Eventually.of_forall fun i j ↦ hCdiam i j) (Eventually.of_forall hcov)).trans
+      (liminf_le_liminf (Eventually.of_forall fun i ↦ ?_))
+    calc ∑' j : {j : ℕ // y ∈ f '' C i j}, Metric.ediam (C i j.1) ^ (k : ℝ)
+        = ∑' j, {j : ℕ | y ∈ f '' C i j}.indicator (fun j ↦ Metric.ediam (C i j) ^ (k : ℝ)) j :=
+          tsum_subtype {j : ℕ | y ∈ f '' C i j} fun j ↦ Metric.ediam (C i j) ^ (k : ℝ)
+      _ ≤ G i y := ENNReal.tsum_le_tsum fun j ↦ by
+          by_cases hj : y ∈ f '' C i j
+          · rw [Set.indicator_of_mem (show j ∈ {j : ℕ | y ∈ f '' C i j} from hj),
+              Set.indicator_of_mem (subset_closure hj)]
+          · rw [Set.indicator_of_notMem (show j ∉ {j : ℕ | y ∈ f '' C i j} from hj)]
+            exact zero_le
+  · -- `∫ G i ≤ ωₘ Lᵐ (μH[m+k](A) + 1/i)`, since `Lᵐ(closure f(C)) ≤ ωₘ (L diam C)ᵐ`.
+    have hint : ∀ i : ℕ, ∫⁻ y, G i y ≤
+        ω * (L : ℝ≥0∞) ^ m * (μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹) := by
+      intro i
+      rw [hG]
+      dsimp only
+      rw [lintegral_tsum fun j ↦ (hGj i j).aemeasurable]
+      calc ∑' j, ∫⁻ y, (closure (f '' C i j)).indicator
+              (fun _ ↦ Metric.ediam (C i j) ^ (k : ℝ)) y
+          = ∑' j, Metric.ediam (C i j) ^ (k : ℝ) * volume (closure (f '' C i j)) :=
+            tsum_congr fun j ↦ lintegral_indicator_const isClosed_closure.measurableSet _
+        _ ≤ ∑' j, ω * (L : ℝ≥0∞) ^ m *
+              ⨆ _ : (C i j).Nonempty, Metric.ediam (C i j) ^ ((m + k : ℕ) : ℝ) :=
+            ENNReal.tsum_le_tsum fun j ↦ by
+              rcases (C i j).eq_empty_or_nonempty with h | h
+              · simp [h]
+              rw [iSup_pos h]
+              calc Metric.ediam (C i j) ^ (k : ℝ) * volume (closure (f '' C i j))
+                  ≤ Metric.ediam (C i j) ^ (k : ℝ) * (ω * Metric.ediam (f '' C i j) ^ m) := by
+                    gcongr
+                    exact Submission.volume_closure_le_unitBall_mul_ediam_pow m _
+                _ ≤ Metric.ediam (C i j) ^ (k : ℝ) *
+                      (ω * ((L : ℝ≥0∞) * Metric.ediam (C i j)) ^ m) := by
+                    gcongr
+                    exact hf.ediam_image_le _
+                _ = ω * (L : ℝ≥0∞) ^ m * Metric.ediam (C i j) ^ ((m + k : ℕ) : ℝ) := by
+                    rw [ENNReal.rpow_natCast, ENNReal.rpow_natCast, mul_pow, pow_add]
+                    ring
+        _ = ω * (L : ℝ≥0∞) ^ m *
+              ∑' j, ⨆ _ : (C i j).Nonempty, Metric.ediam (C i j) ^ ((m + k : ℕ) : ℝ) :=
+            ENNReal.tsum_mul_left
+        _ ≤ ω * (L : ℝ≥0∞) ^ m * (μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹) := by
+            gcongr
+            exact hCsum i
+    -- Fatou's lemma, and `1/i → 0`.
+    have hlim : Tendsto (fun i : ℕ ↦ ω * (L : ℝ≥0∞) ^ m *
+        (μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹)) atTop
+        (𝓝 (ω * (L : ℝ≥0∞) ^ m * μH[((m + k : ℕ) : ℝ)] A)) := by
+      have h : Tendsto (fun i : ℕ ↦ μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹) atTop
+          (𝓝 (μH[((m + k : ℕ) : ℝ)] A + 0)) :=
+        tendsto_const_nhds.add ENNReal.tendsto_inv_nat_nhds_zero
+      rw [add_zero] at h
+      exact ENNReal.Tendsto.const_mul h
+        (Or.inr (ENNReal.mul_ne_top measure_ball_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top)))
+    calc ∫⁻ y, liminf (fun i ↦ G i y) atTop ≤ liminf (fun i ↦ ∫⁻ y, G i y) atTop :=
+          lintegral_liminf_le hGmeas
+      _ ≤ liminf (fun i : ℕ ↦ ω * (L : ℝ≥0∞) ^ m *
+            (μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹)) atTop :=
+          liminf_le_liminf (Eventually.of_forall hint)
+      _ = ω * (L : ℝ≥0∞) ^ m * μH[((m + k : ℕ) : ℝ)] A := hlim.liminf_eq
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
