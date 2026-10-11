@@ -407,6 +407,132 @@ theorem Submission.egorov_closed_subset_uniformOn_compact_volume : ∀ (n : ℕ)
     have hxA₀ := (hFA j hj).1
     exact ⟨⟨hxA₀.1, Metric.ball_subset_ball (by linarith [Nat.le_ceil r]) (hr hx)⟩,
       fun hxt => hxA₀.2 (mem_iUnion.2 ⟨_, hxt⟩)⟩
+/-- **Uniform remainder estimate 1.6(‡) on a closed set** (Simon Ch. 2, proof of Theorem 1.5,
+`chapter-02.txt` lines 251–265): let `f : ℝⁿ → ℝ` be `K`-Lipschitz, `L` Borel and `S` Borel with
+`Df(x) = L(x)` at every `x ∈ S`. Then for `ε ∈ (0, ∞]` there is a closed `A ⊆ S` with
+`Lⁿ(S ∖ A) < ε` such that for every compact `Q ⊆ A` and `ε' > 0` some `δ > 0` gives
+`|f(y) − f(x) − L(x)(y − x)| ≤ ε'|y − x|` for `x ∈ Q`, `y ∈ A`, `|x − y| < δ`. With
+`R(x, y) = (f(y) − f(x) − L(x)(y − x))/|y − x|`, the suprema
+`ηₖ(x) = sup {|R(x, y)| : y ∈ S, 0 < |y − x| < 1/(k + 1)}` are at most `K + ‖L(x)‖`, tend to `0`
+on `S`, and are Borel (by continuity of `f` off the diagonal they are suprema over a countable
+dense `D ⊆ S`); Egoroff (`Submission.egorov_closed_subset_uniformOn_compact_volume`) gives `A`,
+and `η_{k₀} < ε'` on `Q` gives the estimate with `δ = 1/(k₀ + 1)`. -/
+theorem Submission.lipschitz_uniform_remainder_on_closed_subset : ∀ (n : ℕ) (f : Rn n → ℝ)
+    (K : ℝ≥0) (L : Rn n → (Rn n →L[ℝ] ℝ)) (S : Set (Rn n)), LipschitzWith K f → Measurable L →
+    MeasurableSet S → (∀ x ∈ S, HasFDerivAt f (L x) x) → ∀ ε : ℝ≥0∞, 0 < ε →
+    ∃ A ⊆ S, IsClosed A ∧ volume (S \ A) < ε ∧
+      ∀ Q : Set (Rn n), IsCompact Q → Q ⊆ A → ∀ ε' : ℝ, 0 < ε' → ∃ δ : ℝ, 0 < δ ∧
+        ∀ x ∈ Q, ∀ y ∈ A, dist x y < δ → ‖f y - f x - L x (y - x)‖ ≤ ε' * ‖y - x‖ := by
+  intro n f K L S hf hL hS hdiff ε hε
+  -- Step 1: `φ k x y = |R(x, y)|` on the shell `0 < |y - x| < 1/(k + 1)` (`0` elsewhere; Simon's
+  -- `1/k`, `k ≥ 1`, reindexed) and `η k x = sup_{y ∈ S} φ k x y`, with `0 ≤ φ ≤ K + ‖L x‖`.
+  set φ : ℕ → Rn n → Rn n → ℝ := fun k x y =>
+    if 0 < ‖y - x‖ ∧ ‖y - x‖ < 1 / ((k : ℝ) + 1) then ‖f y - f x - L x (y - x)‖ / ‖y - x‖
+    else 0 with hφ
+  set η : ℕ → Rn n → ℝ := fun k x => ⨆ y : S, φ k x y
+  have hφ0 : ∀ k x y, 0 ≤ φ k x y := by
+    intro k x y
+    simp only [hφ]
+    split_ifs
+    · positivity
+    · exact le_rfl
+  have hφK : ∀ k x y, φ k x y ≤ K + ‖L x‖ := by
+    intro k x y
+    simp only [hφ]
+    split_ifs with h
+    · rw [div_le_iff₀ h.1]
+      calc ‖f y - f x - L x (y - x)‖ ≤ ‖f y - f x‖ + ‖L x (y - x)‖ := norm_sub_le _ _
+        _ ≤ K * ‖y - x‖ + ‖L x‖ * ‖y - x‖ :=
+          add_le_add (by simpa only [dist_eq_norm] using hf.dist_le_mul y x) ((L x).le_opNorm _)
+        _ = (K + ‖L x‖) * ‖y - x‖ := by ring
+    · positivity
+  have hbdd : ∀ k x (T : Set (Rn n)), BddAbove (range fun y : T => φ k x y) :=
+    fun k x T => ⟨K + ‖L x‖, by rintro _ ⟨y, rfl⟩; exact hφK k x y⟩
+  have hη0 : ∀ k x, 0 ≤ η k x := fun k x => Real.iSup_nonneg fun y => hφ0 k x y
+  -- Step 2: `η k x → 0` for `x ∈ S`, since `|R(x, y)| ≤ e/2` for `|y - x| < ρ(x, e)`.
+  have hconv : ∀ x ∈ S, Tendsto (fun k => η k x) atTop (𝓝 0) := by
+    intro x hx
+    rw [Metric.tendsto_atTop]
+    intro e he
+    obtain ⟨ρ, hρ, hball⟩ :=
+      Metric.eventually_nhds_iff.mp ((hdiff x hx).isLittleO.def (half_pos he))
+    obtain ⟨N, hN⟩ := exists_nat_one_div_lt hρ
+    refine ⟨N, fun k hk => ?_⟩
+    have hle : η k x ≤ e / 2 := by
+      refine Real.iSup_le (fun y => ?_) (half_pos he).le
+      simp only [hφ]
+      split_ifs with h
+      · rw [div_le_iff₀ h.1]
+        refine hball ?_
+        rw [dist_eq_norm]
+        calc ‖(y : Rn n) - x‖ < 1 / ((k : ℝ) + 1) := h.2
+          _ ≤ 1 / ((N : ℝ) + 1) := by gcongr
+          _ < ρ := hN
+      · exact (half_pos he).le
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg (hη0 k x)]
+    linarith
+  -- Step 3: each `η k` is Borel. For a countable `D ⊆ S` with `S ⊆ closure D`,
+  -- `η k x = sup_{z ∈ D} φ k x z`, as `z ↦ |R(x, z)|` is continuous on the open shell.
+  have hfc : Continuous f := hf.continuous
+  obtain ⟨D, hDS, hDc, hSD⟩ :=
+    (TopologicalSpace.IsSeparable.of_separableSpace S).exists_countable_dense_subset
+  have hηD : ∀ k x, η k x = ⨆ z : D, φ k x z := by
+    intro k x
+    have hM0 : 0 ≤ ⨆ z : D, φ k x z := Real.iSup_nonneg fun z => hφ0 k x z
+    refine le_antisymm (Real.iSup_le (fun y => ?_) hM0)
+      (Real.iSup_le (fun z => le_ciSup (hbdd k x S) ⟨z, hDS z.2⟩) (hη0 k x))
+    by_cases hy : 0 < ‖(y : Rn n) - x‖ ∧ ‖(y : Rn n) - x‖ < 1 / ((k : ℝ) + 1)
+    · have hU : {z : Rn n | 0 < ‖z - x‖ ∧ ‖z - x‖ < 1 / ((k : ℝ) + 1)} ∈ 𝓝 (y : Rn n) := by
+        refine IsOpen.mem_nhds ?_ hy
+        have hc : Continuous fun z : Rn n => ‖z - x‖ := (continuous_id.sub continuous_const).norm
+        exact (isOpen_lt continuous_const hc).inter (isOpen_lt hc continuous_const)
+      have hR : ContinuousAt (fun z => ‖f z - f x - L x (z - x)‖ / ‖z - x‖) (y : Rn n) := by
+        refine ContinuousAt.div ?_ ?_ hy.1.ne' <;> fun_prop
+      have hRD : Tendsto (fun z => ‖f z - f x - L x (z - x)‖ / ‖z - x‖) (𝓝[D] (y : Rn n))
+          (𝓝 (‖f y - f x - L x (y - x)‖ / ‖(y : Rn n) - x‖)) :=
+        tendsto_nhdsWithin_of_tendsto_nhds hR
+      have : (𝓝[D] (y : Rn n)).NeBot := mem_closure_iff_nhdsWithin_neBot.mp (hSD y.2)
+      calc φ k x y = ‖f y - f x - L x (y - x)‖ / ‖(y : Rn n) - x‖ := ite_eq_left hy
+        _ ≤ ⨆ z : D, φ k x z := by
+          refine le_of_tendsto hRD ?_
+          filter_upwards [self_mem_nhdsWithin, mem_nhdsWithin_of_mem_nhds hU] with z hzD hzU
+          calc ‖f z - f x - L x (z - x)‖ / ‖z - x‖ = φ k x z := (ite_eq_left hzU).symm
+            _ ≤ ⨆ z : D, φ k x z := le_ciSup (hbdd k x D) ⟨z, hzD⟩
+    · calc φ k x y = 0 := ite_eq_right hy
+        _ ≤ ⨆ z : D, φ k x z := hM0
+  have hηm : ∀ k, Measurable (η k) := by
+    intro k
+    have hφm : ∀ z : D, Measurable fun x => φ k x z := by
+      intro z
+      have hd : Measurable fun x : Rn n => ‖(z : Rn n) - x‖ :=
+        (measurable_const.sub measurable_id).norm
+      simp only [hφ]
+      refine Measurable.ite ((measurableSet_lt measurable_const hd).inter
+        (measurableSet_lt hd measurable_const)) ?_ measurable_const
+      exact ((measurable_const.sub hfc.measurable).sub (ContinuousLinearMap.measurable_apply₂.comp
+        (hL.prodMk (measurable_const.sub measurable_id)))).norm.div hd
+    have : Countable D := hDc.to_subtype
+    rw [show η k = fun x => ⨆ z : D, φ k x z from funext (hηD k)]
+    exact Measurable.iSup hφm
+  -- Step 4: Egoroff (sibling `egorov_sigma_finite`) with limit `0` gives the closed set `A`.
+  obtain ⟨A, hAS, hAc, hAμ, hAu⟩ := Submission.egorov_closed_subset_uniformOn_compact_volume n η 0
+    S hηm measurable_const hS hconv ε hε
+  refine ⟨A, hAS, hAc, hAμ, fun Q hQ hQA ε' hε' => ?_⟩
+  -- Step 5: `η k₀ < ε'` on `Q` gives the estimate for `y ∈ A`, `|x - y| < δ = 1/(k₀ + 1)`.
+  obtain ⟨k₀, hk₀⟩ := (Metric.tendstoUniformlyOn_iff.mp (hAu Q hQ hQA) ε' hε').exists
+  refine ⟨1 / ((k₀ : ℝ) + 1), by positivity, fun x hx y hy hxy => ?_⟩
+  obtain rfl | hyx := eq_or_ne y x
+  · simp
+  have hpos : 0 < ‖y - x‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hyx)
+  have hlt : ‖y - x‖ < 1 / ((k₀ : ℝ) + 1) := by rwa [← dist_eq_norm, dist_comm]
+  have h1 : ‖f y - f x - L x (y - x)‖ ≤ η k₀ x * ‖y - x‖ := by
+    rw [← div_le_iff₀ hpos]
+    calc ‖f y - f x - L x (y - x)‖ / ‖y - x‖ = φ k₀ x y := (ite_eq_left ⟨hpos, hlt⟩).symm
+      _ ≤ η k₀ x := le_ciSup (hbdd k₀ x S) ⟨y, hAS hy⟩
+  have h2 : η k₀ x < ε' := by
+    have h := hk₀ x hx
+    rwa [Pi.zero_apply, dist_comm, Real.dist_eq, sub_zero, abs_of_nonneg (hη0 k₀ x)] at h
+  exact h1.trans (mul_le_mul_of_nonneg_right h2.le (norm_nonneg _))
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
