@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b4fce7e5cd60a1d8c33bff4b43f4a637a9de4cba5f2a454fda9d2f2668e4235c",
+  "git_delta": {
+    "base_commit": "9f3d1f1556c5a3c2adb471302296bc92b1aa8dae",
+    "candidate_commit": "7ad42b5b348c5a2c0cecb2b19e1132b50c82403d",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "lusin_compact_exhaustion_of_measurable",
+    "diff_sha256": "4227296a9285cdec5d4b05afe2bd9eb370dd02c1fb3a9400e87e7020fbbbc1c8",
+    "source_sha256": "b5dcc0dfc4de572122182aeb892fee104381afc1dcd75a205970bbcf22bb6d54",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lusin_compact_exhaustion_of_measurable",
+      "statement": "∀ {Y : Type} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y] (n : ℕ) (g : EuclideanSpace ℝ (Fin n) → Y) (S : Set (EuclideanSpace ℝ (Fin n))), Measurable g → MeasurableSet S → volume S ≠ ⊤ → ∃ C : ℕ → Set (EuclideanSpace ℝ (Fin n)), (∀ j, IsCompact (C j) ∧ C j ⊆ S ∧ ContinuousOn g (C j)) ∧ volume (S \\ ⋃ j, C j) = 0",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
