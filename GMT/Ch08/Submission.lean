@@ -410,6 +410,135 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Test functions for the sequential form of the Alaoglu step in Simon Ch. 1, 4.16 (erratum: the
+Alaoglu theorem only yields a subnet).  If `X` is locally compact, Hausdorff and second countable,
+there is a sequence `g` in `C_c(X, ℝ)` such that every `f ∈ C_c(X, ℝ)` has a compact
+`K ⊇ tsupport f` and, for each `η > 0`, some `g k` with `tsupport (g k) ⊆ K` and `|f - g k| ≤ η`
+everywhere. -/
+theorem Submission.radon_compactlySupported_countable_approx :
+    ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X]
+      [SecondCountableTopology X], ∃ g : ℕ → C_c(X, ℝ), ∀ f : C_c(X, ℝ), ∃ K : Set X,
+        IsCompact K ∧ tsupport f ⊆ K ∧ ∀ η : ℝ, 0 < η → ∃ k : ℕ, tsupport (g k) ⊆ K ∧
+          ∀ x : X, |f x - g k x| ≤ η := by
+  intro X _ _ _ _
+  -- Step 1: `C(X, ℝ)` with the compact-open topology is second countable.  This inlines Mathlib's
+  -- `ContinuousMap.compactOpen_eq_generateFrom` and `ContinuousMap.instSecondCountableTopology`
+  -- (`Mathlib.Topology.ContinuousMap.SecondCountableSpace`, outside this file's imports), with
+  -- the closures of the relatively compact basic open sets of `X` as the compact sets.
+  set S : Set (Set X) :=
+    closure '' {B | B ∈ TopologicalSpace.countableBasis X ∧ IsCompact (closure B)}
+  set T : Set (Set ℝ) := TopologicalSpace.countableBasis ℝ
+  have hT : TopologicalSpace.IsTopologicalBasis T := TopologicalSpace.isBasis_countableBasis ℝ
+  have hS₁ : ∀ K ∈ S, IsCompact K := by
+    rintro _ ⟨B, hB, rfl⟩
+    exact hB.2
+  have hS₂ : ∀ f : C(X, ℝ), ∀ x, ∀ V ∈ T, f x ∈ V → ∃ K ∈ S, K ∈ 𝓝 x ∧ MapsTo f K V := by
+    intro f x V hV hxV
+    have hpre : f ⁻¹' V ∈ 𝓝 x := ((hT.isOpen hV).preimage f.continuous).mem_nhds hxV
+    obtain ⟨C, hCx, hCV, hC⟩ := local_compact_nhds hpre
+    obtain ⟨B, hB, hxB, hBC⟩ := (TopologicalSpace.isBasis_countableBasis X).mem_nhds_iff.1 hCx
+    have hBC' : closure B ⊆ C := closure_minimal hBC hC.isClosed
+    refine ⟨closure B, ⟨B, ⟨hB, hC.of_isClosed_subset isClosed_closure hBC'⟩, rfl⟩, ?_, ?_⟩
+    · exact mem_of_superset
+        ((TopologicalSpace.isOpen_of_mem_countableBasis hB).mem_nhds hxB) subset_closure
+    · exact fun y hy => hCV (hBC' hy)
+  have hkey : (ContinuousMap.compactOpen : TopologicalSpace C(X, ℝ)) =
+      TopologicalSpace.generateFrom (Set.image2 (fun K t ↦
+        {f : C(X, ℝ) | MapsTo f K (⋃₀ t)}) S {t : Set (Set ℝ) | t.Finite ∧ t ⊆ T}) := by
+    apply le_antisymm
+    · apply_rules [TopologicalSpace.generateFrom_anti, image2_subset_iff.mpr]
+      intro K hK t ht
+      exact mem_image2_of_mem (hS₁ K hK) (isOpen_sUnion fun _ h ↦ hT.isOpen <| ht.2 h)
+    · refine le_of_nhds_le_nhds fun f ↦ ?_
+      simp only [ContinuousMap.nhds_compactOpen, le_iInf_iff, le_principal_iff]
+      intro K (hK : IsCompact K) U (hU : IsOpen U) hfKU
+      simp only [TopologicalSpace.nhds_generateFrom]
+      obtain ⟨t, htT, htf, hTU, hKT⟩ :
+          ∃ t ⊆ T, t.Finite ∧ (∀ V ∈ t, V ⊆ U) ∧ f '' K ⊆ ⋃₀ t := by
+        rw [hT.open_eq_sUnion' hU, mapsTo_iff_image_subset, sUnion_eq_biUnion] at hfKU
+        obtain ⟨t, ht, hfin, htK⟩ :=
+          (hK.image (map_continuous f)).elim_finite_subcover_image (fun V hV ↦ hT.isOpen hV.1)
+            hfKU
+        refine ⟨t, fun _ h ↦ (ht h).1, hfin, fun _ h ↦ (ht h).2, ?_⟩
+        rwa [sUnion_eq_biUnion]
+      rw [image_subset_iff] at hKT
+      obtain ⟨s, hsS, hsf, hKs, hst⟩ :
+          ∃ s ⊆ S, s.Finite ∧ K ⊆ ⋃₀ s ∧ MapsTo f (⋃₀ s) (⋃₀ t) := by
+        have : ∀ x ∈ K, ∃ L ∈ S, L ∈ 𝓝 x ∧ MapsTo f L (⋃₀ t) := by
+          intro x hx
+          rcases hKT hx with ⟨V, hVt, hxV⟩
+          rcases hS₂ f x V (htT hVt) hxV with ⟨L, hLS, hLx, hLV⟩
+          exact ⟨L, hLS, hLx, hLV.mono_right <| subset_sUnion_of_mem hVt⟩
+        choose! L hLS hLmem hLt using this
+        rcases hK.elim_nhds_subcover L hLmem with ⟨s, hsK, hs⟩
+        refine ⟨L '' s, image_subset_iff.2 fun x hx ↦ hLS x <| hsK x hx, s.finite_toSet.image _,
+          by rwa [sUnion_image], ?_⟩
+        rw [mapsTo_sUnion, forall_mem_image]
+        exact fun x hx ↦ hLt x <| hsK x hx
+      have hsub : (⋂ L ∈ s, {g : C(X, ℝ) | MapsTo g L (⋃₀ t)}) ⊆ {g | MapsTo g K U} := by
+        simp only [← ofPred_forall, ← mapsTo_iUnion, ← sUnion_eq_biUnion]
+        exact fun g hg ↦ hg.mono hKs (sUnion_subset hTU)
+      refine mem_of_superset ((biInter_mem hsf).2 fun L hL ↦ ?_) hsub
+      refine mem_iInf_of_mem _ <| mem_iInf_of_mem ?_ <| mem_principal_self _
+      exact ⟨hst.mono_left (subset_sUnion_of_mem hL), mem_image2_of_mem (hsS hL) ⟨htf, htT⟩⟩
+  have hcount : (Set.image2 (fun K t ↦ {f : C(X, ℝ) | MapsTo f K (⋃₀ t)}) S
+      {t : Set (Set ℝ) | t.Finite ∧ t ⊆ T}).Countable :=
+    (((TopologicalSpace.countable_countableBasis X).mono fun _ hB => hB.1).image _).image2
+      (countable_ofPred_finite_subset (TopologicalSpace.countable_countableBasis ℝ)) _
+  have : SecondCountableTopology C(X, ℝ) := ⟨⟨_, hcount, hkey⟩⟩
+  -- Step 2: a dense sequence `d` in `C(X, ℝ)` approximates every `h` uniformly on compact sets,
+  -- since the compact-open topology is that of the compact-convergence uniformity.
+  obtain ⟨d, hd⟩ : ∃ d : ℕ → C(X, ℝ), DenseRange d :=
+    ⟨TopologicalSpace.denseSeq C(X, ℝ), TopologicalSpace.denseRange_denseSeq C(X, ℝ)⟩
+  have happrox : ∀ (h : C(X, ℝ)) (L : Set X), IsCompact L → ∀ η : ℝ, 0 < η →
+      ∃ i, ∀ x ∈ L, |h x - d i x| < η := by
+    intro h L hL η hη
+    have hW : {p : C(X, ℝ) × C(X, ℝ) | ∀ x ∈ L,
+        (p.1 x, p.2 x) ∈ {q : ℝ × ℝ | dist q.1 q.2 < η}} ∈ uniformity C(X, ℝ) :=
+      ContinuousMap.hasBasis_compactConvergenceUniformity.mem_of_mem
+        (i := (L, {q : ℝ × ℝ | dist q.1 q.2 < η})) ⟨hL, Metric.dist_mem_uniformity hη⟩
+    obtain ⟨_, ⟨i, rfl⟩, hi⟩ := hd.inter_nhds_nonempty (UniformSpace.ball_mem_nhds h hW)
+    exact ⟨i, fun x hx => by simpa [Real.dist_eq] using hi x hx⟩
+  -- Step 3: a compact exhaustion `E` of `X` and Urysohn cutoffs `χ m` with values in `[0, 1]`,
+  -- equal to `1` on `E m` and vanishing off `interior (E (m + 1))`.
+  set E := CompactExhaustion.choice X
+  choose χ hχ1 hχ0 hχc hχI using fun m => exists_continuous_one_zero_of_isCompact
+    (E.isCompact m) isOpen_interior.isClosed_compl
+    (disjoint_compl_right_iff_subset.2 (E.subset_interior_succ m))
+  have hχsupp : ∀ m, tsupport (χ m) ⊆ E (m + 1) := by
+    intro m
+    refine closure_minimal ?_ (E.isCompact (m + 1)).isClosed
+    intro x hx
+    by_contra hxE
+    exact hx (hχ0 m (fun hxi => hxE (interior_subset hxi)))
+  -- Step 4: the family `g (Nat.pair m i) = χ m * d i`, supported in `E (m + 1)`.
+  let g : ℕ → C_c(X, ℝ) := fun k =>
+    ⟨χ (Nat.unpair k).1 * d (Nat.unpair k).2, (hχc (Nat.unpair k).1).mul_right⟩
+  have hgx : ∀ k x, g k x = χ (Nat.unpair k).1 x * d (Nat.unpair k).2 x := fun _ _ => rfl
+  have hgsupp : ∀ k, tsupport (g k) ⊆ E ((Nat.unpair k).1 + 1) := fun k =>
+    (tsupport_mul_subset_left (f := χ (Nat.unpair k).1) (g := d (Nat.unpair k).2)).trans
+      (hχsupp _)
+  clear_value g
+  -- Step 5: if `tsupport f ⊆ E m`, take `K = E (m + 1)`.  As `f = χ m * f`, we get
+  -- `|f - χ m * d i| = χ m * |f - d i| ≤ η` once `|f - d i| < η` on `E (m + 1)`.
+  refine ⟨g, fun f => ?_⟩
+  obtain ⟨m, hm⟩ := E.exists_superset_of_isCompact f.hasCompactSupport.isCompact
+  refine ⟨E (m + 1), E.isCompact _, hm.trans (E.subset_succ m), fun η hη => ?_⟩
+  obtain ⟨i, hi⟩ := happrox f (E (m + 1)) (E.isCompact _) η hη
+  refine ⟨Nat.pair m i, ?_, fun x => ?_⟩
+  · simpa [Nat.unpair_pair] using hgsupp (Nat.pair m i)
+  · have hfx : f x = χ m x * f x := by
+      by_cases hx : x ∈ E m
+      · rw [hχ1 m hx, Pi.one_apply, one_mul]
+      · rw [image_eq_zero_of_notMem_tsupport (fun h => hx (hm h)), mul_zero]
+    rw [hgx, Nat.unpair_pair, hfx, ← mul_sub, abs_mul, abs_of_nonneg (hχI m x).1]
+    by_cases hx : x ∈ E (m + 1)
+    · calc χ m x * |f x - d i x| ≤ 1 * η :=
+            mul_le_mul (hχI m x).2 (hi x hx).le (abs_nonneg _) zero_le_one
+        _ = η := one_mul η
+    · rw [hχ0 m (fun h => hx (interior_subset h)), Pi.zero_apply, zero_mul]
+      exact hη.le
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
