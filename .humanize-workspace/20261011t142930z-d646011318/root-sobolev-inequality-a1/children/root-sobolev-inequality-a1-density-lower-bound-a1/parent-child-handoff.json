@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean",
+        "rg -n 'theorem exists_disjoint_subfamily_covering_enlargement_closedBall' -A 12 <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "rg -n 'theorem lintegral_comp_eq_lintegral_meas_lt_mul|theorem lintegral_eq_lintegral_meas_lt|theorem lintegral_comp_eq_lintegral_meas_le_mul|theorem lintegral_rpow_eq_lintegral_meas_lt_mul' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "rg -n 'countable_of_nonempty_interior|countable_of_isOpen' <snapshot>/mathlib/Mathlib",
+        "rg -n '^theorem|^lemma|^def|^protected theorem' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "sed -n 586,880p book/chapter-04.txt (Simon 5.1-5.9 printed text)",
+        "grep -rn 'theorem contDiff_of_tsupport_subset|theorem exists_fiveTimesCovering|theorem integrableOn_norm_tangentialGradient' lake-packages-25730c7c/simongmt/Poincare/SimonGMT",
+        "cat simongmt/Poincare/SimonGMT/Chapter04/{SobolevCovering,GoodRadius,SobolevGoodRadius,SobolevTruncation,SobolevLayerCake,Sobolev,CompactWeighted}.lean Chapter01/DensityCovering.lean",
+        "git -C lake-packages-25730c7c/simongmt rev-parse HEAD",
+        "lake env lean GMT/Ch04/Submission.lean -o /tmp/sobolev-a1-audit/olean/GMT/Ch04/Submission.olean",
+        "python3 -I gen_challenges.py: verifier/lean_contract.validate_lean_statement + gmt-compare.child_modules(mode=contract) for each child; LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/sobolev-a1-audit/olean lean Challenge_<name>.lean",
+        "LEAN_PATH=... lean /tmp/sobolev-a1-audit/lean/Assembly.lean (parent frozen type proved from the uncle and six sorry'd children; #print axioms)",
+        "LEAN_PATH=... lean /tmp/sobolev-a1-audit/lean/Inspect.lean (Iff.rfl against explicit @HPow.hPow ℝ ℕ ℝ / Real.rpow / Measure toReal forms)",
+        "lake env lean /tmp/sobolev-a1-audit/lean/Axioms.lean (#print axioms of cited SimonGMT and Mathlib lemmas)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-sobolev-inequality-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevCovering.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/GoodRadius.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevGoodRadius.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevTruncation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/SobolevLayerCake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Sobolev.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/CompactWeighted.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityCovering.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/sobolev-a1-audit/children.json",
+        "/tmp/sobolev-a1-audit/lean/Assembly.lean",
+        "/tmp/sobolev-a1-audit/lean/Inspect.lean",
+        "/tmp/sobolev-a1-audit/lean/Axioms.lean"
+      ],
+      "conclusion": "Contract provenance. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 6e58e5dd…0f4770b). The manifest pins project ff75f52 and Mathlib 25730c7c. The SimonGMT package is at the pinned revision 2b3663083f3fe399b6296fb8eaee52169170e197.\n\nMathlib lemmas available in the snapshot, each depending only on propext, Classical.choice and Quot.sound:\n- Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall (requires τ > 3; used with τ = 5)\n- Set.PairwiseDisjoint.countable_of_nonempty_interior\n- the Layercake lemmas lintegral_comp_eq_lintegral_meas_lt_mul and lintegral_rpow_eq_lintegral_meas_lt_mul\n- Real.smoothTransition (smooth, monotone, values in [0,1], 0 on (−∞,0], 1 on [1,∞))\n- withDensity_absolutelyContinuous, exists_measurable_superset_of_null, Tendsto.limUnder_eq\n- LocallyIntegrableOn.integrableOn_compact_subset, Continuous.integrable_of_hasCompactSupport\n- intervalIntegral.integral_comp_mul_left, MonotoneOn.intervalIntegrable, Real.rpow_inv_natCast_pow\n- Submodule.norm_starProjection_apply_le\n\nPinned SimonGMT. It contains a kernel-checked Sobolev proof for its own Chapter04.RectifiableVarifold. That structure differs from the contract's, so its varifold-specific lemmas cannot be applied. Its general lemmas are reusable as tools, each with the same three axioms only:\n- Chapter04.lintegral_le_of_ae_exists_good_radius (5-times covering plus summation)\n- exists_smooth_superlevel_cutoff\n- lintegral_smooth_truncation_energy_le\n- lintegral_superlevel_le_of_positive_shifts\n- rpow_one_sub_le_of_le_rpow_mul\n- intervalIntegrable_radiusQuotient_of_monotoneOn\n- RectifiableVarifold.contDiff_of_tsupport_subset (fully general despite the namespace)\n- Chapter01.exists_fiveTimesCovering\nIts calculus lemma exists_goodRadius_of_local_radius_inequality has a weaker constant (4·5ⁿM^{1/n}, r ≤ R). The corrected Lemma 5.8 child therefore keeps the parent's sharp constant and is proved directly.\n\nChild type checks. With GMT.Ch04.Submission compiled to an olean:\n- All six child types pass validate_lean_statement and elaborate in comparator-generated NodeChallenge files (contract scope: the opens, namespace GMT.Ch04, noncomputable section, open RectifiableVarifold); the only diagnostics are the expected sorry warnings.\n- Iff.rfl confirms ℕ-powers and Real.rpow where intended.\n- The parent's frozen type is proved, with no sorry in its body, from the uncle weighted_monotonicity_identity (frozen type copied byte-identically) and the six children. #print axioms shows sorryAx only through the stubs."
+    }
+  ],
+  "parent_id": "root.sobolev_inequality-a1",
+  "child_id": "root.sobolev_inequality-a1.density_lower_bound-a1",
+  "subproblem": {
+    "key": "density_lower_bound",
+    "title": "Θ ≥ 1 μ_V-a.e. in U from θ ≥ 1 and ApproxTangentAE (statement (1.1))",
+    "statement": "Assume ApproxTangentAE. Let n ≥ 1, ℓ ∈ ℕ, V a rectifiable n-varifold in E = ℝ^{n+ℓ}, U ⊆ E open, and suppose θ ≥ 1 μ_V-a.e. in U (V.MultiplicityGE 1 U). Then for μ_V-a.e. x ∈ U the density Θ(x) = lim_{ρ↓0} μ_V(B_ρ(x))/(ω_nρⁿ) exists (V.HasDensityAt x (V.density x)) and Θ(x) ≥ 1.",
+    "lean_statement": "ApproxTangentAE → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), 0 < n → IsOpen U → V.MultiplicityGE 1 U → ∀ᵐ x ∂V.weight, x ∈ U → V.HasDensityAt x (V.density x) ∧ 1 ≤ V.density x",
+    "lean_name": "sobolev_density_ge_one_ae",
+    "depends_on": [],
+    "natural_proof": "Conventions. E = Ambient n ℓ = ℝ^{n+ℓ}; Hⁿ = μHE[n]; for an admissible pair a = (M, θ), mk a = v(M, θ) and its weight is pairWeight n M θ = (Hⁿ⌞M) with density x ↦ ofReal θ(x); μ_V = V.weight; B_ρ(x) = closedBall x ρ; ω_n = omega n; V.HasDensityAt x t means μ_V(B_ρ(x))/(ω_nρⁿ) → t as ρ ↓ 0 (filter 𝓝[>]0, with μ_V(·) read as a real number via Measure.real), and V.density x is limUnder (𝓝[>]0) of the same quotient. Source: Step 1, statement (1.1), of the parent proof (Simon Ch. 4, opening of §5: 'θ ≥ 1 μ_V-a.e. in U' gives Θ ≥ 1 μ_V-a.e. in U, where Θ = θ by ApproxTangentAE).\n\n1. By V.MultiplicityGE 1 U there is an admissible pair a = (M, θ) with mk a = V and θ(x) ≥ 1 for Hⁿ⌞(M ∩ U)-a.e. x.\n2. Since V = mk a and the weight is defined by Quot.lift (which computes on mk a), μ_V = pairWeight n M θ = (Hⁿ⌞M).withDensity(ofReal ∘ θ). A measure with a density with respect to ν is absolutely continuous with respect to ν (Mathlib withDensity_absolutelyContinuous), so μ_V ≪ Hⁿ⌞M. Consequently every property that holds Hⁿ⌞M-a.e. also holds μ_V-a.e.\n3. U is open, hence a Borel set. Therefore Hⁿ⌞(M ∩ U) = (Hⁿ⌞M)⌞U (restrict_restrict for the measurable set U), and the statement of step 1 is equivalent to: for Hⁿ⌞M-a.e. x, x ∈ U ⇒ θ(x) ≥ 1 (ae_restrict_iff' for the measurable set U).\n4. ApproxTangentAE applied to n > 0, ℓ and the pair a gives, for Hⁿ⌞M-a.e. x, (mk a).HasDensityAt x (θ(x)); as mk a = V, this says V.HasDensityAt x (θ(x)).\n5. Let x be a point of the intersection of the two Hⁿ⌞M-full sets of steps 3 and 4, and suppose x ∈ U. Then V.HasDensityAt x (θ(x)). The filter 𝓝[>]0 on ℝ is nontrivial and ℝ is Hausdorff, so the limit is unique and limUnder returns it (Mathlib Tendsto.limUnder_eq): V.density x = θ(x). Hence V.HasDensityAt x (V.density x), and V.density x = θ(x) ≥ 1 by step 3.\n6. So the implication 'x ∈ U ⇒ (V.HasDensityAt x (V.density x) ∧ 1 ≤ V.density x)' holds for Hⁿ⌞M-a.e. x, and by step 2 it holds for μ_V-a.e. x. ∎",
+    "proof_key_steps": [
+      "MultiplicityGE gives a pair a = (M, θ) with mk a = V and θ ≥ 1 Hⁿ-a.e. on M ∩ U",
+      "μ_V = (Hⁿ⌞M).withDensity θ is absolutely continuous w.r.t. Hⁿ⌞M",
+      "ApproxTangentAE gives HasDensityAt x (θ x) for Hⁿ⌞M-a.e. x, so density x = θ x by uniqueness of limits",
+      "Combine on U (Borel) and transfer the Hⁿ⌞M-a.e. statement to μ_V-a.e."
+    ]
+  },
+  "audit": {
+    "key": "density_lower_bound",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The frozen definitions support every step: MultiplicityGE supplies the representative, withDensity transfers almost-everywhere statements, openness justifies restriction to U, and ApproxTangentAE plus limUnder uniqueness identifies the density. No structural or parent conclusion is assumed."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-sobolev-inequality-a1-density-lower-bound-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-sobolev-inequality-a1-density-lower-bound-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-sobolev-inequality-a1-density-lower-bound-a1/parent-supplied-natural-proof.json"
+}
