@@ -410,6 +410,60 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 8, 5.8 (Compactness Theorem)**, "a direct consequence of" Ch. 1, 4.16, 3.7 and 5.5.
+Uniform mass bounds on compact sets let the Radon compactness theorem (Ch. 1, 4.16, corrected)
+extract `V_{φ(j)} → V`; zero extension of test functions on `Gₙ(U)` makes this convergence as Radon
+measures on `Gₙ(U)`; semicontinuity 3.7 along the subsequence gives locally bounded first
+variation, `‖δV‖(W) ≤ liminf_{j} ‖δV_{φ(j)}‖(W)` and `Θ^n(μ_V, ·) ≥ 1` `μ_V`-a.e.; and Allard's
+theorem 5.5 makes `V` rectifiable.  The rectifiability of the `V_j` is not needed. -/
+theorem Submission.compactness_theorem : CompactnessTheorem := by
+  intro N n U Vj A _ hVj hbound hdens hA
+  have hU : IsOpen U := (Vj 0).isOpen_domain
+  -- Ch. 1, 4.16 needs `sup_j μ_{V_j}(K) < ∞` for compact `K ⊆ U`: take an open `W ⊂⊂ U` around `K`.
+  have hmass : ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → ∃ C : ℝ≥0∞, C ≠ ∞ ∧
+      ∀ᶠ j in atTop, (Vj j).measure (K ×ˢ (univ : Set (Grassmannian N n))) ≤ C := by
+    intro K hK hKU
+    obtain ⟨W, hWo, hKW, hWU, hWc⟩ := exists_open_between_and_isCompact_closure hK hU hKU
+    refine ⟨_, hbound W ⟨hWo, hWc, hWU⟩, Eventually.of_forall fun j ↦ ?_⟩
+    rw [← (Vj j).weight_apply hK.measurableSet]
+    exact (measure_mono hKW).trans (le_self_add.trans (le_iSup
+      (fun j ↦ (Vj j).weight W + variationMeasure (Vj j) W) j))
+  obtain ⟨φ, hφ, V, hconv⟩ :=
+    Submission.varifold_radon_compactness N n U (fun j ↦ (Vj j).measure) hU hmass
+  -- A test function on `Gₙ(U)` extends by zero to one on `ℝ^N × G(N,n)` supported in `U × G(N,n)`.
+  have hRC : Varifold.RadonConverges (fun j ↦ Vj (φ j)) V := by
+    intro f
+    let g : C_c(Euclidean N × Grassmannian N n, ℝ) :=
+      { toFun := Subtype.val.extend f 0
+        continuous_toFun :=
+          f.hasCompactSupport.continuous_extend_zero (hU.prod isOpen_univ) f.continuous
+        hasCompactSupport' := f.hasCompactSupport.extend_zero continuous_subtype_val }
+    have hg : tsupport g ⊆ U ×ˢ (univ : Set (Grassmannian N n)) :=
+      (f.hasCompactSupport.tsupport_extend_zero_subset continuous_subtype_val).trans
+        (Subtype.coe_image_subset _ _)
+    have hint : ∀ W : Varifold N n U, ∫ z, g z ∂W.measure = ∫ z, f z ∂W.domainMeasure := by
+      intro W
+      rw [← W.map_domainMeasure, (MeasurableEmbedding.subtype_coe
+        (hU.measurableSet.prod MeasurableSet.univ)).integral_map]
+      exact integral_congr_ae (Eventually.of_forall fun z ↦
+        Subtype.val_injective.extend_apply f 0 z)
+    simpa only [hint] using hconv g hg
+  -- 3.7 along the subsequence; its `liminf` hypothesis follows from the uniform bound.
+  have hliminf : ∀ W, IsRelCompactOpenIn W U →
+      liminf (fun j ↦ variationMeasure (Vj (φ j)) W) atTop ≠ ∞ := fun W hW ↦
+    ne_top_of_le_ne_top (hbound W hW) (liminf_le_of_frequently_le' (Frequently.of_forall
+      fun j ↦ le_add_self.trans (le_iSup
+        (fun j ↦ (Vj j).weight W + variationMeasure (Vj j) W) (φ j))))
+  obtain ⟨hVbv, hVvar, hVdens⟩ :=
+    Submission.density_semicontinuity_theorem N n U (fun j ↦ Vj (φ j)) V (fun j ↦ A (φ j)) hRC
+      (fun j ↦ hVj (φ j)) hliminf (fun j ↦ hdens (φ j))
+      (fun W hW ↦ (hA W hW).comp hφ.tendsto_atTop)
+  -- 5.5: `Θ^n(μ_V, ·) ≥ 1 > 0` `μ_V`-a.e.
+  have hrect : IsRectifiable V :=
+    (Submission.allard_rectifiability_and_tangent_cones.1 N n U V hVbv
+      (hVdens.mono fun _ ⟨θ, hθ, hθ1⟩ ↦ ⟨θ, hθ, zero_lt_one.trans_le hθ1⟩)).1
+  exact ⟨φ, hφ, V, hRC, hrect, hVbv, hVdens, hVvar⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
