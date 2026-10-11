@@ -373,6 +373,59 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, 4.1–4.2 (p. 55), reparametrizing a local representation.** Let `(V, W, ψ)` be
+a `C¹` local representation of `M` with `T_{ψ(x)} M = range Dψ(x)` for `x ∈ V`, and let `Λ` be
+`C¹` and injective on the open set `Ω`, with bijective derivative and `Λ(Ω) ⊆ V` open. Then
+`ψ ∘ Λ` is `C¹` and injective on `Ω` with injective derivative, `(ψ ∘ Λ)(Ω) = O ∩ M` for an open
+`O` (4.2: by relative properness, `ψ(V \ Λ(Ω))` is closed relative to `W`), and
+`T_{ψ(Λ(p))} M = range D(ψ ∘ Λ)(p)` for `p ∈ Ω`. -/
+theorem Submission.coarea_straightening_reparametrize_chart : ∀ (N m k : ℕ) (M : Set (Rn N)) (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N) (Ω : Set (WithLp 2 (Rn m × Rn k))) (Λ : WithLp 2 (Rn m × Rn k) → Rn (m + k)), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → (∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → IsOpen Ω → ContDiffOn ℝ 1 Λ Ω → InjOn Λ Ω → IsOpen (Λ '' Ω) → Λ '' Ω ⊆ V → (∀ p ∈ Ω, Function.Bijective (fderiv ℝ Λ p)) → ∃ O : Set (Rn N), IsOpen O ∧ (ψ ∘ Λ) '' Ω = O ∩ M ∧ ContDiffOn ℝ 1 (ψ ∘ Λ) Ω ∧ InjOn (ψ ∘ Λ) Ω ∧ (∀ p ∈ Ω, Function.Injective (fderiv ℝ (ψ ∘ Λ) p)) ∧ ∀ p ∈ Ω, tangentSpace M ((ψ ∘ Λ) p) = LinearMap.range (fderiv ℝ (ψ ∘ Λ) p).toLinearMap := by
+  intro N m k M V W ψ Ω Λ hψ hT hΩ hΛC hΛinj hV₁ hV₁V hΛbij
+  obtain ⟨hV, hW, hψC, hψinj, hψimg, hψprop, hψder⟩ := hψ
+  have hΛV : MapsTo Λ Ω V := fun p hp => hV₁V ⟨p, hp, rfl⟩
+  -- Simon 4.2: `ψ(V \ Λ(Ω))` is closed relative to `W`. Near `y ∈ W` it lies in the image of the
+  -- compact set `(V ∩ ψ⁻¹(B̄)) \ Λ(Ω)`, where `B̄ ⊆ W` is a closed ball about `y`.
+  have hrel : ∀ y ∈ W, y ∈ closure (ψ '' (V \ Λ '' Ω)) → y ∈ ψ '' (V \ Λ '' Ω) := by
+    intro y hyW hycl
+    obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hW y hyW
+    have hQW : closedBall y (r / 2) ⊆ W := (closedBall_subset_ball (half_lt_self hr)).trans hball
+    have hK : IsCompact (ψ '' (V ∩ ψ ⁻¹' closedBall y (r / 2) ∩ (Λ '' Ω)ᶜ)) :=
+      ((hψprop _ (isCompact_closedBall y (r / 2)) hQW).inter_right
+        hV₁.isClosed_compl).image_of_continuousOn (hψC.continuousOn.mono fun x hx => hx.1.1)
+    have hsub : ball y (r / 2) ∩ ψ '' (V \ Λ '' Ω) ⊆
+        ψ '' (V ∩ ψ ⁻¹' closedBall y (r / 2) ∩ (Λ '' Ω)ᶜ) := by
+      rintro _ ⟨hyb, x, ⟨hxV, hxV₁⟩, rfl⟩
+      exact ⟨x, ⟨⟨hxV, ball_subset_closedBall hyb⟩, hxV₁⟩, rfl⟩
+    obtain ⟨x, ⟨⟨hxV, -⟩, hxV₁⟩, hxy⟩ := closure_minimal hsub hK.isClosed
+      (isOpen_ball.inter_closure ⟨mem_ball_self (half_pos hr), hycl⟩)
+    exact ⟨x, ⟨hxV, hxV₁⟩, hxy⟩
+  -- Chain rule: `D(ψ ∘ Λ)(p) = Dψ(Λ(p)) ∘ DΛ(p)`.
+  have hD : ∀ p ∈ Ω, fderiv ℝ (ψ ∘ Λ) p = (fderiv ℝ ψ (Λ p)).comp (fderiv ℝ Λ p) := fun p hp =>
+    fderiv_comp p ((hψC.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds (hΛV hp)))
+      ((hΛC.differentiableOn one_ne_zero).differentiableAt (hΩ.mem_nhds hp))
+  refine ⟨W \ closure (ψ '' (V \ Λ '' Ω)), hW.sdiff isClosed_closure, ?_, hψC.comp hΛC hΛV,
+    hψinj.comp hΛinj hΛV, fun p hp => ?_, fun p hp => ?_⟩
+  · rw [image_comp]
+    ext y
+    constructor
+    · rintro ⟨x, hxV₁, rfl⟩
+      have hxM : ψ x ∈ W ∩ M := by rw [← hψimg]; exact ⟨x, hV₁V hxV₁, rfl⟩
+      refine ⟨⟨hxM.1, fun hcl => ?_⟩, hxM.2⟩
+      obtain ⟨x', ⟨hx'V, hx'V₁⟩, hx'⟩ := hrel _ hxM.1 hcl
+      rw [hψinj hx'V (hV₁V hxV₁) hx'] at hx'V₁
+      exact hx'V₁ hxV₁
+    · rintro ⟨⟨hyW, hycl⟩, hyM⟩
+      obtain ⟨x, hxV, rfl⟩ : y ∈ ψ '' V := by rw [hψimg]; exact ⟨hyW, hyM⟩
+      by_cases hx : x ∈ Λ '' Ω
+      · exact ⟨x, hx, rfl⟩
+      · exact (hycl (subset_closure ⟨x, ⟨hxV, hx⟩, rfl⟩)).elim
+  · rw [hD p hp, ContinuousLinearMap.coe_comp]
+    exact (hψder (Λ p) (hΛV hp)).comp (hΛbij p hp).1
+  · -- `DΛ(p)` is onto, so `range D(ψ ∘ Λ)(p) = range Dψ(Λ(p)) = T_{ψ(Λ(p))} M`.
+    rw [Function.comp_apply, hT (Λ p) (hΛV hp), hD p hp, ContinuousLinearMap.toLinearMap_comp,
+      LinearMap.range_comp_of_range_eq_top]
+    exact LinearMap.range_eq_top.mpr (hΛbij p hp).2
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
