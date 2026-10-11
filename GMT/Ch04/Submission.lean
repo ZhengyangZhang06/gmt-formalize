@@ -434,6 +434,50 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Lower Lipschitz pieces from pointwise local lower bounds.** If `f : ℝⁿ → F` is continuous
+and every point `w` of the Borel set `R` has some `c > 0` with `c|u| ≤ |f(w + u) - f(w)|` for
+`|u| ≤ c`, then `R` is covered by countably many bounded Borel sets `T_p ⊆ R`, on each of which
+`f` satisfies a uniform lower Lipschitz bound `c_p|v - w| ≤ |f(v) - f(w)|`. -/
+theorem Submission.lower_lipschitz_cover_of_local_bound : ∀ (n : ℕ) {F : Type} [NormedAddCommGroup F] (f : EuclideanSpace ℝ (Fin n) → F) (R : Set (EuclideanSpace ℝ (Fin n))), Continuous f → MeasurableSet R → (∀ w ∈ R, ∃ c : ℝ, 0 < c ∧ ∀ u : EuclideanSpace ℝ (Fin n), ‖u‖ ≤ c → c * ‖u‖ ≤ ‖f (w + u) - f w‖) → ∃ T : ℕ → Set (EuclideanSpace ℝ (Fin n)), R ⊆ ⋃ p, T p ∧ ∀ p, MeasurableSet (T p) ∧ Bornology.IsBounded (T p) ∧ T p ⊆ R ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ T p, ∀ w ∈ T p, c * ‖v - w‖ ≤ ‖f v - f w‖ := by
+  intro n F _ f R hf hR hloc
+  -- Scales `r_k = 1/(k+1)` and the closed sets `G_k` of points with the lower bound at scale `r_k`.
+  obtain ⟨r, hr, hrc⟩ : ∃ r : ℕ → ℝ, (∀ k, 0 < r k) ∧ ∀ c : ℝ, 0 < c → ∃ k, r k < c :=
+    ⟨fun k ↦ 1 / ((k : ℝ) + 1), fun _ ↦ Nat.one_div_pos_of_nat, fun _ hc ↦ exists_nat_one_div_lt hc⟩
+  obtain ⟨G, hG, hGmem⟩ : ∃ G : ℕ → Set (EuclideanSpace ℝ (Fin n)), (∀ k, IsClosed (G k)) ∧
+      ∀ k w, w ∈ G k ↔ ∀ u, ‖u‖ ≤ r k → r k * ‖u‖ ≤ ‖f (w + u) - f w‖ :=
+    ⟨fun k ↦ ⋂ u ∈ closedBall 0 (r k), {w | r k * ‖u‖ ≤ ‖f (w + u) - f w‖},
+      fun k ↦ isClosed_biInter fun u _ ↦ isClosed_le continuous_const
+        ((hf.comp (continuous_id.add continuous_const)).sub hf).norm,
+      fun k w ↦ by simp only [mem_iInter₂, mem_closedBall_zero_iff, mem_ofPred_eq]⟩
+  -- Every point of `R` lies in some `G_k`.
+  have hRG : ∀ w ∈ R, ∃ k, w ∈ G k := fun w hw ↦ by
+    obtain ⟨c, hc, hcw⟩ := hloc w hw
+    obtain ⟨k, hk⟩ := hrc c hc
+    exact ⟨k, (hGmem k w).2 fun u hu ↦
+      (mul_le_mul_of_nonneg_right hk.le (norm_nonneg u)).trans (hcw u (hu.trans hk.le))⟩
+  -- A dense sequence `q`: balls of radius `r_k / 2` around the `q_m` cover `ℝⁿ` for each `k`.
+  obtain ⟨q, hq⟩ := TopologicalSpace.exists_dense_seq (EuclideanSpace ℝ (Fin n))
+  refine ⟨fun p ↦ R ∩ G p.unpair.1 ∩ closedBall (q p.unpair.2) (r p.unpair.1 / 2), ?_,
+    fun p ↦ ⟨?_, ?_, ?_, ?_⟩⟩
+  · intro w hw
+    obtain ⟨k, hk⟩ := hRG w hw
+    obtain ⟨m, hm⟩ := hq.exists_dist_lt w (half_pos (hr k))
+    refine mem_iUnion.2 ⟨Nat.pair k m, ?_⟩
+    rw [Nat.unpair_pair]
+    exact ⟨⟨hw, hk⟩, mem_closedBall.2 hm.le⟩
+  · exact (hR.inter (hG _).measurableSet).inter measurableSet_closedBall
+  · exact isBounded_closedBall.subset inter_subset_right
+  · exact inter_subset_left.trans inter_subset_left
+  · -- Two points of `T_p` are within `r_k` of each other, so the bound of `G_k` applies to `v - w`.
+    refine ⟨r p.unpair.1, hr _, fun v hv w hw ↦ ?_⟩
+    have hvw : ‖v - w‖ ≤ r p.unpair.1 := by
+      rw [← dist_eq_norm]
+      calc dist v w ≤ dist v (q p.unpair.2) + dist w (q p.unpair.2) := dist_triangle_right _ _ _
+        _ ≤ r p.unpair.1 / 2 + r p.unpair.1 / 2 :=
+          add_le_add (mem_closedBall.1 hv.2) (mem_closedBall.1 hw.2)
+        _ = r p.unpair.1 := add_halves _
+    simpa only [add_sub_cancel] using (hGmem _ w).1 hw.1.2 (v - w) hvw
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
