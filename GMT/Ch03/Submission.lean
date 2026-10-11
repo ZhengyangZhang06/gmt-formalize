@@ -370,6 +370,89 @@ theorem Submission.bf_plane_closedBall_measure_eq : ∀ (n N : ℕ) (W : Submodu
     intro y hy ρ hρ
     rw [show y = ((⟨y, hy⟩ : W) : Rn N) from rfl, hmeas ⟨y, hy⟩ ρ, h01,
       Measure.addHaar_closedBall' _ _ hρ]
+/-- Vitali covering for `Hⁿ` by closed discs in an `n`-plane `W ⊆ ℝᴺ`: the Symmetric Vitali
+Property of Simon Ch. 1, Def. 3.10, for the doubling measure `Hⁿ ⌞ W` (`chapter-01.txt` lines
+765–799; Remark 3.11(2) derives it from the 5-times covering lemma 3.4 and Corollary 3.5, lines
+609–660). If the discs `W ∩ B̄(c i, ρ i)` (`i ∈ t`, `c i ∈ W`, `ρ i > 0`) cover an arbitrary
+`S ⊆ W` finely, then countably many pairwise disjoint ones cover `Hⁿ`-almost all of `S`. As
+`Hⁿ(W) = ∞` for `n ≥ 1`, Simon's finite-mass hypothesis is unavailable; we use instead the locally
+finite form `Vitali.exists_disjoint_covering_ae` on the subtype `W`, where `μHE[finrank W]` is an
+additive Haar measure whose closed balls are `3ⁿ`-doubling (`Measure.addHaar_closedBall'`), and
+transfer the result along the isometric inclusion `W → ℝᴺ`. -/
+theorem Submission.bf_plane_vitali_disjoint_cover : ∀ (n N : ℕ) (W : Submodule ℝ (Rn N)),
+    finrank ℝ W = n → ∀ (ι : Type) (S : Set (Rn N)) (t : Set ι) (c : ι → Rn N) (ρ : ι → ℝ),
+      S ⊆ (W : Set (Rn N)) → (∀ i ∈ t, c i ∈ W ∧ 0 < ρ i) →
+        (∀ x ∈ S, ∀ ε : ℝ, 0 < ε → ∃ i ∈ t, c i = x ∧ ρ i ≤ ε) →
+          ∃ u ⊆ t, u.Countable ∧
+            u.PairwiseDisjoint (fun i ↦ (W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i)) ∧
+            μHE[n] (S \ ⋃ i ∈ u, ((W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i))) = 0 := by
+  intro n N W hW ι S t c ρ hSW hct hfine
+  -- work intrinsically on the subtype `W`, with `n = finrank W`
+  subst hW
+  classical
+  set μ : Measure W := μHE[finrank ℝ W]
+  -- lifted centres `c' i ∈ W` and balls `B i = B̄_W(c' i, ρ i)`
+  let c' : ι → W := fun i ↦ if h : c i ∈ W then ⟨c i, h⟩ else 0
+  have hc' : ∀ i ∈ t, (c' i : Rn N) = c i := by
+    intro i hi
+    simp [c', (hct i hi).1]
+  let B : ι → Set W := fun i ↦ Metric.closedBall (c' i) (ρ i)
+  -- the inclusion maps `B i` onto the disc `W ∩ B̄(c i, ρ i)`
+  have himg : ∀ i ∈ t, Subtype.val '' B i = (W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i) := by
+    intro i hi
+    ext x
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      refine ⟨z.2, ?_⟩
+      have : dist z (c' i) ≤ ρ i := hz
+      rwa [Subtype.dist_eq, hc' i hi] at this
+    · rintro ⟨hxW, hx⟩
+      refine ⟨⟨x, hxW⟩, ?_, rfl⟩
+      show dist (⟨x, hxW⟩ : W) (c' i) ≤ ρ i
+      rwa [Subtype.dist_eq, hc' i hi]
+  -- hypotheses of the Vitali theorem: doubling with constant `3ⁿ`, nonempty interiors,
+  -- closedness and fineness at the preimage `S'` of `S` in `W`
+  have hdoub : ∀ i ∈ t, μ (Metric.closedBall (c' i) (3 * ρ i)) ≤
+      ((3 ^ finrank ℝ W : ℝ≥0) : ℝ≥0∞) * μ (B i) := by
+    intro i hi
+    have hρ : 0 ≤ ρ i := (hct i hi).2.le
+    rw [Measure.addHaar_closedBall' μ _ (by positivity), Measure.addHaar_closedBall' μ _ hρ,
+      mul_pow, ENNReal.ofReal_mul (by positivity), mul_assoc]
+    gcongr
+    rw [ENNReal.ofReal_pow (by norm_num)]
+    simp
+  have hint : ∀ i ∈ t, (interior (B i)).Nonempty := fun i hi ↦
+    ⟨c' i, Metric.ball_subset_interior_closedBall (Metric.mem_ball_self (hct i hi).2)⟩
+  have hclosed : ∀ i ∈ t, IsClosed (B i) := fun i _ ↦ Metric.isClosed_closedBall
+  have hfine' : ∀ x ∈ (Subtype.val ⁻¹' S : Set W), ∀ ε > (0 : ℝ), ∃ a ∈ t, ρ a ≤ ε ∧ c' a = x := by
+    intro x hx ε hε
+    obtain ⟨i, hi, hcx, hρε⟩ := hfine x hx ε hε
+    exact ⟨i, hi, hρε, Subtype.ext (by rw [hc' i hi, hcx])⟩
+  obtain ⟨u, hut, hu, hdisj, hnull⟩ := Vitali.exists_disjoint_covering_ae μ (Subtype.val ⁻¹' S) t
+    (3 ^ finrank ℝ W) ρ c' B (fun i _ ↦ subset_rfl) hdoub hint hclosed hfine'
+  refine ⟨u, hut, hu, ?_, ?_⟩
+  -- the inclusion is injective, so the discs are pairwise disjoint
+  · intro i hi j hj hij
+    simp only [Function.onFun]
+    rw [← himg i (hut hi), ← himg j (hut hj)]
+    exact (disjoint_image_iff Subtype.val_injective).mpr (hdisj hi hj hij)
+  -- `S \ ⋃ discs` is the image of `S' \ ⋃ B i`, and the inclusion preserves `μHE[n]`
+  · have hset : S \ ⋃ i ∈ u, ((W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i)) =
+        Subtype.val '' ((Subtype.val ⁻¹' S : Set W) \ ⋃ i ∈ u, B i) := by
+      ext x
+      constructor
+      · rintro ⟨hxS, hxU⟩
+        refine ⟨⟨x, hSW hxS⟩, ⟨hxS, fun hmem ↦ hxU ?_⟩, rfl⟩
+        obtain ⟨i, hi, hiB⟩ := mem_iUnion₂.1 hmem
+        exact mem_iUnion₂.2 ⟨i, hi, himg i (hut hi) ▸ ⟨_, hiB, rfl⟩⟩
+      · rintro ⟨z, ⟨hzS, hzU⟩, rfl⟩
+        refine ⟨hzS, fun hmem ↦ hzU ?_⟩
+        obtain ⟨i, hi, hiD⟩ := mem_iUnion₂.1 hmem
+        rw [← himg i (hut hi)] at hiD
+        obtain ⟨w, hw, hwz⟩ := hiD
+        exact mem_iUnion₂.2 ⟨i, hi, Subtype.ext hwz ▸ hw⟩
+    rw [hset, isometry_subtype_coe.euclideanHausdorffMeasure_image]
+    exact hnull
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
