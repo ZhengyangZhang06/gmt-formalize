@@ -335,6 +335,102 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Lipschitz open chart pieces** (Simon Ch. 3, Lemma 1.2 and Remark 1.3, `chapter-03.txt`
+lines 25–73, for the embedded `C¹` submanifolds of Ch. 2, (4.1)). Let `U` be open, `M ⊆ U`, `f`
+locally Lipschitz on `U`, and `M ⊆ N₀ ∪ ⋃ᵢ Sᵢ` with every `Sᵢ` an `n`-dimensional embedded `C¹`
+submanifold. Then `M ⊆ N₀ ∪ ⋃_α ψ_α(D_α)` for countably many open `D_α ⊆ ℝⁿ` and maps `ψ_α`
+that are `C¹`, injective and Lipschitz on `D_α` with injective differential, and such that
+`f ∘ ψ_α` is Lipschitz on `D_α`. By Lindelöf, countably many charts cover each `Sᵢ`. Around a
+parameter `u` of a point of `M`, a closed ball inside the chart domain on which the chart is
+Lipschitz (`C¹` on a compact convex set) and which it maps into a ball where `f` is Lipschitz
+contains a set `B ∋ u` of a fixed countable basis of `ℝⁿ`; the good pairs `(B, ψ)` are
+enumerated by `ℕ`. -/
+theorem Submission.submanifold_cover_lipschitz_open_charts : ∀ (n N m : ℕ) (M U N₀ : Set (Rn N)) (S : ℕ → Set (Rn N)) (f : Rn N → Rn m), IsOpen U → M ⊆ U → LocallyLipschitzOn U f → (∀ i, IsC1Submanifold n (S i)) → M ⊆ N₀ ∪ ⋃ i, S i → ∃ (D : ℕ → Set (Rn n)) (ψ : ℕ → Rn n → Rn N), (∀ α, IsOpen (D α)) ∧ (∀ α, ContDiffOn ℝ 1 (ψ α) (D α)) ∧ (∀ α, InjOn (ψ α) (D α)) ∧ (∀ α, ∃ K, LipschitzOnWith K (ψ α) (D α)) ∧ (∀ α, ∀ u ∈ D α, Function.Injective (fderiv ℝ (ψ α) u)) ∧ (∀ α, ∃ K, LipschitzOnWith K (f ∘ ψ α) (D α)) ∧ M ⊆ N₀ ∪ ⋃ α, ψ α '' D α := by
+  intro n N m M U N₀ S f hU hMU hf hS hcov
+  classical
+  -- Step 1: a chart `(V_{i,y}, W_{i,y}, ψ_{i,y})` of `S i` at every `y ∈ S i`.
+  choose! V W ψ hVo hWo hyW hψC hψinj hψim hψprop hψD using hS
+  clear hψprop
+  -- Step 2: by Lindelöf, the charts at countably many `y ∈ T i` cover `S i`.
+  choose T hTS hTc hTW using fun i ↦
+    TopologicalSpace.isOpen_biUnion_countable (S i) (W i) (fun y hy ↦ hWo i y hy)
+  -- Step 3: the good pairs among `(∅, 0)` and `(B, ψ_{i,y})`, `B` in a countable basis of `ℝⁿ`.
+  obtain ⟨𝔅, h𝔅c, -, h𝔅⟩ := TopologicalSpace.exists_countable_basis (Rn n)
+  obtain ⟨Good, hGood⟩ : ∃ Good : Set (Rn n) × (Rn n → Rn N) → Prop, ∀ p, Good p ↔
+      (IsOpen p.1 ∧ ContDiffOn ℝ 1 p.2 p.1 ∧ InjOn p.2 p.1 ∧ (∃ K, LipschitzOnWith K p.2 p.1) ∧
+        (∀ u ∈ p.1, Function.Injective (fderiv ℝ p.2 u)) ∧
+        ∃ K, LipschitzOnWith K (f ∘ p.2) p.1) := ⟨_, fun _ ↦ Iff.rfl⟩
+  have hQc : (insert ((∅ : Set (Rn n)), (0 : Rn n → Rn N))
+      (⋃ i, ⋃ y ∈ T i, (fun B ↦ (B, ψ i y)) '' 𝔅)).Countable :=
+    (countable_iUnion fun i ↦ (hTc i).biUnion fun y _ ↦ h𝔅c.image _).insert _
+  have hPne : {p ∈ insert ((∅ : Set (Rn n)), (0 : Rn n → Rn N))
+      (⋃ i, ⋃ y ∈ T i, (fun B ↦ (B, ψ i y)) '' 𝔅) | Good p}.Nonempty :=
+    ⟨(∅, 0), mem_insert _ _, (hGood _).mpr ⟨isOpen_empty, contDiffOn_empty, injOn_empty _,
+      ⟨0, lipschitzOnWith_empty _ _⟩, fun _ h ↦ h.elim, ⟨0, lipschitzOnWith_empty _ _⟩⟩⟩
+  obtain ⟨g, hg⟩ := (hQc.mono (sep_subset _ _)).exists_eq_range hPne
+  have hgG : ∀ α, Good (g α) := by
+    intro α
+    have h : g α ∈ range g := mem_range_self α
+    rw [← hg] at h
+    exact h.2
+  refine ⟨fun α ↦ (g α).1, fun α ↦ (g α).2, fun α ↦ ((hGood _).mp (hgG α)).1,
+    fun α ↦ ((hGood _).mp (hgG α)).2.1, fun α ↦ ((hGood _).mp (hgG α)).2.2.1,
+    fun α ↦ ((hGood _).mp (hgG α)).2.2.2.1, fun α ↦ ((hGood _).mp (hgG α)).2.2.2.2.1,
+    fun α ↦ ((hGood _).mp (hgG α)).2.2.2.2.2, ?_⟩
+  -- Step 4: a point `x ∈ M \ N₀` is `ψ_{i,y}(u)` for some `y ∈ T i`, `u ∈ V_{i,y}`.
+  intro x hx
+  rcases hcov hx with hx0 | hxS
+  · exact Or.inl hx0
+  right
+  obtain ⟨i, hxi⟩ := mem_iUnion.mp hxS
+  have hxW : x ∈ ⋃ y ∈ T i, W i y := by
+    rw [hTW]
+    exact mem_biUnion hxi (hyW i x hxi)
+  obtain ⟨y, hyT, hxy⟩ := mem_iUnion₂.mp hxW
+  have hy : y ∈ S i := hTS i hyT
+  have hxU : x ∈ U := hMU hx
+  obtain ⟨u, hu, rfl⟩ : x ∈ ψ i y '' V i y := by
+    rw [hψim i y hy]
+    exact ⟨hxy, hxi⟩
+  -- Step 5: `r = min δ₁ δ₂ / 2` has `closedBall u r ⊆ V` and `ψ(closedBall u r) ⊆ B(x, s)`,
+  -- where `f` is `K`-Lipschitz on `B(x, s) ⊆ t`.
+  obtain ⟨K, t, ht, hKt⟩ := hf hxU
+  rw [hU.nhdsWithin_eq hxU] at ht
+  obtain ⟨s, hs, hst⟩ := Metric.mem_nhds_iff.mp ht
+  have hcont : ContinuousAt (ψ i y) u :=
+    (hψC i y hy).continuousOn.continuousAt ((hVo i y hy).mem_nhds hu)
+  obtain ⟨δ₁, hδ₁, hδ₁s⟩ := Metric.continuousAt_iff.mp hcont s hs
+  obtain ⟨δ₂, hδ₂, hδ₂V⟩ := Metric.isOpen_iff.mp (hVo i y hy) u hu
+  have hδ : 0 < min δ₁ δ₂ := lt_min hδ₁ hδ₂
+  have hr0 : 0 < min δ₁ δ₂ / 2 := half_pos hδ
+  have hrδ : ∀ v ∈ Metric.closedBall u (min δ₁ δ₂ / 2), dist v u < δ₁ ∧ dist v u < δ₂ :=
+    fun v hv ↦ lt_min_iff.mp ((Metric.mem_closedBall.mp hv).trans_lt (half_lt_self hδ))
+  have hBV : Metric.closedBall u (min δ₁ δ₂ / 2) ⊆ V i y :=
+    fun v hv ↦ hδ₂V (Metric.mem_ball.mpr (hrδ v hv).2)
+  -- Step 6: `ψ` is Lipschitz on the compact convex ball.
+  obtain ⟨L, hL⟩ := ((hψC i y hy).mono hBV).exists_lipschitzOnWith one_ne_zero
+    (convex_closedBall u _) (isCompact_closedBall u _)
+  -- Step 7: a basis set `u ∈ B ⊆ B(u, r)` gives a good pair `(B, ψ_{i,y})`.
+  obtain ⟨B, hB𝔅, huB, hBball⟩ :=
+    h𝔅.exists_subset_of_mem_open (Metric.mem_ball_self hr0) Metric.isOpen_ball
+  have hBcl : B ⊆ Metric.closedBall u (min δ₁ δ₂ / 2) :=
+    hBball.trans Metric.ball_subset_closedBall
+  have hBP : (B, ψ i y) ∈ {p ∈ insert ((∅ : Set (Rn n)), (0 : Rn n → Rn N))
+      (⋃ i, ⋃ y ∈ T i, (fun B ↦ (B, ψ i y)) '' 𝔅) | Good p} := by
+    refine ⟨mem_insert_of_mem _ (mem_iUnion.mpr ⟨i, mem_iUnion₂.mpr ⟨y, hyT, B, hB𝔅, rfl⟩⟩),
+      (hGood _).mpr ⟨h𝔅.isOpen hB𝔅, (hψC i y hy).mono (hBcl.trans hBV),
+        (hψinj i y hy).mono (hBcl.trans hBV), ⟨L, hL.mono hBcl⟩,
+        fun v hv ↦ hψD i y hy v (hBV (hBcl hv)), ⟨K * L, hKt.comp (hL.mono hBcl) ?_⟩⟩⟩
+    intro v hv
+    exact hst (Metric.mem_ball.mpr (hδ₁s (hrδ v (hBcl hv)).1))
+  -- Step 8: `(B, ψ_{i,y})` is some `(D_α, ψ_α)`, and `x = ψ_α(u) ∈ ψ_α(D_α)`.
+  rw [hg] at hBP
+  obtain ⟨α, hα⟩ := hBP
+  refine mem_iUnion.mpr ⟨α, ?_⟩
+  show ψ i y u ∈ (g α).2 '' (g α).1
+  rw [hα]
+  exact mem_image_of_mem _ huB
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
