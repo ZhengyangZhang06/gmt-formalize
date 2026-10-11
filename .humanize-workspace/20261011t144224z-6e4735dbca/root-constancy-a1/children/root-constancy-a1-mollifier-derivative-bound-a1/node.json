@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1.mollifier_derivative_bound-a1",
+  "parent_id": "root.constancy-a1",
+  "depth": 2,
+  "title": "Derivatives of a mollification are bounded by the L¹ norm",
+  "statement": "Let n ∈ ℕ, φ : ℝⁿ → ℝ be C^∞ with compact support, and q ∈ ℕ. Then there is a constant C such that ‖D^q(φ ∗ g)(x)‖ ≤ C ∫ |g| dLⁿ for every Lebesgue-integrable g : ℝⁿ → ℝ and every x ∈ ℝⁿ, where (φ ∗ g)(x) = ∫ φ(t) g(x − t) dLⁿ(t) and D^q is the q-th Fréchet derivative.",
+  "lean_statement": "∀ (n : ℕ) (φ : Eucl n → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → ∀ q : ℕ, ∃ C : ℝ, ∀ g : Eucl n → ℝ, Integrable g volume → ∀ x : Eucl n, ‖iteratedFDeriv ℝ q (convolution φ g (ContinuousLinearMap.lsmul ℝ ℝ) volume) x‖ ≤ C * ∫ y, |g y| ∂volume",
+  "lean_name": "constancy_mollifier_iteratedFDeriv_norm_le_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-mollifier-derivative-bound-a1-a1"
+}

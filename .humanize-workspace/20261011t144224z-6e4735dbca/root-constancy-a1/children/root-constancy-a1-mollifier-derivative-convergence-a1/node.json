@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1.mollifier_derivative_convergence-a1",
+  "parent_id": "root.constancy-a1",
+  "depth": 2,
+  "title": "Mollifications of a test function converge with all derivatives uniformly",
+  "statement": "Let n ∈ ℕ, b : ℝⁿ → ℝ be C^∞ with compact support, and let ψ_k : ℝⁿ → ℝ (k ∈ ℕ) be continuous with ψ_k ≥ 0, ∫ ψ_k dLⁿ = 1 and spt ψ_k ⊆ B̄_{r_k}(0), where r_k → 0. Then for every q ∈ ℕ, D^q(ψ_k ∗ b) → D^q b uniformly on ℝⁿ as k → ∞, where (ψ ∗ b)(x) = ∫ ψ(t) b(x − t) dLⁿ(t).",
+  "lean_statement": "∀ (n : ℕ) (b : Eucl n → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → HasCompactSupport b → ∀ (ψ : ℕ → Eucl n → ℝ) (r : ℕ → ℝ), (∀ k, Continuous (ψ k)) → (∀ k x, 0 ≤ ψ k x) → (∀ k, ∫ x, ψ k x ∂volume = 1) → (∀ k, tsupport (ψ k) ⊆ closedBall 0 (r k)) → Tendsto r atTop (𝓝 0) → ∀ q : ℕ, TendstoUniformly (fun k x => iteratedFDeriv ℝ q (convolution (ψ k) b (ContinuousLinearMap.lsmul ℝ ℝ) volume) x) (fun x => iteratedFDeriv ℝ q b x) atTop",
+  "lean_name": "constancy_approx_identity_iteratedFDeriv_tendstoUniformly",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-mollifier-derivative-convergence-a1-a1"
+}

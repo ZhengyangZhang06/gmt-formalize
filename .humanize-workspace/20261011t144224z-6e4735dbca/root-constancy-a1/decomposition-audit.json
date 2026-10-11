@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def ConstancyTheorem",
+        "TestFormOnConverges|IsSmoothForm|structure GeometricCurrentOn|def TestFormOn|boundary_apply",
+        "eq_smul_basis_det|theorem det_self",
+        "extDeriv_apply",
+        "hasFDerivAt_convolution_left|hasFDerivAt_convolution_right|contDiff_convolution_left",
+        "dist_convolution_le|support_convolution_subset",
+        "norm_iteratedFDeriv_fderiv|iteratedFDeriv_succ_eq_comp_left|iteratedFDeriv_zero_eq_comp",
+        "withDensityᵥ_rnDeriv_eq|measurable_rnDeriv|integrable_rnDeriv",
+        "exists_isSubordinate",
+        "IsLocallyConstant.exists_eq_const|theorem exists_eq_const",
+        "python3 /tmp/gmt_constancy_independent_audit_prrok2xf/run_lean.py StatementsAndAssembly.lean",
+        "python3 /tmp/gmt_constancy_independent_audit_prrok2xf/run_lean.py LibraryAxioms.lean",
+        "n.get('lean_name') in names"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/VectorMeasure/Decomposition/RadonNikodym.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/VectorMeasure/Decomposition/Lebesgue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/LocallyConstant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FixedSupportCurrentTopology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/FiniteL1Dual.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/gmt_constancy_independent_audit_prrok2xf/StatementsAndAssembly.lean",
+        "/tmp/gmt_constancy_independent_audit_prrok2xf/LibraryAxioms.lean",
+        "/tmp/gmt_constancy_independent_audit_prrok2xf/FullProofChecks.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected ConstancyTheorem. Verified the frozen contract and pinned Mathlib/SimonGMT compatibility. All six one-line propositions independently elaborate in the comparator scope using an unchanged frozen Submission without implemented children. The parameterized C3(C2(C1)) assembly proves exactly ConstancyTheorem and has only standard axioms. Independently recompiled the supplied C1 and two mollifier proof artifacts against the exact child types; they also use only standard axioms. Checked the reusable finite-order bound, weak-gradient constancy, finite-L1 representation, signed Radon–Nikodym and partition-of-unity declarations and their axioms. All six names are bare identifiers; no reserved-name matches occur in the latest 69-node DAG. Dependencies are acyclic and correctly directed: local_on_balls uses the three analytic siblings, while its annihilation hypothesis and globalize's local hypothesis are supplied during parent assembly. No matrix-unit constructions occur."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "closed_kills_partials",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree, including arbitrary U and global coefficient equality. The determinant reduction, interior-product construction and permutation-sign computation establish dη = ω; zero boundary then gives T(ω) = 0. Compact support is preserved, and openness is unnecessary. The proof is complete and non-circular."
+    },
+    {
+      "key": "riesz_l1_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract requires representation on integrable functions by an everywhere-bounded measurable density. The proof normalizes C, establishes a.e. invariance, constructs a countably additive absolutely continuous signed measure, applies Radon–Nikodym, truncates on a measurable null set, and extends from simple functions by L¹ continuity. These steps prove the stated generality without additional hypotheses or circular reliance."
+    },
+    {
+      "key": "mollifier_derivative_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the stated convolution and iterated Fréchet-derivative bound. The generalized induction correctly accommodates vector-valued derivative kernels, preserves the bilinear bound under precompL, and uses the currying norm identity. Compact support supplies a finite uniform kernel-derivative bound, yielding C independent of g and x, including q = 0."
+    },
+    {
+      "key": "mollifier_derivative_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes exactly the Lean hypotheses. Differentiation falls on the smooth compactly supported b, so continuity of each ψ_k suffices. The currying isometries justify the derivative identities; uniform continuity, nonnegativity, unit integral and shrinking support give uniform convergence at every order. No unstated positive-radius assumption is needed."
+    },
+    {
+      "key": "local_on_balls",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The annihilation hypothesis and local conclusion match their Lean types. The proof supplies fixed compact support, the scalar-form reduction, a bounded functional on the restricted finite measure, and valid instantiations of all three declared siblings. Its C¹ test argument satisfies the reusable weak-gradient lemma. The normalized-bump limit then identifies one constant for every supported test form. No parent theorem or undeclared sibling is assumed."
+    },
+    {
+      "key": "globalize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement exactly matches the local-to-global implication, including openness, connectedness and the final restricted integral. Normalized bumps equate constants on overlaps; connectedness makes them global. A finite subordinate smooth partition decomposes each compactly supported test form, and vanishing outside U converts the whole-space integral. The local conclusion is an explicit hypothesis, so no dependency on local_on_balls is required."
+    }
+  ],
+  "required_changes": []
+}
