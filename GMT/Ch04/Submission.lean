@@ -13,7 +13,6 @@ import Mathlib.MeasureTheory.Measure.WithDensity
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.Topology.Semicontinuity.Basic
 import Poincare.SimonGMT.Chapter03.Rectifiable
-import Mathlib.MeasureTheory.Function.StronglyMeasurable.Inner
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 4: Rectifiable `n`-varifolds (printed pp. 85–102)
@@ -520,11 +519,14 @@ theorem Submission.backward_integral_gronwall_Ioc : ∀ (a b Λ C : ℝ) (f : �
     exact le_of_mul_le_mul_left h1 (Real.exp_pos (Λ * s))
   -- Step 7: `f(s) ≤ F(s) ≤ G(s) ≤ C e^{Λ(b - s)}`
   exact (hfF s hs).trans ((hFG s hs).trans h2)
+
 /-- **Simon Ch. 4, 5.4 in Gronwall form (bounded mean curvature).** Assume the weighted
-monotonicity identity (WMI) as a hypothesis. If `V` has generalized mean curvature `H` in the open
-set `U` with `|H| ≤ Λ`, `g ∈ C¹(U)`, `g ≥ 0`, `B_r(y) ⊆ U` and `0 < s ≤ r`, then
+monotonicity identity (WMI) as a hypothesis. If `μ_V` is finite on compacts, `T_x V` is
+`n`-dimensional `μ_V`-a.e. with `x ↦ p_{T_x V}` `μ_V`-a.e. strongly measurable, `V` has generalized
+mean curvature `H` in the open set `U` with `|H| ≤ Λ`, `g ∈ C¹(U)`, `g ≥ 0`, `B_r(y) ⊆ U`,
+`0 < s ≤ r` and `|∇^M g| |x - y|^{1-n}` is `μ_V`-integrable on `B_r(y)`, then
 `s⁻ⁿ ∫_{B_s(y)} g dμ_V ≤ e^{Λ(r-s)} (r⁻ⁿ ∫_{B_r(y)} g dμ_V +
-n⁻¹ ∫_{B_r(y)} |∇^M g| |x - y|^{1-n} dμ_V)`.
+n⁻¹ ∫_{B_r(y)} |∇^M g| |x - y|^{1-n} dμ_V)` (the printed factor is the weaker `e^{Λρ}`).
 Put `f(τ) = τ⁻ⁿ ∫_{B_τ(y)} g dμ_V`. By (WMI), `|H| ≤ Λ` and Cauchy–Schwarz,
 `f(σ) ≤ f(r) + P + Λ ∫_{(σ,r]} f` for `σ ∈ [s, r]`, where
 `P = ∫_{(s,r]} τ^{-n-1} ∫_{B_τ(y)} |x - y| |∇^M g| dμ_V dτ`. The backward integral Gronwall
@@ -580,14 +582,15 @@ theorem Submission.bounded_curvature_ball_average_estimate : (∀ (n ℓ : ℕ) 
     have h1 : IntegrableOn (fun x => inner ℝ (x - y) (V.tangentialGradient g x))
         (closedBall y τ) μ := by
       refine Integrable.of_bound (C := r * Cg1) ?_ ?_
-      · exact (hsubm.inner hTGmeas).restrict
+      · exact (continuous_inner.comp_aestronglyMeasurable₂ hsubm hTGmeas).restrict
       · refine (ae_restrict_iff' measurableSet_closedBall).2 (Eventually.of_forall fun x hx => ?_)
         refine (norm_inner_le_norm _ _).trans ?_
         have h1 : ‖x - y‖ ≤ r := by rw [← dist_eq_norm]; exact (mem_closedBall.1 hx).trans hτ
         exact mul_le_mul h1 (hTGbound x (hsubB τ hτ hx)) (norm_nonneg _) hr.le
     have hHτ : IntegrableOn (fun x => inner ℝ (x - y) (H x)) (closedBall y τ) μ := by
       have hH' := hHint.mono_set (hsubB τ hτ)
-      refine (hH'.norm.const_mul r).mono' (hsubm.restrict.inner hH'.aestronglyMeasurable) ?_
+      refine (hH'.norm.const_mul r).mono'
+        (continuous_inner.comp_aestronglyMeasurable₂ hsubm.restrict hH'.aestronglyMeasurable) ?_
       refine (ae_restrict_iff' measurableSet_closedBall).2 (Eventually.of_forall fun x hx => ?_)
       refine (norm_inner_le_norm _ _).trans ?_
       have h1 : ‖x - y‖ ≤ r := by rw [← dist_eq_norm]; exact (mem_closedBall.1 hx).trans hτ
