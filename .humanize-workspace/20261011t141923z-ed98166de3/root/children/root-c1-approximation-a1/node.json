@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_approximation-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "C¹ approximation of Lipschitz functions (Simon 2.1.5)",
+  "statement": "For every n ∈ ℕ, every Lipschitz f : ℝⁿ → ℝ and every real ε > 0 there is g : ℝⁿ → ℝ of class C¹ such that the Lebesgue measure of {x : f(x) ≠ g(x)} ∪ {x : f does not have Fréchet derivative Dg(x) at x} is < ε.",
+  "lean_statement": "C1Approximation",
+  "lean_name": "c1_approximation_theorem",
+  "depends_on": [
+    "root.lipschitz_ext_rademacher-a1",
+    "root.whitney_extension-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_ext_rademacher-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.whitney_extension-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-c1-approximation-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.area_formula-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Area formula, multiplicity and weighted forms (Simon 2.3.4, 2.3.5, erratum dHⁿ)",
+  "statement": "For n ≤ m, A ⊆ ℝⁿ Lebesgue-null-measurable and f : ℝⁿ → ℝᵐ K-Lipschitz on A, with Jf(x) = √det(L*L), L = fderivWithin ℝ f A x: (3.4, corrected) ∫_{ℝᵐ} #(A ∩ f⁻¹{y}) dHⁿ(y) = ∫_A Jf dLⁿ; (3.5) for every h : ℝⁿ → [0,∞] a.e.-measurable on A, y ↦ Σ_{x ∈ A ∩ f⁻¹{y}} h(x) is Hⁿ-a.e.-measurable and its Hⁿ-integral equals ∫_A h Jf dLⁿ (Hⁿ = μHE[n]).",
+  "lean_statement": "AreaFormula",
+  "lean_name": "area_formula_theorem",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-area-formula-a1-a1"
+}

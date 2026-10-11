@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.eilenberg_inequality-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Eilenberg inequality (Simon 2.1.9)",
+  "statement": "Let X be a σ-compact metric space, m ≥ 1 natural, k > 0 real, A ⊆ X 𝓗^{m+k}-null-measurable with 𝓗^{m+k}(A) < ∞ (Simon-normalized Hausdorff measures 𝓗^s = (ω_s/2^s)μH[s]) and f : X → ℝᵐ K-Lipschitz on A. Then y ↦ 𝓗^k(A ∩ f⁻¹{y}) is Lebesgue-a.e.-measurable on ℝᵐ and ∫_{ℝᵐ} 𝓗^k(A ∩ f⁻¹{y}) dLᵐ(y) ≤ (ω_m ω_k/ω_{m+k}) K^m 𝓗^{m+k}(A).",
+  "lean_statement": "EilenbergInequality",
+  "lean_name": "eilenberg_inequality_theorem",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-eilenberg-inequality-a1-a1"
+}

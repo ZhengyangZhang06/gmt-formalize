@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_ext_rademacher-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Lipschitz extension (Simon 2.1.2) and Rademacher theorem (Simon 2.1.4)",
+  "statement": "(1.2) For every metric space X (Lean X : Type with MetricSpace X), every nonempty A ⊆ X and every f : A → ℝ that is Lipschitz for the subspace metric (LipschitzWith K f for some K : ℝ≥0), there is F : X → ℝ which is Lipschitz (∃ K, LipschitzWith K F), has the same least Lipschitz constant, lipConst F = lipConst f where lipConst g := sInf {K : ℝ≥0 | LipschitzWith K g}, and satisfies F a = f a for all a ∈ A. (1.4) For every n ∈ ℕ and every Lipschitz f : ℝⁿ → ℝ (ℝⁿ = EuclideanSpace ℝ (Fin n)), f is Fréchet differentiable at volume-almost every point of ℝⁿ.",
+  "lean_statement": "LipschitzExtension ∧ Rademacher",
+  "lean_name": "lipschitz_extension_and_rademacher",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-lipschitz-ext-rademacher-a1-a1"
+}

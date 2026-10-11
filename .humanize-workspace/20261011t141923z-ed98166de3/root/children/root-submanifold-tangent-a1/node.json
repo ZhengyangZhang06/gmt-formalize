@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_tangent-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Tangent space equals range of the chart derivative; Simon submanifolds are Borel with continuous tangent projection (Simon 2.4.1-4.3)",
+  "statement": "(1) If 1 ≤ r and ψ : ℝⁿ → ℝᴺ is a Simon local representation of M on (V, W) (V, W open, ψ C^r on V, injective on V, ψ(V) = W ∩ M, relatively proper, Dψ injective on V), then for every x ∈ V the tangent space tangentSpace M (ψ x) (span of velocities of C¹ curves (−1,1) → M through ψ(x)) equals range Dψ(x). (2) If M is an n-dimensional C^r Simon submanifold of ℝᴺ then M is a Borel set and y ↦ tangentProjection M y is continuous on M.",
+  "lean_statement": "(∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M",
+  "lean_name": "simon_submanifold_tangent_basics",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-submanifold-tangent-a1-a1"
+}

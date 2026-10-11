@@ -1,0 +1,113 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^def |^theorem main_theorem' project/GMT/Ch02/Contract.lean",
+        "rg -n --glob '*.lean' 'namespace Submission|Submission\\.|bv_compactness_poincare_extension|lipschitz_extension_and_rademacher|simon_submanifold_tangent_basics' project",
+        "tangentCone|eqOn.*fderiv|fderivWithin",
+        "exists_disjoint_subfamily_covering_enlargement_closedBall",
+        "contDiff_convolution_left|convolution_tendsto_right|integral_lineDeriv_mul_eq|addHaar_frontier",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean CombinedAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/EuclideanNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/tmp/gmt-ch02-independent-audit-ck9ukm10/CombinedAudit.lean"
+      ],
+      "conclusion": "The split is appropriate. All twelve exact child types elaborated in the comparator-replayed frozen scope without child implementations. Their conditional assembly proves precisely the selected parent type. Dependencies are correctly directed and acyclic; the tangent helper supports the geometric children. All names are distinct bare identifiers, with no conflicting declarations found and only root active in the DAG. Child types are unchanged from v1. The revised BV proof matches the frozen weighted integrand; its conversion and empty-set case independently passed Lean checking. Checked reused library declarations, assembly, and BV conversion depend only on propext, Classical.choice and Quot.sound. No prohibited matrix-unit construction occurs. Every supplied child proof was independently reviewed; acceptance does not assert that the remaining child implementations already exist."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_ext_rademacher",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both statements match the frozen conjunction. The optimal McShane extension argument and compatible, axiom-checked Haar-measure Rademacher theorem prove the exact conclusions without circularity."
+    },
+    {
+      "key": "whitney_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The covering, partition derivative bounds and compact-uniform jet estimates establish differentiability on A and continuity of the derivative. Empty and zero-dimensional cases are covered."
+    },
+    {
+      "key": "c1_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Shellwise Lusin, Egorov and closed approximation produce the required closed large set. The declared Rademacher and Whitney dependencies then give the exact HasFDerivAt exceptional-set bound."
+    },
+    {
+      "key": "lipschitz_image_hausdorff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact approximation proves image null-measurability. Refining countable partitions and monotone convergence prove multiplicity measurability and the correctly normalized bound, including m = 0."
+    },
+    {
+      "key": "eilenberg_inequality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Borel covering majorants and isodiametry give the stated constant. Compact-fiber open-cover contents and the null-remainder argument supply the required a.e. measurability."
+    },
+    {
+      "key": "bv_results",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose now matches variation inside the frozen integrand. A0 correctly handles empty W and divides by positive finite volume otherwise. The mollification, compactness, mean-to-beta and cutoff arguments complete all three conjuncts."
+    },
+    {
+      "key": "area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pinned weighted and multiplicity theorems have compatible types and standard axioms. The normDet/square-root Jacobian, dimension and fiber-sum identifications establish the exact frozen contract."
+    },
+    {
+      "key": "submanifold_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Properness gives the continuous chart inverse and local closedness; the curve argument proves both tangent inclusions. The projection formula proves continuity. The second conjunct's regularity hypothesis is included in IsSimonSubmanifold."
+    },
+    {
+      "key": "variation_formulas",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Chart area formulas, Gram determinant differentiation and uniform domination establish both exact derivative statements. Basis-independent expressions and compact support justify measurability and integrability."
+    },
+    {
+      "key": "stationary_results",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chart divergence argument and admissible smooth test deformations prove the variational equivalence. Within-derivative uniqueness on tangent directions justifies the frozen curvature definition; the normal-field identities complete stationary second variation."
+    },
+    {
+      "key": "coarea_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The critical-fiber covering estimate is independent of Sard. Straightening charts, area and Tonelli prove the regular part, and the null-set argument correctly extends the result to a.e.-measurable weights."
+    },
+    {
+      "key": "c1_sard",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Rank-determinant equivalence, coarea applied to the critical-set indicator, relative closedness and proper inverse-function slice charts prove every conjunct using the declared dependencies."
+    }
+  ],
+  "required_changes": []
+}

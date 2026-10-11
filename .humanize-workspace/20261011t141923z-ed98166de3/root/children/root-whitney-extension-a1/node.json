@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.whitney_extension-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Whitney extension theorem for C¹ jets (Simon 2.1.6)",
+  "statement": "For every n ∈ ℕ, closed A ⊆ ℝⁿ, h : ℝⁿ → ℝ continuous on A and ν : ℝⁿ → ℝⁿ continuous on A such that for every compact K ⊆ A and every ε > 0 there is δ > 0 with |h(y) − h(x) − ⟨ν(x), y − x⟩| ≤ ε|y − x| for all x ∈ K and y ∈ A with 0 < |y − x| < δ, there is a C¹ function g : ℝⁿ → ℝ with g(x) = h(x) and Dg(x)v = ⟨ν(x), v⟩ for all x ∈ A and v ∈ ℝⁿ.",
+  "lean_statement": "WhitneyExtension",
+  "lean_name": "whitney_extension_theorem",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-whitney-extension-a1-a1"
+}

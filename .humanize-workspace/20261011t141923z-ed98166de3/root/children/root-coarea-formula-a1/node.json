@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Co-area formula for C¹ maps on C¹ submanifolds (Simon 2.6.3, 2.6.6)",
+  "statement": "Let k ≥ 1, n = m + k, M an n-dimensional C¹ Simon submanifold of ℝᴺ, U ⊇ M open, f : ℝᴺ → ℝᵐ C¹ on U, and g : ℝᴺ → [0,∞] a.e.-measurable for Hⁿ restricted to M. With J*f = coareaJacobian M f = √det(L L*), L = Df|_{T_xM}: y ↦ ∫_{M∩f⁻¹{y}} g dHᵏ is Lebesgue-a.e.-measurable and ∫_M g J*f dHⁿ = ∫_{ℝᵐ} ∫_{M∩f⁻¹{y}} g dHᵏ dLᵐ(y) (Hᵈ = μHE[d]).",
+  "lean_statement": "CoareaFormula",
+  "lean_name": "coarea_formula_theorem",
+  "depends_on": [
+    "root.area_formula-a1",
+    "root.submanifold_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.area_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.submanifold_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-a1"
+}
