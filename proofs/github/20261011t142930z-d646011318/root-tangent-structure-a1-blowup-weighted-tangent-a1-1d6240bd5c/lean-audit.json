@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "15b888f7577d7c36b104c630a580693cb1166d4e6eafe56650c94680160ed3ec",
+  "git_delta": {
+    "base_commit": "2cce809724fc09db16dc21873e5f9cd1ee6e2dfa",
+    "candidate_commit": "49b11c6b3e223e2242bf7e9e2a1c6dca14cf7332",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_blowup_weighted_tangent",
+    "diff_sha256": "94b44db507cbec59883e76193b44ed40379ca38fa42c372d58ad49f2825e7709",
+    "source_sha256": "5b093b023f983828c38948ac477939ad21c0ca9b4e98248e5d53cb18260eb760",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_blowup_weighted_tangent",
+      "statement": "∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)), Module.finrank ℝ P = n → (∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y, f (t⁻¹ • (y - x)) ∂(mk a).weight) (𝓝[>] 0) (𝓝 (a.θ x * ∫ y in (P : Set (Ambient n ℓ)), f y ∂μHE[n]))) → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n a.M a.θ x P",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
