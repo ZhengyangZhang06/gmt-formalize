@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.representation_unique-a1.smooth_to_continuous-a1",
+  "parent_id": "root.slicing-a1.representation_unique-a1",
+  "depth": 3,
+  "title": "Agreement of g₁μ₁ and g₂μ₂ on C_c^∞(O) extends to C_c(O)",
+  "statement": "For every P ∈ ℕ, all Borel measures μ₁, μ₂ on ℝ^P, all g₁, g₂ : ℝ^P → ℝ with g₁ μ₁-integrable and g₂ μ₂-integrable, and every open O ⊆ ℝ^P: if ∫ φ g₁ dμ₁ = ∫ φ g₂ dμ₂ for every C^∞ function φ : ℝ^P → ℝ (smooth of every finite order; Lean ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)) with compact support and tsupport φ ⊆ O, then ∫ φ g₁ dμ₁ = ∫ φ g₂ dμ₂ for every continuous φ : ℝ^P → ℝ with compact support and tsupport φ ⊆ O.",
+  "lean_statement": "∀ (P : ℕ) (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ), Integrable g₁ μ₁ → Integrable g₂ μ₂ → ∀ O : Set (Eucl P), IsOpen O → (∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ O → ∫ x, φ x * g₁ x ∂μ₁ = ∫ x, φ x * g₂ x ∂μ₂) → ∀ φ : Eucl P → ℝ, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ O → ∫ x, φ x * g₁ x ∂μ₁ = ∫ x, φ x * g₂ x ∂μ₂",
+  "lean_name": "slicing_ru_smooth_to_continuous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-representation-unique-a1-smooth-to-continuous-a1-a1"
+}
