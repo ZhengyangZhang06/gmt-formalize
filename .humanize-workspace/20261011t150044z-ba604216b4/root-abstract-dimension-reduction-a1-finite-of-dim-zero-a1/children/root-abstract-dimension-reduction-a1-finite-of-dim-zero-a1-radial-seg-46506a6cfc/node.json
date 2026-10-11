@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.finite_of_dim_zero-a1.radial_segment_measure-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1.finite_of_dim_zero-a1",
+  "depth": 3,
+  "title": "Step 7 of step 9: a radial segment inside B_1(0) has positive H^1-measure",
+  "statement": "Let P ∈ ℕ, S ⊆ ℝ^P and z ∈ ℝ^P with z ≠ 0 and |z| < 1. Suppose t·z ∈ S for every real t with 0 < t ≤ 1. Then μH[1](S ∩ B_1(0)) > 0. Here μH[1] is Mathlib's 1-dimensional Hausdorff measure on ℝ^P with the Euclidean metric, and B_1(0) is the open unit ball.",
+  "lean_statement": "∀ (P : ℕ) (S : Set (Euclid P)) (z : Euclid P), z ≠ 0 → ‖z‖ < 1 → (∀ t : ℝ, 0 < t → t ≤ 1 → t • z ∈ S) → 0 < μH[1] (S ∩ ball (0 : Euclid P) 1)",
+  "lean_name": "adr_radial_segment_hausdorff_pos",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1-radial-seg-46506a6cfc-a1"
+}
