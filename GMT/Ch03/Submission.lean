@@ -459,3 +459,48 @@ theorem Submission.section3_exists_coordinateProjection_injOn :
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
 end GMT.Ch03
+
+
+/-- **Simon Ch. 3, proof of Lemma 3.3, positivity step (p. 79)** (`chapter-03.txt` lines
+490–496). If `ψ` is `C¹` on an open `V ⊆ ℝⁿ` with `Dψ` injective and `T ⊆ V` has `Lⁿ(T) > 0`,
+then `Hⁿ(p_J(ψ(T))) > 0` for some `J` with `#J = n`. Every neighbourhood of some `u₀ ∈ T` meets
+`T` in positive measure. Choose `J` with `p_J` injective on the `n`-plane `Dψ(u₀)(ℝⁿ)`, so that
+`A = p_J ∘ Dψ(u₀)` is injective. Then `Φ = p_J ∘ ψ` has strict derivative `A` at `u₀`, so it is
+`K`-anti-Lipschitz on a neighbourhood `s` of `u₀`. Hence `0 < Lⁿ(T ∩ s) ≤ Kⁿ Hⁿ(Φ(T ∩ s))`, and
+`Φ(T ∩ s) ⊆ p_J(ψ(T))`. Strict differentiability replaces Simon's local `C¹` diffeomorphism
+(Ch. 2, Remark 4.4). -/
+theorem Submission.section3_chart_coordinateProjection_pos :
+    ∀ (n ℓ : ℕ) (V T : Set (Rn n)) (ψ : Rn n → Rn (n + ℓ)), IsOpen V → ContDiffOn ℝ 1 ψ V →
+      (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → T ⊆ V → 0 < volume T →
+        ∃ J : Finset (Fin (n + ℓ)), J.card = n ∧
+          0 < μHE[n] (coordinateProjection J '' (ψ '' T)) := by
+  intro n ℓ V T ψ hV hψ hDψ hTV hT
+  -- Step 1: every neighbourhood of some `u₀ ∈ T` meets `T` in positive measure.
+  obtain ⟨u₀, hu₀, hdens⟩ := exists_mem_forall_mem_nhdsWithin_pos_measure hT.ne'
+  -- Step 2: `p_J` is injective on the `n`-plane `Dψ(u₀)(ℝⁿ)`, so `A = p_J ∘ Dψ(u₀)` is injective.
+  set D := fderiv ℝ ψ u₀
+  have hD : Function.Injective D := hDψ u₀ (hTV hu₀)
+  obtain ⟨J, hJ, hJinj⟩ := Submission.section3_exists_coordinateProjection_injOn (n + ℓ) n
+    (LinearMap.range (D : Rn n →ₗ[ℝ] Rn (n + ℓ)))
+    (by rw [LinearMap.finrank_range_of_inj (f := (D : Rn n →ₗ[ℝ] Rn (n + ℓ))) hD,
+      finrank_euclideanSpace_fin])
+  set A := (coordinateProjection J).comp D
+  have hA : Function.Injective A := fun v w hvw ↦
+    hD (hJinj (LinearMap.mem_range_self _ v) (LinearMap.mem_range_self _ w) hvw)
+  -- Step 3: `Φ = p_J ∘ ψ` is strictly differentiable at `u₀` with derivative `A`.
+  have hΦ : HasStrictFDerivAt (coordinateProjection J ∘ ψ) A u₀ :=
+    (coordinateProjection J).hasStrictFDerivAt.comp u₀
+      ((hψ.contDiffAt (hV.mem_nhds (hTV hu₀))).hasStrictFDerivAt one_ne_zero)
+  -- Step 4: `Φ` is `K`-anti-Lipschitz on a neighbourhood `s` of `u₀`.
+  obtain ⟨s, hs, K, hK⟩ := Submission.section3_hasStrictFDerivAt_injective_local_antilipschitz
+    n (n + ℓ) (coordinateProjection J ∘ ψ) A u₀ hΦ hA
+  -- Step 5: `0 < Lⁿ(T ∩ s) ≤ Kⁿ Hⁿ(Φ(T ∩ s))`, so `Hⁿ(Φ(T ∩ s)) ≠ 0`.
+  have hbound := Submission.section3_antilipschitzOn_volume_le_euclideanHausdorff_image
+    n (n + ℓ) (coordinateProjection J ∘ ψ) (T ∩ s) K fun x hx y hy ↦ hK x hx.2 y hy.2
+  have himage : μHE[n] ((coordinateProjection J ∘ ψ) '' (T ∩ s)) ≠ 0 := fun h ↦ by
+    rw [h, mul_zero] at hbound
+    exact (hdens _ (inter_mem_nhdsWithin T hs)).ne' (nonpos_iff_eq_zero.mp hbound)
+  -- Step 6: `Φ(T ∩ s) ⊆ p_J(ψ(T))`, and `Hⁿ` is monotone.
+  refine ⟨J, hJ, (pos_iff_ne_zero.mpr himage).trans_le (measure_mono ?_)⟩
+  rw [Set.image_comp]
+  exact Set.image_mono (Set.image_mono Set.inter_subset_left)
