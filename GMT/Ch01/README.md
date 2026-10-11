@@ -92,3 +92,8 @@ Not used (per the brief): any non-clean SimonGMT definition.
 * 4.12 is stated with Mathlib's `ℝ≥0`-linear maps on `C_c(X, ℝ≥0)`, which is exactly additivity plus
   `λ(cf) = cλ(f)` for `c ≥ 0`.
 * Radon measures in §4 are Simon outer measures satisfying (R1)–(R3); integrals use `caratheodoryMeasure`.
+* Encoding check (scratch file outside the repo, not committed): `BorelRegularApproximation`, `LusinTheorem`,
+  `LebesgueEqHausdorff`, `IsodiametricInequality`, `UpperDensityComparison`, `UpperDensityTheorem`,
+  `BesicovitchCovering`, `HausdorffDensityBounds` and `RieszVector` were each proved in a few lines from the SimonGMT
+  theorems listed above, which confirms that these statements match the existing ones. The rest need short bridges
+  (1.13, 3.16, 3.17, 3.24, 4.12) or new mathematics (4.16 when `X` is not compact).
