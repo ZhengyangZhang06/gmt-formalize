@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_sard-a1.regular_fiber-a1",
+  "parent_id": "root.c1_sard-a1",
+  "depth": 2,
+  "title": "The regular part of every fiber is a k-dimensional C¹ Simon submanifold",
+  "statement": "Let N, m, k ∈ ℕ, M ⊆ ℝᴺ an (m+k)-dimensional C¹ Simon submanifold, U ⊆ ℝᴺ open with M ⊆ U, and f : ℝᴺ → ℝᵐ of class C¹ on U. Assume (i) for every C¹ Simon local representation (V, W, ψ) of M with ψ : ℝ^{m+k} → ℝᴺ and every x ∈ V, tangentSpace M (ψ x) = range Dψ(x); and (ii) x ↦ coareaJacobian M f x is continuous on M. Then for every y ∈ ℝᵐ, (M ∩ f⁻¹{y}) \\ {x : coareaJacobian M f x = 0} is a k-dimensional C¹ Simon submanifold of ℝᴺ (IsSimonSubmanifold (E := ℝᵏ) 1; vacuously if it is empty).",
+  "lean_statement": "∀ (N m k : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m), Chapter02.IsSimonSubmanifold (E := Rn (m + k)) 1 M → IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → (∀ (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → ContinuousOn (coareaJacobian M f) M → ∀ y : Rn m, Chapter02.IsSimonSubmanifold (E := Rn k) 1 ((M ∩ f ⁻¹' {y}) \\ {x | coareaJacobian M f x = 0})",
+  "lean_name": "c1_sard_regular_fiber_submanifold",
+  "depends_on": [
+    "root.c1_sard-a1.jacobian_rank-a1",
+    "root.c1_sard-a1.level_set_chart-a1",
+    "root.c1_sard-a1.chart_composition-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.c1_sard-a1.jacobian_rank-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.c1_sard-a1.level_set_chart-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.c1_sard-a1.chart_composition-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-c1-sard-a1-regular-fiber-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_sard-a1.chart_composition-a1",
+  "parent_id": "root.c1_sard-a1",
+  "depth": 2,
+  "title": "Composition of Simon local representations",
+  "statement": "Let n, k, N ∈ ℕ, M, S ⊆ ℝᴺ with S ⊆ M, (V, W, ψ) a C¹ Simon local representation of M with ψ : ℝⁿ → ℝᴺ (IsSimonLocalRepresentation 1 M V W ψ), V₁ ⊆ V, and (D, V₁, l) a C¹ Simon local representation of ψ⁻¹(S) with l : ℝᵏ → ℝⁿ (IsSimonLocalRepresentation 1 (ψ⁻¹(S)) D V₁ l). Then there is W₁ ⊆ W with ψ(V₁) = W₁ ∩ M such that (D, W₁, ψ ∘ l) is a C¹ Simon local representation of S (IsSimonLocalRepresentation 1 S D W₁ (ψ ∘ l), in particular W₁ is open).",
+  "lean_statement": "∀ (n k N : ℕ) (M S : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N) (D : Set (Rn k)) (V₁ : Set (Rn n)) (l : Rn k → Rn n), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → S ⊆ M → V₁ ⊆ V → Chapter02.IsSimonLocalRepresentation 1 (ψ ⁻¹' S) D V₁ l → ∃ W₁ : Set (Rn N), W₁ ⊆ W ∧ ψ '' V₁ = W₁ ∩ M ∧ Chapter02.IsSimonLocalRepresentation 1 S D W₁ (ψ ∘ l)",
+  "lean_name": "c1_sard_local_representation_comp",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-c1-sard-a1-chart-composition-a1-a1"
+}

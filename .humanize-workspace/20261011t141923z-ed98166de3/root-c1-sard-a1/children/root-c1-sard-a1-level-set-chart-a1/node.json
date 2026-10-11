@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_sard-a1.level_set_chart-a1",
+  "parent_id": "root.c1_sard-a1",
+  "depth": 2,
+  "title": "Level sets of a C¹ submersion have Simon local representations (implicit function theorem)",
+  "statement": "Let m, k ∈ ℕ, V ⊆ ℝ^{m+k} open, G : ℝ^{m+k} → ℝᵐ of class C¹ on V, and x₀ ∈ V with DG(x₀) = fderiv ℝ G x₀ surjective. Then there are D ⊆ ℝᵏ, V₁ ⊆ ℝ^{m+k} with x₀ ∈ V₁ ⊆ V, and l : ℝᵏ → ℝ^{m+k} such that IsSimonLocalRepresentation 1 (G⁻¹{G(x₀)}) D V₁ l: D and V₁ are open, l is C¹ and injective on D, l(D) = V₁ ∩ G⁻¹{G(x₀)}, D ∩ l⁻¹(Q) is compact for every compact Q ⊆ V₁, and Dl(z) is injective for all z ∈ D.",
+  "lean_statement": "∀ (m k : ℕ) (V : Set (Rn (m + k))) (G : Rn (m + k) → Rn m) (x₀ : Rn (m + k)), IsOpen V → x₀ ∈ V → ContDiffOn ℝ 1 G V → Function.Surjective (fderiv ℝ G x₀) → ∃ (D : Set (Rn k)) (V₁ : Set (Rn (m + k))) (l : Rn k → Rn (m + k)), x₀ ∈ V₁ ∧ V₁ ⊆ V ∧ Chapter02.IsSimonLocalRepresentation 1 (G ⁻¹' {G x₀}) D V₁ l",
+  "lean_name": "c1_sard_submersion_level_set_chart",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-c1-sard-a1-level-set-chart-a1-a1"
+}

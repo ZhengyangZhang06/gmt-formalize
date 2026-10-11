@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^def (C1Sard|CoareaFormula|tangentSpace|tangentProjection|coareaJacobian)",
+        "C1Sard|6\\.4|closed|rank|header|import",
+        "Submission\\.|c1_sard_|IsUnit|Matrix",
+        "toOpenPartialHomeomorph|mem_toOpenPartialHomeomorph_source",
+        "theorem lintegral_eq_zero_iff'|theorem lintegral_indicator_one",
+        "theorem continuousOn_iff_isClosed|theorem ContinuousOn.isOpen_inter_preimage",
+        "protected theorem ContinuousLinearEquiv.isOpen|theorem ContinuousOn.clm_comp",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/lakefile.toml",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-c1-sard-a1/parent-child-handoff.json",
+        "/tmp/c1sard-independent-audit-as7u8epn/GMT/Ch02/Submission.lean",
+        "/tmp/c1sard-independent-audit-as7u8epn/supplied-proofs-compile.log",
+        "/tmp/c1sard-independent-audit-as7u8epn/AuditAssembly.lean",
+        "/tmp/c1sard-independent-audit-as7u8epn/AuditAssembly.log"
+      ],
+      "conclusion": "The six-way split appropriately separates genuine obligations establishing the selected C1Sard contract. Contract.lean:349–372 fixes the exact measures, dimensions and conclusions; README:103–104 confirms relative closedness. The pinned Mathlib and SimonGMT revisions match the clean compiler checkouts. Independently generated comparator challenges compiled against frozen definitions before any child implementation existed. All six unchanged supplied Lean proof blocks, all six generated solution modules, and the parent assembly subsequently compiled. The assembly proves C1Sard from exactly the authorized tangent-basics and CoareaFormula prerequisite types, supplied as explicit parameters. Every child, the assembly and the reused SimonGMT lemmas depend only on propext, Classical.choice and Quot.sound. All names are bare identifiers; searches found no conflicting project declarations or reservations in other active branches. Dependencies are correctly directed and acyclic. All frozen types are standalone one-line propositions matching their prose, with no implementation-dependent aliases or matrix-instance hazards."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "jacobian_rank",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The unrestricted prose and Lean type agree. Positive semidefiniteness, the adjoint kernel/range identity and finite-dimensional rank establish the equivalence without differentiability assumptions, including m = 0. The supplied proof is complete and non-circular."
+    },
+    {
+      "key": "jacobian_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are explicit and match the type. The identity LL* = Df P Df* establishes continuity; continuity of f and the Jacobian on M establishes the stated relatively closed critical fibers without assuming M closed."
+    },
+    {
+      "key": "critical_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact CoareaFormula hypothesis is used legitimately. The proof establishes measurability of the critical set, applies its indicator weight, identifies the restricted fiber integrals and uses their AEMeasurability to deduce almost-everywhere vanishing. No parent theorem is invoked."
+    },
+    {
+      "key": "level_set_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the complementary kernel coordinate and invertible augmented derivative, then verifies every Simon representation clause within V. The compact-slice argument proves relative properness, and inverse regularity proves injectivity of the chart derivative. Zero-dimensional cases are covered."
+    },
+    {
+      "key": "chart_composition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type include both representations and the necessary inclusions. Simon 4.2 supplies W₁; injectivity forces the compact preimage under ψ into V₁, permitting properness to compose. Image equality, regularity and derivative injectivity are fully justified."
+    },
+    {
+      "key": "regular_fiber",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses exactly its three declared sibling dependencies and its explicit tangent-range and continuity hypotheses. Restriction to the open regular region, surjectivity of the composite derivative, identification of the represented set and chart composition establish the exact submanifold conclusion for every y, including empty fibers."
+    }
+  ],
+  "required_changes": []
+}

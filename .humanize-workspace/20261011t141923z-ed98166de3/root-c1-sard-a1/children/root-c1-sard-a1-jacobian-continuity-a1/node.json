@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_sard-a1.jacobian_continuity-a1",
+  "parent_id": "root.c1_sard-a1",
+  "depth": 2,
+  "title": "Continuity of the coarea Jacobian on M and relative closedness of critical fibers",
+  "statement": "Let N, m ∈ ℕ, M, U ⊆ ℝᴺ with U open and M ⊆ U, and f : ℝᴺ → ℝᵐ of class C¹ on U, and assume x ↦ tangentProjection M x (the orthogonal projection P_x onto T_xM) is continuous on M. Then x ↦ coareaJacobian M f x is continuous on M, and for every y ∈ ℝᵐ there is a closed set F ⊆ ℝᴺ with M ∩ f⁻¹{y} ∩ {x : coareaJacobian M f x = 0} = M ∩ F.",
+  "lean_statement": "∀ (N m : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m), IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → ContinuousOn (tangentProjection M) M → ContinuousOn (coareaJacobian M f) M ∧ ∀ y : Rn m, ∃ F : Set (Rn N), IsClosed F ∧ M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0} = M ∩ F",
+  "lean_name": "c1_sard_coarea_jacobian_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-c1-sard-a1-jacobian-continuity-a1-a1"
+}

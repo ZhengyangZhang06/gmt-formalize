@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_sard-a1.critical_null-a1",
+  "parent_id": "root.c1_sard-a1",
+  "depth": 2,
+  "title": "Critical parts of almost every fiber are Hᵏ-null (co-area formula with A = C)",
+  "statement": "Assume the frozen co-area formula CoareaFormula (Simon 6.3/6.6). Let N, m, k ∈ ℕ with k ≥ 1, M ⊆ ℝᴺ an (m+k)-dimensional C¹ Simon submanifold, U ⊆ ℝᴺ open with M ⊆ U, f : ℝᴺ → ℝᵐ of class C¹ on U, and suppose M is a measurable set and x ↦ coareaJacobian M f x is continuous on M. Then for Lebesgue-a.e. y ∈ ℝᵐ, μHE[k](M ∩ f⁻¹{y} ∩ {x : coareaJacobian M f x = 0}) = 0.",
+  "lean_statement": "CoareaFormula → ∀ (N m k : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m), 0 < k → Chapter02.IsSimonSubmanifold (E := Rn (m + k)) 1 M → IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → MeasurableSet M → ContinuousOn (coareaJacobian M f) M → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0}) = 0",
+  "lean_name": "c1_sard_critical_fibers_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-c1-sard-a1-critical-null-a1-a1"
+}

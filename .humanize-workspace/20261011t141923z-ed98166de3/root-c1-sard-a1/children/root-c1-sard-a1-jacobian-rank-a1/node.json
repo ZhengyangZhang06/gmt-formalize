@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_sard-a1.jacobian_rank-a1",
+  "parent_id": "root.c1_sard-a1",
+  "depth": 2,
+  "title": "Rank criterion for the coarea Jacobian (J*f(x) = 0 iff rank df_x < m)",
+  "statement": "For all N, m ∈ ℕ, every set M ⊆ ℝᴺ, every map f : ℝᴺ → ℝᵐ and every point x ∈ ℝᴺ (ℝᵖ = EuclideanSpace ℝ (Fin p)): with T := tangentSpace M x and L_x := Df(x) ∘ ι_T : T → ℝᵐ (Df(x) = fderiv ℝ f x, ι_T the inclusion), coareaJacobian M f x = √det(L_x L_x*) equals 0 if and only if the dimension of range(L_x) = LinearMap.range ((fderiv ℝ f x).toLinearMap ∘ₗ (tangentSpace M x).subtype) is < m. No hypothesis on M or f is needed.",
+  "lean_statement": "∀ (N m : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N), coareaJacobian M f x = 0 ↔ Module.finrank ℝ (LinearMap.range ((fderiv ℝ f x).toLinearMap ∘ₗ (tangentSpace M x).subtype)) < m",
+  "lean_name": "c1_sard_coarea_jacobian_eq_zero_iff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-c1-sard-a1-jacobian-rank-a1-a1"
+}
