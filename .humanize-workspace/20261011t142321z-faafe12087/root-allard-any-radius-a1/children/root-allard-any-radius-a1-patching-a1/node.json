@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.patching-a1",
+  "parent_id": "root.allard_any_radius-a1",
+  "depth": 2,
+  "title": "Patching local Lipschitz-small graphs in a thin cone into one graph over T_0 (pure geometry)",
+  "statement": "Let n >= 1, S a subset of R^(n+l), rho > 0, 0 < gh < ga, r > 0 with ga rho + r <= gb rho and gb <= 1, 0 <= eps <= 1/24, kappa > 0 with 48 kappa rho <= r and gh <= (1 - kappa) ga, 0 < r_0 <= gh rho, q_0 a linear isometry, T_0 := q_0(R^n x {0}). Assume: S cap B_rho(0) is closed; every y in S cap B_{ga rho}(0) admits a linear isometry q and v : R^n -> R^l, C^1 on B_r(0), with v(0) = 0, |Dv| <= eps (Hilbert-Schmidt, derivative within B_r(0)) and (S - y) cap B_r(0) = q(graph v over B_r(0)) cap B_r(0); dist(y, T_0) <= kappa |y| for all y in S cap B_{gb rho}(0); and u_0, C^1 on B_{r_0}(0) with u_0(0) = 0, Du_0(0) = 0, ||Du_0|| <= 1 and S cap B_{r_0}(0) = q_0(graph u_0 over B_{r_0}(0)) cap B_{r_0}(0). Then there is u, C^1 on the open ball B^o_{gh rho}(0), with u(0) = 0, Du(0) = 0, ||Du|| <= 1/7 there, u = u_0 on B^o_{r_0/2}(0), q_0(graph u over B^o_{gh rho}(0)) contained in S cap B^o_{ga rho}(0), and S cap B^o_{gh rho}(0) contained in q_0(graph u over B^o_{gh rho}(0)).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (S : Set (Amb n ℓ)) (ρ γh γa γb r ε κ r₀ : ℝ) (q₀ : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u₀ : Rn n → Rn ℓ), 0 < ρ → 0 < γh → γh < γa → 0 < r → γa * ρ + r ≤ γb * ρ → γb ≤ 1 → 0 ≤ ε → ε ≤ 1 / 24 → 0 < κ → 48 * κ * ρ ≤ r → γh ≤ (1 - κ) * γa → 0 < r₀ → r₀ ≤ γh * ρ → IsClosed (S ∩ closedBall 0 ρ) → (∀ y ∈ S ∩ closedBall 0 (γa * ρ), ∃ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (v : Rn n → Rn ℓ), ContDiffOn ℝ 1 v (closedBall 0 r) ∧ v 0 = 0 ∧ (∀ x ∈ closedBall (0 : Rn n) r, hsNorm (fderivWithin ℝ v (closedBall 0 r) x) ≤ ε) ∧ (fun x => y + x) ⁻¹' S ∩ closedBall 0 r = q '' graphOver v (closedBall 0 r) ∩ closedBall 0 r) → (∀ y ∈ S ∩ closedBall 0 (γb * ρ), infDist y (rotatedPlane q₀ : Set (Amb n ℓ)) ≤ κ * ‖y‖) → ContDiffOn ℝ 1 u₀ (closedBall 0 r₀) → u₀ 0 = 0 → fderivWithin ℝ u₀ (closedBall 0 r₀) 0 = 0 → (∀ x ∈ closedBall (0 : Rn n) r₀, ‖fderivWithin ℝ u₀ (closedBall 0 r₀) x‖ ≤ 1) → S ∩ closedBall 0 r₀ = q₀ '' graphOver u₀ (closedBall 0 r₀) ∩ closedBall 0 r₀ → ∃ u : Rn n → Rn ℓ, ContDiffOn ℝ 1 u (ball 0 (γh * ρ)) ∧ u 0 = 0 ∧ fderiv ℝ u 0 = 0 ∧ (∀ x ∈ ball (0 : Rn n) (γh * ρ), ‖fderiv ℝ u x‖ ≤ 1 / 7) ∧ (∀ x ∈ ball (0 : Rn n) (r₀ / 2), u x = u₀ x) ∧ q₀ '' graphOver u (ball 0 (γh * ρ)) ⊆ S ∩ ball 0 (γa * ρ) ∧ S ∩ ball 0 (γh * ρ) ⊆ q₀ '' graphOver u (ball 0 (γh * ρ))",
+  "lean_name": "any_radius_patching",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-a1"
+}

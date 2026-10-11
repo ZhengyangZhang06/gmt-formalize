@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.tilt_height_l1-a1",
+  "parent_id": "root.allard_any_radius-a1",
+  "depth": 2,
+  "title": "L^1 tilt-excess/height estimate (Lemma A)",
+  "statement": "Let n >= 1, U open, V a contract rectifiable n-varifold in U with generalized mean curvature H, z in R^(n+l), r > 0 with B_r(z) contained in U, T an n-dimensional subspace and h >= 0 with dist(x - z, T) <= h for every x in spt V cap B_r(z). Then the integral over B_{r/2}(z) of |p_x - p_T|^2 d mu is at most 144 r^-2 times the integral over B_r(z) of dist(x - z, T)^2 d mu plus 4 h times the integral over B_r(z) of |H| d mu (mu = V.weight, p_x = V.tangentProj x, Hilbert-Schmidt norm, Bochner integrals).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (z : Amb n ℓ) (r h : ℝ), 0 < r → 0 ≤ h → closedBall z r ⊆ U → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → (∀ x ∈ V.support ∩ closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ≤ h) → ∫ x in closedBall z (r / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight ≤ 144 * (r ^ 2)⁻¹ * ∫ x in closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight + 4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight",
+  "lean_name": "any_radius_tilt_height_l1",
+  "depends_on": [
+    "root.allard_any_radius-a1.tangent_ae-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.tangent_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-tilt-height-l1-a1-a1"
+}
