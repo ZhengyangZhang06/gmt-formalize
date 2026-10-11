@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.dim_zero-a1",
+  "parent_id": "root.density_and_tangent_cones-a1",
+  "depth": 2,
+  "title": "Dimension zero: a minimizing 0-current supported in the constraint set vanishes",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P open, A ⊆ ℝ^P and T ∈ 𝒟_0(U) minimizing in A (IsMinimizingIn T A, Simon 7.1.1; for n = 0 the boundary condition is vacuous) with spt T ⊆ A. Then T = 0, spt T = ∅, and M_W(T) = 0 for every W ⊆ ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U 0), IsOpen U → IsMinimizingIn T A → T.support ⊆ A → T = 0 ∧ T.support = ∅ ∧ ∀ W : Set (Euclid P), T.massOn W = 0",
+  "lean_name": "dtc_dim_zero_eq_zero",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-dim-zero-a1-a1"
+}

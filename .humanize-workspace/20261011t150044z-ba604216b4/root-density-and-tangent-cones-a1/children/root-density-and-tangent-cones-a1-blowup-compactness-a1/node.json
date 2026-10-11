@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1",
+  "parent_id": "root.density_and_tangent_cones-a1",
+  "depth": 2,
+  "title": "Lemma BC at a fixed point: blow-up subsequences converge to minimizing cycles with mass convergence",
+  "statement": "Let ℓ ≤ k, n ≥ 1, U ⊆ ℝ^{n+k} open, N ⊆ ℝ^{n+k} an embedded C² (n+ℓ)-dimensional submanifold (IsEmbeddedSubmanifold 2 (n+ℓ) N) with (N̄ ∖ N) ∩ U = ∅, T ∈ 𝒟_n(U) minimizing in U ∩ N with spt T ⊆ U ∩ N, x ∈ spt T ∖ spt ∂T, and θ ∈ ℝ with HasMassDensity T x θ. Then for every sequence λ_j > 0 with λ_j → 0 there are a strictly increasing φ : ℕ → ℕ and C ∈ 𝒟_n(ℝ^{n+k}) such that S_j := η_{x,λ_{φ(j)}#}T (blowUp) satisfy S_j ⇀ C in ℝ^{n+k} (ConvergesWeakly), μ_{S_j} → μ_C as Radon measures for all integer multiplicity representations (MassMeasuresConverge), C is integer multiplicity and minimizing in ℝ^{n+k} (IsMinimizingIn C univ), and ∂C = 0 (BoundaryVanishes C).",
+  "lean_statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → 0 < n → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (x : Euclid (n + k)) (θ : ℝ), IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → x ∈ T.support \\ boundarySupport T → HasMassDensity T x θ → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C",
+  "lean_name": "dtc_blowUp_compactness",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+    "root.density_and_tangent_cones-a1.im_sub-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.im_sub-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-a1"
+}
