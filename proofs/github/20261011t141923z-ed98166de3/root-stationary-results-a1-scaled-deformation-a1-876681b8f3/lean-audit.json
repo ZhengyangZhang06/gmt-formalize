@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "25c7a181755230bb6c5b6b1e6d88419e33d51835cf1fce18b83ccbb08b811c6e",
+  "git_delta": {
+    "base_commit": "e89868399fd62a837adde4056aeab4e3a0e97bac",
+    "candidate_commit": "80db24ba7db5a87afbcf9ab480c8bc61e5a33b89",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "scaled_field_deformation_is_admissible",
+    "diff_sha256": "dcf1eb8b6a6b6c3685b24c51bcedf243b7d6bceded335bd0bf4ed6afc9ebe763",
+    "source_sha256": "8334233efac36f4a398cb55d912b2b8039a7440d63f61b941634cc3be586090c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.scaled_field_deformation_is_admissible",
+      "statement": "∀ (N : ℕ) (U : Set (Rn N)) (Y : Rn N → Rn N), IsOpen U → ContDiff ℝ 2 Y → HasCompactSupport Y → tsupport Y ⊆ U → ∃ c : ℝ, 0 < c ∧ IsAdmissibleDeformation 2 U (tsupport Y) (fun t x ↦ x + (c * t) • Y x) ∧ ∀ x, initialVelocity (fun t x ↦ x + (c * t) • Y x) x = c • Y x",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
