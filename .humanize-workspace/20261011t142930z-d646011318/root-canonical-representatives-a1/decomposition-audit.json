@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "def (Ambient|omega|IsRectifiablePair|pairWeight|density|HasDensityAt|MultiplicityGE|canonicalCarrier|ApproxTangentAE|CanonicalRepresentative|LpSupportRepresentation|StationaryDensity|LpDensity)|^import|^namespace|^open",
+        "theorem simon_theorem_3_3|def dimensionalDensityQuotient|def dimensionalUpperDensity|theorem simonHausdorffMeasureReal_toOuterMeasure|theorem measure_toOuterMeasure_isBorelRegular|def CountablyRectifiable|theorem volume_euclidean_ball_eq|theorem simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure",
+        "limUnder_eq|ofReal_measureReal",
+        "hausdorff_null_of_measure_null_density_ge|canonicalCarrier_rectifiablePair_weight|canonicalCarrier_closed_support",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "python3 /tmp/canonical-independent-audit/compile_probe.py TypesAndAssembly.lean",
+        "python3 /tmp/canonical-independent-audit/compile_probe.py Children.lean",
+        "python3 /tmp/canonical-independent-audit/compile_probe.py LibraryAxioms.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Semicontinuity/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Separation/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Real.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-canonical-representatives-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-canonical-representatives-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/tmp/canrep-audit/src/Proofs3.lean",
+        "/tmp/canonical-independent-audit/TypesAndAssembly.lean",
+        "/tmp/canonical-independent-audit/Children.lean",
+        "/tmp/canonical-independent-audit/LibraryAxioms.lean"
+      ],
+      "conclusion": "The handoff preserves the selected canonical_representatives contract. The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean; installed Mathlib and SimonGMT revisions match the pins. Inspected sources support the normalization bridges, arbitrary-set density comparison, restriction identities, semicontinuity, and support arguments. Independent Lean checks passed for all three standalone propositions, the relevant measure instances, the supplied child proofs, and assembly of the exact selected parent from the children and frozen sibling interfaces. Child proofs and parameterized assembly use only propext, Classical.choice, and Quot.sound. No proposed name matched an existing DAG reservation or another branch's declaration. The split is appropriate: canonical_pair_weight depends only on hausdorff_null_density; canonical_closed_support is independent. These obligations establish both selected parent conjuncts, and the dependencies are acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hausdorff_null_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose, including arbitrary A, compact finiteness, positive threshold, and closed-ball real-density limits. The proof correctly establishes both normalization bridges, obtains arbitrarily small open supersets, converts finite-ball real quotients to Simon's extended-real density, and applies density comparison to force Hausdorff-nullity. No measurability hypothesis on A or circular dependency is hidden."
+    },
+    {
+      "key": "canonical_pair_weight",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated type agree. ApproxTangentAE identifies density with multiplicity; the declared density child establishes the additional carrier's nullity. Both null differences are proved before transferring rectifiability, null-measurability, local integrability, and weight equality. Omitting upper semicontinuity is justified. The proof is complete and uses exactly the declared child dependency."
+    },
+    {
+      "key": "canonical_closed_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated type agree. Upper semicontinuity supplies relative closedness. ApproxTangentAE and absolute continuity transfer the multiplicity bound to the weight measure, yielding the support lower bound by contradiction. Positive density forces positive measure in every neighborhood without requiring compact finiteness. The resulting inclusions prove carrier equality and the pointwise bound. No reliance on the pair-weight child or parent theorem occurs."
+    }
+  ],
+  "required_changes": []
+}
