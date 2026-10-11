@@ -335,6 +335,48 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **A measure on an open set is determined by its values on open subsets** (uniqueness of
+`μ_E` in Simon Ch. 3, (4.1)): if `μ`, `μ'` vanish off the open set `U ⊆ ℝᴺ`, `μ` is finite on
+compact subsets of `U`, and `μ(O) = μ'(O)` for every open `O ⊆ U`, then `μ = μ'`. The open
+subsets of `U` of finite `μ`-measure cover `U` (balls with compact closure in `U`), so countably
+many of them do (Lindelöf); with `ℝᴺ ∖ U` they form a countable cover of `ℝᴺ` by sets of finite
+`μ`-measure on whose traces `μ` and `μ'` agree, and the open sets are a π-system generating the
+Borel σ-algebra, so the π-λ uniqueness theorem applies on each piece. -/
+theorem Submission.gaussGreenRep_measure_eq_of_open_eq : ∀ (N : ℕ) (U : Set (Rn N))
+    (μ μ' : Measure (Rn N)), IsOpen U → μ Uᶜ = 0 → μ' Uᶜ = 0 →
+    (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) →
+    (∀ O : Set (Rn N), IsOpen O → O ⊆ U → μ O = μ' O) → μ = μ' := by
+  intro N U μ μ' hU hμ hμ' hfin hopen
+  -- The open subsets of `U` of finite `μ`-measure cover `U`: each `x ∈ U` lies in a ball
+  -- `B_{r/2}(x)` whose compact closure `B̄_{r/2}(x)` is contained in `U`.
+  have hSU : ⋃₀ {V : Set (Rn N) | IsOpen V ∧ V ⊆ U ∧ μ V < ∞} = U := by
+    refine subset_antisymm (sUnion_subset fun V hV => hV.2.1) fun x hx => ?_
+    obtain ⟨r, hr, hxr⟩ := Metric.isOpen_iff.1 hU x hx
+    have hcl : Metric.closedBall x (r / 2) ⊆ U :=
+      (Metric.closedBall_subset_ball (half_lt_self hr)).trans hxr
+    exact mem_sUnion_of_mem (Metric.mem_ball_self (half_pos hr))
+      ⟨Metric.isOpen_ball, Metric.ball_subset_closedBall.trans hcl,
+        (measure_mono Metric.ball_subset_closedBall).trans_lt
+          (hfin _ (isCompact_closedBall x (r / 2)) hcl)⟩
+  -- Lindelöf: countably many of them, `T`, still cover `U`.
+  obtain ⟨T, hTc, hTS, hTU⟩ := TopologicalSpace.isOpen_sUnion_countable
+    {V : Set (Rn N) | IsOpen V ∧ V ⊆ U ∧ μ V < ∞} fun V hV => hV.1
+  -- The open sets are a π-system generating the Borel σ-algebra, and `{Uᶜ} ∪ T` is a countable
+  -- cover of `ℝᴺ` by sets of finite `μ`-measure on whose traces `μ` and `μ'` agree.
+  refine Measure.ext_of_generateFrom_of_cover (S := {s | IsOpen s}) (T := insert Uᶜ T)
+    BorelSpace.measurable_eq (hTc.insert _) isPiSystem_isOpen ?_ ?_ ?_ ?_
+  · rw [sUnion_insert, hTU, hSU, compl_union_self]
+  · rintro t (rfl | ht)
+    · rw [hμ]
+      exact ENNReal.zero_ne_top
+    · exact (hTS ht).2.2.ne
+  · rintro t (rfl | ht) s (hs : IsOpen s)
+    · rw [measure_mono_null inter_subset_right hμ, measure_mono_null inter_subset_right hμ']
+    · exact hopen _ (hs.inter (hTS ht).1) (inter_subset_right.trans (hTS ht).2.1)
+  · rintro t (rfl | ht)
+    · rw [hμ, hμ']
+    · exact hopen _ (hTS ht).1 (hTS ht).2.1
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
