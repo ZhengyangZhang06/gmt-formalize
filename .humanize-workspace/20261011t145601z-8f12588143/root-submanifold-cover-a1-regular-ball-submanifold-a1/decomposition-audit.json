@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "sed -n '1,110p' project/GMT/Ch03/Contract.lean",
+        "sed -n '205,275p' mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "rg -n -A17 -B7 'theorem norm_image_sub_le_of_norm_hasFDerivWithin_le' mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "rg -n -A13 -B4 'theorem ContDiffOn.differentiableOn|theorem ContDiffOn.continuousOn_fderiv_of_isOpen|theorem ContDiffOn.continuousOn |theorem ContDiff.contDiffOn|theorem ContDiff.continuous_fderiv' mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "rg -n -A9 -B3 'theorem IsCompact.diff|theorem IsCompact.of_isClosed_subset|theorem IsCompact.image_of_continuousOn' mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "rg -n -A9 -B4 'preimage_isClosed_of_isClosed' mathlib/Mathlib/Topology/ContinuousOn.lean",
+        "sed -n '106,113p' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "sed -n '140,151p' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "rg -n --glob '*.lean' 'c1_injective_fderiv_local_lower_bounds|isC1Submanifold_image_ball_of_injOn_closedBall' mathlib/Mathlib project/GMT",
+        "rg -l --hidden --no-ignore -g '*.lean' -g '*.json' -g '*.md' -g '!**/.git/**' -g '!**/.lake/**' -g '!**/local-references/**' 'c1_injective_fderiv_local_lower_bounds|isC1Submanifold_image_ball_of_injOn_closedBall' workspaces cluster-state lake-packages-25730c7c/simongmt/Poincare",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/regular-ball-independent-audit-vgji1h4n/IndependentType0.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/regular-ball-independent-audit-vgji1h4n/IndependentType1.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rbs-scratch/Split2.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-submanifold-cover-a1-regular-ball-submanifold-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-submanifold-cover-a1-regular-ball-submanifold-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/regular-ball-independent-audit-vgji1h4n/IndependentType0.lean",
+        "/tmp/regular-ball-independent-audit-vgji1h4n/IndependentType1.lean",
+        "/tmp/rbs-scratch/Split2.lean"
+      ],
+      "conclusion": "The pinned manifest records project d09bc8a18ce60face651f042976e8465f21f0f68 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Relevant calculus/topology sources and Contract.lean were compared byte-for-byte with compiler copies. Contract.lean:56,68 fixes the Euclidean spaces and all eight chart conditions. FiniteDimension.lean:231–246 supplies a positive antilipschitz constant even for a subsingleton domain; ContDiff/Defs.lean:578,916 and MeanValue.lean:422 justify the analytic argument. Compact.lean:101–110 and ContinuousOn.lean:197–201 justify the topological argument using only continuity on the closed ball. PiL2.lean:111,145 confirms the intended Euclidean norm; fderiv has the intended continuous-linear-map type. Both exact one-line propositions passed lexical validation and independently compiled in the comparator scope before either child was declared. Name searches found no library declarations or other branch reservations; matches were confined to this proposal and its review metadata. Independently reviewed and reran Split2.lean: both exact child types and the selected frozen parent compile, with only propext, Classical.choice and Quot.sound. The analytic/topological split is appropriate, its empty sibling dependencies are correct and acyclic, and its conclusions establish the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_lower_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the exact standalone Lean proposition. Openness correctly converts within differentiability to ordinary fderiv. The positive linear lower bound, radius choice inside U, convex mean value inequality for G−L, and operator-norm perturbation establish both bounds with the same positive constant. The proof covers n=0 and contains no circular reliance or deferred proof construction. Its bare name is unreserved, and no sibling dependency is needed."
+    },
+    {
+      "key": "ball_image_submanifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact standalone Lean proposition agree, including arbitrary real r. Restricted regularity suffices: the boundary image is compact, its complement W is open, and closed-ball injectivity puts the open-ball image inside W. The stated preimage equality proves properness using continuity only on the closed ball. All remaining chart conditions follow explicitly; r≤0 and n=0 are covered. The proof is complete and independent, and its bare name is unreserved. Applying the first child with U=univ supplies both injectivity hypotheses and proves the frozen parent with σ=r; a doubled radius is unnecessary."
+    }
+  ],
+  "required_changes": []
+}
