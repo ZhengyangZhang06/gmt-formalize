@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5e568c8b8c0181b83f7c700200e859f1b69fee29bbd6179fa62c8baea22e5e7d",
+  "git_delta": {
+    "base_commit": "52afcf0735069b8f0033fe5880dca58bcf2ca4cc",
+    "candidate_commit": "544e731cef187de3a5b6b084ff7ba0d4c727835b",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "volume_closure_le_unitBall_mul_ediam_pow",
+    "diff_sha256": "54f2ba355b65691d2dc5fab4ac093d77372ad7d0cb76d6a9a1d4fbde1d3bf68b",
+    "source_sha256": "fac0baade546e7abfe11683777d2a6503570bf23da4a1d53e107f92e1af7c514",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.volume_closure_le_unitBall_mul_ediam_pow",
+      "statement": "∀ (m : ℕ) (S : Set (Rn m)), volume (closure S) ≤ volume (Metric.ball (0 : Rn m) 1) * Metric.ediam S ^ m",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
