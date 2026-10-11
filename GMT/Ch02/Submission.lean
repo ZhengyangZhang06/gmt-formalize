@@ -520,6 +520,92 @@ theorem Submission.lipschitzImage_exists_nested_partitions : ∀ (X : Type) [Met
     have h₂ := mem_ball.1 (hQball i l (hl hx'))
     have hi : (0 : ℝ) < 1 / ((i : ℝ) + 1) := by positivity
     linarith [dist_triangle_right x x' (q l)]
+/-- **Simon Ch. 2, Theorem 1.8(ii), counting step (p. 45).** For nested partitions `P i ·` of `X`
+into pieces any two of whose points are at distance `< 1/(i+1)`, the piece counts
+`N_i(y) = ∑ⱼ 1_{f(A ∩ P i j)}(y)` increase pointwise to the multiplicity `N(f, y) = fiberCount A f y`. -/
+theorem Submission.lipschitzImage_iSup_pieceCount_eq_fiberCount : ∀ (X Y : Type) [MetricSpace X] (A : Set X) (f : X → Y) (P : ℕ → ℕ → Set X), (∀ i j k, j ≠ k → Disjoint (P i j) (P i k)) → (∀ i, ⋃ j, P i j = Set.univ) → (∀ i j, ∀ x ∈ P i j, ∀ x' ∈ P i j, dist x x' < 1 / ((i : ℝ) + 1)) → (∀ i j, ∃ k, P (i + 1) j ⊆ P i k) → ∀ y : Y, Monotone (fun i ↦ ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y) ∧ ⨆ i, ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y = fiberCount A f y := by
+  intro X Y _ A f P hdisj hcov hdiam hnest y
+  -- Every point lies in exactly one piece of each level.
+  have hmem : ∀ i (x : X), ∃ j, x ∈ P i j := fun i x ↦ by
+    have hx : x ∈ ⋃ j, P i j := by rw [hcov i]; exact Set.mem_univ x
+    exact Set.mem_iUnion.1 hx
+  have uniq : ∀ {i j k : ℕ} {x : X}, x ∈ P i j → x ∈ P i k → j = k := by
+    intro i j k x hj hk
+    by_contra hne
+    exact Set.disjoint_left.1 (hdisj i j k hne) hj hk
+  choose p hp using hmem
+  choose q hq using hnest
+  set S := A ∩ f ⁻¹' {y}
+  -- `N_i(y)` is the cardinality of `p i '' S`, the set of `j` with `y ∈ f(A ∩ P i j)`.
+  have hiff : ∀ i j, y ∈ f '' (A ∩ P i j) ↔ j ∈ p i '' S := by
+    intro i j
+    constructor
+    · rintro ⟨x, ⟨hxA, hxP⟩, hfx⟩
+      exact ⟨x, ⟨hxA, hfx⟩, uniq (hp i x) hxP⟩
+    · rintro ⟨x, ⟨hxA, hfx⟩, rfl⟩
+      exact ⟨x, ⟨hxA, hp i x⟩, hfx⟩
+  have hN : ∀ i, ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y =
+      ((p i '' S).encard : ℝ≥0∞) := by
+    intro i
+    have hind : ∀ j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y =
+        (p i '' S).indicator (fun _ ↦ (1 : ℝ≥0∞)) j := by
+      intro j
+      by_cases hj : j ∈ p i '' S
+      · rw [Set.indicator_of_mem hj, Set.indicator_of_mem ((hiff i j).2 hj), Pi.one_apply]
+      · rw [Set.indicator_of_notMem hj, Set.indicator_of_notMem (mt (hiff i j).1 hj)]
+    rw [tsum_congr hind, ← tsum_subtype, ENNReal.tsum_set_one]
+  -- (a) `p i '' S` is the image of `p (i + 1) '' S` under the nesting map `q i`.
+  have hmono : ∀ i, (p i '' S).encard ≤ (p (i + 1) '' S).encard := by
+    intro i
+    have himage : p i '' S = q i '' (p (i + 1) '' S) := by
+      rw [Set.image_image]
+      exact Set.image_congr fun x _ ↦ uniq (hp i x) (hq i (p (i + 1) x) (hp (i + 1) x))
+    rw [himage]
+    exact Set.encard_image_le _ _
+  -- (c) A finite `F ⊆ S` with `n` points meets `n` distinct pieces once `1/(i+1)` is below all
+  -- distances between distinct points of `F`.
+  have hexh : ∀ n : ℕ, (n : ℕ∞) ≤ S.encard → ∃ i, (n : ℕ∞) ≤ (p i '' S).encard := by
+    intro n hn
+    obtain ⟨F, hFS, hFn⟩ := Set.exists_subset_encard_eq hn
+    have hFfin : F.Finite := Set.finite_of_encard_eq_coe hFn
+    have hev : ∀ᶠ i : ℕ in atTop, ∀ z ∈ F ×ˢ F, z.1 ≠ z.2 → 1 / ((i : ℝ) + 1) < dist z.1 z.2 := by
+      rw [Filter.eventually_all_finite (hFfin.prod hFfin)]
+      intro z _
+      by_cases hz : z.1 = z.2
+      · exact Filter.Eventually.of_forall fun _ h ↦ absurd hz h
+      · filter_upwards [tendsto_one_div_add_atTop_nhds_zero_nat.eventually
+          (gt_mem_nhds (dist_pos.2 hz))] with i hi _
+        exact hi
+    obtain ⟨i, hi⟩ := hev.exists
+    have hinj : Set.InjOn (p i) F := by
+      intro x hx x' hx' hxx'
+      by_contra hne
+      have hx'P : x' ∈ P i (p i x) := by rw [hxx']; exact hp i x'
+      exact absurd ((hi (x, x') ⟨hx, hx'⟩ hne).trans (hdiam i (p i x) x (hp i x) x' hx'P))
+        (lt_irrefl _)
+    refine ⟨i, ?_⟩
+    calc (n : ℕ∞) = F.encard := hFn.symm
+      _ = (p i '' F).encard := hinj.encard_image.symm
+      _ ≤ (p i '' S).encard := Set.encard_le_encard (Set.image_mono hFS)
+  simp only [hN]
+  refine ⟨monotone_nat_of_le_succ fun i ↦ ENat.toENNReal_le.2 (hmono i), ?_⟩
+  show ⨆ i, ((p i '' S).encard : ℝ≥0∞) = ((S.encard : ℕ∞) : ℝ≥0∞)
+  -- (b) `N_i(y) ≤ encard S`; the reverse inequality for the supremum follows from (c).
+  refine le_antisymm (iSup_le fun i ↦ ENat.toENNReal_le.2 (Set.encard_image_le _ _)) ?_
+  rcases eq_or_ne S.encard ⊤ with htop | htop
+  · rw [htop, ENat.toENNReal_top]
+    refine top_le_iff.2 (ENNReal.eq_top_of_forall_nnreal_le fun r ↦ ?_)
+    obtain ⟨n, hn⟩ := ENNReal.exists_nat_gt (ENNReal.coe_ne_top : (r : ℝ≥0∞) ≠ ⊤)
+    obtain ⟨i, hi⟩ := hexh n (by rw [htop]; exact le_top)
+    calc (r : ℝ≥0∞) ≤ n := hn.le
+      _ = ((n : ℕ∞) : ℝ≥0∞) := (ENat.toENNReal_coe n).symm
+      _ ≤ ((p i '' S).encard : ℝ≥0∞) := ENat.toENNReal_le.2 hi
+      _ ≤ ⨆ i, ((p i '' S).encard : ℝ≥0∞) := le_iSup (fun i ↦ ((p i '' S).encard : ℝ≥0∞)) i
+  · obtain ⟨k, hk⟩ := ENat.ne_top_iff_exists.1 htop
+    obtain ⟨i, hi⟩ := hexh k hk.le
+    calc ((S.encard : ℕ∞) : ℝ≥0∞) = ((k : ℕ∞) : ℝ≥0∞) := by rw [hk]
+      _ ≤ ((p i '' S).encard : ℝ≥0∞) := ENat.toENNReal_le.2 hi
+      _ ≤ ⨆ i, ((p i '' S).encard : ℝ≥0∞) := le_iSup (fun i ↦ ((p i '' S).encard : ℝ≥0∞)) i
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
