@@ -346,12 +346,6 @@ theorem Submission.section3_rectifiableDecomposition : RectifiableDecomposition 
   obtain ⟨R, P, hRP, hdisj, hR, -, hRrect, hPpure⟩ := hborel hAmeas
   exact ⟨R, P, hRP, hdisj, hR, hRrect, hPpure⟩
 
-/-- The frozen Chapter 3 contract. -/
-theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
-
-end GMT.Ch03
-
-
 /-- **Simon Ch. 3, Theorem 3.8 (p. 80)** (`chapter-03.txt` lines 540–548), given Theorem 3.6.
 Erratum: line 540 "by combining 3.2 and 3.7" should read "3.2 and 3.6". Lemma 3.2 splits
 `A = R ∪ P` with `R` countably `n`-rectifiable and `P` purely `n`-unrectifiable. Since
@@ -376,3 +370,8 @@ theorem Submission.section3_rectifiabilityTheorem_of_besicovitchFederer :
   calc A = R ∪ P := hRP
     _ ⊆ (M₀ ∪ ⋃ j, range (F j)) ∪ P := union_subset_union_left P hRcover
     _ = M₀ ∪ P ∪ ⋃ j, range (F j) := union_right_comm _ _ _
+
+/-- The frozen Chapter 3 contract. -/
+theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
+
+end GMT.Ch03
