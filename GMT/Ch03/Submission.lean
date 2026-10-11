@@ -480,6 +480,133 @@ theorem Submission.gaussGreenVar_lusin_closed_subset_continuousOn : ∀ (N : ℕ
       self_mem_nhdsWithin] with y hyU hyC
     by_contra hyV
     exact (hCAE hyC).2 (mem_iUnion.2 ⟨⟨V, hVB⟩, hyU, hyV⟩)
+/-- **Tietze–Urysohn unit-field extension** (steps 6–7 of the variation formula behind
+`GaussGreenRepresentation`): a field `f` continuous on a compact `C ⊆ V`, `V` open, with
+`|f| ≤ 1` on `C` agrees on `C` with a continuous `g`, `|g| ≤ 1`, with compact support in `V`.
+Tietze extends `f|C` coordinatewise to `G₁` (proved inline by the classical Urysohn iteration
+`u_n`, `|u_n| ≤ (2/3)ⁿ/3`, since `Mathlib.Topology.TietzeExtension` is not imported);
+`G = G₁ / max(1, |G₁|)` has `|G| ≤ 1` and `G = f` on `C`; with a Urysohn cut-off `χ`
+(`χ = 1` on `C`, compact `tsupport χ ⊆ V`, `0 ≤ χ ≤ 1`) take `g = χ G`. -/
+theorem Submission.gaussGreenVar_exists_unit_field_eqOn_compact : ∀ (N : ℕ) (C V : Set (Rn N))
+    (f : Rn N → Rn N), IsCompact C → IsOpen V → C ⊆ V → ContinuousOn f C →
+    (∀ x ∈ C, ‖f x‖ ≤ 1) → ∃ g : Rn N → Rn N, Continuous g ∧ HasCompactSupport g ∧
+      tsupport g ⊆ V ∧ (∀ x, ‖g x‖ ≤ 1) ∧ ∀ x ∈ C, g x = f x := by
+  intro N C V f hC hV hCV hf hf1
+  -- Step 1: `C` is closed.
+  have hCc : IsClosed C := hC.isClosed
+  -- Step 2: Tietze extension for real functions on the closed set `C`, by the classical
+  -- Urysohn iteration. One step: if `h` is continuous on `C` with `|h| ≤ r` there, then a
+  -- continuous `u` on `ℝᴺ` with `|u| ≤ r / 3` approximates `h` within `2r/3` on `C`.
+  have step : ∀ (h : Rn N → ℝ) (r : ℝ), 0 < r → ContinuousOn h C → (∀ x ∈ C, |h x| ≤ r) →
+      ∃ u : Rn N → ℝ, Continuous u ∧ (∀ x, |u x| ≤ r / 3) ∧
+        ∀ x ∈ C, |h x - u x| ≤ 2 / 3 * r := by
+    intro h r hr hhc hhr
+    obtain ⟨φ, hφA, hφB, hφ01⟩ := exists_continuous_zero_one_of_isClosed
+      (hhc.preimage_isClosed_of_isClosed hCc isClosed_Iic :
+        IsClosed (C ∩ h ⁻¹' Iic (-(r / 3))))
+      (hhc.preimage_isClosed_of_isClosed hCc isClosed_Ici : IsClosed (C ∩ h ⁻¹' Ici (r / 3)))
+      (Set.disjoint_left.mpr fun x hx1 hx2 => by
+        have h1 : h x ≤ -(r / 3) := hx1.2
+        have h2 : r / 3 ≤ h x := hx2.2
+        linarith)
+    refine ⟨fun x => r / 3 * (2 * φ x - 1), by fun_prop, fun x => ?_, fun x hx => ?_⟩
+    · obtain ⟨h0, h1⟩ := hφ01 x
+      rw [abs_le]
+      constructor <;> nlinarith [mul_nonneg hr.le h0, mul_nonneg hr.le (sub_nonneg.mpr h1)]
+    · show |h x - r / 3 * (2 * φ x - 1)| ≤ 2 / 3 * r
+      obtain ⟨hb1, hb2⟩ := abs_le.mp (hhr x hx)
+      rw [abs_le]
+      by_cases h1 : h x ≤ -(r / 3)
+      · rw [show φ x = 0 from hφA ⟨hx, h1⟩]
+        constructor <;> linarith
+      · by_cases h2 : r / 3 ≤ h x
+        · rw [show φ x = 1 from hφB ⟨hx, h2⟩]
+          constructor <;> linarith
+        · obtain ⟨h0, h1'⟩ := hφ01 x
+          have h1 := not_le.mp h1
+          have h2 := not_le.mp h2
+          constructor <;> nlinarith [mul_nonneg hr.le h0, mul_nonneg hr.le (sub_nonneg.mpr h1')]
+  -- Iterating the step with `r = (2/3)ⁿ` and summing gives the extension.
+  have tietze : ∀ h : Rn N → ℝ, ContinuousOn h C → (∀ x ∈ C, |h x| ≤ 1) →
+      ∃ H : Rn N → ℝ, Continuous H ∧ ∀ x ∈ C, H x = h x := by
+    intro h hhc hh1
+    choose! u hu using step
+    -- The remainders `R 0 = h`, `R (n + 1) = R n - u (R n) ((2/3)ⁿ)`.
+    obtain ⟨R, hR0, hRs⟩ : ∃ R : ℕ → Rn N → ℝ,
+        R 0 = h ∧ ∀ n, R (n + 1) = R n - u (R n) ((2 / 3 : ℝ) ^ n) :=
+      ⟨fun n => Nat.rec h (fun k Rk => Rk - u Rk ((2 / 3 : ℝ) ^ k)) n, rfl, fun _ => rfl⟩
+    have hR : ∀ n, ContinuousOn (R n) C ∧ ∀ x ∈ C, |R n x| ≤ (2 / 3 : ℝ) ^ n := by
+      intro n
+      induction n with
+      | zero => rw [hR0]; exact ⟨hhc, fun x hx => by simpa using hh1 x hx⟩
+      | succ k ih =>
+        obtain ⟨hc, -, hb⟩ := hu (R k) ((2 / 3 : ℝ) ^ k) (by positivity) ih.1 ih.2
+        rw [hRs k]
+        refine ⟨ih.1.sub hc.continuousOn, fun x hx => ?_⟩
+        rw [pow_succ, Pi.sub_apply]
+        linarith [hb x hx]
+    have hv : ∀ n, Continuous (u (R n) ((2 / 3 : ℝ) ^ n)) ∧
+        ∀ x, ‖u (R n) ((2 / 3 : ℝ) ^ n) x‖ ≤ (2 / 3 : ℝ) ^ n / 3 := fun n => by
+      obtain ⟨hc, hb, -⟩ := hu (R n) ((2 / 3 : ℝ) ^ n) (by positivity) (hR n).1 (hR n).2
+      exact ⟨hc, fun x => by rw [Real.norm_eq_abs]; exact hb x⟩
+    have hgeom : Summable fun n : ℕ => (2 / 3 : ℝ) ^ n / 3 :=
+      (summable_geometric_of_lt_one (by norm_num) (by norm_num)).div_const 3
+    refine ⟨fun x => ∑' n, u (R n) ((2 / 3 : ℝ) ^ n) x,
+      continuous_tsum (fun n => (hv n).1) hgeom (fun n x => (hv n).2 x), fun x hx => ?_⟩
+    -- On `C` the partial sums are `h - R n`, and `|R n| ≤ (2/3)ⁿ → 0`.
+    have hpart : ∀ n, ∑ k ∈ Finset.range n, u (R k) ((2 / 3 : ℝ) ^ k) x = h x - R n x := by
+      intro n
+      induction n with
+      | zero => simp [hR0]
+      | succ k ih => rw [Finset.sum_range_succ, ih, hRs k, Pi.sub_apply]; ring
+    have hRx : Tendsto (fun n => R n x) atTop (𝓝 0) :=
+      squeeze_zero_norm (fun n => by rw [Real.norm_eq_abs]; exact (hR n).2 x hx)
+        (tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num))
+    have hlim : Tendsto (fun n => ∑ k ∈ Finset.range n, u (R k) ((2 / 3 : ℝ) ^ k) x) atTop
+        (𝓝 (h x)) := by
+      simp_rw [hpart]
+      simpa using (tendsto_const_nhds (x := h x)).sub hRx
+    exact tendsto_nhds_unique
+      (Summable.of_norm_bounded hgeom (fun n => (hv n).2 x)).hasSum.tendsto_sum_nat hlim
+  -- Coordinatewise extension `G₁` of `f`, continuous on `ℝᴺ` and equal to `f` on `C`.
+  have hcoord : ∀ i : Fin N, ∃ H : Rn N → ℝ, Continuous H ∧ ∀ x ∈ C, H x = f x i := by
+    intro i
+    refine tietze (fun x => f x i) ((PiLp.continuous_apply 2 _ i).comp_continuousOn hf)
+      (fun x hx => ?_)
+    rw [← Real.norm_eq_abs]
+    exact (PiLp.norm_apply_le (f x) i).trans (hf1 x hx)
+  choose H hHc hHC using hcoord
+  let G₁ : Rn N → Rn N := fun x => WithLp.toLp 2 fun i => H i x
+  have hG₁c : Continuous G₁ := (PiLp.continuous_toLp 2 _).comp (continuous_pi hHc)
+  have hG₁C : ∀ x ∈ C, G₁ x = f x := fun x hx => PiLp.ext fun i => hHC i x hx
+  -- Step 3: radial retraction `z ↦ z / max(1, |z|)` onto the closed unit ball.
+  have hmax : ∀ x, 0 < max 1 ‖G₁ x‖ := fun x => lt_of_lt_of_le one_pos (le_max_left _ _)
+  let G : Rn N → Rn N := fun x => (max 1 ‖G₁ x‖)⁻¹ • G₁ x
+  have hGc : Continuous G :=
+    ((continuous_const.max hG₁c.norm).inv₀ fun x => (hmax x).ne').smul hG₁c
+  have hG1 : ∀ x, ‖G x‖ ≤ 1 := by
+    intro x
+    simp only [G]
+    rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos (hmax x), inv_mul_le_iff₀ (hmax x),
+      mul_one]
+    exact le_max_right _ _
+  have hGC : ∀ x ∈ C, G x = f x := by
+    intro x hx
+    simp only [G, hG₁C x hx, max_eq_left (hf1 x hx), inv_one, one_smul]
+  -- Step 4: Urysohn cut-off `χ`, equal to `1` on `C`, with compact support inside `V`.
+  obtain ⟨χ, hχ1, hχcs, hχV, hχ01⟩ := exists_continuousMap_one_of_isCompact_subset_isOpen hC hV hCV
+  -- Step 5: `g = χ • G`.
+  refine ⟨fun x => χ x • G x, χ.continuous.smul hGc,
+    HasCompactSupport.smul_right (f := ⇑χ) (f' := G) hχcs,
+    (tsupport_smul_subset_left _ _).trans hχV, fun x => ?_, fun x hx => ?_⟩
+  · have h1 : ‖χ x‖ ≤ 1 := by
+      rw [Real.norm_eq_abs, abs_le]
+      constructor <;> linarith [(hχ01 x).1, (hχ01 x).2]
+    rw [norm_smul]
+    calc ‖χ x‖ * ‖G x‖ ≤ 1 * 1 := mul_le_mul h1 (hG1 x) (norm_nonneg _) zero_le_one
+      _ = 1 := one_mul 1
+  · simp only
+    rw [hχ1 hx, Pi.one_apply, one_smul, hGC x hx]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
