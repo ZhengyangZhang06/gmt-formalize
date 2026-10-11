@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "60c9acac3fb856880858a3705c48accd27788b5324611f16336603bbf6f19318",
+  "git_delta": {
+    "base_commit": "752c3f61510399ed2a0f72eccf81ceef5b553e52",
+    "candidate_commit": "b3bb73caae86688bc33fbcf7dd275c438ef6b735",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "radial_vector_field_hasFDerivAt",
+    "diff_sha256": "efcadbd5247344388d99386c1217d57282072b1be416bef0f460c89d1cc7a62b",
+    "source_sha256": "bdf98307e107f1dd36462d9ba72ddf3eb60d397f96c0c55fc584bce6abbf40dc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.radial_vector_field_hasFDerivAt",
+      "statement": "∀ (n ℓ : ℕ) (γ : ℝ → ℝ) (ξ x : Ambient n ℓ), ContDiff ℝ 1 γ → HasFDerivAt (fun y : Ambient n ℓ ↦ γ ‖y - ξ‖ • (y - ξ)) (γ ‖x - ξ‖ • ContinuousLinearMap.id ℝ (Ambient n ℓ) + (deriv γ ‖x - ξ‖ / ‖x - ξ‖) • (innerSL ℝ (x - ξ)).smulRight (x - ξ)) x",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
