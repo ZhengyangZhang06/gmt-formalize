@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1e2e852cc93b1e6a6018a43bb359889de1d3be1dc9a61168e9897c26efcc47cd",
+  "git_delta": {
+    "base_commit": "293f280cd90d3b141afe0966aaae26203f038910",
+    "candidate_commit": "57b4b22bae9dff411c2e351691e1cdb7df6dc5d9",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "lipschitzImage_iSup_pieceCount_eq_fiberCount",
+    "diff_sha256": "57e605b3b122b0460443dfc375c60f0645b67e013c477c45e2ee76e1822f9f7a",
+    "source_sha256": "d12b5a0b67fcbb7337d487a1df24fdbf8ed7179c4a571806828d9604878b8a5e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lipschitzImage_iSup_pieceCount_eq_fiberCount",
+      "statement": "∀ (X Y : Type) [MetricSpace X] (A : Set X) (f : X → Y) (P : ℕ → ℕ → Set X), (∀ i j k, j ≠ k → Disjoint (P i j) (P i k)) → (∀ i, ⋃ j, P i j = Set.univ) → (∀ i j, ∀ x ∈ P i j, ∀ x' ∈ P i j, dist x x' < 1 / ((i : ℝ) + 1)) → (∀ i j, ∃ k, P (i + 1) j ⊆ P i k) → ∀ y : Y, Monotone (fun i ↦ ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y) ∧ ⨆ i, ∑' j, (f '' (A ∩ P i j)).indicator (1 : Y → ℝ≥0∞) y = fiberCount A f y",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
