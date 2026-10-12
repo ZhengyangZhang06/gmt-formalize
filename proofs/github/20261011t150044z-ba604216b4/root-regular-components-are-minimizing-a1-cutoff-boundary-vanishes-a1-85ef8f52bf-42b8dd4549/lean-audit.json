@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d7fc8b057ad2540076053dde85dfba4d24b7c318df7a04bcea014d463713e8f3",
+  "git_delta": {
+    "base_commit": "d416af9629ee4f74ffe6d1bf0ffcfc6156aee6e2",
+    "candidate_commit": "f63712b220187dfbad6814982e5c7e3d7c973f4d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_smooth_cutoff_product",
+    "diff_sha256": "6c0fe4ac1f1da1038c922ab5e55d8c41ea270a70badb9b40bd452433eed228fc",
+    "source_sha256": "784cc452ac8dd843f042782a050962f73151475bba772359043db5530e90a779",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_smooth_cutoff_product",
+      "statement": "∀ (P : ℕ), ∃ c₀ : ℝ, 0 ≤ c₀ ∧ ∀ (J : ℕ) (p : Fin J → Euclid P) (σ : Fin J → ℝ), (∀ j, 0 < σ j) → ∃ ζ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ j, ∀ x ∈ ball (p j) (σ j), ζ x = 0) ∧ (∀ x, 1 - ζ x ≤ ∑ j, (ball (p j) (2 * σ j)).indicator (fun _ => (1 : ℝ)) x) ∧ ∀ x, ‖fderiv ℝ ζ x‖ ≤ ∑ j, (ball (p j) (2 * σ j)).indicator (fun _ => c₀ / σ j) x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
