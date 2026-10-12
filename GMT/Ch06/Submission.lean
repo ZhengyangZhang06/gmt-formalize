@@ -736,6 +736,119 @@ theorem Submission.polyhedral_approx_measure_uniqueness :
   exact Submission.polyhedral_approx_integrable_smooth_ext P (μ₁.restrict (closure O))
     (μ₂.restrict (closure O)) g₁ g₂ hi₁ hi₂ O hO hψL (A.indicator u) hb hbC hb0
 
+/-- **Simon Ch. 6, (2.9) and 3.1 (pp. 136, 146).**  If `T = τ(M, θ, ξ)` and `S = T ⌞ A`, then
+`S = τ(M ∩ A, θ, ξ)`.  Let `(μ, v)` be the representation of `T` defining `S`.  For a covector
+`c`, `⟨c, v⟩` is locally `μ`-integrable and `θ ⟨c, ξ⟩` is locally `Hⁿ ⌞ M`-integrable on `U`
+(`polyhedral_approx_rt_integrableOn_apply`, `polyhedral_approx_rt_tau_integrableOn`).  Both pair
+with every smooth `ψ` to `T(ψ c)`, so `polyhedral_approx_measure_uniqueness` equates their
+integrals over `A` against continuous compactly supported weights.  Expanding `ω` in the
+coordinate wedges `dx^I` (`polyhedral_approx_pairing_expansion`), with the coordinates `ω_I` as
+weights, and summing over `I` gives `S(ω) = ∫_A θ ⟨ω, ξ⟩ d(Hⁿ ⌞ M) = τ(M ∩ A, θ, ξ)(ω)`. -/
+theorem Submission.polyhedral_approx_restriction_tau : ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → ∀ (A : Set (Eucl P)) (S : GeometricCurrentOn U n), IsRestriction T A S → ∀ ω : TestFormOn U n, S ω = tauAction n (M ∩ A) θ ξ ω := by
+  intro P n U hU T M θ ξ hMθξ hT A S hS ω
+  obtain ⟨hA, μ, v, hrep, hSω⟩ := hS
+  -- For every covector `c`, `⟨c, v⟩` is locally `μ`-integrable and `θ ⟨c, ξ⟩` is locally
+  -- `Hⁿ ⌞ M`-integrable on `U`.
+  have hloc : ∀ (c : Covector (Eucl P) n) (K : Set (Eucl P)), IsCompact K → K ⊆ U →
+      IntegrableOn (fun x => v x c) K μ ∧
+        IntegrableOn (fun x => θ x * ξ x c) K ((μHE[n] : Measure (Eucl P)).restrict M) :=
+    fun c K hK hKU =>
+      ⟨Submission.polyhedral_approx_rt_integrableOn_apply P n U hU μ v (fun ω => (hrep ω).1)
+          K hK hKU c,
+        Submission.polyhedral_approx_rt_tau_integrableOn P n U M θ ξ hMθξ K hK hKU c⟩
+  -- Both pair with a smooth `ψ` to `T(ψ c)`; hence their integrals over `A` against continuous
+  -- compactly supported weights agree.
+  have key : ∀ (c : Covector (Eucl P) n) (u : Eucl P → ℝ), Continuous u → HasCompactSupport u →
+      tsupport u ⊆ U → ∫ x in A, u x * v x c ∂μ =
+        ∫ x in A, u x * (θ x * ξ x c) ∂((μHE[n] : Measure (Eucl P)).restrict M) := by
+    intro c
+    refine Submission.polyhedral_approx_measure_uniqueness P U hU μ _ (fun x => v x c)
+      (fun x => θ x * ξ x c) (hloc c) (fun ψ hψ hψc hψU => ?_) A hA
+    -- `ψ c` is a test form in `U`.
+    have hmem : (fun x => ψ x • c : DifferentialForm (Eucl P) n) ∈
+        testFormOnSubmodule (E := Eucl P) U n :=
+      ⟨⟨hψ.smul contDiff_const,
+          IsCompact.of_isClosed_subset hψc (isClosed_tsupport _) (tsupport_smul_subset_left _ _)⟩,
+        (tsupport_smul_subset_left _ _).trans hψU⟩
+    calc ∫ x, ψ x * v x c ∂μ
+        = ∫ x, v x (((⟨_, hmem⟩ : TestFormOn U n) : DifferentialForm (Eucl P) n) x) ∂μ := by
+          refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+          show ψ x * v x c = v x (ψ x • c)
+          rw [map_smul, smul_eq_mul]
+      _ = tauAction n M θ ξ (⟨_, hmem⟩ : TestFormOn U n) :=
+          (hrep ⟨_, hmem⟩).2.symm.trans (hT ⟨_, hmem⟩)
+      _ = ∫ x, ψ x * (θ x * ξ x c) ∂((μHE[n] : Measure (Eucl P)).restrict M) := by
+          refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+          show θ x * ξ x (ψ x • c) = ψ x * (θ x * ξ x c)
+          rw [map_smul, smul_eq_mul]
+          ring
+  -- Weighted by a continuous compactly supported `u` with `tsupport u ⊆ U`, both coefficient
+  -- functions are integrable.
+  have hint : ∀ (c : Covector (Eucl P) n) (u : Eucl P → ℝ), Continuous u →
+      HasCompactSupport u → tsupport u ⊆ U → Integrable (fun x => u x * v x c) μ ∧
+        Integrable (fun x => u x * (θ x * ξ x c)) ((μHE[n] : Measure (Eucl P)).restrict M) := by
+    intro c u hu hus huU
+    exact ⟨(IntegrableOn.continuousOn_mul hu.continuousOn (hloc c (tsupport u) hus huU).1
+        hus).integrable_of_forall_notMem_eq_zero
+          fun x hx => by simp [image_eq_zero_of_notMem_tsupport hx],
+      (IntegrableOn.continuousOn_mul hu.continuousOn (hloc c (tsupport u) hus huU).2
+        hus).integrable_of_forall_notMem_eq_zero
+          fun x hx => by simp [image_eq_zero_of_notMem_tsupport hx]⟩
+  -- The coordinates `ω_I = ω(e_{I 0}, …, e_{I (n-1)})` are continuous, with compact support
+  -- in `U`.
+  have hcoord : ∀ I : SimonMultiIndex n P,
+      Continuous (fun x => euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I) ∧
+        HasCompactSupport
+          (fun x => euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I) ∧
+        tsupport (fun x => euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I) ⊆
+          U := by
+    intro I
+    have h0 : (fun c : Covector (Eucl P) n => euclideanCovectorCoordinate c I) 0 = 0 := by
+      simp [euclideanCovectorCoordinate]
+    exact ⟨(ContDiff.continuous ω.property.1.1).eval_const
+        (fun j => EuclideanSpace.single (I j) (1 : ℝ)),
+      ω.property.1.2.comp_left (g := fun c : Covector (Eucl P) n => euclideanCovectorCoordinate c I)
+        h0,
+      (tsupport_comp_subset
+        (g := fun c : Covector (Eucl P) n => euclideanCovectorCoordinate c I) h0 _).trans
+          ω.property.2⟩
+  -- Expand `ω` in the coordinate wedges `dx^I` and sum over `I`.
+  calc S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) n) x) ∂μ := hSω ω
+    _ = ∫ x in A, ∑ I : SimonMultiIndex n P,
+          euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I *
+            v x (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) ∂μ :=
+        integral_congr_ae (Eventually.of_forall fun x =>
+          (Submission.polyhedral_approx_pairing_expansion P n (v x)
+            ((ω : DifferentialForm (Eucl P) n) x)).1)
+    _ = ∑ I : SimonMultiIndex n P, ∫ x in A,
+          euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I *
+            v x (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) ∂μ :=
+        integral_finsetSum _ fun I _ =>
+          (hint _ _ (hcoord I).1 (hcoord I).2.1 (hcoord I).2.2).1.integrableOn
+    _ = ∑ I : SimonMultiIndex n P, ∫ x in A,
+          euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I *
+            (θ x * ξ x (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))))
+            ∂((μHE[n] : Measure (Eucl P)).restrict M) :=
+        Finset.sum_congr rfl fun I _ => key _ _ (hcoord I).1 (hcoord I).2.1 (hcoord I).2.2
+    _ = ∫ x in A, ∑ I : SimonMultiIndex n P,
+          euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I *
+            (θ x * ξ x (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))))
+            ∂((μHE[n] : Measure (Eucl P)).restrict M) :=
+        (integral_finsetSum _ fun I _ =>
+          (hint _ _ (hcoord I).1 (hcoord I).2.1 (hcoord I).2.2).2.integrableOn).symm
+    _ = ∫ x in A, θ x * ξ x ((ω : DifferentialForm (Eucl P) n) x)
+          ∂((μHE[n] : Measure (Eucl P)).restrict M) := by
+        refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+        show ∑ I : SimonMultiIndex n P,
+            euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I *
+              (θ x * ξ x (wedgeCovectors n (fun j => EuclideanSpace.proj (I j)))) =
+          θ x * ξ x ((ω : DifferentialForm (Eucl P) n) x)
+        rw [(Submission.polyhedral_approx_pairing_expansion P n (ξ x)
+          ((ω : DifferentialForm (Eucl P) n) x)).1, Finset.mul_sum]
+        exact Finset.sum_congr rfl fun I _ => by ring
+    _ = tauAction n (M ∩ A) θ ξ ω := by
+        rw [tauAction, Measure.restrict_restrict hA, inter_comm]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
