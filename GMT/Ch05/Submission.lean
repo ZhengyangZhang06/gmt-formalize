@@ -2133,6 +2133,27 @@ theorem aetp_starProjection_range_continuousOn : ∀ (n ℓ : ℕ), ContinuousOn
   intro L hL
   exact (hQc L hL).continuousWithinAt.congr (fun L' hL' => hQ L' hL') (hQ L hL)
 
+/-- **Simon Ch. 3, Lemma 1.2 ("only if"), Remark 1.3 and Theorem 1.6 for `C¹` pieces.**  A
+countably `n`-rectifiable `M ⊆ ℝ^{n+ℓ}` is covered, up to an `Hⁿ`-null set, by countably many Borel
+sets `N_k` of finite `Hⁿ`-measure, each carrying approximate tangent planes `T_k(x)`, `x ∈ N_k`,
+with `x ↦ p_{T_k(x)}` continuous on `N_k`.  Proof: the `C¹` piece cover (C¹ approximation of the
+Lipschitz pieces, null critical images, Lindelöf) gives an `Hⁿ`-null `Z₀` and `C¹` charts `G_k`
+with injective differential and a lower Lipschitz bound on balls `B_k`, with
+`M ⊆ Z₀ ∪ ⋃_k G_k(B_k)`; take `N_k = G_k(B_k)` with the tangent field of each chart image, so
+`M \ ⋃_k N_k ⊆ Z₀`. -/
+theorem lipts_rectifiable_tangent_chart_cover : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (M : Set (Amb n ℓ)), Poincare.SimonGMT.Chapter03.CountablyRectifiable n M → ∃ (N : ℕ → Set (Amb n ℓ)) (T : ℕ → Amb n ℓ → Submodule ℝ (Amb n ℓ)), (∀ k, MeasurableSet (N k)) ∧ (∀ k, (μHE[n] : Measure (Amb n ℓ)) (N k) < ⊤) ∧ (∀ k, ContinuousOn (fun x => (T k x).starProjection) (N k)) ∧ (∀ k, ∀ x ∈ N k, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (N k) x (T k x)) ∧ (μHE[n] : Measure (Amb n ℓ)) (M \ ⋃ k, N k) = 0 := by
+  intro n ℓ hn M hM
+  obtain ⟨Z₀, -, hZ₀, G, c, r, σ, hG, -, hσ, hinj, hlow, hcov⟩ :=
+    aetp_rectifiable_c1_piece_cover n ℓ hn M hM
+  have hchart := fun k => tae_c1_chart_image_approxTangent (G k) (c k) (r k) (σ k) hn (hG k)
+    (hσ k) (hinj k) (hlow k)
+  choose T hT using fun k => (hchart k).2.2
+  refine ⟨fun k => G k '' ball (c k) (r k), T, fun k => (hchart k).1, fun k => (hchart k).2.1,
+    fun k => (hT k).1, fun k => (hT k).2, measure_mono_null (fun x hx => ?_) hZ₀⟩
+  rcases hcov hx.1 with h | h
+  · exact h
+  · exact absurd h hx.2
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
