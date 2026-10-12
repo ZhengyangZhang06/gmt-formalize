@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.integer_combination-a1.overlap_orientation_sign-a1",
+  "parent_id": "root.regular_set_dense-a1.integer_combination-a1",
+  "depth": 3,
+  "title": "Orientations of two IMReps agree up to sign a.e. on the overlap of their carriers",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, and let R₁ = (M₁, θ₁, ξ₁), R₂ = (M₂, θ₂, ξ₂) be IMReps in U (Simon Ch. 6, 3.1). Then for Hⁿ-a.e. x ∈ M₁ ∩ M₂ (Hⁿ = μHE[n]): ξ₂(x) = ξ₁(x) or ξ₂(x) = −ξ₁(x).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ : IMRep U n), IsOpen U → ∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), R₂.orient x = R₁.orient x ∨ R₂.orient x = -R₁.orient x",
+  "lean_name": "rsdic_imrep_ae_orient_eq_or_eq_neg_inter",
+  "depends_on": [
+    "root.regular_set_dense-a1.integer_combination-a1.imrep_tangent_transfer-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.imrep_tangent_transfer-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-overlap-orientation-sign-a1-a1"
+}
