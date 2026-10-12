@@ -747,6 +747,44 @@ theorem Submission.coareaJacobian_mul_normDet_chart : ∀ (N m k : ℕ) (M : Set
     ← LinearMap.normDet_codRestrict hBT]
   exact key
 
+/-- **Simon Ch. 2, §6 (pp. 66–67), straightening charts at regular points of `f` on `M`.** Let `M`
+be an `(m+k)`-dimensional `C¹` submanifold whose local representations `ψ` satisfy
+`T_{ψ(x)} M = range Dψ(x)`, `f` `C¹` on an open `U ⊇ M` and `J*_f(x₀) ≠ 0`. Take a chart `ψ` with
+`ψ(a) = x₀`. Then `D(f ∘ ψ)(a) = Df(x₀) ∘ Dψ(a)` is onto, the local submersion theorem gives `Λ`
+with `f ∘ ψ ∘ Λ = fst`, and `Ψ = ψ ∘ Λ` is the required chart. -/
+theorem Submission.coarea_exists_straightening_chart : ∀ (N m k : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m) (x₀ : Rn N), Chapter02.IsSimonSubmanifold (E := Rn (m + k)) 1 M → IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → (∀ (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → x₀ ∈ M → coareaJacobian M f x₀ ≠ 0 → ∃ (Ω : Set (WithLp 2 (Rn m × Rn k))) (O : Set (Rn N)) (Ψ : WithLp 2 (Rn m × Rn k) → Rn N), IsOpen Ω ∧ IsOpen O ∧ x₀ ∈ O ∧ ContDiffOn ℝ 1 Ψ Ω ∧ InjOn Ψ Ω ∧ Ψ '' Ω = O ∩ M ∧ (∀ p ∈ Ω, Function.Injective (fderiv ℝ Ψ p)) ∧ (∀ p ∈ Ω, f (Ψ p) = WithLp.fst p) ∧ ∀ p ∈ Ω, tangentSpace M (Ψ p) = LinearMap.range (fderiv ℝ Ψ p).toLinearMap := by
+  intro N m k M U f x₀ hM hU hMU hf hT hx₀ hJ
+  -- A chart `(V, W, ψ)` of `M` at `x₀ = ψ a`.
+  obtain ⟨V, W, ψ, hx₀W, hψ⟩ := hM.exists_localRepresentation hx₀
+  obtain ⟨a, haV, rfl⟩ : x₀ ∈ ψ '' V := by rw [hψ.image_eq]; exact ⟨hx₀W, hx₀⟩
+  have hψVU : MapsTo ψ V U := fun x hx => by
+    have hx' : ψ x ∈ W ∩ M := by rw [← hψ.image_eq]; exact mem_image_of_mem ψ hx
+    exact hMU hx'.2
+  -- `G = f ∘ ψ` is `C¹` on `V`, and `DG(a) = Df(ψ a) ∘ Dψ(a)` is onto because `J*_f(ψ a) ≠ 0`.
+  have hGC : ContDiffOn ℝ 1 (f ∘ ψ) V := hf.comp hψ.contDiffOn hψVU
+  have hDG : fderiv ℝ (f ∘ ψ) a = (fderiv ℝ f (ψ a)).comp (fderiv ℝ ψ a) :=
+    fderiv_comp a ((hf.differentiableOn one_ne_zero).differentiableAt (hU.mem_nhds (hψVU haV)))
+      ((hψ.contDiffOn.differentiableOn one_ne_zero).differentiableAt
+        (hψ.isOpen_source.mem_nhds haV))
+  have hsurj : Function.Surjective (fderiv ℝ (f ∘ ψ) a) := by
+    rw [hDG]
+    by_contra hns
+    exact hJ (((Submission.coarea_jacobian_linear_algebra).1 N m (m + k) M f (ψ a)
+      (fderiv ℝ ψ a) (hT V W ψ hψ a haV)).2 hns)
+  -- The submersion chart `Λ` of `G` at `a`; then `Ψ = ψ ∘ Λ` is a chart of `M` near `x₀`.
+  obtain ⟨Ω, Λ, hΩ, hΛC, hΛinj, hΛΩ, haΛ, hΛV, hΛder, hGΛ⟩ :=
+    Submission.coarea_straightening_submersion_chart m k V (f ∘ ψ) a hψ.isOpen_source hGC haV
+      hsurj
+  obtain ⟨O, hO, hΨΩ, hΨC, hΨinj, hΨder, hΨT⟩ :=
+    Submission.coarea_straightening_reparametrize_chart N m k M V W ψ Ω Λ hψ (hT V W ψ hψ) hΩ
+      hΛC hΛinj hΛΩ hΛV hΛder
+  refine ⟨Ω, O, ψ ∘ Λ, hΩ, hO, ?_, hΨC, hΨinj, hΨΩ, hΨder, hGΛ, hΨT⟩
+  -- `x₀ = ψ a = Ψ p` for the `p ∈ Ω` with `Λ p = a`, so `x₀ ∈ Ψ(Ω) = O ∩ M`.
+  obtain ⟨p, hp, hpa⟩ := haΛ
+  have hpO : ψ (Λ p) ∈ O ∩ M := by rw [← hΨΩ]; exact ⟨p, hp, rfl⟩
+  rw [hpa] at hpO
+  exact hpO.1
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
