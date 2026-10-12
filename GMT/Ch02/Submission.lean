@@ -524,4 +524,190 @@ theorem Submission.bv_ext_infDist_compl_fderiv_lt : ∀ (n : ℕ) (U : Set (Rn n
   -- Step 8: `0 < d(w) - d(x) ≤ -L (x - ξ) - r`.
   linarith
 
+/-- **Cut-offs for the BV extension estimate** (Simon Ch. 2, proof of Lemma 2.8, (2)–(3), p. 52).
+Let `U ⊂ ℝⁿ` be bounded, open and convex, and `B_r(ξ) ⊂ U` with `r > 0`. Then there are Lipschitz
+`φ_j : ℝⁿ → [0, 1]` with compact support in `U` such that `φ_j → 1_U` pointwise and
+`r |Dφ_j| ≤ -Dφ_j(x)[x - ξ]` for `Lⁿ`-a.e. `x`. Take `φ_j = γ_j ∘ d`, where `d = dist(·, ℝⁿ \ U)` and
+`γ_j(t) = min(1, max(0, 2t/ε_j - 1))`. The level `ε_j < min(η, 1/(j+1))` is chosen so that
+`{d = ε_j}` and `{d = ε_j/2}` are `Lⁿ`-null. Here `η` is given by
+`Submission.bv_ext_infDist_compl_fderiv_lt`: `r < -Dd(x)[x - ξ]` at every `x ∈ U` with `d(x) < η`
+at which `d` is differentiable. -/
+theorem Submission.bv_ext_exists_cutoffs : ∀ (n : ℕ) (U : Set (Rn n)) (ξ : Rn n) (r : ℝ), IsOpen U → Bornology.IsBounded U → Convex ℝ U → 0 < r → closedBall ξ r ⊆ U → ∃ φ : ℕ → Rn n → ℝ, (∀ j, ∃ K, LipschitzWith K (φ j)) ∧ (∀ j x, 0 ≤ φ j x ∧ φ j x ≤ 1) ∧ (∀ j, HasCompactSupport (φ j)) ∧ (∀ j, tsupport (φ j) ⊆ U) ∧ (∀ x, Tendsto (fun j ↦ φ j x) atTop (𝓝 (U.indicator (fun _ ↦ (1 : ℝ)) x))) ∧ ∀ j, ∀ᵐ x ∂volume, r * ‖fderiv ℝ (φ j) x‖ ≤ -fderiv ℝ (φ j) x (x - ξ) := by
+  intro n U ξ r hUo hUb hUc hr hball
+  rcases Uᶜ.eq_empty_or_nonempty with hUe | hne
+  · -- Step 1: `Uᶜ = ∅`, so `U = univ` is compact and `φ_j ≡ 1` works.
+    have hU : U = univ := compl_empty_iff.1 hUe
+    have hcpt : IsCompact (univ : Set (Rn n)) :=
+      Metric.isCompact_of_isClosed_isBounded isClosed_univ (hU ▸ hUb)
+    refine ⟨fun _ _ ↦ 1, fun _ ↦ ⟨0, LipschitzWith.const 1⟩,
+      fun _ _ ↦ ⟨zero_le_one, le_rfl⟩, fun _ ↦ ?_, fun _ ↦ ?_, fun x ↦ ?_, fun _ ↦ ?_⟩
+    · exact hcpt.of_isClosed_subset (isClosed_tsupport _) (subset_univ _)
+    · rw [hU]; exact subset_univ _
+    · rw [hU, indicator_univ]; exact tendsto_const_nhds
+    · exact Filter.Eventually.of_forall fun x ↦ by simp
+  -- Step 2: `d = infDist · Uᶜ` is 1-Lipschitz, `0` off `U`, positive on `U`, `‖Dd‖ ≤ 1`, and
+  -- differentiable a.e. (Rademacher).
+  set d : Rn n → ℝ := fun y ↦ infDist y Uᶜ with hd_def
+  have hdlip : LipschitzWith 1 d := lipschitz_infDist_pt Uᶜ
+  have hdcont : Continuous d := hdlip.continuous
+  have hd0 : ∀ x, x ∉ U → d x = 0 := fun x hx ↦ infDist_zero_of_mem hx
+  have hdpos : ∀ x ∈ U, 0 < d x := fun x hx ↦
+    (hUo.isClosed_compl.notMem_iff_infDist_pos hne).1 (not_not.2 hx)
+  have hDd : ∀ x, ‖fderiv ℝ d x‖ ≤ 1 := fun x ↦ by
+    simpa using norm_fderiv_le_of_lipschitz ℝ (x₀ := x) hdlip
+  have hdiff : ∀ᵐ x ∂(volume : Measure (Rn n)), DifferentiableAt ℝ d x :=
+    hdlip.ae_differentiableAt
+  -- Step 3: the boundary-direction inequality near `∂U`.
+  obtain ⟨η, hη, hkey⟩ :=
+    Submission.bv_ext_infDist_compl_fderiv_lt n U ξ r hUo hUc hne hr hball
+  -- Step 4: only countably many levels of `d` have positive measure, so we can pick `ε_j` with
+  -- `{d = ε_j}` and `{d = ε_j / 2}` null.
+  have hB : {t : ℝ | 0 < (volume : Measure (Rn n)) {y | d y = t}}.Countable :=
+    Measure.countable_meas_level_set_pos hdcont.measurable
+  have hB' : ({t : ℝ | 0 < (volume : Measure (Rn n)) {y | d y = t}} ∪
+      (fun t ↦ 2 * t) '' {t : ℝ | 0 < (volume : Measure (Rn n)) {y | d y = t}}).Countable :=
+    hB.union (hB.image _)
+  have hε : ∀ j : ℕ, ∃ ε : ℝ, 0 < ε ∧ ε < η ∧ ε < 1 / ((j : ℝ) + 1) ∧
+      (volume : Measure (Rn n)) {y | d y = ε} = 0 ∧
+      (volume : Measure (Rn n)) {y | d y = ε / 2} = 0 := by
+    intro j
+    have hpos : 0 < min η (1 / ((j : ℝ) + 1)) := lt_min hη (by positivity)
+    have hns : ¬ Ioo 0 (min η (1 / ((j : ℝ) + 1))) ⊆
+        {t : ℝ | 0 < (volume : Measure (Rn n)) {y | d y = t}} ∪
+        (fun t ↦ 2 * t) '' {t : ℝ | 0 < (volume : Measure (Rn n)) {y | d y = t}} := by
+      intro hsub
+      have h0 := measure_mono_null hsub (hB'.measure_zero volume)
+      rw [Real.volume_Ioo, ENNReal.ofReal_eq_zero] at h0
+      linarith
+    obtain ⟨ε, hεI, hεB⟩ := not_subset.1 hns
+    refine ⟨ε, hεI.1, hεI.2.trans_le (min_le_left _ _), hεI.2.trans_le (min_le_right _ _), ?_, ?_⟩
+    · by_contra h
+      exact hεB (Or.inl (pos_iff_ne_zero.2 h))
+    · by_contra h
+      exact hεB (Or.inr ⟨ε / 2, pos_iff_ne_zero.2 h, by beta_reduce; ring⟩)
+  choose ε hε0 hεη hεj hεnull hεnull2 using hε
+  -- Step 5: the cut-offs `φ_j = min 1 (max 0 (2 d / ε_j - 1))`.
+  set φ : ℕ → Rn n → ℝ := fun j x ↦ min 1 (max 0 (2 * d x / ε j - 1)) with hφ_def
+  have hφ0 : ∀ j x, d x ≤ ε j / 2 → φ j x = 0 := by
+    intro j x hx
+    have h1 : 2 * d x / ε j - 1 ≤ 0 := by
+      rw [sub_nonpos, div_le_one (hε0 j)]; linarith
+    simp only [hφ_def, max_eq_left h1, min_eq_right zero_le_one]
+  have hφ1 : ∀ j x, ε j ≤ d x → φ j x = 1 := by
+    intro j x hx
+    have h1 : 1 ≤ 2 * d x / ε j - 1 := by
+      rw [le_sub_iff_add_le, le_div_iff₀ (hε0 j)]; linarith
+    simp only [hφ_def, max_eq_right (zero_le_one.trans h1), min_eq_left h1]
+  have hφlin : ∀ j x, ε j / 2 ≤ d x → d x ≤ ε j → φ j x = 2 * d x / ε j - 1 := by
+    intro j x h1 h2
+    have a1 : 0 ≤ 2 * d x / ε j - 1 := by
+      rw [sub_nonneg, one_le_div (hε0 j)]; linarith
+    have a2 : 2 * d x / ε j - 1 ≤ 1 := by
+      rw [sub_le_iff_le_add, div_le_iff₀ (hε0 j)]; linarith
+    simp only [hφ_def, max_eq_right a1, min_eq_right a2]
+  -- Step 7: `tsupport φ_j ⊆ {ε_j / 2 ≤ d} ⊆ U`.
+  have htsupp : ∀ j, tsupport (φ j) ⊆ {x | ε j / 2 ≤ d x} := by
+    intro j
+    refine closure_minimal ?_ (isClosed_le continuous_const hdcont)
+    intro x hx
+    by_contra h
+    exact hx (hφ0 j x (le_of_lt (not_le.1 h)))
+  have hFU : ∀ j, {x | ε j / 2 ≤ d x} ⊆ U := by
+    intro j x hx
+    by_contra h
+    have h1 := hd0 x h
+    have h2 := hε0 j
+    simp only [mem_ofPred_eq] at hx
+    linarith
+  refine ⟨φ, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Step 6: `φ_j` is `(2 / ε_j)`-Lipschitz.
+    intro j
+    have he := hε0 j
+    have hlin : LipschitzWith (Real.toNNReal (2 / ε j)) (fun x ↦ 2 * d x / ε j - 1) := by
+      refine LipschitzWith.of_dist_le_mul fun x y ↦ ?_
+      rw [Real.coe_toNNReal _ (by positivity), Real.dist_eq]
+      have hxy : |d x - d y| ≤ dist x y := by
+        simpa [Real.dist_eq] using hdlip.dist_le_mul x y
+      calc |2 * d x / ε j - 1 - (2 * d y / ε j - 1)| = 2 / ε j * |d x - d y| := by
+            rw [show 2 * d x / ε j - 1 - (2 * d y / ε j - 1) = 2 / ε j * (d x - d y) by ring,
+              abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 / ε j)]
+        _ ≤ 2 / ε j * dist x y := by gcongr
+    exact ⟨_, (hlin.const_max 0).const_min 1⟩
+  · -- Step 6: `0 ≤ φ_j ≤ 1`.
+    intro j x
+    exact ⟨le_min zero_le_one (le_max_left _ _), min_le_left _ _⟩
+  · -- Step 7: `{ε_j / 2 ≤ d}` is closed and bounded, hence compact.
+    intro j
+    have hF : IsCompact {x | ε j / 2 ≤ d x} :=
+      Metric.isCompact_of_isClosed_isBounded (isClosed_le continuous_const hdcont)
+        (hUb.subset (hFU j))
+    exact hF.of_isClosed_subset (isClosed_tsupport _) (htsupp j)
+  · intro j
+    exact (htsupp j).trans (hFU j)
+  · -- Step 8: `φ_j(x)` is eventually `1_U(x)`.
+    intro x
+    by_cases hx : x ∈ U
+    · rw [indicator_of_mem hx]
+      obtain ⟨N, hN⟩ := exists_nat_one_div_lt (hdpos x hx)
+      refine tendsto_const_nhds.congr' (eventually_atTop.2 ⟨N, fun j hj ↦ ?_⟩)
+      symm
+      apply hφ1
+      have : 1 / ((j : ℝ) + 1) ≤ 1 / ((N : ℝ) + 1) := by
+        gcongr
+      linarith [hεj j]
+    · rw [indicator_of_notMem hx]
+      refine tendsto_const_nhds.congr' (Filter.Eventually.of_forall fun j ↦ ?_)
+      symm
+      apply hφ0
+      rw [hd0 x hx]
+      have := hε0 j
+      linarith
+  · -- Step 9: off `{d = ε_j} ∪ {d = ε_j / 2}` and the non-differentiability set of `d`, either
+    -- `Dφ_j(x) = 0` or `Dφ_j(x) = (2 / ε_j) Dd(x)` with `0 < d(x) < ε_j < η`.
+    intro j
+    have he := hε0 j
+    have hn1 : ∀ᵐ x ∂(volume : Measure (Rn n)), d x ≠ ε j := by
+      rw [ae_iff]; simpa using hεnull j
+    have hn2 : ∀ᵐ x ∂(volume : Measure (Rn n)), d x ≠ ε j / 2 := by
+      rw [ae_iff]; simpa using hεnull2 j
+    filter_upwards [hdiff, hn1, hn2] with x hxd hx1 hx2
+    rcases lt_or_gt_of_ne hx2 with hlt | hgt
+    · -- (a) `d x < ε_j / 2`: `φ_j = 0` near `x`.
+      have hloc : φ j =ᶠ[𝓝 x] fun _ ↦ (0 : ℝ) := by
+        filter_upwards [(isOpen_lt hdcont continuous_const).mem_nhds hlt] with y hy
+        exact hφ0 j y (le_of_lt hy)
+      rw [hloc.fderiv_eq]
+      simp
+    rcases lt_or_gt_of_ne hx1 with hlt' | hgt'
+    · -- (c) `ε_j / 2 < d x < ε_j`: `φ_j = 2 d / ε_j - 1` near `x`.
+      have hloc : φ j =ᶠ[𝓝 x] fun y ↦ 2 * d y / ε j - 1 := by
+        filter_upwards [(isOpen_lt continuous_const hdcont).mem_nhds hgt,
+          (isOpen_lt hdcont continuous_const).mem_nhds hlt'] with y hy1 hy2
+        exact hφlin j y (le_of_lt hy1) (le_of_lt hy2)
+      have hderiv : fderiv ℝ (φ j) x = (2 / ε j) • fderiv ℝ d x := by
+        rw [hloc.fderiv_eq]
+        have hfun : (fun y ↦ 2 * d y / ε j - 1) = (fun y ↦ 2 / ε j * d y - 1) := by
+          funext y; ring
+        rw [hfun]
+        exact ((hxd.hasFDerivAt.const_mul (2 / ε j)).sub_const 1).fderiv
+      have hxU : x ∈ U := by
+        by_contra h
+        rw [hd0 x h] at hgt
+        linarith
+      have hk : r < -fderiv ℝ d x (x - ξ) := hkey x hxU (by linarith [hεη j]) hxd
+      have h2e : (0 : ℝ) < 2 / ε j := by positivity
+      rw [hderiv, norm_smul, smul_apply, smul_eq_mul, Real.norm_eq_abs, abs_of_pos h2e]
+      calc r * (2 / ε j * ‖fderiv ℝ d x‖) ≤ r * (2 / ε j * 1) := by
+            gcongr
+            exact hDd x
+        _ = 2 / ε j * r := by ring
+        _ ≤ 2 / ε j * (-fderiv ℝ d x (x - ξ)) := mul_le_mul_of_nonneg_left hk.le h2e.le
+        _ = -(2 / ε j * fderiv ℝ d x (x - ξ)) := by ring
+    · -- (b) `d x > ε_j`: `φ_j = 1` near `x`.
+      have hloc : φ j =ᶠ[𝓝 x] fun _ ↦ (1 : ℝ) := by
+        filter_upwards [(isOpen_lt continuous_const hdcont).mem_nhds hgt'] with y hy
+        exact hφ1 j y (le_of_lt hy)
+      rw [hloc.fderiv_eq]
+      simp
+
 end GMT.Ch02
