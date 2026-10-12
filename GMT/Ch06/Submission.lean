@@ -359,6 +359,69 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- A rectifiable current whose multiplicity is `Hⁿ`-a.e. a natural number on `M` is integer
+multiplicity (Simon Ch. 6, proof of 8.2, conclusion).  The exceptional set
+`N = {x ∈ M : θ(x) ∉ ℕ}` is `Hⁿ`-null, so `M' = M ∖ N` carries the same current and, as
+`Hⁿ(η_{x,r} N) = r⁻ⁿ Hⁿ(N) = 0`, the same weighted approximate tangent spaces. -/
+theorem Submission.ind_ae_integer_multiplicity :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P))
+      (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ →
+      (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) →
+      (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∃ k : ℕ, θ x = k) →
+      IsIntegerMultiplicity T := by
+  open Poincare.SimonGMT.Chapter03 (blowUpMap) in
+  intro P n U T M θ ξ hM hT hθ
+  -- `M' = {x ∈ M : θ(x) ∈ ℕ}` differs from `M` by an `Hⁿ`-null set.
+  set M' : Set (Eucl P) := {x | x ∈ M ∧ ∃ k : ℕ, θ x = k}
+  have hM'M : M' ⊆ M := fun x hx => hx.1
+  have hae : M' =ᵐ[(μHE[n] : Measure (Eucl P))] M := by
+    rw [Filter.eventuallyEqSet_iff]
+    filter_upwards [(ae_restrict_iff'₀ hM.nullMeasurableSet).mp hθ] with x hx
+    exact ⟨fun h => h.1, fun h => ⟨h, hx h⟩⟩
+  have hrestrict : (μHE[n] : Measure (Eucl P)).restrict M' =
+      (μHE[n] : Measure (Eucl P)).restrict M :=
+    Measure.restrict_congr_set hae
+  -- `y ↦ x + r • y` inverts `η_{x,r}`, so `η_{x,r}` is injective.
+  have hinv : ∀ (x : Eucl P) (r : ℝ), r ≠ 0 → ∀ z : Eucl P, x + r • blowUpMap x r z = z := by
+    intro x r hr z
+    simp only [blowUpMap, smul_smul, mul_inv_cancel₀ hr, one_smul, add_sub_cancel]
+  -- `η_{x,r}` maps `Hⁿ`-null sets to `Hⁿ`-null sets: `Hⁿ(η_{x,r} Z) = r⁻ⁿ Hⁿ(Z)`.
+  have hnull : ∀ (x : Eucl P) (r : ℝ), r ≠ 0 → ∀ Z : Set (Eucl P),
+      (μHE[n] : Measure (Eucl P)) Z = 0 → (μHE[n] : Measure (Eucl P)) (blowUpMap x r '' Z) = 0 := by
+    open scoped Pointwise in
+    intro x r hr Z hZ
+    have himage : blowUpMap x r '' Z = r⁻¹ • (IsometryEquiv.subRight x '' Z) := by
+      rw [← Set.image_smul, Set.image_image]
+      rfl
+    rw [himage, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hr),
+      (IsometryEquiv.subRight x).isometry.euclideanHausdorffMeasure_image, hZ, smul_zero]
+  -- The blow-ups `η_{x,r}(M)` and `η_{x,r}(M')` are `Hⁿ`-a.e. equal, so the weighted tangent
+  -- spaces of `(M, θ)` and `(M', θ)` agree.
+  have htan : ∀ (x : Eucl P) (L : Submodule ℝ (Eucl P)),
+      HasWeightedApproximateTangentSpaceAt n M θ x L →
+        HasWeightedApproximateTangentSpaceAt n M' θ x L := by
+    intro x L hL
+    refine ⟨hL.1, fun f => (hL.2 f).congr' ?_⟩
+    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+    have hinj : Function.Injective (blowUpMap x r) :=
+      Function.LeftInverse.injective (g := fun w => x + r • w) (hinv x r hr.ne')
+    refine setIntegral_congr_set ?_
+    rw [ae_eq_set, ← Set.image_sdiff hinj, ← Set.image_sdiff hinj]
+    exact ⟨hnull x r hr.ne' _ (ae_eq_set.mp hae).2, hnull x r hr.ne' _ (ae_eq_set.mp hae).1⟩
+  refine ⟨M', θ, ξ, ⟨hM'M.trans hM.subset, hM.nullMeasurableSet.congr hae.symm,
+    hM.countablyRectifiable.mono hM'M, fun x hx => hM.pos x (hM'M hx),
+    fun K hK hKU => (hM.integrableOn K hK hKU).mono_set (Set.inter_subset_inter_left K hM'M),
+    ?_, ?_⟩, fun x hx => hx.2, fun ω => ?_⟩
+  · rw [hrestrict]
+    exact hM.aestronglyMeasurable
+  · rw [hrestrict]
+    filter_upwards [hM.orients] with x hx
+    obtain ⟨τ, hτ, hL, hξ⟩ := hx
+    exact ⟨τ, hτ, htan x _ hL, hξ⟩
+  · rw [hT ω]
+    unfold tauAction
+    rw [hrestrict]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
