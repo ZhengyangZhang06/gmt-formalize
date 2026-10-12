@@ -1,0 +1,110 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_regularity-a1.carrier_support_null-a1`
+- Child DAG node: `root.density_one_regularity-a1.carrier_support_null-a1.upper_density_null-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 1, Theorem 3.6 (Upper Density Theorem). This is the fact (Leb) used in step 3 of the parent proof. The pinned SimonGMT library formalizes it as Poincare.SimonGMT.Chapter01.simon_theorem_3_6 (Chapter01/DensityComparison.lean:332). That version holds in an arbitrary metric space and for every real dimension >= 0, including n = 0, and needs no local finiteness of the measure. The module Poincare.SimonGMT.Chapter01.DensityComparison is not imported, even transitively, by the contract. So the Lean file proving this child must add `import Poincare.SimonGMT.Chapter01.DensityComparison`. Submission.lean is not byte-checked by the comparator, and only the definitions used by the frozen statement must stay unchanged. This child only transports the theorem to the contract normalization.
+
+Notation:
+- X = R^(n+l), a metric space with its Borel sigma-algebra.
+- nu° is the outer measure of nu (nu.toOuterMeasure).
+- w_n := ofReal(pi^(n/2)/Gamma(n/2+1)), which is SimonGMT's realUnitBallVolume n.
+- For an outer measure m and a set A, Theta^{*n}(m, A, x) = limsup_{r -> 0+} m(A ∩ B_r(x)) / (w_n (ofReal r)^n). This is Simon's upper density (3.1), SimonGMT dimensionalUpperDensity.
+- H^n_S is Simon's Hausdorff measure (SimonGMT simonHausdorffOuterMeasureReal n).
+- muH[n] is the unnormalized Hausdorff measure.
+
+1. nu° is Borel regular in Simon's sense. Every Borel set is nu-measurable, hence Caratheodory-measurable for nu°. Every set S has a measurable (Borel) hull B ⊇ S with nu(B) = nu(S) (exists_measurable_superset). This is SimonGMT measure_toOuterMeasure_isBorelRegular nu.
+2. A is Caratheodory-measurable for nu°. Since A is nu-null-measurable, nu(T) = nu(T ∩ A) + nu(T \ A) for every T ⊆ X (measure_inter_add_sdiff₀). Moreover nu°(A) = nu(A) < infinity.
+3. The quotients agree. First, omega_n >= 0, because pi^(n/2) > 0 and Gamma(n/2+1) > 0 (n/2+1 > 0, Real.Gamma_pos_of_pos). For r > 0 we then have ofReal(omega_n r^n) = ofReal(omega_n) ofReal(r^n) = w_n (ofReal r)^n (ENNReal.ofReal_mul, ENNReal.ofReal_pow, ENNReal.rpow_natCast; ofReal(omega_n) is definitionally w_n). So for every x and every r > 0, the quotient nu(A ∩ B_r(x)) / ofReal(omega_n r^n) in the statement equals Simon's quotient nu°(A ∩ B_r(x)) / (w_n (ofReal r)^n). The two functions of r agree on (0, infinity), which belongs to the filter of right neighbourhoods of 0, so their limsups along that filter agree (limsup_congr). Thus the limsup in the statement is Theta^{*n}(nu°, A, x), and the set in the statement is E := {x : x ∉ A and Theta^{*n}(nu°, A, x) ≠ 0}.
+4. H^n_S(E) = 0, by the Upper Density Theorem. Printed proof of Simon 3.6:
+   - Let t > 0, let S_t = {x ∈ X \ A : Theta^{*n}(nu°, A, x) >= t}, and let C be any closed subset of A.
+   - X \ C is open and S_t ⊆ X \ A ⊆ X \ C. Hence Theta^{*n}(nu°, A ∩ (X \ C), x) = Theta^{*n}(nu°, A, x) >= t for x ∈ S_t, since the density depends only on A near x.
+   - Apply the Comparison Theorem 3.3 with nu° restricted to A, S_t and X \ C in place of mu, A_1 and A_2. Here S_t ⊆ X \ C, and 3.3 needs only that Borel sets are Caratheodory-measurable (mul_simonHausdorff_le_of_le_dimensionalUpperDensity). Borel sets remain Caratheodory-measurable for nu° restricted to A, by Simon's remark after 1.12 (SimonGMT isCaratheodoryMeasurable_restrict). This gives t H^n_S(S_t) <= nu°(A \ C) for each closed C ⊆ A.
+   - By 1.15(2) (nu° Borel regular, A measurable, nu°(A) < infinity, X metric) there are closed C_j ⊆ A with nu°(A \ C_j) -> 0. So H^n_S(S_t) = 0.
+   - Take t = 1/i, i = 1, 2, .... Every x ∈ E has Theta^{*n}(nu°, A, x) > 0, hence lies in some S_{1/i}. Countable subadditivity gives H^n_S(E) = 0.
+   In Lean this whole step is simon_theorem_3_6 nu° (step 1) (0 <= n) (step 2) (nu°(A) < infinity).
+5. Null sets transfer. As outer measures, H^n_S = (w_n / 2^n) muH[n] (SimonGMT simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure, valid since n >= 0). The factor w_n / 2^n is nonzero, because w_n > 0 (realUnitBallVolume_pos) and 2^n < infinity (ENNReal.div_ne_zero). Hence step 4 gives muH[n](E) = 0. Finally muHE[n] = c muH[n] with c = addHaarScalarFactor(volume, muH[n]) (Measure.euclideanHausdorffMeasure_def, Measure.smul_apply). So muHE[n](E) = c · 0 = 0.
+6. By step 3 the set in the statement is E, so its muHE[n]-measure is 0.
+
+## Key steps
+
+1. The outer measure nu° of nu is Borel regular, and A is Caratheodory-measurable for nu° (as A is null-measurable) with nu°(A) < infinity
+2. For r > 0 the contract quotient nu(A ∩ B_r(x))/ofReal(omega_n r^n) equals Simon's quotient (3.1), so the limsups along r -> 0+ agree and the set is E = {x ∉ A : Theta^{*n}(nu°, A, x) ≠ 0}
+3. Simon's Upper Density Theorem 3.6 (SimonGMT simon_theorem_3_6; printed proof via 3.3 and 1.15(2)) gives H^n_S(E) = 0
+4. H^n_S and muHE[n] are nonzero finite multiples of muH[n], so muHE[n](E) = 0
+
+## Reference use
+
+### local-project
+
+Queries:
+- `sed -n 1,463p GMT/Ch05/Contract.lean; diff GMT/Ch05/Submission.lean GMT/Ch05/Contract.lean; cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean`
+- `grep -n '^theorem ' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean; sed -n 1,140p and 240,420p of that file (simon_theorem_3_3, simon_theorem_3_6, mul_simonHausdorff_le_of_le_dimensionalUpperDensity)`
+- `grep -n '^theorem \|^def \|^noncomputable def \|^abbrev ' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/{Densities,Hausdorff,Basic,EuclideanNormalization}.lean; sed -n 25,60p Densities.lean; sed -n 1,60p,260,300p,405,600p Hausdorff.lean; sed -n 200,440p Basic.lean`
+- `sed -n 1,140p <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_def, addHaarScalarFactor_volume_hausdorffMeasure_ne_zero)`
+- `grep -n for measure_compl_support, isClosed_support, lintegral_eq_zero_iff', ae_restrict_iff'₀, measure_inter_conull, measure_inter_add_sdiff₀, isOpen_biUnion_countable, top_div_of_ne_top, withDensity_absolutelyContinuous, withDensity_apply, restrict_apply₀', restrict_restrict, Filter.Tendsto.limsup_eq, Real.Gamma_pos_of_pos, ENNReal.ofReal_pow, ENNReal.rpow_natCast, ENNReal.div_ne_zero in <snapshot>/mathlib/Mathlib`
+- `sed -n 590,735p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt (Simon 3.3-3.7 statements and printed proofs)`
+- `python3 -I scan of dag.json lean_name/lean_statement fields; grep -rl for hausdorff_carrier_diff_support_null, upperDensity_ne_zero_outside_hausdorff_null, hausdorff_support_diff_carrier_null in dag.json, nodes/, GMT/, .lake/packages/simongmt/Poincare`
+- `lake env lean /tmp/csn-a1-check/Check1.lean (contract lines 1-460 + 3 children as sorry + parent proof)`
+- `lake env lean /tmp/csn-a1-check/Check2.lean (+ import Poincare.SimonGMT.Chapter01.DensityComparison; sorry-free proofs of all three children and of the parent; #print axioms)`
+- `lake env lean /tmp/csn-a1-check/Check3.lean (comparator-style: each frozen type at GMT.Ch05 scope closed by exact Submission.X; #print axioms)`
+- `python3 -I /tmp/csn-a1-check/validate.py verifier/lean_contract.py (validate_lean_statement on the 3 child statements)`
+- `sed -n 300,620p verifier/gmt-compare.py (frozen-input byte checks, child NodeChallenge/NodeSolution generation)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-carrier-support-null-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-carrier-support-null-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/csn-a1-check/Check1.lean`
+- `/tmp/csn-a1-check/Check2.lean`
+- `/tmp/csn-a1-check/Check3.lean`
+
+Snapshot: project ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json). The snapshot Contract.lean is byte-identical to the workspace Contract.lean (cmp), and the workspace Submission.lean equals the Contract.
+
+No prior work: none of the three proposed names occurs in dag.json, nodes/, GMT/ or the simongmt sources, and none of them is reserved by another DAG branch.
+
+SimonGMT supplies the analytic core:
+- simon_theorem_3_6 (Upper Density Theorem; Chapter01/DensityComparison.lean:332) and simon_theorem_3_3 / mul_simonHausdorff_le_of_le_dimensionalUpperDensity (lines 294, 251). They hold for an arbitrary OuterMeasure on a metric space, every real n >= 0, with IsBorelRegularOuterMeasure, a Caratheodory-measurable A and finite mass.
+- dimensionalUpperDensity / dimensionalDensityQuotient (Densities.lean:44/39).
+- realUnitBallVolume (Hausdorff.lean:34) is definitionally ofReal(unitBallVolume n).
+- simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure (Hausdorff.lean:424) and realUnitBallVolume_pos (499).
+- measure_toOuterMeasure_isBorelRegular and isCaratheodoryMeasurable_restrict (Basic.lean:309/43).
+These are stated in SimonGMT's own normalization, so a bridge to μHE[n] is needed. It is child upper_density_null, transported via Mathlib's euclideanHausdorffMeasure_def (Measure.lean:74). DensityComparison is not imported by the contract, so Submission must add `import Poincare.SimonGMT.Chapter01.DensityComparison`. gmt-compare.py byte-checks only the frozen inputs, so this is allowed.
+
+Mathlib lemmas confirmed in the snapshot:
+- Measure.measure_compl_support and isClosed_support (Support.lean:202, 115)
+- isOpen_biUnion_countable (Topology/Bases.lean:942)
+- lintegral_eq_zero_iff' (Lebesgue/Basic.lean:322)
+- measure_inter_conull (Measure/Basic.lean:308)
+- measure_inter_add_sdiff₀ (NullMeasurable.lean:265)
+- withDensity_apply and withDensity_absolutelyContinuous (WithDensity.lean:44, 146)
+- restrict_apply₀', restrict_restrict and ae_restrict_iff'₀ (Restrict.lean:136, 205, 624)
+- Filter.Tendsto.limsup_eq (Topology/Order/LiminfLimsup.lean:190)
+
+Simon's printed proof of 3.6 (chapter-01.txt l.700-722) is copied into upper_density_null.
+
+Lean checks: Check1, Check2 and Check3 compile as described in the rationale. All three children and the parent have sorry-free proofs with axioms propext, Classical.choice, Quot.sound. The comparator-style elaboration of every frozen child type succeeds.

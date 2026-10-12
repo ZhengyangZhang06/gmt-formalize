@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.tangent_ae-a1.density_from_tangent-a1",
+  "parent_id": "root.density_one_regularity-a1.tangent_ae-a1",
+  "depth": 3,
+  "title": "Weighted approximate tangent space forces density equal to multiplicity (Simon Ch. 3, Remark 1.8(2))",
+  "statement": "Let n >= 1, U an open subset of R^(n+l), V = v(M, theta) a rectifiable n-varifold in U (contract structure RectifiableVarifold), x in M, and P a linear subspace which is the approximate tangent space of M with respect to theta at x (SimonGMT HasWeightedApproximateTangentSpaceAt n M theta x P). Then Theta^n(mu_V, x) = theta(x), i.e. V.HasDensity x (theta x): mu_V(B_r(x)) / (omega_n r^n) -> theta(x) as r -> 0+ (in [0, infinity], with mu_V = V.weight and omega_n = unitBallVolume n).",
+  "lean_statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), 1 ≤ n → IsOpen U → x ∈ V.carrier → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P → V.HasDensity x (V.mult x)",
+  "lean_name": "tae_hasDensity_of_weightedApproxTangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-tangent-ae-a1-density-from-tangent-a1-a1"
+}
