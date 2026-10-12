@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.integral_density-a1.measurable_densities-a1",
+  "parent_id": "root.integral_compactness-a1.integral_density-a1",
+  "depth": 3,
+  "title": "Borel measurability of the upper/lower n-densities and their level sets (Simon Ch. 1, 3.2; parent step 8)",
+  "statement": "Let N, n ∈ ℕ and μ an s-finite Borel measure on ℝ^N. Then x ↦ limsup_{ρ↓0} μ(B̄_ρ(x))/(ω_nρ^n) and x ↦ liminf_{ρ↓0} μ(B̄_ρ(x))/(ω_nρ^n) are Borel functions ℝ^N → [0,∞], and for every c ∈ [0,∞] the set {x : Θ^n(μ,x) exists and equals c} is a Borel set.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) [SFinite μ], Measurable (fun x ↦ limsup (densityRatio n μ x) (𝓝[>] 0)) ∧ Measurable (fun x ↦ liminf (densityRatio n μ x) (𝓝[>] 0)) ∧ ∀ c : ℝ≥0∞, MeasurableSet {x | HasDensity n μ x c}",
+  "lean_name": "intcpt_id_measurable_densities",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-integral-density-a1-measurable-densities-a1-a1"
+}

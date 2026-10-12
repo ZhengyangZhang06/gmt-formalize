@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.integral_density-a1.restrict_sigma_finite-a1",
+  "parent_id": "root.integral_compactness-a1.integral_density-a1",
+  "depth": 3,
+  "title": "σ-finiteness of μ⌞M for a positive locally integrable multiplicity (parent step 2)",
+  "statement": "Let N ∈ ℕ, μ a measure on the Borel sets of ℝ^N, U ⊆ ℝ^N open, M ⊆ U, and θ : ℝ^N → ℝ with θ(x) > 0 for every x ∈ M and θ μ-integrable on M ∩ K for every compact K ⊆ U. Then the restriction μ⌞M (Mathlib μ.restrict M, so (μ⌞M)(B) = μ(B ∩ M) for Borel B; M need not be measurable) is σ-finite.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (U M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsOpen U → M ⊆ U → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) μ) → SigmaFinite (μ.restrict M)",
+  "lean_name": "intcpt_id_restrict_sigmaFinite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-integral-density-a1-restrict-sigma-finite-a1-a1"
+}
