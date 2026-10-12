@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0ad9cc04ae2aaab50e629b67409b6f1c63dd061e472929bd948e670ee9652f8f",
+  "git_delta": {
+    "base_commit": "13ff686f52cfb3b05f997c6c06e834ff7617b5c9",
+    "candidate_commit": "b897185b6604d86850f08fb10bd816564538d03e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_approxTangent_sdiff_singleton",
+    "diff_sha256": "c7fddbc99399db06959615454304a86df4a9ccff72160e2eadd6fc499fbdcfb1",
+    "source_sha256": "ac23408a2e68e13e59fc087f96062a0f5fa4f24a70405e1ae8746c3d1311e64b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_approxTangent_sdiff_singleton",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x p : Euclid P) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → x ≠ p → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n (M \\ {p}) x Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
