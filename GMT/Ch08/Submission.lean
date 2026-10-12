@@ -580,6 +580,40 @@ theorem Submission.intcpt_vdb_open_thickening_exhaustion :
     rw [biUnion_range] at hcov
     exact ⟨fun p ↦ ball (f p) (s (f p)), fun p ↦ s (f p), fun p ↦ hs0 _ (hTU ⟨p, rfl⟩),
       fun p ↦ hrel _ (hTU ⟨p, rfl⟩), hcov⟩
+/-- **Simon Ch. 8, proof of 5.9, passage from (1) to (2)** (child `ball_mass_le_of_density` of
+`variation_density_bound`): a finite density `Θ^n(μ, x) = θ < ∞` gives `μ(B_ρ(x)) ≤ C ρ^n`, with
+`C = (θ + 1) ω_n`, for all small `ρ > 0`.  The ratio `μ(B_ρ(x)) / (ω_n ρ^n)` is eventually
+`< θ + 1`, and `0 < ω_n ρ^n < ∞` clears the denominator. -/
+theorem Submission.intcpt_vdb_ball_mass_le_of_density :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞), HasDensity n μ x θ →
+      θ ≠ ∞ → ∃ C r : ℝ, 0 < r ∧ ∀ ρ : ℝ, 0 < ρ → ρ < r →
+        μ (closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n) := by
+  intro N n μ x θ hθ hθ_top
+  -- The density ratio is eventually `< θ + 1`, so it is `< θ + 1` on some interval `(0, r)`.
+  have hlim : Tendsto (densityRatio n μ x) (𝓝[>] 0) (𝓝 θ) := hθ
+  have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), densityRatio n μ x ρ < θ + 1 :=
+    hlim.eventually (Iio_mem_nhds (ENNReal.lt_add_right hθ_top one_ne_zero))
+  obtain ⟨r, hr, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 hev
+  -- `ω_n` is the Haar volume of the nonempty open bounded unit ball, so `0 < ω_n < ∞`.
+  have hω₀ : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos (volume : Measure (EuclideanSpace ℝ (Fin n))) 0 one_pos).ne'
+  have hω_top : unitBallVolume n ≠ ∞ :=
+    (measure_ball_lt_top (μ := (volume : Measure (EuclideanSpace ℝ (Fin n)))) (x := 0)
+      (r := 1)).ne
+  refine ⟨(θ.toReal + 1) * (unitBallVolume n).toReal, r, hr, fun ρ hρ hρr ↦ ?_⟩
+  have hρ' : densityRatio n μ x ρ < θ + 1 := hsub ⟨hρ, hρr⟩
+  have hD₀ : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ 0 :=
+    mul_ne_zero hω₀ (pow_ne_zero n (ENNReal.ofReal_pos.2 hρ).ne')
+  have hD_top : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ ∞ :=
+    ENNReal.mul_ne_top hω_top (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  calc μ (closedBall x ρ) ≤ (θ + 1) * (unitBallVolume n * ENNReal.ofReal ρ ^ n) :=
+        (ENNReal.div_le_iff hD₀ hD_top).1 hρ'.le
+    _ = ENNReal.ofReal ((θ.toReal + 1) * (unitBallVolume n).toReal * ρ ^ n) := by
+        rw [ENNReal.ofReal_mul (mul_nonneg (add_nonneg ENNReal.toReal_nonneg zero_le_one)
+            ENNReal.toReal_nonneg),
+          ENNReal.ofReal_mul (add_nonneg ENNReal.toReal_nonneg zero_le_one),
+          ENNReal.ofReal_add ENNReal.toReal_nonneg zero_le_one, ENNReal.ofReal_toReal hθ_top,
+          ENNReal.ofReal_one, ENNReal.ofReal_toReal hω_top, ENNReal.ofReal_pow hρ.le, mul_assoc]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
