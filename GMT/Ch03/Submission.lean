@@ -531,6 +531,52 @@ theorem Submission.deGiorgiRH_closedBall_tendsto_of_vague_plane : ∀ (n N : ℕ
       ((measure_mono (Metric.closedBall_subset_closedBall (by linarith))).trans_lt hr2).ne
       hf0 hf1 hfa hfb).1.trans_lt hr
 
+/-- **Density `ωₙ` at a point with an approximate tangent plane of multiplicity `1`** (the
+measure form of Simon Ch. 3, Remark 1.5(3), as used for `μ_E` in Thm. 4.3; parent proof step 3).
+If `μ(B̄_δ(x)) < ∞` for some `δ > 0` and `μ` has approximate tangent plane `P` with multiplicity
+`1` at `x`, then `μ(B̄_ρ(x)) / ρⁿ → ωₙ = Lⁿ(B₁(0))` in `[0, ∞]` as `ρ ↓ 0`.
+The rescaled push-forwards `ν_r = (rⁿ)⁻¹ η_{x,r#} μ` satisfy `ν_r(B̄_R(0)) = μ(B̄_{rR}(x)) / rⁿ`
+for `r > 0`, as `η_{x,r}⁻¹(B̄_R(0)) = B̄_{rR}(x)`. Hence `ν_r(B̄_2(0)) < ∞` for `r < δ / 2`, and
+`∫ f dν_r = (rⁿ)⁻¹ ∫ f ∘ η_{x,r} dμ → ∫_P f dHⁿ` for `f ∈ C_c(ℝᴺ)`, so
+`deGiorgiRH_closedBall_tendsto_of_vague_plane` gives `ν_r(B̄_1(0)) → ωₙ`. -/
+theorem Submission.deGiorgiRH_measure_density_of_tangentPlane : ∀ (n N : ℕ) (μ : Measure (Rn N)) (x : Rn N) (P : Submodule ℝ (Rn N)), (∃ δ : ℝ, 0 < δ ∧ μ (Metric.closedBall x δ) < ∞) → HasApproxTangentPlaneWithMultiplicity n μ x P 1 → Tendsto (fun ρ : ℝ ↦ μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1))) := by
+  intro n N μ x P ⟨δ, hδ, hδμ⟩ hP
+  have hη : ∀ r, Measurable (blowUpMap x r) := fun r ↦ by
+    unfold blowUpMap
+    fun_prop
+  let ν : ℝ → Measure (Rn N) := fun r ↦ (ENNReal.ofReal (r ^ n))⁻¹ • μ.map (blowUpMap x r)
+  -- `‖η_{x,r}(y)‖ = ‖y - x‖ / r`, so `ν_r(B̄_R(0)) = μ(B̄_{rR}(x)) / rⁿ`.
+  have hν : ∀ r : ℝ, 0 < r → ∀ R : ℝ,
+      ν r (Metric.closedBall 0 R) = μ (Metric.closedBall x (r * R)) / ENNReal.ofReal (r ^ n) := by
+    intro r hr R
+    have hpre : blowUpMap x r ⁻¹' Metric.closedBall 0 R = Metric.closedBall x (r * R) := by
+      ext y
+      rw [mem_preimage, mem_closedBall_zero_iff, mem_closedBall_iff_norm, blowUpMap, norm_smul,
+        norm_inv, Real.norm_eq_abs, abs_of_pos hr, inv_mul_le_iff₀ hr]
+    rw [Measure.smul_apply, Measure.map_apply (hη r) Metric.isClosed_closedBall.measurableSet,
+      hpre, smul_eq_mul, ENNReal.div_eq_inv_mul]
+  -- For `0 < r < δ / 2`, `ν_r(B̄_2(0)) = μ(B̄_{2r}(x)) / rⁿ ≤ μ(B̄_δ(x)) / rⁿ < ∞`.
+  have hfin : ∀ᶠ r in 𝓝[>] (0 : ℝ), ν r (Metric.closedBall 0 2) < ∞ := by
+    filter_upwards [Ioo_mem_nhdsGT (half_pos hδ)] with r hr
+    rw [hν r hr.1]
+    refine ENNReal.div_lt_top ?_ (ENNReal.ofReal_pos.2 (pow_pos hr.1 n)).ne'
+    refine ((measure_mono (Metric.closedBall_subset_closedBall ?_)).trans_lt hδμ).ne
+    linarith [hr.2]
+  -- `∫ f dν_r = (rⁿ)⁻¹ ∫ f ∘ η_{x,r} dμ`, which tends to `1 * ∫_P f dHⁿ`.
+  have hlim : ∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ ∫ y, f y ∂(ν r)) (𝓝[>] 0)
+      (𝓝 (∫ y in (P : Set (Rn N)), f y ∂μHE[n])) := by
+    intro f
+    have hf := hP.2 f
+    rw [one_mul] at hf
+    refine hf.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+    rw [integral_smul_measure, integral_map (hη r).aemeasurable
+      (map_continuous f).aestronglyMeasurable, ENNReal.toReal_inv,
+      ENNReal.toReal_ofReal (pow_nonneg hr.le n), smul_eq_mul]
+  refine (Submission.deGiorgiRH_closedBall_tendsto_of_vague_plane n N ν P hP.1 hfin hlim).congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  rw [hν r hr, mul_one]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
