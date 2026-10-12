@@ -2841,6 +2841,55 @@ theorem Submission.rectifiable_c1_chart_pieces : SubmanifoldCoverCharacterizatio
   refine hxE (mem_iUnion.2 ⟨Nat.pair α i, ?_⟩)
   simp only [Nat.unpair_pair]
   exact mem_image_of_mem _ hi
+/-- **Simon Ch. 3, 2.1–2.2 and (2.7)** (`chapter-03.txt` lines 335–360 and 412–418), along a
+chart: let `A : ℝⁿ → ℝᴺ` be injective with `range A` a weighted approximate tangent plane of `M`
+at `x`, `θ x ≠ 0`, and let `f` have line derivative `Γ w` at `x` in every direction `A w`. Then
+`T_x M = range A` (uniqueness of weighted tangent planes, SimonGMT
+`HasWeightedApproximateTangentSpaceAt.unique`), `L = Γ ∘ A⁻¹` is a tangential differential on
+`range A`, it is `d^M f_x` (uniqueness of line derivatives, `HasLineDerivAt.unique`), and
+`J^{M*}_f(x) · normDet A = normDet (A ∘ ι_{ker Γ}) · normDet Γ*` by the chain rule
+`Submission.coarea_normDet_chain_rule` applied to `T = range A`, `A`, `L` and `Γ`. -/
+theorem Submission.chart_coarea_jacobian_identification : ∀ (n N m : ℕ) (M : Set (Rn N))
+    (θ : Rn N → ℝ) (f : Rn N → Rn m) (x : Rn N) (A : Rn n →L[ℝ] Rn N) (Γ : Rn n →L[ℝ] Rn m),
+    θ x ≠ 0 → Function.Injective A →
+    HasWeightedApproximateTangentSpaceAt n M θ x (LinearMap.range A.toLinearMap) →
+    (∀ w : Rn n, HasLineDerivAt ℝ f (Γ w) x (A w)) →
+    approxTangentPlane n M θ x = LinearMap.range A.toLinearMap ∧
+    (∃ L : ↥(LinearMap.range A.toLinearMap) →L[ℝ] Rn m,
+      HasTangentialDifferentialAt (LinearMap.range A.toLinearMap) f x L) ∧
+    coareaJacobian (approxTangentPlane n M θ x) f x * A.toLinearMap.normDet =
+      (A.toLinearMap ∘ₗ (LinearMap.ker Γ.toLinearMap).subtype).normDet *
+        (LinearMap.adjoint Γ.toLinearMap).normDet := by
+  intro n N m M θ f x A Γ hθ hA hT hΓ
+  set T : Submodule ℝ (Rn N) := LinearMap.range A.toLinearMap
+  -- (i) `T_x M = T`: the chosen plane and `T` are both weighted tangent planes and `θ x ≠ 0`.
+  have hplane : approxTangentPlane n M θ x = T := by
+    have h : ∃ P : Submodule ℝ (Rn N), HasWeightedApproximateTangentSpaceAt n M θ x P := ⟨T, hT⟩
+    rw [approxTangentPlane, dite_eq_left h]
+    exact Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt.unique hθ
+      h.choose_spec hT
+  -- (ii) `L = Γ ∘ e⁻¹`, `e : ℝⁿ ≃ T` induced by `A`, has line derivative `Γ w` along `e w = A w`.
+  let e : Rn n ≃ₗ[ℝ] T := LinearEquiv.ofInjective A.toLinearMap hA
+  have he : ∀ w : Rn n, (e w : Rn N) = A w := fun _ ↦ rfl
+  obtain ⟨L, hLe⟩ : ∃ L : T →L[ℝ] Rn m, ∀ w : Rn n, L (e w) = Γ w :=
+    ⟨LinearMap.toContinuousLinearMap (Γ.toLinearMap ∘ₗ e.symm.toLinearMap), fun w ↦ by simp⟩
+  have hL : HasTangentialDifferentialAt T f x L := by
+    intro τ
+    obtain ⟨w, rfl⟩ := e.surjective τ
+    rw [hLe, he]
+    exact hΓ w
+  -- `d^M f_x = L`: both are line derivatives of `f` at `x` in every direction `τ ∈ T`.
+  have hdiff : tangentialDifferential T f x = L := by
+    have h : ∃ L' : T →L[ℝ] Rn m, HasTangentialDifferentialAt T f x L' := ⟨L, hL⟩
+    rw [tangentialDifferential, dite_eq_left h]
+    exact ContinuousLinearMap.ext fun τ ↦ (h.choose_spec τ).unique (hL τ)
+  -- (iii) `J^{M*}_f(x) = normDet L*`, and `Γ v = L (A v)` feeds the co-area chain rule.
+  refine ⟨hplane, ⟨L, hL⟩, ?_⟩
+  rw [hplane, coareaJacobian, hdiff]
+  refine Submission.coarea_normDet_chain_rule n N m T A.toLinearMap L.toLinearMap Γ.toLinearMap
+    hA rfl fun v hv ↦ ?_
+  show Γ v = L ⟨A v, hv⟩
+  rw [show (⟨A v, hv⟩ : T) = e v from Subtype.ext (he v).symm, hLe]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
