@@ -4349,6 +4349,130 @@ theorem Submission.rectifiable_lipschitz_piece_cover : ∀ (n ℓ : ℕ) (M : Se
   · obtain ⟨hcpt, hdiff, hcont, hlower⟩ := hD (Nat.unpair i).1 (Nat.unpair i).2
     exact ⟨hcpt, ⟨K _, hK _⟩, hdiff, hcont, hlower⟩
 
+/-- **Ch. 4, 1.3 and 2.2, with Ch. 3, 1.6–1.9.** `ApproxTangentAE`; for every `V`, `μ_V` is finite
+on compact sets, `dim T_x V = n` `μ_V`-a.e. and `x ↦ p_{T_x V}` is `μ_V`-measurable; and the first
+variation formula `FirstVariationFormula`. Up to an `Hⁿ`-null set, `M` is covered by the Lipschitz
+pieces `F_i(C_i)` of `rectifiable_lipschitz_piece_cover`. At `Hⁿ`-a.e. `x = F_i(w) ∈ M` the
+weighted blow-up of `μ_V` is `θ(x) Hⁿ ⌞ DF_i(w)(ℝⁿ)` (`ts_piece_weighted_blowup_ae`), so the
+approximate tangent plane at `x` is `DF_i(w)(ℝⁿ)` for every piece through `x`. -/
+theorem Submission.tangent_structure_first_variation : ApproxTangentAE ∧
+    (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n →
+      IsFiniteMeasureOnCompacts V.weight ∧
+        (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧
+        AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) ∧
+    FirstVariationFormula := by
+  classical
+  -- Step 6(i): `μ_V(K) = ∫_{M ∩ K} θ dHⁿ < ∞` for compact `K`.
+  have hfin : ∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ),
+      IsFiniteMeasureOnCompacts (mk a).weight := by
+    intro n ℓ a
+    refine ⟨fun K hK ↦ ?_⟩
+    change pairWeight n a.M a.θ K < ⊤
+    rw [pairWeight, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact (a.isRectifiablePair.locallyIntegrable K hK).setLIntegral_lt_top
+  -- Steps 1–6 for one pair `a = (M, θ)`: a piece cover such that, `Hⁿ`-a.e. on `M`, `T_x V` is
+  -- the tangent plane of every piece through `x`, the conclusions of `ApproxTangentAE` hold and
+  -- `dim T_x V = n`; and `x ↦ p_{T_x V}` is `Hⁿ ⌞ M`-measurable.
+  have hpair : ∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ), 0 < n →
+      ∃ (N₀ : Set (Ambient n ℓ)) (C : ℕ → Set (EuclideanSpace ℝ (Fin n)))
+        (F : ℕ → EuclideanSpace ℝ (Fin n) → Ambient n ℓ),
+        MeasurableSet N₀ ∧ (μHE[n] : Measure (Ambient n ℓ)) N₀ = 0 ∧
+        a.M ⊆ N₀ ∪ ⋃ i, F i '' C i ∧
+        (∀ i, IsCompact (C i) ∧ (∃ K : NNReal, LipschitzWith K (F i)) ∧
+          (∀ w ∈ C i, DifferentiableAt ℝ (F i) w ∧ Function.Injective (fderiv ℝ (F i) w)) ∧
+          ContinuousOn (fderiv ℝ (F i)) (C i) ∧
+          ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖F i v - F i w‖) ∧
+        (∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M,
+          (∀ i, ∀ w ∈ C i, F i w = x →
+            (mk a).tangentSpace x = LinearMap.range (fderiv ℝ (F i) w).toLinearMap) ∧
+          ((∃! P, (mk a).IsApproxTangentAt x P) ∧
+            Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n a.M a.θ x
+              ((mk a).tangentSpace x) ∧
+            (mk a).HasDensityAt x (a.θ x)) ∧
+          Module.finrank ℝ ((mk a).tangentSpace x) = n) ∧
+        AEStronglyMeasurable (fun x ↦ ((mk a).tangentSpace x).starProjection)
+          ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M) := by
+    intro n ℓ a hn
+    -- Step 1: the Lipschitz pieces `N_i = F_i(C_i)`.
+    obtain ⟨N₀, C, F, hN₀, hN₀null, hcover, hpiece⟩ :=
+      Submission.rectifiable_lipschitz_piece_cover n ℓ a.M hn
+        a.isRectifiablePair.countablyRectifiable
+    -- `T_i(F_i(w)) = DF_i(w)(ℝⁿ)` is `n`-dimensional.
+    have hrank : ∀ i, ∀ w ∈ C i,
+        Module.finrank ℝ (LinearMap.range (fderiv ℝ (F i) w).toLinearMap) = n := fun i w hw ↦
+      (LinearMap.finrank_range_of_inj (f := (fderiv ℝ (F i) w).toLinearMap)
+        ((hpiece i).2.2.1 w hw).2).trans finrank_euclideanSpace_fin
+    -- Step 4 on every piece: the weighted blow-up `(★)` at `x = F_i(w)`.
+    have hblow : ∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M, ∀ i, ∀ w ∈ C i,
+        F i w = x → ∀ f : C_c(Ambient n ℓ, ℝ),
+          Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y, f (t⁻¹ • (y - x)) ∂(mk a).weight) (𝓝[>] 0)
+            (𝓝 (a.θ x * ∫ y in (LinearMap.range (fderiv ℝ (F i) w).toLinearMap :
+              Set (Ambient n ℓ)), f y ∂μHE[n])) :=
+      ae_all_iff.2 fun i ↦ Submission.ts_piece_weighted_blowup_ae n ℓ a (C i) (F i) hn (hpiece i)
+    -- `Hⁿ ⌞ M`-a.e. `x` lies in `M \ N₀`, hence on some piece.
+    have hon : ∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M,
+        x ∈ a.M ∧ ∃ i, x ∈ F i '' C i := by
+      filter_upwards [ae_restrict_mem₀ a.isRectifiablePair.measurable,
+        ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.1 hN₀null)] with x hxM hxN₀
+      exact ⟨hxM, mem_iUnion.1 ((hcover hxM).resolve_left hxN₀)⟩
+    -- Step 5.
+    have hae : ∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M,
+        (∀ i, ∀ w ∈ C i, F i w = x →
+          (mk a).tangentSpace x = LinearMap.range (fderiv ℝ (F i) w).toLinearMap) ∧
+        ((∃! P, (mk a).IsApproxTangentAt x P) ∧
+          Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n a.M a.θ x
+            ((mk a).tangentSpace x) ∧
+          (mk a).HasDensityAt x (a.θ x)) ∧
+        Module.finrank ℝ ((mk a).tangentSpace x) = n := by
+      filter_upwards [hblow, hon] with x hx hxon
+      obtain ⟨hxM, i, w, hw, hFw⟩ := hxon
+      -- 5(i): each piece plane through `x` is an approximate tangent plane, with `c = θ(x) > 0`.
+      have happrox : ∀ i, ∀ w ∈ C i, F i w = x →
+          (mk a).IsApproxTangentAt x (LinearMap.range (fderiv ℝ (F i) w).toLinearMap) :=
+        fun i w hw hFw ↦ ⟨hrank i w hw, a.θ x, a.isRectifiablePair.pos x hxM, hx i w hw hFw⟩
+      -- 5(ii): the approximate tangent plane is unique, so `T_x V` is the piece plane.
+      have hP := happrox i w hw hFw
+      have hT : (mk a).tangentSpace x = LinearMap.range (fderiv ℝ (F i) w).toLinearMap := by
+        have hex : ∃ P, (mk a).IsApproxTangentAt x P := ⟨_, hP⟩
+        rw [RectifiableVarifold.tangentSpace, dite_eq_left hex]
+        exact Submission.ts_approx_tangent_plane_unique n ℓ (mk a) x _ _ hex.choose_spec hP
+      refine ⟨fun j v hv hFv ↦ hT.trans
+          (Submission.ts_approx_tangent_plane_unique n ℓ (mk a) x _ _ hP (happrox j v hv hFv)),
+        ⟨⟨_, hP, fun Q hQ ↦ Submission.ts_approx_tangent_plane_unique n ℓ (mk a) x _ _ hQ hP⟩,
+          ?_, ?_⟩, ?_⟩
+      · -- 5(iii): `T_x V` is the approximate tangent space of Ch. 3, 1.7.
+        rw [hT]
+        exact Submission.ts_blowup_weighted_tangent n ℓ a x _ hP.1 (hx i w hw hFw)
+      · -- 5(iv): `Θⁿ(μ_V, x) = θ(x)`.
+        exact Submission.ts_blowup_closedBall_density n ℓ (mk a).weight x _ (a.θ x) hn
+          (hfin n ℓ a) hP.1 (a.isRectifiablePair.pos x hxM) (hx i w hw hFw)
+      · rw [hT]
+        exact hP.1
+    -- Step 6(iii): `p_{T_x V} = g(x)`, evaluated at the first piece through `x`.
+    obtain ⟨g, hg, hgF⟩ := Submission.ts_piece_tangent_projection_field n ℓ C F hpiece
+    refine ⟨N₀, C, F, hN₀, hN₀null, hcover, hpiece, hae, hg.aestronglyMeasurable.congr ?_⟩
+    filter_upwards [hae, hon] with x hx hxon
+    obtain ⟨i, ⟨w, hw, hFw⟩, hmin⟩ : ∃ i, x ∈ F i '' C i ∧ ∀ j < i, x ∉ F j '' C j :=
+      ⟨Nat.find hxon.2, Nat.find_spec hxon.2, fun j hj ↦ Nat.find_min hxon.2 hj⟩
+    rw [hx.1 i w hw hFw]
+    subst hFw
+    exact hgF i w hw hmin
+  refine ⟨fun n ℓ a hn ↦ ?_, fun n ℓ V hn ↦ ?_, fun n ℓ a φ ε K hn hφ ↦ ?_⟩
+  · -- `ApproxTangentAE`.
+    obtain ⟨_, _, _, _, _, _, _, hae, _⟩ := hpair n ℓ a hn
+    exact hae.mono fun x hx ↦ hx.2.1
+  · -- Step 6, (GF), for `V = v(M, θ)`, using `μ_V ≪ Hⁿ ⌞ M`.
+    obtain ⟨a, rfl⟩ : ∃ a : RectifiablePair n ℓ, mk a = V := Quot.exists_rep V
+    obtain ⟨_, _, _, _, _, _, _, hae, hproj⟩ := hpair n ℓ a hn
+    have hac : (mk a).weight ≪ (μHE[n] : Measure (Ambient n ℓ)).restrict a.M :=
+      withDensity_absolutelyContinuous _ _
+    exact ⟨hfin n ℓ a, hac.ae_le (hae.mono fun x hx ↦ hx.2.2), hproj.mono_ac hac⟩
+  · -- Steps 7–10, `FirstVariationFormula`, on the piece cover.
+    obtain ⟨N₀, C, F, hN₀, hN₀null, hcover, hpiece, hae, hproj⟩ := hpair n ℓ a hn
+    exact Submission.ts_first_variation_of_pieces n ℓ a N₀ C F φ ε K hn hN₀ hN₀null hcover
+      hpiece (hae.mono fun x hx ↦ hx.1) hproj hφ
+
 end
 
 end GMT.Ch04
