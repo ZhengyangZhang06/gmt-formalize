@@ -1,0 +1,140 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_components_are_minimizing-a1.cutoff_boundary_vanishes-a1`
+- Child DAG node: `root.regular_components_are_minimizing-a1.cutoff_boundary_vanishes-a1.smooth_cutoff_product-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1 and 3 of the parent proof. This is Simon's cut-off in the proof of 7.5.11 (chapter-07.txt lines 1004–1009): 'let φ_j ∈ C_c^∞ be such that φ_j ≡ 1 on B_{σ_j}(ξ_j), φ_j = 0 on ℝ^{n+ℓ} ∖ B_{2σ_j}(ξ_j), and 0 ≤ φ_j ≤ 1. Now choose ζ = ∏ φ_j …'. Two departures:
+- Correction [D1]: the cut-off must vanish near the singular points, so ζ := ∏_j (1 − φ_j). The book prints ζ = ∏ φ_j.
+- The printed gradient bound |Dζ| ≤ Σ_j |Dφ_j| ≤ Σ_j c/σ_j is recorded with the indicator of B(p_j, 2σ_j), which the parent's integrated estimate [D2] needs.
+
+1. (Model bump and c₀.) Fix P. Let φ₀ : ℝ^P → ℝ be the smooth bump function centred at 0 with inner radius 1 and outer radius 3/2 (Mathlib ContDiffBump with rIn = 1, rOut = 3/2). Then:
+   - φ₀ is C^∞ and 0 ≤ φ₀ ≤ 1;
+   - φ₀(y) = 1 for ‖y‖ ≤ 1 (ContDiffBump.one_of_mem_closedBall);
+   - the support of φ₀ is the open ball B(0, 3/2) (ContDiffBump.support_eq), so φ₀(y) = 0 for ‖y‖ ≥ 3/2.
+   φ₀ is C¹ with compact support, hence Lipschitz (Mathlib ContDiff.lipschitzWith_of_hasCompactSupport). Let c₀ ≥ 0 be a Lipschitz constant of φ₀; one may take c₀ = sup‖Dφ₀‖. Then c₀ depends only on P.
+
+2. (Rescaled bumps.) Let J, the points p_j and the radii σ_j > 0 be given. Put φ_j(x) := φ₀(σ_j^{−1}(x − p_j)).
+   (a) φ_j is C^∞, being φ₀ composed with an affine map, and 0 ≤ φ_j ≤ 1.
+   (b) If x ∈ B(p_j, σ_j), then ‖σ_j^{−1}(x − p_j)‖ = dist(x, p_j)/σ_j < 1, so φ_j(x) = 1.
+   (c) If dist(y, p_j) > (3/2)σ_j, then ‖σ_j^{−1}(y − p_j)‖ > 3/2, so φ_j(y) = 0. Now let x ∉ B(p_j, 2σ_j), i.e. dist(x, p_j) ≥ 2σ_j > (3/2)σ_j. Then φ_j vanishes identically on the open neighbourhood {y : dist(y, p_j) > (3/2)σ_j} of x, so φ_j(x) = 0 and Dφ_j(x) = 0.
+   (d) The map x ↦ σ_j^{−1}(x − p_j) is σ_j^{−1}-Lipschitz, so φ_j is (c₀/σ_j)-Lipschitz. The derivative of a K-Lipschitz function has operator norm at most K (Mathlib norm_fderiv_le_of_lipschitz). Hence ‖Dφ_j(x)‖ ≤ c₀/σ_j for all x. This is the argument of SimonGMT Chapter02.exists_whitneyBump_derivative_bound.
+   Combining (a)–(d), for every x:
+   - φ_j(x) ≤ 1_{B(p_j, 2σ_j)}(x);
+   - ‖Dφ_j(x)‖ ≤ (c₀/σ_j)·1_{B(p_j, 2σ_j)}(x).
+
+3. (Definition of ζ.) Put ζ(x) := ∏_{j=1}^J (1 − φ_j(x)); if J = 0 this is the empty product, ζ ≡ 1.
+   - ζ is C^∞ as a finite product of C^∞ functions.
+   - Each factor lies in [0, 1], so 0 ≤ ζ(x) ≤ 1.
+   - If x ∈ B(p_j, σ_j) for some j, the j-th factor is 1 − 1 = 0 by 2(b), so ζ(x) = 0.
+
+4. (Bound for 1 − ζ.) Claim: for any finite family a_i ∈ [0, 1], 1 − ∏_i (1 − a_i) ≤ Σ_i a_i. Proof by induction over the finite index set:
+   - For the empty family both sides are 0.
+   - Adding an index k: put Π := ∏_i (1 − a_i) ∈ [0, 1] over the old indices. Then 1 − (1 − a_k)Π = (1 − Π) + a_k·Π ≤ Σ_i a_i + a_k.
+   Apply the claim with a_j = φ_j(x) and then use step 2: 1 − ζ(x) ≤ Σ_j φ_j(x) ≤ Σ_j 1_{B(p_j, 2σ_j)}(x).
+
+5. (Gradient bound.) Each 1 − φ_j is differentiable with derivative −Dφ_j(x). By the product rule for finite products (Mathlib HasFDerivAt.finsetProd),
+   Dζ(x) = Σ_j (∏_{i≠j} (1 − φ_i(x)))·(−Dφ_j(x)).
+   Each product ∏_{i≠j} (1 − φ_i(x)) lies in [0, 1]. The triangle inequality and ‖c·L‖ ≤ |c|·‖L‖ then give
+   ‖Dζ(x)‖ ≤ Σ_j ‖Dφ_j(x)‖ ≤ Σ_j (c₀/σ_j)·1_{B(p_j, 2σ_j)}(x),
+   using step 2. In Lean, use ContinuousLinearMap.opNorm_smul_le for ‖c·L‖ ≤ |c|·‖L‖. Since ζ is differentiable, fderiv ℝ ζ x = Dζ(x). ∎
+
+## Key steps
+
+1. Fix the ContDiffBump φ₀ (rIn = 1, rOut = 3/2) and a Lipschitz constant c₀ ≥ 0 of φ₀; c₀ depends only on P.
+2. φ_j(x) = φ₀(σ_j^{−1}(x − p_j)) is C^∞ with values in [0, 1], equals 1 on B(p_j, σ_j), vanishes near every x ∉ B(p_j, 2σ_j) and is (c₀/σ_j)-Lipschitz. Hence φ_j ≤ 1_{B(p_j, 2σ_j)} and ‖Dφ_j‖ ≤ (c₀/σ_j)·1_{B(p_j, 2σ_j)}.
+3. ζ := ∏_j (1 − φ_j) is C^∞, takes values in [0, 1] and vanishes on each B(p_j, σ_j).
+4. By induction, 1 − ∏(1 − a_j) ≤ Σ a_j for a_j ∈ [0, 1]; hence 1 − ζ ≤ Σ_j 1_{B(p_j, 2σ_j)}.
+5. The product rule with 0 ≤ ∏_{i≠j}(1 − φ_i) ≤ 1 gives ‖Dζ‖ ≤ Σ_j ‖Dφ_j‖ ≤ Σ_j (c₀/σ_j)·1_{B(p_j, 2σ_j)}.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean (identical)`
+- `python3 over dag.json: lean_name set of the 58 nodes; regcomp_null_compact_ball_cover, regcomp_smooth_cutoff_product, regcomp_localized_boundary_zero, regcomp_boundary_smul_estimate not reserved; grep -rl of the four names in the run directory and GMT/ (no match); selected node depth 2, status decomposing, frozen lean_statement unchanged`
+- `grep -rln 'hausdorffMeasure_apply|ContDiffBump|SmoothPartitionOfUnity|norm_alternatizeUncurryFin_le|extDeriv_smul|fderiv_smul|enorm_integral_le_lintegral_enorm|exists_isSubordinate' simongmt/Poincare`
+- `grep -rn 'theorem.*cover|lemma.*cover' simongmt/Poincare/SimonGMT/Chapter0[1-3] (hausdorff/null/finite/ball)`
+- `read simongmt Chapter02/WhitneyPartition.lean (exists_whitneyBump_derivative_bound), Chapter01/HausdorffContentDensity.lean, Chapter06/Forms.lean, Chapter06/Currents.lean, Chapter06/CurrentLocalEquality.lean`
+- `grep Mathlib snapshot: hausdorffMeasure_apply, hausdorffMeasure_zero_singleton, setIntegral_eq_zero_of_forall_eq_zero, setIntegral_eq_zero_of_ae_eq_zero, ae_restrict_of_forall_mem, enorm_integral_le_lintegral_enorm, norm_alternatizeUncurryFin_le, fderiv_smul, opNorm_smul_le, norm_smulRight_apply, HasFDerivAt.finsetProd, ContDiff.lipschitzWith_of_hasCompactSupport, norm_fderiv_le_of_lipschitz, ContDiffBump one_of_mem_closedBall/support_eq/contDiff/hasCompactSupport, SmoothPartitionOfUnity.exists_isSubordinate, exists_open_between_and_isCompact_closure, prod_le_one₀, ENNReal.sum_le_tsum, edist_le_ediam_of_mem, lintegral_indicator_const, ofReal_sum_of_nonneg, tsupport_smul_subset_right, support_smul_subset_right, HasCompactSupport.smul_left, fderiv_const_sub, fderiv_zero, ContDiff.continuous_fderiv, ContDiff.differentiable`
+- `sed -n 960,1030p book/chapter-07.txt; grep -n 'Proof of 5.11|Now corresponding to any|The letting|To check (1)' book/chapter-07.txt (5.11 at line 976, proof lines 990-1016)`
+- `lake env lean /tmp/cutoff-split-chk/T0.lean and T1.lean (parent and four child types elaborate; ContDiff ℝ (⊤ : ℕ∞) ζ ↔ ContDiff ℝ ∞ ζ is Iff.rfl)`
+- `lake env lean /tmp/cutoff-split-chk/Assembly.lean and AssemblyAx.lean (parent frozen type from the four children; #print axioms)`
+- `lake env lean /tmp/cutoff-split-chk/C1.lean C2.lean C3.lean C3b.lean C4.lean Full.lean (#print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/cutoff-split-chk/Syn.lean (#synth IsBoundedSMul ℝ (Euclid 3 →L[ℝ] Covector (Euclid 3) 2) fails; NormedSpace found)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-cutoff-boundary-vanishes-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-cutoff-boundary-vanishes-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-cutoff-boundary-vanishes-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1/decomposition-scope-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyPartition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/BigOperators/GroupWithZero/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/BigOperators/Group/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/BigOperators.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt`
+- `/tmp/cutoff-split-chk/T1.lean`
+- `/tmp/cutoff-split-chk/Assembly.lean`
+- `/tmp/cutoff-split-chk/AssemblyAx.lean`
+- `/tmp/cutoff-split-chk/C1.lean`
+- `/tmp/cutoff-split-chk/C2.lean`
+- `/tmp/cutoff-split-chk/C3b.lean`
+- `/tmp/cutoff-split-chk/C4.lean`
+- `/tmp/cutoff-split-chk/Full.lean`
+- `/tmp/cutoff-split-chk/Syn.lean`
+
+Contract and names:
+- The snapshot contract (project b4d606d, Mathlib 25730c7c) is byte-identical to the workspace Submission.lean, and the selected frozen type is unchanged.
+- None of the four proposed names is reserved in the 58-node DAG.
+
+What SimonGMT does and does not provide:
+- No Hausdorff-null ball-cover lemma for Mathlib's μH; its Chapter01 covers use Simon's normalised content.
+- No partition-of-unity localisation for GeometricCurrentOn.
+- No Leibniz bound for extDeriv.
+- These three gaps become children. Chapter02.exists_whitneyBump_derivative_bound supplies the Lipschitz rescaled-bump technique reused in smooth_cutoff_product.
+
+Mathlib facts the children rely on:
+- Child 1: hausdorffMeasure_apply and hausdorffMeasure_zero_singleton.
+- Child 2: ContDiffBump, ContDiff.lipschitzWith_of_hasCompactSupport, norm_fderiv_le_of_lipschitz and HasFDerivAt.finsetProd.
+- Child 3: exists_open_between_and_isCompact_closure, SmoothPartitionOfUnity.exists_isSubordinate (already imported transitively) and setIntegral_eq_zero_of_forall_eq_zero, which needs no measurability of M₁.
+- Child 4: enorm_integral_le_lintegral_enorm, fderiv_smul, norm_alternatizeUncurryFin_le and ContinuousLinearMap.opNorm_smul_le. The last is needed because IsBoundedSMul ℝ (Euclid P →L[ℝ] Covector) is not found by instance search.
+
+Lean checks in the scratch copy:
+- All four child types elaborate.
+- The parent's frozen type compiles from the four children taken as axioms.
+- Full.lean kernel-checks the parent and all four children with only propext, Classical.choice and Quot.sound.

@@ -451,6 +451,150 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.5.11, covering step** (chapter-07.txt lines 1001–1004): a compact `μH[m]`-null set
+`Z ⊆ ℝᴾ` is covered by finitely many open balls `B_{σⱼ}(pⱼ)` with `pⱼ ∈ Z`, `0 < σⱼ < δ` and
+`Σⱼ σⱼ^m < ε`.  If `m = 0`, `μH[0]{x} = 1` forces `Z = ∅`.  If `m ≥ 1`, `hausdorffMeasure_apply`
+gives a cover `(tₙ)` of mesh `≤ δ/2` with `Σ' diam(tₙ)^m < η = ε/2^{m+2}`.  Each `tₙ` meeting `Z`
+lies in the ball of radius `σₙ = diam tₙ + δ'2^{-(n+1)}` (`δ' = min(δ/2, 1, η)`) about a point of
+`tₙ ∩ Z`, and `σₙ^m ≤ 2^m(diam(tₙ)^m + δ'2^{-(n+1)})`; a finite subcover has `Σ σⱼ^m < ε/2`. -/
+theorem Submission.regcomp_null_compact_ball_cover : ∀ (P m : ℕ) (Z : Set (Euclid P)), IsCompact Z → μH[(m : ℝ)] Z = 0 → ∀ ε δ : ℝ, 0 < ε → 0 < δ → ∃ (J : ℕ) (p : Fin J → Euclid P) (σ : Fin J → ℝ), (∀ j, p j ∈ Z) ∧ (∀ j, 0 < σ j ∧ σ j < δ) ∧ Z ⊆ ⋃ j, ball (p j) (σ j) ∧ ∑ j, σ j ^ m < ε := by
+  intro P m Z hZc hZ ε δ hε hδ
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · -- Step 1: `m = 0`, so `μH[0]{x} = 1` forces `Z = ∅` and the empty family works
+    have hZe : Z = ∅ := by
+      refine eq_empty_iff_forall_notMem.2 fun x hx => ?_
+      have h1 : μH[((0 : ℕ) : ℝ)] ({x} : Set (Euclid P)) ≤ μH[((0 : ℕ) : ℝ)] Z :=
+        measure_mono (singleton_subset_iff.2 hx)
+      rw [hZ, Nat.cast_zero, Measure.hausdorffMeasure_zero_singleton] at h1
+      exact one_ne_zero (le_antisymm h1 bot_le)
+    exact ⟨0, Fin.elim0, Fin.elim0, fun j => j.elim0, fun j => j.elim0, by simp [hZe],
+      by simpa using hε⟩
+  -- Step 2: the constants `η = ε/2^{m+2}` and `δ' = min(δ/2, 1, η)`
+  set η : ℝ := ε / 2 ^ (m + 2) with hη_def
+  have hη : 0 < η := by positivity
+  set δ' : ℝ := min (δ / 2) (min 1 η)
+  have hδ' : 0 < δ' := lt_min (by positivity) (lt_min one_pos hη)
+  have hδ'δ : δ' ≤ δ / 2 := min_le_left _ _
+  have hδ'1 : δ' ≤ 1 := (min_le_right _ _).trans (min_le_left _ _)
+  have hδ'η : δ' ≤ η := (min_le_right _ _).trans (min_le_right _ _)
+  -- Step 3: a cover `(tₙ)` with `diam tₙ ≤ δ/2` and `Σ' [tₙ ≠ ∅] diam(tₙ)^m < η`, from the
+  -- infimum at scale `r = δ/2` in `hausdorffMeasure_apply`, which is `≤ μH[m](Z) = 0`
+  have hr : (0 : ℝ≥0∞) < ENNReal.ofReal (δ / 2) := ENNReal.ofReal_pos.2 (by positivity)
+  have hinf : (⨅ (t : ℕ → Set (Euclid P)) (_ : Z ⊆ ⋃ n, t n)
+      (_ : ∀ n, ediam (t n) ≤ ENNReal.ofReal (δ / 2)),
+        ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ (m : ℝ)) < ENNReal.ofReal η := by
+    have hle := le_iSup₂_of_le (f := fun (r : ℝ≥0∞) (_ : 0 < r) =>
+      ⨅ (t : ℕ → Set (Euclid P)) (_ : Z ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ r),
+        ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ (m : ℝ)) (ENNReal.ofReal (δ / 2)) hr le_rfl
+    rw [← Measure.hausdorffMeasure_apply, hZ] at hle
+    exact hle.trans_lt (ENNReal.ofReal_pos.2 hη)
+  simp only [iInf_lt_iff] at hinf
+  obtain ⟨t, hZt, htd, hsum⟩ := hinf
+  -- `dₙ = diam tₙ ∈ [0, δ/2]` as a real number
+  have hd_fin : ∀ n, ediam (t n) ≠ ∞ := fun n => ne_top_of_le_ne_top ENNReal.ofReal_ne_top (htd n)
+  set d : ℕ → ℝ := fun n => (ediam (t n)).toReal
+  have hd_nonneg : ∀ n, 0 ≤ d n := fun n => ENNReal.toReal_nonneg
+  have hd_le : ∀ n, d n ≤ δ / 2 := fun n => by
+    have := ENNReal.toReal_mono ENNReal.ofReal_ne_top (htd n)
+    rwa [ENNReal.toReal_ofReal (by positivity)] at this
+  -- Step 4: radii `σₙ = dₙ + τₙ`, `τₙ = δ'2^{-(n+1)}`, centred at `qᵢ ∈ tᵢ ∩ Z` for `i ∈ I`
+  set τ : ℕ → ℝ := fun n => δ' / 2 * (1 / 2) ^ n
+  have hτ_pos : ∀ n, 0 < τ n := fun n => by positivity
+  have hτ_le : ∀ n, τ n ≤ δ' / 2 := fun n => by
+    have : (1 / 2 : ℝ) ^ n ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+    calc τ n = δ' / 2 * (1 / 2) ^ n := rfl
+      _ ≤ δ' / 2 * 1 := by gcongr
+      _ = δ' / 2 := mul_one _
+  set σ : ℕ → ℝ := fun n => d n + τ n
+  -- (a) `0 < σₙ ≤ δ/2 + δ/4 < δ`
+  have hσ_pos : ∀ n, 0 < σ n := fun n => add_pos_of_nonneg_of_pos (hd_nonneg n) (hτ_pos n)
+  have hσ_lt : ∀ n, σ n < δ := fun n => by
+    have := hd_le n; have := hτ_le n; simp only [σ]; linarith
+  let I := {n : ℕ // (t n ∩ Z).Nonempty}
+  choose q hq using fun i : I => i.2
+  -- (b), (c) `z ∈ Z` lies in some `tₙ`, so `n ∈ I` and `dist(z, qₙ) ≤ dₙ < σₙ`
+  have hcov : Z ⊆ ⋃ i : I, ball (q i) (σ i) := by
+    intro z hz
+    obtain ⟨n, hn⟩ := mem_iUnion.1 (hZt hz)
+    refine mem_iUnion.2 ⟨⟨n, z, hn, hz⟩, ?_⟩
+    rw [mem_ball]
+    have h1 : edist z (q ⟨n, z, hn, hz⟩) ≤ ediam (t n) :=
+      edist_le_ediam_of_mem hn (hq ⟨n, z, hn, hz⟩).1
+    have h2 : dist z (q ⟨n, z, hn, hz⟩) ≤ d n := by
+      rw [dist_edist]; exact ENNReal.toReal_mono (hd_fin n) h1
+    have := hτ_pos n
+    simp only [σ]
+    linarith
+  -- (d) `σₙ ≤ 2 max(dₙ, τₙ)` and `τₙ^m ≤ τₙ` (`τₙ ≤ 1`, `m ≥ 1`), so `σₙ^m ≤ 2^m (dₙ^m + τₙ)`
+  have hσm : ∀ n, σ n ^ m ≤ 2 ^ m * (d n ^ m + τ n) := fun n => by
+    have hτ1 : τ n ≤ 1 := by have := hτ_le n; linarith
+    have hτm : τ n ^ m ≤ τ n := pow_le_of_le_one (hτ_pos n).le hτ1 (by omega)
+    have hmax : σ n ≤ 2 * max (d n) (τ n) := by
+      have := le_max_left (d n) (τ n); have := le_max_right (d n) (τ n); simp only [σ]; linarith
+    have hmaxm : max (d n) (τ n) ^ m ≤ d n ^ m + τ n ^ m := by
+      rcases le_total (d n) (τ n) with h | h
+      · rw [max_eq_right h]; have := pow_nonneg (hd_nonneg n) m; linarith
+      · rw [max_eq_left h]; have := pow_nonneg (hτ_pos n).le m; linarith
+    calc σ n ^ m ≤ (2 * max (d n) (τ n)) ^ m := pow_le_pow_left₀ (hσ_pos n).le hmax m
+      _ = 2 ^ m * max (d n) (τ n) ^ m := mul_pow _ _ _
+      _ ≤ 2 ^ m * (d n ^ m + τ n) := by gcongr; linarith
+  -- Step 5: a finite subcover `S ⊆ I` of the compact set `Z`
+  obtain ⟨S, hS⟩ := hZc.elim_finite_subcover (fun i : I => ball (q i) (σ i))
+    (fun _ => isOpen_ball) hcov
+  -- `Σ_{i ∈ S} dᵢ^m ≤ Σ' [tₙ ≠ ∅] diam(tₙ)^m < η`, as `tᵢ ≠ ∅` for `i ∈ I`
+  have hsumd : ∑ i ∈ S, d i ^ m < η := by
+    have h1 : ∑ i ∈ S, ENNReal.ofReal (d i ^ m) ≤
+        ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ (m : ℝ) := by
+      calc ∑ i ∈ S, ENNReal.ofReal (d i ^ m)
+          = ∑ n ∈ S.map (Embedding.subtype _), ⨆ _ : (t n).Nonempty, ediam (t n) ^ (m : ℝ) := by
+            rw [Finset.sum_map]
+            refine Finset.sum_congr rfl fun i _ => ?_
+            have hne : (t i).Nonempty := i.2.mono inter_subset_left
+            simp only [Embedding.subtype_apply]
+            rw [iSup_pos hne, ENNReal.rpow_natCast, ENNReal.ofReal_pow ENNReal.toReal_nonneg,
+              ENNReal.ofReal_toReal (hd_fin i)]
+        _ ≤ _ := ENNReal.sum_le_tsum _
+    have h2 : ENNReal.ofReal (∑ i ∈ S, d i ^ m) < ENNReal.ofReal η := by
+      rw [ENNReal.ofReal_sum_of_nonneg (s := S) (f := fun i : I => d i ^ m)
+        (fun i _ => pow_nonneg (hd_nonneg (i : ℕ)) m)]
+      exact h1.trans_lt hsum
+    exact (ENNReal.ofReal_lt_ofReal_iff hη).1 h2
+  -- `Σ_{i ∈ S} τᵢ ≤ (δ'/2) Σₙ 2^{-n} = δ' ≤ η`
+  have hsumτ : ∑ i ∈ S, τ i ≤ δ' := by
+    have hg : ∑ i ∈ S, (1 / 2 : ℝ) ^ (i : ℕ) ≤ 2 := by
+      calc ∑ i ∈ S, (1 / 2 : ℝ) ^ (i : ℕ) = ∑ n ∈ S.map (Embedding.subtype _), (1 / 2 : ℝ) ^ n := by
+            rw [Finset.sum_map]; rfl
+        _ ≤ ∑' n : ℕ, (1 / 2 : ℝ) ^ n :=
+            Summable.sum_le_tsum _ (fun _ _ => by positivity) summable_geometric_two
+        _ = 2 := tsum_geometric_two
+    calc ∑ i ∈ S, τ i = δ' / 2 * ∑ i ∈ S, (1 / 2 : ℝ) ^ (i : ℕ) := by rw [Finset.mul_sum]
+      _ ≤ δ' / 2 * 2 := by gcongr
+      _ = δ' := by ring
+  -- `Σ_{i ∈ S} σᵢ^m ≤ 2^m (Σ dᵢ^m + Σ τᵢ) < 2^m (η + η) = ε/2 < ε`
+  have hsumσ : ∑ i ∈ S, σ i ^ m < ε := by
+    have h2m : (0 : ℝ) < 2 ^ m := by positivity
+    calc ∑ i ∈ S, σ i ^ m ≤ ∑ i ∈ S, 2 ^ m * (d i ^ m + τ i) :=
+          Finset.sum_le_sum fun i _ => hσm i
+      _ = 2 ^ m * (∑ i ∈ S, d i ^ m + ∑ i ∈ S, τ i) := by
+          rw [← Finset.mul_sum, Finset.sum_add_distrib]
+      _ < 2 ^ m * (η + η) := by
+          have hlt : ∑ i ∈ S, d i ^ m + ∑ i ∈ S, τ i < η + η := by linarith
+          exact mul_lt_mul_of_pos_left hlt h2m
+      _ = ε / 2 := by rw [hη_def, pow_add]; field_simp; ring
+      _ < ε := by linarith
+  -- Step 6: enumerate `S` as `Fin J`, `J = |S|`
+  let e := S.equivFin
+  refine ⟨S.card, fun j => q (e.symm j), fun j => σ (e.symm j), fun j => (hq _).2,
+    fun j => ⟨hσ_pos _, hσ_lt _⟩, ?_, ?_⟩
+  · intro z hz
+    obtain ⟨i, hiS, hzi⟩ := mem_iUnion₂.1 (hS hz)
+    refine mem_iUnion.2 ⟨e ⟨i, hiS⟩, ?_⟩
+    simpa only [Equiv.symm_apply_apply] using hzi
+  · calc ∑ j, σ (e.symm j : I) ^ m = ∑ i : S, σ (i : I) ^ m :=
+          Equiv.sum_comp e.symm (fun i : S => σ (i : I) ^ m)
+      _ = ∑ i ∈ S, σ i ^ m := Finset.sum_coe_sort S (fun i : I => σ i ^ m)
+      _ < ε := hsumσ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

@@ -1,0 +1,144 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_components_are_minimizing-a1.cutoff_boundary_vanishes-a1`
+- Child DAG node: `root.regular_components_are_minimizing-a1.cutoff_boundary_vanishes-a1.null_compact_ball_cover-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 of the parent proof. This is the covering in the proof of Simon 7.5.11 (chapter-07.txt lines 1001–1004): 'since H^{n−1}(sing T) = 0 (by 5.8) and since sing T ∩ spt ω is compact, we can find a finite collection of balls B_{σ_j}(ξ_j), j = 1, …, P, with ξ_j ∈ sing T ∩ spt ω and Σ σ_j^{n−1} < ε'. Two changes from the printed text:
+- the radius bound σ_j < δ is added, because the parent needs 2σ_j below the density radius and σ_j ≤ 1;
+- m here plays the role of n − 1.
+Notation: μH[m] is Mathlib's Hausdorff measure, which has the same null sets as Simon's H^m. ediam is the extended diameter. B(p, σ) is the open ball.
+
+1. (Case m = 0.) Suppose x ∈ Z. By Mathlib hausdorffMeasure_zero_singleton, μH[0]({x}) = 1. Since {x} ⊆ Z, monotonicity gives 1 ≤ μH[0](Z) = 0, a contradiction. Hence Z = ∅.
+   Take J = 0, the empty families. The conditions on the p_j and σ_j are vacuous, Z = ∅ is contained in the empty union, and the empty sum is 0 < ε.
+
+2. (Case m ≥ 1: constants.) Put η := ε/2^{m+2} > 0 and δ' := min(δ/2, 1, η) > 0. Then δ' ≤ δ/2, δ' ≤ 1 and δ' ≤ η.
+
+3. (Countable cover.) By Mathlib hausdorffMeasure_apply,
+   μH[m](Z) = ⨆_{r>0} ⨅ { Σ'_{n∈ℕ} ⨆_{t_n ≠ ∅} ediam(t_n)^m : Z ⊆ ⋃_n t_n, ediam(t_n) ≤ r for all n }.
+   Take r := δ/2 > 0 as an extended real. The infimum for this r is at most μH[m](Z) = 0 < η. Hence there is a sequence of sets (t_n)_{n∈ℕ} with:
+   - Z ⊆ ⋃_n t_n;
+   - ediam(t_n) ≤ δ/2 for all n;
+   - S_∞ := Σ'_n [t_n ≠ ∅] ediam(t_n)^m < η.
+   Each ediam(t_n) is finite. Let d_n ∈ [0, δ/2] denote its real value.
+
+4. (Centres and radii.) Let I := {n ∈ ℕ : t_n ∩ Z ≠ ∅}. For n ∈ I choose p_n ∈ t_n ∩ Z. For every n put τ_n := δ'·2^{−(n+1)} and σ_n := d_n + τ_n. Then:
+   (a) 0 < τ_n ≤ δ'/2 ≤ δ/4. Hence 0 < σ_n ≤ δ/2 + δ/4 < δ.
+   (b) For n ∈ I, t_n ⊆ B(p_n, σ_n). Indeed, if z ∈ t_n then z and p_n both lie in t_n, so dist(z, p_n) ≤ ediam(t_n) = d_n < σ_n.
+   (c) Z ⊆ ⋃_{n∈I} B(p_n, σ_n). Indeed, each z ∈ Z lies in some t_n. Then z ∈ t_n ∩ Z, so n ∈ I, and z ∈ B(p_n, σ_n) by (b).
+   (d) σ_n^m ≤ 2^m (d_n^m + η·2^{−(n+1)}). Indeed:
+       - σ_n ≤ 2·max(d_n, τ_n), and t ↦ t^m is monotone on [0, ∞);
+       - so σ_n^m ≤ 2^m·max(d_n, τ_n)^m = 2^m·max(d_n^m, τ_n^m) ≤ 2^m (d_n^m + τ_n^m);
+       - finally τ_n^m ≤ τ_n ≤ η·2^{−(n+1)}, because 0 ≤ τ_n ≤ 1, m ≥ 1 and δ' ≤ η.
+
+5. (Finite subcover and the sum.) Z is compact and covered by the open balls B(p_n, σ_n), n ∈ I. Choose a finite set S ⊆ I with Z ⊆ ⋃_{n∈S} B(p_n, σ_n).
+   - First sum. For n ∈ S the set t_n is nonempty, so the n-th term of the series S_∞ is ediam(t_n)^m = d_n^m (as extended reals). A finite partial sum of a series of nonnegative terms is at most its sum (Mathlib ENNReal.sum_le_tsum, after embedding S into ℕ). Hence Σ_{n∈S} d_n^m ≤ S_∞ < η.
+   - Second sum. Σ_{n∈S} 2^{−(n+1)} ≤ Σ_{n≥0} 2^{−(n+1)} = 1.
+   - Conclusion. By 4(d), Σ_{n∈S} σ_n^m ≤ 2^m (Σ_{n∈S} d_n^m + η·Σ_{n∈S} 2^{−(n+1)}) < 2^m (η + η) = 2^{m+1}·ε/2^{m+2} = ε/2 < ε.
+
+6. (Re-indexing.) Enumerate S as n_1, …, n_J with J := |S| (e.g. via Finset.equivFin), and put p_j := p_{n_j}, σ_j := σ_{n_j}. Then:
+   - p_j ∈ Z, because n_j ∈ I;
+   - 0 < σ_j < δ by 4(a);
+   - Z ⊆ ⋃_j B(p_j, σ_j) by step 5;
+   - Σ_j σ_j^m = Σ_{n∈S} σ_n^m < ε.
+   ∎
+
+## Key steps
+
+1. m = 0: μH[0]({x}) = 1 forces Z = ∅, so the empty family (J = 0) works.
+2. m ≥ 1: from hausdorffMeasure_apply and μH[m](Z) = 0, get a countable cover (t_n) with ediam(t_n) ≤ δ/2 and Σ'_n [t_n ≠ ∅] ediam(t_n)^m < η := ε/2^{m+2}.
+3. For n with t_n ∩ Z ≠ ∅, pick p_n ∈ t_n ∩ Z and σ_n := d_n + δ'·2^{−(n+1)}, where δ' = min(δ/2, 1, η). Then 0 < σ_n < δ, t_n ⊆ B(p_n, σ_n) and σ_n^m ≤ 2^m (d_n^m + η·2^{−(n+1)}).
+4. By compactness, choose a finite subcover S. Then Σ_{n∈S} σ_n^m < 2^{m+1}·η = ε/2.
+5. Enumerate S as Fin J.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean (identical)`
+- `python3 over dag.json: lean_name set of the 58 nodes; regcomp_null_compact_ball_cover, regcomp_smooth_cutoff_product, regcomp_localized_boundary_zero, regcomp_boundary_smul_estimate not reserved; grep -rl of the four names in the run directory and GMT/ (no match); selected node depth 2, status decomposing, frozen lean_statement unchanged`
+- `grep -rln 'hausdorffMeasure_apply|ContDiffBump|SmoothPartitionOfUnity|norm_alternatizeUncurryFin_le|extDeriv_smul|fderiv_smul|enorm_integral_le_lintegral_enorm|exists_isSubordinate' simongmt/Poincare`
+- `grep -rn 'theorem.*cover|lemma.*cover' simongmt/Poincare/SimonGMT/Chapter0[1-3] (hausdorff/null/finite/ball)`
+- `read simongmt Chapter02/WhitneyPartition.lean (exists_whitneyBump_derivative_bound), Chapter01/HausdorffContentDensity.lean, Chapter06/Forms.lean, Chapter06/Currents.lean, Chapter06/CurrentLocalEquality.lean`
+- `grep Mathlib snapshot: hausdorffMeasure_apply, hausdorffMeasure_zero_singleton, setIntegral_eq_zero_of_forall_eq_zero, setIntegral_eq_zero_of_ae_eq_zero, ae_restrict_of_forall_mem, enorm_integral_le_lintegral_enorm, norm_alternatizeUncurryFin_le, fderiv_smul, opNorm_smul_le, norm_smulRight_apply, HasFDerivAt.finsetProd, ContDiff.lipschitzWith_of_hasCompactSupport, norm_fderiv_le_of_lipschitz, ContDiffBump one_of_mem_closedBall/support_eq/contDiff/hasCompactSupport, SmoothPartitionOfUnity.exists_isSubordinate, exists_open_between_and_isCompact_closure, prod_le_one₀, ENNReal.sum_le_tsum, edist_le_ediam_of_mem, lintegral_indicator_const, ofReal_sum_of_nonneg, tsupport_smul_subset_right, support_smul_subset_right, HasCompactSupport.smul_left, fderiv_const_sub, fderiv_zero, ContDiff.continuous_fderiv, ContDiff.differentiable`
+- `sed -n 960,1030p book/chapter-07.txt; grep -n 'Proof of 5.11|Now corresponding to any|The letting|To check (1)' book/chapter-07.txt (5.11 at line 976, proof lines 990-1016)`
+- `lake env lean /tmp/cutoff-split-chk/T0.lean and T1.lean (parent and four child types elaborate; ContDiff ℝ (⊤ : ℕ∞) ζ ↔ ContDiff ℝ ∞ ζ is Iff.rfl)`
+- `lake env lean /tmp/cutoff-split-chk/Assembly.lean and AssemblyAx.lean (parent frozen type from the four children; #print axioms)`
+- `lake env lean /tmp/cutoff-split-chk/C1.lean C2.lean C3.lean C3b.lean C4.lean Full.lean (#print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/cutoff-split-chk/Syn.lean (#synth IsBoundedSMul ℝ (Euclid 3 →L[ℝ] Covector (Euclid 3) 2) fails; NormedSpace found)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-cutoff-boundary-vanishes-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-cutoff-boundary-vanishes-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-cutoff-boundary-vanishes-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1/decomposition-scope-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyPartition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/BigOperators/GroupWithZero/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/BigOperators/Group/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/BigOperators.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt`
+- `/tmp/cutoff-split-chk/T1.lean`
+- `/tmp/cutoff-split-chk/Assembly.lean`
+- `/tmp/cutoff-split-chk/AssemblyAx.lean`
+- `/tmp/cutoff-split-chk/C1.lean`
+- `/tmp/cutoff-split-chk/C2.lean`
+- `/tmp/cutoff-split-chk/C3b.lean`
+- `/tmp/cutoff-split-chk/C4.lean`
+- `/tmp/cutoff-split-chk/Full.lean`
+- `/tmp/cutoff-split-chk/Syn.lean`
+
+Contract and names:
+- The snapshot contract (project b4d606d, Mathlib 25730c7c) is byte-identical to the workspace Submission.lean, and the selected frozen type is unchanged.
+- None of the four proposed names is reserved in the 58-node DAG.
+
+What SimonGMT does and does not provide:
+- No Hausdorff-null ball-cover lemma for Mathlib's μH; its Chapter01 covers use Simon's normalised content.
+- No partition-of-unity localisation for GeometricCurrentOn.
+- No Leibniz bound for extDeriv.
+- These three gaps become children. Chapter02.exists_whitneyBump_derivative_bound supplies the Lipschitz rescaled-bump technique reused in smooth_cutoff_product.
+
+Mathlib facts the children rely on:
+- Child 1: hausdorffMeasure_apply and hausdorffMeasure_zero_singleton.
+- Child 2: ContDiffBump, ContDiff.lipschitzWith_of_hasCompactSupport, norm_fderiv_le_of_lipschitz and HasFDerivAt.finsetProd.
+- Child 3: exists_open_between_and_isCompact_closure, SmoothPartitionOfUnity.exists_isSubordinate (already imported transitively) and setIntegral_eq_zero_of_forall_eq_zero, which needs no measurability of M₁.
+- Child 4: enorm_integral_le_lintegral_enorm, fderiv_smul, norm_alternatizeUncurryFin_le and ContinuousLinearMap.opNorm_smul_le. The last is needed because IsBoundedSMul ℝ (Euclid P →L[ℝ] Covector) is not found by instance search.
+
+Lean checks in the scratch copy:
+- All four child types elaborate.
+- The parent's frozen type compiles from the four children taken as axioms.
+- Full.lean kernel-checks the parent and all four children with only propext, Classical.choice and Quot.sound.
