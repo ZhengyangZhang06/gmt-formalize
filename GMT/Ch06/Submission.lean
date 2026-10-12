@@ -421,6 +421,40 @@ theorem Submission.polyhedral_approx_pairing_covector_ext : ∀ (P n : ℕ) (α 
   congr 1
   exact h I
 
+/-- **Rotated coordinate expansion of a covector (Simon Ch. 6, 1.2; Lemma 2.36, Remark 2.37(2)).**
+For a linear isometry `Q` of `ℝ^P`, every `n`-covector expands as
+`φ = ∑_α φ(Q⁻¹e_{α(0)}, …, Q⁻¹e_{α(n-1)}) Q^*dx^α`, where
+`Q^*dx^α = (dx^{α(0)} ∘ Q) ∧ ⋯ ∧ (dx^{α(n-1)} ∘ Q)`.  The pull-back `φ' = (Q⁻¹)^*φ` has
+coordinates `φ'(e_α) = φ(Q⁻¹e_α)`, so the Kronecker property `dx^α(e_I) = δ_{αI}` gives
+`φ' = ∑_α φ'(e_α) dx^α` on increasing coordinates, hence everywhere.  Pulling back by `Q` gives
+`φ = Q^*φ'`. -/
+theorem Submission.rpn_covector_rotated_expansion : ∀ (P n : ℕ) (Q : Eucl P ≃ₗᵢ[ℝ] Eucl P) (φ : Covector (Eucl P) n), φ = ∑ α : SimonMultiIndex n P, φ (fun i => Q.symm (EuclideanSpace.single (α i) (1 : ℝ))) • wedgeCovectors n (fun i => (EuclideanSpace.proj (α i) : Eucl P →L[ℝ] ℝ).comp (Q : Eucl P →L[ℝ] Eucl P)) := by
+  intro P n Q φ
+  -- (2) Standard expansion of `φ' = (Q⁻¹)^*φ`: both sides have the same increasing coordinates.
+  have hexp : covectorPullback n (Q.symm : Eucl P →L[ℝ] Eucl P) φ =
+      ∑ α : SimonMultiIndex n P, φ (fun i => Q.symm (EuclideanSpace.single (α i) (1 : ℝ))) •
+        wedgeCovectors n (fun i => EuclideanSpace.proj (α i)) := by
+    refine Submission.polyhedral_approx_pairing_covector_ext P n _ _ fun I => ?_
+    -- (1) By the Kronecker property only the `α = I` summand survives.
+    have hK := Submission.polyhedral_approx_pairing_wedge_kronecker P n
+    simp only [euclideanCovectorCoordinate] at hK ⊢
+    rw [ContinuousAlternatingMap.sum_apply, Finset.sum_eq_single I]
+    · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, (hK I).1, mul_one]
+      rfl
+    · intro α _ hα
+      rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, (hK α).2 I (Ne.symm hα), mul_zero]
+    · intro h
+      exact absurd (Finset.mem_univ I) h
+  -- (3) `φ = Q^*φ'` since `Q⁻¹ Q = id`, and `Q^*dx^α = wedgeCovectors n (fun i => dx^{α(i)} ∘ Q)`.
+  have hφ : φ = covectorPullback n (Q : Eucl P →L[ℝ] Eucl P)
+      (covectorPullback n (Q.symm : Eucl P →L[ℝ] Eucl P) φ) := by
+    ext v
+    simp [Function.comp_def]
+  conv_lhs => rw [hφ, hexp]
+  rw [map_sum]
+  refine Finset.sum_congr rfl fun α _ => ?_
+  rw [map_smul, covectorPullback_wedgeCovectors]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
