@@ -2608,6 +2608,40 @@ theorem Submission.deGiorgi_gaussGreenPair_compl : ∀ (N : ℕ) (U E : Set (Rn 
   rw [inter_eq_left.2 sdiff_subset, hneg]
   linarith
 
+/-- **Density estimates at the reduced boundary** (Simon Ch. 3, proof of Theorem 4.3, (1)–(6),
+(10), (11), `chapter-03.txt` lines 607–652 and 689–733). Let `(μ, ν)` be a Gauss–Green pair for
+`(U, E)`, `x ∈ ∂*E` and `e = ν_E(x)`. Then there are `ρ₁ > 0` with `B_{ρ₁}(x) ⊆ U` and constants
+`C`, `c > 0` with `μ(B_ρ(x)) ≤ C ρⁿ`, `L^{n+1}(E ∩ B_ρ(x)) ≥ c ρ^{n+1}` and
+`L^{n+1}(B_ρ(x) ∖ E) ≥ c ρ^{n+1}` for `0 < ρ < ρ₁`, and `ρ⁻ⁿ ∫_{B_ρ(x)} |ν - e| dμ → 0` as
+`ρ ↓ 0`. The normal-average bounds give `|e| = 1` and `ρ₀ > 0` with `B_{ρ₀}(x) ⊆ U` and
+`0 < μ(B_ρ(x)) ≤ 2 ∫_{B_ρ(x)} ν · e dμ` for `0 < ρ < ρ₀`; take `ρ₁ = ρ₀`. The upper mass bound
+with `w = e` gives (6') with `C = 2 (n + 1) ω_{n+1}`, and the lower volume bound gives (10) with
+`w = e`; for (11) it is applied to the pair `(μ, -ν)` of `(U, U ∖ E)` with `w = -e`, since
+`(-ν) · (-e) = ν · e` and `(U ∖ E) ∩ B_ρ(x) = B_ρ(x) ∖ E`. The excess decay is the last clause of
+the normal-average bounds, fed with (6'). -/
+theorem Submission.deGiorgi_density_estimates : ∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ x ∈ reducedBoundary U μ ν, ∃ ρ₁ : ℝ, 0 < ρ₁ ∧ Metric.ball x ρ₁ ⊆ U ∧ ∃ C c : ℝ, 0 < c ∧ (∀ ρ ∈ Ioo 0 ρ₁, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (C * ρ ^ n) ∧ ENNReal.ofReal (c * ρ ^ (n + 1)) ≤ volume (E ∩ Metric.ball x ρ) ∧ ENNReal.ofReal (c * ρ ^ (n + 1)) ≤ volume (Metric.ball x ρ \ E)) ∧ Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ y in Metric.ball x ρ, ‖ν y - reducedNormal μ ν x‖ ∂μ) (𝓝[>] 0) (𝓝 0) := by
+  intro n U E μ ν hU hE hpair x hx
+  -- Simon (1), (2): `|e| = 1` and `0 < μ(B_ρ(x)) ≤ 2 ∫_{B_ρ(x)} ν · e dμ` for `0 < ρ < ρ₀`.
+  obtain ⟨he, ⟨ρ₀, hρ₀, hball, hhalf⟩, hexcess⟩ :=
+    Submission.deGiorgiDens_normalAverage_bounds (n + 1) U μ ν hU hpair.2.1 hpair.2.2.1
+      hpair.2.2.2.1 x hx
+  -- (6'): `μ(B_ρ(x)) ≤ 2 (n + 1) ω_{n+1} ρⁿ`.
+  have hmass := Submission.deGiorgiDens_ball_mass_le n U E μ ν hU hE hpair x
+    (reducedNormal μ ν x) ρ₀ he.le hball fun ρ hρ ↦ (hhalf ρ hρ).2
+  -- (10) for `E` with `w = e`, and (11) for the pair `(μ, -ν)` of `(U, U ∖ E)` with `w = -e`.
+  obtain ⟨c, hc, hvol⟩ := Submission.deGiorgiDens_ball_volume_ge n
+  have hlowE := hvol U E μ ν hU hE hpair x (reducedNormal μ ν x) ρ₀ he.le hball hhalf
+  have hlowC := hvol U (U \ E) μ (-ν) hU (hU.measurableSet.nullMeasurableSet.diff hE)
+    (Submission.deGiorgi_gaussGreenPair_compl (n + 1) U E μ ν hU hE hpair) x
+    (-reducedNormal μ ν x) ρ₀ (by rw [norm_neg]; exact he.le) hball fun ρ hρ ↦ by
+      simpa only [Pi.neg_apply, inner_neg_neg] using hhalf ρ hρ
+  refine ⟨ρ₀, hρ₀, hball, 2 * (n + 1) * (volume (Metric.ball (0 : Rn (n + 1)) 1)).toReal, c, hc,
+    fun ρ hρ ↦ ⟨hmass ρ hρ, hlowE ρ hρ, ?_⟩, hexcess n _ ρ₀ hρ₀ hmass⟩
+  -- `(U ∖ E) ∩ B_ρ(x) = B_ρ(x) ∖ E`, as `B_ρ(x) ⊆ B_{ρ₀}(x) ⊆ U`.
+  have hsub : Metric.ball x ρ ⊆ U := (Metric.ball_subset_ball hρ.2.le).trans hball
+  rw [← inter_eq_right.2 hsub, ← sdiff_inter_right_comm]
+  exact hlowC ρ hρ
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
