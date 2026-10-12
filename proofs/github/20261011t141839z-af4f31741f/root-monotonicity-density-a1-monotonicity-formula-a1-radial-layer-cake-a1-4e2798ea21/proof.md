@@ -1,0 +1,120 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.monotonicity_density-a1.monotonicity_formula-a1`
+- Child DAG node: `root.monotonicity_density-a1.monotonicity_formula-a1.radial_layer_cake-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 3.2–3.4 of the parent node's supplied proof of Simon, Introduction to Geometric Measure Theory, Ch. 8, 3.3 (printed p. 210; the "layer cake" form of Simon's use of 3.1 for the non-increasing radial profile γ(r) = φ(r²/t²)), stated here for two arbitrary measures and an arbitrary continuous non-increasing profile φ. It is used inside the sibling node Submission.mono833_radial_first_variation_bound with ν = V.firstVariationRieszMeasure hV (= variationMeasure V = ‖δV‖) and μ = μ_V = V.weight, and, through that node, in the parent with φ = SimonGMT's monotonicityCutoff ε and A = 1 + ε. No finiteness of ν or μ and no sign condition on Λ is needed (ofReal(Λ) = 0 when Λ < 0).
+
+Notation. B_r := closedBall x r (Euclidean closed ball), |·| the Euclidean norm, c(y) := φ(|y − x|²/t²) for y ∈ ℝ^N. All integrals are lower Lebesgue integrals ∫⁻ of [0,∞]-valued functions.
+
+Implementation note: this node is expected to be a leaf, i.e. a single declaration Submission.mono833_radial_layer_cake_le using only the frozen contract's imports (no new import, helper declaration or set_option). A scratch proof of exactly this shape compiled with only `import GMT.Ch08.Submission` (axioms: propext, Classical.choice, Quot.sound) and passed the workflow's leaf-delta check; it used MeasureTheory.lintegral_eq_lintegral_meas_le, lintegral_const_mul', setLIntegral_mono' with measurableSet_Ioi, IsClosed.csSup_mem, le_csSup, isClosed_le, Real.sqrt_lt', Real.sq_sqrt, pow_le_pow_iff_left₀ and pow_le_pow_left₀ (in this Mathlib, Set.mem_setOf_eq is deprecated; Set.mem_ofPred_eq is its warning-free replacement).
+
+Proof. Fix N, ν, μ, x, ρ0, Λ, A, t, φ and assume the hypotheses: (H1) ν(B_r) ≤ ofReal(Λ)·μ(B_r) whenever 0 < r < ρ0; (H2) φ is continuous; (H3) φ is antitone (s ≤ s' ⇒ φ(s') ≤ φ(s)); (H4) φ(s) = 1 for every s ≤ 1; (H5) φ(s) = 0 for every s ≥ A²; (H6) A > 0; (H7) t > 0; (H8) t·A < ρ0.
+
+1. 0 ≤ φ ≤ 1. Let s ∈ ℝ. Since s ≤ max(s, A²), (H3) and (H5) give φ(s) ≥ φ(max(s, A²)) = 0. Since min(s, 1) ≤ s, (H3) and (H4) give φ(s) ≤ φ(min(s, 1)) = 1.
+
+2. The function c(y) = φ(|y − x|²/t²) is continuous on ℝ^N (a composition of the continuous maps y ↦ y − x, the norm, squaring, division by the constant t², and φ by (H2)); hence it is Borel measurable, and by 1, 0 ≤ c(y) ≤ 1 for every y.
+
+3. Layer-cake formula. For any measure m on ℝ^N and any measurable g ≥ 0, ∫⁻ ofReal(g) dm = ∫⁻_{s ∈ (0,∞)} m({y : s ≤ g(y)}) ds (Mathlib lintegral_eq_lintegral_meas_le; it needs only g ≥ 0 a.e. and a.e.-measurability, no finiteness of m). By 2 it applies to g = c with m = ν and with m = μ:
+   ∫⁻ ofReal(c) dν = ∫⁻_{(0,∞)} ν({c ≥ s}) ds,   ∫⁻ ofReal(c) dμ = ∫⁻_{(0,∞)} μ({c ≥ s}) ds,
+   where {c ≥ s} := {y : s ≤ c(y)}.
+
+4. Claim: for every s > 0, ν({c ≥ s}) ≤ ofReal(Λ)·μ({c ≥ s}).
+   4a. If s > 1, then c(y) ≤ 1 < s for all y (by 2), so {c ≥ s} = ∅ and both sides equal 0.
+   4b. Let 0 < s ≤ 1 and E := {τ ∈ ℝ : s ≤ φ(τ)}. E is closed, being the preimage of [s, ∞) under the continuous φ. 1 ∈ E, because φ(1) = 1 ≥ s by (H4). E is bounded above by A²: if τ ∈ E had τ > A², then φ(τ) = 0 < s by (H5), contradicting τ ∈ E. Hence b := sup E is a real number, and b ∈ E because E is closed, nonempty and bounded above. Since 1 ∈ E, b ≥ 1. Moreover b < A²: otherwise φ(b) = 0 < s by (H5), contradicting b ∈ E.
+   4c. E = (−∞, b]. Indeed, every τ ∈ E satisfies τ ≤ sup E = b; conversely, if τ ≤ b then φ(τ) ≥ φ(b) ≥ s by (H3) and b ∈ E, so τ ∈ E.
+   4d. Put r := t·√b. Then for y ∈ ℝ^N: y ∈ {c ≥ s} ⟺ |y − x|²/t² ≤ b (by 4c) ⟺ |y − x|² ≤ b·t² = r² (t² > 0, and r² = t²·b since b ≥ 0) ⟺ |y − x| ≤ r (both |y − x| and r are ≥ 0, and squaring is strictly increasing on [0, ∞)) ⟺ y ∈ B_r. So {c ≥ s} = B_r.
+   4e. r > 0 since t > 0 and b ≥ 1 > 0. And r < ρ0: since 0 ≤ b < A² and A > 0, √b < A (Real.sqrt_lt'), so r = t√b < tA < ρ0 by (H7) and (H8).
+   4f. By (H1) with this r, ν({c ≥ s}) = ν(B_r) ≤ ofReal(Λ)·μ(B_r) = ofReal(Λ)·μ({c ≥ s}).
+
+5. Conclusion. By 3, 4 and monotonicity of the lower integral over the measurable set (0, ∞) (pointwise inequality on (0,∞), setLIntegral_mono'), and then pulling the constant ofReal(Λ) ≠ ∞ out of the lower integral (lintegral_const_mul', which needs no measurability):
+   ∫⁻ ofReal(c) dν = ∫⁻_{(0,∞)} ν({c ≥ s}) ds ≤ ∫⁻_{(0,∞)} ofReal(Λ)·μ({c ≥ s}) ds = ofReal(Λ)·∫⁻_{(0,∞)} μ({c ≥ s}) ds = ofReal(Λ)·∫⁻ ofReal(c) dμ.
+   Since c(y) = φ(|y − x|²/t²), this is exactly the asserted inequality ∫⁻ ofReal(φ(|y − x|²/t²)) dν(y) ≤ ofReal(Λ)·∫⁻ ofReal(φ(|y − x|²/t²)) dμ(y). As N, ν, μ, x, ρ0, Λ, A, t, φ were arbitrary, the statement holds.
+
+## Key steps
+
+1. Antitonicity with φ = 1 on (−∞,1] and φ = 0 on [A²,∞) gives 0 ≤ φ ≤ 1; c(y) = φ(|y − x|²/t²) is continuous, hence measurable, with 0 ≤ c ≤ 1.
+2. Layer cake (lintegral_eq_lintegral_meas_le) for ν and for μ: ∫⁻ ofReal(c) dm = ∫⁻_{(0,∞)} m({c ≥ s}) ds.
+3. For s > 1, {c ≥ s} = ∅. For 0 < s ≤ 1, E = {τ : s ≤ φ(τ)} is closed, contains 1 and is bounded above by A², so b = sup E ∈ E, 1 ≤ b < A², and E = (−∞, b] by antitonicity.
+4. Hence {c ≥ s} = closedBall x (t√b) with 0 < t√b < tA < ρ0, and the ball hypothesis gives ν({c ≥ s}) ≤ ofReal(Λ)·μ({c ≥ s}) for every s > 0.
+5. Integrate over (0,∞) (setLIntegral_mono') and pull out ofReal(Λ) ≠ ∞ (lintegral_const_mul').
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean <snapshot>/project/GMT/Ch08/Contract.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487); git -C .lake/packages/simongmt rev-parse HEAD (2b3663083f3fe399b6296fb8eaee52169170e197)`
+- `grep -n '^public import' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/*.lean (VarifoldConvergence -> FirstVariationRiesz; radial modules reachable only via StationaryMonotonicity)`
+- `lake env lean /tmp/mono833_split/Avail.lean (after import GMT.Ch08.Submission: Varifold.isFirstVariationPolarRepresentation_riesz, lintegral_eq_lintegral_meas_le, MonotoneOn.tendsto_nhdsWithin_Ioo_right available; Chapter04.monotonicityCutoff, Varifold.cutoffMass, Grassmannian.radialNormalSq unknown)`
+- `read /runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/leaf_verification.py (check_source_delta) and parent_verification.py (check_parent_git_delta)`
+- `git show e163fc58e786f6e1d09778b6af00bb997d28a43e:GMT/Ch08/Submission.lean (accepted 8.3.4 parent adds import Poincare.SimonGMT.Chapter08.StationaryMonotonicity); git show 3c6818bddadb89b47160584ce4f8ef0c883fcc29:GMT/Ch08/Submission.lean (accepted weighted-radial parent, ~150-line glue)`
+- `python3 scan of dag.json lean_name / lean_statement / status (227 names; no mono833_* names; related accepted nodes intcpt_allard_first_variation_le_sup_mul, intcpt_allard_wrm_cutoff_mass_hasDerivAt not reusable for the weighted bound)`
+- `grep -n in snapshot mathlib: lintegral_eq_lintegral_meas_le (MeasureTheory/Integral/Layercake.lean:445), MonotoneOn.tendsto_nhdsWithin_Ioo_right (Topology/Order/Monotone.lean:457), IsClosed.csSup_mem (Topology/Order/Monotone.lean:426), setLIntegral_mono' (Integral/Lebesgue/Basic.lean:254), lintegral_const_mul' (Integral/Lebesgue/Add.lean:420), monotoneOn_of_deriv_nonneg (Analysis/Calculus/Deriv/MeanValue.lean:411), ENNReal.Tendsto.mul (Topology/Instances/ENNReal/Lemmas.lean:337), integral_eq_lintegral_of_nonneg_ae (Integral/Bochner/Basic.lean:515), abs_real_inner_le_norm (InnerProductSpace/Basic.lean:471), contDiff_norm_sq (InnerProductSpace/Calculus.lean:140), ENNReal.toReal_mono (Basic/ENNReal/Real.lean:67)`
+- `grep -n theorem names in SimonGMT Chapter08: isFirstVariationPolarRepresentation_riesz (FirstVariationRiesz.lean:133), hasDerivAt_integral_radialCutoff_of_radius (RadialCutoffDifferentiation.lean:91), weightedCutoffMass_eq_weight_integral / hasDerivAt_weightedCutoffNormalMass / hasDerivAt_normalized_weightedCutoffMass (WeightedRadialIdentity.lean:76/96/200), tendsto_integral_radialCutoff / tendsto_cutoffMass / scaledRadialCutoffDeriv_defect_bounds (StationaryCutoff.lean:63/111/142), integrableOn_truncatedRadialDefect / integrableOn_radialDefect_annulus / ofReal_normalizedBallMass_real (StationaryMonotonicity.lean:28/37/124), normalProject_eq_sub / norm_normalProject_radial_sq (RadialFirstVariation.lean:81/123); Chapter04/FirstVariation.lean monotonicityCutoff lemmas (828-886)`
+- `lake env lean /tmp/mono833_split/Types.lean (four child types elaborate; #check_failure confirms names unused)`
+- `lake env lean /tmp/mono833_split/Parent.lean (parent glue with sorried children; axioms propext, sorryAx, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/mono833_split/ChildC1a.lean, ChildC1.lean, ChildC2C3.lean (each child proved with only import GMT.Ch08.Submission; standard axioms)`
+- `lake env lean /tmp/mono833_split/EndToEnd_nowarn.lean (#print axioms Submission.monotonicity_formula_8_3_3: propext, Classical.choice, Quot.sound; no warnings) and LeavesInSubmission.lean (four leaves inside the real frozen Submission.lean)`
+- `python3 check_source_delta(frozen Submission, Submission + one child declaration) for each child (all OK)`
+- `sed -n 262,330p book/chapter-08.txt (printed 3.1-3.6, p. 210-211); sed -n 380,432p book/chapter-04.txt (3.15-3.17 integrating factor, p. 92-93)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-monotonicity-density-a1-monotonicity-formula-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-monotonicity-density-a1-monotonicity-formula-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-monotonicity-density-a1-stationary-identity-a1-density-limit-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryMonotonicity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryCutoff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/WeightedRadialIdentity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialCutoffDifferentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/parent_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/tmp/mono833_split/Types.lean`
+- `/tmp/mono833_split/Parent.lean`
+- `/tmp/mono833_split/ChildC1a.lean`
+- `/tmp/mono833_split/ChildC1.lean`
+- `/tmp/mono833_split/ChildC2C3.lean`
+- `/tmp/mono833_split/EndToEnd_nowarn.lean`
+- `/tmp/mono833_split/LeavesInSubmission.lean`
+
+The snapshot is project 63436ae6 with Mathlib 25730c7c; its Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. The snapshot's Mathlib has no varifold or monotonicity-formula material, so the analytic content comes from the pinned SimonGMT package (rev 2b366308).
+
+SimonGMT already proves the Λ = 0 case and every radial ingredient of the general-Λ proof, but those modules are reachable only through Chapter08.StationaryMonotonicity, which the frozen imports exclude. Workflow leaves cannot add imports (leaf_verification.check_source_delta). The accepted 8.3.4 parent shows that a non-leaf parent may add that import.
+
+Hence the split: the SimonGMT-dependent glue stays in this (now non-leaf) parent, and the four children are generic lemmas provable from the frozen imports alone:
+- the polar representation isFirstVariationPolarRepresentation_riesz (FirstVariationRiesz.lean:133) is reachable via VarifoldConvergence;
+- the layer cake (Layercake.lean:445), the mean value theorem (Deriv/MeanValue.lean:411) and MonotoneOn.tendsto_nhdsWithin_Ioo_right (Topology/Order/Monotone.lean:457) are in Mathlib.
+
+Scratch Lean files confirm the plan:
+- each child, as a single declaration with only `import GMT.Ch08.Submission`, compiles with standard axioms and passes the leaf-delta check;
+- the parent glue plus the four children yields Submission.monotonicity_formula_8_3_3 : MonotonicityFormula with axioms propext, Classical.choice, Quot.sound.
+
+No existing DAG declaration has these types; the proposed names are fresh. An independent reviewer agent reproduced all checks and approved.
