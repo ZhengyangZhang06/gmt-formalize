@@ -2128,6 +2128,46 @@ theorem Submission.c1_critical_slices_null : ∀ (m k : ℕ) (G : Rn (m + k) →
   obtain ⟨R, hR⟩ := exists_nat_ge ‖u‖
   exact mem_iUnion.2 ⟨R, ⟨hu.1, mem_closedBall_zero_iff.2 hR⟩, hu.2⟩
 
+/-- **`C¹` co-area formula in parameter form** (Simon Ch. 2, 6.3 and 6.6, pp. 66–67, whose proof
+Simon omits; [Fed69, 3.2.12, 3.2.22], Evans–Gariepy §3.4), transported by a `C¹` map `ψ` that is
+injective on the open `D ⊆ ℝ^{m+k}`. Let `G : ℝ^{m+k} → ℝᵐ` be `C¹`, `K(u) = ker DG(u)` and
+`J(u) = normDet(Dψ(u) ∘ ι_{K(u)}) · normDet(DG(u)*)`. Then for every Borel `B ⊆ D` and Borel
+`φ ≥ 0`, `y ↦ ∫_{ψ(B ∩ G⁻¹{y})} φ dHᵏ` is `Lᵐ`-a.e. measurable and
+`∫_B φ(ψ(u)) J(u) dLⁿ(u) = ∫_{ℝᵐ} ∫_{ψ(B ∩ G⁻¹{y})} φ dHᵏ dLᵐ(y)`.
+Both claims are glued (Lindelöf, countable additivity) from two kinds of Borel pieces. On the
+critical set `Z = {u | DG(u) not surjective}`, `J = 0`, and the slices `Z ∩ G⁻¹{y}` are `Hᵏ`-null
+for `Lᵐ`-a.e. `y` (this uses `0 < k`); so both sides vanish. Each `p ∈ D ∖ Z` has an
+implicit-function chart `Φ = (G, π)` with source in `D`. On that source the formula follows from
+the injective area formula on the slices, the flat Jacobian identity, Tonelli on `ℝᵐ × ℝᵏ` and the
+change of variables for `Φ`. -/
+theorem Submission.c1_parametric_coarea_formula : ∀ (m k N : ℕ) (D : Set (Rn (m + k)))
+    (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m), 0 < m → 0 < k → IsOpen D →
+    ContDiffOn ℝ 1 ψ D → InjOn ψ D → ContDiff ℝ 1 G → ∀ B ⊆ D, MeasurableSet B →
+    ∀ φ : Rn N → ℝ≥0∞, Measurable φ →
+      AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧
+        ∫⁻ u in B, φ (ψ u) * ENNReal.ofReal
+            (((fderiv ℝ ψ u).toLinearMap ∘ₗ
+                (LinearMap.ker (fderiv ℝ G u).toLinearMap).subtype).normDet *
+              (LinearMap.adjoint (fderiv ℝ G u).toLinearMap).normDet) =
+          ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume := by
+  intro m k N D ψ G _hm hk hD hψ hinj hG
+  -- Glue over `Z = {DG not surjective}` with the weight `w = ofReal ∘ J`.
+  refine Submission.pcoarea_gluing (m + k) N m k D {u | ¬ Function.Surjective (fderiv ℝ G u)} ψ G
+    (fun u ↦ ENNReal.ofReal
+      (((fderiv ℝ ψ u).toLinearMap ∘ₗ (LinearMap.ker (fderiv ℝ G u).toLinearMap).subtype).normDet *
+        (LinearMap.adjoint (fderiv ℝ G u).toLinearMap).normDet))
+    hD hψ.continuousOn hinj hG.continuous ?_ ?_
+  · -- Critical pieces: `J = 0`, and the slices of `Z` are `Hᵏ`-null for `Lᵐ`-a.e. `y`.
+    exact Submission.pcoarea_critical_part m k N D ψ G hD hψ
+      (Submission.c1_critical_slices_null m k G hk hG)
+  · -- Regular pieces: the source of an implicit-function chart at `p ∈ D ∖ Z`, inside `D`.
+    intro p hpD hpZ
+    obtain ⟨Φ, hpΦ, hsrc, hΦ, hΦs, hfst⟩ :=
+      Submission.pcoarea_implicit_chart m k G D p hD hpD hG (not_not.mp hpZ)
+    refine ⟨Φ.source, Φ.open_source, hpΦ, fun B hB hBm φ hφ ↦ ?_⟩
+    exact Submission.pcoarea_formula_on_chart m k N ψ G Φ (hψ.mono hsrc) (hinj.mono hsrc) hΦ hΦs
+      hfst B (hB.trans inter_subset_right) hBm φ hφ
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
