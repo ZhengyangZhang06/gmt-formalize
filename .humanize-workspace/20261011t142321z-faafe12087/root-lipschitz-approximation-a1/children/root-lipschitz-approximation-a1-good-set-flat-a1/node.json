@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.good_set_flat-a1",
+  "parent_id": "root.lipschitz_approximation-a1",
+  "depth": 2,
+  "title": "Height bound and Lipschitz-graph property of the good set (Simon 5.2.6, (3)-(4))",
+  "statement": "Assume AffineApproximationLemma. For n >= 1, l, p > n there are C_0 > 0 and delta_0 > 0 such that for all beta > 0, L in (0,1], 0 < delta <= delta_0 with delta <= (beta L)^(2n+2), 2.3, and every linear isometry q with T_0 = rotatedPlane q, P = p_(T_0), sigma_0 = delta rho: if integral_(B_(sigma_0)(0)) hsNormSq(p_x - P) dmu <= beta^2 L^2 sigma_0^n, then (1) dist(x, T_0) <= C_0 beta L sigma_0 for every x in spt V cap B_(2 sigma_0)(0), and (2) for y_1, y_2 in spt V cap B_(3 sigma_0/4)(0) such that integral_(B_(s/2)(y_1)) hsNormSq(p_x - P) dmu <= beta^2 L^2 s^n for all s in (0, sigma_0/2], |(y_2 - y_1) - P(y_2 - y_1)| <= C_0 beta L |y_2 - y_1|.",
+  "lean_statement": "AffineApproximationLemma → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C₀ δ₀ : ℝ, 0 < C₀ ∧ 0 < δ₀ ∧ ∀ β L : ℝ, 0 < β → 0 < L → L ≤ 1 → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₀ → δ ≤ (β * L) ^ (2 * n + 2) → V.AllardHypotheses H p δ ρ → ∀ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, ∫ x in closedBall 0 (δ * ρ), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight ≤ β ^ 2 * L ^ 2 * (δ * ρ) ^ n → (∀ x ∈ V.support ∩ closedBall 0 (2 * (δ * ρ)), infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ C₀ * β * L * (δ * ρ)) ∧ ∀ y₁ ∈ V.support ∩ closedBall 0 (3 * (δ * ρ) / 4), ∀ y₂ ∈ V.support ∩ closedBall 0 (3 * (δ * ρ) / 4), (∀ s : ℝ, 0 < s → s ≤ δ * ρ / 2 → ∫ x in closedBall y₁ (s / 2), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight ≤ β ^ 2 * L ^ 2 * s ^ n) → ‖(y₂ - y₁) - (rotatedPlane q).starProjection (y₂ - y₁)‖ ≤ C₀ * β * L * ‖y₂ - y₁‖",
+  "lean_name": "lip_approx_good_set_flat",
+  "depends_on": [
+    "root.lipschitz_approximation-a1.tangent_structure-a1",
+    "root.lipschitz_approximation-a1.pinched_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_approximation-a1.tangent_structure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_approximation-a1.pinched_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-good-set-flat-a1-a1"
+}
