@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ac1ba586948043a97e0bfa102a98b1a8ddd3e80088c86da5c034650f22f38a0a",
+  "git_delta": {
+    "base_commit": "f00a435437420e5676232a93804fbe8d037d389e",
+    "candidate_commit": "a66a1c569019d396521f93ae9544f91a81844046",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_rl_monotone_helly_selection",
+    "diff_sha256": "5dd0a5172f1d7e74b3d757142397224afdbefb1a7b9390ccb2c041617c7c9d05",
+    "source_sha256": "724ad8d2d6d929caadd876adcb2a8336bf9d32e1137d5a5d43458db3b7ec2d30",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_rl_monotone_helly_selection",
+      "statement": "∀ (F : ℕ → ℝ → ℝ) (C : ℝ), (∀ j, Monotone (F j)) → (∀ j t, |F j t| ≤ C) → ∃ (ψ : ℕ → ℕ) (E : Set ℝ), StrictMono ψ ∧ E.Countable ∧ ∀ s ∉ E, ∀ ε : ℝ, 0 < ε → ∃ a b : ℝ, a < s ∧ s < b ∧ ∀ᶠ j in atTop, F (ψ j) b - F (ψ j) a < ε",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
