@@ -490,6 +490,62 @@ theorem Submission.chartTD_setIntegral_blowUpMap_image : ∀ (N n : ℕ) (x : Rn
       NNReal.coe_pow, coe_nnnorm, Real.norm_of_nonneg hr.le, smul_eq_mul]
   rw [hint, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero n hr.ne'), one_mul]
 
+/-- **Weighted approximate tangent space from density estimates against a comparison set**
+(Simon Ch. 3, proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 113–143, in the weighted form of
+Def. 1.7 and Remark 1.8(1), lines 284–306). Let `M`, `Γ` be `Hⁿ`-measurable with `Hⁿ(Γ) < ∞`,
+`θ` a positive locally integrable weight on `M`, and let `Γ` have approximate tangent space `P`
+at `x`. If, as `ρ ↓ 0`, `ρ⁻ⁿ ∫_{(M ∖ Γ) ∩ B_ρ(x)} |θ| dHⁿ → 0`, `ρ⁻ⁿ Hⁿ((Γ ∖ M) ∩ B_ρ(x)) → 0`
+and `ρ⁻ⁿ ∫_{M ∩ Γ ∩ B_ρ(x)} |θ - θ(x)| dHⁿ → 0`, then `P` is the approximate tangent space of
+`M` at `x` with respect to `θ`. For `f ∈ C_c(ℝᴺ, ℝ)` and `r > 0`, the change of variables
+`chartTD_setIntegral_blowUpMap_image` (with `x + r η_{x,r}(z) = z`) and the splitting
+`chartTD_weighted_blowup_integral_split` give
+`∫_{η_{x,r}(M)} f(y) θ(x + r y) dHⁿ(y) = E₁(r) + θ(x) (∫_{η_{x,r}(Γ)} f dHⁿ - E₂(r)) + E₃(r)`,
+where `E₁`, `E₂`, `E₃` are the `r⁻ⁿ`-normalized integrals of `f ∘ η_{x,r}` against `θ` over
+`M ∖ Γ`, `1` over `Γ ∖ M` and `θ - θ(x)` over `M ∩ Γ`. Each `Eᵢ(r) → 0` by
+`chartTD_blowup_integral_tendsto_zero`, and `∫_{η_{x,r}(Γ)} f dHⁿ → ∫_P f dHⁿ`. -/
+theorem Submission.chartTD_weighted_tangent_of_density : ∀ (n N : ℕ) (M Γ : Set (Rn N)) (θ : Rn N → ℝ) (x : Rn N) (P : Submodule ℝ (Rn N)), NullMeasurableSet M μHE[n] → NullMeasurableSet Γ μHE[n] → μHE[n] Γ < ∞ → IsPositiveLocallyIntegrableWeight n M θ → HasApproximateTangentSpaceAt n Γ x P → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in (M \ Γ) ∩ Metric.ball x ρ, |θ z| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * (μHE[n] ((Γ \ M) ∩ Metric.ball x ρ)).toReal) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in M ∩ Γ ∩ Metric.ball x ρ, |θ z - θ x| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) → HasWeightedApproximateTangentSpaceAt n M θ x P := by
+  intro n N M Γ θ x P hM hΓ hΓfin hθ hT h₁ h₂ h₃
+  refine ⟨hT.1, fun f ↦ ?_⟩
+  -- `θ` is integrable on `M ∩ B_ρ(x) ⊆ M ∩ B̄_ρ(x)`, and subsets of `Γ` have finite measure.
+  have hθball : ∀ ρ : ℝ, IntegrableOn θ (M ∩ Metric.ball x ρ) μHE[n] := fun ρ ↦
+    (hθ.2.2 _ (isCompact_closedBall x ρ)).mono_set
+      (inter_subset_inter_right _ Metric.ball_subset_closedBall)
+  have hΓsub : ∀ s ⊆ Γ, μHE[n] s ≠ ∞ := fun s hs ↦ ((measure_mono hs).trans_lt hΓfin).ne
+  -- `E₁(r) = r⁻ⁿ ∫_{M ∖ Γ} f(η_{x,r}(z)) θ(z) dHⁿ(z) → 0`
+  have hE₁ : Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ z in M \ Γ, f (blowUpMap x r z) * θ z ∂μHE[n])
+      (𝓝[>] 0) (𝓝 0) :=
+    Submission.chartTD_blowup_integral_tendsto_zero n N (M \ Γ) θ x
+      (fun ρ _ ↦ (hθball ρ).mono_set (inter_subset_inter_left _ sdiff_subset)) h₁ f
+  -- `E₂(r) = r⁻ⁿ ∫_{Γ ∖ M} f(η_{x,r}(z)) dHⁿ(z) → 0`, with the weight `w ≡ 1`
+  have hE₂ : Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ z in Γ \ M, f (blowUpMap x r z) ∂μHE[n])
+      (𝓝[>] 0) (𝓝 0) := by
+    have h := Submission.chartTD_blowup_integral_tendsto_zero n N (Γ \ M) (fun _ ↦ (1 : ℝ)) x
+      (fun ρ _ ↦ integrableOn_const (hΓsub _ (inter_subset_left.trans sdiff_subset)))
+      (h₂.congr fun ρ ↦ by
+        simp only [abs_one, setIntegral_const, smul_eq_mul, mul_one, measureReal_def]) f
+    simpa only [mul_one] using h
+  -- `E₃(r) = r⁻ⁿ ∫_{M ∩ Γ} f(η_{x,r}(z)) (θ(z) - θ(x)) dHⁿ(z) → 0`
+  have hE₃ : Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ *
+      ∫ z in M ∩ Γ, f (blowUpMap x r z) * (θ z - θ x) ∂μHE[n]) (𝓝[>] 0) (𝓝 0) := by
+    refine Submission.chartTD_blowup_integral_tendsto_zero n N (M ∩ Γ) (fun z ↦ θ z - θ x) x
+      (fun ρ _ ↦ ?_) h₃ f
+    have hc : IntegrableOn (fun _ ↦ θ x) (M ∩ Γ ∩ Metric.ball x ρ) μHE[n] :=
+      integrableOn_const (hΓsub _ (inter_subset_left.trans inter_subset_right))
+    exact ((hθball ρ).mono_set (inter_subset_inter_left _ inter_subset_left)).sub hc
+  -- Combine with `∫_{η_{x,r}(Γ)} f dHⁿ → ∫_P f dHⁿ`.
+  have hlim := (hE₁.add (((hT.2 f).sub hE₂).const_mul (θ x))).add hE₃
+  rw [zero_add, sub_zero, add_zero] at hlim
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  -- For `r > 0`: change variables (`x + r η_{x,r}(z) = z`), then split along `Γ`.
+  have hη : ∀ z, x + r • blowUpMap x r z = z := fun z ↦ by
+    rw [blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne', one_smul, add_sub_cancel]
+  rw [Submission.chartTD_setIntegral_blowUpMap_image N n x r hr M,
+    Submission.chartTD_setIntegral_blowUpMap_image N n x r hr Γ]
+  simp only [hη]
+  rw [Submission.chartTD_weighted_blowup_integral_split n N M Γ θ x f r hr hM hΓ hΓfin hθ]
+  ring
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
