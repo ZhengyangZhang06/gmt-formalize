@@ -721,6 +721,49 @@ theorem Submission.frt_graph_piece_density_bounds :
             (c * densityRatio n (H.restrict T) a r)) (𝓝[>] 0) := limsup_le_limsup hle
       _ = c := hlim.limsup_eq
 
+/-- Density one of `H^n` on a set covered by closed Lipschitz graphs of arbitrarily small slope
+(Simon Ch. 8, proof of 1.2, the density-one property of `H^n` on the rectifiable carrier; cf. Ch. 3,
+1.6 and 1.9): if `H^n(A) < ∞`, `A` is `H^n`-measurable and, for every `L ∈ (0,1]`, `A` is covered by
+countably many closed sets `Γ`, each an `L`-graph over some `P ∈ G(N,n)`
+(`|(y - z) - p_P(y - z)| ≤ L |p_P(y - z)|` on `Γ`), then `Θ^n(H^n ⌞ A, x) = 1` for
+`H^n ⌞ A`-a.e. `x`. -/
+theorem Submission.frt_hausdorff_density_one_of_flat_covers :
+    ∀ (N n : ℕ) (A : Set (Euclidean N)), μHE[n] A ≠ ∞ → NullMeasurableSet A μHE[n] → (∀ L : ℝ, 0 < L → L ≤ 1 → ∃ C : Set (Grassmannian N n × Set (Euclidean N)), C.Countable ∧ (∀ c ∈ C, IsClosed c.2 ∧ ∀ y ∈ c.2, ∀ z ∈ c.2, ‖(y - z) - Grassmannian.project c.1 (y - z)‖ ≤ L * ‖Grassmannian.project c.1 (y - z)‖) ∧ A ⊆ ⋃ c ∈ C, c.2) → ∀ᵐ x ∂(μHE[n] : Measure (Euclidean N)).restrict A, HasDensity n ((μHE[n] : Measure (Euclidean N)).restrict A) x 1 := by
+  intro N n A hA hAm hcov
+  set lam : Measure (Euclidean N) := (μHE[n] : Measure (Euclidean N)).restrict A
+  -- Slopes `L_l = 1/(l+1) ∈ (0,1]` with factors `c_l = β_l^n`, `β_l = (1 + L_l²)^{1/2}`.
+  set c : ℕ → ℝ≥0∞ := fun l ↦ ENNReal.ofReal (Real.sqrt (1 + (1 / ((l : ℝ) + 1)) ^ 2)) ^ n
+  -- Step 8: for each `l`, `c_l⁻¹ ≤ liminf` and `limsup ≤ c_l` for `λ`-a.e. `x`.
+  have hstep : ∀ l : ℕ, ∀ᵐ x ∂lam, (c l)⁻¹ ≤ liminf (densityRatio n lam x) (𝓝[>] 0) ∧
+      limsup (densityRatio n lam x) (𝓝[>] 0) ≤ c l := by
+    intro l
+    have hL0 : (0 : ℝ) < 1 / ((l : ℝ) + 1) := by positivity
+    have hL1 : 1 / ((l : ℝ) + 1) ≤ 1 :=
+      div_le_one_of_le₀ (le_add_of_nonneg_left (Nat.cast_nonneg l)) (by positivity)
+    obtain ⟨C, hCc, hC, hAC⟩ := hcov _ hL0 hL1
+    -- `λ`-a.e. point lies in `A ⊆ W = ⋃_{c ∈ C} c.2`, so `λ ⌞ W = λ`.
+    have hW : lam.restrict (⋃ c ∈ C, c.2) = lam :=
+      Measure.restrict_eq_self_of_ae_mem ((ae_restrict_mem₀ hAm).mono fun x hx ↦ hAC hx)
+    have h := (ae_restrict_biUnion_iff Prod.snd hCc _).2 fun c hcC ↦
+      Submission.frt_graph_piece_density_bounds N n A c.2 c.1 _ hA hAm hL0.le (hC c hcC).1
+        (hC c hcC).2
+    rwa [hW] at h
+  -- Step 9: `c_l → 1`, hence `c_l⁻¹ → 1`.
+  have hlim : Tendsto c atTop (𝓝 1) := by
+    have hcont : Continuous fun t : ℝ ↦ ENNReal.ofReal (Real.sqrt (1 + t ^ 2)) ^ n :=
+      (ENNReal.continuous_pow n).comp (ENNReal.continuous_ofReal.comp
+        (continuous_const.add (continuous_pow 2)).sqrt)
+    have h := (hcont.tendsto 0).comp (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+    rw [zero_pow two_ne_zero, add_zero, Real.sqrt_one, ENNReal.ofReal_one, one_pow] at h
+    exact h
+  have hinv : Tendsto (fun l ↦ (c l)⁻¹) atTop (𝓝 1) := by
+    have h := hlim.inv
+    rwa [inv_one] at h
+  -- So `1 ≤ liminf` and `limsup ≤ 1` `λ`-a.e., i.e. `Θ^n(λ, x) = 1`.
+  filter_upwards [ae_all_iff.2 hstep] with x hx
+  exact tendsto_of_le_liminf_of_limsup_le (le_of_tendsto' hinv fun l ↦ (hx l).1)
+    (ge_of_tendsto' hlim fun l ↦ (hx l).2)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
