@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.cauchy_schwarz-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1",
+  "depth": 4,
+  "title": "Cauchy-Schwarz on (-a, a): ∫ g <= sqrt(2a ∫ g^2)",
+  "statement": "Let g : R -> R be a function, a > 0, and suppose g^2 is integrable on the open interval (-a, a) for Lebesgue measure. Then ∫_{(-a,a)} g <= sqrt(2a ∫_{(-a,a)} g^2) (Bochner integrals).",
+  "lean_statement": "∀ (g : ℝ → ℝ) (a : ℝ), 0 < a → IntegrableOn (fun s => g s ^ 2) (Ioo (-a) a) → (∫ s in Ioo (-a) a, g s) ≤ Real.sqrt (2 * a * ∫ s in Ioo (-a) a, g s ^ 2)",
+  "lean_name": "tdo_ods_integral_le_sqrt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-cauchy-schwarz-a1-a1"
+}
