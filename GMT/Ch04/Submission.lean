@@ -434,6 +434,85 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Continuity of the projection onto the range** (used for the tangent field of a `C¹` piece,
+Ch. 4, 1.3). On injective `A ∈ L(ℝⁿ, ℝ^{n+ℓ})`, `A ↦ p_{A(ℝⁿ)}` is continuous: there
+`p_{A(ℝⁿ)} = A (A*A)⁻¹ A*`, with `A*A` invertible, and inversion is continuous at units. -/
+theorem Submission.ts_starProjection_range_continuousOn_injective : ∀ (n ℓ : ℕ), ContinuousOn (fun (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) ↦ (LinearMap.range A.toLinearMap).starProjection) {A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ | Function.Injective A} := by
+  intro n ℓ
+  -- Riesz construction of the adjoint `A ↦ A*` (Mathlib's `adjointAux`, rebuilt from
+  -- `toDual` and `toSesqForm`, which the frozen imports provide).
+  set adj : (EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) →L⋆[ℝ]
+      (Ambient n ℓ →L[ℝ] EuclideanSpace ℝ (Fin n)) :=
+    (ContinuousLinearMap.compSL _ _ _ _ _
+      ((InnerProductSpace.toDual ℝ (EuclideanSpace ℝ (Fin n))).symm :
+        StrongDual ℝ (EuclideanSpace ℝ (Fin n)) →L⋆[ℝ] EuclideanSpace ℝ (Fin n))).comp
+      (ContinuousLinearMap.toSesqForm :
+        (EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) →L[ℝ]
+          Ambient n ℓ →L⋆[ℝ] StrongDual ℝ (EuclideanSpace ℝ (Fin n))) with hadj
+  have hadj_inner : ∀ (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) (y : Ambient n ℓ)
+      (x : EuclideanSpace ℝ (Fin n)), inner ℝ (adj A y) x = inner ℝ y (A x) := by
+    intro A y x
+    change inner ℝ ((InnerProductSpace.toDual ℝ (EuclideanSpace ℝ (Fin n))).symm
+      (ContinuousLinearMap.toSesqForm A y)) x = _
+    rw [InnerProductSpace.toDual_symm_apply, ContinuousLinearMap.toSesqForm_apply_coe]
+    rfl
+  -- `Φ(A) = A ∘ (A*A)⁻¹ ∘ A*`
+  set Φ : (EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) → (Ambient n ℓ →L[ℝ] Ambient n ℓ) :=
+    fun A ↦ A ∘L (Ring.inverse (adj A ∘L A) ∘L adj A) with hΦ
+  -- `A*A` is a unit for injective `A`: `⟪A*Av, v⟫ = ‖Av‖²`, and injective means bijective in
+  -- finite dimension
+  have hunit : ∀ A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ, Function.Injective A →
+      IsUnit (adj A ∘L A) := by
+    intro A hA
+    have hinj : Function.Injective (adj A ∘L A) := by
+      intro v w hvw
+      have h0 : (adj A ∘L A) (v - w) = 0 := by
+        rw [map_sub, hvw, sub_self]
+      have h1 : ‖A (v - w)‖ ^ 2 = 0 := by
+        rw [← real_inner_self_eq_norm_sq, ← hadj_inner]
+        simp only [ContinuousLinearMap.comp_apply] at h0
+        rw [h0, inner_zero_left]
+      have h2 : A (v - w) = 0 := by
+        simpa using h1
+      have h3 : v - w = 0 := hA (by rw [h2, map_zero])
+      exact sub_eq_zero.mp h3
+    refine ContinuousLinearMap.isUnit_iff_bijective.mpr ⟨hinj, ?_⟩
+    exact (LinearMap.injective_iff_surjective (f := (adj A ∘L A).toLinearMap)).mp hinj
+  -- the projection formula `p_{A(ℝⁿ)} = Φ(A)`: `Φ(A)z ∈ A(ℝⁿ)` and `z - Φ(A)z ⊥ A(ℝⁿ)`
+  have hformula : ∀ A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ, Function.Injective A →
+      (LinearMap.range A.toLinearMap).starProjection = Φ A := by
+    intro A hA
+    ext1 z
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · exact ⟨_, rfl⟩
+    · rintro _ ⟨v, rfl⟩
+      rw [ContinuousLinearMap.coe_coe, ← hadj_inner, map_sub]
+      have hcancel : adj A (Φ A z) = adj A z := by
+        have := Ring.mul_inverse_cancel _ (hunit A hA)
+        calc adj A (Φ A z)
+            = ((adj A ∘L A) * Ring.inverse (adj A ∘L A)) (adj A z) := by
+              simp only [hΦ, ContinuousLinearMap.comp_apply, mul_apply_eq_comp]
+          _ = adj A z := by rw [this, one_apply_eq_self]
+      rw [hcancel, sub_self, inner_zero_left]
+  -- continuity of `Φ` at injective maps: `A ↦ A*` is continuous, `Ring.inverse` is continuous
+  -- at units, and composition is continuous
+  have hcont : ∀ A₀ : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ, Function.Injective A₀ →
+      ContinuousAt Φ A₀ := by
+    intro A₀ hA₀
+    have hadjc : Continuous fun A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ ↦ adj A :=
+      adj.continuous
+    have hgram : Continuous fun A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ ↦
+        adj A ∘L A := hadjc.clm_comp continuous_id
+    have hinv : ContinuousAt (fun A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ ↦
+        Ring.inverse (adj A ∘L A)) A₀ := by
+      have := NormedRing.inverse_continuousAt (hunit A₀ hA₀).unit
+      exact ContinuousAt.comp (f := fun A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ ↦
+        adj A ∘L A) (by simpa using this) hgram.continuousAt
+    exact continuousAt_id.clm_comp (hinv.clm_comp hadjc.continuousAt)
+  -- `p_{A(ℝⁿ)}` agrees with `Φ` on the injective maps, so it is continuous there
+  intro A₀ hA₀
+  exact ((hcont A₀ hA₀).continuousWithinAt).congr (fun A hA ↦ hformula A hA) (hformula A₀ hA₀)
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
