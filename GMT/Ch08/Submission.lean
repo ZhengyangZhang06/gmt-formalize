@@ -1249,6 +1249,105 @@ theorem Submission.intcpt_id_measurable_densities :
   rw [heq]
   exact (hlimsup (measurableSet_singleton c)).inter (hliminf (measurableSet_singleton c))
 
+/-- **Simon Ch. 8, Remark 5.9** (step B0 of 5.9, for one varifold): an integral varifold has
+integer density `Θ^n(μ_V, x) ≥ 1` at `μ_V`-a.e. `x`.  Write `V = v(M, θ)`, `ν = θ H^n ⌞ M` and
+`μ_V = ν ⌞ T` for a Borel hull `T` of the tangent-point set `M_*` (`intcpt_id_weight_hull`).  At
+`x ∈ M_*`, `Θ^n(ν, x) = θ(x)` (Ch. 3, Remark 1.8(2): `intcpt_id_tangent_point_density`), and off an
+`H^n`-null set `Θ^n(ν ⌞ Tᶜ, x) = 0` (Ch. 1, 3.6: `intcpt_id_restrict_density_zero_ae`) and
+`θ(x) ∈ ℕ`; hence `Θ^n(μ_V, x) = θ(x) ∈ {1, 2, …}` for `H^n`-a.e. `x ∈ M_*`.  The set where the
+conclusion fails is Borel (`intcpt_id_measurable_densities`), so its `μ_V`-measure is the integral
+of `θ` over an `H^n`-null subset of `M_*`, i.e. `0`. -/
+theorem Submission.intcpt_integral_density_integer :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), IsIntegral V → ∀ᵐ x ∂V.weight, ∃ k : ℕ, 1 ≤ k ∧ HasDensity n V.weight x (k : ℝ≥0∞) := by
+  intro N n U V hV
+  -- Step 1: `V = v(M, θ)` with `θ ∈ ℕ` `H^n`-a.e. on `M`, and `μ_V = ν ⌞ T` with `M_* ⊆ T` Borel
+  -- (sibling `intcpt_id_weight_hull`).
+  obtain ⟨M, θ, hVM, hint⟩ := hV
+  obtain ⟨T, hT, hMT, hweight, hformula⟩ := Submission.intcpt_id_weight_hull N n U V M θ hVM
+  obtain ⟨hMU, hMnull, -, hθpos, hθint, -⟩ := hVM
+  set Mstar : Set (Euclidean N) := {x | x ∈ M ∧ ∃ S : Grassmannian N n,
+    Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane}
+  set ν : Measure (Euclidean N) := ((μHE[n] : Measure (Euclidean N)).restrict M).withDensity
+    fun x ↦ ENNReal.ofReal (θ x) with hν
+  -- `ν(K) = ∫_{M ∩ K} θ dH^n < ∞` for compact `K ⊆ U`.
+  have hνK : ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → ν K ≠ ∞ := by
+    intro K hK hKU
+    rw [hν, withDensity_apply _ hK.measurableSet, Measure.restrict_restrict hK.measurableSet,
+      inter_comm]
+    exact (hθint K hK hKU).lintegral_lt_top.ne
+  -- Step 2 (Ch. 1, 3.6): `Θ^n(ν ⌞ Tᶜ, x) = 0` for `H^n`-a.e. `x ∈ U ∩ T`
+  -- (sibling `intcpt_id_restrict_density_zero_ae`).
+  have hzero := Submission.intcpt_id_restrict_density_zero_ae N n ν U Tᶜ V.isOpen_domain hνK
+    hT.compl
+  -- Step 3: `θ(x) ∈ ℕ` for `H^n`-a.e. `x ∈ M` (`M` need not be measurable here).
+  have hintAE : ∀ᵐ x ∂(μHE[n] : Measure (Euclidean N)), x ∈ M → ∃ k : ℕ, θ x = k := by
+    rw [ae_iff] at hint ⊢
+    refine measure_mono_null (fun x hx ↦ ?_)
+      (nonpos_iff_eq_zero.mp ((Measure.le_restrict_apply _ _).trans hint.le))
+    simp only [mem_ofPred_eq, not_imp] at hx
+    exact ⟨hx.2, hx.1⟩
+  -- Step 4: the target set `P = {x | ∃ k ≥ 1, Θ^n(μ_V, x) = k}` is Borel
+  -- (sibling `intcpt_id_measurable_densities`; `μ_V` is σ-finite).
+  set P : Set (Euclidean N) := {x | ∃ k : ℕ, 1 ≤ k ∧ HasDensity n V.weight x (k : ℝ≥0∞)} with hP
+  have hPmeas : MeasurableSet P := by
+    have hPeq : P = ⋃ k : ℕ, ({_x : Euclidean N | 1 ≤ k} ∩
+        {x | HasDensity n V.weight x (k : ℝ≥0∞)}) := by
+      ext x
+      simp [hP]
+    rw [hPeq]
+    exact MeasurableSet.iUnion fun k ↦ (MeasurableSet.const _).inter
+      ((Submission.intcpt_id_measurable_densities N n V.weight).2.2 _)
+  -- Step 5: `Θ^n(μ_V, x) = θ(x) ∈ {1, 2, …}` at `H^n`-a.e. `x ∈ M_*`.
+  have hkey : ∀ᵐ x ∂(μHE[n] : Measure (Euclidean N)), x ∈ Mstar → x ∈ P := by
+    filter_upwards [hzero, hintAE] with x hx0 hxint hxMstar
+    obtain ⟨hxM, S, hS⟩ := hxMstar
+    obtain ⟨k, hk⟩ := hxint hxM
+    -- (a) `Θ^n(ν, x) = θ(x)` (Ch. 3, Remark 1.8(2): sibling `intcpt_id_tangent_point_density`),
+    -- with `θ` integrable on `M ∩ B_{ε/2}(x)` for a closed ball `B_{ε/2}(x) ⊆ U`.
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp V.isOpen_domain x (hMU hxM)
+    have hcl : closedBall x (ε / 2) ⊆ U :=
+      (closedBall_subset_ball (by linarith)).trans hball
+    have hdens := Submission.intcpt_id_tangent_point_density N n M θ x S.plane (ε / 2) hMnull
+      (fun y hy ↦ (hθpos y hy).le) hxM (by linarith)
+      (hθint _ (isCompact_closedBall x (ε / 2)) hcl) hS
+    -- (b) `Θ^n(ν ⌞ Tᶜ, x) = 0`, since `x ∈ M_* ⊆ T`.
+    have hxT : x ∈ T := hMT ⟨hxM, S, hS⟩
+    have h0 : HasDensity n (ν.restrict Tᶜ) x 0 := hx0 (hMU hxM) (fun h ↦ h hxT)
+    -- (c) `ν = μ_V + ν ⌞ Tᶜ`, so the density ratios add and `Θ^n(μ_V, x) = θ(x) - 0`.
+    have hsplit : ν = V.weight + ν.restrict Tᶜ := by
+      rw [hweight, Measure.restrict_add_restrict_compl hT]
+    have hadd : ∀ ρ, densityRatio n ν x ρ =
+        densityRatio n V.weight x ρ + densityRatio n (ν.restrict Tᶜ) x ρ := by
+      intro ρ
+      simp only [densityRatio]
+      conv_lhs => rw [hsplit]
+      rw [Measure.add_apply, ENNReal.add_div]
+    have hW : HasDensity n V.weight x (ENNReal.ofReal (θ x)) := by
+      have h1 := ENNReal.Tendsto.sub hdens h0 (Or.inl ENNReal.ofReal_ne_top)
+      rw [tsub_zero] at h1
+      unfold HasDensity
+      refine h1.congr' ?_
+      have hfin : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), densityRatio n (ν.restrict Tᶜ) x ρ ≠ ∞ :=
+        h0.eventually (eventually_ne_nhds ENNReal.zero_ne_top)
+      filter_upwards [hfin] with ρ hρ
+      rw [hadd ρ, ENNReal.add_sub_cancel_right hρ]
+    -- (d) `θ(x) = k` with `k ≥ 1`, as `θ > 0` on `M`.
+    refine ⟨k, ?_, ?_⟩
+    · have hpos := hθpos x hxM
+      rw [hk] at hpos
+      exact_mod_cast hpos
+    · rwa [hk, ENNReal.ofReal_natCast] at hW
+  -- Step 6: `μ_V(Pᶜ) = ∫_{M_* ∩ Pᶜ} θ dH^n = 0`, as `P` is Borel and `H^n(M_* ∩ Pᶜ) = 0`.
+  rw [ae_iff]
+  change V.weight Pᶜ = 0
+  rw [hformula _ hPmeas.compl]
+  have hnull : (μHE[n] : Measure (Euclidean N)) (Mstar ∩ Pᶜ) = 0 := by
+    rw [ae_iff] at hkey
+    refine measure_mono_null (fun x hx ↦ ?_) hkey
+    simp only [mem_ofPred_eq, not_imp]
+    exact ⟨hx.1, hx.2⟩
+  rw [Measure.restrict_eq_zero.mpr hnull, lintegral_zero_measure]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
