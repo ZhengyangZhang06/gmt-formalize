@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.diagonal_blowup-a1.ball_cc_dense_seq-a1",
+  "parent_id": "root.integral_compactness-a1.diagonal_blowup-a1",
+  "depth": 3,
+  "title": "A countable sup-dense family in C_c(ℝ^N × G) with supports in B°_R(0) × G (step 1)",
+  "statement": "Let N, n ∈ ℕ and R > 0. There are g_m ∈ C_c(ℝ^N × G(N,n)) (m ∈ ℕ) with tsupport g_m ⊆ B°_R(0) × G(N,n) for every m such that for every f ∈ C_c(ℝ^N × G(N,n)) with tsupport f ⊆ B°_R(0) × G(N,n) and every η > 0 there is m with |f(z) − g_m(z)| ≤ η for all z ∈ ℝ^N × G(N,n).",
+  "lean_statement": "∀ (N n : ℕ) (R : ℝ), 0 < R → ∃ g : ℕ → C_c(Euclidean N × Grassmannian N n, ℝ), (∀ m, tsupport (g m) ⊆ ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n))) ∧ ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n)) → ∀ η : ℝ, 0 < η → ∃ m, ∀ z, |f z - g m z| ≤ η",
+  "lean_name": "intcpt_diag_ball_cc_dense_seq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-diagonal-blowup-a1-ball-cc-dense-seq-a1-a1"
+}

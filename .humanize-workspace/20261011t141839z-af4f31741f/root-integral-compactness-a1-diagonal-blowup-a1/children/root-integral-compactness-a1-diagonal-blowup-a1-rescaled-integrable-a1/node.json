@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.diagonal_blowup-a1.rescaled_integrable-a1",
+  "parent_id": "root.integral_compactness-a1.diagonal_blowup-a1",
+  "depth": 3,
+  "title": "Compactly supported tests supported in the blown-up domain are integrable for the blow-up",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, V an n-varifold on U, ξ ∈ ℝ^N, t > 0 and F ∈ C_c(ℝ^N × G(N,n)) with ξ + t·y ∈ U for every (y, S) ∈ tsupport F. Then F is integrable with respect to V_{ξ,t} = rescaledMeasure V ξ t = ofReal(t^{-n})·(V.measure)_#[(z, S) ↦ (t^{-1}(z − ξ), S)].",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (ξ : Euclidean N) (t : ℝ) (F : C_c(Euclidean N × Grassmannian N n, ℝ)), 0 < t → (∀ z ∈ tsupport F, ξ + t • z.1 ∈ U) → Integrable (fun z ↦ F z) (rescaledMeasure V ξ t)",
+  "lean_name": "intcpt_diag_rescaled_integrable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-diagonal-blowup-a1-rescaled-integrable-a1-a1"
+}

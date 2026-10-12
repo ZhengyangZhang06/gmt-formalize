@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.diagonal_blowup-a1.blowup_variation_bound-a1",
+  "parent_id": "root.integral_compactness-a1.diagonal_blowup-a1",
+  "depth": 3,
+  "title": "The restricted blow-up is a varifold with locally bounded first variation and ‖δW‖(B°_R(0)) ≤ t^{1−n}‖δV‖(B_{tR}(ξ)) (steps 4 and 6; printed (4))",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, V an n-varifold on U with locally bounded first variation, ξ ∈ ℝ^N, t > 0 and R > 0 with ξ + t·y ∈ U for every y ∈ B°_R(0). Then there is an n-varifold W on B°_R(0) such that W.measure = (rescaledMeasure V ξ t).restrict (B°_R(0) × G(N,n)) (i.e. W = V_{ξ,t} ⌞ G_n(B°_R(0))), W has locally bounded first variation, and variationMeasure W (B°_R(0)) ≤ ofReal(t^{-n}·t)·variationMeasure V (B_{tR}(ξ)), where B_ρ(x) is the closed ball and variationMeasure is ‖δ·‖.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (ξ : Euclidean N) (t R : ℝ), V.HasLocallyBoundedFirstVariation → 0 < t → 0 < R → (∀ y ∈ ball (0 : Euclidean N) R, ξ + t • y ∈ U) → ∃ W : Varifold N n (ball (0 : Euclidean N) R), W.measure = (rescaledMeasure V ξ t).restrict (ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n))) ∧ W.HasLocallyBoundedFirstVariation ∧ variationMeasure W (ball (0 : Euclidean N) R) ≤ ENNReal.ofReal (t⁻¹ ^ n * t) * variationMeasure V (closedBall ξ (t * R))",
+  "lean_name": "intcpt_diag_blowup_variation_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-diagonal-blowup-a1-blowup-variation-bound-a1-a1"
+}
