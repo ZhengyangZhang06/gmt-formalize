@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "86a84c23e8197ab05ba66b3cb28e892caa0d568e61dc22c8e2c486ffb775becd",
+  "git_delta": {
+    "base_commit": "6ed9337b7ab5a113fbff0e59a1978be40bdbfd5e",
+    "candidate_commit": "c666a7bc5b7218e6b8d7f9d5e3dcc680e3dfc124",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_ri_restrictDomain_mass_le",
+    "diff_sha256": "fb2241992c3915cb87485f96107690c3e99d435009a07b02342c57cbff1e325b",
+    "source_sha256": "014f88a53ba2fe6e026ceaea8987c18b9216db8410d6ca4171933384a219c26b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_ri_restrictDomain_mass_le",
+      "statement": "∀ (P k : ℕ) (U W : Set (Eucl P)) (hWU : W ⊆ U) (Y : GeometricCurrentOn U k), (Y.restrictDomain hWU).mass ≤ Y.mass",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
