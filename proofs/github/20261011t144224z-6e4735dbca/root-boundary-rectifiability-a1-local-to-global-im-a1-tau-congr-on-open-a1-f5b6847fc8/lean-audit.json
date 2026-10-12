@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "32b2cc22a95cd927f4cf84d58228e23aa8dc2eb55e237fcee6c2d2ba06d738d9",
+  "git_delta": {
+    "base_commit": "2c87a1695b3eb21572e87de1592f511dd455aba7",
+    "candidate_commit": "bf2b276506a5e6672e56a5a83d90afab9a49dece",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ltg_tau_congr_on_open",
+    "diff_sha256": "3b5a4d4f9fb6f09f085de3c370819342efd931073f77d87c9a7d678ab5fe2efc",
+    "source_sha256": "d0efe0afe9be2cbaec1fe6dbfaada7abaec19a35554d0373a0a7c3c37708c3f4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ltg_tau_congr_on_open",
+      "statement": "∀ (P k : ℕ) (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (ξ ξ' : Eucl P → NVector (Eucl P) k) (V : Set (Eucl P)), IsOpen V → (μHE[k] : Measure (Eucl P)) (symmDiff M M' ∩ V) = 0 → (∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M ∩ V)), θ x = θ' x ∧ ξ x = ξ' x) → ∀ ω : DifferentialForm (Eucl P) k, tsupport ω ⊆ V → tauAction k M θ ξ ω = tauAction k M' θ' ξ' ω",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
