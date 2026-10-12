@@ -544,6 +544,55 @@ theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗ�
     rw [← map_sub, hsub, sub_self, sub_zero]
     exact (q.inner_map_map _ _).trans (horth h hh)
 
+/-- Simon Ch. 5, Lemma 2.6 and its proof (pp. 110–111): the distance from `q(a, b)` to the plane
+`T₀ = q(ℝⁿ × {0})` is `|b|`. By `lip_approx_graph_coordinates`, the points of `T₀` are exactly the
+`q(c, 0)` (each `q(c, 0) = p_{T₀}(q(c, 0))` lies in `T₀`, and `p ∈ T₀` with `q⁻¹(p) = (c, d)` gives
+`p = p_{T₀}(p) = q(c, 0)`), and `|q(a, b) − q(c, 0)| = |(a − c, b)| ≥ |b|`, with equality at
+`c = a`. -/
+theorem tdo_gpd_infDist_rotatedPlane_graphPoint : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (a : Rn n) (b : Rn ℓ), infDist (q (graphPoint a b)) (rotatedPlane q : Set (Amb n ℓ)) = ‖b‖ := by
+  intro n ℓ q a b
+  obtain ⟨hsub, hnorm, hsurj, hproj⟩ := lip_approx_graph_coordinates n ℓ q
+  -- `|b| ≤ |(c, b)|` and `|(0, b)| = |b|`
+  have hge : ∀ (c : Rn n) (d : Rn ℓ), ‖d‖ ≤ ‖graphPoint c d‖ := by
+    intro c d
+    have h := hnorm c d
+    have h0 : 0 ≤ ‖graphPoint c d‖ := norm_nonneg _
+    nlinarith [sq_nonneg ‖c‖, norm_nonneg d]
+  have hzero : ∀ d : Rn ℓ, ‖graphPoint (0 : Rn n) d‖ = ‖d‖ := by
+    intro d
+    have h := hnorm 0 d
+    rw [norm_zero, zero_pow two_ne_zero, zero_add] at h
+    exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h
+  -- every `q(c, 0)` lies in `T₀`
+  have hmem : ∀ c : Rn n, q (graphPoint c 0) ∈ rotatedPlane q := by
+    intro c
+    rw [← hproj c 0]
+    exact Submodule.starProjection_apply_mem _ _
+  -- every point of `T₀` is some `q(c, 0)`
+  have hform : ∀ p ∈ rotatedPlane q, ∃ c : Rn n, p = q (graphPoint c 0) := by
+    intro p hp
+    obtain ⟨c, d, hcd⟩ := hsurj (q.symm p)
+    have hp' : p = q (graphPoint c d) := by
+      rw [← hcd]
+      simp
+    refine ⟨c, ?_⟩
+    have h := hproj c d
+    rw [← hp', Submodule.starProjection_eq_self_iff.mpr hp] at h
+    exact h
+  apply le_antisymm
+  -- upper bound: compare with `q(a, 0) ∈ T₀`
+  · calc infDist (q (graphPoint a b)) (rotatedPlane q : Set (Amb n ℓ))
+        ≤ dist (q (graphPoint a b)) (q (graphPoint a 0)) := infDist_le_dist_of_mem (hmem a)
+      _ = ‖b‖ := by
+        rw [dist_eq_norm, ← map_sub, LinearIsometryEquiv.norm_map, hsub, sub_self, sub_zero,
+          hzero]
+  -- lower bound: `|q(a, b) − q(c, 0)| = |(a − c, b)| ≥ |b|` for every `q(c, 0) ∈ T₀`
+  · rw [le_infDist ⟨0, (rotatedPlane q).zero_mem⟩]
+    intro p hp
+    obtain ⟨c, rfl⟩ := hform p hp
+    rw [dist_eq_norm, ← map_sub, LinearIsometryEquiv.norm_map, hsub, sub_zero]
+    exact hge _ _
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
