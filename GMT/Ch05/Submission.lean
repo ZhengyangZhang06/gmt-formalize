@@ -669,4 +669,33 @@ end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
+namespace Submission
+
+/-- **Simon Ch. 5, Theorem 7.1, proof (p. 127): translation invariance (fact (Inv)).**  For
+`τ(x) = x − ξ`, the translate `V' = v(τ(M), θ(· + ξ))` is a rectifiable `n`-varifold in `τ(U)` with
+`μ_{V'} = τ_# μ_V` and `spt V' = τ(spt V)`; if `V` has generalized mean curvature `H` in `U`, then
+`V'` has generalized mean curvature `H(· + ξ)` in `τ(U)`.
+
+`V'` and its structure fields come from `dohr_tv_exists_translate`, the weight from
+`dohr_tv_weight_eq_map`, the tangent projections `p_{T_y V'} = p_{T_{y+ξ} V}` from
+`dohr_tv_tangentProj_eq`, and the first variation from `dohr_tv_gmc_transfer`.  For the support,
+`spt V' = τ(U) ∩ spt(τ_# μ_V) = τ(U) ∩ τ(spt μ_V)` (`dohr_tv_support_map_sub`), which is
+`τ(U ∩ spt μ_V)` because `τ` is injective. -/
+theorem dohr_translate_varifold : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ), ∃ V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U), V'.carrier = (fun x => x - ξ) '' V.carrier ∧ (∀ y, V'.mult y = V.mult (y + ξ)) ∧ V'.weight = V.weight.map (fun x => x - ξ) ∧ V'.support = (fun x => x - ξ) '' V.support ∧ ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun y => H (y + ξ)) := by
+  intro n ℓ U V ξ
+  -- Steps 1–2: the translate `V'` in `τ(U)` with carrier `τ(M)` and multiplicity `θ(· + ξ)`.
+  obtain ⟨V', hc, hm⟩ := Submission.dohr_tv_exists_translate n ℓ U V ξ
+  -- Step 3: `μ_{V'} = τ_# μ_V`.
+  have hw := Submission.dohr_tv_weight_eq_map n ℓ U _ V V' ξ hc hm
+  -- Step 5: `p_{T_y V'} = p_{T_{y+ξ} V}` for every `y`.
+  have ht := Submission.dohr_tv_tangentProj_eq n ℓ U _ V V' ξ hc hm
+  -- Step 6 is `dohr_tv_gmc_transfer`; only the support (Step 4) remains.
+  refine ⟨V', hc, hm, hw, ?_, Submission.dohr_tv_gmc_transfer n ℓ U V ξ V' hw ht⟩
+  -- Step 4: `spt V' = τ(U) ∩ spt(τ_# μ_V) = τ(U) ∩ τ(spt μ_V) = τ(U ∩ spt μ_V)`.
+  show (fun x => x - ξ) '' U ∩ V'.weight.support = (fun x => x - ξ) '' (U ∩ V.weight.support)
+  rw [hw, Submission.dohr_tv_support_map_sub n ℓ V.weight ξ,
+    Set.image_inter (sub_left_injective (b := ξ))]
+
+end Submission
+
 end GMT.Ch05
