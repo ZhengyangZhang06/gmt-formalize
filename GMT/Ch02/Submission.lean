@@ -1215,6 +1215,57 @@ theorem Submission.second_fundamental_form_chart_formula : ((∀ (n N : ℕ) (r 
       hQ hPQ a,
     Submission.sff_projection_field_fderiv_identity n N ψ Q x₀ hψ1 hDψ hQ hfix a b, hP₀]
 
+/-- **Simon Ch. 2, 4.21–4.30 (pp. 59–61) in a chart: the divergence density.** Assume `(TH)`, the
+frozen statement of `simon_submanifold_tangent_basics`. Let `(V, W, ψ)` be a class-`2` local
+representation of `M`, `Y` a `C¹` field, and put `A = Dψ`, `G = A*A`, `J = areaJacobianAt ψ`,
+`u = Y ∘ ψ`, `a = G⁻¹A*u`. Then `w = J • a` is `C¹` on `V` and vanishes where `u` does. By the
+product rule and Jacobi's formula, `trace Dw = J (trace Da + trace(G⁻¹A* D²ψ[a]))`, and the
+coefficient trace identity rewrites the bracket as `trace(G⁻¹A* Du) + ⟨u - Aa, ∑ₗ D²ψ[eₗ, G⁻¹eₗ]⟩`.
+The first term is `div_M Y ∘ ψ` (chain rule and the chart formula for `div_M`). Since `Aa = Pu` with
+`P = AG⁻¹A*` self-adjoint, the chart formulas for `H` and `B` make the second term `⟨u, H ∘ ψ⟩`. -/
+theorem Submission.chart_divergence_density_formula : ((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → ∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N) (Y : Rn N → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ContDiff ℝ 1 Y → ∃ w : Rn n → Rn n, ContDiffOn ℝ 1 w V ∧ (∀ x ∈ V, Y (ψ x) = 0 → w x = 0) ∧ ∀ x ∈ V, LinearMap.trace ℝ (Rn n) (fderiv ℝ w x).toLinearMap = Chapter02.areaJacobianAt ψ x * (tangentialDivergence M Y (ψ x) + inner ℝ (Y (ψ x)) (meanCurvature M (ψ x))) := by
+  intro hTH n N M V W ψ Y hψ hY
+  have hV : IsOpen V := hψ.isOpen_source
+  have hψ2 : ContDiffOn ℝ 2 ψ V := hψ.contDiffOn
+  have hinj : ∀ x ∈ V, Function.Injective (fderiv ℝ ψ x) := fun x hx ↦ hψ.injective_fderiv hx
+  have hu : ContDiffOn ℝ 1 (fun x ↦ Y (ψ x)) V := hY.comp_contDiffOn (hψ2.of_le (by norm_num))
+  obtain ⟨hJ, hDJ⟩ :=
+    Submission.areaJacobianAt_contDiffOn_fderiv_eq_gram_trace n N V ψ hV hψ2 hinj
+  have ha := Submission.chart_tangential_coefficient_contDiffOn n N V ψ _ hV hψ2 hinj hu
+  -- `w = J • a` with `a = G⁻¹A*(Y ∘ ψ)`.
+  refine ⟨fun x ↦ Chapter02.areaJacobianAt ψ x • Ring.inverse
+      (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x)
+      (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) (Y (ψ x))), hJ.smul ha,
+    fun x _ h0 ↦ by simp only [h0, map_zero, smul_zero], fun x hx ↦ ?_⟩
+  have hxV : V ∈ 𝓝 x := hV.mem_nhds hx
+  have hT : tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap :=
+    hTH.1 n N 2 M V W ψ (by norm_num) hψ x hx
+  -- Product rule and Jacobi's formula: `trace Dw = J trace Da + J trace(G⁻¹A* D²ψ[a])`.
+  have hsr (f : Rn n →L[ℝ] ℝ) (v : Rn n) :
+      LinearMap.trace ℝ (Rn n) (f.smulRight v).toLinearMap = f v :=
+    LinearMap.trace_smulRight f.toLinearMap v
+  rw [fderiv_fun_smul (hJ.contDiffAt hxV).differentiableAt_one
+      (ha.contDiffAt hxV).differentiableAt_one, ContinuousLinearMap.toLinearMap_add,
+    ContinuousLinearMap.toLinearMap_smul, map_add, map_smul, smul_eq_mul, hsr, hDJ x hx]
+  -- The coefficient trace identity, with `Du(x) = DY(ψ x) ∘ A` (chain rule).
+  have hcore :=
+    Submission.chart_tangential_coefficient_trace_identity n N V ψ _ hV hψ2 hinj hu x hx
+  dsimp only at hcore
+  rw [fderiv_fun_comp x (hY.differentiable one_ne_zero _)
+    ((hψ2.contDiffAt hxV).differentiableAt (by norm_num)), inner_sub_left] at hcore
+  -- The chart formulas for `div_M Y` and `H`; `P = AG⁻¹A*` is self-adjoint.
+  have hP := (Submission.gram_inverse_range_starProjection n N (tangentSpace M (ψ x))
+    (fderiv ℝ ψ x) (hinj x hx) hT).2.2
+  rw [Submission.chart_tangentialDivergence_eq_gram_trace n N M (ψ x) (fderiv ℝ ψ x) Y
+      (hinj x hx) hT,
+    Submission.chart_meanCurvature_eq_normalPart_gram_sum n N M (ψ x) (fderiv ℝ ψ x)
+      (fderiv ℝ (fderiv ℝ ψ) x) (hinj x hx) hT
+      (Submission.second_fundamental_form_chart_formula hTH n N M V W ψ hψ x hx),
+    normalPart, tangentProjection, inner_sub_right,
+    ← Submodule.inner_starProjection_left_eq_right, hP, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.comp_apply]
+  linear_combination Chapter02.areaJacobianAt ψ x * hcore
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
