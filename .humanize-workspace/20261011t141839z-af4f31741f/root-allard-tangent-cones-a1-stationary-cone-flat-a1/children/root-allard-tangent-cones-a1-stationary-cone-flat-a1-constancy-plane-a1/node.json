@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1.constancy_plane-a1",
+  "parent_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1",
+  "depth": 3,
+  "title": "Constancy theorem for a stationary varifold on ℝ^N supported in an n-plane",
+  "statement": "Assume ConstancyTheorem (Simon 8.4.1, corrected: M ∩ U connected). Let C be a stationary n-varifold on U = ℝ^N and T ∈ G(N,n) with spt μ_C ⊆ T (as a subset of ℝ^N). Then there is θ ≥ 0 with C = θ v(T), i.e. C.measure = ofReal θ • planeVarifoldMeasure T, where v(T)(A) = H^n({y ∈ T : (y,T) ∈ A}).",
+  "lean_statement": "ConstancyTheorem → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (T : Grassmannian N n), C.Stationary → C.weight.support ⊆ (T.plane : Set (Euclidean N)) → ∃ θ : ℝ, 0 ≤ θ ∧ C.measure = ENNReal.ofReal θ • planeVarifoldMeasure T",
+  "lean_name": "allard_tc_scf_constancy_plane",
+  "depends_on": [
+    "root.allard_tangent_cones-a1.stationary_cone_flat-a1.subspace_submanifold-a1",
+    "root.allard_tangent_cones-a1.stationary_cone_flat-a1.subspace_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1.subspace_submanifold-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1.subspace_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-stationary-cone-flat-a1-constancy-plane-a1-a1"
+}
