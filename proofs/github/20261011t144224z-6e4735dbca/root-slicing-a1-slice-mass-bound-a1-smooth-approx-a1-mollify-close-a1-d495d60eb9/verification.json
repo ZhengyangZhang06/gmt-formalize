@@ -1,0 +1,15 @@
+{
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1.mollify_close-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/2185",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "0db2d9bb718d2841475070c496d6c527c1c5f3f7",
+  "integrated_commit": "",
+  "proof_base_commit": "b4234a9dd3d42e8e090c071ecb99244a728e1ce3",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1",
+  "requires": []
+}
