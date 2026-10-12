@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bdcbb7765f8bf5afb28c366d6862d9d4859926afa4a3b6b090aa63f0cc484762",
+  "git_delta": {
+    "base_commit": "ecc53ec24a4257fbec663adb97bf513c2ccbefcb",
+    "candidate_commit": "017b0c1fe8fd4d32e469194d32b12ff196e92e1c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgoj_exists_det_covector",
+    "diff_sha256": "bde6e13d498930e64c2b977094083fbc53a2eba3f10ca63adfdaf981d28586b2",
+    "source_sha256": "21b36b9183a633c97b2f4937c953fb11ed11c07f1bff38daf0c50e8f02e1e44b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgoj_exists_det_covector",
+      "statement": "∀ n : ℕ, ∃ δ : Covector (Euclid n) n, δ (fun i => EuclideanSpace.single i (1 : ℝ)) = 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
