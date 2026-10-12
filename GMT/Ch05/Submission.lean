@@ -458,6 +458,39 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **A Lipschitz map whose derivative is Hölder on a full-measure set is `C¹` with the same
+Hölder bound** (Simon Ch. 5, proof of Theorem 5.2: regularity of the graph function `u`).
+Let `f` be `K`-Lipschitz on `B = B̆_r(c)`, differentiable at every point of `Z ⊆ B` with
+`Lⁿ(B \ Z) = 0`, and `|Df(x) − Df(y)| ≤ M (|x − y|/R)^α` for `x, y ∈ Z` (Hilbert–Schmidt norm,
+`M ≥ 0`, `R, α > 0`).  Then `f ∈ C¹(B)` and the same bound holds for all `x, y ∈ B`.
+`B \ closure Z` is an open null set, hence empty, so `allard52_c1h_holder_extension` extends
+`Df|_Z` to a map `g` which is continuous and satisfies the bound on `B`.  `f` has derivative
+`g x` at every `x ∈ Z`, i.e. at a.e. `x ∈ B`, hence at every `x ∈ B` by
+`allard52_lipschitz_hasFDerivAt_of_ae`; so `Df = g` on `B`. -/
+theorem allard52_c1_holder_of_ae_fderiv : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (c : Rn n) (r : ℝ) (K : ℝ≥0) (Z : Set (Rn n)) (M R α : ℝ), 0 ≤ M → 0 < R → 0 < α → LipschitzOnWith K f (ball c r) → Z ⊆ ball c r → volume (ball c r \ Z) = 0 → (∀ x ∈ Z, DifferentiableAt ℝ f x) → (∀ x ∈ Z, ∀ y ∈ Z, hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤ M * (‖x - y‖ / R) ^ α) → ContDiffOn ℝ 1 f (ball c r) ∧ ∀ x ∈ ball c r, ∀ y ∈ ball c r, hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤ M * (‖x - y‖ / R) ^ α := by
+  intro n ℓ f c r K Z M R α hM hR hα hf _hZ hnull hdiff hhol
+  -- `Z` is dense in `B`: `B \ closure Z` is open and null, hence empty.
+  have hdense : ball c r ⊆ closure Z :=
+    sdiff_eq_empty.mp <| (isOpen_ball.sdiff isClosed_closure).eq_empty_of_measure_zero <|
+      measure_mono_null (sdiff_subset_sdiff_right subset_closure) hnull
+  obtain ⟨g, hg, hgZ, hgB⟩ := Submission.allard52_c1h_holder_extension n n ℓ (fderiv ℝ f)
+    (ball c r) Z M R α hM hR hα hdense hhol
+  -- `f` has derivative `g x` at every `x ∈ Z`, hence at a.e. `x ∈ B`.
+  have hae : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball c r → HasFDerivAt f (g x) x := by
+    filter_upwards [measure_eq_zero_iff_ae_notMem.mp hnull] with x hx hxB
+    have hxZ : x ∈ Z := not_not.mp fun h => hx ⟨hxB, h⟩
+    exact hgZ x hxZ ▸ (hdiff x hxZ).hasFDerivAt
+  have hfd := Submission.allard52_lipschitz_hasFDerivAt_of_ae n ℓ f g c r K hf hg hae
+  have hfg : EqOn (fderiv ℝ f) g (ball c r) := fun x hx => (hfd x hx).fderiv
+  refine ⟨?_, fun x hx y hy => hfg hx ▸ hfg hy ▸ hgB x hx y hy⟩
+  rw [show (1 : WithTop ℕ∞) = 0 + 1 from rfl, contDiffOn_succ_iff_fderiv_of_isOpen isOpen_ball]
+  exact ⟨fun x hx => (hfd x hx).differentiableAt.differentiableWithinAt,
+    fun h => absurd h WithTop.coe_ne_top, contDiffOn_zero.mpr (hg.congr hfg)⟩
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
