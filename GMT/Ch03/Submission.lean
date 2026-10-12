@@ -364,6 +364,64 @@ theorem Submission.chartTD_setIntegral_blowUpMap_image : ∀ (N n : ℕ) (x : Rn
     rw [← he, ← integral_map_equiv, hres, integral_smul_nnreal_measure, NNReal.smul_def,
       NNReal.coe_pow, coe_nnnorm, Real.norm_of_nonneg hr.le, smul_eq_mul]
   rw [hint, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero n hr.ne'), one_mul]
+/-- **`C¹` immersions are locally bi-Lipschitz**, the localization step behind the local
+representation of `C¹` immersions (Simon Ch. 2, §4): if `ψ` is `C¹` on the open set `V ⊆ ℝⁿ`
+and `Dψ(u)` is injective for every `u ∈ V`, then each `u₀ ∈ V` has a ball `B_r(u₀) ⊆ V` on
+which `ψ` is `K`-Lipschitz and `c |u - u'| ≤ |ψ(u) - ψ(u')|` for some `c > 0`. The injective
+`L = Dψ(u₀)` satisfies `c₀ |v| ≤ |L v|` (`LinearMap.exists_antilipschitzWith`); continuity of
+`Dψ` gives `‖Dψ(u) - L‖ ≤ c₀/2` on a small ball, and the mean value inequality on the convex
+ball, applied to `ψ` and to `ψ - L`, gives `K = ‖L‖ + c₀/2` and `c = c₀/2`. -/
+theorem Submission.chartTD_immersion_local_biLipschitz : ∀ (n N : ℕ) (V : Set (Rn n))
+    (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V →
+    (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → ∀ u₀ ∈ V, ∃ r : ℝ, 0 < r ∧
+      Metric.ball u₀ r ⊆ V ∧ ∃ (K : ℝ≥0) (c : ℝ), 0 < c ∧ LipschitzOnWith K ψ (Metric.ball u₀ r) ∧
+        ∀ u ∈ Metric.ball u₀ r, ∀ u' ∈ Metric.ball u₀ r, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖ := by
+  intro n N V ψ hV hψ hinj u₀ hu₀
+  -- Step 1: `ψ` is differentiable on the open set `V` and `Dψ` is continuous there.
+  have hdiff : ∀ u ∈ V, DifferentiableAt ℝ ψ u := fun u hu ↦
+    (hψ.differentiableOn_one u hu).differentiableAt (hV.mem_nhds hu)
+  have hcont : ContinuousOn (fderiv ℝ ψ) V := hψ.continuousOn_fderiv_of_isOpen hV le_rfl
+  -- Step 2: `L = Dψ(u₀)` is injective, hence bounded below: `c₀ ‖v‖ ≤ ‖L v‖` with `c₀ = A⁻¹`.
+  set L := fderiv ℝ ψ u₀ with hL_def
+  obtain ⟨A, hA, hAL⟩ := (L : Rn n →ₗ[ℝ] Rn N).exists_antilipschitzWith
+    (LinearMap.ker_eq_bot.2 (hinj u₀ hu₀))
+  have hA' : (0 : ℝ) < A := NNReal.coe_pos.2 hA
+  have hc₀ : 0 < (A : ℝ)⁻¹ := inv_pos.2 hA'
+  have hlow : ∀ v, (A : ℝ)⁻¹ * ‖v‖ ≤ ‖L v‖ := by
+    intro v
+    have h := hAL.le_mul_dist v 0
+    simp only [dist_zero_right, map_zero, ContinuousLinearMap.coe_coe] at h
+    rw [inv_mul_le_iff₀ hA']
+    exact h
+  -- Step 3: choose `r` with `B_r(u₀) ⊆ V` and `‖Dψ(u) - L‖ ≤ c₀/2` on `B_r(u₀)`.
+  have hev : ∀ᶠ u in 𝓝 u₀, u ∈ V ∧ ‖fderiv ℝ ψ u - L‖ ≤ (A : ℝ)⁻¹ / 2 := by
+    refine (hV.eventually_mem hu₀).and ?_
+    filter_upwards [(hcont.continuousAt (hV.mem_nhds hu₀)).eventually_mem
+      (Metric.closedBall_mem_nhds L (half_pos hc₀))] with u hu
+    rwa [Metric.mem_closedBall, dist_eq_norm] at hu
+  obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff_ball.1 hev
+  -- Step 4: `‖Dψ(u)‖ ≤ ‖L‖ + c₀/2` on `B_r(u₀)`.
+  have hC : 0 ≤ ‖L‖ + (A : ℝ)⁻¹ / 2 := add_nonneg (norm_nonneg _) (half_pos hc₀).le
+  have hbound : ∀ u ∈ Metric.ball u₀ r, ‖fderiv ℝ ψ u‖ ≤ ‖L‖ + (A : ℝ)⁻¹ / 2 := fun u hu ↦
+    calc ‖fderiv ℝ ψ u‖ = ‖L + (fderiv ℝ ψ u - L)‖ := by congr 1; abel
+      _ ≤ ‖L‖ + ‖fderiv ℝ ψ u - L‖ := norm_add_le _ _
+      _ ≤ ‖L‖ + (A : ℝ)⁻¹ / 2 := by linarith [(hball u hu).2]
+  refine ⟨r, hr, fun u hu ↦ (hball u hu).1, (‖L‖ + (A : ℝ)⁻¹ / 2).toNNReal, (A : ℝ)⁻¹ / 2,
+    half_pos hc₀, ?_, ?_⟩
+  · -- Step 5: mean value inequality on the convex ball.
+    rw [lipschitzOnWith_iff_norm_sub_le, Real.coe_toNNReal _ hC]
+    intro x hx y hy
+    exact (convex_ball u₀ r).norm_image_sub_le_of_norm_fderiv_le (𝕜 := ℝ)
+      (fun u hu ↦ hdiff u (hball u hu).1) hbound hy hx
+  · -- Step 6: mean value inequality for `ψ - L`, then the lower bound for `L`.
+    intro u hu u' hu'
+    have hmv := (convex_ball u₀ r).norm_image_sub_le_of_norm_fderiv_le' (𝕜 := ℝ) (φ := L)
+      (fun x hx ↦ hdiff x (hball x hx).1) (fun x hx ↦ (hball x hx).2) hu' hu
+    have h2 := hlow (u - u')
+    have h3 : ‖L (u - u')‖ ≤ ‖ψ u - ψ u'‖ + ‖ψ u - ψ u' - L (u - u')‖ := by
+      calc ‖L (u - u')‖ = ‖(ψ u - ψ u') - (ψ u - ψ u' - L (u - u'))‖ := by congr 1; abel
+        _ ≤ ‖ψ u - ψ u'‖ + ‖ψ u - ψ u' - L (u - u')‖ := norm_sub_le _ _
+    linarith
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
