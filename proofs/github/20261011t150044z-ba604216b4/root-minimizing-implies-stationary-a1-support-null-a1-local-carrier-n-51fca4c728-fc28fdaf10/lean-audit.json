@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8766d84402fb21ccaa11f4d82ddcc0451d5f126aba0a5199ee8a768487e7464f",
+  "git_delta": {
+    "base_commit": "402d01a977f700d0c5a2c97c0530bb5e732764c2",
+    "candidate_commit": "09174c642956670f04a4162de033fa431533f7f3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "lcn_orient_apply_ae_eq_zero_of_vanishesOn",
+    "diff_sha256": "44be3f3891503feb41ff69140505be8f631ed3617b06cf0b2a6c0895a9e62ded",
+    "source_sha256": "6e1842d2e02c0cc6f4808294ce0fdfc611fbedaee20f16a57e72b82a6cd3e806",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lcn_orient_apply_ae_eq_zero_of_vanishesOn",
+      "statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → ∀ α : Covector (Euclid P) n, ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), R.orient x α = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
