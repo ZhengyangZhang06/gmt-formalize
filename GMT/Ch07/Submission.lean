@@ -451,6 +451,131 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A cone set lies in a bounded Lipschitz graph**: Steps 5–6 of the proof of the Lipschitz
+approximation lemma (Simon Ch. 5, proof of 2.6, chapter-05.txt lines 456–480: from
+`|Q(y₂ − y₁)| ≤ CβL|y₁ − y₂|` and `Cβ ≤ ½`, "`|Q(y₁) − Q(y₂)| ≤ 2CβL|P(y₁) − P(y₂)|`", so by the
+Lipschitz Extension Theorem (Ch. 2, 1.2, chapter-02.txt line 33) `G ⊆ graph f`, and replacing
+`fʲ` by `max{min{fʲ, Cδ^{1/(2n+2)}}, −Cδ^{1/(2n+2)}}` gives `sup |f| ≤ Cδ^{1/(2n+2)}`).  Here
+`P = p_{T₀}`, `Q = 1 − P`, `λ = lam`.  Writing `y − ξ = ιv_y + ι'w_y`, `Q(y − ξ) = ι'w_y`, so
+`|w_y| ≤ A` and the cone condition gives `|w_{y₂} − w_{y₁}| ≤ 2λ|v_{y₂} − v_{y₁}|`; hence
+`v_y ↦ w_y` is a well-defined `2λ`-Lipschitz map on `{v_y : y ∈ G}`, whose coordinates are
+extended (McShane) and truncated to `[−A, A]`, giving `f` with `Lip f ≤ 2√k λ`, `|f| ≤ √k A` and
+`G ⊆ {ξ + ιv + ι'f(v)}`. -/
+theorem Submission.dorag_lip_cone_set_graph_extension : ∀ (n k : ℕ) (T₀ : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (ξ : Euclid (n + k)) (G : Set (Euclid (n + k))) (lam A : ℝ), (∀ x, ∃ v w, x = ι v + ι' w) → (∀ v w, T₀.starProjection (ι v + ι' w) = ι v) → 0 ≤ lam → lam ≤ 1 / 2 → 0 ≤ A → (∀ y₁ ∈ G, ∀ y₂ ∈ G, ‖(y₂ - y₁) - T₀.starProjection (y₂ - y₁)‖ ≤ lam * ‖y₂ - y₁‖) → (∀ y ∈ G, ‖(y - ξ) - T₀.starProjection (y - ξ)‖ ≤ A) → ∃ f : Euclid n → Euclid k, (∀ v w, ‖f v - f w‖ ≤ 2 * Real.sqrt k * lam * ‖v - w‖) ∧ (∀ v, ‖f v‖ ≤ Real.sqrt k * A) ∧ G ⊆ range (fun v => ξ + ι v + ι' (f v)) := by
+  intro n k T₀ ι ι' ξ G lam A hspan hproj hlam0 hlam1 hA hcone hbound
+  classical
+  -- Step 1: coordinates `y - ξ = ι (φ y) + ι' (ψ y)`, with `Q (y - ξ) = ι' (ψ y)`.
+  choose φ ψ hφψ using fun y : Euclid (n + k) => hspan (y - ξ)
+  have hψA : ∀ y ∈ G, ‖ψ y‖ ≤ A := by
+    intro y hy
+    have h := hbound y hy
+    rw [hφψ y, hproj, add_sub_cancel_left, LinearIsometry.norm_map] at h
+    exact h
+  -- Step 2: the two-point estimate `|ψ y₂ - ψ y₁| ≤ 2λ |φ y₂ - φ y₁|`.
+  have hdiff : ∀ y₁ y₂ : Euclid (n + k), y₂ - y₁ = ι (φ y₂ - φ y₁) + ι' (ψ y₂ - ψ y₁) := by
+    intro y₁ y₂
+    have e : y₂ - y₁ = (y₂ - ξ) - (y₁ - ξ) := by abel
+    rw [e, hφψ y₁, hφψ y₂, map_sub, map_sub]
+    abel
+  have htwo : ∀ y₁ ∈ G, ∀ y₂ ∈ G, ‖ψ y₂ - ψ y₁‖ ≤ 2 * lam * ‖φ y₂ - φ y₁‖ := by
+    intro y₁ hy₁ y₂ hy₂
+    have h := hcone y₁ hy₁ y₂ hy₂
+    rw [hdiff y₁ y₂, hproj, add_sub_cancel_left, LinearIsometry.norm_map] at h
+    have h2 : ‖ι (φ y₂ - φ y₁) + ι' (ψ y₂ - ψ y₁)‖ ≤ ‖φ y₂ - φ y₁‖ + ‖ψ y₂ - ψ y₁‖ := by
+      calc ‖ι (φ y₂ - φ y₁) + ι' (ψ y₂ - ψ y₁)‖
+          ≤ ‖ι (φ y₂ - φ y₁)‖ + ‖ι' (ψ y₂ - ψ y₁)‖ := norm_add_le _ _
+        _ = ‖φ y₂ - φ y₁‖ + ‖ψ y₂ - ψ y₁‖ := by
+          rw [LinearIsometry.norm_map, LinearIsometry.norm_map]
+    have h3 := mul_le_mul_of_nonneg_left h2 hlam0
+    have h4 := mul_nonneg (sub_nonneg.mpr hlam1) (norm_nonneg (ψ y₂ - ψ y₁))
+    nlinarith [norm_nonneg (ψ y₂ - ψ y₁), norm_nonneg (φ y₂ - φ y₁)]
+  -- Step 3: a function `g` on `D := φ '' G` with `g (φ y) = ψ y`.
+  set D : Set (Euclid n) := φ '' G
+  let g : Euclid n → Euclid k := fun v => ψ (Function.invFunOn φ G v)
+  have hg_eq : ∀ y ∈ G, g (φ y) = ψ y := by
+    intro y hy
+    obtain ⟨h1, h2⟩ := Function.invFunOn_pos (b := φ y) ⟨y, hy, rfl⟩
+    have h := htwo y hy _ h1
+    simp only [h2, sub_self, norm_zero, mul_zero] at h
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+  have hgLip : ∀ v₁ ∈ D, ∀ v₂ ∈ D, ‖g v₁ - g v₂‖ ≤ 2 * lam * ‖v₁ - v₂‖ := by
+    rintro _ ⟨y₁, hy₁, rfl⟩ _ ⟨y₂, hy₂, rfl⟩
+    rw [hg_eq y₁ hy₁, hg_eq y₂ hy₂]
+    exact htwo y₂ hy₂ y₁ hy₁
+  -- Step 4: McShane extension of each coordinate (Simon Ch. 2, 1.2).
+  have hcoordLip : ∀ j : Fin k,
+      LipschitzOnWith (Real.toNNReal (2 * lam)) (fun v => g v j) D := by
+    intro j
+    apply LipschitzOnWith.of_dist_le'
+    intro v₁ hv₁ v₂ hv₂
+    rw [Real.dist_eq, dist_eq_norm]
+    calc |g v₁ j - g v₂ j| = ‖(g v₁ - g v₂) j‖ := by rw [PiLp.sub_apply, Real.norm_eq_abs]
+      _ ≤ ‖g v₁ - g v₂‖ := PiLp.norm_apply_le _ j
+      _ ≤ 2 * lam * ‖v₁ - v₂‖ := hgLip v₁ hv₁ v₂ hv₂
+  choose h hhLip hhEq using fun j => (hcoordLip j).extend_real
+  -- Step 5: truncation of each coordinate to `[-A, A]`.
+  let F : Fin k → Euclid n → ℝ := fun j v => max (-A) (min A (h j v))
+  have hFLip : ∀ j, LipschitzWith (Real.toNNReal (2 * lam)) (F j) :=
+    fun j => ((hhLip j).const_min A).const_max (-A)
+  have hFbound : ∀ j v, |F j v| ≤ A := by
+    intro j v
+    rw [abs_le]
+    exact ⟨le_max_left _ _, max_le (by linarith) (min_le_left _ _)⟩
+  have hFeq : ∀ y ∈ G, ∀ j, F j (φ y) = ψ y j := by
+    intro y hy j
+    have hmem : φ y ∈ D := ⟨y, hy, rfl⟩
+    have e1 : h j (φ y) = g (φ y) j := (hhEq j hmem).symm
+    rw [hg_eq y hy] at e1
+    have hb : |ψ y j| ≤ A := by
+      calc |ψ y j| = ‖ψ y j‖ := (Real.norm_eq_abs _).symm
+        _ ≤ ‖ψ y‖ := PiLp.norm_apply_le _ j
+        _ ≤ A := hψA y hy
+    show max (-A) (min A (h j (φ y))) = ψ y j
+    rw [e1, min_eq_right (abs_le.mp hb).2, max_eq_right (abs_le.mp hb).1]
+  -- Step 6: assemble `f` from its coordinates.
+  let f : Euclid n → Euclid k := fun v => WithLp.toLp 2 (fun j => F j v)
+  have hf_apply : ∀ v j, f v j = F j v := fun v j => rfl
+  have hK : ((Real.toNNReal (2 * lam) : NNReal) : ℝ) = 2 * lam :=
+    Real.coe_toNNReal _ (by linarith)
+  refine ⟨f, ?_, ?_, ?_⟩
+  · intro v w
+    rw [EuclideanSpace.norm_eq (f v - f w)]
+    have hterm : ∀ j, ‖(f v - f w) j‖ ^ 2 ≤ (2 * lam * ‖v - w‖) ^ 2 := by
+      intro j
+      have h1 := (hFLip j).dist_le_mul v w
+      rw [hK, Real.dist_eq, dist_eq_norm] at h1
+      rw [PiLp.sub_apply, hf_apply, hf_apply, Real.norm_eq_abs, sq_abs]
+      exact sq_le_sq' (abs_le.mp h1).1 (abs_le.mp h1).2
+    calc √(∑ j, ‖(f v - f w) j‖ ^ 2) ≤ √(∑ _j : Fin k, (2 * lam * ‖v - w‖) ^ 2) :=
+          Real.sqrt_le_sqrt (Finset.sum_le_sum fun j _ => hterm j)
+      _ = √(k : ℝ) * (2 * lam * ‖v - w‖) := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (by positivity)]
+      _ = 2 * √(k : ℝ) * lam * ‖v - w‖ := by ring
+  · intro v
+    rw [EuclideanSpace.norm_eq (f v)]
+    have hterm : ∀ j, ‖(f v) j‖ ^ 2 ≤ A ^ 2 := by
+      intro j
+      rw [hf_apply, Real.norm_eq_abs, sq_abs]
+      have h1 := hFbound j v
+      exact sq_le_sq' (abs_le.mp h1).1 (abs_le.mp h1).2
+    calc √(∑ j, ‖(f v) j‖ ^ 2) ≤ √(∑ _j : Fin k, A ^ 2) :=
+          Real.sqrt_le_sqrt (Finset.sum_le_sum fun j _ => hterm j)
+      _ = √(k : ℝ) * A := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq hA]
+  · -- Step 7: `G` lies in the graph `{ξ + ι v + ι' (f v)}`.
+    intro y hy
+    refine Set.mem_range.mpr ⟨φ y, ?_⟩
+    have hfy : f (φ y) = ψ y := by
+      apply PiLp.ext
+      intro j
+      rw [hf_apply]
+      exact hFeq y hy j
+    show ξ + ι (φ y) + ι' (f (φ y)) = y
+    rw [hfy, add_assoc, ← hφψ y]
+    abel
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
