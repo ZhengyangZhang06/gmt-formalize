@@ -406,12 +406,6 @@ theorem Submission.gaussGreenRep_c1_uniform_approx : ∀ (N : ℕ) (g : Rn N →
     exact dist_convolution_le (μ := volume) (z₀ := g x) Nat.one_div_pos_of_nat.le (hφb k)
       (hφn k) (hφi k) hg.aestronglyMeasurable fun y hy => (hεg k y x hy).le
 
-/-- The frozen Chapter 3 contract. -/
-theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
-
-end GMT.Ch03
-
-
 /-- **Simon Ch. 3, (4.1): two Gauss–Green pairs pair equally with continuous fields**
 (`chapter-03.txt` lines 551–567, with Ch. 2, §2, `chapter-02.txt` line 489: `∫ u div g`
 "extends uniquely" from `C¹_c` to continuous compactly supported fields). By (4.1) for both pairs,
@@ -464,3 +458,8 @@ theorem Submission.gaussGreenRep_pairing_eq_continuous : ∀ (N : ℕ) (U E : Se
     ((hlimit μ ν (hμK K hK hKU) hνm hν).congr fun k ↦
       hC1 (h k) (hh k).1 (hh k).2.1 ((hh k).2.2.trans hKU))
     (hlimit μ' ν' (hμK' K hK hKU) hνm' hν')
+
+/-- The frozen Chapter 3 contract. -/
+theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
+
+end GMT.Ch03
