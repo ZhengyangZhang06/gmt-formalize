@@ -458,6 +458,45 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Currying step of the proof that `f` is `C^{m+1,α}` iff `Df` is `C^{m,α}` (elliptic bootstrap
+for Simon 7.1): on an open `U`, `f` is `C^{m+1}` with `D^{m+1}f` locally `α`-Hölder iff `f` is `C¹`,
+`Df` is `C^m` and `D^m(Df)` is locally `α`-Hölder, with the same constants.  Indeed
+`D^{m+1}f(x) = Φ (D^m(Df)(x))` for the currying linear isometry `Φ`, and `C^{m+1}` on an open set
+means differentiable with `C^m` derivative. -/
+theorem dohr_eb_hsif_succ_iff_curry : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (α : ℝ) (f : Rn n → E) (U : Set (Rn n)), IsOpen U → ((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ContDiffOn ℝ m (fderiv ℝ f) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ ≤ C * ‖x - y‖ ^ α)) := by
+  intro n E _ _ m α f U hU
+  -- Steps 1–2: `D^{m+1}f(x) = Φ (D^m(Df)(x))` with `Φ` a linear isometry, so the two Hölder
+  -- differences have equal norms at every pair of points.
+  have hnorm : ∀ x y : Rn n,
+      ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ =
+        ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ := by
+    intro x y
+    rw [iteratedFDeriv_succ_eq_comp_right, iteratedFDeriv_succ_eq_comp_right]
+    simp only [Function.comp_apply]
+    rw [← LinearIsometryEquiv.map_sub, LinearIsometryEquiv.norm_map]
+  -- Step 3: hence the Hölder clauses coincide, with the same constant on each compact `K`.
+  have hhol : (∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔
+      (∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ ≤
+        C * ‖x - y‖ ^ α) := by
+    simp only [hnorm]
+  -- Step 4: on the open set `U`, `f` is `C^{m+1}` iff it is differentiable with `C^m` derivative
+  -- (the analyticity clause is vacuous since `m` is finite).
+  have hsucc := contDiffOn_succ_iff_fderiv_of_isOpen (𝕜 := ℝ) (f := f) (n := (m : WithTop ℕ∞)) hU
+  -- Steps 5–6: the regularity parts agree.
+  have hreg : ContDiffOn ℝ (m + 1 : ℕ) f U ↔
+      ContDiffOn ℝ 1 f U ∧ ContDiffOn ℝ m (fderiv ℝ f) U := by
+    push_cast
+    refine ⟨fun h => ⟨h.of_le le_add_self, (hsucc.1 h).2.2⟩, fun h => ?_⟩
+    exact hsucc.2 ⟨h.1.differentiableOn one_ne_zero, by simp, h.2⟩
+  -- Step 7: combine.
+  rw [hreg, hhol, and_assoc]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
