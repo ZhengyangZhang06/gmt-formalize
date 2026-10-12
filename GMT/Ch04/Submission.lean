@@ -1011,6 +1011,65 @@ theorem Submission.mcm_lp_holder_bound : ∀ (n ℓ : ℕ) (μ : Measure (Ambien
       gcongr
     _ = I ^ (1 / p) * τ ^ (-(n : ℝ) / p) * (1 + m / τ ^ n) * τ ^ (n + 1) := by ring
 
+/-- **Simon 4.9 (p. 95) from 4.5 and 4.8.** Under (GF) (of which only the finiteness of `μ_V` on
+compact sets is used), `LpMonotonicity` implies `LpDensity`. For `ξ ∈ U` pick `R > 0` with
+`B_{2R}(ξ) ⊆ U`; the `Lᵖ` bound on the compact ball `B_{2R}(ξ)` gives one `Λ ≥ 0` for which 4.8
+applies on `B_R(η)` for every `|η - ξ| < R`, and `F_η`, `E_η = F_η - 1` satisfy the hypothesis of
+`mcm_density_usc_of_monotone` with `c(ρ) = e^{Λ/2} Λ (ρ/R)^{1-n/p} → 0`. -/
+theorem Submission.mcm_lp_density_of_monotonicity : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → LpMonotonicity → LpDensity := by
+  intro hGF hMono n ℓ V U H p hn hU hH hp hLp
+  -- `p > n ≥ 1`, so `p > 0`, `κ = (p - n)/(4p) > 0` and `θ = 1 - n/p > 0`.
+  have hp0 : 0 < p := (Nat.cast_pos.2 hn).trans hp
+  have hκ : 0 < lpKappa n p := div_pos (sub_pos.2 hp) (by positivity)
+  have hθ : 0 < 1 - (n : ℝ) / p := sub_pos.2 ((div_lt_one hp0).2 hp)
+  refine Submission.mcm_density_usc_of_monotone n ℓ V U (hGF n ℓ V hn).1 fun ξ hξ ↦ ?_
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU ξ hξ
+  obtain ⟨R, hR, h2R⟩ : ∃ R : ℝ, 0 < R ∧ closedBall ξ (2 * R) ⊆ U :=
+    ⟨ε / 3, by positivity, (closedBall_subset_ball (by linarith)).trans hεU⟩
+  -- `|H|ᵖ` is integrable on the compact ball `B_{2R}(ξ) ⊆ U`.
+  have hint : IntegrableOn (fun x ↦ ‖H x‖ ^ p) (closedBall ξ (2 * R)) V.weight := by
+    have h := (hLp _ (isCompact_closedBall ξ (2 * R)) h2R).integrable_norm_rpow
+      (ENNReal.ofReal_pos.2 hp0).ne' ENNReal.ofReal_ne_top
+    rwa [ENNReal.toReal_ofReal hp0.le] at h
+  have hI : ∀ s, 0 ≤ R ^ (p - n) * ∫ x in s, ‖H x‖ ^ p ∂V.weight := fun s ↦
+    mul_nonneg (Real.rpow_nonneg hR.le _)
+      (integral_nonneg fun x ↦ Real.rpow_nonneg (norm_nonneg _) _)
+  -- `Λ = A₀/κ`, where `A₀ = (R^{p-n} ∫_{B_{2R}(ξ)} |H|ᵖ)^{1/p}`.
+  obtain ⟨Λ, hΛ, hA⟩ : ∃ Λ : ℝ, 0 ≤ Λ ∧
+      (R ^ (p - n) * ∫ x in closedBall ξ (2 * R), ‖H x‖ ^ p ∂V.weight) ^ (1 / p) ≤
+        lpKappa n p * Λ :=
+    ⟨_, div_nonneg (Real.rpow_nonneg (hI _) _) hκ.le, (mul_div_cancel₀ _ hκ.ne').ge⟩
+  refine ⟨R, hR, fun ρ ↦ Real.exp (Λ / 2) * Λ * (ρ / R) ^ (1 - (n : ℝ) / p), ?_, fun η hη ↦ ?_⟩
+  · -- `c(ρ) → c(0) = 0` as `ρ ↓ 0`, since `θ > 0`.
+    have hc : ContinuousAt (fun ρ : ℝ ↦ Real.exp (Λ / 2) * Λ * (ρ / R) ^ (1 - (n : ℝ) / p)) 0 :=
+      continuousAt_const.mul ((continuousAt_id.div_const R).rpow_const (Or.inr hθ.le))
+    have h := hc.tendsto
+    rw [zero_div, Real.zero_rpow hθ.ne', mul_zero] at h
+    exact h.mono_left nhdsWithin_le_nhds
+  -- `B_R(η) ⊆ B_{2R}(ξ)`, so `(R^{p-n} ∫_{B_R(η)} |H|ᵖ)^{1/p} ≤ A₀ ≤ κΛ` and 4.8 applies.
+  have hsub : closedBall η R ⊆ closedBall ξ (2 * R) :=
+    closedBall_subset_closedBall' (by linarith [mem_ball.1 hη])
+  have hbound : (R ^ (p - n) * ∫ x in closedBall η R, ‖H x‖ ^ p ∂V.weight) ^ (1 / p) ≤
+      lpKappa n p * Λ := by
+    refine (Real.rpow_le_rpow (hI _) (mul_le_mul_of_nonneg_left ?_ (Real.rpow_nonneg hR.le _))
+      (one_div_pos.2 hp0).le).trans hA
+    exact setIntegral_mono_set hint (ae_of_all _ fun x ↦ Real.rpow_nonneg (norm_nonneg _) _)
+      (ae_of_all _ hsub)
+  obtain ⟨F, _, hF, -, hFmono⟩ :=
+    hMono n ℓ V U H p η R Λ hn hU hH hp hLp hR (hsub.trans h2R) hbound
+  -- `E = F - 1`: the bounds of 4.5 on `(0, R)` are dominated by `c(ρ)`, as `e^{Λ/2} ≥ 1`.
+  refine ⟨F, fun ρ ↦ F ρ - 1, fun ρ hρ ↦ ?_, hFmono.mono Ioo_subset_Ioc_self⟩
+  obtain ⟨hF₁, hF₂, hF₃⟩ := hF ρ (Ioo_subset_Ioc_self hρ)
+  have ht : 0 ≤ Λ * (ρ / R) ^ (1 - (n : ℝ) / p) :=
+    mul_nonneg hΛ (Real.rpow_nonneg (div_nonneg hρ.1.le hR.le) _)
+  have he : 1 ≤ Real.exp (Λ / 2) := Real.one_le_exp (by positivity)
+  have h₁ : Λ / 2 * (ρ / R) ^ (1 - (n : ℝ) / p) ≤
+      Real.exp (Λ / 2) * Λ * (ρ / R) ^ (1 - (n : ℝ) / p) := by nlinarith
+  have h₂ : Real.exp (Λ / 2) / 2 * Λ * (ρ / R) ^ (1 - (n : ℝ) / p) ≤
+      Real.exp (Λ / 2) * Λ * (ρ / R) ^ (1 - (n : ℝ) / p) := by nlinarith
+  exact ⟨⟨(Real.exp_le_exp.2 (neg_le_neg h₁)).trans hF₁, hF₂.trans (Real.exp_le_exp.2 h₁)⟩,
+    hF₃.trans h₂⟩
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 /-- **Fubini on the annulus** `A = B_ρ(ξ) \ B_σ(ξ)` (the radial integration by parts behind the
