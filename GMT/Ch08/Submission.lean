@@ -617,6 +617,39 @@ theorem Submission.varifold_tangents_dlb_restricted_hasDensity :
     Set.inter_eq_left.2 (Set.prod_mono hsub subset_rfl),
     (Submission.varifold_tangents_dlb_rescaledMeasure_prod_univ N n U V x t).2 ht y ρ]
 
+/-- **Simon Ch. 8, step 9 of the use of 3.7 in 5.5 and 5.7** (child `density_pullback` of
+`density_lower_bound`): if `μ_W = c μ_V ⌞ Ω` with `0 < c < ∞` (`W.measure = c V ⌞ (Ω × G)`) and
+`Θ^n(μ_W, ·) ≥ 1` holds `μ_W`-a.e., then `Θ^n(μ_V, ·) ≥ c⁻¹` holds `μ_V`-a.e. on `Ω`.  Near a
+good `y ∈ Ω`, `μ_V(B_ρ(y)) = c⁻¹ μ_W(B_ρ(y))` for small `ρ`, so `density_scaling` with `t = 1`
+gives `Θ^n(μ_V, y) = c⁻¹ Θ^n(μ_W, y) ≥ c⁻¹`. -/
+theorem Submission.varifold_tangents_dlb_ae_hasDensity_of_restricted :
+    ∀ (N n : ℕ) (U Ω : Set (Euclidean N)) (V : Varifold N n U) (W : Varifold N n Ω) (c : ℝ≥0∞), c ≠ 0 → c ≠ ∞ → W.measure = c • V.measure.restrict (Ω ×ˢ (univ : Set (Grassmannian N n))) → (∀ᵐ y ∂W.weight, ∃ θ : ℝ≥0∞, HasDensity n W.weight y θ ∧ 1 ≤ θ) → ∀ᵐ y ∂V.weight, y ∈ Ω → ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ c⁻¹ ≤ θ := by
+  intro N n U Ω V W c hc0 hctop hW hdens
+  have hΩ : MeasurableSet Ω := W.isOpen_domain.measurableSet
+  -- Step 2: `μ_W = c • (μ_V ⌞ Ω)`, checked on Borel sets.
+  have hweight : W.weight = c • V.weight.restrict Ω := by
+    ext A hA
+    rw [W.weight_apply hA, hW, Measure.smul_apply,
+      Measure.restrict_apply (hA.prod MeasurableSet.univ), prod_inter_prod, inter_univ,
+      Measure.smul_apply, Measure.restrict_apply hA, V.weight_apply (hA.inter hΩ)]
+  -- Step 3: `μ_V ⌞ Ω ≪ μ_W` as `c ≠ 0`, so `W` has a density `≥ 1` at `μ_V`-a.e. `y ∈ Ω`.
+  have hac : V.weight.restrict Ω ≪ W.weight := by
+    rw [hweight]
+    exact Measure.absolutelyContinuous_smul hc0
+  filter_upwards [(ae_restrict_iff' hΩ).1 (hac.ae_le hdens)] with y hy hyΩ
+  obtain ⟨θ, hθ, h1θ⟩ := hy hyΩ
+  obtain ⟨δ, hδ, hδΩ⟩ := Metric.isOpen_iff.1 W.isOpen_domain y hyΩ
+  -- Step 5: `density_scaling` with `(μ, ν, z, t, c) = (μ_W, μ_V, y, 1, c⁻¹)`.
+  refine ⟨c⁻¹ * θ, Submission.varifold_tangents_dlb_hasDensity_of_closedBall_scaling N n W.weight
+    V.weight y y 1 δ c⁻¹ θ one_pos hδ (ENNReal.inv_ne_top.2 hc0) (fun ρ _ hρδ ↦ ?_) hθ, ?_⟩
+  · -- Step 4: `B_ρ(y) ⊆ Ω` for `ρ < δ`, so `μ_V(B_ρ(y)) = c⁻¹ μ_W(B_ρ(y))`.
+    rw [inv_one, one_pow, ENNReal.ofReal_one, one_mul, one_mul, hweight, Measure.smul_apply,
+      Measure.restrict_apply measurableSet_closedBall,
+      inter_eq_left.2 ((closedBall_subset_ball hρδ).trans hδΩ), smul_eq_mul, ← mul_assoc,
+      ENNReal.inv_mul_cancel hc0 hctop, one_mul]
+  · calc c⁻¹ = c⁻¹ * 1 := (mul_one _).symm
+      _ ≤ c⁻¹ * θ := by gcongr
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
