@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "blowUpMap|HasWeightedApproximateTangentSpaceAt|namespace|open",
+        "^(theorem|lemma) (integral_smul_measure|MeasurableEmbedding.integral_map|integral_mono_ae|ofReal_integral_eq_lintegral_ofReal|setIntegral_indicator|integral_indicator_one|withDensity_apply|restrict_apply|restrict_restrict|ae_restrict_mem₀|integrable_indicator_iff|tendsto_order)|volume_closedBall",
+        "rsod_blowUp_setIntegral_eq|rsod_planeMeasure_closedBall|rsod_weight_closedBall_eq_ofReal_integral|rsod_blowUp_integral_ballMass_bounds|rsod_tendsto_scaled_mult_integral",
+        "ofReal_div_of_pos",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean ProofsAndComparisons.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1/parent-child-handoff.json",
+        "/tmp/dat-work/proj/Dat/Full.lean",
+        "/tmp/rsod-independent-audit-bf5216l8/Types.lean",
+        "/tmp/rsod-independent-audit-bf5216l8/ProofsAndComparisons.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and compatibility with the working definitions. The snapshot confirms unconditional measurable-embedding change of variables, Hausdorff scaling, plane-volume normalization, and the precise weight/density conventions. No proposed name occurs in the searched snapshot, simongmt sources, or 24 worktrees; no other DAG branch reserves one. All names are bare identifiers, and all frozen statements are standalone one-line propositions matching their prose. In an isolated project using freshly compiled snapshot definitions, all six types elaborate before child declarations exist. The supplied child proofs, exact selected parent assembly, and literal-type comparator-style applications compile with only propext, Classical.choice, and Quot.sound. The split is appropriate: change of variables supports the bounds; plane measure and bounds support the real limit; weight conversion and the real limit imply exactly the selected parent. Dependencies are acyclic and correctly directed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary nonmeasurable M and arbitrary integrands. Restriction is evaluated only on measurable test sets, Hausdorff scaling applies to arbitrary sets, and the cited integral identities require no integrability. The inverse-map simplification and scaling factor are correct; no circular dependency occurs."
+    },
+    {
+      "key": "plane_ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All dimension and radius hypotheses match. The proof correctly derives Nontrivial P from n ≥ 1, transfers Hausdorff measure through the subtype isometry, identifies intrinsic volume, and converts the volume constant to unitBallVolume n. The required additional import is identified."
+    },
+    {
+      "key": "weight_ball_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement needs neither openness of U nor positivity of r. Compactness and the ball containment supply integrability; null-measurability supplies almost-everywhere membership and nonnegativity. The withDensity and restricted-integral identities then prove the stated equality."
+    },
+    {
+      "key": "blowup_ball_mass_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three conclusions and every cutoff hypothesis match the Lean proposition. The proof establishes measurability and integrable domination before applying integral monotonicity, uses carrier positivity only almost everywhere, and correctly transfers ball membership through the blow-up. Its sole child dependency is change of variables."
+    },
+    {
+      "key": "scaled_mult_integral_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies compactly supported cutoffs, integrable plane bounds, and eventual comparisons using precisely the declared dependencies. It derives θ(x) ≥ 0 without assuming x belongs to the carrier, then gives both order-topology bounds, including θ(x) = 0. This proves the exact real limit without invoking the parent; combined with weight_ball_integral, it yields the selected frozen HasDensity statement."
+    }
+  ],
+  "required_changes": []
+}
