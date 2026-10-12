@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.difference_quotient_limit-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1",
+  "depth": 3,
+  "title": "Uniform C^{1,alpha} bounds on difference quotients give a C^{1,alpha} directional derivative",
+  "statement": "Let n, l in N, 0 < alpha <= 1, f : R^n -> R^l, x0, e in R^n, rho, M in R and delta > 0, with f C^1 on B_{rho + delta|e|}(x0). Assume that for all real d with 0 < |d| < delta and all x, y in B_rho(x0): ||d^{-1}(Df(x + de) - Df(x))|| <= M and ||d^{-1}(Df(x + de) - Df(x)) - d^{-1}(Df(y + de) - Df(y))|| <= M |x - y|^alpha. Then the directional derivative D_e f := (x -> Df(x) e) is C^1 on B_rho(x0), ||D(D_e f)(x)|| <= M and ||D(D_e f)(x) - D(D_e f)(y)|| <= M |x - y|^alpha for x, y in B_rho(x0).",
+  "lean_statement": "∀ (n ℓ : ℕ) (α : ℝ) (f : Rn n → Rn ℓ) (x₀ e : Rn n) (ρ δ M : ℝ), 0 < α → α ≤ 1 → 0 < δ → ContDiffOn ℝ 1 f (ball x₀ (ρ + δ * ‖e‖)) → (∀ d : ℝ, d ≠ 0 → |d| < δ → ∀ x ∈ ball x₀ ρ, ‖d⁻¹ • (fderiv ℝ f (x + d • e) - fderiv ℝ f x)‖ ≤ M) → (∀ d : ℝ, d ≠ 0 → |d| < δ → ∀ x ∈ ball x₀ ρ, ∀ y ∈ ball x₀ ρ, ‖d⁻¹ • (fderiv ℝ f (x + d • e) - fderiv ℝ f x) - d⁻¹ • (fderiv ℝ f (y + d • e) - fderiv ℝ f y)‖ ≤ M * ‖x - y‖ ^ α) → ContDiffOn ℝ 1 (fun x => fderiv ℝ f x e) (ball x₀ ρ) ∧ (∀ x ∈ ball x₀ ρ, ‖fderiv ℝ (fun z => fderiv ℝ f z e) x‖ ≤ M) ∧ ∀ x ∈ ball x₀ ρ, ∀ y ∈ ball x₀ ρ, ‖fderiv ℝ (fun z => fderiv ℝ f z e) x - fderiv ℝ (fun z => fderiv ℝ f z e) y‖ ≤ M * ‖x - y‖ ^ α",
+  "lean_name": "dohr_eb_difference_quotient_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-differenc-488312ef14-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1",
+  "depth": 3,
+  "title": "C^{m+1,alpha}_loc iff the derivative (equivalently all partial derivatives) is C^{m,alpha}_loc",
+  "statement": "Let n, m in N, alpha in R, E a real normed space, U open in R^n and f : R^n -> E. Let (A) be: f is C^{m+1} on U and D^{m+1} f is alpha-Hoelder on each compact subset of U. Let (B) be: f is C^1 on U, Df is C^m on U and D^m(Df) is alpha-Hoelder on each compact subset of U. Let (C) be: f is C^1 on U and for every k in Fin n the partial derivative D_k f := (x -> Df(x) e_k) is C^m on U with D^m(D_k f) alpha-Hoelder on each compact subset of U. Then (A <-> B) and (A <-> C).",
+  "lean_statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (α : ℝ) (f : Rn n → E) (U : Set (Rn n)), IsOpen U → (((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ContDiffOn ℝ m (fderiv ℝ f) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fderiv ℝ f) x - iteratedFDeriv ℝ m (fderiv ℝ f) y‖ ≤ C * ‖x - y‖ ^ α)) ∧ ((ContDiffOn ℝ (m + 1 : ℕ) f U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ (m + 1) f x - iteratedFDeriv ℝ (m + 1) f y‖ ≤ C * ‖x - y‖ ^ α) ↔ (ContDiffOn ℝ 1 f U ∧ ∀ k : Fin n, ContDiffOn ℝ m (fun x => fderiv ℝ f x (EuclideanSpace.single k (1 : ℝ))) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) y‖ ≤ C * ‖x - y‖ ^ α)))",
+  "lean_name": "dohr_eb_holder_succ_iff_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-holder-su-d401bf599b-a1"
+}

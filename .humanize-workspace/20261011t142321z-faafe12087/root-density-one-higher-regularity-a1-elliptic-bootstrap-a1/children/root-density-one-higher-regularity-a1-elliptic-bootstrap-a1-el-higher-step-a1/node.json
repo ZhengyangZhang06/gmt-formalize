@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_higher_step-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1",
+  "depth": 3,
+  "title": "Induction step of the elliptic bootstrap: C^{m+1,alpha}_loc solution with C^{m,alpha}_loc right side is C^{m+2,alpha}_loc (m >= 1)",
+  "statement": "Let n >= 1, 0 < alpha < 1, m >= 1, Psi : L(R^n, R^l) -> R C^infinity, lam > 0, eps in R with lam ||Q||^2 <= D^2 Psi(P)[Q][Q] whenever ||P|| <= eps, U open in R^n and u, g : R^n -> R^l with IsLocallyHolderCkα (m+1) alpha u U, ||Du|| <= eps on U, IsLocallyHolderCkα m alpha g U and integral over U of DPsi(Du)[Dphi] = - integral over U of <phi, g> for all C^1 compactly supported phi with tsupport in U. Then IsLocallyHolderCkα (m+2) alpha u U.",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ α : ℝ, 0 < α → α < 1 → ∀ m : ℕ, 1 ≤ m → ∀ (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (lam ε : ℝ) (U : Set (Rn n)) (u g : Rn n → Rn ℓ), 0 < lam → IsOpen U → ContDiff ℝ (⊤ : ℕ∞) Ψ → (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q : Rn n →L[ℝ] Rn ℓ, lam * ‖Q‖ ^ 2 ≤ fderiv ℝ (fderiv ℝ Ψ) P Q Q) → IsLocallyHolderCkα (m + 1) α u U → (∀ x ∈ U, ‖fderiv ℝ u x‖ ≤ ε) → IsLocallyHolderCkα m α g U → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x)) → IsLocallyHolderCkα (m + 2) α u U",
+  "lean_name": "dohr_eb_el_higher_regularity_step",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_comp-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_of_contdiff_succ-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_comp-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_of_contdiff_succ-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-higher-step-a1-a1"
+}

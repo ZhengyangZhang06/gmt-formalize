@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_c2alpha-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1",
+  "depth": 3,
+  "title": "C^{1,alpha} weak solutions of uniformly convex Euler-Lagrange systems with C^{0,alpha} right side are C^{2,alpha}_loc",
+  "statement": "Let n >= 1, 0 < alpha < 1, Psi : L(R^n, R^l) -> R be C^infinity, lam > 0, eps in R, with lam ||Q||^2 <= D^2 Psi(P)[Q][Q] whenever ||P|| <= eps. Let U be open in R^n and u, g : R^n -> R^l with IsLocallyHolderCkα 1 alpha u U, ||Du(x)|| <= eps on U, IsLocallyHolderCkα 0 alpha g U, and integral over U of DPsi(Du(x))[Dphi(x)] = - integral over U of <phi(x), g(x)> for every C^1 compactly supported phi : R^n -> R^l with tsupport in U. Then IsLocallyHolderCkα 2 alpha u U.",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ α : ℝ, 0 < α → α < 1 → ∀ (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (lam ε : ℝ) (U : Set (Rn n)) (u g : Rn n → Rn ℓ), 0 < lam → IsOpen U → ContDiff ℝ (⊤ : ℕ∞) Ψ → (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q : Rn n →L[ℝ] Rn ℓ, lam * ‖Q‖ ^ 2 ≤ fderiv ℝ (fderiv ℝ Ψ) P Q Q) → IsLocallyHolderCkα 1 α u U → (∀ x ∈ U, ‖fderiv ℝ u x‖ ≤ ε) → IsLocallyHolderCkα 0 α g U → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, fderiv ℝ Ψ (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x)) → IsLocallyHolderCkα 2 α u U",
+  "lean_name": "dohr_eb_el_c2alpha_regularity",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.difference_quotient_limit-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.difference_quotient_limit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_succ_iff_fderiv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-c2alpha-a1-a1"
+}
