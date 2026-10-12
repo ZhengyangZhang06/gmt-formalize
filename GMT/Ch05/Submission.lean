@@ -458,6 +458,121 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 3, proof of Lemma 1.2 (p. 70, last paragraph)**: an immersed ball is a `C¹` chart.
+If `G : ℝⁿ → ℝ^{n+ℓ}` is `C¹` and `DG(a)` is injective, then for some `σ > 0` the image
+`G(B̆_σ(a))` is an `n`-dimensional `C¹` submanifold (`IsC1Submanifold`) of finite `Hⁿ`-measure.
+Proof: `L = DG(a)` satisfies `c|v| ≤ |Lv|` for some `c > 0`; by continuity of `DG` choose `σ` with
+`‖DG(z) − L‖ ≤ c/2` on `B_σ(a)`, so `DG(z)` is injective there and, by the mean value inequality
+for `G − L`, `(c/2)|y − x| ≤ |G y − G x| ≤ (‖L‖ + c/2)|y − x|` on `B_σ(a)`.  The chart is
+`V = B̆_σ(a)`, `W = ℝ^{n+ℓ} \ G(S_σ(a))`, `φ = G`; properness holds since
+`V ∩ G⁻¹K = B_σ(a) ∩ G⁻¹K` for compact `K ⊆ W`.  Finally, with `Λ = ‖L‖ + c/2`,
+`Hⁿ(G(B̆_σ(a))) ≤ Λⁿ Hⁿ(B̆_σ(a)) < ∞`. -/
+theorem rsod_c1_immersion_ball_isC1Submanifold : ∀ (n ℓ : ℕ) (G : Rn n → Amb n ℓ) (a : Rn n), ContDiff ℝ 1 G → Function.Injective (fderiv ℝ G a) → ∃ σ : ℝ, 0 < σ ∧ IsC1Submanifold n (G '' ball a σ) ∧ (μHE[n] : Measure (Amb n ℓ)) (G '' ball a σ) < ∞ := by
+  intro n ℓ G a hG hinj
+  set L : Rn n →L[ℝ] Amb n ℓ := fderiv ℝ G a
+  -- Step 1: `c |v| ≤ |L v|` with `c = K⁻¹ > 0`, from the antilipschitz bound of the injective `L`.
+  obtain ⟨K, hKpos, hK⟩ := (LinearMap.injective_iff_antilipschitz (L : Rn n →ₗ[ℝ] Amb n ℓ)).mp hinj
+  have hKpos' : (0 : ℝ) < K := by exact_mod_cast hKpos
+  set c : ℝ := (K : ℝ)⁻¹ with hc
+  have hcpos : 0 < c := inv_pos.mpr hKpos'
+  have hcv : ∀ v, c * ‖v‖ ≤ ‖L v‖ := by
+    intro v
+    rw [hc, inv_mul_le_iff₀ hKpos']
+    exact L.bound_of_antilipschitz hK v
+  -- Step 2: choose `σ` with `‖DG(z) − L‖ ≤ c/2` on `B_σ(a)`.
+  have hdiff : Differentiable ℝ G := hG.differentiable one_ne_zero
+  obtain ⟨δ, hδpos, hδ⟩ :=
+    Metric.continuous_iff.mp (hG.continuous_fderiv one_ne_zero) a (c / 2) (half_pos hcpos)
+  obtain ⟨σ, hσpos, hσδ⟩ : ∃ σ : ℝ, 0 < σ ∧ σ < δ := ⟨δ / 2, half_pos hδpos, half_lt_self hδpos⟩
+  refine ⟨σ, hσpos, ?_⟩
+  have hball_sub : ball a σ ⊆ closedBall a σ := ball_subset_closedBall
+  have hDG : ∀ z ∈ closedBall a σ, ‖fderiv ℝ G z - L‖ ≤ c / 2 := by
+    intro z hz
+    have h := hδ z (lt_of_le_of_lt (mem_closedBall.mp hz) hσδ)
+    rw [dist_eq_norm] at h
+    exact h.le
+  -- Step 3: `DG(z)` is injective on `B_σ(a)`: `c|v| ≤ |Lv| ≤ |DG(z)v| + (c/2)|v|`.
+  have hDGinj : ∀ z ∈ closedBall a σ, Function.Injective (fderiv ℝ G z) := by
+    intro z hz
+    rw [injective_iff_map_eq_zero]
+    intro v hv
+    have h1 : ‖L v‖ ≤ c / 2 * ‖v‖ := by
+      have hLv : L v = -((fderiv ℝ G z - L) v) := by
+        rw [sub_apply, hv, zero_sub, neg_neg]
+      rw [hLv, norm_neg]
+      exact ((fderiv ℝ G z - L).le_opNorm v).trans
+        (mul_le_mul_of_nonneg_right (hDG z hz) (norm_nonneg v))
+    have h2 := hcv v
+    have h3 : ‖v‖ ≤ 0 := by nlinarith [norm_nonneg v]
+    exact norm_le_zero_iff.mp h3
+  -- Step 4: mean value inequality for `G − L` on the convex set `B_σ(a)`.
+  have hMV : ∀ x ∈ closedBall a σ, ∀ y ∈ closedBall a σ,
+      ‖G y - G x - L (y - x)‖ ≤ c / 2 * ‖y - x‖ := fun x hx y hy =>
+    (convex_closedBall a σ).norm_image_sub_le_of_norm_fderiv_le' (fun z _ => hdiff z) hDG hx hy
+  -- (a) `(c/2)|y − x| ≤ |G y − G x|`, so `G` is injective on `B_σ(a)`.
+  have hlow : ∀ x ∈ closedBall a σ, ∀ y ∈ closedBall a σ, c / 2 * ‖y - x‖ ≤ ‖G y - G x‖ := by
+    intro x hx y hy
+    have h1 := hMV x hx y hy
+    have h2 := hcv (y - x)
+    have h3 : ‖L (y - x)‖ ≤ ‖G y - G x‖ + ‖G y - G x - L (y - x)‖ := by
+      have h := norm_sub_le (G y - G x) (G y - G x - L (y - x))
+      rwa [sub_sub_cancel] at h
+    linarith
+  have hinjOn : InjOn G (closedBall a σ) := by
+    intro x hx y hy hxy
+    have h := hlow x hx y hy
+    rw [hxy, sub_self, norm_zero] at h
+    have h' : ‖y - x‖ ≤ 0 := by nlinarith [norm_nonneg (y - x)]
+    exact (sub_eq_zero.mp (norm_le_zero_iff.mp h')).symm
+  -- (b) `|G y − G x| ≤ (‖L‖ + c/2)|y − x|`, so `G` is Lipschitz on `B_σ(a)`.
+  have hLip : LipschitzOnWith (Real.toNNReal (‖L‖ + c / 2)) G (closedBall a σ) := by
+    refine LipschitzOnWith.of_dist_le' fun x hx y hy => ?_
+    rw [dist_eq_norm, dist_eq_norm]
+    have h1 := hMV y hy x hx
+    have h2 := L.le_opNorm (x - y)
+    have h3 : ‖G x - G y‖ ≤ ‖G x - G y - L (x - y)‖ + ‖L (x - y)‖ := by
+      have h := norm_add_le (G x - G y - L (x - y)) (L (x - y))
+      rwa [sub_add_cancel] at h
+    linarith
+  -- Step 5: the chart `V = B̆_σ(a)`, `W = ℝ^{n+ℓ} \ G(S_σ(a))`, `φ = G`.
+  have hWopen : IsOpen (G '' sphere a σ)ᶜ :=
+    ((isCompact_sphere a σ).image hG.continuous).isClosed.isOpen_compl
+  -- A point of `B_σ(a)` whose image avoids `G(S_σ(a))` lies in `B̆_σ(a)`.
+  have hmem_ball : ∀ x ∈ closedBall a σ, G x ∈ (G '' sphere a σ)ᶜ → x ∈ ball a σ := by
+    intro x hx hGx
+    rcases (mem_closedBall.mp hx).lt_or_eq with h | h
+    · exact mem_ball.mpr h
+    · exact absurd ⟨x, mem_sphere.mpr h, rfl⟩ hGx
+  -- `G(B̆_σ(a)) ⊆ W` by injectivity of `G` on `B_σ(a)`.
+  have himW : G '' ball a σ ⊆ (G '' sphere a σ)ᶜ := by
+    rintro _ ⟨x, hx, rfl⟩ ⟨z, hz, hzx⟩
+    have hzx' : z = x := hinjOn (sphere_subset_closedBall hz) (hball_sub hx) hzx
+    rw [hzx'] at hz
+    exact (ne_of_lt (mem_ball.mp hx)) (mem_sphere.mp hz)
+  refine ⟨?_, ?_⟩
+  · intro y hy
+    refine ⟨ball a σ, (G '' sphere a σ)ᶜ, G, isOpen_ball, hWopen, himW hy, hG.contDiffOn,
+      hinjOn.mono hball_sub, (inter_eq_right.mpr himW).symm, ?_,
+      fun x hx => hDGinj x (hball_sub hx)⟩
+    intro K hK hKW
+    have heq : ball a σ ∩ G ⁻¹' K = closedBall a σ ∩ G ⁻¹' K := by
+      refine Subset.antisymm (inter_subset_inter_left _ hball_sub) ?_
+      rintro x ⟨hx, hxK⟩
+      exact ⟨hmem_ball x hx (hKW hxK), hxK⟩
+    rw [heq]
+    exact (isCompact_closedBall a σ).inter_right (hK.isClosed.preimage hG.continuous)
+  -- Step 6: `μHE[n]` is a constant multiple of `μH[n]`, and `μH[n](G(B̆_σ(a))) ≤ Λⁿ μH[n](B̆_σ(a))`
+  -- with `Λ = ‖L‖ + c/2`, which is finite since `μH[n]` is an additive Haar measure on `ℝⁿ`.
+  · rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def, smul_eq_mul]
+    refine ENNReal.mul_lt_top ENNReal.coe_lt_top ?_
+    refine ((hLip.mono hball_sub).hausdorffMeasure_image_le (Nat.cast_nonneg n)).trans_lt ?_
+    exact ENNReal.mul_lt_top (ENNReal.rpow_lt_top_of_nonneg (Nat.cast_nonneg n) ENNReal.coe_ne_top)
+      measure_ball_lt_top
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
