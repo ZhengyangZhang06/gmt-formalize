@@ -1,0 +1,92 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.polyhedral_approximation-a1.finite_mass_approximation-a1`
+- Child DAG node: `root.polyhedral_approximation-a1.finite_mass_approximation-a1.testform_bounded-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 of the parent proof: a test form is continuous with compact support, so the supremum of its Euclidean coefficient norm is finite (Simon Ch. 6, 1.15 and 2.4). Here this finiteness is proved directly for the real function x ↦ |ω(x)|, using continuity of |·| rather than the comparison |α| ≤ √N·‖α‖ with the operator norm. The conclusion is the same.
+
+Notation. Λⁿ := Covector (Eucl P) n is the normed space of continuous alternating n-linear maps (ℝ^P)ⁿ → ℝ. For α ∈ Λⁿ, |α| := covectorEuclideanNorm α = √(Σ_{I : Fin n → Fin P} (if I is strictly increasing then α(e_{I(0)}, …, e_{I(n−1)})² else 0)).
+
+1. (|·| is continuous on Λⁿ.)
+   - For each fixed v ∈ (ℝ^P)ⁿ, the evaluation α ↦ α(v) is continuous on Λⁿ (continuous_eval_const, via the instance ContinuousAlternatingMap.instContinuousEvalConst).
+   - Hence for each I : Fin n → Fin P, the summand α ↦ (if I is strictly increasing then α(e_{I(0)}, …, e_{I(n−1)})² else 0) is continuous. It is either the square of a continuous function or the constant 0.
+   - A finite sum of continuous functions is continuous (continuous_finsetSum), and the square root is continuous (Real.continuous_sqrt). So α ↦ |α| is continuous.
+2. (Continuity of f.) ω is smooth (ContDiff ℝ ∞, the first component of the test-form property of ω), hence continuous. Therefore f(x) := |ω(x)| is continuous on ℝ^P, as a composition of continuous maps.
+3. (Compact support of f.)
+   - If ω(x) = 0 then f(x) = |0| = 0 (covectorEuclideanNorm_zero). Hence support f ⊆ support ω ⊆ tsupport ω.
+   - ω has compact support (the second component of IsTestForm), so f has compact support (HasCompactSupport.mono').
+4. (Boundedness.) A continuous, compactly supported real function is bounded (Continuous.bounded_above_of_compact_support): there is C₀ ∈ ℝ with ‖f(x)‖ ≤ C₀ for all x ∈ ℝ^P. In particular C₀ ≥ ‖f(0)‖ ≥ 0.
+5. Put C := C₀ + 1. Then C ≥ 1 > 0, and for every x ∈ ℝ^P, f(x) ≤ |f(x)| = ‖f(x)‖ ≤ C₀ < C. So |ω(x)| ≤ C for all x. ∎
+
+## Key steps
+
+1. covectorEuclideanNorm is continuous on Λⁿ: continuous evaluations, a finite sum of squares, and the square root.
+2. f(x) = |ω(x)| is continuous because ω is smooth.
+3. f has compact support because |0| = 0 and ω has compact support.
+4. A continuous compactly supported real function is bounded by some C₀ ≥ 0; take C = C₀ + 1 > 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `rg -n '^def DeformationTheorem|^def IsLatticeChain|^abbrev LatticeFaceIndex' project/GMT/Ch06/Contract.lean`
+- `rg -n 'polyhedral_approx_testForm_covectorNorm_bounded|polyhedral_approx_scale_seq|polyhedral_approx_flat_seq_tendsto|br_la_abs_apply_le_mul_mass' project (no match)`
+- `cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean at frozen d8d46c9 and against snapshot project/GMT/Ch06/Submission.lean (byte-identical)`
+- `rg -n 'theorem tendsto_one_div_add_atTop_nhds_zero_nat|theorem antitone_nat_of_succ_le' mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean mathlib/Mathlib/Order/Monotone/Basic.lean`
+- `rg -n 'theorem tendsto_toReal |protected theorem Tendsto.const_mul|theorem tendsto_ofReal ' mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `rg -n 'instance instContinuousEvalConst' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `rg -n 'bounded_above_of_compact_support|squeeze_zero_norm' mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean mathlib/Mathlib/Analysis/Normed/Group/Continuity.lean; rg -n 'theorem mono'' mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `rg -n 'theorem mul_le_mul_right ' mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean (mul_le_mul_left' no longer exists at this pin)`
+- `grep -n 'def covectorEuclideanNorm|covectorEuclideanNorm_zero|covectorEuclideanNorm_neg|def massAdmissibleOn|massOn|le_massOn' simongmt/Poincare/SimonGMT/Chapter06/Mass.lean; grep -n 'def exteriorDerivativeTestOn|boundary_apply|abbrev TestFormOn|structure GeometricCurrentOn' simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `python3 scan of dag.json: br_la_abs_apply_le_mul_mass has an identical lean_statement, status accepted, candidate d771ac3; br_la_testForm_covectorNorm_bounded is status comparing (not shareable); the three new names are absent; grep -rl over the run directory and git refs (no match)`
+- `git show d771ac3 -- GMT/Ch06/Submission.lean (accepted mass-estimate proof)`
+- `sed -n 6532,6570p /runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py (_existing_lean_name_problem: an accepted node may be shared under an identical frozen type)`
+- `sed -n 1960,1992p book/chapter-06.txt (printed 6.2 proof)`
+- `python3 contract_scope(Contract.lean, GMT.Ch06.main_theorem) from verifier/gmt-compare.py`
+- `lake build GMT.Ch06.Submission (scratch /tmp/fms_decomp_check_ch06, frozen d8d46c9, pinned packages); lake env lean Scratch/Stmts.lean; lake env lean Scratch/Children.lean; lake env lean Scratch/NodeSolutions.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Monotone/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-finite-mass-approximation-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1/decomposition-v1.json`
+- `/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py`
+- `/tmp/fms_decomp_check_ch06/Scratch/Stmts.lean`
+- `/tmp/fms_decomp_check_ch06/Scratch/Children.lean`
+- `/tmp/fms_decomp_check_ch06/Scratch/NodeSolutions.lean`
+
+The snapshot pins project d8d46c95 and Mathlib 25730c7c. Its Contract and Submission for Ch06 are byte-identical to the frozen workspace copies and contain no Submission.* declarations. None of the proposed names occurs in the snapshot project (no match).
+
+The contract supplies DeformationTheorem, IsLatticeChain, LatticeFaceIndex and IsIntegerMultiplicity. SimonGMT supplies GeometricCurrentOn, mass/massOn/massAdmissibleOn/le_massOn, covectorEuclideanNorm (with _zero and _neg), TestFormOn, exteriorDerivativeTestOn and GeometricCurrentOn.boundary_apply.
+
+The pinned Mathlib provides every tool the child proofs cite: continuous_eval_const (ContinuousAlternatingMap.instContinuousEvalConst), Continuous.bounded_above_of_compact_support, HasCompactSupport.mono', squeeze_zero, squeeze_zero_norm', tendsto_one_div_add_atTop_nhds_zero_nat, antitone_nat_of_succ_le, eventually_ne_nhds, ENNReal.tendsto_toReal, ENNReal.tendsto_ofReal and ENNReal.Tendsto.const_mul. At this pin the monotonicity lemma is named mul_le_mul_right, because mul_le_mul_left' is gone.
+
+The mass estimate already exists as the accepted DAG declaration br_la_abs_apply_le_mul_mass (candidate d771ac3) with a byte-identical frozen type, so it is reused. The test-form bound exists only as the unaccepted br_la_testForm_covectorNorm_bounded, so it gets a fresh name.
+
+In a scratch build of the frozen project:
+- All four child types and the selected parent type elaborate in the comparator child scope.
+- Full proofs of testform_bounded, scale_sequence and flat_convergence compile, as does the complete assembly of the selected theorem from scale_sequence, flat_convergence and the DeformationTheorem hypothesis.
+- The NodeSolution-style 'exact Submission.X' check passes for every child and the parent.
+- #print axioms reports only propext, Classical.choice and Quot.sound.
