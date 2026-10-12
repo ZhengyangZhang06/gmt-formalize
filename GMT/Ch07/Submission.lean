@@ -577,6 +577,102 @@ theorem Submission.rsd_mw_tfa_retraction : ∀ (P n : ℕ), ∃ ρ : Covector (E
     _ = r - 1 + covectorEuclideanNorm (a - b) := by rw [covectorEuclideanNorm_neg, h₁]
     _ ≤ 2 * covectorEuclideanNorm (a - b) := by linarith
 
+/-- **`L¹(ν)` approximation of a unit covector field by continuous compactly supported unit
+fields** (steps 3–4 of the `L¹(ν)` approximation of a unit covector field by admissible test
+forms).  Let `ν` be a finite Borel measure on `ℝᴾ` and `β` a `ν`-integrable `n`-covector field
+with `N(β) ≤ 1` `ν`-a.e., `N = covectorEuclideanNorm`.  Continuous compactly supported maps are
+dense in `L¹(ν)` (`ν` is regular), so one of them, `g₀`, has `∫ ‖β − g₀‖ dν ≤ η`.  With `ρ` the
+retraction onto `{N ≤ 1}`, `g = ρ ∘ g₀` is continuous, compactly supported (`ρ 0 = 0`), has
+`N(g) ≤ 1`, and `N(g − β) ≤ 2 N(g₀ − β) ≤ 2C ‖β − g₀‖` a.e., so `∫ N(g − β) dν ≤ 2Cη < δ`. -/
+theorem Submission.rsd_mw_tfa_continuous_approx : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (β : Euclid P → Covector (Euclid P) n), IsFiniteMeasure ν → Integrable β ν → (∀ᵐ x ∂ν, covectorEuclideanNorm (β x) ≤ 1) → ∀ δ : ℝ, 0 < δ → ∃ g : Euclid P → Covector (Euclid P) n, Continuous g ∧ HasCompactSupport g ∧ (∀ x, covectorEuclideanNorm (g x) ≤ 1) ∧ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (g x - β x)) ∂ν < ENNReal.ofReal δ := by
+  intro P n ν β hν hβ hβ1 δ hδ
+  -- Step 1: the constant `C` of `norm_props` (iii), the retraction `ρ`, and the tolerance `η`
+  obtain ⟨-, -, ⟨C, hC0, hC⟩, -⟩ := Submission.rsd_mw_tfa_norm_props P n
+  obtain ⟨ρ, hρc, hρ0, hρ1, hρ2⟩ := Submission.rsd_mw_tfa_retraction P n
+  set η : ℝ := δ / (2 * (2 * C + 1)) with hη
+  have hη0 : 0 < η := by positivity
+  -- Step 2: continuous compactly supported maps are dense in `L¹(ν)` (`ν` is finite, hence
+  -- regular).  The contract does not import `Integrable.exists_hasCompactSupport_lintegral_sub_le`,
+  -- so this goes through `MemLp.induction_dense`: `c • 1_s` is approximated by `φ • c`, with `φ`
+  -- a Urysohn function for compact `K ⊆ s ⊆ U` open, `ν (U \ K)` small.
+  have hind : ∀ (c : Covector (Euclid P) n) ⦃s : Set (Euclid P)⦄, MeasurableSet s → ν s < ∞ →
+      ∀ {ε : ℝ≥0∞}, ε ≠ 0 → ∃ g : Euclid P → Covector (Euclid P) n,
+        eLpNorm (g - s.indicator fun _ => c) 1 ν ≤ ε ∧ (Continuous g ∧ HasCompactSupport g) := by
+    intro c s hs hsν ε hε
+    obtain ⟨t, ht0, htε⟩ :=
+      ENNReal.exists_nnreal_pos_mul_lt (a := 2 * ‖c‖ₑ)
+        (ENNReal.mul_ne_top ENNReal.ofNat_ne_top enorm_ne_top) hε
+    have ht : (t : ℝ≥0∞) ≠ 0 := by exact_mod_cast ht0.ne'
+    -- compact `K ⊆ s ⊆ U` open with `ν (s \ K) < t` and `ν (U \ s) < t`
+    obtain ⟨K, hKs, hK, hsK⟩ := hs.exists_isCompact_sdiff_lt hsν.ne ht
+    obtain ⟨U, hsU, hU, -, hUs⟩ := hs.exists_isOpen_sdiff_lt hsν.ne ht
+    -- Urysohn: `φ = 1` on `K`, `φ = 0` off `U`, `0 ≤ φ ≤ 1`, compact support
+    obtain ⟨φ, hφK, hφU, hφs, hφ01⟩ := exists_continuous_one_zero_of_isCompact hK hU.isClosed_compl
+      (disjoint_compl_right_iff_subset.mpr (hKs.trans hsU))
+    have hgc : Continuous fun x => φ x • c := φ.continuous.smul continuous_const
+    refine ⟨fun x => φ x • c, ?_, hgc, hφs.smul_right⟩
+    -- pointwise `‖φ x • c - 1_s(x) c‖ₑ ≤ 1_{U \ K}(x) ‖c‖ₑ`
+    have hle : ∀ x, ‖((fun x => φ x • c) - s.indicator fun _ => c) x‖ₑ ≤
+        (U \ K).indicator (fun _ => ‖c‖ₑ) x := by
+      intro x
+      rw [← ofReal_norm]
+      by_cases hxK : x ∈ K
+      · simp [hφK hxK, hKs hxK]
+      by_cases hxU : x ∈ U
+      · rw [indicator_of_mem (mem_sdiff_of_mem hxU hxK), ← ofReal_norm]
+        refine ENNReal.ofReal_le_ofReal ?_
+        obtain ⟨h0, h1⟩ := hφ01 x
+        by_cases hxs : x ∈ s
+        · rw [Pi.sub_apply, indicator_of_mem hxs, show φ x • c - c = (φ x - 1) • c by module,
+            norm_smul, Real.norm_eq_abs, abs_of_nonpos (by linarith)]
+          nlinarith [norm_nonneg c]
+        · rw [Pi.sub_apply, indicator_of_notMem hxs, sub_zero, norm_smul, Real.norm_eq_abs,
+            abs_of_nonneg h0]
+          nlinarith [norm_nonneg c]
+      · simp [hφU hxU, show x ∉ s from fun h => hxU (hsU h), hxU]
+    rw [eLpNorm_one_eq_lintegral_enorm
+      (hgc.aestronglyMeasurable.sub (stronglyMeasurable_const.indicator hs).aestronglyMeasurable)]
+    calc ∫⁻ x, ‖((fun x => φ x • c) - s.indicator fun _ => c) x‖ₑ ∂ν
+        ≤ ∫⁻ x, (U \ K).indicator (fun _ => ‖c‖ₑ) x ∂ν := lintegral_mono hle
+      _ = ‖c‖ₑ * ν (U \ K) := lintegral_indicator_const (hU.measurableSet.diff hK.measurableSet) _
+      _ ≤ ‖c‖ₑ * (ν (U \ s) + ν (s \ K)) := by
+          gcongr
+          refine (measure_mono fun x hx => ?_).trans (measure_union_le (U \ s) (s \ K))
+          by_cases hxs : x ∈ s
+          · exact Or.inr ⟨hxs, hx.2⟩
+          · exact Or.inl ⟨hx.1, hxs⟩
+      _ ≤ ‖c‖ₑ * (t + t) := by gcongr
+      _ = t * (2 * ‖c‖ₑ) := by ring
+      _ ≤ ε := htε.le
+  -- the density statement for `β`, with tolerance `η`
+  obtain ⟨g₀, hg₀, hg₀c, hg₀s⟩ := (memLp_one_iff_integrable.2 hβ).induction_dense
+    ENNReal.one_ne_top (fun g => Continuous g ∧ HasCompactSupport g) hind
+    (fun f g hf hg => ⟨hf.1.add hg.1, hf.2.add hg.2⟩) (ENNReal.ofReal_pos.mpr hη0).ne'
+  rw [eLpNorm_one_eq_lintegral_enorm (hβ.aestronglyMeasurable.sub hg₀c.aestronglyMeasurable)] at hg₀
+  -- Step 3: `g := ρ ∘ g₀`
+  refine ⟨ρ ∘ g₀, hρc.comp hg₀c, hg₀s.comp_left hρ0, fun x => hρ1 _, ?_⟩
+  -- Step 4: pointwise a.e. estimate
+  have hpt : ∀ᵐ x ∂ν, ENNReal.ofReal (covectorEuclideanNorm ((ρ ∘ g₀) x - β x))
+      ≤ ENNReal.ofReal (2 * C) * ‖β x - g₀ x‖ₑ := by
+    filter_upwards [hβ1] with x hx
+    rw [← ofReal_norm, ← ENNReal.ofReal_mul (by positivity)]
+    apply ENNReal.ofReal_le_ofReal
+    calc covectorEuclideanNorm ((ρ ∘ g₀) x - β x)
+        ≤ 2 * covectorEuclideanNorm (g₀ x - β x) := hρ2 _ _ hx
+      _ ≤ 2 * (C * ‖g₀ x - β x‖) := by gcongr; exact hC _
+      _ = 2 * C * ‖β x - g₀ x‖ := by rw [norm_sub_rev]; ring
+  -- Step 5: integration
+  calc ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm ((ρ ∘ g₀) x - β x)) ∂ν
+      ≤ ∫⁻ x, ENNReal.ofReal (2 * C) * ‖β x - g₀ x‖ₑ ∂ν := lintegral_mono_ae hpt
+    _ = ENNReal.ofReal (2 * C) * ∫⁻ x, ‖β x - g₀ x‖ₑ ∂ν :=
+        lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+    _ ≤ ENNReal.ofReal (2 * C) * ENNReal.ofReal η := by gcongr; exact hg₀
+    _ = ENNReal.ofReal (2 * C * η) := (ENNReal.ofReal_mul (by positivity)).symm
+    -- Step 6: arithmetic
+    _ < ENNReal.ofReal δ := by
+        rw [ENNReal.ofReal_lt_ofReal_iff hδ, hη, mul_div_assoc', div_lt_iff₀ (by positivity)]
+        nlinarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
