@@ -458,6 +458,90 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Height transfer on a graph piece** (step 4 of the rate estimates `any_radius_graph_rate`
+for a `C¹` graph piece of `spt V`, Remark 5.3).  Let `Ω = B̆_R(0)`, `F(x) = q(x, u(x))` with
+`u(0) = 0` and `‖Du‖ ≤ 1/7` on `Ω`.  Assume (E1) `∫_Ω g ∘ F ≤ ∫_{F(Ω)} g dμ_V` for Borel `g ≥ 0`
+and (E2) `p_{F(x)} = P_{Du(x)}` for a.e. `x ∈ Ω`.  Then
+`∫_Ω |u(x) − Du(x) x|² / |x|^{n+2} dx ≤ 2^{n+4} ∫_{B̆_ρ(0)} |y − p_y y|² / |y|^{n+2} dμ_V(y)`.
+Pointwise, `any_radius_gr_ht_pointwise_height` with `P = p_{F(x)}` bounds the integrand by
+`2^{n+4} G(F(x))`; `any_radius_gr_ht_ae_transfer` then moves `∫_Ω G ∘ F` to `∫_{F(Ω)} G dμ_V`. -/
+theorem any_radius_gr_height_transfer : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (R ρ : ℝ), ContDiffOn ℝ 1 u (ball 0 R) → u 0 = 0 → (∀ x ∈ ball (0 : Rn n) R, ‖fderiv ℝ u x‖ ≤ 1 / 7) → q '' graphOver u (ball 0 R) ⊆ ball 0 ρ → AEStronglyMeasurable V.tangentProj V.weight → (∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in ball (0 : Rn n) R, g (q (graphPoint x (u x))) ≤ ∫⁻ y in q '' graphOver u (ball 0 R), g y ∂V.weight) → (∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) R)), V.tangentProj (q (graphPoint x (u x))) = (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u x v)))).starProjection) → ∫⁻ x in ball (0 : Rn n) R, ENNReal.ofReal (‖u x - fderiv ℝ u x x‖ ^ 2 / ‖x‖ ^ (n + 2)) ≤ ENNReal.ofReal (2 ^ (n + 4)) * ∫⁻ y in ball (0 : Amb n ℓ) ρ, ENNReal.ofReal (‖y - V.tangentProj y y‖ ^ 2 / ‖y‖ ^ (n + 2)) ∂V.weight := by
+  intro n ℓ U V q u R ρ hu hu0 hDu hS hP hE1 hE2
+  -- `(a, c) ↦ graphPoint a c` is linear (la_basics (L1), (L3)), hence continuous.
+  obtain ⟨hL1, -, hL3, -⟩ := Submission.any_radius_gr_linear_algebra_basics n ℓ q
+  let Lg : (Rn n × Rn ℓ) →ₗ[ℝ] Amb n ℓ :=
+    { toFun := fun p => graphPoint p.1 p.2
+      map_add' := fun p p' => hL1 p.1 p'.1 p.2 p'.2
+      map_smul' := fun t p => hL3 t p.1 p.2 }
+  have hgc : Continuous fun p : Rn n × Rn ℓ => graphPoint p.1 p.2 :=
+    Lg.continuous_of_finiteDimensional
+  -- `F(x) = q (graphPoint x (u x))` is continuous on `Ω`, hence a.e.-measurable for `Lⁿ ⌞ Ω`.
+  have hF : AEMeasurable (fun x => q (graphPoint x (u x)))
+      (volume.restrict (ball (0 : Rn n) R)) :=
+    (q.continuous.comp_continuousOn
+      (hgc.comp_continuousOn (continuousOn_id.prodMk hu.continuousOn))).aemeasurable
+      measurableSet_ball
+  -- The right-hand integrand `G(y) = |y − p_y y|² / |y|^{n+2}` is `μ_V`-a.e.-measurable.
+  have hTy : AEStronglyMeasurable (fun y => V.tangentProj y y) V.weight :=
+    (continuous_fst.clm_apply continuous_snd :
+      Continuous fun p : (Amb n ℓ →L[ℝ] Amb n ℓ) × Amb n ℓ => p.1 p.2).comp_aestronglyMeasurable
+      (hP.prodMk aestronglyMeasurable_id)
+  have hG : AEMeasurable
+      (fun y : Amb n ℓ => ENNReal.ofReal (‖y - V.tangentProj y y‖ ^ 2 / ‖y‖ ^ (n + 2)))
+      V.weight :=
+    (((aemeasurable_id.sub hTy.aemeasurable).norm.pow_const 2).div
+      (aemeasurable_id.norm.pow_const (n + 2))).ennreal_ofReal
+  -- Mean value inequality and `u(0) = 0`: `|u(x)| ≤ |x|/7` on `Ω`.
+  have hdiff : ∀ x ∈ ball (0 : Rn n) R, DifferentiableAt ℝ u x := fun x hx =>
+    (hu.differentiableOn_one x hx).differentiableAt (isOpen_ball.mem_nhds hx)
+  have hsmall : ∀ x ∈ ball (0 : Rn n) R, ‖u x‖ ≤ ‖x‖ / 7 := by
+    intro x hx
+    have h0 : (0 : Rn n) ∈ ball (0 : Rn n) R :=
+      mem_ball_self (lt_of_le_of_lt (norm_nonneg x) (mem_ball_zero_iff.mp hx))
+    have h := (convex_ball (0 : Rn n) R).norm_image_sub_le_of_norm_fderiv_le hdiff hDu h0 hx
+    rw [hu0, sub_zero, sub_zero] at h
+    linarith
+  -- Pointwise bound for a.e. `x ∈ Ω`: pointwise_height with `P = p_{F(x)} = P_{Du(x)}`, whose
+  -- hypotheses (H1), (H2) are plane_projections (P1), (P2) at `Du(x)`, transported along (E2).
+  obtain ⟨hP1, hP2, -, -⟩ := Submission.any_radius_gr_graph_plane_projections n ℓ q
+  have hpt : ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) R)),
+      ENNReal.ofReal (‖u x - fderiv ℝ u x x‖ ^ 2 / ‖x‖ ^ (n + 2)) ≤
+        ENNReal.ofReal (2 ^ (n + 4)) *
+          ENNReal.ofReal (‖q (graphPoint x (u x)) - V.tangentProj (q (graphPoint x (u x)))
+            (q (graphPoint x (u x)))‖ ^ 2 / ‖q (graphPoint x (u x))‖ ^ (n + 2)) := by
+    filter_upwards [hE2, ae_restrict_mem measurableSet_ball] with x hx hxΩ
+    have key := Submission.any_radius_gr_ht_pointwise_height n ℓ q
+      (V.tangentProj (q (graphPoint x (u x)))) (fderiv ℝ u x) x (u x) (hDu x hxΩ)
+      (hsmall x hxΩ) (by rw [hx]; exact hP1 (fderiv ℝ u x) x)
+      (by rw [hx]; exact hP2 (fderiv ℝ u x))
+    rw [← ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ 2 ^ (n + 4))]
+    exact ENNReal.ofReal_le_ofReal key
+  -- Integrate, transfer along `F` (ae_transfer with (E1)), and enlarge `F(Ω)` to `B̆_ρ(0)`.
+  calc ∫⁻ x in ball (0 : Rn n) R, ENNReal.ofReal (‖u x - fderiv ℝ u x x‖ ^ 2 / ‖x‖ ^ (n + 2))
+      ≤ ∫⁻ x in ball (0 : Rn n) R, ENNReal.ofReal (2 ^ (n + 4)) *
+          ENNReal.ofReal (‖q (graphPoint x (u x)) - V.tangentProj (q (graphPoint x (u x)))
+            (q (graphPoint x (u x)))‖ ^ 2 / ‖q (graphPoint x (u x))‖ ^ (n + 2)) :=
+        lintegral_mono_ae hpt
+    _ = ENNReal.ofReal (2 ^ (n + 4)) * ∫⁻ x in ball (0 : Rn n) R,
+          ENNReal.ofReal (‖q (graphPoint x (u x)) - V.tangentProj (q (graphPoint x (u x)))
+            (q (graphPoint x (u x)))‖ ^ 2 / ‖q (graphPoint x (u x))‖ ^ (n + 2)) :=
+        lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+    _ ≤ ENNReal.ofReal (2 ^ (n + 4)) * ∫⁻ y in q '' graphOver u (ball 0 R),
+          ENNReal.ofReal (‖y - V.tangentProj y y‖ ^ 2 / ‖y‖ ^ (n + 2)) ∂V.weight := by
+        gcongr ENNReal.ofReal (2 ^ (n + 4)) * ?_
+        exact Submission.any_radius_gr_ht_ae_transfer n ℓ (volume.restrict (ball (0 : Rn n) R))
+          (V.weight.restrict (q '' graphOver u (ball 0 R))) (fun x => q (graphPoint x (u x))) hF
+          hE1 (fun y => ENNReal.ofReal (‖y - V.tangentProj y y‖ ^ 2 / ‖y‖ ^ (n + 2)))
+          hG.restrict
+    _ ≤ ENNReal.ofReal (2 ^ (n + 4)) * ∫⁻ y in ball (0 : Amb n ℓ) ρ,
+          ENNReal.ofReal (‖y - V.tangentProj y y‖ ^ 2 / ‖y‖ ^ (n + 2)) ∂V.weight := by
+        gcongr ENNReal.ofReal (2 ^ (n + 4)) * ?_
+        exact lintegral_mono_set hS
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
