@@ -415,6 +415,29 @@ theorem Submission.ltg_tau_integrable : ∀ (P k : ℕ) (U M : Set (Eucl P)) (θ
     hT.nullMeasurableSet (Filter.Eventually.of_forall fun x hx => ?_)
   have hx' : x ∉ tsupport ω := fun h => hx.2 ⟨hx.1, h⟩
   rw [image_eq_zero_of_notMem_tsupport hx', map_zero, mul_zero]
+/-- Finitely many covectors separate `k`-vectors (Simon Ch. 6, §1): `Λᵏ(ℝ^P)` is
+finite-dimensional, and `k`-vectors (continuous linear functionals on it) agreeing on a basis
+agree.  Evaluation on tuples of standard basis vectors embeds `Λᵏ(ℝ^P)` linearly into
+`ℝ^(Fin k → Fin P)` (a multilinear map is determined by its values on basis vectors). -/
+theorem Submission.ltg_covector_separating :
+    ∀ (P k : ℕ), ∃ (L : ℕ) (b : Fin L → Covector (Eucl P) k),
+      ∀ w w' : NVector (Eucl P) k, (∀ l, w (b l) = w' (b l)) → w = w' := by
+  intro P k
+  -- Evaluation on `k`-tuples of standard basis vectors of `ℝ^P`.
+  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
+  let ev : Covector (Eucl P) k →ₗ[ℝ] (Fin k → Fin P) → ℝ :=
+    { toFun := fun α I => α fun j => e (I j)
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl }
+  -- `ev` is injective, so `Λᵏ(ℝ^P)` is finite-dimensional.
+  have hinj : Function.Injective ev := fun α β h =>
+    ContinuousAlternatingMap.toAlternatingMap_injective <|
+      Module.Basis.ext_alternating e fun v _ => congrFun h v
+  have : FiniteDimensional ℝ (Covector (Eucl P) k) := FiniteDimensional.of_injective ev hinj
+  -- Linear functionals agreeing on a basis are equal.
+  let b := Module.finBasis ℝ (Covector (Eucl P) k)
+  exact ⟨Module.finrank ℝ (Covector (Eucl P) k), b, fun w w' h =>
+    ContinuousLinearMap.coe_injective (b.ext h)⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
