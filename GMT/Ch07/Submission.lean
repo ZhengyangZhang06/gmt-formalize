@@ -451,6 +451,78 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **FTC along a segment for a Lipschitz function** (step 1 of the Poincaré inequality on the unit
+ball invoked in the proof of Simon Ch. 5, Lemma 3.1; Gilbarg–Trudinger, Lemma 7.16).  The
+restriction `φ(t) = u((1 − t)y + tx)` is Lipschitz, so `∫₀¹ φ' = φ(1) − φ(0) = u(x) − u(y)`: the
+difference quotients `∫₀¹ (φ(s + t) − φ(s))/t ds` tend, as `t → 0⁺`, to `φ(1) − φ(0)` by continuity
+of `φ` and to `∫₀¹ φ'` by dominated convergence.  Wherever `u` is differentiable at `(1 − t)y + tx`
+the chain rule gives `φ'(t) = Du((1 − t)y + tx)(x − y)`, and this holds for a.e. `t ∈ (0, 1]`. -/
+theorem Submission.dorag_ha_pb_segment_ftc : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (x y : Euclid n), LipschitzWith L u → (∀ᵐ t ∂(volume.restrict (Icc (0 : ℝ) 1)), DifferentiableAt ℝ u ((1 - t) • y + t • x)) → u x - u y = ∫ t in (0 : ℝ)..1, fderiv ℝ u ((1 - t) • y + t • x) (x - y) := by
+  intro n u L x y hu hdiff
+  -- Step 1: `γ(t) = (1 − t)y + tx` is `‖x − y‖`-Lipschitz, so `φ = u ∘ γ` is Lipschitz
+  have hγ : LipschitzWith ‖x - y‖₊ (fun t : ℝ => (1 - t) • y + t • x) := by
+    refine LipschitzWith.of_dist_le_mul fun s t => le_of_eq ?_
+    have h : (1 - s) • y + s • x - ((1 - t) • y + t • x) = (s - t) • (x - y) := by module
+    rw [dist_eq_norm, h, norm_smul, Real.norm_eq_abs, ← Real.dist_eq, coe_nnnorm, mul_comm]
+  -- Step 2: `∫₀¹ φ' = φ(1) − φ(0)` for every Lipschitz `φ : ℝ → ℝ`, with `φ' = lineDeriv ℝ φ · 1`
+  have ftc : ∀ (φ : ℝ → ℝ) (K : NNReal), LipschitzWith K φ →
+      ∫ s in (0 : ℝ)..1, lineDeriv ℝ φ s 1 = φ 1 - φ 0 := by
+    intro φ K hφ
+    have hφc : Continuous φ := hφ.continuous
+    have hint : ∀ a b : ℝ, IntervalIntegrable φ volume a b :=
+      fun a b => hφc.intervalIntegrable a b
+    -- with `Φ(c) = ∫₀ᶜ φ`, `∫₀¹ (φ(s + t) − φ(s))/t ds = (Φ(1 + t) − Φ(1))/t − (Φ(t) − Φ(0))/t`,
+    -- which tends to `φ(1) − φ(0)` as `t → 0⁺` since `Φ' = φ`
+    have hlim : Tendsto (fun t : ℝ => ∫ s in (0 : ℝ)..1, t⁻¹ • (φ (s + t • 1) - φ s)) (𝓝[>] 0)
+        (𝓝 (φ 1 - φ 0)) := by
+      have hΦ : ∀ b, HasDerivAt (fun c => ∫ s in (0 : ℝ)..c, φ s) (φ b) b :=
+        fun b => (hφc.integral_hasStrictDerivAt 0 b).hasDerivAt
+      refine ((hΦ 1).tendsto_slope_zero_right.sub (hΦ 0).tendsto_slope_zero_right).congr
+        fun t => ?_
+      have hshift : ∫ s in (0 : ℝ)..1, φ (s + t) =
+          (∫ s in (0 : ℝ)..1 + t, φ s) - ∫ s in (0 : ℝ)..0 + t, φ s := by
+        rw [intervalIntegral.integral_comp_add_right,
+          intervalIntegral.integral_interval_sub_left (hint _ _) (hint _ _)]
+      simp only [smul_eq_mul, mul_one]
+      rw [intervalIntegral.integral_const_mul,
+        intervalIntegral.integral_sub
+          ((by fun_prop : Continuous fun s => φ (s + t)).intervalIntegrable 0 1) (hint 0 1),
+        hshift, intervalIntegral.integral_same]
+      ring
+    -- by dominated convergence (Rademacher, against the weight `1_{(0, 1]}`) the same quotients
+    -- tend to `∫₀¹ φ'`
+    have hg : Integrable ((Ioc (0 : ℝ) 1).indicator fun _ => (1 : ℝ)) volume := by
+      rw [integrable_indicator_iff measurableSet_Ioc]
+      exact integrableOn_const measure_Ioc_lt_top.ne
+    have hind : ∀ h : ℝ → ℝ, ∫ s, h s * (Ioc (0 : ℝ) 1).indicator (fun _ => (1 : ℝ)) s =
+        ∫ s in (0 : ℝ)..1, h s := by
+      intro h
+      rw [intervalIntegral.integral_of_le zero_le_one, ← integral_indicator measurableSet_Ioc]
+      congr 1
+      ext s
+      by_cases hs : s ∈ Ioc (0 : ℝ) 1 <;> simp [hs]
+    have hdom := hφ.integral_inv_smul_sub_mul_tendsto_integral_lineDeriv_mul hg (1 : ℝ)
+    simp only [hind] at hdom
+    exact tendsto_nhds_unique hdom hlim
+  -- `φ(1) = u(x)` and `φ(0) = u(y)`
+  have key := ftc _ _ (hu.comp hγ)
+  simp only [Function.comp_apply, sub_self, zero_smul, one_smul, zero_add, sub_zero,
+    add_zero] at key
+  rw [← key]
+  -- Step 3: `γ' = x − y`, so `φ'(t) = Du(γ(t))(x − y)` wherever `u` is differentiable at `γ(t)`
+  have hγ' : ∀ t : ℝ, HasDerivAt (fun t : ℝ => (1 - t) • y + t • x) (x - y) t := by
+    intro t
+    have h := (((hasDerivAt_id' t).const_sub 1).smul_const y).add ((hasDerivAt_id' t).smul_const x)
+    convert h using 1
+    rw [neg_one_smul, one_smul, neg_add_eq_sub]
+  -- Step 4: that is the case for a.e. `t ∈ Ι 0 1 = (0, 1] ⊆ [0, 1]`
+  apply intervalIntegral.integral_congr_ae
+  rw [ae_restrict_iff' measurableSet_Icc] at hdiff
+  filter_upwards [hdiff] with t ht hmem
+  rw [uIoc_of_le zero_le_one] at hmem
+  have hd := (ht (Ioc_subset_Icc_self hmem)).hasFDerivAt.comp_hasDerivAt t (hγ' t)
+  exact (hd.hasFDerivAt.hasLineDerivAt 1).lineDeriv.trans (by simp)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
