@@ -458,6 +458,35 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Translates of a.e.-strongly measurable functions on balls.**  If `r + ‖z‖ ≤ s` and `h` is
+a.e.-strongly measurable for Lebesgue measure on `B̆_s(0)`, then so is `x ↦ h(x - z)` on `B̆_r(0)`.
+
+The translation `τ(x) = x - z` preserves Lebesgue measure, hence also maps Lebesgue measure on
+`τ⁻¹(B̆_s(0))` to Lebesgue measure on `B̆_s(0)`; a.e.-strong measurability pulls back along such a
+map, and `B̆_r(0) ⊆ τ⁻¹(B̆_s(0))` because `‖x - z‖ ≤ ‖x‖ + ‖z‖ < r + ‖z‖ ≤ s`. -/
+theorem aestronglyMeasurable_ball_comp_sub : ∀ (n : ℕ) (h : Rn n → ℝ) (r s : ℝ) (z : Rn n), r + ‖z‖ ≤ s → AEStronglyMeasurable h (volume.restrict (ball (0 : Rn n) s)) → AEStronglyMeasurable (fun x => h (x - z)) (volume.restrict (ball (0 : Rn n) r)) := by
+  intro n h r s z hrs hh
+  -- Steps 1–2: `τ` is measure preserving, also from the restriction to `τ⁻¹(B̆_s(0))`
+  -- to the restriction to `B̆_s(0)`.
+  have hmp : MeasurePreserving (fun x : Rn n => x - z)
+      (volume.restrict ((fun x : Rn n => x - z) ⁻¹' ball 0 s)) (volume.restrict (ball 0 s)) :=
+    (measurePreserving_sub_right volume z).restrict_preimage measurableSet_ball
+  -- Step 3: compose a strongly measurable representative of `h` with `τ`.
+  have hcomp : AEStronglyMeasurable (fun x => h (x - z))
+      (volume.restrict ((fun x : Rn n => x - z) ⁻¹' ball 0 s)) :=
+    hh.comp_measurePreserving hmp
+  -- Step 4: `B̆_r(0) ⊆ τ⁻¹(B̆_s(0))`.
+  have hsub : ball (0 : Rn n) r ⊆ (fun x : Rn n => x - z) ⁻¹' ball 0 s := by
+    intro x hx
+    rw [mem_preimage, mem_ball_zero_iff]
+    exact (norm_sub_le x z).trans_lt (by linarith [mem_ball_zero_iff.1 hx])
+  -- Step 5: pass to the smaller measure.
+  exact hcomp.mono_measure (Measure.restrict_mono hsub le_rfl)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
