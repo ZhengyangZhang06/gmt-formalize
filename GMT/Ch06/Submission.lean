@@ -1381,6 +1381,60 @@ theorem Submission.lpf_c1_approximation_real :
     rw [hDhx.fderiv]
     exact ⟨hhx.symm, DifferentiableAt.hasFDerivAt (hCD (hAC hx))⟩
 
+/-- Simon Ch. 2, Theorem 1.5 (C¹ Approximation Theorem, p. 42) for `ℝ^Q`-valued maps, applied
+componentwise as in the proof of Ch. 6, Lemma 3.9 (p. 148): a Lipschitz `u : ℝⁿ → ℝ^Q` agrees
+with a `C¹` map `G`, and has Fréchet derivative `DG(x)`, at every `x` of a closed set `A` with
+`Lⁿ(ℝⁿ ∖ A) < ε`. -/
+theorem Submission.lpf_c1_approximation_eucl :
+    ∀ (n Q : ℕ) (u : Eucl n → Eucl Q) (K : ℝ≥0), LipschitzWith K u → ∀ ε : ℝ≥0∞, 0 < ε →
+      ∃ (A : Set (Eucl n)) (G : Eucl n → Eucl Q), IsClosed A ∧
+        (volume : Measure (Eucl n)) Aᶜ < ε ∧ ContDiff ℝ 1 G ∧
+        ∀ x ∈ A, u x = G x ∧ HasFDerivAt u (fderiv ℝ G x) x := by
+  intro n Q u K hu ε hε
+  -- Split `ε`: `δ > 0` with `Q δ < ε`.
+  obtain ⟨δ, hδ, hδQ⟩ := ENNReal.exists_pos_mul_lt (ENNReal.natCast_ne_top Q) hε.ne'
+  -- The scalar theorem for each component `u_l = π_l ∘ u`, which is `‖π_l‖ K`-Lipschitz: a closed
+  -- `A_l` with `Lⁿ(ℝⁿ ∖ A_l) < δ` and a `C¹` `h_l` with `u_l = h_l`, `Du_l = Dh_l` on `A_l`.
+  have hcomp : ∀ l : Fin Q, ∃ (A : Set (Eucl n)) (h : Eucl n → ℝ), IsClosed A ∧
+      (volume : Measure (Eucl n)) Aᶜ < δ ∧ ContDiff ℝ 1 h ∧
+      ∀ x ∈ A, u x l = h x ∧ HasFDerivAt (fun y => u y l) (fderiv ℝ h x) x := fun l =>
+    Submission.lpf_c1_approximation_real n (fun y => u y l) _
+      ((EuclideanSpace.proj (𝕜 := ℝ) l).lipschitzWith.comp hu) δ hδ
+  choose A h hA hAδ hh hAh using hcomp
+  -- Every `y ∈ ℝ^Q` is `∑_l y_l e_l`, `e_l = EuclideanSpace.single l 1`.
+  have hsum : ∀ y : Eucl Q, ∑ l, y l • EuclideanSpace.single l (1 : ℝ) = y := fun y => by
+    have hy := (EuclideanSpace.basisFun (Fin Q) ℝ).sum_repr y
+    simp only [EuclideanSpace.basisFun_repr, EuclideanSpace.basisFun_apply] at hy
+    exact hy
+  -- `A = ⋂_l A_l` and `G = ∑_l h_l e_l`.
+  refine ⟨⋂ l, A l, fun x => ∑ l, h l x • EuclideanSpace.single l (1 : ℝ), isClosed_iInter hA,
+    ?_, ContDiff.sum fun l _ => (hh l).smul_const _, ?_⟩
+  · -- `Lⁿ(ℝⁿ ∖ A) ≤ ∑_l Lⁿ(ℝⁿ ∖ A_l) ≤ Q δ < ε`.
+    rw [compl_iInter]
+    calc (volume : Measure (Eucl n)) (⋃ l, (A l)ᶜ)
+        ≤ ∑ l, (volume : Measure (Eucl n)) (A l)ᶜ := measure_iUnion_fintype_le _ _
+      _ ≤ ∑ _l : Fin Q, δ := Finset.sum_le_sum fun l _ => (hAδ l).le
+      _ = δ * Q := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_comm]
+      _ < ε := hδQ
+  · intro x hx
+    rw [mem_iInter] at hx
+    -- `G` and `u = ∑_l u_l e_l` both have derivative `Λ = ∑_l (Dh_l(x)).smulRight e_l` at `x`.
+    have hG : HasFDerivAt (fun y => ∑ l, h l y • EuclideanSpace.single l (1 : ℝ))
+        (∑ l, (fderiv ℝ (h l) x).smulRight (EuclideanSpace.single l (1 : ℝ))) x :=
+      HasFDerivAt.fun_sum fun l _ =>
+        ((hh l).differentiable one_ne_zero x).hasFDerivAt.smul_const _
+    have hu' : HasFDerivAt (fun y => ∑ l, u y l • EuclideanSpace.single l (1 : ℝ))
+        (∑ l, (fderiv ℝ (h l) x).smulRight (EuclideanSpace.single l (1 : ℝ))) x :=
+      HasFDerivAt.fun_sum fun l _ => (hAh l x (hx l)).2.smul_const _
+    rw [show (fun y => ∑ l, u y l • EuclideanSpace.single l (1 : ℝ)) = u from
+      funext fun y => hsum (u y)] at hu'
+    refine ⟨?_, ?_⟩
+    · rw [← hsum (u x)]
+      exact Finset.sum_congr rfl fun l _ => by rw [(hAh l x (hx l)).1]
+    · rw [hG.fderiv]
+      exact hu'
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
