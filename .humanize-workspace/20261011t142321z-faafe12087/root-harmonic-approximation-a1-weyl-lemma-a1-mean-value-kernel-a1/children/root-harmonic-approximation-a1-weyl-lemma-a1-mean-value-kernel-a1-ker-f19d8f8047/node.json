@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1.kernel_potential-a1",
+  "parent_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1",
+  "depth": 4,
+  "title": "Smooth even normalized kernel on the unit ball with a radial potential Psi satisfying DPsi(z)[v] = rho(z)<z,v>",
+  "statement": "For every n in N there exist functions rho, Psi : R^n -> R (R^n = EuclideanSpace R (Fin n)) such that: rho and Psi are C^infinity; rho(z) = 0 and Psi(z) = 0 whenever |z| >= 1; rho(-z) = rho(z) for all z; int_{R^n} rho(z) dz = 1 (Lebesgue measure); and DPsi(z)[v] = rho(z) <z, v> for all z, v in R^n, where DPsi(z)[v] = fderiv R Psi z v.",
+  "lean_statement": "∀ n : ℕ, ∃ ρ Ψ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ ContDiff ℝ (⊤ : ℕ∞) Ψ ∧ (∀ z : Rn n, 1 ≤ ‖z‖ → ρ z = 0) ∧ (∀ z : Rn n, 1 ≤ ‖z‖ → Ψ z = 0) ∧ (∀ z : Rn n, ρ (-z) = ρ z) ∧ ∫ z, ρ z = 1 ∧ ∀ z v : Rn n, fderiv ℝ Ψ z v = ρ z * inner ℝ z v",
+  "lean_name": "mvk_exists_kernel_potential",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-weyl-lemma-a1-mean-value-kernel-a1-ker-f19d8f8047-a1"
+}

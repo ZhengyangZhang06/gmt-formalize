@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1.green_identity-a1",
+  "parent_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1",
+  "depth": 4,
+  "title": "Green's first identity on R^n against a compactly supported C^1 function",
+  "statement": "Let n in N. Let H : R^n -> R be of class C^2, let Psi : R^n -> R be of class C^1 with compact support, and let w : R^n -> R^n satisfy DPsi(z)[v] = <w(z), v> for all z, v in R^n (so w is the gradient of Psi). Then int_{R^n} DH(z)[w(z)] dz = - int_{R^n} Laplacian(H)(z) Psi(z) dz. Here DH(z)[v] = fderiv R H z v, Laplacian is Mathlib's Laplacian.laplacian, and the measure is Lebesgue measure.",
+  "lean_statement": "∀ (n : ℕ) (H Ψ : Rn n → ℝ) (w : Rn n → Rn n), ContDiff ℝ 2 H → ContDiff ℝ 1 Ψ → HasCompactSupport Ψ → (∀ z v : Rn n, fderiv ℝ Ψ z v = inner ℝ (w z) v) → ∫ z, fderiv ℝ H z (w z) = -∫ z, Laplacian.laplacian H z * Ψ z",
+  "lean_name": "mvk_integral_fderiv_grad_eq_neg_laplacian",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-weyl-lemma-a1-mean-value-kernel-a1-gre-a626a5bf22-a1"
+}

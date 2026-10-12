@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1.rescale_reflect-a1",
+  "parent_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1",
+  "depth": 4,
+  "title": "Rescaling and reflection of the convolution integral for an even kernel",
+  "statement": "Let n in N, let rho, h : R^n -> R with rho(-z) = rho(z) for all z, x0 in R^n and t > 0. Then int_{R^n} t^{-n} rho(t^{-1} y) h(x0 - y) dy = int_{R^n} rho(z) h(x0 + t z) dz, with respect to Lebesgue measure. No integrability hypothesis is needed, since every identity used holds for the Bochner integral of an arbitrary function.",
+  "lean_statement": "∀ (n : ℕ) (ρ h : Rn n → ℝ) (x₀ : Rn n) (t : ℝ), 0 < t → (∀ z : Rn n, ρ (-z) = ρ z) → ∫ y, t⁻¹ ^ n * ρ (t⁻¹ • y) * h (x₀ - y) = ∫ z, ρ z * h (x₀ + t • z)",
+  "lean_name": "mvk_integral_rescale_reflect",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-weyl-lemma-a1-mean-value-kernel-a1-res-da9155c5a3-a1"
+}
