@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d4b9c9cb576cd9b35cd8f626214d5f9752f502025c700b9a1ad706213b09ed51",
+  "git_delta": {
+    "base_commit": "96ce8c80bf8fdd66d66bdbbb31bcda32e078e174",
+    "candidate_commit": "4c27f7ac7967e910ce5c278019c50c353aa3fbb5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_tendsto_measure_ball_of_vague",
+    "diff_sha256": "83164321c9c52a9a0e489a9a0f209a5e29b6455bd65067818900fb8e6d3a0d30",
+    "source_sha256": "ed0c8191a03a04a89980105398aba904ded78bf3d2596dd32677673d0f776f1b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_tendsto_measure_ball_of_vague",
+      "statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)) (ρ : ℝ), 0 < ρ → (∀ r : ℝ, 0 < r → μ (ball 0 r) ≠ ∞) → (∀ r : ℝ, 0 < r → ∀ᶠ j in atTop, μs j (ball 0 r) ≠ ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ y, f y ∂(μs j)) atTop (𝓝 (∫ y, f y ∂μ))) → μ (sphere 0 ρ) = 0 → Tendsto (fun j => μs j (ball 0 ρ)) atTop (𝓝 (μ (ball 0 ρ)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
