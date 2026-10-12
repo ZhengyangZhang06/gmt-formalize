@@ -458,6 +458,48 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Push-forward domination extends to a.e.-measurable integrands** (null-set transport for
+the weighted height bound of a graph piece in the proof of Simon Ch. 5, Remark 5.3; steps 1, 3
+and 7 of the height transfer).
+If `F : ℝⁿ → ℝ^{n+ℓ}` is `ν`-a.e.-measurable and `∫ h ∘ F dν ≤ ∫ h dμ` for every Borel
+`h : ℝ^{n+ℓ} → [0, ∞]`, then the same inequality holds for every `μ`-a.e.-measurable `g`.
+Proof: let `g̃` be a Borel version of `g` and `N'` a measurable `μ`-null hull of `{g ≠ g̃}`.
+Testing with `h = 1_{N'}` gives `∫ 1_{N'} ∘ F dν ≤ μ N' = 0`, so `F x ∉ N'` for `ν`-a.e. `x` and
+`g ∘ F = g̃ ∘ F` `ν`-a.e.; hence `∫ g ∘ F dν = ∫ g̃ ∘ F dν ≤ ∫ g̃ dμ = ∫ g dμ`. -/
+theorem any_radius_gr_ht_ae_transfer : ∀ (n ℓ : ℕ) (ν : Measure (Rn n)) (μ : Measure (Amb n ℓ)) (F : Rn n → Amb n ℓ), AEMeasurable F ν → (∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x, g (F x) ∂ν ≤ ∫⁻ y, g y ∂μ) → ∀ g : Amb n ℓ → ℝ≥0∞, AEMeasurable g μ → ∫⁻ x, g (F x) ∂ν ≤ ∫⁻ y, g y ∂μ := by
+  intro n ℓ ν μ F hF hE g hg
+  -- Step 1: a Borel version `g̃ = hg.mk g` of `g`; the set `N = {g ≠ g̃}` is `μ`-null.
+  set N : Set (Amb n ℓ) := {y | g y ≠ hg.mk g y}
+  have hN : μ N = 0 := ae_iff.mp hg.ae_eq_mk
+  -- Step 2: the measurable hull `N' ⊇ N` is measurable and `μ`-null.
+  set N' : Set (Amb n ℓ) := toMeasurable μ N
+  have hN'm : MeasurableSet N' := measurableSet_toMeasurable μ N
+  have hN'0 : μ N' = 0 := (measure_toMeasurable N).trans hN
+  -- Step 3: (E) at the Borel indicator `1_{N'}` gives `∫ 1_{N'} ∘ F dν ≤ μ N' = 0`.
+  have hind : Measurable (N'.indicator (1 : Amb n ℓ → ℝ≥0∞)) := measurable_one.indicator hN'm
+  have h0 : ∫⁻ x, N'.indicator 1 (F x) ∂ν = 0 :=
+    nonpos_iff_eq_zero.mp <| calc
+      ∫⁻ x, N'.indicator 1 (F x) ∂ν ≤ ∫⁻ y, N'.indicator 1 y ∂μ := hE _ hind
+      _ = μ N' := lintegral_indicator_one hN'm
+      _ = 0 := hN'0
+  -- Step 4: `1_{N'} ∘ F` is `ν`-a.e.-measurable with zero integral, so it vanishes `ν`-a.e.
+  have hae : (fun x => N'.indicator (1 : Amb n ℓ → ℝ≥0∞) (F x)) =ᵐ[ν] 0 :=
+    (lintegral_eq_zero_iff' (hind.comp_aemeasurable' hF)).mp h0
+  -- Step 5: so `F x ∉ N' ⊇ N`, i.e. `g (F x) = g̃ (F x)`, for `ν`-a.e. `x`.
+  have hgF : (fun x => g (F x)) =ᵐ[ν] fun x => hg.mk g (F x) := by
+    filter_upwards [hae] with x hx
+    by_contra hne
+    have hmem : F x ∈ N' := subset_toMeasurable μ N hne
+    simp [Set.indicator_of_mem hmem] at hx
+  -- Step 6: `∫ g ∘ F dν = ∫ g̃ ∘ F dν ≤ ∫ g̃ dμ = ∫ g dμ`.
+  calc ∫⁻ x, g (F x) ∂ν = ∫⁻ x, hg.mk g (F x) ∂ν := lintegral_congr_ae hgF
+    _ ≤ ∫⁻ y, hg.mk g y ∂μ := hE _ hg.measurable_mk
+    _ = ∫⁻ y, g y ∂μ := lintegral_congr_ae hg.ae_eq_mk.symm
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
