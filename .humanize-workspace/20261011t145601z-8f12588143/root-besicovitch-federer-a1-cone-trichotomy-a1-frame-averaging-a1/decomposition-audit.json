@@ -1,0 +1,94 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "rg -n -A 8 -B 3 'abbrev Rn|def frameProjection|def ForAlmostAllProjections' project/GMT/Ch03/Contract.lean",
+        "instMeasurableSpace|instBorelSpace",
+        "isMulInvariant_eq_smul_of_compactSpace|isHaarMeasure_eq_of_isProbabilityMeasure",
+        "IsTopologicalGroup \\(unitary|isClosed_unitary",
+        "ext_of_forall_integral_eq_of_IsFiniteMeasure",
+        "LinearIsometry.extend|extend_apply",
+        "eq_starProjection_of_mem_of_inner_eq_zero|starProjection_inner_eq_zero|starProjection_apply_mem",
+        "measurable_measure_prodMk_right|measurable_measure_prodMk_left|theorem prod_apply |theorem prod_apply_symm|theorem ae_ae_comm",
+        "bf_orthStabilizer_haar_exists|bf_stabilizerOrbit_null|bf_haar_null_of_cosetFibres_null|bf_starProjection_map_orthogonal|bf_haar_planeDirection_null|bf_haar_excPointwise_null|bf_orthogonal_exists_map_eq|bf_haar_null_to_frames",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/frame-averaging-audit-9d4mzzni/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/frame-averaging-audit-9d4mzzni/Closed.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/Star/Unitary.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/HasOuterApproxClosed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-trichotomy-a1-frame-averaging-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/FrameAveragingSplitAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/FrameAveragingSplitClosed.lean",
+        "/tmp/frame-averaging-audit-9d4mzzni/Challenges.lean",
+        "/tmp/frame-averaging-audit-9d4mzzni/Closed.lean"
+      ],
+      "conclusion": "The pinned Contract and build inputs match the working copies; Mathlib is at 25730c7c759d108ef87ab70af2342a196760f79d. All eight standalone propositions compiled using Contract.lean without child implementations. Independent instance checks confirm operator composition, identity, the Borel structure on continuous linear maps, and product volume on frames. All child types, the parent type, and the two prerequisite types match the compiled headers exactly. Recompiling the complete chain succeeded: the children use only propext, Classical.choice and Quot.sound; the parent additionally uses only stand-ins for its two exact frozen prerequisites. No proposed names matched the DAG, snapshot project, or 150 worktree submissions. All names are bare identifiers. The selected dependency closure is acyclic. Splitting is appropriate: the eight complete obligations assemble into this selected frame-averaging contract, without invoking it or an ancestor."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "haar_stabilizer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches all prose hypotheses and conclusions. The proof establishes the compact stabilizer group, supplies continuous adjoint/star, normalizes Haar measure, derives right invariance by uniqueness, and pushes the measure into the ambient operator space. It is complete and independent, including the zero-dimensional case."
+    },
+    {
+      "key": "stabilizer_orbit_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Probability, support, both invariances, sphere-measure bounds, and measurability are explicit. Reflection transitivity and bounded-continuous-function Fubini prove uniqueness of the invariant sphere probability, yielding the exact null-preimage conclusion. No dimension relation beyond the stated positive finite sphere measure is needed; no sibling or parent is assumed."
+    },
+    {
+      "key": "coset_fubini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the finite/probability and almost-everywhere invariance hypotheses. The measurable multiplication preimage has product measure zero by one slicing and measure θ(B) by the other. All Tonelli and pushforward requirements are justified; no unstated invertibility assumption is used."
+    },
+    {
+      "key": "orthogonal_conj_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The adjoint identity gives injectivity and preservation of dimension. The proposed projection lies in gV, and its residual is orthogonal to gV, proving the operator equality by projection uniqueness. Multiplication elaborates as composition. The proof establishes both conjuncts independently."
+    },
+    {
+      "key": "orthogonal_plane_transitive",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Equal dimensions are the sole required hypothesis. Orthonormal coordinates construct an isometry between the subspaces; the finite-dimensional extension theorem supplies the ambient isometry. The proof verifies both the adjoint identity and equality of the image subspace, with no circular dependence."
+    },
+    {
+      "key": "plane_direction_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the prose. The four declared dependencies suffice: construct the stabilizer measure, apply h1 to hV, transfer sphere nullity by isometry, apply the orbit lemma, and conclude by coset Fubini. The proof explicitly includes the null complement of the stabilizer, correctly handling almost-everywhere support."
+    },
+    {
+      "key": "pointwise_exc_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The complement basis has exactly ℓ vectors, and each augmented plane has dimension n+1. The declared dependencies make each direction event null; h2 places every orthogonal exceptional rotation in their union. Measurability of Exc is unnecessary because outer-measure monotonicity suffices. The empty-family case is also covered."
+    },
+    {
+      "key": "haar_to_frames",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The continuity assumption gives a measurable bad-frame set. Equal-dimensional plane transitivity and right invariance make every frame fibre θ-null, including dependent frames. Orthogonal maps preserve product volume; Tonelli with σ-finite frame volume proves the exact ForAlmostAllProjections conclusion. Only the two declared siblings are used."
+    }
+  ],
+  "required_changes": []
+}
