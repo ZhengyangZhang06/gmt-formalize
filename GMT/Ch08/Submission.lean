@@ -850,6 +850,35 @@ theorem Submission.intcpt_canon_hausdorff_null_of_weight_null :
     by_contra hne
     exact lt_irrefl _ (key _ (pos_iff_ne_zero.2 hne))
   exact (mul_eq_zero.1 h0).resolve_left (ENNReal.inv_ne_zero.2 (by simp))
+/-- **Canonical representation** (step B2 of the proof of Simon Ch. 8, 5.9; child
+`canonical_representation` of `integral_compactness`): let `V` have locally bounded first variation
+and `Θ^n(μ_V, x) > 0` for `μ_V`-a.e. `x`, and let `M = {x ∈ spt μ_V : V has a tangent plane at x}`.
+Allard's theorem (5.5 with 5.6) gives tangent planes `μ_V`-a.e., so the First Rectifiability
+Theorem (1.2) gives `θ` with `V = v(M, θ)` and a tangent plane of multiplicity `θ(x)` at each
+`x ∈ M`.  Such a tangent plane forces `Θ^n(μ_V, x) = θ(x)` (`intcpt_canon_tangent_plane_hasDensity`),
+and as `θ > 0` on `M ⊆ U`, every `μ_V`-null `Z ⊆ M` is `H^n`-null
+(`intcpt_canon_hausdorff_null_of_weight_null`, via Simon Ch. 1, 3.3). -/
+theorem Submission.intcpt_canonical_tangent_representation :
+    AllardRectifiabilityTheorem → FirstRectifiabilityTheorem → ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → (∀ᵐ x ∂V.weight, ∃ θ : ℝ≥0∞, HasDensity n V.weight x θ ∧ 0 < θ) → ∃ θ : Euclidean N → ℝ, IsVarifoldOf V {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'} θ ∧ (∀ x ∈ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'}, (∃ T : Grassmannian N n, HasTangentPlane V x T (θ x)) ∧ HasDensity n V.weight x (ENNReal.ofReal (θ x))) ∧ ∀ Z ⊆ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'}, V.weight Z = 0 → (μHE[n] : Measure (Euclidean N)) Z = 0 := by
+  intro hAllard hFirst N n U V hV hdens
+  -- Step 1: Allard (5.5 with 5.6) gives a tangent plane at `μ_V`-a.e. `x`.
+  obtain ⟨-, hae⟩ := hAllard N n U V hV hdens
+  -- Step 2: the First Rectifiability Theorem (1.2) gives `θ` with `V = v(M, θ)` and a tangent
+  -- plane of multiplicity `θ(x)` at every `x ∈ M`; in particular `M ⊆ U` and `θ > 0` on `M`.
+  obtain ⟨θ, hθT, hθM⟩ := hFirst N n U V hae
+  -- Step 3: a tangent plane of multiplicity `θ(x)` forces `Θ^n(μ_V, x) = θ(x)`.
+  have hden : ∀ x ∈ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
+      HasTangentPlane V x T θ'}, HasDensity n V.weight x (ENNReal.ofReal (θ x)) := by
+    intro x hx
+    obtain ⟨T, hT⟩ := hθT x hx
+    exact Submission.intcpt_canon_tangent_plane_hasDensity N n U V x T (θ x) hT
+  refine ⟨θ, hθM, fun x hx ↦ ⟨hθT x hx, hden x hx⟩, fun Z hZM hZ ↦ ?_⟩
+  -- Step 4: `Z ⊆ M ⊆ U` is `μ_V`-null and `limsup_{ρ↓0} μ_V(B_ρ(x)) / (ω_n ρ^n) = θ(x) > 0` on
+  -- `Z`, so Simon Ch. 1, 3.3 (through the null-transfer child) makes `Z` `H^n`-null.
+  refine Submission.intcpt_canon_hausdorff_null_of_weight_null N n V.weight U Z V.isOpen_domain
+    V.weight_finite_on_compact (hZM.trans hθM.1) hZ fun x hx ↦ ?_
+  rw [Filter.Tendsto.limsup_eq (hden x (hZM hx))]
+  exact ENNReal.ofReal_pos.2 (hθM.2.2.2.1 x (hZM hx))
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
