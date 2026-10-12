@@ -359,6 +359,81 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Covector evaluation bound** (for `M(T) < ∞` in the proof of Simon Ch. 6, 6.1, p. 169).
+If `|τ_j| ≤ 1` for all `j`, then `|α(τ_1, …, τ_n)| ≤ P^n |α|`, `|α|` the Euclidean coefficient
+norm of Remark 2.6.  Expanding each `τ_j` in the standard basis `e_1, …, e_P` gives
+`α(τ) = ∑_f (∏_j τ_j(f j)) α(e_f)` over the `P^n` maps `f : Fin n → Fin P`.  Each coefficient has
+absolute value at most `1`, and `|α(e_f)| ≤ |α|`: `α(e_f) = 0` unless `f` is injective, and then
+`α(e_f) = ±α(e_{f ∘ σ})` for the permutation `σ` sorting `f`, where `f ∘ σ` is strictly
+increasing. -/
+theorem Submission.isoperimetric_abs_covector_apply_le : ∀ (P n : ℕ) (α : Covector (Eucl P) n) (τ : Fin n → Eucl P), (∀ j, ‖τ j‖ ≤ 1) → |α τ| ≤ (P : ℝ) ^ n * covectorEuclideanNorm α := by
+  intro P n α τ hτ
+  classical
+  -- Step 1: `|α(e_f)| ≤ |α|` for every `f : Fin n → Fin P`.
+  have hcoef : ∀ f : Fin n → Fin P,
+      |α (fun j => EuclideanSpace.basisFun (Fin P) ℝ (f j))| ≤ covectorEuclideanNorm α := by
+    intro f
+    by_cases hf : Function.Injective f
+    · -- Sort `f`: `f ∘ σ` is monotone and injective, hence strictly increasing.
+      set σ := Tuple.sort f
+      have hmono : StrictMono (f ∘ σ) :=
+        (Tuple.monotone_sort f).strictMono_of_injective (hf.comp σ.injective)
+      have hperm : α (fun j => EuclideanSpace.basisFun (Fin P) ℝ ((f ∘ σ) j)) =
+          Equiv.Perm.sign σ • α (fun j => EuclideanSpace.basisFun (Fin P) ℝ (f j)) :=
+        α.toAlternatingMap.map_perm (fun j => EuclideanSpace.basisFun (Fin P) ℝ (f j)) σ
+      have habs : |α (fun j => EuclideanSpace.basisFun (Fin P) ℝ (f j))| =
+          |α (fun j => EuclideanSpace.basisFun (Fin P) ℝ ((f ∘ σ) j))| := by
+        rw [hperm]
+        rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
+      -- `α(e_{f ∘ σ})²` is one of the summands of `|α|²`.
+      rw [habs]
+      unfold covectorEuclideanNorm
+      apply Real.abs_le_sqrt
+      have := Finset.single_le_sum (f := fun I : Fin n → Fin P =>
+          if StrictMono I then (α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))) ^ 2 else 0)
+        (fun I _ => by split_ifs <;> positivity) (Finset.mem_univ (f ∘ σ))
+      simpa only [hmono, ite_true] using this
+    · -- Two equal arguments: `α(e_f) = 0`.
+      have hv : ¬Function.Injective fun j => EuclideanSpace.basisFun (Fin P) ℝ (f j) :=
+        fun hv => hf (Function.Injective.of_comp (f := EuclideanSpace.basisFun (Fin P) ℝ) hv)
+      rw [α.map_eq_zero_of_not_injective _ hv, abs_zero]
+      exact covectorEuclideanNorm_nonneg α
+  -- Step 2: multilinear expansion `α(τ) = ∑_f (∏_j τ_j(f j)) α(e_f)`.
+  have hexp : α τ = ∑ f : Fin n → Fin P,
+      (∏ j, τ j (f j)) * α (fun j => EuclideanSpace.basisFun (Fin P) ℝ (f j)) := by
+    have h1 : α τ = α (fun j => ∑ a, τ j a • EuclideanSpace.basisFun (Fin P) ℝ a) := by
+      congr 1
+      funext j
+      simpa only [EuclideanSpace.basisFun_repr] using
+        ((EuclideanSpace.basisFun (Fin P) ℝ).sum_repr (τ j)).symm
+    rw [h1, α.map_sum]
+    refine Finset.sum_congr rfl fun f _ => ?_
+    rw [α.map_smul_univ, smul_eq_mul]
+  -- Step 3: `|∏_j τ_j(f j)| ≤ 1`, as `|τ_j(a)| ≤ |τ_j| ≤ 1`.
+  have hprod : ∀ f : Fin n → Fin P, |∏ j, τ j (f j)| ≤ 1 := by
+    intro f
+    rw [Finset.abs_prod]
+    exact Finset.prod_le_one₀ (fun j _ => abs_nonneg _) fun j _ =>
+      (show |τ j (f j)| ≤ ‖τ j‖ by
+        simpa only [Real.norm_eq_abs] using PiLp.norm_apply_le (τ j) (f j)).trans (hτ j)
+  -- Step 4: sum the bound `|α|` over the `P ^ n` maps `f`.
+  calc |α τ| = |∑ f : Fin n → Fin P,
+        (∏ j, τ j (f j)) * α (fun j => EuclideanSpace.basisFun (Fin P) ℝ (f j))| := by
+          rw [hexp]
+    _ ≤ ∑ f : Fin n → Fin P,
+        |(∏ j, τ j (f j)) * α (fun j => EuclideanSpace.basisFun (Fin P) ℝ (f j))| :=
+          Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _f : Fin n → Fin P, covectorEuclideanNorm α := by
+        refine Finset.sum_le_sum fun f _ => ?_
+        rw [abs_mul]
+        calc |∏ j, τ j (f j)| * |α (fun j => EuclideanSpace.basisFun (Fin P) ℝ (f j))|
+            ≤ 1 * covectorEuclideanNorm α :=
+              mul_le_mul (hprod f) (hcoef f) (abs_nonneg _) zero_le_one
+          _ = covectorEuclideanNorm α := one_mul _
+    _ = (P : ℝ) ^ n * covectorEuclideanNorm α := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
+          Fintype.card_fin, nsmul_eq_mul, Nat.cast_pow]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
