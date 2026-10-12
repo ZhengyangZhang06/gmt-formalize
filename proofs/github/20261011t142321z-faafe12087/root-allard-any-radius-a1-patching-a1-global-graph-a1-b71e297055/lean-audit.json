@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c719ca7afe9f67324b8da817b467db5b728336b4ea904c6d80e0d4ddec7384e4",
+  "git_delta": {
+    "base_commit": "062add4819b4c77c1f1a65977984e58b0173943b",
+    "candidate_commit": "cf772efb296d18bd542be8b85156d5ebae50c295",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "4da73a011b1fc902270997392831b1048a19f55004729e3bce905fee71200f0a",
+    "source_sha256": "85936737e60e8ae1fd6fa78dfcf5764d4261e2b678c0fec546baebc0ec306fce",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.arp_global_graph_of_local_graphs",
+      "statement": "∀ {n ℓ : ℕ} (S : Set (Amb n ℓ)) (q₀ : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (R A B s t κ L : ℝ), 0 < R → 0 < s → 0 ≤ κ → κ < 1 → R ≤ (1 - κ) * A → A + t ≤ B → s + 2 * κ * A ≤ t → IsClosed (S ∩ closedBall 0 A) → (0 : Amb n ℓ) ∈ S → (∀ z ∈ S ∩ closedBall 0 B, infDist z (rotatedPlane q₀ : Set (Amb n ℓ)) ≤ κ * ‖z‖) → (∀ y ∈ S ∩ closedBall 0 A, ∀ (c : Rn n) (d : Rn ℓ), y = q₀ (graphPoint c d) → ∃ f : Rn n → Rn ℓ, ContDiffOn ℝ 1 f (ball c s) ∧ (∀ w ∈ ball c s, ‖fderiv ℝ f w‖ ≤ L) ∧ (∀ w ∈ ball c s, q₀ (graphPoint w (f w)) ∈ S ∩ closedBall y t) ∧ (∀ w ∈ ball c s, ∀ b : Rn ℓ, q₀ (graphPoint w b) ∈ S ∩ closedBall y t → b = f w)) → ∃ u : Rn n → Rn ℓ, ContDiffOn ℝ 1 u (ball 0 R) ∧ (∀ x ∈ ball (0 : Rn n) R, ‖fderiv ℝ u x‖ ≤ L) ∧ (∀ x ∈ ball (0 : Rn n) R, q₀ (graphPoint x (u x)) ∈ S ∩ ball 0 A) ∧ (∀ x ∈ ball (0 : Rn n) R, ∀ b : Rn ℓ, q₀ (graphPoint x b) ∈ S ∩ closedBall 0 A → b = u x) ∧ S ∩ ball 0 R ⊆ q₀ '' graphOver u (ball 0 R)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
