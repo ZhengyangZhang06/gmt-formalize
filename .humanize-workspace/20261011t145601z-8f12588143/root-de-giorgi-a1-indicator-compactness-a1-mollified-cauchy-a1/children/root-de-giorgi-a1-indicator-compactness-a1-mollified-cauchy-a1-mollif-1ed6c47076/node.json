@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.mollified_cauchy-a1.mollified_continuous-a1",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.mollified_cauchy-a1",
+  "depth": 4,
+  "title": "Continuity of the mollified set integral y ↦ ∫_F ρ(y − z) dz",
+  "statement": "Let N ∈ ℕ, let F ⊆ ℝ^N be an arbitrary set, and let ρ : ℝ^N → ℝ be continuous with compact support. Then the function y ↦ ∫_F ρ(y − z) dz is continuous on ℝ^N. The integral is taken with respect to the restricted measure L^N⌞F.",
+  "lean_statement": "∀ (N : ℕ) (F : Set (Rn N)) (ρ : Rn N → ℝ), Continuous ρ → HasCompactSupport ρ → Continuous (fun y : Rn N ↦ ∫ z in F, ρ (y - z))",
+  "lean_name": "indCompact_mollCauchy_setIntegral_continuous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-mollified-cauchy-a1-mollif-1ed6c47076-a1"
+}
