@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1.rescaled_translate_converge-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1",
+  "depth": 3,
+  "title": "Rescaled translates of a compactly supported continuous function converge uniformly with a common compact support",
+  "statement": "Let P ∈ ℕ, let f : ℝ^P → ℝ be continuous with compact support, let y ∈ ℝ^P, and let c_k ∈ ℝ (k ∈ ℕ) with c_k → 1 (c_k⁻¹ is the real inverse, with 0⁻¹ = 0). Then there is a compact K ⊆ ℝ^P such that: (i) f(w − y) = 0 for all w ∉ K; (ii) for all sufficiently large k, f(c_k⁻¹(w − y)) = 0 for all w ∉ K; (iii) f(c_k⁻¹(w − y)) → f(w − y) uniformly in w ∈ ℝ^P as k → ∞.",
+  "lean_statement": "∀ (P : ℕ) (f : Euclid P → ℝ) (y : Euclid P) (mus : ℕ → ℝ), Continuous f → HasCompactSupport f → Tendsto mus atTop (𝓝 1) → ∃ K : Set (Euclid P), IsCompact K ∧ (∀ w ∉ K, f (w - y) = 0) ∧ (∀ᶠ k in atTop, ∀ w ∉ K, f ((mus k)⁻¹ • (w - y)) = 0) ∧ TendstoUniformly (fun k w => f ((mus k)⁻¹ • (w - y))) (fun w => f (w - y)) atTop",
+  "lean_name": "adr_rescaled_translate_tendstoUniformly",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1-resc-03a6c5b658-a1"
+}
