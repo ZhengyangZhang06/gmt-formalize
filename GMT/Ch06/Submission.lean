@@ -359,6 +359,71 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Step 2 of Simon Ch. 6, Lemma 3.9 (p. 148): local essential bound for the tangential Jacobian
+of the push-forward (3.6).  If `(M, θ, ξ)` is a rectifiable triple in `U`, `f` is locally Lipschitz
+on `U` and `L x` agrees `Hⁿ⌞M`-a.e. with the directional derivatives of `f` along the approximate
+tangent space, then `‖(L x)_# ξ(x)‖` is essentially bounded on `M ∩ K` for compact `K ⊆ U`: with
+`Λ` a Lipschitz constant of `f` on a compact neighbourhood of `K` in `U`, `|L(x) τᵢ| ≤ Λ` for the
+orthonormal frame `τ` of `TₓM`, so `‖(L x)_# (±τ₁ ∧ ⋯ ∧ τₙ)‖ ≤ ∏ᵢ |L(x) τᵢ| ≤ Λⁿ`. -/
+theorem Submission.lpf_pi_jacobian_local_bound :
+    ∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n)
+      (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U →
+      IsRectifiableTriple U n M θ ξ → LocallyLipschitzOn U f →
+      (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P),
+        HasWeightedApproximateTangentSpaceAt n M θ x Tx →
+          ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) →
+      ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ C : ℝ,
+        ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ K →
+          ‖nVectorPushforward n (L x) (ξ x)‖ ≤ C := by
+  intro P Q n U M θ ξ f L hU htri hf hderiv K hK hKU
+  -- A Lipschitz constant `Λ` of `f` on a compact `K'` with `K ⊆ interior K'` and `K' ⊆ U`.
+  obtain ⟨K', hK'c, hKK', hK'U⟩ := exists_compact_between hK hU hKU
+  obtain ⟨Λ, hΛ⟩ := (hf.mono hK'U).exists_lipschitzOnWith_of_compact hK'c
+  refine ⟨(Λ : ℝ) ^ n, ?_⟩
+  -- At a.e. `x`: `ξ x = ±τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal frame `τ` of `TₓM`, and the
+  -- derivative clause holds.
+  filter_upwards [htri.orients, hderiv] with x hor hdx hxK
+  obtain ⟨τ, hτ, htan, hξ⟩ := hor
+  -- `|L(x) τᵢ| ≤ Λ`: `t ↦ f (x + t • τᵢ)` is `Λ`-Lipschitz near `0` with derivative `L(x) τᵢ`.
+  have hbound : ∀ i, ‖L x (τ i)‖ ≤ Λ := by
+    intro i
+    have hd := hdx _ htan (τ i) (Submodule.subset_span ⟨i, rfl⟩)
+    obtain ⟨ρ, hρ, hball⟩ := Metric.isOpen_iff.mp isOpen_interior x (hKK' hxK)
+    have hg : LipschitzOnWith 1 (fun t : ℝ => x + t • τ i) (Metric.ball 0 ρ) := by
+      apply LipschitzWith.lipschitzOnWith
+      apply LipschitzWith.of_dist_le_mul
+      intro s t
+      rw [dist_eq_norm, dist_eq_norm, add_sub_add_left_eq_sub, ← sub_smul, norm_smul, hτ.1 i,
+        mul_one, NNReal.coe_one, one_mul]
+    have hmaps : MapsTo (fun t : ℝ => x + t • τ i) (Metric.ball 0 ρ) K' := by
+      intro t ht
+      apply interior_subset
+      apply hball
+      rw [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, hτ.1 i, mul_one]
+      simpa using ht
+    have hlip : LipschitzOnWith Λ (fun t : ℝ => f (x + t • τ i)) (Metric.ball 0 ρ) := by
+      have := hΛ.comp hg hmaps
+      rwa [mul_one] at this
+    exact hd.le_of_lipschitzOn (Metric.ball_mem_nhds 0 hρ) hlip
+  -- `(L x)_# (±simpleNVector τ) = ±simpleNVector (L x ∘ τ)`.
+  have hpush : ‖nVectorPushforward n (L x) (ξ x)‖ = ‖simpleNVector (fun i => L x (τ i))‖ := by
+    rcases hξ with h | h
+    · rw [h, nVectorPushforward_simple]; rfl
+    · rw [h]
+      have : nVectorPushforward n (L x) (-simpleNVector τ) =
+          -simpleNVector (fun i => L x (τ i)) := by
+        ext α; rfl
+      rw [this]
+      exact norm_neg (simpleNVector (fun i => L x (τ i)))
+  -- `‖simpleNVector u‖ ≤ ∏ᵢ ‖uᵢ‖`, the bound `simpleNVector` is built with.
+  rw [hpush]
+  calc ‖simpleNVector (fun i => L x (τ i))‖ ≤ ∏ i, ‖L x (τ i)‖ :=
+        LinearMap.mkContinuous_norm_le _ (Finset.prod_nonneg fun i _ => norm_nonneg _) _
+    _ ≤ ∏ _i : Fin n, (Λ : ℝ) := by
+        gcongr with i
+        exact hbound i
+    _ = (Λ : ℝ) ^ n := by simp
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
