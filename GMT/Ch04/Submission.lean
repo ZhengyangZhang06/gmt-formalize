@@ -971,6 +971,41 @@ theorem Submission.sobolev_of_level_integral_bounds : ∀ (n ℓ : ℕ) (μ : Me
     calc Q = p * (((n : ℝ) - 1) / n * Q) := by rw [← mul_assoc, hpinv, one_mul]
       _ ≤ p * (C * Q ^ (n : ℝ)⁻¹ * J) := mul_le_mul_of_nonneg_left hkey hp0.le
       _ = p * C * J * Q ^ (n : ℝ)⁻¹ := by ring
+/-- **Sobolev preliminaries (Simon Ch. 4, 5.7–5.9, Step 1).** If `μ_V` is finite on compact
+sets, `x ↦ p_{T_x V}` is `μ_V`-a.e. strongly measurable, `U` is open, `H` is locally
+`μ_V`-integrable on `U`, and `g ∈ C¹(U)` has compact support in `U`, then `g ∈ C¹(ℝ^{n+ℓ})`,
+`∇^M g = 0` off `tsupport g`, and `|∇^M g|` and `g|H|` are `μ_V`-integrable. -/
+theorem Submission.sobolev_energy_integrable : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (g : Ambient n ℓ → ℝ), IsFiniteMeasureOnCompacts V.weight → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → LocallyIntegrableOn H U V.weight → ContDiffOn ℝ 1 g U → HasCompactSupport g → tsupport g ⊆ U → ContDiff ℝ 1 g ∧ (∀ x, x ∉ tsupport g → V.tangentialGradient g x = 0) ∧ Integrable (fun x ↦ ‖V.tangentialGradient g x‖) V.weight ∧ Integrable (fun x ↦ g x * ‖H x‖) V.weight := by
+  intro n ℓ V U H g hfin hproj hU hH hg hgc hgU
+  -- (1) `g` is `C¹` at points of the open set `U`, and `g = 0` near points off `tsupport g ⊆ U`.
+  have hC1 : ContDiff ℝ 1 g := contDiff_iff_contDiffAt.2 fun x ↦ by
+    by_cases hx : x ∈ U
+    · exact hg.contDiffAt (hU.mem_nhds hx)
+    · exact contDiffAt_const.congr_of_eventuallyEq
+        (notMem_tsupport_iff_eventuallyEq.1 fun h ↦ hx (hgU h))
+  -- (2) `∇g`, hence `∇^M g = p_{T_x V}(∇g)`, vanishes off `tsupport g`.
+  have hgrad0 : ∀ x, x ∉ tsupport g → gradient g x = 0 := fun x hx ↦ by
+    simp [gradient, fderiv_of_notMem_tsupport ℝ hx]
+  have hzero : ∀ x, x ∉ tsupport g → V.tangentialGradient g x = 0 := fun x hx ↦ by
+    simp [tangentialGradient, hgrad0 x hx]
+  -- `∇g` is continuous with compact support, hence `μ_V`-integrable.
+  have hgradc : Continuous (gradient g) :=
+    (InnerProductSpace.toDual ℝ (Ambient n ℓ)).symm.continuous.comp
+      (hC1.continuous_fderiv one_ne_zero)
+  have hgradi : Integrable (gradient g) V.weight :=
+    hgradc.integrable_of_hasCompactSupport (hgc.mono' fun x hx ↦ of_not_not fun h ↦ hx (hgrad0 x h))
+  refine ⟨hC1, hzero, ?_, ?_⟩
+  · -- (3) `∇^M g` is a.e. strongly measurable and `|∇^M g| ≤ |∇g|`.
+    refine hgradi.mono ?_ (ae_of_all _ fun x ↦ ?_)
+    · exact (isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable
+        (hproj.prodMk hgradc.aestronglyMeasurable)).norm
+    · rw [norm_norm]
+      exact Submodule.norm_starProjection_apply_le _ _
+  · -- (4) `H` is integrable on the compact set `tsupport g ⊆ U`, and `g|H|` vanishes off it.
+    have hHK : IntegrableOn H (tsupport g) V.weight := hH.integrableOn_compact_subset hgU hgc
+    exact (integrableOn_iff_integrable_of_support_subset fun x hx ↦
+      subset_tsupport g (left_ne_zero_of_mul hx)).1
+      (IntegrableOn.continuousOn_mul hC1.continuous.continuousOn hHK.norm hgc)
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
