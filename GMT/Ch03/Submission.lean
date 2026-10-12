@@ -2142,6 +2142,100 @@ theorem Submission.deGiorgiDens_ball_isoperimetric : ∀ (n : ℕ), ∃ c : ℝ,
     ((tendsto_const_nhds.add hslope).const_mul c) ?_
   filter_upwards [Ioo_mem_nhdsLT hρ, hcont.eventually (lt_mem_nhds hVρ)] with s hs hVs
   exact hstar s hs.1 hs.2 (ENNReal.toReal_pos_iff.1 hVs).1
+/-- **Integration of the differential inequality `V^{n/(n+1)} ≤ K V'`** (Simon Ch. 3, proof of
+Theorem 4.3, (10), `chapter-03.txt` lines 723–729: "Integration (using the fact that
+`L^{n+1}(E ∩ B_ρ(0))` is non-decreasing) then implies (10)"). If `V > 0` is non-decreasing on
+`(0, ρ₁)` and for a.e. `ρ ∈ (0, ρ₁)` it has a derivative `d` with `V(ρ)^{n/(n+1)} ≤ K d`, then
+`(ρ/((n+1)K))^{n+1} ≤ V(ρ)` on `(0, ρ₁)`. By the chain rule `W = V^{1/(n+1)}` is non-decreasing
+with `W' ≥ s = 1/((n+1)K)` a.e. Its monotone extension `g` (`0` on `(-∞, 0]`, `W(min x ρ)` on
+`(0, ∞)`) has, a.e., derivative the density of its Stieltjes measure `μ` with respect to `L¹`, so
+`s ρ ≤ ∫_{(0,ρ)} g' ≤ μ((0, ρ]) ≤ W(ρ)`; raising to the power `n + 1` gives the claim. -/
+theorem Submission.deGiorgiDens_lower_bound_of_deriv : ∀ (n : ℕ) (K ρ₁ : ℝ) (V : ℝ → ℝ), 0 < K → MonotoneOn V (Ioo 0 ρ₁) → (∀ ρ ∈ Ioo 0 ρ₁, 0 < V ρ) → (∀ᵐ ρ ∂(volume : Measure ℝ), ρ ∈ Ioo 0 ρ₁ → ∃ d : ℝ, HasDerivAt V d ρ ∧ V ρ ^ ((n : ℝ) / (n + 1)) ≤ K * d) → ∀ ρ ∈ Ioo 0 ρ₁, (ρ / ((n + 1) * K)) ^ (n + 1) ≤ V ρ := by
+  intro n K ρ₁ V hK hmono hpos hderiv ρ hρ
+  -- Step 1: `W = V^b` with `b = 1/(n+1)` is positive and non-decreasing on `(0, ρ₁)`.
+  set b : ℝ := ((n + 1 : ℕ) : ℝ)⁻¹ with hb_def
+  have hb : 0 < b := inv_pos.mpr (by positivity)
+  set W : ℝ → ℝ := fun t => V t ^ b
+  have hWmono : MonotoneOn W (Ioo 0 ρ₁) := fun x hx y hy hxy =>
+    Real.rpow_le_rpow (hpos x hx).le (hmono hx hy hxy) hb.le
+  have hWpos : ∀ t ∈ Ioo 0 ρ₁, 0 < W t := fun t ht => Real.rpow_pos_of_pos (hpos t ht) b
+  set s : ℝ := (((n : ℝ) + 1) * K)⁻¹ with hs_def
+  have hs : 0 < s := inv_pos.mpr (by positivity)
+  have hsb : s = b / K := by
+    rw [hs_def, hb_def, mul_inv, div_eq_mul_inv, Nat.cast_add, Nat.cast_one]
+  -- Step 2: a.e. on `(0, ρ₁)`, `W' = b V^{b-1} V' = V'/((n+1) V^{n/(n+1)}) ≥ s`.
+  have hWderiv : ∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo 0 ρ₁ →
+      ∃ w : ℝ, HasDerivAt W w t ∧ s ≤ w := by
+    filter_upwards [hderiv] with t ht htI
+    obtain ⟨d, hd, hdK⟩ := ht htI
+    have hVt := hpos t htI
+    refine ⟨d * b * V t ^ (b - 1), hd.rpow_const (Or.inl hVt.ne'), ?_⟩
+    have hexp : b - 1 = -((n : ℝ) / (n + 1)) := by
+      rw [hb_def]; push_cast; field_simp; ring
+    rw [hexp, Real.rpow_neg hVt.le]
+    have hA : 0 < V t ^ ((n : ℝ) / (n + 1)) := Real.rpow_pos_of_pos hVt _
+    rw [le_mul_inv_iff₀ hA, hsb]
+    calc b / K * V t ^ ((n : ℝ) / (n + 1)) = b * (V t ^ ((n : ℝ) / (n + 1)) / K) := by ring
+      _ ≤ b * d := mul_le_mul_of_nonneg_left (by rw [div_le_iff₀ hK]; linarith) hb.le
+      _ = d * b := by ring
+  -- Steps 3–4: `s ρ ≤ W ρ`.
+  have key : s * ρ ≤ W ρ := by
+    have hρ0 : 0 < ρ := hρ.1
+    have hρ1 : ρ < ρ₁ := hρ.2
+    have hmemI : ∀ x, 0 < x → min x ρ ∈ Ioo 0 ρ₁ := fun x hx =>
+      ⟨lt_min hx hρ0, (min_le_right x ρ).trans_lt hρ1⟩
+    -- The monotone extension `g` of `W|(0, ρ]` to `ℝ`; `W > 0` makes the value `0` on `(-∞, 0]`
+    -- compatible with monotonicity, which replaces the limit `ε ↓ 0`.
+    set g : ℝ → ℝ := fun x => if x ≤ 0 then 0 else W (min x ρ) with hg_def
+    have hg : Monotone g := by
+      intro x y hxy
+      simp only [hg_def]
+      split_ifs with hx hy hy
+      · exact le_rfl
+      · exact (hWpos _ (hmemI y (not_le.mp hy))).le
+      · exact absurd (hxy.trans hy) hx
+      · exact hWmono (hmemI x (not_le.mp hx)) (hmemI y (not_le.mp hy)) (min_le_min_right ρ hxy)
+    -- The Stieltjes measure of `g` gives `(0, ρ]` mass `g(ρ+) - g(0+) ≤ W(ρ) - 0`.
+    set μ : Measure ℝ := hg.stieltjesFunction.measure with hμ
+    have hμle : μ (Ioc 0 ρ) ≤ ENNReal.ofReal (W ρ) := by
+      rw [hμ, StieltjesFunction.measure_Ioc, hg.stieltjesFunction_eq, hg.stieltjesFunction_eq]
+      apply ENNReal.ofReal_le_ofReal
+      have h1 : Function.rightLim g ρ ≤ g (ρ + 1) := hg.rightLim_le (by linarith)
+      have h2 : g 0 ≤ Function.rightLim g 0 := hg.le_rightLim le_rfl
+      have h3 : g (ρ + 1) = W ρ := by
+        simp only [hg_def]
+        rw [ite_eq_right (not_le.mpr (by linarith)), min_eq_right (by linarith)]
+      have h4 : g 0 = 0 := by simp [hg_def]
+      linarith
+    -- A.e. on `(0, ρ)`, `g' = W' ≥ s` and `g' = dμ/dL¹`.
+    have hae : ∀ᵐ x ∂(volume.restrict (Ioo 0 ρ)), ENNReal.ofReal s ≤ μ.rnDeriv volume x := by
+      rw [ae_restrict_iff' measurableSet_Ioo]
+      filter_upwards [hWderiv, hg.ae_hasDerivAt] with x hx hgx hxI
+      obtain ⟨w, hw, hsw⟩ := hx ⟨hxI.1, hxI.2.trans hρ1⟩
+      have hgw : HasDerivAt g w x := by
+        apply hw.congr_of_eventuallyEq
+        filter_upwards [Ioo_mem_nhds hxI.1 hxI.2] with y hy
+        simp only [hg_def]
+        rw [ite_eq_right (not_le.mpr hy.1), min_eq_left hy.2.le]
+      have hwx := hgx.unique hgw
+      calc ENNReal.ofReal s ≤ ENNReal.ofReal w := ENNReal.ofReal_le_ofReal hsw
+        _ = ENNReal.ofReal (μ.rnDeriv volume x).toReal := by rw [hwx]
+        _ ≤ μ.rnDeriv volume x := ENNReal.ofReal_toReal_le
+    -- Integrate: `s ρ ≤ ∫_{(0,ρ)} dμ/dL¹ ≤ μ((0, ρ]) ≤ W ρ`.
+    have hint : ENNReal.ofReal s * volume (Ioo 0 ρ) ≤ μ (Ioc 0 ρ) :=
+      calc ENNReal.ofReal s * volume (Ioo 0 ρ) = ∫⁻ _ in Ioo 0 ρ, ENNReal.ofReal s := by
+            rw [setLIntegral_const]
+        _ ≤ ∫⁻ x in Ioo 0 ρ, μ.rnDeriv volume x := lintegral_mono_ae hae
+        _ ≤ volume.withDensity (μ.rnDeriv volume) (Ioo 0 ρ) := withDensity_apply_le _ _
+        _ ≤ μ (Ioo 0 ρ) := Measure.le_iff'.1 (Measure.withDensity_rnDeriv_le μ volume) _
+        _ ≤ μ (Ioc 0 ρ) := measure_mono Ioo_subset_Ioc_self
+    rw [Real.volume_Ioo, sub_zero, ← ENNReal.ofReal_mul hs.le] at hint
+    exact (ENNReal.ofReal_le_ofReal_iff (hWpos ρ hρ).le).mp (hint.trans hμle)
+  -- Step 5: `V ρ = (W ρ)^{n+1} ≥ (s ρ)^{n+1}`.
+  have hsρ : ρ / ((n + 1) * K) = s * ρ := by rw [hs_def]; ring
+  calc (ρ / ((n + 1) * K)) ^ (n + 1) = (s * ρ) ^ (n + 1) := by rw [hsρ]
+    _ ≤ W ρ ^ (n + 1) := pow_le_pow_left₀ (mul_pos hs hρ.1).le key _
+    _ = V ρ := Real.rpow_inv_natCast_pow (hpos ρ hρ).le (Nat.succ_ne_zero n)
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
