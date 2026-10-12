@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.chart_divergence-a1.det_jacobi-a1.det_line_derivative-a1",
+  "parent_id": "root.stationary_results-a1.chart_divergence-a1.det_jacobi-a1",
+  "depth": 4,
+  "title": "Jacobi's formula at the identity: d/dt det(1 + t•K) at t = 0 equals trace K",
+  "statement": "Let n ∈ ℕ, ℝⁿ := Rn n = EuclideanSpace ℝ (Fin n), L(ℝⁿ) := ℝⁿ →L[ℝ] ℝⁿ, and K ∈ L(ℝⁿ). The real function t ↦ det(1 + t • K) has derivative trace K at t = 0. Here 1 is the identity of L(ℝⁿ), det = ContinuousLinearMap.det, and trace K := LinearMap.trace ℝ ℝⁿ applied to the underlying linear map K.toLinearMap.",
+  "lean_statement": "∀ (n : ℕ) (K : Rn n →L[ℝ] Rn n), HasDerivAt (fun t : ℝ ↦ (1 + t • K).det) (LinearMap.trace ℝ (Rn n) K.toLinearMap) 0",
+  "lean_name": "hasDerivAt_rn_det_one_add_smul_trace",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-chart-divergence-a1-det-jacobi-a1-det-line-cadbf0f46d-a1"
+}
