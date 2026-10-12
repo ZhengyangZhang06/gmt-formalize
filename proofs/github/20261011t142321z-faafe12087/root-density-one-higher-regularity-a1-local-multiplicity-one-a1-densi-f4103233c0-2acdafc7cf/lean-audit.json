@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "aca097fe09fa8339d13334318fb44d4af37c2898c7448a03db55a1473e43df76",
+  "git_delta": {
+    "base_commit": "11fb785075448cc367296f79d133bb2e3ddc2dec",
+    "candidate_commit": "ad991ed1838bf4044e63fe6b16e88fa33922f76e",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_lmo_dema_withDensity_density_ae",
+    "diff_sha256": "43d8b90f04720f88d7b2c2596c9be5faa38ec49235b60f7b83545e1992460474",
+    "source_sha256": "ca90796ea2bcffd43fd9f9f9eebdae258248bc86ecb828736469fbeab9b980df",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_lmo_dema_withDensity_density_ae",
+      "statement": "∀ n ℓ : ℕ, ∀ (ν : Measure (Amb n ℓ)) (f : Amb n ℓ → ℝ≥0∞), IsLocallyFiniteMeasure ν → IsLocallyFiniteMeasure (ν.withDensity f) → AEMeasurable f ν → ∀ᵐ y ∂ν, ∀ c : ℝ → ℝ≥0∞, Tendsto (fun r : ℝ => ν (closedBall y r) / c r) (𝓝[>] 0) (𝓝 1) → Tendsto (fun r : ℝ => (ν.withDensity f) (closedBall y r) / c r) (𝓝[>] 0) (𝓝 (f y))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
