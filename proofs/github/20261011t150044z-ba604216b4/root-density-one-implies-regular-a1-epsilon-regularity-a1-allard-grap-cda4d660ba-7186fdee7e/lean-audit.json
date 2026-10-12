@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f6b4ac4fdafdc15f6920a6c4ef838f9f9b23d9c018b75492b29736e2281d9174",
+  "git_delta": {
+    "base_commit": "ae75add6ff30d37e31a4b67751d9a052e6961c9a",
+    "candidate_commit": "d17e86eb1c24136312ae33cbefb74d5f93b49ef0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "doraggt_local_density_zero",
+    "diff_sha256": "b059f1383230c406aa33d5534ada8ca9320a9ab9b96a67b8487c86ec272b082e",
+    "source_sha256": "bfd9bbb366f9b3b6c651bee37a266151da348ad032adbd92fda13f41bb850a94",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.doraggt_local_density_zero",
+      "statement": "∀ (P n : ℕ) (U S : Set (Euclid P)), IsOpen U → MeasurableSet S → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (S ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ U → x ∉ S → Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
