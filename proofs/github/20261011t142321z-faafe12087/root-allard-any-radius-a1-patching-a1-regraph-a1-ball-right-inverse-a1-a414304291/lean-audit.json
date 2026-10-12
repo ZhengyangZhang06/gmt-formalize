@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3de25417030b5ed7360349089e394db3667b352ac4c21e55b7414c7ba9e5de30",
+  "git_delta": {
+    "base_commit": "a35eecc79b049d45a92147ab5efd3713d06e6985",
+    "candidate_commit": "9a77fa476bdf708bc1088d0f15c57f874b4ab080",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "arp_rgr_ball_right_inverse",
+    "diff_sha256": "337e9a7f288ee32ede98343fb9f06bc174a9a6f72f7e4e018ba292337ff3c64a",
+    "source_sha256": "7cf63a2c2f9a7807027a1ebd4766c3ace5298b47ce61e8a663822ef72f6933b3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.arp_rgr_ball_right_inverse",
+      "statement": "∀ {n : ℕ} (Φ : Rn n → Rn n) (A : Rn n →L[ℝ] Rn n) (c : Rn n) (r ε : ℝ), 0 < r → 0 ≤ ε → ε ≤ 1 / 24 → (∀ h : Rn n, 11 / 12 * ‖h‖ ≤ ‖A h‖) → (∀ x₁ ∈ closedBall (0 : Rn n) r, ∀ x₂ ∈ closedBall (0 : Rn n) r, ‖Φ x₁ - Φ x₂ - A (x₁ - x₂)‖ ≤ ε * ‖x₁ - x₂‖) → Φ 0 = c → ∃ X : Rn n → Rn n, (∀ w ∈ closedBall c (r / 2), X w ∈ closedBall (0 : Rn n) (3 * r / 5) ∧ Φ (X w) = w) ∧ (∀ x ∈ closedBall (0 : Rn n) r, ∀ w ∈ closedBall c (r / 2), Φ x = w → x = X w) ∧ (∀ w₁ ∈ closedBall c (r / 2), ∀ w₂ ∈ closedBall c (r / 2), 7 / 8 * ‖X w₁ - X w₂‖ ≤ ‖w₁ - w₂‖)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
