@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T141839Z-af4f31741f",
+  "parent_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch08/20261011t141839z-af4f31741f/dispatch/root-tangent-graph-cover-a1-cone-graph-cover-a1",
+  "source_commit": "63436ae63eb6a2fd7525bef73c73cf88e2cd7e93",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch08/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1.density_bounds_uniform-a1",
+      "key": "density_bounds_uniform",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1-density-bounds-uniform-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1-density-bounds-uniform-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum snapshot project/GMT/Ch08/Contract.lean, workspace GMT/Ch08/Contract.lean and GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487); sha256 of snapshot vs workspace .lake/packages/mathlib for Topology/Bases.lean, Basic/ENNReal/Inv.lean, Topology/Order/LeftRightNhds.lean, Topology/Constructions/SumProd.lean (identical); git rev-parse .lake/packages/mathlib (25730c7c…) and .lake/packages/simongmt (2b366308…)",
+              "rg -c 'tgc_local_graph_closed_cover|tgc_eventual_density_bounds_uniform' local-references/5a882a57db723346 (exit 1: no match); grep of run dag.json and nodes/ (no match)",
+              "rg -n '^theorem (exists_nat_one_div_lt|closure_prod_eq|isClosed_le|DenseRange.exists_dist_lt)\\b|theorem exists_inv_nat_lt|theorem mem_nhdsGT_iff_exists_Ioo_subset|theorem ofReal_inv_of_pos|^def denseSeq|theorem denseRange_denseSeq|theorem closure_minimal' mathlib/Mathlib",
+              "rg -n 'exists_nat_one_div_lt|DenseRange.exists_dist_lt|theorem continuous_of_finiteDimensional|theorem ofReal_mul |theorem ofReal_pow|theorem ofReal_le_ofReal_iff |theorem unpair_pair' mathlib/Mathlib",
+              "grep -n 'abbrev Grassmannian|def projectionLinearMap|def project' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean; rg -n 'Lipschitz graph|LipschitzGraph|lipschitz_graph|graph_cover' simongmt Chapter03 (no match); rg -n 'denseSeq|closure_prod_eq|exists_inv_nat_lt' simongmt",
+              "grep -n 'Egoroff|(10)|graph|closure' book/sources/chapter-03-source.txt; sed -n 180,262p (printed (7)-(10) and the localization E_j ∩ B_{δ/4}(x_0), pp. 73-74)",
+              "python3: contract_scope/child_modules from verifier/gmt-compare.py (replayed child scope and NodeChallenge generation); validate_lean_statement from verifier/lean_contract.py on both statements (pass)",
+              "lake env lean /tmp/cgc-decomp/Probe.lean, Check.lean, Parent.lean, Full.lean, challenges/c1_NodeChallenge.lean, challenges/c2_NodeChallenge.lean (all exit 0; #print axioms = [propext, Classical.choice, Quot.sound])"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Constructions/SumProd.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Closure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/Order/Archimedean/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Nat/Pairing.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-graph-cover-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-linear-algebra-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/cgc-decomp/Full.lean",
+              "/tmp/cgc-decomp/Parent.lean"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c. Its Contract is byte-identical to the workspace Contract and Submission, and the cited Mathlib files are byte-identical to the workspace packages.\n\nNeither tgc_local_graph_closed_cover nor tgc_eventual_density_bounds_uniform exists in the snapshot, in dag.json or in the run's nodes. SimonGMT has no Lipschitz-graph covering lemma, so neither child duplicates library or DAG content.\n\nMathlib supplies every tool the children and the parent assembly use:\n- TopologicalSpace.denseSeq and denseRange_denseSeq (Topology/Bases.lean:373,378)\n- DenseRange.exists_dist_lt (Topology/MetricSpace/Pseudo/Defs.lean:930)\n- closure_prod_eq (Topology/Constructions/SumProd.lean:529)\n- closure_minimal (Topology/Closure.lean:199)\n- isClosed_le (Topology/Order/OrderClosed.lean:447)\n- LinearMap.continuous_of_finiteDimensional (Topology/Algebra/Module/FiniteDimension.lean:284)\n- ENNReal.exists_inv_nat_lt and ENNReal.ofReal_inv_of_pos (Basic/ENNReal/Inv.lean:650,945)\n- ENNReal.ofReal_le_ofReal_iff, ofReal_mul and ofReal_pow (Basic/ENNReal/Real.lean:147,297,306)\n- mem_nhdsGT_iff_exists_Ioo_subset (Topology/Order/LeftRightNhds.lean:104)\n- exists_nat_one_div_lt (Algebra/Order/Archimedean/Basic.lean:211)\n- Nat.unpair_pair (Data/Nat/Pairing.lean:60)\n\nSimonGMT Chapter08/Varifold.lean:82-106 defines Grassmannian.project S x := S.projectionLinearMap x, which is linear and therefore continuous.\n\nBoth statements validate and elaborate in the comparator's replayed scope. Scratch proofs of both children with their exact frozen types compile. So does the exact frozen parent, proved from the two children plus the frozen sibling type tgc_tilted_cone_inclusion. All use only the axioms propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1",
+        "child_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1.density_bounds_uniform-a1",
+        "subproblem": {
+          "key": "density_bounds_uniform",
+          "title": "Uniformization of eventual density bounds (replacement of Egoroff): an eventual lower bound c t^n and arbitrarily small eventual upper bounds ε t^n hold for all t ∈ (0, 1/(k+1)] with constants 1/(m+1) and β/(m+1)",
+          "statement": "Let n ∈ ℕ, β ∈ ℝ with β > 0, and F, G : ℝ → [0,∞]. Suppose (H1) there is c ∈ [0,∞] with c > 0 such that c · ofReal(t)^n ≤ F(t) for all sufficiently small t > 0 (eventually in 𝓝[>] 0), and (H2) for every ε ∈ [0,∞] with ε > 0, G(t) ≤ ε · ofReal(t)^n for all sufficiently small t > 0. Then there are m, k ∈ ℕ such that for every real t with 0 < t ≤ 1/(k+1): ofReal((1/(m+1)) · t^n) ≤ F(t) and G(t) ≤ ofReal((1/(m+1)) · β · t^n).",
+          "lean_statement": "∀ (n : ℕ) (β : ℝ) (F G : ℝ → ℝ≥0∞), 0 < β → (∃ c : ℝ≥0∞, 0 < c ∧ ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ F t) → (∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), G t ≤ ε * ENNReal.ofReal t ^ n) → ∃ m k : ℕ, ∀ t : ℝ, 0 < t → t ≤ 1 / ((k : ℝ) + 1) → ENNReal.ofReal (1 / ((m : ℝ) + 1) * t ^ n) ≤ F t ∧ G t ≤ ENNReal.ofReal (1 / ((m : ℝ) + 1) * β * t ^ n)",
+          "lean_name": "tgc_eventual_density_bounds_uniform",
+          "depends_on": [],
+          "natural_proof": "Source: step 3 of the parent proof (the classes cover A), which replaces the use of Egoroff's theorem in printed (7)–(9) of Simon, Ch. 3, Thm 1.6 (p. 73) by countably many uniform classes; here it is stated for arbitrary functions F, G : ℝ → [0,∞] (in the parent: F(t) := μ(closedBall(x,t)), G(t) := μ({y ∈ closedBall(x,t) : (L/16)‖y − x‖ ≤ ‖(y − x) − p_T(y − x)‖}) and β := (L/16)^n/2, so that (1/(m+1))·β is the constant ε_m = a_m(γ/2)^n/2 of the parent's step 1 with a_m = 1/(m+1), γ = L/8). Hypotheses: (H1) c ∈ [0,∞] with 0 < c and c · ofReal(t)^n ≤ F(t) eventually in 𝓝[>] 0; (H2) for every ε ∈ [0,∞] with 0 < ε, G(t) ≤ ε · ofReal(t)^n eventually in 𝓝[>] 0; and β > 0.\n\n1. Choice of m. Since c ≠ 0, ENNReal.exists_inv_nat_lt gives m ∈ ℕ with (m : [0,∞])⁻¹ < c. Put a := 1/(m + 1) ∈ ℝ; then a > 0. Moreover ofReal(a) = ofReal((m + 1)⁻¹) = (ofReal(m + 1))⁻¹ (one_div, ENNReal.ofReal_inv_of_pos, as m + 1 > 0) = ((m : [0,∞]) + 1)⁻¹ (ENNReal.ofReal_add, ENNReal.ofReal_natCast, ENNReal.ofReal_one). Since (m : [0,∞]) ≤ (m : [0,∞]) + 1 and inversion on [0,∞] is antitone (ENNReal.inv_le_inv), ofReal(a) ≤ (m : [0,∞])⁻¹ < c; in particular ofReal(a) ≤ c. (For m = 0 the inequality 0⁻¹ = ∞ < c is impossible, so in fact m ≥ 1, but this is not needed.)\n\n2. Choice of ε. Put ε := ofReal(a β). As a β > 0, ε > 0 (ENNReal.ofReal_pos).\n\n3. A common radius. By (H1), and by (H2) applied to this ε, the statements c · ofReal(t)^n ≤ F(t) and G(t) ≤ ε · ofReal(t)^n each hold eventually in 𝓝[>] 0, hence so does their conjunction (Filter.Eventually.and). By mem_nhdsGT_iff_exists_Ioo_subset there is δ > 0 such that both inequalities hold for every t ∈ (0, δ).\n\n4. Choice of k. By exists_nat_one_div_lt applied to δ > 0 there is k ∈ ℕ with 1/(k + 1) < δ.\n\n5. Verification. Let t ∈ ℝ with 0 < t ≤ 1/(k + 1). Then t < δ, so t ∈ (0, δ) and both inequalities of step 3 hold at t. Since a ≥ 0 and t ≥ 0, ofReal(a · t^n) = ofReal(a) · ofReal(t^n) = ofReal(a) · ofReal(t)^n (ENNReal.ofReal_mul, ENNReal.ofReal_pow) ≤ c · ofReal(t)^n (step 1 and monotonicity of multiplication in [0,∞]) ≤ F(t). Since a β ≥ 0, G(t) ≤ ε · ofReal(t)^n = ofReal(a β) · ofReal(t)^n = ofReal(a β · t^n) (the same two lemmas). As a = 1/(m + 1), these are exactly ofReal(1/(m+1) · t^n) ≤ F(t) and G(t) ≤ ofReal(1/(m+1) · β · t^n).\n\n6. Hence m and k witness the conclusion. ∎",
+          "proof_key_steps": [
+            "ENNReal.exists_inv_nat_lt gives m ∈ ℕ with ofReal(1/(m+1)) = ((m:[0,∞]) + 1)⁻¹ ≤ (m:[0,∞])⁻¹ < c.",
+            "Apply (H2) with ε := ofReal((1/(m+1))·β) > 0 and combine with (H1); mem_nhdsGT_iff_exists_Ioo_subset yields δ > 0 such that both bounds hold on (0, δ).",
+            "exists_nat_one_div_lt gives k ∈ ℕ with 1/(k+1) < δ.",
+            "For 0 < t ≤ 1/(k+1), ENNReal.ofReal_mul and ENNReal.ofReal_pow convert the bounds at t into the two stated inequalities."
+          ]
+        },
+        "audit": {
+          "key": "density_bounds_uniform",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The standalone Lean proposition exactly matches all hypotheses, quantifiers, constants, and the closed upper radius endpoint. The supplied proof correctly chooses a positive reciprocal below c, including c = infinity; selects finite positive epsilon = ofReal(a beta); intersects the eventual bounds; and chooses 1/(k+1) strictly below the common open radius. The stated nonnegativity conditions justify every ofReal multiplication and power conversion, also for n = 0. The bare name is unreserved and dependencies are empty. Substituting ball mass, cone mass, and beta = (L/16)^n/2 establishes the parent's uniform-class covering without circularity or further proof planning."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-graph-cover-a1-density-bounds-uniform-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-graph-cover-a1-density-bounds-uniform-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-graph-cover-a1-density-bounds-uniform-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1.local_graph_closed_cover-a1",
+      "key": "local_graph_closed_cover",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1-local-graph-closed-cover-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1-local-graph-closed-cover-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum snapshot project/GMT/Ch08/Contract.lean, workspace GMT/Ch08/Contract.lean and GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487); sha256 of snapshot vs workspace .lake/packages/mathlib for Topology/Bases.lean, Basic/ENNReal/Inv.lean, Topology/Order/LeftRightNhds.lean, Topology/Constructions/SumProd.lean (identical); git rev-parse .lake/packages/mathlib (25730c7c…) and .lake/packages/simongmt (2b366308…)",
+              "rg -c 'tgc_local_graph_closed_cover|tgc_eventual_density_bounds_uniform' local-references/5a882a57db723346 (exit 1: no match); grep of run dag.json and nodes/ (no match)",
+              "rg -n '^theorem (exists_nat_one_div_lt|closure_prod_eq|isClosed_le|DenseRange.exists_dist_lt)\\b|theorem exists_inv_nat_lt|theorem mem_nhdsGT_iff_exists_Ioo_subset|theorem ofReal_inv_of_pos|^def denseSeq|theorem denseRange_denseSeq|theorem closure_minimal' mathlib/Mathlib",
+              "rg -n 'exists_nat_one_div_lt|DenseRange.exists_dist_lt|theorem continuous_of_finiteDimensional|theorem ofReal_mul |theorem ofReal_pow|theorem ofReal_le_ofReal_iff |theorem unpair_pair' mathlib/Mathlib",
+              "grep -n 'abbrev Grassmannian|def projectionLinearMap|def project' simongmt Poincare/SimonGMT/Chapter08/Varifold.lean; rg -n 'Lipschitz graph|LipschitzGraph|lipschitz_graph|graph_cover' simongmt Chapter03 (no match); rg -n 'denseSeq|closure_prod_eq|exists_inv_nat_lt' simongmt",
+              "grep -n 'Egoroff|(10)|graph|closure' book/sources/chapter-03-source.txt; sed -n 180,262p (printed (7)-(10) and the localization E_j ∩ B_{δ/4}(x_0), pp. 73-74)",
+              "python3: contract_scope/child_modules from verifier/gmt-compare.py (replayed child scope and NodeChallenge generation); validate_lean_statement from verifier/lean_contract.py on both statements (pass)",
+              "lake env lean /tmp/cgc-decomp/Probe.lean, Check.lean, Parent.lean, Full.lean, challenges/c1_NodeChallenge.lean, challenges/c2_NodeChallenge.lean (all exit 0; #print axioms = [propext, Classical.choice, Quot.sound])"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Constructions/SumProd.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Closure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/Order/Archimedean/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Data/Nat/Pairing.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-graph-cover-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-linear-algebra-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/cgc-decomp/Full.lean",
+              "/tmp/cgc-decomp/Parent.lean"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c. Its Contract is byte-identical to the workspace Contract and Submission, and the cited Mathlib files are byte-identical to the workspace packages.\n\nNeither tgc_local_graph_closed_cover nor tgc_eventual_density_bounds_uniform exists in the snapshot, in dag.json or in the run's nodes. SimonGMT has no Lipschitz-graph covering lemma, so neither child duplicates library or DAG content.\n\nMathlib supplies every tool the children and the parent assembly use:\n- TopologicalSpace.denseSeq and denseRange_denseSeq (Topology/Bases.lean:373,378)\n- DenseRange.exists_dist_lt (Topology/MetricSpace/Pseudo/Defs.lean:930)\n- closure_prod_eq (Topology/Constructions/SumProd.lean:529)\n- closure_minimal (Topology/Closure.lean:199)\n- isClosed_le (Topology/Order/OrderClosed.lean:447)\n- LinearMap.continuous_of_finiteDimensional (Topology/Algebra/Module/FiniteDimension.lean:284)\n- ENNReal.exists_inv_nat_lt and ENNReal.ofReal_inv_of_pos (Basic/ENNReal/Inv.lean:650,945)\n- ENNReal.ofReal_le_ofReal_iff, ofReal_mul and ofReal_pow (Basic/ENNReal/Real.lean:147,297,306)\n- mem_nhdsGT_iff_exists_Ioo_subset (Topology/Order/LeftRightNhds.lean:104)\n- exists_nat_one_div_lt (Algebra/Order/Archimedean/Basic.lean:211)\n- Nat.unpair_pair (Data/Nat/Pairing.lean:60)\n\nSimonGMT Chapter08/Varifold.lean:82-106 defines Grassmannian.project S x := S.projectionLinearMap x, which is linear and therefore continuous.\n\nBoth statements validate and elaborate in the comparator's replayed scope. Scratch proofs of both children with their exact frozen types compile. So does the exact frozen parent, proved from the two children plus the frozen sibling type tgc_tilted_cone_inclusion. All use only the axioms propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1",
+        "child_id": "root.tangent_graph_cover-a1.cone_graph_cover-a1.local_graph_closed_cover-a1",
+        "subproblem": {
+          "key": "local_graph_closed_cover",
+          "title": "Closed graph pieces from a local graph property: a set whose points at distance ≤ r satisfy the L-graph inequality over P lies on countably many closed L-graphs over P",
+          "statement": "Let N, n ∈ ℕ, L, r ∈ ℝ with r > 0, P ∈ G(N,n) with p := Grassmannian.project P, and E ⊆ ℝ^N. Suppose ‖(y − z) − p(y − z)‖ ≤ L‖p(y − z)‖ for all y, z ∈ E with ‖y − z‖ ≤ r. Then there are closed sets Γ_0, Γ_1, … ⊆ ℝ^N such that ‖(y − z) − p(y − z)‖ ≤ L‖p(y − z)‖ for every i and all y, z ∈ Γ_i, and every x ∈ E lies in some Γ_i.",
+          "lean_statement": "∀ (N n : ℕ) (L r : ℝ) (P : Grassmannian N n) (E : Set (Euclidean N)), 0 < r → (∀ y ∈ E, ∀ z ∈ E, ‖y - z‖ ≤ r → ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ x ∈ E, ∃ i, x ∈ Γ i",
+          "lean_name": "tgc_local_graph_closed_cover",
+          "depends_on": [],
+          "natural_proof": "Source: step 5 of the parent proof (closed pieces), i.e. the localization E_j ∩ B_{δ/4}(x_0) and the countable selection after printed (10) in Simon, Ch. 3, Thm 1.6 (p. 74), with closures taken to make the pieces closed. (In the parent it is applied to E := E_{m,k}, a uniform class, with r := 1/(2(k+1)), its hypothesis being the parent's step 4; the pieces are then the closures of E_{m,k} ∩ closedBall(d_j, 1/(4(k+1))).) Notation: p := Grassmannian.project P. By definition p u = P.projectionLinearMap u, so p is ℝ-linear and, being a linear map on the finite-dimensional space ℝ^N = Euclidean N, continuous (LinearMap.continuous_of_finiteDimensional). No hypothesis on L or n is used.\n\n1. A dense sequence. Euclidean N is a finite-dimensional real normed space, hence a separable metric space, and it is nonempty (it contains 0). Hence d := TopologicalSpace.denseSeq (Euclidean N) : ℕ → ℝ^N has dense range (TopologicalSpace.denseRange_denseSeq).\n\n2. The pieces. For j ∈ ℕ put S_j := E ∩ closedBall(d_j, r/2) and Γ_j := closure(S_j). Each Γ_j is closed (isClosed_closure). This is the first conclusion.\n\n3. The graph relation is closed. Let F := {(y, z) ∈ ℝ^N × ℝ^N : ‖(y − z) − p(y − z)‖ ≤ L‖p(y − z)‖}. The maps (y, z) ↦ ‖(y − z) − p(y − z)‖ and (y, z) ↦ L‖p(y − z)‖ are continuous, being built from the continuous maps (y, z) ↦ y − z (continuous_fst.sub continuous_snd), p, vector subtraction, the norm and multiplication by the constant L. Hence F, the set where the first is ≤ the second, is closed (isClosed_le).\n\n4. S_j × S_j ⊆ F. Let y, z ∈ S_j. Then ‖y − d_j‖ ≤ r/2 and ‖z − d_j‖ ≤ r/2 (mem_closedBall, dist_eq_norm), so ‖y − z‖ = ‖(y − d_j) − (z − d_j)‖ ≤ ‖y − d_j‖ + ‖z − d_j‖ ≤ r/2 + r/2 = r (norm_sub_le). Since y, z ∈ E and ‖y − z‖ ≤ r, the hypothesis gives ‖(y − z) − p(y − z)‖ ≤ L‖p(y − z)‖, i.e. (y, z) ∈ F.\n\n5. The graph inequality on Γ_j. Let y, z ∈ Γ_j = closure(S_j). By closure_prod_eq, (y, z) ∈ closure(S_j) × closure(S_j) = closure(S_j × S_j), and by closure_minimal (with step 4 and the closedness of F from step 3) closure(S_j × S_j) ⊆ F. Hence (y, z) ∈ F, i.e. ‖(y − z) − p(y − z)‖ ≤ L‖p(y − z)‖. This is the second conclusion. (Lean note: first `have hmem := closure_minimal hsub hFc hyz` and then close the goal with `exact hmem`, optionally after `rw [Set.mem_ofPred_eq] at hmem`; a one-shot `exact closure_minimal …` can exhaust the heartbeat limit in isDefEq.)\n\n6. Covering. Let x ∈ E. As r/2 > 0, DenseRange.exists_dist_lt (step 1) gives j ∈ ℕ with dist(x, d_j) < r/2. Then x ∈ closedBall(d_j, r/2), so x ∈ S_j ⊆ closure(S_j) = Γ_j (subset_closure). This is the third conclusion with i := j.\n\n7. Hence Γ : ℕ → Set (Euclidean N), j ↦ closure(E ∩ closedBall(d_j, r/2)), satisfies all three conclusions. ∎",
+          "proof_key_steps": [
+            "Take the dense sequence d_j := TopologicalSpace.denseSeq (Euclidean N) of the separable, nonempty space ℝ^N.",
+            "Define Γ_j := closure(E ∩ closedBall(d_j, r/2)); each Γ_j is closed.",
+            "The graph relation F = {(y,z) : ‖(y − z) − p(y − z)‖ ≤ L‖p(y − z)‖} is closed, since p is a continuous linear map (isClosed_le).",
+            "Points of E ∩ closedBall(d_j, r/2) are at distance ≤ r, so the hypothesis puts S_j × S_j inside F.",
+            "closure(S_j) × closure(S_j) = closure(S_j × S_j) ⊆ F gives the graph inequality on Γ_j.",
+            "Density gives, for each x ∈ E, some j with dist(x, d_j) < r/2, so x ∈ Γ_j."
+          ]
+        },
+        "audit": {
+          "key": "local_graph_closed_cover",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The standalone Lean proposition exactly matches the prose, including arbitrary real L and the sole radius hypothesis r > 0. The proof supplies every step: dense localization gives pieces of diameter at most r; projection continuity makes the graph relation closed; closure_prod_eq and closure_minimal extend the inequality to both closure variables; density proves covering. No measurability, dimension restriction, or additional sign assumption is needed. The bare name is unreserved, and the proof has no child or parent reliance. Applying it to each uniform class with r = 1/(2(k+1)) gives precisely the parent's required closed pieces."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-graph-cover-a1-local-graph-closed-cover-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-graph-cover-a1-local-graph-closed-cover-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-tangent-graph-cover-a1-cone-graph-cover-a1-local-graph-closed-cover-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/task.md": "26a69821fcbb4c8156d8dbf819ba687b1796fca88b5c4969fc177e4e2d316f7f",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/problem.md": "f3ff6fdb84533e44ef581c7db9fc65e6f4432d3e00703417ae6a5521b34622cf",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/problem.json": "ab856ea735af6858e6e745d0a7c2f7609ef9100e057929e5e454a9981df30814",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/reference-manifest.json": "b9f15a98b4902e870b1591aa2a8d0fbc8638813c80ba6751d53265f3313f8524",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/decomposition.json": "e3aabc0d141465f43877662bfd9354e1364a08d3f690c1fb238c91071f36cd9d",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/decomposition-audit.json": "234393e0c261715c94fa1bde66c6cf9d809cc4e46f3dde6cee701ec61419317d",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/controller-contract.json": "d6d64638c7d2185f309c986882cec6bc2e74e968c0a584815c0cff93d386fef9",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1-density-bounds-uniform-a1/parent-child-handoff.json": "d308d0252c4c6065f796804b8f8ff99a262431396ae9acdd8e2d3e9b382923ee",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1-density-bounds-uniform-a1/parent-supplied-plan.md": "1b50337d2fd94f16ecc30ec2b34a65fcee3a73f59c65ee0dae10db8a8871b1bc",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1-density-bounds-uniform-a1/parent-supplied-natural-proof.md": "19927a3f8868a8e6645f507268d88adc4add2756aeaed923d1047b97ca5a5b58",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1-density-bounds-uniform-a1/parent-supplied-natural-proof.json": "be681b66a04edce3b30311319547d30ffdca2b46d81f11cde02b647957333bf8",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1-density-bounds-uniform-a1/node.json": "cf6ace4914074f061592fd5ac79b54367f6368f18ac2a053c3d88c024ddeea0b",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1-local-graph-closed-cover-a1/parent-child-handoff.json": "b1e1538473b1b0bf4ef83ff2a43df49cdcee381ab3cfb212f54ec9629ba06189",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1-local-graph-closed-cover-a1/parent-supplied-plan.md": "8284d89f1dfa0121aa2a2223f4b26e2070f8ad7b9c66d0b0e47511cf86541f1a",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1-local-graph-closed-cover-a1/parent-supplied-natural-proof.md": "1666da38c69427aa0b6e079fa0a54441bf4f10f387507020f1e94e56e691f4cd",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1-local-graph-closed-cover-a1/parent-supplied-natural-proof.json": "22e506f489e8f9694aab4d7924b819c628360acc4967105af389e0c7a8140f07",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-tangent-graph-cover-a1-cone-graph-cover-a1/children/root-tangent-graph-cover-a1-cone-graph-cover-a1-local-graph-closed-cover-a1/node.json": "d9676aa181d366a359770464f4d7a2fabcf3f83e40116384116cd1b34720da5f"
+  }
+}
