@@ -458,6 +458,50 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- The weight measure restricted to a measurable `O ⊆ U` is `Hⁿ` on `spt V ∩ O` with density
+`1_M θ`: `μ_V ⌞ O = (Hⁿ ⌞ (spt V ∩ O)).withDensity (ofReal ∘ 1_M θ)`.
+Proof: `spt V ∩ O = spt μ_V ∩ O` (as `O ⊆ U`) is measurable since `spt μ_V` is closed, and
+`μ_V((spt μ_V)ᶜ) = 0`, so `μ_V(S ∩ O) = μ_V(S ∩ (spt V ∩ O))` for measurable `S`.  Both sides then
+equal `∫ θ dHⁿ` over `S ∩ (spt V ∩ O) ∩ M`, by `withDensity_apply`, `restrict_restrict` and, on
+the right, `lintegral_indicator₀`/`restrict_restrict₀` for the `Hⁿ`-null-measurable carrier `M`. -/
+theorem dohr_lmo_dema_weight_restrict_withDensity : ∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (O : Set (Amb n ℓ)), MeasurableSet O → O ⊆ U → V.weight.restrict O = ((μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ O)).withDensity (fun x => ENNReal.ofReal (V.carrier.indicator V.mult x)) := by
+  intro n ℓ U V O hO hOU
+  -- `spt V ∩ O = spt μ_V ∩ O` is measurable.
+  have hA : V.support ∩ O = V.weight.support ∩ O := by
+    ext x
+    exact ⟨fun hx => ⟨hx.1.2, hx.2⟩, fun hx => ⟨⟨hOU hx.2, hx.1⟩, hx.2⟩⟩
+  have hAm : MeasurableSet (V.support ∩ O) := by
+    rw [hA]
+    exact V.weight.isClosed_support.measurableSet.inter hO
+  ext S hS
+  have hSA : MeasurableSet (S ∩ (V.support ∩ O)) := hS.inter hAm
+  rw [Measure.restrict_apply hS, withDensity_apply _ hS, Measure.restrict_restrict hS]
+  -- `μ_V` vanishes off its support, so `μ_V(S ∩ O) = μ_V(S ∩ (spt V ∩ O))`.
+  have hSO : V.weight (S ∩ O) = V.weight (S ∩ (V.support ∩ O)) := by
+    refine le_antisymm ?_ (measure_mono (inter_subset_inter_right _ inter_subset_right))
+    calc V.weight (S ∩ O)
+        ≤ V.weight (S ∩ (V.support ∩ O) ∪ V.weight.supportᶜ) := by
+          refine measure_mono fun x hx => ?_
+          by_cases hx' : x ∈ V.weight.support
+          · exact Or.inl ⟨hx.1, hA ▸ ⟨hx', hx.2⟩⟩
+          · exact Or.inr hx'
+      _ ≤ V.weight (S ∩ (V.support ∩ O)) + V.weight V.weight.supportᶜ := measure_union_le _ _
+      _ = V.weight (S ∩ (V.support ∩ O)) := by rw [Measure.measure_compl_support, add_zero]
+  rw [hSO, RectifiableVarifold.weight, withDensity_apply _ hSA, Measure.restrict_restrict hSA]
+  -- On the right, `ofReal (1_M θ) = 1_M (ofReal ∘ θ)` and `M` is null-measurable.
+  have hf : (fun x => ENNReal.ofReal (V.carrier.indicator V.mult x)) =
+      V.carrier.indicator (fun x => ENNReal.ofReal (V.mult x)) := by
+    funext x
+    by_cases hx : x ∈ V.carrier <;> simp [hx]
+  have hM : NullMeasurableSet V.carrier
+      ((μHE[n] : Measure (Amb n ℓ)).restrict (S ∩ (V.support ∩ O))) :=
+    V.nullMeasurableSet_carrier.mono Measure.restrict_le_self
+  rw [hf, lintegral_indicator₀ hM, Measure.restrict_restrict₀ hM, inter_comm]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
