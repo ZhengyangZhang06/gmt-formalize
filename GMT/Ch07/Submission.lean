@@ -451,6 +451,27 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The carrier of a `0`-dimensional integer multiplicity triple `(M, θ, ξ)` in `U` meets every
+compact `K ⊆ U` in a finite set.  `H⁰ = μHE[0]` gives each point mass `1` and `θ ≥ 1` on `M`, so
+any `N` points of `M ∩ K` give `N ≤ ∫_{M ∩ K} θ dH⁰`, which is finite by local integrability. -/
+theorem Submission.dimred_zdv_carrier_finite : ∀ (P : ℕ) (U K : Set (Euclid P)) (R : IMRep U 0), IsCompact K → K ⊆ U → (R.carrier ∩ K).Finite := by
+  intro P U K R hK hKU
+  by_contra hinf
+  apply R.locallyIntegrable_mult K hK hKU
+  -- an `N`-element subset `t ⊆ M ∩ K` gives `N ≤ Σ_{x ∈ t} θ(x) H⁰{x} ≤ ∫_{M ∩ K} θ dH⁰`
+  have hN : ∀ N : ℕ, (N : ℝ≥0∞) ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[0] := by
+    intro N
+    obtain ⟨t, hts, htN⟩ := Set.Infinite.exists_subset_card_eq hinf N
+    calc (N : ℝ≥0∞) = ∑ x ∈ t, (1 : ℝ≥0∞) := by simp [htN]
+      _ ≤ ∑ x ∈ t, (R.mult x : ℝ≥0∞) * μHE[0] {x} := by
+        refine Finset.sum_le_sum fun x hx => ?_
+        rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton,
+          mul_one]
+        exact Nat.one_le_cast.mpr (R.mult_pos x (hts hx).1)
+      _ = ∫⁻ x in (t : Set (Euclid P)), (R.mult x : ℝ≥0∞) ∂μHE[0] := (lintegral_finset t _).symm
+      _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[0] := lintegral_mono_set hts
+  exact top_le_iff.mp (le_of_tendsto' ENNReal.tendsto_nat_nhds_top hN)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
