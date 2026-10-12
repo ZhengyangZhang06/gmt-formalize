@@ -492,6 +492,53 @@ theorem Submission.intcpt_allard_ccb_cylinder_grouping :
   -- Step 6: `(1 + u)^k ≤ 1 + (2^k - 1) u` for `0 ≤ u ≤ 1`.
   have hF1 : ∀ k : ℕ, (1 + u) ^ k ≤ 1 + (2 ^ k - 1) * u := by
     intro k
+/-- One-point bound from monotonicity (Simon Ch. 8, 5.10, proof of (8), one point): if
+`‖y - x‖ < ε ≤ δ⁴`, `0 < δ ≤ 1/2`, `0 < σ ≤ δ²` and `r ↦ e^{εr} μ(B_r(y)) / r^n` is non-decreasing
+on `(0,1)`, then `μ(B_σ(y)) / σ^n ≤ (1 + 2^{n+2} δ²) μ(B_1(x))`. -/
+theorem Submission.intcpt_allard_ccb_one_point_ball_bound :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x y : Euclidean N) (δ ε σ : ℝ), 0 < δ → δ ≤ 1 / 2 → 0 < ε → ε ≤ δ ^ 4 → ‖y - x‖ < ε → MonotoneOn (fun r : ℝ ↦ ENNReal.ofReal (Real.exp (ε * r)) * μ (closedBall y r) / ENNReal.ofReal r ^ n) (Ioo 0 1) → 0 < σ → σ ≤ δ ^ 2 → μ (closedBall y σ) / ENNReal.ofReal σ ^ n ≤ ENNReal.ofReal (1 + 2 ^ (n + 2) * δ ^ 2) * μ (closedBall x 1) := by
+  intro N n μ x y δ ε σ hδ hδ2 hε hεδ hyx hmono hσ hσδ
+  -- Step 1: `ε ≤ δ⁴ ≤ δ² ≤ 1/4`, so `σ, 1 - ε ∈ (0,1)` and `σ ≤ 1 - ε`.
+  have hδsq : δ ^ 2 ≤ 1 / 4 := by nlinarith
+  have hδ4 : δ ^ 4 ≤ δ ^ 2 := by nlinarith [pow_pos hδ 2]
+  have hεδ2 : ε ≤ δ ^ 2 := hεδ.trans hδ4
+  have hε4 : ε ≤ 1 / 4 := hεδ2.trans hδsq
+  have hσ1 : σ < 1 := by linarith
+  have h1ε : 0 < 1 - ε := by linarith
+  have h1ε1 : 1 - ε < 1 := by linarith
+  have hσle : σ ≤ 1 - ε := by linarith
+  -- Step 2: monotonicity `f(σ) ≤ f(1 - ε)`.
+  have hf : ENNReal.ofReal (Real.exp (ε * σ)) * μ (closedBall y σ) / ENNReal.ofReal σ ^ n ≤
+      ENNReal.ofReal (Real.exp (ε * (1 - ε))) * μ (closedBall y (1 - ε)) /
+        ENNReal.ofReal (1 - ε) ^ n :=
+    hmono ⟨hσ, hσ1⟩ ⟨h1ε, h1ε1⟩ hσle
+  -- Step 3: `e^{εσ} ≥ 1`, so `μ(B_σ(y)) / σ^n ≤ f(σ)`.
+  have hlow : μ (closedBall y σ) / ENNReal.ofReal σ ^ n ≤
+      ENNReal.ofReal (Real.exp (ε * σ)) * μ (closedBall y σ) / ENNReal.ofReal σ ^ n := by
+    refine ENNReal.div_le_div_right ?_ _
+    calc μ (closedBall y σ) = 1 * μ (closedBall y σ) := (one_mul _).symm
+      _ ≤ ENNReal.ofReal (Real.exp (ε * σ)) * μ (closedBall y σ) :=
+        mul_le_mul' (ENNReal.one_le_ofReal.2 (Real.one_le_exp (by positivity))) le_rfl
+  -- Step 4: `B_{1-ε}(y) ⊆ B_1(x)` and `e^{ε(1-ε)} ≤ e^ε`.
+  have hball : closedBall y (1 - ε) ⊆ closedBall x 1 := by
+    apply closedBall_subset_closedBall'
+    rw [dist_eq_norm]
+    linarith
+  have hexp : ENNReal.ofReal (Real.exp (ε * (1 - ε))) ≤ ENNReal.ofReal (Real.exp ε) :=
+    ENNReal.ofReal_le_ofReal (Real.exp_le_exp.2 (by nlinarith))
+  have hup : ENNReal.ofReal (Real.exp (ε * (1 - ε))) * μ (closedBall y (1 - ε)) /
+        ENNReal.ofReal (1 - ε) ^ n ≤
+      ENNReal.ofReal (Real.exp ε) * μ (closedBall x 1) / ENNReal.ofReal (1 - ε) ^ n :=
+    ENNReal.div_le_div_right (mul_le_mul' hexp (measure_mono hball)) _
+  -- Step 5: `ofReal(e^ε) μ(B_1(x)) / ofReal(1 - ε)^n = ofReal(e^ε / (1 - ε)^n) μ(B_1(x))`.
+  have hrw : ENNReal.ofReal (Real.exp ε) * μ (closedBall x 1) / ENNReal.ofReal (1 - ε) ^ n =
+      ENNReal.ofReal (Real.exp ε / (1 - ε) ^ n) * μ (closedBall x 1) := by
+    rw [ENNReal.mul_div_right_comm, ← ENNReal.ofReal_pow h1ε.le,
+      ← ENNReal.ofReal_div_of_pos (pow_pos h1ε n)]
+  -- Step 6: the real inequality `e^ε / (1 - ε)^n ≤ 1 + 2^{n+2} δ²`.
+  -- (F1) `(1 + u)^k ≤ 1 + (2^k - 1) u` for `0 ≤ u ≤ 1`, by induction on `k`.
+  have hF1 : ∀ u : ℝ, 0 ≤ u → u ≤ 1 → ∀ k : ℕ, (1 + u) ^ k ≤ 1 + (2 ^ k - 1) * u := by
+    intro u hu0 hu1 k
     induction k with
     | zero => simp
     | succ k ih =>
@@ -543,6 +590,49 @@ theorem Submission.intcpt_allard_ccb_cylinder_grouping :
             ENNReal.ofReal (ρ + S) ^ n) :=
         Finset.sum_le_sum fun w _ ↦ hresc _
     _ = _ := (Finset.mul_sum _ _ _).symm
+        _ = 1 + 2 ^ k * u + (2 ^ k - 1) * u ^ 2 := by ring
+        _ ≤ 1 + 2 ^ k * u + (2 ^ k - 1) * u := by
+          have hu2 : u ^ 2 ≤ u := by nlinarith
+          have := mul_le_mul_of_nonneg_left hu2 (sub_nonneg.2 h2k)
+          linarith
+        _ = 1 + (2 ^ (k + 1) - 1) * u := by ring
+  -- (F2) `e^ε ≤ 1 / (1 - ε) ≤ 1 + 2ε`.
+  have hinv : 1 / (1 - ε) ≤ 1 + 2 * ε := by
+    rw [div_le_iff₀ h1ε]
+    nlinarith
+  have hF2 : Real.exp ε ≤ 1 + 2 * ε :=
+    (Real.exp_bound_div_one_sub_of_interval hε.le (by linarith)).trans hinv
+  have hpow : 1 / (1 - ε) ^ n ≤ 1 + (2 ^ n - 1) * (2 * ε) := by
+    calc 1 / (1 - ε) ^ n = (1 / (1 - ε)) ^ n := (one_div_pow _ _).symm
+      _ ≤ (1 + 2 * ε) ^ n := pow_le_pow_left₀ (one_div_nonneg.2 h1ε.le) hinv n
+      _ ≤ 1 + (2 ^ n - 1) * (2 * ε) := hF1 (2 * ε) (by linarith) (by linarith) n
+  have h2n : (1 : ℝ) ≤ 2 ^ n := one_le_pow₀ (by norm_num)
+  have hreal : Real.exp ε / (1 - ε) ^ n ≤ 1 + 2 ^ (n + 2) * δ ^ 2 := by
+    calc Real.exp ε / (1 - ε) ^ n = Real.exp ε * (1 / (1 - ε) ^ n) := (mul_one_div _ _).symm
+      _ ≤ (1 + 2 * ε) * (1 + (2 ^ n - 1) * (2 * ε)) :=
+        mul_le_mul hF2 hpow (one_div_nonneg.2 (pow_nonneg h1ε.le n)) (by linarith)
+      _ = 1 + 2 ^ n * (2 * ε) + (2 ^ n - 1) * (4 * ε ^ 2) := by ring
+      _ ≤ 1 + 2 ^ n * (2 * ε) + 2 ^ n * (4 * ε ^ 2) := by
+        have := mul_le_mul_of_nonneg_right (sub_le_self (2 ^ n : ℝ) zero_le_one)
+          (by positivity : (0 : ℝ) ≤ 4 * ε ^ 2)
+        linarith
+      _ ≤ 1 + 2 ^ n * (2 * ε) + 2 ^ n * (2 * ε) := by
+        have h4 : 4 * ε ^ 2 ≤ 2 * ε := by nlinarith
+        have := mul_le_mul_of_nonneg_left h4 (by positivity : (0 : ℝ) ≤ 2 ^ n)
+        linarith
+      _ = 1 + 2 ^ (n + 2) * ε := by ring
+      _ ≤ 1 + 2 ^ (n + 2) * δ ^ 2 := by
+        have := mul_le_mul_of_nonneg_left hεδ2 (by positivity : (0 : ℝ) ≤ 2 ^ (n + 2))
+        linarith
+  -- Step 7: chain the estimates.
+  calc μ (closedBall y σ) / ENNReal.ofReal σ ^ n
+      ≤ ENNReal.ofReal (Real.exp (ε * σ)) * μ (closedBall y σ) / ENNReal.ofReal σ ^ n := hlow
+    _ ≤ ENNReal.ofReal (Real.exp (ε * (1 - ε))) * μ (closedBall y (1 - ε)) /
+          ENNReal.ofReal (1 - ε) ^ n := hf
+    _ ≤ ENNReal.ofReal (Real.exp ε) * μ (closedBall x 1) / ENNReal.ofReal (1 - ε) ^ n := hup
+    _ = ENNReal.ofReal (Real.exp ε / (1 - ε) ^ n) * μ (closedBall x 1) := hrw
+    _ ≤ ENNReal.ofReal (1 + 2 ^ (n + 2) * δ ^ 2) * μ (closedBall x 1) :=
+      mul_le_mul' (ENNReal.ofReal_le_ofReal hreal) le_rfl
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
