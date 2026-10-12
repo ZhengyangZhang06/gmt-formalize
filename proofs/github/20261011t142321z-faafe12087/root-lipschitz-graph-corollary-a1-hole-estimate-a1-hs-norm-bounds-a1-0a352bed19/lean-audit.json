@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ef6eabf3d12dba0ad76eb38de09d99571bc7397f9962c76ff8f70047cce08f00",
+  "git_delta": {
+    "base_commit": "8542082ecd54d93699a84701a8d4cee8a849cda0",
+    "candidate_commit": "7372f81c6640dd17bd99bd3c9bbe79675f27d126",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lgc_hsNormSq_bounds",
+    "diff_sha256": "254c8dfe6ec2148b1464625553c32fbada7402a4c6b1472b843a65041f206515",
+    "source_sha256": "42947aa1a5f5597cbadb61e248f8a9079010d31431962c8a55007822f22a0413",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lgc_hsNormSq_bounds",
+      "statement": "∀ (m k : ℕ), Continuous (fun A : Rn m →L[ℝ] Rn k => hsNormSq A) ∧ ∀ A : Rn m →L[ℝ] Rn k, 0 ≤ hsNormSq A ∧ hsNormSq A ≤ m * ‖A‖ ^ 2 ∧ ∀ v : Rn m, ‖A v‖ ^ 2 ≤ hsNormSq A * ‖v‖ ^ 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

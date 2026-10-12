@@ -1,0 +1,15 @@
+{
+  "node_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1.hs_norm_bounds-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1923",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "7372f81c6640dd17bd99bd3c9bbe79675f27d126",
+  "integrated_commit": "",
+  "proof_base_commit": "8542082ecd54d93699a84701a8d4cee8a849cda0",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.lipschitz_graph_corollary-a1.hole_estimate-a1",
+  "requires": []
+}
