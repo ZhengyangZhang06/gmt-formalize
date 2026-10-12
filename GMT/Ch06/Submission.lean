@@ -388,6 +388,19 @@ theorem Submission.fiw_tb_ext_smul_testForm :
     change χ x • (c • (a : DifferentialForm (Eucl P) q) x) =
       c • (χ x • (a : DifferentialForm (Eucl P) q) x)
     rw [smul_comm]
+/-- Homogeneity of the Euclidean coefficient norm (Simon Ch. 6, 1.15, 2.4–2.5):
+`|c α| = |c| |α|`.  Every coefficient of `c • α` on an increasing tuple of basis vectors is
+`c` times that of `α`, so each squared coefficient gains the factor `c²`; pull `c²` out of the
+finite sum and use `√(c² s) = √(c²) √s = |c| √s`. -/
+theorem Submission.fiw_tb_ext_covectorNorm_smul : ∀ (P q : ℕ) (c : ℝ) (α : Covector (Eucl P) q), covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+  intro P q c α
+  unfold covectorEuclideanNorm
+  rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+  congr 1
+  refine Finset.sum_congr rfl fun I _ => ?_
+  split_ifs
+  · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+  · simp
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
