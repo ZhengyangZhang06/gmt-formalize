@@ -458,6 +458,23 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, Remark 4.10(1)** ("hence `V = v(spt V ∩ U, Θ)`"; step 5 of the proof of
+Ch. 5, Theorem 7.1): if every `x ∈ spt V` has a positive density `Θⁿ(μ_V, x) = t > 0`, then the
+carrier `M` and `spt V` agree up to an `Hⁿ`-null set, `Hⁿ(M ∆ spt V) = 0`.
+`M \ spt V` is `Hⁿ`-null because `θ > 0` on `M` and `μ_V` vanishes off `spt μ_V`; `spt V \ M` is
+`Hⁿ`-null by the Upper Density Theorem (Ch. 1, 3.6) applied to `μ_V` on `M ∩ B_r(x)`. -/
+theorem hausdorff_carrier_symmDiff_support_null : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), (∀ x ∈ V.support, ∃ t : ℝ, 0 < t ∧ V.HasDensity x t) → (μHE[n] : Measure (Amb n ℓ)) (symmDiff V.carrier V.support) = 0 := by
+  intro n ℓ U V hdens
+  -- Step 4: `M ∆ spt V = (M \ spt V) ∪ (spt V \ M)`; step 2 makes the first part `Hⁿ`-null
+  -- and step 3 (which uses the positive densities) the second.
+  rw [Set.symmDiff_def]
+  exact measure_union_null (Submission.hausdorff_carrier_diff_support_null V)
+    (Submission.hausdorff_support_diff_carrier_null V hdens)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
