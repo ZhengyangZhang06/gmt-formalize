@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.pushforward_is_current-a1.current_of_dominated_density-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.pushforward_is_current-a1",
+  "depth": 3,
+  "title": "A locally dominated n-vector density pulled back along a measurable map defines a current",
+  "statement": "Let P, Q, n ∈ ℕ. Let V ⊆ ℝ^Q be any set and μ any measure on ℝ^P. Let g : ℝ^P → ℝ^Q be μ-a.e. measurable. Let w : ℝ^P → Λ_n(ℝ^Q) be μ-a.e. strongly measurable; here Λ_n(ℝ^Q) = NVector (Eucl Q) n is the space of continuous linear functionals on n-covectors of ℝ^Q, with the operator norm. Assume that for every compact K ⊆ V there is a μ-integrable h : ℝ^P → ℝ with ‖w(x)‖ ≤ h(x) for μ-a.e. x satisfying g(x) ∈ K. Then there is S ∈ D_n(V) (a GeometricCurrentOn V n) such that S(ω) = ∫ w(x)(ω(g(x))) dμ(x) for every test form ω ∈ Dⁿ(V) (TestFormOn V n).",
+  "lean_statement": "∀ (P Q n : ℕ) (V : Set (Eucl Q)) (μ : Measure (Eucl P)) (g : Eucl P → Eucl Q) (w : Eucl P → NVector (Eucl Q) n), AEMeasurable g μ → AEStronglyMeasurable w μ → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → ∃ h : Eucl P → ℝ, Integrable h μ ∧ ∀ᵐ x ∂μ, g x ∈ K → ‖w x‖ ≤ h x) → ∃ S : GeometricCurrentOn V n, ∀ ω : TestFormOn V n, S ω = ∫ x, w x ((ω : DifferentialForm (Eucl Q) n) (g x)) ∂μ",
+  "lean_name": "lpf_pic_current_of_dominated_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-pushforward-is-current-a1-current-of-7b4042b0e0-a1"
+}
