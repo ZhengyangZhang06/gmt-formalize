@@ -434,6 +434,22 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Integral over the range of a linear map.** If a continuous linear `A : ℝⁿ → ℝ^{n+ℓ}` and
+`j ≥ 0` satisfy `Hⁿ(A(S)) = j Lⁿ(S)` for every `S ⊆ ℝⁿ`, then `Hⁿ ⌞ range A = A_#(j Lⁿ)`, so
+`∫_{range A} f dHⁿ = j ∫ f(Au) du` for every `f ∈ C_c(ℝ^{n+ℓ})`. -/
+theorem Submission.ts_pdb_linear_range_integral : ∀ (n ℓ : ℕ) (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) (j : ℝ), 0 ≤ j → (∀ S : Set (EuclideanSpace ℝ (Fin n)), (μHE[n] : Measure (Ambient n ℓ)) (A '' S) = ENNReal.ofReal j * volume S) → ∀ f : C_c(Ambient n ℓ, ℝ), ∫ y in (LinearMap.range A.toLinearMap : Set (Ambient n ℓ)), f y ∂μHE[n] = j * ∫ u, f (A u) := by
+  intro n ℓ A j hj hA f
+  -- `Hⁿ ⌞ range A = A_#(j Lⁿ)`: for Borel `T`, `T ∩ range A = A(A⁻¹T)`; apply `hA` to `A⁻¹T`.
+  have hmeas : (μHE[n] : Measure (Ambient n ℓ)).restrict (LinearMap.range A.toLinearMap) =
+      (ENNReal.ofReal j • (volume : Measure (EuclideanSpace ℝ (Fin n)))).map A := by
+    ext T hT
+    rw [Measure.restrict_apply hT, Measure.map_apply A.measurable hT, Measure.smul_apply,
+      smul_eq_mul, ← hA, LinearMap.coe_range, ContinuousLinearMap.coe_coe,
+      Set.image_preimage_eq_inter_range]
+  -- Change variables along `A`, then pull out the scalar `(ofReal j).toReal = j`.
+  rw [hmeas, integral_map A.measurable.aemeasurable (map_continuous f).aestronglyMeasurable,
+    integral_smul_measure, ENNReal.toReal_ofReal hj, smul_eq_mul]
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
