@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1.affine_combine-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.cylinder_cluster_bound-a1",
+  "depth": 4,
+  "title": "Composing two affine bounds in [0,∞] (recombination of the induction constants, Simon 8.5.10, proof of (8))",
+  "statement": "Let b, c, c', k, δ ∈ ℝ and X, Y, M ∈ [0,∞] with b ≥ 0, c ≥ 0, k ≥ 0, δ² ≤ 1, b + c + bc ≤ c' and (1 + b)c + k ≤ c'. If X ≤ ofReal(1 + bδ²)·Y + ofReal(kδ²) and Y ≤ ofReal(1 + cδ²)·M + ofReal(cδ²), then X ≤ ofReal(1 + c'δ²)·M + ofReal(c'δ²). (M = ∞ is allowed.)",
+  "lean_statement": "∀ (b c c' k δ : ℝ) (X Y M : ℝ≥0∞), 0 ≤ b → 0 ≤ c → 0 ≤ k → δ ^ 2 ≤ 1 → b + c + b * c ≤ c' → (1 + b) * c + k ≤ c' → X ≤ ENNReal.ofReal (1 + b * δ ^ 2) * Y + ENNReal.ofReal (k * δ ^ 2) → Y ≤ ENNReal.ofReal (1 + c * δ ^ 2) * M + ENNReal.ofReal (c * δ ^ 2) → X ≤ ENNReal.ofReal (1 + c' * δ ^ 2) * M + ENNReal.ofReal (c' * δ ^ 2)",
+  "lean_name": "intcpt_allard_ccb_affine_combine",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-cylinder-cluster-bound-a-f011c8ede8-a1"
+}
