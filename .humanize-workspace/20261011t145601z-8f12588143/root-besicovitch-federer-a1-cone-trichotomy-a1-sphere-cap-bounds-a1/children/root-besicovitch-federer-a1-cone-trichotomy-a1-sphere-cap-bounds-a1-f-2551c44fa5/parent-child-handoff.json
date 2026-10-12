@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat manifest.json (project d09bc8a18ce60face651f042976e8465f21f0f68, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "rg -n \"μHE\\[|notation|def euclideanHausdorffMeasure|theorem.*euclideanHausdorffMeasure\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "sed -n 55,112p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (μHE[d] := addHaarScalarFactor • μH[d]; isAddHaarMeasure_euclideanHausdorffMeasure)",
+        "grep -n \"theorem Isometry.euclideanHausdorffMeasure_image\\|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "grep -n \"finrank_add_inf_finrank_orthogonal\" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "grep -n \"theorem addHaar_ball_of_pos\\|theorem addHaar_ball \" mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "grep -n \"finite_cover_balls\" mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        "grep -n \"theorem starProjection_eq_self_iff\\|theorem starProjection_apply_eq_zero_iff\\|theorem starProjection_norm_le\" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "grep -n \"theorem mem_orthogonal_singleton_iff_inner_left\" mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean",
+        "grep -n \"irreducible_def stdOrthonormalBasis\" mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "grep -rn \"theorem measure_biUnion_lt_top\" mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "grep -n \"bf_\\|sphere\\|Sphere\" project/GMT/Ch03/Contract.lean (no match)",
+        "grep -n -A6 \"theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn\" .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "grep dag.json, GMT/ and .lake/packages/simongmt for bf_planeBall_measure_uniform, bf_sphereCap_lower_comparison, bf_sphereCap_upper_comparison (no match)",
+        "python3 dag.json: lean_statement of bf_plane_closedBall_measure_eq (accepted) and deGiorgiRH_plane_closedBall_measure (decomposing)",
+        "grep -n -i \"besicovitch\\|federer\\|3\\.6\" book/chapter-03.txt (Theorem 3.6 at lines 530-536; proof deferred to [Fed69]/[Ros84])",
+        "lake env lean GMT/Scratch/SphereCapBoundsSplitDecision.lean, GMT/Scratch/SphereCapBoundsChildCheck.lean, GMT/Scratch/SphereCapBoundsEndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SphereCapBoundsSplitDecision.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SphereCapBoundsChildCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SphereCapBoundsEndToEnd.lean"
+      ],
+      "conclusion": "The snapshot fixes Rn (Contract.lean); the contract has no sphere, cap or bf_ declarations. Mathlib at 25730c7c supplies every ingredient the children use. (i) μHE[d] is defined as addHaarScalarFactor • μH[d]; isAddHaarMeasure_euclideanHausdorffMeasure, Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume handle it. (ii) Measure.addHaar_ball_of_pos (no Nontrivial assumption, so n = 0 is fine) and stdOrthonormalBasis. (iii) Submodule.finrank_add_inf_finrank_orthogonal and its primed form. (iv) Submodule.starProjection_eq_self_iff, starProjection_apply_eq_zero_iff and starProjection_norm_le, with Submodule.mem_orthogonal_singleton_iff_inner_left. (v) IsCompact.finite_cover_balls and measure_biUnion_lt_top. SimonGMT supplies euclideanHausdorffMeasure_image_le_of_lipschitzOn: μHE[n](f '' A) ≤ K^n μHE[n](A). No existing declaration states any child. The accepted bf_plane_closedBall_measure_eq uses closed balls, a plane-dependent constant and no positivity. deGiorgiRH_plane_closedBall_measure is unaccepted and uses closed balls centred at 0. Neither can be reused verbatim. All three proposed names are fresh. Simon's Ch. 3, Theorem 3.6 (chapter-03.txt lines 530–536) defers its proof to [Fed69]/[Ros84], so the child proofs are extracted from the parent-supplied Step 2.1 argument. Lean checks: the child types elaborate; the assembly from the three exact child types proves the frozen parent type; all three children and the parent were proved in scratch with axioms [propext, Classical.choice, Quot.sound]."
+    }
+  ],
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1",
+  "child_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1.flat_ball_uniform-a1",
+  "subproblem": {
+    "key": "flat_ball_uniform",
+    "title": "Uniform Hⁿ-measure of open balls in n-planes (parent step 1)",
+    "statement": "Let n ∈ ℕ. There is a real number ω > 0, depending only on n, with the following property. For every N ∈ ℕ, every linear subspace T of ℝᴺ = EuclideanSpace ℝ (Fin N) with dim T = n, every w ∈ T and every ρ > 0: Hⁿ(T ∩ B(w, ρ)) = ofReal(ω ρⁿ). Here Hⁿ = μHE[n] (Euclidean Hausdorff measure, applied to arbitrary sets as an outer measure), B(w, ρ) is the open ball and ofReal = ENNReal.ofReal.",
+    "lean_statement": "∀ n : ℕ, ∃ ω : ℝ, 0 < ω ∧ ∀ (N : ℕ) (T : Submodule ℝ (Rn N)), finrank ℝ T = n → ∀ w ∈ T, ∀ ρ : ℝ, 0 < ρ → μHE[n] ((T : Set (Rn N)) ∩ Metric.ball w ρ) = ENNReal.ofReal (ω * ρ ^ n)",
+    "lean_name": "bf_planeBall_measure_uniform",
+    "depends_on": [],
+    "natural_proof": "Source: step 1 (\"Flat balls\") of the parent-supplied proof of `bf_sphereCap_measure_bounds`. That proof is Step 2.1 of the cone-trichotomy argument for the Besicovitch–Federer projection theorem (Dall'Alba, Lemma 4.15; Mattila, Geometry of Sets and Measures in Euclidean Spaces, Ch. 18). Simon's Ch. 3, Theorem 3.6 (chapter-03.txt lines 530–536) defers the theorem's proof to [Fed69]/[Ros84], so there is no printed Simon proof to copy. The argument is written out here, and the independence of ω from the plane T is made explicit.\n\nNotation: ℝᵐ := EuclideanSpace ℝ (Fin m); |·| is the Euclidean norm; B(x, r) is the open ball; Hⁿ := μHE[n]; ofReal := ENNReal.ofReal; L := volume (Lebesgue measure) on ℝⁿ.\n\n1. Choice of ω. Let B₀ := B_{ℝⁿ}(0, 1). L is an additive Haar measure on ℝⁿ. It is therefore positive on nonempty open sets and finite on bounded sets (ℝⁿ is proper), so 0 < L(B₀) < ∞ (Mathlib Metric.measure_ball_pos, measure_ball_lt_top). Put ω := L(B₀).toReal. Then ω > 0 and ofReal(ω) = L(B₀) (ENNReal.toReal_pos, ENNReal.ofReal_toReal), and ω depends only on n. The case n = 0 needs no change: ℝ⁰ is a single point, B₀ = ℝ⁰ and L(B₀) = 1.\n\n2. Isometric parametrization of T. Fix N, a subspace T ⊆ ℝᴺ with dim T = n, a point w ∈ T and ρ > 0.\n   - With the inner product inherited from ℝᴺ, T is an n-dimensional real inner product space.\n   - It therefore has an orthonormal basis indexed by Fin n (Mathlib: stdOrthonormalBasis ℝ T, reindexed along finrank ℝ T = n by finCongr). The coordinate map of this basis is a linear isometric equivalence e : T → ℝⁿ.\n   - Let ι : ℝⁿ → ℝᴺ, ι(z) := e⁻¹(z) regarded as an element of ℝᴺ. Then ι is an isometry, because it is the isometry e⁻¹ followed by the inclusion T ↪ ℝᴺ, which preserves distances.\n   - ι(ℝⁿ) = T, and ι(e(x)) = x for every x ∈ T.\n   - Put z₀ := e(w), so that ι(z₀) = w.\n\n3. T ∩ B(w, ρ) = ι(B_{ℝⁿ}(z₀, ρ)).\n   (⊆) Let x ∈ T with |x − w| < ρ, and put z := e(x). Then ι(z) = x and |z − z₀| = |ι(z) − ι(z₀)| = |x − w| < ρ.\n   (⊇) Let z ∈ ℝⁿ with |z − z₀| < ρ. Then ι(z) ∈ T and |ι(z) − w| = |ι(z) − ι(z₀)| = |z − z₀| < ρ.\n\n4. Computation.\n   - Hⁿ of an isometric image equals Hⁿ of the source set (Mathlib Isometry.euclideanHausdorffMeasure_image). So Hⁿ(T ∩ B(w, ρ)) = μHE[n](B_{ℝⁿ}(z₀, ρ)), computed in ℝⁿ.\n   - On ℝⁿ, μHE[n] = L (Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume).\n   - L is an additive Haar measure on ℝⁿ, dim ℝⁿ = n and ρ > 0. The scaling law for balls therefore gives L(B(z₀, ρ)) = ofReal(ρⁿ)·L(B₀) (Mathlib Measure.addHaar_ball_of_pos, finrank_euclideanSpace_fin).\n   - Hence Hⁿ(T ∩ B(w, ρ)) = ofReal(ρⁿ)·ofReal(ω) = ofReal(ω ρⁿ), using ofReal(a)·ofReal(b) = ofReal(a·b) for a ≥ 0.\n\n5. ω was fixed in step 1 independently of N, T, w and ρ, which proves the statement. ∎",
+    "proof_key_steps": [
+      "Set ω := L(B_{ℝⁿ}(0, 1)).toReal. It is positive because the open unit ball of ℝⁿ has positive, finite Lebesgue measure.",
+      "An orthonormal basis of T gives an isometry ι : ℝⁿ → ℝᴺ onto T with T ∩ B(w, ρ) = ι(B_{ℝⁿ}(e(w), ρ)).",
+      "Three facts give Hⁿ(T ∩ B(w, ρ)) = ofReal(ρⁿ)·L(B₀) = ofReal(ωρⁿ): μHE[n] is invariant under isometries, μHE[n] = volume on ℝⁿ, and the Haar scaling law for balls."
+    ]
+  },
+  "audit": {
+    "key": "flat_ball_uniform",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and standalone one-line Lean proposition match, including uniformity in ambient dimension, plane and center. The proof establishes positive finite unit-ball volume, constructs the isometric parametrization, proves the image equality, and applies normalization and positive-radius Haar scaling. The ENNReal conversion is justified by finiteness. Dimension zero is covered without a Nontrivial assumption. No circular reliance or additional planning is needed."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-trichotomy-a1-sphere-cap-bounds-a1-f-2551c44fa5/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-trichotomy-a1-sphere-cap-bounds-a1-f-2551c44fa5/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-trichotomy-a1-sphere-cap-bounds-a1-f-2551c44fa5/parent-supplied-natural-proof.json"
+}
