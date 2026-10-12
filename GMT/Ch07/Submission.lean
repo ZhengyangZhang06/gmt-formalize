@@ -730,6 +730,107 @@ theorem Submission.dorag_dbs_localized_density_point : ∀ (P : ℕ) (W s : Set 
   obtain ⟨i, hiT, hxi⟩ := hcover x hxW
   exact hx i hiT hxi
 
+/-- Simon Ch. 3, Remark 1.5(3) with the density theorem of Ch. 1, 3.16: for `μ = θHⁿ⌞M` and an
+open `W ⊆ U`, at `Hⁿ⌞M`-a.e. `x ∈ W` every `c < θ(x)` has `cωₙtⁿ ≤ μ(B_t(x))` for small `t > 0`.
+With `m = θ(x)` and `M_m = {θ = m} ∩ M`, the density theorem on `M_m` and the approximate tangent
+plane at `x` give `μ(B_t(x)) ≥ m Hⁿ(M_m ∩ B_t(x)) ≥ m a Hⁿ(M ∩ B_t(x)) ≥ m a² ωₙtⁿ`, and
+`a = (1 + c/m)/2 < 1` has `c ≤ m a²`. -/
+theorem Submission.dorag_dbs_lower_density_ge_mult : ∀ (P n : ℕ) (U W : Set (Euclid P)) (R : IMRep U n), 0 < n → IsOpen W → W ⊆ U → ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ W → ∀ c : ℝ, c < R.mult x → ∀ᶠ t in 𝓝[>] (0 : ℝ), ENNReal.ofReal c * unitBallVolume n * ENNReal.ofReal (t ^ n) ≤ R.measure (closedBall x t) := by
+  intro P n U W R hn hW hWU
+  have hM := R.measurableSet_carrier
+  -- Step 1: `Hⁿ⌞M` is finite on compact `K ⊆ W`, as `θ ≥ 1` on `M` and `θ` is locally integrable
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ W →
+      (μHE[n].restrict R.carrier) K ≠ ∞ := by
+    intro K hK hKW
+    rw [Measure.restrict_apply' hM]
+    have h := R.locallyIntegrable_mult K hK (hKW.trans hWU)
+    refine ne_top_of_le_ne_top h ?_
+    calc μHE[n] (K ∩ R.carrier) = ∫⁻ _ in R.carrier ∩ K, (1 : ℝ≥0∞) ∂μHE[n] := by
+          rw [setLIntegral_const, one_mul, inter_comm]
+      _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+          apply setLIntegral_mono' (hM.inter hK.measurableSet)
+          intro x hx
+          have := R.mult_pos x hx.1
+          exact_mod_cast this
+  -- Step 2: the density theorem on each level set `M_m = {y ∈ M | θ(y) = m}`, for all `m` at once
+  have hs : ∀ m : ℕ, MeasurableSet {y | y ∈ R.carrier ∧ R.mult y = m} := fun m =>
+    hM.inter (R.measurable_mult (measurableSet_singleton m))
+  have hlev : ∀ m : ℕ, ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      x ∈ {y | y ∈ R.carrier ∧ R.mult y = m} → x ∈ W → ∀ a : ℝ, a < 1 →
+        ∀ᶠ t in 𝓝[>] (0 : ℝ), ENNReal.ofReal a * (μHE[n].restrict R.carrier) (closedBall x t) ≤
+          (μHE[n].restrict R.carrier) ({y | y ∈ R.carrier ∧ R.mult y = m} ∩ closedBall x t) := by
+    intro m
+    have := Submission.dorag_dbs_localized_density_point P W {y | y ∈ R.carrier ∧ R.mult y = m}
+      (μHE[n].restrict R.carrier) hW (hs m) hfin
+    rwa [ae_restrict_iff' (hs m)] at this
+  have hlev' := ae_all_iff.mpr hlev
+  -- Steps 3–4: a.e. `x` lies in `M` and has an approximate tangent plane `Q`
+  have hmem : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ R.carrier := ae_restrict_mem hM
+  filter_upwards [hlev', R.orients, hmem] with x hlevx htanx hxM hxW c hc
+  obtain ⟨Q, hQ, -⟩ := htanx
+  -- Step 5: with `m = θ(x) ≥ 1` and `0 < c < m`, `a = (1 + c/m)/2 < 1` satisfies `c ≤ m a²`
+  have hm1 : 1 ≤ R.mult x := R.mult_pos x hxM
+  have hm0 : (0 : ℝ) < R.mult x := by exact_mod_cast hm1
+  by_cases hc0 : c ≤ 0
+  · filter_upwards with t
+    simp [ENNReal.ofReal_of_nonpos hc0]
+  push Not at hc0
+  set m := R.mult x
+  have hq0 : 0 < c / m := div_pos hc0 hm0
+  have hq1 : c / m < 1 := (div_lt_one hm0).mpr hc
+  set a := (1 + c / m) / 2 with ha_def
+  have ha1 : a < 1 := by linarith
+  have ha0 : 0 < a := by linarith
+  have haq : c / m ≤ a * a := by nlinarith
+  have hcm : c ≤ m * (a * a) := by
+    have := (div_le_iff₀ hm0).mp haq
+    linarith
+  -- Step 6: `μ(B_t(x)) ≥ m Hⁿ(M_m ∩ B_t(x)) ≥ m a Hⁿ(M ∩ B_t(x)) ≥ m a² ωₙtⁿ ≥ c ωₙtⁿ`
+  have hA := Submission.dorag_dbs_approxTangent_lower_density P n R.carrier x Q hn hQ a ha1
+  have hB := hlevx m ⟨hxM, rfl⟩ hxW a ha1
+  filter_upwards [hA, hB] with t hAt hBt
+  rw [Measure.restrict_apply measurableSet_closedBall,
+    Measure.restrict_apply ((hs m).inter measurableSet_closedBall)] at hBt
+  have hset : {y | y ∈ R.carrier ∧ R.mult y = m} ∩ closedBall x t ∩ R.carrier =
+      {y | y ∈ R.carrier ∧ R.mult y = m} ∩ closedBall x t := by
+    ext y; constructor
+    · exact fun h => h.1
+    · exact fun h => ⟨h, h.1.1⟩
+  rw [hset] at hBt
+  have hmeas : (m : ℝ≥0∞) * μHE[n] ({y | y ∈ R.carrier ∧ R.mult y = m} ∩ closedBall x t) ≤
+      R.measure (closedBall x t) := by
+    unfold IMRep.measure
+    rw [withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall]
+    calc (m : ℝ≥0∞) * μHE[n] ({y | y ∈ R.carrier ∧ R.mult y = m} ∩ closedBall x t)
+        = ∫⁻ _ in {y | y ∈ R.carrier ∧ R.mult y = m} ∩ closedBall x t, (m : ℝ≥0∞) ∂μHE[n] := by
+          rw [setLIntegral_const, mul_comm]
+      _ = ∫⁻ y in {y | y ∈ R.carrier ∧ R.mult y = m} ∩ closedBall x t,
+            (R.mult y : ℝ≥0∞) ∂μHE[n] := by
+          apply setLIntegral_congr_fun ((hs m).inter measurableSet_closedBall)
+          intro y hy
+          exact (congrArg (fun k : ℕ => (k : ℝ≥0∞)) hy.1.2).symm
+      _ ≤ ∫⁻ y in closedBall x t ∩ R.carrier, (R.mult y : ℝ≥0∞) ∂μHE[n] := by
+          apply lintegral_mono_set
+          intro y hy
+          exact ⟨hy.2, hy.1.1⟩
+  have hinter : μHE[n] (closedBall x t ∩ R.carrier) = μHE[n] (R.carrier ∩ closedBall x t) := by
+    rw [inter_comm]
+  rw [hinter] at hBt
+  calc ENNReal.ofReal c * unitBallVolume n * ENNReal.ofReal (t ^ n)
+      ≤ ENNReal.ofReal (m * (a * a)) * unitBallVolume n * ENNReal.ofReal (t ^ n) := by
+        gcongr
+    _ = (m : ℝ≥0∞) * (ENNReal.ofReal a * (ENNReal.ofReal a * unitBallVolume n *
+          ENNReal.ofReal (t ^ n))) := by
+        rw [ENNReal.ofReal_mul (Nat.cast_nonneg _), ENNReal.ofReal_mul ha0.le,
+          ENNReal.ofReal_natCast]
+        ring
+    _ ≤ (m : ℝ≥0∞) * (ENNReal.ofReal a * μHE[n] (R.carrier ∩ closedBall x t)) := by
+        gcongr
+    _ ≤ (m : ℝ≥0∞) * μHE[n] ({y | y ∈ R.carrier ∧ R.mult y = m} ∩ closedBall x t) := by
+        gcongr
+    _ ≤ R.measure (closedBall x t) := hmeas
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
