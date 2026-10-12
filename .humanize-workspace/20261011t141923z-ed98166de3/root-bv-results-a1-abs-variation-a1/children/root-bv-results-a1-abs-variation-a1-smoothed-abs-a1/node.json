@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.abs_variation-a1.smoothed_abs-a1",
+  "parent_id": "root.bv_results-a1.abs_variation-a1",
+  "depth": 3,
+  "title": "Smoothed absolute value √(w²+η²) − η: C¹, gradient bound and η-closeness to |w|",
+  "statement": "For every n ∈ ℕ, every C¹ function w : ℝⁿ → ℝ (ℝⁿ = EuclideanSpace ℝ (Fin n)) and every real η > 0, the function F(x) := √(w(x)² + η²) − η satisfies: (a) F is C¹; (b) ‖DF(x)‖ ≤ ‖Dw(x)‖ for every x, where D = Mathlib fderiv ℝ and ‖·‖ is the operator norm; (c) |F(x) − |w(x)|| ≤ η for every x.",
+  "lean_statement": "∀ (n : ℕ) (w : Rn n → ℝ) (η : ℝ), 0 < η → ContDiff ℝ 1 w → ContDiff ℝ 1 (fun x ↦ Real.sqrt (w x ^ 2 + η ^ 2) - η) ∧ (∀ x, ‖fderiv ℝ (fun x ↦ Real.sqrt (w x ^ 2 + η ^ 2) - η) x‖ ≤ ‖fderiv ℝ w x‖) ∧ ∀ x, abs (Real.sqrt (w x ^ 2 + η ^ 2) - η - |w x|) ≤ η",
+  "lean_name": "bv_abs_variation_smoothed_abs",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-abs-variation-a1-smoothed-abs-a1-a1"
+}

@@ -768,6 +768,95 @@ theorem Submission.bv_mollifier_tendsto_L1 : ∀ (n : ℕ) (F : Rn n → ℝ) (�
     _ ≤ δ + (δ + δ) :=
         add_le_add ((hcontr j _ hFg).trans hg_close) (add_le_add hj hg_close)
     _ ≤ ε := hδ
+/-- **Monotonicity of `bvVariationOn` in the domain.** For every `u : ℝⁿ → ℝ` and all sets
+`W ⊆ O ⊆ ℝⁿ`, `bvVariationOn u W ≤ bvVariationOn u O`; no openness, measurability or integrability is
+assumed. A field `g` admissible for `W` is admissible for `O`, as `tsupport g ⊆ W ⊆ O`. Since `div g`
+vanishes off `tsupport g` (SimonGMT `support_euclideanDivergence_subset`), both pairings
+`∫_W u div g` and `∫_O u div g` equal `∫ u div g` (`setIntegral_eq_integral_of_forall_compl_eq_zero`,
+which needs no measurability of the set). -/
+theorem Submission.bv_abs_variation_mono_set : ∀ (n : ℕ) (u : Rn n → ℝ) (W O : Set (Rn n)), W ⊆ O → Chapter02.bvVariationOn u W ≤ Chapter02.bvVariationOn u O := by
+  intro n u W O hWO
+  -- Step 2: it suffices to bound the pairing of a single field `g` admissible for `W`.
+  refine iSup_le fun g ↦ iSup_le fun hg ↦ iSup_le fun hs ↦ iSup_le fun hn ↦ ?_
+  -- Step 3: `g` is admissible for `O`.
+  have hO : tsupport g ⊆ O := hs.trans hWO
+  -- Step 1: `u · div g` vanishes off every `T ⊇ tsupport g`, because `div g` does.
+  have hvan : ∀ T : Set (Rn n), tsupport g ⊆ T → ∀ x ∉ T,
+      u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x = 0 := fun T hT x hx ↦ by
+    rw [Function.notMem_support.mp fun h ↦ hx (hT (Chapter02.support_euclideanDivergence_subset _ h)),
+      mul_zero]
+  -- Steps 4–5: both set pairings equal the whole-space pairing, and `g` is admissible for `O`.
+  calc ENNReal.ofReal (∫ x in W, u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x)
+      = ENNReal.ofReal (∫ x in O, u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x) := by
+        rw [setIntegral_eq_integral_of_forall_compl_eq_zero (hvan W hs),
+          setIntegral_eq_integral_of_forall_compl_eq_zero (hvan O hO)]
+    _ ≤ Chapter02.bvVariationOn u O := Chapter02.ofReal_integral_le_bvVariationOn u O g hg hO hn
+/-- **Simon Ch. 2, before 2.5 (p. 49), mollifier kernel**, as used for `|D|u|| ≤ |Du|` in the
+proof of 2.8 (p. 52). For every `n` and `σ > 0` there is a `C^∞` kernel `ρ ≥ 0` on `ℝⁿ` with
+`support ρ ⊆ B(0, σ)` (open ball) and `∫ ρ dLⁿ = 1`. Take the smooth bump `φ` at `0` with radii
+`σ/2 < σ`. Its support is `B(0, σ)`, so `∫ φ > 0`, and `ρ = φ / ∫ φ` works. -/
+theorem Submission.bv_abs_variation_exists_kernel : ∀ (n : ℕ) (σ : ℝ), 0 < σ → ∃ ρ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ (∀ x, 0 ≤ ρ x) ∧ Function.support ρ ⊆ ball 0 σ ∧ ∫ x, ρ x = 1 := by
+  intro n σ hσ
+  -- Step 1: a smooth bump `φ` at `0` with `rIn = σ/2`, `rOut = σ` (inner-product-space instance).
+  obtain ⟨φ, hφ⟩ : ∃ φ : ContDiffBump (0 : Rn n), φ.rOut = σ :=
+    ⟨⟨σ / 2, σ, half_pos hσ, half_lt_self hσ⟩, rfl⟩
+  -- Step 2: `∫ φ > 0`, as `φ ≥ 0` is integrable with support the nonempty open ball `B(0, σ)`.
+  have hpos : 0 < ∫ x, φ x := by
+    refine (integral_pos_iff_support_of_nonneg φ.nonneg'
+      (φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport)).2 ?_
+    rw [φ.support_eq]
+    exact measure_ball_pos _ _ φ.rOut_pos
+  -- Steps 3–6: `ρ = φ / ∫ φ` is smooth, nonnegative, supported in `B(0, σ)`, of unit mass.
+  refine ⟨fun x ↦ φ x / ∫ y, φ y, φ.contDiff.div_const _, fun x ↦ div_nonneg φ.nonneg hpos.le,
+    ?_, ?_⟩
+  · rw [Function.support_div, φ.support_eq, Function.support_const hpos.ne', inter_univ, hφ]
+  · rw [integral_div, div_self hpos.ne']
+/-- **Smoothed absolute value.** For `w ∈ C¹(ℝⁿ)` and `η > 0`, `F = √(w² + η²) - η` is `C¹`,
+satisfies `‖DF(x)‖ ≤ ‖Dw(x)‖` and is uniformly `η`-close to `|w|`. With `ψ(t) = √(t² + η²) - η`
+and `F = ψ ∘ w`: `|t| ≤ √(t² + η²) ≤ |t| + η` gives the closeness, and the chain rule gives
+`DF(x) = (w(x) / √(w(x)² + η²)) • Dw(x)` with a coefficient of absolute value at most `1`. -/
+theorem Submission.bv_abs_variation_smoothed_abs : ∀ (n : ℕ) (w : Rn n → ℝ) (η : ℝ), 0 < η → ContDiff ℝ 1 w → ContDiff ℝ 1 (fun x ↦ Real.sqrt (w x ^ 2 + η ^ 2) - η) ∧ (∀ x, ‖fderiv ℝ (fun x ↦ Real.sqrt (w x ^ 2 + η ^ 2) - η) x‖ ≤ ‖fderiv ℝ w x‖) ∧ ∀ x, abs (Real.sqrt (w x ^ 2 + η ^ 2) - η - |w x|) ≤ η := by
+  intro n w η hη hw
+  -- Step 1: the radicand `t² + η²` is positive.
+  have hpos : ∀ t : ℝ, 0 < t ^ 2 + η ^ 2 := fun t ↦ by positivity
+  -- Step 2: `|t| = √(t²) ≤ √(t² + η²)`.
+  have hlow : ∀ t : ℝ, |t| ≤ Real.sqrt (t ^ 2 + η ^ 2) := fun t ↦ by
+    rw [← Real.sqrt_sq_eq_abs]
+    exact Real.sqrt_le_sqrt (le_add_of_nonneg_right (sq_nonneg η))
+  -- Step 3: `√(t² + η²) ≤ √((|t| + η)²) = |t| + η`.
+  have hup : ∀ t : ℝ, Real.sqrt (t ^ 2 + η ^ 2) ≤ |t| + η := fun t ↦ by
+    rw [← Real.sqrt_sq (add_nonneg (abs_nonneg t) hη.le)]
+    exact Real.sqrt_le_sqrt (by nlinarith [abs_nonneg t, sq_abs t])
+  refine ⟨?_, fun x ↦ ?_, fun x ↦ ?_⟩
+  -- Step 5: the radicand is `C¹` and never vanishes, so `F` is `C¹`.
+  · have h1 : ContDiff ℝ 1 (fun x ↦ w x ^ 2 + η ^ 2) := (hw.pow 2).add contDiff_const
+    exact (h1.sqrt fun x ↦ (hpos (w x)).ne').sub contDiff_const
+  -- Step 6: `ψ'(t₀) = 2t₀ / (2√(t₀² + η²))` at `t₀ = w(x)`; the chain rule gives
+  -- `DF(x) = ψ'(t₀) • Dw(x)`, and `|ψ'(t₀)| ≤ 1` by Step 2.
+  · have hψ : HasDerivAt (fun t : ℝ ↦ Real.sqrt (t ^ 2 + η ^ 2) - η)
+        (2 * w x / (2 * Real.sqrt (w x ^ 2 + η ^ 2))) (w x) := by
+      have h1 : HasDerivAt (fun t : ℝ ↦ t ^ 2 + η ^ 2) (2 * w x) (w x) := by
+        simpa using (hasDerivAt_pow 2 (w x)).add_const (η ^ 2)
+      exact (h1.sqrt (hpos (w x)).ne').sub_const η
+    have hwx : HasFDerivAt w (fderiv ℝ w x) x := (hw.differentiable one_ne_zero x).hasFDerivAt
+    have hF : HasFDerivAt (fun x ↦ Real.sqrt (w x ^ 2 + η ^ 2) - η)
+        ((2 * w x / (2 * Real.sqrt (w x ^ 2 + η ^ 2))) • fderiv ℝ w x) x :=
+      hψ.comp_hasFDerivAt x hwx
+    have h2s : 0 < 2 * Real.sqrt (w x ^ 2 + η ^ 2) := by
+      have := Real.sqrt_pos.2 (hpos (w x))
+      positivity
+    have hc : |2 * w x / (2 * Real.sqrt (w x ^ 2 + η ^ 2))| ≤ 1 := by
+      rw [abs_div, abs_of_pos h2s, div_le_one h2s, abs_mul, abs_two]
+      linarith [hlow (w x)]
+    rw [hF.fderiv, norm_smul, Real.norm_eq_abs]
+    calc |2 * w x / (2 * Real.sqrt (w x ^ 2 + η ^ 2))| * ‖fderiv ℝ w x‖
+        ≤ 1 * ‖fderiv ℝ w x‖ := mul_le_mul_of_nonneg_right hc (norm_nonneg _)
+      _ = ‖fderiv ℝ w x‖ := one_mul _
+  -- Step 4: `-η ≤ F(x) - |w(x)| ≤ 0 ≤ η`, by Steps 2 and 3.
+  · rw [abs_le]
+    constructor
+    · linarith [hlow (w x)]
+    · linarith [hup (w x)]
 /-- **Simon Ch. 2, proof of Lemma 2.5: transposing a mollification.** For `F ∈ L¹(ℝⁿ)` and
 continuous, compactly supported `ρ`, `h`, with `ρ̌(t) = ρ(-t)`: `∫ (ρ * F) h = ∫ F (ρ̌ * h)` (the
 step `∫ (φ_σ * u) div g = ∫ u (φ_σ * div g)`, for a kernel that need not be even). Both
@@ -1589,6 +1678,165 @@ theorem Submission.bv_mollifier_sub_lintegral_le : ∀ (n : ℕ) (W Q : Set (Rn 
   -- On `Q` we have `1_W u = u`, because `x ∈ closedBall x σ ⊆ W`.
   refine (setLIntegral_congr_fun hQ fun x hx ↦ ?_).trans_le hconv
   simp only [indicator_of_mem (hQW x hx (mem_closedBall_self hσ.le))]
+/-- **`|D|u||(O) ≤ |Du|(O)`, as used in Simon's proof of Ch. 2, Lemma 2.8.** For `O` open and
+`u ∈ L¹_loc(O)`, the variation (2.4) of `|u|` on `O` is at most that of `u`. Fix an admissible
+Lipschitz field `g` with `S = spt g ⊂ O` and thicken `S ⊂ V ⊂ V' ⊂⊂ O`. The mollifications
+`w_j = ρ_j * (1_{V'} u)` satisfy `∫_V |Dw_j| ≤ |Du|(V') ≤ |Du|(O)`. For the smoothed absolute value
+`F_j = √(w_j² + η_j²) - η_j`, integration by parts gives `∫ F_j div g = -∫ DF_j[g] ≤ ∫_V |Dw_j|`.
+Since `F_j → |u|` in `L¹(V)` and `div g` is bounded and vanishes off `S`, the limit is
+`∫_O |u| div g ≤ |Du|(O)`. -/
+theorem Submission.bv_abs_variation_le : ∀ (n : ℕ) (O : Set (Rn n)) (u : Rn n → ℝ), IsOpen O → LocallyIntegrableOn u O volume → Chapter02.bvVariationOn (fun x ↦ |u x|) O ≤ Chapter02.bvVariationOn u O := by
+  intro n O u hO hu
+  -- Step 0 (reduction): it suffices to bound `∫_O |u| div g` for one admissible field `g`.
+  refine iSup_le fun g ↦ iSup_le fun hg ↦ iSup_le fun hgO ↦ iSup_le fun hgn ↦ ?_
+  obtain ⟨Λ, hΛ⟩ := hg
+  set S : Set (Rn n) := tsupport (g : Rn n → Rn n)
+  have hScpt : IsCompact S := g.hasCompactSupport.isCompact
+  have hSmeas : MeasurableSet S := (isClosed_tsupport _).measurableSet
+  have hg1 : ∀ x, ‖g x‖ ≤ 1 := fun x ↦
+    (le_csSup (g.continuous.norm.bddAbove_range_of_hasCompactSupport g.hasCompactSupport.norm)
+      (mem_range_self x)).trans hgn
+  have hdiv0 : ∀ x, x ∉ S → Chapter02.euclideanDivergence (g : Rn n → Rn n) x = 0 := by
+    intro x hx
+    by_contra h
+    exact hx (Chapter02.support_euclideanDivergence_subset _ h)
+  -- Step 1 (neighbourhoods): `S ⊆ V = thickening (δ/4) S ⊆ V' = thickening δ S ⊆ O`, with
+  -- `closure V'` compact in `O`, so `u` is integrable on `V'`.
+  obtain ⟨δ, hδ, hδO⟩ := hScpt.exists_cthickening_subset_open hO hgO
+  set V : Set (Rn n) := thickening (δ / 4) S
+  set V' : Set (Rn n) := thickening δ S
+  have hK : IsCompact (cthickening δ S) := hScpt.cthickening
+  have hV'K : V' ⊆ cthickening δ S := thickening_subset_cthickening δ S
+  have hVV' : V ⊆ V' := thickening_mono (by linarith) S
+  have hSV : S ⊆ V := self_subset_thickening (by linarith) S
+  have hV'O : V' ⊆ O := hV'K.trans hδO
+  have hV'open : IsOpen V' := isOpen_thickening
+  have hVmeas : MeasurableSet V := isOpen_thickening.measurableSet
+  have hV'meas : MeasurableSet V' := hV'open.measurableSet
+  have hVfin : volume V ≠ ∞ :=
+    ((measure_mono (hVV'.trans hV'K)).trans_lt hK.measure_lt_top).ne
+  have huV' : IntegrableOn u V' volume := (hu.integrableOn_compact_subset hδO hK).mono_set hV'K
+  have huV : IntegrableOn u V volume := huV'.mono_set hVV'
+  have hu'int : Integrable (V'.indicator u) volume := huV'.integrable_indicator hV'meas
+  -- Step 2 (mollification): radii `σ j ≤ δ/4`, `σ j → 0`, kernels `ρ j` and `w j = ρ j * 1_{V'} u`.
+  obtain ⟨η, hηpos, hη1, hηlim⟩ : ∃ η : ℕ → ℝ, (∀ j, 0 < η j) ∧ (∀ j, η j ≤ 1) ∧
+      Tendsto η atTop (𝓝 0) :=
+    ⟨fun j ↦ 1 / ((j : ℝ) + 1), fun j ↦ Nat.one_div_pos_of_nat,
+      fun j ↦ (div_le_one (by positivity)).2 (by linarith [(j.cast_nonneg : (0 : ℝ) ≤ j)]),
+      tendsto_one_div_add_atTop_nhds_zero_nat⟩
+  obtain ⟨σ, hσpos, hσle, hσlim⟩ : ∃ σ : ℕ → ℝ, (∀ j, 0 < σ j) ∧ (∀ j, σ j ≤ δ / 4) ∧
+      Tendsto σ atTop (𝓝 0) :=
+    ⟨fun j ↦ δ / 4 * η j, fun j ↦ mul_pos (by linarith) (hηpos j),
+      fun j ↦ mul_le_of_le_one_right (by linarith) (hη1 j),
+      by simpa only [mul_zero] using hηlim.const_mul (δ / 4)⟩
+  choose ρ hρs hρn hρsupp hρi using fun j ↦
+    Submission.bv_abs_variation_exists_kernel n (σ j) (hσpos j)
+  have hρ2 : ∀ j, ContDiff ℝ 2 (ρ j) := fun j ↦ (hρs j).of_le (WithTop.coe_le_coe.2 le_top)
+  have hρc : ∀ j, HasCompactSupport (ρ j) := fun j ↦
+    HasCompactSupport.of_support_subset_isCompact (isCompact_closedBall 0 (σ j))
+      ((hρsupp j).trans ball_subset_closedBall)
+  set w : ℕ → Rn n → ℝ := fun j ↦
+    convolution (ρ j) (V'.indicator u) (ContinuousLinearMap.lsmul ℝ ℝ) volume
+  have hw1 : ∀ j, ContDiff ℝ 1 (w j) := fun j ↦
+    (hρc j).contDiff_convolution_left (n := 1) (ContinuousLinearMap.lsmul ℝ ℝ)
+      ((hρs j).of_le (WithTop.coe_le_coe.2 le_top)) hu'int.locallyIntegrable
+  -- `closedBall x (σ j) ⊆ V'` for `x ∈ V`, so the gradient bound of the mollifier applies:
+  -- `∫_V ‖D w j‖ ≤ |Du|(V') ≤ |Du|(O)`.
+  have hball : ∀ j, ∀ x ∈ V, closedBall x (σ j) ⊆ V' := fun j x hx ↦
+    (closedBall_subset_cthickening hx (σ j)).trans <|
+      (cthickening_thickening_subset (hσpos j).le (δ / 4) S).trans <|
+        cthickening_subset_thickening' hδ (by linarith [hσle j]) S
+  have hgrad : ∀ j, ∫⁻ x in V, ‖fderiv ℝ (w j) x‖ₑ ≤ Chapter02.bvVariationOn u O := fun j ↦
+    (Submission.bv_mollifier_fderiv_lintegral_le n V' V u (ρ j) (σ j) hV'open huV' (hρ2 j)
+      (hρn j) (hρsupp j) (hρi j) (hball j)).trans
+      (Submission.bv_abs_variation_mono_set n u V' O hV'O)
+  -- Step 3 (smoothed absolute value): `F j = √((w j)² + (η j)²) - η j`.
+  set F : ℕ → Rn n → ℝ := fun j x ↦ Real.sqrt (w j x ^ 2 + η j ^ 2) - η j
+  have hF : ∀ j, ContDiff ℝ 1 (F j) ∧ (∀ x, ‖fderiv ℝ (F j) x‖ ≤ ‖fderiv ℝ (w j) x‖) ∧
+      ∀ x, abs (F j x - |w j x|) ≤ η j := fun j ↦
+    Submission.bv_abs_variation_smoothed_abs n (w j) (η j) (hηpos j) (hw1 j)
+  -- Step 4 (integration by parts): `∫ F j div g = -∫ D(F j)[g] ≤ ∫_S ‖D w j‖ ≤ |Du|(O)`.
+  have hIbound : ∀ j, ENNReal.ofReal (∫ x, F j x * Chapter02.euclideanDivergence g x) ≤
+      Chapter02.bvVariationOn u O := by
+    intro j
+    obtain ⟨hF1, hFd, -⟩ := hF j
+    have hpt : ∀ x, ‖fderiv ℝ (F j) x (g x)‖ₑ ≤ S.indicator (fun x ↦ ‖fderiv ℝ (w j) x‖ₑ) x := by
+      intro x
+      by_cases hx : x ∈ S
+      · rw [indicator_of_mem hx]
+        calc ‖fderiv ℝ (F j) x (g x)‖ₑ ≤ ‖fderiv ℝ (F j) x‖ₑ * ‖g x‖ₑ :=
+              ContinuousLinearMap.le_opENorm _ _
+          _ ≤ ‖fderiv ℝ (w j) x‖ₑ * 1 := by
+              gcongr
+              · rw [← ofReal_norm, ← ofReal_norm]
+                exact ENNReal.ofReal_le_ofReal (hFd x)
+              · rw [← ofReal_norm, ← ENNReal.ofReal_one]
+                exact ENNReal.ofReal_le_ofReal (hg1 x)
+          _ = ‖fderiv ℝ (w j) x‖ₑ := mul_one _
+      · rw [indicator_of_notMem hx, image_eq_zero_of_notMem_tsupport hx, map_zero, enorm_zero]
+    rw [Submission.bv_lipschitz_integration_by_parts n (F j) g Λ hF1 hΛ g.hasCompactSupport]
+    calc ENNReal.ofReal (-∫ x, fderiv ℝ (F j) x (g x))
+        ≤ ‖-∫ x, fderiv ℝ (F j) x (g x)‖ₑ := Real.ofReal_le_enorm _
+      _ = ‖∫ x, fderiv ℝ (F j) x (g x)‖ₑ := enorm_neg _
+      _ ≤ ∫⁻ x, ‖fderiv ℝ (F j) x (g x)‖ₑ := enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ x, S.indicator (fun x ↦ ‖fderiv ℝ (w j) x‖ₑ) x := lintegral_mono hpt
+      _ = ∫⁻ x in S, ‖fderiv ℝ (w j) x‖ₑ := lintegral_indicator hSmeas _
+      _ ≤ ∫⁻ x in V, ‖fderiv ℝ (w j) x‖ₑ := lintegral_mono_set hSV
+      _ ≤ Chapter02.bvVariationOn u O := hgrad j
+  -- Step 5 (limit): `div g` vanishes off `S ⊆ V`, so all integrals may be taken over `V`, where
+  -- `F j → |u|` in `L¹`: `|F j - |u|| ≤ η j + |w j - 1_{V'} u|` on `V`.
+  have hIV : ∀ j, ∫ x, F j x * Chapter02.euclideanDivergence g x =
+      ∫ x in V, F j x * Chapter02.euclideanDivergence g x := fun j ↦
+    (setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx ↦ by
+      rw [hdiv0 x fun h ↦ hx (hSV h), mul_zero]).symm
+  have hOV : ∫ x in O, |u x| * Chapter02.euclideanDivergence g x =
+      ∫ x in V, |u x| * Chapter02.euclideanDivergence g x := by
+    have h1 : ∀ x ∉ O, |u x| * Chapter02.euclideanDivergence g x = 0 := fun x hx ↦ by
+      rw [hdiv0 x fun h ↦ hx (hgO h), mul_zero]
+    have h2 : ∀ x ∉ V, |u x| * Chapter02.euclideanDivergence g x = 0 := fun x hx ↦ by
+      rw [hdiv0 x fun h ↦ hx (hSV h), mul_zero]
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero h1,
+      setIntegral_eq_integral_of_forall_compl_eq_zero h2]
+  have hL1 : Tendsto (fun j ↦ ∫⁻ x in V, ‖F j x - |u x|‖ₑ) atTop (𝓝 0) := by
+    have hconv := Submission.bv_mollifier_tendsto_L1 n (V'.indicator u) ρ σ hu'int
+      (fun j ↦ (hρs j).continuous) hρn hρsupp hρi hσlim
+    have hη' : Tendsto (fun j ↦ ENNReal.ofReal (η j) * volume V) atTop (𝓝 0) := by
+      simpa only [ENNReal.ofReal_zero, zero_mul] using
+        ENNReal.Tendsto.mul_const (ENNReal.tendsto_ofReal hηlim) (Or.inr hVfin)
+    have hmaj := hη'.add hconv
+    rw [add_zero] at hmaj
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hmaj
+      (fun _ ↦ zero_le) fun j ↦ ?_
+    have hpt : ∀ x ∈ V, ‖F j x - |u x|‖ₑ ≤ ENNReal.ofReal (η j) + ‖w j x - V'.indicator u x‖ₑ := by
+      intro x hx
+      rw [indicator_of_mem (hVV' hx) u, Real.enorm_eq_ofReal_abs, Real.enorm_eq_ofReal_abs,
+        ← ENNReal.ofReal_add (hηpos j).le (abs_nonneg _)]
+      refine ENNReal.ofReal_le_ofReal ((abs_sub_le _ (|w j x|) _).trans (add_le_add ?_ ?_))
+      · exact (hF j).2.2 x
+      · exact abs_abs_sub_abs_le_abs_sub _ _
+    calc ∫⁻ x in V, ‖F j x - |u x|‖ₑ
+        ≤ ∫⁻ x in V, (ENNReal.ofReal (η j) + ‖w j x - V'.indicator u x‖ₑ) :=
+          setLIntegral_mono' hVmeas hpt
+      _ = ENNReal.ofReal (η j) * volume V + ∫⁻ x in V, ‖w j x - V'.indicator u x‖ₑ := by
+          rw [lintegral_add_left measurable_const, setLIntegral_const]
+      _ ≤ ENNReal.ofReal (η j) * volume V + ∫⁻ x, ‖w j x - V'.indicator u x‖ₑ := by
+          gcongr
+          exact Measure.restrict_le_self
+  have hlim : Tendsto (fun j ↦ ∫ x in V, F j x * Chapter02.euclideanDivergence g x) atTop
+      (𝓝 (∫ x in V, |u x| * Chapter02.euclideanDivergence g x)) :=
+    Chapter02.tendsto_integral_mul_of_lintegral_sub (μ := volume.restrict V) (v := F)
+      (u := fun x ↦ |u x|) (w := Chapter02.euclideanDivergence (g : Rn n → Rn n))
+      (continuous_abs.comp_aestronglyMeasurable huV.aestronglyMeasurable)
+      (Eventually.of_forall fun j ↦
+        ((hF j).1.continuous.continuousOn.integrableOn_compact hK).mono_set (hVV'.trans hV'K))
+      (Chapter02.measurable_euclideanDivergence _).aestronglyMeasurable
+      (ae_of_all _ (Chapter02.norm_euclideanDivergence_le_of_lipschitz hΛ)) hL1
+  have hlim' : Tendsto (fun j ↦ ENNReal.ofReal (∫ x, F j x * Chapter02.euclideanDivergence g x))
+      atTop (𝓝 (ENNReal.ofReal (∫ x in O, |u x| * Chapter02.euclideanDivergence g x))) := by
+    rw [hOV]
+    refine (ENNReal.tendsto_ofReal hlim).congr fun j ↦ ?_
+    rw [hIV j]
+  exact le_of_tendsto' hlim' hIbound
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
