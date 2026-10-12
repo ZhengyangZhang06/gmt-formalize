@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1",
+  "depth": 3,
+  "title": "Change of variables for Hⁿ-integrals over blow-ups η_{y,r}(S)",
+  "statement": "Let Q, n ∈ ℕ, y ∈ ℝ^Q, r > 0, let S ⊆ ℝ^Q be an arbitrary set and g : ℝ^Q → ℝ an arbitrary function, and let η = η_{y,r}, η(x) = r⁻¹(x − y). Then ∫_{η(S)} g dHⁿ = (rⁿ)⁻¹ ∫_S g(η(x)) dHⁿ(x), where Hⁿ = μHE[n] on ℝ^Q and both sides are Bochner set integrals (no integrability or measurability assumption is made; the identity includes the case where both sides are 0 by non-integrability).",
+  "lean_statement": "∀ (Q n : ℕ) (y : Eucl Q) (r : ℝ) (S : Set (Eucl Q)) (g : Eucl Q → ℝ), 0 < r → ∫ z in Poincare.SimonGMT.Chapter03.blowUpMap y r '' S, g z ∂(μHE[n] : Measure (Eucl Q)) = (r ^ n)⁻¹ * ∫ x in S, g (Poincare.SimonGMT.Chapter03.blowUpMap y r x) ∂(μHE[n] : Measure (Eucl Q))",
+  "lean_name": "lpf_wtc_blowup_setIntegral_image",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-blow-7c8d1035a6-a1"
+}
