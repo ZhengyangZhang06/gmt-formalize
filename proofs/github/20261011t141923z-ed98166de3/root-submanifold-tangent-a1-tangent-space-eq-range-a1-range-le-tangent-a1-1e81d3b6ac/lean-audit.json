@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6f24fcf6527916282bf0335df9ee785f2c197c924be858c5221a2a4ed7a136aa",
+  "git_delta": {
+    "base_commit": "8bc6ec159a1bd23731d6f40bc606f21626ca1546",
+    "candidate_commit": "cb782538443ca2ba4881d5c9c1dd2af1d10493b1",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "simon_chart_range_fderiv_le_tangentSpace",
+    "diff_sha256": "c3ee194a8332775805ee009abe26ec899152c68744bb89c0166b270328662192",
+    "source_sha256": "7d89a7ca0e861a142324669b8fa15d6b872c0803975f0d69c471aaee89af28ac",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.simon_chart_range_fderiv_le_tangentSpace",
+      "statement": "∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V → MapsTo ψ V M → ∀ x ∈ V, LinearMap.range (fderiv ℝ ψ x).toLinearMap ≤ tangentSpace M (ψ x)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
