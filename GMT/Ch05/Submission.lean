@@ -458,6 +458,45 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- The graph of the zero map `ℝⁿ → ℝ^ℓ` spans the coordinate plane `ℝⁿ × {0}`.  Comparing
+coordinates (`Fin.addCases`; `Fin.append_left`/`Fin.append_right`),
+`graphPoint v 0 = Σᵢ vᵢ e_{castAdd ℓ i}`: at `castAdd ℓ j` both sides equal `v j` (`castAdd ℓ` is
+injective), at `natAdd n j` both vanish (`castAdd ℓ i < n ≤ natAdd n j`).  So every generator of the
+left span lies in `horizontalPlane n ℓ`, and conversely `e_{castAdd ℓ i} = graphPoint eᵢ 0` is a
+generator of the left span; conclude by `Submodule.span_le` and antisymmetry. -/
+theorem allard52_gpa_span_graph_zero : ∀ (n ℓ : ℕ),
+    Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v ((0 : Rn n →L[ℝ] Rn ℓ) v)) =
+      horizontalPlane n ℓ := by
+  intro n ℓ
+  have hsum : ∀ v : Rn n, graphPoint v ((0 : Rn n →L[ℝ] Rn ℓ) v) =
+      ∑ i : Fin n, v i • EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) := by
+    intro v
+    ext k
+    refine Fin.addCases (fun j => ?_) (fun j => ?_) k
+    · simp [graphPoint, Pi.single_apply]
+    · have hne : ∀ i : Fin n, Fin.natAdd n j ≠ Fin.castAdd ℓ i := by
+        intro i h
+        have := congrArg Fin.val h
+        simp only [Fin.val_natAdd, Fin.val_castAdd] at this
+        omega
+      simp [graphPoint, hne]
+  apply le_antisymm
+  · rw [Submodule.span_le]
+    rintro _ ⟨v, rfl⟩
+    dsimp only
+    rw [hsum v]
+    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  · rw [horizontalPlane, Submodule.span_le]
+    rintro _ ⟨i, rfl⟩
+    refine Submodule.subset_span ⟨EuclideanSpace.single i 1, ?_⟩
+    dsimp only
+    rw [hsum]
+    simp
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
