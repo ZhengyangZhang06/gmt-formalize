@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "14ffa38d7acc2a4483a7b8f11dd81e7391a08a24563a6ee70ae4451573c99156",
+  "git_delta": {
+    "base_commit": "d90c7c526919c3e96e60f6f22666f6bf129d31ad",
+    "candidate_commit": "5398dbd7d7380fbababadad6cba0ddc8c0639433",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "8c2e2202bde0ab411811f8f96269c2a77138890a2f9bf2571a418efc80784e2f",
+    "source_sha256": "4ca7ea66b28cab7ba76b96805ccdb5da2971c33749dd92e642bca31a1dfc6b6b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_cone_tangentProjection_aemeasurable",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
