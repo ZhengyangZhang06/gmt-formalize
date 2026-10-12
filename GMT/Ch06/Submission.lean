@@ -397,26 +397,6 @@ theorem Submission.br_zd_im_dirac_repr :
     exact absurd (h1.trans_lt hn) (lt_irrefl _)
   -- Integrals over finsets are finite sums.
   have hint : ∀ (F : Finset (Eucl P)) (g : Eucl P → ℝ), IntegrableOn g (F : Set (Eucl P)) μ := by
-/-- Simon Ch. 6, 3.1 with `n = 0` (the `0`-dimensional step in the proof of 6.3): a finite
-integer combination of point masses `Y(ω) = ∑_{x ∈ D} a(x) ω(x)`, `D ⊆ U`, is the integer
-multiplicity current `τ(M, θ, ξ)` with `M = {x ∈ D : a(x) ≠ 0}`, `θ = |a|` and `ξ = ±1` the sign
-of `a`.  `Y` is continuous since convergence of test forms gives pointwise convergence.  `M` is
-finite, so it is `H⁰`-measurable and countably `0`-rectifiable and `H⁰`-integrals over it are
-finite sums; at `x ∈ M`, for small `r` the blow-up `η_{x,r}(M)` meets the support of a given
-`f ∈ C_c` only in `0`, so the weighted tangent space is `{0}`, spanned by the empty frame. -/
-theorem Submission.br_zd_finite_dirac_im :
-    ∀ (P : ℕ) (U : Set (Eucl P)) (D : Finset (Eucl P)) (a : Eucl P → ℤ),
-      (↑D : Set (Eucl P)) ⊆ U → ∃ Y : GeometricCurrentOn U 0, IsIntegerMultiplicity Y ∧
-        ∀ ω : TestFormOn U 0,
-          Y ω = ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![] := by
-  open Poincare.SimonGMT.Chapter03 (blowUpMap) in
-  classical
-  intro P U D a hDU
-  -- `H⁰{x} = 1`, so `H⁰`-integrals over finite sets are finite sums.
-  have hpt : ∀ x : Eucl P, (μHE[0] : Measure (Eucl P)) {x} = 1 := fun x => by
-    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
-  have hint : ∀ (F : Finset (Eucl P)) (g : Eucl P → ℝ),
-      IntegrableOn g (F : Set (Eucl P)) (μHE[0] : Measure (Eucl P)) := by
     intro F g
     rw [← biUnion_of_singleton (F : Set (Eucl P)), Finset.set_biUnion_coe,
       integrableOn_finset_iUnion]
@@ -527,6 +507,32 @@ theorem Submission.br_zd_finite_dirac_im :
   · have hx' : x ∉ tsupport f := fun h => hx.2 (by rw [hSM]; exact ⟨hx.1, h⟩)
     have h0 : (ω : DifferentialForm (Eucl P) 0) x = 0 := hzero x hx'
     simp [h0]
+
+/-- Simon Ch. 6, 3.1 with `n = 0` (the `0`-dimensional step in the proof of 6.3): a finite
+integer combination of point masses `Y(ω) = ∑_{x ∈ D} a(x) ω(x)`, `D ⊆ U`, is the integer
+multiplicity current `τ(M, θ, ξ)` with `M = {x ∈ D : a(x) ≠ 0}`, `θ = |a|` and `ξ = ±1` the sign
+of `a`.  `Y` is continuous since convergence of test forms gives pointwise convergence.  `M` is
+finite, so it is `H⁰`-measurable and countably `0`-rectifiable and `H⁰`-integrals over it are
+finite sums; at `x ∈ M`, for small `r` the blow-up `η_{x,r}(M)` meets the support of a given
+`f ∈ C_c` only in `0`, so the weighted tangent space is `{0}`, spanned by the empty frame. -/
+theorem Submission.br_zd_finite_dirac_im :
+    ∀ (P : ℕ) (U : Set (Eucl P)) (D : Finset (Eucl P)) (a : Eucl P → ℤ),
+      (↑D : Set (Eucl P)) ⊆ U → ∃ Y : GeometricCurrentOn U 0, IsIntegerMultiplicity Y ∧
+        ∀ ω : TestFormOn U 0,
+          Y ω = ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![] := by
+  open Poincare.SimonGMT.Chapter03 (blowUpMap) in
+  classical
+  intro P U D a hDU
+  -- `H⁰{x} = 1`, so `H⁰`-integrals over finite sets are finite sums.
+  have hpt : ∀ x : Eucl P, (μHE[0] : Measure (Eucl P)) {x} = 1 := fun x => by
+    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
+  have hint : ∀ (F : Finset (Eucl P)) (g : Eucl P → ℝ),
+      IntegrableOn g (F : Set (Eucl P)) (μHE[0] : Measure (Eucl P)) := by
+    intro F g
+    rw [← biUnion_of_singleton (F : Set (Eucl P)), Finset.set_biUnion_coe,
+      integrableOn_finset_iUnion]
+    exact fun x _ => integrableOn_singleton (hx := by rw [hpt]; exact ENNReal.one_lt_top)
+  have hsum : ∀ (F : Finset (Eucl P)) (g : Eucl P → ℝ),
       ∫ x in (F : Set (Eucl P)), g x ∂(μHE[0] : Measure (Eucl P)) = ∑ x ∈ F, g x := by
     intro F g
     rw [setIntegral_finset F (hint F g)]
@@ -631,6 +637,7 @@ theorem Submission.br_zd_finite_dirac_im :
       Finset.sum_filter_of_ne]
     intro x _ hne ha
     exact hne (by simp [ha])
+
 /-- The case `n = 0` of Simon Ch. 6, 8.2 (p. 176, "trivial in case `n = 0`"), on a set `W` with
 `closure W` compact (used for 6.3): let `X_j ⇀ X` and, on test forms supported in `W`, let
 `X_j(ω) = ∑ᶠ_{x ∈ N_j} c_j(x) ω(x)` with integers `c_j ≠ 0` on `N_j`, `N_j ∩ W` finite and
@@ -742,6 +749,43 @@ theorem Submission.br_zd_dirac_local_limit : ∀ (P : ℕ) (U W : Set (Eucl P)) 
       exact Finset.sum_congr rfl fun ℓ hℓ => by rw [(Finset.mem_filter.1 hℓ).2]
     · have hyW : y ℓ ∉ W := by simpa [s] using hℓ
       rw [hvan ω (y ℓ) fun h => hyW (hω h), mul_zero]
+
+/-- The case `n = 0` of Simon Ch. 6, 3.11 and 8.2 (p. 176, "trivial in case `n = 0`"), used for
+6.3: a weak limit `X` of integer multiplicity `X_j ∈ 𝒟₀(U)` with `sup_j M_W(X_j) < ∞` for every
+`W ⊂⊂ U` is integer multiplicity.  Each `X_j` is a locally finite integer Dirac sum
+`∑ᶠ_{x ∈ N_j} c_j(x) ω(x)`.  Near `x₀ ∈ U` take `W = B_{ε/2}(x₀) ⊂⊂ U`; testing with signed bumps,
+`∑_{x ∈ S} |c_j(x)| ≤ Λ = sup_j M_W(X_j)` for finite `S ⊆ N_j ∩ W`, so on forms supported in `W` the
+limit `X` is a finite integer Dirac sum, which is an integer multiplicity current.  These local
+representations patch together. -/
+theorem Submission.br_zero_dim_weak_limit_isIntegerMultiplicity : ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Xj : ℕ → GeometricCurrentOn U 0) (X : GeometricCurrentOn U 0), (∀ j, IsIntegerMultiplicity (Xj j)) → (∀ W, CompactlyContainedOpen W U → (⨆ j, (Xj j).massOn W) < ∞) → WeaklyConvergesOn Xj X → IsIntegerMultiplicity X := by
+  intro P U hU Xj X hXj hmass hconv
+  -- Each `X_j` is a locally finite integer Dirac sum `∑ᶠ_{x ∈ N_j} c_j(x) ω(x)`.
+  choose N c hNU hNfin hc hrepr using fun j => Submission.br_zd_im_dirac_repr P U (Xj j) (hXj j)
+  refine Submission.br_isIntegerMultiplicity_of_local P 0 U hU X fun x₀ hx₀ => ?_
+  -- `W = B_{ε/2}(x₀)` with `B_ε(x₀) ⊆ U`, so `closure W = B̄_{ε/2}(x₀)` is compact and lies in `U`.
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x₀ hx₀
+  set W : Set (Eucl P) := ball x₀ (ε / 2)
+  have hclW : closure W = closedBall x₀ (ε / 2) := closure_ball x₀ (half_pos hε).ne'
+  have hWK : IsCompact (closure W) := by
+    rw [hclW]
+    exact isCompact_closedBall x₀ (ε / 2)
+  have hclWU : closure W ⊆ U := by
+    rw [hclW]
+    exact (closedBall_subset_ball (half_lt_self hε)).trans hεU
+  have hWU : W ⊆ U := subset_closure.trans hclWU
+  -- `Λ = sup_j M_W(X_j) < ∞` bounds the weights `∑_{x ∈ S} |c_j(x)|` of the `X_j` in `W`.
+  have hΛ : (⨆ j, (Xj j).massOn W) < ∞ := hmass W ⟨isOpen_ball, hWK, hclWU⟩
+  obtain ⟨D, a, hDW, hXD⟩ := Submission.br_zd_dirac_local_limit P U W Xj X N c
+    (⨆ j, (Xj j).massOn W).toReal hWK hconv hc
+    (fun j => (hNfin j _ hWK hclWU).subset (inter_subset_inter_right _ subset_closure))
+    (fun j S hS => (ENNReal.ofReal_le_iff_le_toReal hΛ.ne).1
+      ((Submission.br_zd_dirac_massOn_ge P U W (N j) (Xj j) (c j) isOpen_ball hWU (hNfin j)
+        (hrepr j) S hS).trans (le_iSup (fun j => (Xj j).massOn W) j)))
+    (fun j ω _ => hrepr j ω)
+  -- On forms supported in `W`, `X` is a finite integer Dirac sum, i.e. integer multiplicity.
+  obtain ⟨Y, hY, hYD⟩ := Submission.br_zd_finite_dirac_im P U D a (hDW.trans hWU)
+  exact ⟨W, isOpen_ball, mem_ball_self (half_pos hε), hWU, Y, hY,
+    fun ω hω => (hXD ω hω).trans (hYD ω).symm⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
