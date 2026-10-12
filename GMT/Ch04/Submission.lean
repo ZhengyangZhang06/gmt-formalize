@@ -508,6 +508,124 @@ theorem Submission.aestronglyMeasurable_normalRadialSq_and_bounds : (∀ (n ℓ 
     exact div_le_one_of_le₀
       (pow_le_pow_left₀ (norm_nonneg _) (Submodule.norm_starProjection_apply_le _ _) 2)
       (sq_nonneg _)
+/-- Positivity argument of Simon 6.1 (p. 100), for an abstract measure `μ` and weight `q` (applied
+with `μ = μ_V` and `q = |D^⊥r|²`). Let `μ` be finite on compact sets with compact support,
+`U = ℝ^{n+ℓ} \ B_R(ξ)`, `r = |x - ξ|`, `H` locally `μ`-integrable on `U` with `|H · (x - ξ)| < n`
+`μ`-a.e. in `U`, `q` a.e. strongly measurable with `0 ≤ q ≤ 1`, and `γ ∈ C¹` with `γ, γ' ≥ 0` on
+`[0, ∞)`, `γ = 0` on `[0, R + ε]` and `γ > 0` on `(R + ε, ∞)`. If
+`∫_U (nγ(r) + rγ'(r)(1 - q)) dμ = -∫_U γ(r)(x - ξ) · H dμ`, then `spt μ ⊆ B_{R+ε}(ξ)`.
+Both integrands are integrable (`μ` is finite and the left one is bounded on `spt μ`; the right one
+vanishes off the compact `spt μ ∩ {r ≥ R + ε} ⊆ U`, on which `H` is integrable), so
+`∫_U (F + G) dμ = 0` with `F + G ≥ γ(r)(n - |(x - ξ) · H|) ≥ 0` `μ`-a.e. in `U`; hence `γ(r) = 0`
+`μ`-a.e. in `U`, and the open set `{r > R + ε} ⊆ U` is `μ`-null, so it misses `spt μ`. -/
+theorem Submission.support_subset_closedBall_of_radial_identity : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (q : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ : Ambient n ℓ) (R ε : ℝ), 0 < n → 0 ≤ R → 0 < ε → IsFiniteMeasureOnCompacts μ → IsCompact μ.support → LocallyIntegrableOn H (closedBall ξ R)ᶜ μ → AEStronglyMeasurable q μ → (∀ x, 0 ≤ q x ∧ q x ≤ 1) → ContDiff ℝ 1 γ → (∀ t : ℝ, 0 ≤ t → 0 ≤ γ t ∧ 0 ≤ deriv γ t) → (∀ t : ℝ, 0 ≤ t → t ≤ R + ε → γ t = 0) → (∀ t : ℝ, R + ε < t → 0 < γ t) → (∀ᵐ x ∂μ, x ∈ (closedBall ξ R)ᶜ → |inner ℝ (H x) (x - ξ)| < (n : ℝ)) → ∫ x in (closedBall ξ R)ᶜ, ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - q x)) ∂μ = -∫ x in (closedBall ξ R)ᶜ, γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂μ → μ.support ⊆ closedBall ξ (R + ε) := by
+  intro n ℓ μ H q γ ξ R ε hn hR hε hfin hcpt hHloc hq hq01 hγ hγnn hγ0 hγpos hC hId
+  have hUm : MeasurableSet (closedBall ξ R)ᶜ := measurableSet_closedBall.compl
+  have hγc : Continuous γ := hγ.continuous
+  have hγ'c : Continuous (deriv γ) := hγ.continuous_deriv le_rfl
+  have hrc : Continuous fun x : Ambient n ℓ ↦ ‖x - ξ‖ := (continuous_id.sub continuous_const).norm
+  have hr0 : ∀ x : Ambient n ℓ, 0 ≤ ‖x - ξ‖ := fun x ↦ norm_nonneg _
+  have hmemU : ∀ x : Ambient n ℓ, R < ‖x - ξ‖ → x ∈ (closedBall ξ R)ᶜ := fun x hx ↦ by
+    rwa [mem_compl_iff, mem_closedBall, dist_eq_norm, not_le]
+  -- step 1: `μ(E \ spt μ) = 0`, so `μ` is a finite measure
+  have hae : ∀ᵐ x ∂μ, x ∈ μ.support := Measure.support_mem_ae
+  have : IsFiniteMeasure μ := ⟨(measure_univ_le_add_compl μ.support).trans_lt
+    (by rw [Measure.measure_compl_support, add_zero]; exact hcpt.measure_lt_top)⟩
+  -- steps 2–4: `F = nγ(r) + rγ'(r)(1 - q)` is a.e. strongly measurable and bounded on `spt μ`
+  set F : Ambient n ℓ → ℝ := fun x ↦
+    (n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - q x) with hFdef
+  set G : Ambient n ℓ → ℝ := fun x ↦ γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) with hGdef
+  have hFlow : ∀ x, (n : ℝ) * γ ‖x - ξ‖ ≤ F x := fun x ↦ by
+    have := mul_nonneg (mul_nonneg (hr0 x) (hγnn _ (hr0 x)).2) (sub_nonneg.2 (hq01 x).2)
+    simp only [hFdef]
+    linarith
+  have hFle : ∀ x, F x ≤ (n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ := fun x ↦ by
+    have := mul_le_of_le_one_right (mul_nonneg (hr0 x) (hγnn _ (hr0 x)).2)
+      (sub_le_self 1 (hq01 x).1)
+    simp only [hFdef]
+    linarith
+  have hFnn : ∀ x, 0 ≤ F x := fun x ↦
+    (mul_nonneg (Nat.cast_nonneg n) (hγnn _ (hr0 x)).1).trans (hFlow x)
+  obtain ⟨C₁, hC₁⟩ := hcpt.exists_bound_of_continuousOn
+    (f := fun x : Ambient n ℓ ↦ (n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖)
+    ((continuous_const.mul (hγc.comp hrc)).add (hrc.mul (hγ'c.comp hrc))).continuousOn
+  have hFmeas : AEStronglyMeasurable F μ :=
+    (continuous_const.mul (hγc.comp hrc)).aestronglyMeasurable.add
+      ((hrc.mul (hγ'c.comp hrc)).aestronglyMeasurable.mul (aestronglyMeasurable_const.sub hq))
+  have hFint : Integrable F μ := by
+    refine Integrable.of_bound hFmeas C₁ ?_
+    filter_upwards [hae] with x hx
+    rw [Real.norm_eq_abs, abs_of_nonneg (hFnn x)]
+    exact (hFle x).trans ((le_abs_self _).trans (by simpa [Real.norm_eq_abs] using hC₁ x hx))
+  -- step 5: `G = γ(r)(x - ξ) · H` is integrable on `S = spt μ ∩ {r ≥ R + ε} ⊆ U`, and `G = 0`
+  -- `μ`-a.e. on `U \ S`
+  set S : Set (Ambient n ℓ) := μ.support ∩ {x | R + ε ≤ ‖x - ξ‖}
+  have hSc : IsCompact S := hcpt.inter_right (isClosed_le continuous_const hrc)
+  have hSU : S ⊆ (closedBall ξ R)ᶜ := fun x hx ↦
+    hmemU x (by have : R + ε ≤ ‖x - ξ‖ := hx.2; linarith)
+  have hHS : IntegrableOn H S μ := hHloc.integrableOn_compact_subset hSU hSc
+  obtain ⟨C₂, hC₂⟩ := hcpt.exists_bound_of_continuousOn
+    (f := fun x : Ambient n ℓ ↦ γ ‖x - ξ‖ * ‖x - ξ‖) ((hγc.comp hrc).mul hrc).continuousOn
+  have hGmeas : AEStronglyMeasurable G (μ.restrict S) :=
+    (hγc.comp hrc).aestronglyMeasurable.mul (continuous_inner.comp_aestronglyMeasurable
+      ((continuous_id.sub continuous_const).aestronglyMeasurable.prodMk hHS.aestronglyMeasurable))
+  have hGS : IntegrableOn G S μ := by
+    refine Integrable.mono' (hHS.norm.const_mul C₂) hGmeas ?_
+    filter_upwards [ae_restrict_mem hSc.isClosed.measurableSet] with x hx
+    have hg := (hγnn ‖x - ξ‖ (hr0 x)).1
+    have hb := hC₂ x hx.1
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hg (hr0 x))] at hb
+    calc ‖G x‖ = γ ‖x - ξ‖ * |inner ℝ (x - ξ) (H x)| := by
+          simp only [hGdef, norm_mul, Real.norm_eq_abs, abs_of_nonneg hg]
+      _ ≤ γ ‖x - ξ‖ * (‖x - ξ‖ * ‖H x‖) :=
+          mul_le_mul_of_nonneg_left (abs_real_inner_le_norm _ _) hg
+      _ = γ ‖x - ξ‖ * ‖x - ξ‖ * ‖H x‖ := by ring
+      _ ≤ C₂ * ‖H x‖ := mul_le_mul_of_nonneg_right hb (norm_nonneg _)
+  have hGU : IntegrableOn G (closedBall ξ R)ᶜ μ := by
+    refine hGS.of_ae_sdiff_eq_zero hUm.nullMeasurableSet ?_
+    filter_upwards [hae] with x hx hxUS
+    have hlt : ‖x - ξ‖ < R + ε := lt_of_not_ge fun h ↦ hxUS.2 ⟨hx, h⟩
+    simp only [hGdef, hγ0 _ (hr0 x) hlt.le, zero_mul]
+  -- step 6: `∫_U (F + G) dμ = 0` and `F + G ≥ γ(r)(n - |(x - ξ) · H|) ≥ 0` `μ`-a.e. on `U`
+  have hsum : ∫ x in (closedBall ξ R)ᶜ, (F x + G x) ∂μ = 0 := by
+    rw [integral_add hFint.integrableOn hGU]
+    have h : ∫ x in (closedBall ξ R)ᶜ, F x ∂μ = -∫ x in (closedBall ξ R)ᶜ, G x ∂μ := hId
+    linarith
+  have hkey : ∀ x, γ ‖x - ξ‖ * ((n : ℝ) - |inner ℝ (x - ξ) (H x)|) ≤ F x + G x := fun x ↦ by
+    have h1 : γ ‖x - ξ‖ * -|inner ℝ (x - ξ) (H x)| ≤ G x :=
+      mul_le_mul_of_nonneg_left (neg_abs_le _) (hγnn ‖x - ξ‖ (hr0 x)).1
+    have h2 := hFlow x
+    linarith
+  have hCU : ∀ᵐ x ∂μ, x ∈ (closedBall ξ R)ᶜ → |inner ℝ (x - ξ) (H x)| < (n : ℝ) := by
+    filter_upwards [hC] with x hx hxU
+    rw [real_inner_comm]
+    exact hx hxU
+  have hnn : 0 ≤ᵐ[μ.restrict (closedBall ξ R)ᶜ] fun x ↦ F x + G x := by
+    rw [EventuallyLE, ae_restrict_iff' hUm]
+    filter_upwards [hCU] with x hx hxU
+    exact (mul_nonneg (hγnn _ (hr0 x)).1 (sub_nonneg.2 (hx hxU).le)).trans (hkey x)
+  have hzero : (fun x ↦ F x + G x) =ᵐ[μ.restrict (closedBall ξ R)ᶜ] 0 :=
+    (integral_eq_zero_iff_of_nonneg_ae hnn (hFint.integrableOn.add hGU)).1 hsum
+  have hγU : ∀ᵐ x ∂μ, x ∈ (closedBall ξ R)ᶜ → γ ‖x - ξ‖ = 0 := by
+    rw [EventuallyEq, ae_restrict_iff' hUm] at hzero
+    filter_upwards [hzero, hCU] with x hx hCx hxU
+    have hk := hkey x
+    have h0 : F x + G x = 0 := hx hxU
+    by_contra hne
+    have hpos := mul_pos (lt_of_le_of_ne (hγnn _ (hr0 x)).1 (Ne.symm hne)) (sub_pos.2 (hCx hxU))
+    linarith
+  -- step 7: the open set `{r > R + ε} ⊆ U` is `μ`-null, hence disjoint from `spt μ`
+  have hO : IsOpen {x : Ambient n ℓ | R + ε < ‖x - ξ‖} := isOpen_lt continuous_const hrc
+  have hμO : μ {x : Ambient n ℓ | R + ε < ‖x - ξ‖} = 0 := by
+    rw [measure_eq_zero_iff_ae_notMem]
+    filter_upwards [hγU] with x hx hxO
+    have hxO' : R + ε < ‖x - ξ‖ := hxO
+    exact (hγpos _ hxO').ne' (hx (hmemU x (by linarith)))
+  intro x hx
+  have hxO : x ∉ {x : Ambient n ℓ | R + ε < ‖x - ξ‖} := fun h ↦
+    Measure.subset_compl_support_of_isOpen hO hμO h hx
+  rw [mem_closedBall, dist_eq_norm]
+  exact not_lt.1 hxO
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
