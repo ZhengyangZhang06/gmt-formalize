@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6215a23baf30e5da202e73c4a8c43228dccea15d3f049c1a2b8b2bc7e143beca",
+  "git_delta": {
+    "base_commit": "ac364daeae0b891db3e963fa6e089e624c3aea8c",
+    "candidate_commit": "758c7f366972a65cc274e2debb1a2b26ebea6b1f",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ball_harmonic_patching",
+    "diff_sha256": "5a0273e43bf24bf7a12c45e2e9ff6315bfbf06176f0e34de7f86cb3f87570f1f",
+    "source_sha256": "545541c803962515ace5518634a2d6b6d58d59c63723b2a98a7550108f7be41d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ball_harmonic_patching",
+      "statement": "∀ n : ℕ, 1 ≤ n → ∀ w : Rn n → ℝ, (∀ ε : ℝ, 0 < ε → ε < 1 / 2 → ∃ v : Rn n → ℝ, InnerProductSpace.HarmonicOnNhd v (ball (0 : Rn n) (1 - ε)) ∧ ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) (1 - 2 * ε))), v x = w x) → ∃ u : Rn n → ℝ, InnerProductSpace.HarmonicOnNhd u (ball (0 : Rn n) 1) ∧ ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), u x = w x",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
