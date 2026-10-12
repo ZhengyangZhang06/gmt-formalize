@@ -1,0 +1,22 @@
+{
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.im_extend-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3312",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "51907ff085abf2c27411ebd60937784eee60d27f",
+  "integrated_commit": "",
+  "proof_base_commit": "91f6be301231a7dd1e704ffa98958f26390e9dd5",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1",
+  "requires": [
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.cutoff-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.smul_testform-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.eq_near-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.support_subset-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1",
+    "root.boundary_rectifiability-a1.tangent_locality-a1"
+  ]
+}
