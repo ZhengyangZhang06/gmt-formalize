@@ -3339,6 +3339,69 @@ theorem Submission.bf_compact_projection_null :
   obtain ⟨b, hbA, hba, hdist, hPb⟩ := hax i
   rw [map_sub, sub_eq_zero] at hPb
   exact hball (Metric.mem_ball.2 (hdist.trans hi)) ⟨⟨hbA, hPb⟩, hba⟩
+/-- Reduction to compact sets: Step 1 of the proof of Simon Ch. 3, Theorem 3.6 (p. 80,
+`chapter-03.txt` lines 530–536; the book omits the proof). A purely `n`-unrectifiable
+`Q = ⋃ⱼ Qⱼ` with `Hⁿ(Qⱼ) < ∞` is covered by an `Hⁿ`-null set and countably many compact purely
+`n`-unrectifiable sets of finite measure. As in the proof of Lemma 3.2 (lines 455–469), the Borel
+hull `Bⱼ ⊇ Qⱼ` splits by SimonGMT's measurable Lemma 3.2 as `Bⱼ = Rⱼ ∪ P'ⱼ` with `Rⱼ` Borel and
+countably rectifiable, so `Qⱼ ∩ Rⱼ ⊆ Q` is null and `Pⱼ := Bⱼ \ Rⱼ ⊆ P'ⱼ` is Borel and purely
+unrectifiable. The finite measure `Hⁿ ⌞ Pⱼ` is inner regular (Ch. 1, 1.15(2), 1.16), so compact
+sets `K j i ⊆ Pⱼ` exhaust `Pⱼ` up to an `Hⁿ`-null set; they are re-indexed by `Nat.unpair`. -/
+theorem Submission.bf_compact_cover_reduction : ∀ (n ℓ : ℕ) (Q : Set (Rn (n + ℓ))),
+    PurelyUnrectifiable n Q →
+      (∃ Qj : ℕ → Set (Rn (n + ℓ)), Q = ⋃ j, Qj j ∧ ∀ j, μHE[n] (Qj j) < ∞) →
+        ∃ (Z : Set (Rn (n + ℓ))) (K : ℕ → Set (Rn (n + ℓ))), μHE[n] Z = 0 ∧
+          (∀ i, IsCompact (K i) ∧ PurelyUnrectifiable n (K i) ∧ μHE[n] (K i) < ∞) ∧
+            Q ⊆ Z ∪ ⋃ i, K i := by
+  rintro n ℓ Q hQ ⟨Qj, rfl, hfin⟩
+  -- Borel hull `Bⱼ` of `Qⱼ`, split by the measurable Lemma 3.2 as `Bⱼ = Rⱼ ∪ P'ⱼ`
+  have hdec : ∀ j, ∃ R P : Set (Rn (n + ℓ)), CountablyRectifiable n R ∧ MeasurableSet P ∧
+      PurelyUnrectifiable n P ∧ μHE[n] P < ∞ ∧ Qj j ⊆ R ∪ P := by
+    intro j
+    set B := toMeasurable (μHE[n] : Measure (Rn (n + ℓ))) (Qj j)
+    have hB : μHE[n] B < ∞ := (measure_toMeasurable (Qj j)).trans_lt (hfin j)
+    obtain ⟨R, P', hRP', -, hR, -, hRrect, hP'⟩ :=
+      Poincare.SimonGMT.Chapter03.measurable_rectifiable_purelyUnrectifiable_decomposition
+        (measurableSet_toMeasurable _ (Qj j)).nullMeasurableSet (fun _ ↦ B)
+        (subset_iUnion (fun _ : ℕ ↦ B) 0) (fun _ ↦ hB)
+    refine ⟨R, B \ R, hRrect, (measurableSet_toMeasurable _ (Qj j)).diff hR,
+      hP'.mono fun x hx ↦ ?_, (measure_mono sdiff_subset).trans_lt hB, fun x hx ↦ ?_⟩
+    · have hxRP' : x ∈ R ∪ P' := hRP' ▸ hx.1
+      exact hxRP'.resolve_left hx.2
+    · by_cases hxR : x ∈ R
+      · exact Or.inl hxR
+      · exact Or.inr ⟨subset_toMeasurable _ _ hx, hxR⟩
+  choose R P hRrect hPmeas hPpure hPfin hcover using hdec
+  -- inner regularity of the finite measure `Hⁿ ⌞ Pⱼ`: compact `K j i ⊆ Pⱼ` with
+  -- `Hⁿ(Pⱼ \ K j i) < 1 / i`
+  have hcpt : ∀ j (i : ℕ), ∃ K ⊆ P j, IsCompact K ∧ μHE[n] (P j \ K) < (i : ℝ≥0∞)⁻¹ := by
+    intro j i
+    have : Fact (μHE[n] (P j) < ∞) := ⟨hPfin j⟩
+    obtain ⟨K, hKP, hK, hlt⟩ := (hPmeas j).exists_isCompact_sdiff_lt
+      (μ := (μHE[n] : Measure (Rn (n + ℓ))).restrict (P j))
+      (by rw [Measure.restrict_apply_self]; exact (hPfin j).ne)
+      (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top i))
+    exact ⟨K, hKP, hK, by rwa [Measure.restrict_eq_self _ sdiff_subset] at hlt⟩
+  choose K hKsub hKcpt hKlt using hcpt
+  have hnull : ∀ j, μHE[n] (P j \ ⋃ i, K j i) = 0 := by
+    intro j
+    by_contra h
+    obtain ⟨i, hi⟩ := ENNReal.exists_inv_nat_lt h
+    exact lt_asymm hi
+      ((measure_mono (sdiff_subset_sdiff_right (subset_iUnion (K j) i))).trans_lt (hKlt j i))
+  refine ⟨⋃ j, (Qj j ∩ R j) ∪ (P j \ ⋃ i, K j i), fun m ↦ K (Nat.unpair m).1 (Nat.unpair m).2,
+    measure_iUnion_null fun j ↦ measure_union_null ?_ (hnull j),
+    fun m ↦ ⟨hKcpt _ _, (hPpure _).mono (hKsub _ _), (measure_mono (hKsub _ _)).trans_lt (hPfin _)⟩,
+    fun x hx ↦ ?_⟩
+  · exact hQ _ (inter_subset_left.trans (subset_iUnion Qj j)) ((hRrect j).mono inter_subset_right)
+  · obtain ⟨j, hxj⟩ := mem_iUnion.1 hx
+    rcases hcover j hxj with hxR | hxP
+    · exact Or.inl (mem_iUnion.2 ⟨j, Or.inl ⟨hxj, hxR⟩⟩)
+    by_cases hxK : ∃ i, x ∈ K j i
+    · obtain ⟨i, hi⟩ := hxK
+      refine Or.inr (mem_iUnion.2 ⟨Nat.pair j i, ?_⟩)
+      simpa only [Nat.unpair_pair] using hi
+    · exact Or.inl (mem_iUnion.2 ⟨j, Or.inr ⟨hxP, by simpa only [mem_iUnion] using hxK⟩⟩)
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
