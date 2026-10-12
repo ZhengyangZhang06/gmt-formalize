@@ -1,0 +1,21 @@
+{
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.cutoff_defect_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1883",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "6070b3614438e1689620a86f1a280672dc0ca153",
+  "integrated_commit": "",
+  "proof_base_commit": "2351f06fca407f3b56cb58e019903b5fcbbc5536",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.slicing-a1.slice_mass_bound-a1",
+  "requires": [
+    "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1",
+    "root.slicing-a1.slice_mass_bound-a1.leibniz_bound-a1",
+    "root.slicing-a1.slice_mass_bound-a1.cutoff_defect_bound-a1.grad_lintegral-a1",
+    "root.slicing-a1.slice_mass_bound-a1.cutoff_defect_bound-a1.band_limit-a1",
+    "root.slicing-a1.slice_mass_bound-a1.cutoff_defect_bound-a1.multiplier_limit-a1"
+  ]
+}
