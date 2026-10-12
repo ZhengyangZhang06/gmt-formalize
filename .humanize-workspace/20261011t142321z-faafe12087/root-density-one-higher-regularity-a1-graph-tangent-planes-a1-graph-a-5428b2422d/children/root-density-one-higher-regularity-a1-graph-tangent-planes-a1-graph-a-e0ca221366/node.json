@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1.bilip_integral_tendsto-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1",
+  "depth": 4,
+  "title": "Integrals over C¹-close bi-Lipschitz images of a compact parameter set converge",
+  "statement": "Let n, ℓ ∈ ℕ, E := ℝ^{n+ℓ} (Amb n ℓ) and H := μHE[n], the n-dimensional Euclidean Hausdorff measure on E. Let K ⊆ ℝⁿ (Rn n) be compact, let pr : E → ℝⁿ and L : ℝⁿ → E be continuous linear maps with pr(L v) = v for all v ∈ ℝⁿ, let F : ℝ → (ℝⁿ → E) be an arbitrary family of maps (F_t := F t; no continuity is assumed), and let φ : E → ℝ be continuous with compact support. Assume, as t → 0+ (along 𝓝[>] 0): (H1) eventually pr(F_t v) = v for all v ∈ K; (H2) for every ε > 0, eventually ‖F_t v − F_t v' − L(v − v')‖ ≤ ε‖v − v'‖ for all v, v' ∈ K; (H3) for every ε > 0, eventually ‖F_t v − L v‖ ≤ ε for all v ∈ K. Then ∫_{F_t(K)} φ dH → ∫_{L(K)} φ dH as t → 0+.",
+  "lean_statement": "∀ (n ℓ : ℕ) (K : Set (Rn n)) (pr : Amb n ℓ →L[ℝ] Rn n) (L : Rn n →L[ℝ] Amb n ℓ) (F : ℝ → Rn n → Amb n ℓ) (φ : Amb n ℓ → ℝ), IsCompact K → Continuous φ → HasCompactSupport φ → (∀ v, pr (L v) = v) → (∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ v ∈ K, pr (F t v) = v) → (∀ ε : ℝ, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ v ∈ K, ∀ v' ∈ K, ‖F t v - F t v' - L (v - v')‖ ≤ ε * ‖v - v'‖) → (∀ ε : ℝ, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ v ∈ K, ‖F t v - L v‖ ≤ ε) → Tendsto (fun t : ℝ => ∫ w in F t '' K, φ w ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 (∫ w in L '' K, φ w ∂(μHE[n] : Measure (Amb n ℓ))))",
+  "lean_name": "dohr_tp_gat_bilip_setIntegral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-graph-a-e0ca221366-a1"
+}
