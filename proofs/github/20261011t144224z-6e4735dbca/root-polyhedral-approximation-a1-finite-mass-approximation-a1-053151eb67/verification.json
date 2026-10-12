@@ -1,0 +1,20 @@
+{
+  "node_id": "root.polyhedral_approximation-a1.finite_mass_approximation-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/539",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "60949edddf663b5e668fb781348a69dab5dc0356",
+  "integrated_commit": "",
+  "proof_base_commit": "d4f41cf6294979f1dc91899c5b9a21d936abbf97",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.polyhedral_approximation-a1",
+  "requires": [
+    "root.boundary_rectifiability-a1.lattice_approximation-a1.mass_estimate-a1",
+    "root.polyhedral_approximation-a1.finite_mass_approximation-a1.testform_bounded-a1",
+    "root.polyhedral_approximation-a1.finite_mass_approximation-a1.scale_sequence-a1",
+    "root.polyhedral_approximation-a1.finite_mass_approximation-a1.flat_convergence-a1"
+  ]
+}

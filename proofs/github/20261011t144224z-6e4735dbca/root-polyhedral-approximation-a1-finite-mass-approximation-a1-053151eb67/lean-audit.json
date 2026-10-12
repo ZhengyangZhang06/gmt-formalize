@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "edc512c84fc6f8a6443e9b32bd01707ffc4beabff97cdb41710fc4012cb33aa8",
+  "git_delta": {
+    "base_commit": "e66a85b66d3896d6a1ddc6c70fbe970e4329a5a1",
+    "candidate_commit": "60949edddf663b5e668fb781348a69dab5dc0356",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "e4c440cefacdbbf6c216889223c15c1d05fea69addc3cba591b4ab2d166dc31c",
+    "source_sha256": "a1dbaf3d3e905180e57190bcd404f0be61e1f52d09d900d5c5c8ee6b1a814654",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_finite_mass_seq",
+      "statement": "DeformationTheorem → ∀ m ℓ : ℕ, 1 ≤ ℓ → ∀ X : ℕ → GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), (∀ k, IsIntegerMultiplicity (X k)) → (∀ k, (X k).mass + (X k).boundary.mass < ∞) → ∃ (ρ : ℕ → ℝ) (β : ℕ → LatticeFaceIndex (m + 1) (m + 1 + ℓ) → ℤ) (Pc : ℕ → GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1)), (∀ k, 0 < ρ k) ∧ Antitone ρ ∧ Tendsto ρ atTop (𝓝 0) ∧ (∀ k, IsLatticeChain (ρ k) (fun F => (β k F : ℝ)) (Pc k)) ∧ ∀ ω : TestFormOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), Tendsto (fun k => Pc k ω - X k ω) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
