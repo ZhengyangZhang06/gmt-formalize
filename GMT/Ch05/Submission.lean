@@ -576,6 +576,40 @@ theorem aetp_starProjection_range_continuousOn : ∀ (n ℓ : ℕ), ContinuousOn
   intro L hL
   exact (hQc L hL).continuousWithinAt.congr (fun L' hL' => hQ L' hL') (hQ L hL)
 
+/-- Simon Ch. 5, Theorem 7.1 (tangent planes of the rotated graph `Q(graph u)`): if `u` is `C¹` on
+the open ball `B̆_R(0)` and `G z = (z, u z)`, then the projection `p_{Q(DG(x)(ℝⁿ))}` onto the rotated
+tangent plane depends continuously on `x ∈ B̆_R(0)`.  By
+`rsod_graphChart_injective_contDiffOn_fderiv_injective` (with `q = id`, `x₀ = 0`), `G` is `C¹` on
+the ball with injective derivative there, so `x ↦ DG(x)` is continuous on the ball and
+`aetp_starProjection_range_continuousOn` makes `x ↦ p_{DG(x)(ℝⁿ)}` continuous there.  Finally
+`p_{Q K} = Q ∘ p_K ∘ Q⁻¹` (`Submodule.starProjection_map_apply`), and composing with the fixed
+maps `Q`, `Q⁻¹` is continuous. -/
+theorem dohr_tp_projection_continuousOn : ∀ (n ℓ : ℕ) (R : ℝ) (u : Rn n → Rn ℓ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), ContDiffOn ℝ 1 u (ball 0 R) → ContinuousOn (fun x : Rn n => (Submodule.map Q.toLinearEquiv.toLinearMap (LinearMap.range (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)).starProjection) (ball 0 R) := by
+  intro n ℓ R u Q hu
+  -- The graph map `G z = (z, u z)` is `C¹` on the ball, with injective derivative there.
+  obtain ⟨-, hGc, hGi⟩ := rsod_graphChart_injective_contDiffOn_fderiv_injective
+    (LinearIsometryEquiv.refl ℝ (Amb n ℓ)) u 0 (ball 0 R) isOpen_ball hu
+  have hG : (fun x => (LinearIsometryEquiv.refl ℝ (Amb n ℓ)) (graphPoint x (u x)) + 0) =
+      fun z : Rn n => graphPoint z (u z) := by
+    funext x
+    simp
+  rw [hG] at hGc hGi
+  set G := fun z : Rn n => graphPoint z (u z)
+  -- `x ↦ p_{DG(x)(ℝⁿ)}` is continuous on the ball.
+  have hP : ContinuousOn (fun x => (LinearMap.range (fderiv ℝ G x).toLinearMap).starProjection)
+      (ball 0 R) :=
+    (aetp_starProjection_range_continuousOn n ℓ).comp
+      (hGc.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl) fun x hx => hGi x hx
+  -- Conjugation by `Q`: `p_{Q K} = Q ∘ p_K ∘ Q⁻¹`.
+  let Qc : Amb n ℓ →L[ℝ] Amb n ℓ := Q.toContinuousLinearEquiv
+  let Qs : Amb n ℓ →L[ℝ] Amb n ℓ := Q.symm.toContinuousLinearEquiv
+  have hconj : ContinuousOn (fun x =>
+      Qc.comp ((LinearMap.range (fderiv ℝ G x).toLinearMap).starProjection.comp Qs)) (ball 0 R) :=
+    continuousOn_const.clm_comp (hP.clm_comp continuousOn_const)
+  refine hconj.congr fun x _ => ?_
+  ext1 w
+  simp [Submodule.starProjection_map_apply, Qc, Qs]
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
