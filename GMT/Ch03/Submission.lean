@@ -817,6 +817,142 @@ theorem Submission.bf_haar_excPointwise_null : ∀ (n ℓ : ℕ) (Exc : Set (Rn 
     rfl
   rw [key _ _ hsup, (Submission.bf_starProjection_map_orthogonal (n + ℓ) g hgG (V j)).1] at hj
   exact hj
+/-- **From Haar-random rotated planes to Lebesgue-a.e. frames** (Steps 8–10 of the frame-averaging
+step for Simon Ch. 3, Theorem 3.6). Let `θ` be a probability measure on `𝓛 = ℝᴺ →L[ℝ] ℝᴺ` with
+`g* g = 1` for `θ`-a.e. `g`, invariant under `g ↦ g k` for every `k` with `k* k = 1`, let
+`dim W₀ = n` and let `Q ⊆ 𝓛` be Borel with `θ{g | g P_{W₀} g* ∈ Q} = 0`. If the frame projection
+is continuous on the linearly independent frames, then for Lebesgue-a.e. frame `v ∈ (ℝᴺ)ⁿ`, if
+`v` is linearly independent then `P_{span v} ∉ Q`. The set `𝒮` of bad frames is Borel. For every
+frame `v`, `θ{g | g·v ∈ 𝒮} = 0`: if `v` is dependent then so is `g·v` for injective `g`; otherwise
+`span v = h W₀` with `h* h = 1`, so `P_{span(g·v)} = (gh) P_{W₀} (gh)*` and right invariance
+reduces to `θ{g | g P_{W₀} g* ∈ Q} = 0`. As `v ↦ g·v` preserves Lebesgue measure for `g* g = 1`,
+Tonelli on `θ ⊗ λ` gives `λ(𝒮) = ∫ λ{v | g·v ∈ 𝒮} dθ = ∫ θ{g | g·v ∈ 𝒮} dλ = 0`. -/
+theorem Submission.bf_haar_null_to_frames : ∀ (N n : ℕ), ContinuousOn (fun v : Fin n → Rn N ↦ frameProjection v) {v | LinearIndependent ℝ v} → ∀ θ : Measure (Rn N →L[ℝ] Rn N), IsProbabilityMeasure θ → (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1) → (∀ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 → Measure.map (fun g ↦ g * k) θ = θ) → ∀ W₀ : Submodule ℝ (Rn N), finrank ℝ W₀ = n → ∀ Q : Set (Rn N →L[ℝ] Rn N), MeasurableSet Q → θ {g | g * W₀.starProjection * ContinuousLinearMap.adjoint g ∈ Q} = 0 → ForAlmostAllProjections N n (fun p ↦ p ∉ Q) := by
+  intro N n hcont θ hθ hθO hθR W₀ hW₀ Q hQ hnull
+  classical
+  -- Step 1: `𝒮 = {v ∈ 𝒱 | P_{span v} ∈ Q}` is Borel, as `frameProjection` is continuous on the
+  -- open set `𝒱` of linearly independent frames.
+  set 𝒱 : Set (Fin n → Rn N) := {v | LinearIndependent ℝ v} with h𝒱
+  have h𝒱o : IsOpen 𝒱 := isOpen_setOfPred_linearIndependent
+  set S : Set (Fin n → Rn N) := {v | LinearIndependent ℝ v ∧ frameProjection v ∈ Q} with hS
+  have hSm : MeasurableSet S := by
+    have hF : Measurable (𝒱.piecewise (fun v ↦ frameProjection v)
+        (fun _ ↦ (0 : Rn N →L[ℝ] Rn N))) :=
+      ContinuousOn.measurable_piecewise hcont continuousOn_const h𝒱o.measurableSet
+    have hSF : S = 𝒱 ∩ (𝒱.piecewise (fun v ↦ frameProjection v)
+        (fun _ ↦ (0 : Rn N →L[ℝ] Rn N))) ⁻¹' Q := by
+      ext v
+      simp only [hS, h𝒱, Set.mem_inter_iff, Set.mem_preimage]
+      constructor
+      · rintro ⟨hv, hq⟩
+        exact ⟨hv, by rwa [Set.piecewise_eq_of_mem _ _ _ hv]⟩
+      · rintro ⟨hv, hq⟩
+        exact ⟨hv, by rwa [Set.piecewise_eq_of_mem _ _ _ hv] at hq⟩
+    rw [hSF]
+    exact h𝒱o.measurableSet.inter (hF hQ)
+  -- Step 2: `M = {(g, v) | g·v ∈ 𝒮}` is measurable, as `(g, v) ↦ g·v` is continuous.
+  set M : Set ((Rn N →L[ℝ] Rn N) × (Fin n → Rn N)) := {p | (fun i ↦ p.1 (p.2 i)) ∈ S} with hM
+  have hMm : MeasurableSet M := by
+    have hc : Continuous (fun p : (Rn N →L[ℝ] Rn N) × (Fin n → Rn N) ↦ fun i ↦ p.1 (p.2 i)) :=
+      continuous_pi fun i ↦ continuous_fst.clm_apply ((continuous_apply i).comp continuous_snd)
+    exact hc.measurable hSm
+  have hA : MeasurableSet {g : Rn N →L[ℝ] Rn N |
+      g * W₀.starProjection * ContinuousLinearMap.adjoint g ∈ Q} :=
+    ((continuous_id.mul continuous_const).mul
+      (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Rn N) (F := Rn N)).continuous).measurable hQ
+  -- Step 3: `θ{g | g·v ∈ 𝒮} = 0` for every frame `v`.
+  have hfib : ∀ v : Fin n → Rn N, θ {g : Rn N →L[ℝ] Rn N | (fun i ↦ g (v i)) ∈ S} = 0 := by
+    intro v
+    by_cases hv : LinearIndependent ℝ v
+    · -- `span v = h W₀` for some `h` with `h* h = 1`.
+      have hspan : finrank ℝ (Submodule.span ℝ (Set.range v)) = n := by
+        rw [finrank_span_eq_card hv, Fintype.card_fin]
+      obtain ⟨h, hh, hmap⟩ := Submission.bf_orthogonal_exists_map_eq N W₀
+        (Submodule.span ℝ (Set.range v)) (hW₀.trans hspan.symm)
+      have hsub : {g : Rn N →L[ℝ] Rn N | (fun i ↦ g (v i)) ∈ S} ⊆
+          {g | ¬ContinuousLinearMap.adjoint g * g = 1} ∪ (fun g ↦ g * h) ⁻¹'
+            {g | g * W₀.starProjection * ContinuousLinearMap.adjoint g ∈ Q} := by
+        intro g hg
+        by_cases hg1 : ContinuousLinearMap.adjoint g * g = 1
+        · right
+          -- `(gh)* (gh) = h* (g* g) h = 1` and `span(g·v) = g h W₀`, so
+          -- `P_{span(g·v)} = (gh) P_{W₀} (gh)*`.
+          have hgh : ContinuousLinearMap.adjoint (g * h) * (g * h) = 1 := by
+            rw [show ContinuousLinearMap.adjoint (g * h) =
+                ContinuousLinearMap.adjoint h * ContinuousLinearMap.adjoint g from
+              ContinuousLinearMap.adjoint_comp g h]
+            calc ContinuousLinearMap.adjoint h * ContinuousLinearMap.adjoint g * (g * h)
+                = ContinuousLinearMap.adjoint h * (ContinuousLinearMap.adjoint g * g) * h := by
+                  simp only [mul_assoc]
+              _ = 1 := by rw [hg1, mul_one, hh]
+          have hspan' : Submodule.span ℝ (Set.range fun i ↦ g (v i)) =
+              W₀.map ((g * h : Rn N →L[ℝ] Rn N) : Rn N →ₗ[ℝ] Rn N) := by
+            have hr : Set.range (fun i ↦ g (v i)) = (g : Rn N →ₗ[ℝ] Rn N) '' Set.range v := by
+              rw [← Set.range_comp]
+              rfl
+            rw [hr, Submodule.span_image, ← hmap, ← Submodule.map_comp]
+            rfl
+          have hPeq : ∀ W₁ W₂ : Submodule ℝ (Rn N), W₁ = W₂ →
+              W₁.starProjection = W₂.starProjection := by
+            rintro W₁ W₂ rfl
+            rfl
+          have hP : frameProjection (fun i ↦ g (v i)) =
+              g * h * W₀.starProjection * ContinuousLinearMap.adjoint (g * h) := by
+            unfold frameProjection
+            rw [hPeq _ _ hspan']
+            exact (Submission.bf_starProjection_map_orthogonal N (g * h) hgh W₀).1
+          change g * h * W₀.starProjection * ContinuousLinearMap.adjoint (g * h) ∈ Q
+          rw [← hP]
+          exact hg.2
+        · left
+          exact hg1
+      -- By right invariance under `h`, `θ{g | g h ∈ A} = θ(A) = 0`.
+      refine measure_mono_null hsub (measure_union_null hθO ?_)
+      rw [← Measure.map_apply (measurable_mul_const h) hA, hθR h hh]
+      exact hnull
+    · -- If `v` is dependent, so is `g·v` for every injective `g`.
+      refine measure_mono_null ?_ hθO
+      intro g hg hg1
+      exact hv (LinearIndependent.of_comp (g : Rn N →ₗ[ℝ] Rn N) hg.1)
+  -- Step 5 (Tonelli): `∫ λ{v | g·v ∈ 𝒮} dθ = (θ ⊗ λ)(M) = ∫ θ{g | g·v ∈ 𝒮} dλ = 0`, so
+  -- `λ{v | g·v ∈ 𝒮} = 0` for some `g` with `g* g = 1`.
+  have hprod : (θ.prod volume) M = 0 := by
+    rw [Measure.prod_apply_symm hMm]
+    have h0 : (fun v : Fin n → Rn N ↦ θ ((fun g ↦ (g, v)) ⁻¹' M)) = fun _ ↦ 0 := by
+      funext v
+      exact hfib v
+    rw [h0, lintegral_zero]
+  rw [Measure.prod_apply hMm] at hprod
+  have hmeas : Measurable (fun g : Rn N →L[ℝ] Rn N ↦ (volume : Measure (Fin n → Rn N))
+      (Prod.mk g ⁻¹' M)) := measurable_measure_prodMk_left hMm
+  have hae := (lintegral_eq_zero_iff hmeas).mp hprod
+  have : (ae θ).NeBot := ae_neBot.mpr (IsProbabilityMeasure.ne_zero θ)
+  obtain ⟨g, hg1, hg0⟩ := (hθO.and hae).exists
+  -- Step 4: `g` is a linear isometry of `ℝᴺ` onto itself, so `v ↦ g·v` preserves `λ`.
+  have hgg : ∀ x, ContinuousLinearMap.adjoint g (g x) = x := by
+    intro x
+    rw [← mul_apply_eq_comp, hg1, one_apply_eq_self]
+  have hnorm : ∀ x, ‖g x‖ = ‖x‖ := by
+    intro x
+    have h2 : inner ℝ (g x) (g x) = inner ℝ x x := by
+      rw [← ContinuousLinearMap.adjoint_inner_right, hgg]
+    rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq] at h2
+    exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h2
+  let gi : Rn N →ₗᵢ[ℝ] Rn N := { toLinearMap := (g : Rn N →ₗ[ℝ] Rn N), norm_map' := hnorm }
+  have hsurj : Function.Surjective gi :=
+    LinearMap.surjective_of_injective (f := (g : Rn N →ₗ[ℝ] Rn N)) gi.injective
+  have hmp : MeasurePreserving (fun v : Fin n → Rn N ↦ fun i ↦ g (v i)) volume volume :=
+    measurePreserving_pi (fun _ ↦ volume) (fun _ ↦ volume)
+      (fun _ ↦ (LinearIsometryEquiv.ofSurjective gi hsurj).measurePreserving)
+  have hS0 : (volume : Measure (Fin n → Rn N)) S = 0 := by
+    rw [← hmp.measure_preimage hSm.nullMeasurableSet]
+    exact hg0
+  -- Step 6: `λ(𝒮) = 0` is the claim.
+  rw [ForAlmostAllProjections, ae_iff]
+  refine measure_mono_null ?_ hS0
+  intro v hv
+  simp only [Set.mem_ofPred_eq, not_imp, not_not] at hv
+  exact hv
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
