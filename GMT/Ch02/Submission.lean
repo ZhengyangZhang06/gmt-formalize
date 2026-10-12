@@ -1502,6 +1502,88 @@ theorem Submission.whitney_extension_theorem : WhitneyExtension := by
     hφ0 hloc hsum hanchor hdφ hgA fun x hx ↦ ite_eq_right hx
   exact ⟨g, hg, fun x hx ↦ ⟨hgA x hx, hDg x hx⟩⟩
 
+/-- **Simon Ch. 2, Theorem 1.5 (p. 42), `C¹` approximation**, by the printed proof (p. 44).
+`f` is differentiable on a co-null Borel set `B` (Rademacher 1.4) with Borel gradient `ν`. Lusin
+gives a closed `C ⊆ B` with `ν|C` continuous and `Lⁿ(B ∖ C) < ε/2`. The remainder moduli `η_k`
+of `f` on `C` tend to `0` on `C`, and Egorov gives a closed `A ⊆ C` with `Lⁿ(C ∖ A) < ε/2` on
+whose compact subsets `η_k → 0` uniformly. That is the hypothesis of Whitney 1.6 for `(A, f, ν)`,
+and the resulting `C¹` function `g` satisfies `g = f` and `Dg = Df` on `A`, where
+`Lⁿ(ℝⁿ ∖ A) < ε`. -/
+theorem Submission.c1_approximation_theorem : C1Approximation := by
+  intro n f hf ε hε
+  obtain ⟨K, hK⟩ := hf
+  -- Steps 1–2: `B = {x | DifferentiableAt ℝ f x}` is Borel and co-null, `ν = ∇f` is Borel.
+  have hB : MeasurableSet {x : Rn n | DifferentiableAt ℝ f x} :=
+    measurableSet_of_differentiableAt ℝ f
+  have hB_null : volume {x : Rn n | ¬ DifferentiableAt ℝ f x} = 0 :=
+    ae_iff.1 (Submission.lipschitz_extension_and_rademacher.2 n f ⟨K, hK⟩)
+  obtain ⟨ν, hν, hν_fderiv⟩ : ∃ ν : Rn n → Rn n, Measurable ν ∧
+      ∀ x, innerSL ℝ (ν x) = fderiv ℝ f x :=
+    ⟨fun x ↦ (InnerProductSpace.toDual ℝ (Rn n)).symm (fderiv ℝ f x),
+      (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.measurable.comp (measurable_fderiv ℝ f),
+      fun x ↦ ContinuousLinearMap.ext fun v ↦ by
+        rw [innerSL_apply_apply, InnerProductSpace.toDual_symm_apply]⟩
+  -- Step 3 (Lusin): a closed `C ⊆ B` with `ν|C` continuous and `Lⁿ(B ∖ C) < ε/2`.
+  obtain ⟨C, hCB, hC, hνC, hBC⟩ :=
+    Submission.c1approx_lusin_closed_continuousOn n n _ ν hB hν (ε / 2) (half_pos hε)
+  have hCf : ∀ x ∈ C, HasFDerivAt f (fderiv ℝ f x) x := fun x hx ↦
+    DifferentiableAt.hasFDerivAt (hCB hx)
+  -- Step 4: Borel remainder moduli `η_k` on `C`, tending to `0` at every point of `C`.
+  obtain ⟨η, hη, hη_le, hη_lim⟩ :=
+    Submission.c1approx_measurable_remainder_modulus n K C f ν hK hν
+  -- Steps 5–6 (Egorov): a closed `A ⊆ C` with `Lⁿ(C ∖ A) < ε/2` and `η_k → 0` uniformly on
+  -- every compact subset of `A`.
+  obtain ⟨A, hAC, hA, hCA, hA_unif⟩ :=
+    Submission.c1approx_egorov_closed_compact_uniform n C η (fun _ ↦ 0) hC.measurableSet hη
+      measurable_const (fun x hx ↦ hη_lim x hx (by rw [hν_fderiv]; exact hCf x hx)) (ε / 2)
+      (half_pos hε)
+  -- Step 7: the hypothesis of Whitney's theorem for `(A, f, ν)`, with `δ = 1 / (k + 1)`.
+  have hW : ∀ L ⊆ A, IsCompact L → ∀ ε' : ℝ, 0 < ε' → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ L, ∀ y ∈ A,
+      0 < ‖y - x‖ → ‖y - x‖ < δ → |f y - f x - inner ℝ (ν x) (y - x)| ≤ ε' * ‖y - x‖ := by
+    intro L hLA hL ε' hε'
+    obtain ⟨k, hk⟩ := eventually_atTop.1
+      (Metric.tendstoUniformlyOn_iff.1 (hA_unif L hLA hL) ε' hε')
+    refine ⟨1 / ((k : ℝ) + 1), by positivity, fun x hx y hy hxy hxyk ↦ ?_⟩
+    have hηk : η k x < ε' := by
+      have h := hk k le_rfl x hx
+      simp only [Real.dist_eq, zero_sub, abs_neg] at h
+      exact (le_abs_self _).trans_lt h
+    calc |f y - f x - inner ℝ (ν x) (y - x)| ≤ η k x * ‖y - x‖ :=
+          hη_le k x (hAC (hLA hx)) y (hAC hy) hxy hxyk
+      _ ≤ ε' * ‖y - x‖ := mul_le_mul_of_nonneg_right hηk.le (norm_nonneg _)
+  obtain ⟨g, hg, hgA⟩ :=
+    Submission.whitney_extension_theorem n A f ν hA hK.continuous.continuousOn (hνC.mono hAC) hW
+  refine ⟨g, hg, ?_⟩
+  -- Step 8: the exceptional set lies in `ℝⁿ ∖ A ⊆ (ℝⁿ ∖ B) ∪ (B ∖ C) ∪ (C ∖ A)`.
+  have hsub : {x | f x ≠ g x} ∪ {x | ¬ HasFDerivAt f (fderiv ℝ g x) x} ⊆
+      {x | ¬ DifferentiableAt ℝ f x} ∪ ({x | DifferentiableAt ℝ f x} \ C) ∪ (C \ A) := by
+    intro x hx
+    by_cases hxA : x ∈ A
+    · obtain ⟨hgx, hDg⟩ := hgA x hxA
+      have hfg : fderiv ℝ g x = fderiv ℝ f x := by
+        rw [← hν_fderiv]
+        ext v
+        rw [hDg v, innerSL_apply_apply]
+      rcases hx with hx | hx
+      · exact (hx hgx.symm).elim
+      · exact (hx (hfg ▸ hCf x (hAC hxA))).elim
+    · by_cases hxC : x ∈ C
+      · exact Or.inr ⟨hxC, hxA⟩
+      · by_cases hxB : DifferentiableAt ℝ f x
+        · exact Or.inl (Or.inr ⟨hxB, hxC⟩)
+        · exact Or.inl (Or.inl hxB)
+  calc volume ({x | f x ≠ g x} ∪ {x | ¬ HasFDerivAt f (fderiv ℝ g x) x})
+      ≤ volume ({x | ¬ DifferentiableAt ℝ f x} ∪ ({x | DifferentiableAt ℝ f x} \ C) ∪ (C \ A)) :=
+        measure_mono hsub
+    _ ≤ volume {x | ¬ DifferentiableAt ℝ f x} + volume ({x | DifferentiableAt ℝ f x} \ C) +
+          volume (C \ A) :=
+        (measure_union_le _ _).trans (add_le_add (measure_union_le _ _) le_rfl)
+    _ < ENNReal.ofReal (ε / 2) + ENNReal.ofReal (ε / 2) := by
+        rw [hB_null, zero_add]
+        exact ENNReal.add_lt_add hBC hCA
+    _ = ENNReal.ofReal ε := by
+        rw [← ENNReal.ofReal_add (half_pos hε).le (half_pos hε).le, add_halves]
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
