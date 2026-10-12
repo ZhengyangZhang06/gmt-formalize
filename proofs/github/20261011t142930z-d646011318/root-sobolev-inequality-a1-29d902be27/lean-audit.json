@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "10d5aeb313c5a48d37465c5515ad724c080ec547933da0bed944b861887cfadf",
+  "git_delta": {
+    "base_commit": "cf7864aadeb3d20e7fab61b4e9f080997451c1a3",
+    "candidate_commit": "700300115de61d7923e6785a9dc854df2c2a1365",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "cdf7e8538853d9fbb8215bad07abe3023220d046d8febda8245ad12bca106432",
+    "source_sha256": "310290547f4f21bd176c77641ec206a8cde2aee41e07fbe86d7aaca9afd9e864",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sobolev_inequality",
+      "statement": "ApproxTangentAE → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → SobolevInequality",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
