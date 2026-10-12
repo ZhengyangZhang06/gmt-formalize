@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dohr_tv_|dohr_translate_varifold|support_map|map_support",
+        "measurePreserving_euclideanHausdorffMeasure|euclideanHausdorffMeasure_image",
+        "mem_support_iff_forall|def support",
+        "integrableOn_comp_preimage|restrict_preimage_emb|NullMeasurableSet.preimage|def LocallyIntegrableOn|def IntegrableAtFilter",
+        "def CountablyRectifiable|def blowUpMap|def HasWeightedApproximateTangentSpaceAt",
+        "theorem lintegral_map_equiv|MeasurableEmbedding.integral_map|MeasurableEmbedding.integrable_map_iff|theorem withDensity_apply|theorem fderiv_comp_sub |lemma Topology.IsEmbedding.map_nhdsWithin_eq",
+        "restrict_map|namespace MeasurableEquiv|export",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env bash -c 'LEAN_PATH=\"/tmp/dohr-tv-independent-audit-9iuobjci/build:$LEAN_PATH\" /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dohr-tv-independent-audit-9iuobjci/src/Types.lean'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env bash -c 'LEAN_PATH=\"/tmp/dohr-tv-independent-audit-9iuobjci/build:$LEAN_PATH\" /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dohr-tv-independent-audit-9iuobjci/src/Full.lean'"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-translate-varifold-a1/parent-child-handoff.json",
+        "/tmp/dohr-tv-independent-audit-9iuobjci/src/Types.lean",
+        "/tmp/dohr-tv-independent-audit-9iuobjci/src/Children.lean",
+        "/tmp/dohr-tv-independent-audit-9iuobjci/src/Full.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and byte-identical workspace contract/compiler configuration. The searches found no proposed declaration names in the snapshot and no support_map/map_support match in the searched measure library. Inspected definitions and transport lemmas validate the proofs, including restrictions to arbitrary sets and change of variables without integrand-measurability assumptions. Independently rebuilt Submission, elaborated all five exact one-line propositions without child declarations, and compiled both the parent assembly and complete supplied scratch proofs. Every complete child proof and dohr_translate_varifold has only propext, Classical.choice and Quot.sound as axioms. All five names are bare identifiers, with no collisions among the 178 DAG nodes checked or another branch's proposed names. The split appropriately separates construction, weight, support, tangent projections and curvature transfer. Empty sibling dependencies are acyclic and justified by explicit equality hypotheses; the compiled assembly establishes exactly the selected parent contract. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "exists_translate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes all structure hypotheses and matches the exact Lean proposition. The proof verifies all six obligations: carrier inclusion, null measurability, countable rectifiability, positivity, a.e. measurability and compact-set integrability. Restriction transport applies to arbitrary sets, so no openness or extra measurability assumption is missing. Both asserted field equalities hold by construction."
+    },
+    {
+      "key": "weight_eq_map",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type have identical hypotheses, including arbitrary U'. The proof correctly transports restricted Hausdorff measure, compares weights on measurable sets using withDensity_apply, and applies lintegral_map_equiv before simplifying the multiplicity. It needs neither a sibling theorem nor an unstated finiteness assumption."
+    },
+    {
+      "key": "support_map_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the stated arbitrary-measure result. MeasurableEquiv.map_apply permits evaluation on every neighbourhood set, and continuity of translation and its inverse proves both support inclusions. No finiteness, regularity or varifold hypothesis is silently required."
+    },
+    {
+      "key": "tangent_proj_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the required equality at every point, matching the prose and Lean type. Blow-up domains and multiplicity arguments agree exactly, yielding equality of the entire weighted tangent predicates. Substituting that predicate equality into the dependent choice expression is valid, including where tangent spaces are non-unique or absent."
+    },
+    {
+      "key": "gmc_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit weight and tangent-projection hypotheses match the prose and suffice independently. The proof transports neighbourhood-filter integrability, verifies every test-field condition, establishes the pointwise divergence identity, and changes variables in both first-variation integrals. No openness assumption or circular reliance is needed. Together with the other children and the support intersection identity, it proves the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}

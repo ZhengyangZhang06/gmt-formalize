@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.translate_varifold-a1.tangent_proj_eq-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.translate_varifold-a1",
+  "depth": 3,
+  "title": "Tangent projections of a translated varifold",
+  "statement": "Let n, l be natural numbers, U and U' arbitrary subsets of R^(n+l), V a rectifiable n-varifold in U with carrier M and multiplicity theta, V' a rectifiable n-varifold in U', xi in R^(n+l) and tau(x) = x - xi. If V'.carrier = tau(M) and V'.mult(y) = theta(y + xi) for every y, then V'.tangentProj y = V.tangentProj (y + xi) for every y in R^(n+l), where tangentProj is the contract's orthogonal projection onto the (classically chosen) weighted approximate tangent space where one exists and 0 elsewhere.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (V' : RectifiableVarifold n ℓ U') (ξ : Amb n ℓ), V'.carrier = (fun x => x - ξ) '' V.carrier → (∀ y, V'.mult y = V.mult (y + ξ)) → ∀ y, V'.tangentProj y = V.tangentProj (y + ξ)",
+  "lean_name": "dohr_tv_tangentProj_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-translate-varifold-a1-tangent-proj-eq-a1-a1"
+}

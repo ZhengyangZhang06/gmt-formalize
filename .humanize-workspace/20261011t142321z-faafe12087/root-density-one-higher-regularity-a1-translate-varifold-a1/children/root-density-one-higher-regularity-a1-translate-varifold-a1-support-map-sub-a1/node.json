@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.translate_varifold-a1.support_map_sub-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.translate_varifold-a1",
+  "depth": 3,
+  "title": "Support of the image of a measure under a translation",
+  "statement": "Let n, l be natural numbers, mu any measure on the Borel sigma-algebra of R^(n+l) (no finiteness assumption), xi in R^(n+l) and tau(x) = x - xi. Then spt(tau_# mu) = tau(spt mu), where spt nu is the set of points x such that nu(N) > 0 for every neighbourhood N of x (Mathlib Measure.support) and tau_# mu = Measure.map tau mu.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (ξ : Amb n ℓ), (μ.map (fun x => x - ξ)).support = (fun x => x - ξ) '' μ.support",
+  "lean_name": "dohr_tv_support_map_sub",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-translate-varifold-a1-support-map-sub-a1-a1"
+}
