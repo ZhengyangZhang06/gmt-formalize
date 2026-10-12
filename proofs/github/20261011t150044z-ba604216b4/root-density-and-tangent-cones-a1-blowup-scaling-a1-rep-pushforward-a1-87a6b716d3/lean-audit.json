@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2af431b3c7047e8637fa5ddc75d58ccf9fde064e780c4edc4d1c90ecfa549561",
+  "git_delta": {
+    "base_commit": "9d7c5560591d29a2f8ad81607fb8cdb5144ba25f",
+    "candidate_commit": "cb3c7f3eda7f74be829e1ae3271494c85af94319",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_blowUp_imrep",
+    "diff_sha256": "5bc9105632b8a4916de547e369ca7dbe6dbee596a7d9a61cee15ea3f15241953",
+    "source_sha256": "944020721df00c800239b6afff8761d8460d8047b9c49604cb274a52e644d983",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_blowUp_imrep",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (R : IMRep U n), R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
