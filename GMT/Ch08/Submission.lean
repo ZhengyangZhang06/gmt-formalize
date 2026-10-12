@@ -2,6 +2,7 @@ import Poincare.SimonGMT.Chapter08.VarifoldConvergence
 import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter02.Submanifold
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Poincare.SimonGMT.Chapter08.ConstancyTangent
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 8 (printed pp. 205–224)
@@ -471,6 +472,58 @@ theorem Submission.allard_tc_tpr_blowup_setIntegral :
   -- Step 4: integrate; `MeasurableEmbedding.integral_map` needs no measurability of `φ`.
   rw [hmeas, integral_smul_measure, hemb.integral_map, ENNReal.toReal_ofReal
     (pow_nonneg (inv_pos.mpr hr).le n), smul_eq_mul]
+/-- Varifold tangent planes versus approximate tangent planes (Simon Ch. 8, Definition 1.1 against
+Ch. 3, 1.7): if `μ_V = H^n ⌞ θ` on `M` and `V` has tangent plane `T` with multiplicity `θ(x)`
+at `x`, then `T` is the unique approximate tangent space of `M` at `x` with respect to `θ`. -/
+theorem Submission.allard_tc_tpr_weighted_approx_tangent_iff :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (T : Grassmannian N n), NullMeasurableSet M μHE[n] → (∀ y ∈ M, 0 < θ y) → (∀ K : Set (Euclidean N), IsCompact K → IntegrableOn θ (M ∩ K) μHE[n]) → (∀ B : Set (Euclidean N), MeasurableSet B → V.weight B = ∫⁻ y in M ∩ B, ENNReal.ofReal (θ y) ∂μHE[n]) → HasTangentPlane V x T (θ x) → ∀ S : Grassmannian N n, Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ↔ S = T := by
+  intro N n U V M θ x T hM hθ hθint hweight hT
+  -- Steps 1–6: `T.plane` is an approximate tangent space of `M` at `x` with respect to `θ`.
+  have hTM : Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x T.plane := by
+    refine ⟨T.finrank_plane, fun g ↦ ?_⟩
+    -- Step 2: the test function `f(z, S) = g(z)` is compactly supported, `G(N,n)` being compact.
+    have hf : HasCompactSupport (fun z : Euclidean N × Grassmannian N n ↦ g z.1) :=
+      HasCompactSupport.intro (g.hasCompactSupport.isCompact.prod isCompact_univ) fun z hz ↦
+        image_eq_zero_of_notMem_tsupport fun h ↦ hz ⟨h, mem_univ _⟩
+    let f : C_c(Euclidean N × Grassmannian N n, ℝ) :=
+      ⟨⟨fun z ↦ g z.1, (map_continuous g).comp continuous_fst⟩, hf⟩
+    have hfc : Continuous (f : Euclidean N × Grassmannian N n → ℝ) := map_continuous f
+    -- Step 3: Definition 1.1 tested with `f`; the plane side is `θ(x) ∫_T g dH^n`.
+    have hlim := hT.2.2 f
+    have hplane : ∫ z, f z ∂(planeVarifoldMeasure T) =
+        ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] := by
+      rw [planeVarifoldMeasure, integral_map (φ := fun y : Euclidean N ↦ (y, T)) (by fun_prop)
+        hfc.aestronglyMeasurable]
+      rfl
+    rw [hplane] at hlim
+    refine hlim.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    have hr0 : (0 : ℝ) < r := hr
+    have hr' : (0 : ℝ) ≤ r⁻¹ ^ n := pow_nonneg (inv_nonneg.2 hr0.le) n
+    have hg : Continuous fun y : Euclidean N ↦ g (r⁻¹ • (y - x)) := by fun_prop
+    -- Step 5: by the two sibling children and `x + r • η_{x,r}(z) = z`, the weighted blow-up
+    -- integral is `r^{-n} ∫ g(r^{-1}(z - x)) dμ_V(z)` for `r > 0`.
+    have hblow : ∫ y in Chapter03.blowUpMap x r '' M, g y * θ (x + r • y) ∂μHE[n] =
+        r⁻¹ ^ n * ∫ z, g (r⁻¹ • (z - x)) ∂V.weight := by
+      rw [Submission.allard_tc_tpr_blowup_setIntegral N n M
+          (fun y ↦ g y * θ (x + r • y)) x r hr0,
+        Submission.allard_tc_tpr_integral_eq_weighted N n V.weight M θ hM hθ hθint hweight]
+      congr 1
+      refine integral_congr_ae (Eventually.of_forall fun z ↦ ?_)
+      simp only [Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr0.ne', one_smul,
+        add_sub_cancel]
+    -- Step 4: the rescaled side `∫ f dV_{x,r}` is also `r^{-n} ∫ g(r^{-1}(z - x)) dμ_V(z)`.
+    rw [hblow, rescaledMeasure, integral_smul_measure,
+      integral_map (φ := fun z : Euclidean N × Grassmannian N n ↦ (r⁻¹ • (z.1 - x), z.2))
+        (by fun_prop) hfc.aestronglyMeasurable, ENNReal.toReal_ofReal hr', smul_eq_mul,
+      Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable]
+    rfl
+  -- Step 7: weighted approximate tangent planes are unique where `θ(x) ≠ 0`, and a point of
+  -- `G(N,n)` is determined by its plane.
+  intro S
+  refine ⟨fun hS ↦ Grassmannian.eq_of_plane_eq (hS.unique hT.2.1.ne' hTM), ?_⟩
+  rintro rfl
+  exact hTM
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
