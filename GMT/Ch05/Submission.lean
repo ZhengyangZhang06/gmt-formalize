@@ -458,6 +458,87 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, 4.3–4.4** (the integrating factor for the radial first-variation identity).
+Let `β < 1` and suppose that on `(0, R)`: `I` is differentiable with `I ≥ 0`, `E` and `Q` are
+continuous, `n I − t I' + t Q = −E`, and `|a(t)| ≤ M t^{−β}`, where `a = E/t^{n+1}/(1 + I/tⁿ)`.
+Then for `0 < s ≤ r < R`, with `G(t) = ∫₀ᵗ a`,
+`e^{−G(r)} (1 + I(r)/rⁿ) − e^{−G(s)} (1 + I(s)/sⁿ) = ∫ₛʳ e^{−G(t)} Q(t)/tⁿ dt`.
+Proof: `a` is continuous on `(0, R)` (since `1 + I/tⁿ ≥ 1`) and dominated by `M τ^{−β}`, which is
+integrable at `0`, so `G' = a` on `(0, R)`.  The hypothesis gives
+`(1 + I/tⁿ)' = (t I' − n I)/t^{n+1} = Q/tⁿ + a (1 + I/tⁿ)`, hence
+`(e^{−G} (1 + I/tⁿ))' = e^{−G} Q/tⁿ`, and the fundamental theorem of calculus on `[s, r]`
+concludes. -/
+theorem allard52_am_integrating_factor : ∀ (n : ℕ) (I I' E Q a : ℝ → ℝ) (R M β : ℝ), β < 1 → (∀ t ∈ Ioo 0 R, HasDerivAt I (I' t) t) → (∀ t ∈ Ioo 0 R, ContinuousAt E t) → (∀ t ∈ Ioo 0 R, ContinuousAt Q t) → (∀ t ∈ Ioo 0 R, 0 ≤ I t) → (∀ t ∈ Ioo 0 R, (n : ℝ) * I t - t * I' t + t * Q t = -E t) → (∀ t, a t = E t / t ^ (n + 1) / (1 + I t / t ^ n)) → (∀ t ∈ Ioo 0 R, |a t| ≤ M * t ^ (-β)) → ∀ s r : ℝ, 0 < s → s ≤ r → r < R → Real.exp (-∫ τ in (0)..r, a τ) * (1 + I r / r ^ n) - Real.exp (-∫ τ in (0)..s, a τ) * (1 + I s / s ^ n) = ∫ t in s..r, Real.exp (-∫ τ in (0)..t, a τ) * (Q t / t ^ n) := by
+  intro n I I' E Q a R M β hβ hI hE hQ hI0 hid ha hab s r hs hsr hrR
+  -- Notation: `Ψ(t) = 1 + I(t)/tⁿ`; on `(0, R)` we have `Ψ ≥ 1 > 0`.
+  have hΨpos : ∀ t ∈ Ioo 0 R, 0 < 1 + I t / t ^ n := by
+    intro t ht
+    have : 0 ≤ I t / t ^ n := div_nonneg (hI0 t ht) (pow_nonneg ht.1.le n)
+    linarith
+  -- Step 1: `a` is continuous on `(0, R)`.
+  have hac : ∀ t ∈ Ioo 0 R, ContinuousAt a t := by
+    intro t ht
+    have ha' : a = fun t => E t / t ^ (n + 1) / (1 + I t / t ^ n) := funext ha
+    rw [ha']
+    exact ((hE t ht).div (continuous_pow (n + 1)).continuousAt (pow_ne_zero _ ht.1.ne')).div
+      (continuousAt_const.add ((hI t ht).continuousAt.div (continuous_pow n).continuousAt
+        (pow_ne_zero _ ht.1.ne'))) (hΨpos t ht).ne'
+  have hacon : ContinuousOn a (Ioo 0 R) := fun t ht => (hac t ht).continuousWithinAt
+  -- Step 2: `a` is integrable on `[0, t]` for `t ∈ (0, R)`: `|a(τ)| ≤ M τ^{−β}` and `−β > −1`.
+  have haint : ∀ t ∈ Ioo 0 R, IntervalIntegrable a volume 0 t := by
+    intro t ht
+    have hsub : Ioc 0 t ⊆ Ioo 0 R := fun x hx => ⟨hx.1, hx.2.trans_lt ht.2⟩
+    refine ((intervalIntegral.intervalIntegrable_rpow' (by linarith : -1 < -β)).const_mul
+      M).mono_fun' ?_ ?_
+    · rw [uIoc_of_le ht.1.le]
+      exact (hacon.mono hsub).aestronglyMeasurable measurableSet_Ioc
+    · rw [uIoc_of_le ht.1.le]
+      refine ae_restrict_of_forall_mem measurableSet_Ioc fun x hx => ?_
+      simpa only [Real.norm_eq_abs] using hab x (hsub hx)
+  -- Step 3: `G(t) = ∫₀ᵗ a` has `G' = a` on `(0, R)`.
+  have hG : ∀ t ∈ Ioo 0 R, HasDerivAt (fun u => ∫ τ in (0)..u, a τ) (a t) t := fun t ht =>
+    intervalIntegral.integral_hasDerivAt_right (haint t ht)
+      (hacon.stronglyMeasurableAtFilter isOpen_Ioo t ht) (hac t ht)
+  -- Steps 4–5: `Ψ' = (t I' − n I)/t^{n+1} = Q/tⁿ + E/t^{n+1} = Q/tⁿ + a Ψ` on `(0, R)`.
+  have hΨ : ∀ t ∈ Ioo 0 R,
+      HasDerivAt (fun u => 1 + I u / u ^ n) (Q t / t ^ n + a t * (1 + I t / t ^ n)) t := by
+    intro t ht
+    have ht0 : t ≠ 0 := ht.1.ne'
+    have htn : t ^ n ≠ 0 := pow_ne_zero n ht0
+    refine (((hI t ht).div (hasDerivAt_pow n t) htn).const_add 1).congr_deriv ?_
+    have hpow : (n : ℝ) * t ^ (n - 1) = n * t ^ n / t := by
+      rcases Nat.eq_zero_or_pos n with rfl | hn
+      · simp
+      · rw [eq_div_iff ht0, mul_assoc, pow_sub_one_mul hn.ne']
+    have hEt : E t = t * I' t - n * I t - t * Q t := by linarith [hid t ht]
+    rw [ha t, div_mul_cancel₀ _ (hΨpos t ht).ne', hpow, pow_succ, hEt]
+    field_simp
+    ring
+  -- Step 6: `Φ(t) = exp(−G(t)) Ψ(t)` has `Φ' = exp(−G) Q/tⁿ` on `(0, R)`.
+  have hΦ : ∀ t ∈ Ioo 0 R, HasDerivAt
+      (fun u => Real.exp (-∫ τ in (0)..u, a τ) * (1 + I u / u ^ n))
+      (Real.exp (-∫ τ in (0)..t, a τ) * (Q t / t ^ n)) t := by
+    intro t ht
+    refine ((hG t ht).neg.exp.mul (hΨ t ht)).congr_deriv ?_
+    rw [Pi.neg_apply]
+    ring
+  -- Step 7: FTC on `[s, r] ⊆ (0, R)`.
+  have hsub : uIcc s r ⊆ Ioo 0 R := by
+    rw [uIcc_of_le hsr]
+    exact fun x hx => ⟨hs.trans_le hx.1, hx.2.trans_lt hrR⟩
+  have hcont : ContinuousOn
+      (fun t => Real.exp (-∫ τ in (0)..t, a τ) * (Q t / t ^ n)) (uIcc s r) := by
+    intro t ht
+    have ht' := hsub ht
+    exact ((hG t ht').continuousAt.neg.rexp.mul ((hQ t ht').div
+      (continuous_pow n).continuousAt (pow_ne_zero n ht'.1.ne'))).continuousWithinAt
+  exact (intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t ht => hΦ t (hsub ht))
+    hcont.intervalIntegrable).symm
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
