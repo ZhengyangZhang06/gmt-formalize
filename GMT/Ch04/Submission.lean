@@ -5294,6 +5294,152 @@ theorem Submission.tangent_structure_first_variation : ApproxTangentAE ∧
     obtain ⟨N₀, C, F, hN₀, hN₀null, hcover, hpiece, hae, hproj⟩ := hpair n ℓ a hn
     exact Submission.ts_first_variation_of_pieces n ℓ a N₀ C F φ ε K hn hN₀ hN₀null hcover
       hpiece (hae.mono fun x hx ↦ hx.1) hproj hφ
+/-- **Derivative of the radial field, including the centre** (Simon Ch. 4, 3.2). For `γ ∈ C¹`
+and `r = |x - ξ|`, the field `g(y) = γ(|y - ξ|)(y - ξ)` is differentiable at `x` with
+`Dg(x)v = γ(r)v + (γ'(r)/r)⟨x - ξ, v⟩(x - ξ)` (with `γ'(r)/r = 0` when `r = 0`). At `x = ξ`
+this is `γ(0)·I`, since `g(ξ + v) - g(ξ) - γ(0)v = (γ(|v|) - γ(0))v = o(|v|)` by continuity of
+`γ`; for `x ≠ ξ`, `|y - ξ| = √(|y - ξ|²)` has derivative `r⁻¹⟨x - ξ, ·⟩` and the chain and
+product rules give the formula. -/
+theorem Submission.radial_vector_field_hasFDerivAt : ∀ (n ℓ : ℕ) (γ : ℝ → ℝ) (ξ x : Ambient n ℓ), ContDiff ℝ 1 γ → HasFDerivAt (fun y : Ambient n ℓ ↦ γ ‖y - ξ‖ • (y - ξ)) (γ ‖x - ξ‖ • ContinuousLinearMap.id ℝ (Ambient n ℓ) + (deriv γ ‖x - ξ‖ / ‖x - ξ‖) • (innerSL ℝ (x - ξ)).smulRight (x - ξ)) x := by
+  intro n ℓ γ ξ x hγ
+  have hγd : Differentiable ℝ γ := hγ.differentiable one_ne_zero
+  rcases eq_or_ne x ξ with rfl | hx
+  · -- the centre: the claimed derivative is `γ(0)·I` and the remainder is `(γ(|v|) - γ(0))v`
+    simp only [sub_self, norm_zero, div_zero, zero_smul, add_zero]
+    rw [hasFDerivAt_iff_isLittleO_nhds_zero]
+    have h1 : Tendsto (fun v : Ambient n ℓ ↦ γ ‖v‖ - γ 0) (𝓝 0) (𝓝 0) := by
+      have h := (hγd.continuous.tendsto (‖(0 : Ambient n ℓ)‖)).comp (continuous_norm.tendsto 0)
+      simpa [Function.comp_def] using h.sub_const (γ 0)
+    have h2 : (fun v : Ambient n ℓ ↦ (γ ‖v‖ - γ 0) • v) =o[𝓝 0] fun v ↦ v := by
+      have h := ((Asymptotics.isLittleO_one_iff ℝ).2 h1).smul_isBigO
+        (Asymptotics.isBigO_refl (fun v : Ambient n ℓ ↦ v) (𝓝 0))
+      simpa only [one_smul] using h
+    refine h2.congr_left fun v ↦ ?_
+    simp [sub_smul]
+  · -- off the centre: `|y - ξ| = √(|y - ξ|²)`, then the chain and product rules
+    have hr : 0 < ‖x - ξ‖ := norm_pos_iff.2 (sub_ne_zero.2 hx)
+    have hsub : HasFDerivAt (fun y : Ambient n ℓ ↦ y - ξ) (ContinuousLinearMap.id ℝ (Ambient n ℓ)) x :=
+      (hasFDerivAt_id x).sub_const ξ
+    have hnorm : HasFDerivAt (fun y : Ambient n ℓ ↦ ‖y - ξ‖) (‖x - ξ‖⁻¹ • innerSL ℝ (x - ξ)) x := by
+      have h := hsub.norm_sq.sqrt (pow_ne_zero 2 hr.ne')
+      simp only [Real.sqrt_sq_eq_abs, abs_norm] at h
+      refine h.congr_fderiv ?_
+      ext v
+      simp
+      field_simp
+    have hφ : HasFDerivAt (fun y : Ambient n ℓ ↦ γ ‖y - ξ‖)
+        (deriv γ ‖x - ξ‖ • ‖x - ξ‖⁻¹ • innerSL ℝ (x - ξ)) x :=
+      (hγd ‖x - ξ‖).hasDerivAt.comp_hasFDerivAt x hnorm
+    refine (hφ.fun_smul hsub).congr_fderiv ?_
+    ext v
+    simp [smul_smul, div_eq_mul_inv]
+/-- **Trace of `(c I + F(·) v) ∘ p_P`** (used for `div_M` of radial fields, Ch. 4, 3.2 and 5.1).
+For a subspace `P` with orthogonal projection `p_P`, `c ∈ ℝ`, a continuous linear functional `F`
+and `v ∈ ℝ^{n+ℓ}`: `trace((c I + F(·) v) ∘ p_P) = c dim P + F(p_P v)`. -/
+theorem Submission.trace_scalar_add_rankOne_comp_starProjection : ∀ (n ℓ : ℕ) (P : Submodule ℝ (Ambient n ℓ)) (c : ℝ) (F : Ambient n ℓ →L[ℝ] ℝ) (v : Ambient n ℓ), LinearMap.trace ℝ (Ambient n ℓ) ((c • ContinuousLinearMap.id ℝ (Ambient n ℓ) + F.smulRight v).toLinearMap ∘ₗ P.starProjection.toLinearMap) = c * (Module.finrank ℝ P : ℝ) + F (P.starProjection v) := by
+  intro n ℓ P c F v
+  -- `trace p_P = dim P`: `p_P = ι ∘ π`, and `trace (ι ∘ π) = trace (π ∘ ι) = trace id_P`.
+  have hp : LinearMap.trace ℝ (Ambient n ℓ) P.starProjection.toLinearMap =
+      (Module.finrank ℝ P : ℝ) := by
+    rw [Submodule.starProjection, ContinuousLinearMap.toLinearMap_comp,
+      LinearMap.trace_comp_comm']
+    have hπι : P.orthogonalProjectionOnto.toLinearMap ∘ₗ P.subtypeL.toLinearMap =
+        LinearMap.id := by
+      ext x
+      simp
+    rw [hπι, LinearMap.trace_id]
+  -- `(c I + F(·) v) ∘ p_P = c p_P + (F ∘ p_P)(·) v`; the rank-one part has trace `F(p_P v)`.
+  have hA : (c • ContinuousLinearMap.id ℝ (Ambient n ℓ) + F.smulRight v).toLinearMap ∘ₗ
+      P.starProjection.toLinearMap = c • P.starProjection.toLinearMap +
+        (F.toLinearMap ∘ₗ P.starProjection.toLinearMap).smulRight v := by
+    ext w
+    simp
+  rw [hA, map_add, map_smul, LinearMap.trace_smulRight, hp, smul_eq_mul]
+  rfl
+
+theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
+
+/-- **Pointwise tangential divergence of the weighted radial field** (Simon Ch. 4, 3.2 and 5.1).
+If `dim T_x V = n`, `h` is differentiable at `x` and `γ` is `C¹`, then for
+`X(y) = h(y) γ(|y - ξ|)(y - ξ)` and `r = |x - ξ|`,
+`div_M X(x) = h(x)(n γ(r) + r γ'(r)(1 - |D^⊥r|²)) + γ(r) (x - ξ) · ∇^M h(x)`. -/
+theorem Submission.tangentialDiv_weighted_radial_field : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ x : Ambient n ℓ), Module.finrank ℝ (V.tangentSpace x) = n → DifferentiableAt ℝ h x → ContDiff ℝ 1 γ → V.tangentialDiv (fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ)) x = h x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient h x) := by
+  intro n ℓ V h γ ξ x hdim hh hγ
+  -- `X = h • g` with `g(y) = γ(|y - ξ|)(y - ξ)`; by the product rule and the derivative of `g`,
+  -- `DX(x) = c I + F(·)(x - ξ)` with `c = h(x)γ(r)` and `F = h(x)(γ'(r)/r)⟨x - ξ, ·⟩ + γ(r) Dh(x)`.
+  have hX : (fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ)) = fun y ↦ h y • γ ‖y - ξ‖ • (y - ξ) := by
+    funext y
+    exact mul_smul _ _ _
+  have hDX : fderiv ℝ (fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ)) x =
+      (h x * γ ‖x - ξ‖) • ContinuousLinearMap.id ℝ (Ambient n ℓ) +
+        ((h x * (deriv γ ‖x - ξ‖ / ‖x - ξ‖)) • innerSL ℝ (x - ξ) +
+          γ ‖x - ξ‖ • fderiv ℝ h x).smulRight (x - ξ) := by
+    rw [hX, (hh.hasFDerivAt.fun_smul
+      (Submission.radial_vector_field_hasFDerivAt n ℓ γ ξ x hγ)).fderiv]
+    refine ContinuousLinearMap.ext fun u ↦ ?_
+    simp only [add_apply, smul_apply, ContinuousLinearMap.id_apply,
+      ContinuousLinearMap.smulRight_apply, innerSL_apply_apply, smul_eq_mul]
+    module
+  -- Hence `div_M X(x) = c dim T_x V + F(p(x - ξ))`, with `p` the projection onto `T_x V`.
+  rw [RectifiableVarifold.tangentialDiv, hDX,
+    Submission.trace_scalar_add_rankOne_comp_starProjection n ℓ (V.tangentSpace x), hdim]
+  set P := V.tangentSpace x
+  -- Gradient term: `Dh(x)(p(x - ξ)) = ⟨∇h(x), p(x - ξ)⟩ = ⟨x - ξ, p ∇h(x)⟩ = ⟨x - ξ, ∇^M h(x)⟩`.
+  have hgrad : fderiv ℝ h x (P.starProjection (x - ξ)) =
+      inner ℝ (x - ξ) (V.tangentialGradient h x) := by
+    rw [← inner_gradient_left, ← P.inner_starProjection_left_eq_right, real_inner_comm]
+    rfl
+  -- Projection term: `⟨x - ξ, p(x - ξ)⟩ = |p(x - ξ)|²`.
+  have hpw : inner ℝ (x - ξ) (P.starProjection (x - ξ)) = ‖P.starProjection (x - ξ)‖ ^ 2 := by
+    calc inner ℝ (x - ξ) (P.starProjection (x - ξ))
+        = inner ℝ (x - ξ) (P.starProjection (P.starProjection (x - ξ))) := by
+          rw [Submodule.starProjection_eq_self_iff.mpr (P.starProjection_apply_mem _)]
+      _ = inner ℝ (P.starProjection (x - ξ)) (P.starProjection (x - ξ)) :=
+          (P.inner_starProjection_left_eq_right _ _).symm
+      _ = ‖P.starProjection (x - ξ)‖ ^ 2 := real_inner_self_eq_norm_sq _
+  -- Pythagoras: `r² = |p(x - ξ)|² + |p^⊥(x - ξ)|²`, so `(γ'(r)/r)|p(x - ξ)|² = rγ'(r)(1 - q_ξ(x))`
+  -- (both sides vanish when `r = 0`).
+  have key : deriv γ ‖x - ξ‖ / ‖x - ξ‖ * ‖P.starProjection (x - ξ)‖ ^ 2 =
+      ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x) := by
+    have hpy := P.norm_sq_eq_add_norm_sq_starProjection (x - ξ)
+    rw [RectifiableVarifold.normalRadialSq]
+    generalize ‖P.starProjection (x - ξ)‖ = a at hpy ⊢
+    generalize ‖Pᗮ.starProjection (x - ξ)‖ = b at hpy ⊢
+    generalize ‖x - ξ‖ = r at hpy ⊢
+    rcases eq_or_ne r 0 with hr | hr
+    · simp [hr]
+    · rw [show a ^ 2 = r ^ 2 - b ^ 2 by linarith]
+      field_simp
+  simp only [add_apply, smul_apply, innerSL_apply_apply, smul_eq_mul, hgrad, hpw]
+  linear_combination h x * key
+
+/-- Simon 3.2–3.3 and 5.1 (pp. 89–90, 96) with Definition 3.14 (p. 92): the first variation
+formula for the radial field `X(x) = h(x) γ(r) (x - ξ)`, `r = |x - ξ|`. If `dim T_x V = n` for
+`μ_V`-a.e. `x`, `V` has generalized mean curvature `H` in the open set `U`, `h ∈ C¹(U)`,
+`γ ∈ C¹(ℝ)` and `X ∈ C¹_c(U; ℝ^{n+ℓ})`, then `∫_U (h (n γ(r) + r γ'(r) (1 - |D^⊥ r|²)) +
+γ(r) (x - ξ) · ∇^M h) dμ_V = -∫_U h γ(r) (x - ξ) · H dμ_V`. -/
+theorem Submission.radial_first_variation : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ : Ambient n ℓ), (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → ContDiff ℝ 1 γ → IsTestField U (fun x ↦ (h x * γ ‖x - ξ‖) • (x - ξ)) → ∫ x in U, (h x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient h x)) ∂V.weight = -∫ x in U, h x * γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂V.weight := by
+  intro n ℓ V U H h γ ξ hdim hU hH hh hγ hX
+  -- `X` vanishes near every point off `U`, since `tsupport X ⊆ U`.
+  have hout : ∀ x ∉ U, x ∉ tsupport fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ) :=
+    fun x hxU hx ↦ hxU (hX.2.2 hx)
+  have hX0 : ∀ x ∉ U, (h x * γ ‖x - ξ‖) • (x - ξ) = 0 :=
+    fun x hxU ↦ (image_eq_zero_of_notMem_tsupport (hout x hxU) :)
+  calc _ = ∫ x in U, V.tangentialDiv (fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ)) x ∂V.weight := by
+        -- Simon 3.2 and 5.1: the integrand is `div_M X` wherever `dim T_x V = n`.
+        refine setIntegral_congr_ae hU.measurableSet ?_
+        filter_upwards [hdim] with x hx hxU
+        exact (Submission.tangentialDiv_weighted_radial_field n ℓ V h γ ξ x hx
+          (hh.differentiableOn_one.differentiableAt (hU.mem_nhds hxU)) hγ).symm
+    _ = ∫ x, V.tangentialDiv (fun y ↦ (h y * γ ‖y - ξ‖) • (y - ξ)) x ∂V.weight :=
+        setIntegral_eq_integral_of_forall_compl_eq_zero fun x hxU ↦ by
+          rw [tangentialDiv, fderiv_of_notMem_tsupport ℝ (hout x hxU)]
+          simp
+    _ = -∫ x, inner ℝ ((h x * γ ‖x - ξ‖) • (x - ξ)) (H x) ∂V.weight := hH.2 _ hX
+    _ = _ := by
+        rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := U) fun x hxU ↦ ?_]
+        · simp_rw [real_inner_smul_left]
+        · rw [hX0 x hxU, inner_zero_left]
 
 end
 
