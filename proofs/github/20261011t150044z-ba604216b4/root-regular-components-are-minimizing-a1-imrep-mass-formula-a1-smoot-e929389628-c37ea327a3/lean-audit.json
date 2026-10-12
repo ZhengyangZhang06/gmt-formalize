@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2a173080d4d7e704b34801b26b66769959f72b672f3e3f6297f83b98ccef6504",
+  "git_delta": {
+    "base_commit": "31005c08e39721b1243f9f24df0a03bd24b658d9",
+    "candidate_commit": "cf0af43a11f1abba05cabc57356a699198ca343d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_norm_radial_retraction_sub_le",
+    "diff_sha256": "a772c26ef894d5e490af6925c7a1f8d4f7ddf74d8243d21f5d0e821aa00dd826",
+    "source_sha256": "d46dcd57ba4ab3d5ea81326933b3fbd07bfbcfccaaadd1a1b04abf731f0269ef",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_norm_radial_retraction_sub_le",
+      "statement": "∀ (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℝ E] (x y : E), ‖y‖ ≤ 1 → ‖(max 1 ‖x‖)⁻¹ • x - y‖ ≤ ‖x - y‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
