@@ -1717,6 +1717,91 @@ theorem Submission.deGiorgiDens_sobolev_indicator : ∀ (n : ℕ), ∃ c : ℝ, 
     _ = ENNReal.ofReal (c * (∫ y, ζ y ∂μ + ∫ y in G, ‖fderiv ℝ ζ y‖)) :=
         ((ENNReal.continuous_ofReal.tendsto _).comp (hlim.const_mul c)).liminf_eq
 
+/-- **Isoperimetric differential inequality** at a differentiability radius, from the proof of
+Simon Ch. 3, Theorem 4.3 (p. 83, `chapter-03.txt` lines 706–722): with
+`V(r) = L^{n+1}(G ∩ B_r(x))` and `B̄_ρ(x) ⊆ U`, `V(ρ)^{n/(n+1)} ≤ c (μ(B_ρ(x)) + V'(ρ))`.
+Let `c` be the constant of `deGiorgiDens_sobolev_indicator` and `p = (n+1)/n`, so that
+`1/p = n/(n+1)` (also for `n = 0`, where `p = ∞`). For `s ∈ (0, ρ)` with `V(s) > 0`, apply it to
+the radial cut-off `ζ_s` of `deGiorgiDens_radial_cutoff` (`ζ_s = 1` on `B_s`, `0 ≤ ζ_s ≤ 1_{B_ρ}`,
+`∫_G |Dζ_s| = (V(ρ) - V(s))/(ρ - s)`): since `1_{G ∩ B_s} ≤ χ_G ζ_s` and `∫ ζ_s dμ ≤ μ(B_ρ)`,
+`V(s)^{n/(n+1)} = ‖1_{G ∩ B_s}‖_p ≤ ‖χ_G ζ_s‖_p ≤ c (μ(B_ρ) + (V(ρ) - V(s))/(ρ - s))`. As `s ↑ ρ`,
+`V(s) → V(ρ) > 0` (so the bound holds for all `s` near `ρ`) and the difference quotient tends to
+`V'(ρ)`. -/
+theorem Submission.deGiorgiDens_ball_isoperimetric : ∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (U G : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (x : Rn (n + 1)) (ρ d : ℝ), 0 < ρ → Metric.closedBall x ρ ⊆ U → 0 < volume (G ∩ Metric.ball x ρ) → HasDerivAt (fun r : ℝ ↦ (volume (G ∩ Metric.ball x r)).toReal) d ρ → (volume (G ∩ Metric.ball x ρ)).toReal ^ ((n : ℝ) / (n + 1)) ≤ c * ((μ (Metric.ball x ρ)).toReal + d) := by
+  intro n
+  -- Step 0: `c` is the Sobolev constant; `p = (n+1)/n ≠ 0`, `1/p = n/(n+1)` (`1/⊤ = 0` if `n = 0`).
+  obtain ⟨c, hc, hsob⟩ := Submission.deGiorgiDens_sobolev_indicator n
+  refine ⟨c, hc, fun U G μ ν hU hG hμν x ρ d hρ hcl hpos hderiv ↦ ?_⟩
+  have hp0 : (n + 1 : ℝ≥0∞) / n ≠ 0 := ENNReal.div_ne_zero.2 ⟨by simp, ENNReal.natCast_ne_top n⟩
+  have hpa : 1 / ((n + 1 : ℝ≥0∞) / n).toReal = (n : ℝ) / (n + 1) := by
+    rw [ENNReal.toReal_div, ENNReal.toReal_add (ENNReal.natCast_ne_top n) ENNReal.one_ne_top,
+      ENNReal.toReal_natCast, ENNReal.toReal_one, one_div_div]
+  -- Step 1: `V(r) = L(G ∩ B_r)` is finite and non-decreasing, `V(ρ) > 0`, and `μ(B_ρ) < ∞`.
+  set V : ℝ → ℝ := fun r ↦ (volume (G ∩ Metric.ball x r)).toReal
+  have hfin : ∀ r, volume (G ∩ Metric.ball x r) ≠ ∞ := fun r ↦
+    ((measure_mono inter_subset_right).trans_lt measure_ball_lt_top).ne
+  have hVρ : 0 < V ρ := ENNReal.toReal_pos hpos.ne' (hfin ρ)
+  have hμB : μ (Metric.ball x ρ) ≠ ∞ :=
+    ((measure_mono Metric.ball_subset_closedBall).trans_lt
+      (hμν.2.1 _ (isCompact_closedBall x ρ) hcl)).ne
+  -- Step 2: `(∗) V(s)^{n/(n+1)} ≤ c (μ(B_ρ) + (V(ρ) - V(s))/(ρ - s))` for `s ∈ (0, ρ)`, `V(s) > 0`.
+  have hstar : ∀ s, 0 < s → s < ρ → 0 < volume (G ∩ Metric.ball x s) →
+      V s ^ ((n : ℝ) / (n + 1)) ≤ c * ((μ (Metric.ball x ρ)).toReal + (V ρ - V s) / (ρ - s)) := by
+    intro s hs hsρ hVs
+    obtain ⟨ζ, ⟨K, hK⟩, hζc, hζt, hζ01, hζ1, hζ0, hζD⟩ :=
+      Submission.deGiorgiDens_radial_cutoff (n + 1) x s ρ hs hsρ
+    have hS := hsob U G μ ν hU hG hμν ζ K hK hζc (hζt.trans hcl) fun y ↦ (hζ01 y).1
+    -- (a) `∫_G |Dζ_s| = (V(ρ) - V(s))/(ρ - s) ≥ 0`.
+    have hD : ∫ y in G, ‖fderiv ℝ ζ y‖ = (V ρ - V s) / (ρ - s) := hζD G hG
+    have hD0 : 0 ≤ (V ρ - V s) / (ρ - s) :=
+      div_nonneg (sub_nonneg.2 (ENNReal.toReal_mono (hfin ρ)
+        (measure_mono (inter_subset_inter_right _ (Metric.ball_subset_ball hsρ.le)))))
+        (sub_nonneg.2 hsρ.le)
+    -- (b) `0 ≤ ∫ ζ_s dμ ≤ ∫ 1_{B_ρ} dμ = μ(B_ρ)`.
+    have hI0 : 0 ≤ ∫ y, ζ y ∂μ := integral_nonneg fun y ↦ (hζ01 y).1
+    have hI : ∫ y, ζ y ∂μ ≤ (μ (Metric.ball x ρ)).toReal := by
+      calc ∫ y, ζ y ∂μ ≤ ∫ y, (Metric.ball x ρ).indicator 1 y ∂μ := by
+            refine integral_mono_of_nonneg (ae_of_all _ fun y ↦ (hζ01 y).1)
+              ((integrable_indicator_iff measurableSet_ball).2
+                (integrableOn_const (C := (1 : ℝ)) hμB)) (ae_of_all _ fun y ↦ ?_)
+            by_cases hy : y ∈ Metric.ball x ρ
+            · rw [indicator_of_mem hy]
+              exact (hζ01 y).2
+            · rw [indicator_of_notMem hy, hζ0 y hy]
+        _ = (μ (Metric.ball x ρ)).toReal := integral_indicator_one measurableSet_ball
+    -- (c) `L(G ∩ B_s)^{n/(n+1)} = ‖1_{G ∩ B_s}‖_p ≤ ‖χ_G ζ_s‖_p`, as `ζ_s = 1` on `B_s`.
+    have hGs : NullMeasurableSet (G ∩ Metric.ball x s) volume :=
+      hG.inter measurableSet_ball.nullMeasurableSet
+    have hlow : volume (G ∩ Metric.ball x s) ^ ((n : ℝ) / (n + 1)) ≤
+        eLpNorm (G.indicator ζ) ((n + 1 : ℝ≥0∞) / n) volume := by
+      have h1 := eLpNorm_indicator_const' (c := (1 : ℝ)) hGs hVs.ne' hp0
+      rw [hpa, enorm_one, one_mul] at h1
+      rw [← h1]
+      refine eLpNorm_mono (aestronglyMeasurable_const.indicator₀ hGs) fun y ↦ ?_
+      by_cases hy : y ∈ G ∩ Metric.ball x s
+      · rw [indicator_of_mem hy, indicator_of_mem hy.1, hζ1 y hy.2]
+      · rw [indicator_of_notMem hy, norm_zero]
+        exact norm_nonneg _
+    -- Combine (a)–(c) and pass to real numbers.
+    have hR0 : 0 ≤ c * (∫ y, ζ y ∂μ + ∫ y in G, ‖fderiv ℝ ζ y‖) := by
+      rw [hD]
+      exact mul_nonneg hc.le (add_nonneg hI0 hD0)
+    have hreal := ENNReal.toReal_mono ENNReal.ofReal_ne_top (hlow.trans hS)
+    rw [← ENNReal.toReal_rpow, ENNReal.toReal_ofReal hR0, hD] at hreal
+    exact hreal.trans (mul_le_mul_of_nonneg_left (add_le_add hI le_rfl) hc.le)
+  -- Step 3: let `s ↑ ρ`; `V` is continuous at `ρ` and its difference quotients tend to `d`.
+  have hcont : Tendsto V (𝓝[<] ρ) (𝓝 (V ρ)) :=
+    hderiv.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+  have hslope : Tendsto (fun s ↦ (V ρ - V s) / (ρ - s)) (𝓝[<] ρ) (𝓝 d) :=
+    ((hasDerivAt_iff_tendsto_slope.1 hderiv).mono_left
+      (nhdsWithin_mono _ fun s (hs : s < ρ) ↦ hs.ne)).congr fun s ↦ by
+        rw [slope_comm, slope_def_field]
+  show V ρ ^ ((n : ℝ) / (n + 1)) ≤ c * ((μ (Metric.ball x ρ)).toReal + d)
+  refine le_of_tendsto_of_tendsto (hcont.rpow_const (Or.inl hVρ.ne'))
+    ((tendsto_const_nhds.add hslope).const_mul c) ?_
+  filter_upwards [Ioo_mem_nhdsLT hρ, hcont.eventually (lt_mem_nhds hVρ)] with s hs hVs
+  exact hstar s hs.1 hs.2 (ENNReal.toReal_pos_iff.1 hVs).1
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
