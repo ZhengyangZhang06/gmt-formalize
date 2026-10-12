@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4ffb96eec6538e9f678b381cea81e4b22bc1b92e28949ecd0ed941f74118913a",
+  "git_delta": {
+    "base_commit": "e796a9b1135e3b016581d81288452116f5a867a0",
+    "candidate_commit": "2c2a3d8b30e0edeccc5e28c9d1cf724c03670973",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_dbs_localized_density_point",
+    "diff_sha256": "c6c62ad0a64b27b2da5488360734a9edfaee95bc1c14def7154276e551ea7a11",
+    "source_sha256": "9edc997abd1f32d340e5fe7cbb3b0dd02b1268f3d355fa6a3c5911c390f1d0bd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_dbs_localized_density_point",
+      "statement": "∀ (P : ℕ) (W s : Set (Euclid P)) (ν : Measure (Euclid P)), IsOpen W → MeasurableSet s → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → ν K ≠ ∞) → ∀ᵐ x ∂ν.restrict s, x ∈ W → ∀ a : ℝ, a < 1 → ∀ᶠ t in 𝓝[>] (0 : ℝ), ENNReal.ofReal a * ν (closedBall x t) ≤ ν (s ∩ closedBall x t)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
