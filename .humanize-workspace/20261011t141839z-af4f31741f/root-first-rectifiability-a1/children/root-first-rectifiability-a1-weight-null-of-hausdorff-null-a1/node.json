@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.weight_null_of_hausdorff_null-a1",
+  "parent_id": "root.first_rectifiability-a1",
+  "depth": 2,
+  "title": "H^n-null sets on which μ has finite density are μ-null",
+  "statement": "Let μ be a Borel measure on ℝ^N and Z ⊆ ℝ^N with H^n(Z) = 0 such that at every x ∈ Z the n-density of μ exists and is finite (HasDensity n μ x θ for some θ ∈ [0, ∞)). Then μ(Z) = 0.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (Z : Set (Euclidean N)), μHE[n] Z = 0 → (∀ x ∈ Z, ∃ θ : ℝ≥0∞, θ ≠ ∞ ∧ HasDensity n μ x θ) → μ Z = 0",
+  "lean_name": "frt_weight_null_of_hausdorff_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-null-of-hausdorff-null-a1-a1"
+}
