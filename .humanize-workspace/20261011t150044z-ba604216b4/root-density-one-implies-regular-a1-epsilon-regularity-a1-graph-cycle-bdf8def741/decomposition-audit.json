@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def tangentSpace|dsmc_chart_range_subset_tangentSpace|dgce_left_inverse_tangentSpace_subset_range|left_inverse_tangentSpace",
+        "theorem (ContDiffOn\\.differentiableOn_one|ContDiffOn\\.of_le|ContDiffOn\\.comp|HasFDerivAt\\.comp_hasDerivAt|HasDerivAt\\.congr_of_eventuallyEq|HasDerivAt\\.unique|DifferentiableOn\\.differentiableAt|coe_range|coe_coe|Ioo_mem_nhds|abs_sin_le_one|contDiff_sin|HasDerivAt\\.sin|HasDerivAt\\.smul_const|HasDerivAt\\.const_add|HasDerivAt\\.sub_const|HasDerivAt\\.const_mul|HasDerivAt\\.div_const|isOpen_iff)",
+        "python3 -I /tmp/left-inverse-tangent-audit-lm5rjnf8/audit.py",
+        "git diff 7692c471e48ae7e29a182c53a149e0ffa80c4544 8f402cb9186dec35e39aea49d7ea887fd87109ae -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/left-inverse-tangent-audit-lm5rjnf8/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/left-inverse-tangent-audit-lm5rjnf8/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/left-inverse-tangent-audit-lm5rjnf8/Accepted.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/lit-decomp-7f3a/Composed.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Deriv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Trigonometric.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Range.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-bdf8def741/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-bdf8def741/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-751a76913b/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-751a76913b/comparator-v1.log",
+        "/tmp/left-inverse-tangent-audit-lm5rjnf8/audit.py",
+        "/tmp/left-inverse-tangent-audit-lm5rjnf8/Types.lean",
+        "/tmp/left-inverse-tangent-audit-lm5rjnf8/Assembly.lean",
+        "/tmp/left-inverse-tangent-audit-lm5rjnf8/Accepted.lean",
+        "/tmp/lit-decomp-7f3a/Composed.lean"
+      ],
+      "conclusion": "The workspace matches the pinned project and mathlib revisions; the Ch07 contract is byte-identical to the snapshot. Its tangentSpace is the stated set of curve velocities. The snapshot project contains no declaration of either proposed inclusion. Both exact one-line child propositions pass validation and elaborate independently in the comparator's frozen scope, before either child is declared. The LinearMap.range-to-Set.range coercion was independently checked by rfl. The new name has no reservation outside this proposal; the reused name has an identical frozen type and a comparator-accepted candidate at 8f402cb9186dec35e39aea49d7ea887fd87109ae. Replaying that candidate, compiling the supplied sine-based proofs, and independently assembling the exact parent all succeed with only propext, Classical.choice and Quot.sound. The split is appropriate: specialize the reverse inclusion to r = 1, V = ball 0 s and N = Φ '' V, then apply set antisymmetry. Both children are independent, so the dependencies are acyclic and correctly directed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_subset_range",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and exactly matches the closed Lean proposition. The bare name is unreserved. Step 0 correctly obtains differentiability from C¹ regularity on the open ball. The projected curve c = L(γ − z) has c(0) = v₀ and derivative Lw; the left-inverse hypothesis gives Φ ∘ c = γ throughout (-1,1). The chain rule, eventual equality and derivative uniqueness yield w = DΦ(v₀)(Lw), providing the required range witness. Not using the witness curve's stronger C¹ hypothesis is legitimate. The proof is complete, non-circular and requires no child dependencies."
+    },
+    {
+      "key": "range_subset_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including openness, r ≥ 1 and image containment. The bare name validly reuses the identical comparator-accepted contract. The proof reduces Cʳ to C¹, obtains the derivative at the interior point, and handles zero directions by a constant curve. For nonzero a, openness supplies ρ₀ > 0; c₀ = ρ₀/(2‖a‖) is positive, and θ(t) = c₀ sin(t/c₀) has θ(0) = 0, θ′(0) = 1 and |θ(t)| ≤ c₀. Consequently κ stays strictly inside the chosen ball and has derivative a. Composition supplies every tangent-space witness condition. This proves the full generalized statement independently, without circular reliance or missing dependencies."
+    }
+  ],
+  "required_changes": []
+}
