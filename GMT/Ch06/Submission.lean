@@ -815,6 +815,144 @@ theorem Submission.slicing_ru_smooth_to_continuous : ∀ (P : ℕ) (μ₁ μ₂ 
   -- Step 4: the two sequences coincide termwise by the smooth hypothesis.
   exact tendsto_nhds_unique
     ((hlim μ₁ g₁ hg₁).congr fun n => hsmooth _ (hηd n) (hηc n) (hηO n)) (hlim μ₂ g₂ hg₂)
+/-- Simon Ch. 6, (2.7)–(2.9): uniqueness step for representations of currents.  If `g₁ μ₁` and
+`g₂ μ₂` agree on continuous compactly supported functions with support in the open set `O`, then
+they agree on bounded Borel functions vanishing off `O`.  With `g⁺ = max g 0`, `g⁻ = max (-g) 0`,
+the finite measures `m₁ = g₁⁺ μ₁ + g₂⁻ μ₂`, `m₂ = g₁⁻ μ₁ + g₂⁺ μ₂` satisfy
+`∫ f dm₁ - ∫ f dm₂ = ∫ f g₁ dμ₁ - ∫ f g₂ dμ₂` for bounded measurable `f`, so they agree on
+`C_c(O)`.  Urysohn functions and inner regularity give `m₁ V = m₂ V` for open `V ⊆ O`; by the
+π–λ theorem `m₁ ⌞ O = m₂ ⌞ O`, and the claim follows. -/
+theorem Submission.slicing_ru_continuous_to_bounded : ∀ (P : ℕ) (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ), Integrable g₁ μ₁ → Integrable g₂ μ₂ → ∀ O : Set (Eucl P), IsOpen O → (∀ φ : Eucl P → ℝ, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ O → ∫ x, φ x * g₁ x ∂μ₁ = ∫ x, φ x * g₂ x ∂μ₂) → ∀ h : Eucl P → ℝ, Measurable h → (∃ C : ℝ, ∀ x, |h x| ≤ C) → (∀ x, x ∉ O → h x = 0) → ∫ x, h x * g₁ x ∂μ₁ = ∫ x, h x * g₂ x ∂μ₂ := by
+  intro P μ₁ μ₂ g₁ g₂ hg₁ hg₂ O hO H h hh ⟨C, hC⟩ hhO
+  -- Step 1: `∫ f d(g⁺ μ) - ∫ f d(g⁻ μ) = ∫ f g dμ` for bounded measurable `f`.
+  have split : ∀ (μ : Measure (Eucl P)) (g : Eucl P → ℝ), Integrable g μ →
+      ∀ f : Eucl P → ℝ, Measurable f → ∀ D : ℝ, (∀ x, |f x| ≤ D) →
+        ∫ x, f x ∂(μ.withDensity fun x => ENNReal.ofReal (g x)) -
+          ∫ x, f x ∂(μ.withDensity fun x => ENNReal.ofReal (-g x)) = ∫ x, f x * g x ∂μ := by
+    intro μ g hg f hf D hD
+    have hb : ∀ {ρ : Measure (Eucl P)}, ∀ᵐ x ∂ρ, ‖f x‖ ≤ D :=
+      Eventually.of_forall fun x => by simpa [Real.norm_eq_abs] using hD x
+    have hmax : ∀ t : ℝ, ENNReal.ofReal (max t 0) = ENNReal.ofReal t := by
+      intro t
+      rcases le_total t 0 with ht | ht
+      · rw [max_eq_right ht, ENNReal.ofReal_zero, ENNReal.ofReal_of_nonpos ht]
+      · rw [max_eq_left ht]
+    have hpos : ∀ u : Eucl P → ℝ, Integrable u μ →
+        ∫ x, f x ∂(μ.withDensity fun x => ENNReal.ofReal (u x)) = ∫ x, max (u x) 0 * f x ∂μ := by
+      intro u hu
+      have : IsFiniteMeasure (μ.withDensity fun x => ENNReal.ofReal (u x)) :=
+        isFiniteMeasure_withDensity_ofReal hu.2
+      have hρ : AEMeasurable (fun x => ENNReal.ofReal (u x)) μ :=
+        ENNReal.measurable_ofReal.comp_aemeasurable hu.aemeasurable
+      have e₁ : ∫⁻ x, ENNReal.ofReal (f x) ∂(μ.withDensity fun x => ENNReal.ofReal (u x)) =
+          ∫⁻ x, ENNReal.ofReal (max (u x) 0 * f x) ∂μ := by
+        rw [lintegral_withDensity_eq_lintegral_mul₀ hρ hf.ennreal_ofReal.aemeasurable]
+        refine lintegral_congr fun x => ?_
+        rw [Pi.mul_apply, ENNReal.ofReal_mul (le_max_right _ _), hmax]
+      have e₂ : ∫⁻ x, ENNReal.ofReal (-f x) ∂(μ.withDensity fun x => ENNReal.ofReal (u x)) =
+          ∫⁻ x, ENNReal.ofReal (-(max (u x) 0 * f x)) ∂μ := by
+        have hnf : AEMeasurable (fun x => ENNReal.ofReal (-f x)) μ :=
+          hf.neg.ennreal_ofReal.aemeasurable
+        rw [lintegral_withDensity_eq_lintegral_mul₀ hρ hnf]
+        refine lintegral_congr fun x => ?_
+        rw [Pi.mul_apply, ← mul_neg, ENNReal.ofReal_mul (le_max_right _ _), hmax]
+      rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part
+          (Integrable.of_bound hf.aestronglyMeasurable D hb),
+        integral_eq_lintegral_pos_part_sub_lintegral_neg_part
+          (hu.pos_part.mul_bdd hf.aestronglyMeasurable hb), e₁, e₂]
+    rw [hpos g hg, hpos (fun x => -g x) hg.neg,
+      ← integral_sub (hg.pos_part.mul_bdd hf.aestronglyMeasurable hb)
+        (hg.neg_part.mul_bdd hf.aestronglyMeasurable hb)]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    have := max_zero_sub_max_neg_zero_eq_self (g x)
+    simp only
+    linear_combination (f x) * this
+  -- Step 2: the finite measures `m₁ = g₁⁺ μ₁ + g₂⁻ μ₂` and `m₂ = g₁⁻ μ₁ + g₂⁺ μ₂`.
+  set m₁ : Measure (Eucl P) := (μ₁.withDensity fun x => ENNReal.ofReal (g₁ x)) +
+    μ₂.withDensity fun x => ENNReal.ofReal (-g₂ x) with hm₁
+  set m₂ : Measure (Eucl P) := (μ₁.withDensity fun x => ENNReal.ofReal (-g₁ x)) +
+    μ₂.withDensity fun x => ENNReal.ofReal (g₂ x) with hm₂
+  have : IsFiniteMeasure (μ₁.withDensity fun x => ENNReal.ofReal (g₁ x)) :=
+    isFiniteMeasure_withDensity_ofReal hg₁.2
+  have : IsFiniteMeasure (μ₁.withDensity fun x => ENNReal.ofReal (-g₁ x)) :=
+    isFiniteMeasure_withDensity_ofReal hg₁.neg.2
+  have : IsFiniteMeasure (μ₂.withDensity fun x => ENNReal.ofReal (g₂ x)) :=
+    isFiniteMeasure_withDensity_ofReal hg₂.2
+  have : IsFiniteMeasure (μ₂.withDensity fun x => ENNReal.ofReal (-g₂ x)) :=
+    isFiniteMeasure_withDensity_ofReal hg₂.neg.2
+  have : IsFiniteMeasure m₁ := by rw [hm₁]; infer_instance
+  have : IsFiniteMeasure m₂ := by rw [hm₂]; infer_instance
+  -- (★) `∫ f dm₁ - ∫ f dm₂ = ∫ f g₁ dμ₁ - ∫ f g₂ dμ₂` for bounded measurable `f`.
+  have star : ∀ f : Eucl P → ℝ, Measurable f → ∀ D : ℝ, (∀ x, |f x| ≤ D) →
+      ∫ x, f x ∂m₁ - ∫ x, f x ∂m₂ = ∫ x, f x * g₁ x ∂μ₁ - ∫ x, f x * g₂ x ∂μ₂ := by
+    intro f hf D hD
+    have hb : ∀ {ρ : Measure (Eucl P)}, ∀ᵐ x ∂ρ, ‖f x‖ ≤ D :=
+      Eventually.of_forall fun x => by simpa [Real.norm_eq_abs] using hD x
+    have i : ∀ (ρ : Measure (Eucl P)) [IsFiniteMeasure ρ], Integrable f ρ :=
+      fun ρ _ => Integrable.of_bound hf.aestronglyMeasurable D hb
+    rw [hm₁, hm₂, integral_add_measure (i _) (i _), integral_add_measure (i _) (i _),
+      ← split μ₁ g₁ hg₁ f hf D hD, ← split μ₂ g₂ hg₂ f hf D hD]
+    ring
+  -- Step 3: `m₁` and `m₂` agree on `C_c(O)`.
+  have agree : ∀ φ : Eucl P → ℝ, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ O →
+      ∫ x, φ x ∂m₁ = ∫ x, φ x ∂m₂ := by
+    intro φ hφ hφc hφO
+    obtain ⟨D, hD⟩ := hφ.bounded_above_of_compact_support hφc
+    have := star φ hφ.measurable D fun x => by simpa [Real.norm_eq_abs] using hD x
+    rw [H φ hφ hφc hφO, sub_self, sub_eq_zero] at this
+    exact this
+  -- Step 4: finite measures agreeing on `C_c(O)` agree on open subsets of `O`
+  -- (inner regularity and Urysohn's lemma).
+  have le_of_agree : ∀ (ρ₁ ρ₂ : Measure (Eucl P)) [IsFiniteMeasure ρ₁] [IsFiniteMeasure ρ₂],
+      (∀ φ : Eucl P → ℝ, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ O →
+        ∫ x, φ x ∂ρ₁ = ∫ x, φ x ∂ρ₂) →
+      ∀ V : Set (Eucl P), IsOpen V → V ⊆ O → ρ₁ V ≤ ρ₂ V := by
+    intro ρ₁ ρ₂ _ _ hρ V hV hVO
+    rw [hV.measure_eq_iSup_isCompact ρ₁]
+    refine iSup_le fun K => iSup_le fun hKV => iSup_le fun hK => ?_
+    obtain ⟨φ, hφK, hφc, hφV, hφ01⟩ := exists_continuousMap_one_of_isCompact_subset_isOpen hK hV hKV
+    have hφi : ∀ (ρ : Measure (Eucl P)) [IsFiniteMeasure ρ], Integrable φ ρ := by
+      intro ρ _
+      refine Integrable.of_bound φ.continuous.aestronglyMeasurable 1
+        (Eventually.of_forall fun x => ?_)
+      rw [Real.norm_eq_abs, abs_le]
+      exact ⟨by linarith [(hφ01 x).1], (hφ01 x).2⟩
+    have h₁ : ρ₁.real K ≤ ∫ x, φ x ∂ρ₁ := by
+      rw [← integral_indicator_one hK.measurableSet]
+      refine integral_mono ((integrable_const (1 : ℝ)).indicator hK.measurableSet) (hφi ρ₁)
+        fun x => ?_
+      by_cases hx : x ∈ K
+      · simp [Set.indicator_of_mem hx, hφK hx]
+      · simp [Set.indicator_of_notMem hx, (hφ01 x).1]
+    have h₂ : ∫ x, φ x ∂ρ₂ ≤ ρ₂.real V := by
+      rw [← integral_indicator_one hV.measurableSet]
+      refine integral_mono (hφi ρ₂) ((integrable_const (1 : ℝ)).indicator hV.measurableSet)
+        fun x => ?_
+      by_cases hx : x ∈ V
+      · simp [Set.indicator_of_mem hx, (hφ01 x).2]
+      · have : φ x = 0 := image_eq_zero_of_notMem_tsupport fun hx' => hx (hφV hx')
+        simp [Set.indicator_of_notMem hx, this]
+    have := h₁.trans ((hρ φ φ.continuous hφc (hφV.trans hVO)).le.trans h₂)
+    exact (ENNReal.toReal_le_toReal (measure_ne_top _ _) (measure_ne_top _ _)).1 this
+  have eq_open : ∀ V : Set (Eucl P), IsOpen V → V ⊆ O → m₁ V = m₂ V := fun V hV hVO =>
+    le_antisymm (le_of_agree m₁ m₂ agree V hV hVO)
+      (le_of_agree m₂ m₁ (fun φ hφ hφc hφO => (agree φ hφ hφc hφO).symm) V hV hVO)
+  -- Step 5: π–λ: `m₁ ⌞ O = m₂ ⌞ O`.
+  have hrestr : m₁.restrict O = m₂.restrict O := by
+    refine ext_of_generate_finite {s | IsOpen s} BorelSpace.measurable_eq isPiSystem_isOpen
+      (fun s hs => ?_) ?_
+    · have hs' : IsOpen s := hs
+      rw [Measure.restrict_apply hs'.measurableSet, Measure.restrict_apply hs'.measurableSet]
+      exact eq_open _ (hs'.inter hO) inter_subset_right
+    · rw [Measure.restrict_apply_univ, Measure.restrict_apply_univ]
+      exact eq_open O hO subset_rfl
+  -- Step 6: conclusion.
+  have hint : ∫ x, h x ∂m₁ = ∫ x, h x ∂m₂ := by
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (μ := m₁) hhO,
+      ← setIntegral_eq_integral_of_forall_compl_eq_zero (μ := m₂) hhO, hrestr]
+  have := star h hh C hC
+  rw [hint, sub_self] at this
+  linarith
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
