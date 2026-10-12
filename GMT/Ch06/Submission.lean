@@ -420,6 +420,30 @@ theorem Submission.polyhedral_approx_pairing_covector_ext : ∀ (P n : ℕ) (α 
   rw [he, AlternatingMap.map_perm, AlternatingMap.map_perm]
   congr 1
   exact h I
+/-- **Coordinate bound** (for the pairing expansion in the proof of Simon Ch. 6, 6.2, p. 169).
+Each increasing coordinate `c_I = c(e_{I(1)}, …, e_{I(n)})` of an `n`-covector `c` is bounded in
+absolute value by the Euclidean coefficient norm `|c|` of Remark 2.6.  Here `|c|² = ∑_J t_J`, with
+`t_J = c(e_{J(1)}, …, e_{J(n)})²` for strictly increasing `J : Fin n → Fin P` and `t_J = 0`
+otherwise.  Every `t_J ≥ 0` and `t_I = c_I²`, so `c_I² ≤ |c|²`. -/
+theorem Submission.polyhedral_approx_pairing_coordinate_bound : ∀ (P n : ℕ) (c : Covector (Eucl P) n) (I : SimonMultiIndex n P), |euclideanCovectorCoordinate c I| ≤ covectorEuclideanNorm c := by
+  intro P n c I
+  -- `|c| = √(∑_J t_J)`, the sum over all `J : Fin n → Fin P`.
+  set t : (Fin n → Fin P) → ℝ := fun J =>
+    if StrictMono J then (c fun i => EuclideanSpace.basisFun (Fin P) ℝ (J i)) ^ 2 else 0 with ht
+  -- Each `t_J` is a square or `0`.
+  have ht0 : ∀ J ∈ Finset.univ, 0 ≤ t J := fun J _ => by
+    simp only [ht]
+    split_ifs <;> positivity
+  -- `⇑I` is strictly increasing and `basisFun (I i) = e_{I(i)}`, so `t_I = c_I²`.
+  have htI : t I = euclideanCovectorCoordinate c I ^ 2 := by
+    simp only [ht, I.strictMono, ite_true, EuclideanSpace.basisFun_apply, euclideanCovectorCoordinate]
+  -- `|c_I| = √(c_I²) = √(t_I) ≤ √(∑_J t_J) = |c|`.
+  calc |euclideanCovectorCoordinate c I| = √(euclideanCovectorCoordinate c I ^ 2) :=
+        (Real.sqrt_sq_eq_abs _).symm
+    _ ≤ √(∑ J, t J) := by
+        rw [← htI]
+        exact Real.sqrt_le_sqrt (Finset.single_le_sum ht0 (Finset.mem_univ _))
+    _ = covectorEuclideanNorm c := rfl
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
