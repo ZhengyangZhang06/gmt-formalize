@@ -515,6 +515,31 @@ theorem Submission.smr_ufd_cl_vector_lusin : ∀ (P N : ℕ) (μ : Measure (Eucl
       continuousOn_pi.2 fun i => (hFcont i).mono (inter_subset_right.trans (iInter_subset _ i))
     exact (PiLp.continuous_toLp 2 _).comp_continuousOn h
 
+/-- Lusin's theorem with compact sets of large measure (Simon Ch. 1, 1.17, with inner regularity;
+used for Ch. 6, 2.7–2.9): let `μ` be finite on compact subsets of `U`, `u : ℝ^P → ℝ^N` Borel,
+`E` Borel and `W ⊆ U` open.  If `c < μ(W ∩ E)`, then some compact `C ⊆ W ∩ E` has `c < μ(C)`
+and `u|C` continuous. -/
+theorem Submission.smr_ufd_compact_lusin_set :
+    ∀ (P N : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)) (u : Eucl P → EuclideanSpace ℝ (Fin N)),
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → Measurable u →
+      ∀ E : Set (Eucl P), MeasurableSet E → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U →
+      ∀ c : ℝ≥0∞, c < μ (W ∩ E) →
+        ∃ C : Set (Eucl P), IsCompact C ∧ C ⊆ W ∩ E ∧ c < μ C ∧ ContinuousOn u C := by
+  intro P N U μ u hfin hu E hE W hW hWU c hc
+  -- Inner regularity: a compact `C₀ ⊆ W ∩ E` with `c < μ(C₀)`.
+  obtain ⟨C₀, hC₀, hC₀WE, hcC₀⟩ :=
+    Submission.smr_ufd_cl_inner_compact P U μ hfin E hE W hW hWU c hc
+  -- `C₀` is a compact subset of `W ⊆ U`, so `μ(C₀) < ∞`.
+  have hC₀fin : μ C₀ ≠ ∞ := (hfin C₀ hC₀ (hC₀WE.trans (inter_subset_left.trans hWU))).ne
+  -- Lusin on `C₀` with error `δ = μ(C₀) - c > 0`: a compact `C ⊆ C₀` with `μ(C₀ ∖ C) < δ` on
+  -- which `u` is continuous.
+  obtain ⟨C, hC, hCC₀, hC₀C, hu_cont⟩ :=
+    Submission.smr_ufd_cl_vector_lusin P N μ u hu C₀ hC₀.measurableSet hC₀fin (μ C₀ - c)
+      (tsub_pos_iff_lt.2 hcC₀).ne'
+  -- `μ(C₀) - μ(C) ≤ μ(C₀ ∖ C) < μ(C₀) - c`, hence `c < μ(C)`.
+  exact ⟨C, hC, hCC₀.trans hC₀WE, lt_of_tsub_lt_tsub_left (le_measure_sdiff.trans_lt hC₀C),
+    hu_cont⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
