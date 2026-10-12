@@ -542,6 +542,344 @@ theorem Submission.deGiorgiDens_normalAverage_bounds : ∀ (N : ℕ) (U : Set (R
         _ = max C 0 * Real.sqrt (2 * (1 - (μ (Metric.ball x ρ)).toReal⁻¹ *
               ∫ y in Metric.ball x ρ, inner ℝ (ν y) e ∂μ)) := by
             rw [mul_comm (max C 0), mul_assoc, inv_mul_cancel_left₀ hρn.ne']
+/-- **Gagliardo–Nirenberg–Sobolev inequality, `L¹` case** (Simon Ch. 3, proof of Theorem 4.3,
+Step 7; [GT01, Thm 7.10]): for `n ≥ 1` and a `C¹` compactly supported `v : ℝ^{n+1} → ℝ`,
+`‖v‖_{L^{(n+1)/n}} ≤ c ∫ |Dv|`, here with `c = 1`. The module
+`Mathlib.Analysis.FunctionalSpaces.SobolevInequality` is outside the frozen imports, so its
+argument is replayed inline: the grid-lines lemma (Hölder's inequality and induction over the
+integrated coordinates, as in Mathlib's
+`MeasureTheory.GridLines.T_insert_le_T_lmarginal_singleton`), the bound
+`|v(x)| ≤ ∫ |Dv(x + t eⱼ)| dt` along each coordinate line, and the volume-preserving
+identification `WithLp.toLp 2 : (Fin (n + 1) → ℝ) → ℝ^{n+1}`. -/
+theorem Submission.deGiorgiDensSob_gns_contDiff : ∀ (n : ℕ), 0 < n → ∃ c : ℝ, 0 < c ∧ ∀ v : Rn (n + 1) → ℝ, ContDiff ℝ 1 v → HasCompactSupport v → eLpNorm v ((n + 1 : ℝ≥0∞) / n) volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ v y‖) := by
+  intro n hn
+  refine ⟨1, one_pos, fun v hv hvs => ?_⟩
+  have hn' : (0 : ℝ) < n := by exact_mod_cast hn
+  set p : ℝ := 1 / (n : ℝ) with hp_def
+  have hp0 : 0 ≤ p := by positivity
+  -- Grid-lines lemma (Mathlib `GridLines.T_insert_le_T_lmarginal_singleton` and induction)
+  have grid : ∀ (μ : Fin (n + 1) → Measure ℝ) [∀ i, SigmaFinite (μ i)] (s : Finset (Fin (n + 1))),
+      ((s.card : ℝ) - 1) * p ≤ 1 → ∀ g : (Fin (n + 1) → ℝ) → ℝ≥0∞, Measurable g → ∀ x,
+      (∫⋯∫⁻_s, g ^ (1 - ((s.card : ℝ) - 1) * p) * ∏ j ∈ s, (∫⋯∫⁻_{j}, g ∂μ) ^ p ∂μ) x ≤
+        (∫⋯∫⁻_s, g ∂μ) x ^ (1 + p) := by
+    intro μ _ s
+    have step : ∀ (s : Finset (Fin (n + 1))) (i : Fin (n + 1)), i ∉ s → (s.card : ℝ) * p ≤ 1 →
+        ∀ f : (Fin (n + 1) → ℝ) → ℝ≥0∞, Measurable f →
+        (∫⋯∫⁻_insert i s, f ^ (1 - (s.card : ℝ) * p) *
+            ∏ j ∈ insert i s, (∫⋯∫⁻_{j}, f ∂μ) ^ p ∂μ) ≤
+          ∫⋯∫⁻_s, (∫⋯∫⁻_{i}, f ∂μ) ^ (1 - ((s.card : ℝ) - 1) * p) *
+            ∏ j ∈ s, (∫⋯∫⁻_{j}, (∫⋯∫⁻_{i}, f ∂μ) ∂μ) ^ p ∂μ := by
+      intro s i hi hp f hf
+      calc (∫⋯∫⁻_insert i s, f ^ (1 - (s.card : ℝ) * p) *
+              ∏ j ∈ insert i s, (∫⋯∫⁻_{j}, f ∂μ) ^ p ∂μ)
+          = ∫⋯∫⁻_s, (fun x ↦ ∫⁻ (t : ℝ), (f (Function.update x i t) ^ (1 - (s.card : ℝ) * p)
+              * ∏ j ∈ insert i s, (∫⋯∫⁻_{j}, f ∂μ) (Function.update x i t) ^ p) ∂(μ i)) ∂μ := by
+            rw [lmarginal_insert' _ _ hi]
+            · simp only [Pi.mul_apply, Pi.pow_apply, Finset.prod_apply]
+            · change Measurable (fun x ↦ _)
+              simp only [Pi.mul_apply, Pi.pow_apply, Finset.prod_apply]
+              refine (hf.pow_const _).mul <| Finset.measurable_fun_prod _ ?_
+              exact fun _ _ ↦ hf.lmarginal μ |>.pow_const _
+        _ ≤ _ := lmarginal_mono (s := s) (fun x ↦ ?_)
+      simp only [Pi.mul_apply, Pi.pow_apply, Finset.prod_apply]
+      set X := Function.update x i
+      have hF₁ : ∀ {j : Fin (n + 1)}, Measurable fun t ↦ (∫⋯∫⁻_{j}, f ∂μ) (X t) :=
+        fun {_} ↦ hf.lmarginal μ |>.comp <| measurable_update _
+      have hF₀ : Measurable fun t ↦ f (X t) := hf.comp <| measurable_update _
+      let k : ℝ := s.card
+      have hk' : 0 ≤ 1 - k * p := by linarith only [hp]
+      calc ∫⁻ t, f (X t) ^ (1 - k * p)
+              * ∏ j ∈ insert i s, (∫⋯∫⁻_{j}, f ∂μ) (X t) ^ p ∂(μ i)
+          = ∫⁻ t, (∫⋯∫⁻_{i}, f ∂μ) (X t) ^ p * (f (X t) ^ (1 - k * p)
+              * ∏ j ∈ s, ((∫⋯∫⁻_{j}, f ∂μ) (X t) ^ p)) ∂(μ i) := by
+            clear_value X
+            congr! 2 with t
+            simp_rw [Finset.prod_insert hi]
+            ring_nf
+        _ = (∫⋯∫⁻_{i}, f ∂μ) x ^ p *
+              ∫⁻ t, f (X t) ^ (1 - k * p) * ∏ j ∈ s, ((∫⋯∫⁻_{j}, f ∂μ) (X t)) ^ p ∂(μ i) := by
+            have : ∀ t, (∫⋯∫⁻_{i}, f ∂μ) (X t) = (∫⋯∫⁻_{i}, f ∂μ) x := by
+              intro t
+              rw [lmarginal_update_of_mem]
+              exact Iff.mpr Finset.mem_singleton rfl
+            simp_rw [this]
+            rw [lintegral_const_mul]
+            exact (hF₀.pow_const _).mul <| Finset.measurable_fun_prod _ fun _ _ ↦ hF₁.pow_const _
+        _ ≤ (∫⋯∫⁻_{i}, f ∂μ) x ^ p *
+              ((∫⁻ t, f (X t) ∂μ i) ^ (1 - k * p)
+              * ∏ j ∈ s, (∫⁻ t, (∫⋯∫⁻_{j}, f ∂μ) (X t) ∂μ i) ^ p) := by
+            gcongr
+            apply ENNReal.lintegral_mul_prod_norm_pow_le
+            · exact hF₀.aemeasurable
+            · intros
+              exact hF₁.aemeasurable
+            · simp only [Finset.sum_const, nsmul_eq_mul]
+              ring
+            · exact hk'
+            · exact fun _ _ ↦ hp0
+        _ = (∫⋯∫⁻_{i}, f ∂μ) x ^ p *
+              ((∫⋯∫⁻_{i}, f ∂μ) x ^ (1 - k * p) * ∏ j ∈ s, (∫⋯∫⁻_{i, j}, f ∂μ) x ^ p) := by
+            congr! 2
+            · rw [lmarginal_singleton]
+            refine Finset.prod_congr rfl fun j hj => ?_
+            have hi' : i ∉ ({j} : Finset (Fin (n + 1))) := by
+              simp only [Finset.mem_singleton] at hj ⊢
+              exact fun h ↦ hi (h ▸ hj)
+            rw [lmarginal_insert _ hf hi']
+        _ = (∫⋯∫⁻_{i}, f ∂μ) x ^ (p + (1 - k * p)) *
+              ∏ j ∈ s, (∫⋯∫⁻_{i, j}, f ∂μ) x ^ p := by
+            rw [ENNReal.rpow_add_of_nonneg]
+            · ring
+            · exact hp0
+            · exact hk'
+        _ ≤ (∫⋯∫⁻_{i}, f ∂μ) x ^ (1 - ((s.card : ℝ) - 1) * p) *
+              ∏ j ∈ s, (∫⋯∫⁻_{j}, (∫⋯∫⁻_{i}, f ∂μ) ∂μ) x ^ p := by
+            congr! 2 with j hj
+            · ring
+            · congr! 1
+              rw [← lmarginal_union μ f hf]
+              · congr
+                rw [Finset.union_comm]
+                rfl
+              · rw [Finset.disjoint_singleton]
+                exact fun h ↦ hi (h ▸ hj)
+    induction s using Finset.induction_on with
+    | empty =>
+      intro _ g _ x
+      simp only [lmarginal_empty, Finset.prod_empty, mul_one, Finset.card_empty, Nat.cast_zero,
+        Pi.pow_apply]
+      ring_nf
+      exact le_rfl
+    | insert i s hi ih =>
+      intro hcard g hg x
+      rw [Finset.card_insert_of_notMem hi] at hcard ⊢
+      have e : (((s.card + 1 : ℕ) : ℝ) - 1) = s.card := by push_cast; ring
+      rw [e] at hcard ⊢
+      have hs' : ((s.card : ℝ) - 1) * p ≤ 1 := by nlinarith
+      calc _ ≤ _ := step s i hi hcard g hg x
+        _ ≤ (∫⋯∫⁻_s, (∫⋯∫⁻_{i}, g ∂μ) ∂μ) x ^ (1 + p) := ih hs' _ (hg.lmarginal μ) x
+        _ = (∫⋯∫⁻_insert i s, g ∂μ) x ^ (1 + p) := by
+          rw [← lmarginal_union' μ g hg (Finset.disjoint_singleton_left.2 hi), ← Finset.insert_eq]
+  -- coordinates: `L : (Fin (n + 1) → ℝ) ≃L[ℝ] Rn (n + 1)` is `WithLp.toLp 2`
+  let L := (PiLp.continuousLinearEquiv 2 ℝ (fun _ : Fin (n + 1) => ℝ)).symm
+  have hL : ∀ x, L x = WithLp.toLp 2 x := fun x => rfl
+  -- one-dimensional bound along coordinate lines (fundamental theorem of calculus)
+  have ftc : ∀ (x : Fin (n + 1) → ℝ) (j : Fin (n + 1)),
+      ‖v (L x)‖ₑ ≤ ∫⁻ t, ‖fderiv ℝ v (L (Function.update x j t))‖ₑ := by
+    intro x j
+    have hφ : ContDiff ℝ 1 (fun t : ℝ => v (L (Function.update x j t))) :=
+      hv.comp (L.contDiff.comp (contDiff_update 1 x j))
+    have hφs : HasCompactSupport (fun t : ℝ => v (L (Function.update x j t))) :=
+      hvs.comp_isClosedEmbedding
+        (L.toHomeomorph.isClosedEmbedding.comp (isClosedEmbedding_update x j))
+    have hder : ∀ t, HasDerivAt (fun t : ℝ => v (L (Function.update x j t)))
+        (fderiv ℝ v (L (Function.update x j t)) (L (Pi.single j 1))) t := by
+      intro t
+      have h1 : HasDerivAt (Function.update x j) (Pi.single j (1 : ℝ)) t := by
+        rw [hasDerivAt_pi]
+        intro k
+        by_cases hk : k = j
+        · subst hk
+          simp only [Function.update_self, Pi.single_eq_same]
+          exact hasDerivAt_id' t
+        · simpa [Function.update_of_ne hk, Pi.single_eq_of_ne hk] using hasDerivAt_const t (x k)
+      exact ((hv.differentiable one_ne_zero) _).hasFDerivAt.comp_hasDerivAt t
+        (L.hasFDerivAt.comp_hasDerivAt t h1)
+    have hsingle : ‖L (Pi.single j (1 : ℝ))‖ₑ = 1 := by
+      rw [hL, PiLp.toLp_single]
+      simp [enorm_eq_nnnorm, PiLp.nnnorm_single]
+    calc ‖v (L x)‖ₑ = ‖(fun t : ℝ => v (L (Function.update x j t))) (x j)‖ₑ := by
+          simp only [Function.update_eq_self]
+      _ ≤ ∫⁻ t in Iic (x j), ‖deriv (fun t : ℝ => v (L (Function.update x j t))) t‖ₑ :=
+          HasCompactSupport.enorm_le_lintegral_Ici_deriv hφ hφs (x j)
+      _ ≤ ∫⁻ t, ‖deriv (fun t : ℝ => v (L (Function.update x j t))) t‖ₑ :=
+          setLIntegral_le_lintegral _ _
+      _ ≤ ∫⁻ t, ‖fderiv ℝ v (L (Function.update x j t))‖ₑ := by
+          refine lintegral_mono fun t => ?_
+          rw [(hder t).deriv]
+          refine (ContinuousLinearMap.le_opENorm _ _).trans ?_
+          rw [hsingle, mul_one]
+  -- the main inequality `∫ |v| ^ (1 + p) ≤ (∫ |Dv|) ^ (1 + p)`
+  have hDv : Continuous (fderiv ℝ v) := hv.continuous_fderiv one_ne_zero
+  have hg : Measurable fun x : Fin (n + 1) → ℝ => ‖fderiv ℝ v (L x)‖ₑ :=
+    (hDv.comp L.continuous).enorm.measurable
+  have hcard : (((Finset.univ : Finset (Fin (n + 1))).card : ℝ) - 1) = n := by simp
+  have hnp : (n : ℝ) * p = 1 := by rw [hp_def]; field_simp
+  have hpow : ∀ a : ℝ≥0∞, a ^ (1 + p) = ∏ _j : Fin (n + 1), a ^ p := by
+    intro a
+    rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin, ← ENNReal.rpow_natCast,
+      ← ENNReal.rpow_mul]
+    congr 1
+    push_cast
+    linarith
+  have main : ∫⁻ y, ‖v y‖ₑ ^ (1 + p) ≤ (∫⁻ y, ‖fderiv ℝ v y‖ₑ) ^ (1 + p) := by
+    have e1 : ∫⁻ y, ‖v y‖ₑ ^ (1 + p) = ∫⁻ x : Fin (n + 1) → ℝ, ‖v (L x)‖ₑ ^ (1 + p) :=
+      ((PiLp.volume_preserving_toLp (Fin (n + 1))).lintegral_comp
+        (hv.continuous.enorm.measurable.pow_const _)).symm
+    have e2 : ∫⁻ y, ‖fderiv ℝ v y‖ₑ = ∫⁻ x : Fin (n + 1) → ℝ, ‖fderiv ℝ v (L x)‖ₑ :=
+      ((PiLp.volume_preserving_toLp (Fin (n + 1))).lintegral_comp hDv.enorm.measurable).symm
+    have hgrid := grid (fun _ => volume) Finset.univ (by rw [hcard, hnp])
+      (fun x : Fin (n + 1) → ℝ => ‖fderiv ℝ v (L x)‖ₑ) hg 0
+    simp only [lmarginal_univ, Pi.mul_apply, Pi.pow_apply, Finset.prod_apply,
+      lmarginal_singleton, hcard, hnp, sub_self, ENNReal.rpow_zero, one_mul] at hgrid
+    rw [e1, e2, volume_pi]
+    refine le_trans (lintegral_mono fun x => ?_) hgrid
+    rw [hpow]
+    gcongr with j
+    exact ftc x j
+  -- conversion to `eLpNorm`
+  have hq0 : ((n + 1 : ℝ≥0∞) / n) ≠ 0 := by simp [ENNReal.div_eq_zero_iff]
+  have hqtop : ((n + 1 : ℝ≥0∞) / n) ≠ ∞ := by simp [ENNReal.div_eq_top, hn.ne']
+  have hqr : ((n + 1 : ℝ≥0∞) / n).toReal = 1 + p := by
+    rw [ENNReal.toReal_div, ENNReal.toReal_add (by simp) (by simp)]
+    simp only [ENNReal.toReal_natCast, ENNReal.toReal_one]
+    rw [hp_def]
+    field_simp
+  have hint : Integrable (fderiv ℝ v) volume :=
+    hDv.integrable_of_hasCompactSupport (hvs.fderiv ℝ)
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hq0 hqtop hv.continuous.aestronglyMeasurable, hqr,
+    one_mul, ofReal_integral_norm_eq_lintegral_enorm hint]
+  have h1p : (0 : ℝ) < 1 + p := by positivity
+  calc (∫⁻ y, ‖v y‖ₑ ^ (1 + p)) ^ (1 / (1 + p))
+      ≤ ((∫⁻ y, ‖fderiv ℝ v y‖ₑ) ^ (1 + p)) ^ (1 / (1 + p)) :=
+        ENNReal.rpow_le_rpow main (by positivity)
+    _ = ∫⁻ y, ‖fderiv ℝ v y‖ₑ := by
+        rw [← ENNReal.rpow_mul, mul_one_div_cancel h1p.ne', ENNReal.rpow_one]
+/-- **One-dimensional endpoint Sobolev inequality** (Simon Ch. 3, proof of Theorem 4.3, Step 7
+"Constants", erratum E6: for `N = 1` the Sobolev inequality is replaced by
+`sup |w| ≤ ½ ∫ |w'|`). Every `C¹` function `v : ℝ¹ → ℝ` with compact support satisfies
+`‖v‖_∞ ≤ ½ ∫ ‖Dv‖ dL¹`. Parametrise `ℝ¹` by the isometric, measure-preserving map
+`ι(t) = t e₀` (`e₀ = EuclideanSpace.single 0 1`) and put `f = v ∘ ι`, so
+`|f'(t)| = |Dv(ι t) e₀| ≤ ‖Dv(ι t)‖`. The fundamental theorem of calculus from both ends gives
+`f(t) = ∫_{(-∞, t]} f' = -∫_{(t, ∞)} f'`, hence `2 |f(t)| ≤ ∫ |f'| ≤ ∫_ℝ ‖Dv(ι t)‖ dt = ∫ ‖Dv‖ dL¹`.
+Since `v(y) = f(y 0)`, the bound `|v| ≤ ½ ∫ ‖Dv‖` holds everywhere, hence for the essential
+supremum. -/
+theorem Submission.deGiorgiDensSob_one_dim_contDiff : ∀ v : Rn 1 → ℝ, ContDiff ℝ 1 v → HasCompactSupport v → eLpNorm v ∞ volume ≤ ENNReal.ofReal (1 / 2 * ∫ y, ‖fderiv ℝ v y‖) := by
+  intro v hv hvs
+  -- Step 1: the isometric parametrisation `ι(t) = t e₀` of `ℝ¹`, with `y = ι(y 0)`.
+  set e₀ : Rn 1 := EuclideanSpace.single 0 1 with he₀
+  have hne₀ : ‖e₀‖ = 1 := by simp [he₀]
+  let ι : ℝ →L[ℝ] Rn 1 := (ContinuousLinearMap.id ℝ ℝ).smulRight e₀
+  have hι : ∀ t, ι t = t • e₀ := fun t ↦ by simp [ι]
+  have hιnorm : ∀ t, ‖ι t‖ = ‖t‖ := fun t ↦ by rw [hι, norm_smul, hne₀, mul_one]
+  have hιce : Topology.IsClosedEmbedding ι :=
+    (AddMonoidHomClass.isometry_of_norm ι hιnorm).isClosedEmbedding
+  have hιsurj : ∀ y : Rn 1, ι (y 0) = y := by
+    intro y
+    ext i
+    fin_cases i
+    simp [hι, he₀]
+  -- Step 2: `ι` agrees with the measure-preserving equivalence
+  -- `toLp 2 ∘ (funUnique (Fin 1) ℝ).symm`, so `∫_ℝ ‖Dv(ι t)‖ dt = ∫_{ℝ¹} ‖Dv‖ dL¹`.
+  let E : ℝ ≃ᵐ Rn 1 :=
+    (MeasurableEquiv.funUnique (Fin 1) ℝ).symm.trans (MeasurableEquiv.toLp 2 (Fin 1 → ℝ))
+  have hE : MeasurePreserving E volume volume :=
+    (PiLp.volume_preserving_toLp (Fin 1)).comp (volume_preserving_funUnique (Fin 1) ℝ).symm
+  have hEι : ∀ t, E t = ι t := by
+    intro t
+    ext i
+    fin_cases i
+    simp [E, hι, he₀]
+  have hchange : ∫ t, ‖fderiv ℝ v (ι t)‖ = ∫ y, ‖fderiv ℝ v y‖ := by
+    rw [← hE.integral_comp' (fun y ↦ ‖fderiv ℝ v y‖)]
+    simp only [hEι]
+  -- Step 3: `f = v ∘ ι` is `C¹` with compact support and `|f'(t)| ≤ ‖Dv(ι t)‖`.
+  set f : ℝ → ℝ := v ∘ ι with hf_def
+  have hf : ContDiff ℝ 1 f := hv.comp ι.contDiff
+  have hfs : HasCompactSupport f := hvs.comp_isClosedEmbedding hιce
+  have hderiv : ∀ t, HasDerivAt f (fderiv ℝ v (ι t) e₀) t := by
+    intro t
+    have h1 : HasDerivAt (ι : ℝ → Rn 1) e₀ t := by
+      have hfun : (ι : ℝ → Rn 1) = fun s ↦ s • e₀ := funext hι
+      rw [hfun]
+      simpa using (hasDerivAt_id t).smul_const e₀
+    exact HasFDerivAt.comp_hasDerivAt (x := t)
+      (hv.differentiable one_ne_zero (ι t)).hasFDerivAt h1
+  have hderiv_eq : ∀ t, deriv f t = fderiv ℝ v (ι t) e₀ := fun t ↦ (hderiv t).deriv
+  have hdbound : ∀ t, ‖deriv f t‖ ≤ ‖fderiv ℝ v (ι t)‖ := by
+    intro t
+    rw [hderiv_eq]
+    calc ‖fderiv ℝ v (ι t) e₀‖ ≤ ‖fderiv ℝ v (ι t)‖ * ‖e₀‖ := ContinuousLinearMap.le_opNorm _ _
+      _ = ‖fderiv ℝ v (ι t)‖ := by rw [hne₀, mul_one]
+  -- Step 4: `f'` and `t ↦ ‖Dv(ι t)‖` are integrable, and `∫ |f'| ≤ ∫ ‖Dv(ι t)‖ dt`.
+  have hdcont : Continuous (deriv f) := hf.continuous_deriv le_rfl
+  have hdint : Integrable (deriv f) := hdcont.integrable_of_hasCompactSupport hfs.deriv
+  have hgint : Integrable (fun t ↦ ‖fderiv ℝ v (ι t)‖) := by
+    have hc : Continuous (fun t ↦ ‖fderiv ℝ v (ι t)‖) :=
+      ((hv.continuous_fderiv one_ne_zero).comp ι.continuous).norm
+    exact hc.integrable_of_hasCompactSupport
+      (((hvs.fderiv ℝ).norm).comp_isClosedEmbedding hιce)
+  have hmono : ∫ s, ‖deriv f s‖ ≤ ∫ s, ‖fderiv ℝ v (ι s)‖ :=
+    integral_mono hdint.norm hgint hdbound
+  -- Step 5: FTC from the left, `∫_{(-∞, t]} f' = f(t)`.
+  have hftc_left : ∀ t, ∫ s in Iic t, deriv f s = f t := fun t ↦
+    hfs.integral_Iic_deriv_eq hf t
+  -- Step 6: FTC from the right, `∫_{(t, ∞)} f' = 0 - f(t)`, as `f → 0` at `+∞`.
+  have hlim_top : Tendsto f atTop (𝓝 0) := by
+    have h := hfs
+    rw [hasCompactSupport_iff_eventuallyEq, Filter.coclosedCompact_eq_cocompact] at h
+    exact (h.filter_mono _root_.atTop_le_cocompact).tendsto
+  have hftc_right : ∀ t, ∫ s in Ioi t, deriv f s = 0 - f t := fun t ↦
+    integral_Ioi_of_hasDerivAt_of_tendsto'
+      (fun s _ ↦ (hf.differentiable one_ne_zero s).hasDerivAt) hdint.integrableOn hlim_top
+  -- Step 7: adding the two bounds, `2 |f(t)| ≤ ∫ |f'| ≤ ∫ ‖Dv‖ dL¹`.
+  have hpt : ∀ t, ‖f t‖ ≤ 1 / 2 * ∫ y, ‖fderiv ℝ v y‖ := by
+    intro t
+    have h1 : ‖f t‖ ≤ ∫ s in Iic t, ‖deriv f s‖ := by
+      rw [← hftc_left t]
+      exact norm_integral_le_integral_norm _
+    have h2 : ‖f t‖ ≤ ∫ s in Ioi t, ‖deriv f s‖ := by
+      have : f t = -∫ s in Ioi t, deriv f s := by rw [hftc_right t]; ring
+      rw [this, norm_neg]
+      exact norm_integral_le_integral_norm _
+    have h3 : (∫ s in Iic t, ‖deriv f s‖) + ∫ s in Ioi t, ‖deriv f s‖ = ∫ s, ‖deriv f s‖ :=
+      intervalIntegral.integral_Iic_add_Ioi hdint.norm.integrableOn hdint.norm.integrableOn
+    calc ‖f t‖ = 1 / 2 * (‖f t‖ + ‖f t‖) := by ring
+      _ ≤ 1 / 2 * ((∫ s in Iic t, ‖deriv f s‖) + ∫ s in Ioi t, ‖deriv f s‖) := by gcongr
+      _ = 1 / 2 * ∫ s, ‖deriv f s‖ := by rw [h3]
+      _ ≤ 1 / 2 * ∫ s, ‖fderiv ℝ v (ι s)‖ := by gcongr
+      _ = 1 / 2 * ∫ y, ‖fderiv ℝ v y‖ := by rw [hchange]
+  -- Step 8: `v(y) = f(y 0)`, so `|v(y)| ≤ ½ ∫ ‖Dv‖ dL¹` for every `y ∈ ℝ¹`.
+  have hall : ∀ y, ‖v y‖ ≤ 1 / 2 * ∫ y, ‖fderiv ℝ v y‖ := by
+    intro y
+    have := hpt (y 0)
+    rwa [hf_def, Function.comp_apply, hιsurj] at this
+  -- Step 9: the everywhere bound bounds the essential supremum `eLpNorm v ∞`.
+  rw [eLpNorm_exponent_top hv.continuous.aestronglyMeasurable]
+  exact eLpNormEssSup_le_of_ae_bound (ae_of_all _ hall)
+/-- **Passing to the limit in a Sobolev bound along `C¹` approximations** (used in the proof of
+Simon Ch. 3, Theorem 4.3, for the Sobolev inequality of Lipschitz functions). Let `S ⊆ ℝᴺ` be
+compact and `v_j ∈ C¹(ℝᴺ)` with `tsupport v_j ⊆ S` and `‖Dv_j‖ ≤ K`, such that `v_j → u` and
+`Dv_j → Du` `Lᴺ`-a.e. If `‖v_j‖_{L^p} ≤ c ∫ ‖Dv_j‖ dLᴺ` for every `j`, then
+`‖u‖_{L^p} ≤ c ∫ ‖Du‖ dLᴺ`. Dominated convergence (with the bound `K 1_S`) gives
+`∫ ‖Dv_j‖ → ∫ ‖Du‖`, and Fatou's lemma for `eLpNorm` gives `‖u‖_{L^p} ≤ liminf_j ‖v_j‖_{L^p}`. -/
+theorem Submission.deGiorgiDensSob_eLpNorm_le_of_approx : ∀ (N : ℕ) (p : ℝ≥0∞) (c : ℝ) (K : ℝ≥0) (S : Set (Rn N)) (u : Rn N → ℝ) (v : ℕ → Rn N → ℝ), IsCompact S → (∀ j, ContDiff ℝ 1 (v j)) → (∀ j, tsupport (v j) ⊆ S) → (∀ j y, ‖fderiv ℝ (v j) y‖ ≤ K) → (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ v j y) atTop (𝓝 (u y))) → (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ fderiv ℝ (v j) y) atTop (𝓝 (fderiv ℝ u y))) → (∀ j, eLpNorm (v j) p volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ (v j) y‖)) → eLpNorm u p volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ u y‖) := by
+  intro N p c K S u v hS hv hsupp hbd hlim hdlim hineq
+  -- Step 1: each `v j` is continuous, so their a.e. limit `u` is a.e. strongly measurable.
+  have hvm : ∀ j, AEStronglyMeasurable (v j) volume :=
+    fun j ↦ (hv j).continuous.aestronglyMeasurable
+  have hum : AEStronglyMeasurable u volume := aestronglyMeasurable_of_tendsto_ae atTop hvm hlim
+  -- Steps 2–4: dominated convergence of `∫ ‖Dv_j‖`; `Dv_j` vanishes off `tsupport v_j ⊆ S`, so
+  -- `‖Dv_j‖ ≤ K 1_S`, which is integrable because `S` is compact.
+  have hconv : Tendsto (fun j ↦ ∫ y, ‖fderiv ℝ (v j) y‖) atTop (𝓝 (∫ y, ‖fderiv ℝ u y‖)) := by
+    refine tendsto_integral_of_dominated_convergence (S.indicator fun _ ↦ (K : ℝ))
+      (F := fun j y ↦ ‖fderiv ℝ (v j) y‖) (f := fun y ↦ ‖fderiv ℝ u y‖)
+      (fun j ↦ ((hv j).continuous_fderiv one_ne_zero).norm.aestronglyMeasurable)
+      ((integrableOn_const hS.measure_lt_top.ne).integrable_indicator hS.measurableSet)
+      (fun j ↦ ae_of_all _ fun y ↦ ?_) (hdlim.mono fun y hy ↦ hy.norm)
+    show ‖‖fderiv ℝ (v j) y‖‖ ≤ S.indicator (fun _ ↦ (K : ℝ)) y
+    by_cases hy : y ∈ S
+    · rw [norm_norm, indicator_of_mem hy]
+      exact hbd j y
+    · rw [indicator_of_notMem hy, fderiv_of_notMem_tsupport ℝ fun h ↦ hy (hsupp j h), norm_zero,
+        norm_zero]
+  -- Steps 5–7: Fatou's lemma for `eLpNorm`, the bounds for `v j`, and the limit of those bounds.
+  calc eLpNorm u p volume ≤ atTop.liminf fun j ↦ eLpNorm (v j) p volume :=
+        Lp.eLpNorm_lim_le_liminf_eLpNorm hvm u hum hlim
+    _ ≤ atTop.liminf fun j ↦ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ (v j) y‖) :=
+        liminf_le_liminf (.of_forall hineq)
+    _ = ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ u y‖) :=
+        (ENNReal.tendsto_ofReal (hconv.const_mul c)).liminf_eq
 /-- **Mollifying a compactly supported Lipschitz function**: the approximation step of Simon Ch. 3,
 proof of Theorem 4.3, used to apply (3) to the Lipschitz cut-offs `ζ_k` of (4) and in the Sobolev
 step (`chapter-03.txt` lines 622–637 and 689–704). For the normalized bump `φ_j ≥ 0` with
@@ -730,6 +1068,38 @@ theorem Submission.deGiorgiDens_lipschitz_smooth_approx : ∀ (N : ℕ) (u : Rn 
       rw [abs_of_nonneg (hφ_nonneg j _)]
       exact hφ_le j _ x₀
   exact ⟨v, hv_cd, hv_cs, hv_tsupp, hbound, hunif, hae⟩
+/-- **Sobolev inequality for compactly supported Lipschitz functions** (Simon Ch. 3, proof of
+Theorem 4.3, Step 7 "Constants"): for `N = n + 1` and `p = (n + 1) / n` (so `p = ∞` when `n = 0`)
+there is `c > 0` with `‖u‖_{L^p} ≤ c ∫ ‖Du‖ dLᴺ` for every Lipschitz `u : ℝᴺ → ℝ` with compact
+support. For `C¹` functions with compact support this is the Gagliardo–Nirenberg–Sobolev
+inequality [GT01, Thm 7.10] when `n ≥ 1` and the bound `sup |v| ≤ ½ ∫ |v'|` (erratum E6) when
+`n = 0`. The mollifications `v_j` of `u` are `C¹`, supported in the compact set
+`cthickening 1 (tsupport u)`, with `‖Dv_j‖ ≤ K`, `v_j → u` uniformly and `Dv_j → Du` a.e., so the
+bound passes to the limit by dominated convergence and Fatou's lemma for `eLpNorm`. -/
+theorem Submission.deGiorgiDens_lipschitz_sobolev : ∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (u : Rn (n + 1) → ℝ) (K : ℝ≥0), LipschitzWith K u → HasCompactSupport u → eLpNorm u ((n + 1 : ℝ≥0∞) / n) volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ u y‖) := by
+  intro n
+  -- Steps 1–2: the inequality for `C¹` functions with compact support, with `c = ½` if `n = 0`
+  -- (where `p = (0 + 1) / 0 = ∞`) and the Gagliardo–Nirenberg–Sobolev constant if `n ≥ 1`.
+  obtain ⟨c, hc, hsmooth⟩ : ∃ c : ℝ, 0 < c ∧ ∀ v : Rn (n + 1) → ℝ, ContDiff ℝ 1 v →
+      HasCompactSupport v →
+        eLpNorm v ((n + 1 : ℝ≥0∞) / n) volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ v y‖) := by
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · refine ⟨1 / 2, one_half_pos, fun v hv hvs ↦ ?_⟩
+      convert Submission.deGiorgiDensSob_one_dim_contDiff v hv hvs using 2
+      simp
+    · exact Submission.deGiorgiDensSob_gns_contDiff n hn
+  refine ⟨c, hc, fun u K hu hcu ↦ ?_⟩
+  -- Step 3: the `C¹` approximations `v j`, supported in the compact set
+  -- `cthickening (1 / (j + 1)) (tsupport u) ⊆ cthickening 1 (tsupport u)`.
+  obtain ⟨v, hv_cd, hv_cs, hv_tsupp, hbound, hunif, hae⟩ :=
+    Submission.deGiorgiDens_lipschitz_smooth_approx (n + 1) u K hu hcu
+  have hsupp : ∀ j, tsupport (v j) ⊆ Metric.cthickening 1 (tsupport u) := fun j ↦
+    (hv_tsupp j).trans (Metric.cthickening_mono
+      (div_le_one_of_le₀ (le_add_of_nonneg_left (Nat.cast_nonneg j)) (by positivity)) _)
+  -- Steps 4–5: dominated convergence of `∫ ‖Dv_j‖` and Fatou's lemma for `eLpNorm`.
+  exact Submission.deGiorgiDensSob_eLpNorm_le_of_approx (n + 1) _ c K
+    (Metric.cthickening 1 (tsupport u)) u v hcu.isCompact.cthickening hv_cd hsupp hbound
+    (ae_of_all _ hunif.tendsto_at) hae fun j ↦ hsmooth (v j) (hv_cd j) (hv_cs j)
 
 /-- **Gauss–Green identity for a Lipschitz test function times a constant vector** (Simon Ch. 3,
 proof of 4.3, (3) and its use for Lipschitz cut-offs in (4)–(5), pp. 81–82, `chapter-03.txt`
