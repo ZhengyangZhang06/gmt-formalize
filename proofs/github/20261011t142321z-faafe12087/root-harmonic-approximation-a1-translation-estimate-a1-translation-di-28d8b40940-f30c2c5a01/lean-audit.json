@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f32f579c0f647a9dc3bf3c3d30122f39b478f6d35d5eab686867400b521f1afa",
+  "git_delta": {
+    "base_commit": "2253ad2a673290205b30c48e05de9ca1c7837a34",
+    "candidate_commit": "e2e2bc90bec5a011c178fe045ad289b4d0f785ad",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lintegral_ball_translation_difference_le",
+    "diff_sha256": "9b6fe97b7c422bddf9f84e41da60685d228e95295e12a1e700569da26a4723c7",
+    "source_sha256": "1a926ca4b62370e1a6696620e41d9311053b2ce334993ca556fb414b911bbda8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lintegral_ball_translation_difference_le",
+      "statement": "∀ (n : ℕ) (h : Rn n → ℝ) (r s : ℝ) (z : Rn n), r + ‖z‖ ≤ s → AEStronglyMeasurable h (volume.restrict (ball (0 : Rn n) s)) → ∫⁻ x in ball (0 : Rn n) r, ‖h (x - z) - h x‖ₑ ^ 2 ≤ 4 * ∫⁻ x in ball (0 : Rn n) s, ‖h x‖ₑ ^ 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
