@@ -444,6 +444,32 @@ theorem Submission.tgc_weight_blowup_tendsto :
       (by fun_prop) hfc.aestronglyMeasurable, ENNReal.toReal_ofReal ht', smul_eq_mul,
     Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable]
   rfl
+/-- `H^n(T ∩ B_r(0)) = ω_n r^n` for an `n`-plane `T ∈ G(N,n)` and every `r ≥ 0` (step (1.2) of
+the tangent graph cover proof): an isometric parametrization of `T` by `ℝ^n` carries `H^n` on `T`
+to Lebesgue measure on `ℝ^n`. -/
+theorem Submission.tgc_plane_closedBall_hausdorff :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n T r hr
+  -- Step 1: an orthonormal basis of `T.plane` indexed by `Fin n`.
+  let b : OrthonormalBasis (Fin n) ℝ T.plane :=
+    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane)
+  -- Step 2: the linear isometry `J : ℝ^n → ℝ^N`, with range `T.plane`.
+  let J : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
+    T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+  -- Step 3: `J (B_r(0)) = T.plane ∩ B_r(0)`.
+  have himg : J '' closedBall 0 r = (T.plane : Set (Euclidean N)) ∩ closedBall 0 r := by
+    ext y
+    constructor
+    · rintro ⟨u, hu, rfl⟩
+      refine ⟨(b.repr.symm u).2, ?_⟩
+      rw [mem_closedBall_zero_iff, J.norm_map]
+      exact mem_closedBall_zero_iff.mp hu
+    · rintro ⟨hy, hyr⟩
+      exact ⟨b.repr ⟨y, hy⟩, by simpa using hyr, by simp [J]⟩
+  -- Steps 4–6: isometry invariance, `μHE[n] = volume` on `ℝ^n`, and the Haar closed-ball formula.
+  rw [← himg, J.isometry.euclideanHausdorffMeasure_image,
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr,
+    finrank_euclideanSpace_fin, unitBallVolume, ENNReal.ofReal_pow hr, mul_comm]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
