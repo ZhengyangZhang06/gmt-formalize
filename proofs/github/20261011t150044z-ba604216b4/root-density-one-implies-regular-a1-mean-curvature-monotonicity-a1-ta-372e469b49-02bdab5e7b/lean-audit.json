@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8c17ccdfe66ecdfed6e23d0431d3e298d429215ef4c951a840fe768f594f6613",
+  "git_delta": {
+    "base_commit": "0b2b8dc0d72dbc341d9c6af6c0dc531302065164",
+    "candidate_commit": "0ca57fc7eafa263951ad154c799b38cb5211c286",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dsmc_tangent_projection_field",
+    "diff_sha256": "97a5755d36a83cf16f24f3b87bcdc4649ad87d16ba053f3daa4c8901969930ca",
+    "source_sha256": "0295a2ccc1ba5be9bbb2b3b497d46572b9017e221e4a34b26a7ae181eadf8145",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_tangent_projection_field",
+      "statement": "∀ (P d : ℕ) (U N : Set (Euclid P)) (y₀ : Euclid P), IsOpen U → IsEmbeddedSubmanifold 2 d N → y₀ ∈ N ∩ U → ∃ (r β : ℝ) (Pt : Euclid P → (Euclid P →L[ℝ] Euclid P)), 0 < r ∧ 0 ≤ β ∧ closedBall y₀ (3 * r) ⊆ U ∧ ContDiffOn ℝ 1 Pt (ball y₀ (3 * r)) ∧ (∀ y ∈ ball y₀ (3 * r), ∀ u w : Euclid P, inner ℝ (Pt y u) w = inner ℝ u (Pt y w)) ∧ (∀ y ∈ ball y₀ (2 * r), ‖fderiv ℝ Pt y‖ ≤ β) ∧ (∀ q ∈ N ∩ ball y₀ (3 * r), ∀ u : Euclid P, Pt q u ∈ tangentSpace N q) ∧ (∀ q ∈ N ∩ ball y₀ (3 * r), ∀ u ∈ tangentSpace N q, Pt q u = u)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
