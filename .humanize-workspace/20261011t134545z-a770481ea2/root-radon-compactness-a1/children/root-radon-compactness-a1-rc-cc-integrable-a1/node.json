@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radon_compactness-a1.rc_cc_integrable-a1",
+  "parent_id": "root.radon_compactness-a1",
+  "depth": 2,
+  "title": "Test functions are integrable against a Radon outer measure",
+  "statement": "Let X be a topological space (universe u; no separation axiom needed). Let μ be a Radon outer measure on X in the sense of Simon Def. 4.6 (Lean IsRadonOuterMeasure μ):\n- (R1) μ is Borel regular — every Borel set is μ-measurable and every set has a Borel superset of equal measure — and μ(K) < ∞ for every compact K;\n- (R2) μ(A) = inf{μ(U) : U open ⊇ A};\n- (R3) μ(U) = sup{μ(K) : K compact ⊆ U} for open U.\nLet μ̄ := caratheodoryMeasure μ be μ restricted to the σ-algebra 𝓜_μ of μ-measurable (Carathéodory) sets (Lemma 1.6/Remark 1.7). Then every continuous f : X → ℝ with compact support (f ∈ C_c(X, ℝ)) is μ̄-integrable.",
+  "lean_statement": "∀ (X : Type u) [TopologicalSpace X] (μ : OuterMeasure X), IsRadonOuterMeasure μ → ∀ f : C_c(X, ℝ), Integrable (fun x => f x) (caratheodoryMeasure μ)",
+  "lean_name": "rc_cc_integrable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-radon-compactness-a1-rc-cc-integrable-a1-a1"
+}

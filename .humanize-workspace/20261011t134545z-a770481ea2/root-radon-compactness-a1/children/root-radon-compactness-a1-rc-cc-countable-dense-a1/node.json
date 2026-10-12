@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radon_compactness-a1.rc_cc_countable_dense-a1",
+  "parent_id": "root.radon_compactness-a1",
+  "depth": 2,
+  "title": "Countable uniformly dense family of test functions supported in a compact set",
+  "statement": "Let X be a Hausdorff, second countable topological space (universe u) and K ⊆ X compact. Then there is a countable set D ⊆ C_c(X, ℝ) of continuous compactly supported real functions with two properties:\n- tsupport g ⊆ K for every g ∈ D;\n- for every f ∈ C_c(X, ℝ) with tsupport f ⊆ K and every ε > 0 there is g ∈ D with |f(x) − g(x)| ≤ ε for all x ∈ X.",
+  "lean_statement": "∀ (X : Type u) [TopologicalSpace X] [T2Space X] [SecondCountableTopology X] (K : Set X), IsCompact K → ∃ D : Set C_c(X, ℝ), D.Countable ∧ (∀ g ∈ D, tsupport g ⊆ K) ∧ ∀ f : C_c(X, ℝ), tsupport f ⊆ K → ∀ ε : ℝ, 0 < ε → ∃ g ∈ D, ∀ x, |f x - g x| ≤ ε",
+  "lean_name": "rc_cc_countable_dense",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-radon-compactness-a1-rc-cc-countable-dense-a1-a1"
+}

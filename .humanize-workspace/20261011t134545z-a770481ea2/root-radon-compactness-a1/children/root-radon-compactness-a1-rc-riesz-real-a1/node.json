@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radon_compactness-a1.rc_riesz_real-a1",
+  "parent_id": "root.radon_compactness-a1",
+  "depth": 2,
+  "title": "Representation of positive linear functionals on C_c(X, ℝ) from Theorem 4.12",
+  "statement": "Assume RieszPositive (Simon Thm 4.12) for spaces in universe u: for every locally compact Hausdorff space Y in universe u and every ℝ≥0-linear λ : C_c(Y, ℝ≥0) → ℝ≥0, there is a Radon outer measure ν on Y with λ(h) = ∫_Y h dν̄ (ν̄ = caratheodoryMeasure ν) for all h ∈ C_c(Y, ℝ≥0). Let X be a locally compact Hausdorff space in universe u, and let Λ : C_c(X, ℝ) → ℝ be ℝ-linear with Λ(f) ≥ 0 whenever f ≥ 0 pointwise. Then there is a Radon outer measure μ on X with Λ(f) = ∫_X f d(caratheodoryMeasure μ) for every f ∈ C_c(X, ℝ).",
+  "lean_statement": "RieszPositive.{u} → ∀ (X : Type u) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] (Λ : C_c(X, ℝ) →ₗ[ℝ] ℝ), (∀ f : C_c(X, ℝ), 0 ≤ f → 0 ≤ Λ f) → ∃ μ : OuterMeasure X, IsRadonOuterMeasure μ ∧ ∀ f : C_c(X, ℝ), Λ f = ∫ x, f x ∂caratheodoryMeasure μ",
+  "lean_name": "rc_riesz_real",
+  "depends_on": [
+    "root.radon_compactness-a1.rc_cc_integrable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.radon_compactness-a1.rc_cc_integrable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-radon-compactness-a1-rc-riesz-real-a1-a1"
+}
