@@ -458,6 +458,81 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Fundamental theorem of calculus for a Lipschitz curve with an a.e. derivative (node
+`lipschitz_ftc` of `lipschitz_ae_derivative`): if `φ : ℝ → ℝ^ℓ` is `L`-Lipschitz on `[a, b]`, `k`
+is continuous on `[a, b]` and `φ` has derivative `k(t)` at a.e. `t ∈ (a, b)`, then
+`φ(b) - φ(a) = ∫_a^b k`.  The extension `ψ = φ ∘ projIcc a b` is `L`-Lipschitz on `ℝ`, so the
+difference quotients `h⁻¹ (ψ(t + h) - ψ(t))` are bounded by `L`; as `h → 0⁺` they tend to `k(t)`
+for a.e. `t ∈ (a, b]`, and dominated convergence gives convergence of their integrals over
+`[a, b]` to `∫_a^b k`.  For a primitive `G` of the continuous `ψ` the same integrals equal
+`h⁻¹ (G(b + h) - G(b)) - h⁻¹ (G(a + h) - G(a))`, which tend to `ψ(b) - ψ(a) = φ(b) - φ(a)`. -/
+theorem allard52_lad_lipschitz_ftc : ∀ (ℓ : ℕ) (φ k : ℝ → Rn ℓ) (a b : ℝ) (L : ℝ≥0), a ≤ b → LipschitzOnWith L φ (Icc a b) → ContinuousOn k (Icc a b) → (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → HasDerivAt φ (k t) t) → φ b - φ a = ∫ t in a..b, k t := by
+  intro ℓ φ k a b L hab hφ _ hderiv
+  -- The extension `ψ = φ ∘ projIcc a b` is `L`-Lipschitz on `ℝ` and agrees with `φ` on `[a, b]`.
+  set ψ : ℝ → Rn ℓ := fun t => φ (projIcc a b hab t) with hψ
+  have hψL : LipschitzWith L ψ := by
+    have h := hφ.to_restrict.comp (LipschitzWith.projIcc hab)
+    rw [mul_one] at h
+    exact h
+  have hψc : Continuous ψ := hψL.continuous
+  have hψa : ψ a = φ a := by
+    simp only [hψ, projIcc_left]
+  have hψb : ψ b = φ b := by
+    simp only [hψ, projIcc_right]
+  have hψeq : ∀ t ∈ Ioo a b, ψ =ᶠ[𝓝 t] φ := by
+    intro t ht
+    filter_upwards [Icc_mem_nhds ht.1 ht.2] with s hs
+    simp only [hψ, projIcc_of_mem hab hs]
+  -- The difference quotients of `ψ` are bounded by `L`.
+  have hbound : ∀ h : ℝ, 0 < h → ∀ t : ℝ, ‖h⁻¹ • (ψ (t + h) - ψ t)‖ ≤ L := by
+    intro h hh t
+    rw [norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hh, ← dist_eq_norm]
+    have h1 := hψL.dist_le_mul (t + h) t
+    rw [Real.dist_eq, add_sub_cancel_left, abs_of_pos hh] at h1
+    calc h⁻¹ * dist (ψ (t + h)) (ψ t) ≤ h⁻¹ * (L * h) := by gcongr
+      _ = L := by field_simp
+  -- Dominated convergence: the integrals of the difference quotients tend to `∫_a^b k`, since
+  -- `ψ = φ` near every `t ∈ (a, b)` and `{b}` is null.
+  have hlim1 : Tendsto (fun h : ℝ => ∫ t in a..b, h⁻¹ • (ψ (t + h) - ψ t)) (𝓝[>] 0)
+      (𝓝 (∫ t in a..b, k t)) := by
+    refine intervalIntegral.tendsto_integral_filter_of_dominated_convergence (fun _ => (L : ℝ))
+      ?_ ?_ intervalIntegrable_const ?_
+    · refine Eventually.of_forall (fun h => ?_)
+      exact (((hψc.comp (continuous_id.add continuous_const)).sub hψc).const_smul
+        h⁻¹).aestronglyMeasurable
+    · filter_upwards [self_mem_nhdsWithin] with h hh
+      exact ae_of_all _ (fun t _ => hbound h hh t)
+    · filter_upwards [hderiv, Measure.ae_ne volume b] with t ht htb htI
+      rw [uIoc_of_le hab] at htI
+      have htIoo : t ∈ Ioo a b := ⟨htI.1, lt_of_le_of_ne htI.2 htb⟩
+      exact ((ht htIoo).congr_of_eventuallyEq (hψeq t htIoo)).tendsto_slope_zero_right
+  -- The same integrals are difference quotients at `b` and at `a` of a primitive `G` of `ψ`.
+  set G : ℝ → Rn ℓ := fun x => ∫ t in a..x, ψ t
+  have hGd : ∀ x, HasDerivAt G (ψ x) x := fun x =>
+    (hψc.integral_hasStrictDerivAt a x).hasDerivAt
+  have hGint : ∀ u v, ∫ t in u..v, ψ t = G v - G u := fun u v =>
+    intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hGd x) (hψc.intervalIntegrable u v)
+  have hrepr : ∀ h : ℝ, ∫ t in a..b, h⁻¹ • (ψ (t + h) - ψ t) =
+      h⁻¹ • (G (b + h) - G b) - h⁻¹ • (G (a + h) - G a) := by
+    intro h
+    have hint : IntervalIntegrable (fun t => ψ (t + h)) volume a b :=
+      (hψc.comp (continuous_id.add continuous_const)).intervalIntegrable a b
+    rw [intervalIntegral.integral_smul,
+      intervalIntegral.integral_sub hint (hψc.intervalIntegrable a b),
+      intervalIntegral.integral_comp_add_right ψ h, hGint (a + h) (b + h), hGint a b, ← smul_sub]
+    congr 1
+    abel
+  have hlim2 : Tendsto (fun h : ℝ => ∫ t in a..b, h⁻¹ • (ψ (t + h) - ψ t)) (𝓝[>] 0)
+      (𝓝 (ψ b - ψ a)) := by
+    simp only [hrepr]
+    exact (hGd b).tendsto_slope_zero_right.sub (hGd a).tendsto_slope_zero_right
+  rw [← hψa, ← hψb]
+  exact tendsto_nhds_unique hlim2 hlim1
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
