@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "942375b5c313271be27f42c89ac7fc0bb4c8b229d0355d8605a717179185f929",
+  "git_delta": {
+    "base_commit": "08d8c9f6968533b4364d02039d728a073a9531ab",
+    "candidate_commit": "1e2cce53580ad1a27f86002e85b0b765f2a522ec",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "mvk_integral_radial_fderiv_eq_neg_laplacian",
+    "diff_sha256": "a2a5c0ab16427324e5b48867e97a37fc90db39616005704875e62da79e02c26c",
+    "source_sha256": "0514f4939a087628b8d81a175b31d747c3f801f60de98cb8c796c550ec9f16f3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mvk_integral_radial_fderiv_eq_neg_laplacian",
+      "statement": "∀ (n : ℕ) (ρ Ψ h : Rn n → ℝ) (x₀ : Rn n) (σ : ℝ), σ ≠ 0 → ContDiff ℝ 2 h → ContDiff ℝ 1 Ψ → (∀ z : Rn n, 1 ≤ ‖z‖ → Ψ z = 0) → (∀ z v : Rn n, fderiv ℝ Ψ z v = ρ z * inner ℝ z v) → ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z = -σ * ∫ z, Laplacian.laplacian h (x₀ + σ • z) * Ψ z",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
