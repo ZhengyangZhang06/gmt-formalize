@@ -544,6 +544,107 @@ theorem dohr_vel_linear_graph_area : ∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn 
   rw [himage, hι.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
     Measure.addHaar_image_linearMap, hdet, Real.sqrt_sq_eq_abs]
 
+/-- Trace of a vertical map composed with the projection onto a rotated graph plane.
+Put `b_a = L e_a = (e_a, P e_a)`, so `⟨b_a, b_c⟩ = g_{ac}` with `g = I + (⟨P e_a, P e_b⟩)_{a,b}`;
+`g` is symmetric and invertible (`det g > 0` by `dohr_vel_linear_graph_area`).  The projection onto
+`τ = range L` is `z ↦ Σ_{a,c} g^{ac} ⟨b_c, z⟩ b_a`
+(`Submodule.eq_starProjection_of_mem_of_inner_eq_zero`), and the projection onto `Q⁻¹ τ` is
+`Q⁻¹ ∘ p_τ ∘ Q` (`Submodule.starProjection_map_apply`).  Hence `D ∘ p` is the rank-one sum
+`z ↦ Σ_{a,c} g^{ac} ⟨Q⁻¹ b_c, z⟩ Q⁻¹(0, Ψ e_a)`, whose trace is `Σ_{a,c} g^{ac} ⟨P e_c, Ψ e_a⟩`
+(`LinearMap.trace_smulRight`). -/
+theorem dohr_vel_graph_projection_trace : ∀ n ℓ : ℕ, ∀ (P Ψ : Rn n →L[ℝ] Rn ℓ) (L : Rn n →L[ℝ] Amb n ℓ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (D : Amb n ℓ →L[ℝ] Amb n ℓ), (∀ v : Rn n, L v = graphPoint v (P v)) → (∀ (v : Rn n) (w : Rn ℓ), D (Q.symm (graphPoint v w)) = Q.symm (graphPoint 0 (Ψ v))) → LinearMap.trace ℝ (Amb n ℓ) (D.toLinearMap ∘ₗ (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range L.toLinearMap)).starProjection.toLinearMap) = ∑ a : Fin n, ∑ c : Fin n, ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))⁻¹ a c * inner ℝ (P (EuclideanSpace.single c (1 : ℝ))) (Ψ (EuclideanSpace.single a (1 : ℝ))) := by
+  intro n ℓ P Ψ L Q D hL hD
+  have hinner : ∀ (v v' : Rn n) (w w' : Rn ℓ),
+      inner ℝ (graphPoint v w) (graphPoint v' w') = inner ℝ v v' + inner ℝ w w' := by
+    intro v v' w w'
+    simp only [graphPoint, PiLp.inner_apply, RCLike.inner_apply, conj_trivial, Fin.sum_univ_add, Fin.append_left,
+      Fin.append_right]
+  set g : Matrix (Fin n) (Fin n) ℝ := (1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n =>
+    inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))) with hg
+  let bv : Fin n → Amb n ℓ := fun a => L (EuclideanSpace.single a (1 : ℝ))
+  have hdet : g.det ≠ 0 := (dohr_vel_linear_graph_area n ℓ P).1.ne'
+  have hunit : IsUnit g.det := isUnit_iff_ne_zero.mpr hdet
+  have hinvg : g⁻¹ * g = 1 := Matrix.nonsing_inv_mul g hunit
+  have hgT : g.transpose = g := by
+    ext a c
+    simp only [hg, Matrix.transpose_apply, Matrix.add_apply, Matrix.of_apply, Matrix.one_apply]
+    rw [real_inner_comm]
+    by_cases hac : a = c
+    · subst hac; rfl
+    · rw [ite_eq_right hac, ite_eq_right (Ne.symm hac)]
+  have hsymm : ∀ a c, g⁻¹ a c = g⁻¹ c a := by
+    intro a c
+    have h1 : (g⁻¹).transpose = g⁻¹ := by rw [Matrix.transpose_nonsing_inv, hgT]
+    have h2 := congrFun (congrFun h1 c) a
+    simpa [Matrix.transpose_apply] using h2
+  -- the orthogonal projection onto the graph plane τ = range L
+  have hproj : ∀ z, (LinearMap.range L.toLinearMap).starProjection z =
+      ∑ a, ∑ c, (g⁻¹ a c * inner ℝ (bv c) z) • bv a := by
+    intro z
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · refine Submodule.sum_mem _ (fun a _ => Submodule.sum_mem _ (fun c _ => Submodule.smul_mem _ _ ?_))
+      exact ⟨EuclideanSpace.single a (1 : ℝ), rfl⟩
+    · have hd : ∀ d, inner ℝ (z - ∑ a, ∑ c, (g⁻¹ a c * inner ℝ (bv c) z) • bv a) (bv d) = 0 := by
+        intro d
+        have hgd : ∀ a, inner ℝ (bv a) (bv d) = g a d := fun a => by
+          simp only [bv, hL, hinner, hg, Matrix.add_apply, Matrix.of_apply, Matrix.one_apply,
+            EuclideanSpace.inner_single_left, PiLp.single_apply, map_one, one_mul]
+        rw [inner_sub_left, sum_inner]
+        simp_rw [sum_inner, real_inner_smul_left, hgd]
+        have hswap : ∑ a, ∑ c, g⁻¹ a c * inner ℝ (bv c) z * g a d =
+            ∑ c, inner ℝ (bv c) z * ∑ a, g⁻¹ c a * g a d := by
+          rw [Finset.sum_comm]
+          refine Finset.sum_congr rfl (fun c _ => ?_)
+          rw [Finset.mul_sum]
+          refine Finset.sum_congr rfl (fun a _ => ?_)
+          rw [hsymm a c]
+          ring
+        rw [hswap]
+        simp_rw [← Matrix.mul_apply, hinvg, Matrix.one_apply]
+        simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+        rw [real_inner_comm]
+        exact sub_self _
+      intro w hw
+      obtain ⟨v, rfl⟩ := hw
+      have hv : v = ∑ a, (v a) • EuclideanSpace.single a (1 : ℝ) := by
+        conv_lhs => rw [← (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr v]
+        simp only [EuclideanSpace.basisFun_repr, EuclideanSpace.basisFun_apply]
+      have hLv : L.toLinearMap v = ∑ a, (v a) • bv a := by
+        conv_lhs => rw [hv]
+        rw [map_sum]
+        simp only [map_smul, ContinuousLinearMap.coe_coe, bv]
+      rw [hLv, inner_sum]
+      refine Finset.sum_eq_zero (fun a _ => ?_)
+      rw [real_inner_smul_right, hd a, mul_zero]
+  -- rotate the plane
+  have hp : ∀ z, (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range L.toLinearMap)).starProjection z =
+      Q.symm ((LinearMap.range L.toLinearMap).starProjection (Q z)) := by
+    intro z
+    have := Submodule.starProjection_map_apply Q.symm (LinearMap.range L.toLinearMap) z
+    rw [LinearIsometryEquiv.symm_symm] at this
+    exact this
+  have hDb : ∀ a, D (Q.symm (bv a)) = Q.symm (graphPoint 0 (Ψ (EuclideanSpace.single a (1 : ℝ)))) := by
+    intro a
+    simp only [bv, hL]
+    exact hD _ _
+  have hDp : D.toLinearMap ∘ₗ (Submodule.map Q.symm.toLinearEquiv.toLinearMap
+        (LinearMap.range L.toLinearMap)).starProjection.toLinearMap =
+      ∑ a, ∑ c, g⁻¹ a c • (innerₛₗ ℝ (Q.symm (bv c))).smulRight
+        (Q.symm (graphPoint 0 (Ψ (EuclideanSpace.single a (1 : ℝ))))) := by
+    apply LinearMap.ext
+    intro z
+    simp only [LinearMap.comp_apply, ContinuousLinearMap.coe_coe, hp, hproj, map_sum, map_smul,
+      LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.smulRight_apply,
+      innerₛₗ_apply_apply, hDb]
+    refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun c _ => ?_))
+    rw [LinearIsometryEquiv.inner_map_eq_flip, LinearIsometryEquiv.symm_symm, smul_smul]
+  rw [hDp]
+  simp only [map_sum, map_smul, LinearMap.trace_smulRight, innerₛₗ_apply_apply, LinearIsometryEquiv.inner_map_map,
+    smul_eq_mul]
+  refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun c _ => ?_))
+  show g⁻¹ a c * inner ℝ (L (EuclideanSpace.single c (1 : ℝ))) (graphPoint 0 (Ψ (EuclideanSpace.single a (1 : ℝ)))) = _
+  rw [hL, hinner, inner_zero_right, zero_add]
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
