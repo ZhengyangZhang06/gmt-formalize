@@ -555,6 +555,55 @@ theorem Submission.varifold_tangents_rescaled_ball_mass_tendsto :
     _ = (ENNReal.ofReal t ^ n)⁻¹ * V.weight (closedBall x (t * R)) := by
       rw [ENNReal.inv_mul_cancel hc0 hctop, mul_one]
 
+/-- **Simon Ch. 8, 5.2 (centre corrected to `0`), ball masses of a varifold tangent** (child
+`limit_ball_mass` of `varifold_tangents`): if `Θ^n(μ_V, x) = θ₀` and `C ∈ VarTan(V, x)`, then
+`μ_C(B_ρ(0)) = θ₀ ω_n ρ^n` for every `ρ > 0`.
+Write `L(r) = θ₀ ω_n r^n` and `K_r = B_r(0) × G(N,n)`.  For the radii `t_j > 0`, `t_j → 0` of `C`,
+`varifold_tangents_rescaled_ball_mass_tendsto` gives `V_{x,t_j}(K_r) → L(r) < ∞` for `r > 0`.  As
+`C(K_ρ') = μ_C(B_ρ'(0)) < ∞`, `varifold_tangents_lbm_vague_cylinder_bounds` (with `a = ρ`, `b = ρ'`)
+gives `μ_C(B_ρ(0)) ≤ L(ρ')` and `L(ρ) ≤ μ_C(B_ρ'(0))` for every `ρ' > ρ`.  Let `ρ' ↓ ρ`: `L` is
+continuous, and `μ_C(B_ρ'(0)) → μ_C(B_ρ(0))` by continuity from above, since
+`⋂_{ρ' > ρ} B_ρ'(0) = B_ρ(0)`. -/
+theorem Submission.varifold_tangents_limit_ball_mass :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (θ₀ : ℝ) (C : Varifold N n (univ : Set (Euclidean N))), HasDensity n V.weight x (ENNReal.ofReal θ₀) → IsVarifoldTangent V x C → ∀ ρ : ℝ, 0 < ρ → C.weight (closedBall 0 ρ) = ENNReal.ofReal θ₀ * unitBallVolume n * ENNReal.ofReal ρ ^ n := by
+  intro N n U V x θ₀ C hθ hC ρ hρ
+  obtain ⟨t, ht_pos, ht_lim, hconv⟩ := hC
+  set L : ℝ → ℝ≥0∞ := fun r ↦ ENNReal.ofReal θ₀ * unitBallVolume n * ENNReal.ofReal r ^ n
+  -- `t j → 0⁺`, so `V_{x,t_j}(B_r(0) × G(N,n)) → L r < ∞` for every `r > 0`.
+  have ht : Tendsto t atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.2 ⟨ht_lim, Eventually.of_forall ht_pos⟩
+  have hmass : ∀ r : ℝ, 0 < r → Tendsto (fun j ↦ rescaledMeasure V x (t j)
+      (closedBall (0 : Euclidean N) r ×ˢ (univ : Set (Grassmannian N n)))) atTop (𝓝 (L r)) :=
+    fun r hr ↦ (Submission.varifold_tangents_rescaled_ball_mass_tendsto N n U V x _ r hθ hr).comp ht
+  have hc : ENNReal.ofReal θ₀ * unitBallVolume n ≠ ∞ :=
+    ENNReal.mul_ne_top ENNReal.ofReal_ne_top measure_ball_lt_top.ne
+  have hL : ∀ r, L r ≠ ∞ := fun r ↦ ENNReal.mul_ne_top hc (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  -- `C(B_r(0) × G(N,n)) = μ_C(B_r(0)) < ∞`, as `B_r(0)` is compact.
+  have hCK : ∀ r : ℝ, C.measure (closedBall (0 : Euclidean N) r ×ˢ (univ : Set (Grassmannian N n)))
+      = C.weight (closedBall 0 r) := fun r ↦ (C.weight_apply measurableSet_closedBall).symm
+  have hCtop : ∀ r : ℝ, C.weight (closedBall 0 r) ≠ ∞ :=
+    fun r ↦ C.weight_finite_on_compact _ (isCompact_closedBall 0 r) (subset_univ _)
+  -- For `ρ' > ρ`: `μ_C(B_ρ(0)) ≤ L ρ'` and `L ρ ≤ μ_C(B_ρ'(0))`.
+  have hbd : ∀ ρ' > ρ, C.weight (closedBall 0 ρ) ≤ L ρ' ∧ L ρ ≤ C.weight (closedBall 0 ρ') := by
+    intro ρ' hρ'
+    have := Submission.varifold_tangents_lbm_vague_cylinder_bounds N n _ C.measure ρ ρ' (L ρ)
+      (L ρ') hconv hρ' (hCK ρ' ▸ hCtop ρ') (hmass ρ hρ) (hmass ρ' (hρ.trans hρ')) (hL ρ')
+    rwa [hCK, hCK] at this
+  -- Let `ρ' ↓ ρ`: `L` is continuous and `r ↦ μ_C(B_r(0))` is continuous from the right.
+  have hLlim : Tendsto L (𝓝[>] ρ) (𝓝 (L ρ)) :=
+    ((ENNReal.continuous_const_mul hc).comp
+      ((ENNReal.continuous_pow n).comp ENNReal.continuous_ofReal)).continuousAt.tendsto.mono_left
+      nhdsWithin_le_nhds
+  have hClim : Tendsto (fun r ↦ C.weight (closedBall (0 : Euclidean N) r)) (𝓝[>] ρ)
+      (𝓝 (C.weight (closedBall 0 ρ))) := by
+    have := tendsto_measure_biInter_gt (μ := C.weight) (s := closedBall (0 : Euclidean N)) (a := ρ)
+      (fun r _ ↦ measurableSet_closedBall.nullMeasurableSet)
+      (fun i j _ hij ↦ closedBall_subset_closedBall hij) ⟨ρ + 1, by linarith, hCtop _⟩
+    rwa [biInter_gt_closedBall] at this
+  have hev : ∀ᶠ ρ' in 𝓝[>] ρ, ρ < ρ' := self_mem_nhdsWithin
+  exact le_antisymm (ge_of_tendsto hLlim (hev.mono fun ρ' h ↦ (hbd ρ' h).1))
+    (ge_of_tendsto hClim (hev.mono fun ρ' h ↦ (hbd ρ' h).2))
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
