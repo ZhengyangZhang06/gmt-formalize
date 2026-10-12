@@ -2,6 +2,8 @@ import Poincare.SimonGMT.Chapter08.VarifoldConvergence
 import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter02.Submanifold
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Poincare.SimonGMT.Chapter01.DensityComparison
+import Poincare.SimonGMT.Chapter02.AreaLiteral
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 8 (printed pp. 205–224)
@@ -478,6 +480,127 @@ theorem Submission.frt_cnm_densityRatio_lower_closure :
       ((((ENNReal.continuous_pow n).comp ENNReal.continuous_ofReal).tendsto ρ).mono_left
         nhdsWithin_le_nhds) (Or.inr hωtop)) (Or.inl (hD0 ρ hρ))
   exact le_of_tendsto hlim (mem_of_superset (Ioo_mem_nhdsLT hρ) hbound)
+/-- `ω_n = π^{n/2} / Γ(n/2 + 1)` for every `n ∈ ℕ` (including `ω_0 = 1`): for `n = 0` the volume
+of `EuclideanSpace ℝ (Fin 0)` is the Dirac mass at `0`, and for `n ≥ 1` this is
+`EuclideanSpace.volume_ball` at radius `1` together with `√π ^ n = π ^ (n / 2)`. -/
+theorem Submission.frt_hnw_unitBallVolume_eq_gamma :
+    ∀ n : ℕ, unitBallVolume n = ENNReal.ofReal (Real.pi ^ ((n : ℝ) / 2) / Real.Gamma ((n : ℝ) / 2 + 1)) := by
+  intro n
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · -- Step 1: the volume of `EuclideanSpace ℝ (Fin 0)` is `dirac 0`, so `ω_0 = 1 = π^0 / Γ(1)`.
+    rw [unitBallVolume, volume_euclideanSpace_eq_dirac (Fin 0),
+      Measure.dirac_apply_of_mem (mem_ball_self (x := (0 : EuclideanSpace ℝ (Fin 0))) one_pos)]
+    simp
+  · -- Step 2: the ball formula at centre `0` and radius `1`, with `card (Fin n) = n`.
+    have : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+    rw [unitBallVolume, EuclideanSpace.volume_ball (Fin n) 0 1, Fintype.card_fin,
+      ENNReal.ofReal_one, one_pow, one_mul]
+    -- Step 3: `√π ^ n = π ^ (n / 2)`.
+    have hpow : Real.sqrt Real.pi ^ n = Real.pi ^ ((n : ℝ) / 2) := by
+      rw [Real.sqrt_eq_rpow, ← Real.rpow_natCast, ← Real.rpow_mul Real.pi_pos.le]
+      congr 1
+      ring
+    rw [hpow]
+/-- Small open neighbourhoods of null sets (used for the First Rectifiability Theorem, Simon Ch. 8,
+1.2): if `μ` is finite on compact subsets of the open set `U` and `Z ⊆ U` is `μ`-null, then for every
+`ζ > 0` there is an open `O` with `Z ⊆ O ⊆ U` and `μ(O) < ζ`. -/
+theorem Submission.frt_hnw_exists_open_superset_measure_lt :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (U Z : Set (Euclidean N)) (ζ : ℝ≥0∞), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → Z ⊆ U → μ Z = 0 → 0 < ζ → ∃ O : Set (Euclidean N), IsOpen O ∧ Z ⊆ O ∧ O ⊆ U ∧ μ O < ζ := by
+  intro N μ U Z ζ hU hfin hZU hZ hζ
+  -- Step 1: for each `x ∈ U` a radius `r x > 0` with `closedBall x (r x) ⊆ U`.
+  have hrad : ∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ closedBall x r ⊆ U := by
+    intro x hx
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp hU x hx
+    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hεU⟩
+  choose! r hr using hrad
+  -- Steps 2–3: the balls `ball x (r x)`, `x ∈ U`, cover `U`; by Lindelöf, so do those with
+  -- centres in a countable `T ⊆ U`.
+  have hcover : ⋃ x ∈ U, ball x (r x) = U := by
+    apply Subset.antisymm
+    · exact iUnion₂_subset fun x hx ↦ ball_subset_closedBall.trans (hr x hx).2
+    · intro x hx
+      exact mem_iUnion₂.mpr ⟨x, hx, mem_ball_self (hr x hx).1⟩
+  obtain ⟨T, hTU, hTc, hTcover⟩ :=
+    TopologicalSpace.isOpen_biUnion_countable U (fun x ↦ ball x (r x)) (fun _ _ ↦ isOpen_ball)
+  rw [hcover] at hTcover
+  have : Countable T := hTc.to_subtype
+  -- Step 4: a budget `ε i > 0` with `∑' i, ε i < ζ`.
+  obtain ⟨ε, hεpos, hεsum⟩ := ENNReal.exists_pos_sum_of_countable hζ.ne' T
+  -- Step 5: outer regularity of the finite measure `μ.restrict (ball i (r i))` gives an open
+  -- `O' i ⊇ Z` with `μ (O' i ∩ ball i (r i)) < ε i`.
+  have hloc : ∀ i : T, ∃ O' : Set (Euclidean N), Z ⊆ O' ∧ IsOpen O' ∧
+      μ (O' ∩ ball (i : Euclidean N) (r i)) < ε i := by
+    intro i
+    have hballfin : μ (ball (i : Euclidean N) (r i)) ≠ ∞ :=
+      ne_top_of_le_ne_top (hfin _ (isCompact_closedBall _ _) (hr _ (hTU i.2)).2)
+        (measure_mono ball_subset_closedBall)
+    have : IsFiniteMeasure (μ.restrict (ball (i : Euclidean N) (r i))) :=
+      isFiniteMeasure_restrict.mpr hballfin
+    have hZν : μ.restrict (ball (i : Euclidean N) (r i)) Z < ε i := by
+      rw [Measure.restrict_apply' measurableSet_ball]
+      exact (measure_mono_null inter_subset_left hZ).trans_lt (by exact_mod_cast hεpos i)
+    obtain ⟨O', hZO', hO'open, hO'⟩ := Set.exists_isOpen_lt_of_lt Z _ hZν
+    refine ⟨O', hZO', hO'open, ?_⟩
+    rwa [Measure.restrict_apply hO'open.measurableSet] at hO'
+  choose O' hZO' hO'open hO' using hloc
+  -- Step 6: glue `O = ⋃ i, O' i ∩ ball i (r i)`.
+  refine ⟨⋃ i : T, O' i ∩ ball (i : Euclidean N) (r i), ?_, ?_, ?_, ?_⟩
+  · exact isOpen_iUnion fun i ↦ (hO'open i).inter isOpen_ball
+  · intro z hz
+    have hz' : z ∈ ⋃ x ∈ T, ball x (r x) := hTcover ▸ hZU hz
+    obtain ⟨x, hxT, hzx⟩ := mem_iUnion₂.mp hz'
+    exact mem_iUnion.mpr ⟨⟨x, hxT⟩, hZO' _ hz, hzx⟩
+  · exact iUnion_subset fun i ↦ inter_subset_right.trans
+      (ball_subset_closedBall.trans (hr _ (hTU i.2)).2)
+  · calc μ (⋃ i : T, O' i ∩ ball (i : Euclidean N) (r i))
+        ≤ ∑' i : T, μ (O' i ∩ ball (i : Euclidean N) (r i)) := measure_iUnion_le _
+      _ ≤ ∑' i : T, (ε i : ℝ≥0∞) := ENNReal.tsum_le_tsum fun i ↦ (hO' i).le
+      _ < ζ := hεsum
+/-- Step (3b) in the proof of Simon Ch. 8, 1.2 (child `hausdorff_null_of_weight_null` of
+`first_rectifiability`), via Simon Ch. 1, 3.3: let `U` be open and `μ` finite on compact subsets
+of `U`.  If `Z ⊆ U` is `μ`-null and `limsup_{ρ↓0} μ(B_ρ(x)) / (ω_n ρ^n) > 0` at every `x ∈ Z`,
+then `H^n(Z) = 0`.  For `Z_m = {x ∈ Z : limsup ≥ 1/m}`, Simon 3.3 gives `(1/m) H^n(Z_m) ≤ μ(O)`
+for every open `O ⊇ Z_m`, and there are such `O` with `μ(O)` arbitrarily small. -/
+theorem Submission.frt_hausdorff_null_of_weight_null :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (U Z : Set (Euclidean N)), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → Z ⊆ U → μ Z = 0 → (∀ x ∈ Z, 0 < limsup (densityRatio n μ x) (𝓝[>] 0)) → μHE[n] Z = 0 := by
+  intro N n μ U Z hU hfin hZU hZ hpos
+  -- (a) `ω_n` is Simon's normalization `π^{n/2} / Γ(n/2 + 1)`, also for `n = 0`.
+  have hω : unitBallVolume n = Chapter01.realUnitBallVolume (n : ℝ) := by
+    rw [Chapter01.realUnitBallVolume_eq]
+    exact Submission.frt_hnw_unitBallVolume_eq_gamma n
+  -- (b) Borel sets are Carathéodory measurable for `μ`.
+  have hcar : borel (Euclidean N) ≤ μ.toOuterMeasure.caratheodory := by
+    rw [← BorelSpace.measurable_eq]
+    exact le_toOuterMeasure_caratheodory μ
+  -- (c) Simon 3.3: if `t ≤ limsup densityRatio` on `A ⊆ O` with `O` open, then
+  -- `t H^n(A) ≤ μ(O)`, because `O ∩ B_ρ(x) = B_ρ(x)` for small `ρ`.
+  have hcomp : ∀ (O A : Set (Euclidean N)) (t : ℝ≥0∞), IsOpen O → A ⊆ O →
+      (∀ x ∈ A, t ≤ limsup (densityRatio n μ x) (𝓝[>] 0)) → t * μHE[n] A ≤ μ O := by
+    intro O A t hO hAO hA
+    have h := Chapter01.mul_simonHausdorff_le_of_le_dimensionalUpperDensity μ.toOuterMeasure hcar
+      (Nat.cast_nonneg n) A O t fun x hx ↦ by
+        obtain ⟨R, hR, hRO⟩ := Metric.isOpen_iff.1 hO x (hAO hx)
+        refine (hA x hx).trans_eq (limsup_congr ?_)
+        filter_upwards [Ioo_mem_nhdsGT hR] with ρ hρ
+        rw [Chapter01.dimensionalDensityQuotient, densityRatio, hω, ENNReal.rpow_natCast,
+          inter_eq_right.2 ((closedBall_subset_ball hρ.2).trans hRO), Measure.toOuterMeasure_apply]
+    rwa [← Chapter01.simonHausdorffMeasureReal_toOuterMeasure (Nat.cast_nonneg n),
+      Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure] at h
+  -- (d) For `t ≠ 0`, `Z_t = {x ∈ Z : t ≤ limsup densityRatio}` is `H^n`-null: otherwise an open
+  -- `O ⊇ Z_t` with `μ(O) < t H^n(Z_t)` exists (`Z_t` is `μ`-null), contradicting (c).
+  have hnull : ∀ t : ℝ≥0∞, t ≠ 0 →
+      μHE[n] {x | x ∈ Z ∧ t ≤ limsup (densityRatio n μ x) (𝓝[>] 0)} = 0 := by
+    intro t ht
+    by_contra hH
+    obtain ⟨O, hO, hZO, -, hμO⟩ := Submission.frt_hnw_exists_open_superset_measure_lt N μ U
+      {x | x ∈ Z ∧ t ≤ limsup (densityRatio n μ x) (𝓝[>] 0)} _ hU hfin
+      ((sep_subset _ _).trans hZU) (measure_mono_null (sep_subset _ _) hZ) (ENNReal.mul_pos ht hH)
+    exact (hcomp O _ t hO hZO fun x hx ↦ hx.2).not_gt hμO
+  -- (e) `Z ⊆ ⋃ m, Z_{1/m}`, as `limsup densityRatio > 0` exceeds some `1/m` at each `x ∈ Z`.
+  refine measure_mono_null (fun x hx ↦ ?_)
+    (measure_iUnion_null fun m : ℕ ↦ hnull _ (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top m)))
+  obtain ⟨m, hm⟩ := ENNReal.exists_inv_nat_lt (hpos x hx).ne'
+  exact mem_iUnion.2 ⟨m, hx, hm.le⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
