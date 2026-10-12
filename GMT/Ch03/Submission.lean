@@ -335,6 +335,60 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Lebesgue–Besicovitch differentiation along open balls** (Simon Ch. 1, Corollary 3.17, with
+the passage from closed to open balls; parent proof steps 2–3). Let `μ` be a finite measure on
+`ℝᴺ` and `f ∈ L¹(μ)`. Then for `μ`-a.e. `x`, `normalAverage μ f x ρ = μ(B_ρ(x))⁻¹ ∫_{B_ρ(x)} f dμ`
+tends to `f(x)` as `ρ ↓ 0`. Besicovitch differentiation gives `c(r) = ⨍_{B̄_r(x)} f dμ → f(x)`.
+Given a closed neighbourhood `F` of `f(x)`, take `δ > 0` with `c(r) ∈ F` for `r ∈ (0, δ)`, and let
+`ρ ∈ (0, δ)`. If `μ(B_ρ(x)) = 0`, then `normalAverage μ f x ρ = 0 = c(ρ/2)`. Otherwise the closed
+balls `B̄_{r_n}(x)`, `ρ/2 < r_n ↑ ρ`, exhaust `B_ρ(x)`, so `c(r_n) → normalAverage μ f x ρ` by
+continuity of measure from below and of set integrals, and `F` is closed. -/
+theorem Submission.deGiorgiBFM_normalAverage_tendsto_ae : ∀ (N : ℕ) (μ : Measure (Rn N)) (f : Rn N → Rn N), IsFiniteMeasure μ → Integrable f μ → ∀ᵐ x ∂μ, Tendsto (normalAverage μ f x) (𝓝[>] 0) (𝓝 (f x)) := by
+  intro N μ f hμ hf
+  -- Lebesgue–Besicovitch differentiation along closed balls.
+  filter_upwards [VitaliFamily.ae_tendsto_average (Besicovitch.vitaliFamily μ) hf.locallyIntegrable]
+    with x hx
+  have hc : Tendsto (fun r : ℝ ↦ ⨍ y in Metric.closedBall x r, f y ∂μ) (𝓝[>] 0) (𝓝 (f x)) :=
+    hx.comp (Besicovitch.tendsto_filterAt μ x)
+  refine (closed_nhds_basis (f x)).tendsto_right_iff.2 fun F ⟨hF, hFc⟩ ↦ ?_
+  obtain ⟨δ, hδ, hδF⟩ := (nhdsGT_basis (0 : ℝ)).eventually_iff.1 (hc.eventually_mem hF)
+  filter_upwards [Ioo_mem_nhdsGT hδ] with ρ ⟨hρ, hρδ⟩
+  rcases eq_or_ne (μ (Metric.ball x ρ)) 0 with h0 | hne
+  · -- `μ(B_ρ(x)) = 0`: both `normalAverage μ f x ρ` and `c(ρ/2)` vanish.
+    have h1 : normalAverage μ f x ρ = 0 := by
+      rw [normalAverage, h0, ENNReal.toReal_zero, inv_zero, zero_smul]
+    have h2 : ⨍ y in Metric.closedBall x (ρ / 2), f y ∂μ = 0 := by
+      rw [setAverage_eq, measureReal_def,
+        measure_mono_null (Metric.closedBall_subset_ball (half_lt_self hρ)) h0,
+        ENNReal.toReal_zero, inv_zero, zero_smul]
+    rw [id, h1, ← h2]
+    exact hδF ⟨half_pos hρ, (half_lt_self hρ).trans hρδ⟩
+  · -- `μ(B_ρ(x)) > 0`: the closed balls `B̄_{u n}(x)`, `ρ/2 < u n ↑ ρ`, exhaust `B_ρ(x)`.
+    obtain ⟨u, hu_mono, hu_mem, hu_lim⟩ := exists_seq_strictMono_tendsto' (half_lt_self hρ)
+    have hU : ⋃ n, Metric.closedBall x (u n) = Metric.ball x ρ := by
+      refine Subset.antisymm (iUnion_subset fun n ↦ Metric.closedBall_subset_ball (hu_mem n).2) ?_
+      intro y hy
+      obtain ⟨n, hn⟩ := (hu_lim.eventually (lt_mem_nhds (Metric.mem_ball.1 hy))).exists
+      exact mem_iUnion.2 ⟨n, Metric.mem_closedBall.2 hn.le⟩
+    have hmono : Monotone fun n ↦ Metric.closedBall x (u n) :=
+      fun m n hmn ↦ Metric.closedBall_subset_closedBall (hu_mono.monotone hmn)
+    -- `μ(B̄_{u n}(x))⁻¹ → μ(B_ρ(x))⁻¹` (continuity from below; `0 < μ(B_ρ(x)) < ∞`).
+    have hmeas : Tendsto (fun n ↦ (μ (Metric.closedBall x (u n))).toReal⁻¹) atTop
+        (𝓝 (μ (Metric.ball x ρ)).toReal⁻¹) := by
+      refine ((ENNReal.tendsto_toReal (measure_ne_top μ _)).comp ?_).inv₀
+        (ENNReal.toReal_ne_zero.2 ⟨hne, measure_ne_top μ _⟩)
+      rw [← hU]
+      exact tendsto_measure_iUnion_atTop hmono
+    -- `∫_{B̄_{u n}(x)} f dμ → ∫_{B_ρ(x)} f dμ`.
+    have hint : Tendsto (fun n ↦ ∫ y in Metric.closedBall x (u n), f y ∂μ) atTop
+        (𝓝 (∫ y in Metric.ball x ρ, f y ∂μ)) := by
+      rw [← hU]
+      exact tendsto_setIntegral_of_monotone (fun _ ↦ measurableSet_closedBall) hmono
+        hf.integrableOn
+    refine hFc.mem_of_tendsto (hmeas.smul hint) (Eventually.of_forall fun n ↦ ?_)
+    simpa only [setAverage_eq, measureReal_def] using
+      hδF ⟨(half_pos hρ).trans (hu_mem n).1, (hu_mem n).2.trans hρδ⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
