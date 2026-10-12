@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d7a73c875694a733db11e5a2b3b4381cd527e463a7a9080e94d3c6d5599aecec",
+  "git_delta": {
+    "base_commit": "28f83ecb0bd1f31a6b2353924393f514daf6e31f",
+    "candidate_commit": "63f81b1cb8987ece03b08b9c1bb6f764c2e82cc3",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "tgc_weight_blowup_tendsto",
+    "diff_sha256": "653d8213ebc24520a41c54d44c16bc7bdbcef641a0c0778ceaaa5b281b24a121",
+    "source_sha256": "3444d0dd24b8c66d7e7cd94a50c8601e6fdaedd2f466266a424bc11ed636996d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tgc_weight_blowup_tendsto",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ g : C_c(Euclidean N, ℝ), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ y, g (t⁻¹ • (y - x)) ∂V.weight) (𝓝[>] 0) (𝓝 (θ * ∫ y in (T.plane : Set (Euclidean N)), g y ∂(μHE[n] : Measure (Euclidean N))))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
