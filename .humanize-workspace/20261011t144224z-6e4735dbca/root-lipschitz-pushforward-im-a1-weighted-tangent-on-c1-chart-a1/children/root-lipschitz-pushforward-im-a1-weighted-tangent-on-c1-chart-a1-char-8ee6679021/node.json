@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1",
+  "depth": 3,
+  "title": "A C¹ antilipschitz chart image has approximate tangent space DΦ(w)(ℝⁿ) at Φ(w)",
+  "statement": "Let Φ : ℝⁿ → ℝ^Q be C¹, Ω ⊆ ℝⁿ open, c > 0 with c|w − w′| ≤ |Φ(w) − Φ(w′)| for all w, w′ ∈ Ω, and w ∈ Ω. Then T := DΦ(w)(ℝⁿ) = LinearMap.range (fderiv ℝ Φ w) is the (unweighted, Simon Ch. 3 Def. 1.4) approximate tangent space of N := Φ(Ω) at y := Φ(w): finrank T = n and lim_{λ↓0} ∫_{η_{y,λ}(N)} φ dHⁿ = ∫_T φ dHⁿ for every φ ∈ C_c(ℝ^Q, ℝ).",
+  "lean_statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∀ w ∈ Ω, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (Φ '' Ω) (Φ w) (LinearMap.range (fderiv ℝ Φ w).toLinearMap)",
+  "lean_name": "lpf_wtc_chart_approx_tangent",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_area_formula-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_area_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-8ee6679021-a1"
+}

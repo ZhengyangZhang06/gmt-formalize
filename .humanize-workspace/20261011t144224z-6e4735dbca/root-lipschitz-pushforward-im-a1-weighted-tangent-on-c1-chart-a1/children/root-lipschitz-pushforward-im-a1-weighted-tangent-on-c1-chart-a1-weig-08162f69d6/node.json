@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1",
+  "depth": 3,
+  "title": "Weighted approximate tangent space from an unweighted one on a piece with continuous weight (Simon Ch. 3, Remark 1.8(1))",
+  "statement": "Let M, C ⊆ ℝ^Q be Hⁿ-null-measurable with C ⊆ M, y ∈ C, θ : ℝ^Q → ℝ with θ ≥ 0 on M, and T a linear subspace of ℝ^Q. Assume: T is the (unweighted, Def. 1.4) approximate tangent space of C at y; there is r > 0 with Hⁿ(C ∩ B̄_r(y)) < ∞ and θ Hⁿ-integrable on M ∩ B̄_r(y); θ|C is continuous at y (ContinuousWithinAt θ C y); and (∫⁻_{(M∖C) ∩ B̄_ρ(y)} ofReal(θ) dHⁿ)/ENNReal.ofReal(ρⁿ) → 0 in [0, ∞] as ρ → 0+. Then HasWeightedApproximateTangentSpaceAt n M θ y T.",
+  "lean_statement": "∀ (Q n : ℕ) (M C : Set (Eucl Q)) (θ : Eucl Q → ℝ) (y : Eucl Q) (T : Submodule ℝ (Eucl Q)), NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → NullMeasurableSet C (μHE[n] : Measure (Eucl Q)) → C ⊆ M → y ∈ C → (∀ x ∈ M, 0 ≤ θ x) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C y T → (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (C ∩ closedBall y r) < ∞ ∧ IntegrableOn θ (M ∩ closedBall y r) (μHE[n] : Measure (Eucl Q))) → ContinuousWithinAt θ C y → Tendsto (fun ρ : ℝ => (∫⁻ x in (M \\ C) ∩ closedBall y ρ, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl Q))) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) → HasWeightedApproximateTangentSpaceAt n M θ y T",
+  "lean_name": "lpf_wtc_weighted_tangent_transfer",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.density_bound_of_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.density_bound_of_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-weig-08162f69d6-a1"
+}
