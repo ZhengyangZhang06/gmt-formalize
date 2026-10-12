@@ -434,6 +434,43 @@ theorem Submission.frt_weq_density_borel_representative :
       Eventually.of_forall fun _ ↦ Set.mem_Ioi.2 Nat.one_div_pos_of_nat⟩
   have ht' : Tendsto (densityRatio n μ x) (𝓝[>] 0) (𝓝 t) := ht
   exact (ht'.comp hρ).liminf_eq
+/-- Hypothesis 3.1 of the monotonicity formula holds `μ_V`-a.e. (the remark in the proof of Simon
+Ch. 8, 3.6, p. 211, by the differentiation theorem 2.7): for `μ_V`-a.e. `x` there are `R > 0` with
+`B_R(x) ⊆ U` and `Λ ≥ 0` with `‖δV‖(B_r(x)) ≤ Λ μ_V(B_r(x))` for all `0 < r < R`. -/
+theorem Submission.dea_ae_variationMeasure_ball_bound :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → ∀ᵐ x ∂V.weight, ∃ R Λ : ℝ, 0 < R ∧ 0 ≤ Λ ∧ closedBall x R ⊆ U ∧ ∀ r : ℝ, 0 < r → r < R → variationMeasure V (closedBall x r) ≤ ENNReal.ofReal Λ * V.weight (closedBall x r) := by
+  intro N n U V hV
+  -- Step 1: `μ_V` is carried by `U`, since `μ_V(Uᶜ) = V(Uᶜ × G(N,n)) = 0`.
+  have hU : ∀ᵐ x ∂V.weight, x ∈ U := by
+    rw [ae_iff]
+    change V.weight Uᶜ = 0
+    rw [V.weight_apply V.isOpen_domain.measurableSet.compl]
+    exact V.supported
+  -- Step 2: under `hV`, `‖δV‖` is the Riesz measure `ν`.
+  have hvar : variationMeasure V = V.firstVariationRieszMeasure hV := dite_eq_left hV
+  -- Step 3: by the differentiation theorem (Simon 2.7), for `μ_V`-a.e. `x` the ratio
+  -- `ν(B_r(x)) / μ_V(B_r(x))` tends to a finite `D(x)` as `r ↓ 0`.
+  filter_upwards [(V.firstVariationRiesz_symmetricDensity_spec hV).2, hU] with x hx hxU
+  obtain ⟨ht, hD⟩ := hx
+  -- Step 4: `Λ = D(x) + 1 > 0` satisfies `D(x) < Λ`.
+  set D := V.symmetricFirstVariationDensity (V.firstVariationRieszMeasure hV) x
+  set Λ : ℝ := D.toReal + 1
+  have hΛ : 0 < Λ := by positivity
+  have hlt : D < ENNReal.ofReal Λ := by
+    rw [← ENNReal.ofReal_toReal hD]
+    exact (ENNReal.ofReal_lt_ofReal_iff hΛ).mpr (lt_add_one _)
+  -- Step 5: the ratio is `< Λ` for all `r ∈ (0, r₁)`.
+  obtain ⟨r₁, hr₁, hsmall⟩ :=
+    mem_nhdsGT_iff_exists_Ioo_subset.mp (ht.eventually (gt_mem_nhds hlt))
+  -- Step 7: `B_{r₂}(x) ⊆ U` (open ball), and `R = min r₁ (r₂ / 2)`.
+  obtain ⟨r₂, hr₂, hball⟩ := Metric.isOpen_iff.mp V.isOpen_domain x hxU
+  refine ⟨min r₁ (r₂ / 2), Λ, lt_min hr₁ (half_pos hr₂), hΛ.le, ?_, fun r hr hrR ↦ ?_⟩
+  · exact (closedBall_subset_ball ((min_le_right _ _).trans_lt (half_lt_self hr₂))).trans hball
+  -- Step 6: `ν(B_r(x)) / μ_V(B_r(x)) ≤ Λ` gives `ν(B_r(x)) ≤ Λ μ_V(B_r(x))`, as `Λ ≠ 0, ∞`.
+  · rw [hvar]
+    exact (ENNReal.div_le_iff_le_mul (Or.inr ENNReal.ofReal_ne_top)
+      (Or.inr (ENNReal.ofReal_pos.mpr hΛ).ne')).mp
+      (hsmall ⟨hr, hrR.trans_le (min_le_left _ _)⟩).le
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
