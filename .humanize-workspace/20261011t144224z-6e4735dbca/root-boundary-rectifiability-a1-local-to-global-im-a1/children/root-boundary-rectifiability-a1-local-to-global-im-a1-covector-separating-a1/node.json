@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.local_to_global_im-a1.covector_separating-a1",
+  "parent_id": "root.boundary_rectifiability-a1.local_to_global_im-a1",
+  "depth": 3,
+  "title": "A finite family of covectors separates k-vectors",
+  "statement": "For all P, k ∈ ℕ there are L ∈ ℕ and k-covectors b_1,…,b_L on ℝ^P (continuous alternating k-linear forms) with the following property. If w, w' are k-vectors (continuous linear functionals on k-covectors, `NVector`) and w(b_l) = w'(b_l) for all l, then w = w'.",
+  "lean_statement": "∀ (P k : ℕ), ∃ (L : ℕ) (b : Fin L → Covector (Eucl P) k), ∀ w w' : NVector (Eucl P) k, (∀ l, w (b l) = w' (b l)) → w = w'",
+  "lean_name": "ltg_covector_separating",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-local-to-global-im-a1-covector-separating-a1-a1"
+}
