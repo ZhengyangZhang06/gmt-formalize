@@ -570,6 +570,35 @@ theorem lip_approx_gm_ball_measure : ∀ (n : ℕ), 1 ≤ n → ∀ (c : Rn n) (
   -- Scaling: `|B_r(c)| = rⁿ |B̆_1(0)| = ω_n rⁿ`.
   rw [Measure.addHaar_closedBall volume c hr, hfin, hball,
     ← ENNReal.ofReal_mul (pow_nonneg hr n), mul_comm]
+/-- Simon Ch. 5, proof of Lemma 2.6 (pp. 110–111): for a linear isometry `q` of `ℝ^{n+ℓ}` and
+`f : ℝⁿ → ℝ^ℓ` with `|f(x) − f(z)| ≤ |x − z|`, the map `Γ(x) = q(x, f(x))` is `√2`-Lipschitz.
+Since `q` preserves distances and `|(x, f x) − (z, f z)|² = |x − z|² + |f(x) − f(z)|²` (split the sum
+`Σ_k w_k²` over the indices `castAdd ℓ i` and `natAdd n j` of `Fin (n + ℓ)` with `Fin.sum_univ_add`),
+the hypothesis gives `|Γ(x) − Γ(z)|² ≤ 2|x − z|² = (√2 |x − z|)²`; take square roots. -/
+theorem lip_approx_gm_graph_map_lipschitz : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), (∀ x z, ‖f x - f z‖ ≤ ‖x - z‖) → LipschitzWith (NNReal.sqrt 2) (fun x => q (graphPoint x (f x))) := by
+  intro n ℓ q f hf
+  -- the coordinates of `graphPoint a b`
+  have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp [graphPoint]
+  have hr : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp [graphPoint]
+  -- `|(a, b) − (a', b')|² = |a − a'|² + |b − b'|²`, splitting `Σ_k w_k²` over the two blocks
+  have hsq : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      ‖graphPoint a b - graphPoint a' b'‖ ^ 2 = ‖a - a'‖ ^ 2 + ‖b - b'‖ ^ 2 := by
+    intro a a' b b'
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp only [PiLp.sub_apply, hl, hr]
+  -- `q` preserves distances, so it suffices to bound `|(x, f x) − (z, f z)|` by `√2 |x − z|`
+  refine LipschitzWith.of_dist_le_mul fun x z => ?_
+  rw [LinearIsometryEquiv.dist_map, dist_eq_norm, dist_eq_norm, Real.coe_sqrt,
+    NNReal.coe_ofNat]
+  have hfxz : ‖f x - f z‖ ^ 2 ≤ ‖x - z‖ ^ 2 := pow_le_pow_left₀ (norm_nonneg _) (hf x z) 2
+  refine (sq_le_sq₀ (norm_nonneg _) (by positivity)).mp ?_
+  rw [hsq, mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
+  linarith
 
 end Submission
 
