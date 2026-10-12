@@ -451,6 +451,44 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Cut-off step of the reduction to multiplicity one behind **Simon 7.4.2** (chapter-07.txt
+lines 608–610), as in the proof of Ch. 5, 7.3 (chapter-05.txt lines 1388–1395), where it gives
+`∂S = ∂T` for the competitor `S = T + N₀E`.  If `B ⊆ U` is open, `K ⊆ B` is compact, and
+`F ∈ 𝒟ₘ(U)` vanishes on every form whose support misses `K` and on `ι(𝒟ᵐ(B))`, then `F = 0`:
+take a smooth `φ` with `tsupport φ ⊆ B` compact and `φ = 1` on an open `V ⊇ K`; then
+`ω = ι(φω) + (1 − φ)ω`, and `(1 − φ)ω` vanishes on `V`, so its support misses `K`. -/
+theorem Submission.rsd_cmr_eq_zero_of_vanish_off_compact : ∀ (P m : ℕ) (U B K : Set (Euclid P)) (hBU : B ⊆ U) (F : GeometricCurrentOn U m), IsOpen B → IsCompact K → K ⊆ B → (∀ ω : TestFormOn U m, Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) K → F ω = 0) → (∀ ψ : TestFormOn B m, F (testFormOnInclusion hBU m ψ) = 0) → ∀ ω : TestFormOn U m, F ω = 0 := by
+  intro P m U B K hBU F hB hK hKB hoff hin ω
+  -- Step 1: a smooth cutoff `φ`, `= 1` on `thickening (δ/2) K ⊇ K`, `tsupport φ ⊆ cthickening δ K ⊆ B`.
+  obtain ⟨δ, hδ, hδB⟩ := hK.exists_cthickening_subset_open hB hKB
+  obtain ⟨φ, hφ, -, hφs, hφt⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
+    (isOpen_thickening (δ := δ) (E := K)) (isClosed_cthickening (δ := δ / 2) (E := K))
+    (cthickening_subset_thickening' hδ (half_lt_self hδ) K)
+  have htφ : tsupport φ ⊆ cthickening δ K := by
+    rw [tsupport, hφs]
+    exact closure_thickening_subset_cthickening δ K
+  have hφ1 : ∀ x ∈ thickening (δ / 2) K, φ x = 1 :=
+    fun x hx => (hφt x).1 (thickening_subset_cthickening _ _ hx)
+  -- Step 2: `ψ = φ ω ∈ 𝒟ᵐ(B)`, so `F (ι ψ) = 0`.
+  have hωs : ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) m) := ω.property.1.1
+  have hψt : tsupport (fun x => φ x • (ω : DifferentialForm (Euclid P) m) x) ⊆ tsupport φ :=
+    tsupport_smul_subset_left _ _
+  have hcφ : IsCompact (tsupport φ) :=
+    hK.cthickening.of_isClosed_subset (isClosed_tsupport φ) htφ
+  let ψ : TestFormOn B m := ⟨fun x => φ x • (ω : DifferentialForm (Euclid P) m) x,
+    ⟨hφ.fun_smul hωs, hcφ.of_isClosed_subset (isClosed_tsupport _) hψt⟩, hψt.trans (htφ.trans hδB)⟩
+  -- Step 3: `ω - ι ψ = (1 - φ) ω` vanishes on the open `thickening (δ/2) K ⊇ K`.
+  have hdisj : Disjoint (tsupport ((ω - testFormOnInclusion hBU m ψ : TestFormOn U m) :
+      DifferentialForm (Euclid P) m)) K := by
+    refine Set.disjoint_right.2 fun x hx => notMem_tsupport_iff_eventuallyEq.2 ?_
+    filter_upwards [isOpen_thickening.mem_nhds (self_subset_thickening (half_pos hδ) K hx)]
+      with y hy
+    simp [ψ, hφ1 y hy]
+  -- Step 4: linearity, `F ω = F (ι ψ) + F (ω - ι ψ) = 0`.
+  have h := hoff _ hdisj
+  rw [map_sub F.toCurrent ω (testFormOnInclusion hBU m ψ), hin ψ, sub_zero] at h
+  exact h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
