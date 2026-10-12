@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1.graph_coords-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1",
+  "depth": 4,
+  "title": "Coordinates, linearity, norm and inner product of graphPoint",
+  "statement": "For all n, l >= 0, let Amb n l = R^(n+l) (EuclideanSpace R (Fin (n + l))) and, for a in R^n and b in R^l, let graphPoint(a, b) := toLp(Fin.append a b) be the point of R^(n+l) whose first n coordinates are those of a and whose last l coordinates are those of b. Then: (C1) for all a in R^n, b in R^l and i in Fin n, the coordinate of graphPoint(a, b) at castAdd l i is a_i; (C2) for all a in R^n, b in R^l and j in Fin l, the coordinate of graphPoint(a, b) at natAdd n j is b_j; and for all a, a' in R^n, b, b' in R^l and t in R: (L1) graphPoint(a + a', b + b') = graphPoint(a, b) + graphPoint(a', b'); (L2) graphPoint(a - a', b - b') = graphPoint(a, b) - graphPoint(a', b'); (L3) graphPoint(t a, t b) = t graphPoint(a, b); (L4) |graphPoint(a, b)|^2 = |a|^2 + |b|^2; (IP) <graphPoint(a, b), graphPoint(a', b')> = <a, a'> + <b, b'> (real Euclidean inner products of R^(n+l), R^n and R^l).",
+  "lean_statement": "∀ (n ℓ : ℕ), (∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i) ∧ (∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j) ∧ (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint (a + a') (b + b') = graphPoint a b + graphPoint a' b') ∧ (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint (a - a') (b - b') = graphPoint a b - graphPoint a' b') ∧ (∀ (t : ℝ) (a : Rn n) (b : Rn ℓ), graphPoint (t • a) (t • b) = t • graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ (a a' : Rn n) (b b' : Rn ℓ), inner ℝ (graphPoint a b) (graphPoint a' b') = inner ℝ a a' + inner ℝ b b')",
+  "lean_name": "any_radius_gr_la_graphPoint_algebra",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-la-basics-a1-graph-coords-a1-a1"
+}
