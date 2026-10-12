@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "24bb7a4a50de81a32d2568b4b6f6bf30c74979a7304bc985fad5fd186f5559dd",
+  "git_delta": {
+    "base_commit": "4c5b64842a92598e06f9242bc859b422524985d0",
+    "candidate_commit": "86b75144b9b170e1f094a4128e60736ff30bbd68",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "4ce623957bde52d3cd8a7dac0b575128920f4691cc3ca1c0ec6c7ef2af9b2f9f",
+    "source_sha256": "8ab13b6632f1a9081cdbbb3cb67cdac570944088ca47fa0e1c8af5bfc6871a4b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_stationary_cone_flat",
+      "statement": "StationaryMonotonicityIdentity → ConstancyTheorem → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (θ₀ : ℝ), 0 < θ₀ → C.Stationary → (∀ ρ : ℝ, 0 < ρ → C.weight (closedBall 0 ρ) = ENNReal.ofReal θ₀ * unitBallVolume n * ENNReal.ofReal ρ ^ n) → (∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal θ₀ ≤ θ) → ∃ T : Grassmannian N n, C.measure = ENNReal.ofReal θ₀ • planeVarifoldMeasure T",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
