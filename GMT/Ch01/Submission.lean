@@ -639,6 +639,22 @@ def RieszPositive : Prop :=
     ∃ μ : OuterMeasure X, IsRadonOuterMeasure μ ∧
       ∀ f : C_c(X, ℝ≥0), (Λ f : ℝ) = ∫ x, (f x : ℝ) ∂caratheodoryMeasure μ
 
+/-- Simon Ch. 1, Theorem 4.12, from the pinned libraries: for the Borel σ-algebra, Mathlib's
+`NNRealRMK.rieszMeasure Λ` is regular (`NNRealRMK.rieszMeasure_regular`), so its outer measure is
+Radon (`isRadonOuterMeasure_toOuterMeasure`); its Carathéodory integral equals the Borel one
+(`integral_radonCaratheodoryMeasure`), which is `Λ f` by `NNRealRMK.integral_rieszMeasure`. -/
+theorem Submission.riesz_positive : RieszPositive := by
+  intro X _ _ _ Λ
+  let : MeasurableSpace X := borel X
+  have : BorelSpace X := ⟨rfl⟩
+  refine ⟨(NNRealRMK.rieszMeasure Λ).toOuterMeasure,
+    isRadonOuterMeasure_toOuterMeasure _, fun f => ?_⟩
+  have hf : StronglyMeasurable (fun x => (f x : ℝ)) :=
+    (NNReal.continuous_coe.comp f.continuous).stronglyMeasurable
+  change (Λ f : ℝ) =
+    ∫ x, (f x : ℝ) ∂radonCaratheodoryMeasure (NNRealRMK.rieszMeasure Λ)
+  rw [integral_radonCaratheodoryMeasure _ hf, NNRealRMK.integral_rieszMeasure]
+
 /-- **Riesz representation theorem (vector-valued).** Simon Ch. 1, Theorem 4.14 (p. 35).
 
 Let `X` be a locally compact Hausdorff space, `H` a finite-dimensional real Hilbert space, and
