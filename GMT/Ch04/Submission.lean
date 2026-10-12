@@ -660,6 +660,90 @@ theorem Submission.ts_fv_sum_inner_starProjection_eq_trace : ∀ (N : ℕ) (P : 
   simp only [LinearMap.comp_apply, ContinuousLinearMap.coe_coe]
   -- `⟨L(p_P eₖ), p_P eₖ⟩ = ⟨p_P eₖ, L(p_P eₖ)⟩ = ⟨eₖ, p_P(L(p_P eₖ))⟩` (`p_P` is self-adjoint).
   rw [real_inner_comm, Submodule.inner_starProjection_left_eq_right]
+/-- **Entry bound and uniform ellipticity of the tangential matrix** (auxiliary to the Jacobian
+computation behind Simon Ch. 4, 2.2, done as in Ch. 2, 5.2–5.3). Let `p` be the orthogonal
+projection onto `P ⊆ ℝᴺ`, `eᵢ` the standard basis and `L` a linear map with `‖L‖ ≤ b`,
+`‖v‖ ≤ b‖L v‖` and `b ≥ 1`. Then `S_ij = ⟨L(p eᵢ), L(p eⱼ)⟩ + ⟨eᵢ - p eᵢ, eⱼ - p eⱼ⟩` satisfies
+`|S_ij| ≤ b² + 1` and `(b²)⁻¹ ∑ᵢ ξᵢ² ≤ ∑ᵢ ∑ⱼ ξᵢ S_ij ξⱼ`: for `v = ∑ᵢ ξᵢ eᵢ` the form equals
+`‖L(p v)‖² + ‖v - p v‖²`, while `∑ᵢ ξᵢ² = ‖v‖² = ‖p v‖² + ‖v - p v‖²`. -/
+theorem Submission.ts_fv_tangential_matrix_estimates : (∀ (N : ℕ) (P : Submodule ℝ (EuclideanSpace ℝ (Fin N))) (L : EuclideanSpace ℝ (Fin N) →L[ℝ] EuclideanSpace ℝ (Fin N)) (b : ℝ), 1 ≤ b → ‖L‖ ≤ b → (∀ v, ‖v‖ ≤ b * ‖L v‖) → (∀ i j : Fin N, |inner ℝ (L (P.starProjection (EuclideanSpace.single i (1 : ℝ)))) (L (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) + inner ℝ (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ))) (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ)))| ≤ b ^ 2 + 1) ∧ ∀ ξ : Fin N → ℝ, (b ^ 2)⁻¹ * ∑ i, ξ i ^ 2 ≤ ∑ i, ∑ j, ξ i * (inner ℝ (L (P.starProjection (EuclideanSpace.single i (1 : ℝ)))) (L (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) + inner ℝ (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ))) (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ)))) * ξ j) := by
+  intro N P L b hb hL hLinv
+  have hb0 : 0 < b := one_pos.trans_le hb
+  -- Pythagoras: `‖v‖² = ‖p v‖² + ‖v - p v‖²`, since `v - p v ⊥ P ∋ p v`.
+  have pyth : ∀ v : EuclideanSpace ℝ (Fin N),
+      ‖v‖ ^ 2 = ‖P.starProjection v‖ ^ 2 + ‖v - P.starProjection v‖ ^ 2 := by
+    intro v
+    have h0 : inner ℝ (P.starProjection v) (v - P.starProjection v) = 0 := by
+      rw [real_inner_comm]
+      exact Submodule.starProjection_inner_eq_zero v _ (P.starProjection_apply_mem v)
+    have h := norm_add_sq_real (P.starProjection v) (v - P.starProjection v)
+    rwa [add_sub_cancel, h0, mul_zero, add_zero] at h
+  refine ⟨fun i j ↦ ?_, fun ξ ↦ ?_⟩
+  · -- (a) Cauchy–Schwarz with `‖L(p eₖ)‖ ≤ ‖L‖‖p eₖ‖ ≤ b` and `‖eₖ - p eₖ‖ ≤ ‖eₖ‖ = 1`.
+    have he : ∀ k : Fin N, ‖(EuclideanSpace.single k (1 : ℝ) : EuclideanSpace ℝ (Fin N))‖ = 1 :=
+      fun k ↦ by simp
+    have hA : ∀ k : Fin N, ‖L (P.starProjection (EuclideanSpace.single k (1 : ℝ)))‖ ≤ b := by
+      intro k
+      calc ‖L (P.starProjection (EuclideanSpace.single k (1 : ℝ)))‖
+          ≤ ‖L‖ * ‖P.starProjection (EuclideanSpace.single k (1 : ℝ))‖ := L.le_opNorm _
+        _ ≤ b * 1 := by
+          gcongr
+          exact (P.norm_starProjection_apply_le _).trans (he k).le
+        _ = b := mul_one b
+    have hB : ∀ k : Fin N, ‖EuclideanSpace.single k (1 : ℝ) -
+        P.starProjection (EuclideanSpace.single k (1 : ℝ))‖ ≤ 1 := by
+      intro k
+      have h := pyth (EuclideanSpace.single k (1 : ℝ))
+      rw [he k] at h
+      nlinarith [norm_nonneg (EuclideanSpace.single k (1 : ℝ) -
+        P.starProjection (EuclideanSpace.single k (1 : ℝ))),
+        sq_nonneg ‖P.starProjection (EuclideanSpace.single k (1 : ℝ))‖]
+    refine (abs_add_le _ _).trans (add_le_add ?_ ?_)
+    · refine (abs_real_inner_le_norm _ _).trans ?_
+      rw [sq]
+      exact mul_le_mul (hA i) (hA j) (norm_nonneg _) hb0.le
+    · refine (abs_real_inner_le_norm _ _).trans ?_
+      calc _ ≤ (1 : ℝ) * 1 := mul_le_mul (hB i) (hB j) (norm_nonneg _) zero_le_one
+        _ = 1 := mul_one 1
+  · -- (b) With `v = ∑ᵢ ξᵢ eᵢ` the form is `‖L(p v)‖² + ‖v - p v‖²`, and `∑ᵢ ξᵢ² = ‖v‖²`.
+    set v : EuclideanSpace ℝ (Fin N) := ∑ i, ξ i • EuclideanSpace.single i (1 : ℝ) with hv
+    -- bilinearity: `⟨∑ᵢ ξᵢ uᵢ, ∑ⱼ ξⱼ uⱼ⟩ = ∑ᵢ ∑ⱼ ξᵢ ⟨uᵢ, uⱼ⟩ ξⱼ`
+    have bil : ∀ u : Fin N → EuclideanSpace ℝ (Fin N),
+        inner ℝ (∑ i, ξ i • u i) (∑ j, ξ j • u j) = ∑ i, ∑ j, ξ i * inner ℝ (u i) (u j) * ξ j := by
+      intro u
+      rw [sum_inner]
+      refine Finset.sum_congr rfl fun i _ ↦ ?_
+      rw [real_inner_smul_left, inner_sum, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun j _ ↦ ?_
+      rw [real_inner_smul_right]
+      ring
+    have hLv : L (P.starProjection v) =
+        ∑ i, ξ i • L (P.starProjection (EuclideanSpace.single i (1 : ℝ))) := by
+      simp only [hv, map_sum, map_smul]
+    have hQv : v - P.starProjection v = ∑ i, ξ i • (EuclideanSpace.single i (1 : ℝ) -
+        P.starProjection (EuclideanSpace.single i (1 : ℝ))) := by
+      simp only [hv, map_sum, map_smul, smul_sub, Finset.sum_sub_distrib]
+    have hform : ∑ i, ∑ j, ξ i * (inner ℝ (L (P.starProjection (EuclideanSpace.single i (1 : ℝ))))
+        (L (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) +
+        inner ℝ
+          (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ)))
+          (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ)))) *
+          ξ j = ‖L (P.starProjection v)‖ ^ 2 + ‖v - P.starProjection v‖ ^ 2 := by
+      rw [← real_inner_self_eq_norm_sq, ← real_inner_self_eq_norm_sq, hLv, hQv,
+        bil fun i ↦ L (P.starProjection (EuclideanSpace.single i (1 : ℝ))),
+        bil fun i ↦ EuclideanSpace.single i (1 : ℝ) -
+          P.starProjection (EuclideanSpace.single i (1 : ℝ))]
+      simp only [mul_add, add_mul, Finset.sum_add_distrib]
+    have hnv : ‖v‖ ^ 2 = ∑ i, ξ i ^ 2 := by
+      rw [← real_inner_self_eq_norm_sq, hv, bil fun i ↦ EuclideanSpace.single i (1 : ℝ)]
+      simp [EuclideanSpace.inner_single_left, sq]
+    -- `‖p v‖ ≤ b‖L(p v)‖` and `(b²)⁻¹ ≤ 1`
+    have hlow : ‖P.starProjection v‖ ^ 2 ≤ b ^ 2 * ‖L (P.starProjection v)‖ ^ 2 := by
+      rw [← mul_pow]
+      exact pow_le_pow_left₀ (norm_nonneg _) (hLinv _) 2
+    rw [hform, ← hnv, pyth v, mul_add]
+    exact add_le_add ((inv_mul_le_iff₀ (by positivity)).2 hlow)
+      (mul_le_of_le_one_left (sq_nonneg _) (inv_le_one_of_one_le₀ (one_le_pow₀ hb)))
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
