@@ -756,6 +756,90 @@ theorem Submission.dtc_blowUp_massOn_image : ∀ (P n : ℕ) (U : Set (Euclid P)
     · have h := hωn (x + lam • z)
       rwa [hω, hηι] at h
 
+/-- **Blow-ups commute with the current operations** (Simon 6.2.11, 6.2.23–6.2.24(1) for
+`η = η_{x,λ}`, `λ > 0`): `η_#(S − T) = η_#S − η_#T`, `η_#` is injective,
+`spt(η_#T) = η(spt T)` and `∂(η_#T) = η_#(∂T)`.
+
+(i) Both sides evaluate `S − T` on the same pulled-back form.  (ii) Every `ω' ∈ 𝒟ⁿ(U)` is
+`ω ∘ η` for some `ω ∈ 𝒟ⁿ(η(U))`, and `η_#Y(ω) = λ⁻ⁿ Y(ω')` (`dtc_blowUp_testForm_corr`).
+(iii) `η` is an affine homeomorphism, and `η_#T` vanishes on `W₀ ⊂⊂ η(U)` iff `T` vanishes on
+`η⁻¹(W₀) ⊂⊂ U`; so the zero regions correspond, and `spt(η_#T) = η(spt T)` as `η` is injective.
+(iv) `d` commutes with affine pull-back (`GeometricCurrentOn.boundary_affinePushforward`). -/
+theorem Submission.dtc_blowUp_algebra : ∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp (S - T) x lam hlam.ne' = blowUp S x lam hlam.ne' - blowUp T x lam hlam.ne') ∧ (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp S x lam hlam.ne' = blowUp T x lam hlam.ne' → S = T) ∧ (∀ (n : ℕ) (T : GeometricCurrentOn U n), (blowUp T x lam hlam.ne').support = dilation x lam '' T.support) ∧ ∀ (m : ℕ) (T : GeometricCurrentOn U (m + 1)), (blowUp T x lam hlam.ne').boundary = blowUp T.boundary x lam hlam.ne' := by
+  intro P U x lam hlam
+  have hc (n : ℕ) : lam⁻¹ ^ n ≠ 0 := pow_ne_zero n (inv_ne_zero hlam.ne')
+  -- `η = η_{x,λ}` as a homeomorphism
+  obtain ⟨e, he⟩ : ∃ e : Euclid P ≃ₜ Euclid P, ⇑e = dilation x lam :=
+    ⟨(Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
+      (Homeomorph.addLeft (-(lam⁻¹ • x))), by
+        funext y
+        simp [dilation, dilationCLM]⟩
+  refine ⟨fun n S T => GeometricCurrentOn.ext fun ω => rfl, fun n S T h => ?_, fun n T => ?_,
+    fun m T => ?_⟩
+  · -- (ii) `λ⁻ⁿ S(ω') = η_#S(ω) = η_#T(ω) = λ⁻ⁿ T(ω')`
+    obtain ⟨-, hb, hval⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+    refine GeometricCurrentOn.ext fun ω' => ?_
+    obtain ⟨ω, hω⟩ := hb ω'
+    have hS := hval S ω ω' hω
+    rw [h, hval T ω ω' hω] at hS
+    exact mul_left_cancel₀ (hc n) hS.symm
+  · -- (iii) the zero regions correspond under `η`
+    obtain ⟨ha, hb, hval⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+    have hzero : (blowUp T x lam hlam.ne').zeroRegion = dilation x lam '' T.zeroRegion := by
+      ext z
+      constructor
+      · rintro ⟨W₀, ⟨hW₀o, hW₀c, hW₀U, hW₀v⟩, hz⟩
+        rw [← he] at hW₀U
+        have hW : closure (e ⁻¹' W₀) = e ⁻¹' closure W₀ := (e.preimage_closure W₀).symm
+        refine ⟨e.symm z, ⟨e ⁻¹' W₀, ⟨hW₀o.preimage e.continuous, ?_, ?_, ?_⟩, ?_⟩, ?_⟩
+        · rw [hW]
+          exact e.isCompact_preimage.2 hW₀c
+        · rw [hW]
+          exact (preimage_mono hW₀U).trans (e.preimage_image U).subset
+        · intro ω' hω'
+          obtain ⟨ω, hω⟩ := hb ω'
+          have hsupp : tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W₀ := by
+            have hfun : (ω : DifferentialForm (Euclid P) n) =
+                (ω' : DifferentialForm (Euclid P) n) ∘ e.symm := by
+              funext y
+              rw [Function.comp_apply, hω, ← congrFun he (e.symm y), e.apply_symm_apply]
+            rw [hfun]
+            refine (tsupport_comp_subset_preimage _ e.symm.continuous).trans fun y hy => ?_
+            have hy' := hω' (mem_preimage.1 hy)
+            rwa [mem_preimage, e.apply_symm_apply] at hy'
+          have h0 := hW₀v ω hsupp
+          rw [hval T ω ω' hω] at h0
+          exact (mul_eq_zero.1 h0).resolve_left (hc n)
+        · rwa [mem_preimage, e.apply_symm_apply]
+        · rw [← he]
+          exact e.apply_symm_apply z
+      · rintro ⟨w, ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hw⟩, rfl⟩
+        have hW : closure (e '' W) = e '' closure W := (e.image_closure W).symm
+        refine ⟨e '' W, ⟨e.isOpenMap W hWo, ?_, ?_, ?_⟩, ?_⟩
+        · rw [hW]
+          exact hWc.image e.continuous
+        · rw [hW, ← he]
+          exact image_mono hWU
+        · intro ω hω
+          obtain ⟨ω', hω'⟩ := ha ω
+          have hsupp : tsupport (ω' : DifferentialForm (Euclid P) n) ⊆ W := by
+            have hfun : (ω' : DifferentialForm (Euclid P) n) =
+                (ω : DifferentialForm (Euclid P) n) ∘ e := by
+              funext y
+              rw [Function.comp_apply, hω', ← congrFun he y]
+            rw [hfun, ← e.preimage_image W]
+            exact (tsupport_comp_subset_preimage _ e.continuous).trans (preimage_mono hω)
+          rw [hval T ω ω' hω', hWv ω' hsupp, mul_zero]
+        · rw [← he]
+          exact mem_image_of_mem e hw
+    have hinj : Function.Injective (dilation x lam) := he ▸ e.injective
+    simp only [GeometricCurrentOn.support]
+    rw [hzero, image_sdiff hinj]
+  · -- (iv) `d` commutes with the affine pull-back
+    unfold blowUp
+    rw [GeometricCurrentOn.boundary_affinePushforward]
+    rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
