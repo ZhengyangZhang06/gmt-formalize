@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ee0ac5e52b3610cad04d77e506bb598476fc372124f1d59c7232f7017391734a",
+  "git_delta": {
+    "base_commit": "6366219d1d97a740d6498e0f7c9502a900136b65",
+    "candidate_commit": "c2e1da27351f187f73bea12498cef1f46ca9bd52",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_ims_action_eq_integral",
+    "diff_sha256": "560f794534025b357ba334f14dee9c31a09726c2c60168371e731a8141aeb4ee",
+    "source_sha256": "cabde5e0d0d202c1f24653fa43026203ca7783fc5b916243b576a8a5fb6c18f6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_ims_action_eq_integral",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (ω : TestFormOn U n), Integrable (fun x => R.orient x ((ω : DifferentialForm (Euclid P) n) x)) R.measure ∧ R.action (ω : DifferentialForm (Euclid P) n) = ∫ x, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
