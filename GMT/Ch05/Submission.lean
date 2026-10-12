@@ -619,6 +619,1561 @@ theorem aal_dge1_support_density_lower_bound : ∀ (n ℓ : ℕ) (μ : Measure (
       nlinarith [mul_le_mul_of_nonneg_right key hsn.le]
     rw [← ENNReal.ofReal_toReal (hfin' s (by linarith [hs.2]))]
     exact ENNReal.ofReal_le_ofReal key2
+/-- **Simon Ch. 4, 3.2–3.3 and 4.1** (first variation of the radial cutoff fields).  Let `V` have
+generalized mean curvature `H` in `U`, with `p_{T_x M}` the projection onto an `n`-plane for
+`μ_V`-a.e. `x`.  Let `φ ∈ C¹(ℝ)` with `φ = 1` on `(-∞, 1]` and `φ = 0` on `[T, ∞)`, let `ρ > 0`, and
+let `B_{Tρ}(y) ⊆ U`.  Then `X(x) = φ(r/ρ)(x − y)`, `r = |x − y|`, is admissible in 3.14, and
+`div_M X = n φ(r/ρ) + (r/ρ) φ'(r/ρ)(1 − |(x − y) − p_{T_x M}(x − y)|²/r²)` `μ_V`-a.e.
+(both sides equal `n` at `x = y`).  So `∫ div_M X dμ_V = −∫ X · H dμ_V` is the stated identity. -/
+theorem aal_radial_first_variation_identity : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → ∀ (y : Amb n ℓ) (φ : ℝ → ℝ) (T ρ : ℝ), ContDiff ℝ 1 φ → (∀ t : ℝ, t ≤ 1 → φ t = 1) → (∀ t : ℝ, T ≤ t → φ t = 0) → 0 < ρ → closedBall y (T * ρ) ⊆ U → ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) * (1 - ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2)) ∂V.weight = -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂V.weight := by
+  intro n ℓ U V H hH hP y φ T ρ hφ hφ1 hφT hρ hU
+  -- Step 1: the field `X(x) = φ(|x - y|/ρ)(x - y)` is `C¹`.  On `B̆_ρ(y)` it is `x - y`.
+  obtain ⟨X, hX⟩ : ∃ X : Amb n ℓ → Amb n ℓ, X = fun x => φ (‖x - y‖ / ρ) • (x - y) := ⟨_, rfl⟩
+  have hXball : ∀ x ∈ ball y ρ, X =ᶠ[𝓝 x] fun z => z - y := by
+    intro x hx
+    filter_upwards [isOpen_ball.mem_nhds hx] with z hz
+    have : ‖z - y‖ / ρ ≤ 1 := by
+      rw [mem_ball, dist_eq_norm] at hz
+      rw [div_le_one hρ]; exact hz.le
+    simp [hX, hφ1 _ this]
+  have hXcd : ContDiff ℝ 1 X := by
+    rw [contDiff_iff_contDiffAt]
+    intro x
+    by_cases hxy : x = y
+    · exact (contDiffAt_id.sub contDiffAt_const).congr_of_eventuallyEq
+        (hXball x (by rw [hxy]; exact mem_ball_self hρ))
+    · rw [hX]
+      have h1 : ContDiffAt ℝ 1 (fun z : Amb n ℓ => ‖z - y‖) x :=
+        (contDiffAt_id.sub contDiffAt_const).norm ℝ (sub_ne_zero.2 hxy)
+      have h2 : ContDiffAt ℝ 1 (fun z : Amb n ℓ => φ (‖z - y‖ / ρ)) x :=
+        hφ.contDiffAt.comp x (h1.div_const ρ)
+      exact h2.smul (contDiffAt_id.sub contDiffAt_const)
+  -- Step 2: `X = 0` off `B_{Tρ}(y)`, a compact subset of `U`, so `X` is admissible in 3.14.
+  have hXzero : ∀ z, T * ρ < ‖z - y‖ → X z = 0 := by
+    intro z hz
+    have hT : T ≤ ‖z - y‖ / ρ := by rw [le_div_iff₀ hρ]; exact hz.le
+    rw [hX]; simp [hφT _ hT]
+  have hsupp : tsupport X ⊆ closedBall y (T * ρ) := by
+    refine closure_minimal (fun z hz => ?_) isClosed_closedBall
+    by_contra h
+    rw [mem_closedBall, dist_eq_norm, not_le] at h
+    exact hz (hXzero z h)
+  have hXcs : HasCompactSupport X :=
+    (isCompact_closedBall y (T * ρ)).of_isClosed_subset (isClosed_tsupport X) hsupp
+  have key := hH.2 X hXcd hXcs (hsupp.trans hU)
+  -- Step 3: `X · H = φ(r/ρ)(x - y) · H`.
+  have hRHS : (fun x => inner ℝ (X x) (H x)) =
+      fun x => φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) := by
+    funext x; rw [hX]; exact real_inner_smul_left _ _ _
+  rw [hRHS] at key
+  -- Step 4: for `x ≠ y`, `DX(x) = φ(r/ρ) id + ρ⁻¹ r⁻¹ φ'(r/ρ) ((x - y) · ⬝) (x - y)`.
+  have hXderiv : ∀ x, x ≠ y → HasFDerivAt X
+      (φ (‖x - y‖ / ρ) • ContinuousLinearMap.id ℝ (Amb n ℓ) +
+        (deriv φ (‖x - y‖ / ρ) / (ρ * ‖x - y‖)) • (innerSL ℝ (x - y)).smulRight (x - y)) x := by
+    intro x hxy
+    have hr : 0 < ‖x - y‖ := norm_pos_iff.2 (sub_ne_zero.2 hxy)
+    -- `D|· - y|(x) = r⁻¹ (x - y) · ⬝`, from `|z - y| = √(|z - y|²)`.
+    have hnorm : HasFDerivAt (fun z : Amb n ℓ => ‖z - y‖) (‖x - y‖⁻¹ • innerSL ℝ (x - y)) x := by
+      have h := (Real.hasDerivAt_sqrt (pow_pos hr 2).ne').comp_hasFDerivAt x
+        (hasFDerivAt_sub_const (𝕜 := ℝ) (x := x) y).norm_sq
+      convert h using 1
+      · funext z; simp [Real.sqrt_sq (norm_nonneg _)]
+      · ext v; simp [Real.sqrt_sq hr.le]; field_simp
+    have hcomp : HasDerivAt (fun t => φ (t / ρ)) (deriv φ (‖x - y‖ / ρ) / ρ) ‖x - y‖ :=
+      (((hφ.differentiable one_ne_zero) (‖x - y‖ / ρ)).hasDerivAt.comp ‖x - y‖
+        ((hasDerivAt_id' ‖x - y‖).div_const ρ)).congr_deriv (mul_one_div _ _)
+    have hc := (hcomp.comp_hasFDerivAt x hnorm).smul (hasFDerivAt_sub_const (𝕜 := ℝ) (x := x) y)
+    have hfun : X = ((fun t => φ (t / ρ)) ∘ fun z : Amb n ℓ => ‖z - y‖) • fun z => z - y := by
+      rw [hX]; rfl
+    rw [hfun]
+    refine hc.congr_fderiv ?_
+    ext v
+    simp
+    ring
+  -- Step 5: `trace p_P = dim P` and `trace ((a id + c (u · ⬝) u) ∘ p_P) = a dim P + c u · p_P u`.
+  have htrP : ∀ P : Submodule ℝ (Amb n ℓ),
+      LinearMap.trace ℝ (Amb n ℓ) P.starProjection.toLinearMap = (Module.finrank ℝ P : ℝ) := by
+    intro P
+    rw [Submodule.starProjection, ContinuousLinearMap.toLinearMap_comp, LinearMap.trace_comp_comm']
+    have hcomp : P.orthogonalProjectionOnto.toLinearMap.comp P.subtypeL.toLinearMap =
+        LinearMap.id := by
+      ext x; simp
+    rw [hcomp, LinearMap.trace_id]
+  have htr : ∀ (P : Submodule ℝ (Amb n ℓ)) (a c : ℝ) (u : Amb n ℓ),
+      LinearMap.trace ℝ (Amb n ℓ) ((a • ContinuousLinearMap.id ℝ (Amb n ℓ) +
+          c • (innerSL ℝ u).smulRight u).toLinearMap ∘ₗ P.starProjection.toLinearMap) =
+        a * Module.finrank ℝ P + c * inner ℝ u (P.starProjection u) := by
+    intro P a c u
+    have hcomp : (a • ContinuousLinearMap.id ℝ (Amb n ℓ) +
+          c • (innerSL ℝ u).smulRight u).toLinearMap ∘ₗ P.starProjection.toLinearMap =
+        a • P.starProjection.toLinearMap +
+          c • ((innerSL ℝ u).toLinearMap ∘ₗ P.starProjection.toLinearMap).smulRight u := by
+      ext w; simp
+    rw [hcomp, map_add, map_smul, map_smul, LinearMap.trace_smulRight, htrP]
+    simp
+  -- Step 6: `div_M X` equals the integrand at every `x` where `p_{T_x M}` projects onto an
+  -- `n`-plane `P`.
+  have hae : ∀ᵐ x ∂V.weight, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) *
+      (1 - ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2)) = V.divM X x := by
+    filter_upwards [hP] with x hx
+    obtain ⟨P, hPn, hPx⟩ := hx
+    rw [RectifiableVarifold.divM, hPx]
+    by_cases hxy : x = y
+    · -- At the center `DX(y) = id`, so `div_M X(y) = n = n φ(0)`.
+      have hfd : fderiv ℝ X x = ContinuousLinearMap.id ℝ (Amb n ℓ) := by
+        rw [(hXball x (by rw [hxy]; exact mem_ball_self hρ)).fderiv_eq]
+        exact (hasFDerivAt_sub_const y).fderiv
+      rw [hfd]
+      simp only [ContinuousLinearMap.coe_id, LinearMap.id_comp, htrP, hPn]
+      subst hxy
+      simp [hφ1 0 zero_le_one]
+    · -- Away from it, `(x - y) · p_P (x - y) = |p_P (x - y)|²` and Pythagoras.
+      rw [(hXderiv x hxy).fderiv, htr, hPn]
+      have hr : 0 < ‖x - y‖ := norm_pos_iff.2 (sub_ne_zero.2 hxy)
+      have h0 : inner ℝ ((x - y) - P.starProjection (x - y)) (P.starProjection (x - y)) = 0 :=
+        Submodule.starProjection_inner_eq_zero _ _ (Submodule.starProjection_apply_mem _ _)
+      have h1 : inner ℝ (x - y) (P.starProjection (x - y)) = ‖P.starProjection (x - y)‖ ^ 2 := by
+        calc inner ℝ (x - y) (P.starProjection (x - y))
+            = inner ℝ (((x - y) - P.starProjection (x - y)) + P.starProjection (x - y))
+                (P.starProjection (x - y)) := by rw [sub_add_cancel]
+          _ = ‖P.starProjection (x - y)‖ ^ 2 := by
+            rw [inner_add_left, h0, zero_add, real_inner_self_eq_norm_sq]
+      have h2 : ‖x - y‖ ^ 2 =
+          ‖(x - y) - P.starProjection (x - y)‖ ^ 2 + ‖P.starProjection (x - y)‖ ^ 2 := by
+        have := norm_add_sq_real ((x - y) - P.starProjection (x - y)) (P.starProjection (x - y))
+        rw [sub_add_cancel, h0] at this
+        linarith
+      rw [h1]
+      field_simp
+      linear_combination (deriv φ (‖x - y‖ / ρ)) * h2
+  -- Step 7: integrals of `μ_V`-a.e. equal functions agree.
+  rw [← key]
+  exact integral_congr_ae hae
+/-- **Simon Ch. 4, 4.2–4.3** (the Hölder step for the mean-curvature term).  Let `p > 1`, let `μ`
+be a measure on `ℝ^{n+ℓ}` with `μ(B_t(y)) < ∞`, let `H` be `μ`-integrable on `B_t(y)` with
+`∫_{B_t(y)} |H|ᵖ dμ < ∞`, and let `ψ` be a.e. strongly measurable with `0 ≤ ψ ≤ 1` and `ψ = 0` off
+`B_t(y)`.  Then `|∫ ψ(x) (x − y) · H(x) dμ| ≤ t (∫_{B_t(y)} |H|ᵖ dμ)^{1/p} (∫ ψ dμ)^{1 − 1/p}`.
+Proof: on `B_t(y)`, `|ψ(x) (x − y) · H(x)| ≤ t ψ(x) |H(x)|` by Cauchy–Schwarz, and the pairing
+vanishes off `B_t(y)`; Hölder on `B_t(y)` with `q = p/(p − 1)` and `ψ^q ≤ ψ` bound
+`∫_{B_t(y)} ψ |H| dμ`.  The estimate is carried out in `[0, ∞]`, where every factor on the right is
+finite, and then converted to real numbers. -/
+theorem aal_curvature_pairing_holder_bound : ∀ (n ℓ : ℕ) (p : ℝ), 1 < p → ∀ (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (ψ : Amb n ℓ → ℝ) (y : Amb n ℓ) (t : ℝ), 0 ≤ t → μ (closedBall y t) < ⊤ → IntegrableOn H (closedBall y t) μ → ∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ < ⊤ → AEStronglyMeasurable ψ μ → (∀ x, 0 ≤ ψ x ∧ ψ x ≤ 1) → (∀ x, t < ‖x - y‖ → ψ x = 0) → |∫ x, ψ x * inner ℝ (x - y) (H x) ∂μ| ≤ t * (∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) * (∫ x, ψ x ∂μ) ^ (1 - 1 / p) := by
+  intro n ℓ p hp μ H ψ y t ht hμB hHint hHp hψm hψ01 hψt
+  -- Notation: `B = B_t(y)` and the conjugate exponent `q = p/(p - 1)`, with `1/q = 1 - 1/p`.
+  set B : Set (Amb n ℓ) := closedBall y t
+  have hBm : MeasurableSet B := measurableSet_closedBall
+  obtain ⟨q, hpq⟩ : ∃ q : ℝ, p.HolderConjugate q := ⟨_, Real.HolderConjugate.conjExponent hp⟩
+  have hq1 : 1 - 1 / p = 1 / q := by rw [one_div, one_div, hpq.one_sub_inv]
+  -- Step 1: `ψ` vanishes off `B`; it is integrable because `0 ≤ ψ ≤ 1_B` and `μ(B) < ∞`.
+  have hψB : ∀ x, x ∉ B → ψ x = 0 := by
+    intro x hx
+    apply hψt x
+    simpa [B, mem_closedBall, dist_eq_norm] using hx
+  have hψe : ∀ x, ‖ψ x‖ₑ = ENNReal.ofReal (ψ x) := fun x => Real.enorm_of_nonneg (hψ01 x).1
+  have hψle : ∀ x, ‖ψ x‖ₑ ≤ 1 := fun x => (hψe x).trans_le (ENNReal.ofReal_le_one.2 (hψ01 x).2)
+  have hψind : ∀ x, ‖ψ x‖ₑ ≤ B.indicator 1 x := by
+    intro x
+    by_cases hx : x ∈ B
+    · rw [indicator_of_mem hx, Pi.one_apply]
+      exact hψle x
+    · rw [hψB x hx, enorm_zero]
+      exact zero_le
+  have hψlin : ∫⁻ x, ‖ψ x‖ₑ ∂μ < ∞ :=
+    calc ∫⁻ x, ‖ψ x‖ₑ ∂μ ≤ ∫⁻ x, B.indicator 1 x ∂μ := lintegral_mono hψind
+      _ = μ B := lintegral_indicator_one hBm
+      _ < ∞ := hμB
+  have hψint : Integrable ψ μ := ⟨hψm, hψlin⟩
+  have hψI : ∫⁻ x, ‖ψ x‖ₑ ∂μ = ENNReal.ofReal (∫ x, ψ x ∂μ) := by
+    rw [ofReal_integral_eq_lintegral_ofReal hψint (ae_of_all _ fun x => (hψ01 x).1)]
+    exact lintegral_congr hψe
+  have hψnn : 0 ≤ ∫ x, ψ x ∂μ := integral_nonneg fun x => (hψ01 x).1
+  -- Step 2: on `B`, `|ψ(x)(x - y)·H(x)| ≤ t ψ(x)|H(x)|` (Cauchy–Schwarz and `|x - y| ≤ t`);
+  -- off `B` the pairing vanishes.
+  have hpt : ∀ x, ‖ψ x * inner ℝ (x - y) (H x)‖ₑ ≤
+      B.indicator (fun x => ENNReal.ofReal t * (‖H x‖ₑ * ‖ψ x‖ₑ)) x := by
+    intro x
+    by_cases hx : x ∈ B
+    · rw [indicator_of_mem hx]
+      have hxy : ‖x - y‖ ≤ t := by simpa [B, mem_closedBall, dist_eq_norm] using hx
+      have hreal : ‖ψ x * inner ℝ (x - y) (H x)‖ ≤ t * (‖H x‖ * ψ x) := by
+        rw [norm_mul, Real.norm_of_nonneg (hψ01 x).1]
+        calc ψ x * ‖inner ℝ (x - y) (H x)‖ ≤ ψ x * (‖x - y‖ * ‖H x‖) :=
+              mul_le_mul_of_nonneg_left (norm_inner_le_norm _ _) (hψ01 x).1
+          _ ≤ ψ x * (t * ‖H x‖) :=
+              mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hxy (norm_nonneg _))
+                (hψ01 x).1
+          _ = t * (‖H x‖ * ψ x) := by ring
+      calc ‖ψ x * inner ℝ (x - y) (H x)‖ₑ = ENNReal.ofReal ‖ψ x * inner ℝ (x - y) (H x)‖ :=
+            (ofReal_norm _).symm
+        _ ≤ ENNReal.ofReal (t * (‖H x‖ * ψ x)) := ENNReal.ofReal_le_ofReal hreal
+        _ = ENNReal.ofReal t * (‖H x‖ₑ * ‖ψ x‖ₑ) := by
+          rw [ENNReal.ofReal_mul ht, ENNReal.ofReal_mul (norm_nonneg _), ofReal_norm, hψe]
+    · rw [indicator_of_notMem hx, hψB x hx, zero_mul, enorm_zero]
+  -- Step 3: Hölder on `(B, μ⌞B)` with exponents `p` and `q`.
+  have hHolder := ENNReal.lintegral_mul_le_Lp_mul_Lq (μ.restrict B) hpq
+    hHint.aestronglyMeasurable.enorm hψm.restrict.enorm
+  simp only [Pi.mul_apply] at hHolder
+  -- Step 4: `ψ^q ≤ ψ` since `0 ≤ ψ ≤ 1` and `q ≥ 1`; so `∫_B ψ^q ≤ ∫ ψ`.
+  have hψq : ∫⁻ x in B, ‖ψ x‖ₑ ^ q ∂μ ≤ ENNReal.ofReal (∫ x, ψ x ∂μ) :=
+    calc ∫⁻ x in B, ‖ψ x‖ₑ ^ q ∂μ ≤ ∫⁻ x in B, ‖ψ x‖ₑ ∂μ :=
+          lintegral_mono fun x => ENNReal.rpow_le_self_of_le_one (hψle x) hpq.symm.lt.le
+      _ ≤ ∫⁻ x, ‖ψ x‖ₑ ∂μ := setLIntegral_le_lintegral _ _
+      _ = ENNReal.ofReal (∫ x, ψ x ∂μ) := hψI
+  -- The estimate in `[0, ∞]`.
+  have key : ‖∫ x, ψ x * inner ℝ (x - y) (H x) ∂μ‖ₑ ≤ ENNReal.ofReal t *
+      ((∫⁻ x in B, ‖H x‖ₑ ^ p ∂μ) ^ (1 / p) * ENNReal.ofReal (∫ x, ψ x ∂μ) ^ (1 / q)) :=
+    calc ‖∫ x, ψ x * inner ℝ (x - y) (H x) ∂μ‖ₑ
+        ≤ ∫⁻ x, ‖ψ x * inner ℝ (x - y) (H x)‖ₑ ∂μ := enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ x, B.indicator (fun x => ENNReal.ofReal t * (‖H x‖ₑ * ‖ψ x‖ₑ)) x ∂μ :=
+          lintegral_mono hpt
+      _ = ∫⁻ x in B, ENNReal.ofReal t * (‖H x‖ₑ * ‖ψ x‖ₑ) ∂μ := lintegral_indicator hBm _
+      _ = ENNReal.ofReal t * ∫⁻ x in B, ‖H x‖ₑ * ‖ψ x‖ₑ ∂μ :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ ≤ ENNReal.ofReal t *
+          ((∫⁻ x in B, ‖H x‖ₑ ^ p ∂μ) ^ (1 / p) * (∫⁻ x in B, ‖ψ x‖ₑ ^ q ∂μ) ^ (1 / q)) := by
+          gcongr ENNReal.ofReal t * ?_
+      _ ≤ ENNReal.ofReal t *
+          ((∫⁻ x in B, ‖H x‖ₑ ^ p ∂μ) ^ (1 / p) * ENNReal.ofReal (∫ x, ψ x ∂μ) ^ (1 / q)) := by
+          gcongr ENNReal.ofReal t * (_ * ?_)
+          exact ENNReal.rpow_le_rpow hψq hpq.symm.one_div_nonneg
+  -- Step 5: back to real numbers; every factor on the right is finite.
+  have hfin : ENNReal.ofReal t *
+      ((∫⁻ x in B, ‖H x‖ₑ ^ p ∂μ) ^ (1 / p) * ENNReal.ofReal (∫ x, ψ x ∂μ) ^ (1 / q)) ≠ ∞ :=
+    ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+      (ENNReal.mul_ne_top (ENNReal.rpow_ne_top_of_nonneg hpq.one_div_nonneg hHp.ne)
+        (ENNReal.rpow_ne_top_of_nonneg hpq.symm.one_div_nonneg ENNReal.ofReal_ne_top))
+  have h := ENNReal.toReal_mono hfin key
+  rw [toReal_enorm, ENNReal.toReal_mul, ENNReal.toReal_mul, ← ENNReal.toReal_rpow,
+    ← ENNReal.toReal_rpow, ENNReal.toReal_ofReal ht, ENNReal.toReal_ofReal hψnn,
+    Real.norm_eq_abs] at h
+  rw [hq1, mul_assoc]
+  exact h
+/-- **Simon Ch. 4, 3.4** (differentiating a scaled radial cutoff integral with a bounded weight).
+Let `φ` be `C¹` and nonincreasing with `φ = 1` on `(-∞, 1]` and `φ = 0` on `[1 + ε, ∞)`, let
+`μ(B_S(y)) < ∞`, and let `q` be a.e. strongly measurable with `|q| ≤ B` a.e.; write
+`r = ‖x − y‖`.  If `0 < t` and `(1 + ε) t < S`, then `φ(r/t) q` and `(r/t) φ'(r/t) q` are
+`μ`-integrable, and `s ↦ ∫ φ(r/s) q dμ` has derivative `-(1/t) ∫ (r/t) φ'(r/t) q dμ` at `t`.
+For `0 < s < S/(1 + ε)` the integrands vanish off `B_S(y)`, so the integrals may be taken against
+the finite measure `μ ⌞ B_S(y)`.  There `|u φ'(u)| ≤ C` for `u ≥ 0` bounds the `s`-derivatives by
+`2CB/t` on `(t/2, S/(1 + ε))`, and one differentiates under the integral sign. -/
+theorem aal_cfs_hasDerivAt_cutoff_integral : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (q : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℝ → ℝ) (S ε B t : ℝ), 0 < ε → μ (closedBall y S) < ⊤ → AEStronglyMeasurable q μ → (∀ᵐ x ∂μ, |q x| ≤ B) → ContDiff ℝ 1 φ → Antitone φ → (∀ s : ℝ, s ≤ 1 → φ s = 1) → (∀ s : ℝ, 1 + ε ≤ s → φ s = 0) → 0 < t → (1 + ε) * t < S → Integrable (fun x => φ (‖x - y‖ / t) * q x) μ ∧ Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x) μ ∧ HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) * q x ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x ∂μ) / t) t := by
+  intro n ℓ μ q y φ S ε B t hε hμS hq hqB hφ hanti hone hzero ht htS
+  have hε1 : (0 : ℝ) < 1 + ε := by linarith
+  -- Step 1: `0 ≤ φ ≤ 1`, `φ` and `φ'` are continuous, `φ' = 0` on `(1 + ε, ∞)`, and
+  -- `|u φ'(u)| ≤ C` for `u ≥ 0`.
+  have hφc : Continuous φ := hφ.continuous
+  have hdφc : Continuous (deriv φ) := hφ.continuous_deriv_one
+  have hφnn : ∀ s, 0 ≤ φ s := fun s => by
+    have h := hanti (le_max_left s (1 + ε))
+    rwa [hzero _ (le_max_right _ _)] at h
+  have hφle : ∀ s, φ s ≤ 1 := fun s => by
+    have h := hanti (min_le_left s 1)
+    rwa [hone _ (min_le_right _ _)] at h
+  have hdzero : ∀ s, 1 + ε < s → deriv φ s = 0 := fun s hs => by
+    have h : φ =ᶠ[𝓝 s] fun _ => (0 : ℝ) := by
+      filter_upwards [lt_mem_nhds hs] with u hu
+      exact hzero u hu.le
+    exact h.deriv_eq.trans (deriv_const s 0)
+  obtain ⟨C, hC0, hC⟩ : ∃ C : ℝ, 0 ≤ C ∧ ∀ u : ℝ, 0 ≤ u → |u * deriv φ u| ≤ C := by
+    obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := 1 + ε)).exists_bound_of_continuousOn
+      (continuous_id.mul hdφc).continuousOn
+    refine ⟨max C 0, le_max_right _ _, fun u hu => ?_⟩
+    rcases le_or_gt u (1 + ε) with h | h
+    · have h' := hC u ⟨hu, h⟩
+      rw [Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
+    · rw [hdzero u h, mul_zero, abs_zero]
+      exact le_max_right _ _
+  -- Step 2: for `s ≠ 0`, `d/ds φ(r/s) = -(r/s) φ'(r/s) / s`.
+  have hderiv : ∀ (r s : ℝ), s ≠ 0 →
+      HasDerivAt (fun u => φ (r / u)) (-(r / s * deriv φ (r / s)) / s) s := by
+    intro r s hs
+    have h1 : HasDerivAt (fun u : ℝ => r / u) (r * -(s ^ 2)⁻¹) s := by
+      have := (hasDerivAt_inv hs).const_mul r
+      convert this using 1
+      funext u
+      exact div_eq_mul_inv r u
+    have h2 := ((hφ.differentiable (by simp) (r / s)).hasDerivAt).comp s h1
+    have heq : -(r / s * deriv φ (r / s)) / s = deriv φ (r / s) * (r * -(s ^ 2)⁻¹) := by
+      rw [sq, mul_inv]
+      ring
+    rw [heq]
+    exact h2
+  -- Step 3: for `0 < s < R = S/(1 + ε)` the integrands vanish off `K = B_S(y)`, so their
+  -- `μ`-integrals are integrals for the finite measure `ν = μ ⌞ K`.
+  set K : Set (Amb n ℓ) := closedBall y S with hKdef
+  set ν : Measure (Amb n ℓ) := μ.restrict K with hνdef
+  have : IsFiniteMeasure ν := isFiniteMeasure_restrict.mpr hμS.ne
+  set R : ℝ := S / (1 + ε) with hRdef
+  have hRiff : ∀ s : ℝ, s < R ↔ (1 + ε) * s < S := fun s => by
+    rw [hRdef, lt_div_iff₀ hε1, mul_comm]
+  have htR : t < R := (hRiff t).2 htS
+  have hout : ∀ s, 0 < s → s < R → ∀ x, x ∉ K → 1 + ε < ‖x - y‖ / s := by
+    intro s hs hsR x hx
+    have hxS : S < ‖x - y‖ := by
+      simpa [hKdef, mem_closedBall, dist_eq_norm, not_le] using hx
+    rw [lt_div_iff₀ hs]
+    linarith [(hRiff s).1 hsR]
+  have hconv : ∀ s, 0 < s → s < R →
+      ∫ x, φ (‖x - y‖ / s) * q x ∂μ = ∫ x, φ (‖x - y‖ / s) * q x ∂ν := by
+    intro s hs hsR
+    rw [hνdef, setIntegral_eq_integral_of_forall_compl_eq_zero]
+    intro x hx
+    rw [hzero _ (hout s hs hsR x hx).le, zero_mul]
+  have hconv' : ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x ∂μ =
+      ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x ∂ν := by
+    rw [hνdef, setIntegral_eq_integral_of_forall_compl_eq_zero]
+    intro x hx
+    rw [hdzero _ (hout t ht htR x hx), mul_zero, zero_mul]
+  -- Step 4: the integrands are bounded by `B` and `C B` on the finite measure `ν`, hence
+  -- `ν`-integrable; vanishing off `K`, they are `μ`-integrable.
+  have hqν : AEStronglyMeasurable q ν := hq.restrict
+  have hqBν : ∀ᵐ x ∂ν, |q x| ≤ B := ae_restrict_of_ae hqB
+  have hint1 : ∀ s, Integrable (fun x => φ (‖x - y‖ / s) * q x) ν := by
+    intro s
+    refine Integrable.of_bound ((hφc.comp (by fun_prop :
+      Continuous fun x : Amb n ℓ => ‖x - y‖ / s)).aestronglyMeasurable.mul hqν) B ?_
+    filter_upwards [hqBν] with x hx
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (hφnn _)]
+    calc φ (‖x - y‖ / s) * |q x| ≤ 1 * |q x| :=
+          mul_le_mul_of_nonneg_right (hφle _) (abs_nonneg _)
+      _ ≤ B := by rw [one_mul]; exact hx
+  have hint2 : Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x) ν := by
+    refine Integrable.of_bound ((by fun_prop : Continuous fun x : Amb n ℓ =>
+      ‖x - y‖ / t * deriv φ (‖x - y‖ / t)).aestronglyMeasurable.mul hqν) (C * B) ?_
+    filter_upwards [hqBν] with x hx
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+    exact mul_le_mul (hC _ (div_nonneg (norm_nonneg _) ht.le)) hx (abs_nonneg _) hC0
+  have hμint : ∀ f : Amb n ℓ → ℝ, Integrable f ν → (∀ x, x ∉ K → f x = 0) → Integrable f μ := by
+    intro f hf hf0
+    refine (integrableOn_iff_integrable_of_support_subset (s := K) ?_).mp hf
+    intro x hx
+    by_contra h
+    exact hx (hf0 x h)
+  refine ⟨hμint _ (hint1 t) (fun x hx => by rw [hzero _ (hout t ht htR x hx).le, zero_mul]),
+    hμint _ hint2 (fun x hx => by rw [hdzero _ (hout t ht htR x hx), mul_zero, zero_mul]), ?_⟩
+  -- Step 5: differentiate under the integral sign for `ν` on `U = (t/2, R)`, with the
+  -- integrable constant bound `2 C B / t`.
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := ν)
+    (F := fun s x => φ (‖x - y‖ / s) * q x)
+    (F' := fun s x => -(‖x - y‖ / s * deriv φ (‖x - y‖ / s)) / s * q x)
+    (x₀ := t) (bound := fun _ => 2 * C * B / t) (s := Ioo (t / 2) R)
+    (Ioo_mem_nhds (half_lt_self ht) htR) ?_ (hint1 t) ?_ ?_ (integrable_const _) ?_
+  -- Step 6: the `ν`- and `μ`-integrals agree near `t`, so the derivative transfers to `μ`.
+  · have hderivν := key.2
+    have heq : (∫ x, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t * q x ∂ν) =
+        -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x ∂μ) / t := by
+      rw [hconv', ← integral_neg, ← integral_div]
+      congr 1
+      funext x
+      ring
+    rw [heq] at hderivν
+    refine hderivν.congr_of_eventuallyEq ?_
+    filter_upwards [Ioo_mem_nhds ht htR] with s hs
+    exact hconv s hs.1 hs.2
+  · exact Eventually.of_forall fun s => (hφc.comp (by fun_prop :
+      Continuous fun x : Amb n ℓ => ‖x - y‖ / s)).aestronglyMeasurable.mul hqν
+  · exact (by fun_prop : Continuous fun x : Amb n ℓ =>
+      -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t).aestronglyMeasurable.mul hqν
+  · filter_upwards [hqBν] with x hx s hs
+    have hs0 : 0 < s := lt_trans (half_pos ht) hs.1
+    have hB : 0 ≤ B := (abs_nonneg _).trans hx
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_div, abs_neg, abs_of_pos hs0]
+    calc |‖x - y‖ / s * deriv φ (‖x - y‖ / s)| / s * |q x| ≤ C / s * B :=
+          mul_le_mul (div_le_div_of_nonneg_right
+            (hC _ (div_nonneg (norm_nonneg _) hs0.le)) hs0.le) hx (abs_nonneg _)
+            (div_nonneg hC0 hs0.le)
+      _ ≤ 2 * C * B / t := by
+          rw [div_mul_eq_mul_div, div_le_div_iff₀ hs0 ht]
+          nlinarith [hs.1, mul_nonneg hC0 hB]
+  · filter_upwards with x s hs
+    have hs0 : 0 < s := lt_trans (half_pos ht) hs.1
+    exact (hderiv ‖x - y‖ s hs0.ne').mul_const (q x)
+
+/-- Simon Ch. 4, 4.1–4.3 (continuity in the scale of the cutoff pairing): let `φ` be `C¹` and
+nonincreasing with `φ = 1` on `(-∞, 1]` and `φ = 0` on `[1 + ε, ∞)`, and let `H` be
+`μ`-integrable on `B_S(y)`.  Then `L(s) = ∫ φ(‖x − y‖/s) (x − y)·H(x) dμ(x)` is continuous at
+every `t > 0` with `(1 + ε) t < S`.  For `0 < s < S/(1 + ε)` the integrand vanishes off
+`B_S(y)` and is bounded there by `S ‖H‖`, so dominated convergence applies to `μ ⌞ B_S(y)`. -/
+theorem aal_cfs_cutoff_pairing_continuousAt : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (φ : ℝ → ℝ) (S ε t : ℝ), 0 < ε → IntegrableOn H (closedBall y S) μ → ContDiff ℝ 1 φ → Antitone φ → (∀ s : ℝ, s ≤ 1 → φ s = 1) → (∀ s : ℝ, 1 + ε ≤ s → φ s = 0) → 0 < t → (1 + ε) * t < S → ContinuousAt (fun s => ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂μ) t := by
+  intro n ℓ μ H y φ S ε t hε hH hφ hanti hone hzero ht htS
+  have hε1 : (0 : ℝ) < 1 + ε := by linarith
+  have hHν : Integrable H (μ.restrict (closedBall y S)) := hH
+  -- Step 1: `φ` is continuous, and `0 ≤ φ ≤ 1` because `φ` is nonincreasing.
+  have hφc : Continuous φ := hφ.continuous
+  have hφnn : ∀ s, 0 ≤ φ s := fun s => by
+    have h := hanti (le_max_left s (1 + ε))
+    rwa [hzero _ (le_max_right _ _)] at h
+  have hφle : ∀ s, φ s ≤ 1 := fun s => by
+    have h := hanti (min_le_left s 1)
+    rwa [hone _ (min_le_right _ _)] at h
+  -- `t < R* := S/(1 + ε)`.
+  have htR : t < S / (1 + ε) := by
+    rw [lt_div_iff₀ hε1]
+    linarith
+  -- Step 2: for `s ∈ (0, R*)` the integrand vanishes off `B_S(y)` (there `‖x − y‖/s ≥ 1 + ε`),
+  -- so `L(s)` is the integral against `μ ⌞ B_S(y)`.
+  have hconv : ∀ s ∈ Ioo 0 (S / (1 + ε)),
+      ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂(μ.restrict (closedBall y S)) =
+        ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂μ := by
+    rintro s ⟨hs, hsR⟩
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    rw [lt_div_iff₀ hε1] at hsR
+    have h1 : 1 + ε ≤ ‖x - y‖ / s := by
+      rw [le_div_iff₀ hs]
+      linarith
+    rw [hzero _ h1, zero_mul]
+  -- Step 3: dominated convergence for the `μ ⌞ B_S(y)`-integral at `t`, with bound `S ‖H‖`.
+  have hmain : ContinuousAt (fun s =>
+      ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂(μ.restrict (closedBall y S))) t := by
+    refine continuousAt_of_dominated (bound := fun x => S * ‖H x‖) ?_ ?_
+      (hHν.norm.const_mul S) ?_
+    · -- Measurability: `x ↦ φ(‖x − y‖/s)` is continuous and `x ↦ (x − y)·H(x)` is
+      -- a.e. strongly measurable.
+      refine Eventually.of_forall fun s => ?_
+      have hcut : Continuous fun x : Amb n ℓ => φ (‖x - y‖ / s) := hφc.comp (by fun_prop)
+      exact hcut.aestronglyMeasurable.mul
+        (continuous_inner.comp_aestronglyMeasurable
+          ((by fun_prop : Continuous fun x : Amb n ℓ => x - y).aestronglyMeasurable.prodMk
+            hHν.aestronglyMeasurable))
+    · -- Domination: on `B_S(y)`, `|φ(‖x − y‖/s) (x − y)·H(x)| ≤ ‖x − y‖ ‖H x‖ ≤ S ‖H x‖`.
+      refine Eventually.of_forall fun s => ?_
+      rw [ae_restrict_iff' measurableSet_closedBall]
+      refine Eventually.of_forall fun x hx => ?_
+      rw [mem_closedBall, dist_eq_norm] at hx
+      calc ‖φ (‖x - y‖ / s) * inner ℝ (x - y) (H x)‖
+          = φ (‖x - y‖ / s) * ‖inner ℝ (x - y) (H x)‖ := by
+            rw [norm_mul, Real.norm_of_nonneg (hφnn _)]
+        _ ≤ 1 * (‖x - y‖ * ‖H x‖) :=
+            mul_le_mul (hφle _) (norm_inner_le_norm _ _) (norm_nonneg _) zero_le_one
+        _ ≤ S * ‖H x‖ := by
+            rw [one_mul]
+            exact mul_le_mul_of_nonneg_right hx (norm_nonneg _)
+    · -- Pointwise continuity in `s` at `t ≠ 0`, since `φ` is continuous.
+      refine Eventually.of_forall fun x => ?_
+      exact (hφc.continuousAt.comp (continuousAt_const.div continuousAt_id ht.ne')).mul
+        continuousAt_const
+  -- Step 4: both functions agree on the neighbourhood `(0, R*)` of `t`.
+  exact hmain.congr (Filter.eventually_of_mem (Ioo_mem_nhds ht htR) hconv)
+
+/-- Simon Ch. 4, (4.3)–(4.4), in abstract form (`P = I'`, and `Q` plays the role of `J'`): if on
+`(0, R)` we have `I' = P`, `L` continuous, `I ≥ 0`, `nI − tP + tQ = −L`,
+`a = (L/t^{n+1})/(1 + I/tⁿ)` and `|a| ≤ M t^{−β}` with `β < 1`, then
+`Ψ(s) = exp(−∫₀ˢ a)(1 + I(s)/sⁿ)` satisfies `Ψ'(t) = exp(−∫₀ᵗ a) Q(t)/tⁿ`, and
+`exp(−∫₀^ρ |a|) ≤ exp(−∫₀ᵗ a) ≤ exp(∫₀^ρ |a|)` for `0 < t ≤ ρ < R`. -/
+theorem aal_cfs_integrating_factor_deriv : ∀ (n : ℕ) (I L a P Q : ℝ → ℝ) (R M β : ℝ), β < 1 → (∀ t : ℝ, 0 < t → t < R → HasDerivAt I (P t) t) → (∀ t : ℝ, 0 < t → t < R → ContinuousAt L t) → (∀ t : ℝ, 0 < t → t < R → 0 ≤ I t) → (∀ t : ℝ, 0 < t → t < R → (n : ℝ) * I t - t * P t + t * Q t = -L t) → (∀ t : ℝ, 0 < t → t < R → a t = L t / t ^ (n + 1) / (1 + I t / t ^ n)) → (∀ t : ℝ, 0 < t → t < R → |a t| ≤ M * t ^ (-β)) → (∀ t : ℝ, 0 < t → t < R → HasDerivAt (fun s => Real.exp (-∫ u in (0)..s, a u) * (1 + I s / s ^ n)) (Real.exp (-∫ u in (0)..t, a u) * (Q t / t ^ n)) t) ∧ (∀ t ρ : ℝ, 0 < t → t ≤ ρ → ρ < R → Real.exp (-∫ u in (0)..ρ, |a u|) ≤ Real.exp (-∫ u in (0)..t, a u) ∧ Real.exp (-∫ u in (0)..t, a u) ≤ Real.exp (∫ u in (0)..ρ, |a u|)) := by
+  intro n I L a P Q R M β hβ hIder hLc hInn hid ha hab
+  have hden : ∀ t, 0 < t → t < R → 1 ≤ 1 + I t / t ^ n := fun t ht htR => by
+    have := div_nonneg (hInn t ht htR) (pow_pos ht n).le
+    linarith
+  -- `a` is continuous on `(0, R)`
+  have hacontAt : ∀ t, 0 < t → t < R → ContinuousAt a t := by
+    intro t ht htR
+    have hev : (fun s => L s / s ^ (n + 1) / (1 + I s / s ^ n)) =ᶠ[𝓝 t] a := by
+      filter_upwards [Ioo_mem_nhds ht htR] with s hs
+      exact (ha s hs.1 hs.2).symm
+    refine ContinuousAt.congr ?_ hev
+    exact ((hLc t ht htR).div ((continuous_pow (n + 1)).continuousAt)
+      (pow_ne_zero _ ht.ne')).div
+      (continuousAt_const.add ((hIder t ht htR).continuousAt.div
+        ((continuous_pow n).continuousAt) (pow_ne_zero _ ht.ne')))
+      (by linarith [hden t ht htR])
+  have hacont : ContinuousOn a (Ioo 0 R) := fun t ht =>
+    (hacontAt t ht.1 ht.2).continuousWithinAt
+  -- `a` is integrable on `[0, t]`, by the bound `|a s| ≤ M s^(-β)` with `β < 1`
+  have haint : ∀ t, 0 < t → t < R → IntervalIntegrable a volume 0 t := by
+    intro t ht htR
+    refine IntervalIntegrable.mono_fun' (g := fun s => M * s ^ (-β)) ?_ ?_ ?_
+    · exact (intervalIntegral.intervalIntegrable_rpow' (by linarith)).const_mul M
+    · rw [uIoc_of_le ht.le]
+      exact (hacont.mono (Ioc_subset_Ioo_right htR)).aestronglyMeasurable measurableSet_Ioc
+    · rw [uIoc_of_le ht.le]
+      refine (ae_restrict_iff' measurableSet_Ioc).mpr (Eventually.of_forall fun s hs => ?_)
+      show ‖a s‖ ≤ M * s ^ (-β)
+      rw [Real.norm_eq_abs]
+      exact hab s hs.1 (lt_of_le_of_lt hs.2 htR)
+  -- the fundamental theorem of calculus for `∫₀ᵗ a`
+  have hGderiv : ∀ t, 0 < t → t < R → HasDerivAt (fun u => ∫ s in (0)..u, a s) (a t) t := by
+    intro t ht htR
+    exact intervalIntegral.integral_hasDerivAt_right (haint t ht htR)
+      (hacont.stronglyMeasurableAtFilter isOpen_Ioo t ⟨ht, htR⟩) (hacontAt t ht htR)
+  refine ⟨fun t ht htR => ?_, fun t ρ ht htρ hρR => ?_⟩
+  · have hd := ((hGderiv t ht htR).neg.exp).mul ((hasDerivAt_const t (1 : ℝ)).add
+      ((hIder t ht htR).div (hasDerivAt_pow n t) (pow_ne_zero n ht.ne')))
+    have hd' : HasDerivAt (fun s => Real.exp (-∫ u in (0)..s, a u) * (1 + I s / s ^ n))
+        (Real.exp (-∫ u in (0)..t, a u) * -a t * (1 + I t / t ^ n) +
+          Real.exp (-∫ u in (0)..t, a u) *
+            (0 + (P t * t ^ n - I t * ((n : ℝ) * t ^ (n - 1))) / (t ^ n) ^ 2)) t := hd
+    convert hd' using 1
+    set E := Real.exp (-∫ u in (0)..t, a u) with hEdef
+    have hP : 0 < t ^ n := pow_pos ht n
+    have hden' : 1 + I t / t ^ n ≠ 0 := by linarith [hden t ht htR]
+    have haL : a t * (1 + I t / t ^ n) = L t / (t ^ n * t) := by
+      rw [ha t ht htR, div_mul_cancel₀ _ hden', pow_succ]
+    have hnpow : (n : ℝ) * t ^ (n - 1) = n * t ^ n / t := by
+      rcases Nat.eq_zero_or_pos n with hn | hn
+      · subst hn
+        simp
+      · rw [eq_div_iff ht.ne', mul_assoc, ← pow_succ, Nat.sub_add_cancel hn]
+    have hq : (P t * t ^ n - I t * ((n : ℝ) * t ^ (n - 1))) / (t ^ n) ^ 2 =
+        (t * P t - n * I t) / (t ^ n * t) := by
+      rw [hnpow]
+      field_simp
+    have hidt : t * P t - n * I t = t * Q t + L t := by linarith [hid t ht htR]
+    have hQ : (t * Q t + L t) / (t ^ n * t) = Q t / t ^ n + L t / (t ^ n * t) := by
+      field_simp
+    rw [hq, hidt, hQ]
+    linear_combination E * haL
+  · have hiρ := haint ρ (ht.trans_le htρ) hρR
+    have h1 : |∫ u in (0)..t, a u| ≤ ∫ u in (0)..t, |a u| :=
+      intervalIntegral.abs_integral_le_integral_abs ht.le
+    have h2 : ∫ u in (0)..t, |a u| ≤ ∫ u in (0)..ρ, |a u| :=
+      intervalIntegral.integral_mono_interval le_rfl ht.le htρ
+        (Eventually.of_forall fun u => abs_nonneg _) hiρ.abs
+    have h3 := abs_le.mp (h1.trans h2)
+    exact ⟨Real.exp_le_exp.mpr (by linarith [h3.2]), Real.exp_le_exp.mpr (by linarith [h3.1])⟩
+
+/-- **Integrated squeeze from the derivative comparison** (Simon Ch. 4, 3.4 → 3.5 "by
+integration in 3.4", with the prefactors of 3.5 in corrected order).  Write `r = |x − y|` and,
+for `t > 0`, `J'(t) = −t⁻¹ ∫ (r/t) φ'(r/t) w dμ`.  If `0 ≤ w ≤ 1` a.e., `φ` is a `C¹`
+nonincreasing cutoff (`φ = 1` on `(−∞, 1]`, `φ = 0` on `[1 + ε, ∞)`), `0 < σ ≤ ρ`,
+`(1 + ε)ρ < S`, `μ(B_S(y)) < ∞`, and on `[σ, ρ]` both `e^{−c} ≤ F ≤ e^c` and `Ψ' = F J'/tⁿ`,
+then with `A = ∫ (φ(r/ρ) − φ(r/σ)) w / rⁿ dμ`,
+`e^{−c} A ≤ Ψ(ρ) − Ψ(σ) ≤ e^c (1 + ε)ⁿ A`.
+Proof: take the comparison weight `q = w / max(σ, r)ⁿ` and `G(t) = ∫ φ(r/t) q dμ`, whose
+derivative `G'` comes from `aal_cfs_hasDerivAt_cutoff_integral`.  Where `∂ₜ φ(r/t) ≠ 0` we have
+`t ≤ r ≤ (1 + ε)t` and `q = w/rⁿ`, so integrating in `x` gives `0 ≤ G' ≤ J'/tⁿ ≤ (1 + ε)ⁿ G'` on
+`[σ, ρ]`.  Hence `Ψ − e^{−c} G` and `e^c (1 + ε)ⁿ G − Ψ` have nonnegative derivatives there and
+are monotone (mean value theorem), and `G(ρ) − G(σ) = A`. -/
+theorem aal_cfs_squeeze_of_deriv : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ Ψ F : ℝ → ℝ) (S ε c σ ρ : ℝ), 0 < ε → μ (closedBall y S) < ⊤ → AEStronglyMeasurable w μ → (∀ᵐ x ∂μ, 0 ≤ w x ∧ w x ≤ 1) → ContDiff ℝ 1 φ → Antitone φ → (∀ s : ℝ, s ≤ 1 → φ s = 1) → (∀ s : ℝ, 1 + ε ≤ s → φ s = 0) → 0 < σ → σ ≤ ρ → (1 + ε) * ρ < S → (∀ t : ℝ, σ ≤ t → t ≤ ρ → Real.exp (-c) ≤ F t ∧ F t ≤ Real.exp c) → (∀ t : ℝ, σ ≤ t → t ≤ ρ → HasDerivAt Ψ (F t * ((-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ) / t) / t ^ n)) t) → Real.exp (-c) * ∫ x, (φ (‖x - y‖ / ρ) - φ (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ ≤ Ψ ρ - Ψ σ ∧ Ψ ρ - Ψ σ ≤ Real.exp c * (1 + ε) ^ n * ∫ x, (φ (‖x - y‖ / ρ) - φ (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ := by
+  intro n ℓ μ w y φ Ψ F S ε c σ ρ hε hμS hw hw01 hφ hanti hone hzero hσ hσρ hρS hF hΨ
+  have hε1 : (0 : ℝ) < 1 + ε := by linarith
+  -- `φ' = 0` off `[1, 1 + ε]`, and `φ' ≤ 0`
+  have hdlo : ∀ s, s < 1 → deriv φ s = 0 := fun s hs => by
+    have h : φ =ᶠ[𝓝 s] fun _ => (1 : ℝ) := by
+      filter_upwards [gt_mem_nhds hs] with u hu
+      exact hone u hu.le
+    exact h.deriv_eq.trans (deriv_const s 1)
+  have hdhi : ∀ s, 1 + ε < s → deriv φ s = 0 := fun s hs => by
+    have h : φ =ᶠ[𝓝 s] fun _ => (0 : ℝ) := by
+      filter_upwards [lt_mem_nhds hs] with u hu
+      exact hzero u hu.le
+    exact h.deriv_eq.trans (deriv_const s 0)
+  have hdnp : ∀ s, deriv φ s ≤ 0 := fun s => hanti.deriv_nonpos
+  -- the radii `t ∈ [σ, ρ]` are admissible for `aal_cfs_hasDerivAt_cutoff_integral`
+  have hadm : ∀ t, σ ≤ t → t ≤ ρ → 0 < t ∧ (1 + ε) * t < S := fun t h1 h2 =>
+    ⟨hσ.trans_le h1, lt_of_le_of_lt (mul_le_mul_of_nonneg_left h2 hε1.le) hρS⟩
+  -- the comparison weight `q = w / max(σ, r)ⁿ`, bounded by `σ⁻ⁿ`
+  set q : Amb n ℓ → ℝ := fun x => w x / (max σ ‖x - y‖) ^ n with hqdef
+  have hq : AEStronglyMeasurable q μ :=
+    hw.div₀ (by fun_prop : Continuous fun x : Amb n ℓ => (max σ ‖x - y‖) ^ n).aestronglyMeasurable
+  have hqB : ∀ᵐ x ∂μ, |q x| ≤ 1 / σ ^ n := by
+    filter_upwards [hw01] with x hx
+    have hm : 0 < max σ ‖x - y‖ := lt_of_lt_of_le hσ (le_max_left _ _)
+    rw [hqdef, abs_div, abs_of_nonneg hx.1, abs_of_pos (pow_pos hm n),
+      div_le_div_iff₀ (pow_pos hm n) (pow_pos hσ n)]
+    calc w x * σ ^ n ≤ 1 * σ ^ n := mul_le_mul_of_nonneg_right hx.2 (pow_pos hσ n).le
+      _ ≤ 1 * (max σ ‖x - y‖) ^ n := by
+        gcongr
+        exact le_max_left _ _
+  have hw1 : ∀ᵐ x ∂μ, |w x| ≤ 1 :=
+    hw01.mono fun x hx => abs_le.mpr ⟨by linarith [hx.1], hx.2⟩
+  -- the sibling cutoff derivative, with the weights `q` and `w`
+  have hG := fun t (h1 : σ ≤ t) (h2 : t ≤ ρ) =>
+    Submission.aal_cfs_hasDerivAt_cutoff_integral n ℓ μ q y φ S ε (1 / σ ^ n) t hε hμS hq hqB
+      hφ hanti hone hzero (hadm t h1 h2).1 (hadm t h1 h2).2
+  have hJ := fun t (h1 : σ ≤ t) (h2 : t ≤ ρ) =>
+    Submission.aal_cfs_hasDerivAt_cutoff_integral n ℓ μ w y φ S ε 1 t hε hμS hw hw1
+      hφ hanti hone hzero (hadm t h1 h2).1 (hadm t h1 h2).2
+  set G : ℝ → ℝ := fun s => ∫ x, φ (‖x - y‖ / s) * q x ∂μ with hGdef
+  set G' : ℝ → ℝ := fun t => -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x ∂μ) / t
+    with hG'eq
+  set N : ℝ → ℝ := fun t => (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ) / t) / t ^ n
+    with hNdef
+  -- pointwise, then integrated, comparison of the scale derivatives
+  have hcmp : ∀ t, σ ≤ t → t ≤ ρ → G' t ≤ N t ∧ N t ≤ (1 + ε) ^ n * G' t ∧ 0 ≤ G' t := by
+    intro t h1 h2
+    have ht : 0 < t := (hadm t h1 h2).1
+    set D : Amb n ℓ → ℝ := fun x => -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t with hDdef
+    have eG : G' t = ∫ x, D x * q x ∂μ := by
+      rw [hG'eq, hDdef]
+      dsimp only
+      rw [← integral_neg, ← integral_div]
+      congr 1
+      funext x
+      ring
+    have eN : N t = ∫ x, D x * w x / t ^ n ∂μ := by
+      rw [hNdef, hDdef]
+      dsimp only
+      rw [← integral_neg, ← integral_div, ← integral_div]
+      congr 1
+      funext x
+      ring
+    have intG : Integrable (fun x => D x * q x) μ := by
+      have h := ((hG t h1 h2).2.1.const_mul (-1 / t))
+      refine h.congr (Eventually.of_forall fun x => ?_)
+      simp only [hDdef]
+      ring
+    have intN : Integrable (fun x => D x * w x / t ^ n) μ := by
+      have h := ((hJ t h1 h2).2.1.const_mul (-1 / t / t ^ n))
+      refine h.congr (Eventually.of_forall fun x => ?_)
+      simp only [hDdef]
+      ring
+    have hpt : ∀ᵐ x ∂μ, D x * q x ≤ D x * w x / t ^ n ∧
+        D x * w x / t ^ n ≤ (1 + ε) ^ n * (D x * q x) ∧ 0 ≤ D x * q x := by
+      filter_upwards [hw01] with x hx
+      have hD0 : 0 ≤ D x := by
+        simp only [hDdef]
+        apply div_nonneg _ ht.le
+        rw [neg_nonneg]
+        exact mul_nonpos_of_nonneg_of_nonpos (div_nonneg (norm_nonneg _) ht.le) (hdnp _)
+      by_cases hd : deriv φ (‖x - y‖ / t) = 0
+      · have hD : D x = 0 := by simp only [hDdef, hd, mul_zero, neg_zero, zero_div]
+        simp [hD]
+      · -- here `1 ≤ r/t ≤ 1 + ε`, so `σ ≤ t ≤ r ≤ (1 + ε)t` and `q = w/rⁿ`
+        have hlo : 1 ≤ ‖x - y‖ / t := by
+          by_contra h
+          exact hd (hdlo _ (lt_of_not_ge h))
+        have hhi : ‖x - y‖ / t ≤ 1 + ε := by
+          by_contra h
+          exact hd (hdhi _ (lt_of_not_ge h))
+        have htr : t ≤ ‖x - y‖ := by rwa [le_div_iff₀ ht, one_mul] at hlo
+        have hrt : ‖x - y‖ ≤ (1 + ε) * t := by rwa [div_le_iff₀ ht] at hhi
+        have hr : 0 < ‖x - y‖ := ht.trans_le htr
+        have hqx : q x = w x / ‖x - y‖ ^ n := by
+          simp only [hqdef, max_eq_right (h1.trans htr)]
+        have hDw : 0 ≤ D x * w x := mul_nonneg hD0 hx.1
+        have hrn : 0 < ‖x - y‖ ^ n := pow_pos hr n
+        have htn : 0 < t ^ n := pow_pos ht n
+        rw [hqx, ← mul_div_assoc]
+        refine ⟨div_le_div_of_nonneg_left hDw htn (pow_le_pow_left₀ ht.le htr n), ?_,
+          div_nonneg hDw hrn.le⟩
+        have hpow : ‖x - y‖ ^ n ≤ (1 + ε) ^ n * t ^ n := by
+          rw [← mul_pow]
+          exact pow_le_pow_left₀ hr.le hrt n
+        calc D x * w x / t ^ n = (D x * w x) * (1 / t ^ n) := by ring
+          _ ≤ (D x * w x) * ((1 + ε) ^ n / ‖x - y‖ ^ n) := by
+              apply mul_le_mul_of_nonneg_left _ hDw
+              rw [div_le_div_iff₀ htn hrn]
+              linarith [hpow]
+          _ = (1 + ε) ^ n * (D x * w x / ‖x - y‖ ^ n) := by ring
+    refine ⟨?_, ?_, ?_⟩
+    · rw [eG, eN]
+      exact integral_mono_ae intG intN (hpt.mono fun x hx => hx.1)
+    · rw [eN, eG, ← integral_const_mul]
+      exact integral_mono_ae intN (intG.const_mul _) (hpt.mono fun x hx => hx.2.1)
+    · rw [eG]
+      exact integral_nonneg_of_ae (hpt.mono fun x hx => hx.2.2)
+  have hGder : ∀ t, σ ≤ t → t ≤ ρ → HasDerivAt G (G' t) t := fun t h1 h2 => (hG t h1 h2).2.2
+  -- a function with nonnegative derivative at every point of `[σ, ρ]` increases from `σ` to `ρ`
+  have hmono : ∀ (f : ℝ → ℝ) (f' : ℝ → ℝ), (∀ t, σ ≤ t → t ≤ ρ → HasDerivAt f (f' t) t) →
+      (∀ t, σ ≤ t → t ≤ ρ → 0 ≤ f' t) → f σ ≤ f ρ := by
+    intro f f' hf hf'
+    have hm : MonotoneOn f (Icc σ ρ) := by
+      apply monotoneOn_of_deriv_nonneg (convex_Icc σ ρ)
+      · intro t ht
+        exact (hf t ht.1 ht.2).continuousAt.continuousWithinAt
+      · intro t ht
+        rw [interior_Icc] at ht
+        exact (hf t ht.1.le ht.2.le).differentiableAt.differentiableWithinAt
+      · intro t ht
+        rw [interior_Icc] at ht
+        rw [(hf t ht.1.le ht.2.le).deriv]
+        exact hf' t ht.1.le ht.2.le
+    exact hm ⟨le_rfl, hσρ⟩ ⟨hσρ, le_rfl⟩ hσρ
+  -- `e^{−c} G' ≤ Ψ' ≤ e^c (1 + ε)ⁿ G'` on `[σ, ρ]`, integrated
+  have hlow := hmono (fun t => Ψ t - Real.exp (-c) * G t)
+    (fun t => F t * N t - Real.exp (-c) * G' t)
+    (fun t h1 h2 => (hΨ t h1 h2).sub ((hGder t h1 h2).const_mul _))
+    (fun t h1 h2 => by
+      obtain ⟨hc1, -, hc3⟩ := hcmp t h1 h2
+      obtain ⟨hF1, -⟩ := hF t h1 h2
+      have hN0 : 0 ≤ N t := hc3.trans hc1
+      have := mul_le_mul hF1 hc1 hc3 ((Real.exp_pos _).le.trans hF1)
+      linarith)
+  have hup := hmono (fun t => Real.exp c * (1 + ε) ^ n * G t - Ψ t)
+    (fun t => Real.exp c * (1 + ε) ^ n * G' t - F t * N t)
+    (fun t h1 h2 => ((hGder t h1 h2).const_mul _).sub (hΨ t h1 h2))
+    (fun t h1 h2 => by
+      obtain ⟨hc1, hc2, hc3⟩ := hcmp t h1 h2
+      obtain ⟨-, hF2⟩ := hF t h1 h2
+      have hN0 : 0 ≤ N t := hc3.trans hc1
+      have h1' := mul_le_mul_of_nonneg_right hF2 hN0
+      have h2' := mul_le_mul_of_nonneg_left hc2 (Real.exp_pos c).le
+      nlinarith)
+  -- the increment of `G` is the annular integral `A`
+  have hA : G ρ - G σ = ∫ x, (φ (‖x - y‖ / ρ) - φ (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ := by
+    rw [hGdef]
+    dsimp only
+    rw [← integral_sub (hG ρ hσρ le_rfl).1 (hG σ le_rfl hσρ).1]
+    congr 1
+    funext x
+    by_cases hr : ‖x - y‖ ≤ σ
+    · have h1 : ‖x - y‖ / σ ≤ 1 := (div_le_one hσ).mpr hr
+      have h2 : ‖x - y‖ / ρ ≤ 1 := (div_le_one (hσ.trans_le hσρ)).mpr (hr.trans hσρ)
+      rw [hone _ h1, hone _ h2]
+      ring
+    · have hmax : max σ ‖x - y‖ = ‖x - y‖ := max_eq_right (le_of_lt (lt_of_not_ge hr))
+      simp only [hqdef, hmax]
+      ring
+  rw [← hA]
+  beta_reduce at hlow hup
+  constructor <;> nlinarith [hlow, hup]
+
+/-- **Integrating-factor squeeze for one cutoff** (Simon Ch. 4, 3.4–3.5 and 4.3–4.4, with the
+weight `|D^⊥ r|²` replaced by an abstract `w`, `0 ≤ w ≤ 1`, and the Hölder bound 3.1 by
+`|a(t)| ≤ M t^{−β}`, `β < 1`).  Write `r = |x − y|`, `I(t) = ∫ φ(r/t) dμ`,
+`L(t) = ∫ φ(r/t) (x − y)·H dμ` and `a(t) = t^{−(n+1)} L(t) / (1 + t^{−n} I(t))`.  If the radial
+identity `∫ (n φ(r/ρ) + (r/ρ) φ'(r/ρ)(1 − w)) dμ = −L(ρ)` holds whenever `0 < ρ`,
+`(1 + ε)ρ ≤ S`, then for `0 < σ ≤ ρ`, `(1 + ε)ρ < S`, with `F(t) = exp(−∫_0^t a)`,
+`c = ∫_0^ρ |a|` and `A = ∫ (φ(r/ρ) − φ(r/σ)) w / rⁿ dμ`,
+`e^{−c} A ≤ F(ρ)(1 + ρ^{−n} I(ρ)) − F(σ)(1 + σ^{−n} I(σ)) ≤ e^c (1 + ε)ⁿ A`.
+
+With `P(t) = I'(t)` and `Q(t) = J'(t)` (`J(t) = ∫ φ(r/t) w dμ`) from
+`aal_cfs_hasDerivAt_cutoff_integral`, the radial identity splits into
+`n I(t) − t P(t) + t Q(t) = −L(t)`; `L` is continuous by `aal_cfs_cutoff_pairing_continuousAt`.
+`aal_cfs_integrating_factor_deriv` turns this into `(F (1 + t^{−n} I))' = F Q / tⁿ` and
+`e^{−c} ≤ F ≤ e^c` on `(0, ρ]`, and `aal_cfs_squeeze_of_deriv` integrates the squeeze. -/
+theorem aal_cutoff_integrating_factor_squeeze : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℝ → ℝ) (I a : ℝ → ℝ) (S ε M β : ℝ), 0 < ε → β < 1 → μ (closedBall y S) < ⊤ → AEStronglyMeasurable w μ → (∀ᵐ x ∂μ, 0 ≤ w x ∧ w x ≤ 1) → IntegrableOn H (closedBall y S) μ → ContDiff ℝ 1 φ → Antitone φ → (∀ t : ℝ, t ≤ 1 → φ t = 1) → (∀ t : ℝ, 1 + ε ≤ t → φ t = 0) → (∀ ρ : ℝ, 0 < ρ → (1 + ε) * ρ ≤ S → ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) * (1 - w x)) ∂μ = -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂μ) → (∀ t : ℝ, I t = ∫ x, φ (‖x - y‖ / t) ∂μ) → (∀ t : ℝ, a t = (∫ x, φ (‖x - y‖ / t) * inner ℝ (x - y) (H x) ∂μ) / t ^ (n + 1) / (1 + I t / t ^ n)) → (∀ t : ℝ, 0 < t → (1 + ε) * t < S → |a t| ≤ M * t ^ (-β)) → ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → (1 + ε) * ρ < S → Real.exp (-∫ t in (0)..ρ, |a t|) * ∫ x, (φ (‖x - y‖ / ρ) - φ (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ ≤ Real.exp (-∫ t in (0)..ρ, a t) * (1 + I ρ / ρ ^ n) - Real.exp (-∫ t in (0)..σ, a t) * (1 + I σ / σ ^ n) ∧ Real.exp (-∫ t in (0)..ρ, a t) * (1 + I ρ / ρ ^ n) - Real.exp (-∫ t in (0)..σ, a t) * (1 + I σ / σ ^ n) ≤ Real.exp (∫ t in (0)..ρ, |a t|) * (1 + ε) ^ n * ∫ x, (φ (‖x - y‖ / ρ) - φ (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ := by
+  intro n ℓ μ H w y φ I a S ε M β hε hβ hμS hw hw01 hH hφ hanti hone hzero hrad hI ha hab
+    σ ρ hσ hσρ hρS
+  have hε1 : (0 : ℝ) < 1 + ε := by linarith
+  -- All radii used below lie in `(0, S / (1 + ε))`, i.e. `0 < t` and `(1 + ε) t < S`.
+  have hRiff : ∀ t : ℝ, t < S / (1 + ε) ↔ (1 + ε) * t < S := fun t => by
+    rw [lt_div_iff₀ hε1, mul_comm]
+  have hρR : ρ < S / (1 + ε) := (hRiff ρ).2 hρS
+  -- `0 ≤ φ`, so `I ≥ 0`; `|w| ≤ 1` a.e.
+  have hφnn : ∀ s, 0 ≤ φ s := fun s => by
+    have h := hanti (le_max_left s (1 + ε))
+    rwa [hzero _ (le_max_right _ _)] at h
+  have hw1 : ∀ᵐ x ∂μ, |w x| ≤ 1 :=
+    hw01.mono fun x hx => abs_le.mpr ⟨by linarith [hx.1], hx.2⟩
+  have hc1 : ∀ᵐ x ∂μ, |(fun _ : Amb n ℓ => (1 : ℝ)) x| ≤ 1 :=
+    Eventually.of_forall fun x => by simp
+  -- The cutoff derivative with weight `1`: integrability and `I' = P`.
+  have hB1 : ∀ t : ℝ, 0 < t → (1 + ε) * t < S →
+      Integrable (fun x => φ (‖x - y‖ / t)) μ ∧
+        Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t)) μ ∧
+        HasDerivAt I (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ) / t) t := by
+    intro t ht htS
+    have h := Submission.aal_cfs_hasDerivAt_cutoff_integral n ℓ μ (fun _ => 1) y φ S ε 1 t hε
+      hμS aestronglyMeasurable_const hc1 hφ hanti hone hzero ht htS
+    simp only [mul_one] at h
+    refine ⟨h.1, h.2.1, ?_⟩
+    rw [show I = fun s => ∫ x, φ (‖x - y‖ / s) ∂μ from funext hI]
+    exact h.2.2
+  -- The cutoff derivative with weight `w`: integrability of `(r/t) φ'(r/t) w`.
+  have hBw := fun t (ht : 0 < t) (htS : (1 + ε) * t < S) =>
+    Submission.aal_cfs_hasDerivAt_cutoff_integral n ℓ μ w y φ S ε 1 t hε hμS hw hw1 hφ hanti
+      hone hzero ht htS
+  -- The integrating factor `F` and its bounds, from the differential identity
+  -- `n I(t) − t P(t) + t Q(t) = −L(t)` (the radial identity split into integrable pieces).
+  obtain ⟨hD1, hD2⟩ := Submission.aal_cfs_integrating_factor_deriv n I
+    (fun t => ∫ x, φ (‖x - y‖ / t) * inner ℝ (x - y) (H x) ∂μ) a
+    (fun t => -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ) / t)
+    (fun t => -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ) / t)
+    (S / (1 + ε)) M β hβ
+    (fun t ht htR => (hB1 t ht ((hRiff t).1 htR)).2.2)
+    (fun t ht htR => Submission.aal_cfs_cutoff_pairing_continuousAt n ℓ μ H y φ S ε t hε hH hφ
+      hanti hone hzero ht ((hRiff t).1 htR))
+    (fun t _ _ => by
+      rw [hI t]
+      exact integral_nonneg fun x => hφnn _)
+    (fun t ht htR => by
+      have htS := (hRiff t).1 htR
+      obtain ⟨h1f, h1d, -⟩ := hB1 t ht htS
+      obtain ⟨-, hwd, -⟩ := hBw t ht htS
+      have hR := hrad t ht htS.le
+      have e1 : ∫ x, ((n : ℝ) * φ (‖x - y‖ / t) +
+            ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * (1 - w x)) ∂μ =
+          ∫ x, ((n : ℝ) * φ (‖x - y‖ / t) +
+            (‖x - y‖ / t * deriv φ (‖x - y‖ / t) -
+              ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x)) ∂μ := by
+        congr 1
+        funext x
+        ring
+      have h2 : Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t) -
+          ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x) μ := h1d.sub hwd
+      rw [e1, integral_add (h1f.const_mul _) h2, integral_const_mul,
+        integral_sub h1d hwd, ← hI t] at hR
+      have ht0 : t ≠ 0 := ht.ne'
+      have key : ∀ z : ℝ, t * (-z / t) = -z := fun z => by field_simp
+      rw [key, key]
+      linarith)
+    (fun t _ _ => ha t)
+    (fun t ht htR => hab t ht ((hRiff t).1 htR))
+  -- Integrate the squeeze `e^{−c} ≤ F ≤ e^c` against `Q / tⁿ = J' / tⁿ` over `[σ, ρ]`.
+  exact Submission.aal_cfs_squeeze_of_deriv n ℓ μ w y φ
+    (fun s => Real.exp (-∫ u in (0)..s, a u) * (1 + I s / s ^ n))
+    (fun t => Real.exp (-∫ u in (0)..t, a u)) S ε (∫ t in (0)..ρ, |a t|) σ ρ hε hμS hw hw01
+    hφ hanti hone hzero hσ hσρ hρS
+    (fun t hσt htρ => hD2 t ρ (hσ.trans_le hσt) htρ hρR)
+    (fun t hσt htρ => hD1 t (hσ.trans_le hσt) (htρ.trans_lt hρR))
+/-- **Simon Ch. 4, 3.6 and 4.5–4.7** (monotonicity from the radial first-variation identity, with
+`κ = (p − n)/(4p)`).  Let `p > n ≥ 1`, `0 < R < S`, `Λ > 0`, `μ(B_S(y)) < ∞`, `0 ≤ w ≤ 1` `μ`-a.e.,
+`H` integrable on `B_S(y)` with `∫_{B_S(y)} |H|ᵖ dμ < ∞` and `(R^{p−n} ∫_{B_R(y)} |H|ᵖ dμ)^{1/p} ≤ κΛ`,
+and suppose `∫ (n φ(r/ρ) + (r/ρ) φ'(r/ρ)(1 − w)) dμ = −∫ φ(r/ρ) (x − y)·H dμ`, `r = |x − y|`, for every
+`C¹` cutoff `φ` (`φ = 1` on `(−∞, 1]`, `φ = 0` on `[T, ∞)`) and `ρ > 0` with `Tρ ≤ S`.
+
+Proof: for `φ_k = 1 − smoothTransition((· − 1)/ε_k)` with `ε_k ↓ 0`, the Hölder bound
+`Submission.aal_curvature_pairing_holder_bound` gives `|a_k(t)| ≤ 2‖H‖_{Lᵖ(B_S)} t^{−n/p}` for
+`a_k(t) = t^{−n−1} ∫ φ_k(r/t)(x − y)·H dμ / (1 + t^{−n} ∫ φ_k(r/t) dμ)`, and
+`Submission.aal_cutoff_integrating_factor_squeeze` gives the squeeze for each `k`.  Dominated
+convergence (in `x` and in `t`) passes to `k → ∞`: with
+`a₀(t) = t^{−n−1} ∫_{B_t(y)} (x − y)·H dμ / (1 + t^{−n} μ(B_t(y)))`, the Hölder bound for `1_{B_t(y)}` gives
+`∫₀ʳ |a₀| ≤ (Λ/4)(r/R)^{1−n/p}`, so `F(t) = exp(−∫₀ᵗ a₀)` satisfies the bounds on `(0, R]`, and
+`Φ(t) = F(t) t⁻ⁿ μ(B_t(y)) + F(t) − 1` satisfies
+`e^{−Λ} ∫_{B_r(y)∖B_s(y)} w/rⁿ dμ ≤ Φ(r) − Φ(s) ≤ e^{Λ} ∫_{B_r(y)∖B_s(y)} w/rⁿ dμ` for `0 < s ≤ r ≤ R`. -/
+theorem aal_monotonicity_of_radial_identity : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (R S Λ : ℝ), 0 < R → R < S → 0 < Λ → μ (closedBall y S) < ⊤ → AEStronglyMeasurable w μ → (∀ᵐ x ∂μ, 0 ≤ w x ∧ w x ≤ 1) → IntegrableOn H (closedBall y S) μ → ∫⁻ x in closedBall y S, ‖H x‖ₑ ^ p ∂μ < ⊤ → (ENNReal.ofReal (R ^ (p - n)) * ∫⁻ x in closedBall y R, ‖H x‖ₑ ^ p ∂μ) ^ (1 / p) ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → (∀ (φ : ℝ → ℝ) (T ρ : ℝ), ContDiff ℝ 1 φ → (∀ t : ℝ, t ≤ 1 → φ t = 1) → (∀ t : ℝ, T ≤ t → φ t = 0) → 0 < ρ → T * ρ ≤ S → ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) * (1 - w x)) ∂μ = -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂μ) → ∃ F : ℝ → ℝ, (∀ r : ℝ, 0 < r → r ≤ R → Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * (r / R) ^ (1 - (n : ℝ) / p) ∧ (Λ ≤ 1 → |F r - 1| ≤ Λ * (r / R) ^ (1 - (n : ℝ) / p))) ∧ (∀ s r : ℝ, 0 < s → s ≤ r → r ≤ R → IntegrableOn (fun x => w x / ‖x - y‖ ^ n) (closedBall y r \ closedBall y s) μ ∧ Real.exp (-Λ) * ∫ x in closedBall y r \ closedBall y s, w x / ‖x - y‖ ^ n ∂μ ≤ (F r * ((μ (closedBall y r)).toReal / r ^ n) + (F r - 1)) - (F s * ((μ (closedBall y s)).toReal / s ^ n) + (F s - 1)) ∧ (F r * ((μ (closedBall y r)).toReal / r ^ n) + (F r - 1)) - (F s * ((μ (closedBall y s)).toReal / s ^ n) + (F s - 1)) ≤ Real.exp Λ * ∫ x in closedBall y r \ closedBall y s, w x / ‖x - y‖ ^ n ∂μ) := by
+  -- Steps 3-4: C^1 cutoffs φ k s = 1 - smoothTransition ((s - 1) / ε k) with ε k = ε₁ / (k + 1) → 0.
+  have hCutoffSeq : ∀ ε₁ : ℝ, 0 < ε₁ → ∃ (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), (∀ k, 0 < ε k ∧ ε k ≤ ε₁) ∧ Tendsto ε atTop (𝓝 0) ∧ (∀ k, ContDiff ℝ 1 (φ k)) ∧ (∀ k, Antitone (φ k)) ∧ (∀ k s, 0 ≤ φ k s ∧ φ k s ≤ 1) ∧ (∀ k s, s ≤ 1 → φ k s = 1) ∧ (∀ k s, 1 + ε k ≤ s → φ k s = 0) ∧ (∀ s, 1 < s → ∀ᶠ k in atTop, φ k s = 0) := by
+    intro ε₁ hε₁
+    obtain ⟨ε, hεdef⟩ : ∃ ε : ℕ → ℝ, ε = fun k : ℕ => ε₁ / ((k : ℝ) + 1) := ⟨_, rfl⟩
+    have hεpos : ∀ k, 0 < ε k := fun k => by
+      rw [hεdef]
+      exact div_pos hε₁ (by positivity)
+    have hεle : ∀ k, ε k ≤ ε₁ := fun k => by
+      rw [hεdef]
+      exact div_le_self hε₁.le (by have := Nat.cast_nonneg (α := ℝ) k; linarith)
+    have hεlim : Tendsto ε atTop (𝓝 0) := by
+      have h := (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul ε₁
+      rw [mul_zero] at h
+      refine h.congr fun k => ?_
+      rw [hεdef]
+      ring
+    refine ⟨fun k s => 1 - Real.smoothTransition ((s - 1) / ε k), ε,
+      fun k => ⟨hεpos k, hεle k⟩, hεlim, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · intro k
+      exact contDiff_const.sub (Real.smoothTransition.contDiff.comp (by fun_prop))
+    · intro k s t hst
+      have h1 : (s - 1) / ε k ≤ (t - 1) / ε k :=
+        div_le_div_of_nonneg_right (by linarith) (hεpos k).le
+      have := Real.smoothTransition.monotone h1
+      show 1 - Real.smoothTransition ((t - 1) / ε k) ≤ 1 - Real.smoothTransition ((s - 1) / ε k)
+      linarith
+    · intro k s
+      have h0 := Real.smoothTransition.nonneg ((s - 1) / ε k)
+      have h1 := Real.smoothTransition.le_one ((s - 1) / ε k)
+      show 0 ≤ 1 - Real.smoothTransition ((s - 1) / ε k) ∧ 1 - Real.smoothTransition ((s - 1) / ε k) ≤ 1
+      constructor <;> linarith
+    · intro k s hs
+      have h1 : (s - 1) / ε k ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) (hεpos k).le
+      show 1 - Real.smoothTransition ((s - 1) / ε k) = 1
+      rw [Real.smoothTransition.zero_of_nonpos h1, sub_zero]
+    · intro k s hs
+      have h1 : 1 ≤ (s - 1) / ε k := by
+        rw [le_div_iff₀ (hεpos k)]
+        linarith
+      show 1 - Real.smoothTransition ((s - 1) / ε k) = 0
+      rw [Real.smoothTransition.one_of_one_le h1, sub_self]
+    · intro s hs
+      have hev : ∀ᶠ k in atTop, ε k ≤ s - 1 :=
+        hεlim.eventually (ge_mem_nhds (by linarith : (0 : ℝ) < s - 1))
+      filter_upwards [hev] with k hk
+      have h1 : 1 ≤ (s - 1) / ε k := by
+        rw [le_div_iff₀ (hεpos k)]
+        linarith
+      show 1 - Real.smoothTransition ((s - 1) / ε k) = 0
+      rw [Real.smoothTransition.one_of_one_le h1, sub_self]
+  -- Helper for steps 5 and 9: b ^ e ≤ 1 + b for b ≥ 0 and 0 ≤ e ≤ 1.
+  have hRpowLeOneAdd : ∀ {b e : ℝ}, 0 ≤ b → 0 ≤ e → e ≤ 1 → b ^ e ≤ 1 + b := by
+    intro b e hb he0 he1
+    rcases le_total b 1 with h | h
+    · have := Real.rpow_le_one hb h he0
+      linarith
+    · have := Real.rpow_le_rpow_of_exponent_le h he1
+      rw [Real.rpow_one] at this
+      linarith
+  -- Steps 5 and 9 (algebra): |L| ≤ t N I ^ (1 - 1/p) gives |L / t ^ (n + 1) / (1 + I / t ^ n)| ≤ N t ^ (-n/p).
+  have hCoeffBound : ∀ (n : ℕ) (p t N I L : ℝ), 1 < p → 0 < t → 0 ≤ N → 0 ≤ I → |L| ≤ t * N * I ^ (1 - 1 / p) → |L / t ^ (n + 1) / (1 + I / t ^ n)| ≤ N * t ^ (-((n : ℝ) / p)) := by
+    intro n p t N I L hp ht hN hI hL
+    have hp0 : 0 < p := by linarith
+    have htn : 0 < t ^ n := pow_pos ht n
+    set b := I / t ^ n with hbdef
+    have hb : 0 ≤ b := div_nonneg hI htn.le
+    have hIb : I = b * t ^ n := by
+      rw [hbdef, div_mul_cancel₀ _ htn.ne']
+    have he0 : 0 ≤ 1 - 1 / p := by
+      have : 1 / p < 1 := by rw [div_lt_one hp0]; exact hp
+      linarith
+    have he1 : 1 - 1 / p ≤ 1 := by
+      have : 0 < 1 / p := by positivity
+      linarith
+    have hpow : I ^ (1 - 1 / p) = b ^ (1 - 1 / p) * t ^ ((n : ℝ) * (1 - 1 / p)) := by
+      rw [hIb, Real.mul_rpow hb htn.le, ← Real.rpow_natCast, ← Real.rpow_mul ht.le]
+    have hbe := hRpowLeOneAdd hb he0 he1
+    have hden : 0 < 1 + b := by linarith
+    have hL' : |L| ≤ N * (1 + b) * (t * t ^ ((n : ℝ) * (1 - 1 / p))) := by
+      calc |L| ≤ t * N * I ^ (1 - 1 / p) := hL
+        _ = t * N * (b ^ (1 - 1 / p) * t ^ ((n : ℝ) * (1 - 1 / p))) := by rw [hpow]
+        _ ≤ t * N * ((1 + b) * t ^ ((n : ℝ) * (1 - 1 / p))) := by
+            gcongr
+        _ = N * (1 + b) * (t * t ^ ((n : ℝ) * (1 - 1 / p))) := by ring
+    have hexp : t * t ^ ((n : ℝ) * (1 - 1 / p)) = t ^ (-((n : ℝ) / p)) * t ^ (n + 1) := by
+      rw [← Real.rpow_natCast t (n + 1), ← Real.rpow_add ht]
+      have h1 : t * t ^ ((n : ℝ) * (1 - 1 / p)) = t ^ ((1 : ℝ) + (n : ℝ) * (1 - 1 / p)) := by
+        rw [Real.rpow_add ht, Real.rpow_one]
+      rw [h1]
+      congr 1
+      push_cast
+      field_simp
+      ring
+    rw [abs_div, abs_div, abs_of_pos (pow_pos ht (n + 1)), abs_of_pos hden, div_div,
+      div_le_iff₀ (mul_pos (pow_pos ht (n + 1)) hden)]
+    calc |L| ≤ N * (1 + b) * (t * t ^ ((n : ℝ) * (1 - 1 / p))) := hL'
+      _ = N * t ^ (-((n : ℝ) / p)) * (t ^ (n + 1) * (1 + b)) := by rw [hexp]; ring
+  -- Step 8: radial cutoff integrals are continuous in the radius on (0, R] (dominated continuity).
+  have hCutoffIntCont : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (g : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℝ → ℝ) (S T R : ℝ), 0 < T → T * R ≤ S → IntegrableOn g (closedBall y S) μ → Continuous φ → (∀ s, 0 ≤ φ s ∧ φ s ≤ 1) → (∀ s, T ≤ s → φ s = 0) → ContinuousOn (fun t => ∫ x, φ (‖x - y‖ / t) * g x ∂μ) (Ioc 0 R) := by
+    intro n ℓ μ g y φ S T R hT hTR hg hφc hφ01 hφ0
+    obtain ⟨ν, hν⟩ : ∃ ν : Measure (Amb n ℓ), ν = μ.restrict (closedBall y S) := ⟨_, rfl⟩
+    have hgν : Integrable g ν := by rw [hν]; exact hg
+    have hout : ∀ t ∈ Ioc (0 : ℝ) R, ∀ x, x ∉ closedBall y S → φ (‖x - y‖ / t) * g x = 0 := by
+      intro t ht x hx
+      have hxS : S < ‖x - y‖ := by simpa [mem_closedBall, dist_eq_norm, not_le] using hx
+      have hTt : T * t ≤ T * R := mul_le_mul_of_nonneg_left ht.2 hT.le
+      have : T ≤ ‖x - y‖ / t := by
+        rw [le_div_iff₀ ht.1]
+        linarith
+      rw [hφ0 _ this, zero_mul]
+    have heq : ∀ t ∈ Ioc (0 : ℝ) R,
+        ∫ x, φ (‖x - y‖ / t) * g x ∂μ = ∫ x, φ (‖x - y‖ / t) * g x ∂ν := by
+      intro t ht
+      rw [hν, setIntegral_eq_integral_of_forall_compl_eq_zero (fun x hx => hout t ht x hx)]
+    refine ContinuousOn.congr ?_ heq
+    refine continuousOn_of_dominated (bound := fun x => ‖g x‖) ?_ ?_ hgν.norm ?_
+    · intro t _
+      exact (hφc.comp (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ / t)).aestronglyMeasurable.mul
+        hgν.aestronglyMeasurable
+    · intro t _
+      refine Eventually.of_forall fun x => ?_
+      rw [norm_mul, Real.norm_eq_abs, abs_of_nonneg (hφ01 _).1]
+      exact mul_le_of_le_one_left (norm_nonneg _) (hφ01 _).2
+    · refine Eventually.of_forall fun x => ?_
+      apply ContinuousOn.mul _ continuousOn_const
+      apply hφc.comp_continuousOn
+      apply ContinuousOn.div continuousOn_const continuousOn_id
+      intro t ht
+      exact ht.1.ne'
+  -- Step 7: radial cutoff integrals converge to closed-ball integrals (dominated convergence).
+  have hCutoffIntLim : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (g : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℕ → ℝ → ℝ) (S T t : ℝ), 0 < t → 1 ≤ T → T * t ≤ S → IntegrableOn g (closedBall y S) μ → (∀ k, Continuous (φ k)) → (∀ k s, 0 ≤ φ k s ∧ φ k s ≤ 1) → (∀ k s, s ≤ 1 → φ k s = 1) → (∀ k s, T ≤ s → φ k s = 0) → (∀ s, 1 < s → ∀ᶠ k in atTop, φ k s = 0) → Tendsto (fun k => ∫ x, φ k (‖x - y‖ / t) * g x ∂μ) atTop (𝓝 (∫ x in closedBall y t, g x ∂μ)) := by
+    intro n ℓ μ g y φ S T t ht hT hTt hg hφc hφ01 hφone hφ0 hφev
+    obtain ⟨ν, hν⟩ : ∃ ν : Measure (Amb n ℓ), ν = μ.restrict (closedBall y S) := ⟨_, rfl⟩
+    have hgν : Integrable g ν := by rw [hν]; exact hg
+    have htS : t ≤ S := by nlinarith
+    have hout : ∀ k, ∀ x, x ∉ closedBall y S → φ k (‖x - y‖ / t) * g x = 0 := by
+      intro k x hx
+      have hxS : S < ‖x - y‖ := by simpa [mem_closedBall, dist_eq_norm, not_le] using hx
+      have : T ≤ ‖x - y‖ / t := by
+        rw [le_div_iff₀ ht]
+        linarith
+      rw [hφ0 k _ this, zero_mul]
+    have heq : ∀ k, ∫ x, φ k (‖x - y‖ / t) * g x ∂μ = ∫ x, φ k (‖x - y‖ / t) * g x ∂ν := by
+      intro k
+      rw [hν, setIntegral_eq_integral_of_forall_compl_eq_zero (fun x hx => hout k x hx)]
+    have hlimeq : ∫ x in closedBall y t, g x ∂μ = ∫ x, (closedBall y t).indicator g x ∂ν := by
+      rw [hν, integral_indicator measurableSet_closedBall,
+        Measure.restrict_restrict measurableSet_closedBall,
+        inter_eq_left.mpr (closedBall_subset_closedBall htS)]
+    rw [hlimeq]
+    refine (tendsto_congr heq).mpr ?_
+    refine tendsto_integral_of_dominated_convergence (fun x => ‖g x‖) ?_ hgν.norm ?_ ?_
+    · intro k
+      exact ((hφc k).comp
+        (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ / t)).aestronglyMeasurable.mul
+        hgν.aestronglyMeasurable
+    · intro k
+      refine Eventually.of_forall fun x => ?_
+      rw [norm_mul, Real.norm_eq_abs, abs_of_nonneg (hφ01 k _).1]
+      exact mul_le_of_le_one_left (norm_nonneg _) (hφ01 k _).2
+    · refine Eventually.of_forall fun x => ?_
+      by_cases hx : x ∈ closedBall y t
+      · rw [indicator_of_mem hx]
+        have hle : ‖x - y‖ / t ≤ 1 := by
+          rw [div_le_one ht]
+          simpa [mem_closedBall, dist_eq_norm] using hx
+        have : (fun k => φ k (‖x - y‖ / t) * g x) = fun _ => g x := by
+          funext k
+          rw [hφone k _ hle, one_mul]
+        rw [this]
+        exact tendsto_const_nhds
+      · rw [indicator_of_notMem hx]
+        have hlt : 1 < ‖x - y‖ / t := by
+          rw [one_lt_div ht]
+          simpa [mem_closedBall, dist_eq_norm, not_le] using hx
+        refine tendsto_const_nhds.congr' ?_
+        filter_upwards [hφev _ hlt] with k hk
+        rw [hk, zero_mul]
+  -- Steps 1 and 12: annular integrability, nonnegativity and convergence of the annular cutoff integrals.
+  have hAnnularLim : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℕ → ℝ → ℝ) (S T σ ρ : ℝ), 0 < σ → σ ≤ ρ → 1 ≤ T → T * ρ ≤ S → μ (closedBall y S) < ⊤ → AEStronglyMeasurable w μ → (∀ᵐ x ∂μ, 0 ≤ w x ∧ w x ≤ 1) → (∀ k, Continuous (φ k)) → (∀ k s, 0 ≤ φ k s ∧ φ k s ≤ 1) → (∀ k s, s ≤ 1 → φ k s = 1) → (∀ k s, T ≤ s → φ k s = 0) → (∀ s, 1 < s → ∀ᶠ k in atTop, φ k s = 0) → IntegrableOn (fun x => w x / ‖x - y‖ ^ n) (closedBall y ρ \ closedBall y σ) μ ∧ 0 ≤ ∫ x in closedBall y ρ \ closedBall y σ, w x / ‖x - y‖ ^ n ∂μ ∧ Tendsto (fun k => ∫ x, (φ k (‖x - y‖ / ρ) - φ k (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ) atTop (𝓝 (∫ x in closedBall y ρ \ closedBall y σ, w x / ‖x - y‖ ^ n ∂μ)) := by
+    intro n ℓ μ w y φ S T σ ρ hσ hσρ hT hTρ hμS hwm hw01 hφc hφ01 hφone hφ0 hφev
+    have hρ : 0 < ρ := lt_of_lt_of_le hσ hσρ
+    have hρS : ρ ≤ S := by nlinarith
+    obtain ⟨A, hA⟩ : ∃ A : Set (Amb n ℓ), A = closedBall y ρ \ closedBall y σ := ⟨_, rfl⟩
+    rw [← hA]
+    have hAm : MeasurableSet A := by
+      rw [hA]
+      exact measurableSet_closedBall.diff measurableSet_closedBall
+    have hAS : A ⊆ closedBall y S := by
+      rw [hA]
+      exact sdiff_subset.trans (closedBall_subset_closedBall hρS)
+    have hμA : μ A < ⊤ := lt_of_le_of_lt (measure_mono hAS) hμS
+    have hfm : AEStronglyMeasurable (fun x => w x / ‖x - y‖ ^ n) μ :=
+      hwm.div₀ (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ ^ n).aestronglyMeasurable
+    have hbd : ∀ᵐ x ∂μ, σ < ‖x - y‖ → ‖w x / ‖x - y‖ ^ n‖ ≤ (σ ^ n)⁻¹ := by
+      filter_upwards [hw01] with x hx hxσ
+      have hpos : 0 < ‖x - y‖ ^ n := pow_pos (hσ.trans hxσ) n
+      rw [Real.norm_eq_abs, abs_div, abs_of_nonneg hx.1, abs_of_pos hpos]
+      calc w x / ‖x - y‖ ^ n ≤ 1 / ‖x - y‖ ^ n := div_le_div_of_nonneg_right hx.2 hpos.le
+        _ ≤ 1 / σ ^ n :=
+            one_div_le_one_div_of_le (pow_pos hσ n) (pow_le_pow_left₀ hσ.le hxσ.le n)
+        _ = (σ ^ n)⁻¹ := one_div _
+    have hmemA : ∀ x, x ∈ A ↔ ‖x - y‖ ≤ ρ ∧ σ < ‖x - y‖ := by
+      intro x
+      rw [hA]
+      simp [mem_closedBall, dist_eq_norm, not_le]
+    have hint : IntegrableOn (fun x => w x / ‖x - y‖ ^ n) A μ := by
+      refine Measure.integrableOn_of_bounded (M := (σ ^ n)⁻¹) hμA.ne hfm ?_
+      rw [ae_restrict_iff' hAm]
+      filter_upwards [hbd] with x hx hxA
+      exact hx ((hmemA x).mp hxA).2
+    refine ⟨hint, ?_, ?_⟩
+    · apply setIntegral_nonneg_of_ae_restrict
+      filter_upwards [ae_restrict_of_ae hw01] with x hx
+      exact div_nonneg hx.1 (pow_nonneg (norm_nonneg _) n)
+    · obtain ⟨ν, hν⟩ : ∃ ν : Measure (Amb n ℓ), ν = μ.restrict (closedBall y S) := ⟨_, rfl⟩
+      have hνfin : IsFiniteMeasure ν := by
+        rw [hν]
+        exact isFiniteMeasure_restrict.mpr hμS.ne
+      have hout : ∀ k x, x ∉ closedBall y S →
+          (φ k (‖x - y‖ / ρ) - φ k (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) = 0 := by
+        intro k x hx
+        have hxS : S < ‖x - y‖ := by simpa [mem_closedBall, dist_eq_norm, not_le] using hx
+        have h1 : T ≤ ‖x - y‖ / ρ := by
+          rw [le_div_iff₀ hρ]
+          linarith
+        have h2 : T ≤ ‖x - y‖ / σ := by
+          rw [le_div_iff₀ hσ]
+          have : T * σ ≤ T * ρ := mul_le_mul_of_nonneg_left hσρ (by linarith)
+          linarith
+        rw [hφ0 k _ h1, hφ0 k _ h2, sub_self, zero_mul]
+      have heq : ∀ k, ∫ x, (φ k (‖x - y‖ / ρ) - φ k (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ =
+          ∫ x, (φ k (‖x - y‖ / ρ) - φ k (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂ν := by
+        intro k
+        rw [hν, setIntegral_eq_integral_of_forall_compl_eq_zero (fun x hx => hout k x hx)]
+      have hlimeq : ∫ x in A, w x / ‖x - y‖ ^ n ∂μ =
+          ∫ x, A.indicator (fun x => w x / ‖x - y‖ ^ n) x ∂ν := by
+        rw [hν, integral_indicator hAm, Measure.restrict_restrict hAm, inter_eq_left.mpr hAS]
+      rw [hlimeq]
+      refine (tendsto_congr heq).mpr ?_
+      refine tendsto_integral_of_dominated_convergence (fun _ => (σ ^ n)⁻¹) ?_
+        (integrable_const _) ?_ ?_
+      · intro k
+        have h1 : Continuous fun x : Amb n ℓ => φ k (‖x - y‖ / ρ) - φ k (‖x - y‖ / σ) := by
+          have := hφc k
+          fun_prop
+        have hfmν : AEStronglyMeasurable (fun x => w x / ‖x - y‖ ^ n) ν := by
+          rw [hν]
+          exact hfm.restrict
+        exact h1.aestronglyMeasurable.mul hfmν
+      · intro k
+        have hbdν : ∀ᵐ x ∂ν, σ < ‖x - y‖ → ‖w x / ‖x - y‖ ^ n‖ ≤ (σ ^ n)⁻¹ := by
+          rw [hν]
+          exact ae_restrict_of_ae hbd
+        filter_upwards [hbdν] with x hx
+        by_cases hxσ : σ < ‖x - y‖
+        · rw [norm_mul]
+          have hd : ‖φ k (‖x - y‖ / ρ) - φ k (‖x - y‖ / σ)‖ ≤ 1 := by
+            rw [Real.norm_eq_abs, abs_le]
+            have := hφ01 k (‖x - y‖ / ρ)
+            have := hφ01 k (‖x - y‖ / σ)
+            constructor <;> linarith
+          calc ‖φ k (‖x - y‖ / ρ) - φ k (‖x - y‖ / σ)‖ * ‖w x / ‖x - y‖ ^ n‖
+              ≤ 1 * (σ ^ n)⁻¹ := mul_le_mul hd (hx hxσ) (norm_nonneg _) zero_le_one
+            _ = (σ ^ n)⁻¹ := one_mul _
+        · rw [not_lt] at hxσ
+          have h1 : ‖x - y‖ / ρ ≤ 1 := by
+            rw [div_le_one hρ]
+            linarith
+          have h2 : ‖x - y‖ / σ ≤ 1 := by
+            rw [div_le_one hσ]
+            exact hxσ
+          rw [hφone k _ h1, hφone k _ h2, sub_self, zero_mul, norm_zero]
+          positivity
+      · refine Eventually.of_forall fun x => ?_
+        by_cases hxσ : ‖x - y‖ ≤ σ
+        · have hxA : x ∉ A := fun h => (not_le.mpr ((hmemA x).mp h).2) hxσ
+          rw [indicator_of_notMem hxA]
+          have h1 : ‖x - y‖ / ρ ≤ 1 := by
+            rw [div_le_one hρ]
+            linarith
+          have h2 : ‖x - y‖ / σ ≤ 1 := by
+            rw [div_le_one hσ]
+            exact hxσ
+          have : (fun k => (φ k (‖x - y‖ / ρ) - φ k (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n)) =
+              fun _ => 0 := by
+            funext k
+            rw [hφone k _ h1, hφone k _ h2, sub_self, zero_mul]
+          rw [this]
+          exact tendsto_const_nhds
+        · rw [not_le] at hxσ
+          have h2 : 1 < ‖x - y‖ / σ := by
+            rw [one_lt_div hσ]
+            exact hxσ
+          by_cases hxρ : ‖x - y‖ ≤ ρ
+          · have hxA : x ∈ A := (hmemA x).mpr ⟨hxρ, hxσ⟩
+            rw [indicator_of_mem hxA]
+            have h1 : ‖x - y‖ / ρ ≤ 1 := by
+              rw [div_le_one hρ]
+              exact hxρ
+            refine tendsto_const_nhds.congr' ?_
+            filter_upwards [hφev _ h2] with k hk
+            rw [hφone k _ h1, hk, sub_zero, one_mul]
+          · rw [not_le] at hxρ
+            have hxA : x ∉ A := fun h => (not_le.mpr hxρ) ((hmemA x).mp h).1
+            rw [indicator_of_notMem hxA]
+            have h1 : 1 < ‖x - y‖ / ρ := by
+              rw [one_lt_div hρ]
+              exact hxρ
+            refine tendsto_const_nhds.congr' ?_
+            filter_upwards [hφev _ h1, hφev _ h2] with k hk1 hk2
+            rw [hk1, hk2, sub_self, zero_mul]
+  -- Step 11: elementary bounds for exp u when |u| ≤ (Λ / 4) q.
+  have hExpBounds : ∀ (Λ q u : ℝ), 0 < Λ → 0 ≤ q → q ≤ 1 → |u| ≤ Λ / 4 * q → Real.exp (-Λ) ≤ Real.exp u ∧ Real.exp u ≤ Real.exp Λ ∧ |Real.exp u - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * q ∧ (Λ ≤ 1 → |Real.exp u - 1| ≤ Λ * q) := by
+    intro Λ q u hΛ hq0 hq1 hu
+    obtain ⟨b, hb⟩ : ∃ b : ℝ, b = Λ / 4 * q := ⟨_, rfl⟩
+    rw [← hb] at hu
+    have hb0 : 0 ≤ b := by rw [hb]; positivity
+    have hbΛ : b ≤ Λ / 4 := by
+      rw [hb]
+      calc Λ / 4 * q ≤ Λ / 4 * 1 := mul_le_mul_of_nonneg_left hq1 (by positivity)
+        _ = Λ / 4 := mul_one _
+    have hu' := abs_le.mp hu
+    -- `|exp u - 1| ≤ exp b * b`
+    have hkey : |Real.exp u - 1| ≤ Real.exp b * b := by
+      rcases le_total 0 u with h | h
+      · have h1 : 0 ≤ Real.exp u - 1 := by linarith [Real.add_one_le_exp u]
+        rw [abs_of_nonneg h1]
+        have h2 : 1 - u ≤ Real.exp (-u) := by linarith [Real.add_one_le_exp (-u)]
+        have h3 : Real.exp u * Real.exp (-u) = 1 := by
+          rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
+        have h4 : Real.exp u - 1 ≤ u * Real.exp u := by
+          have := mul_le_mul_of_nonneg_left h2 (Real.exp_pos u).le
+          nlinarith
+        have h5 : u ≤ b := by linarith
+        calc Real.exp u - 1 ≤ u * Real.exp u := h4
+          _ ≤ b * Real.exp b := mul_le_mul h5 (Real.exp_le_exp.mpr h5) (Real.exp_pos u).le hb0
+          _ = Real.exp b * b := mul_comm _ _
+      · have h1 : Real.exp u - 1 ≤ 0 := by
+          have := Real.exp_le_one_iff.mpr h
+          linarith
+        rw [abs_of_nonpos h1]
+        have h2 : u + 1 ≤ Real.exp u := Real.add_one_le_exp u
+        have h5 : -u ≤ b := by linarith
+        have h6 : 1 ≤ Real.exp b := Real.one_le_exp hb0
+        nlinarith
+    refine ⟨?_, ?_, ?_, ?_⟩
+    · exact Real.exp_le_exp.mpr (by linarith)
+    · exact Real.exp_le_exp.mpr (by linarith)
+    · have h1 : Real.exp (Λ / 4) ≤ Real.exp (Λ / 2) := Real.exp_le_exp.mpr (by linarith)
+      have hΛq : 0 ≤ Λ * q := by positivity
+      calc |Real.exp u - 1| ≤ Real.exp b * b := hkey
+        _ ≤ Real.exp (Λ / 4) * b := mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr hbΛ) hb0
+        _ = Real.exp (Λ / 4) / 4 * (Λ * q) := by rw [hb]; ring
+        _ ≤ Real.exp (Λ / 2) / 2 * (Λ * q) := by
+            apply mul_le_mul_of_nonneg_right _ hΛq
+            have := Real.exp_pos (Λ / 4)
+            linarith
+        _ = Real.exp (Λ / 2) / 2 * Λ * q := by ring
+    · intro hΛ1
+      have hq4 : Real.exp (1 / 4) ≤ 4 := by
+        have h1 : -(1 / 4 : ℝ) + 1 ≤ Real.exp (-(1 / 4)) := Real.add_one_le_exp _
+        have h2 : Real.exp (1 / 4) * Real.exp (-(1 / 4)) = 1 := by
+          rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
+        have h3 := Real.exp_pos (1 / 4 : ℝ)
+        nlinarith
+      calc |Real.exp u - 1| ≤ Real.exp b * b := hkey
+        _ ≤ Real.exp (1 / 4) * b :=
+            mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr (by linarith)) hb0
+        _ ≤ 4 * b := mul_le_mul_of_nonneg_right hq4 hb0
+        _ = Λ * q := by rw [hb]; ring
+  -- Steps 9 (bound D.3) and 10-12: passage to the limit k → ∞ in the fixed-cutoff squeeze (D.2).
+  have hFactorLimit : ∀ (R β M K Λ : ℝ) (a : ℕ → ℝ → ℝ) (a₀ : ℝ → ℝ) (Q : ℕ → ℝ → ℝ) (Q₀ : ℝ → ℝ) (A : ℕ → ℝ → ℝ → ℝ) (A₀ : ℝ → ℝ → ℝ) (e : ℕ → ℝ), 0 < R → β < 1 → 0 < Λ → K * R ^ (1 - β) / (1 - β) ≤ Λ / 4 → (∀ k, AEStronglyMeasurable (a k) (volume.restrict (Ioc 0 R))) → (∀ k t, 0 < t → t ≤ R → |a k t| ≤ M * t ^ (-β)) → (∀ t, 0 < t → t ≤ R → Tendsto (fun k => a k t) atTop (𝓝 (a₀ t))) → (∀ t, 0 < t → t ≤ R → |a₀ t| ≤ K * t ^ (-β)) → (∀ t, 0 < t → t ≤ R → Tendsto (fun k => Q k t) atTop (𝓝 (Q₀ t))) → (∀ σ ρ, 0 < σ → σ ≤ ρ → ρ ≤ R → Tendsto (fun k => A k σ ρ) atTop (𝓝 (A₀ σ ρ))) → (∀ σ ρ, 0 < σ → σ ≤ ρ → ρ ≤ R → 0 ≤ A₀ σ ρ) → Tendsto e atTop (𝓝 1) → (∀ k σ ρ, 0 < σ → σ ≤ ρ → ρ ≤ R → Real.exp (-∫ t in (0)..ρ, |a k t|) * A k σ ρ ≤ Real.exp (-∫ t in (0)..ρ, a k t) * Q k ρ - Real.exp (-∫ t in (0)..σ, a k t) * Q k σ ∧ Real.exp (-∫ t in (0)..ρ, a k t) * Q k ρ - Real.exp (-∫ t in (0)..σ, a k t) * Q k σ ≤ Real.exp (∫ t in (0)..ρ, |a k t|) * e k * A k σ ρ) → (∀ r, 0 < r → r ≤ R → Real.exp (-Λ) ≤ Real.exp (-∫ t in (0)..r, a₀ t) ∧ Real.exp (-∫ t in (0)..r, a₀ t) ≤ Real.exp Λ ∧ |Real.exp (-∫ t in (0)..r, a₀ t) - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * (r / R) ^ (1 - β) ∧ (Λ ≤ 1 → |Real.exp (-∫ t in (0)..r, a₀ t) - 1| ≤ Λ * (r / R) ^ (1 - β))) ∧ (∀ σ ρ, 0 < σ → σ ≤ ρ → ρ ≤ R → Real.exp (-Λ) * A₀ σ ρ ≤ Real.exp (-∫ t in (0)..ρ, a₀ t) * Q₀ ρ - Real.exp (-∫ t in (0)..σ, a₀ t) * Q₀ σ ∧ Real.exp (-∫ t in (0)..ρ, a₀ t) * Q₀ ρ - Real.exp (-∫ t in (0)..σ, a₀ t) * Q₀ σ ≤ Real.exp Λ * A₀ σ ρ) := by
+    intro R β M K Λ a a₀ Q Q₀ A A₀ e hR hβ hΛ hK hameas hab halim ha₀b hQlim hAlim hA₀ he hsq
+    have hβ1 : 0 < 1 - β := by linarith
+    have hgint : ∀ (C ρ : ℝ), IntervalIntegrable (fun t => C * t ^ (-β)) volume 0 ρ := fun C ρ =>
+      (intervalIntegral.intervalIntegrable_rpow' (by linarith)).const_mul C
+    have hameas' : ∀ k ρ, ρ ≤ R → AEStronglyMeasurable (a k) (volume.restrict (Ioc 0 ρ)) :=
+      fun k ρ hρR => (hameas k).mono_measure (Measure.restrict_mono (Ioc_subset_Ioc_right hρR) le_rfl)
+    -- convergence of the integrals of `a k` and `|a k|`
+    have hGlim : ∀ ρ, 0 < ρ → ρ ≤ R →
+        Tendsto (fun k => ∫ t in (0)..ρ, a k t) atTop (𝓝 (∫ t in (0)..ρ, a₀ t)) := by
+      intro ρ hρ hρR
+      refine intervalIntegral.tendsto_integral_filter_of_dominated_convergence
+        (fun t => M * t ^ (-β)) ?_ ?_ (hgint M ρ) ?_
+      · rw [uIoc_of_le hρ.le]
+        exact Eventually.of_forall fun k => hameas' k ρ hρR
+      · rw [uIoc_of_le hρ.le]
+        exact Eventually.of_forall fun k => Eventually.of_forall fun t ht => by
+          rw [Real.norm_eq_abs]
+          exact hab k t ht.1 (ht.2.trans hρR)
+      · rw [uIoc_of_le hρ.le]
+        exact Eventually.of_forall fun t ht => halim t ht.1 (ht.2.trans hρR)
+    have hClim : ∀ ρ, 0 < ρ → ρ ≤ R →
+        Tendsto (fun k => ∫ t in (0)..ρ, |a k t|) atTop (𝓝 (∫ t in (0)..ρ, |a₀ t|)) := by
+      intro ρ hρ hρR
+      refine intervalIntegral.tendsto_integral_filter_of_dominated_convergence
+        (fun t => M * t ^ (-β)) ?_ ?_ (hgint M ρ) ?_
+      · rw [uIoc_of_le hρ.le]
+        exact Eventually.of_forall fun k => (hameas' k ρ hρR).norm
+      · rw [uIoc_of_le hρ.le]
+        exact Eventually.of_forall fun k => Eventually.of_forall fun t ht => by
+          rw [Real.norm_eq_abs, abs_abs]
+          exact hab k t ht.1 (ht.2.trans hρR)
+      · rw [uIoc_of_le hρ.le]
+        exact Eventually.of_forall fun t ht =>
+          (continuous_abs.tendsto _).comp (halim t ht.1 (ht.2.trans hρR))
+    -- the bound (D.3)
+    have hCb : ∀ ρ, 0 < ρ → ρ ≤ R → ∫ t in (0)..ρ, |a₀ t| ≤ Λ / 4 * (ρ / R) ^ (1 - β) := by
+      intro ρ hρ hρR
+      have h1 : ‖∫ t in (0)..ρ, |a₀ t|‖ ≤ ∫ t in (0)..ρ, K * t ^ (-β) := by
+        refine intervalIntegral.norm_integral_le_of_norm_le hρ.le ?_ (hgint K ρ)
+        exact Eventually.of_forall fun t ht => by
+          rw [Real.norm_eq_abs, abs_abs]
+          exact ha₀b t ht.1 (ht.2.trans hρR)
+      have h2 : ∫ t in (0)..ρ, K * t ^ (-β) = K * ρ ^ (1 - β) / (1 - β) := by
+        rw [intervalIntegral.integral_const_mul, integral_rpow (Or.inl (by linarith))]
+        have h3 : -β + 1 = 1 - β := by ring
+        rw [h3, Real.zero_rpow (by linarith), sub_zero, mul_div_assoc]
+      have h3 : K * ρ ^ (1 - β) / (1 - β) = K * R ^ (1 - β) / (1 - β) * (ρ / R) ^ (1 - β) := by
+        rw [Real.div_rpow hρ.le hR.le]
+        have : 0 < R ^ (1 - β) := Real.rpow_pos_of_pos hR _
+        field_simp
+      have h4 : 0 ≤ (ρ / R) ^ (1 - β) := Real.rpow_nonneg (div_nonneg hρ.le hR.le) _
+      calc ∫ t in (0)..ρ, |a₀ t| ≤ ‖∫ t in (0)..ρ, |a₀ t|‖ := by
+            rw [Real.norm_eq_abs]
+            exact le_abs_self _
+        _ ≤ K * ρ ^ (1 - β) / (1 - β) := h1.trans_eq h2
+        _ = K * R ^ (1 - β) / (1 - β) * (ρ / R) ^ (1 - β) := h3
+        _ ≤ Λ / 4 * (ρ / R) ^ (1 - β) := mul_le_mul_of_nonneg_right hK h4
+    have hq1 : ∀ ρ, 0 < ρ → ρ ≤ R → (ρ / R) ^ (1 - β) ≤ 1 := fun ρ hρ hρR =>
+      Real.rpow_le_one (div_nonneg hρ.le hR.le) ((div_le_one hR).mpr hρR) hβ1.le
+    refine ⟨?_, ?_⟩
+    · intro r hr hrR
+      have hu : |-∫ t in (0)..r, a₀ t| ≤ Λ / 4 * (r / R) ^ (1 - β) := by
+        rw [abs_neg]
+        exact (intervalIntegral.abs_integral_le_integral_abs hr.le).trans (hCb r hr hrR)
+      exact hExpBounds Λ ((r / R) ^ (1 - β)) _ hΛ
+        (Real.rpow_nonneg (div_nonneg hr.le hR.le) _) (hq1 r hr hrR) hu
+    · intro σ ρ hσ hσρ hρR
+      have hσR : σ ≤ R := hσρ.trans hρR
+      have hρ : 0 < ρ := hσ.trans_le hσρ
+      have hmid : Tendsto (fun k => Real.exp (-∫ t in (0)..ρ, a k t) * Q k ρ -
+          Real.exp (-∫ t in (0)..σ, a k t) * Q k σ) atTop
+          (𝓝 (Real.exp (-∫ t in (0)..ρ, a₀ t) * Q₀ ρ - Real.exp (-∫ t in (0)..σ, a₀ t) * Q₀ σ)) := by
+        have h1 := ((Real.continuous_exp.tendsto _).comp (hGlim ρ hρ hρR).neg).mul (hQlim ρ hρ hρR)
+        have h2 := ((Real.continuous_exp.tendsto _).comp (hGlim σ hσ hσR).neg).mul (hQlim σ hσ hσR)
+        exact h1.sub h2
+      have hlo : Tendsto (fun k => Real.exp (-∫ t in (0)..ρ, |a k t|) * A k σ ρ) atTop
+          (𝓝 (Real.exp (-∫ t in (0)..ρ, |a₀ t|) * A₀ σ ρ)) :=
+        ((Real.continuous_exp.tendsto _).comp (hClim ρ hρ hρR).neg).mul (hAlim σ ρ hσ hσρ hρR)
+      have hhi : Tendsto (fun k => Real.exp (∫ t in (0)..ρ, |a k t|) * e k * A k σ ρ) atTop
+          (𝓝 (Real.exp (∫ t in (0)..ρ, |a₀ t|) * 1 * A₀ σ ρ)) :=
+        (((Real.continuous_exp.tendsto _).comp (hClim ρ hρ hρR)).mul he).mul (hAlim σ ρ hσ hσρ hρR)
+      have hL := le_of_tendsto_of_tendsto' hlo hmid (fun k => (hsq k σ ρ hσ hσρ hρR).1)
+      have hU := le_of_tendsto_of_tendsto' hmid hhi (fun k => (hsq k σ ρ hσ hσρ hρR).2)
+      have hc : ∫ t in (0)..ρ, |a₀ t| ≤ Λ := by
+        have h1 := hCb ρ hρ hρR
+        have h2 : Λ / 4 * (ρ / R) ^ (1 - β) ≤ Λ / 4 * 1 :=
+          mul_le_mul_of_nonneg_left (hq1 ρ hρ hρR) (by positivity)
+        linarith
+      have hA := hA₀ σ ρ hσ hσρ hρR
+      constructor
+      · refine le_trans ?_ hL
+        exact mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr (by linarith)) hA
+      · refine hU.trans ?_
+        rw [mul_one]
+        exact mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr hc) hA
+  -- Assembly (steps 1-13 of the supplied proof).
+  intro n ℓ hn p hnp μ H w y R S Λ hR hRS hΛ hμS hwm hw01 hH hHpS hsmall hrad
+  -- basic constants
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hp1 : 1 < p := by linarith
+  have hp0 : 0 < p := by linarith
+  have hβ1 : (n : ℝ) / p < 1 := (div_lt_one hp0).mpr hnp
+  have hβpos : 0 < 1 - (n : ℝ) / p := by linarith
+  have hκ : 0 ≤ (p - n) / (4 * p) * Λ :=
+    mul_nonneg (div_nonneg (by linarith) (by linarith)) hΛ.le
+  -- Step 2: smallness
+  obtain ⟨J, hJ⟩ : ∃ J : ℝ≥0∞, J = ∫⁻ x in closedBall y R, ‖H x‖ₑ ^ p ∂μ := ⟨_, rfl⟩
+  have hJne : J ≠ ⊤ := by
+    rw [hJ]
+    exact (lt_of_le_of_lt (lintegral_mono_set (closedBall_subset_closedBall hRS.le)) hHpS).ne
+  obtain ⟨K, hKdef⟩ : ∃ K : ℝ, K = (∫⁻ x in closedBall y R, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) :=
+    ⟨_, rfl⟩
+  have hKR : K * R ^ (1 - (n : ℝ) / p) ≤ (p - n) / (4 * p) * Λ := by
+    have hRp : 0 < R ^ (p - n) := Real.rpow_pos_of_pos hR _
+    have hp1' : 0 < 1 / p := by positivity
+    have h := hsmall
+    rw [← hJ] at h
+    have hJ' : J = ENNReal.ofReal J.toReal := (ENNReal.ofReal_toReal hJne).symm
+    rw [hJ', ← ENNReal.ofReal_mul hRp.le,
+      ENNReal.ofReal_rpow_of_nonneg (mul_nonneg hRp.le ENNReal.toReal_nonneg) hp1'.le,
+      ENNReal.ofReal_le_ofReal_iff hκ] at h
+    rw [Real.mul_rpow hRp.le ENNReal.toReal_nonneg, ← Real.rpow_mul hR.le] at h
+    have he : (p - n) * (1 / p) = 1 - (n : ℝ) / p := by
+      field_simp
+    rw [he] at h
+    rw [hKdef, ← hJ]
+    linarith
+  have hK0 : 0 ≤ K := by
+    rw [hKdef]
+    exact Real.rpow_nonneg ENNReal.toReal_nonneg _
+  have hKR' : K * R ^ (1 - (n : ℝ) / p) / (1 - (n : ℝ) / p) ≤ Λ / 4 := by
+    rw [div_le_iff₀ hβpos]
+    calc K * R ^ (1 - (n : ℝ) / p) ≤ (p - n) / (4 * p) * Λ := hKR
+      _ = Λ / 4 * (1 - (n : ℝ) / p) := by
+          field_simp
+  obtain ⟨KS, hKSdef⟩ : ∃ KS : ℝ,
+      KS = (∫⁻ x in closedBall y S, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) := ⟨_, rfl⟩
+  have hKS0 : 0 ≤ KS := by
+    rw [hKSdef]
+    exact Real.rpow_nonneg ENNReal.toReal_nonneg _
+  have hJt : ∀ t, t ≤ S → (∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ) < ⊤ := fun t htS =>
+    lt_of_le_of_lt (lintegral_mono_set (closedBall_subset_closedBall htS)) hHpS
+  have hNmono : ∀ t t', t ≤ t' → t' ≤ S →
+      (∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) ≤
+        (∫⁻ x in closedBall y t', ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) := by
+    intro t t' htt' ht'S
+    exact Real.rpow_le_rpow ENNReal.toReal_nonneg
+      (ENNReal.toReal_mono (hJt t' ht'S).ne
+        (lintegral_mono_set (closedBall_subset_closedBall htt'))) (by positivity)
+  have hμsub : ∀ t, t ≤ S → μ (closedBall y t) < ⊤ := fun t htS =>
+    lt_of_le_of_lt (measure_mono (closedBall_subset_closedBall htS)) hμS
+  have hHsub : ∀ t, t ≤ S → IntegrableOn H (closedBall y t) μ := fun t htS =>
+    hH.mono_set (closedBall_subset_closedBall htS)
+  -- Steps 3-4: the cutoff sequence
+  obtain ⟨ε₁, hε₁pos, hε₁le, hε₁R⟩ : ∃ ε₁ : ℝ, 0 < ε₁ ∧ ε₁ ≤ 1 ∧ (1 + ε₁) * R < S := by
+    refine ⟨min 1 ((S - R) / (2 * R)), lt_min one_pos (div_pos (by linarith) (by linarith)),
+      min_le_left _ _, ?_⟩
+    have h1 : min 1 ((S - R) / (2 * R)) * R ≤ (S - R) / (2 * R) * R :=
+      mul_le_mul_of_nonneg_right (min_le_right _ _) hR.le
+    have h2 : (S - R) / (2 * R) * R = (S - R) / 2 := by
+      field_simp
+    nlinarith
+  obtain ⟨φ, ε, hε, hεlim, hφC, hφanti, hφ01, hφone, hφzero, hφev⟩ :=
+    hCutoffSeq ε₁ hε₁pos
+  have hφc : ∀ k, Continuous (φ k) := fun k => (hφC k).continuous
+  have hφzero₁ : ∀ k s, 1 + ε₁ ≤ s → φ k s = 0 := fun k s hs =>
+    hφzero k s (le_trans (by linarith [(hε k).2]) hs)
+  have hεR : ∀ k, (1 + ε k) * R < S := fun k =>
+    lt_of_le_of_lt (mul_le_mul_of_nonneg_right (by linarith [(hε k).2]) hR.le) hε₁R
+  -- the cutoff quantities
+  obtain ⟨I, hI⟩ : ∃ I : ℕ → ℝ → ℝ, ∀ k t, I k t = ∫ x, φ k (‖x - y‖ / t) ∂μ :=
+    ⟨fun k t => ∫ x, φ k (‖x - y‖ / t) ∂μ, fun _ _ => rfl⟩
+  obtain ⟨L, hL⟩ : ∃ L : ℕ → ℝ → ℝ,
+      ∀ k t, L k t = ∫ x, φ k (‖x - y‖ / t) * inner ℝ (x - y) (H x) ∂μ :=
+    ⟨fun k t => ∫ x, φ k (‖x - y‖ / t) * inner ℝ (x - y) (H x) ∂μ, fun _ _ => rfl⟩
+  obtain ⟨a, ha⟩ : ∃ a : ℕ → ℝ → ℝ, ∀ k t, a k t = L k t / t ^ (n + 1) / (1 + I k t / t ^ n) :=
+    ⟨fun k t => L k t / t ^ (n + 1) / (1 + I k t / t ^ n), fun _ _ => rfl⟩
+  have hInn : ∀ k t, 0 ≤ I k t := fun k t => by
+    rw [hI]
+    exact integral_nonneg fun x => (hφ01 k _).1
+  -- Step 5: the bound (D.1) on `a k`
+  have hab : ∀ k t, 0 < t → (1 + ε k) * t < S → |a k t| ≤ 2 * KS * t ^ (-((n : ℝ) / p)) := by
+    intro k t ht htS
+    have hεk := hε k
+    have ht' : 0 ≤ (1 + ε k) * t := by
+      have : 0 < 1 + ε k := by linarith
+      positivity
+    have hhol := Submission.aal_curvature_pairing_holder_bound n ℓ p hp1 μ H
+      (fun x => φ k (‖x - y‖ / t)) y ((1 + ε k) * t) ht' (hμsub _ htS.le) (hHsub _ htS.le)
+      (hJt _ htS.le)
+      ((hφc k).comp (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ / t)).aestronglyMeasurable
+      (fun x => hφ01 k _) (fun x hx => hφzero k _ (by
+        rw [le_div_iff₀ ht]
+        exact hx.le))
+    have hN : (∫⁻ x in closedBall y ((1 + ε k) * t), ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) ≤ KS := by
+      rw [hKSdef]
+      exact hNmono _ S htS.le le_rfl
+    have hNn : 0 ≤ (∫⁻ x in closedBall y ((1 + ε k) * t), ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) :=
+      Real.rpow_nonneg ENNReal.toReal_nonneg _
+    have hIp : 0 ≤ I k t ^ (1 - 1 / p) := Real.rpow_nonneg (hInn k t) _
+    have hLb : |L k t| ≤ t * (2 * KS) * I k t ^ (1 - 1 / p) := by
+      rw [hL]
+      rw [← hI] at hhol
+      refine hhol.trans ?_
+      apply mul_le_mul_of_nonneg_right _ hIp
+      have h2 : 1 + ε k ≤ 2 := by linarith
+      calc (1 + ε k) * t * (∫⁻ x in closedBall y ((1 + ε k) * t), ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p)
+          ≤ 2 * t * KS := by
+            have := mul_le_mul h2 hN hNn (by norm_num)
+            nlinarith
+        _ = t * (2 * KS) := by ring
+    rw [ha]
+    exact hCoeffBound n p t (2 * KS) (I k t) (L k t) hp1 ht (by positivity)
+      (hInn k t) hLb
+  -- Step 6: the fixed-cutoff squeeze (D.2)
+  have hsq : ∀ k σ ρ, 0 < σ → σ ≤ ρ → ρ ≤ R →
+      Real.exp (-∫ t in (0)..ρ, |a k t|) *
+          ∫ x, (φ k (‖x - y‖ / ρ) - φ k (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ ≤
+        Real.exp (-∫ t in (0)..ρ, a k t) * (1 + I k ρ / ρ ^ n) -
+          Real.exp (-∫ t in (0)..σ, a k t) * (1 + I k σ / σ ^ n) ∧
+      Real.exp (-∫ t in (0)..ρ, a k t) * (1 + I k ρ / ρ ^ n) -
+          Real.exp (-∫ t in (0)..σ, a k t) * (1 + I k σ / σ ^ n) ≤
+        Real.exp (∫ t in (0)..ρ, |a k t|) * (1 + ε k) ^ n *
+          ∫ x, (φ k (‖x - y‖ / ρ) - φ k (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ := by
+    intro k σ ρ hσ hσρ hρR
+    have hρS : (1 + ε k) * ρ < S :=
+      lt_of_le_of_lt (mul_le_mul_of_nonneg_left hρR (by linarith [(hε k).1])) (hεR k)
+    exact Submission.aal_cutoff_integrating_factor_squeeze n ℓ μ H w y (φ k) (I k) (a k) S (ε k)
+      (2 * KS) ((n : ℝ) / p) (hε k).1 hβ1 hμS hwm hw01 hH (hφC k) (hφanti k) (hφone k)
+      (hφzero k)
+      (fun ρ' hρ' hρ'S => hrad (φ k) (1 + ε k) ρ' (hφC k) (hφone k) (hφzero k) hρ' hρ'S)
+      (hI k) (fun t => by rw [ha, hL]) (hab k) σ ρ hσ hσρ hρS
+  -- Step 8: continuity, hence measurability, of `a k` on `(0, R]`
+  have hgint : IntegrableOn (fun x => inner ℝ (x - y) (H x)) (closedBall y S) μ := by
+    refine Integrable.mono' (hH.norm.const_mul S) ?_ ?_
+    · exact continuous_inner.comp_aestronglyMeasurable
+        ((by fun_prop : Continuous fun x : Amb n ℓ => x - y).aestronglyMeasurable.prodMk
+          hH.aestronglyMeasurable)
+    · rw [ae_restrict_iff' measurableSet_closedBall]
+      refine Eventually.of_forall fun x hx => ?_
+      have hxS : ‖x - y‖ ≤ S := by simpa [mem_closedBall, dist_eq_norm] using hx
+      calc ‖(inner ℝ (x - y) (H x) : ℝ)‖ ≤ ‖x - y‖ * ‖H x‖ := norm_inner_le_norm _ _
+        _ ≤ S * ‖H x‖ := mul_le_mul_of_nonneg_right hxS (norm_nonneg _)
+  have h1int : IntegrableOn (fun _ => (1 : ℝ)) (closedBall y S) μ :=
+    integrableOn_const hμS.ne
+  have hIcont : ∀ k, ContinuousOn (I k) (Ioc 0 R) := by
+    intro k
+    have h := hCutoffIntCont n ℓ μ (fun _ => (1 : ℝ)) y (φ k) S
+      (1 + ε k) R (by linarith [(hε k).1]) (hεR k).le h1int (hφc k) (hφ01 k) (hφzero k)
+    simp only [mul_one] at h
+    exact h.congr fun t _ => hI k t
+  have hLcont : ∀ k, ContinuousOn (L k) (Ioc 0 R) := by
+    intro k
+    have h := hCutoffIntCont n ℓ μ (fun x => inner ℝ (x - y) (H x)) y
+      (φ k) S (1 + ε k) R (by linarith [(hε k).1]) (hεR k).le hgint (hφc k) (hφ01 k) (hφzero k)
+    exact h.congr fun t _ => hL k t
+  have hacont : ∀ k, ContinuousOn (a k) (Ioc 0 R) := by
+    intro k
+    have h : ContinuousOn (fun t => L k t / t ^ (n + 1) / (1 + I k t / t ^ n)) (Ioc 0 R) := by
+      refine ((hLcont k).div (continuousOn_pow (n + 1)) ?_).div
+        (continuousOn_const.add ((hIcont k).div (continuousOn_pow n) ?_)) ?_
+      · intro t ht
+        exact (pow_pos ht.1 _).ne'
+      · intro t ht
+        exact (pow_pos ht.1 _).ne'
+      · intro t ht
+        have := div_nonneg (hInn k t) (pow_pos ht.1 n).le
+        linarith
+    exact h.congr fun t _ => ha k t
+  have hameas : ∀ k, AEStronglyMeasurable (a k) (volume.restrict (Ioc 0 R)) := fun k =>
+    (hacont k).aestronglyMeasurable measurableSet_Ioc
+  -- Step 7: pointwise limits
+  have hIlim : ∀ t, 0 < t → t ≤ R →
+      Tendsto (fun k => I k t) atTop (𝓝 ((μ (closedBall y t)).toReal)) := by
+    intro t ht htR
+    have h := hCutoffIntLim n ℓ μ (fun _ => (1 : ℝ)) y φ S (1 + ε₁) t ht
+      (by linarith) (lt_of_le_of_lt (mul_le_mul_of_nonneg_left htR (by linarith)) hε₁R).le
+      h1int hφc hφ01 hφone hφzero₁ hφev
+    simp only [mul_one] at h
+    rw [setIntegral_const, smul_eq_mul, mul_one, Measure.real_def] at h
+    exact h.congr fun k => (hI k t).symm
+  have hLlim : ∀ t, 0 < t → t ≤ R →
+      Tendsto (fun k => L k t) atTop (𝓝 (∫ x in closedBall y t, inner ℝ (x - y) (H x) ∂μ)) := by
+    intro t ht htR
+    have h := hCutoffIntLim n ℓ μ (fun x => inner ℝ (x - y) (H x)) y φ S
+      (1 + ε₁) t ht (by linarith)
+      (lt_of_le_of_lt (mul_le_mul_of_nonneg_left htR (by linarith)) hε₁R).le
+      hgint hφc hφ01 hφone hφzero₁ hφev
+    exact h.congr fun k => (hL k t).symm
+  obtain ⟨a₀, ha₀⟩ : ∃ a₀ : ℝ → ℝ, ∀ t, a₀ t =
+      (∫ x in closedBall y t, inner ℝ (x - y) (H x) ∂μ) / t ^ (n + 1) /
+        (1 + (μ (closedBall y t)).toReal / t ^ n) := ⟨_, fun _ => rfl⟩
+  have halim : ∀ t, 0 < t → t ≤ R → Tendsto (fun k => a k t) atTop (𝓝 (a₀ t)) := by
+    intro t ht htR
+    have hden : 1 + (μ (closedBall y t)).toReal / t ^ n ≠ 0 := by
+      have := div_nonneg (ENNReal.toReal_nonneg (a := μ (closedBall y t))) (pow_pos ht n).le
+      linarith
+    rw [ha₀]
+    have h := ((hLlim t ht htR).div_const (t ^ (n + 1))).div
+      (tendsto_const_nhds.add ((hIlim t ht htR).div_const (t ^ n))) hden
+    exact h.congr fun k => (ha k t).symm
+  -- Step 9: the bound (D.3) on `a₀`
+  have ha₀b : ∀ t, 0 < t → t ≤ R → |a₀ t| ≤ K * t ^ (-((n : ℝ) / p)) := by
+    intro t ht htR
+    have htS : t ≤ S := by linarith
+    have hhol := Submission.aal_curvature_pairing_holder_bound n ℓ p hp1 μ H
+      ((closedBall y t).indicator (fun _ => (1 : ℝ))) y t ht.le (hμsub t htS) (hHsub t htS)
+      (hJt t htS) (aestronglyMeasurable_const.indicator measurableSet_closedBall)
+      (fun x => by
+        by_cases hx : x ∈ closedBall y t
+        · simp [hx]
+        · simp [hx])
+      (fun x hx => by
+        have : x ∉ closedBall y t := by
+          simpa [mem_closedBall, dist_eq_norm, not_le] using hx
+        simp [this])
+    have e1 : ∫ x, (closedBall y t).indicator (fun _ => (1 : ℝ)) x * inner ℝ (x - y) (H x) ∂μ =
+        ∫ x in closedBall y t, inner ℝ (x - y) (H x) ∂μ := by
+      rw [← integral_indicator measurableSet_closedBall]
+      congr 1
+      funext x
+      by_cases hx : x ∈ closedBall y t
+      · simp [hx]
+      · simp [hx]
+    have e2 : ∫ x, (closedBall y t).indicator (fun _ => (1 : ℝ)) x ∂μ =
+        (μ (closedBall y t)).toReal := by
+      rw [integral_indicator measurableSet_closedBall, setIntegral_const, smul_eq_mul, mul_one,
+        Measure.real_def]
+    rw [e1, e2] at hhol
+    have hN : (∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) ≤ K := by
+      rw [hKdef]
+      exact hNmono t R htR hRS.le
+    have hLb : |∫ x in closedBall y t, inner ℝ (x - y) (H x) ∂μ| ≤
+        t * K * (μ (closedBall y t)).toReal ^ (1 - 1 / p) := by
+      refine hhol.trans ?_
+      apply mul_le_mul_of_nonneg_right _ (Real.rpow_nonneg ENNReal.toReal_nonneg _)
+      exact mul_le_mul_of_nonneg_left hN ht.le
+    rw [ha₀]
+    exact hCoeffBound n p t K _ _ hp1 ht hK0 ENNReal.toReal_nonneg hLb
+  -- the uniform bound on `(0, R]`
+  have hab' : ∀ k t, 0 < t → t ≤ R → |a k t| ≤ 2 * KS * t ^ (-((n : ℝ) / p)) := by
+    intro k t ht htR
+    exact hab k t ht (lt_of_le_of_lt (mul_le_mul_of_nonneg_left htR (by linarith [(hε k).1]))
+      (hεR k))
+  -- Step 12: the annular integrals
+  have hann : ∀ σ ρ, 0 < σ → σ ≤ ρ → ρ ≤ R →
+      IntegrableOn (fun x => w x / ‖x - y‖ ^ n) (closedBall y ρ \ closedBall y σ) μ ∧
+      0 ≤ ∫ x in closedBall y ρ \ closedBall y σ, w x / ‖x - y‖ ^ n ∂μ ∧
+      Tendsto (fun k => ∫ x, (φ k (‖x - y‖ / ρ) - φ k (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ)
+        atTop (𝓝 (∫ x in closedBall y ρ \ closedBall y σ, w x / ‖x - y‖ ^ n ∂μ)) := by
+    intro σ ρ hσ hσρ hρR
+    exact hAnnularLim n ℓ μ w y φ S (1 + ε₁) σ ρ hσ hσρ (by linarith)
+      (lt_of_le_of_lt (mul_le_mul_of_nonneg_left hρR (by linarith)) hε₁R).le hμS hwm hw01 hφc
+      hφ01 hφone hφzero₁ hφev
+  have he : Tendsto (fun k => (1 + ε k) ^ n) atTop (𝓝 1) := by
+    have h := (tendsto_const_nhds (x := (1 : ℝ))).add hεlim
+    rw [add_zero] at h
+    simpa using h.pow n
+  -- Steps 10-12: passage to the limit
+  have hQlim : ∀ t, 0 < t → t ≤ R → Tendsto (fun k => 1 + I k t / t ^ n) atTop
+      (𝓝 (1 + (μ (closedBall y t)).toReal / t ^ n)) := fun t ht htR =>
+    tendsto_const_nhds.add ((hIlim t ht htR).div_const _)
+  obtain ⟨hi, hii⟩ := hFactorLimit R ((n : ℝ) / p) (2 * KS) K Λ a a₀
+    (fun k t => 1 + I k t / t ^ n) (fun t => 1 + (μ (closedBall y t)).toReal / t ^ n)
+    (fun k σ ρ => ∫ x, (φ k (‖x - y‖ / ρ) - φ k (‖x - y‖ / σ)) * (w x / ‖x - y‖ ^ n) ∂μ)
+    (fun σ ρ => ∫ x in closedBall y ρ \ closedBall y σ, w x / ‖x - y‖ ^ n ∂μ)
+    (fun k => (1 + ε k) ^ n) hR hβ1 hΛ hKR' hameas hab' halim ha₀b hQlim
+    (fun σ ρ hσ hσρ hρR => (hann σ ρ hσ hσρ hρR).2.2)
+    (fun σ ρ hσ hσρ hρR => (hann σ ρ hσ hσρ hρR).2.1) he hsq
+  -- Step 13: conclusion
+  refine ⟨fun t => Real.exp (-∫ s in (0)..t, a₀ s), hi, ?_⟩
+  intro s r hs hsr hrR
+  obtain ⟨hint, -, -⟩ := hann s r hs hsr hrR
+  obtain ⟨h1, h2⟩ := hii s r hs hsr hrR
+  exact ⟨hint, le_of_le_of_eq h1 (by ring), le_of_eq_of_le (by ring) h2⟩
 /-- **Simon Ch. 3, Remark 1.8(1), first assertion** (Lusin exhaustion of a rectifiable varifold):
 the carrier `M` of `V = v(M, θ)` is, up to an `Hⁿ`-null set, a countable union of compact sets
 `K ⊆ M` of finite `Hⁿ`-measure on each of which `θ` is continuous.  Proof: pass to a Borel
@@ -3070,6 +4625,113 @@ theorem aal_tangent_structure : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb
     ← ENNReal.ofReal_div_of_pos (mul_pos hω (pow_pos hr.1 n))]
   congr 1
   ring
+/-- **`Lᵖ` monotonicity identity** (Simon Ch. 4, 3.2–3.6 and 4.1–4.8, with the constant
+`κ = (p − n)/(4p)` in front of `Λ`).  Let `p > n`, `B_S(y) ⊆ U`, `∫_{B_S(y)} |H|ᵖ dμ_V < ∞` and
+`(R^{p−n} ∫_{B_R(y)} |H|ᵖ dμ_V)^{1/p} ≤ κ Λ` with `0 < R < S`, `Λ > 0`.  Then there are `F` with
+`e^{−Λ} ≤ F(r) ≤ e^Λ` and `|F(r) − 1| ≤ ½ e^{Λ/2} Λ (r/R)^{1−n/p}` (`≤ Λ (r/R)^{1−n/p}` if `Λ ≤ 1`)
+for `0 < r ≤ R`, and `G` with `e^{−Λ} ≤ G(s, r) ≤ e^Λ` and
+`Φ(r) − Φ(s) = G(s, r) ∫_{B_r(y) \ B_s(y)} |p_x^⊥(x − y)|² / |x − y|^{n+2} dμ_V` for `0 < s ≤ r ≤ R`,
+where `Φ(t) = F(t) t⁻ⁿ μ_V(B_t(y)) + F(t) − 1`.
+
+By `aal_tangent_structure`, `p_x` is `μ_V`-a.e. a rank-`n` orthogonal projection and `x ↦ p_x` is
+a.e. strongly measurable, so `w(x) = |p_x^⊥(x − y)|² / |x − y|²` is a.e. strongly measurable with
+`0 ≤ w ≤ 1` a.e.  `μ_V(B_S(y)) < ∞` and `H ∈ L¹(B_S(y))` because `B_S(y)` is a compact subset of
+`U`.  `aal_radial_first_variation_identity` gives the radial identity for every cutoff profile, and
+`aal_monotonicity_of_radial_identity` then yields `F` together with
+`e^{−Λ} A ≤ Φ(r) − Φ(s) ≤ e^Λ A`, `A = ∫_{B_r(y) \ B_s(y)} w / |x − y|ⁿ dμ_V`; here
+`w / |x − y|ⁿ = |p_x^⊥(x − y)|² / |x − y|^{n+2}`.  Finally `G(s, r) = (Φ(r) − Φ(s)) / A`, or `1`
+if `A = 0` (then the squeeze forces `Φ(r) = Φ(s)`). -/
+theorem aal_lp_monotonicity : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (y : Amb n ℓ) (R S Λ : ℝ), 0 < R → R < S → 0 < Λ → closedBall y S ⊆ U → ∫⁻ x in closedBall y S, ‖H x‖ₑ ^ p ∂V.weight < ⊤ → V.scaledLpNorm H p y R ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → ∃ (F : ℝ → ℝ) (G : ℝ → ℝ → ℝ), (∀ r : ℝ, 0 < r → r ≤ R → Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * (r / R) ^ (1 - (n : ℝ) / p) ∧ (Λ ≤ 1 → |F r - 1| ≤ Λ * (r / R) ^ (1 - (n : ℝ) / p))) ∧ (∀ s r : ℝ, 0 < s → s ≤ r → r ≤ R → Real.exp (-Λ) ≤ G s r ∧ G s r ≤ Real.exp Λ ∧ IntegrableOn (fun x => ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) (closedBall y r \ closedBall y s) V.weight ∧ (F r * ((V.weight (closedBall y r)).toReal / r ^ n) + (F r - 1)) - (F s * ((V.weight (closedBall y s)).toReal / s ^ n) + (F s - 1)) = G s r * ∫ x in closedBall y r \ closedBall y s, ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2) ∂V.weight) := by
+  intro n ℓ hn p hp U hU V H hH y R S Λ hR hRS hΛ hBS hHp hK
+  -- Step 0: `p_x` is a.e. a rank-`n` orthogonal projection, and `x ↦ p_x` is a.e. measurable.
+  obtain ⟨hproj, hmeas, -⟩ := Submission.aal_tangent_structure n ℓ hn U hU V
+  -- `μ_V(B_S(y)) = ∫_{M ∩ B_S(y)} θ dHⁿ < ∞` and `H ∈ L¹(B_S(y))`, as `B_S(y) ⊆ U` is compact.
+  have hμS : V.weight (closedBall y S) < ⊤ := by
+    have hint := V.integrableOn_mult (closedBall y S) (isCompact_closedBall y S) hBS
+    rw [RectifiableVarifold.weight, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact hint.setLIntegral_lt_top
+  have hHS : IntegrableOn H (closedBall y S) V.weight :=
+    hH.1.integrableOn_compact_subset hBS (isCompact_closedBall y S)
+  -- The weight `w(x) = |p_x^⊥(x − y)|² / |x − y|²` is a.e. strongly measurable, with `0 ≤ w ≤ 1`.
+  have hTm : AEStronglyMeasurable (fun x => V.tangentProj x (x - y)) V.weight := by
+    have happ : Continuous (Function.uncurry
+        fun (A : Amb n ℓ →L[ℝ] Amb n ℓ) (v : Amb n ℓ) => A v) :=
+      continuous_fst.clm_apply continuous_snd
+    exact happ.comp_aestronglyMeasurable₂ hmeas (continuous_sub_right y).aestronglyMeasurable
+  have hwm : AEStronglyMeasurable
+      (fun x => ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2) V.weight := by
+    have h1 : AEStronglyMeasurable (fun x => ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2)
+        V.weight :=
+      ((continuous_sub_right y).aestronglyMeasurable.sub hTm).norm.pow 2
+    have h2 : AEStronglyMeasurable (fun x : Amb n ℓ => ‖x - y‖ ^ 2) V.weight :=
+      ((continuous_sub_right y).norm.pow 2).aestronglyMeasurable
+    exact (h1.aemeasurable.div h2.aemeasurable).aestronglyMeasurable
+  have hw01 : ∀ᵐ x ∂V.weight, 0 ≤ ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2 ∧
+      ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2 ≤ 1 := by
+    filter_upwards [hproj] with x hx
+    obtain ⟨P, -, hP⟩ := hx
+    refine ⟨by positivity, div_le_one_of_le₀ ?_ (sq_nonneg _)⟩
+    rw [hP, ← Submodule.starProjection_orthogonal_val]
+    exact pow_le_pow_left₀ (norm_nonneg _) (Submodule.norm_starProjection_apply_le _ _) 2
+  -- The radial first-variation identity for every cutoff profile with `B_{Tρ}(y) ⊆ B_S(y)`.
+  have hrad : ∀ (φ : ℝ → ℝ) (T ρ : ℝ), ContDiff ℝ 1 φ → (∀ t : ℝ, t ≤ 1 → φ t = 1) →
+      (∀ t : ℝ, T ≤ t → φ t = 0) → 0 < ρ → T * ρ ≤ S →
+      ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) *
+        (1 - ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2)) ∂V.weight =
+      -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂V.weight :=
+    fun φ T ρ hφ h1 h0 hρ hTρ =>
+      Submission.aal_radial_first_variation_identity n ℓ U V H hH hproj y φ T ρ hφ h1 h0 hρ
+        ((closedBall_subset_closedBall hTρ).trans hBS)
+  -- The monotonicity squeeze for the abstract weight `w`.
+  obtain ⟨F, hF1, hF2⟩ := Submission.aal_monotonicity_of_radial_identity n ℓ hn p hp V.weight H
+    (fun x => ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2) y R S Λ hR hRS hΛ hμS hwm
+    hw01 hHS hHp hK hrad
+  -- `g_y = w / |x − y|ⁿ` (also at `x = y`, where both sides vanish).
+  have hg : (fun x => ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) =
+      fun x => ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ 2 / ‖x - y‖ ^ n := by
+    funext x
+    rw [div_div, ← pow_add, add_comm 2 n]
+  -- A two-sided squeeze `e^{−Λ} A ≤ D ≤ e^Λ A` gives the ratio `G = D / A` (`1` if `A = 0`).
+  have hratio : ∀ A D : ℝ, Real.exp (-Λ) * A ≤ D → D ≤ Real.exp Λ * A →
+      Real.exp (-Λ) ≤ (if A = 0 then 1 else D / A) ∧ (if A = 0 then 1 else D / A) ≤ Real.exp Λ ∧
+        D = (if A = 0 then 1 else D / A) * A := by
+    intro A D hlo hhi
+    have hexp : Real.exp (-Λ) < Real.exp Λ := Real.exp_lt_exp.2 (by linarith)
+    split_ifs with h0
+    · subst h0
+      rw [mul_zero] at hlo hhi
+      exact ⟨Real.exp_le_one_iff.2 (by linarith), Real.one_le_exp hΛ.le, by linarith⟩
+    · have hA : 0 < A := by
+        rcases lt_or_gt_of_ne h0 with h | h
+        · nlinarith
+        · exact h
+      exact ⟨(le_div_iff₀ hA).2 hlo, (div_le_iff₀ hA).2 hhi, (div_mul_cancel₀ D h0).symm⟩
+  refine ⟨F, fun s r =>
+    if (∫ x in closedBall y r \ closedBall y s,
+        ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2) ∂V.weight) = 0 then 1
+    else ((F r * ((V.weight (closedBall y r)).toReal / r ^ n) + (F r - 1)) -
+        (F s * ((V.weight (closedBall y s)).toReal / s ^ n) + (F s - 1))) /
+      ∫ x in closedBall y r \ closedBall y s,
+        ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2) ∂V.weight, hF1, ?_⟩
+  intro s r hs hsr hrR
+  obtain ⟨hint, hlo, hhi⟩ := hF2 s r hs hsr hrR
+  have hlo' : Real.exp (-Λ) * ∫ x in closedBall y r \ closedBall y s,
+        ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2) ∂V.weight ≤
+      (F r * ((V.weight (closedBall y r)).toReal / r ^ n) + (F r - 1)) -
+        (F s * ((V.weight (closedBall y s)).toReal / s ^ n) + (F s - 1)) := by
+    rw [hg]
+    exact hlo
+  have hhi' : (F r * ((V.weight (closedBall y r)).toReal / r ^ n) + (F r - 1)) -
+        (F s * ((V.weight (closedBall y s)).toReal / s ^ n) + (F s - 1)) ≤
+      Real.exp Λ * ∫ x in closedBall y r \ closedBall y s,
+        ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2) ∂V.weight := by
+    rw [hg]
+    exact hhi
+  obtain ⟨hG1, hG2, hG3⟩ := hratio _ _ hlo' hhi'
+  refine ⟨hG1, hG2, ?_, hG3⟩
+  rw [hg]
+  exact hint
 
 end Submission
 
