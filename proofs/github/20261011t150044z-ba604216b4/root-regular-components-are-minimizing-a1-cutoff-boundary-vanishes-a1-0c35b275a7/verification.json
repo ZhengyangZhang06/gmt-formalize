@@ -1,0 +1,20 @@
+{
+  "node_id": "root.regular_components_are_minimizing-a1.cutoff_boundary_vanishes-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/923",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "8f87767fa9e199dc38617cd203df089b5f327603",
+  "integrated_commit": "",
+  "proof_base_commit": "7d8e61061713f8a4e1b5335a1b89c27562592ae3",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.regular_components_are_minimizing-a1",
+  "requires": [
+    "root.regular_components_are_minimizing-a1.cutoff_boundary_vanishes-a1.null_compact_ball_cover-a1",
+    "root.regular_components_are_minimizing-a1.cutoff_boundary_vanishes-a1.smooth_cutoff_product-a1",
+    "root.regular_components_are_minimizing-a1.cutoff_boundary_vanishes-a1.localized_boundary_zero-a1",
+    "root.regular_components_are_minimizing-a1.cutoff_boundary_vanishes-a1.boundary_smul_estimate-a1"
+  ]
+}
