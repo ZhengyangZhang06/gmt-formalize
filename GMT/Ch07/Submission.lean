@@ -468,6 +468,56 @@ theorem Submission.imsupp_covector_finiteDimensional : ∀ (P n : ℕ), FiniteDi
   refine FiniteDimensional.of_injective L fun α β h => ?_
   exact ContinuousAlternatingMap.toAlternatingMap_injective
     (e.ext_alternating fun v _ => congr_fun h v)
+/-- **Simon Ch. 6, 3.2(3)**, one covector at a time: if `T = τ(M, θ, ξ)` vanishes on the open set
+`W ⊆ U`, then `ξ(x)(α) = 0` for `μ_T`-a.e. `x ∈ W`.  Here `f = ξ(·)(α)` is a.e. bounded by `‖α‖`
+(`ξ = ±τ₁ ∧ ⋯ ∧ τₙ`, `τ` orthonormal) and `μ_T = θ Hⁿ⌞M` is finite on compact subsets of `U`, so
+`f` is locally `μ_T`-integrable on `W`.  For smooth compactly supported `g` with `spt g ⊆ W`,
+`∫ g f dμ_T = τ(M, θ, ξ)(g α) = T(g α) = 0`, and the fundamental lemma of the calculus of
+variations gives `f = 0` a.e. on `W`. -/
+theorem Submission.imsupp_orient_apply_ae_eq_zero_of_vanishesOn : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → W ⊆ U → T.VanishesOn W → ∀ α : Covector (Euclid P) n, ∀ᵐ x ∂R.measure, x ∈ W → R.orient x α = 0 := by
+  intro P n U W T R hRT hW hWU hT α
+  -- `μ_T = θ Hⁿ⌞M ≪ Hⁿ⌞M`
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  -- `|ξ(x)(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖` wherever `ξ(x)` is a unit orientation
+  have hbound : ∀ᵐ x ∂R.measure, ‖R.orient x α‖ ≤ ‖α‖ := by
+    refine hac.ae_le ?_
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
+    have h1 : ‖R.orient x α‖ = ‖α τ‖ := by
+      rcases hξ with h | h
+      · rw [h α]
+      · rw [h α, norm_neg]
+    rw [h1]
+    calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := ContinuousAlternatingMap.le_opNorm α τ
+      _ = ‖α‖ := by rw [Finset.prod_eq_one fun i _ => hτ.norm_eq_one i, mul_one]
+  -- `f = ξ(·)(α)` is the continuous evaluation at `α` composed with `ξ`
+  have hmeas : AEStronglyMeasurable (fun x => R.orient x α) R.measure :=
+    ((ContinuousLinearMap.apply ℝ ℝ α).continuous.comp_aestronglyMeasurable
+      R.aestronglyMeasurable_orient).mono_ac hac
+  -- `μ_T(K) = ∫_{M ∩ K} θ dHⁿ < ∞` for compact `K ⊆ U`
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → R.measure K < ∞ := by
+    intro K hK hKU
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact (R.locallyIntegrable_mult K hK hKU).lt_top
+  -- `f` is bounded and `μ_T` is finite on compact subsets of `W`
+  have hli : LocallyIntegrableOn (fun x => R.orient x α) W R.measure := by
+    refine (locallyIntegrableOn_iff hW.isLocallyClosed).2 fun K hKW hK => ?_
+    exact IntegrableOn.of_bound (hfin K hK (hKW.trans hWU)) hmeas.restrict ‖α‖
+      (ae_restrict_of_ae hbound)
+  -- `∫ g f dμ_T = τ(M, θ, ξ)(g α) = T(g α) = 0`, as `g α` is a test form supported in `W`
+  refine hW.ae_eq_zero_of_integral_contDiff_smul_eq_zero hli fun g hg hgc hgW => ?_
+  let ω : TestFormOn U n := ⟨fun y => g y • α, ⟨hg.smul contDiff_const, hgc.smul_right⟩,
+    (tsupport_smul_subset_left _ _).trans (hgW.trans hWU)⟩
+  have h0 : T ω = 0 := hT ω ((tsupport_smul_subset_left _ _).trans hgW)
+  rw [hRT ω] at h0
+  have hθ : (fun x => (R.mult x : ℝ≥0∞)) = fun x => ((R.mult x : NNReal) : ℝ≥0∞) := by
+    funext x; simp
+  have hmθ : Measurable fun x => (R.mult x : NNReal) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : NNReal))).comp R.measurable_mult
+  rw [IMRep.measure, hθ, integral_withDensity_eq_integral_smul hmθ, ← h0, IMRep.action]
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  simp only [ω, NNReal.smul_def, NNReal.coe_natCast, smul_eq_mul, map_smul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
