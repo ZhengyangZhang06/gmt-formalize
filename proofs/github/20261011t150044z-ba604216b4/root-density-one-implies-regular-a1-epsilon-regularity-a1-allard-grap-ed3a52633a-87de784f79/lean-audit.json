@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "24050583907acc9ad40eadca4fcb4cf6ff0c25859844e545c63c1e4f45d4104b",
+  "git_delta": {
+    "base_commit": "fa2b1a667e399a01d7c45eab9bd10a32db12f3ed",
+    "candidate_commit": "76c42fc0656c13ccfead877c3b63dfa1c6dca5ca",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_haa_lipschitz_ibp",
+    "diff_sha256": "f8d112562fb8a6371354dc40e502327c9f1b4969927e8304edc3f4783de5cc87",
+    "source_sha256": "6e0504a6b077de7d12d33c9183ce76eed1e707997ee21fda2534a6e27b519cd2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_haa_lipschitz_ibp",
+      "statement": "∀ (n : ℕ) (R : ℝ) (u ζ : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ContDiff ℝ 2 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∫ y in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ u y (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ y (EuclideanSpace.single i (1 : ℝ)) = -∫ y in ball (0 : Euclid n) R, u y * ∑ i : Fin n, iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
