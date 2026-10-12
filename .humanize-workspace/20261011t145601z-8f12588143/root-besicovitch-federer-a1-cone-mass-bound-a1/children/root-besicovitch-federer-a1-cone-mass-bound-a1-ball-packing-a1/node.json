@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_mass_bound-a1.ball_packing-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_mass_bound-a1",
+  "depth": 3,
+  "title": "Packing disjoint balls centred in an n-dimensional subspace",
+  "statement": "Let n, N ∈ ℕ, W ⊆ ℝ^N a linear subspace with dim W = n, and Hⁿ := μHE[n]. Let ι be a type, T ⊆ ι a countable set, w : ι → ℝ^N, ρ : ι → ℝ, w₀ ∈ W and R ∈ ℝ. Assume that for all i ∈ T: w(i) ∈ W, ρ(i) > 0 and B(w(i), ρ(i)) ⊆ B(w₀, R). Assume also that the open balls B(w(i), ρ(i)), i ∈ T, are pairwise disjoint. Then Σ_{i∈T} ρ(i)ⁿ ≤ Rⁿ in [0, ∞], i.e. ∑' i : T, ofReal(ρ(i)ⁿ) ≤ ofReal(Rⁿ).",
+  "lean_statement": "∀ (n N : ℕ) (W : Submodule ℝ (Rn N)), finrank ℝ W = n → ∀ (ι : Type) (T : Set ι) (w : ι → Rn N) (ρ : ι → ℝ) (w₀ : Rn N) (R : ℝ), T.Countable → (∀ i ∈ T, w i ∈ W) → w₀ ∈ W → (∀ i ∈ T, 0 < ρ i) → T.PairwiseDisjoint (fun i ↦ Metric.ball (w i) (ρ i)) → (∀ i ∈ T, Metric.ball (w i) (ρ i) ⊆ Metric.ball w₀ R) → ∑' i : T, ENNReal.ofReal (ρ i ^ n) ≤ ENNReal.ofReal (R ^ n)",
+  "lean_name": "bf_coneMass_subspace_ball_packing",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-mass-bound-a1-ball-packing-a1-a1"
+}
