@@ -451,6 +451,99 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, 1.1 and 1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` of a plane (`τ`
+orthonormal) is a nonzero `n`-vector of norm at most one.  `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+gives `‖ξ‖ ≤ 1`.  The covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩ = det(⟨τᵢ, wⱼ⟩)`, the
+alternatization of `w ↦ ∏ᵢ ⟨τᵢ, wᵢ⟩`, has `δ(τ) = 1` by orthonormality, so `ξ(δ) = ±1 ≠ 0`. -/
+theorem Submission.imsupp_unit_orientation_ne_zero_norm_le_one : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ξ ≠ 0 ∧ ‖ξ‖ ≤ 1 := by
+  rintro P n ξ Q ⟨τ, hτ, -, hξ⟩
+  -- `|ξ(α)| = |α(τ)|` for either sign
+  have hnorm : ∀ α : Covector (Euclid P) n, ‖ξ α‖ = ‖α τ‖ := fun α => by
+    rcases hξ with h | h
+    · rw [h α]
+    · rw [h α, norm_neg]
+  refine ⟨fun h0 => ?_, ContinuousLinearMap.opNorm_le_bound ξ zero_le_one fun α => ?_⟩
+  · -- the covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩` has `δ(τ) = 1`: the term `σ = 1` is
+    -- `∏ᵢ ‖τᵢ‖² = 1`, and for `σ ≠ 1` some factor `⟨τᵢ, τ_{σ(i)}⟩`, `σ(i) ≠ i`, vanishes
+    obtain ⟨δ, hδ⟩ : ∃ δ : Covector (Euclid P) n, δ τ = 1 := by
+      refine ⟨ContinuousMultilinearMap.alternatization
+        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin n) ℝ).compContinuousLinearMap
+          fun i => innerSL ℝ (τ i)), ?_⟩
+      rw [ContinuousMultilinearMap.alternatization_apply_apply,
+        Finset.sum_eq_single (1 : Equiv.Perm (Fin n))]
+      · rw [Equiv.Perm.sign_one, one_smul, Equiv.Perm.coe_one, Function.comp_id,
+          ContinuousMultilinearMap.compContinuousLinearMap_apply,
+          ContinuousMultilinearMap.mkPiAlgebra_apply]
+        refine Finset.prod_eq_one fun i _ => ?_
+        rw [innerSL_apply_apply, real_inner_self_eq_norm_sq, hτ.norm_eq_one, one_pow]
+      · intro σ _ hσ
+        obtain ⟨i, hi⟩ : ∃ i, σ i ≠ i := by
+          by_contra! h
+          exact hσ (Equiv.ext h)
+        rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
+          ContinuousMultilinearMap.mkPiAlgebra_apply,
+          Finset.prod_eq_zero (Finset.mem_univ i) ?_, smul_zero]
+        rw [innerSL_apply_apply, Function.comp_apply]
+        exact hτ.inner_eq_zero hi.symm
+      · exact fun h => absurd (Finset.mem_univ _) h
+    -- `ξ = 0` would give `0 = ‖ξ(δ)‖ = ‖δ(τ)‖ = 1`
+    have h := hnorm δ
+    rw [h0, hδ, zero_apply, norm_zero, norm_one] at h
+    exact zero_ne_one h
+  · -- `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+    rw [hnorm, one_mul]
+    calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := ContinuousAlternatingMap.le_opNorm α τ
+      _ = ‖α‖ := by rw [Finset.prod_eq_one fun i _ => hτ.norm_eq_one i, mul_one]
+
+/-- **Simon Ch. 6, 3.1 (‡)**: if `spt ω ⊆ K` for a compact `K ⊆ U` and `‖ω(x)‖ ≤ ε` for all `x`,
+then `|τ(M, θ, ξ)(ω)| ≤ ε ∫_{M ∩ K} θ dHⁿ`.  `Hⁿ`-a.e. on `M`, `ξ(x)` is a unit orientation, so
+`‖ξ(x)‖ ≤ 1` and `|θ(x) ⟨ω(x), ξ(x)⟩| ≤ ε θ(x) 1_K(x)`; the bound `θ 1_K` is `Hⁿ⌞M`-integrable
+with integral `∫_{M ∩ K} θ dHⁿ < ∞`, `θ` being locally `Hⁿ`-integrable in `U`. -/
+theorem Submission.rsd_cmr_ic_action_abs_le : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (K : Set (Euclid P)) (ω : TestFormOn U n) (ε : ℝ), IsCompact K → K ⊆ U → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ ε) → |R.action (ω : DifferentialForm (Euclid P) n)| ≤ ε * (∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal := by
+  intro P n U R K ω ε hK hKU hsupp hbound
+  have hKm : MeasurableSet K := hK.isClosed.measurableSet
+  have hθm : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+  have hθ0 : ∀ x, (0 : ℝ) ≤ R.mult x := fun x => Nat.cast_nonneg _
+  -- `(Hⁿ⌞M)⌞K = Hⁿ⌞(M ∩ K)`, and `ofReal θ = θ` since `θ` is `ℕ`-valued
+  have hrestr : (μHE[n].restrict R.carrier).restrict K = μHE[n].restrict (R.carrier ∩ K) := by
+    rw [Measure.restrict_restrict hKm, inter_comm]
+  have hlint : ∫⁻ x, ENNReal.ofReal (R.mult x : ℝ) ∂(μHE[n].restrict (R.carrier ∩ K)) =
+      ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+    simp_rw [ENNReal.ofReal_natCast]
+  -- `θ 1_K` is `Hⁿ⌞M`-integrable with integral `∫_{M ∩ K} θ dHⁿ`
+  have hint : Integrable (K.indicator fun x => (R.mult x : ℝ)) (μHE[n].restrict R.carrier) := by
+    rw [integrable_indicator_iff hKm, IntegrableOn, hrestr]
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_ofReal (Eventually.of_forall hθ0), hlint]
+    exact (R.locallyIntegrable_mult K hK hKU).lt_top
+  have hval : ∫ x, K.indicator (fun x => (R.mult x : ℝ)) x ∂(μHE[n].restrict R.carrier) =
+      (∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal := by
+    rw [integral_indicator hKm, hrestr,
+      integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall hθ0) hθm.aestronglyMeasurable, hlint]
+  -- `‖ξ(x)‖ ≤ 1` for `Hⁿ`-a.e. `x ∈ M`, `ξ(x)` being a unit orientation there
+  have hξ : ∀ᵐ x ∂(μHE[n].restrict R.carrier), ‖R.orient x‖ ≤ 1 := by
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, -, hQ⟩ := hx
+    exact (Submission.imsupp_unit_orientation_ne_zero_norm_le_one P n _ Q hQ).2
+  -- `|θ ⟨ω, ξ⟩| ≤ θ ‖ξ‖ ‖ω‖ ≤ ε θ` on `K`, and `ω = 0` off `K ⊇ spt ω`
+  have hpt : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      ‖(R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)‖ ≤
+        ε * K.indicator (fun x => (R.mult x : ℝ)) x := by
+    filter_upwards [hξ] with x hx
+    by_cases hxK : x ∈ K
+    · rw [indicator_of_mem hxK, norm_mul, Real.norm_of_nonneg (hθ0 x), mul_comm ε]
+      refine mul_le_mul_of_nonneg_left ?_ (hθ0 x)
+      calc ‖R.orient x ((ω : DifferentialForm (Euclid P) n) x)‖
+          ≤ ‖R.orient x‖ * ‖(ω : DifferentialForm (Euclid P) n) x‖ := (R.orient x).le_opNorm _
+        _ ≤ 1 * ε := mul_le_mul hx (hbound x) (norm_nonneg _) zero_le_one
+        _ = ε := one_mul ε
+    · have hωx : (ω : DifferentialForm (Euclid P) n) x = 0 :=
+        image_eq_zero_of_notMem_tsupport fun h => hxK (hsupp h)
+      rw [indicator_of_notMem hxK, hωx, map_zero, mul_zero, norm_zero, mul_zero]
+  -- `|τ(M, θ, ξ)(ω)| ≤ ∫ ε θ 1_K d(Hⁿ⌞M) = ε ∫_{M ∩ K} θ dHⁿ`
+  have h := norm_integral_le_of_norm_le (hint.const_mul ε) hpt
+  rwa [integral_const_mul, hval, Real.norm_eq_abs] at h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

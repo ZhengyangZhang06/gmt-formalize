@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e2af5a1370d9e9a23064b7b5b7ad03da8700a03098431d4befb631b990d483fe",
+  "git_delta": {
+    "base_commit": "4cef077f0ce5f967f0bdbde556166f10c9df5c40",
+    "candidate_commit": "6b3ac82c258a85f93254ac75f0e9953f0d5e216c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_cmr_ic_action_abs_le",
+    "diff_sha256": "7beba7f9db63bfb6632e6187a3003fb28eabd0275fb8ae26dfc1decd833cedd6",
+    "source_sha256": "1a0aeaea12d37fbdaf95972790c9aeae2b9f62831da9e235c44dc2fcba86a9a5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_cmr_ic_action_abs_le",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (K : Set (Euclid P)) (ω : TestFormOn U n) (ε : ℝ), IsCompact K → K ⊆ U → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ ε) → |R.action (ω : DifferentialForm (Euclid P) n)| ≤ ε * (∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
