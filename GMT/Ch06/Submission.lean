@@ -359,6 +359,90 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Weighted Lebesgue points of the orientation of a rectifiable triple (Simon Ch. 1, 3.23 with
+3.11(3); Steps 1–3 of the proof of Ch. 6, 8.2).  For `Hⁿ⌞M`-a.e. `x`,
+`(∫_{M ∩ B̄_s(x)} θ(y) ‖ξ(y) − ξ(x)‖ dHⁿ(y)) / (∫_{M ∩ B̄_s(x)} θ dHⁿ) → 0` as `s ↓ 0`
+(`ℝ≥0∞`-valued).  With `λ = (Hⁿ⌞M) ⌞ θ`, `λ(B̄_s(x))` is the denominator, `λ` is locally finite
+and mutually absolutely continuous with `Hⁿ⌞M` (`θ > 0` on `M`), and `ξ` is locally
+`λ`-integrable as `‖ξ‖ ≤ 1` a.e.; the claim is Lebesgue differentiation of `ξ` with respect to
+`λ` along the Besicovitch Vitali family of closed balls. -/
+theorem Submission.ind_ab_weighted_lebesgue_point :
+    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple (univ : Set (Eucl P)) n M θ ξ → ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), Tendsto (fun s : ℝ => (∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ ∂(μHE[n] : Measure (Eucl P))) / (∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P)))) (𝓝[>] 0) (𝓝 0) := by
+  intro P n M θ ξ h
+  -- Step 1: `‖ξ‖ ≤ 1` a.e. on `M`, since `|α(τ)| ≤ ‖α‖ ∏ ‖τᵢ‖ = ‖α‖` for orthonormal `τ`.
+  have hunit : ∀ᵐ y ∂((μHE[n] : Measure (Eucl P)).restrict M), ‖ξ y‖ ≤ 1 := by
+    filter_upwards [h.orients] with y hy
+    obtain ⟨τ, hτ, -, hξ⟩ := hy
+    have hs : ∀ α : Covector (Eucl P) n, |α τ| ≤ ‖α‖ := by
+      intro α
+      have h1 := ContinuousAlternatingMap.le_opNorm α τ
+      have h2 : ∏ i, ‖τ i‖ = 1 := by simp [hτ.1]
+      simpa [h2] using h1
+    refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one (fun α => ?_)
+    rw [one_mul]
+    rcases hξ with hξ | hξ
+    · rw [hξ, simpleNVector_apply, Real.norm_eq_abs]; exact hs α
+    · rw [hξ, neg_apply, simpleNVector_apply, norm_neg, Real.norm_eq_abs]
+      exact hs α
+  -- Step 2: `θ` is a.e.-strongly measurable for `Hⁿ⌞M`, being integrable on each `M ∩ B̄_k(0)`.
+  have hθm : AEStronglyMeasurable θ ((μHE[n] : Measure (Eucl P)).restrict M) := by
+    have hM : M = ⋃ k : ℕ, M ∩ closedBall (0 : Eucl P) k := by
+      ext y
+      simp only [mem_iUnion, mem_inter_iff, mem_closedBall, dist_zero_right]
+      constructor
+      · intro hy
+        obtain ⟨k, hk⟩ := exists_nat_ge ‖y‖
+        exact ⟨k, hy, hk⟩
+      · rintro ⟨k, hy, -⟩
+        exact hy
+    rw [hM, aestronglyMeasurable_iUnion_iff]
+    intro k
+    exact (h.integrableOn _ (isCompact_closedBall 0 k) (subset_univ _)).aestronglyMeasurable
+  have hwm : AEMeasurable (fun y => ENNReal.ofReal (θ y)) ((μHE[n] : Measure (Eucl P)).restrict M) :=
+    ENNReal.measurable_ofReal.comp_aemeasurable hθm.aemeasurable
+  -- Step 3: the weighted measure `λ = (Hⁿ⌞M) ⌞ θ`, finite on closed balls.
+  obtain ⟨lam, hlam⟩ : ∃ lam : Measure (Eucl P),
+      lam = ((μHE[n] : Measure (Eucl P)).restrict M).withDensity (fun y => ENNReal.ofReal (θ y)) :=
+    ⟨_, rfl⟩
+  have hball : ∀ (z : Eucl P) (s : ℝ), lam (closedBall z s) =
+      ∫⁻ y in M ∩ closedBall z s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P)) := by
+    intro z s
+    rw [hlam, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+  have hfin : ∀ (z : Eucl P) (s : ℝ), lam (closedBall z s) < ⊤ := by
+    intro z s
+    rw [hball]
+    exact (h.integrableOn _ (isCompact_closedBall z s) (subset_univ _)).lintegral_lt_top
+  have : IsLocallyFiniteMeasure lam :=
+    ⟨fun z => ⟨closedBall z 1, closedBall_mem_nhds z one_pos, hfin z 1⟩⟩
+  -- Step 4: `λ ≪ Hⁿ⌞M`, and `Hⁿ⌞M ≪ λ` since `θ > 0` on `M`.
+  have hac1 : lam ≪ (μHE[n] : Measure (Eucl P)).restrict M := by
+    rw [hlam]; exact withDensity_absolutelyContinuous _ _
+  have hac2 : (μHE[n] : Measure (Eucl P)).restrict M ≪ lam := by
+    rw [hlam]
+    refine withDensity_absolutelyContinuous' hwm ?_
+    filter_upwards [ae_restrict_mem₀ h.nullMeasurableSet] with y hy
+    exact (ENNReal.ofReal_pos.2 (h.pos y hy)).ne'
+  -- Steps 5–6: `ξ` is locally `λ`-integrable; Lebesgue–Besicovitch differentiation.
+  have hdiff := VitaliFamily.ae_tendsto_lintegral_enorm_sub_div (E := NVector (Eucl P) n)
+    (Besicovitch.vitaliFamily lam) (f := ξ) (by
+      intro z
+      refine ⟨closedBall z 1, closedBall_mem_nhds z one_pos, ?_⟩
+      refine Measure.integrableOn_of_bounded (M := 1) (hfin z 1).ne ?_ ?_
+      · exact h.aestronglyMeasurable.mono_ac hac1
+      · exact ae_restrict_of_ae (hac1.ae_le hunit))
+  filter_upwards [hac2.ae_le hdiff] with x hx
+  have hx' := hx.comp (Besicovitch.tendsto_filterAt lam x)
+  -- Step 7: the `λ`-quotient over `B̄_s(x)` is the weighted `Hⁿ`-quotient over `M ∩ B̄_s(x)`.
+  refine hx'.congr (fun s => ?_)
+  simp only [Function.comp]
+  rw [hball x s]
+  congr 1
+  rw [hlam, setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀ _ hwm.restrict _
+      measurableSet_closedBall (Eventually.of_forall fun _ => ENNReal.ofReal_lt_top),
+    Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+  rfl
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
