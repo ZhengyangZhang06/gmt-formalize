@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7131983c7bb9ef2e36e253f1d508bd60d632ce815f18852d426c8408ce7455c4",
+  "git_delta": {
+    "base_commit": "5248d90a66e5893fcead1328cac35fda177577a6",
+    "candidate_commit": "71213ea7006f68765662979f7642f706eef891c1",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_abs_variation_smoothed_abs",
+    "diff_sha256": "13e0633ff37cc7098ec7ca5fffee2f87af687ffc091855cec11818a214c5a9cf",
+    "source_sha256": "ce58c8eb51e560339bc78d1b0501ec9a6e5db9329396c83d06ba96b263a8ea63",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_abs_variation_smoothed_abs",
+      "statement": "∀ (n : ℕ) (w : Rn n → ℝ) (η : ℝ), 0 < η → ContDiff ℝ 1 w → ContDiff ℝ 1 (fun x ↦ Real.sqrt (w x ^ 2 + η ^ 2) - η) ∧ (∀ x, ‖fderiv ℝ (fun x ↦ Real.sqrt (w x ^ 2 + η ^ 2) - η) x‖ ≤ ‖fderiv ℝ w x‖) ∧ ∀ x, abs (Real.sqrt (w x ^ 2 + η ^ 2) - η - |w x|) ≤ η",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
