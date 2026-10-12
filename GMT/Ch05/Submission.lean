@@ -1233,6 +1233,86 @@ theorem rsod_lipschitz_c1_approx_closedBall : ∀ (n : ℕ) (f : Rn n → ℝ) (
     _ = volume ((B ∩ D) \ C) + volume (C \ A) := by rw [hDnull, zero_add]
     _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hBDC hCA
     _ = ε := ENNReal.add_halves ε
+/-- **Simon Ch. 3, Lemma 1.2 ("only if"), first half.**  The range of a `K`-Lipschitz
+`F : ℝⁿ → ℝ^{n+ℓ}` lies in `N₀ ∪ ⋃_k G_k(ℝⁿ)` with `Hⁿ(N₀) = 0` and every `G_k` of class `C¹`.
+Each coordinate `F_c` is `K`-Lipschitz, so `rsod_lipschitz_c1_approx_closedBall` gives `C¹` maps
+`g_{m,i,c}` with `Lⁿ(B_m(0) ∩ {F_c ≠ g_{m,i,c}}) < ((i + 1)(n + ℓ + 1))⁻¹`; the assembled maps
+`G_{m,i} = (g_{m,i,c})_c` are `C¹` with `Lⁿ(B_m(0) ∩ {F ≠ G_{m,i}}) ≤ (i + 1)⁻¹`.  Hence
+`Z = ⋃_m ⋂_i (B_m(0) ∩ {F ≠ G_{m,i}})` is `Lⁿ = Hⁿ`-null, so is the Lipschitz image `N₀ = F(Z)`,
+and off `Z` each `F(x)` is some `G_{m,i}(x)`.  The `G_{m,i}` are enumerated through `Nat.unpair`. -/
+theorem rsod_lipschitz_range_subset_c1_ranges : ∀ (n ℓ : ℕ) (F : Rn n → Amb n ℓ) (K : ℝ≥0), LipschitzWith K F → ∃ (N₀ : Set (Amb n ℓ)) (G : ℕ → Rn n → Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) N₀ = 0 ∧ (∀ k, ContDiff ℝ 1 (G k)) ∧ range F ⊆ N₀ ∪ ⋃ k, range (G k) := by
+  intro n ℓ F K hF
+  -- Step 1: each coordinate `F_c` is `K`-Lipschitz.
+  have hFc : ∀ c : Fin (n + ℓ), LipschitzWith K fun x => F x c := fun c =>
+    LipschitzWith.of_dist_le_mul fun x y =>
+      (PiLp.dist_apply_le (F x) (F y) c).trans (hF.dist_le_mul x y)
+  -- Step 2: `C¹` maps `g_{m,i,c}` with `Lⁿ(B_m(0) ∩ {F_c ≠ g_{m,i,c}}) < ((i + 1)(n + ℓ + 1))⁻¹`.
+  have hε : ∀ i : ℕ, (0 : ℝ≥0∞) < (((i : ℝ≥0∞) + 1) * (((n + ℓ : ℕ) : ℝ≥0∞) + 1))⁻¹ :=
+    fun i => ENNReal.inv_pos.2 (ENNReal.mul_ne_top (by simp) (by simp))
+  choose g hg hgF using fun (m i : ℕ) (c : Fin (n + ℓ)) =>
+    Submission.rsod_lipschitz_c1_approx_closedBall n (fun x => F x c) K (hFc c) m _ (hε i)
+  -- Step 3: the vector maps `G_{m,i} = (g_{m,i,c})_c` are `C¹`, and
+  -- `Lⁿ(B_m(0) ∩ {F ≠ G_{m,i}}) ≤ (n + ℓ)((i + 1)(n + ℓ + 1))⁻¹ ≤ (i + 1)⁻¹`.
+  let G' : ℕ → ℕ → Rn n → Amb n ℓ := fun m i x => WithLp.toLp 2 fun c => g m i c x
+  have hG' : ∀ m i, ContDiff ℝ 1 (G' m i) := fun m i =>
+    contDiff_piLp' (p := 2) fun c => by simpa [G'] using hg m i c
+  have hG'F : ∀ m i : ℕ,
+      volume (closedBall (0 : Rn n) m ∩ {x | F x ≠ G' m i x}) ≤ ((i : ℝ≥0∞) + 1)⁻¹ := by
+    intro m i
+    calc volume (closedBall (0 : Rn n) m ∩ {x | F x ≠ G' m i x})
+        ≤ volume (⋃ c : Fin (n + ℓ), closedBall (0 : Rn n) m ∩ {x | F x c ≠ g m i c x}) := by
+          refine measure_mono fun x hx => ?_
+          obtain ⟨c, hc⟩ : ∃ c, F x c ≠ g m i c x := by
+            by_contra! h
+            exact hx.2 (PiLp.ext fun c => by simpa [G'] using h c)
+          exact mem_iUnion.2 ⟨c, hx.1, hc⟩
+      _ ≤ ∑ c : Fin (n + ℓ), volume (closedBall (0 : Rn n) m ∩ {x | F x c ≠ g m i c x}) :=
+          measure_iUnion_fintype_le _ _
+      _ ≤ ∑ _c : Fin (n + ℓ), (((i : ℝ≥0∞) + 1) * (((n + ℓ : ℕ) : ℝ≥0∞) + 1))⁻¹ :=
+          Finset.sum_le_sum fun c _ => (hgF m i c).le
+      _ = ((i : ℝ≥0∞) + 1)⁻¹ * (((n + ℓ : ℕ) : ℝ≥0∞) * (((n + ℓ : ℕ) : ℝ≥0∞) + 1)⁻¹) := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+            ENNReal.mul_inv (Or.inl (by simp)) (Or.inl (by simp)), mul_left_comm]
+      _ ≤ ((i : ℝ≥0∞) + 1)⁻¹ * 1 := by
+          gcongr
+          calc ((n + ℓ : ℕ) : ℝ≥0∞) * (((n + ℓ : ℕ) : ℝ≥0∞) + 1)⁻¹
+              ≤ (((n + ℓ : ℕ) : ℝ≥0∞) + 1) * (((n + ℓ : ℕ) : ℝ≥0∞) + 1)⁻¹ := by
+                gcongr
+                exact le_self_add
+            _ ≤ 1 := ENNReal.mul_inv_le_one _
+      _ = ((i : ℝ≥0∞) + 1)⁻¹ := mul_one _
+  -- Step 4: `Z = ⋃_m ⋂_i (B_m(0) ∩ {F ≠ G_{m,i}})` is `Lⁿ`-null, since each `⋂_i` has measure
+  -- `≤ (i + 1)⁻¹ ≤ i⁻¹` for every `i`.
+  set Z : Set (Rn n) := ⋃ m : ℕ, ⋂ i : ℕ, closedBall (0 : Rn n) m ∩ {x | F x ≠ G' m i x}
+  have hZ : volume Z = 0 := by
+    refine measure_iUnion_null fun m => ?_
+    by_contra h
+    obtain ⟨i, hi⟩ := ENNReal.exists_inv_nat_lt h
+    have hi' : ((i : ℝ≥0∞) + 1)⁻¹ ≤ (i : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 le_self_add
+    exact absurd ((measure_mono (iInter_subset
+      (fun i : ℕ => closedBall (0 : Rn n) m ∩ {x | F x ≠ G' m i x}) i)).trans
+        ((hG'F m i).trans hi')) (not_le.2 hi)
+  -- Step 5: `Hⁿ = Lⁿ` on `ℝⁿ`, so the Lipschitz image `N₀ = F(Z)` is `Hⁿ`-null.
+  have hN₀ : (μHE[n] : Measure (Amb n ℓ)) (F '' Z) = 0 := by
+    refine nonpos_iff_eq_zero.1 ?_
+    calc (μHE[n] : Measure (Amb n ℓ)) (F '' Z)
+        ≤ (K : ℝ≥0∞) ^ n * (μHE[n] : Measure (Rn n)) Z :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            hF.lipschitzOnWith
+      _ = 0 := by rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hZ, mul_zero]
+  -- Steps 6–7: off `Z`, `F(x) = G_{m,i}(x)` for some `i` (with `|x| ≤ m`); enumerate the
+  -- `G_{m,i}` through `Nat.unpair`.
+  refine ⟨F '' Z, fun k => G' k.unpair.1 k.unpair.2, hN₀, fun k => hG' _ _, ?_⟩
+  rintro _ ⟨x, rfl⟩
+  by_cases hxZ : x ∈ Z
+  · exact Or.inl (mem_image_of_mem F hxZ)
+  obtain ⟨m, hm⟩ := exists_nat_ge ‖x‖
+  have hxm : x ∈ closedBall (0 : Rn n) m := mem_closedBall_zero_iff.2 hm
+  have hxZm : x ∉ ⋂ i : ℕ, closedBall (0 : Rn n) m ∩ {x | F x ≠ G' m i x} :=
+    fun h => hxZ (mem_iUnion.2 ⟨m, h⟩)
+  obtain ⟨i, hi⟩ := not_forall.1 (mt mem_iInter.2 hxZm)
+  have hFx : F x = G' m i x := not_not.1 fun hne => hi ⟨hxm, hne⟩
+  exact Or.inr (mem_iUnion.2 ⟨Nat.pair m i, x, by simp only [Nat.unpair_pair, hFx]⟩)
 
 end Submission
 
