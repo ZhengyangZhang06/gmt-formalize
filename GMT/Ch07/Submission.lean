@@ -451,6 +451,78 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Sharp mass ratio on the standing balls** (Simon Ch. 5, 2.4, chapter-05.txt lines 278–288,
+with the radii `4δρ`, `(1 − 4δ)ρ` and an exact constant).  Put `t' = (1 − 4δ)ρ ∈ (0, ρ]`.  For
+`|y − z| ≤ 4δρ` the triangle inequality gives `B_{t'}(y) ⊆ B_ρ(z) ⊆ W`, and `κt' ≤ κρ ≤ δ`, so
+`e^{κt'} t'^{−n} μ(B_{t'}(y)) ≤ e^δ t'^{−n} (1 + δ) ωₙ ρⁿ = K ωₙ`, `K = e^δ(1 + δ)/(1 − 4δ)ⁿ`.
+The monotonicity hypothesis (Simon Ch. 4, 4.7–4.8, chapter-04.txt lines 536–546) carries this to
+every `t ∈ (0, t']`, and `e^{κt} ≥ 1` then gives `μ(B_t(y)) ≤ K ωₙ tⁿ`. -/
+theorem Submission.dorag_dbs_sharp_mass_ratio : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (W : Set (Euclid P)) (κ δ ρ : ℝ) (z : Euclid P), 0 < ρ → 0 ≤ δ → δ ≤ 1 / 8 → 0 ≤ κ → κ * ρ ≤ δ → closedBall z ρ ⊆ W → μ (closedBall z ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → (∀ (y : Euclid P) (s t : ℝ), 0 < s → s < t → closedBall y t ⊆ W → ENNReal.ofReal (Real.exp (κ * s) / s ^ n) * μ (closedBall y s) ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * μ (closedBall y t)) → ∀ y ∈ closedBall z (4 * δ * ρ), ∀ t : ℝ, 0 < t → t ≤ (1 - 4 * δ) * ρ → ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * μ (closedBall y t) ≤ ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n) * unitBallVolume n ∧ μ (closedBall y t) ≤ ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n) * unitBallVolume n * ENNReal.ofReal (t ^ n) := by
+  intro P n μ W κ δ ρ z hρ hδ0 hδ8 hκ hκρ hball hmass hmono y hy t ht htle
+  -- Step 1: `t' = (1 − 4δ)ρ ∈ (0, ρ]`.
+  set t' := (1 - 4 * δ) * ρ with ht'_def
+  have h14 : 0 < 1 - 4 * δ := by linarith
+  have ht'pos : 0 < t' := mul_pos h14 hρ
+  have ht'ρ : t' ≤ ρ := by nlinarith
+  -- Step 2: `B_{t'}(y) ⊆ B_ρ(z)`.
+  have hsub : closedBall y t' ⊆ closedBall z ρ := by
+    intro p hp
+    rw [mem_closedBall] at hp hy ⊢
+    calc dist p z ≤ dist p y + dist y z := dist_triangle p y z
+      _ ≤ t' + 4 * δ * ρ := add_le_add hp hy
+      _ = ρ := by rw [ht'_def]; ring
+  -- Step 3: the normalized mass at the radius `t'`.
+  have hstep3 : ENNReal.ofReal (Real.exp (κ * t') / t' ^ n) * μ (closedBall y t') ≤
+      ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n) * unitBallVolume n := by
+    have ht'n : 0 < t' ^ n := pow_pos ht'pos n
+    have he : Real.exp (κ * t') / t' ^ n ≤ Real.exp δ / t' ^ n := by
+      apply div_le_div_of_nonneg_right _ ht'n.le
+      apply Real.exp_le_exp.mpr
+      calc κ * t' ≤ κ * ρ := mul_le_mul_of_nonneg_left ht'ρ hκ
+        _ ≤ δ := hκρ
+    calc ENNReal.ofReal (Real.exp (κ * t') / t' ^ n) * μ (closedBall y t')
+        ≤ ENNReal.ofReal (Real.exp δ / t' ^ n) * μ (closedBall z ρ) := by
+          gcongr
+      _ ≤ ENNReal.ofReal (Real.exp δ / t' ^ n) *
+            (ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n)) := by
+          gcongr
+      _ = ENNReal.ofReal (Real.exp δ / t' ^ n * (1 + δ) * ρ ^ n) * unitBallVolume n := by
+          rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by positivity)]
+          ring
+      _ = ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n) * unitBallVolume n := by
+          congr 2
+          rw [ht'_def, mul_pow]
+          field_simp
+  -- Step 4: monotonicity carries the bound to every `t ∈ (0, t']`.
+  have hi : ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * μ (closedBall y t) ≤
+      ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n) * unitBallVolume n := by
+    rcases lt_or_eq_of_le htle with hlt | heq
+    · exact (hmono y t t' ht hlt (hsub.trans hball)).trans hstep3
+    · rw [heq]; exact hstep3
+  refine ⟨hi, ?_⟩
+  -- Step 5: `e^{κt} ≥ 1` turns the normalized bound into `μ(B_t(y)) ≤ K ωₙ tⁿ`.
+  have htn : 0 < t ^ n := pow_pos ht n
+  have hexp1 : 1 ≤ Real.exp (κ * t) := Real.one_le_exp (mul_nonneg hκ ht.le)
+  have hfac : ENNReal.ofReal (t ^ n / Real.exp (κ * t)) *
+      ENNReal.ofReal (Real.exp (κ * t) / t ^ n) = 1 := by
+    rw [← ENNReal.ofReal_mul (by positivity)]
+    rw [show t ^ n / Real.exp (κ * t) * (Real.exp (κ * t) / t ^ n) = 1 by field_simp]
+    simp
+  have hle : ENNReal.ofReal (t ^ n / Real.exp (κ * t)) ≤ ENNReal.ofReal (t ^ n) :=
+    ENNReal.ofReal_le_ofReal (div_le_self htn.le hexp1)
+  calc μ (closedBall y t)
+      = ENNReal.ofReal (t ^ n / Real.exp (κ * t)) *
+          (ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * μ (closedBall y t)) := by
+        rw [← mul_assoc, hfac, one_mul]
+    _ ≤ ENNReal.ofReal (t ^ n / Real.exp (κ * t)) *
+          (ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n) * unitBallVolume n) := by
+        gcongr
+    _ ≤ ENNReal.ofReal (t ^ n) *
+          (ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n) * unitBallVolume n) := by
+        gcongr
+    _ = ENNReal.ofReal (Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n) * unitBallVolume n *
+          ENNReal.ofReal (t ^ n) := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
