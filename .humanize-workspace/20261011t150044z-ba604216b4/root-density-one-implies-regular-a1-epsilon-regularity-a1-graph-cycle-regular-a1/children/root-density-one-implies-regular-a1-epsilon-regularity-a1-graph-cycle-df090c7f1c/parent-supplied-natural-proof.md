@@ -1,0 +1,103 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_embedded-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1, 3, 5 and 6 of the parent proof. Deviation (simplification): the parent used the smaller graph Σ' = Φ(B_{s/2}(0)) with chart target C'; here the whole graph Σ = Φ(B_s(0)) is used with chart target W = Pr⁻¹(D), which needs no bound on u; and the facts (i), (ii) established in the parent's steps 1 and 3 are recorded in the statement because the parent applies the area formula with them.
+Notation used throughout: ℝ^m means Euclid m = EuclideanSpace ℝ (Fin m); e₁, …, eₙ is the standard basis of ℝⁿ; ι : ℝⁿ → ℝ^{n+k} and ι' : ℝ^k → ℝ^{n+k} are linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w; ι*, ι'* are their adjoints (ContinuousLinearMap.adjoint of the underlying continuous linear maps); D := B_s(0) ⊆ ℝⁿ (open ball); Φ(v) := z + ιv + ι'u(v); Σ := Φ(D); Pr(x) := ι*(x − z); DΦ(v) := fderiv ℝ Φ v.
+Formalization note: unless this child is split further it is a machine leaf (one theorem appended to the frozen GMT/Ch07/Submission.lean, no new import or helper declaration); all lemmas cited are in the import closure of GMT.Ch07.Submission.
+1. Adjoint identities. Since ι is an isometry, ⟨ι*ιv, v'⟩ = ⟨ιv, ιv'⟩ = ⟨v, v'⟩ for all v' (ContinuousLinearMap.adjoint_inner_left, LinearIsometry.inner_map_map), so ι*ι = id; by orthogonality ⟨ι*ι'w, v'⟩ = ⟨ι'w, ιv'⟩ = 0 for all v', so ι*ι' = 0. Consequently Pr(x) = ι*(x − z) is affine and continuous, and Pr(Φ(v)) = ι*ιv + ι*ι'u(v) = v for every v ∈ ℝⁿ. Hence Φ is injective on ℝⁿ, in particular on D — this is (i) — and ‖v − v'‖ = ‖Pr Φ(v) − Pr Φ(v')‖ ≤ ‖Φ(v) − Φ(v')‖. Every x ∈ Σ satisfies Pr x ∈ D and x = Φ(Pr x).
+2. Derivative, (ii). D is open and u is C¹ on D, so u is differentiable at every v ∈ D (ContDiffOn.differentiableOn_one (or ContDiffOn.differentiableOn with one_ne_zero), then DifferentiableOn.differentiableAt since D ∈ 𝓝 v). Φ = (constant z) + ι + ι'∘u, so Φ is differentiable at v with fderiv ℝ Φ v = ι + ι'∘Du(v) (HasFDerivAt.const_add, the derivative of a continuous linear map is itself, chain rule HasFDerivAt.comp), and Φ is C¹ on D (sums and compositions of C¹ maps with continuous linear maps, ContDiffOn.add, ContinuousLinearMap.contDiff.comp_contDiffOn). Then ι*∘DΦ(v) = ι*ι + ι*ι'∘Du(v) = id, so DΦ(v) is injective. Also ι*(DΦ(v)a) = a for every a ∈ ℝⁿ.
+3. Chart, (iii). Let y ∈ Σ. Take V := D, W := Pr⁻¹(D) = {x : ‖ι*(x − z)‖ < s} and ψ := Φ.
+ (a) V is open (isOpen_ball); W is open as the preimage of an open set under the continuous map Pr; y ∈ W because Pr y ∈ D (step 1).
+ (b) ContDiffOn ℝ 1 Φ D (step 2; the contract writes the order as the cast of the natural number 1, Nat.cast_one) and InjOn Φ D (step 1).
+ (c) Φ(D) = W ∩ Σ: by step 1, Σ ⊆ W, hence W ∩ Σ = Σ = Φ(D).
+ (d) Properness: let K ⊆ W be compact. If K = ∅ then D ∩ Φ⁻¹(K) = ∅ is compact. Otherwise the continuous function x ↦ ‖Pr x‖ attains its maximum t on K (IsCompact.exists_isMaxOn), and t < s because K ⊆ W. If v ∈ D and Φ(v) ∈ K, then ‖v‖ = ‖Pr Φ(v)‖ ≤ t; conversely the closed ball B̄_t(0) is contained in D. Hence D ∩ Φ⁻¹(K) = B̄_t(0) ∩ Φ⁻¹(K). Since Φ is continuous on B̄_t(0) ⊆ D and K is closed, this set is closed (ContinuousOn.preimage_isClosed_of_isClosed with Metric.isClosed_closedBall) and contained in the compact ball B̄_t(0) (isCompact_closedBall), hence compact (IsCompact.of_isClosed_subset).
+ (e) For every v ∈ D, fderiv ℝ Φ v is injective (step 2).
+ So every y ∈ Σ has a chart as required by IsEmbeddedSubmanifold 1 n Σ.
+4. tangentSpace Σ (Φ v₀) ⊆ range DΦ(v₀). Let v₀ ∈ D, y := Φ(v₀) and w ∈ tangentSpace Σ y: there is γ : ℝ → ℝ^{n+k}, C¹ on (−1, 1), with γ((−1, 1)) ⊆ Σ, γ(0) = y and HasDerivAt γ w 0. Put c := Pr∘γ. Pr is affine with linear part ι*, so HasDerivAt c (ι*w) 0, and c(0) = Pr y = v₀. For t ∈ (−1, 1) we have γ(t) ∈ Σ, so γ(t) = Φ(c(t)) by step 1. Φ is differentiable at v₀ (step 2), so by the chain rule (HasFDerivAt.comp_hasDerivAt) HasDerivAt (Φ∘c) (DΦ(v₀)(ι*w)) 0. Since γ = Φ∘c on the neighbourhood (−1, 1) of 0, HasDerivAt γ (DΦ(v₀)(ι*w)) 0 (HasDerivAt.congr_of_eventuallyEq), and uniqueness of derivatives (HasDerivAt.unique) gives w = DΦ(v₀)(ι*w) ∈ range DΦ(v₀).
+5. range DΦ(v₀) ⊆ tangentSpace Σ (Φ v₀). Let a ∈ ℝⁿ. If a = 0, the constant curve γ ≡ y is smooth, maps into Σ, satisfies γ(0) = y and has derivative 0 = DΦ(v₀)0. If a ≠ 0, put c₀ := (s − ‖v₀‖)/(2‖a‖) > 0 and θ(t) := c₀·sin(t/c₀); θ is smooth (Real.contDiff_sin), |θ(t)| ≤ c₀ for all t (Real.abs_sin_le_one), θ(0) = 0 and θ'(0) = cos 0 = 1 (Real.hasDerivAt_sin and the chain rule). The smooth curve κ(t) := v₀ + θ(t)a satisfies ‖κ(t)‖ ≤ ‖v₀‖ + c₀‖a‖ = (s + ‖v₀‖)/2 < s, so κ(ℝ) ⊆ D. Put γ := Φ∘κ. Since Φ is C¹ on D ⊇ κ(ℝ), γ is C¹ on ℝ, in particular on (−1, 1) (ContDiffOn.comp with the smooth κ and MapsTo κ univ D); γ(ℝ) ⊆ Φ(D) = Σ; γ(0) = Φ(v₀) = y; and by the chain rule γ'(0) = DΦ(v₀)(θ'(0)a) = DΦ(v₀)a. Hence DΦ(v₀)a ∈ tangentSpace Σ y. (Sine replaces the parent's tanh only because its smoothness and derivative lemmas are directly available.)
+6. Steps 4 and 5 give (iv): tangentSpace Σ (Φ v₀) equals the range of fderiv ℝ Φ v₀ (regarded as a linear map, coerced to a set) for every v₀ ∈ D. Together with steps 1–3 this proves all four conjuncts. ∎
+
+## Key steps
+
+1. Adjoint identities ι*ι = id, ι*ι' = 0: Pr := ι*(· − z) satisfies Pr∘Φ = id, so Φ is injective and Σ ⊆ Pr⁻¹(D).
+2. Φ is C¹ on D with DΦ(v) = ι + ι'∘Du(v) and ι*∘DΦ(v) = id, so DΦ(v) is injective.
+3. Chart V = D, W = Pr⁻¹(D), ψ = Φ: W ∩ Σ = Φ(D), properness via D ∩ Φ⁻¹(K) = B̄_t(0) ∩ Φ⁻¹(K) with t = max_K ‖Pr‖ < s.
+4. Tangent ⊆ range: γ = Φ∘(Pr∘γ) on (−1, 1) and the chain rule give w = DΦ(v₀)(ι*w).
+5. Range ⊆ tangent: the curve Φ(v₀ + c₀ sin(t/c₀) a) stays in Σ and has velocity DΦ(v₀)a.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD vs manifest.json`
+- `rg -n 'integral_area_formula_of_injective_derivative|weighted_area_formula_of_injective_derivative|areaJacobianAt_eq_sqrt_det_adjoint_comp|def areaJacobianAt' simongmt/Poincare/SimonGMT/Chapter02`
+- `rg -n 'def HasApproximateTangentSpaceAt|support_euclideanHausdorffMeasure_restrict_submodule|regular_euclideanHausdorffMeasure_restrict_submodule|HasApproximateTangentSpaceAt.unique|def blowUpMap' Chapter03/Rectifiable.lean`
+- `rg -n 'exteriorDerivative_apply|def affinePullbackForm|exteriorDerivative_affinePullbackForm|tsupport_exteriorDerivative_subset|GeometricCurrentOn.boundary|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.support|VanishesOn' Chapter06/{Forms,Currents,AffineCurrentPushforward,CurrentLocalEquality}.lean`
+- `rg -n 'ae_eq_const_of_weak_coordinate_derivatives_zero|WeakDerivativesZero|abbrev Euclidean' Chapter08/{DistributionalConstancy,Varifold}.lean (C¹ tests only; no smooth-test variant)`
+- `rg -n 'theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem dist_convolution_le|def apply (m : ι → E)|theorem ContDiffOn.differentiableOn|continuousOn_fderiv_of_isOpen' in pinned Mathlib`
+- `lake env lean /tmp/gcr3-work/Closure{,2,3}.lean: #exists tests (Lean environment lookup) of ~150 cited names against import GMT.Ch07.Submission`
+- `lake env lean /tmp/gcr3-work/{Orig,Plus}.lean: hash dump of all GMT.Ch07 constants without/with import Chapter02.WeightedArea + Chapter08.DistributionalConstancy (diff: identical)`
+- `python3 lean_contract.validate_lean_statement + gmt-compare.contract_scope; lake env lean /tmp/gcr3-work/Challenges.lean`
+- `lake env lean /tmp/gcr3-work/Assembly.lean; #print axioms GMT.Ch07.dgcr_assembly_check`
+- `python3 scan of dag.json and nodes/*/{decomposition-v*,parent-child-handoff}.json lean_names (dgcr_ collisions; accepted reusable declarations such as rsdic_unitOrientation_eq_or_eq_neg); git grep dgcr_ over all refs`
+- `read runtime flow: leaf_verification.check_source_delta / check_git_delta, parent_verification.check_parent_git_delta, runtime._machine_leaf, _solve_children node bound, _existing_lean_name_problem, _overlay_accepted_children, _publish_workspace_branch; swarm-configs/583ac9fefa804936b5c9a125fda7b1f6.json (max_nodes 1000, leaf_lean_agent_review false)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/parent_verification.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/583ac9fefa804936b5c9a125fda7b1f6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-im-sub-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/parent-child-handoff.json`
+- `/tmp/gcr3-work/Closure.lean`
+- `/tmp/gcr3-work/Closure2.lean`
+- `/tmp/gcr3-work/Closure3.lean`
+- `/tmp/gcr3-work/Orig.lean`
+- `/tmp/gcr3-work/Plus.lean`
+- `/tmp/gcr3-work/Challenges.lean`
+- `/tmp/gcr3-work/Assembly.lean`
+
+Snapshot = project b4d606d and mathlib 25730c7c. The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean, and the simongmt package is at its pinned commit 2b36630.
+Reusable facts found:
+- Chapter02.integral_area_formula_of_injective_derivative: Bochner area formula for an injective map with injective derivative, any integrand. Used by the parent with areaJacobianAt_eq_sqrt_det_adjoint_comp.
+- Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero: distributional constancy, C¹ tests only, so the smooth-to-C¹ child is needed.
+- Chapter03 HasApproximateTangentSpaceAt with finrank_eq, support_/regular_euclideanHausdorffMeasure_restrict_submodule.
+- Chapter06 exteriorDerivative_apply (Mathlib extDeriv convention), affinePullbackForm with exteriorDerivative_affinePullbackForm, tsupport_exteriorDerivative_subset, boundary_apply, zeroRegion/support.
+- Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn.
+- Mathlib: EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.measure_compl_support, Convex.lipschitzOnWith_of_nnnorm_hasFDerivWithin_le, convolution smoothness/derivative lemmas and dist_convolution_le, ContinuousAlternatingMap.apply / norm_image_sub_le, AlternatingMap.eq_smul_basis_det, Fin.sign_cycleRange.
+Outside the frozen import closure, hence used only in the parent: Chapter02.WeightedArea/Area and Chapter08.DistributionalConstancy. Adding these two imports keeps all 103 GMT.Ch07 declarations hash-identical. Mathlib BumpFunction.Normed/Convolution are also outside, so the mollifier child normalizes a ContDiffBump by hand.
+Workflow facts: childless nodes are machine leaves that may append only one theorem. This worker allows 1000 nodes and the DAG has 249. The accepted rsdic_unitOrientation_eq_or_eq_neg exists but is not reused, because a leaf would depend on it across branches.
+Lean checks:
+- All 9 child types pass validate_lean_statement and elaborate in the comparator contract scope.
+- The exact parent type follows from the 7 parent-level child types plus the two library modules, using only propext, Classical.choice and Quot.sound.
+- No name collisions.

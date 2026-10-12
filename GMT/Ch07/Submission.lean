@@ -451,6 +451,46 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Step 1 of the proof that an integer multiplicity cycle carried by a `C¹` graph is regular
+(Simon 7.4.3, via Allard's theorem): orthogonal coordinates on `ℝ^{n+k}`.  If the linear
+isometries `ι : ℝⁿ → ℝ^{n+k}` and `ι' : ℝᵏ → ℝ^{n+k}` have orthogonal ranges `L`, `L'`, then every
+`x ∈ ℝ^{n+k}` is `ι v + ι' w`, and `‖ι v + ι' w‖² = ‖v‖² + ‖w‖²`.  `L` and `L'` have dimensions `n`
+and `k` and meet only in `0`, so by the dimension formula `L ⊔ L' = ℝ^{n+k}`; the norm identity
+is Pythagoras. -/
+theorem Submission.dgcr_orthogonal_coordinates : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ x : Euclid (n + k), ∃ v : Euclid n, ∃ w : Euclid k, x = ι v + ι' w) ∧ ∀ (v : Euclid n) (w : Euclid k), ‖ι v + ι' w‖ ^ 2 = ‖v‖ ^ 2 + ‖w‖ ^ 2 := by
+  intro n k ι ι' horth
+  refine ⟨fun x => ?_, fun v w => ?_⟩
+  · -- `L := range ι` and `L' := range ι'` have dimensions `n` and `k` (isometries are injective)
+    have hL : Module.finrank ℝ (LinearMap.range ι.toLinearMap) = n := by
+      rw [LinearMap.finrank_range_of_inj ι.injective, finrank_euclideanSpace_fin]
+    have hL' : Module.finrank ℝ (LinearMap.range ι'.toLinearMap) = k := by
+      rw [LinearMap.finrank_range_of_inj ι'.injective, finrank_euclideanSpace_fin]
+    -- `L ⊓ L' = ⊥`: if `ι v = ι' w`, then `⟪ι v, ι v⟫ = ⟪ι v, ι' w⟫ = 0`, so `ι v = 0`
+    have hinf : LinearMap.range ι.toLinearMap ⊓ LinearMap.range ι'.toLinearMap = ⊥ := by
+      rw [Submodule.eq_bot_iff]
+      rintro _ ⟨⟨v, rfl⟩, w, hw⟩
+      have h0 : inner ℝ (ι v) (ι v) = 0 := by
+        have h := horth v w
+        rwa [show ι' w = ι v from hw] at h
+      exact inner_self_eq_zero.1 h0
+    -- dimension formula: `dim (L ⊔ L') = n + k = dim ℝ^{n+k}`, so `L ⊔ L' = ⊤`
+    have hsup : LinearMap.range ι.toLinearMap ⊔ LinearMap.range ι'.toLinearMap = ⊤ := by
+      apply Submodule.eq_top_of_finrank_eq
+      have h := Submodule.finrank_sup_add_finrank_inf_eq
+        (LinearMap.range ι.toLinearMap) (LinearMap.range ι'.toLinearMap)
+      rw [hinf, finrank_bot, hL, hL'] at h
+      rw [finrank_euclideanSpace_fin]
+      omega
+    -- `x ∈ L ⊔ L'`, so `x = ι v + ι' w`
+    have hx : x ∈ LinearMap.range ι.toLinearMap ⊔ LinearMap.range ι'.toLinearMap := by
+      rw [hsup]
+      exact Submodule.mem_top
+    obtain ⟨_, ⟨v, rfl⟩, _, ⟨w, rfl⟩, hvw⟩ := Submodule.mem_sup.1 hx
+    exact ⟨v, w, hvw.symm⟩
+  · -- Pythagoras: the cross term `2 ⟪ι v, ι' w⟫` vanishes and `ι`, `ι'` preserve norms
+    rw [norm_add_sq_real, horth, LinearIsometry.norm_map, LinearIsometry.norm_map]
+    ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

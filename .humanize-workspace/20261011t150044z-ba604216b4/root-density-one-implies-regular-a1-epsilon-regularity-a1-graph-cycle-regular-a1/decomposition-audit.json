@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsUnitOrientationOf|structure IMRep|def (IsEmbeddedSubmanifold|tangentSpace|IsOrientation|regularSet)|sorry|axiom",
+        "integral_area_formula_of_injective_derivative|areaJacobianAt_eq_sqrt_det_adjoint_comp|def areaJacobianAt|sorry|axiom",
+        "HasApproximateTangentSpaceAt|support_euclideanHausdorffMeasure_restrict_submodule|regular_euclideanHausdorffMeasure_restrict_submodule|blowUpMap",
+        "ae_eq_const_of_weak_coordinate_derivatives_zero|def WeakDerivativesZero|sorry|axiom",
+        "dist_convolution_le|hasFDerivAt_convolution_right|contDiff_convolution_left|support_convolution_subset|convolution_precompR_apply",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dgcr-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dgcr-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dgcr-independent-audit/Axioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/decomposition-v3.json",
+        "/tmp/dgcr-independent-audit/Types.lean",
+        "/tmp/dgcr-independent-audit/Assembly.lean",
+        "/tmp/dgcr-independent-audit/Axioms.lean",
+        "/tmp/dgcr-independent-audit/FrozenOriginal.lean",
+        "/tmp/dgcr-independent-audit/FrozenWithImports.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected dor_graph_supported_cycle_regular contract. All nine standalone, one-line propositions pass lexical validation and independently elaborate in comparator scope without child implementations. Their prose includes the corresponding hypotheses. The dependency graph is acyclic and correctly directed; scanning 537 DAG/decomposition/handoff records found no conflicting name reservation outside this selected node's earlier proposals. Every name is a bare identifier intended for Submission. The conditional assembly was independently compiled after checking that its seven child hypotheses and parent conclusion exactly match the frozen strings; it establishes the selected regularSet conclusion, with only propext, Classical.choice and Quot.sound. The reused area, constancy, plane-measure and affine-pullback results have the same permitted axiom list. Project, mathlib and simongmt revisions match the pinned references. Re-elaborating the frozen source with the two proposed imports preserves all 103 GMT.Ch07 declaration type/value hashes. No raw matrix IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "orthogonal_coordinates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches both prose conclusions. Pythagoras proves the norm identity; orthogonality gives trivial intersection, and complementary dimensions give surjectivity. The proof is complete, independent and valid when either dimension is zero."
+    },
+    {
+      "key": "graph_embedded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The adjoint projection proves injectivity and derivative injectivity. The proposed chart satisfies the contract's properness condition through compact projection bounds. Both tangent-space inclusions are proved using explicit curves and the chain rule. All four Lean conclusions match the prose."
+    },
+    {
+      "key": "graph_measure_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The 1-Lipschitz left inverse yields the required pushforward-measure domination and lower-integral inequality. The restriction identities correctly avoid assuming global measurability of u. Compact derivative bounds give finite image measure, including the stated negative-radius and zero-radius cases."
+    },
+    {
+      "key": "graph_orientation_jacobian",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Gram-determinant argument proves J>0 and identifies normalized evaluation with a unit orientation. The explicit ξ and β satisfy continuity, normalization and the exact covector identity. The Lean Jacobian uses adjoint composition and the determinant of a continuous linear endomorphism, with no pointwise matrix-multiplication ambiguity."
+    },
+    {
+      "key": "approx_tangent_graph",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The separating compactly supported test function forces Q into the graph derivative's range; equal dimensions then give equality. Null-set images and restricted integrals are handled without assuming A measurable. The proof uses the supplied approximate-tangent hypothesis and does not assume the child or parent conclusion."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two spanning orthonormal families become bases of Q. Their change-of-basis determinant is ±1, and alternating-form evaluation gives one sign independent of the covector. Extensionality proves the exact disjunction, including n=0. This is a fresh proof, not reuse of the differently ordered accepted declaration."
+    },
+    {
+      "key": "integer_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes graph concentration, applies the declared tangent and sign dependencies, constructs g explicitly, and transfers integrality, measurability and local integrability through measure domination. The representation follows from justified almost-everywhere and restriction identities. It does not silently require continuity of ξ. Dependencies and prose match the exact Lean contract."
+    },
+    {
+      "key": "boundary_weak_derivatives",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit cutoff and affine pullback produce a smooth test form with compact support inside C. The alternating-sign computation matches the library exterior derivative, and the germ argument establishes the required pointwise identity. Boundary vanishing and the representation hypothesis then prove precisely the stated weak-derivative equation."
+    },
+    {
+      "key": "smooth_to_c1_tests",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs normalized mollifiers, confines all supports to one compact subset of D, and proves uniform convergence of coordinate derivatives. Local integrability justifies passage to the integral limit; vanishing outside the support gives the whole-space conclusion. The n=0 case is vacuous, and the result matches the library constancy hypothesis."
+    }
+  ],
+  "required_changes": []
+}
