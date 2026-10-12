@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d778c4de65a6d7a0cde631a1e574f3e739dab72336fc87e563590ffc586d6380",
+  "git_delta": {
+    "base_commit": "4f962bda7b1511486f9b5a55e300b3f602fe9d49",
+    "candidate_commit": "d777b59b466c0b17830d639f2c0f9790bc4b0fad",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "399e48769d753d180b21339ce7acc85e4686a29d0cc5cb6874f074cd55703c5e",
+    "source_sha256": "73d50adf622d5cff10c791b1e0abc579948fbef71ffc38a0723c234cd0c0a406",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.c1_critical_slices_null",
+      "statement": "∀ (m k : ℕ) (G : Rn (m + k) → Rn m), 0 < k → ContDiff ℝ 1 G → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] ({u | ¬ Function.Surjective (fderiv ℝ G u)} ∩ G ⁻¹' {y}) = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
