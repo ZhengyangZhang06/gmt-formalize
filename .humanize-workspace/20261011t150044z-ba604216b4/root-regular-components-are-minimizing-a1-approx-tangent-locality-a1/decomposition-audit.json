@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def blowUpMap|def HasApproximateTangentSpaceAt|simon_theorem_3_6|simon_remark_3_7",
+        "exists_disjoint_subfamily_covering_enlargement|hausdorffMeasure_le_liminf_tsum|exists_isClosed_sdiff_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure|countable_cover_nhdsWithin",
+        "of_forall_sdiff_eq_zero|integrableOn_of_bounded",
+        "tendsto_nhds_zero|exists_inv_nat_lt|tendsto_toReal",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:\"$PATH\" lake env lean /tmp/atl-independent-audit/IndependentTypes.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:\"$PATH\" lake env lean /tmp/atl-split-check/Full.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:\"$PATH\" lake env lean /tmp/atl-split-check/Mods.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/atl-independent-audit/IndependentTypes.lean",
+        "/tmp/atl-split-check/Full.lean",
+        "/tmp/atl-split-check/Mods.lean"
+      ],
+      "conclusion": "The handoff matches the selected contract. Pinned revisions and inspected Mathlib sources match the installed dependencies. All four exact one-line propositions independently elaborate in the comparator's replayed scope without any child declaration present. All names are bare identifiers, with no conflicts in the inspected 137-node DAG. DensityComparison is absent from the import closure, confirming the rationale for supplying the covering proof. I independently reran the matching complete prototype: all four children and the exact selected parent assembly compile using only propext, Classical.choice and Quot.sound. The split is appropriate; upper_density_zero → local_density_zero and blowup_measure_scaling → pointwise_comparison are acyclic and correctly directed. Applying local_density_zero to B ∖ A, restricting to A, and choosing a compact ball inside U supplies every hypothesis of pointwise_comparison and proves the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "upper_density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including Borel measurability, finite measure and ENNReal convergence. Threshold sets capture every failure of convergence. The disjoint covering argument correctly covers centres by radius-3 enlargements and yields the 6^n estimate. Closed approximation applies to the finite restricted measure; shrinking balls avoid the closed subset. This proves each threshold set Hausdorff-null, hence μHE-null, without assuming threshold-set measurability. The argument includes n = 0 and has no circular dependency."
+    },
+    {
+      "key": "local_density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes every stated hypothesis and correctly requires no assumption S ⊆ U. The countable cover has compact closed balls contained in U, so each Borel piece has finite measure. The declared upper_density_zero dependency supplies simultaneous conclusions outside a countable union of null sets. Eventual equality inside small closed balls transfers convergence to S. This is a complete, non-circular localization proof."
+    },
+    {
+      "key": "blowup_measure_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the prose for arbitrary S and every real R. Positivity of r establishes the image-intersection identity and makes the homothety invertible. The pinned isometry and homothety lemmas apply to arbitrary sets, so no measurability hypothesis is missing. Scalar normalization gives exactly the stated ENNReal factor, including n = 0 and nonpositive R. The proof is independent of the other children."
+    },
+    {
+      "key": "pointwise_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. The inverse affine map proves Borel measurability of images, and injectivity gives the disjoint decomposition. Local finite mass and compact support establish integrability before integral additivity is used. The declared scaling dependency bounds the difference by the rescaled density quotient; composition with r ↦ rR and continuity of ENNReal.toReal at zero justify the limit. Both tangent implications then follow with the same dimension condition, for every Q, without requiring x ∈ A or invoking the parent theorem."
+    }
+  ],
+  "required_changes": []
+}
