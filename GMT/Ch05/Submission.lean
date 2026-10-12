@@ -458,6 +458,25 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Campanato centres agree with `G` almost everywhere** (Simon Ch. 5, proof of Theorem 5.2:
+identification of the centres by Lebesgue's differentiation theorem in the parameter domain `ℝⁿ`).
+Let `G, c : ℝⁿ → L(ℝᵐ, ℝᵏ)` with `G` Borel and `‖G‖ ≤ B`, and suppose that for every
+`z ∈ B_{R/4}(0)` and `s ∈ (0, R/4]`
+`∫_{B_{s/2}(z)} |G(x) − c(z)|² dx ≤ A sⁿ (s/R)^{2α}` (Hilbert–Schmidt norm, `R, α > 0`).
+Then `G(z) = c(z)` for `Lⁿ`-a.e. `z ∈ B̆_{R/4}(0)`.
+Off the null set of `allard52_cae_hsNormSq_lebesgue_ae`, every `z` is a quadratic Lebesgue point
+of `G`; for `z ∈ B̆_{R/4}(0) ⊆ B_{R/4}(0)` the Campanato bound at `z` is the hypothesis of
+`allard52_cae_center_eq_at_lebesgue_point` with `T = c(z)` and `s₀ = R/4`. -/
+theorem allard52_campanato_ae_center : ∀ (n m k : ℕ) (G c : Rn n → (Rn m →L[ℝ] Rn k)) (A R α B : ℝ), 1 ≤ n → 0 < R → 0 < α → Measurable G → (∀ x, ‖G x‖ ≤ B) → (∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - c z)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → ∀ᵐ z ∂(volume : Measure (Rn n)), z ∈ ball (0 : Rn n) (R / 4) → G z = c z := by
+  intro n m k G c A R α B _hn hR hα hG hB hcamp
+  filter_upwards [Submission.allard52_cae_hsNormSq_lebesgue_ae n m k G B hG hB] with z hz hzR
+  exact Submission.allard52_cae_center_eq_at_lebesgue_point n m k G z (c z) A R α (R / 4) hR hα
+    (by positivity) hG hz (hcamp z (ball_subset_closedBall hzR))
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
