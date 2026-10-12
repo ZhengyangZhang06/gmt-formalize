@@ -1,0 +1,98 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IMRep|IsUnitOrientationOf|MultiVector|locallyIntegrable_mult|aestronglyMeasurable_orient|def measure|def action|def Represents",
+        "exists_orthonormalBasis_extension_of_card_eq|sum_sq_inner_right|sum_inner_mul_inner",
+        "exists_hasCompactSupport_lintegral_sub_le|^variable|^section|^namespace|Regular",
+        "contDiff_convolution_left|dist_normed_convolution_le|Nontrivial|^variable|^section|^namespace|integral_normed",
+        "IsSeparable.exists_countable_dense_subset|IsSeparable.mono|exists_countable_dense_subset",
+        "regcomp_covector_sq_sum_orthonormalBasis|regcomp_covector_eval_orthonormal_le|regcomp_exists_covector_eval_orthonormal_eq_one|regcomp_unit_orientation_pairing|regcomp_imrep_massOn_le_measure|regcomp_covector_field_near_maximizer|regcomp_exists_smooth_unit_form_approx|regcomp_imrep_measure_le_massOn",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/regcomp-independent-audit/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/regcomp-independent-audit/Bridges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/regcomp-independent-audit/API.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "GMT/Ch07/Submission.lean",
+        "GMT/Ch07/README.md",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/SmoothApprox.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Metrizable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/regcomp-independent-audit/Contracts.lean",
+        "/tmp/regcomp-independent-audit/Bridges.lean",
+        "/tmp/regcomp-independent-audit/API.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected mass formula. The snapshot contract matches Submission.lean, and package revisions match the pinned manifests. All eight exact one-line child types independently elaborate as Prop without child implementations. Their names are distinct bare identifiers; no occurrences were found in the current 143-node DAG or searched worktree Lean sources. Dependencies are acyclic, correctly directed, and sufficient: the two mass inequalities establish the exact selected parent by le_antisymm. This conditional assembly and the conditional orientation-pairing and upper-bound proofs compile without sorry. The checked library dependencies use only propext, Classical.choice, and Quot.sound. Separate Lean checks confirm the determinant construction with Matrix.of, coefficient-valued convolution, required instances, and the smoothness order underlying IsTestForm. Each supplied natural proof was independently reviewed; none relies circularly on the selected parent or an ancestor."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_sq_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the prose and coefficient-norm definition. Slotwise Parseval proves basis independence; sorting injective tuples and counting permutations gives the factorial normalization. The argument also covers n = 0 and n > P without additional hypotheses."
+    },
+    {
+      "key": "covector_eval_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Orthonormality supplies n ≤ P and the required basis extension. The injectively indexed permutation sum is bounded by the full nonnegative sum; the declared square-sum dependency and positivity of n! yield exactly the stated absolute-value bound."
+    },
+    {
+      "key": "covector_norming",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant wedge evaluates to one on the frame. Its basis-tuple evaluations have exactly n! nonzero squares, so the declared normalization dependency proves coefficient norm one. Matrix.of gives the intended matrix construction; the empty-frame case is covered."
+    },
+    {
+      "key": "unit_orientation_pairing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof unfolds the exact orientation predicate and handles both signs using the two declared dependencies. Negating the norming covector handles the negative orientation. Both conclusions match the frozen proposition, and the conditional Lean proof checks."
+    },
+    {
+      "key": "mass_le_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The closed support S supplies measurability even for arbitrary W. The orientation bound and nonnegative multiplicity give the indicator estimate, and the unconditional Bochner-integral inequality bounds every admissible evaluation by R.measure W. No openness assumption is needed; the conditional Lean proof checks."
+    },
+    {
+      "key": "near_maximizer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The injective coefficient map establishes finite dimensionality and separability. A strongly measurable version of ξ and a countable dense subset of the coefficient unit ball give measurable disjoint selection sets. Their simple-function approximations produce the required everywhere bounded strongly measurable field, with the stated almost-everywhere estimate."
+    },
+    {
+      "key": "smooth_form_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coefficient/operator norm comparison supplies integrability. Finite-measure regularity justifies continuous approximation; cutoff and radial retraction preserve support and control the error. Positive normalized mollification preserves the coefficient bound and yields the required smooth compact support. The explicit error estimate is strictly below ε, and the relevant Lean constructions check."
+    },
+    {
+      "key": "measure_le_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reduction to W ∩ U, compact exhaustion, and local integrability provide the finite neighborhood measure required by the analytic children. The proof verifies their hypotheses, integrability of both action terms, and the withDensity error conversion. Letting η decrease to zero and exhausting compact masses proves the exact lower bound, including infinite mass."
+    }
+  ],
+  "required_changes": []
+}

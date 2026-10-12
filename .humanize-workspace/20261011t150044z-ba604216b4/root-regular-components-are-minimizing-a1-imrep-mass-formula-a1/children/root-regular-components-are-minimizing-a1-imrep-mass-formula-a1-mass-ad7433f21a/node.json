@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.mass_le_measure-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1",
+  "depth": 3,
+  "title": "Upper mass bound for an integer multiplicity current: M_W(τ(M, θ, ξ)) ≤ ∫_{M∩W} θ dHⁿ",
+  "statement": "Let U ⊆ ℝ^P be any set, T ∈ GeometricCurrentOn U n and R = (C, θ, ξ) an IMRep in U with R.Represents T (T(ω) = ∫_C θ ξ(ω) dHⁿ for all test forms ω in U). Then for every set W ⊆ ℝ^P, M_W(T) = T.massOn W ≤ R.measure W = (θ Hⁿ⌞C)(W).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ W : Set (Euclid P), T.massOn W ≤ R.measure W",
+  "lean_name": "regcomp_imrep_massOn_le_measure",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.unit_orientation_pairing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.unit_orientation_pairing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-mass-ad7433f21a-a1"
+}
