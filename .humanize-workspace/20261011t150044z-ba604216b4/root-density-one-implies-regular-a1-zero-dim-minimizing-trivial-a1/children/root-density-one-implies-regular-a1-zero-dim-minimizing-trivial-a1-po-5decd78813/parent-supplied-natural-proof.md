@@ -1,0 +1,101 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.zero_dim_minimizing_trivial-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.zero_dim_minimizing_trivial-a1.point_current-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 4 and 6 of the parent-supplied proof: the point current D(ω) = m·s·ω(x) is a current, and spt(S − T) = spt(−D) = {x}. The argument is stated here for an arbitrary degree n and an arbitrary functional ξ₀; the parent uses n = 0 and ξ₀ = ±θ(x)ξ(x). Definitions: Simon's test-form topology (chapter-06.txt lines 170–175, frozen as TestFormOnConverges), currents Ch. 6, 2.1 (lines 192–194), support Ch. 6, 2.11 (lines 296–301, frozen as GeometricCurrentOn.support = U ∖ zeroRegion).
+1. The functional. For ω ∈ 𝒟ⁿ(U) put L(ω) := ξ₀(ω(x)). Addition and scalar multiplication in 𝒟ⁿ(U) are pointwise, (ω + η)(x) = ω(x) + η(x) and (cω)(x) = c·ω(x), and ξ₀ is linear. So L is ℝ-linear.
+2. Continuity. Let ω_j → 0 in 𝒟ⁿ(U) (TestFormOnConverges ω_j 0): there is a compact K ⊆ U with tsupport ω_j ⊆ K for all j, and for every k the k-th derivatives of ω_j converge uniformly on K to those of 0, i.e. to 0. If x ∈ K, the case k = 0 gives D⁰ω_j(x) → 0. Since ‖D⁰ω_j(x)‖ = ‖ω_j(x)‖ (norm_iteratedFDeriv_zero), ω_j(x) → 0, and by continuity of ξ₀, L(ω_j) = ξ₀(ω_j(x)) → ξ₀(0) = 0. If x ∉ K, then x ∉ tsupport ω_j, so ω_j(x) = 0 and L(ω_j) = 0 for all j. In both cases L(ω_j) → 0. Hence D := (L, continuity) is a GeometricCurrentOn U n with D(ω) = ξ₀(ω(x)) for all ω. This proves (a).
+3. A test covector. For (b), assume ξ₀ ≠ 0 and let D ∈ 𝒟_n(U) satisfy D(ω) = ξ₀(ω(x)) for all ω ∈ 𝒟ⁿ(U). Since ξ₀ ≠ 0, there is an n-covector α₀ with ξ₀(α₀) ≠ 0; otherwise ξ₀ = 0 by extensionality.
+4. x ∈ spt D. We have x ∈ U by hypothesis. Suppose x lay in the zero region: x ∈ W with W open, W̄ compact, W̄ ⊆ U, and D(ω) = 0 for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ W. Choose ε > 0 with B_ε(x) ⊆ W. Let φ : ℝ^P → ℝ be the smooth bump function centred at x with radii ε/4 < ε/2 (ContDiffBump): φ = 1 on B̄_{ε/4}(x), so φ(x) = 1, and tsupport φ = B̄_{ε/2}(x) ⊆ B_ε(x) ⊆ W is compact. Put ω(z) := φ(z)·α₀. Then ω is C^∞, being a smooth scalar times a constant, has compact support, and tsupport ω ⊆ tsupport φ ⊆ W ⊆ W̄ ⊆ U. So ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ W. Hence 0 = D(ω) = ξ₀(φ(x)·α₀) = ξ₀(α₀) ≠ 0, a contradiction. So x is not in the zero region, and x ∈ spt D.
+5. No other point lies in spt D. By definition spt D ⊆ U. Let z ∈ U with z ≠ x. Choose ε > 0 with B_ε(z) ⊆ U, and put ρ := min(ε/2, |z − x|/2) > 0 and W := B_ρ(z). W is open, and W̄ = B̄_ρ(z) (closure_ball, ρ ≠ 0) is compact with B̄_ρ(z) ⊆ B_ε(z) ⊆ U. If ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ W, then x ∉ tsupport ω because |x − z| > ρ, so ω(x) = 0 and D(ω) = ξ₀(0) = 0. Thus D vanishes on W, so z ∈ W ⊆ zero region and z ∉ spt D.
+6. By steps 4 and 5, spt D = {x}. This proves (b).
+
+## Key steps
+
+1. ω ↦ ξ₀(ω(x)) is linear, and it is sequentially continuous because convergence in 𝒟ⁿ(U) includes uniform convergence of ω_j itself on a compact set containing all supports.
+2. If ξ₀(α₀) ≠ 0, a bump φ at x gives a test form φα₀ supported in any open W ∋ x with D(φα₀) ≠ 0, so x ∈ spt D.
+3. Every z ∈ U ∖ {x} has a small ball with compact closure in U that misses x, on which D vanishes, so spt D = {x}.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both byte-identical)`
+- `rg -c sorry local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean (1 = main_theorem)`
+- `rg -n 'euclideanHausdorffMeasure_zero|μHE\[|notation.*μHE' mathlib/Mathlib`
+- `rg -n 'theorem (withDensity_dirac|dirac_withDensity|withDensity_add_measure|withDensity_smul_measure)' mathlib/Mathlib`
+- `rg -n '^(theorem|lemma) ' mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `sed -n 615,660p mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n -e 'theorem restrict_union ' -e 'theorem setIntegral_union' -e 'theorem integral_singleton' -e 'theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero' -e 'integrableOn_finite' -e 'theorem integrableOn_singleton_iff' -e 'theorem dirac_apply_of_mem' -e 'theorem lintegral_singleton' -e "theorem ae_restrict_iff'" -e 'theorem withDensity_apply ' mathlib/Mathlib/MeasureTheory`
+- `rg -n 'sum_measure_singleton|IntegrableOn.of_forall_sdiff_eq_zero|Countable.measurableSet|norm_iteratedFDeriv_zero|Infinite.exists_subset_card_eq' mathlib/Mathlib/{MeasureTheory,Analysis/Calculus/ContDiff,Data/Set}`
+- `rg -n 'theorem exists_.*tsupport_subset|tsupport_eq|one_of_mem_closedBall|hasCompactSupport|contDiff' mathlib/Mathlib/Analysis/Calculus/BumpFunction/`
+- `grep -n 'CountablyRectifiable|HasApproximateTangentSpaceAt|blowUpMap|CountablyRectifiable.mono' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean; cat simongmt Chapter06/{Currents,CurrentLocalEquality,Mass}.lean`
+- `rg -l 'dor_zdm|imrep_zero_structure|imrep_zero_erase_point|zdm_point_current' dag.json GMT simongmt; rg -l --glob '*.lean' dor_zdm workspaces/.swarm-worktrees (no match)`
+- `grep -n 'countably n-rectifiable|1.4 Definition|2.11|3.1 Definition|counting measure' book/chapter-0{2,3,6}.txt`
+- `lake env lean /tmp/zdmt-decomp/Stmts.lean; lake env lean /tmp/zdmt-decomp/spec/Final.lean (exact frozen strings elaborate)`
+- `lake env lean /tmp/zdmt-decomp/Inst.lean (pp.explicit instance check)`
+- `lake env lean /tmp/zdmt-decomp/Combined.lean (#print axioms of the three children and the assembled parent)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Dirac/Def.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Countable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-zero-dim-minimizing-trivial-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-zero-dim-minimizing-trivial-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/c025f76e99e37e80afe1/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/zdmt-decomp/Stmts.lean`
+- `/tmp/zdmt-decomp/Inst.lean`
+- `/tmp/zdmt-decomp/Assembly.lean`
+- `/tmp/zdmt-decomp/Child1.lean`
+- `/tmp/zdmt-decomp/Child2.lean`
+- `/tmp/zdmt-decomp/Child3.lean`
+- `/tmp/zdmt-decomp/Combined.lean`
+- `/tmp/zdmt-decomp/spec/Final.lean`
+- `/tmp/zdmt-decomp/spec/children.json`
+
+Snapshot: project b4d606d, mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, and its only sorry is main_theorem.
+
+The pinned SimonGMT package has no degree-0 integer multiplicity facts and no point currents. It provides GeometricCurrentOn, TestFormOnConverges, zeroRegion/support and massOn (Chapter06), and CountablyRectifiable(.mono), HasApproximateTangentSpaceAt and blowUpMap (Chapter03).
+
+The snapshot Mathlib supplies every tool the children need:
+- Hausdorff measure in degree 0: euclideanHausdorffMeasure_zero, hausdorffMeasure_zero_singleton, one_le_hausdorffMeasure_zero_of_nonempty, sum_measure_singleton.
+- Measures and supports: withDensity_apply, withDensity_add_measure, dirac_withDensity, Measure.restrict_union, Measure.restrict_singleton, Measure.restrict_restrict, lintegral_singleton, Measure.mem_support_iff_forall, ae_restrict_iff'.
+- Integration: setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, setIntegral_union, integral_singleton, integrableOn_singleton, integrableOn_finite_biUnion, IntegrableOn.of_forall_sdiff_eq_zero.
+- Other: Set.Countable.measurableSet, Set.Infinite.exists_subset_card_eq, norm_iteratedFDeriv_zero, ContDiffBump (tsupport_eq, one_of_mem_closedBall, hasCompactSupport, contDiff), ContinuousAlternatingMap.constOfIsEmpty(_apply).
+
+With these, all three children are fully proved in kernel-checked prototypes (/tmp/zdmt-decomp/Combined.lean) using only propext, Classical.choice and Quot.sound. The frozen parent type is assembled from the children plus the declared sibling dor_imrep_massOn_eq_measure_and_support, used at its exact frozen type.
+
+The dor_zdm_* names have no matches anywhere. The related nodes dtc_dim_zero_eq_zero and dimred_zero_dim_minimizing_eq_zero have different, unaccepted types, so nothing is reused.
+
+Book: Simon restricts Ch. 6 §3 to n ≥ 1 (chapter-06.txt line 731), so the degree-0 arguments are supplied in full. They cite Ch. 3 1.1 and 1.4, Ch. 6 2.1, 2.11 and 3.1, and Ch. 2 line 787 (H⁰ is counting measure).
