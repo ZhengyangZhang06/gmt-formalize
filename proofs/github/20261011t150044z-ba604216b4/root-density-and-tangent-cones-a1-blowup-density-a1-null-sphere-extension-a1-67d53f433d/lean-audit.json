@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c5e07ad61e96a2bbc71667ae1394505ca5e06d3714f18f1b8046cb093e8cf74d",
+  "git_delta": {
+    "base_commit": "96ce8c80bf8fdd66d66bdbbb31bcda32e078e174",
+    "candidate_commit": "2ecc33009bccaafdaa3be57d9721f5e0d4ccafd1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_measure_ball_eq_of_null_sphere",
+    "diff_sha256": "82dfa8c2b73c3d3431cb2d9f459b7d803ff6ad5172da07fd9c92e7c95185548c",
+    "source_sha256": "9f99036215e908db86375cc81d2064c6d6469d38339731e3f7548a821723a23d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_measure_ball_eq_of_null_sphere",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (c : ℝ≥0∞), c ≠ ∞ → (∀ r : ℝ, 0 < r → μ (ball 0 r) ≠ ∞) → (∀ ρ : ℝ, 0 < ρ → μ (sphere 0 ρ) = 0 → μ (ball 0 ρ) = c * ENNReal.ofReal (ρ ^ n)) → ∀ ρ : ℝ, 0 < ρ → μ (ball 0 ρ) = c * ENNReal.ofReal (ρ ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

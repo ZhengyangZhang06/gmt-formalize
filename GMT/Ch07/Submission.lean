@@ -451,6 +451,99 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.3.1** (proof, after display (4)): let `μ` be finite on balls and `c ≠ ∞`.  If
+`μ(B_ρ(0)) = c ρⁿ` for every `ρ > 0` with `μ(∂B_ρ(0)) = 0`, then it holds for every `ρ > 0`.
+Only countably many spheres `∂B_t(0)` are charged: they are level sets of `‖·‖` for the finite
+measures `μ⌞B_{m+1}(0)`.  So there are good radii `rₖ ∈ (sₖ, ρ)`, `sₖ = ρ - ρ/(k+1)`; letting
+`k → ∞` in `c rₖⁿ ≤ μ(B_ρ(0))` and in `μ(B_{sₖ}(0)) ≤ c rₖⁿ ≤ c ρⁿ` gives both inequalities. -/
+theorem Submission.dtc_measure_ball_eq_of_null_sphere : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (c : ℝ≥0∞), c ≠ ∞ → (∀ r : ℝ, 0 < r → μ (ball 0 r) ≠ ∞) → (∀ ρ : ℝ, 0 < ρ → μ (sphere 0 ρ) = 0 → μ (ball 0 ρ) = c * ENNReal.ofReal (ρ ^ n)) → ∀ ρ : ℝ, 0 < ρ → μ (ball 0 ρ) = c * ENNReal.ofReal (ρ ^ n) := by
+  intro P n μ c hc hfin hgood ρ hρ
+  -- Step 1: the set `N` of radii of charged spheres is countable
+  set N : Set ℝ := {t | 0 < μ (sphere (0 : Euclid P) t)}
+  have hNc : N.Countable := by
+    -- `μ⌞B_{m+1}(0)` is finite, so it charges only countably many level sets of `‖·‖`
+    have hlevel : ∀ m : ℕ,
+        {t : ℝ | 0 < μ.restrict (ball (0 : Euclid P) (m + 1)) {a | ‖a‖ = t}}.Countable := by
+      intro m
+      have : IsFiniteMeasure (μ.restrict (ball (0 : Euclid P) (m + 1))) :=
+        ⟨by rw [Measure.restrict_apply_univ]; exact lt_top_iff_ne_top.2 (hfin _ (by positivity))⟩
+      exact Measure.countable_meas_level_set_pos measurable_norm
+    refine (countable_iUnion hlevel).mono fun t ht => ?_
+    have ht' : 0 < μ (sphere (0 : Euclid P) t) := ht
+    obtain ⟨m, hm⟩ := exists_nat_gt t
+    have hsub : sphere (0 : Euclid P) t ⊆ ball 0 (m + 1) := fun a ha => by
+      rw [mem_ball_zero_iff, mem_sphere_zero_iff_norm.1 ha]
+      linarith
+    have hsph : {a : Euclid P | ‖a‖ = t} = sphere 0 t := by
+      ext a
+      simp
+    simp only [mem_iUnion, mem_ofPred_eq]
+    refine ⟨m, ?_⟩
+    rwa [hsph, Measure.restrict_apply' measurableSet_ball, inter_eq_left.2 hsub]
+  -- Step 2: every nonempty open interval contains a radius outside `N`
+  have hIoo : ∀ a b : ℝ, a < b → ∃ r ∈ Ioo a b, r ∉ N := by
+    intro a b hab
+    by_contra h
+    push Not at h
+    have h0 : volume (Ioo a b) = 0 := measure_mono_null (fun r hr => h r hr) (hNc.measure_zero _)
+    rw [Real.volume_Ioo, ENNReal.ofReal_eq_zero] at h0
+    linarith
+  have hgood' : ∀ r : ℝ, 0 < r → r ∉ N → μ (ball 0 r) = c * ENNReal.ofReal (r ^ n) :=
+    fun r hr hrN => hgood r hr (by simpa [N, pos_iff_ne_zero] using hrN)
+  -- Step 3: `sₖ = ρ - ρ/(k+1)` increases to `ρ`, and good radii `rₖ ∈ (sₖ, ρ)` tend to `ρ`
+  set s : ℕ → ℝ := fun k => ρ - ρ / (k + 1) with hs
+  have hs_lt : ∀ k, s k < ρ := fun k => by
+    have : 0 < ρ / (k + 1) := by positivity
+    simp only [hs]
+    linarith
+  have hs_nonneg : ∀ k, 0 ≤ s k := fun k => by
+    have : ρ / (k + 1) ≤ ρ := div_le_self hρ.le (by linarith [k.cast_nonneg (α := ℝ)])
+    simp only [hs]
+    linarith
+  have hs_mono : Monotone s := fun i j hij => by
+    have : ρ / ((j : ℝ) + 1) ≤ ρ / ((i : ℝ) + 1) :=
+      div_le_div_of_nonneg_left hρ.le (by positivity) (by exact_mod_cast Nat.add_le_add_right hij 1)
+    simp only [hs]
+    linarith
+  have hs_tend : Tendsto s atTop (𝓝 ρ) := by
+    have : Tendsto (fun k : ℕ => ρ / ((k : ℝ) + 1)) atTop (𝓝 0) :=
+      ((tendsto_const_div_atTop_nhds_zero_nat ρ).comp (tendsto_add_atTop_nat 1)).congr
+        fun k => by simp
+    simpa using (tendsto_const_nhds (x := ρ)).sub this
+  choose r hr hrN using fun k => hIoo (s k) ρ (hs_lt k)
+  have hr_pos : ∀ k, 0 < r k := fun k => (hs_nonneg k).trans_lt (hr k).1
+  have hr_tend : Tendsto r atTop (𝓝 ρ) :=
+    tendsto_of_tendsto_of_tendsto_of_le_of_le hs_tend tendsto_const_nhds
+      (fun k => (hr k).1.le) fun k => (hr k).2.le
+  -- Step 4: lower bound, letting `k → ∞` in `c rₖⁿ = μ(B_{rₖ}(0)) ≤ μ(B_ρ(0))` (uses `c ≠ ∞`)
+  have hlower : c * ENNReal.ofReal (ρ ^ n) ≤ μ (ball 0 ρ) := by
+    have hlim : Tendsto (fun k => c * ENNReal.ofReal (r k ^ n)) atTop
+        (𝓝 (c * ENNReal.ofReal (ρ ^ n))) :=
+      ENNReal.Tendsto.const_mul ((ENNReal.continuous_ofReal.tendsto _).comp
+        (((continuous_pow n).tendsto ρ).comp hr_tend)) (Or.inr hc)
+    refine le_of_tendsto' hlim fun k => ?_
+    rw [← hgood' _ (hr_pos k) (hrN k)]
+    exact measure_mono (ball_subset_ball (hr k).2.le)
+  -- Step 5: upper bound, by continuity from below along the balls `B_{sₖ}(0) ↑ B_ρ(0)`
+  have hupper : μ (ball 0 ρ) ≤ c * ENNReal.ofReal (ρ ^ n) := by
+    have hU : ⋃ k, ball (0 : Euclid P) (s k) = ball 0 ρ := by
+      refine Subset.antisymm (iUnion_subset fun k => ball_subset_ball (hs_lt k).le) fun y hy => ?_
+      rw [mem_ball_zero_iff] at hy
+      obtain ⟨k, hk⟩ := (hs_tend.eventually (lt_mem_nhds hy)).exists
+      exact mem_iUnion.2 ⟨k, mem_ball_zero_iff.2 hk⟩
+    have hmono : Monotone fun k => ball (0 : Euclid P) (s k) :=
+      fun i j hij => ball_subset_ball (hs_mono hij)
+    rw [← hU, hmono.measure_iUnion]
+    refine iSup_le fun k => ?_
+    calc μ (ball 0 (s k)) ≤ μ (ball 0 (r k)) := measure_mono (ball_subset_ball (hr k).1.le)
+      _ = c * ENNReal.ofReal (r k ^ n) := hgood' _ (hr_pos k) (hrN k)
+      _ ≤ c * ENNReal.ofReal (ρ ^ n) := by
+        have h1 : 0 ≤ r k := (hr_pos k).le
+        have h2 : r k ≤ ρ := (hr k).2.le
+        gcongr
+  -- Step 6
+  exact le_antisymm hupper hlower
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
