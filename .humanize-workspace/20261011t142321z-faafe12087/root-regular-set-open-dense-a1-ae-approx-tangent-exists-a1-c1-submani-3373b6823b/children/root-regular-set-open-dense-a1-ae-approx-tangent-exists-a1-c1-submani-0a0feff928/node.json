@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_tangent-a1.chart_lower_bound-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_tangent-a1",
+  "depth": 4,
+  "title": "Linear lower bound for a C¹ map near a point where its derivative is injective",
+  "statement": "Let m, N ∈ ℕ, let V ⊆ ℝᵐ be open, let φ : ℝᵐ → ℝ^N be C¹ on V (ContDiffOn ℝ 1 φ V), let v₀ ∈ V, and suppose that Dφ(v₀) := fderiv ℝ φ v₀ is injective. Then there exist c > 0 and δ > 0 such that the closed ball B_δ(v₀) is contained in V and c‖w‖ ≤ ‖φ(v₀ + w) − φ(v₀)‖ for every w ∈ ℝᵐ with ‖w‖ ≤ δ.",
+  "lean_statement": "∀ (m N : ℕ) (V : Set (Rn m)) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (v₀ : Rn m), IsOpen V → ContDiffOn ℝ 1 φ V → v₀ ∈ V → Function.Injective (fderiv ℝ φ v₀) → ∃ c : ℝ, 0 < c ∧ ∃ δ : ℝ, 0 < δ ∧ closedBall v₀ δ ⊆ V ∧ ∀ w : Rn m, ‖w‖ ≤ δ → c * ‖w‖ ≤ ‖φ (v₀ + w) - φ v₀‖",
+  "lean_name": "rsod_c1tan_chart_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-submani-0a0feff928-a1"
+}

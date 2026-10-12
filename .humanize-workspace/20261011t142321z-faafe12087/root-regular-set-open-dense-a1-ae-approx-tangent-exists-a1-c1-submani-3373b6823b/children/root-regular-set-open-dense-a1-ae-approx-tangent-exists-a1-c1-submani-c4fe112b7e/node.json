@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_tangent-a1.chart_blowup_tendsto-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_submanifold_tangent-a1",
+  "depth": 4,
+  "title": "Dominated convergence for the rescaled chart integrals",
+  "statement": "Let m, N ∈ ℕ, V ⊆ ℝᵐ open, φ : ℝᵐ → ℝ^N continuous on V, J : ℝᵐ → ℝ continuous on V, L : ℝᵐ → ℝ^N a continuous linear map and v₀ ∈ ℝᵐ such that φ has Fréchet derivative L at v₀. Let c, δ, ε > 0 with B_δ(v₀) ⊆ V (closed ball) such that (a) c‖w‖ ≤ ‖φ(v₀ + w) − φ(v₀)‖ for every w with ‖w‖ ≤ δ, and (b) ε ≤ ‖φ(v) − φ(v₀)‖ for every v ∈ V with δ ≤ ‖v − v₀‖. Let f : ℝ^N → ℝ be continuous with compact support. With Hᵐ := μHE[m] on ℝᵐ, U_r := {u ∈ ℝᵐ : v₀ + ru ∈ V} and ψ_r(u) := r⁻¹(φ(v₀ + ru) − φ(v₀)), we have ∫_{U_r} J(v₀ + ru)·f(ψ_r(u)) dHᵐ(u) → ∫_{ℝᵐ} J(v₀)·f(Lu) dHᵐ(u) as r → 0⁺ (along 𝓝[>] 0).",
+  "lean_statement": "∀ (m N : ℕ) (V : Set (Rn m)) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (J : Rn m → ℝ) (L : Rn m →L[ℝ] EuclideanSpace ℝ (Fin N)) (v₀ : Rn m) (c δ ε : ℝ) (f : EuclideanSpace ℝ (Fin N) → ℝ), IsOpen V → ContinuousOn φ V → ContinuousOn J V → HasFDerivAt φ L v₀ → 0 < c → 0 < δ → 0 < ε → closedBall v₀ δ ⊆ V → (∀ w : Rn m, ‖w‖ ≤ δ → c * ‖w‖ ≤ ‖φ (v₀ + w) - φ v₀‖) → (∀ v ∈ V, δ ≤ ‖v - v₀‖ → ε ≤ ‖φ v - φ v₀‖) → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ u in {u : Rn m | v₀ + r • u ∈ V}, J (v₀ + r • u) * f (r⁻¹ • (φ (v₀ + r • u) - φ v₀)) ∂(μHE[m] : Measure (Rn m))) (𝓝[>] 0) (𝓝 (∫ u, J v₀ * f (L u) ∂(μHE[m] : Measure (Rn m))))",
+  "lean_name": "rsod_c1tan_chart_blowUp_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-submani-c4fe112b7e-a1"
+}
