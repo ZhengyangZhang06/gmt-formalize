@@ -563,6 +563,37 @@ theorem lintegral_ball_comp_sub_le : ∀ (n : ℕ) (F : Rn n → ℝ≥0∞) (r 
     _ = ∫⁻ x, (ball (0 : Rn n) s).indicator F x :=
         lintegral_sub_right_eq_self ((ball (0 : Rn n) s).indicator F) w
     _ = ∫⁻ x in ball (0 : Rn n) s, F x := lintegral_indicator measurableSet_ball F
+/-- Crude `L²` bound for translation differences on balls, used for the translation estimate in
+the proof of Simon Ch. 5, Lemma 3.1 (p. 114): if `r + ‖z‖ ≤ s` and `h` is a.e. strongly measurable
+on `B_s`, then `∫_{B_r} |h(x - z) - h(x)|² ≤ 4 ∫_{B_s} |h|²`.  Pointwise
+`|h(x - z) - h(x)|² ≤ 2 |h(x - z)|² + 2 |h(x)|²`; the translated term is bounded by
+`lintegral_ball_comp_sub_le` and the untranslated one by `B_r ⊆ B_s`. -/
+theorem lintegral_ball_translation_difference_le : ∀ (n : ℕ) (h : Rn n → ℝ) (r s : ℝ) (z : Rn n), r + ‖z‖ ≤ s → AEStronglyMeasurable h (volume.restrict (ball (0 : Rn n) s)) → ∫⁻ x in ball (0 : Rn n) r, ‖h (x - z) - h x‖ₑ ^ 2 ≤ 4 * ∫⁻ x in ball (0 : Rn n) s, ‖h x‖ₑ ^ 2 := by
+  intro n h r s z hrs hh
+  -- `B_r ⊆ B_s`, so the untranslated summand is a.e. measurable on `B_r`.
+  have hsub : ball (0 : Rn n) r ⊆ ball 0 s :=
+    ball_subset_ball ((le_add_of_nonneg_right (norm_nonneg z)).trans hrs)
+  have hmeas : AEMeasurable (fun x => 2 * ‖h x‖ₑ ^ 2) (volume.restrict (ball (0 : Rn n) r)) :=
+    ((hh.mono_measure (Measure.restrict_mono hsub le_rfl)).enorm.pow_const 2).const_mul 2
+  -- `(a + b)² ≤ 2a² + 2b²` in `ℝ≥0∞` (the power-mean inequality for `p = 2`).
+  have hsq : ∀ a b : ℝ≥0∞, (a + b) ^ 2 ≤ 2 * a ^ 2 + 2 * b ^ 2 := fun a b => by
+    have h2 := ENNReal.rpow_add_le_mul_rpow_add_rpow a b (p := 2) (by norm_num)
+    norm_num at h2
+    simpa [mul_add] using h2
+  calc ∫⁻ x in ball (0 : Rn n) r, ‖h (x - z) - h x‖ₑ ^ 2
+      ≤ ∫⁻ x in ball (0 : Rn n) r, (2 * ‖h (x - z)‖ₑ ^ 2 + 2 * ‖h x‖ₑ ^ 2) :=
+        lintegral_mono fun x => (pow_le_pow_left' enorm_sub_le 2).trans (hsq _ _)
+    _ = 2 * (∫⁻ x in ball (0 : Rn n) r, ‖h (x - z)‖ₑ ^ 2) +
+          2 * ∫⁻ x in ball (0 : Rn n) r, ‖h x‖ₑ ^ 2 := by
+        rw [lintegral_add_right' _ hmeas, lintegral_const_mul' _ _ (by norm_num),
+          lintegral_const_mul' _ _ (by norm_num)]
+    _ ≤ 2 * (∫⁻ x in ball (0 : Rn n) s, ‖h x‖ₑ ^ 2) +
+          2 * ∫⁻ x in ball (0 : Rn n) s, ‖h x‖ₑ ^ 2 :=
+        add_le_add
+          (mul_le_mul_right
+            (Submission.lintegral_ball_comp_sub_le n (fun y => ‖h y‖ₑ ^ 2) r s z hrs) 2)
+          (mul_le_mul_right (lintegral_mono_set hsub) 2)
+    _ = 4 * ∫⁻ x in ball (0 : Rn n) s, ‖h x‖ₑ ^ 2 := by ring
 
 /-- **Translation estimate for `C¹` functions** (Evans, *PDE*, §5.8.2 Theorem 3(i);
 Gilbarg–Trudinger §7.11): for `φ ∈ C¹(ℝⁿ)`, `r ∈ ℝ` and `z ∈ ℝⁿ`,
