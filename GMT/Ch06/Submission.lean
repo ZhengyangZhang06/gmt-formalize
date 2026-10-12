@@ -510,6 +510,118 @@ theorem Submission.br_cube_integral_fderiv_eq_faces :
   exact intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hderiv t)
     (hcont.intervalIntegrable 0 ρ)
 
+/-- Stokes' theorem on the parameter cube of the lattice face `ρ (z + F_α)`, `F = (z, α)`.  Put
+`p = ρ z`, `v_j = e_{α j}`, `A(s) = p + ∑_j s_j v_j` and `α_i = α ∘ succAbove_i`; then
+`∫_{[0,ρ]^{m+1}} dω(A(s))(v) ds` is the alternating sum over `i` of the integrals of `ω(·)(e_{α_i})`
+over the faces `s_i = ρ` and `s_i = 0`, i.e. of
+`∫_{[0,ρ]^m} ω(ρ (z + e_{α i}) + ∑_k s_k e_{α_i k})(e_{α_i})` minus
+`∫_{[0,ρ]^m} ω(p + ∑_k s_k e_{α_i k})(e_{α_i})`.
+By `exteriorDerivative_apply` and the chain rule, `dω(A(s))(v) = ∑_i (-1)^i Dφ_i(s)(e_i)` for
+`φ_i(s) = ω(A(s))(removeNth_i v)`; `br_cube_integral_fderiv_eq_faces` integrates each term, and
+`A(insertNth_i(t, s')) = p + t v_i + ∑_k s'_k e_{α_i k}` identifies the two faces. -/
+theorem Submission.br_cube_stokes_lattice :
+    ∀ (P m : ℕ) (ρ : ℝ), 0 < ρ → ∀ (F : LatticeFaceIndex (m + 1) P)
+      (ω : DifferentialForm (Eucl P) m), IsSmoothForm ω →
+      ∫ s in Set.Icc (0 : Fin (m + 1) → ℝ) (fun _ => ρ),
+        exteriorDerivative ω (∑ l, (ρ * (F.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) +
+          ∑ j, s j • EuclideanSpace.single (F.2 j) (1 : ℝ))
+          (fun j => EuclideanSpace.single (F.2 j) (1 : ℝ)) =
+      ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) *
+        ((∫ s in Set.Icc (0 : Fin m → ℝ) (fun _ => ρ),
+          ω (∑ l, (ρ * (((F.1 + Pi.single (F.2 i) 1 : Fin P → ℤ) l : ℤ) : ℝ)) •
+              EuclideanSpace.single l (1 : ℝ) +
+            ∑ j, s j • EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) j) (1 : ℝ))
+            (fun j => EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) j) (1 : ℝ))) -
+        ∫ s in Set.Icc (0 : Fin m → ℝ) (fun _ => ρ),
+          ω (∑ l, (ρ * (F.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) +
+            ∑ j, s j • EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) j) (1 : ℝ))
+            (fun j => EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) j)
+              (1 : ℝ))) := by
+  intro P m ρ hρ F ω hω
+  -- The base point `p = ρ z`, the frame `v j = e_{α j}` and `A s = p + ∑ j, s j • v j`.
+  set p : Eucl P := ∑ l, (ρ * (F.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) with hp
+  set v : Fin (m + 1) → Eucl P := fun j => EuclideanSpace.single (F.2 j) (1 : ℝ) with hv
+  have hωd : Differentiable ℝ ω := hω.differentiable (by simp)
+  -- `A` is affine with linear part `DA s = ∑ j, s j • v j`.
+  let DA : (Fin (m + 1) → ℝ) →L[ℝ] Eucl P := ∑ j, (ContinuousLinearMap.proj j).smulRight (v j)
+  have hDA : ∀ s, DA s = ∑ j, s j • v j := fun s => by simp [DA]
+  have hAeq : (fun s : Fin (m + 1) → ℝ => p + ∑ j, s j • v j) = fun s => p + DA s := by
+    funext s; rw [hDA]
+  have hA : ∀ s, HasFDerivAt (fun s : Fin (m + 1) → ℝ => p + ∑ j, s j • v j) DA s := fun s => by
+    rw [hAeq]
+    exact DA.hasFDerivAt.const_add p
+  -- `φ i s = ω (A s) (removeNth i v)` is `C¹`: evaluation at a fixed frame is continuous linear.
+  set φ : Fin (m + 1) → (Fin (m + 1) → ℝ) → ℝ :=
+    fun i s => ω (p + ∑ j, s j • v j) (Fin.removeNth i v)
+  have hφ : ∀ i, ContDiff ℝ 1 (φ i) := by
+    intro i
+    have h1 : ContDiff ℝ 1 (fun y => ω y (Fin.removeNth i v)) :=
+      (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ (Fin.removeNth i v)).contDiff.comp
+        (hω.of_le (by simp))
+    have h2 : ContDiff ℝ 1 (fun s : Fin (m + 1) → ℝ => p + ∑ j, s j • v j) := by
+      rw [hAeq]
+      exact contDiff_const.add DA.contDiff
+    exact h1.comp h2
+  -- Pointwise `dω(A s)(v) = ∑ i, (-1)^i Dφ_i(s)(e_i)`, by the chain rule and `DA e_i = v i`.
+  have hpt : ∀ s : Fin (m + 1) → ℝ, exteriorDerivative ω (p + ∑ j, s j • v j) v =
+      ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * fderiv ℝ (φ i) s (Pi.single i 1) := by
+    intro s
+    rw [exteriorDerivative_apply (hωd _) v]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    have hc : HasFDerivAt (fun y => ω y (Fin.removeNth i v))
+        (fderiv ℝ (fun y => ω y (Fin.removeNth i v)) (p + ∑ j, s j • v j))
+        (p + ∑ j, s j • v j) :=
+      ((hωd _).continuousAlternatingMap_apply_const _).hasFDerivAt
+    have hφi : φ i = (fun y => ω y (Fin.removeNth i v)) ∘ (fun s => p + ∑ j, s j • v j) := rfl
+    rw [hφi, (hc.comp s (hA s)).fderiv, ContinuousLinearMap.comp_apply, hDA]
+    have hsum : ∑ j, (Pi.single i (1 : ℝ) : Fin (m + 1) → ℝ) j • v j = v i := by
+      simp [Pi.single_apply]
+    rw [hsum, zsmul_eq_mul]
+    push_cast
+    ring
+  -- Integrate the finite sum of continuous functions over the cube term by term.
+  have hcont : ∀ i, Continuous fun s => fderiv ℝ (φ i) s (Pi.single i 1) :=
+    fun i => ((hφ i).continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hint : ∀ i : Fin (m + 1), IntegrableOn
+      (fun s => (-1 : ℝ) ^ (i : ℕ) * fderiv ℝ (φ i) s (Pi.single i 1))
+      (Set.Icc (0 : Fin (m + 1) → ℝ) (fun _ => ρ)) :=
+    fun i => (continuous_const.mul (hcont i)).continuousOn.integrableOn_compact isCompact_Icc
+  rw [setIntegral_congr_fun measurableSet_Icc (fun s _ => hpt s),
+    integral_finsetSum _ (fun i _ => hint i)]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  -- Fubini and the fundamental theorem of calculus in the `i`-th coordinate.
+  rw [integral_const_mul, Submission.br_cube_integral_fderiv_eq_faces m ρ hρ.le (φ i) (hφ i) i]
+  congr 1
+  have hcI : ∀ c : ℝ, IntegrableOn (fun s' : Fin m → ℝ => φ i (Fin.insertNth i c s'))
+      (Set.Icc 0 fun _ => ρ) := fun c =>
+    ((hφ i).continuous.comp (continuous_const.finInsertNth i continuous_id)).continuousOn
+      |>.integrableOn_compact isCompact_Icc
+  rw [integral_sub (hcI ρ) (hcI 0)]
+  -- Identify the faces `s_i = ρ` and `s_i = 0`.
+  have hA_ins : ∀ (c : ℝ) (s' : Fin m → ℝ),
+      p + ∑ j, Fin.insertNth (α := fun _ => ℝ) i c s' j • v j =
+        (p + c • v i) + ∑ k, s' k •
+          EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) k) (1 : ℝ) := by
+    intro c s'
+    rw [Fin.sum_univ_succAbove _ i, Fin.insertNth_apply_same, add_assoc]
+    simp only [Fin.insertNth_apply_succAbove]
+    rfl
+  have hrem : Fin.removeNth i v =
+      fun k => EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) k) (1 : ℝ) := rfl
+  have htop : ∑ l, (ρ * (((F.1 + Pi.single (F.2 i) 1 : Fin P → ℤ) l : ℤ) : ℝ)) •
+      EuclideanSpace.single l (1 : ℝ) = p + ρ • v i := by
+    simp only [Pi.add_apply, Int.cast_add, mul_add, add_smul, Finset.sum_add_distrib, hp, hv]
+    congr 1
+    rw [Finset.sum_eq_single (F.2 i)]
+    · simp
+    · intro b _ hb; simp [hb]
+    · simp
+  congr 1
+  · refine setIntegral_congr_fun measurableSet_Icc fun s' _ => ?_
+    simp only [φ, hA_ins, htop, hrem]
+  · refine setIntegral_congr_fun measurableSet_Icc fun s' _ => ?_
+    simp only [φ, hA_ins, hrem, zero_smul, add_zero]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
