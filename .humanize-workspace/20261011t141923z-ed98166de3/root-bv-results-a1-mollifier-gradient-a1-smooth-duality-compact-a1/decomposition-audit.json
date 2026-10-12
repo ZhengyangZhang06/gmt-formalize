@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ContDiff.fderiv_right|ContDiff.clm_apply|ContDiff.continuous_fderiv|ContDiff.sqrt|ContDiff.norm_sq",
+        "HasCompactMulSupport.mono|le_of_forall_pos_le_add|ofReal_le_ofReal_iff|ofReal_toReal",
+        "mono.*HasCompact|HasCompact.*mono|le_of_forall_one_lt_le_mul|ofReal_le_ofReal_iff",
+        "bv_exists_contDiff_gradient_of_contDiff_two|bv_regularized_unit_field_admissible|bv_set_lintegral_le_of_regularized_bound",
+        "def gradient",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Proofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/ExistsOfLE.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-mollifier-gradient-a1-smooth-duality-compact-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-mollifier-gradient-a1-smooth-duality-compact-a1/decomposition-v1.json",
+        "/tmp/sdc-independent-audit-096mi04_/Challenge0.lean",
+        "/tmp/sdc-independent-audit-096mi04_/Challenge1.lean",
+        "/tmp/sdc-independent-audit-096mi04_/Challenge2.lean",
+        "/tmp/sdc-independent-audit-096mi04_/Instances.lean",
+        "/tmp/sdc-independent-audit-096mi04_/Proofs.lean"
+      ],
+      "conclusion": "The three-way split is appropriate for the selected bv_lintegral_norm_fderiv_le_of_dual_compact: gradient representation, test-field admissibility and the integral limit are distinct, sufficient obligations. The frozen contract matches the workspace; inspected Mathlib sources match revision 25730c7c. All three exact one-line propositions independently elaborate in comparator-generated challenges without child implementations. Their supplied proof translations were independently inspected and recompiled against a fresh frozen baseline; each uses only propext, Classical.choice and Quot.sound. Assembly of the exact selected parent type also compiles with only these axioms when its existing cutoff dependency is an explicit premise. Euclidean inner-product, continuous-linear-map norm and volume instances were verified. No Matrix/IsUnit construction occurs. All proposed names are bare identifiers intended for Submission.X; no conflicts were found in the 134-node DAG, other decomposition records, snapshot project or Lean files across 300 git refs. The proposed children have no dependencies, and the selected dependency closure is acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "riesz_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including global C² regularity and both gradient identities. The supplied proof establishes C¹ regularity by differentiating once and taking finite sums, proves representation by orthonormal expansion, and proves norm equality using both operator-norm inequalities with the zero-norm case handled explicitly. It applies also when n = 0. No parent or sibling theorem is used."
+    },
+    {
+      "key": "regularized_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every hypothesis and all four conclusions match the Lean proposition. Positive η makes the square-root denominator positive everywhere, justifying the C¹ operations. The defining equation yields support containment and compact support. The norm estimate correctly uses both bounds on χ and positivity of the denominator. The proof works for an arbitrary supplied C¹ field G, so no dependency on riesz_gradient is missing."
+    },
+    {
+      "key": "eta_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition matches the prose, including volume, Bochner integrals, nonnegativity and the extended-real bound. The proof handles M = ∞, establishes all needed measurability and integrability, proves the elementary inequality in both cases, and correctly compares the restricted and whole-space integrals. The explicit ε/(μ(L)+1) choice completes the limit, and the final conversion uses integrability and nonnegativity on the restricted measure. No additional planning or circular reliance is needed."
+    }
+  ],
+  "required_changes": []
+}

@@ -373,6 +373,49 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Riesz gradient of a `C²` function.** For `w : ℝⁿ → ℝ` of class `C²`, the vector field
+`G(x) = ∑ᵢ Dw(x)(eᵢ) • eᵢ`, with `(eᵢ)` the standard orthonormal basis of `ℝⁿ`
+(`EuclideanSpace.basisFun`), is `C¹`, since `Dw` is `C¹` (`ContDiff.fderiv_right`). It represents
+`Dw(x)` by the orthonormal expansion `∑ᵢ ⟨eᵢ, v⟩ • eᵢ = v` (`OrthonormalBasis.sum_repr'`), and
+`‖G(x)‖ = ‖Dw(x)‖`. Cauchy–Schwarz and `ContinuousLinearMap.opNorm_le_bound` give
+`‖Dw(x)‖ ≤ ‖G(x)‖`. Conversely `‖G(x)‖² = Dw(x)(G(x)) ≤ ‖Dw(x)‖ ‖G(x)‖`. -/
+theorem Submission.bv_exists_contDiff_gradient_of_contDiff_two : ∀ (n : ℕ) (w : Rn n → ℝ), ContDiff ℝ 2 w → ∃ G : Rn n → Rn n, ContDiff ℝ 1 G ∧ (∀ x v, inner ℝ (G x) v = fderiv ℝ w x v) ∧ ∀ x, ‖G x‖ = ‖fderiv ℝ w x‖ := by
+  intro n w hw
+  -- Step 1: `Dw` is `C¹`, since `w` is `C²` and `1 + 1 ≤ 2`.
+  have hDw : ContDiff ℝ 1 (fderiv ℝ w) := hw.fderiv_right (by norm_num)
+  -- Step 2: `G(x) = ∑ᵢ Dw(x)(eᵢ) • eᵢ`, with `e` the standard orthonormal basis of `ℝⁿ`.
+  set e := EuclideanSpace.basisFun (Fin n) ℝ
+  set G : Rn n → Rn n := fun x ↦ ∑ i, fderiv ℝ w x (e i) • e i with hGsum
+  -- Step 3: `G` is `C¹`, as a finite sum of `C¹` scalar functions times constant vectors.
+  have hG : ContDiff ℝ 1 G :=
+    ContDiff.sum fun i _ ↦ (hDw.clm_apply contDiff_const).smul contDiff_const
+  -- Step 4: `⟨G(x), v⟩ = ∑ᵢ ⟨eᵢ, v⟩ Dw(x)(eᵢ) = Dw(x)(∑ᵢ ⟨eᵢ, v⟩ • eᵢ) = Dw(x)(v)`.
+  have hrep : ∀ x v, inner ℝ (G x) v = fderiv ℝ w x v := by
+    intro x v
+    calc inner ℝ (G x) v = ∑ i, inner ℝ (e i) v * fderiv ℝ w x (e i) := by
+          rw [hGsum, sum_inner]
+          refine Finset.sum_congr rfl fun i _ ↦ ?_
+          rw [real_inner_smul_left, mul_comm]
+      _ = fderiv ℝ w x (∑ i, inner ℝ (e i) v • e i) := by
+          simp only [map_sum, map_smul, smul_eq_mul]
+      _ = fderiv ℝ w x v := by rw [e.sum_repr' v]
+  refine ⟨G, hG, hrep, fun x ↦ le_antisymm ?_ ?_⟩
+  · -- Step 6: `‖G(x)‖² = Dw(x)(G(x)) ≤ ‖Dw(x)‖ ‖G(x)‖`; divide by `‖G(x)‖` when it is positive.
+    rcases (norm_nonneg (G x)).eq_or_lt with h0 | hpos
+    · rw [← h0]
+      exact norm_nonneg _
+    · have h : ‖G x‖ * ‖G x‖ ≤ ‖fderiv ℝ w x‖ * ‖G x‖ :=
+        calc ‖G x‖ * ‖G x‖ = inner ℝ (G x) (G x) := (real_inner_self_eq_norm_mul_norm (G x)).symm
+          _ = fderiv ℝ w x (G x) := hrep x (G x)
+          _ ≤ |fderiv ℝ w x (G x)| := le_abs_self _
+          _ = ‖fderiv ℝ w x (G x)‖ := (Real.norm_eq_abs _).symm
+          _ ≤ ‖fderiv ℝ w x‖ * ‖G x‖ := (fderiv ℝ w x).le_opNorm (G x)
+      exact le_of_mul_le_mul_right h hpos
+  · -- Step 5: Cauchy–Schwarz `|Dw(x)(v)| = |⟨G(x), v⟩| ≤ ‖G(x)‖ ‖v‖` and the operator-norm bound.
+    refine ContinuousLinearMap.opNorm_le_bound _ (norm_nonneg (G x)) fun v ↦ ?_
+    rw [← hrep x v, Real.norm_eq_abs]
+    exact abs_real_inner_le_norm (G x) v
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
