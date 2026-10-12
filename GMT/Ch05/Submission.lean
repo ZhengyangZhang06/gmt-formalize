@@ -506,6 +506,31 @@ theorem lgc_hsNormSq_bounds : ∀ (m k : ℕ), Continuous (fun A : Rn m →L[ℝ
       _ ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) := h2
       _ = (∑ i, ‖A (e i)‖ ^ 2) * ‖v‖ ^ 2 := by rw [h3, mul_comm]
 
+/-- **Distance to a nearby plane** (Simon Ch. 5, proof of 4.5): for subspaces `P`, `Q` of
+`ℝ^{n+ℓ}` and `x ∈ ℝ^{n+ℓ}`, `dist(x, P) ≤ dist(x, Q) + |p_P − p_Q| |x|`.  The orthogonal
+projections are nearest points, `x − p_P x = (x − p_Q x) − (p_P − p_Q) x`, and
+`|(p_P − p_Q) x| ≤ |p_P − p_Q| |x|` by taking square roots in `lgc_hsNormSq_bounds`. -/
+theorem tdo_stp_infDist_le_infDist_add_hsNorm : ∀ (n ℓ : ℕ) (P Q : Submodule ℝ (Amb n ℓ)) (x : Amb n ℓ), infDist x (P : Set (Amb n ℓ)) ≤ infDist x (Q : Set (Amb n ℓ)) + hsNorm (P.starProjection - Q.starProjection) * ‖x‖ := by
+  intro n ℓ P Q x
+  set A := P.starProjection - Q.starProjection with hA
+  have hb := (lgc_hsNormSq_bounds (n + ℓ) (n + ℓ)).2 A
+  -- `|A x| ≤ |A| |x|`: square roots of `|A x|² ≤ |A|² |x|²`.
+  have hAx : ‖A x‖ ≤ hsNorm A * ‖x‖ := by
+    unfold hsNorm
+    rw [← Real.sqrt_sq (norm_nonneg (A x)), ← Real.sqrt_sq (norm_nonneg x),
+      ← Real.sqrt_mul hb.1]
+    exact Real.sqrt_le_sqrt (hb.2.2 x)
+  -- The orthogonal projections are nearest points.
+  rw [← P.dist_starProjection_eq_infDist x, ← Q.dist_starProjection_eq_infDist x,
+    dist_eq_norm, dist_eq_norm]
+  have hx : x - P.starProjection x = (x - Q.starProjection x) - A x := by
+    rw [hA, sub_apply]
+    abel
+  calc ‖x - P.starProjection x‖ ≤ ‖x - Q.starProjection x‖ + ‖A x‖ := by
+        rw [hx]
+        exact norm_sub_le _ _
+    _ ≤ ‖x - Q.starProjection x‖ + hsNorm A * ‖x‖ := by gcongr
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
