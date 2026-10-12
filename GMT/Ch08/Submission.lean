@@ -410,6 +410,43 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Integration against a measure that is `θ H^n ⌞ M` on Borel sets (used in the proof of Simon
+Ch. 8, 1.2, where `μ_V = θ H^n ⌞ M`): if `μ B = ∫⁻_{B ∩ M} θ dH^n` for every Borel set `B`,
+`θ > 0` on `M`, `θ` is `H^n`-integrable on `M ∩ K` for a Borel set `K` and `h` vanishes off `K`,
+then `∫ h dμ = ∫_M h θ dH^n`.  `h` is arbitrary: no measurability or integrability is assumed. -/
+theorem Submission.frt_wat_integral_eq_setIntegral_mul :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M K : Set (Euclidean N)) (θ h : Euclidean N → ℝ), NullMeasurableSet M μHE[n] → (∀ y ∈ M, 0 < θ y) → MeasurableSet K → IntegrableOn θ (M ∩ K) μHE[n] → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ y in B ∩ M, ENNReal.ofReal (θ y) ∂μHE[n]) → (∀ z, z ∉ K → h z = 0) → ∫ z, h z ∂μ = ∫ z in M, h z * θ z ∂μHE[n] := by
+  intro N n μ M K θ h hM hθ hK hθK hμ hh
+  -- Step 1: `μ ⌞ K = (H^n ⌞ (M ∩ K)).withDensity (ofReal ∘ θ)`, compared on Borel sets `B`.
+  have hrestr : μ.restrict K =
+      ((μHE[n] : Measure (Euclidean N)).restrict (M ∩ K)).withDensity
+        (fun y ↦ ENNReal.ofReal (θ y)) := by
+    ext B hB
+    rw [Measure.restrict_apply hB, hμ _ (hB.inter hK), withDensity_apply _ hB,
+      Measure.restrict_restrict hB, inter_assoc, inter_comm K M]
+  -- `M ∩ K` is `H^n`-null-measurable, so `H^n ⌞ (M ∩ K)`-a.e. point lies in `M ∩ K`.
+  have hMK : NullMeasurableSet (M ∩ K) (μHE[n] : Measure (Euclidean N)) :=
+    hM.inter hK.nullMeasurableSet
+  calc ∫ z, h z ∂μ = ∫ z in K, h z ∂μ :=
+        -- Step 2: `h = 0` off `K`.
+        (setIntegral_eq_integral_of_forall_compl_eq_zero hh).symm
+    _ = ∫ z, (ENNReal.ofReal (θ z)).toReal • h z
+          ∂((μHE[n] : Measure (Euclidean N)).restrict (M ∩ K)) := by
+        -- Step 3: the density `ofReal ∘ θ` is a.e.-measurable (`θ` is integrable) and finite.
+        rw [hrestr, integral_withDensity_eq_integral_toReal_smul₀
+          (Integrable.aemeasurable hθK).ennreal_ofReal
+          (Eventually.of_forall fun _ ↦ ENNReal.ofReal_lt_top)]
+    _ = ∫ z in M ∩ K, h z * θ z ∂μHE[n] := by
+        -- Step 4: `(ofReal (θ z)).toReal = θ z` for a.e. `z ∈ M ∩ K`, as `θ > 0` on `M`.
+        refine integral_congr_ae ?_
+        filter_upwards [ae_restrict_mem₀ hMK] with z hz
+        rw [ENNReal.toReal_ofReal (hθ z hz.1).le, smul_eq_mul, mul_comm]
+    _ = ∫ z in M, h z * θ z ∂μHE[n] :=
+        -- Step 5: `h θ = 0` on `M \ (M ∩ K)` and `M` is null-measurable.
+        (setIntegral_eq_of_subset_of_ae_sdiff_eq_zero hM inter_subset_left
+          (Eventually.of_forall fun z hz ↦ by
+            rw [hh z fun hzK ↦ hz.2 ⟨hz.1, hzK⟩, zero_mul])).symm
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
