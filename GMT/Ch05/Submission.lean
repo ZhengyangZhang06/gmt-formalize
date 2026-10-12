@@ -458,6 +458,39 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Translation of a rectifiable varifold** (Simon Ch. 5, proof of Theorem 7.1, p. 127: "after
+applying the appropriate translation"; used for Corollary 7.3).  For `τ(y) = y + x₀`, the varifold
+`W = v(τ⁻¹M, θ ∘ τ)` in `τ⁻¹U` has weight `μ_W = (· - x₀)_# μ_V`, support `spt W = τ⁻¹(spt V)`,
+generalized mean curvature `H ∘ τ` whenever `V` has generalized mean curvature `H`, and `H ∘ τ`
+is locally in `Lᵖ(μ_W)` whenever `H` is locally in `Lᵖ(μ_V)`. -/
+theorem rsod_exists_translated_varifold : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ),
+    ∃ W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U),
+      W.carrier = (fun y => y + x₀) ⁻¹' V.carrier ∧ (∀ y, W.mult y = V.mult (y + x₀)) ∧
+      W.weight = V.weight.map (fun y => y - x₀) ∧
+      W.support = (fun y => y + x₀) ⁻¹' V.support ∧
+      (∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H →
+        W.HasGeneralizedMeanCurvature (fun y => H (y + x₀))) ∧
+      (∀ (H : Amb n ℓ → Amb n ℓ) (p : ℝ), V.LocallyLp H p →
+        W.LocallyLp (fun y => H (y + x₀)) p) := by
+  intro n ℓ U V x₀
+  -- Step 1: `W = v(τ⁻¹M, θ ∘ τ)` is a rectifiable varifold in `τ⁻¹U`.
+  obtain ⟨W, hc, hm⟩ := Submission.rsod_tv_exists_structure n ℓ U V x₀
+  -- Step 2: `μ_W = (· - x₀)_# μ_V` by change of variables along `τ`.
+  have hw : W.weight = V.weight.map (fun y => y - x₀) :=
+    Submission.rsod_tv_weight_eq n ℓ U _ V W x₀ hc hm
+  -- Step 4: blow-ups of `τ⁻¹M` at `y` are those of `M` at `y + x₀`, so tangent planes translate.
+  have hT : ∀ y, W.tangentProj y = V.tangentProj (y + x₀) :=
+    Submission.rsod_tv_tangentProj_eq n ℓ U _ V W x₀ hc hm
+  -- Steps 3, 5, 6: the support, the first variation and the local `Lᵖ` bounds transfer along `τ`.
+  exact ⟨W, hc, hm, hw, Submission.rsod_tv_support_eq n ℓ U V x₀ W hw,
+    Submission.rsod_tv_meanCurvature n ℓ U V x₀ W hw hT,
+    Submission.rsod_tv_locallyLp n ℓ U V x₀ W hw⟩
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
