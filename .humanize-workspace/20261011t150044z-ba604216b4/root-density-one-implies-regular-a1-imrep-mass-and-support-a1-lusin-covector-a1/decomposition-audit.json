@@ -1,0 +1,50 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "lusin",
+        "ext_alternating|toAlternatingMap_injective|of_injective|proper_real|secondCountable_of_proper|exists_pos_sum_of_countable.",
+        "exists_isCompact_sdiff_lt|Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure",
+        "measurable_mk|ae_eq_mk",
+        "exists_countable_basis|IsTopologicalBasis.continuous_iff",
+        "dor_ims_lusin_covector_finiteDimensional",
+        "dor_ims_lusin_measurable_continuousOn",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean' /tmp/lusin-independent-audit-h_xbo4_7/Contracts.lean",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean' /tmp/lusin-independent-audit-h_xbo4_7/Proofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/parent-child-handoff.json",
+        "/tmp/lusin-independent-audit-h_xbo4_7/Contracts.lean",
+        "/tmp/lusin-independent-audit-h_xbo4_7/Proofs.lean"
+      ],
+      "conclusion": "Verified pinned revisions and source compatibility: the frozen and workspace contracts agree, and twelve consulted Mathlib files match the installed pinned sources. The Lusin search found separation/Souslin results, not the required continuity theorem. Basis extensionality, compact inner approximation, countable bases, and measurable modifications support the supplied arguments. Both exact child types independently elaborate as propositions with autoImplicit false before either child is declared. Both supplied Lean proofs, comparator-shaped applications, and the exact selected-parent assembly compile; their axioms are only propext, Classical.choice, and Quot.sound. The split appropriately separates finite-dimensionality from measurable-map Lusin. Empty child dependency lists are correct and acyclic. Both names are bare identifiers without namespace encoding and have no conflicting DAG or other-proposal reservation; neither child relies on an unaccepted declaration."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_finite_dimensional",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line Lean proposition agree for all P and n. Evaluation on standard-basis tuples defines a linear map into a finite-dimensional function space. Basis extensionality proves injectivity of the underlying alternating maps, and injectivity of toAlternatingMap gives equality of continuous alternating maps. FiniteDimensional.of_injective completes the proof, including zero-dimensional and degree-zero cases. This is complete, non-circular, and supplies the countability prerequisite used by the selected parent."
+    },
+    {
+      "key": "lusin_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every Lean hypothesis, including opens-measurability and ε = ∞. Restricting μ to A gives a finite regular Borel measure and justifies compact approximation without assumptions on μ outside A. The proof correctly obtains a nonempty countable basis using g(0), chooses summable positive finite budgets, constructs paired compact pieces, bounds the intersection's measure defect, and proves continuity through relatively open basis preimages. No separation assumption on Y or circular reliance is needed. The construction agrees with [Loeb–Talvila, Theorem 1](https://arxiv.org/pdf/math/0406370) and [Santambrogio's weak Lusin proof](https://math.univ-lyon1.fr/~santambrogio/Lusin.pdf). Combined with the first child and the supplied measurable-modification/null-set argument, it proves exactly the selected parent."
+    }
+  ],
+  "required_changes": []
+}
