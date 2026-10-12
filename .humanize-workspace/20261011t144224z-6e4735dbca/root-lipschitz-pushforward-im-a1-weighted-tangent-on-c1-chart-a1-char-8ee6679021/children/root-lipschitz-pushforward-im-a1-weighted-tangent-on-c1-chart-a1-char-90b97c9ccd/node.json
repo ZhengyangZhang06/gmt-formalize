@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.gram_jacobian_continuous-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1",
+  "depth": 4,
+  "title": "Continuity of the Gram-determinant Jacobian √det(⟨DΦ(v)eᵢ, DΦ(v)eⱼ⟩) of a C¹ map",
+  "statement": "Let Q, n ∈ ℕ and Φ : ℝⁿ → ℝ^Q be C¹ (ContDiff ℝ 1 Φ). Then the function v ↦ √det(⟨DΦ(v)eᵢ, DΦ(v)eⱼ⟩)_{i,j=1..n} is continuous on ℝⁿ. Here DΦ(v) = fderiv ℝ Φ v, eᵢ = EuclideanSpace.single i 1 are the standard basis vectors, ⟨·,·⟩ is the Euclidean inner product and √ is Real.sqrt.",
+  "lean_statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q), ContDiff ℝ 1 Φ → Continuous (fun v : Eucl n => Real.sqrt (Matrix.of fun i j : Fin n => inner ℝ (fderiv ℝ Φ v (EuclideanSpace.single i 1)) (fderiv ℝ Φ v (EuclideanSpace.single j 1))).det)",
+  "lean_name": "lpf_wtc_cat_gram_jacobian_continuous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-90b97c9ccd-a1"
+}
