@@ -335,6 +335,71 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Uniform perimeter bound for the blow-ups** (parent proof, Step 2(a); Simon Ch. 3, proof of
+Theorem 4.3, `chapter-03.txt` lines 653–656, from the mass bound (6)). Let `|ν| = 1` `μ`-a.e.,
+assume the mass bound (M) `μ(B_ρ(x)) ≤ C ρⁿ` for `ρ ∈ (0, ρ₁)` and the blow-up Gauss–Green
+identity (I) `∫_{η_{x,r}(E)} div g = -(rⁿ)⁻¹ ∫ ⟨g ∘ η_{x,r}, ν⟩ dμ` for `C¹` fields `g` with
+compact support in `B_R(0)`, `r R < ρ₁`. Then every such `g` with `|g| ≤ 1` satisfies
+`∫_{η_{x,r}(E)} div g ≤ max(C, 0) Rⁿ`:
+1. `ρ := r R ∈ (0, ρ₁)`, so `μ(B_ρ(x)) ≤ C ρⁿ < ∞` by (M);
+2. `g ∘ η_{x,r}` vanishes off `B_ρ(x)`, since there `|η_{x,r}(y)| = r⁻¹ |y - x| ≥ R`;
+3. hence `|⟨g ∘ η_{x,r}, ν⟩| ≤ 1_{B_ρ(x)}` `μ`-a.e. (Cauchy–Schwarz, `|g| ≤ 1`, `|ν| = 1`), so
+   `|∫ ⟨g ∘ η_{x,r}, ν⟩ dμ| ≤ μ(B_ρ(x)) ≤ max(C, 0) ρⁿ` (also when the pairing is not
+   integrable, its Bochner integral then being `0`);
+4. by (I), `∫_{η_{x,r}(E)} div g ≤ (rⁿ)⁻¹ max(C, 0) (r R)ⁿ = max(C, 0) Rⁿ`. -/
+theorem Submission.deGiorgiHS_blowUp_divergence_bound : ∀ (N n : ℕ) (E : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N) (x : Rn N) (ρ₁ C : ℝ), (∀ᵐ y ∂μ, ‖ν y‖ = 1) → (∀ ρ ∈ Ioo 0 ρ₁, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → (∀ r R : ℝ, 0 < r → 0 < R → r * R < ρ₁ → ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball 0 R → ∫ z in blowUpMap x r '' E, Poincare.SimonGMT.Chapter02.euclideanDivergence g z = -((r ^ n)⁻¹ * ∫ y, inner ℝ (g (blowUpMap x r y)) (ν y) ∂μ)) → ∀ r R : ℝ, 0 < r → 0 < R → r * R < ρ₁ → ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball 0 R → (∀ y, ‖g y‖ ≤ 1) → ∫ z in blowUpMap x r '' E, Poincare.SimonGMT.Chapter02.euclideanDivergence g z ≤ max C 0 * R ^ n := by
+  intro N n E μ ν x ρ₁ C hν hM hI r R hr hR hrR g hg hgc hgs hg1
+  rw [hI r R hr hR hrR g hg hgc hgs]
+  -- Step 1: `ρ := r R ∈ (0, ρ₁)`, so `B := B_ρ(x)` has finite mass `μ(B) ≤ C ρⁿ` by (M).
+  have hρ : 0 < r * R := mul_pos hr hR
+  have hμB : μ (Metric.ball x (r * R)) ≤ ENNReal.ofReal (C * (r * R) ^ n) := hM (r * R) ⟨hρ, hrR⟩
+  have hμB_ne_top : μ (Metric.ball x (r * R)) ≠ ∞ := (hμB.trans_lt ENNReal.ofReal_lt_top).ne
+  -- Step 2: off `B`, `|η(y)| = r⁻¹ |y - x| ≥ R`, so `η(y) ∉ tsupport g` and `g (η y) = 0`.
+  have hzero : ∀ y ∉ Metric.ball x (r * R), g (blowUpMap x r y) = 0 := by
+    intro y hy
+    refine image_eq_zero_of_notMem_tsupport fun hmem ↦ hy ?_
+    have h1 := hgs hmem
+    rw [mem_ball_zero_iff] at h1
+    simp only [blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr] at h1
+    rw [Metric.mem_ball, dist_eq_norm]
+    exact (inv_mul_lt_iff₀ hr).1 h1
+  -- Step 3: `|⟨g (η y), ν y⟩| ≤ 1_B(y)` whenever `|ν y| = 1`, i.e. `μ`-a.e.
+  have hbound : ∀ᵐ y ∂μ, ‖inner ℝ (g (blowUpMap x r y)) (ν y)‖ ≤
+      (Metric.ball x (r * R)).indicator (1 : Rn N → ℝ) y := by
+    filter_upwards [hν] with y hy
+    by_cases hyB : y ∈ Metric.ball x (r * R)
+    · rw [Set.indicator_of_mem hyB, Pi.one_apply]
+      calc ‖inner ℝ (g (blowUpMap x r y)) (ν y)‖ ≤ ‖g (blowUpMap x r y)‖ * ‖ν y‖ :=
+            norm_inner_le_norm _ _
+        _ ≤ 1 := by rw [hy, mul_one]; exact hg1 _
+    · rw [Set.indicator_of_notMem hyB, hzero y hyB, inner_zero_left, norm_zero]
+  -- Step 4: `1_B` is integrable with integral `μ(B)`, which bounds the norm of the Bochner
+  -- integral of the pairing (integrable or not).
+  have hint : Integrable ((Metric.ball x (r * R)).indicator (1 : Rn N → ℝ)) μ :=
+    (integrableOn_const hμB_ne_top).integrable_indicator measurableSet_ball
+  have hpair : ‖∫ y, inner ℝ (g (blowUpMap x r y)) (ν y) ∂μ‖ ≤ μ.real (Metric.ball x (r * R)) :=
+    (norm_integral_le_of_norm_le hint hbound).trans_eq (integral_indicator_one measurableSet_ball)
+  -- Step 5: `μ(B) ≤ max(C ρⁿ, 0) ≤ max(C, 0) ρⁿ` as real numbers, since `ρⁿ > 0`.
+  have hρn : 0 < (r * R) ^ n := pow_pos hρ n
+  have hmass : μ.real (Metric.ball x (r * R)) ≤ max C 0 * (r * R) ^ n := by
+    rw [measureReal_def]
+    calc (μ (Metric.ball x (r * R))).toReal ≤ (ENNReal.ofReal (C * (r * R) ^ n)).toReal :=
+          ENNReal.toReal_mono ENNReal.ofReal_ne_top hμB
+      _ = max (C * (r * R) ^ n) 0 := ENNReal.toReal_ofReal'
+      _ ≤ max C 0 * (r * R) ^ n :=
+          max_le (mul_le_mul_of_nonneg_right (le_max_left C 0) hρn.le)
+            (mul_nonneg (le_max_right C 0) hρn.le)
+  -- Step 6: by (I), `∫_{η(E)} div g = -(rⁿ)⁻¹ ∫ ⟨g ∘ η, ν⟩ dμ ≤ (rⁿ)⁻¹ max(C, 0) (r R)ⁿ`.
+  have hrn : 0 < r ^ n := pow_pos hr n
+  calc -((r ^ n)⁻¹ * ∫ y, inner ℝ (g (blowUpMap x r y)) (ν y) ∂μ)
+      = (r ^ n)⁻¹ * -∫ y, inner ℝ (g (blowUpMap x r y)) (ν y) ∂μ := (mul_neg _ _).symm
+    _ ≤ (r ^ n)⁻¹ * (max C 0 * (r * R) ^ n) :=
+        mul_le_mul_of_nonneg_left
+          ((neg_le_abs _).trans ((Real.norm_eq_abs _).symm.le.trans (hpair.trans hmass)))
+          (inv_nonneg.2 hrn.le)
+    _ = max C 0 * ((r ^ n)⁻¹ * r ^ n) * R ^ n := by rw [mul_pow]; ring
+    _ = max C 0 * R ^ n := by rw [inv_mul_cancel₀ hrn.ne', mul_one]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
