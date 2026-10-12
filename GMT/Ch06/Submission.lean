@@ -452,6 +452,87 @@ theorem Submission.slicing_mb_dm_lowerLeftDini_measurable :
   refine Measurable.iSup fun j => Measurable.iInf fun q => Measurable.iInf_Prop _ ?_
   exact ENNReal.measurable_ofReal.comp
     ((hGm.sub (hGm.comp (measurable_id.sub_const _))).div_const _)
+/-- For nondecreasing `G : ℝ → ℝ` and `a ≤ b`, the lower integral over `(a, b)` of the lower left
+Dini derivative `D(t) = liminf_{k → 0+} ofReal ((G t - G (t - k)) / k)` is at most `G b - G a`. -/
+theorem Submission.slicing_mb_dm_lintegral_lowerLeftDini_le :
+    ∀ G : ℝ → ℝ, Monotone G → ∀ a b : ℝ, a ≤ b →
+      ∫⁻ t in Ioo a b, liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0) ≤
+        ENNReal.ofReal (G b - G a) := by
+  intro G hG a b hab
+  -- Step sizes `δ n = 1/(n+1) → 0+`.
+  set δ : ℕ → ℝ := fun n => 1 / ((n : ℝ) + 1)
+  have hδ_pos : ∀ n, 0 < δ n := fun n => Nat.one_div_pos_of_nat
+  have hδ_lim : Tendsto δ atTop (𝓝 0) := tendsto_one_div_add_atTop_nhds_zero_nat
+  have hδ_tendsto : Tendsto δ atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hδ_lim
+      (Eventually.of_forall hδ_pos)
+  -- Truncated left difference quotients `F n t = 1_{t > a + δ n} ofReal (G t - G (t - δ n)) / δ n`.
+  set F : ℕ → ℝ → ℝ≥0∞ := fun n => (Ioi (a + δ n)).indicator
+    (fun t => ENNReal.ofReal ((G t - G (t - δ n)) / δ n)) with hF_def
+  have hGm : Measurable G := hG.measurable
+  have hF_meas : ∀ n, Measurable (F n) := fun n =>
+    (ENNReal.measurable_ofReal.comp
+      ((hGm.sub (hGm.comp (measurable_id.sub_const _))).div_const _)).indicator measurableSet_Ioi
+  -- For `t ∈ (a, b)`: `δ n → 0+`, and `t > a + δ n` eventually, so `D(t) ≤ liminf_n F n t`.
+  have hpt : ∀ t ∈ Ioo a b,
+      liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0) ≤
+        liminf (fun n => F n t) atTop := by
+    intro t ht
+    refine hδ_tendsto.liminf_le_liminf_comp.trans_eq (liminf_congr ?_)
+    filter_upwards [(tendsto_order.1 hδ_lim).2 _ (sub_pos.2 ht.1)] with n hn
+    have hmem : t ∈ Ioi (a + δ n) := by
+      simp only [mem_Ioi]
+      linarith
+    simp only [hF_def, Function.comp_apply, indicator_of_mem hmem]
+  -- Each `F n` integrates over `(a, b)` to at most `G b - G a`.
+  have hbound : ∀ n, ∫⁻ t in Ioo a b, F n t ≤ ENNReal.ofReal (G b - G a) := by
+    intro n
+    have hc : 0 < δ n := hδ_pos n
+    simp only [hF_def]
+    rw [setLIntegral_indicator measurableSet_Ioi, inter_comm, Ioo_inter_Ioi,
+      max_eq_right (by linarith : a ≤ a + δ n)]
+    rcases le_or_gt b (a + δ n) with hb | hb
+    · rw [Ioo_eq_empty (not_lt.2 hb), setLIntegral_empty]
+      exact zero_le
+    -- On `(a + δ n, b)` the quotient is nonnegative and integrable, and
+    -- `∫_{a+δ}^b (G t - G (t - δ)) dt = ∫_{b-δ}^b G - ∫_a^{a+δ} G ≤ δ (G b - G a)`.
+    have hGc : Monotone (fun t => G (t - δ n)) := fun x y hxy => hG (by linarith)
+    have hint : IntervalIntegrable (fun t => (G t - G (t - δ n)) / δ n) volume (a + δ n) b :=
+      (hG.intervalIntegrable.sub hGc.intervalIntegrable).div_const _
+    have hintOn : IntegrableOn (fun t => (G t - G (t - δ n)) / δ n) (Ioo (a + δ n) b) :=
+      ((intervalIntegrable_iff_integrableOn_Ioc_of_le hb.le).1 hint).mono_set Ioo_subset_Ioc_self
+    have hnonneg : 0 ≤ᵐ[volume.restrict (Ioo (a + δ n) b)]
+        (fun t => (G t - G (t - δ n)) / δ n) :=
+      Eventually.of_forall fun t => div_nonneg (sub_nonneg.2 (hG (by linarith))) hc.le
+    have hreal : ∫ t in Ioo (a + δ n) b, (G t - G (t - δ n)) / δ n ≤ G b - G a := by
+      rw [← integral_Ioc_eq_integral_Ioo, ← intervalIntegral.integral_of_le hb.le,
+        intervalIntegral.integral_div,
+        intervalIntegral.integral_sub hG.intervalIntegrable hGc.intervalIntegrable,
+        intervalIntegral.integral_comp_sub_right G (δ n), add_sub_cancel_right, div_le_iff₀ hc]
+      have h1 := intervalIntegral.integral_add_adjacent_intervals
+        (hG.intervalIntegrable (μ := volume) (a := a + δ n) (b := b - δ n))
+        (hG.intervalIntegrable (μ := volume) (a := b - δ n) (b := b))
+      have h2 := intervalIntegral.integral_add_adjacent_intervals
+        (hG.intervalIntegrable (μ := volume) (a := a) (b := a + δ n))
+        (hG.intervalIntegrable (μ := volume) (a := a + δ n) (b := b - δ n))
+      have h3 : ∫ x in (b - δ n)..b, G x ≤ δ n * G b := by
+        have := intervalIntegral.integral_mono_on (μ := volume) (by linarith : b - δ n ≤ b)
+          hG.intervalIntegrable intervalIntegrable_const (fun x hx => hG hx.2)
+        simpa [intervalIntegral.integral_const] using this
+      have h4 : δ n * G a ≤ ∫ x in a..(a + δ n), G x := by
+        have := intervalIntegral.integral_mono_on (μ := volume) (by linarith : a ≤ a + δ n)
+          intervalIntegrable_const hG.intervalIntegrable (fun x hx => hG hx.1)
+        simpa [intervalIntegral.integral_const] using this
+      linarith
+    calc ∫⁻ t in Ioo (a + δ n) b, ENNReal.ofReal ((G t - G (t - δ n)) / δ n)
+        = ENNReal.ofReal (∫ t in Ioo (a + δ n) b, (G t - G (t - δ n)) / δ n) :=
+          (ofReal_integral_eq_lintegral_ofReal hintOn hnonneg).symm
+      _ ≤ ENNReal.ofReal (G b - G a) := ENNReal.ofReal_le_ofReal hreal
+  -- Fatou's lemma.
+  calc ∫⁻ t in Ioo a b, liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0)
+      ≤ ∫⁻ t in Ioo a b, liminf (fun n => F n t) atTop := setLIntegral_mono' measurableSet_Ioo hpt
+    _ ≤ liminf (fun n => ∫⁻ t in Ioo a b, F n t) atTop := lintegral_liminf_le hF_meas
+    _ ≤ ENNReal.ofReal (G b - G a) := liminf_le_of_frequently_le' (Frequently.of_forall hbound)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
