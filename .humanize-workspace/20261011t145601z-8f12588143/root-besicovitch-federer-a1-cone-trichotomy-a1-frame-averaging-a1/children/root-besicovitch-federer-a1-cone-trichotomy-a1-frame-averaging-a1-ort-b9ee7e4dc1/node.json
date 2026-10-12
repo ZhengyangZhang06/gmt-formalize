@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.orthogonal_plane_transitive-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1",
+  "depth": 4,
+  "title": "O(N) acts transitively on subspaces of equal dimension (Step 9(b))",
+  "statement": "Let N ∈ ℕ, E := ℝᴺ = EuclideanSpace ℝ (Fin N), and let W₀, W ⊆ E be linear subspaces with dim W₀ = dim W. Then there is h ∈ E →L[ℝ] E with h*h = 1 (h* the adjoint) and h(W₀) = W (Submodule.map).",
+  "lean_statement": "∀ (N : ℕ) (W₀ W : Submodule ℝ (Rn N)), finrank ℝ W₀ = finrank ℝ W → ∃ h : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint h * h = 1 ∧ W₀.map (h : Rn N →ₗ[ℝ] Rn N) = W",
+  "lean_name": "bf_orthogonal_exists_map_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-frame-averaging-a1-ort-b9ee7e4dc1-a1"
+}

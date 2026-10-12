@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.pointwise_exc_null-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1",
+  "depth": 4,
+  "title": "For each point a, Haar-a.e. rotation of W₀ is not exceptional (Steps 2–6)",
+  "statement": "Let n, ℓ ∈ ℕ, N := n + ℓ, E := ℝᴺ = EuclideanSpace ℝ (Fin N), and let 𝓛 := E →L[ℝ] E carry the Borel σ-algebra of its norm topology. Write g* for the adjoint, Hⁿ := μHE[n] and P_W := W.starProjection. Let Exc ⊆ E × 𝓛 be any set and Bad ⊆ E × 𝓛 × E a measurable set. Assume (S) that every (n+1)-dimensional subspace H ⊆ E satisfies 0 < Hⁿ({x ∈ H : |x| = 1}) < ∞. Let a ∈ E satisfy two conditions. (h1_a): Hⁿ({x ∈ H : |x| = 1, (a, P_H, x) ∈ Bad}) = 0 for every (n+1)-dimensional subspace H. (h2_a): for every n-dimensional subspace W with (a, P_W) ∈ Exc and every orthonormal family u_1, …, u_ℓ of vectors in W^⊥, there is j with (a, P_{W ⊔ span{u_j}}, u_j) ∈ Bad. Let θ be a Borel probability measure on 𝓛 with g*g = 1 for θ-a.e. g, such that the image of θ under g ↦ gk equals θ for every k with k*k = 1. Then for every n-dimensional subspace W₀ ⊆ E, θ({g ∈ 𝓛 : (a, g P_{W₀} g*) ∈ Exc}) = 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (Exc : Set (Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ)))) (Bad : Set (Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ)) × Rn (n + ℓ))), MeasurableSet Bad → (∀ H : Submodule ℝ (Rn (n + ℓ)), finrank ℝ H = n + 1 → 0 < μHE[n] {x : Rn (n + ℓ) | x ∈ H ∧ ‖x‖ = 1} ∧ μHE[n] {x : Rn (n + ℓ) | x ∈ H ∧ ‖x‖ = 1} < ∞) → ∀ a : Rn (n + ℓ), (∀ H : Submodule ℝ (Rn (n + ℓ)), finrank ℝ H = n + 1 → μHE[n] {x | x ∈ H ∧ ‖x‖ = 1 ∧ (a, H.starProjection, x) ∈ Bad} = 0) → (∀ W : Submodule ℝ (Rn (n + ℓ)), finrank ℝ W = n → (a, W.starProjection) ∈ Exc → ∀ u : Fin ℓ → Rn (n + ℓ), Orthonormal ℝ u → (∀ j, u j ∈ Wᗮ) → ∃ j, (a, (W ⊔ Submodule.span ℝ {u j}).starProjection, u j) ∈ Bad) → ∀ θ : Measure (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ)), IsProbabilityMeasure θ → (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1) → (∀ k : Rn (n + ℓ) →L[ℝ] Rn (n + ℓ), ContinuousLinearMap.adjoint k * k = 1 → Measure.map (fun g ↦ g * k) θ = θ) → ∀ W₀ : Submodule ℝ (Rn (n + ℓ)), finrank ℝ W₀ = n → θ {g | (a, g * W₀.starProjection * ContinuousLinearMap.adjoint g) ∈ Exc} = 0",
+  "lean_name": "bf_haar_excPointwise_null",
+  "depends_on": [
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.orthogonal_conj_projection-a1",
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.plane_direction_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.orthogonal_conj_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.plane_direction_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-frame-averaging-a1-poi-a242f472e9-a1"
+}

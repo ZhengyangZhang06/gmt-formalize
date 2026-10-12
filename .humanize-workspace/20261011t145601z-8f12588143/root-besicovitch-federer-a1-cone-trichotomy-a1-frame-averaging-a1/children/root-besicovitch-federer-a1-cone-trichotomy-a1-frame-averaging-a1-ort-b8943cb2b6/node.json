@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1.orthogonal_conj_projection-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1",
+  "depth": 4,
+  "title": "Projection onto a rotated subspace: P_{gV} = g P_V g* and dim gV = dim V (fact F1)",
+  "statement": "Let N ∈ ℕ, E := ℝᴺ = EuclideanSpace ℝ (Fin N), and g ∈ E →L[ℝ] E with g*g = 1, where g* is the adjoint. Let V ⊆ E be a linear subspace and gV := g(V) its image (Submodule.map). Then the orthogonal projection onto gV is g ∘ P_V ∘ g*, where P_W := W.starProjection; that is, P_{gV} = g P_V g* in E →L[ℝ] E. Moreover dim gV = dim V.",
+  "lean_statement": "∀ (N : ℕ) (g : Rn N →L[ℝ] Rn N), ContinuousLinearMap.adjoint g * g = 1 → ∀ V : Submodule ℝ (Rn N), (V.map (g : Rn N →ₗ[ℝ] Rn N)).starProjection = g * V.starProjection * ContinuousLinearMap.adjoint g ∧ finrank ℝ (V.map (g : Rn N →ₗ[ℝ] Rn N)) = finrank ℝ V",
+  "lean_name": "bf_starProjection_map_orthogonal",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-frame-averaging-a1-ort-b8943cb2b6-a1"
+}
