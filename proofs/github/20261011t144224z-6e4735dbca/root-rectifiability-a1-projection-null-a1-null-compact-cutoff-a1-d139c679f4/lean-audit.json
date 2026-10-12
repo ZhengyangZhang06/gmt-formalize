@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "835ec5b1693505600466c7a3ee79d80260d8cc4d67f9e57a5d65f79ee88fcfb3",
+  "git_delta": {
+    "base_commit": "dfd88241360975c108ba15cfd4aea32b6edcbd54",
+    "candidate_commit": "bba2aab98b8efc657cc4a6eb8f17fa4ffb7ee18d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_null_compact_cutoff",
+    "diff_sha256": "f224b82ad33100a6696008c27e61bbce4c5176c9da8558d24cd6d8c13cac9777",
+    "source_sha256": "5514d21ea8b1dc26f06eefcaf497b195b4f1c4a2784d9ea6b4b10188cc95cb84",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_null_compact_cutoff",
+      "statement": "∀ (N : ℕ) (F : Set (Eucl N)), IsCompact F → (volume : Measure (Eucl N)) F = 0 → ∀ δ : ℝ, 0 < δ → ∃ b : Eucl N → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b ∧ HasCompactSupport b ∧ (∀ y, 0 ≤ b y ∧ b y ≤ 1) ∧ (∀ y ∈ F, b y = 1) ∧ ((volume : Measure (Eucl N)) (tsupport b)).toReal ≤ δ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
