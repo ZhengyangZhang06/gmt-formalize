@@ -1,0 +1,98 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_pieces-a1`
+- Child DAG node: `root.lipschitz_pieces-a1.lusin_exhaustion-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝⁿ := EuclideanSpace ℝ (Fin n) with Lebesgue measure Lⁿ := volume; Y is a finite-dimensional real normed space with its Borel σ-algebra; g: ℝⁿ → Y is Borel measurable; S ⊆ ℝⁿ is Borel with Lⁿ(S) < ∞. This is the Lusin part of Step 3 of the parent proof, stated for an arbitrary finite-dimensional target; for Y = L(ℝⁿ, ℝ^{n+ℓ}) and orthonormal bases (e_a), (e'_b) the coordinates in step 1 may be taken to be the matrix entries ⟨g(w)e_a, e'_b⟩ used there.
+
+1. (Coordinates.) Let d := dim Y and fix a basis b_1, …, b_d of Y (Mathlib Module.finBasis ℝ Y). Because Y is finite-dimensional, the coordinate map Φ: Y → ℝ^d, determined by y = Σ_i Φ(y)_i·b_i, is a continuous linear equivalence, i.e. Φ and Φ⁻¹ are continuous (Basis.equivFunL). For i ∈ {1, …, d} let g_i: ℝⁿ → ℝ, g_i(w) := Φ(g(w))_i. Each g_i is Borel measurable, as the composition of the continuous (hence Borel) map y ↦ Φ(y)_i with the Borel map g.
+
+2. (Regularity of Lⁿ.) Lⁿ is weakly regular, so for every Borel A ⊆ ℝⁿ with Lⁿ(A) < ∞ and every δ > 0 there is a closed F ⊆ A with Lⁿ(A ∖ F) < δ (Mathlib MeasurableSet.exists_isClosed_sdiff_lt). Lⁿ is also inner regular by compact sets on sets of finite measure: for such A and δ there is a compact K ⊆ A with Lⁿ(A ∖ K) < δ (MeasurableSet.exists_isCompact_sdiff_lt).
+
+3. (One compact set.) Let ε > 0 be real and put δ := ε/(2(d + 1)) > 0.
+ (a) For each i ∈ {1, …, d}, Lusin's theorem for real-valued functions (Simon Ch. 1, 1.17; Poincare.SimonGMT.Chapter01.exists_isClosed_continuousOn_of_measurable in module Poincare.SimonGMT.Chapter01.Lusin, which the proof file must import), applied with ν := Lⁿ, with its regularity hypothesis supplied by the first part of step 2, with A := S, f := g_i and tolerance δ, gives a closed set D_i ⊆ S with Lⁿ(S ∖ D_i) < δ such that g_i is continuous on D_i.
+ (b) By the second part of step 2 there is a compact K ⊆ S with Lⁿ(S ∖ K) < ε/2.
+ (c) Put C := K ∩ ⋂_{i=1}^{d} D_i (so C = K when d = 0). C is compact, being the intersection of the compact set K with the closed set ⋂_i D_i (IsCompact.inter_right, isClosed_iInter), and C ⊆ K ⊆ S.
+ (d) If x ∈ S ∖ C, then x ∉ K or x ∉ D_i for some i; hence S ∖ C ⊆ (S ∖ K) ∪ ⋃_{i=1}^{d} (S ∖ D_i). By monotonicity and finite subadditivity,
+   Lⁿ(S ∖ C) ≤ Lⁿ(S ∖ K) + Σ_{i=1}^{d} Lⁿ(S ∖ D_i) < ε/2 + d·δ ≤ ε/2 + (d + 1)·δ = ε/2 + ε/2 = ε,
+ where the strict inequality uses Lⁿ(S ∖ K) < ε/2, Lⁿ(S ∖ D_i) ≤ δ and the finiteness of d·δ.
+ (e) For each i, g_i is continuous on D_i ⊇ C, hence on C. A map into the finite product ℝ^d is continuous on C iff all its components are (continuousOn_pi), so w ↦ Φ(g(w)) = (g_1(w), …, g_d(w)) is continuous on C; therefore g = Φ⁻¹ ∘ (Φ ∘ g) is continuous on C, Φ⁻¹ being continuous.
+
+4. (Exhaustion.) For every j ∈ ℕ apply step 3 with ε := 1/(j + 1) and call the resulting set C_j. Then C_j is compact, C_j ⊆ S, g is continuous on C_j and Lⁿ(S ∖ C_j) < 1/(j + 1). For every j we have S ∖ ⋃_i C_i ⊆ S ∖ C_j, so Lⁿ(S ∖ ⋃_i C_i) ≤ 1/(j + 1). Given η > 0 there is j with 1/(j + 1) < η (ENNReal.exists_inv_nat_lt), so Lⁿ(S ∖ ⋃_i C_i) ≤ η for every η > 0, i.e. Lⁿ(S ∖ ⋃_i C_i) = 0. Thus the sequence (C_j)_{j∈ℕ} consists of compact subsets of S on each of which g is continuous, and it exhausts S up to an Lⁿ-null set, as asserted.
+
+## Key steps
+
+1. Fix a basis of Y: the coordinate map Φ: Y → ℝ^d is a continuous linear equivalence (Basis.equivFunL) and each coordinate g_i = Φ(·)_i ∘ g is Borel
+2. Lⁿ is weakly regular (closed inner approximation, the regularity hypothesis of SimonGMT's Lusin theorem) and inner regular by compact sets on Borel sets of finite measure
+3. For ε > 0: Lusin for each g_i gives closed D_i ⊆ S with Lⁿ(S ∖ D_i) < ε/(2(d+1)), inner regularity gives compact K ⊆ S with Lⁿ(S ∖ K) < ε/2; C := K ∩ ⋂_i D_i is compact, C ⊆ S, Lⁿ(S ∖ C) < ε, and g = Φ⁻¹ ∘ (g_1, …, g_d) is continuous on C
+4. Taking ε = 1/(j+1) gives C_j; Lⁿ(S ∖ ⋃_i C_i) ≤ 1/(j+1) for every j, hence Lⁿ(S ∖ ⋃_i C_i) = 0
+
+## Reference use
+
+### local-project
+
+Queries:
+- `S=.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e; cat $S/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean $S/project/GMT/Ch04/Contract.lean`
+- `grep -n simongmt -A4 $S/project/lake-manifest.json; git -C lake-packages-25730c7c/simongmt rev-parse HEAD`
+- `rg -n -i "lusin" $S/mathlib/Mathlib`
+- `rg -n "theorem exists_isCompact_diff_lt|theorem MeasurableSet.exists_isCompact_diff_lt|exists_isCompact_diff_lt|exists_isClosed_diff_lt|exists_isClosed_sdiff_lt|exists_isCompact_sdiff_lt" $S/mathlib/Mathlib`
+- `rg -n "theorem .*exists.*[cC]ompact.*[cC]ontinuousOn|theorem .*exists.*[cC]losed.*[cC]ontinuousOn|theorem .*[cC]ontinuousOn.*exists" $S/mathlib/Mathlib/MeasureTheory`
+- `rg -n "euclideanHausdorffMeasure_eq_volume" $S/mathlib/Mathlib`
+- `rg -n "theorem measurable_fderiv |theorem measurableSet_of_differentiableAt |theorem exists_measurable_superset_of_null|theorem exists_dense_seq|theorem _root_.Bornology.IsBounded.measure_lt_top|theorem IsBounded.measure_lt_top" $S/mathlib/Mathlib`
+- `rg -n "antilipschitz" $S/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean $S/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean $S/mathlib/Mathlib/Analysis/Normed/Operator/*.lean`
+- `grep -rn "rademacher_ae_differentiableAt\|euclideanHausdorffMeasure_image_le_of_lipschitzOn\|def areaRegularSet\|measurableSet_areaRegularSet\|area_image_compl_regularSet_eq_zero\|exists_isClosed_continuousOn_of_measurable" lake-packages-25730c7c/simongmt/Poincare/SimonGMT --include=*.lean`
+- `grep -n import lake-packages-25730c7c/simongmt/Poincare/SimonGMT/{Chapter03/Rectifiable,Chapter02/Lipschitz,Chapter02/AreaLipschitz,Chapter02/AreaCritical,Chapter01/Lusin}.lean`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/lp-decomp-a1/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/lp-decomp-a1/olean lean /tmp/lp-decomp-a1/src/{ChildTypes,Ingredients,Assembly,FeasA,FeasB,Full}.lean (elaboration, #print axioms of cited lemmas, sorry-free proofs)`
+- `HUMANIZE_RUN_DIR=/tmp/lp-decomp-a1/fakerun python3 verifier/gmt-compare.py --lean-target GMT/Ch04/Submission.lean --verifier-dir verifier --packages lake-packages-25730c7c --frozen-commit ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef --dry-run <child-node> (and with the real run dir for root.lipschitz_pieces-a1)`
+- `lean /tmp/lp-decomp-a1/cand/GMT/Ch04/Submission.lean -o /tmp/lp-decomp-a1/olean2/GMT/Ch04/Submission.olean; LEAN_PATH=...:/tmp/lp-decomp-a1/olean2 lean /tmp/lp-decomp-a1/nodes/Sol-*.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-lipschitz-pieces-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-lipschitz-pieces-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/lp-decomp-a1/src/Full.lean`
+- `/tmp/lp-decomp-a1/cand/GMT/Ch04/Submission.lean`
+
+Snapshot pins: project commit ff75f52a, Mathlib 25730c7c. The snapshot's project/GMT/Ch04/Contract.lean is byte-identical (sha256 6e58e5dd…0f4770b) to the workspace Contract.lean and Submission.lean. SimonGMT is pinned at 2b3663083f3f; the lake-manifest and the package HEAD agree.
+
+The contract imports only Poincare.SimonGMT.Chapter03.Rectifiable (→ Chapter02.Lipschitz). Child statements therefore use only Mathlib notions: DifferentiableAt, fderiv, Function.Injective, MeasurableSet, Bornology.IsBounded, IsCompact, ContinuousOn, volume, μHE[n]. Child proofs may add imports of Poincare.SimonGMT.Chapter02.AreaLipschitz and Poincare.SimonGMT.Chapter01.Lusin; a scratch candidate Submission with these imports compiled.
+
+No match: the snapshot Mathlib has no vector-valued Lusin theorem. `rg lusin` finds only the Lusin separation and Lusin–Souslin theorems in MeasureTheory/Constructions/Polish/Basic.lean and comments in Function/Jacobian.lean. The continuousOn-existence search finds no Lusin-type lemma. Child B therefore combines SimonGMT Chapter01.exists_isClosed_continuousOn_of_measurable (Lusin.lean:127, real-valued, Simon 1.17) with basis coordinates (Basis.equivFunL) and Mathlib MeasurableSet.exists_isClosed_sdiff_lt (Regular.lean:1036) and MeasurableSet.exists_isCompact_sdiff_lt (Regular.lean:843).
+
+Found and used:
+- Mathlib: LinearMap.exists_antilipschitzWith (FiniteDimension.lean:231); measurable_fderiv and measurableSet_of_differentiableAt (FDeriv/Measurable.lean:378, 372); EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:187); exists_measurable_superset_of_null (MeasureSpaceDef.lean:219); TopologicalSpace.exists_dense_seq (Topology/Bases.lean:364); Bornology.IsBounded.measure_lt_top (Typeclasses/Finite.lean:357).
+- SimonGMT: Chapter02.areaRegularSet, measurableSet_areaRegularSet and area_image_compl_regularSet_eq_zero (AreaLipschitz.lean:31, 34, 59); Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz.lean:216).
+- #print axioms for each cited lemma: propext, Classical.choice, Quot.sound only.
+
+Lean checks:
+- All three child types elaborate after `import GMT.Ch04.Submission` in the contract scope. `∞` is ambiguous there, so `⊤` is used.
+- Sorry-free proofs of all three children and of the parent assembly compile.
+- The comparator-generated `exact Submission.X` modules compile for the three children and for root.lipschitz_pieces-a1.
+- #print axioms Submission.rectifiable_lipschitz_piece_cover = [propext, Classical.choice, Quot.sound].
