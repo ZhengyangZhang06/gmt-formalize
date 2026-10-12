@@ -555,6 +555,186 @@ theorem Submission.polyhedral_approx_pairing_expansion : ∀ (P n : ℕ) (w : NV
         euclideanCovectorCoordinate c I • wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) :=
         congrArg w hc
     _ = _ := by simp only [map_sum, map_smul, smul_eq_mul]
+/-- An integrable density is a difference of two finite measures (used for the uniqueness of the
+vector measure in Simon Ch. 6, (2.7)–(2.9), p. 136): `ν^± = μ.withDensity (ofReal ∘ (±g))` are
+finite and `∫ b dν⁺ − ∫ b dν⁻ = ∫ b g dμ` for every bounded Borel `b`. -/
+theorem Submission.polyhedral_approx_density_split :
+    ∀ (P : ℕ) (μ : Measure (Eucl P)) (g : Eucl P → ℝ), Integrable g μ →
+      ∃ νpos νneg : Measure (Eucl P), IsFiniteMeasure νpos ∧ IsFiniteMeasure νneg ∧
+        ∀ b : Eucl P → ℝ, Measurable b → (∃ C : ℝ, ∀ x, |b x| ≤ C) →
+          ∫ x, b x ∂νpos - ∫ x, b x ∂νneg = ∫ x, b x * g x ∂μ := by
+  intro P μ g hg
+  have hg' : Integrable (fun x => -g x) μ := hg.neg
+  refine ⟨μ.withDensity fun x => ENNReal.ofReal (g x),
+    μ.withDensity fun x => ENNReal.ofReal (-g x),
+    isFiniteMeasure_withDensity_ofReal hg.2, isFiniteMeasure_withDensity_ofReal hg'.2, ?_⟩
+  rintro b hb ⟨C, hC⟩
+  -- `∫ b d(μ.withDensity (ofReal ∘ f)) = ∫ f⁺ b dμ`, since `(ofReal r).toReal = r⁺`.
+  have hwd : ∀ f : Eucl P → ℝ, Integrable f μ →
+      ∫ x, b x ∂(μ.withDensity fun x => ENNReal.ofReal (f x)) = ∫ x, max (f x) 0 * b x ∂μ := by
+    intro f hf
+    rw [integral_withDensity_eq_integral_toReal_smul₀ hf.1.aemeasurable.ennreal_ofReal
+      (ae_of_all μ fun _ => ENNReal.ofReal_lt_top)]
+    simp only [ENNReal.toReal_ofReal', smul_eq_mul]
+  -- `f⁺ b` is integrable: `f⁺` is integrable and `b` is measurable and bounded.
+  have hint : ∀ f : Eucl P → ℝ, Integrable f μ → Integrable (fun x => max (f x) 0 * b x) μ :=
+    fun f hf => hf.pos_part.mul_bdd hb.aestronglyMeasurable
+      (ae_of_all μ fun x => (Real.norm_eq_abs (b x)).le.trans (hC x))
+  rw [hwd g hg, hwd (fun x => -g x) hg', ← integral_sub (hint g hg) (hint (fun x => -g x) hg')]
+  -- `g⁺ − (−g)⁺ = g`.
+  congr 1
+  ext x
+  rw [← sub_mul, max_zero_sub_max_neg_zero_eq_self, mul_comm]
+/-- Finite measures `ν₁, ν₂` on `ℝ^P` that agree on every `C^∞` function with compact support in
+an open set `O` agree on every function `b` vanishing outside `O` (the uniqueness behind Simon
+Ch. 6, (2.7)–(2.9), p. 136).  For `ν = ν₁ + ν₂` and the real densities `fᵢ = (dνᵢ/dν).toReal`,
+the Lebesgue decomposition gives `∫ c dνᵢ = ∫ fᵢ c dν` for every `c`; the fundamental lemma of
+the calculus of variations gives `f₁ = f₂` `ν`-a.e. on `O`, hence `f₁ b = f₂ b` `ν`-a.e. -/
+theorem Submission.polyhedral_approx_finite_smooth_ext :
+    ∀ (P : ℕ) (ν₁ ν₂ : Measure (Eucl P)), IsFiniteMeasure ν₁ → IsFiniteMeasure ν₂ →
+      ∀ O : Set (Eucl P), IsOpen O →
+      (∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ →
+        tsupport ψ ⊆ O → ∫ x, ψ x ∂ν₁ = ∫ x, ψ x ∂ν₂) →
+      ∀ b : Eucl P → ℝ, (∀ x, x ∉ O → b x = 0) → ∫ x, b x ∂ν₁ = ∫ x, b x ∂ν₂ := by
+  intro P ν₁ ν₂ h₁ h₂ O hO hψ b hb
+  -- Step 1: `ν = ν₁ + ν₂` is finite and dominates `ν₁` and `ν₂`.
+  set ν : Measure (Eucl P) := ν₁ + ν₂
+  have hac₁ : ν₁ ≪ ν := Measure.AbsolutelyContinuous.rfl.add_right ν₂
+  have hac₂ : ν₂ ≪ ν := Measure.AbsolutelyContinuous.rfl.add_right' ν₁
+  -- Steps 2–4: for finite `μ ≪ ν` the singular part vanishes, so `μ = ν.withDensity (dμ/dν)`;
+  -- hence `∫ c dμ = ∫ (dμ/dν).toReal * c dν` for every `c`, and `(dμ/dν).toReal` is
+  -- `ν`-integrable.
+  have key : ∀ μ : Measure (Eucl P), IsFiniteMeasure μ → μ ≪ ν →
+      Integrable (fun x => (μ.rnDeriv ν x).toReal) ν ∧
+      ∀ c : Eucl P → ℝ, ∫ x, c x ∂μ = ∫ x, (μ.rnDeriv ν x).toReal * c x ∂ν := by
+    intro μ hμ hac
+    have hdec : μ = ν.withDensity (μ.rnDeriv ν) := by
+      have h := Measure.haveLebesgueDecomposition_add μ ν
+      rwa [Measure.singularPart_eq_zero_of_ac hac, zero_add] at h
+    refine ⟨integrable_toReal_of_lintegral_ne_top (Measure.measurable_rnDeriv μ ν).aemeasurable
+      (Measure.lintegral_rnDeriv_lt_top μ ν).ne, fun c => ?_⟩
+    calc ∫ x, c x ∂μ = ∫ x, c x ∂(ν.withDensity (μ.rnDeriv ν)) := by
+          conv_lhs => rw [hdec]
+      _ = ∫ x, (μ.rnDeriv ν x).toReal • c x ∂ν :=
+          integral_withDensity_eq_integral_toReal_smul (Measure.measurable_rnDeriv μ ν)
+            (Measure.rnDeriv_lt_top μ ν) c
+      _ = ∫ x, (μ.rnDeriv ν x).toReal * c x ∂ν := by simp only [smul_eq_mul]
+  obtain ⟨hi₁, e₁⟩ := key ν₁ h₁ hac₁
+  obtain ⟨hi₂, e₂⟩ := key ν₂ h₂ hac₂
+  -- Steps 5–6: `f₁ - f₂` annihilates every smooth test function supported in `O`, so it
+  -- vanishes `ν`-a.e. on `O`.
+  have hF : ∀ᵐ x ∂ν, x ∈ O → (ν₁.rnDeriv ν x).toReal - (ν₂.rnDeriv ν x).toReal = 0 := by
+    refine hO.ae_eq_zero_of_integral_contDiff_smul_eq_zero
+      ((hi₁.sub hi₂).locallyIntegrable.locallyIntegrableOn O) ?_
+    intro g hg hgc hgO
+    have i₁ : Integrable (fun x => g x • (ν₁.rnDeriv ν x).toReal) ν :=
+      hi₁.locallyIntegrable.integrable_smul_left_of_hasCompactSupport hg.continuous hgc
+    have i₂ : Integrable (fun x => g x • (ν₂.rnDeriv ν x).toReal) ν :=
+      hi₂.locallyIntegrable.integrable_smul_left_of_hasCompactSupport hg.continuous hgc
+    have hg' := hψ g hg hgc hgO
+    rw [e₁ g, e₂ g] at hg'
+    simp only [smul_sub]
+    rw [integral_sub i₁ i₂, sub_eq_zero]
+    simpa only [smul_eq_mul, mul_comm] using hg'
+  -- Step 7: `f₁ b = f₂ b` `ν`-a.e.: on `O` by steps 5–6, off `O` because `b = 0` there.
+  rw [e₁ b, e₂ b]
+  refine integral_congr_ae ?_
+  filter_upwards [hF] with x hx
+  by_cases hxO : x ∈ O
+  · rw [sub_eq_zero.mp (hx hxO)]
+  · simp [hb x hxO]
+
+/-- Integrable densities `g₁ μ₁`, `g₂ μ₂` that agree on every `C^∞` function with compact support
+in an open set `O` agree on every bounded Borel `b` vanishing outside `O` (the uniqueness behind
+Simon Ch. 6, (2.7)–(2.9), p. 136).  Split `gᵢ μᵢ = pᵢ − nᵢ` into finite measures
+(`polyhedral_approx_density_split`).  The finite measures `λ₁ = p₁ + n₂`, `λ₂ = p₂ + n₁` satisfy
+`∫ c dλ₁ − ∫ c dλ₂ = ∫ c g₁ dμ₁ − ∫ c g₂ dμ₂` for bounded Borel `c` (★), so they agree on smooth
+tests in `O`, hence on `b` (`polyhedral_approx_finite_smooth_ext`); (★) with `c = b` concludes. -/
+theorem Submission.polyhedral_approx_integrable_smooth_ext :
+    ∀ (P : ℕ) (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ), Integrable g₁ μ₁ →
+      Integrable g₂ μ₂ → ∀ O : Set (Eucl P), IsOpen O →
+      (∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ →
+        tsupport ψ ⊆ O → ∫ x, ψ x * g₁ x ∂μ₁ = ∫ x, ψ x * g₂ x ∂μ₂) →
+      ∀ b : Eucl P → ℝ, Measurable b → (∃ C : ℝ, ∀ x, |b x| ≤ C) → (∀ x, x ∉ O → b x = 0) →
+        ∫ x, b x * g₁ x ∂μ₁ = ∫ x, b x * g₂ x ∂μ₂ := by
+  intro P μ₁ μ₂ g₁ g₂ hg₁ hg₂ O hO hψ b hb hbC hbO
+  -- Step 1: `gᵢ μᵢ = pᵢ − nᵢ` with `pᵢ`, `nᵢ` finite.
+  obtain ⟨p₁, n₁, hp₁, hn₁, h₁⟩ := Submission.polyhedral_approx_density_split P μ₁ g₁ hg₁
+  obtain ⟨p₂, n₂, hp₂, hn₂, h₂⟩ := Submission.polyhedral_approx_density_split P μ₂ g₂ hg₂
+  -- Steps 2–3: `λ₁ = p₁ + n₂` and `λ₂ = p₂ + n₁` are finite, and for bounded Borel `c`
+  -- (★) `∫ c dλ₁ − ∫ c dλ₂ = ∫ c g₁ dμ₁ − ∫ c g₂ dμ₂`.
+  have key : ∀ c : Eucl P → ℝ, Measurable c → (∃ C : ℝ, ∀ x, |c x| ≤ C) →
+      ∫ x, c x ∂(p₁ + n₂) - ∫ x, c x ∂(p₂ + n₁) =
+        ∫ x, c x * g₁ x ∂μ₁ - ∫ x, c x * g₂ x ∂μ₂ := by
+    rintro c hc ⟨C, hC⟩
+    -- A bounded Borel `c` is integrable against every finite measure.
+    have hint : ∀ (ν : Measure (Eucl P)) [IsFiniteMeasure ν], Integrable c ν := fun ν _ =>
+      Integrable.of_bound hc.aestronglyMeasurable C
+        (ae_of_all ν fun x => (Real.norm_eq_abs (c x)).le.trans (hC x))
+    rw [integral_add_measure (hint p₁) (hint n₂), integral_add_measure (hint p₂) (hint n₁)]
+    linarith [h₁ c hc ⟨C, hC⟩, h₂ c hc ⟨C, hC⟩]
+  -- Step 4: by (★), `λ₁` and `λ₂` agree on smooth tests with compact support in `O`.
+  have hsmooth : ∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ O → ∫ x, ψ x ∂(p₁ + n₂) = ∫ x, ψ x ∂(p₂ + n₁) := by
+    intro ψ hψs hψc hψO
+    obtain ⟨C, hC⟩ := hψs.continuous.bounded_above_of_compact_support hψc
+    linarith [key ψ hψs.continuous.measurable
+      ⟨C, fun x => (Real.norm_eq_abs (ψ x)).symm.le.trans (hC x)⟩, hψ ψ hψs hψc hψO]
+  -- Step 5: hence `λ₁` and `λ₂` agree on `b`, which vanishes outside `O`.
+  have hext := Submission.polyhedral_approx_finite_smooth_ext P (p₁ + n₂) (p₂ + n₁)
+    inferInstance inferInstance O hO hsmooth b hbO
+  -- Step 6: (★) with `c = b`.
+  linarith [key b hb hbC]
+
+/-- Uniqueness of the vector measure in Simon Ch. 6, (2.7)–(2.9) (p. 136), which makes `T ⌞ A`
+well defined: if `g₁ μ₁` and `g₂ μ₂` (`gᵢ` locally `μᵢ`-integrable in `U`) agree on `C^∞`
+functions with compact support in `U`, then `∫_A u g₁ dμ₁ = ∫_A u g₂ dμ₂` for every Borel `A`
+and continuous `u` with compact support in `U`.  For an open `O ⊇ tsupport u` with compact
+`L = closure O ⊆ U`, each `gᵢ` is `μᵢ⌞L`-integrable, the hypothesis passes to `μᵢ⌞L` on `O`,
+and `1_A u` is bounded, Borel and vanishes outside `O`. -/
+theorem Submission.polyhedral_approx_measure_uniqueness :
+    ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ),
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn g₁ K μ₁ ∧ IntegrableOn g₂ K μ₂) →
+      (∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ →
+        tsupport ψ ⊆ U → ∫ x, ψ x * g₁ x ∂μ₁ = ∫ x, ψ x * g₂ x ∂μ₂) →
+      ∀ A : Set (Eucl P), MeasurableSet A → ∀ u : Eucl P → ℝ, Continuous u →
+        HasCompactSupport u → tsupport u ⊆ U →
+          ∫ x in A, u x * g₁ x ∂μ₁ = ∫ x in A, u x * g₂ x ∂μ₂ := by
+  intro P U hU μ₁ μ₂ g₁ g₂ hint hψ A hA u hu huc huU
+  -- Step 1: an open `O` and a compact `L = closure O` with `tsupport u ⊆ O ⊆ L ⊆ U`; each `gᵢ`
+  -- is `μᵢ⌞L`-integrable.
+  obtain ⟨O, hO, huO, hLU, hL⟩ := exists_open_between_and_isCompact_closure huc hU huU
+  have hOL : O ⊆ closure O := subset_closure
+  obtain ⟨hi₁, hi₂⟩ := hint (closure O) hL hLU
+  -- Step 2: integrating `f gᵢ` over `L` or over `ℝ^P` gives the same when `f = 0` outside `O`.
+  have hloc : ∀ (μ : Measure (Eucl P)) (g f : Eucl P → ℝ), (∀ x, x ∉ O → f x = 0) →
+      ∫ x in closure O, f x * g x ∂μ = ∫ x, f x * g x ∂μ := fun μ g f hf =>
+    setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
+      rw [hf x fun h => hx (hOL h), zero_mul]
+  -- Step 3: `g₁ (μ₁⌞L)` and `g₂ (μ₂⌞L)` agree on `C^∞` functions with compact support in `O`.
+  have hψL : ∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ O → ∫ x in closure O, ψ x * g₁ x ∂μ₁ = ∫ x in closure O, ψ x * g₂ x ∂μ₂ := by
+    intro ψ hψs hψc hψO
+    have hψ0 : ∀ x, x ∉ O → ψ x = 0 := fun x hx =>
+      image_eq_zero_of_notMem_tsupport fun h => hx (hψO h)
+    rw [hloc μ₁ g₁ ψ hψ0, hloc μ₂ g₂ ψ hψ0]
+    exact hψ ψ hψs hψc ((hψO.trans hOL).trans hLU)
+  -- Step 4: `1_A u` is Borel, bounded and vanishes outside `O`.
+  have hb : Measurable (A.indicator u) := hu.measurable.indicator hA
+  have hbC : ∃ C : ℝ, ∀ x, |A.indicator u x| ≤ C := by
+    obtain ⟨C, hC⟩ := hu.bounded_above_of_compact_support huc
+    exact ⟨C, fun x => (Real.norm_eq_abs _).symm.le.trans
+      ((norm_indicator_le_norm_self u x).trans (hC x))⟩
+  have hb0 : ∀ x, x ∉ O → A.indicator u x = 0 := fun x hx =>
+    Set.indicator_apply_eq_zero.mpr fun _ => image_eq_zero_of_notMem_tsupport fun h => hx (huO h)
+  -- Step 5: `∫_A u gᵢ dμᵢ = ∫_L 1_A u gᵢ dμᵢ`; the integrable version on `O` concludes.
+  have hA' : ∀ (μ : Measure (Eucl P)) (g : Eucl P → ℝ),
+      ∫ x in A, u x * g x ∂μ = ∫ x in closure O, A.indicator u x * g x ∂μ := fun μ g => by
+    rw [hloc μ g _ hb0, ← integral_indicator hA]
+    simp only [Set.indicator_mul_left]
+  rw [hA' μ₁ g₁, hA' μ₂ g₂]
+  exact Submission.polyhedral_approx_integrable_smooth_ext P (μ₁.restrict (closure O))
+    (μ₂.restrict (closure O)) g₁ g₂ hi₁ hi₂ O hO hψL (A.indicator u) hb hbC hb0
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
