@@ -2442,6 +2442,100 @@ theorem Submission.bf_frameAveraging_null : ∀ (n ℓ : ℕ), 0 < n → 0 < ℓ
     (Submission.bf_frameProjection_continuousOn (n + ℓ) n) θ hθ hθO' hθR W₀ hW₀ Q hQm
     hQnull).mono fun v hv hlin ↦ not_not.1 (hv hlin)
 
+/-- **Cone trichotomy for almost every frame** (Steps 8–9 of the proof of Simon Ch. 3,
+Theorem 3.6, `chapter-03.txt` lines 530–536, whose proof Simon defers to [Fed69]/[Ros84];
+P. Mattila, *Geometry of Sets and Measures in Euclidean Spaces*, Ch. 18; M. G. Dall'Alba,
+*The Besicovitch–Federer Projection Theorem*, Padova 2020, Lemmas 4.15, 5.5, 5.6 and
+Theorem 4.16). Let `A ⊆ ℝ^{n+ℓ}` be compact with `Hⁿ(A) < ∞`, `δ > 0`, and
+`X_p(a, r, s) = {x : |p(x - a)| < s|x - a|} ∩ B(a, r)`. Then for Lebesgue-a.e. linearly
+independent frame `v`, with `p = p_{span v}`, `Hⁿ`-a.e. `a ∈ A` satisfies the trichotomy
+`T(a, p)`: `(rs)⁻ⁿ Hⁿ(A ∩ X_p(a, r, s)) → 0` as `s ↓ 0` uniformly in `r ∈ (0, δ)`; or for every
+`K` there are arbitrarily small `s` and some `r ∈ (0, δ)` with `Hⁿ(A ∩ X_p(a, r, s)) ≥ K(rs)ⁿ`;
+or some `b ∈ A \ {a}` with `|b - a| < δ` has `p(b - a) = 0`.
+The exceptional pairs `Exc = {(a, p) : a ∈ A, ¬T(a, p)}` and the bad axes
+`Bad = {(a, Q, θ) : a ∈ A, ¬T_θ(a, Q)}`, where `T_θ` is the same trichotomy for the slab cones
+`{x : |Q(x - a) - (Q(x - a)·θ)θ| < s|Q(x - a)|} ∩ B(a, r)` (axis condition
+`Q(b - a) = (Q(b - a)·θ)θ`), are Borel (`bf_coneExceptional_measurableSet`, Steps 1 and 4.2 of
+the node proof). For an `(n+1)`-plane `H`, `Hⁿ`-a.e. unit `θ ∈ H` is a good axis for `Q = p_H`
+(`bf_sphere_ae_slabGood`, Step 2). If `T(a, p_W)` fails for an `n`-plane `W`, then every
+orthonormal basis `u` of `Wᗮ` has a bad axis `u_j` for `p_{W ⊕ ℝu_j}`
+(`bf_slabGood_imp_coneTrichotomy`, Step 3). Averaging over `O(n+ℓ)` and transferring to frames
+(`bf_frameAveraging_null`, Steps 4–5) with the finite measure `μ = Hⁿ ⌞ A` gives
+`Hⁿ(A ∩ {a : (a, p_{span v}) ∈ Exc}) = 0` for a.e. linearly independent `v`. -/
+theorem Submission.bf_coneTrichotomy_ae_frames :
+    ∀ (n ℓ : ℕ), 0 < n → 0 < ℓ → ∀ A : Set (Rn (n + ℓ)), IsCompact A → μHE[n] A < ∞ →
+      ∀ δ : ℝ, 0 < δ → ForAlmostAllProjections (n + ℓ) n (fun p ↦ μHE[n] {a | a ∈ A ∧
+        ¬ ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r →
+          r < δ → μHE[n] (A ∩ ({x | ‖p (x - a)‖ < s * ‖x - a‖} ∩ Metric.ball a r)) ≤
+            ENNReal.ofReal (c * (r * s) ^ n)) ∨
+        (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧
+          ENNReal.ofReal (K * (r * s) ^ n) ≤
+            μHE[n] (A ∩ ({x | ‖p (x - a)‖ < s * ‖x - a‖} ∩ Metric.ball a r))) ∨
+        ∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ p (b - a) = 0)} = 0) := by
+  intro n ℓ hn hℓ A hA hAfin δ hδ
+  -- `Exc = {(a, p) : a ∈ A, ¬T(a, p)}`, the exceptional pairs of the statement
+  let Exc : Set (Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ))) :=
+    {q | q.1 ∈ A ∧ ¬ ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ,
+      0 < r → r < δ → μHE[n] (A ∩ ({x | ‖q.2 (x - q.1)‖ < s * ‖x - q.1‖} ∩ Metric.ball q.1 r)) ≤
+        ENNReal.ofReal (c * (r * s) ^ n)) ∨
+      (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧
+        ENNReal.ofReal (K * (r * s) ^ n) ≤
+          μHE[n] (A ∩ ({x | ‖q.2 (x - q.1)‖ < s * ‖x - q.1‖} ∩ Metric.ball q.1 r))) ∨
+      ∃ b ∈ A, b ≠ q.1 ∧ dist b q.1 < δ ∧ q.2 (b - q.1) = 0)}
+  -- `Bad = {(a, Q, θ) : a ∈ A, ¬T_θ(a, Q)}`, the bad axes `θ` of the slab cones of `Q`
+  let Bad : Set (Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ)) × Rn (n + ℓ)) :=
+    {q | q.1 ∈ A ∧ ¬ ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ,
+      0 < r → r < δ → μHE[n] (A ∩ ({x | ‖q.2.1 (x - q.1) -
+        inner ℝ (q.2.1 (x - q.1)) q.2.2 • q.2.2‖ < s * ‖q.2.1 (x - q.1)‖} ∩
+          Metric.ball q.1 r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨
+      (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧
+        ENNReal.ofReal (K * (r * s) ^ n) ≤ μHE[n] (A ∩ ({x | ‖q.2.1 (x - q.1) -
+          inner ℝ (q.2.1 (x - q.1)) q.2.2 • q.2.2‖ < s * ‖q.2.1 (x - q.1)‖} ∩
+            Metric.ball q.1 r))) ∨
+      ∃ b ∈ A, b ≠ q.1 ∧ dist b q.1 < δ ∧
+        q.2.1 (b - q.1) - inner ℝ (q.2.1 (b - q.1)) q.2.2 • q.2.2 = 0)}
+  -- Step 1: `Exc` is Borel (cones `|p(x - a)| < s|x - a|`: `F₁ (a, p) = p`, `F₂ = id`)
+  have hExc : MeasurableSet Exc :=
+    Submission.bf_coneExceptional_measurableSet n ℓ
+      (X := Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ))) A hA hAfin δ hδ Prod.fst
+      (fun ξ y ↦ ξ.2 y) (fun _ y ↦ y) continuous_fst (by fun_prop) (by fun_prop)
+  -- Step 4.2: `Bad` is Borel (slab cones: `F₁ (a, Q, θ) = Q - ⟪Q ·, θ⟫ θ`, `F₂ (a, Q, θ) = Q`)
+  have hBad : MeasurableSet Bad :=
+    Submission.bf_coneExceptional_measurableSet n ℓ
+      (X := Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ)) × Rn (n + ℓ)) A hA hAfin δ hδ Prod.fst
+      (fun ξ y ↦ ξ.2.1 y - inner ℝ (ξ.2.1 y) ξ.2.2 • ξ.2.2) (fun ξ y ↦ ξ.2.1 y)
+      continuous_fst (by fun_prop) (by fun_prop)
+  -- Step 2 (sphere lemma): on the unit sphere of an `(n+1)`-plane `H`, `Hⁿ`-a.e. axis is good
+  have hsph : ∀ (a : Rn (n + ℓ)) (H : Submodule ℝ (Rn (n + ℓ))), finrank ℝ H = n + 1 →
+      μHE[n] {θ | θ ∈ H ∧ ‖θ‖ = 1 ∧ (a, H.starProjection, θ) ∈ Bad} = 0 := by
+    intro a H hH
+    refine measure_mono_null ?_ (Submission.bf_sphere_ae_slabGood n ℓ hn H hH A hA hAfin δ hδ a)
+    intro θ hθ
+    exact ⟨hθ.1, hθ.2.1, hθ.2.2.2⟩
+  -- Step 3 (slab cones versus cones): if `T(a, p_W)` fails, some axis `u_j` is bad
+  have hslab : ∀ (a : Rn (n + ℓ)) (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n →
+      (a, W.starProjection) ∈ Exc → ∀ u : Fin ℓ → Rn (n + ℓ), Orthonormal ℝ u →
+        (∀ j, u j ∈ Wᗮ) → ∃ j, (a, (W ⊔ Submodule.span ℝ {u j}).starProjection, u j) ∈ Bad := by
+    intro a W hW haW u hu huW
+    by_contra hcon
+    push Not at hcon
+    refine haW.2
+      (Submission.bf_slabGood_imp_coneTrichotomy n ℓ hn hℓ W hW u hu huW A δ a fun j ↦ ?_)
+    by_contra hng
+    exact hcon j ⟨haW.1, hng⟩
+  -- Steps 4–5: average over `O(n + ℓ)` and transfer to frames, for `μ = Hⁿ ⌞ A` (finite)
+  have hfin : IsFiniteMeasure ((μHE[n] : Measure (Rn (n + ℓ))).restrict A) :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact hAfin⟩
+  have key := Submission.bf_frameAveraging_null n ℓ hn hℓ
+    ((μHE[n] : Measure (Rn (n + ℓ))).restrict A) hfin Exc Bad hExc hBad hsph hslab
+  refine key.mono fun v hv hlin ↦ ?_
+  have h0 : ((μHE[n] : Measure (Rn (n + ℓ))).restrict A) {a | (a, frameProjection v) ∈ Exc} = 0 :=
+    hv hlin
+  rw [Measure.restrict_apply' hA.measurableSet] at h0
+  refine measure_mono_null ?_ h0
+  intro a ha
+  exact ⟨ha, ha.1⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
