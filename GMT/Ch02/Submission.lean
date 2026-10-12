@@ -1035,6 +1035,42 @@ theorem Submission.second_fundamental_form_chart_formula : ((∀ (n N : ℕ) (r 
       hQ hPQ a,
     Submission.sff_projection_field_fderiv_identity n N ψ Q x₀ hψ1 hDψ hQ hfix a b, hP₀]
 
+/-- **Simon Ch. 2, 4.26–4.27 (p. 60) and the identity in the proof of 5.11 (p. 65): properties of
+`B` and `H`.** Assume (TH), the frozen statement of `Submission.simon_submanifold_tangent_basics`,
+and let `M` be an `n`-dimensional `C²` submanifold of `ℝᴺ`. Then (i) `B_y(τ, η) = B_y(η, τ)` lies in
+`(T_y M)^⊥` for `y ∈ M` and `τ, η ∈ T_y M`; (ii) `y ↦ H(y)` is continuous on `M`; (iii) if `Y` is
+differentiable at `y ∈ M` and normal along `M`, then `⟨η, DY(y)τ⟩ = -⟨Y(y), B_y(τ, η)⟩` for
+`τ, η ∈ T_y M`. In every `C²` chart `(V, W, ψ)` of `M`, (TH1) gives `T_{ψ(x)} M = range Dψ(x)`, and
+`B_{ψ(x)}(Dψ(x)a, Dψ(x)b) = (D²ψ(x)[a, b])^⊥` (`Submission.second_fundamental_form_chart_formula`).
+From these two chart facts, (i) is `Submission.second_fundamental_form_symm_normal_of_chart_formula`
+and (iii) is `Submission.inner_fderiv_normal_field_eq_neg_second_fundamental_form`. For (ii), with
+`G(x) = Dψ(x)* ∘ Dψ(x)`, the map `x ↦ H(ψ(x)) = (∑_{k,l} ⟨e_k, G(x)⁻¹ e_l⟩ D²ψ(x)[e_k, e_l])^⊥` is
+continuous on `V` because `z ↦ P_z` is continuous on `M` by (TH2)
+(`Submission.mean_curvature_comp_chart_continuousOn`); continuity on `M` can be checked in charts
+(`Submission.simon_submanifold_continuousOn_of_chart_continuousOn`). -/
+theorem Submission.second_fundamental_form_symm_normal_continuity : ((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → ∀ (n N : ℕ) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) 2 M → (∀ y ∈ M, ∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, secondFundamentalForm M y τ η = secondFundamentalForm M y η τ ∧ ∀ v ∈ tangentSpace M y, inner ℝ (secondFundamentalForm M y τ η) v = 0) ∧ ContinuousOn (meanCurvature M) M ∧ ∀ (Y : Rn N → Rn N) (y : Rn N), y ∈ M → DifferentiableAt ℝ Y y → (∀ z ∈ M, ∀ v ∈ tangentSpace M z, inner ℝ (Y z) v = 0) → ∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, inner ℝ η (fderiv ℝ Y y τ) = -inner ℝ (Y y) (secondFundamentalForm M y τ η) := by
+  intro hTH n N M hM
+  -- Step 1 (TH1, class `2 ≥ 1`): `T_{ψ(x)} M = range Dψ(x)` in every `C²` chart of `M`.
+  have hR : ∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N),
+      Chapter02.IsSimonLocalRepresentation 2 M V W ψ →
+        ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap :=
+    fun V W ψ hψ ↦ hTH.1 n N 2 M V W ψ (by norm_num) hψ
+  -- Step 2: `B_{ψ(x)}(Dψ(x)a, Dψ(x)b) = (D²ψ(x)[a, b])^⊥` in every `C²` chart of `M`.
+  have hC : ∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N),
+      Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ∀ x ∈ V, ∀ a b : Rn n,
+        secondFundamentalForm M (ψ x) (fderiv ℝ ψ x a) (fderiv ℝ ψ x b) =
+          normalPart M (ψ x) (fderiv ℝ (fderiv ℝ ψ) x a b) :=
+    fun V W ψ hψ ↦ Submission.second_fundamental_form_chart_formula hTH n N M V W ψ hψ
+  -- Step 3: (i) symmetry and normality of `B` and (iii) the normal-field identity, from Steps 1–2.
+  refine ⟨Submission.second_fundamental_form_symm_normal_of_chart_formula n N M hM hR hC, ?_,
+    Submission.inner_fderiv_normal_field_eq_neg_second_fundamental_form n N M hM hR hC⟩
+  -- Step 4: (ii) `H ∘ ψ` is continuous on `V` for every `C²` chart (TH2: `z ↦ P_z` is continuous on
+  -- `M`), and continuity on `M` is checked in charts.
+  exact Submission.simon_submanifold_continuousOn_of_chart_continuousOn n N 2 M (Rn N)
+    (meanCurvature M) hM fun V W ψ hψ ↦
+      Submission.mean_curvature_comp_chart_continuousOn n N M V W ψ hψ (hTH.2 n N 2 M hM).2
+        (hR V W ψ hψ) (hC V W ψ hψ)
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
