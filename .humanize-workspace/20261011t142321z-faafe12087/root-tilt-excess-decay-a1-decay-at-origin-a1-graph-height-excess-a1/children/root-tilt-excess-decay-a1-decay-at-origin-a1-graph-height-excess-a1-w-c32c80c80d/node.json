@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_height_excess-a1.weight_density_bound-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_height_excess-a1",
+  "depth": 4,
+  "title": "Upper density bound turns weight integrals into Hausdorff integrals (Simon 4.5, proof step (1c))",
+  "statement": "Let n, l be natural numbers, U an arbitrary subset of R^{n+l}, and V a contract rectifiable n-varifold in U with carrier M, multiplicity θ and weight μ = V.weight = (H^n restricted to M) with density ofReal ∘ θ, where H^n = μHE[n]. Let E ⊆ R^{n+l} be a measurable set, C a real number and g : R^{n+l} → [0, ∞] a measurable function. Assume θ(x) ≤ C for μ-almost every x ∈ E. Then ∫⁻_E g dμ ≤ ofReal(C) · ∫⁻_E g dH^n. The integrals are lower Lebesgue integrals in [0, ∞], and ofReal(C) = max(C, 0).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (E : Set (Amb n ℓ)) (C : ℝ) (g : Amb n ℓ → ℝ≥0∞), MeasurableSet E → Measurable g → (∀ᵐ x ∂V.weight, x ∈ E → V.mult x ≤ C) → ∫⁻ x in E, g x ∂V.weight ≤ ENNReal.ofReal C * ∫⁻ x in E, g x ∂(μHE[n] : Measure (Amb n ℓ))",
+  "lean_name": "tdo_ghe_setLIntegral_weight_le_mul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1-w-c32c80c80d-a1"
+}
