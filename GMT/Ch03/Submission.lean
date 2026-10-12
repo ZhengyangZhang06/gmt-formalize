@@ -665,6 +665,86 @@ derivatives (adapted from Mathlib's `ApproximatesLinearOn.norm_fderiv_sub_le`), 
 branches for the multiplicity, and null images of critical points via the graphs
 `x ↦ (g x, ε x)` as `ε → 0`. -/
 theorem Submission.areaFormula_on_chart_piece : ∀ (n N p : ℕ) (ψ : Rn n → Rn N) (f : Rn N → Rn p) (D : Set (Rn n)) (K C : ℝ≥0) (J : Rn N → ℝ) (S : Set (Rn N)) (h : Rn N → ℝ≥0∞), IsCompact D → (∀ u ∈ D, DifferentiableAt ℝ ψ u) → (∀ u ∈ D, Function.Injective (fderiv ℝ ψ u)) → LipschitzOnWith K ψ D → (∀ u ∈ D, ∀ v ∈ D, dist u v ≤ (C : ℝ) * dist (ψ u) (ψ v)) → LipschitzOnWith K (f ∘ ψ) D → S ⊆ ψ '' D → NullMeasurableSet S μHE[n] → (∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ D → ψ u ∈ S → DifferentiableAt ℝ (f ∘ ψ) u ∧ J (ψ u) * (fderiv ℝ ψ u).toLinearMap.normDet = (fderiv ℝ (f ∘ ψ) u).toLinearMap.normDet) → AEMeasurable h ((μHE[n] : Measure (Rn N)).restrict S) → (∫⁻ x in S, h x * ENNReal.ofReal (J x) ∂μHE[n] = ∫⁻ y, ∑' x : ↥(S ∩ f ⁻¹' {y}), h x ∂μHE[n]) ∧ AEMeasurable (fun y ↦ ∑' x : ↥(S ∩ f ⁻¹' {y}), h x) (μHE[n] : Measure (Rn p)) := by
+/-- **Derivative bounds for a `C¹` chart with upper and lower Lipschitz bounds** (Simon Ch. 3, the
+`C¹` charts in the proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 113–143, and Remark 1.5(2)).
+Let `B ⊆ ℝⁿ` be open and `ψ : ℝⁿ → ℝᴺ` be `C¹` and `K`-Lipschitz on `B`, with
+`c |u - u'| ≤ |ψ(u) - ψ(u')|` for all `u, u' ∈ B` (no sign condition on `c`). Then for every
+`v ∈ B`: `‖Dψ(v)‖ ≤ K` by `norm_fderiv_le_of_lipschitzOn`, as `B ∈ 𝓝 v`; and `c |w| ≤ |Dψ(v) w|`
+for every `w ∈ ℝⁿ`, since for small `t > 0` we have `v + t w ∈ B`, hence
+`c |w| ≤ |t⁻¹ (ψ(v + t w) - ψ(v))|`, and these difference quotients tend to `Dψ(v) w` as `t ↓ 0`
+(`HasFDerivAt.lim`). -/
+theorem Submission.chartTD_chart_fderiv_bounds : ∀ (n N : ℕ) (B : Set (Rn n)) (ψ : Rn n → Rn N) (K : ℝ≥0) (c : ℝ), IsOpen B → ContDiffOn ℝ 1 ψ B → LipschitzOnWith K ψ B → (∀ u ∈ B, ∀ u' ∈ B, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖) → ∀ v ∈ B, ‖fderiv ℝ ψ v‖ ≤ K ∧ ∀ w : Rn n, c * ‖w‖ ≤ ‖fderiv ℝ ψ v w‖ := by
+  intro n N B ψ K c hB hψ hLip hlow v hv
+  have hBv : B ∈ 𝓝 v := hB.mem_nhds hv
+  -- Upper bound: `ψ` is `K`-Lipschitz on the neighbourhood `B` of `v`.
+  refine ⟨norm_fderiv_le_of_lipschitzOn ℝ hBv hLip, fun w ↦ ?_⟩
+  -- `ψ` is `C¹` on the open set `B`, so it has derivative `Dψ(v)` at `v`.
+  have hd : HasFDerivAt ψ (fderiv ℝ ψ v) v :=
+    ((hψ.differentiableOn one_ne_zero).differentiableAt hBv).hasFDerivAt
+  -- `|t⁻¹ (ψ(v + t w) - ψ(v))| → |Dψ(v) w|` as `t ↓ 0`, since `|t⁻¹| = t⁻¹ → ∞`.
+  have hlim : Tendsto (fun t : ℝ ↦ ‖t⁻¹ • (ψ (v + t⁻¹⁻¹ • w) - ψ v)‖) (𝓝[>] 0)
+      (𝓝 ‖fderiv ℝ ψ v w‖) := by
+    refine (hd.lim w (c := fun t : ℝ ↦ t⁻¹) ?_).norm
+    refine (tendsto_inv_nhdsGT_zero (𝕜 := ℝ)).congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with t (ht : 0 < t)
+    rw [Real.norm_of_nonneg (inv_nonneg.2 ht.le)]
+  -- Eventually `v + t w ∈ B`, as `v + t w → v` when `t ↓ 0`.
+  have hev : ∀ᶠ t in 𝓝[>] (0 : ℝ), v + t • w ∈ B := by
+    have hcont : Tendsto (fun t : ℝ ↦ v + t • w) (𝓝 0) (𝓝 v) :=
+      (continuous_const.add (continuous_id.smul continuous_const)).tendsto' 0 v (by simp)
+    exact hcont.mono_left nhdsWithin_le_nhds hBv
+  -- For such `t > 0`: `c |w| = t⁻¹ c |t w| ≤ t⁻¹ |ψ(v + t w) - ψ(v)|`.
+  refine ge_of_tendsto hlim ?_
+  filter_upwards [hev, self_mem_nhdsWithin] with t ht (htpos : 0 < t)
+  have h := hlow (v + t • w) ht v hv
+  rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg htpos.le] at h
+  rw [inv_inv, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 htpos.le)]
+  calc c * ‖w‖ = t⁻¹ * (c * (t * ‖w‖)) := by field_simp
+    _ ≤ t⁻¹ * ‖ψ (v + t • w) - ψ v‖ := by gcongr
+/-- **Operator-norm bound for the area factor** (Simon Ch. 2, linear area formula (3.1),
+`chapter-02.txt` lines 742–758, and the Lipschitz image estimate Thm. 1.8(i), lines 268–275):
+for every linear map `A : ℝⁿ → ℝᴺ`, `normDet A = √det(A* A) ≤ ‖A‖ⁿ`. On the closed unit ball
+`S ⊆ ℝⁿ` the linear area formula gives `Hⁿ(A(S)) = normDet A · Lⁿ(S)`, while `A` is
+`‖A‖`-Lipschitz, so `Hⁿ(A(S)) ≤ ‖A‖ⁿ Hⁿ(S) = ‖A‖ⁿ Lⁿ(S)`; cancel `0 < Lⁿ(S) < ∞`. -/
+theorem Submission.chartTD_normDet_le_opNorm_pow : ∀ (n N : ℕ) (A : Rn n →L[ℝ] Rn N), A.toLinearMap.normDet ≤ ‖A‖ ^ n := by
+  intro n N A
+  have hfin : finrank ℝ (Rn n) = n := finrank_euclideanSpace_fin
+  set S : Set (Rn n) := Metric.closedBall 0 1
+  -- Simon Ch. 2 (3.1): `Hⁿ(A(S)) = normDet A · Lⁿ(S)`.
+  have h1 := LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume A.toLinearMap S
+  -- `A` is `‖A‖₊`-Lipschitz, so `Hⁿ(A(S)) ≤ ‖A‖₊ⁿ Hⁿ(S) = ‖A‖₊ⁿ Lⁿ(S)`.
+  have h2 := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+    (finrank ℝ (Rn n)) (A.lipschitzWith.lipschitzOnWith (s := S))
+  rw [InnerProductSpace.euclideanHausdorffMeasure_eq_volume] at h2
+  have hcoe : (A.toLinearMap : Rn n → Rn N) '' S = A '' S := rfl
+  rw [← hcoe, h1] at h2
+  -- Cancel `0 < Lⁿ(S) < ∞`.
+  have hpos : 0 < volume S := Metric.measure_closedBall_pos _ _ one_pos
+  have hfinite : volume S < ∞ := measure_closedBall_lt_top
+  have h3 : ENNReal.ofReal A.toLinearMap.normDet ≤ (‖A‖₊ : ℝ≥0∞) ^ finrank ℝ (Rn n) :=
+    (ENNReal.mul_le_mul_iff_left hpos.ne' hfinite.ne).mp h2
+  rw [hfin] at h3
+  -- Back to `ℝ`: `(‖A‖₊ : ℝ≥0∞)ⁿ = ofReal (‖A‖ⁿ)`.
+  have h4 : ENNReal.ofReal A.toLinearMap.normDet ≤ ENNReal.ofReal (‖A‖ ^ n) := by
+    rw [ENNReal.ofReal_pow (norm_nonneg _)]
+    simpa [ofReal_norm, enorm_eq_nnnorm] using h3
+  exact (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp h4
+/-- **Injective area formula on an open Lipschitz domain, in integral form** (Simon Ch. 2, (3.2)
+and (3.5), `chapter-02.txt` lines 743–797). Let `B ⊆ ℝⁿ` be open, `ψ : ℝⁿ → ℝᴺ` `K`-Lipschitz
+and injective on `B`, and `g : ℝᴺ → ℝ` continuous. Then `∫_{ψ(B)} g dHⁿ = ∫_B g(ψ v) Jψ(v) dv`
+with `Jψ(v) = normDet (Dψ(v))`, as Bochner integrals (no integrability assumption).
+
+Proof: `Hⁿ⌞ψ(B)` is the push-forward under `ψ` of `ν = Jψ · Lⁿ⌞B`. For Borel `E`, the weighted
+area formula (3.5) with weight `1_E ∘ ψ` gives `Hⁿ(E ∩ ψ(B)) = ν(ψ⁻¹(E))`: by injectivity the
+fibre sum is `1_{E ∩ ψ(B)}`, and `ψ(B)` is Borel by Lusin–Souslin. Change of variables for the
+push-forward and integration against the density `Jψ` then give the integral identity.
+The SimonGMT modules proving (3.5) lie outside the frozen imports, so (3.5) is derived here from
+the linear case (3.1), Mathlib's `LinearMap.euclideanHausdorffMeasure_image`, by the local steps
+of the accepted proof of `Submission.areaFormula_on_chart_piece`: comparison with linear maps on
+the pieces of `exists_partition_approximatesLinearOn_of_hasFDerivWithinAt`, a density-point
+bound on derivatives, injective branches, and null images of critical points via the graphs
+`x ↦ (G x, ε x)`. Rademacher's theorem gives differentiability a.e. on the open set `B`. -/
+theorem Submission.chartTD_injective_area_setIntegral : ∀ (n N : ℕ) (B : Set (Rn n)) (ψ : Rn n → Rn N) (K : ℝ≥0), IsOpen B → LipschitzOnWith K ψ B → InjOn ψ B → ∀ g : Rn N → ℝ, Continuous g → ∫ y in ψ '' B, g y ∂μHE[n] = ∫ v in B, g (ψ v) * (fderiv ℝ ψ v).toLinearMap.normDet := by
   intro n
   classical
   -- The metric Jacobian `L ↦ normDet L = √det (L* L)` is continuous.
@@ -2743,6 +2823,1045 @@ theorem Submission.lipschitz_real_c1_approximation : ∀ (n : ℕ) (f : Rn n →
     _ = volume (B \ C) + volume (C \ A) := by rw [hBc, zero_add]
     _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hBC hCA
     _ = ε := ENNReal.add_halves ε
+  -- Simon Ch. 2 (3.2) in integral form for the injective map `ψ` on the open set `B`.
+  intro N B ψ K hB hLip hinj g hg
+  set J : Rn n → ℝ := fun v ↦ (fderiv ℝ ψ v).toLinearMap.normDet with hJdef
+  have hJmeas : Measurable J := (normDet_cont (Rn N)).measurable.comp (measurable_fderiv ℝ ψ)
+  set j : Rn n → ℝ≥0 := fun v ↦ (J v).toNNReal with hjdef
+  have hjmeas : Measurable j := hJmeas.real_toNNReal
+  set ν : Measure (Rn n) := (volume.restrict B).withDensity (fun v ↦ (j v : ℝ≥0∞)) with hνdef
+  have hψcont : ContinuousOn ψ B := hLip.continuousOn
+  have hBmeas : MeasurableSet B := hB.measurableSet
+  have hψae : AEMeasurable ψ (volume.restrict B) := hψcont.aemeasurable hBmeas
+  have hψν : AEMeasurable ψ ν := hψae.mono_ac (withDensity_absolutelyContinuous _ _)
+  -- Lusin–Souslin: the injective continuous image `ψ(B)` of the Borel set `B` is Borel.
+  have hΓ : MeasurableSet (ψ '' B) := hBmeas.image_of_continuousOn_injOn hψcont hinj
+  -- Rademacher: `ψ` is differentiable at almost every point of the open set `B`.
+  have hdiff : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ B → DifferentiableAt ℝ ψ x := by
+    filter_upwards [hLip.ae_differentiableWithinAt_of_mem (μ := volume)] with x hx hxB
+    exact (hx hxB).differentiableAt (hB.mem_nhds hxB)
+  -- `Hⁿ⌞ψ(B) = ψ_# ν`, tested on Borel sets `E`.
+  have hmeas : (μHE[n] : Measure (Rn N)).restrict (ψ '' B) = Measure.map ψ ν := by
+    ext E hE
+    rw [Measure.restrict_apply hE, Measure.map_apply_of_aemeasurable hψν hE, hνdef,
+      withDensity_apply' _ _]
+    have hw : AEMeasurable (fun v ↦ E.indicator (1 : Rn N → ℝ≥0∞) (ψ v)) (volume.restrict B) :=
+      (measurable_one.indicator hE).comp_aemeasurable hψae
+    -- Simon (3.5) with the weight `1_E ∘ ψ`.
+    have harea : ∫⁻ y, (∑' x : ↥(B ∩ ψ ⁻¹' {y}), E.indicator (1 : Rn N → ℝ≥0∞) (ψ x)) ∂μHE[n] =
+        ∫⁻ x in B, ENNReal.ofReal (fderiv ℝ ψ x).toLinearMap.normDet *
+          E.indicator (1 : Rn N → ℝ≥0∞) (ψ x) :=
+      (area_mult (Rn N) B ψ K _ hBmeas.nullMeasurableSet hLip hdiff hw).2
+    -- By injectivity, the fibre sum is the indicator of `E ∩ ψ(B)`.
+    have hfib : ∀ y, (∑' x : ↥(B ∩ ψ ⁻¹' {y}), E.indicator (1 : Rn N → ℝ≥0∞) (ψ x)) =
+        (E ∩ ψ '' B).indicator 1 y := by
+      intro y
+      by_cases hy : y ∈ ψ '' B
+      · obtain ⟨v, hv, rfl⟩ := hy
+        rw [tsum_eq_single (⟨v, hv, rfl⟩ : ↥(B ∩ ψ ⁻¹' {ψ v})) fun b hb ↦
+          absurd (Subtype.ext (hinj b.2.1 hv (show ψ b.1 = ψ v from b.2.2))) hb]
+        show E.indicator (1 : Rn N → ℝ≥0∞) (ψ v) = _
+        by_cases hvE : ψ v ∈ E
+        · rw [indicator_of_mem hvE,
+            indicator_of_mem (show ψ v ∈ E ∩ ψ '' B from ⟨hvE, v, hv, rfl⟩)]
+        · rw [indicator_of_notMem hvE,
+            indicator_of_notMem (show ψ v ∉ E ∩ ψ '' B from fun h ↦ hvE h.1)]
+      · rw [indicator_of_notMem (show y ∉ E ∩ ψ '' B from fun h ↦ hy h.2)]
+        exact ENNReal.tsum_eq_zero.mpr fun b ↦ absurd ⟨b.1, b.2.1, b.2.2⟩ hy
+    rw [lintegral_congr hfib, lintegral_indicator_one (hE.inter hΓ)] at harea
+    rw [harea, ← lintegral_indicator₀ (hψae.nullMeasurable hE)]
+    refine setLIntegral_congr_fun hBmeas fun x _ ↦ ?_
+    by_cases hxE : ψ x ∈ E
+    · rw [indicator_of_mem hxE, indicator_of_mem (show x ∈ ψ ⁻¹' E from hxE)]
+      simp [hjdef, hJdef, ENNReal.ofReal]
+    · rw [indicator_of_notMem hxE, indicator_of_notMem (show x ∉ ψ ⁻¹' E from hxE)]
+      simp
+  -- Change of variables for `ψ_# ν`, then integration against the density `Jψ`.
+  rw [hmeas, integral_map hψν hg.aestronglyMeasurable, hνdef,
+    integral_withDensity_eq_integral_smul hjmeas]
+  congr 1
+  funext v
+  rw [NNReal.smul_def, smul_eq_mul, hjdef]
+  simp only
+  rw [Real.coe_toNNReal _ (LinearMap.normDet_nonneg _), mul_comm]
+
+/-- **Blow-up limit of a pulled-back chart integral** (Simon Ch. 3, proof of Theorem 1.6 "⇒" and
+Remark 1.5(2), `chapter-03.txt` lines 87–90 and 113–143, for a single bi-Lipschitz `C¹` chart):
+let `B ⊆ ℝⁿ` be open, `ψ` `C¹` and `K`-Lipschitz on `B` with `c|u - u'| ≤ |ψ(u) - ψ(u')|`
+(`c > 0`) on `B`, and `Jψ(v) = normDet(Dψ(v))`. Then for `u ∈ B` and `f ∈ C_c(ℝᴺ)`,
+`r⁻ⁿ ∫_B f(η_{ψ(u),r}(ψ(v))) Jψ(v) dv → Jψ(u) ∫_{ℝⁿ} f(Dψ(u) y) dy` as `r ↓ 0`. The substitution
+`v = u + r y` turns the left side into `∫ G_r` with
+`G_r(y) = 1_B(u + r y) f(r⁻¹(ψ(u + r y) - ψ(u))) Jψ(u + r y)`. If `f(z) ≠ 0` forces `|z| ≤ R`, the
+lower bound gives `G_r = 0` off `B̄_{R/c}(0)`, and `|G_r| ≤ (sup |f|) Kⁿ` by
+`Submission.chartTD_chart_fderiv_bounds` and `Submission.chartTD_normDet_le_opNorm_pow`. Since
+`G_r(y) → f(Dψ(u) y) Jψ(u)` pointwise (`Dψ` and `normDet` are continuous), dominated convergence
+applies. -/
+theorem Submission.chartTD_chart_blowup_integral_tendsto : ∀ (n N : ℕ) (B : Set (Rn n))
+    (ψ : Rn n → Rn N) (K : ℝ≥0) (c : ℝ), IsOpen B → ContDiffOn ℝ 1 ψ B →
+    LipschitzOnWith K ψ B → 0 < c → (∀ u ∈ B, ∀ u' ∈ B, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖) →
+    ∀ u ∈ B, ∀ f : C_c(Rn N, ℝ),
+      Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ v in B, f (blowUpMap (ψ u) r (ψ v)) *
+          (fderiv ℝ ψ v).toLinearMap.normDet) (𝓝[>] 0)
+        (𝓝 ((fderiv ℝ ψ u).toLinearMap.normDet * ∫ y, f (fderiv ℝ ψ u y))) := by
+  intro n N B ψ K c hB hψ hLip hc hlow u hu f
+  set J : Rn n → ℝ := fun v => (fderiv ℝ ψ v).toLinearMap.normDet with hJdef
+  set L := fderiv ℝ ψ u with hLdef
+  have hBmeas : MeasurableSet B := hB.measurableSet
+  -- Step 1: `normDet = √det(A* ∘ A)` is continuous, so `J = normDet ∘ Dψ` is Borel and continuous
+  -- at `u`; `0 ≤ J ≤ Kⁿ` on `B`; `ψ` is continuous on `B` and has derivative `L` at `u`.
+  have hND : Continuous (fun A : Rn n →L[ℝ] Rn N ↦ A.toLinearMap.normDet) := by
+    have key : ∀ A : Rn n →L[ℝ] Rn N, A.toLinearMap.normDet =
+        Real.sqrt ((ContinuousLinearMap.adjoint A ∘L A).det) := by
+      intro A
+      rw [← A.normDet_sq]
+      simp [Real.sqrt_sq (LinearMap.normDet_nonneg _)]
+    simp_rw [key]
+    exact Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
+      ((ContinuousLinearMap.adjoint.continuous).clm_comp continuous_id))
+  have hJmeas : Measurable J := hND.measurable.comp (measurable_fderiv ℝ ψ)
+  have hJnn : ∀ v, 0 ≤ J v := fun v => LinearMap.normDet_nonneg _
+  have hJle : ∀ v ∈ B, J v ≤ (K : ℝ) ^ n := fun v hv =>
+    (Submission.chartTD_normDet_le_opNorm_pow n N _).trans
+      (pow_le_pow_left₀ (norm_nonneg _)
+        (Submission.chartTD_chart_fderiv_bounds n N B ψ K c hB hψ hLip hlow v hv).1 n)
+  have hJcont : ContinuousAt J u := by
+    have h1 : ContinuousAt (fderiv ℝ ψ) u :=
+      (hψ.continuousOn_fderiv_of_isOpen hB le_rfl).continuousAt (hB.mem_nhds hu)
+    exact hND.continuousAt.comp h1
+  have hψcont : ContinuousOn ψ B := hLip.continuousOn
+  have hd : HasFDerivAt ψ L u :=
+    ((hψ.differentiableOn one_ne_zero).differentiableAt (hB.mem_nhds hu)).hasFDerivAt
+  -- Step 2: `|f| ≤ M` everywhere, and `f z ≠ 0` forces `‖z‖ ≤ R`.
+  obtain ⟨M, hM⟩ := f.hasCompactSupport.exists_bound_of_continuous f.continuous
+  obtain ⟨R, hR⟩ : ∃ R, ∀ z, f z ≠ 0 → ‖z‖ ≤ R := by
+    obtain ⟨R, hR⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall 0
+    exact ⟨R, fun z hz => by simpa using hR (subset_tsupport _ hz)⟩
+  -- Step 3: the substitution `v = u + r y`: `r⁻ⁿ ∫_B h_r = ∫ G_r` for every `r > 0`.
+  let h : ℝ → Rn n → ℝ := fun r v => f (blowUpMap (ψ u) r (ψ v)) * J v
+  let G : ℝ → Rn n → ℝ := fun r y => B.indicator (h r) (u + r • y)
+  have hsub : ∀ r : ℝ, 0 < r →
+      (r ^ n)⁻¹ * ∫ v in B, f (blowUpMap (ψ u) r (ψ v)) * J v = ∫ y, G r y := by
+    intro r hr
+    rw [← integral_indicator hBmeas]
+    have h1 := Measure.integral_comp_smul (volume : Measure (Rn n))
+      (fun y => B.indicator (h r) (u + y)) r
+    rw [integral_add_left_eq_self (fun y => B.indicator (h r) y) u] at h1
+    rw [finrank_euclideanSpace_fin, abs_of_pos (inv_pos.mpr (pow_pos hr n)), smul_eq_mul] at h1
+    exact h1.symm
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  -- Step 4: dominated convergence with the bound `M Kⁿ 1_{B̄_{R/c}(0)}`.
+  have hDCT : Tendsto (fun r => ∫ y, G r y) (𝓝[>] 0) (𝓝 (∫ y, f (L y) * J u)) := by
+    refine tendsto_integral_filter_of_dominated_convergence
+      (fun y => (Metric.closedBall (0 : Rn n) (R / c)).indicator (fun _ => M * (K : ℝ) ^ n) y)
+      ?_ ?_ ?_ ?_
+    · -- `G_r = 1_{S_r} · (h_r ∘ (u + r •))` with `S_r = {y | u + r y ∈ B}` open.
+      filter_upwards [self_mem_nhdsWithin] with r hr
+      have haff : Continuous (fun y : Rn n => u + r • y) := by fun_prop
+      set S : Set (Rn n) := (fun y : Rn n => u + r • y) ⁻¹' B with hSdef
+      have hSopen : IsOpen S := hB.preimage haff
+      have hGS : G r = S.indicator (fun y => h r (u + r • y)) := by
+        funext y
+        by_cases hy : u + r • y ∈ B
+        · simp [G, S, Set.indicator_of_mem, hy]
+        · simp [G, S, Set.indicator_of_notMem, hy]
+      rw [hGS, aestronglyMeasurable_indicator_iff hSopen.measurableSet]
+      have h1 : ContinuousOn (fun y : Rn n => f (blowUpMap (ψ u) r (ψ (u + r • y)))) S := by
+        have hb : Continuous (fun z : Rn N => blowUpMap (ψ u) r z) := by
+          unfold blowUpMap; fun_prop
+        exact (f.continuous.comp hb).comp_continuousOn
+          (hψcont.comp haff.continuousOn (fun y hy => hy))
+      have h2 : Measurable (fun y : Rn n => J (u + r • y)) := hJmeas.comp haff.measurable
+      exact (h1.aestronglyMeasurable hSopen.measurableSet).mul
+        h2.aestronglyMeasurable.restrict
+    · -- If `G_r(y) ≠ 0` then `c r ‖y‖ ≤ ‖ψ(u + r y) - ψ(u)‖ ≤ r R`, so `‖y‖ ≤ R / c`.
+      filter_upwards [self_mem_nhdsWithin] with r hr
+      have hr' : (0:ℝ) < r := hr
+      refine Eventually.of_forall (fun y => ?_)
+      by_cases hy : u + r • y ∈ B
+      · have hGy : G r y = f (blowUpMap (ψ u) r (ψ (u + r • y))) * J (u + r • y) := by
+          simp [G, h, Set.indicator_of_mem, hy]
+        rw [hGy]
+        by_cases hf0 : f (blowUpMap (ψ u) r (ψ (u + r • y))) = 0
+        · rw [hf0, zero_mul, norm_zero]
+          exact Set.indicator_nonneg (fun _ _ => by positivity) _
+        · have hRb := hR _ hf0
+          have hyball : y ∈ Metric.closedBall (0 : Rn n) (R / c) := by
+            rw [Metric.mem_closedBall, dist_zero_right, le_div_iff₀ hc]
+            have h1 := hlow (u + r • y) hy u hu
+            rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hr'.le] at h1
+            unfold blowUpMap at hRb
+            rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr hr'.le)] at hRb
+            have h2 : ‖ψ (u + r • y) - ψ u‖ ≤ r * R := by
+              rw [inv_mul_le_iff₀ hr'] at hRb; linarith
+            nlinarith
+          rw [Set.indicator_of_mem hyball, norm_mul, Real.norm_of_nonneg (hJnn _)]
+          exact mul_le_mul (hM _) (hJle _ hy) (hJnn _) hM0
+      · have hGy : G r y = 0 := by simp [G, Set.indicator_of_notMem, hy]
+        rw [hGy, norm_zero]
+        exact Set.indicator_nonneg (fun _ _ => by positivity) _
+    · exact (integrableOn_const (measure_closedBall_lt_top (x := (0 : Rn n))
+        (r := R / c)).ne).integrable_indicator measurableSet_closedBall
+    · -- Pointwise: eventually `u + r y ∈ B`, `r⁻¹(ψ(u + r y) - ψ(u)) → L y`, `J(u + r y) → J(u)`.
+      refine Eventually.of_forall (fun y => ?_)
+      have hlin : Tendsto (fun r : ℝ => u + r • y) (𝓝[>] 0) (𝓝 u) := by
+        have : Tendsto (fun r : ℝ => u + r • y) (𝓝 0) (𝓝 (u + (0:ℝ) • y)) :=
+          ((continuous_const.add (continuous_id.smul continuous_const)).tendsto 0)
+        simpa using this.mono_left nhdsWithin_le_nhds
+      have hevB : ∀ᶠ r in 𝓝[>] (0:ℝ), u + r • y ∈ B := hlin (hB.mem_nhds hu)
+      have hq : Tendsto (fun r : ℝ => blowUpMap (ψ u) r (ψ (u + r • y))) (𝓝[>] 0)
+          (𝓝 (L y)) := by
+        have := hd.lim y (c := fun r : ℝ => r⁻¹) (l := 𝓝[>] (0:ℝ)) (by
+          refine (tendsto_inv_nhdsGT_zero (𝕜 := ℝ)).congr' ?_
+          filter_upwards [self_mem_nhdsWithin] with t ht
+          simp [abs_of_pos (show (0:ℝ) < t from ht)])
+        simpa [blowUpMap, inv_inv] using this
+      have hlim : Tendsto (fun r : ℝ => f (blowUpMap (ψ u) r (ψ (u + r • y))) * J (u + r • y))
+          (𝓝[>] 0) (𝓝 (f (L y) * J u)) :=
+        ((f.continuous.tendsto _).comp hq).mul (hJcont.tendsto.comp hlin)
+      refine hlim.congr' ?_
+      filter_upwards [hevB] with r hr
+      simp [G, h, Set.indicator_of_mem, hr]
+  -- Step 5: `∫ f(L y) J(u) dy = J(u) ∫ f(L y) dy`, and the two sides agree for `r > 0`.
+  rw [integral_mul_const, mul_comm] at hDCT
+  refine hDCT.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r hr
+  exact (hsub r hr).symm
+/-- **Vanishing normalized density of `|w|` kills the normalized blow-up integrals of `f w`**
+(Simon Ch. 3, proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 127–140, with a weight `w` as in
+Remark 1.8(1), lines 298–306): if `w` is `Hⁿ`-integrable on `S ∩ B_ρ(x)` for every `ρ > 0` and
+`ρ⁻ⁿ ∫_{S ∩ B_ρ(x)} |w| dHⁿ → 0` as `ρ ↓ 0`, then `r⁻ⁿ ∫_S f(η_{x,r}(z)) w(z) dHⁿ(z) → 0` as
+`r ↓ 0` for every `f ∈ C_c(ℝᴺ, ℝ)`. With `|f| ≤ C` and `f(y) = 0` for `‖y‖ ≥ R`, the integrand
+vanishes off `B_{Rr}(x)`, so `|∫_S f(η_{x,r}(z)) w(z) dHⁿ(z)| ≤ C ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ`
+(`setIntegral_indicator`, `norm_integral_le_of_norm_le`), and the normalized integral is at most
+`C Rⁿ · (Rr)⁻ⁿ ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ → 0`. -/
+theorem Submission.chartTD_blowup_integral_tendsto_zero : ∀ (n N : ℕ) (S : Set (Rn N)) (w : Rn N → ℝ) (x : Rn N), (∀ ρ : ℝ, 0 < ρ → IntegrableOn w (S ∩ Metric.ball x ρ) μHE[n]) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x ρ, |w z| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) → ∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ z in S, f (blowUpMap x r z) * w z ∂μHE[n]) (𝓝[>] 0) (𝓝 0) := by
+  intro n N S w x hw hlim f
+  -- `|f| ≤ C`, and `f y = 0` whenever `R ≤ ‖y‖`, for some `R > 0`.
+  obtain ⟨C, hC⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+  obtain ⟨R, hR, hfR⟩ := f.hasCompactSupport.exists_pos_le_norm
+  -- For `r > 0` the integrand vanishes off `B_{Rr}(x)`, which gives
+  -- `|∫_S f(η_{x,r}(z)) w(z) dHⁿ(z)| ≤ C ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ`.
+  have hbound : ∀ r : ℝ, 0 < r → ‖∫ z in S, f (blowUpMap x r z) * w z ∂μHE[n]‖ ≤
+      C * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n] := by
+    intro r hr
+    have hloc : (fun z ↦ f (blowUpMap x r z) * w z) =
+        (Metric.ball x (R * r)).indicator (fun z ↦ f (blowUpMap x r z) * w z) := by
+      funext z
+      by_cases hz : z ∈ Metric.ball x (R * r)
+      · rw [Set.indicator_of_mem hz]
+      · rw [Set.indicator_of_notMem hz]
+        rw [Metric.mem_ball, not_lt, dist_eq_norm] at hz
+        have hRz : R ≤ ‖blowUpMap x r z‖ := by
+          rw [blowUpMap, norm_smul, norm_inv, Real.norm_of_nonneg hr.le, le_inv_mul_iff₀' hr]
+          exact hz
+        rw [hfR _ hRz, zero_mul]
+    rw [hloc, setIntegral_indicator measurableSet_ball]
+    calc ‖∫ z in S ∩ Metric.ball x (R * r), f (blowUpMap x r z) * w z ∂μHE[n]‖
+        ≤ ∫ z in S ∩ Metric.ball x (R * r), C * |w z| ∂μHE[n] := by
+          refine norm_integral_le_of_norm_le ((hw _ (mul_pos hR hr)).abs.const_mul C)
+            (Eventually.of_forall fun z ↦ ?_)
+          rw [norm_mul, Real.norm_eq_abs (w z)]
+          exact mul_le_mul_of_nonneg_right (hC _) (abs_nonneg _)
+      _ = C * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n] := integral_const_mul C _
+  -- `r ↦ Rr` maps `𝓝[>] 0` into itself, so `C Rⁿ · (Rr)⁻ⁿ ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ → 0`.
+  have hRr : Tendsto (fun r : ℝ ↦ R * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have h0 : Tendsto (fun r : ℝ ↦ R * r) (𝓝 0) (𝓝 (R * 0)) := tendsto_id.const_mul R
+      rw [mul_zero] at h0
+      exact h0.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hR hr
+  have hmaj : Tendsto (fun r : ℝ ↦ C * R ^ n *
+      (((R * r) ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n])) (𝓝[>] 0) (𝓝 0) := by
+    have h := (hlim.comp hRr).const_mul (C * R ^ n)
+    rw [mul_zero] at h
+    exact h
+  -- Squeeze: `|r⁻ⁿ ∫_S f(η_{x,r}(z)) w(z) dHⁿ(z)| ≤ C Rⁿ · (Rr)⁻ⁿ ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ`.
+  refine squeeze_zero_norm' ?_ hmaj
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  have hrn : 0 < r ^ n := pow_pos hr n
+  have hRn : 0 < R ^ n := pow_pos hR n
+  rw [norm_mul, norm_inv, norm_pow, Real.norm_of_nonneg hr.le]
+  calc (r ^ n)⁻¹ * ‖∫ z in S, f (blowUpMap x r z) * w z ∂μHE[n]‖
+      ≤ (r ^ n)⁻¹ * (C * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n]) :=
+        mul_le_mul_of_nonneg_left (hbound r hr) (inv_nonneg.mpr hrn.le)
+    _ = C * R ^ n * (((R * r) ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n]) := by
+        rw [mul_pow]
+        field_simp
+/-- **Splitting the localized weighted blow-up integral along a comparison set** (the
+decomposition in Simon Ch. 3, proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 116–120, in the
+weighted form of Def. 1.7 and Remark 1.8(1), lines 284–306). Let `M`, `Γ` be `Hⁿ`-measurable with
+`Hⁿ(Γ) < ∞`, `θ` a positive locally integrable weight on `M`, `f ∈ C_c(ℝᴺ, ℝ)`, `r > 0` and
+`g = f ∘ η_{x,r}`. Then
+`∫_M g θ = ∫_{M ∖ Γ} g θ + θ(x) (∫_Γ g - ∫_{Γ ∖ M} g) + ∫_{M ∩ Γ} g (θ - θ(x))`.
+`g` is continuous, `|g| ≤ C`, and `g = 0` off the closed ball `K = B̄_{r R₀}(x)`, where
+`tsupport f ⊆ B_{R₀}(0)`. So `|g θ| ≤ 1_K C |θ|` makes `g θ` integrable on `M`, and `g` is
+integrable on `Γ`. The identity follows from `integral_inter_add_sdiff₀` (splitting `∫_M g θ` along
+`Γ` and `∫_Γ g` along `M`) and linearity on `M ∩ Γ`. -/
+theorem Submission.chartTD_weighted_blowup_integral_split : ∀ (n N : ℕ) (M Γ : Set (Rn N)) (θ : Rn N → ℝ) (x : Rn N) (f : C_c(Rn N, ℝ)) (r : ℝ), 0 < r → NullMeasurableSet M μHE[n] → NullMeasurableSet Γ μHE[n] → μHE[n] Γ < ∞ → IsPositiveLocallyIntegrableWeight n M θ → ∫ z in M, f (blowUpMap x r z) * θ z ∂μHE[n] = ∫ z in M \ Γ, f (blowUpMap x r z) * θ z ∂μHE[n] + θ x * (∫ z in Γ, f (blowUpMap x r z) ∂μHE[n] - ∫ z in Γ \ M, f (blowUpMap x r z) ∂μHE[n]) + ∫ z in M ∩ Γ, f (blowUpMap x r z) * (θ z - θ x) ∂μHE[n] := by
+  intro n N M Γ θ x f r hr hM hΓ hΓfin hθ
+  obtain ⟨-, hθmeas, hθint⟩ := hθ
+  -- Step 1: `g = f ∘ η_{x,r}` is continuous, `|g| ≤ C`, and `g = 0` off `K = B̄_{r R₀}(x)`
+  have hη : Continuous (blowUpMap x r) := by
+    unfold blowUpMap
+    fun_prop
+  have hgc : Continuous fun z ↦ f (blowUpMap x r z) := f.continuous.comp hη
+  obtain ⟨C, hC⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_ball (0 : Rn N)
+  set K := Metric.closedBall x (r * R₀)
+  have hgK : ∀ z, f (blowUpMap x r z) ≠ 0 → z ∈ K := by
+    intro z hz
+    have hball : blowUpMap x r z ∈ Metric.ball (0 : Rn N) R₀ := hR₀ (subset_tsupport _ hz)
+    rw [mem_ball_zero_iff, blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr,
+      inv_mul_lt_iff₀ hr] at hball
+    rw [Metric.mem_closedBall, dist_eq_norm]
+    exact hball.le
+  -- Step 2: `g θ` is `Hⁿ ⌞ M`-integrable, dominated by `1_K C |θ|`
+  have h1 : IntegrableOn (fun z ↦ f (blowUpMap x r z) * θ z) M μHE[n] := by
+    have hmaj : IntegrableOn (K.indicator fun z ↦ C * ‖θ z‖) M μHE[n] := by
+      rw [IntegrableOn, integrable_indicator_iff Metric.isClosed_closedBall.measurableSet,
+        IntegrableOn, Measure.restrict_restrict Metric.isClosed_closedBall.measurableSet,
+        inter_comm]
+      exact (hθint K (isCompact_closedBall x _)).norm.const_mul C
+    refine Integrable.mono' hmaj (hgc.aestronglyMeasurable.mul hθmeas.aestronglyMeasurable) ?_
+    refine Eventually.of_forall fun z ↦ ?_
+    by_cases hz : f (blowUpMap x r z) = 0
+    · rw [hz, zero_mul, norm_zero]
+      exact indicator_nonneg (fun _ _ ↦ mul_nonneg ((norm_nonneg _).trans (hC 0))
+        (norm_nonneg _)) z
+    · rw [indicator_of_mem (hgK z hz), norm_mul]
+      exact mul_le_mul_of_nonneg_right (hC _) (norm_nonneg _)
+  -- Step 3: `g` is `Hⁿ ⌞ Γ`-integrable (bounded and continuous, `Hⁿ(Γ) < ∞`)
+  have h2 : IntegrableOn (fun z ↦ f (blowUpMap x r z)) Γ μHE[n] :=
+    IntegrableOn.of_bound hΓfin hgc.aestronglyMeasurable C (Eventually.of_forall fun z ↦ hC _)
+  -- Step 4: `g θ` and `g` are integrable on `M ∩ Γ`
+  have h1' := h1.mono_set (inter_subset_left : M ∩ Γ ⊆ M)
+  have h2' := h2.mono_set (inter_subset_right : M ∩ Γ ⊆ Γ)
+  -- Step 5: split `∫_M g θ` along `Γ` and `∫_Γ g` along `M`; linearity on `M ∩ Γ`
+  have hA := integral_inter_add_sdiff₀ hΓ h1
+  have hB := integral_inter_add_sdiff₀ hM h2
+  rw [inter_comm Γ M] at hB
+  have hD : ∫ z in M ∩ Γ, f (blowUpMap x r z) * (θ z - θ x) ∂μHE[n] =
+      ∫ z in M ∩ Γ, f (blowUpMap x r z) * θ z ∂μHE[n] -
+        θ x * ∫ z in M ∩ Γ, f (blowUpMap x r z) ∂μHE[n] := by
+    rw [← integral_const_mul, ← integral_sub h1' (h2'.const_mul _)]
+    congr 1
+    funext z
+    ring
+  -- Step 6: substitute and rearrange
+  rw [hD, ← hB, ← hA]
+  ring
+/-- **Change of variables for blow-ups** (Simon Ch. 3, proof of Theorem 1.6 "⇒",
+`chapter-03.txt` lines 113–143, esp. line 133; Def. 1.7, lines 284–295): for `r > 0`, every set
+`A` and every `g`, `∫_{η_{x,r}(A)} g dHⁿ = r⁻ⁿ ∫_A g ∘ η_{x,r} dHⁿ`. The map
+`η_{x,r} = (r⁻¹ • ·) ∘ (· - x)` is a measurable equivalence with `Hⁿ(η⁻¹(T)) = rⁿ Hⁿ(T)` for
+every `T` (translation invariance and `euclideanHausdorffMeasure_smul₀`), so
+`η_#(Hⁿ⌞A) = rⁿ Hⁿ⌞η(A)`; conclude by `integral_map_equiv` and `integral_smul_nnreal_measure`. -/
+theorem Submission.chartTD_setIntegral_blowUpMap_image : ∀ (N n : ℕ) (x : Rn N) (r : ℝ), 0 < r → ∀ (A : Set (Rn N)) (g : Rn N → ℝ), ∫ y in blowUpMap x r '' A, g y ∂μHE[n] = (r ^ n)⁻¹ * ∫ z in A, g (blowUpMap x r z) ∂μHE[n] := by
+  intro N n x r hr A g
+  -- `η_{x,r} = (r⁻¹ • ·) ∘ (· - x)` as a measurable equivalence of `ℝᴺ`.
+  set e : Rn N ≃ᵐ Rn N :=
+    (MeasurableEquiv.subRight x).trans (MeasurableEquiv.smul₀ r⁻¹ (inv_ne_zero hr.ne'))
+  have he : ⇑e = blowUpMap x r := rfl
+  -- Scaling: `Hⁿ(η⁻¹(T)) = rⁿ Hⁿ(T)` for every set `T`, since `η⁻¹(T) = r • T + x`.
+  have hmap : (μHE[n] : Measure (Rn N)).map e = (‖r‖₊ ^ n) • μHE[n] := by
+    ext T -
+    have hT : ⇑e ⁻¹' T = (fun y ↦ y + -x) ⁻¹' ((fun z ↦ r⁻¹ • z) ⁻¹' T) := by
+      ext y
+      simp [he, blowUpMap, sub_eq_add_neg]
+    rw [e.map_apply, Measure.smul_apply, hT, measure_preimage_add_right,
+      preimage_smul_inv₀ hr.ne', Measure.euclideanHausdorffMeasure_smul₀ n hr.ne']
+  -- Hence `η_#(Hⁿ⌞A) = rⁿ Hⁿ⌞η(A)`, as `η⁻¹(η(A)) = A`.
+  have hres : ((μHE[n] : Measure (Rn N)).restrict A).map e =
+      (‖r‖₊ ^ n) • (μHE[n] : Measure (Rn N)).restrict (e '' A) := by
+    rw [← Measure.restrict_smul, ← hmap, e.restrict_map, e.preimage_image]
+  have hint : ∫ z in A, g (blowUpMap x r z) ∂μHE[n] =
+      r ^ n * ∫ y in blowUpMap x r '' A, g y ∂μHE[n] := by
+    rw [← he, ← integral_map_equiv, hres, integral_smul_nnreal_measure, NNReal.smul_def,
+      NNReal.coe_pow, coe_nnnorm, Real.norm_of_nonneg hr.le, smul_eq_mul]
+  rw [hint, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero n hr.ne'), one_mul]
+/-- **`C¹` immersions are locally bi-Lipschitz**, the localization step behind the local
+representation of `C¹` immersions (Simon Ch. 2, §4): if `ψ` is `C¹` on the open set `V ⊆ ℝⁿ`
+and `Dψ(u)` is injective for every `u ∈ V`, then each `u₀ ∈ V` has a ball `B_r(u₀) ⊆ V` on
+which `ψ` is `K`-Lipschitz and `c |u - u'| ≤ |ψ(u) - ψ(u')|` for some `c > 0`. The injective
+`L = Dψ(u₀)` satisfies `c₀ |v| ≤ |L v|` (`LinearMap.exists_antilipschitzWith`); continuity of
+`Dψ` gives `‖Dψ(u) - L‖ ≤ c₀/2` on a small ball, and the mean value inequality on the convex
+ball, applied to `ψ` and to `ψ - L`, gives `K = ‖L‖ + c₀/2` and `c = c₀/2`. -/
+theorem Submission.chartTD_immersion_local_biLipschitz : ∀ (n N : ℕ) (V : Set (Rn n))
+    (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V →
+    (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → ∀ u₀ ∈ V, ∃ r : ℝ, 0 < r ∧
+      Metric.ball u₀ r ⊆ V ∧ ∃ (K : ℝ≥0) (c : ℝ), 0 < c ∧ LipschitzOnWith K ψ (Metric.ball u₀ r) ∧
+        ∀ u ∈ Metric.ball u₀ r, ∀ u' ∈ Metric.ball u₀ r, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖ := by
+  intro n N V ψ hV hψ hinj u₀ hu₀
+  -- Step 1: `ψ` is differentiable on the open set `V` and `Dψ` is continuous there.
+  have hdiff : ∀ u ∈ V, DifferentiableAt ℝ ψ u := fun u hu ↦
+    (hψ.differentiableOn_one u hu).differentiableAt (hV.mem_nhds hu)
+  have hcont : ContinuousOn (fderiv ℝ ψ) V := hψ.continuousOn_fderiv_of_isOpen hV le_rfl
+  -- Step 2: `L = Dψ(u₀)` is injective, hence bounded below: `c₀ ‖v‖ ≤ ‖L v‖` with `c₀ = A⁻¹`.
+  set L := fderiv ℝ ψ u₀ with hL_def
+  obtain ⟨A, hA, hAL⟩ := (L : Rn n →ₗ[ℝ] Rn N).exists_antilipschitzWith
+    (LinearMap.ker_eq_bot.2 (hinj u₀ hu₀))
+  have hA' : (0 : ℝ) < A := NNReal.coe_pos.2 hA
+  have hc₀ : 0 < (A : ℝ)⁻¹ := inv_pos.2 hA'
+  have hlow : ∀ v, (A : ℝ)⁻¹ * ‖v‖ ≤ ‖L v‖ := by
+    intro v
+    have h := hAL.le_mul_dist v 0
+    simp only [dist_zero_right, map_zero, ContinuousLinearMap.coe_coe] at h
+    rw [inv_mul_le_iff₀ hA']
+    exact h
+  -- Step 3: choose `r` with `B_r(u₀) ⊆ V` and `‖Dψ(u) - L‖ ≤ c₀/2` on `B_r(u₀)`.
+  have hev : ∀ᶠ u in 𝓝 u₀, u ∈ V ∧ ‖fderiv ℝ ψ u - L‖ ≤ (A : ℝ)⁻¹ / 2 := by
+    refine (hV.eventually_mem hu₀).and ?_
+    filter_upwards [(hcont.continuousAt (hV.mem_nhds hu₀)).eventually_mem
+      (Metric.closedBall_mem_nhds L (half_pos hc₀))] with u hu
+    rwa [Metric.mem_closedBall, dist_eq_norm] at hu
+  obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff_ball.1 hev
+  -- Step 4: `‖Dψ(u)‖ ≤ ‖L‖ + c₀/2` on `B_r(u₀)`.
+  have hC : 0 ≤ ‖L‖ + (A : ℝ)⁻¹ / 2 := add_nonneg (norm_nonneg _) (half_pos hc₀).le
+  have hbound : ∀ u ∈ Metric.ball u₀ r, ‖fderiv ℝ ψ u‖ ≤ ‖L‖ + (A : ℝ)⁻¹ / 2 := fun u hu ↦
+    calc ‖fderiv ℝ ψ u‖ = ‖L + (fderiv ℝ ψ u - L)‖ := by congr 1; abel
+      _ ≤ ‖L‖ + ‖fderiv ℝ ψ u - L‖ := norm_add_le _ _
+      _ ≤ ‖L‖ + (A : ℝ)⁻¹ / 2 := by linarith [(hball u hu).2]
+  refine ⟨r, hr, fun u hu ↦ (hball u hu).1, (‖L‖ + (A : ℝ)⁻¹ / 2).toNNReal, (A : ℝ)⁻¹ / 2,
+    half_pos hc₀, ?_, ?_⟩
+  · -- Step 5: mean value inequality on the convex ball.
+    rw [lipschitzOnWith_iff_norm_sub_le, Real.coe_toNNReal _ hC]
+    intro x hx y hy
+    exact (convex_ball u₀ r).norm_image_sub_le_of_norm_fderiv_le (𝕜 := ℝ)
+      (fun u hu ↦ hdiff u (hball u hu).1) hbound hy hx
+  · -- Step 6: mean value inequality for `ψ - L`, then the lower bound for `L`.
+    intro u hu u' hu'
+    have hmv := (convex_ball u₀ r).norm_image_sub_le_of_norm_fderiv_le' (𝕜 := ℝ) (φ := L)
+      (fun x hx ↦ hdiff x (hball x hx).1) (fun x hx ↦ (hball x hx).2) hu' hu
+    have h2 := hlow (u - u')
+    have h3 : ‖L (u - u')‖ ≤ ‖ψ u - ψ u'‖ + ‖ψ u - ψ u' - L (u - u')‖ := by
+      calc ‖L (u - u')‖ = ‖(ψ u - ψ u') - (ψ u - ψ u' - L (u - u'))‖ := by congr 1; abel
+        _ ≤ ‖ψ u - ψ u'‖ + ‖ψ u - ψ u' - L (u - u')‖ := norm_sub_le _ _
+    linarith
+/-- **Measure-theoretic facts for a bi-Lipschitz image of a bounded open set** (parent
+`root.chart_tangent_differential-a1`, Step 2, (Σ1)–(Σ3); Simon Ch. 2, Theorem 1.8(i)). Let
+`B ⊆ ℝⁿ` be open and bounded, `ψ : ℝⁿ → ℝᴺ` `K`-Lipschitz on `B` with
+`c |u - u'| ≤ |ψ u - ψ u'|` on `B` (`c > 0`), and `Γ = ψ(B)`. Then `Γ` is `Hⁿ`-measurable and
+bounded, `Hⁿ(Γ) < ∞`, `Hⁿ(Γ ∩ B̄_ρ(x)) ≤ C ρⁿ` for `x ∈ Γ`, `ρ > 0`, and `B ∩ ψ⁻¹(Z)` is
+`Lⁿ`-null whenever `Hⁿ(Z) = 0`. The bounds follow from `Hⁿ(φ(E)) ≤ Λⁿ Hⁿ(E)` for `Λ`-Lipschitz
+`φ` (SimonGMT `euclideanHausdorffMeasure_image_le_of_lipschitzOn`) and `Hⁿ = Lⁿ` on `ℝⁿ`, applied
+to `ψ` and to the `c⁻¹`-Lipschitz inverse of `ψ|_B`; measurability is Lusin–Souslin. -/
+theorem Submission.chartTD_biLipschitz_image_measure_facts : ∀ (n N : ℕ) (B : Set (Rn n))
+    (ψ : Rn n → Rn N) (K : ℝ≥0) (c : ℝ), IsOpen B → Bornology.IsBounded B →
+    LipschitzOnWith K ψ B → 0 < c → (∀ u ∈ B, ∀ u' ∈ B, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖) →
+    NullMeasurableSet (ψ '' B) μHE[n] ∧ Bornology.IsBounded (ψ '' B) ∧ μHE[n] (ψ '' B) < ∞ ∧
+      (∃ C : ℝ, ∀ x ∈ ψ '' B, ∀ ρ : ℝ, 0 < ρ →
+        μHE[n] (ψ '' B ∩ Metric.closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) ∧
+      ∀ Z : Set (Rn N), μHE[n] Z = 0 → volume (B ∩ ψ ⁻¹' Z) = 0 := by
+  intro n N B ψ K c hBo hBb hψ hc hlow
+  -- `Hⁿ = Lⁿ` on `ℝⁿ`.
+  have hHE : (μHE[n] : Measure (Rn n)) = volume :=
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume n
+  -- Since `c > 0`, the lower bound makes `ψ` injective on `B`.
+  have hinj : InjOn ψ B := by
+    intro u hu u' hu' h
+    have h1 := hlow u hu u' hu'
+    rw [h, sub_self, norm_zero] at h1
+    have h2 : ‖u - u'‖ ≤ 0 := le_of_mul_le_mul_left (by rwa [mul_zero]) hc
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
+  -- (F2) for `ψ` on subsets `A ⊆ B`: `Hⁿ(ψ(A)) ≤ Kⁿ Lⁿ(A)`.
+  have hF2 : ∀ A ⊆ B, μHE[n] (ψ '' A) ≤ (K : ℝ≥0∞) ^ n * volume A := by
+    intro A hA
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hψ.mono hA)
+    rwa [hHE] at h
+  -- (i) Lusin–Souslin: `ψ` is continuous and injective on the Borel set `B`, so `Γ` is Borel.
+  refine ⟨(hBo.measurableSet.image_of_continuousOn_injOn hψ.continuousOn hinj).nullMeasurableSet,
+    ?_, ?_, ?_, ?_⟩
+  -- (ii) `|ψ u - ψ u'| ≤ K |u - u'| ≤ K R` on `B`.
+  · obtain ⟨R, hR⟩ := Metric.isBounded_iff.mp hBb
+    refine Metric.isBounded_iff.mpr ⟨K * R, ?_⟩
+    rintro _ ⟨u, hu, rfl⟩ _ ⟨u', hu', rfl⟩
+    calc dist (ψ u) (ψ u') ≤ K * dist u u' := hψ.dist_le_mul u hu u' hu'
+      _ ≤ K * R := mul_le_mul_of_nonneg_left (hR hu hu') K.coe_nonneg
+  -- (iii) `Hⁿ(Γ) ≤ Kⁿ Lⁿ(B) < ∞`.
+  · calc μHE[n] (ψ '' B) ≤ (K : ℝ≥0∞) ^ n * volume B := hF2 B subset_rfl
+      _ < ∞ := ENNReal.mul_lt_top (ENNReal.pow_lt_top ENNReal.coe_lt_top) hBb.measure_lt_top
+  -- (iv) `C = Kⁿ ω_n c⁻ⁿ`: `Γ ∩ B̄_ρ(ψ u) ⊆ ψ(B ∩ B̄_{ρ/c}(u))` and `Lⁿ(B̄_s(u)) = sⁿ ω_n`.
+  · set V : ℝ := (volume (Metric.ball (0 : Rn n) 1)).toReal with hV
+    refine ⟨(K : ℝ) ^ n * V * c⁻¹ ^ n, ?_⟩
+    rintro _ ⟨u, hu, rfl⟩ ρ hρ
+    have hsub : ψ '' B ∩ Metric.closedBall (ψ u) ρ ⊆ ψ '' (B ∩ Metric.closedBall u (ρ / c)) := by
+      rintro _ ⟨⟨u', hu', rfl⟩, hy⟩
+      refine ⟨u', ⟨hu', ?_⟩, rfl⟩
+      rw [Metric.mem_closedBall, dist_eq_norm] at hy ⊢
+      rw [le_div_iff₀ hc]
+      have := hlow u' hu' u hu
+      linarith
+    have hball : volume (Metric.ball (0 : Rn n) 1) = ENNReal.ofReal V := by
+      rw [hV, ENNReal.ofReal_toReal measure_ball_lt_top.ne]
+    calc μHE[n] (ψ '' B ∩ Metric.closedBall (ψ u) ρ)
+        ≤ μHE[n] (ψ '' (B ∩ Metric.closedBall u (ρ / c))) := measure_mono hsub
+      _ ≤ (K : ℝ≥0∞) ^ n * volume (B ∩ Metric.closedBall u (ρ / c)) := hF2 _ inter_subset_left
+      _ ≤ (K : ℝ≥0∞) ^ n * volume (Metric.closedBall u (ρ / c)) := by
+          gcongr; exact inter_subset_right
+      _ = (K : ℝ≥0∞) ^ n * (ENNReal.ofReal ((ρ / c) ^ n) * ENNReal.ofReal V) := by
+          rw [Measure.addHaar_closedBall _ _ (div_pos hρ hc).le, finrank_euclideanSpace_fin, hball]
+      _ = ENNReal.ofReal ((K : ℝ) ^ n * ((ρ / c) ^ n * V)) := by
+          rw [ENNReal.ofReal_mul (pow_nonneg K.coe_nonneg n),
+            ENNReal.ofReal_mul (pow_nonneg (div_pos hρ hc).le n), ENNReal.ofReal_pow K.coe_nonneg,
+            ENNReal.ofReal_coe_nnreal]
+      _ = ENNReal.ofReal ((K : ℝ) ^ n * V * c⁻¹ ^ n * ρ ^ n) := by
+          congr 1
+          rw [div_pow, div_eq_mul_inv, inv_pow]
+          ring
+  -- (v) The inverse `φ` of `ψ|_B` is `c⁻¹`-Lipschitz on `Γ` and `B ∩ ψ⁻¹(Z) ⊆ φ(Γ ∩ Z)`, so
+  -- `Lⁿ(B ∩ ψ⁻¹(Z)) ≤ c⁻ⁿ Hⁿ(Γ ∩ Z) = 0`.
+  · intro Z hZ
+    have hleft : LeftInvOn (Function.invFunOn ψ B) ψ B := hinj.leftInvOn_invFunOn
+    have hφ : LipschitzOnWith (Real.toNNReal c⁻¹) (Function.invFunOn ψ B) (ψ '' B) := by
+      apply LipschitzOnWith.of_dist_le_mul
+      rintro _ ⟨u, hu, rfl⟩ _ ⟨u', hu', rfl⟩
+      rw [hleft hu, hleft hu', Real.coe_toNNReal _ (inv_nonneg.mpr hc.le), dist_eq_norm,
+        dist_eq_norm, inv_mul_eq_div, le_div_iff₀ hc]
+      linarith [hlow u hu u' hu']
+    have hsub : B ∩ ψ ⁻¹' Z ⊆ Function.invFunOn ψ B '' (ψ '' B ∩ Z) := by
+      rintro u ⟨hu, hZu⟩
+      exact ⟨ψ u, ⟨mem_image_of_mem ψ hu, hZu⟩, hleft hu⟩
+    have h1 := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hφ.mono (inter_subset_left : ψ '' B ∩ Z ⊆ ψ '' B))
+    rw [hHE] at h1
+    refine nonpos_iff_eq_zero.mp ?_
+    calc volume (B ∩ ψ ⁻¹' Z)
+        ≤ volume (Function.invFunOn ψ B '' (ψ '' B ∩ Z)) := measure_mono hsub
+      _ ≤ (Real.toNNReal c⁻¹ : ℝ≥0∞) ^ n * μHE[n] (ψ '' B ∩ Z) := h1
+      _ ≤ (Real.toNNReal c⁻¹ : ℝ≥0∞) ^ n * μHE[n] Z := by gcongr; exact inter_subset_right
+      _ = 0 := by rw [hZ, mul_zero]
+
+/-- **Approximate tangent space of a bi-Lipschitz `C¹` chart** (Simon Ch. 3, Remark 1.5(2) and
+the proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 87–90 and 113–143, esp. lines 122–126): if
+`ψ` is `C¹` and `K`-Lipschitz on the open set `B ⊆ ℝⁿ` with `c|u - u'| ≤ |ψ(u) - ψ(u')|` there
+(`c > 0`), then at every `u ∈ B` the image `ψ(B)` has approximate tangent space
+`T = range Dψ(u)`. As `c|w| ≤ |Dψ(u) w|`, `Dψ(u)` is injective and `finrank T = n`. For `r > 0`
+the blow-up scaling and the area formula on `B` give `∫_{η_{ψ(u),r}(ψ(B))} f dHⁿ =
+r⁻ⁿ ∫_B f(η_{ψ(u),r}(ψ(v))) Jψ(v) dv`, which tends to `Jψ(u) ∫ f(Dψ(u) y) dy`; the area formula
+for the injective linear map `Dψ(u)` on `ℝⁿ` identifies this limit with `∫_T f dHⁿ`. -/
+theorem Submission.chartTD_biLipschitz_chart_approx_tangent : ∀ (n N : ℕ) (B : Set (Rn n)) (ψ : Rn n → Rn N) (K : ℝ≥0) (c : ℝ), IsOpen B → ContDiffOn ℝ 1 ψ B → LipschitzOnWith K ψ B → 0 < c → (∀ u ∈ B, ∀ u' ∈ B, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖) → ∀ u ∈ B, HasApproximateTangentSpaceAt n (ψ '' B) (ψ u) (LinearMap.range (fderiv ℝ ψ u).toLinearMap) := by
+  intro n N B ψ K c hB hψ hK hc hlow u hu
+  -- Since `c > 0`, `c‖x‖ ≤ 0` forces `x = 0`.
+  have hzero : ∀ x : Rn n, c * ‖x‖ ≤ 0 → x = 0 := fun x hx ↦
+    norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right hx hc)
+  -- `c‖w‖ ≤ ‖Dψ(u) w‖` makes `Dψ(u)` injective, and the lower bound makes `ψ` injective on `B`.
+  have hLinj : Function.Injective (fderiv ℝ ψ u) := fun w w' hww' ↦ by
+    have h := (Submission.chartTD_chart_fderiv_bounds n N B ψ K c hB hψ hK hlow u hu).2 (w - w')
+    rw [map_sub, hww', sub_self, norm_zero] at h
+    exact sub_eq_zero.1 (hzero _ h)
+  have hinj : InjOn ψ B := fun v hv v' hv' hvv' ↦ by
+    have h := hlow v hv v' hv'
+    rw [hvv', sub_self, norm_zero] at h
+    exact sub_eq_zero.1 (hzero _ h)
+  refine ⟨by rw [LinearMap.finrank_range_of_inj (f := (fderiv ℝ ψ u).toLinearMap) hLinj,
+    finrank_euclideanSpace_fin], fun f ↦ ?_⟩
+  -- The area formula for `Dψ(u)` on `ℝⁿ`, whose Jacobian is the constant `Jψ(u)`:
+  -- `∫_T f dHⁿ = Jψ(u) ∫ f(Dψ(u) y) dy`.
+  have hT : ∫ y in (LinearMap.range (fderiv ℝ ψ u).toLinearMap : Set (Rn N)), f y ∂μHE[n] =
+      (fderiv ℝ ψ u).toLinearMap.normDet * ∫ y, f (fderiv ℝ ψ u y) := by
+    have h := Submission.chartTD_injective_area_setIntegral n N univ (fderiv ℝ ψ u)
+      ‖fderiv ℝ ψ u‖₊ isOpen_univ (fderiv ℝ ψ u).lipschitzWith.lipschitzOnWith hLinj.injOn f
+      (map_continuous f)
+    simp only [image_univ, Measure.restrict_univ, ContinuousLinearMap.fderiv] at h
+    rw [LinearMap.coe_range, ContinuousLinearMap.coe_coe, h, integral_mul_const, mul_comm]
+  rw [hT]
+  -- For `r > 0`, the blow-up scaling and the area formula on `B` with `g = f ∘ η_{ψ(u),r}` turn
+  -- `∫_{η_{ψ(u),r}(ψ(B))} f dHⁿ` into the blown-up chart integral, whose limit is known.
+  refine (Submission.chartTD_chart_blowup_integral_tendsto n N B ψ K c hB hψ hK hc hlow u hu
+    f).congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r hr
+  have hg : Continuous fun z ↦ f (blowUpMap (ψ u) r z) := by
+    unfold blowUpMap
+    fun_prop
+  rw [Submission.chartTD_setIntegral_blowUpMap_image N n (ψ u) r hr (ψ '' B) f,
+    Submission.chartTD_injective_area_setIntegral n N B ψ K hB hK hinj _ hg]
+/-- **Upper density theorem for `|w| Hⁿ⌞A`** (Simon Ch. 1, Theorem 3.6 and Remark 3.7(2),
+`chapter-01.txt` lines 700–721, by the covering argument of the proof of Theorem 3.3, lines
+666–698): if `A` is `Hⁿ`-measurable and `w` is `Hⁿ`-integrable on `A ∩ K` for every compact `K`,
+then `ρ⁻ⁿ ∫_{A ∩ B_ρ(x)} |w| dHⁿ → 0` as `ρ ↓ 0` for `Hⁿ`-a.e. `x ∉ A`. Take a Borel `A₀ ⊆ A`
+with `Hⁿ(A ∖ A₀) = 0` and `ν = |w| Hⁿ⌞A₀`, which is finite on compact sets, hence outer regular:
+`ν(U) < ε` for some open `U ⊇ ℝᴺ ∖ A₀` (Simon uses the closed `ℝᴺ ∖ U ⊆ A₀`). The points
+`x ∉ A₀` with `ν(B̄_ρ(x)) ≥ ρⁿ/(k+1)` for arbitrarily small `ρ` are covered finely by such balls
+inside `U`; the 5r-covering lemma gives disjoint ones with `∑ (10ρⱼ)ⁿ ≤ 10ⁿ (k+1) ν(U)`, so this
+set is `Hⁿ`-null (only nullity is needed, so the non-sharp constant `10ⁿ` suffices). Off these
+null sets, `∫_{A ∩ B_ρ(x)} |w| dHⁿ ≤ ν(B̄_ρ(x))`. -/
+theorem Submission.chartTD_upper_density_zero_ae : ∀ (n N : ℕ) (A : Set (Rn N)) (w : Rn N → ℝ), NullMeasurableSet A μHE[n] → (∀ K : Set (Rn N), IsCompact K → IntegrableOn w (A ∩ K) μHE[n]) → ∀ᵐ x ∂(μHE[n] : Measure (Rn N)), x ∉ A → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in A ∩ Metric.ball x ρ, |w z| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) := by
+  intro n N A w hA hw
+  -- A Borel kernel `A₀ ⊆ A` with `Hⁿ(A ∖ A₀) = 0`.
+  obtain ⟨A₀, hA₀A, hA₀, hA₀ae⟩ := hA.exists_measurable_subset_ae_eq
+  -- The weighted measure `ν = |w| Hⁿ⌞A₀`: concentrated on `A₀` and finite on compact sets.
+  set ν : Measure (Rn N) :=
+    ((μHE[n] : Measure (Rn N)).restrict A₀).withDensity (fun z ↦ ‖w z‖ₑ) with hν
+  have hνapp : ∀ s : Set (Rn N), MeasurableSet s →
+      ν s = ∫⁻ z in s ∩ A₀, ‖w z‖ₑ ∂(μHE[n] : Measure (Rn N)) := by
+    intro s hs
+    rw [hν, withDensity_apply _ hs, Measure.restrict_restrict hs]
+  have hνA₀ : ν A₀ᶜ = 0 := by
+    rw [hνapp _ hA₀.compl, compl_inter_self, Measure.restrict_empty, lintegral_zero_measure]
+  have : IsFiniteMeasureOnCompacts ν := ⟨fun K hK => by
+    rw [hνapp K hK.isClosed.measurableSet]
+    exact (lintegral_mono_set (s := K ∩ A₀) (t := A ∩ K) fun z hz => ⟨hA₀A hz.2, hz.1⟩).trans_lt
+      (hw K hK).2⟩
+  -- `S k`: the points `x ∉ A₀` with `ν(B̄_ρ(x)) ≥ ρⁿ/(k+1)` for arbitrarily small `ρ > 0`.
+  set S : ℕ → Set (Rn N) := fun k ↦ {x | x ∉ A₀ ∧ ∀ δ > 0, ∃ ρ ∈ Ioo (0 : ℝ) δ,
+    ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * ρ ^ n) ≤ ν (Metric.closedBall x ρ)} with hS
+  -- Simon 3.3/3.6: each `S k` is `Hⁿ`-null.
+  have hSH : ∀ k, (μH[(n : ℝ)] : Measure (Rn N)) (S k) = 0 := by
+    intro k
+    refine le_antisymm (ENNReal.le_of_forall_pos_le_add fun ε hε _ => ?_) zero_le
+    rw [zero_add]
+    -- An open `U ⊇ ℝᴺ ∖ A₀` with `ν(U) < ε / (10ⁿ (k+1))` (outer regularity, `ν(ℝᴺ ∖ A₀) = 0`).
+    obtain ⟨U, hUA, hUo, hUν⟩ := Set.exists_isOpen_lt_of_lt (μ := ν) A₀ᶜ
+      (ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * ε / 10 ^ n))
+      (by rw [hνA₀]; exact ENNReal.ofReal_pos.2 (by positivity))
+    -- At every scale `1/(m+1)`, the 5r-covering lemma applied to the balls `B̄_ρ(x) ⊆ U`,
+    -- `x ∈ S k`, `ρ < 1/(m+1)`, `ν(B̄_ρ(x)) ≥ ρⁿ/(k+1)` gives a countable disjoint
+    -- subfamily whose 5-fold enlargements cover `S k`.
+    have hcov : ∀ m : ℕ, ∃ u : Set (Rn N × ℝ), u.Countable ∧
+        (∀ b ∈ u, 0 < b.2 ∧ b.2 < ((m : ℝ) + 1)⁻¹) ∧
+        S k ⊆ (⋃ b : u, Metric.closedBall b.1.1 (5 * b.1.2)) ∧
+        ∑' b : u, ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * b.1.2 ^ n) ≤
+          ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * ε / 10 ^ n) := by
+      intro m
+      let B : Set (Rn N × ℝ) := {b | b.1 ∈ S k ∧ 0 < b.2 ∧ b.2 < ((m : ℝ) + 1)⁻¹ ∧
+        Metric.closedBall b.1 b.2 ⊆ U ∧
+        ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * b.2 ^ n) ≤ ν (Metric.closedBall b.1 b.2)}
+      obtain ⟨u, huB, hudisj, hucov⟩ :=
+        Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall B Prod.fst Prod.snd
+          ((m : ℝ) + 1)⁻¹ (fun b hb => hb.2.2.1.le) 5 (by norm_num)
+      have hucount : u.Countable := hudisj.countable_of_nonempty_interior fun b hb =>
+        ⟨b.1, mem_interior_iff_mem_nhds.2 (Metric.closedBall_mem_nhds _ (huB hb).2.1)⟩
+      refine ⟨u, hucount, fun b hb => ⟨(huB hb).2.1, (huB hb).2.2.1⟩, ?_, ?_⟩
+      · intro x hx
+        obtain ⟨r₀, hr₀, hr₀U⟩ :=
+          Metric.nhds_basis_closedBall.mem_iff.1 (hUo.mem_nhds (hUA hx.1))
+        obtain ⟨ρ, hρ, hρν⟩ := hx.2 (min r₀ ((m : ℝ) + 1)⁻¹) (lt_min hr₀ (by positivity))
+        have hb : (x, ρ) ∈ B := ⟨hx, hρ.1, hρ.2.trans_le (min_le_right _ _),
+          (Metric.closedBall_subset_closedBall (hρ.2.le.trans (min_le_left _ _))).trans hr₀U,
+          hρν⟩
+        obtain ⟨b, hbu, hsub⟩ := hucov (x, ρ) hb
+        exact mem_iUnion.2 ⟨⟨b, hbu⟩, hsub (Metric.mem_closedBall_self hρ.1.le)⟩
+      · calc ∑' b : u, ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * b.1.2 ^ n)
+            ≤ ∑' b : u, ν (Metric.closedBall b.1.1 b.1.2) :=
+              ENNReal.tsum_le_tsum fun b => (huB b.2).2.2.2.2
+          _ = ν (⋃ b ∈ u, Metric.closedBall b.1 b.2) :=
+              (measure_biUnion hucount hudisj fun b _ =>
+                Metric.isClosed_closedBall.measurableSet).symm
+          _ ≤ ν U := measure_mono (iUnion₂_subset fun b hb => (huB hb).2.2.2.1)
+          _ ≤ ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * ε / 10 ^ n) := hUν.le
+    choose u hucount hur hucov husum using hcov
+    have : ∀ m, Countable (u m) := fun m => (hucount m).to_subtype
+    have hr0 : Tendsto (fun m : ℕ => ENNReal.ofReal (10 * ((m : ℝ) + 1)⁻¹)) atTop (𝓝 0) := by
+      have h := tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (10 : ℝ)
+      simp only [one_div, mul_zero] at h
+      have h' := ENNReal.tendsto_ofReal h
+      rwa [ENNReal.ofReal_zero] at h'
+    -- `diam(B̄_{5r}(c))ⁿ ≤ (10r)ⁿ = 10ⁿ (k+1) · rⁿ/(k+1)`.
+    have hterm : ∀ (r : ℝ) (c : Rn N), 0 < r →
+        Metric.ediam (Metric.closedBall c (5 * r)) ^ (n : ℝ) ≤
+          ENNReal.ofReal (10 ^ n / ((k : ℝ) + 1)⁻¹) *
+            ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * r ^ n) := by
+      intro r c hr
+      have hd : Metric.ediam (Metric.closedBall c (5 * r)) ≤ ENNReal.ofReal (10 * r) :=
+        Metric.ediam_le_of_forall_dist_le fun y hy z hz =>
+          (dist_triangle_right y z c).trans (by
+            have := Metric.mem_closedBall.1 hy
+            have := Metric.mem_closedBall.1 hz
+            linarith)
+      calc Metric.ediam (Metric.closedBall c (5 * r)) ^ (n : ℝ)
+          ≤ ENNReal.ofReal (10 * r) ^ (n : ℝ) := ENNReal.rpow_le_rpow hd (Nat.cast_nonneg n)
+        _ = ENNReal.ofReal ((10 * r) ^ n) := by
+            rw [ENNReal.rpow_natCast, ENNReal.ofReal_pow (by positivity)]
+        _ = ENNReal.ofReal (10 ^ n / ((k : ℝ) + 1)⁻¹ * (((k : ℝ) + 1)⁻¹ * r ^ n)) := by
+            congr 1
+            field_simp
+            ring
+        _ = ENNReal.ofReal (10 ^ n / ((k : ℝ) + 1)⁻¹) *
+            ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * r ^ n) := ENNReal.ofReal_mul (by positivity)
+    -- Hence `Hⁿ(S k) ≤ ε` by the definition of `Hⁿ` through covers of vanishing diameter.
+    calc (μH[(n : ℝ)] : Measure (Rn N)) (S k)
+        ≤ liminf (fun m => ∑' b : u m,
+            Metric.ediam (Metric.closedBall b.1.1 (5 * b.1.2)) ^ (n : ℝ)) atTop :=
+          Measure.hausdorffMeasure_le_liminf_tsum (β := ℕ) (ι := fun m => ↥(u m)) (n : ℝ) (S k)
+            (l := atTop) (fun m : ℕ => ENNReal.ofReal (10 * ((m : ℝ) + 1)⁻¹)) hr0
+            (fun m b => Metric.closedBall b.1.1 (5 * b.1.2))
+            (Eventually.of_forall fun m b => by
+              obtain ⟨hb0, hb1⟩ := hur m b.1 b.2
+              refine Metric.ediam_le_of_forall_dist_le fun y hy z hz =>
+                (dist_triangle_right y z b.1.1).trans ?_
+              have := Metric.mem_closedBall.1 hy
+              have := Metric.mem_closedBall.1 hz
+              linarith)
+            (Eventually.of_forall hucov)
+      _ ≤ ε := by
+        refine liminf_le_of_frequently_le' (Frequently.of_forall fun m => ?_)
+        calc ∑' b : u m, Metric.ediam (Metric.closedBall b.1.1 (5 * b.1.2)) ^ (n : ℝ)
+            ≤ ∑' b : u m, ENNReal.ofReal (10 ^ n / ((k : ℝ) + 1)⁻¹) *
+                ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * b.1.2 ^ n) :=
+              ENNReal.tsum_le_tsum fun b => hterm _ _ (hur m b.1 b.2).1
+          _ = ENNReal.ofReal (10 ^ n / ((k : ℝ) + 1)⁻¹) *
+                ∑' b : u m, ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * b.1.2 ^ n) :=
+              ENNReal.tsum_mul_left
+          _ ≤ ENNReal.ofReal (10 ^ n / ((k : ℝ) + 1)⁻¹) *
+                ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * ε / 10 ^ n) := by gcongr; exact husum m
+          _ = ε := by
+            rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_coe_nnreal]
+            congr 1
+            field_simp
+  -- `μHE[n]` is a finite multiple of `μH[n]`.
+  have hSμ : ∀ k, (μHE[n] : Measure (Rn N)) (S k) = 0 := by
+    intro k
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hSH k, smul_zero]
+  rw [ae_iff]
+  refine measure_mono_null (fun x hx => ?_) (measure_iUnion_null hSμ)
+  simp only [mem_ofPred_eq, not_imp] at hx
+  obtain ⟨hxA, hxT⟩ := hx
+  by_contra hxS
+  simp only [mem_iUnion, not_exists] at hxS
+  apply hxT
+  -- At `x ∉ A` outside every `S k`: `ν(B̄_ρ(x)) < ρⁿ/(k+1)` for all small `ρ > 0`.
+  have hgood : ∀ k : ℕ, ∃ δ > 0, ∀ ρ ∈ Ioo (0 : ℝ) δ,
+      ν (Metric.closedBall x ρ) < ENNReal.ofReal (((k : ℝ) + 1)⁻¹ * ρ ^ n) := by
+    intro k
+    have h := hxS k
+    simp only [hS, mem_ofPred_eq, not_and, not_forall, not_exists, not_le] at h
+    obtain ⟨δ, hδ, h'⟩ := h (fun h₀ => hxA (hA₀A h₀))
+    exact ⟨δ, hδ, h'⟩
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  obtain ⟨k, hk⟩ := exists_nat_one_div_lt hε
+  obtain ⟨δ, hδ, h⟩ := hgood k
+  filter_upwards [Ioo_mem_nhdsGT hδ] with ρ hρ
+  have hρn : 0 < ρ ^ n := pow_pos hρ.1 n
+  have hI0 : 0 ≤ ∫ z in A ∩ Metric.ball x ρ, |w z| ∂(μHE[n] : Measure (Rn N)) :=
+    integral_nonneg fun z => abs_nonneg _
+  -- `∫_{A ∩ B_ρ(x)} |w| dHⁿ ≤ ∫⁻_{A₀ ∩ B_ρ(x)} |w| dHⁿ ≤ ν(B̄_ρ(x)) < ρⁿ/(k+1)`.
+  have hI : ∫ z in A ∩ Metric.ball x ρ, |w z| ∂(μHE[n] : Measure (Rn N)) <
+      ((k : ℝ) + 1)⁻¹ * ρ ^ n := by
+    have h1 : ENNReal.ofReal (∫ z in A ∩ Metric.ball x ρ, |w z| ∂(μHE[n] : Measure (Rn N))) ≤
+        ν (Metric.closedBall x ρ) := by
+      calc ENNReal.ofReal (∫ z in A ∩ Metric.ball x ρ, |w z| ∂(μHE[n] : Measure (Rn N)))
+          = ‖∫ z in A ∩ Metric.ball x ρ, |w z| ∂(μHE[n] : Measure (Rn N))‖ₑ :=
+            (Real.enorm_of_nonneg hI0).symm
+        _ ≤ ∫⁻ z in A ∩ Metric.ball x ρ, ‖|w z|‖ₑ ∂(μHE[n] : Measure (Rn N)) :=
+            enorm_integral_le_lintegral_enorm _
+        _ = ∫⁻ z in A₀ ∩ Metric.ball x ρ, ‖w z‖ₑ ∂(μHE[n] : Measure (Rn N)) := by
+            simp only [Real.enorm_abs]
+            exact setLIntegral_congr (hA₀ae.symm.inter (EventuallyEq.refl _ _))
+        _ ≤ ∫⁻ z in Metric.closedBall x ρ ∩ A₀, ‖w z‖ₑ ∂(μHE[n] : Measure (Rn N)) :=
+            lintegral_mono_set fun z hz => ⟨Metric.ball_subset_closedBall hz.2, hz.1⟩
+        _ = ν (Metric.closedBall x ρ) :=
+            (hνapp _ Metric.isClosed_closedBall.measurableSet).symm
+    exact (ENNReal.ofReal_lt_ofReal_iff (by positivity)).1 (h1.trans_lt (h ρ hρ))
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg (mul_nonneg (inv_nonneg.2 hρn.le) hI0)]
+  calc (ρ ^ n)⁻¹ * ∫ z in A ∩ Metric.ball x ρ, |w z| ∂(μHE[n] : Measure (Rn N))
+      ≤ (ρ ^ n)⁻¹ * (((k : ℝ) + 1)⁻¹ * ρ ^ n) :=
+        mul_le_mul_of_nonneg_left hI.le (inv_nonneg.2 hρn.le)
+    _ = ((k : ℝ) + 1)⁻¹ := by field_simp
+    _ < ε := by simpa [one_div] using hk
+/-- **Lebesgue points of `Hⁿ ⌞ S` with the `ρⁿ` normalization** (Simon Ch. 1, Corollary 3.17;
+parent proof step (P3)). Let `Hⁿ(S) < ∞`, `w ∈ L¹(Hⁿ ⌞ S)` and `Hⁿ(S ∩ B̄_ρ(x)) ≤ Cρⁿ` for
+`x ∈ S`, `ρ > 0`. Then for `Hⁿ`-a.e. `x ∈ S`, `ρ⁻ⁿ ∫_{S ∩ B_ρ(x)} |w - w(x)| dHⁿ → 0` as `ρ ↓ 0`.
+The Lebesgue–Besicovitch differentiation theorem for the finite measure `λ₀ = Hⁿ ⌞ S` along
+closed balls gives `a(ρ) = ⨍_{B̄_ρ(x)} |w - w(x)| dλ₀ → 0` for `λ₀`-a.e. (i.e. `Hⁿ`-a.e. on `S`)
+`x`, and `ρ⁻ⁿ ∫_{S ∩ B_ρ(x)} |w - w(x)| dHⁿ ≤ ρ⁻ⁿ λ₀(B̄_ρ(x)) a(ρ) ≤ max(C, 0) a(ρ)`. -/
+theorem Submission.chartTD_lebesgue_point_ae : ∀ (n N : ℕ) (S : Set (Rn N)) (w : Rn N → ℝ) (C : ℝ), NullMeasurableSet S μHE[n] → μHE[n] S < ∞ → IntegrableOn w S μHE[n] → (∀ x ∈ S, ∀ ρ : ℝ, 0 < ρ → μHE[n] (S ∩ Metric.closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ∀ᵐ x ∂(μHE[n] : Measure (Rn N)), x ∈ S → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x ρ, |w z - w x| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) := by
+  intro n N S w C hS hSfin hw hC
+  -- `λ₀ = Hⁿ ⌞ S` is a finite measure and `w ∈ L¹(λ₀)`.
+  have : IsFiniteMeasure ((μHE[n] : Measure (Rn N)).restrict S) :=
+    ⟨by rwa [Measure.restrict_apply_univ]⟩
+  have hw' : Integrable w ((μHE[n] : Measure (Rn N)).restrict S) := hw
+  -- Lebesgue–Besicovitch differentiation for `λ₀`; `λ₀`-a.e. is `Hⁿ`-a.e. on `S`.
+  have hdiff := VitaliFamily.ae_tendsto_average_norm_sub
+    (Besicovitch.vitaliFamily ((μHE[n] : Measure (Rn N)).restrict S)) hw'.locallyIntegrable
+  filter_upwards [(ae_restrict_iff'₀ hS).1 hdiff] with x hx hxS
+  -- `max(C, 0) a(ρ) → 0` as `ρ ↓ 0`, where `a(ρ) = ⨍_{B̄_ρ(x)} |w - w(x)| dλ₀`.
+  have ha : Tendsto (fun ρ : ℝ ↦ max C 0 * ⨍ y in Metric.closedBall x ρ, ‖w y - w x‖
+      ∂((μHE[n] : Measure (Rn N)).restrict S)) (𝓝[>] 0) (𝓝 0) := by
+    simpa only [mul_zero, Function.comp_apply] using
+      ((hx hxS).comp (Besicovitch.tendsto_filterAt _ x)).const_mul (max C 0)
+  have hint : Integrable (fun z ↦ |w z - w x|) ((μHE[n] : Measure (Rn N)).restrict S) :=
+    (hw'.sub (integrable_const (w x))).abs
+  refine squeeze_zero' ?_ ?_ ha
+  · filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+    exact mul_nonneg (inv_nonneg.2 (pow_nonneg hρ.le n)) (integral_nonneg fun _ ↦ abs_nonneg _)
+  · filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+    have hρn : 0 < ρ ^ n := pow_pos hρ n
+    -- `λ₀(B̄_ρ(x)) = Hⁿ(S ∩ B̄_ρ(x)) ≤ max(C, 0) ρⁿ`.
+    have hmeas : ((μHE[n] : Measure (Rn N)).restrict S).real (Metric.closedBall x ρ) ≤
+        max C 0 * ρ ^ n := by
+      rw [measureReal_def, Measure.restrict_apply measurableSet_closedBall, inter_comm]
+      refine ENNReal.toReal_le_of_le_ofReal (by positivity) ((hC x hxS ρ hρ).trans ?_)
+      exact ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right (le_max_left _ _) hρn.le)
+    have havg : 0 ≤ ⨍ y in Metric.closedBall x ρ, ‖w y - w x‖
+        ∂((μHE[n] : Measure (Rn N)).restrict S) :=
+      average_nonneg fun _ ↦ norm_nonneg _
+    rw [inv_mul_le_iff₀ hρn]
+    calc ∫ z in S ∩ Metric.ball x ρ, |w z - w x| ∂μHE[n]
+        = ∫ z in Metric.ball x ρ, |w z - w x| ∂((μHE[n] : Measure (Rn N)).restrict S) := by
+          rw [Measure.restrict_restrict measurableSet_ball, inter_comm S]
+      _ ≤ ∫ z in Metric.closedBall x ρ, |w z - w x| ∂((μHE[n] : Measure (Rn N)).restrict S) :=
+          setIntegral_mono_set hint.integrableOn (Eventually.of_forall fun _ ↦ abs_nonneg _)
+            Metric.ball_subset_closedBall.eventuallyLE
+      _ = ((μHE[n] : Measure (Rn N)).restrict S).real (Metric.closedBall x ρ) *
+            ⨍ y in Metric.closedBall x ρ, ‖w y - w x‖ ∂((μHE[n] : Measure (Rn N)).restrict S) := by
+          rw [← smul_eq_mul, measure_smul_setAverage _ (measure_ne_top _ _)]
+          simp only [Real.norm_eq_abs]
+      _ ≤ ρ ^ n * (max C 0 * ⨍ y in Metric.closedBall x ρ, ‖w y - w x‖
+            ∂((μHE[n] : Measure (Rn N)).restrict S)) := by
+          rw [← mul_assoc, mul_comm (ρ ^ n)]
+          exact mul_le_mul_of_nonneg_right hmeas havg
+
+/-- **Weighted approximate tangent space from density estimates against a comparison set**
+(Simon Ch. 3, proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 113–143, in the weighted form of
+Def. 1.7 and Remark 1.8(1), lines 284–306). Let `M`, `Γ` be `Hⁿ`-measurable with `Hⁿ(Γ) < ∞`,
+`θ` a positive locally integrable weight on `M`, and let `Γ` have approximate tangent space `P`
+at `x`. If, as `ρ ↓ 0`, `ρ⁻ⁿ ∫_{(M ∖ Γ) ∩ B_ρ(x)} |θ| dHⁿ → 0`, `ρ⁻ⁿ Hⁿ((Γ ∖ M) ∩ B_ρ(x)) → 0`
+and `ρ⁻ⁿ ∫_{M ∩ Γ ∩ B_ρ(x)} |θ - θ(x)| dHⁿ → 0`, then `P` is the approximate tangent space of
+`M` at `x` with respect to `θ`. For `f ∈ C_c(ℝᴺ, ℝ)` and `r > 0`, the change of variables
+`chartTD_setIntegral_blowUpMap_image` (with `x + r η_{x,r}(z) = z`) and the splitting
+`chartTD_weighted_blowup_integral_split` give
+`∫_{η_{x,r}(M)} f(y) θ(x + r y) dHⁿ(y) = E₁(r) + θ(x) (∫_{η_{x,r}(Γ)} f dHⁿ - E₂(r)) + E₃(r)`,
+where `E₁`, `E₂`, `E₃` are the `r⁻ⁿ`-normalized integrals of `f ∘ η_{x,r}` against `θ` over
+`M ∖ Γ`, `1` over `Γ ∖ M` and `θ - θ(x)` over `M ∩ Γ`. Each `Eᵢ(r) → 0` by
+`chartTD_blowup_integral_tendsto_zero`, and `∫_{η_{x,r}(Γ)} f dHⁿ → ∫_P f dHⁿ`. -/
+theorem Submission.chartTD_weighted_tangent_of_density : ∀ (n N : ℕ) (M Γ : Set (Rn N)) (θ : Rn N → ℝ) (x : Rn N) (P : Submodule ℝ (Rn N)), NullMeasurableSet M μHE[n] → NullMeasurableSet Γ μHE[n] → μHE[n] Γ < ∞ → IsPositiveLocallyIntegrableWeight n M θ → HasApproximateTangentSpaceAt n Γ x P → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in (M \ Γ) ∩ Metric.ball x ρ, |θ z| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * (μHE[n] ((Γ \ M) ∩ Metric.ball x ρ)).toReal) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in M ∩ Γ ∩ Metric.ball x ρ, |θ z - θ x| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) → HasWeightedApproximateTangentSpaceAt n M θ x P := by
+  intro n N M Γ θ x P hM hΓ hΓfin hθ hT h₁ h₂ h₃
+  refine ⟨hT.1, fun f ↦ ?_⟩
+  -- `θ` is integrable on `M ∩ B_ρ(x) ⊆ M ∩ B̄_ρ(x)`, and subsets of `Γ` have finite measure.
+  have hθball : ∀ ρ : ℝ, IntegrableOn θ (M ∩ Metric.ball x ρ) μHE[n] := fun ρ ↦
+    (hθ.2.2 _ (isCompact_closedBall x ρ)).mono_set
+      (inter_subset_inter_right _ Metric.ball_subset_closedBall)
+  have hΓsub : ∀ s ⊆ Γ, μHE[n] s ≠ ∞ := fun s hs ↦ ((measure_mono hs).trans_lt hΓfin).ne
+  -- `E₁(r) = r⁻ⁿ ∫_{M ∖ Γ} f(η_{x,r}(z)) θ(z) dHⁿ(z) → 0`
+  have hE₁ : Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ z in M \ Γ, f (blowUpMap x r z) * θ z ∂μHE[n])
+      (𝓝[>] 0) (𝓝 0) :=
+    Submission.chartTD_blowup_integral_tendsto_zero n N (M \ Γ) θ x
+      (fun ρ _ ↦ (hθball ρ).mono_set (inter_subset_inter_left _ sdiff_subset)) h₁ f
+  -- `E₂(r) = r⁻ⁿ ∫_{Γ ∖ M} f(η_{x,r}(z)) dHⁿ(z) → 0`, with the weight `w ≡ 1`
+  have hE₂ : Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ z in Γ \ M, f (blowUpMap x r z) ∂μHE[n])
+      (𝓝[>] 0) (𝓝 0) := by
+    have h := Submission.chartTD_blowup_integral_tendsto_zero n N (Γ \ M) (fun _ ↦ (1 : ℝ)) x
+      (fun ρ _ ↦ integrableOn_const (hΓsub _ (inter_subset_left.trans sdiff_subset)))
+      (h₂.congr fun ρ ↦ by
+        simp only [abs_one, setIntegral_const, smul_eq_mul, mul_one, measureReal_def]) f
+    simpa only [mul_one] using h
+  -- `E₃(r) = r⁻ⁿ ∫_{M ∩ Γ} f(η_{x,r}(z)) (θ(z) - θ(x)) dHⁿ(z) → 0`
+  have hE₃ : Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ *
+      ∫ z in M ∩ Γ, f (blowUpMap x r z) * (θ z - θ x) ∂μHE[n]) (𝓝[>] 0) (𝓝 0) := by
+    refine Submission.chartTD_blowup_integral_tendsto_zero n N (M ∩ Γ) (fun z ↦ θ z - θ x) x
+      (fun ρ _ ↦ ?_) h₃ f
+    have hc : IntegrableOn (fun _ ↦ θ x) (M ∩ Γ ∩ Metric.ball x ρ) μHE[n] :=
+      integrableOn_const (hΓsub _ (inter_subset_left.trans inter_subset_right))
+    exact ((hθball ρ).mono_set (inter_subset_inter_left _ inter_subset_left)).sub hc
+  -- Combine with `∫_{η_{x,r}(Γ)} f dHⁿ → ∫_P f dHⁿ`.
+  have hlim := (hE₁.add (((hT.2 f).sub hE₂).const_mul (θ x))).add hE₃
+  rw [zero_add, sub_zero, add_zero] at hlim
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  -- For `r > 0`: change variables (`x + r η_{x,r}(z) = z`), then split along `Γ`.
+  have hη : ∀ z, x + r • blowUpMap x r z = z := fun z ↦ by
+    rw [blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne', one_smul, add_sub_cancel]
+  rw [Submission.chartTD_setIntegral_blowUpMap_image N n x r hr M,
+    Submission.chartTD_setIntegral_blowUpMap_image N n x r hr Γ]
+  simp only [hη]
+  rw [Submission.chartTD_weighted_blowup_integral_split n N M Γ θ x f r hr hM hΓ hΓfin hθ]
+  ring
+/-- **Rademacher's theorem on an open set** (Simon Ch. 2, Theorem 1.4, applied locally as in
+(4.8)): if `g : ℝⁿ → ℝᵖ` is locally Lipschitz on the open set `W ⊆ ℝⁿ`, then `g` is
+differentiable at `Lⁿ`-a.e. point of `W`. Each point `x` of the exceptional set
+`Z = {u ∈ W : g is not differentiable at u}` has a ball `B_r(x)` on which `g` is Lipschitz;
+Rademacher for maps Lipschitz on a set (`LipschitzOnWith.ae_differentiableWithinAt_of_mem`) and
+openness of the ball give `Lⁿ(Z ∩ B_r(x)) = 0`, and second countability
+(`measure_null_of_locally_null`) gives `Lⁿ(Z) = 0`. -/
+theorem Submission.chartTD_ae_differentiableAt_of_locallyLipschitzOn : ∀ (n p : ℕ)
+    (W : Set (Rn n)) (g : Rn n → Rn p), IsOpen W → LocallyLipschitzOn W g →
+    ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ W → DifferentiableAt ℝ g u := by
+  intro n p W g hW hg
+  -- Step 1: the claim says that `Z = {u | ¬(u ∈ W → DifferentiableAt ℝ g u)}` is `Lⁿ`-null.
+  rw [ae_iff]
+  -- Step 6: by second countability, it suffices that each `x ∈ Z` has a null neighbourhood
+  -- within `Z`.
+  refine measure_null_of_locally_null _ fun x hx ↦ ?_
+  simp only [mem_ofPred_eq, not_imp] at hx
+  -- Step 2: `g` is `K`-Lipschitz on a ball `B_r(x)`, since `𝓝[W] x = 𝓝 x` for the open `W`.
+  obtain ⟨K, T, hT, hgT⟩ := hg hx.1
+  rw [hW.nhdsWithin_eq hx.1] at hT
+  obtain ⟨r, hr, hrT⟩ := Metric.mem_nhds_iff.1 hT
+  -- Step 5: `Z ∩ B_r(x)` is a neighbourhood of `x` within `Z`.
+  refine ⟨_, inter_mem_nhdsWithin _ (Metric.ball_mem_nhds x hr), ?_⟩
+  -- Step 3: Rademacher on `B_r(x)`: `g` is differentiable within the ball at a.e. point of it.
+  have hR := ae_iff.1 ((hgT.mono hrT).ae_differentiableWithinAt_of_mem
+    (μ := (volume : Measure (Rn n))))
+  -- Step 4: `Z ∩ B_r(x)` lies in the Rademacher exceptional set, because the ball is open.
+  refine measure_mono_null (fun v hv ↦ ?_) hR
+  simp only [mem_inter_iff, mem_ofPred_eq, not_imp] at hv ⊢
+  exact ⟨hv.2, fun hd ↦ hv.1.2 (hd.differentiableAt (Metric.isOpen_ball.mem_nhds hv.2))⟩
+/-- **Line derivative of a locally Lipschitz map along a chart** (Simon Ch. 2, (4.7) and (4.10)):
+let `f : ℝᴺ → ℝᵖ` be locally Lipschitz on the open set `U ⊆ ℝᴺ`, and let `ψ : ℝⁿ → ℝᴺ` and
+`f ∘ ψ` be differentiable at `u`, with `ψ(u) ∈ U`. Then for every `w ∈ ℝⁿ`, `f` has line
+derivative `D(f ∘ ψ)(u) w` at `ψ(u)` in the direction `Dψ(u) w`. The chart curve
+`t ↦ ψ(u + t w)` and the line `t ↦ ψ(u) + t Dψ(u) w` agree to first order at `t = 0`, so the
+Lipschitz bound of `f` near `ψ(u)` makes the values of `f` along them differ by `o(t)`. -/
+theorem Submission.chartTD_hasLineDerivAt_of_comp_differentiableAt : ∀ (n N p : ℕ)
+    (U : Set (Rn N)) (f : Rn N → Rn p) (ψ : Rn n → Rn N) (u : Rn n), IsOpen U →
+    LocallyLipschitzOn U f → ψ u ∈ U → DifferentiableAt ℝ ψ u → DifferentiableAt ℝ (f ∘ ψ) u →
+    ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w) := by
+  intro n N p U f ψ u hU hf hu hψ hfψ w
+  -- Step 2: `f` is `L`-Lipschitz on a neighbourhood `T` of `ψ u`, since `𝓝[U] (ψ u) = 𝓝 (ψ u)`.
+  obtain ⟨L, T, hT, hfT⟩ := hf hu
+  rw [hU.nhdsWithin_eq hu] at hT
+  -- Step 3: the line derivatives of `ψ` and of `f ∘ ψ` at `u` in the direction `w`.
+  have ha := hψ.hasFDerivAt.hasLineDerivAt w
+  have hb := hfψ.hasFDerivAt.hasLineDerivAt w
+  -- Step 1: write the two hypotheses and the goal as `o(t)` statements as `t → 0`.
+  rw [hasLineDerivAt_iff_isLittleO_nhds_zero] at ha hb ⊢
+  -- Step 4: for `t` near `0`, both `ψ (u + t • w)` and `ψ u + t • Dψ(u) w` lie in `T`.
+  have hγ : ∀ᶠ t in 𝓝 (0 : ℝ), ψ (u + t • w) ∈ T :=
+    hψ.continuousAt.tendsto.comp
+      ((by fun_prop : Continuous fun t : ℝ ↦ u + t • w).tendsto' 0 u (by simp)) hT
+  have hα : ∀ᶠ t in 𝓝 (0 : ℝ), ψ u + t • fderiv ℝ ψ u w ∈ T :=
+    (by fun_prop : Continuous fun t : ℝ ↦ ψ u + t • fderiv ℝ ψ u w).tendsto' 0 (ψ u) (by simp) hT
+  -- Step 5 (Simon (4.7)): the Lipschitz bound compares `f` along the line and along the chart
+  -- curve, and the difference of the two curves is `o(t)`.
+  have hO : (fun t : ℝ ↦ f (ψ u + t • fderiv ℝ ψ u w) - f (ψ (u + t • w))) =O[𝓝 0]
+      fun t : ℝ ↦ ψ (u + t • w) - ψ u - t • fderiv ℝ ψ u w := by
+    refine Asymptotics.IsBigO.of_bound L ?_
+    filter_upwards [hγ, hα] with t hγt hαt
+    rw [← sub_add_eq_sub_sub, norm_sub_rev (ψ (u + t • w))]
+    exact hfT.norm_sub_le hαt hγt
+  -- Step 6: the two `o(t)` terms add up to the claim.
+  refine ((hO.trans_isLittleO ha).add hb).congr_left fun t ↦ ?_
+  simp only [Function.comp_apply]
+  abel
+
+/-- **Simon Ch. 2, Theorem 1.4 and (4.8)–(4.10)** (`chapter-02.txt` lines 59–72, 925–957), in one
+`C¹` chart `ψ` on an open `V ⊆ ℝⁿ` (injectivity of `Dψ` is not needed). Let `f` be locally
+Lipschitz on an open `U ⊆ ℝᴺ`. For `Lⁿ`-a.e. `u ∈ V` with `ψ(u) ∈ U`, `f ∘ ψ` is differentiable
+at `u` (Rademacher) and `D(f ∘ ψ)(u) w = d/dt f(ψ(u) + t Dψ(u) w)|_{t=0}` for every `w` ((4.10)).
+On the open set `W = V ∩ ψ⁻¹(U)` the map `f ∘ ψ` is locally Lipschitz, so Rademacher's theorem
+applies on `W`. At each point of differentiability, the curve `t ↦ ψ(u + t w)` is compared with
+the line `t ↦ ψ(u) + t Dψ(u) w` as in (4.7). -/
+theorem Submission.chartTD_comp_differentiable_lineDeriv_ae : ∀ (n N p : ℕ) (U : Set (Rn N))
+    (f : Rn N → Rn p) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen U → LocallyLipschitzOn U f →
+    IsOpen V → ContDiffOn ℝ 1 ψ V →
+    ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ U →
+      DifferentiableAt ℝ (f ∘ ψ) u ∧
+        ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w) := by
+  intro n N p U f V ψ hU hf hV hψ
+  -- Step 1: `W = V ∩ ψ⁻¹(U)` is open, since `ψ` is continuous on the open set `V`.
+  have hW : IsOpen (V ∩ ψ ⁻¹' U) := hψ.continuousOn.isOpen_inter_preimage hV hU
+  -- Step 2: `f ∘ ψ` is locally Lipschitz on `W`: `ψ` is Lipschitz near `u` (it is `C¹` there),
+  -- `f` is Lipschitz near `ψ(u)` (`U` is open), and `ψ` maps a neighbourhood of `u` into the
+  -- latter.
+  have hfψ : LocallyLipschitzOn (V ∩ ψ ⁻¹' U) (f ∘ ψ) := by
+    rintro u ⟨huV, huU⟩
+    have hψu : ContDiffAt ℝ 1 ψ u := hψ.contDiffAt (hV.mem_nhds huV)
+    obtain ⟨Kψ, s, hs, hψs⟩ := hψu.exists_lipschitzOnWith
+    obtain ⟨Kf, t, ht, hft⟩ := hf huU
+    rw [hU.nhdsWithin_eq huU] at ht
+    exact ⟨Kf * Kψ, s ∩ ψ ⁻¹' t,
+      mem_nhdsWithin_of_mem_nhds (inter_mem hs (hψu.continuousAt.preimage_mem_nhds ht)),
+      hft.comp (hψs.mono inter_subset_left) fun _ hx ↦ hx.2⟩
+  -- Steps 3–4: Rademacher's theorem on `W` (via the countable cover in the accepted child).
+  filter_upwards [Submission.chartTD_ae_differentiableAt_of_locallyLipschitzOn n p _ _ hW hfψ]
+    with u hu huV huU
+  have hdiff : DifferentiableAt ℝ (f ∘ ψ) u := hu ⟨huV, huU⟩
+  -- Step 5 (Simon (4.10)): the line derivative at every point of differentiability.
+  exact ⟨hdiff, Submission.chartTD_hasLineDerivAt_of_comp_differentiableAt n N p U f ψ u hU hf
+    huU ((hψ.contDiffAt (hV.mem_nhds huV)).differentiableAt one_ne_zero) hdiff⟩
+
+/-- **Simon Ch. 3, Remark 1.5(2) and proof of Theorem 1.6 "⇒", in the weighted form of
+Remark 1.8(1); Ch. 2, (4.8)–(4.10)** (`chapter-03.txt` lines 87–90, 113–143, 284–306;
+`chapter-02.txt` lines 925–957), for one `C¹` chart `ψ` on an open `V ⊆ ℝⁿ` with injective `Dψ`.
+For `Lⁿ`-a.e. `u ∈ V` with `ψ(u) ∈ M`: (A) `range Dψ(u)` is the approximate tangent space of `M`
+at `ψ(u)` with respect to `θ` (Def. 1.7); (B) `f ∘ ψ` is differentiable at `u` (Rademacher);
+(C) `D(f ∘ ψ)(u) w = d/dt f(ψ(u) + t Dψ(u) w)|_{t=0}` (Ch. 2 (4.10)).
+For (A), `V` is covered by countably many balls `B` on which `ψ` is bi-Lipschitz. With
+`Γ = ψ(B)`: by the upper density theorem and Lebesgue's differentiation theorem, `Hⁿ`-a.e.
+`x ∈ M ∩ Γ` satisfies the density conditions (P1)–(P3) of the proof of 1.6; the blow-ups of `Γ` at
+`ψ(u)` converge to `range Dψ(u)` (Remark 1.5(2)); so (A) holds off the preimage of an `Hⁿ`-null
+set, which is `Lⁿ`-null in `B` because `ψ⁻¹` is Lipschitz on `Γ`. -/
+theorem Submission.chart_approx_tangent_and_differential : ∀ (n ℓ p : ℕ) (M U : Set (Rn (n + ℓ)))
+    (θ : Rn (n + ℓ) → ℝ) (f : Rn (n + ℓ) → Rn p) (V : Set (Rn n)) (ψ : Rn n → Rn (n + ℓ)),
+    NullMeasurableSet M μHE[n] → IsPositiveLocallyIntegrableWeight n M θ → IsOpen U → M ⊆ U →
+    LocallyLipschitzOn U f → IsOpen V → ContDiffOn ℝ 1 ψ V →
+    (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) →
+    ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M →
+      HasWeightedApproximateTangentSpaceAt n M θ (ψ u)
+          (LinearMap.range (fderiv ℝ ψ u).toLinearMap) ∧
+        DifferentiableAt ℝ (f ∘ ψ) u ∧
+        ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w) := by
+  intro n ℓ p M U θ f V ψ hM hθ hU hMU hf hV hψ hinj
+  -- (B), (C): Rademacher's theorem in the chart and Ch. 2 (4.10), at points with `ψ u ∈ U`.
+  have hBC := Submission.chartTD_comp_differentiable_lineDeriv_ae n (n + ℓ) p U f V ψ hU hf hV hψ
+  -- (A) on a ball `B ⊆ V` around each `u₀ ∈ V` on which `ψ` is bi-Lipschitz.
+  have hloc : ∀ u₀ ∈ V, ∃ r : ℝ, 0 < r ∧ Metric.ball u₀ r ⊆ V ∧
+      ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ Metric.ball u₀ r → ψ u ∈ M →
+        HasWeightedApproximateTangentSpaceAt n M θ (ψ u)
+          (LinearMap.range (fderiv ℝ ψ u).toLinearMap) := by
+    intro u₀ hu₀
+    obtain ⟨r, hr, hrV, K, c, hc, hLip, hlow⟩ :=
+      Submission.chartTD_immersion_local_biLipschitz n (n + ℓ) V ψ hV hψ hinj u₀ hu₀
+    refine ⟨r, hr, hrV, ?_⟩
+    set B := Metric.ball u₀ r
+    -- `Γ = ψ(B)` is `Hⁿ`-measurable and bounded, `Hⁿ(Γ) < ∞`, `Hⁿ(Γ ∩ B̄_ρ(x)) ≤ C ρⁿ`, and
+    -- preimages in `B` of `Hⁿ`-null sets are `Lⁿ`-null.
+    obtain ⟨hΓm, hΓb, hΓfin, ⟨C, hC⟩, hnull⟩ :=
+      Submission.chartTD_biLipschitz_image_measure_facts n (n + ℓ) B ψ K c Metric.isOpen_ball
+        Metric.isBounded_ball hLip hc hlow
+    set Γ := ψ '' B
+    -- (P1): `θ Hⁿ ⌞ (M \ Γ)` has `n`-density `0` at `Hⁿ`-a.e. point of `M ∩ Γ`.
+    have hP1 := Submission.chartTD_upper_density_zero_ae n (n + ℓ) (M \ Γ) θ (hM.diff hΓm)
+      fun K hK ↦ (hθ.2.2 K hK).mono_set (inter_subset_inter_left K sdiff_subset)
+    -- (P2): `Hⁿ ⌞ (Γ \ M)` has `n`-density `0` at `Hⁿ`-a.e. point of `M ∩ Γ`.
+    have hP2 := Submission.chartTD_upper_density_zero_ae n (n + ℓ) (Γ \ M) (fun _ ↦ (1 : ℝ))
+      (hΓm.diff hM) fun K _ ↦ integrableOn_const
+        ((measure_mono (inter_subset_left.trans sdiff_subset)).trans_lt hΓfin).ne
+    -- (P3): `Hⁿ`-a.e. point of `M ∩ Γ` is a Lebesgue point of `θ`, with the `ρⁿ` normalization.
+    have hP3 := Submission.chartTD_lebesgue_point_ae n (n + ℓ) (M ∩ Γ) θ C (hM.inter hΓm)
+      ((measure_mono inter_subset_right).trans_lt hΓfin)
+      ((hθ.2.2 _ hΓb.isCompact_closure).mono_set (inter_subset_inter_right M subset_closure))
+      fun x hx ρ hρ ↦ (measure_mono (inter_subset_inter_left _ inter_subset_right)).trans
+        (hC x hx.2 ρ hρ)
+    have hgood : ∀ᵐ x ∂(μHE[n] : Measure (Rn (n + ℓ))), x ∈ M → x ∈ Γ →
+        Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in (M \ Γ) ∩ Metric.ball x ρ, |θ z| ∂μHE[n])
+          (𝓝[>] 0) (𝓝 0) ∧
+        Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * (μHE[n] ((Γ \ M) ∩ Metric.ball x ρ)).toReal)
+          (𝓝[>] 0) (𝓝 0) ∧
+        Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in M ∩ Γ ∩ Metric.ball x ρ, |θ z - θ x| ∂μHE[n])
+          (𝓝[>] 0) (𝓝 0) := by
+      filter_upwards [hP1, hP2, hP3] with x h1 h2 h3 hxM hxΓ
+      refine ⟨h1 fun h ↦ h.2 hxΓ, ?_, h3 ⟨hxM, hxΓ⟩⟩
+      simpa [setIntegral_const, Measure.real] using h2 fun h ↦ h.2 hxM
+    -- Off the `Lⁿ`-null preimage of the set where (P1)–(P3) fail, the blow-ups of `Γ` at `ψ u`
+    -- converge to `range Dψ(u)` (Remark 1.5(2)), and (P1)–(P3) transfer this to `M` and `θ`.
+    refine ae_iff.2 (measure_mono_null (fun u hu ↦ ?_) (hnull _ (ae_iff.1 hgood)))
+    simp only [mem_ofPred_eq, not_imp] at hu
+    obtain ⟨huB, huM, hnot⟩ := hu
+    refine ⟨huB, ?_⟩
+    simp only [mem_preimage, mem_ofPred_eq, not_imp]
+    refine ⟨huM, mem_image_of_mem ψ huB, ?_⟩
+    rintro ⟨h1, h2, h3⟩
+    exact hnot (Submission.chartTD_weighted_tangent_of_density n (n + ℓ) M Γ θ (ψ u) _ hM hΓm
+      hΓfin hθ (Submission.chartTD_biLipschitz_chart_approx_tangent n (n + ℓ) B ψ K c
+        Metric.isOpen_ball (hψ.mono hrV) hLip hc hlow u huB) h1 h2 h3)
+  -- Countably many of these balls cover `V` (Lindelöf).
+  choose! r hr hrV hae using hloc
+  obtain ⟨T, hTV, hTc, hTcover⟩ := TopologicalSpace.isOpen_biUnion_countable V
+    (fun u ↦ Metric.ball u (r u)) fun u _ ↦ Metric.isOpen_ball
+  have hA : ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M →
+      HasWeightedApproximateTangentSpaceAt n M θ (ψ u)
+        (LinearMap.range (fderiv ℝ ψ u).toLinearMap) := by
+    filter_upwards [(ae_ball_iff hTc).2 fun i hi ↦ hae i (hTV hi)] with u hu huV huM
+    have hmem : u ∈ ⋃ i ∈ T, Metric.ball i (r i) :=
+      hTcover ▸ mem_biUnion huV (Metric.mem_ball_self (hr u huV))
+    obtain ⟨i, hi, hui⟩ := mem_iUnion₂.1 hmem
+    exact hu i hi hui huM
+  filter_upwards [hA, hBC] with u hAu hBCu huV huM
+  exact ⟨hAu huV huM, hBCu huV (hMU huM)⟩
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
