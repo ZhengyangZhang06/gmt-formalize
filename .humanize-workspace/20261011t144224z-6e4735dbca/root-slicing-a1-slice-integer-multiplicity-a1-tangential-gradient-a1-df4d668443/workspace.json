@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T144224Z-6e4735dbca",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.chart_tangent-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch06/20261011t144224z-6e4735dbca/dispatch/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-df4d668443",
+  "source_commit": "d8d46c9587747dee0751a1f780fcafdba16a3886",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch06/Submission.lean",
+  "children": [],
+  "files": {
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-df4d668443/task.md": "851788007dc8c3751d2eb432e671ed309656d733cb7f0945095ef6d498b86aea",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-df4d668443/problem.md": "2a7a835f77ed0c2d2d9344f4d74d4aca5aba45b602f54cca55c26b05d42f07c7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-df4d668443/problem.json": "c524959c2b363f8a0061c212b44cd7e69bb1645bf27826cb3a6bf3b6c474c290",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-df4d668443/reference-manifest.json": "754178a610ec50f104bdcaf2bcf3c0ceacdeda598b67255aba00da6a8cdbcdf7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-df4d668443/decomposition.json": "b52eb2ec1029b8909f6731aadab2d4ffc7ebf379dcf795b7a7e560cf7cf57fc2",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-df4d668443/decomposition-audit.json": "15ef1b7d18a0c7201f4f7d3ae6d2d7c82ba087f33b055b6bd060ea0087b5800f",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-df4d668443/controller-contract.json": "6753c097b624229cd25c20ce9ff1dd35a6c88a2084eb3ccb57d6c14f531038f6"
+  }
+}

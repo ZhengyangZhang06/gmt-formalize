@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'slicing_im_tg|lpf_wtc_|lpf_weighted_tangent_on_c1_chart' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "exists_measurable_subset_ae_eq|exists_measurable_superset_ae_eq|def toMeasurable|toMeasurable.*ae_eq|toMeasurable.*sdiff",
+        "def HasWeightedApproximateTangentSpaceAt|def HasApproximateTangentSpaceAt|def blowUpMap|theorem simon_theorem_3_6|theorem ae_dimensionalUpperDensity_eq_zero_outside|theorem measure_toOuterMeasure_isBorelRegular|theorem weighted_area_formula_lipschitzOn_fiberSum|theorem exists_isClosed_continuousOn_of_measurable|theorem simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure",
+        "MIN_SUBPROBLEMS|def _existing_lean_name_problem|def _accepted_checkpoint|def _overlay_accepted_children|def _node_worktree|def _dependency_problem|def _topological",
+        "git show f9637977f9e75fb52f6164df51add52d8c76c0d8:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/chart_tangent_independent_audit/ChallengeAndReduction.lean > /tmp/chart_tangent_independent_audit/ChallengeAndReduction.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/chart_tangent_independent_audit/AcceptedProofsAndTypes.lean > /tmp/chart_tangent_independent_audit/AcceptedProofsAndTypes.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-df4d668443/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1-df4d668443/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/models.py",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+        "/tmp/chart_tangent_independent_audit/ChallengeAndReduction.lean",
+        "/tmp/chart_tangent_independent_audit/ChallengeAndReduction.log",
+        "/tmp/chart_tangent_independent_audit/AcceptedProofsAndTypes.lean",
+        "/tmp/chart_tangent_independent_audit/AcceptedProofsAndTypes.log"
+      ],
+      "conclusion": "The snapshot pins project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Its contract matches the workspace. No proposed declaration occurs in the snapshot project. Independently checked DAG records, immutable handoffs, comparator challenges, candidate identities and permitted-axiom configurations establish valid reuse for all nine declarations: unique bare names, accepted checkpoints and byte-identical frozen types, with compatible package revisions. All nine one-line propositions elaborate without their implementations. A separate Lean theorem derives the exact selected parent from child hypotheses, without sorry. Recompiling the accepted implementations and checking every proposed type succeeds; all nine declarations and the selected conclusion use only propext, Classical.choice and Quot.sound. The split is appropriate: six children serve the final assembly directly, and three supply genuine prerequisites. Dependencies are correctly directed and acyclic; their transitive closure excludes both the selected parent and its twin. Each supplied natural proof was independently checked, including dimension zero and local integrability. The density/Lusin strategy also agrees with [Simon, Chapter 1 Theorem 3.6 and Chapter 3 Remark 1.8(1)](https://web.stanford.edu/class/math285/ts-gmt)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including arbitrary S and g. The measurable-equivalence argument correctly gives the pushforward factor rⁿ and permits restriction to arbitrary sets. The integral identities require no integrability assumption; division by rⁿ > 0 proves the exact conclusion."
+    },
+    {
+      "key": "chart_image_measurable_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Injectivity justifies the Borel-image argument. Antilipschitzness bounds preimages of compact sets; global C¹ regularity supplies a Lipschitz bound on a containing compact convex ball. The Hausdorff image estimate then proves local finiteness."
+    },
+    {
+      "key": "chart_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact signed Bochner identity is proved by bounded localization and positive/negative weighted area formulas, with finiteness justified before subtraction. The Gram determinant equals normDet squared. Matrix.of correctly constructs the matrix; no pointwise-function multiplication ambiguity occurs."
+    },
+    {
+      "key": "chart_approximate_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The differentiated lower bound proves injectivity and dimension n. BLOWUP and AREA produce the rescaled integral, with a fixed integrable dominating function. Pointwise convergence and the linear area formula identify the required limit. Both declared dependencies are used correctly, including when n = 0."
+    },
+    {
+      "key": "lusin_compact_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose retains every local hypothesis. Borel cores and finite weighted measures justify Lusin’s theorem. Closed pieces lie inside compact sets; strict positivity yields finite Hausdorff measure and converts weighted null remainders into Hausdorff-null remainders. Enumeration proves the exact conclusion."
+    },
+    {
+      "key": "zero_density_off_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary ENNReal-valued weight is legitimate: withDensity_apply requires only measurability of the evaluated set. The Borel hull and countable compact localization supply the upper-density theorem’s hypotheses. Removing the null exceptional sets and rescaling by the positive finite normalization gives the exact limit."
+    },
+    {
+      "key": "density_bound_of_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type include the essential local-finiteness assumption. It ensures integrability of the cutoff and indicator even for arbitrary S. Tangent convergence bounds the cutoff integrals; BLOWUP converts this into the stated eventual bound with a finite nonnegative constant."
+    },
+    {
+      "key": "tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. The first density limit supplies local finiteness of C outside N; the assumed finiteness of N handles the other pieces. Null-measurable integral splitting is justified, both rescaled errors vanish, and the dimension condition is inherited. No circular tangent claim is used."
+    },
+    {
+      "key": "weighted_tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact local hypotheses suffice. DENSITY-BOUND controls mass on C, and local integrability justifies the three-term decomposition. The tangent hypothesis handles the main term, continuity handles the error on C, and nonnegativity plus the density limit handles the remainder. Both dependencies are correctly used."
+    }
+  ],
+  "required_changes": []
+}
