@@ -468,15 +468,51 @@ there, and let `φ` be a nonincreasing `C¹` function with `φ = 1` on `(-∞, 1
 `∫ (n φ(r/t) + (r/t) φ'(r/t) (1 − w)) dμ`
 `= n ∫ φ(r/t) dμ + ∫ (r/t) φ'(r/t) dμ − ∫ (r/t) φ'(r/t) w dμ`,
 `∫ φ(r/t) dμ ≥ 0` and `∫ (r/t) φ'(r/t) w dμ ≤ 0`.
-Proof: by `allard52_am_fc_cutoff_facts`, `0 ≤ φ ≤ 1`, `φ' ≤ 0`, `φ' = 0` on `(1 + ε, ∞)`, and `φ'`
-is continuous and bounded.  The three integrands vanish off `B = B_{(1+ε)t}(y) ⊆ B̆_R(y)`, which has
-finite measure, and are bounded and a.e. strongly measurable on `B`, hence integrable; linearity
-gives the split, `φ ≥ 0` the second claim, and `(r/t) φ'(r/t) w ≤ 0` `μ`-a.e. the third. -/
+Proof: as in `allard52_am_fc_cutoff_facts` (derived directly here), `0 ≤ φ ≤ 1`, `φ' ≤ 0`,
+`φ' = 0` on `(1 + ε, ∞)`, and `φ'` is continuous and bounded.  The three integrands vanish off
+`B = B_{(1+ε)t}(y) ⊆ B̆_R(y)`, which has finite measure, and are bounded and a.e. strongly
+measurable on `B`, hence integrable; linearity gives the split, `φ ≥ 0` the second claim, and
+`(r/t) φ'(r/t) w ≤ 0` `μ`-a.e. the third. -/
 theorem allard52_am_fc_radial_split : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (R ε : ℝ) (φ : ℝ → ℝ), 0 < ε → μ (closedBall y R) < ⊤ → AEStronglyMeasurable w (μ.restrict (ball y R)) → (∀ᵐ x ∂μ, x ∈ ball y R → 0 ≤ w x ∧ w x ≤ 1) → ContDiff ℝ 1 φ → Antitone φ → (∀ u : ℝ, u ≤ 1 → φ u = 1) → (∀ u : ℝ, 1 + ε ≤ u → φ u = 0) → ∀ t : ℝ, 0 < t → (1 + ε) * t < R → ∫ x, ((n : ℝ) * φ (‖x - y‖ / t) + ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * (1 - w x)) ∂μ = (n : ℝ) * ∫ x, φ (‖x - y‖ / t) ∂μ + ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ - ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ ∧ 0 ≤ ∫ x, φ (‖x - y‖ / t) ∂μ ∧ ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ ≤ 0 := by
   intro n ℓ μ w y R ε φ hε hμR hw hw01 hφC hφA hφ1 hφ0 t ht htR
-  -- Step 1: `0 ≤ φ ≤ 1`, `φ' ≤ 0`, `φ' = 0` on `(1 + ε, ∞)`, `φ'` continuous and `|φ'| ≤ C`.
-  obtain ⟨hφ01, hdφ, hdφ0, hdφc, C, hC⟩ :=
-    Submission.allard52_am_fc_cutoff_facts φ ε hε hφC hφA hφ1 hφ0
+  -- Step 1: `0 ≤ φ ≤ 1`, `φ' ≤ 0`, `φ' = 0` on `(1 + ε, ∞)`, `φ'` continuous and `|φ'| ≤ C`
+  -- (the facts of `allard52_am_fc_cutoff_facts`, derived directly).
+  -- `0 ≤ φ ≤ 1` by monotonicity and the boundary values `φ (1 + ε) = 0`, `φ 1 = 1`.
+  have hφ01 : ∀ u : ℝ, 0 ≤ φ u ∧ φ u ≤ 1 := by
+    intro u
+    constructor
+    · rcases le_total (1 + ε) u with hu | hu
+      · rw [hφ0 u hu]
+      · rw [← hφ0 (1 + ε) le_rfl]
+        exact hφA hu
+    · rcases le_total u 1 with hu | hu
+      · rw [hφ1 u hu]
+      · rw [← hφ1 1 le_rfl]
+        exact hφA hu
+  -- `φ' ≤ 0` because `φ` is nonincreasing.
+  have hdφ : ∀ u : ℝ, deriv φ u ≤ 0 := fun u => hφA.deriv_nonpos
+  -- `φ' = 0` on `(1 + ε, ∞)` and on `(-∞, 1)`, where `φ` is locally constant.
+  have hdφ0 : ∀ u : ℝ, 1 + ε < u → deriv φ u = 0 := by
+    intro u hu
+    have hev : φ =ᶠ[𝓝 u] fun _ => (0 : ℝ) :=
+      Filter.eventually_of_mem (Ioi_mem_nhds hu) (fun v hv => hφ0 v (le_of_lt hv))
+    rw [hev.deriv_eq, deriv_const]
+  have hdφ1 : ∀ u : ℝ, u < 1 → deriv φ u = 0 := by
+    intro u hu
+    have hev : φ =ᶠ[𝓝 u] fun _ => (1 : ℝ) :=
+      Filter.eventually_of_mem (Iio_mem_nhds hu) (fun v hv => hφ1 v (le_of_lt hv))
+    rw [hev.deriv_eq, deriv_const]
+  -- `φ'` is continuous because `φ` is `C¹`; its support lies in `[1, 1 + ε]`, so it is bounded.
+  have hdφc : Continuous (deriv φ) := hφC.continuous_deriv le_rfl
+  obtain ⟨C, hC⟩ : ∃ C : ℝ, ∀ u : ℝ, |deriv φ u| ≤ C := by
+    have hsupp : HasCompactSupport (deriv φ) := by
+      refine HasCompactSupport.of_support_subset_isCompact
+        (isCompact_Icc (a := 1) (b := 1 + ε)) ?_
+      intro u hu
+      rw [Function.mem_support] at hu
+      exact ⟨not_lt.mp fun h => hu (hdφ1 u h), not_lt.mp fun h => hu (hdφ0 u h)⟩
+    obtain ⟨C, hC⟩ := hdφc.bounded_above_of_compact_support hsupp
+    exact ⟨C, fun u => by rw [← Real.norm_eq_abs]; exact hC u⟩
   -- Step 2: `B = B_{(1+ε)t}(y)` lies in `B̆_R(y)`, so `μ(B) < ∞`; `r/t ≤ 1 + ε` on `B` and
   -- `r/t > 1 + ε` off `B`.
   have hBm : MeasurableSet (closedBall y ((1 + ε) * t)) := measurableSet_closedBall
