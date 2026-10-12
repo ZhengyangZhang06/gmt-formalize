@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e3533178ada13f9420ae5d41090308e66e5698d1e2cf312d98a4d502c50d9e23",
+  "git_delta": {
+    "base_commit": "1deaa96350f3945139f0fa7b71ee16c1b6f777fe",
+    "candidate_commit": "b27494a624bd7cb016c2462cf743040f38ce4183",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "isoperimetric_lattice_face_cutoff",
+    "diff_sha256": "ef210977c54fdfeb4f2afca52bd47e822239c838660b9f20705c92fcb1ad244d",
+    "source_sha256": "181eb1902fd4fae5c7aff21e34a104edf3d6afae2f2e563956b5951539d7ff4c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.isoperimetric_lattice_face_cutoff",
+      "statement": "∀ (n N : ℕ) (ρ δ : ℝ) (z : Fin N → ℤ) (α : SimonMultiIndex n N), 0 < ρ → 0 < δ → ∃ φ : Eucl N → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ ∧ HasCompactSupport φ ∧ (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) ∧ (∀ x : Eucl N, (∀ i : Fin N, (i ∈ range α → ρ * ((z i : ℝ) + δ) ≤ x i ∧ x i ≤ ρ * ((z i : ℝ) + 1 - δ)) ∧ (i ∉ range α → x i = ρ * (z i : ℝ))) → φ x = 1) ∧ ∀ z' : Fin N → ℤ, z' ≠ z → ∀ x ∈ latticeFace ρ ((z', α) : LatticeFaceIndex n N), φ x = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
