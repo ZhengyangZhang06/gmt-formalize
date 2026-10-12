@@ -1388,6 +1388,51 @@ theorem w12_ball_smooth_approximation : ∀ n : ℕ, 1 ≤ n → ∀ (f : Rn n �
             (ball (0 : Rn n) 1).indicator g x‖ₑ ^ 2 := setLIntegral_congr_fun measurableSet_ball hpt
       _ ≤ ∫⁻ x, ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator g (x - z)) -
             (ball (0 : Rn n) 1).indicator g x‖ₑ ^ 2 := setLIntegral_le_lintegral _ _
+/-- **Poincaré inequality on the unit ball** (Simon Ch. 5, fact (P) in the proof of Lemma 3.1,
+p. 114; Gilbarg–Trudinger (7.45)).  If `n ≥ 1` and `f ∈ W^{1,2}(B)` has weak gradient `g`, where
+`B = B̆₁(0)`, then `∫_B |f − λ|² ≤ 2^{n+2} ∫_B |g|²` with `λ = ⨍_B f`.  For `0 < r < 1`, smooth
+approximation on `B_r` and the segment estimate give
+`∫_{B_r}∫_{B_r} |f(x) − f(y)|² ≤ 2^{n+2} |B| ∫_{B_r} |g|²`.  Letting `r ↑ 1` and using
+`∫_B |f − λ|² ≤ |B|⁻¹ ∫_B∫_B |f(x) − f(y)|²` then gives the claim. -/
+theorem w12_ball_poincare_inequality : ∀ n : ℕ, 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∫⁻ x in ball (0 : Rn n) 1, ‖f x - ⨍ y in ball (0 : Rn n) 1, f y‖ₑ ^ 2 ≤ ENNReal.ofReal C * ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 := by
+  intro n hn
+  refine ⟨2 ^ (n + 2), by positivity, fun f g hfg => ?_⟩
+  have hf : MemLp f 2 (volume.restrict (ball (0 : Rn n) 1)) := hfg.1
+  have hg : MemLp g 2 (volume.restrict (ball (0 : Rn n) 1)) := hfg.2.1
+  -- Steps 1–2: for `0 < r < 1`, approximate `f` on `B_r` by smooth `φ_j` and pass to the limit;
+  -- the energy on `B_r` is at most the energy on `B`.
+  have hBr : ∀ r : ℝ, 0 < r → r < 1 →
+      ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖f x - f y‖ₑ ^ 2 ≤
+        (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) *
+          ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 := by
+    intro r hr0 hr1
+    obtain ⟨φ, hφ, h1, h2⟩ := Submission.w12_ball_smooth_approximation n hn f g hfg r hr0 hr1
+    have hsub : ball (0 : Rn n) r ⊆ ball 0 1 := ball_subset_ball hr1.le
+    calc ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖f x - f y‖ₑ ^ 2
+        ≤ (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) *
+            ∫⁻ x in ball (0 : Rn n) r, ‖g x‖ₑ ^ 2 :=
+          Submission.poincare_approx_ball_double_integral_bound n f g φ r hr0 hr1.le
+            (hf.aestronglyMeasurable.mono_set hsub) (hg.aestronglyMeasurable.mono_set hsub)
+            (fun j => (hφ j).of_le (by exact_mod_cast le_top)) h1 h2
+      _ ≤ (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) *
+            ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 := by
+          gcongr
+  -- Step 3: let `r ↑ 1`.
+  have hB := Submission.poincare_ball_double_integral_exhaustion n f _ hf.aestronglyMeasurable hBr
+  -- Step 4: the mean.  Since `0 < |B| < ∞`, `|B|⁻¹ · 2^{n+2} |B| = 2^{n+2}`.
+  have h0 : volume (ball (0 : Rn n) 1) ≠ 0 := (measure_ball_pos volume (0 : Rn n) one_pos).ne'
+  have htop : volume (ball (0 : Rn n) 1) ≠ ∞ := measure_ball_lt_top.ne
+  calc ∫⁻ x in ball (0 : Rn n) 1, ‖f x - ⨍ y in ball (0 : Rn n) 1, f y‖ₑ ^ 2
+      ≤ (volume (ball (0 : Rn n) 1))⁻¹ *
+          ∫⁻ x in ball (0 : Rn n) 1, ∫⁻ y in ball (0 : Rn n) 1, ‖f x - f y‖ₑ ^ 2 :=
+        Submission.poincare_set_mean_deviation_sq_bound n _ f measurableSet_ball htop hf
+    _ ≤ (volume (ball (0 : Rn n) 1))⁻¹ * ((2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) *
+          ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2) := by
+        gcongr
+    _ = ENNReal.ofReal (2 ^ (n + 2)) * ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 := by
+        rw [mul_comm ((2 : ℝ≥0∞) ^ (n + 2)), ← mul_assoc, ← mul_assoc,
+          ENNReal.inv_mul_cancel h0 htop, one_mul, ENNReal.ofReal_pow zero_le_two,
+          ENNReal.ofReal_ofNat]
 
 end Submission
 
