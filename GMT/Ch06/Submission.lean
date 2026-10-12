@@ -397,6 +397,26 @@ theorem Submission.br_zd_im_dirac_repr :
     exact absurd (h1.trans_lt hn) (lt_irrefl _)
   -- Integrals over finsets are finite sums.
   have hint : ∀ (F : Finset (Eucl P)) (g : Eucl P → ℝ), IntegrableOn g (F : Set (Eucl P)) μ := by
+/-- Simon Ch. 6, 3.1 with `n = 0` (the `0`-dimensional step in the proof of 6.3): a finite
+integer combination of point masses `Y(ω) = ∑_{x ∈ D} a(x) ω(x)`, `D ⊆ U`, is the integer
+multiplicity current `τ(M, θ, ξ)` with `M = {x ∈ D : a(x) ≠ 0}`, `θ = |a|` and `ξ = ±1` the sign
+of `a`.  `Y` is continuous since convergence of test forms gives pointwise convergence.  `M` is
+finite, so it is `H⁰`-measurable and countably `0`-rectifiable and `H⁰`-integrals over it are
+finite sums; at `x ∈ M`, for small `r` the blow-up `η_{x,r}(M)` meets the support of a given
+`f ∈ C_c` only in `0`, so the weighted tangent space is `{0}`, spanned by the empty frame. -/
+theorem Submission.br_zd_finite_dirac_im :
+    ∀ (P : ℕ) (U : Set (Eucl P)) (D : Finset (Eucl P)) (a : Eucl P → ℤ),
+      (↑D : Set (Eucl P)) ⊆ U → ∃ Y : GeometricCurrentOn U 0, IsIntegerMultiplicity Y ∧
+        ∀ ω : TestFormOn U 0,
+          Y ω = ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![] := by
+  open Poincare.SimonGMT.Chapter03 (blowUpMap) in
+  classical
+  intro P U D a hDU
+  -- `H⁰{x} = 1`, so `H⁰`-integrals over finite sets are finite sums.
+  have hpt : ∀ x : Eucl P, (μHE[0] : Measure (Eucl P)) {x} = 1 := fun x => by
+    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
+  have hint : ∀ (F : Finset (Eucl P)) (g : Eucl P → ℝ),
+      IntegrableOn g (F : Set (Eucl P)) (μHE[0] : Measure (Eucl P)) := by
     intro F g
     rw [← biUnion_of_singleton (F : Set (Eucl P)), Finset.set_biUnion_coe,
       integrableOn_finset_iUnion]
@@ -507,6 +527,110 @@ theorem Submission.br_zd_im_dirac_repr :
   · have hx' : x ∉ tsupport f := fun h => hx.2 (by rw [hSM]; exact ⟨hx.1, h⟩)
     have h0 : (ω : DifferentialForm (Eucl P) 0) x = 0 := hzero x hx'
     simp [h0]
+      ∫ x in (F : Set (Eucl P)), g x ∂(μHE[0] : Measure (Eucl P)) = ∑ x ∈ F, g x := by
+    intro F g
+    rw [setIntegral_finset F (hint F g)]
+    simp only [measureReal_def, hpt, ENNReal.toReal_one, one_smul]
+  -- The current `Y(ω) = ∑_{x ∈ D} a(x) ω(x)`: if `ω_j → 0`, then `ω_j(x) → 0` for every `x`
+  -- (uniformly on the common compact support `K`, and `ω_j(x) = 0` off `K`).
+  let L : TestFormOn U 0 →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![]
+      map_add' := fun ω η => by simp [Finset.sum_add_distrib, mul_add]
+      map_smul' := fun t ω => by simp [Finset.mul_sum, mul_left_comm] }
+  have hcont : ∀ ωs : ℕ → TestFormOn U 0, TestFormOnConverges ωs 0 →
+      Tendsto (fun j => L (ωs j)) atTop (𝓝 0) := by
+    rintro ωs ⟨K, -, -, hsupp, -, hconv⟩
+    have hx : ∀ x, Tendsto (fun j => (ωs j : DifferentialForm (Eucl P) 0) x ![]) atTop (𝓝 0) := by
+      intro x
+      by_cases hxK : x ∈ K
+      · have hev : Continuous fun T : ContinuousMultilinearMap ℝ (fun _ : Fin 0 => Eucl P)
+            (Covector (Eucl P) 0) => T ![] ![] := by fun_prop
+        simpa [Function.comp_def] using (hev.tendsto _).comp ((hconv 0).tendsto_at hxK)
+      · have h0 : ∀ j, (ωs j : DifferentialForm (Eucl P) 0) x = 0 := fun j =>
+          image_eq_zero_of_notMem_tsupport fun h => hxK (hsupp j h)
+        simp [h0]
+    simpa [L] using tendsto_finsetSum D fun x _ => (hx x).const_mul (a x : ℝ)
+  obtain ⟨Y, hY⟩ : ∃ Y : GeometricCurrentOn U 0, ∀ ω : TestFormOn U 0,
+      Y ω = ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![] :=
+    ⟨⟨L, hcont⟩, fun ω => rfl⟩
+  refine ⟨Y, ?_, hY⟩
+  -- The triple: `M = {a ≠ 0}`, `θ = |a|`, `ξ = -ε` on `N = {a < 0}` and `ξ = ε` elsewhere, where
+  -- `⟨α, ε⟩ = α(![])`; then `θ(x) ⟨α, ξ(x)⟩ = a(x) α(![])` on `M`.
+  set M : Finset (Eucl P) := D.filter (fun x => a x ≠ 0) with hM
+  set N : Finset (Eucl P) := D.filter (fun x => a x < 0) with hN
+  let ε : NVector (Eucl P) 0 := simpleNVector ![]
+  let θ : Eucl P → ℝ := fun x => |(a x : ℝ)|
+  let ξ : Eucl P → NVector (Eucl P) 0 := fun x => if x ∈ N then -ε else ε
+  have hMmeas : MeasurableSet (M : Set (Eucl P)) := M.finite_toSet.measurableSet
+  have hterm : ∀ x ∈ M, ∀ α : Covector (Eucl P) 0, θ x * ξ x α = (a x : ℝ) * α ![] := by
+    intro x hx α
+    have hxD : x ∈ D := (Finset.mem_filter.1 hx).1
+    by_cases hneg : a x < 0
+    · have hxN : x ∈ N := Finset.mem_filter.2 ⟨hxD, hneg⟩
+      have ha : (a x : ℝ) < 0 := by exact_mod_cast hneg
+      simp only [θ, ξ, ε, hxN, ↓reduceIte, neg_apply, simpleNVector_apply,
+        abs_of_neg ha]
+      ring
+    · have hxN : x ∉ N := fun h => hneg (Finset.mem_filter.1 h).2
+      have ha : (0 : ℝ) ≤ a x := by exact_mod_cast not_lt.1 hneg
+      simp only [θ, ξ, ε, hxN, ↓reduceIte, simpleNVector_apply, abs_of_nonneg ha]
+  refine ⟨M, θ, ξ,
+    { subset := fun x hx => hDU (Finset.mem_filter.1 hx).1
+      nullMeasurableSet := hMmeas.nullMeasurableSet
+      countablyRectifiable := ?_
+      pos := fun x hx => abs_pos.2 (Int.cast_ne_zero.2 (Finset.mem_filter.1 hx).2)
+      integrableOn := fun K _ _ => (hint M θ).mono_set inter_subset_left
+      aestronglyMeasurable := ?_
+      orients := ?_ }, fun x _ => ⟨(a x).natAbs, by simp [θ, Nat.cast_natAbs, Int.cast_abs]⟩, ?_⟩
+  · -- `M` is countable, hence covered by the ranges of countably many constant maps.
+    obtain ⟨g, hg⟩ := countable_iff_exists_subset_range.1 M.finite_toSet.countable
+    refine ⟨∅, measure_empty, fun j _ => g j, fun j => ⟨0, LipschitzWith.const _⟩, fun y hy => ?_⟩
+    obtain ⟨j, rfl⟩ := hg hy
+    exact Or.inr (mem_iUnion.2 ⟨j, 0, rfl⟩)
+  · -- `ξ` is constant off and on the finite set `N`.
+    exact (StronglyMeasurable.ite N.finite_toSet.measurableSet stronglyMeasurable_const
+      stronglyMeasurable_const).aestronglyMeasurable
+  · -- Every `x ∈ M` is oriented by the empty frame, spanning the weighted tangent space `{0}`.
+    refine ae_restrict_of_forall_mem hMmeas fun x hx =>
+      ⟨![], ⟨fun i => i.elim0, fun i => i.elim0⟩, ?_, ?_⟩
+    · rw [range_eq_empty, Submodule.span_empty]
+      refine ⟨finrank_bot ℝ (Eucl P), fun f => ?_⟩
+      have hbot : ∫ y in ((⊥ : Submodule ℝ (Eucl P)) : Set (Eucl P)), f y
+          ∂(μHE[0] : Measure (Eucl P)) = f 0 := by
+        simp
+      rw [hbot]
+      -- `f = 0` off `B_R(0)`, and the points of `M \ {x}` have distance `≥ d` from `x`; so for
+      -- `0 < r < d / R` only `y = x` contributes to `∑_{y ∈ M} f(η_{x,r}(y)) θ(y)`.
+      obtain ⟨R, hR, hfR⟩ := f.hasCompactSupport.exists_pos_le_norm
+      obtain ⟨d, hd, hdM⟩ := Metric.isOpen_iff.mp
+        (M.erase x).finite_toSet.isClosed.isOpen_compl x (by simp)
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [Ioo_mem_nhdsGT (div_pos hd hR)] with r ⟨hr0, hrd⟩
+      have hinj : Function.Injective (blowUpMap x r) := fun y z h => by
+        simpa [blowUpMap, hr0.ne'] using h
+      have hback : ∀ y, x + r • blowUpMap x r y = y := fun y => by
+        simp [blowUpMap, smul_smul, hr0.ne']
+      rw [← Finset.coe_image, hsum, Finset.sum_image fun y _ z _ h => hinj h]
+      simp only [hback]
+      rw [Finset.sum_eq_single x (fun y hy hyx => ?_) (fun h => absurd hx h)]
+      · simp [blowUpMap, mul_comm]
+      · have hyd : d ≤ ‖y - x‖ := by
+          rw [← dist_eq_norm]
+          by_contra h
+          exact hdM (mem_ball.2 (not_le.1 h)) (Finset.mem_erase.2 ⟨hyx, hy⟩)
+        rw [lt_div_iff₀ hR] at hrd
+        rw [hfR, zero_mul]
+        rw [blowUpMap, norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hr0, le_inv_mul_iff₀ hr0]
+        linarith
+    · by_cases hxN : x ∈ N
+      · exact Or.inr (by simp [ξ, ε, hxN])
+      · exact Or.inl (by simp [ξ, ε, hxN])
+  · -- `τ(M, θ, ξ)(ω) = ∑_{x ∈ M} a(x) ω(x) = ∑_{x ∈ D} a(x) ω(x)`, as `a = 0` on `D \ M`.
+    intro ω
+    rw [hY, tauAction, hsum, Finset.sum_congr rfl fun x hx => hterm x hx _, hM,
+      Finset.sum_filter_of_ne]
+    intro x _ hne ha
+    exact hne (by simp [ha])
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
