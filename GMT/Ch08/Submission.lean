@@ -540,6 +540,46 @@ theorem Submission.intcpt_vdb_liminf_ratio_bound_ae :
   -- Steps 3–6: applied to `ν i` with `ρ₀ = r`, it makes the exceptional set `μ`-null.
   exact Submission.intcpt_vdb_liminf_bound_ae_of_cover N C μ ν W r
     (fun A i t h ↦ hC μ (ν i) A r t h) hS
+/-- **Simon Ch. 8, proof of 5.9, printed (1)–(2), localisation and exhaustion** (child
+`open_thickening_exhaustion` of `variation_density_bound`): an open `U ⊆ ℝ^N` is covered by
+countably many sets `W_p` whose `r_p`-thickenings (`r_p > 0`) are relatively compact open subsets of
+`U`.  Take `W = B°_s(x)` and `r = s` with `B°_{3s}(x) ⊆ U`: `thickening s (B°_s(x)) ⊆ B°_{2s}(x)`
+has compact closure inside `B_{2s}(x) ⊆ U`, and countably many such balls cover `U` (Lindelöf). -/
+theorem Submission.intcpt_vdb_open_thickening_exhaustion :
+    ∀ (N : ℕ) (U : Set (Euclidean N)), IsOpen U → ∃ (W : ℕ → Set (Euclidean N)) (r : ℕ → ℝ),
+      (∀ p, 0 < r p) ∧ (∀ p, IsRelCompactOpenIn (thickening (r p) (W p)) U) ∧ U ⊆ ⋃ p, W p := by
+  intro N U hU
+  -- For `x ∈ U` choose `s x > 0` with `B°_{3 s x}(x) ⊆ U`.
+  have hrad : ∀ x ∈ U, ∃ s : ℝ, 0 < s ∧ ball x (3 * s) ⊆ U := fun x hx ↦ by
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x hx
+    exact ⟨ε / 3, by positivity, by rwa [mul_div_cancel₀ ε three_ne_zero]⟩
+  choose! s hs0 hsU using hrad
+  -- `thickening (s x) (B°_{s x}(x)) ⊆ B°_{2 s x}(x)` has closure in `B_{2 s x}(x) ⊆ B°_{3 s x}(x)`.
+  have hrel : ∀ x ∈ U, IsRelCompactOpenIn (thickening (s x) (ball x (s x))) U := fun x hx ↦ by
+    have hsub : closure (thickening (s x) (ball x (s x))) ⊆ closedBall x (2 * s x) := by
+      refine (closure_mono ?_).trans closure_ball_subset_closedBall
+      simpa only [two_mul] using Metric.thickening_ball x (s x) (s x)
+    refine ⟨isOpen_thickening, (isCompact_closedBall x _).of_isClosed_subset isClosed_closure hsub,
+      hsub.trans ((closedBall_subset_ball ?_).trans (hsU x hx))⟩
+    linarith [hs0 x hx]
+  -- Lindelöf: countably many of the balls `B°_{s x}(x)`, `x ∈ U`, cover `U`.
+  obtain ⟨T, hTU, hTc, hT⟩ :=
+    TopologicalSpace.isOpen_biUnion_countable U (fun x ↦ ball x (s x)) fun _ _ ↦ isOpen_ball
+  have hcov : U ⊆ ⋃ x ∈ T, ball x (s x) := by
+    rw [hT]
+    exact fun x hx ↦ mem_biUnion hx (mem_ball_self (hs0 x hx))
+  rcases T.eq_empty_or_nonempty with rfl | hTne
+  · -- `U = ∅`: take `W p = ∅` and `r p = 1`.
+    rw [biUnion_empty] at hcov
+    refine ⟨fun _ ↦ ∅, fun _ ↦ 1, fun _ ↦ one_pos, fun _ ↦ ?_, hcov.trans (empty_subset _)⟩
+    rw [thickening_empty]
+    refine ⟨isOpen_empty, ?_, ?_⟩ <;> rw [closure_empty]
+    exacts [isCompact_empty, empty_subset U]
+  · -- `T = range f`: take `W p = B°_{s (f p)}(f p)` and `r p = s (f p)`.
+    obtain ⟨f, rfl⟩ := hTc.exists_eq_range hTne
+    rw [biUnion_range] at hcov
+    exact ⟨fun p ↦ ball (f p) (s (f p)), fun p ↦ s (f p), fun p ↦ hs0 _ (hTU ⟨p, rfl⟩),
+      fun p ↦ hrel _ (hTU ⟨p, rfl⟩), hcov⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
