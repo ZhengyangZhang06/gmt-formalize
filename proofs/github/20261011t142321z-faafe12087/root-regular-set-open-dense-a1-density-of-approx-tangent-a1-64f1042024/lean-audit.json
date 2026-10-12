@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "1d24fada2bee0a32a54c1e2150150ca99acbd1c3a04c8ff4f95286e4b4f8343c",
+  "git_delta": {
+    "base_commit": "b58cc4ceb751d5f98e94ad451a5657b5fbda6f2a",
+    "candidate_commit": "b5e0cdadf7b277f00c03ff8c7410a7c5488e3091",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "1f77f3e66f9572e7adfb8e183dadc08acc0aa0cffa303c330b9a9e9e7556e085",
+    "source_sha256": "8a4cf629099a626560f5339868a4e6b0ea225a05c67346211c195b73f643c0c5",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_hasDensity_of_approxTangent",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), x ∈ U → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P → V.HasDensity x (V.mult x)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
