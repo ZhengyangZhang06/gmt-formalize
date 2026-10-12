@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5cad086b06f8a2c7c253f3ac21c863256f8f487ac38605dc87b38f4948bf34a6",
+  "git_delta": {
+    "base_commit": "1d413761d4920fe295b13967cf42a7906180c1a2",
+    "candidate_commit": "2b0c51405c3f7d305798214e74d0447c1d210ae1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_approxTangent_dilation",
+    "diff_sha256": "27adc3fb13855e7463c4a889ebcaab488d2fbec8401504b3d882af58e5bbfa6a",
+    "source_sha256": "230578f3f62ddcd884750867efb1fcc527c5adfba4a7284862942468f3652dfd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_approxTangent_dilation",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x y : Euclid P) (lam : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < lam → HasApproximateTangentSpaceAt n M y Q → HasApproximateTangentSpaceAt n (dilation x lam '' M) (dilation x lam y) Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
