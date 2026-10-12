@@ -533,6 +533,29 @@ theorem Submission.lpf_tde_continuous_left_inverse :
     exact (mul_self_le_mul_self_iff (norm_nonneg p) (norm_nonneg v)).2
       (by nlinarith [mul_self_nonneg ‖v - p‖])
 
+/-- Borel chartwise tangential differential (Simon Ch. 3 §2, 2.1–2.2, for Ch. 6, 3.6): for C¹
+charts `Φ j` antilipschitz on open `Ω j` and any `f`, glue the Borel pieces
+`x = Φ j w ↦ D(f ∘ Φ j)(w) ∘ Λ(DΦ j(w))` along the first chart through `x`, and `0` off the
+charts; `Λ` is the continuous left inverse of `lpf_tde_continuous_left_inverse`. -/
+theorem Submission.lpf_tde_measurable_chart_differential :
+    ∀ (P Q n : ℕ) (Φ : ℕ → Eucl n → Eucl P) (Ω : ℕ → Set (Eucl n)) (f : Eucl P → Eucl Q), (∀ j, IsOpen (Ω j)) → (∀ j, ContDiff ℝ 1 (Φ j)) → (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) → ∃ L : Eucl P → (Eucl P →L[ℝ] Eucl Q), StronglyMeasurable L ∧ (∀ x, x ∉ (⋃ j, Φ j '' Ω j) → L x = 0) ∧ ∀ x ∈ (⋃ j, Φ j '' Ω j), ∃ j, ∃ w ∈ Ω j, Φ j w = x ∧ (∀ s : Eucl n, L x (fderiv ℝ (Φ j) w s) = fderiv ℝ (f ∘ Φ j) w s) ∧ ∀ v : Eucl P, ∃ s : Eucl n, ‖fderiv ℝ (Φ j) w s‖ ≤ ‖v‖ ∧ L x v = fderiv ℝ (f ∘ Φ j) w s := by
+  intro P Q n Φ Ω f hΩ hΦ hanti
+  -- Step 0: the continuous left inverse `Λ` on the injective maps.
+  obtain ⟨Λ, hΛc, hΛ⟩ := Submission.lpf_tde_continuous_left_inverse n P
+  -- Steps 1–5, chart by chart: a Borel piece `G j` on the Borel image `Φ j '' Ω j`.
+  choose G hGm hSm hG using fun j =>
+    Submission.lpf_tde_mcd_single_chart P Q n Λ (Φ j) (Ω j) f hΛc hΛ (hΩ j) (hΦ j) (hanti j)
+  -- Steps 6–7: glue the pieces along the first chart containing `x`, `0` off the charts.
+  obtain ⟨L, hLm, hL0, hL⟩ := Submission.lpf_tde_mcd_countable_glue (Eucl P)
+    (Eucl P →L[ℝ] Eucl Q) (fun j => Φ j '' Ω j) G hSm hGm
+  refine ⟨L, hLm.stronglyMeasurable, hL0, fun x hx => ?_⟩
+  -- Step 8: `L x` is the piece of a chart `j` through `x`, so the chart identities transfer.
+  obtain ⟨j, hxj, hLx⟩ := hL x hx
+  obtain ⟨w, hw, hΦw, hA, hv⟩ := hG j x hxj
+  refine ⟨j, w, hw, hΦw, fun s => by rw [hLx]; exact hA s, fun v => ?_⟩
+  obtain ⟨s, hs, hGs⟩ := hv v
+  exact ⟨s, hs, by rw [hLx]; exact hGs⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
