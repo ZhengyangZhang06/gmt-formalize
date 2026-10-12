@@ -571,6 +571,54 @@ theorem dohr_tp_wtlp_rescaled_limit : ∀ (n : ℕ) (L : ℝ → ℝ≥0∞) (ρ
       ENNReal.toReal_ofReal (inv_nonneg.mpr (pow_nonneg (mul_pos hr hρ).le n))]
     rw [mul_pow, mul_inv, mul_comm ((r ^ n)⁻¹), ← mul_assoc, ← mul_assoc,
       mul_inv_cancel₀ (pow_ne_zero n hρ.ne'), one_mul]
+/-- `Hⁿ`-a.e. on `M ∩ O`, approximate tangent planes of `S` are approximate tangent planes of `M`
+with respect to `θ`, provided `Hⁿ((M ∩ O) \ S) = 0`, `θ` is integrable on `M ∩ O` and
+`Hⁿ ⌞ (S ∩ O)` has `n`-dimensional growth.  `Hⁿ ⌞ (S ∩ O)`-a.e. point is a Lebesgue point of
+`1_M θ` (`dohr_tp_ae_lebesgue_point_of_growth`); at such a point `y ∈ M ∩ O ∩ S` the small balls
+`B_r(y)` lie in `O`, which turns this into the Lebesgue condition on `S` required by
+`dohr_tp_weighted_tangent_of_lebesgue_point`. -/
+theorem dohr_tp_ae_weighted_tangent_of_growth : ∀ (n ℓ : ℕ) (M S O : Set (Amb n ℓ)) (θ : Amb n ℓ → ℝ) (C : ℝ), IsOpen O → NullMeasurableSet M (μHE[n] : Measure (Amb n ℓ)) → AEMeasurable θ ((μHE[n] : Measure (Amb n ℓ)).restrict M) → IntegrableOn θ (M ∩ O) (μHE[n] : Measure (Amb n ℓ)) → (μHE[n] : Measure (Amb n ℓ)) ((M ∩ O) \ S) = 0 → (∀ (z : Amb n ℓ) (r : ℝ), 0 < r → (μHE[n] : Measure (Amb n ℓ)) (S ∩ O ∩ closedBall z r) ≤ ENNReal.ofReal (C * r ^ n)) → ∀ᵐ y ∂((μHE[n] : Measure (Amb n ℓ)).restrict M), y ∈ O → ∀ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n S y P → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n M θ y P := by
+  intro n ℓ M S O θ C hO hM hθ hθint hMS hgrowth
+  -- `ν = Hⁿ ⌞ (S ∩ O)` has `n`-dimensional growth and `f = 1_M θ` is `ν`-integrable.
+  have hνgrowth : ∀ (z : Amb n ℓ) (r : ℝ), 0 < r →
+      ((μHE[n] : Measure (Amb n ℓ)).restrict (S ∩ O)) (closedBall z r) ≤
+        ENNReal.ofReal (C * r ^ n) := by
+    intro z r hr
+    rw [Measure.restrict_apply measurableSet_closedBall, inter_comm (closedBall z r)]
+    exact hgrowth z r hr
+  have hf : Integrable (M.indicator θ) ((μHE[n] : Measure (Amb n ℓ)).restrict (S ∩ O)) :=
+    (integrableOn_indicator_iff hM).2
+      (hθint.mono_set (inter_subset_inter_right M inter_subset_right))
+  -- The points of `S ∩ O` that are not Lebesgue points of `f` form an `Hⁿ`-null set.
+  have hbad := nonpos_iff_eq_zero.1 ((Measure.le_restrict_apply (S ∩ O) _).trans
+    (ae_iff.1 (Submission.dohr_tp_ae_lebesgue_point_of_growth n ℓ
+      ((μHE[n] : Measure (Amb n ℓ)).restrict (S ∩ O)) (M.indicator θ) C hf hνgrowth)).le)
+  -- Inside `M`, the conclusion can only fail on `((M ∩ O) \ S) ∪ (non-Lebesgue points ∩ S ∩ O)`.
+  rw [ae_iff, Measure.restrict_apply₀' hM]
+  refine measure_mono_null ?_ (measure_union_null hMS hbad)
+  rintro y ⟨hy, hyM⟩
+  have hyO : y ∈ O := by
+    by_contra hyO
+    exact hy fun h => absurd h hyO
+  by_cases hyS : y ∈ S
+  · refine Or.inr ⟨fun hyLeb => hy fun _ P hP => ?_, hyS, hyO⟩
+    -- `y ∈ M ∩ O ∩ S` is a Lebesgue point: use a ball `B̆_ε(y) ⊆ O`.
+    obtain ⟨ε, hε, hεO⟩ := Metric.isOpen_iff.1 hO y hyO
+    have hMε : (μHE[n] : Measure (Amb n ℓ)) ((M ∩ ball y ε) \ S) = 0 :=
+      measure_mono_null (Set.sdiff_subset_sdiff_left (inter_subset_inter_right M hεO)) hMS
+    have hSε : (μHE[n] : Measure (Amb n ℓ)) (S ∩ ball y ε) ≠ ⊤ := by
+      refine ne_top_of_le_ne_top ENNReal.ofReal_ne_top ((measure_mono ?_).trans (hgrowth y ε hε))
+      exact fun x hx => ⟨⟨hx.1, hεO hx.2⟩, ball_subset_closedBall hx.2⟩
+    refine Submission.dohr_tp_weighted_tangent_of_lebesgue_point n ℓ M S θ y P ε hε hM hθ hMε
+      hSε hP (hyLeb.congr' ?_)
+    -- For `r < ε`, `B_r(y) ∩ (S ∩ O) = S ∩ B_r(y)`, and `f y = θ y` since `y ∈ M`.
+    filter_upwards [Ioo_mem_nhdsGT hε] with r hr
+    have hball : closedBall y r ∩ (S ∩ O) = S ∩ closedBall y r := by
+      ext x
+      exact ⟨fun hx => ⟨hx.2.1, hx.1⟩,
+        fun hx => ⟨hx.2, hx.1, hεO (closedBall_subset_ball hr.2 hx.2)⟩⟩
+    rw [Measure.restrict_restrict measurableSet_closedBall, hball, indicator_of_mem hyM]
+  · exact Or.inl ⟨⟨hyM, hyO⟩, hyS⟩
 
 end Submission
 
