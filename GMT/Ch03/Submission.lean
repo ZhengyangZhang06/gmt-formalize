@@ -953,6 +953,285 @@ theorem Submission.bf_haar_null_to_frames : ∀ (N n : ℕ), ContinuousOn (fun v
   intro v hv
   simp only [Set.mem_ofPred_eq, not_imp, not_not] at hv
   exact hv
+/-- **Uniform `Hⁿ`-measure of open balls in `n`-planes** (flat-ball step of the sphere-cap bounds
+for the Besicovitch–Federer theorem; Dall'Alba, Lemma 4.15; Mattila, Ch. 18). For each `n` the
+constant `ω = Lⁿ(B_{ℝⁿ}(0, 1)) > 0` satisfies `Hⁿ(T ∩ B(w, ρ)) = ω ρⁿ` for every `n`-dimensional
+subspace `T ⊆ ℝᴺ`, every `w ∈ T` and every `ρ > 0`. An orthonormal basis of `T` gives a linear
+isometric equivalence `e : T ≃ ℝⁿ`, and `ι = e⁻¹` followed by `T ↪ ℝᴺ` is an isometry with
+`T ∩ B(w, ρ) = ι(B(e w, ρ))`; `Hⁿ` is invariant under isometries, equals `Lⁿ` on `ℝⁿ`, and
+`Lⁿ(B(z, ρ)) = ρⁿ Lⁿ(B(0, 1))`. -/
+theorem Submission.bf_planeBall_measure_uniform : ∀ n : ℕ, ∃ ω : ℝ, 0 < ω ∧ ∀ (N : ℕ) (T : Submodule ℝ (Rn N)), finrank ℝ T = n → ∀ w ∈ T, ∀ ρ : ℝ, 0 < ρ → μHE[n] ((T : Set (Rn N)) ∩ Metric.ball w ρ) = ENNReal.ofReal (ω * ρ ^ n) := by
+  intro n
+  -- Step 1: `ω = Lⁿ(B(0, 1))` is positive and finite, `Lⁿ` being an additive Haar measure on
+  -- the proper space `ℝⁿ`; it depends only on `n`.
+  have hB₀pos : 0 < volume (Metric.ball (0 : Rn n) 1) := Metric.measure_ball_pos _ _ one_pos
+  have hB₀fin : volume (Metric.ball (0 : Rn n) 1) < ∞ := measure_ball_lt_top
+  refine ⟨(volume (Metric.ball (0 : Rn n) 1)).toReal, ENNReal.toReal_pos hB₀pos.ne' hB₀fin.ne,
+    fun N T hT w hw ρ hρ ↦ ?_⟩
+  -- Step 2: an orthonormal basis of `T` indexed by `Fin n` gives a linear isometric equivalence
+  -- `e : T ≃ ℝⁿ`, and `ι = (↑) ∘ e⁻¹ : ℝⁿ → ℝᴺ` is an isometry with `ι (e x) = x` on `T`.
+  let e : T ≃ₗᵢ[ℝ] Rn n := ((stdOrthonormalBasis ℝ T).reindex (finCongr hT)).repr
+  let ι : Rn n → Rn N := fun z ↦ (e.symm z : Rn N)
+  have hι : Isometry ι := isometry_subtype_coe.comp e.symm.isometry
+  have hιe : ∀ x : T, ι (e x) = x := fun x ↦ by simp [ι]
+  have hιw : ι (e ⟨w, hw⟩) = w := hιe ⟨w, hw⟩
+  -- Step 3: `T ∩ B(w, ρ) = ι(B(e w, ρ))`, since `ι` preserves distances.
+  have himg : (T : Set (Rn N)) ∩ Metric.ball w ρ = ι '' Metric.ball (e ⟨w, hw⟩) ρ := by
+    ext x
+    constructor
+    · rintro ⟨hxT, hx⟩
+      refine ⟨e ⟨x, hxT⟩, ?_, hιe ⟨x, hxT⟩⟩
+      rw [Metric.mem_ball, ← hι.dist_eq, hιe, hιw]
+      exact hx
+    · rintro ⟨z, hz, rfl⟩
+      refine ⟨(e.symm z).2, ?_⟩
+      rw [Metric.mem_ball, ← hιw, hι.dist_eq]
+      exact hz
+  -- Step 4: isometry invariance of `Hⁿ`, `Hⁿ = Lⁿ` on `ℝⁿ` and the Haar scaling law for balls.
+  rw [himg, hι.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+    Measure.addHaar_ball_of_pos _ _ hρ, finrank_euclideanSpace_fin,
+    ENNReal.ofReal_mul ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hB₀fin.ne, mul_comm]
+/-- **Projection lower comparison for caps of the unit sphere of an `(n+1)`-plane** (the graph
+map over `T_ζ` and the orthogonal projection `π_ζ`; Dall'Alba, Lemma 4.15; Mattila, Ch. 18).
+For a subspace `H ⊆ ℝᴺ` with `dim H = n + 1` and a unit vector `ζ ∈ H`, the `n`-plane
+`T = (ℝζ)^⊥ ∩ H` satisfies `Hⁿ(T ∩ B(0, ρ/2)) ≤ Hⁿ(S(H) ∩ B(ζ, ρ))` for `0 < ρ ≤ 2`, where
+`S(H) = {θ ∈ H : |θ| = 1}`. Every `w ∈ T ∩ B(0, ρ/2)` is `π ξ` for the lift
+`ξ = w + (1 - |w|²)^{1/2} ζ ∈ S(H) ∩ B(ζ, ρ)`, where `π` is the `1`-Lipschitz orthogonal
+projection onto `T`. -/
+theorem Submission.bf_sphereCap_lower_comparison : ∀ (n N : ℕ) (H : Submodule ℝ (Rn N)), finrank ℝ H = n + 1 → ∀ ζ ∈ H, ‖ζ‖ = 1 → ∃ T : Submodule ℝ (Rn N), finrank ℝ T = n ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ 2 → μHE[n] ((T : Set (Rn N)) ∩ Metric.ball 0 (ρ / 2)) ≤ μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ) := by
+  intro n N H hH ζ hζ hζ1
+  -- Step 1: the plane `T = (ℝζ)^⊥ ∩ H` has dimension `n`, since `ℝζ ⊆ H` is a line.
+  have hζ0 : ζ ≠ 0 := by
+    rintro rfl
+    simp at hζ1
+  have hTdim : finrank ℝ ((ℝ ∙ ζ)ᗮ ⊓ H : Submodule ℝ (Rn N)) = n :=
+    Submodule.finrank_add_inf_finrank_orthogonal' ((Submodule.span_singleton_le_iff_mem ζ H).2 hζ)
+      (by rw [finrank_span_singleton hζ0, hH, add_comm])
+  refine ⟨(ℝ ∙ ζ)ᗮ ⊓ H, hTdim, fun ρ hρ hρ2 ↦ ?_⟩
+  set T : Submodule ℝ (Rn N) := (ℝ ∙ ζ)ᗮ ⊓ H
+  -- Step 2: the orthogonal projection `π` onto `T` sends `ζ` to `0`, since `ζ ⊥ T`.
+  have hπζ : T.starProjection ζ = 0 := by
+    rw [Submodule.starProjection_apply_eq_zero_iff]
+    intro u hu
+    exact Submodule.mem_orthogonal_singleton_iff_inner_left.1 hu.1
+  -- Step 3: every `w ∈ T ∩ B(0, ρ/2)` is `π ξ` for `ξ = w + (1 - |w|²)^{1/2} ζ` in the cap.
+  have hsub : (T : Set (Rn N)) ∩ Metric.ball 0 (ρ / 2) ⊆
+      T.starProjection '' ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ) := by
+    rintro w ⟨hwT, hw⟩
+    have hwζ : inner ℝ w ζ = 0 := Submodule.mem_orthogonal_singleton_iff_inner_left.1 hwT.1
+    rw [mem_ball_zero_iff] at hw
+    set t : ℝ := ‖w‖ ^ 2
+    have ht0 : 0 ≤ t := by positivity
+    have ht1 : t < 1 := by nlinarith [norm_nonneg w]
+    have htρ : t < ρ ^ 2 / 4 := by nlinarith [norm_nonneg w]
+    set f : ℝ := Real.sqrt (1 - t)
+    have hf0 : 0 ≤ f := Real.sqrt_nonneg _
+    have hf2 : f ^ 2 = 1 - t := Real.sq_sqrt (by linarith)
+    have hf1 : f ≤ 1 := Real.sqrt_le_one.2 (by linarith)
+    have hft : 1 - t ≤ f := (Real.le_sqrt (by linarith) (by linarith)).2 (by nlinarith)
+    refine ⟨w + f • ζ, ⟨⟨H.add_mem hwT.2 (H.smul_mem f hζ), ?_⟩, ?_⟩, ?_⟩
+    · -- (b) `|ξ|² = |w|² + f² = 1`
+      have hsq : ‖w + f • ζ‖ ^ 2 = 1 := by
+        rw [norm_add_sq_real, inner_smul_right, hwζ, norm_smul, hζ1, Real.norm_of_nonneg hf0]
+        nlinarith
+      nlinarith [norm_nonneg (w + f • ζ)]
+    · -- (c) `|ξ - ζ|² = |w|² + (1 - f)² ≤ 2 |w|² < ρ²`
+      rw [Metric.mem_ball, dist_eq_norm]
+      have hsq : ‖w + f • ζ - ζ‖ ^ 2 = t + (1 - f) ^ 2 := by
+        rw [show w + f • ζ - ζ = w + (f - 1) • ζ by rw [sub_smul, one_smul]; abel,
+          norm_add_sq_real, inner_smul_right, hwζ, norm_smul, hζ1, Real.norm_eq_abs, mul_one,
+          sq_abs]
+        ring
+      have hlt : ‖w + f • ζ - ζ‖ ^ 2 < ρ ^ 2 := by
+        rw [hsq]
+        nlinarith [mul_nonneg (sub_nonneg.2 hf1) (sub_nonneg.2 hft),
+          mul_nonneg ht0 (sub_nonneg.2 hft), mul_nonneg ht0 (sub_nonneg.2 ht1.le)]
+      exact lt_of_pow_lt_pow_left₀ 2 hρ.le hlt
+    · -- (d) `π ξ = π w + f π ζ = w`
+      rw [map_add, map_smul, hπζ, smul_zero, add_zero, Submodule.starProjection_eq_self_iff.2 hwT]
+  -- Step 4: monotonicity and the Lipschitz image bound with constant `1`.
+  calc μHE[n] ((T : Set (Rn N)) ∩ Metric.ball 0 (ρ / 2))
+      ≤ μHE[n] (T.starProjection '' ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ)) :=
+        measure_mono hsub
+    _ ≤ ((1 : ℝ≥0) : ℝ≥0∞) ^ n * μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ) :=
+        Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+          T.lipschitzWith_starProjection.lipschitzOnWith
+    _ = μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ) := by simp
+/-- **Graph upper comparison for small caps of the unit sphere of an `(n+1)`-plane** (a cap
+estimate for Simon Ch. 3, Theorem 3.6, `chapter-03.txt` lines 530–536, whose proof Simon defers
+to [Fed69]/[Ros84]; cf. Mattila, *Geometry of Sets and Measures in Euclidean Spaces*, Ch. 18).
+Let `H ⊆ ℝᴺ` be a subspace with `dim H = n + 1`, `S(H) = {θ ∈ H : |θ| = 1}` and `ζ ∈ S(H)`.
+The `n`-plane `T = H ∩ ζ^⊥` satisfies `Hⁿ(S(H) ∩ B(ζ, ρ)) ≤ 2ⁿ Hⁿ(T ∩ B(0, ρ))` for
+`0 < ρ ≤ 1/2`: the cap lies in the image of the disc `T ∩ B(0, ρ)` under the graph map
+`Γ(w) = w + (1 - |w|²)^{1/2} ζ`, which is `2`-Lipschitz on that disc. -/
+theorem Submission.bf_sphereCap_upper_comparison : ∀ (n N : ℕ) (H : Submodule ℝ (Rn N)), finrank ℝ H = n + 1 → ∀ ζ ∈ H, ‖ζ‖ = 1 → ∃ T : Submodule ℝ (Rn N), finrank ℝ T = n ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 / 2 → μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ) ≤ 2 ^ n * μHE[n] ((T : Set (Rn N)) ∩ Metric.ball 0 ρ) := by
+  intro n N H hH ζ hζ hζ1
+  -- The plane `T = (ℝζ)ᗮ ⊓ H` has dimension `dim H - dim ℝζ = n`.
+  have hζ0 : ζ ≠ 0 := by rintro rfl; simp at hζ1
+  have hT : finrank ℝ ((ℝ ∙ ζ)ᗮ ⊓ H : Submodule ℝ (Rn N)) = n :=
+    Submodule.finrank_add_inf_finrank_orthogonal' ((Submodule.span_singleton_le_iff_mem _ _).2 hζ)
+      (by rw [finrank_span_singleton hζ0, hH, add_comm])
+  refine ⟨(ℝ ∙ ζ)ᗮ ⊓ H, hT, fun ρ hρ hρ2 ↦ ?_⟩
+  set T : Submodule ℝ (Rn N) := (ℝ ∙ ζ)ᗮ ⊓ H
+  set Γ : Rn N → Rn N := fun w ↦ w + Real.sqrt (1 - ‖w‖ ^ 2) • ζ with hΓ
+  -- The cap lies in `Γ(T ∩ B(0, ρ))`: `ξ = Γ(w)` for `s = ξ · ζ > 0` and `w = ξ - s ζ ∈ T`.
+  have hsub : {θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ ⊆
+      Γ '' ((T : Set (Rn N)) ∩ Metric.ball 0 ρ) := by
+    rintro ξ ⟨⟨hξH, hξ1⟩, hξ⟩
+    rw [Metric.mem_ball, dist_eq_norm] at hξ
+    set s : ℝ := inner ℝ ξ ζ
+    have hd : ‖ξ - ζ‖ ^ 2 = 2 - 2 * s := by rw [norm_sub_sq_real, hξ1, hζ1]; ring
+    have hs1 : s ≤ 1 := by simpa [hξ1, hζ1] using real_inner_le_norm ξ ζ
+    have hdlt : ‖ξ - ζ‖ ^ 2 < ρ ^ 2 := by nlinarith [norm_nonneg (ξ - ζ)]
+    have hspos : 0 < s := by nlinarith
+    set w : Rn N := ξ - s • ζ with hw
+    have hwζ : inner ℝ w ζ = 0 := by
+      rw [hw, inner_sub_left, real_inner_smul_left, real_inner_self_eq_norm_sq, hζ1]; ring
+    have hw2 : ‖w‖ ^ 2 = 1 - s ^ 2 := by
+      rw [hw, norm_sub_sq_real, real_inner_smul_right, norm_smul, hξ1, hζ1, Real.norm_eq_abs,
+        mul_one, sq_abs]
+      ring
+    refine ⟨w, ⟨⟨Submodule.mem_orthogonal_singleton_iff_inner_left.2 hwζ,
+      H.sub_mem hξH (H.smul_mem s hζ)⟩, ?_⟩, ?_⟩
+    · -- `|w|² = (1 - s)(1 + s) ≤ 2 (1 - s) = |ξ - ζ|² < ρ²`
+      rw [mem_ball_zero_iff]
+      have hle : ‖w‖ ^ 2 ≤ ‖ξ - ζ‖ ^ 2 := by rw [hw2, hd]; nlinarith
+      exact lt_of_pow_lt_pow_left₀ 2 hρ.le (hle.trans_lt hdlt)
+    · -- `(1 - |w|²)^{1/2} = (s²)^{1/2} = s`
+      show w + Real.sqrt (1 - ‖w‖ ^ 2) • ζ = ξ
+      rw [hw2, show (1 : ℝ) - (1 - s ^ 2) = s ^ 2 by ring, Real.sqrt_sq hspos.le, hw,
+        sub_add_cancel]
+  -- `Γ` is `2`-Lipschitz on `T ∩ B(0, ρ)`.
+  have hlip : LipschitzOnWith 2 Γ ((T : Set (Rn N)) ∩ Metric.ball 0 ρ) := by
+    refine LipschitzOnWith.of_dist_le_mul fun w hw w' hw' ↦ ?_
+    have hwζ : inner ℝ w ζ = 0 := Submodule.mem_orthogonal_singleton_iff_inner_left.1 hw.1.1
+    have hwζ' : inner ℝ w' ζ = 0 := Submodule.mem_orthogonal_singleton_iff_inner_left.1 hw'.1.1
+    have ha : ‖w‖ < 1 / 2 := (mem_ball_zero_iff.1 hw.2).trans_le hρ2
+    have hb : ‖w'‖ < 1 / 2 := (mem_ball_zero_iff.1 hw'.2).trans_le hρ2
+    have ha0 := norm_nonneg w
+    have hb0 := norm_nonneg w'
+    -- `|f(w) - f(w')| ≤ |w - w'|` for `f(w) = (1 - |w|²)^{1/2}`: with `x = 1 - |w|²` and
+    -- `y = 1 - |w'|²` we have `√x, √y ≥ 1/2`, so `|√x - √y| = |x - y| / (√x + √y) ≤ |x - y|`,
+    -- and `|x - y| = ||w| - |w'|| (|w| + |w'|) ≤ |w - w'|`.
+    have hff : |Real.sqrt (1 - ‖w‖ ^ 2) - Real.sqrt (1 - ‖w'‖ ^ 2)| ≤ ‖w - w'‖ := by
+      set x : ℝ := 1 - ‖w‖ ^ 2 with hx
+      set y : ℝ := 1 - ‖w'‖ ^ 2 with hy
+      have hsx : 1 / 2 ≤ Real.sqrt x := by
+        rw [Real.le_sqrt (by norm_num) (by nlinarith)]; nlinarith
+      have hsy : 1 / 2 ≤ Real.sqrt y := by
+        rw [Real.le_sqrt (by norm_num) (by nlinarith)]; nlinarith
+      have hprod : (Real.sqrt x - Real.sqrt y) * (Real.sqrt x + Real.sqrt y) = x - y := by
+        nlinarith [Real.sq_sqrt (show (0 : ℝ) ≤ x by nlinarith),
+          Real.sq_sqrt (show (0 : ℝ) ≤ y by nlinarith)]
+      have hsqrt : |Real.sqrt x - Real.sqrt y| ≤ |x - y| := by
+        rw [← hprod, abs_mul, abs_of_pos (by linarith : (0 : ℝ) < Real.sqrt x + Real.sqrt y)]
+        nlinarith [abs_nonneg (Real.sqrt x - Real.sqrt y)]
+      have hxy : |x - y| = |‖w‖ - ‖w'‖| * (‖w‖ + ‖w'‖) := by
+        rw [hx, hy, show (1 - ‖w‖ ^ 2) - (1 - ‖w'‖ ^ 2) = (‖w'‖ - ‖w‖) * (‖w‖ + ‖w'‖) by ring,
+          abs_mul, abs_of_nonneg (by linarith : (0 : ℝ) ≤ ‖w‖ + ‖w'‖), abs_sub_comm]
+      refine hsqrt.trans ?_
+      rw [hxy]
+      nlinarith [abs_norm_sub_norm_le w w', abs_nonneg (‖w‖ - ‖w'‖)]
+    -- Pythagoras: `(w - w') ⟂ ζ`, so `|Γ(w) - Γ(w')|² = |w - w'|² + (f(w) - f(w'))² ≤ (2 |w - w'|)²`.
+    have hdiff : Γ w - Γ w' =
+        (w - w') + (Real.sqrt (1 - ‖w‖ ^ 2) - Real.sqrt (1 - ‖w'‖ ^ 2)) • ζ := by
+      simp only [hΓ, sub_smul]; abel
+    have hinner : inner ℝ (w - w') ζ = 0 := by rw [inner_sub_left, hwζ, hwζ', sub_zero]
+    have hsq : ‖Γ w - Γ w'‖ ^ 2 =
+        ‖w - w'‖ ^ 2 + (Real.sqrt (1 - ‖w‖ ^ 2) - Real.sqrt (1 - ‖w'‖ ^ 2)) ^ 2 := by
+      rw [hdiff, norm_add_sq_real, real_inner_smul_right, hinner, norm_smul, hζ1, Real.norm_eq_abs,
+        mul_one, sq_abs]
+      ring
+    have hff2 : (Real.sqrt (1 - ‖w‖ ^ 2) - Real.sqrt (1 - ‖w'‖ ^ 2)) ^ 2 ≤ ‖w - w'‖ ^ 2 := by
+      rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) hff 2
+    rw [dist_eq_norm, dist_eq_norm]
+    have h2 : ‖Γ w - Γ w'‖ ^ 2 ≤ ((2 : ℝ≥0) * ‖w - w'‖) ^ 2 := by
+      push_cast; nlinarith [norm_nonneg (w - w')]
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).1 h2
+  -- Monotonicity and the Lipschitz image bound `Hⁿ(Γ(A)) ≤ 2ⁿ Hⁿ(A)`.
+  calc μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ)
+      ≤ μHE[n] (Γ '' ((T : Set (Rn N)) ∩ Metric.ball 0 ρ)) := measure_mono hsub
+    _ ≤ ((2 : ℝ≥0) : ℝ≥0∞) ^ n * μHE[n] ((T : Set (Rn N)) ∩ Metric.ball 0 ρ) :=
+        Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n hlip
+    _ = 2 ^ n * μHE[n] ((T : Set (Rn N)) ∩ Metric.ball 0 ρ) := by norm_num
+
+/-- **Two-sided `Hⁿ` bounds for caps of the unit sphere of an `(n+1)`-plane** (Step 2.1 of the
+cone trichotomy for Simon Ch. 3, Theorem 3.6; Dall'Alba, Lemma 4.15; Mattila, Ch. 18). Let
+`H ⊆ ℝ^{n+ℓ}` be a subspace with `dim H = n + 1` and `S(H) = {θ ∈ H : |θ| = 1}`. There are
+constants `c > 0` and `C`, depending only on `n` and `H`, such that for every `ζ ∈ S(H)` and
+every `ρ > 0`: `c ρⁿ ≤ Hⁿ(S(H) ∩ B(ζ, ρ))` if `ρ ≤ 2`, and `Hⁿ(S(H) ∩ B(ζ, ρ)) ≤ C ρⁿ`. With `ω`
+the flat-ball constant (`Hⁿ(T ∩ B(w, ρ)) = ω ρⁿ` on `n`-planes), the projection comparison gives
+`c = 2⁻ⁿ ω`; the graph comparison gives `2ⁿ ω ρⁿ` for `ρ ≤ 1/2`; finitely many caps of radius
+`1/2` cover the compact `S(H)`, so `σ = Hⁿ(S(H)) < ∞`; and `C = 2ⁿ (ω + σ)` covers `ρ > 1/2`
+via `σ ≤ σ (2ρ)ⁿ`. -/
+theorem Submission.bf_sphereCap_measure_bounds : ∀ (n ℓ : ℕ), 0 < n → ∀ H : Submodule ℝ (Rn (n + ℓ)), finrank ℝ H = n + 1 → ∃ c C : ℝ, 0 < c ∧ ∀ ζ ∈ H, ‖ζ‖ = 1 → ∀ ρ : ℝ, 0 < ρ → (ρ ≤ 2 → ENNReal.ofReal (c * ρ ^ n) ≤ μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ)) ∧ μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ) ≤ ENNReal.ofReal (C * ρ ^ n) := by
+  intro n ℓ _ H hH
+  set S : Set (Rn (n + ℓ)) := {θ | θ ∈ H ∧ ‖θ‖ = 1} with hS
+  -- Step 1: the flat-ball constant `ω`, with `Hⁿ(T ∩ B(w, ρ)) = ω ρⁿ` for every `n`-plane `T`.
+  obtain ⟨ω, hω, hball⟩ := Submission.bf_planeBall_measure_uniform n
+  -- Step 4: small caps, `Hⁿ(S(H) ∩ B(ζ, ρ)) ≤ 2ⁿ Hⁿ(T_ζ ∩ B(0, ρ)) = 2ⁿ ω ρⁿ` for `ρ ≤ 1/2`.
+  have hsmall : ∀ ζ ∈ H, ‖ζ‖ = 1 → ∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 / 2 →
+      μHE[n] (S ∩ Metric.ball ζ ρ) ≤ ENNReal.ofReal (2 ^ n * ω * ρ ^ n) := by
+    intro ζ hζ hζ1 ρ hρ hρ2
+    obtain ⟨T, hT, hcmp⟩ := Submission.bf_sphereCap_upper_comparison n (n + ℓ) H hH ζ hζ hζ1
+    calc μHE[n] (S ∩ Metric.ball ζ ρ)
+        ≤ 2 ^ n * μHE[n] ((T : Set (Rn (n + ℓ))) ∩ Metric.ball 0 ρ) := hcmp ρ hρ hρ2
+      _ = ENNReal.ofReal (2 ^ n * ω * ρ ^ n) := by
+        rw [hball (n + ℓ) T hT 0 T.zero_mem ρ hρ, mul_assoc,
+          ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ 2 ^ n),
+          ENNReal.ofReal_pow (by norm_num : (0 : ℝ) ≤ 2), ENNReal.ofReal_ofNat]
+  -- Step 5: `Hⁿ(S(H)) < ∞`, since the compact `S(H)` is covered by finitely many caps of radius
+  -- `1/2`, each of measure at most `2ⁿ ω 2⁻ⁿ`.
+  have hScpt : IsCompact S := by
+    have hSeq : S = (H : Set (Rn (n + ℓ))) ∩ {θ | ‖θ‖ = 1} := rfl
+    rw [hSeq]
+    refine Metric.isCompact_of_isClosed_isBounded
+      (H.closed_of_finiteDimensional.inter (isClosed_eq continuous_norm continuous_const))
+      ((Metric.isBounded_closedBall (x := (0 : Rn (n + ℓ))) (r := 1)).subset ?_)
+    rintro θ ⟨-, hθ⟩
+    have hθ1 : ‖θ‖ = 1 := hθ
+    rw [mem_closedBall_zero_iff]
+    exact hθ1.le
+  obtain ⟨t, htS, htfin, hcover⟩ :=
+    finite_cover_balls_of_compact hScpt (by norm_num : (0 : ℝ) < 1 / 2)
+  have hSfin : μHE[n] S < ∞ := by
+    have hsub : S ⊆ ⋃ ζ ∈ t, S ∩ Metric.ball ζ (1 / 2) := fun θ hθ ↦ by
+      obtain ⟨ζ, hζt, hθζ⟩ := Set.mem_iUnion₂.1 (hcover hθ)
+      exact Set.mem_iUnion₂.2 ⟨ζ, hζt, hθ, hθζ⟩
+    refine (measure_mono hsub).trans_lt (measure_biUnion_lt_top htfin fun ζ hζ ↦ ?_)
+    have hζS : ζ ∈ H ∧ ‖ζ‖ = 1 := by
+      have := htS hζ
+      rwa [hS] at this
+    exact (hsmall ζ hζS.1 hζS.2 (1 / 2) (by norm_num) le_rfl).trans_lt ENNReal.ofReal_lt_top
+  -- Steps 3, 6 and 7: `c = 2⁻ⁿ ω` and `C = 2ⁿ (ω + σ)` with `σ = Hⁿ(S(H))`.
+  set σ : ℝ := (μHE[n] S).toReal
+  have hσ0 : 0 ≤ σ := ENNReal.toReal_nonneg
+  refine ⟨ω / 2 ^ n, 2 ^ n * (ω + σ), div_pos hω (pow_pos two_pos n),
+    fun ζ hζ hζ1 ρ hρ ↦ ⟨fun hρ2 ↦ ?_, ?_⟩⟩
+  · -- Step 3: `c ρⁿ = ω (ρ/2)ⁿ = Hⁿ(T_ζ ∩ B(0, ρ/2)) ≤ Hⁿ(S(H) ∩ B(ζ, ρ))`.
+    obtain ⟨T, hT, hcmp⟩ := Submission.bf_sphereCap_lower_comparison n (n + ℓ) H hH ζ hζ hζ1
+    calc ENNReal.ofReal (ω / 2 ^ n * ρ ^ n) = ENNReal.ofReal (ω * (ρ / 2) ^ n) := by
+          congr 1
+          rw [div_pow]
+          ring
+      _ = μHE[n] ((T : Set (Rn (n + ℓ))) ∩ Metric.ball 0 (ρ / 2)) :=
+          (hball (n + ℓ) T hT 0 T.zero_mem (ρ / 2) (half_pos hρ)).symm
+      _ ≤ μHE[n] (S ∩ Metric.ball ζ ρ) := hcmp ρ hρ hρ2
+  · -- Step 6: for `ρ ≤ 1/2` use step 4; for `ρ > 1/2`, `Hⁿ(S(H) ∩ B(ζ, ρ)) ≤ σ ≤ σ (2ρ)ⁿ`.
+    rcases le_or_gt ρ (1 / 2) with hρ2 | hρ2
+    · refine (hsmall ζ hζ hζ1 ρ hρ hρ2).trans (ENNReal.ofReal_le_ofReal ?_)
+      have h2 : 0 ≤ 2 ^ n * σ * ρ ^ n :=
+        mul_nonneg (mul_nonneg (pow_nonneg zero_le_two n) hσ0) (pow_nonneg hρ.le n)
+      linarith
+    · have h1 : 1 ≤ 2 ^ n * ρ ^ n := by
+        rw [← mul_pow]
+        exact one_le_pow₀ (by linarith)
+      calc μHE[n] (S ∩ Metric.ball ζ ρ) ≤ μHE[n] S := measure_mono Set.inter_subset_left
+        _ = ENNReal.ofReal σ := (ENNReal.ofReal_toReal hSfin.ne).symm
+        _ ≤ ENNReal.ofReal (2 ^ n * (ω + σ) * ρ ^ n) := by
+          refine ENNReal.ofReal_le_ofReal ?_
+          -- `2ⁿ (ω + σ) ρⁿ - σ = ω (2ρ)ⁿ + σ ((2ρ)ⁿ - 1) ≥ 0`
+          nlinarith [mul_nonneg hσ0 (sub_nonneg.2 h1), mul_nonneg hω.le (zero_le_one.trans h1)]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
