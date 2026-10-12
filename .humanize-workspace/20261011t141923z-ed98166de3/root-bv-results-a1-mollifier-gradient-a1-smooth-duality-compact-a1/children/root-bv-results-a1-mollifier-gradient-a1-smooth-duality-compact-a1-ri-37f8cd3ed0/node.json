@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_gradient-a1.smooth_duality_compact-a1.riesz_gradient-a1",
+  "parent_id": "root.bv_results-a1.mollifier_gradient-a1.smooth_duality_compact-a1",
+  "depth": 4,
+  "title": "Riesz gradient of a C² function is a C¹ vector field with matching norm",
+  "statement": "Let n ∈ ℕ and let w : ℝⁿ → ℝ be of class C², where ℝⁿ = EuclideanSpace ℝ (Fin n) carries its standard inner product ⟨·,·⟩ and Euclidean norm. Write Dw(x) := fderiv ℝ w x, a continuous linear map ℝⁿ → ℝ with operator norm ‖Dw(x)‖. Then there is a C¹ vector field G : ℝⁿ → ℝⁿ such that ⟨G(x), v⟩ = Dw(x)(v) for all x, v ∈ ℝⁿ, and ‖G(x)‖ = ‖Dw(x)‖ for every x ∈ ℝⁿ.",
+  "lean_statement": "∀ (n : ℕ) (w : Rn n → ℝ), ContDiff ℝ 2 w → ∃ G : Rn n → Rn n, ContDiff ℝ 1 G ∧ (∀ x v, inner ℝ (G x) v = fderiv ℝ w x v) ∧ ∀ x, ‖G x‖ = ‖fderiv ℝ w x‖",
+  "lean_name": "bv_exists_contDiff_gradient_of_contDiff_two",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-gradient-a1-smooth-duality-compact-a1-ri-37f8cd3ed0-a1"
+}
