@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_image_hausdorff-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Hausdorff measure of Lipschitz images and multiplicity bound (Simon 2.1.8)",
+  "statement": "Let X be a σ-compact metric space and Y a metric space (Borel σ-algebras), m ≥ 0 real, 𝓗^m = (ω_m/2^m)μH[m] Simon-normalized Hausdorff measure, A ⊆ X 𝓗^m-null-measurable with 𝓗^m(A) < ∞, and f : X → Y K-Lipschitz on A. Then (i) f(A) is 𝓗^m-null-measurable and 𝓗^m(f(A)) ≤ K^m 𝓗^m(A); (ii) the multiplicity N(y) = encard(A ∩ f⁻¹{y}) is 𝓗^m-a.e.-measurable on Y and ∫_Y N d𝓗^m ≤ K^m 𝓗^m(A).",
+  "lean_statement": "LipschitzImageHausdorff",
+  "lean_name": "lipschitz_image_hausdorff_theorem",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-lipschitz-image-hausdorff-a1-a1"
+}

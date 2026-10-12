@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Stationary iff mean curvature vanishes (Simon 2.5.5(2)) and second variation of stationary submanifolds (Simon 2.5.11, C³ correction)",
+  "statement": "(5.5(2)) If M is an n-dimensional C² Simon submanifold of ℝ^{n+ℓ}, U is open and closure U ∩ M is compact, then M is stationary in U (IsStationaryIn) iff the mean curvature meanCurvature M y = 0 for all y ∈ M ∩ U. (5.11) If M is a C² Simon submanifold, U open with (closure M ∖ M) ∩ U = ∅, M stationary in U, and φ an admissible C³ deformation whose initial velocity X is normal to M along M, then t ↦ Hⁿ(φ_t(M ∩ K)) is differentiable near 0 and its derivative has derivative ∫_M (Σ_i|(D_{τ_i}X)^⊥|² − Σ_{i,j}(X·B(τ_i,τ_j))²) dHⁿ at 0.",
+  "lean_statement": "StationaryIffMeanCurvatureZero ∧ SecondVariationStationary",
+  "lean_name": "stationary_mean_curvature_and_stable_variation",
+  "depends_on": [
+    "root.area_formula-a1",
+    "root.submanifold_tangent-a1",
+    "root.variation_formulas-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.area_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.submanifold_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.variation_formulas-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-a1"
+}
