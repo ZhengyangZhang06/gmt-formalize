@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f876d736a9b741277e8f100eb7f591dc444970d17390f856ea2dee25842306b6",
+  "git_delta": {
+    "base_commit": "dbd37a474c3c8ec1f452a2402cfebc51dec7da8d",
+    "candidate_commit": "fdcd05b897cd6d058ac387a57f3edcb3f7c38058",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_sp_sn_weighted_fundamental_lemma",
+    "diff_sha256": "1190c96baeacfa29c4f5ab4567069fe284f6aef64cd911c3e5d28bbdcf5db5ba",
+    "source_sha256": "d193f791f2b5b1de6074beddcc1a1fd471a73a1683a1036a02e152fc6c598677",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_sp_sn_weighted_fundamental_lemma",
+      "statement": "∀ (P : ℕ) (μ : Measure (Eucl P)) (M W : Set (Eucl P)) (θ g : Eucl P → ℝ) (C : ℝ), IsOpen W → NullMeasurableSet M μ → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) μ → AEStronglyMeasurable g (μ.restrict M) → (∀ᵐ x ∂(μ.restrict M), |g x| ≤ C) → (∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ W → ∫ x in M, θ x * (φ x * g x) ∂μ = 0) → ∀ᵐ x ∂(μ.restrict M), x ∈ W → g x = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
