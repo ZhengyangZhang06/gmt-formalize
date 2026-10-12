@@ -359,6 +359,19 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Lebesgue differentiation along closed balls: for a finite measure `ν` on `ℝ^P` and
+`g ∈ L¹(ν)`, `ν`-a.e. `x` satisfies `⨍_{B̄_s(x)} |g - g(x)| dν → 0` as `s → 0⁺`.  The closed balls
+`B̄_s(x)` form the Besicovitch Vitali family of `ν` (`ℝ^P` has the Besicovitch covering property),
+along which every locally integrable function has Lebesgue points `ν`-a.e. -/
+theorem Submission.fiw_tl_ald_closedBall_lebesgue_point :
+    ∀ (P : ℕ) (ν : Measure (Eucl P)) [IsFiniteMeasure ν] (g : Eucl P → ℝ), Integrable g ν →
+      ∀ᵐ x ∂ν, Tendsto (fun s : ℝ => (∫⁻ z in closedBall x s, ‖g z - g x‖ₑ ∂ν) /
+        ν (closedBall x s)) (𝓝[>] 0) (𝓝 0) := by
+  intro P ν _ g hg
+  filter_upwards [(Besicovitch.vitaliFamily ν).ae_tendsto_lintegral_enorm_sub_div
+    hg.locallyIntegrable] with x hx
+  exact hx.comp (Besicovitch.tendsto_filterAt ν x)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
