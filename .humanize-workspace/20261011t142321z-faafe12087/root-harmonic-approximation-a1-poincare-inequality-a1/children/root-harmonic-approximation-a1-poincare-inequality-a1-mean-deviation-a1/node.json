@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.poincare_inequality-a1.mean_deviation-a1",
+  "parent_id": "root.harmonic_approximation-a1.poincare_inequality-a1",
+  "depth": 3,
+  "title": "Mean-deviation bound by the double integral on a finite-measure set",
+  "statement": "Let n ∈ ℕ, s ⊆ ℝ^n a measurable set with Lebesgue measure |s| < ∞, and f : ℝ^n → ℝ with f ∈ L²(s) (MemLp f 2 (volume.restrict s)). Let λ := ⨍_s f be Mathlib's set average. Then ∫⁻_{x ∈ s} ‖f(x) − λ‖ₑ² dx ≤ |s|^{−1} · ∫⁻_{x ∈ s} ∫⁻_{y ∈ s} ‖f(x) − f(y)‖ₑ² dy dx, where |s|^{−1} is the inverse in [0, ∞] (equal to ∞ when |s| = 0).",
+  "lean_statement": "∀ (n : ℕ) (s : Set (Rn n)) (f : Rn n → ℝ), MeasurableSet s → volume s ≠ ∞ → MemLp f 2 (volume.restrict s) → ∫⁻ x in s, ‖f x - ⨍ y in s, f y‖ₑ ^ 2 ≤ (volume s)⁻¹ * ∫⁻ x in s, ∫⁻ y in s, ‖f x - f y‖ₑ ^ 2",
+  "lean_name": "poincare_set_mean_deviation_sq_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-poincare-inequality-a1-mean-deviation-a1-a1"
+}
