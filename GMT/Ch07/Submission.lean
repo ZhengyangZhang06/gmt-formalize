@@ -451,6 +451,90 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cut-off quadratic moments over `n`-planes** (the constant `cₙ` of the measurability proof
+for the approximate tangent planes of Simon Ch. 3, 1.4).  For `n ≥ 1` one constant `c > 0`,
+depending only on `n`, gives `∫_Q max(1 − |y|², 0)⟨u, y⟩² dHⁿ(y) = c|p_Q u|²` for every `P`,
+every `n`-dimensional subspace `Q ⊆ ℝᴾ` and every `u ∈ ℝᴾ`.  On `ℝⁿ` put
+`q(w) = ∫ max(1 − |z|², 0)⟨w, z⟩² dHⁿ(z)` and `c = q(e)`, `|e| = 1`: linear isometries preserve
+`Hⁿ`, so `q` is invariant under them, `q(tw) = t²q(w)`, and a reflection maps `|w|e` to `w`,
+whence `q(w) = c|w|²`; `c > 0` since the integrand is continuous, `≥ 0`, compactly supported and
+`3/16` at `e/2`.  An isometry `ι = L⁻¹ : ℝⁿ → Q ⊆ ℝᴾ` carries `Hⁿ` to `Hⁿ⌞Q`, and
+`⟨u, ι z⟩ = ⟨L(p_Q u), z⟩`, so the integral is `q(L(p_Q u)) = c|p_Q u|²`. -/
+theorem Submission.exists_plane_cutoff_quadratic_moment_eq : ∀ n : ℕ, 0 < n → ∃ c : ℝ, 0 < c ∧ ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)), Module.finrank ℝ Q = n → ∀ u : Euclid P, ∫ y in (Q : Set (Euclid P)), max (1 - ‖y‖ ^ 2) 0 * inner ℝ u y ^ 2 ∂μHE[n] = c * ‖Q.starProjection u‖ ^ 2 := by
+  intro n hn
+  -- The moment `q(w)` on the model plane `ℝⁿ`; the constant is `c = q(e)` for a unit vector `e`.
+  obtain ⟨q, hq_def⟩ : ∃ q : Euclid n → ℝ,
+      ∀ w, q w = ∫ z, max (1 - ‖z‖ ^ 2) 0 * inner ℝ w z ^ 2 ∂μHE[n] :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨e, he⟩ : ∃ e : Euclid n, ‖e‖ = 1 := ⟨EuclideanSpace.single ⟨0, hn⟩ 1, by simp⟩
+  -- `q(Rw) = q(w)` for a linear isometry `R`: substitute `z = Rz'`, `R` preserves `Hⁿ`.
+  have hq_iso : ∀ (R : Euclid n ≃ₗᵢ[ℝ] Euclid n) (w : Euclid n), q (R w) = q w := by
+    intro R w
+    have key : ∫ z, max (1 - ‖R z‖ ^ 2) 0 * inner ℝ (R w) (R z) ^ 2 ∂μHE[n] =
+        ∫ z, max (1 - ‖z‖ ^ 2) 0 * inner ℝ (R w) z ^ 2 ∂μHE[n] :=
+      (R.toIsometryEquiv.measurePreserving_euclideanHausdorffMeasure n).integral_comp
+        R.toHomeomorph.measurableEmbedding (fun y => max (1 - ‖y‖ ^ 2) 0 * inner ℝ (R w) y ^ 2)
+    simp only [LinearIsometryEquiv.norm_map, LinearIsometryEquiv.inner_map_map] at key
+    rw [hq_def, hq_def, ← key]
+  have hq_smul : ∀ (t : ℝ) (w : Euclid n), q (t • w) = t ^ 2 * q w := by
+    intro t w
+    rw [hq_def, hq_def, ← integral_const_mul]
+    congr 1
+    funext z
+    rw [real_inner_smul_left]
+    ring
+  -- `q(w) = c|w|²`: the reflection in `(|w|e − w)ᗮ` maps `|w|e` to `w`.
+  have hq : ∀ w : Euclid n, q w = q e * ‖w‖ ^ 2 := by
+    intro w
+    have h1 : ‖‖w‖ • e‖ = ‖w‖ := by rw [norm_smul, he, mul_one, norm_norm]
+    obtain ⟨R, hR⟩ : ∃ R : Euclid n ≃ₗᵢ[ℝ] Euclid n, R (‖w‖ • e) = w :=
+      ⟨_, Submodule.reflection_sub h1⟩
+    calc q w = q (R (‖w‖ • e)) := by rw [hR]
+      _ = q (‖w‖ • e) := hq_iso R _
+      _ = q e * ‖w‖ ^ 2 := by rw [hq_smul, mul_comm]
+  -- `c > 0`: on `ℝⁿ`, `Hⁿ` is Lebesgue measure, and the integrand is `3/16` at `e/2`.
+  have hc : 0 < q e := by
+    have hcont : Continuous fun z : Euclid n => max (1 - ‖z‖ ^ 2) 0 * inner ℝ e z ^ 2 := by
+      fun_prop
+    have hsupp : HasCompactSupport fun z : Euclid n => max (1 - ‖z‖ ^ 2) 0 * inner ℝ e z ^ 2 := by
+      refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) 1) fun z hz => ?_
+      have h1 : 1 < ‖z‖ := by simpa using hz
+      have h2 : 1 - ‖z‖ ^ 2 ≤ 0 := by nlinarith
+      simp [max_eq_right h2]
+    have hnonneg : 0 ≤ fun z : Euclid n => max (1 - ‖z‖ ^ 2) 0 * inner ℝ e z ^ 2 :=
+      fun z => mul_nonneg (le_max_right _ _) (sq_nonneg _)
+    have hx : (fun z : Euclid n => max (1 - ‖z‖ ^ 2) 0 * inner ℝ e z ^ 2) ((1 / 2 : ℝ) • e) ≠ 0 := by
+      simp only [norm_smul, he, real_inner_smul_right, real_inner_self_eq_norm_sq]
+      norm_num
+    rw [hq_def, EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    exact hcont.integral_pos_of_hasCompactSupport_nonneg_nonzero hsupp hnonneg hx
+  refine ⟨q e, hc, fun P Q hQ u => ?_⟩
+  -- An orthonormal basis of `Q` indexed by `Fin n` gives `L : Q ≃ ℝⁿ`; `ι = L⁻¹` is an isometry
+  -- of `ℝⁿ` onto `Q ⊆ ℝᴾ`, so `ι_# Hⁿ = Hⁿ⌞Q`.
+  obtain ⟨L, -⟩ : ∃ L : Q ≃ₗᵢ[ℝ] Euclid n, True :=
+    ⟨((stdOrthonormalBasis ℝ Q).reindex (finCongr hQ)).repr, trivial⟩
+  have hι : Isometry fun z : Euclid n => ((L.symm z : Q) : Euclid P) :=
+    isometry_subtype_coe.comp L.symm.isometry
+  have hrange : Set.range (fun z : Euclid n => ((L.symm z : Q) : Euclid P)) =
+      (Q : Set (Euclid P)) := by
+    ext y
+    refine ⟨?_, fun hy => ⟨L ⟨y, hy⟩, by simp⟩⟩
+    rintro ⟨z, rfl⟩
+    exact (L.symm z).2
+  have hemb : MeasurableEmbedding fun z : Euclid n => ((L.symm z : Q) : Euclid P) :=
+    hι.isClosedEmbedding.measurableEmbedding
+  have hnorm : ∀ z : Euclid n, ‖((L.symm z : Q) : Euclid P)‖ = ‖z‖ := fun z => L.symm.norm_map z
+  -- `⟨u, ι z⟩ = ⟨p_Q u, ι z⟩ = ⟨L(p_Q u), z⟩`.
+  have hinner : ∀ z : Euclid n, inner ℝ u ((L.symm z : Q) : Euclid P) =
+      inner ℝ (L (Q.orthogonalProjectionOnto u)) z := by
+    intro z
+    rw [LinearIsometryEquiv.inner_map_eq_flip,
+      Submodule.inner_orthogonalProjectionOnto_eq_of_mem_right]
+  rw [← hrange, ← hι.map_euclideanHausdorffMeasure, hemb.integral_map]
+  simp only [hnorm, hinner]
+  rw [← hq_def, hq, LinearIsometryEquiv.norm_map, Submodule.starProjection_apply]
+  rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
