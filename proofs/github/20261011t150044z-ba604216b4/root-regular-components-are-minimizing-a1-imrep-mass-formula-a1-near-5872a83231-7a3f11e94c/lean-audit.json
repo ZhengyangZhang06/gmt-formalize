@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a949385120efbd651f6aec6cca7e96fe4c2e9c1957372d4f8d62e065d3ea158a",
+  "git_delta": {
+    "base_commit": "2582a5324d6e8614878be4c1565192af07e087a5",
+    "candidate_commit": "5c11e74e661b263bbdae70afa4ac6555c8a82fc6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_covector_unit_ball_dense_seq",
+    "diff_sha256": "63481a6a5f03e7e0f14dc52bcf8986818562a90ca9795632efe95f23b4912ef0",
+    "source_sha256": "815778c6f8ea129b80d5e20312cf8bd28ec5bf3482dde90347624dd6cea92160",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_covector_unit_ball_dense_seq",
+      "statement": "∀ (P n : ℕ), ∃ b : ℕ → Covector (Euclid P) n, (∀ k, covectorEuclideanNorm (b k) ≤ 1) ∧ ∀ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 → β ∈ closure (Set.range b)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
