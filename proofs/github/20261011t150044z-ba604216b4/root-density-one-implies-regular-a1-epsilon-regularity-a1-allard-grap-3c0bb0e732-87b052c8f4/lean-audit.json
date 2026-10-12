@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "84282cd84295e49cceb7132478ed3db4cf336a1506eca9fe85101abc24d424d0",
+  "git_delta": {
+    "base_commit": "96114b7491a7a09e1372cd95c904ca8001182988",
+    "candidate_commit": "f83e41abfdd96e0c9a85a6ae4ef024a2da6a9721",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_dbs_lower_density_ge_mult",
+    "diff_sha256": "b9ddef61bd50fbcf98302379b6cd7956d43d0acc4c776c171cc675ec3cebbf3c",
+    "source_sha256": "2c3708e0b2fadebcca28c9a9656cb696c2167cdfd780c95dda557fdbc2c0b96b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_dbs_lower_density_ge_mult",
+      "statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (R : IMRep U n), 0 < n → IsOpen W → W ⊆ U → ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ W → ∀ c : ℝ, c < R.mult x → ∀ᶠ t in 𝓝[>] (0 : ℝ), ENNReal.ofReal c * unitBallVolume n * ENNReal.ofReal (t ^ n) ≤ R.measure (closedBall x t)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
