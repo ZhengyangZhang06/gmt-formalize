@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "602b79dceee1c46412768772f005a543efe5c7524d9ecab50fe3496419daf9b5",
+  "git_delta": {
+    "base_commit": "bfb7b24d1fcd2b1d9024388b8bb4a12bef38429b",
+    "candidate_commit": "b04a0309aad1bc70ed6b149c974bbddf4620a560",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_mw_tfa_smooth_cutoff",
+    "diff_sha256": "b5893f0f7a2b44d106552e27cd51897c981453f64a476d9e950f8bfae706372d",
+    "source_sha256": "e32902af6ef3229c82426c57c16e22096482f6bc7b725cdecb26363cc79a2f72",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_mw_tfa_smooth_cutoff",
+      "statement": "∀ (P : ℕ) (ν : Measure (Euclid P)) (V : Set (Euclid P)), IsFiniteMeasure ν → IsOpen V → ν Vᶜ = 0 → ∀ δ : ℝ, 0 < δ → ∃ χ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) χ ∧ HasCompactSupport χ ∧ tsupport χ ⊆ V ∧ (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ ν {x | χ x ≠ 1} < ENNReal.ofReal δ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
