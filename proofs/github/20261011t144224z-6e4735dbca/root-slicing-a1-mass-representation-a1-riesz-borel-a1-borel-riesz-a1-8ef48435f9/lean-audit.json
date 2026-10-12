@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d8ce271ff024cf434ab6e0fc2abcb18d3752d28fe00e7d170b8355921d9770a3",
+  "git_delta": {
+    "base_commit": "416efd450712d139e1bc21d6f12590cb04792b22",
+    "candidate_commit": "cdfc95dc55d0b62e7e9066fc24f472e5ec962d09",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_rb_borel_riesz_sigma_compact",
+    "diff_sha256": "badee6f334668745a9f90587f2890f60fa18071840f7a3b26baf8c11401cac61",
+    "source_sha256": "50f9d90760276bc551bc6ae2950450019dd434f05e0e03f63bd4e7399c5ee8df",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_rb_borel_riesz_sigma_compact",
+      "statement": "∀ (Y : Type) [TopologicalSpace Y] [T2Space Y] [LocallyCompactSpace Y] [SigmaCompactSpace Y] [MeasurableSpace Y] [BorelSpace Y] (N : ℕ) (L : CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)) →ₗ[ℝ] ℝ), (∀ K : Set Y, IsCompact K → ∃ B : ℝ, ∀ g : CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)), (∀ y, ‖g y‖ ≤ 1) → tsupport g ⊆ K → L g ≤ B) → ∃ (m : Measure Y) (ν : Y → EuclideanSpace ℝ (Fin N)), (∀ K : Set Y, IsCompact K → m K < ∞) ∧ Measurable ν ∧ (∀ y, ‖ν y‖ ≤ 1) ∧ (∀ᵐ y ∂m, ‖ν y‖ = 1) ∧ ∀ g : CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)), L g = ∫ y, inner ℝ (g y) (ν y) ∂m",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
