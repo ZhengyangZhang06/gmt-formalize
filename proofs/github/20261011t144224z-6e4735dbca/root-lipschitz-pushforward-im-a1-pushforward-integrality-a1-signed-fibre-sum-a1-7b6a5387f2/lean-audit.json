@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cff5b1658915852074c1d30decc1b388c16e743201b063845f0b0fc69d2af309",
+  "git_delta": {
+    "base_commit": "2a9df835e9c7991cb668fe018b5e19a9f2add6b4",
+    "candidate_commit": "db4569b324be9451dec21d760693c55fa2dd6fa1",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_pi_signed_fibre_sum",
+    "diff_sha256": "7e7b8b42d45cd18cf4c1c3d826bc80c7aa3194b6600ef0bc38836921ae9545e8",
+    "source_sha256": "e3eacd6ba5db71fe8099608d7d4207425d977ca5a33f75ebe6bef192928ecf81",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_pi_signed_fibre_sum",
+      "statement": "∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] (μ : Measure X) (ν : Measure Y) (f : X → Y) (A : Set X) (J : X → ℝ≥0∞), AEMeasurable J (μ.restrict A) → (∀ h : X → ℝ≥0∞, AEMeasurable h (μ.restrict A) → AEMeasurable (fun y => ∑' x : {x : X // x ∈ A ∧ f x = y}, h x) ν ∧ ∫⁻ x in A, h x * J x ∂μ = ∫⁻ y, ∑' x : {x : X // x ∈ A ∧ f x = y}, h x ∂ν) → ∀ g : X → ℝ, AEStronglyMeasurable g (μ.restrict A) → ∫⁻ x in A, ‖g x‖ₑ * J x ∂μ < ∞ → (∀ᵐ y ∂ν, Summable (fun x : {x : X // x ∈ A ∧ f x = y} => g x)) ∧ Integrable (fun y => ∑' x : {x : X // x ∈ A ∧ f x = y}, g x) ν ∧ ∫ x in A, g x * (J x).toReal ∂μ = ∫ y, ∑' x : {x : X // x ∈ A ∧ f x = y}, g x ∂ν",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
