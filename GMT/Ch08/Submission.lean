@@ -410,6 +410,37 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 8, Remark 3.8(1), p. 211** (child `variation_lsc` of `density_semicontinuity`): if
+`V_i → V` as Radon measures on `Gₙ(U)`, every `V_i` has locally bounded first variation and
+`liminf_i ‖δV_i‖(W) < ∞` for each open `W ⊂⊂ U`, then `V` has locally bounded first variation and
+`‖δV‖(W) ≤ liminf_i ‖δV_i‖(W)` for each open `W ⊂⊂ U`.  On such `W`, `‖δX‖(W)` is the supremum of
+2.5 (`firstVariationNormOn`), which is lower semicontinuous because `δV_i(X) → δV(X)`. -/
+theorem Submission.variationMeasure_le_liminf_of_radonConverges :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U),
+      Varifold.RadonConverges Vi V → (∀ i, (Vi i).HasLocallyBoundedFirstVariation) →
+      (∀ W, IsRelCompactOpenIn W U → liminf (fun i ↦ variationMeasure (Vi i) W) atTop ≠ ∞) →
+      V.HasLocallyBoundedFirstVariation ∧ ∀ W, IsRelCompactOpenIn W U →
+        variationMeasure V W ≤ liminf (fun i ↦ variationMeasure (Vi i) W) atTop := by
+  intro N n U Vi V h hi hbound
+  -- Under local boundedness `variationMeasure` is the Riesz measure, which equals the supremum
+  -- of 2.5 on every `W ⊂⊂ U`.
+  have hnorm : ∀ X : Varifold N n U, X.HasLocallyBoundedFirstVariation →
+      ∀ W, IsRelCompactOpenIn W U → variationMeasure X W = X.firstVariationNormOn W := by
+    intro X hX W hW
+    rw [variationMeasure, dite_eq_left hX]
+    exact X.firstVariationRieszMeasure_eq_norm hX W hW.1 hW.2
+  have hlim : ∀ W, IsRelCompactOpenIn W U →
+      liminf (fun i ↦ variationMeasure (Vi i) W) atTop =
+        liminf (fun i ↦ (Vi i).firstVariationNormOn W) atTop := fun W hW ↦
+    congrArg (liminf · atTop) (funext fun i ↦ hnorm (Vi i) (hi i) W hW)
+  have hV : V.HasLocallyBoundedFirstVariation :=
+    h.hasLocallyBoundedFirstVariation fun W hW hWU ↦ by
+      rw [← hlim W ⟨hW, hWU⟩]
+      exact hbound W ⟨hW, hWU⟩
+  refine ⟨hV, fun W hW ↦ ?_⟩
+  rw [hnorm V hV W hW, hlim W hW]
+  exact h.firstVariationNormOn_le_liminf W
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
