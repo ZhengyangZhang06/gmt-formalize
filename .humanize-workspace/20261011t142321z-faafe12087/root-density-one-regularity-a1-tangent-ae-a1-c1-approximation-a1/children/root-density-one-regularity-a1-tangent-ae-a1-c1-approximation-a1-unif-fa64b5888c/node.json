@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.tangent_ae-a1.c1_approximation-a1.uniform_remainder-a1",
+  "parent_id": "root.density_one_regularity-a1.tangent_ae-a1.c1_approximation-a1",
+  "depth": 4,
+  "title": "Egorov uniformization of the first-order Taylor remainder on a closed set of differentiability points",
+  "statement": "Let n be a natural number, let f : R^n -> R be K-Lipschitz (K >= 0), let C ⊆ R^n be a closed set such that f is differentiable at every point of C, and let δ ∈ (0, ∞] (an extended nonnegative real with δ ≠ 0). Write Df(x) = fderiv R f x and L^n = volume on R^n = EuclideanSpace R (Fin n). Then there is a closed set A ⊆ C with L^n(C \\ A) < δ with the following property: for every compact Q ⊆ A and every η > 0 there is ρ > 0 such that |f(y) - f(x) - Df(x)(y - x)| <= η |y - x| for all x ∈ Q and all y ∈ A with dist(x, y) < ρ.",
+  "lean_statement": "∀ {n : ℕ} (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ C : Set (Rn n), IsClosed C → C ⊆ {x | DifferentiableAt ℝ f x} → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ A : Set (Rn n), A ⊆ C ∧ IsClosed A ∧ volume (C \\ A) < δ ∧ ∀ Q : Set (Rn n), IsCompact Q → Q ⊆ A → ∀ η : ℝ, 0 < η → ∃ ρ : ℝ, 0 < ρ ∧ ∀ x ∈ Q, ∀ y ∈ A, dist x y < ρ → ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ η * ‖y - x‖",
+  "lean_name": "tae_c1_uniform_remainder",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-tangent-ae-a1-c1-approximation-a1-unif-fa64b5888c-a1"
+}

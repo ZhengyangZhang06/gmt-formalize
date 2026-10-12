@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exists_isClosed_sdiff_lt|of_pseudoMetrizableSpace_secondCountable_of_locallyFinite|exists_isOpen_lt_of_lt",
+        "theorem tendstoUniformlyOn_of_ae_tendsto|measurable_fderiv|measurableSet_of_differentiableAt|theorem LipschitzWith.ae_differentiableAt|theorem continuousOn_clm_apply|continuousOn_iUnion|isClosed_iUnion",
+        "Lusin|lusin|whitney|Whitney",
+        "tae_c1_lusin_clm_volume|tae_c1_uniform_remainder|tae_whitney_c1_extension",
+        "sed -n '1,155p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "sed -n '1,150p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "sed -n '150,276p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "sed -n '276,405p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/c1-decomp-independent-audit-9hpi6g6r/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/c1-decomp-independent-audit-9hpi6g6r/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/c1-decomp-independent-audit-9hpi6g6r/Whitney.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/LocallyFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-tangent-ae-a1-c1-approximation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-tangent-ae-a1-c1-approximation-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyPartition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/c1-decomp-independent-audit-9hpi6g6r/Types.lean",
+        "/tmp/c1-decomp-independent-audit-9hpi6g6r/Assembly.lean",
+        "/tmp/c1-decomp-independent-audit-9hpi6g6r/Whitney.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical contract. The three-way split is appropriate for the selected approximation theorem. All three exact propositions elaborate independently, with the intended Euclidean volume, Borel, and continuous-linear-map instances. An independently written Lean proof derives the exact selected parent from the three child hypotheses, preserving the strict epsilon bound. The copied Whitney construction proves the exact third child; it and the reused Lusin/Whitney infrastructure use only propext, Classical.choice, and Quot.sound. WhitneyExtension lacks an olean, while its required dependencies are built. The searched Mathlib Lusin/Whitney matches were unrelated separation/Souslin results. No proposed name is reserved in the DAG or occurs in GMT sources across the 315 checked ref tips. All names are bare identifiers, and the empty sibling dependency lists are correct and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lusin_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type matches all prose hypotheses and conclusions. Finite-volume shells, coordinatewise Lusin, finite-dimensional continuity, and locally finite closed-set pasting establish the result. Summable losses give the strict bound, including infinite tolerance and n = 0. The proof is complete and non-circular."
+    },
+    {
+      "key": "uniform_remainder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type exactly matches the stated compact-uniform remainder estimate. Lipschitzness bounds the suprema; differentiability gives convergence; the dense-subset argument proves measurability. Shellwise Egorov and inner regularity produce the required closed set, and compactness supplies one uniform radius. No continuity of Df is silently assumed, and no parent or child theorem is used circularly."
+    },
+    {
+      "key": "whitney_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type matches the closed-set compatibility hypotheses and full prescribed-derivative conclusion. The supplied construction proves bounded overlap, partition derivative bounds, differentiability on A, and continuity of the derivative across A. The anchor estimates and constants are valid, including empty A and n = 0. Independent Lean reconstruction proves this exact child without additional axioms or circular reliance."
+    }
+  ],
+  "required_changes": []
+}
