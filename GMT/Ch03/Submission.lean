@@ -2237,6 +2237,66 @@ theorem Submission.deGiorgiDens_lower_bound_of_deriv : ∀ (n : ℕ) (K ρ₁ : 
     _ ≤ W ρ ^ (n + 1) := pow_le_pow_left₀ (mul_pos hs hρ.1).le key _
     _ = V ρ := Real.rpow_inv_natCast_pow (hpos ρ hρ).le (Nat.succ_ne_zero n)
 
+/-- **Lower volume bound** in the proof of De Giorgi's theorem (Simon Ch. 3, proof of Theorem 4.3,
+(10)–(11), `chapter-03.txt` lines 706–733; parent Step 8 (i)–(iii)). Let `(μ, ν)` be a Gauss–Green
+pair for `(U, G)`, `|w| ≤ 1`, `B_{ρ₁}(x) ⊆ U`, and `0 < μ(B_ρ(x)) ≤ 2 ∫_{B_ρ(x)} ν · w dμ` for
+`ρ ∈ (0, ρ₁)`. Put `V(r) = L^{n+1}(G ∩ B_r(x))` (finite, non-decreasing), let `c_F` be the constant
+of `deGiorgiDens_ball_isoperimetric` and `K = 3 c_F`.
+(i) `V > 0` on `(0, ρ₁)`: if `V(r) = 0`, then `V` vanishes on `(-∞, r)`, so `V'(r/2) = 0` and
+`deGiorgiDens_ball_normal_le_deriv` gives `∫_{B_{r/2}(x)} ν · w dμ ≤ 0 < μ(B_{r/2}(x))`, which
+contradicts the hypothesis. (ii) At every `r ∈ (0, ρ₁)` where the monotone `V` is differentiable
+(Lebesgue-a.e. `r`), `μ(B_r(x)) ≤ 2 V'(r)` by `deGiorgiDens_ball_normal_le_deriv`, so the
+isoperimetric inequality gives `V(r)^{n/(n+1)} ≤ c_F (μ(B_r(x)) + V'(r)) ≤ K V'(r)`.
+(iii) `deGiorgiDens_lower_bound_of_deriv` integrates this to
+`V(ρ) ≥ (ρ / ((n + 1) K))^{n+1} = c ρ^{n+1}` with `c = ((n + 1) K)^{-(n+1)}`. -/
+theorem Submission.deGiorgiDens_ball_volume_ge : ∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (U G : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (x w : Rn (n + 1)) (ρ₁ : ℝ), ‖w‖ ≤ 1 → Metric.ball x ρ₁ ⊆ U → (∀ ρ ∈ Ioo 0 ρ₁, 0 < μ (Metric.ball x ρ) ∧ (μ (Metric.ball x ρ)).toReal ≤ 2 * ∫ y in Metric.ball x ρ, inner ℝ (ν y) w ∂μ) → ∀ ρ ∈ Ioo 0 ρ₁, ENNReal.ofReal (c * ρ ^ (n + 1)) ≤ volume (G ∩ Metric.ball x ρ) := by
+  intro n
+  obtain ⟨cF, hcF, hiso⟩ := Submission.deGiorgiDens_ball_isoperimetric n
+  have hK : 0 < 3 * cF := by positivity
+  refine ⟨(1 / ((n + 1) * (3 * cF))) ^ (n + 1), by positivity, ?_⟩
+  intro U G μ ν hU hG hGG x w ρ₁ hw hball hmass ρ hρ
+  -- `V(r) = L^{n+1}(G ∩ B_r(x))` is finite and non-decreasing.
+  set V : ℝ → ℝ := fun r ↦ (volume (G ∩ Metric.ball x r)).toReal
+  have hfin : ∀ r, volume (G ∩ Metric.ball x r) ≠ ∞ := fun r ↦
+    ((measure_mono inter_subset_right).trans_lt measure_ball_lt_top).ne
+  have hVmono : Monotone V := fun r s hrs ↦ ENNReal.toReal_mono (hfin s)
+    (measure_mono (inter_subset_inter_right _ (Metric.ball_subset_ball hrs)))
+  -- For `r ∈ (0, ρ₁)`: `B̄_r(x) ⊆ U`, hence `0 < μ(B_r(x)) < ∞`.
+  have hcl : ∀ r ∈ Ioo 0 ρ₁, Metric.closedBall x r ⊆ U := fun r hr ↦
+    (Metric.closedBall_subset_ball hr.2).trans hball
+  have hm : ∀ r ∈ Ioo 0 ρ₁, 0 < (μ (Metric.ball x r)).toReal := fun r hr ↦
+    ENNReal.toReal_pos (hmass r hr).1.ne' ((measure_mono Metric.ball_subset_closedBall).trans_lt
+      (hGG.2.1 _ (isCompact_closedBall x r) (hcl r hr))).ne
+  -- (i) `V > 0` on `(0, ρ₁)`.
+  have hVpos : ∀ r ∈ Ioo 0 ρ₁, 0 < V r := by
+    intro r hr
+    by_contra hVr
+    have hr2 : r / 2 ∈ Ioo 0 ρ₁ := ⟨half_pos hr.1, (half_lt_self hr.1).trans hr.2⟩
+    -- `V` vanishes on `(-∞, r)`, so `V'(r/2) = 0`.
+    have hd : HasDerivAt V 0 (r / 2) := by
+      refine (hasDerivAt_const (r / 2) (0 : ℝ)).congr_of_eventuallyEq ?_
+      filter_upwards [Iio_mem_nhds (half_lt_self hr.1)] with t ht
+      exact le_antisymm ((hVmono ht.le).trans (not_lt.1 hVr)) ENNReal.toReal_nonneg
+    have h₁ := Submission.deGiorgiDens_ball_normal_le_deriv (n + 1) U G μ ν hU hG hGG x w (r / 2) 0
+      hr2.1 (hcl _ hr2) hw hd
+    linarith [(hmass _ hr2).2, hm _ hr2]
+  -- (ii) `V(r)^{n/(n+1)} ≤ 3 c_F V'(r)` wherever `V` is differentiable in `(0, ρ₁)`.
+  have hae : ∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioo 0 ρ₁ →
+      ∃ d : ℝ, HasDerivAt V d r ∧ V r ^ ((n : ℝ) / (n + 1)) ≤ 3 * cF * d := by
+    filter_upwards [hVmono.ae_differentiableAt] with r hr hrI
+    have h₁ := Submission.deGiorgiDens_ball_normal_le_deriv (n + 1) U G μ ν hU hG hGG x w r
+      (deriv V r) hrI.1 (hcl r hrI) hw hr.hasDerivAt
+    have h₂ := hiso U G μ ν hU hG hGG x r (deriv V r) hrI.1 (hcl r hrI)
+      (ENNReal.toReal_pos_iff.1 (hVpos r hrI)).1 hr.hasDerivAt
+    have h₃ : (μ (Metric.ball x r)).toReal ≤ 2 * deriv V r := by linarith [(hmass r hrI).2]
+    refine ⟨deriv V r, hr.hasDerivAt, h₂.trans ?_⟩
+    linarith [mul_le_mul_of_nonneg_left h₃ hcF.le]
+  -- (iii) Integrate: `V(ρ) ≥ (ρ / ((n + 1) K))^{n+1} = c ρ^{n+1}`.
+  have hV := Submission.deGiorgiDens_lower_bound_of_deriv n (3 * cF) ρ₁ V hK (hVmono.monotoneOn _)
+    hVpos hae ρ hρ
+  rw [ENNReal.ofReal_le_iff_le_toReal (hfin ρ), ← mul_pow, one_div_mul_eq_div]
+  exact hV
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
