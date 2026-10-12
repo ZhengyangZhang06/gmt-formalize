@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace|exists_lt_isCompact_of_ne_top|exists_isCompact_isClosed_sdiff_lt",
+        "instTietzeExtensionUnitClosedBall|exists_restrict_eq|exists_forall_mem_restrict_eq|exists_continuous_one_zero_of_isCompact|exists_cthickening_subset_open|closure_thickening_subset_cthickening|closure_eq_iInter_thickening",
+        "def covectorEuclideanNorm|abbrev NVector|abbrev Covector|exists_isClosed_continuousOn_of_measurable",
+        "inner_apply|def EuclideanSpace|abbrev EuclideanSpace|instInnerProductSpace",
+        "integral_inter_add_sdiff|norm_setIntegral_le_of_norm_le_const|tendsto_measure_iUnion_atTop|tendsto_measure_iInter_atTop",
+        "smr_ufd_",
+        "validate_lean_statement(s['lean_statement'])",
+        "contract_scope",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -o /tmp/ufd-independent-audit-1v92bai0/.lake/build/lib/lean/Audit/Challenges.olean Audit/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -o /tmp/ufd-independent-audit-1v92bai0/.lake/build/lib/lean/Audit/Assembly.olean Audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -o /tmp/ufd-independent-audit-1v92bai0/.lake/build/lib/lean/Audit/TypeCompatibility.olean Audit/TypeCompatibility.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-unit-form-density-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-unit-form-density-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Complex/Tietze.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/TietzeExtension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/ufd-independent-audit-1v92bai0/Audit/Challenges.lean",
+        "/tmp/ufd-independent-audit-1v92bai0/Audit/Assembly.lean",
+        "/tmp/ufd-independent-audit-1v92bai0/Audit/Instances.lean",
+        "/tmp/ufd-independent-audit-1v92bai0/Audit/TypeCompatibility.lean",
+        "/tmp/ufd-independent-audit-1v92bai0/audit-results.json"
+      ],
+      "conclusion": "Verified the frozen project and pinned library revisions and checked relevant Mathlib sources against the snapshot. The split is appropriate: five independent analytic obligations, together with the already recorded covector-isometry dependency, establish this selected parent's exact frozen type. Dependencies are acyclic and correctly directed. All proposed names are bare, distinct identifiers; searches found no reservation by another DAG branch or matching library declaration. All five one-line propositions elaborate independently in the comparator scope, and their implemented types remain compatible after additional imports. Independently recompiled all five parent-supplied scratch proofs and the exact parent assembly; their axiom dependencies are only propext, Classical.choice and Quot.sound. Explicit checks confirm the intended Euclidean L2 norm/inner product, Borel structures, finite-set inner regularity and closed-unit-ball Tietze instance. Child comparator gates remain required."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_coord_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match all hypotheses and conclusions. Coordinate measurability, basis expansion, the inequality ‖u‖² ≤ ‖u‖, and the almost-everywhere Cauchy–Schwarz argument establish every conclusion. The inferred inner product is Euclidean L2. The proof handles N = 0 and has no circular dependency."
+    },
+    {
+      "key": "compact_lusin",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract is proved by compact exhaustion, finite-measure inner approximation, and coordinatewise Lusin with its full regularity hypothesis supplied. The error budget retains measure strictly above c; all required finiteness conditions follow from the stated assumptions. Intersecting with C₀ explicitly handles N = 0. No global finiteness or unstated regularity assumption is used."
+    },
+    {
+      "key": "ball_tietze",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Restriction gives a continuous map into the closed unit ball, whose Tietze instance applies to this finite-dimensional real Euclidean space. Extension and inclusion give the required global bound and pointwise agreement, including empty C and N = 0."
+    },
+    {
+      "key": "small_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact thickening has finite measure by the stated local hypothesis. Its decreasing measurable halos have empty intersection, so continuity from above supplies the required error bound. Urysohn and the closure-of-support estimate establish every support and value condition. Empty C and ε = ∞ are covered; ε ≠ 0 exactly matches the prose."
+    },
+    {
+      "key": "integral_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and conclusion match exactly. The proof derives C ⊆ S and all finiteness requirements, establishes integrability by indicator domination, splits the set integral, and bounds the remainder by μ(S ∖ C). Finite-value conversion then yields the strict ENNReal inequality. No hidden integrability assumption or circular reliance remains."
+    }
+  ],
+  "required_changes": []
+}

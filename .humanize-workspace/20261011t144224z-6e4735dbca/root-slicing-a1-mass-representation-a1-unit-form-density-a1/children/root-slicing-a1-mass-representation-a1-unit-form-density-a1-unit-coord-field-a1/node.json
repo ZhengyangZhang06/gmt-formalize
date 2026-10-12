@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.mass_representation-a1.unit_form_density-a1.unit_coord_field-a1",
+  "parent_id": "root.slicing-a1.mass_representation-a1.unit_form_density-a1",
+  "depth": 4,
+  "title": "Coordinates of a Borel unit k-vector field in an isometric chart: u(x) = (v(x)(J⁻¹e_i))_i is Borel, ‖u‖ ≤ 1, ‖u‖ = 1 μ-a.e., v(x)(α) = ⟨Jα, u(x)⟩",
+  "statement": "Let P, k, N ∈ ℕ, μ a measure on ℝ^P, v : ℝ^P → NVector (Eucl P) k and J : Covector (Eucl P) k ≃ₗ[ℝ] EuclideanSpace ℝ (Fin N) a linear equivalence with covectorEuclideanNorm α = ‖Jα‖ for every k-covector α. Assume |v(x)(α)| ≤ covectorEuclideanNorm α for all x, α; x ↦ v(x)(α) is Borel for every α; and for μ-a.e. x there is α with covectorEuclideanNorm α ≤ 1 and v(x)(α) = 1. Then there is a Borel map u : ℝ^P → EuclideanSpace ℝ (Fin N) with ‖u(x)‖ ≤ 1 for all x, ‖u(x)‖ = 1 for μ-a.e. x, and v(x)(α) = ⟨Jα, u(x)⟩ (real inner product) for all x and α.",
+  "lean_statement": "∀ (P k N : ℕ) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k) (J : Covector (Eucl P) k ≃ₗ[ℝ] EuclideanSpace ℝ (Fin N)), (∀ α : Covector (Eucl P) k, covectorEuclideanNorm α = ‖J α‖) → (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) → (∀ α : Covector (Eucl P) k, Measurable (fun x => v x α)) → (∀ᵐ x ∂μ, ∃ α : Covector (Eucl P) k, covectorEuclideanNorm α ≤ 1 ∧ v x α = 1) → ∃ u : Eucl P → EuclideanSpace ℝ (Fin N), Measurable u ∧ (∀ x, ‖u x‖ ≤ 1) ∧ (∀ᵐ x ∂μ, ‖u x‖ = 1) ∧ ∀ (x : Eucl P) (α : Covector (Eucl P) k), v x α = inner ℝ (J α) (u x)",
+  "lean_name": "smr_ufd_unit_coord_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-unit-form-density-a1-unit-coord-field-a1-a1"
+}
