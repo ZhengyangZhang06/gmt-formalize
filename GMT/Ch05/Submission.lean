@@ -458,6 +458,89 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Lusin's theorem for `Lⁿ` on sets of possibly infinite measure** (used in Simon Ch. 2, proof of
+Theorem 1.5, p. 44), for a Borel map `F : ℝⁿ → L(ℝⁿ, ℝ)`.  Proof: `Lⁿ` is inner regular by closed
+sets also on Borel sets of infinite measure (exhaust by the bounded pieces `E ∩ B̆(0, k + 1)` with
+summable tolerances and intersect the sets `Kₖ ∪ B̆(0, k + 1)ᶜ`).  Fix a countable basis `(V)` of the
+second-countable space `L(ℝⁿ, ℝ)` and tolerances `ε_V` with `Σ ε_V < δ`; choose closed
+`K_V ⊆ S ∩ F⁻¹(V)` and `K'_V ⊆ S \ F⁻¹(V)` missing measure `< ε_V` of `S`.  Then
+`C = ⋂_V (K_V ∪ K'_V)` is closed, `Lⁿ(S \ C) ≤ Σ ε_V < δ`, and `F|C` is continuous because
+`C ∩ F⁻¹(V) = C \ K'_V` is relatively open in `C` for every basic `V`. -/
+theorem tae_c1_lusin_clm_volume : ∀ {n : ℕ} (F : Rn n → (Rn n →L[ℝ] ℝ)), Measurable F → ∀ S : Set (Rn n), MeasurableSet S → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ C : Set (Rn n), C ⊆ S ∧ IsClosed C ∧ volume (S \ C) < δ ∧ ContinuousOn F C := by
+  intro n F hF S hS δ hδ
+  -- Inner regularity of `Lⁿ` by closed sets, also for Borel sets of infinite measure.
+  have hreg : ∀ E : Set (Rn n), MeasurableSet E → ∀ ε : ℝ≥0∞, ε ≠ 0 →
+      ∃ K ⊆ E, IsClosed K ∧ volume (E \ K) < ε := by
+    intro E hE ε hε
+    obtain ⟨ε', hε'0, hε'⟩ := ENNReal.exists_pos_sum_of_countable hε ℕ
+    have hK : ∀ k : ℕ, ∃ K ⊆ E ∩ ball (0 : Rn n) (k + 1), IsClosed K ∧
+        volume ((E ∩ ball (0 : Rn n) (k + 1)) \ K) < ε' k := fun k =>
+      (hE.inter measurableSet_ball).exists_isClosed_sdiff_lt
+        ((measure_mono inter_subset_right).trans_lt measure_ball_lt_top).ne
+        (ENNReal.coe_ne_zero.2 (hε'0 k).ne')
+    choose K hKE hKc hKμ using hK
+    refine ⟨⋂ k : ℕ, (K k ∪ (ball (0 : Rn n) (k + 1))ᶜ), fun x hx => ?_,
+      isClosed_iInter fun k => (hKc k).union isOpen_ball.isClosed_compl, ?_⟩
+    · obtain ⟨k, hk⟩ := exists_nat_gt ‖x‖
+      rcases mem_iInter.1 hx k with hxK | hxB
+      · exact (hKE k hxK).1
+      · exact absurd (mem_ball_zero_iff.2 (hk.trans (lt_add_one _))) hxB
+    · calc volume (E \ ⋂ k : ℕ, (K k ∪ (ball (0 : Rn n) (k + 1))ᶜ))
+          ≤ volume (⋃ k : ℕ, (E ∩ ball (0 : Rn n) (k + 1)) \ K k) := by
+            refine measure_mono fun x hx => ?_
+            obtain ⟨hxE, hxK⟩ := hx
+            rw [mem_iInter, not_forall] at hxK
+            obtain ⟨k, hk⟩ := hxK
+            rw [mem_union, mem_compl_iff, not_or, not_not] at hk
+            exact mem_iUnion.2 ⟨k, ⟨hxE, hk.2⟩, hk.1⟩
+        _ ≤ ∑' k : ℕ, volume ((E ∩ ball (0 : Rn n) (k + 1)) \ K k) := measure_iUnion_le _
+        _ ≤ ∑' k : ℕ, (ε' k : ℝ≥0∞) := ENNReal.tsum_le_tsum fun k => (hKμ k).le
+        _ < ε := hε'
+  -- A countable basis of `L(ℝⁿ, ℝ)` and summable tolerances indexed by it.
+  obtain ⟨b, hbc, -, hb⟩ := TopologicalSpace.exists_countable_basis (Rn n →L[ℝ] ℝ)
+  have : Countable b := hbc.to_subtype
+  obtain ⟨ε, hε0, hε⟩ := ENNReal.exists_pos_sum_of_countable hδ b
+  have hK : ∀ V : b, ∃ K ⊆ S ∩ F ⁻¹' V, IsClosed K ∧ ∃ K' ⊆ S \ F ⁻¹' V, IsClosed K' ∧
+      volume (S \ (K ∪ K')) < ε V := by
+    intro V
+    have hP : MeasurableSet (F ⁻¹' (V : Set (Rn n →L[ℝ] ℝ))) := hF (hb.isOpen V.2).measurableSet
+    have hε2 : (ε V : ℝ≥0∞) / 2 ≠ 0 := (ENNReal.half_pos (ENNReal.coe_ne_zero.2 (hε0 V).ne')).ne'
+    obtain ⟨K, hKs, hKc, hKμ⟩ := hreg _ (hS.inter hP) _ hε2
+    obtain ⟨K', hK's, hK'c, hK'μ⟩ := hreg _ (hS.diff hP) _ hε2
+    refine ⟨K, hKs, hKc, K', hK's, hK'c, ?_⟩
+    calc volume (S \ (K ∪ K')) ≤ volume ((S ∩ F ⁻¹' V) \ K ∪ (S \ F ⁻¹' V) \ K') := by
+          refine measure_mono fun x hx => ?_
+          by_cases hxV : x ∈ F ⁻¹' (V : Set (Rn n →L[ℝ] ℝ))
+          · exact Or.inl ⟨⟨hx.1, hxV⟩, fun h => hx.2 (Or.inl h)⟩
+          · exact Or.inr ⟨⟨hx.1, hxV⟩, fun h => hx.2 (Or.inr h)⟩
+      _ ≤ volume ((S ∩ F ⁻¹' V) \ K) + volume ((S \ F ⁻¹' V) \ K') := measure_union_le _ _
+      _ < (ε V : ℝ≥0∞) / 2 + (ε V : ℝ≥0∞) / 2 := ENNReal.add_lt_add hKμ hK'μ
+      _ = ε V := ENNReal.add_halves _
+  choose K hKs hKc K' hK's hK'c hKμ using hK
+  refine ⟨⋂ V : b, (K V ∪ K' V), fun x hx => ?_, isClosed_iInter fun V => (hKc V).union (hK'c V),
+    ?_, ?_⟩
+  · obtain ⟨V, hVb, -⟩ := hb.exists_subset_of_mem_open (mem_univ (F x)) isOpen_univ
+    rcases mem_iInter.1 hx ⟨V, hVb⟩ with h | h
+    · exact (hKs _ h).1
+    · exact (hK's _ h).1
+  · calc volume (S \ ⋂ V : b, (K V ∪ K' V)) = volume (⋃ V : b, S \ (K V ∪ K' V)) := by
+          rw [sdiff_iInter]
+      _ ≤ ∑' V : b, volume (S \ (K V ∪ K' V)) := measure_iUnion_le _
+      _ ≤ ∑' V : b, (ε V : ℝ≥0∞) := ENNReal.tsum_le_tsum fun V => (hKμ V).le
+      _ < δ := hε
+  · rw [_root_.continuousOn_iff]
+    intro x _ t ht hxt
+    obtain ⟨V, hVb, hxV, hVt⟩ := hb.exists_subset_of_mem_open hxt ht
+    refine ⟨(K' ⟨V, hVb⟩)ᶜ, (hK'c _).isOpen_compl, fun h => (hK's _ h).2 hxV, ?_⟩
+    rintro y ⟨hy1, hy2⟩
+    rcases mem_iInter.1 hy2 ⟨V, hVb⟩ with h | h
+    · exact hVt (hKs _ h).2
+    · exact absurd h hy1
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
