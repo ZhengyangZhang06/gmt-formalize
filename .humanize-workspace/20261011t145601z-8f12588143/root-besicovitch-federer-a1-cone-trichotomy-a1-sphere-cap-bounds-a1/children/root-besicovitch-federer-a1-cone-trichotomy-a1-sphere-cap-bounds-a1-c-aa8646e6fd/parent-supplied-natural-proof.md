@@ -1,0 +1,89 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1`
+- Child DAG node: `root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1.cap_upper_comparison-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 2 and 4 of the parent-supplied proof of `bf_sphereCap_measure_bounds` (Step 2.1 (a), (c): a small cap is the graph of w ↦ (1 − |w|²)^{1/2} over T_ζ, and this graph map is 2-Lipschitz on |w| ≤ 1/2; Dall'Alba, Lemma 4.15; Mattila, Ch. 18), written out. Simon defers this theorem to [Fed69]/[Ros84] (Ch. 3, Theorem 3.6, chapter-03.txt lines 530–536), so there is no printed Simon proof to copy.
+
+Notation: x·y is the inner product of ℝᴺ, |·| the norm, B(x, r) the open ball, Hⁿ := μHE[n] and S(H) := {θ ∈ H : |θ| = 1}.
+
+Fact (L): if g : ℝᴺ → ℝᴺ is K-Lipschitz on A ⊆ ℝᴺ (K ≥ 0), then Hⁿ(g(A)) ≤ Kⁿ·Hⁿ(A) (SimonGMT Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn).
+
+1. The plane T. Let T := {w ∈ H : w·ζ = 0} = (ℝζ)^⊥ ∩ H.
+   - Since |ζ| = 1, ζ ≠ 0, so ℝζ is a line, and ℝζ ⊆ H.
+   - For subspaces K ⊆ H, dim K + dim(K^⊥ ∩ H) = dim H (Mathlib Submodule.finrank_add_inf_finrank_orthogonal). Applied with K = ℝζ, this gives 1 + dim T = n + 1, so dim T = n.
+   - For n = 0 this gives T = {0}, and the argument below needs no change.
+   - T does not depend on ρ.
+
+2. The graph map. For w ∈ ℝᴺ put f(w) := (1 − |w|²)^{1/2} and Γ(w) := w + f(w)ζ. The square root is the real one; it is only used for |w| < 1/2, where 1 − |w|² > 3/4. Fix ρ with 0 < ρ ≤ 1/2.
+
+3. S(H) ∩ B(ζ, ρ) ⊆ Γ(T ∩ B(0, ρ)). Let ξ ∈ H with |ξ| = 1 and |ξ − ζ| < ρ, and put s := ξ·ζ.
+   (a) |ξ − ζ|² = |ξ|² − 2s + |ζ|² = 2 − 2s. So s = 1 − |ξ − ζ|²/2 > 1 − ρ²/2 ≥ 1 − 1/8 > 0. By Cauchy–Schwarz, s ≤ |ξ||ζ| = 1 (Mathlib norm_sub_sq_real, real_inner_le_norm).
+   (b) Let w := ξ − sζ. Then w ∈ H, since ξ, ζ ∈ H. Also w·ζ = s − s|ζ|² = 0, so w ∈ T.
+   (c) |w|² = |ξ|² − 2s(ξ·ζ) + s²|ζ|² = 1 − s². Hence f(w) = (s²)^{1/2} = s, because s > 0 (Real.sqrt_sq). So Γ(w) = w + sζ = ξ.
+   (d) |w| < ρ. Since 1 − s ≥ 0 and 1 + s ≤ 2, |w|² = 1 − s² = (1 − s)(1 + s) ≤ 2(1 − s) = |ξ − ζ|² < ρ². This is the parent's estimate |w| = |π_ζ(ξ − ζ)| ≤ |ξ − ζ|, with π_ζ the orthogonal projection onto T, done by direct computation.
+   Thus ξ = Γ(w) with w ∈ T ∩ B(0, ρ).
+
+4. Γ is 2-Lipschitz on T ∩ B(0, ρ). Let w, w' ∈ T ∩ B(0, ρ), and put a := |w| < ρ ≤ 1/2 and b := |w'| < ρ ≤ 1/2. Put x := 1 − a² and y := 1 − b². Then x, y > 3/4, so f(w) = √x ≥ 1/2, f(w') = √y ≥ 1/2, and √x + √y ≥ 1. (The parent proof uses the sharper bound √x + √y ≥ √3; only ≥ 1 is needed here.)
+   (a) |f(w) − f(w')| ≤ |w − w'|.
+      - Since (√x − √y)(√x + √y) = x − y, we get |√x − √y| = |x − y|/(√x + √y) ≤ |x − y|.
+      - Moreover |x − y| = |b² − a²| = |b − a|·(a + b) ≤ |a − b| ≤ |w − w'|, because a + b < 1 and ||w| − |w'|| ≤ |w − w'| (Mathlib abs_norm_sub_norm_le).
+   (b) Γ(w) − Γ(w') = (w − w') + (f(w) − f(w'))ζ. Here (w − w')·ζ = 0 because w, w' ∈ T, and |ζ| = 1. Hence |Γ(w) − Γ(w')|² = |w − w'|² + (f(w) − f(w'))² ≤ 2|w − w'|² ≤ (2|w − w'|)², i.e. |Γ(w) − Γ(w')| ≤ 2|w − w'| (Mathlib LipschitzOnWith.of_dist_le_mul, pow_le_pow_iff_left₀).
+
+5. Measure comparison. Monotonicity of Hⁿ, step 3, and (L) applied to Γ with K = 2 on A = T ∩ B(0, ρ) give
+   Hⁿ(S(H) ∩ B(ζ, ρ)) ≤ Hⁿ(Γ(T ∩ B(0, ρ))) ≤ 2ⁿ·Hⁿ(T ∩ B(0, ρ)).
+
+6. The plane T of step 1 has dimension n and does not depend on ρ, and step 5 holds for every ρ ∈ (0, 1/2]. This proves the statement. ∎
+
+## Key steps
+
+1. T := (ℝζ)^⊥ ∩ H has dimension n.
+2. Let ξ ∈ S(H) with |ξ − ζ| < ρ ≤ 1/2. Then s := ξ·ζ > 0, w := ξ − sζ lies in T, |w|² = 1 − s² ≤ |ξ − ζ|² < ρ², and ξ = Γ(w) := w + (1 − |w|²)^{1/2}ζ. Hence S(H) ∩ B(ζ, ρ) ⊆ Γ(T ∩ B(0, ρ)).
+3. For w, w′ ∈ T with |w|, |w′| < 1/2: |f(w) − f(w′)| ≤ |w − w′|, and |Γ(w) − Γ(w′)|² = |w − w′|² + (f(w) − f(w′))² ≤ 4|w − w′|². So Γ is 2-Lipschitz.
+4. Monotonicity and the Lipschitz image bound with constant 2 give Hⁿ(S(H) ∩ B(ζ, ρ)) ≤ 2ⁿ·Hⁿ(T ∩ B(0, ρ)).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (project d09bc8a18ce60face651f042976e8465f21f0f68, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `rg -n "μHE\[|notation|def euclideanHausdorffMeasure|theorem.*euclideanHausdorffMeasure" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `sed -n 55,112p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (μHE[d] := addHaarScalarFactor • μH[d]; isAddHaarMeasure_euclideanHausdorffMeasure)`
+- `grep -n "theorem Isometry.euclideanHausdorffMeasure_image\|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `grep -n "finrank_add_inf_finrank_orthogonal" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean`
+- `grep -n "theorem addHaar_ball_of_pos\|theorem addHaar_ball " mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `grep -n "finite_cover_balls" mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `grep -n "theorem starProjection_eq_self_iff\|theorem starProjection_apply_eq_zero_iff\|theorem starProjection_norm_le" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `grep -n "theorem mem_orthogonal_singleton_iff_inner_left" mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean`
+- `grep -n "irreducible_def stdOrthonormalBasis" mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `grep -rn "theorem measure_biUnion_lt_top" mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `grep -n "bf_\|sphere\|Sphere" project/GMT/Ch03/Contract.lean (no match)`
+- `grep -n -A6 "theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn" .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `grep dag.json, GMT/ and .lake/packages/simongmt for bf_planeBall_measure_uniform, bf_sphereCap_lower_comparison, bf_sphereCap_upper_comparison (no match)`
+- `python3 dag.json: lean_statement of bf_plane_closedBall_measure_eq (accepted) and deGiorgiRH_plane_closedBall_measure (decomposing)`
+- `grep -n -i "besicovitch\|federer\|3\.6" book/chapter-03.txt (Theorem 3.6 at lines 530-536; proof deferred to [Fed69]/[Ros84])`
+- `lake env lean GMT/Scratch/SphereCapBoundsSplitDecision.lean, GMT/Scratch/SphereCapBoundsChildCheck.lean, GMT/Scratch/SphereCapBoundsEndToEnd.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SphereCapBoundsSplitDecision.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SphereCapBoundsChildCheck.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SphereCapBoundsEndToEnd.lean`
+
+The snapshot fixes Rn (Contract.lean); the contract has no sphere, cap or bf_ declarations. Mathlib at 25730c7c supplies every ingredient the children use. (i) μHE[d] is defined as addHaarScalarFactor • μH[d]; isAddHaarMeasure_euclideanHausdorffMeasure, Isometry.euclideanHausdorffMeasure_image and EuclideanSpace.euclideanHausdorffMeasure_eq_volume handle it. (ii) Measure.addHaar_ball_of_pos (no Nontrivial assumption, so n = 0 is fine) and stdOrthonormalBasis. (iii) Submodule.finrank_add_inf_finrank_orthogonal and its primed form. (iv) Submodule.starProjection_eq_self_iff, starProjection_apply_eq_zero_iff and starProjection_norm_le, with Submodule.mem_orthogonal_singleton_iff_inner_left. (v) IsCompact.finite_cover_balls and measure_biUnion_lt_top. SimonGMT supplies euclideanHausdorffMeasure_image_le_of_lipschitzOn: μHE[n](f '' A) ≤ K^n μHE[n](A). No existing declaration states any child. The accepted bf_plane_closedBall_measure_eq uses closed balls, a plane-dependent constant and no positivity. deGiorgiRH_plane_closedBall_measure is unaccepted and uses closed balls centred at 0. Neither can be reused verbatim. All three proposed names are fresh. Simon's Ch. 3, Theorem 3.6 (chapter-03.txt lines 530–536) defers its proof to [Fed69]/[Ros84], so the child proofs are extracted from the parent-supplied Step 2.1 argument. Lean checks: the child types elaborate; the assembly from the three exact child types proves the frozen parent type; all three children and the parent were proved in scratch with axioms [propext, Classical.choice, Quot.sound].
