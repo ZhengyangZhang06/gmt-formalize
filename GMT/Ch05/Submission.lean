@@ -557,6 +557,48 @@ theorem rsod_blowUp_integral_tendsto_zero : ∀ (n ℓ : ℕ) (x : Amb n ℓ) (A
   rw [mul_zero] at htend
   refine squeeze_zero_norm' ?_ htend
   filter_upwards [self_mem_nhdsWithin] with r hr using hbound r hr
+/-- **Transfer of approximate tangent spaces** (Simon Ch. 3, proof of Theorem 1.6 "⇒" and
+Remark 1.5(2)).  Let `D ⊆ C ∩ N` be Borel with `Hⁿ(C), Hⁿ(N) < ∞`, and let `C \ D` and `N \ D`
+have zero `n`-density at `x`.  If `T_x N = P`, then `T_x C = P`: for `η = η_{x,r}` with `r > 0`
+and `f ∈ C_c`, splitting `C` and `N` along `D` before the change of variables gives
+`∫_{η(C)} f = ∫_{η(N)} f − ∫_{η(N \ D)} f + ∫_{η(C \ D)} f`, and the last two terms tend to `0`. -/
+theorem rsod_approxTangent_transfer : ∀ (n ℓ : ℕ) (C N D : Set (Amb n ℓ)) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), MeasurableSet D → D ⊆ C → D ⊆ N → (μHE[n] : Measure (Amb n ℓ)) C < ∞ → (μHE[n] : Measure (Amb n ℓ)) N < ∞ → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real ((C \ D) ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real ((N \ D) ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n N x P → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C x P := by
+  intro n ℓ C N D x P hD hDC hDN hC hN hCD hND hT
+  -- Step 1: `finrank P = n` is inherited from `T_x N = P`; fix a test function `f ∈ C_c`.
+  refine ⟨hT.1, fun f => ?_⟩
+  -- Step 2: `∫_{η(N)} f → ∫_P f`, while `∫_{η(N \ D)} f → 0` and `∫_{η(C \ D)} f → 0`.
+  have hlim := ((hT.2 f).sub (Submission.rsod_blowUp_integral_tendsto_zero n ℓ x (N \ D)
+      ((measure_mono sdiff_subset).trans_lt hN) hND f)).add
+    (Submission.rsod_blowUp_integral_tendsto_zero n ℓ x (C \ D)
+      ((measure_mono sdiff_subset).trans_lt hC) hCD f)
+  rw [sub_zero, add_zero] at hlim
+  -- Step 3: it suffices to prove `(∗)` `∫_{η(C)} f = ∫_{η(N)} f − ∫_{η(N \ D)} f + ∫_{η(C \ D)} f`
+  -- for every `r > 0`.
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  set μ : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
+  set g : Amb n ℓ → ℝ := fun z => f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)
+  -- Step 4: change of variables with `θ ≡ 1`: `∫_{η(S)} f = r⁻ⁿ ∫_S f ∘ η`.
+  have hCV : ∀ S : Set (Amb n ℓ), ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' S, f y ∂μ =
+      (r ^ n)⁻¹ * ∫ z in S, g z ∂μ := fun S => by
+    simpa only [mul_one] using
+      Submission.rsod_blowUp_setIntegral_eq n ℓ S f (fun _ => 1) x r hr
+  -- Step 5: `g = f ∘ η` is continuous and bounded, hence integrable on sets of finite measure.
+  obtain ⟨B, hB⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+  have hg : Continuous g := f.continuous.comp (by
+    unfold Poincare.SimonGMT.Chapter03.blowUpMap
+    fun_prop)
+  have hint : ∀ S : Set (Amb n ℓ), μ S < ∞ → IntegrableOn g S μ := fun S hS =>
+    Measure.integrableOn_of_bounded hS.ne hg.aestronglyMeasurable (ae_of_all _ fun z => hB _)
+  -- Step 6: `∫_S g = ∫_{S \ D} g + ∫_D g` whenever `D ⊆ S` and `Hⁿ(S) < ∞`.
+  have hsplit : ∀ S : Set (Amb n ℓ), D ⊆ S → μ S < ∞ →
+      ∫ z in S, g z ∂μ = ∫ z in S \ D, g z ∂μ + ∫ z in D, g z ∂μ := fun S hDS hS => by
+    conv_lhs => rw [← sdiff_union_of_subset hDS]
+    exact setIntegral_union disjoint_sdiff_left hD
+      (hint _ ((measure_mono sdiff_subset).trans_lt hS)) (hint _ ((measure_mono hDS).trans_lt hS))
+  -- Step 7: the identity `(∗)`.
+  rw [hCV C, hCV N, hCV (N \ D), hCV (C \ D), hsplit C hDC hC, hsplit N hDN hN]
+  ring
 
 end Submission
 
