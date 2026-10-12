@@ -1,0 +1,17 @@
+{
+  "node_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1.weight_eq_restrict-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1135",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "ec4de1e8e007a11e19f1e7d5ac0a665e979450b4",
+  "integrated_commit": "",
+  "proof_base_commit": "d347ebb51a9349d97abcd886cf3eb72865e79885",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.allard_tangent_cones-a1.tangent_point_representation-a1",
+  "requires": [
+    "root.allard_tangent_cones-a1.tangent_point_representation-a1.hausdorff_null_of_weight_null-a1"
+  ]
+}
