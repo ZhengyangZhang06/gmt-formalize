@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e0086acf5c208e154f31b27c9ec6b40b26d341db162046c5972b3127c121bcdd",
+  "git_delta": {
+    "base_commit": "3d5446fc8bcaf6f20bfd9472faef6a9ce0ee2907",
+    "candidate_commit": "b16cb9a923c3bd5c5ec4c39719908cd8df9658cc",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_cube_stokes_lattice",
+    "diff_sha256": "231280f721f99971f854ea7263d3f1549d2f3bda5834c9652b9653424ca33384",
+    "source_sha256": "1e3709ca5c998b7be62872b67d4b4dd7069321d2c5c3180626cd39a28b7c9f33",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_cube_stokes_lattice",
+      "statement": "∀ (P m : ℕ) (ρ : ℝ), 0 < ρ → ∀ (F : LatticeFaceIndex (m + 1) P) (ω : DifferentialForm (Eucl P) m), IsSmoothForm ω → ∫ s in Set.Icc (0 : Fin (m + 1) → ℝ) (fun _ => ρ), exteriorDerivative ω (∑ l, (ρ * (F.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) + ∑ j, s j • EuclideanSpace.single (F.2 j) (1 : ℝ)) (fun j => EuclideanSpace.single (F.2 j) (1 : ℝ)) = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * ((∫ s in Set.Icc (0 : Fin m → ℝ) (fun _ => ρ), ω (∑ l, (ρ * (((F.1 + Pi.single (F.2 i) 1 : Fin P → ℤ) l : ℤ) : ℝ)) • EuclideanSpace.single l (1 : ℝ) + ∑ j, s j • EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) j) (1 : ℝ)) (fun j => EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) j) (1 : ℝ))) - ∫ s in Set.Icc (0 : Fin m → ℝ) (fun _ => ρ), ω (∑ l, (ρ * (F.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) + ∑ j, s j • EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) j) (1 : ℝ)) (fun j => EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) j) (1 : ℝ)))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
