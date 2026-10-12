@@ -373,6 +373,75 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, proof of Theorem 2.6, compact exhaustion (step 1 of the diagonal extraction).**
+If `U ⊆ ℝⁿ` is open, the sets `Q j = B_{j+1}(0) ∩ {x : 1/(j+1) ≤ infEDist x Uᶜ}` are compact, lie
+in `U` and increase with `j`; indeed `Q j ⊆ interior (Q (j+1))`. Every `x ∈ U` lies in some `Q j`
+since `Uᶜ` is closed, so the increasing open sets `interior (Q (j+1))` cover any compact `K ⊆ U`,
+and one of them already contains `K`. -/
+theorem Submission.bv_isOpen_exists_compact_exhaustion : ∀ (n : ℕ) (U : Set (Rn n)), IsOpen U → ∃ Q : ℕ → Set (Rn n), (∀ j, IsCompact (Q j)) ∧ (∀ j, Q j ⊆ U) ∧ Monotone Q ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ j, K ⊆ Q j := by
+  intro n U hU
+  -- `Q j = B_{j+1}(0) ∩ {x : 1/(j+1) ≤ infEDist x Uᶜ}`; no case distinction on `U` or `n`.
+  let Q : ℕ → Set (Rn n) := fun j ↦
+    closedBall 0 ((j : ℝ) + 1) ∩ {x | ENNReal.ofReal (1 / ((j : ℝ) + 1)) ≤ infEDist x Uᶜ}
+  -- (i) A compact ball cut by a closed superlevel set of the continuous `x ↦ infEDist x Uᶜ`.
+  have hQc (j : ℕ) : IsCompact (Q j) :=
+    (isCompact_closedBall 0 _).inter_right (isClosed_le continuous_const continuous_infEDist)
+  -- (ii) Off `U` the distance `infEDist x Uᶜ` vanishes, while `1/(j+1) > 0`.
+  have hQU (j : ℕ) : Q j ⊆ U := fun x hx ↦ by
+    by_contra hxU
+    have h1 : ENNReal.ofReal (1 / ((j : ℝ) + 1)) ≤ infEDist x Uᶜ := hx.2
+    rw [infEDist_zero_of_mem hxU] at h1
+    exact absurd h1 (not_le.2 (ENNReal.ofReal_pos.2 (by positivity)))
+  -- `Q j ⊆ interior (Q (j+1))`: the open set `ball 0 (j+2) ∩ {1/(j+2) < infEDist · Uᶜ}` contains
+  -- `Q j` and lies in `Q (j+1)`.
+  have hQint (j : ℕ) : Q j ⊆ interior (Q (j + 1)) := fun x hx ↦ by
+    have h2 : ((j + 1 : ℕ) : ℝ) + 1 = (j : ℝ) + 2 := by push_cast; ring
+    have h12 : ENNReal.ofReal (1 / ((j : ℝ) + 2)) < ENNReal.ofReal (1 / ((j : ℝ) + 1)) :=
+      (ENNReal.ofReal_lt_ofReal_iff (by positivity)).2
+        (one_div_lt_one_div_of_lt (by positivity) (by linarith))
+    refine mem_interior.2 ⟨ball 0 ((j : ℝ) + 2) ∩
+        {y | ENNReal.ofReal (1 / ((j : ℝ) + 2)) < infEDist y Uᶜ}, ?_,
+      isOpen_ball.inter (isOpen_lt continuous_const continuous_infEDist), ?_⟩
+    · rintro y ⟨hy1, hy2⟩
+      refine ⟨mem_closedBall_zero_iff.2 ?_, ?_⟩
+      · rw [h2]
+        exact (mem_ball_zero_iff.1 hy1).le
+      · show ENNReal.ofReal (1 / (((j + 1 : ℕ) : ℝ) + 1)) ≤ infEDist y Uᶜ
+        rw [h2]
+        exact le_of_lt hy2
+    · have hx1 : ‖x‖ ≤ (j : ℝ) + 1 := mem_closedBall_zero_iff.1 hx.1
+      have hx2 : ENNReal.ofReal (1 / ((j : ℝ) + 1)) ≤ infEDist x Uᶜ := hx.2
+      exact ⟨mem_ball_zero_iff.2 (by linarith), lt_of_lt_of_le h12 hx2⟩
+  -- (iii) Monotonicity from `Q j ⊆ interior (Q (j+1)) ⊆ Q (j+1)`.
+  have hQm : Monotone Q := monotone_nat_of_le_succ fun j ↦ (hQint j).trans interior_subset
+  -- Every `x ∈ U` lies in some `Q j`: `infEDist x Uᶜ ≠ 0` because `Uᶜ` is closed.
+  have hQcover (x : Rn n) (hx : x ∈ U) : ∃ j, x ∈ Q j := by
+    have hx0 : infEDist x Uᶜ ≠ 0 := fun h ↦
+      (mem_iff_infEDist_zero_of_closed hU.isClosed_compl).2 h hx
+    obtain ⟨m, hm⟩ := ENNReal.exists_inv_nat_lt hx0
+    obtain ⟨j, hj⟩ := exists_nat_ge (max ‖x‖ (m : ℝ))
+    have hmj : m ≤ j + 1 := by
+      have : (m : ℝ) ≤ j := (le_max_right _ _).trans hj
+      have : m ≤ j := by exact_mod_cast this
+      omega
+    refine ⟨j, mem_closedBall_zero_iff.2 (by linarith [le_max_left ‖x‖ (m : ℝ)]), ?_⟩
+    show ENNReal.ofReal (1 / ((j : ℝ) + 1)) ≤ infEDist x Uᶜ
+    calc ENNReal.ofReal (1 / ((j : ℝ) + 1)) = ((j + 1 : ℕ) : ℝ≥0∞)⁻¹ := by
+          rw [one_div, ENNReal.ofReal_inv_of_pos (by positivity : (0 : ℝ) < (j : ℝ) + 1),
+            ← Nat.cast_succ, ENNReal.ofReal_natCast]
+      _ ≤ (m : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 (Nat.cast_le.2 hmj)
+      _ ≤ infEDist x Uᶜ := hm.le
+  -- (iv) The increasing open sets `interior (Q (j+1))` cover a compact `K ⊆ U`, so one of them
+  -- contains `K`.
+  refine ⟨Q, hQc, hQU, hQm, fun K hK hKU ↦ ?_⟩
+  obtain ⟨j, hj⟩ := hK.elim_directed_cover (fun j ↦ interior (Q (j + 1)))
+    (fun _ ↦ isOpen_interior)
+    (fun x hx ↦ by
+      obtain ⟨j, hj⟩ := hQcover x (hKU hx)
+      exact mem_iUnion.2 ⟨j, hQint j hj⟩)
+    (directed_of_isDirected_le fun i j hij ↦ interior_mono (hQm (Nat.succ_le_succ hij)))
+  exact ⟨j + 1, hj.trans interior_subset⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 

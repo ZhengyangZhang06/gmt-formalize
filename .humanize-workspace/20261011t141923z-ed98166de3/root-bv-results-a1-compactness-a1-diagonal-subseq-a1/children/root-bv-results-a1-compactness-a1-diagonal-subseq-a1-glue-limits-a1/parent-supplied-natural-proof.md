@@ -1,0 +1,106 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.bv_results-a1.compactness-a1.diagonal_subseq-a1`
+- Child DAG node: `root.bv_results-a1.compactness-a1.diagonal_subseq-a1.glue_limits-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Introduction to GMT, Ch. 2, Theorem 2.6 (p. 50). The printed proof reduces the claim to precompactness in L¹_loc(U), and the reviewed proof supplied to node root.bv_results-a1.compactness-a1.diagonal_subseq-a1 (step A2 of root.bv_results-a1.compactness-a1) turns precompactness on every compact subset into an L¹_loc-convergent subsequence by compact exhaustion and diagonal extraction. This child is steps 5–8 of that proof (compatibility of the limits, gluing, convergence and local integrability), stated for an arbitrary monotone compact exhaustion Q_j that absorbs the compact subsets of U. Notation: μ = volume (Lebesgue measure on ℝⁿ = Rn n); ∫⁻_A is the lower Lebesgue integral for μ.restrict A; ‖a‖ₑ is the extended norm; "a.e. on A" means μ.restrict A-a.e.
+
+Hypotheses. (H0) U is open. (H1) Every Q_j is compact. (H2) Q is monotone: i ≤ j implies Q_i ⊆ Q_j. (H3) Every compact K ⊆ U lies in some Q_j. (H4) Every w_k is a.e.-strongly measurable for μ.restrict Q_j, for every j. (H5) Every G_j is integrable on Q_j. (H6) e_j(k) := ∫⁻_{Q_j} ‖w_k − G_j‖ₑ → 0 as k → ∞, for every j.
+Claim. There is v : ℝⁿ → ℝ with LocallyIntegrableOn v U volume and ∫⁻_K ‖w_k − v‖ₑ → 0 for every compact K ⊆ U, i.e. Chapter02.TendstoLocallyInL1On w v U atTop.
+
+0. Measurability. Each Q_j is compact, hence closed, hence a Borel and measurable set (IsCompact.isClosed, IsClosed.measurableSet).
+
+1. Compatibility: for i ≤ j, G_i = G_j a.e. on Q_i.
+ (a) Measurability. G_i is a.e.-strongly measurable for μ.restrict Q_i by (H5). G_j is a.e.-strongly measurable for μ.restrict Q_j by (H5), hence also for μ.restrict Q_i ≤ μ.restrict Q_j, since Q_i ⊆ Q_j by (H2) (AEStronglyMeasurable.mono_measure, Measure.restrict_mono).
+ (b) Pointwise bound. For every k and x: G_i(x) − G_j(x) = (w_k(x) − G_j(x)) − (w_k(x) − G_i(x)). The triangle inequality for ‖·‖ₑ (enorm_sub_le) gives ‖G_i(x) − G_j(x)‖ₑ ≤ ‖w_k(x) − G_i(x)‖ₑ + ‖w_k(x) − G_j(x)‖ₑ.
+ (c) Integral bound. Integrate (b) over Q_i (lintegral_mono). The lower integral is additive when one summand is a.e.-measurable (lintegral_add_left'). Here x ↦ ‖w_k(x) − G_i(x)‖ₑ is a.e.-measurable for μ.restrict Q_i by (H4) and (a). Then lintegral_mono_set with Q_i ⊆ Q_j gives
+   ∫⁻_{Q_i} ‖G_i − G_j‖ₑ ≤ ∫⁻_{Q_i} ‖w_k − G_i‖ₑ + ∫⁻_{Q_i} ‖w_k − G_j‖ₑ ≤ e_i(k) + e_j(k)   for every k.
+ (d) The right side tends to 0 + 0 = 0 by (H6). The left side does not depend on k, so it is ≤ 0 (ge_of_tendsto'), i.e. ∫⁻_{Q_i} ‖G_i − G_j‖ₑ = 0.
+ (e) The integrand is a.e.-measurable for μ.restrict Q_i by (a). By lintegral_eq_zero_iff', ‖G_i − G_j‖ₑ = 0, i.e. G_i = G_j, a.e. on Q_i.
+ (This proof route uses (H4) exactly in the additivity step of (c). For functions that are not a.e.-measurable, the lower Lebesgue integral is superadditive but in general not subadditive. For example, let A ⊆ Q_i be such that A and Q_i ∖ A both have inner measure 0. Then ∫⁻_{Q_i} 1_A = ∫⁻_{Q_i} 1_{Q_i∖A} = 0, while ∫⁻_{Q_i} (1_A + 1_{Q_i∖A}) = μ(Q_i). The hypothesis is supplied by the parent, because each w_k = u_{ψ(k)} is integrable on every Q_j.)
+
+2. Gluing. For x ∈ ⋃_j Q_j let j(x) be the least j with x ∈ Q_j (Nat.find) and put v(x) := G_{j(x)}(x). For x ∉ ⋃_j Q_j put v(x) := 0.
+ Claim: for every j, v = G_j a.e. on Q_j. Fix j.
+ (a) For each i ∈ ℕ, μ-a.e. x satisfies: i ≤ j and x ∈ Q_i imply G_i(x) = G_j(x). For i ≤ j this is step 1 converted from μ.restrict Q_i to μ with ae_restrict_iff' (Q_i is measurable by step 0). For i > j the statement is vacuous.
+ (b) There are countably many i, so μ-a.e. x satisfies the statement of (a) for all i simultaneously (ae_all_iff).
+ (c) Let x be such a point with x ∈ Q_j. Then x ∈ ⋃_i Q_i, so j(x) is defined. Also x ∈ Q_{j(x)} (Nat.find_spec) and j(x) ≤ j by minimality (Nat.find_min'). By (b), v(x) = G_{j(x)}(x) = G_j(x).
+ (d) So μ-a.e. x satisfies x ∈ Q_j ⇒ v(x) = G_j(x). Since Q_j is measurable, ae_restrict_iff' turns this into v = G_j a.e. on Q_j.
+
+3. Integrability on Q_j. G_j is integrable on Q_j (H5) and v = G_j a.e. on Q_j (step 2), so v is integrable on Q_j (IntegrableOn.congr_fun_ae).
+
+4. Convergence. Let K ⊆ U be compact. By (H3) choose j with K ⊆ Q_j. For every k:
+ (a) 0 ≤ ∫⁻_K ‖w_k − v‖ₑ ≤ ∫⁻_{Q_j} ‖w_k − v‖ₑ (lintegral_mono_set).
+ (b) ∫⁻_{Q_j} ‖w_k − v‖ₑ = ∫⁻_{Q_j} ‖w_k − G_j‖ₑ = e_j(k) (lintegral_congr_ae with step 2).
+ (c) By (H6), e_j(k) → 0, so the squeeze theorem (tendsto_of_tendsto_of_tendsto_of_le_of_le) gives ∫⁻_K ‖w_k − v‖ₑ → 0.
+ Since K was arbitrary, this is the definition of Chapter02.TendstoLocallyInL1On w v U atTop: for every compact K ⊆ U, Tendsto (fun k ↦ ∫⁻ x in K, ‖w k x − v x‖ₑ) atTop (𝓝 0).
+
+5. Local integrability. Let K ⊆ U be compact. By (H3), K ⊆ Q_j for some j, so v is integrable on K by step 3 and IntegrableOn.mono_set. U is open (H0), hence locally closed (IsOpen.isLocallyClosed), and ℝⁿ is locally compact. So locallyIntegrableOn_iff gives LocallyIntegrableOn v U volume.
+
+6. Steps 4 and 5 prove the claim. ∎
+
+## Key steps
+
+1. Compatibility: for i ≤ j, ∫⁻_{Q_i}‖G_i − G_j‖ₑ ≤ e_i(k) + e_j(k) → 0 by the triangle inequality, additivity of ∫⁻ (using a.e.-measurability of w_k) and Q_i ⊆ Q_j; so G_i = G_j a.e. on Q_i.
+2. Gluing: v(x) := G_{j(x)}(x) with j(x) the least j such that x ∈ Q_j, and v := 0 off ⋃_j Q_j; countably many null sets give v = G_j a.e. on Q_j.
+3. v is integrable on every Q_j (IntegrableOn.congr_fun_ae).
+4. For compact K ⊆ Q_j ⊆ U: ∫⁻_K‖w_k − v‖ₑ ≤ ∫⁻_{Q_j}‖w_k − v‖ₑ = e_j(k) → 0, which gives TendstoLocallyInL1On w v U atTop.
+5. v is integrable on every compact K ⊆ U and U is open, so LocallyIntegrableOn v U volume (locallyIntegrableOn_iff).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/ff09f3909baeeae7/manifest.json (mode local-project; project 1b1689a8deba89d58b36b1a04dba493693824437; mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp snapshot project/GMT/Ch02/Contract.lean and Submission.lean against the workspace copies (identical); cmp snapshot mathlib files against lake-packages-25730c7c/mathlib (SigmaCompact, LocallyIntegrable, LpSeminorm/Defs, LpSpace/Basic, Sequences, Bases, Compactness/Compact, UniformSpace/Cauchy, MetricSpace/Pseudo/Basic, MetricSpace/HausdorffDistance: identical)`
+- `rg -n 'structure CompactExhaustion|theorem exists_superset_of_isCompact|def choice|exists_compact_exhaustion|IsOpen.exists_iUnion_isCompact|isCompact_exhaustion|exists_seq_isCompact|IsOpen.sigmaCompact|isSigmaCompact_of_isOpen|IsOpen.isSigmaCompact' Mathlib`
+- `rg -n 'theorem locallyIntegrableOn_iff|theorem LocallyIntegrableOn.integrableOn_compact_subset|theorem tendsto_subseq|theorem TotallyBounded.isCompact_of_isClosed|theorem totallyBounded_iff|theorem edist_toLp_toLp|theorem eLpNorm_one_eq_lintegral_enorm|theorem isCompact_univ_pi|instance.*FirstCountableTopology' Mathlib`
+- `sed -n 115,140p Mathlib/MeasureTheory/Function/LpSeminorm/Defs.lean (eLpNorm_one_eq_lintegral_enorm requires AEStronglyMeasurable)`
+- `grep -rlE 'Kolmogorov.?Riesz|Frechet.?Kolmogorov|Fréchet.?Kolmogorov|Rellich' Mathlib (no match)`
+- `grep -n 'TendstoLocallyInL1On|IsRelativelyCompactIn|def |theorem |lemma ' simongmt/Poincare/SimonGMT/Chapter02/BV.lean, then sed -n 105,260p`
+- `python3 -I scan of dag.json lean_statements for Monotone|exhaust|TendstoLocallyInL1On|StrictMono|Lp; grep lean_name over nodes/*/decomposition-v*.json; git grep of the 3 proposed names over all refs (no match)`
+- `python3 -I gen.py (verifier gmt-compare.py contract_scope/child_modules + lean_contract.validate_lean_statement) -> Checks/NodeChallenge_00..02.lean and Checks/Assembly.lean; lake env lean on each against a scratch olean of GMT.Ch02.Submission`
+- `lake env lean Prove/ChildA.lean, Prove/ChildB.lean, Prove/ChildC.lean, Review/Assembly.lean, Review/FullChain.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/UniformSpace/Cauchy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-compactness-a1-diagonal-subseq-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/diagsub-decomp-jHC3Ee/proj/Checks/NodeChallenge_00.lean`
+- `/tmp/diagsub-decomp-jHC3Ee/proj/Checks/NodeChallenge_01.lean`
+- `/tmp/diagsub-decomp-jHC3Ee/proj/Checks/NodeChallenge_02.lean`
+- `/tmp/diagsub-decomp-jHC3Ee/proj/Checks/Assembly.lean`
+- `/tmp/diagsub-decomp-jHC3Ee/proj/Prove/ChildA.lean`
+- `/tmp/diagsub-decomp-jHC3Ee/proj/Prove/ChildB.lean`
+- `/tmp/diagsub-decomp-jHC3Ee/proj/Prove/ChildC.lean`
+- `/tmp/diagsub-decomp-jHC3Ee/proj/Review/Assembly.lean`
+- `/tmp/diagsub-decomp-jHC3Ee/proj/Review/FullChain.lean`
+
+Snapshot integrity: Contract.lean and Submission.lean in the snapshot are byte-identical to the workspace copies. The cited mathlib files are identical to the compiled lake package (commit 25730c7c). TendstoLocallyInL1On (SimonGMT BV.lean) means ∀ compact K ⊆ U, ∫⁻_K‖v_i − u‖ₑ → 0.
+
+Library gaps:
+- Mathlib has CompactExhaustion only for whole (σ-compact, locally compact) spaces. There is no lemma for an open subset that absorbs compact sets, so compact_exhaustion is new.
+- Mathlib has no L¹ compactness theorem (no Kolmogorov–Riesz/Rellich/Fréchet–Kolmogorov match) and no gluing lemma for L¹_loc limits, so simultaneous_subseq and glue_limits are new.
+- Their building blocks all exist and resolve: Lp completeness, Lp.edist_toLp_toLp/edist_def, eLpNorm_one_eq_lintegral_enorm, TotallyBounded.isCompact_of_isClosed, isCompact_univ_pi, the countable-product FirstCountableTopology instance, IsCompact.tendsto_subseq, locallyIntegrableOn_iff, IsCompact.elim_directed_cover and the infEDist API.
+- In this mathlib eLpNorm_one_eq_lintegral_enorm needs AEStronglyMeasurable, and the child proofs account for this.
+
+DAG check: no DAG node has an identical frozen type to reuse. eilenberg_compact_exhaustion and convex_open_exists_inner_exhaustion state different facts. The three new names are unreserved.
+
+Lean checks: all three child types elaborate in the comparator scope and are proved outright with axioms [propext, Classical.choice, Quot.sound]. The assembly from the three types to the exact frozen parent type, and the full chain, compile with the same axioms.
