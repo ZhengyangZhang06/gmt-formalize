@@ -602,6 +602,76 @@ theorem poincare_ball_convex_combination_bound : ∀ (n : ℕ) (h : Rn n → ℝ
       _ = (2 : ℝ≥0∞) ^ n * volume B * ∫⁻ z in B, h z := by
           rw [setLIntegral_const]; ring
 
+/-- Simon Ch. 5, proof of Lemma 3.1 (p. 114), Poincaré inequality, smooth estimate: for a `C¹`
+function `φ` on `ℝⁿ` and `0 < r ≤ 1`,
+`∫_{B_r} ∫_{B_r} |φ(x) - φ(y)|² dy dx ≤ 2ⁿ⁺² |B_1| ∫_{B_r} |∇φ|²` in `[0, ∞]`.  For
+`x, y ∈ B_r` we have `|x - y| < 2r ≤ 2`, so the segment bound gives
+`|φ(x) - φ(y)|² ≤ 4 ∫_{[0,1]} |∇φ((1 - t) y + t x)|² dt`; integrating over `B_r × B_r`, moving the
+`t`-integral outside (Tonelli) and applying the convex-combination bound
+`∫_{B_r} ∫_{B_r} |∇φ((1 - t) y + t x)|² dy dx ≤ 2ⁿ |B_r| ∫_{B_r} |∇φ|²` for each `t ∈ [0, 1]`
+gives the claim, since `|[0, 1]| = 1` and `|B_r| ≤ |B_1|`. -/
+theorem poincare_c1_ball_double_integral_bound : ∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ r : ℝ, 0 < r → r ≤ 1 → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖φ x - φ y‖ₑ ^ 2 ≤ (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) * ∫⁻ x in ball (0 : Rn n) r, ‖gradient φ x‖ₑ ^ 2 := by
+  intro n φ hφ r hr0 hr1
+  set B := ball (0 : Rn n) r with hB
+  -- 1. regularity: `∇φ` is continuous, so the integrands are measurable
+  have hgc : Continuous (gradient φ) :=
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp (hφ.continuous_fderiv one_ne_zero)
+  have hgm : Measurable (fun z => ‖gradient φ z‖ₑ ^ 2) := hgc.measurable.enorm.pow_const 2
+  have hG1 : Measurable (fun p : (Rn n × Rn n) × ℝ => ‖gradient φ ((1 - p.2) • p.1.2 + p.2 • p.1.1)‖ₑ ^ 2) :=
+    hgm.comp (by fun_prop : Continuous (fun p : (Rn n × Rn n) × ℝ => (1 - p.2) • p.1.2 + p.2 • p.1.1)).measurable
+  have hG2 : Measurable (fun p : (Rn n × ℝ) × Rn n => ‖gradient φ ((1 - p.1.2) • p.2 + p.1.2 • p.1.1)‖ₑ ^ 2) :=
+    hgm.comp (by fun_prop : Continuous (fun p : (Rn n × ℝ) × Rn n => (1 - p.1.2) • p.2 + p.1.2 • p.1.1)).measurable
+  -- 2. pointwise bound on `B × B`, from the segment bound and `|x - y| ≤ 2`
+  have step1 : ∀ x ∈ B, ∀ y ∈ B, ‖φ x - φ y‖ₑ ^ 2 ≤
+      4 * ∫⁻ t in Icc (0:ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+    intro x hx y hy
+    refine (poincare_c1_segment_sq_bound n φ hφ x y).trans ?_
+    gcongr
+    have hxy : ‖x - y‖ ≤ 2 := by
+      have := norm_sub_le x y
+      rw [hB, mem_ball, dist_zero_right] at hx hy
+      linarith
+    have : ‖x - y‖ₑ ≤ 2 := by
+      rw [← ofReal_norm]
+      calc ENNReal.ofReal ‖x - y‖ ≤ ENNReal.ofReal 2 := ENNReal.ofReal_le_ofReal hxy
+        _ = 2 := by simp
+    calc ‖x - y‖ₑ ^ 2 ≤ 2 ^ 2 := by gcongr
+      _ = 4 := by norm_num
+  calc ∫⁻ x in B, ∫⁻ y in B, ‖φ x - φ y‖ₑ ^ 2
+      ≤ ∫⁻ x in B, ∫⁻ y in B, 4 * ∫⁻ t in Icc (0:ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+        refine setLIntegral_mono' measurableSet_ball fun x hx => ?_
+        exact setLIntegral_mono' measurableSet_ball fun y hy => step1 x hx y hy
+    -- 3. pull out the constant `4`
+    _ = 4 * ∫⁻ x in B, ∫⁻ y in B, ∫⁻ t in Icc (0:ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+        rw [← lintegral_const_mul' _ _ (by norm_num)]
+        congr 1; ext x
+        rw [← lintegral_const_mul' _ _ (by norm_num)]
+    -- 4. Tonelli: move the `t`-integral outside
+    _ = 4 * ∫⁻ t in Icc (0:ℝ) 1, ∫⁻ x in B, ∫⁻ y in B, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+        congr 1
+        have inner : ∀ x, ∫⁻ y in B, ∫⁻ t in Icc (0:ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2
+            = ∫⁻ t in Icc (0:ℝ) 1, ∫⁻ y in B, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+          intro x
+          refine lintegral_lintegral_swap ?_
+          exact (hG1.comp (measurable_const.prodMk measurable_fst |>.prodMk measurable_snd)).aemeasurable
+        simp_rw [inner]
+        refine lintegral_lintegral_swap ?_
+        exact (hG2.lintegral_prod_right').aemeasurable
+    -- 5. the convex-combination bound for each `t ∈ [0, 1]`, and `|[0, 1]| = 1`
+    _ ≤ 4 * ∫⁻ t in Icc (0:ℝ) 1, (2 : ℝ≥0∞) ^ n * volume B * ∫⁻ z in B, ‖gradient φ z‖ₑ ^ 2 := by
+        gcongr 4 * ?_
+        refine setLIntegral_mono' measurableSet_Icc fun t ht => ?_
+        exact poincare_ball_convex_combination_bound n _ hgm r t hr0 ht.1 ht.2
+    _ = 4 * ((2 : ℝ≥0∞) ^ n * volume B * ∫⁻ z in B, ‖gradient φ z‖ₑ ^ 2) := by
+        rw [setLIntegral_const, Real.volume_Icc]; simp
+    -- 6. `4 · 2ⁿ = 2ⁿ⁺²` and `|B_r| ≤ |B_1|`
+    _ ≤ (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) * ∫⁻ x in B, ‖gradient φ x‖ₑ ^ 2 := by
+        have hvol : volume B ≤ volume (ball (0 : Rn n) 1) := measure_mono (ball_subset_ball hr1)
+        calc 4 * ((2 : ℝ≥0∞) ^ n * volume B * ∫⁻ z in B, ‖gradient φ z‖ₑ ^ 2)
+            = (2 : ℝ≥0∞) ^ (n + 2) * volume B * ∫⁻ z in B, ‖gradient φ z‖ₑ ^ 2 := by
+              rw [pow_add]; ring
+          _ ≤ _ := by gcongr
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
