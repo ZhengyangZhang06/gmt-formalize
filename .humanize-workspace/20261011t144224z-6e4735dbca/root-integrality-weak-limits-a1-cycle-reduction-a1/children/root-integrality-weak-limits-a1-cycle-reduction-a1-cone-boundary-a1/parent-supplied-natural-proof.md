@@ -1,0 +1,114 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_boundary-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝ^P := Eucl P with standard orthonormal basis e_1,…,e_P; D^k(ℝ^P) := TestFormOn univ k (C^∞ k-forms with compact tsupport); D_k(ℝ^P) := GeometricCurrentOn univ k; Λ_k := Covector (ℝ^P) k (continuous alternating k-linear forms) with Mathlib's operator norm ‖·‖; |α| := covectorEuclideanNorm α (the Euclidean coefficient norm used in the mass); (x, v) := Fin.cons x v for x ∈ ℝ^P, v ∈ (ℝ^P)^k; spt := support, M := mass, ⇀ := WeaklyConvergesOn, ∂ := boundary, d := extDeriv; B_r(0), B̄_r(0) are the open and closed balls. For ω ∈ D^{m+1}(ℝ^P), ψ ∈ D^m(ℝ^P) and N ⊆ ℝ^P, say that ψ satisfies the Hω-formula on N if ψ(x)(v) = ∫_0^1 t^m ω(tx)(x, v) dt for all x ∈ N and all v ∈ (ℝ^P)^m. For X ∈ D_m(ℝ^P) and C ∈ D_{m+1}(ℝ^P), Cone(X, C) means: for all ω ∈ D^{m+1}(ℝ^P) and ψ ∈ D^m(ℝ^P), if ψ satisfies the Hω-formula on some open N ⊇ spt X, then C(ω) = X(ψ). (This is verbatim the inline Lean predicate of the statement.) Bump functions: for 0 < r < s there is ζ ∈ C^∞(ℝ^P; ℝ) with 0 ≤ ζ ≤ 1, ζ = 1 on B̄_r(0) and tsupport ζ = B̄_s(0) (a Mathlib ContDiffBump centred at 0 with rIn = r, rOut = s); for such ζ and a C^∞ k-form ψ, ζψ := (x ↦ ζ(x)•ψ(x)) ∈ D^k(ℝ^P) (ContDiff.smul; tsupport(ζψ) ⊆ tsupport ζ, compact).
+
+Source: Part I, item 2 of the parent proof (∂(0⨯X) = X for X = ∂Y with Y compactly supported, via the radial homotopy formula for m ≥ 1 and H(dφ) = φ − φ(0) for m = 0). The two cases are handled uniformly through dχ = dφ for χ := H(dφ), using (F2) for Y only.
+
+1. (Set-up.) Let R₀ := max(R, 0), B := B_{R₀+1}(0) (open) and fix ζ ∈ C^∞(ℝ^P; ℝ) with ζ = 1 on B̄_{R₀+1}(0) and compact tsupport ζ ⊆ B̄_{R₀+2}(0) (ContDiffBump). Then spt Y ⊆ B̄_R(0) ⊆ B, and by iwl_cr_support_lemmas (1) (U = univ, Z = Y), spt ∂Y ⊆ spt Y ⊆ B.
+2. Fix φ ∈ D^m(ℝ^P). Its exterior derivative dφ ∈ D^{m+1}(ℝ^P) (`exteriorDerivativeTestOn`; as a form it is extDeriv φ, which is C^∞). By definition of the boundary, ∂C(φ) = C(dφ) and ∂Y(φ) = Y(dφ).
+3. (χ := H(dφ).) Apply iwl_cr_radial_operator to the C^∞ (m+1)-form dφ with k := m and a := m: there is a C^∞ m-form χ with χ(x)(v) = ∫_0^1 t^m dφ(tx)(x, v) dt for all x, v. Then ζχ ∈ D^m(ℝ^P), and since ζ = 1 on B, ζχ satisfies the Hω-formula for ω := dφ on the open set B ⊇ spt ∂Y. By Cone(∂Y, C): C(dφ) = ∂Y(ζχ) = Y(d(ζχ)).
+4. (dχ = dφ.) Case m = 0: by iwl_cr_radial_homotopy (b) (φ is C^∞ and χ satisfies exactly its hypothesis, t^m = t^0), χ(x) = φ(x) − φ(0) for all x. So χ differs from φ by a constant, Dχ = Dφ everywhere and dχ = alternatizeUncurryFin(Dχ) = dφ.
+ Case m = k + 1: apply iwl_cr_radial_operator to the C^∞ (k+1)-form φ with exponent a := k: there is a C^∞ k-form ψ with Dψ(x)[w](v) = ∫_0^1 t^k( t·(Dφ(tx)[w])(x, v) + φ(tx)(w, v) ) dt (formula (ii)). By Step 3, χ(x)(v) = ∫_0^1 t^{k+1} dφ(tx)(x, v) dt. By iwl_cr_radial_homotopy (a), χ(x) + dψ(x) = φ(x) for all x, i.e. χ = φ − dψ. Since φ and dψ are C^∞ (ψ is C^∞), d(φ − dψ) = dφ − d(dψ) (there is no `extDeriv_sub`: use `extDeriv_add` with the differentiable forms φ and −dψ, and `extDeriv_smul` for the sign), and d(dψ) = 0 (`extDeriv_extDeriv`; ψ is C^∞, in particular C²). Hence dχ = dφ.
+5. (Localization.) For x ∈ B, ζ = 1 on the neighbourhood B of x, so ζχ = χ on a neighbourhood of x; hence D(ζχ)(x) = Dχ(x) (`Filter.EventuallyEq.fderiv_eq`) and d(ζχ)(x) = dχ(x) = dφ(x).
+6. So the test forms d(ζχ), dφ ∈ D^{m+1}(ℝ^P) agree on the open set B ⊇ spt Y. Their difference vanishes on B, so tsupport(d(ζχ) − dφ) ⊆ ℝ^P ∖ B, which is disjoint from spt Y; by isoperimetric_apply_eq_zero_of_disjoint_support and linearity, Y(d(ζχ)) = Y(dφ).
+7. Therefore ∂C(φ) = C(dφ) = Y(d(ζχ)) = Y(dφ) = ∂Y(φ) for every φ ∈ D^m(ℝ^P), i.e. ∂C = ∂Y (GeometricCurrentOn.ext). ∎
+
+## Key steps
+
+1. C(dφ) = ∂Y(ζχ) = Y(d(ζχ)) for χ := H(dφ) from iwl_cr_radial_operator, since ζχ satisfies the Hω-formula on B ⊇ spt ∂Y (support lemma (1)).
+2. dχ = dφ: for m = 0, χ = φ − φ(0) (homotopy (b)); for m = k+1, χ = φ − d(H′φ) (homotopy (a) with H′φ from the radial operator, exponent k) and d² = 0.
+3. d(ζχ) = dχ = dφ on the open ball B ⊇ spt Y, so Y(d(ζχ)) = Y(dφ) by the reused vanishing lemma.
+4. Hence ∂C(φ) = Y(dφ) = ∂Y(φ) for every φ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean; cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean; sha256sum GMT/Ch06/Contract.lean`
+- `python3: read nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/{parent-child-handoff,decomposition-v1,decomposition-audit-v1,decomposition-review-receipt-v1}.json`
+- `python3: dag.json statuses and frozen lean_statements of iwl_im_closure, iwl_smooth_pushforward, iwl_cycle_reduction, isoperimetric_apply_eq_zero_of_disjoint_support, cmb_abs_apply_le_of_massOn_le, isoperimetric_abs_covector_apply_le, lpf_countably_rectifiable_c1_cover, lpf_rectifiable_area_formula; scan of dag.json and nodes/*/decomposition-v*.json for iwl_cr_* names`
+- `rg -n 'theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|theorem MeasurableSet.image_of_continuousOn_injOn|theorem LinearMap.injective_iff_antilipschitz|theorem normDet_sq_eq_det_gram|theorem measurePreserving_piFinSuccAbove|theorem PiLp.volume_preserving_ofLp|theorem PiLp.volume_preserving_toLp|theorem MeasureTheory.Measure.euclideanHausdorffMeasure_zero|theorem hausdorffMeasure_zero_singleton|theorem hausdorffMeasure_apply|theorem exists_measurable_subset_ae_eq|theorem lintegral_prod |theorem Measurable.lintegral_prod_right'|theorem lintegral_iUnion |theorem lintegral_tsum' mathlib/Mathlib (snapshot)`
+- `rg -n 'hausdorffMeasure.*prod|area_formula|areaJacobian' mathlib/Mathlib (snapshot)`
+- `grep -rln for hasFDerivAt_integral_of_dominated_of_fderiv_le, norm_iteratedFDeriv_le_of_bilinear, norm_iteratedFDeriv_smul_le, alternatizeUncurryFin_curryLeft, extDeriv_extDeriv, tendsto_integral_filter_of_dominated_convergence, integral_integral_swap, euclideanHausdorffMeasure_homothety_image, det_succ_row_zero in snapshot Mathlib`
+- `grep -n '^theorem|^def' simongmt Chapter02/{AreaLipschitz,WeightedArea,Area,AreaApproximation,AreaNoninjective}.lean, Chapter03/{Rectifiable,DisjointCover,SubmanifoldCover}.lean, Chapter06/{Currents,Mass,CurrentLocalEquality,Forms}.lean; rg 'pointSlice_isTestForm|iteratedFDeriv_fixedSupportParameterSlice' simongmt`
+- `git show 2f3657605e574458d48b2cd837f262ae2f392816:GMT/Ch06/Submission.lean (accepted rectifiability_weighted_tangent_ae, piece construction hpart)`
+- `python3 -I /tmp/cr2/scripts/gen.py (verifier gmt-compare.py child_modules + lean_contract.validate_lean_statement); lake env lean /tmp/cr2/gen/*__NodeChallenge.lean`
+- `lake env lean /tmp/cr2/Scratch/Assembly.lean, SolutionCheck.lean, LibCheck.lean, JacCheck.lean, SplitCheck.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/decomposition-review-receipt-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-weighted-tangent-ae-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-weighted-tangent-ae-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-density-comparison-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-vanish-off-support-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/cr2/scripts/gen.py`
+- `/tmp/cr2/Scratch/Assembly.lean`
+- `/tmp/cr2/Scratch/SolutionCheck.lean`
+- `/tmp/cr2/Scratch/LibCheck.lean`
+- `/tmp/cr2/Scratch/JacCheck.lean`
+- `/tmp/cr2/Scratch/SplitCheck.lean`
+
+Snapshot: project d8d46c95, Mathlib 25730c7c. Its Ch06 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0dd…853d).
+
+Findings in dag.json:
+- The chart-cover and rectifiable-area-formula nodes (lpf_countably_rectifiable_c1_cover, lpf_rectifiable_area_formula) are still speculative-ready, so they cannot be reused.
+- No other DAG node supplies a product formula.
+- iwl_im_closure and iwl_smooth_pushforward are the parent's frozen sibling dependencies, with the types used in the assembly.
+- The reused isoperimetric_apply_eq_zero_of_disjoint_support, cmb_abs_apply_le_of_massOn_le and isoperimetric_abs_covector_apply_le are accepted, with identical types.
+
+Libraries:
+- rg in the snapshot Mathlib finds no area formula and no Hausdorff product formula for rectifiable sets; only hausdorffMeasure_pi_real and hausdorffMeasure_prod_real exist.
+- The pinned SimonGMT package (lake-packages-25730c7c/simongmt, rev 2b36630) supplies the injective Lipschitz area formula weighted_area_formula_lipschitz_injOn (Chapter02/AreaLipschitz.lean:101). It takes an arbitrary weight, with μHE[finrank E] on the target, volume on the source and J = areaJacobianAt = normDet. It is derived from WeightedArea.lean:76/120. SimonGMT also supplies area_image_compl_regularSet_eq_zero, measurableSet_areaRegularSet and measurable_areaJacobianAt.
+- Mathlib supplies exists_partition_approximatesLinearOn_of_hasFDerivWithinAt (Jacobian.lean:255), MeasurableSet.image_of_continuousOn_injOn (Polish/Basic.lean:821), LinearMap.injective_iff_antilipschitz, LinearMap.normDet_sq_eq_det_gram (NormDet.lean:303), measurePreserving_piFinSuccAbove, PiLp.volume_preserving_ofLp/toLp, lintegral_prod, lintegral_iUnion and lintegral_tsum.
+- All of these print only propext, Classical.choice and Quot.sound.
+- The accepted rectifiability_weighted_tangent_ae (commit 2f36576) already formalizes the same bi-Lipschitz piece construction (`hpart`).
+- These inputs give a complete chart-free proof of the product formula.
+
+Lean checks:
+- 12 challenge modules and 12 solution resolutions.
+- The parent assembly.
+- The lift Jacobian identity and the measure-preserving split (standard axioms only).
+
+These checks certify statements, assembly and library inputs, not the remaining analytic proofs. Those were reviewed in natural language; the v1 audit accepted 11 of them, and an independent reviewer accepted the repaired one in this session.
+
+Public citation: Federer, GMT (1969) 3.2.23, cited for this product formula in arXiv:2505.11279.

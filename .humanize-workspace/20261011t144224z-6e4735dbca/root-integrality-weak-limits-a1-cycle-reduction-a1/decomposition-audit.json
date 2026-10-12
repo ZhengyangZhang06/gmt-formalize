@@ -1,0 +1,119 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "IsRectifiableTriple|IsIntegerMultiplicity|IsIntegralCurrent|HasWeightedApproximateTangentSpaceAt|CountablyRectifiable|WeaklyConvergesOn|namespace|^import",
+        "hausdorffMeasure.*prod|area_formula|areaJacobian",
+        "norm_iteratedFDeriv_le_of_bilinear|norm_iteratedFDeriv_smul_le",
+        "LinearMap.injective_iff_antilipschitz|theorem normDet_sq_eq_det_gram|measurePreserving_piFinSuccAbove|volume_preserving_ofLp|volume_preserving_toLp",
+        "pointSlice_isTestForm|iteratedFDeriv_fixedSupportParameterSlice",
+        "git show 3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6:GMT/Ch06/Submission.lean",
+        "git show ba202ac0407b6e93210594416fcd0729874b2eff:GMT/Ch06/Submission.lean",
+        "git show 8c000d1fa9feee2acb018915bef93ab6fe6393ef:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cr-independent-audit-e1ov9475/AllChallenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cr-independent-audit-e1ov9475/LibraryAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ParametricIntervalIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/tmp/cr-independent-audit-e1ov9475/AllChallenges.lean",
+        "/tmp/cr-independent-audit-e1ov9475/LibraryAxioms.lean",
+        "/tmp/cr-independent-audit-e1ov9475/isoperimetric_apply_eq_zero_of_disjoint_support_Accepted_Axioms.lean",
+        "/tmp/cr-independent-audit-e1ov9475/cmb_abs_apply_le_of_massOn_le_Accepted_Axioms.lean",
+        "/tmp/cr-independent-audit-e1ov9475/isoperimetric_abs_covector_apply_le_Accepted_Axioms.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and frozen definitions. All twelve one-line propositions pass lexical validation and independently elaborate in comparator scope against a freshly compiled frozen Submission copy; these challenge checks do not certify proofs. The three reused declarations have identical frozen types and independently checked axiom lists containing only propext, Classical.choice and Quot.sound. Sixteen relevant library inputs have the same permitted axiom set. No general rectifiable Hausdorff product formula was found in snapshot Mathlib; the pinned SimonGMT injective Lipschitz area formula supplies the input used by the explicit repaired proof. Public corroboration of the Federer 3.2.23 citation appears in [Ficola–Schmidt, Lemma 2.16](https://arxiv.org/html/2505.11279v1). All names are bare identifiers; the nine new names have no other-branch reservations. Child and inherited dependencies are acyclic. The split is appropriate: its cone properties, together with the frozen sibling dependencies, establish the selected parent by applying Cyc to T_j minus their boundary cones and then adding back the limit cone."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The compact-support cover and finite smooth partition of unity prove vanishing for arbitrary U; openness of U is unnecessary. The independently checked declaration uses only permitted axioms."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Nonnegativity of C follows from the pointwise bound. Both signed rescalings are admissible, and letting the positive rescaling parameter decrease to C proves the stated estimate, including B = 0. Accepted-type reuse and axioms were verified."
+    },
+    {
+      "key": "covector_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Sorting injective basis tuples bounds every coefficient; multilinear expansion and coordinate bounds give P^n. Empty tuples and zero ambient dimension are covered. The declaration has only permitted axioms."
+    },
+    {
+      "key": "radial_operator",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bounded bilinear contraction, compact-parameter differentiation argument, and Leibniz estimate establish all three conclusions. The derivative bound includes j = 0; negative radii have empty closed balls. The proof supplies the construction and estimates without an undeclared analytic obligation."
+    },
+    {
+      "key": "radial_homotopy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The alternating-sum expansion has the correct signs and powers. Cancellation leaves the derivative of t^(k+1)φ(tx); the scalar case gives φ(x) − φ(0). No extra smoothness assumption on ψ is needed because its fderiv formula is explicitly assumed."
+    },
+    {
+      "key": "support_lemmas",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three zero-region arguments prove their exact conclusions. Boundary localization works for arbitrary U; openness of U and closedness of K are supplied where small admissible balls are needed. The sole child dependency is correctly directed."
+    },
+    {
+      "key": "cone_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "A fixed cutoff and the radial derivative bounds construct a linear, sequentially continuous current. Agreement on an open neighborhood of the support gives the full universally quantified cone relation. No already-implemented cone definition or self-reference occurs in the frozen type."
+    },
+    {
+      "key": "cone_estimates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The support argument, coefficient estimate with c = P^(2m+1), and cutoff limit establish the stated bounds, including P = 0 and R = 0. Finite mass is assumed before taking toReal. A single cutoff test form proves the exact weak-continuity conclusion."
+    },
+    {
+      "key": "cone_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "For χ = H(dφ), the supplied homotopy identities give dχ = dφ in both degree cases. Localization near the support of Y then identifies the two boundary actions. This correctly handles degree zero without assuming that every zero-dimensional cycle has zero augmentation."
+    },
+    {
+      "key": "hausdorff_product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conclusions match their types. The cylinder covering argument handles null sets, with m = 0 separately. The repaired proof constructs Borel injective Lipschitz pieces using verified library inputs, disjointifies them, compares the lifted Jacobians, and applies measure-preserving coordinate splitting and Tonelli. Summation and null remainders are justified; no speculative chart-cover theorem is used."
+    },
+    {
+      "key": "interval_product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies every field of the product rectifiable triple. Integer positivity supplies local Hausdorff finiteness; the product formula transfers exceptional sets and integrands. The weighted tangent argument supplies an eventual uniform dominating bound. The resulting current is sequentially continuous, and Fubini proves the slice identity for every family satisfying the stated equality."
+    },
+    {
+      "key": "cone_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "H_push is explicitly included and is supplied by the frozen smooth-pushforward sibling with the given Lipschitz hypothesis. The slice formula proves compact support of the product current; the cutoff pullback calculation and justified Fubini exchange identify its pushforward with C. This proves cone integrality without invoking the selected parent or its conclusion."
+    }
+  ],
+  "required_changes": []
+}

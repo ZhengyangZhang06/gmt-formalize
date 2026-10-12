@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_boundary-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1",
+  "depth": 3,
+  "title": "Boundary of the cone over a boundary: ∂(0⨯∂Y) = ∂Y",
+  "statement": "Let P, m ∈ ℕ, R ∈ ℝ and Y, C ∈ D_{m+1}(ℝ^P) with spt Y ⊆ B̄_R(0) and Cone(∂Y, C), i.e. C(ω) = ∂Y(ψ) whenever ω ∈ D^{m+1}(ℝ^P), ψ ∈ D^m(ℝ^P) and ψ(x)(v) = ∫_0^1 t^m ω(tx)(x, v) dt for all x in some open N ⊇ spt ∂Y and all v. Then ∂C = ∂Y (Simon 2.31: ∂(0⨯∂Y) = ∂Y for compactly supported Y).",
+  "lean_statement": "∀ (P m : ℕ) (R : ℝ) (Y C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), Y.support ⊆ closedBall 0 R → (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ Y.boundary.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = Y.boundary ψ) → C.boundary = Y.boundary",
+  "lean_name": "iwl_cr_cone_boundary",
+  "depends_on": [
+    "root.isoperimetric-a1.vanish_off_support-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_homotopy-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.support_lemmas-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.isoperimetric-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-vanish-off-support-a1-a1",
+      "result_commit": "3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_homotopy-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.support_lemmas-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-boundary-a1-a1"
+}

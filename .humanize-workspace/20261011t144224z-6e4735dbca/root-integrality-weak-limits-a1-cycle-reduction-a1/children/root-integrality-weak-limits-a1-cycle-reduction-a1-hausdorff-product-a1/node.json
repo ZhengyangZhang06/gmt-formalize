@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1",
+  "depth": 3,
+  "title": "Product formula for Hausdorff measure on ℝ × (countably rectifiable set)",
+  "statement": "Let P, m ∈ ℕ. Write Φ(s, x) := (s, x_1, …, x_P) ∈ ℝ^{P+1} for s ∈ ℝ, x ∈ ℝ^P (Lean: (EuclideanSpace.equiv (Fin (P+1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) and π(y) := (y_1, …, y_P) ∈ ℝ^P for y = (y_0, …, y_P) ∈ ℝ^{P+1} (Lean: (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P+1)) ℝ y))), so {y : π(y) ∈ S} = Φ(ℝ × S). Hᵏ := μHE[k]. (a) If N ⊆ ℝ^P and H^m(N) = 0 then H^{m+1}({y : π(y) ∈ N}) = 0. (b) If A ⊆ ℝ^P is H^m-null-measurable, countably m-rectifiable and H^m(A ∩ K) < ∞ for every compact K, then for every Borel g : ℝ^{P+1} → [0, ∞]: ∫⁻_{ {y : π(y) ∈ A} } g dH^{m+1} = ∫⁻_ℝ ∫⁻_A g(Φ(s, x)) dH^m(x) ds (product formula H^{m+1}⌞(ℝ × A) = L¹ ⊗ H^m⌞A, Federer 3.2.23).",
+  "lean_statement": "(∀ (P m : ℕ) (N : Set (Eucl P)), (μHE[m] : Measure (Eucl P)) N = 0 → (μHE[m + 1] : Measure (Eucl (P + 1))) {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0) ∧ (∀ (P m : ℕ) (A : Set (Eucl P)), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → ∀ g : Eucl (P + 1) → ℝ≥0∞, Measurable g → ∫⁻ y in {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A}, g y ∂(μHE[m + 1] : Measure (Eucl (P + 1))) = ∫⁻ s : ℝ, ∫⁻ x in A, g ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) ∂(μHE[m] : Measure (Eucl P)))",
+  "lean_name": "iwl_cr_hausdorff_product_formula",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-hausdorff-product-a1-a1"
+}
