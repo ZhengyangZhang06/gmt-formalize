@@ -2710,6 +2710,114 @@ theorem Submission.simon_submanifold_measurableSet : ∀ (n N : ℕ) (r : ℕ∞
   exact .biUnion hTc fun y hy ↦
     (hrep y (hTM hy)).2.1.measurableSet.inter isClosed_closure.measurableSet
 
+/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
+theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
+
+/-- **Simon Ch. 2, 4.3 (p. 55), `T_{ψ(x)} M ⊆ range Dψ(x)`.** If `(V, W, ψ)` is a `C^r` local
+representation of `M`, `r ≥ 1`, and `ψ⁻¹ = invFunOn ψ V` is continuous on `W ∩ M`, then
+`T_{ψ(x)} M ⊆ range Dψ(x)` for `x ∈ V`. A `C¹` curve `γ` in `M` through `ψ(x)` stays in `W ∩ M`
+near `0`, so `γ = ψ ∘ c` there with `c = ψ⁻¹ ∘ γ → x`, and `simon_lift_velocity_mem_range_fderiv`
+puts `γ'(0)` in `range Dψ(x)`. -/
+theorem Submission.simon_chart_tangentSpace_le_range_fderiv : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ContinuousOn (Function.invFunOn ψ V) (W ∩ M) → ∀ x ∈ V, tangentSpace M (ψ x) ≤ LinearMap.range (fderiv ℝ ψ x).toLinearMap := by
+  intro n N r M V W ψ hr hψ hcont x₀ hx₀
+  obtain ⟨hV, hW, hψC, hψinj, hψimg, -, hψder⟩ := hψ
+  have hdiff : DifferentiableAt ℝ ψ x₀ :=
+    ((hψC.of_le (by exact_mod_cast hr)).differentiableOn_one x₀ hx₀).differentiableAt
+      (hV.mem_nhds hx₀)
+  have hy₀ : ψ x₀ ∈ W ∩ M := by rw [← hψimg]; exact mem_image_of_mem ψ hx₀
+  -- It suffices to treat a generator `v = γ'(0)` of `T_{ψ(x₀)} M`.
+  rw [tangentSpace, Submodule.span_le]
+  rintro v ⟨γ, -, hγM, hγ0, hγv⟩
+  -- `γ(t) ∈ W ∩ M` for `t` near `0`.
+  have hγWM : ∀ᶠ t in 𝓝 (0 : ℝ), γ t ∈ W ∩ M := by
+    have hγ0W : γ 0 ∈ W := by rw [hγ0]; exact hy₀.1
+    filter_upwards [hγv.continuousAt.preimage_mem_nhds (hW.mem_nhds hγ0W),
+      Ioo_mem_nhds (show (-1 : ℝ) < 0 by norm_num) one_pos] with t htW htI
+    exact ⟨htW, hγM htI⟩
+  -- The lift `c = ψ⁻¹ ∘ γ` satisfies `γ = ψ ∘ c` near `0` and `c(t) → ψ⁻¹(ψ x₀) = x₀`.
+  have hfac : ∀ᶠ t in 𝓝 (0 : ℝ), γ t = ψ (Function.invFunOn ψ V (γ t)) := by
+    filter_upwards [hγWM] with t ht
+    rw [← hψimg] at ht
+    exact (Function.invFunOn_eq ht).symm
+  have hc : Tendsto (fun t ↦ Function.invFunOn ψ V (γ t)) (𝓝 (0 : ℝ)) (𝓝 x₀) := by
+    have hγt : Tendsto γ (𝓝 (0 : ℝ)) (𝓝[W ∩ M] (ψ x₀)) := by
+      refine tendsto_nhdsWithin_iff.mpr ⟨?_, hγWM⟩
+      rw [← hγ0]
+      exact hγv.continuousAt.tendsto
+    have hg := (hcont (ψ x₀) hy₀).tendsto
+    rw [hψinj.leftInvOn_invFunOn hx₀] at hg
+    exact hg.comp hγt
+  exact Submission.simon_lift_velocity_mem_range_fderiv n N ψ x₀
+    (fun t ↦ Function.invFunOn ψ V (γ t)) γ v hdiff (hψder x₀ hx₀) hc hfac hγv
+
+/-- **Simon Ch. 2, 4.3 (p. 55).** If `(V, W, ψ)` is a `C^r` local representation of `M`, `r ≥ 1`,
+then `T_{ψ(x)} M = range Dψ(x)` for `x ∈ V`. `range Dψ(x) ⊆ T_{ψ(x)} M` holds for any `C¹` map of
+the open set `V` into `M` (here `ψ(V) = W ∩ M`). Conversely, every generating velocity of
+`T_{ψ(x)} M` lies in `range Dψ(x)`, since its curve lifts through `ψ⁻¹ = invFunOn ψ V`, which is
+continuous on `W ∩ M` by 4.2. -/
+theorem Submission.simon_submanifold_tangentSpace_eq_range : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap := by
+  intro n N r M V W ψ hr h x hx
+  -- Part A: `ψ` is a `C¹` map of the open set `V` into `ψ(V) = W ∩ M ⊆ M`.
+  have hA : LinearMap.range (fderiv ℝ ψ x).toLinearMap ≤ tangentSpace M (ψ x) :=
+    Submission.simon_chart_range_fderiv_le_tangentSpace n N M V ψ h.isOpen_source
+      (h.contDiffOn.of_le (by exact_mod_cast hr))
+      ((mapsTo_image ψ V).mono_right (h.image_eq.subset.trans inter_subset_right)) x hx
+  -- Part B: generating curves lift through `invFunOn ψ V`, continuous on `W ∩ M` (Simon 4.2).
+  have hB : tangentSpace M (ψ x) ≤ LinearMap.range (fderiv ℝ ψ x).toLinearMap :=
+    Submission.simon_chart_tangentSpace_le_range_fderiv n N r M V W ψ hr h
+      (Submission.simon_submanifold_chart_inverse_continuousOn n N r M V W ψ h) x hx
+  exact le_antisymm hB hA
+
+/-- **Simon Ch. 2, §4 (p. 55), from 4.1–4.3: the tangent projection `y ↦ P_y` is continuous on
+`M`.** Near `y₀ ∈ M` take a local representation `(V, W, ψ)` with `y₀ ∈ W` and let
+`g = invFunOn ψ V : W ∩ M → V`. As `T_{ψ(x)} M = range Dψ(x)` (4.3,
+`simon_submanifold_tangentSpace_eq_range`), `P_y = P_{range Dψ(g(y))}` for `y ∈ W ∩ M`. The right
+side is continuous on `W ∩ M`: it composes `g` (`simon_submanifold_chart_inverse_continuousOn`),
+`x ↦ Dψ(x)` (continuous on the open `V`, with injective values) and `A ↦ P_{range A}`
+(`simon_submanifold_range_starProjection_continuousOn`). As `W` is a neighbourhood of `y₀`,
+continuity within `W ∩ M` at `y₀` is continuity within `M`. -/
+theorem Submission.simon_submanifold_tangentProjection_continuousOn : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → ContinuousOn (tangentProjection M) M := by
+  intro n N r M hM y₀ hy₀
+  -- Step 1: a local representation `(V, W, ψ)` with `y₀ ∈ W`; `g = invFunOn ψ V`.
+  obtain ⟨V, W, ψ, hy₀W, hψ⟩ := hM.exists_localRepresentation hy₀
+  set g := Function.invFunOn ψ V
+  -- Step 2: `W ∩ M = ψ(V)`, so `g` maps `W ∩ M` into `V` and `ψ (g y) = y` there.
+  have hsurj : SurjOn ψ V (W ∩ M) := hψ.image_eq.symm.subset
+  have hgV : MapsTo g (W ∩ M) V := hsurj.mapsTo_invFunOn
+  have hψg : RightInvOn g ψ (W ∩ M) := hsurj.rightInvOn_invFunOn
+  -- Step 3: `P_y = P_{range Dψ(g(y))}` on `W ∩ M`, as `T_y M = T_{ψ(g(y))} M = range Dψ(g(y))`.
+  have hP : EqOn (tangentProjection M)
+      (fun y ↦ (LinearMap.range (fderiv ℝ ψ (g y)).toLinearMap).starProjection) (W ∩ M) := by
+    intro y hy
+    have hT := Submission.simon_submanifold_tangentSpace_eq_range n N r M V W ψ hM.1 hψ (g y)
+      (hgV hy)
+    rw [hψg hy] at hT
+    simp only [tangentProjection, hT]
+  -- Step 4: the right side is continuous on `W ∩ M`, as the composite of `g`, `x ↦ Dψ(x)` (which
+  -- maps `V` into the injective maps) and `A ↦ P_{range A}`.
+  have hDψ : ContinuousOn (fderiv ℝ ψ) V :=
+    hψ.contDiffOn.continuousOn_fderiv_of_isOpen hψ.isOpen_source (by exact_mod_cast hM.1)
+  have hcont : ContinuousOn
+      (fun y ↦ (LinearMap.range (fderiv ℝ ψ (g y)).toLinearMap).starProjection) (W ∩ M) :=
+    (Submission.simon_submanifold_range_starProjection_continuousOn n N).comp
+      (hDψ.comp (Submission.simon_submanifold_chart_inverse_continuousOn n N r M V W ψ hψ) hgV)
+      fun _ hy ↦ hψ.injective_fderiv (hgV hy)
+  -- Steps 5–6: so `P` is continuous within `W ∩ M` at `y₀`, and `W ∩ M ∈ 𝓝[M] y₀` as `W` is open.
+  exact (hcont.congr hP y₀ ⟨hy₀W, hy₀⟩).mono_of_mem_nhdsWithin
+    (mem_nhdsWithin.2 ⟨W, hψ.isOpen_target, hy₀W, subset_rfl⟩)
+
+/-- **Simon Ch. 2, 4.1–4.3 (p. 55).** (1) If `ψ : V → W` is a local representation of `M` of class
+`C^r`, `r ≥ 1`, then `T_{ψ(x)} M = range Dψ(x)` for every `x ∈ V`. (2) An `n`-dimensional `C^r`
+submanifold `M` is a Borel set and `y ↦ P_y` is continuous on `M`. Part (1) is
+`simon_submanifold_tangentSpace_eq_range`. In part (2), `M` is Borel because properness makes it
+locally closed and countably many charts cover it (`simon_submanifold_measurableSet`). On a chart,
+`P_y` is the projection onto `range Dψ(ψ⁻¹ y)`, which depends continuously on `y` because `Dψ` and
+`ψ⁻¹` are continuous (`simon_submanifold_tangentProjection_continuousOn`). -/
+theorem Submission.simon_submanifold_tangent_basics : (∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M :=
+  ⟨Submission.simon_submanifold_tangentSpace_eq_range, fun n N r M hM ↦
+    ⟨Submission.simon_submanifold_measurableSet n N r M hM,
+      Submission.simon_submanifold_tangentProjection_continuousOn n N r M hM⟩⟩
+
 /-- **Simon Ch. 2, 5.3 and 5.4 (pp. 61–63), first and second variation formulas** (5.4 with the
 `C³` correction). Put `S = M ∩ K`, `e y = (y, P_y)` with `P_y = tangentProjection M y`, and
 `g (t, (x, P)) = √det(I - P + P (Dφ_t x)* (Dφ_t x) P)`. For `|t| < 1` the map `φ_t` is
@@ -2822,113 +2930,5 @@ theorem Submission.first_and_second_variation : FirstVariation ∧ SecondVariati
     exact setIntegral_congr_fun hS fun z hz ↦ ((hF3 hφ3).2 M z (hKU hz.2)).deriv
   exact ⟨hev.mono fun t ht ↦ ht.differentiableAt,
     hval2 ▸ hderiv2.congr_of_eventuallyEq (hev.mono fun t ht ↦ ht.deriv)⟩
-
-/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
-theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
-
-/-- **Simon Ch. 2, 4.3 (p. 55), `T_{ψ(x)} M ⊆ range Dψ(x)`.** If `(V, W, ψ)` is a `C^r` local
-representation of `M`, `r ≥ 1`, and `ψ⁻¹ = invFunOn ψ V` is continuous on `W ∩ M`, then
-`T_{ψ(x)} M ⊆ range Dψ(x)` for `x ∈ V`. A `C¹` curve `γ` in `M` through `ψ(x)` stays in `W ∩ M`
-near `0`, so `γ = ψ ∘ c` there with `c = ψ⁻¹ ∘ γ → x`, and `simon_lift_velocity_mem_range_fderiv`
-puts `γ'(0)` in `range Dψ(x)`. -/
-theorem Submission.simon_chart_tangentSpace_le_range_fderiv : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ContinuousOn (Function.invFunOn ψ V) (W ∩ M) → ∀ x ∈ V, tangentSpace M (ψ x) ≤ LinearMap.range (fderiv ℝ ψ x).toLinearMap := by
-  intro n N r M V W ψ hr hψ hcont x₀ hx₀
-  obtain ⟨hV, hW, hψC, hψinj, hψimg, -, hψder⟩ := hψ
-  have hdiff : DifferentiableAt ℝ ψ x₀ :=
-    ((hψC.of_le (by exact_mod_cast hr)).differentiableOn_one x₀ hx₀).differentiableAt
-      (hV.mem_nhds hx₀)
-  have hy₀ : ψ x₀ ∈ W ∩ M := by rw [← hψimg]; exact mem_image_of_mem ψ hx₀
-  -- It suffices to treat a generator `v = γ'(0)` of `T_{ψ(x₀)} M`.
-  rw [tangentSpace, Submodule.span_le]
-  rintro v ⟨γ, -, hγM, hγ0, hγv⟩
-  -- `γ(t) ∈ W ∩ M` for `t` near `0`.
-  have hγWM : ∀ᶠ t in 𝓝 (0 : ℝ), γ t ∈ W ∩ M := by
-    have hγ0W : γ 0 ∈ W := by rw [hγ0]; exact hy₀.1
-    filter_upwards [hγv.continuousAt.preimage_mem_nhds (hW.mem_nhds hγ0W),
-      Ioo_mem_nhds (show (-1 : ℝ) < 0 by norm_num) one_pos] with t htW htI
-    exact ⟨htW, hγM htI⟩
-  -- The lift `c = ψ⁻¹ ∘ γ` satisfies `γ = ψ ∘ c` near `0` and `c(t) → ψ⁻¹(ψ x₀) = x₀`.
-  have hfac : ∀ᶠ t in 𝓝 (0 : ℝ), γ t = ψ (Function.invFunOn ψ V (γ t)) := by
-    filter_upwards [hγWM] with t ht
-    rw [← hψimg] at ht
-    exact (Function.invFunOn_eq ht).symm
-  have hc : Tendsto (fun t ↦ Function.invFunOn ψ V (γ t)) (𝓝 (0 : ℝ)) (𝓝 x₀) := by
-    have hγt : Tendsto γ (𝓝 (0 : ℝ)) (𝓝[W ∩ M] (ψ x₀)) := by
-      refine tendsto_nhdsWithin_iff.mpr ⟨?_, hγWM⟩
-      rw [← hγ0]
-      exact hγv.continuousAt.tendsto
-    have hg := (hcont (ψ x₀) hy₀).tendsto
-    rw [hψinj.leftInvOn_invFunOn hx₀] at hg
-    exact hg.comp hγt
-  exact Submission.simon_lift_velocity_mem_range_fderiv n N ψ x₀
-    (fun t ↦ Function.invFunOn ψ V (γ t)) γ v hdiff (hψder x₀ hx₀) hc hfac hγv
-
-/-- **Simon Ch. 2, 4.3 (p. 55).** If `(V, W, ψ)` is a `C^r` local representation of `M`, `r ≥ 1`,
-then `T_{ψ(x)} M = range Dψ(x)` for `x ∈ V`. `range Dψ(x) ⊆ T_{ψ(x)} M` holds for any `C¹` map of
-the open set `V` into `M` (here `ψ(V) = W ∩ M`). Conversely, every generating velocity of
-`T_{ψ(x)} M` lies in `range Dψ(x)`, since its curve lifts through `ψ⁻¹ = invFunOn ψ V`, which is
-continuous on `W ∩ M` by 4.2. -/
-theorem Submission.simon_submanifold_tangentSpace_eq_range : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap := by
-  intro n N r M V W ψ hr h x hx
-  -- Part A: `ψ` is a `C¹` map of the open set `V` into `ψ(V) = W ∩ M ⊆ M`.
-  have hA : LinearMap.range (fderiv ℝ ψ x).toLinearMap ≤ tangentSpace M (ψ x) :=
-    Submission.simon_chart_range_fderiv_le_tangentSpace n N M V ψ h.isOpen_source
-      (h.contDiffOn.of_le (by exact_mod_cast hr))
-      ((mapsTo_image ψ V).mono_right (h.image_eq.subset.trans inter_subset_right)) x hx
-  -- Part B: generating curves lift through `invFunOn ψ V`, continuous on `W ∩ M` (Simon 4.2).
-  have hB : tangentSpace M (ψ x) ≤ LinearMap.range (fderiv ℝ ψ x).toLinearMap :=
-    Submission.simon_chart_tangentSpace_le_range_fderiv n N r M V W ψ hr h
-      (Submission.simon_submanifold_chart_inverse_continuousOn n N r M V W ψ h) x hx
-  exact le_antisymm hB hA
-
-/-- **Simon Ch. 2, §4 (p. 55), from 4.1–4.3: the tangent projection `y ↦ P_y` is continuous on
-`M`.** Near `y₀ ∈ M` take a local representation `(V, W, ψ)` with `y₀ ∈ W` and let
-`g = invFunOn ψ V : W ∩ M → V`. As `T_{ψ(x)} M = range Dψ(x)` (4.3,
-`simon_submanifold_tangentSpace_eq_range`), `P_y = P_{range Dψ(g(y))}` for `y ∈ W ∩ M`. The right
-side is continuous on `W ∩ M`: it composes `g` (`simon_submanifold_chart_inverse_continuousOn`),
-`x ↦ Dψ(x)` (continuous on the open `V`, with injective values) and `A ↦ P_{range A}`
-(`simon_submanifold_range_starProjection_continuousOn`). As `W` is a neighbourhood of `y₀`,
-continuity within `W ∩ M` at `y₀` is continuity within `M`. -/
-theorem Submission.simon_submanifold_tangentProjection_continuousOn : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → ContinuousOn (tangentProjection M) M := by
-  intro n N r M hM y₀ hy₀
-  -- Step 1: a local representation `(V, W, ψ)` with `y₀ ∈ W`; `g = invFunOn ψ V`.
-  obtain ⟨V, W, ψ, hy₀W, hψ⟩ := hM.exists_localRepresentation hy₀
-  set g := Function.invFunOn ψ V
-  -- Step 2: `W ∩ M = ψ(V)`, so `g` maps `W ∩ M` into `V` and `ψ (g y) = y` there.
-  have hsurj : SurjOn ψ V (W ∩ M) := hψ.image_eq.symm.subset
-  have hgV : MapsTo g (W ∩ M) V := hsurj.mapsTo_invFunOn
-  have hψg : RightInvOn g ψ (W ∩ M) := hsurj.rightInvOn_invFunOn
-  -- Step 3: `P_y = P_{range Dψ(g(y))}` on `W ∩ M`, as `T_y M = T_{ψ(g(y))} M = range Dψ(g(y))`.
-  have hP : EqOn (tangentProjection M)
-      (fun y ↦ (LinearMap.range (fderiv ℝ ψ (g y)).toLinearMap).starProjection) (W ∩ M) := by
-    intro y hy
-    have hT := Submission.simon_submanifold_tangentSpace_eq_range n N r M V W ψ hM.1 hψ (g y)
-      (hgV hy)
-    rw [hψg hy] at hT
-    simp only [tangentProjection, hT]
-  -- Step 4: the right side is continuous on `W ∩ M`, as the composite of `g`, `x ↦ Dψ(x)` (which
-  -- maps `V` into the injective maps) and `A ↦ P_{range A}`.
-  have hDψ : ContinuousOn (fderiv ℝ ψ) V :=
-    hψ.contDiffOn.continuousOn_fderiv_of_isOpen hψ.isOpen_source (by exact_mod_cast hM.1)
-  have hcont : ContinuousOn
-      (fun y ↦ (LinearMap.range (fderiv ℝ ψ (g y)).toLinearMap).starProjection) (W ∩ M) :=
-    (Submission.simon_submanifold_range_starProjection_continuousOn n N).comp
-      (hDψ.comp (Submission.simon_submanifold_chart_inverse_continuousOn n N r M V W ψ hψ) hgV)
-      fun _ hy ↦ hψ.injective_fderiv (hgV hy)
-  -- Steps 5–6: so `P` is continuous within `W ∩ M` at `y₀`, and `W ∩ M ∈ 𝓝[M] y₀` as `W` is open.
-  exact (hcont.congr hP y₀ ⟨hy₀W, hy₀⟩).mono_of_mem_nhdsWithin
-    (mem_nhdsWithin.2 ⟨W, hψ.isOpen_target, hy₀W, subset_rfl⟩)
-
-/-- **Simon Ch. 2, 4.1–4.3 (p. 55).** (1) If `ψ : V → W` is a local representation of `M` of class
-`C^r`, `r ≥ 1`, then `T_{ψ(x)} M = range Dψ(x)` for every `x ∈ V`. (2) An `n`-dimensional `C^r`
-submanifold `M` is a Borel set and `y ↦ P_y` is continuous on `M`. Part (1) is
-`simon_submanifold_tangentSpace_eq_range`. In part (2), `M` is Borel because properness makes it
-locally closed and countably many charts cover it (`simon_submanifold_measurableSet`). On a chart,
-`P_y` is the projection onto `range Dψ(ψ⁻¹ y)`, which depends continuously on `y` because `Dψ` and
-`ψ⁻¹` are continuous (`simon_submanifold_tangentProjection_continuousOn`). -/
-theorem Submission.simon_submanifold_tangent_basics : (∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M :=
-  ⟨Submission.simon_submanifold_tangentSpace_eq_range, fun n N r M hM ↦
-    ⟨Submission.simon_submanifold_measurableSet n N r M hM,
-      Submission.simon_submanifold_tangentProjection_continuousOn n N r M hM⟩⟩
 
 end GMT.Ch02
