@@ -750,6 +750,64 @@ theorem Submission.adr_content_density : ∀ (P : ℕ) (ℓ : ℝ) (A : Set (Euc
         field_simp
         linarith
 
+/-- **Simon A.4**, proof of (1) (chapter-A.txt lines 58–112): for `μH[ℓ]`-a.e.
+`x ∈ A = sing φ ∩ B₁(0)` some blow-up `φ_{x,λₖ} ⇀ ψ ∈ F` has `ψ` homogeneous of degree zero and
+`μH[ℓ](sing ψ ∩ B₁(0)) > 0`.  `A` is closed ∩ open (A.3c), so by `adr_content_density` it
+suffices to treat `x ∈ A` with the cover inequality `ρ^ℓ ≤ 2 Σⱼ (diam Cⱼ)^ℓ` at arbitrarily
+small `ρ`.  `adr_exists_strictAnti_radii` gives such `ρₖ ↓ 0` with `ρₖ < (1 − |x|)/4`, and A.2 for
+the scales `2ρₖ` gives `sub` and `ψ` with `φ_{x,λₖ} ⇀ ψ`, `λₖ = 2ρ_{sub(k)}`.  If
+`μH[ℓ](sing ψ ∩ B₁(0)) = 0`, then A.1 and A.3(3) feed `adr_eventually_subset_small_cover`:
+`B_{1/2}(0) ∩ sing φ_{x,λₖ} ⊆ ⋃ⱼ Uⱼ` for `k ≥ k₀`, with `Σⱼ (diam Uⱼ)^ℓ < 2^{−ℓ}/8`.  By A.3(2)
+this is hypothesis (ii) of `adr_rescaled_content_lower_bound` at `ρ = ρ_{sub(k₀)}`, whose
+conclusion `Σⱼ (diam Uⱼ)^ℓ ≥ 2^{−ℓ}/8` is a contradiction. -/
+theorem Submission.adr_tangent_keeps_measure : ∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → (∀ φ ∈ F, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ k, 0 < lams k) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ψ : Euclid P → Euclid Q), StrictMono sub ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φ (y + lams (sub k) • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) ∧ ∀ lam : ℝ, 0 < lam → ∀ x, ψ (lam • x) = ψ x) → (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → sing (fun x => φ (y + lam • x)) = (fun x => y + lam • x) ⁻¹' sing φ) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → ∀ ℓ : ℝ, 0 < ℓ → ∀ φ ∈ F, μH[ℓ] {x | x ∈ sing φ ∩ ball (0 : Euclid P) 1 ∧ ¬ ∃ (lams : ℕ → ℝ) (ψ : Euclid P → Euclid Q), (∀ k, 0 < lams k) ∧ (∀ k, lams k < 1) ∧ (∀ k, ‖x‖ ≤ 1 - lams k) ∧ Tendsto lams atTop (𝓝 0) ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ z, f z • φ (x + lams k • z) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ z, f z • ψ z ∂μH[(n : ℝ)]))) ∧ (∀ lam : ℝ, 0 < lam → ∀ z, ψ (lam • z) = ψ z) ∧ 0 < μH[ℓ] (sing ψ ∩ ball (0 : Euclid P) 1)} = 0 := by
+  intro P n Q F sing hF hblow hclosed hsing hconv ℓ hℓ φ hφ
+  set A := sing φ ∩ ball (0 : Euclid P) 1
+  -- off a `μH[ℓ]`-null set, `x ∈ A` has the cover inequality at arbitrarily small radii
+  refine measure_mono_null ?_ (Submission.adr_content_density P ℓ A hℓ
+    ((hclosed φ hφ).measurableSet.inter measurableSet_ball) (isBounded_ball.subset inter_subset_right))
+  rintro x ⟨hxA, hx⟩
+  refine ⟨hxA, fun hD => hx ?_⟩
+  have hx1 : ‖x‖ < 1 := mem_ball_zero_iff.mp hxA.2
+  -- radii `ρₖ ↓ 0`, `ρₖ < (1 − |x|)/4`, each with the cover inequality
+  obtain ⟨ρs, hρ0, hρlt, hρanti, hρlim, hρD⟩ :=
+    Submission.adr_exists_strictAnti_radii _ ((1 - ‖x‖) / 4) (by linarith) hD
+  -- A.2 at `y = x` for the scales `2ρₖ`; the blow-up scales are `λₖ = 2ρ_{sub(k)}`
+  have h2lim : Tendsto (fun k => 2 * ρs k) atTop (𝓝 0) := by
+    simpa only [mul_zero] using hρlim.const_mul 2
+  obtain ⟨sub, ψ, hsub, hψF, hψ, hψhom⟩ := hblow φ hφ x hx1 (fun k => 2 * ρs k)
+    (fun k => mul_pos two_pos (hρ0 k))
+    (fun a b hab => by
+      show 2 * ρs b < 2 * ρs a
+      linarith [hρanti hab])
+    h2lim
+  have hlam0 : ∀ k, 0 < 2 * ρs (sub k) := fun k => mul_pos two_pos (hρ0 (sub k))
+  have hlam1 : ∀ k, 2 * ρs (sub k) < 1 := fun k => by
+    linarith [hρlt (sub k), norm_nonneg x]
+  have hlamx : ∀ k, ‖x‖ ≤ 1 - 2 * ρs (sub k) := fun k => by
+    linarith [hρlt (sub k)]
+  have hlamlim : Tendsto (fun k => 2 * ρs (sub k)) atTop (𝓝 0) := by
+    simpa only [mul_zero, Function.comp_apply] using (hρlim.comp hsub.tendsto_atTop).const_mul 2
+  refine ⟨fun k => 2 * ρs (sub k), ψ, hlam0, hlam1, hlamx, hlamlim, hψF, hψ, hψhom, ?_⟩
+  -- if `μH[ℓ](sing ψ ∩ B₁(0)) = 0`, a cheap cover of `sing ψ` contradicts the cover inequality
+  refine pos_iff_ne_zero.2 fun hψ0 => ?_
+  have hε : (0 : ℝ≥0∞) < (2 : ℝ≥0∞) ^ (-ℓ) / 8 :=
+    ENNReal.div_pos (ENNReal.rpow_pos (by norm_num) (by norm_num)).ne' (by norm_num)
+  obtain ⟨U, k₀, hU, hUcov⟩ := Submission.adr_eventually_subset_small_cover P ℓ (sing ψ)
+    (fun k => sing fun z => φ (x + (2 * ρs (sub k)) • z)) ((2 : ℝ≥0∞) ^ (-ℓ) / 8) hℓ
+    (hclosed ψ hψF) hψ0 hε
+    (hconv ψ hψF (fun k z => φ (x + (2 * ρs (sub k)) • z))
+      (fun k => hF φ hφ x (2 * ρs (sub k)) (hlam0 k) (hlam1 k) (hlamx k)) hψ)
+  -- by A.3(2), `x + λ_{k₀} z ∈ A` with `|z| < 1/2` puts `z` in `B_{1/2}(0) ∩ sing φ_{x,λ_{k₀}}`
+  have hcov : ∀ z : Euclid P, x + (2 * ρs (sub k₀)) • z ∈ A → ‖z‖ < 1 / 2 → z ∈ ⋃ j, U j := by
+    intro z hzA hz
+    refine hUcov k₀ le_rfl ⟨mem_ball_zero_iff.mpr hz, ?_⟩
+    show z ∈ sing fun w => φ (x + (2 * ρs (sub k₀)) • w)
+    rw [hsing φ hφ x (2 * ρs (sub k₀)) (hlam0 k₀) (hlam1 k₀) (hlamx k₀)]
+    exact hzA.1
+  exact absurd hU (not_lt.2 (Submission.adr_rescaled_content_lower_bound P ℓ A x (ρs (sub k₀)) U
+    hℓ (hρ0 _) (hρD _) hcov))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
