@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.restriction_tau-a1.tau_integrability-a1",
+  "parent_id": "root.polyhedral_approximation-a1.restriction_tau-a1",
+  "depth": 3,
+  "title": "Coordinates of θξ for a rectifiable triple are locally Hⁿ⌞M-integrable",
+  "statement": "Let P, n ∈ ℕ, U, M ⊆ ℝ^P, θ : ℝ^P → ℝ and ξ : ℝ^P → Λ_n(ℝ^P) (NVector (Eucl P) n) satisfy IsRectifiableTriple U n M θ ξ. Then for every compact K ⊆ U and every n-covector c ∈ Λⁿ(ℝ^P), the function x ↦ θ(x)·ξ(x)(c) is integrable on K with respect to ν := Hⁿ⌞M (Lean: (μHE[n] : Measure (Eucl P)).restrict M).",
+  "lean_statement": "∀ (P n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∀ c : Covector (Eucl P) n, IntegrableOn (fun x => θ x * ξ x c) K ((μHE[n] : Measure (Eucl P)).restrict M)",
+  "lean_name": "polyhedral_approx_rt_tau_integrableOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-restriction-tau-a1-tau-integrability-a1-a1"
+}
