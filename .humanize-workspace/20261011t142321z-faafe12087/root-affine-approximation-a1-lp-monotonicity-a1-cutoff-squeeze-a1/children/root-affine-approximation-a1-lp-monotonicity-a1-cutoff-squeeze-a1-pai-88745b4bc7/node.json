@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.lp_monotonicity-a1.cutoff_squeeze-a1.pairing_continuity-a1",
+  "parent_id": "root.affine_approximation-a1.lp_monotonicity-a1.cutoff_squeeze-a1",
+  "depth": 4,
+  "title": "Continuity in the scale of the cutoff curvature pairing (Simon Ch. 4, 4.1-4.3)",
+  "statement": "Let n, l >= 0, mu a measure on R^(n+l), H : R^(n+l) -> R^(n+l), y in R^(n+l), phi : R -> R, and reals S, epsilon, t with epsilon > 0. Write r = |x - y|. Assume:\n- H is mu-integrable on the closed ball B_S(y);\n- phi is C^1 and nonincreasing, with phi(s) = 1 for s <= 1 and phi(s) = 0 for s >= 1 + epsilon;\n- 0 < t and (1 + epsilon) t < S.\nThen L(s) := integral phi(r/s) (x - y).H(x) dmu(x) is continuous at s = t. Here L(s) is a Bochner integral defined for every real s, and (x - y).H(x) is the Euclidean inner product.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (φ : ℝ → ℝ) (S ε t : ℝ), 0 < ε → IntegrableOn H (closedBall y S) μ → ContDiff ℝ 1 φ → Antitone φ → (∀ s : ℝ, s ≤ 1 → φ s = 1) → (∀ s : ℝ, 1 + ε ≤ s → φ s = 0) → 0 < t → (1 + ε) * t < S → ContinuousAt (fun s => ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂μ) t",
+  "lean_name": "aal_cfs_cutoff_pairing_continuousAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-lp-monotonicity-a1-cutoff-squeeze-a1-pai-88745b4bc7-a1"
+}
