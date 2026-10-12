@@ -2880,6 +2880,43 @@ theorem rsod_weight_closedBall_eq_ofReal_integral : ∀ (n ℓ : ℕ) (U : Set (
   rw [RectifiableVarifold.weight, withDensity_apply _ measurableSet_closedBall,
     Measure.restrict_restrict measurableSet_closedBall, inter_comm (closedBall x r) V.carrier,
     ofReal_integral_eq_lintegral_ofReal hint.integrable hnn]
+/-- **Simon Ch. 3, Lemma 1.2, Theorem 1.9 and Remark 1.8(2)** for `V = v(M, θ)` in the open set
+`U`: for `μ_V`-a.e. `x`, `p_{T_x M}` is the orthogonal projection onto an `n`-dimensional subspace,
+`x ↦ p_{T_x M}` is `μ_V`-a.e. strongly measurable, and `Θⁿ(μ_V, x) = θ(x)`.  The first two
+assertions are `lgc_tangent_plane_ae`: `μ_V`-a.e. `x` has a weighted approximate tangent space `P`
+(of dimension `n` by Definition 1.7) with `p_{T_x M} = p_P`.  For the density, `μ_V ≪ Hⁿ ⌞ M`, so
+`μ_V`-a.e. such `x` also lies in `M ⊆ U`; for small `r > 0`, `B_r(x) ⊆ U` gives
+`μ_V(B_r(x)) = ∫_{M ∩ B_r(x)} θ dHⁿ` (`rsod_weight_closedBall_eq_ofReal_integral`), and
+`r⁻ⁿ ∫_{M ∩ B_r(x)} θ dHⁿ → ω_n θ(x)` (`rsod_tendsto_scaled_mult_integral`), so
+`μ_V(B_r(x)) / (ω_n rⁿ) → θ(x)`. -/
+theorem aal_tangent_structure : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ V : RectifiableVarifold n ℓ U, (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) ∧ AEStronglyMeasurable V.tangentProj V.weight ∧ (∀ᵐ x ∂V.weight, V.HasDensity x (V.mult x)) := by
+  intro n ℓ hn U hU V
+  obtain ⟨hmeas, hae⟩ := Submission.lgc_tangent_plane_ae n ℓ hn U hU V
+  refine ⟨?_, hmeas, ?_⟩
+  · filter_upwards [hae] with x ⟨T, hT, hTp⟩
+    exact ⟨T, hT.1, hTp⟩
+  -- `μ_V`-a.e. point lies in `M`, since `μ_V ≪ Hⁿ ⌞ M`; and `ω_n > 0`.
+  have hcar : ∀ᵐ x ∂V.weight, x ∈ V.carrier :=
+    (withDensity_absolutelyContinuous _ _).ae_le (ae_restrict_mem₀ V.nullMeasurableSet_carrier)
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    exact div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  filter_upwards [hae, hcar] with x ⟨T, hT, _⟩ hx
+  obtain ⟨e, he, heU⟩ := Metric.isOpen_iff.1 hU x (V.carrier_subset hx)
+  -- `ω_n⁻¹ (r⁻ⁿ ∫_{M ∩ B_r(x)} θ dHⁿ) → ω_n⁻¹ (ω_n θ(x)) = θ(x)`.
+  have hlim := (Submission.rsod_tendsto_scaled_mult_integral n ℓ hn U hU V x T
+    (V.carrier_subset hx) hT).const_mul (unitBallVolume n)⁻¹
+  rw [inv_mul_cancel_left₀ hω.ne'] at hlim
+  show Tendsto (fun r : ℝ => V.weight (closedBall x r) / ENNReal.ofReal (unitBallVolume n * r ^ n))
+    (𝓝[>] 0) (𝓝 (ENNReal.ofReal (V.mult x)))
+  refine (ENNReal.tendsto_ofReal hlim).congr' ?_
+  -- For `0 < r < e`, `B_r(x) ⊆ U`, so `μ_V(B_r(x)) / (ω_n rⁿ)` is the real quotient above.
+  filter_upwards [Ioo_mem_nhdsGT he] with r hr
+  rw [Submission.rsod_weight_closedBall_eq_ofReal_integral n ℓ U V x r
+      ((closedBall_subset_ball hr.2).trans heU),
+    ← ENNReal.ofReal_div_of_pos (mul_pos hω (pow_pos hr.1 n))]
+  congr 1
+  ring
 
 end Submission
 
