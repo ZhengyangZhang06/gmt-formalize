@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b92a23cf8df7e6c378f36cf9157429276e4351dba5d2c45c2ff7c8119ecd2437",
+  "git_delta": {
+    "base_commit": "70eaa4b79ac1be0ce2c20e3e33f2617f71389072",
+    "candidate_commit": "73831a4dd0cccb2a31ac457e0ebf551b086b8660",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_cdb_multiplier_integral_tendsto",
+    "diff_sha256": "c66f8c3463817b96b10c60e37c87435cb7b8b17c079b06db81c027d8d01b2385",
+    "source_sha256": "7d20380f867f777b3ad7745e6da75ed9a57681c7b6d779e45e8043924dd37340",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_cdb_multiplier_integral_tendsto",
+      "statement": "∀ (P : ℕ) (ν : Measure (Eucl P)) (F : Eucl P → ℝ) (K : Set (Eucl P)) (f : Eucl P → ℝ) (g : ℕ → Eucl P → ℝ) (χ : ℝ → ℝ), Integrable F ν → (∀ x, x ∉ K → F x = 0) → (∀ j, Measurable (g j)) → (∀ x ∈ K, Tendsto (fun j => g j x) atTop (𝓝 (f x))) → Continuous χ → (∀ s, |χ s| ≤ 1) → Tendsto (fun j => ∫ x, χ (g j x) * F x ∂ν) atTop (𝓝 (∫ x, χ (f x) * F x ∂ν))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
