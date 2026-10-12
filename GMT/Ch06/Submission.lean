@@ -504,6 +504,45 @@ theorem Submission.fiw_ims_sc_series_bound : ∀ (a : ℕ → ℝ) (c : ℕ → 
     _ = ∑' r, ENNReal.ofReal |(c r : ℝ) * a r| :=
         ENNReal.ofReal_tsum_of_nonneg (fun r => abs_nonneg _) habs
     _ ≤ ENNReal.ofReal C * ∑' r, ((c r).natAbs : ℝ≥0∞) * m r := hle
+/-- Mass bound: if `η` is supported in `V` and `|η(x)| ≤ C` everywhere (Euclidean covector
+norm) with `C > 0`, then `|X(η)| ≤ M_V(X) · C` in `[0, ∞]`. -/
+theorem Submission.fiw_ims_mass_bound :
+    ∀ (P k : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U k) (V : Set (Eucl P))
+      (η : TestFormOn U k) (C : ℝ), 0 < C → tsupport (η : DifferentialForm (Eucl P) k) ⊆ V →
+      (∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) k) x) ≤ C) →
+      ENNReal.ofReal |X η| ≤ X.massOn V * ENNReal.ofReal C := by
+  intro P k U X V η C hC hV hη
+  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
+  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) k),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  -- A sign `s = ±C⁻¹` with `s X(η) = C⁻¹ |X(η)|`.
+  obtain ⟨s, hs, hsX⟩ : ∃ s : ℝ, |s| = C⁻¹ ∧ s * X η = C⁻¹ * |X η| := by
+    rcases le_or_gt 0 (X η) with h | h
+    · exact ⟨C⁻¹, abs_of_pos (inv_pos.mpr hC), by rw [abs_of_nonneg h]⟩
+    · exact ⟨-C⁻¹, by rw [abs_neg, abs_of_pos (inv_pos.mpr hC)], by rw [abs_of_neg h]; ring⟩
+  -- `s η` is mass-admissible for `V`: supported in `V`, pointwise norm `≤ C⁻¹ C = 1`.
+  have hadm : s • η ∈ massAdmissibleOn U k V := by
+    refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hV, fun x => ?_⟩
+    change covectorEuclideanNorm (s • (η : DifferentialForm (Eucl P) k) x) ≤ 1
+    rw [hsmul, hs, inv_mul_le_iff₀ hC, mul_one]
+    exact hη x
+  -- Definition of mass and linearity of `X`: `ofReal (C⁻¹ |X(η)|) ≤ M_V(X)`.
+  have hle := X.le_massOn hadm
+  rw [map_smul, smul_eq_mul, hsX] at hle
+  -- Undo the scaling by `C⁻¹`.
+  calc ENNReal.ofReal |X η| = ENNReal.ofReal (C⁻¹ * |X η| * C) := by
+        rw [mul_comm C⁻¹, mul_assoc, inv_mul_cancel₀ hC.ne', mul_one]
+    _ = ENNReal.ofReal (C⁻¹ * |X η|) * ENNReal.ofReal C :=
+        ENNReal.ofReal_mul (mul_nonneg (inv_nonneg.mpr hC.le) (abs_nonneg _))
+    _ ≤ X.massOn V * ENNReal.ofReal C := by gcongr
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
