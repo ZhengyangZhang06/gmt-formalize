@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a65f5040e8aa3496ec9f9eddc070567c59da5c3efa7e4dc205edf4382c3fa63f",
+  "git_delta": {
+    "base_commit": "c2b97cf999cd20d0ab173a0b003656edf0c4de51",
+    "candidate_commit": "3ee36355e1a198567622480653c313715c9db46f",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_graph_piece_density_bounds",
+    "diff_sha256": "c5db6a4175bb98bf2a84f6c118b18a471c2a8148a6e367f588ea47a33e6c9290",
+    "source_sha256": "bb09e55c9f8154231deb4b59d0090156ff62584975fb8fb3cb626f4c54e647f5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_graph_piece_density_bounds",
+      "statement": "∀ (N n : ℕ) (A Γ : Set (Euclidean N)) (P : Grassmannian N n) (L : ℝ), μHE[n] A ≠ ∞ → NullMeasurableSet A μHE[n] → 0 ≤ L → IsClosed Γ → (∀ y ∈ Γ, ∀ z ∈ Γ, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → ∀ᵐ x ∂((μHE[n] : Measure (Euclidean N)).restrict A).restrict Γ, (ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n)⁻¹ ≤ liminf (densityRatio n ((μHE[n] : Measure (Euclidean N)).restrict A) x) (𝓝[>] 0) ∧ limsup (densityRatio n ((μHE[n] : Measure (Euclidean N)).restrict A) x) (𝓝[>] 0) ≤ ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
