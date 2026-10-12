@@ -465,6 +465,67 @@ theorem Submission.cmb_exists_compactly_contained_exhaustion :
         _ < infEDist x₀ Uᶜ := hi₂
         _ ≤ infEDist x Uᶜ := isMinOn_iff.1 hx₀ x hx
 
+/-- Flat convergence implies weak convergence (Simon Ch. 6, proof of 7.2, the "if" part): for
+`ω ∈ 𝒟ⁿ(U)` take `W ⊂⊂ U` containing `spt ω ⊇ spt dω`; a decomposition `T_j − T = ∂R + S`
+with `M_W(S) + M_W(R) < δ` gives `|T_j(ω) − T(ω)| = |R(dω) + S(ω)| ≤ δ (sup |dω| + sup |ω|)`. -/
+theorem Submission.fiw_flat_to_weak :
+    ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n)
+      (Tj : ℕ → GeometricCurrentOn U n),
+      (∀ W, CompactlyContainedOpen W U → Tendsto (fun j => flatDistance W (Tj j) T) atTop (𝓝 0)) →
+      WeaklyConvergesOn Tj T := by
+  intro P n U hU T Tj hflat ω
+  -- The Euclidean coefficient norm of a test form is continuous with compact support, so bounded.
+  have hbdd : ∀ {k : ℕ} (η : TestFormOn U k), ∃ C : ℝ, 0 ≤ C ∧
+      ∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) k) x) ≤ C := by
+    intro k η
+    have hη : Continuous (η : DifferentialForm (Eucl P) k) := η.property.1.1.continuous
+    have hηs : HasCompactSupport (η : DifferentialForm (Eucl P) k) := η.property.1.2
+    have hcont : Continuous fun x =>
+        covectorEuclideanNorm ((η : DifferentialForm (Eucl P) k) x) := by
+      unfold covectorEuclideanNorm
+      refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+      exact Continuous.if_const _ (((continuous_eval_const _).comp hη).pow 2) continuous_const
+    have hsupp : HasCompactSupport fun x =>
+        covectorEuclideanNorm ((η : DifferentialForm (Eucl P) k) x) :=
+      HasCompactSupport.comp_left (g := covectorEuclideanNorm) hηs
+        (covectorEuclideanNorm_zero P k)
+    obtain ⟨C, hC⟩ := hcont.bounded_above_of_compact_support hsupp
+    refine ⟨max C 0, le_max_right _ _, fun x => ?_⟩
+    have hx := hC x
+    rw [Real.norm_of_nonneg (covectorEuclideanNorm_nonneg _)] at hx
+    exact hx.trans (le_max_left _ _)
+  -- An open `W ⊂⊂ U` containing `spt ω`, hence also `spt dω`.
+  have hωs : HasCompactSupport (ω : DifferentialForm (Eucl P) n) := ω.property.1.2
+  have hωU : tsupport (ω : DifferentialForm (Eucl P) n) ⊆ U := ω.property.2
+  obtain ⟨Wseq, hWseq, hcover⟩ := Submission.cmb_exists_compactly_contained_exhaustion P U hU
+  obtain ⟨i, hi⟩ := hcover _ hωs.isCompact hωU
+  have hdi : tsupport ((exteriorDerivativeTestOn U n ω : TestFormOn U (n + 1)) :
+      DifferentialForm (Eucl P) (n + 1)) ⊆ Wseq i :=
+    (tsupport_exteriorDerivative_subset (ω : DifferentialForm (Eucl P) n)).trans hi
+  obtain ⟨C₀, hC₀, hω⟩ := hbdd ω
+  obtain ⟨C₁, hC₁, hdω⟩ := hbdd (exteriorDerivativeTestOn U n ω)
+  have hC : 0 < C₀ + C₁ + 1 := by linarith
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hδ : 0 < ε / (C₀ + C₁ + 1) := div_pos hε hC
+  filter_upwards [(tendsto_order.1 (hflat (Wseq i) (hWseq i))).2 _ (ENNReal.ofReal_pos.2 hδ)]
+    with j hj
+  -- A decomposition `T_j − T = ∂R + S` with `M_W(S) + M_W(R) < δ`.
+  obtain ⟨R, hR⟩ := iInf_lt_iff.1 hj
+  obtain ⟨S, hS⟩ := iInf_lt_iff.1 hR
+  obtain ⟨⟨-, -, hdec⟩, hlt⟩ := iInf_lt_iff.1 hS
+  have hR₁ := Submission.cmb_abs_apply_le_of_massOn_le P (n + 1) U (Wseq i) R
+    (exteriorDerivativeTestOn U n ω) _ C₁ hδ.le (le_add_self.trans hlt.le) hdi hdω
+  have hS₁ := Submission.cmb_abs_apply_le_of_massOn_le P n U (Wseq i) S ω _ C₀ hδ.le
+    (le_self_add.trans hlt.le) hi hω
+  rw [Real.dist_eq, hdec ω, GeometricCurrentOn.boundary_apply]
+  calc |R (exteriorDerivativeTestOn U n ω) + S ω|
+      ≤ |R (exteriorDerivativeTestOn U n ω)| + |S ω| := abs_add_le _ _
+    _ ≤ ε / (C₀ + C₁ + 1) * C₁ + ε / (C₀ + C₁ + 1) * C₀ := add_le_add hR₁ hS₁
+    _ = ε / (C₀ + C₁ + 1) * (C₀ + C₁ + 1) - ε / (C₀ + C₁ + 1) := by ring
+    _ < ε / (C₀ + C₁ + 1) * (C₀ + C₁ + 1) := by linarith
+    _ = ε := div_mul_cancel₀ ε hC.ne'
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
