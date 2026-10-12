@@ -674,4 +674,34 @@ end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
+namespace Submission
+
+/-- Translation of local `Lᵖ` bounds (translation step in the proof of Simon Ch. 5, Corollary 7.3,
+p. 128).  If `μ_W = σ_# μ_V` for `σ(y) = y − x₀` and `∫_K |H|ᵖ dμ_V < ∞` for every compact
+`K ⊆ U`, then `∫_K |H(y + x₀)|ᵖ dμ_W(y) < ∞` for every compact `K ⊆ U − x₀`: restriction and
+`lintegral` commute with the push-forward by the measurable equivalence `σ`, so the integral equals
+`∫_{σ⁻¹(K)} |H|ᵖ dμ_V`, and `σ⁻¹(K) = K + x₀` is a compact subset of `U`. -/
+theorem rsod_tv_locallyLp : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ) (W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U)), W.weight = V.weight.map (fun y => y - x₀) → ∀ (H : Amb n ℓ → Amb n ℓ) (p : ℝ), V.LocallyLp H p → W.LocallyLp (fun y => H (y + x₀)) p := by
+  intro n ℓ U V x₀ W hw H p hV K hK hKU
+  have hσ : (fun y : Amb n ℓ => y - x₀) = ⇑(MeasurableEquiv.subRight x₀) := rfl
+  have hpre : ⇑(MeasurableEquiv.subRight x₀) ⁻¹' K = (fun y => y + x₀) '' K := by
+    ext x
+    constructor
+    · intro hx
+      exact ⟨x - x₀, hx, sub_add_cancel x x₀⟩
+    · rintro ⟨k, hk, rfl⟩
+      show k + x₀ - x₀ ∈ K
+      rwa [add_sub_cancel_right]
+  have hsub : (fun y => y + x₀) '' K ⊆ U := by
+    rintro _ ⟨k, hk, rfl⟩
+    exact hKU hk
+  -- `∫⁻_K f d(σ_# μ_V) = ∫⁻_{σ⁻¹(K)} f ∘ σ dμ_V`, and `f (σ x) = |H(x − x₀ + x₀)|ᵖ = |H x|ᵖ`.
+  rw [hw, hσ, MeasurableEquiv.restrict_map, lintegral_map_equiv, hpre]
+  refine lt_of_eq_of_lt (lintegral_congr fun x => ?_)
+    (hV _ (hK.image (continuous_add_const x₀)) hsub)
+  show ‖H (x - x₀ + x₀)‖ₑ ^ p = ‖H x‖ₑ ^ p
+  rw [sub_add_cancel]
+
+end Submission
+
 end GMT.Ch05
