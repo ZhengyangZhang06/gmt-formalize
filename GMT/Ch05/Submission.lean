@@ -526,6 +526,41 @@ theorem dohr_tv_exists_translate : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : 
     have h := (hσ.integrableOn_comp_preimage hσe).2
       (V.integrableOn_mult _ (hK.image (continuous_add_const ξ)) hσK)
     rwa [preimage_inter, hσe.injective.preimage_image, ← himage] at h
+/-- **Weight of a translated varifold** (Simon Ch. 4, 1.1; Ch. 5, proof of Theorem 7.1, p. 127:
+"after applying the appropriate translation").  Let `τ(x) = x - ξ`.  If `V' = v(τ(M), θ(· + ξ))`,
+then `μ_{V'} = τ_# μ_V`: `τ` is an isometric bijection, so `τ_# Hⁿ = Hⁿ` and
+`τ_#(Hⁿ ⌞ M) = Hⁿ ⌞ τ(M)`; for measurable `S`, changing variables along `τ` gives
+`μ_{V'}(S) = ∫_{τ⁻¹S} θ(x - ξ + ξ) d(Hⁿ ⌞ M)(x) = μ_V(τ⁻¹S)`. -/
+theorem dohr_tv_weight_eq_map : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U) (V' : RectifiableVarifold n ℓ U') (ξ : Amb n ℓ),
+    V'.carrier = (fun x => x - ξ) '' V.carrier → (∀ y, V'.mult y = V.mult (y + ξ)) →
+    V'.weight = V.weight.map (fun x => x - ξ) := by
+  intro n ℓ U U' V V' ξ hc hm
+  -- `τ(x) = x - ξ` as a measurable equivalence `e` (inverse `y ↦ y + ξ`).
+  let e : Amb n ℓ ≃ᵐ Amb n ℓ := MeasurableEquiv.subRight ξ
+  -- Step 1: `τ` is an isometric bijection, so `τ_# Hⁿ = Hⁿ`.
+  have h1 : (μHE[n] : Measure (Amb n ℓ)).map e = μHE[n] :=
+    ((IsometryEquiv.subRight ξ).measurePreserving_euclideanHausdorffMeasure n).map_eq
+  -- Step 2: `Hⁿ ⌞ τ(M) = (τ_# Hⁿ) ⌞ τ(M) = τ_#(Hⁿ ⌞ τ⁻¹(τ(M))) = τ_#(Hⁿ ⌞ M)`.
+  have h2 : (μHE[n] : Measure (Amb n ℓ)).restrict V'.carrier =
+      ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).map e := by
+    have h := e.restrict_map (μHE[n] : Measure (Amb n ℓ)) (e '' V.carrier)
+    rw [h1, Set.preimage_image_eq _ e.injective] at h
+    rw [hc]
+    exact h
+  -- Step 3: compare `μ_{V'}` and `τ_# μ_V` on measurable sets `S`.
+  show V'.weight = V.weight.map e
+  ext S hS
+  -- Step 4: `(τ_# μ_V)(S) = μ_V(τ⁻¹S) = ∫_{τ⁻¹S} θ d(Hⁿ ⌞ M)`.
+  rw [e.map_apply]
+  simp only [RectifiableVarifold.weight]
+  rw [withDensity_apply _ (e.measurable hS)]
+  -- Step 5: `μ_{V'}(S) = ∫_S θ' d(τ_#(Hⁿ ⌞ M)) = ∫_{τ⁻¹S} θ'(x - ξ) d(Hⁿ ⌞ M)(x)`.
+  rw [withDensity_apply _ hS, h2, e.restrict_map, lintegral_map_equiv]
+  -- Step 6: `θ'(x - ξ) = θ(x - ξ + ξ) = θ(x)`, so the two integrals agree.
+  refine lintegral_congr fun x => ?_
+  show ENNReal.ofReal (V'.mult (x - ξ)) = ENNReal.ofReal (V.mult x)
+  rw [hm, sub_add_cancel]
 
 end Submission
 
