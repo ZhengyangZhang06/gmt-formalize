@@ -458,6 +458,129 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Tangent identification** (for the graph rate in Simon Ch. 5, Remark 5.3).  Let `V` be a
+rectifiable `n`-varifold in any `U ⊆ ℝ^{n+ℓ}` whose tangent projection `y ↦ p_y = p_{T_y M}` is
+`μ_V`-a.e. strongly measurable, let `S` be a subspace, and let `c, s₀ > 0` with
+`c sⁿ ≤ μ_V(B_s(ζ)) < ∞` for `0 < s ≤ s₀`.  If the mean oscillation
+`μ_V(B_s(ζ))⁻¹ ∫⁻_{B_s(ζ)} |p_y − p_ζ|² dμ_V(y)` and the tilt-excess `E(ζ, s, S)` both tend to `0`
+as `s ↓ 0`, then `p_ζ = p_S`.
+
+Proof: (L8) of `any_radius_gr_linear_algebra_basics` gives
+`|p_ζ − p_S|² ≤ 2|p_y − p_ζ|² + 2|p_y − p_S|²` for every `y`.  Integrating over `B_s(ζ)` (the
+integrands are a.e. measurable as continuous functions of `p`, so the lower integral is additive),
+using (T1) of `any_radius_gr_tilt_integral_facts` for the last term and dividing by
+`μ_V(B_s(ζ)) ≥ c sⁿ` gives
+`|p_ζ − p_S|² ≤ 2 μ_V(B_s(ζ))⁻¹ ∫⁻_{B_s(ζ)} |p_y − p_ζ|² dμ_V(y) + 2 E(ζ, s, S)/c` for
+`0 < s ≤ s₀`.  Letting `s ↓ 0` gives `|p_ζ − p_S|² = 0`, so `p_ζ = p_S` by (L8). -/
+theorem any_radius_gr_tangent_identification : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (ζ : Amb n ℓ) (S : Submodule ℝ (Amb n ℓ)) (c s₀ : ℝ), 0 < c → 0 < s₀ → (∀ s : ℝ, 0 < s → s ≤ s₀ → ENNReal.ofReal (c * s ^ n) ≤ V.weight (closedBall ζ s) ∧ V.weight (closedBall ζ s) < ⊤) → Tendsto (fun s : ℝ => (V.weight (closedBall ζ s))⁻¹ * ∫⁻ y in closedBall ζ s, ENNReal.ofReal (hsNormSq (V.tangentProj y - V.tangentProj ζ)) ∂V.weight) (𝓝[>] 0) (𝓝 0) → Tendsto (fun s : ℝ => V.tiltExcess ζ s S) (𝓝[>] 0) (𝓝 0) → V.tangentProj ζ = S.starProjection := by
+  intro n ℓ U V htan ζ S c s₀ hc hs₀ hmass hL hT
+  -- (L8) of `la_basics` on `ℝ^{n+ℓ} = Rn (n + ℓ)` (any isometry `q` will do; take the identity).
+  obtain ⟨-, -, -, -, -, -, -, hL8, -⟩ :=
+    Submission.any_radius_gr_linear_algebra_basics n ℓ (LinearIsometryEquiv.refl ℝ (Amb n ℓ))
+  have hHS := hL8 (n + ℓ) (n + ℓ)
+  -- (T1) of `tilt_integrals` for `T = S`.
+  have hT1 := (Submission.any_radius_gr_tilt_integral_facts n ℓ U V htan ζ S).1
+  -- Step 1: `ofReal D ≤ 2 a(y) + 2 b(y)` for every `y`, where `D = |p_ζ − p_S|²`,
+  -- `a(y) = ofReal |p_y − p_ζ|²` and `b(y) = ofReal |p_y − p_S|²`.
+  have hpt : ∀ y, ENNReal.ofReal (hsNormSq (V.tangentProj ζ - S.starProjection)) ≤
+      2 * ENNReal.ofReal (hsNormSq (V.tangentProj y - V.tangentProj ζ)) +
+        2 * ENNReal.ofReal (hsNormSq (V.tangentProj y - S.starProjection)) := by
+    intro y
+    have hsplit : V.tangentProj ζ - S.starProjection =
+        -(V.tangentProj y - V.tangentProj ζ) + (V.tangentProj y - S.starProjection) := by abel
+    have hle : hsNormSq (V.tangentProj ζ - S.starProjection) ≤
+        2 * hsNormSq (V.tangentProj y - V.tangentProj ζ) +
+          2 * hsNormSq (V.tangentProj y - S.starProjection) := by
+      rw [hsplit, ← (hHS (V.tangentProj y - V.tangentProj ζ) 0).2.2.2.1]
+      exact (hHS _ _).2.2.1
+    have ha0 := (hHS (V.tangentProj y - V.tangentProj ζ) 0).1
+    have hb0 := (hHS (V.tangentProj y - S.starProjection) 0).1
+    calc ENNReal.ofReal (hsNormSq (V.tangentProj ζ - S.starProjection))
+        ≤ ENNReal.ofReal (2 * hsNormSq (V.tangentProj y - V.tangentProj ζ) +
+            2 * hsNormSq (V.tangentProj y - S.starProjection)) := ENNReal.ofReal_le_ofReal hle
+      _ = 2 * ENNReal.ofReal (hsNormSq (V.tangentProj y - V.tangentProj ζ)) +
+            2 * ENNReal.ofReal (hsNormSq (V.tangentProj y - S.starProjection)) := by
+        rw [ENNReal.ofReal_add (mul_nonneg zero_le_two ha0) (mul_nonneg zero_le_two hb0),
+          ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_ofNat]
+  -- Step 2: `y ↦ ofReal |p_y − C|²` is `μ_V`-a.e. measurable for every fixed `C`.
+  have hmeas : ∀ C : Amb n ℓ →L[ℝ] Amb n ℓ,
+      AEMeasurable (fun y => ENNReal.ofReal (hsNormSq (V.tangentProj y - C))) V.weight := by
+    intro C
+    have hcont : Continuous fun M : Amb n ℓ →L[ℝ] Amb n ℓ => hsNormSq (M - C) := by
+      unfold hsNormSq
+      exact continuous_finsetSum _ fun i _ =>
+        ((continuous_id.sub continuous_const).clm_apply continuous_const).norm.pow 2
+    exact ENNReal.measurable_ofReal.comp_aemeasurable
+      (hcont.comp_aestronglyMeasurable htan).aemeasurable
+  -- Step 3: `ofReal D ≤ 2 Avg_s + 2 ofReal (E(ζ, s, S)/c)` for `0 < s ≤ s₀`.
+  have hstar : ∀ s : ℝ, 0 < s → s ≤ s₀ →
+      ENNReal.ofReal (hsNormSq (V.tangentProj ζ - S.starProjection)) ≤
+        2 * ((V.weight (closedBall ζ s))⁻¹ * ∫⁻ y in closedBall ζ s,
+            ENNReal.ofReal (hsNormSq (V.tangentProj y - V.tangentProj ζ)) ∂V.weight) +
+          2 * ENNReal.ofReal (V.tiltExcess ζ s S / c) := by
+    intro s hs hss
+    obtain ⟨hlow, hfin⟩ := hmass s hs hss
+    have hcs : 0 < c * s ^ n := mul_pos hc (pow_pos hs n)
+    have hm0 : V.weight (closedBall ζ s) ≠ 0 :=
+      ((ENNReal.ofReal_pos.mpr hcs).trans_le hlow).ne'
+    -- Integrate Step 1 over `B_s(ζ)`; (T1) turns the `b`-integral into `ofReal (sⁿ E(ζ, s, S))`.
+    have hint : ENNReal.ofReal (hsNormSq (V.tangentProj ζ - S.starProjection)) *
+          V.weight (closedBall ζ s) ≤
+        2 * ∫⁻ y in closedBall ζ s,
+            ENNReal.ofReal (hsNormSq (V.tangentProj y - V.tangentProj ζ)) ∂V.weight +
+          2 * ENNReal.ofReal (s ^ n * V.tiltExcess ζ s S) := by
+      rw [← hT1 s hs hfin, ← setLIntegral_const, ← lintegral_const_mul' _ _ ENNReal.ofNat_ne_top,
+        ← lintegral_const_mul' _ _ ENNReal.ofNat_ne_top,
+        ← lintegral_add_left' (((hmeas _).restrict).const_mul 2)]
+      exact lintegral_mono fun y => hpt y
+    -- `μ_V(B_s(ζ))⁻¹ ofReal (sⁿ E) ≤ ofReal ((c sⁿ)⁻¹ sⁿ E) = ofReal (E/c)`.
+    have htilt : (V.weight (closedBall ζ s))⁻¹ * ENNReal.ofReal (s ^ n * V.tiltExcess ζ s S) ≤
+        ENNReal.ofReal (V.tiltExcess ζ s S / c) := by
+      have hinv : (V.weight (closedBall ζ s))⁻¹ ≤ ENNReal.ofReal (c * s ^ n)⁻¹ := by
+        rw [ENNReal.ofReal_inv_of_pos hcs]
+        exact ENNReal.inv_le_inv.mpr hlow
+      calc (V.weight (closedBall ζ s))⁻¹ * ENNReal.ofReal (s ^ n * V.tiltExcess ζ s S)
+          ≤ ENNReal.ofReal (c * s ^ n)⁻¹ * ENNReal.ofReal (s ^ n * V.tiltExcess ζ s S) := by
+            gcongr
+        _ = ENNReal.ofReal ((c * s ^ n)⁻¹ * (s ^ n * V.tiltExcess ζ s S)) :=
+            (ENNReal.ofReal_mul (inv_nonneg.mpr hcs.le)).symm
+        _ = ENNReal.ofReal (V.tiltExcess ζ s S / c) := by
+            rw [mul_inv, mul_assoc, inv_mul_cancel_left₀ (pow_ne_zero n hs.ne'), div_eq_inv_mul]
+    calc ENNReal.ofReal (hsNormSq (V.tangentProj ζ - S.starProjection))
+        = ENNReal.ofReal (hsNormSq (V.tangentProj ζ - S.starProjection)) *
+            V.weight (closedBall ζ s) * (V.weight (closedBall ζ s))⁻¹ := by
+          rw [mul_assoc, ENNReal.mul_inv_cancel hm0 hfin.ne, mul_one]
+      _ ≤ (2 * ∫⁻ y in closedBall ζ s,
+              ENNReal.ofReal (hsNormSq (V.tangentProj y - V.tangentProj ζ)) ∂V.weight +
+            2 * ENNReal.ofReal (s ^ n * V.tiltExcess ζ s S)) * (V.weight (closedBall ζ s))⁻¹ := by
+          gcongr
+      _ = 2 * ((V.weight (closedBall ζ s))⁻¹ * ∫⁻ y in closedBall ζ s,
+              ENNReal.ofReal (hsNormSq (V.tangentProj y - V.tangentProj ζ)) ∂V.weight) +
+            2 * ((V.weight (closedBall ζ s))⁻¹ *
+              ENNReal.ofReal (s ^ n * V.tiltExcess ζ s S)) := by
+          ring
+      _ ≤ _ := by gcongr
+  -- Step 4: the right side of Step 3 tends to `2 · 0 + 2 ofReal (0/c) = 0` as `s ↓ 0`.
+  have hlim : Tendsto (fun s : ℝ => 2 * ((V.weight (closedBall ζ s))⁻¹ * ∫⁻ y in closedBall ζ s,
+        ENNReal.ofReal (hsNormSq (V.tangentProj y - V.tangentProj ζ)) ∂V.weight) +
+        2 * ENNReal.ofReal (V.tiltExcess ζ s S / c)) (𝓝[>] 0) (𝓝 0) := by
+    have h2 : (2 : ℝ≥0∞) ≠ ⊤ := ENNReal.ofNat_ne_top
+    have h := (ENNReal.Tendsto.const_mul hL (Or.inr h2)).add
+      (ENNReal.Tendsto.const_mul (ENNReal.tendsto_ofReal (hT.div_const c)) (Or.inr h2))
+    rwa [zero_div, ENNReal.ofReal_zero, mul_zero, add_zero] at h
+  have hD0 : ENNReal.ofReal (hsNormSq (V.tangentProj ζ - S.starProjection)) ≤ 0 :=
+    ge_of_tendsto hlim (by
+      filter_upwards [Ioc_mem_nhdsGT hs₀] with s hs
+      exact hstar s hs.1 hs.2)
+  -- Step 5: `D = 0`, hence `p_ζ − p_S = 0` by (L8).
+  have hD : hsNormSq (V.tangentProj ζ - S.starProjection) = 0 :=
+    le_antisymm (ENNReal.ofReal_eq_zero.mp (nonpos_iff_eq_zero.mp hD0)) (hHS _ 0).1
+  exact sub_eq_zero.mp ((hHS _ 0).2.2.2.2.1 hD)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
