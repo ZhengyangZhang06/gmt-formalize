@@ -410,6 +410,78 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Canonical integer representation of an integral varifold, with mass domination (step 6 of the
+flat-limit integer multiplicity argument for Simon Ch. 8, 5.9): given a.e. positive integer
+densities of integral varifolds (hD) and the canonical tangent-plane representation (hC), an
+integral `W` with locally bounded first variation is `v(M, θ)` for
+`M = {x ∈ spt μ_W : W has a tangent plane at x}`, `θ` is a positive integer `H^n`-a.e. on `M`, and
+`∫ u dμ_W ≤ ∫_{M ∩ K} u θ dH^n` for Borel `u ≥ 0` vanishing off a compact `K ⊆ U`. -/
+theorem Submission.intcpt_fli_integral_canonical_domination :
+    (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), IsIntegral V → ∀ᵐ x ∂V.weight, ∃ k : ℕ, 1 ≤ k ∧ HasDensity n V.weight x (k : ℝ≥0∞)) → (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → (∀ᵐ x ∂V.weight, ∃ θ : ℝ≥0∞, HasDensity n V.weight x θ ∧ 0 < θ) → ∃ θ : Euclidean N → ℝ, IsVarifoldOf V {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'} θ ∧ (∀ x ∈ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'}, (∃ T : Grassmannian N n, HasTangentPlane V x T (θ x)) ∧ HasDensity n V.weight x (ENNReal.ofReal (θ x))) ∧ ∀ Z ⊆ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'}, V.weight Z = 0 → (μHE[n] : Measure (Euclidean N)) Z = 0) → ∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U), IsIntegral W → W.HasLocallyBoundedFirstVariation → ∃ θ : Euclidean N → ℝ, IsVarifoldOf W {x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane W x T θ'} θ ∧ (∀ x ∈ {x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane W x T θ'}, (∃ T : Grassmannian N n, HasTangentPlane W x T (θ x)) ∧ HasDensity n W.weight x (ENNReal.ofReal (θ x))) ∧ (μHE[n] : Measure (Euclidean N)) {x | x ∈ {x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane W x T θ'} ∧ ¬ ∃ m : ℕ, 1 ≤ m ∧ θ x = m} = 0 ∧ ∀ (K : Set (Euclidean N)) (u : Euclidean N → ℝ≥0∞), IsCompact K → K ⊆ U → Measurable u → (∀ x, x ∉ K → u x = 0) → ∫⁻ x, u x ∂W.weight ≤ ∫⁻ x in {x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane W x T θ'} ∩ K, u x * ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Euclidean N)) := by
+  intro hD hC N n U W hint hlbfv
+  -- Step 1: by (hD), `Θ^n(μ_W, x)` is an integer `k ≥ 1` for `μ_W`-a.e. `x`, so (hC) applies.
+  have hdens := hD N n U W hint
+  have hpos : ∀ᵐ x ∂W.weight, ∃ θ : ℝ≥0∞, HasDensity n W.weight x θ ∧ 0 < θ := by
+    filter_upwards [hdens] with x hx
+    obtain ⟨k, hk1, hk⟩ := hx
+    exact ⟨k, hk, by exact_mod_cast hk1⟩
+  -- Step 2: (hC) gives `θ` with the representation and tangent/density conclusions.
+  obtain ⟨θ, hvarOf, htan, hnull⟩ := hC N n U W hlbfv hpos
+  refine ⟨θ, hvarOf, htan, ?_, ?_⟩
+  -- Step 3: the points of `M` where `θ` is not a positive integer form a `μ_W`-null set (density
+  -- limits along `𝓝[>] 0` are unique), hence an `H^n`-null set by the null transfer property.
+  · apply hnull
+    · intro x hx; exact hx.1
+    · apply measure_eq_zero_iff_ae_notMem.2
+      filter_upwards [hdens] with x hx hxZ
+      obtain ⟨k, hk1, hk⟩ := hx
+      obtain ⟨hxM, hnot⟩ := hxZ
+      have hθx := (htan x hxM).2
+      have heq : ENNReal.ofReal (θ x) = (k : ℝ≥0∞) := tendsto_nhds_unique hθx hk
+      have hθpos : 0 < θ x := hvarOf.2.2.2.1 x hxM
+      apply hnot
+      refine ⟨k, hk1, ?_⟩
+      have := congrArg ENNReal.toReal heq
+      rwa [ENNReal.toReal_ofReal hθpos.le, ENNReal.toReal_natCast] at this
+  -- Step 4: domination. `θ` is `H^n`-integrable on `M ∩ K`, so `ofReal ∘ θ` is a.e.-measurable there.
+  · intro K u hK hKU hu huK
+    have hθint := hvarOf.2.2.2.2.1 K hK hKU
+    have hθae : AEMeasurable (fun x => ENNReal.ofReal (θ x))
+        ((μHE[n] : Measure (Euclidean N)).restrict
+          ({x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
+            HasTangentPlane W x T θ'} ∩ K)) :=
+      hθint.aestronglyMeasurable.aemeasurable.ennreal_ofReal
+    have hKmeas : MeasurableSet K := hK.isClosed.measurableSet
+    -- Step 5: `μ_W ⌞ K ≤ (H^n ⌞ (M ∩ K)).withDensity (ofReal ∘ θ)`, tested on Borel sets `B` via
+    -- `IsVarifoldOf` applied to `(B ∩ K) × G(N,n)`.
+    have hle : W.weight.restrict K ≤ ((μHE[n] : Measure (Euclidean N)).restrict
+        ({x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
+          HasTangentPlane W x T θ'} ∩ K)).withDensity (fun x => ENNReal.ofReal (θ x)) := by
+      refine Measure.le_iff.2 (fun B hB => ?_)
+      rw [Measure.restrict_apply hB, withDensity_apply _ hB, Measure.restrict_restrict hB,
+        Varifold.weight_apply W (hB.inter hKmeas),
+        hvarOf.2.2.2.2.2 _ ((hB.inter hKmeas).prod MeasurableSet.univ)]
+      apply lintegral_mono_set
+      intro x hx
+      obtain ⟨hxM, S, _, hxS⟩ := hx
+      exact ⟨hxS.1.1, hxM, hxS.1.2⟩
+    -- Step 6: integrate `u` (supported in `K`) against this inequality.
+    have hsupp : Function.support u ⊆ K := by
+      intro x hx
+      by_contra hxK
+      exact hx (huK x hxK)
+    calc ∫⁻ x, u x ∂W.weight = ∫⁻ x in K, u x ∂W.weight :=
+          (setLIntegral_eq_of_support_subset hsupp).symm
+      _ ≤ ∫⁻ x, u x ∂(((μHE[n] : Measure (Euclidean N)).restrict
+          ({x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
+            HasTangentPlane W x T θ'} ∩ K)).withDensity (fun x => ENNReal.ofReal (θ x))) :=
+          lintegral_mono' hle le_rfl
+      _ = ∫⁻ x in {x | x ∈ W.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
+            HasTangentPlane W x T θ'} ∩ K, ENNReal.ofReal (θ x) * u x
+            ∂(μHE[n] : Measure (Euclidean N)) :=
+          lintegral_withDensity_eq_lintegral_mul₀ hθae hu.aemeasurable
+      _ = _ := by simp_rw [mul_comm]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
