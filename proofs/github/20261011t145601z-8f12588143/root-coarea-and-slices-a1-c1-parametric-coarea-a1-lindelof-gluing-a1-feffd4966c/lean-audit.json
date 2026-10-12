@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "217e36203eed1162c5db795c475d37a3d798328c4280d8c8428bb06bb85275a1",
+  "git_delta": {
+    "base_commit": "a6b27d63ebdd5bbfbed860a0ad341121141b548e",
+    "candidate_commit": "d34c999dea144a9915b3224744fbfa458403209f",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "pcoarea_gluing",
+    "diff_sha256": "cfb7f7ce53f4d89beb69bc0210f6dc70b5ea950dbd50a733242f50606a71f0f0",
+    "source_sha256": "b23727f95919a7e1e695bf29cc8c187aee7428e0438da7c14acb1b96fa50c59b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.pcoarea_gluing",
+      "statement": "∀ (n N m k : ℕ) (D Z : Set (Rn n)) (ψ : Rn n → Rn N) (G : Rn n → Rn m) (w : Rn n → ℝ≥0∞), IsOpen D → ContinuousOn ψ D → InjOn ψ D → Continuous G → (∀ B ⊆ D, MeasurableSet B → B ⊆ Z → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧ ∫⁻ u in B, φ (ψ u) * w u = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume) → (∀ p ∈ D, p ∉ Z → ∃ O : Set (Rn n), IsOpen O ∧ p ∈ O ∧ ∀ B ⊆ D ∩ O, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧ ∫⁻ u in B, φ (ψ u) * w u = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume) → ∀ B ⊆ D, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧ ∫⁻ u in B, φ (ψ u) * w u = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
