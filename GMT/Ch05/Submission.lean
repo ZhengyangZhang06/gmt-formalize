@@ -458,6 +458,53 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Lebesgue points for a measure with `n`-dimensional growth: if `ν(B_r(z)) ≤ C rⁿ` for all `z`
+and `r > 0` and `f` is `ν`-integrable, then for `ν`-a.e. `y`,
+`r⁻ⁿ ∫_{B_r(y)} |f − f(y)| dν → 0` as `r ↓ 0`.  The growth bound makes `ν` locally finite, so the
+Besicovitch differentiation theorem gives `ν(B_r(y))⁻¹ ∫_{B_r(y)} |f − f(y)| dν → 0`, and
+`r⁻ⁿ ∫_{B_r(y)} |f − f(y)| dν ≤ C · ν(B_r(y))⁻¹ ∫_{B_r(y)} |f − f(y)| dν`. -/
+theorem dohr_tp_ae_lebesgue_point_of_growth : ∀ (n ℓ : ℕ) (ν : Measure (Amb n ℓ)) (f : Amb n ℓ → ℝ) (C : ℝ), Integrable f ν → (∀ (z : Amb n ℓ) (r : ℝ), 0 < r → ν (closedBall z r) ≤ ENNReal.ofReal (C * r ^ n)) → ∀ᵐ y ∂ν, Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) * ∫⁻ w in closedBall y r, ‖f w - f y‖ₑ ∂ν) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ ν f C hf hgrowth
+  -- The growth bound makes `ν` locally finite (hence σ-finite).
+  have : IsLocallyFiniteMeasure ν :=
+    ⟨fun y => ⟨closedBall y 1, closedBall_mem_nhds y one_pos,
+      (hgrowth y 1 one_pos).trans_lt ENNReal.ofReal_lt_top⟩⟩
+  -- Besicovitch differentiation: the averages of `|f − f(y)|` over `B_r(y)` tend to `0`.
+  filter_upwards [(Besicovitch.vitaliFamily ν).ae_tendsto_lintegral_enorm_sub_div
+    hf.locallyIntegrable] with y hy
+  have hD := hy.comp (Besicovitch.tendsto_filterAt ν y)
+  have hCD : Tendsto (fun r : ℝ => ENNReal.ofReal C *
+      ((∫⁻ w in closedBall y r, ‖f w - f y‖ₑ ∂ν) / ν (closedBall y r))) (𝓝[>] 0) (𝓝 0) := by
+    simpa using ENNReal.Tendsto.const_mul hD (Or.inr ENNReal.ofReal_ne_top)
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hCD
+    (Eventually.of_forall fun _ => zero_le) ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  -- `r⁻ⁿ ∫_{B_r(y)} |f − f(y)| dν ≤ C · (average)`, separating the case `ν(B_r(y)) = 0`.
+  by_cases hm : ν (closedBall y r) = 0
+  · rw [setLIntegral_measure_zero _ _ hm]
+    simp
+  have hmle := hgrowth y r hr
+  have hmtop : ν (closedBall y r) ≠ ∞ := ne_top_of_le_ne_top ENNReal.ofReal_ne_top hmle
+  have hrn : 0 < r ^ n := pow_pos hr n
+  calc ENNReal.ofReal ((r ^ n)⁻¹) * ∫⁻ w in closedBall y r, ‖f w - f y‖ₑ ∂ν
+      = ENNReal.ofReal ((r ^ n)⁻¹) * ((∫⁻ w in closedBall y r, ‖f w - f y‖ₑ ∂ν) /
+          ν (closedBall y r) * ν (closedBall y r)) := by
+        rw [ENNReal.div_mul_cancel hm hmtop]
+    _ ≤ ENNReal.ofReal ((r ^ n)⁻¹) * ((∫⁻ w in closedBall y r, ‖f w - f y‖ₑ ∂ν) /
+          ν (closedBall y r) * ENNReal.ofReal (C * r ^ n)) := by
+        gcongr
+    _ = ENNReal.ofReal ((r ^ n)⁻¹ * (C * r ^ n)) *
+          ((∫⁻ w in closedBall y r, ‖f w - f y‖ₑ ∂ν) / ν (closedBall y r)) := by
+        rw [ENNReal.ofReal_mul (inv_nonneg.mpr hrn.le)]
+        ring
+    _ = ENNReal.ofReal C *
+          ((∫⁻ w in closedBall y r, ‖f w - f y‖ₑ ∂ν) / ν (closedBall y r)) := by
+        rw [mul_comm C, inv_mul_cancel_left₀ hrn.ne']
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
