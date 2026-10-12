@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.sff_properties-a1.gram_unit-a1",
+  "parent_id": "root.stationary_results-a1.sff_properties-a1",
+  "depth": 3,
+  "title": "The Gram operator A*A of an injective linear map is invertible",
+  "statement": "For all n, N ∈ ℕ and every continuous linear map A : ℝⁿ → ℝᴺ (ℝ^d := EuclideanSpace ℝ (Fin d)) that is injective, the Gram operator G := A* ∘ A : ℝⁿ → ℝⁿ (A* = ContinuousLinearMap.adjoint A, the Hilbert adjoint) is a unit of the ring ℝⁿ →L[ℝ] ℝⁿ, whose multiplication is composition; i.e. G has a two-sided inverse that is a continuous linear map.",
+  "lean_statement": "∀ (n N : ℕ) (A : Rn n →L[ℝ] Rn N), Function.Injective A → IsUnit (ContinuousLinearMap.adjoint A ∘L A)",
+  "lean_name": "gram_operator_isUnit_of_injective",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-sff-properties-a1-gram-unit-a1-a1"
+}

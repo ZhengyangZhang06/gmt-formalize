@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.sff_chart-a1.fderiv_within_chart_direction-a1",
+  "parent_id": "root.stationary_results-a1.sff_chart-a1",
+  "depth": 3,
+  "title": "Derivative within M along chart directions equals the derivative of a local extension",
+  "statement": "Let n, N ∈ ℕ (ℝ^d := EuclideanSpace ℝ (Fin d)), M ⊆ ℝᴺ, V ⊆ ℝⁿ, ψ : ℝⁿ → ℝᴺ, f, g : ℝᴺ → L(ℝᴺ, ℝᴺ) and x₀ ∈ ℝⁿ. Assume five things: V is a neighbourhood of x₀; ψ(V) ⊆ M; ψ is differentiable at x₀; g is differentiable at ψ(x₀); and f(z) = g(z) for every z ∈ M in some neighbourhood of ψ(x₀), i.e. f =ᶠ[𝓝[M] ψ x₀] g. Then for every a ∈ ℝⁿ, fderivWithin ℝ f M (ψ x₀) (Dψ(x₀)a) = Dg(ψ(x₀))(Dψ(x₀)a) in L(ℝᴺ, ℝᴺ). Here Dψ(x₀) = fderiv ℝ ψ x₀ and Dg(y) = fderiv ℝ g y.",
+  "lean_statement": "∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (ψ : Rn n → Rn N) (f g : Rn N → (Rn N →L[ℝ] Rn N)) (x₀ : Rn n), V ∈ 𝓝 x₀ → ψ '' V ⊆ M → DifferentiableAt ℝ ψ x₀ → DifferentiableAt ℝ g (ψ x₀) → f =ᶠ[𝓝[M] ψ x₀] g → ∀ a : Rn n, fderivWithin ℝ f M (ψ x₀) (fderiv ℝ ψ x₀ a) = fderiv ℝ g (ψ x₀) (fderiv ℝ ψ x₀ a)",
+  "lean_name": "sff_fderivWithin_chart_direction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-sff-chart-a1-fderiv-within-chart-direction-a1-a1"
+}
