@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1.ball_weak_subseq-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1",
+  "depth": 4,
+  "title": "Weak subsequential compactness of bounded measures on one closed ball, with the closed-set portmanteau inequality",
+  "statement": "Let P, R ∈ ℕ and let μ_j (j ∈ ℕ) be measures on ℝ^P = Eucl P with sup_j μ_j(ℝ^P) < ∞. Then there are a strictly increasing χ : ℕ → ℕ and a measure ν on ℝ^P with ν(ℝ^P) < ∞ such that every closed set F ⊆ ℝ^P with F ⊆ B̄_R(0) = closedBall 0 R satisfies limsup_{i→∞} μ_{χ(i)}(F) ≤ ν(F).",
+  "lean_statement": "∀ (P R : ℕ) (μ : ℕ → Measure (Eucl P)), (⨆ j, μ j univ) < ∞ → ∃ (χ : ℕ → ℕ) (ν : Measure (Eucl P)), StrictMono χ ∧ ν univ < ∞ ∧ ∀ F : Set (Eucl P), IsClosed F → F ⊆ closedBall 0 (R : ℝ) → limsup (fun i => μ (χ i) F) atTop ≤ ν F",
+  "lean_name": "ind_md_closedBall_weak_subseq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-mass-density-a1-ba-edf2a04af6-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1.ae_ball_growth-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1",
+  "depth": 4,
+  "title": "Hⁿ-a.e. n-dimensional small-ball growth bound for a finite measure",
+  "statement": "Let P, n ∈ ℕ and let ν be a measure on ℝ^P = Eucl P with ν(ℝ^P) < ∞. Then for Hⁿ-a.e. x ∈ ℝ^P (Hⁿ = μHE[n]) there are C ∈ ℝ and r₀ > 0 with ν(B̄_r(x)) < ENNReal.ofReal(C·rⁿ) for every r ∈ (0, r₀), where B̄_r(x) = closedBall x r.",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Eucl P)), ν univ < ∞ → ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), ∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ r ∈ Ioo (0 : ℝ) r₀, ν (closedBall x r) < ENNReal.ofReal (C * r ^ n)",
+  "lean_name": "ind_md_ae_closedBall_growth",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-mass-density-a1-ae-f7d60da3e2-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1.mass_measure_balls-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1",
+  "depth": 4,
+  "title": "Finite mass measure of a finite-mass current, agreeing with local mass on open balls",
+  "statement": "Let P, n ∈ ℕ and let T ∈ D_n(ℝ^P) (T : GeometricCurrentOn univ n on ℝ^P = Eucl P) have finite mass M(T) = T.mass < ∞. Then there is a measure μ on ℝ^P with μ(ℝ^P) ≤ M(T) and μ(B_r(x)) = M_{B_r(x)}(T) (= T.massOn (ball x r)) for every x ∈ ℝ^P and every r ∈ ℝ, where B_r(x) is the open ball (empty when r ≤ 0).",
+  "lean_statement": "∀ (P n : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl P)) n), T.mass < ∞ → ∃ μ : Measure (Eucl P), μ univ ≤ T.mass ∧ ∀ (x : Eucl P) (r : ℝ), μ (ball x r) = T.massOn (ball x r)",
+  "lean_name": "ind_md_mass_measure_balls",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-mass-density-a1-ma-046d2fc55f-a1"
+}
