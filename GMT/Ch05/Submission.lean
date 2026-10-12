@@ -458,6 +458,56 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Hilbert–Schmidt versus operator norm** (Simon, Notation p. ix), as used in the hole estimate
+of the proof of Ch. 5, Corollary 2.7 (`‖A‖ ≤ |A|`).  For `A : ℝᵐ →L ℝᵏ` the squared Hilbert–Schmidt
+norm `|A|² = Σᵢ |A eᵢ|²` is continuous in `A` (a finite sum of squared norms of the evaluations
+`A ↦ A eᵢ`) and satisfies `0 ≤ |A|² ≤ m ‖A‖²` (`|A eᵢ| ≤ ‖A‖ |eᵢ| = ‖A‖`).  Moreover
+`|A v|² ≤ |A|² |v|²`: expanding `v = Σᵢ vᵢ eᵢ` gives `|A v| ≤ Σᵢ |vᵢ| |A eᵢ|`, and Cauchy–Schwarz
+bounds the square of the right side by `(Σᵢ |vᵢ|²)(Σᵢ |A eᵢ|²) = |v|² |A|²`. -/
+theorem lgc_hsNormSq_bounds : ∀ (m k : ℕ), Continuous (fun A : Rn m →L[ℝ] Rn k => hsNormSq A) ∧ ∀ A : Rn m →L[ℝ] Rn k, 0 ≤ hsNormSq A ∧ hsNormSq A ≤ m * ‖A‖ ^ 2 ∧ ∀ v : Rn m, ‖A v‖ ^ 2 ≤ hsNormSq A * ‖v‖ ^ 2 := by
+  intro m k
+  refine ⟨?_, fun A => ⟨?_, ?_, fun v => ?_⟩⟩
+  · -- Continuity: a finite sum of `‖A eᵢ‖ ^ 2`, each continuous in `A`.
+    unfold hsNormSq
+    fun_prop
+  · unfold hsNormSq
+    positivity
+  · -- `‖A eᵢ‖ ≤ ‖A‖ ‖eᵢ‖ = ‖A‖` for each of the `m` summands.
+    unfold hsNormSq
+    calc ∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2 ≤ ∑ _i : Fin m, ‖A‖ ^ 2 := by
+          gcongr with i
+          calc ‖A (EuclideanSpace.single i 1)‖ ≤ ‖A‖ * ‖EuclideanSpace.single i (1:ℝ)‖ :=
+                A.le_opNorm _
+            _ = ‖A‖ := by simp
+      _ = m * ‖A‖ ^ 2 := by simp
+  · unfold hsNormSq
+    set e : Fin m → Rn m := fun i => EuclideanSpace.single i 1 with he
+    -- Expand `v` in the standard basis and apply the triangle inequality.
+    have hv : v = ∑ i, v i • e i := by
+      ext j
+      simp [he, Pi.single_apply]
+    have hAv : A v = ∑ i, v i • A (e i) := by
+      conv_lhs => rw [hv]
+      simp [map_sum, map_smul]
+    have h1 : ‖A v‖ ≤ ∑ i, |v i| * ‖A (e i)‖ := by
+      rw [hAv]
+      calc _ ≤ ∑ i, ‖v i • A (e i)‖ := norm_sum_le _ _
+        _ = _ := by simp [norm_smul]
+    -- Cauchy–Schwarz for the finite sums, and `‖v‖² = Σᵢ |vᵢ|²`.
+    have h2 : (∑ i, |v i| * ‖A (e i)‖) ^ 2 ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) :=
+      Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+    have h3 : ‖v‖ ^ 2 = ∑ i, |v i| ^ 2 := by
+      rw [EuclideanSpace.norm_sq_eq]
+      simp [sq_abs]
+    have h0 : 0 ≤ ‖A v‖ := norm_nonneg _
+    calc ‖A v‖ ^ 2 ≤ (∑ i, |v i| * ‖A (e i)‖) ^ 2 := by gcongr
+      _ ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) := h2
+      _ = (∑ i, ‖A (e i)‖ ^ 2) * ‖v‖ ^ 2 := by rw [h3, mul_comm]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
