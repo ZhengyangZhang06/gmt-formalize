@@ -458,6 +458,70 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Linear lower bound for a `C¹` chart near a point where its derivative is injective (used for
+the `C¹` submanifold charts of Simon Ch. 2 §4).  If `V ⊆ ℝᵐ` is open, `φ` is `C¹` on `V`, `v₀ ∈ V`
+and `Dφ(v₀)` is injective, then there are `c, δ > 0` with `B_δ(v₀) ⊆ V` and
+`c ‖w‖ ≤ ‖φ(v₀ + w) − φ(v₀)‖` whenever `‖w‖ ≤ δ`.  With `L = Dφ(v₀)` and `‖u‖ ≤ K ‖L u‖`, take
+`c = 1/(2K)` and `δ` so small that `‖Dφ(v) − L‖ ≤ c` on `B_δ(v₀) ⊆ V`; the mean value inequality
+gives `‖φ(v₀ + w) − φ(v₀) − L w‖ ≤ c ‖w‖`, and `2c ‖w‖ ≤ ‖L w‖` finishes. -/
+theorem rsod_c1tan_chart_lower_bound : ∀ (m N : ℕ) (V : Set (Rn m)) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (v₀ : Rn m), IsOpen V → ContDiffOn ℝ 1 φ V → v₀ ∈ V → Function.Injective (fderiv ℝ φ v₀) → ∃ c : ℝ, 0 < c ∧ ∃ δ : ℝ, 0 < δ ∧ closedBall v₀ δ ⊆ V ∧ ∀ w : Rn m, ‖w‖ ≤ δ → c * ‖w‖ ≤ ‖φ (v₀ + w) - φ v₀‖ := by
+  intro m N V φ v₀ hV hφ hv₀ hinj
+  set L := fderiv ℝ φ v₀ with hL
+  -- Step 1: `‖u‖ ≤ K ‖L u‖` for some `K > 0`; put `c = 1/(2K)`, so `c K = 1/2`.
+  obtain ⟨K, hK0, hK⟩ := (L : Rn m →ₗ[ℝ] EuclideanSpace ℝ (Fin N)).exists_antilipschitzWith
+    (LinearMap.ker_eq_bot.mpr hinj)
+  have hK0' : (0 : ℝ) < K := hK0
+  have hLlow : ∀ u : Rn m, ‖u‖ ≤ K * ‖L u‖ := fun u => hK.le_mul_norm (map_zero _) u
+  set c : ℝ := 1 / (2 * K) with hc
+  have hc0 : 0 < c := by positivity
+  have hcK : c * K = 1 / 2 := by
+    rw [hc]
+    field_simp
+  -- Step 2: `Dφ` is continuous at `v₀`; choose `δ < δ₁, δ₂` with `‖Dφ(v) − L‖ < c` for
+  -- `dist(v, v₀) < δ₁` and `B̆_{δ₂}(v₀) ⊆ V`.
+  have hcont : ContinuousAt (fderiv ℝ φ) v₀ :=
+    (hφ.continuousOn_fderiv_of_isOpen hV le_rfl).continuousAt (hV.mem_nhds hv₀)
+  obtain ⟨δ₁, hδ₁, hδ₁'⟩ := Metric.continuousAt_iff.mp hcont c hc0
+  obtain ⟨δ₂, hδ₂, hδ₂'⟩ := Metric.isOpen_iff.mp hV v₀ hv₀
+  set δ : ℝ := min δ₁ δ₂ / 2 with hδ
+  have hδ0 : 0 < δ := by positivity
+  have hδlt₁ : δ < δ₁ := by
+    have := min_le_left δ₁ δ₂
+    rw [hδ]
+    linarith
+  have hδlt₂ : δ < δ₂ := by
+    have := min_le_right δ₁ δ₂
+    rw [hδ]
+    linarith
+  have hball : closedBall v₀ δ ⊆ V := (closedBall_subset_ball hδlt₂).trans hδ₂'
+  refine ⟨c, hc0, δ, hδ0, hball, fun w hw => ?_⟩
+  -- Step 3: on `B_δ(v₀)`, `φ` is differentiable and `‖Dφ(v) − L‖ ≤ c`.
+  have hdiff : ∀ v ∈ closedBall v₀ δ, DifferentiableAt ℝ φ v := fun v hv =>
+    (hφ.differentiableOn one_ne_zero v (hball hv)).differentiableAt (hV.mem_nhds (hball hv))
+  have hbound : ∀ v ∈ closedBall v₀ δ, ‖fderiv ℝ φ v - L‖ ≤ c := fun v hv => by
+    have h := hδ₁' (lt_of_le_of_lt (mem_closedBall.mp hv) hδlt₁)
+    rw [dist_eq_norm] at h
+    exact h.le
+  -- Step 4: mean value inequality on the convex ball: `‖φ(v₀ + w) − φ(v₀) − L w‖ ≤ c ‖w‖`.
+  have hmem : v₀ + w ∈ closedBall v₀ δ := by
+    rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left]
+    exact hw
+  have hmvt := (convex_closedBall v₀ δ).norm_image_sub_le_of_norm_fderiv_le' hdiff hbound
+    (mem_closedBall_self hδ0.le) hmem
+  rw [add_sub_cancel_left] at hmvt
+  -- Step 5: `2c ‖w‖ ≤ ‖L w‖ ≤ ‖φ(v₀ + w) − φ(v₀)‖ + c ‖w‖`.
+  have h1 : c * ‖w‖ ≤ ‖L w‖ / 2 := by
+    calc c * ‖w‖ ≤ c * (K * ‖L w‖) := mul_le_mul_of_nonneg_left (hLlow w) hc0.le
+      _ = ‖L w‖ / 2 := by rw [← mul_assoc, hcK]; ring
+  have h2 : ‖L w‖ ≤ ‖φ (v₀ + w) - φ v₀‖ + ‖φ (v₀ + w) - φ v₀ - L w‖ := by
+    have := norm_sub_le (φ (v₀ + w) - φ v₀) (φ (v₀ + w) - φ v₀ - L w)
+    rwa [sub_sub_cancel] at this
+  linarith
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
