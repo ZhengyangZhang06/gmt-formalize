@@ -569,6 +569,112 @@ theorem Submission.simon_submanifold_hausdorff_finite_pos : ∀ (n N : ℕ) (r :
     refine pos_iff_ne_zero.2 fun h0 => hpos.ne' ?_
     rw [h0, mul_zero] at hle
     exact nonpos_iff_eq_zero.mp hle
+/-- **Scaled vector fields generate admissible deformations** (Simon Ch. 2, remark after 5.4).
+For `U ⊆ ℝᴺ` open and `Y ∈ C²(ℝᴺ, ℝᴺ)` with compact support `tsupport Y ⊆ U`, there is `c > 0`
+such that `φ_t(x) = x + c t Y(x)` is an admissible `C²` deformation of `U` fixing the outside of
+`tsupport Y`, with initial velocity `c Y`. `Y` is `L`-Lipschitz (`C¹` with compact support) and
+`c = 1/(L+1)`; for `|t| < 1` and any `L`-Lipschitz `g`, `x ↦ x + c t g(x)` approximates the identity
+with constant `|c t| L < 1`, hence is a bijection of `ℝᴺ` (`ApproximatesLinearOn.injOn`,
+`ApproximatesLinearOn.surjective`). Applied to `g = Y` this gives `φ_t` bijective; being the identity
+off `K = tsupport Y ⊆ U`, it maps `U` onto `U`. Applied to `g = DY(x)` (of norm `≤ L`) it gives
+`Dφ_t(x) = I + c t DY(x)` bijective. -/
+theorem Submission.scaled_field_deformation_is_admissible : ∀ (N : ℕ) (U : Set (Rn N)) (Y : Rn N → Rn N), IsOpen U → ContDiff ℝ 2 Y → HasCompactSupport Y → tsupport Y ⊆ U → ∃ c : ℝ, 0 < c ∧ IsAdmissibleDeformation 2 U (tsupport Y) (fun t x ↦ x + (c * t) • Y x) ∧ ∀ x, initialVelocity (fun t x ↦ x + (c * t) • Y x) x = c • Y x := by
+  intro N U Y hU hY hYc hYU
+  -- `Y` is `C¹` with compact support, hence `L`-Lipschitz for some `L`; put `c = 1/(L+1)`.
+  obtain ⟨L, hL⟩ := hY.lipschitzWith_of_hasCompactSupport hYc two_ne_zero
+  set c : ℝ := 1 / ((L : ℝ) + 1) with hc_def
+  have hc : 0 < c := by positivity
+  have hcL : c * L < 1 := by
+    rw [hc_def, div_mul_eq_mul_div, one_mul, div_lt_one (by positivity)]
+    linarith
+  -- For `|s| < c` and `L`-Lipschitz `g`, `x ↦ x + s • g x` approximates the identity with constant
+  -- `‖s‖ L < 1`, hence is a bijection of `ℝᴺ`.
+  have key : ∀ s : ℝ, |s| < c → ∀ g : Rn N → Rn N, LipschitzWith L g →
+      Function.Bijective (fun x ↦ x + s • g x) := by
+    intro s hs g hg
+    have hκ : ‖s‖₊ * L < 1 := by
+      rw [← NNReal.coe_lt_coe, NNReal.coe_mul, coe_nnnorm, Real.norm_eq_abs, NNReal.coe_one]
+      calc |s| * L ≤ c * L := mul_le_mul_of_nonneg_right hs.le L.2
+        _ < 1 := hcL
+    have hA : ApproximatesLinearOn (fun x ↦ x + s • g x)
+        ((ContinuousLinearEquiv.refl ℝ (Rn N) : Rn N ≃L[ℝ] Rn N) : Rn N →L[ℝ] Rn N) univ
+        (‖s‖₊ * L) := by
+      intro x _ y _
+      have h1 : x + s • g x - (y + s • g y) -
+          ((ContinuousLinearEquiv.refl ℝ (Rn N) : Rn N ≃L[ℝ] Rn N) : Rn N →L[ℝ] Rn N) (x - y) =
+          s • (g x - g y) := by
+        simp only [ContinuousLinearEquiv.coe_refl, ContinuousLinearMap.id_apply, smul_sub]
+        abel
+      rw [h1, norm_smul, NNReal.coe_mul, coe_nnnorm, mul_assoc]
+      exact mul_le_mul_of_nonneg_left (hg.norm_sub_le x y) (norm_nonneg s)
+    have hA' : Subsingleton (Rn N) ∨ ‖s‖₊ * L <
+        ‖(((ContinuousLinearEquiv.refl ℝ (Rn N) : Rn N ≃L[ℝ] Rn N).symm : Rn N ≃L[ℝ] Rn N) :
+          Rn N →L[ℝ] Rn N)‖₊⁻¹ := by
+      rcases subsingleton_or_nontrivial (Rn N) with h | h
+      · exact Or.inl h
+      · right
+        rw [ContinuousLinearEquiv.refl_symm, ContinuousLinearEquiv.coe_refl,
+          ContinuousLinearMap.nnnorm_id, inv_one]
+        exact hκ
+    exact ⟨injOn_univ.mp (hA.injOn hA'), hA.surjective hA'⟩
+  refine ⟨c, hc, ⟨hU, hYc, hYU, ?_, ?_, ?_, ?_⟩, ?_⟩
+  · -- `(t, x) ↦ x + (c t) • Y x` is `C²` on `ℝ × ℝᴺ`.
+    have h2 : ContDiff ℝ 2 (fun p : ℝ × Rn N ↦ p.2 + (c * p.1) • Y p.2) :=
+      contDiff_snd.add ((contDiff_const.mul contDiff_fst).smul (hY.comp contDiff_snd))
+    exact h2.contDiffOn
+  · -- `φ₀ = id`.
+    intro x _
+    simp
+  · -- `φ_t = id` off `tsupport Y`.
+    intro t _ x hx
+    simp [image_eq_zero_of_notMem_tsupport hx]
+  · intro t ht
+    have hs : |c * t| < c := by
+      have ht' : |t| < 1 := abs_lt.mpr ⟨ht.1, ht.2⟩
+      rw [abs_mul, abs_of_pos hc]
+      calc c * |t| < c * 1 := mul_lt_mul_of_pos_left ht' hc
+        _ = c := mul_one c
+    have hbij := key (c * t) hs Y hL
+    have hfix : ∀ x, x ∉ tsupport Y → x + (c * t) • Y x = x := fun x hx ↦ by
+      simp [image_eq_zero_of_notMem_tsupport hx]
+    refine ⟨⟨?_, hbij.1.injOn, ?_⟩, ?_⟩
+    · -- `φ_t` maps `U` into `U`: either `φ_t x ∈ tsupport Y ⊆ U`, or `φ_t (φ_t x) = φ_t x`, whence
+      -- `φ_t x = x` by injectivity.
+      intro x hx
+      by_cases h : x + (c * t) • Y x ∈ tsupport Y
+      · exact hYU h
+      · have hx' : x + (c * t) • Y x = x := hbij.1 (hfix _ h)
+        show x + (c * t) • Y x ∈ U
+        rw [hx']
+        exact hx
+    · -- `φ_t` maps `U` onto `U`: a preimage of `z ∈ U` lies in `tsupport Y ⊆ U` or equals `z`.
+      intro z hz
+      obtain ⟨x, rfl⟩ := hbij.2 z
+      by_cases h : x ∈ tsupport Y
+      · exact ⟨x, hYU h, rfl⟩
+      · refine ⟨x, ?_, rfl⟩
+        have hzx := hfix x h
+        simp only at hz
+        rw [hzx] at hz
+        exact hz
+    · -- `Dφ_t(x) = I + (c t) DY(x)` is bijective, since `DY(x)` is `L`-Lipschitz.
+      intro x _
+      have hd : HasFDerivAt (fun y ↦ y + (c * t) • Y y)
+          (ContinuousLinearMap.id ℝ (Rn N) + (c * t) • fderiv ℝ Y x) x :=
+        (hasFDerivAt_id x).add
+          (((hY.differentiable two_ne_zero) x).hasFDerivAt.const_smul (c * t))
+      have hDL : LipschitzWith L (fderiv ℝ Y x) :=
+        (fderiv ℝ Y x).lipschitzWith.weaken (norm_fderiv_le_of_lipschitz ℝ hL)
+      show Function.Bijective (fderiv ℝ (fun y ↦ y + (c * t) • Y y) x)
+      rw [hd.fderiv]
+      convert key (c * t) hs (fderiv ℝ Y x) hDL using 1
+      ext v
+      simp
+  · -- Initial velocity: `t ↦ x + (c t) • Y x` has derivative `c • Y x`.
+    intro x
+    have h : HasDerivAt (fun t : ℝ ↦ x + (c * t) • Y x) (c • Y x) 0 := by
+      simpa using (((hasDerivAt_id (0 : ℝ)).const_mul c).smul_const (Y x)).const_add x
+    exact h.deriv
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
