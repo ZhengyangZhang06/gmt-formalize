@@ -483,6 +483,80 @@ theorem Submission.c1approx_lusin_closed_continuousOn : ∀ (n m : ℕ) (S : Set
         (measure_mono hsub).trans (measure_iUnion_le _)
     _ ≤ ∑' j, δ j := ENNReal.tsum_le_tsum fun j ↦ (hCμ j).le
     _ < ENNReal.ofReal ε := hδsum
+/-- **Simon Ch. 2, proof of Theorem 1.5 (p. 44), Borel remainder moduli.** For a Lipschitz
+`f : ℝⁿ → ℝ`, a Borel `ν : ℝⁿ → ℝⁿ` and any `C ⊆ ℝⁿ` there are Borel functions `η k` with
+`|f y - f x - ν(x)·(y - x)| ≤ η k x |y - x|` for `x, y ∈ C`, `0 < |y - x| < 1/(k + 1)`, and
+`η k x → 0` at each `x ∈ C` where `f` has derivative `v ↦ ν(x)·v`. Simon's
+`η_k(x) = sup {|R(x,y)| : y ∈ C ∩ B_{1/k}(x) \ {x}}` is replaced by the supremum of the quotients
+`|R(x,q)|`, `0 < |q - x| < 1/(k + 1)`, over a countable dense `D ⊆ ℝⁿ`; it is Borel, and it
+dominates `|R(x,y)|` at every `y` with `0 < |y - x| < 1/(k + 1)` by continuity in `y`. -/
+theorem Submission.c1approx_measurable_remainder_modulus : ∀ (n : ℕ) (K : ℝ≥0) (C : Set (Rn n)) (f : Rn n → ℝ) (ν : Rn n → Rn n), LipschitzWith K f → Measurable ν → ∃ η : ℕ → Rn n → ℝ, (∀ k, Measurable (η k)) ∧ (∀ k : ℕ, ∀ x ∈ C, ∀ y ∈ C, 0 < ‖y - x‖ → ‖y - x‖ < 1 / ((k : ℝ) + 1) → |f y - f x - inner ℝ (ν x) (y - x)| ≤ η k x * ‖y - x‖) ∧ ∀ x ∈ C, HasFDerivAt f (innerSL ℝ (ν x)) x → Tendsto (fun k ↦ η k x) atTop (𝓝 0) := by
+  intro n K C f ν hf hν
+  -- A countable dense set `D ⊆ ℝⁿ`.
+  obtain ⟨D, hDc, hDd⟩ := TopologicalSpace.exists_countable_dense (Rn n)
+  have : Countable D := hDc.to_subtype
+  have : Nonempty D := hDd.nonempty.to_subtype
+  -- The remainder quotient `ρ x q = |f q - f x - ν(x)·(q - x)| / |q - x|` lies in `[0, K + |ν x|]`.
+  let ρ : Rn n → Rn n → ℝ := fun x q ↦ |f q - f x - inner ℝ (ν x) (q - x)| / ‖q - x‖
+  have hρ0 (x q : Rn n) : 0 ≤ ρ x q := by positivity
+  have hρK (x q : Rn n) : ρ x q ≤ K + ‖ν x‖ := by
+    refine div_le_of_le_mul₀ (norm_nonneg _) (by positivity) ?_
+    calc |f q - f x - inner ℝ (ν x) (q - x)| ≤ |f q - f x| + |inner ℝ (ν x) (q - x)| := abs_sub _ _
+      _ ≤ K * ‖q - x‖ + ‖ν x‖ * ‖q - x‖ := by
+        gcongr
+        · rw [← Real.dist_eq, ← dist_eq_norm]
+          exact hf.dist_le_mul q x
+        · exact abs_real_inner_le_norm _ _
+      _ = (K + ‖ν x‖) * ‖q - x‖ := by ring
+  -- `φ k q` is `ρ (·) q` on the open set `U k q = {x | 0 < |q - x| < 1/(k + 1)}` and `0` off it;
+  -- `η k = sup_{q ∈ D} φ k q`.
+  let U : ℕ → Rn n → Set (Rn n) := fun k q ↦ {x | 0 < ‖q - x‖ ∧ ‖q - x‖ < 1 / ((k : ℝ) + 1)}
+  have hU (k : ℕ) (q : Rn n) : IsOpen (U k q) :=
+    (isOpen_lt continuous_const (continuous_const.sub continuous_id).norm).inter
+      (isOpen_lt (continuous_const.sub continuous_id).norm continuous_const)
+  let φ : ℕ → Rn n → Rn n → ℝ := fun k q ↦ (U k q).indicator fun x ↦ ρ x q
+  have hφ0 (k : ℕ) (q x : Rn n) : 0 ≤ φ k q x := indicator_nonneg (fun x _ ↦ hρ0 x q) x
+  have hbdd (k : ℕ) (x : Rn n) : BddAbove (range fun q : D ↦ φ k q x) := by
+    refine ⟨K + ‖ν x‖, ?_⟩
+    rintro _ ⟨q, rfl⟩
+    exact (indicator_le_self' (fun x _ ↦ hρ0 x q) x).trans (hρK x q)
+  let η : ℕ → Rn n → ℝ := fun k x ↦ ⨆ q : D, φ k q x
+  refine ⟨η, fun k ↦ ?_, fun k x _ y _ hpos hlt ↦ ?_, fun x _ hfd ↦ ?_⟩
+  · -- Each `φ k q` is Borel, and `η k` is a countable supremum of them.
+    refine Measurable.iSup fun q ↦ Measurable.indicator ?_ (hU k q).measurableSet
+    have hfm : Measurable f := hf.continuous.measurable
+    exact (continuous_abs.measurable.comp ((measurable_const.sub hfm).sub
+      (hν.inner (measurable_const.sub measurable_id)))).div (measurable_const.sub measurable_id).norm
+  · -- The `q` with `|f q - f x - ν(x)·(q - x)| ≤ η k x |q - x|` form a closed set containing the
+    -- points of `D` in the open set `{q | 0 < |q - x| < 1/(k + 1)}`, which are dense in it.
+    have hF : IsClosed {q : Rn n | |f q - f x - inner ℝ (ν x) (q - x)| ≤ η k x * ‖q - x‖} :=
+      isClosed_le ((hf.continuous.sub continuous_const).sub
+        (continuous_const.inner (continuous_id.sub continuous_const))).abs
+        (continuous_const.mul (continuous_id.sub continuous_const).norm)
+    have hV : IsOpen {q : Rn n | 0 < ‖q - x‖ ∧ ‖q - x‖ < 1 / ((k : ℝ) + 1)} :=
+      (isOpen_lt continuous_const (continuous_id.sub continuous_const).norm).inter
+        (isOpen_lt (continuous_id.sub continuous_const).norm continuous_const)
+    refine closure_minimal (fun q hq ↦ ?_) hF (hDd.open_subset_closure_inter hV ⟨hpos, hlt⟩)
+    have hle : φ k q x ≤ η k x := le_ciSup (hbdd k x) ⟨q, hq.2⟩
+    rw [show φ k q x = ρ x q from indicator_of_mem hq.1 _] at hle
+    exact (div_le_iff₀ hq.1.1).1 hle
+  · -- Given `δ > 0`, the `o(|y - x|)` estimate holds on `ball x r`; once `1/(k + 1) < r`, every
+    -- `φ k q x` is at most `δ / 2`.
+    refine Metric.tendsto_atTop.2 fun δ hδ ↦ ?_
+    obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff.1 (hfd.isLittleO.bound (half_pos hδ))
+    obtain ⟨k₀, hk₀⟩ := exists_nat_one_div_lt hr
+    refine ⟨k₀, fun k hk ↦ ?_⟩
+    have hle : η k x ≤ δ / 2 := by
+      refine ciSup_le fun q ↦ indicator_apply_le' (fun hq ↦ ?_) fun _ ↦ (half_pos hδ).le
+      have hqr : dist (q : Rn n) x < r := by
+        rw [dist_eq_norm]
+        exact hq.2.trans_le ((Nat.one_div_le_one_div hk).trans hk₀.le)
+      have h := hball hqr
+      rw [innerSL_apply_apply, Real.norm_eq_abs] at h
+      exact (div_le_iff₀ hq.1).2 h
+    have h0 : 0 ≤ η k x := Real.iSup_nonneg fun q ↦ hφ0 k q x
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg h0]
+    exact hle.trans_lt (half_lt_self hδ)
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
