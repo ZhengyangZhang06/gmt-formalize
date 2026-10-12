@@ -774,6 +774,47 @@ theorem Submission.smr_rb_pushforward_subtype :
     rw [hι.integral_map]
     simp only [hνval]
 
+/-- Riesz representation (Simon Ch. 1, 4.14) for a locally bounded functional `L` on
+`CF_N(U) = {f ∈ C_c(ℝ^P, ℝ^N) : tsupport f ⊆ U}`, `U ⊆ ℝ^P` open: there are a Borel measure `μ`
+on `ℝ^P` living on `U`, finite on compact subsets of `U`, and a Borel field `ν` with `‖ν‖ ≤ 1`
+and `‖ν‖ = 1` `μ`-a.e., such that `L f = ∫ ⟨f, ν⟩ dμ` for every `f ∈ CF_N(U)`. -/
+theorem Submission.smr_riesz_borel_euclidean :
+    ∀ (P N : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ L : (Eucl P → EuclideanSpace ℝ (Fin N)) → ℝ,
+      (∀ f g : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → HasCompactSupport f →
+        tsupport f ⊆ U → Continuous g → HasCompactSupport g → tsupport g ⊆ U →
+        L (f + g) = L f + L g) →
+      (∀ (c : ℝ) (f : Eucl P → EuclideanSpace ℝ (Fin N)), Continuous f → HasCompactSupport f →
+        tsupport f ⊆ U → L (c • f) = c * L f) →
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ B : ℝ,
+        ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → tsupport f ⊆ K →
+          (∀ x, ‖f x‖ ≤ 1) → L f ≤ B) →
+      ∃ (μ : Measure (Eucl P)) (ν : Eucl P → EuclideanSpace ℝ (Fin N)), Measurable ν ∧
+        μ Uᶜ = 0 ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) ∧
+        (∀ x, ‖ν x‖ ≤ 1) ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧
+        ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → HasCompactSupport f →
+          tsupport f ⊆ U →
+          Integrable (fun x => inner ℝ (f x) (ν x)) μ ∧
+            L f = ∫ x, inner ℝ (f x) (ν x) ∂μ := by
+  intro P N U hU L hadd hsmul hbd
+  -- Transfer `L` to a locally bounded linear functional `L'` on `C_c(↥U, ℝ^N)`.
+  obtain ⟨L', hL'bd, hL'f⟩ := Submission.smr_rb_transfer_functional P N U hU L hadd hsmul hbd
+  -- `↥U` is locally compact (`U` is open), hence σ-compact (second countable); it carries the
+  -- subspace Borel σ-algebra.
+  have : LocallyCompactSpace ↥U := hU.locallyCompactSpace
+  -- Borel Riesz representation of `L'` on `↥U`.
+  obtain ⟨m, ν₁, hmK, hν₁, hν₁le, hν₁ae, hrep⟩ :=
+    Submission.smr_rb_borel_riesz_sigma_compact ↥U N L' hL'bd
+  -- Push the data forward to `ℝ^P`, extending `ν₁` by zero.
+  obtain ⟨μ, ν, hν, hμU, hμK, hνle, hνae, hpush⟩ :=
+    Submission.smr_rb_pushforward_subtype P N U hU m ν₁ hmK hν₁ hν₁le hν₁ae
+  refine ⟨μ, ν, hν, hμU, hμK, hνle, hνae, fun f hf hfc hfU => ?_⟩
+  obtain ⟨hint, hμm⟩ := hpush f hf hfc hfU
+  obtain ⟨g, hg, hLg⟩ := hL'f f hf hfc hfU
+  -- `L f = L' g = ∫ ⟨g, ν₁⟩ dm = ∫ ⟨f ∘ ι, ν₁⟩ dm = ∫ ⟨f, ν⟩ dμ`.
+  refine ⟨hint, ?_⟩
+  rw [hLg, hrep g, hμm]
+  simp only [hg]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
