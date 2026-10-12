@@ -627,6 +627,44 @@ theorem aal_allard_subball_bounds : ∀ (n ℓ : ℕ) (p : ℝ), (n : ℝ) < p �
     refine le_trans ?_ hK'
     exact ENNReal.rpow_le_rpow (mul_le_mul' (ENNReal.ofReal_le_ofReal
       (Real.rpow_le_rpow hr.le hrρ hpn.le)) hI) hp'.le
+/-- Simon Ch. 5, 2.4, step (5.1) of the lower density bound, abstracted: put
+`Φ(u) = F(u) (m(u)/uⁿ) + (F(u) − 1)`.  If `|F(u) − 1| ≤ Λ (u/R)^α` on `(0, R]` with `α > 0`, `Φ` is
+nondecreasing on `(0, R]`, and for every `ε > 0` eventually `(1 − ε) ω uⁿ ≤ m(u)` as `u ↓ 0`, then
+`ω ≤ Φ(t)` for every `t ∈ (0, R]` (let `u ↓ 0` in `Φ(u) ≤ Φ(t)`, using `F(u) → 1`). -/
+theorem aal_monotone_quantity_ge_density : ∀ (n : ℕ) (α ω R Λ : ℝ) (m F : ℝ → ℝ), 0 < α → 0 < ω → 0 < R → (∀ u : ℝ, 0 < u → u ≤ R → |F u - 1| ≤ Λ * (u / R) ^ α) → (∀ u t : ℝ, 0 < u → u ≤ t → t ≤ R → F u * (m u / u ^ n) + (F u - 1) ≤ F t * (m t / t ^ n) + (F t - 1)) → (∀ ε : ℝ, 0 < ε → ∀ᶠ u in 𝓝[>] (0 : ℝ), (1 - ε) * (ω * u ^ n) ≤ m u) → ∀ t : ℝ, 0 < t → t ≤ R → ω ≤ F t * (m t / t ^ n) + (F t - 1) := by
+  intro n α ω R Λ m F hα hω hR hF hmono hlow t ht htR
+  -- `Λ (u/R)^α → 0` as `u → 0+`, since `x ↦ x^α` is continuous at `0` with `0^α = 0` (`α > 0`).
+  have hlim : Tendsto (fun u : ℝ => Λ * (u / R) ^ α) (𝓝[>] 0) (𝓝 0) := by
+    have hc : ContinuousAt (fun u : ℝ => Λ * (u / R) ^ α) 0 :=
+      continuousAt_const.mul ((continuousAt_id.div_const R).rpow_const (Or.inr hα.le))
+    have h := hc.tendsto
+    simp only [zero_div, Real.zero_rpow hα.ne', mul_zero] at h
+    exact h.mono_left nhdsWithin_le_nhds
+  -- Suppose `Φ(t) < ω` and pick `η ∈ (0, 1/2]` with `η (2ω + 1) ≤ (ω − Φ(t))/2`.
+  refine not_lt.mp fun hcon => ?_
+  obtain ⟨η, hη0, hη2, hηd⟩ : ∃ η : ℝ, 0 < η ∧ η ≤ 1 / 2 ∧
+      η * (2 * (2 * ω + 1)) ≤ ω - (F t * (m t / t ^ n) + (F t - 1)) := by
+    refine ⟨min (1 / 2) ((ω - (F t * (m t / t ^ n) + (F t - 1))) / (2 * (2 * ω + 1))),
+      lt_min (by norm_num) (div_pos (sub_pos.mpr hcon) (by positivity)), min_le_left _ _, ?_⟩
+    rw [← le_div_iff₀ (by positivity)]
+    exact min_le_right _ _
+  -- A small radius `u ∈ (0, t)` with `Λ (u/R)^α < η` and `(1 − η) ω uⁿ ≤ m(u)`.
+  have hsmall : ∀ᶠ u in 𝓝[>] (0 : ℝ), u ∈ Ioo 0 t := Ioo_mem_nhdsGT ht
+  obtain ⟨u, ⟨hu0, hut⟩, huΛ, hum⟩ :=
+    (hsmall.and ((hlim.eventually (gt_mem_nhds hη0)).and (hlow η hη0))).exists
+  -- `|F(u) − 1| < η`, so `F(u) > 1 − η ≥ 1/2`.
+  have hFu : 1 - η < F u := by
+    have h := (abs_lt.mp ((hF u hu0 (hut.le.trans htR)).trans_lt huΛ)).1
+    linarith
+  -- `m(u)/uⁿ ≥ (1 − η) ω ≥ 0`, hence `F(u) (m(u)/uⁿ) ≥ (1 − η)² ω`.
+  have hmu : (1 - η) * ω ≤ m u / u ^ n := by
+    rw [le_div_iff₀ (pow_pos hu0 n)]
+    linarith
+  have hprod : (1 - η) * ((1 - η) * ω) ≤ F u * (m u / u ^ n) :=
+    mul_le_mul hFu.le hmu (mul_nonneg (by linarith) hω.le) (by linarith)
+  -- `Φ(u) ≥ (1 − η)² ω − η ≥ ω − η (2ω + 1) > Φ(t)`, contradicting `Φ(u) ≤ Φ(t)`.
+  have hmon := hmono u t hu0 hut.le htR
+  linarith [mul_nonneg (sq_nonneg η) hω.le]
 
 end Submission
 
