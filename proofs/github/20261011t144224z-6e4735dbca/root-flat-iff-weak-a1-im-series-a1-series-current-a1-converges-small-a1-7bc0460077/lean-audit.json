@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1bc431621add40a5be2c59f1c37e15d7db6d075c159c5387e5052d66d2f3dff3",
+  "git_delta": {
+    "base_commit": "8bb0d7fa0eeab496bae355d04a49b6dfe6484814",
+    "candidate_commit": "49ba437cb4c73c41041035a8f5eda19c11c4711b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_ims_sc_converges_zero_small",
+    "diff_sha256": "97aeff1bc7f649a42dbd843c74d9660f7225b5312d07af4a01a7de9a19a8eb6c",
+    "source_sha256": "7b3c44cf95edf1d2178b7a9e6c1e78a0533e3dc45f6a366f49cd8bb8adc9ecaf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_ims_sc_converges_zero_small",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (ω : ℕ → TestFormOn U n), TestFormOnConverges ω 0 → ∃ K : Set (Eucl P), IsCompact K ∧ K ⊆ U ∧ (∀ q, tsupport ((ω q : DifferentialForm (Eucl P) n)) ⊆ K) ∧ ∀ ε : ℝ, 0 < ε → ∀ᶠ q in atTop, ∀ x, covectorEuclideanNorm ((ω q : DifferentialForm (Eucl P) n) x) ≤ ε",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
