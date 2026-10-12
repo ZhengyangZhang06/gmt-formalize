@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.upper_density_zero-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1",
+  "depth": 3,
+  "title": "Upper density theorem in μHE[n] form (Simon Ch. 1, Thm 3.6)",
+  "statement": "Let n, ℓ ≥ 0, ν a measure on (the Borel σ-algebra of) ℝ^{n+ℓ} = Amb n ℓ, and A ⊆ ℝ^{n+ℓ} a Borel set with ν(A) < ∞. Then for Hⁿ-almost every x ∈ ℝ^{n+ℓ} (Hⁿ = μHE[n]) with x ∉ A, ν(A ∩ B_r(x))/rⁿ → 0 in [0, ∞] as r ↓ 0 (B_r(x) the closed ball; rⁿ read as ENNReal.ofReal (rⁿ)). (Simon Ch. 1, Upper Density Theorem 3.6, i.e. the cited fact (H2) of the parent proof, in Mathlib's normalization of Hⁿ.)",
+  "lean_statement": "∀ (n ℓ : ℕ) (ν : Measure (Amb n ℓ)) (A : Set (Amb n ℓ)), MeasurableSet A → ν A < ⊤ → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∉ A → Tendsto (fun r : ℝ => ν (A ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "aetp_upper_density_zero_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-upper-density-zero-a1-a1"
+}
