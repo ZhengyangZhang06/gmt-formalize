@@ -2987,8 +2987,6 @@ theorem Submission.trace_scalar_add_rankOne_comp_starProjection : ∀ (n ℓ : �
   rw [hA, map_add, map_smul, LinearMap.trace_smulRight, hp, smul_eq_mul]
   rfl
 
-theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
-
 /-- **Pointwise tangential divergence of the weighted radial field** (Simon Ch. 4, 3.2 and 5.1).
 If `dim T_x V = n`, `h` is differentiable at `x` and `γ` is `C¹`, then for
 `X(y) = h(y) γ(|y - ξ|)(y - ξ)` and `r = |x - ξ|`,
