@@ -1464,6 +1464,63 @@ theorem Submission.frt_tangent_plane_unique :
   rw [← T'.toMatrix_projectionLinearMap, ← T.toMatrix_projectionLinearMap, hproj T', hproj T,
     hplane]
 
+/-- **A varifold with tangent planes `μ_V`-a.e. is the graph measure of its tangent planes**
+(Simon Ch. 8, proof of 1.2, p. 208, printed (1)–(2), with the corrected `η_V^(x)(β) = β(T_x)`).
+Let `η` satisfy the conclusions of Lemma 1.3, and let `V` have a tangent plane at `μ_V`-a.e. `x`.
+Then for every Borel `A ⊆ ℝ^N × G(N,n)` the set `S_A = {x : (x, T_x) ∈ A}` is
+`μ_V`-null-measurable and `V(A) = μ_V(S_A)`.  At a tangent point the ball averages tend to
+`β(T_x)`, so `∫ β dη(x) = β(T_x)` for `μ_V`-a.e. `x`.  With a Borel selection `τ` of `x ↦ T_x`,
+the second part of 1.3 becomes identity (1), hence `V = (μ_V)_#(x ↦ (x, τ x))`. -/
+theorem Submission.frt_varifold_eq_tangent_graph_measure :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), (∃ η : Euclidean N → Measure (Grassmannian N n), (∀ᵐ x ∂V.weight, IsProbabilityMeasure (η x) ∧ ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂(η x)))) ∧ ∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A → (∀ S, 0 ≤ β S) → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, (∫⁻ S, ENNReal.ofReal (β S) ∂(η x)) ∂V.weight) → (∀ᵐ x ∂V.weight, ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ) → ∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A → NullMeasurableSet {x | ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ ∧ (x, T) ∈ A} V.weight ∧ V.measure A = V.weight {x | ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ ∧ (x, T) ∈ A} := by
+  intro N n U V hη htan A hA
+  obtain ⟨η, hη₁, hη₂⟩ := hη
+  -- Step 0: if `G(N,n) = ∅`, then `S_A = ∅` and `A = ∅`.
+  rcases isEmpty_or_nonempty (Grassmannian N n) with hG | hG
+  · have hS : {x | ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ ∧ (x, T) ∈ A} = ∅ :=
+      eq_empty_of_forall_notMem fun _ ⟨T, _⟩ ↦ hG.elim T
+    have hA₀ : A = ∅ := eq_empty_of_forall_notMem fun z _ ↦ hG.elim z.2
+    rw [hS, hA₀]
+    simp
+  -- Step 1: a Borel `τ : ℝ^N → G(N,n)` with `τ x = T` whenever the averages tend to `β(T)`.
+  obtain ⟨τ, hτm, hτ⟩ := Submission.frt_vgm_measurable_plane_selection N n U V hG
+  -- Step 2: at a tangent point the averages tend to `β(T)`, so `τ x = T`.
+  have hτT : ∀ (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ),
+      HasTangentPlane V x T θ → τ x = T := fun x T θ hT ↦
+    hτ x T (Submission.frt_vgm_tangent_ball_average N n U V x T θ hT)
+  -- Step 3: identity (1).  For `μ_V`-a.e. `x`, `η(x)` is a probability measure and
+  -- `∫ β dη(x) = β(T_x) = β(τ x)` by uniqueness of limits as `ρ ↓ 0`.
+  have hid : ∀ (A' : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A' →
+      (∀ S, 0 ≤ β S) →
+      ∫⁻ z in A' ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure =
+        ∫⁻ x in A', ENNReal.ofReal (β (τ x)) ∂V.weight := by
+    intro A' β hA' hβ
+    rw [hη₂ A' β hA' hβ]
+    refine setLIntegral_congr_fun_ae hA' ?_
+    filter_upwards [hη₁, htan] with x hx htx _
+    obtain ⟨hprob, hlim⟩ := hx
+    obtain ⟨T, θ, hT⟩ := htx
+    have hβT : ∫ S, β S ∂(η x) = β T :=
+      tendsto_nhds_unique (hlim β) (Submission.frt_vgm_tangent_ball_average N n U V x T θ hT β)
+    rw [hτT x T θ hT, ← hβT, ofReal_integral_eq_lintegral_ofReal
+      (β.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _))
+      (Eventually.of_forall hβ)]
+  -- Step 4: hence `V = (μ_V)_#(x ↦ (x, τ x))` (printed (2)).
+  have hV := Submission.frt_vgm_eq_map_graph_of_lintegral N n U V τ hτm hid
+  -- Step 5: `S_A` agrees `μ_V`-a.e. with the Borel set `{x : (x, τ x) ∈ A}`, since `τ x = T` at
+  -- every tangent pair `(x, T)` and tangent points have full `μ_V`-measure.
+  have hg : Measurable fun x ↦ (x, τ x) := measurable_id.prodMk hτm
+  have hAe : {x | ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ ∧ (x, T) ∈ A}
+      =ᵐ[V.weight] (fun x ↦ (x, τ x)) ⁻¹' A := by
+    filter_upwards [htan] with x htx
+    obtain ⟨T, θ, hT⟩ := htx
+    refine propext ⟨fun ⟨T', θ', hT', hmem⟩ ↦ ?_, fun hmem ↦ ⟨T, θ, hT, ?_⟩⟩
+    · show (x, τ x) ∈ A
+      rwa [hτT x T' θ' hT']
+    · rwa [← hτT x T θ hT]
+  refine ⟨(hg hA).nullMeasurableSet.congr hAe.symm, ?_⟩
+  rw [hV, Measure.map_apply hg hA, measure_congr hAe]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
