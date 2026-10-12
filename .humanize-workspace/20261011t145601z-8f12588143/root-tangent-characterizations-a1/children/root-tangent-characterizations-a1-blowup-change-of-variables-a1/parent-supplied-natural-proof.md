@@ -1,0 +1,86 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tangent_characterizations-a1`
+- Child DAG node: `root.tangent_characterizations-a1.blowup_change_of_variables-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: fact (F1) in the Notation section of the parent proof. It is the scaling identity behind Simon Ch. 3, Definitions 1.4 and 1.7 and the proof of Theorem 1.6 (chapter-03.txt lines 113-143, 290-296). Here it is proved for every integrand g, which contains the parent's two cases (Borel g ≥ 0, and g with g∘η integrable).
+
+Setting. Fix n, N, x ∈ ℝ^N, r > 0, A ⊆ ℝ^N and g : ℝ^N → ℝ. Write η := η_{x,r}, Hⁿ := μHE[n] and c := (r⁻¹)ⁿ.
+
+1. η is a homeomorphism of ℝ^N with inverse η⁻¹(y) = x + r·y. Indeed x + r·(r⁻¹(y − x)) = y and r⁻¹((x + r·y) − x) = y because r ≠ 0, and both maps are continuous (affine). Hence η and η⁻¹ are Borel measurable bijections, and η⁻¹ is a measurable embedding. (SimonGMT: Chapter04.blowUpHomeomorph.)
+
+2. For every set S ⊆ ℝ^N, Hⁿ(η(S)) = c·Hⁿ(S). Write η = h ∘ τ with τ(y) = y − x and h(z) = r⁻¹·z, the homothety with centre 0 and ratio r⁻¹.
+   - τ is an isometry, so Hⁿ(τ(S)) = Hⁿ(S) (Mathlib Isometry.euclideanHausdorffMeasure_image).
+   - Hⁿ(h(T)) = ‖r⁻¹‖ⁿ·Hⁿ(T) = (r⁻¹)ⁿ·Hⁿ(T) for every T (Mathlib euclideanHausdorffMeasure_homothety_image; r⁻¹ > 0).
+   Both facts hold for arbitrary sets, since Hⁿ is the Hausdorff outer measure. (SimonGMT: Chapter04.hausdorff_blowUp_image.)
+
+3. Push-forward identity: (η⁻¹)_#(Hⁿ⌞η(A)) = c·(Hⁿ⌞A). Let B be Borel. By the definition of the image measure and of the restriction (the preimage (η⁻¹)⁻¹(B) is Borel), (η⁻¹)_#(Hⁿ⌞η(A))(B) = Hⁿ((η⁻¹)⁻¹(B) ∩ η(A)). Since η is a bijection, (η⁻¹)⁻¹(B) = η(B) and η(B) ∩ η(A) = η(A ∩ B). By Step 2 with S = A ∩ B, this equals c·Hⁿ(A ∩ B) = c·(Hⁿ⌞A)(B). Two measures that agree on all Borel sets are equal. (SimonGMT: Chapter04.map_inverse_blowUp_carrier, in module Poincare.SimonGMT.Chapter04.WeightedBlowUp. It may be imported by the implementation, or Steps 2-3 can be reproved from the cited Mathlib lemmas.)
+
+4. Let ν := Hⁿ⌞η(A). Since η⁻¹ is a measurable embedding, ∫ G d((η⁻¹)_#ν) = ∫ G∘η⁻¹ dν for every function G : ℝ^N → ℝ, with no integrability hypothesis (Mathlib MeasurableEmbedding.integral_map). Take G := g∘η. Then G∘η⁻¹ = g, so ∫ g∘η d((η⁻¹)_#ν) = ∫ g dν = ∫_{η(A)} g dHⁿ.
+
+5. By Step 3, the left side of Step 4 is ∫ g∘η d(c·(Hⁿ⌞A)). This equals c·∫_A g∘η dHⁿ (Mathlib integral_smul_measure, valid for every integrand and every finite constant; here the constant is ENNReal.ofReal(r⁻¹)ⁿ, with real value (r⁻¹)ⁿ).
+
+6. Combining Steps 4 and 5: ∫_{η(A)} g dHⁿ = (r⁻¹)ⁿ ∫_A g(η(z)) dHⁿ(z) = (rⁿ)⁻¹ ∫_A g(η_{x,r}(z)) dHⁿ(z), using (r⁻¹)ⁿ = (rⁿ)⁻¹ (inv_pow). ∎
+
+## Key steps
+
+1. η_{x,r} is a homeomorphism with inverse y ↦ x + r y, hence its inverse is a measurable embedding.
+2. Hⁿ(η_{x,r}(S)) = (r⁻¹)ⁿHⁿ(S) for every set S (translation isometry + homothety scaling of μHE).
+3. Push-forward identity (η⁻¹)_#(Hⁿ⌞η(A)) = (r⁻¹)ⁿ·Hⁿ⌞A, checked on Borel sets.
+4. Change of variables along the measurable embedding η⁻¹ plus integral_smul_measure gives the identity for every integrand g; (r⁻¹)ⁿ = (rⁿ)⁻¹.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `grep -n "def blowUpMap|def CountablyRectifiable|def HasApproximateTangentSpaceAt|def HasWeightedApproximateTangentSpaceAt|def PurelyUnrectifiable" -A 14 simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -rn "blowUpMap" simongmt/Poincare/SimonGMT --include=*.lean`
+- `grep -rn "theorem.*euclideanHausdorffMeasure.*smul|theorem euclideanHausdorffMeasure_image|theorem.*image_le_of_lipschitzOn|theorem.*image_null|theorem.*image_eq_zero" simongmt/Poincare/SimonGMT`
+- `grep -rn "theorem|lemma" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `grep -rn "ContDiffAt.exists_lipschitzOnWith|ContDiffOn.locallyLipschitzOn|isOpen_iUnion_countable|isOpen_biUnion_countable|integral_withDensity_eq_integral_toReal_smul|withDensity_apply_eq_zero" mathlib/Mathlib`
+- `grep -rn "Integrable.lintegral_lt_top|restrict_apply₀'|ae_restrict_mem₀|measure_biUnion_null_iff|image_iUnion₂|ae_restrict_iff'₀" mathlib/Mathlib`
+- `grep -rn "LocallyLipschitzOn.*hausdorff|hausdorffMeasure.*LocallyLipschitz" mathlib/Mathlib simongmt/Poincare (no match)`
+- `grep -rn "IsC1Submanifold|IsSimonSubmanifold" simongmt/Poincare --include=*.lean | grep theorem`
+- `diff local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean (identical)`
+- `python3 over runs/.../dag.json: lean_name and lean_statement of every DAG node (collision check)`
+- `lake env lean /tmp/tc-decomp/Check.lean, Glue.lean, Children.lean (statement elaboration, parent glue from stubbed children and siblings, trial child proofs)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-tangent-characterizations-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Data/Set/Lattice/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCompletion.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaSubmanifoldExample.lean`
+
+Snapshot: project d09bc8a (its Contract.lean is byte-identical to the workspace contract), Mathlib 25730c7c, plus the pinned simongmt package.
+
+Reusable declarations found, by child:
+- (1) SimonGMT Chapter04: hausdorff_blowUp_image (H^n(eta_{x,r}(S)) = ofReal(r^-1)^n H^n(S) for arbitrary S), blowUpHomeomorph, map_inverse_blowUp_carrier (push-forward of H^n restricted to eta(M) by eta^-1 equals ofReal(r^-1)^n times H^n restricted to M). Mathlib: euclideanHausdorffMeasure_homothety_image, Isometry.euclideanHausdorffMeasure_image, MeasurableEmbedding.integral_map, integral_smul_measure.
+- (2) Mathlib: withDensity_apply, withDensity_apply_eq_zero', integral_withDensity_eq_integral_toReal_smul0, Measure.restrict_apply0', ae_restrict_mem0, Integrable.lintegral_lt_top. SimonGMT's RectifiableVarifold.integral_weighted_blowUp is the varifold-specific model of child (2c).
+- (3) SimonGMT: Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (arbitrary sets), Chapter02.area_image_null_of_lipschitzOn (single Lipschitz-on-set map only). Mathlib: EuclideanSpace.euclideanHausdorffMeasure_eq_volume, TopologicalSpace.isOpen_biUnion_countable.
+- (4) Mathlib: ContDiffAt.exists_lipschitzOnWith (C1 implies locally Lipschitz on open sets), measure_biUnion_null_iff. SimonGMT's IsSimonSubmanifold.nonempty_volumeAtlas is an alternative countable-atlas route.
+- Parent glue: SimonGMT countablyRectifiable_of_measure_zero, CountablyRectifiable.mono; Mathlib ae_restrict_iff'0, withDensity_absolutelyContinuous, integrableOn_const.
+
+No match: neither library states the blow-up change of variables for an arbitrary set and integrand, the null-image lemma for maps that are only locally Lipschitz on an open set, or the chartwise a.e. transfer over an IsC1Submanifold cover. These are therefore supplied as children (1), (3) and (4).
+
+Compilation checks: all four child statements elaborate. Trial proofs of all four children compiled (exit 0); child (1) imported Poincare.SimonGMT.Chapter04.WeightedBlowUp, whose oleans are present in .lake/packages/simongmt. The parent compiled from the children together with the stubbed sibling interfaces.
+
+Collision check: no proposed lean_name collides with any lean_name in dag.json.

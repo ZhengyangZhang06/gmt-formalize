@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_characterizations-a1.blowup_change_of_variables-a1",
+  "parent_id": "root.tangent_characterizations-a1",
+  "depth": 2,
+  "title": "Change of variables for Hausdorff integrals under the blow-up map η_{x,r} (fact F1)",
+  "statement": "Let n, N ∈ ℕ, x ∈ ℝ^N = EuclideanSpace ℝ (Fin N), r > 0, A ⊆ ℝ^N an arbitrary set and g : ℝ^N → ℝ an arbitrary function. Let η_{x,r}(y) = r⁻¹(y − x) (blowUpMap x r) and Hⁿ = μHE[n] on ℝ^N. Then ∫_{η_{x,r}(A)} g dHⁿ = (rⁿ)⁻¹ ∫_A g(η_{x,r}(z)) dHⁿ(z). Both sides are Bochner integrals for the restricted measures Hⁿ⌞η_{x,r}(A) and Hⁿ⌞A, with value 0 for non-integrable integrands, so the identity holds whether or not g is integrable.",
+  "lean_statement": "∀ (n N : ℕ) (x : Rn N) (r : ℝ) (A : Set (Rn N)) (g : Rn N → ℝ), 0 < r → ∫ y in blowUpMap x r '' A, g y ∂μHE[n] = (r ^ n)⁻¹ * ∫ z in A, g (blowUpMap x r z) ∂μHE[n]",
+  "lean_name": "setIntegral_blowUpMap_image",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-tangent-characterizations-a1-blowup-change-of-variables-a1-a1"
+}

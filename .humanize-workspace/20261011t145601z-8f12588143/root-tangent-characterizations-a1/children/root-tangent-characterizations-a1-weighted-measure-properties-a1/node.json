@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_characterizations-a1.weighted_measure_properties-a1",
+  "parent_id": "root.tangent_characterizations-a1",
+  "depth": 2,
+  "title": "The measure θHⁿ⌞M: finite on compacts, same null sets as Hⁿ⌞M, and weighted tangent planes are tangent planes with multiplicity θ(x)",
+  "statement": "Let n, N ∈ ℕ and let M ⊆ ℝ^N be Hⁿ-measurable (NullMeasurableSet M μHE[n]). Let θ : ℝ^N → ℝ be a positive locally integrable weight on M (IsPositiveLocallyIntegrableWeight n M θ): θ > 0 on M, θ is Hⁿ⌞M-a.e. measurable, and θ is Hⁿ-integrable on M ∩ K for every compact K. Let μ = θHⁿ⌞M, i.e. μ = (Hⁿ⌞M).withDensity(z ↦ ofReal θ(z)). Then:\n(a) μ(K) < ∞ for every compact K;\n(b) for every set S ⊆ ℝ^N, μ(S) = 0 iff Hⁿ(M ∩ S) = 0;\n(c) for every x ∈ ℝ^N and every subspace P with HasWeightedApproximateTangentSpaceAt n M θ x P, the measure μ satisfies HasApproxTangentPlaneWithMultiplicity n μ x P (θ x). The hypothesis means: finrank P = n, and ∫_{η_{x,r}(M)} f(y)θ(x + ry) dHⁿ(y) → θ(x)∫_P f dHⁿ as r ↓ 0 for every f ∈ C_c(ℝ^N). The conclusion means: finrank P = n, and (rⁿ)⁻¹∫ f(η_{x,r}(y)) dμ(y) → θ(x)∫_P f dHⁿ as r ↓ 0 for every f ∈ C_c(ℝ^N).",
+  "lean_statement": "∀ (n N : ℕ) (M : Set (Rn N)) (θ : Rn N → ℝ) (μ : Measure (Rn N)), NullMeasurableSet M μHE[n] → IsPositiveLocallyIntegrableWeight n M θ → μ = ((μHE[n] : Measure (Rn N)).restrict M).withDensity (fun z ↦ ENNReal.ofReal (θ z)) → (∀ K : Set (Rn N), IsCompact K → μ K < ∞) ∧ (∀ S : Set (Rn N), μ S = 0 ↔ μHE[n] (M ∩ S) = 0) ∧ ∀ (x : Rn N) (P : Submodule ℝ (Rn N)), HasWeightedApproximateTangentSpaceAt n M θ x P → HasApproxTangentPlaneWithMultiplicity n μ x P (θ x)",
+  "lean_name": "weightedMeasure_finite_null_tangent",
+  "depends_on": [
+    "root.tangent_characterizations-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tangent_characterizations-a1.blowup_change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-tangent-characterizations-a1-weighted-measure-properties-a1-a1"
+}
