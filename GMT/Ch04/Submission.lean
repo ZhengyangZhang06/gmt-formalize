@@ -10067,6 +10067,385 @@ theorem Submission.weighted_mono_cutoff_limit : ∀ (n ℓ : ℕ) (μ : Measure 
   refine ⟨hi, hii, tendsto_nhds_unique (((hUρ.div_const (ρ ^ n)).sub
     (hUσ.div_const (σ ^ n))).congr fun m ↦ ?_) ((hK.add hT).congr fun m ↦ (hSm m).symm)⟩
   rw [hcomm, hcomm]
+/-- **Cutoff, radial profile and radial test field outside a ball** (Simon Ch. 4, 6.1, proof
+steps 2–4). A bump function `ζ` centred at `ξ` is `1` near the compact set `K`; the profile
+`γ(t) = g(t² - (R + ε)²)`, `g = expNegInvGlue`, vanishes on `[0, R + ε]`, is positive beyond and
+nondecreasing on `[0, ∞)`; and `X(x) = (ζ(x)γ(|x - ξ|))(x - ξ)` is a `C¹` field with compact
+support in `ℝ^{n+ℓ} \ B_R(ξ)` (`γ(|x - ξ|) = g(|x - ξ|² - (R + ε)²)` is smooth even at `ξ`). -/
+theorem Submission.exists_radial_cutoff_test_field : ∀ (n ℓ : ℕ) (K : Set (Ambient n ℓ)) (ξ : Ambient n ℓ) (R ε : ℝ), IsCompact K → 0 ≤ R → 0 < ε → ∃ (ζ : Ambient n ℓ → ℝ) (γ : ℝ → ℝ), ContDiff ℝ 1 ζ ∧ (∀ x ∈ K, ζ x = 1 ∧ gradient ζ x = 0) ∧ ContDiff ℝ 1 γ ∧ (∀ t : ℝ, 0 ≤ t → 0 ≤ γ t ∧ 0 ≤ deriv γ t) ∧ (∀ t : ℝ, 0 ≤ t → t ≤ R + ε → γ t = 0) ∧ (∀ t : ℝ, R + ε < t → 0 < γ t) ∧ IsTestField (closedBall ξ R)ᶜ (fun x ↦ (ζ x * γ ‖x - ξ‖) • (x - ξ)) := by
+  intro n ℓ K ξ R ε hK hR hε
+  -- step 1: `K ⊆ W = B(ξ, ρ₀)` with `ρ₀ = |ρ| + 1 > 0`
+  obtain ⟨ρ, hρ⟩ := hK.isBounded.subset_ball ξ
+  have hρ₀ : 0 < |ρ| + 1 := by positivity
+  have hKW : K ⊆ ball ξ (|ρ| + 1) := hρ.trans (ball_subset_ball (by linarith [le_abs_self ρ]))
+  -- step 2: `ζ` is the bump function at `ξ` with `rIn = ρ₀`, `rOut = ρ₀ + 1`
+  let f : ContDiffBump ξ := ⟨|ρ| + 1, |ρ| + 2, hρ₀, by linarith⟩
+  -- steps 4 and 6: `γ(t) = g(t² - (R + ε)²)` vanishes for `0 ≤ t ≤ R + ε`
+  have hc : 0 < R + ε := by linarith
+  have hzero : ∀ t : ℝ, 0 ≤ t → t ≤ R + ε → expNegInvGlue (t ^ 2 - (R + ε) ^ 2) = 0 :=
+    fun t ht htc ↦ expNegInvGlue.zero_of_nonpos (by nlinarith)
+  refine ⟨f, fun t ↦ expNegInvGlue (t ^ 2 - (R + ε) ^ 2), f.contDiff, fun x hx ↦ ?_,
+    expNegInvGlue.contDiff.comp ((contDiff_id.pow 2).sub contDiff_const), fun t ht ↦ ?_, hzero,
+    fun t ht ↦ expNegInvGlue.pos_of_pos (by nlinarith), ?_, ?_, ?_⟩
+  · -- step 3: `ζ ≡ 1` on a neighbourhood of `x ∈ K`, so `ζ(x) = 1` and `∇ζ(x) = 0`
+    have h1 : (f : Ambient n ℓ → ℝ) =ᶠ[𝓝 x] fun _ ↦ 1 := f.eventuallyEq_one_of_mem_ball (hKW hx)
+    exact ⟨h1.eq_of_nhds, h1.gradient_eq.trans (gradient_fun_const x 1)⟩
+  · -- step 5: `γ'(t) = g'(t² - (R + ε)²) · 2t` with `g' ≥ 0` since `g` is monotone
+    refine ⟨expNegInvGlue.nonneg _, ?_⟩
+    have hin : HasDerivAt (fun t : ℝ ↦ t ^ 2 - (R + ε) ^ 2) (2 * t) t := by
+      simpa using (hasDerivAt_pow 2 t).sub_const ((R + ε) ^ 2)
+    have hg : HasDerivAt expNegInvGlue (deriv expNegInvGlue (t ^ 2 - (R + ε) ^ 2))
+        (t ^ 2 - (R + ε) ^ 2) :=
+      ((expNegInvGlue.contDiff (n := 1)).differentiable one_ne_zero _).hasDerivAt
+    have hd := hg.comp t hin
+    rw [Function.comp_def] at hd
+    rw [hd.deriv]
+    exact mul_nonneg expNegInvGlue.monotone.deriv_nonneg (by linarith)
+  · -- step 8: `x ↦ γ(|x - ξ|) = g(|x - ξ|² - (R + ε)²)` is smooth, hence `X` is `C¹`
+    have hγ : ContDiff ℝ 1 fun x : Ambient n ℓ ↦ expNegInvGlue (‖x - ξ‖ ^ 2 - (R + ε) ^ 2) :=
+      expNegInvGlue.contDiff.comp (((contDiff_id.sub contDiff_const).norm_sq ℝ).sub contDiff_const)
+    exact (f.contDiff.mul hγ).smul (contDiff_id.sub contDiff_const)
+  · -- step 9: `supp X ⊆ supp ζ`, which is compact
+    exact f.hasCompactSupport.mono fun x hx hfx ↦ hx (by simp [hfx])
+  · -- step 10: `supp X ⊆ {|x - ξ| ≥ R + ε}`, a closed set inside `(B_R(ξ))ᶜ`
+    have hcl : IsClosed {x : Ambient n ℓ | R + ε ≤ ‖x - ξ‖} :=
+      isClosed_le continuous_const (continuous_id.sub continuous_const).norm
+    refine (closure_minimal (fun x hx ↦ ?_) hcl).trans fun x hx ↦ ?_
+    · by_contra hlt
+      exact hx (by simp [hzero ‖x - ξ‖ (norm_nonneg _) (not_le.1 hlt).le])
+    · simp only [mem_compl_iff, mem_closedBall, dist_eq_norm, not_le]
+      exact lt_of_lt_of_le (by linarith) hx
+/-- **Measurability and unit bounds of `|D^⊥r|²` (Simon Ch. 4, 6.1, step 7(b); cf. 3.2–3.3).**
+If `x ↦ p_{T_x V}` is `μ_V`-a.e. strongly measurable, then so is
+`q(x) = |p_{(T_x V)^⊥}(x - ξ)|² / |x - ξ|²` (`q(ξ) = 0 / 0 = 0`), and `0 ≤ q ≤ 1` everywhere. -/
+theorem Submission.aestronglyMeasurable_normalRadialSq_and_bounds : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (ξ : Ambient n ℓ), AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → AEStronglyMeasurable (fun x ↦ V.normalRadialSq ξ x) V.weight ∧ ∀ x, 0 ≤ V.normalRadialSq ξ x ∧ V.normalRadialSq ξ x ≤ 1) := by
+  intro n ℓ V ξ hP
+  -- `p_{(T_x V)^⊥} = 1 - p_{T_x V}`, so `x ↦ p_{(T_x V)^⊥}` is a.e. strongly measurable.
+  have hQ : AEStronglyMeasurable (fun x ↦ (V.tangentSpace x)ᗮ.starProjection) V.weight := by
+    simp_rw [Submodule.starProjection_orthogonal']
+    exact aestronglyMeasurable_const.sub hP
+  -- Evaluation `(L, v) ↦ L v` is continuous bilinear, and `x ↦ x - ξ` is continuous.
+  have hQv : AEStronglyMeasurable (fun x ↦ (V.tangentSpace x)ᗮ.starProjection (x - ξ)) V.weight :=
+    (ContinuousLinearMap.id ℝ (Ambient n ℓ →L[ℝ] Ambient n ℓ)).aestronglyMeasurable_comp₂
+      (f := fun x ↦ (V.tangentSpace x)ᗮ.starProjection) (g := fun x ↦ x - ξ) hQ
+      (continuous_id.sub continuous_const).aestronglyMeasurable
+  -- `x ↦ (|x - ξ|²)⁻¹` is Borel measurable, and `ℝ` is second countable.
+  have hden : AEStronglyMeasurable (fun x : Ambient n ℓ ↦ (‖x - ξ‖ ^ 2)⁻¹) V.weight :=
+    ((continuous_id.sub continuous_const).norm.pow 2).measurable.inv.aestronglyMeasurable
+  refine ⟨?_, fun x ↦ ⟨?_, ?_⟩⟩
+  · -- `a / b = a * b⁻¹` for all real `a, b` (also for `b = 0`).
+    simp only [RectifiableVarifold.normalRadialSq, div_eq_mul_inv]
+    exact (hQv.norm.pow 2).mul hden
+  · exact div_nonneg (sq_nonneg _) (sq_nonneg _)
+  · -- `|p_{(T_x V)^⊥} v| ≤ |v|`; `a / b ≤ 1` needs only `a ≤ b` and `0 ≤ b`.
+    exact div_le_one_of_le₀
+      (pow_le_pow_left₀ (norm_nonneg _) (Submodule.norm_starProjection_apply_le _ _) 2)
+      (sq_nonneg _)
+/-- Positivity argument of Simon 6.1 (p. 100), for an abstract measure `μ` and weight `q` (applied
+with `μ = μ_V` and `q = |D^⊥r|²`). Let `μ` be finite on compact sets with compact support,
+`U = ℝ^{n+ℓ} \ B_R(ξ)`, `r = |x - ξ|`, `H` locally `μ`-integrable on `U` with `|H · (x - ξ)| < n`
+`μ`-a.e. in `U`, `q` a.e. strongly measurable with `0 ≤ q ≤ 1`, and `γ ∈ C¹` with `γ, γ' ≥ 0` on
+`[0, ∞)`, `γ = 0` on `[0, R + ε]` and `γ > 0` on `(R + ε, ∞)`. If
+`∫_U (nγ(r) + rγ'(r)(1 - q)) dμ = -∫_U γ(r)(x - ξ) · H dμ`, then `spt μ ⊆ B_{R+ε}(ξ)`.
+Both integrands are integrable (`μ` is finite and the left one is bounded on `spt μ`; the right one
+vanishes off the compact `spt μ ∩ {r ≥ R + ε} ⊆ U`, on which `H` is integrable), so
+`∫_U (F + G) dμ = 0` with `F + G ≥ γ(r)(n - |(x - ξ) · H|) ≥ 0` `μ`-a.e. in `U`; hence `γ(r) = 0`
+`μ`-a.e. in `U`, and the open set `{r > R + ε} ⊆ U` is `μ`-null, so it misses `spt μ`. -/
+theorem Submission.support_subset_closedBall_of_radial_identity : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (q : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ : Ambient n ℓ) (R ε : ℝ), 0 < n → 0 ≤ R → 0 < ε → IsFiniteMeasureOnCompacts μ → IsCompact μ.support → LocallyIntegrableOn H (closedBall ξ R)ᶜ μ → AEStronglyMeasurable q μ → (∀ x, 0 ≤ q x ∧ q x ≤ 1) → ContDiff ℝ 1 γ → (∀ t : ℝ, 0 ≤ t → 0 ≤ γ t ∧ 0 ≤ deriv γ t) → (∀ t : ℝ, 0 ≤ t → t ≤ R + ε → γ t = 0) → (∀ t : ℝ, R + ε < t → 0 < γ t) → (∀ᵐ x ∂μ, x ∈ (closedBall ξ R)ᶜ → |inner ℝ (H x) (x - ξ)| < (n : ℝ)) → ∫ x in (closedBall ξ R)ᶜ, ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - q x)) ∂μ = -∫ x in (closedBall ξ R)ᶜ, γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂μ → μ.support ⊆ closedBall ξ (R + ε) := by
+  intro n ℓ μ H q γ ξ R ε hn hR hε hfin hcpt hHloc hq hq01 hγ hγnn hγ0 hγpos hC hId
+  have hUm : MeasurableSet (closedBall ξ R)ᶜ := measurableSet_closedBall.compl
+  have hγc : Continuous γ := hγ.continuous
+  have hγ'c : Continuous (deriv γ) := hγ.continuous_deriv le_rfl
+  have hrc : Continuous fun x : Ambient n ℓ ↦ ‖x - ξ‖ := (continuous_id.sub continuous_const).norm
+  have hr0 : ∀ x : Ambient n ℓ, 0 ≤ ‖x - ξ‖ := fun x ↦ norm_nonneg _
+  have hmemU : ∀ x : Ambient n ℓ, R < ‖x - ξ‖ → x ∈ (closedBall ξ R)ᶜ := fun x hx ↦ by
+    rwa [mem_compl_iff, mem_closedBall, dist_eq_norm, not_le]
+  -- step 1: `μ(E \ spt μ) = 0`, so `μ` is a finite measure
+  have hae : ∀ᵐ x ∂μ, x ∈ μ.support := Measure.support_mem_ae
+  have : IsFiniteMeasure μ := ⟨(measure_univ_le_add_compl μ.support).trans_lt
+    (by rw [Measure.measure_compl_support, add_zero]; exact hcpt.measure_lt_top)⟩
+  -- steps 2–4: `F = nγ(r) + rγ'(r)(1 - q)` is a.e. strongly measurable and bounded on `spt μ`
+  set F : Ambient n ℓ → ℝ := fun x ↦
+    (n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - q x) with hFdef
+  set G : Ambient n ℓ → ℝ := fun x ↦ γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) with hGdef
+  have hFlow : ∀ x, (n : ℝ) * γ ‖x - ξ‖ ≤ F x := fun x ↦ by
+    have := mul_nonneg (mul_nonneg (hr0 x) (hγnn _ (hr0 x)).2) (sub_nonneg.2 (hq01 x).2)
+    simp only [hFdef]
+    linarith
+  have hFle : ∀ x, F x ≤ (n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ := fun x ↦ by
+    have := mul_le_of_le_one_right (mul_nonneg (hr0 x) (hγnn _ (hr0 x)).2)
+      (sub_le_self 1 (hq01 x).1)
+    simp only [hFdef]
+    linarith
+  have hFnn : ∀ x, 0 ≤ F x := fun x ↦
+    (mul_nonneg (Nat.cast_nonneg n) (hγnn _ (hr0 x)).1).trans (hFlow x)
+  obtain ⟨C₁, hC₁⟩ := hcpt.exists_bound_of_continuousOn
+    (f := fun x : Ambient n ℓ ↦ (n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖)
+    ((continuous_const.mul (hγc.comp hrc)).add (hrc.mul (hγ'c.comp hrc))).continuousOn
+  have hFmeas : AEStronglyMeasurable F μ :=
+    (continuous_const.mul (hγc.comp hrc)).aestronglyMeasurable.add
+      ((hrc.mul (hγ'c.comp hrc)).aestronglyMeasurable.mul (aestronglyMeasurable_const.sub hq))
+  have hFint : Integrable F μ := by
+    refine Integrable.of_bound hFmeas C₁ ?_
+    filter_upwards [hae] with x hx
+    rw [Real.norm_eq_abs, abs_of_nonneg (hFnn x)]
+    exact (hFle x).trans ((le_abs_self _).trans (by simpa [Real.norm_eq_abs] using hC₁ x hx))
+  -- step 5: `G = γ(r)(x - ξ) · H` is integrable on `S = spt μ ∩ {r ≥ R + ε} ⊆ U`, and `G = 0`
+  -- `μ`-a.e. on `U \ S`
+  set S : Set (Ambient n ℓ) := μ.support ∩ {x | R + ε ≤ ‖x - ξ‖}
+  have hSc : IsCompact S := hcpt.inter_right (isClosed_le continuous_const hrc)
+  have hSU : S ⊆ (closedBall ξ R)ᶜ := fun x hx ↦
+    hmemU x (by have : R + ε ≤ ‖x - ξ‖ := hx.2; linarith)
+  have hHS : IntegrableOn H S μ := hHloc.integrableOn_compact_subset hSU hSc
+  obtain ⟨C₂, hC₂⟩ := hcpt.exists_bound_of_continuousOn
+    (f := fun x : Ambient n ℓ ↦ γ ‖x - ξ‖ * ‖x - ξ‖) ((hγc.comp hrc).mul hrc).continuousOn
+  have hGmeas : AEStronglyMeasurable G (μ.restrict S) :=
+    (hγc.comp hrc).aestronglyMeasurable.mul (continuous_inner.comp_aestronglyMeasurable
+      ((continuous_id.sub continuous_const).aestronglyMeasurable.prodMk hHS.aestronglyMeasurable))
+  have hGS : IntegrableOn G S μ := by
+    refine Integrable.mono' (hHS.norm.const_mul C₂) hGmeas ?_
+    filter_upwards [ae_restrict_mem hSc.isClosed.measurableSet] with x hx
+    have hg := (hγnn ‖x - ξ‖ (hr0 x)).1
+    have hb := hC₂ x hx.1
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hg (hr0 x))] at hb
+    calc ‖G x‖ = γ ‖x - ξ‖ * |inner ℝ (x - ξ) (H x)| := by
+          simp only [hGdef, norm_mul, Real.norm_eq_abs, abs_of_nonneg hg]
+      _ ≤ γ ‖x - ξ‖ * (‖x - ξ‖ * ‖H x‖) :=
+          mul_le_mul_of_nonneg_left (abs_real_inner_le_norm _ _) hg
+      _ = γ ‖x - ξ‖ * ‖x - ξ‖ * ‖H x‖ := by ring
+      _ ≤ C₂ * ‖H x‖ := mul_le_mul_of_nonneg_right hb (norm_nonneg _)
+  have hGU : IntegrableOn G (closedBall ξ R)ᶜ μ := by
+    refine hGS.of_ae_sdiff_eq_zero hUm.nullMeasurableSet ?_
+    filter_upwards [hae] with x hx hxUS
+    have hlt : ‖x - ξ‖ < R + ε := lt_of_not_ge fun h ↦ hxUS.2 ⟨hx, h⟩
+    simp only [hGdef, hγ0 _ (hr0 x) hlt.le, zero_mul]
+  -- step 6: `∫_U (F + G) dμ = 0` and `F + G ≥ γ(r)(n - |(x - ξ) · H|) ≥ 0` `μ`-a.e. on `U`
+  have hsum : ∫ x in (closedBall ξ R)ᶜ, (F x + G x) ∂μ = 0 := by
+    rw [integral_add hFint.integrableOn hGU]
+    have h : ∫ x in (closedBall ξ R)ᶜ, F x ∂μ = -∫ x in (closedBall ξ R)ᶜ, G x ∂μ := hId
+    linarith
+  have hkey : ∀ x, γ ‖x - ξ‖ * ((n : ℝ) - |inner ℝ (x - ξ) (H x)|) ≤ F x + G x := fun x ↦ by
+    have h1 : γ ‖x - ξ‖ * -|inner ℝ (x - ξ) (H x)| ≤ G x :=
+      mul_le_mul_of_nonneg_left (neg_abs_le _) (hγnn ‖x - ξ‖ (hr0 x)).1
+    have h2 := hFlow x
+    linarith
+  have hCU : ∀ᵐ x ∂μ, x ∈ (closedBall ξ R)ᶜ → |inner ℝ (x - ξ) (H x)| < (n : ℝ) := by
+    filter_upwards [hC] with x hx hxU
+    rw [real_inner_comm]
+    exact hx hxU
+  have hnn : 0 ≤ᵐ[μ.restrict (closedBall ξ R)ᶜ] fun x ↦ F x + G x := by
+    rw [EventuallyLE, ae_restrict_iff' hUm]
+    filter_upwards [hCU] with x hx hxU
+    exact (mul_nonneg (hγnn _ (hr0 x)).1 (sub_nonneg.2 (hx hxU).le)).trans (hkey x)
+  have hzero : (fun x ↦ F x + G x) =ᵐ[μ.restrict (closedBall ξ R)ᶜ] 0 :=
+    (integral_eq_zero_iff_of_nonneg_ae hnn (hFint.integrableOn.add hGU)).1 hsum
+  have hγU : ∀ᵐ x ∂μ, x ∈ (closedBall ξ R)ᶜ → γ ‖x - ξ‖ = 0 := by
+    rw [EventuallyEq, ae_restrict_iff' hUm] at hzero
+    filter_upwards [hzero, hCU] with x hx hCx hxU
+    have hk := hkey x
+    have h0 : F x + G x = 0 := hx hxU
+    by_contra hne
+    have hpos := mul_pos (lt_of_le_of_ne (hγnn _ (hr0 x)).1 (Ne.symm hne)) (sub_pos.2 (hCx hxU))
+    linarith
+  -- step 7: the open set `{r > R + ε} ⊆ U` is `μ`-null, hence disjoint from `spt μ`
+  have hO : IsOpen {x : Ambient n ℓ | R + ε < ‖x - ξ‖} := isOpen_lt continuous_const hrc
+  have hμO : μ {x : Ambient n ℓ | R + ε < ‖x - ξ‖} = 0 := by
+    rw [measure_eq_zero_iff_ae_notMem]
+    filter_upwards [hγU] with x hx hxO
+    have hxO' : R + ε < ‖x - ξ‖ := hxO
+    exact (hγpos _ hxO').ne' (hx (hmemU x (by linarith)))
+  intro x hx
+  have hxO : x ∉ {x : Ambient n ℓ | R + ε < ‖x - ξ‖} := fun h ↦
+    Measure.subset_compl_support_of_isOpen hO hμO h hx
+  rw [mem_closedBall, dist_eq_norm]
+  exact not_lt.1 hxO
+
+/-- **Ch. 4, 6.1 (p. 100) from the radial first variation.** Assume the radial first variation
+identity (3.2–3.3, 3.14) for `X(x) = h(x)γ(|x - ξ|)(x - ξ)`, and that for `n ≥ 1` the weight `μ_V`
+is finite on compact sets, `dim T_x V = n` `μ_V`-a.e. and `x ↦ p_{T_x V}` is `μ_V`-a.e. strongly
+measurable. Then `SupportInBall`: for `ε > 0`, the identity with `h = ζ`, `ζ = 1` and `∇ζ = 0` on
+`spt V`, and `γ = 0` on `[0, R + ε]`, `γ > 0` beyond, reads
+`n ∫_U γ(r) dμ_V + ∫_U rγ'(r)(1 - |D^⊥r|²) dμ_V = -∫_U γ(r)(x - ξ)·H dμ_V`, and with
+`|H·(x - ξ)| < n` it forces `spt V ⊆ B_{R+ε}(ξ)`. -/
+theorem Submission.support_in_ball_of_radial_first_variation : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ : Ambient n ℓ), (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → ContDiff ℝ 1 γ → IsTestField U (fun x ↦ (h x * γ ‖x - ξ‖) • (x - ξ)) → ∫ x in U, (h x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient h x)) ∂V.weight = -∫ x in U, h x * γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂V.weight) → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → SupportInBall := by
+  intro hRFV hGF n ℓ V H ξ R hn hR hH hcurv hcpt
+  obtain ⟨hfin, hdim, hproj⟩ := hGF n ℓ V hn
+  -- `|H(x)·(x - ξ)| < n` for `μ_V`-a.e. `x ∈ U = ℝ^{n+ℓ} \ B_R(ξ)`.
+  have hC : ∀ᵐ x ∂V.weight, x ∈ (closedBall ξ R)ᶜ → |inner ℝ (H x) (x - ξ)| < (n : ℝ) := by
+    filter_upwards [hcurv] with x hx hxU
+    have h := (inv_mul_lt_iff₀ (Nat.cast_pos.mpr hn : (0 : ℝ) < n)).1 (hx hxU)
+    rwa [mul_one] at h
+  -- `|D^⊥r|²` is `μ_V`-a.e. strongly measurable with values in `[0, 1]`.
+  obtain ⟨hqm, hq⟩ := Submission.aestronglyMeasurable_normalRadialSq_and_bounds n ℓ V ξ hproj
+  have hball : ∀ ε : ℝ, 0 < ε → V.support ⊆ closedBall ξ (R + ε) := by
+    intro ε hε
+    -- `X(x) = ζ(x)γ(|x - ξ|)(x - ξ)` is a test field in `U`, with `ζ = 1`, `∇ζ = 0` on `spt V`,
+    -- so (RFV) applies with `h = ζ`.
+    obtain ⟨ζ, γ, hζ, hζK, hγ, hγnn, hγ0, hγpos, hX⟩ :=
+      Submission.exists_radial_cutoff_test_field n ℓ V.support ξ R ε hcpt hR hε
+    have hstar := hRFV n ℓ V (closedBall ξ R)ᶜ H ζ γ ξ hdim isClosed_closedBall.isOpen_compl hH
+      hζ.contDiffOn hγ hX
+    -- `μ_V`-a.e. `x` lies in `spt V`, where `ζ = 1` and `∇^M ζ = p_{T_x V}(∇ζ) = 0`, so `ζ` drops
+    -- out of both sides of (RFV).
+    have hae : ∀ᵐ x ∂V.weight.restrict (closedBall ξ R)ᶜ, ζ x = 1 ∧ gradient ζ x = 0 := by
+      refine ae_restrict_of_ae ?_
+      filter_upwards [V.weight.support_mem_ae] with x hx using hζK x hx
+    have hL : ∫ x in (closedBall ξ R)ᶜ, (ζ x * ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ *
+          (1 - V.normalRadialSq ξ x)) + γ ‖x - ξ‖ * inner ℝ (x - ξ) (V.tangentialGradient ζ x))
+          ∂V.weight =
+        ∫ x in (closedBall ξ R)ᶜ, ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ *
+          (1 - V.normalRadialSq ξ x)) ∂V.weight := by
+      refine integral_congr_ae ?_
+      filter_upwards [hae] with x hx
+      simp only [RectifiableVarifold.tangentialGradient, hx.1, hx.2, map_zero, inner_zero_right,
+        mul_zero, add_zero, one_mul]
+    have hR' : ∫ x in (closedBall ξ R)ᶜ, ζ x * γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂V.weight =
+        ∫ x in (closedBall ξ R)ᶜ, γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂V.weight := by
+      refine integral_congr_ae ?_
+      filter_upwards [hae] with x hx
+      simp only [hx.1, one_mul]
+    rw [hL, hR'] at hstar
+    -- The identity and `|H·(x - ξ)| < n` force `γ(|x - ξ|) = 0` `μ_V`-a.e. on `U`.
+    exact Submission.support_subset_closedBall_of_radial_identity n ℓ V.weight H
+      (V.normalRadialSq ξ) γ ξ R ε hn hR hε hfin hcpt hH.1 hqm hq hγ hγnn hγ0 hγpos hC hstar
+  -- `spt V ⊆ ⋂_{ε > 0} B_{R+ε}(ξ) = B_R(ξ)`.
+  intro x hx
+  rw [mem_closedBall]
+  exact le_of_forall_pos_le_add fun ε hε ↦ mem_closedBall.1 (hball ε hε hx)
+/-- **Ch. 4, 6.2 from 6.1 (p. 101).** Assume `SupportInBall` (6.1). If `spt V` is compact and `V`
+is stationary in `ℝ^{n+ℓ} \ K` with `K` compact, then `spt V ⊆ conv K`: for `y ∉ conv K` there is
+a closed ball `B_R(c) ⊇ K` with `R ≥ 0` and `y ∉ B_R(c)` (`conv K` is compact by Carathéodory), `V`
+has generalized mean curvature `0` in `ℝ^{n+ℓ} \ B_R(c) ⊆ ℝ^{n+ℓ} \ K`, and 6.1 gives
+`spt V ⊆ B_R(c)`. -/
+theorem Submission.convex_hull_property_of_support_in_ball : SupportInBall → ConvexHullProperty := by
+  intro hBall n ℓ V K hn hK hV hstat
+  classical
+  -- Ball Lemma: every `y ∉ conv K` lies outside some closed ball `B_R(c) ⊇ K` with `R ≥ 0`.
+  have hsep : ∀ y ∉ convexHull ℝ K, ∃ (c : Ambient n ℓ) (R : ℝ),
+      0 ≤ R ∧ K ⊆ closedBall c R ∧ y ∉ closedBall c R := by
+    intro y hy
+    rcases K.eq_empty_or_nonempty with hKe | hKne
+    · -- `K = ∅`: `dim ℝ^{n+ℓ} = n + ℓ ≥ 1`, so there is `c ≠ y`; take `R = 0`.
+      have : Nontrivial (Ambient n ℓ) :=
+        Module.nontrivial_of_finrank_pos (by rw [finrank_euclideanSpace_fin]; omega)
+      obtain ⟨c, hc⟩ := exists_ne y
+      refine ⟨c, 0, le_rfl, by simp [hKe], ?_⟩
+      rw [closedBall_zero, mem_singleton_iff]
+      exact hc.symm
+    -- `K ≠ ∅`: `conv K` is compact. By Carathéodory every point of `conv K` is a convex
+    -- combination of at most `dim ℝ^{n+ℓ} + 1` points of `K`, so `conv K` is a finite union of
+    -- continuous images `W j` of the compact sets `{w ∈ [0,1]^j : ∑ w = 1} × K^j`.
+    have hcomp : IsCompact (convexHull ℝ K) := by
+      let W : ℕ → Set (Ambient n ℓ) := fun j ↦
+        (fun p : (Fin j → ℝ) × (Fin j → Ambient n ℓ) ↦ ∑ i, p.1 i • p.2 i) ''
+          ((Icc (0 : Fin j → ℝ) 1 ∩ {w | ∑ i, w i = 1}) ×ˢ univ.pi fun _ ↦ K)
+      have hW : ∀ j, IsCompact (W j) := fun j ↦
+        ((isCompact_Icc.inter_right (isClosed_eq (by fun_prop) continuous_const)).prod
+          (isCompact_univ_pi fun _ ↦ hK)).image (by fun_prop)
+      suffices h : convexHull ℝ K =
+          ⋃ j ∈ Finset.range (Module.finrank ℝ (Ambient n ℓ) + 2), W j by
+        rw [h]
+        exact (Finset.finite_toSet _).isCompact_biUnion fun j _ ↦ hW j
+      refine subset_antisymm (fun x hx ↦ ?_) ?_
+      · -- A finset `t ⊆ K` of minimal cardinality with `x ∈ conv t`.
+        have hex : ∃ m, ∃ t : Finset (Ambient n ℓ), ↑t ⊆ K ∧
+            x ∈ convexHull ℝ (t : Set (Ambient n ℓ)) ∧ t.card = m := by
+          rw [convexHull_eq_union_convexHull_finite_subsets] at hx
+          simp only [mem_iUnion, exists_prop] at hx
+          obtain ⟨t, htK, hxt⟩ := hx
+          exact ⟨_, t, htK, hxt, rfl⟩
+        obtain ⟨t, htK, hxt, htm⟩ := Nat.find_spec hex
+        obtain ⟨w, hw0, hw1, hwx⟩ := Finset.mem_convexHull'.1 hxt
+        -- Carathéodory: `#t ≤ dim ℝ^{n+ℓ} + 1`. Otherwise an affine relation `∑ g z • z = 0`,
+        -- `∑ g z = 0`, `g ≠ 0` on `t` lets us remove a point of `t`, contradicting minimality.
+        have hcard : t.card ≤ Module.finrank ℝ (Ambient n ℓ) + 1 := by
+          by_contra hlt
+          obtain ⟨g, hgx, hg1, hg0⟩ :=
+            Module.exists_nontrivial_relation_sum_zero_of_finrank_succ_lt_card (not_le.mp hlt)
+          obtain ⟨i₁, hi₁, hgi₁⟩ := Finset.exists_pos_of_sum_zero_of_exists_nonzero g hg1 hg0
+          obtain ⟨i₀, hi₀, hmin⟩ := (t.filter fun z ↦ 0 < g z).exists_min_image
+            (fun z ↦ w z / g z) ⟨i₁, Finset.mem_filter.2 ⟨hi₁, hgi₁⟩⟩
+          rw [Finset.mem_filter] at hi₀
+          let k : Ambient n ℓ → ℝ := fun z ↦ w z - w i₀ / g i₀ * g z
+          have hk : k i₀ = 0 := by simp [k, hi₀.2.ne']
+          have hxe : x ∈ convexHull ℝ (↑(t.erase i₀) : Set (Ambient n ℓ)) := by
+            refine Finset.mem_convexHull'.2 ⟨k, fun z hz ↦ ?_, ?_, ?_⟩
+            · have hzt := Finset.mem_of_mem_erase hz
+              simp only [k, sub_nonneg]
+              by_cases hgz : 0 < g z
+              · exact (le_div_iff₀ hgz).1 (hmin z (Finset.mem_filter.2 ⟨hzt, hgz⟩))
+              · exact (mul_nonpos_of_nonneg_of_nonpos (div_nonneg (hw0 _ hi₀.1) hi₀.2.le)
+                  (not_lt.mp hgz)).trans (hw0 z hzt)
+            · rw [Finset.sum_erase t hk]
+              simp only [k, Finset.sum_sub_distrib, ← Finset.mul_sum, hw1, hg1, mul_zero, sub_zero]
+            · rw [Finset.sum_erase t (f := fun z ↦ k z • z) (by simp [hk])]
+              simp only [k, sub_smul, mul_smul, Finset.sum_sub_distrib, ← Finset.smul_sum, hgx,
+                smul_zero, sub_zero, hwx]
+          exact Nat.find_min hex
+            (show (t.erase i₀).card < Nat.find hex by
+              rw [Finset.card_erase_of_mem hi₀.1]; omega)
+            ⟨t.erase i₀, (Finset.coe_subset.2 (Finset.erase_subset _ _)).trans htK, hxe, rfl⟩
+        -- Reindex the convex combination by `Fin #t`.
+        let e := t.equivFin
+        let a : Fin t.card → ℝ := fun i ↦ w (e.symm i)
+        let z : Fin t.card → Ambient n ℓ := fun i ↦ (e.symm i : Ambient n ℓ)
+        have hsum : ∑ i, a i = 1 :=
+          (Equiv.sum_comp e.symm fun j : t ↦ w j).trans ((Finset.sum_coe_sort t w).trans hw1)
+        have hsumx : ∑ i, a i • z i = x :=
+          (Equiv.sum_comp e.symm fun j : t ↦ w j • (j : Ambient n ℓ)).trans
+            ((Finset.sum_coe_sort t fun y ↦ w y • y).trans hwx)
+        have ha0 : ∀ i, 0 ≤ a i := fun i ↦ hw0 _ (e.symm i).2
+        have ha1 : ∀ i, a i ≤ 1 := fun i ↦
+          hsum ▸ Finset.single_le_sum (fun j _ ↦ ha0 j) (Finset.mem_univ i)
+        exact mem_iUnion₂.2 ⟨t.card, Finset.mem_range.2 (by omega),
+          (a, z), ⟨⟨⟨ha0, ha1⟩, hsum⟩, fun i _ ↦ htK (e.symm i).2⟩, hsumx⟩
+      · -- Conversely, convex combinations of points of `K` lie in `conv K`.
+        simp only [iUnion_subset_iff]
+        rintro j - _ ⟨⟨a, z⟩, ⟨⟨⟨ha0, -⟩, hsum⟩, hz⟩, rfl⟩
+        exact (convex_convexHull ℝ K).sum_mem (fun i _ ↦ ha0 i) hsum
+          fun i _ ↦ subset_convexHull ℝ K (hz i (mem_univ i))
+    -- Nearest point `z₀ ∈ conv K` to `y`: `⟪y - z₀, x - z₀⟫ ≤ 0` for `x ∈ conv K`, and
+    -- `η = |y - z₀| > 0`.
+    obtain ⟨z₀, hz₀, hmin⟩ := exists_norm_eq_iInf_of_complete_convex hKne.convexHull
+      hcomp.isComplete (convex_convexHull ℝ K) y
+    have hvar := (norm_eq_iInf_iff_real_inner_le_zero (convex_convexHull ℝ K) hz₀).1 hmin
+    have hη : 0 < ‖y - z₀‖ := norm_pos_iff.mpr (sub_ne_zero.mpr fun h ↦ hy (h ▸ hz₀))
+    -- `K ⊆ B_D(z₀)`; with `t η² = D² + 1`, the ball `B_R(c)`, `c = z₀ - t (y - z₀)`,
+    -- `R² = D² + t² η²`, contains `K` and `|y - c| = (1 + t) η > R`.
+    obtain ⟨D, hD, hKD⟩ := hK.isBounded.subset_ball_lt 0 z₀
+    set t : ℝ := (D ^ 2 + 1) / ‖y - z₀‖ ^ 2
+    have ht : 0 < t := by positivity
+    have htη : t * ‖y - z₀‖ ^ 2 = D ^ 2 + 1 := div_mul_cancel₀ _ (by positivity)
+    set R : ℝ := Real.sqrt (D ^ 2 + t ^ 2 * ‖y - z₀‖ ^ 2)
+    have hR : 0 ≤ R := Real.sqrt_nonneg _
+    have hR2 : R ^ 2 = D ^ 2 + t ^ 2 * ‖y - z₀‖ ^ 2 := Real.sq_sqrt (by positivity)
+    refine ⟨z₀ - t • (y - z₀), R, hR, fun x hx ↦ ?_, ?_⟩
+    · have hxD : ‖x - z₀‖ < D := by simpa only [mem_ball, dist_eq_norm] using hKD hx
+      have hi : inner ℝ (x - z₀) (y - z₀) ≤ 0 := by
+        rw [real_inner_comm]
+        exact hvar x (subset_convexHull ℝ K hx)
+      have heq : x - (z₀ - t • (y - z₀)) = (x - z₀) + t • (y - z₀) := by abel
+      have hsq : ‖x - (z₀ - t • (y - z₀))‖ ^ 2 ≤ R ^ 2 := by
+        rw [heq, norm_add_sq_real, real_inner_smul_right, norm_smul, Real.norm_eq_abs,
+          abs_of_pos ht, hR2]
+        nlinarith [mul_nonpos_of_nonneg_of_nonpos ht.le hi, norm_nonneg (x - z₀)]
+      rw [mem_closedBall, dist_eq_norm]
+      nlinarith [norm_nonneg (x - (z₀ - t • (y - z₀)))]
+    · have heq : y - (z₀ - t • (y - z₀)) = (1 + t) • (y - z₀) := by module
+      rw [mem_closedBall, dist_eq_norm, heq, norm_smul, Real.norm_eq_abs,
+        abs_of_pos (by linarith), not_le]
+      nlinarith [sq_nonneg ((1 + t) * ‖y - z₀‖ + R)]
+  intro y hy
+  by_contra hyK
+  obtain ⟨c, R, hR, hKc, hyc⟩ := hsep y hyK
+  -- `V` has generalized mean curvature `0` in `ℝ^{n+ℓ} \ B_R(c) ⊆ ℝ^{n+ℓ} \ K`.
+  have hmc : V.HasMeanCurvatureIn (closedBall c R)ᶜ fun _ ↦ 0 := by
+    refine ⟨locallyIntegrableOn_zero, fun X hX ↦ ?_⟩
+    rw [hstat X ⟨hX.1, hX.2.1, hX.2.2.trans (compl_subset_compl.mpr hKc)⟩]
+    simp
+  -- 6.1 with `H = 0`, `ξ = c`: `spt V ⊆ B_R(c)`, contradicting `y ∈ spt V \ B_R(c)`.
+  exact hyc (hBall n ℓ V (fun _ ↦ 0) c R hn hR hmc
+    (Filter.Eventually.of_forall fun x _ ↦ by simp) hV hy)
 /-- **Derivative of the radial field, including the centre** (Simon Ch. 4, 3.2). For `γ ∈ C¹`
 and `r = |x - ξ|`, the field `g(y) = γ(|y - ξ|)(y - ξ)` is differentiable at `x` with
 `Dg(x)v = γ(r)v + (γ'(r)/r)⟨x - ξ, v⟩(x - ξ)` (with `γ'(r)/r = 0` when `r = 0`). At `x = ξ`
@@ -10797,6 +11176,20 @@ theorem Submission.sobolev_inequality : ApproxTangentAE → (∀ (n ℓ : ℕ) (
         ∫ x, (‖V.tangentialGradient h x‖ + h x * ‖H x‖) ∂V.weight :=
         mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hq hK) hJ
     _ = _ := by ring
+/-- Simon 6.1–6.2 (pp. 100–101): if for every `n ≥ 1` and every `V` the weight `μ_V` is finite
+on compact sets, `dim T_x V = n` for `μ_V`-a.e. `x` and `x ↦ p_{T_x V}` is `μ_V`-a.e. strongly
+measurable, then `spt V ⊆ B_R(ξ)` whenever `n⁻¹|H(x)·(x - ξ)| < 1` in `ℝ^{n+ℓ} \ B_R(ξ)` and
+`spt V` is compact (6.1), and `spt V ⊆ conv K` whenever `spt V` is compact and `V` is stationary
+in `ℝ^{n+ℓ} \ K` with `K` compact (6.2). -/
+theorem Submission.support_in_ball_convex_hull : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → SupportInBall ∧ ConvexHullProperty := by
+  intro hGF
+  -- 6.1: the radial first variation identity (3.2–3.3, 3.14) for `X(x) = ζ(x) γ(r) (x - ξ)`,
+  -- with `ζ ≡ 1` near `spt V` and `γ = 0` on `(-∞, R + ε]`, forces `γ(r) = 0` `μ_V`-a.e.
+  have hBall : SupportInBall :=
+    Submission.support_in_ball_of_radial_first_variation Submission.radial_first_variation hGF
+  -- 6.2: `conv K` is the intersection of the closed balls containing `K`, and `V` has
+  -- generalized mean curvature `0` outside each of them.
+  exact ⟨hBall, Submission.convex_hull_property_of_support_in_ball hBall⟩
 
 end
 

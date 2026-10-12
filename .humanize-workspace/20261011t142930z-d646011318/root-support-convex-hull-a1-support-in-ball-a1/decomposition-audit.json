@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "sha256sum .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean",
+        "lemma support_mem_ae\\b|lemma subset_compl_support_of_isOpen\\b|lemma support_subset_of_isClosed\\b|lemma measure_compl_support\\b",
+        "starProjection_orthogonal'|norm_starProjection_apply_le",
+        "structure ContDiffBump|theorem one_of_mem_closedBall|protected theorem hasCompactSupport|protected theorem contDiff",
+        "protected theorem monotone|theorem zero_of_nonpos|theorem pos_of_pos|theorem nonneg|protected theorem contDiff",
+        "LocallyIntegrableOn.integrableOn_compact_subset|IntegrableOn.of_ae_sdiff_eq_zero|theorem integral_eq_zero_iff_of_nonneg_ae|theorem ContinuousLinearMap.aestronglyMeasurable_comp₂",
+        "rg -n -F -e exists_radial_cutoff_test_field -e aestronglyMeasurable_normalRadialSq_and_bounds -e support_subset_closedBall_of_radial_identity .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean",
+        "python3 -I /tmp/sib-independent-audit-ecwlilmd/run_checks_direct.py"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-support-convex-hull-a1-support-in-ball-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-support-convex-hull-a1-support-in-ball-a1/decomposition-v1.json",
+        "/tmp/sib-independent-audit-ecwlilmd/checks/TypesBeforeImplementation.lean",
+        "/tmp/sib-independent-audit-ecwlilmd/checks/AssemblyFromStatements.lean",
+        "/tmp/sib-independent-audit-ecwlilmd/checks/FullReplay.lean",
+        "/tmp/sib-independent-audit-ecwlilmd/compilation_results.json"
+      ],
+      "conclusion": "The pinned project ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef and mathlib 25730c7c759d108ef87ab70af2342a196760f79d supply the required definitions and lemmas; snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical. No proposed name occurs in the searched frozen project files, and scans of the current 79-node DAG and 139 decomposition/handoff files found no other-branch reservation. All names are bare identifiers. All exact one-line child types passed validation, elaborated before child implementations existed, and compiled as comparator challenges. Independent probes confirmed the Borel, gradient, continuous-linear-map projection and scalar-action interpretations. Replayed child proofs and the exact frozen parent proof compiled with only propext, Classical.choice and Quot.sound. An additional assembly taking only the three child statements as hypotheses compiled with the same standard axioms. The split is appropriate: its independent construction, measurability and positivity obligations establish the selected SupportInBall theorem; dependency lists are correctly empty and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_cutoff_test_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree on every hypothesis and conclusion. The supplied proof constructs the bump and squared-radius expNegInvGlue profile, proves the gradient vanishes on K, checks all profile properties, and establishes smoothness, compact support and support containment for the field. It handles the centre without differentiating the norm and covers empty K and zero-dimensional ambient spaces. This is a complete, non-circular obligation for parent steps 2–4."
+    },
+    {
+      "key": "normal_radial_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the stated projection-measurability hypothesis and pointwise bounds. The proof correctly uses the continuous-linear-map identity p_perp = id − p, continuous evaluation, measurable real inversion and multiplication. It treats the zero denominator separately and derives the upper bound from contraction of orthogonal projection. No tangent-dimension assumption or parent theorem is silently required; the proof is complete."
+    },
+    {
+      "key": "radial_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every measure, curvature, profile, q and radial-identity hypothesis is present in both prose and Lean. The proof establishes vanishing off the compact set S, measurability and integrability before using integral linearity, then uses the strict curvature bound to force gamma to vanish almost everywhere. The open-null-set argument gives exactly the stated support containment. The almost-everywhere implication matches restriction to the measurable open exterior. The argument is complete and non-circular, and its conclusion supplies the parent's epsilon-ball bound."
+    }
+  ],
+  "required_changes": []
+}

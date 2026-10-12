@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.support_convex_hull-a1.support_in_ball-a1.radial_vanishing-a1",
+  "parent_id": "root.support_convex_hull-a1.support_in_ball-a1",
+  "depth": 3,
+  "title": "Positivity argument: the radial identity forces spt μ ⊆ B_{R+ε}(ξ) (Simon 6.1, steps 7–9)",
+  "statement": "Let n ≥ 1 and ℓ be natural numbers, E = Ambient n ℓ = ℝ^{n+ℓ}, μ a measure on (the Borel σ-algebra of) E that is finite on compact sets (IsFiniteMeasureOnCompacts μ) and whose support spt μ = μ.support is compact. Let H: E → E, q: E → ℝ, γ: ℝ → ℝ, ξ ∈ E, R ≥ 0, ε > 0, U := E ∖ B_R(ξ) (B_R(ξ) = closedBall ξ R) and r = r(x) := |x − ξ|. Assume: H is locally μ-integrable on U (LocallyIntegrableOn H U μ); q is μ-a.e. strongly measurable and 0 ≤ q(x) ≤ 1 for every x; γ ∈ C¹(ℝ); γ(t) ≥ 0 and γ'(t) ≥ 0 for every t ≥ 0 (γ' = deriv γ); γ(t) = 0 for 0 ≤ t ≤ R + ε; γ(t) > 0 for every t > R + ε; (C) |⟨H(x), x − ξ⟩| < n for μ-a.e. x ∈ U; and (★★) ∫_U [nγ(r) + rγ'(r)(1 − q(x))] dμ(x) = −∫_U γ(r)⟨x − ξ, H(x)⟩ dμ(x) (Bochner integrals with respect to μ restricted to U). Then spt μ ⊆ B_{R+ε}(ξ).",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (q : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ : Ambient n ℓ) (R ε : ℝ), 0 < n → 0 ≤ R → 0 < ε → IsFiniteMeasureOnCompacts μ → IsCompact μ.support → LocallyIntegrableOn H (closedBall ξ R)ᶜ μ → AEStronglyMeasurable q μ → (∀ x, 0 ≤ q x ∧ q x ≤ 1) → ContDiff ℝ 1 γ → (∀ t : ℝ, 0 ≤ t → 0 ≤ γ t ∧ 0 ≤ deriv γ t) → (∀ t : ℝ, 0 ≤ t → t ≤ R + ε → γ t = 0) → (∀ t : ℝ, R + ε < t → 0 < γ t) → (∀ᵐ x ∂μ, x ∈ (closedBall ξ R)ᶜ → |inner ℝ (H x) (x - ξ)| < (n : ℝ)) → ∫ x in (closedBall ξ R)ᶜ, ((n : ℝ) * γ ‖x - ξ‖ + ‖x - ξ‖ * deriv γ ‖x - ξ‖ * (1 - q x)) ∂μ = -∫ x in (closedBall ξ R)ᶜ, γ ‖x - ξ‖ * inner ℝ (x - ξ) (H x) ∂μ → μ.support ⊆ closedBall ξ (R + ε)",
+  "lean_name": "support_subset_closedBall_of_radial_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-support-convex-hull-a1-support-in-ball-a1-radial-vanishing-a1-a1"
+}
