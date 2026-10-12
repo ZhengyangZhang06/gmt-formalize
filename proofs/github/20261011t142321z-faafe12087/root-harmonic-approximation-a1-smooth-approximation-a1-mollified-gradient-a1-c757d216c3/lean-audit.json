@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c461e11a3413e466f2084125332b5735b6984574e8e02041e984237d1eafca41",
+  "git_delta": {
+    "base_commit": "01e4aff02fbd3c4e48212faac9ecdbf590ecc6ad",
+    "candidate_commit": "7f2bb11306e19a62486e84ee80d58c9f74e362bb",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "w12_ball_mollification_gradient",
+    "diff_sha256": "917d52a7ba5ad8a0c791a25c40fd06a64da73ae3a062ffb73583872df3095d07",
+    "source_sha256": "2cf95ed620f7e6ef1d03f7a0545026919e1173816edebebb4ee3d855e0b06e78",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.w12_ball_mollification_gradient",
+      "statement": "∀ (n : ℕ) (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∀ (ρ : Rn n → ℝ) (ε : ℝ), ContDiff ℝ (⊤ : ℕ∞) ρ → (∀ z, ε ≤ ‖z‖ → ρ z = 0) → ContDiff ℝ (⊤ : ℕ∞) (fun x => ∫ z, ρ z • (ball (0 : Rn n) 1).indicator f (x - z)) ∧ ∀ x : Rn n, ‖x‖ < 1 - ε → gradient (fun x => ∫ z, ρ z • (ball (0 : Rn n) 1).indicator f (x - z)) x = ∫ z, ρ z • (ball (0 : Rn n) 1).indicator g (x - z)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
