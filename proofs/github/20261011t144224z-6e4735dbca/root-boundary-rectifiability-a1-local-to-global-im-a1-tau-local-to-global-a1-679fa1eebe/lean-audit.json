@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "910d114f4ba7a95e13e12a3e8400a8e75f7c995cdc4c68424f8bd82502b23ed5",
+  "git_delta": {
+    "base_commit": "e45cf6b9299493073f601b6398e60f7232bde2a8",
+    "candidate_commit": "0ab0bebaeb02fdf6406c929416f9e8d68757098c",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ltg_tau_local_to_global",
+    "diff_sha256": "a1beb41b5d87d9a9747a76b06d0104564f11613305ee9a74ed8eb1b1cc29820c",
+    "source_sha256": "8a86357e814890e1461d4367577ff04400bbbf422fd209434269c344703e1bdf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ltg_tau_local_to_global",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U k) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M θ ξ → (∀ x ∈ U, ∃ V : Set (Eucl P), IsOpen V ∧ x ∈ V ∧ ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ V → X ω = tauAction k M θ ξ ω) → ∀ ω : TestFormOn U k, X ω = tauAction k M θ ξ ω",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
