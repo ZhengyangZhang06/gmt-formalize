@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c36940bd1d8aedc84c1634ea07631010ad7cb98b75d1ebb0c50e0843fd5346d0",
+  "git_delta": {
+    "base_commit": "4ae6c936d308fb0ed3afb07d76da841dccf6cf29",
+    "candidate_commit": "e4172a7b3e6ff6905ecff6f6d729752746d19ff0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_ims_lusin_measurable_continuousOn",
+    "diff_sha256": "b238ddc9015815bc010979f7e4312041bd075246de27f36970a1b44a296b2dd9",
+    "source_sha256": "8d0898ad9f6b7f3eaa1bbb3b078f2453dda19ec24b0401935c9b8e1c30c6c6a3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_ims_lusin_measurable_continuousOn",
+      "statement": "∀ (P : ℕ) {Y : Type} [TopologicalSpace Y] [SecondCountableTopology Y] [MeasurableSpace Y] [OpensMeasurableSpace Y] (μ : Measure (Euclid P)) (A : Set (Euclid P)) (g : Euclid P → Y) (ε : ℝ≥0∞), Measurable g → MeasurableSet A → μ A ≠ ∞ → ε ≠ 0 → ∃ K : Set (Euclid P), IsCompact K ∧ K ⊆ A ∧ μ (A \\ K) < ε ∧ ContinuousOn g K",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
