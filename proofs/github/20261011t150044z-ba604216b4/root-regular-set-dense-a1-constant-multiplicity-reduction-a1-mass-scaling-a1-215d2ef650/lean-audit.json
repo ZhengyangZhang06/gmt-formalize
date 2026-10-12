@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e829add45eed9c6d631f6a34fbfa62a73de1a7a4cebb4b8c027cfb45ec5e2511",
+  "git_delta": {
+    "base_commit": "d3ea2e1c191b161a95169c907a576bb52a804fed",
+    "candidate_commit": "059924ab7750978e0165ec0b0912c24ae66e17cd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_cmr_massOn_eq_ofReal_mul",
+    "diff_sha256": "ad0f196b750a395a36dcef73ccc2b729505f3d2f3db50472cfedb5591f11f856",
+    "source_sha256": "3a3a81372ae29aff41d090bfe25829369c0160a7b7e3bfe25e68839b1363e095",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_cmr_massOn_eq_ofReal_mul",
+      "statement": "∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n) (T₀ : GeometricCurrentOn V n) (c : ℝ), 0 ≤ c → (∀ ω : TestFormOn V n, T (testFormOnInclusion hVU n ω) = c * T₀ ω) → ∀ W : Set (Euclid P), W ⊆ V → T.massOn W = ENNReal.ofReal c * T₀.massOn W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
