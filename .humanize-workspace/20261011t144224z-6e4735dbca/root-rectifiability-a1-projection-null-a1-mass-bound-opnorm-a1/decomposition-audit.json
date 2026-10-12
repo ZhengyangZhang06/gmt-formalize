@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "covectorEuclideanNorm",
+        "theorem le_opNorm|lemma norm_eq_one|def basisFun|theorem sqrt_mul |theorem sqrt_sq |theorem sqrt_sq_eq_abs|theorem sqrt_le_iff|theorem sqrt_le_sqrt|theorem Fintype.card_fun|theorem ofReal_le_ofReal_iff|theorem tsupport_smul_subset_right",
+        "fiw_ims_sc_covectorNorm_le_opNorm",
+        "cmb_abs_apply_le_of_massOn_le",
+        "git diff d8d46c9587747dee0751a1f780fcafdba16a3886 c8cb71851ed3018dcc8a0a89a946b8610884f81a -- GMT/Ch06/Submission.lean",
+        "git diff d8d46c9587747dee0751a1f780fcafdba16a3886 ba202ac0407b6e93210594416fcd0729874b2eff -- GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -o /tmp/mbo-independent-audit-devyeack/Audit.olean /tmp/mbo-independent-audit-devyeack/Audit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fintype/BigOperators.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-mass-bound-opnorm-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-mass-bound-opnorm-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-series-current-a1-covector-norm-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-series-current-a1-covector-norm-a1/comparison-identity-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/comparison-identity-v1.json",
+        "/tmp/mbo-independent-audit-devyeack/Audit.lean",
+        "/tmp/mbo-independent-audit-devyeack/Audit.log"
+      ],
+      "conclusion": "The pinned project and Mathlib revisions match the manifest; the SimonGMT dependency matches its frozen revision. The snapshot Contract and workspace Contract/Submission have identical SHA-256 hashes. Mass.lean confirms the coefficient norm, admissibility conditions and supremum inequality; Currents.lean supplies scalar closure and linearity for arbitrary U and W. The cited Mathlib lemmas have the required hypotheses. Searching pinned Mathlib found no covectorEuclideanNorm declaration; SimonGMT supplies no homogeneity or operator-norm comparison theorem.\n\nThe split is appropriate for this selected statement. The first child and sqrt(k) ≤ k for natural k yield the coefficient bound P^n*C, using C ≥ 0. The second child then gives B*(P^n*C), equal to the frozen parent conclusion. Both children are independent accepted leaves, so reuse introduces no cycle. Each name has an accepted owner with a byte-identical frozen type and no conflicting active owner; comparator receipts confirm the specified candidate commits.\n\nFresh Lean compilation exited 0. Both challenge propositions elaborated before either child declaration existed. The accepted proof blocks, an independently written parent implication, and exact-type witnesses all checked. The norm was also checked to be the continuous-alternating-map norm. Every audited theorem uses only propext, Classical.choice and Quot.sound; the unchanged root main_theorem's sorry is not a dependency."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_norm_le_opnorm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean proposition match exactly, with no missing hypotheses. Independently checking all five steps confirms unit basis vectors, the operator-norm coefficient bound, the squared bound for both StrictMono branches, the count P^n, and the square-root identities. Empty products and empty index types correctly cover n = 0 and P = 0. The proof is complete, independent of the parent and sibling, and directly guides formalization. The bare identifier validly reuses the comparator-accepted declaration at c8cb71851ed3018dcc8a0a89a946b8610884f81a with the identical frozen type."
+    },
+    {
+      "key": "coeff_norm_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis of the exact one-line Lean proposition. All six proof steps are valid: coefficient-norm homogeneity follows termwise; evaluation at 0 establishes C ≥ 0; scalar closure and support inclusion make both rescaled signs admissible; B ≥ 0 justifies converting the ENNReal inequality; linearity yields the two signed bounds. Taking s = C handles C > 0, while s = |T ω|/(B+1) gives the stated strict contradiction when C = 0. No openness assumption, circular reliance or deferred proof search is needed. The bare identifier validly reuses the comparator-accepted declaration at ba202ac0407b6e93210594416fcd0729874b2eff with the identical frozen type."
+    }
+  ],
+  "required_changes": []
+}
