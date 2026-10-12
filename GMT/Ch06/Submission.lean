@@ -402,6 +402,76 @@ theorem Submission.iwl_sp_pn_sum_sq_comp_basis_le : ∀ (P Q : ℕ) (L : Eucl P 
   rw [← hu, ← hg, ← mul_pow]
   exact pow_le_pow_left₀ (norm_nonneg _) hle 2
 
+/-- Multilinear tensor-power bound: for every continuous linear `L : ℝ^P → ℝ^Q` and every
+`j`-multilinear `β : (ℝ^Q)^j → ℝ` (not necessarily alternating or continuous),
+`∑_{i : Fin j → Fin P} β(L e_{i(1)}, …, L e_{i(j)})²`
+`≤ (‖L‖²)^j ∑_{i : Fin j → Fin Q} β(e′_{i(1)}, …, e′_{i(j)})²`,
+with `e`, `e′` the standard bases.  Induction on `j`, generalizing `β`: split the sums over
+`Fin (j + 1) → Fin n` along `Fin.cons`, apply the inductive hypothesis to `β.curryLeft (L e_a)`,
+exchange the sums and bound each slot functional `y ↦ β(Fin.cons y (e′ ∘ i″))` by the one-slot
+estimate `Submission.iwl_sp_pn_sum_sq_comp_basis_le`. -/
+theorem Submission.iwl_sp_pn_multilinear_sum_sq_le :
+    ∀ (P Q j : ℕ) (L : Eucl P →L[ℝ] Eucl Q) (β : MultilinearMap ℝ (fun _ : Fin j => Eucl Q) ℝ),
+      ∑ i : Fin j → Fin P, (β (fun k => L (EuclideanSpace.basisFun (Fin P) ℝ (i k)))) ^ 2 ≤
+        (‖L‖ ^ 2) ^ j *
+          ∑ i : Fin j → Fin Q, (β (fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i k))) ^ 2 := by
+  intro P Q j L
+  induction j with
+  | zero =>
+    -- Both sums have the single empty tuple as index, and both arguments of `β` are empty.
+    intro β
+    rw [Fintype.sum_unique, Fintype.sum_unique, pow_zero, one_mul]
+    exact (congrArg (fun v => β v ^ 2) (Subsingleton.elim _ _)).le
+  | succ j ih =>
+    intro β
+    -- Sums over `Fin (j + 1) → Fin n` split along `Fin.cons` (`Fin.consEquiv`).
+    have split : ∀ (n : ℕ) (G : (Fin (j + 1) → Fin n) → ℝ),
+        ∑ i, G i = ∑ a : Fin n, ∑ i' : Fin j → Fin n, G (Fin.cons a i') := by
+      intro n G
+      rw [← Fintype.sum_prod_type']
+      exact (Fintype.sum_equiv (Fin.consEquiv fun _ => Fin n) _ _ fun _ => rfl).symm
+    -- The slot functionals `y ↦ β (Fin.cons y w)` are linear.
+    let slot : (Fin j → Eucl Q) → Eucl Q →ₗ[ℝ] ℝ := fun w =>
+      { toFun := fun y => β (Fin.cons y w)
+        map_add' := fun x y => β.cons_add w x y
+        map_smul' := fun c x => β.cons_smul w c x }
+    calc ∑ i : Fin (j + 1) → Fin P, (β fun k => L (EuclideanSpace.basisFun (Fin P) ℝ (i k))) ^ 2
+        = ∑ a : Fin P, ∑ i' : Fin j → Fin P,
+            (β.curryLeft (L (EuclideanSpace.basisFun (Fin P) ℝ a))
+              fun k => L (EuclideanSpace.basisFun (Fin P) ℝ (i' k))) ^ 2 := by
+          rw [split P]
+          exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun i' _ =>
+            congrArg (fun v => β v ^ 2)
+              (Fin.comp_cons (fun p => L (EuclideanSpace.basisFun (Fin P) ℝ p)) a i')
+      -- the inductive hypothesis for `β.curryLeft (L e_a)`
+      _ ≤ ∑ a : Fin P, (‖L‖ ^ 2) ^ j * ∑ i'' : Fin j → Fin Q,
+            (β.curryLeft (L (EuclideanSpace.basisFun (Fin P) ℝ a))
+              fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i'' k)) ^ 2 :=
+          Finset.sum_le_sum fun a _ => ih _
+      _ = (‖L‖ ^ 2) ^ j * ∑ i'' : Fin j → Fin Q, ∑ a : Fin P,
+            (slot (fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i'' k))
+              (L (EuclideanSpace.basisFun (Fin P) ℝ a))) ^ 2 := by
+          rw [← Finset.mul_sum, Finset.sum_comm]
+          rfl
+      -- the one-slot bound for each slot functional
+      _ ≤ (‖L‖ ^ 2) ^ j * ∑ i'' : Fin j → Fin Q, ‖L‖ ^ 2 * ∑ b : Fin Q,
+            (slot (fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i'' k))
+              (EuclideanSpace.basisFun (Fin Q) ℝ b)) ^ 2 :=
+          mul_le_mul_of_nonneg_left
+            (Finset.sum_le_sum fun i'' _ => Submission.iwl_sp_pn_sum_sq_comp_basis_le P Q L _)
+            (by positivity)
+      _ = (‖L‖ ^ 2) ^ (j + 1) * ∑ b : Fin Q, ∑ i'' : Fin j → Fin Q,
+            (β (Fin.cons (EuclideanSpace.basisFun (Fin Q) ℝ b)
+              fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i'' k))) ^ 2 := by
+          rw [← Finset.mul_sum, Finset.sum_comm, pow_succ (‖L‖ ^ 2) j, mul_assoc]
+          rfl
+      _ = (‖L‖ ^ 2) ^ (j + 1) * ∑ i : Fin (j + 1) → Fin Q,
+            (β fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i k)) ^ 2 := by
+          rw [split Q]
+          exact congrArg _ (Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun i'' _ =>
+            congrArg (fun v => β v ^ 2)
+              (Fin.comp_cons (fun p => EuclideanSpace.basisFun (Fin Q) ℝ p) b i'').symm)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
