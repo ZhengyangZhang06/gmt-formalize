@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.local_density_zero-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1",
+  "depth": 3,
+  "title": "Upper Density Theorem for a set locally finite in an open set (Simon Ch. 1, Remark 3.7(2))",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open and let S ⊆ ℝ^P be a Borel set with H^n(S ∩ K) < ∞ for every compact K ⊆ U, where H^n = μHE[n]. Then for H^n-almost every x ∈ ℝ^P: if x ∈ U and x ∉ S, then H^n(S ∩ closedBall(x, ρ)) / ρ^n → 0 as ρ ↓ 0 (the quotient taken in [0, ∞], with ρ^n = ENNReal.ofReal(ρ)^n).",
+  "lean_statement": "∀ (P n : ℕ) (U S : Set (Euclid P)), IsOpen U → MeasurableSet S → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (S ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ U → x ∉ S → Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "regcomp_atl_local_density_zero",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.upper_density_zero-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.upper_density_zero-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-65b9043b0e-a1"
+}

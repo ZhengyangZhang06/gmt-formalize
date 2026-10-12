@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c55130f6d6f2863bf5d2cec8efc6afef9d5775709621fd1fa42cd6c96dc639d4",
+  "git_delta": {
+    "base_commit": "3227c684784c31db42b130de55bbf73941ff8624",
+    "candidate_commit": "048ff2b9b9037a03e4daa8d5ce0db106c1f592a3",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "191db1731486eac228802fa1c561dd39e7b1d99c54196f0adb17945787019fc8",
+    "source_sha256": "7a1d3e2885922e5dce376d039e1d3556daa1d02e8720b1eb9ce59ea03808ce2a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_approx_tangent_locality",
+      "statement": "∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
