@@ -450,6 +450,73 @@ theorem Submission.exists_urysohn_integral_sandwich :
     · simpa [hx] using (hg01 x).2
     · simp [hx, image_eq_zero_of_notMem_tsupport fun h ↦ hx (hLO (hgL h))]
 
+/-- Compact-set half of the portmanteau theorem (Simon Ch. 8, proof of 3.7): if `μ_i` and `μ` are
+finite on compact subsets of the open set `U` and `∫ g dμ_i → ∫ g dμ` for every continuous `g` with
+compact support in `U`, then `limsup_i μ_i(K) ≤ μ(K)` for every compact `K ⊆ U`. -/
+theorem Submission.limsup_measure_compact_le_of_tendsto_integral :
+    ∀ (N : ℕ) (U : Set (Euclidean N)) (μs : ℕ → Measure (Euclidean N)) (μ : Measure (Euclidean N)), IsOpen U → (∀ (i : ℕ) (K : Set (Euclidean N)), IsCompact K → K ⊆ U → μs i K ≠ ∞) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → (∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Tendsto (fun i ↦ ∫ x, g x ∂(μs i)) atTop (𝓝 (∫ x, g x ∂μ))) → ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → limsup (fun i ↦ μs i K) atTop ≤ μ K := by
+  intro N U μs μ hU hμs hμ hconv K hK hKU
+  -- Step 1: a closed thickening `cthickening δ K` of `K` lies in `U`.
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hKU
+  -- Step 2: radii `r m = δ / (m + 1)` and neighbourhoods `O m = thickening (r m) K`.
+  set r : ℕ → ℝ := fun m ↦ δ / (m + 1)
+  have hr_pos : ∀ m, 0 < r m := fun m ↦ div_pos hδ (Nat.cast_add_one_pos m)
+  have hr_le : ∀ m, r m ≤ δ := fun m ↦
+    div_le_self hδ.le (le_add_of_nonneg_left (Nat.cast_nonneg m))
+  have hr_anti : Antitone r := fun m m' hmm' ↦
+    div_le_div_of_nonneg_left hδ.le (Nat.cast_add_one_pos m) (by gcongr)
+  set O : ℕ → Set (Euclidean N) := fun m ↦ thickening (r m) K
+  -- (a) `O m` is open and contains `K`; (b) `O m ⊆ U`; (c) `O` is decreasing.
+  have hO_open : ∀ m, IsOpen (O m) := fun m ↦ isOpen_thickening
+  have hKO : ∀ m, K ⊆ O m := fun m ↦ self_subset_thickening (hr_pos m) K
+  have hOU : ∀ m, O m ⊆ U := fun m ↦
+    (thickening_subset_cthickening_of_le (hr_le m) K).trans hδU
+  have hO_anti : Antitone O := fun m m' h ↦ thickening_mono (hr_anti h) K
+  -- (d) `⋂ m, O m = closure K = K`.
+  have hO_inter : ⋂ m, O m = K := by
+    refine Subset.antisymm (fun x hx ↦ ?_) (subset_iInter hKO)
+    rw [mem_iInter] at hx
+    have hxcl : x ∈ closure K := by
+      rw [closure_eq_iInter_thickening]
+      simp only [mem_iInter]
+      intro ε hε
+      obtain ⟨m, hm⟩ := exists_nat_gt (δ / ε)
+      have hrε : r m < ε := by
+        rw [div_lt_iff₀ hε] at hm
+        show δ / (m + 1) < ε
+        rw [div_lt_iff₀ (Nat.cast_add_one_pos m)]
+        nlinarith
+      exact thickening_mono hrε.le K (hx m)
+    rwa [hK.isClosed.closure_eq] at hxcl
+  -- (e) `μ (O 0) ≤ μ (cthickening δ K) < ∞`, since `cthickening δ K` is a compact subset of `U`.
+  have hO0 : μ (O 0) ≠ ∞ :=
+    ne_top_of_le_ne_top (hμ _ hK.cthickening hδU)
+      (measure_mono (thickening_subset_cthickening_of_le (hr_le 0) K))
+  -- Step 3: continuity from above gives `μ (O m) → μ K`.
+  have htend : Tendsto (fun m ↦ μ (O m)) atTop (𝓝 (μ K)) := by
+    have h := tendsto_measure_iInter_atTop (μ := μ)
+      (fun m ↦ (hO_open m).measurableSet.nullMeasurableSet) hO_anti ⟨0, hO0⟩
+    rwa [hO_inter] at h
+  -- Steps 4–6: `limsup_i μ_i(K) ≤ μ(O m)` for each `m`.
+  have key : ∀ m, limsup (fun i ↦ μs i K) atTop ≤ μ (O m) := by
+    intro m
+    -- Step 4: the sandwich function for `K ⊆ O m`; each `μ_i` and `μ` is admissible as `O m ⊆ U`.
+    obtain ⟨g, hgc, hgcs, hgO, hg⟩ :=
+      Submission.exists_urysohn_integral_sandwich N K (O m) hK (hO_open m) (hKO m)
+    have hfin : ∀ ν : Measure (Euclidean N), (∀ L, IsCompact L → L ⊆ U → ν L ≠ ∞) →
+        ∀ L, IsCompact L → L ⊆ O m → ν L ≠ ∞ :=
+      fun ν hν L hL hLO ↦ hν L hL (hLO.trans (hOU m))
+    -- Step 5: `tsupport g ⊆ O m ⊆ U`, so `ofReal (∫ g dμ_i) → ofReal (∫ g dμ)`.
+    have hlim := ENNReal.tendsto_ofReal (hconv g hgc hgcs (hgO.trans (hOU m)))
+    -- Step 6: `limsup_i μ_i(K) ≤ limsup_i ofReal (∫ g dμ_i) = ofReal (∫ g dμ) ≤ μ(O m)`.
+    calc limsup (fun i ↦ μs i K) atTop
+        ≤ limsup (fun i ↦ ENNReal.ofReal (∫ x, g x ∂(μs i))) atTop :=
+          limsup_le_limsup (Eventually.of_forall fun i ↦ (hg (μs i) (hfin _ (hμs i))).1)
+      _ = ENNReal.ofReal (∫ x, g x ∂μ) := hlim.limsup_eq
+      _ ≤ μ (O m) := (hg μ (hfin μ hμ)).2
+  -- Step 7: let `m → ∞`.
+  exact ge_of_tendsto' htend key
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
