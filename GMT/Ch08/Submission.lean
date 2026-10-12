@@ -828,6 +828,73 @@ theorem Submission.weight_closedBall_lower_bound_of_density_ge_one :
     _ = V.weight (closedBall x ρ) := by
         rw [hexp, one_mul, densityRatio, ENNReal.mul_div_cancel hD0 hDtop]
 
+/-- **Simon Ch. 8, proof of 3.7, second half of printed step (4)** (child `limit_mass_lower_bound`
+of `density_semicontinuity`): let `V_i → V` as Radon measures on `Gₙ(U)`, `q_i → ∞`, `y_i → x`,
+`B°_{ρ₀}(x) ⊆ U` and `e^{-Λρ} ω_n ρ^n ≤ μ_{V_{q_i}}(B_ρ(y_i))` for all `i` and `0 < ρ < ρ₀`.  Then
+`e^{-Λρ} ω_n ρ^n ≤ μ_V(B_ρ(x))` for `0 < ρ < ρ₀`, hence `liminf_{ρ↓0} μ_V(B_ρ(x))/(ω_n ρ^n) ≥ 1`.
+For large `i`, `B_{ρ-|y_i-x|}(y_i) ⊆ B_ρ(x)`, so `e^{-Λρ} ω_n ρ^n ≤ limsup_i μ_{V_{q_i}}(B_ρ(x))
+≤ μ_V(B_ρ(x))` by (P2) of `weight_portmanteau_of_radonConverges`; then divide by `ω_n ρ^n`. -/
+theorem Submission.lower_density_ge_one_of_nearby_mass_bounds :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U)
+      (x : Euclidean N) (ρ₀ Λ : ℝ) (q : ℕ → ℕ) (y : ℕ → Euclidean N),
+      Varifold.RadonConverges Vi V → 0 < ρ₀ → ball x ρ₀ ⊆ U → Tendsto q atTop atTop →
+      Tendsto y atTop (𝓝 x) →
+      (∀ i, ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+        ENNReal.ofReal (Real.exp (-(Λ * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n ≤
+          (Vi (q i)).weight (closedBall (y i) ρ)) →
+      (∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+        ENNReal.ofReal (Real.exp (-(Λ * ρ))) * unitBallVolume n * ENNReal.ofReal ρ ^ n ≤
+          V.weight (closedBall x ρ)) ∧
+      1 ≤ liminf (densityRatio n V.weight x) (𝓝[>] 0) := by
+  intro N n U Vi V x ρ₀ Λ q y hV hρ₀ hU hq hy hmass
+  -- `ω_n ∈ (0, ∞)`, and `F(r) = e^{-Λr} ω_n r^n` is continuous with finite values.
+  have hω0 : unitBallVolume n ≠ 0 := (Metric.measure_ball_pos volume _ one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  set F : ℝ → ℝ≥0∞ := fun r ↦
+    ENNReal.ofReal (Real.exp (-(Λ * r))) * unitBallVolume n * ENNReal.ofReal r ^ n
+  have hE : Continuous fun r : ℝ ↦ ENNReal.ofReal (Real.exp (-(Λ * r))) :=
+    ENNReal.continuous_ofReal.comp (by fun_prop)
+  have hF : ∀ r : ℝ, Tendsto F (𝓝 r) (𝓝 (F r)) := fun r ↦
+    ENNReal.Tendsto.mul (ENNReal.Tendsto.mul_const (hE.tendsto r) (Or.inr hωtop))
+      (Or.inr (ENNReal.pow_ne_top ENNReal.ofReal_ne_top))
+      (ENNReal.Tendsto.pow (ENNReal.continuous_ofReal.tendsto r))
+      (Or.inr (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hωtop))
+  -- The mass bound for `V`: `F(ρ - |y_i - x|) ≤ μ_{V_{q_i}}(B_ρ(x))` for large `i`, and (P2).
+  have hmassV : ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → F ρ ≤ V.weight (closedBall x ρ) := by
+    intro ρ hρ hρρ₀
+    have hP2 := (Submission.weight_portmanteau_of_radonConverges N n U Vi V hV).2
+      (closedBall x ρ) (isCompact_closedBall x ρ) ((closedBall_subset_ball hρρ₀).trans hU)
+    have hd : Tendsto (fun i ↦ dist (y i) x) atTop (𝓝 0) := tendsto_iff_dist_tendsto_zero.1 hy
+    have hr : Tendsto (fun i ↦ ρ - dist (y i) x) atTop (𝓝 ρ) := by
+      have h := (tendsto_const_nhds : Tendsto (fun _ : ℕ ↦ ρ) atTop (𝓝 ρ)).sub hd
+      rwa [sub_zero] at h
+    have hle : ∀ᶠ i in atTop, F (ρ - dist (y i) x) ≤ (Vi (q i)).weight (closedBall x ρ) := by
+      filter_upwards [hd.eventually (eventually_lt_nhds hρ)] with i hi
+      refine (hmass i _ (sub_pos.2 hi) ((sub_le_self ρ dist_nonneg).trans_lt hρρ₀)).trans
+        (measure_mono fun z hz ↦ ?_)
+      rw [mem_closedBall] at hz ⊢
+      linarith [dist_triangle z (y i) x]
+    calc F ρ = limsup (fun i ↦ F (ρ - dist (y i) x)) atTop := ((hF ρ).comp hr).limsup_eq.symm
+      _ ≤ limsup (fun i ↦ (Vi (q i)).weight (closedBall x ρ)) atTop := limsup_le_limsup hle
+      _ ≤ limsup (fun j ↦ (Vi j).weight (closedBall x ρ)) atTop :=
+          Tendsto.limsup_comp_le_limsup (u := fun j ↦ (Vi j).weight (closedBall x ρ)) hq
+      _ ≤ V.weight (closedBall x ρ) := hP2
+  refine ⟨hmassV, ?_⟩
+  -- The lower density: `e^{-Λr} ≤ densityRatio n μ_V x r` on `(0, ρ₀)`, and `e^{-Λr} → 1`.
+  have hev : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      ENNReal.ofReal (Real.exp (-(Λ * r))) ≤ densityRatio n V.weight x r := by
+    filter_upwards [Ioo_mem_nhdsGT hρ₀] with r hr
+    rw [densityRatio, ENNReal.le_div_iff_mul_le
+      (Or.inl (mul_ne_zero hω0 (pow_ne_zero _ (ENNReal.ofReal_pos.2 hr.1).ne')))
+      (Or.inl (ENNReal.mul_ne_top hωtop (ENNReal.pow_ne_top ENNReal.ofReal_ne_top))), ← mul_assoc]
+    exact hmassV r hr.1 hr.2
+  have hlim : Tendsto (fun r : ℝ ↦ ENNReal.ofReal (Real.exp (-(Λ * r)))) (𝓝[>] 0) (𝓝 1) := by
+    have h := (hE.tendsto 0).mono_left (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
+    rwa [mul_zero, neg_zero, Real.exp_zero, ENNReal.ofReal_one] at h
+  calc (1 : ℝ≥0∞) = liminf (fun r : ℝ ↦ ENNReal.ofReal (Real.exp (-(Λ * r)))) (𝓝[>] 0) :=
+        hlim.liminf_eq.symm
+    _ ≤ liminf (densityRatio n V.weight x) (𝓝[>] 0) := liminf_le_liminf hev
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
