@@ -373,6 +373,64 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Toward Simon Ch. 2, 6.3 and 6.6 (co-area formula).** Volume packing bound: for bounded
+`K ⊆ ℝⁿ` there is `C` such that every finite `F ⊆ K` that is `r`-separated, `0 < r ≤ 1`, has
+`card F · rⁿ ≤ C`. The open balls `ball x (r/2)`, `x ∈ F`, are pairwise disjoint and lie in
+`U = thickening 1 K`, so `card F · (r/2)ⁿ · Lⁿ(ball 0 1) ≤ Lⁿ(U)`; take
+`C = 2ⁿ Lⁿ(U) / Lⁿ(ball 0 1)`. -/
+theorem Submission.bounded_set_separated_finset_card_mul_pow_le : ∀ (n : ℕ) (K : Set (Rn n)), Bornology.IsBounded K → ∃ C : ℝ, ∀ r : ℝ, 0 < r → r ≤ 1 → ∀ F : Finset (Rn n), (↑F : Set (Rn n)) ⊆ K → (∀ x ∈ F, ∀ y ∈ F, x ≠ y → r < dist x y) → (F.card : ℝ) * r ^ n ≤ C := by
+  intro n K hK
+  -- Step 1: `U = thickening 1 K` has finite volume `A`; `ball 0 1` has volume `b > 0`.
+  set U : Set (Rn n) := Metric.thickening 1 K
+  have hUfin : volume U ≠ ⊤ := hK.thickening.measure_lt_top.ne
+  set A : ℝ := (volume U).toReal
+  set b : ℝ := (volume (Metric.ball (0 : Rn n) 1)).toReal
+  have hb : 0 < b := ENNReal.toReal_pos
+    (Metric.measure_ball_pos volume (0 : Rn n) one_pos).ne' measure_ball_lt_top.ne
+  refine ⟨2 ^ n * A / b, fun r hr hr1 F hFK hsep ↦ ?_⟩
+  have hr2 : 0 < r / 2 := by positivity
+  -- Step 2: `Lⁿ(ball z (r/2)) = (r/2)ⁿ · Lⁿ(ball 0 1)`.
+  have hball : ∀ z : Rn n, volume (Metric.ball z (r / 2)) =
+      ENNReal.ofReal ((r / 2) ^ n) * volume (Metric.ball (0 : Rn n) 1) := by
+    intro z
+    rw [Measure.addHaar_ball_of_pos volume z hr2, finrank_euclideanSpace_fin]
+  -- Step 3: the balls `ball x (r/2)`, `x ∈ F`, are pairwise disjoint.
+  have hdisj : (↑F : Set (Rn n)).PairwiseDisjoint (fun x ↦ Metric.ball x (r / 2)) := by
+    intro x hx y hy hxy
+    refine Set.disjoint_left.2 fun z hzx hzy ↦ ?_
+    rw [Metric.mem_ball] at hzx hzy
+    have h1 := hsep x hx y hy hxy
+    have h2 := dist_triangle_left x y z
+    linarith
+  -- Step 4: they lie in `U`, since `r/2 < 1`.
+  have hsub : (⋃ x ∈ F, Metric.ball x (r / 2)) ⊆ U := by
+    intro z hz
+    simp only [Set.mem_iUnion] at hz
+    obtain ⟨x, hxF, hzx⟩ := hz
+    rw [Metric.mem_ball] at hzx
+    exact Metric.mem_thickening_iff.2 ⟨x, hFK hxF, by linarith⟩
+  -- Step 5: `card F · (r/2)ⁿ · Lⁿ(ball 0 1) = ∑ Lⁿ(ball x (r/2)) = Lⁿ(⋃ ball x (r/2)) ≤ Lⁿ(U)`.
+  have hle : (F.card : ℝ≥0∞) * (ENNReal.ofReal ((r / 2) ^ n) * volume (Metric.ball (0 : Rn n) 1))
+      ≤ volume U := by
+    calc (F.card : ℝ≥0∞) * (ENNReal.ofReal ((r / 2) ^ n) * volume (Metric.ball (0 : Rn n) 1))
+        = ∑ x ∈ F, volume (Metric.ball x (r / 2)) := by
+          rw [Finset.sum_congr rfl fun x _ ↦ hball x, Finset.sum_const, nsmul_eq_mul]
+      _ = volume (⋃ x ∈ F, Metric.ball x (r / 2)) :=
+          (measure_biUnion_finset hdisj fun x _ ↦ Metric.isOpen_ball.measurableSet).symm
+      _ ≤ volume U := measure_mono hsub
+  -- Step 6: real form `card F · ((r/2)ⁿ · b) ≤ A`, as `Lⁿ(U) < ∞`.
+  have hreal : (F.card : ℝ) * ((r / 2) ^ n * b) ≤ A := by
+    have h := ENNReal.toReal_mono hUfin hle
+    rwa [ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_natCast,
+      ENNReal.toReal_ofReal (by positivity)] at h
+  -- Step 7: `card F · rⁿ · b = 2ⁿ · (card F · ((r/2)ⁿ · b)) ≤ 2ⁿ · A`.
+  have hpow : (2 : ℝ) ^ n * (r / 2) ^ n = r ^ n := by
+    rw [← mul_pow, mul_div_cancel₀ r two_ne_zero]
+  rw [le_div_iff₀ hb]
+  calc (F.card : ℝ) * r ^ n * b = 2 ^ n * ((F.card : ℝ) * ((r / 2) ^ n * b)) := by
+        rw [← hpow]; ring
+    _ ≤ 2 ^ n * A := mul_le_mul_of_nonneg_left hreal (by positivity)
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
