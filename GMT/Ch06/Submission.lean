@@ -359,6 +359,55 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Rademacher on a Lipschitz chart (Simon Ch. 2, 1.4 and 1.8(i)): for `f` locally Lipschitz on
+an open `U` and `Φ` `K`-Lipschitz on an open `Ω ⊆ ℝⁿ`, the `Φ`-image of the set of `w ∈ Ω` with
+`Φ w ∈ U` at which `f ∘ Φ` is not differentiable is `Hⁿ`-null. -/
+theorem Submission.lpf_tde_chart_nondiff_image_null :
+    ∀ (P Q n : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P)
+      (Ω : Set (Eucl n)) (K : ℝ≥0), IsOpen U → LocallyLipschitzOn U f → IsOpen Ω →
+      LipschitzOnWith K Φ Ω →
+      (μHE[n] : Measure (Eucl P))
+        (Φ '' {w | w ∈ Ω ∧ Φ w ∈ U ∧ ¬ DifferentiableAt ℝ (f ∘ Φ) w}) = 0 := by
+  intro P Q n U f Φ Ω K hU hf hΩ hΦ
+  -- Each `w ∈ Ω ∩ Φ⁻¹(U)` has an open `V ∋ w`, `V ⊆ Ω`, on which `f ∘ Φ` is Lipschitz.
+  have hloc : ∀ w ∈ Ω ∩ Φ ⁻¹' U, ∃ V : Set (Eucl n), IsOpen V ∧ w ∈ V ∧ V ⊆ Ω ∧
+      ∃ C : ℝ≥0, LipschitzOnWith C (f ∘ Φ) V := by
+    rintro w ⟨hwΩ, hwU⟩
+    obtain ⟨C, t, ht, hft⟩ := hf hwU
+    rw [hU.nhdsWithin_eq hwU] at ht
+    have hcont : ContinuousAt Φ w := hΦ.continuousOn.continuousAt (hΩ.mem_nhds hwΩ)
+    have hmem : Ω ∩ Φ ⁻¹' t ∈ 𝓝 w := inter_mem (hΩ.mem_nhds hwΩ) (hcont.preimage_mem_nhds ht)
+    obtain ⟨V, hVsub, hVo, hwV⟩ := _root_.mem_nhds_iff.1 hmem
+    exact ⟨V, hVo, hwV, fun y hy => (hVsub hy).1,
+      C * K, hft.comp (hΦ.mono fun y hy => (hVsub hy).1) fun y hy => (hVsub hy).2⟩
+  choose! V hVo hwV hVΩ C hC using hloc
+  -- Countably many of the `V w` cover `Ω ∩ Φ⁻¹(U)` (Lindelöf).
+  obtain ⟨T, hTsub, hTc, hTU⟩ :=
+    TopologicalSpace.isOpen_biUnion_countable (Ω ∩ Φ ⁻¹' U) V fun w hw => hVo w hw
+  -- Rademacher on each `V w`: the non-differentiability set of `f ∘ Φ` is Lebesgue-null.
+  have hZ : (volume : Measure (Eucl n))
+      {w | w ∈ Ω ∧ Φ w ∈ U ∧ ¬ DifferentiableAt ℝ (f ∘ Φ) w} = 0 := by
+    have hcover : {w | w ∈ Ω ∧ Φ w ∈ U ∧ ¬ DifferentiableAt ℝ (f ∘ Φ) w} ⊆
+        ⋃ w ∈ T, {y | y ∈ V w ∧ ¬ DifferentiableAt ℝ (f ∘ Φ) y} := by
+      rintro y ⟨hyΩ, hyU, hyd⟩
+      have hy : y ∈ ⋃ w ∈ T, V w := hTU ▸ mem_biUnion ⟨hyΩ, hyU⟩ (hwV y ⟨hyΩ, hyU⟩)
+      obtain ⟨w, hwT, hyV⟩ := mem_iUnion₂.1 hy
+      exact mem_biUnion hwT ⟨hyV, hyd⟩
+    refine measure_mono_null hcover ((measure_biUnion_null_iff hTc).2 fun w hwT => ?_)
+    have hw := hTsub hwT
+    have hR := (hC w hw).ae_differentiableWithinAt_of_mem (μ := (volume : Measure (Eucl n)))
+    rw [ae_iff] at hR
+    refine measure_mono_null (fun y hy => ?_) hR
+    obtain ⟨hyV, hyd⟩ := hy
+    exact fun h => hyd ((h hyV).differentiableAt ((hVo w hw).mem_nhds hyV))
+  -- `μHE[n] = volume` on `ℝⁿ`, and the Lipschitz image bound `Hⁿ(Φ(Z)) ≤ Kⁿ Hⁿ(Z) = 0`.
+  rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume] at hZ
+  have himage := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+    (Y := Eucl P) n (hΦ.mono fun w (hw : w ∈ {w | w ∈ Ω ∧ Φ w ∈ U ∧
+      ¬ DifferentiableAt ℝ (f ∘ Φ) w}) => hw.1)
+  rw [hZ, mul_zero] at himage
+  exact nonpos_iff_eq_zero.1 himage
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
