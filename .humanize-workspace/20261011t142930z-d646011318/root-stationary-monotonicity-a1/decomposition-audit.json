@@ -1,0 +1,50 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "tendsto_nhdsWithin_Ioo_right|tendsto_measure_biInter_gt|setLIntegral_iUnion_of_directed|tendsto_setIntegral_of_monotone|aestronglyMeasurable_iUnion_iff|integrableOn_singleton_iff|ofReal_integral_eq_lintegral_ofReal|hasFiniteIntegral_iff_ofReal|Tendsto.limUnder_eq",
+        "stationary_ratio_limit_of_annulus_identity|stationary_density_usc_of_ratio_bound",
+        "measureReal_mono|tendsto_toReal",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/stationary-independent-audit/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/stationary-independent-audit/ParentAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Separation/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-stationary-monotonicity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-weighted-monotonicity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/tmp/sm-a1-audit/Assembly.lean",
+        "/tmp/stationary-independent-audit/Challenges.lean",
+        "/tmp/stationary-independent-audit/ParentAssembly.lean"
+      ],
+      "conclusion": "Accept the two-child split of stationary_monotonicity_density. The snapshot contract matches the workspace byte-for-byte; installed dependency revisions match their pins. The inspected Mathlib lemmas support the supplied limit, measurability, integrability and continuity arguments. Name searches found no existing declarations in the snapshot/project, and neither proposed bare name is reserved by another DAG node. Adding the children preserves acyclicity; both correctly have empty depends_on because their inputs are explicit hypotheses. Both exact one-line types independently elaborate without child implementations. The supplied appendix proofs compile together against a freshly rebuilt contract, and each uses only propext, Classical.choice and Quot.sound. The supplied parent residual also compiles with the sibling's exact frozen type as an explicit parameter, using only those standard axioms. This verifies that the children and existing sibling prerequisite establish precisely the selected frozen parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ratio_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition match all hypotheses and four conclusions. The proof correctly derives monotonicity, the finite infimum limit, identification with limUnder, and the density bound. Annulus integrability supplies measurability; bounded lower integrals establish integrability on the punctured ball before integral convergence is invoked. The zero value at the center handles even an infinite singleton mass. No finiteness, tangent-measurability or positive-dimension hypothesis is silently required, and nonpositive R causes only vacuous obligations. This is a substantive, non-circular part of the selected parent. Its exact supplied appendix kernel-checks."
+    },
+    {
+      "key": "density_usc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis of the exact Lean proposition. The proof correctly chooses the interior radii, uses compact-ball finiteness for continuity from above and passage through ENNReal.toReal, and applies the ratio bound using the two proved ball inclusions. Division requires only a nonnegative denominator, as supplied. The resulting neighborhood inequality proves UpperSemicontinuousOn. No stationarity or other child theorem is assumed implicitly; the parent supplies its explicit density and ratio-bound hypotheses from ratio_limit. The proof is complete and non-circular, and its exact supplied appendix kernel-checks."
+    }
+  ],
+  "required_changes": []
+}
