@@ -1,0 +1,98 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.de_giorgi-a1.rectifiable_hausdorff-a1.measure_le_hausdorff-a1`
+- Child DAG node: `root.de_giorgi-a1.rectifiable_hausdorff-a1.measure_le_hausdorff-a1.hausdorff_normalization-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the Notation paragraph of the supplied proof of deGiorgiRH_measure_le_two_pow_mul_hausdorff. It states that Simon's normalized Hausdorff measure, with covering cost ω_n(diam C/2)ⁿ, coincides with μHE[n] (SimonGMT simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure, simonHausdorffMeasureReal). Here that fact is written as an explicit identity between μHE[n] and Mathlib's unnormalized μH[n].
+
+Notation.
+- ω_n := Lⁿ(B_1(0)) = volume (Metric.ball (0 : Rn n) 1).
+- ω'_n := SimonGMT Chapter01.realUnitBallVolume (n : ℝ) = ofReal(π^{n/2}/Γ(n/2 + 1)).
+- All identities below are in [0, ∞] and hold for an arbitrary set s ⊆ ℝ^N.
+
+1. Simon's measure in terms of μH[n]. By definition (SimonGMT Chapter01.simonHausdorffMeasureReal), simonHausdorffMeasureReal (n : ℝ) = (ω'_n / 2^(n:ℝ)) • μH[n]. In [0, ∞] we have 2^(n:ℝ) = 2ⁿ (ENNReal.rpow_natCast). This measure is the Hⁿ of the supplied proof: its values on all sets are Simon's literal (2.1)–(2.2) (SimonGMT Chapter01.simonHausdorffMeasureReal_toOuterMeasure).
+
+2. Identification with μHE[n]. SimonGMT Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure n (module Poincare.SimonGMT.Chapter02.AreaLiteral) gives simonHausdorffMeasureReal (n : ℝ) = μHE[n]. It holds on every metric space with Borel σ-algebra, in particular on X = ℝ^N. It is the kernel-checked consequence of Simon Ch. 1, Theorems 2.8–2.9 (the isodiametric inequality gives Hⁿ = Lⁿ on ℝⁿ). Since (a • ν)(s) = a·ν(s) for every set s (Measure.smul_apply), Steps 1–2 give μHE[n](s) = (ω'_n / 2ⁿ)·μH[n](s).
+
+3. ω'_n = ω_n.
+   (a) If n ≥ 1: SimonGMT Chapter01.volume_euclidean_ball_eq (module Poincare.SimonGMT.Chapter01.EuclideanHausdorffUpper) gives volume (ball x r) = ω'_n·(ofReal r)ⁿ in ℝⁿ = EuclideanSpace ℝ (Fin n) for 0 < n. With x = 0 and r = 1 this is ω_n = ω'_n·1ⁿ = ω'_n.
+   (b) If n = 0: ω'_0 = π⁰/Γ(1) = 1 (Chapter01.realUnitBallVolume_zero). ℝ⁰ = EuclideanSpace ℝ (Fin 0) consists of the single point 0, so B_1(0) = {0}. The set {0} is the parallelepiped spanned by the empty orthonormal basis EuclideanSpace.basisFun (Fin 0) ℝ, because the empty sum is 0. Its volume is 1 by Mathlib OrthonormalBasis.volume_parallelepiped. Hence ω_0 = 1 = ω'_0. (EuclideanSpace.volume_ball does not apply here, since it needs a nonempty index type.)
+
+4. Conclusion. By Steps 2–3, 2ⁿ·μHE[n](s) = 2ⁿ·((ω_n / 2ⁿ)·μH[n](s)) = (2ⁿ·(ω_n / 2ⁿ))·μH[n](s) = ω_n·μH[n](s). The last equality holds because 2ⁿ ≠ 0 and 2ⁿ ≠ ∞, so 2ⁿ·(a / 2ⁿ) = a for every a ∈ [0, ∞] (ENNReal.mul_div_cancel). This is the claim ω_n·μH[n](s) = 2ⁿ·μHE[n](s). ∎
+
+5. Imports. Neither SimonGMT module used above is in the contract's import closure. The solution adds `import Poincare.SimonGMT.Chapter01.EuclideanHausdorffUpper` and `import Poincare.SimonGMT.Chapter02.AreaLiteral` to GMT/Ch03/Submission.lean; both are in the pinned simongmt package.
+
+## Key steps
+
+1. simonHausdorffMeasureReal n = (ω'_n/2ⁿ)•μH[n] by definition and = μHE[n] by SimonGMT simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure, so μHE[n](s) = (ω'_n/2ⁿ)·μH[n](s) for every set s
+2. ω'_n = ω_n: for n ≥ 1 apply volume_euclidean_ball_eq at x = 0, r = 1; for n = 0, ω'_0 = 1 and B_1(0) = {0} is a unit orthonormal parallelepiped of volume 1
+3. Cancel 2ⁿ ∈ (0,∞): 2ⁿ·μHE[n](s) = ω_n·μH[n](s)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean`
+- `sed -n 1,200p <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_def, euclideanHausdorffMeasure_zero, EuclideanSpace.euclideanHausdorffMeasure_eq_volume)`
+- `grep -n 'theorem le_mkMetric|theorem mkMetric_smul|theorem le_hausdorffMeasure|theorem mkMetric_toOuterMeasure|theorem hausdorffMeasure_apply|def mkMetric' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `grep -rn 'theorem tendsto_measure_iUnion_atTop|theorem measure_iUnion_eq_iSup_accumulate' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/*.lean`
+- `sed -n 300,360p <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean (EuclideanSpace.volume_ball needs Nonempty ι; InnerProductSpace.volume_ball needs Nontrivial)`
+- `grep -rn 'le_of_forall_lt_one_mul_le|exists_nat_one_div_lt|toReal_le_of_le_ofReal|mul_div_cancel|mul_lt_mul_left|one_lt_inv|def ediam|edist_le_ediam_of_mem|restrict_apply' <snapshot>/mathlib/Mathlib`
+- `grep -n 'def simonHausdorff|theorem simonHausdorff' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `grep -rn 'simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|simonHausdorffMeasureReal_toOuterMeasure' .lake/packages/simongmt/Poincare/SimonGMT`
+- `grep -n 'theorem realUnitBallVolume|theorem volume_euclidean_ball_eq' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/*.lean`
+- `grep -n '^theorem' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/{DensityComparison,HausdorffDensityBounds,HausdorffContentDensity,Densities}.lean (no 2^n upper-density bound; only the reverse comparison simon_theorem_3_3)`
+- `python3 -I import-closure walk from Poincare.SimonGMT.Chapter02.BV and Poincare.SimonGMT.Chapter03.Rectifiable (closure = Chapter01.{Basic,Hausdorff,MetricCriterion}, Chapter02.{BV,Lipschitz}, Chapter03.Rectifiable)`
+- `grep -n 'Remark|3.3|3.26|3.27' book/chapter-01.txt (Simon Thm 3.3 lines 602-610, Thm 3.26 / Remark 3.27)`
+- `git show <sibling solution branches>:GMT/Ch03/Submission.lean | grep '^import' (solutions add pinned SimonGMT imports)`
+- `python3 -I dag.json lean_name collision check (208 nodes): none`
+- `python3 -I verifier/gmt-compare.py child_modules(contract mode) + verifier/lean_contract.py validate_lean_statement; lake env lean on both generated NodeChallenge files: OK`
+- `lake env lean GMT/Scratch/MeasureLeHausdorffSplitDecision.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Algebra/Order/Archimedean/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-rectifiable-hausdorff-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/RectifiableHausdorffSplitDecision.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/MeasureLeHausdorffSplitDecision.lean`
+
+The snapshot contract is byte-identical to the workspace contract (project d09bc8a, Mathlib 25730c7c).
+
+Neither Mathlib nor the pinned SimonGMT contains the selected bound or its covering core. SimonGMT has only the reverse density comparison (simon_theorem_3_3, mul_simonHausdorff_le_of_le_dimensionalUpperDensity) and a content-level analogue of the restricted-outer-measure technique (infinite_content_eq_zero_of_uniform_ball_bound_of_small_diameter).
+
+Mathlib supplies:
+- the covering machinery: OuterMeasure.le_mkMetric, OuterMeasure.mkMetric_smul, hausdorffMeasure_apply, Measure.mkMetric_toOuterMeasure;
+- continuity from below for arbitrary sets: Monotone.measure_iUnion, tendsto_measure_iUnion_atTop;
+- ENNReal.le_of_forall_lt_one_mul_le.
+
+The normalization ω_n·μH[n] = 2ⁿ·μHE[n] follows from SimonGMT simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure (Chapter02/AreaLiteral) and volume_euclidean_ball_eq (Chapter01/EuclideanHausdorffUpper). Both are outside the contract import closure but importable, as sibling solutions do. The case n = 0 uses OrthonormalBasis.volume_parallelepiped.
+
+Both child types elaborate in the exact NodeChallenge scope. The scratch file proves both children and the parent assembly with propext, Classical.choice and Quot.sound only. No lean_name collides with the 208 DAG nodes.

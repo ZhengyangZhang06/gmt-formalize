@@ -1,0 +1,46 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem le_mkMetric|theorem mkMetric_smul|theorem mkMetric_toOuterMeasure|theorem hausdorffMeasure_apply|def mkMetric|def hausdorffMeasure",
+        "theorem tendsto_measure_iUnion_atTop|theorem.*measure_iUnion|def euclideanHausdorffMeasure|theorem euclideanHausdorffMeasure_def|theorem euclideanHausdorffMeasure_zero",
+        "simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|def simonHausdorffMeasureReal|simonHausdorffMeasureReal_toOuterMeasure|def realUnitBallVolume|realUnitBallVolume_zero|realUnitBallVolume_pos|realUnitBallVolume_ne_top|volume_euclidean_ball_eq",
+        "volume_parallelepiped|theorem volume_ball|theorem volume_closedBall",
+        "PATH='/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/bin:/usr/bin:/bin' '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env lean GMT/Scratch/MeasureLeHausdorffSplitDecision.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-rectifiable-hausdorff-a1-measure-le-hausdorff-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/MeasureLeHausdorffSplitDecision.lean",
+        "/tmp/gmt-decomposition-audit-fvrs_290/closed_ball_covering_bound.lean",
+        "/tmp/gmt-decomposition-audit-fvrs_290/hausdorff_normalization.lean"
+      ],
+      "conclusion": "Verified snapshot compatibility and the pinned SimonGMT sources. The covering machinery, continuity from below for arbitrary increasing sets, normalization identity, and zero-dimensional volume computation support the supplied arguments. Both frozen child propositions independently elaborate in generated comparator challenges. The supplied child proofs and exact selected-parent assembly compile with only propext, Classical.choice, and Quot.sound. Neither bare name is reserved among the 208 DAG nodes. The split is appropriate: the independent children combine through the stated increasing-set argument and final limiting step to prove exactly the selected parent. Their empty dependency lists are correct and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "closed_ball_covering_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose hypotheses and conclusion. The proof correctly restricts the outer measure to arbitrary B, obtains the diameter bound by taking radii down to the finite extended diameter, handles zero diameter and n = 0, and passes through countable covers and infima using finite positive c. No measurability or finiteness assumption is hidden. The proof is complete, non-circular, and sufficient for formalization; the bare name is unreserved."
+    },
+    {
+      "key": "hausdorff_normalization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the normalization claim for every n, N, and arbitrary s. The pinned SimonGMT identification applies with the required metric and Borel instances. The proof identifies the unit-ball constant separately for positive dimension and dimension zero, then legitimately cancels the finite nonzero factor 2^n, including infinite measure values. The cited results have compatible hypotheses and standard axioms only. The proof is complete and independent of the sibling and parent; the bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}
