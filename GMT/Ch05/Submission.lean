@@ -458,6 +458,81 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, after 4.4** (the primitive of the mean-curvature coefficient).  Let `p > n`,
+`R, Λ, ε > 0`, `κ = (p − n)/(4p)`, and let `a` be continuous with
+`|a(τ)| ≤ 2κΛR⁻¹ (τ/R)^{−n/p}` at every `τ > 0` with `(1 + ε)τ < R`.  Then for each such `t` the
+primitive `G(u) = ∫₀ᵘ a` is continuous at `t` and `|G(t)| ≤ Λ/2`.
+Proof: as `−n/p > −1`, the bound is integrable near `0`, so `a` is interval integrable on `[0, t]`
+and the fundamental theorem of calculus applies at `t`; and
+`|G(t)| ≤ ∫₀ᵗ 2κΛR⁻¹ (τ/R)^{−n/p} dτ = (2κ/(1 − n/p)) Λ (t/R)^{1−n/p} = (Λ/2) (t/R)^{1−n/p} ≤ Λ/2`,
+since `t ≤ R`. -/
+theorem allard52_am_fc_primitive : ∀ (n : ℕ) (p R Λ ε : ℝ) (a : ℝ → ℝ), (n : ℝ) < p → 0 < R → 0 < Λ → 0 < ε → (∀ t : ℝ, 0 < t → (1 + ε) * t < R → ContinuousAt a t ∧ |a t| ≤ 2 * ((p - n) / (4 * p)) * Λ / R * (t / R) ^ (-((n : ℝ) / p))) → ∀ t : ℝ, 0 < t → (1 + ε) * t < R → ContinuousAt (fun u => ∫ τ in (0)..u, a τ) t ∧ |∫ τ in (0)..t, a τ| ≤ Λ / 2 := by
+  intro n p R Λ ε a hnp hR hΛ hε ha t ht htR
+  -- Notation: `β = n/p ∈ [0, 1)`, `c = 2κΛ/R`, and the bound `g(τ) = c (τ/R)^{−β}`.
+  set β : ℝ := (n : ℝ) / p with hβ
+  set c : ℝ := 2 * ((p - n) / (4 * p)) * Λ / R with hc
+  have hp : 0 < p := (Nat.cast_nonneg n).trans_lt hnp
+  have hβ1 : β < 1 := (div_lt_one hp).2 hnp
+  -- Step 0: `t ≤ R`, and `a` is continuous on the open set `U = {τ | 0 < τ ∧ (1 + ε)τ < R}`,
+  -- which contains `(0, t]`.
+  have htR' : t ≤ R := by nlinarith
+  set U : Set ℝ := {τ | 0 < τ ∧ (1 + ε) * τ < R}
+  have hUo : IsOpen U :=
+    (isOpen_lt continuous_const continuous_id).inter
+      (isOpen_lt (continuous_const.mul continuous_id) continuous_const)
+  have haU : ContinuousOn a U := fun τ hτ => (ha τ hτ.1 hτ.2).1.continuousWithinAt
+  have hIoc : Ioc 0 t ⊆ U := fun τ hτ =>
+    ⟨hτ.1, lt_of_le_of_lt (mul_le_mul_of_nonneg_left hτ.2 (by linarith)) htR⟩
+  -- Step 1: `g` is interval integrable on `[0, t]`, since `−β > −1` (rescale `τ ↦ τ/R`).
+  have hg0 : IntervalIntegrable (fun τ => (τ / R) ^ (-β)) volume 0 t := by
+    have h := (intervalIntegral.intervalIntegrable_rpow' (a := 0) (b := t / R)
+      (r := -β) (by linarith)).comp_mul_right (c := R⁻¹)
+    simpa [div_eq_mul_inv, hR.ne'] using h
+  have hg : IntervalIntegrable (fun τ => c * (τ / R) ^ (-β)) volume 0 t := hg0.const_mul c
+  -- Step 2: `|a| ≤ g` on `(0, t]`.
+  have hle : ∀ τ ∈ Ioc 0 t, ‖a τ‖ ≤ c * (τ / R) ^ (-β) := fun τ hτ => by
+    rw [Real.norm_eq_abs]
+    exact (ha τ (hIoc hτ).1 (hIoc hτ).2).2
+  -- Step 3: by domination, `a` is interval integrable on `[0, t]`.
+  have haI : IntervalIntegrable a volume 0 t := by
+    refine hg.mono_fun' ?_ ?_
+    · rw [uIoc_of_le ht.le]
+      exact (haU.mono hIoc).aestronglyMeasurable measurableSet_Ioc
+    · rw [uIoc_of_le ht.le]
+      exact (ae_restrict_iff' measurableSet_Ioc).2 (Eventually.of_forall hle)
+  refine ⟨?_, ?_⟩
+  -- Step 4: FTC at `t`, where `a` is continuous and strongly measurable near `t`.
+  · exact (intervalIntegral.integral_hasDerivAt_right haI
+      (haU.stronglyMeasurableAtFilter hUo t ⟨ht, htR⟩) (ha t ht htR).1).continuousAt
+  -- Step 5: `|G(t)| ≤ ∫₀ᵗ g = c R (t/R)^{1−β}/(1 − β) = (Λ/2)(t/R)^{1−β} ≤ Λ/2`.
+  · have h1 : |∫ τ in (0)..t, a τ| ≤ ∫ τ in (0)..t, c * (τ / R) ^ (-β) := by
+      rw [← Real.norm_eq_abs]
+      exact intervalIntegral.norm_integral_le_of_norm_le ht.le (Eventually.of_forall hle) hg
+    have h2 : ∫ τ in (0)..t, c * (τ / R) ^ (-β) =
+        c * (R * ((t / R) ^ (-β + 1) / (-β + 1))) := by
+      rw [intervalIntegral.integral_const_mul,
+        intervalIntegral.integral_comp_div (fun x => x ^ (-β)) hR.ne',
+        integral_rpow (Or.inl (by linarith)), zero_div, Real.zero_rpow (by linarith), sub_zero,
+        smul_eq_mul]
+    -- `2κ/(1 − β) = 1/2`.
+    have h3 : c * (R * ((t / R) ^ (-β + 1) / (-β + 1))) = Λ / 2 * (t / R) ^ (-β + 1) := by
+      have hβ' : -β + 1 = (p - n) / p := by rw [hβ]; field_simp; ring
+      have hpn : p - n ≠ 0 := (sub_pos.2 hnp).ne'
+      generalize (t / R) ^ (-β + 1) = X
+      rw [hβ', hc]
+      field_simp
+      ring
+    have hX : (t / R) ^ (-β + 1) ≤ 1 :=
+      Real.rpow_le_one (div_nonneg ht.le hR.le) ((div_le_one hR).2 htR') (by linarith)
+    calc |∫ τ in (0)..t, a τ| ≤ ∫ τ in (0)..t, c * (τ / R) ^ (-β) := h1
+      _ = Λ / 2 * (t / R) ^ (-β + 1) := by rw [h2, h3]
+      _ ≤ Λ / 2 * 1 := mul_le_mul_of_nonneg_left hX (by positivity)
+      _ = Λ / 2 := mul_one _
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
