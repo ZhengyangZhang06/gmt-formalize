@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bd49043959cd30b8aa9a97412fd251f3be9e71623bcacf957b16b1278e46b1ae",
+  "git_delta": {
+    "base_commit": "c97d312d0a38c8d10578c717cfb24db3c08af20a",
+    "candidate_commit": "9cda1c41561017926db3be717e4805ce18c529c9",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_fv_det_ge_pow_of_quadForm_ge",
+    "diff_sha256": "3c6124985188a317472ed2b850aae8324e54fa0edd1c11114177833fe80240e5",
+    "source_sha256": "3ea54290006a02c9336ccb51397e1812e8c9dc9d8f249e64475653ece3ea144a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_fv_det_ge_pow_of_quadForm_ge",
+      "statement": "∀ (N : ℕ) (S : Matrix (Fin N) (Fin N) ℝ) (c : ℝ), 0 ≤ c → (∀ i j, S i j = S j i) → (∀ ξ : Fin N → ℝ, c * ∑ i, ξ i ^ 2 ≤ ∑ i, ∑ j, ξ i * S i j * ξ j) → c ^ N ≤ S.det",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
