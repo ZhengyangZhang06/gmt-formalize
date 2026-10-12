@@ -564,6 +564,56 @@ theorem rsod_tv_support_eq : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : Rectif
       rwa [add_sub_cancel_right]
   -- `spt W = τ⁻¹U ∩ spt μ_W = τ⁻¹U ∩ τ⁻¹(spt μ_V) = τ⁻¹(U ∩ spt μ_V) = τ⁻¹(spt V)`.
   simp only [RectifiableVarifold.support, hw, hsupp, Set.preimage_inter]
+/-- Translation invariance of tangent planes (Simon Ch. 3, 1.7; Ch. 4, 1.3): if
+`W = v(τ⁻¹ M, θ ∘ τ)` with `τ(y) = y + x₀`, then `η_{y,r}(τ⁻¹ M) = η_{y + x₀,r}(M)` and the
+blown-up multiplicities agree, so the weighted approximate tangent planes of `W` at `y` are those
+of `V` at `y + x₀`, and `W`, `V` choose the same tangent projection there. -/
+theorem rsod_tv_tangentProj_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U) (W : RectifiableVarifold n ℓ U') (x₀ : Amb n ℓ),
+    W.carrier = (fun y => y + x₀) ⁻¹' V.carrier → (∀ y, W.mult y = V.mult (y + x₀)) →
+    ∀ y, W.tangentProj y = V.tangentProj (y + x₀) := by
+  intro n ℓ U U' V W x₀ hc hm y
+  -- `η_{y,r}(τ⁻¹ M) = η_{y + x₀,r}(M)`, since `z - y = (z + x₀) - (y + x₀)`.
+  have himg : ∀ r : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap y r '' W.carrier =
+      Poincare.SimonGMT.Chapter03.blowUpMap (y + x₀) r '' V.carrier := by
+    intro r
+    rw [hc]
+    ext w
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      refine ⟨z + x₀, hz, ?_⟩
+      simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+      congr 1
+      abel
+    · rintro ⟨m, hm', rfl⟩
+      refine ⟨m - x₀, by simpa using hm', ?_⟩
+      simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+      congr 1
+      abel
+  -- `θ_W(y + r w) = θ((y + x₀) + r w)` and `θ_W(y) = θ(y + x₀)`, so the predicates agree.
+  have hadd : ∀ (r : ℝ) (w : Amb n ℓ), y + r • w + x₀ = y + x₀ + r • w := fun r w =>
+    add_right_comm y (r • w) x₀
+  have key : ∀ P : Submodule ℝ (Amb n ℓ),
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n W.carrier W.mult y P ↔
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult
+        (y + x₀) P := by
+    intro P
+    simp only [Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt, himg, hm, hadd]
+  -- Hence `W` at `y` and `V` at `y + x₀` choose the same tangent plane.
+  have hchoose : ∀ (p q : Submodule ℝ (Amb n ℓ) → Prop) (h₁ : ∃ P, p P) (h₂ : ∃ P, q P),
+      p = q → Classical.choose h₁ = Classical.choose h₂ := by
+    rintro p q h₁ h₂ rfl
+    rfl
+  unfold RectifiableVarifold.tangentProj
+  by_cases h₁ : ∃ P,
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n W.carrier W.mult y P
+  · have h₂ := (exists_congr key).1 h₁
+    rw [dite_eq_left h₁, dite_eq_left h₂]
+    congr 1
+    exact hchoose _ _ h₁ h₂ (funext fun P => propext (key P))
+  · have h₂ : ¬∃ P, Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier
+        V.mult (y + x₀) P := fun h => h₁ ((exists_congr key).2 h)
+    rw [dite_eq_right h₁, dite_eq_right h₂]
 
 end Submission
 
