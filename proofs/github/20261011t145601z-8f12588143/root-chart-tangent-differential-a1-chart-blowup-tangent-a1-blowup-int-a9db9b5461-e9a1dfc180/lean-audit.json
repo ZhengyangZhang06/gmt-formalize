@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a3cffeee87bb3c65ffcd5c3127a635b356e58be9ff26c6249aee28214d0ecfb1",
+  "git_delta": {
+    "base_commit": "074c7231d2a4c84a07ea4aff841f434be9cef2a6",
+    "candidate_commit": "333f99de4e47bf4d87d221e537cd12d326166880",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "chartTD_chart_blowup_integral_tendsto",
+    "diff_sha256": "53631eef2e9a34c33e1d67d3a5385ca23ba93bd24d90185f41f36216ea5e249c",
+    "source_sha256": "32e63adad4bc1f2f0b5e32162aa9e2e56f14f97818d4eae0611131a34445cbd8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.chartTD_chart_blowup_integral_tendsto",
+      "statement": "∀ (n N : ℕ) (B : Set (Rn n)) (ψ : Rn n → Rn N) (K : ℝ≥0) (c : ℝ), IsOpen B → ContDiffOn ℝ 1 ψ B → LipschitzOnWith K ψ B → 0 < c → (∀ u ∈ B, ∀ u' ∈ B, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖) → ∀ u ∈ B, ∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ v in B, f (blowUpMap (ψ u) r (ψ v)) * (fderiv ℝ ψ v).toLinearMap.normDet) (𝓝[>] 0) (𝓝 ((fderiv ℝ ψ u).toLinearMap.normDet * ∫ y, f (fderiv ℝ ψ u y)))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
