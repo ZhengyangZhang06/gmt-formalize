@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "norm_sq_eq|inner_apply|orthonormal_single|norm_single",
+        "eq_starProjection_of_mem_of_inner_eq_zero|dist_starProjection_eq_infDist|norm_starProjection_apply_le|sub_starProjection_mem_orthogonal|starProjection_apply_mem|starProjection :",
+        "finrank_span_eq_card|finrank_map_eq",
+        "mem_span_range_iff_exists_fun",
+        "theorem le_opNorm|theorem opNorm_le_bound|def opNorm|instance.*Norm",
+        "any_radius_gr_la_",
+        "contract_scope|challenge|namespace Submission|child_lean|child_type",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Checks/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Checks/AllProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/BigOperators/Ring/Finset.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1-la-basics-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1-la-basics-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/la-basics-split-xQ1XeA/proj/Checks/All.lean",
+        "/tmp/la-basics-independent-q1jfeqf2/proj/Checks/Contracts.lean",
+        "/tmp/la-basics-independent-q1jfeqf2/proj/Checks/AllProofs.lean"
+      ],
+      "conclusion": "Independently verified project revision ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d; inspected library files match the compiler package sources. The definitions use Euclidean norms, the continuous-linear-map operator norm, and ambient-valued starProjection. Completeness and orthogonal-projection instances synthesize for arbitrary subspaces of Rn m. All three exact one-line child propositions elaborate without their implementations in the comparator's replayed scope. The supplied child proofs, exact parent assembly, and Submission-name resolution independently compile; their axiom lists contain only propext, Classical.choice and Quot.sound. All names are bare identifiers. No competing reservation occurs in the DAG or other nodes' JSON declaration fields; own proposal/retry records are the only matches. Searches found no proposed-name matches in snapshot project Lean files or Lean files across 587 distinct Git reference tips. No declaration from another DAG branch is reused. The three-way split is appropriate: its sole prerequisite edge, rotated_plane depending on graph_coords, is acyclic, and the children establish the selected frozen parent contract exactly."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_coords",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches C1, C2, L1–L4 and IP with all quantifiers present. Steps 1–3 establish exhaustive coordinate decomposition, append evaluation and extensionality; steps 4–6 prove the linearity identities; steps 7–8 split the Euclidean norm and inner-product sums. Empty index types are covered. The proof is complete and non-circular. Its additional coordinate and inner-product conclusions genuinely support rotated_plane."
+    },
+    {
+      "key": "rotated_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly states L5–L7 for the specified linear isometric equivalence. Steps 1–4 derive the horizontal-plane description and vertical orthogonality using only graph_coords. Steps 5–6 establish projection membership, orthogonal residual and uniqueness, with completeness justified. Steps 7–8 establish the attained distance minimum and the norm equality with explicit nonnegativity. Step 9 proves dimension using an independent coordinate family and preservation under linear equivalence. Zero-dimensional cases remain valid; the dependency is correctly directed and non-circular."
+    },
+    {
+      "key": "hs_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches L8(a–g) and L9. Steps 1–5 correctly use nonnegative finite sums, square roots, triangle inequalities, negation and basis expansion. Step 6 derives the pointwise Cauchy–Schwarz bound before applying the operator-norm criterion with a nonnegative constant. Step 7 justifies squaring and taking square roots. Step 8 obtains projection contraction from finite-dimensional completeness and Pythagoras, then sums over the basis. The proof is independent, non-circular and complete, including dimensions zero."
+    }
+  ],
+  "required_changes": []
+}
