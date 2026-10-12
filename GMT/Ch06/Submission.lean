@@ -520,6 +520,56 @@ theorem Submission.polyhedral_approx_integrable_smooth_ext :
   -- Step 6: (★) with `c = b`.
   linarith [key b hb hbC]
 
+/-- Uniqueness of the vector measure in Simon Ch. 6, (2.7)–(2.9) (p. 136), which makes `T ⌞ A`
+well defined: if `g₁ μ₁` and `g₂ μ₂` (`gᵢ` locally `μᵢ`-integrable in `U`) agree on `C^∞`
+functions with compact support in `U`, then `∫_A u g₁ dμ₁ = ∫_A u g₂ dμ₂` for every Borel `A`
+and continuous `u` with compact support in `U`.  For an open `O ⊇ tsupport u` with compact
+`L = closure O ⊆ U`, each `gᵢ` is `μᵢ⌞L`-integrable, the hypothesis passes to `μᵢ⌞L` on `O`,
+and `1_A u` is bounded, Borel and vanishes outside `O`. -/
+theorem Submission.polyhedral_approx_measure_uniqueness :
+    ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ),
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn g₁ K μ₁ ∧ IntegrableOn g₂ K μ₂) →
+      (∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ →
+        tsupport ψ ⊆ U → ∫ x, ψ x * g₁ x ∂μ₁ = ∫ x, ψ x * g₂ x ∂μ₂) →
+      ∀ A : Set (Eucl P), MeasurableSet A → ∀ u : Eucl P → ℝ, Continuous u →
+        HasCompactSupport u → tsupport u ⊆ U →
+          ∫ x in A, u x * g₁ x ∂μ₁ = ∫ x in A, u x * g₂ x ∂μ₂ := by
+  intro P U hU μ₁ μ₂ g₁ g₂ hint hψ A hA u hu huc huU
+  -- Step 1: an open `O` and a compact `L = closure O` with `tsupport u ⊆ O ⊆ L ⊆ U`; each `gᵢ`
+  -- is `μᵢ⌞L`-integrable.
+  obtain ⟨O, hO, huO, hLU, hL⟩ := exists_open_between_and_isCompact_closure huc hU huU
+  have hOL : O ⊆ closure O := subset_closure
+  obtain ⟨hi₁, hi₂⟩ := hint (closure O) hL hLU
+  -- Step 2: integrating `f gᵢ` over `L` or over `ℝ^P` gives the same when `f = 0` outside `O`.
+  have hloc : ∀ (μ : Measure (Eucl P)) (g f : Eucl P → ℝ), (∀ x, x ∉ O → f x = 0) →
+      ∫ x in closure O, f x * g x ∂μ = ∫ x, f x * g x ∂μ := fun μ g f hf =>
+    setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
+      rw [hf x fun h => hx (hOL h), zero_mul]
+  -- Step 3: `g₁ (μ₁⌞L)` and `g₂ (μ₂⌞L)` agree on `C^∞` functions with compact support in `O`.
+  have hψL : ∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ O → ∫ x in closure O, ψ x * g₁ x ∂μ₁ = ∫ x in closure O, ψ x * g₂ x ∂μ₂ := by
+    intro ψ hψs hψc hψO
+    have hψ0 : ∀ x, x ∉ O → ψ x = 0 := fun x hx =>
+      image_eq_zero_of_notMem_tsupport fun h => hx (hψO h)
+    rw [hloc μ₁ g₁ ψ hψ0, hloc μ₂ g₂ ψ hψ0]
+    exact hψ ψ hψs hψc ((hψO.trans hOL).trans hLU)
+  -- Step 4: `1_A u` is Borel, bounded and vanishes outside `O`.
+  have hb : Measurable (A.indicator u) := hu.measurable.indicator hA
+  have hbC : ∃ C : ℝ, ∀ x, |A.indicator u x| ≤ C := by
+    obtain ⟨C, hC⟩ := hu.bounded_above_of_compact_support huc
+    exact ⟨C, fun x => (Real.norm_eq_abs _).symm.le.trans
+      ((norm_indicator_le_norm_self u x).trans (hC x))⟩
+  have hb0 : ∀ x, x ∉ O → A.indicator u x = 0 := fun x hx =>
+    Set.indicator_apply_eq_zero.mpr fun _ => image_eq_zero_of_notMem_tsupport fun h => hx (huO h)
+  -- Step 5: `∫_A u gᵢ dμᵢ = ∫_L 1_A u gᵢ dμᵢ`; the integrable version on `O` concludes.
+  have hA' : ∀ (μ : Measure (Eucl P)) (g : Eucl P → ℝ),
+      ∫ x in A, u x * g x ∂μ = ∫ x in closure O, A.indicator u x * g x ∂μ := fun μ g => by
+    rw [hloc μ g _ hb0, ← integral_indicator hA]
+    simp only [Set.indicator_mul_left]
+  rw [hA' μ₁ g₁, hA' μ₂ g₂]
+  exact Submission.polyhedral_approx_integrable_smooth_ext P (μ₁.restrict (closure O))
+    (μ₂.restrict (closure O)) g₁ g₂ hi₁ hi₂ O hO hψL (A.indicator u) hb hbC hb0
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
