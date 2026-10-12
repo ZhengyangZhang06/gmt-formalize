@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "02b7893dbe4c56b553e5f36ec77315ae2f4ec731787fab2e94dc65a8d9fcfa40",
+  "git_delta": {
+    "base_commit": "d89cd3c9e742f33b212f6931b75cf2515615c8ee",
+    "candidate_commit": "4557766ff8593dc4c81d31d8a88413786feacfe8",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "3e2146b93c6561fdcc3f9ebd8176db5025ded77dcc47946dc3be5997d361e205",
+    "source_sha256": "af4804e6f3056c3dd3ea4a94d3ecf5cd9c8787dcb63a777e5818989ecece40b6",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.weight_portmanteau_of_radonConverges",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U), Varifold.RadonConverges Vi V → (∀ O : Set (Euclidean N), IsOpen O → O ⊆ U → V.weight O ≤ liminf (fun i ↦ (Vi i).weight O) atTop) ∧ ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → limsup (fun i ↦ (Vi i).weight K) atTop ≤ V.weight K",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
