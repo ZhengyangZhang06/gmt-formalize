@@ -646,6 +646,341 @@ theorem rsod_blowUp_setIntegral_eq : ∀ (n ℓ : ℕ) (M : Set (Amb n ℓ)) (f 
   simp only [hη, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne',
     one_smul, add_sub_cancel]
 
+/-- **Weighted tangent planes at good points of a piece** (Simon Ch. 3, proof of 1.6 "only if"
+with Remark 1.8(1)).  Let `C ⊆ M` be compact with `θ|_C` continuous, and let `N` be Borel with
+`Hⁿ(N) < ∞` having approximate tangent space `T(x)` at each of its points.  Then for `Hⁿ`-a.e.
+`x ∈ C ∩ N`, `T(x)` is the approximate tangent space of `M` with respect to `θ` at `x`.
+
+Proof: put `C' = C ∩ N`, take a compact neighbourhood `K ⊆ U` of `C` and the finite measure
+`ν = |θ| Hⁿ ⌞ (M ∩ K)`.  The Upper Density Theorem (`aetp_upper_density_zero_ae`) applied to
+`Hⁿ` on `N \ C'` and to `ν` on `C'ᶜ` gives an `Hⁿ`-null set off which both sets have zero
+`n`-density at points of `C'`.  At such `x`, for `f ∈ C_c` vanishing off `B_R(0)` and small `r`,
+the change of variables `rsod_blowUp_setIntegral_eq` gives
+`∫_{η(M)} f θ(x + r·) − θ(x) ∫_{η(N)} f = r⁻ⁿ (∫_{M \ C'} (f∘η) θ + ∫_{C'} (f∘η)(θ − θ(x))
+− θ(x) ∫_{N \ C'} f∘η)`; the three terms are at most `sup|f| r⁻ⁿ ν(C'ᶜ ∩ B_{rR}(x))`,
+`ω(rR) ∫_{η(N)} |f|` (`ω` the oscillation of `θ|_C` at `x`) and
+`|θ(x)| sup|f| r⁻ⁿ Hⁿ((N \ C') ∩ B_{rR}(x))`, all tending to `0`, while
+`∫_{η(N)} f → ∫_{T(x)} f`. -/
+theorem tae_weightedApproxTangent_ae_on_piece : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (C N : Set (Amb n ℓ)) (T : Amb n ℓ → Submodule ℝ (Amb n ℓ)), 1 ≤ n → IsOpen U → IsCompact C → C ⊆ V.carrier → ContinuousOn V.mult C → MeasurableSet N → (μHE[n] : Measure (Amb n ℓ)) N < ⊤ → (∀ x ∈ N, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n N x (T x)) → ∀ᵐ x ∂((μHE[n] : Measure (Amb n ℓ)).restrict (C ∩ N)), Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x (T x) := by
+  intro n ℓ U V C N T _hn hU hC hCM hθC hN hNfin hT
+  -- A Borel hull `M'` of the carrier `M`: integrals over `M` and over `M'` agree.
+  obtain ⟨M', hM'meas, hMM', hMae⟩ : ∃ M' : Set (Amb n ℓ), MeasurableSet M' ∧ V.carrier ⊆ M' ∧
+      M' =ᵐ[(μHE[n] : Measure (Amb n ℓ))] V.carrier :=
+    ⟨toMeasurable _ V.carrier, measurableSet_toMeasurable _ _, subset_toMeasurable _ _,
+      V.nullMeasurableSet_carrier.toMeasurable_ae_eq⟩
+  -- Step 1: a compact neighbourhood `K ⊆ U` of `C`, containing `B_s(z)` for `z ∈ C`, `s ≤ δ`.
+  obtain ⟨δ, hδ, hδU⟩ := hC.exists_cthickening_subset_open hU (hCM.trans V.carrier_subset)
+  obtain ⟨K, hKc, hKU, hBK⟩ : ∃ K : Set (Amb n ℓ), IsCompact K ∧ K ⊆ U ∧
+      ∀ z ∈ C, ∀ s ≤ δ, closedBall z s ⊆ K :=
+    ⟨cthickening δ C, hC.cthickening, hδU, fun z hz s hs =>
+      (closedBall_subset_cthickening hz s).trans (cthickening_mono hs C)⟩
+  have hθK : IntegrableOn V.mult (M' ∩ K) (μHE[n] : Measure (Amb n ℓ)) :=
+    (V.integrableOn_mult K hKc hKU).congr_set_ae (hMae.inter (ae_eq_refl K))
+  -- The piece `C' = C ∩ N` and the finite measure `ν = |θ| Hⁿ ⌞ (M' ∩ K)`.
+  obtain ⟨C', hC'⟩ : ∃ C' : Set (Amb n ℓ), C' = C ∩ N := ⟨_, rfl⟩
+  rw [← hC']
+  have hC'meas : MeasurableSet C' := by
+    rw [hC']
+    exact hC.isClosed.measurableSet.inter hN
+  have hC'C : C' ⊆ C := by
+    rw [hC']
+    exact inter_subset_left
+  have hC'N : C' ⊆ N := by
+    rw [hC']
+    exact inter_subset_right
+  have hC'M' : C' ⊆ M' := fun z hz => hMM' (hCM (hC'C hz))
+  obtain ⟨ν, hν⟩ : ∃ ν : Measure (Amb n ℓ),
+      ν = ((μHE[n] : Measure (Amb n ℓ)).restrict (M' ∩ K)).withDensity fun z => ‖V.mult z‖ₑ :=
+    ⟨_, rfl⟩
+  have hνfin : ν C'ᶜ < ⊤ := by
+    refine lt_of_le_of_lt (measure_mono (subset_univ _)) ?_
+    rw [hν, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+    exact hθK.2
+  -- Step 2: the Upper Density Theorem for `Hⁿ` on `N \ C'` and for `ν` on `C'ᶜ`.
+  have h1 := aetp_upper_density_zero_ae n ℓ (μHE[n] : Measure (Amb n ℓ)) (N \ C')
+    (hN.diff hC'meas) (lt_of_le_of_lt (measure_mono sdiff_subset) hNfin)
+  have h2 := aetp_upper_density_zero_ae n ℓ ν C'ᶜ hC'meas.compl hνfin
+  rw [ae_restrict_iff' hC'meas]
+  filter_upwards [h1, h2] with x hx1 hx2 hxC'
+  have hd1 := hx1 fun h => h.2 hxC'
+  have hd2 := hx2 fun h => h hxC'
+  have hxC : x ∈ C := hC'C hxC'
+  -- Step 3: `dim T(x) = n`, and the approximate-tangent limits of `N` at `x`.
+  obtain ⟨hTdim, hTlim⟩ := hT x (hC'N hxC')
+  refine ⟨hTdim, fun f => ?_⟩
+  -- The oscillation `ω(s) = sup {|θ z - θ x| : z ∈ C ∩ B_s(x)}` tends to `0` as `s ↓ 0`.
+  obtain ⟨ω, hω⟩ : ∃ ω : ℝ → ℝ≥0∞,
+      ∀ s, ω s = ⨆ z ∈ C ∩ closedBall x s, ‖V.mult z - V.mult x‖ₑ := ⟨_, fun _ => rfl⟩
+  have hωlim : Tendsto ω (𝓝[>] 0) (𝓝 0) := by
+    rw [ENNReal.tendsto_nhds_zero]
+    intro ε hε
+    have hev := eventually_nhdsWithin_iff.1
+      ((tendsto_iff_edist_tendsto_0.1 (hθC x hxC).tendsto).eventually (gt_mem_nhds hε))
+    obtain ⟨ρ, hρ, hball⟩ := Metric.eventually_nhds_iff.1 hev
+    filter_upwards [Ioo_mem_nhdsGT hρ] with s hs
+    rw [hω]
+    refine iSup₂_le fun z hz => ?_
+    rw [← edist_eq_enorm_sub]
+    exact (hball (lt_of_le_of_lt (mem_closedBall.1 hz.2) hs.2) hz.1).le
+  -- Step 4: a support radius `R` and a bound `Cf` for the test function `f`.
+  obtain ⟨R0, hR0⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall (0 : Amb n ℓ)
+  obtain ⟨R, hR, hfR⟩ : ∃ R : ℝ, 0 < R ∧ ∀ y, f y ≠ 0 → ‖y‖ ≤ R := by
+    refine ⟨max R0 1, lt_of_lt_of_le one_pos (le_max_right _ _), fun y hy => ?_⟩
+    have hy' := hR0 (subset_tsupport _ hy)
+    rw [mem_closedBall, dist_zero_right] at hy'
+    exact hy'.trans (le_max_left _ _)
+  obtain ⟨Cf, hCf⟩ := (map_continuous f).bounded_above_of_compact_support f.hasCompactSupport
+  have hcf : ENNReal.ofReal Cf ≠ ⊤ := ENNReal.ofReal_ne_top
+  have hfb : ∀ y, ‖f y‖ₑ ≤ ENNReal.ofReal Cf := fun y => by
+    rw [← ofReal_norm]
+    exact ENNReal.ofReal_le_ofReal (hCf y)
+  have hsupp : ∀ r : ℝ, 0 < r → ∀ z, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) ≠ 0 →
+      z ∈ closedBall x (r * R) := by
+    intro r hr z hz
+    have hz' := hfR _ hz
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hr.le),
+      inv_mul_le_iff₀ hr] at hz'
+    rwa [mem_closedBall, dist_eq_norm]
+  have hgc : ∀ r : ℝ, Continuous fun z => f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) :=
+    fun r => (map_continuous f).comp (by
+      unfold Poincare.SimonGMT.Chapter03.blowUpMap
+      fun_prop)
+  -- Steps 4-8: the splitting estimate, for `0 < r < δ / R`.
+  have hbound : ∀ r ∈ Ioo (0 : ℝ) (δ / R),
+      ‖(∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier,
+          f y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ))) -
+        V.mult x * ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' N,
+          f y ∂(μHE[n] : Measure (Amb n ℓ))‖ₑ ≤
+      ENNReal.ofReal Cf * (ENNReal.ofReal ((r ^ n)⁻¹) * ν (C'ᶜ ∩ closedBall x (r * R))) +
+      ω (r * R) * ENNReal.ofReal (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' N,
+          ‖f y‖ ∂(μHE[n] : Measure (Amb n ℓ))) +
+      ‖V.mult x‖ₑ * (ENNReal.ofReal Cf * (ENNReal.ofReal ((r ^ n)⁻¹) *
+        (μHE[n] : Measure (Amb n ℓ)) ((N \ C') ∩ closedBall x (r * R)))) := by
+    rintro r ⟨hr, hrδ⟩
+    have hBr : closedBall x (r * R) ⊆ K := hBK x hxC _ ((lt_div_iff₀ hR).1 hrδ).le
+    have hg0 : ∀ z, z ∉ closedBall x (r * R) →
+        f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) = 0 := fun z hz => by
+      by_contra h
+      exact hz (hsupp r hr z h)
+    -- Integrability of `(f ∘ η_{x,r}) θ` on `M'` and of `f ∘ η_{x,r}` on `N`.
+    have hi1 : IntegrableOn (fun z => f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * V.mult z)
+        M' (μHE[n] : Measure (Amb n ℓ)) := by
+      have h0 : IntegrableOn (fun z => f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * V.mult z)
+          (M' ∩ K) (μHE[n] : Measure (Amb n ℓ)) :=
+        Integrable.bdd_mul hθK (hgc r).aestronglyMeasurable (Eventually.of_forall fun z => hCf _)
+      refine h0.of_forall_sdiff_eq_zero hM'meas fun z hz => ?_
+      rw [hg0 z fun hzB => hz.2 ⟨hz.1, hBr hzB⟩, zero_mul]
+    have hi2 : IntegrableOn (fun z => f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)) N
+        (μHE[n] : Measure (Amb n ℓ)) :=
+      Measure.integrableOn_of_bounded hNfin.ne (hgc r).aestronglyMeasurable
+        (Eventually.of_forall fun z => hCf _)
+    -- Change of variables (Remark 1.8(2)).
+    have hI : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier,
+        f y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) =
+        (r ^ n)⁻¹ * ∫ z in M', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * V.mult z
+          ∂(μHE[n] : Measure (Amb n ℓ)) := by
+      rw [rsod_blowUp_setIntegral_eq n ℓ V.carrier f V.mult x r hr,
+        ← Measure.restrict_congr_set hMae]
+    have hJ : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' N, f y
+        ∂(μHE[n] : Measure (Amb n ℓ)) =
+        (r ^ n)⁻¹ * ∫ z in N, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)
+          ∂(μHE[n] : Measure (Amb n ℓ)) := by
+      simpa only [mul_one] using rsod_blowUp_setIntegral_eq n ℓ N f (fun _ => 1) x r hr
+    have hJabs : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' N, ‖f y‖
+        ∂(μHE[n] : Measure (Amb n ℓ)) =
+        (r ^ n)⁻¹ * ∫ z in N, ‖f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)‖
+          ∂(μHE[n] : Measure (Amb n ℓ)) := by
+      simpa only [mul_one] using
+        rsod_blowUp_setIntegral_eq n ℓ N (fun y => ‖f y‖) (fun _ => 1) x r hr
+    -- Splitting `M' = C' ∪ (M' \ C')` and `N = C' ∪ (N \ C')`.
+    have hsplitM : ∫ z in M', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * V.mult z
+        ∂(μHE[n] : Measure (Amb n ℓ)) =
+        (∫ z in C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * V.mult z
+          ∂(μHE[n] : Measure (Amb n ℓ))) +
+        ∫ z in M' \ C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * V.mult z
+          ∂(μHE[n] : Measure (Amb n ℓ)) := by
+      rw [← integral_inter_add_sdiff hC'meas hi1, inter_eq_right.2 hC'M']
+    have hsplitN : ∫ z in N, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)
+        ∂(μHE[n] : Measure (Amb n ℓ)) =
+        (∫ z in C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)
+          ∂(μHE[n] : Measure (Amb n ℓ))) +
+        ∫ z in N \ C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)
+          ∂(μHE[n] : Measure (Amb n ℓ)) := by
+      rw [← integral_inter_add_sdiff hC'meas hi2, inter_eq_right.2 hC'N]
+    have hosc : (∫ z in C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * V.mult z
+          ∂(μHE[n] : Measure (Amb n ℓ))) -
+        V.mult x * ∫ z in C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)
+          ∂(μHE[n] : Measure (Amb n ℓ)) =
+        ∫ z in C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * (V.mult z - V.mult x)
+          ∂(μHE[n] : Measure (Amb n ℓ)) := by
+      rw [← integral_const_mul, ← integral_sub (hi1.mono_set hC'M')
+        ((hi2.mono_set hC'N).const_mul _)]
+      congr 1
+      ext z
+      ring
+    have key : (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier,
+          f y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ))) -
+        V.mult x * ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' N,
+          f y ∂(μHE[n] : Measure (Amb n ℓ)) =
+        (r ^ n)⁻¹ * ((∫ z in M' \ C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * V.mult z
+            ∂(μHE[n] : Measure (Amb n ℓ))) +
+          (∫ z in C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * (V.mult z - V.mult x)
+            ∂(μHE[n] : Measure (Amb n ℓ))) -
+          V.mult x * ∫ z in N \ C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)
+            ∂(μHE[n] : Measure (Amb n ℓ))) := by
+      rw [hI, hJ, hsplitM, hsplitN, ← hosc]
+      ring
+    -- Step 5: the part on `M' \ C'` is bounded by the `ν`-mass of `C'ᶜ ∩ B_{rR}(x)`.
+    have hA : ‖∫ z in M' \ C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * V.mult z
+        ∂(μHE[n] : Measure (Amb n ℓ))‖ₑ ≤
+        ENNReal.ofReal Cf * ν (C'ᶜ ∩ closedBall x (r * R)) := by
+      refine (enorm_integral_le_lintegral_enorm _).trans ?_
+      have hS : MeasurableSet (C'ᶜ ∩ closedBall x (r * R)) :=
+        hC'meas.compl.inter measurableSet_closedBall
+      rw [hν, withDensity_apply _ hS, Measure.restrict_restrict hS,
+        ← lintegral_const_mul' _ _ hcf, ← lintegral_indicator (hM'meas.diff hC'meas),
+        ← lintegral_indicator (hS.inter (hM'meas.inter hKc.isClosed.measurableSet))]
+      refine lintegral_mono fun z => ?_
+      by_cases hz : z ∈ M' \ C'
+      · rw [indicator_of_mem hz]
+        by_cases hgz : f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) = 0
+        · simp [hgz]
+        · have hzB := hsupp r hr z hgz
+          have hzS : z ∈ (C'ᶜ ∩ closedBall x (r * R)) ∩ (M' ∩ K) := ⟨⟨hz.2, hzB⟩, hz.1, hBr hzB⟩
+          rw [indicator_of_mem hzS, enorm_mul]
+          gcongr
+          exact hfb _
+      · rw [indicator_of_notMem hz]
+        exact zero_le
+    -- Step 6: the part on `N \ C'` is bounded by the `Hⁿ`-mass of `(N \ C') ∩ B_{rR}(x)`.
+    have hD : ‖∫ z in N \ C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)
+        ∂(μHE[n] : Measure (Amb n ℓ))‖ₑ ≤
+        ENNReal.ofReal Cf * (μHE[n] : Measure (Amb n ℓ)) ((N \ C') ∩ closedBall x (r * R)) := by
+      refine (enorm_integral_le_lintegral_enorm _).trans ?_
+      rw [← setLIntegral_const, ← lintegral_indicator (hN.diff hC'meas),
+        ← lintegral_indicator ((hN.diff hC'meas).inter measurableSet_closedBall)]
+      refine lintegral_mono fun z => ?_
+      by_cases hz : z ∈ N \ C'
+      · rw [indicator_of_mem hz]
+        by_cases hgz : f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) = 0
+        · simp [hgz]
+        · have hzS : z ∈ (N \ C') ∩ closedBall x (r * R) := ⟨hz, hsupp r hr z hgz⟩
+          rw [indicator_of_mem hzS]
+          exact hfb _
+      · rw [indicator_of_notMem hz]
+        exact zero_le
+    -- Step 8: the oscillation part on `C'` is bounded by `ω(rR) ∫_N |f ∘ η_{x,r}|`.
+    have hE : ‖∫ z in C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * (V.mult z - V.mult x)
+        ∂(μHE[n] : Measure (Amb n ℓ))‖ₑ ≤
+        ω (r * R) * ∫⁻ z in N, ‖f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)‖ₑ
+          ∂(μHE[n] : Measure (Amb n ℓ)) := by
+      refine (enorm_integral_le_lintegral_enorm _).trans ?_
+      rw [← lintegral_const_mul _ (hgc r).measurable.enorm, ← lintegral_indicator hC'meas,
+        ← lintegral_indicator hN]
+      refine lintegral_mono fun z => ?_
+      by_cases hz : z ∈ C'
+      · rw [indicator_of_mem hz, indicator_of_mem (hC'N hz)]
+        by_cases hgz : f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) = 0
+        · simp [hgz]
+        · rw [enorm_mul, mul_comm, hω]
+          gcongr
+          exact le_iSup₂ (f := fun z (_ : z ∈ C ∩ closedBall x (r * R)) =>
+            ‖V.mult z - V.mult x‖ₑ) z ⟨hC'C hz, hsupp r hr z hgz⟩
+      · rw [indicator_of_notMem hz]
+        exact zero_le
+    have hlin : ∫⁻ z in N, ‖f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)‖ₑ
+        ∂(μHE[n] : Measure (Amb n ℓ)) =
+        ENNReal.ofReal (∫ z in N, ‖f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)‖
+          ∂(μHE[n] : Measure (Amb n ℓ))) :=
+      (ofReal_integral_norm_eq_lintegral_enorm hi2).symm
+    have hsum : ‖(∫ z in M' \ C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * V.mult z
+            ∂(μHE[n] : Measure (Amb n ℓ))) +
+          (∫ z in C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * (V.mult z - V.mult x)
+            ∂(μHE[n] : Measure (Amb n ℓ))) -
+          V.mult x * ∫ z in N \ C', f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)
+            ∂(μHE[n] : Measure (Amb n ℓ))‖ₑ ≤
+        ENNReal.ofReal Cf * ν (C'ᶜ ∩ closedBall x (r * R)) +
+          ω (r * R) * ∫⁻ z in N, ‖f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)‖ₑ
+            ∂(μHE[n] : Measure (Amb n ℓ)) +
+          ‖V.mult x‖ₑ * (ENNReal.ofReal Cf *
+            (μHE[n] : Measure (Amb n ℓ)) ((N \ C') ∩ closedBall x (r * R))) := by
+      refine enorm_sub_le.trans ?_
+      rw [enorm_mul]
+      exact add_le_add ((enorm_add_le _ _).trans (add_le_add hA hE)) (by gcongr)
+    have hrn : 0 ≤ (r ^ n)⁻¹ := inv_nonneg.2 (pow_nonneg hr.le n)
+    rw [key, enorm_mul, Real.enorm_eq_ofReal hrn, hJabs, ENNReal.ofReal_mul hrn]
+    refine (mul_le_mul_of_nonneg_left hsum zero_le).trans (le_of_eq ?_)
+    rw [hlin]
+    ring
+  -- Step 9: assemble the limits.
+  have hmul : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have hc : Continuous fun r : ℝ => r * R := by fun_prop
+      exact (hc.tendsto' 0 0 (zero_mul R)).mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hr hR
+  have hscale : ∀ r : ℝ, 0 < r → ∀ X : ℝ≥0∞, ENNReal.ofReal ((r ^ n)⁻¹) * X =
+      ENNReal.ofReal (R ^ n) * (X / ENNReal.ofReal ((r * R) ^ n)) := by
+    intro r hr X
+    have h : (r ^ n)⁻¹ = R ^ n * ((r * R) ^ n)⁻¹ := by
+      rw [mul_pow]
+      field_simp [pow_ne_zero n hr.ne', pow_ne_zero n hR.ne']
+    rw [h, ENNReal.ofReal_mul (pow_nonneg hR.le n),
+      ENNReal.ofReal_inv_of_pos (pow_pos (mul_pos hr hR) n), div_eq_mul_inv]
+    ring
+  have hRn : ENNReal.ofReal (R ^ n) ≠ ⊤ := ENNReal.ofReal_ne_top
+  have hT1 : Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) * ν (C'ᶜ ∩ closedBall x (r * R)))
+      (𝓝[>] 0) (𝓝 0) := by
+    have h := ENNReal.Tendsto.const_mul (hd2.comp hmul) (Or.inr hRn)
+    rw [mul_zero] at h
+    refine h.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    rw [hscale r hr]
+    rfl
+  have hT3 : Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) *
+      (μHE[n] : Measure (Amb n ℓ)) ((N \ C') ∩ closedBall x (r * R))) (𝓝[>] 0) (𝓝 0) := by
+    have h := ENNReal.Tendsto.const_mul (hd1.comp hmul) (Or.inr hRn)
+    rw [mul_zero] at h
+    refine h.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    rw [hscale r hr]
+    rfl
+  let fabs : CompactlySupportedContinuousMap (Amb n ℓ) ℝ :=
+    ⟨⟨fun y => ‖f y‖, (map_continuous f).norm⟩, f.hasCompactSupport.norm⟩
+  have hT2 : Tendsto (fun r : ℝ => ω (r * R) * ENNReal.ofReal (∫ y in
+      Poincare.SimonGMT.Chapter03.blowUpMap x r '' N, ‖f y‖ ∂(μHE[n] : Measure (Amb n ℓ))))
+      (𝓝[>] 0) (𝓝 0) := by
+    have h := ENNReal.Tendsto.mul (hωlim.comp hmul) (Or.inr ENNReal.ofReal_ne_top)
+      (ENNReal.tendsto_ofReal (hTlim fabs)) (Or.inr ENNReal.zero_ne_top)
+    rw [zero_mul] at h
+    exact h
+  have hU : Tendsto (fun r : ℝ =>
+      ENNReal.ofReal Cf * (ENNReal.ofReal ((r ^ n)⁻¹) * ν (C'ᶜ ∩ closedBall x (r * R))) +
+      ω (r * R) * ENNReal.ofReal (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' N,
+          ‖f y‖ ∂(μHE[n] : Measure (Amb n ℓ))) +
+      ‖V.mult x‖ₑ * (ENNReal.ofReal Cf * (ENNReal.ofReal ((r ^ n)⁻¹) *
+        (μHE[n] : Measure (Amb n ℓ)) ((N \ C') ∩ closedBall x (r * R)))))
+      (𝓝[>] 0) (𝓝 0) := by
+    have h := ((ENNReal.Tendsto.const_mul hT1 (Or.inr hcf)).add hT2).add
+      (ENNReal.Tendsto.const_mul (ENNReal.Tendsto.const_mul hT3 (Or.inr hcf))
+        (Or.inr (enorm_ne_top : ‖V.mult x‖ₑ ≠ ⊤)))
+    simp only [mul_zero, add_zero] at h
+    exact h
+  have hdiff : Tendsto (fun r : ℝ =>
+      (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier,
+        f y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ))) -
+      V.mult x * ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' N,
+        f y ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0) := by
+    rw [tendsto_iff_edist_tendsto_0]
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hU
+      (Eventually.of_forall fun r => zero_le) ?_
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hR)] with r hr
+    rw [edist_zero_right]
+    exact hbound r hr
+  have h := hdiff.add ((hTlim f).const_mul (V.mult x))
+  simp only [sub_add_cancel, zero_add] at h
+  exact h
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
