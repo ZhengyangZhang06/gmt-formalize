@@ -960,6 +960,266 @@ theorem exists_smooth_mean_value_kernel : ∀ n : ℕ, 1 ≤ n → ∃ ρ : Rn n
     Submission.mvk_integral_ray_fubini n ρ h x₀ t ht.le hρ.continuous hρ1
       (hh.of_le (by norm_num)), hρint, one_mul, hint, add_zero]
 
+/-- **Local harmonic representatives of a weakly harmonic function** (step 5 of the proof of
+Weyl's lemma, used for Simon Ch. 5, Lemma 3.1).  Let `w` be integrable on `B = B̆₁(0)` with
+`∫_B w Δζ = 0` for every `ζ ∈ C^∞_c(B)`, and let `0 < ε < 1/2`.  Then some `v`, harmonic near every
+point of `B̆_{1-ε}(0)`, agrees with `w` a.e. on `B̆_{1-2ε}(0)`.
+
+Take `v(x) = ∫_B κ(x - y) w(y) dy` with the mean-value kernel scaled to `κ(z) = ε⁻ⁿ ρ(z/ε)`; it
+is harmonic on `B̆_{1-ε}(0)`.  For normalized bumps `ψⱼ` supported in `B̆_{sⱼ}(0)`, `sⱼ = ε/(j+2)`,
+the mollifications `vⱼ = ψⱼ ⋆ 1_B w` are harmonic on `B̆_{1-ε}(0)` too, so for `|x₀| < 1 - 2ε` the
+mean value property and Fubini give `vⱼ(x₀) = (ψⱼ ⋆ v)(x₀)`.  As `j → ∞` this tends to `v(x₀)` by
+continuity of `v`, and to `w(x₀)` for a.e. `x₀` by Lebesgue differentiation. -/
+theorem ball_weakly_harmonic_local_representative : ∀ n : ℕ, 1 ≤ n → ∀ w : Rn n → ℝ, IntegrableOn w (ball (0 : Rn n) 1) → (∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, w x * Laplacian.laplacian ζ x = 0) → ∀ ε : ℝ, 0 < ε → ε < 1 / 2 → ∃ v : Rn n → ℝ, InnerProductSpace.HarmonicOnNhd v (ball (0 : Rn n) (1 - ε)) ∧ ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) (1 - 2 * ε))), v x = w x := by
+  -- Steps 3 and 6: normalized bumps `ψⱼ` vanishing off `B̆_{sⱼ}(0)`, `sⱼ = δ/(j+2) → 0`, with
+  -- `ψⱼ ⋆ v → v` pointwise for continuous `v`, and `ψⱼ ⋆ 1_B w → w` a.e. on `B`.
+  have hA : ∀ n : ℕ, ∀ δ : ℝ, 0 < δ → ∃ ψ : ℕ → Rn n → ℝ, (∀ j, ContDiff ℝ (⊤ : ℕ∞) (ψ j)) ∧ (∀ j, ∀ z : Rn n, δ ≤ ‖z‖ → ψ j z = 0) ∧ (∀ v : Rn n → ℝ, Continuous v → ∀ x : Rn n, Tendsto (fun j => ∫ b, ψ j b * v (x - b)) atTop (𝓝 (v x))) ∧ ∀ w : Rn n → ℝ, IntegrableOn w (ball (0 : Rn n) 1) → ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), Tendsto (fun j => ∫ y in ball (0 : Rn n) 1, ψ j (x - y) * w y) atTop (𝓝 (w x)) := by
+    intro n δ hδ
+    -- The radii `sⱼ = δ/(j+2)` lie in `(0, δ)` and tend to `0`.
+    set s : ℕ → ℝ := fun j => δ / ((j : ℝ) + 2) with hs
+    have hs_pos : ∀ j, 0 < s j := fun j => div_pos hδ (by positivity)
+    have hs_lt : ∀ j, s j < δ := by
+      intro j
+      simp only [s]
+      rw [div_lt_iff₀ (by positivity)]
+      have : (0 : ℝ) ≤ j := Nat.cast_nonneg j
+      nlinarith
+    have hs_tend : Tendsto s atTop (𝓝 0) := by
+      have h1 : Tendsto (fun j : ℕ => (j : ℝ) + 2) atTop atTop :=
+        tendsto_atTop_add_const_right _ 2 tendsto_natCast_atTop_atTop
+      exact h1.const_div_atTop δ
+    -- `φⱼ` is the bump equal to `1` on `B_{sⱼ/2}(0)` with support `B̆_{sⱼ}(0)`; `ψⱼ = φⱼ / ∫ φⱼ`.
+    let φ : ℕ → ContDiffBump (0 : Rn n) := fun j =>
+      ⟨s j / 2, s j, half_pos (hs_pos j), half_lt_self (hs_pos j)⟩
+    have hφint : ∀ j, Integrable (φ j) volume := fun j =>
+      (φ j).continuous.integrable_of_hasCompactSupport (φ j).hasCompactSupport
+    have hIpos : ∀ j, 0 < ∫ x, φ j x := by
+      intro j
+      refine (integral_pos_iff_support_of_nonneg (fun x => (φ j).nonneg) (hφint j)).mpr ?_
+      rw [(φ j).support_eq]
+      exact measure_ball_pos volume 0 (φ j).rOut_pos
+    set ψ : ℕ → Rn n → ℝ := fun j x => φ j x / ∫ y, φ j y with hψdef
+    have hψ_nonneg : ∀ j x, 0 ≤ ψ j x := fun j x => div_nonneg (φ j).nonneg (hIpos j).le
+    have hψ_int1 : ∀ j, ∫ x, ψ j x = 1 := by
+      intro j
+      simp only [ψ]
+      rw [integral_div]
+      exact div_self (hIpos j).ne'
+    have hψ_supp : ∀ j, Function.support (ψ j) = ball (0 : Rn n) (s j) := by
+      intro j
+      have : ψ j = fun x => φ j x / ∫ y, φ j y := rfl
+      rw [this, Function.support_div, (φ j).support_eq, Function.support_const (hIpos j).ne',
+        inter_univ]
+    -- `|B_{sⱼ/2}(0)| ≤ ∫ φⱼ` and `|B_{sⱼ}(0)| = 2ᵈ |B_{sⱼ/2}(0)|`, so `|ψⱼ| ≤ 2ᵈ / |B_{sⱼ}(0)|`.
+    have hIge : ∀ j, volume.real (closedBall (0 : Rn n) (s j / 2)) ≤ ∫ x, φ j x := by
+      intro j
+      calc volume.real (closedBall (0 : Rn n) (s j / 2))
+          = ∫ x in closedBall (0 : Rn n) (s j / 2), (1 : ℝ) := by simp
+        _ = ∫ x in closedBall (0 : Rn n) (s j / 2), φ j x := by
+            refine setIntegral_congr_fun measurableSet_closedBall (fun x hx => ?_)
+            exact ((φ j).one_of_mem_closedBall hx).symm
+        _ ≤ ∫ x, φ j x :=
+            setIntegral_le_integral (hφint j) (Eventually.of_forall (fun x => (φ j).nonneg))
+    have hvol : ∀ j, volume.real (closedBall (0 : Rn n) (s j))
+        = 2 ^ Module.finrank ℝ (Rn n) * volume.real (closedBall (0 : Rn n) (s j / 2)) := by
+      intro j
+      rw [Measure.addHaar_real_closedBall' _ _ (hs_pos j).le,
+        Measure.addHaar_real_closedBall' _ _ (half_pos (hs_pos j)).le, ← mul_assoc, ← mul_pow]
+      congr 2
+      ring
+    have hvolpos : ∀ j, 0 < volume.real (closedBall (0 : Rn n) (s j / 2)) := by
+      intro j
+      exact ENNReal.toReal_pos (measure_closedBall_pos _ _ (half_pos (hs_pos j))).ne'
+        measure_closedBall_lt_top.ne
+    have hψ_bound : ∀ j x, |ψ j x| ≤
+        2 ^ Module.finrank ℝ (Rn n) / volume.real (closedBall (0 : Rn n) (s j)) := by
+      intro j x
+      rw [abs_of_nonneg (hψ_nonneg j x), hvol j]
+      have h2 : (0 : ℝ) < 2 ^ Module.finrank ℝ (Rn n) := by positivity
+      rw [div_mul_cancel_left₀ h2.ne']
+      calc ψ j x = φ j x / ∫ y, φ j y := rfl
+        _ ≤ 1 / ∫ y, φ j y := by
+            gcongr
+            · exact (hIpos j).le
+            · exact (φ j).le_one
+        _ ≤ 1 / volume.real (closedBall (0 : Rn n) (s j / 2)) := by
+            gcongr
+            · exact hvolpos j
+            · exact hIge j
+        _ = (volume.real (closedBall (0 : Rn n) (s j / 2)))⁻¹ := one_div _
+    refine ⟨ψ, ?_, ?_, ?_, ?_⟩
+    · -- `ψⱼ` is `C^∞`.
+      intro j
+      exact (φ j).contDiff.div_const _
+    · -- `ψⱼ(z) = 0` for `|z| ≥ δ > sⱼ`.
+      intro j z hz
+      by_contra hne
+      have hmem : z ∈ Function.support (ψ j) := hne
+      rw [hψ_supp j, mem_ball, dist_zero_right] at hmem
+      linarith [hs_lt j]
+    · -- Approximate identity: `ψⱼ ⋆ v → v` at every point for continuous `v`.
+      intro v hv x
+      have hsmall : Tendsto (fun j => Function.support (ψ j)) atTop (𝓝 (0 : Rn n)).smallSets := by
+        rw [nhds_basis_ball.smallSets.tendsto_right_iff]
+        intro r hr
+        have := (tendsto_order.1 hs_tend).2 r hr
+        filter_upwards [this] with j hj
+        rw [hψ_supp j]
+        exact ball_subset_ball hj.le
+      have h := convolution_tendsto_right (μ := volume) (Eventually.of_forall hψ_nonneg)
+        (Eventually.of_forall hψ_int1) hsmall (Eventually.of_forall fun _ => hv.aestronglyMeasurable)
+        ((hv.tendsto x).comp tendsto_snd) tendsto_const_nhds
+      simpa only [convolution_def, ContinuousLinearMap.lsmul_apply, smul_eq_mul] using h
+    · -- Lebesgue differentiation for `W = 1_B w` along the closed balls `B_{sⱼ}(x)`, with
+      -- kernels `y ↦ ψⱼ(x - y)` bounded by `2ᵈ / |B_{sⱼ}(x)|`.
+      intro w hw
+      set W : Rn n → ℝ := (ball (0 : Rn n) 1).indicator w with hWdef
+      have hWi : Integrable W := (integrable_indicator_iff measurableSet_ball).mpr hw
+      have hleb := (Besicovitch.vitaliFamily (volume : Measure (Rn n))).ae_tendsto_average_norm_sub
+        hWi.locallyIntegrable
+      filter_upwards [ae_restrict_of_ae hleb, ae_restrict_mem measurableSet_ball] with x hx hxB
+      have hs' : Tendsto s atTop (𝓝[>] 0) :=
+        tendsto_nhdsWithin_iff.2 ⟨hs_tend, Eventually.of_forall hs_pos⟩
+      have hav := (hx.comp (Besicovitch.tendsto_filterAt volume x)).comp hs'
+      have key := tendsto_integral_smul_of_tendsto_average_norm_sub
+        (μ := volume) (a := fun j => closedBall x (s j)) (f := W) (c := W x)
+        (g := fun j y => ψ j (x - y)) (2 ^ Module.finrank ℝ (Rn n)) hav
+        (Eventually.of_forall fun j => hWi.integrableOn)
+        (by
+          refine tendsto_const_nhds.congr (fun j => ?_)
+          rw [integral_sub_left_eq_self (fun y => ψ j y) volume x, hψ_int1 j])
+        (Eventually.of_forall fun j => by
+          intro y hy
+          have hmem : x - y ∈ Function.support (ψ j) := hy
+          rw [hψ_supp j, mem_ball, dist_zero_right] at hmem
+          rw [mem_closedBall, dist_eq_norm, ← norm_neg, neg_sub]
+          exact hmem.le)
+        (Eventually.of_forall fun j y => by
+          rw [Measure.addHaar_real_closedBall_center]
+          exact hψ_bound j (x - y))
+      have hconv : ∀ j, ∫ y in ball (0 : Rn n) 1, ψ j (x - y) * w y = ∫ y, ψ j (x - y) • W y := by
+        intro j
+        rw [← integral_indicator measurableSet_ball]
+        congr 1
+        funext y
+        simp only [smul_eq_mul, W]
+        exact Set.indicator_mul_right _ (fun y => ψ j (x - y)) w
+      have hWx : W x = w x := Set.indicator_of_mem hxB w
+      simp_rw [hconv]
+      rw [← hWx]
+      exact key
+  -- Step 5: Fubini exchanges two ball mollifications of `w`:
+  -- `∫ κ(a) (ψ ⋆ 1_B w)(x₀ - a) da = ∫ ψ(b) (κ ⋆ 1_B w)(x₀ - b) db`.
+  have hB : ∀ n : ℕ, ∀ κ ψ w : Rn n → ℝ, Continuous κ → HasCompactSupport κ → Continuous ψ → HasCompactSupport ψ → IntegrableOn w (ball (0 : Rn n) 1) → ∀ x₀ : Rn n, ∫ a, κ a * ∫ y in ball (0 : Rn n) 1, ψ (x₀ - a - y) * w y = ∫ b, ψ b * ∫ y in ball (0 : Rn n) 1, κ (x₀ - b - y) * w y := by
+    intro n κ ψ w hκc hκs hψc hψs hw x₀
+    set W : Rn n → ℝ := (ball (0 : Rn n) 1).indicator w with hWdef
+    have hWi : Integrable W := (integrable_indicator_iff measurableSet_ball).mpr hw
+    have conv : ∀ (φ : Rn n → ℝ) (x : Rn n),
+        ∫ y in ball (0 : Rn n) 1, φ (x - y) * w y = ∫ t, φ t * W (x - t) := by
+      intro φ x
+      rw [← integral_indicator measurableSet_ball]
+      have h1 : (ball (0 : Rn n) 1).indicator (fun y => φ (x - y) * w y)
+          = fun y => φ (x - y) * W y := by
+        funext y
+        exact Set.indicator_mul_right _ (fun y => φ (x - y)) w
+      rw [h1, ← integral_sub_left_eq_self _ volume x]
+      simp only [sub_sub_cancel]
+    simp_rw [conv]
+    -- `(a, t) ↦ κ(a) ψ(t) W(x₀ - a - t)` is integrable on `ℝⁿ × ℝⁿ`: multiply the convolution
+    -- integrand `ψ(t) W(a - t)` by the bounded `κ(x₀ - a)`, then substitute `a ↦ x₀ - a`.
+    obtain ⟨Cκ, hCκ⟩ := hκc.bounded_above_of_compact_support hκs
+    have hG : Integrable (fun p : Rn n × Rn n => κ (x₀ - p.1) * (ψ p.2 * W (p.1 - p.2)))
+        (volume.prod volume) := by
+      have h0 : Integrable (fun p : Rn n × Rn n => ψ p.2 * W (p.1 - p.2)) (volume.prod volume) := by
+        have := (hψc.integrable_of_hasCompactSupport hψs : Integrable ψ volume).convolution_integrand
+          (ContinuousLinearMap.mul ℝ ℝ) (μ := volume) hWi
+        simpa using this
+      refine h0.bdd_mul (c := Cκ) ?_ ?_
+      · exact ((hκc.comp (continuous_const.sub continuous_fst))).aestronglyMeasurable
+      · exact Eventually.of_forall (fun p => hCκ _)
+    have hR : MeasurePreserving (fun p : Rn n × Rn n => (x₀ - p.1, p.2))
+        (volume.prod volume) (volume.prod volume) :=
+      (Measure.measurePreserving_sub_left volume x₀).prod (MeasurePreserving.id volume)
+    have hF : Integrable (Function.uncurry fun a t => κ a * (ψ t * W (x₀ - a - t)))
+        (volume.prod volume) := by
+      have := (hR.integrable_comp hG.aestronglyMeasurable).mpr hG
+      refine this.congr (Eventually.of_forall fun p => ?_)
+      simp [Function.uncurry, sub_sub_cancel]
+    calc ∫ a, κ a * ∫ t, ψ t * W (x₀ - a - t)
+        = ∫ a, ∫ t, κ a * (ψ t * W (x₀ - a - t)) := by
+          congr 1; funext a; rw [integral_const_mul]
+      _ = ∫ t, ∫ a, κ a * (ψ t * W (x₀ - a - t)) := integral_integral_swap hF
+      _ = ∫ b, ψ b * ∫ t, κ t * W (x₀ - b - t) := by
+          congr 1; funext b; rw [← integral_const_mul]
+          congr 1; funext a
+          rw [sub_right_comm x₀ a b]; ring
+  intro n hn w hint hlap ε hε hε2
+  -- Step 1: the mean-value kernel `ρ`, scaled to `κ(z) = ε⁻ⁿ ρ(z/ε)`, vanishes for `|z| ≥ ε`.
+  obtain ⟨ρ, hρs, hρv, hρm⟩ := Submission.exists_smooth_mean_value_kernel n hn
+  set κ : Rn n → ℝ := fun z => ε⁻¹ ^ n * ρ (ε⁻¹ • z) with hκdef
+  have hκs : ContDiff ℝ (⊤ : ℕ∞) κ :=
+    contDiff_const.mul (hρs.comp (contDiff_const_smul _))
+  have hκv : ∀ z : Rn n, ε ≤ ‖z‖ → κ z = 0 := by
+    intro z hz
+    have h1 : 1 ≤ ‖ε⁻¹ • z‖ := by
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hε), inv_mul_eq_div,
+        le_div_iff₀ hε]
+      linarith
+    simp only [κ, hρv _ h1, mul_zero]
+  have hcs : ∀ (φ : Rn n → ℝ), (∀ z : Rn n, ε ≤ ‖z‖ → φ z = 0) → HasCompactSupport φ := by
+    intro φ hφ
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Rn n) ε) (fun z hz => hφ z ?_)
+    rw [mem_closedBall, dist_zero_right, not_le] at hz
+    exact hz.le
+  -- Step 2: `v = κ ⋆ 1_B w` is `C^∞` with `Δv = 0` on `B̆_{1-ε}(0)`, hence harmonic there.
+  obtain ⟨hvs, hvl⟩ :=
+    Submission.ball_convolution_contDiff_laplacian_eq_zero n hn w hint hlap κ ε hκs hκv
+  set v : Rn n → ℝ := fun x => ∫ y in ball (0 : Rn n) 1, κ (x - y) * w y with hvdef
+  have h2top : (2 : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := WithTop.coe_le_coe.mpr le_top
+  refine ⟨v, ?_, ?_⟩
+  · intro x hx
+    refine ⟨hvs.contDiffAt.of_le h2top, ?_⟩
+    filter_upwards [isOpen_ball.mem_nhds hx] with y hy
+    exact hvl y hy
+  -- Step 4: for `|x₀| < 1 - 2ε`, `vⱼ = ψⱼ ⋆ 1_B w` is harmonic on `B_ε(x₀) ⊆ B̆_{1-ε}(0)`, so the
+  -- mean value property and step 5 give `vⱼ(x₀) = (ψⱼ ⋆ v)(x₀)`.
+  obtain ⟨ψ, hψs, hψv, hψc, hψa⟩ := hA n ε hε
+  have key : ∀ x₀ ∈ ball (0 : Rn n) (1 - 2 * ε), ∀ j : ℕ,
+      (∫ y in ball (0 : Rn n) 1, ψ j (x₀ - y) * w y) = ∫ b, ψ j b * v (x₀ - b) := by
+    intro x₀ hx₀ j
+    obtain ⟨hvjs, hvjl⟩ :=
+      Submission.ball_convolution_contDiff_laplacian_eq_zero n hn w hint hlap (ψ j) ε (hψs j)
+        (hψv j)
+    have hlapj : ∀ y ∈ closedBall x₀ ε,
+        Laplacian.laplacian (fun x => ∫ y in ball (0 : Rn n) 1, ψ j (x - y) * w y) y = 0 := by
+      intro y hy
+      apply hvjl
+      rw [mem_ball, dist_zero_right]
+      rw [mem_ball, dist_zero_right] at hx₀
+      rw [mem_closedBall, dist_eq_norm] at hy
+      calc ‖y‖ = ‖(y - x₀) + x₀‖ := by rw [sub_add_cancel]
+        _ ≤ ‖y - x₀‖ + ‖x₀‖ := norm_add_le _ _
+        _ < 1 - ε := by linarith
+    have hmvp := hρm (fun x => ∫ y in ball (0 : Rn n) 1, ψ j (x - y) * w y) x₀ ε hε
+      (hvjs.of_le h2top) hlapj
+    have hswap := hB n κ (ψ j) w hκs.continuous (hcs κ hκv)
+      (hψs j).continuous (hcs (ψ j) (hψv j)) hint x₀
+    rw [← hmvp]
+    exact hswap
+  -- Step 7: for a.e. `x₀ ∈ B̆_{1-2ε}(0)`, `vⱼ(x₀) = (ψⱼ ⋆ v)(x₀)` tends both to `w(x₀)` and,
+  -- by continuity of `v`, to `v(x₀)`.
+  have hae := hψa w hint
+  have hae' : ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) (1 - 2 * ε))),
+      Tendsto (fun j => ∫ y in ball (0 : Rn n) 1, ψ j (x - y) * w y) atTop (𝓝 (w x)) :=
+    ae_restrict_of_ae_restrict_of_subset (ball_subset_ball (by linarith)) hae
+  filter_upwards [hae', ae_restrict_mem (measurableSet_ball :
+    MeasurableSet (ball (0 : Rn n) (1 - 2 * ε)))] with x hx hxm
+  have hlim1 : Tendsto (fun j => ∫ y in ball (0 : Rn n) 1, ψ j (x - y) * w y) atTop (𝓝 (v x)) := by
+    have := hψc v hvs.continuous x
+    refine this.congr (fun j => ?_)
+    exact (key x hxm j).symm
+  exact tendsto_nhds_unique hlim1 hx
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
