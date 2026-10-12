@@ -479,6 +479,72 @@ theorem Submission.doragm_rfv_radial_field_c1 : ∀ (P : ℕ) (y : Euclid P) (φ
   · -- away from `y` the norm `z ↦ ‖z - y‖` is smooth, since `x - y ≠ 0`
     have hnorm : ContDiffAt ℝ 1 (fun z : Euclid P => ‖z - y‖) x := hsub.norm ℝ (sub_ne_zero.2 hxy)
     exact (hφ.comp_contDiffAt x (hnorm.div_const τ)).smul hsub
+/-- **Trace of the derivative of a radial field** (Simon Ch. 4, 3.2 and the identity after it,
+with a subspace `Q` in place of `TₓM`; chapter-04.txt lines 225–262).  Let `φ` be `C¹` with
+`φ = 1` on `(-∞, 1]`, `τ > 0`, `X(z) = φ(|z − y|/τ)(z − y)`, `p = Q.starProjection`, `v = x − y`
+and `r = |v|`.  Then `trace(p ∘ DX(x)) = dim Q · φ(r/τ) + (r/τ) φ'(r/τ) (1 − |v − p v|²/r²)`.
+`p` is a projection onto `Q`, so `trace p = dim Q` (`LinearMap.IsProj.trace`).  At `x = y` the
+field is `z ↦ z − y` on `B_τ(y)`, so `DX(y) = I` and both sides equal `dim Q`.  For `x ≠ y`,
+`DX(x) = φ(r/τ) I + φ'(r/τ) τ⁻¹ r⁻¹ ⟨v, ·⟩ v` (`|z − y| = √(|z − y|²)`, chain and product
+rules), the rank-one part has trace `φ'(r/τ) τ⁻¹ r⁻¹ ⟨v, p v⟩` (`LinearMap.trace_smulRight`), and
+`⟨v, p v⟩ = r² − |v − p v|²` since `v − p v ⊥ p v`. -/
+theorem Submission.doragm_rfv_trace_radial_field : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (y x : Euclid P) (φ : ℝ → ℝ) (τ : ℝ), ContDiff ℝ 1 φ → (∀ u, u ≤ 1 → φ u = 1) → 0 < τ → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ (fderiv ℝ (fun z : Euclid P => φ (‖z - y‖ / τ) • (z - y)) x).toLinearMap) = (Module.finrank ℝ Q : ℝ) * φ (‖x - y‖ / τ) + ‖x - y‖ / τ * deriv φ (‖x - y‖ / τ) * (1 - ‖(x - y) - Q.starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ 2) := by
+  intro P Q y x φ τ hφ hφ1 hτ
+  -- `p = Q.starProjection` is a projection onto `Q`, so its trace is `dim Q`.
+  have htr : LinearMap.trace ℝ (Euclid P) Q.starProjection.toLinearMap = Module.finrank ℝ Q :=
+    LinearMap.IsProj.trace ⟨fun w => Q.starProjection_apply_mem w,
+      fun w hw => Submodule.starProjection_eq_self_iff.mpr hw⟩
+  by_cases hxy : x = y
+  · -- On `B(y, τ)` the field is `z ↦ z - y`, whose derivative is the identity.
+    subst hxy
+    have hev : (fun z : Euclid P => φ (‖z - x‖ / τ) • (z - x)) =ᶠ[𝓝 x] fun z => z - x := by
+      filter_upwards [Metric.ball_mem_nhds x hτ] with z hz
+      rw [hφ1 _ ((div_le_one hτ).mpr (mem_ball_iff_norm.mp hz).le), one_smul]
+    rw [hev.fderiv_eq, fderiv_sub_const, fderiv_fun_id]
+    simp [htr, hφ1 0 zero_le_one]
+  · -- Derivative of `z ↦ ‖z - y‖` at `x ≠ y`, via `√(‖z - y‖²)`.
+    have hr0 : 0 < ‖x - y‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hxy)
+    have hsub : HasFDerivAt (fun z : Euclid P => z - y) (ContinuousLinearMap.id ℝ (Euclid P)) x :=
+      (hasFDerivAt_id x).sub_const y
+    have hnorm := hsub.norm_sq.sqrt (pow_ne_zero 2 hr0.ne')
+    have hsqrt : (fun z : Euclid P => √(‖z - y‖ ^ 2)) = fun z => ‖z - y‖ :=
+      funext fun z => Real.sqrt_sq (norm_nonneg _)
+    rw [hsqrt] at hnorm
+    -- Chain rule for `c(z) = φ(‖z - y‖ / τ)`, then the product rule for `c(z) • (z - y)`.
+    have hφd : HasDerivAt (fun t => φ (t / τ)) (deriv φ (‖x - y‖ / τ) * (1 / τ)) ‖x - y‖ :=
+      ((hφ.differentiable one_ne_zero) _).hasDerivAt.comp _
+        (HasDerivAt.div_const (hasDerivAt_id' ‖x - y‖) τ)
+    have hX := (hφd.comp_hasFDerivAt x hnorm).smul hsub
+    rw [show (fun z : Euclid P => φ (‖z - y‖ / τ) • (z - y)) =
+      ((fun t => φ (t / τ)) ∘ fun z => ‖z - y‖) • fun z => z - y from rfl, hX.fderiv]
+    -- `p ∘ (a I + ℓ(·) v) = a p + ℓ(·) p v`; the rank-one part has trace `ℓ(p v)`.
+    have key : ∀ (a : ℝ) (ℓ : Euclid P →L[ℝ] ℝ) (v : Euclid P),
+        LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ
+          (a • ContinuousLinearMap.id ℝ (Euclid P) + ℓ.smulRight v).toLinearMap) =
+          a * Module.finrank ℝ Q + ℓ (Q.starProjection v) := by
+      intro a ℓ v
+      have hcomp : Q.starProjection.toLinearMap ∘ₗ
+          (a • ContinuousLinearMap.id ℝ (Euclid P) + ℓ.smulRight v).toLinearMap =
+          a • Q.starProjection.toLinearMap +
+            (ℓ : Euclid P →ₗ[ℝ] ℝ).smulRight (Q.starProjection v) := by
+        ext w
+        simp
+      rw [hcomp, map_add, map_smul, htr, LinearMap.trace_smulRight, smul_eq_mul,
+        ContinuousLinearMap.coe_coe]
+    -- Pythagoras: `⟨v, p v⟩ = ‖v‖² - ‖v - p v‖²`, as `v - p v ⊥ p v`.
+    have hinner : inner ℝ (x - y) (Q.starProjection (x - y)) =
+        ‖x - y‖ ^ 2 - ‖(x - y) - Q.starProjection (x - y)‖ ^ 2 := by
+      have h0 := Submodule.starProjection_inner_eq_zero (K := Q) (x - y)
+        (Q.starProjection (x - y)) (Q.starProjection_apply_mem _)
+      rw [inner_sub_left, real_inner_self_eq_norm_sq] at h0
+      rw [norm_sub_sq_real (x - y) (Q.starProjection (x - y))]
+      linarith
+    rw [key]
+    simp only [Function.comp_apply, smul_apply, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.id_apply, innerSL_apply_apply, smul_eq_mul, nsmul_eq_mul,
+      Real.sqrt_sq (norm_nonneg _), hinner]
+    field_simp
+    ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
