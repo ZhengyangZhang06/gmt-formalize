@@ -451,6 +451,72 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Metric and Hausdorff-measure properties of a Lipschitz graph map** (Simon Ch. 2,
+Theorem 1.8(i); Steps 0, 1 and 3 of the graph-tangent argument for Allard's graph).  Let
+`ι : ℝⁿ → ℝ^{n+k}`, `ι' : ℝᵏ → ℝ^{n+k}` be linear isometries with orthogonal ranges, `g` an
+`L`-Lipschitz map and `Ψ(u) = b + ιu + ι'(g u)`.  Then (i) `|u − u'| ≤ |Ψ(u) − Ψ(u')|`
+(Pythagoras), (ii) `Ψ` is `(1 + L)`-Lipschitz, (iii) `Ψ(ℝⁿ)` is closed (antilipschitz and
+uniformly continuous on the complete `ℝⁿ`), (iv) `Hⁿ(Ψ(ℝⁿ) ∩ K) < ∞` for compact `K` (by (i),
+`Ψ(ℝⁿ) ∩ K ⊆ Ψ(B̄ₘ(0))`), (v) `Hⁿ(Ψ(N)) = 0` if `Lⁿ(N) = 0`; (iv) and (v) use
+`Hⁿ(Ψ(A)) ≤ (1 + L)ⁿ Hⁿ(A)` and `Hⁿ = Lⁿ` on `ℝⁿ`. -/
+theorem Submission.doraggt_lipschitz_graph_map_basics : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (b : Euclid (n + k)) (g : Euclid n → Euclid k) (L : NNReal), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → LipschitzWith L g → (∀ u u' : Euclid n, dist u u' ≤ dist (b + ι u + ι' (g u)) (b + ι u' + ι' (g u'))) ∧ LipschitzWith (1 + L) (fun u => b + ι u + ι' (g u)) ∧ IsClosed (Set.range fun u => b + ι u + ι' (g u)) ∧ (∀ K : Set (Euclid (n + k)), IsCompact K → μHE[n] (Set.range (fun u => b + ι u + ι' (g u)) ∩ K) ≠ ∞) ∧ ∀ N : Set (Euclid n), volume N = 0 → μHE[n] ((fun u => b + ι u + ι' (g u)) '' N) = 0 := by
+  intro n k ι ι' b g L horth hg
+  set Ψ : Euclid n → Euclid (n + k) := fun u => b + ι u + ι' (g u) with hΨ
+  -- Step 1: `Ψ(u) − Ψ(u') = ι(u − u') + ι'(g u − g u')`.
+  have hdiff : ∀ u u', Ψ u - Ψ u' = ι (u - u') + ι' (g u - g u') := by
+    intro u u'
+    simp only [hΨ, map_sub]
+    abel
+  -- Step 2 (i): Pythagoras, `|Ψ(u) − Ψ(u')|² = |u − u'|² + |g u − g u'|²`.
+  have hdist : ∀ u u', dist u u' ≤ dist (Ψ u) (Ψ u') := by
+    intro u u'
+    rw [dist_eq_norm, dist_eq_norm, hdiff]
+    have h := norm_add_sq_eq_norm_sq_add_norm_sq_real (horth (u - u') (g u - g u'))
+    rw [LinearIsometry.norm_map, LinearIsometry.norm_map] at h
+    refine (mul_self_le_mul_self_iff (norm_nonneg _) (norm_nonneg _)).2 ?_
+    rw [h]
+    exact le_add_of_nonneg_right (mul_self_nonneg _)
+  -- Step 3 (ii): triangle inequality and the Lipschitz bound for `g`.
+  have hlip : LipschitzWith (1 + L) Ψ := by
+    refine LipschitzWith.of_dist_le_mul fun u u' => ?_
+    rw [dist_eq_norm, dist_eq_norm, hdiff]
+    calc ‖ι (u - u') + ι' (g u - g u')‖ ≤ ‖ι (u - u')‖ + ‖ι' (g u - g u')‖ := norm_add_le _ _
+      _ = ‖u - u'‖ + dist (g u) (g u') := by
+          rw [LinearIsometry.norm_map, LinearIsometry.norm_map, dist_eq_norm]
+      _ ≤ ‖u - u'‖ + L * ‖u - u'‖ := by
+          rw [← dist_eq_norm u u']
+          gcongr
+          exact hg.dist_le_mul u u'
+      _ = ((1 + L : NNReal) : ℝ) * ‖u - u'‖ := by
+          push_cast
+          ring
+  -- Step 4 (iii): `Ψ` is antilipschitz and uniformly continuous on the complete `ℝⁿ`.
+  have hclosed : IsClosed (Set.range Ψ) := by
+    have hanti : AntilipschitzWith 1 Ψ :=
+      AntilipschitzWith.of_le_mul_dist fun u u' => by simpa using hdist u u'
+    exact hanti.isClosed_range hlip.uniformContinuous
+  -- Step 5: `Hⁿ(Ψ(A)) ≤ (1 + L)ⁿ Lⁿ(A)`, using `Hⁿ = Lⁿ` on `ℝⁿ`.
+  have himage : ∀ A : Set (Euclid n),
+      μHE[n] (Ψ '' A) ≤ ((1 + L : NNReal) : ℝ≥0∞) ^ n * volume A := by
+    intro A
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hlip.lipschitzOnWith (s := A))
+    rwa [EuclideanSpace.euclideanHausdorffMeasure_eq_volume] at h
+  -- Step 6 (iv): `Ψ(ℝⁿ) ∩ K ⊆ Ψ(B̄ₘ(0))` for `K ⊆ B̄ₘ(Ψ(0))`, by (i).
+  have hfin : ∀ K : Set (Euclid (n + k)), IsCompact K → μHE[n] (Set.range Ψ ∩ K) ≠ ∞ := by
+    intro K hK
+    obtain ⟨m, hm⟩ := hK.isBounded.subset_closedBall (Ψ 0)
+    have hsub : Set.range Ψ ∩ K ⊆ Ψ '' closedBall 0 m := by
+      rintro _ ⟨⟨u, rfl⟩, huK⟩
+      exact ⟨u, mem_closedBall.2 ((hdist u 0).trans (mem_closedBall.1 (hm huK))), rfl⟩
+    refine ne_top_of_le_ne_top ?_ ((measure_mono hsub).trans (himage _))
+    exact ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top) measure_closedBall_lt_top.ne
+  -- Step 7 (v): null sets go to null sets.
+  have hnull : ∀ N : Set (Euclid n), volume N = 0 → μHE[n] (Ψ '' N) = 0 := by
+    intro N hN
+    exact le_zero_iff.1 ((himage N).trans (by rw [hN, mul_zero]))
+  exact ⟨hdist, hlip, hclosed, hfin, hnull⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

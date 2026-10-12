@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "035f5cd9a7ffcfadaba6c22266e08c17e428905e8413d0e671badb0dcc999ca5",
+  "git_delta": {
+    "base_commit": "b1d3f73cf0a852feff1c96e2394aa9c15e8d5b1e",
+    "candidate_commit": "c958c7f9c03aa58150ee8881350e523292573666",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "doraggt_lipschitz_graph_map_basics",
+    "diff_sha256": "71d0097219b1f2e2fab3368abcde20e3e274507dd24fc09f6f88457b8de57006",
+    "source_sha256": "4f2b0b32c30ed97e00a48ef9fe3028c9facf182dc3198cc3576a3bf3a6c603ae",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.doraggt_lipschitz_graph_map_basics",
+      "statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (b : Euclid (n + k)) (g : Euclid n → Euclid k) (L : NNReal), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → LipschitzWith L g → (∀ u u' : Euclid n, dist u u' ≤ dist (b + ι u + ι' (g u)) (b + ι u' + ι' (g u'))) ∧ LipschitzWith (1 + L) (fun u => b + ι u + ι' (g u)) ∧ IsClosed (Set.range fun u => b + ι u + ι' (g u)) ∧ (∀ K : Set (Euclid (n + k)), IsCompact K → μHE[n] (Set.range (fun u => b + ι u + ι' (g u)) ∩ K) ≠ ∞) ∧ ∀ N : Set (Euclid n), volume N = 0 → μHE[n] ((fun u => b + ι u + ι' (g u)) '' N) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
