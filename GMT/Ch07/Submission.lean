@@ -626,6 +626,64 @@ theorem Submission.adr_weak_tendsto_of_tendstoUniformly : ∀ (P Q : ℕ) (μ : 
           rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
           nlinarith [mul_nonneg (abs_nonneg M) hε.le]
   simpa using hdiff.add (hweak h hc hhc)
+/-- **Rescaled translates converge uniformly** (Simon, Appendix A, the weak limits
+`ψ = lim φ_{x+λⱼβx,λⱼ}`; step 3 of the proof of `adr_weak_tendsto_comp_affine`).  If `f` is
+continuous with compact support and `c_k → 1`, then `f(c_k⁻¹(w − y)) → f(w − y)` uniformly in `w`,
+and `f(· − y)` and, for large `k`, `f(c_k⁻¹(· − y))` vanish off one compact ball `K = B̄_{2R}(y)`,
+where `R ≥ 1` and `f = 0` off `B̄_R(0)`.  No sign of `c_k` is assumed: eventually `1/2 < c_k < 2`. -/
+theorem Submission.adr_rescaled_translate_tendstoUniformly : ∀ (P : ℕ) (f : Euclid P → ℝ) (y : Euclid P) (mus : ℕ → ℝ), Continuous f → HasCompactSupport f → Tendsto mus atTop (𝓝 1) → ∃ K : Set (Euclid P), IsCompact K ∧ (∀ w ∉ K, f (w - y) = 0) ∧ (∀ᶠ k in atTop, ∀ w ∉ K, f ((mus k)⁻¹ • (w - y)) = 0) ∧ TendstoUniformly (fun k w => f ((mus k)⁻¹ • (w - y))) (fun w => f (w - y)) atTop := by
+  intro P f y mus hf hfc hmus
+  -- step 1: `tsupport f ⊆ B̄_{R₀}(0)`; with `R := max R₀ 1 ≥ 1`, `f x = 0` whenever `‖x‖ > R`
+  obtain ⟨R₀, hR₀⟩ := hfc.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  set R := max R₀ 1 with hR
+  have hR1 : 1 ≤ R := le_max_right _ _
+  have hzero : ∀ x : Euclid P, R < ‖x‖ → f x = 0 := by
+    intro x hx
+    refine image_eq_zero_of_notMem_tsupport fun hxs => ?_
+    have h := hR₀ hxs
+    rw [mem_closedBall_zero_iff] at h
+    linarith [le_max_left R₀ 1]
+  have h2R : 0 < 2 * R := by linarith
+  -- step 2: `K := B̄_{2R}(y)`; `f (w - y) = 0` off `K`
+  have hK : ∀ w ∉ closedBall y (2 * R), f (w - y) = 0 := by
+    intro w hw
+    rw [mem_closedBall, dist_eq_norm, not_le] at hw
+    exact hzero _ (by linarith)
+  -- step 3: eventually `1 / 2 < c_k < 2`, so `‖c_k⁻¹ (w - y)‖ > 2R / 2 = R` and
+  -- `f (c_k⁻¹ (w - y)) = 0` off `K`
+  have hKk : ∀ᶠ k in atTop, ∀ w ∉ closedBall y (2 * R), f ((mus k)⁻¹ • (w - y)) = 0 := by
+    filter_upwards [hmus (Ioo_mem_nhds (by norm_num : (1 / 2 : ℝ) < 1)
+      (by norm_num : (1 : ℝ) < 2))] with k hk w hw
+    rw [mem_closedBall, dist_eq_norm, not_le] at hw
+    have hpos : 0 < mus k := by linarith [hk.1]
+    apply hzero
+    rw [norm_smul, norm_inv, Real.norm_of_nonneg hpos.le, inv_mul_eq_div, lt_div_iff₀ hpos]
+    nlinarith [hk.2]
+  refine ⟨closedBall y (2 * R), isCompact_closedBall y (2 * R), hK, hKk, ?_⟩
+  -- step 4: `f` is uniformly continuous; on `K` the argument moves by
+  -- `|1 - c_k⁻¹| ‖w - y‖ ≤ |c_k⁻¹ - 1| 2R → 0`, and off `K` both values vanish
+  rw [Metric.tendstoUniformly_iff]
+  intro ε hε
+  obtain ⟨δ, hδ, hfδ⟩ :=
+    Metric.uniformContinuous_iff.mp (hfc.uniformContinuous_of_continuous hf) ε hε
+  have hinv : Tendsto (fun k => (mus k)⁻¹) atTop (𝓝 1) := by
+    simpa only [inv_one] using hmus.inv₀ one_ne_zero
+  filter_upwards [hKk, Metric.tendsto_nhds.mp hinv (δ / (2 * R)) (div_pos hδ h2R)]
+    with k hk hk' w
+  show dist (f (w - y)) (f ((mus k)⁻¹ • (w - y))) < ε
+  by_cases hw : w ∈ closedBall y (2 * R)
+  · apply hfδ
+    rw [mem_closedBall, dist_eq_norm] at hw
+    rw [Real.dist_eq, abs_sub_comm] at hk'
+    have hsub : (w - y) - (mus k)⁻¹ • (w - y) = (1 - (mus k)⁻¹) • (w - y) := by
+      rw [sub_smul, one_smul]
+    rw [dist_eq_norm, hsub, norm_smul, Real.norm_eq_abs]
+    calc |1 - (mus k)⁻¹| * ‖w - y‖ ≤ |1 - (mus k)⁻¹| * (2 * R) :=
+          mul_le_mul_of_nonneg_left hw (abs_nonneg _)
+      _ < δ / (2 * R) * (2 * R) := mul_lt_mul_of_pos_right hk' h2R
+      _ = δ := div_mul_cancel₀ δ h2R.ne'
+  · rw [hK w hw, hk w hw, dist_self]
+    exact hε
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
