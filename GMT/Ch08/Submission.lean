@@ -410,6 +410,50 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Tilt cutoffs are test functions (the cutoff `χ(z) t_P(S)` of the flat-limit step of Simon
+Ch. 8, 5.9): for `P ∈ G(N,n)` and continuous compactly supported `χ` on `ℝ^N`, the function
+`(z,S) ↦ χ(z) ‖p_S - p_P‖` lies in `C_c(ℝ^N × G(N,n))` and has support in `spt χ × G(N,n)`. -/
+theorem Submission.intcpt_fli_tilt_cutoff_cc :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (χ : Euclidean N → ℝ), Continuous χ → HasCompactSupport χ → ∃ f : C_c(Euclidean N × Grassmannian N n, ℝ), (∀ (z : Euclidean N) (S : Grassmannian N n), f (z, S) = χ z * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖) ∧ tsupport f ⊆ tsupport χ ×ˢ (univ : Set (Grassmannian N n)) := by
+  intro N n P χ hχ hχcs
+  -- Step 1: `Φ = toContinuousLinearMap ∘ (toMatrix b b)⁻¹` is linear on the finite-dimensional
+  -- matrix space, hence continuous.
+  let b := (EuclideanSpace.basisFun (Fin N) ℝ).toBasis
+  let Φ : Matrix (Fin N) (Fin N) ℝ →ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N) :=
+    (LinearMap.toContinuousLinearMap :
+      (Euclidean N →ₗ[ℝ] Euclidean N) ≃ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N)).toLinearMap ∘ₗ
+      (LinearMap.toMatrix b b).symm.toLinearMap
+  have hΦ : Continuous Φ := Φ.continuous_of_finiteDimensional
+  -- Step 2: `p_S = (toMatrix b b)⁻¹ S`, so by linearity
+  -- `toContinuousLinearMap (p_S - p_P) = Φ (S - P)`.
+  have heq : ∀ S : Grassmannian N n, LinearMap.toContinuousLinearMap
+      (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P) = Φ (S.1 - P.1) := by
+    intro S
+    have h : (LinearMap.toMatrix b b).symm (S.1 - P.1) =
+        Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P := by
+      rw [map_sub]
+      rfl
+    rw [← h]
+    rfl
+  -- Step 3: `t_P(S) = ‖Φ (S - P)‖` is continuous in `S`.
+  have ht : Continuous fun S : Grassmannian N n ↦ ‖LinearMap.toContinuousLinearMap
+      (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖ := by
+    simp only [heq]
+    exact (hΦ.comp (continuous_subtype_val.sub continuous_const)).norm
+  -- Step 4: `F(z,S) = χ(z) t_P(S)` is continuous.
+  let F : Euclidean N × Grassmannian N n → ℝ := fun z ↦ χ z.1 * ‖LinearMap.toContinuousLinearMap
+      (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖
+  have hF : Continuous F := (hχ.comp continuous_fst).mul (ht.comp continuous_snd)
+  -- Step 5: `support F ⊆ support χ × G ⊆ tsupport χ × G`, which is closed.
+  have hFsupp : tsupport F ⊆ tsupport χ ×ˢ (univ : Set (Grassmannian N n)) := by
+    refine closure_minimal (fun z hz ↦ ⟨subset_tsupport χ fun h ↦ hz ?_, mem_univ _⟩)
+      ((isClosed_tsupport χ).prod isClosed_univ)
+    simp only [F, h, zero_mul]
+  -- Step 6: `tsupport χ × G` is compact (`G` is compact), so `F ∈ C_c(ℝ^N × G)`.
+  have hFcs : HasCompactSupport F :=
+    (hχcs.prod isCompact_univ).of_isClosed_subset (isClosed_tsupport F) hFsupp
+  exact ⟨⟨⟨F, hF⟩, hFcs⟩, fun z S ↦ rfl, hFsupp⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
