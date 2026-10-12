@@ -458,6 +458,172 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Tangent planes of `V` where `spt V` is a `C¹` graph** (Simon Ch. 3, 1.4–1.9).  If
+`Q(spt V − ξ) ∩ B̆_R(0) = graph u ∩ B̆_R(0)`, `u ∈ C¹(B̆_R(0))`, `B_s(ξ) ⊆ U` and `s ≤ R`, then
+`p_{T_y V}` is the projection onto `Q⁻¹(range DG(x))` for `μ_V`-a.e. `y ∈ B̆_s(ξ)` and every `x`
+with `Q(y − ξ) = G(x) = (x, u(x))`, and `y ↦ p_{T_y V}` is `μ_V ⌞ B̆_s(ξ)`-a.e. strongly measurable.
+On `B̆_{s'}(ξ)`, `s' < s`, `M` lies in `S = ξ + Q⁻¹(graph u)` up to an `Hⁿ`-null set and `S` has
+`n`-dimensional growth, so a.e. the plane `Q⁻¹(range DG(x))` of `S` at `y` is a weighted
+approximate tangent plane of `(M, θ)`; uniqueness (`θ(y) > 0`) identifies `tangentProj`.  The
+measurable representative is `y ↦ p(π(Q(y − ξ)))`, `π` the first `n` coordinates. -/
+theorem dohr_graph_tangent_planes : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ) (s R : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), 0 < s → s ≤ R → closedBall ξ s ⊆ U → ContDiffOn ℝ 1 u (ball 0 R) → Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → AEStronglyMeasurable (fun y => V.tangentProj y) (V.weight.restrict (ball ξ s)) ∧ ∀ᵐ y ∂V.weight, y ∈ ball ξ s → ∀ x ∈ ball (0 : Rn n) R, Q (y - ξ) = graphPoint x (u x) → V.tangentProj y = (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)).starProjection := by
+  intro n ℓ hn U _ V ξ s R Q u hs hsR hBU hu hgraph
+  -- `A w = ξ + Q⁻¹ w` is an isometry inverting `y ↦ Q (y - ξ)`.
+  have hA : Isometry (fun w : Amb n ℓ => ξ + Q.symm w) :=
+    Isometry.of_dist_eq fun a b => by rw [dist_add_left, Q.symm.dist_map]
+  have hback : ∀ (y : Amb n ℓ) (x : Rn n), Q (y - ξ) = graphPoint x (u x) →
+      ξ + Q.symm (graphPoint x (u x)) = y := by
+    intro y x h
+    rw [← h, LinearIsometryEquiv.symm_apply_apply, add_sub_cancel]
+  -- `|a| ≤ |(a, b)|`.
+  have hnorm : ∀ (a : Rn n) (b : Rn ℓ), ‖a‖ ≤ ‖graphPoint a b‖ := by
+    intro a b
+    rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq]
+    refine Real.sqrt_le_sqrt ?_
+    rw [Fin.sum_univ_add]
+    simp only [graphPoint, Fin.append_left]
+    exact le_add_of_nonneg_right (Finset.sum_nonneg fun _ _ => by positivity)
+  -- Points of `spt V` in `B̆_R(ξ)` lie on the graph after the motion `y ↦ Q (y - ξ)`.
+  have hon : ∀ y ∈ V.support, y ∈ ball ξ R →
+      ∃ x ∈ ball (0 : Rn n) R, Q (y - ξ) = graphPoint x (u x) := by
+    intro y hy hyR
+    have hmem : Q (y - ξ) ∈ Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R :=
+      ⟨⟨y - ξ, ⟨y, hy, rfl⟩, rfl⟩, by
+        rw [mem_ball_zero_iff, LinearIsometryEquiv.norm_map, ← dist_eq_norm]
+        exact hyR⟩
+    rw [hgraph] at hmem
+    obtain ⟨⟨x, hx, hxy⟩, -⟩ := hmem
+    exact ⟨x, hx, hxy.symm⟩
+  -- `μ_V` is carried by `spt μ_V` and by `M`, and `M \ spt μ_V` is `Hⁿ`-null.
+  have hsupp : ∀ᵐ y ∂V.weight, y ∈ V.weight.support := Measure.support_mem_ae
+  have hac : V.weight ≪ (μHE[n] : Measure (Amb n ℓ)).restrict V.carrier :=
+    withDensity_absolutelyContinuous _ _
+  have hmemM : ∀ᵐ y ∂V.weight, y ∈ V.carrier :=
+    hac.ae_le (ae_restrict_mem₀ V.nullMeasurableSet_carrier)
+  have hMsupp : (μHE[n] : Measure (Amb n ℓ)) (V.carrier ∩ V.weight.supportᶜ) = 0 := by
+    have h0 : ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).withDensity
+        (fun x => ENNReal.ofReal (V.mult x)) V.weight.supportᶜ = 0 :=
+      Measure.measure_compl_support
+    rw [withDensity_apply_eq_zero' V.aemeasurable_mult.ennreal_ofReal,
+      Measure.restrict_apply₀' V.nullMeasurableSet_carrier] at h0
+    refine measure_mono_null ?_ h0
+    rintro y ⟨hyM, hy⟩
+    exact ⟨⟨(ENNReal.ofReal_pos.2 (V.mult_pos y hyM)).ne', hy⟩, hyM⟩
+  -- `Q⁻¹(range DG(x))` is the approximate tangent space of `S = A(graph u)` at `A(G x)`.
+  have htan : ∀ x ∈ ball (0 : Rn n) R,
+      Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n
+        ((fun w => ξ + Q.symm w) '' graphOver u (ball 0 R)) (ξ + Q.symm (graphPoint x (u x)))
+        (Submodule.map Q.symm.toLinearEquiv.toLinearMap
+          (LinearMap.range (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)) :=
+    fun x hx => Submission.dohr_tp_approx_tangent_affine_isometry n ℓ _ _ ξ Q.symm _
+      (Submission.dohr_tp_graph_approx_tangent n ℓ hn R u hu x hx)
+  -- The claim on `B̆_{s'}(ξ)` for each `s' < s`.
+  have hkey : ∀ s' : ℝ, 0 < s' → s' < s → ∀ᵐ y ∂V.weight, y ∈ ball ξ s' →
+      ∀ x ∈ ball (0 : Rn n) R, Q (y - ξ) = graphPoint x (u x) →
+        V.tangentProj y = (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range
+          (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)).starProjection := by
+    intro s' hs' hs's
+    have hball : ball ξ s' ⊆ closedBall ξ s :=
+      ball_subset_closedBall.trans (closedBall_subset_closedBall hs's.le)
+    -- `n`-dimensional growth of `S ∩ B̆_{s'}(ξ)`, through the graph over `B̆_{s'}(0)`.
+    obtain ⟨C, -, hC⟩ :=
+      Submission.dohr_tp_graph_ball_growth n ℓ hn R s' u hs' (hs's.trans_le hsR) hu
+    have hgrowth : ∀ (z : Amb n ℓ) (r : ℝ), 0 < r →
+        (μHE[n] : Measure (Amb n ℓ)) ((fun w => ξ + Q.symm w) '' graphOver u (ball 0 R) ∩
+          ball ξ s' ∩ closedBall z r) ≤ ENNReal.ofReal (C * r ^ n) := by
+      intro z r hr
+      refine le_trans (measure_mono ?_) ((hA.euclideanHausdorffMeasure_image
+        (graphOver u (ball 0 s') ∩ closedBall (Q (z - ξ)) r)).trans_le (hC (Q (z - ξ)) r hr))
+      rintro y ⟨⟨⟨g, ⟨x, -, rfl⟩, rfl⟩, hyb⟩, hyz⟩
+      refine ⟨graphPoint x (u x), ⟨⟨x, ?_, rfl⟩, ?_⟩, rfl⟩
+      · rw [mem_ball, dist_eq_norm, add_sub_cancel_left, LinearIsometryEquiv.norm_map] at hyb
+        rw [mem_ball_zero_iff]
+        exact (hnorm x (u x)).trans_lt hyb
+      · rw [mem_closedBall] at hyz ⊢
+        rw [← Q.symm.dist_map, LinearIsometryEquiv.symm_apply_apply, ← dist_add_left ξ,
+          add_sub_cancel]
+        exact hyz
+    -- `M ∩ B̆_{s'}(ξ)` lies in `S` up to an `Hⁿ`-null set.
+    have hnull : (μHE[n] : Measure (Amb n ℓ))
+        ((V.carrier ∩ ball ξ s') \ (fun w => ξ + Q.symm w) '' graphOver u (ball 0 R)) = 0 := by
+      refine measure_mono_null ?_ hMsupp
+      rintro y ⟨⟨hyM, hyb⟩, hyS⟩
+      refine ⟨hyM, fun hy => hyS ?_⟩
+      obtain ⟨x, hx, hxy⟩ :=
+        hon y ⟨hBU (hball hyb), hy⟩ (ball_subset_ball (hs's.le.trans hsR) hyb)
+      exact ⟨graphPoint x (u x), ⟨x, hx, rfl⟩, hback y x hxy⟩
+    have hint : IntegrableOn V.mult (V.carrier ∩ ball ξ s') (μHE[n] : Measure (Amb n ℓ)) :=
+      (V.integrableOn_mult _ (isCompact_closedBall ξ s) hBU).mono_set
+        (inter_subset_inter_right _ hball)
+    have h6 := Submission.dohr_tp_ae_weighted_tangent_of_growth n ℓ V.carrier
+      ((fun w => ξ + Q.symm w) '' graphOver u (ball 0 R)) (ball ξ s') V.mult C isOpen_ball
+      V.nullMeasurableSet_carrier V.aemeasurable_mult hint hnull hgrowth
+    filter_upwards [hac.ae_le h6, hmemM] with y hy6 hyM hyb x hx hxy
+    have hT := htan x hx
+    rw [hback y x hxy] at hT
+    have hW := hy6 hyb _ hT
+    have hex : ∃ P : Submodule ℝ (Amb n ℓ),
+        Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult y P :=
+      ⟨_, hW⟩
+    rw [RectifiableVarifold.tangentProj, dite_eq_left hex]
+    congr 1
+    exact Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt.unique
+      (V.mult_pos y hyM).ne' (Classical.choose_spec hex) hW
+  -- Exhaust `B̆_s(ξ)` by the balls `B̆_{s - s/(k+2)}(ξ)`.
+  have hsecond : ∀ᵐ y ∂V.weight, y ∈ ball ξ s → ∀ x ∈ ball (0 : Rn n) R,
+      Q (y - ξ) = graphPoint x (u x) →
+        V.tangentProj y = (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range
+          (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)).starProjection := by
+    have hrad : ∀ k : ℕ, 0 < s - s / ((k : ℝ) + 2) ∧ s - s / ((k : ℝ) + 2) < s := fun k =>
+      ⟨sub_pos.2 (div_lt_self hs (by linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)])),
+        sub_lt_self _ (by positivity)⟩
+    filter_upwards [ae_all_iff.2 fun k : ℕ => hkey _ (hrad k).1 (hrad k).2] with y hy hys
+    obtain ⟨k, hk⟩ := exists_nat_one_div_lt (div_pos (sub_pos.2 (mem_ball.1 hys)) hs)
+    refine hy k (mem_ball.2 ?_)
+    have h1 : s / ((k : ℝ) + 2) < s / ((k : ℝ) + 1) :=
+      div_lt_div_of_pos_left hs (by positivity) (by linarith)
+    have h2 : s / ((k : ℝ) + 1) < s - dist y ξ := by
+      rw [div_lt_div_iff₀ (by positivity) hs] at hk
+      rw [div_lt_iff₀ (by positivity)]
+      linarith
+    linarith
+  refine ⟨?_, hsecond⟩
+  -- Measurability: `tangentProj y = p (π (Q (y - ξ)))` a.e., with `p` continuous on `B̆_R(0)`.
+  let π : Amb n ℓ → Rn n := fun w => WithLp.toLp 2 (fun i : Fin n => w (Fin.castAdd ℓ i))
+  have hπ : Continuous π := by fun_prop
+  have hπG : ∀ x : Rn n, π (graphPoint x (u x)) = x := by
+    intro x
+    ext i
+    simp [π, graphPoint]
+  let f : Amb n ℓ → Rn n := fun y => π (Q (y - ξ))
+  have hf : Continuous f := hπ.comp (Q.continuous.comp (continuous_id.sub continuous_const))
+  let p : Rn n → (Amb n ℓ →L[ℝ] Amb n ℓ) := fun x =>
+    (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range
+      (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)).starProjection
+  have hp : ContinuousOn p (ball 0 R) :=
+    Submission.dohr_tp_projection_continuousOn n ℓ R u Q.symm hu
+  have hae : ∀ᵐ y ∂V.weight.restrict (ball ξ s),
+      y ∈ f ⁻¹' ball 0 R ∧ (p ∘ f) y = V.tangentProj y := by
+    rw [ae_restrict_iff' measurableSet_ball]
+    filter_upwards [hsecond, hsupp] with y hy hyS hys
+    obtain ⟨x, hx, hxy⟩ := hon y ⟨hBU (ball_subset_closedBall hys), hyS⟩ (ball_subset_ball hsR hys)
+    have hfx : f y = x := by
+      show π (Q (y - ξ)) = x
+      rw [hxy, hπG]
+    refine ⟨by rw [mem_preimage, hfx]; exact hx, ?_⟩
+    rw [Function.comp_apply, hfx]
+    exact (hy hys x hx hxy).symm
+  have hmeas : AEStronglyMeasurable (p ∘ f)
+      ((V.weight.restrict (ball ξ s)).restrict (f ⁻¹' ball 0 R)) :=
+    (hp.comp hf.continuousOn (mapsTo_preimage f _)).aestronglyMeasurable
+      (isOpen_ball.preimage hf).measurableSet
+  rw [Measure.restrict_eq_self_of_ae_mem (hae.mono fun y hy => hy.1)] at hmeas
+  exact hmeas.congr (hae.mono fun y hy => hy.2)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
