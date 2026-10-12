@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.proj_algebra-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1",
+  "depth": 5,
+  "title": "Hilbert–Schmidt inequalities for orthogonal projections",
+  "statement": "Let N ∈ ℕ, V := ℝ^N (Lean Euclid N) with standard orthonormal basis e_i = EuclideanSpace.single i 1, and for a subspace Q ⊆ V let p_Q := Q.starProjection be the orthogonal projection onto Q. For a continuous linear A : V → V put |A|² := Σ_i |Ae_i|², and for subspaces Q, T write |p_Q − p_T|² := Σ_i |p_Qe_i − p_Te_i|². Then: (a) |Ay|² ≤ |A|²|y|² for every continuous linear A : V → V and every y ∈ V; (b) |p_S − p_T|² ≤ 2|p_Q − p_S|² + 2|p_Q − p_T|² for all subspaces Q, S, T; (c) |⟨p_Qa, b⟩ − ⟨a, b⟩| ≤ |p_Q − p_T|²|a||b| for all subspaces Q, T and all a, b ∈ T; (d) |p_Qe|² ≤ |p_Q − p_T|²|e|² for all subspaces Q, T and every e ∈ T^⊥.",
+  "lean_statement": "∀ (N : ℕ), (∀ (A : Euclid N →L[ℝ] Euclid N) (y : Euclid N), ‖A y‖ ^ 2 ≤ (∑ i : Fin N, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖y‖ ^ 2) ∧ (∀ Q S T : Submodule ℝ (Euclid N), ∑ i : Fin N, ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ 2 * ∑ i : Fin N, ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 + 2 * ∑ i : Fin N, ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∧ (∀ (Q T : Submodule ℝ (Euclid N)) (a b : Euclid N), a ∈ T → b ∈ T → |inner ℝ (Q.starProjection a) b - inner ℝ a b| ≤ (∑ i : Fin N, ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖a‖ * ‖b‖) ∧ ∀ (Q T : Submodule ℝ (Euclid N)) (e : Euclid N), e ∈ Tᗮ → ‖Q.starProjection e‖ ^ 2 ≤ (∑ i : Fin N, ‖Q.starProjection (EuclideanSpace.single i (1 : ℝ)) - T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖e‖ ^ 2",
+  "lean_name": "dorag_tes_projection_algebra",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-300799f288-a1"
+}

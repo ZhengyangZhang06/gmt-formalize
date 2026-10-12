@@ -1,0 +1,98 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "tilt|harmonic.approx|lipschitz.approx|area.formula|def approxTangentPlane|def tangentialDivergence|def IMRep.firstVariation",
+        "weakly harmonic|rellich|harmonic approximation|tilt.excess",
+        "ae_differentiableAt|norm_fderiv_le_of_lipschitz|measurable_fderiv",
+        "weighted_area_formula_lipschitz_injOn|areaJacobianAt_sq_eq_det_adjoint_comp|^import|^namespace",
+        "theorem integral_withDensity_eq_integral_toReal_smul|theorem measure_compl_support|support.*= 0|theorem image_of_continuousOn_injOn|addHaar_sphere",
+        "rg -l '\"lean_name\": \"dorag_tes_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes --glob '*.json'",
+        ". /tmp/tes-v2/env.sh\n\"$LEAN\" /tmp/tilt-excess-independent-audit/Challenges.lean > /tmp/tilt-excess-independent-audit/Challenges.out 2>&1",
+        ". /tmp/tes-v2/env.sh\n\"$LEAN\" /tmp/tilt-excess-independent-audit/Assembly.lean > /tmp/tilt-excess-independent-audit/Assembly.out 2>&1",
+        ". /tmp/tes-v2/env.sh\n\"$LEAN\" /tmp/tilt-excess-independent-audit/IntegralParens.lean > /tmp/tilt-excess-independent-audit/IntegralParens.out 2>&1",
+        ". /tmp/tes-v2/env.sh\n\"$LEAN\" /tmp/tes-v2/chk/AreaChk.lean > /tmp/tilt-excess-independent-audit/AreaChk.out 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-af4665598c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-af4665598c/decomposition-v2.json",
+        "/tmp/tilt-excess-independent-audit/Challenges.lean",
+        "/tmp/tilt-excess-independent-audit/ProjParse.lean",
+        "/tmp/tilt-excess-independent-audit/IntegralParens.lean",
+        "/tmp/tilt-excess-independent-audit/Assembly.lean",
+        "/tmp/tilt-excess-independent-audit/Assembly.out",
+        "/tmp/tilt-excess-independent-audit/Integrals.out",
+        "/tmp/tilt-excess-independent-audit/AreaChk.out"
+      ],
+      "conclusion": "The snapshot pins project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Its Chapter 7 contract and package manifest match the workspace. Chapter 5 contains related Prop contracts with an unproved main theorem, not reusable proofs; the Mathlib weakly-harmonic/Rellich/harmonic-approximation/tilt-excess search found no matches. The pinned SimonGMT area formula and Jacobian identity have only standard axioms.\n\nThe split is appropriate for Submission.dorag_tilt_excess_one_step_decay. All eight types elaborate independently and match their prose, including integral scopes and projection sums. Their names are bare, distinct and unreserved across the workspace DAGs. No child type references its implementation, and no Matrix/IsUnit construction occurs. Child dependencies and the selected parent's external dependency closure are acyclic.\n\nI independently checked every supplied natural proof. Recompiling the supplied assembly, after checking exact equality of its eight sibling types, eight child types and frozen parent type, succeeded. Its parent proof uses only the declared contracts and propext, Classical.choice and Quot.sound; no sorryAx. This verifies conditional assembly, while the individual child proofs were audited mathematically."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "proj_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four clauses match the Lean type. Basis expansion, the parallelogram inequality, orthogonality and Cauchy–Schwarz prove them without circularity, including N = 0. The projection-sum parenthesization check passed."
+    },
+    {
+      "key": "graph_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Injectivity, Rademacher, the compatible area formula and the explicit determinant estimate establish both weighted lower-integral bounds. The proof handles almost-everywhere differentiability and arbitrary measurable ENNReal weights."
+    },
+    {
+      "key": "plane_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The ENNReal case split and measurable integral comparison give the stated plane choice and height constant. Division uses M > 0 and does not require finite ball mass. Only proj_algebra is needed."
+    },
+    {
+      "key": "graph_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frame hypotheses determine the projection coordinates. The proof establishes local finiteness, admissibility of the cutoff field, the graph projection identity, integrability on the restricted domains and both stated estimates. Its only child dependency is proj_algebra."
+    },
+    {
+      "key": "graph_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exceptional-set bounds and multiplicity-one argument justify transfer through graph_area. Boundedness establishes Bochner integrability; the positive/negative decomposition proves the precise signed difference estimate. Lean correctly subtracts two separately computed integrals."
+    },
+    {
+      "key": "graph_weak_harmonic",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Constructing P as the adjoint supplies both prerequisite contracts. Their energy and transfer bounds yield exactly 2e + a and the stated weak-form constant. The exact conclusion also recompiles from graph_variation and graph_transfer alone."
+    },
+    {
+      "key": "graph_height",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Injectivity establishes the graph plane's dimension. Projection minimality, multiplicity-one domination and graph_area bound the graph contribution; the support-height hypothesis bounds the complement. The sphere-null argument justifies the open parameter ball, and the off-graph term is correctly external, including infinite-mass cases."
+    },
+    {
+      "key": "affine_assembly",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite componentwise choices construct c and Λ with the stated norms. Continuity ensures integrability on bounded balls, permitting summation and conversion to the lower integral. The proof correctly handles k = 0 and nonpositive radii without additional sign hypotheses."
+    }
+  ],
+  "required_changes": []
+}
