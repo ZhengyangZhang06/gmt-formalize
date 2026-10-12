@@ -451,6 +451,54 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Fubini symmetry of iterated convolutions** (step 4 of the proof of Weyl's lemma, which gives
+"Thus w is harmonic in B" in the proof of Simon Ch. 5, Lemma 3.1): for `f ∈ L¹(ℝⁿ)` and continuous
+compactly supported kernels `φ, ψ`, `((f ⋆ φ) ⋆ ψ)(x) = ((f ⋆ ψ) ⋆ φ)(x)`.  For continuous
+compactly supported `a, b` the kernel `f(y) a(x − z − y) b(z)` is integrable on `ℝⁿ × ℝⁿ`
+(dominated by `sup |a| · |b(z)| · |f(y)|`), so Fubini and the substitution `z ↦ (x − y) − z` give
+`∫_z (∫_y f(y) a(x − z − y)) b(z) = ∫_y f(y) ∫_z a(z) b(x − y − z)`; the inner kernel integrals
+for `(a, b) = (φ, ψ)` and `(ψ, φ)` agree by the same substitution. -/
+theorem Submission.dorag_ha_weyl_conv_swap : ∀ (n : ℕ) (f φ ψ : Euclid n → ℝ) (x : Euclid n), Integrable f → Continuous φ → HasCompactSupport φ → Continuous ψ → HasCompactSupport ψ → ∫ z, (∫ y, f y * φ (x - z - y)) * ψ z = ∫ z, (∫ y, f y * ψ (x - z - y)) * φ z := by
+  intro n f φ ψ x hf hφ hφs hψ hψs
+  -- reflection invariance: `∫ a(w − z) b(z) dz = ∫ a(z) b(w − z) dz`, via `z ↦ w − z`
+  have refl : ∀ (a b : Euclid n → ℝ) (w : Euclid n),
+      ∫ z, a (w - z) * b z = ∫ z, a z * b (w - z) := by
+    intro a b w
+    rw [← integral_sub_left_eq_self (fun z => a z * b (w - z)) volume w]
+    simp only [sub_sub_cancel]
+  -- (★): for continuous compactly supported `a, b`,
+  -- `∫_z (∫_y f(y) a(x − z − y)) b(z) = ∫_y f(y) ∫_z a(z) b(x − y − z)`
+  have gen : ∀ a b : Euclid n → ℝ, Continuous a → HasCompactSupport a → Continuous b →
+      HasCompactSupport b →
+      ∫ z, (∫ y, f y * a (x - z - y)) * b z = ∫ y, f y * ∫ z, a z * b (x - y - z) := by
+    intro a b ha has hb hbs
+    obtain ⟨M, hM⟩ := has.exists_bound_of_continuous ha
+    have hbi : Integrable b := hb.integrable_of_hasCompactSupport hbs
+    -- `K(z, y) = f(y) a(x − z − y) b(z)` is integrable on `ℝⁿ × ℝⁿ`, being a.e.-strongly
+    -- measurable and dominated by `M |b(z)| |f(y)|`
+    have hK : Integrable (uncurry fun z y => f y * a (x - z - y) * b z)
+        (volume.prod (volume : Measure (Euclid n))) := by
+      refine ((hbi.norm.mul_prod hf.norm).const_mul M).mono' ?_ (Eventually.of_forall fun p => ?_)
+      · have ha' : Continuous fun p : Euclid n × Euclid n => a (x - p.1 - p.2) := by fun_prop
+        have hb' : Continuous fun p : Euclid n × Euclid n => b p.1 := by fun_prop
+        exact (hf.aestronglyMeasurable.comp_snd.mul ha'.aestronglyMeasurable).mul
+          hb'.aestronglyMeasurable
+      · simp only [uncurry, norm_mul]
+        calc ‖f p.2‖ * ‖a (x - p.1 - p.2)‖ * ‖b p.1‖ ≤ ‖f p.2‖ * M * ‖b p.1‖ := by
+              gcongr
+              exact hM _
+          _ = M * (‖b p.1‖ * ‖f p.2‖) := by ring
+    calc ∫ z, (∫ y, f y * a (x - z - y)) * b z
+        = ∫ z, ∫ y, f y * a (x - z - y) * b z := by
+          simp only [integral_mul_const]
+      _ = ∫ y, ∫ z, f y * a (x - z - y) * b z := integral_integral_swap hK
+      _ = ∫ y, f y * ∫ z, a z * b (x - y - z) := by
+          refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+          simp only [sub_right_comm x _ y, mul_assoc, integral_const_mul, refl a b (x - y)]
+  rw [gen φ ψ hφ hφs hψ hψs, gen ψ φ hψ hψs hφ hφs]
+  refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+  simp only [← refl ψ φ (x - y), mul_comm]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
