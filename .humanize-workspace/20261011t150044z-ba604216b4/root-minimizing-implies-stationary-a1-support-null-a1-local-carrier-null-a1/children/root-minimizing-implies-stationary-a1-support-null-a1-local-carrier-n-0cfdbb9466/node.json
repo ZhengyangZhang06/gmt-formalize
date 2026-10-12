@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.component_integrable-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1",
+  "depth": 4,
+  "title": "The scalar components θ·ξ(α) of an integer multiplicity triple are H^n-integrable on compact pieces of the carrier",
+  "statement": "Let P, n ∈ ℕ and U, K ⊆ ℝ^P. Let R = (M, θ, ξ) be an integer multiplicity triple in U (R : IMRep U n), with M = R.carrier, θ = R.mult : ℝ^P → ℕ and ξ = R.orient : ℝ^P → Λ_n = MultiVector P n. Assume K is compact and K ⊆ U. Then for every n-covector α ∈ Λ^n = Covector (Euclid P) n, the real function x ↦ θ(x)·ξ(x)(α) is integrable on M ∩ K with respect to H^n = μHE[n] (Mathlib's normalized n-dimensional Hausdorff measure). In Lean: IntegrableOn (fun x => (R.mult x : ℝ) * R.orient x α) (R.carrier ∩ K) μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n), IsCompact K → K ⊆ U → ∀ α : Covector (Euclid P) n, IntegrableOn (fun x => (R.mult x : ℝ) * R.orient x α) (R.carrier ∩ K) μHE[n]",
+  "lean_name": "lcn_mult_mul_orient_apply_integrableOn",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-2d6f974584-a1",
+      "result_commit": "2e5d20d49a4a41f79e81db1a65e850fb919b38ba",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-0cfdbb9466-a1"
+}
