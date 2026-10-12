@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.weighted_tangent_pointwise-a1.rescaled_density_limit-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.weighted_tangent_pointwise-a1",
+  "depth": 4,
+  "title": "Rescaling the radius in a scaled Lebesgue-point limit",
+  "statement": "Let n be a natural number, L : R -> [0, infinity] any function and rho > 0. Suppose ENNReal.ofReal((t^n)^{-1}) * L(t) -> 0 in [0, infinity] as t -> 0+ (along nhdsWithin 0 (Ioi 0)). Then (a) L(r rho) != infinity for all r eventually along nhdsWithin 0 (Ioi 0), and (b) (r^n)^{-1} * (L(r rho)).toReal -> 0 in R as r -> 0+.",
+  "lean_statement": "∀ (n : ℕ) (L : ℝ → ℝ≥0∞) (ρ : ℝ), 0 < ρ → Tendsto (fun t : ℝ => ENNReal.ofReal ((t ^ n)⁻¹) * L t) (𝓝[>] 0) (𝓝 0) → (∀ᶠ r in 𝓝[>] (0 : ℝ), L (r * ρ) ≠ ⊤) ∧ Tendsto (fun r : ℝ => (r ^ n)⁻¹ * (L (r * ρ)).toReal) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "dohr_tp_wtlp_rescaled_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-weighte-ff1fa72ac0-a1"
+}
