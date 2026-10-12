@@ -12,7 +12,6 @@ import Mathlib.Topology.Algebra.Module.Determinant
 import Poincare.SimonGMT.Chapter01.Hausdorff
 import Poincare.SimonGMT.Chapter02.BV
 import Poincare.SimonGMT.Chapter02.Submanifold
-import Poincare.SimonGMT.Chapter02.SubmanifoldTopology
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 2: Some further preliminaries from analysis (pp. 39–68)
@@ -460,8 +459,8 @@ representation `V → W` of `M` with `T_{ψ x} M = range Dψ(x)` for `x ∈ V`, 
 `x₀` that is differentiable at `ψ x₀` (`Submission.sff_immersion_local_left_inverse`) and
 `Q = Π ∘ Dψ ∘ g`. `Q` is differentiable at `ψ x₀` by the chain rule
 (`Submission.sff_range_starProjection_differentiableAt`, `ContDiffAt.fderiv_right`). By Simon 4.2
-(`IsSimonLocalRepresentation.exists_open_image_eq_inter`), the points of `M` near `ψ x₀` are the
-`ψ x` with `g (ψ x) = x`, where `Q (ψ x) = Π(Dψ x) = P_{ψ x}`. -/
+(from the relative properness of `ψ`), the points of `M` near `ψ x₀` are the `ψ x` with
+`g (ψ x) = x`, where `Q (ψ x) = Π(Dψ x) = P_{ψ x}`. -/
 theorem Submission.sff_tangentProjection_local_extension : ∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → (∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → ∀ x₀ ∈ V, ∃ Q : Rn N → (Rn N →L[ℝ] Rn N), DifferentiableAt ℝ Q (ψ x₀) ∧ tangentProjection M =ᶠ[𝓝[M] ψ x₀] Q ∧ ∀ᶠ x in 𝓝 x₀, Q (ψ x) = (LinearMap.range (fderiv ℝ ψ x).toLinearMap).starProjection := by
   intro n N M V W ψ hrep hT x₀ hx₀
   -- Step 1: `ψ` is `C²` at `x₀`, so `ψ` is `C¹` there and `Dψ` is differentiable at `x₀`.
@@ -474,13 +473,28 @@ theorem Submission.sff_tangentProjection_local_extension : ∀ (n N : ℕ) (M : 
   obtain ⟨g, hg, hgψ⟩ := Submission.sff_immersion_local_left_inverse n N ψ x₀ h1 hinj
   obtain ⟨U, hUg, hUo, hxU⟩ := _root_.eventually_nhds_iff.mp hgψ
   have hgx₀ : g (ψ x₀) = x₀ := hUg x₀ hxU
-  -- Step 3 (Simon 4.2): `ψ (U ∩ V) = W₀ ∩ M` for an open `W₀`, and `ψ x₀ ∈ W₀`.
-  obtain ⟨W₀, hW₀o, -, hW₀⟩ :=
-    hrep.exists_open_image_eq_inter (hUo.inter hrep.isOpen_source) inter_subset_right
-  have hy₀ : ψ x₀ ∈ W₀ := by
-    have h : ψ x₀ ∈ ψ '' (U ∩ V) := ⟨x₀, ⟨hxU, hx₀⟩, rfl⟩
-    rw [hW₀] at h
+  -- Step 3 (Simon 4.2): near `ψ x₀`, every point of `M` is `ψ x` with `x ∈ U ∩ V`. Take a compact
+  -- neighbourhood `K ⊆ W` of `ψ x₀`. By relative properness `V ∩ ψ⁻¹ K` is compact, so
+  -- `ψ ((V ∩ ψ⁻¹ K) \ U)` is compact, hence closed, and it misses `ψ x₀` since `ψ` is injective on `V`.
+  have hy₀W : ψ x₀ ∈ W := by
+    have h : ψ x₀ ∈ ψ '' V := ⟨x₀, hx₀, rfl⟩
+    rw [hrep.image_eq] at h
     exact h.1
+  obtain ⟨K, hKn, hKW, hK⟩ := local_compact_nhds (hrep.isOpen_target.mem_nhds hy₀W)
+  have hcl : IsClosed (ψ '' ((V ∩ ψ ⁻¹' K) \ U)) :=
+    (((hrep.isCompact_source_inter_preimage K hK hKW).diff hUo).image_of_continuousOn
+      (hrep.contDiffOn.continuousOn.mono fun x hx ↦ hx.1.1)).isClosed
+  have hy₀C : ψ x₀ ∉ ψ '' ((V ∩ ψ ⁻¹' K) \ U) := by
+    rintro ⟨x, ⟨⟨hxV, -⟩, hxU'⟩, hx⟩
+    rw [hrep.injOn hxV hx₀ hx] at hxU'
+    exact hxU' hxU
+  have hloc : ∀ᶠ z in 𝓝 (ψ x₀), z ∈ M → ∃ x ∈ U ∩ V, ψ x = z := by
+    filter_upwards [hKn, hcl.isOpen_compl.mem_nhds hy₀C] with z hzK hzC hzM
+    have hz : z ∈ ψ '' V := by rw [hrep.image_eq]; exact ⟨hKW hzK, hzM⟩
+    obtain ⟨x, hxV, rfl⟩ := hz
+    refine ⟨x, ⟨?_, hxV⟩, rfl⟩
+    by_contra hxU'
+    exact hzC ⟨x, ⟨⟨hxV, hzK⟩, hxU'⟩, rfl⟩
   -- Step 4: `Q = Π ∘ Dψ ∘ g` is differentiable at `ψ x₀` by the chain rule.
   let Pr : (Rn n →L[ℝ] Rn N) → (Rn N →L[ℝ] Rn N) :=
     fun B ↦ (LinearMap.range B.toLinearMap).starProjection
@@ -489,14 +503,13 @@ theorem Submission.sff_tangentProjection_local_extension : ∀ (n N : ℕ) (M : 
       rw [hgx₀]; exact Submission.sff_range_starProjection_differentiableAt n N _ hinj
     have hAg : DifferentiableAt ℝ (fderiv ℝ ψ) (g (ψ x₀)) := by rw [hgx₀]; exact hA
     exact hPr.comp (ψ x₀) (hAg.comp (ψ x₀) hg)
-  -- Step 5: each `z ∈ W₀ ∩ M` is `ψ x` with `x ∈ U ∩ V`, so `Q z = Π(Dψ x) = P_z` by (T).
+  -- Step 5: each `z ∈ M` near `ψ x₀` is `ψ x` with `x ∈ U ∩ V`, so `Q z = Π(Dψ x) = P_z` by (T).
   · -- Equal subspaces have equal projections (`HasOrthogonalProjection` is a `Prop`).
     have key : ∀ K K' : Submodule ℝ (Rn N), K = K' → K.starProjection = K'.starProjection := by
       rintro K K' rfl; rfl
     rw [Filter.EventuallyEq, eventually_nhdsWithin_iff]
-    filter_upwards [hW₀o.mem_nhds hy₀] with z hzW₀ hzM
-    have hz : z ∈ ψ '' (U ∩ V) := by rw [hW₀]; exact ⟨hzW₀, hzM⟩
-    obtain ⟨x, ⟨hxU', hxV⟩, rfl⟩ := hz
+    filter_upwards [hloc] with z hz hzM
+    obtain ⟨x, ⟨hxU', hxV⟩, rfl⟩ := hz hzM
     show (tangentSpace M (ψ x)).starProjection = Pr (fderiv ℝ ψ (g (ψ x)))
     rw [hUg x hxU']
     exact key _ _ (hT x hxV)
