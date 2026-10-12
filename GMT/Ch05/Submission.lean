@@ -633,6 +633,88 @@ theorem allard52_cft_graph_map_sqrt_two : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃�
   have h := hlip x hx 0 h0
   rwa [hf0, hzero, map_zero, sub_zero, sub_zero] at h
 
+/-- Simon Ch. 5, proof of Theorem 5.2, (10)–(11) (pp. 123–124): tilt-excess decay gives the
+Campanato estimate for the tangent planes `G(x) = p_{q(graph Df(x))}` of the Lipschitz graph. Fix
+`z ∈ Bⁿ_{R/4}(0)`, `0 < s ≤ R/4`, and put `ζ = q(z, f(z))`, `P = p_{S(ζ)}`, `D = Bⁿ_{s/2}(z)`,
+`B = B_s(ζ)`. As `x ↦ q(x, f(x))` is `√2`-Lipschitz on `Bⁿ_R(0)` and vanishes at `0`:
+`ζ ∈ spt V ∩ B_{R/2}(0)` (by the graph representation of `spt V`), `D ⊆ B̆ⁿ_{R/2}(0)`,
+`q(x, f(x)) ∈ B` for `x ∈ D`, and `B ⊆ B_R(0) ⊆ U`, so `μ_V(B) < ∞` and
+`∫⁻_B |p_{T_y M} − P|² dμ_V = sⁿ E(ζ, s, S(ζ)) ≤ A sⁿ (s/R)^e`. The comparison hypothesis with
+`Φ(w, T) = 1_B(w) |T − P|²` bounds `∫⁻_D |G(x) − P|² dx` by
+`∫⁻_{q(graph f|_D)} Φ(y, p_{T_y M}) dμ_V`, which is at most `∫⁻_B |p_{T_y M} − P|² dμ_V`. -/
+theorem allard52_campanato_from_tilt : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (S : Amb n ℓ → Submodule ℝ (Amb n ℓ)) (R A e : ℝ), 0 < R → closedBall (0 : Amb n ℓ) R ⊆ U → f 0 = 0 → LipschitzOnWith 1 f (closedBall 0 R) → V.support ∩ closedBall 0 R = q '' graphOver f (closedBall 0 R) ∩ closedBall 0 R → AEStronglyMeasurable V.tangentProj V.weight → (∀ Φ : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ) → ℝ≥0∞, Measurable (Function.uncurry Φ) → ∀ D : Set (Rn n), MeasurableSet D → D ⊆ ball 0 (R / 2) → ∫⁻ x in D, Φ (q (graphPoint x (f x))) ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f x v))).map q.toLinearEquiv.toLinearMap).starProjection ≤ ∫⁻ y in q '' graphOver f D, Φ y (V.tangentProj y) ∂V.weight) → (∀ ζ ∈ V.support ∩ closedBall 0 (R / 2), ∀ s : ℝ, 0 < s → s ≤ R / 2 → V.tiltExcess ζ s (S ζ) ≤ A * (s / R) ^ e) → ∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f x v))).map q.toLinearEquiv.toLinearMap).starProjection - (S (q (graphPoint z (f z)))).starProjection)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ e) := by
+  intro n ℓ U V q f S R A e hR hRU hf0 hlip hspt hae hcomp htilt z hz s hs hsR
+  set ζ : Amb n ℓ := q (graphPoint z (f z))
+  -- the graph map `x ↦ q(x, f(x))` is `√2`-Lipschitz on `Bⁿ_R(0)` and `|q(x, f(x))| ≤ √2 |x|`
+  obtain ⟨hlipF, hnormF⟩ :=
+    Submission.allard52_cft_graph_map_sqrt_two n ℓ q f (closedBall 0 R) hlip
+  have h2 : Real.sqrt 2 ≤ 2 := by
+    nlinarith [Real.sq_sqrt (show (0 : ℝ) ≤ 2 by norm_num), Real.sqrt_nonneg 2]
+  have hzn : ‖z‖ ≤ R / 4 := mem_closedBall_zero_iff.mp hz
+  have hzR : z ∈ closedBall (0 : Rn n) R := mem_closedBall_zero_iff.mpr (by linarith)
+  -- `|ζ| ≤ √2 |z| ≤ R/2`
+  have hζn : ‖ζ‖ ≤ R / 2 :=
+    calc ‖ζ‖ ≤ Real.sqrt 2 * ‖z‖ := hnormF hf0 (mem_closedBall_self hR.le) z hzR
+      _ ≤ 2 * (R / 4) := mul_le_mul h2 hzn (norm_nonneg z) (by norm_num)
+      _ = R / 2 := by ring
+  -- `ζ ∈ spt V ∩ B_{R/2}(0)`, as `spt V ∩ B_R(0) = q(graph f) ∩ B_R(0)`
+  have hζspt : ζ ∈ V.support ∩ closedBall 0 (R / 2) := by
+    have hmem : ζ ∈ q '' graphOver f (closedBall 0 R) ∩ closedBall 0 R :=
+      ⟨Set.mem_image_of_mem q (Set.mem_image_of_mem (fun x => graphPoint x (f x)) hzR),
+        mem_closedBall_zero_iff.mpr (by linarith)⟩
+    rw [← hspt] at hmem
+    exact ⟨hmem.1, mem_closedBall_zero_iff.mpr hζn⟩
+  -- `D = Bⁿ_{s/2}(z) ⊆ B̆ⁿ_{R/2}(0)` and `D ⊆ Bⁿ_R(0)`
+  have hDball : closedBall z (s / 2) ⊆ ball (0 : Rn n) (R / 2) :=
+    closedBall_subset_ball' (by rw [dist_zero_right]; linarith)
+  have hDR : closedBall z (s / 2) ⊆ closedBall (0 : Rn n) R :=
+    closedBall_subset_closedBall' (by rw [dist_zero_right]; linarith)
+  -- `q(x, f(x)) ∈ B = B_s(ζ)` for `x ∈ D`
+  have hFB : ∀ x ∈ closedBall z (s / 2), q (graphPoint x (f x)) ∈ closedBall ζ s := by
+    intro x hx
+    rw [mem_closedBall, dist_eq_norm]
+    have hxz : ‖x - z‖ ≤ s / 2 := by rw [← dist_eq_norm]; exact hx
+    calc ‖q (graphPoint x (f x)) - ζ‖ ≤ Real.sqrt 2 * ‖x - z‖ := hlipF x (hDR hx) z hzR
+      _ ≤ 2 * (s / 2) := mul_le_mul h2 hxz (norm_nonneg _) (by norm_num)
+      _ = s := by ring
+  -- `B ⊆ B_R(0) ⊆ U`, hence `μ_V(B) < ∞`
+  have hBR : closedBall ζ s ⊆ closedBall (0 : Amb n ℓ) R :=
+    closedBall_subset_closedBall' (by rw [dist_zero_right]; linarith)
+  have hBfin : V.weight (closedBall ζ s) < ⊤ := by
+    rw [rsod_weight_closedBall_eq_ofReal_integral n ℓ U V ζ s (hBR.trans hRU)]
+    exact ENNReal.ofReal_lt_top
+  -- `∫⁻_B |p_{T_y M} − P|² dμ_V = sⁿ E(ζ, s, S(ζ)) ≤ A sⁿ (s/R)^e`
+  have hBbound : ∫⁻ y in closedBall ζ s,
+      ENNReal.ofReal (hsNormSq (V.tangentProj y - (S ζ).starProjection)) ∂V.weight ≤
+      ENNReal.ofReal (A * s ^ n * (s / R) ^ e) := by
+    rw [Submission.allard52_cft_tilt_lintegral_eq n ℓ U V hae ζ s (S ζ) hs hBfin]
+    refine ENNReal.ofReal_le_ofReal ?_
+    calc s ^ n * V.tiltExcess ζ s (S ζ) ≤ s ^ n * (A * (s / R) ^ e) :=
+          mul_le_mul_of_nonneg_left (htilt ζ hζspt s hs (by linarith)) (pow_pos hs n).le
+      _ = A * s ^ n * (s / R) ^ e := by ring
+  -- the test function `Φ(w, T) = 1_B(w) |T − P|²` is measurable
+  have hg : Measurable fun T : Amb n ℓ →L[ℝ] Amb n ℓ =>
+      ENNReal.ofReal (hsNormSq (T - (S ζ).starProjection)) := by
+    refine ENNReal.measurable_ofReal.comp (Continuous.measurable ?_)
+    unfold hsNormSq
+    refine continuous_finsetSum _ fun i _ => ?_
+    exact ((continuous_id.sub continuous_const).clm_apply continuous_const).norm.pow 2
+  have hΦ : Measurable (Function.uncurry fun (w : Amb n ℓ) (T : Amb n ℓ →L[ℝ] Amb n ℓ) =>
+      (closedBall ζ s).indicator
+        (fun _ => ENNReal.ofReal (hsNormSq (T - (S ζ).starProjection))) w) :=
+    (hg.comp measurable_snd).indicator (measurable_fst measurableSet_closedBall)
+  have hcmp := hcomp _ hΦ (closedBall z (s / 2)) measurableSet_closedBall hDball
+  refine le_trans (le_of_eq ?_) (hcmp.trans ((setLIntegral_le_lintegral _ _).trans
+    (le_trans (le_of_eq ?_) hBbound)))
+  -- on `D` the indicator is `1`, since the graph over `D` lies in `B`
+  · exact setLIntegral_congr_fun measurableSet_closedBall fun x hx => by
+      rw [Set.indicator_of_mem (hFB x hx)]
+  -- `∫⁻ 1_B |p_{T_y M} − P|² dμ_V = ∫⁻_B |p_{T_y M} − P|² dμ_V`
+  · refine (lintegral_congr fun y => ?_).trans (lintegral_indicator measurableSet_closedBall _)
+    by_cases hy : y ∈ closedBall ζ s
+    · rw [Set.indicator_of_mem hy, Set.indicator_of_mem hy]
+    · rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hy]
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
