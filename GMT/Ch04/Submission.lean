@@ -434,6 +434,143 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Local data for the weighted monotonicity identity (Simon Ch. 4, 3.1–3.3 and 5.1).** Let `μ_V`
+be finite on compacts with `x ↦ p_{T_x V}` `μ_V`-a.e. strongly measurable, `U` open, `H` locally
+`μ_V`-integrable on `U`, `h ∈ C¹(U)`, `ρ > 0` and `tsupport h ∩ B_ρ(ξ) ⊆ U`. Then there are `R > ρ`
+and `A` such that `tsupport h ∩ B_R(ξ) ⊆ U`, `h` and `|D^⊥r|²` are a.e. strongly measurable for
+`μ_V ⌞ B_R(ξ)`, `|h| ≤ A` and `|D^⊥r|² ≤ 1` on `B_R(ξ)`, and `(x - ξ) · ∇^M h` and
+`(x - ξ) · (∇^M h + hH)` are `μ_V`-integrable on `B_R(ξ)`. -/
+theorem Submission.weighted_mono_local_data : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (ρ : ℝ), IsFiniteMeasureOnCompacts V.weight → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → LocallyIntegrableOn H U V.weight → ContDiffOn ℝ 1 h U → tsupport h ∩ closedBall ξ ρ ⊆ U → 0 < ρ → ∃ R A : ℝ, ρ < R ∧ tsupport h ∩ closedBall ξ R ⊆ U ∧ AEStronglyMeasurable h (V.weight.restrict (closedBall ξ R)) ∧ AEStronglyMeasurable (V.normalRadialSq ξ) (V.weight.restrict (closedBall ξ R)) ∧ (∀ x ∈ closedBall ξ R, |h x| ≤ A ∧ |V.normalRadialSq ξ x| ≤ 1) ∧ IntegrableOn (fun x ↦ inner ℝ (x - ξ) (V.tangentialGradient h x)) (closedBall ξ R) V.weight ∧ IntegrableOn (fun x ↦ inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x)) (closedBall ξ R) V.weight) := by
+  intro n ℓ V U H h ξ ρ hμ hP hU hH hh hsub hρ
+  -- Step 1 (room): `B_ρ(ξ)` lies in the open set `(tsupport h)ᶜ ∪ U`, hence so does a
+  -- closed thickening `B_R(ξ)`, `R = δ + ρ > ρ`; then `tsupport h ∩ B_R(ξ) ⊆ U`.
+  have hW : IsOpen ((tsupport h)ᶜ ∪ U) := (isClosed_tsupport h).isOpen_compl.union hU
+  have hBW : closedBall ξ ρ ⊆ (tsupport h)ᶜ ∪ U := by
+    intro x hx
+    by_cases hxt : x ∈ tsupport h
+    · exact Or.inr (hsub ⟨hxt, hx⟩)
+    · exact Or.inl hxt
+  obtain ⟨δ, hδ, hδW⟩ := (isCompact_closedBall ξ ρ).exists_cthickening_subset_open hW hBW
+  rw [cthickening_closedBall hδ.le hρ.le ξ] at hδW
+  obtain ⟨R, hR⟩ : ∃ R, R = δ + ρ := ⟨_, rfl⟩
+  rw [← hR] at hδW
+  have hρR : ρ < R := by linarith
+  have hR0 : 0 ≤ R := by linarith
+  have hsubR : tsupport h ∩ closedBall ξ R ⊆ U := by
+    rintro x ⟨hxt, hxB⟩
+    rcases hδW hxB with hx | hx
+    · exact absurd hxt hx
+    · exact hx
+  -- Step 2: `h` and `∇h` are continuous at every point of `B_R(ξ)`: on `U` by `C¹`, and off `U`
+  -- they vanish near the point, which lies outside `tsupport h`.
+  have hcont : ∀ x ∈ closedBall ξ R, ContinuousAt h x ∧ ContinuousAt (gradient h) x := by
+    intro x hx
+    by_cases hxU : x ∈ U
+    · have hUx : U ∈ 𝓝 x := hU.mem_nhds hxU
+      have hDh : ContinuousAt (fderiv ℝ h) x :=
+        (hh.continuousOn_fderiv_of_isOpen hU le_rfl).continuousAt hUx
+      exact ⟨hh.continuousOn.continuousAt hUx,
+        (InnerProductSpace.toDual ℝ (Ambient n ℓ)).symm.continuous.continuousAt.comp hDh⟩
+    · have hxt : x ∉ tsupport h := fun hxt ↦ hxU (hsubR ⟨hxt, hx⟩)
+      have hxn : (tsupport h)ᶜ ∈ 𝓝 x := (isClosed_tsupport h).isOpen_compl.mem_nhds hxt
+      have h0 : h =ᶠ[𝓝 x] fun _ ↦ (0 : ℝ) := by
+        filter_upwards [hxn] with y hy
+        exact image_eq_zero_of_notMem_tsupport hy
+      have g0 : gradient h =ᶠ[𝓝 x] fun _ ↦ (0 : Ambient n ℓ) := by
+        filter_upwards [hxn] with y hy
+        rw [gradient, fderiv_of_notMem_tsupport ℝ hy, map_zero]
+      exact ⟨h0.continuousAt, g0.continuousAt⟩
+  have hhc : ContinuousOn h (closedBall ξ R) := fun x hx ↦ (hcont x hx).1.continuousWithinAt
+  have hgc : ContinuousOn (gradient h) (closedBall ξ R) :=
+    fun x hx ↦ (hcont x hx).2.continuousWithinAt
+  -- Step 3: bounds `A`, `A₁` for `h`, `∇h` on the compact ball, measurability for `μ ⌞ B_R(ξ)`,
+  -- and `μ(B_R(ξ)) < ∞`.
+  obtain ⟨A, hA⟩ := (isCompact_closedBall ξ R).exists_bound_of_continuousOn hhc
+  obtain ⟨A₁, hA₁⟩ := (isCompact_closedBall ξ R).exists_bound_of_continuousOn hgc
+  have hBm : MeasurableSet (closedBall ξ R) := measurableSet_closedBall
+  have hhm : AEStronglyMeasurable h (V.weight.restrict (closedBall ξ R)) :=
+    hhc.aestronglyMeasurable hBm
+  have hgm : AEStronglyMeasurable (gradient h) (V.weight.restrict (closedBall ξ R)) :=
+    hgc.aestronglyMeasurable hBm
+  have hBfin : V.weight (closedBall ξ R) < ⊤ := (isCompact_closedBall ξ R).measure_lt_top
+  -- Step 4: `∇^M h = p_x (∇h)` is measurable (continuous evaluation) and bounded by `A₁`.
+  have happ : Continuous (Function.uncurry
+      fun (L : Ambient n ℓ →L[ℝ] Ambient n ℓ) (v : Ambient n ℓ) ↦ L v) :=
+    isBoundedBilinearMap_apply.continuous
+  have hTm : AEStronglyMeasurable (V.tangentialGradient h)
+      (V.weight.restrict (closedBall ξ R)) :=
+    happ.comp_aestronglyMeasurable₂ hP.restrict hgm
+  have hTb : ∀ x ∈ closedBall ξ R, ‖V.tangentialGradient h x‖ ≤ A₁ := fun x hx ↦
+    ((V.tangentSpace x).norm_starProjection_apply_le (gradient h x)).trans (hA₁ x hx)
+  -- Step 5: `q = |(1 - p_x)(x - ξ)|² / |x - ξ|²` is measurable and `0 ≤ q ≤ 1`.
+  have hdisp : Continuous fun x : Ambient n ℓ ↦ x - ξ := continuous_id.sub continuous_const
+  have hPperp : AEStronglyMeasurable (fun x ↦ (V.tangentSpace x)ᗮ.starProjection) V.weight := by
+    have : (fun x ↦ (V.tangentSpace x)ᗮ.starProjection) =
+        fun x ↦ 1 - (V.tangentSpace x).starProjection := by
+      funext x
+      exact Submodule.starProjection_orthogonal' (V.tangentSpace x)
+    rw [this]
+    exact aestronglyMeasurable_const.sub hP
+  have hqm : AEStronglyMeasurable (V.normalRadialSq ξ) V.weight := by
+    have hnum : AEStronglyMeasurable
+        (fun x ↦ (V.tangentSpace x)ᗮ.starProjection (x - ξ)) V.weight :=
+      happ.comp_aestronglyMeasurable₂ hPperp hdisp.aestronglyMeasurable
+    have h1 : AEMeasurable
+        (fun x ↦ ‖(V.tangentSpace x)ᗮ.starProjection (x - ξ)‖ ^ 2) V.weight :=
+      (hnum.norm.pow 2).aemeasurable
+    have h2 : AEMeasurable (fun x : Ambient n ℓ ↦ ‖x - ξ‖ ^ 2) V.weight :=
+      (hdisp.norm.pow 2).measurable.aemeasurable
+    exact (h1.div h2).aestronglyMeasurable
+  have hqb : ∀ x, |V.normalRadialSq ξ x| ≤ 1 := by
+    intro x
+    have h0 : 0 ≤ V.normalRadialSq ξ x := div_nonneg (sq_nonneg _) (sq_nonneg _)
+    have h1 : V.normalRadialSq ξ x ≤ 1 := div_le_one_of_le₀
+      (pow_le_pow_left₀ (norm_nonneg _) (Submodule.norm_starProjection_apply_le _ _) 2)
+      (sq_nonneg _)
+    rw [abs_of_nonneg h0]
+    exact h1
+  -- Step 6: `⟨x - ξ, ∇^M h⟩` is measurable and bounded by `R A₁` on `B_R(ξ)`.
+  have hF₁ : IntegrableOn (fun x ↦ inner ℝ (x - ξ) (V.tangentialGradient h x))
+      (closedBall ξ R) V.weight := by
+    refine IntegrableOn.of_bound hBfin ?_ (R * A₁) ?_
+    · exact continuous_inner.comp_aestronglyMeasurable₂ hdisp.aestronglyMeasurable hTm
+    · refine ae_restrict_of_forall_mem hBm fun x hx ↦ ?_
+      have hxR : ‖x - ξ‖ ≤ R := by rw [← dist_eq_norm]; exact hx
+      rw [Real.norm_eq_abs]
+      exact (abs_real_inner_le_norm _ _).trans (mul_le_mul hxR (hTb x hx) (norm_nonneg _) hR0)
+  -- Step 7: `H` is integrable on the compact `K = tsupport h ∩ B_R(ξ) ⊆ U`; `⟨x - ξ, h H⟩` is
+  -- dominated by `R A |H|` on `K` and vanishes on `B_R(ξ) \ K`.
+  have hK : IsCompact (tsupport h ∩ closedBall ξ R) :=
+    (isCompact_closedBall ξ R).inter_left (isClosed_tsupport h)
+  have hKm : MeasurableSet (tsupport h ∩ closedBall ξ R) := hK.isClosed.measurableSet
+  have hHK : IntegrableOn H (tsupport h ∩ closedBall ξ R) V.weight :=
+    hH.integrableOn_compact_subset hsubR hK
+  have hF₂K : IntegrableOn (fun x ↦ inner ℝ (x - ξ) (h x • H x))
+      (tsupport h ∩ closedBall ξ R) V.weight := by
+    refine Integrable.mono' (hHK.norm.const_mul (R * A)) ?_ ?_
+    · have hhK : AEStronglyMeasurable h (V.weight.restrict (tsupport h ∩ closedBall ξ R)) :=
+        hhm.mono_set inter_subset_right
+      exact continuous_inner.comp_aestronglyMeasurable₂ hdisp.aestronglyMeasurable
+        (hhK.smul hHK.aestronglyMeasurable)
+    · refine ae_restrict_of_forall_mem hKm fun x hx ↦ ?_
+      have hxR : ‖x - ξ‖ ≤ R := by rw [← dist_eq_norm]; exact hx.2
+      have hhx : ‖h x‖ ≤ A := hA x hx.2
+      rw [Real.norm_eq_abs]
+      calc |inner ℝ (x - ξ) (h x • H x)| ≤ ‖x - ξ‖ * ‖h x • H x‖ := abs_real_inner_le_norm _ _
+        _ = ‖x - ξ‖ * (‖h x‖ * ‖H x‖) := by rw [norm_smul]
+        _ ≤ R * (A * ‖H x‖) :=
+          mul_le_mul hxR (mul_le_mul_of_nonneg_right hhx (norm_nonneg _)) (by positivity) hR0
+        _ = R * A * ‖H x‖ := by ring
+  have hF₂ : IntegrableOn (fun x ↦ inner ℝ (x - ξ) (h x • H x)) (closedBall ξ R) V.weight := by
+    refine hF₂K.of_forall_sdiff_eq_zero hBm fun x hx ↦ ?_
+    have hxt : x ∉ tsupport h := fun hxt ↦ hx.2 ⟨hxt, hx.1⟩
+    simp [image_eq_zero_of_notMem_tsupport hxt]
+  -- Step 8: `G = ⟨x - ξ, ∇^M h⟩ + ⟨x - ξ, h H⟩` is integrable on `B_R(ξ)`.
+  refine ⟨R, A, hρR, hsubR, hhm, hqm.restrict, fun x hx ↦ ⟨?_, hqb x⟩, hF₁, ?_⟩
+  · rw [← Real.norm_eq_abs]
+    exact hA x hx
+  · exact (hF₁.add hF₂).congr_fun (fun x _ ↦ (inner_add_right _ _ _).symm) hBm
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
