@@ -410,6 +410,205 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 1, 3.6 (Upper Density Theorem), localized as in Remark 3.7(2)** (child
+`zero_density_off_set` of `integral_density`, parent step 5): if `μ` is finite on compact subsets
+of the open set `U` and `A` is Borel, then `Θ^n(μ⌞A, x) = 0` for `H^n`-a.e. `x ∈ U ∖ A`.
+Simon's proof of 3.6 is carried out inline: the comparison estimate of 3.3 comes from a covering
+lemma (3.4; here Mathlib's Vitali lemma with enlargement `4`, which only changes the constant),
+closed sets `C_j ⊆ A` with `μ(A ∖ C_j) → 0` (1.15(2)) make the bad set `H^n`-null, and `U` is
+covered by countably many balls `B_q(c)` with `B_{2q}(c) ⊆ U`, on which `μ` is finite (3.7(2)). -/
+theorem Submission.intcpt_id_restrict_density_zero_ae : ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (U A : Set (Euclidean N)), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → MeasurableSet A → ∀ᵐ x ∂(μHE[n] : Measure (Euclidean N)), x ∈ U → x ∉ A → HasDensity n (μ.restrict A) x 0 := by
+  intro N n μ U A hU hfin hA
+  -- `H^n = c • μH[n]`, so it suffices to work with `μH[n]`.
+  rw [MeasureTheory.Measure.euclideanHausdorffMeasure_def]
+  refine Measure.ae_smul_measure ?_ _
+  -- `ω_n` is positive and finite.
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- Comparison estimate (Simon 3.3–3.4, Vitali covering): if every point of `F` is the centre of
+  -- arbitrarily small closed balls `B_ρ` with `s ρ^n ≤ ν(B_ρ)`, then `μH[n](F) ≤ 8^n ν(ℝ^N) / s`.
+  have hcov : ∀ (ν : Measure (Euclidean N)) (F : Set (Euclidean N)) (s : ℝ≥0∞), s ≠ 0 → s ≠ ∞ →
+      (∀ x ∈ F, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧
+        s * ENNReal.ofReal ρ ^ n ≤ ν (closedBall x ρ)) →
+      μH[(n : ℝ)] F ≤ 8 ^ n * ν univ * s⁻¹ := by
+    intro ν F s hs0 hstop hF
+    choose! r hr0 hrδ hrν using hF
+    have hδ : ∀ m : ℕ, (0 : ℝ) < 1 / ((m : ℝ) + 1) := fun m => by positivity
+    have hV := fun m : ℕ => Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall F id
+      (fun a => r a (1 / ((m : ℝ) + 1))) (1 / ((m : ℝ) + 1))
+      (fun a ha => (hrδ a ha _ (hδ m)).le) 4 (by norm_num)
+    choose u huF hud hucov using hV
+    have huc : ∀ m, (u m).Countable := fun m =>
+      (hud m).countable_of_nonempty_interior fun a ha =>
+        ⟨a, mem_interior_iff_mem_nhds.mpr (closedBall_mem_nhds a (hr0 a (huF m ha) _ (hδ m)))⟩
+    have : ∀ m, Countable (u m) := fun m => (huc m).to_subtype
+    have htend : Tendsto (fun m : ℕ => ENNReal.ofReal (8 * (1 / ((m : ℝ) + 1)))) atTop (𝓝 0) := by
+      have h1 : Tendsto (fun m : ℕ => 8 * (1 / ((m : ℝ) + 1))) atTop (𝓝 (8 * 0)) :=
+        tendsto_one_div_add_atTop_nhds_zero_nat.const_mul 8
+      rw [mul_zero] at h1
+      simpa using ENNReal.tendsto_ofReal h1
+    have hdiam : ∀ᶠ m in atTop, ∀ i : u m,
+        ediam (closedBall (i : Euclidean N) (4 * r i (1 / ((m : ℝ) + 1)))) ≤
+          ENNReal.ofReal (8 * (1 / ((m : ℝ) + 1))) := by
+      refine Eventually.of_forall fun m i => ?_
+      refine Metric.ediam_le_of_forall_dist_le fun x hx y hy => ?_
+      rw [mem_closedBall] at hx hy
+      have := hrδ i (huF m i.2) _ (hδ m)
+      linarith [dist_triangle_right x y (i : Euclidean N)]
+    have hcover : ∀ᶠ m in atTop,
+        F ⊆ ⋃ i : u m, closedBall (i : Euclidean N) (4 * r i (1 / ((m : ℝ) + 1))) := by
+      refine Eventually.of_forall fun m a ha => ?_
+      obtain ⟨b, hb, hab⟩ := hucov m a ha
+      exact mem_iUnion.mpr ⟨⟨b, hb⟩, hab (mem_closedBall_self (hr0 a ha _ (hδ m)).le)⟩
+    have key := MeasureTheory.Measure.hausdorffMeasure_le_liminf_tsum (ι := fun m => u m) (n : ℝ) F
+      (fun m : ℕ => ENNReal.ofReal (8 * (1 / ((m : ℝ) + 1)))) htend
+      (fun m i => closedBall (i : Euclidean N) (4 * r i (1 / ((m : ℝ) + 1)))) hdiam hcover
+    refine key.trans (liminf_le_of_frequently_le' (Frequently.of_forall fun m => ?_))
+    calc ∑' i : u m, ediam (closedBall (i : Euclidean N) (4 * r i (1 / ((m : ℝ) + 1)))) ^ (n : ℝ)
+        ≤ ∑' i : u m, 8 ^ n * (ν (closedBall (i : Euclidean N) (r i (1 / ((m : ℝ) + 1)))) * s⁻¹) := by
+          refine ENNReal.tsum_le_tsum fun i => ?_
+          have hiν := hrν i (huF m i.2) _ (hδ m)
+          have hd : ediam (closedBall (i : Euclidean N) (4 * r i (1 / ((m : ℝ) + 1)))) ≤
+              ENNReal.ofReal (8 * r i (1 / ((m : ℝ) + 1))) := by
+            refine Metric.ediam_le_of_forall_dist_le fun x hx y hy => ?_
+            rw [mem_closedBall] at hx hy
+            linarith [dist_triangle_right x y (i : Euclidean N)]
+          calc ediam (closedBall (i : Euclidean N) (4 * r i (1 / ((m : ℝ) + 1)))) ^ (n : ℝ)
+              ≤ ENNReal.ofReal (8 * r i (1 / ((m : ℝ) + 1))) ^ (n : ℝ) :=
+                ENNReal.rpow_le_rpow hd (Nat.cast_nonneg n)
+            _ = 8 ^ n * ENNReal.ofReal (r i (1 / ((m : ℝ) + 1))) ^ n := by
+                rw [ENNReal.rpow_natCast, ENNReal.ofReal_mul (by norm_num), mul_pow,
+                  ENNReal.ofReal_ofNat]
+            _ ≤ 8 ^ n * (ν (closedBall (i : Euclidean N) (r i (1 / ((m : ℝ) + 1)))) * s⁻¹) := by
+                gcongr
+                calc ENNReal.ofReal (r i (1 / ((m : ℝ) + 1))) ^ n
+                    = s⁻¹ * (s * ENNReal.ofReal (r i (1 / ((m : ℝ) + 1))) ^ n) := by
+                      rw [← mul_assoc, ENNReal.inv_mul_cancel hs0 hstop, one_mul]
+                  _ ≤ s⁻¹ * ν (closedBall (i : Euclidean N) (r i (1 / ((m : ℝ) + 1)))) := by
+                      gcongr
+                  _ = ν (closedBall (i : Euclidean N) (r i (1 / ((m : ℝ) + 1)))) * s⁻¹ :=
+                      mul_comm _ _
+      _ = 8 ^ n * ((∑' i : u m, ν (closedBall (i : Euclidean N) (r i (1 / ((m : ℝ) + 1))))) *
+            s⁻¹) := by
+          rw [ENNReal.tsum_mul_left, ENNReal.tsum_mul_right]
+      _ ≤ 8 ^ n * (ν univ * s⁻¹) := by
+          gcongr
+          exact (measure_biUnion (huc m) (hud m) (fun _ _ => measurableSet_closedBall)).symm.le.trans
+            (measure_mono (subset_univ _))
+      _ = 8 ^ n * ν univ * s⁻¹ := (mul_assoc _ _ _).symm
+  -- Simon 3.6 for a measure `ν` with `ν(A) < ∞`.
+  have hC : ∀ ν : Measure (Euclidean N), ν A ≠ ∞ →
+      ∀ᵐ x ∂(μH[(n : ℝ)] : Measure (Euclidean N)), x ∉ A → HasDensity n (ν.restrict A) x 0 := by
+    intro ν hνA
+    have : IsFiniteMeasure (ν.restrict A) :=
+      ⟨by rw [Measure.restrict_apply_univ]; exact hνA.lt_top⟩
+    -- Closed sets `K j ⊆ A` with `ν(A ∖ K j) < 1/j`.
+    have hK : ∀ j : ℕ, ∃ K ⊆ A, IsClosed K ∧ ν.restrict A (A \ K) < (j : ℝ≥0∞)⁻¹ := fun j =>
+      hA.exists_isClosed_sdiff_lt (measure_ne_top _ _) (by simp)
+    choose K hKA hKc hKν using hK
+    -- The set where the density ratio exceeds `1/(k+1)` for arbitrarily small radii is null.
+    have hS : ∀ k : ℕ, μH[(n : ℝ)] {x | x ∉ A ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
+        ((k : ℝ≥0∞) + 1)⁻¹ < densityRatio n (ν.restrict A) x ρ} = 0 := by
+      intro k
+      have hs0 : ((k : ℝ≥0∞) + 1)⁻¹ * unitBallVolume n ≠ 0 := mul_ne_zero (by simp) hω0
+      have hstop : ((k : ℝ≥0∞) + 1)⁻¹ * unitBallVolume n ≠ ∞ :=
+        ENNReal.mul_ne_top (by simp) hωtop
+      have hbound : ∀ j : ℕ, μH[(n : ℝ)] {x | x ∉ A ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
+          ((k : ℝ≥0∞) + 1)⁻¹ < densityRatio n (ν.restrict A) x ρ} ≤
+            8 ^ n * (((k : ℝ≥0∞) + 1)⁻¹ * unitBallVolume n)⁻¹ * (j : ℝ≥0∞)⁻¹ := by
+        intro j
+        refine (hcov (ν.restrict (A \ K j)) _ _ hs0 hstop ?_).trans ?_
+        · rintro x ⟨hxA, hfreq⟩ δ hδ
+          obtain ⟨r, hr, hrK⟩ :=
+            Metric.isOpen_iff.mp (hKc j).isOpen_compl x (fun hx => hxA (hKA j hx))
+          obtain ⟨ρ, hρlt, hρI⟩ := (hfreq.and_eventually (Ioo_mem_nhdsGT (lt_min hδ hr))).exists
+          refine ⟨ρ, hρI.1, hρI.2.trans_le (min_le_left _ _), ?_⟩
+          have hden0 : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ 0 :=
+            mul_ne_zero hω0 (pow_ne_zero _ (ENNReal.ofReal_pos.mpr hρI.1).ne')
+          have hdentop : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ ∞ :=
+            ENNReal.mul_ne_top hωtop (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+          rw [densityRatio, ENNReal.lt_div_iff_mul_lt (Or.inl hden0) (Or.inl hdentop)] at hρlt
+          have hball : closedBall x ρ ∩ (A \ K j) = closedBall x ρ ∩ A := by
+            ext y
+            constructor
+            · exact fun h => ⟨h.1, h.2.1⟩
+            · intro h
+              exact ⟨h.1, h.2, hrK (closedBall_subset_ball (hρI.2.trans_le (min_le_right _ _)) h.1)⟩
+          rw [Measure.restrict_apply measurableSet_closedBall, hball,
+            ← Measure.restrict_apply measurableSet_closedBall, mul_assoc]
+          exact hρlt.le
+        · rw [Measure.restrict_apply_univ]
+          have hνj : ν (A \ K j) ≤ (j : ℝ≥0∞)⁻¹ := by
+            have h := (hKν j).le
+            rwa [Measure.restrict_apply (hA.diff (hKc j).measurableSet),
+              inter_eq_left.mpr sdiff_subset] at h
+          calc 8 ^ n * ν (A \ K j) * (((k : ℝ≥0∞) + 1)⁻¹ * unitBallVolume n)⁻¹
+              = 8 ^ n * (((k : ℝ≥0∞) + 1)⁻¹ * unitBallVolume n)⁻¹ * ν (A \ K j) := by ring
+            _ ≤ 8 ^ n * (((k : ℝ≥0∞) + 1)⁻¹ * unitBallVolume n)⁻¹ * (j : ℝ≥0∞)⁻¹ := by gcongr
+      have hlim : Tendsto (fun j : ℕ => 8 ^ n * (((k : ℝ≥0∞) + 1)⁻¹ * unitBallVolume n)⁻¹ *
+          (j : ℝ≥0∞)⁻¹) atTop (𝓝 (8 ^ n * (((k : ℝ≥0∞) + 1)⁻¹ * unitBallVolume n)⁻¹ * 0)) :=
+        ENNReal.Tendsto.const_mul ENNReal.tendsto_inv_nat_nhds_zero
+          (Or.inr (ENNReal.mul_ne_top (ENNReal.pow_ne_top (by simp)) (ENNReal.inv_ne_top.mpr hs0)))
+      rw [mul_zero] at hlim
+      exact nonpos_iff_eq_zero.mp (ge_of_tendsto' hlim hbound)
+    rw [ae_iff]
+    refine measure_mono_null ?_ (measure_iUnion_null hS)
+    intro x hx
+    simp only [mem_ofPred_eq, not_imp] at hx
+    obtain ⟨hxA, hnot⟩ := hx
+    rw [HasDensity, ENNReal.tendsto_nhds_zero] at hnot
+    simp only [not_forall, Filter.not_eventually, not_le, exists_prop] at hnot
+    obtain ⟨ε, hε, hfreq⟩ := hnot
+    obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
+    refine mem_iUnion.mpr ⟨k, hxA, hfreq.mono fun ρ hρ => ?_⟩
+    calc ((k : ℝ≥0∞) + 1)⁻¹ ≤ (k : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.mpr le_self_add
+      _ < ε := hk
+      _ < densityRatio n (ν.restrict A) x ρ := hρ
+  -- Countable cover of `U` by closed balls whose doubles lie in `U`.
+  obtain ⟨F, hFc, hFgood, hFcover⟩ : ∃ F : Set (Euclidean N × ℝ), F.Countable ∧
+      (∀ p ∈ F, 0 < p.2 ∧ closedBall p.1 (2 * p.2) ⊆ U) ∧ U ⊆ ⋃ p ∈ F, closedBall p.1 p.2 := by
+    obtain ⟨D, hDc, hDd⟩ := TopologicalSpace.exists_countable_dense (Euclidean N)
+    refine ⟨{p | p ∈ D ×ˢ range ((↑) : ℚ → ℝ) ∧ 0 < p.2 ∧ closedBall p.1 (2 * p.2) ⊆ U},
+      (hDc.prod (countable_range _)).mono fun p hp => hp.1, fun p hp => hp.2, ?_⟩
+    intro y hy
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp hU y hy
+    obtain ⟨q, hq0, hq⟩ := exists_rat_btwn (div_pos hε (by norm_num : (0 : ℝ) < 3))
+    obtain ⟨c, hcD, hc⟩ := hDd.exists_dist_lt y hq0
+    refine mem_iUnion₂.mpr ⟨(c, (q : ℝ)), ⟨⟨hcD, q, rfl⟩, hq0, ?_⟩, ?_⟩
+    · intro z hz
+      apply hεU
+      rw [mem_ball]
+      rw [mem_closedBall] at hz
+      have h1 := dist_triangle z c y
+      rw [dist_comm] at hc
+      simp only at hz
+      linarith
+    · rw [mem_closedBall]
+      exact hc.le
+  -- Localize on each ball and combine countably many null sets.
+  have hball : ∀ p ∈ F, ∀ᵐ x ∂(μH[(n : ℝ)] : Measure (Euclidean N)), x ∉ A →
+      HasDensity n ((μ.restrict (closedBall p.1 (2 * p.2))).restrict A) x 0 := by
+    intro p hp
+    apply hC
+    rw [Measure.restrict_apply hA]
+    exact ne_top_of_le_ne_top (hfin _ (isCompact_closedBall _ _) (hFgood p hp).2)
+      (measure_mono inter_subset_right)
+  filter_upwards [(ae_ball_iff hFc).mpr hball] with x hx hxU hxA
+  obtain ⟨p, hp, hxp⟩ : ∃ p ∈ F, x ∈ closedBall p.1 p.2 := by
+    simpa only [mem_iUnion, exists_prop] using hFcover hxU
+  have hpos : 0 < p.2 := (hFgood p hp).1
+  refine (hx p hp hxA).congr' ?_
+  filter_upwards [Ioc_mem_nhdsGT hpos] with ρ hρ
+  have hsub : closedBall x ρ ⊆ closedBall p.1 (2 * p.2) := by
+    apply closedBall_subset_closedBall'
+    rw [mem_closedBall] at hxp
+    linarith [hρ.2]
+  simp only [densityRatio]
+  rw [Measure.restrict_apply measurableSet_closedBall, Measure.restrict_apply measurableSet_closedBall,
+    Measure.restrict_apply (measurableSet_closedBall.inter hA),
+    inter_eq_left.mpr (inter_subset_left.trans hsub)]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
