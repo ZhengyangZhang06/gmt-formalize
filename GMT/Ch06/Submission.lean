@@ -360,6 +360,170 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Derivative lower bound (step 1 of the C¹ chart approximate tangent argument for Simon Ch. 6,
+3.9): if `c ‖v - v'‖ ≤ ‖Φ v - Φ v'‖` on an open `Ω ∋ w` and `Φ` is differentiable at `w`, then
+`c ‖s‖ ≤ ‖DΦ(w) s‖` for every `s` (no sign condition on `c`).  Apply the bound to `v = w + t • s`,
+`v' = w`, divide by `t > 0` and let `t → 0⁺`. -/
+theorem Submission.lpf_wtc_cat_fderiv_lower_bound :
+    ∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)) (c : ℝ) (w : Eucl n), IsOpen Ω → w ∈ Ω → DifferentiableAt ℝ Φ w → (∀ v ∈ Ω, ∀ v' ∈ Ω, c * ‖v - v'‖ ≤ ‖Φ v - Φ v'‖) → ∀ s : Eucl n, c * ‖s‖ ≤ ‖fderiv ℝ Φ w s‖ := by
+  intro Q n Φ Ω c w hΩ hw hdiff hanti s
+  -- `γ t = Φ (w + t • s)` has derivative `DΦ(w) s` at `0`, so its right slopes converge to it.
+  have hline : HasDerivAt (fun t : ℝ => w + t • s) s 0 := by
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const s).const_add w
+  have hγ : HasDerivAt (fun t : ℝ => Φ (w + t • s)) (fderiv ℝ Φ w s) 0 := by
+    have h0 : w + (0 : ℝ) • s = w := by simp
+    exact hdiff.hasFDerivAt.comp_hasDerivAt_of_eq 0 hline h0.symm
+  have hnorm : Tendsto (fun t : ℝ => ‖t⁻¹ • (Φ (w + (0 + t) • s) - Φ (w + (0 : ℝ) • s))‖)
+      (𝓝[>] 0) (𝓝 ‖fderiv ℝ Φ w s‖) := hγ.tendsto_slope_zero_right.norm
+  -- The segment `w + t • s` stays in the open set `Ω` for small `t`.
+  have hcont : Continuous (fun t : ℝ => w + t • s) :=
+    continuous_const.add (continuous_id.smul continuous_const)
+  have hmem : ∀ᶠ t in 𝓝 (0 : ℝ), w + t • s ∈ Ω := by
+    apply hcont.continuousAt.preimage_mem_nhds
+    simpa using hΩ.mem_nhds hw
+  have hev : ∀ᶠ t in 𝓝[>] (0 : ℝ),
+      c * ‖s‖ ≤ ‖t⁻¹ • (Φ (w + (0 + t) • s) - Φ (w + (0 : ℝ) • s))‖ := by
+    filter_upwards [nhdsWithin_le_nhds hmem, self_mem_nhdsWithin] with t ht htpos
+    have htpos : (0 : ℝ) < t := htpos
+    have h1 := hanti (w + t • s) ht w hw
+    simp only [zero_add, zero_smul, add_zero]
+    rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg htpos.le] at h1
+    rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr htpos.le), le_inv_mul_iff₀ htpos]
+    linarith [h1]
+  exact ge_of_tendsto hnorm hev
+/-- Rescaled chart integrals converge (Simon Ch. 3, approximate tangent space of a `C¹` chart
+image): for `Φ` continuous, differentiable at `w ∈ Ω` and antilipschitz on the open set `Ω`,
+`J` continuous and `φ ∈ C_c`, `(rⁿ)⁻¹ ∫_Ω J(v) φ(r⁻¹(Φ v − Φ w)) dv → ∫ J(w) φ(DΦ(w) s) ds`
+as `r → 0⁺`.  Substituting `v = w + r s` (Haar scaling and translation invariance) turns the
+left side into `∫ F_r`; for `0 < r ≤ 1` the antilipschitz bound confines the support of `F_r`
+to `‖s‖ ≤ R / c`, so `F_r` is dominated by a constant on a ball, and `F_r(s) → J(w) φ(DΦ(w) s)`
+pointwise by differentiability at `w`; dominated convergence concludes. -/
+theorem Submission.lpf_wtc_cat_rescaled_integral_tendsto :
+    ∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)) (J : Eucl n → ℝ) (φ : Eucl Q → ℝ)
+      (w : Eucl n), IsOpen Ω → w ∈ Ω → Continuous Φ → DifferentiableAt ℝ Φ w →
+      (∃ c : ℝ, 0 < c ∧ ∀ v ∈ Ω, ∀ v' ∈ Ω, c * ‖v - v'‖ ≤ ‖Φ v - Φ v'‖) → Continuous J →
+      Continuous φ → HasCompactSupport φ →
+      Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ v in Ω, J v * φ (r⁻¹ • (Φ v - Φ w))) (𝓝[>] 0)
+        (𝓝 (∫ s, J w * φ (fderiv ℝ Φ w s))) := by
+  intro Q n Φ Ω J φ w hΩ hw hΦc hdiff hanti hJ hφ hφc
+  obtain ⟨c, hc, hcΩ⟩ := hanti
+  -- Constants: `tsupport φ ⊆ B̄_R(0)`, `|φ| ≤ A`, `|J| ≤ B` on `B̄_{R/c}(w)`.
+  obtain ⟨R, hR0, hR⟩ : ∃ R, 0 < R ∧ tsupport φ ⊆ closedBall (0 : Eucl Q) R :=
+    hφc.isCompact.isBounded.subset_closedBall_lt 0 0
+  obtain ⟨A, hA⟩ : ∃ A, ∀ x, ‖φ x‖ ≤ A := hφ.bounded_above_of_compact_support hφc
+  obtain ⟨B, hB⟩ : ∃ B, ∀ z ∈ closedBall w (R / c), ‖J z‖ ≤ B :=
+    (isCompact_closedBall w (R / c)).exists_bound_of_continuousOn hJ.continuousOn
+  have hA0 : 0 ≤ A := (norm_nonneg _).trans (hA 0)
+  have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB w (mem_closedBall_self (div_pos hR0 hc).le))
+  set F : ℝ → Eucl n → ℝ := fun r s =>
+    Ω.indicator (fun v => J v * φ (r⁻¹ • (Φ v - Φ w))) (w + r • s) with hF
+  -- Change of variables `v = w + r • s`.
+  have hcov : ∀ r : ℝ, 0 < r →
+      ∫ s, F r s = (r ^ n)⁻¹ * ∫ v in Ω, J v * φ (r⁻¹ • (Φ v - Φ w)) := by
+    intro r hr
+    rw [← integral_indicator hΩ.measurableSet]
+    have h1 := Measure.integral_comp_smul_of_nonneg (volume : Measure (Eucl n))
+      (fun x => Ω.indicator (fun v => J v * φ (r⁻¹ • (Φ v - Φ w))) (w + x)) r (hR := hr.le)
+    rw [integral_add_left_eq_self, finrank_euclideanSpace_fin, smul_eq_mul] at h1
+    exact h1
+  have hmeas : ∀ r : ℝ, AEStronglyMeasurable (F r) volume := by
+    intro r
+    have hk : Continuous (fun v => J v * φ (r⁻¹ • (Φ v - Φ w))) := by
+      have h1 : Continuous (fun v => r⁻¹ • (Φ v - Φ w)) :=
+        (hΦc.sub continuous_const).const_smul r⁻¹
+      exact hJ.mul (hφ.comp h1)
+    have hlin : Measurable (fun s : Eucl n => w + r • s) :=
+      (continuous_const.add (continuous_id.const_smul r)).measurable
+    exact ((hk.measurable.indicator hΩ.measurableSet).comp hlin).aestronglyMeasurable
+  -- Domination for `0 < r ≤ 1` by `B * A` on `B̄_{R/c}(0)`.
+  set bound : Eucl n → ℝ := (closedBall (0 : Eucl n) (R / c)).indicator (fun _ => B * A)
+    with hbound
+  have hdom : ∀ r : ℝ, r ∈ Ioc (0 : ℝ) 1 → ∀ s, ‖F r s‖ ≤ bound s := by
+    rintro r ⟨hr0, hr1⟩ s
+    by_cases hz : F r s = 0
+    · rw [hz, norm_zero]
+      exact indicator_nonneg (fun _ _ => mul_nonneg hB0 hA0) s
+    · have hmemΩ : w + r • s ∈ Ω := by
+        by_contra hnot
+        exact hz (by simp only [hF, indicator_of_notMem hnot])
+      have hFeq : F r s = J (w + r • s) * φ (r⁻¹ • (Φ (w + r • s) - Φ w)) := by
+        simp only [hF, indicator_of_mem hmemΩ]
+      have hφne : φ (r⁻¹ • (Φ (w + r • s) - Φ w)) ≠ 0 := by
+        intro h0; apply hz; rw [hFeq, h0, mul_zero]
+      have hinR : ‖r⁻¹ • (Φ (w + r • s) - Φ w)‖ ≤ R := by
+        have := hR (subset_tsupport φ hφne)
+        simpa [mem_closedBall, dist_zero_right] using this
+      have hΦR : ‖Φ (w + r • s) - Φ w‖ ≤ r * R := by
+        rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr hr0.le), inv_mul_le_iff₀ hr0] at hinR
+        exact hinR
+      have hant := hcΩ (w + r • s) hmemΩ w hw
+      rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hr0.le] at hant
+      have hs : ‖s‖ ≤ R / c := by
+        rw [le_div_iff₀ hc]
+        have : r * (c * ‖s‖) ≤ r * R := by nlinarith
+        nlinarith
+      have hsball : s ∈ closedBall (0 : Eucl n) (R / c) := by
+        simpa [mem_closedBall, dist_zero_right] using hs
+      have hwball : w + r • s ∈ closedBall w (R / c) := by
+        rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul,
+          Real.norm_of_nonneg hr0.le]
+        calc r * ‖s‖ ≤ 1 * ‖s‖ := by gcongr
+          _ = ‖s‖ := one_mul _
+          _ ≤ R / c := hs
+      rw [hbound, indicator_of_mem hsball, hFeq, norm_mul]
+      exact mul_le_mul (hB _ hwball) (hA _) (norm_nonneg _) hB0
+  have hint : Integrable bound volume := by
+    rw [hbound]
+    exact (integrableOn_const (measure_closedBall_lt_top (x := (0 : Eucl n))
+      (r := R / c)).ne).integrable_indicator measurableSet_closedBall
+  -- Pointwise limit from differentiability of `Φ` at `w`.
+  have hlim : ∀ s, Tendsto (fun r => F r s) (𝓝[>] 0) (𝓝 (J w * φ (fderiv ℝ Φ w s))) := by
+    intro s
+    have hline : HasDerivAt (fun t : ℝ => w + t • s) s 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).smul_const s).const_add w
+    have hγ : HasDerivAt (fun t : ℝ => Φ (w + t • s)) (fderiv ℝ Φ w s) 0 := by
+      have h0 : w + (0 : ℝ) • s = w := by simp
+      exact hdiff.hasFDerivAt.comp_hasDerivAt_of_eq 0 hline h0.symm
+    have hslope : Tendsto (fun t : ℝ => t⁻¹ • (Φ (w + t • s) - Φ w)) (𝓝[>] 0)
+        (𝓝 (fderiv ℝ Φ w s)) := by
+      simpa using hγ.tendsto_slope_zero_right
+    have hcont : Continuous (fun t : ℝ => w + t • s) :=
+      continuous_const.add (continuous_id.smul continuous_const)
+    have hto : Tendsto (fun t : ℝ => w + t • s) (𝓝[>] 0) (𝓝 w) := by
+      have := hcont.tendsto 0
+      simp only [zero_smul, add_zero] at this
+      exact this.mono_left nhdsWithin_le_nhds
+    have hmem : ∀ᶠ t in 𝓝[>] (0 : ℝ), w + t • s ∈ Ω := hto (hΩ.mem_nhds hw)
+    have hJlim : Tendsto (fun t : ℝ => J (w + t • s)) (𝓝[>] 0) (𝓝 (J w)) :=
+      (hJ.tendsto w).comp hto
+    have hφlim : Tendsto (fun t : ℝ => φ (t⁻¹ • (Φ (w + t • s) - Φ w))) (𝓝[>] 0)
+        (𝓝 (φ (fderiv ℝ Φ w s))) := (hφ.tendsto _).comp hslope
+    refine (hJlim.mul hφlim).congr' ?_
+    filter_upwards [hmem] with t ht
+    simp only [hF, indicator_of_mem ht]
+  -- Dominated convergence along `𝓝[>] 0`, then undo the change of variables.
+  have hdct := tendsto_integral_filter_of_dominated_convergence
+    (μ := (volume : Measure (Eucl n))) (l := 𝓝[>] (0 : ℝ)) (F := F)
+    (f := fun s => J w * φ (fderiv ℝ Φ w s)) bound
+    (Eventually.of_forall hmeas)
+    (by filter_upwards [Ioc_mem_nhdsGT (zero_lt_one' ℝ)] with r hr
+        exact Eventually.of_forall (hdom r hr))
+    hint (Eventually.of_forall hlim)
+  refine hdct.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r hr
+  exact hcov r hr
+/-- Continuity of the Jacobian `JΦ = √det((DΦ)* DΦ)` (Simon Ch. 2, (3.3)) of a `C¹` map
+`Φ : ℝⁿ → ℝ^Q`, written as the Gram determinant `det(⟨DΦ(v)eᵢ, DΦ(v)eⱼ⟩)` of the columns of
+`DΦ(v)`.  `v ↦ DΦ(v)` is continuous since `Φ` is `C¹`, so are the columns `DΦ(v)eᵢ`, the Gram
+entries, the Gram matrix (entrywise), its determinant (a polynomial in the entries) and the
+square root. -/
+theorem Submission.lpf_wtc_cat_gram_jacobian_continuous :
+    ∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q), ContDiff ℝ 1 Φ → Continuous (fun v : Eucl n => Real.sqrt (Matrix.of fun i j : Fin n => inner ℝ (fderiv ℝ Φ v (EuclideanSpace.single i 1)) (fderiv ℝ Φ v (EuclideanSpace.single j 1))).det) := by
+  intro Q n Φ hΦ
+  have hD : Continuous (fderiv ℝ Φ) := hΦ.continuous_fderiv one_ne_zero
+  refine Real.continuous_sqrt.comp (Continuous.matrix_det ?_)
+  refine continuous_pi fun i => continuous_pi fun j => ?_
+  exact (hD.clm_apply continuous_const).inner (hD.clm_apply continuous_const)
 /-- Change of variables for `Hⁿ`-integrals over blow-ups: `η = η_{y,r}`, `η(x) = r⁻¹(x − y)`,
 pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`, so `∫_{η(S)} g dHⁿ = (rⁿ)⁻¹ ∫_S g ∘ η dHⁿ` for every set
 `S` and every `g` (both sides are Bochner set integrals). -/
@@ -631,6 +795,67 @@ theorem Submission.lpf_wtc_chart_area_formula : ∀ (Q n : ℕ) (Φ : Eucl n →
   -- Steps 4–5: the signed identity, extended from `s, Φ(s)` back to `Ω, Φ(Ω)`.
   exact Submission.lpf_wtc_caf_signed_of_lintegral Q n Φ Ω s J h hΩ hs hsΩ hsb hΦ.continuous
     hinj hJcont hJnonneg hh hsupp hcover hlint
+
+/-- A `C¹` chart that is antilipschitz on the open set `Ω` has, at each `y = Φ(w)` (`w ∈ Ω`),
+the approximate tangent space `T = DΦ(w)(ℝⁿ)` (Simon Ch. 3, Def. 1.4) of `N = Φ(Ω)`.  The
+blow-up integral `∫_{η_{y,λ}(N)} φ dHⁿ` is `(λⁿ)⁻¹ ∫_Ω JΦ(v) φ(λ⁻¹(Φ(v) − y)) dv` (blow-up change
+of variables, then the area formula), which tends to `∫ JΦ(w) φ(DΦ(w)s) ds`; the area formula for
+the linear map `DΦ(w)` identifies this limit with `∫_T φ dHⁿ`. -/
+theorem Submission.lpf_wtc_chart_approx_tangent :
+    ∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)), IsOpen Ω → ContDiff ℝ 1 Φ →
+      (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) →
+      ∀ w ∈ Ω, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (Φ '' Ω) (Φ w)
+        (LinearMap.range (fderiv ℝ Φ w).toLinearMap) := by
+  intro Q n Φ Ω hΩ hΦ hanti w hw
+  obtain ⟨c, hc, hcΩ⟩ := hanti
+  have hdiff : DifferentiableAt ℝ Φ w := hΦ.differentiable one_ne_zero w
+  -- `c‖s‖ ≤ ‖DΦ(w)s‖`: `DΦ(w)` is injective and `c`-antilipschitz on `ℝⁿ`.
+  have hlow : ∀ s : Eucl n, c * ‖s‖ ≤ ‖fderiv ℝ Φ w s‖ :=
+    Submission.lpf_wtc_cat_fderiv_lower_bound Q n Φ Ω c w hΩ hw hdiff hcΩ
+  have hinj : Function.Injective (fderiv ℝ Φ w) := by
+    intro s s' hss'
+    have h := hlow (s - s')
+    rw [map_sub, hss', sub_self, norm_zero] at h
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp (by nlinarith [norm_nonneg (s - s')]))
+  refine ⟨?_, fun f => ?_⟩
+  · exact (LinearMap.finrank_range_of_inj (f := (fderiv ℝ Φ w).toLinearMap) hinj).trans
+      finrank_euclideanSpace_fin
+  -- The area formula for the linear map `DΦ(w)` on `ℝⁿ` evaluates the limit `∫_T φ dHⁿ`.
+  have hT : ∫ y in (LinearMap.range (fderiv ℝ Φ w).toLinearMap : Set (Eucl Q)), f y
+        ∂(μHE[n] : Measure (Eucl Q)) =
+      ∫ s, Real.sqrt (Matrix.of fun i j : Fin n =>
+          inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1))
+            (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det * f (fderiv ℝ Φ w s) := by
+    have h := Submission.lpf_wtc_chart_area_formula Q n (fderiv ℝ Φ w) univ isOpen_univ
+      (fderiv ℝ Φ w).contDiff
+      ⟨c, hc, fun v _ v' _ => by rw [← map_sub (fderiv ℝ Φ w)]; exact hlow (v - v')⟩
+      f f.continuous f.hasCompactSupport
+    simp only [image_univ, Measure.restrict_univ, ContinuousLinearMap.fderiv] at h
+    rwa [LinearMap.coe_range, ContinuousLinearMap.coe_coe]
+  rw [hT]
+  refine (Submission.lpf_wtc_cat_rescaled_integral_tendsto Q n Φ Ω
+    (fun v => Real.sqrt (Matrix.of fun i j : Fin n =>
+      inner ℝ (fderiv ℝ Φ v (EuclideanSpace.single i 1))
+        (fderiv ℝ Φ v (EuclideanSpace.single j 1))).det) f w hΩ hw hΦ.continuous hdiff
+    ⟨c, hc, hcΩ⟩ (Submission.lpf_wtc_cat_gram_jacobian_continuous Q n Φ hΦ) f.continuous
+    f.hasCompactSupport).congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  -- `η = η_{Φ(w),r}` is a homeomorphism, so `φ ∘ η` is again continuous with compact support.
+  let e : Eucl Q ≃ₜ Eucl Q :=
+    (Homeomorph.addRight (-Φ w)).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+  have he : (e : Eucl Q → Eucl Q) = Poincare.SimonGMT.Chapter03.blowUpMap (Φ w) r := by
+    funext x
+    simp [e, Poincare.SimonGMT.Chapter03.blowUpMap, sub_eq_add_neg]
+  have hcont : Continuous fun x => f (Poincare.SimonGMT.Chapter03.blowUpMap (Φ w) r x) := by
+    rw [← he]
+    exact f.continuous.comp e.continuous
+  have hsupp : HasCompactSupport fun x => f (Poincare.SimonGMT.Chapter03.blowUpMap (Φ w) r x) := by
+    rw [← he]
+    exact f.hasCompactSupport.comp_homeomorph e
+  -- Blow up `Φ(Ω)` at `Φ(w)`, then pull the integral back to `Ω` by the area formula.
+  rw [Submission.lpf_wtc_blowup_setIntegral_image Q n (Φ w) r (Φ '' Ω) f hr,
+    Submission.lpf_wtc_chart_area_formula Q n Φ Ω hΩ hΦ ⟨c, hc, hcΩ⟩ _ hcont hsupp]
+  rfl
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

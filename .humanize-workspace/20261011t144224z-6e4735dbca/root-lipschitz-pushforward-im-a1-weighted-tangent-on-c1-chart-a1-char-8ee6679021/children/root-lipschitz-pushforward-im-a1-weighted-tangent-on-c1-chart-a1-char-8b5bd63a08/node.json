@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.rescaled_integral_tendsto-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1",
+  "depth": 4,
+  "title": "Dominated-convergence limit of the rescaled chart integral (rⁿ)⁻¹∫_Ω J(v)φ(r⁻¹(Φ(v) − Φ(w))) dv",
+  "statement": "Let Q, n ∈ ℕ, Φ : ℝⁿ → ℝ^Q continuous, Ω ⊆ ℝⁿ open and w ∈ Ω. Assume Φ is differentiable at w with derivative L := DΦ(w) = fderiv ℝ Φ w, and that there is c > 0 with c|v − v′| ≤ |Φ(v) − Φ(v′)| for all v, v′ ∈ Ω. Let J : ℝⁿ → ℝ be continuous and φ : ℝ^Q → ℝ continuous with compact support. Then, as r → 0⁺ (filter 𝓝[>] 0),\n(rⁿ)⁻¹ ∫_Ω J(v) φ(r⁻¹(Φ(v) − Φ(w))) dLⁿ(v) → ∫_{ℝⁿ} J(w) φ(L s) dLⁿ(s).\nHere Lⁿ = volume on ℝⁿ and all integrals are Bochner integrals.",
+  "lean_statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)) (J : Eucl n → ℝ) (φ : Eucl Q → ℝ) (w : Eucl n), IsOpen Ω → w ∈ Ω → Continuous Φ → DifferentiableAt ℝ Φ w → (∃ c : ℝ, 0 < c ∧ ∀ v ∈ Ω, ∀ v' ∈ Ω, c * ‖v - v'‖ ≤ ‖Φ v - Φ v'‖) → Continuous J → Continuous φ → HasCompactSupport φ → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ v in Ω, J v * φ (r⁻¹ • (Φ v - Φ w))) (𝓝[>] 0) (𝓝 (∫ s, J w * φ (fderiv ℝ Φ w s)))",
+  "lean_name": "lpf_wtc_cat_rescaled_integral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-8b5bd63a08-a1"
+}
