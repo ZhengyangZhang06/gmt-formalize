@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_graph_corollary-a1.density_monotonicity-a1",
+  "parent_id": "root.lipschitz_graph_corollary-a1",
+  "depth": 2,
+  "title": "Density bounds (Simon 5.2.4) and annular monotonicity inequality under 2.3",
+  "statement": "For n >= 1, l >= 0 and p > n there are delta_0 in (0, 1/8] and C_0 >= 0, depending only on n, l, p, such that: whenever U is open, V = v(M, theta) is a RectifiableVarifold n l U with generalized mean curvature H in U, 0 < delta <= delta_0 and AllardHypotheses H p delta rho (Simon 2.3) hold, then, with mu = V.weight, omega_n = unitBallVolume n, closed balls B_s(y) and p_x = V.tangentProj x: (i) mu(B_s(y)) <= 2 omega_n s^n for all y with |y| <= 3 delta rho and all 0 < s <= rho/2; (ii) mu(B_s(y)) >= omega_n s^n / 2 for all y in spt V with |y| <= 3 delta rho and all 0 < s <= rho/2; (iii) for all y with |y| <= 3 delta rho and all 0 < s <= r <= rho/2: r^-n mu(B_r(y)) <= e^2 s^-n mu(B_s(y)) + C_0 delta + e^2 * (integral over B_r(y) \\ B_s(y) of |(x - y) - p_x(x - y)|^2 / |x - y|^(n+2) dmu(x)), where the ball masses are taken as real numbers (toReal) and the integral is the Bochner integral.",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₀ C₀ : ℝ, 0 < δ₀ ∧ δ₀ ≤ 1 / 8 ∧ 0 ≤ C₀ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₀ → V.AllardHypotheses H p δ ρ → (∀ y : Amb n ℓ, ‖y‖ ≤ 3 * δ * ρ → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → V.weight (closedBall y s) ≤ ENNReal.ofReal (2 * unitBallVolume n * s ^ n)) ∧ (∀ y ∈ V.support, ‖y‖ ≤ 3 * δ * ρ → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → ENNReal.ofReal (unitBallVolume n * s ^ n / 2) ≤ V.weight (closedBall y s)) ∧ (∀ y : Amb n ℓ, ‖y‖ ≤ 3 * δ * ρ → ∀ s r : ℝ, 0 < s → s ≤ r → r ≤ ρ / 2 → (r ^ n)⁻¹ * (V.weight (closedBall y r)).toReal ≤ Real.exp 2 * ((s ^ n)⁻¹ * (V.weight (closedBall y s)).toReal) + C₀ * δ + Real.exp 2 * ∫ x in closedBall y r \\ closedBall y s, ‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2) ∂V.weight)",
+  "lean_name": "lgc_density_monotonicity",
+  "depends_on": [
+    "root.lipschitz_graph_corollary-a1.tangent_plane_ae-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_graph_corollary-a1.tangent_plane_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-graph-corollary-a1-density-monotonicity-a1-a1"
+}
