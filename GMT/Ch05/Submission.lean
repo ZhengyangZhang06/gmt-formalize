@@ -458,6 +458,78 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- One-dimensional sup bound: if `W : ℝ → ℝ^ℓ` is `K`-Lipschitz on `[-a, a]`, then for every
+`t ∈ [-a, a]`, `|W(t)| ≤ ((2a)⁻¹ ∫_{(-a,a)} |W|²)^{1/2} + (2a ∫_{(-a,a)} |W'|²)^{1/2}`.
+By `tdo_ods_norm_sub_le_integral_deriv`, `|W(t)| ≤ |W(s)| + D` for all `s ∈ (-a, a)`, where
+`D = ∫_{(-a,a)} |W'|`; averaging over `s` gives `|W(t)| ≤ (2a)⁻¹ ∫_{(-a,a)} |W| + D`, and
+`tdo_ods_integral_le_sqrt` bounds `∫_{(-a,a)} |W|` and `D`.  The integrands `|W|`, `|W|²` are
+continuous on `[-a, a]`, and `|W'|² ≤ K²` on `(-a, a)` (`norm_deriv_le_of_lipschitzOn`). -/
+theorem tdo_ods_interval_sup_le : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), 0 < a →
+    LipschitzOnWith K W (Icc (-a) a) → ∀ t ∈ Icc (-a) a,
+      ‖W t‖ ≤ Real.sqrt ((2 * a)⁻¹ * ∫ s in Ioo (-a) a, ‖W s‖ ^ 2) +
+        Real.sqrt (2 * a * ∫ s in Ioo (-a) a, ‖deriv W s‖ ^ 2) := by
+  intro ℓ W a K ha hW t ht
+  have h2a : 0 < 2 * a := by linarith
+  have hfin : volume (Ioo (-a) a) ≠ ∞ := measure_Ioo_lt_top.ne
+  -- Step 1: `|W|` and `|W|²` are continuous on `[-a, a]`, hence integrable on `(-a, a)`.
+  have hcont : ContinuousOn (fun s => ‖W s‖) (Icc (-a) a) := hW.continuousOn.norm
+  have hW1 : IntegrableOn (fun s => ‖W s‖) (Ioo (-a) a) :=
+    hcont.integrableOn_Icc.mono_set Ioo_subset_Icc_self
+  have hW2 : IntegrableOn (fun s => ‖W s‖ ^ 2) (Ioo (-a) a) :=
+    (hcont.pow 2).integrableOn_Icc.mono_set Ioo_subset_Icc_self
+  -- Step 2: `deriv W` is measurable and `|W'|² ≤ K²` on `(-a, a)`.
+  have hD2 : IntegrableOn (fun s => ‖deriv W s‖ ^ 2) (Ioo (-a) a) := by
+    refine Measure.integrableOn_of_bounded (M := (K : ℝ) ^ 2) hfin
+      ((measurable_deriv W).norm.pow_const 2).aestronglyMeasurable
+      ((ae_restrict_iff' measurableSet_Ioo).2 (ae_of_all _ fun r hr => ?_))
+    rw [Real.norm_of_nonneg (sq_nonneg _)]
+    exact pow_le_pow_left₀ (norm_nonneg _)
+      (norm_deriv_le_of_lipschitzOn (Icc_mem_nhds hr.1 hr.2) hW) 2
+  -- Step 3: `|W(t)| ≤ |W(s)| + D` for every `s ∈ (-a, a)`.
+  set D := ∫ r in Ioo (-a) a, ‖deriv W r‖
+  have hpt : ∀ s ∈ Ioo (-a) a, ‖W t‖ ≤ ‖W s‖ + D := fun s hs =>
+    (norm_le_norm_add_norm_sub' (W t) (W s)).trans (add_le_add le_rfl
+      (Submission.tdo_ods_norm_sub_le_integral_deriv ℓ W a K hW s (Ioo_subset_Icc_self hs) t ht))
+  -- Step 4: average over `s ∈ (-a, a)`, an interval of length `2a`.
+  have hvol : volume.real (Ioo (-a) a) = 2 * a := by
+    rw [Real.volume_real_Ioo_of_le (by linarith)]
+    ring
+  have hconst : IntegrableOn (fun _ : ℝ => ‖W t‖) (Ioo (-a) a) := integrableOn_const hfin
+  have hconstD : IntegrableOn (fun _ : ℝ => D) (Ioo (-a) a) := integrableOn_const hfin
+  have hsum : IntegrableOn (fun s => ‖W s‖ + D) (Ioo (-a) a) := hW1.add hconstD
+  have havg : 2 * a * ‖W t‖ ≤ (∫ s in Ioo (-a) a, ‖W s‖) + 2 * a * D := by
+    have h := setIntegral_mono_on hconst hsum measurableSet_Ioo hpt
+    rwa [setIntegral_const, integral_add hW1 hconstD, setIntegral_const, hvol, smul_eq_mul,
+      smul_eq_mul] at h
+  have hinv : (2 * a)⁻¹ * (2 * a) = 1 := inv_mul_cancel₀ h2a.ne'
+  have hmean : ‖W t‖ ≤ (2 * a)⁻¹ * (∫ s in Ioo (-a) a, ‖W s‖) + D :=
+    calc ‖W t‖ = (2 * a)⁻¹ * (2 * a * ‖W t‖) := by rw [← mul_assoc, hinv, one_mul]
+      _ ≤ (2 * a)⁻¹ * ((∫ s in Ioo (-a) a, ‖W s‖) + 2 * a * D) :=
+        mul_le_mul_of_nonneg_left havg (inv_nonneg.2 h2a.le)
+      _ = (2 * a)⁻¹ * (∫ s in Ioo (-a) a, ‖W s‖) + D := by
+        rw [mul_add, ← mul_assoc, hinv, one_mul]
+  -- Step 5: Cauchy–Schwarz for `|W|`.
+  have hW_cs : (2 * a)⁻¹ * (∫ s in Ioo (-a) a, ‖W s‖) ≤
+      Real.sqrt ((2 * a)⁻¹ * ∫ s in Ioo (-a) a, ‖W s‖ ^ 2) :=
+    calc (2 * a)⁻¹ * (∫ s in Ioo (-a) a, ‖W s‖)
+        ≤ (2 * a)⁻¹ * Real.sqrt (2 * a * ∫ s in Ioo (-a) a, ‖W s‖ ^ 2) :=
+          mul_le_mul_of_nonneg_left
+            (Submission.tdo_ods_integral_le_sqrt (fun s => ‖W s‖) a ha hW2)
+            (inv_nonneg.2 h2a.le)
+      _ = Real.sqrt ((2 * a)⁻¹ ^ 2 * (2 * a * ∫ s in Ioo (-a) a, ‖W s‖ ^ 2)) := by
+          rw [Real.sqrt_mul (sq_nonneg (2 * a)⁻¹), Real.sqrt_sq (inv_nonneg.2 h2a.le)]
+      _ = Real.sqrt ((2 * a)⁻¹ * ∫ s in Ioo (-a) a, ‖W s‖ ^ 2) := by
+          rw [sq, mul_assoc, ← mul_assoc (2 * a)⁻¹ (2 * a), hinv, one_mul]
+  -- Step 6: Cauchy–Schwarz for `|W'|`.
+  have hD_cs : D ≤ Real.sqrt (2 * a * ∫ s in Ioo (-a) a, ‖deriv W s‖ ^ 2) :=
+    Submission.tdo_ods_integral_le_sqrt (fun s => ‖deriv W s‖) a ha hD2
+  -- Step 7: combine.
+  exact hmean.trans (add_le_add hW_cs hD_cs)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
