@@ -1,0 +1,18 @@
+{
+  "node_id": "root.first_rectifiability-a1.weight_null_of_hausdorff_null-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/862",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "cfe16d73c334126ef0dc1bb81176d2d1d8f2514d",
+  "integrated_commit": "",
+  "proof_base_commit": "7c42140703db59ce1223974c81223b55beebf214",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.first_rectifiability-a1",
+  "requires": [
+    "root.first_rectifiability-a1.weight_null_of_hausdorff_null-a1.null_of_ball_bound-a1",
+    "root.first_rectifiability-a1.weight_null_of_hausdorff_null-a1.finite_density_ball_bound-a1"
+  ]
+}
