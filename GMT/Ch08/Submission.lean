@@ -506,6 +506,45 @@ theorem Submission.varifold_tangents_rh_mc_exists_c1_approx :
       _ ≤ 1 / ((k₀ : ℝ) + 1) := by gcongr
       _ < δ := hk₀
 
+/-- Extension of the dilation law from `C¹_c` to `C_c` by mollification (step 3 of the proof of
+the corrected Simon Ch. 8, 5.3): if `μ` is finite on compact sets, `s > 0` and
+`∫ h(s⁻¹ y) dμ(y) = sⁿ ∫ h dμ` for every compactly supported `C¹` function `h`, then the same
+identity holds for every continuous compactly supported `g`.  The `C¹` approximants `φ_k → g`
+(uniformly, all vanishing off one compact `K`) satisfy the identity, and both sides pass to the
+limit because the integrands converge uniformly and agree with their limits off the fixed compact
+sets `s • K` and `K`. -/
+theorem Submission.varifold_tangents_rh_scaling_continuous :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (s : ℝ), IsFiniteMeasureOnCompacts μ → 0 < s → (∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ) → ∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ := by
+  intro N n μ s hμ hs hS g hg hgc
+  -- Step 3: `C¹` functions `φ k → g` uniformly, with `g` and every `φ k` vanishing off `K`.
+  obtain ⟨K, φ, hK, hgK, hφ, hφK, hunif⟩ :=
+    Submission.varifold_tangents_rh_mc_exists_c1_approx N g hg hgc
+  have hφc : ∀ k, HasCompactSupport (φ k) := fun k ↦ HasCompactSupport.intro hK (hφK k)
+  -- Step 4: the hypothesis applies to every `φ k`.
+  have h4 : ∀ k, ∫ y, φ k (s⁻¹ • y) ∂μ = s ^ n * ∫ y, φ k y ∂μ :=
+    fun k ↦ hS (φ k) (hφ k) (hφc k)
+  -- Step 5(i): `∫ φ k dμ → ∫ g dμ`, the differences vanishing off `K`.
+  have hlim1 : Tendsto (fun k ↦ ∫ y, φ k y ∂μ) atTop (𝓝 (∫ y, g y ∂μ)) :=
+    Submission.varifold_tangents_rh_mc_tendsto_integral_of_uniform N μ K φ g hμ hK
+      (fun k ↦ (hφ k).continuous.integrable_of_hasCompactSupport (hφc k))
+      (hg.integrable_of_hasCompactSupport hgc)
+      (fun k y hy ↦ (hφK k y hy).trans (hgK y hy).symm) hunif
+  -- Step 5(ii): `∫ φ k (s⁻¹ y) dμ(y) → ∫ g (s⁻¹ y) dμ(y)`, the differences vanishing off `s • K`
+  -- since `y ∉ s • K` gives `s⁻¹ • y ∉ K`.
+  have hs' : s⁻¹ ≠ 0 := inv_ne_zero hs.ne'
+  have hsK : ∀ y ∉ s • K, s⁻¹ • y ∉ K := fun y hy h ↦
+    hy ((mem_smul_set_iff_inv_smul_mem₀ hs.ne' K y).2 h)
+  have hlim2 : Tendsto (fun k ↦ ∫ y, φ k (s⁻¹ • y) ∂μ) atTop (𝓝 (∫ y, g (s⁻¹ • y) ∂μ)) :=
+    Submission.varifold_tangents_rh_mc_tendsto_integral_of_uniform N μ (s • K)
+      (fun k y ↦ φ k (s⁻¹ • y)) (fun y ↦ g (s⁻¹ • y)) hμ (hK.smul s)
+      (fun k ↦ ((hφ k).continuous.comp (continuous_const_smul s⁻¹)).integrable_of_hasCompactSupport
+        ((hφc k).comp_smul hs'))
+      ((hg.comp (continuous_const_smul s⁻¹)).integrable_of_hasCompactSupport (hgc.comp_smul hs'))
+      (fun k y hy ↦ (hφK k _ (hsK y hy)).trans (hgK _ (hsK y hy)).symm)
+      (fun ε hε ↦ (hunif ε hε).imp fun k₀ hk₀ k hk y ↦ hk₀ k hk (s⁻¹ • y))
+  -- Step 6: by step 4 both limits are limits of the same sequence.
+  exact tendsto_nhds_unique hlim2 ((hlim1.const_mul (s ^ n)).congr fun k ↦ (h4 k).symm)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
