@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9acb3e3b86733712374e6d3a0708d8d24cdc3a840985a48c046e43130c16748c",
+  "git_delta": {
+    "base_commit": "63ed0b8bc7606f415b26737d6f2480a4b59ab702",
+    "candidate_commit": "e7cd686e80bd48e6cf3df1e7478f429970d6a68d",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ted_lpm_curvature_holder",
+    "diff_sha256": "f07a34e7623a5988c552ae7d74586b9aa1bad2dcc49d4f979f8442f39581d064",
+    "source_sha256": "752bd20028896265c505593aae241c172fd9a7637e13a2e5c49fa75c9dc63678",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ted_lpm_curvature_holder",
+      "statement": "∀ (n ℓ : ℕ) (p : ℝ), 1 < p → ∀ (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (ψ : Amb n ℓ → ℝ) (y : Amb n ℓ) (t : ℝ), 0 ≤ t → μ (closedBall y t) < ⊤ → IntegrableOn H (closedBall y t) μ → ∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ < ⊤ → AEStronglyMeasurable ψ μ → (∀ x, 0 ≤ ψ x ∧ ψ x ≤ 1) → (∀ x, t < ‖x - y‖ → ψ x = 0) → |∫ x, ψ x * inner ℝ (x - y) (H x) ∂μ| ≤ t * (∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) * (∫ x, ψ x ∂μ) ^ (1 - 1 / p)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
