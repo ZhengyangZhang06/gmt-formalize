@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.ball_sandwich-a1",
+  "parent_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1",
+  "depth": 4,
+  "title": "Cutoff sandwich: ν(B̄_{ra}(x)) ≤ ofReal(r^n ∫_{η_r(M)} f(y)θ(x+ry) dH^n) ≤ ν(B̄_{rR}(x))",
+  "statement": "Let N, n ∈ ℕ and H^n := μHE[n] on ℝ^N = Euclidean N. Let M ⊆ ℝ^N be H^n-null-measurable, θ : ℝ^N → ℝ with θ ≥ 0 on M, x ∈ ℝ^N and r₀ ∈ ℝ with θ H^n-integrable on M ∩ B̄_{r₀}(x). Let f ∈ C_c(ℝ^N, ℝ) with 0 ≤ f ≤ 1 everywhere, f(y) = 1 whenever ‖y‖ ≤ a and f(y) = 0 whenever ‖y‖ > R (a, R ∈ ℝ). Let r > 0 with r·R ≤ r₀. Put ν := (H^n⌞M).withDensity(ofReal ∘ θ), η := Chapter03.blowUpMap x r (η(z) = r⁻¹(z − x)) and I := ∫_{η(M)} f(y)·θ(x + r•y) dH^n(y). Then ν(B̄_{r·a}(x)) ≤ ofReal(r^n · I) ≤ ν(B̄_{r·R}(x)).",
+  "lean_statement": "∀ (N n : ℕ) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (f : C_c(Euclidean N, ℝ)) (r₀ a R r : ℝ), NullMeasurableSet M (μHE[n] : Measure (Euclidean N)) → (∀ y ∈ M, 0 ≤ θ y) → IntegrableOn θ (M ∩ closedBall x r₀) μHE[n] → (∀ y, 0 ≤ f y) → (∀ y, f y ≤ 1) → (∀ y, ‖y‖ ≤ a → f y = 1) → (∀ y, R < ‖y‖ → f y = 0) → 0 < r → r * R ≤ r₀ → (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity fun y ↦ ENNReal.ofReal (θ y)) (closedBall x (r * a)) ≤ ENNReal.ofReal (r ^ n * ∫ y in Chapter03.blowUpMap x r '' M, f y * θ (x + r • y) ∂μHE[n]) ∧ ENNReal.ofReal (r ^ n * ∫ y in Chapter03.blowUpMap x r '' M, f y * θ (x + r • y) ∂μHE[n]) ≤ (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity fun y ↦ ENNReal.ofReal (θ y)) (closedBall x (r * R))",
+  "lean_name": "intcpt_id_tpd_ball_sandwich",
+  "depends_on": [
+    "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.blowup_cov-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.blowup_cov-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-integral-density-a1-tangent-point-densit-a189ba7f1d-a1"
+}
