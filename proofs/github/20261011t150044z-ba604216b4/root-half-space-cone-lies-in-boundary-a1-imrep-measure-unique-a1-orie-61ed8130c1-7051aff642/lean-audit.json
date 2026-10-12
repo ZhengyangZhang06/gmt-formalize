@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4ffee3ddda5d4d5cd51b933ba7815ccfd4ae76631bc1c432e888dda736055762",
+  "git_delta": {
+    "base_commit": "2dc74aa959d64a4291090694d5c016f196e6f529",
+    "candidate_commit": "deb99356ba22fa0a7c3b91feabd427b84a2fb40d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "unit_orientations_common_unit_covector",
+    "diff_sha256": "79ed857cfea582135ff1e5800a679f0b5c5e33348c7680b07cb7f7ba5205adc7",
+    "source_sha256": "96198daa21f1e12880d838e04835548b6e5285835dd154f2fc5f27191c420f80",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.unit_orientations_common_unit_covector",
+      "statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ₁ ξ₂ : MultiVector P n), IsUnitOrientationOf ξ₁ Q → IsUnitOrientationOf ξ₂ Q → ∃ α : Covector (Euclid P) n, |ξ₁ α| = 1 ∧ |ξ₂ α| = 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
