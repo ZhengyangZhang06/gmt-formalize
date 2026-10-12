@@ -510,6 +510,47 @@ theorem Submission.dtc_approxTangent_of_null_diff : ∀ (P n : ℕ) (M M' V : Se
     · exact measure_mono_null hsub hnullimg
   rw [hcut, hcut ((fun y : Euclid P => r⁻¹ • (y - x)) '' M'), Measure.restrict_congr_set hae]
 
+/-- **An integer multiplicity triple essentially carried by a compact set moves to any domain
+containing it** (step 6.6 of the localization in the proof of Simon 7.3.1; Simon 6.3.1,
+chapter-06.txt lines 733–753).  If `R = (M, θ, ξ)` is an `IMRep` in `V`, `K ⊆ V ∩ U` is compact
+and `Hⁿ(M \ K) = 0`, then `(M ∩ K, θ, ξ)` is an `IMRep` in `U` with the same action: `M ∩ K` and
+`M` differ by the `Hⁿ`-null set `M \ K`, so `Hⁿ⌞(M ∩ K) = Hⁿ⌞M`; `∫_{M ∩ K} θ dHⁿ < ∞` since
+`K ⊆ V` is compact; and `M ∩ K` has the approximate tangent planes of `M`
+(`dtc_approxTangent_of_null_diff` with the open set `ℝᴾ`). -/
+theorem Submission.dtc_imrep_of_null_off_compact : ∀ (P n : ℕ) (U V K : Set (Euclid P)) (R : IMRep V n), IsCompact K → K ⊆ V → K ⊆ U → μHE[n] (R.carrier \ K) = 0 → ∃ R' : IMRep U n, R'.carrier ⊆ K ∧ ∀ ω : DifferentialForm (Euclid P) n, R'.action ω = R.action ω := by
+  intro P n U V K R hK hKV hKU hnull
+  have hsub : R.carrier ∩ K ⊆ R.carrier := inter_subset_left
+  have hdiff : R.carrier \ (R.carrier ∩ K) = R.carrier \ K := Set.sdiff_self_inter
+  -- `M ∩ K =ᵐ M`: `(M ∩ K) \ M = ∅` and `M \ (M ∩ K) = M \ K` is `Hⁿ`-null.
+  have hrestr : μHE[n].restrict (R.carrier ∩ K) = μHE[n].restrict R.carrier := by
+    refine Measure.restrict_congr_set (ae_eq_set.2 ⟨?_, hdiff ▸ hnull⟩)
+    rw [Set.sdiff_eq_empty.2 hsub]
+    exact measure_empty
+  refine ⟨
+    { carrier := R.carrier ∩ K
+      mult := R.mult
+      orient := R.orient
+      measurableSet_carrier := R.measurableSet_carrier.inter hK.isClosed.measurableSet
+      carrier_subset := inter_subset_right.trans hKU
+      rectifiable := R.rectifiable.mono hsub
+      measurable_mult := R.measurable_mult
+      mult_pos := fun x hx => R.mult_pos x hx.1
+      -- `∫_{(M ∩ K) ∩ C} θ ≤ ∫_{M ∩ K} θ < ∞`, using only that `K ⊆ V` is compact.
+      locallyIntegrable_mult := fun _ _ _ => ne_top_of_le_ne_top
+        (R.locallyIntegrable_mult K hK hKV) (lintegral_mono_set inter_subset_left)
+      aestronglyMeasurable_orient :=
+        R.aestronglyMeasurable_orient.mono_measure (Measure.restrict_mono hsub le_rfl)
+      -- a.e. on `M ∩ K`, the plane `Q` oriented by `ξ(x)` is also `Tₓ(M ∩ K)`.
+      orients := (ae_restrict_of_ae_restrict_of_subset hsub R.orients).mono
+        fun x ⟨Q, hQ, hξ⟩ => ⟨Q, Submission.dtc_approxTangent_of_null_diff P n R.carrier
+          (R.carrier ∩ K) univ x Q hsub isOpen_univ (mem_univ x)
+          (by rw [inter_univ, hdiff]; exact hnull) hQ, hξ⟩ },
+    inter_subset_right, fun ω => ?_⟩
+  -- the actions are integrals of the same function against the same measure
+  change ∫ x in R.carrier ∩ K, (R.mult x : ℝ) * R.orient x (ω x) ∂μHE[n] =
+    ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (ω x) ∂μHE[n]
+  rw [hrestr]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
