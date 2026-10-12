@@ -525,6 +525,110 @@ theorem Submission.weighted_mono_cutoff_integral_tendsto : ∀ (n ℓ : ℕ) (μ
   have h := tendsto_integral_of_dominated_convergence _ hmeas hbi hbound
     (Filter.Eventually.of_forall hlim)
   rwa [integral_indicator measurableSet_closedBall] at h
+/-- **Monotonicity kernels: measurability, uniform bound, support and pointwise limit.**
+Let `0 < σ ≤ ρ`, `εₘ → 0` with `0 < εₘ ≤ 1`, and let `φₘ` be nonincreasing with `φₘ = 1` on
+`(-∞, 1]` and `φₘ = 0` on `[1 + εₘ, ∞)`. Put
+`kₘ(s) = ∫_{(σ,ρ]} -(s/τ²) φₘ'(s/τ) / τⁿ dτ` and `Dₘ(s) = φₘ(s/ρ) - φₘ(s/σ)`. If
+`Dₘ(s)/sⁿ ≤ kₘ(s) ≤ (1 + εₘ)ⁿ Dₘ(s)/sⁿ` for `s > 0`, then each `kₘ` is measurable,
+`|kₘ(s)| ≤ 2ⁿ/σⁿ` for `s ≥ 0`, `kₘ(s) = 0` for `s > (1 + εₘ)ρ`, and
+`kₘ(s) → 1_{(σ,ρ]}(s) s⁻ⁿ` for every `s ≥ 0`. -/
+theorem Submission.weighted_mono_kernel_limit : ∀ (n : ℕ) (σ ρ : ℝ) (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), 0 < σ → σ ≤ ρ → Tendsto ε atTop (𝓝 0) → (∀ m, 0 < ε m ∧ ε m ≤ 1) → (∀ m, Antitone (φ m)) → (∀ m t, t ≤ 1 → φ m t = 1) → (∀ m t, 1 + ε m ≤ t → φ m t = 0) → (∀ m s, 0 < s → (φ m (s / ρ) - φ m (s / σ)) / s ^ n ≤ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n ∧ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n ≤ (1 + ε m) ^ n * ((φ m (s / ρ) - φ m (s / σ)) / s ^ n)) → (∀ m, Measurable (fun s ↦ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n)) ∧ (∀ m s, 0 ≤ s → |∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n| ≤ 2 ^ n / σ ^ n) ∧ (∀ m s, (1 + ε m) * ρ < s → ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n = 0) ∧ (∀ s, 0 ≤ s → Tendsto (fun m ↦ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n) atTop (𝓝 ((Ioc σ ρ).indicator (fun s ↦ (s ^ n)⁻¹) s))) := by
+  intro n σ ρ φ ε hσ hσρ hε hε01 hanti hone hzero hbd
+  have hρ : 0 < ρ := hσ.trans_le hσρ
+  -- Step 0: `0 ≤ φₘ ≤ 1`, by antitonicity and the boundary values.
+  have hφ1 : ∀ m t, φ m t ≤ 1 := fun m t ↦
+    (hanti m (min_le_left t 1)).trans_eq (hone m _ (min_le_right t 1))
+  have hφ0 : ∀ m t, 0 ≤ φ m t := fun m t ↦
+    (hzero m _ (le_max_right t (1 + ε m))).symm.le.trans (hanti m (le_max_left t (1 + ε m)))
+  -- Step 1: `0 ≤ Dₘ(s) ≤ 1` for `s > 0`, and `Dₘ(s) = 0` for `0 < s ≤ σ`.
+  have hdiv : ∀ s, 0 < s → s / ρ ≤ s / σ := fun s hs ↦ div_le_div_of_nonneg_left hs.le hσ hσρ
+  have hD0 : ∀ m s, 0 < s → 0 ≤ φ m (s / ρ) - φ m (s / σ) := fun m s hs ↦
+    sub_nonneg.2 (hanti m (hdiv s hs))
+  have hD1 : ∀ m s, φ m (s / ρ) - φ m (s / σ) ≤ 1 := fun m s ↦ by
+    linarith [hφ1 m (s / ρ), hφ0 m (s / σ)]
+  have hDlo : ∀ m s, 0 < s → s ≤ σ → φ m (s / ρ) - φ m (s / σ) = 0 := by
+    intro m s hs hsσ
+    rw [hone m (s / ρ) ((div_le_one₀ hρ).2 (hsσ.trans hσρ)), hone m (s / σ) ((div_le_one₀ hσ).2 hsσ),
+      sub_self]
+  -- Step 2: where `Dₘ(s) = 0` (and `s > 0`), the assumed two-sided bound forces `kₘ(s) = 0`.
+  have hsq : ∀ m s, 0 < s → φ m (s / ρ) - φ m (s / σ) = 0 →
+      ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n = 0 := by
+    intro m s hs hD
+    obtain ⟨h1, h2⟩ := hbd m s hs
+    rw [hD, zero_div] at h1
+    rw [hD, zero_div, mul_zero] at h2
+    exact le_antisymm h2 h1
+  -- Step 3: `kₘ(s) = 0` for `0 ≤ s ≤ σ` (for `s = 0` the integrand vanishes).
+  have hklo : ∀ m s, 0 ≤ s → s ≤ σ →
+      ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n = 0 := by
+    intro m s hs hsσ
+    rcases hs.eq_or_lt with rfl | hs
+    · simp
+    · exact hsq m s hs (hDlo m s hs hsσ)
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · -- (1) The integrand is Borel on `ℝ × ℝ` (`measurable_deriv`), so the parametric integral is
+    -- measurable.
+    intro m
+    have hm : Measurable (fun p : ℝ × ℝ ↦ -(p.1 / p.2 ^ 2) * deriv (φ m) (p.1 / p.2) / p.2 ^ n) := by
+      fun_prop
+    exact (hm.stronglyMeasurable.integral_prod_right' (ν := volume.restrict (Ioc σ ρ))).measurable
+  · -- (2) For `s > σ`: `0 ≤ kₘ(s) ≤ (1 + εₘ)ⁿ Dₘ(s)/sⁿ ≤ 2ⁿ · (1/σⁿ)`.
+    intro m s hs
+    rcases le_or_gt s σ with hsσ | hsσ
+    · rw [hklo m s hs hsσ, abs_zero]
+      positivity
+    have hs0 : 0 < s := hσ.trans hsσ
+    obtain ⟨h1, h2⟩ := hbd m s hs0
+    have hDs : 0 ≤ (φ m (s / ρ) - φ m (s / σ)) / s ^ n :=
+      div_nonneg (hD0 m s hs0) (pow_nonneg hs0.le n)
+    rw [abs_of_nonneg (hDs.trans h1)]
+    refine h2.trans ?_
+    rw [div_eq_mul_one_div (2 ^ n) (σ ^ n)]
+    refine mul_le_mul ?_ ?_ hDs (by positivity)
+    · exact pow_le_pow_left₀ (by linarith [(hε01 m).1]) (by linarith [(hε01 m).2]) n
+    · calc (φ m (s / ρ) - φ m (s / σ)) / s ^ n ≤ 1 / s ^ n :=
+            div_le_div_of_nonneg_right (hD1 m s) (pow_nonneg hs0.le n)
+        _ ≤ 1 / σ ^ n := one_div_le_one_div_of_le (pow_pos hσ n) (pow_le_pow_left₀ hσ.le hsσ.le n)
+  · -- (3) For `s > (1 + εₘ)ρ`: `s/σ ≥ s/ρ ≥ 1 + εₘ`, so `Dₘ(s) = 0 - 0`.
+    intro m s hs
+    have hs0 : 0 < s := (mul_pos (by linarith [(hε01 m).1]) hρ).trans hs
+    have h1 : 1 + ε m ≤ s / ρ := (le_div_iff₀ hρ).2 hs.le
+    refine hsq m s hs0 ?_
+    rw [hzero m _ h1, hzero m _ (h1.trans (hdiv s hs0)), sub_self]
+  · -- (4) Pointwise limit, by cases on the position of `s`.
+    intro s hs
+    rcases le_or_gt s σ with hsσ | hsσ
+    · -- `s ≤ σ`: `kₘ(s) = 0` for all `m`, and `s ∉ (σ, ρ]`.
+      rw [indicator_of_notMem (fun h : s ∈ Ioc σ ρ ↦ (not_lt.2 hsσ) h.1)]
+      exact tendsto_const_nhds.congr fun m ↦ (hklo m s hs hsσ).symm
+    have hs0 : 0 < s := hσ.trans hsσ
+    rcases le_or_gt s ρ with hsρ | hsρ
+    · -- `σ < s ≤ ρ`: eventually `Dₘ(s) = 1 - 0`; squeeze between `s⁻ⁿ` and `(1 + εₘ)ⁿ s⁻ⁿ`.
+      rw [indicator_of_mem (show s ∈ Ioc σ ρ from ⟨hsσ, hsρ⟩)]
+      have hev : ∀ᶠ m in atTop, ε m < s / σ - 1 :=
+        hε.eventually_lt_const (by rw [sub_pos, one_lt_div₀ hσ]; exact hsσ)
+      have hD : ∀ᶠ m in atTop, φ m (s / ρ) - φ m (s / σ) = 1 := by
+        filter_upwards [hev] with m hm
+        rw [hone m _ ((div_le_one₀ hρ).2 hsρ), hzero m _ (by linarith), sub_zero]
+      have hup : Tendsto (fun m ↦ (1 + ε m) ^ n * (s ^ n)⁻¹) atTop (𝓝 ((s ^ n)⁻¹)) := by
+        have h := ((tendsto_const_nhds (x := (1 : ℝ))).add hε).pow n |>.mul_const (s ^ n)⁻¹
+        rwa [add_zero, one_pow, one_mul] at h
+      refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hup ?_ ?_
+      · filter_upwards [hD] with m hm
+        have h := (hbd m s hs0).1
+        rwa [hm, one_div] at h
+      · filter_upwards [hD] with m hm
+        have h := (hbd m s hs0).2
+        rwa [hm, one_div] at h
+    · -- `s > ρ`: eventually `s/σ ≥ s/ρ ≥ 1 + εₘ`, so `kₘ(s) = 0`; and `s ∉ (σ, ρ]`.
+      rw [indicator_of_notMem (fun h : s ∈ Ioc σ ρ ↦ (not_le.2 hsρ) h.2)]
+      have hev : ∀ᶠ m in atTop, ε m < s / ρ - 1 :=
+        hε.eventually_lt_const (by rw [sub_pos, one_lt_div₀ hρ]; exact hsρ)
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [hev] with m hm
+      have h1 : 1 + ε m ≤ s / ρ := by linarith
+      refine (hsq m s hs0 ?_).symm
+      rw [hzero m _ h1, hzero m _ (h1.trans (hdiv s hs0)), sub_self]
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
