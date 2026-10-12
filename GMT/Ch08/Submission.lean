@@ -478,6 +478,66 @@ theorem Submission.allard_tc_scf_ratio_le :
     rwa [ENNReal.ofReal_one, mul_one] at h'
   -- Steps 5 and 7: `R(y, ρ)` is eventually below a quantity tending to `a`.
   exact ge_of_tendsto hlim ((eventually_ge_atTop ρ).mono hbound)
+/-- Density ratios at points of `spt μ` are bounded below by an a.e. lower bound of the density
+(the step "(and hence for every `y ∈ spt μ_C` by 3.4)" after Simon Ch. 8, 5.5(7)): if `μ` is finite
+on closed balls, `ρ ↦ R(x, ρ) = μ(B_ρ(x))/(ω_n ρ^n)` is non-decreasing on `(0, ∞)` for every `x`
+and `Θ^n(μ, x) ≥ a` for `μ`-a.e. `x`, then `a ≤ R(y, ρ)` for `y ∈ spt μ` and `ρ > 0`.  Each open
+ball of radius `1/(k+1)` about `y` contains a point `y_k` with
+`a ≤ Θ^n(μ, y_k) ≤ R(y_k, ρ) ≤ μ(B_{ρ+1/(k+1)}(y))/(ω_n ρ^n)`, and continuity from above for the
+decreasing closed balls `B_{ρ+1/(k+1)}(y)` lets `k → ∞`. -/
+theorem Submission.allard_tc_scf_ratio_ge_on_support :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (a : ℝ≥0∞), (∀ (y : Euclidean N) (ρ : ℝ), μ (closedBall y ρ) ≠ ∞) → (∀ y : Euclidean N, MonotoneOn (densityRatio n μ y) (Ioi 0)) → (∀ᵐ y ∂μ, ∃ θ : ℝ≥0∞, HasDensity n μ y θ ∧ a ≤ θ) → ∀ y ∈ μ.support, ∀ ρ : ℝ, 0 < ρ → a ≤ densityRatio n μ y ρ := by
+  intro N n μ a hfin hmono hae y hy ρ hρ
+  -- Step 1: `c = ω_n ρ^n ∈ (0, ∞)`.
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+  have hωt : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hc0 : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ 0 :=
+    mul_ne_zero hω0 (pow_ne_zero _ (ENNReal.ofReal_pos.2 hρ).ne')
+  have hct : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ ∞ :=
+    ENNReal.mul_ne_top hωt (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  -- Step 2: the density at any point is at most its density ratio at radius `ρ`.
+  have hdens : ∀ (x : Euclidean N) (θ : ℝ≥0∞), HasDensity n μ x θ →
+      θ ≤ densityRatio n μ x ρ := by
+    intro x θ hx
+    refine le_of_tendsto hx ?_
+    filter_upwards [Ioo_mem_nhdsGT hρ] with s hs
+    exact hmono x hs.1 hρ hs.2.le
+  -- Steps 3–5: a point `z ∈ B°_{1/(k+1)}(y)` of density `θ ≥ a` exists since `y ∈ spt μ`, and
+  -- `a ≤ θ ≤ R(z, ρ) ≤ μ(B_{ρ+1/(k+1)}(y))/c`.
+  have hk : ∀ k : ℕ, a * (unitBallVolume n * ENNReal.ofReal ρ ^ n) ≤
+      μ (closedBall y (ρ + 1 / ((k : ℝ) + 1))) := by
+    intro k
+    have hr : (0 : ℝ) < 1 / ((k : ℝ) + 1) := Nat.one_div_pos_of_nat
+    obtain ⟨z, hz, θ, hzθ, haθ⟩ : ∃ z ∈ ball y (1 / ((k : ℝ) + 1)), ∃ θ : ℝ≥0∞,
+        HasDensity n μ z θ ∧ a ≤ θ := by
+      by_contra hcon
+      have h0 : μ (ball y (1 / ((k : ℝ) + 1))) = 0 :=
+        measure_mono_null (fun z hz hzθ ↦ hcon ⟨z, hz, hzθ⟩) (ae_iff.1 hae)
+      exact ((Measure.mem_support_iff_forall y).1 hy _ (ball_mem_nhds y hr)).ne' h0
+    rw [← ENNReal.le_div_iff_mul_le (Or.inl hc0) (Or.inl hct)]
+    calc a ≤ θ := haθ
+      _ ≤ densityRatio n μ z ρ := hdens z θ hzθ
+      _ ≤ μ (closedBall y (ρ + 1 / ((k : ℝ) + 1))) /
+          (unitBallVolume n * ENNReal.ofReal ρ ^ n) :=
+        ENNReal.div_le_div_right (measure_mono (closedBall_subset_closedBall'
+          (add_le_add le_rfl (mem_ball.1 hz).le))) _
+  -- Step 6: continuity from above for the decreasing closed balls `B_{ρ+1/(k+1)}(y)`.
+  have hinter : (⋂ k : ℕ, closedBall y (ρ + 1 / ((k : ℝ) + 1))) = closedBall y ρ := by
+    ext z
+    simp only [mem_iInter, mem_closedBall]
+    refine ⟨fun h ↦ ?_, fun h k ↦ h.trans (le_add_of_nonneg_right Nat.one_div_pos_of_nat.le)⟩
+    by_contra hlt
+    obtain ⟨k, hk⟩ := exists_nat_one_div_lt (sub_pos.2 (not_le.1 hlt))
+    linarith [h k]
+  have htend : Tendsto (fun k : ℕ ↦ μ (closedBall y (ρ + 1 / ((k : ℝ) + 1)))) atTop
+      (𝓝 (μ (closedBall y ρ))) := by
+    rw [← hinter]
+    exact tendsto_measure_iInter_atTop (fun _ ↦ measurableSet_closedBall.nullMeasurableSet)
+      (fun i j hij ↦ closedBall_subset_closedBall
+        (add_le_add le_rfl (Nat.one_div_le_one_div hij))) ⟨0, hfin _ _⟩
+  -- Step 7: pass to the limit and divide by `c`.
+  exact (ENNReal.le_div_iff_mul_le (Or.inl hc0) (Or.inl hct)).2 (ge_of_tendsto' htend hk)
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
