@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "6bb87764635bf1d6e56c528fd90518c14d2d2336aac8bb27a3a70801cfd0fb9c",
+  "git_delta": {
+    "base_commit": "36b7723e97bb42a26206dc169e5753e41e1c651b",
+    "candidate_commit": "29370a5f3619dcf036524638effde5335e237f7b",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "d36ca851299d4b3f960a8508ea76e6144b82816bbeacd8bed10c5e0f9c6e7677",
+    "source_sha256": "67d473ef63e3c18984d3c6325d60e3b46673ef199205c51456c1813909296f06",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aal_density_ge_one",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), V.AllardHypotheses H p δ ρ → ∀ y ∈ V.support ∩ ball (0 : Amb n ℓ) ρ, ∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), ENNReal.ofReal ((1 - ε) * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
