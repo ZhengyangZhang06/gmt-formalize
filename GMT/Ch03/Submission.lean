@@ -498,6 +498,64 @@ theorem Submission.critSlices_slab_volume_le : ∀ (m : ℕ) (ν c : Rn m) (r R 
       rw [ENNReal.ofReal_mul (by linarith), ← ENNReal.ofReal_pow (by linarith)]
       congr 2 <;> ring
 
+/-- **Images under a nearly degenerate derivative lie in a thin slab.** This is the step "the
+image of a critical subcube lies in a thin slab" of the covering proof that critical slices are
+null (Simon Ch. 2, p. 66, the consequence of 6.3, `chapter-02.txt` lines 1476–1478; Simon gives
+no proof). Here it is stated for a convex `S` of radius `d` about `u₀`. Since `P` is not
+surjective, some unit `ν` is orthogonal to `range P`. The mean value inequality for `G - P` gives
+`G(u) - G(u₀) = P(u - u₀) + e` with `|e| ≤ εd`. Hence `G(S)` lies in
+`{w : |⟨w - G(u₀), ν⟩| ≤ εd, |w - G(u₀)| ≤ (Λ + ε)d}`, whose volume is bounded by
+`Submission.critSlices_slab_volume_le`. -/
+theorem Submission.critSlices_image_volume_le_of_fderiv_near : ∀ (n m : ℕ) (G : Rn n → Rn m)
+    (S : Set (Rn n)) (P : Rn n →L[ℝ] Rn m) (u₀ : Rn n) (d ε Λ : ℝ), Convex ℝ S → u₀ ∈ S →
+    (∀ v ∈ S, DifferentiableAt ℝ G v) → (∀ v ∈ S, ‖fderiv ℝ G v - P‖ ≤ ε) →
+    (∀ v ∈ S, ‖v - u₀‖ ≤ d) → ¬ Function.Surjective P → ‖P‖ ≤ Λ →
+    volume (G '' S) ≤ ENNReal.ofReal (2 * (ε * d) * (2 * ((Λ + ε) * d)) ^ (m - 1)) := by
+  intro n m G S P u₀ d ε Λ hS hu₀ hdiff hnear hd hP hΛ
+  -- `u₀ ∈ S` gives `ε ≥ ‖DG(u₀) - P‖ ≥ 0`.
+  have hε : 0 ≤ ε := (norm_nonneg _).trans (hnear u₀ hu₀)
+  -- A unit normal `ν` to the proper subspace `range P`: `(range P)ᗮ ≠ 0` as `range P ≠ ℝᵐ`.
+  obtain ⟨ν, hν, hPν⟩ : ∃ ν : Rn m, ‖ν‖ = 1 ∧ ∀ x, inner ℝ (P x) ν = 0 := by
+    have hV : LinearMap.range (P : Rn n →ₗ[ℝ] Rn m) ≠ ⊤ := fun h ↦
+      hP fun y ↦ LinearMap.mem_range.1 (h ▸ Submodule.mem_top)
+    obtain ⟨ν₀, hν₀, hν₀0⟩ :=
+      Submodule.exists_mem_ne_zero_of_ne_bot (mt Submodule.orthogonal_eq_bot_iff.1 hV)
+    refine ⟨‖ν₀‖⁻¹ • ν₀, ?_, fun x ↦ ?_⟩
+    · rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 hν₀0)]
+    · have h0 : inner ℝ (P x) ν₀ = 0 :=
+        (Submodule.mem_orthogonal _ _).1 hν₀ (P x) (LinearMap.mem_range_self _ x)
+      rw [inner_smul_right, h0, mul_zero]
+  -- `G(S)` lies in the slab of half-width `εd` normal to `ν`, cut off by the closed ball of
+  -- radius `(Λ + ε)d`, both about `G(u₀)`.
+  have hsub : G '' S ⊆
+      {w : Rn m | |inner ℝ (w - G u₀) ν| ≤ ε * d ∧ ‖w - G u₀‖ ≤ (Λ + ε) * d} := by
+    rintro _ ⟨u, hu, rfl⟩
+    -- Mean value inequality for `G - P` on the convex `S`: `|e| ≤ ε|u - u₀| ≤ εd`.
+    set e := G u - G u₀ - P (u - u₀) with he_def
+    have he : ‖e‖ ≤ ε * d :=
+      (hS.norm_image_sub_le_of_norm_fderiv_le' hdiff hnear hu₀ hu).trans
+        (mul_le_mul_of_nonneg_left (hd u hu) hε)
+    have hw : G u - G u₀ = P (u - u₀) + e := by
+      rw [he_def]
+      abel
+    refine ⟨?_, ?_⟩
+    · -- `⟨w, ν⟩ = ⟨e, ν⟩` because `ν ⊥ range P`; then Cauchy–Schwarz.
+      rw [hw, inner_add_left, hPν, zero_add]
+      calc |inner ℝ e ν| ≤ ‖e‖ * ‖ν‖ := abs_real_inner_le_norm e ν
+        _ = ‖e‖ := by rw [hν, mul_one]
+        _ ≤ ε * d := he
+    · -- `|w| ≤ ‖P‖ |u - u₀| + |e| ≤ Λd + εd`.
+      rw [hw]
+      calc ‖P (u - u₀) + e‖ ≤ ‖P (u - u₀)‖ + ‖e‖ := norm_add_le _ _
+        _ ≤ Λ * d + ε * d := add_le_add ((P.le_opNorm _).trans
+            (mul_le_mul hΛ (hd u hu) (norm_nonneg _) ((norm_nonneg _).trans hΛ))) he
+        _ = (Λ + ε) * d := by ring
+  calc volume (G '' S)
+      ≤ volume {w : Rn m | |inner ℝ (w - G u₀) ν| ≤ ε * d ∧ ‖w - G u₀‖ ≤ (Λ + ε) * d} :=
+        measure_mono hsub
+    _ ≤ ENNReal.ofReal (2 * (ε * d) * (2 * ((Λ + ε) * d)) ^ (m - 1)) :=
+        Submission.critSlices_slab_volume_le m ν (G u₀) (ε * d) ((Λ + ε) * d) hν
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
