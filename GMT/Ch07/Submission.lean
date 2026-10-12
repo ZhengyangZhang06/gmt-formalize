@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Two-measure five-times covering bound**: the summation step after the 5-times Covering
+Lemma (Simon Ch. 1, 3.4, chapter-01.txt lines 612–622) in the proof of the Lipschitz
+approximation lemma (Simon Ch. 5, proof of 2.6, chapter-05.txt lines 413–425 and 536–548).
+If each `y ∈ A` has `0 < r(y) ≤ R₀`, `B_{r(y)}(y) ⊆ B` and `μ(A ∩ B_{5r(y)}(y)) ≤ c ν(B_{r(y)}(y))`,
+then `μ(A) ≤ c ν(B)`.  Vitali's lemma (factor `5 > 3`) gives `u ⊆ A` with the balls
+`B_{r(b)}(b)`, `b ∈ u`, pairwise disjoint, hence countable in the separable `ℝᴾ`, and
+`A ⊆ ⋃_{b ∈ u} B_{5r(b)}(b)`; so `μ(A) ≤ Σ_b μ(A ∩ B_{5r(b)}(b)) ≤ c Σ_b ν(B_{r(b)}(b))
+= c ν(⋃_b B_{r(b)}(b)) ≤ c ν(B)`. -/
+theorem Submission.dorag_lip_vitali_two_measure_bound : ∀ (P : ℕ) (μ ν : Measure (Euclid P)) (A B : Set (Euclid P)) (r : Euclid P → ℝ) (R₀ : ℝ) (c : ℝ≥0∞), (∀ y ∈ A, 0 < r y ∧ r y ≤ R₀ ∧ closedBall y (r y) ⊆ B ∧ μ (A ∩ closedBall y (5 * r y)) ≤ c * ν (closedBall y (r y))) → μ A ≤ c * ν B := by
+  intro P μ ν A B r R₀ c h
+  -- Vitali selection with enlargement factor `5 > 3`.
+  obtain ⟨u, huA, hdisj, hcov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall
+    A id r R₀ (fun a ha => (h a ha).2.1) 5 (by norm_num)
+  simp only [id] at hdisj hcov
+  -- Disjoint balls with nonempty interior in the separable `ℝᴾ` are countably many.
+  have hu : u.Countable := hdisj.countable_of_nonempty_interior fun a ha => by
+    have hr := (h a (huA ha)).1
+    exact ⟨a, interior_mono ball_subset_closedBall
+      (by rw [isOpen_ball.interior_eq]; exact mem_ball_self hr)⟩
+  -- `a ∈ B_{r(a)}(a) ⊆ B_{5r(b)}(b)`.
+  have hAsub : A ⊆ ⋃ b ∈ u, A ∩ closedBall b (5 * r b) := by
+    intro a ha
+    obtain ⟨b, hb, hab⟩ := hcov a ha
+    exact mem_iUnion₂.2 ⟨b, hb, ha, hab (mem_closedBall_self (h a ha).1.le)⟩
+  calc μ A ≤ μ (⋃ b ∈ u, A ∩ closedBall b (5 * r b)) := measure_mono hAsub
+    _ ≤ ∑' b : u, μ (A ∩ closedBall b (5 * r b)) := measure_biUnion_le μ hu _
+    _ ≤ ∑' b : u, c * ν (closedBall b (r b)) :=
+        ENNReal.tsum_le_tsum fun b => (h b (huA b.2)).2.2.2
+    _ = c * ∑' b : u, ν (closedBall b (r b)) := ENNReal.tsum_mul_left
+    _ = c * ν (⋃ b ∈ u, closedBall b (r b)) := by
+        rw [measure_biUnion hu hdisj fun b _ => measurableSet_closedBall]
+    _ ≤ c * ν B := by
+        gcongr
+        exact iUnion₂_subset fun b hb => (h b (huA hb)).2.2.1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
