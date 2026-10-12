@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.weighted_approx_tangent-a1.weight_integral_formula-a1",
+  "parent_id": "root.first_rectifiability-a1.weighted_approx_tangent-a1",
+  "depth": 3,
+  "title": "Integration against a measure represented as θ·H^n⌞M on Borel sets, for integrands vanishing off a Borel set",
+  "statement": "Let N, n ∈ ℕ and write H^n := μHE[n], the n-dimensional Euclidean Hausdorff measure on ℝ^N = Euclidean N. Let μ be a measure on ℝ^N (Borel σ-algebra). Let M, K ⊆ ℝ^N, with M H^n-null-measurable and K Borel, and let θ, h : ℝ^N → ℝ. Assume:\n- θ(y) > 0 for every y ∈ M;\n- θ is H^n-integrable on M ∩ K;\n- μ(B) = ∫⁻_{B ∩ M} ENNReal.ofReal(θ(y)) dH^n(y) for every Borel set B ⊆ ℝ^N;\n- h(z) = 0 for every z ∉ K.\nThen the Bochner integrals satisfy ∫ h dμ = ∫_M h(z) θ(z) dH^n(z). No measurability, boundedness or integrability of h is assumed; a Bochner integral of a non-integrable function is 0.",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M K : Set (Euclidean N)) (θ h : Euclidean N → ℝ), NullMeasurableSet M μHE[n] → (∀ y ∈ M, 0 < θ y) → MeasurableSet K → IntegrableOn θ (M ∩ K) μHE[n] → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ y in B ∩ M, ENNReal.ofReal (θ y) ∂μHE[n]) → (∀ z, z ∉ K → h z = 0) → ∫ z, h z ∂μ = ∫ z in M, h z * θ z ∂μHE[n]",
+  "lean_name": "frt_wat_integral_eq_setIntegral_mul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weighted-approx-tangent-a1-weight-integr-d6aa11dc45-a1"
+}

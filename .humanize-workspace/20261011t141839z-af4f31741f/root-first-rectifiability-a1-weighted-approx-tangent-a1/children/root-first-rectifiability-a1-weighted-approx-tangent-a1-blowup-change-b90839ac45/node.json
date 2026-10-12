@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.weighted_approx_tangent-a1.blowup_change_of_variables-a1",
+  "parent_id": "root.first_rectifiability-a1.weighted_approx_tangent-a1",
+  "depth": 3,
+  "title": "Dilation change of variables for H^n set integrals over blow-up images η_{x,r}(M)",
+  "statement": "Let N, n ∈ ℕ, x ∈ ℝ^N (= Euclidean N) and r > 0. Let M ⊆ ℝ^N be an arbitrary set and F : ℝ^N → ℝ an arbitrary function. Let η := Chapter03.blowUpMap x r, so η(y) = r⁻¹ • (y − x), and let H^n := μHE[n]. Then ∫_{η(M)} F dH^n = r⁻¹^n · ∫_M F(η(z)) dH^n(z), as Bochner set integrals; no measurability or integrability is assumed of M or F.",
+  "lean_statement": "∀ (N n : ℕ) (x : Euclidean N) (r : ℝ) (M : Set (Euclidean N)) (F : Euclidean N → ℝ), 0 < r → ∫ y in Chapter03.blowUpMap x r '' M, F y ∂μHE[n] = r⁻¹ ^ n * ∫ z in M, F (Chapter03.blowUpMap x r z) ∂μHE[n]",
+  "lean_name": "frt_wat_setIntegral_blowUpMap_image",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weighted-approx-tangent-a1-blowup-change-b90839ac45-a1"
+}
