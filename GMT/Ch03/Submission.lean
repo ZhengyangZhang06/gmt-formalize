@@ -524,6 +524,59 @@ theorem Submission.indCompact_l1Dual_tendsto_integral_mul : ∀ (N : ℕ) (w s :
     filter_upwards [hlim] with y hy
     exact hy.const_mul (w y)
 
+/-- **`L¹` norm on a ball by duality with `C¹` test functions** (the `L¹`-duality step of the
+mollification proof of Simon Ch. 2, Thm. 2.6, used in Ch. 3, proof of Thm. 4.3): if `w` is
+integrable on `B_R(0)` and `∫ w ψ ≤ M` for every `C¹` function `ψ` with compact support,
+`tsupport ψ ⊆ B_R(0)` and `|ψ| ≤ 1`, then `∫_{B_R(0)} |w| ≤ M`. The test `ψ = 0` settles the
+empty ball `R ≤ 0`. For `R > 0` the sign function `s = 1_{B_R(0)} sgn w` (here `sgn 0 = 1`)
+satisfies `w s = 1_{B_R(0)} |w|`; admissible `ψⱼ → s` a.e.
+(`indCompact_l1Dual_exists_admissible_ae_tendsto`) and dominated convergence
+(`indCompact_l1Dual_tendsto_integral_mul`) give `M ≥ ∫ w ψⱼ → ∫_{B_R(0)} |w|`. -/
+theorem Submission.indCompact_ball_integral_abs_le_of_test_bound : ∀ (N : ℕ) (w : Rn N → ℝ)
+    (R M : ℝ), IntegrableOn w (Metric.ball (0 : Rn N) R) volume →
+    (∀ ψ : Rn N → ℝ, ContDiff ℝ 1 ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ Metric.ball (0 : Rn N) R → (∀ y, |ψ y| ≤ 1) → ∫ y, w y * ψ y ≤ M) →
+    ∫ y in Metric.ball (0 : Rn N) R, |w y| ≤ M := by
+  intro N w R M hw hM
+  rcases le_or_gt R 0 with hR | hR
+  · -- Empty ball: the admissible test `ψ = 0` gives `0 ≤ M`.
+    rw [Metric.ball_eq_empty.2 hR, setIntegral_empty]
+    simpa using hM 0 contDiff_const HasCompactSupport.zero (by simp) (by simp)
+  -- The sign function `s = 1_{B_R(0)} sgn w`: `|s| ≤ 1` and `s = 0` off the ball.
+  obtain ⟨s, hs⟩ : ∃ s : Rn N → ℝ,
+      s = (Metric.ball (0 : Rn N) R).indicator fun y ↦ if 0 ≤ w y then 1 else -1 := ⟨_, rfl⟩
+  have hs_meas : AEStronglyMeasurable s volume := by
+    rw [hs, aestronglyMeasurable_indicator_iff measurableSet_ball]
+    exact ((Measurable.ite measurableSet_Ici measurable_const measurable_const).comp_aemeasurable
+      hw.aestronglyMeasurable.aemeasurable).aestronglyMeasurable
+  have hs_le : ∀ y, |s y| ≤ 1 := by
+    intro y
+    by_cases hy : y ∈ Metric.ball (0 : Rn N) R
+    · rw [hs, indicator_of_mem hy]
+      split_ifs <;> simp
+    · simp [hs, indicator_of_notMem hy]
+  have hs_zero : ∀ y, y ∉ Metric.ball (0 : Rn N) R → s y = 0 := fun y hy ↦ by
+    rw [hs, indicator_of_notMem hy]
+  -- `w s = 1_{B_R(0)} |w|`.
+  have hws : ∫ y, w y * s y = ∫ y in Metric.ball (0 : Rn N) R, |w y| := by
+    rw [← integral_indicator measurableSet_ball]
+    congr 1
+    funext y
+    by_cases hy : y ∈ Metric.ball (0 : Rn N) R
+    · rw [hs, indicator_of_mem hy, indicator_of_mem hy]
+      split_ifs with h
+      · rw [mul_one, abs_of_nonneg h]
+      · rw [mul_neg_one, abs_of_neg (not_le.1 h)]
+    · rw [hs, indicator_of_notMem hy, indicator_of_notMem hy, mul_zero]
+  -- Admissible `ψⱼ → s` a.e., and dominated convergence `∫ w ψⱼ → ∫ w s`.
+  obtain ⟨ψ, hψ, hψc, hψt, hψb, hψs⟩ :=
+    Submission.indCompact_l1Dual_exists_admissible_ae_tendsto N R s hR hs_meas hs_le hs_zero
+  have hlim := Submission.indCompact_l1Dual_tendsto_integral_mul N w s R ψ hw
+    (fun j ↦ (hψ j).continuous.aestronglyMeasurable) hψb
+    (fun j y hy ↦ image_eq_zero_of_notMem_tsupport fun h ↦ hy (hψt j h)) hψs
+  rw [hws] at hlim
+  exact le_of_tendsto' hlim fun j ↦ hM (ψ j) (hψ j) (hψc j) (hψt j) (hψb j)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
