@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f1fec6ca76b60ab3ae97e630e2fe345c96b236cfbe7c35ddf2c3fe4c16603b1f",
+  "git_delta": {
+    "base_commit": "bba14b6d645d7cbc00fc3395d39e8b8a17a77607",
+    "candidate_commit": "bcc7e7942381c284df369c6498a64feab32057ff",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_ims_sua_continuous_unit_extension",
+    "diff_sha256": "45dfc9d7ad759e31d26c96ea21c089776acdf02a1a228dd47055b39bc100f20f",
+    "source_sha256": "0f1df5114d03d458c14411e4dab1083d62bf53b98ae5686f1bf669aa01dc72df",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_ims_sua_continuous_unit_extension",
+      "statement": "∀ (P n : ℕ) (K V : Set (Euclid P)) (β : Euclid P → Covector (Euclid P) n), IsCompact K → IsOpen V → K ⊆ V → ContinuousOn β K → (∀ x ∈ K, covectorEuclideanNorm (β x) ≤ 1) → ∃ g : Euclid P → Covector (Euclid P) n, Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ V ∧ (∀ x, covectorEuclideanNorm (g x) ≤ 1) ∧ ∀ x ∈ K, g x = β x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
