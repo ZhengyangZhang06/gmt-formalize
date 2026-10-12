@@ -434,6 +434,59 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Continuity in the scale** (Simon Ch. 4, 3.3–3.5, p. 90: `I(τ) = ∫ g ψ(r/τ) dμ` is continuous in
+`τ`). If `0 < σ`, `0 < c`, `c ρ < R`, `g` is `μ`-integrable on `B_R(ξ)`, `ψ` is continuous and
+`ψ(t) = 0` for `t > c`, then for `τ ∈ [σ, ρ]` the integrand vanishes off `B = B_R(ξ)` (there
+`|x - ξ| / τ > R / τ > c`), so it equals `1_B g · ψ(|x - ξ| / τ)`. It is bounded by `1_B M |g|`,
+where `|ψ| ≤ M` on `[0, R / σ]`, and it is continuous in `τ`. Hence `τ ↦ ∫ g ψ(|x - ξ| / τ) dμ`
+is continuous on `[σ, ρ]` (`continuousOn_of_dominated`). -/
+theorem Submission.wm_smoothed_scale_integral_continuousOn : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (g : Ambient n ℓ → ℝ) (ψ : ℝ → ℝ) (ξ : Ambient n ℓ) (c σ ρ R : ℝ), 0 < σ → 0 < c → c * ρ < R → IntegrableOn g (closedBall ξ R) μ → Continuous ψ → (∀ t, c < t → ψ t = 0) → ContinuousOn (fun τ ↦ ∫ x, g x * ψ (‖x - ξ‖ / τ) ∂μ) (Icc σ ρ) := by
+  intro n ℓ μ g ψ ξ c σ ρ R hσ hc hcρ hg hψ hψ0
+  -- step 1: every `τ ∈ [σ, ρ]` has `τ > 0` and `c τ < R`
+  have hτ : ∀ τ ∈ Icc σ ρ, 0 < τ ∧ c * τ < R := fun τ hτ ↦
+    ⟨hσ.trans_le hτ.1, (mul_le_mul_of_nonneg_left hτ.2 hc.le).trans_lt hcρ⟩
+  -- step 2: off `B = B_R(ξ)`, `|x - ξ| / τ > c`, so `ψ` vanishes and the integrand is `1_B g ψ`
+  have hvan : ∀ τ ∈ Icc σ ρ, ∀ x ∉ closedBall ξ R, ψ (‖x - ξ‖ / τ) = 0 := by
+    intro τ hτσ x hx
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    exact hψ0 _ ((lt_div_iff₀ (hτ τ hτσ).1).2 ((hτ τ hτσ).2.trans hx))
+  have hF : ∀ τ ∈ Icc σ ρ, ∀ x,
+      (closedBall ξ R).indicator g x * ψ (‖x - ξ‖ / τ) = g x * ψ (‖x - ξ‖ / τ) := by
+    intro τ hτσ x
+    by_cases hx : x ∈ closedBall ξ R
+    · rw [indicator_of_mem hx]
+    · rw [indicator_of_notMem hx, hvan τ hτσ x hx, mul_zero, mul_zero]
+  -- step 3: `|ψ| ≤ M` on the compact interval `[0, R / σ]`
+  obtain ⟨M, hM⟩ :=
+    (isCompact_Icc : IsCompact (Icc 0 (R / σ))).exists_bound_of_continuousOn hψ.continuousOn
+  -- step 4: `1_B g` and the majorant `1_B (M |g|)` are integrable
+  have hgi : Integrable ((closedBall ξ R).indicator g) μ :=
+    hg.integrable_indicator measurableSet_closedBall
+  have hbi : Integrable ((closedBall ξ R).indicator fun x ↦ M * ‖g x‖) μ :=
+    IntegrableOn.integrable_indicator (hg.norm.const_mul M) measurableSet_closedBall
+  -- step 8: `continuousOn_of_dominated`, whose hypotheses are steps 5, 6, 4 and 7
+  refine continuousOn_of_dominated (fun τ hτσ ↦ ?_) (fun τ hτσ ↦ ?_) hbi ?_
+  · -- step 5: `1_B g · ψ(|x - ξ| / τ)` is a.e. strongly measurable
+    exact (hgi.aestronglyMeasurable.mul
+      (hψ.comp ((continuous_id.sub continuous_const).norm.div_const τ)).aestronglyMeasurable).congr
+      (Eventually.of_forall (hF τ hτσ))
+  · -- step 6: domination by `1_B (M |g|)`
+    filter_upwards with x
+    by_cases hx : x ∈ closedBall ξ R
+    · have hxR : ‖x - ξ‖ ≤ R := by rwa [mem_closedBall, dist_eq_norm] at hx
+      have hτ0 := (hτ τ hτσ).1
+      have hs : ‖x - ξ‖ / τ ∈ Icc 0 (R / σ) :=
+        ⟨div_nonneg (norm_nonneg _) hτ0.le,
+          calc ‖x - ξ‖ / τ ≤ R / τ := div_le_div_of_nonneg_right hxR hτ0.le
+            _ ≤ R / σ := div_le_div_of_nonneg_left ((norm_nonneg _).trans hxR) hσ hτσ.1⟩
+      rw [indicator_of_mem hx, norm_mul, mul_comm]
+      exact mul_le_mul_of_nonneg_right (hM _ hs) (norm_nonneg _)
+    · simp [indicator_of_notMem hx, hvan τ hτσ x hx]
+  · -- step 7: `τ ↦ g x ψ(|x - ξ| / τ)` is continuous on `[σ, ρ]` for every `x`
+    filter_upwards with x
+    exact continuousOn_const.mul (hψ.comp_continuousOn
+      (continuousOn_const.div continuousOn_id fun τ hτσ ↦ (hτ τ hτσ).1.ne'))
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
