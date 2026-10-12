@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "aetp_|rsod_|dohr_tp_",
+        "theorem eq_starProjection_of_mem_of_inner_eq_zero|theorem starProjection_map_apply|class HasOrthogonalProjection",
+        "theorem inverse_continuousAt",
+        "theorem ContDiffOn.continuousOn_fderiv_of_isOpen|theorem ContinuousOn.clm_comp|theorem ContinuousAt.clm_comp|theorem Continuous.clm_comp",
+        "theorem isUnit_iff_isUnit_toLinearMap|theorem isUnit_iff_ker_eq_bot|theorem mul_inverse_cancel|def smulRightL",
+        "theorem mul_apply|mul := comp|mul_def",
+        "git show 97c0c4bc:GMT/Ch05/Submission.lean",
+        "git show 9f89be4c:GMT/Ch05/Submission.lean",
+        "python3 -I /tmp/tpc-independent-audit-z1xzok46/run.py frozen",
+        "python3 -I /tmp/tpc-independent-audit-z1xzok46/run.py Contracts.lean",
+        "python3 -I /tmp/tpc-independent-audit-z1xzok46/run.py FullProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-tangent-c14559ce7b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1-graph-cha-b1db627944/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-projection-c-ed781ad605/accepted-candidate.json",
+        "/tmp/tpc-independent-audit-z1xzok46/src/Contracts.lean",
+        "/tmp/tpc-independent-audit-z1xzok46/src/FullProofs.lean"
+      ],
+      "conclusion": "The manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; both match the workspace revisions. Submission and Contract match their snapshot copies. Searching the snapshot found no aetp_, rsod_, or dohr_tp_ declarations. The pinned library supplies the coordinate equivalence, projection characterization and conjugation formula, derivative continuity, composition continuity, and inverse continuity used here. Both proposed names uniquely identify comparator-accepted checkpoints with byte-identical frozen types. Their dependency closures are acyclic and exclude the selected parent. Independent compilation against a fresh frozen Submission confirmed that all three contracts elaborate without child implementations and that the retained child proofs imply the exact selected parent contract. Both children, their coordinate helper, and the assembled parent have only [propext, Classical.choice, Quot.sound] as axioms. Endomorphism multiplication was independently checked to be composition. The split is appropriate: specialize the graph chart to the identity rotation and zero translation, obtain continuous injective derivatives, compose with projection_continuity, and conjugate by Q."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_chart_immersion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line proposition and all three conclusions. Coordinate comparison establishes the graph-point equivalence; cancellation and first components prove global injectivity; composition proves C¹ regularity. Openness correctly permits ordinary differentiation, and the displayed derivative formula proves derivative injectivity, including dimension zero. The proof is complete and non-circular. The bare name validly reuses accepted commit 97c0c4bc with an identical frozen type. Its existing accepted coordinate-helper dependency is preserved and acyclic; the supplied prose also proves that identity explicitly."
+    },
+    {
+      "key": "projection_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line type exactly describe operator-norm continuity on injective maps. The supplied proof establishes the transpose identity and continuity, Gram-operator invertibility, the projection formula by orthogonality, inverse continuity, and the final within-set congruence without circularity or missing hypotheses. Completeness and projection instances follow from finite dimensionality, including n = 0. IsUnit and Ring.inverse use continuous-linear-endomorphism composition, independently verified in Lean. The bare name validly reuses accepted commit 9f89be4c with an identical frozen type and no dependencies."
+    }
+  ],
+  "required_changes": []
+}
