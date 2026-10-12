@@ -6640,6 +6640,78 @@ theorem Submission.eilenberg_upper_integral_inequality : ∀ (N m k : ℕ), ∃ 
   filter_upwards [hA, hBC] with u hAu hBCu huV huM
   exact ⟨hAu huV huM, hBCu huV (hMU huM)⟩
 
+/-- **Simon Ch. 3, co-area formula (2.7)–(2.9) and Remark 2.10(2) (p. 77).** Simon derives both
+from the `C¹` case (Ch. 2 §6), the decomposition of Remark 1.3 and the `C¹` Approximation
+Theorem 1.5 of Ch. 2 (`chapter-03.txt` lines 426–428, 439–442). `rectifiable_c1_chart_pieces`
+covers `M`, up to an `Hⁿ`-null set, by pieces `ψ_j(E_j)` of injective `C¹` charts on which
+`f ∘ ψ_j` agrees to first order with a `C¹` map `G_j`. (a) is `coarea_tangent_existence`. For
+(c), intersect the pieces with a Borel `M_b ⊆ M` of full measure (`ψ_j(E_j)` is Borel by
+Lusin–Souslin), apply `chart_piece_coarea_formula` on each piece and glue with
+`coarea_gluing_of_pieces`, null sets having `Hᵏ`-null slices by
+`coarea_null_slices_of_eilenberg`; (b) is (c) with `g ≡ 1`. For the slices, `M ∩ f⁻¹(y)` lies in
+the slice of the uncovered null part together with the sets `ψ_j(D_j ∩ G_j⁻¹(y))`, which are
+countably `k`-rectifiable for a.e. `y` by `c1_level_slices_countablyRectifiable`. -/
+theorem Submission.coareaFormula_and_slices_hold : CoareaFormula ∧ SlicesAreRectifiable := by
+  refine ⟨?_, ?_⟩
+  · intro m k ℓ hk M U θ f hM hrect hθ hU hMU hf
+    -- Chart pieces `ψ j '' E j` covering `M` up to an `Hⁿ`-null set, with `f ∘ ψ j = G j` on `E j`.
+    obtain ⟨D, ψ, G, E, hDo, hψC, hψi, hψL, hψd, hGC, hEm, hED, hfG, hnull⟩ :=
+      Submission.rectifiable_c1_chart_pieces Submission.submanifoldCoverCharacterization_holds
+        Submission.lipschitz_c1_approximation (m + k) ℓ m M U f hrect hU hMU hf
+    -- A Borel `Mb ⊆ M` with `Hⁿ(M \ Mb) = 0`; the Borel pieces are `ψ j '' E j ∩ Mb`.
+    obtain ⟨Mb, hMbM, hMbm, hMbae⟩ := hM.exists_measurable_subset_ae_eq
+    have hS : ∀ j, MeasurableSet (ψ j '' E j ∩ Mb) := fun j =>
+      ((hEm j).image_of_continuousOn_injOn ((hψC j).continuousOn.mono (hED j))
+        ((hψi j).mono (hED j))).inter hMbm
+    have hSnull : μHE[m + k] (M \ ⋃ j, (ψ j '' E j ∩ Mb)) = 0 := by
+      refine measure_mono_null ?_ (measure_union_null hnull (ae_eq_set.1 hMbae).2)
+      rintro x ⟨hxM, hx⟩
+      by_cases hxb : x ∈ Mb
+      · refine Or.inl ⟨hxM, fun hxU => hx ?_⟩
+        obtain ⟨j, hj⟩ := mem_iUnion.1 hxU
+        exact mem_iUnion.2 ⟨j, hj, hxb⟩
+      · exact Or.inr ⟨hxM, hxb⟩
+    -- (c): glue the one-piece formulas; null sets have null slices by Eilenberg's inequality.
+    have hc := Submission.coarea_gluing_of_pieces (m + k + ℓ) (m + k) m k U M f
+      (fun x => ENNReal.ofReal (coareaJacobian (approxTangentPlane (m + k) M θ x) f x))
+      (fun j => ψ j '' E j ∩ Mb) hU hMU hf.continuousOn
+      (fun Z hZM hZ => Submission.coarea_null_slices_of_eilenberg
+        Submission.eilenberg_upper_integral_inequality (m + k + ℓ) m k U Z f hf (hZM.trans hMU) hZ)
+      hS hSnull
+      (fun j B hB hBm φ hφ => Submission.chart_piece_coarea_formula
+        Submission.chart_approx_tangent_and_differential m k ℓ M U θ f (D j) (E j) (ψ j) (G j)
+        hk hM hθ hU hMU hf (hDo j) (hψC j) (hψi j) (hψL j) (hψd j) (hGC j) (hEm j) (hED j) (hfG j)
+        B (fun x hx => ⟨(hB hx).1, hMbM (hB hx).2⟩) hBm φ hφ)
+    refine ⟨Submission.coarea_tangent_existence Submission.submanifoldCoverCharacterization_holds
+      Submission.lipschitz_c1_approximation Submission.chart_approx_tangent_and_differential
+      (m + k) ℓ m M U θ f hM hrect hθ hU hMU hf, fun A hAM hA => ?_, hc⟩
+    -- (b) is (c) with `g ≡ 1`.
+    simpa only [one_mul, setLIntegral_one] using hc A hAM hA (fun _ => 1) aemeasurable_const
+  · intro m k ℓ hk M U f _ hrect hU hMU hf
+    obtain ⟨D, ψ, G, E, hDo, hψC, -, -, -, hGC, -, hED, hfG, hnull⟩ :=
+      Submission.rectifiable_c1_chart_pieces Submission.submanifoldCoverCharacterization_holds
+        Submission.lipschitz_c1_approximation (m + k) ℓ m M U f hrect hU hMU hf
+    -- The uncovered part of `M` has `Hᵏ`-null slices for a.e. `y`.
+    have hZ := Submission.coarea_null_slices_of_eilenberg
+      Submission.eilenberg_upper_integral_inequality (m + k + ℓ) m k U (M \ ⋃ j, ψ j '' E j) f hf
+      (Set.sdiff_subset.trans hMU) hnull
+    -- For a.e. `y`, every `ψ j '' (D j ∩ G j ⁻¹' {y})` is countably `k`-rectifiable.
+    have hR : ∀ᵐ y ∂(volume : Measure (Rn m)), ∀ j,
+        CountablyRectifiable k (ψ j '' (D j ∩ G j ⁻¹' {y})) :=
+      ae_all_iff.2 fun j => Submission.c1_level_slices_countablyRectifiable m k (m + k + ℓ) (D j)
+        (ψ j) (G j) hk (hDo j) (hψC j) (hGC j)
+    filter_upwards [hZ, hR] with y hy hyR
+    obtain ⟨M₀, hM₀, F, hF, hcov⟩ := Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ hyR
+    refine ⟨M₀ ∪ ((M \ ⋃ j, ψ j '' E j) ∩ f ⁻¹' {y}), measure_union_null hM₀ hy, F, hF, ?_⟩
+    rintro x ⟨hxM, hxy⟩
+    by_cases hx : x ∈ ⋃ j, ψ j '' E j
+    · -- `x = ψ j u` with `u ∈ E j ⊆ D j` and `G j u = f x = y`.
+      obtain ⟨j, u, hu, rfl⟩ := mem_iUnion.1 hx
+      rcases hcov (mem_iUnion.2 ⟨j, u, ⟨hED j hu, (hfG j u hu).1.symm.trans hxy⟩, rfl⟩) with h | h
+      · exact Or.inl (Or.inl h)
+      · exact Or.inr h
+    · exact Or.inl (Or.inr ⟨⟨hxM, hx⟩, hxy⟩)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
