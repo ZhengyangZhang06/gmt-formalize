@@ -1019,6 +1019,94 @@ theorem Submission.variation_deformation_calculus : ∀ (N : ℕ) (U K : Set (Rn
       0 y (hΨ.contDiffAt (hO.mem_nhds ⟨h0, hy⟩))).congr_of_eventuallyEq
       (Filter.eventually_of_mem hI fun t ht ↦ (hM t ht).deriv)
 
+/-- **Simon Ch. 2, 5.2–5.4 (pp. 62–63), the Jacobian of a deformation family.** With
+`A(t, x) = Dφ_t(x)`, put `g(t, (x, P)) = √det(I - P + P A(t, x)* A(t, x) P)`. If `φ` is admissible
+of class `r ∈ {2, 3}`, then `g` is `C^{r-1}` at `(0, (x, P))` for `x ∈ U` and every idempotent
+`P`: `det`, the adjoint and composition are smooth on `L(ℝᴺ)`, `A` is `C^{r-1}` at `(0, x)` with
+`A(0, x) = I` (`variation_deformation_calculus`), and so the radicand is `det(I - P + P ∘ P) = 1`
+there. At `P = P_y`, `t ↦ g(t, (y, P_y))` is the function of `variation_gram_det_derivatives` for
+the frame `τᵢ` of `T_y M`; its first two derivatives at `0` are `div_M X(y)` and the
+second-variation integrand. Both integrands vanish off `K`, where `DX = DZ = 0`. -/
+theorem Submission.variation_jacobian_family : ∀ (N : ℕ) (U K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), let g : ℝ × (Rn N × (Rn N →L[ℝ] Rn N)) → ℝ := fun p ↦ Real.sqrt ((1 - p.2.2 + p.2.2 ∘L ContinuousLinearMap.adjoint (fderiv ℝ (φ p.1) p.2.1) ∘L fderiv ℝ (φ p.1) p.2.1 ∘L p.2.2).det); (IsAdmissibleDeformation 2 U K φ → (∀ x ∈ U, ∀ P : Rn N →L[ℝ] Rn N, P ∘L P = P → ContDiffAt ℝ 1 g (0, (x, P))) ∧ ∀ (M : Set (Rn N)) (y : Rn N), y ∈ U → HasDerivAt (fun t ↦ g (t, (y, tangentProjection M y))) (tangentialDivergence M (initialVelocity φ) y) 0) ∧ (IsAdmissibleDeformation 3 U K φ → (∀ x ∈ U, ∀ P : Rn N →L[ℝ] Rn N, P ∘L P = P → ContDiffAt ℝ 2 g (0, (x, P))) ∧ ∀ (M : Set (Rn N)) (y : Rn N), y ∈ U → HasDerivAt (fun t ↦ deriv (fun s ↦ g (s, (y, tangentProjection M y))) t) (secondVariationIntegrand M φ y) 0) ∧ ∀ r : ℕ∞, IsAdmissibleDeformation r U K φ → ∀ (M : Set (Rn N)) (y : Rn N), y ∉ K → tangentialDivergence M (initialVelocity φ) y = 0 ∧ secondVariationIntegrand M φ y = 0 := by
+  intro N U K φ g
+  have hG := Submission.variation_gram_det_derivatives
+  have hD := Submission.variation_deformation_calculus N U K φ
+  -- Class `3` implies class `2`: only the `C^r` clause depends on `r`.
+  have h32 : IsAdmissibleDeformation 3 U K φ → IsAdmissibleDeformation 2 U K φ := by
+    rintro ⟨hU, hK, hKU, hφ, hφ0, hfix, hbij⟩
+    exact ⟨hU, hK, hKU, hφ.of_le (by exact_mod_cast (by norm_num : (2 : ℕ∞) ≤ 3)), hφ0, hfix, hbij⟩
+  -- `B ↦ det B` is smooth: in the standard basis `e` it is the Leibniz polynomial in the
+  -- continuous linear coordinates `B ↦ ⟪e (σ i), B (e i)⟫`.
+  have hdet : ∀ {k : WithTop ℕ∞}, ContDiff ℝ k (fun B : Rn N →L[ℝ] Rn N ↦ B.det) := by
+    intro k
+    classical
+    let e := EuclideanSpace.basisFun (Fin N) ℝ
+    have h : (fun B : Rn N →L[ℝ] Rn N ↦ B.det) = fun B ↦
+        ∑ σ : Equiv.Perm (Fin N), Equiv.Perm.sign σ • ∏ i, inner ℝ (e (σ i)) (B (e i)) := by
+      funext B
+      change LinearMap.det (B : Rn N →ₗ[ℝ] Rn N) = _
+      rw [← LinearMap.det_toMatrix e.toBasis, Matrix.det_apply]
+      simp [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.repr_apply_apply]
+    rw [h]
+    refine ContDiff.sum fun σ _ ↦ ContDiff.const_smul _ (contDiff_prod fun i _ ↦ ?_)
+    exact contDiff_const.inner ℝ (ContinuousLinearMap.apply ℝ (Rn N) (e i)).contDiff
+  -- `B ↦ B*` is additive and commutes with real scalars, so it is continuous linear.
+  have hadj : ∀ {k : WithTop ℕ∞}, ContDiff ℝ k
+      (fun B : Rn N →L[ℝ] Rn N ↦ ContinuousLinearMap.adjoint B) := by
+    intro k
+    let L : (Rn N →L[ℝ] Rn N) →L[ℝ] (Rn N →L[ℝ] Rn N) :=
+      { toFun := fun B ↦ ContinuousLinearMap.adjoint B
+        map_add' := fun B C ↦ map_add _ B C
+        map_smul' := fun c B ↦ by simp
+        cont := ContinuousLinearMap.adjoint.continuous }
+    exact L.contDiff
+  -- Smoothness of `g` at `(0, (x, P))` once `A` is `C^k` at `(0, x)` with `A(0, x) = I`.
+  have hsmooth : ∀ {k : WithTop ℕ∞} (x : Rn N) (P : Rn N →L[ℝ] Rn N), P ∘L P = P →
+      ContDiffAt ℝ k (fun p : ℝ × Rn N ↦ fderiv ℝ (φ p.1) p.2) (0, x) →
+      fderiv ℝ (φ 0) x = 1 → ContDiffAt ℝ k g (0, (x, P)) := by
+    intro k x P hP hA hA0
+    have hA' : ContDiffAt ℝ k
+        (fun p : ℝ × (Rn N × (Rn N →L[ℝ] Rn N)) ↦ fderiv ℝ (φ p.1) p.2.1) (0, (x, P)) :=
+      hA.comp (f := fun p : ℝ × (Rn N × (Rn N →L[ℝ] Rn N)) ↦ (p.1, p.2.1)) (0, (x, P))
+        (contDiffAt_fst.prodMk contDiffAt_snd.fst)
+    have hP' : ContDiffAt ℝ k (fun p : ℝ × (Rn N × (Rn N →L[ℝ] Rn N)) ↦ p.2.2) (0, (x, P)) :=
+      contDiffAt_snd.snd
+    have hΓ : ContDiffAt ℝ k (fun p : ℝ × (Rn N × (Rn N →L[ℝ] Rn N)) ↦ 1 - p.2.2 +
+        p.2.2 ∘L ContinuousLinearMap.adjoint (fderiv ℝ (φ p.1) p.2.1) ∘L fderiv ℝ (φ p.1) p.2.1 ∘L
+          p.2.2) (0, (x, P)) :=
+      (contDiffAt_const.sub hP').add
+        (hP'.clm_comp ((hadj.contDiffAt.comp _ hA').clm_comp (hA'.clm_comp hP')))
+    -- At `(0, (x, P))` the operator is `I - P + P ∘ P = I`, whose determinant is `1 ≠ 0`.
+    have h1 : 1 - P + P ∘L ContinuousLinearMap.adjoint (fderiv ℝ (φ 0) x) ∘L fderiv ℝ (φ 0) x ∘L
+        P = 1 := by
+      rw [hA0, ContinuousLinearMap.adjoint_one, ContinuousLinearMap.one_def,
+        ContinuousLinearMap.id_comp, ContinuousLinearMap.id_comp, hP, sub_add_cancel]
+    refine (hdet.contDiffAt.comp _ hΓ).sqrt ?_
+    change (1 - P + P ∘L ContinuousLinearMap.adjoint (fderiv ℝ (φ 0) x) ∘L fderiv ℝ (φ 0) x ∘L
+      P).det ≠ 0
+    rw [h1, ContinuousLinearMap.det, ContinuousLinearMap.toLinearMap_one, map_one]
+    exact one_ne_zero
+  have h0 : (0 : ℝ) ∈ Ioo (-1 : ℝ) 1 := ⟨by norm_num, by norm_num⟩
+  refine ⟨fun h2 ↦ ⟨fun x hx P hP ↦ ?_, fun M y hy ↦ ?_⟩,
+    fun h3 ↦ ⟨fun x hx P hP ↦ ?_, fun M y hy ↦ ?_⟩, fun r hr M y hy ↦ ?_⟩
+  · -- (F2), smoothness.
+    exact hsmooth x P hP ((hD.2.1 h2).1 0 h0 x hx) ((hD.2.1 h2).2 x hx).1
+  · -- (F2), first variation: `P_y = T.starProjection` and `τᵢ` is the frame `b` of `T = T_y M`.
+    obtain ⟨hA0, hA1⟩ := (hD.2.1 h2).2 y hy
+    exact (hG N (tangentSpace M y) _ (stdOrthonormalBasis ℝ (tangentSpace M y))
+      (fun t ↦ fderiv ℝ (φ t) y) hA0).1 _ hA1
+  · -- (F3), smoothness.
+    exact hsmooth x P hP ((hD.2.2 h3).1 0 h0 x hx) ((hD.2.1 (h32 h3)).2 x hx).1
+  · -- (F3), second variation: `A₁ = DX(y)`, `A₂ = DZ(y)`, and `v - P_y v = normalPart M y v`.
+    obtain ⟨hA0, hA1⟩ := (hD.2.1 (h32 h3)).2 y hy
+    obtain ⟨hev, hA2⟩ := (hD.2.2 h3).2 y hy
+    exact (hG N (tangentSpace M y) _ (stdOrthonormalBasis ℝ (tangentSpace M y))
+      (fun t ↦ fderiv ℝ (φ t) y) hA0).2 _ _ hev hA1 hA2
+  · -- (FV): off `K`, `DX(y) = DZ(y) = 0`, so every term of both integrands vanishes.
+    obtain ⟨-, -, hX, hZ⟩ := hD.1 r hr y hy
+    simp [secondVariationIntegrand, tangentialDivergence, normalPart, hX, hZ]
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
