@@ -4732,6 +4732,130 @@ theorem aal_lp_monotonicity : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : �
   refine ⟨hG1, hG2, ?_, hG3⟩
   rw [hg]
   exact hint
+/-- **Simon Ch. 4, 3.9–3.13, 4.9 and Remark 4.10(1)** (lower density bound on `spt V`).  Under the
+hypotheses 2.3 (`AllardHypotheses`), every `y ∈ spt V` with `|y| < ρ` satisfies
+`μ_V(B_s(y)) ≥ (1 − ε) ω_n sⁿ` for all small `s > 0`, for each `ε > 0`.  At `μ_V`-a.e. `x` near `y`
+the `Lᵖ` monotonicity identity and `Θⁿ(μ_V, x) = θ(x) ≥ 1` give
+`ω_n ≤ (1 + c(t)) t⁻ⁿ μ_V(B_t(x)) + c(t)` with `c(t) = A (t/r)^{1−n/p} → 0`; since
+`y ∈ spt μ_V`, such points accumulate at `y`, which transfers the bound to `y`. -/
+theorem aal_density_ge_one : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), V.AllardHypotheses H p δ ρ → ∀ y ∈ V.support ∩ ball (0 : Amb n ℓ) ρ, ∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), ENNReal.ofReal ((1 - ε) * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s) := by
+  intro n ℓ hn p hp U hU V H δ ρ hA y hy ε hε
+  obtain ⟨hρ, hH, hθ, -, hball0, -, hK0⟩ := hA
+  have hysupp : y ∈ V.weight.support := (show y ∈ U ∩ V.weight.support from hy.1).2
+  have hyρ : ‖y‖ < ρ := mem_ball_zero_iff.mp hy.2
+  have hy0 : 0 ≤ ‖y‖ := norm_nonneg y
+  have hn' : (0 : ℝ) < n := by exact_mod_cast hn
+  have hp0 : 0 < p := lt_trans hn' hp
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    exact div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  -- One radius `r = d/8`, `d = ρ - |y|`, for every point of `B̆_r(y)`.
+  set d := ρ - ‖y‖ with hd_def
+  have hd : 0 < d := by linarith
+  set r := d / 8 with hr_def
+  have hr : 0 < r := by positivity
+  -- Balls `B_{2r}(x)`, `x ∈ B̆_r(y)`, stay inside `B_ρ(0) ⊆ U`.
+  have hsub0 : ∀ x : Amb n ℓ, x ∈ ball y r → closedBall x (2 * r) ⊆ closedBall (0 : Amb n ℓ) ρ := by
+    intro x hx z hz
+    rw [mem_ball] at hx
+    rw [mem_closedBall] at hz
+    have h1 : dist z 0 ≤ dist z x + (dist x y + dist y 0) :=
+      (dist_triangle z x 0).trans (add_le_add le_rfl (dist_triangle x y 0))
+    simp only [dist_zero_right] at h1
+    rw [mem_closedBall, dist_zero_right]
+    linarith
+  -- (F2): `μ_V(B_{2r}(y)) < ∞`, as `B_{2r}(y)` is a compact subset of `U`.
+  have hfin2 : V.weight (closedBall y (2 * r)) < ⊤ := by
+    have hKU : closedBall y (2 * r) ⊆ U := by
+      intro z hz
+      apply hball0
+      rw [mem_closedBall] at hz ⊢
+      have h1 := dist_triangle z y 0
+      simp only [dist_zero_right] at h1 ⊢
+      linarith
+    have hKm : MeasurableSet (closedBall y (2 * r)) := measurableSet_closedBall
+    unfold RectifiableVarifold.weight
+    rw [withDensity_apply _ hKm, Measure.restrict_restrict hKm, Set.inter_comm]
+    exact (V.integrableOn_mult _ (isCompact_closedBall _ _) hKU).lintegral_lt_top
+  -- (A): `∫_{B_ρ(0)} |H|ᵖ dμ_V < ∞`, from `(ρ^{p-n} ∫_{B_ρ(0)} |H|ᵖ dμ_V)^{1/p} ≤ δ`.
+  have hI0 : ∫⁻ x in closedBall (0 : Amb n ℓ) ρ, ‖H x‖ₑ ^ p ∂V.weight < ⊤ := by
+    have h1 : V.scaledLpNorm H p 0 ρ < ⊤ := lt_of_le_of_lt hK0 ENNReal.ofReal_lt_top
+    unfold RectifiableVarifold.scaledLpNorm at h1
+    have h2 := (ENNReal.rpow_lt_top_iff_of_pos (by positivity : (0 : ℝ) < 1 / p)).mp h1
+    have ha : ENNReal.ofReal (ρ ^ (p - n)) ≠ 0 := by
+      rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]; exact Real.rpow_pos_of_pos hρ _
+    rcases ENNReal.mul_lt_top_iff.mp h2 with h | h | h
+    · exact h.2
+    · exact absurd h ha
+    · rw [h]; exact ENNReal.zero_lt_top
+  -- Step 1: constants.  `κ = (p - n)/(4p)`, `Λ = max(δ, 0)/κ + 1` (so `δ ≤ κΛ`),
+  -- `A = e^{Λ/2} Λ/2`, `β = 1 - n/p > 0` and `c(t) = A (t/r)^β`.
+  set κ := (p - n) / (4 * p) with hκ_def
+  have hκ : 0 < κ := div_pos (by linarith) (by linarith)
+  set Λ := max δ 0 / κ + 1 with hΛ_def
+  have hΛ : 0 < Λ := by positivity
+  have hκΛ : δ ≤ κ * Λ := by
+    have h1 : κ * (max δ 0 / κ) = max δ 0 := by field_simp
+    have h2 : κ * Λ = max δ 0 + κ := by rw [hΛ_def, mul_add, h1, mul_one]
+    have h3 := le_max_left δ 0
+    linarith
+  set A := Real.exp (Λ / 2) / 2 * Λ with hA_def
+  have hA0 : 0 ≤ A := by positivity
+  set β := 1 - (n : ℝ) / p with hβ_def
+  have hβ : 0 < β := by
+    have : (n : ℝ) / p < 1 := (div_lt_one hp0).mpr hp
+    linarith
+  set c : ℝ → ℝ := fun t => A * (t / r) ^ β with hc_def
+  have hc0 : ∀ t : ℝ, 0 < t → t ≤ r → 0 ≤ c t := fun t ht _ =>
+    mul_nonneg hA0 (Real.rpow_nonneg (div_nonneg ht.le hr.le) _)
+  have hclim : Tendsto c (𝓝[>] 0) (𝓝 0) := by
+    have h1 : Tendsto (fun t : ℝ => A * (t / r) ^ β) (𝓝 0) (𝓝 (A * ((0 : ℝ) / r) ^ β)) := by
+      apply Tendsto.const_mul
+      apply Tendsto.rpow_const
+      · exact (continuous_id.div_const r).tendsto 0
+      · exact Or.inr hβ.le
+    rw [zero_div, Real.zero_rpow hβ.ne', mul_zero] at h1
+    exact h1.mono_left nhdsWithin_le_nhds
+  -- Step 5: transfer the a.e. bound near `y` to the support point `y`.
+  refine Submission.aal_dge1_support_density_lower_bound n ℓ V.weight y (unitBallVolume n) r c hω
+    hr hysupp hfin2 hc0 hclim ?_ ε hε
+  -- Step 4: `Θⁿ(μ_V, x) = θ(x) ≥ 1` for `μ_V`-a.e. `x`.
+  have hts := (Submission.aal_tangent_structure n ℓ hn U hU V).2.2
+  filter_upwards [hts, hθ] with x hxd hx1 hxy t ht htr
+  -- Steps 2–3 at such `x ∈ B̆_r(y)`: the `Lᵖ` monotonicity identity on `(0, r]`, with `S = 2r`.
+  have hsubx : closedBall x (2 * r) ⊆ U := (hsub0 x hxy).trans hball0
+  have hfin : ∫⁻ z in closedBall x (2 * r), ‖H z‖ₑ ^ p ∂V.weight < ⊤ :=
+    lt_of_le_of_lt (lintegral_mono_set (hsub0 x hxy)) hI0
+  -- (K-mono): `K(x, r) ≤ K(0, ρ) ≤ δ ≤ κΛ`.
+  have hKx : V.scaledLpNorm H p x r ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) := by
+    have hKmono : V.scaledLpNorm H p x r ≤ V.scaledLpNorm H p 0 ρ := by
+      unfold RectifiableVarifold.scaledLpNorm
+      apply ENNReal.rpow_le_rpow _ (by positivity)
+      exact mul_le_mul'
+        (ENNReal.ofReal_le_ofReal (Real.rpow_le_rpow hr.le (by linarith) (by linarith)))
+        (lintegral_mono_set ((closedBall_subset_closedBall (by linarith)).trans (hsub0 x hxy)))
+    exact hKmono.trans (hK0.trans (ENNReal.ofReal_le_ofReal hκΛ))
+  obtain ⟨F, G, hF, hG⟩ := Submission.aal_lp_monotonicity n ℓ hn p hp U hU V H hH x r (2 * r) Λ
+    hr (by linarith) hΛ hsubx hfin hKx
+  -- `Φ(t) = F(t) t⁻ⁿ μ_V(B_t(x)) + F(t) - 1` is nondecreasing on `(0, r]`: `G > 0`, `∫ g ≥ 0`.
+  have hmono : ∀ s t : ℝ, 0 < s → s ≤ t → t ≤ r →
+      F s * ((V.weight (closedBall x s)).toReal / s ^ n) + (F s - 1) ≤
+        F t * ((V.weight (closedBall x t)).toReal / t ^ n) + (F t - 1) := by
+    intro s t hs hst htr
+    obtain ⟨hG1, -, -, hEq⟩ := hG s t hs hst htr
+    have hint : 0 ≤ ∫ z in closedBall x t \ closedBall x s,
+        ‖(z - x) - V.tangentProj z (z - x)‖ ^ 2 / ‖z - x‖ ^ (n + 2) ∂V.weight :=
+      integral_nonneg fun z => by positivity
+    have hGpos : 0 < G s t := lt_of_lt_of_le (Real.exp_pos _) hG1
+    have := mul_nonneg hGpos.le hint
+    linarith
+  -- `ω_n θ(x) ≤ (1 + c(t)) t⁻ⁿ μ_V(B_t(x)) + c(t)`, and `ω_n ≤ ω_n θ(x)`.
+  have key := Submission.aal_dge1_density_le_monotone_bound n ℓ V.weight x (unitBallVolume n) r A β
+    (V.mult x) F hω hr hβ (by linarith) (fun t ht htr => (hF t ht htr).2.2.1) hmono hxd t ht htr
+  have h1 : unitBallVolume n ≤ unitBallVolume n * V.mult x := le_mul_of_one_le_right hω.le hx1
+  show unitBallVolume n ≤ (1 + c t) * ((V.weight (closedBall x t)).toReal / t ^ n) + c t
+  simp only [hc_def]
+  linarith
 
 end Submission
 
