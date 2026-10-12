@@ -679,6 +679,255 @@ theorem Submission.bf_sphereGood_axisFree_measurableSet : ∀ (N : ℕ) (H : Sub
     have hhi : dist b a ≤ δ - 1 / ((j : ℝ) + 1) := by
       linarith [hj.trans_le (min_le_right _ _)]
     exact hno (Set.mem_iUnion.2 ⟨j, (θ, b), ⟨⟨⟨⟨hθS, hbA⟩, hlo⟩, hhi⟩, hg0⟩, rfl⟩)
+/-- **Double-cone outer measure on directions** (Steps 1–3 of the supplied proof of the
+sphere-good-directions lemma for the Besicovitch–Federer theorem, Simon Ch. 3, Theorem 3.6; cf.
+Dall'Alba, Theorem 4.16). With `y_x = p_H(x - a)` and the double cone
+`Λ(E') = {x : y_x ≠ 0, ±y_x/|y_x| ∈ E'}`, the outer measure
+`m(E') = sup_{0<r<δ} Hⁿ(A ∩ B_r(a) ∩ Λ(E')) / rⁿ` vanishes on the unit directions of `H` whose
+axis through `a` meets no `b ∈ A ∖ {a}` with `|b - a| < δ`, and its cap densities control the
+slab-cone densities of `A` at `a`, since
+`Z_θ(s) ⊆ Λ(S(H) ∩ B_{2s}(θ))` and `Λ(S(H) ∩ B_t(θ)) ⊆ Z_θ(t)`. -/
+theorem Submission.bf_sphereGood_doubleCone_outerMeasure : ∀ (N n : ℕ) (H : Submodule ℝ (Rn N)) (A : Set (Rn N)) (δ : ℝ), 0 < δ → ∀ a : Rn N, ∃ m : OuterMeasure (Rn N), m {θ | θ ∈ H ∧ ‖θ‖ = 1 ∧ ¬ ∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ H.starProjection (b - a) - inner ℝ (H.starProjection (b - a)) θ • θ = 0} = 0 ∧ ∀ θ ∈ H, ‖θ‖ = 1 → ((∀ c : ℝ, 0 < c → ∃ η : ℝ, 0 < η ∧ ∀ t : ℝ, 0 < t → t < η → m ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩ Metric.ball θ t) ≤ ENNReal.ofReal (c * t ^ n)) → ∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μHE[n] (A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ < s * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∧ ((∀ K : ℝ, ∀ η : ℝ, 0 < η → ∃ t : ℝ, 0 < t ∧ t < η ∧ ENNReal.ofReal (K * t ^ n) < m ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩ Metric.ball θ t)) → ∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μHE[n] (A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ < s * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r))) := by
+  intro N n H A δ hδ a
+  -- Step 0: `d(v, θ) = |v - (v·θ)θ|` is the distance from `v` to the line `ℝθ`.
+  have perp_smul : ∀ (θ v : Rn N) (c : ℝ),
+      c • v - inner ℝ (c • v) θ • θ = c • (v - inner ℝ v θ • θ) := by
+    intro θ v c
+    rw [real_inner_smul_left, smul_sub, smul_smul]
+  have perp_neg : ∀ θ v : Rn N, -v - inner ℝ (-v) θ • θ = -(v - inner ℝ v θ • θ) := by
+    intro θ v
+    rw [inner_neg_left, neg_smul]
+    abel
+  -- `d(v, θ) ≤ |v - θ|` for a unit vector `θ`.
+  have perp_le : ∀ θ v : Rn N, ‖θ‖ = 1 → ‖v - inner ℝ v θ • θ‖ ≤ ‖v - θ‖ := by
+    intro θ v hθ
+    have h1 : ‖v - inner ℝ v θ • θ‖ ^ 2 = ‖v‖ ^ 2 - (inner ℝ v θ) ^ 2 := by
+      rw [norm_sub_sq_real, real_inner_smul_right, norm_smul, Real.norm_eq_abs, mul_pow, sq_abs,
+        hθ]
+      ring
+    have h2 : ‖v - θ‖ ^ 2 = ‖v‖ ^ 2 - 2 * inner ℝ v θ + 1 := by
+      rw [norm_sub_sq_real, hθ]
+      ring
+    have h3 : ‖v - inner ℝ v θ • θ‖ ^ 2 ≤ ‖v - θ‖ ^ 2 := by
+      rw [h1, h2]
+      nlinarith [sq_nonneg (inner ℝ v θ - 1)]
+    nlinarith [norm_nonneg (v - inner ℝ v θ • θ), norm_nonneg (v - θ)]
+  -- `|ξ - θ| ≤ 2 d(ξ, θ)` for unit vectors `ξ, θ` with `ξ·θ ≥ 0`.
+  have sub_le_two_perp : ∀ θ ξ : Rn N, ‖θ‖ = 1 → ‖ξ‖ = 1 → 0 ≤ inner ℝ ξ θ →
+      ‖ξ - θ‖ ≤ 2 * ‖ξ - inner ℝ ξ θ • θ‖ := by
+    intro θ ξ hθ hξ hpos
+    have h1 : ‖ξ - inner ℝ ξ θ • θ‖ ^ 2 = 1 - (inner ℝ ξ θ) ^ 2 := by
+      rw [norm_sub_sq_real, real_inner_smul_right, norm_smul, Real.norm_eq_abs, mul_pow, sq_abs,
+        hθ, hξ]
+      ring
+    have h2 : ‖ξ - θ‖ ^ 2 = 2 - 2 * inner ℝ ξ θ := by
+      rw [norm_sub_sq_real, hθ, hξ]
+      ring
+    have hle : inner ℝ ξ θ ≤ 1 := by
+      have := real_inner_le_norm ξ θ
+      rw [hθ, hξ] at this
+      linarith
+    have h3 : ‖ξ - θ‖ ^ 2 ≤ (2 * ‖ξ - inner ℝ ξ θ • θ‖) ^ 2 := by
+      rw [mul_pow, h1, h2]
+      nlinarith [mul_nonneg (sub_nonneg.2 hle) (by linarith : (0 : ℝ) ≤ 1 + 2 * inner ℝ ξ θ)]
+    nlinarith [norm_nonneg (ξ - θ), norm_nonneg (ξ - inner ℝ ξ θ • θ)]
+  -- Step 1: the double cone `Λ(E')` over a set of directions `E'`, with vertex `a`.
+  obtain ⟨Λ, hΛ⟩ : ∃ Λ : Set (Rn N) → Set (Rn N), ∀ (E' : Set (Rn N)) (x : Rn N),
+      x ∈ Λ E' ↔ H.starProjection (x - a) ≠ 0 ∧
+        (‖H.starProjection (x - a)‖⁻¹ • H.starProjection (x - a) ∈ E' ∨
+          -(‖H.starProjection (x - a)‖⁻¹ • H.starProjection (x - a)) ∈ E') :=
+    ⟨fun E' ↦ {x | H.starProjection (x - a) ≠ 0 ∧
+      (‖H.starProjection (x - a)‖⁻¹ • H.starProjection (x - a) ∈ E' ∨
+        -(‖H.starProjection (x - a)‖⁻¹ • H.starProjection (x - a)) ∈ E')}, fun _ _ ↦ Iff.rfl⟩
+  have Λ_mono : ∀ {E₁ E₂ : Set (Rn N)}, E₁ ⊆ E₂ → Λ E₁ ⊆ Λ E₂ := by
+    intro E₁ E₂ h x hx
+    rw [hΛ] at hx ⊢
+    obtain ⟨hx0, hx | hx⟩ := hx
+    · exact ⟨hx0, Or.inl (h hx)⟩
+    · exact ⟨hx0, Or.inr (h hx)⟩
+  have Λ_iUnion : ∀ s : ℕ → Set (Rn N), Λ (⋃ i, s i) = ⋃ i, Λ (s i) := by
+    intro s
+    ext x
+    simp only [hΛ, mem_iUnion]
+    constructor
+    · rintro ⟨hx0, ⟨i, hi⟩ | ⟨i, hi⟩⟩
+      · exact ⟨i, hx0, Or.inl hi⟩
+      · exact ⟨i, hx0, Or.inr hi⟩
+    · rintro ⟨i, hx0, hi | hi⟩
+      · exact ⟨hx0, Or.inl ⟨i, hi⟩⟩
+      · exact ⟨hx0, Or.inr ⟨i, hi⟩⟩
+  have Λ_empty : Λ ∅ = ∅ := by
+    ext x
+    simp [hΛ]
+  -- Step 2: the outer measure `m(E') = sup_{0<r<δ} Hⁿ(A ∩ B_r(a) ∩ Λ(E')) / rⁿ`.
+  obtain ⟨m, hm⟩ : ∃ m : OuterMeasure (Rn N), ∀ E' : Set (Rn N),
+      m E' = ⨆ r ∈ Set.Ioo (0 : ℝ) δ,
+        μHE[n] (A ∩ Metric.ball a r ∩ Λ E') / ENNReal.ofReal (r ^ n) := by
+    refine ⟨{ measureOf := fun E' ↦ ⨆ r ∈ Set.Ioo (0 : ℝ) δ,
+                μHE[n] (A ∩ Metric.ball a r ∩ Λ E') / ENNReal.ofReal (r ^ n)
+              empty := ?_
+              mono := ?_
+              iUnion_nat := ?_ }, fun _ ↦ rfl⟩
+    · simp [Λ_empty]
+    · intro s₁ s₂ h
+      exact iSup₂_mono fun r _ ↦
+        ENNReal.div_le_div_right (measure_mono (inter_subset_inter_right _ (Λ_mono h))) _
+    · intro s _
+      refine iSup₂_le fun r hr ↦ ?_
+      rw [Λ_iUnion, inter_iUnion]
+      calc μHE[n] (⋃ i, A ∩ Metric.ball a r ∩ Λ (s i)) / ENNReal.ofReal (r ^ n)
+          ≤ (∑' i, μHE[n] (A ∩ Metric.ball a r ∩ Λ (s i))) / ENNReal.ofReal (r ^ n) :=
+            ENNReal.div_le_div_right (measure_iUnion_le _) _
+        _ = ∑' i, μHE[n] (A ∩ Metric.ball a r ∩ Λ (s i)) / ENNReal.ofReal (r ^ n) := by
+            simp only [div_eq_mul_inv, ENNReal.tsum_mul_right]
+        _ ≤ ∑' i, ⨆ r ∈ Set.Ioo (0 : ℝ) δ,
+              μHE[n] (A ∩ Metric.ball a r ∩ Λ (s i)) / ENNReal.ofReal (r ^ n) :=
+            ENNReal.tsum_le_tsum fun i ↦ le_iSup₂_of_le r hr le_rfl
+  refine ⟨m, ?_, ?_⟩
+  · -- Step 3: no point of `A ∩ B_r(a)` lies in the double cone over the axis-free directions.
+    rw [hm]
+    refine le_antisymm (iSup₂_le fun r hr ↦ ?_) zero_le
+    have hnull : A ∩ Metric.ball a r ∩ Λ {θ | θ ∈ H ∧ ‖θ‖ = 1 ∧ ¬ ∃ b ∈ A, b ≠ a ∧
+        dist b a < δ ∧ H.starProjection (b - a) - inner ℝ (H.starProjection (b - a)) θ • θ = 0}
+        = ∅ := by
+      refine eq_empty_of_forall_notMem ?_
+      rintro x ⟨⟨hxA, hxr⟩, hxΛ⟩
+      rw [hΛ] at hxΛ
+      obtain ⟨hy0, hξ⟩ := hxΛ
+      have hxa : x ≠ a := by
+        intro h
+        apply hy0
+        rw [h, sub_self, map_zero]
+      have hdist : dist x a < δ := (Metric.mem_ball.1 hxr).trans hr.2
+      set y := H.starProjection (x - a) with hy
+      have hyn : ‖y‖ ≠ 0 := norm_ne_zero_iff.2 hy0
+      have hcoef : ‖y‖⁻¹ * ‖y‖ ^ 2 * ‖y‖⁻¹ = 1 := by field_simp
+      have hcol1 : y - inner ℝ y (‖y‖⁻¹ • y) • (‖y‖⁻¹ • y) = 0 := by
+        rw [real_inner_smul_right, real_inner_self_eq_norm_sq, smul_smul, hcoef, one_smul,
+          sub_self]
+      have hcol2 : y - inner ℝ y (-(‖y‖⁻¹ • y)) • (-(‖y‖⁻¹ • y)) = 0 := by
+        rw [inner_neg_right, real_inner_smul_right, real_inner_self_eq_norm_sq, neg_smul, smul_neg,
+          neg_neg, smul_smul, hcoef, one_smul, sub_self]
+      rcases hξ with hξ | hξ
+      · exact hξ.2.2 ⟨x, hxA, hxa, hdist, hcol1⟩
+      · exact hξ.2.2 ⟨x, hxA, hxa, hdist, hcol2⟩
+    rw [hnull, measure_empty, ENNReal.zero_div]
+  · intro θ hθH hθ1
+    refine ⟨fun hα c hc ↦ ?_, fun hβ K ε hε ↦ ?_⟩
+    · -- Step 5: small caps give small slab cones, via `Z_θ(s) ⊆ Λ(S(H) ∩ B_{2s}(θ))`.
+      obtain ⟨η, hη, hηt⟩ := hα (c / 2 ^ n) (div_pos hc (by positivity))
+      refine ⟨η / 2, half_pos hη, fun s hs hsε r hr hrδ ↦ ?_⟩
+      have hrn : ENNReal.ofReal (r ^ n) ≠ 0 := by
+        rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+        exact pow_pos hr n
+      have hsub : A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖
+          < s * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r) ⊆
+          A ∩ Metric.ball a r ∩ Λ ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩ Metric.ball θ (2 * s)) := by
+        rintro x ⟨hxA, hxZ, hxr⟩
+        refine ⟨⟨hxA, hxr⟩, ?_⟩
+        have hx' : ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ <
+            s * ‖H.starProjection (x - a)‖ := hxZ
+        have hyH : H.starProjection (x - a) ∈ H := H.starProjection_apply_mem _
+        rw [hΛ]
+        set y := H.starProjection (x - a) with hy
+        have hy0 : y ≠ 0 := by
+          intro h0
+          rw [h0] at hx'
+          simp at hx'
+        have hyn : 0 < ‖y‖ := norm_pos_iff.2 hy0
+        set w : Rn N := ‖y‖⁻¹ • y with hw
+        have hwH : w ∈ H := H.smul_mem _ hyH
+        have hw1 : ‖w‖ = 1 := by
+          rw [hw, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hyn.ne']
+        have hdw : ‖w - inner ℝ w θ • θ‖ < s := by
+          rw [hw, perp_smul, norm_smul, norm_inv, norm_norm, inv_mul_lt_iff₀ hyn]
+          linarith [hx', mul_comm s ‖y‖]
+        refine ⟨hy0, ?_⟩
+        rcases le_or_gt 0 (inner ℝ w θ) with hpos | hneg
+        · left
+          refine ⟨⟨hwH, hw1⟩, ?_⟩
+          rw [Metric.mem_ball, dist_eq_norm]
+          calc ‖w - θ‖ ≤ 2 * ‖w - inner ℝ w θ • θ‖ := sub_le_two_perp θ w hθ1 hw1 hpos
+            _ < 2 * s := by linarith
+        · right
+          refine ⟨⟨H.neg_mem hwH, by rw [norm_neg, hw1]⟩, ?_⟩
+          rw [Metric.mem_ball, dist_eq_norm]
+          have hpos' : 0 ≤ inner ℝ (-w) θ := by
+            rw [inner_neg_left]
+            linarith
+          calc ‖-w - θ‖ ≤ 2 * ‖-w - inner ℝ (-w) θ • θ‖ :=
+                sub_le_two_perp θ (-w) hθ1 (by rw [norm_neg, hw1]) hpos'
+            _ = 2 * ‖w - inner ℝ w θ • θ‖ := by rw [perp_neg, norm_neg]
+            _ < 2 * s := by linarith
+      refine (measure_mono hsub).trans ?_
+      -- `Hⁿ(A ∩ B_r(a) ∩ Λ(E')) ≤ rⁿ m(E')` for `0 < r < δ`.
+      have hK : μHE[n] (A ∩ Metric.ball a r ∩ Λ ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩
+          Metric.ball θ (2 * s))) ≤
+          m ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩ Metric.ball θ (2 * s)) * ENNReal.ofReal (r ^ n) := by
+        rw [← ENNReal.div_le_iff hrn ENNReal.ofReal_ne_top, hm]
+        exact le_iSup₂_of_le (f := fun r (_ : r ∈ Set.Ioo (0 : ℝ) δ) ↦
+          μHE[n] (A ∩ Metric.ball a r ∩ Λ ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩
+            Metric.ball θ (2 * s))) / ENNReal.ofReal (r ^ n)) r ⟨hr, hrδ⟩ le_rfl
+      refine hK.trans ?_
+      calc m ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩ Metric.ball θ (2 * s)) * ENNReal.ofReal (r ^ n)
+          ≤ ENNReal.ofReal (c / 2 ^ n * (2 * s) ^ n) * ENNReal.ofReal (r ^ n) := by
+            gcongr
+            exact hηt (2 * s) (by positivity) (by linarith)
+        _ = ENNReal.ofReal (c * (r * s) ^ n) := by
+            rw [← ENNReal.ofReal_mul (by positivity)]
+            congr 1
+            rw [mul_pow, mul_pow]
+            field_simp
+    · -- Step 6: large caps give large slab cones, via `Λ(S(H) ∩ B_t(θ)) ⊆ Z_θ(t)`.
+      by_cases hK : K ≤ 0
+      · refine ⟨ε / 2, half_pos hε, by linarith, δ / 2, half_pos hδ, by linarith, ?_⟩
+        rw [ENNReal.ofReal_of_nonpos (mul_nonpos_of_nonpos_of_nonneg hK (by positivity))]
+        exact zero_le
+      · rw [not_le] at hK
+        obtain ⟨t, ht, htε, hlt⟩ := hβ K ε hε
+        rw [hm] at hlt
+        obtain ⟨r, hr, hlt'⟩ : ∃ r ∈ Set.Ioo (0 : ℝ) δ, ENNReal.ofReal (K * t ^ n) <
+            μHE[n] (A ∩ Metric.ball a r ∩ Λ ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩
+              Metric.ball θ t)) / ENNReal.ofReal (r ^ n) := by
+          simpa only [lt_iSup_iff, exists_prop] using hlt
+        have hrn : ENNReal.ofReal (r ^ n) ≠ 0 := by
+          rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+          exact pow_pos hr.1 n
+        refine ⟨t, ht, htε, r, hr.1, hr.2, ?_⟩
+        have h2 := (ENNReal.lt_div_iff_mul_lt (Or.inl hrn) (Or.inl ENNReal.ofReal_ne_top)).1 hlt'
+        rw [← ENNReal.ofReal_mul (mul_pos hK (pow_pos ht n)).le] at h2
+        have hsub : A ∩ Metric.ball a r ∩ Λ ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩ Metric.ball θ t) ⊆
+            A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ <
+              t * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r) := by
+          rintro x ⟨⟨hxA, hxr⟩, hxΛ⟩
+          refine ⟨hxA, ?_, hxr⟩
+          rw [hΛ] at hxΛ
+          obtain ⟨hy0, hξ⟩ := hxΛ
+          show ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ <
+            t * ‖H.starProjection (x - a)‖
+          set y := H.starProjection (x - a) with hy
+          have hyn : 0 < ‖y‖ := norm_pos_iff.2 hy0
+          set w : Rn N := ‖y‖⁻¹ • y with hw
+          have hyw : y = ‖y‖ • w := by
+            rw [hw, smul_smul, mul_inv_cancel₀ hyn.ne', one_smul]
+          have key : ‖y - inner ℝ y θ • θ‖ = ‖y‖ * ‖w - inner ℝ w θ • θ‖ := by
+            conv_lhs => rw [hyw]
+            rw [perp_smul, norm_smul, norm_norm]
+          have hdist : ‖w - inner ℝ w θ • θ‖ < t := by
+            rcases hξ with ⟨_, hb⟩ | ⟨_, hb⟩
+            · rw [Metric.mem_ball, dist_eq_norm] at hb
+              exact (perp_le θ w hθ1).trans_lt hb
+            · rw [Metric.mem_ball, dist_eq_norm] at hb
+              have := (perp_le θ (-w) hθ1).trans_lt hb
+              rwa [perp_neg, norm_neg] at this
+          rw [key]
+          calc ‖y‖ * ‖w - inner ℝ w θ • θ‖ < ‖y‖ * t := mul_lt_mul_of_pos_left hdist hyn
+            _ = t * ‖y‖ := mul_comm _ _
+        calc ENNReal.ofReal (K * (r * t) ^ n) = ENNReal.ofReal (K * t ^ n * r ^ n) := by
+              congr 1
+              ring
+          _ ≤ _ := h2.le
+          _ ≤ _ := measure_mono hsub
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
