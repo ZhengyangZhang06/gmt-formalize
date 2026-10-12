@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0f79a2adf59fc752689f9f8dd4104f803101e8f35256c5c9e1fb2decce0a53ae",
+  "git_delta": {
+    "base_commit": "dbd37a474c3c8ec1f452a2402cfebc51dec7da8d",
+    "candidate_commit": "b1056f9a9134d6f9a72dae4d837463bd738c8967",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_sp_sn_signed_simpleNVector_bound_ne_zero",
+    "diff_sha256": "1251c8701e29a4b7f640e4a7bc51a72b0246f8f60df6950bc97488c043250383",
+    "source_sha256": "9dffcbb347e7dbc09d6eea6c09fd73e78d7de3ddfb9e5884752a17d5ec93e771",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_sp_sn_signed_simpleNVector_bound_ne_zero",
+      "statement": "∀ (P n : ℕ) (τ : Fin n → Eucl P) (w : NVector (Eucl P) n), Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) → (∀ b : Covector (Eucl P) n, |w b| ≤ ‖b‖) ∧ w ≠ 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
