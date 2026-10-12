@@ -458,6 +458,116 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 5, proof of Lemma 2.6, (6)**, for an arbitrary subspace `T` and threshold `b > 0`,
+with `σ₀ = δρ` and `C₀ = 2ω_n(5/2)ⁿ`: if `G'` is the set of `y ∈ spt V` with
+`∫_{B_{s/2}(y)} |p_{T_x M} − p_T|² dμ_V ≤ b sⁿ` for all `s ∈ (0, σ₀/2]`, then
+`μ_V(B_{3σ₀/4}(0) \ G') ≤ (C₀/b) ∫_{B_{σ₀}(0)} |p_{T_x M} − p_T|² dμ_V`.
+
+Off the `μ_V`-null set `(spt μ_V)ᶜ`, a point `y` of `B_{3σ₀/4}(0) \ G'` is a bad point of `spt V`:
+some `s_y ∈ (0, σ₀/2]` has tilt above `b s_yⁿ` on `B_{s_y/2}(y)`.  The pinched density bound
+(`lip_approx_pinched_density`) gives `μ_V(B_{5s_y/2}(y)) ≤ 2ω_n(5s_y/2)ⁿ = C₀ s_yⁿ`, which is at most
+`C₀/b` times the tilt measure `Ψ = μ_V ⌞ |p_{T_x M} − p_T|²` of `B_{s_y/2}(y) ⊆ B_{σ₀}(0)`; the
+Vitali bound (`lip_approx_vitali_bound`) then gives `μ_V(bad set) ≤ (C₀/b) Ψ(B_{σ₀}(0))`, and
+`Ψ(B_{σ₀}(0))` is the tilt integral because the integrand is integrable on the compact ball
+`B_{σ₀}(0) ⊆ U` (`lip_approx_tangent_structure`). -/
+theorem lip_approx_good_set_complement : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p →
+    ∃ δ₀ C₀ : ℝ, 0 < δ₀ ∧ 0 ≤ C₀ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U →
+    ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₀ →
+    V.AllardHypotheses H p δ ρ → ∀ (T : Submodule ℝ (Amb n ℓ)) (b : ℝ), 0 < b →
+    V.weight (closedBall 0 (3 * (δ * ρ) / 4) \ {y | y ∈ V.support ∧ ∀ s : ℝ, 0 < s →
+      s ≤ δ * ρ / 2 → ∫ x in closedBall y (s / 2),
+        hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight ≤ b * s ^ n}) ≤
+    ENNReal.ofReal (C₀ / b * ∫ x in closedBall 0 (δ * ρ),
+      hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight) := by
+  intro n ℓ hn p hp
+  obtain ⟨δP, hδP, hδP8, hPD⟩ := Submission.lip_approx_pinched_density n ℓ hn p hp
+  have hω : 0 ≤ unitBallVolume n :=
+    div_nonneg (Real.rpow_nonneg Real.pi_pos.le _) (Real.Gamma_pos_of_pos (by positivity)).le
+  have hC₀ : 0 ≤ 2 * unitBallVolume n * (5 / 2 : ℝ) ^ n := by positivity
+  refine ⟨δP, 2 * unitBallVolume n * (5 / 2) ^ n, hδP, hC₀, ?_⟩
+  intro U hU V H δ ρ hδ hδδ hA T b hb
+  have hρ : 0 < ρ := hA.1
+  have hBU : closedBall (0 : Amb n ℓ) ρ ⊆ U := hA.2.2.2.2.1
+  have hδρ : 0 < δ * ρ := mul_pos hδ hρ
+  have hδρ8 : δ * ρ ≤ ρ / 8 := by nlinarith [hδδ.trans hδP8]
+  have hCb : 0 ≤ 2 * unitBallVolume n * (5 / 2 : ℝ) ^ n / b := div_nonneg hC₀ hb.le
+  -- The tilt integrand is integrable on `B_{δρ}(0) ⊆ U`, so on measurable subsets of this ball the
+  -- tilt measure `Ψ = μ_V ⌞ |p_{T_x M} − p_T|²` is the tilt integral.
+  have hWU : closedBall (0 : Amb n ℓ) (δ * ρ) ⊆ U :=
+    (closedBall_subset_closedBall (by linarith)).trans hBU
+  have hint : IntegrableOn (fun x => hsNormSq (V.tangentProj x - T.starProjection))
+      (closedBall (0 : Amb n ℓ) (δ * ρ)) V.weight :=
+    (Submission.lip_approx_tangent_structure n ℓ hn U hU V).2.1 T _ (isCompact_closedBall _ _) hWU
+  have hΨ : ∀ B : Set (Amb n ℓ), MeasurableSet B → B ⊆ closedBall 0 (δ * ρ) →
+      V.weight.withDensity (fun x => ENNReal.ofReal (hsNormSq (V.tangentProj x - T.starProjection)))
+        B = ENNReal.ofReal (∫ x in B, hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight) := by
+    intro B hB hBW
+    rw [withDensity_apply _ hB, ofReal_integral_eq_lintegral_ofReal (hint.mono_set hBW)
+      (Eventually.of_forall fun x => Finset.sum_nonneg fun i _ => sq_nonneg _)]
+  -- `S`: the points `y ∈ B_{3δρ/4}(0)` with a radius `s_y ∈ (0, δρ/2]` whose tilt on `B_{s_y/2}(y)`
+  -- exceeds `b s_yⁿ`.
+  obtain ⟨S, hS⟩ : ∃ S : Set (Amb n ℓ), S = {y | y ∈ closedBall (0 : Amb n ℓ) (3 * (δ * ρ) / 4) ∧
+      ∃ s : ℝ, 0 < s ∧ s ≤ δ * ρ / 2 ∧ b * s ^ n <
+        ∫ x in closedBall y (s / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight} :=
+    ⟨_, rfl⟩
+  have hrad : ∀ y, ∃ s : ℝ, y ∈ S → 0 < s ∧ s ≤ δ * ρ / 2 ∧ b * s ^ n <
+      ∫ x in closedBall y (s / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight := by
+    intro y
+    by_cases hy : y ∈ S
+    · rw [hS] at hy
+      obtain ⟨-, s, hs⟩ := hy
+      exact ⟨s, fun _ => hs⟩
+    · exact ⟨0, fun h => absurd h hy⟩
+  choose s hs using hrad
+  -- Pinched density on `B_{5s_y/2}(y)` and the Vitali bound with radii `s_y/2`, `W = B_{δρ}(0)`.
+  have hvit := Submission.lip_approx_vitali_bound (n + ℓ) V.weight
+    (V.weight.withDensity fun x => ENNReal.ofReal (hsNormSq (V.tangentProj x - T.starProjection)))
+    S (closedBall 0 (δ * ρ)) (fun y => s y / 2) (δ * ρ / 4)
+    (ENNReal.ofReal (2 * unitBallVolume n * (5 / 2) ^ n / b)) (fun y hy => by
+      have hy0 : dist y 0 ≤ 3 * (δ * ρ) / 4 := by
+        have hyS := hy
+        rw [hS] at hyS
+        exact hyS.1
+      obtain ⟨hs0, hs1, hs2⟩ := hs y hy
+      have hball : closedBall y (s y / 2) ⊆ closedBall 0 (δ * ρ) :=
+        closedBall_subset_closedBall' (by linarith)
+      refine ⟨by positivity, by linarith, hball, ?_⟩
+      have hy3 : ‖y‖ ≤ 3 * (δ * ρ) := by rw [← dist_zero_right]; linarith
+      calc V.weight (S ∩ closedBall y (5 * (s y / 2)))
+          ≤ V.weight (closedBall y (5 * (s y / 2))) := measure_mono inter_subset_right
+        _ ≤ ENNReal.ofReal (2 * unitBallVolume n * (5 * (s y / 2)) ^ n) :=
+          (hPD U hU V H δ ρ hδ hδδ hA y hy3 _ (by positivity) (by linarith)).1
+        _ = ENNReal.ofReal (2 * unitBallVolume n * (5 / 2) ^ n / b * (b * s y ^ n)) := by
+          congr 1
+          field_simp
+          ring
+        _ ≤ ENNReal.ofReal (2 * unitBallVolume n * (5 / 2) ^ n / b *
+            ∫ x in closedBall y (s y / 2),
+              hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight) :=
+          ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left hs2.le hCb)
+        _ = _ := by rw [ENNReal.ofReal_mul hCb, hΨ _ measurableSet_closedBall hball])
+  -- Up to the `μ_V`-null set `(spt μ_V)ᶜ`, the complement of the good set lies in `S`.
+  refine (measure_mono (μ := V.weight) (t := S ∪ V.weight.supportᶜ) ?_).trans ?_
+  · rintro y ⟨hy, hyG⟩
+    by_cases hys : y ∈ V.weight.support
+    · left
+      have hyU : y ∈ U := hBU (closedBall_subset_closedBall (by linarith) hy)
+      rw [hS]
+      refine ⟨hy, ?_⟩
+      by_contra hcon
+      exact hyG ⟨show y ∈ U ∩ V.weight.support from ⟨hyU, hys⟩,
+        fun t ht0 ht1 => not_lt.1 fun ht => hcon ⟨t, ht0, ht1, ht⟩⟩
+    · exact Or.inr hys
+  calc V.weight (S ∪ V.weight.supportᶜ) ≤ V.weight S + V.weight V.weight.supportᶜ :=
+        measure_union_le _ _
+    _ = V.weight S := by rw [Measure.measure_compl_support, add_zero]
+    _ ≤ _ := hvit
+    _ = _ := by rw [hΨ _ measurableSet_closedBall subset_rfl, ← ENNReal.ofReal_mul hCb]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
