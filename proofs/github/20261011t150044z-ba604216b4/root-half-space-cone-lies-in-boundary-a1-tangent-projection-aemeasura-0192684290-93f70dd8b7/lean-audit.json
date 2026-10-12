@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "480bc2a385d62de8cef2d2f9fd60d936adacdbcfab49aab7a4bd53221f1a6f3c",
+  "git_delta": {
+    "base_commit": "9ad135bd263a2ec21e926fa7bc2756fbdad8d225",
+    "candidate_commit": "fad2341d37df1dd3adc1ecea4db9a08ac1f874b4",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "c8907302ecabe373da0d43bbb03091d05c07c7609e218f764343b0aea49cb55e",
+    "source_sha256": "785a4ed21b82f25a1a3b7edce70504acee58982b9518ed1f98e5a08705d193de",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.continuous_blowUp_image_setIntegral",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∀ r : ℝ, 0 < r → Continuous (fun x : Euclid P => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n])",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
