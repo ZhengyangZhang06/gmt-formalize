@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1.weighted_diff_bound-a1",
+  "parent_id": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1",
+  "depth": 4,
+  "title": "L¹ comparison of two weighted integrals against a bounded test weight supported in a closed ball",
+  "statement": "Let P, n ∈ ℕ and H := μHE[n] on ℝ^P = Eucl P. Let M₁, M₂ ⊆ ℝ^P be H-null-measurable, θ₁, θ₂, φ : ℝ^P → ℝ, x ∈ ℝ^P and c, ρ, s, K ∈ ℝ. Assume: θ_i is H-integrable on M_i ∩ B̄_ρ(x) for i = 1, 2; φ is continuous; ‖φ(z)‖ ≤ K for every z; φ(z) = 0 for every z ∉ B̄_s(x); and s ≤ ρ. Then, in [0, ∞],\n‖∫_{M₂} φθ₂ dH − c·∫_{M₁} φθ₁ dH‖ₑ ≤ ofReal(K) · ∫⁻_{B̄_s(x)} ‖1_{M₂}θ₂ − c·1_{M₁}θ₁‖ₑ dH,\nwhere ∫_{M_i} denotes the Bochner set integral. No sign condition on θ_i, c or φ is assumed.",
+  "lean_statement": "∀ (P n : ℕ) (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ φ : Eucl P → ℝ) (x : Eucl P) (c ρ s K : ℝ), NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) → NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) → IntegrableOn θ₁ (M₁ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) → IntegrableOn θ₂ (M₂ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) → Continuous φ → (∀ z, ‖φ z‖ ≤ K) → (∀ z, z ∉ closedBall x s → φ z = 0) → s ≤ ρ → ‖(∫ z in M₂, φ z * θ₂ z ∂(μHE[n] : Measure (Eucl P))) - c * ∫ z in M₁, φ z * θ₁ z ∂(μHE[n] : Measure (Eucl P))‖ₑ ≤ ENNReal.ofReal K * ∫⁻ z in closedBall x s, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ∂(μHE[n] : Measure (Eucl P))",
+  "lean_name": "fiw_tl_tr_weighted_diff_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-weigh-bf77e528cf-a1"
+}

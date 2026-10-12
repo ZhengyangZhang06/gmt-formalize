@@ -359,6 +359,76 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- `L¹` comparison of two weighted integrals against a bounded continuous test weight `φ`
+vanishing off `B̄_s(x)`, `s ≤ ρ`: with `h = 1_{M₂} θ₂ - c 1_{M₁} θ₁`,
+`‖∫_{M₂} φ θ₂ - c ∫_{M₁} φ θ₁‖ₑ ≤ K · ∫⁻_{B̄_s(x)} ‖h‖ₑ`.
+Both integrals are integrals of `φ · 1_{M_i} θ_i = φ · 1_{M_i ∩ B̄_ρ(x)} θ_i`, which are
+integrable, so the difference is `∫ φ h`, and `‖φ h‖ₑ ≤ 1_{B̄_s(x)} K ‖h‖ₑ` pointwise. -/
+theorem Submission.fiw_tl_tr_weighted_diff_bound :
+    ∀ (P n : ℕ) (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ φ : Eucl P → ℝ) (x : Eucl P) (c ρ s K : ℝ),
+      NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) →
+      NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) →
+      IntegrableOn θ₁ (M₁ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) →
+      IntegrableOn θ₂ (M₂ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) →
+      Continuous φ → (∀ z, ‖φ z‖ ≤ K) → (∀ z, z ∉ closedBall x s → φ z = 0) → s ≤ ρ →
+      ‖(∫ z in M₂, φ z * θ₂ z ∂(μHE[n] : Measure (Eucl P))) -
+          c * ∫ z in M₁, φ z * θ₁ z ∂(μHE[n] : Measure (Eucl P))‖ₑ ≤
+        ENNReal.ofReal K * ∫⁻ z in closedBall x s,
+          ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ∂(μHE[n] : Measure (Eucl P)) := by
+  intro P n M₁ M₂ θ₁ θ₂ φ x c ρ s K hM₁ hM₂ hθ₁ hθ₂ hφ hφK hφs hsρ
+  set μ : Measure (Eucl P) := μHE[n]
+  -- `φ` vanishes off `B̄_ρ(x) ⊇ B̄_s(x)`.
+  have hφρ : ∀ z, z ∉ closedBall x ρ → φ z = 0 := fun z hz =>
+    hφs z fun hzs => hz (closedBall_subset_closedBall hsρ hzs)
+  -- `∫_M φ θ = ∫ φ · 1_M θ`, and `φ · 1_M θ = φ · 1_{M ∩ B̄_ρ(x)} θ` is integrable.
+  have key : ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ), NullMeasurableSet M μ →
+      IntegrableOn θ (M ∩ closedBall x ρ) μ →
+      (∫ z in M, φ z * θ z ∂μ) = ∫ z, φ z * M.indicator θ z ∂μ ∧
+        Integrable (fun z => φ z * M.indicator θ z) μ := by
+    intro M θ hM hθ
+    refine ⟨?_, ?_⟩
+    · rw [← integral_indicator₀ hM]
+      congr 1
+      funext z
+      exact indicator_mul_right M φ θ
+    · have hint : Integrable ((M ∩ closedBall x ρ).indicator θ) μ :=
+        hθ.integrable_indicator₀ (hM.inter measurableSet_closedBall.nullMeasurableSet)
+      refine (hint.bdd_mul hφ.aestronglyMeasurable (ae_of_all _ hφK)).congr
+        (ae_of_all _ fun z => ?_)
+      by_cases hz : z ∈ closedBall x ρ
+      · by_cases hzM : z ∈ M
+        · simp [indicator_of_mem hzM, indicator_of_mem (mem_inter hzM hz)]
+        · simp [indicator_of_notMem hzM, indicator_of_notMem fun h : z ∈ M ∩ _ => hzM h.1]
+      · simp [hφρ z hz]
+  obtain ⟨h₁eq, h₁int⟩ := key M₁ θ₁ hM₁ hθ₁
+  obtain ⟨h₂eq, h₂int⟩ := key M₂ θ₂ hM₂ hθ₂
+  -- Linearity: the difference is `∫ φ · (1_{M₂} θ₂ - c 1_{M₁} θ₁)`.
+  have hlin : (∫ z in M₂, φ z * θ₂ z ∂μ) - c * ∫ z in M₁, φ z * θ₁ z ∂μ =
+      ∫ z, φ z * (M₂.indicator θ₂ z - c * M₁.indicator θ₁ z) ∂μ := by
+    rw [h₁eq, h₂eq, ← integral_const_mul, ← integral_sub h₂int (h₁int.const_mul c)]
+    congr 1
+    funext z
+    ring
+  rw [hlin]
+  calc ‖∫ z, φ z * (M₂.indicator θ₂ z - c * M₁.indicator θ₁ z) ∂μ‖ₑ
+      ≤ ∫⁻ z, ‖φ z * (M₂.indicator θ₂ z - c * M₁.indicator θ₁ z)‖ₑ ∂μ :=
+        enorm_integral_le_lintegral_enorm _
+    _ ≤ ∫⁻ z, (closedBall x s).indicator
+          (fun z => ENNReal.ofReal K * ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ) z ∂μ := by
+        refine lintegral_mono fun z => ?_
+        by_cases hz : z ∈ closedBall x s
+        · rw [indicator_of_mem hz, enorm_mul]
+          gcongr
+          rw [← ofReal_norm]
+          exact ENNReal.ofReal_le_ofReal (hφK z)
+        · simp [hφs z hz]
+    _ = ∫⁻ z in closedBall x s,
+          ENNReal.ofReal K * ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ∂μ :=
+        lintegral_indicator measurableSet_closedBall _
+    _ = ENNReal.ofReal K *
+          ∫⁻ z in closedBall x s, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ∂μ :=
+        lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
