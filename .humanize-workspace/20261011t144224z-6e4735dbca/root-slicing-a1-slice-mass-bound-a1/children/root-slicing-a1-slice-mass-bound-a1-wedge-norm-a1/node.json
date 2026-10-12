@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1",
+  "depth": 3,
+  "title": "Euclidean coefficient norm of a wedge with a 1-covector: |α∧γ| ≤ ‖α‖·|γ| (parent Step 3(iv), R5)",
+  "statement": "For all P, m ∈ ℕ, every continuous linear functional α : ℝ^P → ℝ and every m-covector γ on ℝ^P (Covector (Eucl P) m), the (m+1)-covector α∧γ := alternatizeUncurryFin(α.smulRight γ), given by (α∧γ)(w_0,…,w_m) = Σ_{i=0}^{m} (−1)^i α(w_i)·γ(w_0,…,ŵ_i,…,w_m), satisfies covectorEuclideanNorm(α∧γ) ≤ ‖α‖·covectorEuclideanNorm(γ). Here ‖α‖ is the operator norm and, for a k-covector φ, covectorEuclideanNorm(φ) = (Σ_{I strictly increasing} φ(e_{I(0)},…,e_{I(k−1)})²)^{1/2} with e the standard basis.",
+  "lean_statement": "∀ (P m : ℕ) (α : Eucl P →L[ℝ] ℝ) (γ : Covector (Eucl P) m), covectorEuclideanNorm (ContinuousAlternatingMap.alternatizeUncurryFin (α.smulRight γ)) ≤ ‖α‖ * covectorEuclideanNorm γ",
+  "lean_name": "slicing_mb_wedge_norm_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1-a1"
+}

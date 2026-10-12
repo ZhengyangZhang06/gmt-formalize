@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "slicing_mb_",
+        "covectorEuclideanNorm|massAdmissibleOn|def GeometricCurrentOn.massOn|abbrev Covector|abbrev DifferentialForm|def IsTestForm|abbrev exteriorDerivative|abbrev TestFormOn|structure GeometricCurrentOn|boundary_apply|tsupport_exteriorDerivative_subset|abbrev NVector",
+        "theorem norm_deriv_le_of_lipschitz|theorem LipschitzOnWith.extend_real|theorem LipschitzWith.ae_differentiableAt|theorem Monotone.ae_differentiableAt|theorem MonotoneOn.intervalIntegrable_deriv|theorem MonotoneOn.intervalIntegral_deriv_mem_uIcc|theorem liminf_const_mul_of_ne_top|theorem hasDerivAt_integral_of_dominated_loc_of_lip|contDiff_convolution_left|theorem alternatizeUncurryFin_apply|theorem tendsto_measure_biInter_gt|theorem Orthonormal.exists_orthonormalBasis_extension_of_card_eq",
+        "tendsto_integral_filter_of_dominated_convergence|tendsto_integral_of_dominated_convergence",
+        "#check (ContinuousAlternatingMap.alternatizeUncurryFin (α.smulRight γ) : Covector (Eucl P) (m + 1))",
+        "#print axioms SliceMassAudit.assembly",
+        "#print axioms MonotoneOn.intervalIntegral_deriv_mem_uIcc"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1/decomposition-v5.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/swarm-configs/97b6c024c2834d99b1a86982198ed548.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        "/tmp/slice_mass_independent_audit_z6jcos49/Types.lean",
+        "/tmp/slice_mass_independent_audit_z6jcos49/Instances.lean",
+        "/tmp/slice_mass_independent_audit_z6jcos49/Assembly.lean",
+        "/tmp/slice_mass_independent_audit_z6jcos49/LibraryAxioms.lean",
+        "/tmp/slice_mass_independent_audit_z6jcos49/ProofNames.lean"
+      ],
+      "conclusion": "The seven-way split is appropriate for the selected slicing_mass_bound contract. Dependencies are acyclic and correctly directed; every child contributes to this parent. The active configuration permits the proposed expansion. No proposed name occurs in the snapshot project or current 200-node DAG, and no previously accepted declaration is being reused. All seven names are bare identifiers, and all seven one-line propositions independently elaborate against a freshly compiled frozen contract without child implementations. The wedge degree, operator norms and C∞ index resolve correctly. Sixteen inspected Mathlib files match the pinned snapshot byte-for-byte. The exact parent assembles from its two frozen representation dependencies and the pointwise/density children with only propext, Classical.choice and Quot.sound; key library-lemma axiom checks also pass. All proof-reference name checks pass. The supplied scratch file additionally checked the nonexistent, uncited Monotone.liminf_le_limsup; that unrelated check supplies no evidence and affects none of these proofs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including endpoint derivative vanishing. The explicit parameter choice, normalized convolution, open plateaus and preserved Lipschitz constant establish every conclusion. The proof is complete and independent."
+    },
+    {
+      "key": "wedge_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type uses the intended alternating-sum wedge and continuous-linear-map operator norm. Counting and slotwise Parseval establish basis independence before the adapted-basis estimate. The proof covers zero functionals, degree zero and degrees exceeding the ambient dimension without additional hypotheses."
+    },
+    {
+      "key": "smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All local Lipschitz, openness, compactness and ambient almost-everywhere derivative hypotheses match. McShane extension, localized mollification, translation of exceptional null sets and dominated differentiation prove both bounds. The argument supports every stated dimension and nonnegative constant."
+    },
+    {
+      "key": "leibniz_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the required test forms with correct topological supports, establishes the exterior-derivative product rule and applies representation integrability, normalization and the declared wedge child. It needs neither openness of U nor local finiteness of μ beyond the stated assumptions."
+    },
+    {
+      "key": "cutoff_defect_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement follows from its two declared children. Representation integrability justifies dominated convergence, while μ(tsupport ω) < ∞ justifies continuity from above. Nonnegativity of c follows from the derivative bound, and the argument remains valid for arbitrary h. No extra measurability assumption on f outside W is needed."
+    },
+    {
+      "key": "pointwise",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Unpacking IsSlice gives precisely the restricted integrals and sign used in the proof. Dominated convergence applies along the full right-neighborhood filter; finite-constant liminf algebra includes LW = 0. Letting ε decrease and taking the stated mass supremum proves the bound for every t, including infinite-density cases."
+    },
+    {
+      "key": "density_majorant",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof handles infinite interval mass separately. Finite restriction yields a globally real-valued, right-continuous monotone distribution function. The wider-band comparison handles closed endpoints and atoms; rational infima establish Borel measurability, and almost-everywhere differentiation plus the derivative integral bound proves the exact conclusion without assuming global finiteness or σ-finiteness."
+    }
+  ],
+  "required_changes": []
+}
