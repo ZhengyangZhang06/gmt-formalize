@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.patching-a1.regraph-a1",
+  "parent_id": "root.allard_any_radius-a1.patching-a1",
+  "depth": 3,
+  "title": "Re-graphing a small-slope C^1 graph over a nearby n-plane T0 (slope <= 1/7)",
+  "statement": "Let q, q0 be linear isometries of R^{n+l} and T0 := rotatedPlane q0. Let v : R^n -> R^l, y in R^{n+l}, c in R^n and d in R^l with y = q0(graphPoint c d). Let r > 0, 0 <= eps <= 1/24 and 0 <= vartheta <= 1/12. Assume:\n- v is C^1 on the closed ball B_r(0) and v(0) = 0;\n- the operator norm of fderivWithin v B_r(0) x is <= eps for every x in B_r(0);\n- infDist(q(graphPoint x 0), T0) <= vartheta |x| for every x in R^n.\nThen there is f : R^n -> R^l such that:\n(a) f is C^1 on the open ball B°_{r/2}(c), and |fderiv f w| <= 1/7 there;\n(b) for every w in the closed ball B_{r/2}(c) there is x in B_r(0) with y + q(graphPoint x (v x)) = q0(graphPoint w (f w)) and |graphPoint x (v x)| <= r;\n(c) if x is in B_r(0), w is in B_{r/2}(c), b is in R^l, and y + q(graphPoint x (v x)) = q0(graphPoint w b), then b = f(w).",
+  "lean_statement": "∀ {n ℓ : ℕ} (q q₀ : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (v : Rn n → Rn ℓ) (y : Amb n ℓ) (c : Rn n) (d : Rn ℓ) (r ε ϑ : ℝ), 0 < r → 0 ≤ ε → ε ≤ 1 / 24 → 0 ≤ ϑ → ϑ ≤ 1 / 12 → ContDiffOn ℝ 1 v (closedBall 0 r) → v 0 = 0 → (∀ x ∈ closedBall (0 : Rn n) r, ‖fderivWithin ℝ v (closedBall 0 r) x‖ ≤ ε) → (∀ x : Rn n, infDist (q (graphPoint x 0)) (rotatedPlane q₀ : Set (Amb n ℓ)) ≤ ϑ * ‖x‖) → y = q₀ (graphPoint c d) → ∃ f : Rn n → Rn ℓ, ContDiffOn ℝ 1 f (ball c (r / 2)) ∧ (∀ w ∈ ball c (r / 2), ‖fderiv ℝ f w‖ ≤ 1 / 7) ∧ (∀ w ∈ closedBall c (r / 2), ∃ x ∈ closedBall (0 : Rn n) r, y + q (graphPoint x (v x)) = q₀ (graphPoint w (f w)) ∧ ‖graphPoint x (v x)‖ ≤ r) ∧ (∀ x ∈ closedBall (0 : Rn n) r, ∀ (w : Rn n) (b : Rn ℓ), y + q (graphPoint x (v x)) = q₀ (graphPoint w b) → w ∈ closedBall c (r / 2) → b = f w)",
+  "lean_name": "arp_regraph_over_rotatedPlane",
+  "depends_on": [
+    "root.allard_any_radius-a1.patching-a1.rotated_coords-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.patching-a1.rotated_coords-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-regraph-a1-a1"
+}
