@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0ed2d45fe304d2791041fd0ecd2fd2f3fdf4e5d04a53d7c27d7514c7b556f60e",
+  "git_delta": {
+    "base_commit": "a2fecf2bb63f89d0347a9fd2b3667f77c878a7d8",
+    "candidate_commit": "3f2c933122da88aeed25382e703dd86ca397d552",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "e40a8fa78e36cdda5f65d90cd12485c76be45d79304c9ec16cda5417194e5953",
+    "source_sha256": "f043f7a450a82296621344bcd4047376d17c2fe324802444c2b7a41fc74046f9",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_carrier_nullMeasurable",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), M ⊆ U → V.weight Mᶜ = 0 → (∀ x ∈ M, 0 < θ x ∧ HasDensity n V.weight x (ENNReal.ofReal (θ x))) → NullMeasurableSet M μHE[n]",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
