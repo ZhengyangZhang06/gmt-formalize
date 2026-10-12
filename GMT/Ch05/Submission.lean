@@ -632,6 +632,34 @@ theorem allard52_am_cc_cutoff_integral_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Meas
   · refine Eventually.of_forall fun x s hs => ?_
     have hs0 : 0 < s := lt_trans (half_pos ht) hs.1
     exact (hderiv ‖x - y‖ s hs0.ne').mul_const (f x)
+/-- **Simon Ch. 4, 3.3–3.4 and 4.1** (step 2(c) of the annular monotonicity argument: calculus in
+the scale of radial cutoff integrals, where `s ∂ₛ φ(r/s) = -(r/s) φ'(r/s)`).  Let `f` be
+`μ`-integrable on `B_S(y)`, let `φ` be `C¹` with `φ = 0` on `[T, ∞)`, `T > 0`, and let `t > 0`
+with `T t < S`; write `r = ‖x − y‖`.  Then
+(a) `s ↦ ∫ φ(r/s) f dμ` and (b) `s ↦ ∫ (r/s) φ'(r/s) f dμ` are continuous at `t`, and
+(c) `s ↦ ∫ φ(r/s) f dμ` has derivative `-(∫ (r/t) φ'(r/t) f dμ)/t` at `t`.
+(a) and (b) are `allard52_am_cc_profile_integral_continuousAt` for the continuous profiles
+`g = φ` and `g(u) = u φ'(u)`, both zero on `(T, ∞)` (`φ'` vanishes there because `φ` vanishes on
+that open set); (c) is `allard52_am_cc_cutoff_integral_hasDerivAt`. -/
+theorem allard52_am_cutoff_integral_calculus : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (f : Amb n ℓ → ℝ) (φ : ℝ → ℝ) (S T t : ℝ), IntegrableOn f (closedBall y S) μ → ContDiff ℝ 1 φ → 0 < T → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → ContinuousAt (fun s => ∫ x, φ (‖x - y‖ / s) * f x ∂μ) t ∧ ContinuousAt (fun s => ∫ x, ‖x - y‖ / s * deriv φ (‖x - y‖ / s) * f x ∂μ) t ∧ HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) * f x ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * f x ∂μ) / t) t := by
+  intro n ℓ μ y f φ S T t hf hφ hT hφT ht hTt
+  -- `φ' = 0` on `(T, ∞)`: near each `u > T`, `φ` agrees with the zero function.
+  have hdφT : ∀ u : ℝ, T < u → deriv φ u = 0 := fun u hu => by
+    have h : φ =ᶠ[𝓝 u] fun _ => (0 : ℝ) := by
+      filter_upwards [lt_mem_nhds hu] with v hv
+      exact hφT v hv.le
+    exact h.deriv_eq.trans (deriv_const u 0)
+  refine ⟨?_, ?_, ?_⟩
+  -- (a): the profile `g = φ`, continuous as `φ` is `C¹`, and zero on `(T, ∞) ⊆ [T, ∞)`.
+  · exact Submission.allard52_am_cc_profile_integral_continuousAt n ℓ μ y f φ S T t hf
+      hφ.continuous hT (fun u hu => hφT u hu.le) ht hTt
+  -- (b): the profile `g(u) = u φ'(u)`, continuous as `φ'` is; `g(r/s) f` is the integrand.
+  · exact Submission.allard52_am_cc_profile_integral_continuousAt n ℓ μ y f
+      (fun u => u * deriv φ u) S T t hf (continuous_id.mul hφ.continuous_deriv_one) hT
+      (fun u hu => (congrArg (u * ·) (hdφT u hu)).trans (mul_zero u)) ht hTt
+  -- (c): differentiation in the scale under the integral sign.
+  · exact Submission.allard52_am_cc_cutoff_integral_hasDerivAt n ℓ μ y f φ S T t hf hφ hT hφT
+      ht hTt
 
 end Submission
 
