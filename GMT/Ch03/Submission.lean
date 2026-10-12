@@ -1197,6 +1197,117 @@ theorem Submission.indCompact_diagonal_mollified_uniform_cauchy : ∀ (N : ℕ) 
   rw [abs_le] at h1 h2 ⊢
   rw [abs_lt] at h3 h4
   constructor <;> linarith [h1.1, h1.2, h2.1, h2.2, h3.1, h3.2, h4.1, h4.2]
+/-- **Local `L¹` Cauchy sequences of sets have a local limit**: the completeness step of the
+compactness theorem (Simon Ch. 2, Thm. 2.6) for characteristic functions, as used in the proof of
+Ch. 3, Thm. 4.3. If for every `R ∈ ℕ` the sets `F k` are Cauchy in measure on `B_R(0)`, i.e.
+`|B_R(0) ∩ (F_k Δ F_l)| → 0` as `k, l → ∞`, then some measurable `G` has `|K ∩ (F_k Δ G)| → 0`
+for every compact `K`. Riesz–Fischer argument: choose `n_j ≥ k₀(j)` monotone, where
+`|B_j ∩ (F_k Δ F_l)| ≤ 2⁻ʲ` for `k, l ≥ k₀(j)`, and put `G₀ = ⋃ᵢ ⋂_{j ≥ i} F_{n_j}`. Then
+`F_{n_i} Δ G₀ ⊆ ⋃_{j ≥ i} (F_{n_j} Δ F_{n_{j+1}})`, so `|B_R ∩ (F_{n_i} Δ G₀)| ≤ 2 · 2⁻ⁱ` for
+`i ≥ R`, and by the triangle inequality for `Δ`, `|B_R ∩ (F_k Δ G₀)| ≤ 3 · 2⁻ⁱ` for `k ≥ n_i`.
+These estimates only use outer measure; `G` is a measurable hull of the null-measurable set `G₀`,
+and every compact `K` lies in some `B_R`. -/
+theorem Submission.indCompact_limit_of_local_cauchy : ∀ (N : ℕ) (F : ℕ → Set (Rn N)),
+    (∀ k, NullMeasurableSet (F k) volume) →
+    (∀ (R : ℕ) (ε : ℝ≥0∞), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀,
+      volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F k) (F l)) ≤ ε) →
+    ∃ G : Set (Rn N), MeasurableSet G ∧ ∀ K : Set (Rn N), IsCompact K →
+      Tendsto (fun k ↦ volume (K ∩ symmDiff (F k) G)) atTop (𝓝 0) := by
+  intro N F hF hC
+  -- Fast subsequence: `k₀ j` is a Cauchy index for `R = j`, `ε = 2⁻ʲ`; `n` is monotone, `n ≥ k₀`.
+  choose k₀ hk₀ using fun j : ℕ ↦ hC j ((2 : ℝ≥0∞)⁻¹ ^ j) (ENNReal.pow_pos (by simp) j)
+  obtain ⟨n, hn_ge, hn_mono⟩ : ∃ n : ℕ → ℕ, (∀ j, k₀ j ≤ n j) ∧ Monotone n :=
+    ⟨fun j ↦ (Finset.range (j + 1)).sup k₀, fun j ↦ Finset.le_sup (Finset.self_mem_range_succ j),
+      fun i j hij ↦ Finset.sup_mono (Finset.range_subset_range.2 (Nat.succ_le_succ hij))⟩
+  have hstep : ∀ j : ℕ, volume (Metric.ball (0 : Rn N) j ∩ symmDiff (F (n j)) (F (n (j + 1)))) ≤
+      (2 : ℝ≥0∞)⁻¹ ^ j := fun j ↦
+    hk₀ j _ (hn_ge j) _ ((hn_ge j).trans (hn_mono (Nat.le_succ j)))
+  -- The limit set `G₀ = ⋃ᵢ ⋂_{j ≥ i} F (n j)`.
+  obtain ⟨G₀, hG₀⟩ : ∃ G₀ : Set (Rn N), G₀ = ⋃ i, ⋂ j ≥ i, F (n j) := ⟨_, rfl⟩
+  have hmem : ∀ y, y ∈ G₀ ↔ ∃ i, ∀ j ≥ i, y ∈ F (n j) := fun y ↦ by
+    simp only [hG₀, mem_iUnion, mem_iInter]
+  -- Tail inclusion: `F (n i) Δ G₀ ⊆ ⋃_{j ≥ i} (F (n j) Δ F (n (j + 1)))`.
+  have htail : ∀ i, symmDiff (F (n i)) G₀ ⊆
+      ⋃ m : ℕ, symmDiff (F (n (i + m))) (F (n (i + m + 1))) := by
+    intro i y hy
+    by_contra hcon
+    simp only [mem_iUnion, not_exists] at hcon
+    have hiff : ∀ m, (y ∈ F (n (i + m)) ↔ y ∈ F (n i)) := by
+      intro m
+      induction m with
+      | zero => simp
+      | succ m ih =>
+        have h := hcon m
+        rw [mem_symmDiff] at h
+        rw [← ih, ← add_assoc]
+        tauto
+    rw [mem_symmDiff, hmem] at hy
+    rcases hy with ⟨hyA, hyG⟩ | ⟨⟨i', hi'⟩, hyA⟩
+    · refine hyG ⟨i, fun j hj ↦ ?_⟩
+      obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hj
+      exact (hiff m).2 hyA
+    · exact hyA ((hiff i').1 (hi' (i + i') (Nat.le_add_left i' i)))
+  -- Along the subsequence: `|B_R ∩ (F (n i) Δ G₀)| ≤ 2⁻ⁱ · 2` for `R ≤ i`.
+  have hsub : ∀ R i : ℕ, R ≤ i →
+      volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F (n i)) G₀) ≤ (2 : ℝ≥0∞)⁻¹ ^ i * 2 := by
+    intro R i hRi
+    calc volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F (n i)) G₀)
+        ≤ volume (⋃ m : ℕ, Metric.ball (0 : Rn N) ↑(i + m) ∩
+            symmDiff (F (n (i + m))) (F (n (i + m + 1)))) := by
+          refine measure_mono fun y hy ↦ ?_
+          obtain ⟨m, hm⟩ := mem_iUnion.1 (htail i hy.2)
+          refine mem_iUnion.2 ⟨m, Metric.ball_subset_ball ?_ hy.1, hm⟩
+          exact_mod_cast hRi.trans (Nat.le_add_right i m)
+      _ ≤ ∑' m : ℕ, volume (Metric.ball (0 : Rn N) ↑(i + m) ∩
+            symmDiff (F (n (i + m))) (F (n (i + m + 1)))) := measure_iUnion_le _
+      _ ≤ ∑' m : ℕ, (2 : ℝ≥0∞)⁻¹ ^ (i + m) := ENNReal.tsum_le_tsum fun m ↦ hstep (i + m)
+      _ = (2 : ℝ≥0∞)⁻¹ ^ i * 2 := by
+          simp_rw [pow_add]
+          rw [ENNReal.tsum_mul_left, ENNReal.tsum_geometric, ENNReal.one_sub_inv_two, inv_inv]
+  -- Whole sequence: `|B_R ∩ (F k Δ G₀)| ≤ 2⁻ⁱ + 2⁻ⁱ · 2` for `R ≤ i` and `k ≥ n i`.
+  have hwhole : ∀ R i k : ℕ, R ≤ i → n i ≤ k →
+      volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F k) G₀) ≤
+        (2 : ℝ≥0∞)⁻¹ ^ i + (2 : ℝ≥0∞)⁻¹ ^ i * 2 := by
+    intro R i k hRi hk
+    calc volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F k) G₀)
+        ≤ volume ((Metric.ball (0 : Rn N) i ∩ symmDiff (F k) (F (n i))) ∪
+            (Metric.ball (0 : Rn N) R ∩ symmDiff (F (n i)) G₀)) := by
+          refine measure_mono fun y hy ↦ ?_
+          rcases symmDiff_triangle (F k) (F (n i)) G₀ hy.2 with h | h
+          · exact Or.inl ⟨Metric.ball_subset_ball (by exact_mod_cast hRi) hy.1, h⟩
+          · exact Or.inr ⟨hy.1, h⟩
+      _ ≤ volume (Metric.ball (0 : Rn N) i ∩ symmDiff (F k) (F (n i))) +
+            volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F (n i)) G₀) := measure_union_le _ _
+      _ ≤ (2 : ℝ≥0∞)⁻¹ ^ i + (2 : ℝ≥0∞)⁻¹ ^ i * 2 :=
+          add_le_add (hk₀ i k ((hn_ge i).trans hk) (n i) (hn_ge i)) (hsub R i hRi)
+  -- Hence `|B_R ∩ (F k Δ G₀)| → 0` for every `R ∈ ℕ`.
+  have hgeom : Tendsto (fun i : ℕ ↦ (2 : ℝ≥0∞)⁻¹ ^ i + (2 : ℝ≥0∞)⁻¹ ^ i * 2) atTop (𝓝 0) := by
+    have h1 : Tendsto (fun i : ℕ ↦ (2 : ℝ≥0∞)⁻¹ ^ i) atTop (𝓝 0) :=
+      ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one (ENNReal.inv_lt_one.2 ENNReal.one_lt_two)
+    have h2 := h1.add (ENNReal.Tendsto.mul_const h1 (Or.inr (by norm_num : (2 : ℝ≥0∞) ≠ ∞)))
+    rwa [zero_mul, add_zero] at h2
+  have hball : ∀ R : ℕ,
+      Tendsto (fun k ↦ volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F k) G₀)) atTop (𝓝 0) := by
+    intro R
+    refine ENNReal.tendsto_nhds_zero.2 fun ε hε ↦ ?_
+    obtain ⟨i, hiR, hiε⟩ :=
+      ((eventually_ge_atTop R).and (ENNReal.tendsto_nhds_zero.1 hgeom ε hε)).exists
+    exact (eventually_ge_atTop (n i)).mono fun k hk ↦ (hwhole R i k hiR hk).trans hiε
+  -- `G = toMeasurable G₀` is measurable and a.e. equal to the null-measurable `G₀`; every compact
+  -- `K` lies in some `B_R`.
+  have hG₀m : NullMeasurableSet G₀ volume := by
+    rw [hG₀]
+    exact .iUnion fun i ↦ .iInter fun j ↦ .iInter fun _ ↦ hF (n j)
+  refine ⟨toMeasurable volume G₀, measurableSet_toMeasurable _ _, fun K hK ↦ ?_⟩
+  obtain ⟨r, hr⟩ := hK.isBounded.subset_ball (0 : Rn N)
+  obtain ⟨R, hR⟩ := exists_nat_gt r
+  have hKR : K ⊆ Metric.ball (0 : Rn N) R := hr.trans (Metric.ball_subset_ball hR.le)
+  have heq : ∀ k, volume (K ∩ symmDiff (F k) (toMeasurable volume G₀)) =
+      volume (K ∩ symmDiff (F k) G₀) := fun k ↦
+    measure_congr (EventuallyEqSet.rfl.inter (EventuallyEqSet.rfl.symmDiff hG₀m.toMeasurable_ae_eq))
+  refine (tendsto_congr heq).2 ?_
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (hball R)
+    (fun k ↦ zero_le) (fun k ↦ measure_mono (inter_subset_inter_left _ hKR))
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
