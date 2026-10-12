@@ -1,0 +1,115 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.monotonicity_density-a1.stationary_identity-a1`
+- Child DAG node: `root.monotonicity_density-a1.stationary_identity-a1.density_limit-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Steps 2 and 3.4 of the parent node's supplied proof of Simon, Introduction to Geometric Measure Theory, Ch. 8, 3.4 (printed p. 211). Those steps give the existence of Θ^n(μ_V,x) from monotonicity of the normalised ball mass, and pass to the limit σ ↓ 0 in the annular identity. They are stated here abstractly for [0,∞]-valued functions. In the parent they are applied with P = densityRatio n μ_V x, D(σ,ρ) = ω_n^{-1}·normalDefect V x (B_ρ ∖ B_σ) and T(ρ) = ω_n^{-1}·normalDefect V x (B_ρ). Only the order topologies of ℝ and [0,∞] are used.
+
+Implementation note: this node is a leaf. Its implementation must be the single declaration Submission.annular_identity_limit_at_zero, using only the frozen contract's imports. A scratch proof of this shape compiled and passed the leaf-delta check, using MonotoneOn.tendsto_nhdsWithin_Ioo_right, Filter.Tendsto.add, Ioc_mem_nhdsGT, Filter.Tendsto.congr' and tendsto_nhds_unique.
+
+Fix P, D, T and ρ0 > 0 satisfying hypotheses (i) and (ii), and let I := (0, ρ0), the open interval Ioo 0 ρ0.
+
+1. Monotonicity. Let σ, ρ ∈ I with σ ≤ ρ. Then 0 < σ ≤ ρ < ρ0. Every element of [0,∞] is ≥ 0, so D(σ,ρ) ≥ 0, and by (i) P(σ) ≤ P(σ) + D(σ,ρ) = P(ρ). Hence P is monotone (non-decreasing) on I.
+
+2. The limit at 0+. I is nonempty since ρ0/2 ∈ I (as ρ0 > 0), and P(I) is bounded below by 0. Put θ := inf P(I) ∈ [0,∞]. Then P(t) → θ as t → 0+ (MonotoneOn.tendsto_nhdsWithin_Ioo_right). In the order topology of [0,∞] it suffices to show:
+   (a) for every a < θ, P(t) > a for all t in some set of 𝓝[>] 0;
+   (b) for every b > θ, P(t) < b for all t in some set of 𝓝[>] 0.
+   For (a), take I itself: I ∈ 𝓝[>] 0 because ρ0 > 0, and P(t) ≥ θ > a for t ∈ I.
+   For (b), b > θ = inf P(I) gives some s ∈ I with P(s) < b. Every t ∈ (0, s) lies in I with t ≤ s, so P(t) ≤ P(s) < b by 1; and (0, s) ∈ 𝓝[>] 0.
+
+3. Fix ρ with 0 < ρ < ρ0. Addition [0,∞] × [0,∞] → [0,∞] is continuous (ℝ≥0∞ is a topological additive monoid). So by 2 and (ii), P(σ) + D(σ,ρ) → θ + T(ρ) as σ → 0+ (Filter.Tendsto.add).
+
+4. The interval (0, ρ] belongs to 𝓝[>] 0 (Ioc_mem_nhdsGT, as ρ > 0). For σ ∈ (0, ρ] we have 0 < σ ≤ ρ < ρ0, hence P(σ) + D(σ,ρ) = P(ρ) by (i). So σ ↦ P(σ) + D(σ,ρ) coincides eventually along 𝓝[>] 0 with the constant function P(ρ), and therefore tends to P(ρ) as σ → 0+ (tendsto_const_nhds and Filter.Tendsto.congr').
+
+5. The filter 𝓝[>] 0 on ℝ is proper, since each (0, ε) with ε > 0 is nonempty, and [0,∞] is Hausdorff. So a function has at most one limit along this filter (tendsto_nhds_unique). By 3 and 4, θ + T(ρ) = P(ρ).
+
+6. Conclusion. P(t) → θ as t → 0+ (step 2), and θ + T(ρ) = P(ρ) for every 0 < ρ < ρ0 (step 5). This θ witnesses the claim. As P, D, T and ρ0 were arbitrary, the statement holds.
+
+## Key steps
+
+1. Hypothesis (i) and D ≥ 0 give P(σ) ≤ P(σ) + D(σ,ρ) = P(ρ), so P is monotone on (0, ρ0).
+2. P is monotone on (0, ρ0) with ρ0 > 0 and bounded below in [0,∞], so P(t) → θ := inf P((0,ρ0)) as t → 0+ (MonotoneOn.tendsto_nhdsWithin_Ioo_right).
+3. For fixed ρ ∈ (0,ρ0), P(σ) + D(σ,ρ) → θ + T(ρ) as σ → 0+, by hypothesis (ii) and continuity of addition on [0,∞].
+4. On (0, ρ] ∈ 𝓝[>] 0 the same function equals P(ρ). Uniqueness of limits along the proper filter 𝓝[>] 0 in the Hausdorff space [0,∞] gives θ + T(ρ) = P(ρ).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum <snapshot>/project/GMT/Ch08/Contract.lean GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487); git -C .lake/packages/simongmt rev-parse HEAD (2b3663083f3fe399b6296fb8eaee52169170e197, clean)`
+- `grep -n 'tendsto_nhdsWithin_Ioo_right|Antitone.tendsto_nhdsGT' <snapshot>/mathlib/Mathlib/Topology/Order/Monotone.lean (457, 536); grep 'protected theorem Tendsto.const_mul' Topology/Instances/ENNReal/Lemmas.lean (354); grep 'Ioc_mem_nhdsGT' (MeasureTheory/Covering/Besicovitch.lean usage)`
+- `grep -n 'inv_ne_top|protected theorem mul_inv|div_eq_inv_mul' <snapshot>/mathlib/Mathlib/Basic/ENNReal/Inv.lean (205, 245, 48); grep 'theorem ofReal_pow' Basic/ENNReal/Real.lean (306); grep 'theorem measure_ball_pos' MeasureTheory/Measure/OpenPos.lean (212)`
+- `grep -n 'theorem lintegral_mono_set|theorem lintegral_indicator' MeasureTheory/Integral/Lebesgue/Basic.lean (98, 510); grep 'lintegral_tendsto_of_tendsto_of_monotone' Integral/Lebesgue/Add.lean (115); grep 'theorem withDensity_apply' Measure/WithDensity.lean (44); grep 'theorem tendsto_measure_iUnion_atTop' Measure/Continuity.lean (198)`
+- `grep -n '^theorem|^def' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/{StationaryMonotonicity,StationaryCutoff}.lean; grep normalProject_eq_sub|norm_normalProject_radial_sq|radialNormalSq Chapter08/RadialFirstVariation.lean; grep monotonicityCutoff|scaledRadialCutoffDeriv_support Chapter04/FirstVariation.lean`
+- `python import-closure walk of Poincare.SimonGMT.Chapter08.VarifoldConvergence + Chapter03.Rectifiable + Chapter02.Submanifold vs Poincare.SimonGMT.Chapter08.StationaryMonotonicity (7 extra modules: Chapter04.Basic, Chapter04.FirstVariation, RadialCutoffDifferentiation, RadialFirstVariation, StationaryCutoff, StationaryMonotonicity, WeightedRadialIdentity)`
+- `grep -rn 'def densityRatio|def unitBallVolume|def HasDensity|def normalDefect' .lake/packages/simongmt/Poincare (no clash with contract names)`
+- `grep -c 'annular_identity_limit_at_zero|normalDefect_annulus_tendsto_closedBall' .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json (0); git log --all -S annular_identity_limit_at_zero (none)`
+- `read /runtime/flows/gmt-claude-ceab09671123/_recursive_lean/leaf_verification.py (check_source_delta forbids import/extra declarations in leaves) and parent_verification.py (check_parent_git_delta); verifier/gmt-compare.py candidate_inputs and challenge generation (line ~597); verifier/lean_contract.validate_lean_statement on both child types (OK)`
+- `lean (LEAN_PATH=private Submission olean + lake packages) /tmp/stat_id_split/final/FinalTypes.lean, LeafB.lean -> SolutionB.lean, LeafC.lean -> SolutionC.lean, ParentCandidate.lean -> SolutionParent.lean; earlier /tmp/stat_id_split/src/{Types,Assembly,ChildA,ChildB}.lean; reviewer /tmp/stat_id_review/src/{RestructC,RestructParent}.lean`
+- `grep -n '3.4' book/chapter-08.txt (printed 3.3-3.4 text, p. 210-211)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-monotonicity-density-a1-stationary-identity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-monotonicity-density-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryMonotonicity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryCutoff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialCutoffDifferentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/WeightedRadialIdentity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-ceab09671123/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-ceab09671123/_recursive_lean/parent_verification.py`
+- `/tmp/stat_id_split/final/FinalTypes.lean`
+- `/tmp/stat_id_split/final/LeafB.lean`
+- `/tmp/stat_id_split/final/SolutionB.lean`
+- `/tmp/stat_id_split/final/LeafC.lean`
+- `/tmp/stat_id_split/final/SolutionC.lean`
+- `/tmp/stat_id_split/final/ParentCandidate.lean`
+- `/tmp/stat_id_split/final/SolutionParent.lean`
+- `/tmp/stat_id_split/src/Assembly.lean`
+- `/tmp/stat_id_split/src/ChildA.lean`
+- `/tmp/stat_id_review/src/RestructC.lean`
+- `/tmp/stat_id_review/src/RestructParent.lean`
+
+Snapshot and pinning: the snapshot is project 63436ae6 plus Mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace Contract and Submission (sha256 2e5cd5b3…). SimonGMT is pinned at 2b366308 with a clean worktree.
+
+Mathlib supplies every lemma the two leaves need:
+- MonotoneOn.tendsto_nhdsWithin_Ioo_right (Topology/Order/Monotone.lean:457) and Antitone.tendsto_nhdsGT (:536);
+- ENNReal.Tendsto.const_mul (Topology/Instances/ENNReal/Lemmas.lean:354);
+- lintegral_mono_set and lintegral_indicator (Integral/Lebesgue/Basic.lean:98 and :510);
+- withDensity_apply (Measure/WithDensity.lean:44) and tendsto_measure_iUnion_atTop (Measure/Continuity.lean:198);
+- ENNReal.inv_ne_top, mul_inv and div_eq_inv_mul (Basic/ENNReal/Inv.lean:205, 245, 48), ofReal_pow (Basic/ENNReal/Real.lean:306), and measure_ball_pos (Measure/OpenPos.lean:212).
+Mathlib has no varifold material.
+
+The annular identity is SimonGMT's Varifold.StationaryOn.stationaryMonotonicity (StationaryMonotonicity.lean:131). It relies on normalizedBallMass (:111), annularMonotonicityDefect (:120), StationaryOn (StationaryCutoff.lean:28), and normalProject_eq_sub and norm_normalProject_radial_sq (RadialFirstVariation.lean:81, :123). All of these sit in seven modules outside the contract's import closure. The active leaf gate (check_source_delta) forbids `import` in leaf deltas, while check_parent_git_delta lets a non-leaf edit Submission.lean. So the identity stays in this node and both children are import-free. There are no name clashes.
+
+Kernel checks import GMT.Ch08.Submission in the contract scope and use only the axioms propext, Classical.choice and Quot.sound:
+- Both child types elaborate and pass validate_lean_statement.
+- Both names are unused, both for #check_failure and in dag.json.
+- Each leaf candidate (contract plus one theorem) passes check_source_delta, compiles, and `exact Submission.<name>` closes its frozen type.
+- A full parent candidate (contract, the StationaryMonotonicity import, both leaves, then the parent theorem) compiles, and `exact Submission.stationary_monotonicity_identity_8_3_4` closes StationaryMonotonicityIdentity.
+
+An independent reviewer agent confirmed the mathematics and all cited line numbers.
