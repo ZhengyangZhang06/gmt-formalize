@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "22ef9d4246d710344cc17173cf75734cf3768b61bf4ed2eff5414c5eefab79cc",
+  "git_delta": {
+    "base_commit": "87c5fa6e5c125affdde2662b3845a029a4f6f835",
+    "candidate_commit": "f3fab24b30d25c8dec70f1a8ea4c0b1680f2a76a",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_allard_ccb_cylinder_grouping",
+    "diff_sha256": "f3e552589b32006bb4b9559feeced4a6c5060852e1fd2c0dd56aaa6c022618fa",
+    "source_sha256": "027f35f61cef440a8dabceecc11bdd041f2d3fe101a28153b8d5a046c4da5ab2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_ccb_cylinder_grouping",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (x : Euclidean N) (s Z : Finset (Euclidean N)) (d ρ S u : ℝ), (∀ y ∈ s, Grassmannian.project P y = x) → Z ⊆ s → 0 < d → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → d ≤ ‖y - y'‖) → 0 < ρ → 0 ≤ S → S ≤ u * ρ → u ≤ 1 → (∀ y ∈ s, ∃ z ∈ Z, ‖y - z‖ ≤ S) → ∑ y ∈ s, μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) / ENNReal.ofReal ρ ^ n ≤ ENNReal.ofReal (1 + (2 ^ n - 1) * u) * ∑ y ∈ Z, μ (closedBall y (ρ + S) ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2 + S}) / ENNReal.ofReal (ρ + S) ^ n",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
