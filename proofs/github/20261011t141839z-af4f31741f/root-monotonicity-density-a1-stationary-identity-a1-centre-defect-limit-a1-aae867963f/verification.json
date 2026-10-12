@@ -1,0 +1,15 @@
+{
+  "node_id": "root.monotonicity_density-a1.stationary_identity-a1.centre_defect_limit-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1432",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "e58a09b373383a2cbb227361b2290a1b4cf41c40",
+  "integrated_commit": "",
+  "proof_base_commit": "40a295ceb92948e3f56c016347f044491c03d902",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.monotonicity_density-a1.stationary_identity-a1",
+  "requires": []
+}
