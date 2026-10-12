@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1",
+  "parent_id": "root.regular_set_dense-a1.integer_combination-a1",
+  "depth": 3,
+  "title": "An IMRep whose weighted orientation is p₁θ₁ξ₁1_{M₁} + p₂θ₂ξ₂1_{M₂} a.e.",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, let R₁ = (M₁, θ₁, ξ₁), R₂ = (M₂, θ₂, ξ₂) be IMReps in U (Simon Ch. 6, 3.1) and p₁, p₂ ∈ ℤ. Then there is an IMRep R = (M', θ', ξ') in U such that for Hⁿ-a.e. x ∈ ℝ^P (Hⁿ = μHE[n]) the n-vectors satisfy 1_{M'}(x)θ'(x)ξ'(x) = p₁1_{M₁}(x)θ₁(x)ξ₁(x) + p₂1_{M₂}(x)θ₂(x)ξ₂(x) (written with Set.indicator and scalar multiplication in MultiVector P n).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ : IMRep U n) (p₁ p₂ : ℤ), IsOpen U → ∃ R : IMRep U n, ∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = (p₁ : ℝ) • R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + (p₂ : ℝ) • R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x",
+  "lean_name": "rsdic_exists_imrep_int_combination",
+  "depends_on": [
+    "root.regular_set_dense-a1.integer_combination-a1.imrep_tangent_transfer-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.overlap_orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.imrep_tangent_transfer-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.overlap_orientation_sign-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-combination-construction-a1-a1"
+}
