@@ -458,6 +458,148 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, 4.5–4.8** (steps 1 and 5–9 of the annular monotonicity argument: the passage
+`ε → 0` in the radial cutoff).  Let `n ≥ 1`, `p > n`, `R > 0`, `0 < Λ ≤ 1`, `κ = (p − n)/(4p)`;
+let `μ(B_R(y)) < ∞`, `H` be `μ`-integrable on `B_R(y)` with `(R^{p−n} ∫_{B_R(y)} |H|ᵖ dμ)^{1/p} ≤ κΛ`,
+`0 ≤ w ≤ 1` `μ`-a.e. in `B̆_R(y)`, and assume the radial first-variation identity for all `C¹`
+cutoffs.  Then some `F` (here `F = exp(−G)`, `G(t) = ∫₀ᵗ a₀`,
+`a₀(t) = t^{−n−1} ∫_{B_t(y)} (x − y)·H dμ / (1 + t^{−n} μ(B_t(y)))`) satisfies, with
+`Φ(r) = F(r) r^{−n} μ(B_r(y)) + F(r) − 1`:
+(i) `e^{−Λ} ≤ F ≤ e^{Λ}` and `|F(r) − 1| ≤ Λ (r/R)^{1−n/p}` on `(0, R)`;
+(ii) `Φ` is nondecreasing on `(0, R)`, and
+`∫_{B_r(y) \ B_s(y)} w/|x − y|ⁿ dμ ≤ e^{Λ} (Φ(r) − Φ(s))` for `0 < s ≤ r < R`.
+Proof: `allard52_am_fixed_cutoff` for the cutoffs `φ k` of `allard52_amcl_cutoff_sequence`
+gives the bound `|a_k| ≤ 2κΛR⁻¹(τ/R)^{−n/p}`, the monotonicity of
+`Φ̃_k = exp(−∫₀ a_k)(1 + I_k/tⁿ)` and the per-`k` annular estimate; dominated convergence
+(`allard52_amcl_radial_cutoff_tendsto`) gives `I_k(t) → μ(B_t(y))`, `E_k(t) → E₀(t)`, hence
+`a_k(t) → a₀(t)`; `allard52_amcl_interval_limit` gives `∫₀ᵗ a_k → G(t)` and
+`|G(t)| ≤ (Λ/2)(t/R)^{1−n/p}`, whence (i) by `|eᶻ − 1| ≤ 2|z|`; the monotonicity passes to the
+limit, and Fatou's lemma (`allard52_amcl_annular_lintegral_le`) gives the annular bound with
+`e^{Λ/2} ≤ e^{Λ}`. -/
+theorem allard52_am_cutoff_limit : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (R Λ : ℝ), 0 < R → 0 < Λ → Λ ≤ 1 → μ (closedBall y R) < ⊤ → IntegrableOn H (closedBall y R) μ → (ENNReal.ofReal (R ^ (p - n)) * ∫⁻ x in closedBall y R, ‖H x‖ₑ ^ p ∂μ) ^ (1 / p) ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → AEStronglyMeasurable w (μ.restrict (ball y R)) → (∀ᵐ x ∂μ, x ∈ ball y R → 0 ≤ w x ∧ w x ≤ 1) → (∀ (φ : ℝ → ℝ) (T ρ : ℝ), ContDiff ℝ 1 φ → (∀ t : ℝ, t ≤ 1 → φ t = 1) → (∀ t : ℝ, T ≤ t → φ t = 0) → 0 < ρ → T * ρ < R → ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ) * (1 - w x)) ∂μ = -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂μ) → ∃ F : ℝ → ℝ, (∀ r ∈ Ioo 0 R, Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Λ * (r / R) ^ (1 - (n : ℝ) / p)) ∧ (∀ s r : ℝ, 0 < s → s ≤ r → r < R → F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal + F s - 1 ≤ F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1 ∧ ∫⁻ x in closedBall y r \ closedBall y s, ENNReal.ofReal (w x / ‖x - y‖ ^ n) ∂μ ≤ ENNReal.ofReal (Real.exp Λ * ((F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1) - (F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal + F s - 1)))) := by
+  intro n ℓ hn p hp μ H w y R Λ hR hΛ hΛ1 hμR hH hHp hw hw01 hrad
+  -- Steps 1–2: `C¹` nonincreasing cutoffs, `1` on `(-∞, 1]` and `0` on `[1 + ε k, ∞)`, `ε k → 0`.
+  obtain ⟨φ, ε, hε, hεt, hφC, hφA, hφ01, hφ1, hφ0⟩ := Submission.allard52_amcl_cutoff_sequence
+  -- The cutoff quantities `I_k, E_k, a_k` and their limits `m, E₀, a₀, G` and `F = exp(−G)`.
+  obtain ⟨I, hI⟩ : ∃ I : ℕ → ℝ → ℝ, ∀ k t, I k t = ∫ x, φ k (‖x - y‖ / t) ∂μ :=
+    ⟨_, fun _ _ => rfl⟩
+  obtain ⟨E, hE⟩ : ∃ E : ℕ → ℝ → ℝ, ∀ k t,
+      E k t = ∫ x, φ k (‖x - y‖ / t) * inner ℝ (x - y) (H x) ∂μ := ⟨_, fun _ _ => rfl⟩
+  obtain ⟨a, ha⟩ : ∃ a : ℕ → ℝ → ℝ, ∀ k t, a k t = E k t / t ^ (n + 1) / (1 + I k t / t ^ n) :=
+    ⟨_, fun _ _ => rfl⟩
+  obtain ⟨m, hm⟩ : ∃ m : ℝ → ℝ, ∀ t, m t = (μ (closedBall y t)).toReal := ⟨_, fun _ => rfl⟩
+  obtain ⟨E₀, hE₀⟩ : ∃ E₀ : ℝ → ℝ, ∀ t,
+      E₀ t = ∫ x in closedBall y t, inner ℝ (x - y) (H x) ∂μ := ⟨_, fun _ => rfl⟩
+  obtain ⟨a₀, ha₀⟩ : ∃ a₀ : ℝ → ℝ, ∀ t, a₀ t = E₀ t / t ^ (n + 1) / (1 + m t / t ^ n) :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨G, hG⟩ : ∃ G : ℝ → ℝ, ∀ t, G t = ∫ τ in (0)..t, a₀ τ := ⟨_, fun _ => rfl⟩
+  obtain ⟨F, hF⟩ : ∃ F : ℝ → ℝ, ∀ t, F t = Real.exp (-G t) := ⟨_, fun _ => rfl⟩
+  -- Step 3: `fixed_cutoff` for every `k`, the radial identity being the hypothesis at `T = 1 + ε k`.
+  have hfix := fun k => Submission.allard52_am_fixed_cutoff n ℓ hn p hp μ H w y R Λ (ε k) (φ k)
+    (I k) (E k) (a k) hR hΛ (hε k).1 (hε k).2 hμR hH hHp hw hw01 (hφC k) (hφA k) (hφ1 k)
+    (hφ0 k) (fun ρ hρ hρR => hrad (φ k) (1 + ε k) ρ (hφC k) (hφ1 k) (hφ0 k) hρ hρR) (hI k)
+    (hE k) (ha k)
+  -- `(1 + ε k) t < R` for all large `k`, whenever `t < R`.
+  have hev : ∀ t, t < R → ∀ᶠ k in atTop, (1 + ε k) * t < R := by
+    intro t ht
+    have h : Tendsto (fun k => (1 + ε k) * t) atTop (𝓝 ((1 + 0) * t)) :=
+      (hεt.const_add 1).mul_const t
+    rw [add_zero, one_mul] at h
+    exact h.eventually (eventually_lt_nhds ht)
+  -- Step 5: dominated convergence at a fixed radius `t ∈ (0, R)`.
+  have hint1 : IntegrableOn (fun _ => (1 : ℝ)) (closedBall y R) μ := integrableOn_const hμR.ne
+  have hintH : IntegrableOn (fun x => inner ℝ (x - y) (H x)) (closedBall y R) μ := by
+    refine Integrable.mono' ((Integrable.norm hH).const_mul R)
+      ((continuous_inner (𝕜 := ℝ)).comp_aestronglyMeasurable
+        ((continuous_sub_right y).aestronglyMeasurable.prodMk
+          (Integrable.aestronglyMeasurable hH))) ?_
+    filter_upwards [ae_restrict_mem measurableSet_closedBall] with x hx
+    have hxR : ‖x - y‖ ≤ R := by rw [← dist_eq_norm]; exact mem_closedBall.1 hx
+    exact (norm_inner_le_norm (𝕜 := ℝ) _ _).trans (mul_le_mul_of_nonneg_right hxR (norm_nonneg _))
+  have hIlim : ∀ t, 0 < t → t < R → Tendsto (fun k => I k t) atTop (𝓝 (m t)) := by
+    intro t ht htR
+    have h := Submission.allard52_amcl_radial_cutoff_tendsto n ℓ μ (fun _ => 1) y φ ε R t ht htR
+      hint1 (fun k => (hφC k).continuous) hφ01 hφ1 hφ0 hεt
+    simp only [mul_one, setIntegral_const, smul_eq_mul, measureReal_def] at h
+    simpa only [hI, hm] using h
+  have hElim : ∀ t, 0 < t → t < R → Tendsto (fun k => E k t) atTop (𝓝 (E₀ t)) := by
+    intro t ht htR
+    simpa only [hE, hE₀] using Submission.allard52_amcl_radial_cutoff_tendsto n ℓ μ
+      (fun x => inner ℝ (x - y) (H x)) y φ ε R t ht htR hintH (fun k => (hφC k).continuous)
+      hφ01 hφ1 hφ0 hεt
+  have halim : ∀ t, 0 < t → t < R → Tendsto (fun k => a k t) atTop (𝓝 (a₀ t)) := by
+    intro t ht htR
+    have hm0 : 0 ≤ m t / t ^ n := div_nonneg (by rw [hm]; exact ENNReal.toReal_nonneg)
+      (pow_nonneg ht.le n)
+    rw [show (fun k => a k t) = fun k => E k t / t ^ (n + 1) / (1 + I k t / t ^ n) from
+      funext fun k => ha k t, ha₀]
+    exact ((hElim t ht htR).div_const (t ^ (n + 1))).div
+      (((hIlim t ht htR).div_const (t ^ n)).const_add 1) (by linarith)
+  -- Step 6: `∫₀ᵗ a_k → G(t)`, with `|G(t)| ≤ (Λ/2)(t/R)^{1−n/p}`, and `Φ̃_k(t) → F(t)(1 + m(t)/tⁿ)`.
+  have hGlim : ∀ t, 0 < t → t < R → Tendsto (fun k => ∫ τ in (0)..t, a k τ) atTop (𝓝 (G t)) ∧
+      |G t| ≤ Λ / 2 * (t / R) ^ (1 - (n : ℝ) / p) := by
+    intro t ht htR
+    rw [hG]
+    refine Submission.allard52_amcl_interval_limit n p R Λ t a a₀ hp hR hΛ ht ?_
+      (fun τ hτ hτt => halim τ hτ (lt_of_le_of_lt hτt htR))
+    filter_upwards [hev t htR] with k hk
+    intro τ hτ hτt
+    exact (hfix k).1 τ hτ
+      (lt_of_le_of_lt (mul_le_mul_of_nonneg_left hτt (by linarith [(hε k).1])) hk)
+  have hΦlim : ∀ t, 0 < t → t < R → Tendsto (fun k => Real.exp (-∫ τ in (0)..t, a k τ) *
+      (1 + I k t / t ^ n)) atTop (𝓝 (F t * (1 + m t / t ^ n))) := by
+    intro t ht htR
+    rw [hF]
+    exact (hGlim t ht htR).1.neg.rexp.mul (((hIlim t ht htR).div_const _).const_add 1)
+  refine ⟨F, ?_, ?_⟩
+  -- Step 7: conclusion (i).
+  · rintro r ⟨hr0, hrR⟩
+    have hp0 : 0 < p := lt_of_le_of_lt (Nat.cast_nonneg n) hp
+    have hrR1 : 0 ≤ r / R ∧ r / R ≤ 1 := ⟨div_nonneg hr0.le hR.le, (div_le_one hR).2 hrR.le⟩
+    have hpow1 : (r / R) ^ (1 - (n : ℝ) / p) ≤ 1 :=
+      Real.rpow_le_one hrR1.1 hrR1.2 (sub_nonneg.2 ((div_le_one hp0).2 hp.le))
+    have hGr := (hGlim r hr0 hrR).2
+    have hGr' : |G r| ≤ Λ / 2 :=
+      hGr.trans ((mul_le_mul_of_nonneg_left hpow1 (by linarith)).trans (mul_one _).le)
+    obtain ⟨hGl, hGu⟩ := abs_le.1 hGr'
+    rw [hF]
+    refine ⟨Real.exp_le_exp.2 (by linarith), Real.exp_le_exp.2 (by linarith), ?_⟩
+    calc |Real.exp (-G r) - 1| ≤ 2 * |-G r| :=
+          Real.abs_exp_sub_one_le (by rw [abs_neg]; linarith)
+      _ = 2 * |G r| := by rw [abs_neg]
+      _ ≤ 2 * (Λ / 2 * (r / R) ^ (1 - (n : ℝ) / p)) := by linarith
+      _ = Λ * (r / R) ^ (1 - (n : ℝ) / p) := by ring
+  -- Steps 8–9: conclusion (ii).
+  · intro s r hs hsr hrR
+    have hsR : s < R := lt_of_le_of_lt hsr hrR
+    have hr0 : 0 < r := lt_of_lt_of_le hs hsr
+    -- Monotonicity of `Φ̃_k` passes to the limit.
+    have hmono : F s * (1 + m s / s ^ n) ≤ F r * (1 + m r / r ^ n) :=
+      le_of_tendsto_of_tendsto (hΦlim s hs hsR) (hΦlim r hr0 hrR) (by
+        filter_upwards [hev r hrR] with k hk
+        exact ((hfix k).2 s r hs hsr hk).1)
+    have hD : (F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1) -
+        (F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal + F s - 1) =
+        F r * (1 + m r / r ^ n) - F s * (1 + m s / s ^ n) := by
+      rw [hm, hm]; ring
+    refine ⟨by linarith, ?_⟩
+    -- Fatou's lemma along the annuli `B_r(y) \ B̆_{(1 + ε k) s}(y)`.
+    have hann := Submission.allard52_amcl_annular_lintegral_le n ℓ μ
+      (fun x => ENNReal.ofReal (w x / ‖x - y‖ ^ n)) y ε
+      (fun k => Real.exp (Λ / 2) * (Real.exp (-∫ τ in (0)..r, a k τ) * (1 + I k r / r ^ n) -
+        Real.exp (-∫ τ in (0)..s, a k τ) * (1 + I k s / s ^ n))) s r
+      (Real.exp (Λ / 2) * (F r * (1 + m r / r ^ n) - F s * (1 + m s / s ^ n))) hs hεt
+      (((hΦlim r hr0 hrR).sub (hΦlim s hs hsR)).const_mul _) (by
+        filter_upwards [hev r hrR] with k hk
+        exact ((hfix k).2 s r hs hsr hk).2)
+    rw [hD]
+    exact hann.trans (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right
+      (Real.exp_le_exp.2 (by linarith)) (sub_nonneg.2 hmono)))
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
