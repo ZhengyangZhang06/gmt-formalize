@@ -1,0 +1,93 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.flat_iff_weak-a1.total_boundedness-a1`
+- Child DAG node: `root.flat_iff_weak-a1.total_boundedness-a1.vanish_off_support-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, preliminary (G1) ("Support vanishing"); Simon Ch. 6, 2.11 (spt T is the complement of the largest open set on which T vanishes).
+
+Notation. T vanishes on W (T.VanishesOn W) if T(η) = 0 for every η ∈ D^n(U) with tsupport η ⊆ W. zeroRegion(T) := ⋃{W : W open, closure W compact, closure W ⊆ U, T vanishes on W}, and spt T := U ∖ zeroRegion(T).
+
+1. Put C := tsupport ω. Since ω ∈ D^n(U), ω is smooth, has compact support, and C ⊆ U. In particular C is compact (and closed).
+2. C ⊆ zeroRegion(T): if x ∈ C then x ∈ U, and x ∉ spt T = U ∖ zeroRegion(T) by the disjointness hypothesis; hence x ∈ zeroRegion(T).
+3. zeroRegion(T) is the union of the open sets W of the family above, and T vanishes on each of them. By compactness of C there are finitely many members W_1, …, W_N of the family (N ∈ ℕ, possibly N = 0) with C ⊆ W_1 ∪ ⋯ ∪ W_N.
+4. Smooth partition of unity. Apply SmoothPartitionOfUnity.exists_isSubordinate on the manifold ℝ^P with model 𝓘(ℝ, ℝ^P), index type Fin N, the closed set C and the open cover (W_i)_{i} of C. It gives smooth functions ψ_1, …, ψ_N : ℝ^P → ℝ (ContMDiff for the model 𝓘(ℝ, ℝ^P) is ContDiff ℝ ∞) with tsupport ψ_i ⊆ W_i for all i and Σ_i ψ_i(x) = 1 for every x ∈ C.
+5. For each i put η_i := ψ_i • ω, i.e. η_i(x) = ψ_i(x) ω(x). Then η_i is smooth (product of a smooth scalar function and a smooth form), tsupport η_i ⊆ tsupport ω = C is compact, tsupport η_i ⊆ tsupport ψ_i ⊆ W_i, and tsupport η_i ⊆ C ⊆ U. Hence η_i ∈ D^n(U), and since T vanishes on W_i, T(η_i) = 0.
+6. ω = Σ_i η_i. If x ∈ C then Σ_i η_i(x) = (Σ_i ψ_i(x)) ω(x) = ω(x). If x ∉ C then x ∉ support ω, so ω(x) = 0 and each η_i(x) = ψ_i(x)·0 = 0. Hence the underlying forms agree everywhere, and ω = Σ_i η_i in the submodule D^n(U) (Subtype.ext and funext; for N = 0 this reads ω = 0).
+7. By linearity of the underlying linear map of T, T(ω) = Σ_i T(η_i) = 0. ∎
+
+Remark (adaptable accepted Lean proof; not needed for the argument above). The identical frozen type is already comparator-accepted in another branch as Submission.isoperimetric_apply_eq_zero_of_disjoint_support (DAG node root.isoperimetric-a1.vanish_off_support-a1; commit 3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6, file GMT/Ch06/Submission.lean, branch humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-vanish-off-support-a1-a1). That Lean proof follows steps 1–7 (IsCompact.elim_finite_subcover, SmoothPartitionOfUnity.exists_isSubordinate with contMDiff_iff_contDiff, Subtype.ext with Finset.sum_smul, map_sum) and can be reused verbatim under the name fiw_tb_apply_eq_zero_of_disjoint_support.
+
+## Key steps
+
+1. tsupport ω is compact and, by disjointness from spt T = U ∖ zeroRegion(T), contained in zeroRegion(T).
+2. Finitely many open sets W_i on which T vanishes cover tsupport ω.
+3. A smooth partition of unity ψ_i subordinate to (W_i) with Σψ_i = 1 on tsupport ω.
+4. ω = Σ ψ_i ω with each ψ_i ω ∈ D^n(U) supported in W_i, so T(ψ_i ω) = 0.
+5. Linearity gives T(ω) = 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c95, Mathlib 25730c7c)`
+- `python3 scan of dag.json (235 nodes): no lean_name containing fiw_tb; frozen lean_statement of root.flat_iff_weak-a1.im_mass_formula-a1 (accepted) and im_lincomb-a1 compared textually with the MF/LC premises`
+- `git log --all --oneline -S fiw_tb_ (687 refs, no match); grep -rl fiw_tb_ .humanize/math-wiki (no match)`
+- `git show <commit>:GMT/Ch06/Submission.lean | grep -c 'theorem Submission.<name>' for the 12 cited accepted declarations (all present), including br_la_abs_apply_le_mul_mass @ d771ac3a and fiw_ims_frame_sign @ c90a4050`
+- `grep -n max_nodes /runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py; read _decompose, _solve_children, _existing_lean_name_problem; swarm-configs/8d6f8e1fdf494359a56bc7f71c57d439.json (max_nodes 1000, max_children 12, max_depth 6)`
+- `grep -n 'def covectorEuclideanNorm|def massAdmissibleOn|def GeometricCurrentOn.massOn|def TestFormOnConverges|structure GeometricCurrentOn|zero_apply|boundary_apply|restrictDomain_apply|def testFormOnInclusion|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.support|abbrev SimonMultiIndex|def CountablyRectifiable|countablyRectifiable_of_measure_zero|def blowUpMap|def HasWeightedApproximateTangentSpaceAt' in SimonGMT Chapter06/Chapter03`
+- `grep Mathlib: theorem exists_nnreal_pos_mul_lt, Finite.exists_infinite_fiber, Infinite.exists_ne_map_eq_of_mapsTo, thickening_subset_of_subset, cthickening_subset_of_subset, thickening_subset_cthickening, mul_le_mul_right`
+- `lake build GMT.Ch06.Submission in /tmp/tb5-Hq3Nws (git archive d8d46c9, packages linked)`
+- `python3 -I /tmp/tb5_tools/gen_challenges.py (verifier/gmt-compare.py child_modules mode contract + lean_contract.validate_lean_statement); lake env lean Scratch/V4/Ch_*.lean and Scratch/V4/Remaining3.lean (0 errors)`
+- `lake env lean Scratch/V4/Assembly.lean and Scratch/V4/FiniteNet.lean (#print axioms: propext, Classical.choice, Quot.sound)`
+- `sed -n 2028,2090p book/chapter-06.txt (Simon 7.2 and its proof, (1)–(3))`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1/decomposition-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1/decomposition-audit-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/swarm-configs/8d6f8e1fdf494359a56bc7f71c57d439.json`
+- `/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/math-wiki/submission-br-la-abs-apply-le-mul-mass.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/math-wiki/submission-fiw-ims-frame-sign.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/math-wiki/submission-fiw-im-mass-formula.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Data/Fintype/Pigeonhole.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/tb5-Hq3Nws/Scratch/V4/Assembly.lean`
+- `/tmp/tb5-Hq3Nws/Scratch/V4/FiniteNet.lean`
+- `/tmp/tb5-Hq3Nws/Scratch/V4/Remaining3.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 contract (IsIntegerMultiplicity, IsRectifiableTriple, tauAction, latticeFace, latticeFaceAction, IsLatticeChain, DeformationTheorem). Neither the project nor SimonGMT has an integer-multiplicity calculus, a flat-norm lemma or a lattice-chain coefficient bound, so these become the 10 children.
+
+SimonGMT supplies the API used in the child proofs:
+- massOn and mass via massAdmissibleOn and covectorEuclideanNorm, and le_massOn / massOn_mono;
+- restrictDomain(_apply), testFormOnInclusion, zero_apply, boundary_apply and GeometricCurrentOn.ext;
+- zeroRegion and support = U \ zeroRegion;
+- SimonMultiIndex = Fin n ↪o Fin p, CountablyRectifiable (with countablyRectifiable_of_measure_zero and .mono), blowUpMap and HasWeightedApproximateTangentSpaceAt.
+Mathlib supplies ENNReal.exists_nnreal_pos_mul_lt and the thickening lemmas.
+
+Accepted Submission declarations, cited in the remarks as optional reuse pointers, were checked at their commits. The two new pointers are:
+- br_la_abs_apply_le_mul_mass (d771ac3a), the evaluation bound;
+- fiw_ims_frame_sign (c90a4050), the frame sign.
+
+Scratch checks:
+- all 10 child types elaborate in the comparator's exact challenge scope;
+- the parent type follows from MF, LC, fiw_tb_finite_net and fiw_tb_flat_sub;
+- fiw_tb_finite_net follows from its five siblings;
+- both derivations use only [propext, Classical.choice, Quot.sound].
