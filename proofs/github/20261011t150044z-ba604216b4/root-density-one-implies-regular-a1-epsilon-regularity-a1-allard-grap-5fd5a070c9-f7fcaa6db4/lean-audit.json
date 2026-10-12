@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f5d749f663c06268d3fb8461ff0590ed17ff11c5a453f0fae5b8003dc1892ca3",
+  "git_delta": {
+    "base_commit": "e4c3f11b52d8e5d8c241bd78caa2e9cdadab917b",
+    "candidate_commit": "bc8d621e72a21f5d7bf2971ca1bbf2c75a2998e0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_pb_segment_ftc",
+    "diff_sha256": "26e141762eab667a5baf06bd39de3931d64e71ca699f67ef11582a829060bb53",
+    "source_sha256": "4260c04f6d1372e039a172af0ce906ace8837ea97fa176db729db8b7c938f0f2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_pb_segment_ftc",
+      "statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (x y : Euclid n), LipschitzWith L u → (∀ᵐ t ∂(volume.restrict (Icc (0 : ℝ) 1)), DifferentiableAt ℝ u ((1 - t) • y + t • x)) → u x - u y = ∫ t in (0 : ℝ)..1, fderiv ℝ u ((1 - t) • y + t • x) (x - y)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
