@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "824e8f68ea0dbdc27dbae93f675129921077ff5610bfb81395a50b6a7d1443e8",
+  "git_delta": {
+    "base_commit": "51c91d19ebbedca006cf4f6f2e80cc4c6cda5dd5",
+    "candidate_commit": "1c55ec485bf93542968e584ff39ce06b41600d04",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_lb_wedge_testForm",
+    "diff_sha256": "550e0c6ca2b75dc7ff288e14ec7280d9026f8a7ebc60cafd647e25d3756c83cd",
+    "source_sha256": "4dea3875fc2d8ded8912f65303ffb917e564172edba3bfc60da7d19e3e7824b0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_lb_wedge_testForm",
+      "statement": "∀ (P m : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U m) (α : Eucl P → (Eucl P →L[ℝ] ℝ)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) α → ∃ η : TestFormOn U (m + 1), ∀ x, (η : DifferentialForm (Eucl P) (m + 1)) x = ContinuousAlternatingMap.alternatizeUncurryFin ((α x).smulRight ((ω : DifferentialForm (Eucl P) m) x))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
