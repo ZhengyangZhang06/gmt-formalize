@@ -504,6 +504,45 @@ theorem Submission.mcm_primitive_radial_fubini : ∀ (X : Type) [MeasurableSpace
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
+/-- **Fubini on the annulus** `A = B_ρ(ξ) \ B_σ(ξ)` (the radial integration by parts behind the
+integrating factors of Simon Ch. 4, 3.17 and 4.7). If `μ` is finite on compact sets, `w` is
+`μ`-integrable on `A`, `F'` is integrable on `(σ, ρ]` and `F(t) = F(σ) + ∫_{(σ,t]} F'` for
+`t ∈ [σ, ρ]`, then `w (F(|x - ξ|) - F(σ))` is `μ`-integrable on `A`,
+`t ↦ F'(t) ∫_{B_ρ(ξ) \ B_t(ξ)} w dμ` is integrable on `(σ, ρ]`, and
+`∫_{(σ,ρ]} F'(t) ∫_{B_ρ(ξ) \ B_t(ξ)} w dμ dt = ∫_A w (F(|x - ξ|) - F(σ)) dμ`. This is
+`mcm_primitive_radial_fubini` for `S = A` and `r = |· - ξ|`, since
+`A ∩ {x | t < r x} = B_ρ(ξ) \ B_t(ξ)` for `t ∈ (σ, ρ]`. -/
+theorem Submission.mcm_annulus_primitive_fubini : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (ξ : Ambient n ℓ) (w : Ambient n ℓ → ℝ) (F F' : ℝ → ℝ) (σ ρ : ℝ), IsFiniteMeasureOnCompacts μ → IntegrableOn w (closedBall ξ ρ \ closedBall ξ σ) μ → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun x ↦ w x * (F ‖x - ξ‖ - F σ)) (closedBall ξ ρ \ closedBall ξ σ) μ ∧ IntegrableOn (fun t ↦ F' t * ∫ x in closedBall ξ ρ \ closedBall ξ t, w x ∂μ) (Ioc σ ρ) ∧ ∫ t in Ioc σ ρ, F' t * ∫ x in closedBall ξ ρ \ closedBall ξ t, w x ∂μ = ∫ x in closedBall ξ ρ \ closedBall ξ σ, w x * (F ‖x - ξ‖ - F σ) ∂μ := by
+  intro n ℓ μ ξ w F F' σ ρ hμ hw hF' hF
+  -- `ℝ^{n+ℓ}` is σ-compact and `μ` is finite on compact sets: `μ` is σ-finite, hence s-finite
+  have hμs : SFinite μ := inferInstance
+  -- `A` is Borel and the radius `r = |· - ξ|` is continuous, hence Borel measurable
+  have hA : MeasurableSet (closedBall ξ ρ \ closedBall ξ σ) :=
+    measurableSet_closedBall.diff measurableSet_closedBall
+  have hr : Measurable fun x : Ambient n ℓ ↦ ‖x - ξ‖ :=
+    (continuous_id.sub continuous_const).norm.measurable
+  -- `r` maps `A` into `(σ, ρ]`
+  have hrA : ∀ x ∈ closedBall ξ ρ \ closedBall ξ σ, ‖x - ξ‖ ∈ Ioc σ ρ := by
+    rintro x ⟨hxρ, hxσ⟩
+    rw [mem_closedBall_iff_norm] at hxρ hxσ
+    exact ⟨not_le.1 hxσ, hxρ⟩
+  obtain ⟨ha, hb, hc⟩ := Submission.mcm_primitive_radial_fubini (Ambient n ℓ) μ
+    (closedBall ξ ρ \ closedBall ξ σ) (fun x ↦ ‖x - ξ‖) w F F' σ ρ hμs hA hr hrA hw hF' hF
+  -- for `t ∈ (σ, ρ]`: `A ∩ {x | t < r x} = B_ρ(ξ) \ B_t(ξ)`, as `t < r x` forces `σ < r x`
+  have hAt : ∀ t ∈ Ioc σ ρ, (closedBall ξ ρ \ closedBall ξ σ) ∩ {x | t < ‖x - ξ‖} =
+      closedBall ξ ρ \ closedBall ξ t := by
+    intro t ht
+    ext x
+    simp only [mem_inter_iff, Set.mem_sdiff, mem_closedBall_iff_norm, mem_ofPred_eq, not_le]
+    exact ⟨fun h ↦ ⟨h.1.1, h.2⟩, fun h ↦ ⟨⟨h.1, ht.1.trans h.2⟩, h.2⟩⟩
+  -- so the two `t`-integrands agree on `(σ, ρ]`, which carries over integrability and integral
+  have hEq : EqOn
+      (fun t ↦ F' t * ∫ x in (closedBall ξ ρ \ closedBall ξ σ) ∩ {x | t < ‖x - ξ‖}, w x ∂μ)
+      (fun t ↦ F' t * ∫ x in closedBall ξ ρ \ closedBall ξ t, w x ∂μ) (Ioc σ ρ) :=
+    fun t ht ↦ by simp only [hAt t ht]
+  exact ⟨ha, hb.congr_fun hEq measurableSet_Ioc,
+    (setIntegral_congr_fun measurableSet_Ioc hEq).symm.trans hc⟩
+
 end
 
 end GMT.Ch04
