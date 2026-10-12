@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0e6abcdd235042675507f92ca2305ce920ed6d7ebbb5b66160bfe3c32f482c3a",
+  "git_delta": {
+    "base_commit": "9305473129b1605935eb357f70521be1c2e9f135",
+    "candidate_commit": "908b52fe33cd4239213aa8d14392ecc93706f07b",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiDens_lower_bound_of_deriv",
+    "diff_sha256": "c2aa03b7ca5701e2364c64a5d9b00008a9fed93c7f4df623326f46a477990570",
+    "source_sha256": "10649147091c45677eff89a62a57bd46b939441066fd80a1db268599df9b98f5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiDens_lower_bound_of_deriv",
+      "statement": "∀ (n : ℕ) (K ρ₁ : ℝ) (V : ℝ → ℝ), 0 < K → MonotoneOn V (Ioo 0 ρ₁) → (∀ ρ ∈ Ioo 0 ρ₁, 0 < V ρ) → (∀ᵐ ρ ∂(volume : Measure ℝ), ρ ∈ Ioo 0 ρ₁ → ∃ d : ℝ, HasDerivAt V d ρ ∧ V ρ ^ ((n : ℝ) / (n + 1)) ≤ K * d) → ∀ ρ ∈ Ioo 0 ρ₁, (ρ / ((n + 1) * K)) ^ (n + 1) ≤ V ρ",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
