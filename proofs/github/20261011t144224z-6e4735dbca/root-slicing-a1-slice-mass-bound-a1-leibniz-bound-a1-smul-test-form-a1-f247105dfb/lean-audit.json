@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5fd796fcb340737891a1a53403165b879978ba48f5beb4733d91cdbdb210f41c",
+  "git_delta": {
+    "base_commit": "51c91d19ebbedca006cf4f6f2e80cc4c6cda5dd5",
+    "candidate_commit": "1faaa7c7259bb155f74661c6ff80276b4faaa290",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_lb_smul_testForm",
+    "diff_sha256": "2c5c4b4dcab59a3839f4588dc346926a1769c96982d69400257aab3ebe0bf993",
+    "source_sha256": "7c9a828d8df5350ee6fd52872ca4538785d9d577e1b422fbd3fcc9a227687d5a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_lb_smul_testForm",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (φ : TestFormOn U k) (ψ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → ∃ η : TestFormOn U k, ∀ x, (η : DifferentialForm (Eucl P) k) x = ψ x • (φ : DifferentialForm (Eucl P) k) x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
