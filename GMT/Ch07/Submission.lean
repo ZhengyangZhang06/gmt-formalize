@@ -512,6 +512,33 @@ theorem Submission.adr_secant_rescaling_of_infinite : ∀ (P : ℕ) (S : Set (Eu
   · change x + a (ks (ψ i)) • (a (ks (ψ i)))⁻¹ • (q (ks (ψ i)) - x) ∈ S
     rw [smul_inv_smul₀ (ha _).ne', add_sub_cancel]
     exact hqS _
+/-- **Radial segment** (Simon, proof of A.4: `H¹(sing ψ ∩ B_1(0)) > 0`).  If `S` contains the
+radial segment `{t z : 0 < t ≤ 1}`, where `z ≠ 0` and `|z| < 1`, then `μH[1](S ∩ B_1(0)) > 0`:
+the closed segment `[z / 2, z]` lies in `S ∩ B_1(0)`, its endpoints differ, and its
+`μH[1]`-measure is the distance between them (`hausdorffMeasure_segment`). -/
+theorem Submission.adr_radial_segment_hausdorff_pos : ∀ (P : ℕ) (S : Set (Euclid P)) (z : Euclid P), z ≠ 0 → ‖z‖ < 1 → (∀ t : ℝ, 0 < t → t ≤ 1 → t • z ∈ S) → 0 < μH[1] (S ∩ ball (0 : Euclid P) 1) := by
+  intro P S z hz hz1 hS
+  -- a point `α • (z / 2) + β • z` of `[z / 2, z]` is `t • z` with `t = α / 2 + β ∈ (0, 1]`, so it
+  -- lies in `S`, and `|t z| ≤ |z| < 1`
+  have hsub : segment ℝ ((1 / 2 : ℝ) • z) z ⊆ S ∩ ball (0 : Euclid P) 1 := by
+    rintro w ⟨α, β, hα, hβ, hαβ, rfl⟩
+    have hw : α • (1 / 2 : ℝ) • z + β • z = (α / 2 + β) • z := by
+      rw [smul_smul, ← add_smul, mul_one_div]
+    have ht0 : 0 < α / 2 + β := by linarith
+    have ht1 : α / 2 + β ≤ 1 := by linarith
+    rw [hw]
+    refine ⟨hS _ ht0 ht1, ?_⟩
+    rw [mem_ball_zero_iff, norm_smul, Real.norm_of_nonneg ht0.le]
+    calc (α / 2 + β) * ‖z‖ ≤ 1 * ‖z‖ := by gcongr
+      _ < 1 := by rwa [one_mul]
+  -- `z / 2 ≠ z`, since otherwise `(1 / 2 - 1) • z = 0` forces `z = 0`
+  have hne : (1 / 2 : ℝ) • z ≠ z := by
+    intro h
+    have h' : ((1 / 2 : ℝ) - 1) • z = 0 := by rw [sub_smul, one_smul, h, sub_self]
+    exact hz ((smul_eq_zero.mp h').resolve_left (by norm_num))
+  calc (0 : ℝ≥0∞) < edist ((1 / 2 : ℝ) • z) z := edist_pos.mpr hne
+    _ = μH[1] (segment ℝ ((1 / 2 : ℝ) • z) z) := (hausdorffMeasure_segment _ _).symm
+    _ ≤ μH[1] (S ∩ ball (0 : Euclid P) 1) := measure_mono hsub
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
