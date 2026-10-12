@@ -441,6 +441,40 @@ theorem Submission.lpf_lli_inner_compact_approx : ∀ (P : ℕ) (μ : Measure (E
     exact mem_iUnion.2 ⟨Nat.pair m j, by simpa only [Nat.unpair_pair] using hj⟩
   · exact Or.inl ⟨hxA, hx⟩
 
+/-- Locally Lipschitz images (step (P3) of Simon Ch. 6, Lemma 3.9; cf. Ch. 2, Theorem 1.8(i)).
+If `f` is locally Lipschitz on `U ⊆ ℝ^P`, then `f` maps `Hⁿ`-null subsets of `U` to `Hⁿ`-null
+sets, and `Hⁿ`-null-measurable `A ⊆ U` with `Hⁿ ⌞ A` σ-finite to `Hⁿ`-null-measurable sets. -/
+theorem Submission.lpf_locally_lipschitz_image : ∀ (P Q n : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q), LocallyLipschitzOn U f → (∀ Z ⊆ U, (μHE[n] : Measure (Eucl P)) Z = 0 → (μHE[n] : Measure (Eucl Q)) (f '' Z) = 0) ∧ ∀ A ⊆ U, NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → SigmaFinite ((μHE[n] : Measure (Eucl P)).restrict A) → NullMeasurableSet (f '' A) (μHE[n] : Measure (Eucl Q)) := by
+  intro P Q n U f hf
+  -- Step 1: open sets `O i` covering `U`, with `f` `K i`-Lipschitz on `O i ∩ U`.
+  obtain ⟨O, K, -, hUO, hK⟩ := Submission.lpf_lli_countable_lipschitz_cover P Q U f hf
+  -- Step 2, part (i): `Hⁿ(f(Z ∩ O i)) ≤ (K i)ⁿ Hⁿ(Z ∩ O i) = 0` and `f(Z) ⊆ ⋃ i, f(Z ∩ O i)`.
+  have hnull : ∀ Z ⊆ U, (μHE[n] : Measure (Eucl P)) Z = 0 →
+      (μHE[n] : Measure (Eucl Q)) (f '' Z) = 0 := by
+    intro Z hZU hZ
+    have hcover : f '' Z ⊆ ⋃ i, f '' (Z ∩ O i) := by
+      rintro _ ⟨x, hxZ, rfl⟩
+      obtain ⟨i, hi⟩ := mem_iUnion.1 (hUO (hZU hxZ))
+      exact mem_iUnion.2 ⟨i, x, ⟨hxZ, hi⟩, rfl⟩
+    refine measure_mono_null hcover (measure_iUnion_null fun i => nonpos_iff_eq_zero.1 ?_)
+    calc (μHE[n] : Measure (Eucl Q)) (f '' (Z ∩ O i))
+        ≤ (K i : ℝ≥0∞) ^ n * (μHE[n] : Measure (Eucl P)) (Z ∩ O i) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            ((hK i).mono fun x hx => ⟨hx.2, hZU hx.1⟩)
+      _ = 0 := by rw [measure_mono_null inter_subset_left hZ, mul_zero]
+  refine ⟨hnull, fun A hAU hA hσ => ?_⟩
+  -- Step 3: compact `C k ⊆ A` with `Hⁿ(A \ ⋃ k, C k) = 0`.
+  obtain ⟨C, hCc, hCA, hAC⟩ := Submission.lpf_lli_inner_compact_approx P _ A hA hσ
+  -- Step 4: each `f(C k)` is compact (`f` is continuous on `U ⊇ C k`), hence Borel, and
+  -- `f(A \ ⋃ k, C k)` is `Hⁿ`-null by part (i).
+  have hB : MeasurableSet (⋃ k, f '' C k) := MeasurableSet.iUnion fun k =>
+    ((hCc k).image_of_continuousOn (hf.continuousOn.mono ((hCA k).trans hAU))).isClosed
+      |>.measurableSet
+  have hsplit : f '' A = (⋃ k, f '' C k) ∪ f '' (A \ ⋃ k, C k) := by
+    rw [← image_iUnion, ← image_union, union_sdiff_cancel (iUnion_subset hCA)]
+  rw [hsplit]
+  exact hB.nullMeasurableSet.union (.of_null (hnull _ (sdiff_subset.trans hAU) hAC))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
