@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "06781f5e79060eb7a04f622e087c3b342e2a50c8bdc0c9f8d0f38f239c057891",
+  "git_delta": {
+    "base_commit": "b5567c51ecc72d33f5aded618bec246e0e76ab86",
+    "candidate_commit": "e54c806e72bd5ecedc87c350f35edb9b45bdb0e7",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_tde_mcd_countable_glue",
+    "diff_sha256": "2e594726f64fb050da2fc539bef6f8749d1a201f3c4fcdf92712506b4a21b073",
+    "source_sha256": "968faf5837314d62314e989dbf59c8b76b350b48fa78934d027af05bf0e42101",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_tde_mcd_countable_glue",
+      "statement": "∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] [Zero Y] (S : ℕ → Set X) (G : ℕ → X → Y), (∀ j, MeasurableSet (S j)) → (∀ j, Measurable (G j)) → ∃ L : X → Y, Measurable L ∧ (∀ x, x ∉ (⋃ j, S j) → L x = 0) ∧ ∀ x ∈ (⋃ j, S j), ∃ j, x ∈ S j ∧ L x = G j x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
