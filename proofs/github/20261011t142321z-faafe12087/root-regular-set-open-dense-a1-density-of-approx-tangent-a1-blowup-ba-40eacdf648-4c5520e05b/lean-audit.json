@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "64ad3d352fc34e6482013bf34f36e1e2bf5f5a0d47e4a6102d927d3bb1432402",
+  "git_delta": {
+    "base_commit": "2b23ce11a3d51f7a6650255d941940cf03797567",
+    "candidate_commit": "5386f066e1dd69662094918fc0690b273235d0ab",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_blowUp_integral_ballMass_bounds",
+    "diff_sha256": "a77906ee8a584a1eb604923372ed1aaa0ea8b7f1537a8e51ae5eca4071208410",
+    "source_sha256": "f273297ad55abcb599d25fc94561fb0ba8d465a71f6c148dce2e762d44a46b8d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_blowUp_integral_ballMass_bounds",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (r R : ℝ) (φ : Amb n ℓ → ℝ), 0 < r → 1 ≤ R → closedBall x (r * R) ⊆ U → Measurable φ → (∀ y, 0 ≤ φ y ∧ φ y ≤ 1) → (∀ y, y ∉ closedBall (0 : Amb n ℓ) R → φ y = 0) → 0 ≤ ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier, φ y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) ∧ ((∀ y ∈ closedBall (0 : Amb n ℓ) 1, φ y = 1) → (r ^ n)⁻¹ * ∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ)) ≤ ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier, φ y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ))) ∧ ((∀ y, y ∉ closedBall (0 : Amb n ℓ) 1 → φ y = 0) → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier, φ y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) ≤ (r ^ n)⁻¹ * ∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ)))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
