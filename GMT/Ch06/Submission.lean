@@ -359,6 +359,181 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- A coordinate of an `n`-covector is bounded by its Euclidean coefficient norm:
+`|α(e_{β(0)}, …, e_{β(n-1)})| ≤ |α|` for every increasing multi-index `β`. -/
+theorem Submission.cmb_rb_abs_euclideanCovectorCoordinate_le :
+    ∀ (P n : ℕ) (α : Covector (Eucl P) n) (β : SimonMultiIndex n P),
+      |euclideanCovectorCoordinate α β| ≤ covectorEuclideanNorm α := by
+  intro P n α β
+  -- `|c| = √(c²)` and `√` is monotone, so it suffices to bound `c²` by the defining sum.
+  rw [covectorEuclideanNorm, ← Real.sqrt_sq_eq_abs]
+  refine Real.sqrt_le_sqrt ?_
+  -- `c²` is the summand of the strictly increasing tuple `β`; every summand is nonnegative.
+  refine le_trans (le_of_eq ?_) (Finset.single_le_sum (fun I _ => ?_) (Finset.mem_univ ⇑β))
+  · simp only [euclideanCovectorCoordinate, β.strictMono, ↓reduceIte,
+      EuclideanSpace.basisFun_apply]
+  · exact ite_nonneg (sq_nonneg _) le_rfl
+/-- The triangle inequality for the Euclidean coefficient norm of covectors (Simon Ch. 6, 1.15):
+`|α + γ| ≤ |α| + |γ|`.  `|a|` is the Euclidean norm of the coefficient vector
+`c(a)_I = [I strictly increasing] · a(b_{I(0)}, …, b_{I(n-1)})` in `ℝ^(Fin n → Fin P)`, and `c` is
+additive, so this is `norm_add_le` in that Euclidean space. -/
+theorem Submission.cmb_rb_covectorEuclideanNorm_add_le :
+    ∀ (P n : ℕ) (α γ : Covector (Eucl P) n),
+      covectorEuclideanNorm (α + γ) ≤ covectorEuclideanNorm α + covectorEuclideanNorm γ := by
+  intro P n α γ
+  -- The coefficient vector `c(a)_I = [I strictly increasing] · a(b_{I(0)}, …, b_{I(n-1)})`.
+  let c : Covector (Eucl P) n → EuclideanSpace ℝ (Fin n → Fin P) := fun a =>
+    WithLp.toLp 2 fun I =>
+      if StrictMono I then a (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) else 0
+  have hc : ∀ a, covectorEuclideanNorm a = ‖c a‖ := by
+    intro a
+    rw [EuclideanSpace.norm_eq, covectorEuclideanNorm]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    simp only [c, Real.norm_eq_abs, sq_abs]
+    split_ifs <;> simp
+  have hadd : c (α + γ) = c α + c γ := by
+    ext I
+    simp only [c, PiLp.add_apply, ContinuousAlternatingMap.add_apply]
+    split_ifs <;> simp
+  rw [hc, hc, hc, hadd]
+  exact norm_add_le _ _
+/-- Coefficients of a measure representation (2.7) are integrable on compact sets (Simon Ch. 6,
+p. 136): for compact `K ⊆ W ⊆ U`, `W` open, test with `ψ = χ dx^β`, where the smooth cutoff `χ`
+equals `1` exactly on `K` and has compact support in `W`.  Then `⟨ψ, v⟩` is `μ`-integrable and
+agrees on `K` with the coefficient `⟨dx^β, v⟩`. -/
+theorem Submission.cmb_rb_measureRepresentation_integrableOn_coeff :
+    ∀ (P n : ℕ) (U W : Set (Eucl P)), IsOpen W → W ⊆ U → ∀ (T : GeometricCurrentOn U n)
+      (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ v →
+      ∀ K : Set (Eucl P), IsCompact K → K ⊆ W → ∀ β : SimonMultiIndex n P,
+        IntegrableOn (fun x => euclideanNVectorCoordinate (v x) β) K μ := by
+  intro P n U W hW hWU T μ v hrep K hK hKW β
+  -- An open `V` with `K ⊆ V` and `closure V` compact inside `W`.
+  obtain ⟨V, hVo, hKV, hVW, hVc⟩ := exists_open_between_and_isCompact_closure hK hW hKW
+  -- A smooth cutoff `χ` with `support χ = V` and `χ x = 1 ↔ x ∈ K`.
+  obtain ⟨χ, hχs, -, hχV, hχK⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := (⊤ : ℕ∞)) hVo hK.isClosed hKV
+  -- The test form `ψ = χ dx^β`.
+  let c : Covector (Eucl P) n := wedgeCovectors n (fun j => EuclideanSpace.proj (β j))
+  let ψ : DifferentialForm (Eucl P) n := fun x => χ x • c
+  have hψV : tsupport ψ ⊆ closure V := by
+    simpa [tsupport, hχV] using tsupport_smul_subset_left χ (fun _ => c)
+  have hψ : ψ ∈ TestFormOn U n :=
+    ⟨⟨hχs.smul contDiff_const, hVc.of_isClosed_subset (isClosed_tsupport _) hψV⟩,
+      hψV.trans (hVW.trans hWU)⟩
+  -- `⟨ψ, v⟩` is `μ`-integrable and equals the coefficient on the closed set `K`.
+  refine (hrep ⟨ψ, hψ⟩).1.integrableOn.congr_fun (fun x hx => ?_) hK.isClosed.measurableSet
+  simp [ψ, c, (hχK x).1 hx, euclideanNVectorCoordinate]
+
+/-- **Coordinate pairing estimate, the step "by (2.7)" in the proof of Simon Ch. 6, Lemma 2.15
+(p. 137).**  Let the coefficients `v^β = ⟨dx^β, v⟩` of `v` be `μ`-integrable on a measurable set
+`K`, and let `θ` be a continuous `n`-form vanishing off `K` with `|θ| ≤ D` (Euclidean coefficient
+norm).  Then `f = ∑_β θ(e_β) v^β` is `μ`-integrable and `|∫ f dμ| ≤ D ∑_β ∫_K |v^β| dμ`.  Each
+coefficient `θ(e_β)` is continuous with `|θ(e_β)| ≤ |θ| ≤ D`, so `f` is integrable on `K`; it
+vanishes off `K`; and `|f| ≤ ∑_β D |v^β|` pointwise. -/
+theorem Submission.cmb_rb_integral_coeff_pairing_bound : ∀ (P n : ℕ) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n) (K : Set (Eucl P)), MeasurableSet K → (∀ β : SimonMultiIndex n P, IntegrableOn (fun x => euclideanNVectorCoordinate (v x) β) K μ) → ∀ (θ : Eucl P → Covector (Eucl P) n) (D : ℝ), Continuous θ → (∀ x, x ∉ K → θ x = 0) → (∀ x, covectorEuclideanNorm (θ x) ≤ D) → Integrable (fun x => ∑ β : SimonMultiIndex n P, euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β) μ ∧ |∫ x, ∑ β : SimonMultiIndex n P, euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β ∂μ| ≤ D * ∑ β : SimonMultiIndex n P, ∫ x in K, |euclideanNVectorCoordinate (v x) β| ∂μ := by
+  intro P n μ v K _hK hv θ D hθ hθK hθD
+  -- Step 1: every coefficient is bounded, `|θ(x)(e_β)| ≤ |θ(x)| ≤ D`.
+  have hcD : ∀ (β : SimonMultiIndex n P) (x : Eucl P),
+      |euclideanCovectorCoordinate (θ x) β| ≤ D := fun β x =>
+    (Submission.cmb_rb_abs_euclideanCovectorCoordinate_le P n (θ x) β).trans (hθD x)
+  -- Step 2: `x ↦ θ(x)(e_β)` is continuous, as evaluation at `e_β` is continuous.
+  have hcc : ∀ β : SimonMultiIndex n P,
+      Continuous fun x => euclideanCovectorCoordinate (θ x) β := fun β =>
+    hθ.eval_const _
+  -- Step 3: each `θ(e_β) v^β`, hence `f`, is `μ`-integrable on `K`.
+  have hfK : IntegrableOn (fun x => ∑ β : SimonMultiIndex n P,
+      euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β) K μ :=
+    integrable_finsetSum _ fun β _ => Integrable.bdd_mul (hv β) (hcc β).aestronglyMeasurable
+      (ae_of_all _ fun x => (Real.norm_eq_abs _).trans_le (hcD β x))
+  -- Step 4: `f = 0` off `K`, so `f` is `μ`-integrable and `∫ f dμ = ∫_K f dμ`.
+  have hf0 : ∀ x, x ∉ K → ∑ β : SimonMultiIndex n P,
+      euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β = 0 := by
+    intro x hx
+    simp [euclideanCovectorCoordinate, hθK x hx]
+  refine ⟨(integrableOn_iff_integrable_of_support_subset
+    (Function.support_subset_iff'.2 hf0)).1 hfK, ?_⟩
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hf0]
+  -- Steps 5–6: `|f| ≤ ∑_β D |v^β|` pointwise; integrate over `K`.
+  have hg : ∀ β ∈ (Finset.univ : Finset (SimonMultiIndex n P)),
+      IntegrableOn (fun x => D * |euclideanNVectorCoordinate (v x) β|) K μ := fun β _ =>
+    (hv β).abs.const_mul D
+  calc |∫ x in K, ∑ β : SimonMultiIndex n P,
+          euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β ∂μ|
+      ≤ ∫ x in K, |∑ β : SimonMultiIndex n P,
+          euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β| ∂μ :=
+        abs_integral_le_integral_abs
+    _ ≤ ∫ x in K, ∑ β : SimonMultiIndex n P, D * |euclideanNVectorCoordinate (v x) β| ∂μ :=
+        integral_mono hfK.abs (integrable_finsetSum _ hg) fun x =>
+          (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun β _ => by
+            rw [abs_mul]
+            exact mul_le_mul_of_nonneg_right (hcD β x) (abs_nonneg _))
+    _ = ∑ β : SimonMultiIndex n P, D * ∫ x in K, |euclideanNVectorCoordinate (v x) β| ∂μ := by
+        rw [integral_finsetSum _ hg]
+        simp only [integral_const_mul]
+    _ = D * ∑ β : SimonMultiIndex n P, ∫ x in K, |euclideanNVectorCoordinate (v x) β| ∂μ :=
+        (Finset.mul_sum _ _ _).symm
+/-- Mass estimate: if `M_W(T) ≤ B` and `ω` is supported in `W` with `|ω(x)| ≤ C` everywhere
+(Euclidean covector norm), then `|T(ω)| ≤ B · C`. -/
+theorem Submission.cmb_abs_apply_le_of_massOn_le :
+    ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B C : ℝ),
+      0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) →
+      |T ω| ≤ B * C := by
+  intro P n U W T ω B C hB hM hW hC
+  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
+  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  -- `C ≥ 0`, by evaluating the pointwise bound at `0`.
+  have hC0 : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hC 0)
+  -- For every `c > C`, both `±c⁻¹ ω` are mass-admissible for `W`, hence `|T ω| ≤ B c`.
+  have key : ∀ c, C < c → |T ω| ≤ B * c := by
+    intro c hc
+    have hc0 : 0 < c := hC0.trans_lt hc
+    have hbound : ∀ s : ℝ, |s| = c⁻¹ → s * T ω ≤ B := by
+      intro s hs
+      have hadm : s • ω ∈ massAdmissibleOn U n W := by
+        refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hW, fun x => ?_⟩
+        change covectorEuclideanNorm (s • (ω : DifferentialForm (Eucl P) n) x) ≤ 1
+        rw [hsmul, hs, inv_mul_le_iff₀ hc0, mul_one]
+        exact (hC x).trans hc.le
+      have hle := (T.le_massOn hadm).trans hM
+      rw [ENNReal.ofReal_le_ofReal_iff hB] at hle
+      have hlin : T (s • ω) = s * T ω := by
+        rw [map_smul, smul_eq_mul]
+      rwa [hlin] at hle
+    have h1 := hbound c⁻¹ (abs_of_pos (inv_pos.mpr hc0))
+    have h2 := hbound (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc0)])
+    have e1 : c * (c⁻¹ * T ω) = T ω := by field_simp
+    have e2 : c * (-c⁻¹ * T ω) = -T ω := by field_simp
+    rw [abs_le]
+    constructor
+    · have := mul_le_mul_of_nonneg_left h2 hc0.le
+      rw [e2] at this
+      linarith
+    · have := mul_le_mul_of_nonneg_left h1 hc0.le
+      rw [e1] at this
+      linarith
+  -- Let `c ↓ C`: take `c = C + ε / (B + 1)`.
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  have hB1 : 0 < B + 1 := by linarith
+  have hδ : 0 < ε / (B + 1) := div_pos hε hB1
+  have hBδ : B * (ε / (B + 1)) ≤ ε := by
+    calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
+          mul_le_mul_of_nonneg_right (by linarith) hδ.le
+      _ = ε := by field_simp
+  have := key (C + ε / (B + 1)) (by linarith)
+  calc |T ω| ≤ B * (C + ε / (B + 1)) := this
+    _ = B * C + B * (ε / (B + 1)) := by ring
+    _ ≤ B * C + ε := by linarith
 /-- **Mollification step of Simon Ch. 6, Lemma 2.15 (p. 137).**  A continuous compactly supported
 `n`-form `ω` with `tsupport ω ⊆ V`, `V` open, is a uniform limit, in the Euclidean coefficient
 norm, of test forms supported in `V`.  As `|α| ≤ √N ‖α‖` (`N = #(Fin n → Fin P)`, `‖α‖` the
@@ -447,6 +622,159 @@ theorem Submission.cmb_exists_testForm_uniform_approx : ∀ (P n : ℕ) (U V : S
     _ ≤ ε := by
       rw [hε'_def, mul_div_assoc', div_le_iff₀ hN1]
       nlinarith
+/-- Coordinate expansion of an `n`-covector on `ℝ^P` in the wedge basis:
+`α = ∑_β α(e_{β(0)}, …, e_{β(n-1)}) dx^β` over the increasing multi-indices `β`. -/
+theorem Submission.cmb_covector_eq_sum_coord_smul_wedge :
+    ∀ (P n : ℕ) (α : Covector (Eucl P) n), α = ∑ β : SimonMultiIndex n P,
+      euclideanCovectorCoordinate α β • wedgeCovectors n (fun j => EuclideanSpace.proj (β j)) := by
+  intro P n α
+  classical
+  -- `e v = (e_{v 0}, …, e_{v (n - 1)})` for a tuple `v` of coordinate indices.
+  set e : (Fin n → Fin P) → Fin n → Eucl P := fun v j => EuclideanSpace.single (v j) 1
+  set R : Covector (Eucl P) n := ∑ β : SimonMultiIndex n P,
+    euclideanCovectorCoordinate α β • wedgeCovectors n (fun j => EuclideanSpace.proj (β j)) with hR
+  -- Kronecker property: `dx^β (e_γ) = δ_{βγ}`.
+  have hK : ∀ β γ : SimonMultiIndex n P,
+      wedgeCovectors n (fun j => EuclideanSpace.proj (β j)) (e γ) = if β = γ then 1 else 0 := by
+    intro β γ
+    rw [wedgeCovectors_apply_det]
+    split_ifs with hβγ
+    · -- the matrix `[δ_{β i, β j}]` is the identity
+      subst hβγ
+      convert Matrix.det_one (n := Fin n) (R := ℝ)
+      ext i j
+      simp [e, Matrix.one_apply, PiLp.single_apply, β.injective.eq_iff]
+    · -- some `β i` is not among the `γ j`, so row `i` vanishes
+      obtain ⟨i, hi⟩ : ∃ i, ∀ j, β i ≠ γ j := by
+        by_contra! h
+        apply hβγ
+        rw [← OrderEmbedding.range_inj_of_wellFoundedLT]
+        have hsub : Set.range β ⊆ Set.range γ := by
+          rintro _ ⟨i, rfl⟩
+          obtain ⟨j, hj⟩ := h i
+          exact ⟨j, hj.symm⟩
+        refine Set.eq_of_subset_of_ncard_le hsub ?_ (Set.finite_range γ)
+        rw [Set.ncard_range_of_injective γ.injective, Set.ncard_range_of_injective β.injective]
+      exact Matrix.det_eq_zero_of_row_eq_zero i fun j => by simp [e, PiLp.single_apply, hi j]
+  -- `R` agrees with `α` on increasing tuples of basis vectors.
+  have h1 : ∀ γ : SimonMultiIndex n P, R (e γ) = α (e γ) := by
+    intro γ
+    rw [hR, ContinuousAlternatingMap.sum_apply]
+    simp only [ContinuousAlternatingMap.smul_apply, hK, smul_eq_mul, mul_ite, mul_one, mul_zero,
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+    rfl
+  -- `R` agrees with `α` on injective tuples: sort them and use `map_perm`.
+  have h2 : ∀ v : Fin n → Fin P, Function.Injective v → R (e v) = α (e v) := by
+    intro v hv
+    have hsm : StrictMono (v ∘ Tuple.sort v) :=
+      (Tuple.monotone_sort v).strictMono_of_injective (hv.comp (Tuple.sort v).injective)
+    have hγ := h1 (OrderEmbedding.ofStrictMono _ hsm)
+    have heq : e (OrderEmbedding.ofStrictMono _ hsm) = e v ∘ Tuple.sort v := rfl
+    rw [heq, ← ContinuousAlternatingMap.coe_toAlternatingMap R,
+      ← ContinuousAlternatingMap.coe_toAlternatingMap α, AlternatingMap.map_perm,
+      AlternatingMap.map_perm] at hγ
+    exact smul_left_cancel _ hγ
+  -- Conclude by extensionality on the standard basis.
+  symm
+  apply ContinuousAlternatingMap.toAlternatingMap_injective
+  refine Module.Basis.ext_alternating (EuclideanSpace.basisFun (Fin P) ℝ).toBasis fun v hv => ?_
+  simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
+    ContinuousAlternatingMap.coe_toAlternatingMap]
+  exact h2 v hv
+
+/-- **Continuous forms against a measure representation: the step "by (2.7)" in the proof of
+Simon Ch. 6, Lemma 2.15 (p. 137).**  Let `(μ, v)` represent `T` as in (2.7), `W ⊂⊂ U` and
+`M_W(T) ≤ B`.  If `ω` is a continuous `n`-form with `tsupport ω ⊆ W` and `|ω(x)| ≤ C` everywhere
+(Euclidean coefficient norm), then `⟨ω, v⟩` is `μ`-integrable and `|∫ ⟨ω, v⟩ dμ| ≤ B · C`.
+Choose `V` open with `tsupport ω ⊆ V` and `closure V ⊆ W` compact.  The coefficients `v_β` of `v`
+are `μ`-integrable on `closure V`, so for every continuous `θ` vanishing off `closure V` with
+`|θ| ≤ D`, `⟨θ, v⟩ = ∑_β θ(e_β) v_β` is integrable and `|∫ ⟨θ, v⟩ dμ| ≤ D · G`, where
+`G = ∑_β ∫_{closure V} |v_β| dμ`.  For a test form `η` supported in `V` with `|ω - η| ≤ ε`, the
+mass bound gives `|∫ ⟨ω, v⟩ dμ| ≤ |T(η)| + ε G ≤ B (C + ε) + ε G`; let `ε → 0`. -/
+theorem Submission.cmb_measureRepresentation_continuous_bound : ∀ (P n : ℕ) (U W : Set (Eucl P)), CompactlyContainedOpen W U → ∀ (T : GeometricCurrentOn U n) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ v → ∀ (B C : ℝ), 0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → ∀ ω : Eucl P → Covector (Eucl P) n, Continuous ω → tsupport ω ⊆ W → (∀ x, covectorEuclideanNorm (ω x) ≤ C) → Integrable (fun x => v x (ω x)) μ ∧ |∫ x, v x (ω x) ∂μ| ≤ B * C := by
+  intro P n U W hWU T μ v hT B C hB hM ω hω hωW hωC
+  obtain ⟨hWo, hWc, hWU'⟩ := hWU
+  have hWU₀ : W ⊆ U := subset_closure.trans hWU'
+  -- Step 1: `tsupport ω` is compact; choose `V` open with `tsupport ω ⊆ V`, `closure V ⊆ W`
+  -- compact.
+  have hωc : HasCompactSupport ω :=
+    hWc.of_isClosed_subset (isClosed_tsupport ω) (hωW.trans subset_closure)
+  obtain ⟨V, hVo, hωV, hVW, hVc⟩ :=
+    exists_open_between_and_isCompact_closure hωc.isCompact hWo hωW
+  have hVU : V ⊆ U := subset_closure.trans (hVW.trans hWU₀)
+  -- Step 2: the coefficients `v_β` of `v` are `μ`-integrable on `closure V`.
+  have hcoef : ∀ β : SimonMultiIndex n P,
+      IntegrableOn (fun x => euclideanNVectorCoordinate (v x) β) (closure V) μ :=
+    Submission.cmb_rb_measureRepresentation_integrableOn_coeff P n U W hWo hWU₀ T μ v hT
+      (closure V) hVc hVW
+  set G : ℝ := ∑ β : SimonMultiIndex n P,
+    ∫ x in closure V, |euclideanNVectorCoordinate (v x) β| ∂μ
+  have hG : 0 ≤ G := Finset.sum_nonneg fun β _ => integral_nonneg fun x => abs_nonneg _
+  -- Step 3: coordinate expansion `v(x)(α) = ∑_β α(e_β) v_β(x)`.
+  have hexp : ∀ (x : Eucl P) (α : Covector (Eucl P) n), v x α = ∑ β : SimonMultiIndex n P,
+      euclideanCovectorCoordinate α β * euclideanNVectorCoordinate (v x) β := by
+    intro x α
+    conv_lhs => rw [Submission.cmb_covector_eq_sum_coord_smul_wedge P n α]
+    simp only [map_sum, map_smul, smul_eq_mul, euclideanNVectorCoordinate]
+  -- Step 4: pairings with continuous forms vanishing off `closure V` are integrable, and
+  -- `|∫ ⟨θ, v⟩ dμ| ≤ D G` when `|θ| ≤ D`.
+  have hpair : ∀ (θ : Eucl P → Covector (Eucl P) n) (D : ℝ), Continuous θ →
+      (∀ x, x ∉ closure V → θ x = 0) → (∀ x, covectorEuclideanNorm (θ x) ≤ D) →
+      Integrable (fun x => v x (θ x)) μ ∧ |∫ x, v x (θ x) ∂μ| ≤ D * G := by
+    intro θ D hθ hθV hθD
+    have hfun : (fun x => v x (θ x)) = fun x => ∑ β : SimonMultiIndex n P,
+        euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β :=
+      funext fun x => hexp x (θ x)
+    rw [hfun]
+    exact Submission.cmb_rb_integral_coeff_pairing_bound P n μ v (closure V)
+      isClosed_closure.measurableSet hcoef θ D hθ hθV hθD
+  have hωV' : ∀ x, x ∉ closure V → ω x = 0 := fun x hx =>
+    image_eq_zero_of_notMem_tsupport fun h => hx (subset_closure (hωV h))
+  refine ⟨(hpair ω C hω hωV' hωC).1, ?_⟩
+  -- Step 5: compare with a test form `η` supported in `V`, `|ω - η| ≤ ε`.
+  have key : ∀ ε : ℝ, 0 < ε → |∫ x, v x (ω x) ∂μ| ≤ B * (C + ε) + ε * G := by
+    intro ε hε
+    obtain ⟨η, hηV, hηω⟩ :=
+      Submission.cmb_exists_testForm_uniform_approx P n U V ω hVo hVU hω hωc hωV ε hε
+    -- `|η| ≤ C + ε`, hence `|T(η)| ≤ B (C + ε)` by the mass bound.
+    have hηC : ∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x) ≤ C + ε := by
+      intro x
+      have h := Submission.cmb_rb_covectorEuclideanNorm_add_le P n (ω x)
+        (-(ω x - (η : DifferentialForm (Eucl P) n) x))
+      have heq : ω x + -(ω x - (η : DifferentialForm (Eucl P) n) x) =
+          (η : DifferentialForm (Eucl P) n) x := by abel
+      rw [heq, covectorEuclideanNorm_neg] at h
+      linarith [hωC x, hηω x]
+    have hTη : |T η| ≤ B * (C + ε) :=
+      Submission.cmb_abs_apply_le_of_massOn_le P n U W T η B (C + ε) hB hM
+        (hηV.trans (subset_closure.trans hVW)) hηC
+    -- `θ = ω - η` is continuous, vanishes off `closure V` and `|θ| ≤ ε`.
+    have hηc : Continuous (η : DifferentialForm (Eucl P) n) := ContDiff.continuous η.property.1.1
+    have hθV : ∀ x, x ∉ closure V → ω x - (η : DifferentialForm (Eucl P) n) x = 0 := by
+      intro x hx
+      rw [hωV' x hx, image_eq_zero_of_notMem_tsupport fun h => hx (subset_closure (hηV h)),
+        sub_zero]
+    obtain ⟨hθi, hθb⟩ :
+        Integrable (fun x => v x (ω x - (η : DifferentialForm (Eucl P) n) x)) μ ∧
+          |∫ x, v x (ω x - (η : DifferentialForm (Eucl P) n) x) ∂μ| ≤ ε * G :=
+      hpair (fun x => ω x - (η : DifferentialForm (Eucl P) n) x) ε (hω.sub hηc) hθV hηω
+    -- `∫ ⟨ω, v⟩ dμ = T(η) + ∫ ⟨ω - η, v⟩ dμ`.
+    obtain ⟨hηi, hηT⟩ := hT η
+    have hsplit : ∫ x, v x (ω x) ∂μ =
+        T η + ∫ x, v x (ω x - (η : DifferentialForm (Eucl P) n) x) ∂μ := by
+      rw [hηT, ← integral_add hηi hθi]
+      congr 1
+      funext x
+      rw [← map_add, add_sub_cancel]
+    rw [hsplit]
+    exact (abs_add_le _ _).trans (add_le_add hTη hθb)
+  -- Step 6: let `ε → 0`, with `ε = ε₀ / (B + G + 1)`.
+  refine le_of_forall_pos_le_add fun ε₀ hε₀ => ?_
+  have hBG : 0 < B + G + 1 := by linarith
+  have hε : 0 < ε₀ / (B + G + 1) := div_pos hε₀ hBG
+  have hεε₀ : ε₀ / (B + G + 1) * (B + G + 1) = ε₀ := div_mul_cancel₀ ε₀ hBG.ne'
+  have h := key _ hε
+  nlinarith
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
