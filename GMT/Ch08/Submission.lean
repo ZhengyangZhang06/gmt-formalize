@@ -410,6 +410,24 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 8, proof of 3.7, p. 212, choice of `ρ₀` and `W̃`** (child `thickening_rel_compact`
+of `lower_density_ae`): if `W ⊂⊂ U` then `W̃ = {x : dist(x, W) < ρ₀} ⊂⊂ U` for some `ρ₀ > 0`.
+The compact set `closure W` has a closed thickening `cthickening ρ₀ (closure W) ⊆ U`; it is compact
+(`ℝ^N` is proper) and contains `closure W̃ ⊆ cthickening ρ₀ W = cthickening ρ₀ (closure W)`. -/
+theorem Submission.exists_thickening_isRelCompactOpenIn :
+    ∀ (N : ℕ) (U W : Set (Euclidean N)), IsOpen U → IsRelCompactOpenIn W U →
+      ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ IsRelCompactOpenIn (thickening ρ₀ W) U := by
+  intro N U W hU hW
+  obtain ⟨-, hWc, hWU⟩ := hW
+  -- Some closed thickening of the compact set `closure W ⊆ U` still lies in the open set `U`.
+  obtain ⟨δ, hδ, hδU⟩ := hWc.exists_cthickening_subset_open hU hWU
+  -- `closure (thickening δ W) ⊆ cthickening δ W = cthickening δ (closure W)`.
+  have hcl : closure (thickening δ W) ⊆ cthickening δ (closure W) := by
+    rw [cthickening_closure]
+    exact closure_thickening_subset_cthickening δ W
+  exact ⟨δ, hδ, isOpen_thickening, hWc.cthickening.of_isClosed_subset isClosed_closure hcl,
+    hcl.trans hδU⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
