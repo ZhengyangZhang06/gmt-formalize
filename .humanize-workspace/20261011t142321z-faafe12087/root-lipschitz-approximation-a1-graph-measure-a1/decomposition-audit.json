@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "euclideanHausdorffMeasure_eq_volume|def euclideanHausdorffMeasure|theorem volume_closedBall|theorem addHaar_closedBall|theorem addHaar_ball|hausdorffMeasure_image_le",
+        "lintegral_eq_lintegral_meas_lt|lintegral_image_eq_lintegral_abs_deriv_mul|Gamma_eq_integral|GammaIntegral_convergent|integral_gaussian|volume_preserving_piFinSuccAbove|volume_preserving_ofLp|lintegral_prod_mul",
+        "norm_sq_eq|sum_univ_add|append_left|append_right",
+        "lip_approx_gm_ball_measure|lip_approx_gm_graph_map_lipschitz",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/graphmeasure-independent-audit-m7l19qsh/FrozenContracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/graphmeasure-independent-audit-m7l19qsh/CheckedProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/graphmeasure-dec-1791796928/checks/Avail.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Gaussian/GaussianIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Gamma/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/JacobianOneDim.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-measure-a1/parent-child-handoff.json",
+        "/tmp/graphmeasure-dec-1791796928/checks/Avail.lean",
+        "/tmp/graphmeasure-independent-audit-m7l19qsh/FrozenContracts.lean",
+        "/tmp/graphmeasure-independent-audit-m7l19qsh/CheckedProofs.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and identical snapshot/workspace/scratch Submission sources. Independently confirmed that EuclideanSpace.volume_closedBall is unavailable in the frozen import environment, while the Gaussian, Gamma, Haar-scaling and normalized Hausdorff-image ingredients are available. This supports the split into a substantial ball-measure computation and an independent graph Lipschitz estimate. Both frozen types elaborate before either child is implemented and pass the statement validator. Independently compiled both supplied proofs, comparator-style exact checks, and the exact selected parent derived from them; all use only propext, Classical.choice and Quot.sound. The Euclidean L² metric and NNReal square-root coercion checks pass. Neither proposed name occurs in the DAG or existing Submission; both are bare identifiers, with no accepted-declaration reuse. Empty child dependency lists are accurate and acyclic. The two conclusions, image composition, and the normalized Hausdorff image inequality establish precisely the selected parent, including r = 0."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose, including n ≥ 1, arbitrary center, and r ≥ 0. Every proof step checks: normalization and Haar scaling, Gaussian evaluation by Tonelli, layer cake, the injective exponential substitution with its absolute derivative, Gamma evaluation and cancellation of a positive finite factor. The dimension hypothesis supplies nontriviality and vanishing on nonpositive substitution inputs. Zero radius is covered. The proof is complete, independently formalizable, and uses neither the parent nor another DAG theorem."
+    },
+    {
+      "key": "graph_map_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches the prose for arbitrary natural dimensions, the linear isometry equivalence, and the global bound on f. The proof independently derives the coordinate norm identity using Fin.append and the Euclidean L² norm, applies the hypothesis with valid nonnegative squaring, and obtains the exact NNReal.sqrt 2 Lipschitz bound. It also covers zero dimensions. No graph-coordinates declaration, parent theorem, or undeclared dependency is used; the proof is complete."
+    }
+  ],
+  "required_changes": []
+}

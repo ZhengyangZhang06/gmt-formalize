@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.graph_measure-a1.graph_map_lipschitz-a1",
+  "parent_id": "root.lipschitz_approximation-a1.graph_measure-a1",
+  "depth": 3,
+  "title": "The rotated graph map of a 1-Lipschitz function is sqrt(2)-Lipschitz",
+  "statement": "Let n, l be natural numbers, q a linear isometry of R^(n+l), and f : R^n -> R^l with |f(x) - f(z)| <= |x - z| for all x, z in R^n. Then the map Gamma : R^n -> R^(n+l), Gamma(x) = q(graphPoint x (f x)), is Lipschitz with constant sqrt 2: |Gamma(x) - Gamma(z)| <= sqrt(2) |x - z| for all x, z. In Lean the constant is NNReal.sqrt 2, i.e. LipschitzWith (NNReal.sqrt 2) Gamma.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), (∀ x z, ‖f x - f z‖ ≤ ‖x - z‖) → LipschitzWith (NNReal.sqrt 2) (fun x => q (graphPoint x (f x)))",
+  "lean_name": "lip_approx_gm_graph_map_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-graph-measure-a1-graph-map-lipschitz-a1-a1"
+}

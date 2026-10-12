@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.graph_measure-a1.ball_measure-a1",
+  "parent_id": "root.lipschitz_approximation-a1.graph_measure-a1",
+  "depth": 3,
+  "title": "H^n-measure of a closed ball in R^n equals omega_n r^n",
+  "statement": "For every n >= 1, every c in R^n = EuclideanSpace R (Fin n) and every r >= 0, the normalised n-dimensional Hausdorff measure of the closed ball satisfies H^n(B_r(c)) = omega_n r^n.\n- Here H^n = muHE[n] on R^n, B_r(c) = closedBall c r, and omega_n = unitBallVolume n = pi^(n/2)/Gamma(n/2 + 1).\n- As an extended real: muHE[n](closedBall c r) = ENNReal.ofReal(omega_n * r^n).",
+  "lean_statement": "∀ (n : ℕ), 1 ≤ n → ∀ (c : Rn n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Rn n)) (closedBall c r) = ENNReal.ofReal (unitBallVolume n * r ^ n)",
+  "lean_name": "lip_approx_gm_ball_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-graph-measure-a1-ball-measure-a1-a1"
+}

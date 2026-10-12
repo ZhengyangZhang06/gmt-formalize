@@ -1,0 +1,136 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_approximation-a1.graph_measure-a1`
+- Child DAG node: `root.lipschitz_approximation-a1.graph_measure-a1.ball_measure-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 of the parent proof (fact Gr): Simon's normalisation H^n = L^n on R^n (Notation p. ix; Ch. 1, 2.10) and the classical value L^n(B_1) = pi^(n/2)/Gamma(n/2+1). The parent cites Mathlib EuclideanSpace.volume_closedBall, but its module Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls is not imported by GMT.Ch05.Submission (`#check EuclideanSpace.volume_closedBall` is an unknown constant there). The unit-ball volume is therefore derived below from the Gaussian integral, the same computation as in the accepted node rsod_planeMeasure_closedBall.
+
+Notation.
+- R^n = EuclideanSpace R (Fin n), with Lebesgue measure L^n = volume, and dim R^n = n (finrank_euclideanSpace_fin). Since n >= 1, R^n is nontrivial.
+- B_s(x) = closedBall x s, and U_s(0) = ball 0 s is the open ball.
+- All integrals are lower Lebesgue integrals of nonnegative functions, with values in [0, infinity]. The map ofReal : R -> [0, infinity] is multiplicative on nonnegative reals.
+
+1. On R^n the normalised Hausdorff measure muHE[n] equals L^n (Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume). So it suffices to show L^n(B_r(c)) = ofReal(omega_n r^n).
+
+2. L^n is an additive Haar measure on the n-dimensional space R^n.
+- For r >= 0, L^n(B_r(c)) = ofReal(r^n) * L^n(U_1(0)) (Measure.addHaar_closedBall).
+- For every s >= 0, L^n(U_s(0)) = ofReal(s^n) * L^n(U_1(0)) (Measure.addHaar_ball, which uses nontriviality).
+It therefore suffices to prove (*) L^n(U_1(0)) = ofReal(omega_n).
+
+3. Let I be the lower integral over R^n of e^{-|x|^2} with respect to L^n. First evaluation: I = ofReal(sqrt(pi))^n.
+(a) The integral over R of e^{-t^2} dt is sqrt(pi) (Gaussian integral, integral_gaussian with b = 1). The integrand is integrable and positive, so its lower integral is ofReal(sqrt(pi)).
+(b) For every m, let J_m be the lower integral over R^m = (Fin m -> R), with product Lebesgue measure, of e^{-(y_1^2 + ... + y_m^2)}. Claim: J_m = ofReal(sqrt(pi))^m, by induction on m.
+- Case m = 0: the product measure on the one-point space has total mass 1 and the integrand is e^0 = 1, so J_0 = 1.
+- Step m -> m+1: the equivalence y -> (y_0, (y_{i+1})_{i<m}) of R^{m+1} with R x R^m is measure preserving (MeasurableEquiv.piFinSuccAbove at index 0, volume_preserving_piFinSuccAbove). Since sum_{i<=m} y_i^2 = y_0^2 + sum_{i<m} y_{i+1}^2, the integrand becomes the product e^{-a^2} * e^{-|w|^2} of nonnegative measurable functions of a in R and w in R^m. Tonelli for such products (lintegral_prod_mul) gives J_{m+1} = (lower integral of e^{-a^2} da) * J_m = ofReal(sqrt(pi)) * ofReal(sqrt(pi))^m = ofReal(sqrt(pi))^(m+1).
+(c) The coordinate map x -> (x_i)_i from R^n = EuclideanSpace R (Fin n) to (Fin n -> R) is measure preserving (PiLp.volume_preserving_ofLp), and |x|^2 = sum_i x_i^2 (EuclideanSpace.norm_sq_eq). Hence I = J_n = ofReal(sqrt(pi))^n.
+
+4. Second evaluation: I = ofReal(Gamma(n/2+1)) * L^n(U_1(0)).
+(a) Apply the layer-cake formula (lintegral_eq_lintegral_meas_lt) to the nonnegative continuous function g(x) = e^{-|x|^2}: I is the lower integral over t in (0, infinity) of L^n({x : t < g(x)}).
+(b) Fix t > 0. Then t < e^{-|x|^2} iff log t < -|x|^2 iff |x|^2 < -log t iff |x| < sqrt(-log t). The last equivalence is Real.lt_sqrt, using |x| >= 0; if -log t <= 0, both sides are false. So {x : t < g(x)} = U_{sqrt(-log t)}(0), whose measure is ofReal(sqrt(-log t)^n) * L^n(U_1(0)) by step 2. Pulling out the constant factor (lintegral_mul_const) gives I = K * L^n(U_1(0)), where K is the lower integral over t in (0, infinity) of ofReal(sqrt(-log t)^n).
+(c) Substitute t = phi(u) = e^{-u} for u in R.
+- phi is injective and differentiable, with phi'(u) = -e^{-u}.
+- phi(R) = (0, infinity), since t = e^{-(-log t)} for t > 0.
+- The one-dimensional change of variables for lower integrals over the image of an injective differentiable map (lintegral_image_eq_lintegral_abs_deriv_mul), together with log(e^{-u}) = -u, shows that K is the lower integral over u in R of ofReal(e^{-u}) * ofReal(sqrt(u)^n) = ofReal(e^{-u} sqrt(u)^n).
+(d) For u <= 0 we have sqrt(u) = 0, so sqrt(u)^n = 0 because n >= 1. The integrand therefore vanishes off (0, infinity), and K is the lower integral over u in (0, infinity) of ofReal(e^{-u} sqrt(u)^n) (setLIntegral_eq_of_support_subset).
+- For u > 0, sqrt(u)^n = (u^{1/2})^n = u^{n/2} = u^{(n/2+1)-1}.
+- Euler's integral Gamma(s) = integral over (0, infinity) of e^{-u} u^{s-1} du, with s = n/2 + 1 > 0 (Real.Gamma_eq_integral), applies. The integrand is integrable (Real.GammaIntegral_convergent) and nonnegative on (0, infinity), so K = ofReal(Gamma(n/2+1)).
+(e) Hence I = ofReal(Gamma(n/2+1)) * L^n(U_1(0)).
+
+5. By steps 3 and 4, ofReal(sqrt(pi))^n = ofReal(Gamma(n/2+1)) * L^n(U_1(0)). Since Gamma(n/2+1) > 0 (Real.Gamma_pos_of_pos), the factor ofReal(Gamma(n/2+1)) is nonzero and finite. Hence L^n(U_1(0)) = ofReal(sqrt(pi)^n) / ofReal(Gamma(n/2+1)) = ofReal(sqrt(pi)^n / Gamma(n/2+1)) (ENNReal.eq_div_iff, ENNReal.ofReal_div_of_pos, and ENNReal.ofReal_pow with sqrt(pi) >= 0).
+
+6. sqrt(pi)^n = (pi^{1/2})^n = pi^{n/2} (Real.sqrt_eq_rpow, Real.rpow_natCast, Real.rpow_mul with pi >= 0). So sqrt(pi)^n / Gamma(n/2+1) = pi^{n/2} / Gamma(n/2+1) = unitBallVolume n = omega_n, which proves (*).
+
+7. By steps 1, 2 and (*): muHE[n](B_r(c)) = L^n(B_r(c)) = ofReal(r^n) * ofReal(omega_n) = ofReal(omega_n * r^n). This uses r^n >= 0 (since r >= 0), multiplicativity of ofReal on nonnegative reals, and commutativity of multiplication.
+
+## Key steps
+
+1. muHE[n] = volume on R^n, and Haar scaling (addHaar_closedBall, addHaar_ball) reduces the claim to volume(ball 0 1) = omega_n
+2. Gaussian integral: the integral of e^{-|x|^2} over R^n equals (sqrt pi)^n, by Fubini induction on the dimension and the measure-preserving coordinate map
+3. Layer cake: {e^{-|x|^2} > t} = ball 0 sqrt(-log t), so the Gaussian integral equals (integral over (0,inf) of sqrt(-log t)^n dt) * volume(ball 0 1)
+4. Substitution t = e^{-u} and Euler's integral: the integral over (0,inf) of sqrt(-log t)^n dt equals Gamma(n/2+1)
+5. Solve: volume(ball 0 1) = (sqrt pi)^n / Gamma(n/2+1) = pi^(n/2) / Gamma(n/2+1) = omega_n, then multiply by r^n
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json`
+- `diff GMT/Ch05/Submission.lean <snapshot>/project/GMT/Ch05/Submission.lean (identical)`
+- `cat <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure def :68, EuclideanSpace.euclideanHausdorffMeasure_eq_volume :187)`
+- `grep -n hausdorffMeasure_image_le <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (:688, :733, :745)`
+- `grep -n 'theorem volume_closedBall|theorem volume_ball' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean (:307, :324, :343, :354)`
+- `grep -n 'theorem addHaar_closedBall |theorem addHaar_ball ' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean (:456, :500)`
+- `grep -n integral_gaussian|Gamma_eq_integral|GammaIntegral_convergent|lintegral_eq_lintegral_meas_lt|lintegral_image_eq_lintegral_abs_deriv_mul|volume_preserving_piFinSuccAbove|PiLp.volume_preserving_ofLp|lintegral_prod_mul in the snapshot Mathlib files listed`
+- `grep -n theorem .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean (euclideanHausdorffMeasure_image_le_of_lipschitzOn :216); grep import SimonGMT/Chapter03/Rectifiable.lean (imports Chapter02.Lipschitz)`
+- `python3 -I: dag.json lean_name collision scan (lip_approx_* names; ball-volume nodes: rsod_planeMeasure_closedBall accepted)`
+- `git show 7881dde5f7e308e54f05a8f95dc7a4b94e277e4c (rsod_planeMeasure_closedBall: VolumeOfBalls outside the import closure; Gaussian derivation)`
+- `git show 3ead40d6:GMT/Ch05/Submission.lean | grep -c lip_approx_graph_coordinates (0); git show e2915745:GMT/Ch05/Submission.lean | grep -c 'theorem lip_approx_graph_coordinates' (1)`
+- `lake env lean checks/Avail.lean (#check EuclideanSpace.volume_closedBall and InnerProductSpace.volume_closedBall: unknown constants; SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn available)`
+- `lake env lean checks/Final.lean (both children and the parent from them; #print axioms; comparator-style exact Submission.X checks)`
+- `python3 -I verifier/gmt-compare.py contract_scope(Contract.lean, GMT.Ch05.main_theorem); verifier/lean_contract.py validate_lean_statement on both child statements`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Gaussian/GaussianIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Gamma/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/JacobianOneDim.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-measure-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-measure-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-coordinates-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-coordinates-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-plane-bal-a9b18bed1e/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/graphmeasure-dec-1791796928/checks/Avail.lean`
+- `/tmp/graphmeasure-dec-1791796928/checks/Final.lean`
+
+Pinned versions:
+- Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d.
+- The workspace GMT/Ch05/Submission.lean is byte-identical to the snapshot copy.
+
+Decisive finding:
+- EuclideanSpace.volume_closedBall (VolumeOfBalls.lean:324), which the supplied step 4 cites, is outside the import closure of GMT.Ch05.Submission: `#check` gives an unknown constant.
+- So the omega_n computation must be done inside a child. Accepted commit 7881dde (rsod_planeMeasure_closedBall) confirms this and uses the same Gaussian, layer-cake and Gamma derivation.
+
+Available in the import closure and used by the proofs:
+- Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Measure.lean:187).
+- Measure.addHaar_closedBall and addHaar_ball (EqHaar.lean:500, 456).
+- integral_gaussian (GaussianIntegral.lean:211).
+- Real.Gamma_eq_integral (Gamma/Basic.lean:405).
+- lintegral_eq_lintegral_meas_lt (Layercake.lean:496).
+- lintegral_image_eq_lintegral_abs_deriv_mul (JacobianOneDim.lean:44).
+- volume_preserving_piFinSuccAbove (Pi.lean:818).
+- PiLp.volume_preserving_ofLp (Haar/InnerProductSpace.lean:134).
+- lintegral_prod_mul (Prod.lean:1076).
+- SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz.lean:216), imported via Chapter03.Rectifiable.
+
+Dependency on graph coordinates:
+- lip_approx_graph_coordinates is accepted (candidate e2915745) but absent from this node's base 3ead40d6.
+- So child graph_map_lipschitz re-derives the coordinate identities and has no node dependency.
+
+Lean results (/tmp/graphmeasure-dec-1791796928/checks/Final.lean, sha256 e51af93951da7d5d69e694e0829a6a7f0ba8523f068231ecb3e68c0662533448):
+- lip_approx_gm_ball_measure and lip_approx_gm_graph_map_lipschitz are fully proved.
+- The frozen parent lip_approx_graph_measure is proved from them.
+- All three use only the axioms propext, Classical.choice and Quot.sound.
+- Comparator-style `exact Submission.X` checks succeed in the replayed contract scope, which is: open MeasureTheory Metric Set Filter Topology; open scoped ENNReal NNReal; namespace GMT.Ch05; open RectifiableVarifold.
+- Both statements pass validate_lean_statement.
+
+Names: no lean_name in dag.json collides with lip_approx_gm_ball_measure or lip_approx_gm_graph_map_lipschitz, so there is no reuse.
