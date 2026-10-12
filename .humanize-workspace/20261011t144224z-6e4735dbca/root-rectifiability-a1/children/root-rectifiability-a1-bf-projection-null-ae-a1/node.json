@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.bf_projection_null_ae-a1",
+  "parent_id": "root.rectifiability-a1",
+  "depth": 2,
+  "title": "Besicovitch-Federer projection theorem for almost every linear map (finite measure)",
+  "statement": "Let N, m ∈ ℕ, k := m + 1, and let E ⊆ ℝ^N be a Borel set with Hᵏ(E) < ∞ (Hᵏ = μHE[k]) which is purely k-unrectifiable. Then for Lebesgue-almost every v = (v₁, …, v_k) ∈ (ℝ^N)^k, the image of E under the linear map L_v : ℝ^N → ℝᵏ, x ↦ (⟨v₁,x⟩, …, ⟨v_k,x⟩), has Lebesgue measure zero in ℝᵏ.",
+  "lean_statement": "∀ (N m : ℕ) (E : Set (Eucl N)), MeasurableSet E → (μHE[m + 1] : Measure (Eucl N)) E < ∞ → Poincare.SimonGMT.Chapter03.PurelyUnrectifiable (m + 1) E → ∀ᵐ v ∂(volume : Measure (Fin (m + 1) → Eucl N)), (volume : Measure (Eucl (m + 1))) ((fun x : Eucl N => (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (v i) x) : Eucl (m + 1))) '' E) = 0",
+  "lean_name": "rectifiability_bf_projection_null_ae",
+  "depends_on": [
+    "root.rectifiability-a1.bf_cone_density-a1",
+    "root.rectifiability-a1.bf_trichotomy-a1",
+    "root.rectifiability-a1.density_comparison-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.bf_cone_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.bf_trichotomy-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.density_comparison-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-bf-projection-null-ae-a1-a1"
+}

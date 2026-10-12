@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.mass_measure_abs_continuous-a1",
+  "parent_id": "root.rectifiability-a1",
+  "depth": 2,
+  "title": "Absolute continuity of the mass measure with respect to Hⁿ (Simon 6, Remark 2.37(1))",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open, T ∈ D_n(U) with M_W(T) + M_W(∂T) < ∞ for every open W ⊂⊂ U, and μ a Borel measure on ℝ^P with IsMassMeasure T μ. Then μ is absolutely continuous with respect to n-dimensional Hausdorff measure Hⁿ = μHE[n] on ℝ^P: every set A ⊆ ℝ^P with Hⁿ(A) = 0 has μ(A) = 0.",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W + T.boundary.massOn W < ∞) → ∀ μ : Measure (Eucl P), IsMassMeasure T μ → μ ≪ (μHE[m + 1] : Measure (Eucl P))",
+  "lean_name": "rectifiability_mass_measure_abs_continuous",
+  "depends_on": [
+    "root.rectifiability-a1.projection_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-mass-measure-abs-continuous-a1-a1"
+}
