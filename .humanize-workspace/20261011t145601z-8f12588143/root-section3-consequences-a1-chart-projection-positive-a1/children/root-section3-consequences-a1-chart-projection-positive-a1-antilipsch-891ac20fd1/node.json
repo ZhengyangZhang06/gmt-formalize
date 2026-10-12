@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.section3_consequences-a1.chart_projection_positive-a1.antilipschitz_measure_bound-a1",
+  "parent_id": "root.section3_consequences-a1.chart_projection_positive-a1",
+  "depth": 3,
+  "title": "Anti-Lipschitz maps on subsets of ℝⁿ satisfy Lⁿ(S) ≤ Kⁿ·Hⁿ(f(S))",
+  "statement": "Let n, p ∈ ℕ and write ℝᵈ = EuclideanSpace ℝ (Fin d) with the Euclidean norm |·|. Let f : ℝⁿ → ℝᵖ be any map, S ⊆ ℝⁿ an arbitrary set (not assumed measurable), and K ∈ ℝ≥0 such that |x − y| ≤ K·|f(x) − f(y)| for all x, y ∈ S. Then Lⁿ(S) ≤ Kⁿ·Hⁿ(f(S)) in [0, ∞]. Here Lⁿ = volume is Lebesgue outer measure on ℝⁿ, and Hⁿ = μHE[n] is the Euclidean-normalised n-dimensional Hausdorff outer measure on ℝᵖ.",
+  "lean_statement": "∀ (n p : ℕ) (f : Rn n → Rn p) (S : Set (Rn n)) (K : ℝ≥0), (∀ x ∈ S, ∀ y ∈ S, ‖x - y‖ ≤ K * ‖f x - f y‖) → volume S ≤ (K : ℝ≥0∞) ^ n * μHE[n] (f '' S)",
+  "lean_name": "section3_antilipschitzOn_volume_le_euclideanHausdorff_image",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-section3-consequences-a1-chart-projection-positive-a1-antilipsch-891ac20fd1-a1"
+}

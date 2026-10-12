@@ -345,6 +345,67 @@ theorem Submission.section3_rectifiableDecomposition : RectifiableDecomposition 
   refine ⟨hdecomp, fun hAmeas ↦ ?_⟩
   obtain ⟨R, P, hRP, hdisj, hR, -, hRrect, hPpure⟩ := hborel hAmeas
   exact ⟨R, P, hRP, hdisj, hR, hRrect, hPpure⟩
+/-- **An injective strict derivative gives a local anti-Lipschitz bound**: the local step of
+Simon Ch. 3, proof of Lemma 3.3 (p. 79, `chapter-03.txt` lines 494–496: `p_J` restricted to `N`
+near `x` is a `C¹` diffeomorphism), with strict differentiability in place of the inverse function
+theorem. As `A` is injective on `ℝⁿ`, `‖v‖ ≤ K₀ ‖A v‖` for some `K₀ > 0`. Near `u₀`,
+`‖Φ x - Φ y - A (x - y)‖ ≤ (2K₀)⁻¹ ‖x - y‖`, so the triangle inequality gives
+`‖x - y‖ ≤ K₀ ‖Φ x - Φ y‖ + ‖x - y‖ / 2`, i.e. `‖x - y‖ ≤ 2K₀ ‖Φ x - Φ y‖`. -/
+theorem Submission.section3_hasStrictFDerivAt_injective_local_antilipschitz : ∀ (n p : ℕ)
+    (Φ : Rn n → Rn p) (A : Rn n →L[ℝ] Rn p) (u₀ : Rn n), HasStrictFDerivAt Φ A u₀ →
+    Function.Injective A → ∃ s ∈ 𝓝 u₀, ∃ K : ℝ≥0, ∀ x ∈ s, ∀ y ∈ s,
+      ‖x - y‖ ≤ K * ‖Φ x - Φ y‖ := by
+  intro n p Φ A u₀ hΦ hA
+  -- Step 1: `A` is injective on a finite-dimensional space, so `‖v‖ ≤ K₀ ‖A v‖` with `K₀ > 0`.
+  obtain ⟨K₀, hK₀, hAK₀⟩ :=
+    LinearMap.exists_antilipschitzWith (A : Rn n →ₗ[ℝ] Rn p) (LinearMap.ker_eq_bot.mpr hA)
+  have hK₀' : (0 : ℝ) < K₀ := hK₀
+  have h1 (v : Rn n) : ‖v‖ ≤ K₀ * ‖A v‖ := by
+    simpa [dist_eq_norm] using hAK₀.le_mul_dist v 0
+  -- Step 2: on a neighbourhood `s` of `u₀`, `Φ` approximates `A` with constant `(2K₀)⁻¹`.
+  obtain ⟨s, hs, hΦs⟩ := hΦ.approximates_deriv_on_nhds (c := (2 * K₀)⁻¹) (Or.inr (by positivity))
+  refine ⟨s, hs, 2 * K₀, fun x hx y hy ↦ ?_⟩
+  have h2 : ‖Φ x - Φ y - A (x - y)‖ ≤ (2 * K₀ : ℝ)⁻¹ * ‖x - y‖ := by
+    exact_mod_cast hΦs x hx y hy
+  -- Step 3: the triangle inequality for `A (x - y) = (Φ x - Φ y) - (Φ x - Φ y - A (x - y))`.
+  have h3 : ‖A (x - y)‖ ≤ ‖Φ x - Φ y‖ + ‖Φ x - Φ y - A (x - y)‖ := by
+    calc ‖A (x - y)‖ = ‖(Φ x - Φ y) - (Φ x - Φ y - A (x - y))‖ := by rw [sub_sub_cancel]
+      _ ≤ _ := norm_sub_le _ _
+  -- Steps 4–5: since `K₀ (2K₀)⁻¹ = 1 / 2`, half of `‖x - y‖` is absorbed into the left side.
+  have h4 : ‖x - y‖ ≤ K₀ * ‖Φ x - Φ y‖ + ‖x - y‖ / 2 :=
+    calc ‖x - y‖ ≤ K₀ * ‖A (x - y)‖ := h1 (x - y)
+      _ ≤ K₀ * (‖Φ x - Φ y‖ + (2 * K₀ : ℝ)⁻¹ * ‖x - y‖) := by gcongr; linarith
+      _ = K₀ * ‖Φ x - Φ y‖ + ‖x - y‖ / 2 := by field_simp
+  push_cast
+  linarith
+/-- **Anti-Lipschitz maps on subsets of `ℝⁿ` satisfy `Lⁿ(S) ≤ Kⁿ Hⁿ(f(S))`**: step 7 of the
+proof of Simon Ch. 3, Lemma 3.3 (p. 79), stated for an arbitrary map `f` and set `S`. The
+restriction `g = f|_S` is `K`-anti-Lipschitz on the metric subspace `S`, so
+`μH[n]_S(S) ≤ Kⁿ μH[n](g(S)) = Kⁿ μH[n](f(S))`; the isometric inclusion `S ↪ ℝⁿ` gives
+`μH[n](S) = μH[n]_S(S)`. Multiplying by the normalising constant of `μHE[n]` and using
+`μHE[n] = Lⁿ` on `ℝⁿ` gives the claim. No measurability of `S` or `f` is needed: all estimates
+are for outer measures. -/
+theorem Submission.section3_antilipschitzOn_volume_le_euclideanHausdorff_image : ∀ (n p : ℕ)
+    (f : Rn n → Rn p) (S : Set (Rn n)) (K : ℝ≥0),
+    (∀ x ∈ S, ∀ y ∈ S, ‖x - y‖ ≤ K * ‖f x - f y‖) →
+    volume S ≤ (K : ℝ≥0∞) ^ n * μHE[n] (f '' S) := by
+  intro n p f S K hf
+  -- Step 2: the restriction `g = f|_S` is `K`-anti-Lipschitz on the metric subspace `S`.
+  have hg : AntilipschitzWith K (S.domRestrict f) :=
+    AntilipschitzWith.of_le_mul_dist fun a b => by
+      simpa only [Subtype.dist_eq, dist_eq_norm, domRestrict_apply] using hf a a.2 b b.2
+  -- Step 3: `μH[n]_S(S) ≤ Kⁿ μH[n](g(S))`, and `g(S) = f(S)`.
+  have h3 := hg.le_hausdorffMeasure_image (Nat.cast_nonneg n) univ
+  rw [image_univ, range_domRestrict, ENNReal.rpow_natCast] at h3
+  -- Step 4: the isometric inclusion `S ↪ ℝⁿ` gives `μH[n](S) = μH[n]_S(S)`.
+  have h4 := isometry_subtype_coe.hausdorffMeasure_image (Or.inl (Nat.cast_nonneg n))
+    (univ : Set S)
+  rw [image_univ, Subtype.range_coe] at h4
+  -- Steps 5–6: multiply by the normalising constant of `μHE[n]`, and `μHE[n] = Lⁿ` on `ℝⁿ`.
+  rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.euclideanHausdorffMeasure_def,
+    Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, Measure.smul_apply, h4,
+    ENNReal.smul_def, ENNReal.smul_def, smul_eq_mul, smul_eq_mul, mul_left_comm]
+  gcongr
 /-- **Simon Ch. 3, proof of Lemma 3.3, first claim (pp. 78–79)** (`chapter-03.txt` lines
 482–489). An `n`-plane `L ⊆ ℝᴺ` has `n` coordinates `J` with `p_J` injective on `L`. The
 restricted coordinate functionals `φⱼ = xⱼ|_L` span `L*`, since a nonzero `x ∈ L` has a nonzero
@@ -435,6 +496,50 @@ theorem Submission.section3_contDiffOn_image_null_of_volume_null : ∀ (n N : �
     exact (hK.mono inter_subset_right).hausdorffMeasure_image_le (Nat.cast_nonneg n)
   rw [hvol, mul_zero] at himg
   simpa using himg
+
+/-- **Simon Ch. 3, proof of Lemma 3.3, positivity step (p. 79)** (`chapter-03.txt` lines
+490–496). If `ψ` is `C¹` on an open `V ⊆ ℝⁿ` with `Dψ` injective and `T ⊆ V` has `Lⁿ(T) > 0`,
+then `Hⁿ(p_J(ψ(T))) > 0` for some `J` with `#J = n`. Every neighbourhood of some `u₀ ∈ T` meets
+`T` in positive measure. Choose `J` with `p_J` injective on the `n`-plane `Dψ(u₀)(ℝⁿ)`, so that
+`A = p_J ∘ Dψ(u₀)` is injective. Then `Φ = p_J ∘ ψ` has strict derivative `A` at `u₀`, so it is
+`K`-anti-Lipschitz on a neighbourhood `s` of `u₀`. Hence `0 < Lⁿ(T ∩ s) ≤ Kⁿ Hⁿ(Φ(T ∩ s))`, and
+`Φ(T ∩ s) ⊆ p_J(ψ(T))`. Strict differentiability replaces Simon's local `C¹` diffeomorphism
+(Ch. 2, Remark 4.4). -/
+theorem Submission.section3_chart_coordinateProjection_pos :
+    ∀ (n ℓ : ℕ) (V T : Set (Rn n)) (ψ : Rn n → Rn (n + ℓ)), IsOpen V → ContDiffOn ℝ 1 ψ V →
+      (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → T ⊆ V → 0 < volume T →
+        ∃ J : Finset (Fin (n + ℓ)), J.card = n ∧
+          0 < μHE[n] (coordinateProjection J '' (ψ '' T)) := by
+  intro n ℓ V T ψ hV hψ hDψ hTV hT
+  -- Step 1: every neighbourhood of some `u₀ ∈ T` meets `T` in positive measure.
+  obtain ⟨u₀, hu₀, hdens⟩ := exists_mem_forall_mem_nhdsWithin_pos_measure hT.ne'
+  -- Step 2: `p_J` is injective on the `n`-plane `Dψ(u₀)(ℝⁿ)`, so `A = p_J ∘ Dψ(u₀)` is injective.
+  set D := fderiv ℝ ψ u₀
+  have hD : Function.Injective D := hDψ u₀ (hTV hu₀)
+  obtain ⟨J, hJ, hJinj⟩ := Submission.section3_exists_coordinateProjection_injOn (n + ℓ) n
+    (LinearMap.range (D : Rn n →ₗ[ℝ] Rn (n + ℓ)))
+    (by rw [LinearMap.finrank_range_of_inj (f := (D : Rn n →ₗ[ℝ] Rn (n + ℓ))) hD,
+      finrank_euclideanSpace_fin])
+  set A := (coordinateProjection J).comp D
+  have hA : Function.Injective A := fun v w hvw ↦
+    hD (hJinj (LinearMap.mem_range_self _ v) (LinearMap.mem_range_self _ w) hvw)
+  -- Step 3: `Φ = p_J ∘ ψ` is strictly differentiable at `u₀` with derivative `A`.
+  have hΦ : HasStrictFDerivAt (coordinateProjection J ∘ ψ) A u₀ :=
+    (coordinateProjection J).hasStrictFDerivAt.comp u₀
+      ((hψ.contDiffAt (hV.mem_nhds (hTV hu₀))).hasStrictFDerivAt one_ne_zero)
+  -- Step 4: `Φ` is `K`-anti-Lipschitz on a neighbourhood `s` of `u₀`.
+  obtain ⟨s, hs, K, hK⟩ := Submission.section3_hasStrictFDerivAt_injective_local_antilipschitz
+    n (n + ℓ) (coordinateProjection J ∘ ψ) A u₀ hΦ hA
+  -- Step 5: `0 < Lⁿ(T ∩ s) ≤ Kⁿ Hⁿ(Φ(T ∩ s))`, so `Hⁿ(Φ(T ∩ s)) ≠ 0`.
+  have hbound := Submission.section3_antilipschitzOn_volume_le_euclideanHausdorff_image
+    n (n + ℓ) (coordinateProjection J ∘ ψ) (T ∩ s) K fun x hx y hy ↦ hK x hx.2 y hy.2
+  have himage : μHE[n] ((coordinateProjection J ∘ ψ) '' (T ∩ s)) ≠ 0 := fun h ↦ by
+    rw [h, mul_zero] at hbound
+    exact (hdens _ (inter_mem_nhdsWithin T hs)).ne' (nonpos_iff_eq_zero.mp hbound)
+  -- Step 6: `Φ(T ∩ s) ⊆ p_J(ψ(T))`, and `Hⁿ` is monotone.
+  refine ⟨J, hJ, (pos_iff_ne_zero.mpr himage).trans_le (measure_mono ?_)⟩
+  rw [Set.image_comp]
+  exact Set.image_mono (Set.image_mono Set.inter_subset_left)
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry

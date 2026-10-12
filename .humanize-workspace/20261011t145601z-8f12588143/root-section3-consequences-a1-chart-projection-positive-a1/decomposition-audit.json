@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "rg -n -i 'antilipschitz|Antilipschitz' project/GMT",
+        "sed -n '225,240p' Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "sed -n '44,92p' Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "sed -n '300,326p' Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean",
+        "sed -n '765,842p' Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "sed -n '52,90p' Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "sed -n '145,205p' Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "sed -n '145,165p' Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "rg -n --hidden --no-ignore 'section3_hasStrictFDerivAt_injective_local_antilipschitz|section3_antilipschitzOn_volume_le_euclideanHausdorff_image' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json GMT .lake/packages/simongmt/Poincare/SimonGMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart-projection-independent-audit-gado1jef/Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart-projection-independent-audit-gado1jef/ProofVerification.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Data/Set/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-chart-projection-positive-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-section3-consequences-a1-chart-projection-positive-a1/decomposition-v1.json",
+        "/tmp/chart-projection-independent-audit-gado1jef/Challenge.lean",
+        "/tmp/chart-projection-independent-audit-gado1jef/ProofVerification.lean"
+      ],
+      "conclusion": "The two-child split is appropriate for the selected chart-projection theorem. The immutable handoff matches its frozen contract. Snapshot revisions are project d09bc8a18ce60face651f042976e8465f21f0f68 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; inspected compiler sources match the snapshot, and workspace Contract/Submission match its Contract. The cited linear, strict-derivative, Hausdorff and normalization lemmas support the supplied arguments. No project antilipschitz lemma was found; ApproximatesLinearOn.antilipschitzWith requires a continuous linear equivalence. Both proposed names are bare identifiers, unreserved in the 73-node DAG, and independently usable as Submission.X. Both exact one-line propositions elaborate before either child is declared; explicit-coercion checks confirm real multiplication, natural powers in ENNReal, and the intended Euclidean measures. Neither type contains a matrix construction. The children have no mutual or parent dependencies, and the existing dependency graph is acyclic. Independent Lean verification of both supplied proofs and the selected-parent assembly using the exact frozen coordinate_projection_injective hypothesis succeeded, with only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_antilipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree on every hypothesis and conclusion. Injectivity in finite dimension supplies K₀ > 0, including n = 0. Strict differentiability supplies a common neighborhood with error bounded by (2K₀)⁻¹ times the input distance. The triangle inequality and absorption of half that distance give the claimed bound with K = 2K₀. Each step is justified and directly formalizable without assuming the child or parent. This is precisely the local estimate needed for the projected chart."
+    },
+    {
+      "key": "antilipschitz_measure_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition agree, including arbitrary nonmeasurable S and K ∈ ℝ≥0. Restricting f to the metric subtype S gives a global anti-Lipschitz map. Applying the Hausdorff image inequality to univ, transferring through the isometric subtype inclusion, converting the exponent, and multiplying by the common normalization constant proves the exact volume inequality. No measurability, continuity, or positivity of K is silently required; K = 0 and n = 0 are covered. The proof is complete and independent of the parent and other child. Applied to T ∩ s, it forces positive projected measure, completing the selected parent by monotonicity."
+    }
+  ],
+  "required_changes": []
+}

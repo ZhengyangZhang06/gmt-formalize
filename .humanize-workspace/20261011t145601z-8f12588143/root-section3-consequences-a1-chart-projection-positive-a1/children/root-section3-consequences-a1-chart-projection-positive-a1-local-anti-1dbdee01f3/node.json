@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.section3_consequences-a1.chart_projection_positive-a1.local_antilipschitz-a1",
+  "parent_id": "root.section3_consequences-a1.chart_projection_positive-a1",
+  "depth": 3,
+  "title": "Injective strict derivative gives a local anti-Lipschitz bound",
+  "statement": "Let n, p ∈ ℕ and write ℝᵈ = EuclideanSpace ℝ (Fin d) with the Euclidean norm |·|. Let Φ : ℝⁿ → ℝᵖ be any map, A : ℝⁿ → ℝᵖ a continuous linear map, and u₀ ∈ ℝⁿ. Suppose Φ has strict Fréchet derivative A at u₀ (HasStrictFDerivAt Φ A u₀), i.e. Φ(x) − Φ(y) − A(x − y) = o(|x − y|) as (x, y) → (u₀, u₀). Suppose also that A is injective. Then there are a neighbourhood s of u₀ and a constant K ∈ ℝ≥0 such that |x − y| ≤ K·|Φ(x) − Φ(y)| for all x, y ∈ s.",
+  "lean_statement": "∀ (n p : ℕ) (Φ : Rn n → Rn p) (A : Rn n →L[ℝ] Rn p) (u₀ : Rn n), HasStrictFDerivAt Φ A u₀ → Function.Injective A → ∃ s ∈ 𝓝 u₀, ∃ K : ℝ≥0, ∀ x ∈ s, ∀ y ∈ s, ‖x - y‖ ≤ K * ‖Φ x - Φ y‖",
+  "lean_name": "section3_hasStrictFDerivAt_injective_local_antilipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-section3-consequences-a1-chart-projection-positive-a1-local-anti-1dbdee01f3-a1"
+}
