@@ -458,6 +458,75 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Lemma 3.1 (p. 114), Weyl's lemma for the weak limit `w`: the mean-value
+kernel.  With `E(σ) = expNegInvGlue (1 − σ)` (`C^∞`, `≥ 0`, `0` for `σ ≥ 1`, `> 0` for `σ < 1`),
+`ρ(z) = c E(|z|²)` with `c = (∫ E(|z|²) dz)⁻¹` is `C^∞`, even, zero for `|z| ≥ 1` and of mass `1`;
+`Ψ(z) = (c/2) P(|z|²)` with `P(σ) = ∫_1^σ E` is `C^∞` (`P' = E` by FTC), zero for `|z| ≥ 1`, and
+`DΨ(z)[v] = (c/2) E(|z|²) 2⟨z, v⟩ = ρ(z)⟨z, v⟩` by the chain rule. -/
+theorem mvk_exists_kernel_potential : ∀ n : ℕ, ∃ ρ Ψ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ ContDiff ℝ (⊤ : ℕ∞) Ψ ∧ (∀ z : Rn n, 1 ≤ ‖z‖ → ρ z = 0) ∧ (∀ z : Rn n, 1 ≤ ‖z‖ → Ψ z = 0) ∧ (∀ z : Rn n, ρ (-z) = ρ z) ∧ ∫ z, ρ z = 1 ∧ ∀ z v : Rn n, fderiv ℝ Ψ z v = ρ z * inner ℝ z v := by
+  intro n
+  -- The profile `E(σ) = expNegInvGlue (1 - σ)`: `C^∞`, `≥ 0`, `0` for `σ ≥ 1`, `> 0` for `σ < 1`.
+  set E : ℝ → ℝ := fun σ => expNegInvGlue (1 - σ)
+  have hE_smooth : ContDiff ℝ (⊤ : ℕ∞) E :=
+    expNegInvGlue.contDiff.comp (contDiff_const.sub contDiff_id)
+  have hE_cont : Continuous E := hE_smooth.continuous
+  have hE_nonneg : ∀ σ, 0 ≤ E σ := fun σ => expNegInvGlue.nonneg _
+  have hE_zero : ∀ σ, 1 ≤ σ → E σ = 0 := fun σ hσ =>
+    expNegInvGlue.zero_of_nonpos (by linarith)
+  have hE_pos : ∀ σ, σ < 1 → 0 < E σ := fun σ hσ =>
+    expNegInvGlue.pos_of_pos (by linarith)
+  -- The unnormalized kernel `ρ₀(z) = E(‖z‖²)`: `C^∞`, zero for `‖z‖ ≥ 1`, of positive mass.
+  set ρ₀ : Rn n → ℝ := fun z => E (‖z‖ ^ 2) with hρ₀_def
+  have hρ₀_smooth : ContDiff ℝ (⊤ : ℕ∞) ρ₀ := hE_smooth.comp (contDiff_norm_sq ℝ)
+  have hρ₀_zero : ∀ z : Rn n, 1 ≤ ‖z‖ → ρ₀ z = 0 := fun z hz =>
+    hE_zero _ (one_le_pow₀ hz)
+  have hρ₀_supp : HasCompactSupport ρ₀ :=
+    HasCompactSupport.intro (isCompact_closedBall (0 : Rn n) 1) fun z hz =>
+      hρ₀_zero z (by rw [mem_closedBall_zero_iff, not_le] at hz; exact hz.le)
+  have hρ₀_int : Integrable ρ₀ := hρ₀_smooth.continuous.integrable_of_hasCompactSupport hρ₀_supp
+  have hI₀_pos : 0 < ∫ z, ρ₀ z := by
+    rw [integral_pos_iff_support_of_nonneg (fun z => hE_nonneg _) hρ₀_int]
+    refine (measure_ball_pos volume (0 : Rn n) one_pos).trans_le (measure_mono fun z hz => ?_)
+    rw [mem_ball_zero_iff] at hz
+    exact (hE_pos _ (pow_lt_one₀ (norm_nonneg z) hz two_ne_zero)).ne'
+  set c : ℝ := (∫ z, ρ₀ z)⁻¹ with hc_def
+  -- The primitive `P(σ) = ∫_1^σ E`: `P' = E` (FTC), so `P` is `C^∞`; `P = 0` on `[1, ∞)`.
+  set P : ℝ → ℝ := fun σ => ∫ s in (1 : ℝ)..σ, E s with hP_def
+  have hP_deriv : ∀ σ, HasDerivAt P (E σ) σ := fun σ =>
+    (hE_cont.integral_hasStrictDerivAt 1 σ).hasDerivAt
+  have hP_smooth : ContDiff ℝ (⊤ : ℕ∞) P :=
+    contDiff_infty_iff_deriv.2 ⟨fun σ => (hP_deriv σ).differentiableAt,
+      (funext fun σ => (hP_deriv σ).deriv : deriv P = E) ▸ hE_smooth⟩
+  have hP_zero : ∀ σ, 1 ≤ σ → P σ = 0 := fun σ hσ => by
+    simp only [hP_def]
+    rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) ?_]
+    · simp
+    · intro s hs
+      rw [uIcc_of_le hσ] at hs
+      exact hE_zero s hs.1
+  -- `ρ = c ρ₀` and `Ψ(z) = (c/2) P(‖z‖²)`.
+  refine ⟨fun z => c * ρ₀ z, fun z => c / 2 * P (‖z‖ ^ 2), contDiff_const.mul hρ₀_smooth,
+    contDiff_const.mul (hP_smooth.comp (contDiff_norm_sq ℝ)), fun z hz => ?_, fun z hz => ?_,
+    fun z => ?_, ?_, fun z v => ?_⟩
+  · show c * ρ₀ z = 0
+    rw [hρ₀_zero z hz, mul_zero]
+  · show c / 2 * P (‖z‖ ^ 2) = 0
+    rw [hP_zero _ (one_le_pow₀ hz), mul_zero]
+  · simp only [hρ₀_def, norm_neg]
+  · rw [integral_const_mul, hc_def, inv_mul_cancel₀ hI₀_pos.ne']
+  · -- Chain rule: `DΨ(z)[v] = (c/2) E(‖z‖²) 2⟨z, v⟩ = ρ(z) ⟨z, v⟩`.
+    have h : HasFDerivAt (fun z : Rn n => c / 2 * P (‖z‖ ^ 2))
+        ((c / 2) • (E (‖z‖ ^ 2) • (2 • innerSL ℝ z))) z :=
+      ((hP_deriv _).comp_hasFDerivAt z (hasStrictFDerivAt_norm_sq z).hasFDerivAt).const_mul _
+    rw [h.fderiv]
+    simp only [smul_apply, innerSL_apply_apply, smul_eq_mul, nsmul_eq_mul, hρ₀_def]
+    push_cast
+    ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
