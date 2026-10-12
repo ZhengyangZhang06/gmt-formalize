@@ -454,6 +454,44 @@ theorem Submission.intcpt_id_tpd_setIntegral_blowUpMap_image :
       ENNReal.toReal_ofReal (pow_nonneg hr.le n), smul_eq_mul]
   -- Step 6: multiply by `r⁻¹ ^ n`, as `r⁻¹ ^ n * r ^ n = 1`.
   rw [← hη, hcov, ← mul_assoc, ← mul_pow, inv_mul_cancel₀ hr.ne', one_pow, one_mul]
+/-- The `n`-dimensional Hausdorff measure of the closed ball `B_r(0)` of an `n`-dimensional subspace
+`P ⊆ ℝ^N` is `ω_n r^n` (Simon Ch. 3, Remark 1.8(2); the plane-ball step of the tangent-point density
+argument for Simon Ch. 8, 5.9): `P ∩ B_r(0)` is the image of the closed `r`-ball of `P` under the
+isometric inclusion, `H^n = vol` on `P`, and an orthonormal coordinate map `P ≃ ℝ^n` carries the
+volume of the open unit ball of `P` to `ω_n`. -/
+theorem Submission.intcpt_id_tpd_plane_closedBall_hausdorff :
+    ∀ (N n : ℕ) (P : Submodule ℝ (Euclidean N)) (r : ℝ), Module.finrank ℝ P = n → 0 ≤ r → (μHE[n] : Measure (Euclidean N)) ((P : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n P r hP hr
+  -- Step 1: `P ∩ B_r(0)` is the image of the closed `r`-ball of `P` under the inclusion.
+  have himage : (P : Set (Euclidean N)) ∩ closedBall 0 r =
+      (Subtype.val : P → Euclidean N) '' closedBall (0 : P) r := by
+    ext z
+    constructor
+    · rintro ⟨hz, hzr⟩
+      refine ⟨⟨z, hz⟩, ?_, rfl⟩
+      rw [mem_closedBall_zero_iff] at hzr ⊢
+      exact hzr
+    · rintro ⟨w, hw, rfl⟩
+      refine ⟨w.2, ?_⟩
+      rw [mem_closedBall_zero_iff] at hw ⊢
+      exact hw
+  -- Step 3: `H^n = vol` on `P`, because `finrank P = n`.
+  have hvol : (μHE[n] : Measure P) = volume := by
+    have h := InnerProductSpace.euclideanHausdorffMeasure_eq_volume (V := P)
+    rwa [hP] at h
+  -- Step 5: orthonormal coordinates `e : P ≃ ℝ^n` preserve volume and the open unit ball.
+  let e : P ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin n) :=
+    ((stdOrthonormalBasis ℝ P).reindex (finCongr hP)).repr
+  have hball : volume (ball (0 : P) 1) = unitBallVolume n := by
+    have hpre : e ⁻¹' ball 0 1 = ball (0 : P) 1 := by
+      ext w
+      simp only [mem_preimage, mem_ball_zero_iff, LinearIsometryEquiv.norm_map]
+    rw [← hpre, e.measurePreserving.measure_preimage measurableSet_ball.nullMeasurableSet]
+    rfl
+  -- Steps 2, 4 and 6: isometry invariance of `H^n`, Haar scaling of balls in `P`, and
+  -- `ofReal (r ^ n) = ofReal r ^ n` for `r ≥ 0`.
+  rw [himage, isometry_subtype_coe.euclideanHausdorffMeasure_image, hvol,
+    Measure.addHaar_closedBall volume (0 : P) hr, hP, hball, ENNReal.ofReal_pow hr, mul_comm]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
