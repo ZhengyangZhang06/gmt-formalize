@@ -359,6 +359,38 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- A signed simple `n`-vector `w = ±τ₁ ∧ ⋯ ∧ τₙ` of an orthonormal frame `τ` (the orientations
+`ξ(x)` of Simon Ch. 6, 3.1) has `|⟨b, w⟩| ≤ ‖b‖` for every `n`-covector `b` and is nonzero:
+`|⟨b, w⟩| = |b(τ)| ≤ ‖b‖ ∏ ‖τᵢ‖ = ‖b‖`, and the covector `b_τ = ⟨τ₁, ·⟩ ∧ ⋯ ∧ ⟨τₙ, ·⟩` has
+`b_τ(τ) = det(⟨τᵢ, τⱼ⟩) = det 1 = 1` (1.1). -/
+theorem Submission.iwl_sp_sn_signed_simpleNVector_bound_ne_zero : ∀ (P n : ℕ) (τ : Fin n → Eucl P) (w : NVector (Eucl P) n), Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) → (∀ b : Covector (Eucl P) n, |w b| ≤ ‖b‖) ∧ w ≠ 0 := by
+  intro P n τ w hτ hw
+  -- Whatever the sign, `|⟨b, w⟩| = |b(τ₁, …, τₙ)|`.
+  have habs : ∀ b : Covector (Eucl P) n, |w b| = |b τ| := by
+    intro b
+    rcases hw with rfl | rfl
+    · simp only [simpleNVector_apply]
+    · simp only [neg_apply, simpleNVector_apply, abs_neg]
+  -- `|b(τ)| ≤ ‖b‖ ∏ ‖τᵢ‖ = ‖b‖`, as the frame vectors are unit vectors.
+  have hbound : ∀ b : Covector (Eucl P) n, |b τ| ≤ ‖b‖ := by
+    intro b
+    have h1 := b.le_opNorm τ
+    have hprod : ∏ i, ‖τ i‖ = 1 := Finset.prod_eq_one (fun i _ => hτ.1 i)
+    rw [hprod, mul_one, Real.norm_eq_abs] at h1
+    exact h1
+  refine ⟨fun b => (habs b).trans_le (hbound b), ?_⟩
+  -- `b_τ(τ) = det(⟨τᵢ, τⱼ⟩) = det 1 = 1`, so `w = 0` would give `0 = |w(b_τ)| = 1`.
+  intro h0
+  have hdet : wedgeCovectors n (fun i => innerSL ℝ (τ i)) τ = 1 := by
+    rw [wedgeCovectors_apply_det]
+    have hm : (Matrix.of fun i j => (innerSL ℝ (τ i)) (τ j)) = (1 : Matrix (Fin n) (Fin n) ℝ) := by
+      ext i j
+      rw [Matrix.of_apply, innerSL_apply_apply, orthonormal_iff_ite.mp hτ i j, Matrix.one_apply]
+    rw [hm, Matrix.det_one]
+  have h1 := habs (wedgeCovectors n (fun i => innerSL ℝ (τ i)))
+  rw [h0, hdet] at h1
+  simp only [zero_apply, abs_zero, abs_one, zero_ne_one] at h1
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
