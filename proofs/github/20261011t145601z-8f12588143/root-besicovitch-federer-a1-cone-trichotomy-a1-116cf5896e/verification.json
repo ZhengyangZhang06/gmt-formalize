@@ -1,0 +1,22 @@
+{
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/109",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "03988cd664c321cb4411e9fb240d1d85a9687bfc",
+  "integrated_commit": "",
+  "proof_base_commit": "e1117ce32893a64c88fdbafb77ade2448556bedb",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.besicovitch_federer-a1",
+  "requires": [
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.exceptional_measurable-a1",
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1",
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_good_directions-a1",
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.slab_to_cone-a1",
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_projection_continuous-a1",
+    "root.besicovitch_federer-a1.cone_trichotomy-a1.frame_averaging-a1"
+  ]
+}
