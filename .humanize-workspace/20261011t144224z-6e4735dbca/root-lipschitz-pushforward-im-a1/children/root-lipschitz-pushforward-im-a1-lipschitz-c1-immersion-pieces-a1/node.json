@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1",
+  "depth": 2,
+  "title": "C¹ approximation of locally Lipschitz maps by antilipschitz C¹ pieces (Simon Ch. 2, 1.5 + inverse function theorem)",
+  "statement": "Let Ω ⊆ ℝⁿ be open and u : ℝⁿ → ℝ^Q locally Lipschitz on Ω. There are C¹ maps G_k : ℝⁿ → ℝ^Q, open sets O_k ⊆ ℝⁿ and pairwise disjoint Borel sets E_k ⊆ O_k ∩ Ω (k ∈ ℕ) such that each G_k is antilipschitz on O_k (c_k|w − w′| ≤ |G_k(w) − G_k(w′)| for w, w′ ∈ O_k, some c_k > 0), u(w) = G_k(w) and u has Fréchet derivative DG_k(w) at every w ∈ E_k, and Lⁿ-almost every w ∈ Ω at which u is differentiable with injective derivative belongs to ⋃_k E_k.",
+  "lean_statement": "∀ (n Q : ℕ) (Ω : Set (Eucl n)) (u : Eucl n → Eucl Q), IsOpen Ω → LocallyLipschitzOn Ω u → ∃ (G : ℕ → Eucl n → Eucl Q) (O E : ℕ → Set (Eucl n)), (∀ k, IsOpen (O k)) ∧ (∀ k, ContDiff ℝ 1 (G k)) ∧ (∀ k, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ O k, ∀ w' ∈ O k, c * ‖w - w'‖ ≤ ‖G k w - G k w'‖) ∧ (∀ k, MeasurableSet (E k)) ∧ (∀ k, E k ⊆ O k ∩ Ω) ∧ Pairwise (Function.onFun Disjoint E) ∧ (∀ k, ∀ w ∈ E k, u w = G k w ∧ HasFDerivAt u (fderiv ℝ (G k) w) w) ∧ ∀ᵐ w ∂(volume : Measure (Eucl n)), w ∈ Ω → (∃ D : Eucl n →L[ℝ] Eucl Q, HasFDerivAt u D w ∧ Function.Injective D) → w ∈ ⋃ k, E k",
+  "lean_name": "lpf_lipschitz_c1_immersion_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-a1"
+}
