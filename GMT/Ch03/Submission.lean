@@ -478,6 +478,71 @@ theorem Submission.deGiorgiNAB_innerAverage_tendsto_one : ∀ (N : ℕ) (U : Set
       (innerSL ℝ e).integral_comp_comm hint
   rw [normalAverage, real_inner_smul_left, hcomm]
 
+/-- **Normal averages at a reduced-boundary point** (Simon Ch. 3, proof of Theorem 4.3, displays
+(1) and (2), `chapter-03.txt` lines 604–620). Let `μ` be finite on compact subsets of the open set
+`U`, `|ν| = 1` `μ`-a.e., `x ∈ ∂*E` and `e = ν_E(x)`. Then `|e| = 1`; there is `ρ₀ > 0` with
+`B_{ρ₀}(x) ⊆ U` and `0 < μ(B_ρ(x)) ≤ 2 ∫_{B_ρ(x)} ν · e dμ` for `0 < ρ < ρ₀`; and if
+`μ(B_ρ(x)) ≤ C ρⁿ` for small `ρ`, then `ρ⁻ⁿ ∫_{B_ρ(x)} |ν - e| dμ → 0` as `ρ ↓ 0`.
+With `a(ρ) = μ(B_ρ(x))⁻¹ ∫_{B_ρ(x)} ν · e dμ`, (1) says `a(ρ) → 1`, so `a > 1/2` near `0`; and by
+Cauchy–Schwarz (2), `∫_{B_ρ(x)} |ν - e| dμ ≤ μ(B_ρ(x)) √(2 (1 - a(ρ)))`, which is at most
+`max(C, 0) ρⁿ √(2 (1 - a(ρ)))` and squeezes `ρ⁻ⁿ ∫_{B_ρ(x)} |ν - e| dμ` to `0`. -/
+theorem Submission.deGiorgiDens_normalAverage_bounds : ∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ∀ x ∈ reducedBoundary U μ ν, ‖reducedNormal μ ν x‖ = 1 ∧ (∃ ρ₀ : ℝ, 0 < ρ₀ ∧ Metric.ball x ρ₀ ⊆ U ∧ ∀ ρ ∈ Ioo 0 ρ₀, 0 < μ (Metric.ball x ρ) ∧ (μ (Metric.ball x ρ)).toReal ≤ 2 * ∫ y in Metric.ball x ρ, inner ℝ (ν y) (reducedNormal μ ν x) ∂μ) ∧ ∀ (n : ℕ) (C ρ₂ : ℝ), 0 < ρ₂ → (∀ ρ ∈ Ioo 0 ρ₂, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ y in Metric.ball x ρ, ‖ν y - reducedNormal μ ν x‖ ∂μ) (𝓝[>] 0) (𝓝 0) := by
+  intro N U μ ν hU hfin hν hν1 x hx
+  -- `x ∈ U`, `|e| = 1` and `μ(B_ρ(x)) > 0` for every `ρ > 0`; Simon (1): `a(ρ) → 1`.
+  obtain ⟨hxU, he, -, hpos⟩ := Submission.deGiorgiNAB_reducedBoundary_basic N U μ ν x hx
+  have ha := Submission.deGiorgiNAB_innerAverage_tendsto_one N U μ ν hU hfin hν hν1 x hx
+  set e := reducedNormal μ ν x
+  -- A compact ball `B̄_{ε/2}(x) ⊆ U`, so that `μ(B_ρ(x)) < ∞` for `ρ ≤ ε / 2`.
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp hU x hxU
+  have hr : 0 < ε / 2 := half_pos hε
+  have hrU : Metric.closedBall x (ε / 2) ⊆ U :=
+    (Metric.closedBall_subset_ball (half_lt_self hε)).trans hεU
+  have hfinρ : ∀ ρ ≤ ε / 2, μ (Metric.ball x ρ) < ∞ := fun ρ hρ ↦
+    (measure_mono (Metric.ball_subset_closedBall.trans
+      (Metric.closedBall_subset_closedBall hρ))).trans_lt (hfin _ (isCompact_closedBall x _) hrU)
+  refine ⟨he, ?_, ?_⟩
+  · -- `a > 1/2` on some `(0, δ)`; take `ρ₀ = min δ (ε / 2)`.
+    obtain ⟨δ, hδ, hδa⟩ := mem_nhdsGT_iff_exists_Ioo_subset.mp
+      (ha.eventually_const_lt (by norm_num : (1 / 2 : ℝ) < 1))
+    refine ⟨min δ (ε / 2), lt_min hδ hr, (Metric.ball_subset_closedBall.trans
+      (Metric.closedBall_subset_closedBall (min_le_right _ _))).trans hrU,
+      fun ρ hρ ↦ ⟨hpos ρ hρ.1, ?_⟩⟩
+    have h12 : 1 / 2 <
+        (μ (Metric.ball x ρ)).toReal⁻¹ * ∫ y in Metric.ball x ρ, inner ℝ (ν y) e ∂μ :=
+      hδa ⟨hρ.1, hρ.2.trans_le (min_le_left _ _)⟩
+    have hm : 0 < (μ (Metric.ball x ρ)).toReal :=
+      ENNReal.toReal_pos (hpos ρ hρ.1).ne' (hfinρ ρ (hρ.2.le.trans (min_le_right _ _))).ne
+    rw [lt_inv_mul_iff₀ hm] at h12
+    linarith
+  · -- Simon (2) and `μ(B_ρ(x)) ≤ max(C, 0) ρⁿ` squeeze the scaled excess to `0`.
+    intro n C ρ₂ hρ₂ hmass
+    have hup : Tendsto (fun ρ : ℝ ↦ max C 0 * Real.sqrt (2 * (1 - (μ (Metric.ball x ρ)).toReal⁻¹ *
+        ∫ y in Metric.ball x ρ, inner ℝ (ν y) e ∂μ))) (𝓝[>] 0) (𝓝 0) := by
+      have hc : Continuous fun t : ℝ ↦ max C 0 * Real.sqrt (2 * (1 - t)) := by fun_prop
+      exact (hc.tendsto' 1 0 (by simp)).comp ha
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hup ?_ ?_
+    · filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+      exact mul_nonneg (inv_nonneg.mpr (pow_nonneg hρ.le n)) (integral_nonneg fun y ↦ norm_nonneg _)
+    · filter_upwards [Ioo_mem_nhdsGT (lt_min hρ₂ hr)] with ρ hρ
+      have hρn : 0 < ρ ^ n := pow_pos hρ.1 n
+      have hm : (μ (Metric.ball x ρ)).toReal ≤ max C 0 * ρ ^ n :=
+        calc (μ (Metric.ball x ρ)).toReal ≤ (ENNReal.ofReal (C * ρ ^ n)).toReal :=
+              ENNReal.toReal_mono ENNReal.ofReal_ne_top
+                (hmass ρ ⟨hρ.1, hρ.2.trans_le (min_le_left _ _)⟩)
+          _ = max C 0 * ρ ^ n := by
+              rw [ENNReal.toReal_ofReal', max_mul_of_nonneg _ _ hρn.le, zero_mul]
+      have hB := Submission.deGiorgiNAB_excess_le_sqrt N μ ν e (Metric.ball x ρ)
+        (hfinρ ρ (hρ.2.le.trans (min_le_right _ _))) hν hν1 he
+      calc (ρ ^ n)⁻¹ * ∫ y in Metric.ball x ρ, ‖ν y - e‖ ∂μ
+          ≤ (ρ ^ n)⁻¹ * (max C 0 * ρ ^ n * Real.sqrt (2 * (1 - (μ (Metric.ball x ρ)).toReal⁻¹ *
+              ∫ y in Metric.ball x ρ, inner ℝ (ν y) e ∂μ))) :=
+            mul_le_mul_of_nonneg_left
+              (hB.trans (mul_le_mul_of_nonneg_right hm (Real.sqrt_nonneg _)))
+              (inv_nonneg.mpr hρn.le)
+        _ = max C 0 * Real.sqrt (2 * (1 - (μ (Metric.ball x ρ)).toReal⁻¹ *
+              ∫ y in Metric.ball x ρ, inner ℝ (ν y) e ∂μ)) := by
+            rw [mul_comm (max C 0), mul_assoc, inv_mul_cancel_left₀ hρn.ne']
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
