@@ -784,6 +784,130 @@ theorem Submission.frt_vgm_tangent_ball_average :
   filter_upwards [self_mem_nhdsWithin] with t ht
   rw [Pi.div_apply]
   exact mul_div_mul_left _ _ (pow_ne_zero n (inv_ne_zero (ne_of_gt ht)))
+/-- The closed-ball mass `x ↦ μ(B_r(x))` of an s-finite measure `μ` on `ℝ^N` is Borel measurable for
+every radius `r` (used with `μ = μ_V` for the Borel choice of `x ↦ T_x` in Simon Ch. 8, proof of
+1.2). -/
+theorem Submission.frt_vgm_mps_weight_closedBall_measurable :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)), SFinite μ → ∀ r : ℝ, Measurable (fun x : Euclidean N ↦ μ (closedBall x r)) := by
+  intro N μ hμ r
+  -- Steps 1–2: `D_r = {(x, y) : dist y x ≤ r}` is closed in `ℝ^N × ℝ^N`, hence measurable.
+  have hD : MeasurableSet {p : Euclidean N × Euclidean N | dist p.2 p.1 ≤ r} :=
+    (isClosed_le (continuous_snd.dist continuous_fst) continuous_const).measurableSet
+  -- Step 3: the slice of `D_r` at `x` is `closedBall x r`.
+  have hslice (x : Euclidean N) :
+      Prod.mk x ⁻¹' {p : Euclidean N × Euclidean N | dist p.2 p.1 ≤ r} = closedBall x r :=
+    Set.ext fun _ ↦ mem_closedBall.symm
+  -- Steps 4–5: `μ` is s-finite, so `x ↦ μ (Prod.mk x ⁻¹' D_r) = μ (closedBall x r)` is measurable.
+  simpa only [hslice] using measurable_measure_prodMk_left (ν := μ) hD
+/-- The ball integral `x ↦ ∫_{B_r(x) × G(N,n)} β(S) dν(y,S)` is Borel measurable for every
+s-finite measure `ν` on `ℝ^N × G(N,n)`, every `r` and every continuous `β` (step 3 of the Borel
+choice of `x ↦ T_x` in the proof of Simon Ch. 8, 1.2): it equals
+`x ↦ ∫ 1_{E_r}(x, z) β(z.2) dν(z)` for the closed set `E_r = {(x, z) : |z.1 - x| ≤ r}`, which is
+measurable in `x` by `StronglyMeasurable.integral_prod_right'`. -/
+theorem Submission.frt_vgm_mps_ball_integral_measurable :
+    ∀ (N n : ℕ) (ν : Measure (Euclidean N × Grassmannian N n)), SFinite ν → ∀ (r : ℝ) (β : C(Grassmannian N n, ℝ)), Measurable (fun x : Euclidean N ↦ ∫ z in closedBall x r ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂ν) := by
+  intro N n ν hν r β
+  -- Steps 1–2: `E_r = {(x, z) | dist z.1 x ≤ r}` is closed in `ℝ^N × (ℝ^N × G(N,n))`, hence
+  -- measurable (the factors are second countable).
+  have hE : IsClosed {p : Euclidean N × (Euclidean N × Grassmannian N n) | dist p.2.1 p.1 ≤ r} :=
+    isClosed_le ((continuous_fst.comp continuous_snd).dist continuous_fst) continuous_const
+  -- Step 3: `F = 1_{E_r}(x, z) β(z.2)` is measurable, hence strongly measurable.
+  have hF : StronglyMeasurable
+      ({p : Euclidean N × (Euclidean N × Grassmannian N n) | dist p.2.1 p.1 ≤ r}.indicator
+        fun p ↦ β p.2.2) :=
+    ((β.continuous.measurable.comp (measurable_snd.comp measurable_snd)).indicator
+      hE.measurableSet).stronglyMeasurable
+  -- Step 4: `ν` is s-finite, so `x ↦ ∫ F(x, z) dν(z)` is (strongly) measurable.
+  convert (hF.integral_prod_right' (ν := ν)).measurable using 1
+  -- Steps 5–6: by `integral_indicator` the ball integral at `x` is `∫ 1_{B_r(x) × G}(z) β(z.2) dν`,
+  -- and `1_{B_r(x) × G}(z) β(z.2) = F(x, z)` for every `z`.
+  funext x
+  rw [← integral_indicator (measurableSet_closedBall.prod MeasurableSet.univ)]
+  congr 1
+  funext z
+  simp [Set.indicator, Set.mem_prod, Metric.mem_closedBall]
+/-- Measurable selection of entrywise limits in `G(N,n)` (the Borel version of `x ↦ T_x` in Simon
+Ch. 8, proof of 1.2, p. 208): if every entry `x ↦ a_k(x)_{ij}` is measurable, there is a measurable
+`τ : X → G(N,n)` with `τ x = T` whenever `a_k(x)_{ij} → T_{ij}` as `k → ∞` for all `i, j`. -/
+theorem Submission.frt_vgm_mps_limit_selection :
+    ∀ (X : Type) [MeasurableSpace X] (N n : ℕ), Nonempty (Grassmannian N n) → ∀ (a : ℕ → X → Fin N → Fin N → ℝ), (∀ (k : ℕ) (i j : Fin N), Measurable (fun x ↦ a k x i j)) → ∃ τ : X → Grassmannian N n, Measurable τ ∧ ∀ (x : X) (T : Grassmannian N n), (∀ i j : Fin N, Tendsto (fun k ↦ a k x i j) atTop (𝓝 (T.1 i j))) → τ x = T := by
+  intro X _ N n hne a ha
+  classical
+  -- Step 1: a base point `S₀`; the projection set `𝒢` is closed, hence measurable.
+  obtain ⟨S₀⟩ := hne
+  have hG : MeasurableSet
+      {P : Matrix (Fin N) (Fin N) ℝ | P.IsSymm ∧ P * P = P ∧ P.trace = (n : ℝ)} :=
+    Grassmannian.isClosed_projectionSet.measurableSet
+  -- Step 2: the convergence sets `C^{ij}` are measurable.
+  have hC : ∀ i j : Fin N, MeasurableSet {x | ∃ c, Tendsto (fun k ↦ a k x i j) atTop (𝓝 c)} :=
+    fun i j ↦ measurableSet_exists_tendsto fun k ↦ ha k i j
+  -- Step 3: the entrywise limits `L^{ij}` are measurable.
+  have hL : ∀ i j : Fin N, Measurable fun x ↦ limUnder atTop fun k ↦ a k x i j :=
+    fun i j ↦ (StronglyMeasurable.limUnder fun k ↦ (ha k i j).stronglyMeasurable).measurable
+  -- Step 4: the limit matrix `M` is measurable.
+  obtain ⟨M, hM_def⟩ : ∃ M : X → Matrix (Fin N) (Fin N) ℝ,
+      M = fun x ↦ Matrix.of fun i j ↦ limUnder atTop fun k ↦ a k x i j := ⟨_, rfl⟩
+  have hM : Measurable M := Measurable.of_eval_matrix M fun i j ↦ by simpa [hM_def] using hL i j
+  -- Step 5: the good set `Y` is measurable.
+  obtain ⟨Y, hY_def⟩ : ∃ Y : Set X, Y = (⋂ i, ⋂ j, {x | ∃ c, Tendsto (fun k ↦ a k x i j) atTop (𝓝 c)}) ∩
+      M ⁻¹' {P | P.IsSymm ∧ P * P = P ∧ P.trace = (n : ℝ)} := ⟨_, rfl⟩
+  have hY : MeasurableSet Y := hY_def ▸
+    (MeasurableSet.iInter fun i ↦ MeasurableSet.iInter fun j ↦ hC i j).inter (hM hG)
+  -- Step 6: `τ x := ⟨Y.piecewise M (fun _ ↦ S₀.1) x, _⟩` is a measurable `G(N,n)`-valued map.
+  have hmem : ∀ x, Y.piecewise M (fun _ ↦ S₀.1) x ∈
+      {P : Matrix (Fin N) (Fin N) ℝ | P.IsSymm ∧ P * P = P ∧ P.trace = (n : ℝ)} := by
+    intro x
+    by_cases hx : x ∈ Y
+    · rw [Set.piecewise_eq_of_mem _ _ _ hx]
+      rw [hY_def] at hx
+      exact hx.2
+    · rw [Set.piecewise_eq_of_notMem _ _ _ hx]
+      exact S₀.2
+  refine ⟨fun x ↦ ⟨Y.piecewise M (fun _ ↦ S₀.1) x, hmem x⟩,
+    (Measurable.piecewise hY hM measurable_const).subtype_mk, ?_⟩
+  -- Step 7: if every entry converges to that of `T`, then `M x = T`, `x ∈ Y` and `τ x = T`.
+  intro x T hT
+  have hMx : M x = T.1 := by
+    ext i j
+    rw [hM_def]
+    exact (hT i j).limUnder_eq
+  have hxY : x ∈ Y := by
+    rw [hY_def]
+    refine ⟨Set.mem_iInter.2 fun i ↦ Set.mem_iInter.2 fun j ↦ ⟨T.1 i j, hT i j⟩, ?_⟩
+    rw [Set.mem_preimage, hMx]
+    exact T.2
+  exact Subtype.ext ((Set.piecewise_eq_of_mem Y M (fun _ ↦ S₀.1) hxY).trans hMx)
+
+/-- A Borel selection of the plane determined by ball averages (the Borel version `T̃` of
+`x ↦ T_x` needed in the proof of Simon Ch. 8, 1.2, p. 208): there is a measurable
+`τ : ℝ^N → G(N,n)` with `τ x = T` whenever the averages of every continuous `β` over `Gₙ(B_ρ(x))`
+tend to `β T` as `ρ ↓ 0`.  The averages of the matrix entries `S ↦ S_{ij}` along `ρ_k = 1/(k+1)`
+are measurable in `x`, and `τ` selects their entrywise limit. -/
+theorem Submission.frt_vgm_measurable_plane_selection :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), Nonempty (Grassmannian N n) → ∃ τ : Euclidean N → Grassmannian N n, Measurable τ ∧ ∀ (x : Euclidean N) (T : Grassmannian N n), (∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (β T))) → τ x = T := by
+  intro N n U V hG
+  -- Step 1: the matrix-entry functions `e_{ij}(S) = S_{ij}` are continuous on `G(N,n)`, and the
+  -- radii are `ρ_k = 1/(k+1)`.
+  let e : Fin N → Fin N → C(Grassmannian N n, ℝ) := fun i j ↦
+    ⟨fun S ↦ S.1 i j, (continuous_id.matrix_elem i j).comp continuous_subtype_val⟩
+  let ρ : ℕ → ℝ := fun k ↦ 1 / ((k : ℝ) + 1)
+  -- Steps 2–4: the averages `a_k(x)_{ij} = (∫_{B_{ρ_k}(x) × G} e_{ij} dV) / μ_V(B_{ρ_k}(x))` are
+  -- measurable in `x` (`V.measure` and `V.weight` are σ-finite, hence s-finite).
+  -- Steps 5–6: a measurable selection `τ` of their entrywise limits.
+  obtain ⟨τ, hτm, hτ⟩ := Submission.frt_vgm_mps_limit_selection (Euclidean N) N n hG
+    (fun k x i j ↦ (∫ z in closedBall x (ρ k) ×ˢ (univ : Set (Grassmannian N n)),
+      e i j z.2 ∂V.measure) / (V.weight (closedBall x (ρ k))).toReal)
+    (fun k i j ↦ (Submission.frt_vgm_mps_ball_integral_measurable N n V.measure inferInstance
+      (ρ k) (e i j)).div
+        (Submission.frt_vgm_mps_weight_closedBall_measurable N V.weight inferInstance
+          (ρ k)).ennreal_toReal)
+  refine ⟨τ, hτm, fun x T hT ↦ hτ x T fun i j ↦ ?_⟩
+  -- Step 7: `ρ_k → 0⁺`, so the hypothesis for `β = e_{ij}` gives `a_k(x)_{ij} → T_{ij}`.
+  have hρ : Tendsto ρ atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
+      tendsto_one_div_add_atTop_nhds_zero_nat
+      (Eventually.of_forall fun k ↦ by simp only [Set.mem_Ioi, ρ]; positivity)
+  exact (hT (e i j)).comp hρ
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 

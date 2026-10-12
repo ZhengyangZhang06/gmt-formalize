@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "measurable_measure_prodMk_left|integral_prod_right\\x27|measurableSet_exists_tendsto|protected theorem limUnder|of_eval_matrix",
+        "abbrev Grassmannian|instSecondCountableTopology|BorelSpace|isClosed_projectionSet|projectionSet|structure Varifold|instSigmaFinite|def weight|Euclidean",
+        "frt_vgm_mps_",
+        "BorelSpace|instance",
+        "axiom|sorry|unsafe",
+        "Python checks of frozen statements, validate_lean_statement, comparator child_modules, DAG reservations, and snapshot/build-file byte equality",
+        "git for-each-ref --format=%(objectname) refs/heads refs/remotes",
+        "git grep for frt_vgm_mps_ across all 233 distinct commits from 538 local/remote refs",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mps_independent_audit/Verified.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mps_independent_audit/weight_closed_ball_measurable/NodeChallenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mps_independent_audit/ball_integral_measurable/NodeChallenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mps_independent_audit/grassmannian_limit_selection/NodeChallenge.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/Polish/StronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Matrix/MeasurableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/issue-workers.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-varifold-graph-measure-a1-measurable-pla-2a9de20f84/parent-child-handoff.json",
+        "/tmp/mps_decomp/Full.lean",
+        "/tmp/mps_independent_audit/Verified.lean"
+      ],
+      "conclusion": "The split is appropriate: it isolates three smaller, independent obligations with complete supplied proofs. Empty sibling-dependency lists are correct and acyclic. The children imply this selected parent's exact frozen type through measurable entry averages at radii 1/(k+1), followed by convergence composition and limit selection. All names are bare identifiers; no reservations or declaration collisions were found. Each frozen type is a standalone one-line proposition and independently elaborates in its comparator challenge without child implementations. The supplied proofs and exact parent assembly were independently recompiled with autoImplicit disabled; only propext, Classical.choice and Quot.sound occur. Borel and SFinite instances were checked, and matrix multiplication was verified against its finite-sum formula. The inspected snapshot files and package configuration match the build; Mathlib and SimonGMT revisions match their pins. Relevant library results support all claimed hypotheses, including parametric Bochner integration without integrability assumptions."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weight_closed_ball_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type include arbitrary dimension, an s-finite measure, and every real radius. The closed incidence set is measurable in the product Borel space; its slices are exactly the closed balls. measurable_measure_prodMk_left applies with precisely the supplied s-finiteness hypothesis. The complete argument also covers negative radii and uses neither siblings nor the parent."
+    },
+    {
+      "key": "ball_integral_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the stated Bochner set integral for arbitrary s-finite ν. The jointly measurable indicator is strongly measurable, and integral_prod_right' supplies parameter measurability without an integrability premise. integral_indicator and the verified slice identity yield the exact conclusion, including empty Grassmannians and nonintegrable integrands. The proof is complete and independent."
+    },
+    {
+      "key": "grassmannian_limit_selection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly includes an arbitrary measurable domain, measurable entries, and nonemptiness for the fallback plane. Countability and completeness justify measurable convergence sets and limUnder. Matrix.of, the closed projection predicate, and the measurable piecewise subtype construction use the intended instances. Entrywise limit identification and Subtype.ext establish the exact pointwise property. All seven proof steps are sufficient and non-circular."
+    }
+  ],
+  "required_changes": []
+}
