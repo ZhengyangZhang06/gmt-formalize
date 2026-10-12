@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1.jacobian_normdet_bridge-a1",
+  "parent_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1",
+  "depth": 3,
+  "title": "The co-area Jacobian is the norm determinant of the adjoint of df_x restricted to T_x M",
+  "statement": "Let N, m ∈ ℕ, M ⊆ ℝᴺ, f : ℝᴺ → ℝᵐ and x ∈ ℝᴺ, where ℝⁿ = EuclideanSpace ℝ (Fin n).\nPut T := tangentSpace M x. It is a linear subspace of ℝᴺ, finite-dimensional, with the restricted inner product.\nLet L := (fderiv ℝ f x) ∘ ι : T → ℝᵐ, where ι : T → ℝᴺ is the inclusion. In Lean, L = ((fderiv ℝ f x).comp (tangentSpace M x).subtypeL).toLinearMap.\nLet L* := LinearMap.adjoint L : ℝᵐ → T.\nThen coareaJacobian M f x = normDet(L*), where normDet is Mathlib's LinearMap.normDet.",
+  "lean_statement": "∀ (N m : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N), coareaJacobian M f x = (LinearMap.adjoint ((fderiv ℝ f x).comp (tangentSpace M x).subtypeL).toLinearMap).normDet",
+  "lean_name": "coareaJacobian_eq_normDet_adjoint",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-jacobian-linear-algebra-a1-jacobian-normdet-bridge-a1-a1"
+}

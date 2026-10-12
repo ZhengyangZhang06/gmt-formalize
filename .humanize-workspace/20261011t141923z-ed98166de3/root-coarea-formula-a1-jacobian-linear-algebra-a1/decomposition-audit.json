@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "adjoint_toLinearMap|adjoint_adjoint|orthogonal_range|orthogonal_ker|eq_adjoint_iff",
+        "normDet.*(fromBlocks|WithLp)|(fromBlocks|WithLp).*normDet",
+        "coareaJacobian_eq_normDet_adjoint|coareaJacobian_eq_zero_iff_not_surjective|coarea_normDet_block_triangular|coarea_normDet_adjoint_mul_normDet_chart|coareaJacobian_mul_normDet_chart",
+        "orthogonalProjectionOnto_apply_of_mem_orthogonal|orthogonalProjectionOnto_mem_subspace_eq_self|orthogonal_eq_bot_iff",
+        "def child_modules|def contract_scope|validate_lean_statement|frozen|allowed|Submission",
+        "#print axioms Submission.coarea_jacobian_linear_algebra",
+        "#synth InnerProductSpace ℝ (WithLp 2 (Rn 2 × Rn 3))"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/ProdL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Module/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-jacobian-linear-algebra-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-jacobian-linear-algebra-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/jacobian-independent-audit-165l3v6c/FullSubmission.lean",
+        "/tmp/jacobian-independent-audit-165l3v6c/full-proof.log"
+      ],
+      "conclusion": "The split appropriately separates the two conclusions of Submission.coarea_jacobian_linear_algebra, their shared bridge, and the block determinant argument. The frozen parent type is literally the conjunction of jacobian_zero_iff and jacobian_chart_identity. Dependencies are acyclic and agree with the supplied proof references. All five names are bare identifiers; no conflicting reservations were found in other DAG branches or node contracts. The targeted normDet/fromBlocks/WithLp search found no Mathlib match. The inspected library files establish the required determinant, adjoint, projection, and codomain-restriction facts. Compiler sources match the inspected snapshot; Mathlib and SimonGMT revisions match the pinned dependencies. Independently generated comparator challenges for all five children and the parent elaborate against frozen definitions before any child implementation is available. All five unchanged supplied scripts and the exact parent assembly compile with only propext, Classical.choice, and Quot.sound. WithLp uses instProdInnerProductSpace, and its component-sum inner product was checked by rfl. No problematic inline IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "jacobian_normdet_bridge",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose. Continuous and linear adjoints agree, and normDet_sq applied to L*, adjoint involutivity, and normDet nonnegativity establish the square-root identity. The proof is complete, independent, and includes zero-dimensional cases."
+    },
+    {
+      "key": "jacobian_zero_iff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement exactly preserves Part (1), including the range hypothesis. The bridge, kernel/orthogonal-complement equivalences, and explicitly proved surjectivity equivalence establish both directions. Only the declared bridge dependency is used; no injectivity or differentiability assumption is missing."
+    },
+    {
+      "key": "block_triangular_normdet",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every space, dimension, and block hypothesis in the exact Lean proposition. Reindexed orthonormal product bases give the stated lower-triangular matrix; the block determinant formula and normDet matrix formula prove the conclusion, including singular maps and empty blocks. This is a genuine independent obligation."
+    },
+    {
+      "key": "chart_normdet_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the abstract chart statement. Bijectivity and straightening establish all required dimensions; orthogonal coordinates and the declared block lemma factor normDet Φ. The supplied proof establishes λ∘α=id and normDet λ=normDet L*, then derives the conclusion without division or hidden positivity assumptions. The library reuse is compatible and axiom-checked."
+    },
+    {
+      "key": "jacobian_chart_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition is exactly Part (2). The proof constructs both codomain restrictions, proves Φ bijective using injectivity and the range equality, and verifies both straightening identities. Applying precisely the two declared dependencies and normDet_codRestrict proves the conclusion. Together with jacobian_zero_iff it establishes the selected parent."
+    }
+  ],
+  "required_changes": []
+}
