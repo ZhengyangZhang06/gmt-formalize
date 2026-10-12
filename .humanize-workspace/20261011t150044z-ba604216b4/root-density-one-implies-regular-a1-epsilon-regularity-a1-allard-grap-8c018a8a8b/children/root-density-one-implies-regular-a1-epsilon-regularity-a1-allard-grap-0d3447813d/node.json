@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.weighted_blowup_limit-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1",
+  "depth": 5,
+  "title": "Weighted blow-up integrals over a Lipschitz graph converge at almost every parameter",
+  "statement": "Let n, k ∈ ℕ, ι : ℝⁿ → ℝ^{n+k}, ι' : ℝᵏ → ℝ^{n+k} linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, L ≥ 0, f : ℝⁿ → ℝᵏ L-Lipschitz, G : ℝⁿ → ℝ Borel measurable with |G(u)| ≤ C for all u. Then for Lⁿ-a.e. v ∈ ℝⁿ: f is differentiable at v, and for every continuous compactly supported ψ : ℝ^{n+k} → ℝ, ∫_{ℝⁿ} ψ(ιw + ι'(r⁻¹(f(v + rw) − f(v))))·G(v + rw) dw → G(v)·∫_{ℝⁿ} ψ(ιw + ι'(Df(v)w)) dw as r ↓ 0.",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (L : NNReal) (G : Euclid n → ℝ) (C : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → LipschitzWith L f → Measurable G → (∀ u, |G u| ≤ C) → ∀ᵐ v ∂(volume : Measure (Euclid n)), DifferentiableAt ℝ f v ∧ ∀ ψ : Euclid (n + k) → ℝ, Continuous ψ → HasCompactSupport ψ → Tendsto (fun r : ℝ => ∫ w, ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w)) (𝓝[>] 0) (𝓝 (G v * ∫ w, ψ (ι w + ι' (fderiv ℝ f v w))))",
+  "lean_name": "doraggt_ae_weighted_graph_blowup_tendsto",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.lebesgue_rescaled-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.lebesgue_rescaled-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-0d3447813d-a1"
+}
