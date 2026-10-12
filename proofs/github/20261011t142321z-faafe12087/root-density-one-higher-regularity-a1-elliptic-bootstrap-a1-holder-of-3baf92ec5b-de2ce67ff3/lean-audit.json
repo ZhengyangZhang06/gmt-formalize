@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d3fabb06dcdede0783353a9b059e4f3ebf936d3d718711652c052dd4d792fe53",
+  "git_delta": {
+    "base_commit": "f95a5846627bd1bf1c5bed99f08884272959039e",
+    "candidate_commit": "7299b1bb58f82725cdf5831a9feecfc10c0202cb",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_holder_of_contDiffOn_succ",
+    "diff_sha256": "c1d08aa72015570d7466519fb800889c2f8342f4089c140d360e3431959b2b73",
+    "source_sha256": "cc4c75d68b9cf143be0aef13eab02f3270997c0b43aa3d5c47388647ece808c6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_holder_of_contDiffOn_succ",
+      "statement": "∀ (E₁ E₂ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] (m : ℕ) (α : ℝ) (h : E₁ → E₂) (V : Set E₁), 0 < α → α ≤ 1 → IsOpen V → ContDiffOn ℝ (m + 1 : ℕ) h V → ∀ K : Set E₁, IsCompact K → K ⊆ V → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m h x - iteratedFDeriv ℝ m h y‖ ≤ C * ‖x - y‖ ^ α",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
