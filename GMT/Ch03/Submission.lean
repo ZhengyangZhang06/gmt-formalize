@@ -335,6 +335,70 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Block-triangular factorization of `normDet`** (steps 1 and 6 of the flat Jacobian identity
+for the co-area formula, Simon Ch. 3, (2.7)–(2.8)). Let `Γ : ℝ^{m+k} → ℝᵐ` be surjective and
+`S : ℝ^{m+k} → ℝᵏ` linear, let `T : ℝ^{m+k} → WithLp 2 (ℝᵐ × ℝᵏ)` have components `Γ` and `S`,
+and let `K = ker Γ`. Then `normDet T = normDet (Γ|_{K^⊥}) · normDet (S|_K)`. In the coordinates
+`c(a, b) = a + b`, a linear isometry `WithLp 2 (K^⊥ × K) ≃ ℝ^{m+k}`, and orthonormal bases of
+`K^⊥`, `K`, `ℝᵐ`, `ℝᵏ`, the matrix of `T ∘ c` is block lower-triangular because `Γ` vanishes on
+`K`; its diagonal blocks are the matrices of `Γ|_{K^⊥}` and `S|_K`. -/
+theorem Submission.pcoarea_flat_normDet_block : ∀ (m k : ℕ) (Γ : Rn (m + k) →ₗ[ℝ] Rn m) (S : Rn (m + k) →ₗ[ℝ] Rn k) (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)), Function.Surjective Γ → (∀ v, (T v).fst = Γ v) → (∀ v, (T v).snd = S v) → T.normDet = (Γ.domRestrict (LinearMap.ker Γ)ᗮ).normDet * (S ∘ₗ (LinearMap.ker Γ).subtype).normDet := by
+  intro m k Γ S T hΓ hfst hsnd
+  -- Step 1: `dim K = k` by rank–nullity (`Γ` is onto), hence `dim K^⊥ = m`.
+  have hK : finrank ℝ (LinearMap.ker Γ) = k := by
+    have h := LinearMap.finrank_range_add_finrank_ker Γ
+    rw [LinearMap.range_eq_top.mpr hΓ, finrank_top, finrank_euclideanSpace_fin,
+      finrank_euclideanSpace_fin] at h
+    omega
+  have hKp : finrank ℝ (LinearMap.ker Γ)ᗮ = m := by
+    have h := Submodule.finrank_add_finrank_orthogonal (LinearMap.ker Γ)
+    rw [hK, finrank_euclideanSpace_fin] at h
+    omega
+  -- Step 2: `c(a, b) = a + b` is a linear isometry `WithLp 2 (K^⊥ × K) ≃ ℝ^{m+k}`, so
+  -- `normDet (T ∘ c) = normDet T · normDet c = normDet T`.
+  let c : WithLp 2 ((LinearMap.ker Γ)ᗮ × LinearMap.ker Γ) ≃ₗᵢ[ℝ] Rn (m + k) :=
+    ((LinearMap.ker Γ).orthogonalDecomposition.trans
+      (LinearIsometryEquiv.withLpProdComm 2 ℝ _ _)).symm
+  have hc : ∀ p, c p = (p.fst : Rn (m + k)) + (p.snd : Rn (m + k)) := by
+    intro p
+    change ((p.snd : Rn (m + k)) + (p.fst : Rn (m + k))) = _
+    exact add_comm _ _
+  have hTc : (T ∘ₗ c.toLinearEquiv.toLinearMap).normDet = T.normDet := by
+    rw [LinearMap.normDet_comp_of_finrank_eq _ _ c.toLinearEquiv.finrank_eq,
+      show c.toLinearEquiv.toLinearMap.normDet = 1 from c.toLinearIsometry.normDet_eq_one,
+      mul_one]
+  -- Steps 3–5: in the product orthonormal bases `β₁.prod β₂` of `WithLp 2 (K^⊥ × K)` and
+  -- `γ₁.prod γ₂` of `WithLp 2 (ℝᵐ × ℝᵏ)`, the matrix of `T ∘ c` has the blocks
+  -- `⟨γ₁ i, Γ (β₁ j)⟩`, `⟨γ₁ i, Γ (β₂ j)⟩ = 0` (as `β₂ j ∈ ker Γ`), `⟨γ₂ i, S (β₁ j)⟩` and
+  -- `⟨γ₂ i, S (β₂ j)⟩`.
+  let β₁ : OrthonormalBasis (Fin m) ℝ (LinearMap.ker Γ)ᗮ :=
+    (stdOrthonormalBasis ℝ (LinearMap.ker Γ)ᗮ).reindex (finCongr hKp)
+  let β₂ : OrthonormalBasis (Fin k) ℝ (LinearMap.ker Γ) :=
+    (stdOrthonormalBasis ℝ (LinearMap.ker Γ)).reindex (finCongr hK)
+  let γ₁ := EuclideanSpace.basisFun (Fin m) ℝ
+  let γ₂ := EuclideanSpace.basisFun (Fin k) ℝ
+  have hmat : LinearMap.toMatrix (β₁.prod β₂).toBasis (γ₁.prod γ₂).toBasis
+      (T ∘ₗ c.toLinearEquiv.toLinearMap) =
+      Matrix.fromBlocks
+        (LinearMap.toMatrix β₁.toBasis γ₁.toBasis (Γ.domRestrict (LinearMap.ker Γ)ᗮ)) 0
+        (LinearMap.toMatrix β₁.toBasis γ₂.toBasis (S.domRestrict (LinearMap.ker Γ)ᗮ))
+        (LinearMap.toMatrix β₂.toBasis γ₂.toBasis (S ∘ₗ (LinearMap.ker Γ).subtype)) := by
+    have hc' : ∀ x, c.toLinearEquiv x = c x := fun _ => rfl
+    ext (i | i) (j | j) <;>
+      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.coe_toBasis, OrthonormalBasis.prod_apply,
+        OrthonormalBasis.repr_apply_apply, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂,
+        Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.zero_apply,
+        LinearMap.comp_apply, Sum.elim_inl, Sum.elim_inr, Function.comp_apply,
+        WithLp.prod_inner_apply, LinearMap.domRestrict_apply, Submodule.subtype_apply] <;>
+      simp [hc', hc, hfst, hsnd]
+  -- Steps 6–7: `det (fromBlocks M₁₁ 0 M₂₁ M₂₂) = det M₁₁ · det M₂₂`, and `normDet` is `‖det‖` of
+  -- the matrix in orthonormal bases indexed by the same type.
+  rw [← hTc, LinearMap.normDet_eq_norm_det_toMatrix _ (β₁.prod β₂) (γ₁.prod γ₂), hmat,
+    Matrix.det_fromBlocks_zero₁₂, norm_mul,
+    ← LinearMap.normDet_eq_norm_det_toMatrix _ β₁ γ₁,
+    ← LinearMap.normDet_eq_norm_det_toMatrix _ β₂ γ₂]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
