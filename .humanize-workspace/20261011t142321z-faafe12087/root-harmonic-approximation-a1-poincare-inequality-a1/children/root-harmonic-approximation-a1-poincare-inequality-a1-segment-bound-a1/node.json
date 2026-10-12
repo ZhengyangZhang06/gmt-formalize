@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.poincare_inequality-a1.segment_bound-a1",
+  "parent_id": "root.harmonic_approximation-a1.poincare_inequality-a1",
+  "depth": 3,
+  "title": "C^1 segment bound: |phi(x)-phi(y)|^2 <= |x-y|^2 * int_[0,1] |grad phi((1-t)y+tx)|^2 dt",
+  "statement": "For every n ∈ ℕ, every C^1 function φ : ℝ^n → ℝ (Lean: ContDiff ℝ 1 φ on Rn n = EuclideanSpace ℝ (Fin n)) and all x, y ∈ ℝ^n: ‖φ(x) − φ(y)‖ₑ² ≤ ‖x − y‖ₑ² · ∫⁻_{t ∈ [0,1]} ‖∇φ((1 − t)·y + t·x)‖ₑ² dt, an inequality in [0, ∞], where ∇φ is Mathlib's gradient φ and the t-integral is the lintegral over Icc 0 1 for Lebesgue measure.",
+  "lean_statement": "∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ x y : Rn n, ‖φ x - φ y‖ₑ ^ 2 ≤ ‖x - y‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2",
+  "lean_name": "poincare_c1_segment_sq_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-poincare-inequality-a1-segment-bound-a1-a1"
+}

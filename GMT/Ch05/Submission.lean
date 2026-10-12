@@ -462,6 +462,473 @@ def RegularSetOpenDense : Prop :=
 
 namespace Submission
 
+/-- Simon Ch. 5, proof of Lemma 3.1 (p. 114), Poincaré inequality, segment step: for a `C¹`
+function `φ` on `ℝⁿ` and `x, y ∈ ℝⁿ`,
+`|φ(x) - φ(y)|² ≤ |x - y|² ∫_{[0,1]} |∇φ((1 - t) y + t x)|² dt` in `[0, ∞]`.  Along the segment
+`γ(t) = (1 - t) y + t x` the chain rule and the fundamental theorem of calculus give
+`φ(x) - φ(y) = ∫₀¹ Dφ(γ(t))(x - y) dt`; then `|Dφ(z) v| ≤ |v| |∇φ(z)|` (the gradient is the
+Riesz representative of `Dφ(z)`), and Cauchy–Schwarz on the unit interval (`L¹ ≤ L²` for a
+probability measure) bounds the square of `∫₀¹ |∇φ(γ(t))| dt`. -/
+theorem poincare_c1_segment_sq_bound : ∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ x y : Rn n, ‖φ x - φ y‖ₑ ^ 2 ≤ ‖x - y‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+  intro n φ hφ x y
+  set γ : ℝ → Rn n := fun t => (1 - t) • y + t • x with hγ
+  -- 1. the segment and the chain rule
+  have hγd : ∀ t, HasDerivAt γ (x - y) t := by
+    intro t
+    have h1 : HasDerivAt (fun t : ℝ => (1 - t) • y) (-y) t := by
+      simpa using ((hasDerivAt_id t).const_sub 1).smul_const y
+    have h2 : HasDerivAt (fun t : ℝ => t • x) x t := by
+      simpa using (hasDerivAt_id t).smul_const x
+    convert h1.add h2 using 1
+    abel
+  have hud : ∀ t, HasDerivAt (fun t => φ (γ t)) (fderiv ℝ φ (γ t) (x - y)) t := fun t =>
+    ((hφ.differentiable one_ne_zero (γ t)).hasFDerivAt).comp_hasDerivAt t (hγd t)
+  have hγc : Continuous γ := by fun_prop
+  have hderc : Continuous (fun t => fderiv ℝ φ (γ t) (x - y)) :=
+    ((hφ.continuous_fderiv one_ne_zero).comp hγc).clm_apply continuous_const
+  -- 2. fundamental theorem of calculus
+  have hFTC : ∫ t in (0:ℝ)..1, fderiv ℝ φ (γ t) (x - y) = φ x - φ y := by
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hud t)
+      (hderc.intervalIntegrable 0 1)]
+    simp [γ]
+  have hgc : Continuous (gradient φ) :=
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp (hφ.continuous_fderiv one_ne_zero)
+  -- 3. pointwise Cauchy–Schwarz: |Dφ(z) v| ≤ |v| |∇φ(z)|
+  have hpt : ∀ t, ‖fderiv ℝ φ (γ t) (x - y)‖ₑ ≤ ‖x - y‖ₑ * ‖gradient φ (γ t)‖ₑ := by
+    intro t
+    have : ‖fderiv ℝ φ (γ t) (x - y)‖ ≤ ‖x - y‖ * ‖gradient φ (γ t)‖ := by
+      calc ‖fderiv ℝ φ (γ t) (x - y)‖ ≤ ‖fderiv ℝ φ (γ t)‖ * ‖x - y‖ := (fderiv ℝ φ (γ t)).le_opNorm _
+        _ = ‖x - y‖ * ‖gradient φ (γ t)‖ := by
+          rw [gradient, LinearIsometryEquiv.norm_map, mul_comm]
+    rw [← ofReal_norm, ← ofReal_norm, ← ofReal_norm, ← ENNReal.ofReal_mul (norm_nonneg _)]
+    exact ENNReal.ofReal_le_ofReal this
+  have hle : ‖φ x - φ y‖ₑ ≤ ‖x - y‖ₑ * ∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ := by
+    rw [← hFTC, intervalIntegral.integral_of_le zero_le_one]
+    calc ‖∫ t in Ioc (0:ℝ) 1, fderiv ℝ φ (γ t) (x - y)‖ₑ
+        ≤ ∫⁻ t in Ioc (0:ℝ) 1, ‖fderiv ℝ φ (γ t) (x - y)‖ₑ := enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ t in Ioc (0:ℝ) 1, ‖x - y‖ₑ * ‖gradient φ (γ t)‖ₑ := lintegral_mono fun t => hpt t
+      _ = ‖x - y‖ₑ * ∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ :=
+          lintegral_const_mul' _ _ enorm_ne_top
+  -- 4. Cauchy–Schwarz on (0,1] (a probability space): (∫ a)^2 ≤ ∫ a^2
+  have hCS : (∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ) ^ 2 ≤
+      ∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ ^ 2 := by
+    set μ : Measure ℝ := volume.restrict (Ioc (0:ℝ) 1) with hμ
+    have hμ1 : μ univ = 1 := by
+      rw [hμ, Measure.restrict_apply_univ, Real.volume_Ioc, sub_zero, ENNReal.ofReal_one]
+    have : IsFiniteMeasure μ := ⟨by rw [hμ1]; exact ENNReal.one_lt_top⟩
+    have hh : AEStronglyMeasurable (fun t => gradient φ (γ t)) μ := (hgc.comp hγc).aestronglyMeasurable
+    have key := eLpNorm_le_eLpNorm_mul_rpow_measure_univ (p := 1) (q := 2) (μ := μ) one_le_two hh
+    rw [eLpNorm_one_eq_lintegral_enorm hh,
+      eLpNorm_eq_lintegral_rpow_enorm_toReal two_ne_zero ENNReal.ofNat_ne_top hh] at key
+    have e1 : (1 / (1 : ℝ≥0∞).toReal - 1 / (2 : ℝ≥0∞).toReal) = 1 / 2 := by norm_num
+    rw [e1, hμ1, ENNReal.one_rpow, mul_one] at key
+    have e2 : ∀ t, ‖gradient φ (γ t)‖ₑ ^ (2 : ℝ≥0∞).toReal = ‖gradient φ (γ t)‖ₑ ^ 2 := fun t => by
+      simp
+    simp_rw [e2] at key
+    calc (∫⁻ t, ‖gradient φ (γ t)‖ₑ ∂μ) ^ 2
+        ≤ ((∫⁻ t, ‖gradient φ (γ t)‖ₑ ^ 2 ∂μ) ^ (1 / (2 : ℝ≥0∞).toReal)) ^ 2 := by gcongr
+      _ = ∫⁻ t, ‖gradient φ (γ t)‖ₑ ^ 2 ∂μ := by
+        rw [← ENNReal.rpow_mul_natCast]
+        norm_num
+  -- 5. combine
+  calc ‖φ x - φ y‖ₑ ^ 2 ≤ (‖x - y‖ₑ * ∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ) ^ 2 := by gcongr
+    _ = ‖x - y‖ₑ ^ 2 * (∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ) ^ 2 := mul_pow _ _ _
+    _ ≤ ‖x - y‖ₑ ^ 2 * ∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ ^ 2 := by gcongr
+    _ ≤ ‖x - y‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+        gcongr
+        exact Ioc_subset_Icc_self
+/-- **Convex-combination averaging bound on a ball** (the change-of-variables step in the proof of
+the Poincaré inequality on convex domains, Gilbarg–Trudinger Lemma 7.16; Evans §5.8.1).  For a
+measurable `h ≥ 0`, `r > 0` and `t ∈ [0, 1]`,
+`∫_{B_r} ∫_{B_r} h((1 - t) y + t x) dy dx ≤ 2ⁿ |B_r| ∫_{B_r} h`.
+
+Since `B_r` is convex, `(1 - t) y + t x ∈ B_r`.  One of the two variables has coefficient
+`s ≥ 1/2`; substituting `z = c + s •` (that variable) (Jacobian `sⁿ`, `Measure.map_addHaar_smul`
+and translation invariance) bounds the integral in that variable by `s⁻ⁿ ∫_{B_r} h ≤ 2ⁿ ∫_{B_r} h`,
+and integrating this constant over the other variable (after Tonelli when `t ≥ 1/2`) gives the
+claim. -/
+theorem poincare_ball_convex_combination_bound : ∀ (n : ℕ) (h : Rn n → ℝ≥0∞), Measurable h → ∀ r t : ℝ, 0 < r → 0 ≤ t → t ≤ 1 → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, h ((1 - t) • y + t • x) ≤ (2 : ℝ≥0∞) ^ n * volume (ball (0 : Rn n) r) * ∫⁻ z in ball (0 : Rn n) r, h z := by
+  intro n h hh r t hr ht0 ht1
+  set B := ball (0 : Rn n) r with hB
+  -- 1. affine change of variables: ∫ F(c + s x) dx = |s|^{-n} ∫ F
+  have affine : ∀ (F : Rn n → ℝ≥0∞), Measurable F → ∀ (c : Rn n) {s : ℝ}, s ≠ 0 →
+      ∫⁻ x, F (c + s • x) = ENNReal.ofReal |(s ^ n)⁻¹| * ∫⁻ z, F z := by
+    intro F hF c s hs
+    have hm : Measurable (fun z : Rn n => F (c + z)) := hF.comp (measurable_const_add c)
+    have hmap := lintegral_map (μ := (volume : Measure (Rn n))) hm
+      (measurable_const_smul s : Measurable fun x : Rn n => s • x)
+    rw [← hmap, Measure.map_addHaar_smul volume hs, lintegral_smul_measure,
+      lintegral_add_left_eq_self (μ := (volume : Measure (Rn n))) F c, smul_eq_mul,
+      finrank_euclideanSpace_fin]
+  -- 2. convexity of the ball
+  have hmem : ∀ x ∈ B, ∀ y ∈ B, (1 - t) • y + t • x ∈ B := fun x hx y hy =>
+    convex_ball (0 : Rn n) r hy hx (by linarith) ht0 (by ring)
+  -- 3. one-variable bound when the coefficient of the integration variable is ≥ 1/2
+  have key : ∀ (c : Rn n) (s : ℝ), 1 / 2 ≤ s → (∀ x ∈ B, c + s • x ∈ B) →
+      ∫⁻ x in B, h (c + s • x) ≤ (2 : ℝ≥0∞) ^ n * ∫⁻ z in B, h z := by
+    intro c s hs hcs
+    have hs' : 0 < s := by linarith
+    calc ∫⁻ x in B, h (c + s • x) = ∫⁻ x in B, B.indicator h (c + s • x) := by
+          refine setLIntegral_congr_fun measurableSet_ball (fun x hx => ?_)
+          rw [indicator_of_mem (hcs x hx)]
+      _ ≤ ∫⁻ x, B.indicator h (c + s • x) := setLIntegral_le_lintegral _ _
+      _ = ENNReal.ofReal |(s ^ n)⁻¹| * ∫⁻ z, B.indicator h z :=
+          affine _ (hh.indicator measurableSet_ball) c hs'.ne'
+      _ = ENNReal.ofReal |(s ^ n)⁻¹| * ∫⁻ z in B, h z := by
+          rw [lintegral_indicator measurableSet_ball]
+      _ ≤ (2 : ℝ≥0∞) ^ n * ∫⁻ z in B, h z := by
+          gcongr
+          have h1 : |(s ^ n)⁻¹| ≤ (2 : ℝ) ^ n := by
+            rw [abs_of_pos (by positivity), ← inv_pow]
+            exact pow_le_pow_left₀ (by positivity) (inv_le_of_inv_le₀ (by norm_num) (by linarith)) n
+          calc ENNReal.ofReal |(s ^ n)⁻¹| ≤ ENNReal.ofReal ((2 : ℝ) ^ n) := ENNReal.ofReal_le_ofReal h1
+            _ = (2 : ℝ≥0∞) ^ n := by rw [ENNReal.ofReal_pow (by norm_num)]; simp
+  have hH : Measurable (fun p : Rn n × Rn n => h ((1 - t) • p.2 + t • p.1)) :=
+    hh.comp (by fun_prop : Continuous fun p : Rn n × Rn n => (1 - t) • p.2 + t • p.1).measurable
+  rcases le_or_gt (1 / 2 : ℝ) t with ht | ht
+  · -- 4. t ≥ 1/2: Tonelli, then substitute in x
+    rw [lintegral_lintegral_swap hH.aemeasurable]
+    calc ∫⁻ y in B, ∫⁻ x in B, h ((1 - t) • y + t • x)
+        ≤ ∫⁻ y in B, (2 : ℝ≥0∞) ^ n * ∫⁻ z in B, h z := by
+          refine setLIntegral_mono' measurableSet_ball fun y hy => ?_
+          exact key ((1 - t) • y) t ht (fun x hx => hmem x hx y hy)
+      _ = (2 : ℝ≥0∞) ^ n * volume B * ∫⁻ z in B, h z := by
+          rw [setLIntegral_const]; ring
+  · -- 5. t < 1/2: substitute in y directly
+    calc ∫⁻ x in B, ∫⁻ y in B, h ((1 - t) • y + t • x)
+        ≤ ∫⁻ x in B, (2 : ℝ≥0∞) ^ n * ∫⁻ z in B, h z := by
+          refine setLIntegral_mono' measurableSet_ball fun x hx => ?_
+          have e : ∀ y : Rn n, (1 - t) • y + t • x = t • x + (1 - t) • y := fun y => add_comm _ _
+          simp_rw [e]
+          exact key (t • x) (1 - t) (by linarith) (fun y hy => by rw [← e]; exact hmem x hx y hy)
+      _ = (2 : ℝ≥0∞) ^ n * volume B * ∫⁻ z in B, h z := by
+          rw [setLIntegral_const]; ring
+
+/-- Simon Ch. 5, proof of Lemma 3.1 (p. 114), Poincaré inequality, smooth estimate: for a `C¹`
+function `φ` on `ℝⁿ` and `0 < r ≤ 1`,
+`∫_{B_r} ∫_{B_r} |φ(x) - φ(y)|² dy dx ≤ 2ⁿ⁺² |B_1| ∫_{B_r} |∇φ|²` in `[0, ∞]`.  For
+`x, y ∈ B_r` we have `|x - y| < 2r ≤ 2`, so the segment bound gives
+`|φ(x) - φ(y)|² ≤ 4 ∫_{[0,1]} |∇φ((1 - t) y + t x)|² dt`; integrating over `B_r × B_r`, moving the
+`t`-integral outside (Tonelli) and applying the convex-combination bound
+`∫_{B_r} ∫_{B_r} |∇φ((1 - t) y + t x)|² dy dx ≤ 2ⁿ |B_r| ∫_{B_r} |∇φ|²` for each `t ∈ [0, 1]`
+gives the claim, since `|[0, 1]| = 1` and `|B_r| ≤ |B_1|`. -/
+theorem poincare_c1_ball_double_integral_bound : ∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ r : ℝ, 0 < r → r ≤ 1 → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖φ x - φ y‖ₑ ^ 2 ≤ (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) * ∫⁻ x in ball (0 : Rn n) r, ‖gradient φ x‖ₑ ^ 2 := by
+  intro n φ hφ r hr0 hr1
+  set B := ball (0 : Rn n) r with hB
+  -- 1. regularity: `∇φ` is continuous, so the integrands are measurable
+  have hgc : Continuous (gradient φ) :=
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp (hφ.continuous_fderiv one_ne_zero)
+  have hgm : Measurable (fun z => ‖gradient φ z‖ₑ ^ 2) := hgc.measurable.enorm.pow_const 2
+  have hG1 : Measurable (fun p : (Rn n × Rn n) × ℝ => ‖gradient φ ((1 - p.2) • p.1.2 + p.2 • p.1.1)‖ₑ ^ 2) :=
+    hgm.comp (by fun_prop : Continuous (fun p : (Rn n × Rn n) × ℝ => (1 - p.2) • p.1.2 + p.2 • p.1.1)).measurable
+  have hG2 : Measurable (fun p : (Rn n × ℝ) × Rn n => ‖gradient φ ((1 - p.1.2) • p.2 + p.1.2 • p.1.1)‖ₑ ^ 2) :=
+    hgm.comp (by fun_prop : Continuous (fun p : (Rn n × ℝ) × Rn n => (1 - p.1.2) • p.2 + p.1.2 • p.1.1)).measurable
+  -- 2. pointwise bound on `B × B`, from the segment bound and `|x - y| ≤ 2`
+  have step1 : ∀ x ∈ B, ∀ y ∈ B, ‖φ x - φ y‖ₑ ^ 2 ≤
+      4 * ∫⁻ t in Icc (0:ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+    intro x hx y hy
+    refine (poincare_c1_segment_sq_bound n φ hφ x y).trans ?_
+    gcongr
+    have hxy : ‖x - y‖ ≤ 2 := by
+      have := norm_sub_le x y
+      rw [hB, mem_ball, dist_zero_right] at hx hy
+      linarith
+    have : ‖x - y‖ₑ ≤ 2 := by
+      rw [← ofReal_norm]
+      calc ENNReal.ofReal ‖x - y‖ ≤ ENNReal.ofReal 2 := ENNReal.ofReal_le_ofReal hxy
+        _ = 2 := by simp
+    calc ‖x - y‖ₑ ^ 2 ≤ 2 ^ 2 := by gcongr
+      _ = 4 := by norm_num
+  calc ∫⁻ x in B, ∫⁻ y in B, ‖φ x - φ y‖ₑ ^ 2
+      ≤ ∫⁻ x in B, ∫⁻ y in B, 4 * ∫⁻ t in Icc (0:ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+        refine setLIntegral_mono' measurableSet_ball fun x hx => ?_
+        exact setLIntegral_mono' measurableSet_ball fun y hy => step1 x hx y hy
+    -- 3. pull out the constant `4`
+    _ = 4 * ∫⁻ x in B, ∫⁻ y in B, ∫⁻ t in Icc (0:ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+        rw [← lintegral_const_mul' _ _ (by norm_num)]
+        congr 1; ext x
+        rw [← lintegral_const_mul' _ _ (by norm_num)]
+    -- 4. Tonelli: move the `t`-integral outside
+    _ = 4 * ∫⁻ t in Icc (0:ℝ) 1, ∫⁻ x in B, ∫⁻ y in B, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+        congr 1
+        have inner : ∀ x, ∫⁻ y in B, ∫⁻ t in Icc (0:ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2
+            = ∫⁻ t in Icc (0:ℝ) 1, ∫⁻ y in B, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+          intro x
+          refine lintegral_lintegral_swap ?_
+          exact (hG1.comp (measurable_const.prodMk measurable_fst |>.prodMk measurable_snd)).aemeasurable
+        simp_rw [inner]
+        refine lintegral_lintegral_swap ?_
+        exact (hG2.lintegral_prod_right').aemeasurable
+    -- 5. the convex-combination bound for each `t ∈ [0, 1]`, and `|[0, 1]| = 1`
+    _ ≤ 4 * ∫⁻ t in Icc (0:ℝ) 1, (2 : ℝ≥0∞) ^ n * volume B * ∫⁻ z in B, ‖gradient φ z‖ₑ ^ 2 := by
+        gcongr 4 * ?_
+        refine setLIntegral_mono' measurableSet_Icc fun t ht => ?_
+        exact poincare_ball_convex_combination_bound n _ hgm r t hr0 ht.1 ht.2
+    _ = 4 * ((2 : ℝ≥0∞) ^ n * volume B * ∫⁻ z in B, ‖gradient φ z‖ₑ ^ 2) := by
+        rw [setLIntegral_const, Real.volume_Icc]; simp
+    -- 6. `4 · 2ⁿ = 2ⁿ⁺²` and `|B_r| ≤ |B_1|`
+    _ ≤ (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) * ∫⁻ x in B, ‖gradient φ x‖ₑ ^ 2 := by
+        have hvol : volume B ≤ volume (ball (0 : Rn n) 1) := measure_mono (ball_subset_ball hr1)
+        calc 4 * ((2 : ℝ≥0∞) ^ n * volume B * ∫⁻ z in B, ‖gradient φ z‖ₑ ^ 2)
+            = (2 : ℝ≥0∞) ^ (n + 2) * volume B * ∫⁻ z in B, ‖gradient φ z‖ₑ ^ 2 := by
+              rw [pow_add]; ring
+          _ ≤ _ := by gcongr
+/-- **Double-integral Poincaré bound for `L²` limits of `C¹` functions on `B_r`** (the passage to
+the limit in the Poincaré inequality on balls behind Simon Ch. 5, Lemma 3.1; cf. Gilbarg–Trudinger,
+Lemma 7.16 and (7.45), Evans §5.8.1).  Let `0 < r ≤ 1`, let `f`, `g` be a.e.-strongly measurable on
+`B_r = B̆_r(0)`, and let `φⱼ ∈ C¹` with `φⱼ → f` and `∇φⱼ → g` in `L²(B_r)`.  Then
+`∫_{B_r} ∫_{B_r} |f(x) − f(y)|² dy dx ≤ 2^{n+2} |B̆₁(0)| ∫_{B_r} |g|²` (in `[0, ∞]`).
+
+Pass to a subsequence `φ_{ns i} → f` a.e. on `B_r`, apply Fatou's lemma in `y` and then in `x`,
+bound each `φ_{ns i}` by the `C¹` estimate `poincare_c1_ball_double_integral_bound`, and use
+Minkowski `‖∇φ_{ns i}‖₂ ≤ ‖g‖₂ + ‖∇φ_{ns i} − g‖₂`, whose last term tends to `0`. -/
+theorem poincare_approx_ball_double_integral_bound : ∀ (n : ℕ) (f : Rn n → ℝ) (g : Rn n → Rn n) (φ : ℕ → Rn n → ℝ) (r : ℝ), 0 < r → r ≤ 1 → AEStronglyMeasurable f (volume.restrict (ball (0 : Rn n) r)) → AEStronglyMeasurable g (volume.restrict (ball (0 : Rn n) r)) → (∀ j, ContDiff ℝ 1 (φ j)) → Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖φ j x - f x‖ₑ ^ 2) atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖gradient (φ j) x - g x‖ₑ ^ 2) atTop (𝓝 0) → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖f x - f y‖ₑ ^ 2 ≤ (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) * ∫⁻ x in ball (0 : Rn n) r, ‖g x‖ₑ ^ 2 := by
+  intro n f g φ r hr0 hr1 hf hg hφ h1 h2
+  set B := ball (0 : Rn n) r with hB
+  set μ : Measure (Rn n) := volume.restrict B with hμ
+  set C : ℝ≥0∞ := (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) with hC
+  have hCtop : C ≠ ∞ := ENNReal.mul_ne_top (by simp) measure_ball_lt_top.ne
+  -- `L²` bookkeeping: `eLpNorm u 2 μ = (∫⁻ ‖u‖ₑ ^ 2 dμ) ^ (1/2)` for a.e.-strongly measurable `u`.
+  have eL2 : ∀ {E : Type} [NormedAddCommGroup E] {u : Rn n → E}, AEStronglyMeasurable u μ →
+      eLpNorm u 2 μ = (∫⁻ x, ‖u x‖ₑ ^ 2 ∂μ) ^ (1 / 2 : ℝ) := by
+    intro E _ u hu
+    rw [eLpNorm_eq_lintegral_rpow_enorm_toReal two_ne_zero ENNReal.ofNat_ne_top hu]
+    simp
+  have eL2sq : ∀ {E : Type} [NormedAddCommGroup E] {u : Rn n → E}, AEStronglyMeasurable u μ →
+      eLpNorm u 2 μ ^ 2 = ∫⁻ x, ‖u x‖ₑ ^ 2 ∂μ := by
+    intro E _ u hu
+    rw [eL2 hu, ← ENNReal.rpow_mul_natCast]
+    norm_num
+  have tL2 : ∀ {E : Type} [NormedAddCommGroup E] {u : ℕ → Rn n → E},
+      (∀ j, AEStronglyMeasurable (u j) μ) → Tendsto (fun j => ∫⁻ x, ‖u j x‖ₑ ^ 2 ∂μ) atTop (𝓝 0) →
+      Tendsto (fun j => eLpNorm (u j) 2 μ) atTop (𝓝 0) := by
+    intro E _ u hu h
+    simp_rw [eL2 (hu _)]
+    have := ((ENNReal.continuous_rpow_const (y := (1 / 2 : ℝ))).tendsto 0).comp h
+    rwa [ENNReal.zero_rpow_of_pos (by norm_num)] at this
+  -- Step 0: replace `f` by a strongly measurable representative `f'`; nothing changes.
+  have hff' := hf.ae_eq_mk
+  have hfm : StronglyMeasurable (hf.mk f) := hf.stronglyMeasurable_mk
+  set f' := hf.mk f
+  have hdbl : ∫⁻ x in B, ∫⁻ y in B, ‖f x - f y‖ₑ ^ 2 =
+      ∫⁻ x in B, ∫⁻ y in B, ‖f' x - f' y‖ₑ ^ 2 := by
+    have hin : ∀ x, ∫⁻ y in B, ‖f x - f y‖ₑ ^ 2 = ∫⁻ y in B, ‖f x - f' y‖ₑ ^ 2 := fun x =>
+      lintegral_congr_ae (hff'.mono fun y hy => by simp [hy])
+    simp_rw [hin]
+    exact lintegral_congr_ae (hff'.mono fun x hx => by simp [hx])
+  rw [hdbl]
+  have h1' : Tendsto (fun j => ∫⁻ x in B, ‖φ j x - f' x‖ₑ ^ 2) atTop (𝓝 0) := by
+    refine h1.congr fun j => ?_
+    exact lintegral_congr_ae (hff'.mono fun x hx => by simp only [hx])
+  -- Step 1: `φⱼ` and `∇φⱼ = (toDual)⁻¹ ∘ Dφⱼ` are continuous.
+  have hφc : ∀ j, Continuous (φ j) := fun j => (hφ j).continuous
+  have hgc : ∀ j, Continuous (gradient (φ j)) := fun j =>
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp ((hφ j).continuous_fderiv one_ne_zero)
+  -- Step 2: `φⱼ → f'` in `L²(μ)`, hence in measure, so a subsequence converges `μ`-a.e.
+  have hconv : Tendsto (fun j => eLpNorm (φ j - f') 2 μ) atTop (𝓝 0) :=
+    tL2 (fun j => (hφc j).aestronglyMeasurable.sub hfm.aestronglyMeasurable) h1'
+  obtain ⟨ns, hns, hae⟩ :=
+    (tendstoInMeasure_of_tendsto_eLpNorm two_ne_zero hconv).exists_seq_tendsto_ae
+  -- Steps 3–4: Fatou's lemma, first in `y` (for `μ`-a.e. `x`) and then in `x`.
+  have hsqc : Continuous (fun p : ℝ × ℝ => ‖p.1 - p.2‖ₑ ^ 2) :=
+    (ENNReal.continuous_pow 2).comp (continuous_enorm.comp (continuous_fst.sub continuous_snd))
+  have hFatou : ∫⁻ x in B, ∫⁻ y in B, ‖f' x - f' y‖ₑ ^ 2 ≤
+      liminf (fun i => ∫⁻ x in B, ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop := by
+    have hpt : ∀ᵐ x ∂μ, ∫⁻ y in B, ‖f' x - f' y‖ₑ ^ 2 ≤
+        liminf (fun i => ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop := by
+      filter_upwards [hae] with x hx
+      calc ∫⁻ y in B, ‖f' x - f' y‖ₑ ^ 2
+          = ∫⁻ y in B, liminf (fun i => ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop := by
+            refine lintegral_congr_ae ?_
+            filter_upwards [hae] with y hy
+            exact (((hsqc.tendsto _).comp (hx.prodMk_nhds hy)).liminf_eq).symm
+        _ ≤ liminf (fun i => ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop :=
+            lintegral_liminf_le fun i =>
+              ((measurable_const.sub (hφc _).measurable).enorm.pow_const 2)
+    calc ∫⁻ x in B, ∫⁻ y in B, ‖f' x - f' y‖ₑ ^ 2
+        ≤ ∫⁻ x in B, liminf (fun i => ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop :=
+          lintegral_mono_ae hpt
+      _ ≤ liminf (fun i => ∫⁻ x in B, ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop :=
+          lintegral_liminf_le fun i =>
+            ((((hφc _).measurable.comp measurable_fst).sub
+              ((hφc _).measurable.comp measurable_snd)).enorm.pow_const 2).lintegral_prod_right'
+  -- Step 5: the `C¹` estimate for `φ_{ns i}` and Minkowski's inequality in `L²(μ)`.
+  have hbound : ∀ i, ∫⁻ x in B, ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2 ≤
+      C * (eLpNorm g 2 μ + eLpNorm (gradient (φ (ns i)) - g) 2 μ) ^ 2 := by
+    intro i
+    refine (Submission.poincare_c1_ball_double_integral_bound n (φ (ns i)) (hφ _) r hr0
+      hr1).trans ?_
+    gcongr
+    rw [← eL2sq (hgc _).aestronglyMeasurable]
+    gcongr
+    calc eLpNorm (gradient (φ (ns i))) 2 μ
+        = eLpNorm (g + (gradient (φ (ns i)) - g)) 2 μ := by rw [add_sub_cancel]
+      _ ≤ _ := eLpNorm_add_le one_le_two
+  -- Step 6: `‖∇φ_{ns i} − g‖₂ → 0`, so the bounds tend to `C ‖g‖₂²` (`C < ∞`).
+  have hε : Tendsto (fun j => eLpNorm (gradient (φ j) - g) 2 μ) atTop (𝓝 0) :=
+    tL2 (fun j => (hgc j).aestronglyMeasurable.sub hg) h2
+  have hlim : Tendsto (fun i => C * (eLpNorm g 2 μ + eLpNorm (gradient (φ (ns i)) - g) 2 μ) ^ 2)
+      atTop (𝓝 (C * (eLpNorm g 2 μ + 0) ^ 2)) := by
+    refine ENNReal.Tendsto.const_mul ?_ (Or.inr hCtop)
+    exact ((ENNReal.continuous_pow 2).tendsto _).comp
+      (tendsto_const_nhds.add (hε.comp hns.tendsto_atTop))
+  -- Step 7: conclusion.
+  calc ∫⁻ x in B, ∫⁻ y in B, ‖f' x - f' y‖ₑ ^ 2
+      ≤ liminf (fun i => ∫⁻ x in B, ∫⁻ y in B, ‖φ (ns i) x - φ (ns i) y‖ₑ ^ 2) atTop := hFatou
+    _ ≤ liminf (fun i => C * (eLpNorm g 2 μ + eLpNorm (gradient (φ (ns i)) - g) 2 μ) ^ 2) atTop :=
+        liminf_le_liminf (Eventually.of_forall hbound)
+    _ = C * (eLpNorm g 2 μ + 0) ^ 2 := hlim.liminf_eq
+    _ = C * ∫⁻ x in B, ‖g x‖ₑ ^ 2 := by rw [add_zero, eL2sq hg]
+/-- **Exhaustion of the unit ball for the double integral** (step `r → 1` of the `W^{1,2}`
+Poincaré inequality on `B̆₁(0)`; Gilbarg–Trudinger, Lemma 7.16).  If `f` is a.e.-strongly
+measurable on `B̆₁(0)` and `∫_{B̆_r}∫_{B̆_r} |f(x) - f(y)|² dy dx ≤ K` for every `r ∈ (0,1)`, then
+the same bound holds on `B̆₁(0)`.  The balls `B̆_{r_m}`, `r_m = 1 - 1/(m+2)`, increase to `B̆₁(0)`;
+for a strongly measurable representative of `f` the union formula for directed unions and
+monotone convergence reduce the double integral over `B̆₁(0)` to the diagonal radii. -/
+theorem poincare_ball_double_integral_exhaustion : ∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0∞), AEStronglyMeasurable f (volume.restrict (ball (0 : Rn n) 1)) → (∀ r : ℝ, 0 < r → r < 1 → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖f x - f y‖ₑ ^ 2 ≤ K) → ∫⁻ x in ball (0 : Rn n) 1, ∫⁻ y in ball (0 : Rn n) 1, ‖f x - f y‖ₑ ^ 2 ≤ K := by
+  intro n f K hf hK
+  -- double integrals over `s` only depend on the a.e.-class of `f` on `s`
+  have dbl : ∀ {s : Set (Rn n)} {f₁ f₂ : Rn n → ℝ}, f₁ =ᵐ[volume.restrict s] f₂ →
+      ∫⁻ x in s, ∫⁻ y in s, ‖f₁ x - f₁ y‖ₑ ^ 2 = ∫⁻ x in s, ∫⁻ y in s, ‖f₂ x - f₂ y‖ₑ ^ 2 := by
+    intro s f₁ f₂ h
+    have h1 : ∀ x, ∫⁻ y in s, ‖f₁ x - f₁ y‖ₑ ^ 2 = ∫⁻ y in s, ‖f₁ x - f₂ y‖ₑ ^ 2 := fun x =>
+      lintegral_congr_ae (h.mono fun y hy => by simp [hy])
+    simp_rw [h1]
+    exact lintegral_congr_ae (h.mono fun x hx => by simp [hx])
+  have hff' := hf.ae_eq_mk
+  have hm : StronglyMeasurable (hf.mk f) := hf.stronglyMeasurable_mk
+  set f' := hf.mk f
+  -- radii `r m = 1 - 1/(m+2)` increase to `1`
+  let r : ℕ → ℝ := fun m => 1 - 1 / ((m : ℝ) + 2)
+  have hr0 : ∀ m, 0 < r m := fun m => by
+    have : (1 : ℝ) / ((m : ℝ) + 2) < 1 := by
+      rw [div_lt_one (by positivity)]; linarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m)]
+    simp only [r]; linarith
+  have hr1 : ∀ m, r m < 1 := fun m => by
+    have : (0 : ℝ) < 1 / ((m : ℝ) + 2) := by positivity
+    simp only [r]; linarith
+  have hrmono : Monotone r := by
+    intro a b hab
+    simp only [r]
+    have hab' : (a : ℝ) + 2 ≤ (b : ℝ) + 2 := by exact_mod_cast Nat.add_le_add_right hab 2
+    have : (1 : ℝ) / ((b : ℝ) + 2) ≤ 1 / ((a : ℝ) + 2) :=
+      one_div_le_one_div_of_le (by positivity) hab'
+    linarith
+  set B : ℕ → Set (Rn n) := fun m => ball 0 (r m) with hBdef
+  have hBmono : Monotone B := fun a b hab => ball_subset_ball (hrmono hab)
+  have hBdir : Directed (· ⊆ ·) B := hBmono.directed_le
+  have hU : ⋃ m, B m = ball (0 : Rn n) 1 := by
+    ext x
+    simp only [mem_iUnion, mem_ball, dist_zero_right, B]
+    constructor
+    · rintro ⟨m, hm⟩; exact hm.trans (hr1 m)
+    · intro hx
+      have h1 : 0 < 1 - ‖x‖ := by linarith
+      obtain ⟨m, hm⟩ := exists_nat_gt (1 / (1 - ‖x‖))
+      refine ⟨m, ?_⟩
+      simp only [r]
+      have : 1 / ((m : ℝ) + 2) < 1 - ‖x‖ := by
+        rw [div_lt_iff₀ (by positivity)]
+        rw [div_lt_iff₀ h1] at hm
+        nlinarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m)]
+      linarith
+  -- the hypothesis transfers to the representative `f'`
+  have hK' : ∀ m, ∫⁻ x in B m, ∫⁻ y in B m, ‖f' x - f' y‖ₑ ^ 2 ≤ K := fun m => by
+    rw [← dbl (ae_restrict_of_ae_restrict_of_subset (ball_subset_ball (hr1 m).le) hff')]
+    exact hK _ (hr0 m) (hr1 m)
+  rw [dbl hff', ← hU]
+  have hF : Measurable (fun p : Rn n × Rn n => ‖f' p.1 - f' p.2‖ₑ ^ 2) :=
+    ((hm.measurable.comp measurable_fst).sub (hm.measurable.comp measurable_snd)).enorm.pow_const 2
+  -- inner integrals: union formula along the directed family `B`
+  have hG : ∀ x, ∫⁻ y in ⋃ m, B m, ‖f' x - f' y‖ₑ ^ 2 = ⨆ m, ∫⁻ y in B m, ‖f' x - f' y‖ₑ ^ 2 :=
+    fun x => setLIntegral_iUnion_of_directed _ hBdir
+  simp_rw [hG]
+  -- outer integral: union formula, then monotone convergence
+  rw [setLIntegral_iUnion_of_directed _ hBdir]
+  refine iSup_le fun k => ?_
+  rw [lintegral_iSup (fun m => hF.lintegral_prod_right')
+    (fun a b hab x => lintegral_mono_set (hBmono hab))]
+  refine iSup_le fun m => ?_
+  -- diagonal comparison at the radius `r (max k m)`
+  calc ∫⁻ x in B k, ∫⁻ y in B m, ‖f' x - f' y‖ₑ ^ 2
+      ≤ ∫⁻ x in B (max k m), ∫⁻ y in B (max k m), ‖f' x - f' y‖ₑ ^ 2 := by
+        refine (lintegral_mono_set (hBmono (le_max_left k m))).trans ?_
+        exact lintegral_mono fun x => lintegral_mono_set (hBmono (le_max_right k m))
+    _ ≤ K := hK' _
+/-- Simon Ch. 5, proof of Lemma 3.1 (p. 114), Poincaré inequality, mean-deviation step: for a
+measurable `s ⊆ ℝⁿ` of finite measure and `f ∈ L²(s)`,
+`∫_s |f - ⨍_s f|² ≤ |s|⁻¹ ∫_s ∫_s |f(x) - f(y)|² dy dx` in `[0, ∞]`.  If `|s| = 0` the left side
+vanishes.  Otherwise `f(x) - ⨍_s f = |s|⁻¹ ∫_s (f(x) - f(y)) dy`, and Cauchy–Schwarz on `s`
+(`L¹ ≤ L²` for the finite measure `volume.restrict s`) gives
+`|f(x) - ⨍_s f|² ≤ |s|⁻¹ ∫_s |f(x) - f(y)|² dy` for every `x`; integrate over `x ∈ s`. -/
+theorem poincare_set_mean_deviation_sq_bound : ∀ (n : ℕ) (s : Set (Rn n)) (f : Rn n → ℝ), MeasurableSet s → volume s ≠ ∞ → MemLp f 2 (volume.restrict s) → ∫⁻ x in s, ‖f x - ⨍ y in s, f y‖ₑ ^ 2 ≤ (volume s)⁻¹ * ∫⁻ x in s, ∫⁻ y in s, ‖f x - f y‖ₑ ^ 2 := by
+  intro n s f hs hfin hf
+  -- 1. null set: the left side vanishes
+  by_cases h0 : volume s = 0
+  · have : volume.restrict s = 0 := Measure.restrict_eq_zero.mpr h0
+    simp [this]
+  -- 2. pass to a strongly measurable representative (no side changes)
+  have hfa := hf.aestronglyMeasurable
+  have hff' : f =ᵐ[volume.restrict s] hfa.mk f := hfa.ae_eq_mk
+  have hf'L2 : MemLp (hfa.mk f) 2 (volume.restrict s) := (memLp_congr_ae hff').mp hf
+  have hdbl : ∫⁻ x in s, ∫⁻ y in s, ‖f x - f y‖ₑ ^ 2 =
+      ∫⁻ x in s, ∫⁻ y in s, ‖hfa.mk f x - hfa.mk f y‖ₑ ^ 2 := by
+    have h1 : ∀ x, ∫⁻ y in s, ‖f x - f y‖ₑ ^ 2 = ∫⁻ y in s, ‖f x - hfa.mk f y‖ₑ ^ 2 := fun x =>
+      lintegral_congr_ae (hff'.mono fun y hy => by simp [hy])
+    simp_rw [h1]
+    exact lintegral_congr_ae (hff'.mono fun x hx => by simp [hx])
+  rw [hdbl]
+  have havg : ⨍ y in s, f y = ⨍ y in s, hfa.mk f y := by
+    rw [setAverage_eq, setAverage_eq, integral_congr_ae hff']
+  rw [havg]
+  set f' := hfa.mk f
+  set c := ⨍ y in s, f' y with hc
+  rw [lintegral_congr_ae (g := fun x => ‖f' x - c‖ₑ ^ 2) (hff'.mono fun x hx => by simp only [hx])]
+  have : IsFiniteMeasure (volume.restrict s) :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact hfin.lt_top⟩
+  rw [← lintegral_const_mul' _ _ (ENNReal.inv_ne_top.mpr h0)]
+  apply lintegral_mono
+  intro x
+  -- 3. f(x) - λ = |s|⁻¹ ∫_s (f(x) - f(y)) dy
+  have hint : Integrable f' (volume.restrict s) := hf'L2.integrable one_le_two
+  have hkey : f' x - c = (volume.real s)⁻¹ * ∫ y in s, (f' x - f' y) := by
+    have hu : (volume.restrict s).real univ = volume.real s := by simp [Measure.real]
+    have hreal : volume.real s ≠ 0 := by
+      simp [Measure.real, ENNReal.toReal_eq_zero_iff, h0, hfin]
+    rw [integral_sub (integrable_const _) hint, integral_const, hu, hc, setAverage_eq]
+    simp only [smul_eq_mul]
+    field_simp
+  -- 4. Cauchy–Schwarz on s: (∫_s |u|)^2 ≤ |s| ∫_s |u|^2
+  have hCS : (∫⁻ y in s, ‖f' x - f' y‖ₑ) ^ 2 ≤ volume s * ∫⁻ y in s, ‖f' x - f' y‖ₑ ^ 2 := by
+    have hh : AEStronglyMeasurable (fun y => f' x - f' y) (volume.restrict s) :=
+      aestronglyMeasurable_const.sub hint.aestronglyMeasurable
+    have key := eLpNorm_le_eLpNorm_mul_rpow_measure_univ (p := 1) (q := 2)
+      (μ := volume.restrict s) one_le_two hh
+    rw [eLpNorm_one_eq_lintegral_enorm hh,
+      eLpNorm_eq_lintegral_rpow_enorm_toReal two_ne_zero ENNReal.ofNat_ne_top hh] at key
+    have e1 : (1 / (1 : ℝ≥0∞).toReal - 1 / (2 : ℝ≥0∞).toReal) = 1 / 2 := by norm_num
+    rw [e1, Measure.restrict_apply_univ] at key
+    have e2 : ∀ y, ‖f' x - f' y‖ₑ ^ (2 : ℝ≥0∞).toReal = ‖f' x - f' y‖ₑ ^ 2 := fun y => by simp
+    simp_rw [e2] at key
+    calc (∫⁻ y in s, ‖f' x - f' y‖ₑ) ^ 2
+        ≤ ((∫⁻ y in s, ‖f' x - f' y‖ₑ ^ 2) ^ (1 / (2 : ℝ≥0∞).toReal) *
+            volume s ^ (1 / 2 : ℝ)) ^ 2 := by gcongr
+      _ = volume s * ∫⁻ y in s, ‖f' x - f' y‖ₑ ^ 2 := by
+        rw [mul_pow, ← ENNReal.rpow_mul_natCast, ← ENNReal.rpow_mul_natCast]
+        norm_num
+        rw [mul_comm]
+  -- 5. pointwise bound and conclusion
+  have hnorm : ‖f' x - c‖ₑ ≤ (volume s)⁻¹ * ∫⁻ y in s, ‖f' x - f' y‖ₑ := by
+    rw [hkey, enorm_mul]
+    gcongr
+    · rw [Measure.real, Real.enorm_eq_ofReal (inv_nonneg.mpr ENNReal.toReal_nonneg),
+        ENNReal.ofReal_inv_of_pos (ENNReal.toReal_pos h0 hfin), ENNReal.ofReal_toReal hfin]
+    · exact enorm_integral_le_lintegral_enorm _
+  calc ‖f' x - c‖ₑ ^ 2 ≤ ((volume s)⁻¹ * ∫⁻ y in s, ‖f' x - f' y‖ₑ) ^ 2 := by gcongr
+    _ = (volume s)⁻¹ ^ 2 * (∫⁻ y in s, ‖f' x - f' y‖ₑ) ^ 2 := by rw [mul_pow]
+    _ ≤ (volume s)⁻¹ ^ 2 * (volume s * ∫⁻ y in s, ‖f' x - f' y‖ₑ ^ 2) := by gcongr
+    _ = (volume s)⁻¹ * ∫⁻ y in s, ‖f' x - f' y‖ₑ ^ 2 := by
+      rw [pow_two, ← mul_assoc, mul_assoc _ _ (volume s), ENNReal.inv_mul_cancel h0 hfin, mul_one]
 /-- **`L²` contraction of mollification** (Young's inequality with exponents `(1, 2; 2)`;
 Gilbarg–Trudinger §7.2, Evans Appendix C).  Convolution with a continuous probability kernel
 `ρ ≥ 0`, `∫ ρ = 1`, does not increase the `L²` energy: `∫⁻ ‖ρ ⋆ H‖ₑ² ≤ ∫⁻ ‖H‖ₑ²`.
@@ -921,6 +1388,51 @@ theorem w12_ball_smooth_approximation : ∀ n : ℕ, 1 ≤ n → ∀ (f : Rn n �
             (ball (0 : Rn n) 1).indicator g x‖ₑ ^ 2 := setLIntegral_congr_fun measurableSet_ball hpt
       _ ≤ ∫⁻ x, ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator g (x - z)) -
             (ball (0 : Rn n) 1).indicator g x‖ₑ ^ 2 := setLIntegral_le_lintegral _ _
+/-- **Poincaré inequality on the unit ball** (Simon Ch. 5, fact (P) in the proof of Lemma 3.1,
+p. 114; Gilbarg–Trudinger (7.45)).  If `n ≥ 1` and `f ∈ W^{1,2}(B)` has weak gradient `g`, where
+`B = B̆₁(0)`, then `∫_B |f − λ|² ≤ 2^{n+2} ∫_B |g|²` with `λ = ⨍_B f`.  For `0 < r < 1`, smooth
+approximation on `B_r` and the segment estimate give
+`∫_{B_r}∫_{B_r} |f(x) − f(y)|² ≤ 2^{n+2} |B| ∫_{B_r} |g|²`.  Letting `r ↑ 1` and using
+`∫_B |f − λ|² ≤ |B|⁻¹ ∫_B∫_B |f(x) − f(y)|²` then gives the claim. -/
+theorem w12_ball_poincare_inequality : ∀ n : ℕ, 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∫⁻ x in ball (0 : Rn n) 1, ‖f x - ⨍ y in ball (0 : Rn n) 1, f y‖ₑ ^ 2 ≤ ENNReal.ofReal C * ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 := by
+  intro n hn
+  refine ⟨2 ^ (n + 2), by positivity, fun f g hfg => ?_⟩
+  have hf : MemLp f 2 (volume.restrict (ball (0 : Rn n) 1)) := hfg.1
+  have hg : MemLp g 2 (volume.restrict (ball (0 : Rn n) 1)) := hfg.2.1
+  -- Steps 1–2: for `0 < r < 1`, approximate `f` on `B_r` by smooth `φ_j` and pass to the limit;
+  -- the energy on `B_r` is at most the energy on `B`.
+  have hBr : ∀ r : ℝ, 0 < r → r < 1 →
+      ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖f x - f y‖ₑ ^ 2 ≤
+        (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) *
+          ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 := by
+    intro r hr0 hr1
+    obtain ⟨φ, hφ, h1, h2⟩ := Submission.w12_ball_smooth_approximation n hn f g hfg r hr0 hr1
+    have hsub : ball (0 : Rn n) r ⊆ ball 0 1 := ball_subset_ball hr1.le
+    calc ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖f x - f y‖ₑ ^ 2
+        ≤ (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) *
+            ∫⁻ x in ball (0 : Rn n) r, ‖g x‖ₑ ^ 2 :=
+          Submission.poincare_approx_ball_double_integral_bound n f g φ r hr0 hr1.le
+            (hf.aestronglyMeasurable.mono_set hsub) (hg.aestronglyMeasurable.mono_set hsub)
+            (fun j => (hφ j).of_le (by exact_mod_cast le_top)) h1 h2
+      _ ≤ (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) *
+            ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 := by
+          gcongr
+  -- Step 3: let `r ↑ 1`.
+  have hB := Submission.poincare_ball_double_integral_exhaustion n f _ hf.aestronglyMeasurable hBr
+  -- Step 4: the mean.  Since `0 < |B| < ∞`, `|B|⁻¹ · 2^{n+2} |B| = 2^{n+2}`.
+  have h0 : volume (ball (0 : Rn n) 1) ≠ 0 := (measure_ball_pos volume (0 : Rn n) one_pos).ne'
+  have htop : volume (ball (0 : Rn n) 1) ≠ ∞ := measure_ball_lt_top.ne
+  calc ∫⁻ x in ball (0 : Rn n) 1, ‖f x - ⨍ y in ball (0 : Rn n) 1, f y‖ₑ ^ 2
+      ≤ (volume (ball (0 : Rn n) 1))⁻¹ *
+          ∫⁻ x in ball (0 : Rn n) 1, ∫⁻ y in ball (0 : Rn n) 1, ‖f x - f y‖ₑ ^ 2 :=
+        Submission.poincare_set_mean_deviation_sq_bound n _ f measurableSet_ball htop hf
+    _ ≤ (volume (ball (0 : Rn n) 1))⁻¹ * ((2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) *
+          ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2) := by
+        gcongr
+    _ = ENNReal.ofReal (2 ^ (n + 2)) * ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 := by
+        rw [mul_comm ((2 : ℝ≥0∞) ^ (n + 2)), ← mul_assoc, ← mul_assoc,
+          ENNReal.inv_mul_cancel h0 htop, one_mul, ENNReal.ofReal_pow zero_le_two,
+          ENNReal.ofReal_ofNat]
 
 end Submission
 
