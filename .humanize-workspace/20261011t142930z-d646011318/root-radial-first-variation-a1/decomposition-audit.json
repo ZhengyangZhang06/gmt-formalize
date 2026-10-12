@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "trace_smulRight|IsProj.trace|trace_id|trace_comp_comm",
+        "norm_sq_eq_add_norm_sq_starProjection|inner_starProjection_left_eq_right|starProjection_eq_self_iff|starProjection_apply_mem|starProjection_orthogonal_val|theorem HasFDerivAt.norm_sq|theorem HasFDerivAt.sqrt|fderiv_of_notMem_tsupport|setIntegral_eq_integral_of_forall_compl_eq_zero|setIntegral_congr_ae|toDual_symm_apply|hasFDerivAt_iff_isLittleO_nhds_zero",
+        "radial_vector_field_hasFDerivAt|trace_scalar_add_rankOne_comp_starProjection|tangentialDiv_weighted_radial_field",
+        "\"lean_name\": \"(radial_vector_field_hasFDerivAt|trace_scalar_add_rankOne_comp_starProjection|tangentialDiv_weighted_radial_field)\"",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/radial-independent-audit-20261011/StandaloneTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/radial-independent-audit-20261011/Replay.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-radial-first-variation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/tmp/radial-independent-audit-20261011/StandaloneTypes.lean",
+        "/tmp/radial-independent-audit-20261011/Replay.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected radial_first_variation contract. The snapshot contract matches the workspace byte-for-byte, and inspected Mathlib sources match the pinned compiler dependencies. All three child types and the frozen parent type independently elaborate before any child declarations. Replaying the supplied implementation and exact comparator targets succeeds; all four proofs depend only on propext, Classical.choice and Quot.sound. The proposed names are bare identifiers, have no conflicting DAG reservations, and have no matches in the snapshot project or Mathlib. Dependencies are correctly directed and acyclic: the derivative and trace lemmas establish pointwise_divergence, which establishes the selected parent through support localization, almost-everywhere equality and HasMeanCurvatureIn. The pinned integral lemmas require no additional integrability assumptions."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the stated derivative and hypotheses. At the centre, continuity gives the required little-o remainder; away from the centre, differentiating the squared norm through sqrt and applying the chain and product rules gives the displayed continuous linear map. The proof covers dimension zero and contains no circular reliance or deferred proof construction."
+    },
+    {
+      "key": "projection_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean type agree. Ambient finite dimensionality supplies the projection and trace instances. The adapted orthonormal-basis computation proves both the scalar contribution and F(p v), including zero-dimensional subspaces; the supplied basis-free route is also supported by the pinned trace lemmas. No additional hypotheses or child dependencies are needed."
+    },
+    {
+      "key": "pointwise_divergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes all stated hypotheses. The proof correctly applies the two declared dependencies, identifies fderiv by derivative uniqueness, and obtains the gradient term using self-adjointness. Pythagoras and the explicit zero/nonzero-radius cases justify the normalRadialSq expression without division gaps. This pointwise identity supplies exactly the parent's almost-everywhere integrand equality; no ancestor theorem is used."
+    }
+  ],
+  "required_changes": []
+}
