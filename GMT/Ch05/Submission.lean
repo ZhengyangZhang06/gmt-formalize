@@ -458,6 +458,76 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Second derivative of `t ↦ √(det(I + t² S))` at `0`.  By `Matrix.det_one_add_smul`,
+`p(t) = det(I + t² S) = 1 + τ t² + R(t²) t⁴` with `τ = tr S` and a fixed polynomial `R`, so
+`p(0) = 1`, `p'(0) = 0` and `p''(0) = 2τ`.  Near `0` we have `p > 0`, hence
+`(√p)' = p' / (2√p)` there, and the quotient rule at `0` gives `(√p)''(0) = p''(0) / 2 = τ`. -/
+theorem dohr_eb_ail_sqrt_det_second_deriv : ∀ n : ℕ, ∀ S : Matrix (Fin n) (Fin n) ℝ, deriv (deriv (fun t : ℝ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + t ^ 2 • S)))) 0 = Matrix.trace S := by
+  intro n S
+  -- `p(t) = 1 + τ t² + R(t²) t⁴` (Taylor expansion of the determinant).
+  obtain ⟨R, hR⟩ : ∃ R : Polynomial ℝ, ∀ r : ℝ,
+      Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + r • S) =
+        1 + Matrix.trace S * r + R.eval r * r ^ 2 :=
+    ⟨_, fun r => Matrix.det_one_add_smul r S⟩
+  have hf : (fun t : ℝ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + t ^ 2 • S))) =
+      fun t => Real.sqrt (1 + Matrix.trace S * t ^ 2 + R.eval (t ^ 2) * t ^ 4) := by
+    funext t
+    rw [hR (t ^ 2)]
+    ring_nf
+  rw [hf]
+  -- It suffices to know `p(0) = 1`, `p'(0) = 0` and `p''(0) = 2τ`.
+  suffices H : ∀ p p' : ℝ → ℝ, (∀ t, HasDerivAt p (p' t) t) → p 0 = 1 → p' 0 = 0 →
+      HasDerivAt p' (2 * Matrix.trace S) 0 →
+      deriv (deriv (fun t => Real.sqrt (p t))) 0 = Matrix.trace S by
+    have h2 : ∀ t : ℝ, HasDerivAt (fun t : ℝ => t ^ 2) (2 * t) t := fun t => by
+      simpa using hasDerivAt_pow 2 t
+    have hR2 : ∀ t : ℝ, HasDerivAt (fun t : ℝ => R.eval (t ^ 2))
+        (R.derivative.eval (t ^ 2) * (2 * t)) t := fun t => by
+      have := (R.hasDerivAt (t ^ 2)).comp t (h2 t)
+      simpa [Function.comp_def] using this
+    have hR2' : ∀ t : ℝ, HasDerivAt (fun t : ℝ => R.derivative.eval (t ^ 2) * (2 * t))
+        (R.derivative.derivative.eval (t ^ 2) * (2 * t) * (2 * t) +
+          R.derivative.eval (t ^ 2) * 2) t := fun t => by
+      have hR'2 : HasDerivAt (fun t : ℝ => R.derivative.eval (t ^ 2))
+          (R.derivative.derivative.eval (t ^ 2) * (2 * t)) t := by
+        have := (R.derivative.hasDerivAt (t ^ 2)).comp t (h2 t)
+        simpa [Function.comp_def] using this
+      have := hR'2.fun_mul ((hasDerivAt_id' t).const_mul 2)
+      convert this using 1
+      ring
+    refine H (fun t => 1 + Matrix.trace S * t ^ 2 + R.eval (t ^ 2) * t ^ 4)
+      (fun t => 2 * Matrix.trace S * t + R.derivative.eval (t ^ 2) * (2 * t) * t ^ 4 +
+        R.eval (t ^ 2) * (4 * t ^ 3)) (fun t => ?_) (by simp) (by simp) ?_
+    · have := (((hasDerivAt_const t (1 : ℝ)).fun_add ((h2 t).const_mul (Matrix.trace S))).fun_add
+        ((hR2 t).fun_mul (hasDerivAt_pow 4 t)))
+      convert this using 1
+      push_cast
+      ring
+    · have := ((((hasDerivAt_id' (0 : ℝ)).const_mul (2 * Matrix.trace S)).fun_add
+        ((hR2' 0).fun_mul (hasDerivAt_pow 4 (0 : ℝ)))).fun_add
+        ((hR2 0).fun_mul ((hasDerivAt_pow 3 (0 : ℝ)).const_mul 4)))
+      convert this using 1
+      simp
+  intro p p' hp hp0 hp'0 hp''
+  -- Near `0`, `p > 0`, so `(√p)' = p' / (2√p)` there.
+  have hpos : ∀ᶠ t in 𝓝 (0 : ℝ), 0 < p t :=
+    continuousAt_const.eventually_lt (hp 0).continuousAt (by rw [hp0]; norm_num)
+  have hderiv : deriv (fun t => Real.sqrt (p t)) =ᶠ[𝓝 0]
+      fun t => p' t / (2 * Real.sqrt (p t)) := by
+    filter_upwards [hpos] with t ht
+    exact ((hp t).sqrt ht.ne').deriv
+  rw [hderiv.deriv_eq]
+  -- Quotient rule at `0`.
+  have hd : HasDerivAt (fun t => 2 * Real.sqrt (p t)) (2 * (p' 0 / (2 * Real.sqrt (p 0)))) 0 :=
+    ((hp 0).sqrt (by rw [hp0]; norm_num)).const_mul 2
+  rw [(hp''.fun_div hd (by rw [hp0]; norm_num)).deriv, hp'0, hp0]
+  simp
+  ring
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
