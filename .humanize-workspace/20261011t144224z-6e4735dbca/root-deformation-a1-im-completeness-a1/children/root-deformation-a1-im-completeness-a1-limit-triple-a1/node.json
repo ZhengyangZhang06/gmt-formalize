@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_completeness-a1.limit_triple-a1",
+  "parent_id": "root.deformation-a1.im_completeness-a1",
+  "depth": 3,
+  "title": "Pointwise eventual limits of rectifiable triples are rectifiable triples (orientation of the limit in Simon 3.13)",
+  "statement": "Let N, k ∈ ℕ and H := μHE[k] on ℝ^N. For every j ∈ ℕ let (M_j, θ_j, ξ_j) satisfy IsRectifiableTriple ℝ^N k M_j θ_j ξ_j with θ_j ≥ 1 on M_j. Let M₀ ⊆ ℝ^N be H-null-measurable, θ₀ : ℝ^N → ℝ with θ₀ ≥ 1 on M₀ and θ₀ H-integrable on M₀ ∩ K for every compact K, and ξ₀ : ℝ^N → Λ_k(ℝ^N) (NVector). Assume that for H-a.e. x ∈ M₀ (H⌞M₀-a.e.) x ∈ M_j for all sufficiently large j and ξ_j(x) → ξ₀(x). Then IsRectifiableTriple ℝ^N k M₀ θ₀ ξ₀: M₀ is countably k-rectifiable, θ₀ > 0 on M₀ and locally H-integrable, ξ₀ is H⌞M₀-a.e. strongly measurable, and for H-a.e. x ∈ M₀ there is an orthonormal τ : Fin k → ℝ^N such that span τ is the weighted approximate tangent space of (M₀, θ₀) at x and ξ₀(x) = ±simpleNVector τ.",
+  "lean_statement": "∀ (N k : ℕ) (M : ℕ → Set (Eucl N)) (θ : ℕ → Eucl N → ℝ) (ξ : ℕ → Eucl N → NVector (Eucl N) k) (M₀ : Set (Eucl N)) (θ₀ : Eucl N → ℝ) (ξ₀ : Eucl N → NVector (Eucl N) k), (∀ j, IsRectifiableTriple (univ : Set (Eucl N)) k (M j) (θ j) (ξ j)) → (∀ j, ∀ x ∈ M j, 1 ≤ θ j x) → NullMeasurableSet M₀ (μHE[k] : Measure (Eucl N)) → (∀ x ∈ M₀, 1 ≤ θ₀ x) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ₀ (M₀ ∩ K) (μHE[k] : Measure (Eucl N))) → (∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict M₀), (∀ᶠ j in atTop, x ∈ M j) ∧ Tendsto (fun j => ξ j x) atTop (𝓝 (ξ₀ x))) → IsRectifiableTriple (univ : Set (Eucl N)) k M₀ θ₀ ξ₀",
+  "lean_name": "imc_isRectifiableTriple_of_eventually_mem",
+  "depends_on": [
+    "root.deformation-a1.im_completeness-a1.approx_tangent_locality-a1",
+    "root.deformation-a1.im_completeness-a1.weighted_tangent_equiv-a1",
+    "root.flat_iff_weak-a1.im_series-a1.frame_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.im_completeness-a1.approx_tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.im_completeness-a1.weighted_tangent_equiv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.im_series-a1.frame_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-frame-sign-a1-a1",
+      "result_commit": "c90a40505abdbff33b9174acf9b20037eb2cb2a1",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-completeness-a1-limit-triple-a1-a1"
+}

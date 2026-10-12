@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_completeness-a1.approx_tangent_locality-a1",
+  "parent_id": "root.deformation-a1.im_completeness-a1",
+  "depth": 3,
+  "title": "Approximate tangent spaces of a subset agree a.e. with those of a locally finite superset (Lemma A)",
+  "statement": "Let N, k ∈ ℕ, H := μHE[k] on ℝ^N, and let E ⊆ E′ ⊆ ℝ^N be H-null-measurable sets with H(E′ ∩ K) < ∞ for every compact K ⊆ ℝ^N. Then for H-a.e. x ∈ E (that is, H⌞E-a.e.) and every linear subspace Q ⊆ ℝ^N: Q is the approximate tangent space of E at x in the sense of Simon Ch. 3, Def. 1.4 (HasApproximateTangentSpaceAt k E x Q: finrank Q = k and ∫_{η_{x,r}(E)} f dH → ∫_Q f dH as r → 0+ for every f ∈ C_c(ℝ^N), where η_{x,r}(y) = r⁻¹(y − x)) if and only if Q is the approximate tangent space of E′ at x.",
+  "lean_statement": "∀ (N k : ℕ) (E E' : Set (Eucl N)), E ⊆ E' → NullMeasurableSet E (μHE[k] : Measure (Eucl N)) → NullMeasurableSet E' (μHE[k] : Measure (Eucl N)) → (∀ K : Set (Eucl N), IsCompact K → (μHE[k] : Measure (Eucl N)) (E' ∩ K) < ∞) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict E), ∀ Q : Submodule ℝ (Eucl N), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt k E x Q ↔ Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt k E' x Q",
+  "lean_name": "imc_approxTangent_iff_of_subset",
+  "depends_on": [
+    "root.deformation-a1.im_completeness-a1.zero_density-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.im_completeness-a1.zero_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-blow-7c8d1035a6-a1",
+      "result_commit": "8389acdfdd73d9fc3fa8f08ede1aff9d04d17e88",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-completeness-a1-approx-tangent-locality-a1-a1"
+}
