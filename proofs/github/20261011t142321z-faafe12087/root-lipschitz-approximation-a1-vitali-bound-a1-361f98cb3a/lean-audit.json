@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4fc419929f5f47f5ec58b99b348cd2ff88c83c870607ffb37276fbb4a6478fa4",
+  "git_delta": {
+    "base_commit": "3ead40d6dbe8307bbaa9668fe07c5ee021fa686d",
+    "candidate_commit": "271bb2907c3f528720bdae986486db32656db5c1",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lip_approx_vitali_bound",
+    "diff_sha256": "95a763fbc0f1d611b7008e871885c591b54037d81a8847b32c22d95fa3cea546",
+    "source_sha256": "b3cbd4e3de7690da8b4408ec5f993c728ca8d24999b2e5b291d1d6305693bc06",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lip_approx_vitali_bound",
+      "statement": "∀ (N : ℕ) (ν Ψ : Measure (EuclideanSpace ℝ (Fin N))) (S W : Set (EuclideanSpace ℝ (Fin N))) (r : EuclideanSpace ℝ (Fin N) → ℝ) (R₀ : ℝ) (M : ℝ≥0∞), (∀ y ∈ S, 0 < r y ∧ r y ≤ R₀ ∧ closedBall y (r y) ⊆ W ∧ ν (S ∩ closedBall y (5 * r y)) ≤ M * Ψ (closedBall y (r y))) → ν S ≤ M * Ψ W",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
