@@ -2059,6 +2059,56 @@ theorem Submission.ts_pwb_blowup_at_good_point : ∀ (n ℓ : ℕ) (a : Rectifia
   filter_upwards [self_mem_nhdsWithin] with t ht
   exact (hdec t ht).symm
 
+/-- **Weighted blow-up on one Lipschitz piece (Simon Ch. 3, 1.9 via 1.6 and 1.8(1)).** For a
+Lipschitz piece `(C, F)` and `Hⁿ`-a.e. `x ∈ M`, at every `w ∈ C` with `F(w) = x` the blow-ups of
+`μ_V` converge: `t⁻ⁿ ∫ f(t⁻¹(y - x)) dμ_V(y) → θ(x) ∫_{DF(w)(ℝⁿ)} f dHⁿ` as `t ↓ 0`. -/
+theorem Submission.ts_piece_weighted_blowup_ae : ∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), 0 < n → (IsCompact C ∧ (∃ K : NNReal, LipschitzWith K F) ∧ (∀ w ∈ C, DifferentiableAt ℝ F w ∧ Function.Injective (fderiv ℝ F w)) ∧ ContinuousOn (fderiv ℝ F) C ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C, ∀ w ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → ∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M, ∀ w ∈ C, F w = x → ∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y, f (t⁻¹ • (y - x)) ∂(mk a).weight) (𝓝[>] 0) (𝓝 (a.θ x * ∫ y in (LinearMap.range (fderiv ℝ F w).toLinearMap : Set (Ambient n ℓ)), f y ∂μHE[n])) := by
+  intro n ℓ a C F hn hpiece
+  have hC : IsCompact C := hpiece.1
+  obtain ⟨κ, hF⟩ := hpiece.2.1
+  have hM := a.isRectifiablePair.measurable
+  -- the sibling: `Hⁿ(F(C) ∩ B_ρ(z)) ≤ Γρⁿ` on `F(C)`, and the blow-up of `Hⁿ ⌞ F(C)` at the
+  -- image of every density point of `C`
+  obtain ⟨⟨Γ, hΓ⟩, hblow⟩ := Submission.ts_piece_density_blowup n ℓ C F hn hpiece
+  -- `F(C)` is compact, hence Borel, and `Hⁿ(F(C)) < ∞`
+  have hNc : IsCompact (F '' C) := hC.image hF.continuous
+  have hNm : MeasurableSet (F '' C) := hNc.isClosed.measurableSet
+  have hNfin : (μHE[n] : Measure (Ambient n ℓ)) (F '' C) ≠ ⊤ := by
+    rcases (F '' C).eq_empty_or_nonempty with h | ⟨z, hz⟩
+    · rw [h, measure_empty]
+      exact ENNReal.zero_ne_top
+    obtain ⟨r, hr⟩ := hNc.isBounded.subset_closedBall z
+    have h := hΓ z hz (max r 1) (one_pos.trans_le (le_max_right r 1))
+    rw [inter_eq_left.2 (hr.trans (closedBall_subset_closedBall (le_max_left r 1)))] at h
+    exact ne_top_of_le_ne_top ENNReal.ofReal_ne_top h
+  -- Lusin: compact `K k ⊆ M ∩ F(C)`, with `θ` continuous on each, cover `M ∩ F(C)` up to an
+  -- `Hⁿ`-null set
+  obtain ⟨K, hK, hKnull⟩ := Submission.ts_pwb_lusin_compact_cover n ℓ μHE[n] (a.M ∩ F '' C) a.θ
+    (hM.inter hNm.nullMeasurableSet)
+    (ne_top_of_le_ne_top hNfin (measure_mono inter_subset_right))
+    (Integrable.aestronglyMeasurable (a.isRectifiablePair.locallyIntegrable _ hNc))
+  -- upper densities of `μ_V ⌞ (K k)ᶜ` and of `Hⁿ ⌞ (F(C) \ K k)` vanish `Hⁿ`-a.e. on `K k`
+  have hfin : IsFiniteMeasureOnCompacts ((μHE[n] : Measure (Ambient n ℓ)).restrict (F '' C)) := by
+    have : IsFiniteMeasure ((μHE[n] : Measure (Ambient n ℓ)).restrict (F '' C)) :=
+      isFiniteMeasure_restrict.2 hNfin
+    infer_instance
+  have hA := fun k ↦ Submission.ts_pwb_upper_density_vanish_ae n ℓ (mk a).weight (K k)ᶜ
+    (Submission.ts_pwb_pair_weight_integral n ℓ a).1 (hK k).1.isClosed.measurableSet.compl
+  have hB := fun k ↦ Submission.ts_pwb_upper_density_vanish_ae n ℓ _ (K k)ᶜ hfin
+    (hK k).1.isClosed.measurableSet.compl
+  -- `Hⁿ`-a.e. point of `F(C)` is the image of density points of `C` only
+  have hD := Submission.ts_pwb_density_points_of_image_ae n ℓ C F hC.isClosed.measurableSet ⟨κ, hF⟩
+  filter_upwards [ae_restrict_mem₀ hM, ae_restrict_of_ae (ae_all_iff.2 hA),
+    ae_restrict_of_ae (ae_all_iff.2 hB), ae_restrict_of_ae hD,
+    ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.1 hKnull)] with x hxM hxA hxB hxD hxK
+  intro w hw hFw f
+  have hxN : x ∈ F '' C := ⟨w, hw, hFw⟩
+  obtain ⟨k, hk⟩ := mem_iUnion.1 (not_not.1 fun h ↦ hxK ⟨⟨hxM, hxN⟩, h⟩)
+  have hL := hblow w hw (hxD w hw hFw) f
+  rw [hFw] at hL
+  exact Submission.ts_pwb_blowup_at_good_point n ℓ a (F '' C) (K k) x f Γ _ hNm hNfin (hK k).1
+    (hK k).2.1 hk ((hK k).2.2 x hk) (hΓ x hxN) (hxA k fun h ↦ h hk) (hxB k fun h ↦ h hk) hL
+
 end
 
 end GMT.Ch04
