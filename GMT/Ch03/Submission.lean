@@ -383,6 +383,81 @@ theorem Submission.coarea_normDet_adjoint_eq_horizontal : ∀ {X Y : Type} [Norm
     rw [LinearMap.normDet_eq_zero_iff_ker_ne_bot, ← LinearMap.orthogonal_range, ne_eq,
       Submodule.orthogonal_eq_bot_iff, LinearMap.range_eq_top]
     exact hP
+/-- **Block-triangular factorization of `normDet`** (step 5 of the parent proof of
+`coarea_normDet_chain_rule`, the block form of `A`). Let `f : V → X` be a linear bijection,
+`K ⊆ V` a subspace and `W = f(K)ᗮ`. In orthonormal bases of `V = K ⊕ Kᗮ` and `X = f(K) ⊕ W`
+indexed by `Fin r ⊕ Fin s` (`r = dim K = dim f(K)`, `s = dim Kᗮ = dim W`), the matrix of `f` is
+`fromBlocks M₁₁ M₁₂ 0 M₂₂`: `M₁₁` is the matrix of `f|_K : K → f(K)`, the lower-left block
+vanishes because `W ⊥ f(K)`, and `M₂₂` is the matrix of `p_W ∘ f ∘ ι_{Kᗮ}` because
+`⟪w, x⟫ = ⟪w, p_W x⟫` for `w ∈ W`. Hence `normDet f = |det M₁₁| · |det M₂₂|`, and
+`|det M₁₁| = normDet (f ∘ ι_K)` since corestricting to `f(K)` does not change `normDet`. -/
+theorem Submission.coarea_normDet_block_triangular : ∀ {V X : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] (f : V →ₗ[ℝ] X) (K : Submodule ℝ V) (W : Submodule ℝ X), Function.Bijective f → W = (K.map f)ᗮ → f.normDet = (f ∘ₗ K.subtype).normDet * ((W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ f ∘ₗ Kᗮ.subtype).normDet := by
+  intro V X _ _ _ _ _ _ f K W hf hW
+  classical
+  -- Notation: `F = f(K)`, so `W = Fᗮ`.
+  obtain ⟨F, hF⟩ : ∃ F : Submodule ℝ X, F = K.map f := ⟨_, rfl⟩
+  rw [← hF] at hW
+  -- Step 1: dimensions, `dim F = dim K` and `dim W = dim Kᗮ`.
+  have hr : finrank ℝ F = finrank ℝ K := by
+    rw [hF]; exact (Submodule.equivMapOfInjective f hf.1 K).finrank_eq.symm
+  have hVX : finrank ℝ V = finrank ℝ X := (LinearEquiv.ofBijective f hf).finrank_eq
+  have e1 := Submodule.finrank_add_finrank_orthogonal K
+  have e2 := Submodule.finrank_add_finrank_orthogonal F
+  rw [← hW] at e2
+  have hs : finrank ℝ W = finrank ℝ Kᗮ := by omega
+  -- Steps 2–3: orthonormal bases of `K`, `Kᗮ`, `F`, `W`; adapted bases `β` of `V`, `γ` of `X`.
+  let b₁ := stdOrthonormalBasis ℝ K
+  let b₂ := stdOrthonormalBasis ℝ Kᗮ
+  let c₁ : OrthonormalBasis (Fin (finrank ℝ K)) ℝ F :=
+    (stdOrthonormalBasis ℝ F).reindex (finCongr hr)
+  let c₂ : OrthonormalBasis (Fin (finrank ℝ Kᗮ)) ℝ W :=
+    (stdOrthonormalBasis ℝ W).reindex (finCongr hs)
+  let c₂' : OrthonormalBasis (Fin (finrank ℝ Kᗮ)) ℝ Fᗮ := c₂.map (LinearIsometryEquiv.ofEq _ _ hW)
+  let β := (b₁.prod b₂).map K.orthogonalDecomposition.symm
+  let γ := (c₁.prod c₂').map F.orthogonalDecomposition.symm
+  have hβl : ∀ i, β (Sum.inl i) = (b₁ i : V) := by intro i; simp [β]
+  have hβr : ∀ j, β (Sum.inr j) = (b₂ j : V) := by intro j; simp [β]
+  have hγl : ∀ i, γ (Sum.inl i) = (c₁ i : X) := by intro i; simp [γ]
+  have hγr : ∀ j, γ (Sum.inr j) = (c₂ j : X) := by intro j; simp [γ, c₂']
+  -- The diagonal blocks: `f_K : K → F` and `g = p_W ∘ f ∘ ι_{Kᗮ} : Kᗮ → W`.
+  have hmemF : ∀ k : K, f k ∈ F := fun k => hF ▸ Submodule.mem_map_of_mem k.2
+  let fK : K →ₗ[ℝ] F := (f ∘ₗ K.subtype).codRestrict F (fun k => hmemF k)
+  let g : Kᗮ →ₗ[ℝ] W := (W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ f ∘ₗ Kᗮ.subtype
+  -- Steps 6–7: `normDet = |det|` in square orthonormal bases; `normDet (f ∘ ι_K) = normDet f_K`.
+  have h1 : (f ∘ₗ K.subtype).normDet = fK.normDet := (LinearMap.normDet_codRestrict _).symm
+  rw [h1, LinearMap.normDet_eq_norm_det_toMatrix f β γ,
+    LinearMap.normDet_eq_norm_det_toMatrix fK b₁ c₁, LinearMap.normDet_eq_norm_det_toMatrix g b₂ c₂,
+    ← norm_mul]
+  congr 1
+  -- Step 4: the matrix of `f` in `β`, `γ` is block upper triangular.
+  have hM : LinearMap.toMatrix β.toBasis γ.toBasis f =
+      Matrix.fromBlocks (LinearMap.toMatrix b₁.toBasis c₁.toBasis fK)
+        (Matrix.of fun i j => inner ℝ (c₁ i : X) (f (b₂ j))) 0
+        (LinearMap.toMatrix b₂.toBasis c₂.toBasis g) := by
+    ext a b
+    rcases a with i | i <;> rcases b with j | j
+    · -- (a) the `K → F` block is the matrix of `f_K`.
+      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, Matrix.fromBlocks_apply₁₁,
+        hβl, hγl]
+      rfl
+    · -- (d) the unconstrained block `M₁₂`.
+      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, Matrix.fromBlocks_apply₁₂,
+        hβr, hγl, Matrix.of_apply]
+    · -- (b) `W ⊥ F` kills the `K → W` block.
+      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, Matrix.fromBlocks_apply₂₁,
+        hβl, hγr, Matrix.zero_apply]
+      have hmem : (c₂ i : X) ∈ Fᗮ := hW ▸ (c₂ i).2
+      exact Submodule.inner_left_of_mem_orthogonal (hmemF (b₁ j)) hmem
+    · -- (c) `⟪w, x⟫ = ⟪w, p_W x⟫` for `w ∈ W`: the `Kᗮ → W` block is the matrix of `g`.
+      simp only [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, Matrix.fromBlocks_apply₂₂,
+        hβr, hγr]
+      simp [g]
+  -- Step 5: `det (fromBlocks M₁₁ M₁₂ 0 M₂₂) = det M₁₁ * det M₂₂`.
+  rw [hM, Matrix.det_fromBlocks_zero₂₁]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
