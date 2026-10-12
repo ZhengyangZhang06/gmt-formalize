@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "744a3ec313b5b15665f5d8ba6ac744d34e2f17f41876496d953b4a56ac38f732",
+  "git_delta": {
+    "base_commit": "ee1cfdb20d31e3213616e38de1a8b63a2050f8a6",
+    "candidate_commit": "eff6bc80913593f9d5e9d1c9607c7d8265732d0a",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_c1_approximation_eucl",
+    "diff_sha256": "4ee12d4e2dd110ac0f87b3b74a564120506b923340b777b984c176e99dc2c84d",
+    "source_sha256": "db063e26379782a2741b889a32eff402a683757ca483042d2bf18dd476615e9e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_c1_approximation_eucl",
+      "statement": "∀ (n Q : ℕ) (u : Eucl n → Eucl Q) (K : ℝ≥0), LipschitzWith K u → ∀ ε : ℝ≥0∞, 0 < ε → ∃ (A : Set (Eucl n)) (G : Eucl n → Eucl Q), IsClosed A ∧ (volume : Measure (Eucl n)) Aᶜ < ε ∧ ContDiff ℝ 1 G ∧ ∀ x ∈ A, u x = G x ∧ HasFDerivAt u (fderiv ℝ G x) x",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
