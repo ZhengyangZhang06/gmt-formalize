@@ -345,6 +345,64 @@ theorem Submission.section3_rectifiableDecomposition : RectifiableDecomposition 
   refine ⟨hdecomp, fun hAmeas ↦ ?_⟩
   obtain ⟨R, P, hRP, hdisj, hR, -, hRrect, hPpure⟩ := hborel hAmeas
   exact ⟨R, P, hRP, hdisj, hR, hRrect, hPpure⟩
+/-- **Simon Ch. 3, proof of Lemma 3.3, first claim (pp. 78–79)** (`chapter-03.txt` lines
+482–489). An `n`-plane `L ⊆ ℝᴺ` has `n` coordinates `J` with `p_J` injective on `L`. The
+restricted coordinate functionals `φⱼ = xⱼ|_L` span `L*`, since a nonzero `x ∈ L` has a nonzero
+coordinate. So `n` of them, `φ_{j(1)}, …, φ_{j(n)}`, form a basis of `L*`, and their indices are
+distinct; an `x ∈ L` with every `x_{j(i)} = 0` is then `0`. As `x - p_J x ⊥ e_j` for `j ∈ J`,
+`p_J` keeps the coordinates in `J`, so `J = {j(1), …, j(n)}` works. This is the dual form of
+Simon's nonsingular `n × n` minor. -/
+theorem Submission.section3_exists_coordinateProjection_injOn :
+    ∀ (N n : ℕ) (L : Submodule ℝ (Rn N)), finrank ℝ L = n →
+      ∃ J : Finset (Fin N), J.card = n ∧ Set.InjOn (coordinateProjection J) (L : Set (Rn N)) := by
+  intro N n L hL
+  -- Step 1: `p_J` keeps the coordinates indexed by `J`, as `x - p_J x ⊥ e_i` for `i ∈ J`.
+  have hcoord : ∀ (J : Finset (Fin N)) (x : Rn N), ∀ i ∈ J, coordinateProjection J x i = x i := by
+    intro J x i hi
+    have hmem : EuclideanSpace.single i (1 : ℝ) ∈
+        Submodule.span ℝ ((fun j ↦ EuclideanSpace.single j (1 : ℝ)) '' (J : Set (Fin N))) :=
+      Submodule.subset_span ⟨i, hi, rfl⟩
+    have h := Submodule.starProjection_inner_eq_zero x _ hmem
+    rw [inner_sub_left, EuclideanSpace.inner_single_right, EuclideanSpace.inner_single_right,
+      one_mul, one_mul, conj_trivial, conj_trivial, sub_eq_zero] at h
+    exact h.symm
+  -- Step 2: the coordinate functionals `φⱼ` restricted to `L` span `L*`.
+  let φ : Fin N → Module.Dual ℝ L := fun j ↦ (EuclideanSpace.projₗ j).comp L.subtype
+  have hspan : Submodule.span ℝ (Set.range φ) = ⊤ := by
+    refine Submodule.span_eq_top_of_ne_zero fun z hz ↦ ?_
+    obtain ⟨j, hj⟩ : ∃ j, (z : Rn N) j ≠ 0 := by
+      by_contra! h
+      exact hz (Subtype.ext (PiLp.ext h))
+    exact ⟨φ j, Set.mem_range_self j, hj⟩
+  -- Step 3: `n` of them, `φ_{j(1)}, …, φ_{j(n)}`, form a basis of `L*`; the `j(i)` are distinct.
+  obtain ⟨f, hf_mem, hf_span, hf_indep⟩ :=
+    Submodule.exists_fun_fin_finrank_span_eq ℝ (Set.range φ)
+  choose j hj using hf_mem
+  have hj_inj : Function.Injective j := fun a b hab ↦
+    hf_indep.injective (by rw [← hj a, ← hj b, hab])
+  have hcard : finrank ℝ (Submodule.span ℝ (Set.range φ)) = n := by
+    rw [hspan, finrank_top, Subspace.dual_finrank_eq, hL]
+  -- Step 4: a vector of `L` whose selected coordinates vanish is `0`.
+  have hzero : ∀ z : L, (∀ i, (z : Rn N) (j i) = 0) → z = 0 := by
+    intro z hz
+    refine (Module.forall_dual_apply_eq_zero_iff ℝ z).mp fun g ↦ ?_
+    have hle : Submodule.span ℝ (Set.range f) ≤ LinearMap.ker (Module.Dual.eval ℝ L z) := by
+      rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      rw [SetLike.mem_coe, LinearMap.mem_ker, Module.Dual.eval_apply, ← hj i]
+      exact hz i
+    have hg : g ∈ Submodule.span ℝ (Set.range f) := by
+      rw [hf_span, hspan]
+      exact Submodule.mem_top
+    simpa using hle hg
+  -- Step 5: `J = {j(1), …, j(n)}` has `n` elements and `p_J` is injective on `L`.
+  refine ⟨Finset.univ.image j, ?_, ?_⟩
+  · rw [Finset.card_image_of_injective _ hj_inj, Finset.card_univ, Fintype.card_fin, hcard]
+  · intro x hx y hy hxy
+    have hsel : ∀ i, (x - y) (j i) = 0 := fun i ↦ by
+      have hi : j i ∈ Finset.univ.image j := Finset.mem_image_of_mem j (Finset.mem_univ i)
+      rw [PiLp.sub_apply, ← hcoord _ x (j i) hi, ← hcoord _ y (j i) hi, hxy, sub_self]
+    exact sub_eq_zero.mp (congrArg Subtype.val (hzero ⟨x - y, L.sub_mem hx hy⟩ hsel))
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
