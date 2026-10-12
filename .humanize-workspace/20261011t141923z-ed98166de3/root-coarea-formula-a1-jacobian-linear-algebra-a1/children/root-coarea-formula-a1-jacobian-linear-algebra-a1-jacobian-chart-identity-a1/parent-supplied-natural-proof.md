@@ -1,0 +1,142 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.coarea_formula-a1.jacobian_linear_algebra-a1`
+- Child DAG node: `root.coarea_formula-a1.jacobian_linear_algebra-a1.jacobian_chart_identity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Part (2) of the parent proof. Steps 4–5 there pass from A, B to Ã = A|^T and Θ₂ through isometric inclusions, using normDet_codRestrict. Steps 6–9 (the core identity) are the sibling lemma chart_normdet_identity. The identification coareaJacobian = √det(LL*) = normDet(L*) is the sibling lemma jacobian_normdet_bridge.
+
+Notation. Fix N, m, k, M, f, x, A, B.
+- T := tangentSpace M x, a finite-dimensional subspace of ℝᴺ with the restricted inner product.
+- D := fderiv ℝ f x and P := WithLp 2 (ℝᵐ × ℝᵏ).
+- Hypotheses: (HA) A is injective; (HT) T = range A; (HD) D(A p) = p₁ for all p; (HB) B b = A(toLp(0, b)) for all b.
+
+1. A p ∈ T for every p ∈ P, since A p ∈ range A = T by (HT). B b ∈ T for every b ∈ ℝᵏ, since B b = A(toLp(0, b)) ∈ T by (HB).
+
+2. By step 1, define the codomain restrictions (LinearMap.codRestrict) Φ := A.toLinearMap.codRestrict T : P → T and Ψ := B.toLinearMap.codRestrict T : ℝᵏ → T. Thus Φ p is A p viewed in T, and Ψ b is B b viewed in T.
+
+3. Φ is bijective.
+   - Injective: if Φ p = Φ q then A p = A q, so p = q by (HA).
+   - Surjective: every t ∈ T = range A equals A p for some p, i.e. Φ p = t.
+
+4. Let L := ((fderiv ℝ f x).comp T.subtypeL).toLinearMap : T → ℝᵐ, so L t = D t. By (HD), L(Φ p) = D(A p) = p₁ for all p.
+
+5. Ψ b = Φ(toLp(0, b)) in T for all b: both have underlying vector B b = A(toLp(0, b)) by (HB) (Subtype.ext).
+
+6. Apply the sibling lemma chart_normdet_identity (Submission.coarea_normDet_adjoint_mul_normDet_chart) to m, k, the space T, and L, Φ, Ψ. Its hypotheses are steps 3, 4 and 5. It gives normDet(L*) · normDet(Φ) = normDet(Ψ).
+
+7. By the sibling lemma jacobian_normdet_bridge (Submission.coareaJacobian_eq_normDet_adjoint N m M f x), coareaJacobian M f x = normDet(L*); the L in its statement is exactly the L of step 4.
+
+8. Following a map with the isometric inclusion of a subspace does not change normDet (LinearMap.normDet_codRestrict). So normDet Φ = normDet(A.toLinearMap) and normDet Ψ = normDet(B.toLinearMap).
+
+9. Substituting steps 7 and 8 into step 6 gives coareaJacobian M f x · normDet(A) = normDet(B). ∎
+
+No case distinction is needed: m = 0 and k = 0 are handled inside the two sibling lemmas.
+
+Formalization note (optional guidance, not part of the mathematical argument). The following script was checked with the pinned toolchain in a copy of Submission.lean (namespace GMT.Ch02; only standard axioms; no extra import beyond what the dependencies need):
+
+theorem Submission.coareaJacobian_mul_normDet_chart : (∀ (N m k : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N) (A : WithLp 2 (Rn m × Rn k) →L[ℝ] Rn N) (B : Rn k →L[ℝ] Rn N), Function.Injective A → tangentSpace M x = LinearMap.range A.toLinearMap → (∀ p, fderiv ℝ f x (A p) = WithLp.fst p) → (∀ b, B b = A (WithLp.toLp 2 (0, b))) → coareaJacobian M f x * A.toLinearMap.normDet = B.toLinearMap.normDet) := by
+  intro N m k M f x A B hA hT hD hB
+  set T := tangentSpace M x with hTdef
+  have hAT : ∀ p, A.toLinearMap p ∈ T := fun p => hT ▸ LinearMap.mem_range_self A.toLinearMap p
+  have hBT : ∀ b, B.toLinearMap b ∈ T := fun b => by
+    have : B b = A (WithLp.toLp 2 (0, b)) := hB b
+    simpa [this] using hAT (WithLp.toLp 2 (0, b))
+  set Φ := A.toLinearMap.codRestrict T hAT with hΦ
+  set Ψ := B.toLinearMap.codRestrict T hBT with hΨ
+  have hbij : Function.Bijective Φ := by
+    refine ⟨fun p q hpq => hA (congrArg Subtype.val hpq), fun t => ?_⟩
+    have ht : (t : Rn N) ∈ LinearMap.range A.toLinearMap := hT ▸ t.2
+    obtain ⟨p, hp⟩ := ht
+    exact ⟨p, Subtype.ext hp⟩
+  have hL : ∀ p, ((fderiv ℝ f x).comp T.subtypeL).toLinearMap (Φ p) = WithLp.fst p := by
+    intro p
+    simpa [hΦ] using hD p
+  have hΨΦ : ∀ b, Ψ b = Φ (WithLp.toLp 2 (0, b)) := by
+    intro b
+    apply Subtype.ext
+    simpa [hΨ, hΦ] using hB b
+  have key := Submission.coarea_normDet_adjoint_mul_normDet_chart m k T _ Φ Ψ hbij hL hΨΦ
+  rw [Submission.coareaJacobian_eq_normDet_adjoint, ← LinearMap.normDet_codRestrict hAT, ← LinearMap.normDet_codRestrict hBT]
+  exact key
+
+With this and the Part (1) child, the selected parent is closed by
+⟨Submission.coareaJacobian_eq_zero_iff_not_surjective, Submission.coareaJacobian_mul_normDet_chart⟩. Its frozen type is literally the conjunction of the two child types.
+
+## Key steps
+
+1. A and B take values in T. Φ := A|^T : P → T is bijective, Ψ := B|^T, L(Φ p) = p₁ and Ψ b = Φ(toLp(0, b)).
+2. Lemma L (chart_normdet_identity) gives normDet(L*) · normDet(Φ) = normDet(Ψ).
+3. The bridge gives coareaJacobian M f x = normDet(L*). normDet_codRestrict gives normDet Φ = normDet A and normDet Ψ = normDet B.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/ff09f3909baeeae7/manifest.json`
+- `sed -n 80,200p project/GMT/Ch02/Contract.lean`
+- `grep -n "theorem\|lemma\|def \|^variable\|^section\|^namespace\|^end" mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `sed -n 1,440p mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `grep -rn "OrthonormalBasis.prod\|def prod .*OrthonormalBasis\|theorem.*withLpProdComm\|def withLpProdComm\|orthogonalDecomposition" mathlib/Mathlib --include=*.lean`
+- `sed -n 1,140p mathlib/Mathlib/Analysis/InnerProductSpace/ProdL2.lean`
+- `grep -rn "theorem det_fromBlocks_zero\|theorem det_prodMap\|theorem toMatrix_prodMap\|det_restrict\|det_quotient\|theorem det_conj\b\|theorem det_comp\b" mathlib/Mathlib --include=*.lean`
+- `sed -n 770,840p mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `grep -n "theorem adjoint_toLinearMap\|adjoint_toContinuousLinearMap\|theorem orthogonal_range\|theorem orthogonal_ker\|def adjoint" mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `sed -n 1,60p mathlib/Mathlib/Topology/Algebra/Module/Determinant.lean`
+- `grep -rn "def orthogonalProjectionOnto\|orthogonalProjectionOnto_eq_zero_iff\|orthogonalProjectionOnto_mem_subspace_eq_self\|orthogonalProjectionOnto_apply_of_mem_orthogonal\|starProjection_add_starProjection_orthogonal" mathlib/Mathlib/Analysis/InnerProductSpace/Projection/*.lean`
+- `grep -rn "withLpProdComm" mathlib/Mathlib --include=*.lean`
+- `cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean`
+- `grep -rhoE '"lean_name": *"[^"]+"' nodes/ dag.json | sort -u`
+- `grep -n "co-area\|6\.2" book/chapter-02.txt; sed -n 1405,1560p book/chapter-02.txt`
+- `python3 -I gen_challenge.py (gmt-compare.py child_modules/contract_scope + lean_contract.validate_lean_statement) on the five child statements; lake env lean NodeChallenge_00..04.lean`
+- `lean FullProof.lean / DepCheck.lean / FinalAssembly.lean with #print axioms; lean NodeSolution_00..05.lean against a scratch Submission.lean containing the proofs; lean Inst.lean (#synth InnerProductSpace ℝ (WithLp 2 (Rn 2 × Rn 3)))`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/ProdL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/ToLin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Module/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-jacobian-linear-algebra-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-c1-sard-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+
+The manifest pins project 1b1689a8 and Mathlib 25730c7c, which match the workspace lake manifest.
+
+project/GMT/Ch02/Contract.lean fixes the two definitions in play:
+- tangentSpace (l.86);
+- coareaJacobian (l.123): let L := (fderiv ℝ f x).comp (tangentSpace M x).subtypeL; Real.sqrt ((L ∘L adjoint L).det).
+ContinuousLinearMap.det is an abbrev for LinearMap.det of the underlying map (Topology/Algebra/Module/Determinant.lean). ContinuousLinearMap.adjoint_toLinearMap holds by rfl (Adjoint.lean l.578).
+
+Mathlib supplies everything else.
+- NormDet.lean: normDet_nonneg, normDet_eq_zero_iff_ker_ne_bot (l.111), normDet_eq_norm_det_toMatrix (l.182), LinearIsometry.normDet_eq_one (l.213), normDet_id, normDet_sq (l.294), normDet_comp_of_finrank_eq (l.348), normDet_codRestrict (l.365).
+- ProdL2.lean: OrthonormalBasis.prod with prod_apply, Submodule.orthogonalDecomposition and WithLp.prod_inner_apply.
+- Matrix/Determinant/Basic.lean: Matrix.det_fromBlocks_zero₁₂ (l.728).
+- LinearAlgebra/Determinant.lean: LinearMap.det_eq_det_mul_det, the quotient form of the block formula. It is not needed.
+- Adjoint.lean: LinearMap.orthogonal_range and orthogonal_ker (l.632–642), adjoint_adjoint, eq_adjoint_iff.
+- Projection/Basic.lean: orthogonalProjectionOnto, orthogonalProjectionOnto_apply_of_mem_orthogonal (l.484), orthogonalProjectionOnto_mem_subspace_eq_self (l.277).
+- ProdLp.lean: LinearIsometryEquiv.withLpProdComm_apply (l.1208).
+
+The pinned SimonGMT file CoareaLinearAlgebra.lean already proves coareaLinearJacobian_eq_sqrt_det, coareaLinearJacobian_eq_zero_iff, coareaCoordinates, coareaHorizontalLinear_coordinates, coareaHorizontalLinear_normDet and coarea_kernel_finrank. Its olean is built in the package tree. Only child (d) uses it, and the import is axiom-clean.
+
+No snapshot file contains the block-triangular normDet lemma or the abstract Lemma L: grep for normDet together with fromBlocks/WithLp found only the generic pieces listed above. Hence children (c) and (d) are new.
+
+All five statements validate and elaborate in the contract scope. Full proofs of the five children and of the parent compile with only propext, Classical.choice and Quot.sound, and so do the NodeSolution modules. The dependency-only checks and the stand-in assembly of the parent pass.
+
+No dag.json or nodes/* file reserves any of the five names. The c1_sard branch's c1_sard_coarea_jacobian_eq_zero_iff has a different type and is not reused.
+
+The book's §6, 6.2 (chapter-02.txt l.1410–1475) is the source of the argument.

@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -il coarea mathlib/Mathlib",
+        "coarea_chart_area_pullback|coarea_chart_fiber_disintegration",
+        "measureSpaceOfInnerProductSpace",
+        "rg -n 'name = \"(mathlib|simongmt)\"|rev = ' project/lakefile.toml",
+        "python3 /tmp/chart-coarea-independent-audit-x0vctz50/run_checks.py ProofD.lean ProofX.lean",
+        "python3 /tmp/chart-coarea-independent-audit-x0vctz50/run_checks.py Challenge_chart_area_pullback.lean Challenge_chart_fiber_disintegration.lean",
+        "python3 /tmp/chart-coarea-independent-audit-x0vctz50/run_checks.py AuditAssembly.lean AuditInstances.lean AuditReferences.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/lakefile.toml",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-chart-coarea-a1/parent-child-handoff.json",
+        "/tmp/chart-coarea-independent-audit-x0vctz50/checks/ProofD.lean",
+        "/tmp/chart-coarea-independent-audit-x0vctz50/checks/ProofX.lean",
+        "/tmp/chart-coarea-independent-audit-x0vctz50/checks/AuditAssembly.lean",
+        "/tmp/chart-coarea-independent-audit-x0vctz50/checks/AuditInstances.lean",
+        "/tmp/chart-coarea-independent-audit-x0vctz50/checks/AuditReferences.lean",
+        "/tmp/chart-coarea-independent-audit-x0vctz50/checks/Challenge_chart_area_pullback.lean",
+        "/tmp/chart-coarea-independent-audit-x0vctz50/checks/Challenge_chart_fiber_disintegration.lean"
+      ],
+      "conclusion": "The pinned sources supply the required weighted area formula, measurable totalized derivative, continuous normDet, WithLp volume transport and Tonelli interfaces. The weighted area formula explicitly permits nonmeasurable target weights. Inspected Mathlib files match the clean pinned checkout; SimonGMT also matches its frozen revision. Searching Mathlib for coarea returned no match. Both proposed names are bare, distinct and unreserved in the DAG and other branch proposals. Both exact one-line types pass validation and independently generated comparator challenges compile against a freshly built frozen Submission without either child implemented. Both supplied proof witnesses compile with only propext, Classical.choice and Quot.sound. Independent instance checks confirm canonical inner-product-space volume, Borel structures, sigma-finite fibre volume, j(b)=toLp(0,b), and the intended linear-map normDet. A sorry-free parameterized assembly proves precisely the selected frozen parent type from these two contracts and its existing algebra dependency. The dependency direction is correct and acyclic; the split is appropriate."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_area_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including arbitrary g and the full explicit hLA hypothesis. Steps 1–5 correctly establish differentiability, Borel pullback, image equality, dimension and the applicable weighted area formula. Steps 6–9 derive the chain-rule identity, instantiate hLA, and identify the integrands using nonnegativity and ENNReal.ofReal_mul. No measurability of coareaJacobian is required. hLA is exactly supplied by the selected parent's existing algebra dependency, so the empty child dependency list hides no circular reliance. This genuinely proves the left side equals the shared chart integral. The supplied proof is complete and ready for formalization."
+    },
+    {
+      "key": "chart_fiber_disintegration",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree with all hypotheses explicit. Steps 1–4 correctly establish the vertical inclusion, differentiability and Borel zero-extended integrand without assuming global measurability of Ψ. Step 5 applies volume-preserving transport and Tonelli with sigma-finite fibre volume. Steps 6–9 verify each fibre derivative, injectivity, Borel source and exact image, then apply the weighted area formula for every parameter. Step 10 therefore proves both Borel measurability and the required integral identity. No global regularity of f, positive-dimension assumption, or parent theorem is used. This independent child supplies precisely the complementary equality needed for assembly."
+    }
+  ],
+  "required_changes": []
+}

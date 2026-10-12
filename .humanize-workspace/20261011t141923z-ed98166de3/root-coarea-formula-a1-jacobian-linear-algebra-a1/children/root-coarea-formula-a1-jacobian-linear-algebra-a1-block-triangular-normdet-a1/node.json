@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1.block_triangular_normdet-a1",
+  "parent_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1",
+  "depth": 3,
+  "title": "normDet of a block lower-triangular map between Euclidean products",
+  "statement": "Let E₁, E₂, F₁, F₂ be finite-dimensional real inner product spaces (in Type) with dim E₁ = dim F₁ and dim E₂ = dim F₂.\nGive WithLp 2 (E₁ × E₂) and WithLp 2 (F₁ × F₂) their Euclidean (L²) product inner products, ⟨(u,v),(u',v')⟩ = ⟨u,u'⟩ + ⟨v,v'⟩. Their components are WithLp.fst and WithLp.snd.\nLet G : WithLp 2 (E₁ × E₂) → WithLp 2 (F₁ × F₂), G₁₁ : E₁ → F₁ and G₂₂ : E₂ → F₂ be ℝ-linear maps such that:\n(i) WithLp.fst(G(toLp(0, b))) = 0 for all b ∈ E₂;\n(ii) G₁₁ a = WithLp.fst(G(toLp(a, 0))) for all a ∈ E₁;\n(iii) G₂₂ b = WithLp.snd(G(toLp(0, b))) for all b ∈ E₂.\nThen normDet(G) = normDet(G₁₁) · normDet(G₂₂), where normDet is Mathlib's LinearMap.normDet.",
+  "lean_statement": "∀ (E₁ E₂ F₁ F₂ : Type) [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁] [FiniteDimensional ℝ E₁] [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] [FiniteDimensional ℝ E₂] [NormedAddCommGroup F₁] [InnerProductSpace ℝ F₁] [FiniteDimensional ℝ F₁] [NormedAddCommGroup F₂] [InnerProductSpace ℝ F₂] [FiniteDimensional ℝ F₂] (G : WithLp 2 (E₁ × E₂) →ₗ[ℝ] WithLp 2 (F₁ × F₂)) (G₁₁ : E₁ →ₗ[ℝ] F₁) (G₂₂ : E₂ →ₗ[ℝ] F₂), Module.finrank ℝ E₁ = Module.finrank ℝ F₁ → Module.finrank ℝ E₂ = Module.finrank ℝ F₂ → (∀ b : E₂, WithLp.fst (G (WithLp.toLp 2 (0, b))) = 0) → (∀ a : E₁, G₁₁ a = WithLp.fst (G (WithLp.toLp 2 (a, 0)))) → (∀ b : E₂, G₂₂ b = WithLp.snd (G (WithLp.toLp 2 (0, b)))) → G.normDet = G₁₁.normDet * G₂₂.normDet",
+  "lean_name": "coarea_normDet_block_triangular",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-jacobian-linear-algebra-a1-block-triangular-normdet-a1-a1"
+}

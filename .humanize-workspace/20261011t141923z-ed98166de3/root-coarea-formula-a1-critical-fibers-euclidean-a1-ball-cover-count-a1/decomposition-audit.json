@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'bounded_set_separated_finset_card_mul_pow_le|exists_separated_finset_subset_cover_closedBall|bounded_set_closedBall_cover_card_mul_pow_le|packingNumber|IsSeparated|maximalSeparatedSet' project -g '*.lean'",
+        "addHaar_ball_of_pos|finrank_euclideanSpace_fin|measure_biUnion_finset|IsBounded.measure_lt_top|measure_ball_lt_top|measure_ball_pos|mem_thickening_iff|IsBounded.thickening|toReal_mono|toReal_pos",
+        "findGreatest_spec|findGreatest_is_greatest|theorem le_floor |card_insert_of_notMem|isCover_iff_subset_iUnion_closedBall|IsCover.of_maximal_isSeparated",
+        "theorem toReal_mono|theorem toReal_mul|theorem toReal_pos|lemma toReal_mono|lemma toReal_mul|lemma toReal_pos|theorem le_div_iff₀|theorem dist_triangle_left",
+        "sed -n '1,165p' project/GMT/Ch02/Contract.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Nat/Find.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Finset/Card.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Algebra/Order/Floor/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-critical-fibers-euclidean-a1-ball-cover-count-a1/parent-child-handoff.json",
+        "/tmp/ballcover-independent-audit-27d7fdcc/FullFinal.lean",
+        "/tmp/ballcover-independent-audit-27d7fdcc/FullFinal.log"
+      ],
+      "conclusion": "The project search returned no matching declaration. The pinned Mathlib supplies all required measure, thickening, dimension, greatest-cardinality and floor lemmas with the stated hypotheses. Eleven consulted Mathlib files were byte-identical to the compiler dependency sources. Both frozen child propositions passed validation and compiled as comparator challenges against a freshly rebuilt pinned Submission containing neither child. The supplied child implementations and assembly into the exact selected parent also compiled; their axiom reports contain only propext, Classical.choice and Quot.sound. Both names are bare identifiers and unreserved among the 119 inspected DAG nodes. The split appropriately separates volume packing from metric maximality; both dependency lists are correctly empty and the resulting dependency graph is acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "packing_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and includes every hypothesis. The proof correctly establishes finite thickening volume and positive finite unit-ball volume, then uses disjoint contained half-radius balls, finite additivity, a justified toReal conversion and scaling to obtain a constant independent of r and F. It covers empty K and n = 0 without assuming measurability of K or positive dimension. Every hypothesis is used correctly. The proof is complete, guides formalization directly and invokes neither the child nor the parent theorem."
+    },
+    {
+      "key": "maximal_separated_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including X : Type, the pseudometric assumption, nonnegative radius and universal cardinality bound. P(0), attainment by Nat.findGreatest, exclusion of the successor cardinality and all insertion cases are justified. Nonnegativity correctly proves the uncovered point is new, including when r = 0; no metric separation axiom is silently assumed. The proof is complete and non-circular. For parent assembly, positivity of r^n converts the packing bound into card(F) ≤ ⌊C/r^n⌋₊ via Nat.le_floor. This child then supplies the cover, and packing supplies its count, proving exactly the selected parent."
+    }
+  ],
+  "required_changes": []
+}
