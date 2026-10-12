@@ -651,6 +651,43 @@ theorem Submission.allard_tc_tpr_integral_eq_weighted :
   refine integral_congr_ae ?_
   filter_upwards [ae_restrict_mem₀ hM] with x hx
   rw [ENNReal.toReal_ofReal (hθ x hx).le, smul_eq_mul, mul_comm]
+/-- Change of variables under a blow-up (Simon Ch. 8, 5.1/5.5): for `r > 0` and
+`η_{x,r}(z) = r⁻¹(z - x)`, `∫_{η_{x,r}(M)} φ dH^n = r^{-n} ∫_M φ ∘ η_{x,r} dH^n` for every set `M`
+and every function `φ`. -/
+theorem Submission.allard_tc_tpr_blowup_setIntegral :
+    ∀ (N n : ℕ) (M : Set (Euclidean N)) (φ : Euclidean N → ℝ) (x : Euclidean N) (r : ℝ), 0 < r → ∫ y in Chapter03.blowUpMap x r '' M, φ y ∂μHE[n] = r⁻¹ ^ n * ∫ z in M, φ (Chapter03.blowUpMap x r z) ∂μHE[n] := by
+  intro N n M φ x r hr
+  set H : Measure (Euclidean N) := μHE[n]
+  set η : Euclidean N → Euclidean N := Chapter03.blowUpMap x r
+  have hr' : r⁻¹ ≠ 0 := inv_ne_zero hr.ne'
+  -- Step 1: `η` is translation by `-x` followed by dilation by `r⁻¹`, a homeomorphism, hence a
+  -- measurable embedding.
+  let e : Euclidean N ≃ₜ Euclidean N :=
+    (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ hr')
+  have he : ⇑e = η := by
+    funext z
+    simp [e, η, Chapter03.blowUpMap]
+  have hemb : MeasurableEmbedding η := he ▸ e.toMeasurableEquiv.measurableEmbedding
+  -- Step 2: `H(η(A)) = r^{-n} H(A)` for every set `A` (translation invariance and scaling).
+  have hscale : ∀ A : Set (Euclidean N), H (η '' A) = ENNReal.ofReal (r⁻¹ ^ n) * H A := by
+    intro A
+    have himg : η '' A = r⁻¹ • ((fun z ↦ z - x) '' A) := by
+      rw [← Set.image_smul, Set.image_image]
+      rfl
+    have hiso : Isometry (fun z : Euclidean N ↦ z - x) := (IsometryEquiv.subRight x).isometry
+    rw [himg, Measure.euclideanHausdorffMeasure_smul₀ n hr', hiso.euclideanHausdorffMeasure_image]
+    rw [ENNReal.smul_def, smul_eq_mul, ENNReal.coe_pow, ← ENNReal.ofReal_coe_nnreal, coe_nnnorm,
+      Real.norm_of_nonneg (inv_pos.mpr hr).le, ← ENNReal.ofReal_pow (inv_pos.mpr hr).le]
+  -- Step 3: `H ⌞ η(M) = r^{-n} η_# (H ⌞ M)`, checked on measurable sets `D` via
+  -- `η(η⁻¹(D) ∩ M) = D ∩ η(M)`.
+  have hmeas : H.restrict (η '' M) = ENNReal.ofReal (r⁻¹ ^ n) • (H.restrict M).map η := by
+    ext D hD
+    rw [Measure.restrict_apply hD, Measure.smul_apply, Measure.map_apply hemb.measurable hD,
+      Measure.restrict_apply (hemb.measurable hD), smul_eq_mul, ← hscale,
+      Set.inter_comm (η ⁻¹' D), Set.image_inter_preimage, Set.inter_comm]
+  -- Step 4: integrate; `MeasurableEmbedding.integral_map` needs no measurability of `φ`.
+  rw [hmeas, integral_smul_measure, hemb.integral_map, ENNReal.toReal_ofReal
+    (pow_nonneg (inv_pos.mpr hr).le n), smul_eq_mul]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
