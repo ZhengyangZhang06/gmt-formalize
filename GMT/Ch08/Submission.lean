@@ -1323,6 +1323,73 @@ theorem Submission.allard_tc_tangent_plane_dilation :
   -- Step 5: an `n`-plane is determined by these integrals.
   exact ⟨Submission.allard_tc_tpd_plane_eq_of_integral_eq N n T T' hplane, hθ⟩
 
+/-- **Canonical representation `C = v(M, θ)` by varifold tangent planes** (step B3 of the proof of
+Simon Ch. 8, 5.7).  Take `M` and `θ` from the First Rectifiability Theorem 1.2.  Since `μ_C` is
+`θ H^n ⌞ M`, at every `x ∈ M` the weighted approximate tangent planes of `(M, θ)` are exactly the
+varifold tangent planes of `C` with multiplicity `θ(x)`, so they may replace the approximate tangent
+planes in `IsVarifoldOf`. -/
+theorem Submission.allard_tc_tangent_point_representation :
+    FirstRectifiabilityTheorem → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))),
+      (∀ᵐ x ∂C.weight, ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane C x T θ) →
+      ∃ (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsVarifoldOf C M θ ∧
+        (∀ x ∈ M, ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x)) ∧
+        ∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A →
+          C.measure A = ∫⁻ x in {x | x ∈ M ∧ ∃ T : Grassmannian N n,
+            HasTangentPlane C x T (θ x) ∧ (x, T) ∈ A}, ENNReal.ofReal (θ x) ∂μHE[n] := by
+  intro hFRT N n C hC
+  -- 1.2 gives `θ`, a tangent plane with multiplicity `θ(x)` at every `x ∈ M`, and `C = v(M, θ)`,
+  -- where `M` is the set of tangent points in `spt μ_C`; only these properties of `M` are used.
+  obtain ⟨θ, hT, hV⟩ := hFRT N n univ C hC
+  generalize {x | x ∈ C.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
+    HasTangentPlane C x T θ'} = M at hT hV
+  obtain ⟨-, hMmeas, hMrect, hθpos, hθint, hrep⟩ := id hV
+  refine ⟨M, θ, hV, hT, ?_⟩
+  -- `μ_C(B) = ∫_{E ∩ B} θ dH^n`, where `E ⊆ M` is the set of points with an approximate tangent
+  -- plane (`IsVarifoldOf` at `A = B × G(N,n)`).
+  obtain ⟨E, hEM, hE⟩ : ∃ E ⊆ M, ∀ B : Set (Euclidean N), MeasurableSet B →
+      C.weight B = ∫⁻ x in E ∩ B, ENNReal.ofReal (θ x) ∂μHE[n] := by
+    refine ⟨{x | x ∈ M ∧ ∃ S : Grassmannian N n,
+      Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane}, fun x hx ↦ hx.1, ?_⟩
+    intro B hB
+    rw [C.weight_apply hB, hrep _ (hB.prod MeasurableSet.univ)]
+    congr 2
+    ext x
+    simp only [mem_ofPred_eq, mem_inter_iff, mem_prod, mem_univ, and_true]
+    constructor
+    · rintro ⟨hx, S, hS, hxB⟩
+      exact ⟨⟨hx, S, hS⟩, hxB⟩
+    · rintro ⟨⟨hx, S, hS⟩, hxB⟩
+      exact ⟨hx, S, hS, hxB⟩
+  -- `μ_C = θ H^n ⌞ M`: `H^n ⌞ M` is σ-finite and `θ(x)` is the density of `μ_C` at `x ∈ M`.
+  have hW : ∀ B : Set (Euclidean N), MeasurableSet B →
+      C.weight B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂μHE[n] := by
+    have := Submission.allard_tc_tpr_rectifiable_sigmaFinite N n M hMrect
+    refine Submission.allard_tc_tpr_weight_eq_restrict N n C.weight M E θ
+      (fun K hK ↦ C.weight_finite_on_compact K hK (subset_univ K)) inferInstance hEM
+      (fun x hx ↦ ⟨hθpos x hx, ?_⟩) hE
+    obtain ⟨T, hTx⟩ := hT x hx
+    exact Submission.allard_tc_tangent_plane_density N n univ C x T (θ x) hTx
+  -- Hence at `x ∈ M` the approximate tangent planes are exactly the tangent planes of `C` with
+  -- multiplicity `θ(x)`.
+  have hiff : ∀ x : Euclidean N, ∀ T : Grassmannian N n, HasTangentPlane C x T (θ x) →
+      ∀ S : Grassmannian N n,
+        Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ↔ S = T :=
+    fun x T hTx ↦ Submission.allard_tc_tpr_weighted_approx_tangent_iff N n univ C M θ x T
+      hMmeas hθpos (fun K hK ↦ hθint K hK (subset_univ K)) hW hTx
+  intro A hA
+  rw [hrep A hA]
+  congr 2
+  ext x
+  simp only [mem_ofPred_eq]
+  constructor
+  · rintro ⟨hx, S, hS, hxS⟩
+    obtain ⟨T, hTx⟩ := hT x hx
+    refine ⟨hx, S, ?_, hxS⟩
+    rw [(hiff x T hTx S).1 hS]
+    exact hTx
+  · rintro ⟨hx, T, hTx, hxT⟩
+    exact ⟨hx, T, (hiff x T hTx T).2 rfl, hxT⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
