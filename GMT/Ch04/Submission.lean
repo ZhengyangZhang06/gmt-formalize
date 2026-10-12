@@ -679,6 +679,140 @@ theorem Submission.support_in_ball_of_radial_first_variation : (∀ (n ℓ : ℕ
   intro x hx
   rw [mem_closedBall]
   exact le_of_forall_pos_le_add fun ε hε ↦ mem_closedBall.1 (hball ε hε hx)
+/-- **Ch. 4, 6.2 from 6.1 (p. 101).** Assume `SupportInBall` (6.1). If `spt V` is compact and `V`
+is stationary in `ℝ^{n+ℓ} \ K` with `K` compact, then `spt V ⊆ conv K`: for `y ∉ conv K` there is
+a closed ball `B_R(c) ⊇ K` with `R ≥ 0` and `y ∉ B_R(c)` (`conv K` is compact by Carathéodory), `V`
+has generalized mean curvature `0` in `ℝ^{n+ℓ} \ B_R(c) ⊆ ℝ^{n+ℓ} \ K`, and 6.1 gives
+`spt V ⊆ B_R(c)`. -/
+theorem Submission.convex_hull_property_of_support_in_ball : SupportInBall → ConvexHullProperty := by
+  intro hBall n ℓ V K hn hK hV hstat
+  classical
+  -- Ball Lemma: every `y ∉ conv K` lies outside some closed ball `B_R(c) ⊇ K` with `R ≥ 0`.
+  have hsep : ∀ y ∉ convexHull ℝ K, ∃ (c : Ambient n ℓ) (R : ℝ),
+      0 ≤ R ∧ K ⊆ closedBall c R ∧ y ∉ closedBall c R := by
+    intro y hy
+    rcases K.eq_empty_or_nonempty with hKe | hKne
+    · -- `K = ∅`: `dim ℝ^{n+ℓ} = n + ℓ ≥ 1`, so there is `c ≠ y`; take `R = 0`.
+      have : Nontrivial (Ambient n ℓ) :=
+        Module.nontrivial_of_finrank_pos (by rw [finrank_euclideanSpace_fin]; omega)
+      obtain ⟨c, hc⟩ := exists_ne y
+      refine ⟨c, 0, le_rfl, by simp [hKe], ?_⟩
+      rw [closedBall_zero, mem_singleton_iff]
+      exact hc.symm
+    -- `K ≠ ∅`: `conv K` is compact. By Carathéodory every point of `conv K` is a convex
+    -- combination of at most `dim ℝ^{n+ℓ} + 1` points of `K`, so `conv K` is a finite union of
+    -- continuous images `W j` of the compact sets `{w ∈ [0,1]^j : ∑ w = 1} × K^j`.
+    have hcomp : IsCompact (convexHull ℝ K) := by
+      let W : ℕ → Set (Ambient n ℓ) := fun j ↦
+        (fun p : (Fin j → ℝ) × (Fin j → Ambient n ℓ) ↦ ∑ i, p.1 i • p.2 i) ''
+          ((Icc (0 : Fin j → ℝ) 1 ∩ {w | ∑ i, w i = 1}) ×ˢ univ.pi fun _ ↦ K)
+      have hW : ∀ j, IsCompact (W j) := fun j ↦
+        ((isCompact_Icc.inter_right (isClosed_eq (by fun_prop) continuous_const)).prod
+          (isCompact_univ_pi fun _ ↦ hK)).image (by fun_prop)
+      suffices h : convexHull ℝ K =
+          ⋃ j ∈ Finset.range (Module.finrank ℝ (Ambient n ℓ) + 2), W j by
+        rw [h]
+        exact (Finset.finite_toSet _).isCompact_biUnion fun j _ ↦ hW j
+      refine subset_antisymm (fun x hx ↦ ?_) ?_
+      · -- A finset `t ⊆ K` of minimal cardinality with `x ∈ conv t`.
+        have hex : ∃ m, ∃ t : Finset (Ambient n ℓ), ↑t ⊆ K ∧
+            x ∈ convexHull ℝ (t : Set (Ambient n ℓ)) ∧ t.card = m := by
+          rw [convexHull_eq_union_convexHull_finite_subsets] at hx
+          simp only [mem_iUnion, exists_prop] at hx
+          obtain ⟨t, htK, hxt⟩ := hx
+          exact ⟨_, t, htK, hxt, rfl⟩
+        obtain ⟨t, htK, hxt, htm⟩ := Nat.find_spec hex
+        obtain ⟨w, hw0, hw1, hwx⟩ := Finset.mem_convexHull'.1 hxt
+        -- Carathéodory: `#t ≤ dim ℝ^{n+ℓ} + 1`. Otherwise an affine relation `∑ g z • z = 0`,
+        -- `∑ g z = 0`, `g ≠ 0` on `t` lets us remove a point of `t`, contradicting minimality.
+        have hcard : t.card ≤ Module.finrank ℝ (Ambient n ℓ) + 1 := by
+          by_contra hlt
+          obtain ⟨g, hgx, hg1, hg0⟩ :=
+            Module.exists_nontrivial_relation_sum_zero_of_finrank_succ_lt_card (not_le.mp hlt)
+          obtain ⟨i₁, hi₁, hgi₁⟩ := Finset.exists_pos_of_sum_zero_of_exists_nonzero g hg1 hg0
+          obtain ⟨i₀, hi₀, hmin⟩ := (t.filter fun z ↦ 0 < g z).exists_min_image
+            (fun z ↦ w z / g z) ⟨i₁, Finset.mem_filter.2 ⟨hi₁, hgi₁⟩⟩
+          rw [Finset.mem_filter] at hi₀
+          let k : Ambient n ℓ → ℝ := fun z ↦ w z - w i₀ / g i₀ * g z
+          have hk : k i₀ = 0 := by simp [k, hi₀.2.ne']
+          have hxe : x ∈ convexHull ℝ (↑(t.erase i₀) : Set (Ambient n ℓ)) := by
+            refine Finset.mem_convexHull'.2 ⟨k, fun z hz ↦ ?_, ?_, ?_⟩
+            · have hzt := Finset.mem_of_mem_erase hz
+              simp only [k, sub_nonneg]
+              by_cases hgz : 0 < g z
+              · exact (le_div_iff₀ hgz).1 (hmin z (Finset.mem_filter.2 ⟨hzt, hgz⟩))
+              · exact (mul_nonpos_of_nonneg_of_nonpos (div_nonneg (hw0 _ hi₀.1) hi₀.2.le)
+                  (not_lt.mp hgz)).trans (hw0 z hzt)
+            · rw [Finset.sum_erase t hk]
+              simp only [k, Finset.sum_sub_distrib, ← Finset.mul_sum, hw1, hg1, mul_zero, sub_zero]
+            · rw [Finset.sum_erase t (f := fun z ↦ k z • z) (by simp [hk])]
+              simp only [k, sub_smul, mul_smul, Finset.sum_sub_distrib, ← Finset.smul_sum, hgx,
+                smul_zero, sub_zero, hwx]
+          exact Nat.find_min hex
+            (show (t.erase i₀).card < Nat.find hex by
+              rw [Finset.card_erase_of_mem hi₀.1]; omega)
+            ⟨t.erase i₀, (Finset.coe_subset.2 (Finset.erase_subset _ _)).trans htK, hxe, rfl⟩
+        -- Reindex the convex combination by `Fin #t`.
+        let e := t.equivFin
+        let a : Fin t.card → ℝ := fun i ↦ w (e.symm i)
+        let z : Fin t.card → Ambient n ℓ := fun i ↦ (e.symm i : Ambient n ℓ)
+        have hsum : ∑ i, a i = 1 :=
+          (Equiv.sum_comp e.symm fun j : t ↦ w j).trans ((Finset.sum_coe_sort t w).trans hw1)
+        have hsumx : ∑ i, a i • z i = x :=
+          (Equiv.sum_comp e.symm fun j : t ↦ w j • (j : Ambient n ℓ)).trans
+            ((Finset.sum_coe_sort t fun y ↦ w y • y).trans hwx)
+        have ha0 : ∀ i, 0 ≤ a i := fun i ↦ hw0 _ (e.symm i).2
+        have ha1 : ∀ i, a i ≤ 1 := fun i ↦
+          hsum ▸ Finset.single_le_sum (fun j _ ↦ ha0 j) (Finset.mem_univ i)
+        exact mem_iUnion₂.2 ⟨t.card, Finset.mem_range.2 (by omega),
+          (a, z), ⟨⟨⟨ha0, ha1⟩, hsum⟩, fun i _ ↦ htK (e.symm i).2⟩, hsumx⟩
+      · -- Conversely, convex combinations of points of `K` lie in `conv K`.
+        simp only [iUnion_subset_iff]
+        rintro j - _ ⟨⟨a, z⟩, ⟨⟨⟨ha0, -⟩, hsum⟩, hz⟩, rfl⟩
+        exact (convex_convexHull ℝ K).sum_mem (fun i _ ↦ ha0 i) hsum
+          fun i _ ↦ subset_convexHull ℝ K (hz i (mem_univ i))
+    -- Nearest point `z₀ ∈ conv K` to `y`: `⟪y - z₀, x - z₀⟫ ≤ 0` for `x ∈ conv K`, and
+    -- `η = |y - z₀| > 0`.
+    obtain ⟨z₀, hz₀, hmin⟩ := exists_norm_eq_iInf_of_complete_convex hKne.convexHull
+      hcomp.isComplete (convex_convexHull ℝ K) y
+    have hvar := (norm_eq_iInf_iff_real_inner_le_zero (convex_convexHull ℝ K) hz₀).1 hmin
+    have hη : 0 < ‖y - z₀‖ := norm_pos_iff.mpr (sub_ne_zero.mpr fun h ↦ hy (h ▸ hz₀))
+    -- `K ⊆ B_D(z₀)`; with `t η² = D² + 1`, the ball `B_R(c)`, `c = z₀ - t (y - z₀)`,
+    -- `R² = D² + t² η²`, contains `K` and `|y - c| = (1 + t) η > R`.
+    obtain ⟨D, hD, hKD⟩ := hK.isBounded.subset_ball_lt 0 z₀
+    set t : ℝ := (D ^ 2 + 1) / ‖y - z₀‖ ^ 2
+    have ht : 0 < t := by positivity
+    have htη : t * ‖y - z₀‖ ^ 2 = D ^ 2 + 1 := div_mul_cancel₀ _ (by positivity)
+    set R : ℝ := Real.sqrt (D ^ 2 + t ^ 2 * ‖y - z₀‖ ^ 2)
+    have hR : 0 ≤ R := Real.sqrt_nonneg _
+    have hR2 : R ^ 2 = D ^ 2 + t ^ 2 * ‖y - z₀‖ ^ 2 := Real.sq_sqrt (by positivity)
+    refine ⟨z₀ - t • (y - z₀), R, hR, fun x hx ↦ ?_, ?_⟩
+    · have hxD : ‖x - z₀‖ < D := by simpa only [mem_ball, dist_eq_norm] using hKD hx
+      have hi : inner ℝ (x - z₀) (y - z₀) ≤ 0 := by
+        rw [real_inner_comm]
+        exact hvar x (subset_convexHull ℝ K hx)
+      have heq : x - (z₀ - t • (y - z₀)) = (x - z₀) + t • (y - z₀) := by abel
+      have hsq : ‖x - (z₀ - t • (y - z₀))‖ ^ 2 ≤ R ^ 2 := by
+        rw [heq, norm_add_sq_real, real_inner_smul_right, norm_smul, Real.norm_eq_abs,
+          abs_of_pos ht, hR2]
+        nlinarith [mul_nonpos_of_nonneg_of_nonpos ht.le hi, norm_nonneg (x - z₀)]
+      rw [mem_closedBall, dist_eq_norm]
+      nlinarith [norm_nonneg (x - (z₀ - t • (y - z₀)))]
+    · have heq : y - (z₀ - t • (y - z₀)) = (1 + t) • (y - z₀) := by module
+      rw [mem_closedBall, dist_eq_norm, heq, norm_smul, Real.norm_eq_abs,
+        abs_of_pos (by linarith), not_le]
+      nlinarith [sq_nonneg ((1 + t) * ‖y - z₀‖ + R)]
+  intro y hy
+  by_contra hyK
+  obtain ⟨c, R, hR, hKc, hyc⟩ := hsep y hyK
+  -- `V` has generalized mean curvature `0` in `ℝ^{n+ℓ} \ B_R(c) ⊆ ℝ^{n+ℓ} \ K`.
+  have hmc : V.HasMeanCurvatureIn (closedBall c R)ᶜ fun _ ↦ 0 := by
+    refine ⟨locallyIntegrableOn_zero, fun X hX ↦ ?_⟩
+    rw [hstat X ⟨hX.1, hX.2.1, hX.2.2.trans (compl_subset_compl.mpr hKc)⟩]
+    simp
+  -- 6.1 with `H = 0`, `ξ = c`: `spt V ⊆ B_R(c)`, contradicting `y ∈ spt V \ B_R(c)`.
+  exact hyc (hBall n ℓ V (fun _ ↦ 0) c R hn hR hmc
+    (Filter.Eventually.of_forall fun x _ ↦ by simp) hV hy)
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
