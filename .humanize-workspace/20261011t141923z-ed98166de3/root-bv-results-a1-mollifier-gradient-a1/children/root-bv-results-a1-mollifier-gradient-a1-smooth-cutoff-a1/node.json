@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_gradient-a1.smooth_cutoff-a1",
+  "parent_id": "root.bv_results-a1.mollifier_gradient-a1",
+  "depth": 3,
+  "title": "Smooth cut-off function for a compact subset of an open set",
+  "statement": "Let n ∈ ℕ, let L ⊆ ℝⁿ be compact and O ⊆ ℝⁿ open with L ⊆ O. Then there is χ : ℝⁿ → ℝ of class C^∞ (ContDiff ℝ (⊤ : ℕ∞) χ) such that 0 ≤ χ ≤ 1 everywhere, χ = 1 on L, χ has compact support, and tsupport χ ⊆ O.",
+  "lean_statement": "∀ (n : ℕ) (L O : Set (Rn n)), IsCompact L → IsOpen O → L ⊆ O → ∃ χ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) χ ∧ (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ (∀ x ∈ L, χ x = 1) ∧ HasCompactSupport χ ∧ tsupport χ ⊆ O",
+  "lean_name": "bv_exists_smooth_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-gradient-a1-smooth-cutoff-a1-a1"
+}

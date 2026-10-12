@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_gradient-a1.smooth_duality_compact-a1.eta_limit-a1",
+  "parent_id": "root.bv_results-a1.mollifier_gradient-a1.smooth_duality_compact-a1",
+  "depth": 4,
+  "title": "From the regularized bounds ∫ χf²/√(f²+η²) ≤ M to ∫⁻ over L of f ≤ M",
+  "statement": "Let n ∈ ℕ and ℝⁿ = EuclideanSpace ℝ (Fin n) with Lebesgue measure (volume). Let f, χ : ℝⁿ → ℝ be continuous with f(x) ≥ 0 and χ(x) ≥ 0 for all x, and χ of compact support. Let L ⊆ ℝⁿ be compact with χ(x) = 1 for all x ∈ L, and let M ∈ [0, ∞]. Suppose that for every real η > 0, ofReal(∫_{ℝⁿ} χ(x) f(x)² / √(f(x)² + η²) dx) ≤ M, where the integral is the Bochner integral. Then the [0,∞]-valued lower Lebesgue integral ∫⁻_L ofReal(f(x)) dx is ≤ M.",
+  "lean_statement": "∀ (n : ℕ) (f χ : Rn n → ℝ) (L : Set (Rn n)) (M : ℝ≥0∞), Continuous f → (∀ x, 0 ≤ f x) → Continuous χ → HasCompactSupport χ → (∀ x, 0 ≤ χ x) → IsCompact L → (∀ x ∈ L, χ x = 1) → (∀ η : ℝ, 0 < η → ENNReal.ofReal (∫ x, χ x * f x ^ 2 / Real.sqrt (f x ^ 2 + η ^ 2)) ≤ M) → ∫⁻ x in L, ENNReal.ofReal (f x) ≤ M",
+  "lean_name": "bv_set_lintegral_le_of_regularized_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-gradient-a1-smooth-duality-compact-a1-eta-limit-a1-a1"
+}
