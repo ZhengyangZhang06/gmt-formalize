@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1.rotated_plane-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1",
+  "depth": 4,
+  "title": "Projection onto, distance to, and dimension of the rotated plane T_0 = q(R^n x {0})",
+  "statement": "For all n, l >= 0 and every linear isometric equivalence q of R^(n+l) = Amb n l onto itself: let graphPoint(a, b) be the point of R^(n+l) whose first n coordinates are those of a in R^n and whose last l coordinates are those of b in R^l, horizontalPlane := span{eps_{castAdd l i} : i in Fin n} (eps_k the standard basis vectors of R^(n+l)), T_0 := rotatedPlane q = q(horizontalPlane) (the image of horizontalPlane under the linear map underlying q) and P_{T_0} := (rotatedPlane q).starProjection its orthogonal projection. Then (L5) P_{T_0}(q(graphPoint(a, b))) = q(graphPoint(a, 0)) for all a in R^n, b in R^l; (L6) infDist(q(graphPoint(a, b)), T_0) = |b| for all a in R^n, b in R^l; (L7) finrank T_0 = n.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a (0 : Rn ℓ))) ∧ (∀ (a : Rn n) (b : Rn ℓ), infDist (q (graphPoint a b)) (rotatedPlane q : Set (Amb n ℓ)) = ‖b‖) ∧ Module.finrank ℝ (rotatedPlane q) = n",
+  "lean_name": "any_radius_gr_la_rotatedPlane_facts",
+  "depends_on": [
+    "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1.graph_coords-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1.graph_coords-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-la-basics-a1-rotated-plane-a1-a1"
+}

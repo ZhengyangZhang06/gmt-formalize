@@ -458,6 +458,226 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Graph coordinates on `ℝ^{n+ℓ} = ℝⁿ × ℝ^ℓ`, used for the graph estimates behind Simon Ch. 5,
+Remark 5.3 (p. 122): the point `(a, b) = graphPoint a b` has coordinate `a_i` at `castAdd ℓ i` and
+`b_j` at `natAdd n j`; `(a, b)` is linear in the pair; `|(a, b)|² = |a|² + |b|²`; and
+`⟨(a, b), (a', b')⟩ = ⟨a, a'⟩ + ⟨b, b'⟩`.
+Every index of `Fin (n + ℓ)` is `castAdd ℓ i` or `natAdd n j` (`Fin.addCases`), so the linearity
+identities hold coordinatewise, and the norm and the inner product split as sums over the two
+blocks of indices (`Fin.sum_univ_add`). -/
+theorem any_radius_gr_la_graphPoint_algebra : ∀ (n ℓ : ℕ), (∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i) ∧ (∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j) ∧ (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint (a + a') (b + b') = graphPoint a b + graphPoint a' b') ∧ (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint (a - a') (b - b') = graphPoint a b - graphPoint a' b') ∧ (∀ (t : ℝ) (a : Rn n) (b : Rn ℓ), graphPoint (t • a) (t • b) = t • graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ (a a' : Rn n) (b b' : Rn ℓ), inner ℝ (graphPoint a b) (graphPoint a' b') = inner ℝ a a' + inner ℝ b b') := by
+  intro n ℓ
+  -- (C1), (C2): the coordinates of `graphPoint a b = toLp (Fin.append a b)`
+  have hC1 : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp only [graphPoint, PiLp.toLp_apply, Fin.append_left]
+  have hC2 : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp only [graphPoint, PiLp.toLp_apply, Fin.append_right]
+  refine ⟨hC1, hC2, ?_, ?_, ?_, ?_, ?_⟩
+  -- (L1)–(L3): compare the coordinates at every `castAdd ℓ i` and every `natAdd n j`
+  · intro a a' b b'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.add_apply, hC1]
+    · simp only [PiLp.add_apply, hC2]
+  · intro a a' b b'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.sub_apply, hC1]
+    · simp only [PiLp.sub_apply, hC2]
+  · intro t a b
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.smul_apply, hC1]
+    · simp only [PiLp.smul_apply, hC2]
+  -- (L4): split `‖x‖² = Σ_k ‖x_k‖²` over the two blocks of indices
+  · intro a b
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp only [hC1, hC2]
+  -- (IP): split `⟪x, y⟫ = Σ_k ⟪x_k, y_k⟫` in the same way
+  · intro a a' b b'
+    rw [PiLp.inner_apply, PiLp.inner_apply, PiLp.inner_apply, Fin.sum_univ_add]
+    simp only [hC1, hC2]
+/-- The rotated plane `T₀ = q(ℝⁿ × {0})` of Simon Ch. 5, Lemma 2.6 (p. 110), in the graph estimates
+behind Remark 5.3 (p. 122): for a linear isometry `q` of `ℝ^{n+ℓ}`, (L5) `p_{T₀}(q(a, b)) = q(a, 0)`,
+(L6) `dist(q(a, b), T₀) = |b|` and (L7) `dim T₀ = n`.
+Since `e_{castAdd ℓ i} = (eᵢ, 0)` and `c ↦ (c, 0)` is linear, `ℝⁿ × {0} = {(c, 0) : c ∈ ℝⁿ}`, which
+is orthogonal to `(0, b)`; as `q` preserves inner products, `q(a, 0) ∈ T₀` and
+`q(a, b) − q(a, 0) = q(0, b) ⊥ T₀` characterize the projection, and the distance to `T₀` is attained
+at the projection.  The `e_{castAdd ℓ i}` are independent and `q` preserves dimension. -/
+theorem any_radius_gr_la_rotatedPlane_facts : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a (0 : Rn ℓ))) ∧ (∀ (a : Rn n) (b : Rn ℓ), infDist (q (graphPoint a b)) (rotatedPlane q : Set (Amb n ℓ)) = ‖b‖) ∧ Module.finrank ℝ (rotatedPlane q) = n := by
+  intro n ℓ q
+  -- (C1), (C2), (L1)–(L4) and (IP) for `graphPoint`
+  obtain ⟨hC1, hC2, hadd, hsub, hsmul, hnorm, hinner⟩ :=
+    Submission.any_radius_gr_la_graphPoint_algebra n ℓ
+  -- Step 1: `e_{castAdd ℓ i} = (eᵢ, 0)`; compare the coordinates at `castAdd ℓ i'` and `natAdd n j`
+  have hbasis : ∀ i : Fin n, EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) =
+      graphPoint (EuclideanSpace.single i (1 : ℝ)) (0 : Rn ℓ) := by
+    intro i
+    ext k
+    refine Fin.addCases (fun i' => ?_) (fun j => ?_) k
+    · rw [hC1]
+      simp only [PiLp.single_apply, (Fin.castAdd_injective n ℓ).eq_iff]
+    · rw [hC2]
+      have hne : Fin.natAdd n j ≠ Fin.castAdd ℓ i := by
+        intro h
+        have hval := congrArg Fin.val h
+        simp at hval
+        omega
+      simp [hne]
+  -- Step 2: `G c = (c, 0)` is linear, by (L1) and (L3)
+  let G : Rn n →ₗ[ℝ] Amb n ℓ :=
+    { toFun := fun c => graphPoint c (0 : Rn ℓ)
+      map_add' := fun c c' => by simpa using hadd c c' (0 : Rn ℓ) (0 : Rn ℓ)
+      map_smul' := fun t c => by simpa using hsmul t c (0 : Rn ℓ) }
+  -- Step 3: `ℝⁿ × {0} = {(c, 0) : c ∈ ℝⁿ}`, the image under `G` of the span of the `eᵢ`
+  have hhor : horizontalPlane n ℓ = LinearMap.range G := by
+    have hfun : (fun i : Fin n => EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ)) =
+        G ∘ fun i : Fin n => EuclideanSpace.single i (1 : ℝ) := by
+      funext i
+      exact hbasis i
+    have hspan :
+        Submodule.span ℝ (Set.range fun i : Fin n => EuclideanSpace.single i (1 : ℝ)) = ⊤ := by
+      have hb : ⇑(EuclideanSpace.basisFun (Fin n) ℝ) = fun i => EuclideanSpace.single i (1 : ℝ) :=
+        funext (EuclideanSpace.basisFun_apply (Fin n) ℝ)
+      have := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis.span_eq
+      rwa [OrthonormalBasis.coe_toBasis, hb] at this
+    rw [horizontalPlane, hfun, Set.range_comp, Submodule.span_image, hspan,
+      LinearMap.range_eq_map]
+  -- Step 4: `(0, b)` is orthogonal to `ℝⁿ × {0}`, by (IP)
+  have horth : ∀ (b : Rn ℓ), ∀ h ∈ horizontalPlane n ℓ,
+      inner ℝ (graphPoint (0 : Rn n) b) h = 0 := by
+    intro b h hh
+    rw [hhor] at hh
+    obtain ⟨c, rfl⟩ := hh
+    show inner ℝ (graphPoint 0 b) (graphPoint c 0) = 0
+    rw [hinner]
+    simp
+  -- Step 6(ii): `q(a, b) − q(a, 0) = q(0, b)`, by (L2)
+  have hdiff : ∀ (a : Rn n) (b : Rn ℓ),
+      q (graphPoint a b) - q (graphPoint a 0) = q (graphPoint 0 b) := by
+    intro a b
+    rw [← map_sub, ← hsub]
+    simp
+  -- Step 6, (L5): `q(a, 0) ∈ T₀` and `q(a, b) − q(a, 0) ⊥ T₀`, as `q` preserves inner products
+  have hproj : ∀ (a : Rn n) (b : Rn ℓ),
+      (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a (0 : Rn ℓ)) := by
+    intro a b
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · exact Submodule.mem_map_of_mem (by rw [hhor]; exact ⟨a, rfl⟩)
+    · intro w hw
+      obtain ⟨h, hh, rfl⟩ := Submodule.mem_map.mp hw
+      rw [hdiff]
+      simp only [LinearEquiv.coe_coe, LinearIsometryEquiv.coe_toLinearEquiv]
+      rw [LinearIsometryEquiv.inner_map_map]
+      exact horth b h hh
+  refine ⟨hproj, ?_, ?_⟩
+  -- Step 8, (L6): `dist(v, T₀) = |v − p_{T₀} v| = |q(0, b)| = |(0, b)| = |b|`, by (L5) and (L4)
+  · intro a b
+    rw [← Submodule.dist_starProjection_eq_infDist, hproj, dist_eq_norm, hdiff,
+      LinearIsometryEquiv.norm_map]
+    have h := hnorm 0 b
+    rw [norm_zero, zero_pow two_ne_zero, zero_add] at h
+    exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h
+  -- Step 9, (L7): the `e_{castAdd ℓ i}` are independent, and `q` preserves `finrank`
+  · have hli : LinearIndependent ℝ
+        (fun i : Fin n => EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ)) :=
+      (EuclideanSpace.orthonormal_single (𝕜 := ℝ) (ι := Fin (n + ℓ))).linearIndependent.comp _
+        (Fin.castAdd_injective n ℓ)
+    rw [rotatedPlane, LinearEquiv.finrank_map_eq, horizontalPlane, finrank_span_eq_card hli,
+      Fintype.card_fin]
+/-- Basic facts about the Hilbert–Schmidt norm `|M| = (Σᵢ |M eᵢ|²)^{1/2}` of `M : ℝᵐ →L ℝᵏ`
+(Simon, Notation p. ix): `0 ≤ |M|²`, `|M| ^ 2 = |M|²`, `|M + N|² ≤ 2 |M|² + 2 |N|²`,
+`|-M|² = |M|²`, `|M|² = 0 ⇒ M = 0` and `‖M‖ ≤ |M| ≤ √m ‖M‖`; moreover the orthogonal projection
+`P_K` onto any subspace `K ⊆ ℝᵐ` has `|P_K|² ≤ m`.  Proof: termwise estimates on the standard
+basis `eᵢ`, the expansion `v = Σᵢ vᵢ eᵢ` with Cauchy–Schwarz for `‖M‖ ≤ |M|`, and
+`|P_K eᵢ| ≤ |eᵢ| = 1`. -/
+theorem any_radius_gr_la_hsNorm_facts : (∀ (m k : ℕ) (M N : Rn m →L[ℝ] Rn k), 0 ≤ hsNormSq M ∧ hsNorm M ^ 2 = hsNormSq M ∧ hsNormSq (M + N) ≤ 2 * hsNormSq M + 2 * hsNormSq N ∧ hsNormSq (-M) = hsNormSq M ∧ (hsNormSq M = 0 → M = 0) ∧ ‖M‖ ≤ hsNorm M ∧ hsNorm M ≤ Real.sqrt m * ‖M‖) ∧ ∀ (m : ℕ) (K : Submodule ℝ (Rn m)), hsNormSq K.starProjection ≤ m := by
+  refine ⟨fun m k M N => ?_, fun m K => ?_⟩
+  · -- (a) `hsNormSq M` is a finite sum of squares, hence nonnegative.
+    have ha : 0 ≤ hsNormSq M := Finset.sum_nonneg fun i _ => sq_nonneg _
+    -- Expansion `v = Σᵢ vᵢ eᵢ` in the standard basis `eᵢ = EuclideanSpace.single i 1`.
+    have hexp : ∀ v : Rn m, ∑ i, v i • EuclideanSpace.single i (1 : ℝ) = v := fun v => by
+      simpa only [EuclideanSpace.basisFun_apply, EuclideanSpace.basisFun_repr] using
+        (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr v
+    -- (b) `hsNorm M ^ 2 = √(hsNormSq M) ^ 2 = hsNormSq M`, by (a).
+    refine ⟨ha, Real.sq_sqrt ha, ?_, ?_, ?_, ?_, ?_⟩
+    · -- (c) termwise `‖(M + N) eᵢ‖² ≤ (‖M eᵢ‖ + ‖N eᵢ‖)² ≤ 2 ‖M eᵢ‖² + 2 ‖N eᵢ‖²`.
+      unfold hsNormSq
+      rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+      refine Finset.sum_le_sum fun i _ => ?_
+      have h1 : ‖(M + N) (EuclideanSpace.single i 1)‖ ≤
+          ‖M (EuclideanSpace.single i 1)‖ + ‖N (EuclideanSpace.single i 1)‖ := by
+        rw [add_apply]
+        exact norm_add_le _ _
+      have h2 := pow_le_pow_left₀ (norm_nonneg _) h1 2
+      nlinarith [sq_nonneg (‖M (EuclideanSpace.single i 1)‖ - ‖N (EuclideanSpace.single i 1)‖)]
+    · -- (d) `‖(-M) eᵢ‖ = ‖-(M eᵢ)‖ = ‖M eᵢ‖` termwise.
+      unfold hsNormSq
+      simp only [neg_apply, norm_neg]
+    · -- (e) every `M eᵢ` vanishes, so `M v = Σᵢ vᵢ M eᵢ = 0` for every `v`.
+      intro h0
+      have hi : ∀ i, M (EuclideanSpace.single i 1) = 0 := fun i => by
+        have := (Finset.sum_eq_zero_iff_of_nonneg fun j _ =>
+          sq_nonneg ‖M (EuclideanSpace.single j (1 : ℝ))‖).1 h0 i (Finset.mem_univ i)
+        simpa using this
+      refine ContinuousLinearMap.ext fun v => ?_
+      rw [zero_apply, ← hexp v, map_sum]
+      simp [hi]
+    · -- (f) `‖M v‖ ≤ Σᵢ |vᵢ| ‖M eᵢ‖ ≤ hsNorm M ‖v‖` (triangle and Cauchy–Schwarz inequalities).
+      refine M.opNorm_le_bound (Real.sqrt_nonneg _) fun v => ?_
+      calc ‖M v‖ = ‖∑ i, v i • M (EuclideanSpace.single i 1)‖ := by
+            conv_lhs => rw [← hexp v]
+            simp only [map_sum, map_smul]
+        _ ≤ ∑ i, ‖v i‖ * ‖M (EuclideanSpace.single i 1)‖ :=
+            (norm_sum_le _ _).trans_eq (Finset.sum_congr rfl fun i _ => norm_smul _ _)
+        _ ≤ √(∑ i, ‖v i‖ ^ 2) * √(∑ i, ‖M (EuclideanSpace.single i 1)‖ ^ 2) :=
+            Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+        _ = hsNorm M * ‖v‖ := by rw [EuclideanSpace.norm_eq v, mul_comm (hsNorm M)]; rfl
+    · -- (g) `‖M eᵢ‖ ≤ ‖M‖ ‖eᵢ‖ = ‖M‖`, so `hsNormSq M ≤ m ‖M‖²`; take square roots.
+      have h1 : hsNormSq M ≤ m * ‖M‖ ^ 2 := by
+        calc hsNormSq M = ∑ i : Fin m, ‖M (EuclideanSpace.single i 1)‖ ^ 2 := rfl
+          _ ≤ ∑ _i : Fin m, ‖M‖ ^ 2 := by
+              refine Finset.sum_le_sum fun i _ => pow_le_pow_left₀ (norm_nonneg _) ?_ 2
+              simpa using M.le_opNorm (EuclideanSpace.single i (1 : ℝ))
+          _ = m * ‖M‖ ^ 2 := by simp
+      calc hsNorm M = √(hsNormSq M) := rfl
+        _ ≤ √(m * ‖M‖ ^ 2) := Real.sqrt_le_sqrt h1
+        _ = Real.sqrt m * ‖M‖ := by
+            rw [Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
+  · -- (L9) `‖P_K eᵢ‖ ≤ ‖eᵢ‖ = 1` (Pythagoras) for each of the `m` basis vectors `eᵢ`.
+    calc hsNormSq K.starProjection
+        = ∑ i : Fin m, ‖K.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := rfl
+      _ ≤ ∑ _i : Fin m, (1 : ℝ) ^ 2 := by
+          refine Finset.sum_le_sum fun i _ => pow_le_pow_left₀ (norm_nonneg _) ?_ 2
+          simpa using K.norm_starProjection_apply_le (EuclideanSpace.single i (1 : ℝ))
+      _ = m := by simp
+/-- Linear algebra behind the graph-rate step of Simon Ch. 5, Remark 5.3 (p. 122): graph
+coordinates on `ℝ^{n+ℓ} = ℝⁿ × ℝ^ℓ`, the rotated plane `T₀ = q(ℝⁿ × {0})` of Lemma 2.6 (p. 110), and
+the Hilbert–Schmidt norm `|A|` (Notation p. ix; footnote 2 on p. 115).  For a linear isometry `q`:
+(L1)–(L3) `(a, b)` is additive, subtractive and homogeneous in the pair; (L4)
+`|(a, b)|² = |a|² + |b|²`; (L5) `p_{T₀}(q(a, b)) = q(a, 0)`; (L6) `dist(q(a, b), T₀) = |b|`;
+(L7) `dim T₀ = n`; (L8) for `M, N : ℝᵐ → ℝᵏ`: `|M|² ≥ 0`, `|M|² = (|M|)²`,
+`|M + N|² ≤ 2|M|² + 2|N|²`, `|−M|² = |M|²`, `|M|² = 0 ⇒ M = 0` and `‖M‖ ≤ |M| ≤ √m ‖M‖`;
+(L9) `|p_K|² ≤ m` for every subspace `K ⊆ ℝᵐ`.
+(L1)–(L4) are part of the coordinate algebra of `(a, b)`, (L5)–(L7) are the projection, distance and
+dimension facts for `T₀`, and (L8), (L9) are the Hilbert–Schmidt facts. -/
+theorem any_radius_gr_linear_algebra_basics : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint (a + a') (b + b') = graphPoint a b + graphPoint a' b') ∧ (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint (a - a') (b - b') = graphPoint a b - graphPoint a' b') ∧ (∀ (t : ℝ) (a : Rn n) (b : Rn ℓ), graphPoint (t • a) (t • b) = t • graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a (0 : Rn ℓ))) ∧ (∀ (a : Rn n) (b : Rn ℓ), infDist (q (graphPoint a b)) (rotatedPlane q : Set (Amb n ℓ)) = ‖b‖) ∧ Module.finrank ℝ (rotatedPlane q) = n ∧ (∀ (m k : ℕ) (M N : Rn m →L[ℝ] Rn k), 0 ≤ hsNormSq M ∧ hsNorm M ^ 2 = hsNormSq M ∧ hsNormSq (M + N) ≤ 2 * hsNormSq M + 2 * hsNormSq N ∧ hsNormSq (-M) = hsNormSq M ∧ (hsNormSq M = 0 → M = 0) ∧ ‖M‖ ≤ hsNorm M ∧ hsNorm M ≤ Real.sqrt m * ‖M‖) ∧ ∀ (m : ℕ) (K : Submodule ℝ (Rn m)), hsNormSq K.starProjection ≤ m := by
+  intro n ℓ q
+  -- (L1)–(L4): additivity, subtraction, homogeneity and the norm of `graphPoint`
+  obtain ⟨-, -, hadd, hsub, hsmul, hnorm, -⟩ :=
+    Submission.any_radius_gr_la_graphPoint_algebra n ℓ
+  -- (L5)–(L7): projection onto, distance to and dimension of `T₀ = q(ℝⁿ × {0})`
+  obtain ⟨hproj, hdist, hrank⟩ := Submission.any_radius_gr_la_rotatedPlane_facts n ℓ q
+  -- (L8), (L9): the Hilbert–Schmidt facts
+  exact ⟨hadd, hsub, hsmul, hnorm, hproj, hdist, hrank, Submission.any_radius_gr_la_hsNorm_facts⟩
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
