@@ -448,6 +448,189 @@ theorem Submission.lpf_pi_chart_image_rectifiable :
   obtain ⟨j, hj⟩ := mem_iUnion.mp (hKcover.symm ▸ mem_univ (⟨x, hxO⟩ : O))
   exact mem_iUnion.mpr ⟨j, x, (hgEq j ⟨⟨x, hxO⟩, hj, rfl⟩).symm⟩
 
+/-- Integer multiplicity from an integer chart-oriented density (parent Steps 7, 8, 10, 11).
+Let `S(ω) = ∫_Y ⟨ω, Ψ⟩ dHⁿ`, where for `Hⁿ`-a.e. `y ∈ Y`, `Ψ(y) = ∑ᵢ aᵢ σᵢ₁ ∧ ⋯ ∧ σᵢₙ` with
+`aᵢ ∈ ℤ` and `σᵢ` an orthonormal frame of `DG_{kᵢ}(wᵢ)(ℝⁿ)`, `G_{kᵢ}(wᵢ) = y`.  By (WTC) for
+`(Y, 1)` all these planes are the approximate tangent plane of `Y` at `y`, so sign rigidity gives
+`Ψ(y) = c(y) σ₁ ∧ ⋯ ∧ σₙ` with `c(y) ∈ ℤ` and `‖Ψ(y)‖ = |c(y)|`.  Off a null set, `S = τ(M′, θ′, ξ′)`
+with `M′ = {Ψ ≠ 0}`, `θ′ = ‖Ψ‖` and `ξ′ = Ψ/‖Ψ‖`; (WTC) for `(M′, θ′)` orients `ξ′`. -/
+theorem Submission.lpf_pi_im_of_chart_density : (∀ (Q n : ℕ) (V M : Set (Eucl Q)) (θ : Eucl Q → ℝ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)), IsOpen V → M ⊆ V → NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → (∀ y ∈ M, 0 < θ y) → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl Q))) → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∀ᵐ y ∂((μHE[n] : Measure (Eucl Q)).restrict (M ∩ Φ '' Ω)), ∀ w ∈ Ω, Φ w = y → HasWeightedApproximateTangentSpaceAt n M θ y (LinearMap.range (fderiv ℝ Φ w).toLinearMap)) → ((∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) → ∀ (Q n : ℕ) (V Y : Set (Eucl Q)) (Ψ : Eucl Q → NVector (Eucl Q) n) (G : ℕ → Eucl n → Eucl Q) (O : ℕ → Set (Eucl n)) (S : GeometricCurrentOn V n), IsOpen V → (∀ k, IsOpen (O k)) → (∀ k, ContDiff ℝ 1 (G k)) → (∀ k, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ O k, ∀ w' ∈ O k, c * ‖w - w'‖ ≤ ‖G k w - G k w'‖) → Y ⊆ V → NullMeasurableSet Y (μHE[n] : Measure (Eucl Q)) → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → (μHE[n] : Measure (Eucl Q)) (Y ∩ K) < ∞) → AEStronglyMeasurable Ψ ((μHE[n] : Measure (Eucl Q)).restrict Y) → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IntegrableOn (fun y => ‖Ψ y‖) (Y ∩ K) (μHE[n] : Measure (Eucl Q))) → (∀ᵐ y ∂((μHE[n] : Measure (Eucl Q)).restrict Y), ∃ (m : ℕ) (a : Fin m → ℤ) (k : Fin m → ℕ) (w : Fin m → Eucl n) (σ : Fin m → Fin n → Eucl Q), (∀ i, w i ∈ O (k i) ∧ G (k i) (w i) = y ∧ Orthonormal ℝ (σ i) ∧ Submodule.span ℝ (range (σ i)) = LinearMap.range (fderiv ℝ (G (k i)) (w i)).toLinearMap) ∧ Ψ y = ∑ i, (a i : ℝ) • simpleNVector (σ i)) → (∀ ω : TestFormOn V n, S ω = ∫ y in Y, Ψ y ((ω : DifferentialForm (Eucl Q) n) y) ∂(μHE[n] : Measure (Eucl Q))) → IsIntegerMultiplicity S := by
+  intro hWTC hSNA Q n V Y Ψ G O S hV hO hG hanti hYV hY hYfin hΨm hΨint hfam hS
+  obtain ⟨hunit, hsign⟩ := Submission.lpf_pi_simple_unit_facts hSNA
+  set μ : Measure (Eucl Q) := (μHE[n] : Measure (Eucl Q)) with hμdef
+  -- Step 1: tangent planes of (Y, 1) on each chart
+  let TY : ℕ → Eucl Q → Prop := fun k y => ∀ w ∈ O k, G k w = y →
+      HasWeightedApproximateTangentSpaceAt n Y (fun _ => (1:ℝ)) y
+        (LinearMap.range (fderiv ℝ (G k) w).toLinearMap)
+  have hWY : ∀ k, ∀ᵐ y ∂(μ.restrict (Y ∩ G k '' O k)), TY k y := by
+    intro k
+    exact hWTC Q n V Y (fun _ => (1:ℝ)) (G k) (O k) hV hYV hY (fun _ _ => one_pos)
+      (fun K hK hKV => integrableOn_const (hYfin K hK hKV).ne) (hO k) (hG k) (hanti k)
+  let Ek : ℕ → Set (Eucl Q) := fun k => {y | ¬ TY k y} ∩ (Y ∩ G k '' O k)
+  have hEk : ∀ k, μ (Ek k) = 0 := by
+    intro k
+    have h1 : μ.restrict (Y ∩ G k '' O k) {y | ¬ TY k y} = 0 := ae_iff.mp (hWY k)
+    exact le_antisymm ((Measure.le_restrict_apply _ _).trans h1.le) bot_le
+  let Fam : Eucl Q → Prop := fun y => ∃ (m : ℕ) (a : Fin m → ℤ) (k : Fin m → ℕ)
+      (w : Fin m → Eucl n) (σ : Fin m → Fin n → Eucl Q),
+      (∀ i, w i ∈ O (k i) ∧ G (k i) (w i) = y ∧ Orthonormal ℝ (σ i) ∧
+        Submodule.span ℝ (range (σ i)) = LinearMap.range (fderiv ℝ (G (k i)) (w i)).toLinearMap) ∧
+      Ψ y = ∑ i, (a i : ℝ) • simpleNVector (σ i)
+  let E0 : Set (Eucl Q) := {y | ¬ Fam y} ∩ Y
+  have hE0 : μ E0 = 0 := by
+    have h1 : μ.restrict Y {y | ¬ Fam y} = 0 := ae_iff.mp hfam
+    exact le_antisymm ((Measure.le_restrict_apply _ _).trans h1.le) bot_le
+  let E : Set (Eucl Q) := E0 ∪ ⋃ k, Ek k
+  have hE : μ E = 0 := measure_union_null hE0 (measure_iUnion_null hEk)
+  -- Step 2: common plane and integer coefficient
+  have key : ∀ y ∈ Y, y ∉ E → Ψ y ≠ 0 → ∃ (c : ℤ) (k₀ : ℕ) (w₀ : Eucl n) (σ₀ : Fin n → Eucl Q),
+      w₀ ∈ O k₀ ∧ G k₀ w₀ = y ∧ Orthonormal ℝ σ₀ ∧
+      Submodule.span ℝ (range σ₀) = LinearMap.range (fderiv ℝ (G k₀) w₀).toLinearMap ∧
+      Ψ y = (c : ℝ) • simpleNVector σ₀ := by
+    intro y hyY hyE hΨ0
+    have hFam : Fam y := by
+      by_contra hc
+      exact hyE (Or.inl ⟨hc, hyY⟩)
+    obtain ⟨m, a, k, w, σ, hi, hΨy⟩ := hFam
+    rcases Nat.eq_zero_or_pos m with hm | hm
+    · subst hm
+      exact (hΨ0 (by simpa using hΨy)).elim
+    · let i₀ : Fin m := ⟨0, hm⟩
+      have htan : ∀ i, HasWeightedApproximateTangentSpaceAt n Y (fun _ => (1:ℝ)) y
+          (LinearMap.range (fderiv ℝ (G (k i)) (w i)).toLinearMap) := by
+        intro i
+        have hyEk : y ∉ Ek (k i) := fun h => hyE (Or.inr (mem_iUnion.mpr ⟨k i, h⟩))
+        have hmem : y ∈ Y ∩ G (k i) '' O (k i) := ⟨hyY, w i, (hi i).1, (hi i).2.1⟩
+        have hT : TY (k i) y := by
+          by_contra hc
+          exact hyEk ⟨hc, hmem⟩
+        exact hT (w i) (hi i).1 (hi i).2.1
+      have hspan : ∀ i, Submodule.span ℝ (range (σ i₀)) = Submodule.span ℝ (range (σ i)) := by
+        intro i
+        rw [(hi i₀).2.2.2, (hi i).2.2.2]
+        exact Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt.unique
+          (by simp) (htan i₀) (htan i)
+      have hε : ∀ i, ∃ e : ℤ, simpleNVector (σ i) = (e : ℝ) • simpleNVector (σ i₀) := by
+        intro i
+        rcases hsign Q n (σ i₀) (σ i) (hi i₀).2.2.1 (hi i).2.2.1 (hspan i) with h | h
+        · exact ⟨1, by rw [h, Int.cast_one, one_smul]⟩
+        · exact ⟨-1, by rw [h, Int.cast_neg, Int.cast_one]; exact (neg_one_smul ℝ (simpleNVector (σ i₀))).symm⟩
+      choose e he using hε
+      refine ⟨∑ i, a i * e i, k i₀, w i₀, σ i₀, (hi i₀).1, (hi i₀).2.1, (hi i₀).2.2.1,
+        (hi i₀).2.2.2, ?_⟩
+      rw [hΨy, Int.cast_sum, Finset.sum_smul]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [he i, smul_smul, Int.cast_mul]
+  -- Step 3: the new triple
+  let M' : Set (Eucl Q) := (Y ∩ {y | ‖Ψ y‖ ≠ 0}) \ E
+  let θ' : Eucl Q → ℝ := fun y => ‖Ψ y‖
+  let ξ' : Eucl Q → NVector (Eucl Q) n := fun y => ‖Ψ y‖⁻¹ • Ψ y
+  have hM'Y : M' ⊆ Y := fun y hy => hy.1.1
+  have hM'mem : ∀ y ∈ M', y ∈ Y ∧ y ∉ E ∧ Ψ y ≠ 0 :=
+    fun y hy => ⟨hy.1.1, hy.2, fun h0 => (show ‖Ψ y‖ ≠ 0 from hy.1.2) (by rw [h0]; exact ContinuousLinearMap.opNorm_zero)⟩
+  have hdata : ∀ y ∈ M', ∃ (c : ℤ) (k₀ : ℕ) (w₀ : Eucl n) (σ₀ : Fin n → Eucl Q),
+      w₀ ∈ O k₀ ∧ G k₀ w₀ = y ∧ Orthonormal ℝ σ₀ ∧
+      Submodule.span ℝ (range σ₀) = LinearMap.range (fderiv ℝ (G k₀) w₀).toLinearMap ∧
+      θ' y = (c.natAbs : ℝ) ∧ (ξ' y = simpleNVector σ₀ ∨ ξ' y = -simpleNVector σ₀) := by
+    intro y hy
+    obtain ⟨hyY, hyE, hΨ0⟩ := hM'mem y hy
+    obtain ⟨c, k₀, w₀, σ₀, hw₀, hGw₀, hσ₀, hspan₀, hΨc⟩ := key y hyY hyE hΨ0
+    have hnorm : ‖Ψ y‖ = |(c : ℝ)| := by
+      have : NormSMulClass ℝ (NVector (Eucl Q) n) :=
+        @NormedSpace.toNormSMulClass ℝ (NVector (Eucl Q) n) _ _ _
+      rw [hΨc, norm_smul, hunit Q n σ₀ hσ₀, mul_one, Real.norm_eq_abs]
+    have hc0 : (c : ℝ) ≠ 0 := by
+      intro h; apply hΨ0; rw [hΨc, h, zero_smul]
+    refine ⟨c, k₀, w₀, σ₀, hw₀, hGw₀, hσ₀, hspan₀, ?_, ?_⟩
+    · show ‖Ψ y‖ = _
+      rw [hnorm, Nat.cast_natAbs, Int.cast_abs]
+    · show ‖Ψ y‖⁻¹ • Ψ y = _ ∨ ‖Ψ y‖⁻¹ • Ψ y = _
+      rw [hnorm, hΨc, smul_smul]
+      rcases lt_or_gt_of_ne hc0 with hneg | hpos
+      · right
+        rw [abs_of_neg hneg, inv_neg, neg_mul, inv_mul_cancel₀ hc0]; exact neg_one_smul ℝ (simpleNVector σ₀)
+      · left
+        rw [abs_of_pos hpos, inv_mul_cancel₀ hc0, one_smul]
+  -- nullMeasurableSet
+  have hnormΨ : AEStronglyMeasurable (fun y => ‖Ψ y‖) (μ.restrict Y) :=
+    (@continuous_norm (NVector (Eucl Q) n) _).comp_aestronglyMeasurable hΨm
+  have hM'nm : NullMeasurableSet M' μ := by
+    have hg := hnormΨ.aemeasurable
+    have hgm : Measurable (hg.mk _) := hg.measurable_mk
+    have hae : ∀ᵐ y ∂μ, y ∈ Y → ‖Ψ y‖ = hg.mk _ y := (ae_restrict_iff'₀ hY).mp hg.ae_eq_mk
+    have h1 : NullMeasurableSet (Y ∩ (hg.mk _) ⁻¹' {0}ᶜ) μ :=
+      hY.inter (hgm (measurableSet_singleton 0).compl).nullMeasurableSet
+    have h2 : NullMeasurableSet (Y ∩ {y | ‖Ψ y‖ ≠ 0}) μ := by
+      refine h1.congr ?_
+      filter_upwards [hae] with y hy
+      change (y ∈ Y ∧ hg.mk _ y ≠ 0) = (y ∈ Y ∧ ‖Ψ y‖ ≠ 0)
+      apply propext
+      constructor
+      · rintro ⟨h1, h2⟩; exact ⟨h1, by rwa [hy h1]⟩
+      · rintro ⟨h1, h2⟩; exact ⟨h1, by rwa [← hy h1]⟩
+    exact h2.diff (NullMeasurableSet.of_null hE)
+  -- countablyRectifiable
+  have hM'cov : M' ⊆ ⋃ k, G k '' O k := by
+    intro y hy
+    obtain ⟨c, k₀, w₀, σ₀, hw₀, hGw₀, -⟩ := hdata y hy
+    exact mem_iUnion.mpr ⟨k₀, w₀, hw₀, hGw₀⟩
+  have hCR : CountablyRectifiable n M' :=
+    (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ (fun k =>
+      Submission.lpf_pi_chart_image_rectifiable Q n (G k) (O k) (hO k) (hG k).contDiffOn)).mono hM'cov
+  have hθ'pos : ∀ y ∈ M', 0 < θ' y := fun y hy => show 0 < ‖Ψ y‖ from
+    lt_of_le_of_ne (norm_nonneg (Ψ y)) (Ne.symm (show ‖Ψ y‖ ≠ 0 from hy.1.2))
+  have hθ'int : ∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IntegrableOn θ' (M' ∩ K) μ :=
+    fun K hK hKV => (hΨint K hK hKV).mono_set (inter_subset_inter_left _ hM'Y)
+  have hξ' : AEStronglyMeasurable ξ' (μ.restrict M') :=
+    ((hnormΨ.aemeasurable.inv.aestronglyMeasurable).smul hΨm).mono_measure
+      (Measure.restrict_mono hM'Y le_rfl)
+  -- orients
+  let TM : ℕ → Eucl Q → Prop := fun k y => ∀ w ∈ O k, G k w = y →
+      HasWeightedApproximateTangentSpaceAt n M' θ' y (LinearMap.range (fderiv ℝ (G k) w).toLinearMap)
+  have hWM : ∀ k, ∀ᵐ y ∂(μ.restrict (M' ∩ G k '' O k)), TM k y := fun k =>
+    hWTC Q n V M' θ' (G k) (O k) hV (hM'Y.trans hYV) hM'nm hθ'pos hθ'int (hO k) (hG k) (hanti k)
+  let E'k : ℕ → Set (Eucl Q) := fun k => {y | ¬ TM k y} ∩ (M' ∩ G k '' O k)
+  have hE'k : ∀ k, μ (E'k k) = 0 := by
+    intro k
+    have h1 : μ.restrict (M' ∩ G k '' O k) {y | ¬ TM k y} = 0 := ae_iff.mp (hWM k)
+    exact le_antisymm ((Measure.le_restrict_apply _ _).trans h1.le) bot_le
+  have hE' : μ (⋃ k, E'k k) = 0 := measure_iUnion_null hE'k
+  have horients : ∀ᵐ y ∂(μ.restrict M'), ∃ τ : Fin n → Eucl Q, Orthonormal ℝ τ ∧
+      HasWeightedApproximateTangentSpaceAt n M' θ' y (Submodule.span ℝ (range τ)) ∧
+      (ξ' y = simpleNVector τ ∨ ξ' y = -simpleNVector τ) := by
+    have h1 : ∀ᵐ y ∂(μ.restrict M'), y ∉ ⋃ k, E'k k :=
+      ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.mp hE')
+    filter_upwards [h1, ae_restrict_mem₀ hM'nm] with y hyE' hyM'
+    obtain ⟨c, k₀, w₀, σ₀, hw₀, hGw₀, hσ₀, hspan₀, -, hξ⟩ := hdata y hyM'
+    refine ⟨σ₀, hσ₀, ?_, hξ⟩
+    have hT : TM k₀ y := by
+      by_contra hc
+      exact hyE' (mem_iUnion.mpr ⟨k₀, hc, hyM', w₀, hw₀, hGw₀⟩)
+    rw [hspan₀]
+    exact hT w₀ hw₀ hGw₀
+  -- representation
+  have hrep : ∀ ω : TestFormOn V n, S ω = tauAction n M' θ' ξ' ω := by
+    intro ω
+    rw [hS ω]
+    unfold tauAction
+    rw [setIntegral_eq_of_subset_of_ae_sdiff_eq_zero hY hM'Y ?_]
+    · refine setIntegral_congr_fun₀ hM'nm ?_
+      intro y hy
+      have hne : ‖Ψ y‖ ≠ 0 := hy.1.2
+      show Ψ y _ = ‖Ψ y‖ * ((‖Ψ y‖⁻¹ • Ψ y) _)
+      rw [_root_.smul_apply, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hne, one_mul]
+    · filter_upwards [measure_eq_zero_iff_ae_notMem.mp hE] with y hyE hy
+      have h0 : ‖Ψ y‖ = 0 := by
+        by_contra hc
+        exact hy.2 ⟨⟨hy.1, hc⟩, hyE⟩
+      have hΨ0 : Ψ y = 0 := (norm_eq_zero (E := NVector (Eucl Q) n) (a := Ψ y)).mp h0
+      rw [hΨ0]
+      rfl
+  refine ⟨M', θ', ξ', ⟨hM'Y.trans hYV, hM'nm, hCR, hθ'pos, hθ'int, hξ', horients⟩, ?_, hrep⟩
+  intro y hy
+  obtain ⟨c, -, -, -, -, -, -, -, hθc, -⟩ := hdata y hy
+  exact ⟨c.natAbs, hθc⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
