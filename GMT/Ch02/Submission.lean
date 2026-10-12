@@ -373,6 +373,28 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Smoothness of the determinant on `L(ℝⁿ)`.** For every `n` and every order `k : WithTop ℕ∞`
+(finite, `∞` or analytic), `T ↦ T.det` is `C^k` on `ℝⁿ →L[ℝ] ℝⁿ`. In the standard basis `eᵢ` the
+Leibniz formula gives `T.det = ∑_σ sign σ * ∏ᵢ (T eᵢ)_{σ i}` (`LinearMap.det_toMatrix`,
+`Matrix.det_apply`). Each entry `T ↦ (T eᵢ)_l` is continuous linear, and finite sums and products of
+`C^k` functions are `C^k` (`ContDiff.sum`, `contDiff_prod`). -/
+theorem Submission.contDiff_rn_continuousLinearMap_det : ∀ (n : ℕ) (k : WithTop ℕ∞), ContDiff ℝ k (fun T : Rn n →L[ℝ] Rn n ↦ T.det) := by
+  intro n k
+  -- Steps 1–2: the Leibniz formula in the standard basis, whose matrix entries are `(T eᵢ)_l`.
+  let b := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+  have h : (fun T : Rn n →L[ℝ] Rn n ↦ T.det) = fun T ↦ ∑ σ : Equiv.Perm (Fin n),
+      ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ i, (T (EuclideanSpace.single i (1 : ℝ))).ofLp (σ i) := by
+    funext T
+    rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix b, Matrix.det_apply]
+    refine Finset.sum_congr rfl fun σ _ ↦ ?_
+    rw [Units.smul_def, zsmul_eq_mul]
+    congr 1
+  rw [h]
+  -- Steps 3–4: each entry is a continuous linear functional of `T`; close under `∏` and `∑`.
+  refine ContDiff.sum fun σ _ ↦ contDiff_const.mul (contDiff_prod fun i _ ↦ ?_)
+  exact ((EuclideanSpace.proj (σ i)).comp
+    (ContinuousLinearMap.apply ℝ (Rn n) (EuclideanSpace.single i (1 : ℝ)))).contDiff
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
