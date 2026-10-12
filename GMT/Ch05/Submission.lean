@@ -802,9 +802,242 @@ theorem isHolderCk_one_of_scaledC1AlphaNorm_ne_top : ∀ {n ℓ : ℕ} (u : Rn n
         simp
       rw [hD₁, LinearIsometryEquiv.norm_map, ← hD x hx, ← hD y hy]
       exact (hop _).trans (hb₂ x (hWB hx) y (hWB hy) hxy)
+/-- **Simon Ch. 5, Theorem 7.1, proof (p. 127): "after applying the appropriate translation".**
+For `τ(x) = x − ξ`, `V' = v(τ(M), θ(· + ξ))` is a rectifiable `n`-varifold in `τ(U)`.  `τ` and its
+inverse `σ = (· + ξ)` are isometries, so they preserve `Hⁿ`, and `τ(S) = σ⁻¹(S)` for every set `S`;
+null-measurability, countable rectifiability (via `τ(M₀)` and the Lipschitz maps `F_j − ξ`),
+positivity, a.e.-measurability of `θ ∘ σ` and its integrability on `τ(M) ∩ K` (through the compact
+set `σ(K) ⊆ U`) all transfer along `σ`. -/
+theorem dohr_tv_exists_translate : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ), ∃ V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U), V'.carrier = (fun x => x - ξ) '' V.carrier ∧ ∀ y, V'.mult y = V.mult (y + ξ) := by
+  intro n ℓ U V ξ
+  -- Step 0: `τ = (· − ξ)` is an isometry, `σ = (· + ξ)` is an `Hⁿ`-measure-preserving measurable
+  -- embedding, and `τ(S) = σ⁻¹(S)` for every set `S`.
+  have himage : ∀ S : Set (Amb n ℓ), (fun x => x - ξ) '' S = (fun x => x + ξ) ⁻¹' S := by
+    intro S
+    ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      simpa using hx
+    · intro hy
+      exact ⟨y + ξ, hy, add_sub_cancel_right y ξ⟩
+  have hτ : Isometry (fun x : Amb n ℓ => x - ξ) := (IsometryEquiv.subRight ξ).isometry
+  have hσ : MeasurePreserving (fun x : Amb n ℓ => x + ξ) μHE[n] μHE[n] :=
+    (IsometryEquiv.addRight ξ).measurePreserving_euclideanHausdorffMeasure n
+  have hσe : MeasurableEmbedding (fun x : Amb n ℓ => x + ξ) := measurableEmbedding_addRight ξ
+  -- Steps 1–2: `V' = v(τ(M), θ ∘ σ)`; the two required equalities hold by definition.
+  refine ⟨{
+    carrier := (fun x => x - ξ) '' V.carrier
+    mult := fun y => V.mult (y + ξ)
+    carrier_subset := image_mono V.carrier_subset
+    nullMeasurableSet_carrier := ?_
+    countablyRectifiable := ?_
+    mult_pos := ?_
+    aemeasurable_mult := ?_
+    integrableOn_mult := ?_ }, rfl, fun y => rfl⟩
+  · -- Step 3: `τ(M) = σ⁻¹(M)` and `σ` is quasi-measure-preserving.
+    rw [himage]
+    exact V.nullMeasurableSet_carrier.preimage hσ.quasiMeasurePreserving
+  · -- Step 4: translate the null set `M₀` and the Lipschitz pieces `F j` by `−ξ`.
+    obtain ⟨M₀, hM₀, F, hF, hcov⟩ := V.countablyRectifiable
+    refine ⟨(fun x => x - ξ) '' M₀, ?_, fun j z => F j z - ξ, fun j => ?_, ?_⟩
+    · rw [hτ.euclideanHausdorffMeasure_image]
+      exact hM₀
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨K, LipschitzWith.of_dist_le_mul fun z w =>
+        (dist_sub_right (F j z) (F j w) ξ).le.trans (hK.dist_le_mul z w)⟩
+    · rintro _ ⟨x, hx, rfl⟩
+      rcases hcov hx with h | h
+      · exact Or.inl ⟨x, h, rfl⟩
+      · obtain ⟨j, z, rfl⟩ := mem_iUnion.mp h
+        exact Or.inr (mem_iUnion.mpr ⟨j, z, rfl⟩)
+  · -- Step 5: `θ(x − ξ + ξ) = θ(x) > 0` for `x ∈ M`.
+    rintro _ ⟨x, hx, rfl⟩
+    show 0 < V.mult (x - ξ + ξ)
+    rw [sub_add_cancel]
+    exact V.mult_pos x hx
+  · -- Step 6: `σ` is measure preserving from `Hⁿ⌞σ⁻¹(M)` to `Hⁿ⌞M`.
+    rw [himage]
+    exact V.aemeasurable_mult.comp_quasiMeasurePreserving
+      (hσ.restrict_preimage_emb hσe V.carrier).quasiMeasurePreserving
+  · -- Step 7: `σ(K)` is a compact subset of `U`, and `τ(M) ∩ K = σ⁻¹(M ∩ σ(K))`.
+    intro K hK hKU
+    have hσK : (fun x => x + ξ) '' K ⊆ U := by
+      rintro _ ⟨y, hy, rfl⟩
+      obtain ⟨x, hx, rfl⟩ := hKU hy
+      simpa using hx
+    have h := (hσ.integrableOn_comp_preimage hσe).2
+      (V.integrableOn_mult _ (hK.image (continuous_add_const ξ)) hσK)
+    rwa [preimage_inter, hσe.injective.preimage_image, ← himage] at h
+/-- **Weight of a translated varifold** (Simon Ch. 4, 1.1; Ch. 5, proof of Theorem 7.1, p. 127:
+"after applying the appropriate translation").  Let `τ(x) = x - ξ`.  If `V' = v(τ(M), θ(· + ξ))`,
+then `μ_{V'} = τ_# μ_V`: `τ` is an isometric bijection, so `τ_# Hⁿ = Hⁿ` and
+`τ_#(Hⁿ ⌞ M) = Hⁿ ⌞ τ(M)`; for measurable `S`, changing variables along `τ` gives
+`μ_{V'}(S) = ∫_{τ⁻¹S} θ(x - ξ + ξ) d(Hⁿ ⌞ M)(x) = μ_V(τ⁻¹S)`. -/
+theorem dohr_tv_weight_eq_map : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U) (V' : RectifiableVarifold n ℓ U') (ξ : Amb n ℓ),
+    V'.carrier = (fun x => x - ξ) '' V.carrier → (∀ y, V'.mult y = V.mult (y + ξ)) →
+    V'.weight = V.weight.map (fun x => x - ξ) := by
+  intro n ℓ U U' V V' ξ hc hm
+  -- `τ(x) = x - ξ` as a measurable equivalence `e` (inverse `y ↦ y + ξ`).
+  let e : Amb n ℓ ≃ᵐ Amb n ℓ := MeasurableEquiv.subRight ξ
+  -- Step 1: `τ` is an isometric bijection, so `τ_# Hⁿ = Hⁿ`.
+  have h1 : (μHE[n] : Measure (Amb n ℓ)).map e = μHE[n] :=
+    ((IsometryEquiv.subRight ξ).measurePreserving_euclideanHausdorffMeasure n).map_eq
+  -- Step 2: `Hⁿ ⌞ τ(M) = (τ_# Hⁿ) ⌞ τ(M) = τ_#(Hⁿ ⌞ τ⁻¹(τ(M))) = τ_#(Hⁿ ⌞ M)`.
+  have h2 : (μHE[n] : Measure (Amb n ℓ)).restrict V'.carrier =
+      ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).map e := by
+    have h := e.restrict_map (μHE[n] : Measure (Amb n ℓ)) (e '' V.carrier)
+    rw [h1, Set.preimage_image_eq _ e.injective] at h
+    rw [hc]
+    exact h
+  -- Step 3: compare `μ_{V'}` and `τ_# μ_V` on measurable sets `S`.
+  show V'.weight = V.weight.map e
+  ext S hS
+  -- Step 4: `(τ_# μ_V)(S) = μ_V(τ⁻¹S) = ∫_{τ⁻¹S} θ d(Hⁿ ⌞ M)`.
+  rw [e.map_apply]
+  simp only [RectifiableVarifold.weight]
+  rw [withDensity_apply _ (e.measurable hS)]
+  -- Step 5: `μ_{V'}(S) = ∫_S θ' d(τ_#(Hⁿ ⌞ M)) = ∫_{τ⁻¹S} θ'(x - ξ) d(Hⁿ ⌞ M)(x)`.
+  rw [withDensity_apply _ hS, h2, e.restrict_map, lintegral_map_equiv]
+  -- Step 6: `θ'(x - ξ) = θ(x - ξ + ξ) = θ(x)`, so the two integrals agree.
+  refine lintegral_congr fun x => ?_
+  show ENNReal.ofReal (V'.mult (x - ξ)) = ENNReal.ofReal (V.mult x)
+  rw [hm, sub_add_cancel]
+/-- **Support of a translated measure** (used for Simon Ch. 5, Theorem 7.1, p. 127, where `V` is
+translated by `τ(x) = x − ξ`).  For every measure `μ` on `ℝ^{n+ℓ}`, `spt (τ_# μ) = τ (spt μ)`.
+`τ` is the measurable equivalence `MeasurableEquiv.subRight ξ`, so `(τ_# μ)(N) = μ(τ⁻¹ N)` for
+every set `N`.  If `y ∈ spt (τ_# μ)` and `N` is a neighbourhood of `y + ξ`, then `σ⁻¹ N`
+(`σ(x) = x + ξ`) is a neighbourhood of `y` and `μ N = (τ_# μ)(σ⁻¹ N) > 0`, so `y = τ(y + ξ)`
+with `y + ξ ∈ spt μ`; conversely `τ⁻¹ N` is a neighbourhood of `x` for every neighbourhood `N`
+of `τ(x)`. -/
+theorem dohr_tv_support_map_sub : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (ξ : Amb n ℓ),
+    (μ.map (fun x => x - ξ)).support = (fun x => x - ξ) '' μ.support := by
+  intro n ℓ μ ξ
+  -- `(τ_# μ)(N) = μ(τ⁻¹ N)` for every set `N`, measurable or not.
+  have hmap : ∀ N : Set (Amb n ℓ), μ.map (fun x => x - ξ) N = μ ((fun x => x - ξ) ⁻¹' N) :=
+    fun N => (MeasurableEquiv.subRight ξ).map_apply N
+  ext y
+  simp only [Measure.mem_support_iff_forall, hmap, mem_image]
+  constructor
+  · -- `y + ξ ∈ spt μ`: pull each neighbourhood `N` of `y + ξ` back along `σ`.
+    intro hy
+    refine ⟨y + ξ, fun N hN => ?_, add_sub_cancel_right y ξ⟩
+    have h := hy ((fun x => x + ξ) ⁻¹' N)
+      ((continuous_add_const ξ).continuousAt.preimage_mem_nhds hN)
+    simpa [preimage_preimage] using h
+  · -- `τ⁻¹ N` is a neighbourhood of `x` for every neighbourhood `N` of `τ(x)`.
+    rintro ⟨x, hx, rfl⟩ N hN
+    exact hx _ ((continuous_sub_right ξ).continuousAt.preimage_mem_nhds hN)
+/-- Simon Ch. 5, proof of Theorem 7.1 (the translation `τ(x) = x − ξ` of `V = v(M, θ)`): if
+`V'.carrier = τ(M)` and `V'.mult = θ(· + ξ)`, then `η_{y,r}(τ(M)) = η_{y+ξ,r}(M)` and
+`V'.mult(y + r z) = θ((y + ξ) + r z)`, so the weighted approximate tangent predicates of `V'` at `y`
+and of `V` at `y + ξ` coincide, and hence so do the classically chosen tangent projections. -/
+theorem dohr_tv_tangentProj_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (V' : RectifiableVarifold n ℓ U') (ξ : Amb n ℓ), V'.carrier = (fun x => x - ξ) '' V.carrier → (∀ y, V'.mult y = V.mult (y + ξ)) → ∀ y, V'.tangentProj y = V.tangentProj (y + ξ) := by
+  intro n ℓ U U' V V' ξ hM hθ y
+  -- The blow-ups agree: `η_{y,r}(τ(M)) = η_{y+ξ,r}(M)` since `(x − ξ) − y = x − (y + ξ)`.
+  have hblow : ∀ r : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap y r '' V'.carrier =
+      Poincare.SimonGMT.Chapter03.blowUpMap (y + ξ) r '' V.carrier := by
+    intro r
+    rw [hM, Set.image_image]
+    congr 1
+    funext x
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, sub_sub, add_comm ξ y]
+  -- The weights agree: `V'.mult(y + r z) = θ((y + ξ) + r z)`.
+  have hw : ∀ (r : ℝ) (z : Amb n ℓ), V'.mult (y + r • z) = V.mult (y + ξ + r • z) := by
+    intro r z
+    rw [hθ, add_right_comm]
+  -- Hence the weighted approximate tangent predicates of `V'` at `y` and of `V` at `y + ξ` agree.
+  have hP :
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V'.carrier V'.mult y =
+        Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult
+          (y + ξ) := by
+    funext P
+    simp only [Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt, hblow, hw, hθ y]
+  -- `tangentProj` only sees the tangent predicate, so equal predicates give equal projections.
+  have key : ∀ A B : Submodule ℝ (Amb n ℓ) → Prop, A = B →
+      @dite _ (∃ P, A P) (Classical.propDecidable _)
+          (fun h => (Classical.choose h).starProjection) (fun _ => (0 : Amb n ℓ →L[ℝ] Amb n ℓ)) =
+        @dite _ (∃ P, B P) (Classical.propDecidable _)
+          (fun h => (Classical.choose h).starProjection) (fun _ => 0) := by
+    rintro A B rfl
+    rfl
+  exact key _ _ hP
+/-- **Generalized mean curvature under the translation `τ(x) = x − ξ`** (Simon Ch. 4, 3.14).  Let
+`V'` be a rectifiable varifold in `τ(U)` with `μ_{V'} = τ_# μ_V` and `p_{T_y V'} = p_{T_{y+ξ} V}`
+for every `y`.  If `V` has generalized mean curvature `H` in `U`, then `V'` has generalized mean
+curvature `y ↦ H(y + ξ)` in `τ(U)`.
+Proof: `τ` is a homeomorphism and a measurable embedding.  Local integrability moves along `τ`,
+because `τ` maps `𝓝[U] x` onto `𝓝[τ(U)] τ(x)` and `H(· + ξ) ∘ τ = H`.  For `X ∈ C¹_c(τ(U))` the
+field `Y = X ∘ τ` lies in `C¹_c(U)`, and `div_{M'} X(τ(x)) = div_M Y(x)` because
+`DY(x) = DX(τ(x))`.  Changing variables in both first-variation integrals then gives the identity
+for `V'`. -/
+theorem dohr_tv_gmc_transfer : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ) (V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U)), V'.weight = V.weight.map (fun x => x - ξ) → (∀ y, V'.tangentProj y = V.tangentProj (y + ξ)) → ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun y => H (y + ξ)) := by
+  intro n ℓ U V ξ V' hw htp H hH
+  obtain ⟨hloc, hvar⟩ := hH
+  -- `τ(x) = x − ξ` is a measurable embedding and a topological embedding.
+  have hτm : MeasurableEmbedding (fun x : Amb n ℓ => x - ξ) := measurableEmbedding_subRight ξ
+  have hτe : Topology.IsEmbedding (fun x : Amb n ℓ => x - ξ) := (Homeomorph.subRight ξ).isEmbedding
+  refine ⟨?_, fun X hX hXc hXs => ?_⟩
+  · -- Step 1: `H(· + ξ)` is locally integrable on `τ(U)`.  At `τ(x)`, `x ∈ U`, the filter
+    -- `𝓝[τ(U)] τ(x)` is the image of `𝓝[U] x` under `τ`, and `H(· + ξ) ∘ τ = H`.
+    rintro _ ⟨x, hxU, rfl⟩
+    rw [hw, ← hτe.map_nhdsWithin_eq, hτm.integrableAtFilter_map_iff]
+    simpa only [Function.comp_def, sub_add_cancel] using hloc x hxU
+  · -- Step 2: the first variation of `V'`, tested against `X`, via the field `Y = X ∘ τ` on `U`.
+    have hY : ContDiff ℝ 1 (fun x => X (x - ξ)) := hX.comp (contDiff_id.sub contDiff_const)
+    have hYc : HasCompactSupport (fun x => X (x - ξ)) :=
+      hXc.comp_homeomorph (Homeomorph.subRight ξ)
+    have hYs : tsupport (fun x => X (x - ξ)) ⊆ U := by
+      intro x hx
+      have hx' : x - ξ ∈ tsupport X := by
+        have h : x ∈ tsupport (X ∘ Homeomorph.subRight ξ) := hx
+        rwa [tsupport_comp_eq_preimage] at h
+      obtain ⟨u, hu, hux⟩ := hXs hx'
+      rwa [← sub_left_injective hux]
+    -- `div_{M'} X (x − ξ) = div_M Y x`: the tangent planes match and `DY(x) = DX(x − ξ)`.
+    have hdiv : ∀ x, V'.divM X (x - ξ) = V.divM (fun x => X (x - ξ)) x := by
+      intro x
+      simp only [RectifiableVarifold.divM]
+      rw [htp, sub_add_cancel, fderiv_comp_sub]
+    calc ∫ y, V'.divM X y ∂V'.weight = ∫ x, V'.divM X (x - ξ) ∂V.weight := by
+          rw [hw, hτm.integral_map]
+      _ = ∫ x, V.divM (fun x => X (x - ξ)) x ∂V.weight := by simp only [hdiv]
+      _ = -∫ x, inner ℝ (X (x - ξ)) (H x) ∂V.weight := hvar _ hY hYc hYs
+      _ = -∫ y, inner ℝ (X y) (H (y + ξ)) ∂V'.weight := by
+          rw [hw, hτm.integral_map]
+          simp only [sub_add_cancel]
 
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
+
+namespace Submission
+
+/-- **Simon Ch. 5, Theorem 7.1, proof (p. 127): translation invariance (fact (Inv)).**  For
+`τ(x) = x − ξ`, the translate `V' = v(τ(M), θ(· + ξ))` is a rectifiable `n`-varifold in `τ(U)` with
+`μ_{V'} = τ_# μ_V` and `spt V' = τ(spt V)`; if `V` has generalized mean curvature `H` in `U`, then
+`V'` has generalized mean curvature `H(· + ξ)` in `τ(U)`.
+
+`V'` and its structure fields come from `dohr_tv_exists_translate`, the weight from
+`dohr_tv_weight_eq_map`, the tangent projections `p_{T_y V'} = p_{T_{y+ξ} V}` from
+`dohr_tv_tangentProj_eq`, and the first variation from `dohr_tv_gmc_transfer`.  For the support,
+`spt V' = τ(U) ∩ spt(τ_# μ_V) = τ(U) ∩ τ(spt μ_V)` (`dohr_tv_support_map_sub`), which is
+`τ(U ∩ spt μ_V)` because `τ` is injective. -/
+theorem dohr_translate_varifold : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ), ∃ V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U), V'.carrier = (fun x => x - ξ) '' V.carrier ∧ (∀ y, V'.mult y = V.mult (y + ξ)) ∧ V'.weight = V.weight.map (fun x => x - ξ) ∧ V'.support = (fun x => x - ξ) '' V.support ∧ ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun y => H (y + ξ)) := by
+  intro n ℓ U V ξ
+  -- Steps 1–2: the translate `V'` in `τ(U)` with carrier `τ(M)` and multiplicity `θ(· + ξ)`.
+  obtain ⟨V', hc, hm⟩ := Submission.dohr_tv_exists_translate n ℓ U V ξ
+  -- Step 3: `μ_{V'} = τ_# μ_V`.
+  have hw := Submission.dohr_tv_weight_eq_map n ℓ U _ V V' ξ hc hm
+  -- Step 5: `p_{T_y V'} = p_{T_{y+ξ} V}` for every `y`.
+  have ht := Submission.dohr_tv_tangentProj_eq n ℓ U _ V V' ξ hc hm
+  -- Step 6 is `dohr_tv_gmc_transfer`; only the support (Step 4) remains.
+  refine ⟨V', hc, hm, hw, ?_, Submission.dohr_tv_gmc_transfer n ℓ U V ξ V' hw ht⟩
+  -- Step 4: `spt V' = τ(U) ∩ spt(τ_# μ_V) = τ(U) ∩ τ(spt μ_V) = τ(U ∩ spt μ_V)`.
+  show (fun x => x - ξ) '' U ∩ V'.weight.support = (fun x => x - ξ) '' (U ∩ V.weight.support)
+  rw [hw, Submission.dohr_tv_support_map_sub n ℓ V.weight ξ,
+    Set.image_inter (sub_left_injective (b := ξ))]
+
+end Submission
 
 end GMT.Ch05

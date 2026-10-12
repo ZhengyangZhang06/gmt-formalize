@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.translate_varifold-a1.gmc_transfer-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.translate_varifold-a1",
+  "depth": 3,
+  "title": "Generalized mean curvature transfers to the translated varifold",
+  "statement": "Let n, l be natural numbers, U any subset of R^(n+l), V a rectifiable n-varifold in U, xi in R^(n+l), tau(x) = x - xi, and V' a rectifiable n-varifold in tau(U) such that mu_V' = tau_# mu_V (V'.weight = Measure.map tau V.weight) and V'.tangentProj y = V.tangentProj (y + xi) for every y. If V has generalized mean curvature H in U (H locally mu_V-integrable on U and integral of div_M X dmu_V = - integral of <X, H> dmu_V for every C^1 compactly supported X with tsupport X contained in U), then V' has generalized mean curvature y -> H(y + xi) in tau(U).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ) (V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U)), V'.weight = V.weight.map (fun x => x - ξ) → (∀ y, V'.tangentProj y = V.tangentProj (y + ξ)) → ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun y => H (y + ξ))",
+  "lean_name": "dohr_tv_gmc_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-translate-varifold-a1-gmc-transfer-a1-a1"
+}
