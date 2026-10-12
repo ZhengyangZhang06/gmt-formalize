@@ -1,0 +1,15 @@
+{
+  "node_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.density_borel_representative-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1213",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "015a566dda072ed131ac107a823c055fb2c67c43",
+  "integrated_commit": "",
+  "proof_base_commit": "bdec0da1f79e416d344ad10816544f4ff4d5af5c",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1",
+  "requires": []
+}
