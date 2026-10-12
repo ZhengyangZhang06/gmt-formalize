@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsRectifiableTriple|tauAction|IsRestriction|IsMeasureRepresentation|SlicingTheorem|br_loc_",
+        "def TestFormOnConverges|structure GeometricCurrentOn|def covectorEuclideanNorm|def massAdmissibleOn|def massOn|def mass |def testFormOnInclusion|testFormOnInclusion_coe|restrictDomain_apply|abbrev NVector|def simpleNVector|CountablyRectifiable.mono|def HasWeightedApproximateTangentSpaceAt",
+        "norm_fderiv_le_of_lipschitz|norm_iteratedFDeriv_zero|tendstoUniformlyOn_iff",
+        "br_loc_tauAction_current|br_loc_triple_inter_open",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/AllChallenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/FullChain.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-localization-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-localization-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/tmp/loc_decomp/proj/Scratch/AllChallenges.lean",
+        "/tmp/loc_decomp/proj/Scratch/FullChain.lean"
+      ],
+      "conclusion": "The split appropriately isolates two construction lemmas and reuses seven accepted declarations with identical frozen types. New names are unreserved; all names are bare identifiers. Dependencies are correctly directed and acyclic, including existing dependency closures. Independent Lean runs succeeded: all nine challenge types elaborate without their implementations, and the supplied assembly proves the selected parent's exact frozen type. The parent and both new declarations report only propext, Classical.choice and Quot.sound. Frozen definitions and accepted source copies were checked for identity. Operator norms, coefficient norms, Euclidean metrics and domain inclusions have the intended meanings; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tau_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including arbitrary V. Integrability establishes linearity; uniform convergence on a common compact support and the integrable indicator majorant establish precisely the current's continuity field. Only the declared dependencies are used."
+    },
+    {
+      "key": "triple_inter_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All target-domain hypotheses are explicit. The proof verifies every triple field and correctly transfers orientation through weighted tangent locality. Its sole dependency is correctly directed."
+    },
+    {
+      "key": "restriction_theory",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse. Coordinate cutoff bounds establish R0; locally finite coefficient-measure uniqueness establishes R1; Riesz representation, restriction continuity and the Lusin/mollification argument establish R2. These conclusions supply exactly the restriction facts used in the assembly."
+    },
+    {
+      "key": "boundary_mass_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse. The compactly supported cutoff preserves admissibility, germ locality identifies exterior derivatives on V, and the supremum yields the stated boundary-mass inequality. No openness of V is needed."
+    },
+    {
+      "key": "mass_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse. The coefficient-norm duality bound and compact exhaustion with continuous approximation and mollification prove both inequalities. The proof handles arbitrary open W through W intersect U and supplies finite mass of X."
+    },
+    {
+      "key": "tau_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse. Orientation gives the operator-norm bound; measurable evaluation and locally integrable multiplicity prove both integrability claims. Vanishing outside the compact support justifies the extension to M."
+    },
+    {
+      "key": "tau_congr_on_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse. Restricting to measurable V, replacing almost-equal sets and replacing almost-equal integrands proves equality even for totalized nonintegrable Bochner integrals. This gives the parent's exact local agreement."
+    },
+    {
+      "key": "weighted_tangent_congr",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse. Lipschitz blow-ups preserve null sets; compactly supported tests eventually see only V. The transformed weights and carriers agree almost everywhere, and pointwise equality of the weights identifies the limiting value."
+    },
+    {
+      "key": "unit_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type accepted reuse. Evaluation on an orthonormal frame and the alternating-map operator-norm inequality prove the bound, including the empty frame. Negation preserves absolute value."
+    }
+  ],
+  "required_changes": []
+}
