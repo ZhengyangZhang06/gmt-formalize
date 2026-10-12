@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c160faab51f8b834a2d777340f40172f9b217a9f4601708c30c227c760a48b24",
+  "git_delta": {
+    "base_commit": "cd85cf76069b4253c566d71bc95ea30382f99c75",
+    "candidate_commit": "44fd07a85eca697cba746767746d26164d0b584d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "stationary_imrep_radial_tangency_of_ball_ratio",
+    "diff_sha256": "772190999fb713c5679f9620529d20cf048875accc0f6358a608f2b8df1bc307",
+    "source_sha256": "06522cafbf93fd52c9f7a1d97c5cce7c94d9fd59e00d163e9da2f1108b097b95",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.stationary_imrep_radial_tangency_of_ball_ratio",
+      "statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → (∀ ρ : ℝ, 0 < ρ → R.measure (closedBall (0 : Euclid P) ρ) = ENNReal.ofReal (ρ ^ n) * R.measure (closedBall (0 : Euclid P) 1)) → ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
