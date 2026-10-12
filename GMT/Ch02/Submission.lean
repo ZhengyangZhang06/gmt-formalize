@@ -472,4 +472,24 @@ theorem Submission.exists_separated_finset_subset_cover_closedBall : ∀ (X : Ty
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
+/-- **Closed-ball covers of a bounded set in `ℝⁿ`.** Let `K ⊆ ℝⁿ` be bounded. There is `C` such that
+for every `0 < r ≤ 1` some finite `s ⊆ K` has `K ⊆ ⋃_{x ∈ s} B̄(x, r)` and `card(s)·rⁿ ≤ C`. Take `C`
+from the packing bound: `card(F)·rⁿ ≤ C` for every finite `r`-separated `F ⊆ K`. As `0 < rⁿ`, every
+such `F` has at most `⌊C / rⁿ⌋₊` points, so a maximal `r`-separated `F ⊆ K` covers `K` by closed
+`r`-balls, and the packing bound applies to this `F` as well. -/
+theorem Submission.bounded_set_closedBall_cover_card_mul_pow_le : ∀ (n : ℕ) (K : Set (Rn n)), Bornology.IsBounded K → ∃ C : ℝ, ∀ r : ℝ, 0 < r → r ≤ 1 → ∃ s : Finset (Rn n), (↑s : Set (Rn n)) ⊆ K ∧ K ⊆ ⋃ x ∈ s, closedBall x r ∧ (s.card : ℝ) * r ^ n ≤ C := by
+  intro n K hK
+  -- Step 1: the packing bound gives `C`, fixed before `r` is chosen.
+  obtain ⟨C, hC⟩ := Submission.bounded_set_separated_finset_card_mul_pow_le n K hK
+  refine ⟨C, fun r hr hr1 ↦ ?_⟩
+  -- Step 2: as `0 < rⁿ`, every finite `r`-separated `F ⊆ K` has at most `⌊C / rⁿ⌋₊` points.
+  have hN : ∀ F : Finset (Rn n), (↑F : Set (Rn n)) ⊆ K →
+      (∀ x ∈ F, ∀ y ∈ F, x ≠ y → r < dist x y) → F.card ≤ ⌊C / r ^ n⌋₊ :=
+    fun F hFK hFr ↦ Nat.le_floor ((le_div_iff₀ (pow_pos hr n)).2 (hC r hr hr1 F hFK hFr))
+  -- Step 3: hence some finite `r`-separated `F ⊆ K` covers `K` by closed `r`-balls.
+  obtain ⟨F, hFK, hFr, hcov⟩ :=
+    Submission.exists_separated_finset_subset_cover_closedBall (Rn n) K r ⌊C / r ^ n⌋₊ hr.le hN
+  -- Step 4: take `s := F`; the packing bound gives `card(F)·rⁿ ≤ C`.
+  exact ⟨F, hFK, hcov, hC r hr hr1 F hFK hFr⟩
+
 end GMT.Ch02
