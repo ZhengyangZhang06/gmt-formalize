@@ -438,6 +438,65 @@ theorem Submission.ltg_covector_separating :
   let b := Module.finBasis ℝ (Covector (Eucl P) k)
   exact ⟨Module.finrank ℝ (Covector (Eucl P) k), b, fun w w' h =>
     ContinuousLinearMap.coe_injective (b.ext h)⟩
+/-- Nonnegative multiples of unit simple `k`-vectors are rigid (the orientations
+`ξ = ±τ₁ ∧ ⋯ ∧ τₖ` of Simon Ch. 6, 3.1): if `τ, τ'` are orthonormal, `w = ±τ₁ ∧ ⋯ ∧ τₖ`,
+`w' = ±τ'₁ ∧ ⋯ ∧ τ'ₖ`, `a, a' ≥ 0` and `a w = a' w'`, then `a = a'`, and `w = w'` when `a ≠ 0`.
+Evaluate on the dual covectors `α_σ = ⟨σ₁, ·⟩ ∧ ⋯ ∧ ⟨σₖ, ·⟩`, `α_σ(v) = det(⟨σᵢ, vⱼ⟩)` (1.1):
+with `d = det(⟨τᵢ, τ'ⱼ⟩)`, `α_τ(τ) = α_τ'(τ') = 1` and `α_τ(τ') = α_τ'(τ) = d` give
+`a = a' |d|` and `a |d| = a'`. -/
+theorem Submission.ltg_simple_unit_rigidity :
+    ∀ (P k : ℕ) (τ τ' : Fin k → Eucl P) (w w' : NVector (Eucl P) k) (a a' : ℝ),
+      Orthonormal ℝ τ → Orthonormal ℝ τ' → (w = simpleNVector τ ∨ w = -simpleNVector τ) →
+      (w' = simpleNVector τ' ∨ w' = -simpleNVector τ') → 0 ≤ a → 0 ≤ a' → a • w = a' • w' →
+      a = a' ∧ (a ≠ 0 → w = w') := by
+  intro P k τ τ' w w' a a' hτ hτ' hw hw' ha ha' h
+  -- The dual covector `α_σ = ⟨σ₁, ·⟩ ∧ ⋯ ∧ ⟨σₖ, ·⟩` evaluates as `det(⟨σᵢ, vⱼ⟩)`.
+  let α : (Fin k → Eucl P) → Covector (Eucl P) k :=
+    fun σ => wedgeCovectors k fun i => innerSL ℝ (σ i)
+  have hα : ∀ σ v : Fin k → Eucl P,
+      α σ v = (Matrix.of fun i j => inner ℝ (σ i) (v j)).det := fun σ v => by
+    simp only [α, wedgeCovectors_apply_det, innerSL_apply_apply]
+  -- `α_σ(σ) = det 1 = 1` for orthonormal `σ`, and `α_τ'(τ) = α_τ(τ')` by transposition.
+  have hone : ∀ σ : Fin k → Eucl P, Orthonormal ℝ σ → α σ σ = 1 := fun σ hσ => by
+    have h1 : (Matrix.of fun i j => inner ℝ (σ i) (σ j)) = (1 : Matrix (Fin k) (Fin k) ℝ) := by
+      ext i j
+      simp [orthonormal_iff_ite.mp hσ, Matrix.one_apply]
+    rw [hα, h1, Matrix.det_one]
+  have hswap : α τ' τ = α τ τ' := by
+    rw [hα, hα, ← Matrix.det_transpose]
+    congr 1
+    ext i j
+    simp only [Matrix.transpose_apply, Matrix.of_apply]
+    exact real_inner_comm _ _
+  -- Signs: `w = s • simpleNVector τ` and `w' = s' • simpleNVector τ'` with `|s| = |s'| = 1`.
+  have hsign : ∀ (σ : Fin k → Eucl P) (v : NVector (Eucl P) k),
+      (v = simpleNVector σ ∨ v = -simpleNVector σ) →
+        ∃ s : ℝ, |s| = 1 ∧ v = s • simpleNVector σ := by
+    rintro σ v (rfl | rfl)
+    · exact ⟨1, abs_one, (one_smul ℝ _).symm⟩
+    · refine ⟨-1, by simp, ?_⟩
+      ext β
+      simp
+  obtain ⟨s, hs, rfl⟩ := hsign τ w hw
+  obtain ⟨s', hs', rfl⟩ := hsign τ' w' hw'
+  -- Evaluate `a • w = a' • w'` at `α_τ` and `α_τ'` and take absolute values:
+  -- `a = a' |d|` and `a |d| = a'`, where `d = α_τ(τ')`.
+  have e1 := congrArg (fun v : NVector (Eucl P) k => |v (α τ)|) h
+  have e2 := congrArg (fun v : NVector (Eucl P) k => |v (α τ')|) h
+  simp only [smul_apply, simpleNVector_apply, smul_eq_mul, hone τ hτ, hone τ' hτ', hswap,
+    abs_mul, abs_of_nonneg ha, abs_of_nonneg ha', hs, hs', mul_one, one_mul] at e1 e2
+  -- `a = a'`: trivial if `a = 0`; otherwise `a |d|² = a` forces `|d| = 1`.
+  have haa : a = a' := by
+    rcases eq_or_ne a 0 with ha0 | ha0
+    · rw [← e2, ha0, zero_mul]
+    · have hd : |α τ τ'| * |α τ τ'| = 1 :=
+        mul_left_cancel₀ ha0 (by rw [← mul_assoc, e2, ← e1, mul_one])
+      have hd' : |α τ τ'| = 1 := by nlinarith [abs_nonneg (α τ τ')]
+      rw [← e2, hd', mul_one]
+  -- `w = w'`: cancel the nonzero scalar `a` in `a • w = a • w'`.
+  refine ⟨haa, fun ha0 => ?_⟩
+  rw [← haa] at h
+  exact smul_right_injective _ ha0 h
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
