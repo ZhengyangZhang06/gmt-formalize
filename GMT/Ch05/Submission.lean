@@ -458,6 +458,40 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Dilation formula for lower integrals on `ℝⁿ`** (used in the boundary-layer estimate for the
+Rellich compactness step in the proof of Simon Ch. 5, Lemma 3.1, p. 114).  For `t > 0`, every
+`F : ℝⁿ → [0, ∞]` and every set `E ⊆ ℝⁿ` (neither assumed measurable),
+`∫_E F(t x) dx = t^{-n} ∫_{tE} F(y) dy`, where `tE = {y : t⁻¹ y ∈ E}`.
+Proof: `T x = t x` is a measurable equivalence with `T⁻¹(tE) = E`, and `T_# Lⁿ = t^{-n} Lⁿ`
+(`Measure.map_addHaar_smul`, `finrank ℝ ℝⁿ = n`).  Change of variables along the measurable
+embedding `T` needs no measurability of `F` or `E`. -/
+theorem ble_sac_lintegral_comp_smul : ∀ (n : ℕ) (F : Rn n → ℝ≥0∞) (E : Set (Rn n)) (t : ℝ), 0 < t → ∫⁻ x in E, F (t • x) = ENNReal.ofReal ((t ^ n)⁻¹) * ∫⁻ y in (fun y => t⁻¹ • y) ⁻¹' E, F y := by
+  intro n F E t ht
+  -- `T x = t • x` as a measurable equivalence of `ℝⁿ`.
+  let e : Rn n ≃ᵐ Rn n := (Homeomorph.smul (Units.mk0 t ht.ne')).toMeasurableEquiv
+  have he : ∀ x, e x = t • x := fun x => rfl
+  -- `T⁻¹(tE) = E`, since `t⁻¹ • (t • x) = x`.
+  have hpre : e ⁻¹' ((fun y => t⁻¹ • y) ⁻¹' E) = E := by
+    ext x
+    simp only [mem_preimage, he, smul_smul, inv_mul_cancel₀ ht.ne', one_smul]
+  -- `T_# Lⁿ = t^{-n} Lⁿ`.
+  have hmap : Measure.map e volume = ENNReal.ofReal ((t ^ n)⁻¹) • (volume : Measure (Rn n)) := by
+    have := Measure.map_addHaar_smul (volume : Measure (Rn n)) ht.ne'
+    rw [finrank_euclideanSpace_fin] at this
+    rw [show (e : Rn n → Rn n) = fun x => t • x from funext he, this]
+    congr 2
+    rw [abs_of_pos (by positivity)]
+  -- Change variables along the measurable embedding `T`, then pull out the scalar.
+  calc ∫⁻ x in E, F (t • x) = ∫⁻ x in e ⁻¹' ((fun y => t⁻¹ • y) ⁻¹' E), F (e x) := by
+        rw [hpre]; simp only [he]
+    _ = ∫⁻ y in (fun y => t⁻¹ • y) ⁻¹' E, F y ∂(Measure.map e volume) := by
+        rw [e.measurableEmbedding.restrict_map, e.measurableEmbedding.lintegral_map]
+    _ = _ := by rw [hmap, Measure.restrict_smul, lintegral_smul_measure, smul_eq_mul]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
