@@ -400,6 +400,120 @@ theorem Submission.smr_ufd_cl_inner_compact : ∀ (P : ℕ) (U : Set (Eucl P)) (
   -- Step 5: `L` is compact, `L ⊆ E' ⊆ W ∩ E` and `c < μ L`.
   refine ⟨L, hLc, hLE'.trans hE'W, ?_⟩
   rwa [Measure.restrict_eq_self μ hLE'] at hL
+/-- Lusin's theorem with compact sets (Simon Ch. 1, 1.17, applied coordinatewise): if `μ` is a
+measure on `ℝ^P`, `u : ℝ^P → ℝ^N` is Borel and `A ⊆ ℝ^P` is Borel with `μ(A) < ∞`, then for every
+`ε > 0` there is a compact `C ⊆ A` with `μ(A ∖ C) < ε` and `u|C` continuous. -/
+theorem Submission.smr_ufd_cl_vector_lusin : ∀ (P N : ℕ) (μ : Measure (Eucl P)) (u : Eucl P → EuclideanSpace ℝ (Fin N)), Measurable u → ∀ A : Set (Eucl P), MeasurableSet A → μ A ≠ ∞ → ∀ ε : ℝ≥0∞, ε ≠ 0 → ∃ C : Set (Eucl P), IsCompact C ∧ C ⊆ A ∧ μ (A \ C) < ε ∧ ContinuousOn u C := by
+  intro P N μ u hu A hA hAfin ε hε
+  -- Step 1: every Borel `S` with `μ(S) < ∞` has, for every `δ > 0`, a compact (hence closed)
+  -- `F ⊆ S` with `μ(S ∖ F) < δ`: the finite measure `ν = μ ⌞ S` is regular on `ℝ^P`, and
+  -- `ν = μ` on subsets of `S`.
+  have hreg : ∀ S : Set (Eucl P), MeasurableSet S → μ S ≠ ∞ → ∀ δ : ℝ≥0∞, δ ≠ 0 →
+      ∃ F ⊆ S, IsCompact F ∧ IsClosed F ∧ μ (S \ F) < δ := by
+    intro S hS hSfin δ hδ
+    have : IsFiniteMeasure (μ.restrict S) := isFiniteMeasure_restrict.2 hSfin
+    have : (μ.restrict S).Regular :=
+      Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure _
+    obtain ⟨F, hFS, hFc, hFcl, hFlt⟩ :=
+      hS.exists_isCompact_isClosed_sdiff_lt (μ := μ.restrict S) (measure_ne_top _ _) hδ
+    refine ⟨F, hFS, hFc, hFcl, ?_⟩
+    rwa [Measure.restrict_apply (hS.diff hFcl.measurableSet), inter_eq_left.2 sdiff_subset]
+      at hFlt
+  -- Step 2: an error budget `0 < η < ∞` with `(N + 1) η < ε`.
+  obtain ⟨η, hη0, hηε⟩ :=
+    ENNReal.exists_pos_mul_lt (a := ((N + 1 : ℕ) : ℝ≥0∞)) (ENNReal.natCast_ne_top _) hε
+  have hηtop : η ≠ ∞ := by
+    rintro rfl
+    rw [ENNReal.top_mul (by exact_mod_cast Nat.succ_ne_zero N)] at hηε
+    exact not_top_lt hηε
+  -- Step 3: the coordinates `u_i = (u ·) i` are Borel.
+  have hui : ∀ i : Fin N, Measurable fun x => u x i := fun i =>
+    (EuclideanSpace.proj i).continuous.measurable.comp hu
+  -- Step 4: Lusin's theorem (Simon Ch. 1, 1.17) on `A` for a Borel `f : ℝ^P → ℝ`, with the
+  -- closed regularity of Step 1.  SimonGMT's `Chapter01.Lusin` is outside the frozen imports, so
+  -- it is proved here through a countable basis `(b k)` of `ℝ`: closed `G k ⊆ A ∩ f⁻¹(b k)` and
+  -- `H k ⊆ A ∖ f⁻¹(b k)` with defects `< δ k`, `∑ δ k < η / 2`, and `F = ⋂ k, (G k ∪ H k)`.
+  have hlusin : ∀ f : Eucl P → ℝ, Measurable f →
+      ∃ F ⊆ A, IsClosed F ∧ μ (A \ F) < η ∧ ContinuousOn f F := by
+    intro f hf
+    obtain ⟨b, hb⟩ := TopologicalSpace.exists_seq_basis ℝ
+    have hbo : ∀ k, IsOpen (b k) := fun k => hb.isOpen (mem_range_self k)
+    obtain ⟨δ, hδ0, hδη⟩ := ENNReal.exists_pos_sum_of_countable (ENNReal.half_pos hη0.ne').ne' ℕ
+    have hδ : ∀ k, ((δ k : ℝ≥0) : ℝ≥0∞) ≠ 0 := fun k => ENNReal.coe_ne_zero.2 (hδ0 k).ne'
+    choose G hGA hGc hGcl hGlt using fun k =>
+      hreg _ (hA.inter (hf (hbo k).measurableSet))
+        (ne_top_of_le_ne_top hAfin (measure_mono inter_subset_left)) (δ k) (hδ k)
+    choose H hHA hHc hHcl hHlt using fun k =>
+      hreg _ (hA.diff (hf (hbo k).measurableSet))
+        (ne_top_of_le_ne_top hAfin (measure_mono sdiff_subset)) (δ k) (hδ k)
+    refine ⟨⋂ k, (G k ∪ H k), ?_, isClosed_iInter fun k => (hGcl k).union (hHcl k), ?_, ?_⟩
+    · exact (iInter_subset _ 0).trans
+        (union_subset ((hGA 0).trans inter_subset_left) ((hHA 0).trans sdiff_subset))
+    -- `A ∖ F ⊆ ⋃ k, ((A ∩ f⁻¹(b k)) ∖ G k ∪ (A ∖ f⁻¹(b k)) ∖ H k)`.
+    · calc μ (A \ ⋂ k, (G k ∪ H k))
+          ≤ μ (⋃ k, ((A ∩ f ⁻¹' b k) \ G k ∪ (A \ f ⁻¹' b k) \ H k)) := by
+            refine measure_mono fun x hx => ?_
+            obtain ⟨k, hk⟩ : ∃ k, x ∉ G k ∪ H k := by
+              by_contra! h
+              exact hx.2 (mem_iInter.2 h)
+            refine mem_iUnion.2 ⟨k, ?_⟩
+            by_cases hxb : f x ∈ b k
+            · exact Or.inl ⟨⟨hx.1, hxb⟩, fun h => hk (Or.inl h)⟩
+            · exact Or.inr ⟨⟨hx.1, hxb⟩, fun h => hk (Or.inr h)⟩
+        _ ≤ ∑' k, μ ((A ∩ f ⁻¹' b k) \ G k ∪ (A \ f ⁻¹' b k) \ H k) := measure_iUnion_le _
+        _ ≤ ∑' k, ((δ k : ℝ≥0∞) + δ k) := ENNReal.tsum_le_tsum fun k =>
+            (measure_union_le _ _).trans (add_le_add (hGlt k).le (hHlt k).le)
+        _ = ∑' k, (δ k : ℝ≥0∞) + ∑' k, (δ k : ℝ≥0∞) := ENNReal.tsum_add
+        _ < η / 2 + η / 2 := ENNReal.add_lt_add hδη hδη
+        _ = η := ENNReal.add_halves η
+    -- `f⁻¹(b k) ∩ F = (H k)ᶜ ∩ F` is relatively open in `F` for every basic open set `b k`.
+    · rw [hb.continuousOn_iff]
+      rintro t ⟨k, rfl⟩
+      refine ⟨(H k)ᶜ, (hHcl k).isOpen_compl, ?_⟩
+      ext x
+      simp only [mem_inter_iff, mem_preimage, mem_compl_iff]
+      constructor
+      · rintro ⟨hxb, hxF⟩
+        exact ⟨fun hxH => ((hHA k) hxH).2 hxb, hxF⟩
+      · rintro ⟨hxH, hxF⟩
+        refine ⟨?_, hxF⟩
+        rcases mem_iInter.1 hxF k with hxG | hxH'
+        · exact ((hGA k) hxG).2
+        · exact absurd hxH' hxH
+  -- For each coordinate `i`: a closed `F i ⊆ A` with `μ(A ∖ F i) < η` and `u_i` continuous
+  -- on `F i`.
+  choose F hFA hFcl hFlt hFcont using fun i => hlusin _ (hui i)
+  -- Step 5: a compact `K ⊆ A` with `μ(A ∖ K) < η`.
+  obtain ⟨K, hKA, hKc, -, hKlt⟩ := hreg A hA hAfin η hη0.ne'
+  -- Step 6: `C = K ∩ ⋂ i, F i` is compact and `C ⊆ K ⊆ A`.
+  refine ⟨K ∩ ⋂ i, F i, hKc.inter_right (isClosed_iInter hFcl), inter_subset_left.trans hKA,
+    ?_, ?_⟩
+  -- Step 8: `A ∖ C ⊆ (A ∖ K) ∪ ⋃ i, (A ∖ F i)`, so `μ(A ∖ C) < η + N η = (N + 1) η < ε`.
+  · have hsum : ∑ i, μ (A \ F i) ≤ ∑ _i : Fin N, η :=
+      Finset.sum_le_sum fun i _ => (hFlt i).le
+    have hsum_ne_top : ∑ i, μ (A \ F i) ≠ ∞ :=
+      ne_top_of_le_ne_top (ENNReal.sum_ne_top.2 fun _ _ => hηtop) hsum
+    calc μ (A \ (K ∩ ⋂ i, F i))
+        ≤ μ ((A \ K) ∪ ⋃ i, (A \ F i)) := by
+          refine measure_mono fun x hx => ?_
+          by_cases hxK : x ∈ K
+          · obtain ⟨i, hi⟩ : ∃ i, x ∉ F i := by
+              by_contra! h
+              exact hx.2 ⟨hxK, mem_iInter.2 h⟩
+            exact Or.inr (mem_iUnion.2 ⟨i, hx.1, hi⟩)
+          · exact Or.inl ⟨hx.1, hxK⟩
+      _ ≤ μ (A \ K) + ∑ i, μ (A \ F i) :=
+          (measure_union_le _ _).trans (add_le_add le_rfl (measure_iUnion_fintype_le _ _))
+      _ < η + ∑ _i : Fin N, η := ENNReal.add_lt_add_of_lt_of_le hsum_ne_top hKlt hsum
+      _ = η * ((N + 1 : ℕ) : ℝ≥0∞) := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+          push_cast
+          ring
+      _ < ε := hηε
+  -- Step 7: every coordinate of `u` is continuous on `C ⊆ F i`, hence so is `u`.
+  · have h : ContinuousOn (fun x => WithLp.ofLp (u x)) (K ∩ ⋂ i, F i) :=
+      continuousOn_pi.2 fun i => (hFcont i).mono (inter_subset_right.trans (iInter_subset _ i))
+    exact (PiLp.continuous_toLp 2 _).comp_continuousOn h
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
