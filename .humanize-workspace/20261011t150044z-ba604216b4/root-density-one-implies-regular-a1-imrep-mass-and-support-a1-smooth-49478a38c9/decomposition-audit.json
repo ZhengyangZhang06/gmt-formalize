@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "covectorEuclideanNorm|Covector|DifferentialForm|IsTestForm",
+        "exists_restrict_eq|instTietzeExtensionTVS|ext_alternating|def apply|toAlternatingMap_injective|CompleteSpace",
+        "dist_normed_convolution_le|nonneg_normed|contDiff_normed|integral_normed|support_normed_eq|hasCompactSupport_normed|continuous_normed|integrable_normed|tsupport",
+        "exists_cthickening_subset_open|closure_thickening_subset_cthickening|mem_thickening_iff_infDist_lt|theorem IsCompact.cthickening|cthickening_empty",
+        "dor_ims_sua|smooth_unit_approx|coeff_norm_rep",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sua-decomp/final/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sua-decomp/final/FinalProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sua-independent-audit-fmw_w7_t/ContractsAndInstances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-49478a38c9/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-49478a38c9/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Tietze.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/TietzeExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/tmp/sua-decomp/final/Challenges.lean",
+        "/tmp/sua-decomp/final/FinalProofs.lean",
+        "/tmp/sua-independent-audit-fmw_w7_t/ContractsAndInstances.lean"
+      ],
+      "conclusion": "Verified project b4d606d and mathlib 25730c7c, unchanged contract definitions, and compatibility of the inspected snapshot and installed library files. The snapshot supplies the cited coefficient, alternating-map, Tietze, thickening, and convolution APIs; the proposed-name search found no existing declarations. DAG and other decomposition-proposal scans found no reservations of the four names. An unaccepted branch has the same finite-dimensionality proposition under a different name; no accepted declaration is reused. All four names are bare identifiers and all four statements are standalone one-line propositions matching their prose. Independently reran the challenge elaboration, complete supplied Lean proofs, and parent assembly: all succeeded; the proofs depend only on propext, Classical.choice, and Quot.sound. Separate probes verified the L² norm, covector completeness, Euclidean properness and Haar measure, and IsTestForm's smoothness order. The split is appropriate and acyclic. Applying continuous_unit_extension, then mollify_unit_field with ε = δ, and substituting g = β on K proves exactly the selected frozen parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coeff_norm_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree without additional hypotheses. Each coefficient evaluation is continuous linear independently of finite-dimensionality; the finite product followed by EuclideanSpace.equiv constructs A. EuclideanSpace.norm_eq gives precisely the defining coefficient sum. The inferred target norm is L². The supplied proof is complete and non-circular."
+    },
+    {
+      "key": "covector_finite_dimensional",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type expresses the stated finite-dimensionality for arbitrary P and n. Evaluation on all basis tuples is linear and injective by alternating-map extensionality, and its codomain is finite-dimensional. FiniteDimensional.of_injective completes the proof, including zero-dimensional and empty-index cases. No child or parent result is assumed."
+    },
+    {
+      "key": "continuous_unit_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match. The proof handles empty K, applies Tietze using the finite-dimensionality sibling, obtains continuity and homogeneity from the coefficient sibling, and verifies the radial retraction and cutoff. The support closure lies in a compact thickening contained in V; the global unit bound and exact agreement on K follow. Both declared dependencies are necessary to the supplied route and correctly directed."
+    },
+    {
+      "key": "mollify_unit_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement includes every required hypothesis and matches its Lean proposition. The proof establishes a support margin, positive smoothing radius, normalized nonnegative kernel, integrability, smoothness, and compact support inside V. Commuting A with the integral proves the unit bound; uniform continuity and C₀ = ‖A‖ give the global ε estimate. Covector completeness is independently available, so no finite-dimensionality dependency is missing. The proof uses only the declared coefficient sibling and library results, and combines with the extension child to prove the selected parent."
+    }
+  ],
+  "required_changes": []
+}
