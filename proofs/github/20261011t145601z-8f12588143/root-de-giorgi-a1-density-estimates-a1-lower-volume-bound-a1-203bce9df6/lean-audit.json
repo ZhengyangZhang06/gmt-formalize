@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d3b8505d81852844c09a2cbf85ca5999309c2c76cc90c8b812b3c4c67007c8f9",
+  "git_delta": {
+    "base_commit": "b67c44ce744852a5c87e01622dae22b1dd376258",
+    "candidate_commit": "afec81be5817427472057f2a16505096b3e9fcee",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiDens_ball_volume_ge",
+    "diff_sha256": "69ecd5fbf7bf6fabbc6561eba44e0f293bf1f799d405b6031340dba50682e7c0",
+    "source_sha256": "a5b5be17a22746c8a76f23abd8d477eac0d618c13def529be7d6a3b9f29ffaf8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiDens_ball_volume_ge",
+      "statement": "∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (U G : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (x w : Rn (n + 1)) (ρ₁ : ℝ), ‖w‖ ≤ 1 → Metric.ball x ρ₁ ⊆ U → (∀ ρ ∈ Ioo 0 ρ₁, 0 < μ (Metric.ball x ρ) ∧ (μ (Metric.ball x ρ)).toReal ≤ 2 * ∫ y in Metric.ball x ρ, inner ℝ (ν y) w ∂μ) → ∀ ρ ∈ Ioo 0 ρ₁, ENNReal.ofReal (c * ρ ^ (n + 1)) ≤ volume (G ∩ Metric.ball x ρ)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
