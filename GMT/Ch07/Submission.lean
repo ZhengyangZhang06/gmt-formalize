@@ -590,6 +590,41 @@ theorem Submission.dorag_ted_pl_proj_limit_rank : ∀ (P n : ℕ) (S : ℕ → S
   · rw [← hb i, ← hLeq]
     exact hLb i
 
+/-- **Limit of geometrically converging `n`-planes** (Simon Ch. 5, proof of Theorem 5.2, (4)–(5):
+"(4) evidently implies that there is `S(ξ)` (`= lim S_ℓ`) such that (5)").  With the squared
+Hilbert–Schmidt distance `d(A, B) = Σᵢ |A eᵢ − B eᵢ|²`, if `dim Sⱼ = n`, `0 ≤ q ≤ 1/4` and
+`d(p_{S_{j+1}}, p_{S_j}) ≤ a qʲ`, then some `n`-plane `S'` has `d(p_{S'}, p_{S_j}) ≤ 4 a qʲ`.
+The vectors `vⱼ = (p_{S_j} eᵢ)ᵢ` of the complete `ℓ²`-product `PiLp 2` satisfy
+`dist(vⱼ, vₖ)² = d(p_{S_j}, p_{S_k})`, so they converge to some `w` with `dist(vⱼ, w)² ≤ 4 a qʲ`;
+the columns `p_{S_j} eᵢ` then converge to `wᵢ`, and `wᵢ = p_{S'} eᵢ` for an `n`-plane `S'`. -/
+theorem Submission.dorag_ted_planes_limit : ∀ (P n : ℕ) (S : ℕ → Submodule ℝ (Euclid P)) (a q : ℝ), (∀ j, Module.finrank ℝ (S j) = n) → 0 ≤ q → q ≤ 1 / 4 → (∀ j : ℕ, ∑ i : Fin P, ‖(S (j + 1)).starProjection (EuclideanSpace.single i (1 : ℝ)) - (S j).starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ a * q ^ j) → ∃ S' : Submodule ℝ (Euclid P), Module.finrank ℝ S' = n ∧ ∀ j : ℕ, ∑ i : Fin P, ‖S'.starProjection (EuclideanSpace.single i (1 : ℝ)) - (S j).starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ 4 * a * q ^ j := by
+  intro P n S a q hS hq0 hq1 hstep
+  -- the Hilbert–Schmidt vectors `vⱼ = (p_{S_j} eᵢ)ᵢ` in the complete `ℓ²`-product
+  let v : ℕ → PiLp 2 (fun _ : Fin P => Euclid P) := fun j =>
+    WithLp.toLp 2 fun i => (S j).starProjection (EuclideanSpace.single i (1 : ℝ))
+  -- `dist(u, u')² = Σᵢ |uᵢ − u'ᵢ|²`
+  have hdist : ∀ u u' : PiLp 2 (fun _ : Fin P => Euclid P),
+      dist u u' ^ 2 = ∑ i : Fin P, ‖u i - u' i‖ ^ 2 := fun u u' => by
+    rw [PiLp.dist_sq_eq_of_L2]
+    simp only [dist_eq_norm]
+  -- `vⱼ → w` with `dist(vⱼ, w)² ≤ 4 a qʲ`, since `dist(vⱼ, vⱼ₊₁)² = d(p_{S_{j+1}}, p_{S_j})`
+  obtain ⟨w, hw, hvw⟩ := Submission.dorag_ted_pl_geometric_limit
+    (PiLp 2 (fun _ : Fin P => Euclid P)) v a q hq0 hq1 fun j => by
+      rw [dist_comm, hdist]
+      exact hstep j
+  -- the columns converge, `p_{S_j} eᵢ → wᵢ`, so `wᵢ = p_{S'} eᵢ` for an `n`-plane `S'`
+  obtain ⟨S', hS', hS'w⟩ := Submission.dorag_ted_pl_proj_limit_rank P n S (fun i => w i) hS
+    fun i => ((PiLp.continuous_apply 2 _ i).tendsto w).comp hw
+  refine ⟨S', hS', fun j => ?_⟩
+  -- `d(p_{S'}, p_{S_j}) = dist(vⱼ, w)²`
+  calc ∑ i : Fin P, ‖S'.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+        (S j).starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2
+      = dist (v j) w ^ 2 := by
+        rw [dist_comm, hdist]
+        simp only [hS'w]
+        rfl
+    _ ≤ 4 * a * q ^ j := hvw j
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
