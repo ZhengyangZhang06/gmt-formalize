@@ -649,6 +649,133 @@ theorem Submission.varifold_tangents_dlb_ae_hasDensity_of_restricted :
       ENNReal.inv_mul_cancel hc0 hctop, one_mul]
   · calc c⁻¹ = c⁻¹ * 1 := (mul_one _).symm
       _ ≤ c⁻¹ * θ := by gcongr
+/-- Simon Ch. 8, 5.1–5.2 (p. 215), the change of variables behind the first variation of the
+rescaled varifold `V_{x,t} = η_{x,t #} V`: for a `C¹` field `X` and `t > 0`,
+`∫ div_S X dV_{x,t} = t⁻ⁿ δV(Y)` with `Y(z) = t X(t⁻¹(z - x))`, since `DY(z) = DX(t⁻¹(z - x))`. -/
+theorem Submission.varifold_tangents_rdb_rescaled_integral_eq :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (t : ℝ) (X : Euclidean N → Euclidean N), 0 < t → ContDiff ℝ 1 X → ∫ z, Varifold.tangentialDivergence X z.1 z.2 ∂(rescaledMeasure V x t) = t⁻¹ ^ n * V.firstVariation (fun z : Euclidean N ↦ t • X (t⁻¹ • (z - x))) := by
+  intro N n U V x t X ht hX
+  -- Step 1: `D(t X(t⁻¹(· - x)))(w) = t (DX(t⁻¹(w - x)) ∘ t⁻¹ id) = DX(t⁻¹(w - x))`.
+  have hfderiv : ∀ w : Euclidean N,
+      fderiv ℝ (fun z : Euclidean N ↦ t • X (t⁻¹ • (z - x))) w = fderiv ℝ X (t⁻¹ • (w - x)) := by
+    intro w
+    have hψ : HasFDerivAt (fun z : Euclidean N ↦ t⁻¹ • (z - x))
+        (t⁻¹ • ContinuousLinearMap.id ℝ (Euclidean N)) w :=
+      ((hasFDerivAt_id w).sub_const x).const_smul t⁻¹
+    have hXψ : HasFDerivAt X (fderiv ℝ X (t⁻¹ • (w - x))) (t⁻¹ • (w - x)) :=
+      (hX.differentiable one_ne_zero _).hasFDerivAt
+    have hY : HasFDerivAt (fun z : Euclidean N ↦ t • X (t⁻¹ • (z - x)))
+        (t • (fderiv ℝ X (t⁻¹ • (w - x))).comp (t⁻¹ • ContinuousLinearMap.id ℝ (Euclidean N))) w :=
+      (hXψ.comp w hψ).const_smul t
+    rw [hY.fderiv]
+    refine ContinuousLinearMap.ext fun v ↦ ?_
+    simp [smul_smul, mul_inv_cancel₀ ht.ne']
+  -- Step 2: hence `div_S Y(z) = div_S X(t⁻¹(z - x))` for every `(z, S)`.
+  have hdiv : ∀ z : Euclidean N × Grassmannian N n,
+      Varifold.tangentialDivergence X (t⁻¹ • (z.1 - x)) z.2 =
+        Varifold.tangentialDivergence (fun z : Euclidean N ↦ t • X (t⁻¹ • (z - x))) z.1 z.2 := by
+    intro z
+    simp only [Varifold.tangentialDivergence, Varifold.jacobian, hfderiv]
+  -- Steps 3–5: pull out the factor `t⁻ⁿ`, then change variables along `(z, S) ↦ (t⁻¹(z - x), S)`.
+  have hφ : Measurable (fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - x), z.2)) :=
+    ((measurable_fst.sub_const x).const_smul t⁻¹).prodMk measurable_snd
+  rw [rescaledMeasure, integral_smul_measure, ENNReal.toReal_ofReal (by positivity), smul_eq_mul,
+    integral_map hφ.aemeasurable (Varifold.continuous_tangentialDivergence hX).aestronglyMeasurable]
+  simp only [hdiv]
+  rfl
+/-- **Simon Ch. 8, 2.5 (p. 209), the supremum bound** (child `first_variation_sup_bound` of the
+rescaled divergence bound for varifold tangents).  If `V` has locally bounded first variation,
+`W ⊂⊂ U` is open and `Y` is a `C¹` field with `spt Y ⊆ W` and `|Y| ≤ K`, then
+`|δV(Y)| ≤ K ‖δV‖(W)`: `Y` is a test field, `‖δV‖(W)` is the supremum in 2.5
+(`firstVariationRieszMeasure_eq_norm`), and `K⁻¹ Y` is admissible in that supremum. -/
+theorem Submission.varifold_tangents_rdb_firstVariation_le_variationMeasure :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (W : Set (Euclidean N)) (Y : Euclidean N → Euclidean N) (K : ℝ), V.HasLocallyBoundedFirstVariation → IsOpen W → IsCompact (closure W) → closure W ⊆ U → ContDiff ℝ 1 Y → tsupport Y ⊆ W → (∀ z, ‖Y z‖ ≤ K) → ENNReal.ofReal |V.firstVariation Y| ≤ ENNReal.ofReal K * variationMeasure V W := by
+  intro N n U V W Y K hV hW hWc hWU hY hYW hYK
+  -- Step 1: `spt Y ⊆ W ⊆ closure W`, which is compact and contained in `U`, so `Y` is a test field.
+  have hYc : HasCompactSupport Y :=
+    hWc.of_isClosed_subset (isClosed_tsupport Y) (hYW.trans subset_closure)
+  let Y' : Varifold.TestVectorField U := ⟨Y, hY, hYc, (hYW.trans subset_closure).trans hWU⟩
+  -- Step 2: `‖δV‖(W)` is the supremum in 2.5.
+  have hμW : variationMeasure V W = V.firstVariationNormOn W := by
+    rw [variationMeasure, dite_eq_left hV]
+    exact V.firstVariationRieszMeasure_eq_norm hV W hW ⟨hWc, hWU⟩
+  rw [hμW]
+  -- Step 3: `0 ≤ ‖Y 0‖ ≤ K`.
+  have hK : 0 ≤ K := (norm_nonneg _).trans (hYK 0)
+  rcases hK.eq_or_lt with rfl | hKpos
+  · -- Step 4: if `K = 0` then `Y = 0` and `δV(Y) = 0`.
+    have hY0 : Y = fun _ ↦ 0 := funext fun z ↦ norm_le_zero_iff.mp (hYK z)
+    rw [hY0, V.firstVariation_zero, abs_zero, ENNReal.ofReal_zero]
+    exact zero_le
+  · -- Step 5: `K⁻¹ Y` is a unit test field supported in `W`, so it enters the supremum.
+    have hunit : (Y'.scale K⁻¹).UnitSupportedIn W := by
+      refine ⟨(Y'.tsupport_scale_subset _).trans hYW, fun z ↦ ?_⟩
+      change ‖K⁻¹ • Y z‖ ≤ 1
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hKpos)]
+      calc K⁻¹ * ‖Y z‖ ≤ K⁻¹ * K := mul_le_mul_of_nonneg_left (hYK z) (inv_nonneg.mpr hK)
+        _ = 1 := inv_mul_cancel₀ hKpos.ne'
+    have hle := V.le_firstVariationNormOn W _ hunit
+    -- Step 6: `δV(K⁻¹ Y) = K⁻¹ δV(Y)`.
+    change ENNReal.ofReal |V.firstVariation (K⁻¹ • Y)| ≤ _ at hle
+    rw [V.firstVariation_const_smul K⁻¹ hY hYc, abs_mul, abs_of_pos (inv_pos.mpr hKpos)] at hle
+    -- Step 7: `|δV(Y)| = K (K⁻¹ |δV(Y)|)`.
+    calc ENNReal.ofReal |V.firstVariation Y|
+        = ENNReal.ofReal K * ENNReal.ofReal (K⁻¹ * |V.firstVariation Y|) := by
+          rw [← ENNReal.ofReal_mul hK, ← mul_assoc, mul_inv_cancel₀ hKpos.ne', one_mul]
+      _ ≤ ENNReal.ofReal K * V.firstVariationNormOn W := mul_le_mul_right hle _
+
+/-- **Simon Ch. 8, 5.1–5.2, the first-variation bound for `V_{x,t}`** (child
+`rescaled_divergence_bound` of `varifold_tangents`): if `X` is `C¹`, `spt X ⊆ B°_R(0)` and
+`|X| ≤ M`, then `|∫ div_S X dV_{x,t}| ≤ M R^{n-1} (tR)^{1-n} ‖δV‖(B_{tR}(x))`.
+With `ψ(z) = t⁻¹(z - x)` and `Y(z) = t X(ψ z)`, `∫ div_S X dV_{x,t} = t^{-n} δV(Y)`
+(`varifold_tangents_rdb_rescaled_integral_eq`).  `Y` is `C¹`, `|Y| ≤ tM` and
+`spt Y ⊆ ψ⁻¹(B°_R(0)) = B°_{tR}(x)`, an open set with compact closure inside `B_{tR}(x) ⊆ U`, so 2.5
+gives `|δV(Y)| ≤ tM ‖δV‖(B°_{tR}(x))` (`varifold_tangents_rdb_firstVariation_le_variationMeasure`).
+The rest is `ℝ≥0∞` arithmetic: `t^{-n} · tM · A = M (R^n / R) (tR · A / (tR)^n)`. -/
+theorem Submission.varifold_tangents_rescaled_divergence_bound :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (t R M : ℝ) (X : Euclidean N → Euclidean N), V.HasLocallyBoundedFirstVariation → 0 < t → 0 < R → closedBall x (t * R) ⊆ U → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball (0 : Euclidean N) R → (∀ y, ‖X y‖ ≤ M) → ENNReal.ofReal |∫ z, Varifold.tangentialDivergence X z.1 z.2 ∂(rescaledMeasure V x t)| ≤ ENNReal.ofReal M * (ENNReal.ofReal R ^ n / ENNReal.ofReal R) * (ENNReal.ofReal (t * R) * variationMeasure V (closedBall x (t * R)) / ENNReal.ofReal (t * R) ^ n) := by
+  intro N n U V x t R M X hV ht hR hBU hX _ hXR hXM
+  rw [Submission.varifold_tangents_rdb_rescaled_integral_eq N n U V x t X ht hX]
+  -- The pulled-back field `Y(z) = t X(t⁻¹(z - x))`: `C¹`, `|Y| ≤ tM`, `spt Y ⊆ B°_{tR}(x)`.
+  have hψ : Continuous (fun z : Euclidean N ↦ t⁻¹ • (z - x)) := by fun_prop
+  have hY : ContDiff ℝ 1 (fun z : Euclidean N ↦ t • X (t⁻¹ • (z - x))) := by fun_prop
+  have hYM : ∀ z, ‖t • X (t⁻¹ • (z - x))‖ ≤ t * M := fun z ↦ by
+    rw [norm_smul, Real.norm_of_nonneg ht.le]
+    exact mul_le_mul_of_nonneg_left (hXM _) ht.le
+  have hYW : tsupport (fun z : Euclidean N ↦ t • X (t⁻¹ • (z - x))) ⊆ ball x (t * R) := by
+    refine (tsupport_smul_subset_right (fun _ ↦ t) _).trans
+      ((tsupport_comp_subset_preimage X hψ).trans fun z hz ↦ ?_)
+    have hz' := mem_ball_zero_iff.1 (hXR hz)
+    rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 ht.le), inv_mul_lt_iff₀ ht] at hz'
+    exact mem_ball_iff_norm.2 hz'
+  -- `W = B°_{tR}(x)` is open with compact closure inside `B_{tR}(x) ⊆ U`: 2.5 with `K = tM`.
+  have hWcl : closure (ball x (t * R)) ⊆ closedBall x (t * R) := closure_ball_subset_closedBall
+  have hδ := Submission.varifold_tangents_rdb_firstVariation_le_variationMeasure N n U V
+    (ball x (t * R)) _ (t * M) hV isOpen_ball
+    ((isCompact_closedBall x (t * R)).of_isClosed_subset isClosed_closure hWcl)
+    (hWcl.trans hBU) hY hYW hYM
+  -- `ℝ≥0∞` arithmetic: `ofReal t, ofReal R ∈ (0, ∞)`; insert `(R R⁻¹)(R R⁻¹)^n = 1`, rearrange.
+  have htn : 0 ≤ t⁻¹ ^ n := pow_nonneg (inv_nonneg.2 ht.le) n
+  have hr : ENNReal.ofReal R * (ENNReal.ofReal R)⁻¹ = 1 :=
+    ENNReal.mul_inv_cancel (ENNReal.ofReal_pos.2 hR).ne' ENNReal.ofReal_ne_top
+  rw [abs_mul, abs_of_nonneg htn, ENNReal.ofReal_mul htn, ENNReal.ofReal_pow (inv_nonneg.2 ht.le),
+    ENNReal.ofReal_inv_of_pos ht, ENNReal.ofReal_mul ht.le, mul_pow, ENNReal.div_eq_inv_mul,
+    ENNReal.div_eq_inv_mul, ENNReal.mul_inv (Or.inl (pow_ne_zero n (ENNReal.ofReal_pos.2 ht).ne'))
+      (Or.inl (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)), ENNReal.inv_pow, ENNReal.inv_pow]
+  calc (ENNReal.ofReal t)⁻¹ ^ n * ENNReal.ofReal |V.firstVariation fun z ↦ t • X (t⁻¹ • (z - x))|
+      ≤ (ENNReal.ofReal t)⁻¹ ^ n *
+          (ENNReal.ofReal t * ENNReal.ofReal M * variationMeasure V (closedBall x (t * R))) := by
+        gcongr
+        rw [← ENNReal.ofReal_mul ht.le]
+        refine hδ.trans ?_
+        gcongr
+        exact ball_subset_closedBall
+    _ = (ENNReal.ofReal t)⁻¹ ^ n *
+          (ENNReal.ofReal t * ENNReal.ofReal M * variationMeasure V (closedBall x (t * R))) *
+          (ENNReal.ofReal R * (ENNReal.ofReal R)⁻¹ *
+            (ENNReal.ofReal R * (ENNReal.ofReal R)⁻¹) ^ n) := by
+        rw [hr, one_pow, mul_one, mul_one]
+    _ = _ := by ring
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
