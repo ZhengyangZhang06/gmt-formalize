@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fc2c337d105cde9830020b5d4ca10d742159b3315549292e8d99c853fa511d6a",
+  "git_delta": {
+    "base_commit": "afd14c9aec14105ad4a16050851cf0d3899e65f6",
+    "candidate_commit": "713eebc5c1a6b6da58d0d5ede7e1174c7c83e7cc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "setIntegral_blowUpMap_image_eq_inv_pow_mul",
+    "diff_sha256": "29df97de662d4d50b50e2b674ae78513d388929c6ce8c0322e14ba797706b457",
+    "source_sha256": "ebe22920afeafb9a05993812b7429e85ae6fa9534d3b996d6ca61f6e5cee246f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.setIntegral_blowUpMap_image_eq_inv_pow_mul",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (r : ℝ), 0 < r → ∀ f : Euclid P → ℝ, ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] = r⁻¹ ^ n * ∫ y in M, f (Poincare.SimonGMT.Chapter03.blowUpMap x r y) ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
