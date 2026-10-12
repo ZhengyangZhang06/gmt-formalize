@@ -899,6 +899,96 @@ theorem Submission.intcpt_diag_blowup_variation_bound :
         congrArg _ hunion
     _ = ⨆ j, variationMeasure W (ball (0 : Euclidean N) (r j)) := hmono.measure_iUnion
     _ ≤ _ := iSup_le hOj
+/-- Convergence on a dense family of test functions extends to all of them under a uniform mass
+bound (Simon Ch. 8, proof of 5.9, printed (3): the diagonal blow-up converges against every test
+function once it does against a countable dense family).  Let `A = O × G(N,n)`, let the
+`g_m ∈ C_c(ℝ^N × G(N,n))` with `spt g_m ⊆ A` be uniformly dense among the `f ∈ C_c(ℝ^N × G(N,n))`
+with `spt f ⊆ A`, and let `μ_k(A) ≤ C` and `ν_k(A) ≤ C < ∞` for all large `k`.  If
+`∫ g_m dμ_k - ∫ g_m dν_k → 0` for every `m`, then `∫ f dμ_k - ∫ f dν_k → 0` for every such `f`. -/
+theorem Submission.intcpt_diag_dense_family_tendsto :
+    ∀ (N n : ℕ) (O : Set (Euclidean N)) (g : ℕ → C_c(Euclidean N × Grassmannian N n, ℝ))
+      (μ ν : ℕ → Measure (Euclidean N × Grassmannian N n)) (C : ℝ≥0∞), MeasurableSet O →
+      C ≠ ∞ → (∀ m, tsupport (g m) ⊆ O ×ˢ (univ : Set (Grassmannian N n))) →
+      (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ),
+        tsupport f ⊆ O ×ˢ (univ : Set (Grassmannian N n)) →
+        ∀ η : ℝ, 0 < η → ∃ m, ∀ z, |f z - g m z| ≤ η) →
+      (∀ᶠ k in atTop, μ k (O ×ˢ (univ : Set (Grassmannian N n))) ≤ C) →
+      (∀ᶠ k in atTop, ν k (O ×ˢ (univ : Set (Grassmannian N n))) ≤ C) →
+      (∀ m, Tendsto (fun k ↦ ∫ z, g m z ∂(μ k) - ∫ z, g m z ∂(ν k)) atTop (𝓝 0)) →
+      ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ),
+        tsupport f ⊆ O ×ˢ (univ : Set (Grassmannian N n)) →
+        Tendsto (fun k ↦ ∫ z, f z ∂(μ k) - ∫ z, f z ∂(ν k)) atTop (𝓝 0) := by
+  intro N n O g μ ν C _hO hC hgsupp hdense hμ hν hconv f hf
+  set A : Set (Euclidean N × Grassmannian N n) := O ×ˢ (univ : Set (Grassmannian N n))
+  set C₀ : ℝ := C.toReal
+  have hC₀nn : 0 ≤ C₀ := ENNReal.toReal_nonneg
+  -- Step 1: a test function supported in `A` is integrable for any measure with `μ'(A) ≤ C`.
+  have hintegr : ∀ (μ' : Measure (Euclidean N × Grassmannian N n))
+      (h : C_c(Euclidean N × Grassmannian N n, ℝ)),
+      μ' A ≤ C → tsupport h ⊆ A → Integrable (fun z ↦ h z) μ' := by
+    intro μ' h hμ' hh
+    obtain ⟨M, hM⟩ := h.hasCompactSupport.exists_bound_of_continuous h.continuous
+    have hOn : IntegrableOn (fun z ↦ h z) A μ' :=
+      Measure.integrableOn_of_bounded (M := M) (ne_top_of_le_ne_top hC hμ')
+        h.continuous.aestronglyMeasurable (Eventually.of_forall hM)
+    exact (integrableOn_iff_integrable_of_support_subset ((subset_tsupport _).trans hh)).mp hOn
+  -- Step 2: if `|h| ≤ η` and `h = 0` off `A`, then `|∫ h dμ'| ≤ η μ'(A) ≤ η C₀`.
+  have hest : ∀ (μ' : Measure (Euclidean N × Grassmannian N n))
+      (h : Euclidean N × Grassmannian N n → ℝ) (η : ℝ),
+      0 ≤ η → μ' A ≤ C → (∀ z, z ∉ A → h z = 0) → (∀ z, |h z| ≤ η) →
+      |∫ z, h z ∂μ'| ≤ η * C₀ := by
+    intro μ' h η hηnn hμ' h0 hη
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero h0]
+    have hlt : μ' A < ∞ := lt_of_le_of_lt hμ' (lt_top_iff_ne_top.mpr hC)
+    have h1 := norm_setIntegral_le_of_norm_le_const (μ := μ') (s := A) (f := h) (C := η) hlt
+      (fun z _ ↦ by simpa [Real.norm_eq_abs] using hη z)
+    rw [Real.norm_eq_abs] at h1
+    refine h1.trans (mul_le_mul_of_nonneg_left ?_ hηnn)
+    exact ENNReal.toReal_mono hC hμ'
+  -- Step 3: approximate `f` by `g m` within `η = ε / (4 (C₀ + 1))`, and take `k` so large that
+  -- both mass bounds hold and `|∫ g m dμ_k - ∫ g m dν_k| < ε / 2`.
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  set η : ℝ := ε / (4 * (C₀ + 1)) with hηdef
+  have hηpos : 0 < η := by positivity
+  obtain ⟨m, hm⟩ := hdense f hf η hηpos
+  obtain ⟨K₁, hK₁⟩ := Metric.tendsto_atTop.mp (hconv m) (ε / 2) (by positivity)
+  obtain ⟨K₂, hK₂⟩ := eventually_atTop.mp hμ
+  obtain ⟨K₃, hK₃⟩ := eventually_atTop.mp hν
+  refine ⟨max K₁ (max K₂ K₃), fun k hk ↦ ?_⟩
+  have hk1 : K₁ ≤ k := le_of_max_le_left hk
+  have hk2 : K₂ ≤ k := le_trans (le_max_left _ _) (le_of_max_le_right hk)
+  have hk3 : K₃ ≤ k := le_trans (le_max_right _ _) (le_of_max_le_right hk)
+  have hμk := hK₂ k hk2
+  have hνk := hK₃ k hk3
+  have hgk := hK₁ k hk1
+  rw [Real.dist_eq, sub_zero] at hgk ⊢
+  have hfμ := hintegr (μ k) f hμk hf
+  have hgμ := hintegr (μ k) (g m) hμk (hgsupp m)
+  have hfν := hintegr (ν k) f hνk hf
+  have hgν := hintegr (ν k) (g m) hνk (hgsupp m)
+  -- Step 4: `f - g m` vanishes off `A` and is bounded by `η`, so Step 2 applies to both measures.
+  have h0 : ∀ z, z ∉ A → f z - g m z = 0 := by
+    intro z hz
+    rw [image_eq_zero_of_notMem_tsupport (fun h ↦ hz (hf h)),
+      image_eq_zero_of_notMem_tsupport (fun h ↦ hz (hgsupp m h)), sub_zero]
+  have e1 := hest (μ k) (fun z ↦ f z - g m z) η hηpos.le hμk h0 hm
+  have e2 := hest (ν k) (fun z ↦ f z - g m z) η hηpos.le hνk h0 hm
+  rw [integral_sub hfμ hgμ] at e1
+  rw [integral_sub hfν hgν] at e2
+  -- Step 5: the triangle inequality, with `2 η C₀ = (ε / 2) C₀ / (C₀ + 1) < ε / 2`.
+  have hsmall : 2 * (η * C₀) < ε / 2 := by
+    have h4 : 0 < C₀ + 1 := by linarith
+    have hrw : η * C₀ = ε / 4 * (C₀ / (C₀ + 1)) := by
+      rw [hηdef]; field_simp
+    have hfrac : C₀ / (C₀ + 1) < 1 := by rw [div_lt_one h4]; linarith
+    have hfrac0 : 0 ≤ C₀ / (C₀ + 1) := div_nonneg hC₀nn h4.le
+    rw [hrw]; nlinarith
+  have a1 := abs_le.mp e1
+  have a2 := abs_le.mp e2
+  have a3 := abs_lt.mp hgk
+  rw [abs_lt]
+  constructor <;> linarith [a1.1, a1.2, a2.1, a2.2, a3.1, a3.2]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
