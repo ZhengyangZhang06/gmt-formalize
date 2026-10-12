@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'covectorEuclideanNorm|massAdmissibleOn|def massOn|def mass|le_massOn|def IsTestForm|testFormOnSubmodule|theorem ext|zero_apply' Poincare/SimonGMT/Chapter06/Mass.lean Poincare/SimonGMT/Chapter06/Currents.lean",
+        "rg -n 'bounded_above_of_compact_support|instContinuousEvalConst|theorem mono\\x27|tsupport_smul_subset_right' Mathlib/Analysis/Normed/Group/Bounded.lean Mathlib/Topology/Algebra/Support.lean Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "rg -n 'ofReal_le_ofReal_iff' Mathlib/Data/ENNReal",
+        "rg -n 'ofReal_le_ofReal_iff' Mathlib/Basic/ENNReal",
+        "rg -n 'mass_eq_zero|massOn_eq_zero|mass = 0|eq_zero_of_mass' Poincare/SimonGMT/Chapter06",
+        "git show c34586955a827a6731d9bc0ca8ae1ba1c0791948 -- GMT/Ch06/Submission.lean",
+        "git show ba202ac0407b6e93210594416fcd0729874b2eff -- GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean ParentFromChildren.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean AllProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/ENNReal",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-zero-mass-iff-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-zero-mass-iff-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-testform-bounded-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/accepted-candidate.json",
+        "/tmp/zero-mass-independent-audit-4q7iz24u/Challenge1.lean",
+        "/tmp/zero-mass-independent-audit-4q7iz24u/Challenge2.lean",
+        "/tmp/zero-mass-independent-audit-4q7iz24u/Challenge3.lean",
+        "/tmp/zero-mass-independent-audit-4q7iz24u/ParentFromChildren.lean",
+        "/tmp/zero-mass-independent-audit-4q7iz24u/AllProofs.lean"
+      ],
+      "conclusion": "Independently confirmed the pinned definitions and all analytic ingredients. The ENNReal search had no match in the deprecated Data/ENNReal wrappers; the required lemma is Basic/ENNReal/Real.lean:147 and requires precisely B ≥ 0. The zero-mass search returned no match in pinned Chapter06. Both names have unique comparator-accepted owners with byte-identical frozen types, and adding the proposed dependencies preserves acyclicity. On a fresh copy of proof base 293e2956, all three frozen types elaborated independently of child implementations. Both accepted proofs, exact named solutions, and the parent assembly compiled; proved declarations use only propext, Classical.choice and Quot.sound. The split is appropriate: boundedness supplies C, mass_bound with W = U and B = 0 forces every evaluation to vanish, and extensionality proves T = 0. The converse follows from the supremum definition. This proves the selected contract without invoking an ancestor theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "testform_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary U and all TestFormOn hypotheses. The bare name validly reuses its identically typed accepted declaration. Each proof step is justified: fixed-tuple evaluation, finite sums and square root give continuity; vanishing at zero transfers compact support; boundedness yields C₀ ≥ 0 by evaluation at the ambient zero vector; C₀ + 1 supplies the positive bound. No openness or dimension restriction is needed. The proof is complete, independent of mass_bound and the parent, and sufficiently explicit for formalization."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition contains exactly the stated hypotheses, and its bare name validly reuses the identically typed accepted declaration. Homogeneity follows directly from the coefficient sum. The pointwise bound implies C ≥ 0; for c > C, both signed inverse rescalings remain test forms and satisfy the support and admissibility conditions. B ≥ 0 correctly permits the ENNReal inequality conversion. Linearity and multiplication by positive c give the absolute-value bound. The explicit ε/(B + 1) argument proves the endpoint, including C = 0. Scalar-action instances checked successfully in Lean. No dependency on testform_bounded, the parent, or an ancestor is hidden."
+    }
+  ],
+  "required_changes": []
+}
