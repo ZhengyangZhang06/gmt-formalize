@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1.mass_bound-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1",
+  "depth": 4,
+  "title": "Evaluation of a current on a pointwise-bounded test form is bounded by sup|η| times its mass",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, Z ∈ D_n(U) a current on U (GeometricCurrentOn U n), η ∈ D^n(U) a test form (TestFormOn U n), and c ∈ ℝ with c > 0 and covectorEuclideanNorm(η(x)) ≤ c for every x ∈ ℝ^P. If the mass M(Z) = Z.mass (= Z.massOn U) is finite, then |Z(η)| ≤ c · M(Z), where M(Z) is read as the real number M(Z).toReal.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (Z : GeometricCurrentOn U n) (η : TestFormOn U n) (c : ℝ), 0 < c → (∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x) ≤ c) → Z.mass ≠ ∞ → |Z η| ≤ c * Z.mass.toReal",
+  "lean_name": "fiw_tb_te_abs_apply_le_mul_mass",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-translation-estimate-a1-mass-bound-a1-a1"
+}
