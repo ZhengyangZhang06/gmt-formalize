@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ContDiffBump|convolution|mollif|uniformContinuous_of_continuous|tendsto_integral",
+        "setIntegral_eq_integral_of_forall_compl_eq_zero|norm_setIntegral_le_of_norm_le_const|theorem integral_sub|theorem IsCompact.measure_lt_top|uniformContinuous_of_continuous|integrable_of_hasCompactSupport|HasCompactSupport.comp_smul|mem_smul_set_iff_inv_smul_mem₀",
+        "structure ContDiffBump|normed|dist_normed_convolution_le|^import|^public import|^variable|^instance",
+        "HasCompactSupport.contDiff_convolution_left|support_convolution_subset|^variable",
+        "sed -n '1,260p' /tmp/dmc-decomp/Final.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dmc-independent-audit-q36f2_up/Replay.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dmc-independent-audit-q36f2_up/Glue.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/ConstMulAction.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/GroupWithZero/Action/Pointwise/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-radial-homogeneity-a1-dilation-mollify-cc-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-varifold-tangents-a1-radial-homogeneity-a1-dilation-mollify-cc-a1/decomposition-v1.json",
+        "GMT/Ch08/Submission.lean",
+        "/tmp/dmc-independent-audit-q36f2_up/Replay.lean",
+        "/tmp/dmc-independent-audit-q36f2_up/Glue.lean",
+        "/tmp/dmc-independent-audit-q36f2_up/uniform_limit_integral_Challenge.lean",
+        "/tmp/dmc-independent-audit-q36f2_up/mollifier_c1_approx_Challenge.lean"
+      ],
+      "conclusion": "The pinned Mathlib revision matches the compiler workspace; all 15 compared supporting source files are byte-identical. The project snapshot search found no relevant mollification or integral-limit implementation. The inspected library signatures support both supplied proofs, including their measure and smoothness assumptions. Both frozen child types independently elaborate with the original Submission import and pass statement validation unchanged. Fresh replays of both child proofs, the exact selected parent, and a separate implication from the two child contracts compile using only propext, Classical.choice, and Quot.sound. The stated additional bump-function import suffices. Both names are bare identifiers, unreserved in the DAG and other branches' decomposition files. The split is appropriate: its independent, acyclic children establish precisely the selected extension theorem through limits on K and s • K."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "uniform_limit_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches every prose hypothesis and the sequential convergence conclusion. The proof correctly obtains finite compact mass, localizes the integral of F_k − G, uses both integrability hypotheses for integral_sub, and obtains a strict ε-bound using ε/(μ.real K + 1). It is complete, non-circular, and independent of the other child. The parent validly applies it to both the original and dilated approximants."
+    },
+    {
+      "key": "mollifier_c1_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly expresses a common compact set, vanishing outside it, C¹ regularity, and uniform approximation. The supplied construction proves each property: normalized Lebesgue bumps have positive shrinking radii; convolution is C¹; support lies in closedBall 0 1 + tsupport g; and uniform continuity gives the required uniform estimate. The relevant Euclidean, Haar-measure, convolution, and pointwise-set instances are valid, including N = 0. No parent or sibling theorem is assumed, and no further proof search or planning is needed."
+    }
+  ],
+  "required_changes": []
+}
