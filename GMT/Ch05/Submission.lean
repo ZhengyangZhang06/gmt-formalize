@@ -13,6 +13,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.LinearAlgebra.Trace
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 5: The Allard Regularity Theorem (pp. 103–130)
@@ -543,6 +544,107 @@ theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗ�
     obtain ⟨h, hh, rfl⟩ := Submodule.mem_map.mp hw
     rw [← map_sub, hsub, sub_self, sub_zero]
     exact (q.inner_map_map _ _).trans (horth h hh)
+
+/-- Simon Ch. 2, 3.5 (area formula) for a rotated Lipschitz graph, as used in the proof of Ch. 5,
+Theorem 4.5: if `f` is `K`-Lipschitz on `B_R(0)`, `A ⊆ B_R(0)` is Borel and `q` is a linear isometry
+of `ℝ^{n+ℓ}`, then `∫_{q(graph f|A)} g dHⁿ = ∫_A J_f(x) g(q(x, f(x))) dx` for every `g ≥ 0`, where
+`J_f = √det(I + (Df eₐ · Df e_b)_{a,b})`. Extend `f` to a globally Lipschitz `f'`; the graph map
+`G x = q(x, f' x)` is Lipschitz and injective, so SimonGMT's injective Lipschitz area formula
+applies to it on `A`. At points of the open ball `B̆_R(0)` where `f'` is differentiable (almost
+every point of `A`: Rademacher, and the sphere is null), `G = q(·, f ·)` near `x` and
+`DG(x) v = q(v, Df(x) v)`, whose Gram matrix on the standard basis is `I + (Df eₐ · Df e_b)`. -/
+theorem gwe_lipschitz_graph_area_formula : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (K : ℝ≥0) (R : ℝ), LipschitzOnWith K f (closedBall 0 R) → ∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → ∀ g : Amb n ℓ → ℝ≥0∞, ∫⁻ y in q '' graphOver f A, g y ∂(μHE[n] : Measure (Amb n ℓ)) = ∫⁻ x in A, ENNReal.ofReal (Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ f x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ f x (EuclideanSpace.single b (1 : ℝ)))))) * g (q (graphPoint x (f x))) := by
+  intro n ℓ hn q f K R hf A hA hAR g
+  -- `(a, b) ↦ graphPoint a b` is the linear isomorphism `ℝⁿ × ℝ^ℓ ≃ ℝ^{n+ℓ}`
+  let Φ := (EuclideanSpace.finAddEquivProd (𝕜 := ℝ) (n := n) (m := ℓ)).symm
+  have hgp : ∀ (a : Rn n) (b : Rn ℓ), graphPoint a b = Φ (a, b) := by
+    intro a b
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp [Φ, graphPoint]
+    · simp [Φ, graphPoint]
+  -- `⟨(a, b), (a', b')⟩ = ⟨a, a'⟩ + ⟨b, b'⟩`
+  have hinner : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      inner ℝ (graphPoint a b) (graphPoint a' b') = inner ℝ a a' + inner ℝ b b' := by
+    intro a a' b b'
+    simp only [graphPoint, PiLp.inner_apply, Fin.sum_univ_add, Fin.append_left, Fin.append_right]
+  -- Step 1: extend `f` from `B_R(0)` to a globally Lipschitz map `f'`
+  obtain ⟨f', hf'L, hf'eq⟩ := hf.extend_finite_dimension
+  -- Step 2: the graph map `G x = q(x, f' x)` is Lipschitz and injective
+  let G : Rn n → Amb n ℓ := fun x => q (graphPoint x (f' x))
+  have hGL : LipschitzWith (1 * (‖(Φ : Rn n × Rn ℓ →L[ℝ] Amb n ℓ)‖₊ *
+      max 1 (lipschitzExtensionConstant (Rn ℓ) * K))) G := by
+    have h := q.lipschitzWith.comp ((Φ : Rn n × Rn ℓ →L[ℝ] Amb n ℓ).lipschitzWith.comp
+      (LipschitzWith.id.prodMk hf'L))
+    convert h using 1
+    funext x
+    simp [G, hgp]
+  have hGinj : Function.Injective G := by
+    intro x y hxy
+    have h := q.injective hxy
+    rw [hgp, hgp] at h
+    exact congrArg Prod.fst (Φ.injective h)
+  -- Step 3: the area formula for `G`
+  have hmain := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn hGL hA
+    hGinj.injOn g
+  rw [finrank_euclideanSpace_fin] at hmain
+  have himg : q '' graphOver f A = G '' A := by
+    rw [graphOver, Set.image_image]
+    refine Set.image_congr ?_
+    intro x hx
+    simp [G, hf'eq (hAR hx)]
+  rw [himg, hmain]
+  -- Steps 4-7: identify the integrands almost everywhere on `A`
+  refine setLIntegral_congr_fun_ae hA ?_
+  have hnt : Nontrivial (Rn n) := by
+    have : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+    infer_instance
+  have hsph : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∉ sphere (0 : Rn n) R :=
+    measure_eq_zero_iff_ae_notMem.mp (Measure.addHaar_sphere volume 0 R)
+  filter_upwards [hf'L.ae_differentiableAt, hsph] with x hdx hxs hxA
+  have hxb : x ∈ ball (0 : Rn n) R := by
+    have h1 := hAR hxA
+    rw [mem_closedBall] at h1
+    rw [mem_sphere] at hxs
+    exact mem_ball.mpr (lt_of_le_of_ne h1 hxs)
+  have hev : f =ᶠ[𝓝 x] f' :=
+    Filter.eventuallyEq_of_mem (isOpen_ball.mem_nhds hxb) fun y hy =>
+      hf'eq (ball_subset_closedBall hy)
+  have hfd : fderiv ℝ f x = fderiv ℝ f' x := hev.fderiv_eq
+  have hfx : f x = f' x := hf'eq (hAR hxA)
+  -- the derivative of `G` at `x` is `v ↦ q(v, Df'(x) v)`
+  let L : Rn n →L[ℝ] Amb n ℓ := (q.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ) ∘L
+    ((Φ : Rn n × Rn ℓ →L[ℝ] Amb n ℓ) ∘L ((ContinuousLinearMap.id ℝ (Rn n)).prod (fderiv ℝ f' x)))
+  have hGd : HasFDerivAt G L x := by
+    have h1 : HasFDerivAt (fun y => (y, f' y))
+        ((ContinuousLinearMap.id ℝ (Rn n)).prod (fderiv ℝ f' x)) x :=
+      (hasFDerivAt_id x).prodMk hdx.hasFDerivAt
+    have h2 := (Φ : Rn n × Rn ℓ →L[ℝ] Amb n ℓ).hasFDerivAt.comp x h1
+    have h3 := (q.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ).hasFDerivAt.comp x h2
+    convert h3 using 1
+    funext y
+    simp [G, hgp]
+  have hLv : ∀ v, L v = q (graphPoint v (fderiv ℝ f' x v)) := by
+    intro v
+    simp [L, hgp]
+  -- the Jacobian of `G` at `x` is `√det(I + (⟨Df e_a, Df e_b⟩))`
+  have hJ : Poincare.SimonGMT.Chapter02.areaJacobianAt G x = Real.sqrt (Matrix.det
+      ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n =>
+        inner ℝ (fderiv ℝ f' x (EuclideanSpace.single a (1 : ℝ)))
+          (fderiv ℝ f' x (EuclideanSpace.single b (1 : ℝ))))) := by
+    have hsq : Poincare.SimonGMT.Chapter02.areaJacobianAt G x ^ 2 =
+        (Matrix.gram ℝ fun i => L (EuclideanSpace.basisFun (Fin n) ℝ i)).det := by
+      rw [Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet, hGd.fderiv]
+      simpa using LinearMap.normDet_sq_eq_det_gram (L : Rn n →ₗ[ℝ] Amb n ℓ)
+        (EuclideanSpace.basisFun (Fin n) ℝ)
+    rw [← Real.sqrt_sq (Poincare.SimonGMT.Chapter02.areaJacobianAt_nonneg G x), hsq]
+    congr 2
+    ext a b
+    simp only [Matrix.gram_apply, EuclideanSpace.basisFun_apply, hLv,
+      LinearIsometryEquiv.inner_map_map, hinner, Matrix.add_apply, Matrix.one_apply,
+      Matrix.of_apply, EuclideanSpace.inner_single_left, PiLp.single_apply]
+    simp
+  rw [hJ, hfd, hfx]
 
 end Submission
 
