@@ -458,6 +458,34 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Columns of an operator-valued map (step 1 of the proof that `f` is `C^{m+1,α}` iff `Df` is
+`C^{m,α}`, in the elliptic bootstrap for Simon 7.1): `g : ℝⁿ → L(ℝⁿ, E)` is `C^m` on a set `U` iff
+every column `g_k = g(·) e_k` is.  Indeed `g_k = ev_k ∘ g` for the evaluation `ev_k T = T e_k`, and
+conversely `g = ∑_k ι_k ∘ g_k` for the continuous linear reconstruction `ι_k w = (h ↦ h_k • w)`. -/
+theorem dohr_eb_hsif_contDiffOn_clm_iff_columns : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (g : Rn n → (Rn n →L[ℝ] E)) (U : Set (Rn n)), ContDiffOn ℝ m g U ↔ ∀ k : Fin n, ContDiffOn ℝ m (fun x => g x (EuclideanSpace.single k (1 : ℝ))) U := by
+  intro n E _ _ m g U
+  -- Step 1: the reconstruction maps `ι k : w ↦ (h ↦ h_k • w)` are continuous linear.
+  let ι : Fin n → E →L[ℝ] (Rn n →L[ℝ] E) := fun k =>
+    ContinuousLinearMap.smulRightL ℝ (Rn n) E (EuclideanSpace.proj k)
+  -- Step 2: the reconstruction `g = ∑ k, ι k ∘ g_k`, from `h = ∑ k, h_k • e_k`.
+  have hrec : g = fun x => ∑ k, ι k (g x (EuclideanSpace.single k (1 : ℝ))) := by
+    funext x
+    ext h
+    have hh : ∑ k, h k • EuclideanSpace.single k (1 : ℝ) = h := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr h
+    conv_lhs => rw [← hh]
+    simp [ι, map_sum, map_smul]
+  refine ⟨fun hg k => ?_, fun hk => ?_⟩
+  -- Step 3: each column `g_k = ev_k ∘ g` is `C^m` on `U`.
+  · exact hg.clm_apply contDiffOn_const
+  -- Step 4: `g = ∑ k, ι k ∘ g_k` is a finite sum of `C^m` maps on `U`.
+  · rw [hrec]
+    exact ContDiffOn.sum fun k _ => (ι k).contDiff.comp_contDiffOn (hk k)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
