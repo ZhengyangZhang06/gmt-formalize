@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8259f7998f9995ffdb6bcfb2555b9084b0c903b98bca6642822927babceb435b",
+  "git_delta": {
+    "base_commit": "f67223e3c34e47820e0985e92550db4c8ae4c553",
+    "candidate_commit": "1b431e814455a6f8f989a42a9eeadf656a7073fa",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_ci_coord_sum_smul_wedge",
+    "diff_sha256": "3fb596aee08f804f2969de8dc781e413a5dad40e245d6fb29b49a79bf398a696",
+    "source_sha256": "be6c1570f8c6988ddad9d6026fe85815cd9dc897cd39c87f3946059f3bd9452c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_ci_coord_sum_smul_wedge",
+      "statement": "∀ (P k : ℕ) (c : SimonMultiIndex k P → ℝ) (J : SimonMultiIndex k P), euclideanCovectorCoordinate (∑ I : SimonMultiIndex k P, c I • wedgeCovectors k (fun j => EuclideanSpace.proj (I j)) : Covector (Eucl P) k) J = c J",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
