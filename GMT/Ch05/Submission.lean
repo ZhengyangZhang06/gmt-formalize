@@ -466,47 +466,6 @@ def RegularSetOpenDense : Prop :=
 
 namespace Submission
 
-/-- **Blow-up change of variables** (Simon Ch. 3, Remark 1.8(2)).  For `η = η_{x,r}`,
-`η(z) = r⁻¹(z − x)`, with `r > 0`, any set `M` and any `f, θ`:
-`∫_{η(M)} f(y) θ(x + r y) dHⁿ(y) = r⁻ⁿ ∫_M f(η z) θ(z) dHⁿ(z)`.  As `η` is a homeomorphism and
-`Hⁿ(η(S)) = r⁻ⁿ Hⁿ(S)` for every `S`, `Hⁿ ⌞ η(M) = r⁻ⁿ η_#(Hⁿ ⌞ M)`; no integrability is needed. -/
-theorem rsod_blowUp_setIntegral_eq : ∀ (n ℓ : ℕ) (M : Set (Amb n ℓ)) (f θ : Amb n ℓ → ℝ) (x : Amb n ℓ) (r : ℝ), 0 < r → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) = (r ^ n)⁻¹ * ∫ z in M, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * θ z ∂(μHE[n] : Measure (Amb n ℓ)) := by
-  intro n ℓ M f θ x r hr
-  set μ : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
-  set η := Poincare.SimonGMT.Chapter03.blowUpMap x r with hη
-  -- `η` is the homeomorphism `z ↦ r⁻¹ • (z - x)`, hence a measurable embedding.
-  let e : Amb n ℓ ≃ₜ Amb n ℓ :=
-    (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
-  have he : ⇑e = η := rfl
-  have hemb : MeasurableEmbedding η := he ▸ e.toMeasurableEquiv.measurableEmbedding
-  have hinj : Function.Injective η := he ▸ e.injective
-  have hsurj : Function.Surjective η := he ▸ e.surjective
-  -- `Hⁿ(η(S)) = (r⁻¹)ⁿ Hⁿ(S)` for every set `S`: a translation followed by a homothety.
-  have hscale : ∀ S : Set (Amb n ℓ), μ (η '' S) = ENNReal.ofReal r⁻¹ ^ n * μ S := by
-    intro S
-    have hshift : Isometry (fun y : Amb n ℓ => y - x) :=
-      Isometry.of_dist_eq fun a b => by simp only [dist_eq_norm, sub_sub_sub_cancel_right]
-    have himage : η '' S = AffineMap.homothety (0 : Amb n ℓ) r⁻¹ '' ((fun y => y - x) '' S) := by
-      rw [← image_comp]
-      congr 1
-      funext y
-      simp [hη, Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
-    rw [himage, euclideanHausdorffMeasure_homothety_image n (0 : Amb n ℓ) (inv_ne_zero hr.ne'),
-      hshift.euclideanHausdorffMeasure_image, ENNReal.smul_def, smul_eq_mul, ENNReal.coe_pow,
-      ← ENNReal.ofReal_coe_nnreal, coe_nnnorm, Real.norm_of_nonneg (inv_pos.mpr hr).le]
-  -- `Hⁿ ⌞ η(M) = (r⁻¹)ⁿ η_#(Hⁿ ⌞ M)`, checked on measurable `A` via `A ∩ η(M) = η(η⁻¹(A) ∩ M)`.
-  have hmeas : μ.restrict (η '' M) = (ENNReal.ofReal r⁻¹ ^ n) • (μ.restrict M).map η := by
-    ext A hA
-    rw [Measure.restrict_apply hA, Measure.smul_apply, Measure.map_apply hemb.measurable hA,
-      Measure.restrict_apply (hemb.measurable hA), smul_eq_mul, ← hscale, image_inter hinj,
-      image_preimage_eq A hsurj]
-  -- Transfer the integral and simplify `x + r • η z = z`.
-  rw [hmeas, integral_smul_measure, hemb.integral_map, ENNReal.toReal_pow,
-    ENNReal.toReal_ofReal (inv_pos.mpr hr).le, inv_pow, smul_eq_mul]
-  congr 1
-  refine integral_congr_ae (Filter.Eventually.of_forall fun z => ?_)
-  simp only [hη, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne',
-    one_smul, add_sub_cancel]
 /-- **Simon Ch. 3, Remark 1.8(1), first assertion** (Lusin exhaustion of a rectifiable varifold):
 the carrier `M` of `V = v(M, θ)` is, up to an `Hⁿ`-null set, a countable union of compact sets
 `K ⊆ M` of finite `Hⁿ`-measure on each of which `θ` is continuous.  Proof: pass to a Borel
@@ -4402,17 +4361,14 @@ theorem any_radius_tangent_ae : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb
 /-- **Lemma A** of the any-radius Allard theorem (Simon Ch. 5, Lemma 2.1, p. 107, with an `L¹`
 curvature term): if `spt V ∩ B_r(z)` lies within height `h` of `z + T`, `dim T = n`, then
 `∫_{B_{r/2}(z)} |p_{T_x M} − p_T|² dμ_V ≤ 144 r⁻² ∫_{B_r(z)} dist(x − z, T)² dμ_V
-  + 4h ∫_{B_r(z)} |H| dμ_V`.  By `any_radius_tangent_ae`, `x ↦ p_x` is `μ_V`-a.e. strongly
+  + 4h ∫_{B_r(z)} |H| dμ_V`.  By `allard52_tangent_ae`, `x ↦ p_x` is `μ_V`-a.e. strongly
 measurable and `μ_V`-a.e. the projection onto an `n`-plane; the cutoff test field
 `X = ζ² p_{T⊥}(x − z)`, the first variation and Young absorption are `ted_lemma_a_tilt_height`. -/
 theorem any_radius_tilt_height_l1 : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (z : Amb n ℓ) (r h : ℝ), 0 < r → 0 ≤ h → closedBall z r ⊆ U → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → (∀ x ∈ V.support ∩ closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ≤ h) → ∫ x in closedBall z (r / 2), hsNormSq (V.tangentProj x - T.starProjection) ∂V.weight ≤ 144 * (r ^ 2)⁻¹ * ∫ x in closedBall z r, infDist (x - z) (T : Set (Amb n ℓ)) ^ 2 ∂V.weight + 4 * h * ∫ x in closedBall z r, ‖H x‖ ∂V.weight := by
   intro n ℓ hn U hU V H hH z r h hr hh hBU T hT hht
   -- Step 0 (child `tangent_ae`): `p_x` is `μ_V`-a.e. strongly measurable and `μ_V`-a.e. the
   -- orthogonal projection onto an `n`-dimensional subspace.
-  obtain ⟨htan, hmeas, -⟩ := Submission.any_radius_tangent_ae n ℓ hn U hU V
-  have hae : ∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧
-      V.tangentProj x = P.starProjection :=
-    htan.mono fun _ ⟨P, hP, _, hPx⟩ => ⟨P, hP, hPx⟩
+  obtain ⟨hmeas, hae, -⟩ := Submission.allard52_tangent_ae n ℓ hn U hU V
   -- Steps 1–6: cutoff `ζ = φ(|x − z|/r)`, test field `X = ζ² p_{T⊥}(x − z)`, `div_M X`, first
   -- variation, Young absorption, `ζ = 1` on `B_{r/2}(z)` and `|x'| ≤ h` `μ_V`-a.e. on `B_r(z)`.
   exact Submission.ted_lemma_a_tilt_height n ℓ hn U hU V H hH hmeas hae z r h hr hBU hh T hT hht
