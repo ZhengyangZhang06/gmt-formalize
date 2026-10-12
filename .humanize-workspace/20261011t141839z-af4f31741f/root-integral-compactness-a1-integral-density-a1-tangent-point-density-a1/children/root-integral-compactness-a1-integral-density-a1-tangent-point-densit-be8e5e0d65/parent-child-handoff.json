@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); diff GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (identical)",
+        "grep -n 'HasDensity\\|densityRatio\\|unitBallVolume' GMT/Ch08/Contract.lean; sed -n 28,60p GMT/Ch08/Contract.lean",
+        "grep -n 'def blowUpMap\\|def HasWeightedApproximateTangentSpaceAt' -A 14 .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "grep -rn 'abbrev Euclidean ' .lake/packages/simongmt/Poincare; grep -rn 'def ofSubmodule\\|plane_ofSubmodule\\|finrank_plane' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/",
+        "rg -n 'euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_eq_volume|theorem Isometry.euclideanHausdorffMeasure_image' snapshot mathlib/Mathlib; grep -rn 'notation \"μHE' snapshot mathlib/Mathlib",
+        "rg -n 'theorem _root_.MeasurableEmbedding.integral_map|theorem restrict_map|theorem integral_smul_measure|theorem addHaar_closedBall |theorem integral_eq_lintegral_of_nonneg_ae|theorem ae_restrict_mem₀|theorem withDensity_apply |theorem lintegral_indicator |theorem Integrable.lintegral_lt_top|theorem integral_indicator_one|le_div_iff_mul_le|theorem div_le_of_le_mul |theorem measurePreserving \\(|theorem measure_ball_pos|theorem measure_ball_lt_top|theorem Ioo_mem_nhdsLT|theorem ofReal_lt_ofReal_iff' snapshot mathlib/Mathlib",
+        "python3 -I dag.json scan: lean_name/status/parent/lean_statement for frt_wat_setIntegral_blowUpMap_image, intcpt_canon_plane_closedBall_hausdorff, frt_td_hasDensity_of_ball_mass_bounds, frt_td_ball_mass_lower/upper_of_blowup, allard_tc_tpr_blowup_setIntegral; cross-parent reused children scan",
+        "grep -c / grep -rl 'intcpt_id_tpd_' over dag.json, DAG.md, nodes/; git for-each-ref loop: git show REF:GMT/Ch08/Submission.lean | grep 'intcpt_id_tpd_\\|intcpt_id_tangent_point_density'; grep -rl intcpt_id_tpd .lake/packages/simongmt and snapshot mathlib",
+        "sed -n 274,326p book/chapter-03.txt (Simon Ch. 3, Definition 1.7 and Remark 1.8(2))",
+        "verifier/gmt-compare.py child_modules + contract_scope (challenge form); python3 -I importlib verifier/lean_contract.py validate_lean_statement on all 8 statements",
+        "lake env lean /tmp/tpd3-decomp/Full.lean; lake env lean /tmp/tpd3-decomp/Assembly.lean; lake env lean /tmp/tpd3-decomp/Challenge_{0..6}.lean; lake env lean /tmp/tpd3-decomp/PP.lean (set_option pp.parens/pp.coercions, #check of each child)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-integral-density-a1-tangent-point-density-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-integral-density-a1-tangent-point-density-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-tangent-plane-dilation-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/tpd-decomp/Full2.lean",
+        "/tmp/tpd3-decomp/Full.lean",
+        "/tmp/tpd3-decomp/Assembly.lean",
+        "/tmp/tpd3-decomp/Challenge_0.lean",
+        "/tmp/tpd3-decomp/PP.lean"
+      ],
+      "conclusion": "The snapshot is project 63436ae6 plus Mathlib 25730c7c, and Submission.lean is identical to Contract.lean.\n\nDefinitions used: Contract.lean defines unitBallVolume (Lebesgue volume of the open unit ball of ℝ^n), densityRatio and HasDensity. SimonGMT Chapter03/Rectifiable.lean defines blowUpMap x r y = r⁻¹ • (y − x) (line 96) and HasWeightedApproximateTangentSpaceAt (line 330): finrank P = n and the integrals of f y * θ (x + r • y) converge along 𝓝[>] 0. Euclidean N is EuclideanSpace ℝ (Fin N) (Varifold.lean:54), and μHE[d] is notation in Geometry/Euclidean/Volume/Measure.lean:72.\n\nEvery Mathlib lemma the child proofs cite is located in the snapshot, including:\n- Isometry.euclideanHausdorffMeasure_image (Measure.lean:131)\n- Measure.euclideanHausdorffMeasure_smul₀ (:152)\n- InnerProductSpace.euclideanHausdorffMeasure_eq_volume (:191)\n- MeasurableEmbedding.integral_map (Bochner/Basic.lean:1093)\n- integral_eq_lintegral_of_nonneg_ae (:515)\n- MeasurableEmbedding.restrict_map (Restrict.lean:890)\n- ae_restrict_mem₀ (:637)\n- withDensity_apply (WithDensity.lean:44)\n- addHaar_closedBall (EqHaar.lean:500)\n- LinearIsometryEquiv.measurePreserving (Haar/InnerProductSpace.lean:151)\n- ENNReal.le_div_iff_mul_le and div_le_of_le_mul (ENNReal/Inv.lean:369 and :392)\nFull.lean uses all of them and compiles with only propext, Classical.choice and Quot.sound.\n\nReuse: the three declarations v1 reused (frt_wat_setIntegral_blowUpMap_image, frt_td_hasDensity_of_ball_mass_bounds, intcpt_canon_plane_closedBall_hausdorff) are accepted nodes under other parents. The controller rejected reuse of the first as reserved by an active node, so no cross-branch name is reused. Fresh intcpt_id_tpd_* names are used throughout, and plane_ball is restated for a Submodule. The 7 names occur nowhere except this node's rejected decomposition-v1.json. They are absent from dag.json, DAG.md, other node directories, every git ref's Submission.lean (842 refs at check time), simongmt and Mathlib.\n\nSimon Ch. 3, Remark 1.8(2) (book/chapter-03.txt lines 298–313) is the source of the cutoff argument the children formalize."
+    }
+  ],
+  "parent_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1",
+  "child_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.ball_mass_upper-a1",
+  "subproblem": {
+    "key": "ball_mass_upper",
+    "title": "Upper ball-mass bound at a weighted approximate tangent point",
+    "statement": "Let N, n ∈ ℕ and H^n := μHE[n] on ℝ^N = Euclidean N. Let M ⊆ ℝ^N be H^n-null-measurable, θ : ℝ^N → ℝ with θ ≥ 0 on M, x ∈ M, P a linear subspace of ℝ^N, and r₀ > 0 with θ H^n-integrable on M ∩ B̄_{r₀}(x). Assume M has weighted approximate tangent space P at x with respect to θ (Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P). Let ν := (H^n⌞M).withDensity(ofReal ∘ θ) and ω̂_n := unitBallVolume n. Then for every c ∈ [0, ∞] with ofReal(θ(x)) · ω̂_n < c, eventually as t → 0⁺: ν(B̄_t(x)) ≤ c · ofReal(t)^n.",
+    "lean_statement": "∀ (N n : ℕ) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (P : Submodule ℝ (Euclidean N)) (r₀ : ℝ), NullMeasurableSet M (μHE[n] : Measure (Euclidean N)) → (∀ y ∈ M, 0 ≤ θ y) → x ∈ M → 0 < r₀ → IntegrableOn θ (M ∩ closedBall x r₀) μHE[n] → Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P → ∀ c : ℝ≥0∞, ENNReal.ofReal (θ x) * unitBallVolume n < c → ∀ᶠ t in 𝓝[>] (0 : ℝ), (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity fun y ↦ ENNReal.ofReal (θ y)) (closedBall x t) ≤ c * ENNReal.ofReal t ^ n",
+    "lean_name": "intcpt_id_tpd_ball_mass_upper",
+    "depends_on": [
+      "ball_sandwich",
+      "plane_cutoff"
+    ],
+    "natural_proof": "Source: steps 2–5 of the selected proof (Simon Ch. 3, Remark 1.8(2)), upper half: the outer cutoff f₂ (1_{B̄_1} ≤ f₂ ≤ 1_{B̄_{1/κ}}) and the limsup bound, written for a single c. Notation: H^n := μHE[n]; B̄_s(z) := closedBall z s; ν := (H^n⌞M).withDensity(ofReal ∘ θ); ω̂ := unitBallVolume n; ω := ω̂.toReal ≥ 0; η_t := Chapter03.blowUpMap x t; I_f(t) := ∫_{η_t(M)} f(y) θ(x + t•y) dH^n(y). HWATS gives finrank P = n and I_f(t) → θ(x)∫_P f dH^n along 𝓝[>] 0 for every f ∈ C_c(ℝ^N, ℝ).\n\n0. ω̂ < ∞, since it is the volume of a bounded ball in a proper space (measure_ball_lt_top), so ω̂ = ofReal ω. Also θ(x) ≥ 0 because x ∈ M.\n\n1. Case c = ∞. For t > 0, ofReal(t) > 0, so ofReal(t)^n ≠ 0 and ∞ · ofReal(t)^n = ∞ (ENNReal.top_mul). Then ν(B̄_t(x)) ≤ ∞ holds for every t ∈ (0, ∞), a set in 𝓝[>] 0 (self_mem_nhdsWithin). Assume from now on c ≠ ∞.\n\n2. Put c' := c.toReal, so c = ofReal(c'). Since θ(x) ≥ 0, ofReal(θ(x)) · ω̂ = ofReal(θ(x)·ω) (ENNReal.ofReal_mul, ENNReal.ofReal_toReal). So ofReal(θ(x)·ω) < ofReal(c'), which gives θ(x)·ω < c' (ENNReal.ofReal_lt_ofReal_iff').\n\n3. Choice of κ. κ ↦ θ(x)·ω·(κ⁻¹)^n is continuous at κ = 1, because inversion is continuous at 1 ≠ 0. Its value there is θ(x)·ω < c', so eventually along 𝓝[<] 1 it stays below c' (Filter.Tendsto.eventually_lt_const). Intersect with Ioo 0 1 ∈ 𝓝[<] 1 (Ioo_mem_nhdsLT). The filter 𝓝[<] 1 on ℝ is non-trivial, so the intersection is nonempty (Filter.Eventually.and, Filter.Eventually.exists). Pick κ in it: 0 < κ < 1 and θ(x)·ω·(κ⁻¹)^n < c'. Then κ⁻¹ > 1 (one_lt_inv₀).\n\n4. Outer cutoff. Apply the sibling plane_cutoff (Submission.intcpt_id_tpd_plane_cutoff) to P with (a, R) := (1, κ⁻¹), using finrank P = n and 0 < 1 < κ⁻¹. It gives f ∈ C_c(ℝ^N, ℝ) with: 0 ≤ f ≤ 1; f(y) = 1 for ‖y‖ ≤ 1; f(y) = 0 for ‖y‖ > κ⁻¹; and ∫_P f dH^n ≤ ω·(κ⁻¹)^n.\n\n5. Limit. By HWATS applied to f, I_f(t) → θ(x)·∫_P f dH^n. Moreover\n θ(x)·∫_P f dH^n ≤ θ(x)·(ω·(κ⁻¹)^n) = θ(x)·ω·(κ⁻¹)^n < c' (θ(x) ≥ 0, step 4).\n Hence ∀ᶠ t in 𝓝[>] 0, I_f(t) < c' (Filter.Tendsto.eventually_lt_const).\n\n6. Sandwich. Since κ·r₀ > 0, ∀ᶠ t in 𝓝[>] 0, t ∈ (0, κ·r₀] (Ioc_mem_nhdsGT). For such t, t·κ⁻¹ = t/κ ≤ r₀ (div_le_iff₀). Fix t in both eventual sets. Apply the sibling ball_sandwich (Submission.intcpt_id_tpd_ball_sandwich) with (f, r₀, a, R, r) := (f, r₀, 1, κ⁻¹, t). Its left inequality gives ν(B̄_{t·1}(x)) ≤ ofReal(t^n · I_f(t)), i.e. ν(B̄_t(x)) ≤ ofReal(t^n · I_f(t)).\n\n7. Conclusion. For such t:\n ν(B̄_t(x)) ≤ ofReal(t^n · I_f(t))\n ≤ ofReal(t^n · c') (ENNReal.ofReal_le_ofReal, since t^n ≥ 0 and I_f(t) < c')\n = ofReal(c') · ofReal(t)^n (mul_comm, ENNReal.ofReal_mul with c' ≥ 0, ENNReal.ofReal_pow with t ≥ 0)\n = c · ofReal(t)^n.\n This holds on a set belonging to 𝓝[>] 0. Together with step 1 this proves the claim. ∎",
+    "proof_key_steps": [
+      "c = ∞ is trivial for t > 0; otherwise c = ofReal(c') with θ(x)ω < c' (θ(x) ≥ 0 as x ∈ M).",
+      "Choose κ ∈ (0,1) with θ(x)ω(κ⁻¹)^n < c' (continuity of κ⁻¹ at 1).",
+      "Sibling plane_cutoff with (a,R) = (1,κ⁻¹): f ∈ C_c, 1_{B̄_1} ≤ f ≤ 1_{B̄_{1/κ}}, ∫_P f ≤ ω(κ⁻¹)^n.",
+      "HWATS: I_f(t) → θ(x)∫_P f < c', so eventually I_f(t) < c'.",
+      "For 0 < t ≤ κr₀ (so tκ⁻¹ ≤ r₀), sibling ball_sandwich gives ν(B̄_t(x)) ≤ ofReal(t^n I_f(t)) ≤ ofReal(t^n c') = c·ofReal(t)^n."
+    ]
+  },
+  "audit": {
+    "key": "ball_mass_upper",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Membership x ∈ M correctly supplies θ(x) ≥ 0. The proof handles c = ∞ separately; otherwise the outer cutoff, tangent convergence and left sandwich inequality give the exact eventual upper bound, including zero weight and dimension zero."
+  },
+  "resolved_dependencies": [
+    "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.ball_sandwich-a1",
+    "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.plane_cutoff-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-integral-density-a1-tangent-point-densit-be8e5e0d65/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-integral-density-a1-tangent-point-densit-be8e5e0d65/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-integral-density-a1-tangent-point-densit-be8e5e0d65/parent-supplied-natural-proof.json"
+}

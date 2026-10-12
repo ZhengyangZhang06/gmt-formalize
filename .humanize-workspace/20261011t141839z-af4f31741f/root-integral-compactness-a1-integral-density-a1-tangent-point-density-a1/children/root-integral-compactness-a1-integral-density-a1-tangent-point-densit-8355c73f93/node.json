@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.plane_ball-a1",
+  "parent_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1",
+  "depth": 4,
+  "title": "H^n of a closed disc in an n-dimensional subspace: H^n(P ∩ B̄_r(0)) = ω_n r^n",
+  "statement": "Let N, n ∈ ℕ, let P be a linear subspace of ℝ^N = Euclidean N with dim P = n (Module.finrank ℝ P = n), and let r ∈ ℝ with r ≥ 0. Then μHE[n](P ∩ closedBall 0 r) = unitBallVolume n · ofReal(r)^n, i.e. H^n(P ∩ B̄_r(0)) = ω_n r^n. Here H^n = μHE[n] is Mathlib's Euclidean Hausdorff measure on ℝ^N, and ω_n = unitBallVolume n is the Lebesgue measure of the open unit ball of ℝ^n = EuclideanSpace ℝ (Fin n).",
+  "lean_statement": "∀ (N n : ℕ) (P : Submodule ℝ (Euclidean N)) (r : ℝ), Module.finrank ℝ P = n → 0 ≤ r → (μHE[n] : Measure (Euclidean N)) ((P : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n",
+  "lean_name": "intcpt_id_tpd_plane_closedBall_hausdorff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-integral-density-a1-tangent-point-densit-8355c73f93-a1"
+}
