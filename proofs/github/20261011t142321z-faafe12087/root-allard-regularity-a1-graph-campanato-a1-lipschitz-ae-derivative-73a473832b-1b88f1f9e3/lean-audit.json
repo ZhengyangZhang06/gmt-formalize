@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "db1fc5acef472015fc6070a98443369a37d8a590ef5ad9c8b4f8453625d9f07e",
+  "git_delta": {
+    "base_commit": "819d5918c9dcfc1c50033e9d575a99bdb3333b9a",
+    "candidate_commit": "d715896f93d3fb720c670cd34945943468a895d4",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_lad_lipschitz_ftc",
+    "diff_sha256": "eae4fc208cc23c45479e137f3117a0d4c7b6d322e5681d6d751e604d621d9fef",
+    "source_sha256": "3028d7019f663b17232ee9e8e247b7eff582dc87db54ab74d9e29ab82f65ca12",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_lad_lipschitz_ftc",
+      "statement": "∀ (ℓ : ℕ) (φ k : ℝ → Rn ℓ) (a b : ℝ) (L : ℝ≥0), a ≤ b → LipschitzOnWith L φ (Icc a b) → ContinuousOn k (Icc a b) → (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → HasDerivAt φ (k t) t) → φ b - φ a = ∫ t in a..b, k t",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
