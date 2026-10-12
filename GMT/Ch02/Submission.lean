@@ -2762,6 +2762,59 @@ theorem Submission.submanifold_divergence_identity_compact : ((∀ (n N : ℕ) (
     integral_finsetSum _ fun q _ ↦ (hloc q).1]
   exact Finset.sum_eq_zero fun q _ ↦ (hloc q).2
 
+/-- **Simon Ch. 2, Lemma 5.5(2) (p. 63), stationary `⇒ H ≡ 0`.** Assume (TH) and the first
+variation formula 5.3. If the `n`-dimensional `C²` submanifold `M ⊆ ℝ^{n+ℓ}` is stationary in the
+open set `U`, then `H = 0` on `M ∩ U`; no compactness of `Ū ∩ M` is needed. By the fundamental
+lemma for test fields (`μ = Hⁿ`, `F = H`: `M` is measurable by (TH2), `H` is continuous on `M`,
+`Hⁿ` is positive on relatively open pieces of `M`, and `M` is locally compact in closed-ball form)
+it suffices that `∫_M ⟨Y, H⟩ dHⁿ = 0` for every `C²` field `Y` with compact support in `U` and
+`M ∩ spt Y` compact. For such `Y`, `φ_t(x) = x + c t Y(x)` is admissible with initial velocity
+`c Y` (`c > 0`), so stationarity, 5.3 and uniqueness of derivatives give `∫_M div_M (c Y) dHⁿ = 0`,
+while the divergence identity gives `∫_M div_M (c Y) dHⁿ = -c ∫_M ⟨Y, H⟩ dHⁿ`. -/
+theorem Submission.stationary_imp_mean_curvature_zero : ((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → FirstVariation → ∀ (n ℓ : ℕ) (M U : Set (Rn (n + ℓ))), Chapter02.IsSimonSubmanifold (E := Rn n) 2 M → IsOpen U → IsStationaryIn n M U → ∀ y ∈ M ∩ U, meanCurvature M y = 0 := by
+  intro hTH hFV n ℓ M U hM hU hS y hy
+  -- `M` is also a `C¹` Simon submanifold: each class-2 chart is a class-1 chart.
+  have hM1 : Chapter02.IsSimonSubmanifold (E := Rn n) 1 M := by
+    refine ⟨le_rfl, fun z hz ↦ ?_⟩
+    obtain ⟨V, W, ψ, hzW, hψ⟩ := hM.2 z hz
+    exact ⟨V, W, ψ, hzW, hψ.1, hψ.2.1, hψ.2.2.1.of_le (by norm_num), hψ.2.2.2⟩
+  -- Fundamental lemma with `μ = Hⁿ`, `F = H`: `M` is measurable (TH2), `H` is continuous on `M`
+  -- (sff_properties), `Hⁿ` is positive near points of `M` (measure_bounds (b)), and `M` is locally
+  -- compact (local_compact_ball).
+  refine Submission.vector_field_eq_zero_of_integral_inner_test_fields (n + ℓ) μHE[n] M U
+    (meanCurvature M) (hTH.2 n (n + ℓ) 2 M hM).1 hU
+    (Submission.second_fundamental_form_symm_normal_continuity hTH n (n + ℓ) M hM).2.1
+    (Submission.simon_submanifold_hausdorff_finite_pos n (n + ℓ) 2 M hM).2
+    (Submission.simon_submanifold_exists_closedBall_isCompact_inter n (n + ℓ) 2 M hM) ?_ y hy
+  -- It remains to show `∫_M ⟨Y, H⟩ dHⁿ = 0` for every admissible test field `Y`.
+  intro Y hY hYc hYU hYK
+  -- scaled_deformation: `φ_t(x) = x + (c t) Y(x)` is admissible, with initial velocity `c Y`.
+  obtain ⟨c, hc, hφ, hvel⟩ :=
+    Submission.scaled_field_deformation_is_admissible (n + ℓ) U Y hU hY hYc hYU
+  -- Stationarity, the first variation formula and uniqueness of derivatives:
+  -- `∫_M div_M (c Y) dHⁿ = 0`.
+  have hdiv0 : ∫ z in M, tangentialDivergence M (fun x ↦ c • Y x) z ∂μHE[n] = 0 := by
+    have hfv := hFV n ℓ M U (tsupport Y) (fun t x ↦ x + (c * t) • Y x) hM1 hU ⟨y, hy.2, hy.1⟩
+      (fun K' hK' hK'U ↦ by rw [inter_comm]; exact hS.1 K' hK' hK'U) hφ
+    rw [show initialVelocity (fun t x ↦ x + (c * t) • Y x) = fun x ↦ c • Y x from funext hvel]
+      at hfv
+    exact hfv.unique (hS.2 _ _ hφ)
+  -- divergence_identity for the `C¹` field `c Y`, which vanishes off the closed set `tsupport Y`:
+  -- `⟨c Y, H⟩` is integrable on `M` and `∫_M div_M (c Y) dHⁿ = -∫_M ⟨c Y, H⟩ dHⁿ`.
+  obtain ⟨-, hint, hdiv⟩ := Submission.submanifold_divergence_identity_compact hTH n (n + ℓ) M
+    (tsupport Y) (fun x ↦ c • Y x) hM ((hY.of_le (by norm_num)).const_smul c)
+    (isClosed_tsupport Y) (fun x hx ↦ by simp [image_eq_zero_of_notMem_tsupport hx]) hYK
+  -- `⟨c Y, H⟩ = c ⟨Y, H⟩` and `c ≠ 0`.
+  have hcY : ∀ z, inner ℝ (c • Y z) (meanCurvature M z) = c * inner ℝ (Y z) (meanCurvature M z) :=
+    fun z ↦ real_inner_smul_left _ _ _
+  simp only [hcY] at hint hdiv
+  rw [hdiv0, integral_const_mul] at hdiv
+  refine ⟨?_, ?_⟩
+  · have h : IntegrableOn (fun z ↦ c⁻¹ * (c * inner ℝ (Y z) (meanCurvature M z))) M μHE[n] :=
+      hint.const_mul c⁻¹
+    simpa only [inv_mul_cancel_left₀ hc.ne'] using h
+  · exact (mul_eq_zero.1 (neg_eq_zero.1 hdiv.symm)).resolve_left hc.ne'
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
