@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ec02eedc43ef6e8c38252e911acdfcaadabee4befd6b74c8d452cdf424dd2bdb",
+  "git_delta": {
+    "base_commit": "444b7bfae7ca6746c99929b15054d2feb21ec0ec",
+    "candidate_commit": "e2139e253e40c589928eaa7b44c0e490f16f6fcb",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "limsup_measure_compact_le_of_tendsto_integral",
+    "diff_sha256": "da6f1c6feaa7d1661610719ada283a10e4bcb4f5cc851e93b4baff742b6e9a26",
+    "source_sha256": "a6225928fc95f39af04fd7c6030bbae165eb5f3a83e11eb9b77dbe82e1ffba3f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.limsup_measure_compact_le_of_tendsto_integral",
+      "statement": "∀ (N : ℕ) (U : Set (Euclidean N)) (μs : ℕ → Measure (Euclidean N)) (μ : Measure (Euclidean N)), IsOpen U → (∀ (i : ℕ) (K : Set (Euclidean N)), IsCompact K → K ⊆ U → μs i K ≠ ∞) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → (∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Tendsto (fun i ↦ ∫ x, g x ∂(μs i)) atTop (𝓝 (∫ x, g x ∂μ))) → ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → limsup (fun i ↦ μs i K) atTop ≤ μ K",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
