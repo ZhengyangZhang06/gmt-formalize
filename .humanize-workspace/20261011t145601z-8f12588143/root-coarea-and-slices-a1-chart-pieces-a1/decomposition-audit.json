@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "submanifold_cover_lipschitz_open_charts|lipschitzOn_open_c1_first_order_agreement",
+        "theorem ContDiffOn.exists_lipschitzOnWith|theorem LipschitzOnWith.extend_finite_dimension|theorem measurableSet_of_differentiableAt|theorem measurable_fderiv|theorem LipschitzWith.ae_differentiableAt",
+        "^theorem isOpen_biUnion_countable|^theorem Countable.exists_eq_range|^theorem measurableSet_eq_fun|^theorem HasFDerivAt.congr_of_eventuallyEq|^theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|^def LocallyLipschitzOn",
+        "euclideanHausdorffMeasure_image_le_of_lipschitzOn|^theorem .*countablyRectifiable|^def IsSimonSubmanifold",
+        "validate_lean_statement(s['lean_statement'])",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart-pieces-independent-audit-i6gjrib6/Standalone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart-pieces-independent-audit-i6gjrib6/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart-pieces-independent-audit-i6gjrib6/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/issue-workers.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-coarea-and-slices-a1-chart-pieces-a1/parent-child-handoff.json",
+        "/tmp/chart-pieces-independent-audit-i6gjrib6/Standalone.lean",
+        "/tmp/chart-pieces-independent-audit-i6gjrib6/Full.lean",
+        "/tmp/chart-pieces-independent-audit-i6gjrib6/Assembly.lean"
+      ],
+      "conclusion": "Verified the pinned definitions and supporting APIs against compatible compiler sources. Neither proposed name matches a declaration in the snapshot or a reservation in another active branch. Both exact one-line types validate and elaborate independently with autoImplicit=false and without either child declaration present. Fresh checks of both supplied proofs and the assembly passed; their only axioms are propext, Classical.choice and Quot.sound. The split is appropriate: the independent covering and agreement obligations, followed by Lipschitz null-image transfer and countable reindexing, establish the exact selected parent contract. Dependencies are acyclic. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_open_charts",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including the frozen submanifold hypothesis. The proof supplies countable chart selection, a nonempty enumeration using the empty piece, compact-ball Lipschitz bounds, composition bounds and coverage. Properness is legitimately unused. Empty and zero-dimensional cases are covered. The bare name is unreserved, and neither the proof nor its independently usable type relies circularly on the parent or another child."
+    },
+    {
+      "key": "first_order_agreement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition retain precisely the approximation, openness and Lipschitz hypotheses. The proof constructs the extension and approximants, proves Borel measurability with valid instances, transfers the actual Fréchet derivative through neighborhood equality, and proves the null complement using Rademacher and vanishing error bounds. Every step is supplied and sufficient for formalization. The bare name is unreserved; the type and proof are independent and non-circular."
+    }
+  ],
+  "required_changes": []
+}

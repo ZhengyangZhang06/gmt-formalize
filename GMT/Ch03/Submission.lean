@@ -2646,6 +2646,201 @@ theorem Submission.c1_level_slices_countablyRectifiable : ∀ (m k N : ℕ) (D :
   · exact Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero
       (Submission.contDiffOn_image_euclideanHausdorff_null (m + k) N k D _ ψ hD hψ
         inter_subset_left (measure_mono_null inter_subset_right hy))
+/-- **Lipschitz open chart pieces** (Simon Ch. 3, Lemma 1.2 and Remark 1.3, `chapter-03.txt`
+lines 25–73, for the embedded `C¹` submanifolds of Ch. 2, (4.1)). Let `U` be open, `M ⊆ U`, `f`
+locally Lipschitz on `U`, and `M ⊆ N₀ ∪ ⋃ᵢ Sᵢ` with every `Sᵢ` an `n`-dimensional embedded `C¹`
+submanifold. Then `M ⊆ N₀ ∪ ⋃_α ψ_α(D_α)` for countably many open `D_α ⊆ ℝⁿ` and maps `ψ_α`
+that are `C¹`, injective and Lipschitz on `D_α` with injective differential, and such that
+`f ∘ ψ_α` is Lipschitz on `D_α`. By Lindelöf, countably many charts cover each `Sᵢ`. Around a
+parameter `u` of a point of `M`, a closed ball inside the chart domain on which the chart is
+Lipschitz (`C¹` on a compact convex set) and which it maps into a ball where `f` is Lipschitz
+contains a set `B ∋ u` of a fixed countable basis of `ℝⁿ`; the good pairs `(B, ψ)` are
+enumerated by `ℕ`. -/
+theorem Submission.submanifold_cover_lipschitz_open_charts : ∀ (n N m : ℕ) (M U N₀ : Set (Rn N)) (S : ℕ → Set (Rn N)) (f : Rn N → Rn m), IsOpen U → M ⊆ U → LocallyLipschitzOn U f → (∀ i, IsC1Submanifold n (S i)) → M ⊆ N₀ ∪ ⋃ i, S i → ∃ (D : ℕ → Set (Rn n)) (ψ : ℕ → Rn n → Rn N), (∀ α, IsOpen (D α)) ∧ (∀ α, ContDiffOn ℝ 1 (ψ α) (D α)) ∧ (∀ α, InjOn (ψ α) (D α)) ∧ (∀ α, ∃ K, LipschitzOnWith K (ψ α) (D α)) ∧ (∀ α, ∀ u ∈ D α, Function.Injective (fderiv ℝ (ψ α) u)) ∧ (∀ α, ∃ K, LipschitzOnWith K (f ∘ ψ α) (D α)) ∧ M ⊆ N₀ ∪ ⋃ α, ψ α '' D α := by
+  intro n N m M U N₀ S f hU hMU hf hS hcov
+  classical
+  -- Step 1: a chart `(V_{i,y}, W_{i,y}, ψ_{i,y})` of `S i` at every `y ∈ S i`.
+  choose! V W ψ hVo hWo hyW hψC hψinj hψim hψprop hψD using hS
+  clear hψprop
+  -- Step 2: by Lindelöf, the charts at countably many `y ∈ T i` cover `S i`.
+  choose T hTS hTc hTW using fun i ↦
+    TopologicalSpace.isOpen_biUnion_countable (S i) (W i) (fun y hy ↦ hWo i y hy)
+  -- Step 3: the good pairs among `(∅, 0)` and `(B, ψ_{i,y})`, `B` in a countable basis of `ℝⁿ`.
+  obtain ⟨𝔅, h𝔅c, -, h𝔅⟩ := TopologicalSpace.exists_countable_basis (Rn n)
+  obtain ⟨Good, hGood⟩ : ∃ Good : Set (Rn n) × (Rn n → Rn N) → Prop, ∀ p, Good p ↔
+      (IsOpen p.1 ∧ ContDiffOn ℝ 1 p.2 p.1 ∧ InjOn p.2 p.1 ∧ (∃ K, LipschitzOnWith K p.2 p.1) ∧
+        (∀ u ∈ p.1, Function.Injective (fderiv ℝ p.2 u)) ∧
+        ∃ K, LipschitzOnWith K (f ∘ p.2) p.1) := ⟨_, fun _ ↦ Iff.rfl⟩
+  have hQc : (insert ((∅ : Set (Rn n)), (0 : Rn n → Rn N))
+      (⋃ i, ⋃ y ∈ T i, (fun B ↦ (B, ψ i y)) '' 𝔅)).Countable :=
+    (countable_iUnion fun i ↦ (hTc i).biUnion fun y _ ↦ h𝔅c.image _).insert _
+  have hPne : {p ∈ insert ((∅ : Set (Rn n)), (0 : Rn n → Rn N))
+      (⋃ i, ⋃ y ∈ T i, (fun B ↦ (B, ψ i y)) '' 𝔅) | Good p}.Nonempty :=
+    ⟨(∅, 0), mem_insert _ _, (hGood _).mpr ⟨isOpen_empty, contDiffOn_empty, injOn_empty _,
+      ⟨0, lipschitzOnWith_empty _ _⟩, fun _ h ↦ h.elim, ⟨0, lipschitzOnWith_empty _ _⟩⟩⟩
+  obtain ⟨g, hg⟩ := (hQc.mono (sep_subset _ _)).exists_eq_range hPne
+  have hgG : ∀ α, Good (g α) := by
+    intro α
+    have h : g α ∈ range g := mem_range_self α
+    rw [← hg] at h
+    exact h.2
+  refine ⟨fun α ↦ (g α).1, fun α ↦ (g α).2, fun α ↦ ((hGood _).mp (hgG α)).1,
+    fun α ↦ ((hGood _).mp (hgG α)).2.1, fun α ↦ ((hGood _).mp (hgG α)).2.2.1,
+    fun α ↦ ((hGood _).mp (hgG α)).2.2.2.1, fun α ↦ ((hGood _).mp (hgG α)).2.2.2.2.1,
+    fun α ↦ ((hGood _).mp (hgG α)).2.2.2.2.2, ?_⟩
+  -- Step 4: a point `x ∈ M \ N₀` is `ψ_{i,y}(u)` for some `y ∈ T i`, `u ∈ V_{i,y}`.
+  intro x hx
+  rcases hcov hx with hx0 | hxS
+  · exact Or.inl hx0
+  right
+  obtain ⟨i, hxi⟩ := mem_iUnion.mp hxS
+  have hxW : x ∈ ⋃ y ∈ T i, W i y := by
+    rw [hTW]
+    exact mem_biUnion hxi (hyW i x hxi)
+  obtain ⟨y, hyT, hxy⟩ := mem_iUnion₂.mp hxW
+  have hy : y ∈ S i := hTS i hyT
+  have hxU : x ∈ U := hMU hx
+  obtain ⟨u, hu, rfl⟩ : x ∈ ψ i y '' V i y := by
+    rw [hψim i y hy]
+    exact ⟨hxy, hxi⟩
+  -- Step 5: `r = min δ₁ δ₂ / 2` has `closedBall u r ⊆ V` and `ψ(closedBall u r) ⊆ B(x, s)`,
+  -- where `f` is `K`-Lipschitz on `B(x, s) ⊆ t`.
+  obtain ⟨K, t, ht, hKt⟩ := hf hxU
+  rw [hU.nhdsWithin_eq hxU] at ht
+  obtain ⟨s, hs, hst⟩ := Metric.mem_nhds_iff.mp ht
+  have hcont : ContinuousAt (ψ i y) u :=
+    (hψC i y hy).continuousOn.continuousAt ((hVo i y hy).mem_nhds hu)
+  obtain ⟨δ₁, hδ₁, hδ₁s⟩ := Metric.continuousAt_iff.mp hcont s hs
+  obtain ⟨δ₂, hδ₂, hδ₂V⟩ := Metric.isOpen_iff.mp (hVo i y hy) u hu
+  have hδ : 0 < min δ₁ δ₂ := lt_min hδ₁ hδ₂
+  have hr0 : 0 < min δ₁ δ₂ / 2 := half_pos hδ
+  have hrδ : ∀ v ∈ Metric.closedBall u (min δ₁ δ₂ / 2), dist v u < δ₁ ∧ dist v u < δ₂ :=
+    fun v hv ↦ lt_min_iff.mp ((Metric.mem_closedBall.mp hv).trans_lt (half_lt_self hδ))
+  have hBV : Metric.closedBall u (min δ₁ δ₂ / 2) ⊆ V i y :=
+    fun v hv ↦ hδ₂V (Metric.mem_ball.mpr (hrδ v hv).2)
+  -- Step 6: `ψ` is Lipschitz on the compact convex ball.
+  obtain ⟨L, hL⟩ := ((hψC i y hy).mono hBV).exists_lipschitzOnWith one_ne_zero
+    (convex_closedBall u _) (isCompact_closedBall u _)
+  -- Step 7: a basis set `u ∈ B ⊆ B(u, r)` gives a good pair `(B, ψ_{i,y})`.
+  obtain ⟨B, hB𝔅, huB, hBball⟩ :=
+    h𝔅.exists_subset_of_mem_open (Metric.mem_ball_self hr0) Metric.isOpen_ball
+  have hBcl : B ⊆ Metric.closedBall u (min δ₁ δ₂ / 2) :=
+    hBball.trans Metric.ball_subset_closedBall
+  have hBP : (B, ψ i y) ∈ {p ∈ insert ((∅ : Set (Rn n)), (0 : Rn n → Rn N))
+      (⋃ i, ⋃ y ∈ T i, (fun B ↦ (B, ψ i y)) '' 𝔅) | Good p} := by
+    refine ⟨mem_insert_of_mem _ (mem_iUnion.mpr ⟨i, mem_iUnion₂.mpr ⟨y, hyT, B, hB𝔅, rfl⟩⟩),
+      (hGood _).mpr ⟨h𝔅.isOpen hB𝔅, (hψC i y hy).mono (hBcl.trans hBV),
+        (hψinj i y hy).mono (hBcl.trans hBV), ⟨L, hL.mono hBcl⟩,
+        fun v hv ↦ hψD i y hy v (hBV (hBcl hv)), ⟨K * L, hKt.comp (hL.mono hBcl) ?_⟩⟩⟩
+    intro v hv
+    exact hst (Metric.mem_ball.mpr (hδ₁s (hrδ v (hBcl hv)).1))
+  -- Step 8: `(B, ψ_{i,y})` is some `(D_α, ψ_α)`, and `x = ψ_α(u) ∈ ψ_α(D_α)`.
+  rw [hg] at hBP
+  obtain ⟨α, hα⟩ := hBP
+  refine mem_iUnion.mpr ⟨α, ?_⟩
+  show ψ i y u ∈ (g α).2 '' (g α).1
+  rw [hα]
+  exact mem_image_of_mem _ huB
+/-- **First-order agreement of a Lipschitz map on an open set with `C¹` maps**, Simon Ch. 3,
+proof of the area formula (2.4) (`chapter-03.txt` lines 376–381), used again for the co-area
+formula (2.8) (lines 426–428). Assume the `C¹` Approximation Theorem (Simon Ch. 2, Thm. 1.5,
+`chapter-02.txt` lines 165–169) for Lipschitz maps `ℝⁿ → ℝᵐ`. If `D ⊆ ℝⁿ` is open and `h` is
+Lipschitz on `D`, then there are `C¹` maps `G i` and Borel sets `E i ⊆ D` such that `h = G i` on
+`E i`, `h` has Fréchet derivative `DG i(u)` at each `u ∈ E i`, and `Lⁿ(D \ ⋃ i, E i) = 0`.
+Extend `h|_D` to a globally Lipschitz `h̃` (Ch. 2, Thm. 1.2), apply the hypothesis to `h̃` with
+`ε = (i + 1)⁻¹`, and let `E i = D ∩ {h̃ differentiable} ∩ {h̃ = G i} ∩ {Dh̃ = DG i}`. As `D` is
+open, `h = h̃` near each `u ∈ D`; and `D \ ⋃ i, E i` lies in the union of the non-differentiability
+set of `h̃` (null by Rademacher, Ch. 2, Thm. 1.4) and `⋂ i, {h̃ ≠ G i ∨ Dh̃ ≠ DG i}`, whose
+measure is `< (i + 1)⁻¹` for every `i`. -/
+theorem Submission.lipschitzOn_open_c1_first_order_agreement : ∀ (n m : ℕ), (∀ (F : Rn n → Rn m) (K : ℝ≥0), LipschitzWith K F → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → Rn m, ContDiff ℝ 1 g ∧ volume {x | F x ≠ g x ∨ fderiv ℝ F x ≠ fderiv ℝ g x} < ε) → ∀ (D : Set (Rn n)) (h : Rn n → Rn m), IsOpen D → (∃ K, LipschitzOnWith K h D) → ∃ (G : ℕ → Rn n → Rn m) (E : ℕ → Set (Rn n)), (∀ i, ContDiff ℝ 1 (G i)) ∧ (∀ i, MeasurableSet (E i)) ∧ (∀ i, E i ⊆ D) ∧ (∀ i, ∀ u ∈ E i, h u = G i u ∧ HasFDerivAt h (fderiv ℝ (G i) u) u) ∧ volume (D \ ⋃ i, E i) = 0 := by
+  intro n m hC1 D h hD ⟨K, hK⟩
+  -- Step 1: a globally Lipschitz extension `ht` of `h|_D`.
+  obtain ⟨ht, htL, hteq⟩ := hK.extend_finite_dimension
+  -- Step 2: `C¹` maps `G i` that agree with `ht` to first order off a set of measure `< (i + 1)⁻¹`.
+  have hε : ∀ i : ℕ, (0 : ℝ≥0∞) < ((i + 1 : ℕ) : ℝ≥0∞)⁻¹ := fun i ↦
+    ENNReal.inv_pos.2 (ENNReal.natCast_ne_top _)
+  choose G hGC hGv using fun i : ℕ ↦ hC1 ht _ htL _ (hε i)
+  -- Step 3: `E i = D ∩ {ht differentiable} ∩ {ht = G i} ∩ {D ht = D (G i)} ⊆ D`.
+  refine ⟨G, fun i ↦ D ∩ {u | DifferentiableAt ℝ ht u} ∩ {u | ht u = G i u} ∩
+    {u | fderiv ℝ ht u = fderiv ℝ (G i) u}, hGC, fun i ↦ ?_, fun i u hu ↦ hu.1.1.1, ?_, ?_⟩
+  · -- Step 4: `E i` is Borel.
+    exact ((hD.measurableSet.inter (measurableSet_of_differentiableAt ℝ ht)).inter
+      (isClosed_eq htL.continuous (hGC i).continuous).measurableSet).inter
+      (measurableSet_eq_fun (measurable_fderiv ℝ ht) (measurable_fderiv ℝ (G i)))
+  · -- Step 5: first-order agreement on `E i`, since `h = ht` on the open neighbourhood `D` of `u`.
+    rintro i u ⟨⟨⟨huD, hud⟩, hueq⟩, hufd⟩
+    refine ⟨(hteq huD).trans hueq, ?_⟩
+    rw [← hufd]
+    exact hud.hasFDerivAt.congr_of_eventuallyEq (eventuallyEq_of_mem (hD.mem_nhds huD) hteq)
+  · -- Steps 6–7: `D \ ⋃ i, E i ⊆ {¬ DifferentiableAt ℝ ht} ∪ ⋂ i, Bad i` with
+    -- `Bad i = {ht ≠ G i ∨ D ht ≠ D (G i)}`; both parts are `Lⁿ`-null.
+    have hdiff : volume {u | ¬ DifferentiableAt ℝ ht u} = 0 :=
+      ae_iff.1 (htL.ae_differentiableAt (μ := volume))
+    have hbad : volume (⋂ i, {x | ht x ≠ G i x ∨ fderiv ℝ ht x ≠ fderiv ℝ (G i) x}) = 0 :=
+      nonpos_iff_eq_zero.1 (ge_of_tendsto'
+        (ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1))
+        fun i ↦ (measure_mono (iInter_subset _ i)).trans (hGv i).le)
+    refine measure_mono_null ?_ (measure_union_null hdiff hbad)
+    rintro u ⟨huD, huE⟩
+    by_cases hud : DifferentiableAt ℝ ht u
+    · refine Or.inr (mem_iInter.2 fun i ↦ ?_)
+      by_contra hcon
+      exact huE (mem_iUnion.2 ⟨i, ⟨⟨huD, hud⟩, not_not.1 fun h₁ ↦ hcon (Or.inl h₁)⟩,
+        not_not.1 fun h₂ ↦ hcon (Or.inr h₂)⟩)
+    · exact Or.inl hud
+
+/-- **`C¹` chart pieces of a countably rectifiable set with first-order `C¹` agreement of `f`**
+(Simon Ch. 3, Lemma 1.2 and Remark 1.3, `chapter-03.txt` lines 25–73, and the procedure of the
+area formula, lines 376–381, invoked for the co-area formula at lines 426–428 and for the slices
+at lines 440–442). Assume Lemma 1.2 (`SubmanifoldCoverCharacterization`) and the `C¹`
+Approximation Theorem (Ch. 2, Thm. 1.5) for Lipschitz maps `ℝⁿ → ℝᵖ`. Let `M ⊆ ℝ^{n+ℓ}` be
+countably `n`-rectifiable, `U ⊇ M` open and `f` locally Lipschitz on `U`. Then there are open
+`D_j ⊆ ℝⁿ`, maps `ψ_j` that are `C¹`, injective and Lipschitz on `D_j` with injective
+differential, `C¹` maps `G_j` and Borel sets `E_j ⊆ D_j` such that `f(ψ_j(u)) = G_j(u)` and
+`D(f ∘ ψ_j)(u) = DG_j(u)` for `u ∈ E_j`, and `Hⁿ(M \ ⋃_j ψ_j(E_j)) = 0`. Lemma 1.2 gives
+`M ⊆ N₀ ∪ ⋃ᵢ Sᵢ` with `Hⁿ(N₀) = 0`; the chart pieces `(D_α, ψ_α)` of
+`submanifold_cover_lipschitz_open_charts` cover `M \ N₀`, and
+`lipschitzOn_open_c1_first_order_agreement` for `f ∘ ψ_α` gives `(G_{α,i}, E_{α,i})` with
+`Lⁿ(D_α \ ⋃ᵢ E_{α,i}) = 0`, whose image under the Lipschitz `ψ_α` is `Hⁿ`-null. The pairs
+`(α, i)` are re-indexed by `Nat.unpair`. -/
+theorem Submission.rectifiable_c1_chart_pieces : SubmanifoldCoverCharacterization → (∀ (n p : ℕ) (f : Rn n → Rn p) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → Rn p, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε) → ∀ (n ℓ m : ℕ) (M U : Set (Rn (n + ℓ))) (f : Rn (n + ℓ) → Rn m), CountablyRectifiable n M → IsOpen U → M ⊆ U → LocallyLipschitzOn U f → ∃ (D : ℕ → Set (Rn n)) (ψ : ℕ → Rn n → Rn (n + ℓ)) (G : ℕ → Rn n → Rn m) (E : ℕ → Set (Rn n)), (∀ j, IsOpen (D j)) ∧ (∀ j, ContDiffOn ℝ 1 (ψ j) (D j)) ∧ (∀ j, InjOn (ψ j) (D j)) ∧ (∀ j, ∃ K, LipschitzOnWith K (ψ j) (D j)) ∧ (∀ j, ∀ u ∈ D j, Function.Injective (fderiv ℝ (ψ j) u)) ∧ (∀ j, ContDiff ℝ 1 (G j)) ∧ (∀ j, MeasurableSet (E j)) ∧ (∀ j, E j ⊆ D j) ∧ (∀ j, ∀ u ∈ E j, f (ψ j u) = G j u ∧ HasFDerivAt (f ∘ ψ j) (fderiv ℝ (G j) u) u) ∧ μHE[n] (M \ ⋃ j, ψ j '' E j) = 0 := by
+  intro hSC hC1 n ℓ m M U f hM hU hMU hf
+  -- Step 1: Lemma 1.2 gives `M ⊆ N₀ ∪ ⋃ i, S i` with `Hⁿ(N₀) = 0` and `C¹` submanifolds `S i`.
+  obtain ⟨N₀, S, hN₀, hS, hcov⟩ := (hSC n ℓ M).1 hM
+  -- Steps 2–4: chart pieces `(D α, ψ α)`, `f ∘ ψ α` Lipschitz, `M ⊆ N₀ ∪ ⋃ α, ψ α '' D α`.
+  obtain ⟨D, ψ, hDo, hψC, hψinj, hψL, hψD, hfψL, hMcov⟩ :=
+    Submission.submanifold_cover_lipschitz_open_charts n (n + ℓ) m M U N₀ S f hU hMU hf hS hcov
+  -- Steps 5–7: `C¹` maps `G α i` agreeing with `f ∘ ψ α` to first order on Borel sets
+  -- `E α i ⊆ D α`, with `Lⁿ(D α \ ⋃ i, E α i) = 0`.
+  choose G E hGC hEm hED hEagr hEnull using fun α ↦
+    Submission.lipschitzOn_open_c1_first_order_agreement n m (hC1 n m) (D α) (f ∘ ψ α) (hDo α)
+      (hfψL α)
+  -- Step 9: re-index the pairs `(α, i)` by `j` through `Nat.unpair`.
+  refine ⟨fun j ↦ D j.unpair.1, fun j ↦ ψ j.unpair.1, fun j ↦ G j.unpair.1 j.unpair.2,
+    fun j ↦ E j.unpair.1 j.unpair.2, fun j ↦ hDo _, fun j ↦ hψC _, fun j ↦ hψinj _,
+    fun j ↦ hψL _, fun j ↦ hψD _, fun j ↦ hGC _ _, fun j ↦ hEm _ _, fun j ↦ hED _ _,
+    fun j ↦ hEagr _ _, ?_⟩
+  -- Step 8: `ψ α '' (D α \ ⋃ i, E α i)` is `Hⁿ`-null: `ψ α` is Lipschitz and `Hⁿ = Lⁿ` on `ℝⁿ`.
+  have hnull : ∀ α, μHE[n] (ψ α '' (D α \ ⋃ i, E α i)) = 0 := by
+    intro α
+    obtain ⟨K, hK⟩ := hψL α
+    refine nonpos_iff_eq_zero.1 ?_
+    calc μHE[n] (ψ α '' (D α \ ⋃ i, E α i))
+        ≤ (K : ℝ≥0∞) ^ n * μHE[n] (D α \ ⋃ i, E α i) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            (hK.mono sdiff_subset)
+      _ = 0 := by rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hEnull α, mul_zero]
+  -- Step 9: `M \ ⋃ j, ψ j '' E j ⊆ N₀ ∪ ⋃ α, ψ α '' (D α \ ⋃ i, E α i)`, a null set.
+  refine measure_mono_null ?_ (measure_union_null hN₀ (measure_iUnion_null hnull))
+  rintro x ⟨hxM, hxE⟩
+  rcases hMcov hxM with hx0 | hxD
+  · exact Or.inl hx0
+  obtain ⟨α, u, huD, rfl⟩ := mem_iUnion.1 hxD
+  refine Or.inr (mem_iUnion.2 ⟨α, u, ⟨huD, fun huE ↦ ?_⟩, rfl⟩)
+  obtain ⟨i, hi⟩ := mem_iUnion.1 huE
+  refine hxE (mem_iUnion.2 ⟨Nat.pair α i, ?_⟩)
+  simp only [Nat.unpair_pair]
+  exact mem_image_of_mem _ hi
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
