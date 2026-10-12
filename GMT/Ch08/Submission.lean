@@ -422,6 +422,15 @@ theorem Submission.intcpt_diag_rescaled_radon_tendsto :
         (𝓝 (∫ z, F z ∂(rescaledMeasure V ξ t))) := by
   intro N n U Vi V ξ t F hconv ht hF
   -- The dilation `Φ (y, S) = (t⁻¹ (y - ξ), S)` is a homeomorphism with inverse `(ξ + t y, S)`.
+/-- Test functions are integrable for the blow-up `V_{ξ,t} = η_{ξ,t #} V` (Simon Ch. 8, 1.1 and
+5.1) when the blow-up of their support stays in `U`: if `t > 0` and `ξ + t y ∈ U` for every
+`(y, S) ∈ spt F`, then `F ∈ C_c(ℝ^N × G(N,n))` is `rescaledMeasure V ξ t`-integrable. -/
+theorem Submission.intcpt_diag_rescaled_integrable :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (ξ : Euclidean N) (t : ℝ)
+      (F : C_c(Euclidean N × Grassmannian N n, ℝ)), 0 < t →
+      (∀ z ∈ tsupport F, ξ + t • z.1 ∈ U) → Integrable (fun z ↦ F z) (rescaledMeasure V ξ t) := by
+  intro N n U V ξ t F ht hF
+  -- The blow-up `Φ(y, S) = (t⁻¹ (y - ξ), S)` is a homeomorphism of `ℝ^N × G(N,n)`.
   let Φ : Euclidean N × Grassmannian N n ≃ₜ Euclidean N × Grassmannian N n :=
     { toFun := fun z ↦ (t⁻¹ • (z.1 - ξ), z.2)
       invFun := fun z ↦ (ξ + t • z.1, z.2)
@@ -438,6 +447,7 @@ theorem Submission.intcpt_diag_rescaled_radon_tendsto :
       continuous_toFun := by fun_prop
       continuous_invFun := by fun_prop }
   -- The pulled-back test function `H = F ∘ Φ` is supported in `U × G(N,n)`.
+  -- The pull-back `H = F ∘ Φ` is compactly supported in `U × G(N,n)`.
   let H : C_c(Euclidean N × Grassmannian N n, ℝ) := F.comp Φ.toCocompactMap
   have hHsupp : tsupport H ⊆ U ×ˢ (univ : Set (Grassmannian N n)) := by
     intro z hz
@@ -475,6 +485,29 @@ theorem Submission.intcpt_diag_rescaled_radon_tendsto :
   have := (hconv h).const_mul (t⁻¹ ^ n)
   simp only [hdom] at this
   simpa only [hresc] using this
+    simpa [Φ, smul_smul, ht.ne'] using hF _ hz'
+  -- `K = π(spt H)` is a compact subset of `U`, so `V(K × G(N,n)) < ∞`.
+  let K : Set (Euclidean N) := Prod.fst '' tsupport H
+  have hKc : IsCompact K := H.hasCompactSupport.isCompact.image continuous_fst
+  have hKU : K ⊆ U := by
+    rintro _ ⟨z, hz, rfl⟩
+    exact (hHsupp hz).1
+  have hfin := V.finite_on_compact K hKc hKU
+  have hsuppK : Function.support H ⊆ K ×ˢ (univ : Set (Grassmannian N n)) := by
+    intro z hz
+    exact ⟨⟨z, subset_tsupport _ hz, rfl⟩, trivial⟩
+  -- `H` is bounded and vanishes off `K × G(N,n)`, hence `V`-integrable.
+  obtain ⟨M, hM⟩ := H.hasCompactSupport.exists_bound_of_continuous H.continuous
+  have hHint : Integrable (fun z ↦ H z) V.measure := by
+    have hOn : IntegrableOn (fun z ↦ H z) (K ×ˢ (univ : Set (Grassmannian N n))) V.measure :=
+      Measure.integrableOn_of_bounded (M := M) hfin H.continuous.aestronglyMeasurable
+        (Eventually.of_forall hM)
+    exact (integrableOn_iff_integrable_of_support_subset hsuppK).mp hOn
+  -- Transfer along `Φ`, then scale by `t^{-n}`.
+  have hmap : Integrable (fun z ↦ F z) (V.measure.map Φ) :=
+    (integrable_map_measure (map_continuous F).aestronglyMeasurable
+      Φ.continuous.measurable.aemeasurable).mpr hHint
+  exact hmap.smul_measure ENNReal.ofReal_ne_top
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
