@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7c379f60abfb9e6000a03e2bf4ca60bb1383bf4b9a7aaa6756314ab198f9cfe3",
+  "git_delta": {
+    "base_commit": "438f8b53b94cda550d889a04beb0332de28b8d46",
+    "candidate_commit": "b78e2315882cce40efa1533e096d0f48f3d9a8ba",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "indCompact_transEst_abs_setIntegral_fderiv_le",
+    "diff_sha256": "57cdf8da047b139c5be65ecbec2e966dfb964dde99dfc7bce9f8ee6a51fe7d51",
+    "source_sha256": "773ff1e047a6eb98f8e19d2ff462e6fee4e13d1dc4310b435800d6f925afc8f1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.indCompact_transEst_abs_setIntegral_fderiv_le",
+      "statement": "∀ (N : ℕ) (F : Set (Rn N)) (R C : ℝ), (∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball (0 : Rn N) (R + 1) → (∀ y, ‖g y‖ ≤ 1) → ∫ y in F, Poincare.SimonGMT.Chapter02.euclideanDivergence g y ≤ C) → ∀ ψ : Rn N → ℝ, ContDiff ℝ 1 ψ → HasCompactSupport ψ → tsupport ψ ⊆ Metric.ball (0 : Rn N) R → (∀ y, |ψ y| ≤ 1) → ∀ a h : Rn N, ‖a‖ ≤ 1 → |∫ z in F, fderiv ℝ ψ (z - a) h| ≤ C * ‖h‖",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
