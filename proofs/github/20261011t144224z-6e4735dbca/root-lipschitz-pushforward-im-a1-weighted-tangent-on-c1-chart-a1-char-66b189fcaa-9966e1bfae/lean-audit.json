@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4625f0c09cfd06a3c2a3a2e6df58b2b0530a23bd83533e542f1274eda02a8f29",
+  "git_delta": {
+    "base_commit": "13574625b28aeb8497a3f4bb4515e54f2e11533b",
+    "candidate_commit": "86fd6e41a7a254894da01666522196e24baf97bd",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_wtc_caf_lipschitz_localization",
+    "diff_sha256": "0454be851ac13aec92116d72b6b0f9da323ce868d79f83157438bf44aff3c063",
+    "source_sha256": "3a4dd69d25b61f7e4e9461a7a7dfca3ca7c65a32dabdfd832a6f951e2f5c49cf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_wtc_caf_lipschitz_localization",
+      "statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)) (K : Set (Eucl Q)), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → IsCompact K → ∃ (s : Set (Eucl n)) (L : ℝ≥0), IsOpen s ∧ s ⊆ Ω ∧ Ω ∩ Φ ⁻¹' K ⊆ s ∧ Bornology.IsBounded s ∧ LipschitzOnWith L Φ s",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
