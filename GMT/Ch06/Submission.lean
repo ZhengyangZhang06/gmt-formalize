@@ -359,6 +359,110 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Eilenberg finiteness: if `f : ℝ^N → ℝ^{m+1}` is Lipschitz and `E ⊆ ℝ^N` is Borel with
+`H^{m+1}(E) < ∞`, then `E ∩ f⁻¹{y}` is finite for Lebesgue-a.e. `y ∈ ℝ^{m+1}`. -/
+theorem Submission.rectifiability_bf_infinite_fibre_null : ∀ (N m : ℕ) (E : Set (Eucl N)) (f : Eucl N → Eucl (m + 1)) (K : ℝ≥0), MeasurableSet E → (μHE[m + 1] : Measure (Eucl N)) E < ∞ → LipschitzWith K f → (volume : Measure (Eucl (m + 1))) {y : Eucl (m + 1) | (E ∩ f ⁻¹' {y}).Infinite} = 0 := by
+  intro N m E f K hE hEfin hf
+  -- Step 1: `Lᵏ(f '' S) ≤ K ^ k * Hᵏ(S)` (`k = m + 1`), as `μHE[k] = volume` on `ℝᵏ`.
+  have himage : ∀ S : Set (Eucl N), (volume : Measure (Eucl (m + 1))) (f '' S) ≤
+      (K : ℝ≥0∞) ^ (m + 1) * μHE[m + 1] S := by
+    intro S
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+      (m + 1) (hf.lipschitzOnWith (s := S))
+    rwa [EuclideanSpace.euclideanHausdorffMeasure_eq_volume] at h
+  -- Step 2: the dyadic cubes `g i ⁻¹' {z}`, `g i x = (⌊2 ^ i * x j⌋)_j`, are Borel, and two
+  -- distinct points lie in distinct cubes for all large `i`.
+  set g : ℕ → Eucl N → (Fin N → ℤ) := fun i x j => ⌊(2 : ℝ) ^ i * x j⌋ with hg
+  have hQm : ∀ i z, MeasurableSet (g i ⁻¹' {z}) := by
+    intro i z
+    have hQ : g i ⁻¹' {z} =
+        ⋂ j, (fun x : Eucl N => (2 : ℝ) ^ i * x j) ⁻¹' Ico (z j : ℝ) (z j + 1) := by
+      ext x
+      simp [hg, funext_iff, Int.floor_eq_iff]
+    rw [hQ]
+    exact MeasurableSet.iInter fun j =>
+      (by fun_prop : Measurable fun x : Eucl N => (2 : ℝ) ^ i * x j) measurableSet_Ico
+  have hsep : ∀ x x' : Eucl N, x ≠ x' → ∀ᶠ i in atTop, g i x ≠ g i x' := by
+    intro x x' hne
+    obtain ⟨j, hj⟩ : ∃ j, x j ≠ x' j :=
+      not_forall.1 fun h => hne (by ext j; exact h j)
+    have hc : 0 < |x j - x' j| := abs_pos.2 (sub_ne_zero.2 hj)
+    filter_upwards [((tendsto_pow_atTop_atTop_of_one_lt one_lt_two).atTop_mul_const
+      hc).eventually_ge_atTop 1] with i hi heq
+    have h1 := Int.abs_sub_lt_one_of_floor_eq_floor (congrFun heq j)
+    rw [← mul_sub, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 ^ i)] at h1
+    linarith
+  -- Step 3: `∑_z Hᵏ(E ∩ g i ⁻¹' {z}) = Hᵏ(E)`.
+  have hsplit : ∀ i, ∑' z, (μHE[m + 1] : Measure (Eucl N)) (E ∩ g i ⁻¹' {z}) =
+      μHE[m + 1] E := by
+    intro i
+    have hdisj : Pairwise (Function.onFun Disjoint fun z => E ∩ g i ⁻¹' {z}) := by
+      intro z z' hzz'
+      refine Set.disjoint_left.2 fun x hx hx' => hzz' ?_
+      exact (show g i x = z from hx.2).symm.trans hx'.2
+    have hU : (⋃ z, E ∩ g i ⁻¹' {z}) = E := by
+      ext x
+      simp
+    rw [← measure_iUnion hdisj fun z => hE.inter (hQm i z), hU]
+  -- Step 4: for Borel hulls `B i z ⊇ f '' (E ∩ g i ⁻¹' {z})`, the counts
+  -- `n i = ∑_z 1_{B i z}` satisfy `∫ n i ≤ C := K ^ k * Hᵏ(E) < ∞`.
+  set B : ℕ → (Fin N → ℤ) → Set (Eucl (m + 1)) :=
+    fun i z => toMeasurable volume (f '' (E ∩ g i ⁻¹' {z})) with hB
+  have hBm : ∀ i z, MeasurableSet (B i z) := fun i z => measurableSet_toMeasurable _ _
+  set n : ℕ → Eucl (m + 1) → ℝ≥0∞ := fun i y => ∑' z, (B i z).indicator 1 y
+  have hnm : ∀ i, Measurable (n i) := fun i =>
+    Measurable.tsum fun z => measurable_one.indicator (hBm i z)
+  set C : ℝ≥0∞ := (K : ℝ≥0∞) ^ (m + 1) * μHE[m + 1] E
+  have hCfin : C < ∞ := ENNReal.mul_lt_top (ENNReal.pow_lt_top ENNReal.coe_lt_top) hEfin
+  have hint : ∀ i, ∫⁻ y, n i y ≤ C := by
+    intro i
+    calc ∫⁻ y, n i y = ∑' z, ∫⁻ y, (B i z).indicator 1 y :=
+          lintegral_tsum fun z => (measurable_one.indicator (hBm i z)).aemeasurable
+      _ = ∑' z, volume (f '' (E ∩ g i ⁻¹' {z})) := by
+          congr 1; ext z; rw [lintegral_indicator_one (hBm i z), hB, measure_toMeasurable]
+      _ ≤ ∑' z, (K : ℝ≥0∞) ^ (m + 1) * μHE[m + 1] (E ∩ g i ⁻¹' {z}) :=
+          ENNReal.tsum_le_tsum fun z => himage _
+      _ = C := by rw [ENNReal.tsum_mul_left, hsplit i]
+  -- Step 5: over an infinite fibre, `M ≤ n i y` for all large `i`, since `M` points of the
+  -- fibre eventually lie in `M` distinct cubes.
+  have hlarge : ∀ y ∈ {y : Eucl (m + 1) | (E ∩ f ⁻¹' {y}).Infinite}, ∀ M : ℕ,
+      ∀ᶠ i in atTop, (M : ℝ≥0∞) ≤ n i y := by
+    intro y hy M
+    obtain ⟨T, hTsub, hTcard⟩ := Set.Infinite.exists_subset_card_eq hy M
+    have hev : ∀ᶠ i in atTop, ∀ p ∈ T ×ˢ T, p.1 ≠ p.2 → g i p.1 ≠ g i p.2 := by
+      refine (eventually_all_finset (T ×ˢ T)).2 fun p _ => ?_
+      by_cases hp : p.1 = p.2
+      · exact Eventually.of_forall fun i h => absurd hp h
+      · exact (hsep p.1 p.2 hp).mono fun i hi _ => hi
+    filter_upwards [hev] with i hi
+    have hinj : InjOn (g i) T := by
+      intro x hx x' hx' hxx'
+      by_contra hne
+      exact hi (x, x') (Finset.mem_product.2 ⟨hx, hx'⟩) hne hxx'
+    calc (M : ℝ≥0∞) = ∑ z ∈ T.image (g i), (1 : ℝ≥0∞) := by
+          rw [Finset.sum_const, Finset.card_image_of_injOn hinj, hTcard, nsmul_one]
+      _ = ∑ z ∈ T.image (g i), (B i z).indicator 1 y := by
+          refine Finset.sum_congr rfl fun z hz => ?_
+          obtain ⟨x, hxT, rfl⟩ := Finset.mem_image.1 hz
+          have hxE : x ∈ E ∩ f ⁻¹' {y} := hTsub (Finset.mem_coe.2 hxT)
+          have hyB : y ∈ B i (g i x) := subset_toMeasurable _ _ ⟨x, ⟨hxE.1, rfl⟩, hxE.2⟩
+          rw [indicator_of_mem hyB]
+          rfl
+      _ ≤ n i y := ENNReal.sum_le_tsum _
+  -- Step 6: Fatou's lemma gives `∫ F ≤ C` for `F = liminf_i n i`, so `F < ∞` a.e.
+  set F : Eucl (m + 1) → ℝ≥0∞ := fun y => liminf (fun i => n i y) atTop
+  have hFm : Measurable F := Measurable.liminf hnm
+  have hFint : ∫⁻ y, F y ≤ C :=
+    (lintegral_liminf_le hnm).trans (liminf_le_of_frequently_le' (Frequently.of_forall hint))
+  have hFae : ∀ᵐ y, F y < ∞ := ae_lt_top hFm (hFint.trans_lt hCfin).ne
+  -- Step 7: the infinite fibres lie over the null set `{F = ∞}`.
+  refine measure_mono_null (fun y hy => ?_) (ae_iff.1 hFae)
+  have hFy : F y = ∞ := by
+    refine top_unique ?_
+    rw [← ENNReal.iSup_natCast]
+    exact iSup_le fun M => le_liminf_of_le (by isBoundedDefault) (hlarge y hy M)
+  simp [hFy]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
