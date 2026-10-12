@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fe2ade919c3c20abfc2d6af0f060f52f0c0c1577d575fa702febec418959c9e4",
+  "git_delta": {
+    "base_commit": "e5f36a394e1883cf56c616c0ebbfcfe0b12ac7f8",
+    "candidate_commit": "8c5617ab677830beb3b1d0888c2619a591cca743",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_rim_sub_imrep",
+    "diff_sha256": "241d0eb0bfc214068d0cd33729fec9a119ebe32da38e1e2f546682e78267c85d",
+    "source_sha256": "d7072d29515df6dce6cf976a182faf092601bd0a27e9b96665370b94d47f67e4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_rim_sub_imrep",
+      "statement": "∀ (P n : ℕ) (U C' : Set (Euclid P)) (R : IMRep U n) (θ' : Euclid P → ℕ), MeasurableSet C' → C' ⊆ R.carrier → Measurable θ' → (∀ x ∈ C', 0 < θ' x) → (∀ x ∈ C', θ' x ≤ R.mult x) → (∀ᵐ x ∂(μHE[n].restrict C'), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n R.carrier x Q → HasApproximateTangentSpaceAt n C' x Q) → ∃ R' : IMRep U n, R'.carrier = C' ∧ R'.mult = θ' ∧ R'.orient = R.orient",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
