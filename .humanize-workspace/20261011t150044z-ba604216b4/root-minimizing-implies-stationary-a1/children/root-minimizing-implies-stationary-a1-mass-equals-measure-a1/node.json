@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.mass_equals_measure-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "depth": 2,
+  "title": "Simon 6.3.2(3): the local mass of an integer multiplicity current is the weight of its varifold",
+  "statement": "Let U ⊆ ℝ^P be open, T ∈ 𝒟_n(U) and R = (M, θ, ξ) an integer multiplicity triple representing T. Then for every open W ⊆ U, M_W(T) = ∫_{M∩W} θ dH^n, i.e. T.massOn W = R.measure W (mass computed with the Euclidean coefficient norm of covectors).",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → IsOpen W → W ⊆ U → T.massOn W = R.measure W",
+  "lean_name": "imrep_represents_massOn_eq_measure",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-mass-equals-measure-a1-a1"
+}

@@ -1,0 +1,95 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.cone-a1.tangent_projection_measurable-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.cone-a1.tangent_projection_measurable-a1.opspace_aemeasurable_of_aesm-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. This is the last sentence of step 7 of the selected parent's supplied proof: 'It is therefore AEMeasurable for the Borel σ-algebra of the finite-dimensional normed space L(ℝ^P, ℝ^P).' Here it is stated for an arbitrary measure μ on ℝ^P and an arbitrary map f.
+
+1. The target space. Write L := L(ℝ^P, ℝ^P) = (Euclid P →L[ℝ] Euclid P).
+- With the operator norm, L is a normed real vector space, hence a metric space; in particular its topology is pseudo-metrizable.
+- Its measurable structure is the Borel σ-algebra of this topology. In the pinned Mathlib (MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean, lines 47–51), ContinuousLinearMap.instMeasurableSpace is defined as borel (E →L[𝕜] F), and ContinuousLinearMap.instBorelSpace records BorelSpace.
+- For Euclid P →L[ℝ] Euclid P the inferred instance equals borel _ by rfl.
+
+2. A strongly measurable representative. By definition of AEStronglyMeasurable f μ, there is a strongly measurable g : ℝ^P → L with f(x) = g(x) for μ-a.e. x. Strong measurability of g means there are simple functions g_k : ℝ^P → L (k ∈ ℕ), each taking finitely many values on measurable fibres, with g_k(x) → g(x) in L for every x ∈ ℝ^P.
+
+3. g is measurable. Let O ⊆ L be open.
+- If O = L, then g⁻¹(O) = ℝ^P is measurable.
+- Otherwise Oᶜ is a non-empty closed set. Then φ(y) := dist(y, Oᶜ) is a continuous (1-Lipschitz) real function on L, and O = {y : φ(y) > 0}.
+  - Each φ∘g_k is a simple real function (finitely many values on the measurable fibres of g_k), hence measurable.
+  - By continuity of φ, φ(g_k(x)) → φ(g(x)) for every x.
+  - A pointwise limit of measurable real functions is measurable (it equals their lim sup). So φ∘g is measurable, and g⁻¹(O) = (φ∘g)⁻¹((0, ∞)) is measurable.
+Since the open sets generate the Borel σ-algebra of L (step 1), g is measurable. In Mathlib this is StronglyMeasurable.measurable, which needs PseudoMetrizableSpace L and BorelSpace L.
+
+4. Conclusion. f = g μ-a.e. and g is measurable, which is the definition of AEMeasurable f μ. In the pinned Mathlib this is AEStronglyMeasurable.aemeasurable (MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean, line 189). Its instance hypotheses PseudoMetrizableSpace L and BorelSpace L hold by step 1, so the formal proof is: intro P μ f hf; exact hf.aemeasurable. ∎
+
+## Key steps
+
+1. L(ℝ^P,ℝ^P) with the operator norm is a metric (pseudo-metrizable) space, and its MeasurableSpace instance is borel with BorelSpace.
+2. AEStronglyMeasurable gives a strongly measurable g with f = g μ-a.e.
+3. g is a pointwise limit of simple functions; testing open sets with dist(·, Oᶜ) shows g is Borel measurable.
+4. f = g a.e. with g measurable, so AEMeasurable f μ (Mathlib AEStronglyMeasurable.aemeasurable).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); cmp snapshot project/GMT/Ch07/{Contract,Submission}.lean against workspace (identical); git rev-parse HEAD = b4d606db; git -C lake-packages-25730c7c/simongmt rev-parse HEAD = 2b366308; git -C lake-packages-25730c7c/mathlib rev-parse HEAD = 25730c7c`
+- `python3 -I scan of dag.json: lean_name == imrep_approxTangent_starProjection_aesm -> only root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1 (status accepted, candidate_commit 36b2d372, identical lean_statement); lean_name == dtc_cone_opEuclid_aemeasurable_of_aesm -> none (232 nodes, 232 distinct names)`
+- `grep -rl --include=*.json --include=*.md dtc_cone_opEuclid nodes dag.json (no match); rg -n 'imrep_approxTangent_starProjection_aesm|dtc_cone_opEuclid|dtc_cone_tangentProjection' local-references/123e8435b4a2469b/project (no match)`
+- `git show 36b2d372:GMT/Ch07/Submission.lean; git diff --stat c36d11c 36b2d372 (one declaration, +203 lines, no helper declarations)`
+- `rg -n 'protected theorem aemeasurable' mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean (line 189: needs PseudoMetrizableSpace and BorelSpace); rg -n 'protected theorem measurable' .../StronglyMeasurable/Basic.lean (line 311)`
+- `rg -n 'instance|measurableSpace|borelSpace' mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean (instMeasurableSpace := borel _, instBorelSpace := ⟨rfl⟩)`
+- `rg -n 'def approxTangentPlane|structure IMRep|aestronglyMeasurable_orient|orients :|def IsUnitOrientationOf|abbrev MultiVector' project/GMT/Ch07/Contract.lean`
+- `rg -n 'def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean; rg -n 'def wedgeCovectors|theorem wedgeCovectors_apply_det' Chapter06/FormsDuality.lean; rg -n 'abbrev Covector' Chapter06/Forms.lean`
+- `rg -n 'theorem alternatizeUncurryFin_apply' mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean; rg -n 'theorem det_apply ' mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean; rg -n 'starProjection_eq_sum_rankOne' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean; rg -n 'def removeNth' mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `sed -n 733,752p book/chapter-06.txt; sed -n 93,108p book/chapter-06.txt; sed -n 75,90p book/chapter-03.txt (citations checked)`
+- `runtime check: _existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff and store.ensure in /runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean (accepted checkpoints reusable by identical name and type); models.py MIN_SUBPROBLEMS = 2`
+- `python3 -I /tmp/dtc-tpm-decomp-bsKYaQ/scripts/gen.py (verifier gmt-compare.child_modules mode=contract and lean_contract.validate_lean_statement on all three types); lake env lean on Ch_*.lean, Assembly.lean and Full.lean, each with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-tangent-projection-measurable-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-tangent-projection-measurable-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-tangent-projection-measurable-a1/decomposition-audit-v5.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/models.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/dtc-tpm-decomp-bsKYaQ/scripts/gen.py`
+- `/tmp/dtc-tpm-decomp-bsKYaQ/check/children.json`
+- `/tmp/dtc-tpm-decomp-bsKYaQ/check/accepted-Submission.lean`
+- `/tmp/dtc-tpm-decomp-bsKYaQ/check/Assembly.lean`
+- `/tmp/dtc-tpm-decomp-bsKYaQ/check/Full.lean`
+
+Snapshot and pins: the snapshot Contract.lean and Submission.lean are byte-identical to the workspace (project b4d606d). Mathlib 25730c7c and simongmt 2b36630 match their pins.
+
+Reused child: the accepted DAG node root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1 (candidate 36b2d372) holds Submission.imrep_approxTangent_starProjection_aesm. Its frozen type is byte-identical to child tangent_projection_aesm: AEStronglyMeasurable of the same tangent-projection map for the same measure μHE[n].restrict R.carrier. It is not in the snapshot project, so a leaf proof of the selected node could reach it only as a reused child; the runtime supports exactly this for accepted checkpoints.
+
+New child: the pinned Mathlib has AEStronglyMeasurable.aemeasurable (requires PseudoMetrizableSpace and BorelSpace) and ContinuousLinearMap.instMeasurableSpace = borel with instBorelSpace. These make child opspace_aemeasurable_of_aesm a one-line formalization. Its name is unreserved: no match in dag.json (232 nodes, 232 distinct names), the node JSON/MD artifacts, or the snapshot project.
+
+Supplied proof's library facts: SimonGMT supplies HasApproximateTangentSpaceAt (first conjunct finrank = n), HasApproximateTangentSpaceAt.unique and wedgeCovectors_apply_det. Mathlib supplies alternatizeUncurryFin_apply, det_apply, removeNth and OrthonormalBasis.starProjection_eq_sum_rankOne. Mathlib has no Cauchy–Binet theorem; the child proof's step 3 proves it by Leibniz expansion. The book citations (Ch. 6 3.1 lines 733–752 and 1.5–1.7 lines 93–108; Ch. 3 1.4–1.5 lines 75–90) are accurate.
+
+Scratch compilation: all three types elaborate in the verifier's contract scope. The conditional assembly and the full replay compile; #print axioms reports only propext, Classical.choice and Quot.sound.

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "depth": 2,
+  "title": "Approximate tangent planes of a set lying H^n-almost entirely in a C¹ submanifold are contained in its tangent spaces",
+  "statement": "Let N ⊆ ℝ^P be an embedded C¹ d-dimensional submanifold, M ⊆ ℝ^P with H^n(M ∖ N) = 0, and x ∈ N. If Q is an approximate tangent plane of M at x (HasApproximateTangentSpaceAt n M x Q, Simon Ch. 3, 1.4), then Q ⊆ T_xN (tangentSpace N x).",
+  "lean_statement": "∀ (P n d : ℕ) (N M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), IsEmbeddedSubmanifold 1 d N → x ∈ N → μHE[n] (M \\ N) = 0 → HasApproximateTangentSpaceAt n M x Q → (Q : Set (Euclid P)) ⊆ tangentSpace N x",
+  "lean_name": "approxTangent_le_submanifold_tangentSpace",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-approx-tangent-in-submanifold-a1-a1"
+}

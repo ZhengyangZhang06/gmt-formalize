@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.stationary_of_minimizing-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "depth": 2,
+  "title": "Simon 7.1.2, first claim: a minimizing current in N ∩ U has varifold stationary in N ∩ U",
+  "statement": "Let U ⊆ ℝ^P be open, N an embedded C² d-dimensional submanifold with (N̄ ∖ N) ∩ U = ∅, T ∈ 𝒟_n(U) minimizing in N ∩ U (Simon 7.1.1, integer multiplicity competitors) with ∂T = 0 in U (vacuous for n = 0), and R = (M, θ, ξ) an integer multiplicity representation of T with H^n(M ∖ N) = 0. Then v(M, θ) is stationary in N ∩ U: ∫_M θ div_M X dH^n = 0 for every X ∈ C¹_c(U; ℝ^P) with X(x) ∈ T_xN for all x ∈ N ∩ U (R.IsStationaryAlong N).",
+  "lean_statement": "∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (N ∩ U) → BoundaryVanishes T → R.Represents T → μHE[n] (R.carrier \\ N) = 0 → R.IsStationaryAlong N",
+  "lean_name": "stationaryAlong_of_minimizing_in_submanifold",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.mass_equals_measure-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+    "root.minimizing_implies_stationary-a1.tangential_deformation-a1",
+    "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.mass_equals_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.tangential_deformation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-stationary-of-minimizing-a1-a1"
+}
