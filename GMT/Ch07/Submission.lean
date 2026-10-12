@@ -451,6 +451,51 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The blow-up integrals `x ↦ ∫_{η_{x,r}(M)} f dHⁿ` of a continuous `f ≥ 0` are Borel
+measurable when `Hⁿ⌞M` is s-finite; `M` need not be measurable.  As `η_{x,r}` is a translation
+followed by the dilation by `r⁻¹`, `Hⁿ(η_{x,r}(s)) = r⁻ⁿ Hⁿ(s)` for every set `s`, so
+`Hⁿ⌞η_{x,r}(M) = r⁻ⁿ (η_{x,r})_#(Hⁿ⌞M)` (on Borel `B`, `η(M) ∩ B = η(M ∩ η⁻¹B)`).  Hence the
+integral is `(r⁻ⁿ ∫ f(r⁻¹(y − x)) d(Hⁿ⌞M)(y)).toReal`, measurable in `x` by Tonelli for the
+s-finite `Hⁿ⌞M`. -/
+theorem Submission.dsmc_measurable_blowUp_image_setIntegral : ∀ (P n : ℕ) (M : Set (Euclid P)), SFinite (μHE[n].restrict M) → ∀ f : Euclid P → ℝ, Continuous f → (∀ y, 0 ≤ f y) → ∀ r : ℝ, 0 < r → Measurable (fun x : Euclid P => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n]) := by
+  intro P n M hM f hf hf0 r hr
+  set η : Euclid P → Euclid P → Euclid P := fun x => Poincare.SimonGMT.Chapter03.blowUpMap x r
+    with hη
+  -- `(x, y) ↦ η_x(y) = r⁻¹(y − x)` is continuous
+  have hηc : Continuous fun p : Euclid P × Euclid P => η p.1 p.2 := by
+    simp only [hη, Poincare.SimonGMT.Chapter03.blowUpMap]
+    fun_prop
+  have hηm : ∀ x, Measurable (η x) := fun x =>
+    (hηc.comp (Continuous.prodMk continuous_const continuous_id)).measurable
+  -- `Hⁿ(η_x(s)) = r⁻ⁿ Hⁿ(s)` for every set `s`
+  have hscale : ∀ x (s : Set (Euclid P)), μHE[n] (η x '' s) = ‖r⁻¹‖₊ ^ n • μHE[n] s := by
+    intro x s
+    have himg : η x '' s = (fun y => r⁻¹ • y) '' (IsometryEquiv.subRight x '' s) := by
+      rw [Set.image_image]
+      rfl
+    rw [himg, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hr.ne'),
+      (IsometryEquiv.subRight x).isometry.euclideanHausdorffMeasure_image]
+  -- `Hⁿ⌞η_x(M) = r⁻ⁿ (η_x)_#(Hⁿ⌞M)`, checked on Borel sets
+  have hrestr : ∀ x, μHE[n].restrict (η x '' M) =
+      ‖r⁻¹‖₊ ^ n • (μHE[n].restrict M).map (η x) := by
+    intro x
+    ext B hB
+    rw [Measure.restrict_apply hB, Measure.smul_apply, Measure.map_apply (hηm x) hB,
+      Measure.restrict_apply (hηm x hB), Set.inter_comm, ← Set.image_inter_preimage, hscale,
+      Set.inter_comm]
+  -- `∫_{η_x(M)} f dHⁿ = (r⁻ⁿ ∫ f ∘ η_x d(Hⁿ⌞M)).toReal`, also when `f` is not integrable
+  have hint : ∀ x, ∫ y in η x '' M, f y ∂μHE[n] =
+      (‖r⁻¹‖₊ ^ n • ∫⁻ y, ENNReal.ofReal (f (η x y)) ∂(μHE[n].restrict M)).toReal := by
+    intro x
+    rw [integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall hf0) hf.aestronglyMeasurable,
+      hrestr, lintegral_smul_measure, lintegral_map hf.measurable.ennreal_ofReal (hηm x)]
+  -- Tonelli for the s-finite measure `Hⁿ⌞M`
+  show Measurable fun x => ∫ y in η x '' M, f y ∂μHE[n]
+  simp_rw [hint]
+  exact ((Measurable.lintegral_prod_right'
+    (f := fun p : Euclid P × Euclid P => ENNReal.ofReal (f (η p.1 p.2)))
+    (ENNReal.continuous_ofReal.comp (hf.comp hηc)).measurable).const_smul _).ennreal_toReal
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
