@@ -359,6 +359,57 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Orthonormal frames of the same subspace have the same simple `n`-vector up to sign (Simon
+Ch. 6, 3.1: `ξ(x) = τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal basis `τ` of `TₓM` is determined by `TₓM` up
+to sign).  `τ` and `τ'` are orthonormal bases `b`, `b'` of `Q = span τ = span τ'`.  Restricted to
+`Q`, an `n`-covector `ω` is an alternating `n`-form on the `n`-dimensional space `Q`, so
+`ω(τ') = b.det(b') ω(τ)` (`AlternatingMap.eq_smul_basis_det`, as in the determinant computation
+after (3.4), p. 147), and `b.det(b') = ±1` because the change of basis between orthonormal bases
+is orthogonal (`OrthonormalBasis.det_to_matrix_orthonormalBasis_real`). -/
+theorem Submission.fiw_ims_frame_sign :
+    ∀ (P n : ℕ) (τ τ' : Fin n → Eucl P), Orthonormal ℝ τ → Orthonormal ℝ τ' →
+      Submodule.span ℝ (range τ) = Submodule.span ℝ (range τ') →
+      simpleNVector τ' = simpleNVector τ ∨ simpleNVector τ' = -simpleNVector τ := by
+  intro P n τ τ' hτ hτ' hspan
+  set Q : Submodule ℝ (Eucl P) := Submodule.span ℝ (range τ)
+  -- Step 1: `τ` and `τ'` are orthonormal bases `b`, `b'` of `Q`.
+  let b : Module.Basis (Fin n) ℝ Q := Module.Basis.span hτ.linearIndependent
+  let b' : Module.Basis (Fin n) ℝ Q :=
+    (Module.Basis.span hτ'.linearIndependent).map (LinearEquiv.ofEq _ _ hspan.symm)
+  have hb : Q.subtype ∘ b = τ :=
+    funext fun i => Module.Basis.coe_span_apply hτ.linearIndependent i
+  have hb' : Q.subtype ∘ b' = τ' := by
+    funext i
+    simp [b']
+  have hbo : Orthonormal ℝ b := by
+    rw [← Q.subtypeₗᵢ.orthonormal_comp_iff, Submodule.coe_subtypeₗᵢ, hb]
+    exact hτ
+  have hbo' : Orthonormal ℝ b' := by
+    rw [← Q.subtypeₗᵢ.orthonormal_comp_iff, Submodule.coe_subtypeₗᵢ, hb']
+    exact hτ'
+  -- Step 2: the restriction `f = ω ∘ Q.subtype` of an `n`-covector `ω` is an alternating
+  -- `n`-form on `Q`, so `f = f b • b.det`; evaluated at `b'` this is `ω τ' = b.det b' * ω τ`.
+  have key : ∀ ω : Covector (Eucl P) n, ω τ' = b.det b' * ω τ := by
+    intro ω
+    have h := DFunLike.congr_fun
+      ((ω.toAlternatingMap.compLinearMap Q.subtype).eq_smul_basis_det b) ⇑b'
+    rw [AlternatingMap.smul_apply, smul_eq_mul] at h
+    change ω (Q.subtype ∘ b') = ω (Q.subtype ∘ b) * b.det b' at h
+    rw [hb, hb'] at h
+    rw [h, mul_comm]
+  -- Step 3: `b.det b' = ±1`, the change of basis between orthonormal bases being orthogonal.
+  have hd : b.det b' = 1 ∨ b.det b' = -1 := by
+    simpa using (b.toOrthonormalBasis hbo).det_to_matrix_orthonormalBasis_real
+      (b'.toOrthonormalBasis hbo')
+  -- Step 4: extensionality, as `simpleNVector v ω = ω v`.
+  rcases hd with hd | hd
+  · left
+    refine ContinuousLinearMap.ext fun ω => ?_
+    rw [simpleNVector_apply, simpleNVector_apply, key ω, hd, one_mul]
+  · right
+    refine ContinuousLinearMap.ext fun ω => ?_
+    rw [_root_.neg_apply, simpleNVector_apply, simpleNVector_apply, key ω, hd, neg_one_mul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
