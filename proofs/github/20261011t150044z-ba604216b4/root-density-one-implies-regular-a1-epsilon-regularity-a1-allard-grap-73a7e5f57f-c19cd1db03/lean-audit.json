@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "085699791a8c951ee4cdaabe89552ff08d364e1acbe083b0e5b42945ea8b8028",
+  "git_delta": {
+    "base_commit": "05a21c9db43afbe93a656c3bcd4d2981ad216899",
+    "candidate_commit": "f42998792014ed0538df6ce62b61eefaa72a8d78",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_weyl_conv_swap",
+    "diff_sha256": "effb6beb0dc6d800169065fb21e0c411b3a993e8eac215e6ff41ef1e288f5325",
+    "source_sha256": "760655d9450f34c5ee30460865b8f8c175fae79f4b732ddae9ca15007895ab81",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_weyl_conv_swap",
+      "statement": "∀ (n : ℕ) (f φ ψ : Euclid n → ℝ) (x : Euclid n), Integrable f → Continuous φ → HasCompactSupport φ → Continuous ψ → HasCompactSupport ψ → ∫ z, (∫ y, f y * φ (x - z - y)) * ψ z = ∫ z, (∫ y, f y * ψ (x - z - y)) * φ z",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
