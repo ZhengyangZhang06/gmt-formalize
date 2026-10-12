@@ -335,6 +335,60 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- Differentiation under the integral sign for a mollified set integral (Simon Ch. 2, §2,
+mollification and Lemma 2.5, with `χ_G` in place of `u` and a general `C¹` kernel `ρ`; used in
+Ch. 3, proof of Theorem 4.3): for `G ⊆ ℝᴺ` and `ρ ∈ C¹_c(ℝᴺ)`, `u(x) = ∫_G ρ(x - z) dz` satisfies
+`Du(x) w = ∫_G Dρ(x - z) w dz`. The derivative is computed directly for `Lᴺ ⌞ G` by
+`hasFDerivAt_integral_of_dominated_of_fderiv_le`, with the bound `C · χ_{B̄_{R+1}(x)}` on
+`B_1(x)`, where `‖Dρ‖ ≤ C` and `tsupport ρ ⊆ B̄_R(0)`; the measurability of `G` is not used. -/
+theorem Submission.deGiorgiSobIndMFL_fderiv_setIntegral_apply : ∀ (N : ℕ) (G : Set (Rn N)) (ρ : Rn N → ℝ), NullMeasurableSet G volume → ContDiff ℝ 1 ρ → HasCompactSupport ρ → ∀ x w : Rn N, fderiv ℝ (fun x ↦ ∫ z in G, ρ (x - z)) x w = ∫ z in G, fderiv ℝ ρ (x - z) w := by
+  intro N G ρ _hG hρ hρc x₀ w
+  -- Step 1: `Dρ` is continuous, compactly supported and bounded by `C`; `tsupport ρ ⊆ B̄_R(0)`.
+  have hρd : Differentiable ℝ ρ := hρ.differentiable one_ne_zero
+  have hρ'c : Continuous (fderiv ℝ ρ) := hρ.continuous_fderiv one_ne_zero
+  have hρ'cs : HasCompactSupport (fderiv ℝ ρ) := hρc.fderiv ℝ
+  obtain ⟨C, hC⟩ := hρ'c.bounded_above_of_compact_support hρ'cs
+  obtain ⟨R, hR⟩ : ∃ R, tsupport ρ ⊆ Metric.closedBall (0 : Rn N) R :=
+    hρc.isCompact.isBounded.subset_closedBall 0
+  -- Step 2: `z ↦ f (a - z)` is continuous with compact support, hence integrable on `G`.
+  have hrefl : ∀ {E : Type} [NormedAddCommGroup E] (f : Rn N → E) (a : Rn N), Continuous f →
+      HasCompactSupport f → Continuous (fun z ↦ f (a - z)) ∧ IntegrableOn (fun z ↦ f (a - z)) G :=
+    fun f a hf hfc ↦ ⟨hf.comp (continuous_const.sub continuous_id),
+      ((hf.comp (continuous_const.sub continuous_id)).integrable_of_hasCompactSupport
+        (hfc.comp_homeomorph (Homeomorph.subLeft a))).integrableOn⟩
+  -- Step 3: by the chain rule, `x ↦ ρ (x - z)` has derivative `Dρ (x - z)` at every `x`.
+  have hderiv : ∀ z x, HasFDerivAt (fun x ↦ ρ (x - z)) (fderiv ℝ ρ (x - z)) x := fun z x ↦
+    ((hρd (x - z)).hasFDerivAt.comp x (hasFDerivAt_sub_const z)).congr_fderiv
+      (ContinuousLinearMap.comp_id _)
+  -- Step 4: for `x ∈ B_1(x₀)`, `‖Dρ (x - z)‖ ≤ C · χ_{B̄_{R+1}(x₀)}(z)`.
+  have hbound : ∀ z, ∀ x ∈ Metric.ball x₀ 1,
+      ‖fderiv ℝ ρ (x - z)‖ ≤ (Metric.closedBall x₀ (R + 1)).indicator (fun _ ↦ C) z := by
+    intro z x hx
+    by_cases hz : z ∈ Metric.closedBall x₀ (R + 1)
+    · simpa [hz] using hC (x - z)
+    · have hxz : x - z ∉ tsupport ρ := by
+        intro h
+        apply hz
+        have h2 := hR h
+        rw [Metric.mem_closedBall, dist_zero_right] at h2
+        rw [Metric.mem_ball] at hx
+        rw [Metric.mem_closedBall]
+        calc dist z x₀ ≤ dist z x + dist x x₀ := dist_triangle _ _ _
+          _ = ‖x - z‖ + dist x x₀ := by rw [dist_eq_norm, norm_sub_rev]
+          _ ≤ R + 1 := by linarith
+      simp [hz, fderiv_of_notMem_tsupport ℝ hxz]
+  -- Step 5: differentiation under the integral sign for `Lᴺ ⌞ G`.
+  have hkey : HasFDerivAt (fun x ↦ ∫ z in G, ρ (x - z)) (∫ z in G, fderiv ℝ ρ (x₀ - z)) x₀ :=
+    hasFDerivAt_integral_of_dominated_of_fderiv_le (Metric.ball_mem_nhds x₀ one_pos)
+      (Eventually.of_forall fun x ↦ (hrefl ρ x hρ.continuous hρc).1.aestronglyMeasurable)
+      (hrefl ρ x₀ hρ.continuous hρc).2 (hrefl (fderiv ℝ ρ) x₀ hρ'c hρ'cs).1.aestronglyMeasurable
+      (Eventually.of_forall hbound)
+      ((integrable_indicator_iff measurableSet_closedBall).2
+        (integrableOn_const (isCompact_closedBall x₀ (R + 1)).measure_lt_top.ne))
+      (Eventually.of_forall fun z x _ ↦ hderiv z x)
+  -- Step 6: evaluation at `w` commutes with the Bochner integral.
+  rw [hkey.fderiv, ContinuousLinearMap.integral_apply (hrefl (fderiv ℝ ρ) x₀ hρ'c hρ'cs).2]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
