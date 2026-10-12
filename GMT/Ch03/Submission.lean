@@ -612,6 +612,76 @@ theorem Submission.gaussGreenRep_extend_C1_functional : ∀ (N : ℕ) (U : Set (
       (Metric.tendstoUniformly_iff.mpr fun ε hε => Eventually.of_forall fun _ x => by
         simpa using hε)
     exact tendsto_nhds_unique h₁ tendsto_const_nhds
+/-- **Uniform `C¹` approximation inside an open set** (the mollification step behind Simon
+Ch. 2, (2.1), used for (4.1)): a continuous compactly supported field `g : ℝᴺ → ℝᴺ` with
+`tsupport g ⊆ W`, `W` open, is the uniform limit of `C¹` fields `h_k` with compact supports in
+one compact `K`, `tsupport g ⊆ K ⊆ W`. Take `K` a closed `δ`-neighbourhood of `tsupport g` inside
+`W` and `h_k = φ_k * g`, `φ_k ≥ 0` a normalized smooth bump supported in `B_{ε_k}(0)`, where
+`ε_k ≤ δ` is a modulus of uniform continuity of `g` for `1/(k+1)`: then `h_k` vanishes off the
+`ε_k`-neighbourhood of `tsupport g` and `|h_k - g| ≤ 1/(k+1)` everywhere. -/
+theorem Submission.gaussGreenRep_c1_uniform_approx : ∀ (N : ℕ) (g : Rn N → Rn N)
+    (W : Set (Rn N)), Continuous g → HasCompactSupport g → IsOpen W → tsupport g ⊆ W →
+    ∃ K : Set (Rn N), IsCompact K ∧ tsupport g ⊆ K ∧ K ⊆ W ∧ ∃ h : ℕ → Rn N → Rn N,
+      (∀ k, ContDiff ℝ 1 (h k) ∧ HasCompactSupport (h k) ∧ tsupport (h k) ⊆ K) ∧
+        TendstoUniformly h g atTop := by
+  intro N g W hg hgc hW hgW
+  -- `K` is a closed `δ`-neighbourhood of `S = tsupport g` contained in `W`.
+  obtain ⟨δ, hδ, hδW⟩ := hgc.isCompact.exists_cthickening_subset_open hW hgW
+  refine ⟨Metric.cthickening δ (tsupport g), hgc.isCompact.cthickening,
+    Metric.self_subset_cthickening _, hδW, ?_⟩
+  -- Uniform continuity: radii `0 < ε k ≤ δ` with `|g a - g b| < 1/(k+1)` when `|a - b| < ε k`.
+  have hu := hgc.uniformContinuous_of_continuous hg
+  have hη : ∀ k : ℕ, ∃ ε > 0, ε ≤ δ ∧
+      ∀ a b, dist a b < ε → dist (g a) (g b) < 1 / ((k : ℝ) + 1) := by
+    intro k
+    obtain ⟨ε, hε, hεg⟩ := Metric.uniformContinuous_iff.mp hu _ (Nat.one_div_pos_of_nat (n := k))
+    exact ⟨min ε δ, lt_min hε hδ, min_le_right _ _,
+      fun a b hab => hεg (hab.trans_le (min_le_left _ _))⟩
+  choose ε hε hεδ hεg using hη
+  -- Mollifiers: a smooth bump on `B_{ε k}(0)`, normalized to have integral `1`.
+  have hφ : ∀ k : ℕ, ∃ φ : Rn N → ℝ, ContDiff ℝ 1 φ ∧ HasCompactSupport φ ∧ (∀ x, 0 ≤ φ x) ∧
+      ∫ x, φ x = 1 ∧ Function.support φ ⊆ Metric.ball 0 (ε k) := by
+    intro k
+    let b : ContDiffBump (0 : Rn N) := ⟨ε k / 2, ε k, half_pos (hε k), half_lt_self (hε k)⟩
+    have hpos : 0 < ∫ x, b x :=
+      b.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero b.hasCompactSupport
+        (fun x => b.nonneg) (x := 0)
+        (by rw [b.one_of_mem_closedBall (Metric.mem_closedBall_self (half_pos (hε k)).le)]
+            exact one_ne_zero)
+    refine ⟨fun x => (∫ y, b y)⁻¹ * b x, contDiff_const.mul b.contDiff,
+      b.hasCompactSupport.mono (Function.support_mul_subset_right _ _),
+      fun x => mul_nonneg (inv_nonneg.2 hpos.le) b.nonneg, ?_, ?_⟩
+    · rw [integral_const_mul, inv_mul_cancel₀ hpos.ne']
+    · exact (Function.support_mul_subset_right _ _).trans b.support_eq.subset
+  choose φ hφc hφs hφn hφi hφb using hφ
+  refine ⟨fun k => convolution (φ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume, fun k => ?_, ?_⟩
+  · -- `φ k * g` vanishes off the `ε k`-neighbourhood of `S`, as `g = 0` on `B_{ε k}(x)` there.
+    have hsupp : Function.support (convolution (φ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume) ⊆
+        Metric.thickening (ε k) (tsupport g) := by
+      intro x hx
+      by_contra hxt
+      apply hx
+      refine dist_le_zero.1 (dist_convolution_le (μ := volume) (z₀ := 0) le_rfl (hφb k) (hφn k)
+        (hφi k) hg.aestronglyMeasurable fun y hy => ?_)
+      have hyS : y ∉ tsupport g := fun hyS =>
+        hxt (Metric.mem_thickening_iff.2 ⟨y, hyS, by rw [dist_comm]; exact hy⟩)
+      rw [image_eq_zero_of_notMem_tsupport hyS, dist_self]
+    have htsupp : tsupport (convolution (φ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume) ⊆
+        Metric.cthickening δ (tsupport g) :=
+      closure_minimal (hsupp.trans ((Metric.thickening_subset_cthickening _ _).trans
+        (Metric.cthickening_mono (hεδ k) _))) Metric.isClosed_cthickening
+    exact ⟨(hφs k).contDiff_convolution_left _ (hφc k) hg.locallyIntegrable,
+      hgc.isCompact.cthickening.of_isClosed_subset (isClosed_tsupport _) htsupp, htsupp⟩
+  · -- `|(φ k * g)(x) - g(x)| ≤ 1/(k+1)` for every `x`, since `|g y - g x| < 1/(k+1)` on
+    -- `B_{ε k}(x)`.
+    rw [Metric.tendstoUniformly_iff]
+    intro η hη
+    obtain ⟨k₀, hk₀⟩ := exists_nat_one_div_lt hη
+    filter_upwards [eventually_ge_atTop k₀] with k hk x
+    rw [dist_comm]
+    refine lt_of_le_of_lt ?_ ((Nat.one_div_le_one_div hk).trans_lt hk₀)
+    exact dist_convolution_le (μ := volume) (z₀ := g x) Nat.one_div_pos_of_nat.le (hφb k)
+      (hφn k) (hφi k) hg.aestronglyMeasurable fun y hy => (hεg k y x hy).le
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
