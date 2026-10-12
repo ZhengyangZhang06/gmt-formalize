@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i '\\bLusin\\b|c1_approximation|contDiff_one_extension_of_whitney' Mathlib/MeasureTheory Mathlib/Analysis",
+        "exists_isClosed_sdiff_lt|tendstoUniformlyOn_of_ae_tendsto|measurable_fderiv|measurableSet_of_differentiableAt|ae_differentiableAt|extend_finite_dimension|exists_antilipschitzWith|approximates_deriv_on_nhds|isOpen_iUnion_countable|addHaar_sphere_of_ne_zero|isClosed_iUnion|exists_contDiff_one_extension_of_whitney",
+        "sed -n '187,214p' Mathlib/MeasureTheory/Function/Egorov.lean",
+        "sed -n '1032,1043p' Mathlib/MeasureTheory/Measure/Regular.lean",
+        "rg -n '^(theorem|lemma|def|structure) |^import|^public import|sorry|axiom' Poincare/SimonGMT/Chapter01/Lusin.lean Poincare/SimonGMT/Chapter02/WhitneyExtension.lean Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean' '/tmp/c1pieces_independent_audit_hsq8svwj/Types.lean'",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean' '/tmp/c1pieces_independent_audit_hsq8svwj/Assembly.lean'",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean' '/tmp/c1pieces_independent_audit_hsq8svwj/Whitney.lean'",
+        "'/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake' env '/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean' Scratch/Names3.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1/parent-child-handoff.json",
+        "/tmp/c1pieces_independent_audit_hsq8svwj/Types.lean",
+        "/tmp/c1pieces_independent_audit_hsq8svwj/Assembly.lean",
+        "/tmp/c1pieces_independent_audit_hsq8svwj/Whitney.lean",
+        "/tmp/c1pieces_scratch/Scratch/Names3.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected parent. All four exact one-line propositions elaborate independently in comparator scope; Eucl uses the Euclidean norm and volume. Names are bare, distinct, and unreserved in the current DAG. The sole child dependency, vector approximation on scalar approximation, is correctly directed and acyclic. No packaged C¹ approximation or function-Lusin theorem was found in the searched Mathlib directories; pinned SimonGMT supplies compatible Lusin and Whitney results. Their axiom checks passed. With the scalar contract supplied as an explicit hypothesis, the other three child proofs and assembly of the unchanged selected parent kernel-check using only propext, Classical.choice, and Quot.sound, without sorryAx. This verifies assembly sufficiency, not a completed Lean proof of the scalar child. Public cross-check: Simon’s Chapter 2, Theorems 1.5–1.6 support the approximation and extension argument ([text](https://math.stanford.edu/~lms/ntu-gmt-text.pdf))."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_approximation_real",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including arbitrary n and positive extended-real ε. The supplied proof correctly establishes locally finite closed annular approximations, derivative continuity, Borel measurability and convergence of η_k, and uniform convergence on bounded retained subsets. These imply the exact compact-uniform Whitney remainder condition, including y outside the compact set. Whitney extension and derivative uniqueness give the required HasFDerivAt statement. Zero dimension and ε = ∞ are covered. The proof is complete and non-circular."
+    },
+    {
+      "key": "c1_approximation_eucl",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose. Choosing δ with Qδ < ε, applying the scalar child to each continuous-linear coordinate, and intersecting the closed sets gives the required measure bound. Finite vector sums give global C¹ regularity and both derivative identities; uniqueness identifies fderiv G. Empty sums correctly handle Q = 0. Its only child dependency is the scalar approximation theorem."
+    },
+    {
+      "key": "c1_local_antilipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the stated local bound. Injectivity in finite dimension gives a positive linear lower bound, including n = 0. C¹ regularity supplies the uniform derivative-error estimate on a sufficiently small convex ball. The mean-value inequality and reverse triangle inequality yield the claimed positive antilipschitz constant. No parent or sibling theorem is assumed; the proof also kernel-checks independently."
+    },
+    {
+      "key": "lipschitz_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the exact Lean proposition. Openness converts within-neighbourhood Lipschitz data into open Lipschitz neighbourhoods contained in Ω. Second countability provides a countable subcover, enumeration handles finite families, and finite-dimensional Lipschitz extension provides the global maps with the required EqOn orientation. The empty-domain case is explicit. The proof is non-circular and kernel-checks independently."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.lipschitz_localization-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1",
+  "depth": 3,
+  "title": "Countable localization of a locally Lipschitz map into globally Lipschitz pieces",
+  "statement": "Let n, Q ∈ ℕ, let Ω ⊆ ℝⁿ be open, and let u : ℝⁿ → ℝ^Q be locally Lipschitz on Ω (ℝᵐ = EuclideanSpace ℝ (Fin m)). Then there are open sets B_m ⊆ Ω (m ∈ ℕ) with Ω ⊆ ⋃_m B_m, and Lipschitz maps v_m : ℝⁿ → ℝ^Q (each with some Lipschitz constant K_m ≥ 0), such that v_m = u on B_m for every m.",
+  "lean_statement": "∀ (n Q : ℕ) (Ω : Set (Eucl n)) (u : Eucl n → Eucl Q), IsOpen Ω → LocallyLipschitzOn Ω u → ∃ (B : ℕ → Set (Eucl n)) (v : ℕ → Eucl n → Eucl Q), (∀ m, IsOpen (B m)) ∧ (∀ m, B m ⊆ Ω) ∧ Ω ⊆ ⋃ m, B m ∧ (∀ m, ∃ K : ℝ≥0, LipschitzWith K (v m)) ∧ ∀ m, EqOn u (v m) (B m)",
+  "lean_name": "lpf_lipschitz_localization",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-lip-66ca1b75a5-a1"
+}
