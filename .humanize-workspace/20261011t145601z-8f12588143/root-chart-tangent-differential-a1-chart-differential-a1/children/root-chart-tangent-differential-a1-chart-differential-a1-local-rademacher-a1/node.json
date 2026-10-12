@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.chart_differential-a1.local_rademacher-a1",
+  "parent_id": "root.chart_tangent_differential-a1.chart_differential-a1",
+  "depth": 3,
+  "title": "Rademacher's theorem for maps locally Lipschitz on an open subset of ℝⁿ (Simon Ch. 2, Thm 1.4 localized as in (4.8); parent Steps 2–4)",
+  "statement": "Let n, p ∈ ℕ, W ⊆ ℝⁿ open and g : ℝⁿ → ℝᵖ locally Lipschitz on W (every x ∈ W has a neighbourhood within W on which g is Lipschitz). Then g is (Fréchet) differentiable at Lⁿ-almost every point of W, i.e. Lⁿ({u ∈ W : g is not differentiable at u}) = 0.",
+  "lean_statement": "∀ (n p : ℕ) (W : Set (Rn n)) (g : Rn n → Rn p), IsOpen W → LocallyLipschitzOn W g → ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ W → DifferentiableAt ℝ g u",
+  "lean_name": "chartTD_ae_differentiableAt_of_locallyLipschitzOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-chart-differential-a1-local-rademacher-a1-a1"
+}

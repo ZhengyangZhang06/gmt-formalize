@@ -1,0 +1,46 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "LocallyLipschitz.*ae_|LocallyLipschitzOn\\.comp|ae_differentiableAt_of_locallyLipschitz|hasLineDerivAt_of_comp_differentiableAt",
+        "chartTD_ae_differentiableAt_of_locallyLipschitzOn|chartTD_hasLineDerivAt_of_comp_differentiableAt",
+        "sed -n '50,83p;310,389p' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "sed -n '1,280p' GMT/Scratch/ChartDiffA1FullCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/ChartDiffA1FullCheck.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-chart-tangent-differential-a1-chart-differential-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-chart-tangent-differential-a1-chart-differential-a1/decomposition-v1.json",
+        "GMT/Scratch/ChartDiffA1FullCheck.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, byte-identical contract, and compatibility of the inspected Mathlib sources with the compiler environment. Confirmed the neighborhood definition of LocallyLipschitzOn, finite-dimensional Rademacher, local-nullity globalization, line-derivative characterization, and C¹ local Lipschitz bounds. The snapshot search found no matching locally-Lipschitz a.e. wrapper or LocallyLipschitzOn.comp. Neither proposed name is reserved by another DAG branch. Independently elaborated both exact child propositions before their declarations and checked Haar, second-countability, and finite-dimensional instances for arbitrary n. Both supplied Lean proofs and the exact frozen parent assembly compiled; all three depend only on propext, Classical.choice, and Quot.sound. The split is appropriate: local composition bounds on W = V ∩ ψ⁻¹(U), followed by the two children, establish precisely the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_rademacher",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line Lean proposition. All six proof steps are sound: openness converts relative neighborhoods to neighborhoods, Rademacher applies on a Lipschitz ball, openness upgrades within-differentiability, and second countability globalizes local nullity without a measurability assumption on the exceptional set. Empty and zero-dimensional cases are covered. The proof is complete and non-circular; the bare declaration name is unreserved."
+    },
+    {
+      "key": "chart_line_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition match exactly. Both differentiability hypotheses yield the stated little-o expansions; continuity places both curves in the Lipschitz neighborhood; the norm comparison and addition prove the exact two-sided HasLineDerivAt conclusion. This works for every direction at each good point, including zero directions, without ambient differentiability or injectivity assumptions. The proof is complete and non-circular. Its empty dependency list is correct, its bare name is unreserved, and applying it after local_rademacher completes the selected parent."
+    }
+  ],
+  "required_changes": []
+}

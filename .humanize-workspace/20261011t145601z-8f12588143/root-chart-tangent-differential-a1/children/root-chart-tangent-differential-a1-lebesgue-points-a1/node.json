@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.lebesgue_points-a1",
+  "parent_id": "root.chart_tangent_differential-a1",
+  "depth": 2,
+  "title": "Lebesgue points for Hⁿ⌞S with the ρⁿ normalization under an upper density bound (Simon Ch. 1, 3.17; parent (P3))",
+  "statement": "Let n, N ∈ ℕ, S ⊆ ℝ^N Hⁿ-null-measurable with Hⁿ(S) < ∞, w : ℝ^N → ℝ integrable on S with respect to Hⁿ, and C ∈ ℝ such that Hⁿ(S ∩ B̄_ρ(x)) ≤ ENNReal.ofReal(Cρⁿ) for all x ∈ S and ρ > 0. Then for Hⁿ-a.e. x ∈ S: lim_{ρ↓0} ρ^{-n}∫_{S ∩ B_ρ(x)} |w(z) − w(x)| dHⁿ(z) = 0.",
+  "lean_statement": "∀ (n N : ℕ) (S : Set (Rn N)) (w : Rn N → ℝ) (C : ℝ), NullMeasurableSet S μHE[n] → μHE[n] S < ∞ → IntegrableOn w S μHE[n] → (∀ x ∈ S, ∀ ρ : ℝ, 0 < ρ → μHE[n] (S ∩ Metric.closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ∀ᵐ x ∂(μHE[n] : Measure (Rn N)), x ∈ S → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x ρ, |w z - w x| ∂μHE[n]) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "chartTD_lebesgue_point_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-lebesgue-points-a1-a1"
+}

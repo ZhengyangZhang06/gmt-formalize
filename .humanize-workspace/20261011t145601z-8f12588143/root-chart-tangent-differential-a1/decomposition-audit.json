@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def blowUpMap|def HasApproximateTangentSpaceAt|def HasWeightedApproximateTangentSpaceAt|IsLocallyIntegrableMultiplicity",
+        "ae_dimensionalUpperDensity_eq_zero_outside_of_openSigmaFinite|measure_toOuterMeasure_isBorelRegular|simon_remark_3_7_of_openSigmaFinite|def dimensionalDensityQuotient|def dimensionalUpperDensity|def IsBorelRegularOuterMeasure|def IsOpenSigmaFinite",
+        "weighted_area_formula_lipschitzOn_fiberSum|injective_area_formula_lipschitzOn",
+        "euclideanHausdorffMeasure_image_eq_normDet_mul_volume|normDet_sq|normDet_nonneg",
+        "exists_measurable_subset_ae_eq|ae_restrict_iff.*₀",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart-td-audit-z9poh2vj/Contracts.lean > /tmp/chart-td-audit-z9poh2vj/contracts.log 2>&1",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart-td-audit-z9poh2vj/Assembly.lean > /tmp/chart-td-audit-z9poh2vj/assembly.log 2>&1",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/chart-td-audit-z9poh2vj/Axioms.lean > /tmp/chart-td-audit-z9poh2vj/axioms.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-chart-tangent-differential-a1/parent-child-handoff.json",
+        "/tmp/chart-td-audit-z9poh2vj/contracts.log",
+        "/tmp/chart-td-audit-z9poh2vj/assembly.log",
+        "/tmp/chart-td-audit-z9poh2vj/axioms.log"
+      ],
+      "conclusion": "Verified the frozen contract and dependency pins against the snapshot: project d09bc8a, Mathlib 25730c7c, SimonGMT 2b366308. All eight one-line propositions independently elaborate in the comparator's contract scope before any child declarations. The supplied assembly proves the exact selected parent from the child contracts as hypotheses; its axiom check and checks of the principal reused library results report only propext, Classical.choice and Quot.sound. All names are bare, distinct and unreserved across the active DAG and other proposed decompositions. The two dependency edges correctly point to blowup_scaling and are acyclic. No Matrix/IsUnit construction occurs. The split appropriately separates substantial obligations for this selected theorem. The density and weighted tangent arguments also agree with [Simon's notes](https://web.stanford.edu/class/math285/ts-gmt.pdf), Chapter 1 §3 and Chapter 3 §1."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including arbitrary sets and functions. Similarity scaling proves the restricted pushforward identity on Borel test sets; measurable-equivalence transport and positive finite scaling handle nonintegrable Bochner integrands correctly. No circular reliance."
+    },
+    {
+      "key": "local_bilipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantified bounds match. The finite-dimensional lower bound, continuity of the derivative, and mean-value estimates for ψ and ψ−L establish both Lipschitz inequalities on the chosen ball, including n=0."
+    },
+    {
+      "key": "chart_image_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All five conclusions match the type. Lusin–Souslin establishes measurability; boundedness and Lipschitz image estimates give finiteness and the density bound. The Lipschitz inverse transfers arbitrary Hausdorff-null sets to volume-null preimages without an unstated measurability assumption."
+    },
+    {
+      "key": "chart_blowup_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the required dimension and every compactly supported test-function limit. The area-formula pushforward identity, scaling dependency, substitution, uniform integrable bound and pointwise convergence justify dominated convergence. The linear area formula identifies the limit. Unbounded B and zero dimension are covered."
+    },
+    {
+      "key": "upper_density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses suffice. Passing to a Borel kernel permits the cited density theorem; local integrability makes the weighted measure open-σ-finite. The nonnegative ENNReal quotient tends to zero, and finite ball integrals justify conversion to the stated real limit. No σ-finiteness of ambient Hausdorff measure is assumed."
+    },
+    {
+      "key": "lebesgue_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite restricted measure satisfies the differentiation theorem's requirements. Null-measurability transfers its almost-everywhere conclusion to the stated ambient implication. The density bound gives the normalized squeeze estimate, with zero-mass balls and possibly negative C handled explicitly."
+    },
+    {
+      "key": "weighted_tangent_combination",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree without requiring x∈M. Compact localization supplies every needed weighted integral, while finite measure of Γ supplies the unweighted integrals. The exact decomposition and three absolute-error bounds prove the weighted limit using only the declared scaling dependency and stated density hypotheses."
+    },
+    {
+      "key": "chart_differential",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and conclusions match exactly. Local composition bounds, Rademacher and a countable cover give differentiability almost everywhere. At each such point, the explicit two-sided o(|t|) comparison proves HasLineDerivAt for every direction simultaneously, without assuming ambient differentiability or an injective chart derivative."
+    }
+  ],
+  "required_changes": []
+}

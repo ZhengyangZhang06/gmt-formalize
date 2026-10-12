@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.weighted_tangent_combination-a1",
+  "parent_id": "root.chart_tangent_differential-a1",
+  "depth": 2,
+  "title": "Locality of weighted approximate tangent planes under density conditions (Simon proof of 1.6 '⇒' and Remark 1.8(1); parent Step 4)",
+  "statement": "Let n, N ∈ ℕ, let M, Γ ⊆ ℝ^N be Hⁿ-null-measurable with Hⁿ(Γ) < ∞, let θ be a positive locally integrable weight on M (θ > 0 on M, θ is Hⁿ⌞M-measurable, θ ∈ L¹(Hⁿ⌞(M ∩ K)) for every compact K), let x ∈ ℝ^N and let P be a linear subspace of ℝ^N such that Γ has approximate tangent space P at x in the sense of Simon's Definition 1.4 (HasApproximateTangentSpaceAt n Γ x P) and, as ρ ↓ 0, (P1) ρ^{-n}∫_{(M∖Γ)∩B_ρ(x)} |θ| dHⁿ → 0, (P2) ρ^{-n}Hⁿ((Γ∖M)∩B_ρ(x)) → 0 (as real numbers, via toReal), (P3) ρ^{-n}∫_{M∩Γ∩B_ρ(x)} |θ(z) − θ(x)| dHⁿ(z) → 0. Then M has approximate tangent space P at x with respect to θ in the sense of Simon's Definition 1.7 (HasWeightedApproximateTangentSpaceAt n M θ x P).",
+  "lean_statement": "∀ (n N : ℕ) (M Γ : Set (Rn N)) (θ : Rn N → ℝ) (x : Rn N) (P : Submodule ℝ (Rn N)), NullMeasurableSet M μHE[n] → NullMeasurableSet Γ μHE[n] → μHE[n] Γ < ∞ → IsPositiveLocallyIntegrableWeight n M θ → HasApproximateTangentSpaceAt n Γ x P → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in (M \\ Γ) ∩ Metric.ball x ρ, |θ z| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * (μHE[n] ((Γ \\ M) ∩ Metric.ball x ρ)).toReal) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in M ∩ Γ ∩ Metric.ball x ρ, |θ z - θ x| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) → HasWeightedApproximateTangentSpaceAt n M θ x P",
+  "lean_name": "chartTD_weighted_tangent_of_density",
+  "depends_on": [
+    "root.chart_tangent_differential-a1.blowup_scaling-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.chart_tangent_differential-a1.blowup_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-weighted-tangent-combination-a1-a1"
+}

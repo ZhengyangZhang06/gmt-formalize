@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.upper_density_zero-a1",
+  "parent_id": "root.chart_tangent_differential-a1",
+  "depth": 2,
+  "title": "Upper density theorem for the weighted measure |w|·Hⁿ⌞A (Simon Ch. 1, 3.6 and Remark 3.7(2); parent (P1), (P2))",
+  "statement": "Let n, N ∈ ℕ, A ⊆ ℝ^N Hⁿ-null-measurable and w : ℝ^N → ℝ integrable on A ∩ K with respect to Hⁿ for every compact K ⊆ ℝ^N. Then for Hⁿ-a.e. x ∈ ℝ^N with x ∉ A: lim_{ρ↓0} ρ^{-n}∫_{A ∩ B_ρ(x)} |w| dHⁿ = 0 (B_ρ(x) the open ball).",
+  "lean_statement": "∀ (n N : ℕ) (A : Set (Rn N)) (w : Rn N → ℝ), NullMeasurableSet A μHE[n] → (∀ K : Set (Rn N), IsCompact K → IntegrableOn w (A ∩ K) μHE[n]) → ∀ᵐ x ∂(μHE[n] : Measure (Rn N)), x ∉ A → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in A ∩ Metric.ball x ρ, |w z| ∂μHE[n]) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "chartTD_upper_density_zero_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-upper-density-zero-a1-a1"
+}

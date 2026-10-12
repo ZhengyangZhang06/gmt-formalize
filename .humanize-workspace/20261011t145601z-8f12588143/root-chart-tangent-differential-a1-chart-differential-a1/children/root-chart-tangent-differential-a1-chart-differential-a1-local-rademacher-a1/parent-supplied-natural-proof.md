@@ -1,0 +1,91 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.chart_tangent_differential-a1.chart_differential-a1`
+- Child DAG node: `root.chart_tangent_differential-a1.chart_differential-a1.local_rademacher-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Parent proof Steps 2–4: Simon, Ch. 2, Theorem 1.4 (Rademacher; chapter-02.txt ≈ lines 59–72, printed p. 40), applied locally exactly as in (4.8) (chapter-02.txt ≈ lines 932–950, printed p. 57). The local Lipschitz bound of parent Step 2 is now taken directly from the hypothesis that g is locally Lipschitz on W. All Mathlib names refer to the pinned snapshot (Mathlib 25730c7c) and are available after `import GMT.Ch03.Submission`. Here ℝⁿ = Rn n = EuclideanSpace ℝ (Fin n) and Lⁿ = volume.
+
+1. Reformulation. Let Z := {u ∈ ℝⁿ : u ∈ W and g is not differentiable at u}. The claim "for Lⁿ-a.e. u, u ∈ W ⇒ g is differentiable at u" says exactly that the set where this implication fails, which is Z, has Lⁿ-measure 0 (`MeasureTheory.ae_iff`). So it suffices to prove Lⁿ(Z) = 0.
+
+2. A ball on which g is Lipschitz. Fix x ∈ Z; in particular x ∈ W. By the definition of `LocallyLipschitzOn W g` there are K ≥ 0 and a set T ∈ 𝓝[W] x such that g is K-Lipschitz on T. Since W is open and x ∈ W, 𝓝[W] x = 𝓝 x (`IsOpen.nhdsWithin_eq`). So T is a neighbourhood of x, and there is r > 0 with B := B_r(x) ⊆ T (`Metric.mem_nhds_iff`). Hence g is K-Lipschitz on B (`LipschitzOnWith.mono`).
+
+3. Rademacher on B. Use Rademacher's theorem for a map that is Lipschitz on a set: Simon 1.4 applied componentwise to the Lipschitz extension of Simon 1.2, or in Mathlib `LipschitzOnWith.ae_differentiableWithinAt_of_mem`. The Mathlib lemma holds for every additive Haar measure on a finite-dimensional real normed space. In particular it holds for volume on ℝⁿ, including n = 0, where volume is the unit point mass. It gives: for Lⁿ-a.e. v, v ∈ B ⇒ g is differentiable within B at v. Equivalently (`MeasureTheory.ae_iff`), the set E_x := {v : v ∈ B and g is not differentiable within B at v} satisfies Lⁿ(E_x) = 0.
+
+4. Z ∩ B ⊆ E_x. Let v ∈ Z ∩ B, so v ∈ B. Suppose g were differentiable within B at v. Since B is open and v ∈ B, B is a neighbourhood of v. So differentiability within B at v would imply differentiability at v (`DifferentiableWithinAt.differentiableAt` with `Metric.isOpen_ball.mem_nhds`), contradicting v ∈ Z. Hence v ∈ E_x. Therefore Lⁿ(Z ∩ B) ≤ Lⁿ(E_x) = 0 (`MeasureTheory.measure_mono_null`).
+
+5. Local nullity. Z ∩ B is a neighbourhood of x within Z, because B ∈ 𝓝 x (`Metric.ball_mem_nhds`, `inter_mem_nhdsWithin`). Thus every point x ∈ Z has a neighbourhood within Z of Lⁿ-measure zero.
+
+6. Countable cover (Lindelöf). ℝⁿ is second countable. For each x ∈ Z take the neighbourhood N_x := Z ∩ B_{r(x)}(x) of step 5. `TopologicalSpace.countable_cover_nhdsWithin` yields a countable set {x_i} ⊆ Z with Z ⊆ ⋃_i N_{x_i}. Countable subadditivity gives Lⁿ(Z) ≤ Σ_i Lⁿ(N_{x_i}) = 0. (This is precisely `MeasureTheory.measure_null_of_locally_null` applied to Z with step 5.) Hence Lⁿ(Z) = 0, which by step 1 is the claim. (If W = ∅ then Z = ∅ and the claim is trivial; the argument covers this case.) ∎
+
+## Key steps
+
+1. Let Z = {u ∈ W : g is not differentiable at u}. The a.e. claim is equivalent to Lⁿ(Z) = 0 (ae_iff).
+2. For x ∈ Z, W is open, so the neighbourhood given by LocallyLipschitzOn contains a ball B_r(x) on which g is Lipschitz.
+3. Apply Rademacher (LipschitzOnWith.ae_differentiableWithinAt_of_mem) on B_r(x). The ball is open, so differentiability within it is differentiability, hence Lⁿ(Z ∩ B_r(x)) = 0.
+4. Every point of Z has an Lⁿ-null neighbourhood within Z. Second countability (measure_null_of_locally_null / countable_cover_nhdsWithin) then gives Lⁿ(Z) = 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/d498d77b74ea2063/manifest.json; cmp local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean workspaces/gmt-ch03/GMT/Ch03/Contract.lean`
+- `grep -n "theorem\|lemma" mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `grep -rn "ae_differentiableAt\b\|ae_differentiableAt_of\|LocallyLipschitz.*ae_\|ae_differentiableWithinAt" mathlib/Mathlib --include=*.lean`
+- `grep -n "LocallyLipschitzOn" mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean mathlib/Mathlib/Topology/Algebra/MetricSpace/Lipschitz.lean mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean mathlib/Mathlib/Analysis/Convex/Continuous.lean mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean`
+- `grep -n "def HasLineDerivAt\|hasLineDerivAt_iff_isLittleO_nhds_zero\|HasFDerivAt.hasLineDerivAt" mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean`
+- `grep -rn "theorem measure_null_of_locally_null\|theorem countable_cover_nhdsWithin\|theorem isOpen_biUnion_countable\|theorem ae_all_iff\|theorem ae_ball_iff\|theorem ae_iff" mathlib/Mathlib/MeasureTheory mathlib/Mathlib/Topology/Bases.lean`
+- `grep -n "lipschitzOnWith_iff_norm_div_le\|LipschitzOnWith.norm_div_le" mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean; grep -rn "theorem IsBigO.trans_isLittleO" mathlib/Mathlib/Analysis/Asymptotics; grep -rn "theorem IsOpen.nhdsWithin_eq\|theorem ContinuousOn.isOpen_inter_preimage\|theorem DifferentiableWithinAt.differentiableAt\|theorem ContDiffOn.contDiffAt\|theorem ContDiffAt.differentiableAt" mathlib/Mathlib`
+- `grep -rn "rademacher\|Rademacher\|LocallyLipschitzOn\|lineDeriv\|LineDeriv\|∀ᵐ.*DifferentiableAt\|ae_differentiable" lake-packages-25730c7c/simongmt/Poincare/SimonGMT --include=*.lean`
+- `python3 -I scan of dag.json nodes for lean_statement containing DifferentiableAt / HasLineDerivAt / LocallyLipschitzOn; grep -rl <proposed names> run dir, GMT/**/*.lean; git log --all --oneline -S<proposed name>`
+- `grep -n "Rademacher\|1.4 Theorem\|locally Lipschitz" book/chapter-02.txt; sed -n 1,75p and 900,965p book/chapter-02.txt`
+- `lake env lean GMT/Scratch/ChartDiffA1SplitCheck.lean; lake env lean GMT/Scratch/ChartDiffA1ChildProofs.lean; lake env lean GMT/Scratch/ChartDiffA1FullCheck.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Algebra/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/NhdsWithin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Asymptotics/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-chart-tangent-differential-a1-chart-differential-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/ChartDiffA1SplitCheck.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/ChartDiffA1ChildProofs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/ChartDiffA1FullCheck.lean`
+
+Snapshot manifest: project d09bc8a, Mathlib 25730c7c. The snapshot's project/GMT/Ch03/Contract.lean is byte-identical to the workspace contract.
+
+Found in Mathlib:
+- Rademacher (Analysis/Calculus/Rademacher.lean): only LipschitzOnWith.ae_differentiableWithinAt_of_mem and LipschitzWith.ae_differentiableAt. No locally-Lipschitz-on-an-open-set version giving DifferentiableAt, and no `LocallyLipschitz*ae_*` lemma anywhere in Mathlib. So child local_rademacher is a genuine new obligation.
+- LocallyLipschitzOn (Topology/EMetricSpace/Lipschitz.lean): defined as ∀ x ∈ s, ∃ K, ∃ t ∈ 𝓝[s] x, LipschitzOnWith K f t. Has .mono and .continuousOn. There is NO LocallyLipschitzOn.comp (only LocallyLipschitz.comp and LipschitzOnWith.comp).
+- ContDiffOn.locallyLipschitzOn requires Convex, so the parent glue uses ContDiffAt.exists_lipschitzOnWith (ContDiff/RCLike.lean).
+- Line derivatives (LineDeriv/Basic.lean): HasLineDerivAt f f' x v := HasDerivAt (fun t ↦ f (x + t • v)) f' 0; hasLineDerivAt_iff_isLittleO_nhds_zero; HasFDerivAt.hasLineDerivAt.
+- Null sets and countable covers: measure_null_of_locally_null (OuterMeasure/Basic.lean); TopologicalSpace.countable_cover_nhdsWithin and isOpen_biUnion_countable (Topology/Bases.lean); ae_iff, ae_all_iff, ae_ball_iff (OuterMeasure/AE.lean).
+- Other lemmas used: LipschitzOnWith.norm_sub_le (to_additive of norm_div_le, Normed/Group/Uniform.lean); Asymptotics.IsBigO.trans_isLittleO (Asymptotics/Basic.lean); IsOpen.nhdsWithin_eq (Topology/NhdsWithin.lean); ContinuousOn.isOpen_inter_preimage (Topology/ContinuousOn.lean); DifferentiableWithinAt.differentiableAt (FDeriv/Basic.lean); ContDiffOn.contDiffAt and ContDiffAt.differentiableAt (ContDiff/Defs.lean).
+
+Pinned SimonGMT: only rademacher_ae_differentiableAt (Chapter02/Lipschitz.lean), a wrapper of LipschitzWith.ae_differentiableAt. No match for a.e. differentiability under LocallyLipschitzOn, for HasLineDerivAt/lineDeriv, or for a chart directional-derivative lemma.
+
+DAG and naming: no other node's lean_statement is a local Rademacher or the pointwise line-derivative lemma. The proposed names have no hit in dag.json, nodes/, Lean sources or git history.
+
+Lean checks (git-ignored GMT/Scratch, after import GMT.Ch03.Submission):
+- ChartDiffA1SplitCheck.lean: frozen parent assembled from the two frozen child types; compiles.
+- ChartDiffA1FullCheck.lean: both children proved plus the assembly; compiles with axioms [propext, Classical.choice, Quot.sound] only.
+
+Book: Simon chapter-02.txt lines 59–72 (Theorem 1.4) and 900–957 ((4.5)–(4.10)).
