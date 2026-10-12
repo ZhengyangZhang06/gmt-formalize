@@ -489,7 +489,7 @@ theorem rsod_wfu_blowUp_freeze_weight_tendsto_zero : ∀ (n ℓ : ℕ) (C : Set 
   have : IsFiniteMeasure (μ.restrict C) := isFiniteMeasure_restrict.mpr hCfin.ne
   rw [Metric.tendsto_nhds]
   intro ε hε
-  set ε' := ε / ((M + 1) * (Λ' + 1)) with hε'def
+  set ε' := ε / ((M + 1) * (Λ' + 1)) with hε'eq
   have hMΛ : 0 < (M + 1) * (Λ' + 1) := mul_pos (by linarith) (by linarith)
   have hε' : 0 < ε' := div_pos hε hMΛ
   obtain ⟨δ, hδ, hδϑ⟩ := Metric.continuousWithinAt_iff.mp hϑ ε' hε'
@@ -534,7 +534,7 @@ theorem rsod_wfu_blowUp_freeze_weight_tendsto_zero : ∀ (n ℓ : ℕ) (C : Set 
     _ ≤ M * ε' * Λ' :=
         mul_le_mul_of_nonneg_left (hrΛ.trans (le_max_left _ _)) (mul_nonneg hM0 hε'.le)
     _ < (M + 1) * (Λ' + 1) * ε' := by nlinarith
-    _ = ε := by rw [hε'def]; field_simp
+    _ = ε := by rw [hε'eq]; field_simp
 
 end Submission
 
