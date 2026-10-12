@@ -359,6 +359,61 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, proof of 8.2 (the blow-up step): if `Q` is the weighted approximate tangent
+space of `(M, θ)` at `x` (Ch. 3, 1.7), then for every continuous compactly supported `f`,
+`(rⁿ)⁻¹ ∫_M θ(y) f(r⁻¹(y − x)) dHⁿ(y) → θ(x) ∫_Q f dHⁿ` as `r ↓ 0`.  The change of variables
+`z = η_{x,r}(y) = r⁻¹(y − x)` turns the left side into the blow-up integral
+`∫_{η_{x,r}(M)} f(z) θ(x + r z) dHⁿ(z)` of the tangent condition. -/
+theorem Submission.ind_ab_rescaled_tangent_limit :
+    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (Q : Submodule ℝ (Eucl P)) (f : Eucl P → ℝ), HasWeightedApproximateTangentSpaceAt n M θ x Q → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ y in M, θ y * f (r⁻¹ • (y - x)) ∂(μHE[n] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 (θ x * ∫ z in (Q : Set (Eucl P)), f z ∂(μHE[n] : Measure (Eucl P)))) := by
+  intro P n M θ x Q f hQ hf hfc
+  -- The tangent condition, tested with `f ∈ C_c(ℝ^P)`; both sides agree for every `r > 0`.
+  refine (hQ.2 ⟨⟨f, hf⟩, hfc⟩).congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r hr
+  have hr : 0 < r := hr
+  -- `η = blowUpMap x r`, `η y = r⁻¹ • (y - x)`, is a homeomorphism of `ℝ^P`.
+  let e : Eucl P ≃ₜ Eucl P :=
+    (Homeomorph.addRight (-x)).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+  have he : (e : Eucl P → Eucl P) = Poincare.SimonGMT.Chapter03.blowUpMap x r := by
+    funext y
+    simp [e, Poincare.SimonGMT.Chapter03.blowUpMap, sub_eq_add_neg]
+  have hemb : MeasurableEmbedding (Poincare.SimonGMT.Chapter03.blowUpMap x r) :=
+    he ▸ e.measurableEmbedding
+  -- `η` pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`: `η⁻¹(B) = x + r • B`.
+  have hmp : MeasurePreserving (Poincare.SimonGMT.Chapter03.blowUpMap x r)
+      (ENNReal.ofReal ((r ^ n)⁻¹) • (μHE[n] : Measure (Eucl P))) μHE[n] := by
+    refine ⟨hemb.measurable, ?_⟩
+    ext B hB
+    rw [Measure.map_apply hemb.measurable hB, Measure.smul_apply]
+    have hpre : Poincare.SimonGMT.Chapter03.blowUpMap x r ⁻¹' B =
+        (fun z => x + z) '' ((fun z => r • z) '' B) := by
+      ext y
+      simp only [mem_preimage, mem_image, Poincare.SimonGMT.Chapter03.blowUpMap]
+      constructor
+      · intro hy
+        exact ⟨r • r⁻¹ • (y - x), ⟨r⁻¹ • (y - x), hy, rfl⟩, by
+          rw [smul_inv_smul₀ hr.ne', add_sub_cancel]⟩
+      · rintro ⟨z, ⟨b, hb, rfl⟩, rfl⟩
+        rwa [add_sub_cancel_left, inv_smul_smul₀ hr.ne']
+    rw [hpre, Isometry.euclideanHausdorffMeasure_image (isometry_add_left x), Set.image_smul,
+      Measure.euclideanHausdorffMeasure_smul₀ n hr.ne' B, ENNReal.smul_def, smul_eq_mul,
+      smul_eq_mul, ← mul_assoc]
+    have hc : ENNReal.ofReal ((r ^ n)⁻¹) * ((‖r‖₊ ^ n : ℝ≥0) : ℝ≥0∞) = 1 := by
+      rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (by positivity), NNReal.coe_pow,
+        coe_nnnorm, Real.norm_of_nonneg hr.le, inv_mul_cancel₀ (pow_ne_zero n hr.ne'),
+        ENNReal.ofReal_one]
+    rw [hc, one_mul]
+  -- Change of variables: `∫_{η(M)} g dHⁿ = (rⁿ)⁻¹ ∫_M g ∘ η dHⁿ`.
+  rw [hmp.setIntegral_image_emb hemb _ M, Measure.restrict_smul, integral_smul_measure,
+    ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
+  congr 1
+  refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+  -- `x + r • η y = y`.
+  have hy : x + r • Poincare.SimonGMT.Chapter03.blowUpMap x r y = y := by
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, smul_inv_smul₀ hr.ne', add_sub_cancel]
+  simp only [hy]
+  exact mul_comm _ _
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
