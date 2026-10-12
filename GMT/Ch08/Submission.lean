@@ -410,6 +410,65 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Vanishing normal defect about `y` gives `x - y ∈ S` at every `(x, S) ∈ spt V` (Simon Ch. 8,
+proof of 5.5, p. 217, display (8)): if `∫_{Gₙ(B_ρ(y))} |x - y|^{-n-2} |p_{S^⊥}(x - y)|² dV = 0` for
+every `ρ > 0`, then `p_{S^⊥}(x - y) = 0` for `V`-a.e. `(x, S)`, hence, by continuity of
+`p_{S^⊥}(x - y)` in `(x, S)`, at every point of `spt V`. -/
+theorem Submission.allard_tc_scf_zero_defect_mem_plane :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (y : Euclidean N), (∀ ρ : ℝ, 0 < ρ → normalDefect V y (closedBall y ρ) = 0) → ∀ z ∈ V.measure.support, z.1 - y ∈ z.2.plane := by
+  intro N n U V y h z hz
+  -- Step 1: `(S, v) ↦ p_S(v)` is continuous (`S ↦ p_S` is the restriction to `G(N,n)` of a linear
+  -- map on the finite-dimensional matrix space), so `w(x, S) = (x - y) - p_S(x - y)` is too.
+  let Φ : Matrix (Fin N) (Fin N) ℝ →ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N) :=
+    (LinearMap.toContinuousLinearMap :
+        (Euclidean N →ₗ[ℝ] Euclidean N) ≃ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N)).toLinearMap.comp
+      (LinearMap.toMatrix Grassmannian.coordinateBasis.toBasis
+        Grassmannian.coordinateBasis.toBasis).symm.toLinearMap
+  have hp : Continuous (fun p : Grassmannian N n × Euclidean N ↦ Grassmannian.project p.1 p.2) :=
+    (Φ.continuous_of_finiteDimensional.comp (continuous_subtype_val.comp continuous_fst)).clm_apply
+      continuous_snd
+  have hg : Continuous (fun z : Euclidean N × Grassmannian N n ↦ (z.2, z.1 - y)) :=
+    continuous_snd.prodMk (continuous_fst.sub continuous_const)
+  have hpg := hp.comp hg
+  have hw : Continuous (fun z : Euclidean N × Grassmannian N n ↦
+      (z.1 - y) - Grassmannian.project z.2 (z.1 - y)) :=
+    (continuous_fst.sub continuous_const).sub hpg
+  -- Step 2: the defect integrand is measurable.
+  have hmeas : Measurable (fun z : Euclidean N × Grassmannian N n ↦
+      ENNReal.ofReal (‖(z.1 - y) - Grassmannian.project z.2 (z.1 - y)‖ ^ 2 /
+        ‖z.1 - y‖ ^ (n + 2))) :=
+    ENNReal.measurable_ofReal.comp ((hw.norm.pow 2).measurable.div
+      ((continuous_fst.sub continuous_const).norm.pow (n + 2)).measurable)
+  -- Steps 3–4: for each `k`, `w = 0` at `V`-a.e. point of `B_{k+1}(y) × G(N,n)`.
+  have hball : ∀ k : ℕ, ∀ᵐ z ∂V.measure,
+      z ∈ closedBall y ((k : ℝ) + 1) ×ˢ (univ : Set (Grassmannian N n)) →
+        (z.1 - y) - Grassmannian.project z.2 (z.1 - y) = 0 := by
+    intro k
+    have h0 := (lintegral_eq_zero_iff hmeas).mp (h ((k : ℝ) + 1) (by positivity))
+    filter_upwards [(ae_restrict_iff' (measurableSet_closedBall.prod MeasurableSet.univ)).mp h0]
+      with z hzero hzk
+    by_cases hzy : z.1 - y = 0
+    · -- At `x = y`: `w = 0 - p_S(0) = 0`.
+      rw [hzy, sub_eq_zero]
+      exact (map_zero z.2.projectionLinearMap).symm
+    · -- Off `x = y`: `|w|² / |x - y|^{n+2} ≤ 0` with a positive denominator, so `|w|² ≤ 0`.
+      have hpos : 0 < ‖z.1 - y‖ ^ (n + 2) := pow_pos (norm_pos_iff.mpr hzy) _
+      have hle := ENNReal.ofReal_eq_zero.mp (hzero hzk)
+      rw [div_le_iff₀ hpos, zero_mul] at hle
+      exact norm_eq_zero.mp ((pow_eq_zero_iff two_ne_zero).mp (le_antisymm hle (sq_nonneg _)))
+  -- Step 5: the balls `B_{k+1}(y)` exhaust `ℝ^N`, so `w = 0` `V`-a.e.
+  have hae : ∀ᵐ z ∂V.measure, (z.1 - y) - Grassmannian.project z.2 (z.1 - y) = 0 := by
+    filter_upwards [ae_all_iff.mpr hball] with z hzero
+    obtain ⟨k, hk⟩ := exists_nat_ge ‖z.1 - y‖
+    refine hzero k ⟨?_, mem_univ _⟩
+    rw [mem_closedBall, dist_eq_norm]
+    linarith
+  -- Step 6: `{w = 0}` is closed and of full measure, so it contains `spt V`.
+  have hz0 : (z.1 - y) - Grassmannian.project z.2 (z.1 - y) = 0 :=
+    Measure.support_subset_of_isClosed (isClosed_eq hw continuous_const) hae hz
+  -- Step 7: `p_S(x - y) = x - y`, so `x - y` lies in the range of `p_S`, which is `S.plane`.
+  exact ⟨z.1 - y, (sub_eq_zero.mp hz0).symm⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
