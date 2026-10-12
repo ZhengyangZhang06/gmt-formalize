@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e25b9db24992c3463fec7b2726f84ad4c8b94e8c7daabe74106ea6b4edf4184a",
+  "git_delta": {
+    "base_commit": "16e8aef346d8275e29369d3ddc06716b3bc882d7",
+    "candidate_commit": "9cfc88355a086406eb20125aebaa6bd0c0303f7b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_ufd_integral_lower_bound",
+    "diff_sha256": "ae1cd2c64b7fd02708b8579aa044bcd4c761eeae07bd2f2ad550e723b1d52be5",
+    "source_sha256": "f5616e56f94c4fd217815472650dac8375e521c06192944fc17b0697994868e1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_ufd_integral_lower_bound",
+      "statement": "∀ (P : ℕ) (μ : Measure (Eucl P)) (g : Eucl P → ℝ) (A C S : Set (Eucl P)) (c : ℝ≥0∞), MeasurableSet A → MeasurableSet C → MeasurableSet S → C ⊆ A → μ S < ∞ → Measurable g → (∀ x, |g x| ≤ 1) → (∀ x ∈ C, g x = 1) → (∀ x, x ∉ S → g x = 0) → c + μ (S \\ C) < μ C → c < ENNReal.ofReal (∫ x in A, g x ∂μ)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

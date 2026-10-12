@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.mass_representation-a1.unit_form_density-a1`
+- Child DAG node: `root.slicing-a1.mass_representation-a1.unit_form_density-a1.integral_lower_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝ^P = Eucl P = EuclideanSpace ℝ (Fin P) with its Borel σ-algebra; all measures are measures on this σ-algebra. ∫_A f dμ means ∫ x in A, f x ∂μ (Bochner integral for μ.restrict A). Source: Simon, Introduction to GMT, Ch. 6, 2.7–2.9 (pp. 136–137), with Ch. 1, 1.17 (Lusin) and 4.14 (Riesz), as detailed in the supplied proof of the parent theorem smr_exists_unit_form_gt, whose steps are cited here as U1–U9; this argument is extracted from that proof. This is step U9 of the parent proof.
+
+1. (Finiteness.) C ⊆ S: if x ∈ C ∖ S then 1 = g(x) = 0, which is impossible. Hence μ(C) ≤ μ(S) < ∞, and c + μ(S ∖ C) < μ(C) < ∞ gives c < ∞ and μ(S ∖ C) < ∞. Put a := μ(C).toReal, b := μ(S ∖ C).toReal and c′ := c.toReal ≥ 0. Since toReal is additive and strictly monotone on finite values, c′ + b < a.
+2. (Integrability.) For every x, |g(x)| ≤ 1_S(x) (|g| ≤ 1 everywhere and g = 0 off S). g is Borel and ∫ 1_S dμ = μ(S) < ∞, so g is μ-integrable (Integrable.mono'), and hence integrable on every measurable set, in particular on A, C and A ∖ C.
+3. (Splitting.) Since C is Borel and A ∩ C = C (C ⊆ A), ∫_A g dμ = ∫_{A∩C} g dμ + ∫_{A∖C} g dμ = ∫_C g dμ + ∫_{A∖C} g dμ (integral_inter_add_sdiff). As g = 1 on the Borel set C, ∫_C g dμ = ∫_C 1 dμ = μ(C).toReal = a (setIntegral_congr_fun, setIntegral_const).
+4. (The remainder is small.) g vanishes on (A ∖ C) ∖ S, so ∫_{A∖C} g dμ = ∫_{(A∖C)∩S} g dμ, and since |g| ≤ 1 and μ((A∖C) ∩ S) ≤ μ(S ∖ C) < ∞, |∫_{(A∖C)∩S} g dμ| ≤ 1·μ((A∖C) ∩ S).toReal ≤ μ(S ∖ C).toReal = b (norm_setIntegral_le_of_norm_le_const). Equivalently, |∫_{A∖C} g dμ| ≤ ∫_{A∖C} 1_S dμ ≤ b.
+5. (Conclusion.) By steps 3–4 and step 1, ∫_A g dμ ≥ a − b > c′ ≥ 0. Since c ≠ ∞, c = ENNReal.ofReal(c′), and since 0 < ∫_A g dμ, ENNReal.ofReal_lt_ofReal_iff gives c = ENNReal.ofReal(c′) < ENNReal.ofReal(∫_A g dμ). ∎
+
+## Key steps
+
+1. C ⊆ S, so μ(C) ≤ μ(S) < ∞; all of c, μ(S∖C), μ(C) are finite and c.toReal + μ(S∖C).toReal < μ(C).toReal.
+2. |g| ≤ 1_S with μ(S) < ∞ makes g integrable.
+3. ∫_A g = ∫_C g + ∫_{A∖C} g = μ(C).toReal + ∫_{A∖C} g.
+4. |∫_{A∖C} g| ≤ μ((A∖C) ∩ S).toReal ≤ μ(S∖C).toReal.
+5. ∫_A g > c.toReal ≥ 0, hence c < ENNReal.ofReal(∫_A g).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean vs git show d8d46c9:GMT/Ch06/{Contract,Submission}.lean (identical, sha256 ea3ee0dd…)`
+- `python3 contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') via verifier/gmt-compare.py (child scope: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06 …; noncomputable section; end)`
+- `grep -rn 'def covectorEuclideanNorm|abbrev NVector|abbrev Covector' simongmt/Poincare/SimonGMT/`
+- `grep -n 'theorem\|lemma' simongmt Chapter01/Lusin.lean (exists_isClosed_continuousOn_of_measurable: closed-set regularity hypothesis hreg, MeasurableSet A, nu A ≠ ∞, Measurable f, ε ≠ 0)`
+- `grep -rn Lusin mathlib/Mathlib --include=*.lean -l (only Polish/Basic Lusin separation and Jacobian Lusin N; no Lusin continuity theorem)`
+- `grep instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace, MeasurableSet.exists_lt_isCompact_of_ne_top, MeasurableSet.exists_isCompact_isClosed_sdiff_lt in Mathlib/MeasureTheory/Measure/{RegularityCompacts,Regular}.lean`
+- `grep Set.instTietzeExtensionUnitClosedBall (Analysis/Complex/Tietze.lean); ContinuousMap.exists_restrict_eq, ContinuousMap.exists_forall_mem_restrict_eq (Topology/TietzeExtension.lean)`
+- `grep exists_continuous_one_zero_of_isCompact (Topology/UrysohnsLemma.lean); IsCompact.exists_cthickening_subset_open, IsCompact.cthickening, closure_thickening_subset_cthickening, closure_eq_iInter_thickening (Topology/MetricSpace/Thickening.lean); IsOpen.exists_iUnion_isClosed (Topology/MetricSpace/HausdorffDistance.lean)`
+- `grep tendsto_measure_iUnion_atTop, tendsto_measure_iInter_atTop (MeasureTheory/Measure/Continuity.lean); integral_inter_add_sdiff, norm_setIntegral_le_of_norm_le_const (MeasureTheory/Integral/Bochner/Set.lean)`
+- `grep Measurable.inner (MeasureTheory/Function/SpecialFunctions/Inner.lean, not imported by Submission); scoped inner notation and class Inner (Analysis/InnerProductSpace/Defs.lean)`
+- `python3 over dag.json nodes lean_name/lean_statement (212 nodes): smr_covector_coord_isometry type, smr_* siblings, lpf_wtc_lusin_compact_pieces, slicing_mb_cutoff, isoperimetric_lattice_face_cutoff; grep -rl smr_ufd_* in dag.json, nodes/, simongmt (no matches)`
+- `sed -n 255,320p book/sources/chapter-06-source.txt (Simon 2.7–2.9 text)`
+- `lake build GMT.Ch06.Submission in scratch /tmp/ufd-split-IpAAXq (frozen d8d46c9, shared packages lake-packages-25730c7c)`
+- `lake env lean Scratch/Children.lean, Scratch/Challenges.lean (5 child types in comparator scope), Scratch/Assembly.lean and Scratch/Assembly2.lean (#print axioms), Scratch/Avail.lean and Scratch/Avail2.lean (import availability), Scratch/Child{1..5}/Proof.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-unit-form-density-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-unit-form-density-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Complex/Tietze.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/TietzeExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/UrysohnsLemma.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/SpecialFunctions/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-06-source.txt`
+- `/tmp/ufd-split-IpAAXq/Scratch/Challenges.lean`
+- `/tmp/ufd-split-IpAAXq/Scratch/Assembly2.lean`
+- `/tmp/ufd-split-IpAAXq/Scratch/Child1/Proof.lean`
+- `/tmp/ufd-split-IpAAXq/Scratch/Child2/Proof.lean`
+- `/tmp/ufd-split-IpAAXq/Scratch/Child3/Proof.lean`
+- `/tmp/ufd-split-IpAAXq/Scratch/Child4/Proof.lean`
+- `/tmp/ufd-split-IpAAXq/Scratch/Child5/Proof.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract, byte-identical to the frozen Contract and Submission. Child types therefore use only contract names, SimonGMT names (Covector, NVector, covectorEuclideanNorm) and Mathlib names.
+
+Available under the base import GMT.Ch06.Submission:
+- measure_inter_conull, tendsto_measure_iUnion_atTop and tendsto_measure_iInter_atTop;
+- IsCompact.exists_cthickening_subset_open and closure_thickening_subset_cthickening;
+- Urysohn (exists_continuous_one_zero_of_isCompact);
+- integral_inter_add_sdiff, norm_setIntegral_le_of_norm_le_const and LinearMap.continuous_of_finiteDimensional.
+
+The following need extra imports, each checked to compile with the frozen submission:
+- the Polish inner-regularity instance InnerRegularCompactLTTop and MeasurableSet.exists_lt_isCompact_of_ne_top / exists_isCompact_isClosed_sdiff_lt (RegularityCompacts);
+- SimonGMT Lusin (Chapter01/Lusin; Mathlib has no Lusin continuity theorem);
+- Tietze, ContinuousMap.exists_restrict_eq and the closed-unit-ball instance (TietzeExtension, Complex.Tietze).
+
+Measurable.inner is not imported, so use continuous_inner. The ⟪·,·⟫_ℝ notation is scoped, so the types write inner ℝ.
+
+No existing declaration matches any proposed child type. The Lusin and cutoff nodes in other branches have different types, so fresh smr_ufd_* names are used; none occurs in dag.json, nodes/, SimonGMT or Mathlib.
+
+All five child types elaborate in the comparator child scope. The parent's exact frozen type is kernel-checked from the sibling isometry type and the five child types with axioms [propext, Classical.choice, Quot.sound]. Each child also has a sorry-free scratch proof with standard axioms.
