@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ff3db591722e3fe26f71d5517127840f50f326eb99fa6861dd130b08be00540b",
+  "git_delta": {
+    "base_commit": "72ac91d782e0a901a70be4a2f8509d060561b388",
+    "candidate_commit": "1caba214479983594321351b85bd3daa87c7317c",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_pic_density_aestronglyMeasurable",
+    "diff_sha256": "16daa7f81495df9de75d65b3d8f3f6f3e9cd4ab41b006747b108ca077e4a84ad",
+    "source_sha256": "faffbb8020dc1372b4c55be6c78c55f0333a329cbb64b6eef4c9954f2c8bf561",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_pic_density_aestronglyMeasurable",
+      "statement": "∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U → IsRectifiableTriple U n M θ ξ → AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) → AEStronglyMeasurable (fun x => θ x • nVectorPushforward n (L x) (ξ x)) ((μHE[n] : Measure (Eucl P)).restrict M)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
