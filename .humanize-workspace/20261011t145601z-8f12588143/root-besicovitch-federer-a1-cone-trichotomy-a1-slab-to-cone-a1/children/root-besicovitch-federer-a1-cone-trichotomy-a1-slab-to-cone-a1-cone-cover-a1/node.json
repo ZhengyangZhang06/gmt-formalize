@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.slab_to_cone-a1.cone_cover-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.slab_to_cone-a1",
+  "depth": 4,
+  "title": "A narrow cone about W^⊥ is covered by the ℓ slab cones with aperture enlarged by √ℓ (parent steps 1 and 3(b); right inclusion of Dall'Alba Lemma 5.5)",
+  "statement": "Let n, ℓ ∈ ℕ with ℓ ≥ 1, and E := ℝ^{n+ℓ} (EuclideanSpace ℝ (Fin (n+ℓ))) with inner product x·y and norm |·|. Let W ⊆ E be a linear subspace with dim W = n and orthogonal projection P := W.starProjection, and let (u_j)_{j ∈ Fin ℓ} be an orthonormal family with every u_j ∈ W^⊥. If y ∈ E and s ∈ ℝ satisfy |Py| < s|y|, then there is j ∈ Fin ℓ with |Py| < √ℓ · s · |Py + (y·u_j)u_j|.",
+  "lean_statement": "∀ (n ℓ : ℕ), 0 < ℓ → ∀ W : Submodule ℝ (Rn (n + ℓ)), finrank ℝ W = n → ∀ u : Fin ℓ → Rn (n + ℓ), Orthonormal ℝ u → (∀ j, u j ∈ Wᗮ) → ∀ (y : Rn (n + ℓ)) (s : ℝ), ‖W.starProjection y‖ < s * ‖y‖ → ∃ j, ‖W.starProjection y‖ < Real.sqrt (ℓ : ℝ) * s * ‖W.starProjection y + inner ℝ y (u j) • u j‖",
+  "lean_name": "bf_cone_subset_iUnion_slabCones",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-slab-to-cone-a1-cone-cover-a1-a1"
+}
