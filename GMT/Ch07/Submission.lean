@@ -577,6 +577,17 @@ theorem Submission.regcomp_covector_sq_sum_basisFun : ∀ (P n : ℕ) (α : Cove
     rw [hperm]
     rcases Int.units_eq_one_or (Equiv.Perm.sign p.2) with h | h <;> simp [h]
 
+/-- **Simon 6.1.2, 6.1.5** in an arbitrary orthonormal basis (the coefficient norm behind
+Remark 6.3.2(3)): for an `n`-covector `α` on `ℝᴾ` and an orthonormal basis `f` of `ℝᴾ`,
+`Σ_{j : Fin n → Fin P} α(f_{j(0)}, …, f_{j(n−1)})² = n! |α|_E²`.  The sum is the same for every
+orthonormal basis (`regcomp_covector_sq_sum_basis_invariant` with `b' = e`, the standard basis),
+and for `e` it is `n! |α|_E²` (`regcomp_covector_sq_sum_basisFun`). -/
+theorem Submission.regcomp_covector_sq_sum_orthonormalBasis : ∀ (P n : ℕ) (α : Covector (Euclid P) n) (f : OrthonormalBasis (Fin P) ℝ (Euclid P)), ∑ j : Fin n → Fin P, (α (fun k => f (j k))) ^ 2 = (n.factorial : ℝ) * covectorEuclideanNorm α ^ 2 := by
+  intro P n α f
+  rw [Submission.regcomp_covector_sq_sum_basis_invariant P n α f
+    (EuclideanSpace.basisFun (Fin P) ℝ)]
+  exact Submission.regcomp_covector_sq_sum_basisFun P n α
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
