@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_fderiv_le-a1.fderiv_setintegral-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_fderiv_le-a1",
+  "depth": 5,
+  "title": "Derivative of the mollified set integral: D(∫_G ρ(· − z)dz)(x)w = ∫_G Dρ(x − z)w dz (parent Step 1)",
+  "statement": "Let N ∈ ℕ, let G ⊆ ℝ^N be Lebesgue null-measurable, and let ρ : ℝ^N → ℝ be C¹ with compact support. Put u(x) := ∫_G ρ(x − z) dL^N(z). Then for all x, w ∈ ℝ^N, Du(x)w = ∫_G Dρ(x − z)w dL^N(z). Here Du(x) = fderiv ℝ u x is Lean's total Fréchet derivative (which is 0 at points of non-differentiability) and Dρ(t) = fderiv ℝ ρ t. (The proof shows that u is in fact differentiable at every x, with Du(x) = ∫_G Dρ(x − z) dz.)",
+  "lean_statement": "∀ (N : ℕ) (G : Set (Rn N)) (ρ : Rn N → ℝ), NullMeasurableSet G volume → ContDiff ℝ 1 ρ → HasCompactSupport ρ → ∀ x w : Rn N, fderiv ℝ (fun x ↦ ∫ z in G, ρ (x - z)) x w = ∫ z in G, fderiv ℝ ρ (x - z) w",
+  "lean_name": "deGiorgiSobIndMFL_fderiv_setIntegral_apply",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-mollified-c34f9b4b00-a1"
+}
