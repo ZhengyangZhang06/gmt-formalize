@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7323d330bf5a0aec0db1459ec31ba4fbbf1468eedae28a2cc01bfdec939828a3",
+  "git_delta": {
+    "base_commit": "f0cd476c39cf290ffc6fb9fe23fb9b07babec2a6",
+    "candidate_commit": "02b00adb9d0901eb01c6be1de777ca5894d42cf4",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "bcda91f5cbf4b4249e6233ec29229893b4a4591eabadabd5a2d9b7c656182132",
+    "source_sha256": "7eb023a78fdeea39c22b0601d21aebafb907a1c0abab9a3fd0712c88ae934389",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_ae_approxTangent_of_c1Cover",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (C Z : Set (Amb n ℓ)) (N : ℕ → Set (Amb n ℓ)), MeasurableSet C → (μHE[n] : Measure (Amb n ℓ)) C < ∞ → (μHE[n] : Measure (Amb n ℓ)) Z = 0 → (∀ k, IsC1Submanifold n (N k) ∧ (μHE[n] : Measure (Amb n ℓ)) (N k) < ∞) → C ⊆ Z ∪ ⋃ k, N k → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∈ C → ∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C x P",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
