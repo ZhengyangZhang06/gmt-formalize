@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem ae_tendsto_measure_inter_div|variable.*Measure|IsLocallyFiniteMeasure",
+        "instHasBesicovitchCovering|^variable|Nontrivial",
+        "euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_def|euclideanHausdorffMeasure_zero",
+        "theorem addHaar_closedBall|^variable|Nontrivial",
+        "theorem hausdorffMeasure_image_le",
+        "continuous.*pow|tendsto.*pow|Tendsto.pow",
+        "frt_plane_subset_hasDensity_one|frt_lipschitz_graph_hausdorff_compare|frt_graph_piece_density_bounds",
+        "sed -n '170,255p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "python3 /tmp/gmt_density_decomp_audit_wikz9lj_/run_lean.py /tmp/gmt_density_decomp_audit_wikz9lj_/Api.lean",
+        "python3 /tmp/gmt_density_decomp_audit_wikz9lj_/run_lean.py /tmp/gmt_density_decomp_audit_wikz9lj_/plane_density_NodeChallenge.lean",
+        "python3 /tmp/gmt_density_decomp_audit_wikz9lj_/run_lean.py /tmp/gmt_density_decomp_audit_wikz9lj_/graph_projection_compare_NodeChallenge.lean",
+        "python3 /tmp/gmt_density_decomp_audit_wikz9lj_/run_lean.py /tmp/gmt_density_decomp_audit_wikz9lj_/graph_piece_bounds_NodeChallenge.lean",
+        "python3 /tmp/gmt_density_decomp_audit_wikz9lj_/run_lean.py /tmp/gmt_density_decomp_audit_wikz9lj_/ParentAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-density-one-flat-covers-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-density-one-flat-covers-a1/decomposition-v1.json",
+        "/tmp/gmt_density_decomp_audit_wikz9lj_/ParentAssembly.lean",
+        "/tmp/gmt_density_decomp_audit_wikz9lj_/Api.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte compatibility of the contract and inspected Mathlib sources. Besicovitch.lean:1105 permits arbitrary sets; BesicovitchVectorSpace.lean:499 and EqHaar.lean:500 require no positive-dimensional assumption. Isometric measure transfer, arbitrary-set Lipschitz image bounds, restriction identities, and ENNReal limit operations support the supplied proofs. The nine principal imported results checked with #print axioms use only propext, Classical.choice and Quot.sound. All child types elaborate independently and pass the generated comparator challenge forms. A separate, sorry-free Lean check proves the exact selected parent proposition assuming the exact graph_piece_bounds contract. Thus the split appropriately isolates geometry, planar density, and differentiation; countable covers and slopes tending to zero complete this parent, including dimension zero and empty covers. All three names are bare identifiers, absent from the imported Submission namespace and the current 102-node DAG. No problematic inline matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary, possibly nonmeasurable T. The proof explicitly constructs the plane isometry, transfers ball measures, applies arbitrary-set differentiation, and transports a measurable exceptional hull to an ambient Hausdorff-null set. Restriction is evaluated only on measurable balls. The argument includes n = 0 and proves the pointwise conclusion outside Z without relying on the parent or another child."
+    },
+    {
+      "key": "graph_projection_compare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree for all real radii and arbitrary S and Y. Symmetry and idempotence give Pythagoras; the graph hypothesis and L ≥ 0 give the inverse Lipschitz estimate. The explicit inverse then proves the preimage bound, while the stated inclusions prove both ball comparisons. Negative radii introduce no gap. The proof requires neither measurability nor any undeclared dependency."
+    },
+    {
+      "key": "graph_piece_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every stated hypothesis and exactly the two density bounds. The proof uses precisely its two declared dependencies: planar density supplies the exceptional set, and graph comparison controls its preimage and ball masses. Finiteness establishes local finiteness of λ; null measurability and closedness justify restricted almost-everywhere membership and measure identities. Eventual positivity and finiteness justify division, cancellation, and the ENNReal limits. Both bounds follow without circularity. The dependency graph is acyclic, and the supplied countable-cover assembly establishes the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}

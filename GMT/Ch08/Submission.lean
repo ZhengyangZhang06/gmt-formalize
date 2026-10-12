@@ -410,6 +410,54 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Lebesgue density one of `H^n` on an arbitrary subset `T` of an `n`-plane (Simon Ch. 8, proof of
+1.2, via the Lebesgue density theorem in `ℝ^n`): outside an `H^n`-null set `Z`, every `a ∈ T` has
+`Θ^n(H^n ⌞ T, a) = 1`. -/
+theorem Submission.frt_plane_subset_hasDensity_one :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (T : Set (Euclidean N)), T ⊆ (P.plane : Set (Euclidean N)) → ∃ Z : Set (Euclidean N), (μHE[n] : Measure (Euclidean N)) Z = 0 ∧ ∀ a ∈ T, a ∉ Z → HasDensity n ((μHE[n] : Measure (Euclidean N)).restrict T) a 1 := by
+  intro N n P T hT
+  -- Step 1: an isometry `ι : ℝ^n → ℝ^N` onto the plane, from an orthonormal basis of `P.plane`.
+  obtain ⟨ι, hι, hsurj⟩ : ∃ ι : EuclideanSpace ℝ (Fin n) → Euclidean N, Isometry ι ∧
+      ∀ a ∈ (P.plane : Set (Euclidean N)), ∃ y, ι y = a := by
+    let e : EuclideanSpace ℝ (Fin n) ≃ₗᵢ[ℝ] P.plane :=
+      ((stdOrthonormalBasis ℝ P.plane).reindex (finCongr P.finrank_plane)).repr.symm
+    exact ⟨P.plane.subtypeₗᵢ.comp e.toLinearIsometry, LinearIsometry.isometry _,
+      fun a ha ↦ ⟨e.symm ⟨a, ha⟩, by simp⟩⟩
+  -- Step 2: `H^n(ι B) = L^n(B)` for every `B ⊆ ℝ^n`.
+  have hmeas : ∀ B : Set (EuclideanSpace ℝ (Fin n)),
+      (μHE[n] : Measure (Euclidean N)) (ι '' B) = volume B := fun B ↦ by
+    rw [hι.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- Step 3: `ι(ι⁻¹(T) ∩ B_s(y)) = B_s(ι y) ∩ T`.
+  have himg : ∀ y s, ι '' (ι ⁻¹' T ∩ closedBall y s) = closedBall (ι y) s ∩ T := by
+    intro y s
+    ext a
+    constructor
+    · rintro ⟨z, ⟨hzT, hz⟩, rfl⟩
+      exact ⟨mem_closedBall.mpr ((hι.dist_eq z y).trans_le (mem_closedBall.mp hz)), hzT⟩
+    · rintro ⟨ha, haT⟩
+      obtain ⟨z, rfl⟩ := hsurj a (hT haT)
+      exact ⟨z, ⟨haT, mem_closedBall.mpr ((hι.dist_eq z y).symm.trans_le (mem_closedBall.mp ha))⟩,
+        rfl⟩
+  -- Step 4: Lebesgue density theorem for `ι⁻¹(T)`, and a measurable null hull `E` of its bad set.
+  obtain ⟨E, hbad, hEm, hE0⟩ := exists_measurable_superset_of_null (ae_iff.mp
+    (Besicovitch.ae_tendsto_measure_inter_div (volume : Measure (EuclideanSpace ℝ (Fin n)))
+      (ι ⁻¹' T)))
+  rw [Measure.restrict_apply hEm] at hE0
+  -- Step 5: `Z = ι(E ∩ ι⁻¹(T))` is `H^n`-null.
+  refine ⟨ι '' (E ∩ ι ⁻¹' T), (hmeas _).trans hE0, ?_⟩
+  -- Step 6: at `a = ι y ∈ T ∖ Z` the density ratio is `L^n(ι⁻¹(T) ∩ B_s(y)) / L^n(B_s(y)) → 1`.
+  intro a haT haZ
+  obtain ⟨y, rfl⟩ := hsurj a (hT haT)
+  have hy : Tendsto (fun r ↦ volume (ι ⁻¹' T ∩ closedBall y r) / volume (closedBall y r))
+      (𝓝[>] 0) (𝓝 1) := by
+    by_contra h
+    exact haZ ⟨y, ⟨hbad h, haT⟩, rfl⟩
+  refine hy.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with s (hs : 0 < s)
+  rw [densityRatio, Measure.restrict_apply measurableSet_closedBall, ← himg y s, hmeas,
+    Measure.addHaar_closedBall volume y hs.le, finrank_euclideanSpace_fin, ENNReal.ofReal_pow hs.le,
+    unitBallVolume, mul_comm (ENNReal.ofReal s ^ n)]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
