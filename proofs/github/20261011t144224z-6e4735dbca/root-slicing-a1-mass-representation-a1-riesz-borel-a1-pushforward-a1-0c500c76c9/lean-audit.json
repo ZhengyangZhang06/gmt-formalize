@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6ee5e8c2f2d6a9f56f374840ba86d70cf1269fdf2354bbfd1dc8e4bf762751eb",
+  "git_delta": {
+    "base_commit": "416efd450712d139e1bc21d6f12590cb04792b22",
+    "candidate_commit": "64646e28b9da300de23fa2406a655153c5b3a43e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_rb_pushforward_subtype",
+    "diff_sha256": "96090392fc0342fdda5a21c48d270ee190e7132538eda54ac6d061cbe38eb32f",
+    "source_sha256": "ec02fa53019a11d9dacd3ed5dd945be0b3c09989431bc7506fe3c58b003bba07",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_rb_pushforward_subtype",
+      "statement": "∀ (P N : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (m : Measure ↥U) (ν₁ : ↥U → EuclideanSpace ℝ (Fin N)), (∀ K : Set ↥U, IsCompact K → m K < ∞) → Measurable ν₁ → (∀ y, ‖ν₁ y‖ ≤ 1) → (∀ᵐ y ∂m, ‖ν₁ y‖ = 1) → ∃ (μ : Measure (Eucl P)) (ν : Eucl P → EuclideanSpace ℝ (Fin N)), Measurable ν ∧ μ Uᶜ = 0 ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ x, ‖ν x‖ ≤ 1) ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧ ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → HasCompactSupport f → tsupport f ⊆ U → Integrable (fun x => inner ℝ (f x) (ν x)) μ ∧ ∫ x, inner ℝ (f x) (ν x) ∂μ = ∫ y, inner ℝ (f ↑y) (ν₁ y) ∂m",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
