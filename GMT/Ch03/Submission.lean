@@ -403,6 +403,38 @@ theorem Submission.section3_exists_coordinateProjection_injOn :
       have hi : j i ∈ Finset.univ.image j := Finset.mem_image_of_mem j (Finset.mem_univ i)
       rw [PiLp.sub_apply, ← hcoord _ x (j i) hi, ← hcoord _ y (j i) hi, hxy, sub_self]
     exact sub_eq_zero.mp (congrArg Subtype.val (hzero ⟨x - y, L.sub_mem hx hy⟩ hsel))
+/-- **`C¹` maps send `Lⁿ`-null sets to `Hⁿ`-null sets**: the measure step in Simon Ch. 3,
+proof of Lemma 3.3 (p. 79, `chapter-03.txt` lines 495–496: a `C¹` diffeomorphism `p` gives
+`Hⁿ(p(S ∩ N ∩ B_σ(x))) > 0`). Each `u ∈ T ⊆ V` has a neighbourhood `t` on which `ψ` is
+`K`-Lipschitz, since `ψ` is `C¹` near `u` and hence strictly differentiable at `u`. As
+`Hⁿ = c • μH[n]` with one constant `c` on every space and `Hⁿ = Lⁿ` on `ℝⁿ`,
+`Hⁿ(ψ(T ∩ t)) ≤ Kⁿ Hⁿ(T ∩ t) = Kⁿ Lⁿ(T ∩ t) = 0`. By second countability
+(`measure_null_of_locally_null` for the outer measure `B ↦ Hⁿ(ψ(B))`), `Hⁿ(ψ(T)) = 0`. -/
+theorem Submission.section3_contDiffOn_image_null_of_volume_null : ∀ (n N : ℕ) (V T : Set (Rn n))
+    (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V → T ⊆ V → volume T = 0 →
+    μHE[n] (ψ '' T) = 0 := by
+  intro n N V T ψ hV hψ hTV hT
+  -- `B ↦ Hⁿ(ψ(B))` is an outer measure on `ℝⁿ`; it suffices that it vanishes on a relative
+  -- neighbourhood of each point of `T`.
+  suffices h : OuterMeasure.comap ψ (μHE[n] : Measure (Rn N)).toOuterMeasure T = 0 by
+    simpa using h
+  refine measure_null_of_locally_null T fun u hu ↦ ?_
+  obtain ⟨K, t, ht, hK⟩ :=
+    ((hψ.contDiffAt (hV.mem_nhds (hTV hu))).hasStrictFDerivAt one_ne_zero).exists_lipschitzOnWith
+  refine ⟨T ∩ t, inter_mem_nhdsWithin T ht, ?_⟩
+  have hvol : (μHE[n] : Measure (Rn n)) (T ∩ t) = 0 := by
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    exact measure_mono_null inter_subset_left hT
+  -- `μHE[n] = c • μH[n]` with the same constant `c` on `ℝⁿ` and on `ℝᴺ`.
+  have himg : (μHE[n] : Measure (Rn N)) (ψ '' (T ∩ t)) ≤
+      (K : ℝ≥0∞) ^ (n : ℝ) * (μHE[n] : Measure (Rn n)) (T ∩ t) := by
+    simp only [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+      smul_eq_mul]
+    rw [mul_left_comm]
+    gcongr
+    exact (hK.mono inter_subset_right).hausdorffMeasure_image_le (Nat.cast_nonneg n)
+  rw [hvol, mul_zero] at himg
+  simpa using himg
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
