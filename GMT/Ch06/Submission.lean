@@ -438,6 +438,43 @@ theorem Submission.smr_ci_norm_eq_sqrt_sum_coord_sq :
   · -- Matching summands: `basisFun i = EuclideanSpace.single i 1`.
     simp only [euclideanCovectorCoordinate, EuclideanSpace.basisFun_apply]
 
+/-- Simon (6.1.2)–(6.1.5): listing the coefficients `α(e_{I(0)}, …, e_{I(k-1)})` over the
+increasing multi-indices `I` is a linear isomorphism `J` of the `k`-covectors on `ℝ^P` onto `ℝ^N`
+with `|α| = ‖J α‖` for the Euclidean coefficient norm `|α| = covectorEuclideanNorm α`. -/
+theorem Submission.smr_covector_coord_isometry :
+    ∀ (P k : ℕ), ∃ (N : ℕ) (J : Covector (Eucl P) k ≃ₗ[ℝ] EuclideanSpace ℝ (Fin N)),
+      ∀ α : Covector (Eucl P) k, covectorEuclideanNorm α = ‖J α‖ := by
+  intro P k
+  -- Enumerate the increasing multi-indices `I : Fin k ↪o Fin P` by `Fin N`.
+  let σ : Fin (Fintype.card (SimonMultiIndex k P)) ≃ SimonMultiIndex k P :=
+    (Fintype.equivFin (SimonMultiIndex k P)).symm
+  -- The coordinate map `J α = (α(e_{σ n}))_n`, linear because evaluation is.
+  obtain ⟨J, hJ⟩ : ∃ J : Covector (Eucl P) k →ₗ[ℝ]
+      EuclideanSpace ℝ (Fin (Fintype.card (SimonMultiIndex k P))),
+      ∀ α n, J α n = euclideanCovectorCoordinate α (σ n) :=
+    ⟨{ toFun := fun α => WithLp.toLp 2 fun n => euclideanCovectorCoordinate α (σ n)
+       map_add' := fun α β => by
+         ext n
+         simp [euclideanCovectorCoordinate]
+       map_smul' := fun c α => by
+         ext n
+         simp [euclideanCovectorCoordinate] }, fun _ _ => rfl⟩
+  have hbij : Function.Bijective J := by
+    refine ⟨(injective_iff_map_eq_zero J).2 fun α hα => ?_, fun y => ?_⟩
+    · -- injective: a covector whose coordinates all vanish is zero
+      refine Submission.smr_ci_covector_eq_zero_of_coord P k α fun I => ?_
+      rw [← σ.apply_symm_apply I, ← hJ, hα, PiLp.zero_apply]
+    · -- surjective: `∑_I y_{σ⁻¹ I} dx^I` has coordinates `y`
+      refine ⟨∑ I : SimonMultiIndex k P,
+        y (σ.symm I) • wedgeCovectors k (fun j => EuclideanSpace.proj (I j)), ?_⟩
+      ext n
+      rw [hJ, Submission.smr_ci_coord_sum_smul_wedge, σ.symm_apply_apply]
+  refine ⟨_, LinearEquiv.ofBijective J hbij, fun α => ?_⟩
+  -- Both norms are square roots of the same sum of squares, reindexed along `σ`.
+  rw [Submission.smr_ci_norm_eq_sqrt_sum_coord_sq, LinearEquiv.ofBijective_apply,
+    EuclideanSpace.norm_eq, ← σ.sum_comp]
+  simp only [hJ, Real.norm_eq_abs, sq_abs]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
