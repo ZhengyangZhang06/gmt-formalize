@@ -699,6 +699,46 @@ theorem rsod_c1tan_chart_blowUp_tendsto : ∀ (m N : ℕ) (V : Set (Rn m)) (φ :
       rfl
   -- Step 7: conclude.
   exact key.congr fun r => integral_indicator (hUo r).measurableSet
+/-- Simon Ch. 3, Definition 1.4 is local: if `S ∩ B̆_ε(x) = T ∩ B̆_ε(x)` for some `ε > 0`, then an
+approximate tangent space of `T` at `x` is also one of `S` at `x`.  Proof: a test function
+`f ∈ C_c(ℝ^N)` vanishes off `B = B_R(0)` for some `R > 0`, so
+`∫_{η_{x,r}(A)} f = ∫_{η_{x,r}(A) ∩ B} f` for every set `A`; for `0 < r < ε/R`, `r⁻¹(z − x) ∈ B`
+forces `|z − x| ≤ rR < ε`, hence `η_{x,r}(S) ∩ B = η_{x,r}(T) ∩ B`, and the blow-up integrals of
+`S` and `T` agree eventually as `r ↓ 0`. -/
+theorem rsod_c1tan_approxTangent_of_local_eq : ∀ (m N : ℕ) (S T : Set (EuclideanSpace ℝ (Fin N))) (x : EuclideanSpace ℝ (Fin N)) (ε : ℝ) (P : Submodule ℝ (EuclideanSpace ℝ (Fin N))), 0 < ε → S ∩ ball x ε = T ∩ ball x ε → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m T x P → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m S x P := by
+  intro m N S T x ε P hε hST hT
+  refine ⟨hT.1, fun f => ?_⟩
+  -- Support radius: `f` vanishes off `B = B_R(0)` with `R = max R₀ 1 > 0`.
+  obtain ⟨R₀, hR₀⟩ := (isBounded_iff_subset_closedBall (0 : EuclideanSpace ℝ (Fin N))).1
+    f.hasCompactSupport.isBounded
+  have hR : 0 < max R₀ 1 := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hsupp : Function.support f ⊆ closedBall 0 (max R₀ 1) :=
+    (subset_tsupport f).trans (hR₀.trans (closedBall_subset_closedBall (le_max_left _ _)))
+  -- Cutting off: `∫_A f = ∫_{A ∩ B} f` for every set `A` (only `B` needs to be measurable).
+  have hcut : ∀ A : Set (EuclideanSpace ℝ (Fin N)),
+      ∫ y in A, f y ∂μHE[m] = ∫ y in A ∩ closedBall 0 (max R₀ 1), f y ∂μHE[m] := by
+    intro A
+    rw [← setIntegral_indicator measurableSet_closedBall, Set.indicator_eq_self.2 hsupp]
+  -- For `0 < r < ε / R`: `η_{x,r}(A) ∩ B ⊆ η_{x,r}(A') ∩ B` whenever `A ∩ B̆_ε(x) ⊆ A'`.
+  have hmono : ∀ A A' : Set (EuclideanSpace ℝ (Fin N)), A ∩ ball x ε ⊆ A' →
+      ∀ r ∈ Ioo 0 (ε / max R₀ 1),
+        Poincare.SimonGMT.Chapter03.blowUpMap x r '' A ∩ closedBall 0 (max R₀ 1) ⊆
+          Poincare.SimonGMT.Chapter03.blowUpMap x r '' A' ∩ closedBall 0 (max R₀ 1) := by
+    rintro A A' hAA' r ⟨hr, hrR⟩ y ⟨⟨z, hz, rfl⟩, hy⟩
+    refine ⟨⟨z, hAA' ⟨hz, ?_⟩, rfl⟩, hy⟩
+    rw [mem_closedBall_zero_iff, Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, norm_inv,
+      Real.norm_of_nonneg hr.le] at hy
+    rw [mem_ball, dist_eq_norm]
+    calc ‖z - x‖ = r * (r⁻¹ * ‖z - x‖) := by field_simp
+      _ ≤ r * max R₀ 1 := mul_le_mul_of_nonneg_left hy hr.le
+      _ < ε := (lt_div_iff₀ hR).1 hrR
+  -- Hence the blow-up integrals of `T` and `S` agree for `0 < r < ε / R`; the limit transfers.
+  refine (hT.2 f).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hε hR)] with r hr
+  rw [hcut (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T),
+    hcut (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S),
+    (hmono T S (hST.symm.subset.trans inter_subset_left) r hr).antisymm
+      (hmono S T (hST.subset.trans inter_subset_left) r hr)]
 
 end Submission
 
