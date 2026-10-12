@@ -1667,6 +1667,81 @@ theorem Submission.bf_slabGood_imp_coneTrichotomy : ∀ (n ℓ : ℕ), 0 < n →
   · -- `Ax'_j ⇒ Ax`.
     rintro j ⟨b, hbA, hba, hbδ, hb⟩
     exact ⟨b, hbA, hba, hbδ, (hq j (b - a)).symm.trans hb⟩
+/-- **Continuity of the frame projection on independent frames** (Step 1.5(b) of the supplied
+proof of the Besicovitch–Federer theorem, Simon Ch. 3, Theorem 3.6). On the linearly independent
+frames `v = (v₁, …, vₙ)` in `ℝᴺ`, the orthogonal projection onto `span v` depends continuously on
+`v`: with the synthesis operator `M_v c = ∑ᵢ cᵢ vᵢ` and the Gram operator `Γ_v = M_v* M_v`
+(invertible for independent `v`), `frameProjection v = M_v Γ_v⁻¹ M_v*`, and ring inversion is
+continuous at units. -/
+theorem Submission.bf_frameProjection_continuousOn : ∀ (N n : ℕ), ContinuousOn (fun v : Fin n → Rn N ↦ frameProjection v) {v | LinearIndependent ℝ v} := by
+  intro N n
+  -- The synthesis operator `M v : ℝⁿ → ℝᴺ`, `c ↦ ∑ᵢ cᵢ vᵢ`, depends continuously on `v`.
+  let M : (Fin n → Rn N) → (EuclideanSpace ℝ (Fin n) →L[ℝ] Rn N) := fun v ↦
+    ∑ i, (EuclideanSpace.proj i : StrongDual ℝ (EuclideanSpace ℝ (Fin n))).smulRight (v i)
+  have hM_apply : ∀ v c, M v c = ∑ i, c i • v i := by
+    intro v c
+    simp [M]
+  have hM : Continuous M := by
+    refine continuous_finsetSum _ fun i _ ↦ ?_
+    exact (ContinuousLinearMap.smulRightL ℝ (EuclideanSpace ℝ (Fin n)) (Rn N)
+      (EuclideanSpace.proj i)).continuous.comp (continuous_apply i)
+  -- The adjoint `M v*` and the Gram operator `Γ v = M v* ∘ M v` depend continuously on `v`.
+  have hMadj : Continuous fun v ↦ ContinuousLinearMap.adjoint (M v) :=
+    ContinuousLinearMap.adjoint.continuous.comp hM
+  let Γ : (Fin n → Rn N) → (EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n)) :=
+    fun v ↦ (ContinuousLinearMap.adjoint (M v)).comp (M v)
+  have hΓ : Continuous Γ := hMadj.clm_comp hM
+  -- For an independent frame, `Γ v` is injective, hence a unit.
+  have hunit : ∀ v : Fin n → Rn N, LinearIndependent ℝ v → IsUnit (Γ v) := by
+    intro v hv
+    have hinj : Function.Injective (Γ v) := by
+      rw [injective_iff_map_eq_zero]
+      intro c hc
+      have h1 : inner ℝ (M v c) (M v c) = 0 := by
+        rw [← ContinuousLinearMap.adjoint_inner_left]
+        exact (congrArg (fun y ↦ inner ℝ y c) hc).trans (inner_zero_left _)
+      have h2 : ∑ i, c i • v i = 0 := by
+        rw [← hM_apply]
+        exact inner_self_eq_zero.1 h1
+      have h3 := Fintype.linearIndependent_iff.1 hv (fun i ↦ c i) h2
+      ext i
+      simpa using h3 i
+    rw [ContinuousLinearMap.isUnit_iff_bijective]
+    exact ⟨hinj, LinearMap.injective_iff_surjective.1 hinj⟩
+  -- For an independent frame, `M v ∘ Γ v⁻¹ ∘ M v*` is the orthogonal projection onto `span v`.
+  have hR : ∀ v : Fin n → Rn N, LinearIndependent ℝ v →
+      (M v).comp ((Ring.inverse (Γ v)).comp (ContinuousLinearMap.adjoint (M v))) =
+        frameProjection v := by
+    intro v hv
+    have hΓinv : ∀ y, Γ v (Ring.inverse (Γ v) y) = y := by
+      intro y
+      have := Ring.mul_inverse_cancel (Γ v) (hunit v hv)
+      exact congrArg (fun T : EuclideanSpace ℝ (Fin n) →L[ℝ] EuclideanSpace ℝ (Fin n) ↦ T y) this
+    ext1 x
+    symm
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · rw [Submodule.mem_span_range_iff_exists_fun]
+      exact ⟨_, (hM_apply _ _).symm⟩
+    · intro w hw
+      obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 hw
+      have hc : ∑ i, c i • v i = M v (WithLp.toLp 2 c) := (hM_apply _ _).symm
+      rw [hc, ← ContinuousLinearMap.adjoint_inner_left, map_sub]
+      have : ContinuousLinearMap.adjoint (M v)
+          (((M v).comp ((Ring.inverse (Γ v)).comp (ContinuousLinearMap.adjoint (M v)))) x) =
+          ContinuousLinearMap.adjoint (M v) x :=
+        hΓinv _
+      rw [this, sub_self, inner_zero_left]
+  -- Conclusion: ring inversion is continuous at the unit `Γ v₀`.
+  intro v₀ hv₀
+  have hinv : ContinuousAt (fun v ↦ Ring.inverse (Γ v)) v₀ := by
+    obtain ⟨u, hu⟩ := hunit v₀ hv₀
+    have h := NormedRing.inverse_continuousAt u
+    rw [hu] at h
+    exact h.comp hΓ.continuousAt
+  have hcont : ContinuousAt (fun v ↦
+      (M v).comp ((Ring.inverse (Γ v)).comp (ContinuousLinearMap.adjoint (M v)))) v₀ :=
+    hM.continuousAt.clm_comp (hinv.clm_comp hMadj.continuousAt)
+  exact hcont.continuousWithinAt.congr (fun v hv ↦ (hR v hv).symm) (hR v₀ hv₀).symm
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
