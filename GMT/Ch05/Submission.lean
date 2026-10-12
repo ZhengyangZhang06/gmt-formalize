@@ -13,6 +13,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.LinearAlgebra.Trace
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter02.AreaCritical
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 5: The Allard Regularity Theorem (pp. 103–130)
@@ -570,6 +571,49 @@ theorem rsod_c1_immersion_ball_isC1Submanifold : ∀ (n ℓ : ℕ) (G : Rn n →
     refine ((hLip.mono hball_sub).hausdorffMeasure_image_le (Nat.cast_nonneg n)).trans_lt ?_
     exact ENNReal.mul_lt_top (ENNReal.rpow_lt_top_of_nonneg (Nat.cast_nonneg n) ENNReal.coe_ne_top)
       measure_ball_lt_top
+/-- Simon Ch. 3, Lemma 1.2 (last paragraph of the proof): the range of a `C¹` map
+`G : ℝⁿ → ℝ^{n+ℓ}` lies in an `Hⁿ`-null set together with countably many `n`-dimensional `C¹`
+submanifolds of finite `Hⁿ`-measure.  The critical values `G({x | DG(x) not injective})` are
+`Hⁿ`-null (SimonGMT `area_image_criticalSet_eq_zero`); each regular point `a` has a ball
+`B̆_{σ(a)}(a)` whose image is such a submanifold (`rsod_c1_immersion_ball_isC1Submanifold`), and
+by Lindelöf countably many of these balls cover the regular points. -/
+theorem rsod_c1_range_subset_submanifold_cover : ∀ (n ℓ : ℕ) (G : Rn n → Amb n ℓ),
+    ContDiff ℝ 1 G → ∃ (N₀ : Set (Amb n ℓ)) (N : ℕ → Set (Amb n ℓ)),
+      (μHE[n] : Measure (Amb n ℓ)) N₀ = 0 ∧
+      (∀ q, IsC1Submanifold n (N q) ∧ (μHE[n] : Measure (Amb n ℓ)) (N q) < ∞) ∧
+      range G ⊆ N₀ ∪ ⋃ q, N q := by
+  intro n ℓ G hG
+  have hdiff : Differentiable ℝ G := hG.differentiable one_ne_zero
+  -- Critical values: `N₀ = G(Crit)` is `Hⁿ`-null.
+  set Crit : Set (Rn n) := {x | DifferentiableAt ℝ G x ∧ ¬ Function.Injective (fderiv ℝ G x)}
+  have hN₀ : (μHE[n] : Measure (Amb n ℓ)) (G '' Crit) = 0 := by
+    simpa only [finrank_euclideanSpace_fin] using
+      Poincare.SimonGMT.Chapter02.area_image_criticalSet_eq_zero G
+  -- Regular points: the image of a small ball around each one is a submanifold patch.
+  set Reg : Set (Rn n) := {x | Function.Injective (fderiv ℝ G x)}
+  have hcrit : ∀ x, x ∉ Reg → G x ∈ G '' Crit := fun x hx => ⟨x, ⟨hdiff x, hx⟩, rfl⟩
+  choose! σ hσ hσsub hσfin using fun a (ha : a ∈ Reg) =>
+    Submission.rsod_c1_immersion_ball_isC1Submanifold n ℓ G a hG ha
+  -- Lindelöf: countably many of the balls `B̆_{σ(a)}(a)`, `a ∈ Reg`, cover `Reg`.
+  obtain ⟨T, hTReg, hTc, hcover⟩ := TopologicalSpace.countable_cover_nhdsWithin
+    (f := fun a => ball a (σ a)) (s := Reg)
+    fun a ha => mem_nhdsWithin_of_mem_nhds (ball_mem_nhds a (hσ a ha))
+  rcases T.eq_empty_or_nonempty with hT | hT
+  · -- No regular points: every value is critical, and the patches are empty.
+    refine ⟨G '' Crit, fun _ => ∅, hN₀,
+      fun _ => ⟨fun y hy => absurd hy (notMem_empty y), by simp⟩, ?_⟩
+    rintro _ ⟨x, rfl⟩
+    refine Or.inl (hcrit x fun hx => ?_)
+    simpa [hT] using hcover hx
+  · -- Enumerate the patches `G(B̆_{σ(a)}(a))`, `a ∈ T`.
+    obtain ⟨e, rfl⟩ := hTc.exists_eq_range hT
+    refine ⟨G '' Crit, fun q => G '' ball (e q) (σ (e q)), hN₀,
+      fun q => ⟨hσsub _ (hTReg (mem_range_self q)), hσfin _ (hTReg (mem_range_self q))⟩, ?_⟩
+    rintro _ ⟨x, rfl⟩
+    by_cases hx : x ∈ Reg
+    · obtain ⟨_, ⟨q, rfl⟩, hxq⟩ := mem_iUnion₂.1 (hcover hx)
+      exact Or.inr (mem_iUnion.2 ⟨q, mem_image_of_mem G hxq⟩)
+    · exact Or.inl (hcrit x hx)
 
 end Submission
 
