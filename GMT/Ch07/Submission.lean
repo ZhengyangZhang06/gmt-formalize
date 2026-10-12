@@ -674,6 +674,69 @@ theorem Submission.dorag_ha_mv_affine_comp_deriv : ∀ (n : ℕ) (h : Euclid n �
       rw [hv, ContinuousMultilinearMap.map_smul_univ]
       simp [hL, sub_eq_add_neg, neg_smul, sq]
 
+/-- **Vanishing flux in the mean value property** (step 4 of the mean value proof, `M'(s) = 0`).
+Let `h` be `C²` and harmonic on the open set `U ⊇ B̄_R(x)`, `0 < r < R`, `g` continuous with
+`g(t) = 0` for `t ≥ r²`, and `0 < s ≤ 1`.  Take the radial potential `Ψ` (`spt Ψ ⊆ B̄_r(0)`,
+`DΨ(y)v = g(|y|²) y · v`) and `G(z) = h(x − s z)`, `C²` on `B_R(0)`.  Green's identity gives
+`∫ DΨ · DG = −∫ Ψ ΔG = 0`, since `ΔG(y) = s² Δh(x − s y) = 0` on `B_R(0)` and `Ψ = 0` off it;
+as `DG(y) = −s Dh(x − s y)`, the left side is `−s ∫ Dh(x − s y)(y) g(|y|²) dy`. -/
+theorem Submission.dorag_ha_mv_flux_zero : ∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ), IsOpen U → ContDiffOn ℝ 2 h U → (∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → ∀ (x : Euclid n) (r R : ℝ), 0 < r → r < R → closedBall x R ⊆ U → ∀ g : ℝ → ℝ, Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∀ s : ℝ, 0 < s → s ≤ 1 → ∫ y : Euclid n, fderiv ℝ h (x - s • y) y * g (‖y‖ ^ 2) = 0 := by
+  intro n U h hU hh hΔ x r R hr hrR hRU g hg hgr s hs0 hs1
+  -- the radial potential: `Ψ ∈ C¹_c`, `spt Ψ ⊆ B̄_r(0)`, `DΨ(y)v = g(|y|²) y · v`
+  obtain ⟨Ψ, hΨC, hΨc, hΨsupp, hΨd⟩ := Submission.dorag_ha_mv_radial_potential n r g hr hg hgr
+  -- `G(z) = h(x − s z)` is `C²` on `V = B_R(0)`, which `z ↦ x − s z` maps into `B̄_R(x) ⊆ U`
+  set G : Euclid n → ℝ := fun z => h (x - s • z) with hG
+  have hVmaps : ∀ z ∈ ball (0 : Euclid n) R, x - s • z ∈ U := by
+    intro z hz
+    apply hRU
+    rw [mem_closedBall, dist_eq_norm, sub_sub_cancel_left, norm_neg, norm_smul, Real.norm_eq_abs,
+      abs_of_pos hs0]
+    rw [mem_ball, dist_zero_right] at hz
+    nlinarith [norm_nonneg z]
+  have hGC : ContDiffOn ℝ 2 G (ball (0 : Euclid n) R) := by
+    have hA : ContDiff ℝ 2 (fun z : Euclid n => x - s • z) :=
+      contDiff_const.sub (contDiff_id.const_smul s)
+    exact hh.comp hA.contDiffOn (fun z hz => hVmaps z hz)
+  have hsuppV : tsupport Ψ ⊆ ball (0 : Euclid n) R := hΨsupp.trans (closedBall_subset_ball hrR)
+  -- Green's identity: `∫ Σᵢ DΨ eᵢ · DG eᵢ = −∫ Ψ ΔG`
+  have hgreen := Submission.dorag_ha_mv_green_identity n (ball (0 : Euclid n) R) G Ψ isOpen_ball
+    hGC hΨC hΨc hsuppV
+  -- `Ψ ΔG = 0`: on `V`, `ΔG(z) = s² Δh(x − s z) = 0`; off `V`, `Ψ(z) = 0`
+  have hRHS : ∀ z, Ψ z * ∑ i : Fin n, iteratedFDeriv ℝ 2 G z
+      ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := by
+    intro z
+    by_cases hz : z ∈ ball (0 : Euclid n) R
+    · have hsum : ∑ i : Fin n, iteratedFDeriv ℝ 2 G z
+          ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := by
+        simp_rw [hG, (Submission.dorag_ha_mv_affine_comp_deriv n h x s z _ _).2]
+        rw [← Finset.mul_sum, hΔ _ (hVmaps z hz), mul_zero]
+      rw [hsum, mul_zero]
+    · have : Ψ z = 0 := image_eq_zero_of_notMem_tsupport (fun h' => hz (hsuppV h'))
+      rw [this, zero_mul]
+  -- `Σᵢ (z · eᵢ) L eᵢ = L z` for linear `L`
+  have hexp : ∀ (L : Euclid n →L[ℝ] ℝ) (z : Euclid n),
+      ∑ i : Fin n, inner ℝ z (EuclideanSpace.single i (1 : ℝ)) * L (EuclideanSpace.single i 1) =
+        L z := by
+    intro L z
+    conv_rhs => rw [← (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr z]
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp [EuclideanSpace.inner_single_right, map_smul]
+  -- `Σᵢ DΨ(z)eᵢ · DG(z)eᵢ = −s Dh(x − s z)(z) g(|z|²)`, as `DG(z) = −s Dh(x − s z)`
+  have hLHS : ∀ z, ∑ i : Fin n, fderiv ℝ Ψ z (EuclideanSpace.single i (1 : ℝ)) *
+      fderiv ℝ G z (EuclideanSpace.single i (1 : ℝ)) =
+      -s * (fderiv ℝ h (x - s • z) z * g (‖z‖ ^ 2)) := by
+    intro z
+    have hGd : ∀ a, fderiv ℝ G z a = -(s * fderiv ℝ h (x - s • z) a) := fun a =>
+      (Submission.dorag_ha_mv_affine_comp_deriv n h x s z a a).1
+    simp_rw [hΨd, hGd]
+    rw [← hexp (fderiv ℝ h (x - s • z)) z, Finset.sum_mul, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    ring
+  -- so `−s ∫ Dh(x − s y)(y) g(|y|²) dy = 0`, and `s ≠ 0`
+  simp_rw [hLHS, hRHS, integral_zero, neg_zero, integral_const_mul] at hgreen
+  exact (mul_eq_zero.1 hgreen).resolve_left (neg_ne_zero.2 hs0.ne')
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
