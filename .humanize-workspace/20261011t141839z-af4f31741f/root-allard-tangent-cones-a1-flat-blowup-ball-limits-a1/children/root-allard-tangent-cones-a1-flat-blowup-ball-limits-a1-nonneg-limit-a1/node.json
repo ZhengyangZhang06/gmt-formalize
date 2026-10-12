@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.nonneg_limit-a1",
+  "parent_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1",
+  "depth": 3,
+  "title": "Ball-integral limit at a flat blow-up for β ≥ 0",
+  "statement": "Let V be an n-varifold on an open U ⊆ ℝ^N, x ∈ U, T ∈ G(N,n) and θ ∈ ℝ. Let l be a filter on a type ι and t : ι → ℝ with t_i → 0 within (0,∞) along l. Suppose that for every f ∈ C_c(ℝ^N × G(N,n)), ∫ f dV_{x,t_i} → θ ∫ f dv(T) along l, where V_{x,r} = rescaledMeasure V x r and v(T) = planeVarifoldMeasure T. Then for every continuous β : G(N,n) → ℝ with β ≥ 0,\n(∫_{B_{t_i}(x)×G(N,n)} β(S) dV(y,S)) / t_i^n → θ·ω_n·β(T) along l,\nwhere B_r(x) is the closed ball and ω_n = (unitBallVolume n).toReal.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ) {ι : Type} (l : Filter ι) (t : ι → ℝ), x ∈ U → Tendsto t l (𝓝[>] 0) → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), Tendsto (fun i ↦ ∫ z, f z ∂(rescaledMeasure V x (t i))) l (𝓝 (θ * ∫ z, f z ∂(planeVarifoldMeasure T)))) → ∀ β : C(Grassmannian N n, ℝ), (∀ S, 0 ≤ β S) → Tendsto (fun i ↦ (∫ z in closedBall x (t i) ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / t i ^ n) l (𝓝 (θ * (unitBallVolume n).toReal * β T))",
+  "lean_name": "allard_tc_fbl_nonneg_limit",
+  "depends_on": [
+    "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.plane_cutoff_limits-a1",
+    "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.rescaled_sandwich-a1",
+    "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.filter_squeeze-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.plane_cutoff_limits-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.rescaled_sandwich-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.filter_squeeze-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-flat-blowup-ball-limits-a1-nonneg-limit-a1-a1"
+}
