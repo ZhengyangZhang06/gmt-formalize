@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ba50c54d6ee46e82cfb14c57fef5deac10fa7acb590553dcf37bc76bed61b95a",
+  "git_delta": {
+    "base_commit": "463ed62426a3641a238b1d68d0a2a08800a58be8",
+    "candidate_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_vanish_off_support",
+    "diff_sha256": "3c7a41cb4409fb0106c12e10b8ded6ec37a5047d8d55d68aaff144a3205b0deb",
+    "source_sha256": "2536cfac18ecdb57bed97df0c0eae795ee0776e477c94eb92c49188b452f88bb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_vanish_off_support",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
