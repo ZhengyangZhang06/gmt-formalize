@@ -2357,316 +2357,6 @@ theorem Submission.intcpt_allard_cylinder_cluster_bound :
       exact Submission.intcpt_allard_ccb_affine_combine b c c' (((m : ℝ) + 1) * K) δ _ _ _ hb0 hc
         hk0 hδ2 hc'1 hc'2 hred (H δ ε hδ (hδle.trans (min_le_left _ _)) hε hεle μ P x Z hZm
           (fun y hy ↦ hpt y (hZs hy)) σ' τ' hσ'0 hσ'le hτ' hsepZ)
-    linarith
-  have hδ1 : δ ≤ 1 := by linarith
-  have hδ2pos : 0 < δ ^ 2 := by positivity
-  have hδ2le : δ ^ 2 ≤ δ := by rw [sq]; exact mul_le_of_le_one_left hδ.le hδ1
-  have h2δ2 : 2 * δ ^ 2 ≤ 1 := by linarith
-  have hδ4 : δ ^ 4 ≤ δ ^ 2 := by
-    have : δ ^ 4 = δ ^ 2 * δ ^ 2 := by ring
-    rw [this]; exact mul_le_of_le_one_left hδ2pos.le (hδ2le.trans hδ1)
-  have hu1 : a * δ ^ 2 ≤ 1 := by
-    have : a * δ ^ 2 = (a * δ) * δ := by ring
-    rw [this]
-    calc (a * δ) * δ ≤ 1 * δ := mul_le_mul_of_nonneg_right haδ hδ.le
-      _ ≤ 1 := by linarith
-  have hτpos : 0 < τ := lt_of_lt_of_le (by positivity) hστ
-  have hyx : ∀ y ∈ s, ‖y - x‖ < ε := fun y hys ↦ by
-    have h := hy y hys
-    rw [← h.1]; exact h.2.1
-  -- Step 1: the minimal distance `d` of `s`, attained at a pair `q`; `4τ ≤ d < 2ε`.
-  have hne : s.offDiag.Nonempty := by
-    obtain ⟨y, hys, y', hy's, hyy'⟩ := Finset.one_lt_card.1 (by omega : 1 < s.card)
-    exact ⟨(y, y'), Finset.mem_offDiag.2 ⟨hys, hy's, hyy'⟩⟩
-  obtain ⟨q, hq, hqmin⟩ := Finset.exists_min_image s.offDiag (fun q ↦ ‖q.1 - q.2‖) hne
-  obtain ⟨hq1, hq2, hq12⟩ := Finset.mem_offDiag.1 hq
-  set d : ℝ := ‖q.1 - q.2‖ with hd_def
-  have hd0 : 0 < d := norm_pos_iff.2 (sub_ne_zero.2 hq12)
-  have hdmin : ∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → d ≤ ‖y - y'‖ := fun y hys y' hy's hyy' ↦
-    hqmin (y, y') (Finset.mem_offDiag.2 ⟨hys, hy's, hyy'⟩)
-  have hd2ε : d < 2 * ε := by
-    have h1 := hyx q.1 hq1
-    have h2 := hyx q.2 hq2
-    calc d = ‖(q.1 - x) - (q.2 - x)‖ := by rw [hd_def]; congr 1; abel
-      _ ≤ ‖q.1 - x‖ + ‖q.2 - x‖ := norm_sub_le _ _
-      _ < 2 * ε := by linarith
-  have h4τd : 4 * τ ≤ d := hsep q.1 hq1 q.2 hq2 hq12
-  -- Step 2: the scale `ρ = d / (4δ²)`, with `σ ≤ ρ < δ²/2 < 1` and `0 < d/4 ≤ 1`.
-  set ρ : ℝ := d / (4 * δ ^ 2) with hρ_def
-  have hρ0 : 0 < ρ := by positivity
-  have hdρ : d = 4 * δ ^ 2 * ρ := by
-    rw [hρ_def]; field_simp
-  have hσρ : σ ≤ ρ := by
-    have h1 : δ ^ 2 * (2 * σ) ≤ δ ^ 2 * ρ := by linarith
-    have h2 : 2 * σ ≤ ρ := le_of_mul_le_mul_left h1 hδ2pos
-    linarith
-  have hρδ : ρ < δ ^ 2 / 2 := by
-    have : 4 * δ ^ 2 * ρ < 4 * δ ^ 2 * (δ ^ 2 / 2) := by
-      calc 4 * δ ^ 2 * ρ = d := hdρ.symm
-        _ < 2 * ε := hd2ε
-        _ ≤ 2 * δ ^ 4 := by linarith
-        _ = 4 * δ ^ 2 * (δ ^ 2 / 2) := by ring
-    exact lt_of_mul_lt_mul_left this (by positivity)
-  have hρ1 : ρ < 1 := by linarith
-  have hd4pos : 0 < d / 4 := by positivity
-  have hd4le : d / 4 ≤ 1 := by linarith
-  -- Step 3: (C_y) at `(d/4, σ, ρ)`, after enlarging `τ` to `d/4`; its error is at most `K δ²`.
-  have hstep3 : ∀ y ∈ s,
-      μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) /
-          ENNReal.ofReal σ ^ n ≤
-        μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) /
-          ENNReal.ofReal ρ ^ n + ENNReal.ofReal (K * δ ^ 2) := by
-    intro y hys
-    have hC := (hy y hys).2.2 (d / 4) σ ρ hd4pos hd4le hσ hσρ hρ1
-    have h2 : 2 * (d / 4) = d / 2 := by ring
-    rw [h2] at hC
-    have hsub : closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ} ⊆
-        closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 4} := by
-      refine inter_subset_inter_right _ fun z hz ↦ ?_
-      have hz' : ‖(z - y) - Grassmannian.project P (z - y)‖ < τ := hz
-      show ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 4
-      linarith
-    have herr : K * ε * ρ / (d / 4) ≤ K * δ ^ 2 := by
-      rw [div_le_iff₀ hd4pos]
-      have hKε : K * ε ≤ K * δ ^ 4 := mul_le_mul_of_nonneg_left hεδ hK
-      have : K * δ ^ 2 * (d / 4) = K * δ ^ 4 * ρ := by rw [hdρ]; ring
-      rw [this]
-      exact mul_le_mul_of_nonneg_right hKε hρ0.le
-    calc _ ≤ μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 4}) /
-          ENNReal.ofReal σ ^ n := ENNReal.div_le_div_right (measure_mono hsub) _
-      _ ≤ _ := hC
-      _ ≤ _ := add_le_add le_rfl (ENNReal.ofReal_le_ofReal herr)
-  -- Step 4: summation over `s`, with `#s · K δ² ≤ (m + 1) K δ²`.
-  have hstep4 : ∑ y ∈ s,
-      μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) /
-          ENNReal.ofReal σ ^ n ≤
-        ∑ y ∈ s, μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) /
-          ENNReal.ofReal ρ ^ n + ENNReal.ofReal (((m : ℝ) + 1) * K * δ ^ 2) := by
-    calc _ ≤ ∑ y ∈ s, (μ (closedBall y ρ ∩
-            {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) /
-          ENNReal.ofReal ρ ^ n + ENNReal.ofReal (K * δ ^ 2)) := Finset.sum_le_sum hstep3
-      _ = _ + s.card • ENNReal.ofReal (K * δ ^ 2) := by
-          rw [Finset.sum_add_distrib, Finset.sum_const]
-      _ ≤ _ := by
-          refine add_le_add le_rfl ?_
-          rw [nsmul_eq_mul, ← ENNReal.ofReal_natCast, ← ENNReal.ofReal_mul (Nat.cast_nonneg _)]
-          refine ENNReal.ofReal_le_ofReal ?_
-          have hcard : (s.card : ℝ) ≤ (m : ℝ) + 1 := by exact_mod_cast hsm
-          have hKδ : 0 ≤ K * δ ^ 2 := by positivity
-          calc (s.card : ℝ) * (K * δ ^ 2) ≤ ((m : ℝ) + 1) * (K * δ ^ 2) :=
-                mul_le_mul_of_nonneg_right hcard hKδ
-            _ = ((m : ℝ) + 1) * K * δ ^ 2 := by ring
-  -- Step 5: clusters from (CS) at scale `d`, with `S ≤ (10 (m + 1))^{m + 1} d = a δ² ρ`.
-  obtain ⟨Z, S, hZs, hZcard, hS0, hSd, hcov, hZsep⟩ :=
-    hCS s d hs2 hd0 hdmin ⟨q.1, hq1, q.2, hq2, hq12, le_refl _⟩
-  have hcardpow : (10 * (s.card : ℝ)) ^ s.card ≤ (10 * ((m : ℝ) + 1)) ^ (m + 1) := by
-    have hcard : (s.card : ℝ) ≤ (m : ℝ) + 1 := by exact_mod_cast hsm
-    calc (10 * (s.card : ℝ)) ^ s.card ≤ (10 * ((m : ℝ) + 1)) ^ s.card :=
-          pow_le_pow_left₀ (mul_nonneg (by norm_num) (Nat.cast_nonneg _)) (by linarith) _
-      _ ≤ _ := pow_le_pow_right₀ hm1 hsm
-  have hSu : S ≤ a * δ ^ 2 * ρ := by
-    calc S ≤ (10 * (s.card : ℝ)) ^ s.card * d := hSd
-      _ ≤ (10 * ((m : ℝ) + 1)) ^ (m + 1) * d := mul_le_mul_of_nonneg_right hcardpow hd0.le
-      _ = a * δ ^ 2 * ρ := by rw [hdρ, ha_def]; ring
-  -- Step 6: grouping (the accepted sibling `cylinder_grouping`) with `u = a δ²`.
-  have hpx : ∀ y ∈ s, Grassmannian.project P y = x := fun y hys ↦ (hy y hys).1
-  have hgroup := Submission.intcpt_allard_ccb_cylinder_grouping N n μ P x s Z d ρ S (a * δ ^ 2)
-    hpx hZs hd0 hdmin hρ0 hS0 hSu hu1 hcov
-  -- Step 7: the witnesses `Z`, `σ' = ρ + S ≤ 2ρ < δ²` and `τ' = d/2 + S`.
-  refine ⟨Z, ρ + S, d / 2 + S, hZs, by omega, by linarith, ?_, ?_, ?_, ?_⟩
-  · have hSρ : a * δ ^ 2 * ρ ≤ ρ := mul_le_of_le_one_left hρ0.le hu1
-    linarith
-  · have h1 : 2 * δ ^ 2 * S ≤ S := mul_le_of_le_one_left hS0 h2δ2
-    have h2 : 2 * δ ^ 2 * (ρ + S) = d / 2 + 2 * δ ^ 2 * S := by rw [hdρ]; ring
-    rw [h2]
-    linarith
-  · intro z hz z' hz' hzz'
-    have := hZsep z hz z' hz' hzz'
-    linarith
-  -- Step 8: chain steps 4 and 6.
-  have hcoef : (1 + (2 ^ n - 1) * (4 * (10 * ((m : ℝ) + 1)) ^ (m + 1)) * δ ^ 2) =
-      1 + (2 ^ n - 1) * (a * δ ^ 2) := by rw [ha_def]; ring
-  rw [hcoef]
-  calc _ ≤ _ := hstep4
-    _ ≤ _ := add_le_add hgroup le_rfl
-
-/-- Composing two affine bounds in `[0,∞]` (Simon Ch. 8, proof of 5.10 (8), recombination of the
-induction constants): if `X ≤ (1 + b δ²) Y + k δ²` and `Y ≤ (1 + c δ²) M + c δ²` with `b, c, k ≥ 0`,
-`δ² ≤ 1`, `b + c + b c ≤ c'` and `(1 + b) c + k ≤ c'`, then `X ≤ (1 + c' δ²) M + c' δ²`
-(`M = ∞` allowed). -/
-theorem Submission.intcpt_allard_ccb_affine_combine :
-    ∀ (b c c' k δ : ℝ) (X Y M : ℝ≥0∞), 0 ≤ b → 0 ≤ c → 0 ≤ k → δ ^ 2 ≤ 1 → b + c + b * c ≤ c' → (1 + b) * c + k ≤ c' → X ≤ ENNReal.ofReal (1 + b * δ ^ 2) * Y + ENNReal.ofReal (k * δ ^ 2) → Y ≤ ENNReal.ofReal (1 + c * δ ^ 2) * M + ENNReal.ofReal (c * δ ^ 2) → X ≤ ENNReal.ofReal (1 + c' * δ ^ 2) * M + ENNReal.ofReal (c' * δ ^ 2) := by
-  intro b c c' k δ X Y M hb hc hk hδ hbc hbck hX hY
-  -- Step 1: `0 ≤ δ² ≤ 1`, so `b c δ⁴ ≤ b c δ²`.
-  have hδ0 : 0 ≤ δ ^ 2 := sq_nonneg δ
-  have hδ4 : b * c * (δ ^ 2 * δ ^ 2) ≤ b * c * δ ^ 2 :=
-    mul_le_mul_of_nonneg_left (mul_le_of_le_one_left hδ0 hδ) (mul_nonneg hb hc)
-  have hp : 0 ≤ 1 + b * δ ^ 2 := by positivity
-  -- Step 2: `(1 + b δ²)(1 + c δ²) ≤ 1 + (b + c + b c) δ² ≤ 1 + c' δ²`.
-  have h1 : (1 + b * δ ^ 2) * (1 + c * δ ^ 2) ≤ 1 + c' * δ ^ 2 := by
-    nlinarith [mul_le_mul_of_nonneg_right hbc hδ0]
-  -- Step 3: `(1 + b δ²) c δ² + k δ² ≤ ((1 + b) c + k) δ² ≤ c' δ²`.
-  have h2 : (1 + b * δ ^ 2) * (c * δ ^ 2) + k * δ ^ 2 ≤ c' * δ ^ 2 := by
-    nlinarith [mul_le_mul_of_nonneg_right hbck hδ0]
-  -- Steps 4–5: substitute the bound on `Y`, distribute in `[0,∞]`, and compare coefficients.
-  calc X ≤ ENNReal.ofReal (1 + b * δ ^ 2) * Y + ENNReal.ofReal (k * δ ^ 2) := hX
-    _ ≤ ENNReal.ofReal (1 + b * δ ^ 2) *
-          (ENNReal.ofReal (1 + c * δ ^ 2) * M + ENNReal.ofReal (c * δ ^ 2)) +
-          ENNReal.ofReal (k * δ ^ 2) := by gcongr
-    _ = ENNReal.ofReal ((1 + b * δ ^ 2) * (1 + c * δ ^ 2)) * M +
-          ENNReal.ofReal ((1 + b * δ ^ 2) * (c * δ ^ 2) + k * δ ^ 2) := by
-      rw [ENNReal.ofReal_add (mul_nonneg hp (mul_nonneg hc hδ0)) (mul_nonneg hk hδ0),
-        ENNReal.ofReal_mul hp, ENNReal.ofReal_mul hp]
-      ring
-    _ ≤ ENNReal.ofReal (1 + c' * δ ^ 2) * M + ENNReal.ofReal (c' * δ ^ 2) := by gcongr
-
-/-- Cluster selection (Simon Ch. 8, proof of 5.10 (8)): if two distinct points of a finite set `s`
-with `#s ≥ 2` are at distance `≤ d`, there are centres `Z ⊆ s` with `#Z < #s` and a radius
-`0 ≤ S ≤ (10 #s)^{#s} d` such that every `y ∈ s` is within `S` of `Z` and distinct centres are at
-least `2d + 4S` apart.  Greedy merging: take an admissible pair (`Z ⊆ s` nonempty, `#Z < #s`,
-`S`-covering, `S ≤ d (5^{#s - #Z} - 1) / 2`) with `#Z` minimal; two centres closer than `2d + 4S`
-would give the admissible pair `(Z ∖ {z'}, 2d + 5S)`. -/
-theorem Submission.intcpt_allard_cluster_selection :
-    ∀ (N : ℕ) (s : Finset (Euclidean N)) (d : ℝ), 2 ≤ s.card → 0 < d → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → d ≤ ‖y - y'‖) → (∃ y ∈ s, ∃ y' ∈ s, y ≠ y' ∧ ‖y - y'‖ ≤ d) → ∃ (Z : Finset (Euclidean N)) (S : ℝ), Z ⊆ s ∧ Z.card < s.card ∧ 0 ≤ S ∧ S ≤ (10 * (s.card : ℝ)) ^ s.card * d ∧ (∀ y ∈ s, ∃ z ∈ Z, ‖y - z‖ ≤ S) ∧ ∀ z ∈ Z, ∀ z' ∈ Z, z ≠ z' → 2 * d + 4 * S ≤ ‖z - z'‖ := by
-  intro N s d hk hd _ hclose
-  classical
-  -- Step 1: admissible pairs `(Z, S)` with `#Z = m`.
-  let Adm : ℕ → Prop := fun m ↦ ∃ (Z : Finset (Euclidean N)) (S : ℝ), Z ⊆ s ∧ Z.Nonempty ∧
-    Z.card = m ∧ m < s.card ∧ 0 ≤ S ∧ (∀ y ∈ s, ∃ z ∈ Z, ‖y - z‖ ≤ S) ∧
-    S ≤ d * ((5 : ℝ) ^ (s.card - m) - 1) / 2
-  -- Step 2: `(s ∖ {y₁}, d)` is admissible.
-  obtain ⟨y₀, hy₀, y₁, hy₁, hne, hdist⟩ := hclose
-  have hstart : Adm (s.card - 1) := by
-    refine ⟨s.erase y₁, d, Finset.erase_subset _ _, ⟨y₀, Finset.mem_erase.2 ⟨hne, hy₀⟩⟩,
-      Finset.card_erase_of_mem hy₁, by omega, hd.le, fun y hy ↦ ?_, ?_⟩
-    · by_cases hyy : y = y₁
-      · rw [hyy]
-        exact ⟨y₀, Finset.mem_erase.2 ⟨hne, hy₀⟩, by rw [norm_sub_rev]; exact hdist⟩
-      · exact ⟨y, Finset.mem_erase.2 ⟨hyy, hy⟩, by simpa using hd.le⟩
-    · rw [show s.card - (s.card - 1) = 1 by omega]
-      linarith
-  have hex : ∃ m, Adm m := ⟨_, hstart⟩
-  -- Step 3: an admissible pair with `#Z` minimal.
-  obtain ⟨Z, S, hZs, ⟨z₀, hz₀⟩, hZcard, hmk, hS0, hcov, hSb⟩ := Nat.find_spec hex
-  have hm1 : 1 ≤ Nat.find hex := hZcard ▸ Finset.card_pos.2 ⟨z₀, hz₀⟩
-  -- Step 4: separation, since otherwise `(Z ∖ {z'}, 2d + 5S)` is admissible with `#Z - 1` points.
-  have hsep : ∀ z ∈ Z, ∀ z' ∈ Z, z ≠ z' → 2 * d + 4 * S ≤ ‖z - z'‖ := by
-    intro z hz z' hz' hzz'
-    refine le_of_not_gt fun hlt ↦ ?_
-    have hadm : Adm (Nat.find hex - 1) := by
-      refine ⟨Z.erase z', 2 * d + 5 * S, (Finset.erase_subset _ _).trans hZs,
-        ⟨z, Finset.mem_erase.2 ⟨hzz', hz⟩⟩, by rw [Finset.card_erase_of_mem hz', hZcard],
-        by omega, by linarith, fun y hy ↦ ?_, ?_⟩
-      · obtain ⟨z'', hz'', hyz''⟩ := hcov y hy
-        by_cases h : z'' = z'
-        · rw [h] at hyz''
-          refine ⟨z, Finset.mem_erase.2 ⟨hzz', hz⟩, ?_⟩
-          calc ‖y - z‖ = ‖(y - z') + (z' - z)‖ := by rw [sub_add_sub_cancel]
-            _ ≤ ‖y - z'‖ + ‖z' - z‖ := norm_add_le _ _
-            _ ≤ 2 * d + 5 * S := by rw [norm_sub_rev z' z]; linarith
-        · exact ⟨z'', Finset.mem_erase.2 ⟨h, hz''⟩, by linarith⟩
-      · rw [show s.card - (Nat.find hex - 1) = (s.card - Nat.find hex) + 1 by omega, pow_succ]
-        linarith
-    have := Nat.find_min' hex hadm
-    omega
-  -- Step 5: conclusion, with `S ≤ d (5^{#s - #Z} - 1) / 2 ≤ 5^{#s} d ≤ (10 #s)^{#s} d`.
-  refine ⟨Z, S, hZs, hZcard ▸ hmk, hS0, ?_, hcov, hsep⟩
-  have h5 : (5 : ℝ) ^ (s.card - Nat.find hex) ≤ 5 ^ s.card :=
-    pow_le_pow_right₀ (by norm_num) (Nat.sub_le _ _)
-  have h10 : (5 : ℝ) ^ s.card ≤ (10 * (s.card : ℝ)) ^ s.card := by
-    refine pow_le_pow_left₀ (by norm_num) ?_ _
-    have : (2 : ℝ) ≤ s.card := by exact_mod_cast hk
-    linarith
-  have hpos : (0 : ℝ) ≤ 5 ^ s.card := by positivity
-  nlinarith
-
-/-- **Simon Ch. 8, proof of 5.10, printed (8), pp. 222–223** (child `cylinder_cluster_bound` of
-`allard_lemma`): at points `y` of one fibre `p_P(y) = x` with `|y - p_P(y)| < ε`, the monotonicity
-(M_y) and the cylinder comparison (C_y) give
-`Σ_{y ∈ s} μ(U^τ_σ(y)) / σ^n ≤ (1 + c δ²) μ(B_1(x)) + c δ²` whenever `#s ≤ m`, `σ ≤ δ²`,
-`2δ²σ ≤ τ` and `4τ ≤ |y - y'|` for distinct points.  The proof is the book's induction on the
-number of points, with the constants defined by recursion on `m`: `c_0 = 0`, `δ_0 = 1/2` and, for
-`a = 4(10(m+1))^{m+1}`, `b = (2^n - 1)a`,
-`c_{m+1} = max{2^{n+2}, b + c_m + b c_m, (1 + b)c_m + (m+1)K}`, `δ_{m+1} = min{δ_m, 1/a}`.
-At most one point is the monotonicity bound (`intcpt_allard_ccb_one_point_ball_bound`, as
-`U^τ_σ(y) ⊆ B_σ(y)`).  For at least two points, `intcpt_allard_ccb_reduction_step` (the
-grouping estimate `intcpt_allard_ccb_cylinder_grouping` applied to the clusters of
-`intcpt_allard_cluster_selection`) passes to `Z ⊆ s` with `#Z ≤ m` and admissible scales
-`(σ', τ')` at the cost `Σ_s ≤ (1 + bδ²) Σ_Z + (m+1)Kδ²`; the induction hypothesis bounds `Σ_Z`,
-and `intcpt_allard_ccb_affine_combine` composes the two affine bounds in `[0, ∞]`. -/
-theorem Submission.intcpt_allard_cylinder_cluster_bound :
-    ∀ (N n : ℕ) (K : ℝ) (m : ℕ), 0 ≤ K → ∃ c δm : ℝ, 0 ≤ c ∧ 0 < δm ∧ ∀ δ ε : ℝ, 0 < δ → δ ≤ δm → 0 < ε → ε ≤ δ ^ 4 → ∀ (μ : Measure (Euclidean N)) (P : Grassmannian N n) (x : Euclidean N) (s : Finset (Euclidean N)), s.card ≤ m → (∀ y ∈ s, Grassmannian.project P y = x ∧ ‖y - Grassmannian.project P y‖ < ε ∧ MonotoneOn (fun r : ℝ ↦ ENNReal.ofReal (Real.exp (ε * r)) * μ (closedBall y r) / ENNReal.ofReal r ^ n) (Ioo 0 1) ∧ ∀ τ σ ρ : ℝ, 0 < τ → τ ≤ 1 → 0 < σ → σ ≤ ρ → ρ < 1 → μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal (K * ε * ρ / τ)) → ∀ σ τ : ℝ, 0 < σ → σ ≤ δ ^ 2 → 2 * δ ^ 2 * σ ≤ τ → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → 4 * τ ≤ ‖y - y'‖) → ∑ y ∈ s, μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ ENNReal.ofReal (1 + c * δ ^ 2) * μ (closedBall x 1) + ENNReal.ofReal (c * δ ^ 2) := by
-  intro N n K m hK
-  induction m with
-  | zero =>
-    -- `#s ≤ 0` forces `s = ∅`, so the sum vanishes.
-    refine ⟨0, 1 / 2, le_rfl, by norm_num, ?_⟩
-    intro δ ε _ _ _ _ μ P x s hs _ σ τ _ _ _ _
-    rw [Finset.card_eq_zero.mp (Nat.le_zero.mp hs)]
-    simp
-  | succ m ih =>
-    obtain ⟨c, δm, hc, hδm, H⟩ := ih
-    -- The constants: `a = 4(10(m+1))^{m+1} ≥ 40`, `b = (2^n - 1)a ≥ 0`,
-    -- `c' = max{2^{n+2}, b + c + bc, (1 + b)c + (m+1)K}` and `δ' = min{δm, 1/a}`.
-    obtain ⟨a, ha⟩ : ∃ a : ℝ, 4 * (10 * ((m : ℝ) + 1)) ^ (m + 1) = a := ⟨_, rfl⟩
-    obtain ⟨b, hb⟩ : ∃ b : ℝ, (2 ^ n - 1) * a = b := ⟨_, rfl⟩
-    obtain ⟨c', hc'⟩ : ∃ c' : ℝ,
-        max (2 ^ (n + 2)) (max (b + c + b * c) ((1 + b) * c + ((m : ℝ) + 1) * K)) = c' :=
-      ⟨_, rfl⟩
-    have ha40 : 40 ≤ a := by
-      have hm : (0 : ℝ) ≤ m := Nat.cast_nonneg m
-      have h10 : (10 : ℝ) ≤ 10 * ((m : ℝ) + 1) := by linarith
-      have hpow : 10 * ((m : ℝ) + 1) ≤ (10 * ((m : ℝ) + 1)) ^ (m + 1) :=
-        le_self_pow₀ (by linarith) (Nat.succ_ne_zero m)
-      rw [← ha]
-      linarith
-    have hb0 : 0 ≤ b := by
-      rw [← hb]
-      exact mul_nonneg (sub_nonneg.mpr (one_le_pow₀ (by norm_num))) (by linarith)
-    have hk0 : 0 ≤ ((m : ℝ) + 1) * K := mul_nonneg (by positivity) hK
-    have h2n : (2 : ℝ) ^ (n + 2) ≤ c' := by
-      rw [← hc']
-      exact le_max_left _ _
-    have hc'1 : b + c + b * c ≤ c' := by
-      rw [← hc']
-      exact (le_max_left _ _).trans (le_max_right _ _)
-    have hc'2 : (1 + b) * c + ((m : ℝ) + 1) * K ≤ c' := by
-      rw [← hc']
-      exact (le_max_right _ _).trans (le_max_right _ _)
-    refine ⟨c', min δm (1 / a), (by positivity : (0 : ℝ) ≤ 2 ^ (n + 2)).trans h2n,
-      lt_min hδm (one_div_pos.mpr (by linarith)), ?_⟩
-    intro δ ε hδ hδle hε hεle μ P x s hs hpt σ τ hσ hσle hτ hsep
-    have hδa : δ ≤ 1 / a := hδle.trans (min_le_right _ _)
-    have hδhalf : δ ≤ 1 / 2 := hδa.trans (one_div_le_one_div_of_le (by norm_num) (by linarith))
-    have hδ2 : δ ^ 2 ≤ 1 := pow_le_one₀ hδ.le (by linarith)
-    rcases Nat.lt_or_ge s.card 2 with hs2 | hs2
-    · -- At most one point: `U^τ_σ(y) ⊆ B_σ(y)` and the one-point monotonicity bound.
-      rcases s.eq_empty_or_nonempty with rfl | ⟨y, hy⟩
-      · simp
-      have hsy : s = {y} := Finset.eq_singleton_iff_unique_mem.mpr
-        ⟨hy, fun y' hy' ↦ Finset.card_le_one.mp (by omega) y' hy' y hy⟩
-      obtain ⟨hpy, hyε, hmono, -⟩ := hpt y hy
-      rw [hsy, Finset.sum_singleton]
-      calc μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) /
-            ENNReal.ofReal σ ^ n
-          ≤ μ (closedBall y σ) / ENNReal.ofReal σ ^ n :=
-            ENNReal.div_le_div_right (measure_mono inter_subset_left) _
-        _ ≤ ENNReal.ofReal (1 + 2 ^ (n + 2) * δ ^ 2) * μ (closedBall x 1) :=
-            Submission.intcpt_allard_ccb_one_point_ball_bound N n μ x y δ ε σ hδ hδhalf hε hεle
-              (by rw [← hpy]; exact hyε) hmono hσ hσle
-        _ ≤ ENNReal.ofReal (1 + c' * δ ^ 2) * μ (closedBall x 1) := by gcongr
-        _ ≤ _ := le_self_add
-    · -- At least two points: one reduction step to `Z ⊆ s` with `#Z ≤ m`, the induction
-      -- hypothesis on `Z` at the scales `(σ', τ')`, and the composition of the two bounds.
-      obtain ⟨Z, σ', τ', hZs, hZm, hσ'0, hσ'le, hτ', hsepZ, hred⟩ :=
-        Submission.intcpt_allard_ccb_reduction_step N n K m
-          (Submission.intcpt_allard_cluster_selection N) hK δ ε hδ (by rw [ha]; exact hδa) hε
-          hεle μ P x s hs2 hs (fun y hy ↦ ⟨(hpt y hy).1, (hpt y hy).2.1, (hpt y hy).2.2.2⟩)
-          σ τ hσ hσle hτ hsep
-      rw [ha, hb] at hred
-      exact Submission.intcpt_allard_ccb_affine_combine b c c' (((m : ℝ) + 1) * K) δ _ _ _ hb0 hc
-        hk0 hδ2 hc'1 hc'2 hred (H δ ε hδ (hδle.trans (min_le_left _ _)) hε hεle μ P x Z hZm
-          (fun y hy ↦ hpt y (hZs hy)) σ' τ' hσ'0 hσ'le hτ' hsepZ)
 
 /-- **Simon Ch. 8, proof of 5.10, printed (6) and (8) (p. 222), and Remark 5.11(∗) (p. 220)**
 (child `fibre_density_sum_bound` of `allard_lemma`): uniformly over fibres with at most `M`
@@ -2756,6 +2446,79 @@ theorem Submission.intcpt_allard_fibre_density_sum_bound :
         P y (Θ y) ε KC hε0.le hexp hKC0 (hpt y hy).2.2.1 (hpt y hy).2.2.2⟩)
       (hclu δ ε hδ0 hδM hε0 hεδ W.weight P x s hcard fun y hy ↦
         ⟨(hs y hy).1, (hs y hy).2.2.2.2.1, (hpt y hy).2.1, (hpt y hy).2.2.2⟩)
+
+/-- **Simon Ch. 8, Lemma 5.10 and Remark 5.11, pp. 219–223** (child `allard_lemma` of
+`integral_compactness`): for `0 < δ ≤ δ̄` and `0 < ε ≤ δ⁴`, if `μ_W(B°_3(0)) ≤ Λ`,
+`‖δW‖(B°_3(0)) < ε²` and `∫_{B°_3(0) × G} ‖p_S - p_P‖ dW < ε²`, then (a) the points of
+`B_2(0) ∩ spt μ_W` where printed (1) or (2) fails have `μ_W`-measure at most `c₀ ε`
+(`intcpt_allard_bad_set_bound`), and (b) on a fibre `p_P(y) = x`, `|x| < 1`, the points satisfying
+(1) and (2) with `|y - p_P(y)| < ε` and `Θ^n(μ_W, y) ≥ 1` have
+`Σ_y Θ^n(μ_W, y) ≤ (1 + δ) ω_n^{-1} μ_W(B_1(x)) + δ`.  For (b), Remark 5.11: with
+`m₀ = ⌈(3/2) Λ / ω_n⌉ + 1` and `δ̄ = min{δ'_{m₀}, 1/2}` (`intcpt_allard_fibre_density_sum_bound`
+with `M = m₀`), `m₀` such points would give `m₀ ≤ Σ Θ ≤ (3/2) Λ / ω_n + 1/2 < m₀`, as
+`B_1(x) ⊆ B°_3(0)`; so a fibre has at most `m₀` of them and the fibre bound applies.  Integrality
+of `W` is not used. -/
+theorem Submission.intcpt_allard_integrality_lemma :
+    MonotonicityFormula → ∀ (N n : ℕ) (Λ : ℝ), 1 ≤ n → 1 ≤ Λ → ∃ δbar c₀ : ℝ, 0 < δbar ∧ 0 ≤ c₀ ∧ ∀ δ ε : ℝ, 0 < δ → δ ≤ δbar → 0 < ε → ε ≤ δ ^ 4 → ∀ (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n), ball (0 : Euclidean N) 3 ⊆ U → W.HasLocallyBoundedFirstVariation → W.weight (ball (0 : Euclidean N) 3) ≤ ENNReal.ofReal Λ → variationMeasure W (ball (0 : Euclidean N) 3) < ENNReal.ofReal (ε ^ 2) → (∫⁻ z in ball (0 : Euclidean N) 3 ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) < ENNReal.ofReal (ε ^ 2) → W.weight {y | y ∈ closedBall (0 : Euclidean N) 2 ∧ y ∈ W.weight.support ∧ ¬ ((∀ ρ : ℝ, 0 < ρ → ρ < 1 → variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)) ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → (∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * ρ ^ n)))} ≤ ENNReal.ofReal (c₀ * ε) ∧ ∀ (x : Euclidean N) (s : Finset (Euclidean N)) (Θ : Euclidean N → ℝ≥0∞), x ∈ P.plane → ‖x‖ < 1 → (∀ y ∈ s, Grassmannian.project P y = x ∧ y ∈ closedBall (0 : Euclidean N) 2 ∧ y ∈ W.weight.support ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)) ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → (∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * ρ ^ n)) ∧ ‖y - Grassmannian.project P y‖ < ε ∧ HasDensity n W.weight y (Θ y) ∧ 1 ≤ Θ y) → ∑ y ∈ s, Θ y ≤ ENNReal.ofReal (1 + δ) * W.weight (closedBall x 1) / unitBallVolume n + ENNReal.ofReal δ := by
+  intro hMF N n Λ _ hΛ
+  -- Step 0: `c₀` from `bad_set_bound`; `ω := ω_n ∈ (0, ∞)`; `m₀ = ⌈(3/2) Λ / ω⌉ + 1`; `δ'` from
+  -- `fibre_density_sum_bound` with `M = m₀`; and `δ̄ = min{δ', 1/2}`.
+  have hΛ0 : 0 ≤ Λ := zero_le_one.trans hΛ
+  obtain ⟨c₀, hc₀, hbad⟩ := Submission.intcpt_allard_bad_set_bound hMF N n Λ hΛ
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  obtain ⟨ω, hω_def⟩ : ∃ ω, (unitBallVolume n).toReal = ω := ⟨_, rfl⟩
+  have hω : 0 < ω := hω_def ▸ ENNReal.toReal_pos hω0 hωtop
+  have hωW : ENNReal.ofReal ω = unitBallVolume n := hω_def ▸ ENNReal.ofReal_toReal hωtop
+  obtain ⟨m₀, hm₀⟩ : ∃ m₀ : ℕ, ⌈3 / 2 * Λ / ω⌉₊ + 1 = m₀ := ⟨_, rfl⟩
+  obtain ⟨δ', hδ'0, hfib⟩ := Submission.intcpt_allard_fibre_density_sum_bound hMF N n Λ hΛ m₀
+  refine ⟨min δ' (1 / 2), c₀, lt_min hδ'0 (by norm_num), hc₀, ?_⟩
+  intro δ ε hδ0 hδle hε0 hεδ U W P hU hW hWΛ hvar htilt
+  have hδ' : δ ≤ δ' := hδle.trans (min_le_left _ _)
+  have hδ2 : δ ≤ 1 / 2 := hδle.trans (min_le_right _ _)
+  have hε1 : ε ≤ 1 := hεδ.trans (pow_le_one₀ hδ0.le (by linarith))
+  -- Step 1: (a) is `bad_set_bound` (`ε ≤ δ⁴ ≤ 1`).
+  refine ⟨hbad ε hε0 hε1 U W P hU hW hWΛ hvar htilt, ?_⟩
+  intro x s Θ _ hx hs
+  -- Step 2: `fibre_density_sum_bound` applies to every `t ⊆ s` with at most `m₀` points.
+  have hsub : ∀ t ⊆ s, t.card ≤ m₀ → ∑ y ∈ t, Θ y ≤
+      ENNReal.ofReal (1 + δ) * W.weight (closedBall x 1) / unitBallVolume n + ENNReal.ofReal δ := by
+    intro t hts htm
+    refine hfib δ ε hδ0 hδ' hε0 hεδ U W P hU hW hWΛ x t Θ htm fun y hy ↦ ?_
+    obtain ⟨h1, h2, -, h4, h5, h6, h7, -⟩ := hs y (hts hy)
+    exact ⟨h1, h2, h4, h5, h6, h7⟩
+  -- Step 3 (Remark 5.11): `B_1(x) ⊆ B°_3(0)`, so the right side is at most
+  -- `(3/2) Λ / ω_n + 1/2 < m₀`.
+  have hB : ENNReal.ofReal (1 + δ) * W.weight (closedBall x 1) / unitBallVolume n +
+      ENNReal.ofReal δ < m₀ := by
+    have hμ : W.weight (closedBall x 1) ≤ ENNReal.ofReal Λ :=
+      (measure_mono (closedBall_subset_ball' (by rw [dist_zero_right]; linarith))).trans hWΛ
+    have hceil : 3 / 2 * Λ / ω ≤ ⌈3 / 2 * Λ / ω⌉₊ := Nat.le_ceil _
+    calc ENNReal.ofReal (1 + δ) * W.weight (closedBall x 1) / unitBallVolume n + ENNReal.ofReal δ
+        ≤ ENNReal.ofReal (3 / 2) * ENNReal.ofReal Λ / ENNReal.ofReal ω +
+            ENNReal.ofReal (1 / 2) := by
+          rw [hωW]
+          gcongr
+          all_goals first | exact hμ | linarith
+      _ = ENNReal.ofReal (3 / 2 * Λ / ω + 1 / 2) := by
+          rw [← ENNReal.ofReal_mul (by norm_num), ← ENNReal.ofReal_div_of_pos hω,
+            ENNReal.ofReal_add (div_nonneg (mul_nonneg (by norm_num) hΛ0) hω.le) (by norm_num)]
+      _ < ENNReal.ofReal m₀ := by
+          have hm₀pos : (0 : ℝ) < m₀ := by rw [← hm₀]; positivity
+          rw [ENNReal.ofReal_lt_ofReal_iff hm₀pos, ← hm₀]
+          push_cast
+          linarith
+      _ = m₀ := ENNReal.ofReal_natCast m₀
+  -- Step 4: at most `m₀` points, since `m₀` of them would give `m₀ ≤ Σ Θ < m₀`.
+  by_cases hcard : s.card ≤ m₀
+  · exact hsub s subset_rfl hcard
+  · exfalso
+    obtain ⟨t, hts, htcard⟩ := Finset.exists_subset_card_eq (show m₀ ≤ s.card by omega)
+    have hlow : (m₀ : ℝ≥0∞) ≤ ∑ y ∈ t, Θ y := by
+      calc (m₀ : ℝ≥0∞) = ∑ _y ∈ t, (1 : ℝ≥0∞) := by simp [htcard]
+        _ ≤ ∑ y ∈ t, Θ y := Finset.sum_le_sum fun y hy ↦ (hs y (hts hy)).2.2.2.2.2.2.2
+    exact absurd (hlow.trans (hsub t hts htcard.le)) (not_le.2 hB)
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
