@@ -434,6 +434,81 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Jacobi's formula for an entrywise-differentiable matrix family** (Simon Ch. 2, 5.2–5.3;
+used for `∂_t J = div_M X` in Ch. 4, 2.2). If every entry `s ↦ A(s)_{ij}` has derivative `A'_{ij}`
+at `t`, `|A(t)_{ij}| ≤ M` and `|A'_{ij}| ≤ M'`, then `s ↦ det A(s)` has a derivative `D` at `t`
+with `|D| ≤ N! N M' M^{N-1}`, and `D = trace A'` when `A(t) = I`. -/
+theorem Submission.ts_fv_hasDerivAt_det_of_entries : ∀ (N : ℕ) (A : ℝ → Matrix (Fin N) (Fin N) ℝ) (A' : Matrix (Fin N) (Fin N) ℝ) (t M M' : ℝ), (∀ i j, HasDerivAt (fun s ↦ A s i j) (A' i j) t) → (∀ i j, |A t i j| ≤ M) → (∀ i j, |A' i j| ≤ M') → ∃ D : ℝ, HasDerivAt (fun s ↦ (A s).det) D t ∧ |D| ≤ (N.factorial : ℝ) * N * M' * M ^ (N - 1) ∧ (A t = 1 → D = A'.trace) := by
+  intro N A A' t M M' hA hM hM'
+  -- `D = ∑_σ ε(σ) ∑_k (∏_{i ≠ k} A(t)_{σ(i) i}) A'_{σ(k) k}`, the derivative of the Leibniz
+  -- formula.
+  refine ⟨∑ σ : Equiv.Perm (Fin N), ((Equiv.Perm.sign σ : ℤ) : ℝ) *
+      ∑ k : Fin N, (∏ i ∈ Finset.univ.erase k, A t (σ i) i) * A' (σ k) k, ?_, ?_, ?_⟩
+  · -- Product rule on each Leibniz term, then constant multiples and the finite sum.
+    have hdet : (fun s ↦ (A s).det) = fun s ↦ ∑ σ : Equiv.Perm (Fin N),
+        ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ i, A s (σ i) i := by
+      funext s
+      exact Matrix.det_apply' (A s)
+    rw [hdet]
+    refine HasDerivAt.fun_sum fun σ _ ↦ HasDerivAt.const_mul _ ?_
+    simpa only [smul_eq_mul] using
+      HasDerivAt.fun_finsetProd (u := Finset.univ) (f := fun i s ↦ A s (σ i) i)
+        (f' := fun i ↦ A' (σ i) i) fun i _ ↦ hA (σ i) i
+  · -- Each `∏_{i ≠ k}` has `N - 1` factors bounded by `M`; there are `N` indices `k` and `N!`
+    -- permutations `σ`.
+    calc |∑ σ : Equiv.Perm (Fin N), ((Equiv.Perm.sign σ : ℤ) : ℝ) *
+          ∑ k : Fin N, (∏ i ∈ Finset.univ.erase k, A t (σ i) i) * A' (σ k) k|
+        ≤ ∑ σ : Equiv.Perm (Fin N), |((Equiv.Perm.sign σ : ℤ) : ℝ) *
+          ∑ k : Fin N, (∏ i ∈ Finset.univ.erase k, A t (σ i) i) * A' (σ k) k| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _σ : Equiv.Perm (Fin N), ∑ _k : Fin N, M' * M ^ (N - 1) := by
+          refine Finset.sum_le_sum fun σ _ ↦ ?_
+          rw [abs_mul, abs_unit_intCast, one_mul]
+          refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k _ ↦ ?_)
+          have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM k k)
+          have hprod : ∏ i ∈ Finset.univ.erase k, |A t (σ i) i| ≤ M ^ (N - 1) := by
+            calc ∏ i ∈ Finset.univ.erase k, |A t (σ i) i|
+                ≤ ∏ _i ∈ Finset.univ.erase k, M :=
+                  Finset.prod_le_prod₀ (fun i _ ↦ abs_nonneg _) fun i _ ↦ hM _ _
+              _ = M ^ (N - 1) := by
+                  rw [Finset.prod_const, Finset.card_erase_of_mem (Finset.mem_univ _),
+                    Finset.card_univ, Fintype.card_fin]
+          rw [abs_mul, Finset.abs_prod, mul_comm M']
+          exact mul_le_mul hprod (hM' _ _) (abs_nonneg _) (pow_nonneg hM0 _)
+      _ = (N.factorial : ℝ) * N * M' * M ^ (N - 1) := by
+          simp only [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin,
+            nsmul_eq_mul]
+          ring
+  · -- At `A(t) = I` only `σ = id` contributes: for `σ ≠ id` pick `σ j ≠ j`; then every
+    -- `∏_{i ≠ k}` contains the factor `I_{σ j, j} = 0` or `I_{σ (σ j), σ j} = 0`.
+    intro h1
+    have hAt1 : ∀ a, A t a a = 1 := fun a ↦
+      (congrFun (congrFun h1 a) a).trans (Matrix.one_apply_eq a)
+    have hAt0 : ∀ a b, a ≠ b → A t a b = 0 := fun a b hab ↦
+      (congrFun (congrFun h1 a) b).trans (Matrix.one_apply_ne hab)
+    rw [Finset.sum_eq_single (1 : Equiv.Perm (Fin N))]
+    · rw [Equiv.Perm.sign_one, Units.val_one, Int.cast_one, one_mul, Matrix.trace]
+      refine Finset.sum_congr rfl fun k _ ↦ ?_
+      have hk : ∏ i ∈ Finset.univ.erase k, A t ((1 : Equiv.Perm (Fin N)) i) i = 1 :=
+        Finset.prod_eq_one fun i _ ↦ hAt1 i
+      rw [hk, one_mul]
+      rfl
+    · intro σ _ hσ
+      obtain ⟨j, hj⟩ : ∃ j, σ j ≠ j := by
+        by_contra h
+        exact hσ (Equiv.ext fun x ↦ not_not.mp fun hx ↦ h ⟨x, hx⟩)
+      have hzero : ∀ k, ∏ i ∈ Finset.univ.erase k, A t (σ i) i = 0 := by
+        intro k
+        by_cases hk : k = j
+        · subst hk
+          exact Finset.prod_eq_zero (Finset.mem_erase.mpr ⟨hj, Finset.mem_univ _⟩)
+            (hAt0 _ _ fun h ↦ hj (σ.injective h))
+        · exact Finset.prod_eq_zero (Finset.mem_erase.mpr ⟨fun h ↦ hk h.symm, Finset.mem_univ _⟩)
+            (hAt0 _ _ hj)
+      simp only [hzero, zero_mul, Finset.sum_const_zero, mul_zero]
+    · intro h
+      exact absurd (Finset.mem_univ _) h
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
