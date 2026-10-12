@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.measurable_chart_differential-a1.countable_glue-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.measurable_chart_differential-a1",
+  "depth": 4,
+  "title": "Countable measurable gluing by first index",
+  "statement": "Let X and Y be measurable spaces, Y having a zero element 0, let S_j ⊆ X (j ∈ ℕ) be measurable sets and G_j : X → Y (j ∈ ℕ) measurable maps. Then there is a measurable L : X → Y with L(x) = 0 for every x ∉ ⋃_j S_j, such that every x ∈ ⋃_j S_j admits j with x ∈ S_j and L(x) = G_j(x).",
+  "lean_statement": "∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] [Zero Y] (S : ℕ → Set X) (G : ℕ → X → Y), (∀ j, MeasurableSet (S j)) → (∀ j, Measurable (G j)) → ∃ L : X → Y, Measurable L ∧ (∀ x, x ∉ (⋃ j, S j) → L x = 0) ∧ ∀ x ∈ (⋃ j, S j), ∃ j, x ∈ S j ∧ L x = G j x",
+  "lean_name": "lpf_tde_mcd_countable_glue",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-me-37e9d69edf-a1"
+}
