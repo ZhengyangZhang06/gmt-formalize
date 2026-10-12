@@ -359,6 +359,27 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The Euclidean coefficient norm of a `k`-covector on `ℝ^P` is the `ℓ²`-norm of its coordinates
+`α(e_{I(0)}, …, e_{I(k-1)})` over the increasing multi-indices `I : Fin k ↪o Fin P`. -/
+theorem Submission.smr_ci_norm_eq_sqrt_sum_coord_sq :
+    ∀ (P k : ℕ) (α : Covector (Eucl P) k), covectorEuclideanNorm α =
+      Real.sqrt (∑ I : SimonMultiIndex k P, euclideanCovectorCoordinate α I ^ 2) := by
+  intro P k α
+  unfold covectorEuclideanNorm
+  congr 1
+  -- Drop the tuples that are not strictly increasing; their terms vanish.
+  rw [← Finset.sum_filter]
+  -- Reindex the strictly increasing tuples by the order embeddings, `I ↦ ⇑I`.
+  symm
+  refine Finset.sum_bij' (fun I _ => ⇑I)
+    (fun f hf => OrderEmbedding.ofStrictMono f (Finset.mem_filter.1 hf).2)
+    (fun I _ => Finset.mem_filter.2 ⟨Finset.mem_univ _, I.strictMono⟩)
+    (fun _ _ => Finset.mem_univ _) (fun I _ => ?_) (fun f _ => ?_) (fun I _ => ?_)
+  · exact RelEmbedding.ext fun _ => rfl
+  · exact OrderEmbedding.coe_ofStrictMono _
+  · -- Matching summands: `basisFun i = EuclideanSpace.single i 1`.
+    simp only [euclideanCovectorCoordinate, EuclideanSpace.basisFun_apply]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
