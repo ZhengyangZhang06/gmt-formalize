@@ -1,0 +1,15 @@
+{
+  "node_id": "root.stationary_results-a1.stationary_mean_zero-a1.test_field_vanishing-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/561",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/1652",
+  "candidate_commit": "5b8b55d049678068d819cc27bfdc5e534551d9dd",
+  "integrated_commit": "",
+  "proof_base_commit": "248ae58165dc2ba3f7a07d67f8b26e019d681309",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.stationary_results-a1.stationary_mean_zero-a1",
+  "requires": []
+}

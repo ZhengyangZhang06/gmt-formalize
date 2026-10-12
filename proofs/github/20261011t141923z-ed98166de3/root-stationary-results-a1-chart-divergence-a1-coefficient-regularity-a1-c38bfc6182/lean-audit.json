@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c4ccde99f7cb27b716da35ed92536efca641e9b28773dded8e8bcfcc8bc238d2",
+  "git_delta": {
+    "base_commit": "4d54a47d0e53f379bf3f93a8052d127d21ed7e66",
+    "candidate_commit": "dcc8f4f21ed6afa1daaeffc4a60e3244e6bbf6e9",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "chart_tangential_coefficient_contDiffOn",
+    "diff_sha256": "d8f1a91033c7e8b6f811566fd6c79093bb0210effd000dcadc24014a02ecc4d5",
+    "source_sha256": "062657a55b81c8bd3ee38ebd596b34562632f003c1d1d0f4979bc033c61ae986",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.chart_tangential_coefficient_contDiffOn",
+      "statement": "∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N) (u : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ x ∈ V, Function.Injective (fderiv ℝ ψ x)) → ContDiffOn ℝ 1 u V → ContDiffOn ℝ 1 (fun x ↦ Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) (u x))) V",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

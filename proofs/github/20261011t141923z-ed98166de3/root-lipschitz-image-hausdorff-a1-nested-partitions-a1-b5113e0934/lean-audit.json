@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e5262b8eb928d605b5dc12931997f661968ec23fb82ff2962322a10eb8b9f91c",
+  "git_delta": {
+    "base_commit": "293f280cd90d3b141afe0966aaae26203f038910",
+    "candidate_commit": "cc2444c50751db6b485d89f97f5ce4b559935fdc",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "lipschitzImage_exists_nested_partitions",
+    "diff_sha256": "e772206c4e20073e9dce7528bcd60671286385288a7d7835d5a31a65130272f2",
+    "source_sha256": "1526fb03755331e32ce6b71ed3fd3752688aa52e865770c053fffe53d7ad6fc3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lipschitzImage_exists_nested_partitions",
+      "statement": "∀ (X : Type) [MetricSpace X] [TopologicalSpace.SeparableSpace X] [MeasurableSpace X] [BorelSpace X], ∃ P : ℕ → ℕ → Set X, (∀ i j, MeasurableSet (P i j)) ∧ (∀ i j k, j ≠ k → Disjoint (P i j) (P i k)) ∧ (∀ i, ⋃ j, P i j = Set.univ) ∧ (∀ i j, ∀ x ∈ P i j, ∀ x' ∈ P i j, dist x x' < 1 / ((i : ℝ) + 1)) ∧ (∀ i j, ∃ k, P (i + 1) j ⊆ P i k)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

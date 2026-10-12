@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2e6fd047fca9bbd4833e6d217b294bb3ebde1cb0cf01a98c4cfea918e1d790f9",
+  "git_delta": {
+    "base_commit": "293f280cd90d3b141afe0966aaae26203f038910",
+    "candidate_commit": "21f01e188567eb05f17c0019fe13c6889d45f97b",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "lipschitzImage_hausdorff_image_le",
+    "diff_sha256": "6a482b9a5f9dab3fc2a3a98a757bdff07f2855eaf1bf8a4a3f21dec93246121b",
+    "source_sha256": "bc4f92d3d3520cb4a7cefab50eb472e8f9f6516c0d26812c06d393518e59e215",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lipschitzImage_hausdorff_image_le",
+      "statement": "∀ (X Y : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] [MetricSpace Y] [MeasurableSpace Y] [BorelSpace Y] (m : ℝ) (E : Set X) (f : X → Y) (K : ℝ≥0), 0 ≤ m → LipschitzOnWith K f E → Chapter01.simonHausdorffMeasureReal m (f '' E) ≤ (K : ℝ≥0∞) ^ m * Chapter01.simonHausdorffMeasureReal m E",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

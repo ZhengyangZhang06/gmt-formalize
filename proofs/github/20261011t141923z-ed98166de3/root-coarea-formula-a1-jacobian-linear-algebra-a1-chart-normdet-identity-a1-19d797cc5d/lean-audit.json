@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e521a085b905e3bfdf4f2d7b75505db77f1f27efa782abd83872b49fe71d5208",
+  "git_delta": {
+    "base_commit": "c78f869a98cf30ea9f07c8e47403d6ed2e1ac01a",
+    "candidate_commit": "c0363ca7ef216d6aaca8c922c130d9884a1ea101",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "coarea_normDet_adjoint_mul_normDet_chart",
+    "diff_sha256": "3f473859ac68ff561c4889528df27494e9ecb3824abaf090aa01946b7d4f7aaa",
+    "source_sha256": "d29c7e6eeb124a145b1c524e1b1a53ca92c8ca428089857ad3e9c8c661c542bf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.coarea_normDet_adjoint_mul_normDet_chart",
+      "statement": "∀ (m k : ℕ) (T : Type) [NormedAddCommGroup T] [InnerProductSpace ℝ T] [FiniteDimensional ℝ T] (L : T →ₗ[ℝ] Rn m) (Φ : WithLp 2 (Rn m × Rn k) →ₗ[ℝ] T) (Ψ : Rn k →ₗ[ℝ] T), Function.Bijective Φ → (∀ p, L (Φ p) = WithLp.fst p) → (∀ b, Ψ b = Φ (WithLp.toLp 2 (0, b))) → (LinearMap.adjoint L).normDet * Φ.normDet = Ψ.normDet",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

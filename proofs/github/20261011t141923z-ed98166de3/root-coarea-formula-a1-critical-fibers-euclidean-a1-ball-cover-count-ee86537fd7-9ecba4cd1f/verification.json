@@ -1,0 +1,15 @@
+{
+  "node_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1.ball_cover_count-a1.packing_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/565",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/1763",
+  "candidate_commit": "247710eee67560b9980fed19a2b2d575c45f4d33",
+  "integrated_commit": "",
+  "proof_base_commit": "683b3f4aa8d6db46af92e32ee3ac54177b4efb47",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.coarea_formula-a1.critical_fibers_euclidean-a1.ball_cover_count-a1",
+  "requires": []
+}

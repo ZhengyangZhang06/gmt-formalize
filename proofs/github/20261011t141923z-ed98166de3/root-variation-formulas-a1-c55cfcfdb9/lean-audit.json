@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8f31d279477c9d6491c23392c164dc268929803568897db72877a0f4015b3b3d",
+  "git_delta": {
+    "base_commit": "1fd5d24b033053458388a815e03f0f80b6b913f4",
+    "candidate_commit": "dbf24596cec17af2db0a4057879eb11b3e97d9ba",
+    "target": "GMT/Ch02/Submission.lean",
+    "changed_files": [
+      "GMT/Ch02/Submission.lean"
+    ],
+    "diff_sha256": "692ff776f84aec8e3c129183bfeee89c95d043c9575ccf4f5aa581deb40d38a5",
+    "source_sha256": "c7fe12658b669d472583ce1281df780ae322304c3ffce2feb1e2bf9c0c95e26d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.first_and_second_variation",
+      "statement": "FirstVariation ∧ SecondVariation",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

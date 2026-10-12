@@ -1,0 +1,15 @@
+{
+  "node_id": "root.stationary_results-a1.chart_divergence-a1.det_jacobi-a1.det_contdiff-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1386",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/1993",
+  "candidate_commit": "fe9729da054dda634b3fe292a305c61205967d7b",
+  "integrated_commit": "",
+  "proof_base_commit": "a492b4f6a9dec819389abb1a526fed5319fa54be",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.stationary_results-a1.chart_divergence-a1.det_jacobi-a1",
+  "requires": []
+}

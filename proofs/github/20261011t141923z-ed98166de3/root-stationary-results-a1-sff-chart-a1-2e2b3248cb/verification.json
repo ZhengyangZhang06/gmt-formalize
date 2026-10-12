@@ -1,0 +1,21 @@
+{
+  "node_id": "root.stationary_results-a1.sff_chart-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/240",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/1964",
+  "candidate_commit": "8da6c4ba286a132aef97a90833a9c39affeb8c88",
+  "integrated_commit": "",
+  "proof_base_commit": "e89868399fd62a837adde4056aeab4e3a0e97bac",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.stationary_results-a1",
+  "requires": [
+    "root.stationary_results-a1.sff_chart-a1.range_projection_diff-a1",
+    "root.stationary_results-a1.sff_chart-a1.immersion_left_inverse-a1",
+    "root.stationary_results-a1.sff_chart-a1.tangent_projection_extension-a1",
+    "root.stationary_results-a1.sff_chart-a1.projection_field_identity-a1",
+    "root.stationary_results-a1.sff_chart-a1.fderiv_within_chart_direction-a1"
+  ]
+}

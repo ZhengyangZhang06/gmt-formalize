@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f218e9c5b708babe03e541f03d0069545f9ca3dda650522858432e375881df53",
+  "git_delta": {
+    "base_commit": "11df9271e5439739a1968805f9658f314e6f6667",
+    "candidate_commit": "7d6970213e109e2a435b91ef62dd3e2801d0181d",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_exists_subseq_tendsto_lintegral_of_finite_nets",
+    "diff_sha256": "0f5effdc9d32339c8fa33a068d7278e01d3cbf3ec2e98381a8ffb0aa3b925541",
+    "source_sha256": "4005a47934fb494f7baed5afdffb75a7c39534764ccea5046b53c4f07ec6b70d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_exists_subseq_tendsto_lintegral_of_finite_nets",
+      "statement": "∀ (n : ℕ) (Q : ℕ → Set (Rn n)) (u : ℕ → Rn n → ℝ), (∀ j k, IntegrableOn (u k) (Q j) volume) → (∀ j, ∀ ε : ℝ, 0 < ε → ∃ F : Finset ℕ, ∀ k, ∃ i ∈ F, (∫⁻ x in Q j, ‖u k x - u i x‖ₑ) < ENNReal.ofReal ε) → ∃ (ψ : ℕ → ℕ) (G : ℕ → Rn n → ℝ), StrictMono ψ ∧ (∀ j, IntegrableOn (G j) (Q j) volume) ∧ ∀ j, Tendsto (fun k ↦ ∫⁻ x in Q j, ‖u (ψ k) x - G j x‖ₑ) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b841342cbc823af825aac9b39dbba38461597ed0d891df2a6438353d5a068831",
+  "git_delta": {
+    "base_commit": "62b7532e5d407481b9b12d72d6b3b271e019408b",
+    "candidate_commit": "b99e37de4c248664bb99b293d6b4addcfac663b5",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "coareaJacobian_eq_normDet_adjoint",
+    "diff_sha256": "50cc8e41a227a19d8ecc2897769d2233bd32e4dd05f6fc5001991039dac1301d",
+    "source_sha256": "209d7c83736112112c01164f94a5b4613fac6a637a1af484629c62b2516cac7d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.coareaJacobian_eq_normDet_adjoint",
+      "statement": "∀ (N m : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N), coareaJacobian M f x = (LinearMap.adjoint ((fderiv ℝ f x).comp (tangentSpace M x).subtypeL).toLinearMap).normDet",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

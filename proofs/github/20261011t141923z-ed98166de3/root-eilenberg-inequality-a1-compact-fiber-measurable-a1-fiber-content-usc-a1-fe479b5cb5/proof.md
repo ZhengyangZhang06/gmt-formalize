@@ -1,0 +1,106 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.eilenberg_inequality-a1.compact_fiber_measurable-a1`
+- Child DAG node: `root.eilenberg_inequality-a1.compact_fiber_measurable-a1.fiber_content_usc-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. This is Step 6 of the parent-supplied proof of `eilenberg_compact_fiber_measurable`, which completes the measurability exercise left after Simon, Ch. 2, Theorem 1.9. Finite open covers are encoded as families O : ℕ → Set X restricted to a finite index set I ⊆ ℕ, the same encoding as in the sibling `eilenberg_compact_hausdorff_eq_iSup_open_content`. No hypothesis on k or δ is needed.
+
+Notation. F_y := Q ∩ f⁻¹{y}. For a finite I ⊆ ℕ (a `Finset ℕ`) and O : ℕ → Set X put S(I, O) := Σ_{i∈I}(ediam O_i)^k, where ediam = `Metric.ediam` and powers are `ENNReal.rpow`. Call (I, O) admissible for y if every O_i with i ∈ I is open with ediam O_i < δ, and F_y ⊆ ⋃_{i∈I} O_i. Then u(y) is the infimum of S(I, O) over the pairs admissible for y. In Mathlib, `UpperSemicontinuous u` unfolds to: for every y₀ ∈ ℝᵐ and every t ∈ [0,∞] with u(y₀) < t, the set {y : u(y) < t} is a neighbourhood of y₀ (∀ᶠ y in 𝓝 y₀, u y < t).
+
+Proof.
+1. Fix y₀ ∈ ℝᵐ and t ∈ [0,∞] with u(y₀) < t.
+
+2. (Near-optimal finite cover of the fibre.) An infimum is < t iff one of its terms is < t (`iInf_lt_iff`, applied to the four nested infima over I, O and the two side conditions). So there are a finite I ⊆ ℕ and O : ℕ → Set X with:
+- O_i open and ediam O_i < δ for every i ∈ I;
+- F_{y₀} ⊆ W := ⋃_{i∈I} O_i;
+- S(I, O) < t.
+
+3. (A closed set of values avoiding y₀.)
+- W is open, being a union of open sets (`isOpen_biUnion`).
+- Q ∖ W is compact, being a compact set minus an open set (`IsCompact.diff`).
+- f is continuous on Q ∖ W ⊆ Q (`ContinuousOn.mono` with `Set.sdiff_subset`). So K := f''(Q ∖ W) is compact (`IsCompact.image_of_continuousOn`) and hence closed in the Hausdorff space ℝᵐ (`IsCompact.isClosed`).
+- y₀ ∉ K. Indeed, if y₀ = f(x) with x ∈ Q and x ∉ W, then x ∈ Q ∩ f⁻¹{y₀} = F_{y₀} ⊆ W, a contradiction.
+
+4. (The neighbourhood.) V := ℝᵐ ∖ K is open (`IsClosed.isOpen_compl`) and contains y₀, so V ∈ 𝓝 y₀ (`IsOpen.mem_nhds`). Let y ∈ V and x ∈ F_y, i.e. x ∈ Q and f(x) = y. If x ∉ W, then x ∈ Q ∖ W and y = f(x) ∈ K, contradicting y ∈ V. Hence x ∈ W, so F_y ⊆ W = ⋃_{i∈I} O_i. Thus the same (I, O) is admissible for y, and u(y) ≤ S(I, O) < t (`iInf_le_of_le` through the four infima, then `lt_of_le_of_lt`).
+
+5. Therefore u(y) < t for every y in the neighbourhood V of y₀; in Lean, `filter_upwards [hK.isClosed.isOpen_compl.mem_nhds hy₀]`. Since y₀ and t were arbitrary, u is upper semicontinuous. If F_{y₀} = ∅, step 2 may give I = ∅ and W = ∅, and the argument is unchanged. If u(y₀) = ∞, no t > u(y₀) exists and there is nothing to prove. ∎
+
+## Key steps
+
+1. Given u(y₀) < t, use iInf_lt_iff to pick a finite indexed open family (I, O), admissible for F_{y₀} = Q ∩ f⁻¹{y₀}, with Σ_{i∈I}(ediam O_i)^k < t.
+2. W = ⋃_{i∈I} O_i is open. K = f''(Q ∖ W) is compact (IsCompact.diff, IsCompact.image_of_continuousOn), hence closed in ℝᵐ, and y₀ ∉ K because F_{y₀} ⊆ W.
+3. For y in the open neighbourhood ℝᵐ ∖ K of y₀, the fibre F_y is contained in W. So (I, O) is admissible for y and u(y) ≤ Σ_{i∈I}(ediam O_i)^k < t.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json (project 1b1689a8, mathlib 25730c7c)`
+- `cmp local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean GMT/Ch02/Contract.lean (identical); grep -n '^end\|^section\|^noncomputable section\|^namespace\|^local notation\|^theorem main_theorem\|^open' GMT/Ch02/Contract.lean`
+- `grep -n 'theorem hausdorffMeasure_apply' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean; sed -n 520,600p (and variable context lines 121, 411, 443)`
+- `grep -n 'UpperSemicontinuous.measurable\|protected theorem Measurable.iSup' mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `grep -n 'theorem ediam_thickening_le\|theorem isOpen_thickening\|theorem self_subset_thickening\|theorem thickening_empty' mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `grep -rn '^noncomputable def ediam\|theorem ediam_empty\|theorem ediam_le\|theorem ediam_mono' mathlib/Mathlib/Topology`
+- `grep -rn 'theorem tsum_eq_sum\|theorem tprod_eq_prod' mathlib/Mathlib/Topology/Algebra/InfiniteSum/`
+- `grep -rn 'theorem exists_pos_sum_of_countable\|theorem exists_inv_nat_lt\|theorem le_of_forall_pos_le_add\|protected theorem tsum_add\|protected theorem sum_le_tsum' mathlib/Mathlib`
+- `grep -n 'theorem IsCompact.elim_finite_subcover\|theorem IsCompact.diff\|theorem IsCompact.image_of_continuousOn' mathlib/Mathlib/Topology/Compactness/Compact.lean; grep -rn 'theorem rpow_ne_top_of_nonneg\|theorem zero_rpow_of_pos\|theorem rpow_le_rpow ' mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean`
+- `grep -n 'theorem\|lemma\|def \|abbrev' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean; read Chapter01/HausdorffOpenCovers.lean`
+- `python3 -I: collect all lean_name values in dag.json and nodes/*/*.json`
+- `python3 -I scripts/gen.py (imports verifier gmt-compare.py contract_scope/child_modules and lean_contract.validate_lean_statement), then lean Challenge_child1.lean / Challenge_child2.lean against a scratch olean of GMT.Ch02.Submission built with plain `lean -o``
+- `lean Final.lean (set_option autoImplicit false; CFMCheck.child1, child2, assembly, parent_from_children; #print axioms), via LSP and batch`
+- `python3 -I: compare the dag.json lean_statement of root.eilenberg_inequality-a1.compact_fiber_measurable-a1 with the assembly target (identical: True)`
+- `sed -n 330,420p book/chapter-02.txt (Simon Thm 1.9; measurability left as an exercise; [Fed69, 2.10.25])`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/InfiniteSum/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Basic/ENNReal/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-eilenberg-inequality-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-eilenberg-inequality-a1-compact-fiber-measurable-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/cfm-decomp-4YUkgw/checks/Challenge_child1.lean`
+- `/tmp/cfm-decomp-4YUkgw/checks/Challenge_child2.lean`
+- `/tmp/cfm-decomp-4YUkgw/checks/Final.lean`
+- `/tmp/cfm-decomp-4YUkgw/checks/Final.batch.log`
+
+**No existing result.** The snapshot (Mathlib 25730c7c, project 1b1689a8) has no ready-made theorem for either piece:
+- No theorem on measurability of fibre Hausdorff measures.
+- No theorem expressing Hausdorff measure of compact sets through finite open covers.
+- SimonGMT's HausdorffOpenCovers.lean only proves that requiring open sets in countable covers leaves the fixed-scale content unchanged. Its exists_isOpen_superset_ediam_rpow_lt is an optional alternative for the thickening step and would need an extra import.
+
+**Tools located and used.**
+- Hausdorff measure and measurability: MeasureTheory.Measure.hausdorffMeasure_apply (Hausdorff.lean:546), UpperSemicontinuous.measurable (BorelSpace/Order.lean:649), Measurable.iSup (Order.lean:909).
+- Thickenings and diameter: Metric.thickening with isOpen_thickening (Thickening.lean:74), thickening_empty (:79), self_subset_thickening (:309), ediam_thickening_le (:354); Metric.ediam (EMetricSpace/Diam.lean:30).
+- Compactness: IsCompact.elim_finite_subcover, IsCompact.diff and IsCompact.image_of_continuousOn (Compact.lean:208/101/110).
+- ENNReal sums and epsilons: ENNReal.exists_pos_sum_of_countable' (SpecificLimits/Basic.lean:649), ENNReal.le_of_forall_pos_le_add (Basic/ENNReal/Basic.lean:613), ENNReal.exists_inv_nat_lt (Basic/ENNReal/Inv.lean:650), ENNReal.tsum_add and ENNReal.sum_le_tsum (InfiniteSum/ENNReal.lean:108/119), tsum_eq_sum (additive form of tprod_eq_prod, InfiniteSum/Basic.lean:457).
+- ENNReal powers: rpow_ne_top_of_nonneg, zero_rpow_of_pos and rpow_le_rpow (Pow/NNReal.lean:610/515/798).
+- SimonGMT: simonHausdorffMeasureReal s = (realUnitBallVolume s / 2^s) • μH[s] (Chapter01/Hausdorff.lean:283).
+
+**Contract scope.** The bare `end` at Contract.lean:374 closes the local notations 𝓗[·]/ω[·]. The child statements therefore spell out names explicitly. `open Poincare.SimonGMT` and namespace GMT.Ch02 (for Rn) remain in scope.
+
+**Lean verification.**
+- Both child lean_statements elaborate in the replayed comparator scope and under autoImplicit false.
+- Both are proved outright in scratch Lean.
+- The assembly proves the frozen parent type, which is byte-identical to dag.json.
+- Every check uses only [propext, Classical.choice, Quot.sound].
+
+**Names.** Both proposed names are unreserved.

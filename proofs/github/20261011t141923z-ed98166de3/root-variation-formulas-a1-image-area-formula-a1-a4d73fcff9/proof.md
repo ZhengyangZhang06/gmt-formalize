@@ -1,0 +1,127 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.variation_formulas-a1`
+- Child DAG node: `root.variation_formulas-a1.image_area_formula-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 2, items 4–7, of the parent proof (area formula for M_t = φ_t(M ∩ K)), with a general injective C¹ map f in place of φ_t. It uses Simon Ch. 2, 3.4/3.5 on charts and 4.11 (chain rule for Jacobians). As the parent proof permits, the chart area formulas are the axiom-clean SimonGMT ones in WeightedArea.lean.
+
+Notation.
+- T_y := tangentSpace M y; ι_y : T_y → ℝᴺ is the inclusion.
+- L_y := Df(y) ∘ ι_y = (fderiv ℝ f y).comp T_y.subtypeL and J(y) := areaJacobian(L_y).
+- μHE[n] is used on ℝⁿ, ℝᴺ and ℝ^{N′}. Since finrank ℝⁿ = n, the SimonGMT statements written with μHE[finrank ℝ ℝⁿ] are statements about μHE[n].
+- For a map F between Euclidean spaces, areaJacobianAt F x = normDet(DF(x)) (SimonGMT areaJacobianAt_eq_normDet).
+
+1. Two linear-algebra facts.
+(a) For a continuous linear map L between finite-dimensional inner product spaces, areaJacobian(L) = √det(L*L) = normDet(L). Indeed Mathlib ContinuousLinearMap.normDet_sq gives normDet(L)² = det(L*L), and normDet(L) ≥ 0.
+(b) Simon 4.11: for linear maps F : E → G and B : G → H, normDet(B ∘ F) = normDet(B|_{range F}) · normDet(F) (Mathlib LinearMap.normDet_comp; equivalently SimonGMT areaJacobian_comp_eq_parametrization_mul_tangential).
+
+2. If M = ∅ then S = ∅ and both sides are 0. Assume M ≠ ∅ from now on.
+
+3. Countable atlas.
+- For each z ∈ M, IsSimonSubmanifold gives open V_z ⊆ ℝⁿ, open W_z ⊆ ℝᴺ and ψ_z with z ∈ W_z and IsSimonLocalRepresentation 1 M V_z W_z ψ_z. Thus ψ_z is C¹ on V_z and injective on V_z, ψ_z(V_z) = W_z ∩ M, and Dψ_z(x) is injective for x ∈ V_z.
+- ℝᴺ is second countable, so there is a countable I ⊆ M with ∪_{z∈I} W_z = ∪_{z∈M} W_z ⊇ M (TopologicalSpace.isOpen_iUnion_countable).
+- I ≠ ∅. Enumerate the corresponding charts as (V_i, W_i, ψ_i), i ∈ ℕ, repeating entries if I is finite. Then M ⊆ ∪_i W_i.
+
+4. Disjoint Borel pieces. Put B_i := (S ∩ W_i) ∖ ∪_{l<i} W_l.
+- Each B_i is Borel and B_i ⊆ S ∩ W_i.
+- The B_i are pairwise disjoint.
+- ∪_i B_i = S: for y ∈ S ⊆ M, take the least i with y ∈ W_i.
+
+5. Chart preimages. Put B′_i := V_i ∩ ψ_i⁻¹(B_i) ⊆ ℝⁿ.
+- B′_i is Borel. The restriction of ψ_i to the open set V_i is continuous, hence measurable; the preimage of B_i is measurable in the subtype V_i; and its image under the measurable embedding Subtype.val is B′_i.
+- Since B_i ⊆ W_i ∩ M = ψ_i(V_i), we have ψ_i(B′_i) = B_i.
+
+6. Area formula for F_i := f ∘ ψ_i on B′_i. Let x ∈ B′_i.
+- ψ_i is differentiable at x (C¹ on the open set V_i), and f is differentiable at ψ_i(x) ∈ S.
+- So F_i is differentiable at x with DF_i(x) = Df(ψ_i x) ∘ Dψ_i(x). This is injective, being a composition of injective maps.
+- F_i is injective on B′_i: ψ_i is injective on V_i, ψ_i(B′_i) ⊆ S, and f is injective on S.
+- SimonGMT injective_area_formula_areaJacobianAt (E = ℝⁿ, F = ℝ^{N′}, s = B′_i) gives μHE[n](F_i(B′_i)) = ∫⁻_{B′_i} ofReal(areaJacobianAt F_i x) dμHE[n](x).
+- Moreover F_i(B′_i) = f(ψ_i(B′_i)) = f(B_i).
+
+7. Jacobian factorization. Let x ∈ B′_i and y := ψ_i(x) ∈ S.
+- By 1(b), areaJacobianAt F_i x = normDet(Df(y) ∘ Dψ_i(x)) = normDet(Df(y)|_{range Dψ_i(x)}) · normDet(Dψ_i(x)).
+- By (hT), range Dψ_i(x) = T_y. So Df(y)|_{range Dψ_i(x)} is the linear map Df(y)|_{T_y} = L_y, and its normDet is J(y) by 1(a).
+- Hence areaJacobianAt F_i x = J(ψ_i x) · areaJacobianAt ψ_i x, a product of nonnegative reals. Therefore ofReal(areaJacobianAt F_i x) = ofReal(areaJacobianAt ψ_i x) · ofReal(J(ψ_i x)).
+
+8. Weighted area formula on the chart. Apply SimonGMT IsSimonLocalRepresentation.weighted_area_formula with r = 1, the Borel set s = B′_i ⊆ V_i, and the weight w := ofReal ∘ J (the weight need not be measurable). It gives ∫⁻_{ψ_i(B′_i)} ofReal(J(y)) dμHE[n](y) = ∫⁻_{B′_i} ofReal(areaJacobianAt ψ_i x) · ofReal(J(ψ_i x)) dμHE[n](x). Combining with 5–7 gives μHE[n](f(B_i)) = ∫⁻_{B_i} ofReal(J) dμHE[n].
+
+9. Summation.
+- Each f(B_i) is Borel by Lusin–Souslin (MeasurableSet.image_of_continuousOn_injOn): B_i is Borel, f is continuous on B_i (it is differentiable at each point of S), and f is injective on B_i.
+- The sets f(B_i) are pairwise disjoint because f is injective on S, and ∪_i f(B_i) = f(S).
+- Use countable additivity of μHE[n] and of the set lintegral over the disjoint Borel sets B_i (lintegral_iUnion). This gives μHE[n](f(S)) = Σ_i μHE[n](f(B_i)) = Σ_i ∫⁻_{B_i} ofReal(J) dμHE[n] = ∫⁻_S ofReal(J) dμHE[n], which is the claim.
+
+## Key steps
+
+1. areaJacobian(L) = normDet(L) (ContinuousLinearMap.normDet_sq) and the Simon 4.11 chain rule normDet(B∘F) = normDet(B|_{range F})·normDet(F) (LinearMap.normDet_comp).
+2. A countable atlas (Lindelöf) gives disjoint Borel pieces B_i of S with chart preimages B′_i, ψ_i(B′_i) = B_i.
+3. Injective area formula (SimonGMT injective_area_formula_areaJacobianAt) for f∘ψ_i on B′_i.
+4. With hT (range Dψ_i(x) = T_{ψ_i x}M): areaJacobianAt(f∘ψ_i) = J∘ψ_i · areaJacobianAt ψ_i.
+5. The weighted chart area formula (IsSimonLocalRepresentation.weighted_area_formula) turns this into ∫_{B_i} J; f(B_i) are disjoint Borel sets; sum over i.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `grep -rn -i 'first.variation\|firstVariation\|first_variation\|secondVariation\|second_variation\|deformation\|isAdmissible' --include=*.lean lake-packages-25730c7c/simongmt`
+- `grep -rli 'second variation\|secondVariation\|second_variation' --include=*.lean lake-packages-25730c7c/simongmt`
+- `sed -n 1,265p Poincare/SimonGMT/Chapter08/DeformationFamily.lean; cat Chapter08/DeformationIntegral.lean; sed -n 1,246p Chapter08/FirstVariationIntegral.lean`
+- `sed -n 1,700p Poincare/SimonGMT/Chapter08/Varifold.lean (Grassmannian, Varifold, tangentialJacobianReal_eq_sqrt_det_ambientGram)`
+- `cat Poincare/SimonGMT/Chapter02/Submanifold.lean Chapter02/WeightedArea.lean Chapter02/SubmanifoldCalculus.lean; sed -n 20,45p Chapter02/Area.lean`
+- `rg -n '^theorem|^lemma' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean; sed -n 262,360p NormDet.lean`
+- `rg -n 'theorem ContinuousOn.aestronglyMeasurable' mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean; rg -n 'theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le' mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `rg -n 'starProjection_norm_le|isIdempotentElem_starProjection' mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean; rg -n 'isSymmSndFDerivAt' mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean; rg -n 'finset_prod|finsetProd' mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean; rg -n 'det_one_add_smul' mathlib/Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean`
+- `rg -n 'contDiff.*det|det.*contDiff|ContDiff.*det' mathlib/Mathlib/Analysis/Calculus mathlib/Mathlib/Analysis/Matrix mathlib/Mathlib/Topology/Algebra/Module mathlib/Mathlib/LinearAlgebra/Matrix`
+- `rg -n 'comp_aestronglyMeasurable' mathlib/Mathlib; grep -rn aestronglyMeasurable_of_tendsto_ae mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/`
+- `sed -n 425,480p mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `sed -n 1160,1300p book/sources/chapter-02-source.txt (Simon Ch. 2 §5, 5.1-5.4 printed derivation)`
+- `python3 -I scripts/gen_checks.py (verifier gmt-compare.py child_modules/contract_scope + lean_contract.validate_lean_statement) then lean checks/NodeChallenge_00..05 against scratch olean of GMT.Ch02.Submission (built with lean -o, LEAN_PATH = lake-packages-25730c7c/*/.lake/build/lib/lean)`
+- `lean asmsrc/Assembly.lean; lean asmsrc/AxiomCheck.lean (#print axioms first_and_second_variation_check); lean asmsrc/FamilyFull.lean; lean asmsrc/GramCheck.lean; lean asmsrc/SmoothCheck.lean; lean asmsrc/InstCheck.lean; lean asmsrc/NameCheck.lean; lean solchk/AllSolutions.lean; lean asmsrc/LibAxioms.lean (#print axioms of every cited library lemma)`
+- `python3 -I scripts/numcheck_pure.py (1500 random instances of the Gram identity and of both derivative formulas)`
+- `python3 -I scan of dag.json lean_name fields and nodes/*/decomposition-v*.json subproblem lean_names for collisions`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Instances/Matrix.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DeformationFamily.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DeformationIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1/decomposition-v1.json`
+- `/tmp/varform-decomp-WPTPfS/scripts/statements.json`
+- `/tmp/varform-decomp-WPTPfS/checks/NodeChallenge_00_variation_submanifold_image_area.lean`
+- `/tmp/varform-decomp-WPTPfS/asmsrc/VarAsm/StandIns.lean`
+- `/tmp/varform-decomp-WPTPfS/asmsrc/Assembly.lean`
+- `/tmp/varform-decomp-WPTPfS/asmsrc/AxiomCheck.lean`
+- `/tmp/varform-decomp-WPTPfS/asmsrc/FamilyFull.lean`
+- `/tmp/varform-decomp-WPTPfS/asmsrc/GramCheck.lean`
+- `/tmp/varform-decomp-WPTPfS/asmsrc/SmoothCheck.lean`
+- `/tmp/varform-decomp-WPTPfS/asmsrc/InstCheck.lean`
+- `/tmp/varform-decomp-WPTPfS/asmsrc/LibAxioms.lean`
+- `/tmp/varform-decomp-WPTPfS/solchk/AllSolutions.lean`
+- `/tmp/varform-decomp-WPTPfS/scripts/numcheck_pure.py`
+
+Neither the pinned Mathlib (25730c7c) nor SimonGMT (2b36630) has a first or second variation formula for Hⁿ of a deformed submanifold. SimonGMT Chapter 8 proves only the varifold first variation for C² families: familyJacobian, hasDerivAt_familySpatialDerivative and hasDerivAt_integral_of_contDiffAt_on_compact. Nothing second-order exists. The reusable ingredients do exist, and #print axioms shows only propext, Classical.choice and Quot.sound for all of them. From SimonGMT: injective_area_formula_areaJacobianAt, IsSimonLocalRepresentation.weighted_area_formula, areaJacobian_comp_eq_parametrization_mul_tangential, and tangentialJacobianReal_eq_sqrt_det_ambientGram (the matrix form of gram_det_identity). From Mathlib: LinearMap.normDet_comp, ContinuousLinearMap.normDet_sq, LinearMap.normDet_sq_eq_det_gram, hasDerivAt_integral_of_dominated_loc_of_deriv_le, ContDiffAt.isSymmSndFDerivAt, HasDerivAt.finsetProd, MeasurableSet.image_of_continuousOn_injOn, Submodule.starProjection_norm_le, Submodule.isIdempotentElem_starProjection and setIntegral_eq_of_subset_of_forall_sdiff_eq_zero. Mathlib has no ContDiff lemma for det and no ContinuousOn.comp_aestronglyMeasurable. The child proofs therefore spell out those steps, and scratch Lean shows det and adjoint are smooth on Rn N →L Rn N in a few lines. All six statements pass validate_lean_statement. Their contract-mode NodeChallenge modules compile against the frozen Submission, and the `exact Submission.X` solution modules compile against stand-ins. FirstVariation ∧ SecondVariation is proved sorry-free from stand-ins of the six children plus the frozen sibling; its axioms are propext, sorryAx (stand-ins only), Classical.choice and Quot.sound. variation_jacobian_family is fully proved from its two declared dependencies. The proposed names collide with nothing in dag.json or in the other proposals.

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f1cebbc4adbca73e229eefb5ccfe99254cd7b04b68abc4f09e10caaaed7a436f",
+  "git_delta": {
+    "base_commit": "6aa972d49349b10fb0c80727c1c1ec9192b18702",
+    "candidate_commit": "5e1b4c5585315797f3a02480e8ac195f6b243264",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "c1_sard_local_representation_comp",
+    "diff_sha256": "cb6158b96681e879cb9b373c527b7f11f2dbba6b6eb94fe7d7e50372e05b9648",
+    "source_sha256": "72d025e5fe94667f6924295c56a50f62f3408c3d62e2f1677b3460f66f68ac89",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.c1_sard_local_representation_comp",
+      "statement": "∀ (n k N : ℕ) (M S : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N) (D : Set (Rn k)) (V₁ : Set (Rn n)) (l : Rn k → Rn n), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → S ⊆ M → V₁ ⊆ V → Chapter02.IsSimonLocalRepresentation 1 (ψ ⁻¹' S) D V₁ l → ∃ W₁ : Set (Rn N), W₁ ⊆ W ∧ ψ '' V₁ = W₁ ∩ M ∧ Chapter02.IsSimonLocalRepresentation 1 S D W₁ (ψ ∘ l)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

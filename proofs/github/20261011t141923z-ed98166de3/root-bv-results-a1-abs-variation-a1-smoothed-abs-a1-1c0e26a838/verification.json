@@ -1,0 +1,15 @@
+{
+  "node_id": "root.bv_results-a1.abs_variation-a1.smoothed_abs-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/348",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/1772",
+  "candidate_commit": "71213ea7006f68765662979f7642f706eef891c1",
+  "integrated_commit": "",
+  "proof_base_commit": "5248d90a66e5893fcead1328cac35fda177577a6",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.bv_results-a1.abs_variation-a1",
+  "requires": []
+}

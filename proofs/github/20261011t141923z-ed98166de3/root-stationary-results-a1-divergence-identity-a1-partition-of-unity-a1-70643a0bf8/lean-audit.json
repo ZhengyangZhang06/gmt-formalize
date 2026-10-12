@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "07971a84eaa7a13dbb5de215ad2048dae8df2a6175e5bd79285b132a4087692f",
+  "git_delta": {
+    "base_commit": "77f786d779952ebb350413dda8ed56d39c112e09",
+    "candidate_commit": "eb3f28c3c2cb8e7af2b1139053c8053d9ff40d22",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "exists_finite_contDiff_partition_near_compact",
+    "diff_sha256": "8a350f8481889f87afabc2f9a88e0460f843916f9971c6fa230b212d7f12b4bd",
+    "source_sha256": "6669a0300cafa458367536302b7cbd957a7966240f6b331e8285b8a337c3d2c8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.exists_finite_contDiff_partition_near_compact",
+      "statement": "∀ (N : ℕ) (C : Set (Rn N)) (P : Set (Rn N) → Prop), IsCompact C → (∀ y ∈ C, ∃ U : Set (Rn N), IsOpen U ∧ y ∈ U ∧ P U) → ∃ (p : ℕ) (ζ : Fin p → Rn N → ℝ) (O : Set (Rn N)), IsOpen O ∧ C ⊆ O ∧ (∀ z ∈ O, ∑ q, ζ q z = 1) ∧ ∀ q, ContDiff ℝ 1 (ζ q) ∧ HasCompactSupport (ζ q) ∧ ∃ U : Set (Rn N), P U ∧ tsupport (ζ q) ⊆ U",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

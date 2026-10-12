@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "72bb88fad9dc8cd336f6b3e9a9c0140f0d67ae2e7255f9232b2960e362af899e",
+  "git_delta": {
+    "base_commit": "707fc857bc56adc5cae40b354272c3ffb50f7baa",
+    "candidate_commit": "92b96ed6afb604399e41ae9358969aecb38ee934",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_translate_sub_lintegral_le_of_tendsto",
+    "diff_sha256": "b07c91a71fa83f24f9763a0e3a8e73e98ad12207fb2a6c76cd91a341a032c956",
+    "source_sha256": "0630bd3263c53fe1dd982531feb4d1ea133054065728dd56625ad86dcb00f782",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_translate_sub_lintegral_le_of_tendsto",
+      "statement": "∀ (n : ℕ) (F : Rn n → ℝ) (w : ℕ → Rn n → ℝ) (Q : Set (Rn n)) (z : Rn n) (C : ℝ≥0∞), AEStronglyMeasurable F volume → (∀ j, AEStronglyMeasurable (w j) volume) → Tendsto (fun j ↦ ∫⁻ x, ‖w j x - F x‖ₑ) atTop (𝓝 0) → (∀ j, ∫⁻ x in Q, ‖w j (x - z) - w j x‖ₑ ≤ C) → ∫⁻ x in Q, ‖F (x - z) - F x‖ₑ ≤ C",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

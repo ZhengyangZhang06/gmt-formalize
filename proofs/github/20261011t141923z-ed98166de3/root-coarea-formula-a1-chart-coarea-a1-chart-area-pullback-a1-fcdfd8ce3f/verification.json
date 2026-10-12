@@ -1,0 +1,15 @@
+{
+  "node_id": "root.coarea_formula-a1.chart_coarea-a1.chart_area_pullback-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/192",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/769",
+  "candidate_commit": "3e39136c4560fab29e60849190e4bfb84e720cb6",
+  "integrated_commit": "",
+  "proof_base_commit": "9c5098d7ac1b8bbe0c2687b1eee1b25e1514c8a8",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.coarea_formula-a1.chart_coarea-a1",
+  "requires": []
+}

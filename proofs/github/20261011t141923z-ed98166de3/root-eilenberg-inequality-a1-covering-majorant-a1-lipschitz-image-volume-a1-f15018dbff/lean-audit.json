@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "306c6a941d2446454d34a3dd9ca7d0431ce5d0f7c8b2cb07d8d4f21ec3cb0879",
+  "git_delta": {
+    "base_commit": "1cb8243d7ad379350e3c82f45bbf625765588f5f",
+    "candidate_commit": "f9262106ac7931021fb40e0792a17ecac6cbbf05",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "eilenberg_covering_lipschitz_image_volume_le",
+    "diff_sha256": "f03c243d47f88a17765985c04a864b1c0036fe8d9da33446026a189ff2c91a67",
+    "source_sha256": "d415956abe5023dae5d9ef38a165117270e4195e62fe75be63270dbfb0eb164f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.eilenberg_covering_lipschitz_image_volume_le",
+      "statement": "∀ (X : Type) [MetricSpace X] (m : ℕ) (D : Set X) (f : X → Rn m) (K : ℝ≥0), LipschitzOnWith K f D → volume (closure (f '' D)) ≤ Chapter01.realUnitBallVolume (m : ℝ) * (K : ℝ≥0∞) ^ m * ediam D ^ m / (2 : ℝ≥0∞) ^ m",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

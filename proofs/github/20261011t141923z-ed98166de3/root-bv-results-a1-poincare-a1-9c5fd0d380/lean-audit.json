@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "463afc45583897dbca4d9ac2d09c9db25a69ccad046d2f6067300b3672952c9d",
+  "git_delta": {
+    "base_commit": "b739ca005eee615d0dc3e136bcefe6e9724e27ce",
+    "candidate_commit": "e9b4cc7cd6edfef6cf8daa37e3610c383a8a06b0",
+    "target": "GMT/Ch02/Submission.lean",
+    "changed_files": [
+      "GMT/Ch02/Submission.lean"
+    ],
+    "diff_sha256": "b5f0d1a18d5f122da77056ff06f5f6d7d6a7499d2d0343765ed8a451a1b99910",
+    "source_sha256": "df80e0d422b51216fbdafdfb6627e488e7e447c8e8b9e9a223bde909fbba7d56",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_poincare_theorem",
+      "statement": "BVPoincare",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "94411ae38f5c8eac782bda82018a633b65ddafc650260206edafc60bb807616f",
+  "git_delta": {
+    "base_commit": "fdde16fcbe8bbdab6b401f1a0cba409e817c9dc5",
+    "candidate_commit": "9e1f3399323cf026b94a15f98ca14c261b9088a7",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "sff_projection_field_fderiv_identity",
+    "diff_sha256": "e7e384c2f02b77a007618e7b39c93d50e5e8e41f1084321947e54e7921604b34",
+    "source_sha256": "e85f13019c3beb9d4d6d58549528c18b2d61aaf5d8c5fa95c5bdbf33a367663c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sff_projection_field_fderiv_identity",
+      "statement": "∀ (n N : ℕ) (ψ : Rn n → Rn N) (Q : Rn N → (Rn N →L[ℝ] Rn N)) (x₀ : Rn n), DifferentiableAt ℝ ψ x₀ → DifferentiableAt ℝ (fderiv ℝ ψ) x₀ → DifferentiableAt ℝ Q (ψ x₀) → (∀ᶠ x in 𝓝 x₀, ∀ v : Rn n, Q (ψ x) (fderiv ℝ ψ x v) = fderiv ℝ ψ x v) → ∀ a b : Rn n, fderiv ℝ Q (ψ x₀) (fderiv ℝ ψ x₀ a) (fderiv ℝ ψ x₀ b) = fderiv ℝ (fderiv ℝ ψ) x₀ a b - Q (ψ x₀) (fderiv ℝ (fderiv ℝ ψ) x₀ a b)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "aa83860287cf29910bc74ec4634dd1725ad320b77d3a9ce28512ba15fbaf18d5",
+  "git_delta": {
+    "base_commit": "eceab16ee4952cae206140dda4dd8bcca9d3b017",
+    "candidate_commit": "40df91dd8b5697f58e9569bb56608288cc5fcc88",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "simon_submanifold_continuousOn_of_chart_continuousOn",
+    "diff_sha256": "e38370ada759aac5d36cf32761e65d8eb39f668208ce22448c418e0cb5e8725d",
+    "source_sha256": "8c64fd53d82530697c65befbc9feadb7692ae8f65e13fce33603a83239130a8c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.simon_submanifold_continuousOn_of_chart_continuousOn",
+      "statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (X : Type) [TopologicalSpace X] (F : Rn N → X), Chapter02.IsSimonSubmanifold (E := Rn n) r M → (∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation r M V W ψ → ContinuousOn (fun x ↦ F (ψ x)) V) → ContinuousOn F M",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

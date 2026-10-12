@@ -1,0 +1,97 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.stationary_results-a1`
+- Child DAG node: `root.stationary_results-a1.mean_zero_stationary-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+(TH) denotes the frozen statement of the sibling node root.submanifold_tangent-a1 (Submission.simon_submanifold_tangent_basics), taken here as an explicit hypothesis: (TH1) for all n, N, r ≥ 1, M ⊆ ℝᴺ and every Simon local representation (V, W, ψ) of M of class r, tangentSpace M (ψ x) = range Dψ(x) for every x ∈ V; (TH2) every n-dimensional C^r Simon submanifold M of ℝᴺ is a measurable set and y ↦ tangentProjection M y is continuous on M.
+Notation. ℝ^d := EuclideanSpace ℝ (Fin d) (= Rn d); Hⁿ := μHE[n]. A chart of class r of M is a triple (V, W, ψ) with Chapter02.IsSimonLocalRepresentation r M V W ψ: V ⊆ ℝⁿ and W ⊆ ℝᴺ open, ψ C^r on V, ψ injective on V, ψ(V) = W ∩ M, ψ relatively proper (V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W) and Dψ(x) injective for x ∈ V. For y ∈ M: T_y := tangentSpace M y, P_y := tangentProjection M y (orthogonal projection onto T_y), v^⊥ := normalPart M y v = v − P_y v, τ_i := tangentFrame M y i (an orthonormal basis of T_y), B_y(τ, η) := secondFundamentalForm M y τ η = (fderivWithin ℝ (tangentProjection M) M y τ) η, H(y) := meanCurvature M y = Σ_i B_y(τ_i, τ_i), div_M Y(y) := tangentialDivergence M Y y = Σ_i ⟨τ_i, DY(y)τ_i⟩, and D²ψ(x)[a, b] := fderiv ℝ (fderiv ℝ ψ) x a b (the derivative at x in direction a of x′ ↦ Dψ(x′)b).
+
+Source: Simon, Ch. 2, Lemma 5.5(2) (p. 63), direction "H ≡ 0 on M ∩ U ⇒ M stationary in U", which the book derives "in view of 4.30" and of the first variation formula 5.3 (printed proof: "In view of 4.30 we also have the following"). This is parent proof II.2 steps 4-5.
+
+Setting. Assume (TH) and FirstVariation. M ⊆ ℝ^{n+ℓ} is an n-dimensional C² Simon submanifold, U is open, closure U ∩ M is compact, and H(y) = meanCurvature M y = 0 for all y ∈ M ∩ U. Hⁿ := μHE[n].
+
+1. (Finiteness.) Let K be compact with K ⊆ U. Since K ⊆ U ⊆ closure U, M ∩ K = (closure U ∩ M) ∩ K, a closed subset (K is closed) of the compact set closure U ∩ M; hence M ∩ K is compact. By sibling measure_bounds (a) (M ∩ K is a compact subset of M), Hⁿ(M ∩ K) < ∞. This is the first conjunct of IsStationaryIn n M U.
+2. (Zero first variation.) Let K and φ satisfy IsAdmissibleDeformation 2 U K φ (so K is compact and K ⊆ U). We show HasDerivAt (deformedArea n M K φ) 0 0.
+3. Case U ∩ M = ∅. Then M ∩ K ⊆ M ∩ U = ∅, so φ t '' (M ∩ K) = ∅ and deformedArea n M K φ t = (Hⁿ(∅)).toReal = 0 for every t. A constant function has derivative 0.
+4. Case U ∩ M ≠ ∅. FirstVariation applies: M is a C¹ Simon submanifold (each class-2 chart is a class-1 chart); U is open; U ∩ M ≠ ∅; for compact K′ ⊆ U, μHE[n](K′ ∩ M) = μHE[n](M ∩ K′) < ∞ by step 1; φ is admissible of class 2. Hence HasDerivAt (deformedArea n M K φ) (∫_M div_M X dHⁿ) 0, where X := initialVelocity φ.
+5. By sibling deformation_regularity (first conjunct), X is C¹ on ℝ^{n+ℓ} and X(x) = 0 for x ∉ K. K is compact, hence closed, and M ∩ K is compact (step 1). By sibling divergence_identity (with Y := X and S := K), ∫_M div_M X dHⁿ = −∫_M ⟨X, H⟩ dHⁿ.
+6. ⟨X(y), H(y)⟩ = 0 for every y ∈ M: if y ∈ U, then H(y) = 0 by hypothesis; if y ∉ U, then y ∉ K (as K ⊆ U), so X(y) = 0. Hence ∫_M ⟨X, H⟩ dHⁿ = 0 (MeasureTheory.setIntegral_eq_zero_of_forall_eq_zero), so ∫_M div_M X dHⁿ = 0 and HasDerivAt (deformedArea n M K φ) 0 0.
+7. Steps 1-6 establish both conjuncts of IsStationaryIn n M U.
+
+## Key steps
+
+1. For compact K ⊆ U, M ∩ K = (closure U ∩ M) ∩ K is compact, so Hⁿ(M ∩ K) < ∞ (measure_bounds).
+2. If U ∩ M = ∅ the deformed area is identically 0.
+3. Otherwise FirstVariation gives derivative ∫_M div_M X; X ∈ C¹ vanishes off K (deformation_regularity).
+4. Divergence identity: ∫_M div_M X = −∫_M ⟨X,H⟩ = 0, since H = 0 on M ∩ U and X = 0 off K ⊆ U.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat -n GMT/Ch02/Contract.lean; diff GMT/Ch02/Contract.lean GMT/Ch02/Submission.lean; cat GMT/Ch02/README.md`
+- `grep -rn "μHE\[" mathlib/Mathlib --include=*.lean | grep -E "notation|def "; sed -n 1,140p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `cat -n simongmt/Poincare/SimonGMT/Chapter02/{Submanifold,SubmanifoldCalculus,SecondFundamentalForm,SecondFundamentalFormCalculus,SubmanifoldIntegral,SubmanifoldTopology,WeightedArea,Area}.lean; grep -n 'injective_area_formula_of_injective_derivative' AreaFormula.lean`
+- `grep -rn "theorem ContDiffAt.isSymmSndFDerivAt\|theorem HasFDerivWithinAt.unique_on\|theorem ContDiffAt.to_localInverse\|theorem LipschitzOnWith.hausdorffMeasure_image_le\|theorem HasCompactSupport.fderiv\|theorem finrank_euclideanSpace_fin" mathlib/Mathlib`
+- `grep -rn tangentConeAt mathlib/Mathlib --include=*.lean | grep -E "theorem|lemma" | grep -iE "deriv|curve|segment|mem_tangentCone"; grep -rn mapsTo_tangent mathlib/Mathlib`
+- `grep -rn "integral_bilinear_hasFDerivAt_right_eq_neg_left_of_integrable\|integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable" mathlib/Mathlib; grep -n "theorem\|lemma" mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `grep -rn "Submission\.\|stationary_imp_mean_curvature_zero\|second_fundamental_form_chart_formula\|submanifold_divergence_identity_compact\|deformation_velocity_acceleration_regularity" project simongmt/Poincare; python3 -I lean_name collision check against dag.json`
+- `python3 -I gen_checks.py (replays verifier gmt-compare.py contract_scope/child_modules and lean_contract.validate_lean_statement for the 10 lean_statements); lake build GMT.Ch02.Submission; lake env lean NodeChallenge_00..09.lean; lake env lean AssemblyCheck.lean`
+- `lake env lean LibCheck.lean: #print axioms Poincare.SimonGMT.Chapter02.{integral_area_formula_of_injective_derivative, IsSimonLocalRepresentation.area_formula, IsSimonLocalRepresentation.weighted_area_formula, IsSimonLocalRepresentation.exists_open_image_eq_inter, IsSimonLocalRepresentation.isEmbedding_chartMap, submanifoldDivergenceAt_eq_sum_inner, measurable_areaJacobianAt}; #check of every cited Mathlib lemma`
+- `sed -n 1030,1420p book/chapter-02.txt (printed 4.18-5.12); read dag.json and nodes/root-stationary-results-a1/parent-child-handoff.json`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/TangentCone/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SecondFundamentalForm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SecondFundamentalFormCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/stat-decomp2/AssemblyCheck.lean`
+
+The frozen contract (Contract.lean lines 83-176 and 297-342) defines the key notions:
+- B is fderivWithin of tangentProjection;
+- H is the frame trace;
+- IsStationaryIn is defined variationally.
+
+Collision checks: the snapshot project has no Submission.* declarations and no declaration with any of the ten proposed names, and dag.json (50 nodes) has no lean_name collision.
+
+SimonGMT supplies kernel-checked tools used by the children:
+- WeightedArea.lean: integral_area_formula_of_injective_derivative and IsSimonLocalRepresentation.area_formula;
+- SubmanifoldTopology.lean: IsSimonLocalRepresentation.exists_open_image_eq_inter and isEmbedding_chartMap;
+- SubmanifoldCalculus.lean: submanifoldDivergenceAt_eq_sum_inner;
+- measurable_areaJacobianAt.
+#print axioms shows only propext, Classical.choice and Quot.sound for all of them.
+
+SimonGMT has no divergence theorem on submanifolds (integral_submanifoldDivergence_eq_curvature_sub_boundary takes it as a hypothesis), no chart formula for the frame-free B, and nothing on admissible deformations. These are therefore genuine new obligations.
+
+Mathlib 25730c7c supplies ContDiffAt.isSymmSndFDerivAt, HasFDerivWithinAt.unique_on, HasFDerivWithinAt.mapsTo_tangent_cone, tangentConeAt_mono, tangentConeAt_of_mem_nhds, ContDiffAt.toOpenPartialHomeomorph, ContDiffAt.to_localInverse, OpenPartialHomeomorph.contDiffAt_symm, integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable, LinearMap.normDet_ne_zero_tfae, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, LipschitzOnWith.hausdorffMeasure_image_le, ContractingWith.fixedPoint, HasCompactSupport.fderiv and ContDiffBump. exists_smooth_tsupport_subset does not exist, so it is not cited. setIntegral_eq_of_subset_of_forall_diff_eq_zero is deprecated, so the _sdiff_ name is cited.
+
+Compile checks:
+- All ten lean_statements pass the workflow validator and elaborate in the comparator-replayed contract scope; NodeChallenge_00..09 compiled with only sorry warnings.
+- AssemblyCheck.lean proves the frozen parent type StationaryIffMeanCurvatureZero ∧ SecondVariationStationary from the children and the sibling types. Its axioms are sorryAx from the stubs plus propext, Classical.choice and Quot.sound.
+- Glue examples that instantiate the children as their proofs use them also compile.

@@ -1,0 +1,18 @@
+{
+  "node_id": "root.whitney_extension-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/34",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/2139",
+  "candidate_commit": "b3fc3504803d0df1a8f1a9826d92509a8f5e263b",
+  "integrated_commit": "",
+  "proof_base_commit": "f24d5b426f3fc56b02869001bf9b33f569563d7a",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.whitney_extension-a1.whitney_partition-a1",
+    "root.whitney_extension-a1.whitney_gluing-a1"
+  ]
+}

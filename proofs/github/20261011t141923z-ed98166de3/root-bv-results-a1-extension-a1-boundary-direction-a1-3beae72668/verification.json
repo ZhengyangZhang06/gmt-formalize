@@ -1,0 +1,18 @@
+{
+  "node_id": "root.bv_results-a1.extension-a1.boundary_direction-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/510",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/1647",
+  "candidate_commit": "f54f5f3346656009611818320ef09d221a139fbe",
+  "integrated_commit": "",
+  "proof_base_commit": "a874a0f7584cf26f1ffe971bc7881ac0b3d1ab97",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.bv_results-a1.extension-a1",
+  "requires": [
+    "root.bv_results-a1.extension-a1.distance_concave-a1",
+    "root.bv_results-a1.extension-a1.distance_gradient-a1"
+  ]
+}

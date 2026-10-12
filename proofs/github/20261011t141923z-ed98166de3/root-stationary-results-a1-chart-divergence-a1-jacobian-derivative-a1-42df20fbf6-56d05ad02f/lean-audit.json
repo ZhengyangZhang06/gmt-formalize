@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6f34325c73b4e994a6c4a4253c86f15a4c11df0608b2d36a715f11b29b76d4e1",
+  "git_delta": {
+    "base_commit": "79460e53659aab800e19ecbe53070245239be9e2",
+    "candidate_commit": "805e272a5121da85f96a12c11fa9e4f3a6bd5259",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "adjoint_comp_fderiv_contDiffOn_fderiv_eq_add",
+    "diff_sha256": "f8e0a217c2c910b68010bd62644a5af158a0cd85e03cb44ec0bf3652ebe389d6",
+    "source_sha256": "d561f55da8c1babd12dfff56bc8acab7e7f051fe594739ed83653c1f9503e18b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.adjoint_comp_fderiv_contDiffOn_fderiv_eq_add",
+      "statement": "∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → ContDiffOn ℝ 1 (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) V ∧ ∀ x ∈ V, ∀ v : Rn n, fderiv ℝ (fun x ↦ ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) x v = ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ (fderiv ℝ ψ) x v + ContinuousLinearMap.adjoint (fderiv ℝ (fderiv ℝ ψ) x v) ∘L fderiv ℝ ψ x",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

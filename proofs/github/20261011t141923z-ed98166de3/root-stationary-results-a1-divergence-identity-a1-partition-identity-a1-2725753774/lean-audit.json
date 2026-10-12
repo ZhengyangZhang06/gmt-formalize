@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1af63ff4035f9105f306d26199e07de6c442b1c8ef4e6ca7b2f53e80ed3ccb11",
+  "git_delta": {
+    "base_commit": "77f786d779952ebb350413dda8ed56d39c112e09",
+    "candidate_commit": "8d3dd96d18ac248a8765548e2f9ed9cd92fbe222",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "tangentialDivergence_add_inner_eq_sum_partition",
+    "diff_sha256": "f9c5bcebf20a7ef9e094c6b91b12f2cf72fa5fa0336d8ed43008950503e48ac3",
+    "source_sha256": "dc6933cdaf9d7b929cd970fa0be87d30c6b4150228ef4bce371583087396bf63",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tangentialDivergence_add_inner_eq_sum_partition",
+      "statement": "∀ (N p : ℕ) (M S O : Set (Rn N)) (Y : Rn N → Rn N) (ζ : Fin p → Rn N → ℝ), ContDiff ℝ 1 Y → (∀ q, ContDiff ℝ 1 (ζ q)) → IsClosed S → (∀ x ∉ S, Y x = 0) → IsOpen O → M ∩ S ⊆ O → (∀ z ∈ O, ∑ q, ζ q z = 1) → ∀ y ∈ M, tangentialDivergence M Y y + inner ℝ (Y y) (meanCurvature M y) = ∑ q, (tangentialDivergence M (fun z ↦ ζ q z • Y z) y + inner ℝ (ζ q y • Y y) (meanCurvature M y))",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

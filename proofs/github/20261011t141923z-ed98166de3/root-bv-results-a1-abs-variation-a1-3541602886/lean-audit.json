@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "1e219e44106b2db225d284a5146df45dc926673699d3d96536a1c095d39e9035",
+  "git_delta": {
+    "base_commit": "67ff63dba028024d99c54dc0b0268d3ee0157017",
+    "candidate_commit": "7baf9d3a858b92aeefe2dc3167a6432bf7e88176",
+    "target": "GMT/Ch02/Submission.lean",
+    "changed_files": [
+      "GMT/Ch02/Submission.lean"
+    ],
+    "diff_sha256": "9daec8dd7a46707c0e1e347bc4f5865d4958c385b23655a1b647e588e2b46357",
+    "source_sha256": "58722a3c34371f48213e1ba32494aa6cbc03278ef0064766ca2d56fceac2437b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_abs_variation_le",
+      "statement": "∀ (n : ℕ) (O : Set (Rn n)) (u : Rn n → ℝ), IsOpen O → LocallyIntegrableOn u O volume → Chapter02.bvVariationOn (fun x ↦ |u x|) O ≤ Chapter02.bvVariationOn u O",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

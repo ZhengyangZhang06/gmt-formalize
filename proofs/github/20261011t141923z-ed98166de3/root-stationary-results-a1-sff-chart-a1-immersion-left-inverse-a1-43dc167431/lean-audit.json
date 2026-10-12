@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5c32102a9f1075733f1b97da367751dd525dde92a9df1e7118a500dee328586b",
+  "git_delta": {
+    "base_commit": "fdde16fcbe8bbdab6b401f1a0cba409e817c9dc5",
+    "candidate_commit": "26f9b26a0719eddbadc1e511b9c14cbcc31c7043",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "sff_immersion_local_left_inverse",
+    "diff_sha256": "f9c34cab5e54f4c2caaa4901518646de6a5085bf9f7feb2a17382741599650fd",
+    "source_sha256": "8b5a04bd152e0ec8a7fd57d174235ad13d0e3a74bc79db367d996beb15ec9ccb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sff_immersion_local_left_inverse",
+      "statement": "∀ (n N : ℕ) (ψ : Rn n → Rn N) (x₀ : Rn n), ContDiffAt ℝ 1 ψ x₀ → Function.Injective (fderiv ℝ ψ x₀) → ∃ g : Rn N → Rn n, DifferentiableAt ℝ g (ψ x₀) ∧ ∀ᶠ x in 𝓝 x₀, g (ψ x) = x",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

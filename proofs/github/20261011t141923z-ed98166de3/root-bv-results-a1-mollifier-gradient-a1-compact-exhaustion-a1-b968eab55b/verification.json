@@ -1,0 +1,15 @@
+{
+  "node_id": "root.bv_results-a1.mollifier_gradient-a1.compact_exhaustion-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/309",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/875",
+  "candidate_commit": "a769163667bb2afce3cec70db7b8c72ce57ee769",
+  "integrated_commit": "",
+  "proof_base_commit": "afd71d875c9982f6fe43bcee403128e34e3995ba",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.bv_results-a1.mollifier_gradient-a1",
+  "requires": []
+}

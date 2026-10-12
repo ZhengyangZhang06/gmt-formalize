@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2e96983f854d6d0939836af5c67104e3ad23b542daa6ce16574406a23de9d1f3",
+  "git_delta": {
+    "base_commit": "c7a37d3d72e550cf37803a37d55dccb4847903f3",
+    "candidate_commit": "199ffa82f312e17c1c752f984909996bf43d60cd",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_integral_div_le_of_variation_le",
+    "diff_sha256": "72f287888fcfe76df68113be6a394614fb049be9cfbdb540b0cb2519d484be27",
+    "source_sha256": "21fb315eb0baaafeec29992293cc82b749d975157919cf01f740255790060d5b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_integral_div_le_of_variation_le",
+      "statement": "∀ (n : ℕ) (W : Set (Rn n)) (u : Rn n → ℝ) (c : ℝ), 0 ≤ c → Chapter02.bvVariationOn u W ≤ ENNReal.ofReal c → ∀ g : CompactlySupportedContinuousMap (Rn n) (Rn n), Chapter02.IsC1TestField g → tsupport g ⊆ W → (∫ x in W, u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x) ≤ c * Chapter02.compactlySupportedSupNorm g",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,17 @@
+{
+  "node_id": "root.variation_formulas-a1.image_area_formula-a1.chart_image_area-a1.weighted_area_formula-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1410",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/2120",
+  "candidate_commit": "11afca0725d2050746abf63787b4a925714c117e",
+  "integrated_commit": "",
+  "proof_base_commit": "daa0a560854607fc9cc6011bb468009fe56464d3",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.variation_formulas-a1.image_area_formula-a1.chart_image_area-a1",
+  "requires": [
+    "root.variation_formulas-a1.image_area_formula-a1.chart_image_area-a1.injective_area_formula-a1"
+  ]
+}
