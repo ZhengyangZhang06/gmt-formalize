@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "263caef143f26e6c9f59f1980182eb8a8939b8a77595fd7cc3540a60abd2965d",
+  "git_delta": {
+    "base_commit": "956d5f19d9a881b05966bd4ee2f27f228011214e",
+    "candidate_commit": "a49e975113ed3d70261b22028f6208d3efcb1f52",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_ru_continuous_to_bounded",
+    "diff_sha256": "615e0db439f54f72e4e439bddcbae3a44e853ac9c16767722146514c30507788",
+    "source_sha256": "74769dd7dc06086c2b45aef738f35cf8c41063f578044de0272a9cfd997f7192",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_ru_continuous_to_bounded",
+      "statement": "∀ (P : ℕ) (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ), Integrable g₁ μ₁ → Integrable g₂ μ₂ → ∀ O : Set (Eucl P), IsOpen O → (∀ φ : Eucl P → ℝ, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ O → ∫ x, φ x * g₁ x ∂μ₁ = ∫ x, φ x * g₂ x ∂μ₂) → ∀ h : Eucl P → ℝ, Measurable h → (∃ C : ℝ, ∀ x, |h x| ≤ C) → (∀ x, x ∉ O → h x = 0) → ∫ x, h x * g₁ x ∂μ₁ = ∫ x, h x * g₂ x ∂μ₂",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
