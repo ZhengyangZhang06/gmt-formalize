@@ -5156,6 +5156,23 @@ theorem Submission.besicovitchFedererProjectionTheorem_holds :
   rw [image_union, image_iUnion]
   exact measure_union_null (hnull v Z hZ) (measure_iUnion_null fun i ↦ hv i hlin)
 
+/-- **Simon Ch. 3, Lemma 3.2, Lemma 3.3 and Theorem 3.8 (pp. 78–80)** (`chapter-03.txt`
+lines 449–469, 476–496 and 540–548). Lemma 3.2 is SimonGMT's `simon_lemma_3_2` for the cover
+`(Aⱼ)`. Lemma 3.3 follows from Lemma 1.2 "⇒": a countably `n`-rectifiable `R ⊆ S` with
+`Hⁿ(R) > 0` has `Hⁿ(R ∩ ψ(V)) > 0` for a `C¹` chart `ψ : V → ℝ^{n+ℓ}` of one of the covering
+submanifolds, so `T = V ∩ ψ⁻¹(R)` has `Lⁿ(T) > 0`; near a density point of `T`, `p_J ∘ ψ` is
+bi-Lipschitz for a `J` with `p_J` injective on the tangent plane, so `Hⁿ(p_J(S)) > 0`.
+Theorem 3.8 combines 3.2 with the Besicovitch–Federer theorem 3.6 (erratum: line 540 cites
+"3.2 and 3.7", but Remark 3.7 is the converse of 3.6): for `A = R ∪ P` as in 3.2, `Hⁿ(p(P)) = 0`
+for almost all `p`, so the hypothesis forces `Hⁿ(P) = 0` and `A` is countably `n`-rectifiable. -/
+theorem Submission.section3_decomposition_projection_rectifiability :
+    RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ RectifiabilityTheoremForSets :=
+  ⟨Submission.section3_rectifiableDecomposition,
+    Submission.section3_coordinateProjectionCriterion_of_submanifoldCover
+      Submission.submanifoldCoverCharacterization_holds,
+    Submission.section3_rectifiabilityTheorem_of_besicovitchFederer
+      Submission.besicovitchFedererProjectionTheorem_holds⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
