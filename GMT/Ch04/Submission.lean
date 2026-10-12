@@ -538,23 +538,13 @@ theorem Submission.hausdorff_null_of_measure_null_density_ge : ∀ (n ℓ : ℕ)
           exact mem_iUnion.2 ⟨⟨b, hb⟩, hab⟩
     _ ≤ ε := liminf_le_of_frequently_le' (Frequently.of_forall fun m ↦ hUsum m)
 
-theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
-
-end
-
-end GMT.Ch04
-
-
-namespace Submission
-
-/-- Simon 3.12 (p. 91), given `ApproxTangentAE`: if `μ_V` is finite on compact sets and
-`Θⁿ(μ_V, ·)` exists at every point of the open set `U`, then `(M_V, Θⁿ(μ_V, ·))` is an
-admissible pair whose weight is `μ_V ⌞ U`. -/
-theorem canonicalCarrier_rectifiablePair_weight : ApproxTangentAE → ∀ (n ℓ : ℕ)
-    (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), 0 < n → IsOpen U →
-    IsFiniteMeasureOnCompacts V.weight → (∀ ξ ∈ U, V.HasDensityAt ξ (V.density ξ)) →
-    IsRectifiablePair n (V.canonicalCarrier U) V.density ∧
-      pairWeight n (V.canonicalCarrier U) V.density = V.weight.restrict U := by
+/-- **Simon 3.12 (p. 91), given `ApproxTangentAE`.** If `μ_V` is finite on compact sets and
+`Θⁿ(μ_V, ·)` exists at every point of the open set `U`, then `(M_V, Θⁿ(μ_V, ·))` is an admissible
+pair whose weight is `μ_V ⌞ U`. Proof: for a representative `(M, θ)` of `V`, `Θⁿ(μ_V, ·) = θ`
+`Hⁿ`-a.e. on `M` by `ApproxTangentAE`, so `Hⁿ((M ∩ U) \ M_V) = 0`; `μ_V(Mᶜ) = 0`, so
+`Hⁿ(M_V \ M) = 0` by the density lemma `Submission.hausdorff_null_of_measure_null_density_ge`
+applied to `{x ∈ U \ M : Θⁿ(μ_V, x) ≥ 1/(k+1)}`. Hence `M_V = M ∩ U` up to `Hⁿ`-null sets. -/
+theorem Submission.canonicalCarrier_rectifiablePair_weight : ApproxTangentAE → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), 0 < n → IsOpen U → IsFiniteMeasureOnCompacts V.weight → (∀ ξ ∈ U, V.HasDensityAt ξ (V.density ξ)) → IsRectifiablePair n (V.canonicalCarrier U) V.density ∧ pairWeight n (V.canonicalCarrier U) V.density = V.weight.restrict U := by
   intro hAT n ℓ V U hn hU hfin hdens
   -- a representative `(M, θ)` of `V`, so that `μ_V = Hⁿ ⌞ θ`
   obtain ⟨a, ha⟩ : ∃ a, RectifiableVarifold.mk a = V := Quot.exists_rep V
@@ -621,4 +611,8 @@ theorem canonicalCarrier_rectifiablePair_weight : ApproxTangentAE → ∀ (n ℓ
     filter_upwards [hN (a.M ∩ U) inter_subset_left] with x hx
     rw [hx]
 
-end Submission
+theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
+
+end
+
+end GMT.Ch04
