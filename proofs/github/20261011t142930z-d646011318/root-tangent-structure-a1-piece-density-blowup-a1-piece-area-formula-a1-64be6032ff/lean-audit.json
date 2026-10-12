@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "160254d19c49949adf05fb93ed58bb6ad6217f1469adfbd3ccd270967eaa53ee",
+  "git_delta": {
+    "base_commit": "d7f5808dc5175e6aa940bcc56eedfeaefec69bc8",
+    "candidate_commit": "772ec8c0a6b39a39ede032f6e65a551109612483",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_pdb_piece_area_formula",
+    "diff_sha256": "99be84c60fe9f133c8548fc7389711aefd646b76fe4da5a3b657b04cc1a06891",
+    "source_sha256": "f92a31c6b28009f4bc0aafe635cc701f62679771df56c8b3e9925eed2e4370fd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_pdb_piece_area_formula",
+      "statement": "∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (K : NNReal), MeasurableSet C → LipschitzWith K F → Set.InjOn F C → ContinuousOn (fderiv ℝ F) C → ∃ J : EuclideanSpace ℝ (Fin n) → ℝ, ContinuousOn J C ∧ (∀ v ∈ C, 0 ≤ J v ∧ ∀ S : Set (EuclideanSpace ℝ (Fin n)), (μHE[n] : Measure (Ambient n ℓ)) (fderiv ℝ F v '' S) = ENNReal.ofReal (J v) * volume S) ∧ ∀ g : Ambient n ℓ → ℝ, Continuous g → ∫ y in F '' C, g y ∂μHE[n] = ∫ v in C, J v * g (F v)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
