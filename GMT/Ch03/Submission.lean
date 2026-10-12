@@ -379,6 +379,63 @@ theorem Submission.gaussGreenRep_setIntegral_divergence_linear : ∀ (N : ℕ) (
         ContinuousLinearMap.toLinearMap_smul, map_smul, smul_eq_mul]
     simp only [hpt]
     exact integral_const_mul c _
+/-- **Simon Ch. 2, (2.1) and the remark after it, for `u = χ_E` (Ch. 3, §4, p. 80).** If `E` has
+locally finite perimeter in the open set `U` and `K ⊆ U` is compact, there is `C ≥ 0` with
+`|∫_{E ∩ U} div g| ≤ C M` for every `C¹` field `g` with compact support in `K` and `|g| ≤ M`.
+Choose an open `W` with `K ⊆ W ⊂⊂ U` and take `C = c(W)` from (2.1). Since `div g = 0` off
+`tsupport g ⊆ W ⊆ U`, `∫_W χ_E div g = ∫_{E ∩ U} div g`, and `sup |g| ≤ M`; this gives the upper
+bound, and the lower bound follows from the upper bound for `-g`, as `div (-g) = -div g`. -/
+theorem Submission.gaussGreenRep_divergence_integral_local_bound : ∀ (N : ℕ) (U E : Set (Rn N)), IsOpen U → NullMeasurableSet E volume → HasLocallyFinitePerimeter U E → ∀ K : Set (Rn N), IsCompact K → K ⊆ U → ∃ C : ℝ, 0 ≤ C ∧ ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ K → ∀ M : ℝ, (∀ x, ‖g x‖ ≤ M) → |∫ x in E ∩ U, Poincare.SimonGMT.Chapter02.euclideanDivergence g x| ≤ C * M := by
+  intro N U E hU hE hBV K hK hKU
+  obtain ⟨-, -, hbound⟩ := hBV
+  -- Step 1: an open `W` with `K ⊆ W` and `closure W` compact in `U`; (2.1) on `W` gives `c ≥ 0`.
+  obtain ⟨W, hWo, hKW, hWU, hWc⟩ := exists_open_between_and_isCompact_closure hK hU hKU
+  obtain ⟨c, hc, hcW⟩ := hbound W hWo ⟨hWc, hWU⟩
+  refine ⟨c, hc, ?_⟩
+  -- Step 2: the upper bound `∫_{E ∩ U} div g ≤ c M`.
+  have hupper : ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ K →
+      ∀ M : ℝ, (∀ x, ‖g x‖ ≤ M) →
+        ∫ x in E ∩ U, Poincare.SimonGMT.Chapter02.euclideanDivergence g x ≤ c * M := by
+    intro g hg hgc hgK M hM
+    -- (a) `g` is a `C¹` test field in `C_c(ℝᴺ, ℝᴺ)` supported in `W`.
+    let G : C_c(Rn N, Rn N) := ⟨⟨g, hg.continuous⟩, hgc⟩
+    have ha := hcW G hg (hgK.trans hKW)
+    -- (b) `∫_W χ_E div g = ∫_{E ∩ U} div g`, since `div g` vanishes off `tsupport g ⊆ W ⊆ U`.
+    have hb : ∫ x in W, E.indicator (fun _ ↦ (1 : ℝ)) x *
+          Poincare.SimonGMT.Chapter02.euclideanDivergence g x =
+        ∫ x in E ∩ U, Poincare.SimonGMT.Chapter02.euclideanDivergence g x := by
+      rw [← integral_indicator hWo.measurableSet,
+        ← integral_indicator₀ (hE.inter hU.measurableSet.nullMeasurableSet)]
+      congr 1
+      ext x
+      by_cases hxW : x ∈ W
+      · have hxU : x ∈ U := hWU (subset_closure hxW)
+        by_cases hxE : x ∈ E <;> simp [hxW, hxU, hxE]
+      · have hx0 : Poincare.SimonGMT.Chapter02.euclideanDivergence g x = 0 :=
+          Function.notMem_support.mp fun hx ↦
+            hxW (hKW (hgK (Poincare.SimonGMT.Chapter02.support_euclideanDivergence_subset g hx)))
+        rw [Set.indicator_of_notMem hxW, eq_comm, Set.indicator_apply_eq_zero]
+        exact fun _ ↦ hx0
+    -- (c) `sup |g| ≤ M`.
+    have hsup : Poincare.SimonGMT.Chapter02.compactlySupportedSupNorm G ≤ M :=
+      csSup_le (Set.range_nonempty _) (by rintro _ ⟨x, rfl⟩; exact hM x)
+    -- (d) Combine.
+    calc ∫ x in E ∩ U, Poincare.SimonGMT.Chapter02.euclideanDivergence g x
+        = ∫ x in W, E.indicator (fun _ ↦ (1 : ℝ)) x *
+            Poincare.SimonGMT.Chapter02.euclideanDivergence g x := hb.symm
+      _ ≤ c * Poincare.SimonGMT.Chapter02.compactlySupportedSupNorm G := ha
+      _ ≤ c * M := mul_le_mul_of_nonneg_left hsup hc
+  -- Step 3: the lower bound, from step 2 for `-g`, using `div (-g) = -div g`.
+  intro g hg hgc hgK M hM
+  have hneg : ∀ x, Poincare.SimonGMT.Chapter02.euclideanDivergence (-g) x =
+      -Poincare.SimonGMT.Chapter02.euclideanDivergence g x := by
+    intro x
+    simp only [Poincare.SimonGMT.Chapter02.euclideanDivergence, fderiv_neg,
+      ContinuousLinearMap.toLinearMap_neg, map_neg]
+  have hlower := hupper (-g) hg.neg hgc.neg (by rwa [tsupport_neg]) M (by simpa using hM)
+  simp only [hneg, integral_neg] at hlower
+  -- Step 4: `-c M ≤ ∫_{E ∩ U} div g ≤ c M`.
+  exact abs_le.mpr ⟨by linarith, hupper g hg hgc hgK M hM⟩
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
