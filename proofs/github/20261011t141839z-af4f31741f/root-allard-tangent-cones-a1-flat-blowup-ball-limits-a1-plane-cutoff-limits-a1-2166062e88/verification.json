@@ -1,0 +1,17 @@
+{
+  "node_id": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.plane_cutoff_limits-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1107",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "a3a24dfb04a3da49dfee08c82f7a66915f9801c7",
+  "integrated_commit": "",
+  "proof_base_commit": "80d4e485561596564ad55072811d9ee9683f3d19",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1",
+  "requires": [
+    "root.allard_tangent_cones-a1.flat_blowup_ball_limits-a1.plane_ball_measure-a1"
+  ]
+}
