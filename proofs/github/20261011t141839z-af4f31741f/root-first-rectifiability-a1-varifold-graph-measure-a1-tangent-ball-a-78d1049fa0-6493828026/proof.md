@@ -1,0 +1,98 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1`
+- Child DAG node: `root.first_rectifiability-a1.varifold_graph_measure-a1.tangent_ball_average-a1.plane_ball-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 5 (plane balls) of the parent proof, made self-contained.
+
+Notation: P := T.plane, a linear subspace of ℝ^N = Euclidean N; |·| is the Euclidean norm; ℝ^n := EuclideanSpace ℝ (Fin n); B_ρ(0) is the closed ball of radius ρ about 0 in the indicated space.
+
+1. Orthonormal basis indexed by Fin n. finrank_ℝ P = n (Grassmannian.finrank_plane). Hence the standard orthonormal basis of P (stdOrthonormalBasis ℝ P, indexed by Fin (finrank ℝ P)) reindexed along finCongr T.finrank_plane is an orthonormal basis b of P indexed by Fin n. Its coordinate map b.repr : P ≃ₗᵢ[ℝ] ℝ^n is a linear isometry equivalence; put e := b.repr.symm : ℝ^n ≃ₗᵢ[ℝ] P.
+
+2. Isometric parametrisation of P. Let ι : ℝ^n → ℝ^N, ι(v) := (e v : ℝ^N), the composite of e with the inclusion P ↪ ℝ^N (in Lean: J := T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry, a linear isometry ℝ^n →ₗᵢ[ℝ] ℝ^N). Then ι is an isometry, |ι(v)| = |v| and ι(v) ∈ P for every v ∈ ℝ^n.
+
+3. ι(B_r(0)) = P ∩ B_r(0), with B_r(0) ⊆ ℝ^n on the left and ⊆ ℝ^N on the right. (⊆) If |v| ≤ r then ι(v) ∈ P and |ι(v)| = |v| ≤ r. (⊇) If w ∈ P and |w| ≤ r, put v := b.repr ⟨w, w ∈ P⟩ = e⁻¹(w) ∈ ℝ^n; then ι(v) = e(e⁻¹ w) = w, and |v| = |⟨w, _⟩| = |w| ≤ r because b.repr preserves norms and the norm of P is the restriction of the norm of ℝ^N.
+
+4. Transfer to ℝ^n. ι is an isometry between metric spaces carrying their Borel σ-algebras, so μHE[n](ι(E)) = μHE[n](E) for every E ⊆ ℝ^n (Isometry.euclideanHausdorffMeasure_image), and on ℝ^n = EuclideanSpace ℝ (Fin n) one has μHE[n] = volume (EuclideanSpace.euclideanHausdorffMeasure_eq_volume). By 3, μHE[n](P ∩ B_r(0)) = μHE[n](ι(B_r(0))) = volume(B_r(0)).
+
+5. Volume of a ball in ℝ^n. volume on ℝ^n is an additive Haar measure and finrank_ℝ ℝ^n = n (finrank_euclideanSpace_fin), so, as r ≥ 0, volume(B_r(0)) = ENNReal.ofReal(r^n) · volume(ball (0 : ℝ^n) 1) (Measure.addHaar_closedBall). Since r ≥ 0, ENNReal.ofReal(r^n) = ENNReal.ofReal(r)^n (ENNReal.ofReal_pow), and volume(ball (0 : ℝ^n) 1) = unitBallVolume n by definition. Hence volume(B_r(0)) = ENNReal.ofReal(r)^n · unitBallVolume n = unitBallVolume n · ENNReal.ofReal(r)^n by commutativity of multiplication in [0, ∞].
+
+6. Combining 4 and 5, μHE[n](T.plane ∩ closedBall 0 r) = unitBallVolume n · ENNReal.ofReal(r)^n. The argument is uniform in n, including n = 0 (ℝ^0 is a point, r^0 = 1, and both sides equal unitBallVolume 0 = 1), so no case distinction is needed. ∎
+
+## Key steps
+
+1. finrank T.plane = n, so reindexing stdOrthonormalBasis ℝ T.plane along finCongr T.finrank_plane gives an orthonormal basis b indexed by Fin n
+2. ι := T.plane.subtypeₗᵢ ∘ b.repr.symm is a linear isometry ℝ^n → ℝ^N with values in T.plane and |ι v| = |v|
+3. T.plane ∩ B_r(0) = ι(B_r(0))
+4. μHE[n](ι E) = μHE[n](E) = volume E on ℝ^n (Isometry.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume)
+5. volume(B_r(0)) = ofReal(r^n)·volume(ball 0 1) = unitBallVolume n · ofReal(r)^n (Measure.addHaar_closedBall, finrank_euclideanSpace_fin, ENNReal.ofReal_pow)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `rg -n 'def HasTangentPlane|def rescaledMeasure|def planeVarifoldMeasure|def unitBallVolume' project/GMT/Ch08/Contract.lean`
+- `cmp project/GMT/Ch08/Contract.lean project/GMT/Ch08/Submission.lean (identical)`
+- `rg -n 'theorem Isometry.euclideanHausdorffMeasure_image|theorem euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n 'theorem addHaar_closedBall ' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `rg -n 'theorem integral_smul_measure|^theorem integral_map |theorem integral_mul_const |theorem integral_sub ' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean mathlib/Mathlib/MeasureTheory/Integral/Bochner/*.lean`
+- `rg -n 'theorem integral_indicator |theorem setIntegral_const|theorem integral_indicator_one' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `rg -n 'integrableOn_of_bounded' mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean; rg -n 'theorem IntegrableOn.integrable_of_forall_notMem_eq_zero|theorem integrableOn_const|theorem integrable_indicator_iff' mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `rg -n '^theorem tendsto_order ' mathlib/Mathlib/Topology/Order/Basic.lean; rg -n 'theorem Filter.Tendsto.div ' mathlib/Mathlib/Topology/Algebra/GroupWithZero.lean; rg -n 'theorem finrank_euclideanSpace_fin' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean; rg -n 'theorem norm_coe_le_norm' mathlib/Mathlib/Topology/ContinuousMap/Compact.lean; rg -n 'theorem intro' mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `rg -n 'theorem measure_ball_pos|theorem measure_ball_lt_top' mathlib/Mathlib/MeasureTheory`
+- `grep -rn 'lemma mul_div_mul_left' mathlib/Mathlib/Algebra/GroupWithZero/`
+- `rg -n 'frt_vgm_tba|frt_td_plane' project/ (no match)`
+- `grep -n 'structure Varifold|isOpen_domain|finite_on_compact|theorem weight_apply|finrank_plane|instCompactSpace|abbrev Grassmannian' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `python3 -I scan of dag.json nodes with lean_name containing closedBall_hausdorff/plane_ball (ids, status, lean_statement); grep -c frt_vgm_tba in all 8 chapter dag.json files (0 each)`
+- `for r in $(git for-each-ref --format='%(refname)'); git grep -q frt_vgm_tba $r -- GMT (0 hits over 617 refs)`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint' /runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/runtime.py`
+- `python3 -I /tmp/tba_decomp3/scripts/scope.py and stmts3.py (gmt-compare.py contract_scope/child_modules mode='contract'; lean_contract.validate_lean_statement on all six types)`
+- `lake env lean /tmp/tba_decomp3/Full3.lean, Stub3.lean, Emu3.lean, Challenge_0..5.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/GroupWithZero.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/GroupWithZero/Units/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-varifold-graph-measure-a1-tangent-ball-average-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-varifold-graph-measure-a1-tangent-ball-average-a1/decomposition-v1.json`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/tmp/tba_decomp3/Full3.lean`
+- `/tmp/tba_decomp3/Stub3.lean`
+- `/tmp/tba_decomp3/Emu3.lean`
+
+The snapshot is project 63436ae6 with Mathlib 25730c7c. Its Contract.lean is identical to Submission.lean. It defines HasTangentPlane (l.108), rescaledMeasure (l.96), planeVarifoldMeasure (l.102) and unitBallVolume (l.41) exactly as the children's prose describes them.
+
+Every library fact the children need exists in the pinned Mathlib/SimonGMT:
+- plane_ball: Isometry.euclideanHausdorffMeasure_image (Volume/Measure.lean:131), EuclideanSpace.euclideanHausdorffMeasure_eq_volume (:187), Measure.addHaar_closedBall (EqHaar.lean:500), finrank_euclideanSpace_fin (PiL2.lean:205), and SimonGMT Grassmannian.finrank_plane (Varifold.lean:126).
+- plane_cutoff_bounds and ball_cutoff_sandwich: Measure.integrableOn_of_bounded (IntegrableOn.lean:716), IntegrableOn.integrable_of_forall_notMem_eq_zero (:453), integrable_indicator_iff (:340), integrableOn_const (:119), integral_indicator and integral_indicator_one (Bochner/Set.lean:185/533), ContinuousMap.norm_coe_le_norm (ContinuousMap/Compact.lean:196), and Varifold.finite_on_compact (Varifold.lean:339).
+- product_blowup: integral_smul_measure and integral_map (Bochner/Basic.lean:1052/1081), integral_mul_const (:294), HasCompactSupport.intro (Topology/Algebra/Support.lean:232), and Grassmannian.instCompactSpace (Varifold.lean:271).
+- nonneg_ball_limit: tendsto_order (Topology/Order/Basic.lean:139) and Varifold.isOpen_domain (Varifold.lean:336).
+- Parent assembly: integral_sub (Bochner/Basic.lean:263), setIntegral_const (Bochner/Set.lean:524), Varifold.weight_apply (Varifold.lean:565), Filter.Tendsto.div (GroupWithZero.lean:189), mul_div_mul_left (GroupWithZero/Units/Basic.lean:460), measure_ball_pos (OpenPos.lean:212) and measure_ball_lt_top (Typeclasses/Finite.lean:373).
+
+Names: no frt_vgm_tba or frt_td_plane name occurs in the snapshot project. The plane-ball type is held by three DAG nodes under distinct names: frt_td_plane_closedBall_hausdorff (another parent; rejected for reuse by the controller), intcpt_canon_plane_closedBall_hausdorff and tgc_plane_closedBall_hausdorff. So the fresh, globally unique name frt_vgm_tba_plane_closedBall_hausdorff is used. No frt_vgm_tba_* name occurs in any chapter dag.json or on any local git ref, so the controller's _existing_lean_name_problem accepts all five.
+
+Lean checks: all five children and the parent's exact frozen type compile in Full3.lean with only propext, Classical.choice and Quot.sound. The parent compiles from the sorry'd children in Stub3.lean. The comparator challenge files built by the verifier's child_modules elaborate every type standalone, and validate_lean_statement accepts all six.
