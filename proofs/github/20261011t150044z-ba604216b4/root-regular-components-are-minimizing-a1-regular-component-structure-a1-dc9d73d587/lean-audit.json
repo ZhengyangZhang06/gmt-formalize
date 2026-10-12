@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4f93c3e53d9530ba906416c56376abc6775bad8ed53af8a9e3d992711f8bc421",
+  "git_delta": {
+    "base_commit": "7d8e61061713f8a4e1b5335a1b89c27562592ae3",
+    "candidate_commit": "91234628bcc986324908de2216e9a0569e327eaf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_regular_component_structure",
+    "diff_sha256": "da156941f6deee69b838a3b81ab3c8c3a3890534779c8f734a7121cfa96e5d17",
+    "source_sha256": "0227e9c41189d217b2e47c191bfb214519c0fb7347f9845b579529c22d05c878",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_regular_component_structure",
+      "statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (T T₁ : GeometricCurrentOn U (m + 1)) (R : IMRep U (m + 1)) (y : Euclid P), IsOpen U → R.Represents T → y ∈ regularSet T → (∀ ω : TestFormOn U (m + 1), T₁ ω = ∫ x in connectedComponentIn (regularSet T) y, R.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]) → MeasurableSet (connectedComponentIn (regularSet T) y) ∧ μHE[m + 1] (connectedComponentIn (regularSet T) y \\ R.carrier) = 0 ∧ closure (connectedComponentIn (regularSet T) y) ∩ U ⊆ connectedComponentIn (regularSet T) y ∪ singularSet T ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → IsCompact (singularSet T ∩ K)) ∧ ∀ z ∈ connectedComponentIn (regularSet T) y, ∃ G : Set (Euclid P), IsOpen G ∧ z ∈ G ∧ ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ G → T₁ ω = c * T ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
