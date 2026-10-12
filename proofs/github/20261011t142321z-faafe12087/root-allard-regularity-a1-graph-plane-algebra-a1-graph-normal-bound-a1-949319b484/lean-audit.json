@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1912bd8ab7a02b68bb5dc6f70fcf64eebdb0ded486392e0f2257b17c9a4dd4cb",
+  "git_delta": {
+    "base_commit": "08b7e2df9183d2d4048a3bbbcb394f441afc745e",
+    "candidate_commit": "f6bfa78c3a2b162b20209cedf176a19867143e62",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_gpa_graph_normal_bound",
+    "diff_sha256": "18712a3940ea8d42591fde964b04d3447991848251122b7357acd3000932690b",
+    "source_sha256": "25867eae24fbe3772fc2ec753a9f385d2cc8c1f6e00a81e9c0ec5595f1821249",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_gpa_graph_normal_bound",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ) (x : Rn n) (y : Rn ℓ), ‖A‖ ≤ 1 → ‖y - A x‖ ≤ 2 * ‖q (graphPoint x y) - ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection (q (graphPoint x y))‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
