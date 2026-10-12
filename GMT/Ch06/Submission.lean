@@ -500,6 +500,44 @@ theorem Submission.slicing_mb_wn_norm_sq_eq_onb_sum :
   rw [covectorEuclideanNorm, Real.sq_sqrt]
   · exact mul_left_cancel₀ (Nat.cast_ne_zero.mpr k.factorial_ne_zero) key
   · exact Finset.sum_nonneg fun I _ => by split_ifs <;> positivity
+/-- Every continuous linear functional `α` on `ℝ^P` has an adapted orthonormal basis `u`:
+`α(u₀) = ‖α‖` and `α(uⱼ) = 0` for `j ≠ 0`. -/
+theorem Submission.slicing_mb_wn_adapted_onb :
+    ∀ (P : ℕ) (α : Eucl P →L[ℝ] ℝ), ∃ u : OrthonormalBasis (Fin P) ℝ (Eucl P),
+      ∀ j : Fin P, α (u j) = if (j : ℕ) = 0 then ‖α‖ else 0 := by
+  intro P α
+  by_cases hα : α = 0
+  · -- `α = 0`: the standard basis works, since `‖α‖ = 0`.
+    exact ⟨EuclideanSpace.basisFun (Fin P) ℝ, fun j => by simp [hα]⟩
+  -- The Riesz vector `a` of `α`: `α z = ⟪a, z⟫` and `‖a‖ = ‖α‖ > 0`.
+  set a : Eucl P := (InnerProductSpace.toDual ℝ (Eucl P)).symm α
+  have hαa : ∀ z, α z = inner ℝ a z := fun z => InnerProductSpace.toDual_symm_apply.symm
+  have hna : ‖a‖ = ‖α‖ := LinearIsometryEquiv.norm_map _ _
+  have hpos : 0 < ‖a‖ := hna ▸ norm_pos_iff.mpr hα
+  have ha0 : a ≠ 0 := norm_pos_iff.mp hpos
+  -- `a ≠ 0` forces `P ≥ 1`, so the index `0` exists.
+  have hP : 0 < P := by
+    have := (Module.finrank_pos_iff_exists_ne_zero (R := ℝ)).mpr ⟨a, ha0⟩
+    rwa [finrank_euclideanSpace_fin] at this
+  set i₀ : Fin P := ⟨0, hP⟩
+  -- Extend the unit vector `‖a‖⁻¹ • a`, placed at index `i₀`, to an orthonormal basis `u`.
+  obtain ⟨u, hu⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq
+    (𝕜 := ℝ) (E := Eucl P) (by simp) (v := fun _ => ‖a‖⁻¹ • a) (s := {i₀})
+    (by
+      rw [orthonormal_subsingleton_iff]
+      intro i
+      exact norm_smul_inv_norm ha0)
+  have hu₀ : u i₀ = ‖a‖⁻¹ • a := hu i₀ (Set.mem_singleton _)
+  have haU : a = ‖a‖ • u i₀ := by rw [hu₀, smul_inv_smul₀ hpos.ne']
+  -- `α(uⱼ) = ‖a‖ ⟪u₀, uⱼ⟫`, which is `‖a‖ = ‖α‖` for `j = 0` and `0` otherwise.
+  refine ⟨u, fun j => ?_⟩
+  rw [hαa, haU, real_inner_smul_left]
+  split_ifs with hj
+  · have : j = i₀ := Fin.ext hj
+    subst this
+    rw [real_inner_self_eq_norm_sq, u.orthonormal.norm_eq_one, one_pow, mul_one, hna]
+  · have : i₀ ≠ j := fun h => hj (by rw [← h])
+    rw [u.orthonormal.inner_eq_zero this, mul_zero]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
