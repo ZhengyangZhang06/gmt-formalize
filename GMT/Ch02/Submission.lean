@@ -723,6 +723,38 @@ theorem Submission.bv_lintegral_norm_fderiv_le_of_dual_compact : ∀ (n : ℕ) (
   simpa only [ofReal_norm] using Submission.bv_set_lintegral_le_of_regularized_bound n
     (fun x => ‖fderiv ℝ w x‖) χ L M (hw.continuous_fderiv two_ne_zero).norm
     (fun x => norm_nonneg _) hχ.continuous hχc (fun x => (hχ01 x).1) hL hχL hreg
+/-- **Simon Ch. 2, proof of Lemma 2.5, passage from compact subsets to an open set.** If `O ⊆ ℝⁿ`
+is open, `f ≥ 0` is measurable and `∫⁻_L f dLⁿ ≤ M` for every compact `L ⊆ O`, then
+`∫⁻_O f dLⁿ ≤ M`. A closed exhaustion `F l` of `O` cut down by the balls `B_l(0)` gives compact
+sets `L l = F l ∩ B_l(0)` increasing to `O`. Then `1_{L l} f` increase to `1_O f`, and monotone
+convergence gives `∫⁻_O f = sup_l ∫⁻_{L l} f ≤ M`. -/
+theorem Submission.bv_lintegral_open_le_of_compact : ∀ (n : ℕ) (O : Set (Rn n)) (f : Rn n → ℝ≥0∞) (M : ℝ≥0∞), IsOpen O → Measurable f → (∀ L, IsCompact L → L ⊆ O → ∫⁻ x in L, f x ≤ M) → ∫⁻ x in O, f x ≤ M := by
+  intro n O f M hO hf hM
+  -- A closed exhaustion `F l` of `O`, cut down to the compact sets `L l = F l ∩ B_l(0)`.
+  obtain ⟨F, hFc, hFO, hFU, hFm⟩ := hO.exists_iUnion_isClosed
+  let L : ℕ → Set (Rn n) := fun l ↦ F l ∩ closedBall 0 l
+  have hLc (l : ℕ) : IsCompact (L l) := (isCompact_closedBall 0 l).inter_left (hFc l)
+  have hLO (l : ℕ) : L l ⊆ O := inter_subset_left.trans (hFO l)
+  have hLm : Monotone L := fun i j hij ↦
+    inter_subset_inter (hFm hij) (closedBall_subset_closedBall (Nat.cast_le.2 hij))
+  have hLU : ⋃ l, L l = O := by
+    refine Subset.antisymm (iUnion_subset hLO) fun x hx ↦ ?_
+    rw [← hFU] at hx
+    obtain ⟨i, hi⟩ := mem_iUnion.1 hx
+    obtain ⟨j, hj⟩ := exists_nat_ge ‖x‖
+    exact mem_iUnion.2 ⟨max i j, hFm (le_max_left i j) hi,
+      mem_closedBall_zero_iff.2 (hj.trans (Nat.cast_le.2 (le_max_right i j)))⟩
+  -- The measurable functions `1_{L l} f` increase to `1_O f`; apply monotone convergence.
+  have hLmeas (l : ℕ) : MeasurableSet (L l) := (hLc l).isClosed.measurableSet
+  calc ∫⁻ x in O, f x
+      = ∫⁻ x, ⨆ l, (L l).indicator f x := by
+        rw [← lintegral_indicator hO.measurableSet, ← hLU]
+        simp_rw [indicator_iUnion_apply bot_eq_zero]
+    _ = ⨆ l, ∫⁻ x, (L l).indicator f x :=
+        lintegral_iSup (fun l ↦ hf.indicator (hLmeas l))
+          fun i j hij ↦ indicator_le_indicator_of_subset (hLm hij) fun _ ↦ zero_le
+    _ = ⨆ l, ∫⁻ x in L l, f x := iSup_congr fun l ↦ lintegral_indicator (hLmeas l) f
+    _ ≤ M := iSup_le fun l ↦ hM (L l) (hLc l) (hLO l)
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
