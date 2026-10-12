@@ -458,6 +458,73 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **`L²` approximation preserves a quadratic energy bound** (Minkowski's inequality in `L²`; the
+limit step `j → ∞` in the proof of the translation estimate, Evans §5.8.2 Thm 3(i),
+Gilbarg–Trudinger §7.11).  If `aⱼ → a₀` in `L²(μ)`, `bⱼ → b₀` in `L²(ν)` and
+`∫⁻ ‖aⱼ‖ₑ² dμ ≤ c ∫⁻ ‖bⱼ‖ₑ² dν` for every `j` with `c < ∞`, then `∫⁻ ‖a₀‖ₑ² dμ ≤ c ∫⁻ ‖b₀‖ₑ² dν`.
+
+With `N = eLpNorm · 2` and `γ = c^{1/2}`, Minkowski gives
+`N(a₀) ≤ N(a₀ - aⱼ) + γ (N(bⱼ - b₀) + N(b₀))` for every `j`; the error terms tend to `0`, so
+`N(a₀) ≤ γ N(b₀)`, and squaring gives the claim (infinite integrals included). -/
+theorem lintegral_sq_le_of_l2_approximation : ∀ {α E F : Type} [MeasurableSpace α] [NormedAddCommGroup E] [NormedAddCommGroup F] (μ ν : Measure α) (c : ℝ≥0∞) (a : ℕ → α → E) (a₀ : α → E) (b : ℕ → α → F) (b₀ : α → F), c ≠ ∞ → (∀ j, AEStronglyMeasurable (a j) μ) → AEStronglyMeasurable a₀ μ → (∀ j, AEStronglyMeasurable (b j) ν) → AEStronglyMeasurable b₀ ν → Tendsto (fun j => ∫⁻ x, ‖a j x - a₀ x‖ₑ ^ 2 ∂μ) atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x, ‖b j x - b₀ x‖ₑ ^ 2 ∂ν) atTop (𝓝 0) → (∀ j, ∫⁻ x, ‖a j x‖ₑ ^ 2 ∂μ ≤ c * ∫⁻ x, ‖b j x‖ₑ ^ 2 ∂ν) → ∫⁻ x, ‖a₀ x‖ₑ ^ 2 ∂μ ≤ c * ∫⁻ x, ‖b₀ x‖ₑ ^ 2 ∂ν := by
+  intro α E F _ _ _ μ ν c a a₀ b b₀ hc ha ha₀ hb hb₀ hA hB hab
+  -- Step 1: `N(u) = eLpNorm u 2 m` has `N(u) ^ 2 = ∫⁻ ‖u‖ₑ ^ 2 dm` and
+  -- `N(u) = (∫⁻ ‖u‖ₑ ^ 2 dm) ^ (1/2)` (`eLpNorm` is `∞` off a.e.-strongly measurable functions).
+  have hsq : ∀ {G : Type} [NormedAddCommGroup G] {m : Measure α} {u : α → G},
+      AEStronglyMeasurable u m → eLpNorm u 2 m ^ 2 = ∫⁻ x, ‖u x‖ₑ ^ 2 ∂m := by
+    intro G _ m u hu
+    simpa [ENNReal.rpow_two] using eLpNorm_nnreal_pow_eq_lintegral (p := 2) two_ne_zero hu
+  have hroot : ∀ {G : Type} [NormedAddCommGroup G] {m : Measure α} {u : α → G},
+      AEStronglyMeasurable u m → eLpNorm u 2 m = (∫⁻ x, ‖u x‖ₑ ^ 2 ∂m) ^ (1 / 2 : ℝ) := by
+    intro G _ m u hu
+    rw [← hsq hu, ← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]
+    norm_num
+  -- Step 2: `γ = c ^ (1/2)` is finite and `γ ^ 2 = c`.
+  obtain ⟨γ, hγ, hγ2⟩ : ∃ γ : ℝ≥0∞, γ ≠ ∞ ∧ γ ^ 2 = c := by
+    refine ⟨c ^ (1 / 2 : ℝ), ENNReal.rpow_ne_top_of_nonneg (by norm_num) hc, ?_⟩
+    rw [← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]
+    norm_num
+  -- Steps 3–7: for every `j`, `N(a₀) ≤ N(a₀ - aⱼ) + γ (N(bⱼ - b₀) + N(b₀))`.
+  have hbound : ∀ j, eLpNorm a₀ 2 μ ≤
+      eLpNorm (a₀ - a j) 2 μ + γ * (eLpNorm (b j - b₀) 2 ν + eLpNorm b₀ 2 ν) := by
+    intro j
+    have h4 : eLpNorm a₀ 2 μ ≤ eLpNorm (a₀ - a j) 2 μ + eLpNorm (a j) 2 μ := by
+      simpa using eLpNorm_add_le (f := a₀ - a j) (g := a j) (μ := μ) one_le_two
+    -- `N(aⱼ)² ≤ c N(bⱼ)² = (γ N(bⱼ))²`, and squaring is order-reflecting on `[0, ∞]`.
+    have h5 : eLpNorm (a j) 2 μ ≤ γ * eLpNorm (b j) 2 ν := by
+      rw [← ENNReal.rpow_le_rpow_iff (z := 2) (by norm_num), ENNReal.rpow_two, ENNReal.rpow_two,
+        mul_pow, hsq (ha j), hsq (hb j), hγ2]
+      exact hab j
+    have h6 : eLpNorm (b j) 2 ν ≤ eLpNorm (b j - b₀) 2 ν + eLpNorm b₀ 2 ν := by
+      simpa using eLpNorm_add_le (f := b j - b₀) (g := b₀) (μ := ν) one_le_two
+    calc eLpNorm a₀ 2 μ ≤ eLpNorm (a₀ - a j) 2 μ + eLpNorm (a j) 2 μ := h4
+      _ ≤ eLpNorm (a₀ - a j) 2 μ + γ * eLpNorm (b j) 2 ν := by gcongr
+      _ ≤ eLpNorm (a₀ - a j) 2 μ + γ * (eLpNorm (b j - b₀) 2 ν + eLpNorm b₀ 2 ν) := by gcongr
+  -- Step 8: the error terms tend to `0`, since `t ↦ t ^ (1/2)` is continuous with `0 ^ (1/2) = 0`.
+  have hroot0 : ∀ {f : ℕ → ℝ≥0∞}, Tendsto f atTop (𝓝 0) →
+      Tendsto (fun j => f j ^ (1 / 2 : ℝ)) atTop (𝓝 0) := by
+    intro f hf
+    simpa [Function.comp_def, ENNReal.zero_rpow_of_pos] using
+      ((ENNReal.continuous_rpow_const (y := (1 / 2 : ℝ))).tendsto 0).comp hf
+  have hA' : Tendsto (fun j => eLpNorm (a₀ - a j) 2 μ) atTop (𝓝 0) :=
+    (hroot0 hA).congr fun j =>
+      ((eLpNorm_sub_comm a₀ (a j) 2 μ).trans (hroot ((ha j).sub ha₀))).symm
+  have hB' : Tendsto (fun j => eLpNorm (b j - b₀) 2 ν) atTop (𝓝 0) :=
+    (hroot0 hB).congr fun j => (hroot ((hb j).sub hb₀)).symm
+  -- Step 9: pass to the limit (`γ < ∞`, so `t ↦ γ t` is continuous).
+  have hlim : Tendsto (fun j => eLpNorm (a₀ - a j) 2 μ +
+      γ * (eLpNorm (b j - b₀) 2 ν + eLpNorm b₀ 2 ν)) atTop (𝓝 (γ * eLpNorm b₀ 2 ν)) := by
+    simpa using hA'.add (ENNReal.Tendsto.const_mul (hB'.add tendsto_const_nhds) (Or.inr hγ))
+  have h9 : eLpNorm a₀ 2 μ ≤ γ * eLpNorm b₀ 2 ν := ge_of_tendsto' hlim hbound
+  -- Step 10: square.
+  calc ∫⁻ x, ‖a₀ x‖ₑ ^ 2 ∂μ = eLpNorm a₀ 2 μ ^ 2 := (hsq ha₀).symm
+    _ ≤ (γ * eLpNorm b₀ 2 ν) ^ 2 := by gcongr
+    _ = c * ∫⁻ x, ‖b₀ x‖ₑ ^ 2 ∂ν := by rw [mul_pow, hγ2, hsq hb₀]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
