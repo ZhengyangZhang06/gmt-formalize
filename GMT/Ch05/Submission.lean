@@ -458,6 +458,101 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (pp. 123–124), estimate (Nor): for a linear isometry `q` of
+`ℝ^{n+ℓ}` and a linear map `A : ℝⁿ → ℝ^ℓ` with `‖A‖ ≤ 1`, the vertical deviation `|y − A x|` of
+`(x, y)` from the graph plane `Γ_A = {(v, A v) : v ∈ ℝⁿ}` is at most twice the distance from
+`q(x, y)` to `q(Γ_A)`.  Since `Γ_A` is the range of the linear map `v ↦ (v, A v)`, the projection
+of `q(x, y)` onto `q(Γ_A)` is `q(v, A v)` for some `v`, so (as `q` is an isometry) this distance
+is `d = |(x − v, y − A v)|` with `d² = |x − v|² + |y − A v|²` (`Fin.append_left`/`right`,
+`Fin.sum_univ_add`).  Then `|y − A x| ≤ |y − A v| + |A (v − x)| ≤ |y − A v| + |x − v| ≤ √2 d ≤ 2 d`,
+using `‖A‖ ≤ 1` and `2 a c ≤ a² + c²`. -/
+theorem allard52_gpa_graph_normal_bound : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ) (x : Rn n) (y : Rn ℓ), ‖A‖ ≤ 1 → ‖y - A x‖ ≤ 2 * ‖q (graphPoint x y) - ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map q.toLinearEquiv.toLinearMap).starProjection (q (graphPoint x y))‖ := by
+  intro n ℓ q A x y hA
+  -- the coordinates of `graphPoint a b`
+  have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp [graphPoint]
+  have hr : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp [graphPoint]
+  -- `graphPoint` is jointly linear
+  have hadd : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint (a + a') (b + b') = graphPoint a b + graphPoint a' b' := by
+    intro a a' b b'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.add_apply, hl]
+    · simp only [PiLp.add_apply, hr]
+  have hsmul : ∀ (c : ℝ) (a : Rn n) (b : Rn ℓ), graphPoint (c • a) (c • b) = c • graphPoint a b := by
+    intro c a b
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.smul_apply, hl]
+    · simp only [PiLp.smul_apply, hr]
+  have hsub : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b') := by
+    intro a a' b b'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+    · simp only [PiLp.sub_apply, hl]
+    · simp only [PiLp.sub_apply, hr]
+  -- Pythagoras: `|(a, b)|² = |a|² + |b|²`
+  have hnorm : ∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
+    intro a b
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp only [hl, hr]
+  -- the graph plane is the range of the linear map `J v = (v, A v)`
+  let J : Rn n →ₗ[ℝ] Amb n ℓ :=
+    { toFun := fun v => graphPoint v (A v)
+      map_add' := fun a a' => by
+        simp only [map_add]
+        exact hadd a a' (A a) (A a')
+      map_smul' := fun c a => by
+        simp only [map_smul, RingHom.id_apply]
+        exact hsmul c a (A a) }
+  have hspan : Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)) =
+      LinearMap.range J := by
+    rw [← Submodule.span_eq (LinearMap.range J), LinearMap.coe_range]
+    rfl
+  -- the projection of `q (x, y)` onto `q(Γ_A)` is `q (v, A v)` for some `v`
+  obtain ⟨z, hz, hzw⟩ := Submodule.mem_map.mp
+    (((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).map
+      q.toLinearEquiv.toLinearMap).starProjection_apply_mem (q (graphPoint x y)))
+  rw [hspan] at hz
+  obtain ⟨v, rfl⟩ := LinearMap.mem_range.mp hz
+  rw [← hzw]
+  -- its distance to `q (x, y)` is `|(x − v, y − A v)|`, since `q` is an isometry
+  have hd : ‖q (graphPoint x y) - q.toLinearEquiv.toLinearMap (J v)‖ =
+      ‖graphPoint (x - v) (y - A v)‖ := by
+    change ‖q (graphPoint x y) - q (graphPoint v (A v))‖ = _
+    rw [← map_sub, LinearIsometryEquiv.norm_map, hsub]
+  rw [hd]
+  -- `|y − A x| ≤ |y − A v| + |A (v − x)| ≤ |y − A v| + |x − v|` as `‖A‖ ≤ 1`
+  have h1 : ‖y - A x‖ ≤ ‖y - A v‖ + ‖x - v‖ := by
+    have e : y - A x = (y - A v) + A (v - x) := by
+      rw [map_sub]
+      abel
+    calc ‖y - A x‖ = ‖(y - A v) + A (v - x)‖ := by rw [e]
+      _ ≤ ‖y - A v‖ + ‖A (v - x)‖ := norm_add_le _ _
+      _ ≤ ‖y - A v‖ + ‖x - v‖ := by
+        gcongr
+        calc ‖A (v - x)‖ ≤ ‖A‖ * ‖v - x‖ := A.le_opNorm _
+          _ ≤ 1 * ‖v - x‖ := by gcongr
+          _ = ‖x - v‖ := by rw [one_mul, norm_sub_rev]
+  -- `c + a ≤ 2 d` from `d² = a² + c²` and `2 a c ≤ a² + c²`
+  have h2 : ‖y - A v‖ + ‖x - v‖ ≤ 2 * ‖graphPoint (x - v) (y - A v)‖ := by
+    have hsq := hnorm (x - v) (y - A v)
+    have ha := norm_nonneg (x - v)
+    have hc := norm_nonneg (y - A v)
+    have hdn := norm_nonneg (graphPoint (x - v) (y - A v))
+    nlinarith [sq_nonneg (‖x - v‖ - ‖y - A v‖)]
+  linarith
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
