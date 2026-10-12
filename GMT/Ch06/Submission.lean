@@ -992,6 +992,78 @@ theorem Submission.br_weightedTangent_congr :
     _ = ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[k] : Measure (Eucl P)) :=
         (hcut M' θ').symm
 
+/-- Integer multiplicity is local (the patching step in the proof of Simon Ch. 6, 6.3): if every
+`x ∈ U` has an open `V ∋ x` on which `X` agrees with an integer multiplicity current, then `X` is
+integer multiplicity.  By Lindelöf countably many such `V_i`, with `Y_i = τ(M_i, θ_i, ξ_i)`, cover
+`U`.  Two of these triples agree up to null sets on `V_i ∩ V_j`, where both represent `X`, so they
+glue to one integer multiplicity triple `(M₀, θ₀, ξ₀)` that agrees with each on its `V_i`; then
+`X = τ(M₀, θ₀, ξ₀)` on forms supported in some `V_i`, hence on all forms. -/
+theorem Submission.br_isIntegerMultiplicity_of_local :
+    ∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ X : GeometricCurrentOn U k,
+      (∀ x ∈ U, ∃ V : Set (Eucl P), IsOpen V ∧ x ∈ V ∧ V ⊆ U ∧
+        ∃ Y : GeometricCurrentOn U k, IsIntegerMultiplicity Y ∧
+          ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ V → X ω = Y ω) →
+      IsIntegerMultiplicity X := by
+  intro P k U _ X hloc
+  rcases U.eq_empty_or_nonempty with rfl | hUne
+  · -- `U = ∅`: `X = τ(∅, 0, 0)`, since the local hypothesis is vacuous.
+    have hT : IsRectifiableTriple (∅ : Set (Eucl P)) k ∅ 0 0 :=
+      { subset := subset_rfl
+        nullMeasurableSet := nullMeasurableSet_empty
+        countablyRectifiable :=
+          Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+        pos := fun x hx => absurd hx (notMem_empty x)
+        integrableOn := fun K _ _ => by simp
+        aestronglyMeasurable := by simp
+        orients := by simp }
+    exact ⟨∅, 0, 0, hT, fun x hx => absurd hx (notMem_empty x),
+      Submission.ltg_tau_local_to_global P k ∅ X ∅ 0 0 hT fun x hx => absurd hx (notMem_empty x)⟩
+  -- For each `x ∈ U` choose `V_x` and `Y_x`.
+  choose! Vx hVo hxV hVU Y hY hXY using hloc
+  -- Lindelöf: a countable subfamily `V_{f i}` (`i ∈ ℕ`) covers `U`.
+  obtain ⟨T, hTU, hTc, hTV⟩ := TopologicalSpace.isOpen_biUnion_countable U Vx hVo
+  have hcovT : U ⊆ ⋃ x ∈ T, Vx x := by
+    rw [hTV]
+    exact fun x hx => mem_biUnion hx (hxV x hx)
+  obtain ⟨f, rfl⟩ : ∃ f : ℕ → Eucl P, T = range f := by
+    refine hTc.exists_eq_range ?_
+    obtain ⟨x, hx⟩ := hUne
+    obtain ⟨y, hy, -⟩ := mem_iUnion₂.mp (hcovT hx)
+    exact ⟨y, hy⟩
+  have hfU : ∀ i, f i ∈ U := fun i => hTU (mem_range_self i)
+  have hcover : U ⊆ ⋃ i, Vx (f i) := by
+    intro x hx
+    obtain ⟨y, ⟨i, rfl⟩, hxy⟩ := mem_iUnion₂.mp (hcovT hx)
+    exact mem_iUnion.mpr ⟨i, hxy⟩
+  -- `Y_{f i} = τ(M_i, θ_i, ξ_i)` with integer multiplicity triples.
+  have hY' : ∀ i, ∃ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k),
+      IsRectifiableTriple U k M θ ξ ∧ (∀ x ∈ M, ∃ n : ℕ, θ x = n) ∧
+        ∀ ω : TestFormOn U k, Y (f i) ω = tauAction k M θ ξ ω :=
+    fun i => hY (f i) (hfU i)
+  choose M θ ξ hT hθ hrep using hY'
+  -- On `V_{f i} ∩ V_{f j}` both triples represent `X`, so they agree there up to null sets.
+  have hcompat : ∀ i j, (μHE[k] : Measure (Eucl P))
+        (symmDiff (M i) (M j) ∩ (Vx (f i) ∩ Vx (f j))) = 0 ∧
+      ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M i ∩ (Vx (f i) ∩ Vx (f j)))),
+        θ i x = θ j x ∧ ξ i x = ξ j x := fun i j =>
+    Submission.ltg_tau_unique_on_open P k U (Vx (f i) ∩ Vx (f j))
+      ((hVo _ (hfU i)).inter (hVo _ (hfU j))) (inter_subset_left.trans (hVU _ (hfU i)))
+      (M i) (M j) (θ i) (θ j) (ξ i) (ξ j) (hT i) (hT j) fun ω hω => by
+        rw [← hrep i ω, ← hrep j ω, ← hXY _ (hfU i) ω (hω.trans inter_subset_left),
+          ← hXY _ (hfU j) ω (hω.trans inter_subset_right)]
+  -- Glue them (tangent spaces transfer by `br_weightedTangent_congr`).
+  obtain ⟨M₀, θ₀, ξ₀, hT₀, hθ₀, hagree⟩ :=
+    Submission.ltg_glue_triples P k U (Submission.br_weightedTangent_congr P k)
+      (fun i => Vx (f i)) M θ ξ (fun i => hVo _ (hfU i)) hcover hT hθ hcompat
+  -- `X = Y_{f i} = τ(M_i, θ_i, ξ_i) = τ(M₀, θ₀, ξ₀)` on forms supported in `V_{f i}`.
+  refine ⟨M₀, θ₀, ξ₀, hT₀, hθ₀, Submission.ltg_tau_local_to_global P k U X M₀ θ₀ ξ₀ hT₀ ?_⟩
+  intro x hx
+  obtain ⟨i, hxi⟩ := mem_iUnion.mp (hcover hx)
+  refine ⟨Vx (f i), hVo _ (hfU i), hxi, fun ω hω => ?_⟩
+  rw [hXY _ (hfU i) ω hω, hrep i ω]
+  exact Submission.ltg_tau_congr_on_open P k (M i) M₀ (θ i) θ₀ (ξ i) ξ₀ (Vx (f i))
+    (hVo _ (hfU i)) (hagree i).1 (hagree i).2 ω hω
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
