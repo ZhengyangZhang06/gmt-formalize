@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "010e75781e9d38dbf6b29b62e01d17e48248bcf65b25bde234a24b769cbfab12",
+  "git_delta": {
+    "base_commit": "df6be89aeafbd709e9b5fc6b49da2ac637e6c4cc",
+    "candidate_commit": "f823b8282812c8fc4593597bdf4e16d346da7820",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "anyrad_gc_graph_lintegral_transfer",
+    "diff_sha256": "ae44da0048056f6d270c20ab83b9b7053f2ea6c2717ffe5e117d1a79c8eaef3b",
+    "source_sha256": "551f97260fc915c6e8e5fb4e843448a0a3b803019bd1057beee60937dec3974b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.anyrad_gc_graph_lintegral_transfer",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (Ω : Set (Rn n)), MeasurableSet Ω → ContinuousOn u Ω → ∀ ν : Measure (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)).restrict (q '' graphOver u Ω) ≤ ν → (∀ A : Set (Rn n), MeasurableSet A → A ⊆ Ω → MeasurableSet (q '' graphOver u A)) ∧ (∀ A : Set (Rn n), MeasurableSet A → A ⊆ Ω → ∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in A, g (q (graphPoint x (u x))) ≤ ∫⁻ y in q '' graphOver u A, g y ∂ν) ∧ ∀ P : Amb n ℓ → Prop, (∀ᵐ y ∂ν, P y) → ∀ᵐ x ∂(volume.restrict Ω), P (q (graphPoint x (u x)))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
