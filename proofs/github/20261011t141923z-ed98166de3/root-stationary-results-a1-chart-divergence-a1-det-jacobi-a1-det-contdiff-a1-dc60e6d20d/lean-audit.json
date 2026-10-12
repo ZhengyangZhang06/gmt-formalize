@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a99c7f6fe98cd89bf1116d1cb06caa1d9a8e75970b59f9c9f2bf21a46f7099e6",
+  "git_delta": {
+    "base_commit": "a492b4f6a9dec819389abb1a526fed5319fa54be",
+    "candidate_commit": "fe9729da054dda634b3fe292a305c61205967d7b",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "contDiff_rn_continuousLinearMap_det",
+    "diff_sha256": "3f048d2eda91f9883eeba5f5e66c7d80f6a5d90cba2cc09c50082443f034c14c",
+    "source_sha256": "04183342fca3e5267186fce6e411f97c6bac9723590a599fee7246d56f8fabc5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.contDiff_rn_continuousLinearMap_det",
+      "statement": "∀ (n : ℕ) (k : WithTop ℕ∞), ContDiff ℝ k (fun T : Rn n →L[ℝ] Rn n ↦ T.det)",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
