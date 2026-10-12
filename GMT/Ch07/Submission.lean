@@ -694,6 +694,47 @@ theorem Submission.dtc_blowUp_imrep : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : 
       Measure.restrict_smul, hme.restrict_map, lintegral_smul_measure, hme.lintegral_map]
     simp [hιη]
 
+/-- **Every current in `η(U)` is a blow-up**, `η = η_{x,λ}`, `λ > 0` (Simon Ch. 6, 2.23 and 3.9
+for `η⁻¹`; used for the minimality of `η_{x,λⱼ#}T` in the proof of 7.3.1, chapter-07.txt
+lines 326–338): every `S' ∈ 𝒟ₙ(η(U))` is `η_{x,λ#}S''` for some `S'' ∈ 𝒟ₙ(U)`, integer
+multiplicity whenever `S'` is.  `κ = η_{−λ⁻¹x,λ⁻¹}` inverts `η`, so `κ(η(U)) = U`, and `S''` is
+`κ_#S'` restricted to `U`: `dtc_blowUp_testForm_corr` for `η` and for `κ` gives
+`η_#S''(ω) = λ⁻ⁿ κ_#S'(ω ∘ η) = λ⁻ⁿ λⁿ S'(ω)`, and a representation of `κ_#S'` in
+`κ(η(U)) = U` (`dtc_blowUp_imrep`) represents `S''`. -/
+theorem Submission.dtc_blowUp_preimage : ∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (S' : GeometricCurrentOn (dilation x lam '' U) n), ∃ S'' : GeometricCurrentOn U n, blowUp S'' x lam hlam.ne' = S' ∧ (IsIntegerMultiplicity S' → IsIntegerMultiplicity S'') := by
+  intro P n U x lam hlam S'
+  have hlam' : 0 < lam⁻¹ := inv_pos.mpr hlam
+  -- `κ = η_{−λ⁻¹x,λ⁻¹}`, `κ(z) = x + λz`, is a two-sided inverse of `η = η_{x,λ}`
+  have hκη : ∀ y, dilation (-(lam⁻¹ • x)) lam⁻¹ (dilation x lam y) = y := fun y => by
+    simp [dilation, dilationCLM, smul_smul, hlam.ne']
+  have hηκ : ∀ z, dilation x lam (dilation (-(lam⁻¹ • x)) lam⁻¹ z) = z := fun z => by
+    simp [dilation, dilationCLM, smul_smul, hlam.ne']
+  have hdom : dilation (-(lam⁻¹ • x)) lam⁻¹ '' (dilation x lam '' U) = U := by
+    rw [image_image]
+    simp only [hκη, image_id']
+  have hUV : U ⊆ dilation (-(lam⁻¹ • x)) lam⁻¹ '' (dilation x lam '' U) := hdom.superset
+  obtain ⟨hpull, -, hblow⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+  have hblow' := (Submission.dtc_blowUp_testForm_corr P n (dilation x lam '' U)
+    (-(lam⁻¹ • x)) lam⁻¹ hlam').2.2
+  -- `S'' := κ_#S'`, restricted from `κ(η(U)) = U` to `U`
+  refine ⟨(blowUp S' (-(lam⁻¹ • x)) lam⁻¹ hlam'.ne').restrictDomain hUV, ?_, ?_⟩
+  · -- `η_#S''(ω) = λ⁻ⁿ S''(ω ∘ η)` and `κ_#S'(ω ∘ η) = λⁿ S'(ω)`, as `ω ∘ η ∘ κ = ω`
+    ext ω
+    obtain ⟨ω', hω'⟩ := hpull ω
+    rw [hblow _ ω ω' hω', GeometricCurrentOn.restrictDomain_apply,
+      hblow' S' (testFormOnInclusion hUV n ω') ω fun z => by
+        rw [testFormOnInclusion_coe, hω', hηκ],
+      ← mul_assoc, ← mul_pow, inv_inv, inv_mul_cancel₀ hlam.ne', one_pow, one_mul]
+  · -- a representation of `κ_#S'` in `κ(η(U)) = U` is one in `U`, and it represents `S''`
+    rintro ⟨R₁, hR₁⟩
+    obtain ⟨R₂, hR₂, -⟩ := Submission.dtc_blowUp_imrep P n (dilation x lam '' U) S'
+      (-(lam⁻¹ • x)) lam⁻¹ hlam' R₁ hR₁
+    exact ⟨{ R₂ with
+        carrier_subset := R₂.carrier_subset.trans hdom.subset
+        locallyIntegrable_mult := fun K hK hKU =>
+          R₂.locallyIntegrable_mult K hK (hKU.trans hUV) },
+      fun ω => hR₂ (testFormOnInclusion hUV n ω)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
