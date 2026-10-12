@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "39b71689843ae360281567941741ffe311ff3dba69d87e494a57b21e18883dd0",
+  "git_delta": {
+    "base_commit": "886f6704dc1ec4b4ff080822d0376e2545faaa01",
+    "candidate_commit": "0a18f902c49477b1e775f627575c4d7822aba43c",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_cri_setLIntegral_congr_off_null",
+    "diff_sha256": "b2299a3bcc176f179e9fe92f05ddf582df945cfc3ccc6e0e1d83bd5042117da5",
+    "source_sha256": "7438f9fe10eedf5b54901382b8a7f3fd8c7886ec3c20d961f62faa28d5edcb11",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_cri_setLIntegral_congr_off_null",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (G D D' : Set (Euclidean N)) (f g : Euclidean N → ℝ≥0∞), NullMeasurableSet G μ → μ (D \\ G) = 0 → μ (D' \\ G) = 0 → (∀ x ∈ G, x ∈ D ↔ x ∈ D') → (∀ x ∈ G, f x = g x) → ∫⁻ x in D, f x ∂μ = ∫⁻ x in D', g x ∂μ",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

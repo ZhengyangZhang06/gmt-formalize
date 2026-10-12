@@ -1,0 +1,15 @@
+{
+  "node_id": "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1.set_lintegral_congr_off_null-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1320",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "0a18f902c49477b1e775f627575c4d7822aba43c",
+  "integrated_commit": "",
+  "proof_base_commit": "886f6704dc1ec4b4ff080822d0376e2545faaa01",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.allard_tangent_cones-a1.cone_rescaling_invariance-a1",
+  "requires": []
+}
