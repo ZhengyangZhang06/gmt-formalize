@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1.cap_upper_comparison-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_cap_bounds-a1",
+  "depth": 4,
+  "title": "Graph upper comparison for small caps of the unit sphere of an (n+1)-plane (parent steps 2 and 4)",
+  "statement": "Let n, N ∈ ℕ, let H be a linear subspace of ℝᴺ = EuclideanSpace ℝ (Fin N) with dim H = n + 1, let S(H) := {θ ∈ H : |θ| = 1}, and let ζ ∈ H with |ζ| = 1. Then there is a linear subspace T of ℝᴺ with dim T = n such that, for every ρ with 0 < ρ ≤ 1/2, Hⁿ(S(H) ∩ B(ζ, ρ)) ≤ 2ⁿ·Hⁿ(T ∩ B(0, ρ)) in [0, ∞]. Here Hⁿ = μHE[n] (applied to arbitrary sets as an outer measure) and B is the open ball.",
+  "lean_statement": "∀ (n N : ℕ) (H : Submodule ℝ (Rn N)), finrank ℝ H = n + 1 → ∀ ζ ∈ H, ‖ζ‖ = 1 → ∃ T : Submodule ℝ (Rn N), finrank ℝ T = n ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 / 2 → μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ) ≤ 2 ^ n * μHE[n] ((T : Set (Rn N)) ∩ Metric.ball 0 ρ)",
+  "lean_name": "bf_sphereCap_upper_comparison",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-sphere-cap-bounds-a1-c-aa8646e6fd-a1"
+}
