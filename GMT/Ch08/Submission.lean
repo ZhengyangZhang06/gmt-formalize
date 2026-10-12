@@ -759,6 +759,24 @@ theorem Submission.frt_weight_blowup_tendsto :
       (by fun_prop) hfc.aestronglyMeasurable, ENNReal.toReal_ofReal ht', smul_eq_mul,
     Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable]
   rfl
+/-- Density at a tangent point (Simon Ch. 8, 1.2, step (0c); Ch. 3, Remark 1.8(2)): if `V` has
+tangent plane `T` with multiplicity `θ` at `x`, then `Θ^n(μ_V, x) = θ`, i.e.
+`μ_V(B_t(x)) / (ω_n t^n) → θ` as `t ↓ 0`. -/
+theorem Submission.frt_tangent_plane_hasDensity :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → HasDensity n V.weight x (ENNReal.ofReal θ) := by
+  intro N n U V x T θ hT
+  -- Step 1: `x ∈ U` and `θ > 0`; as `U` is open, some `B_{r₀}(x) ⊆ U` has finite `μ_V`-mass.
+  have hθ : 0 < θ := hT.2.1
+  obtain ⟨r₀, hr₀, hr₀U⟩ := nhds_basis_closedBall.mem_iff.1 (V.isOpen_domain.mem_nhds hT.1)
+  have hμr₀ : V.weight (closedBall x r₀) ≠ ⊤ :=
+    V.weight_finite_on_compact _ (isCompact_closedBall x r₀) hr₀U
+  -- Step 2: `t^{-n} ∫ g(t^{-1}(z - x)) dμ_V(z) → θ ∫_T g dH^n` for every `g ∈ C_c(ℝ^N)`.
+  have hblow := Submission.frt_weight_blowup_tendsto N n U V x T θ hT
+  -- Steps 3–4: `c t^n ≤ μ_V(B_t(x))` eventually for `c < θ ω_n` and `μ_V(B_t(x)) ≤ c t^n`
+  -- eventually for `c > θ ω_n`; the density squeeze then gives `Θ^n(μ_V, x) = θ`.
+  exact Submission.frt_td_hasDensity_of_ball_mass_bounds N n V.weight x (ENNReal.ofReal θ)
+    (Submission.frt_td_ball_mass_lower_of_blowup N n V.weight x T θ hθ hblow)
+    (Submission.frt_td_ball_mass_upper_of_blowup N n V.weight x T θ r₀ hθ hr₀ hμr₀ hblow)
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
