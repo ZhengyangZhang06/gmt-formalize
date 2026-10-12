@@ -631,6 +631,124 @@ theorem Submission.adr_rescaled_content_lower_bound : ∀ (P : ℕ) (ℓ : ℝ) 
       _ = r / 4 := hcalc
       _ ≤ r := ENNReal.div_le_of_le_mul (le_mul_of_one_le_right' (by norm_num))
   exact lt_irrefl r hrr
+/-- **Simon Ch. 1, 3.26(2)** (cover form, unnormalized): for `ℓ > 0` and `A ⊆ ℝᴾ`, at `μH[ℓ]`-a.e.
+`x ∈ A` there are arbitrarily small `ρ` with `ρ^ℓ ≤ 2 Σⱼ (diam Cⱼ)^ℓ` for every countable cover
+`{Cⱼ}` of `A ∩ B_ρ(x)`.  Let `η(E) = inf Σⱼ (diam Cⱼ)^ℓ` over countable covers of `E` (the content
+`H^ℓ_∞`).  The exceptional points lie in countably many sets `B ⊆ A` of diameter `< R` with
+`2η(A ∩ B_ρ(x)) ≤ ρ^ℓ` for `x ∈ B`, `0 < ρ < R`.  If `C` meets such a `B` at `x`, then
+`C ∩ B ⊆ A ∩ B_ρ(x)` for every `ρ > diam(C ∩ B)`, so `2η(C ∩ B) ≤ (diam C)^ℓ`; hence
+`η(B) ≤ η(B)/2`, `η(B) = 0`, and `μH[ℓ](B) = 0` because covers of small sum have small diameters.
+Measurability and boundedness of `A` are not used. -/
+theorem Submission.adr_content_density : ∀ (P : ℕ) (ℓ : ℝ) (A : Set (Euclid P)), 0 < ℓ → MeasurableSet A → Bornology.IsBounded A → μH[ℓ] {x | x ∈ A ∧ ¬ ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ ∀ C : ℕ → Set (Euclid P), A ∩ ball x ρ ⊆ ⋃ j, C j → ENNReal.ofReal ρ ^ ℓ ≤ 2 * ∑' j, Metric.ediam (C j) ^ ℓ} = 0 := by
+  intro P ℓ A hℓ _ _
+  -- `η` is the content `H^ℓ_∞`
+  set η : OuterMeasure (Euclid P) := OuterMeasure.boundedBy fun C => ediam C ^ ℓ with hη
+  -- content-null sets are `μH[ℓ]`-null: a cover with `Σⱼ (diam Cⱼ)^ℓ < min ε r^ℓ` has all
+  -- diameters `≤ r`
+  have hnull : ∀ B : Set (Euclid P), η B = 0 → μH[ℓ] B = 0 := by
+    intro B hB
+    refine le_antisymm ?_ bot_le
+    rw [Measure.hausdorffMeasure_apply]
+    refine iSup₂_le fun r hr => ENNReal.le_of_forall_pos_le_add fun ε hε _ => ?_
+    have hlt : η B < min (ε : ℝ≥0∞) (r ^ ℓ) := by
+      rw [hB]
+      exact lt_min (by exact_mod_cast hε) (ENNReal.rpow_pos_of_nonneg hr hℓ.le)
+    rw [hη, OuterMeasure.boundedBy_apply] at hlt
+    obtain ⟨t, ht, hsum⟩ : ∃ t : ℕ → Set (Euclid P), B ⊆ ⋃ n, t n ∧
+        ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ ℓ < min (ε : ℝ≥0∞) (r ^ ℓ) := by
+      simpa only [iInf_lt_iff, exists_prop] using hlt
+    refine iInf₂_le_of_le t ht (iInf_le_of_le (fun n => ?_) ?_)
+    · rcases (t n).eq_empty_or_nonempty with hn | hn
+      · simp [hn]
+      · refine ((ENNReal.rpow_lt_rpow_iff hℓ).1 ?_).le
+        exact ((le_iSup (fun _ : (t n).Nonempty => ediam (t n) ^ ℓ) hn).trans
+          (ENNReal.le_tsum (f := fun k => ⨆ _ : (t k).Nonempty, ediam (t k) ^ ℓ) n)).trans_lt
+          (hsum.trans_le (min_le_right _ _))
+    · rw [zero_add]
+      exact (hsum.trans_le (min_le_left _ _)).le
+  -- the contraction `η(B) ≤ η(B)/2` on a set `B ⊆ A` of diameter `< R`
+  have hcontr : ∀ (R : ℝ) (B : Set (Euclid P)), 0 < R → B ⊆ A → ediam B < ENNReal.ofReal R →
+      (∀ x ∈ B, ∀ ρ : ℝ, 0 < ρ → ρ < R → 2 * η (A ∩ ball x ρ) ≤ ENNReal.ofReal ρ ^ ℓ) →
+      η B = 0 := by
+    intro R B hR hBA hBR hball
+    have hkey : ∀ C : Set (Euclid P), 2 * η (C ∩ B) ≤ ediam C ^ ℓ := by
+      intro C
+      rcases (C ∩ B).eq_empty_or_nonempty with hCB | ⟨x, hxC, hxB⟩
+      · rw [hCB, measure_empty, mul_zero]
+        exact bot_le
+      have hDR : ediam (C ∩ B) < ENNReal.ofReal R :=
+        (ediam_mono inter_subset_right).trans_lt hBR
+      have hd : ENNReal.ofReal (ediam (C ∩ B)).toReal = ediam (C ∩ B) :=
+        ENNReal.ofReal_toReal hDR.ne_top
+      have hdR : (ediam (C ∩ B)).toReal < R := by
+        rwa [← hd, ENNReal.ofReal_lt_ofReal_iff hR] at hDR
+      have hlim : Tendsto (fun ρ : ℝ => ENNReal.ofReal ρ ^ ℓ) (𝓝[>] (ediam (C ∩ B)).toReal)
+          (𝓝 (ENNReal.ofReal (ediam (C ∩ B)).toReal ^ ℓ)) :=
+        ((ENNReal.continuous_rpow_const.comp ENNReal.continuous_ofReal).tendsto _).mono_left
+          nhdsWithin_le_nhds
+      -- `C ∩ B ⊆ A ∩ B_ρ(x)` for `diam(C ∩ B) < ρ < R`; let `ρ ↓ diam(C ∩ B)`
+      calc 2 * η (C ∩ B) ≤ ENNReal.ofReal (ediam (C ∩ B)).toReal ^ ℓ := by
+            refine ge_of_tendsto hlim ?_
+            filter_upwards [Ioo_mem_nhdsGT hdR] with ρ hρ
+            have hρ0 : 0 < ρ := ENNReal.toReal_nonneg.trans_lt hρ.1
+            have hsub : C ∩ B ⊆ A ∩ ball x ρ := by
+              intro y hy
+              refine ⟨hBA hy.2, ?_⟩
+              have hyx : edist y x ≤ ediam (C ∩ B) := edist_le_ediam_of_mem hy ⟨hxC, hxB⟩
+              rw [edist_dist, ← hd, ENNReal.ofReal_le_ofReal_iff ENNReal.toReal_nonneg] at hyx
+              exact mem_ball.2 (hyx.trans_lt hρ.1)
+            calc 2 * η (C ∩ B) ≤ 2 * η (A ∩ ball x ρ) := by gcongr
+              _ ≤ ENNReal.ofReal ρ ^ ℓ := hball x hxB ρ hρ0 hρ.2
+        _ = ediam (C ∩ B) ^ ℓ := by rw [hd]
+        _ ≤ ediam C ^ ℓ := ENNReal.rpow_le_rpow (ediam_mono inter_subset_left) hℓ.le
+    have hle : OuterMeasure.restrict B η ≤ (2 : ℝ≥0∞)⁻¹ • η := by
+      have h2 : (2 : ℝ≥0∞)⁻¹ • η =
+          OuterMeasure.boundedBy ((2 : ℝ≥0∞)⁻¹ • fun C : Set (Euclid P) => ediam C ^ ℓ) :=
+        OuterMeasure.smul_boundedBy (ENNReal.inv_ne_top.2 two_ne_zero)
+      rw [h2]
+      refine OuterMeasure.le_boundedBy.2 fun C => ?_
+      rw [OuterMeasure.restrict_apply, Pi.smul_apply, smul_eq_mul,
+        ← ENNReal.mul_le_iff_le_inv two_ne_zero ENNReal.ofNat_ne_top]
+      exact hkey C
+    have hBB : η B ≤ (2 : ℝ≥0∞)⁻¹ * η B := by
+      simpa only [OuterMeasure.restrict_apply, inter_self, smul_apply, smul_eq_mul] using hle B
+    have hfin : η B ≠ ∞ :=
+      ((OuterMeasure.boundedBy_le B).trans_lt (ENNReal.rpow_lt_top_of_nonneg hℓ.le
+        (hBR.trans ENNReal.ofReal_lt_top).ne)).ne
+    rw [← ENNReal.mul_le_iff_le_inv two_ne_zero ENNReal.ofNat_ne_top, two_mul] at hBB
+    exact nonpos_iff_eq_zero.1
+      ((ENNReal.add_le_add_iff_left hfin).1 (hBB.trans_eq (add_zero _).symm))
+  -- the exceptional set lies in the sets `N m ∩ B(u j, 1/(4(m + 1)))`, `u` dense
+  obtain ⟨u, hu⟩ := TopologicalSpace.exists_dense_seq (Euclid P)
+  let N : ℕ → Set (Euclid P) := fun m => {x | x ∈ A ∧ ∀ ρ : ℝ, 0 < ρ → ρ < 1 / (m + 1) →
+    2 * η (A ∩ ball x ρ) ≤ ENNReal.ofReal ρ ^ ℓ}
+  refine measure_mono_null (t := ⋃ m : ℕ, ⋃ j : ℕ,
+    N m ∩ eball (u j) (ENNReal.ofReal (1 / (4 * (m + 1))))) ?_ ?_
+  · rintro x ⟨hxA, hx⟩
+    push Not at hx
+    obtain ⟨δ, hδ, hδx⟩ := hx
+    obtain ⟨m, hm⟩ := exists_nat_one_div_lt hδ
+    obtain ⟨j, hj⟩ := hu.exists_dist_lt x (show (0 : ℝ) < 1 / (4 * (m + 1)) by positivity)
+    refine mem_iUnion.2 ⟨m, mem_iUnion.2 ⟨j, ⟨hxA, fun ρ hρ hρm => ?_⟩, ?_⟩⟩
+    · obtain ⟨C, hC, hCsum⟩ := hδx ρ hρ (hρm.trans hm)
+      calc 2 * η (A ∩ ball x ρ) ≤ 2 * ∑' j, ediam (C j) ^ ℓ := by
+            gcongr
+            exact (measure_mono hC).trans ((measure_iUnion_le C).trans
+              (ENNReal.tsum_le_tsum fun j => OuterMeasure.boundedBy_le _))
+        _ ≤ ENNReal.ofReal ρ ^ ℓ := hCsum.le
+    · rw [mem_eball, edist_dist]
+      exact (ENNReal.ofReal_lt_ofReal_iff (by positivity)).2 hj
+  · refine measure_iUnion_null fun m => measure_iUnion_null fun j => hnull _ ?_
+    refine hcontr (1 / (m + 1)) _ (by positivity) (fun x hx => hx.1.1) ?_ (fun x hx => hx.1.2)
+    calc ediam (N m ∩ eball (u j) (ENNReal.ofReal (1 / (4 * (m + 1)))))
+        ≤ ediam (eball (u j) (ENNReal.ofReal (1 / (4 * (m + 1))))) :=
+          ediam_mono inter_subset_right
+      _ ≤ 2 * ENNReal.ofReal (1 / (4 * (m + 1))) := ediam_eball_le
+      _ < ENNReal.ofReal (1 / (m + 1)) := by
+        rw [two_mul, ← ENNReal.ofReal_add (by positivity) (by positivity),
+          ENNReal.ofReal_lt_ofReal_iff (by positivity)]
+        field_simp
+        linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
