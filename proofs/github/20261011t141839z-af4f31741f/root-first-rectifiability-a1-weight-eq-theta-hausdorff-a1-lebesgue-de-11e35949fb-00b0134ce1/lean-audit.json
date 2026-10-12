@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d81db13d49dedfaf11b75b8fa53005de585b89ea419b578ccee670db40433fb5",
+  "git_delta": {
+    "base_commit": "bdec0da1f79e416d344ad10816544f4ff4d5af5c",
+    "candidate_commit": "274b9011f59fc4fd3a536637c7180bfb2e23e4e7",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_weq_nondensity_points_null",
+    "diff_sha256": "7066ae4fa2ae72952d740ea228781e1c80207a44b414f2bc6283177b9147cf15",
+    "source_sha256": "1f7034f480ddb6ef485fc6092f28d50eadb894f0d501a9d0c191bc93c8919712",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_weq_nondensity_points_null",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (W A : Set (Euclidean N)), IsOpen W → μ W ≠ ∞ → A ⊆ W → μ {x | x ∈ A ∧ ¬ Tendsto (fun r : ℝ => μ (A ∩ closedBall x r) / μ (closedBall x r)) (𝓝[>] 0) (𝓝 1)} = 0",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
