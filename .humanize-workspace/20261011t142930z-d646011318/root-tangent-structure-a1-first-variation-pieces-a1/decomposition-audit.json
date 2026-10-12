@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "normDet_sq_eq_det_gram|normDet_comp|normDet_of_subsingleton",
+        "weighted_area_formula_lipschitz_injOn|euclideanHausdorffMeasure_image_le_of_lipschitzOn|hasDerivAt_familySpatialDerivative",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le|integral_withDensity_eq_integral_toReal_smul₀|restrict_withDensity",
+        "image_of_continuousOn_injOn|exists_measurable_subset_ae_eq|exists_measurable_superset_ae_eq|lintegral_iUnion₀|trace_eq_sum_inner|trace_mul_comm",
+        "det_eq_prod_eigenvalues|eigenvectorBasis|mulVec_eigenvectorBasis",
+        "ts_fv_",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ch04-fvp-audit-rueri5_8/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ch04-fvp-audit-rueri5_8/AxiomsAndInstances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Matrix/Spectrum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DeformationFamily.lean",
+        "/tmp/ch04-fvp-audit-rueri5_8/Challenge_variation_bounds.lean",
+        "/tmp/ch04-fvp-audit-rueri5_8/Challenge_image_mass_area_formula.lean",
+        "/tmp/ch04-fvp-audit-rueri5_8/Challenge_jacobian_derivative.lean",
+        "/tmp/ch04-fvp-audit-rueri5_8/Challenge_weighted_integral_derivative.lean",
+        "/tmp/ch04-fvp-audit-rueri5_8/WithImports.lean",
+        "/tmp/ch04-fvp-audit-rueri5_8/Assembly.lean",
+        "/tmp/ch04-fvp-audit-rueri5_8/AxiomsAndInstances.lean"
+      ],
+      "conclusion": "The four-way split is appropriate for the selected theorem. All four independently generated comparator challenge types pass validation and compile in the frozen scope; they also elaborate with the implementation imports. Each name is a bare identifier, with no matching reservation in the current DAG or declaration in the searched project and pinned SimonGMT sources. The children have no sibling dependencies and their proofs do not rely on the parent. The supplied assembly has exactly the handoff's parent type and recompiles using only the four child propositions as temporary assumptions plus standard axioms; it uses no ancestor theorem or additional obligation. This checks composition, not implementation of the children. Inspected sources match the pinned revisions, and axiom checks of the cited lemmas report only propext, Classical.choice and Quot.sound. Inline matrices use Matrix.of; Lean checks confirm operator identity, composition and operator norm for continuous linear maps."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "variation_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree, including uniform bounds for every ambient point. The proof constructs Λ', establishes the mixed-derivative identity, proves two-sided invertibility of spatial derivatives, and obtains compact bounds extended by identity and zero off K. It covers empty K and zero-dimensional ambient space without circular reliance."
+    },
+    {
+      "key": "image_mass_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the explicit matrix Jacobian match the Lean proposition. The proof establishes the Gram-determinant identity, disjointifies the cover, applies the weighted area formula twice on Borel parameter sets, removes null discrepancies using Lipschitz null preservation, and identifies tangents almost everywhere. The pinned area formula permits arbitrary weights, so no missing measurability assumption is required."
+    },
+    {
+      "key": "jacobian_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The quantifier order correctly makes C depend only on N and B. The proof supplies determinant positivity, explicit uniform bounds, the differentiated Leibniz formula, and the square-root derivative; the initial derivative is identified with trace(Λ'(0)∘p) using projection idempotence and trace cyclicity. It needs neither dim P = n nor continuity of Λ', and handles N = 0. The inline matrix and operator constructions have the intended meaning."
+    },
+    {
+      "key": "weighted_integral_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type preserve the common almost-everywhere set and uniform time interval. The proof transfers hypotheses to Hⁿ restricted to M∩K, verifies integrability and every differentiation-under-integral hypothesis, justifies the local toReal identity, and converts the derivative integral using withDensity and vanishing off K. No extra global measurability, integrability, or positivity assumption on B is needed."
+    }
+  ],
+  "required_changes": []
+}
