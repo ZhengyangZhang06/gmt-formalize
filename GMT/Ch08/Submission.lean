@@ -2,7 +2,6 @@ import Poincare.SimonGMT.Chapter08.VarifoldConvergence
 import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter02.Submanifold
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
-import Poincare.SimonGMT.Chapter08.ConstancyTangent
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 8 (printed pp. 205–224)
@@ -519,11 +518,16 @@ theorem Submission.allard_tc_tpr_weighted_approx_tangent_iff :
       Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable]
     rfl
   -- Step 7: weighted approximate tangent planes are unique where `θ(x) ≠ 0`, and a point of
-  -- `G(N,n)` is determined by its plane.
+  -- `G(N,n)` is determined by its plane, since `Grassmannian.ofSubmodule S.plane _ = S`.
   intro S
-  refine ⟨fun hS ↦ Grassmannian.eq_of_plane_eq (hS.unique hT.2.1.ne' hTM), ?_⟩
-  rintro rfl
-  exact hTM
+  refine ⟨fun hS ↦ ?_, ?_⟩
+  · have hST : S.plane = T.plane := hS.unique hT.2.1.ne' hTM
+    calc S = Grassmannian.ofSubmodule S.plane S.finrank_plane :=
+          (Grassmannian.ofSubmodule_plane S).symm
+      _ = Grassmannian.ofSubmodule T.plane T.finrank_plane := by congr 1
+      _ = T := Grassmannian.ofSubmodule_plane T
+  · rintro rfl
+    exact hTM
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
