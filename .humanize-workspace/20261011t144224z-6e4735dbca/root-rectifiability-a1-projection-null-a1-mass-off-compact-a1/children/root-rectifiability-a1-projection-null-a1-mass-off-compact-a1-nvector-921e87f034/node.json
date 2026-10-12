@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.mass_off_compact-a1.nvector_pairing_bound-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.mass_off_compact-a1",
+  "depth": 4,
+  "title": "Pairing bound for a normalized n-vector: Σ_β w(dx^β)² = 1 implies |w(θ)| ≤ Σ_β |θ(e_β)| (Step 4(b) of the parent proof)",
+  "statement": "Let P, n ∈ ℕ, let w ∈ NVector (Eucl P) n be an n-vector on ℝ^P (a continuous linear functional on Covector (Eucl P) n) and let θ ∈ Covector (Eucl P) n be an n-covector. Assume Σ_{β ∈ I(n,P)} w(dx^β)² = 1, where I(n,P) = SimonMultiIndex n P, dx^β := wedgeCovectors n (fun j => EuclideanSpace.proj (β j)) and w(dx^β) = euclideanNVectorCoordinate w β. Then |w(θ)| ≤ Σ_{β ∈ I(n,P)} |θ(e_β)|, where θ(e_β) := euclideanCovectorCoordinate θ β = θ(e_{β(0)}, …, e_{β(n−1)}) and e_i := EuclideanSpace.single i 1.",
+  "lean_statement": "∀ (P n : ℕ) (w : NVector (Eucl P) n) (θ : Covector (Eucl P) n), ∑ β : SimonMultiIndex n P, (euclideanNVectorCoordinate w β) ^ 2 = 1 → |w θ| ≤ ∑ β : SimonMultiIndex n P, |euclideanCovectorCoordinate θ β|",
+  "lean_name": "rpn_moc_abs_nvector_apply_le",
+  "depends_on": [
+    "root.compactness_mass_bounds-a1.covector_expansion-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_mass_bounds-a1.covector_expansion-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-covector-expansion-a1-a1",
+      "result_commit": "6c6b4b2753e8214a3e45619bb0b65d8d553557a5",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-mass-off-compact-a1-nvector-921e87f034-a1"
+}
