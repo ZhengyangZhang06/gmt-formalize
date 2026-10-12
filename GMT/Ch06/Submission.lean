@@ -359,6 +359,34 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Test forms have bounded Euclidean coefficient norm** (the finiteness of `sup_x |ω(x)|` behind
+"Evidently (1), (2) give `P_k(ω) → T(ω)`" in the proof of Simon Ch. 6, 6.2, p. 169).
+`x ↦ |ω(x)|` is continuous, since `α ↦ |α|` is the square root of a finite sum of squares of
+evaluations, and has compact support, since `|0| = 0`.  A continuous compactly supported real
+function is bounded by some `C₀ ≥ 0`, and `C = C₀ + 1` is positive. -/
+theorem Submission.br_la_testForm_covectorNorm_bounded : ∀ (P n : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U n), ∃ C : ℝ, 0 < C ∧ ∀ x : Eucl P, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C := by
+  intro P n U ω
+  -- `ω` is smooth, hence continuous.
+  have hω : Continuous (ω : DifferentialForm (Eucl P) n) := ω.property.1.1.continuous
+  -- `x ↦ |ω(x)|` is continuous: a square root of a finite sum of squares of evaluations.
+  have hcont : Continuous fun x =>
+      covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) := by
+    unfold covectorEuclideanNorm
+    refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+    split_ifs
+    · exact (hω.eval_const _).pow 2
+    · exact continuous_const
+  -- `|ω(x)| = 0` wherever `ω(x) = 0`, so `x ↦ |ω(x)|` inherits the compact support of `ω`.
+  have hsupp : HasCompactSupport fun x =>
+      covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) := by
+    refine ω.property.1.2.mono' fun x hx => subset_tsupport _ fun h => hx ?_
+    simp [h]
+  -- A continuous compactly supported function is bounded by some `C₀ ≥ |f(0)| ≥ 0`.
+  obtain ⟨C₀, hC₀⟩ := hcont.bounded_above_of_compact_support hsupp
+  refine ⟨C₀ + 1, by linarith [(norm_nonneg _).trans (hC₀ 0)], fun x => ?_⟩
+  linarith [le_abs_self (covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x)),
+    (Real.norm_eq_abs _).symm.trans_le (hC₀ x)]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
