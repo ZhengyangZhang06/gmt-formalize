@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1.radial_ibp-a1",
+  "parent_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1",
+  "depth": 4,
+  "title": "The kernel-weighted radial derivative integral equals -sigma times the Laplacian paired with the potential",
+  "statement": "Let n in N, rho, Psi, h : R^n -> R, x0 in R^n and sigma in R with sigma != 0. Assume h is C^2, Psi is C^1, Psi(z) = 0 whenever |z| >= 1, and DPsi(z)[v] = rho(z) <z, v> for all z, v in R^n. Then int_{R^n} rho(z) Dh(x0 + sigma z)[z] dz = - sigma int_{R^n} Laplacian(h)(x0 + sigma z) Psi(z) dz. Here Df(y)[v] = fderiv R f y v, Laplacian is Mathlib's Laplacian.laplacian, and the measure is Lebesgue measure.",
+  "lean_statement": "∀ (n : ℕ) (ρ Ψ h : Rn n → ℝ) (x₀ : Rn n) (σ : ℝ), σ ≠ 0 → ContDiff ℝ 2 h → ContDiff ℝ 1 Ψ → (∀ z : Rn n, 1 ≤ ‖z‖ → Ψ z = 0) → (∀ z v : Rn n, fderiv ℝ Ψ z v = ρ z * inner ℝ z v) → ∫ z, ρ z * fderiv ℝ h (x₀ + σ • z) z = -σ * ∫ z, Laplacian.laplacian h (x₀ + σ • z) * Ψ z",
+  "lean_name": "mvk_integral_radial_fderiv_eq_neg_laplacian",
+  "depends_on": [
+    "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1.green_identity-a1",
+    "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1.laplacian_rescale-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1.green_identity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1.laplacian_rescale-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-weyl-lemma-a1-mean-value-kernel-a1-radial-ibp-a1-a1"
+}

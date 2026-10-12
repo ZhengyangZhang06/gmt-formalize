@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1.laplacian_rescale-a1",
+  "parent_id": "root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1",
+  "depth": 4,
+  "title": "Laplacian of an affinely rescaled C^2 function",
+  "statement": "Let n in N, let h : R^n -> R be of class C^2, x0 in R^n and sigma in R. Then for every z in R^n, Laplacian(y -> h(x0 + sigma y))(z) = sigma^2 Laplacian(h)(x0 + sigma z), where Laplacian is Mathlib's Laplacian.laplacian.",
+  "lean_statement": "∀ (n : ℕ) (h : Rn n → ℝ) (x₀ : Rn n) (σ : ℝ), ContDiff ℝ 2 h → ∀ z : Rn n, Laplacian.laplacian (fun y => h (x₀ + σ • y)) z = σ ^ 2 * Laplacian.laplacian h (x₀ + σ • z)",
+  "lean_name": "mvk_laplacian_comp_add_smul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-weyl-lemma-a1-mean-value-kernel-a1-lap-4f51451e66-a1"
+}
