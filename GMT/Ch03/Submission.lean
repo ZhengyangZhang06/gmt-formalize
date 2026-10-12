@@ -1086,6 +1086,117 @@ theorem Submission.indCompact_local_cauchy_of_mollified_cauchy : ∀ (N : ℕ) (
           ← ENNReal.ofReal_add (by positivity) (by positivity), hεe]
         congr 1
         ring
+/-- **Diagonal Arzelà–Ascoli extraction for mollified sets** (Steps 4–5 of the mollification
+proof of Simon Ch. 2, Thm. 2.6, with arbitrary continuous compactly supported kernels `ρₘ`): for
+arbitrary sets `Fₖ ⊆ ℝᴺ` some subsequence `φ` makes every `y ↦ ∫_{F_{φ(k)}} ρₘ(y - z) dz`
+uniformly Cauchy on `B̄ₘ(0)`. Only `Lᴺ ⌞ S ≤ Lᴺ` is used, so these functions are bounded by
+`Mₘ Lᴺ(B̄_{Rₘ}(0))` and equicontinuous uniformly in `S`. Tychonoff in the countable product
+`∏_{(m, d) ∈ ℕ × D}` (`D` countable dense) gives `φ` with convergence at every `(m, d)`;
+equicontinuity and a finite cover of `B̄ₘ(0)` by balls centred in `D` upgrade this to the uniform
+Cauchy property. -/
+theorem Submission.indCompact_diagonal_mollified_uniform_cauchy : ∀ (N : ℕ) (ρ : ℕ → Rn N → ℝ)
+    (F : ℕ → Set (Rn N)), (∀ m, Continuous (ρ m)) → (∀ m, HasCompactSupport (ρ m)) →
+    ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ (m : ℕ) (ε : ℝ), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀,
+      ∀ y ∈ Metric.closedBall (0 : Rn N) m,
+        |(∫ z in F (φ k), ρ m (y - z)) - ∫ z in F (φ l), ρ m (y - z)| ≤ ε := by
+  intro N ρ F hc hs
+  -- A function bounded by `C` and vanishing off `B̄_r(c)` has `|∫_S f| ≤ C Lᴺ(B̄_r(0))` for every
+  -- set `S`, since `Lᴺ ⌞ S ≤ Lᴺ`.
+  have key : ∀ (S : Set (Rn N)) (c : Rn N) (r C : ℝ) (f : Rn N → ℝ), (∀ z, ‖f z‖ ≤ C) →
+      (∀ z, f z ≠ 0 → z ∈ Metric.closedBall c r) →
+      |∫ z in S, f z| ≤ C * (volume (Metric.closedBall (0 : Rn N) r)).toReal := by
+    intro S c r C f hfC hfs
+    have hC : 0 ≤ C := (norm_nonneg _).trans (hfC 0)
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (f := f) (s := Metric.closedBall c r)
+      (μ := volume.restrict S) (fun z hz => not_not.1 (mt (hfs z) hz)), ← Real.norm_eq_abs]
+    refine (norm_setIntegral_le_of_norm_le_const
+      ((Measure.restrict_apply_le _ _).trans_lt measure_closedBall_lt_top)
+      (fun z _ => hfC z)).trans (mul_le_mul_of_nonneg_left ?_ hC)
+    rw [Measure.real, ← Measure.addHaar_closedBall_center volume c r]
+    exact ENNReal.toReal_mono measure_closedBall_lt_top.ne (Measure.restrict_apply_le _ _)
+  -- Support radius `Rₘ` and sup bound `Mₘ` of each kernel.
+  have hR : ∀ m, ∃ R : ℝ, ∀ x, ρ m x ≠ 0 → ‖x‖ ≤ R := by
+    intro m
+    obtain ⟨R, hR⟩ := (hs m).isCompact.isBounded.subset_closedBall 0
+    exact ⟨R, fun x hx => by simpa using hR (subset_tsupport _ hx)⟩
+  choose R hR using hR
+  choose M hM using fun m => (hc m).bounded_above_of_compact_support (hs m)
+  -- Uniform bound: `|∫_S ρₘ(y - z) dz| ≤ Mₘ Lᴺ(B̄_{Rₘ}(0))`.
+  have hbd : ∀ (m : ℕ) (S : Set (Rn N)) (y : Rn N),
+      |∫ z in S, ρ m (y - z)| ≤ M m * (volume (Metric.closedBall (0 : Rn N) (R m))).toReal := by
+    intro m S y
+    refine key S y (R m) (M m) (fun z => ρ m (y - z)) (fun z => hM m _) (fun z hz => ?_)
+    rw [Metric.mem_closedBall, dist_comm, dist_eq_norm]
+    exact hR m _ hz
+  have hint : ∀ (m : ℕ) (y : Rn N) (S : Set (Rn N)),
+      Integrable (fun z => ρ m (y - z)) (volume.restrict S) := fun m y S =>
+    (((hc m).integrable_of_hasCompactSupport (hs m)).comp_sub_left y).restrict
+  -- Equicontinuity, uniformly in the set `S`.
+  have heq : ∀ (m : ℕ) (η : ℝ), 0 < η → ∃ δ > 0, ∀ (S : Set (Rn N)) (y y' : Rn N), dist y y' < δ →
+      |(∫ z in S, ρ m (y - z)) - ∫ z in S, ρ m (y' - z)| ≤ η := by
+    intro m η hη
+    obtain ⟨V, hV0, hV⟩ : ∃ V, 0 ≤ V ∧
+        (volume (Metric.closedBall (0 : Rn N) (R m + 1))).toReal = V :=
+      ⟨_, ENNReal.toReal_nonneg, rfl⟩
+    have hV1 : 0 < V + 1 := by linarith
+    obtain ⟨δ, hδ, hδρ⟩ := Metric.uniformContinuous_iff.1
+      ((hs m).uniformContinuous_of_continuous (hc m)) (η / (V + 1)) (div_pos hη hV1)
+    refine ⟨min δ 1, lt_min hδ one_pos, fun S y y' hyy' => ?_⟩
+    rw [← integral_sub (hint m y S) (hint m y' S)]
+    refine (key S y (R m + 1) (η / (V + 1)) (fun z => ρ m (y - z) - ρ m (y' - z)) (fun z => ?_)
+      (fun z hz => ?_)).trans ?_
+    · show ‖ρ m (y - z) - ρ m (y' - z)‖ ≤ _
+      rw [← dist_eq_norm]
+      have hd : dist (y - z) (y' - z) < δ := by
+        rw [dist_sub_right]; exact hyy'.trans_le (min_le_left _ _)
+      exact (hδρ hd).le
+    · have hz' : ρ m (y - z) - ρ m (y' - z) ≠ 0 := hz
+      rw [Metric.mem_closedBall, dist_comm, dist_eq_norm]
+      by_cases h : ρ m (y - z) = 0
+      · have h' : ρ m (y' - z) ≠ 0 := fun h' => hz' (by rw [h, h', sub_self])
+        have h'' := hR m _ h'
+        have hyy1 : ‖y - y'‖ < 1 := by
+          rw [← dist_eq_norm]; exact hyy'.trans_le (min_le_right _ _)
+        calc ‖y - z‖ = ‖(y - y') + (y' - z)‖ := by rw [sub_add_sub_cancel]
+          _ ≤ ‖y - y'‖ + ‖y' - z‖ := norm_add_le _ _
+          _ ≤ R m + 1 := by linarith
+      · linarith [hR m _ h]
+    · rw [hV]
+      calc η / (V + 1) * V ≤ η / (V + 1) * (V + 1) :=
+            mul_le_mul_of_nonneg_left (by linarith) (div_pos hη hV1).le
+        _ = η := div_mul_cancel₀ _ hV1.ne'
+  -- Tychonoff on the countable product indexed by `ℕ × D`, `D` countable dense.
+  obtain ⟨D, hDc, hDd⟩ := TopologicalSpace.exists_countable_dense (Rn N)
+  have : Countable D := hDc.to_subtype
+  have hK : IsCompact (Set.pi univ fun p : ℕ × D =>
+      Icc (-(M p.1 * (volume (Metric.closedBall (0 : Rn N) (R p.1))).toReal))
+        (M p.1 * (volume (Metric.closedBall (0 : Rn N) (R p.1))).toReal)) :=
+    isCompact_univ_pi fun p => isCompact_Icc
+  obtain ⟨a, -, φ, hφ, hlim⟩ := hK.tendsto_subseq
+    (x := fun k (p : ℕ × D) => ∫ z in F k, ρ p.1 ((p.2 : Rn N) - z))
+    fun k => Set.mem_univ_pi.2 fun p => abs_le.1 (hbd p.1 (F k) p.2)
+  refine ⟨φ, hφ, fun m ε hε => ?_⟩
+  obtain ⟨δ, hδ, hδV⟩ := heq m (ε / 3) (by positivity)
+  -- Finitely many `δ`-balls centred in `D` cover `B̄ₘ(0)`.
+  obtain ⟨t, ht⟩ := (isCompact_closedBall (0 : Rn N) (m : ℝ)).elim_finite_subcover
+    (fun d : D => Metric.ball (d : Rn N) δ) (fun _ => Metric.isOpen_ball) fun y _ => by
+      obtain ⟨d, hd, hyd⟩ := hDd.exists_dist_lt y hδ
+      exact mem_iUnion.2 ⟨⟨d, hd⟩, hyd⟩
+  have hev : ∀ᶠ k in atTop, ∀ d ∈ t,
+      dist (∫ z in F (φ k), ρ m ((d : Rn N) - z)) (a (m, d)) < ε / 6 :=
+    (eventually_all_finset t).2 fun d _ =>
+      Metric.tendsto_nhds.1 (tendsto_pi_nhds.1 hlim (m, d)) (ε / 6) (by positivity)
+  obtain ⟨k₀, hk₀⟩ := eventually_atTop.1 hev
+  refine ⟨k₀, fun k hk l hl y hy => ?_⟩
+  obtain ⟨d, hdt, hyd⟩ := mem_iUnion₂.1 (ht hy)
+  have h1 := hδV (F (φ k)) y d hyd
+  have h2 := hδV (F (φ l)) y d hyd
+  have h3 := hk₀ k hk d hdt
+  have h4 := hk₀ l hl d hdt
+  rw [Real.dist_eq] at h3 h4
+  rw [abs_le] at h1 h2 ⊢
+  rw [abs_lt] at h3 h4
+  constructor <;> linarith [h1.1, h1.2, h2.1, h2.2, h3.1, h3.2, h4.1, h4.2]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
