@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.canonical_representation-a1.null_transfer-a1.open_cover_finite_measure-a1",
+  "parent_id": "root.integral_compactness-a1.canonical_representation-a1.null_transfer-a1",
+  "depth": 4,
+  "title": "Countable cover of an open set by open subsets of finite mass (μ finite on compact subsets)",
+  "statement": "Let N ∈ ℕ and let μ be a measure on ℝ^N = Euclidean N (Euclidean metric, Borel σ-algebra). Let U ⊆ ℝ^N be open with μ(K) < ∞ for every compact K ⊆ U. Then there is a sequence (W_i)_{i∈ℕ} of open sets with W_i ⊆ U and μ(W_i) < ∞ for every i, and U ⊆ ⋃_{i∈ℕ} W_i.",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (U : Set (Euclidean N)), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → ∃ W : ℕ → Set (Euclidean N), (∀ i, IsOpen (W i) ∧ W i ⊆ U ∧ μ (W i) ≠ ∞) ∧ U ⊆ ⋃ i, W i",
+  "lean_name": "intcpt_canon_nt_open_cover_finite_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-canonical-representation-a1-null-transfe-35557c76ee-a1"
+}
