@@ -434,6 +434,69 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Rescaled complement at a Lebesgue density point** (a step in the proof of `ApproxTangentAE`,
+Simon Ch. 3, 1.9 and Ch. 4, 1.3). If `C ⊆ ℝⁿ` is Borel, `R > 0` and
+`Lⁿ(C ∩ B_r(w)) / Lⁿ(B_r(w)) → 1` as `r ↓ 0`, then
+`Lⁿ{u ∈ B_R(0) : w + tu ∉ C} → 0` as `t ↓ 0`: the set is the preimage of `B_{tR}(w) \ C` under
+`u ↦ w + tu`, so its measure is
+`t⁻ⁿ Lⁿ(B_{tR}(w) \ C) = Rⁿ Lⁿ(B_1(0)) (1 - Lⁿ(C ∩ B_{tR}(w)) / Lⁿ(B_{tR}(w))) → 0`. -/
+theorem Submission.ts_pdb_density_complement_vanish : ∀ (n : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (w : EuclideanSpace ℝ (Fin n)) (R : ℝ), MeasurableSet C → 0 < R → Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun t : ℝ ↦ volume {u : EuclideanSpace ℝ (Fin n) | u ∈ closedBall 0 R ∧ w + t • u ∉ C}) (𝓝[>] 0) (𝓝 0) := by
+  intro n C w R hC hR hq
+  -- `V = Lⁿ(B_1(0)) < ∞`.
+  set V : ℝ≥0∞ := volume (ball (0 : EuclideanSpace ℝ (Fin n)) 1)
+  have hVfin : V ≠ ⊤ := measure_ball_lt_top.ne
+  -- Step 1: the complementary ratio `1 - q(r)` tends to `0`.
+  have h1 : Tendsto (fun r : ℝ ↦ 1 - volume (C ∩ closedBall w r) / volume (closedBall w r))
+      (𝓝[>] 0) (𝓝 0) := by
+    have := ENNReal.Tendsto.sub tendsto_const_nhds hq (Or.inl ENNReal.one_ne_top)
+    simpa using this
+  -- Step 5 (first half): `t ↦ t * R` maps `t ↓ 0` to `r ↓ 0`.
+  have hmul : Tendsto (fun t : ℝ ↦ t * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_iff.2 ⟨?_, ?_⟩
+    · have h : Tendsto (fun t : ℝ ↦ t * R) (𝓝 0) (𝓝 (0 * R)) :=
+        (continuous_id.mul continuous_const).tendsto 0
+      rw [zero_mul] at h
+      exact h.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with t (ht : 0 < t)
+      exact mul_pos ht hR
+  have h2 : Tendsto (fun t : ℝ ↦ ENNReal.ofReal (R ^ n) * V *
+      (1 - volume (C ∩ closedBall w (t * R)) / volume (closedBall w (t * R)))) (𝓝[>] 0) (𝓝 0) := by
+    have := ENNReal.Tendsto.const_mul (h1.comp hmul)
+      (Or.inr (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hVfin) :
+        (0 : ℝ≥0∞) ≠ 0 ∨ ENNReal.ofReal (R ^ n) * V ≠ ⊤)
+    simpa using this
+  refine h2.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with t (ht : 0 < t)
+  -- Step 2: `B = B_{tR}(w)` has `0 < Lⁿ(B) = (tR)ⁿ Lⁿ(B_1(0)) < ∞`.
+  have hr : 0 < t * R := mul_pos ht hR
+  set B := closedBall w (t * R) with hB
+  have hBpos : volume B ≠ 0 := (measure_closedBall_pos volume w hr).ne'
+  have hBfin : volume B ≠ ⊤ := measure_closedBall_lt_top.ne
+  have hBval : volume B = ENNReal.ofReal ((t * R) ^ n) * V := by
+    rw [hB, Measure.addHaar_closedBall volume w hr.le, finrank_euclideanSpace_fin]
+  -- Step 3: `Lⁿ(B \ C) = Lⁿ(B) (1 - q(tR))`.
+  have hdiff : volume (B \ C) = volume B * (1 - volume (C ∩ B) / volume B) := by
+    have hBC : B \ C = B \ (C ∩ B) := by
+      ext x; simp only [Set.mem_sdiff, mem_inter_iff]; tauto
+    rw [hBC, measure_sdiff inter_subset_right (hC.inter measurableSet_closedBall).nullMeasurableSet
+      (ne_top_of_le_ne_top hBfin (measure_mono inter_subset_right)),
+      ENNReal.mul_sub (fun _ _ ↦ hBfin), mul_one, ENNReal.mul_div_cancel hBpos hBfin]
+  -- Step 4: the set is the preimage of `B \ C` under `u ↦ w + t • u`, so its measure is
+  -- `t⁻ⁿ Lⁿ(B \ C) = Rⁿ Lⁿ(B_1(0)) (1 - q(tR))`.
+  have hset : {u : EuclideanSpace ℝ (Fin n) | u ∈ closedBall 0 R ∧ w + t • u ∉ C} =
+      (fun u ↦ t • u) ⁻¹' ((fun x ↦ w + x) ⁻¹' (B \ C)) := by
+    ext u
+    simp only [mem_ofPred_eq, mem_preimage, Set.mem_sdiff, hB, mem_closedBall, sub_zero,
+      dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_pos ht]
+    constructor
+    · rintro ⟨hu, hw⟩; exact ⟨mul_le_mul_of_nonneg_left hu ht.le, hw⟩
+    · rintro ⟨hu, hw⟩; exact ⟨le_of_mul_le_mul_left hu ht, hw⟩
+  rw [hset, Measure.addHaar_preimage_smul volume ht.ne', measure_preimage_add, hdiff, hBval,
+    finrank_euclideanSpace_fin, ← mul_assoc, ← mul_assoc]
+  congr 2
+  rw [← ENNReal.ofReal_mul (abs_nonneg _), abs_of_pos (by positivity), mul_pow,
+    ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero n ht.ne'), one_mul]
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
