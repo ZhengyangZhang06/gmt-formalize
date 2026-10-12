@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f18608ca8c2017a4935f13cd091e47e2fc16507c77ea33ae929df15a787c781e",
+  "git_delta": {
+    "base_commit": "13574625b28aeb8497a3f4bb4515e54f2e11533b",
+    "candidate_commit": "f573bdec80e2040f693f2b7310ab162bf41e6175",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_wtc_caf_signed_of_lintegral",
+    "diff_sha256": "b928dc08769b47a47dfe3f7715b4e785d1f415096bbb4f05bc2f7d90241c6ef3",
+    "source_sha256": "2b89fd4c38e8d023315398d92a1121f1a75ec442339b7bb1943327c738a3f630",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_wtc_caf_signed_of_lintegral",
+      "statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω s : Set (Eucl n)) (J : Eucl n → ℝ) (h : Eucl Q → ℝ), IsOpen Ω → IsOpen s → s ⊆ Ω → Bornology.IsBounded s → Continuous Φ → InjOn Φ Ω → Continuous J → (∀ v, 0 ≤ J v) → Continuous h → HasCompactSupport h → Ω ∩ Φ ⁻¹' tsupport h ⊆ s → (∀ g : Eucl Q → ℝ≥0∞, Measurable g → ∫⁻ y in Φ '' s, g y ∂(μHE[n] : Measure (Eucl Q)) = ∫⁻ v in s, ENNReal.ofReal (J v) * g (Φ v) ∂(volume : Measure (Eucl n))) → ∫ x in Φ '' Ω, h x ∂(μHE[n] : Measure (Eucl Q)) = ∫ v in Ω, J v * h (Φ v) ∂(volume : Measure (Eucl n))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
