@@ -1014,4 +1014,44 @@ theorem Submission.eilenberg_covering_majorant : ∀ (X : Type) [MetricSpace X] 
         simp only [div_eq_mul_inv]
         ring
 
+/-- **Simon Ch. 2, Theorem 1.9 (pp. 45–46), Eilenberg inequality**, assembled from its three
+children. `eilenberg_compact_exhaustion` gives increasing compact `Q j ⊆ A` with
+`𝓗^{m+k}(N) = 0`, `N = A \ ⋃ j, Q j`. The `eilenberg_covering_majorant` of `N` has integral `0`,
+so `𝓗^k(N ∩ f⁻¹{y}) = 0` for a.e. `y`. Hence, a.e., `𝓗^k(A ∩ f⁻¹{y}) = 𝓗^k((⋃ j, Q j) ∩ f⁻¹{y})
+= ⨆ j, 𝓗^k(Q j ∩ f⁻¹{y})`, a supremum of Borel functions (`eilenberg_compact_fiber_measurable`).
+The inequality is the `eilenberg_covering_majorant` of `A` itself. -/
+theorem Submission.eilenberg_inequality_theorem : EilenbergInequality := by
+  intro X _ _ _ _ m k A f K _ hk hA hAfin hf
+  obtain ⟨Q, hQc, hQA, hQmono, hN⟩ := Submission.eilenberg_compact_exhaustion X
+    (Chapter01.simonHausdorffMeasureReal (m + k)) A hA hAfin
+  -- The majorant of the null remainder `N` vanishes a.e., hence so do the fibre measures of `N`.
+  obtain ⟨G₀, hG₀, hG₀le, hG₀int⟩ := Submission.eilenberg_covering_majorant X m k
+    (A \ ⋃ j, Q j) f K hk (hN.trans_lt ENNReal.zero_lt_top) (hf.mono sdiff_subset)
+  rw [hN, mul_zero, nonpos_iff_eq_zero, lintegral_eq_zero_iff hG₀] at hG₀int
+  -- Continuity from below along the increasing fibres `Q j ∩ f⁻¹{y}`.
+  have hmeas : Measurable fun y ↦
+      Chapter01.simonHausdorffMeasureReal k ((⋃ j, Q j) ∩ f ⁻¹' {y}) := by
+    have hsup : (fun y ↦ Chapter01.simonHausdorffMeasureReal k ((⋃ j, Q j) ∩ f ⁻¹' {y})) =
+        fun y ↦ ⨆ j, Chapter01.simonHausdorffMeasureReal k (Q j ∩ f ⁻¹' {y}) := by
+      funext y
+      rw [iUnion_inter]
+      exact Monotone.measure_iUnion fun i j hij ↦ inter_subset_inter_left _ (hQmono hij)
+    rw [hsup]
+    exact Measurable.iSup fun j ↦ Submission.eilenberg_compact_fiber_measurable X m k (Q j) f hk
+      (hQc j) (hf.mono (hQA j)).continuousOn
+  have hae : (fun y ↦ Chapter01.simonHausdorffMeasureReal k ((⋃ j, Q j) ∩ f ⁻¹' {y})) =ᵐ[volume]
+      fun y ↦ Chapter01.simonHausdorffMeasureReal k (A ∩ f ⁻¹' {y}) := by
+    filter_upwards [hG₀int] with y hy
+    refine le_antisymm (measure_mono (inter_subset_inter_left _ (iUnion_subset hQA))) ?_
+    calc Chapter01.simonHausdorffMeasureReal k (A ∩ f ⁻¹' {y})
+        ≤ Chapter01.simonHausdorffMeasureReal k ((⋃ j, Q j) ∩ f ⁻¹' {y}) +
+            Chapter01.simonHausdorffMeasureReal k ((A \ ⋃ j, Q j) ∩ f ⁻¹' {y}) := by
+          refine (measure_mono fun x hx ↦ ?_).trans (measure_union_le _ _)
+          by_cases hxQ : x ∈ ⋃ j, Q j
+          exacts [Or.inl ⟨hxQ, hx.2⟩, Or.inr ⟨⟨hx.1, hxQ⟩, hx.2⟩]
+      _ = Chapter01.simonHausdorffMeasureReal k ((⋃ j, Q j) ∩ f ⁻¹' {y}) := by
+          rw [nonpos_iff_eq_zero.1 ((hG₀le y).trans_eq hy), add_zero]
+  obtain ⟨G, -, hGle, hGint⟩ := Submission.eilenberg_covering_majorant X m k A f K hk hAfin hf
+  exact ⟨hmeas.aemeasurable.congr hae, (lintegral_mono hGle).trans hGint⟩
+
 end GMT.Ch02
