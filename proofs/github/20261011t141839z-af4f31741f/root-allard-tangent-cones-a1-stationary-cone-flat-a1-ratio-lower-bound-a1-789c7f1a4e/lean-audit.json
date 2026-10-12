@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7b8938a4db2a3f7f3ab9c1b260415eb42285d1d67ccf13991078b07453ac08d5",
+  "git_delta": {
+    "base_commit": "ad0b959554ea648f0f24bf0bde4f12b9a617c2a0",
+    "candidate_commit": "0fcd58060caf945acf55a47f43ff31f3d3198030",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_scf_ratio_ge_on_support",
+    "diff_sha256": "6ae0a9fc9b2a0f2e2808db80443bb2c6f509ec8f47f00cba884c7faf7e329656",
+    "source_sha256": "3ced164e3de0d99d10bbdaee361bb870f23351f8ba5b335d61ad30d67b45a43a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_scf_ratio_ge_on_support",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (a : ℝ≥0∞), (∀ (y : Euclidean N) (ρ : ℝ), μ (closedBall y ρ) ≠ ∞) → (∀ y : Euclidean N, MonotoneOn (densityRatio n μ y) (Ioi 0)) → (∀ᵐ y ∂μ, ∃ θ : ℝ≥0∞, HasDensity n μ y θ ∧ a ≤ θ) → ∀ y ∈ μ.support, ∀ ρ : ℝ, 0 < ρ → a ≤ densityRatio n μ y ρ",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
