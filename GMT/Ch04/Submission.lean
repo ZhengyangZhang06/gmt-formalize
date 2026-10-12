@@ -701,6 +701,104 @@ theorem Submission.closedBall_rpow_kernel_lintegral_le_of_growth : ∀ {X : Type
         rw [← ENNReal.ofReal_add (by positivity) (by positivity)]
         congr 1
         ring
+/-- **Layer-cake/Tonelli bound** (Simon Ch. 4, proof of 5.6, p. 98: integration over
+`ζ ∈ A_{t+ε} ∩ B_{βρ}(ξ)`, then over `t ∈ (0, ∞)` using 4.11). With `f = max (h - ε) 0`, the layer-cake
+formula for `μ ⌞ A` gives `∫_A (h - ε)⁺ dμ = ∫_0^∞ μ(A ∩ {t + ε < h}) dt`. For each `t > 0` the
+level-`t` hypothesis, Tonelli in `(ζ, x)` and `∫_A k(x, ·) dμ ≤ L` on `B` give
+`κ μ(A ∩ {t + ε < h}) ≤ L ∫_B φ(t, ·) G dμ`; integrating in `t`, Tonelli in `(t, x)` and
+`∫_0^∞ φ(t, x) dt ≤ 1` on `B` give the claim. Everything is in `[0, ∞]`, so no finiteness is
+needed. -/
+theorem Submission.layer_cake_tonelli_truncation_bound : ∀ {X : Type} [MeasurableSpace X] (μ : Measure X) [SFinite μ] (A B : Set X) (h : X → ℝ) (φ : ℝ → X → ℝ≥0∞) (G : X → ℝ≥0∞) (k : X → X → ℝ≥0∞) (κ L : ℝ≥0∞) (ε : ℝ), MeasurableSet A → MeasurableSet B → Measurable h → Measurable (Function.uncurry φ) → Measurable G → Measurable (Function.uncurry k) → (∀ x ∈ B, ∫⁻ t in Ioi 0, φ t x ≤ 1) → (∀ x ∈ B, ∫⁻ ζ in A, k x ζ ∂μ ≤ L) → (∀ t : ℝ, 0 < t → ∀ᵐ ζ ∂μ, ζ ∈ A → t + ε < h ζ → κ ≤ ∫⁻ x in B, φ t x * G x * k x ζ ∂μ) → κ * ∫⁻ ζ in A, ENNReal.ofReal (h ζ - ε) ∂μ ≤ L * ∫⁻ x in B, G x ∂μ := by
+  intro X _ μ _ A B h φ G k κ L ε hA hB hh hφ hG hk hi hii hiii
+  -- step 1: `ofReal (h - ε) = ofReal f` with `f = max (h - ε) 0 ≥ 0`, then layer cake on `μ ⌞ A`
+  set f : X → ℝ := fun ζ ↦ max (h ζ - ε) 0 with hf
+  have hfmeas : Measurable f := (hh.sub measurable_const).max measurable_const
+  have hofReal : ∀ ζ, ENNReal.ofReal (h ζ - ε) = ENNReal.ofReal (f ζ) := fun ζ ↦ by
+    show ENNReal.ofReal (h ζ - ε) = ENNReal.ofReal (max (h ζ - ε) 0)
+    rcases le_total 0 (h ζ - ε) with hp | hn
+    · rw [max_eq_left hp]
+    · rw [max_eq_right hn, ENNReal.ofReal_of_nonpos hn, ENNReal.ofReal_zero]
+  have hLC := lintegral_eq_lintegral_meas_lt (μ.restrict A)
+    (Eventually.of_forall fun ζ ↦ (le_max_right _ _ : (0 : ℝ) ≤ f ζ)) hfmeas.aemeasurable
+  simp_rw [hofReal]
+  rw [hLC]
+  -- step 2: for `t > 0` the level set is `S_t = {t + ε < h} ∩ A`
+  have hSmeas : ∀ t : ℝ, MeasurableSet {ζ | t < f ζ} := fun t ↦
+    measurableSet_lt measurable_const hfmeas
+  have hset : ∀ t : ℝ, 0 < t → (μ.restrict A) {ζ | t < f ζ} = μ ({ζ | t + ε < h ζ} ∩ A) := by
+    intro t ht
+    rw [Measure.restrict_apply (hSmeas t)]
+    congr 1
+    ext ζ
+    simp only [Set.mem_inter_iff, Set.mem_ofPred_eq, hf, lt_max_iff]
+    constructor
+    · rintro ⟨h1 | h1, h2⟩
+      · exact ⟨by linarith, h2⟩
+      · exact absurd h1 (not_lt.2 ht.le)
+    · rintro ⟨h1, h2⟩
+      exact ⟨Or.inl (by linarith), h2⟩
+  -- step 3: `κ μ(S_t) ≤ ∫_{S_t} I_t ≤ ∫_A I_t = ∫_B φ(t, ·) G ∫_A k ≤ L ∫_B φ(t, ·) G` (Tonelli)
+  have hFmeas : ∀ t : ℝ, Measurable fun ζ ↦ ∫⁻ x in B, φ t x * G x * k x ζ ∂μ := by
+    intro t
+    have : Measurable fun p : X × X ↦ φ t p.2 * G p.2 * k p.2 p.1 :=
+      ((hφ.comp (measurable_const.prodMk measurable_snd)).mul (hG.comp measurable_snd)).mul
+        (hk.comp (measurable_snd.prodMk measurable_fst))
+    exact this.lintegral_prod_right'
+  have hinner : ∀ t : ℝ, 0 < t →
+      κ * (μ.restrict A) {ζ | t < f ζ} ≤ L * ∫⁻ x in B, φ t x * G x ∂μ := by
+    intro t ht
+    rw [hset t ht]
+    calc κ * μ ({ζ | t + ε < h ζ} ∩ A) = ∫⁻ ζ in {ζ | t + ε < h ζ} ∩ A, κ ∂μ := by
+          rw [setLIntegral_const, mul_comm]
+      _ ≤ ∫⁻ ζ in {ζ | t + ε < h ζ} ∩ A, ∫⁻ x in B, φ t x * G x * k x ζ ∂μ ∂μ := by
+          refine setLIntegral_mono_ae (hFmeas t).aemeasurable ?_
+          filter_upwards [hiii t ht] with ζ hζ hmem
+          exact hζ hmem.2 hmem.1
+      _ ≤ ∫⁻ ζ in A, ∫⁻ x in B, φ t x * G x * k x ζ ∂μ ∂μ :=
+          lintegral_mono_set Set.inter_subset_right
+      _ = ∫⁻ x in B, ∫⁻ ζ in A, φ t x * G x * k x ζ ∂μ ∂μ := by
+          rw [lintegral_lintegral_swap]
+          exact (((hφ.comp (measurable_const.prodMk measurable_snd)).mul
+            (hG.comp measurable_snd)).mul (hk.comp (measurable_snd.prodMk measurable_fst))).aemeasurable
+      _ = ∫⁻ x in B, φ t x * G x * ∫⁻ ζ in A, k x ζ ∂μ ∂μ := by
+          refine lintegral_congr fun x ↦ ?_
+          rw [lintegral_const_mul]
+          exact hk.comp (measurable_const.prodMk measurable_id)
+      _ ≤ ∫⁻ x in B, φ t x * G x * L ∂μ := by
+          refine setLIntegral_mono' hB fun x hx ↦ ?_
+          gcongr
+          exact hii x hx
+      _ = L * ∫⁻ x in B, φ t x * G x ∂μ := by
+          rw [lintegral_mul_const, mul_comm]
+          exact (hφ.comp (measurable_const.prodMk measurable_id)).mul hG
+  -- step 4: integrate in `t`; `t ↦ μ(A ∩ {f > t})` is antitone, hence measurable
+  have hanti : Antitone fun t : ℝ ↦ (μ.restrict A) {ζ | t < f ζ} := by
+    intro s t hst
+    exact measure_mono fun ζ hζ ↦ lt_of_le_of_lt hst hζ
+  have hPmeas : Measurable fun t : ℝ ↦ ∫⁻ x in B, φ t x * G x ∂μ := by
+    have : Measurable fun p : ℝ × X ↦ φ p.1 p.2 * G p.2 := hφ.mul (hG.comp measurable_snd)
+    exact this.lintegral_prod_right'
+  -- step 5: Tonelli in `(t, x)` and `∫_0^∞ φ(t, x) dt ≤ 1` on `B`
+  calc κ * ∫⁻ t in Ioi 0, (μ.restrict A) {ζ | t < f ζ}
+      = ∫⁻ t in Ioi 0, κ * (μ.restrict A) {ζ | t < f ζ} := by
+        rw [lintegral_const_mul _ hanti.measurable]
+    _ ≤ ∫⁻ t in Ioi 0, L * ∫⁻ x in B, φ t x * G x ∂μ :=
+        setLIntegral_mono' measurableSet_Ioi fun t ht ↦ hinner t ht
+    _ = L * ∫⁻ t in Ioi 0, ∫⁻ x in B, φ t x * G x ∂μ := by
+        rw [lintegral_const_mul _ hPmeas]
+    _ = L * ∫⁻ x in B, (∫⁻ t in Ioi 0, φ t x * G x) ∂μ := by
+        rw [lintegral_lintegral_swap]
+        exact (hφ.mul (hG.comp measurable_snd)).aemeasurable
+    _ = L * ∫⁻ x in B, (∫⁻ t in Ioi 0, φ t x) * G x ∂μ := by
+        congr 1
+        refine lintegral_congr fun x ↦ ?_
+        rw [lintegral_mul_const]
+        exact hφ.comp (measurable_id.prodMk measurable_const)
+    _ ≤ L * ∫⁻ x in B, G x ∂μ := by
+        gcongr L * ?_
+        refine setLIntegral_mono' hB fun x hx ↦ ?_
+        calc (∫⁻ t in Ioi 0, φ t x) * G x ≤ 1 * G x := by gcongr; exact hi x hx
+          _ = G x := one_mul _
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
