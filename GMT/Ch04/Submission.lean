@@ -542,6 +542,27 @@ theorem Submission.mcm_annulus_primitive_fubini : ∀ (n ℓ : ℕ) (μ : Measur
     fun t ht ↦ by simp only [hAt t ht]
   exact ⟨ha, hb.congr_fun hEq measurableSet_Ioc,
     (setIntegral_congr_fun measurableSet_Ioc hEq).symm.trans hc⟩
+/-- **Fubini on the triangle `σ < t < s ≤ ρ`** (the `e`-part of the annulus integration by parts
+behind Simon Ch. 4, 3.17 and 4.7). If `e` and `F'` are integrable on `(σ, ρ]` and
+`F(t) = F(σ) + ∫_{(σ,t]} F'` for `t ∈ [σ, ρ]`, then `s ↦ e(s)(F(s) - F(σ))` and
+`t ↦ F'(t) ∫_{(t,ρ]} e` are integrable on `(σ, ρ]` and
+`∫_{(σ,ρ]} F'(t) ∫_{(t,ρ]} e(τ) dτ dt = ∫_{(σ,ρ]} e(s)(F(s) - F(σ)) ds`. -/
+theorem Submission.mcm_interval_primitive_fubini : ∀ (e F F' : ℝ → ℝ) (σ ρ : ℝ), IntegrableOn e (Ioc σ ρ) → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun s ↦ e s * (F s - F σ)) (Ioc σ ρ) ∧ IntegrableOn (fun t ↦ F' t * ∫ τ in Ioc t ρ, e τ) (Ioc σ ρ) ∧ ∫ t in Ioc σ ρ, F' t * ∫ τ in Ioc t ρ, e τ = ∫ s in Ioc σ ρ, e s * (F s - F σ) := by
+  intro e F F' σ ρ he hF' hF
+  -- Steps 1–2: apply `mcm_primitive_radial_fubini` to `(X, ν, S, r, g) = (ℝ, λ, (σ, ρ], id, e)`.
+  -- Lebesgue measure is s-finite, `(σ, ρ]` is Borel, and `id` is measurable and maps `S` into
+  -- `(σ, ρ]`. Part (a) is then verbatim (`id s` is `s`).
+  obtain ⟨ha, hb, hc⟩ := Submission.mcm_primitive_radial_fubini ℝ volume (Ioc σ ρ) id e F F' σ ρ
+    inferInstance measurableSet_Ioc measurable_id (fun _ hs ↦ hs) he hF' hF
+  -- Step 3: `(σ, ρ] ∩ {s : t < s} = (max σ t, ρ] = (t, ρ]` for `t ∈ (σ, ρ]`.
+  have hset : ∀ t ∈ Ioc σ ρ, Ioc σ ρ ∩ {s | t < id s} = Ioc t ρ := fun t ht ↦ by
+    rw [show {s | t < id s} = Ioi t from rfl, Ioc_inter_Ioi, sup_eq_right.2 ht.1.le]
+  -- Step 4: the `t`-integrands of (b′), (c′) and of (b), (c) agree on the Borel set `(σ, ρ]`.
+  have heq : EqOn (fun t ↦ F' t * ∫ s in Ioc σ ρ ∩ {s | t < id s}, e s)
+      (fun t ↦ F' t * ∫ τ in Ioc t ρ, e τ) (Ioc σ ρ) := fun t ht ↦ by
+    simp only [hset t ht]
+  exact ⟨ha, hb.congr_fun heq measurableSet_Ioc,
+    (setIntegral_congr_fun measurableSet_Ioc heq).symm.trans hc⟩
 
 end
 
