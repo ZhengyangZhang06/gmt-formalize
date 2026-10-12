@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.translated_varifold-a1.locally_lp-a1",
+  "parent_id": "root.regular_set_open_dense-a1.translated_varifold-a1",
+  "depth": 3,
+  "title": "Local Lᵖ bounds transfer under translation",
+  "statement": "Let n, ℓ ∈ ℕ, let U ⊆ ℝ^{n+ℓ} be arbitrary, let V be a rectifiable n-varifold in U, let x₀ ∈ ℝ^{n+ℓ}, and let W be a rectifiable n-varifold in {y : y + x₀ ∈ U} whose weight μ_W is the pushforward of μ_V under y ↦ y − x₀. Then for every H : ℝ^{n+ℓ} → ℝ^{n+ℓ} and every p ∈ ℝ the following holds. If ∫_K |H|^p dμ_V < ∞ for every compact K ⊆ U (lintegral of ‖H‖ₑ^p), then ∫_K |H(y + x₀)|^p dμ_W(y) < ∞ for every compact K ⊆ {y : y + x₀ ∈ U}.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ) (W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U)), W.weight = V.weight.map (fun y => y - x₀) → ∀ (H : Amb n ℓ → Amb n ℓ) (p : ℝ), V.LocallyLp H p → W.LocallyLp (fun y => H (y + x₀)) p",
+  "lean_name": "rsod_tv_locallyLp",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-translated-varifold-a1-locally-lp-a1-a1"
+}

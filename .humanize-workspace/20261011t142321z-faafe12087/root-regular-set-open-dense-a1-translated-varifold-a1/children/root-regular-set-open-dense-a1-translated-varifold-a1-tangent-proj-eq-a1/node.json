@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.translated_varifold-a1.tangent_proj_eq-a1",
+  "parent_id": "root.regular_set_open_dense-a1.translated_varifold-a1",
+  "depth": 3,
+  "title": "Tangent projections of a translated varifold",
+  "statement": "Let n, ℓ ∈ ℕ, let U, U' ⊆ ℝ^{n+ℓ} be arbitrary sets, let V be a rectifiable n-varifold in U with carrier M and multiplicity θ, let W be a rectifiable n-varifold in U', and let x₀ ∈ ℝ^{n+ℓ}. Suppose W's carrier is {y : y + x₀ ∈ M} and W.mult(y) = θ(y + x₀) for all y. Then for every y, the tangent projection of W at y equals the tangent projection of V at y + x₀. Here the tangent projection of a varifold at a point is the orthogonal projection onto the (chosen) weighted approximate tangent space of (carrier, multiplicity) at that point when one exists, and 0 otherwise.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (W : RectifiableVarifold n ℓ U') (x₀ : Amb n ℓ), W.carrier = (fun y => y + x₀) ⁻¹' V.carrier → (∀ y, W.mult y = V.mult (y + x₀)) → ∀ y, W.tangentProj y = V.tangentProj (y + x₀)",
+  "lean_name": "rsod_tv_tangentProj_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-translated-varifold-a1-tangent-proj-eq-a1-a1"
+}
