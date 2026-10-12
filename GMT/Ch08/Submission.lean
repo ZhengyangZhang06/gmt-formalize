@@ -1199,6 +1199,359 @@ theorem Submission.frt_weq_piece_restrict_eq_density :
     _ = ν.withDensity (fun x ↦ ENNReal.ofReal (θ x)) B := by rw [← hρeq]
     _ = ∫⁻ x in B, ENNReal.ofReal (θ x) ∂ν := withDensity_apply _ hB
     _ = ∫⁻ x in B ∩ A, ENNReal.ofReal (θ x) ∂H := by rw [hν, Measure.restrict_restrict hB]
+/-- Lebesgue density one of `H^n` on an arbitrary subset `T` of an `n`-plane (Simon Ch. 8, proof of
+1.2, via the Lebesgue density theorem in `ℝ^n`): outside an `H^n`-null set `Z`, every `a ∈ T` has
+`Θ^n(H^n ⌞ T, a) = 1`. -/
+theorem Submission.frt_plane_subset_hasDensity_one :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (T : Set (Euclidean N)), T ⊆ (P.plane : Set (Euclidean N)) → ∃ Z : Set (Euclidean N), (μHE[n] : Measure (Euclidean N)) Z = 0 ∧ ∀ a ∈ T, a ∉ Z → HasDensity n ((μHE[n] : Measure (Euclidean N)).restrict T) a 1 := by
+  intro N n P T hT
+  -- Step 1: an isometry `ι : ℝ^n → ℝ^N` onto the plane, from an orthonormal basis of `P.plane`.
+  obtain ⟨ι, hι, hsurj⟩ : ∃ ι : EuclideanSpace ℝ (Fin n) → Euclidean N, Isometry ι ∧
+      ∀ a ∈ (P.plane : Set (Euclidean N)), ∃ y, ι y = a := by
+    let e : EuclideanSpace ℝ (Fin n) ≃ₗᵢ[ℝ] P.plane :=
+      ((stdOrthonormalBasis ℝ P.plane).reindex (finCongr P.finrank_plane)).repr.symm
+    exact ⟨P.plane.subtypeₗᵢ.comp e.toLinearIsometry, LinearIsometry.isometry _,
+      fun a ha ↦ ⟨e.symm ⟨a, ha⟩, by simp⟩⟩
+  -- Step 2: `H^n(ι B) = L^n(B)` for every `B ⊆ ℝ^n`.
+  have hmeas : ∀ B : Set (EuclideanSpace ℝ (Fin n)),
+      (μHE[n] : Measure (Euclidean N)) (ι '' B) = volume B := fun B ↦ by
+    rw [hι.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- Step 3: `ι(ι⁻¹(T) ∩ B_s(y)) = B_s(ι y) ∩ T`.
+  have himg : ∀ y s, ι '' (ι ⁻¹' T ∩ closedBall y s) = closedBall (ι y) s ∩ T := by
+    intro y s
+    ext a
+    constructor
+    · rintro ⟨z, ⟨hzT, hz⟩, rfl⟩
+      exact ⟨mem_closedBall.mpr ((hι.dist_eq z y).trans_le (mem_closedBall.mp hz)), hzT⟩
+    · rintro ⟨ha, haT⟩
+      obtain ⟨z, rfl⟩ := hsurj a (hT haT)
+      exact ⟨z, ⟨haT, mem_closedBall.mpr ((hι.dist_eq z y).symm.trans_le (mem_closedBall.mp ha))⟩,
+        rfl⟩
+  -- Step 4: Lebesgue density theorem for `ι⁻¹(T)`, and a measurable null hull `E` of its bad set.
+  obtain ⟨E, hbad, hEm, hE0⟩ := exists_measurable_superset_of_null (ae_iff.mp
+    (Besicovitch.ae_tendsto_measure_inter_div (volume : Measure (EuclideanSpace ℝ (Fin n)))
+      (ι ⁻¹' T)))
+  rw [Measure.restrict_apply hEm] at hE0
+  -- Step 5: `Z = ι(E ∩ ι⁻¹(T))` is `H^n`-null.
+  refine ⟨ι '' (E ∩ ι ⁻¹' T), (hmeas _).trans hE0, ?_⟩
+  -- Step 6: at `a = ι y ∈ T ∖ Z` the density ratio is `L^n(ι⁻¹(T) ∩ B_s(y)) / L^n(B_s(y)) → 1`.
+  intro a haT haZ
+  obtain ⟨y, rfl⟩ := hsurj a (hT haT)
+  have hy : Tendsto (fun r ↦ volume (ι ⁻¹' T ∩ closedBall y r) / volume (closedBall y r))
+      (𝓝[>] 0) (𝓝 1) := by
+    by_contra h
+    exact haZ ⟨y, ⟨hbad h, haT⟩, rfl⟩
+  refine hy.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with s (hs : 0 < s)
+  rw [densityRatio, Measure.restrict_apply measurableSet_closedBall, ← himg y s, hmeas,
+    Measure.addHaar_closedBall volume y hs.le, finrank_euclideanSpace_fin, ENNReal.ofReal_pow hs.le,
+    unitBallVolume, mul_comm (ENNReal.ofReal s ^ n)]
+/-- Hausdorff-measure comparison between an `L`-graph and its projection (used for the density-one
+property of `H^n` on the carrier in the proof of Simon Ch. 8, 1.2; cf. Ch. 3, 1.6): if
+`|(y - z) - p_P(y - z)| ≤ L |p_P(y - z)|` for `y, z ∈ S` and `β = (1 + L²)^{1/2}`, then `p_P` is
+`1`-Lipschitz, and injective on `S` with a `β`-Lipschitz inverse, so for `x ∈ S` and `r ∈ ℝ`
+`H^n(p_P(S) ∩ B_{r/β}(p_P x)) ≤ H^n(S ∩ B_r(x)) ≤ β^n H^n(p_P(S) ∩ B_r(p_P x))`, and
+`H^n(S ∩ p_P⁻¹(Y)) ≤ β^n H^n(Y)` for every `Y ⊆ ℝ^N`. -/
+theorem Submission.frt_lipschitz_graph_hausdorff_compare :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (S : Set (Euclidean N)), 0 ≤ L → (∀ y ∈ S, ∀ z ∈ S, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → (∀ x ∈ S, ∀ r : ℝ, (μHE[n] : Measure (Euclidean N)) ((Grassmannian.project P '' S) ∩ closedBall (Grassmannian.project P x) (r / Real.sqrt (1 + L ^ 2))) ≤ (μHE[n] : Measure (Euclidean N)) (S ∩ closedBall x r) ∧ (μHE[n] : Measure (Euclidean N)) (S ∩ closedBall x r) ≤ ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n * (μHE[n] : Measure (Euclidean N)) ((Grassmannian.project P '' S) ∩ closedBall (Grassmannian.project P x) r)) ∧ ∀ Y : Set (Euclidean N), (μHE[n] : Measure (Euclidean N)) (S ∩ Grassmannian.project P ⁻¹' Y) ≤ ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n * (μHE[n] : Measure (Euclidean N)) Y := by
+  intro N n P L S hL hgraph
+  -- Step 1: `β = √(1 + L²)` satisfies `β ≥ 1 > 0`.
+  have hβ0 : 0 < Real.sqrt (1 + L ^ 2) :=
+    one_pos.trans_le (Real.one_le_sqrt.mpr (le_add_of_nonneg_right (sq_nonneg L)))
+  -- Step 2: `p_P` is linear.
+  have hsub : ∀ u v : Euclidean N,
+      Grassmannian.project P (u - v) = Grassmannian.project P u - Grassmannian.project P v :=
+    fun u v ↦ map_sub P.projectionLinearMap u v
+  -- Step 3: `p_P` is symmetric and idempotent, so `|v|² = |p_P v|² + |v - p_P v|²`; hence
+  -- `|p_P v| ≤ |v|` and `p_P` is `1`-Lipschitz.
+  have hpyth : ∀ v : Euclidean N,
+      ‖v‖ ^ 2 = ‖Grassmannian.project P v‖ ^ 2 + ‖v - Grassmannian.project P v‖ ^ 2 := by
+    intro v
+    have hker : Grassmannian.project P (v - Grassmannian.project P v) = 0 := by
+      rw [hsub, Grassmannian.project_project, sub_self]
+    have horth : inner ℝ (Grassmannian.project P v) (v - Grassmannian.project P v) = 0 := by
+      rw [show inner ℝ (Grassmannian.project P v) (v - Grassmannian.project P v) =
+          inner ℝ v (Grassmannian.project P (v - Grassmannian.project P v)) from
+        P.projectionLinearMap_isSymmetric v (v - Grassmannian.project P v), hker, inner_zero_right]
+    have h := norm_add_sq_real (Grassmannian.project P v) (v - Grassmannian.project P v)
+    rw [horth, add_sub_cancel] at h
+    linarith
+  have hnorm : ∀ v : Euclidean N, ‖Grassmannian.project P v‖ ≤ ‖v‖ := by
+    intro v
+    have h := hpyth v
+    nlinarith [norm_nonneg v, norm_nonneg (Grassmannian.project P v),
+      sq_nonneg ‖v - Grassmannian.project P v‖]
+  have hlip : ∀ A : Set (Euclidean N), LipschitzOnWith 1 (Grassmannian.project P) A := by
+    refine fun A ↦ LipschitzOnWith.mk_one fun u _ v _ ↦ ?_
+    rw [dist_eq_norm, dist_eq_norm, ← hsub]
+    exact hnorm (u - v)
+  -- Step 4: on `S`, `|y - z|² ≤ (1 + L²) |p_P(y - z)|²`, i.e. `|y - z| ≤ β |p_P y - p_P z|`.
+  have hkey : ∀ y ∈ S, ∀ z ∈ S, ‖y - z‖ ≤
+      Real.sqrt (1 + L ^ 2) * ‖Grassmannian.project P y - Grassmannian.project P z‖ := by
+    intro y hy z hz
+    rw [← hsub]
+    have h1 := hpyth (y - z)
+    have h2 := hgraph y hy z hz
+    have h3 : ‖(y - z) - Grassmannian.project P (y - z)‖ ^ 2 ≤
+        (L * ‖Grassmannian.project P (y - z)‖) ^ 2 := by
+      gcongr
+    have h4 : ‖y - z‖ ^ 2 ≤ (1 + L ^ 2) * ‖Grassmannian.project P (y - z)‖ ^ 2 := by
+      nlinarith
+    calc ‖y - z‖ = Real.sqrt (‖y - z‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
+      _ ≤ Real.sqrt ((1 + L ^ 2) * ‖Grassmannian.project P (y - z)‖ ^ 2) := Real.sqrt_le_sqrt h4
+      _ = Real.sqrt (1 + L ^ 2) * ‖Grassmannian.project P (y - z)‖ := by
+        rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _)]
+  -- Step 5: `p_P` is injective on `S`, and `h = invFunOn p_P S` is `β`-Lipschitz on `p_P(S)` with
+  -- `h (p_P y) = y` for `y ∈ S`.
+  have hinj : InjOn (Grassmannian.project P) S := by
+    intro y hy z hz hyz
+    have h := hkey y hy z hz
+    rw [hyz, sub_self, norm_zero, mul_zero] at h
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+  have hleft : ∀ y ∈ S,
+      Function.invFunOn (Grassmannian.project P) S (Grassmannian.project P y) = y :=
+    fun y hy ↦ hinj.leftInvOn_invFunOn hy
+  have hinv : LipschitzOnWith (Real.toNNReal (Real.sqrt (1 + L ^ 2)))
+      (Function.invFunOn (Grassmannian.project P) S) (Grassmannian.project P '' S) := by
+    refine LipschitzOnWith.of_dist_le' ?_
+    rintro _ ⟨y, hy, rfl⟩ _ ⟨z, hz, rfl⟩
+    rw [hleft y hy, hleft z hz, dist_eq_norm, dist_eq_norm]
+    exact hkey y hy z hz
+  -- Steps 6–7 (b): `S ∩ p_P⁻¹(Y) = h(p_P(S ∩ p_P⁻¹(Y)))` and `p_P(S ∩ p_P⁻¹(Y)) ⊆ Y`, so the
+  -- Lipschitz image bound for `h` gives `H^n(S ∩ p_P⁻¹(Y)) ≤ β^n H^n(Y)`.
+  have hb : ∀ Y : Set (Euclidean N), (μHE[n] : Measure (Euclidean N))
+      (S ∩ Grassmannian.project P ⁻¹' Y) ≤
+        ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n * (μHE[n] : Measure (Euclidean N)) Y := by
+    intro Y
+    calc (μHE[n] : Measure (Euclidean N)) (S ∩ Grassmannian.project P ⁻¹' Y)
+        = (μHE[n] : Measure (Euclidean N)) (Function.invFunOn (Grassmannian.project P) S ''
+            (Grassmannian.project P '' (S ∩ Grassmannian.project P ⁻¹' Y))) := by
+          rw [hinj.invFunOn_image inter_subset_left]
+      _ ≤ ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n * (μHE[n] : Measure (Euclidean N))
+            (Grassmannian.project P '' (S ∩ Grassmannian.project P ⁻¹' Y)) :=
+          Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            (hinv.mono (image_mono inter_subset_left))
+      _ ≤ ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n * (μHE[n] : Measure (Euclidean N)) Y := by
+          gcongr
+          exact (image_mono inter_subset_right).trans (image_preimage_subset _ _)
+  refine ⟨fun x hx r ↦ ⟨?_, ?_⟩, hb⟩
+  · -- Step 8: `p_P(S) ∩ B_{r/β}(p_P x) ⊆ p_P(S ∩ B_r(x))`, then the `1`-Lipschitz bound for `p_P`.
+    have hsubset : Grassmannian.project P '' S ∩
+        closedBall (Grassmannian.project P x) (r / Real.sqrt (1 + L ^ 2)) ⊆
+          Grassmannian.project P '' (S ∩ closedBall x r) := by
+      rintro _ ⟨⟨z, hz, rfl⟩, hzr⟩
+      refine ⟨z, ⟨hz, ?_⟩, rfl⟩
+      rw [mem_closedBall, dist_eq_norm] at hzr ⊢
+      calc ‖z - x‖
+          ≤ Real.sqrt (1 + L ^ 2) * ‖Grassmannian.project P z - Grassmannian.project P x‖ :=
+            hkey z hz x hx
+        _ ≤ Real.sqrt (1 + L ^ 2) * (r / Real.sqrt (1 + L ^ 2)) :=
+            mul_le_mul_of_nonneg_left hzr hβ0.le
+        _ = r := mul_div_cancel₀ r hβ0.ne'
+    calc (μHE[n] : Measure (Euclidean N)) (Grassmannian.project P '' S ∩
+          closedBall (Grassmannian.project P x) (r / Real.sqrt (1 + L ^ 2)))
+        ≤ (μHE[n] : Measure (Euclidean N)) (Grassmannian.project P '' (S ∩ closedBall x r)) :=
+          measure_mono hsubset
+      _ ≤ ((1 : NNReal) : ℝ≥0∞) ^ n * (μHE[n] : Measure (Euclidean N)) (S ∩ closedBall x r) :=
+          Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n (hlip _)
+      _ = (μHE[n] : Measure (Euclidean N)) (S ∩ closedBall x r) := by
+          rw [ENNReal.coe_one, one_pow, one_mul]
+  · -- Step 9: `S ∩ B_r(x) ⊆ S ∩ p_P⁻¹(p_P(S) ∩ B_r(p_P x))`, as `|p_P z - p_P x| ≤ |z - x|`;
+    -- then (b).
+    have hsubset : S ∩ closedBall x r ⊆ S ∩ Grassmannian.project P ⁻¹'
+        (Grassmannian.project P '' S ∩ closedBall (Grassmannian.project P x) r) := by
+      rintro z ⟨hz, hzr⟩
+      refine ⟨hz, mem_image_of_mem _ hz, ?_⟩
+      rw [mem_closedBall, dist_eq_norm] at hzr ⊢
+      rw [← hsub]
+      exact (hnorm (z - x)).trans hzr
+    exact (measure_mono hsubset).trans (hb _)
+
+/-- Two-sided density bounds on a closed Lipschitz-graph piece (Simon Ch. 8, proof of 1.2, the
+density-one step for `H^n ⌞ A` on one graph piece `Γ`): let `H^n(A) < ∞` with `A` `H^n`-measurable,
+`L ≥ 0`, `β = (1 + L²)^{1/2}`, and let `Γ` be closed with `|(y - z) - p_P(y - z)| ≤ L |p_P(y - z)|`
+for `y, z ∈ Γ`.  Then for `(H^n ⌞ A) ⌞ Γ`-a.e. `x`, with `λ = H^n ⌞ A`,
+`β^{-n} ≤ liminf_{r↓0} λ(B_r(x)) / (ω_n r^n)` and `limsup_{r↓0} λ(B_r(x)) / (ω_n r^n) ≤ β^n`. -/
+theorem Submission.frt_graph_piece_density_bounds :
+    ∀ (N n : ℕ) (A Γ : Set (Euclidean N)) (P : Grassmannian N n) (L : ℝ), μHE[n] A ≠ ∞ → NullMeasurableSet A μHE[n] → 0 ≤ L → IsClosed Γ → (∀ y ∈ Γ, ∀ z ∈ Γ, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → ∀ᵐ x ∂((μHE[n] : Measure (Euclidean N)).restrict A).restrict Γ, (ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n)⁻¹ ≤ liminf (densityRatio n ((μHE[n] : Measure (Euclidean N)).restrict A) x) (𝓝[>] 0) ∧ limsup (densityRatio n ((μHE[n] : Measure (Euclidean N)).restrict A) x) (𝓝[>] 0) ≤ ENNReal.ofReal (Real.sqrt (1 + L ^ 2)) ^ n := by
+  intro N n A Γ P L hA hAm hL hΓ hgraph
+  set H : Measure (Euclidean N) := (μHE[n] : Measure (Euclidean N))
+  set β : ℝ := Real.sqrt (1 + L ^ 2)
+  set c : ℝ≥0∞ := ENNReal.ofReal β ^ n with hc
+  set ω : ℝ≥0∞ := unitBallVolume n
+  set lam : Measure (Euclidean N) := H.restrict A with hlam
+  -- Step 1: `β > 0`, so `c = β^n ∈ (0, ∞)`; and `λ = H^n ⌞ A` is a finite measure.
+  have hβ0 : 0 < β := Real.sqrt_pos.2 (by positivity)
+  have hc0 : c ≠ 0 := pow_ne_zero _ (ENNReal.ofReal_pos.2 hβ0).ne'
+  have hctop : c ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+  have : IsFiniteMeasure lam := isFiniteMeasure_restrict.2 hA
+  -- Step 2: `A_c = A ∩ Γ` is an `L`-graph, and `T = p_P(A_c)` lies in `P.plane`.
+  set Ac : Set (Euclidean N) := A ∩ Γ with hAc
+  set T : Set (Euclidean N) := Grassmannian.project P '' Ac
+  have hTP : T ⊆ (P.plane : Set (Euclidean N)) := by
+    rintro _ ⟨y, -, rfl⟩
+    exact LinearMap.mem_range_self _ y
+  -- Steps 3–4: the plane density result gives an `H^n`-null `Z` off which `H^n ⌞ T` has density
+  -- one on `T`; the graph comparison gives the ball bounds (i)/(ii) for `A_c`, and
+  -- `H^n(A_c ∩ p_P⁻¹(Z)) ≤ c H^n(Z) = 0`.
+  obtain ⟨Z, hZ0, hZ⟩ := Submission.frt_plane_subset_hasDensity_one N n P T hTP
+  obtain ⟨hball, hpre⟩ := Submission.frt_lipschitz_graph_hausdorff_compare N n P L Ac hL
+    (fun y hy z hz ↦ hgraph y hy.2 z hz.2)
+  have hX0 : H (Ac ∩ Grassmannian.project P ⁻¹' Z) = 0 := by
+    have h := hpre Z
+    rw [hZ0, mul_zero] at h
+    exact le_antisymm h bot_le
+  -- Step 5: Besicovitch differentiation, `λ(Γ ∩ B_r(x)) / λ(B_r(x)) → 1` for `λ ⌞ Γ`-a.e. `x`.
+  have hbes := Besicovitch.ae_tendsto_measure_inter_div lam Γ
+  -- Step 6: `λ ⌞ Γ = H^n ⌞ (Γ ∩ A)`, so `λ ⌞ Γ`-a.e. `x` lies in `A_c` and off `A_c ∩ p_P⁻¹(Z)`.
+  have hrr : lam.restrict Γ = H.restrict (Γ ∩ A) := Measure.restrict_restrict hΓ.measurableSet
+  have hmem : ∀ᵐ x ∂lam.restrict Γ, x ∈ Γ ∩ A := by
+    rw [hrr]
+    exact ae_restrict_mem₀ (hΓ.measurableSet.nullMeasurableSet.inter hAm)
+  have hnotX : ∀ᵐ x ∂lam.restrict Γ, x ∉ Ac ∩ Grassmannian.project P ⁻¹' Z := by
+    rw [hrr]
+    exact ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.1 hX0)
+  filter_upwards [hbes, hmem, hnotX] with x hq hxm hxX
+  have hxAc : x ∈ Ac := ⟨hxm.2, hxm.1⟩
+  -- Step 7: `a = p_P x ∈ T ∖ Z`, so `g(s) = H^n(T ∩ B_s(a)) / (ω_n s^n) → 1` as `s ↓ 0`.
+  set a := Grassmannian.project P x
+  have hg : Tendsto (densityRatio n (H.restrict T) a) (𝓝[>] 0) (𝓝 1) :=
+    hZ a ⟨x, hxAc, rfl⟩ fun h ↦ hxX ⟨hxAc, h⟩
+  have hgeq : ∀ s, densityRatio n (H.restrict T) a s =
+      H (T ∩ closedBall a s) / (ω * ENNReal.ofReal s ^ n) := by
+    intro s
+    rw [densityRatio, Measure.restrict_apply measurableSet_closedBall, inter_comm]
+  -- Step 8: the key identity `λ(Γ ∩ B_r(x)) = H^n(A_c ∩ B_r(x))`.
+  have hkey : ∀ r, lam (Γ ∩ closedBall x r) = H (Ac ∩ closedBall x r) := by
+    intro r
+    rw [hlam, Measure.restrict_apply (hΓ.measurableSet.inter measurableSet_closedBall)]
+    congr 1
+    ext y
+    simp only [mem_inter_iff, hAc]
+    tauto
+  constructor
+  · -- Step 9: for `r > 0`, `densityRatio n λ x r ≥ c⁻¹ g(r/β)`, since `ω_n r^n = c ω_n (r/β)^n`
+    -- and `λ(B_r(x)) ≥ H^n(A_c ∩ B_r(x)) ≥ H^n(T ∩ B_{r/β}(a))`; and `c⁻¹ g(r/β) → c⁻¹`.
+    have hdiv : Tendsto (fun r : ℝ ↦ r / β) (𝓝[>] 0) (𝓝[>] 0) := by
+      apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
+      · have h : Tendsto (fun r : ℝ ↦ r / β) (𝓝 0) (𝓝 (0 / β)) := tendsto_id.div_const β
+        rw [zero_div] at h
+        exact h.mono_left nhdsWithin_le_nhds
+      · filter_upwards [self_mem_nhdsWithin] with r hr using div_pos hr hβ0
+    have hlim : Tendsto (fun r ↦ c⁻¹ * densityRatio n (H.restrict T) a (r / β)) (𝓝[>] 0)
+        (𝓝 (c⁻¹ * 1)) :=
+      ENNReal.Tendsto.const_mul (hg.comp hdiv) (Or.inr (ENNReal.inv_ne_top.2 hc0))
+    rw [mul_one] at hlim
+    have hle : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+        c⁻¹ * densityRatio n (H.restrict T) a (r / β) ≤ densityRatio n lam x r := by
+      filter_upwards [self_mem_nhdsWithin] with r hr
+      rw [hgeq]
+      have hnorm : ω * ENNReal.ofReal r ^ n = c * (ω * ENNReal.ofReal (r / β) ^ n) := by
+        have h : ENNReal.ofReal r = ENNReal.ofReal β * ENNReal.ofReal (r / β) := by
+          rw [← ENNReal.ofReal_mul hβ0.le, mul_div_cancel₀ r hβ0.ne']
+        rw [h, mul_pow, hc]
+        ring
+      have hnum : H (T ∩ closedBall a (r / β)) ≤ lam (closedBall x r) :=
+        calc H (T ∩ closedBall a (r / β)) ≤ H (Ac ∩ closedBall x r) := (hball x hxAc r).1
+          _ = lam (Γ ∩ closedBall x r) := (hkey r).symm
+          _ ≤ lam (closedBall x r) := measure_mono inter_subset_right
+      calc c⁻¹ * (H (T ∩ closedBall a (r / β)) / (ω * ENNReal.ofReal (r / β) ^ n))
+          = H (T ∩ closedBall a (r / β)) / (c * (ω * ENNReal.ofReal (r / β) ^ n)) := by
+            generalize H (T ∩ closedBall a (r / β)) = M
+            generalize ω * ENNReal.ofReal (r / β) ^ n = D
+            rw [div_eq_mul_inv, div_eq_mul_inv, ENNReal.mul_inv (Or.inl hc0) (Or.inl hctop)]
+            ring
+        _ = H (T ∩ closedBall a (r / β)) / (ω * ENNReal.ofReal r ^ n) := by rw [hnorm]
+        _ ≤ lam (closedBall x r) / (ω * ENNReal.ofReal r ^ n) := by gcongr
+        _ = densityRatio n lam x r := rfl
+    calc c⁻¹ = liminf (fun r ↦ c⁻¹ * densityRatio n (H.restrict T) a (r / β)) (𝓝[>] 0) :=
+          hlim.liminf_eq.symm
+      _ ≤ liminf (densityRatio n lam x) (𝓝[>] 0) := liminf_le_liminf hle
+  · -- Step 10: eventually `q_x(r) ≠ 0`, and then `λ(B_r(x)) = q_x(r)⁻¹ λ(Γ ∩ B_r(x))` with
+    -- `λ(Γ ∩ B_r(x)) = H^n(A_c ∩ B_r(x)) ≤ c H^n(T ∩ B_r(a))`, so
+    -- `densityRatio n λ x r ≤ q_x(r)⁻¹ (c g(r)) → 1⁻¹ (c · 1) = c`.
+    have hne : ∀ᶠ r in 𝓝[>] (0 : ℝ), lam (Γ ∩ closedBall x r) / lam (closedBall x r) ≠ 0 :=
+      hq.eventually_ne one_ne_zero
+    have hle : ∀ᶠ r in 𝓝[>] (0 : ℝ), densityRatio n lam x r ≤
+        (lam (Γ ∩ closedBall x r) / lam (closedBall x r))⁻¹ *
+          (c * densityRatio n (H.restrict T) a r) := by
+      filter_upwards [hne] with r hr
+      have hΓB0 : lam (Γ ∩ closedBall x r) ≠ 0 := by
+        intro h
+        apply hr
+        rw [h, ENNReal.zero_div]
+      have hΓBtop : lam (Γ ∩ closedBall x r) ≠ ∞ := measure_ne_top _ _
+      have hBtop : lam (closedBall x r) ≠ ∞ := measure_ne_top _ _
+      have hB0 : lam (closedBall x r) ≠ 0 := fun h ↦
+        hΓB0 (measure_mono_null inter_subset_right h)
+      have hinv : (lam (Γ ∩ closedBall x r) / lam (closedBall x r))⁻¹ =
+          lam (closedBall x r) / lam (Γ ∩ closedBall x r) :=
+        ENNReal.inv_div (Or.inl hBtop) (Or.inl hB0)
+      have hBeq : lam (closedBall x r) =
+          (lam (Γ ∩ closedBall x r) / lam (closedBall x r))⁻¹ * lam (Γ ∩ closedBall x r) := by
+        rw [hinv, ENNReal.div_mul_cancel hΓB0 hΓBtop]
+      rw [hgeq]
+      calc densityRatio n lam x r = lam (closedBall x r) / (ω * ENNReal.ofReal r ^ n) := rfl
+        _ = (lam (Γ ∩ closedBall x r) / lam (closedBall x r))⁻¹ * lam (Γ ∩ closedBall x r) /
+              (ω * ENNReal.ofReal r ^ n) := by rw [← hBeq]
+        _ ≤ (lam (Γ ∩ closedBall x r) / lam (closedBall x r))⁻¹ * (c * H (T ∩ closedBall a r)) /
+              (ω * ENNReal.ofReal r ^ n) := by
+            gcongr
+            rw [hkey r]
+            exact (hball x hxAc r).2
+        _ = _ := by rw [mul_div_assoc, mul_div_assoc]
+    have hlim : Tendsto (fun r ↦ (lam (Γ ∩ closedBall x r) / lam (closedBall x r))⁻¹ *
+        (c * densityRatio n (H.restrict T) a r)) (𝓝[>] 0) (𝓝 (1⁻¹ * (c * 1))) :=
+      ENNReal.Tendsto.mul (tendsto_inv_iff.2 hq) (Or.inl (by simp))
+        (ENNReal.Tendsto.const_mul hg (Or.inl one_ne_zero)) (Or.inl (by simp [hc0]))
+    rw [inv_one, mul_one, one_mul] at hlim
+    calc limsup (densityRatio n lam x) (𝓝[>] 0)
+        ≤ limsup (fun r ↦ (lam (Γ ∩ closedBall x r) / lam (closedBall x r))⁻¹ *
+            (c * densityRatio n (H.restrict T) a r)) (𝓝[>] 0) := limsup_le_limsup hle
+      _ = c := hlim.limsup_eq
+
+/-- Density one of `H^n` on a set covered by closed Lipschitz graphs of arbitrarily small slope
+(Simon Ch. 8, proof of 1.2, the density-one property of `H^n` on the rectifiable carrier; cf. Ch. 3,
+1.6 and 1.9): if `H^n(A) < ∞`, `A` is `H^n`-measurable and, for every `L ∈ (0,1]`, `A` is covered by
+countably many closed sets `Γ`, each an `L`-graph over some `P ∈ G(N,n)`
+(`|(y - z) - p_P(y - z)| ≤ L |p_P(y - z)|` on `Γ`), then `Θ^n(H^n ⌞ A, x) = 1` for
+`H^n ⌞ A`-a.e. `x`. -/
+theorem Submission.frt_hausdorff_density_one_of_flat_covers :
+    ∀ (N n : ℕ) (A : Set (Euclidean N)), μHE[n] A ≠ ∞ → NullMeasurableSet A μHE[n] → (∀ L : ℝ, 0 < L → L ≤ 1 → ∃ C : Set (Grassmannian N n × Set (Euclidean N)), C.Countable ∧ (∀ c ∈ C, IsClosed c.2 ∧ ∀ y ∈ c.2, ∀ z ∈ c.2, ‖(y - z) - Grassmannian.project c.1 (y - z)‖ ≤ L * ‖Grassmannian.project c.1 (y - z)‖) ∧ A ⊆ ⋃ c ∈ C, c.2) → ∀ᵐ x ∂(μHE[n] : Measure (Euclidean N)).restrict A, HasDensity n ((μHE[n] : Measure (Euclidean N)).restrict A) x 1 := by
+  intro N n A hA hAm hcov
+  set lam : Measure (Euclidean N) := (μHE[n] : Measure (Euclidean N)).restrict A
+  -- Slopes `L_l = 1/(l+1) ∈ (0,1]` with factors `c_l = β_l^n`, `β_l = (1 + L_l²)^{1/2}`.
+  set c : ℕ → ℝ≥0∞ := fun l ↦ ENNReal.ofReal (Real.sqrt (1 + (1 / ((l : ℝ) + 1)) ^ 2)) ^ n
+  -- Step 8: for each `l`, `c_l⁻¹ ≤ liminf` and `limsup ≤ c_l` for `λ`-a.e. `x`.
+  have hstep : ∀ l : ℕ, ∀ᵐ x ∂lam, (c l)⁻¹ ≤ liminf (densityRatio n lam x) (𝓝[>] 0) ∧
+      limsup (densityRatio n lam x) (𝓝[>] 0) ≤ c l := by
+    intro l
+    have hL0 : (0 : ℝ) < 1 / ((l : ℝ) + 1) := by positivity
+    have hL1 : 1 / ((l : ℝ) + 1) ≤ 1 :=
+      div_le_one_of_le₀ (le_add_of_nonneg_left (Nat.cast_nonneg l)) (by positivity)
+    obtain ⟨C, hCc, hC, hAC⟩ := hcov _ hL0 hL1
+    -- `λ`-a.e. point lies in `A ⊆ W = ⋃_{c ∈ C} c.2`, so `λ ⌞ W = λ`.
+    have hW : lam.restrict (⋃ c ∈ C, c.2) = lam :=
+      Measure.restrict_eq_self_of_ae_mem ((ae_restrict_mem₀ hAm).mono fun x hx ↦ hAC hx)
+    have h := (ae_restrict_biUnion_iff Prod.snd hCc _).2 fun c hcC ↦
+      Submission.frt_graph_piece_density_bounds N n A c.2 c.1 _ hA hAm hL0.le (hC c hcC).1
+        (hC c hcC).2
+    rwa [hW] at h
+  -- Step 9: `c_l → 1`, hence `c_l⁻¹ → 1`.
+  have hlim : Tendsto c atTop (𝓝 1) := by
+    have hcont : Continuous fun t : ℝ ↦ ENNReal.ofReal (Real.sqrt (1 + t ^ 2)) ^ n :=
+      (ENNReal.continuous_pow n).comp (ENNReal.continuous_ofReal.comp
+        (continuous_const.add (continuous_pow 2)).sqrt)
+    have h := (hcont.tendsto 0).comp (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+    rw [zero_pow two_ne_zero, add_zero, Real.sqrt_one, ENNReal.ofReal_one, one_pow] at h
+    exact h
+  have hinv : Tendsto (fun l ↦ (c l)⁻¹) atTop (𝓝 1) := by
+    have h := hlim.inv
+    rwa [inv_one] at h
+  -- So `1 ≤ liminf` and `limsup ≤ 1` `λ`-a.e., i.e. `Θ^n(λ, x) = 1`.
+  filter_upwards [ae_all_iff.2 hstep] with x hx
+  exact tendsto_of_le_liminf_of_limsup_le (le_of_tendsto' hinv fun l ↦ (hx l).1)
+    (ge_of_tendsto' hlim fun l ↦ (hx l).2)
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
