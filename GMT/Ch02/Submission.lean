@@ -747,6 +747,43 @@ theorem Submission.coareaJacobian_mul_normDet_chart : ∀ (N m k : ℕ) (M : Set
     ← LinearMap.normDet_codRestrict hBT]
   exact key
 
+/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
+theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
+
+/-- **`J*_f(x) = 0` iff `Df(x) ∘ A` is not onto** (Simon Ch. 2, §6, p. 66: `J*_f(x) ≠ 0`
+precisely when `df_x` has rank `m`), for `A : ℝⁿ → ℝᴺ` with `T_x M = range A`. With
+`L = df_x = Df(x)|_{T_x M}`, `J*_f(x) = normDet(L*)` (`coareaJacobian_eq_normDet_adjoint`), which
+vanishes iff `ker L* = (range L)ᗮ ≠ 0`, i.e. iff `L` is not onto; and `L` is onto iff `Df(x) ∘ A`
+is, since both have range `Df(x)(T_x M)`. -/
+theorem Submission.coareaJacobian_eq_zero_iff_not_surjective : ∀ (N m n : ℕ) (M : Set (Rn N))
+    (f : Rn N → Rn m) (x : Rn N) (A : Rn n →L[ℝ] Rn N),
+    tangentSpace M x = LinearMap.range A.toLinearMap →
+    (coareaJacobian M f x = 0 ↔ ¬ Function.Surjective ((fderiv ℝ f x).comp A)) := by
+  intro N m n M f x A hT
+  -- Steps 1–3: `J*_f(x) = normDet(L*)` vanishes iff `(range L)ᗮ = ker L* ≠ 0` iff `L` is not onto.
+  rw [Submission.coareaJacobian_eq_normDet_adjoint, LinearMap.normDet_eq_zero_iff_ker_ne_bot,
+    ← LinearMap.orthogonal_range, ne_eq, Submodule.orthogonal_eq_bot_iff, LinearMap.range_eq_top]
+  -- Step 4: since `T_x M = range A`, `L` is onto iff `Df(x) ∘ A` is.
+  refine not_congr ⟨fun hs y ↦ ?_, fun hs y ↦ ?_⟩
+  · obtain ⟨t, rfl⟩ := hs y
+    obtain ⟨z, hz⟩ : (t : Rn N) ∈ LinearMap.range A.toLinearMap := hT ▸ t.2
+    exact ⟨z, congrArg (fderiv ℝ f x) hz⟩
+  · obtain ⟨z, rfl⟩ := hs y
+    exact ⟨⟨A z, hT ▸ LinearMap.mem_range_self A.toLinearMap z⟩, rfl⟩
+
+/-- **Linear algebra of the co-area Jacobian** (Simon Ch. 2, §6, 6.2, p. 66). Let `T = T_x M`,
+`D = Df(x)` and `L = D|_T : T → ℝᵐ`, so that `J*_f(x) = √det(L L*)`.
+(1) If `A : ℝⁿ → ℝᴺ` is linear with `T = range A`, then `J*_f(x) = 0` iff `D ∘ A` is not onto.
+(2) Let `A : ℝᵐ × ℝᵏ → ℝᴺ` (Euclidean product) be injective and linear with `T = range A` and
+`D (A p) = p₁`, and let `B b = A (0, b)`. Then `J*_f(x) · normDet A = normDet B`.
+Part (1) is `coareaJacobian_eq_zero_iff_not_surjective` and part (2) is
+`coareaJacobian_mul_normDet_chart`. -/
+theorem Submission.coarea_jacobian_linear_algebra : (∀ (N m n : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N) (A : Rn n →L[ℝ] Rn N), tangentSpace M x = LinearMap.range A.toLinearMap → (coareaJacobian M f x = 0 ↔ ¬ Function.Surjective ((fderiv ℝ f x).comp A))) ∧ ∀ (N m k : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N) (A : WithLp 2 (Rn m × Rn k) →L[ℝ] Rn N) (B : Rn k →L[ℝ] Rn N), Function.Injective A → tangentSpace M x = LinearMap.range A.toLinearMap → (∀ p, fderiv ℝ f x (A p) = WithLp.fst p) → (∀ b, B b = A (WithLp.toLp 2 (0, b))) → coareaJacobian M f x * A.toLinearMap.normDet = B.toLinearMap.normDet :=
+  -- Part (1), Steps 1–3: `J*_f(x) = 0` iff `L` is not onto, and `range L = range (D ∘ A)`.
+  -- Part (2), Steps 4–9: corestrict `A` and `B` to `T` and compute in block-triangular form.
+  ⟨Submission.coareaJacobian_eq_zero_iff_not_surjective,
+    Submission.coareaJacobian_mul_normDet_chart⟩
+
 /-- **Simon Ch. 2, §6 (pp. 66–67), straightening charts at regular points of `f` on `M`.** Let `M`
 be an `(m+k)`-dimensional `C¹` submanifold whose local representations `ψ` satisfy
 `T_{ψ(x)} M = range Dψ(x)`, `f` `C¹` on an open `U ⊇ M` and `J*_f(x₀) ≠ 0`. Take a chart `ψ` with
@@ -784,42 +821,5 @@ theorem Submission.coarea_exists_straightening_chart : ∀ (N m k : ℕ) (M U : 
   have hpO : ψ (Λ p) ∈ O ∩ M := by rw [← hΨΩ]; exact ⟨p, hp, rfl⟩
   rw [hpa] at hpO
   exact hpO.1
-
-/-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
-theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
-
-/-- **`J*_f(x) = 0` iff `Df(x) ∘ A` is not onto** (Simon Ch. 2, §6, p. 66: `J*_f(x) ≠ 0`
-precisely when `df_x` has rank `m`), for `A : ℝⁿ → ℝᴺ` with `T_x M = range A`. With
-`L = df_x = Df(x)|_{T_x M}`, `J*_f(x) = normDet(L*)` (`coareaJacobian_eq_normDet_adjoint`), which
-vanishes iff `ker L* = (range L)ᗮ ≠ 0`, i.e. iff `L` is not onto; and `L` is onto iff `Df(x) ∘ A`
-is, since both have range `Df(x)(T_x M)`. -/
-theorem Submission.coareaJacobian_eq_zero_iff_not_surjective : ∀ (N m n : ℕ) (M : Set (Rn N))
-    (f : Rn N → Rn m) (x : Rn N) (A : Rn n →L[ℝ] Rn N),
-    tangentSpace M x = LinearMap.range A.toLinearMap →
-    (coareaJacobian M f x = 0 ↔ ¬ Function.Surjective ((fderiv ℝ f x).comp A)) := by
-  intro N m n M f x A hT
-  -- Steps 1–3: `J*_f(x) = normDet(L*)` vanishes iff `(range L)ᗮ = ker L* ≠ 0` iff `L` is not onto.
-  rw [Submission.coareaJacobian_eq_normDet_adjoint, LinearMap.normDet_eq_zero_iff_ker_ne_bot,
-    ← LinearMap.orthogonal_range, ne_eq, Submodule.orthogonal_eq_bot_iff, LinearMap.range_eq_top]
-  -- Step 4: since `T_x M = range A`, `L` is onto iff `Df(x) ∘ A` is.
-  refine not_congr ⟨fun hs y ↦ ?_, fun hs y ↦ ?_⟩
-  · obtain ⟨t, rfl⟩ := hs y
-    obtain ⟨z, hz⟩ : (t : Rn N) ∈ LinearMap.range A.toLinearMap := hT ▸ t.2
-    exact ⟨z, congrArg (fderiv ℝ f x) hz⟩
-  · obtain ⟨z, rfl⟩ := hs y
-    exact ⟨⟨A z, hT ▸ LinearMap.mem_range_self A.toLinearMap z⟩, rfl⟩
-
-/-- **Linear algebra of the co-area Jacobian** (Simon Ch. 2, §6, 6.2, p. 66). Let `T = T_x M`,
-`D = Df(x)` and `L = D|_T : T → ℝᵐ`, so that `J*_f(x) = √det(L L*)`.
-(1) If `A : ℝⁿ → ℝᴺ` is linear with `T = range A`, then `J*_f(x) = 0` iff `D ∘ A` is not onto.
-(2) Let `A : ℝᵐ × ℝᵏ → ℝᴺ` (Euclidean product) be injective and linear with `T = range A` and
-`D (A p) = p₁`, and let `B b = A (0, b)`. Then `J*_f(x) · normDet A = normDet B`.
-Part (1) is `coareaJacobian_eq_zero_iff_not_surjective` and part (2) is
-`coareaJacobian_mul_normDet_chart`. -/
-theorem Submission.coarea_jacobian_linear_algebra : (∀ (N m n : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N) (A : Rn n →L[ℝ] Rn N), tangentSpace M x = LinearMap.range A.toLinearMap → (coareaJacobian M f x = 0 ↔ ¬ Function.Surjective ((fderiv ℝ f x).comp A))) ∧ ∀ (N m k : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N) (A : WithLp 2 (Rn m × Rn k) →L[ℝ] Rn N) (B : Rn k →L[ℝ] Rn N), Function.Injective A → tangentSpace M x = LinearMap.range A.toLinearMap → (∀ p, fderiv ℝ f x (A p) = WithLp.fst p) → (∀ b, B b = A (WithLp.toLp 2 (0, b))) → coareaJacobian M f x * A.toLinearMap.normDet = B.toLinearMap.normDet :=
-  -- Part (1), Steps 1–3: `J*_f(x) = 0` iff `L` is not onto, and `range L = range (D ∘ A)`.
-  -- Part (2), Steps 4–9: corestrict `A` and `B` to `T` and compute in block-triangular form.
-  ⟨Submission.coareaJacobian_eq_zero_iff_not_surjective,
-    Submission.coareaJacobian_mul_normDet_chart⟩
 
 end GMT.Ch02
