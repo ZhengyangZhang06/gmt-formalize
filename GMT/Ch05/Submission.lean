@@ -458,6 +458,53 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Embedded `C¹` submanifolds are Borel** (step 4 of the a.e. approximate-tangent argument
+behind Simon Ch. 5, Corollary 7.3; cf. Ch. 3, 1.9).  If `S ⊆ ℝ^N` is an `m`-dimensional `C¹`
+submanifold (`IsC1Submanifold`), then `S` is a Borel set.
+Proof: let `(V, W, φ)` be a chart at `y ∈ S` and `z ∈ W ∩ closure S`.  For a closed ball
+`K = B_{ε/2}(z) ⊆ W`, properness makes `φ(V ∩ φ⁻¹(K)) = W ∩ S ∩ K` compact, hence closed, and
+`z ∈ closure (W ∩ S ∩ K)`, so `z ∈ S`.  Thus `W ∩ closure S ⊆ S`, whence `S = O ∩ closure S` with
+`O = ⋃_{y ∈ S} W_y` open, and the intersection of an open and a closed set is Borel. -/
+theorem rsod_isC1Submanifold_measurableSet : ∀ (m N : ℕ) (S : Set (EuclideanSpace ℝ (Fin N))), IsC1Submanifold m S → MeasurableSet S := by
+  intro m N S hS
+  -- Steps 1–3: each `y ∈ S` has an open `W ∋ y` with `W ∩ closure S ⊆ S`.
+  have hloc : ∀ y ∈ S, ∃ W : Set (EuclideanSpace ℝ (Fin N)),
+      IsOpen W ∧ y ∈ W ∧ W ∩ closure S ⊆ S := by
+    intro y hy
+    obtain ⟨V, W, φ, -, hW, hyW, hφ, -, himg, hprop, -⟩ := hS y hy
+    refine ⟨W, hW, hyW, ?_⟩
+    rintro z ⟨hzW, hzcl⟩
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hW z hzW
+    -- `K = B_{ε/2}(z)` is a compact subset of `W`, so `Q = V ∩ φ⁻¹(K)` is compact.
+    have hKW : closedBall z (ε / 2) ⊆ W := (closedBall_subset_ball (by linarith)).trans hball
+    have hQ : IsCompact (V ∩ φ ⁻¹' closedBall z (ε / 2)) :=
+      hprop _ (isCompact_closedBall z (ε / 2)) hKW
+    -- `φ(Q) = φ(V) ∩ K = W ∩ S ∩ K` is compact, hence closed.
+    have hφQ : IsCompact (φ '' (V ∩ φ ⁻¹' closedBall z (ε / 2))) :=
+      hQ.image_of_continuousOn (hφ.continuousOn.mono inter_subset_left)
+    rw [image_inter_preimage, himg] at hφQ
+    -- `z ∈ closure (W ∩ S ∩ K)`: points of `S` in `B̆_{ε/2}(z)` lie in `W ∩ S ∩ K`.
+    have hz : z ∈ closure (W ∩ S ∩ closedBall z (ε / 2)) := by
+      refine closure_mono ?_ (isOpen_ball.inter_closure ⟨mem_ball_self (half_pos hε), hzcl⟩)
+      rintro w ⟨hw, hwS⟩
+      exact ⟨⟨hball (ball_subset_ball (by linarith) hw), hwS⟩, ball_subset_closedBall hw⟩
+    rw [hφQ.isClosed.closure_eq] at hz
+    exact hz.1.2
+  -- Step 4: `S = O ∩ closure S` with `O = ⋃_{y ∈ S} W_y`.
+  choose! W hWo hyW hWS using hloc
+  have hSO : S = (⋃ y ∈ S, W y) ∩ closure S := by
+    refine Subset.antisymm (fun z hz => ⟨mem_biUnion hz (hyW z hz), subset_closure hz⟩) ?_
+    rintro z ⟨hzO, hzcl⟩
+    obtain ⟨y, hy, hzy⟩ := mem_iUnion₂.mp hzO
+    exact hWS y hy ⟨hzy, hzcl⟩
+  -- Step 5: `O` is open and `closure S` is closed, so `S = O ∩ closure S` is Borel.
+  rw [hSO]
+  exact (isOpen_biUnion hWo).measurableSet.inter isClosed_closure.measurableSet
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
