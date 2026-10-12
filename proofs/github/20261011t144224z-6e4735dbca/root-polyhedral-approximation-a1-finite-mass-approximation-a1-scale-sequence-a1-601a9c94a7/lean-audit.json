@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e903db84c9e759f63799afa093465920dfeec37d772bc84e422677c55a7e236f",
+  "git_delta": {
+    "base_commit": "cd02f35f95cb0fb2bafe24314fb8b819ff0eecbf",
+    "candidate_commit": "72f53c6507e1919cc37541526a60cfb21d6d4075",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "polyhedral_approx_scale_seq",
+    "diff_sha256": "a2ecb60403595fd89504fce0cac8418e401b137fcd7c8de836f685711df7a02e",
+    "source_sha256": "71ca302ed6f6d120184648b14113dfcf1989aeb2bd8974d9d9eebea758beb094",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_scale_seq",
+      "statement": "∀ a : ℕ → ℝ, ∃ ρ : ℕ → ℝ, (∀ k, 0 < ρ k) ∧ Antitone ρ ∧ Tendsto ρ atTop (𝓝 0) ∧ ∀ k, ρ k * a k ≤ 1 / ((k : ℝ) + 1)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
