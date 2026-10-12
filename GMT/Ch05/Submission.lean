@@ -473,6 +473,41 @@ theorem dohr_lmo_hausdorff_null_of_weight_null : ∀ n ℓ : ℕ, ∀ (U : Set (
   have hsub : A ⊆ ({x | ENNReal.ofReal (V.mult x) ≠ 0} ∩ A) ∩ V.carrier := fun x hx =>
     ⟨⟨(ENNReal.ofReal_pos.mpr (V.mult_pos x (hA hx))).ne', hx⟩, hA hx⟩
   exact measure_mono_null hsub (nonpos_iff_eq_zero.mp ((Measure.le_restrict_apply _ _).trans h0.le))
+/-- Carrier versus support (step 6 of the local multiplicity-one argument for Simon 7.1): let
+`O ⊆ U` be measurable, let `Hⁿ`-a.e. point of `spt V ∩ O` off `M` have density `0`, and let
+every point of `spt V ∩ O` have a density `Θ ≥ 1`. Then `Hⁿ((M ∩ O) ∆ (spt V ∩ O)) = 0`.
+`(M ∩ O) \ spt V` lies outside `spt μ_V`, so it is `μ_V`-null; since it lies inside `M`, the
+sibling `dohr_lmo_hausdorff_null_of_weight_null` makes it `Hⁿ`-null. On `(spt V ∩ O) \ M`,
+`Hⁿ`-a.e. point would have both density `0` and density `Θ ≥ 1`, which uniqueness of limits
+rules out. -/
+theorem dohr_lmo_carrier_support_null : ∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (O : Set (Amb n ℓ)), MeasurableSet O → O ⊆ U → (∀ᵐ y ∂((μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ O)), y ∉ V.carrier → V.HasDensity y 0) → (∀ y ∈ V.support ∩ O, ∃ Θ : ℝ, 1 ≤ Θ ∧ V.HasDensity y Θ) → (μHE[n] : Measure (Amb n ℓ)) (symmDiff (V.carrier ∩ O) (V.support ∩ O)) = 0 := by
+  intro n ℓ U V O hO hOU hzero hdens
+  rw [Set.symmDiff_def]
+  refine measure_union_null ?_ ?_
+  · -- `(M ∩ O) \ (spt V ∩ O)` lies in `M` and, as `O ⊆ U`, outside `spt μ_V`.
+    refine Submission.dohr_lmo_hausdorff_null_of_weight_null n ℓ U V _ (fun x hx => hx.1.1)
+      (measure_mono_null ?_ (Measure.measure_compl_support (μ := V.weight)))
+    rintro x ⟨⟨-, hxO⟩, hxS⟩ hxμ
+    exact hxS ⟨⟨hOU hxO, hxμ⟩, hxO⟩
+  · -- `spt V ∩ O = spt μ_V ∩ O` (as `O ⊆ U`) is measurable.
+    have hmeas : MeasurableSet (V.support ∩ O) := by
+      have h : V.support ∩ O = V.weight.support ∩ O := by
+        ext x
+        exact ⟨fun ⟨⟨_, hx⟩, hxO⟩ => ⟨hx, hxO⟩, fun ⟨hx, hxO⟩ => ⟨⟨hOU hxO, hx⟩, hxO⟩⟩
+      rw [h]
+      exact (Measure.isClosed_support (μ := V.weight)).measurableSet.inter hO
+    -- A.e. point of `spt V ∩ O` lies in `M`: off `M` it would have densities `0` and `Θ ≥ 1`.
+    have hae : ∀ᵐ y ∂((μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ O)), y ∈ V.carrier := by
+      filter_upwards [ae_restrict_mem hmeas, hzero] with y hy hy0
+      by_contra hyM
+      obtain ⟨Θ, hΘ, hyΘ⟩ := hdens y hy
+      have h := tendsto_nhds_unique (hy0 hyM) hyΘ
+      rw [ENNReal.ofReal_zero, eq_comm, ENNReal.ofReal_eq_zero] at h
+      linarith
+    refine measure_mono_null (t := V.carrierᶜ ∩ (V.support ∩ O)) ?_ ?_
+    · rintro x ⟨hx, hxM⟩
+      exact ⟨fun h => hxM ⟨h, hx.2⟩, hx⟩
+    · exact nonpos_iff_eq_zero.1 ((Measure.le_restrict_apply _ _).trans (ae_iff.1 hae).le)
 
 end Submission
 
