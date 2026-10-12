@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1",
+  "depth": 3,
+  "title": "Monotonicity of e^{κρ}ρ^{−n}μ_R(B_ρ(z)) under a bounded mean curvature identity (Simon Ch. 4, 3.14–3.17)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, R = (M, θ, ξ) an IMRep U n, z ∈ ℝ^P, r, κ ∈ ℝ with B̄_r(z) ⊆ U, and H : ℝ^P → ℝ^P. Assume:\n- x ↦ p_x, the orthogonal projection onto approxTangentPlane n M x, is μ_R-AEMeasurable;\n- H is μ_R-a.e. strongly measurable, with |H(x)| ≤ κ for all x;\n- δV(X) = −∫⟨X, H⟩ dμ_R (R.firstVariation) for every C¹ vector field X with compact support contained in B_r(z).\nThen e^{κσ}σ^{−n}μ_R(B_σ(z)) ≤ e^{κρ}ρ^{−n}μ_R(B_ρ(z)) in [0, ∞] for all 0 < σ ≤ ρ ≤ r (open balls, written with ENNReal.ofReal(e^{κs}/s^n)).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (H : Euclid P → Euclid P) (κ : ℝ) (z : Euclid P) (r : ℝ), closedBall z r ⊆ U → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball z r → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ ≤ r → ENNReal.ofReal (Real.exp (κ * σ) / σ ^ n) * R.measure (ball z σ) ≤ ENNReal.ofReal (Real.exp (κ * ρ) / ρ ^ n) * R.measure (ball z ρ)",
+  "lean_name": "dsmc_exp_ball_mass_monotone",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.first_variation_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.first_variation_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-17c79c81ce-a1"
+}

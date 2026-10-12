@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.tangent_projection_measurable-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1",
+  "depth": 3,
+  "title": "Measurability of the approximate tangent projection of an integer multiplicity triple",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, and R = (M, θ, ξ) an IMRep U n: M ⊆ U is Borel and countably n-rectifiable; θ : ℝ^P → ℕ is measurable with θ ≥ 1 on M and ∫_{M∩K} θ dHⁿ < ∞ for every compact K ⊆ U; and, Hⁿ-a.e. on M, M has an approximate tangent plane oriented by ξ. Let p_x be the orthogonal projection onto approxTangentPlane n M x. This is the approximate tangent plane T_xM where one exists (Simon Ch. 3, 1.4), and {0} otherwise. Then x ↦ p_x is AEMeasurable from ℝ^P into L(ℝ^P, ℝ^P), with its Borel σ-algebra, with respect to μ_R = θHⁿ⌞M (R.measure).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), IsOpen U → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure",
+  "lean_name": "dsmc_approxTangentPlane_starProjection_aemeasurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ta-ec3b44cb45-a1"
+}
