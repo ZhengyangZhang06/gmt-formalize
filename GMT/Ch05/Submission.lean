@@ -728,6 +728,109 @@ theorem mollifier_l2_tendsto : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [
     _ ≤ 2 * δ + 4 * δ + 4 * δ := by gcongr; exact hA.trans hC
     _ = 10 * δ := by ring
     _ = e := ENNReal.mul_div_cancel' (by norm_num) (by norm_num)
+/-- **Mollified `W^{1,2}` functions on the unit ball** (Evans, *PDE*, §5.3.1; Gilbarg–Trudinger,
+§7.3).  Let `f ∈ W^{1,2}(B)` with weak gradient `g`, `B = B̆₁(0)`, and let `ρ` be `C^∞` with
+`ρ(z) = 0` for `‖z‖ ≥ ε`.  For the zero extensions `F = 1_B f`, `G = 1_B g`, the mollification
+`Φ(x) = ∫ ρ(z) F(x - z) dz` is `C^∞`, and `∇Φ(x) = ∫ ρ(z) G(x - z) dz` whenever `‖x‖ < 1 - ε`.
+
+`ρ` is supported in `B_ε(0)` and `F` is integrable (`L²` on a ball of finite measure), so
+`Φ = F ⋆ ρ` is smooth with `DΦ(x) v = ∫ F(t) Dρ(x - t) v dt`, i.e. `∇Φ(x) = ∫ F(t) ∇ρ(x - t) dt`.
+For `‖x‖ < 1 - ε` the reflected kernel `ζ(y) = ρ(x - y)` is a test function in `B` with
+`∇ζ(y) = -∇ρ(x - y)`, so the weak identity gives `∫_B f(y) ∇ρ(x - y) dy = ∫_B ρ(x - y) g(y) dy`,
+which is `∫ ρ(z) G(x - z) dz` after the substitution `z = x - y`. -/
+theorem w12_ball_mollification_gradient : ∀ (n : ℕ) (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∀ (ρ : Rn n → ℝ) (ε : ℝ), ContDiff ℝ (⊤ : ℕ∞) ρ → (∀ z, ε ≤ ‖z‖ → ρ z = 0) → ContDiff ℝ (⊤ : ℕ∞) (fun x => ∫ z, ρ z • (ball (0 : Rn n) 1).indicator f (x - z)) ∧ ∀ x : Rn n, ‖x‖ < 1 - ε → gradient (fun x => ∫ z, ρ z • (ball (0 : Rn n) 1).indicator f (x - z)) x = ∫ z, ρ z • (ball (0 : Rn n) 1).indicator g (x - z) := by
+  intro n f g hW ρ ε hρ hρ0
+  obtain ⟨hf2, hg2, hweak⟩ := hW
+  -- Step 1: `tsupport ρ ⊆ B_ε(0)`, so `ρ` is a compactly supported `C^∞` (in particular `C¹`)
+  -- kernel.
+  have hts : tsupport ρ ⊆ closedBall 0 ε := by
+    refine closure_minimal (fun z hz => ?_) isClosed_closedBall
+    rw [mem_closedBall_zero_iff]
+    by_contra h
+    exact (Function.mem_support.1 hz) (hρ0 z (not_le.1 h).le)
+  have hρc : HasCompactSupport ρ :=
+    HasCompactSupport.of_support_subset_isCompact (isCompact_closedBall (0 : Rn n) ε)
+      (subset_closure.trans hts)
+  have hρ1 : ContDiff ℝ 1 ρ := hρ.of_le (by exact_mod_cast le_top)
+  -- Step 2: `F = 1_B f` is integrable, since `f ∈ L²(B)` and `B` has finite measure.
+  have : IsFiniteMeasure (volume.restrict (ball (0 : Rn n) 1)) :=
+    isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+  have hFi : Integrable ((ball (0 : Rn n) 1).indicator f) volume :=
+    (integrable_indicator_iff measurableSet_ball).2 (hf2.integrable one_le_two)
+  -- Step 3: `Φ = F ⋆ ρ` (kernel on the right) is `C^∞`.
+  have hΦ : (fun x => ∫ z, ρ z • (ball (0 : Rn n) 1).indicator f (x - z)) =
+      convolution ((ball (0 : Rn n) 1).indicator f) ρ (ContinuousLinearMap.lsmul ℝ ℝ).flip
+        volume := by
+    rw [convolution_flip]; rfl
+  refine ⟨?_, fun x hx => ?_⟩
+  · rw [hΦ]
+    exact hρc.contDiff_convolution_right _ hFi.locallyIntegrable hρ
+  -- Step 4: `∇Φ(x) = ∫ F(t) ∇ρ(x - t) dt`, by testing `DΦ(x) = ∫ F(t) Dρ(x - t) dt` against each
+  -- `v` and commuting `⟪v, ·⟫` with the (integrable) vector integral.
+  have hgrad : ∀ p v, fderiv ℝ ρ p v = inner ℝ (gradient ρ p) v := fun p v => by
+    rw [gradient, InnerProductSpace.toDual_symm_apply]
+  have hgc : Continuous (gradient ρ) :=
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp (hρ1.continuous_fderiv one_ne_zero)
+  have hgcs : HasCompactSupport (gradient ρ) :=
+    (hρc.fderiv ℝ).comp_left (g := (InnerProductSpace.toDual ℝ (Rn n)).symm) (map_zero _)
+  have hint : Integrable (fun t => (ball (0 : Rn n) 1).indicator f t • gradient ρ (x - t)) volume :=
+    hgcs.convolutionExists_right (ContinuousLinearMap.lsmul ℝ ℝ) hFi.locallyIntegrable hgc x
+  have hD := hρc.hasFDerivAt_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ).flip
+    hFi.locallyIntegrable hρ1 x
+  have key : gradient (fun x => ∫ z, ρ z • (ball (0 : Rn n) 1).indicator f (x - z)) x =
+      ∫ t, (ball (0 : Rn n) 1).indicator f t • gradient ρ (x - t) := by
+    rw [hΦ]
+    refine HasGradientAt.gradient ?_
+    rw [hasGradientAt_iff_hasFDerivAt]
+    convert hD using 1
+    ext v
+    rw [convolution_precompR_apply _ hFi.locallyIntegrable (hρc.fderiv ℝ)
+      (hρ1.continuous_fderiv one_ne_zero) x v, InnerProductSpace.toDual_apply_apply,
+      real_inner_comm, ← innerSL_apply_apply ℝ, ← ContinuousLinearMap.integral_comp_comm _ hint,
+      convolution_def]
+    refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+    simp only [innerSL_apply_apply, real_inner_smul_right, ContinuousLinearMap.flip_apply,
+      ContinuousLinearMap.lsmul_apply, smul_eq_mul, hgrad, real_inner_comm v]
+    ring
+  rw [key]
+  -- Step 5: for `‖x‖ < 1 - ε`, `ζ(y) = ρ(x - y)` is a `C^∞` test function with
+  -- `tsupport ζ ⊆ B_ε(x) ⊆ B` and `∇ζ(y) = -∇ρ(x - y)`.
+  have hζ : ContDiff ℝ (⊤ : ℕ∞) (fun y => ρ (x - y)) := hρ.comp (contDiff_const.sub contDiff_id)
+  have hζc : HasCompactSupport (fun y => ρ (x - y)) := hρc.comp_homeomorph (Homeomorph.subLeft x)
+  have hζs : tsupport (fun y => ρ (x - y)) ⊆ ball 0 1 := by
+    refine (tsupport_comp_subset_preimage ρ (continuous_const.sub continuous_id)).trans
+      fun y hy => ?_
+    have h1 : x - y ∈ tsupport ρ := hy
+    have h2 : ‖x - y‖ ≤ ε := mem_closedBall_zero_iff.1 (hts h1)
+    rw [mem_ball_zero_iff]
+    calc ‖y‖ = ‖x - (x - y)‖ := by rw [sub_sub_cancel]
+      _ ≤ ‖x‖ + ‖x - y‖ := norm_sub_le _ _
+      _ < 1 := by linarith
+  have hζg : ∀ y, gradient (fun y => ρ (x - y)) y = -gradient ρ (x - y) := fun y => by
+    have hd : fderiv ℝ (fun y => ρ (x - y)) y = -(fderiv ℝ ρ (x - y)) := by
+      simpa only [Function.comp_def, ContinuousLinearMap.comp_neg,
+        ContinuousLinearMap.comp_id] using
+        ((hρ1.differentiable one_ne_zero (x - y)).hasFDerivAt.comp y
+          ((hasFDerivAt_id y).const_sub x)).fderiv
+    rw [gradient, hd, map_neg, gradient]
+  -- Step 6: the weak identity for `ζ`: `∫_B f(y) ∇ρ(x - y) dy = ∫_B ρ(x - y) g(y) dy`.
+  have hw := hweak (fun y => ρ (x - y)) hζ hζc hζs
+  simp only [hζg, smul_neg, integral_neg, neg_inj] at hw
+  -- Step 7: pass to the zero extensions and substitute `z = x - y`.
+  calc ∫ t, (ball (0 : Rn n) 1).indicator f t • gradient ρ (x - t)
+      = ∫ y in ball (0 : Rn n) 1, f y • gradient ρ (x - y) := by
+        rw [← integral_indicator measurableSet_ball]
+        refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+        rw [indicator_smul_apply_left]
+    _ = ∫ y in ball (0 : Rn n) 1, ρ (x - y) • g y := hw
+    _ = ∫ y, ρ (x - y) • (ball (0 : Rn n) 1).indicator g y := by
+        rw [← integral_indicator measurableSet_ball]
+        refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+        rw [indicator_smul_apply]
+    _ = ∫ z, ρ z • (ball (0 : Rn n) 1).indicator g (x - z) := by
+        rw [← integral_sub_left_eq_self
+          (fun z => ρ z • (ball (0 : Rn n) 1).indicator g (x - z)) volume x]
+        simp only [sub_sub_cancel]
 
 end Submission
 
