@@ -1,0 +1,20 @@
+{
+  "node_id": "root.affine_approximation-a1.l1_tilt_height-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/402",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "ddc8e5e24c30e2f8c5e4ed341973af053b7d372f",
+  "integrated_commit": "",
+  "proof_base_commit": "5b386d3d7cdc594805689bfab3dd0f850fc5e29c",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.affine_approximation-a1",
+  "requires": [
+    "root.affine_approximation-a1.tangent_structure-a1",
+    "root.affine_approximation-a1.l1_tilt_height-a1.cutoff-a1",
+    "root.affine_approximation-a1.l1_tilt_height-a1.projection_algebra-a1",
+    "root.affine_approximation-a1.l1_tilt_height-a1.test_field_divergence-a1"
+  ]
+}
