@@ -729,6 +729,56 @@ theorem Submission.rsd_cmr_imrep_represents_exists : ∀ (P n : ℕ) (U : Set (E
         rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
         nlinarith
 
+/-- **Extension by zero** (Simon 6.2.16, 6.3.1; step 6(b)–(c) of the proof of 7.4.2).  Let
+`B ⊆ U` with `B` open, `K ⊆ B` compact, and `X = τ(M, θ, ξ) ∈ 𝒟ₙ(B)` with `μ_X = θ Hⁿ⌞M`
+vanishing near each point of `B \ K`.  By second countability `μ_X(B \ K) = 0`, so
+`Hⁿ(M \ K) = 0` as `θ ≥ 1` on `M ⊆ B`.  Then `E = τ(M ∩ K, θ, ξ) ∈ 𝒟ₙ(U)` is integer
+multiplicity, extends `X` (`M ∩ K = M` up to the `Hⁿ`-null set `M \ K`) and vanishes on forms
+whose support misses `K`. -/
+theorem Submission.rsd_cmr_zero_extension : ∀ (P n : ℕ) (U B K : Set (Euclid P)) (hBU : B ⊆ U) (X : GeometricCurrentOn B n) (R : IMRep B n), IsOpen B → IsCompact K → K ⊆ B → R.Represents X → (∀ y ∈ B, y ∉ K → ∃ ρ : ℝ, 0 < ρ ∧ R.measure (ball y ρ) = 0) → ∃ E : GeometricCurrentOn U n, IsIntegerMultiplicity E ∧ (∀ ω : TestFormOn B n, E (testFormOnInclusion hBU n ω) = X ω) ∧ ∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) K → E ω = 0 := by
+  intro P n U B K hBU X R hB hK hKB hX hloc
+  -- `μ_X(B \ K) = 0`: each point of `B \ K` has a `μ_X`-null ball, and `ℝᴾ` is second countable.
+  have hnull : R.measure (B \ K) = 0 :=
+    measure_null_of_locally_null _ fun y hy => by
+      obtain ⟨ρ, hρ, hball⟩ := hloc y hy.1 hy.2
+      exact ⟨ball y ρ, mem_nhdsWithin_of_mem_nhds (ball_mem_nhds y hρ), hball⟩
+  -- `Hⁿ(M \ K) ≤ ∫_{M ∩ (B \ K)} θ dHⁿ = μ_X(B \ K) = 0`, since `θ ≥ 1` on `M ⊆ B`.
+  have hBK : MeasurableSet (B \ K) := hB.measurableSet.diff hK.measurableSet
+  have hMK : μHE[n] (R.carrier \ K) = 0 := by
+    refine nonpos_iff_eq_zero.1 (le_of_le_of_eq ?_ hnull)
+    calc μHE[n] (R.carrier \ K) ≤ μHE[n] ((B \ K) ∩ R.carrier) :=
+          measure_mono fun x hx => ⟨⟨R.carrier_subset hx.1, hx.2⟩, hx.1⟩
+      _ = ∫⁻ _ in (B \ K) ∩ R.carrier, 1 ∂μHE[n] := (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in (B \ K) ∩ R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
+          setLIntegral_mono' (hBK.inter R.measurableSet_carrier) fun x hx =>
+            Nat.one_le_cast.2 (R.mult_pos x hx.2)
+      _ = R.measure (B \ K) := by
+          rw [IMRep.measure, withDensity_apply _ hBK, Measure.restrict_restrict hBK]
+  -- `(M ∩ K, θ, ξ)` is a triple in `U`: `θ` is integrable on the compact `K ⊆ B`, and the
+  -- discarded part `M \ K` is `Hⁿ`-null.
+  obtain ⟨R', hR'c, hR'm, hR'o⟩ := Submission.rsd_cmr_imrep_restrict P n B U K R R.mult
+    hK.measurableSet (fun x hx => hBU (hKB hx.2)) R.measurable_mult
+    (fun x hx => R.mult_pos x hx.1)
+    (fun _ _ _ => ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKB)
+      (lintegral_mono_set inter_subset_left))
+    (Eventually.of_forall fun _ => ⟨1, one_pos, measure_mono_null inter_subset_left hMK⟩)
+  -- `E = τ(M ∩ K, θ, ξ) ∈ 𝒟ₙ(U)`.
+  obtain ⟨E, hE⟩ := Submission.rsd_cmr_imrep_represents_exists P n U R'
+  refine ⟨E, ⟨R', hE⟩, fun ω => ?_, fun ω hω => ?_⟩
+  · -- `E` extends `X`: `M ∩ K` and `M` differ by the `Hⁿ`-null set `M \ K`.
+    rw [hE (testFormOnInclusion hBU n ω), hX ω]
+    simp only [IMRep.action, testFormOnInclusion_coe]
+    rw [hR'c, hR'm, hR'o]
+    refine setIntegral_congr_set (ae_eq_set.2 ⟨?_, ?_⟩)
+    · rw [Set.sdiff_eq_empty.2 inter_subset_left, measure_empty]
+    · rwa [Set.sdiff_self_inter]
+  · -- `E(ω) = 0` when `spt ω ∩ K = ∅`: `ω` vanishes on `M ∩ K ⊆ K`.
+    rw [hE ω]
+    simp only [IMRep.action]
+    rw [hR'c]
+    refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+    rw [image_eq_zero_of_notMem_tsupport (Set.disjoint_right.1 hω hx.2), map_zero, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
