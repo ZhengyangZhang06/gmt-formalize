@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eaba6c88fb8e27741bc1460d74567e6d2e87d613dc9aab7606558cda1017f480",
+  "git_delta": {
+    "base_commit": "469c6e0728a1029aac34e13799c56f7de5aeb533",
+    "candidate_commit": "717898bfbfa2c36fac9cca23f7a3d1571a5b7718",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "upper_density_comparison_and_theorem",
+    "diff_sha256": "b7d50f9ab80441a3a831bf4f506a410f0a747a40efafd3afabe400fe0c1549e7",
+    "source_sha256": "b83c3bebf1cd283fa97c4f70bd211b311bda847d9792643acf1be2a9adf2bb7f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.upper_density_comparison_and_theorem",
+      "statement": "UpperDensityComparison.{u} ∧ UpperDensityTheorem.{u}",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

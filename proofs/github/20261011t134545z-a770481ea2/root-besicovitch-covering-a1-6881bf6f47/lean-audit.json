@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1ed6af9fccc9af08229e9ae78354ffa7fa403c60b20291fa18f3501f97bf4a92",
+  "git_delta": {
+    "base_commit": "df701776cb50a2fcd2d2c79e66f88fb414eecd5c",
+    "candidate_commit": "4af8859f78c16354b06b5943fcb63f5f84da7ecd",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "besicovitch_covering",
+    "diff_sha256": "7ad3f41eee57397f69855a4bdf3766c2871919b34cc991c258d39b3b6a29b55c",
+    "source_sha256": "64253a61f054e89f880410f2ddaaff5f4c7787d7ea676755d9756e7d69ce13eb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.besicovitch_covering",
+      "statement": "BesicovitchCovering",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

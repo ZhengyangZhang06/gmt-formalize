@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f44ba7048b00693284d769268ae14ae5ee8b028069094c4f8dffd86058440d10",
+  "git_delta": {
+    "base_commit": "df701776cb50a2fcd2d2c79e66f88fb414eecd5c",
+    "candidate_commit": "57d532ee9809c4aec11a0211a88179659d554e83",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "riesz_positive",
+    "diff_sha256": "d85f859f170bd8af52f072cdbc325bbbff49418921f6e14f45602fe90af49fc8",
+    "source_sha256": "b6e84f989477cacd7bc93235e9aab1c653ed58f380af806b1f217b6fb87561ce",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.riesz_positive",
+      "statement": "RieszPositive",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

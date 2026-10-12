@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ce0c723b895f811a340433749e81b6d733a296f903e6bce0df1cea4e4ef4efd6",
+  "git_delta": {
+    "base_commit": "c05f4d56d1d56eae2ddcd29b725580d4cd2ea204",
+    "candidate_commit": "5992491437fae934be6ec40811b4b41799c31587",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "rc_diagonal_subseq",
+    "diff_sha256": "e3660fba7b265cfa24e970389d32b3f602970d02cda024390ebfadc6c85cb56f",
+    "source_sha256": "b6e7e5a65d21f703ca49725bd235342406a1fd8139fc0b411cd982e7318ed8ea",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rc_diagonal_subseq",
+      "statement": "∀ (ι : Type u) [Countable ι] (a : ℕ → ι → ℝ), (∀ i, ∃ C : ℝ, ∀ k, |a k i| ≤ C) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ i, ∃ l : ℝ, Tendsto (fun k => a (φ k) i) atTop (𝓝 l)",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

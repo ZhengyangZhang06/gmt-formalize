@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0cee70395cd289d9d5724ef5978925059b197c03e3493e2d983ec6ffed1d3612",
+  "git_delta": {
+    "base_commit": "4bfc7e0c663ba14249864b6a6388c58dbf7e454d",
+    "candidate_commit": "b49193a944290f8d9c0bbb3958e1eb9616c2b9bb",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "rc_riesz_real",
+    "diff_sha256": "d796de4d7e9badac4640c5585c5ba3b0579c88e99992b7a48755beecb6fdc7b4",
+    "source_sha256": "285137f6dcbbc587aca53ee8d021e9a4a3150040ae3eda6a784cf50a45e1acb0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rc_riesz_real",
+      "statement": "RieszPositive.{u} → ∀ (X : Type u) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] (Λ : C_c(X, ℝ) →ₗ[ℝ] ℝ), (∀ f : C_c(X, ℝ), 0 ≤ f → 0 ≤ Λ f) → ∃ μ : OuterMeasure X, IsRadonOuterMeasure μ ∧ ∀ f : C_c(X, ℝ), Λ f = ∫ x, f x ∂caratheodoryMeasure μ",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

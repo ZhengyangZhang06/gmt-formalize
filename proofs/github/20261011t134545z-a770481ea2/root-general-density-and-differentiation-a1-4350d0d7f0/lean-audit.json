@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "91dca1fea187ca58e7c8ea41b742fe4ce46cd1be548df798336a4bd4d34affd7",
+  "git_delta": {
+    "base_commit": "2981c16a9792c074609cee24390c18642af71c1c",
+    "candidate_commit": "57e6afbacc1c6d304208c1746f215f1b004f00dd",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "general_density_and_differentiation",
+    "diff_sha256": "e772abbe60152ee239851f3b4fcec8edfaa779f928c07f32f16ced8c437e43d9",
+    "source_sha256": "97b91a780581d910d38336d2d6f6d810687b652f0cbd325f0fd8327f83834489",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.general_density_and_differentiation",
+      "statement": "GeneralDensityTheorem.{u} ∧ LebesgueDifferentiation.{u}",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

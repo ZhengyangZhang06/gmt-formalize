@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "14380932df25dc08ba15c76f7d89aed27b6c9814916aa4b38cf9914a0c817d5b",
+  "git_delta": {
+    "base_commit": "c05f4d56d1d56eae2ddcd29b725580d4cd2ea204",
+    "candidate_commit": "e3d97c426914a2ff34effdfe5c8fcc8c00b1aafd",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "rc_cc_integrable",
+    "diff_sha256": "e7dfc84d4442cf212d69fadda386c43dd078591fa201f7a20bf4f9021712a830",
+    "source_sha256": "52c9a998562294b31f82c22a7d0f8980fc0f4bde439b10f58327fa3f4362cf0d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rc_cc_integrable",
+      "statement": "∀ (X : Type u) [TopologicalSpace X] (μ : OuterMeasure X), IsRadonOuterMeasure μ → ∀ f : C_c(X, ℝ), Integrable (fun x => f x) (caratheodoryMeasure μ)",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9dc1302a8201f8c720e924c2ddeb88678b4719e0650fcc0a086524c61135a274",
+  "git_delta": {
+    "base_commit": "c05f4d56d1d56eae2ddcd29b725580d4cd2ea204",
+    "candidate_commit": "155f3ed26426e183b7f123d54dff573b13cacf02",
+    "target": "GMT/Ch01/Submission.lean",
+    "declaration": "rc_cc_countable_dense",
+    "diff_sha256": "2f8233477990eab9f32e65f02ee75acb8f37f0de4ec512c7a6124498a534d69e",
+    "source_sha256": "612149e49bba2e7f3416230eedf32f1c2705de5732a6747c86374eb9d9c0c06e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rc_cc_countable_dense",
+      "statement": "∀ (X : Type u) [TopologicalSpace X] [T2Space X] [SecondCountableTopology X] (K : Set X), IsCompact K → ∃ D : Set C_c(X, ℝ), D.Countable ∧ (∀ g ∈ D, tsupport g ⊆ K) ∧ ∀ f : C_c(X, ℝ), tsupport f ⊆ K → ∀ ε : ℝ, 0 < ε → ∃ g ∈ D, ∀ x, |f x - g x| ≤ ε",
+      "lean_file": "GMT/Ch01/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
