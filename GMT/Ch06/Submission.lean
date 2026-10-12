@@ -359,6 +359,33 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Convolution of a locally integrable kernel with a `C^∞` compactly supported function:
+`ψ(y) = ∫ K(t) a(y - t) dt` is `C^∞`, and for all `y, v`, `t ↦ K(t) Da(y - t)v` is integrable with
+`Dψ(y)v = ∫ K(t) Da(y - t)v dt`.  Here `ψ = K ⋆ a` for the pairing `lsmul ℝ ℝ`, so
+`HasCompactSupport.contDiff_convolution_right` gives smoothness, `convolutionExists_right`
+applied to the continuous compactly supported `z ↦ Da(z)v` gives integrability, and
+`hasFDerivAt_convolution_right` with `convolution_precompR_apply` gives the derivative. -/
+theorem Submission.rpn_pe_convolution_contDiff_fderiv :
+    ∀ (n : ℕ) (K a : Eucl n → ℝ), LocallyIntegrable K → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a →
+      HasCompactSupport a → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y => ∫ t, K t * a (y - t)) ∧
+      ∀ y v : Eucl n, Integrable (fun t => K t * fderiv ℝ a (y - t) v) ∧
+        fderiv ℝ (fun y => ∫ t, K t * a (y - t)) y v = ∫ t, K t * fderiv ℝ a (y - t) v := by
+  intro n K a hK ha hsupp
+  -- `ψ = K ⋆ a` for the scalar multiplication pairing (`convolution_lsmul`).
+  have hψ : (fun y => ∫ t, K t * a (y - t)) =
+      convolution K a (ContinuousLinearMap.lsmul ℝ ℝ) volume := rfl
+  -- `a` is `C¹`, so `Da` is continuous.
+  have ha1 : ContDiff ℝ 1 a := ha.of_le (by exact_mod_cast le_top)
+  have hDa : Continuous (fderiv ℝ a) := ha.continuous_fderiv (by simp)
+  refine ⟨hψ ▸ hsupp.contDiff_convolution_right _ hK ha, fun y v => ⟨?_, ?_⟩⟩
+  · -- `z ↦ Da(z)v` is continuous with compact support, so the convolution integrand is integrable.
+    exact (hsupp.fderiv_apply (𝕜 := ℝ) v).convolutionExists_right
+      (ContinuousLinearMap.lsmul ℝ ℝ) hK (hDa.clm_apply continuous_const) y
+  · -- `Dψ(y) = (K ⋆[precompR] Da)(y)`, evaluated at `v` by `convolution_precompR_apply`.
+    rw [hψ, (hsupp.hasFDerivAt_convolution_right _ hK ha1 y).fderiv,
+      convolution_precompR_apply _ hK (hsupp.fderiv (𝕜 := ℝ)) hDa]
+    rfl
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
