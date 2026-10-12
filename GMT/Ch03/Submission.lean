@@ -760,6 +760,39 @@ theorem Submission.gaussGreenRep_riesz_zero_extension_functional : ∀ (N : ℕ)
       · rw [hEout _ _ hx]
         exact (image_eq_zero_of_notMem_tsupport fun h ↦ hx (hgU h)).symm
     exact ⟨f, fun y ↦ rfl, show Λ (E f) = Λ g by rw [hEf]⟩
+/-- **Push-forward of a Riesz pair from a Borel set `U ⊆ ℝᴺ`** (step 7 of the proof that Simon's
+Riesz Representation Theorem, Ch. 1, 4.14 (`chapter-01.txt` lines 1654–1663), applied on `X = U`
+gives the measure `μ_E` and unit field `ν` on `ℝᴺ` of Ch. 3, (4.1) (`chapter-03.txt` lines
+556–564)). Let `ι : U → ℝᴺ` be the inclusion, `μ = ι_# μ₀` and `ν = extend ι ν₀ 0`, so
+`ν ∘ ι = ν₀`. As `U` is Borel, `ι` is a measurable embedding, so `μ(S) = μ₀(ι⁻¹ S)` for every `S`:
+`μ(ℝᴺ ∖ U) = μ₀(∅) = 0` and `μ(K) = μ₀(ι⁻¹ K) < ∞` for compact `K ⊆ U`. A.e. statements,
+a.e.-strong measurability and Bochner integrals transfer along `ι`. -/
+theorem Submission.gaussGreenRep_riesz_pushforward_subtype : ∀ (N : ℕ) (U : Set (Rn N)) (μ₀ : Measure U) (ν₀ : U → Rn N), MeasurableSet U → (∀ K : Set U, IsCompact K → μ₀ K < ∞) → AEStronglyMeasurable ν₀ μ₀ → (∀ᵐ y ∂μ₀, ‖ν₀ y‖ = 1) → ∃ (μ : Measure (Rn N)) (ν : Rn N → Rn N), μ Uᶜ = 0 ∧ (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) ∧ AEStronglyMeasurable ν μ ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧ ∀ g : Rn N → Rn N, ∫ x, inner ℝ (g x) (ν x) ∂μ = ∫ y, inner ℝ (g ↑y) (ν₀ y) ∂μ₀ := by
+  intro N U μ₀ ν₀ hU hfin hν₀ hnorm
+  -- Step 1: the inclusion `ι : U → ℝᴺ` is a measurable embedding since `U` is Borel.
+  have hι : MeasurableEmbedding ((↑) : U → Rn N) := MeasurableEmbedding.subtype_coe hU
+  -- Step 2: `ν` extends `ν₀` by zero, so `ν ∘ ι = ν₀`.
+  have hνι : (Function.extend ((↑) : U → Rn N) ν₀ 0) ∘ ((↑) : U → Rn N) = ν₀ :=
+    funext fun y ↦ Subtype.val_injective.extend_apply ν₀ 0 y
+  refine ⟨μ₀.map (↑), Function.extend ((↑) : U → Rn N) ν₀ 0, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Step 5: `μ(ℝᴺ ∖ U) = μ₀(ι⁻¹(ℝᴺ ∖ U)) = μ₀(∅) = 0`.
+    rw [hι.map_apply, preimage_compl, Subtype.coe_preimage_self, compl_univ, measure_empty]
+  · -- Step 6: for compact `K ⊆ U`, `ι⁻¹ K` is compact (its image is `U ∩ K = K`).
+    intro K hK hKU
+    rw [hι.map_apply]
+    refine hfin _ ?_
+    rwa [Subtype.isCompact_iff, Subtype.image_preimage_coe, inter_eq_right.2 hKU]
+  · -- Step 7: a.e.-strong measurability transfers along `ι`.
+    rw [hι.aestronglyMeasurable_map_iff, hνι]
+    exact hν₀
+  · -- Step 8: `|ν(ι y)| = |ν₀ y| = 1` for `μ₀`-a.e. `y`.
+    rw [hι.ae_map_iff]
+    filter_upwards [hnorm] with y hy
+    rwa [Subtype.val_injective.extend_apply]
+  · -- Step 9: change of variables `∫ F dμ = ∫ F ∘ ι dμ₀` for every `F`.
+    intro g
+    rw [hι.integral_map]
+    simp only [Subtype.val_injective.extend_apply]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
