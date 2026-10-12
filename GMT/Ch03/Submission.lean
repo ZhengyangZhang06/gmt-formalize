@@ -335,6 +335,278 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Slice integrals over a `C¹` chart** (steps 1–3 of the supplied proof of the chart formula
+for the `C¹` parametric co-area formula, Simon Ch. 3, (2.8)–(2.9)). Let `Φ` be an open partial
+homeomorphism from `ℝ^{m+k}` to `ℝᵐ × ℝᵏ` (Euclidean product) whose first component is `G` and
+whose inverse is `C¹`, let `ψ` be `C¹` and injective on `Φ.source`, and let `B ⊆ Φ.source` be
+Borel. If the injective area formula (AF) holds for `φ` in dimension `k`, then for every `y ∈ ℝᵐ`,
+`∫_{ψ(B ∩ G⁻¹{y})} φ dHᵏ = ∫_{ℝᵏ} F(y, z) dz` with `F = 1_{Φ(B)} · φ ∘ ψ ∘ Φ⁻¹ ·
+normDet(D(ψ ∘ Φ⁻¹) ∘ j)`, `j z = (0, z)`: apply (AF) to `χ = ψ ∘ Φ⁻¹ ∘ ι`, `ι z = (y, z)`, on the
+Borel set `S = ι⁻¹(Φ(B))`, whose image is `ψ(B ∩ G⁻¹{y})`, and use `Dχ(z) = D(ψ ∘ Φ⁻¹)(ι z) ∘ j`. -/
+theorem Submission.pcoarea_chart_slice_lintegral : ∀ (m k N : ℕ) (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m) (Φ : OpenPartialHomeomorph (Rn (m + k)) (WithLp 2 (Rn m × Rn k))), ContDiffOn ℝ 1 ψ Φ.source → InjOn ψ Φ.source → ContDiffOn ℝ 1 Φ.symm Φ.target → (∀ u ∈ Φ.source, (Φ u).fst = G u) → ∀ B ⊆ Φ.source, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, (∀ (V : Set (Rn k)) (χ : Rn k → Rn N), IsOpen V → ContDiffOn ℝ 1 χ V → InjOn χ V → ∀ S ⊆ V, MeasurableSet S → ∫⁻ x in χ '' S, φ x ∂μHE[k] = ∫⁻ z in S, φ (χ z) * ENNReal.ofReal ((fderiv ℝ χ z).toLinearMap.normDet)) → ∀ y : Rn m, ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k] = ∫⁻ z : Rn k, (Φ '' B).indicator (fun w ↦ φ (ψ (Φ.symm w)) * ENNReal.ofReal (((fderiv ℝ (ψ ∘ Φ.symm) w).comp ((WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)))).toLinearMap.normDet)) (WithLp.toLp 2 (y, z)) := by
+  intro m k N ψ G Φ hψ hinj hΦs hfst B hB hBm φ hAF y
+  classical
+  -- Step 1: the slice map `ι z = (y, z)` has derivative `j z = (0, z)`, is `C¹` and injective.
+  set j : Rn k →L[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp
+      (ContinuousLinearMap.inr ℝ (Rn m) (Rn k))
+  let ι : Rn k → WithLp 2 (Rn m × Rn k) := fun z ↦ WithLp.toLp 2 (y, z)
+  have hιd : ∀ z, HasFDerivAt ι j z := by
+    intro z
+    have h1 : HasFDerivAt (fun z : Rn k ↦ (y, z)) (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)) z :=
+      hasFDerivAt_prodMk_right y z
+    exact (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.hasFDerivAt.comp z h1
+  have hιcd : ContDiff ℝ 1 ι :=
+    (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.contDiff.comp
+      (contDiff_const.prodMk contDiff_id)
+  have hιc : Continuous ι := hιcd.continuous
+  have hιinj : Function.Injective ι := by
+    intro z₁ z₂ h
+    simpa [ι] using congrArg WithLp.snd h
+  -- Step 2: `Φ(B)` is a Borel subset of `Φ.target` (Lusin–Souslin).
+  have hB' : MeasurableSet (Φ '' B) :=
+    hBm.image_of_continuousOn_injOn (Φ.continuousOn.mono hB) (Φ.injOn.mono hB)
+  have hB'Ω : Φ '' B ⊆ Φ.target := by
+    rintro _ ⟨u, hu, rfl⟩
+    exact Φ.map_source (hB hu)
+  -- Step 3: `V = ι⁻¹(Φ.target)` is open and `S = ι⁻¹(Φ(B)) ⊆ V` is Borel.
+  have hV : IsOpen (ι ⁻¹' Φ.target) := Φ.open_target.preimage hιc
+  have hS : MeasurableSet (ι ⁻¹' (Φ '' B)) := hιc.measurable hB'
+  have hSV : ι ⁻¹' (Φ '' B) ⊆ ι ⁻¹' Φ.target := fun z hz ↦ hB'Ω hz
+  -- Steps 4–5: `χ = ψ ∘ Φ⁻¹ ∘ ι` is `C¹` and injective on `V`.
+  let χ : Rn k → Rn N := fun z ↦ ψ (Φ.symm (ι z))
+  have hχ : ContDiffOn ℝ 1 χ (ι ⁻¹' Φ.target) := by
+    have h1 : ContDiffOn ℝ 1 (fun z ↦ Φ.symm (ι z)) (ι ⁻¹' Φ.target) :=
+      hΦs.comp hιcd.contDiffOn (fun z hz ↦ hz)
+    exact hψ.comp h1 (fun z hz ↦ Φ.map_target hz)
+  have hχi : InjOn χ (ι ⁻¹' Φ.target) := by
+    intro z₁ h₁ z₂ h₂ h
+    exact hιinj (Φ.symm.injOn h₁ h₂ (hinj (Φ.map_target h₁) (Φ.map_target h₂) h))
+  -- Step 6: `ψ(B ∩ G⁻¹{y}) = χ(S)`, since `ι((Φ u).snd) = Φ u` when `G u = y`.
+  have himg : ψ '' (B ∩ G ⁻¹' {y}) = χ '' (ι ⁻¹' (Φ '' B)) := by
+    ext x
+    constructor
+    · rintro ⟨u, ⟨huB, huG⟩, rfl⟩
+      have hfu : (Φ u).fst = y := (hfst u (hB huB)).trans huG
+      have hιu : ι (Φ u).snd = Φ u := by
+        show WithLp.toLp 2 (y, (Φ u).snd) = Φ u
+        rw [← hfu]
+        rfl
+      refine ⟨(Φ u).snd, ?_, ?_⟩
+      · show ι (Φ u).snd ∈ Φ '' B
+        rw [hιu]
+        exact ⟨u, huB, rfl⟩
+      · show ψ (Φ.symm (ι (Φ u).snd)) = ψ u
+        rw [hιu, Φ.left_inv (hB huB)]
+    · rintro ⟨z, ⟨u, huB, hu⟩, rfl⟩
+      refine ⟨u, ⟨huB, ?_⟩, ?_⟩
+      · show G u = y
+        rw [← hfst u (hB huB), hu]
+        rfl
+      · show ψ u = ψ (Φ.symm (ι z))
+        rw [← hu, Φ.left_inv (hB huB)]
+  -- Step 8: chain rule on `V`, `Dχ(z) = D(ψ ∘ Φ⁻¹)(ι z) ∘ j`.
+  have hderiv : ∀ z ∈ ι ⁻¹' Φ.target, fderiv ℝ χ z = (fderiv ℝ (ψ ∘ Φ.symm) (ι z)).comp j := by
+    intro z hz
+    have hΦsd : DifferentiableAt ℝ Φ.symm (ι z) :=
+      (hΦs.differentiableOn one_ne_zero _ hz).differentiableAt (Φ.open_target.mem_nhds hz)
+    have hψd : DifferentiableAt ℝ ψ (Φ.symm (ι z)) :=
+      (hψ.differentiableOn one_ne_zero _ (Φ.map_target hz)).differentiableAt
+        (Φ.open_source.mem_nhds (Φ.map_target hz))
+    have hχeq : χ = (ψ ∘ Φ.symm) ∘ ι := rfl
+    rw [hχeq, fderiv_comp z (hψd.comp (ι z) hΦsd) (hιd z).differentiableAt, (hιd z).fderiv]
+  -- Steps 7, 9, 10: apply (AF) on `(V, χ, S)` and compare the integrands pointwise.
+  rw [himg, hAF (ι ⁻¹' Φ.target) χ hV hχ hχi (ι ⁻¹' (Φ '' B)) hSV hS, ← lintegral_indicator hS]
+  refine lintegral_congr fun z ↦ ?_
+  by_cases hz : z ∈ ι ⁻¹' (Φ '' B)
+  · rw [Set.indicator_of_mem hz, Set.indicator_of_mem (show WithLp.toLp 2 (y, z) ∈ Φ '' B from hz),
+      hderiv z (hSV hz)]
+  · rw [Set.indicator_of_notMem hz,
+      Set.indicator_of_notMem (show WithLp.toLp 2 (y, z) ∉ Φ '' B from hz)]
+
+/-- **Chart integrand of the parametric co-area formula: Borel measurability and Tonelli.**
+Let `Φ` be an open partial homeomorphism from `ℝⁿ`, `n = m + k`, onto an open subset `Ω` of the
+Euclidean product `P = WithLp 2 (ℝᵐ × ℝᵏ)`, let `ψ` be continuous on `O = Φ.source`, `B ⊆ O` Borel
+and `φ ≥ 0` Borel. With `ρ = ψ ∘ Φ⁻¹` and `j z = toLp (0, z)`, the function
+`F = 1_{Φ(B)} · (φ ∘ ρ) · normDet (Dρ ∘ j)` on `P` is Borel: `Φ(B)` is Borel by Lusin–Souslin
+(`Φ` is continuous and injective on `O`), `ρ` agrees on `Φ(B)` with the Borel map
+`Ω.piecewise ρ 0`, `w ↦ Dρ(w)` is Borel for every `ρ` (`measurable_fderiv`) and
+`normDet M = √det (M† M)` is continuous in `M`. Since `toLp` carries `Lᵐ ⊗ Lᵏ` to the volume of
+`P`, Tonelli's theorem gives that `y ↦ ∫ F(toLp (y, z)) dLᵏ(z)` is Borel and
+`∫_P F = ∫_{ℝᵐ} ∫_{ℝᵏ} F(toLp (y, z)) dLᵏ(z) dLᵐ(y)`. No differentiability is assumed. -/
+theorem Submission.pcoarea_chart_integrand_tonelli : ∀ (m k N : ℕ) (ψ : Rn (m + k) → Rn N) (Φ : OpenPartialHomeomorph (Rn (m + k)) (WithLp 2 (Rn m × Rn k))), ContinuousOn ψ Φ.source → ∀ B ⊆ Φ.source, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → Measurable (fun y : Rn m ↦ ∫⁻ z : Rn k, (Φ '' B).indicator (fun w ↦ φ (ψ (Φ.symm w)) * ENNReal.ofReal (((fderiv ℝ (ψ ∘ Φ.symm) w).comp ((WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)))).toLinearMap.normDet)) (WithLp.toLp 2 (y, z))) ∧ ∫⁻ w, (Φ '' B).indicator (fun w ↦ φ (ψ (Φ.symm w)) * ENNReal.ofReal (((fderiv ℝ (ψ ∘ Φ.symm) w).comp ((WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)))).toLinearMap.normDet)) w = ∫⁻ y : Rn m, ∫⁻ z : Rn k, (Φ '' B).indicator (fun w ↦ φ (ψ (Φ.symm w)) * ENNReal.ofReal (((fderiv ℝ (ψ ∘ Φ.symm) w).comp ((WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)))).toLinearMap.normDet)) (WithLp.toLp 2 (y, z)) := by
+  intro m k N ψ Φ hψ B hB hBm φ hφ
+  classical
+  set j : Rn k →L[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp
+      (ContinuousLinearMap.inr ℝ (Rn m) (Rn k))
+  -- Step 1: `Φ(B)` is Borel (Lusin–Souslin) and lies in `Ω = Φ.target`.
+  have hB' : MeasurableSet (Φ '' B) :=
+    hBm.image_of_continuousOn_injOn (Φ.continuousOn.mono hB) (Φ.injOn.mono hB)
+  have hB'Ω : Φ '' B ⊆ Φ.target := by
+    rintro _ ⟨u, hu, rfl⟩
+    exact Φ.map_source (hB hu)
+  -- Step 2: `ρ = ψ ∘ Φ⁻¹` is continuous on the open set `Ω`, so `Ω.piecewise ρ 0` is Borel.
+  have hρ : ContinuousOn (ψ ∘ Φ.symm) Φ.target :=
+    hψ.comp Φ.continuousOn_symm (fun w hw ↦ Φ.map_target hw)
+  have hρm : Measurable (Φ.target.piecewise (ψ ∘ Φ.symm) (fun _ ↦ 0)) :=
+    hρ.measurable_piecewise continuousOn_const Φ.open_target.measurableSet
+  -- Step 3: `normDet M = √det (M† M)` is continuous, so the Jacobian factor is Borel.
+  have hnd : Continuous (fun M : Rn k →L[ℝ] Rn N ↦ M.toLinearMap.normDet) := by
+    have heq : (fun M : Rn k →L[ℝ] Rn N ↦ M.toLinearMap.normDet) =
+        fun M ↦ Real.sqrt ((M.adjoint ∘L M).det) := by
+      funext M
+      rw [← M.normDet_sq]
+      simpa only [RCLike.ofReal_real_eq_id, id_eq] using (Real.sqrt_sq M.normDet_nonneg).symm
+    rw [heq]
+    exact Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
+      (Continuous.clm_comp ContinuousLinearMap.adjoint.continuous continuous_id))
+  have ha : Measurable
+      (fun w ↦ ENNReal.ofReal (((fderiv ℝ (ψ ∘ Φ.symm) w).comp j).toLinearMap.normDet)) :=
+    ENNReal.measurable_ofReal.comp
+      ((hnd.comp (continuous_id.clm_comp continuous_const)).measurable.comp (measurable_fderiv ℝ _))
+  -- Step 4: on `Φ(B)` the integrand agrees with a Borel function, so it is Borel.
+  have hFeq : (Φ '' B).indicator (fun w ↦ φ (ψ (Φ.symm w)) *
+        ENNReal.ofReal (((fderiv ℝ (ψ ∘ Φ.symm) w).comp j).toLinearMap.normDet)) =
+      (Φ '' B).indicator (fun w ↦ φ (Φ.target.piecewise (ψ ∘ Φ.symm) (fun _ ↦ 0) w) *
+        ENNReal.ofReal (((fderiv ℝ (ψ ∘ Φ.symm) w).comp j).toLinearMap.normDet)) := by
+    apply Set.indicator_congr
+    intro w hw
+    simp only [Set.piecewise_eq_of_mem _ _ _ (hB'Ω hw), Function.comp_apply]
+  have hFm : Measurable ((Φ '' B).indicator (fun w ↦ φ (ψ (Φ.symm w)) *
+      ENNReal.ofReal (((fderiv ℝ (ψ ∘ Φ.symm) w).comp j).toLinearMap.normDet))) := by
+    rw [hFeq]
+    exact ((hφ.comp hρm).mul ha).indicator hB'
+  -- Step 5: transport along the measure-preserving `toLp` and apply Tonelli on `ℝᵐ × ℝᵏ`.
+  have hmp := WithLp.volume_preserving_toLp (Rn m) (Rn k)
+  have hFp := hFm.comp (WithLp.measurable_toLp 2 (Rn m × Rn k))
+  refine ⟨hFp.lintegral_prod_right', ?_⟩
+  rw [← hmp.lintegral_comp hFm, Measure.volume_eq_prod]
+  exact lintegral_prod _ hFp.aemeasurable
+/-- **Change of variables from `ℝⁿ` into `P = WithLp 2 (ℝᵐ × ℝᵏ)`** (`n = m + k`; Simon Ch. 3,
+(2.8)–(2.9), `chapter-03.txt` lines 412–436, via the `C¹` co-area formula Ch. 2 (6.3),
+`chapter-02.txt` lines 1462–1476, whose proof Simon omits; this is the injective
+equal-dimensional case of the area formula Ch. 2 (3.1)–(3.5), `chapter-02.txt` lines 743–797):
+if `f : ℝⁿ → P` has derivative `f'(u)` within the Borel set `B` at every `u ∈ B` and is injective
+on `B`, then `∫_{f(B)} g = ∫_B normDet(f'(u)) · g(f(u)) du` for every `g : P → [0, ∞]`.
+As `finrank P = n`, there is a linear isometric equivalence `e : P ≃ ℝⁿ`; `e⁻¹` preserves volume,
+Mathlib's change of variables applies to `e ∘ f` on `B`, and
+`|det(e ∘ f'(u))| = normDet(e) · normDet(f'(u)) = normDet(f'(u))`. -/
+theorem Submission.pcoarea_chart_change_of_variables : ∀ (m k : ℕ) (f : Rn (m + k) → WithLp 2 (Rn m × Rn k)) (f' : Rn (m + k) → Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)) (B : Set (Rn (m + k))), MeasurableSet B → (∀ u ∈ B, HasFDerivWithinAt f (f' u) B u) → InjOn f B → ∀ g : WithLp 2 (Rn m × Rn k) → ℝ≥0∞, ∫⁻ w in f '' B, g w = ∫⁻ u in B, ENNReal.ofReal ((f' u).toLinearMap.normDet) * g (f u) := by
+  intro m k f f' B hB hf hinj g
+  -- Step 1: `finrank P = m + k`.
+  have hfin : finrank ℝ (WithLp 2 (Rn m × Rn k)) = m + k := by
+    rw [(WithLp.linearEquiv 2 ℝ (Rn m × Rn k)).finrank_eq, Module.finrank_prod]
+    simp
+  -- Step 2: a linear isometric equivalence `e : P ≃ ℝⁿ`, and `E = e` as a continuous linear map.
+  let e : WithLp 2 (Rn m × Rn k) ≃ₗᵢ[ℝ] Rn (m + k) :=
+    ((stdOrthonormalBasis ℝ (WithLp 2 (Rn m × Rn k))).reindex (finCongr hfin)).repr
+  let E : WithLp 2 (Rn m × Rn k) →L[ℝ] Rn (m + k) := e.toContinuousLinearEquiv
+  -- Step 3: `e⁻¹` is a volume-preserving measurable embedding, so
+  -- `∫_{e(f(B))} g ∘ e⁻¹ = ∫_{f(B)} g`.
+  have hes : MeasurePreserving e.symm volume volume := e.symm.measurePreserving
+  have h1 : ∫⁻ v in e '' (f '' B), g (e.symm v) = ∫⁻ w in f '' B, g w := by
+    rw [hes.setLIntegral_comp_emb e.symm.toHomeomorph.measurableEmbedding]
+    congr 2
+    rw [Set.image_image]
+    simp
+  -- Step 4: `e ∘ f` has derivative `E ∘ f'(u)` within `B` and is injective on `B`.
+  have hder : ∀ u ∈ B, HasFDerivWithinAt (fun u ↦ e (f u)) (E.comp (f' u)) B u := fun u hu ↦
+    E.hasFDerivAt.comp_hasFDerivWithinAt u (hf u hu)
+  have hinj' : InjOn (fun u ↦ e (f u)) B := fun a ha b hb hab ↦ hinj ha hb (e.injective hab)
+  -- Step 5: Mathlib's change of variables for `e ∘ f` and the integrand `g ∘ e⁻¹`.
+  have h2 := lintegral_image_eq_lintegral_abs_det_fderiv_mul volume hB hder hinj'
+    (fun v ↦ g (e.symm v))
+  -- Step 7: combine; on `B` it remains to compare the Jacobians, as `e⁻¹ (e (f u)) = f u`.
+  rw [← h1, Set.image_image, h2]
+  refine setLIntegral_congr_fun hB (fun u hu ↦ ?_)
+  simp only [LinearIsometryEquiv.symm_apply_apply]
+  congr 2
+  -- Step 6: `|det (E ∘ f'(u))| = normDet E · normDet (f'(u)) = normDet (f'(u))`.
+  have hE : (E : WithLp 2 (Rn m × Rn k) →ₗ[ℝ] Rn (m + k)).normDet = 1 :=
+    LinearIsometry.normDet_eq_one e.toLinearIsometry
+  rw [ContinuousLinearMap.det, ContinuousLinearMap.toLinearMap_comp, ← LinearMap.normDet_eq_abs_det,
+    LinearMap.normDet_comp_of_finrank_eq _ _ (by rw [hfin, finrank_euclideanSpace_fin]), hE,
+    one_mul]
+/-- **Pointwise Jacobian identity on a `C¹` chart** (steps 1 and 7 of the supplied proof of the
+chart formula for the `C¹` parametric co-area formula, Simon Ch. 3, (2.8)–(2.9)). Let `Φ` be an
+open partial homeomorphism from `ℝ^{m+k}` to `ℝᵐ × ℝᵏ` (Euclidean product) such that `Φ` and `Φ⁻¹`
+are `C¹`, whose first component is `G`, and let `ψ` be `C¹` on `Φ.source`. If the flat Jacobian
+identity (FJ) holds for `(m, k, N)`, then at every `u ∈ Φ.source`, with `j z = (0, z)`,
+`normDet(D(ψ ∘ Φ⁻¹)(Φ u) ∘ j) · normDet(DΦ(u)) = normDet(Dψ(u) ∘ ι_{ker DG(u)}) · normDet(DG(u)*)`:
+`DΦ(u)` and `DΦ⁻¹(Φ u)` are mutually inverse, `DG(u) = fst ∘ DΦ(u)`, and (FJ) applies to
+`A = Dψ(u)`, `Γ = DG(u)`, `T = DΦ(u)` and `E = DΦ⁻¹(Φ u) ∘ j`. -/
+theorem Submission.pcoarea_chart_pointwise_jacobian : ∀ (m k N : ℕ) (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m) (Φ : OpenPartialHomeomorph (Rn (m + k)) (WithLp 2 (Rn m × Rn k))), ContDiffOn ℝ 1 ψ Φ.source → ContDiffOn ℝ 1 Φ Φ.source → ContDiffOn ℝ 1 Φ.symm Φ.target → (∀ u ∈ Φ.source, (Φ u).fst = G u) → (∀ (A : Rn (m + k) →ₗ[ℝ] Rn N) (Γ : Rn (m + k) →ₗ[ℝ] Rn m) (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)) (E : Rn k →ₗ[ℝ] Rn (m + k)), Function.Bijective T → (∀ v, (T v).fst = Γ v) → (∀ z, T (E z) = WithLp.toLp 2 (0, z)) → (A ∘ₗ E).normDet * T.normDet = (A ∘ₗ (LinearMap.ker Γ).subtype).normDet * (LinearMap.adjoint Γ).normDet) → ∀ u ∈ Φ.source, ((fderiv ℝ (ψ ∘ Φ.symm) (Φ u)).comp ((WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)))).toLinearMap.normDet * (fderiv ℝ Φ u).toLinearMap.normDet = ((fderiv ℝ ψ u).toLinearMap ∘ₗ (LinearMap.ker (fderiv ℝ G u).toLinearMap).subtype).normDet * (LinearMap.adjoint (fderiv ℝ G u).toLinearMap).normDet := by
+  intro m k N ψ G Φ hψ hΦ hΦs hfst hFJ u hu
+  set j : Rn k →L[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp
+      (ContinuousLinearMap.inr ℝ (Rn m) (Rn k))
+  have hw : Φ u ∈ Φ.target := Φ.map_source hu
+  have hleft : Φ.symm (Φ u) = u := Φ.left_inv hu
+  -- Step 1: `Φ`, `Φ⁻¹` and `ψ` are differentiable at `u`, `Φ u` and `u` (`C¹` on open sets).
+  have hΦd : DifferentiableAt ℝ Φ u :=
+    (hΦ.differentiableOn one_ne_zero u hu).differentiableAt (Φ.open_source.mem_nhds hu)
+  have hΦsd : DifferentiableAt ℝ Φ.symm (Φ u) :=
+    (hΦs.differentiableOn one_ne_zero _ hw).differentiableAt (Φ.open_target.mem_nhds hw)
+  have hψd : DifferentiableAt ℝ ψ u :=
+    (hψ.differentiableOn one_ne_zero u hu).differentiableAt (Φ.open_source.mem_nhds hu)
+  set T := fderiv ℝ Φ u
+  set Λ := fderiv ℝ Φ.symm (Φ u)
+  -- Step 2: `Λ ∘ T = id`, as `Φ⁻¹ ∘ Φ = id` near `u`.
+  have hLT : Λ.comp T = ContinuousLinearMap.id ℝ _ := by
+    have h1 : HasFDerivAt (Φ.symm ∘ Φ) (Λ.comp T) u := hΦsd.hasFDerivAt.comp u hΦd.hasFDerivAt
+    have h2 : HasFDerivAt (Φ.symm ∘ Φ) (ContinuousLinearMap.id ℝ _) u := by
+      apply (hasFDerivAt_id u).congr_of_eventuallyEq
+      filter_upwards [Φ.open_source.mem_nhds hu] with x hx
+      exact Φ.left_inv hx
+    exact h1.unique h2
+  -- Step 3: `T ∘ Λ = id`, as `Φ ∘ Φ⁻¹ = id` near `Φ u`.
+  have hTL : T.comp Λ = ContinuousLinearMap.id ℝ _ := by
+    have hΦd' : HasFDerivAt Φ T (Φ.symm (Φ u)) := by rw [hleft]; exact hΦd.hasFDerivAt
+    have h1 : HasFDerivAt (Φ ∘ Φ.symm) (T.comp Λ) (Φ u) := hΦd'.comp (Φ u) hΦsd.hasFDerivAt
+    have h2 : HasFDerivAt (Φ ∘ Φ.symm) (ContinuousLinearMap.id ℝ _) (Φ u) := by
+      apply (hasFDerivAt_id (Φ u)).congr_of_eventuallyEq
+      filter_upwards [Φ.open_target.mem_nhds hw] with x hx
+      exact Φ.right_inv hx
+    exact h1.unique h2
+  -- Step 4: `T` is bijective.
+  have hbij : Function.Bijective (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)) := by
+    constructor
+    · intro v v' h
+      have h' : Λ (T v) = Λ (T v') := congrArg Λ h
+      rw [← ContinuousLinearMap.comp_apply, ← ContinuousLinearMap.comp_apply, hLT] at h'
+      simpa using h'
+    · intro p
+      refine ⟨Λ p, ?_⟩
+      show T (Λ p) = p
+      rw [← ContinuousLinearMap.comp_apply, hTL]
+      rfl
+  -- Step 5: `G = fst ∘ Φ` near `u`, so `DG(u) = fst ∘ T`.
+  have hG : fderiv ℝ G u = (WithLp.fstL 2 ℝ (Rn m) (Rn k)).comp T := by
+    have heq : G =ᶠ[𝓝 u] (fun x ↦ (Φ x).fst) := by
+      filter_upwards [Φ.open_source.mem_nhds hu] with x hx
+      exact (hfst x hx).symm
+    rw [heq.fderiv_eq]
+    exact ((WithLp.fstL 2 ℝ (Rn m) (Rn k)).hasFDerivAt.comp u hΦd.hasFDerivAt).fderiv
+  have hfstT : ∀ v, ((T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)) v).fst =
+      (fderiv ℝ G u : Rn (m + k) →ₗ[ℝ] Rn m) v := by
+    intro v
+    rw [hG]
+    rfl
+  -- Step 6: `E = Λ ∘ j` satisfies `T (E z) = (0, z)`.
+  let E : Rn k →ₗ[ℝ] Rn (m + k) := ((Λ.comp j : Rn k →L[ℝ] Rn (m + k)) : Rn k →ₗ[ℝ] Rn (m + k))
+  have hE : ∀ z, (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k)) (E z) = WithLp.toLp 2 (0, z) := by
+    intro z
+    show T (Λ (j z)) = _
+    rw [← ContinuousLinearMap.comp_apply, hTL]
+    rfl
+  -- Step 7: chain rule, `D(ψ ∘ Φ⁻¹)(Φ u) = Dψ(u) ∘ Λ`.
+  have hchain : fderiv ℝ (ψ ∘ Φ.symm) (Φ u) = (fderiv ℝ ψ u).comp Λ := by
+    have hψd' : DifferentiableAt ℝ ψ (Φ.symm (Φ u)) := by rw [hleft]; exact hψd
+    rw [fderiv_comp (Φ u) hψd' hΦsd, hleft]
+  -- Step 8: (FJ) with `A = Dψ(u)`, `Γ = DG(u)`, `T` and `E`.
+  rw [hchain]
+  exact hFJ (fderiv ℝ ψ u) (fderiv ℝ G u) T E hbij hfstT hE
 /-- **Area formula for a `C¹` map that is injective on an open parameter domain** (Simon Ch. 2,
 (3.2) and its weighted form (3.5), cf. (4.13)). Let `V ⊆ ℝᵏ` be open and `χ : ℝᵏ → ℝᴺ` be `C¹`
 and injective on `V`; no rank condition on `Dχ` is assumed. Then for every Borel `S ⊆ V` and
@@ -1206,6 +1478,58 @@ theorem Submission.pcoarea_implicit_chart : ∀ (m k : ℕ) (G : Rn (m + k) → 
   · intro u hu
     rw [hΦ]
     rfl
+
+/-- **Parametric co-area formula on one chart** (Simon Ch. 3, co-area formula 2.8–2.9, regular
+part of the `C¹` case; cf. Federer 3.2.12, 3.2.22). Let `Φ` be an open partial homeomorphism from
+`ℝⁿ`, `n = m + k`, to `P = WithLp 2 (ℝᵐ × ℝᵏ)`, `C¹` on its source `O` with `C¹` inverse on its
+target, whose first component is `G` on `O`, and let `ψ` be `C¹` and injective on `O`. For Borel
+`B ⊆ O` and Borel `φ ≥ 0`, `y ↦ ∫_{ψ(B ∩ G⁻¹{y})} φ dHᵏ` is a.e. measurable and
+`∫_B φ(ψ(u)) J(u) du = ∫_{ℝᵐ} ∫_{ψ(B ∩ G⁻¹{y})} φ dHᵏ dy`, where
+`J(u) = normDet (Dψ(u) ∘ ι_{ker DG(u)}) · normDet (DG(u)*)`.
+With `ρ = ψ ∘ Φ⁻¹`, `j z = (0, z)`, `h = φ ∘ ρ · normDet (Dρ ∘ j)` and `F = 1_{Φ(B)} h` on `P`:
+* each slice integral is `∫_{ℝᵏ} F(y, z) dz`, by the injective area formula on the slice
+  `z ↦ ρ(y, z)` (`pcoarea_chart_slice_lintegral` with `pcoarea_c1_injOn_area_formula`);
+* `y ↦ ∫ F(y, z) dz` is measurable and `∫_P F = ∫_{ℝᵐ} ∫_{ℝᵏ} F(y, z) dz dy` (Tonelli,
+  `pcoarea_chart_integrand_tonelli`);
+* `Φ(B)` is Borel (Lusin–Souslin), so `∫_P F = ∫_{Φ(B)} h = ∫_B normDet (DΦ(u)) h(Φ(u)) du`
+  (`pcoarea_chart_change_of_variables`);
+* `normDet (Dρ(Φ(u)) ∘ j) · normDet (DΦ(u)) = J(u)` (`pcoarea_chart_pointwise_jacobian` with the
+  flat Jacobian identity `pcoarea_flat_jacobian_identity`). -/
+theorem Submission.pcoarea_formula_on_chart : ∀ (m k N : ℕ) (ψ : Rn (m + k) → Rn N)
+    (G : Rn (m + k) → Rn m) (Φ : OpenPartialHomeomorph (Rn (m + k)) (WithLp 2 (Rn m × Rn k))),
+    ContDiffOn ℝ 1 ψ Φ.source → InjOn ψ Φ.source → ContDiffOn ℝ 1 Φ Φ.source →
+    ContDiffOn ℝ 1 Φ.symm Φ.target → (∀ u ∈ Φ.source, (Φ u).fst = G u) →
+    ∀ B ⊆ Φ.source, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ →
+    AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧
+      ∫⁻ u in B, φ (ψ u) * ENNReal.ofReal (((fderiv ℝ ψ u).toLinearMap ∘ₗ
+          (LinearMap.ker (fderiv ℝ G u).toLinearMap).subtype).normDet *
+          (LinearMap.adjoint (fderiv ℝ G u).toLinearMap).normDet) =
+        ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume := by
+  intro m k N ψ G Φ hψ hinj hΦ hΦs hfst B hB hBm φ hφ
+  -- Steps 1–3: the area formula on every slice gives `∫_{ψ(B ∩ G⁻¹{y})} φ dHᵏ = ∫ F(y, z) dz`.
+  have hslice := Submission.pcoarea_chart_slice_lintegral m k N ψ G Φ hψ hinj hΦs hfst B hB hBm φ
+    (fun V χ hV hχ hχi S hSV hS ↦
+      Submission.pcoarea_c1_injOn_area_formula k N V χ hV hχ hχi S hSV hS φ hφ)
+  -- Steps 4–5: `F` is Borel, and Tonelli on `ℝᵐ × ℝᵏ` transported to `P`.
+  obtain ⟨hmeas, htonelli⟩ :=
+    Submission.pcoarea_chart_integrand_tonelli m k N ψ Φ hψ.continuousOn B hB hBm φ hφ
+  -- First claim: the slice integral is everywhere equal to a measurable function of `y`.
+  refine ⟨hmeas.aemeasurable.congr (Eventually.of_forall fun y ↦ (hslice y).symm), ?_⟩
+  -- Step 6: `Φ(B)` is Borel and `Φ` has derivative `DΦ(u)` within `B` at each `u ∈ B`.
+  have hΦB : MeasurableSet (Φ '' B) :=
+    hBm.image_of_continuousOn_injOn (Φ.continuousOn.mono hB) (Φ.injOn.mono hB)
+  have hder : ∀ u ∈ B, HasFDerivWithinAt Φ (fderiv ℝ Φ u) B u := fun u hu ↦
+    ((hΦ.differentiableOn one_ne_zero u (hB hu)).differentiableAt
+      (Φ.open_source.mem_nhds (hB hu))).hasFDerivAt.hasFDerivWithinAt
+  -- Step 7: `normDet (Dρ(Φ(u)) ∘ j) · normDet (DΦ(u)) = J(u)` on the source.
+  have hjac := Submission.pcoarea_chart_pointwise_jacobian m k N ψ G Φ hψ hΦ hΦs hfst
+    (Submission.pcoarea_flat_jacobian_identity m k N)
+  -- Second claim: `∫∫ = ∫_P F = ∫_{Φ(B)} h = ∫_B normDet (DΦ(u)) h(Φ(u)) du = ∫_B φ(ψ(u)) J(u) du`.
+  rw [lintegral_congr hslice, ← htonelli, lintegral_indicator hΦB,
+    Submission.pcoarea_chart_change_of_variables m k Φ (fderiv ℝ Φ) B hBm hder (Φ.injOn.mono hB)]
+  refine setLIntegral_congr_fun hBm (fun u hu ↦ ?_)
+  rw [← hjac u (hB hu), ENNReal.ofReal_mul (LinearMap.normDet_nonneg _), Φ.left_inv (hB hu)]
+  ring
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
