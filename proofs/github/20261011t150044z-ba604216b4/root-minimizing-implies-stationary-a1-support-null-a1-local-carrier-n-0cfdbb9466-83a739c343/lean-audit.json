@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b778f9f531e7375931bc1409859930b65d6b6bb84c2f5c8c2f041f20c718f3d0",
+  "git_delta": {
+    "base_commit": "b7af3c720834c483a73d44630cf82c2a5de4b38b",
+    "candidate_commit": "2d3ee82708ddf95dd22bc4f6d7697ad4008caef4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "lcn_mult_mul_orient_apply_integrableOn",
+    "diff_sha256": "c07ad93621eaf9a950ab4962c3734718905e5c3dea15c0912d6f7b50e6ada00b",
+    "source_sha256": "bbcb37bfe8569f3ee672cc302963cc906c1c2759139a71f8e19bc6c515b9b163",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lcn_mult_mul_orient_apply_integrableOn",
+      "statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n), IsCompact K → K ⊆ U → ∀ α : Covector (Euclid P) n, IntegrableOn (fun x => (R.mult x : ℝ) * R.orient x α) (R.carrier ∩ K) μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
