@@ -523,6 +523,45 @@ theorem Submission.regcomp_covector_first_hit_selection : ∀ (P n : ℕ) (A : �
     rw [hCs] at hspec
     exact Or.inr ⟨k, hspec, hb's k⟩
 
+/-- **A near-maximizing covector field** (step 3.1 of the proof of the mass formula
+`M_W(T) = μ_T(W)` for Simon 7.5.11): if `μ`-a.e. `ξ(x)` attains the value `1` on the Euclidean
+unit ball `B = {|β|_E ≤ 1}` of `Λⁿ(ℝᴾ)`, then for every `η > 0` there is a strongly measurable
+`g : ℝᴾ → B` with `⟨g(x), ξ(x)⟩ ≥ 1 - η` for `μ`-a.e. `x`.
+
+Take a sequence `bₖ ∈ B` dense in `B` and a strongly measurable `ξ̃ = ξ` `μ`-a.e.; the sets
+`Aₖ = {x | 1 - η < ξ̃(x)(bₖ)}` are measurable.  Let `g = bₖ` on `Aₖ \ ⋃_{i<k} Aᵢ` and `g = 0`
+off `⋃ₖ Aₖ`.  For a.e. `x`, `{β' | 1 - η < ξ(x)(β')}` is an open neighbourhood of some `β ∈ B`,
+so it contains some `bₖ`, i.e. `x ∈ Aₖ`; hence `g(x) = bⱼ` with `x ∈ Aⱼ`. -/
+theorem Submission.regcomp_covector_field_near_maximizer : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (η : ℝ), 0 < η → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ξ x β = 1) → ∃ g : Euclid P → Covector (Euclid P) n, StronglyMeasurable g ∧ (∀ x, covectorEuclideanNorm (g x) ≤ 1) ∧ ∀ᵐ x ∂μ, 1 - η ≤ ξ x (g x) := by
+  intro P n μ ξ η hη hξ hmax
+  -- a sequence `bₖ ∈ B` dense in `B`
+  obtain ⟨b, hbB, hbd⟩ := Submission.regcomp_covector_unit_ball_dense_seq P n
+  -- `Aₖ = {x | 1 - η < ξ̃(x)(bₖ)}` for the strongly measurable version `ξ̃ = hξ.mk ξ`
+  let A : ℕ → Set (Euclid P) := fun k => {x | 1 - η < hξ.mk ξ x (b k)}
+  have hA : ∀ k, MeasurableSet (A k) := fun k =>
+    measurableSet_lt measurable_const
+      ((ContinuousLinearMap.apply ℝ ℝ (b k)).continuous.comp_stronglyMeasurable
+        hξ.stronglyMeasurable_mk).measurable
+  -- `g = bₖ` on `Aₖ \ ⋃_{i<k} Aᵢ` and `g = 0` off `⋃ₖ Aₖ`
+  obtain ⟨g, hg, hgA⟩ := Submission.regcomp_covector_first_hit_selection P n A b hA
+  refine ⟨g, hg, fun x => ?_, ?_⟩
+  · -- `g(x) ∈ {0} ∪ {bₖ} ⊆ B`
+    rcases hgA x with ⟨h0, -⟩ | ⟨k, -, hk⟩
+    · rw [h0, covectorEuclideanNorm_zero]
+      exact zero_le_one
+    · rw [hk]
+      exact hbB k
+  · filter_upwards [hmax, hξ.ae_eq_mk] with x ⟨β, hβB, hβ⟩ hx
+    -- the open set `{β' | 1 - η < ξ(x)(β')}` contains `β ∈ closure (range b)`, hence some `bₖ`
+    obtain ⟨_, hk, k, rfl⟩ := mem_closure_iff.1 (hbd β hβB) {β' | 1 - η < ξ x β'}
+      (isOpen_lt continuous_const (ξ x).continuous) (by rw [mem_ofPred_eq, hβ]; linarith)
+    rw [mem_ofPred_eq, hx] at hk
+    -- so `x ∈ ⋃ₖ Aₖ`, and `g(x) = bⱼ` with `x ∈ Aⱼ`
+    rcases hgA x with ⟨-, hxA⟩ | ⟨j, hj, hgj⟩
+    · exact (hxA k hk).elim
+    · rw [hgj, hx]
+      exact le_of_lt hj
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
