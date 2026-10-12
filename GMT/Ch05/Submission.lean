@@ -676,6 +676,133 @@ theorem tdo_stp_origin_affine_plane : AffineApproximationLemma → ∀ n ℓ : �
       _ ≤ (2 ^ n * CA ^ 2 * (CA + 1) ^ 2 + 2 * CA) * g * σ := by
           gcongr
           exact le_add_of_nonneg_left (by positivity)
+/-- Hölder's inequality on a set `B` for an arbitrary (not necessarily measurable) function
+`g : X → [0, ∞]` and exponents `0 < q ≤ p`:
+`∫⁻_B g^q dμ ≤ (∫⁻_B g^p dμ)^{q/p} μ(B)^{1-q/p}`, as used for the scaled `Lᵖ` bounds of the mean
+curvature in the tilt-excess decay (cf. Simon Ch. 5, Remark 2.2, p. 107).
+Replace `g^q` by a measurable minorant `G` with the same integral over `B`
+(`exists_measurable_le_lintegral_eq`), write `G = (G^{p/q})^{q/p} · 1^{1-q/p}`, apply the
+two-exponent Hölder inequality `ENNReal.lintegral_mul_norm_pow_le` for `μ.restrict B`, and use
+`G^{p/q} ≤ (g^q)^{p/q} = g^p` with the monotonicity of the lower integral. -/
+theorem tdo_slb_setLIntegral_rpow_le_holder : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (B : Set X) (g : X → ℝ≥0∞) (p q : ℝ), 0 < q → q ≤ p → ∫⁻ x in B, g x ^ q ∂μ ≤ (∫⁻ x in B, g x ^ p ∂μ) ^ (q / p) * μ B ^ (1 - q / p) := by
+  intro X _ μ B g p q hq hqp
+  -- 1. the exponents: `q / p, 1 - q / p ≥ 0` sum to `1`, and `(p / q) (q / p) = 1`, `q (p / q) = p`
+  have hp : 0 < p := hq.trans_le hqp
+  have ha : 0 ≤ q / p := (div_pos hq hp).le
+  have hb : 0 ≤ 1 - q / p := sub_nonneg.mpr ((div_le_one hp).mpr hqp)
+  have hab : q / p + (1 - q / p) = 1 := add_sub_cancel _ _
+  have hpq : p / q * (q / p) = 1 := by field_simp
+  have hqp' : q * (p / q) = p := by field_simp
+  -- 2. a measurable minorant `G ≤ g ^ q` with the same integral over `B`
+  obtain ⟨G, hGm, hGg, hG⟩ := exists_measurable_le_lintegral_eq (μ.restrict B) fun x => g x ^ q
+  -- 3. `G = (G ^ (p / q)) ^ (q / p) * 1 ^ (1 - q / p)` pointwise
+  have hGF : ∀ x, (G x ^ (p / q)) ^ (q / p) * (1 : ℝ≥0∞) ^ (1 - q / p) = G x := fun x => by
+    rw [ENNReal.one_rpow, mul_one, ← ENNReal.rpow_mul, hpq, ENNReal.rpow_one]
+  -- 4. Hölder for `G ^ (p / q)` and `1` with the exponents `q / p` and `1 - q / p` on `μ.restrict B`
+  have hH := ENNReal.lintegral_mul_norm_pow_le (μ := μ.restrict B)
+    (hGm.pow_const (p / q)).aemeasurable (aemeasurable_const (b := (1 : ℝ≥0∞))) ha hb hab
+  -- 5. `G ^ (p / q) ≤ (g ^ q) ^ (p / q) = g ^ p`
+  have hGp : ∀ x, G x ^ (p / q) ≤ g x ^ p := fun x => by
+    calc G x ^ (p / q) ≤ (g x ^ q) ^ (p / q) := ENNReal.rpow_le_rpow (hGg x) (div_pos hp hq).le
+      _ = g x ^ p := by rw [← ENNReal.rpow_mul, hqp']
+  -- 6. chain the steps; `∫⁻_B 1 dμ = μ(B)`
+  calc ∫⁻ x in B, g x ^ q ∂μ = ∫⁻ x in B, G x ∂μ := hG
+    _ = ∫⁻ x in B, (G x ^ (p / q)) ^ (q / p) * (1 : ℝ≥0∞) ^ (1 - q / p) ∂μ := by
+        simp only [hGF]
+    _ ≤ (∫⁻ x in B, G x ^ (p / q) ∂μ) ^ (q / p) * (∫⁻ _ in B, (1 : ℝ≥0∞) ∂μ) ^ (1 - q / p) := hH
+    _ = (∫⁻ x in B, G x ^ (p / q) ∂μ) ^ (q / p) * μ B ^ (1 - q / p) := by
+        rw [setLIntegral_one]
+    _ ≤ (∫⁻ x in B, g x ^ p ∂μ) ^ (q / p) * μ B ^ (1 - q / p) := by
+        gcongr
+        exact hGp _
+/-- Scaling of the scaled `Lᵖ` norm of `H` on nested closed balls (Simon Ch. 5, end of the proof of
+4.5, p. 121, where `B_{θσ}(0) ⊆ B_σ(0)` gives
+`((θσ)^{p−n} ∫_{B_{θσ}(0)} |H|ᵖ dμ_V)^{1/p} ≤ θ^{1−n/p} (σ^{p−n} ∫_{B_σ(0)} |H|ᵖ dμ_V)^{1/p}`):
+if `p > 0`, `0 < s ≤ t` and `B_s(z) ⊆ B_t(w)`, then
+`(s^{p−n} ∫_{B_s(z)} |H|ᵖ dμ_V)^{1/p} ≤ (s/t)^{(p−n)/p} (t^{p−n} ∫_{B_t(w)} |H|ᵖ dμ_V)^{1/p}`.
+The integral over the smaller ball is at most the one over the larger ball, the weight splits as
+`s^{p−n} = (s/t)^{p−n} t^{p−n}`, and `x ↦ x^{1/p}` is monotone and multiplicative on `[0, ∞]`. -/
+theorem tdo_slb_scaledLpNorm_le_of_subset : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ) (z w : Amb n ℓ) (s t : ℝ), 0 < p → 0 < s → s ≤ t → closedBall z s ⊆ closedBall w t → V.scaledLpNorm H p z s ≤ ENNReal.ofReal ((s / t) ^ ((p - n) / p)) * V.scaledLpNorm H p w t := by
+  intro n ℓ U V H p z w s t hp hs hst hsub
+  -- Step 1: `t > 0` and `s / t > 0`
+  have ht : 0 < t := hs.trans_le hst
+  have hst' : 0 ≤ s / t := (div_pos hs ht).le
+  -- Step 2: monotonicity of the lower integral in the domain (no measurability needed)
+  have hI : ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ p ∂V.weight
+      ≤ ∫⁻ x in closedBall w t, ‖H x‖ₑ ^ p ∂V.weight :=
+    lintegral_mono_set hsub
+  -- Step 3: `ofReal (s^{p−n}) = ofReal ((s/t)^{p−n}) * ofReal (t^{p−n})`
+  have hsplit : ENNReal.ofReal (s ^ (p - n))
+      = ENNReal.ofReal ((s / t) ^ (p - n)) * ENNReal.ofReal (t ^ (p - n)) := by
+    rw [← ENNReal.ofReal_mul (Real.rpow_nonneg hst' _), Real.div_rpow hs.le ht.le,
+      div_mul_cancel₀ _ (Real.rpow_pos_of_pos ht _).ne']
+  have hp' : 0 ≤ 1 / p := (one_div_pos.mpr hp).le
+  unfold RectifiableVarifold.scaledLpNorm
+  -- Steps 4–6: compare inside, take `1/p`-th powers, and simplify the coefficient
+  calc (ENNReal.ofReal (s ^ (p - n)) * ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p)
+      ≤ (ENNReal.ofReal ((s / t) ^ (p - n)) * (ENNReal.ofReal (t ^ (p - n))
+          * ∫⁻ x in closedBall w t, ‖H x‖ₑ ^ p ∂V.weight)) ^ (1 / p) := by
+        refine ENNReal.rpow_le_rpow ?_ hp'
+        rw [hsplit, mul_assoc]
+        gcongr
+    _ = ENNReal.ofReal ((s / t) ^ (p - n)) ^ (1 / p) * (ENNReal.ofReal (t ^ (p - n))
+          * ∫⁻ x in closedBall w t, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p) :=
+        ENNReal.mul_rpow_of_nonneg _ _ hp'
+    _ = ENNReal.ofReal ((s / t) ^ ((p - n) / p)) * (ENNReal.ofReal (t ^ (p - n))
+          * ∫⁻ x in closedBall w t, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p) := by
+        rw [ENNReal.ofReal_rpow_of_nonneg (Real.rpow_nonneg hst' _) hp', ← Real.rpow_mul hst',
+          mul_one_div]
+/-- Simon Ch. 5, Remark 2.2 (p. 107): the Hölder estimate of `∫_{B_s(z)} |H|^q dμ_V` by the scaled
+`Lᵖ` norm on a larger ball `B_t(w) ⊇ B_s(z)`.  If `0 < q ≤ p` and `μ_V(B_s(z)) ≤ m`, then
+`∫_{B_s(z)} |H|^q dμ_V ≤ m^{1−q/p} t^{q(n−p)/p} (t^{p−n} ∫_{B_t(w)} |H|ᵖ dμ_V)^{q/p}`
+(lower integrals in `[0, ∞]`; no measurability of `H` and no condition on `s`). -/
+theorem tdo_slb_lintegral_rpow_le_scaledLpNorm : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p q : ℝ) (z w : Amb n ℓ) (s t m : ℝ), 0 < q → q ≤ p → 0 < t → 0 ≤ m → closedBall z s ⊆ closedBall w t → V.weight (closedBall z s) ≤ ENNReal.ofReal m → ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ q ∂V.weight ≤ ENNReal.ofReal (m ^ (1 - q / p) * t ^ (q * (n - p) / p)) * V.scaledLpNorm H p w t ^ q := by
+  intro n ℓ U V H p q z w s t m hq hqp ht hm hsub hmass
+  -- Step 1: `p > 0`, `a = q/p ≥ 0`, `b = 1 - q/p ≥ 0`.
+  have hp : 0 < p := hq.trans_le hqp
+  have ha : 0 ≤ q / p := (div_pos hq hp).le
+  have hb : 0 ≤ 1 - q / p := sub_nonneg.2 ((div_le_one hp).2 hqp)
+  -- Step 5: `I^a = ofReal(t^{q(n-p)/p}) · K(w, t)^q` with `I = ∫⁻_{B_t(w)} |H|ᵖ`.
+  have hkey : ENNReal.ofReal (t ^ (q * (n - p) / p)) * V.scaledLpNorm H p w t ^ q =
+      (∫⁻ x in closedBall w t, ‖H x‖ₑ ^ p ∂V.weight) ^ (q / p) := by
+    have hexp : q * (n - p) / p + (p - n) * (q / p) = 0 := by
+      field_simp
+      ring
+    rw [RectifiableVarifold.scaledLpNorm, ← ENNReal.rpow_mul, one_div_mul_eq_div,
+      ENNReal.mul_rpow_of_nonneg _ _ ha,
+      ENNReal.ofReal_rpow_of_nonneg (Real.rpow_nonneg ht.le _) ha, ← Real.rpow_mul ht.le,
+      ← mul_assoc, ← ENNReal.ofReal_mul (Real.rpow_nonneg ht.le _), ← Real.rpow_add ht, hexp,
+      Real.rpow_zero, ENNReal.ofReal_one, one_mul]
+  calc ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ q ∂V.weight
+      ≤ (∫⁻ x in closedBall z s, ‖H x‖ₑ ^ p ∂V.weight) ^ (q / p) *
+          V.weight (closedBall z s) ^ (1 - q / p) :=
+        Submission.tdo_slb_setLIntegral_rpow_le_holder (Amb n ℓ) V.weight (closedBall z s)
+          (fun x => ‖H x‖ₑ) p q hq hqp
+    -- Step 3: enlarge the domain to `B_t(w)` and bound the mass by `m`.
+    _ ≤ (∫⁻ x in closedBall w t, ‖H x‖ₑ ^ p ∂V.weight) ^ (q / p) *
+          ENNReal.ofReal m ^ (1 - q / p) :=
+        mul_le_mul' (ENNReal.rpow_le_rpow (lintegral_mono_set hsub) ha)
+          (ENNReal.rpow_le_rpow hmass hb)
+    -- Steps 4 and 6: recombine the constants.
+    _ = ENNReal.ofReal (m ^ (1 - q / p) * t ^ (q * (n - p) / p)) * V.scaledLpNorm H p w t ^ q := by
+        rw [ENNReal.ofReal_mul (Real.rpow_nonneg hm _), mul_assoc, hkey,
+          ← ENNReal.ofReal_rpow_of_nonneg hm hb, mul_comm]
+/-- **Scaling and Hölder bounds for the scaled `Lᵖ` norm** (used in the proof of Simon Ch. 5,
+Theorem 4.5, pp. 117–121; part (b) generalizes the Hölder step of Remark 2.2, p. 107).  Write
+`K(y, r) = (r^{p−n} ∫_{B_r(y)} |H|ᵖ dμ_V)^{1/p} ∈ [0, ∞]` (`V.scaledLpNorm`, closed balls, lower
+integrals, `H` arbitrary).
+(a) If `p > 0`, `0 < s ≤ t` and `B_s(z) ⊆ B_t(w)`, then `K(z, s) ≤ (s/t)^{(p−n)/p} K(w, t)`.
+(b) If `0 < q ≤ p`, `t > 0`, `m ≥ 0`, `B_s(z) ⊆ B_t(w)` and `μ_V(B_s(z)) ≤ m`, then
+`∫_{B_s(z)} |H|^q dμ_V ≤ m^{1−q/p} t^{q(n−p)/p} K(w, t)^q`.
+
+Part (a) is `tdo_slb_scaledLpNorm_le_of_subset`: monotonicity of the `p`-integral in the ball and
+`s^{p−n} = (s/t)^{p−n} t^{p−n}`, followed by taking `1/p`-th powers.  Part (b) is
+`tdo_slb_lintegral_rpow_le_scaledLpNorm`: Hölder's inequality on `B_s(z)` for the possibly
+non-measurable `|H|` (`tdo_slb_setLIntegral_rpow_le_holder`), the bounds
+`∫_{B_s(z)} |H|ᵖ ≤ ∫_{B_t(w)} |H|ᵖ` and `μ_V(B_s(z)) ≤ m`, and the identity
+`(∫_{B_t(w)} |H|ᵖ dμ_V)^{q/p} = t^{q(n−p)/p} K(w, t)^q`. -/
+theorem tdo_scaledLpNorm_bounds : (∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ) (z w : Amb n ℓ) (s t : ℝ), 0 < p → 0 < s → s ≤ t → closedBall z s ⊆ closedBall w t → V.scaledLpNorm H p z s ≤ ENNReal.ofReal ((s / t) ^ ((p - n) / p)) * V.scaledLpNorm H p w t) ∧ (∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p q : ℝ) (z w : Amb n ℓ) (s t m : ℝ), 0 < q → q ≤ p → 0 < t → 0 ≤ m → closedBall z s ⊆ closedBall w t → V.weight (closedBall z s) ≤ ENNReal.ofReal m → ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ q ∂V.weight ≤ ENNReal.ofReal (m ^ (1 - q / p) * t ^ (q * (n - p) / p)) * V.scaledLpNorm H p w t ^ q) :=
+  ⟨Submission.tdo_slb_scaledLpNorm_le_of_subset, Submission.tdo_slb_lintegral_rpow_le_scaledLpNorm⟩
 
 end Submission
 
