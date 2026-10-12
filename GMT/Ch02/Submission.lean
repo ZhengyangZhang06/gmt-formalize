@@ -373,6 +373,43 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, 4.2 (p. 55).** The inverse `g = invFunOn ψ V` of a local representation is
+continuous on `W ∩ M = ψ(V)`. For `y ∈ W ∩ M`, a closed ball `Q ⊆ W` about `y` has compact preimage
+`K = V ∩ ψ⁻¹(Q)` (relative properness), and `g` maps `W ∩ M ∩ Q` into `K`. Every cluster point `x'`
+of `g` at `y` lies in `K ⊆ V` and has `ψ x' = y` by continuity of `ψ`, so `x' = g y` by
+injectivity; a map eventually in a compact set with a unique cluster point converges to it. The
+injectivity of `Dψ` is not needed. -/
+theorem Submission.simon_submanifold_chart_inverse_continuousOn : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation r M V W ψ → ContinuousOn (Function.invFunOn ψ V) (W ∩ M) := by
+  intro n N r M V W ψ h
+  obtain ⟨hV, hW, hψ, hinj, himg, hprop, -⟩ := h
+  -- Step 2: on `W ∩ M = ψ(V)`, `g` takes values in `V` and is a right inverse of `ψ`.
+  have hg : ∀ y ∈ W ∩ M, Function.invFunOn ψ V y ∈ V ∧ ψ (Function.invFunOn ψ V y) = y := by
+    intro y hy
+    rw [← himg] at hy
+    exact ⟨Function.invFunOn_mem hy, Function.invFunOn_eq hy⟩
+  intro y hy
+  obtain ⟨hgyV, hψgy⟩ := hg y hy
+  -- Step 4, with a compact ball `Q = closedBall y ε ⊆ W` in place of `{y_j} ∪ {y}`:
+  -- `K = V ∩ ψ⁻¹(Q)` is compact, and `g z ∈ K` for every `z ∈ W ∩ M` close to `y`.
+  obtain ⟨ε, hε, hQW⟩ := nhds_basis_closedBall.mem_iff.1 (hW.mem_nhds hy.1)
+  have hK : IsCompact (V ∩ ψ ⁻¹' closedBall y ε) := hprop _ (isCompact_closedBall y ε) hQW
+  have hev : ∀ᶠ z in 𝓝[W ∩ M] y, Function.invFunOn ψ V z ∈ V ∩ ψ ⁻¹' closedBall y ε := by
+    filter_upwards [self_mem_nhdsWithin, nhdsWithin_le_nhds (closedBall_mem_nhds y hε)]
+      with z hz hzQ
+    obtain ⟨hgzV, hψgz⟩ := hg z hz
+    exact ⟨hgzV, by rwa [mem_preimage, hψgz]⟩
+  -- Steps 5–6, with cluster points in place of subsequential limits: a cluster point `x' ∈ K`
+  -- of `g` at `y` has `ψ x' = y` (Step 1: `ψ` is continuous at `x' ∈ V`), hence `x' = g y`.
+  refine hK.tendsto_nhds_of_unique_mapClusterPt hev fun x' hx' hcl ↦ ?_
+  have hψx' : ContinuousAt ψ x' := hψ.continuousOn.continuousAt (hV.mem_nhds hx'.1)
+  have hcl' : MapClusterPt (ψ x') (𝓝[W ∩ M] y) id := by
+    refine (hcl.continuousAt_comp hψx').congrFun ?_
+    filter_upwards [self_mem_nhdsWithin] with z hz
+    exact (hg z hz).2
+  have hψx'y : ψ x' = y :=
+    eq_of_nhds_neBot (mapClusterPt_id_iff.1 hcl' |>.mono nhdsWithin_le_nhds).neBot
+  exact hinj hx'.1 hgyV (hψx'y.trans hψgy.symm)
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
