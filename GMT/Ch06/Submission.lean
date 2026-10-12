@@ -805,6 +805,35 @@ theorem Submission.lpf_rectifiable_support_null : ∀ (P n : ℕ) (U : Set (Eucl
     ((hM.integrableOn _ hWc hWU).mono_set (Set.inter_subset_inter_right M subset_closure))
     hM.aestronglyMeasurable hξ hT
 
+/-- **Simon Ch. 6, (3.6) (p. 147): the push-forward formula defines a current.**  Let
+`T = τ(M, θ, ξ)` in the open `U`, `f` continuous on `U` with `f⁻¹(K) ∩ spt T` compact for every
+compact `K ⊆ V`, and `L` an `Hⁿ ⌞ M`-a.e. strongly measurable field of linear maps bounded on
+`M ∩ K` for every compact `K ⊆ U`.  Then `ω ↦ ∫_M θ(x) ⟨ω(f(x)), L(x)_# ξ(x)⟩ dHⁿ(x)` is a current
+in `𝒟ₙ(V)`: the density `θ L_# ξ` is `Hⁿ ⌞ M`-a.e. strongly measurable, and on `{f ∈ K}` it is
+dominated by `1_{K'} Cⁿ θ` with `K' = f⁻¹(K) ∩ spt T`, because `Hⁿ(M \ spt T) = 0`. -/
+theorem Submission.lpf_pushforward_is_current : ∀ (P Q n : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)), IsOpen U → IsOpen V → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → ContinuousOn f U → (∀ K, IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ T.support)) → AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ M ∩ K, ‖L x‖ ≤ C) → ∃ S : GeometricCurrentOn V n, ∀ ω : TestFormOn V n, S ω = ∫ x in M, θ x * nVectorPushforward n (L x) (ξ x) ((ω : DifferentialForm (Eucl Q) n) (f x)) ∂(μHE[n] : Measure (Eucl P)) := by
+  intro P Q n U V hU hV T M θ ξ f L hT hTrep hf hprop hLm hLb
+  -- `Hⁿ`-almost every point of `M` lies in `spt T`.
+  have hnull := Submission.lpf_rectifiable_support_null P n U T M θ ξ hT hTrep
+  -- `f` is `Hⁿ ⌞ M`-a.e. measurable, being continuous on the open set `U ⊇ M`.
+  have hfm : AEMeasurable f ((μHE[n] : Measure (Eucl P)).restrict M) :=
+    (hf.aemeasurable hU.measurableSet).mono_set hT.subset
+  -- The density `θ L_# ξ` is `Hⁿ ⌞ M`-a.e. strongly measurable ...
+  have hwm := Submission.lpf_pic_density_aestronglyMeasurable P Q n U M θ ξ L hU hT hLm
+  -- ... and, for compact `K ⊆ V`, dominated on `{f ∈ K}` via the compact `f⁻¹(K) ∩ spt T ⊆ U`.
+  have hdom : ∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → ∃ h : Eucl P → ℝ,
+      Integrable h ((μHE[n] : Measure (Eucl P)).restrict M) ∧
+        ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), f x ∈ K →
+          ‖θ x • nVectorPushforward n (L x) (ξ x)‖ ≤ h x := fun K hK hKV =>
+    Submission.lpf_pic_density_dominated P Q n U T.support M θ ξ f L K hT
+      T.support_subset_domain hnull (hprop K hK hKV)
+      (hLb _ (hprop K hK hKV) (inter_subset_right.trans T.support_subset_domain))
+  -- The current of this density is the claimed one, as `(θ • A_# ξ) β = θ * (A_# ξ) β`.
+  obtain ⟨S, hS⟩ := Submission.lpf_pic_current_of_dominated_density P Q n V
+    ((μHE[n] : Measure (Eucl P)).restrict M) f
+    (fun x => θ x • nVectorPushforward n (L x) (ξ x)) hfm hwm hdom
+  exact ⟨S, hS⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
