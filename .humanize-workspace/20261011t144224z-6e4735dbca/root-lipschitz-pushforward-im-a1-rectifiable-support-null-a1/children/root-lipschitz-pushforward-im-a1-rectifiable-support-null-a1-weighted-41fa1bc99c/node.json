@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1.weighted_fundamental_lemma-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1",
+  "depth": 3,
+  "title": "Fundamental lemma of the calculus of variations with a positive weight on a set",
+  "statement": "Let P ∈ ℕ, μ a measure on ℝ^P, M, W ⊆ ℝ^P with W open and M μ-null-measurable, θ, g : ℝ^P → ℝ and C ∈ ℝ. Assume (i) θ(x) > 0 for every x ∈ M; (ii) θ is μ-integrable on M ∩ W; (iii) g is a.e.-strongly measurable for μ⌞M = μ.restrict M; (iv) |g(x)| ≤ C for μ⌞M-a.e. x; (v) ∫_M θ(x)·(φ(x)·g(x)) dμ(x) = 0 for every C^∞ function φ : ℝ^P → ℝ with compact support and tsupport φ ⊆ W. Then for μ⌞M-a.e. x, x ∈ W implies g(x) = 0.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Eucl P)) (M W : Set (Eucl P)) (θ g : Eucl P → ℝ) (C : ℝ), IsOpen W → NullMeasurableSet M μ → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) μ → AEStronglyMeasurable g (μ.restrict M) → (∀ᵐ x ∂(μ.restrict M), |g x| ≤ C) → (∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ W → ∫ x in M, θ x * (φ x * g x) ∂μ = 0) → ∀ᵐ x ∂(μ.restrict M), x ∈ W → g x = 0",
+  "lean_name": "lpf_rsn_weighted_fundamental_lemma",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1-weighted-41fa1bc99c-a1"
+}
