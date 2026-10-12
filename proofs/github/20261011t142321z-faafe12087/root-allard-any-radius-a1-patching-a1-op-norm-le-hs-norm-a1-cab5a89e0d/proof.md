@@ -1,0 +1,125 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.allard_any_radius-a1.patching-a1`
+- Child DAG node: `root.allard_any_radius-a1.patching-a1.op_norm_le_hs_norm-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Notation: e_i := EuclideanSpace.single i 1 for i < m. By definition hsNorm A = Real.sqrt (hsNormSq A), where hsNormSq A = sum_i |A e_i|^2.
+1. hsNorm A >= 0, being a square root. By the characterization of the operator norm (ContinuousLinearMap.opNorm_le_bound, Mathlib/Analysis/Normed/Operator/Basic.lean:196), it suffices to prove |A x| <= hsNorm A * |x| for every x in R^m.
+2. Fix x and write x_i := x i. In the standard basis, x = sum_i x_i • e_i (EuclideanSpace.basisFun (Fin m) ℝ, sum_repr). By linearity A x = sum_i x_i • A e_i. Since |x_i • A e_i| = |x_i| |A e_i|, the triangle inequality gives |A x| <= sum_i |x_i| |A e_i|.
+3. The Cauchy-Schwarz inequality for finite real sums (Real.sum_mul_le_sqrt_mul_sqrt, Mathlib/Analysis/Real/Sqrt.lean:499) gives sum_i |x_i| |A e_i| <= sqrt(sum_i |x_i|^2) * sqrt(sum_i |A e_i|^2).
+4. sqrt(sum_i |x_i|^2) = |x| (EuclideanSpace.norm_eq, Mathlib/Analysis/InnerProductSpace/PiL2.lean:145), and sqrt(sum_i |A e_i|^2) = hsNorm A by the definitions of hsNorm and hsNormSq. Hence |A x| <= hsNorm A * |x| after commuting the product. Step 1 then gives ||A|| <= hsNorm A.
+5. No case split on m is needed: for m = 0 every sum above is empty, x = 0 and hsNorm A = 0, so each inequality reads 0 <= 0.
+
+## Key steps
+
+1. Reduce to the pointwise bound |A x| <= hsNorm A |x| via ContinuousLinearMap.opNorm_le_bound
+2. Expand x in the standard basis; triangle inequality gives |A x| <= sum |x_i| |A e_i|
+3. Cauchy-Schwarz for finite real sums
+4. Identify sqrt(sum |x_i|^2) = |x| and sqrt(sum |A e_i|^2) = hsNorm A
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp <snapshot>/project/{GMT/Ch05/Contract.lean,GMT/Ch05/Submission.lean,lakefile.toml,lean-toolchain,lake-manifest.json} against the workspace copies`
+- `python3 -I reads of dag.json (node root.allard_any_radius-a1.patching-a1: status, message, attempts, retry_operation; all node statuses) and issue-workers.json (Counter of error fields; this node's worker records)`
+- `python3 -I sha256 comparison of decomposition-v1..v4.json subproblem fields (key/lean_name/lean_statement/depends_on, natural_proof, proof_key_steps, statement, title) and summary of decomposition-audit-v1..v4.json verdicts`
+- `python3 -I sha256 of parent-child-handoff.json subproblem.natural_proof versus decomposition-scope-v4.json proof_sha256; lean_statement equality between handoff and scope`
+- `grep -n '^open|^namespace|^end|^theorem|^def|^abbrev' GMT/Ch05/Submission.lean (scope at main_theorem); head -120 GMT/Ch05/Contract.lean (Amb, Rn, hsNormSq, hsNorm, graphPoint, graphOver, horizontalPlane, rotatedPlane)`
+- `grep -n 'finAddEquivProd|sumEquivProd|theorem EuclideanSpace.norm_eq|norm_sq_eq' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `grep -n 'theorem opNorm_le_bound |sum_mul_le_sqrt_mul_sqrt|le_infDist|theorem infDist_image|theorem infDist_le_dist_of_mem|norm_image_sub_le_of_norm_fderivWithin_le|surjOn_closedBall_of_nonlinearRightInverse|HasFDerivAt.of_local_left_inverse|theorem inverse_continuousAt|contDiffAt_succ_iff_hasFDerivAt|theorem contDiffAt_zero|ContDiffOn.differentiableOn|IsPreconnected.subset_of_closure_inter_subset|def ofInjectiveEndo|fderivWithin_of_mem_nhds|Filter.EventuallyEq.fderiv_eq|pow_le_pow_left₀|pow_le_pow_iff_left₀|div_le_iff₀|mul_le_of_le_one_left|eventually_of_mem' in the snapshot Mathlib`
+- `python3 -I recursive scan of every lean_name in dag.json and nodes/*/*.json for arp_opNorm_le_hsNorm, arp_rotatedPlane_graphPoint_coords, arp_tilt_le_of_slab, arp_regraph_over_rotatedPlane, arp_global_graph_of_local_graphs (plus duplicate check)`
+- `git for-each-ref --format='%(objectname)' | sort -u | xargs -n 50 git grep -l -E 'arp_(opNorm_le_hsNorm|rotatedPlane_graphPoint_coords|tilt_le_of_slab|regraph_over_rotatedPlane|global_graph_of_local_graphs)|any_radius_patching' -- '*.lean'; grep -rn 'arp_|any_radius_patching' --include=*.lean GMT <snapshot>/project`
+- `python3 -I scan of dag.json lean_statements for types identical to the five children or mentioning hsNorm/‖A‖, graphPoint a b, infDist (q₀ (graphPoint`
+- `ls/grep theorem names in lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05`
+- `lake build GMT.Ch05.Submission (fresh scratch /tmp/arp5-patching-vSXJof/proj, .lake/packages symlinked to lake-packages-25730c7c)`
+- `python3 -I /tmp/arp5-scripts/gen_challenges.py (verifier gmt-compare.py layout/contract_scope/child_modules and lean_contract.validate_lean_statement); lake env lean Checks/Challenge_{op_norm_le_hs_norm,rotated_coords,tilt_of_slab,regraph,global_graph,parent}.lean`
+- `lake env lean Checks/Skeleton5.lean (exact parent type proved from sorry stubs of the five exact child types)`
+- `lake env lean Checks/SkeletonAx5.lean (children as axioms; #print axioms Submission.any_radius_patching)`
+- `lake env lean Checks/Avail5.lean (#check of 39 cited lemmas; env.contains for ContractingWith, ContractingWith.fixedPoint, ContDiffAt.to_localInverse, HasStrictFDerivAt.to_localInverse, HasStrictFDerivAt.localInverse)`
+- `lake env lean Checks/Inst5.lean (pp.explicit norm instances; opNorm rfl to the sInf formula)`
+- `python3 -I diff of hand-typed /tmp/arp5-scripts/typed.json (keys, names, dependencies, lean_statements) against decomposition-v4.json`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Real/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/OfCompLeft.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Connected/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Order/Filter/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1/decomposition-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1/decomposition-audit-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1/decomposition-scope-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05`
+- `/tmp/arp5-patching-vSXJof/proj/Checks/Challenge_op_norm_le_hs_norm.lean`
+- `/tmp/arp5-patching-vSXJof/proj/Checks/Challenge_rotated_coords.lean`
+- `/tmp/arp5-patching-vSXJof/proj/Checks/Challenge_tilt_of_slab.lean`
+- `/tmp/arp5-patching-vSXJof/proj/Checks/Challenge_regraph.lean`
+- `/tmp/arp5-patching-vSXJof/proj/Checks/Challenge_global_graph.lean`
+- `/tmp/arp5-patching-vSXJof/proj/Checks/Challenge_parent.lean`
+- `/tmp/arp5-patching-vSXJof/proj/Checks/Skeleton5.lean`
+- `/tmp/arp5-patching-vSXJof/proj/Checks/SkeletonAx5.lean`
+- `/tmp/arp5-patching-vSXJof/proj/Checks/Avail5.lean`
+- `/tmp/arp5-patching-vSXJof/proj/Checks/Inst5.lean`
+- `/tmp/arp5-scripts/gen_challenges.py`
+- `/tmp/arp5-scripts/typed.json`
+
+Snapshot and target
+- The manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d.
+- Contract.lean, Submission.lean and the Lake inputs are byte-identical to the workspace copies.
+- The handoff proof hash and frozen parent type match decomposition-scope-v4.json.
+
+Scope
+- The comparator's child scope at main_theorem is: open MeasureTheory Metric Set Filter Topology; open scoped ENNReal NNReal; namespace GMT.Ch05; open RectifiableVarifold.
+- All five child types and the parent type pass validate_lean_statement and elaborate there after import GMT.Ch05.Submission, with only the expected sorry warning.
+
+Sufficiency
+- Skeleton5.lean compiles a complete proof of the exact parent type from sorry stubs of the five exact child types.
+- SkeletonAx5.lean (children as axioms) gives #print axioms = propext, Classical.choice, Quot.sound plus exactly the five child declarations. Every child is used, and no other gap remains.
+
+Cited library results, all present at the stated lines
+- opNorm_le_bound, Operator/Basic.lean:196
+- Real.sum_mul_le_sqrt_mul_sqrt, Real/Sqrt.lean:499
+- EuclideanSpace.norm_eq, PiL2.lean:145; finAddEquivProd, PiL2.lean:378
+- le_infDist :508, infDist_le_dist_of_mem :500 and infDist_image :596, in HausdorffDistance.lean
+- norm_image_sub_le_of_norm_fderivWithin_le, MeanValue.lean:484
+- surjOn_closedBall_of_nonlinearRightInverse, ApproximatesLinearOn.lean:143
+- HasFDerivAt.of_local_left_inverse, OfCompLeft.lean:165
+- NormedRing.inverse_continuousAt, Units.lean:183
+- contDiffAt_succ_iff_hasFDerivAt :1018 and contDiffAt_zero :1129, in ContDiff/Defs.lean
+- IsPreconnected.subset_of_closure_inter_subset, Connected/Basic.lean:434
+- LinearEquiv.ofInjectiveEndo, FiniteDimensional/Basic.lean:412
+
+Availability and instances
+- All 39 #check-ed lemmas resolve after the import.
+- ContractingWith and ContDiffAt.to_localInverse are not in scope, as regraph's proof states. HasStrictFDerivAt.to_localInverse is in scope but not needed.
+- Norm instances are ContinuousLinearMap.hasOpNorm and PiLp.instNorm. No Matrix or IsUnit construction occurs.
+
+Names and reuse
+- The five arp_* names occur only in this node's own v1-v4 proposals.
+- They are absent from all 217 DAG lean_names (no duplicates), from GMT/ and the snapshot project, and from every .lean file on 667 git refs.
+- No DAG declaration has an identical type; the closest, lip_approx_graph_coordinates, differs. Nothing is reused.
+- SimonGMT Chapter05 contains only graph-area lemmas and is not imported by Submission, so it has no relevant match.
+
+No network sources were needed; the mathematics is the parent-supplied proof (step 6 of the any-radius proof).

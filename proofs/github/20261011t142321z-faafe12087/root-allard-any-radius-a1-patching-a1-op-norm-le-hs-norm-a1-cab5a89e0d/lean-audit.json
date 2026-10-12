@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "34fb109f4b28311c42c5862a286028a200146c66b8c2066356a01e81d920f9fa",
+  "git_delta": {
+    "base_commit": "ce941e0eac9212f99f56be2b8f304089ad4b5181",
+    "candidate_commit": "ba6ad4191c926fd6d36bb85bb3e170341820c92b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "arp_opNorm_le_hsNorm",
+    "diff_sha256": "e267c46f3153b87870268190540dc754375869469f01aecf545650320e3a363a",
+    "source_sha256": "cc29560b89b56bed11069585538d875d1e219abafafc44b754595734fd51f691",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.arp_opNorm_le_hsNorm",
+      "statement": "∀ {m k : ℕ} (A : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
