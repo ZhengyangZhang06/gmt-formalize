@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "08464f933191b1f2bab1eca8a9b99d4578039de2be909cce821d9deef5ddd0d5",
+  "git_delta": {
+    "base_commit": "60df3fc2ed7abb8565de518f91175cd65b1a3ea9",
+    "candidate_commit": "0656a76739b194c967f8d61b35e69aee2874ec31",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_allard_bsb_marginal_measure",
+    "diff_sha256": "a7f83ec16e7c557e387bcde3da203186e7ccd131acaecd0597a7c8ab59abd1ed",
+    "source_sha256": "0847d01c129bdad597b950f3404fc4ca9c8ef2cca68db44b4e2736635fce628d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_bsb_marginal_measure",
+      "statement": "∀ (N n : ℕ) (m : Measure (Euclidean N × Grassmannian N n)) (g : Euclidean N × Grassmannian N n → ℝ≥0∞), ∃ τ : Measure (Euclidean N), ∀ A : Set (Euclidean N), MeasurableSet A → τ A = ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), g z ∂m",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
