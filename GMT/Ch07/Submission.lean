@@ -451,6 +451,38 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 4, §3 (p. 90)**, the cutoff `φ` chosen after (3.3), with `1 + ε = A`: for `A > 1`
+there is a `C¹` nonincreasing `φ` with `0 ≤ φ ≤ 1`, `φ ≡ 1` on `(-∞, 1]`, `φ ≡ 0` on `[A, ∞)`,
+`φ' ≤ 0`, and `φ'(u) ≠ 0` only for `1 < u < A`.  Take `φ(u) = Ψ((A − u)/(A − 1))` for Mathlib's
+smooth transition `Ψ` (`Ψ = 0` on `(-∞, 0]`, `Ψ = 1` on `[1, ∞)`, monotone).  `φ` is antitone, so
+`φ' ≤ 0`; on the plateaus `u` is a global extremum of `φ`, so `φ'(u) = 0`. -/
+theorem Submission.doragm_sab_cutoff_profile : ∀ (A : ℝ), 1 < A → ∃ φ : ℝ → ℝ, ContDiff ℝ 1 φ ∧ Antitone φ ∧ (∀ u, 0 ≤ φ u ∧ φ u ≤ 1) ∧ (∀ u, u ≤ 1 → φ u = 1) ∧ (∀ u, A ≤ u → φ u = 0) ∧ (∀ u, deriv φ u ≤ 0) ∧ (∀ u, deriv φ u ≠ 0 → 1 < u ∧ u < A) := by
+  intro A hA
+  -- `a = A − 1 > 0` and `φ(u) = Ψ((A − u)/a)` for the smooth transition `Ψ`
+  have ha : 0 < A - 1 := sub_pos.2 hA
+  set φ : ℝ → ℝ := fun u => Real.smoothTransition ((A - u) / (A - 1))
+  -- `u ↦ (A − u)/a` is antitone and `Ψ` is monotone
+  have hanti : Antitone φ := fun u v huv =>
+    Real.smoothTransition.monotone (div_le_div_of_nonneg_right (sub_le_sub_left huv A) ha.le)
+  have hbd : ∀ u, 0 ≤ φ u ∧ φ u ≤ 1 := fun u =>
+    ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩
+  -- `u ≤ 1` gives `(A − u)/a ≥ 1`, and `A ≤ u` gives `(A − u)/a ≤ 0`
+  have h1 : ∀ u, u ≤ 1 → φ u = 1 := fun u hu =>
+    Real.smoothTransition.one_of_one_le ((le_div_iff₀ ha).2 (by linarith))
+  have h0 : ∀ u, A ≤ u → φ u = 0 := fun u hu =>
+    Real.smoothTransition.zero_of_nonpos (div_nonpos_of_nonpos_of_nonneg (by linarith) ha.le)
+  refine ⟨φ, ?_, hanti, hbd, h1, h0, fun u => hanti.deriv_nonpos, fun u hu => ?_⟩
+  · -- `Ψ` is `C^∞` and `u ↦ (A − u)/a` is affine
+    exact Real.smoothTransition.contDiff.comp ((contDiff_const.sub contDiff_id).div_const _)
+  · -- on the plateaus `u` is a global maximum (`φ u = 1`) or minimum (`φ u = 0`), so `φ'(u) = 0`
+    by_contra hcon
+    rcases le_or_gt u 1 with hu1 | hu1
+    · refine hu (IsLocalMax.deriv_eq_zero ?_)
+      exact (isMaxOn_univ_iff.2 fun v => (h1 u hu1).symm ▸ (hbd v).2).isLocalMax Filter.univ_mem
+    · have hAu : A ≤ u := not_lt.1 fun h => hcon ⟨hu1, h⟩
+      refine hu (IsLocalMin.deriv_eq_zero ?_)
+      exact (isMinOn_univ_iff.2 fun v => (h0 u hAu).symm ▸ (hbd v).1).isLocalMin Filter.univ_mem
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
