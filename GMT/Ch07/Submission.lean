@@ -467,13 +467,13 @@ theorem Submission.dsmc_chart_secant_estimate : ∀ (P d : ℕ) (N : Set (Euclid
   have hbound : ∀ a : Euclid d, ‖a‖ ≤ K * ‖A a‖ := A.bound_of_antilipschitz hKA
   have hK0 : (0 : ℝ) < K := hK
   -- differentiability at `v` with `η = min 1 ε / (2K)`
-  set η : ℝ := min 1 ε / (2 * K) with hη_def
+  set η : ℝ := min 1 ε / (2 * K) with hη_eq
   have hmin : 0 < min 1 ε := lt_min one_pos hε
   have hη : 0 < η := div_pos hmin (by positivity)
   have hKη : K * η = min 1 ε / 2 := by
-    rw [hη_def]
+    rw [hη_eq]
     field_simp
-  obtain ⟨ρ, hρ, hdiff⟩ := Metric.eventually_nhds_iff.1 (hA.isLittleO.def hη)
+  obtain ⟨ρ, hρ, hdiff⟩ := Metric.eventually_nhds_iff.1 (hA.isLittleO.bound hη)
   -- inverse continuity at radius `ρ`, and `B_{δ₂}(ψ v) ⊆ W`
   obtain ⟨δ₁, hδ₁, hδ₁V⟩ := hinv ρ hρ
   have hψv : ψ v ∈ W ∩ N := hψV ▸ mem_image_of_mem ψ hv
