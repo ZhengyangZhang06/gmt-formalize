@@ -414,6 +414,39 @@ theorem Submission.gram_inverse_range_starProjection : ∀ (n N : ℕ) (K : Subm
         ContinuousLinearMap.adjoint A z := hGG _
     rw [h, sub_self, inner_zero_left]
 
+/-- **Tangential divergence in a chart.** If `T_y M = range A` for an injective `A : ℝⁿ → ℝᴺ`, then
+`div_M Y(y) = tr(G⁻¹ A* L A)`, a trace on `ℝⁿ`, where `L = DY(y)`, `A*` is the adjoint and `G = A* A`;
+no differentiability of `Y` is needed. Write `T = T_y M`, `q : ℝᴺ → T` for the orthogonal projection
+and `ι : T → ℝᴺ` for the inclusion. In the orthonormal basis `τᵢ` of `T` defining the frame,
+`tr_T(q L ι) = ∑ᵢ ⟨τᵢ, q L τᵢ⟩ = ∑ᵢ ⟨τᵢ, L τᵢ⟩ = div_M Y(y)`, and cyclicity turns this into
+`tr_{ℝᴺ}(L P_T)` with `P_T = ι q`. The Gram projection formula `P_T = A G⁻¹ A*` and cyclicity once
+more give `tr_{ℝᴺ}((L A)(G⁻¹ A*)) = tr_{ℝⁿ}((G⁻¹ A*)(L A))`. -/
+theorem Submission.chart_tangentialDivergence_eq_gram_trace : ∀ (n N : ℕ) (M : Set (Rn N)) (y : Rn N) (A : Rn n →L[ℝ] Rn N) (Y : Rn N → Rn N), Function.Injective A → tangentSpace M y = LinearMap.range A.toLinearMap → tangentialDivergence M Y y = LinearMap.trace ℝ (Rn n) (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) ∘L ContinuousLinearMap.adjoint A ∘L fderiv ℝ Y y ∘L A).toLinearMap := by
+  intro n N M y A Y hA hT
+  -- Steps 1–3: `div_M Y(y) = tr_{ℝᴺ}(L ∘ P_T)` with `T = T_y M`, `L = DY(y)` and `P_T = ι ∘ q`.
+  have hdiv : tangentialDivergence M Y y = LinearMap.trace ℝ (Rn N)
+      (fderiv ℝ Y y ∘L (tangentSpace M y).starProjection).toLinearMap := by
+    -- Steps 1–2: expand `tr_T(q ∘ L ∘ ι)` in the orthonormal basis `b` of `T` that defines the
+    -- frame `τᵢ = b i`; since `b i ∈ T`, `⟨b i, q (L (b i))⟩_T = ⟨b i, L (b i)⟩`.
+    have hsum : LinearMap.trace ℝ (tangentSpace M y)
+        ((tangentSpace M y).orthogonalProjectionOnto.toLinearMap ∘ₗ
+          ((fderiv ℝ Y y).toLinearMap ∘ₗ (tangentSpace M y).subtype)) =
+        tangentialDivergence M Y y := by
+      unfold tangentialDivergence
+      rw [LinearMap.trace_eq_sum_inner _ (stdOrthonormalBasis ℝ (tangentSpace M y))]
+      exact Finset.sum_congr rfl fun i _ ↦
+        Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left _ _
+    -- Step 3 (cyclicity): `tr_T(q ∘ (L ∘ ι)) = tr_{ℝᴺ}((L ∘ ι) ∘ q)`, and `ι ∘ q = P_T` by the
+    -- definition of `starProjection`.
+    rw [← hsum]
+    exact LinearMap.trace_comp_comm' _ _
+  -- Step 4: `P_T = A G⁻¹ A*` by the Gram projection formula (`T = range A`, `A` injective).
+  rw [hdiv, (Submission.gram_inverse_range_starProjection n N _ A hA hT).2.2]
+  -- Step 5 (cyclicity): `tr_{ℝᴺ}((L ∘ A) ∘ (G⁻¹ ∘ A*)) = tr_{ℝⁿ}((G⁻¹ ∘ A*) ∘ (L ∘ A))`.
+  exact LinearMap.trace_comp_comm'
+    (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) ∘L ContinuousLinearMap.adjoint A).toLinearMap
+    (fderiv ℝ Y y ∘L A).toLinearMap
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
