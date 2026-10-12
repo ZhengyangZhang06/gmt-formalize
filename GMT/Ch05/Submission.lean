@@ -614,6 +614,61 @@ theorem rsod_tv_tangentProj_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ))
   · have h₂ : ¬∃ P, Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier
         V.mult (y + x₀) P := fun h => h₁ ((exists_congr key).2 h)
     rw [dite_eq_right h₁, dite_eq_right h₂]
+/-- **Generalized mean curvature of a translated varifold** (Simon Ch. 4, Definition 3.14; Ch. 5,
+proof of Theorem 7.1, p. 127: "after applying the appropriate translation"; used for
+Corollary 7.3).  Let `τ(y) = y + x₀` and `σ(y) = y - x₀`.  If `μ_W = σ_# μ_V` and
+`p_{T_y W} = p_{T_{y + x₀} V}`, then `W` has generalized mean curvature `H ∘ τ` in `τ⁻¹ U`:
+neighbourhoods `G ∈ 𝓝[U] (y + x₀)` pull back to `τ⁻¹ G ∈ 𝓝[τ⁻¹ U] y`, and for
+`X ∈ C¹_c(τ⁻¹ U)` the field `X̃ = X ∘ σ ∈ C¹_c(U)` has `div_W X ∘ σ = div_V X̃`, so changing
+variables along `σ` turns the first variation of `W` at `X` into that of `V` at `X̃`. -/
+theorem rsod_tv_meanCurvature : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U)
+    (x₀ : Amb n ℓ) (W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U)),
+    W.weight = V.weight.map (fun y => y - x₀) → (∀ y, W.tangentProj y = V.tangentProj (y + x₀)) →
+    ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H →
+    W.HasGeneralizedMeanCurvature (fun y => H (y + x₀)) := by
+  intro n ℓ U V x₀ W hw hT H hH
+  obtain ⟨hHloc, hHfv⟩ := hH
+  -- `σ(y) = y - x₀` as a measurable equivalence, so `μ_W = σ_# μ_V`.
+  have hw' : W.weight = V.weight.map (MeasurableEquiv.subRight x₀) := hw
+  refine ⟨?_, ?_⟩
+  · -- Local integrability: transport `G ∈ 𝓝[U] (y + x₀)` to `τ⁻¹ G ∈ 𝓝[τ⁻¹ U] y`.
+    intro y hy
+    obtain ⟨G, hG, hGi⟩ := hHloc (y + x₀) hy
+    refine ⟨(fun z => z + x₀) ⁻¹' G, ?_, ?_⟩
+    · exact ((continuous_add_const x₀).continuousWithinAt.tendsto_nhdsWithin
+        (mapsTo_preimage _ _)) hG
+    · -- `IntegrableOn (H ∘ τ) (τ⁻¹ G) (σ_# μ_V) ↔ IntegrableOn (H ∘ τ ∘ σ) (σ⁻¹ τ⁻¹ G) μ_V`.
+      rw [hw', integrableOn_map_equiv]
+      have h1 : (fun z => H (z + x₀)) ∘ (MeasurableEquiv.subRight x₀) = H := by
+        funext z
+        show H (z - x₀ + x₀) = H z
+        rw [sub_add_cancel]
+      have h2 : (MeasurableEquiv.subRight x₀) ⁻¹' ((fun z => z + x₀) ⁻¹' G) = G := by
+        ext z
+        show z - x₀ + x₀ ∈ G ↔ z ∈ G
+        rw [sub_add_cancel]
+      rw [h1, h2]
+      exact hGi
+  · -- First variation: test `V` with the translated field `X̃(x) = X(x - x₀)`.
+    intro X hX hXc hXs
+    have hX'c : ContDiff ℝ 1 (fun x => X (x - x₀)) := hX.comp (contDiff_id.sub contDiff_const)
+    have hX'cs : HasCompactSupport (fun x => X (x - x₀)) :=
+      hXc.comp_homeomorph (IsometryEquiv.subRight x₀).toHomeomorph
+    have hX's : tsupport (fun x => X (x - x₀)) ⊆ U := by
+      intro x hx
+      have h := hXs (tsupport_comp_subset_preimage X (continuous_sub_right x₀) hx)
+      simpa using h
+    have key := hHfv _ hX'c hX'cs hX's
+    -- `div_W X (x - x₀) = div_V X̃ (x)`.
+    have hdiv : ∀ x, W.divM X (x - x₀) = V.divM (fun x => X (x - x₀)) x := by
+      intro x
+      simp only [RectifiableVarifold.divM, hT, sub_add_cancel]
+      rw [fderiv_comp_sub]
+    -- Change variables along `σ` on both sides and apply the first variation of `V` at `X̃`.
+    rw [hw', integral_map_equiv, integral_map_equiv]
+    show ∫ x, W.divM X (x - x₀) ∂V.weight = -∫ x, inner ℝ (X (x - x₀)) (H (x - x₀ + x₀)) ∂V.weight
+    simp only [hdiv, sub_add_cancel]
+    exact key
 
 end Submission
 
