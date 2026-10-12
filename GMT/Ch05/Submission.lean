@@ -837,6 +837,57 @@ theorem dohr_c1_graph_mass_pinching : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (R : ℝ)
     congr 1
     rw [div_pow]
     field_simp
+/-- **Squeeze lemma for `[0, ∞]`-valued ratios as `r ↓ 0`.**  If for every `δ > 0`, eventually as
+`r ↓ 0`, `g r > 0` and `ofReal((1 - δ) g r) ≤ f r ≤ ofReal((1 + δ) g r)`, then
+`f r / ofReal(g r) → 1`.  Dividing by `ofReal(g r) ∈ (0, ∞)` gives
+`ofReal(1 - δ) ≤ f r / ofReal(g r) ≤ ofReal(1 + δ)` eventually; by `tendsto_order`, a target
+`a < 1` is beaten with `δ = (1 - a)/2`, and a target `b > 1` with `δ = (b - 1)/2` (`δ = 1` if
+`b = ∞`). -/
+theorem dohr_ratio_tendsto_one_of_pinching : ∀ (f : ℝ → ℝ≥0∞) (g : ℝ → ℝ), (∀ δ : ℝ, 0 < δ → ∀ᶠ r in 𝓝[>] (0 : ℝ), 0 < g r ∧ ENNReal.ofReal ((1 - δ) * g r) ≤ f r ∧ f r ≤ ENNReal.ofReal ((1 + δ) * g r)) → Tendsto (fun r => f r / ENNReal.ofReal (g r)) (𝓝[>] 0) (𝓝 1) := by
+  intro f g h
+  -- Pointwise: the bounds give `ofReal (1 - δ) ≤ f r / ofReal (g r) ≤ ofReal (1 + δ)`.
+  have key : ∀ δ : ℝ, 0 < δ → ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      ENNReal.ofReal (1 - δ) ≤ f r / ENNReal.ofReal (g r) ∧
+        f r / ENNReal.ofReal (g r) ≤ ENNReal.ofReal (1 + δ) := by
+    intro δ hδ
+    filter_upwards [h δ hδ] with r ⟨hg, hlo, hhi⟩
+    have hg0 : ENNReal.ofReal (g r) ≠ 0 := (ENNReal.ofReal_pos.2 hg).ne'
+    have hgt : ENNReal.ofReal (g r) ≠ ∞ := ENNReal.ofReal_ne_top
+    constructor
+    · rcases le_or_gt (1 - δ) 0 with hd | hd
+      · rw [ENNReal.ofReal_of_nonpos hd]
+        exact zero_le
+      · rw [ENNReal.le_div_iff_mul_le (Or.inl hg0) (Or.inl hgt), ← ENNReal.ofReal_mul hd.le]
+        exact hlo
+    · rw [ENNReal.div_le_iff hg0 hgt, ← ENNReal.ofReal_mul (by linarith)]
+      exact hhi
+  rw [tendsto_order]
+  constructor
+  · -- `a < 1`, so `a = ofReal a.toReal` with `0 ≤ a.toReal < 1`; take `δ = (1 - a.toReal)/2`.
+    intro a ha
+    have hat : a ≠ ∞ := ne_top_of_lt ha
+    have ha' : a.toReal < 1 := by
+      simpa using (ENNReal.toReal_lt_toReal hat ENNReal.one_ne_top).2 ha
+    have ha0 : 0 ≤ a.toReal := ENNReal.toReal_nonneg
+    have hδ : 0 < (1 - a.toReal) / 2 := by linarith
+    filter_upwards [key _ hδ] with r ⟨hlo, _⟩
+    refine lt_of_lt_of_le ?_ hlo
+    calc a = ENNReal.ofReal a.toReal := (ENNReal.ofReal_toReal hat).symm
+      _ < ENNReal.ofReal (1 - (1 - a.toReal) / 2) :=
+        (ENNReal.ofReal_lt_ofReal_iff (by linarith)).2 (by linarith)
+  · -- `b > 1`: if `b = ∞` take `δ = 1`; otherwise `1 < b.toReal`, take `δ = (b.toReal - 1)/2`.
+    intro b hb
+    rcases eq_or_ne b ∞ with rfl | hbt
+    · filter_upwards [key 1 one_pos] with r ⟨_, hhi⟩
+      exact lt_of_le_of_lt hhi ENNReal.ofReal_lt_top
+    · have hb' : 1 < b.toReal := by
+        simpa using (ENNReal.toReal_lt_toReal ENNReal.one_ne_top hbt).2 hb
+      have hδ : 0 < (b.toReal - 1) / 2 := by linarith
+      filter_upwards [key _ hδ] with r ⟨_, hhi⟩
+      refine lt_of_le_of_lt hhi ?_
+      calc ENNReal.ofReal (1 + (b.toReal - 1) / 2) < ENNReal.ofReal b.toReal :=
+            (ENNReal.ofReal_lt_ofReal_iff (by linarith)).2 (by linarith)
+        _ = b := ENNReal.ofReal_toReal hbt
 
 end Submission
 
