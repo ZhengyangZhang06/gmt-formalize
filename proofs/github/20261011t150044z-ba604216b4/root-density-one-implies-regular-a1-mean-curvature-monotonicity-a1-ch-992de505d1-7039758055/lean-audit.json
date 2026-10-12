@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "259e020086c98960e1ad8d5ba7018e783faa803438e4473685dcd53b865bef5d",
+  "git_delta": {
+    "base_commit": "7692c471e48ae7e29a182c53a149e0ffa80c4544",
+    "candidate_commit": "ec0da64354623241a7e40d6b3ec87acd1d1d54e3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dsmc_tangentSpace_subset_range_of_secant",
+    "diff_sha256": "4971d3bc48ee0a5a9075657a79e17f08d45a33e6245d7612fba278ce36a6232f",
+    "source_sha256": "6acd758dc1a5972b4e14999d01653df0a93645ff71a137caec5cc7e5754b15ec",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_tangentSpace_subset_range_of_secant",
+      "statement": "∀ (P d : ℕ) (N : Set (Euclid P)) (q : Euclid P) (A : Euclid d →L[ℝ] Euclid P), (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y ∈ N, dist y q < δ → ∃ a : Euclid d, ‖y - q - A a‖ ≤ ε * ‖y - q‖) → tangentSpace N q ⊆ Set.range A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
