@@ -458,6 +458,78 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Tilt-excess integrals** (for the graph rate in Simon Ch. 5, Remark 5.3).  Let `V` be a
+rectifiable `n`-varifold in any `U ⊆ ℝ^{n+ℓ}` whose tangent projection `x ↦ p_{T_x M}` is
+`μ_V`-a.e. strongly measurable, and write
+`E(s) = E(ζ, s, T) = s⁻ⁿ ∫_{B_s(ζ)} |p_{T_x M} − p_T|² dμ_V`.
+If `s > 0` and `μ_V(B_s(ζ)) < ∞`, then `∫⁻_{B_s(ζ)} |p_{T_x M} − p_T|² dμ_V = sⁿ E(s)` (T1), and
+`σⁿ E(σ) ≤ sⁿ E(s)` for `0 < σ ≤ s` (T2); moreover `E(s) ≥ 0` for every `s > 0` (T3).
+
+Proof: each value of `tangentProj` is an orthogonal projection or `0`, so the Hilbert–Schmidt facts
+(L8), (L9) of `any_radius_gr_linear_algebra_basics` give `0 ≤ f ≤ 4(n + ℓ)` for the integrand `f`.
+As a continuous function of the a.e. strongly measurable `tangentProj`, `f` is integrable on balls
+of finite mass.  After `sⁿ (sⁿ)⁻¹ = 1`, (T1) is `ofReal ∫ f = ∫⁻ ofReal f`, (T2) is monotonicity
+of set integrals of `f ≥ 0` in the domain, and (T3) is `∫ f ≥ 0`. -/
+theorem any_radius_gr_tilt_integral_facts : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (ζ : Amb n ℓ) (T : Submodule ℝ (Amb n ℓ)), (∀ s : ℝ, 0 < s → V.weight (closedBall ζ s) < ⊤ → ∫⁻ y in closedBall ζ s, ENNReal.ofReal (hsNormSq (V.tangentProj y - T.starProjection)) ∂V.weight = ENNReal.ofReal (s ^ n * V.tiltExcess ζ s T)) ∧ (∀ σ s : ℝ, 0 < σ → σ ≤ s → V.weight (closedBall ζ s) < ⊤ → σ ^ n * V.tiltExcess ζ σ T ≤ s ^ n * V.tiltExcess ζ s T) ∧ ∀ s : ℝ, 0 < s → 0 ≤ V.tiltExcess ζ s T := by
+  intro n ℓ U V htan ζ T
+  -- (L8) and (L9) of `la_basics`, used on `ℝ^{n+ℓ} = Rn (n + ℓ)`.
+  obtain ⟨-, -, -, -, -, -, -, hL8, hL9⟩ :=
+    Submission.any_radius_gr_linear_algebra_basics n ℓ (LinearIsometryEquiv.refl ℝ (Amb n ℓ))
+  set f : Amb n ℓ → ℝ := fun y => hsNormSq (V.tangentProj y - T.starProjection)
+  -- Step 1: `0 ≤ f ≤ 4(n + ℓ)`, since each `tangentProj y` is some `p_K` or `0`.
+  have hf0 : ∀ y, 0 ≤ f y := fun y =>
+    (hL8 (n + ℓ) (n + ℓ) (V.tangentProj y - T.starProjection) 0).1
+  have hp : ∀ y, hsNormSq (V.tangentProj y) ≤ ((n + ℓ : ℕ) : ℝ) := by
+    intro y
+    unfold RectifiableVarifold.tangentProj
+    split_ifs
+    · exact hL9 (n + ℓ) _
+    · rw [show hsNormSq (0 : Amb n ℓ →L[ℝ] Amb n ℓ) = 0 by simp [hsNormSq]]
+      exact Nat.cast_nonneg _
+  have hT : hsNormSq (-T.starProjection) ≤ ((n + ℓ : ℕ) : ℝ) := by
+    rw [(hL8 (n + ℓ) (n + ℓ) T.starProjection 0).2.2.2.1]
+    exact hL9 (n + ℓ) T
+  have hbd : ∀ y, f y ≤ 4 * ((n + ℓ : ℕ) : ℝ) := by
+    intro y
+    show hsNormSq (V.tangentProj y - T.starProjection) ≤ _
+    rw [sub_eq_add_neg]
+    have h := (hL8 (n + ℓ) (n + ℓ) (V.tangentProj y) (-T.starProjection)).2.2.1
+    linarith [hp y]
+  -- Step 2: `f = Φ ∘ tangentProj` with `Φ M = hsNormSq (M - p_T)` continuous.
+  have hΦ : Continuous fun M : Amb n ℓ →L[ℝ] Amb n ℓ => hsNormSq (M - T.starProjection) := by
+    unfold hsNormSq
+    exact continuous_finsetSum _ fun i _ => (continuous_norm.comp
+      ((ContinuousLinearMap.apply ℝ (Amb n ℓ) (EuclideanSpace.single i (1 : ℝ))).continuous.comp
+        (continuous_id.sub continuous_const))).pow 2
+  have hfm : AEStronglyMeasurable f V.weight := hΦ.comp_aestronglyMeasurable htan
+  -- Step 3: `f` is integrable on every closed ball of finite mass.
+  have hint : ∀ s : ℝ, V.weight (closedBall ζ s) < ⊤ →
+      IntegrableOn f (closedBall ζ s) V.weight := fun s hs =>
+    Measure.integrableOn_of_bounded (M := 4 * ((n + ℓ : ℕ) : ℝ)) hs.ne hfm
+      (ae_of_all _ fun y => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (hf0 y)]
+        exact hbd y)
+  -- `sⁿ E(ζ, s, T) = ∫_{B_s(ζ)} f dμ_V` for `s > 0`.
+  have hscale : ∀ s : ℝ, 0 < s →
+      s ^ n * V.tiltExcess ζ s T = ∫ y in closedBall ζ s, f y ∂V.weight := by
+    intro s hs
+    unfold RectifiableVarifold.tiltExcess
+    rw [mul_inv_cancel_left₀ (pow_ne_zero n hs.ne')]
+  refine ⟨fun s hs hfin => ?_, fun σ s hσ hσs hfin => ?_, fun s hs => ?_⟩
+  · -- (T1): `ofReal` of the integral of an integrable `f ≥ 0` is its lower integral.
+    rw [hscale s hs, ofReal_integral_eq_lintegral_ofReal (hint s hfin) (ae_of_all _ hf0)]
+  · -- (T2): set integrals of `f ≥ 0` increase with the domain.
+    rw [hscale σ hσ, hscale s (hσ.trans_le hσs)]
+    exact setIntegral_mono_set (hint s hfin) (ae_of_all _ hf0)
+      (closedBall_subset_closedBall hσs).eventuallyLE
+  · -- (T3): a positive factor times the integral of `f ≥ 0`.
+    unfold RectifiableVarifold.tiltExcess
+    exact mul_nonneg (inv_nonneg.mpr (pow_nonneg hs.le n)) (integral_nonneg hf0)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
