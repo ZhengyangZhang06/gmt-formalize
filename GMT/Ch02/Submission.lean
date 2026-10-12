@@ -567,6 +567,45 @@ theorem Submission.sff_fderivWithin_chart_direction : ∀ (n N : ℕ) (M : Set (
   -- Two derivatives of `f` within `M` at `ψ x₀` agree on the tangent cone.
   exact hf.differentiableWithinAt.hasFDerivWithinAt.unique_on hf hcone
 
+/-- **Simon Ch. 2, 4.26 (p. 60), the second fundamental form in a chart.** Assume (TH), the frozen
+statement of `Submission.simon_submanifold_tangent_basics`; only its first part, the chart
+description `T_{ψ(x)} M = range Dψ(x)` of the tangent space, is used. Then for a `C²` local
+representation `(V, W, ψ)` of `M`, `x ∈ V` and `a, b ∈ ℝⁿ`,
+`B_{ψ(x)}(Dψ(x)a, Dψ(x)b) = (D²ψ(x)[a, b])^⊥`. On `M` near `ψ(x)` the tangent projection `P` agrees
+with a field `Q` that is differentiable at `ψ(x)` and fixes the chart tangent vectors
+(`sff_tangentProjection_local_extension`). So `B_{ψ(x)}(Dψ(x)a, ·) = DQ(ψ(x))(Dψ(x)a)`
+(`sff_fderivWithin_chart_direction`), and differentiating `Q(ψ(x'))(Dψ(x')b) = Dψ(x')b` gives
+`DQ(ψ(x))(Dψ(x)a)(Dψ(x)b) = D²ψ(x)[a, b] - Q(ψ(x))(D²ψ(x)[a, b])`
+(`sff_projection_field_fderiv_identity`), where `Q(ψ(x)) = P_{ψ(x)}`. -/
+theorem Submission.second_fundamental_form_chart_formula : ((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → ∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ∀ x ∈ V, ∀ a b : Rn n, secondFundamentalForm M (ψ x) (fderiv ℝ ψ x a) (fderiv ℝ ψ x b) = normalPart M (ψ x) (fderiv ℝ (fderiv ℝ ψ) x a b) := by
+  intro hTH n N M V W ψ hψ x₀ hx₀ a b
+  -- Step 1: the chart instance of (TH1) (class `2 ≥ 1`): `T_{ψ(x)} M = range Dψ(x)` for `x ∈ V`.
+  have hT : ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap :=
+    hTH.1 n N 2 M V W ψ (by norm_num) hψ
+  -- Step 2: an extension `Q` of the tangent projection near `ψ(x₀)`, differentiable at `ψ(x₀)`.
+  obtain ⟨Q, hQ, hPQ, hQψ⟩ :=
+    Submission.sff_tangentProjection_local_extension n N M V W ψ hψ hT x₀ hx₀
+  -- Step 3: `ψ` is `C²` at `x₀`, so `ψ` and `Dψ` are differentiable at `x₀`.
+  have hV : V ∈ 𝓝 x₀ := hψ.isOpen_source.mem_nhds hx₀
+  have hψ2 := hψ.contDiffOn.contDiffAt hV
+  have hψ1 : DifferentiableAt ℝ ψ x₀ := hψ2.differentiableAt (by norm_num)
+  have hDψ : DifferentiableAt ℝ (fderiv ℝ ψ) x₀ :=
+    (hψ2.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
+  -- Step 4: `ψ '' V = W ∩ M ⊆ M`; in particular `ψ(x₀) ∈ M`, so `P_{ψ(x₀)} = Q(ψ(x₀))`.
+  have hψV : ψ '' V ⊆ M := hψ.image_eq ▸ inter_subset_right
+  have hP₀ : tangentProjection M (ψ x₀) = Q (ψ x₀) :=
+    hPQ.eq_of_nhdsWithin (hψV (mem_image_of_mem ψ hx₀))
+  -- Step 5: near `x₀`, `Q(ψ(x))` is the projection onto `range Dψ(x)`, so it fixes `Dψ(x)v`.
+  have hfix : ∀ᶠ x in 𝓝 x₀, ∀ v : Rn n, Q (ψ x) (fderiv ℝ ψ x v) = fderiv ℝ ψ x v :=
+    hQψ.mono fun x hx v ↦ by
+      rw [hx]
+      exact Submodule.starProjection_eq_self_iff.2 (LinearMap.mem_range_self _ v)
+  -- Step 6: `B_{ψ(x₀)}(Dψ(x₀)a, ·) = DQ(ψ(x₀))(Dψ(x₀)a)`; then the derivative identity for `Q`.
+  rw [secondFundamentalForm, normalPart,
+    Submission.sff_fderivWithin_chart_direction n N M V ψ (tangentProjection M) Q x₀ hV hψV hψ1
+      hQ hPQ a,
+    Submission.sff_projection_field_fderiv_identity n N ψ Q x₀ hψ1 hDψ hQ hfix a b, hP₀]
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
