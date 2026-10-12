@@ -458,6 +458,50 @@ theorem Submission.coarea_normDet_block_triangular : ∀ {V X : Type} [NormedAdd
       simp [g]
   -- Step 5: `det (fromBlocks M₁₁ M₁₂ 0 M₂₂) = det M₁₁ * det M₂₂`.
   rw [hM, Matrix.det_fromBlocks_zero₂₁]
+/-- **Horizontal step of the `normDet` chain rule** (step 6 of the supplied proof of the `normDet`
+chain rule behind the co-area Jacobian, Simon Ch. 3, (2.7)). Let `B : V → X` be bijective,
+`Γ = L ∘ B`, `K = ker Γ` and `W = (ker L)ᗮ`. Since `Wᗮ = ker L`, the restriction of `Γ` to `Kᗮ`
+factors as `L|_W ∘ (p_W ∘ B|_{Kᗮ})`, and `B(K) = ker L` gives `dim Kᗮ = dim W`; hence
+`normDet (Γ|_{Kᗮ}) = normDet (L|_W) · normDet (p_W ∘ B|_{Kᗮ})`. -/
+theorem Submission.coarea_normDet_horizontal_comp : ∀ {V X Y : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [FiniteDimensional ℝ Y] (B : V →ₗ[ℝ] X) (L : X →ₗ[ℝ] Y) (Γ : V →ₗ[ℝ] Y) (K : Submodule ℝ V) (W : Submodule ℝ X), Function.Bijective B → (∀ v, Γ v = L (B v)) → K = LinearMap.ker Γ → W = (LinearMap.ker L)ᗮ → (Γ ∘ₗ Kᗮ.subtype).normDet = (L ∘ₗ W.subtype).normDet * ((W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ B ∘ₗ Kᗮ.subtype).normDet := by
+  intro V X Y _ _ _ _ _ _ _ _ _ B L Γ K W hB hΓ hK hW
+  -- `Wᗮ = (ker L)ᗮᗮ = ker L`.
+  have hWperp : Wᗮ = LinearMap.ker L := by
+    rw [hW, Submodule.orthogonal_orthogonal]
+  -- `Γ ∘ ι_{Kᗮ} = (L ∘ ι_W) ∘ (p_W ∘ B ∘ ι_{Kᗮ})`, since `B u - p_W (B u) ∈ Wᗮ = ker L`.
+  have hcomp : Γ ∘ₗ Kᗮ.subtype =
+      (L ∘ₗ W.subtype) ∘ₗ ((W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ B ∘ₗ Kᗮ.subtype) := by
+    refine LinearMap.ext fun u ↦ ?_
+    simp only [LinearMap.comp_apply, Submodule.subtype_apply, ContinuousLinearMap.coe_coe]
+    have h : B u - (W.orthogonalProjectionOnto (B u) : X) ∈ Wᗮ :=
+      Submodule.sub_starProjection_mem_orthogonal (K := W) (B u)
+    rw [hWperp, LinearMap.mem_ker, map_sub, sub_eq_zero] at h
+    rw [hΓ]
+    exact h
+  -- `ker L = B(K)`, using that `B` is surjective.
+  have hker : LinearMap.ker L = K.map B := by
+    ext t
+    constructor
+    · intro ht
+      obtain ⟨v, rfl⟩ := hB.2 t
+      refine ⟨v, ?_, rfl⟩
+      rw [SetLike.mem_coe, hK, LinearMap.mem_ker, hΓ]
+      exact LinearMap.mem_ker.mp ht
+    · rintro ⟨v, hv, rfl⟩
+      rw [SetLike.mem_coe, hK, LinearMap.mem_ker, hΓ] at hv
+      exact hv
+  -- `dim Kᗮ = dim V - dim K = dim X - dim (ker L) = dim W`.
+  have hfin : finrank ℝ Kᗮ = finrank ℝ W := by
+    have e1 := Submodule.finrank_add_finrank_orthogonal K
+    have e2 := Submodule.finrank_add_finrank_orthogonal (LinearMap.ker L)
+    rw [← hW] at e2
+    have e3 := (LinearEquiv.ofBijective B hB).finrank_eq
+    have e4 := (Submodule.equivMapOfInjective B hB.1 K).finrank_eq
+    rw [← hker] at e4
+    omega
+  -- Multiplicativity of `normDet` for a composition through an equal-dimensional space.
+  rw [hcomp]
+  exact LinearMap.normDet_comp_of_finrank_eq _ _ hfin
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
