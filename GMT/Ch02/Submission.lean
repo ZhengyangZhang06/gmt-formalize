@@ -774,6 +774,20 @@ theorem Submission.bv_ext_ofReal_integral_cutoff_le : ∀ (n : ℕ) (U : Set (Rn
           ENNReal.ofReal (∫ x, |u x| * ‖fderiv ℝ φ x‖) := ENNReal.ofReal_add_le
     _ ≤ Chapter02.bvVariationOn u U + ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ :=
       add_le_add hadm hlint.le
+/-- **`|Du|(A) = 0` when `u = 0` a.e. on `A`** (Simon 2.8, proof, C0). For a measurable
+`A ⊆ ℝⁿ` and `u` vanishing `Lⁿ`-a.e. on `A`, every term `∫_A u div g` of the supremum
+`bvVariationOn u A` has an integrand that vanishes `(volume.restrict A)`-a.e.
+(`ae_restrict_iff'`), so it is `ofReal 0 = 0`. A supremum of zeros is `0`. -/
+theorem Submission.bv_ext_variation_eq_zero_of_ae_eq_zero : ∀ (n : ℕ) (A : Set (Rn n)) (u : Rn n → ℝ), MeasurableSet A → (∀ᵐ x ∂volume, x ∈ A → u x = 0) → Chapter02.bvVariationOn u A = 0 := by
+  intro n A u hA hu
+  -- Step 2: since `A` is measurable, `u = 0` holds `(volume.restrict A)`-a.e.
+  have hu' : ∀ᵐ x ∂(volume.restrict A), u x = 0 := (ae_restrict_iff' hA).2 hu
+  -- Step 1: `0 ≤ bvVariationOn u A`, so it suffices to bound every admissible term by `0`.
+  refine le_antisymm (iSup_le fun g ↦ iSup_le fun _ ↦ iSup_le fun _ ↦ iSup_le fun _ ↦ ?_) bot_le
+  -- Step 3: the integrand `u · div g` vanishes a.e. on `A`, so the term is `ofReal 0 = 0`.
+  have h0 : ∫ x in A, u x * Chapter02.euclideanDivergence (g : Rn n → Rn n) x = 0 :=
+    integral_eq_zero_of_ae (hu'.mono fun x hx ↦ by simp [hx])
+  rw [h0, ENNReal.ofReal_zero]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
