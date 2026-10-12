@@ -535,6 +535,104 @@ theorem Submission.frt_vgm_tba_ball_cutoff_sandwich :
   -- Step 7: integrate, using `∫ 1_B β dV = ∫_B β dV`.
   rw [← integral_indicator hB]
   exact ⟨integral_mono hm hi hle₁, integral_mono hi hp hle₂⟩
+/-- The `n`-dimensional Hausdorff measure of the closed ball `B_r(0)` of an `n`-plane
+`T ∈ G(N,n)` is `ω_n r^n` (step 5, plane balls, of the tangent-ball average proof for Simon Ch. 8,
+1.2): `H^n` is transported to Lebesgue measure on `ℝ^n` along an isometric parametrization of `T`. -/
+theorem Submission.frt_vgm_tba_plane_closedBall_hausdorff :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n T r hr
+  -- Step 1: an orthonormal basis `b` of `T.plane` indexed by `Fin n`, since `finrank T.plane = n`.
+  let b : OrthonormalBasis (Fin n) ℝ T.plane :=
+    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane)
+  -- Step 2: the isometric parametrization `ι : ℝ^n → ℝ^N`, `ι v = b.repr.symm v ∈ T.plane`.
+  let ι : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
+    T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+  -- Step 3: `ι '' B_r(0) = T.plane ∩ B_r(0)`.
+  have himage : ι '' closedBall 0 r = (T.plane : Set (Euclidean N)) ∩ closedBall 0 r := by
+    ext w
+    constructor
+    · rintro ⟨v, hv, rfl⟩
+      refine ⟨(b.repr.symm v).2, ?_⟩
+      rw [mem_closedBall_zero_iff] at hv ⊢
+      rwa [ι.norm_map]
+    · rintro ⟨hw, hwr⟩
+      refine ⟨b.repr ⟨w, hw⟩, ?_, ?_⟩
+      · rw [mem_closedBall_zero_iff] at hwr ⊢
+        rwa [b.repr.norm_map]
+      · change ((b.repr.symm (b.repr ⟨w, hw⟩) : T.plane) : Euclidean N) = w
+        rw [b.repr.symm_apply_apply]
+  -- Step 4: `H^n` is invariant under the isometry `ι`, and `H^n = vol` on `ℝ^n`.
+  rw [← himage, ι.isometry.euclideanHausdorffMeasure_image,
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- Step 5: Haar scaling `vol (B_r(0)) = r^n vol (B°_1(0))` (`r ≥ 0`; no `0 < n` needed).
+  rw [Measure.addHaar_closedBall _ _ hr, finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr,
+    unitBallVolume, mul_comm]
+
+/-- The plane integrals of the radial cut-offs `χ⁻ = χ_{1-κ,1}` and `χ⁺ = χ_{1,1+κ}`, where
+`χ_{a,b}(y) = max(0, min(1, (b - |y|)/(b - a)))`, over an `n`-plane `T ∈ G(N,n)` satisfy
+`ω_n (1-κ)^n ≤ ∫_T χ⁻ dH^n` and `∫_T χ⁺ dH^n ≤ ω_n (1+κ)^n` for `0 < κ < 1` (step 6 of the
+tangent-ball average in the proof of Simon Ch. 8, 1.2): `1_{B_{1-κ}(0)} ≤ χ⁻` and
+`χ⁺ ≤ 1_{B_{1+κ}(0)}`, while `H^n(T ∩ B_r(0)) = ω_n r^n`
+(`frt_vgm_tba_plane_closedBall_hausdorff`). -/
+theorem Submission.frt_vgm_tba_plane_cutoff_bounds :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (κ : ℝ), 0 < κ → κ < 1 → (unitBallVolume n).toReal * (1 - κ) ^ n ≤ ∫ y in (T.plane : Set (Euclidean N)), max 0 (min 1 ((1 - ‖y‖) / κ)) ∂μHE[n] ∧ ∫ y in (T.plane : Set (Euclidean N)), max 0 (min 1 ((1 + κ - ‖y‖) / κ)) ∂μHE[n] ≤ (unitBallVolume n).toReal * (1 + κ) ^ n := by
+  intro N n T κ hκ hκ1
+  set μ : Measure (Euclidean N) :=
+    (μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N)) with hμ
+  -- Step 1: `μ(B_r(0)) = ω_n r^n < ∞` for `r ≥ 0`, from `frt_vgm_tba_plane_closedBall_hausdorff`.
+  have hball : ∀ r : ℝ, 0 ≤ r → μ (closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+    intro r hr
+    rw [hμ, Measure.restrict_apply measurableSet_closedBall, inter_comm]
+    exact Submission.frt_vgm_tba_plane_closedBall_hausdorff N n T r hr
+  have hfin : ∀ r : ℝ, 0 ≤ r → μ (closedBall 0 r) ≠ ∞ := by
+    intro r hr
+    rw [hball r hr]
+    exact ENNReal.mul_ne_top measure_ball_lt_top.ne (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  have hreal : ∀ r : ℝ, 0 ≤ r → μ.real (closedBall 0 r) = (unitBallVolume n).toReal * r ^ n := by
+    intro r hr
+    rw [measureReal_def, hball r hr, ENNReal.toReal_mul, ENNReal.toReal_pow,
+      ENNReal.toReal_ofReal hr]
+  -- Step 2: the cut-off `χ_a(y) = max(0, min(1, (a - |y|)/κ))` takes values in `[0,1]`, vanishes
+  -- where `|y| ≥ a` and equals `1` where `|y| ≤ a - κ`.
+  have hχ0 : ∀ (a : ℝ) (y : Euclidean N), 0 ≤ max 0 (min 1 ((a - ‖y‖) / κ)) :=
+    fun a y ↦ le_max_left _ _
+  have hχ1 : ∀ (a : ℝ) (y : Euclidean N), max 0 (min 1 ((a - ‖y‖) / κ)) ≤ 1 :=
+    fun a y ↦ max_le zero_le_one (min_le_left _ _)
+  have hχ_out : ∀ (a : ℝ) (y : Euclidean N), a ≤ ‖y‖ → max 0 (min 1 ((a - ‖y‖) / κ)) = 0 :=
+    fun a y hy ↦ max_eq_left
+      ((min_le_right _ _).trans (div_nonpos_of_nonpos_of_nonneg (sub_nonpos.2 hy) hκ.le))
+  have hχ_in : ∀ (a : ℝ) (y : Euclidean N), ‖y‖ ≤ a - κ → max 0 (min 1 ((a - ‖y‖) / κ)) = 1 := by
+    intro a y hy
+    rw [min_eq_left ((le_div_iff₀ hκ).2 (by linarith)), max_eq_right zero_le_one]
+  -- Step 3: `χ_a` (`a ≤ 2`) and the ball indicators are `μ`-integrable.
+  have hχ_int : ∀ a : ℝ, a ≤ 2 →
+      Integrable (fun y : Euclidean N ↦ max 0 (min 1 ((a - ‖y‖) / κ))) μ := by
+    intro a ha
+    refine IntegrableOn.integrable_of_forall_notMem_eq_zero
+      (s := closedBall (0 : Euclidean N) 2) ?_ fun y hy ↦ hχ_out a y ?_
+    · refine Measure.integrableOn_of_bounded (M := 1) (hfin 2 zero_le_two) (by fun_prop) ?_
+      exact Eventually.of_forall fun y ↦ by rw [Real.norm_of_nonneg (hχ0 a y)]; exact hχ1 a y
+    · rw [mem_closedBall_zero_iff, not_le] at hy
+      linarith
+  have hind_int : ∀ r : ℝ, 0 ≤ r → Integrable ((closedBall (0 : Euclidean N) r).indicator 1) μ :=
+    fun r hr ↦ (integrable_indicator_iff measurableSet_closedBall).2
+      (integrableOn_const (C := (1 : ℝ)) (hfin r hr))
+  constructor
+  · -- Step 4: `1_{B_{1-κ}(0)} ≤ χ⁻`, so `ω_n (1-κ)^n = μ(B_{1-κ}(0)) ≤ ∫ χ⁻ dμ`.
+    rw [← hreal (1 - κ) (by linarith), ← integral_indicator_one measurableSet_closedBall]
+    refine integral_mono (hind_int (1 - κ) (by linarith)) (hχ_int 1 (by norm_num)) fun y ↦ ?_
+    by_cases hy : y ∈ closedBall (0 : Euclidean N) (1 - κ)
+    · rw [indicator_of_mem hy, Pi.one_apply, hχ_in 1 y (mem_closedBall_zero_iff.1 hy)]
+    · rw [indicator_of_notMem hy]
+      exact hχ0 1 y
+  · -- Step 5: `χ⁺ ≤ 1_{B_{1+κ}(0)}`, so `∫ χ⁺ dμ ≤ μ(B_{1+κ}(0)) = ω_n (1+κ)^n`.
+    rw [← hreal (1 + κ) (by linarith), ← integral_indicator_one measurableSet_closedBall]
+    refine integral_mono (hχ_int (1 + κ) (by linarith)) (hind_int (1 + κ) (by linarith))
+      fun y ↦ ?_
+    by_cases hy : y ∈ closedBall (0 : Euclidean N) (1 + κ)
+    · rw [indicator_of_mem hy, Pi.one_apply]
+      exact hχ1 (1 + κ) y
+    · rw [indicator_of_notMem hy, hχ_out (1 + κ) y (not_le.1 (mt mem_closedBall_zero_iff.2 hy)).le]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
