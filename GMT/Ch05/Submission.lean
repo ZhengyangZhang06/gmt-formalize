@@ -609,6 +609,235 @@ theorem dohr_c1_uniform_first_order : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (u : Rn
   rw [← dist_eq_norm]
   exact (hclose ((mem_closedBall.1 hz).trans_lt (hη.trans_le (min_le_right η₁ η₂)))).le
 
+/-- **Two-sided mass pinching for `C¹` graphs** (towards `Θⁿ = 1` on `C¹` graphs, for Simon Ch. 5,
+Theorem 7.1).  If `u` is `C¹` on `B̆_R(0) ⊆ ℝⁿ`, `x ∈ B̆_R(0)` and `0 < ε < 1`, then for all small
+`r > 0` the graph `Γ = graph(u|B̆_R(0))` satisfies
+`((1-ε)/(1+ε))ⁿ ω_n rⁿ ≤ Hⁿ(Γ ∩ B_r((x, u(x)))) ≤ ((1+ε)/(1-ε))ⁿ ω_n rⁿ`.
+With `G(z) = (z, u(z))` and the tangent map `L v = (v, Du(x) v)`, the uniform first-order estimate
+gives `(1-ε)|L(z-z')| ≤ |G(z) - G(z')| ≤ (1+ε)|L(z-z')|` near `x`.  Hence `Γ ∩ B_r((x, u(x)))` is
+squeezed between `G`-images of `x + E_{r/(1+ε)}` and `x + E_{r/(1-ε)}`, `E_t = {v : |L v| ≤ t}`,
+and `L(E_t)` is the closed `t`-ball of the `n`-plane `range L`, of measure `ω_n tⁿ`.  The two
+comparisons use `Hⁿ(f(S)) ≤ Kⁿ Hⁿ(S)` for the `K`-Lipschitz maps `w ↦ G(x + π w)` (`K = 1+ε`) and
+`z ↦ L(π z - x)` (`K = (1-ε)⁻¹`), where `π` is the projection onto the first `n` coordinates. -/
+theorem dohr_c1_graph_mass_pinching : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (R : ℝ) (u : Rn n → Rn ℓ), ContDiffOn ℝ 1 u (ball 0 R) → ∀ x ∈ ball (0 : Rn n) R, ∀ ε : ℝ, 0 < ε → ε < 1 → ∃ η : ℝ, 0 < η ∧ ∀ r : ℝ, 0 < r → r ≤ η → ENNReal.ofReal ((1 - ε) ^ n / (1 + ε) ^ n * (unitBallVolume n * r ^ n)) ≤ (μHE[n] : Measure (Amb n ℓ)) (graphOver u (ball 0 R) ∩ closedBall (graphPoint x (u x)) r) ∧ (μHE[n] : Measure (Amb n ℓ)) (graphOver u (ball 0 R) ∩ closedBall (graphPoint x (u x)) r) ≤ ENNReal.ofReal ((1 + ε) ^ n / (1 - ε) ^ n * (unitBallVolume n * r ^ n)) := by
+  intro n ℓ hn R u hu x₀ hx₀ ε hε hε1
+  set P : Rn n →L[ℝ] Rn ℓ := fderiv ℝ u x₀ with hP
+  have h1ε : 0 < 1 - ε := by linarith
+  -- (1) Graph-coordinate algebra: `(x, y)` is linear and `|(x, y)|² = |x|² + |y|²`.
+  have gp_sub : ∀ (x x' : Rn n) (y y' : Rn ℓ),
+      graphPoint x y - graphPoint x' y' = graphPoint (x - x') (y - y') := by
+    intro x x' y y'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k <;> simp [graphPoint]
+  have gp_add : ∀ (x x' : Rn n) (y y' : Rn ℓ),
+      graphPoint (x + x') (y + y') = graphPoint x y + graphPoint x' y' := by
+    intro x x' y y'
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k <;> simp [graphPoint]
+  have gp_smul : ∀ (c : ℝ) (x : Rn n) (y : Rn ℓ),
+      graphPoint (c • x) (c • y) = c • graphPoint x y := by
+    intro c x y
+    ext k
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) k <;> simp [graphPoint]
+  have gp_norm : ∀ (x : Rn n) (y : Rn ℓ), ‖graphPoint x y‖ ^ 2 = ‖x‖ ^ 2 + ‖y‖ ^ 2 := by
+    intro x y
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp [graphPoint]
+  have gp_le : ∀ (x : Rn n) (y : Rn ℓ), ‖x‖ ≤ ‖graphPoint x y‖ := fun x y =>
+    (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1
+      ((le_add_of_nonneg_right (sq_nonneg ‖y‖)).trans (gp_norm x y).ge)
+  have gp_zero : ∀ y : Rn ℓ, ‖graphPoint (0 : Rn n) y‖ = ‖y‖ := by
+    intro y
+    have h := gp_norm 0 y
+    rw [norm_zero, zero_pow two_ne_zero, zero_add] at h
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 h
+  -- (2) The first-coordinate projection `π` and the tangent map `L v = (v, P v)`.
+  let π : Amb n ℓ → Rn n := fun w => WithLp.toLp 2 (fun i : Fin n => w (Fin.castAdd ℓ i))
+  have hπ : ∀ (x : Rn n) (y : Rn ℓ), π (graphPoint x y) = x := by
+    intro x y
+    ext i
+    simp [π, graphPoint]
+  let L : Rn n →ₗ[ℝ] Amb n ℓ :=
+    { toFun := fun v => graphPoint v (P v)
+      map_add' := fun v w => by
+        simp only [map_add]
+        exact gp_add v w (P v) (P w)
+      map_smul' := fun c v => by
+        simp only [map_smul, RingHom.id_apply]
+        exact gp_smul c v (P v) }
+  have hL : ∀ v, L v = graphPoint v (P v) := fun v => rfl
+  have hLle : ∀ v, ‖v‖ ≤ ‖L v‖ := fun v => gp_le v (P v)
+  have hLinj : Function.Injective L := by
+    intro v w h
+    have := hLle (v - w)
+    rw [map_sub, h, sub_self, norm_zero] at this
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 this)
+  have hπL : ∀ v, π (L v) = v := fun v => hπ v (P v)
+  let G : Rn n → Amb n ℓ := fun x => graphPoint x (u x)
+  have hπG : ∀ x, π (G x) = x := fun x => hπ x (u x)
+  have hGsub : ∀ x x', G x - G x' = graphPoint (x - x') (u x - u x') := fun x x' => gp_sub _ _ _ _
+  have hGdist : ∀ x x', ‖x - x'‖ ≤ ‖G x - G x'‖ := by
+    intro x x'
+    rw [hGsub]
+    exact gp_le _ _
+  -- (3) First-order estimate on the closed ball `B = B_{η₀}(x₀)`:
+  -- `(1-ε)|L(x-x')| ≤ |G(x) - G(x')| ≤ (1+ε)|L(x-x')|`.
+  obtain ⟨η₀, hη₀, hB, hest⟩ :=
+    Submission.dohr_c1_uniform_first_order n ℓ (ball 0 R) u isOpen_ball hu x₀ hx₀ ε hε
+  have hGL : ∀ x ∈ closedBall x₀ η₀, ∀ x' ∈ closedBall x₀ η₀,
+      ‖G x - G x' - L (x - x')‖ ≤ ε * ‖L (x - x')‖ := by
+    intro x hx x' hx'
+    have h1 : G x - G x' - L (x - x') = graphPoint 0 (u x - u x' - P (x - x')) := by
+      rw [hGsub, hL, gp_sub, sub_self]
+    rw [h1, gp_zero]
+    exact (hest x hx x' hx').trans (mul_le_mul_of_nonneg_left (hLle _) hε.le)
+  have hup : ∀ x ∈ closedBall x₀ η₀, ∀ x' ∈ closedBall x₀ η₀,
+      ‖G x - G x'‖ ≤ (1 + ε) * ‖L (x - x')‖ := by
+    intro x hx x' hx'
+    calc ‖G x - G x'‖ = ‖(G x - G x' - L (x - x')) + L (x - x')‖ := by rw [sub_add_cancel]
+      _ ≤ ‖G x - G x' - L (x - x')‖ + ‖L (x - x')‖ := norm_add_le _ _
+      _ ≤ ε * ‖L (x - x')‖ + ‖L (x - x')‖ := by gcongr; exact hGL x hx x' hx'
+      _ = (1 + ε) * ‖L (x - x')‖ := by ring
+  have hlow : ∀ x ∈ closedBall x₀ η₀, ∀ x' ∈ closedBall x₀ η₀,
+      (1 - ε) * ‖L (x - x')‖ ≤ ‖G x - G x'‖ := by
+    intro x hx x' hx'
+    have : ‖L (x - x')‖ ≤ ‖G x - G x'‖ + ‖G x - G x' - L (x - x')‖ := by
+      calc ‖L (x - x')‖ = ‖(G x - G x') - (G x - G x' - L (x - x'))‖ := by rw [sub_sub_cancel]
+        _ ≤ _ := norm_sub_le _ _
+    nlinarith [hGL x hx x' hx']
+  -- (4) Choice of `η = (1-ε)η₀`, localization `Γ ∩ B_r(G(x₀)) = G(D)` and the ellipsoid sandwich
+  -- `x₀ + E_{r/(1+ε)} ⊆ D ⊆ x₀ + E_{r/(1-ε)}`.
+  refine ⟨(1 - ε) * η₀, mul_pos h1ε hη₀, ?_⟩
+  intro r hr hrη
+  have hrη₀ : r / (1 - ε) ≤ η₀ := by rw [div_le_iff₀ h1ε]; linarith
+  have hrη₀' : r / (1 + ε) ≤ η₀ := by
+    rw [div_le_iff₀ (by linarith)]
+    nlinarith
+  let D : Set (Rn n) := ball 0 R ∩ G ⁻¹' closedBall (G x₀) r
+  have hΓ : graphOver u (ball 0 R) ∩ closedBall (graphPoint x₀ (u x₀)) r = G '' D := by
+    rw [graphOver, ← Set.image_inter_preimage]
+  let E : ℝ → Set (Rn n) := fun t => {v | ‖L v‖ ≤ t}
+  have hEB : ∀ t, t ≤ η₀ → ∀ v ∈ E t, x₀ + v ∈ closedBall x₀ η₀ := by
+    intro t ht v hv
+    rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left]
+    exact (hLle v).trans (le_trans hv ht)
+  have hx₀B : x₀ ∈ closedBall x₀ η₀ := mem_closedBall_self hη₀.le
+  have hDB : D ⊆ closedBall x₀ η₀ := by
+    rintro x ⟨-, hx⟩
+    rw [mem_preimage, mem_closedBall, dist_eq_norm] at hx
+    rw [mem_closedBall, dist_eq_norm]
+    have : r ≤ η₀ := by nlinarith
+    linarith [hGdist x x₀]
+  have hED : ∀ v ∈ E (r / (1 + ε)), x₀ + v ∈ D := by
+    intro v hv
+    have hxB := hEB _ hrη₀' v hv
+    refine ⟨hB hxB, ?_⟩
+    rw [mem_preimage, mem_closedBall, dist_eq_norm]
+    have h := hup (x₀ + v) hxB x₀ hx₀B
+    rw [add_sub_cancel_left] at h
+    have hv' : ‖L v‖ ≤ r / (1 + ε) := hv
+    calc ‖G (x₀ + v) - G x₀‖ ≤ (1 + ε) * ‖L v‖ := h
+      _ ≤ (1 + ε) * (r / (1 + ε)) := by gcongr
+      _ = r := by field_simp
+  have hDE : ∀ x ∈ D, x - x₀ ∈ E (r / (1 - ε)) := by
+    intro x hx
+    have hxB := hDB hx
+    have hx2 : ‖G x - G x₀‖ ≤ r := by
+      have := hx.2
+      rwa [mem_preimage, mem_closedBall, dist_eq_norm] at this
+    show ‖L (x - x₀)‖ ≤ r / (1 - ε)
+    rw [le_div_iff₀ h1ε]
+    linarith [hlow x hxB x₀ hx₀B]
+  -- (5) The images `L(E_t)` are the closed `t`-balls of the `n`-plane `range L`.
+  have hrank : Module.finrank ℝ (LinearMap.range L) = n := by
+    rw [LinearMap.finrank_range_of_inj hLinj, finrank_euclideanSpace_fin]
+  have hplane : ∀ t, 0 ≤ t →
+      (μHE[n] : Measure (Amb n ℓ)) (L '' E t) = ENNReal.ofReal (unitBallVolume n * t ^ n) := by
+    intro t ht
+    have hset : L '' E t = closedBall (0 : Amb n ℓ) t ∩
+        ((LinearMap.range L : Submodule ℝ (Amb n ℓ)) : Set (Amb n ℓ)) := by
+      ext y
+      constructor
+      · rintro ⟨v, hv, rfl⟩
+        exact ⟨mem_closedBall_zero_iff.2 hv, LinearMap.mem_range_self L v⟩
+      · rintro ⟨hy, ⟨v, rfl⟩⟩
+        exact ⟨v, mem_closedBall_zero_iff.1 hy, rfl⟩
+    rw [hset, ← Measure.restrict_apply measurableSet_closedBall]
+    exact Submission.rsod_planeMeasure_closedBall n ℓ hn (LinearMap.range L) hrank t ht
+  -- (6) Lipschitz images: `Hⁿ(f(S)) ≤ Kⁿ Hⁿ(S)` for `K`-Lipschitz `f`.
+  have hlip : ∀ (K : ℝ≥0) (f : Amb n ℓ → Amb n ℓ) (s : Set (Amb n ℓ)), LipschitzOnWith K f s →
+      (μHE[n] : Measure (Amb n ℓ)) (f '' s) ≤ (K : ℝ≥0∞) ^ n * (μHE[n] : Measure (Amb n ℓ)) s := by
+    intro K f s hf
+    have h := hf.hausdorffMeasure_image_le (d := (n : ℝ)) (Nat.cast_nonneg n)
+    rw [ENNReal.rpow_natCast] at h
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, Measure.smul_apply,
+      ENNReal.smul_def, ENNReal.smul_def, smul_eq_mul, smul_eq_mul]
+    calc _ ≤ _ * ((K : ℝ≥0∞) ^ n * μH[(n : ℝ)] s) := by gcongr
+      _ = _ := by ring
+  have hpow : ∀ c : ℝ, 0 ≤ c → ((Real.toNNReal c : ℝ≥0) : ℝ≥0∞) ^ n = ENNReal.ofReal (c ^ n) :=
+    fun c hc => (ENNReal.ofReal_pow hc n).symm
+  have hω : 0 ≤ unitBallVolume n := by
+    unfold unitBallVolume
+    exact div_nonneg (Real.rpow_nonneg Real.pi_pos.le _) (Real.Gamma_pos_of_pos (by positivity)).le
+  rw [hΓ]
+  constructor
+  · -- Lower bound via `Ψ(z) = L(π z - x₀)`, which is `(1 - ε)⁻¹`-Lipschitz on `G(D)`.
+    let Ψ : Amb n ℓ → Amb n ℓ := fun z => L (π z - x₀)
+    have hΨlip : LipschitzOnWith (Real.toNNReal (1 - ε)⁻¹) Ψ (G '' D) := by
+      apply LipschitzOnWith.of_dist_le_mul
+      rintro _ ⟨x, hx, rfl⟩ _ ⟨x', hx', rfl⟩
+      simp only [Ψ, hπG]
+      rw [dist_eq_norm, dist_eq_norm, ← map_sub, sub_sub_sub_cancel_right,
+        Real.coe_toNNReal _ (inv_nonneg.2 h1ε.le)]
+      rw [inv_mul_eq_div, le_div_iff₀ h1ε, mul_comm]
+      exact hlow x (hDB hx) x' (hDB hx')
+    have himg : L '' E (r / (1 + ε)) ⊆ Ψ '' (G '' D) := by
+      rintro _ ⟨v, hv, rfl⟩
+      refine ⟨G (x₀ + v), ⟨x₀ + v, hED v hv, rfl⟩, ?_⟩
+      simp only [Ψ, hπG, add_sub_cancel_left]
+    have h1 : (μHE[n] : Measure (Amb n ℓ)) (L '' E (r / (1 + ε))) ≤
+        ((Real.toNNReal (1 - ε)⁻¹ : ℝ≥0) : ℝ≥0∞) ^ n * (μHE[n] : Measure (Amb n ℓ)) (G '' D) :=
+      (measure_mono himg).trans (hlip _ _ _ hΨlip)
+    rw [hplane _ (by positivity), hpow _ (inv_nonneg.2 h1ε.le)] at h1
+    have key : ENNReal.ofReal ((1 - ε) ^ n / (1 + ε) ^ n * (unitBallVolume n * r ^ n)) =
+        ENNReal.ofReal ((1 - ε) ^ n) * ENNReal.ofReal (unitBallVolume n * (r / (1 + ε)) ^ n) := by
+      rw [← ENNReal.ofReal_mul (by positivity)]
+      congr 1
+      rw [div_pow]
+      field_simp
+    rw [key]
+    calc ENNReal.ofReal ((1 - ε) ^ n) * ENNReal.ofReal (unitBallVolume n * (r / (1 + ε)) ^ n)
+        ≤ ENNReal.ofReal ((1 - ε) ^ n) *
+            (ENNReal.ofReal ((1 - ε)⁻¹ ^ n) * (μHE[n] : Measure (Amb n ℓ)) (G '' D)) := by
+          gcongr
+      _ = (μHE[n] : Measure (Amb n ℓ)) (G '' D) := by
+          rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity), ← mul_pow,
+            mul_inv_cancel₀ h1ε.ne', one_pow, ENNReal.ofReal_one, one_mul]
+  · -- Upper bound via `Φ(w) = G(x₀ + π w)`, which is `(1 + ε)`-Lipschitz on `L(E_{r/(1-ε)})`.
+    let Φ : Amb n ℓ → Amb n ℓ := fun w => G (x₀ + π w)
+    have hΦlip : LipschitzOnWith (Real.toNNReal (1 + ε)) Φ (L '' E (r / (1 - ε))) := by
+      apply LipschitzOnWith.of_dist_le_mul
+      rintro _ ⟨v, hv, rfl⟩ _ ⟨v', hv', rfl⟩
+      simp only [Φ, hπL]
+      rw [dist_eq_norm, dist_eq_norm, ← map_sub, Real.coe_toNNReal _ (by linarith)]
+      have h := hup (x₀ + v) (hEB _ hrη₀ v hv) (x₀ + v') (hEB _ hrη₀ v' hv')
+      rwa [add_sub_add_left_eq_sub] at h
+    have himg : G '' D ⊆ Φ '' (L '' E (r / (1 - ε))) := by
+      rintro _ ⟨x, hx, rfl⟩
+      refine ⟨L (x - x₀), ⟨x - x₀, hDE x hx, rfl⟩, ?_⟩
+      simp only [Φ, hπL, add_sub_cancel]
+    have h1 : (μHE[n] : Measure (Amb n ℓ)) (G '' D) ≤
+        ((Real.toNNReal (1 + ε) : ℝ≥0) : ℝ≥0∞) ^ n *
+          (μHE[n] : Measure (Amb n ℓ)) (L '' E (r / (1 - ε))) :=
+      (measure_mono himg).trans (hlip _ _ _ hΦlip)
+    rw [hplane _ (by positivity), hpow _ (by linarith)] at h1
+    refine h1.trans (le_of_eq ?_)
+    rw [← ENNReal.ofReal_mul (by positivity)]
+    congr 1
+    rw [div_pow]
+    field_simp
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
