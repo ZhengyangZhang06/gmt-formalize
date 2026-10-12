@@ -778,6 +778,60 @@ theorem Submission.indCompact_ball_integral_abs_le_of_test_bound : ∀ (N : ℕ)
   rw [hws] at hlim
   exact le_of_tendsto' hlim fun j ↦ hM (ψ j) (hψ j) (hψc j) (hψt j) (hψb j)
 
+/-- **Translation estimate for the indicator of a set with bounded perimeter in `B_{R+1}(0)`**
+(the `L¹` translation bound behind the compactness theorem for sets of locally bounded perimeter,
+Simon Ch. 2, Thm. 2.6, used in Ch. 3, proof of Thm. 4.3): if `∫_F div g ≤ C` for every `C¹`
+field `g` with compact support in `B_{R+1}(0)` and `|g| ≤ 1`, then
+`Lᴺ(B_R(0) ∩ (F_h Δ F)) ≤ C |h|` for `|h| ≤ 1`, where `F_h = {y : y + h ∈ F}`. With
+`w = 1_F(· + h) - 1_F` we have `Lᴺ(B_R(0) ∩ (F_h Δ F)) = ∫_{B_R(0)} |w|`, and for every `C¹`
+test function `ψ` with compact support in `B_R(0)` and `|ψ| ≤ 1`,
+`∫ w ψ = ∫_F (ψ(z - h) - ψ(z)) dz = -∫_0^1 ∫_F Dψ(z - t h)[h] dz dt ≤ C |h|`, since each inner
+integral is the integral over `F` of the divergence of the field `ψ(· - t h) h`. `L¹` duality on
+`B_R(0)` concludes. -/
+theorem Submission.indCompact_translation_estimate : ∀ (N : ℕ) (F : Set (Rn N)) (R C : ℝ), NullMeasurableSet F volume → (∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball (0 : Rn N) (R + 1) → (∀ y, ‖g y‖ ≤ 1) → ∫ y in F, Poincare.SimonGMT.Chapter02.euclideanDivergence g y ≤ C) → ∀ h : Rn N, ‖h‖ ≤ 1 → volume (Metric.ball (0 : Rn N) R ∩ symmDiff ((fun y ↦ y + h) ⁻¹' F) F) ≤ ENNReal.ofReal (C * ‖h‖) := by
+  intro N F R C hF hdiv h hh
+  -- `F_h = (· + h)⁻¹ F` is null-measurable, since `y ↦ y + h` preserves `Lᴺ`.
+  have hA : NullMeasurableSet ((fun y ↦ y + h) ⁻¹' F) volume :=
+    hF.preimage (measurePreserving_add_right volume h).quasiMeasurePreserving
+  -- Step 4. `Lᴺ(B_R(0) ∩ (F_h Δ F)) = ofReal ∫_{B_R(0)} |w|` with `w = 1_F(· + h) - 1_F`,
+  -- because `1_{F_h}(y) = 1_F(y + h)`. It remains to show `∫_{B_R(0)} |w| ≤ C |h|`.
+  rw [Submission.indCompact_transEst_volume_symmDiff_eq_integral N _ F R hA hF]
+  apply ENNReal.ofReal_le_ofReal
+  have hw : ∀ y, ((fun y ↦ y + h) ⁻¹' F).indicator (1 : Rn N → ℝ) y
+      = F.indicator (1 : Rn N → ℝ) (y + h) := fun y ↦ rfl
+  simp only [hw]
+  -- Step 6. `L¹` duality on `B_R(0)` with `M = C |h|`.
+  apply Submission.indCompact_ball_integral_abs_le_of_test_bound N
+    (fun y ↦ F.indicator (1 : Rn N → ℝ) (y + h) - F.indicator (1 : Rn N → ℝ) y) R (C * ‖h‖)
+  · -- `w` is a.e.-strongly measurable with `|w| ≤ 1`, and `Lᴺ(B_R(0)) < ∞`.
+    refine Measure.integrableOn_of_bounded (M := 1) measure_ball_lt_top.ne ?_ ?_
+    · have h1 : AEStronglyMeasurable (fun y ↦ F.indicator (1 : Rn N → ℝ) (y + h)) volume :=
+        (aestronglyMeasurable_const (b := (1 : ℝ))).indicator₀ hA
+      have h2 : AEStronglyMeasurable (fun y ↦ F.indicator (1 : Rn N → ℝ) y) volume :=
+        (aestronglyMeasurable_const (b := (1 : ℝ))).indicator₀ hF
+      exact h1.sub h2
+    · refine Eventually.of_forall fun y ↦ ?_
+      by_cases h1 : y + h ∈ F <;> by_cases h2 : y ∈ F <;> simp [h1, h2]
+  · -- Step 5. Fix a `C¹` test function `ψ` with compact support in `B_R(0)` and `|ψ| ≤ 1`.
+    intro ψ hψ hψs hψsub hψ1
+    -- (a) translation invariance and (b), (d) the fundamental theorem of calculus and Fubini:
+    -- `∫ w ψ = ∫_F (ψ(z - h) - ψ(z)) dz = -∫_0^1 ∫_F Dψ(z - t h)[h] dz dt`.
+    rw [Submission.indCompact_transEst_integral_indicator_shift_mul N F ψ h hF
+        (hψ.continuous.integrable_of_hasCompactSupport hψs),
+      Submission.indCompact_transEst_setIntegral_shift_sub_ftc N F ψ h hψ hψs]
+    -- (c) for `t ∈ (0, 1]`, `‖t h‖ ≤ 1`, so `|∫_F Dψ(z - t h)[h] dz| ≤ C |h|`; (e) integrate.
+    have hb : ‖∫ t in (0 : ℝ)..1, ∫ z in F, fderiv ℝ ψ (z - t • h) h‖ ≤ C * ‖h‖ * |1 - 0| := by
+      apply intervalIntegral.norm_integral_le_of_norm_le_const
+      intro t ht
+      rw [Real.norm_eq_abs]
+      apply Submission.indCompact_transEst_abs_setIntegral_fderiv_le N F R C hdiv ψ hψ hψs hψsub
+        hψ1 (t • h) h
+      rw [Set.uIoc_of_le zero_le_one] at ht
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos ht.1]
+      nlinarith [ht.2, norm_nonneg h]
+    rw [sub_zero, abs_one, mul_one, Real.norm_eq_abs] at hb
+    linarith [neg_le_abs (∫ t in (0 : ℝ)..1, ∫ z in F, fderiv ℝ ψ (z - t • h) h)]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
