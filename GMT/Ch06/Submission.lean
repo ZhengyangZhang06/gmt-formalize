@@ -409,6 +409,104 @@ theorem Submission.isoperimetric_coord_covector_eval : ∀ (n N : ℕ) (α : Sim
         rw [ite_eq_right hI, ite_eq_right hIα]
     rw [covectorEuclideanNorm, Finset.sum_congr rfl fun I _ => hs I, Finset.sum_ite_eq',
       ite_eq_left (Finset.mem_univ _), Real.sqrt_sq_eq_abs]
+/-- Smooth cut-off for a lattice face: for `ρ, δ > 0` there is a compactly supported smooth
+`φ : ℝ^N → [0, 1]` equal to `1` on the shrunken face
+`{x : ρ(zᵢ + δ) ≤ xᵢ ≤ ρ(zᵢ + 1 − δ) (i ∈ α), xᵢ = ρ zᵢ (i ∉ α)}` and vanishing on every other
+lattice face `ρ (z' + F_α)`, `z' ≠ z`, of the same direction `α`. -/
+theorem Submission.isoperimetric_lattice_face_cutoff :
+    ∀ (n N : ℕ) (ρ δ : ℝ) (z : Fin N → ℤ) (α : SimonMultiIndex n N), 0 < ρ → 0 < δ →
+      ∃ φ : Eucl N → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ ∧ HasCompactSupport φ ∧
+        (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) ∧
+        (∀ x : Eucl N, (∀ i : Fin N,
+          (i ∈ range α → ρ * ((z i : ℝ) + δ) ≤ x i ∧ x i ≤ ρ * ((z i : ℝ) + 1 - δ)) ∧
+          (i ∉ range α → x i = ρ * (z i : ℝ))) → φ x = 1) ∧
+        ∀ z' : Fin N → ℤ, z' ≠ z → ∀ x ∈ latticeFace ρ ((z', α) : LatticeFaceIndex n N),
+          φ x = 0 := by
+  intro n N ρ δ z α hρ hδ
+  -- `K`: the shrunken face; `L ⊇ O ⊇ K`: a closed and an open enlarged box (margins `ρδ/2`
+  -- along `range α`, transversal slab of half-width `ρ/2`).
+  set K : Set (Eucl N) := {x | ∀ i : Fin N,
+    (i ∈ range α → ρ * ((z i : ℝ) + δ) ≤ x i ∧ x i ≤ ρ * ((z i : ℝ) + 1 - δ)) ∧
+    (i ∉ range α → x i = ρ * (z i : ℝ))} with hK
+  set L : Set (Eucl N) := {x | ∀ i : Fin N,
+    (i ∈ range α → ρ * ((z i : ℝ) + δ / 2) ≤ x i ∧ x i ≤ ρ * ((z i : ℝ) + 1 - δ / 2)) ∧
+    (i ∉ range α → |x i - ρ * (z i : ℝ)| ≤ ρ / 2)} with hL
+  set O : Set (Eucl N) := {x | ∀ i : Fin N,
+    (i ∈ range α → ρ * ((z i : ℝ) + δ / 2) < x i ∧ x i < ρ * ((z i : ℝ) + 1 - δ / 2)) ∧
+    (i ∉ range α → |x i - ρ * (z i : ℝ)| < ρ / 2)} with hO
+  have hc : ∀ i : Fin N, Continuous fun x : Eucl N => x i := fun i => PiLp.continuous_apply 2 _ i
+  -- Step 1: `K` and `L` are closed, `O` is open.
+  have hKc : IsClosed K := by
+    rw [hK, ofPred_forall]
+    refine isClosed_iInter fun i => ?_
+    by_cases hi : i ∈ range α
+    · simp only [hi, not_true_eq_false, IsEmpty.forall_iff, and_true, forall_const]
+      exact (isClosed_le continuous_const (hc i)).inter (isClosed_le (hc i) continuous_const)
+    · simp only [hi, IsEmpty.forall_iff, not_false_eq_true, forall_const, true_and]
+      exact isClosed_eq (hc i) continuous_const
+  have hLc : IsClosed L := by
+    rw [hL, ofPred_forall]
+    refine isClosed_iInter fun i => ?_
+    by_cases hi : i ∈ range α
+    · simp only [hi, not_true_eq_false, IsEmpty.forall_iff, and_true, forall_const]
+      exact (isClosed_le continuous_const (hc i)).inter (isClosed_le (hc i) continuous_const)
+    · simp only [hi, IsEmpty.forall_iff, not_false_eq_true, forall_const, true_and]
+      exact isClosed_le (((hc i).sub continuous_const).abs) continuous_const
+  have hOo : IsOpen O := by
+    rw [hO, ofPred_forall]
+    refine isOpen_iInter_of_finite fun i => ?_
+    by_cases hi : i ∈ range α
+    · simp only [hi, not_true_eq_false, IsEmpty.forall_iff, and_true, forall_const]
+      exact (isOpen_lt continuous_const (hc i)).inter (isOpen_lt (hc i) continuous_const)
+    · simp only [hi, IsEmpty.forall_iff, not_false_eq_true, forall_const, true_and]
+      exact isOpen_lt (((hc i).sub continuous_const).abs) continuous_const
+  -- Step 2: `K ⊆ O ⊆ L`, hence `K ⊆ interior L`.
+  have hKO : K ⊆ O := by
+    intro x hx i
+    refine ⟨fun hi => ?_, fun hi => ?_⟩
+    · obtain ⟨h1, h2⟩ := (hx i).1 hi
+      constructor <;> nlinarith
+    · rw [(hx i).2 hi, sub_self, abs_zero]
+      positivity
+  have hOL : O ⊆ L := by
+    intro x hx i
+    exact ⟨fun hi => ⟨((hx i).1 hi).1.le, ((hx i).1 hi).2.le⟩, fun hi => ((hx i).2 hi).le⟩
+  have hKL : K ⊆ interior L := hKO.trans (interior_maximal hOL hOo)
+  -- Step 3: `L` is compact, being a closed subset of a compact coordinate box.
+  have hLk : IsCompact L := by
+    have hB : IsCompact (WithLp.toLp 2 '' (univ.pi fun i : Fin N =>
+        Icc (ρ * (z i : ℝ) - ρ) (ρ * (z i : ℝ) + ρ)) : Set (Eucl N)) :=
+      (isCompact_univ_pi fun i => isCompact_Icc).image (PiLp.continuous_toLp 2 _)
+    refine hB.of_isClosed_subset hLc fun x hx =>
+      ⟨WithLp.ofLp x, fun i _ => ?_, WithLp.toLp_ofLp 2 x⟩
+    by_cases hi : i ∈ range α
+    · obtain ⟨h1, h2⟩ := (hx i).1 hi
+      constructor <;> nlinarith
+    · have h := abs_le.1 ((hx i).2 hi)
+      constructor <;> nlinarith
+  -- Steps 4–5: the smooth Urysohn function for `K ⊆ interior L`; it vanishes off the compact `L`.
+  obtain ⟨f, hf1, hf0, hf01⟩ := exists_contMDiffMap_one_nhds_of_subset_interior
+    (modelWithCornersSelf ℝ (Eucl N)) (n := (⊤ : ℕ∞)) hKc hKL
+  refine ⟨f, contMDiff_iff_contDiff.1 f.contMDiff, HasCompactSupport.intro hLk hf0,
+    fun x => hf01 x, fun x hx => hf1.self_of_nhdsSet x hx, ?_⟩
+  -- Step 6: every point of another face of direction `α` lies outside `L`.
+  intro z' hz' x hx
+  apply hf0
+  intro hxL
+  obtain ⟨i, hi⟩ := Function.ne_iff.1 hz'
+  have hzi : (z' i : ℝ) + 1 ≤ z i ∨ (z i : ℝ) + 1 ≤ z' i := by
+    rcases lt_or_gt_of_ne hi with h | h
+    · exact Or.inl (by exact_mod_cast h)
+    · exact Or.inr (by exact_mod_cast h)
+  simp only [latticeFace, mem_ofPred_eq] at hx
+  by_cases hA : i ∈ range α
+  · obtain ⟨h1, h2⟩ := (hx i).1 hA
+    obtain ⟨h3, h4⟩ := (hxL i).1 hA
+    rcases hzi with h | h <;> nlinarith
+  · have h1 := (hx i).2 hA
+    have h3 := abs_le.1 ((hxL i).2 hA)
+    rw [h1] at h3
+    rcases hzi with h | h <;> nlinarith
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
