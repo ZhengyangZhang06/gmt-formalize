@@ -1,0 +1,145 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tilt_excess_decay-a1.lp_monotonicity-a1`
+- Child DAG node: `root.tilt_excess_decay-a1.lp_monotonicity-a1.fixed_cutoff_monotone-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Ch. 4, 3.4-3.5 and 4.3-4.4; Steps 2(d), 2(e) and 4 of the parent proof for one fixed cutoff phi (the parent's phi_eps with T = 1 + eps), with the curvature bound of Step 3 taken as the hypothesis |a| <= M t^{-beta}. Notation: r(x) := |x - y|, phi' := deriv phi, L(t) := integral phi(r/t)(x - y).H dmu, D := (0, S/T). Since T > 0, a number rho lies in D iff rho > 0 and T rho < S. If S <= 0 then D is empty and both assertions hold trivially; the argument below does not need this case distinction.
+
+1. Properties of phi.
+ (a) phi >= 0: if s >= T then phi(s) = 0; if s <= T then phi(s) >= phi(T) = 0 because phi is nonincreasing.
+ (b) For u >= 0, phi(u) <= phi(0).
+ (c) phi' is continuous (phi is C^1), and phi'(s) = 0 for s > T, because phi vanishes on the open neighbourhood (T, infinity) of s.
+ (d) There is C >= 0 with |u phi'(u)| <= C for all u >= 0: let C_0 bound |phi'| on the compact interval [0, T] (continuity) and C := T max(C_0, 0); for 0 <= u <= T, |u phi'(u)| <= T |phi'(u)| <= C, and for u > T, u phi'(u) = 0 by (c).
+ (e) For c real and t != 0, u -> phi(c/u) has derivative -(c/t) phi'(c/t)/t at u = t (chain rule, d/du (c/u) = -c/u^2).
+
+2. Localisation to the finite measure nu := mu restricted to B_S(y). nu is finite and H is nu-integrable. Let t be in D. If x is not in B_S(y) then r(x) > S > T t, so r(x)/t > T and phi(r/t) = 0, phi'(r/t) = 0 by (c). Therefore I(t) = integral phi(r/t) dnu, L(t) = integral phi(r/t)(x - y).H dnu, and the integrand of (R) at rho = t vanishes off B_S(y), so its mu-integral equals its nu-integral.
+
+3. I is differentiable on D. Fix rho in D. For t in the neighbourhood (rho/2, S/T) of rho and every x, F(t, x) := phi(r(x)/t) has t-derivative F'(t, x) = -(r/t) phi'(r/t)/t by 1(e), and |F'(t, x)| <= C/t <= 2C/rho by 1(d). Each x -> F(t, x) is continuous (hence a.e. strongly measurable), x -> F(rho, x) is bounded by phi(0) (1(a),(b)) hence nu-integrable, x -> F'(rho, x) is continuous, and the constant 2C/rho is nu-integrable. By differentiation under the integral sign (hasDerivAt_integral_of_dominated_loc_of_deriv_le), t -> integral F(t, x) dnu has derivative integral F'(rho, x) dnu at rho. This function equals I on D (step 2), so
+ I'(rho) = integral F'(rho, x) dnu = -(1/rho) integral (r/rho) phi'(r/rho) dnu.
+
+4. L is continuous on D. Fix rho in D. For t > 0 and x in B_S(y), |phi(r/t)(x - y).H(x)| <= phi(0) |x - y| |H(x)| <= phi(0) S |H(x)|, a nu-integrable bound; the integrands are a.e. strongly measurable (continuous function times the measurable (x - y).H); and for each x the map t -> phi(r(x)/t)(x - y).H(x) is continuous at rho > 0. By continuity of parametric integrals (continuousAt_of_dominated), t -> integral phi(r/t)(x - y).H dnu is continuous at rho; it equals L on D (step 2).
+
+5. Key inequality: L(rho) <= rho I'(rho) - n I(rho) for rho in D. By (R) and step 2, integral [n phi(r/rho) + (r/rho) phi'(r/rho)] dnu <= -L(rho). Both summands are continuous and bounded (by n phi(0) and by C), hence nu-integrable, so by linearity the left side equals n I(rho) + integral (r/rho) phi'(r/rho) dnu = n I(rho) - rho I'(rho) (step 3).
+
+6. a is continuous on D. Since phi >= 0, I >= 0, so 1 + I(t)/t^n >= 1 for t > 0. For rho in D, L is continuous at rho (step 4), I is continuous at rho (differentiable, step 3), and t -> t^{n+1}, t -> t^n are continuous and nonzero at rho; hence a = L/t^{n+1}/(1 + I/t^n) is continuous at rho. This is the first assertion.
+
+7. Fundamental theorem of calculus. Let A(rho) := integral_0^rho a(t) dt. For rho in D the function a is interval integrable on [0, rho]: on (0, rho] it is continuous (step 6), hence a.e. strongly measurable, and |a(t)| <= M t^{-beta} there (because T t < S for t <= rho), while t -> M t^{-beta} is integrable on (0, rho] since -beta > -1 (intervalIntegrable_rpow'). Moreover a is continuous at rho and strongly measurable at the neighbourhood filter of rho (it is continuous on the open set D). By intervalIntegral.integral_hasDerivAt_right, A has derivative a(rho) at rho.
+
+8. Derivative of Psi. Let rho be in D and E := exp(-A(rho)) > 0. By the chain, product and quotient rules,
+ Psi'(rho) = E (-a(rho)) (1 + I(rho)/rho^n) + E (I'(rho) rho^n - I(rho) n rho^{n-1})/rho^{2n}.
+ Here a(rho)(1 + I(rho)/rho^n) = L(rho)/rho^{n+1} (the denominator is nonzero) and (I' rho^n - n I rho^{n-1})/rho^{2n} = (rho I' - n I)/rho^{n+1} (use n rho^{n-1} = n rho^n/rho, valid also for n = 0). Hence
+ Psi'(rho) = E (rho I'(rho) - n I(rho) - L(rho))/rho^{n+1} >= 0 by step 5.
+
+9. Conclusion. D is an open interval, hence convex with interior D. Psi is differentiable (so continuous) at every point of D with nonnegative derivative (step 8). By the monotonicity criterion (monotoneOn_of_deriv_nonneg), Psi is monotone (nondecreasing) on D. This is the second assertion.
+
+## Key steps
+
+1. phi >= 0, phi(u) <= phi(0) for u >= 0, phi' continuous, phi' = 0 on (T, infinity), and |u phi'(u)| <= C for u >= 0.
+2. For rho in (0, S/T) every integrand vanishes off B_S(y), so I, L and the radial inequality can be computed with the finite measure nu = mu restricted to B_S(y).
+3. Differentiation under the integral sign (bound 2C/rho on (rho/2, S/T)): I'(rho) = -(1/rho) integral (r/rho) phi'(r/rho) dnu; L is continuous (bound phi(0) S |H|).
+4. The radial inequality (R) becomes L(rho) <= rho I'(rho) - n I(rho); since 1 + I/t^n >= 1, a is continuous on (0, S/T).
+5. FTC: a is interval integrable on [0, rho] (|a| <= M t^{-beta}, beta < 1) and continuous at rho, so (integral_0^rho a)' = a(rho).
+6. Psi'(rho) = exp(-integral_0^rho a) (rho I' - n I - L)/rho^{n+1} >= 0, so Psi is monotone on the convex open set (0, S/T).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json; cmp /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean; cmp /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `rg -n 'ted_lpm_|ted_lp_monotonicity|aal_radial_first_variation_identity' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project (no match)`
+- `rg -n 'theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le|theorem continuousAt_of_dominated|theorem integral_hasDerivAt_right|theorem intervalIntegrable_rpow\'|theorem monotoneOn_of_deriv_nonneg|theorem lintegral_mul_le_Lp_mul_Lq|theorem tendsto_integral_of_dominated_convergence|theorem tendsto_integral_filter_of_dominated_convergence|theorem integral_rpow|theorem IntegrableOn.integrable_of_forall_notMem_eq_zero|theorem LocallyIntegrableOn.integrableOn_compact_subset|theorem withDensity_apply|theorem isBoundedBilinearMap_apply|lemma starProjection_orthogonal\'|theorem norm_starProjection_apply_le|theorem abs_exp_sub_one_le|theorem add_one_le_exp|theorem norm_integral_le_of_norm_le|theorem norm_integral_le_lintegral_norm|protected theorem contDiff|protected theorem monotone|theorem zero_of_nonpos|theorem one_of_one_le' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory`
+- `python3 -I scan of dag.json: lean_name/status/lean_statement of every node; grep -rl 'ted_lpm_' nodes dag.json and all local branch heads (no match)`
+- `python3 -I: string equality of the reused aal_radial_first_variation_identity type in dag.json, its accepted-candidate.json and its parent-child-handoff.json; equality of ted_lpm_curvature_holder with the accepted dohr leaf's local Hoelder step and with aal_curvature_pairing_holder_bound`
+- `git show 4c0fc30d6a1cd4ba43b449f2e51583e4e473c461:GMT/Ch05/Submission.lean (accepted leaf dohr_local_monotonicity); git show 98ff8ad3107f7a51f470ffbc3f8c9bf681f15676:GMT/Ch05/Submission.lean (accepted aal_radial_first_variation_identity); git show a8902dc6b193b40a3329c4ecc57e245a8e3c2b7c:GMT/Ch05/Submission.lean (accepted ted_tangent_plane_facts)`
+- `sed -n on /runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/{runtime.py,store.py,leaf_verification.py,issue_workers.py} (reuse check _existing_lean_name_problem, _accepted_checkpoint, Store.refresh, leaf source-delta rules)`
+- `python3 -I validate_lean_statement (verifier/lean_contract.py) on all four child types`
+- `lean /tmp/ted-lpm-decomp/checks/Types.lean (child types in the comparator's NodeChallenge form, contract scope)`
+- `lean /tmp/ted-lpm-decomp/checks/Assembly.lean and AssemblyAx.lean (#print axioms GMT.Ch05.Submission.ted_lp_monotonicity)`
+- `lean /tmp/ted-lpm-decomp/checks/B3prof.lean (profiler) and B3hb.lean (ted_lpm_abstract_monotonicity under default maxHeartbeats)`
+- `lean /tmp/ted-lpm-decomp/checks/Full.lean (#print axioms for the three new children and ted_lp_monotonicity)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrability/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Complex/Exponential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1-radial-first-variation-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1-radial-first-variation-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1-radial-first-variation-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-monotonicity-a1/decomposition-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-local-monotonicity-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/accepted-candidate.json`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/leaf_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/ted-lpm-decomp/checks/Types.lean`
+- `/tmp/ted-lpm-decomp/checks/Assembly.lean`
+- `/tmp/ted-lpm-decomp/checks/AssemblyAx.lean`
+- `/tmp/ted-lpm-decomp/checks/B3hb.lean`
+- `/tmp/ted-lpm-decomp/checks/Full.lean`
+
+Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json). Its project GMT/Ch05/Contract.lean and Submission.lean are byte-identical (cmp) to the workspace Contract.lean.
+
+No-match results:
+- The snapshot project has no declaration named ted_lpm_*, ted_lp_monotonicity or aal_radial_first_variation_identity.
+- 'ted_lpm_' occurs nowhere in the run's nodes/, dag.json or any local branch head, so the three new names are globally unused.
+
+Reused declaration: aal_radial_first_variation_identity is an accepted checkpoint.
+- dag.json: status accepted, candidate 98ff8ad3; comparator log "Your solution is okay!".
+- Its lean_statement is string-identical in dag.json, accepted-candidate.json and its parent-child-handoff.json, and identical to the type proposed here.
+
+Other DAG findings:
+- dohr_local_monotonicity (accepted, leaf commit 4c0fc30d) proves a weaker monotonicity: Lambda <= 1, |F - 1| <= Lambda, open interval (0, R). It cannot yield the selected statement, but its internal steps were the template for the Lean validation.
+- aal_curvature_pairing_holder_bound has the same type as ted_lpm_curvature_holder. It became accepted only at 10:15:26Z, after this worker's last in-memory DAG refresh, so it is not reused (runtime.py _existing_lean_name_problem / store.py refresh semantics).
+
+Mathlib items located (paths under mathlib/Mathlib):
+- hasDerivAt_integral_of_dominated_loc_of_deriv_le (Analysis/Calculus/ParametricIntegral.lean:286)
+- continuousAt_of_dominated (MeasureTheory/Integral/Bochner/Basic.lean:458)
+- norm_integral_le_lintegral_norm (Bochner/Basic.lean:328)
+- monotoneOn_of_deriv_nonneg (Analysis/Calculus/Deriv/MeanValue.lean:411)
+- ENNReal.lintegral_mul_le_Lp_mul_Lq (MeasureTheory/Integral/MeanInequalities.lean:202)
+- tendsto_integral_of_dominated_convergence (MeasureTheory/Integral/DominatedConvergence.lean:57)
+- intervalIntegral.tendsto_integral_filter_of_dominated_convergence (DominatedConvergence.lean:170)
+- intervalIntegral.integral_hasDerivAt_right (IntervalIntegral/FundThmCalculus.lean:725)
+- intervalIntegral.norm_integral_le_of_norm_le (IntervalIntegral/Basic.lean:756)
+- intervalIntegrable_rpow' (Analysis/SpecialFunctions/Integrability/Basic.lean:47)
+- integral_rpow (Analysis/SpecialFunctions/Integrals/Basic.lean:146)
+- Real.smoothTransition one_of_one_le / zero_of_nonpos / contDiff / monotone (Analysis/SpecialFunctions/SmoothTransition.lean:161, 168, 205, 222)
+- Real.abs_exp_sub_one_le and Real.add_one_le_exp (Analysis/Complex/Exponential.lean:533, 632)
+- IntegrableOn.integrable_of_forall_notMem_eq_zero (MeasureTheory/Integral/IntegrableOn.lean:453)
+- LocallyIntegrableOn.integrableOn_compact_subset (MeasureTheory/Function/LocallyIntegrable.lean:122)
+- withDensity_apply (MeasureTheory/Measure/WithDensity.lean:44)
+- starProjection_orthogonal' and norm_starProjection_apply_le (Analysis/InnerProductSpace/Projection/Basic.lean:223, 411)
+- isBoundedBilinearMap_apply (Analysis/Normed/Operator/BoundedLinearMaps.lean:391)
+Real.exp_one_lt_d9 is not in the contract's import closure; Real.abs_exp_sub_one_le is used instead.
+
+Lean checks:
+- Types.lean: all child types elaborate in the comparator's contract scope.
+- Assembly.lean / AssemblyAx.lean: sorry-free parent assembly with axioms {propext, Classical.choice, Quot.sound, the three used declarations}.
+- Full.lean: complete proofs of ted_lpm_curvature_holder, ted_lpm_fixed_cutoff_monotone and ted_lpm_abstract_monotonicity, each with axioms {propext, Classical.choice, Quot.sound}, each a single theorem within default heartbeats.
