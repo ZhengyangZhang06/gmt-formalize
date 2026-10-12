@@ -478,6 +478,139 @@ theorem Submission.polyhedral_approx_pairing_expansion : ∀ (P n : ℕ) (w : NV
         congrArg w hc
     _ = _ := by simp only [map_sum, map_smul, smul_eq_mul]
 
+/-- **Simon Ch. 6, (2.9) (p. 136).**  Restrictions `T ⌞ A` exist for every measure representation
+`(μ, v)` of `T` and Borel `A`, and every restriction has locally finite mass.  For compact
+`K ⊆ U`, testing `T` with `χ_K dx^I` (`χ_K` a smooth cut-off equal to `1` on `K`) shows that the
+coordinates `v(·)(dx^I)` are `μ`-integrable on `K`; by `polyhedral_approx_pairing_expansion`,
+`|⟨α, v(x)⟩| ≤ b ∑_I |v(x)(dx^I)|` whenever every coefficient satisfies `|α_I| ≤ b`.  Taking
+`b = ‖α‖` gives the sequential continuity of `ω ↦ ∫_A ⟨ω, v⟩ dμ`; taking `b = 1` bounds `S(ω)` by
+`∫_{closure W} ∑_I |v(·)(dx^I)| dμ` for every `ω` admissible for `M_W`. -/
+theorem Submission.polyhedral_approx_restriction_exists : ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U n, (∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ v → ∀ A : Set (Eucl P), MeasurableSet A → ∃ S : GeometricCurrentOn U n, IsRestriction T A S) ∧ ∀ (A : Set (Eucl P)) (S : GeometricCurrentOn U n), IsRestriction T A S → ∀ W : Set (Eucl P), CompactlyContainedOpen W U → S.massOn W < ∞ := by
+  intro P n U hU T
+  -- `|α_I| = |α(e_{I 0}, …, e_{I (n-1)})| ≤ ‖α‖`.
+  have coord_le : ∀ (α : Covector (Eucl P) n) (I : SimonMultiIndex n P),
+      |euclideanCovectorCoordinate α I| ≤ ‖α‖ := by
+    intro α I
+    calc |euclideanCovectorCoordinate α I|
+        = ‖α (fun j => EuclideanSpace.single (I j) (1 : ℝ))‖ := (Real.norm_eq_abs _).symm
+      _ ≤ ‖α‖ * ∏ j, ‖EuclideanSpace.single (I j) (1 : ℝ)‖ := α.le_opNorm _
+      _ = ‖α‖ := by simp
+  -- For a representation `(μ, v)` and a compact `K ⊆ U`, the coordinates `v(·)(dx^I)` are
+  -- `μ`-integrable on `K`, and `G = ∑_I |v(·)(dx^I)|` dominates the pairing.
+  have key : ∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n),
+      IsMeasureRepresentation T μ v → ∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+      ∃ G : Eucl P → ℝ, (∀ x, 0 ≤ G x) ∧ IntegrableOn G K μ ∧
+        ∀ (x : Eucl P) (α : Covector (Eucl P) n) (b : ℝ),
+          (∀ I : SimonMultiIndex n P, |euclideanCovectorCoordinate α I| ≤ b) →
+            |v x α| ≤ b * G x := by
+    intro μ v hrep K hK hKU
+    -- A smooth cut-off `χ`, equal to `1` on `K`, with `tsupport χ ⊆ cthickening r K ⊆ U`.
+    obtain ⟨r, hr, hrU⟩ := hK.exists_cthickening_subset_open hU hKU
+    obtain ⟨χ, hχ, -, hχs, hχK⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
+      (isOpen_thickening (δ := r) (E := K)) hK.isClosed (self_subset_thickening hr K)
+    have hχt : tsupport χ ⊆ cthickening r K := by
+      rw [tsupport, hχs]
+      exact closure_thickening_subset_cthickening r K
+    have hcoord : ∀ I : SimonMultiIndex n P, IntegrableOn
+        (fun x => v x (wedgeCovectors n (fun j => EuclideanSpace.proj (I j)))) K μ := by
+      intro I
+      have hmem : (fun x => χ x • wedgeCovectors n (fun j => EuclideanSpace.proj (I j)) :
+          DifferentialForm (Eucl P) n) ∈ testFormOnSubmodule (E := Eucl P) U n :=
+        ⟨⟨hχ.smul contDiff_const, hK.cthickening.of_isClosed_subset (isClosed_tsupport _)
+            ((tsupport_smul_subset_left _ _).trans hχt)⟩,
+          (tsupport_smul_subset_left _ _).trans (hχt.trans hrU)⟩
+      refine (hrep ⟨_, hmem⟩).1.integrableOn.congr_fun (fun x hx => ?_)
+        hK.isClosed.measurableSet
+      show v x (χ x • _) = v x _
+      rw [(hχK x).1 hx, one_smul]
+    refine ⟨fun x => ∑ I : SimonMultiIndex n P,
+        |v x (wedgeCovectors n (fun j => EuclideanSpace.proj (I j)))|,
+      fun x => Finset.sum_nonneg fun I _ => abs_nonneg _,
+      integrable_finsetSum _ fun I _ => (hcoord I).abs, ?_⟩
+    intro x α b hb
+    beta_reduce
+    rw [(Submission.polyhedral_approx_pairing_expansion P n (v x) α).1, Finset.mul_sum]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun I _ => ?_)
+    rw [abs_mul]
+    exact mul_le_mul_of_nonneg_right (hb I) (abs_nonneg _)
+  refine ⟨fun μ v hrep A hA => ?_, fun A S hS W hW => ?_⟩
+  · -- (a) `S(ω) = ∫_A ⟨ω, v⟩ dμ` is linear and sequentially continuous.
+    let L : TestFormOn U n →ₗ[ℝ] ℝ :=
+      { toFun := fun ω => ∫ x in A, v x ((ω : DifferentialForm (Eucl P) n) x) ∂μ
+        map_add' := fun ω η => by
+          simp only [Submodule.coe_add, Pi.add_apply, map_add]
+          exact integral_add (hrep ω).1.integrableOn (hrep η).1.integrableOn
+        map_smul' := fun c ω => by
+          simp only [Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul, RingHom.id_apply]
+          exact integral_const_mul c _ }
+    refine ⟨⟨L, fun ωs hconv => ?_⟩, hA, μ, v, hrep, fun ω => rfl⟩
+    obtain ⟨K, hK, hKU, hsupp, -, hder⟩ := hconv
+    obtain ⟨G, hG0, hGint, hGb⟩ := key μ v hrep K hK hKU
+    have hKm : MeasurableSet K := hK.isClosed.measurableSet
+    have hC0 : 0 ≤ ∫ x in K, G x ∂μ := setIntegral_nonneg hKm fun x _ => hG0 x
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    have hδ : 0 < ε / ((∫ x in K, G x ∂μ) + 1) := div_pos hε (by linarith)
+    -- Eventually `‖ω_j(x)‖ < δ` on `K`, and `ω_j = 0` off `K`.
+    filter_upwards [Metric.tendstoUniformlyOn_iff.1 (hder 0) _ hδ] with j hj
+    have hbound : ∀ x, ‖v x ((ωs j : DifferentialForm (Eucl P) n) x)‖ ≤
+        ε / ((∫ x in K, G x ∂μ) + 1) * K.indicator G x := by
+      intro x
+      by_cases hx : x ∈ K
+      · have hjx := hj x hx
+        rw [Submodule.coe_zero, iteratedFDeriv_zero, Pi.zero_apply, dist_zero_left,
+          norm_iteratedFDeriv_zero] at hjx
+        rw [indicator_of_mem hx, Real.norm_eq_abs]
+        exact (hGb x _ _ fun I => coord_le _ I).trans
+          (mul_le_mul_of_nonneg_right hjx.le (hG0 x))
+      · have h0 : (ωs j : DifferentialForm (Eucl P) n) x = 0 :=
+          image_eq_zero_of_notMem_tsupport fun h => hx (hsupp j h)
+        rw [h0, map_zero, norm_zero, indicator_of_notMem hx, mul_zero]
+    have hint : Integrable (fun x => ε / ((∫ x in K, G x ∂μ) + 1) * K.indicator G x) μ :=
+      (IntegrableOn.integrable_indicator hGint hKm).const_mul _
+    rw [dist_zero_right]
+    calc ‖∫ x in A, v x ((ωs j : DifferentialForm (Eucl P) n) x) ∂μ‖
+        ≤ ∫ x in A, ε / ((∫ x in K, G x ∂μ) + 1) * K.indicator G x ∂μ :=
+          norm_integral_le_of_norm_le hint.integrableOn (ae_of_all _ hbound)
+      _ ≤ ∫ x, ε / ((∫ x in K, G x ∂μ) + 1) * K.indicator G x ∂μ :=
+          integral_mono_measure Measure.restrict_le_self
+            (ae_of_all _ fun x => mul_nonneg hδ.le (indicator_nonneg (fun y _ => hG0 y) x)) hint
+      _ = ε / ((∫ x in K, G x ∂μ) + 1) * ∫ x in K, G x ∂μ := by
+          rw [integral_const_mul, integral_indicator hKm]
+      _ < ε := by
+          rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+          nlinarith
+  · -- (b) For `ω` admissible for `M_W`, `S(ω) ≤ ∫_{closure W} G dμ`.
+    obtain ⟨-, μ, v, hrep, hSω⟩ := hS
+    obtain ⟨-, hWc, hWU⟩ := hW
+    obtain ⟨G, hG0, hGint, hGb⟩ := key μ v hrep (closure W) hWc hWU
+    have hKm : MeasurableSet (closure W) := isClosed_closure.measurableSet
+    have hint : Integrable ((closure W).indicator G) μ :=
+      IntegrableOn.integrable_indicator hGint hKm
+    refine lt_of_le_of_lt (sSup_le ?_) (ENNReal.ofReal_lt_top (r := ∫ x in closure W, G x ∂μ))
+    rintro _ ⟨ω, ⟨hωW, hω1⟩, rfl⟩
+    refine ENNReal.ofReal_le_ofReal ?_
+    have hbound : ∀ x, ‖v x ((ω : DifferentialForm (Eucl P) n) x)‖ ≤
+        (closure W).indicator G x := by
+      intro x
+      by_cases hx : x ∈ closure W
+      · rw [indicator_of_mem hx, Real.norm_eq_abs]
+        have h := hGb x ((ω : DifferentialForm (Eucl P) n) x) 1
+          fun I => ((Submission.polyhedral_approx_pairing_expansion P n (v x) _).2 I).trans (hω1 x)
+        rwa [one_mul] at h
+      · have h0 : (ω : DifferentialForm (Eucl P) n) x = 0 :=
+          image_eq_zero_of_notMem_tsupport fun h => hx (subset_closure (hωW h))
+        rw [h0, map_zero, norm_zero, indicator_of_notMem hx]
+    rw [hSω ω]
+    calc ∫ x in A, v x ((ω : DifferentialForm (Eucl P) n) x) ∂μ
+        ≤ ‖∫ x in A, v x ((ω : DifferentialForm (Eucl P) n) x) ∂μ‖ := Real.le_norm_self _
+      _ ≤ ∫ x in A, (closure W).indicator G x ∂μ :=
+          norm_integral_le_of_norm_le hint.integrableOn (ae_of_all _ hbound)
+      _ ≤ ∫ x, (closure W).indicator G x ∂μ :=
+          integral_mono_measure Measure.restrict_le_self
+            (ae_of_all _ (indicator_nonneg fun y _ => hG0 y)) hint
+      _ = ∫ x in closure W, G x ∂μ := integral_indicator hKm
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
