@@ -2254,6 +2254,167 @@ theorem tae_c1_chart_image_approxTangent : ∀ {n ℓ : ℕ} (G : Rn n → Amb n
   · rintro x ⟨w, hw, rfl⟩
     simp only [hψG w hw]
     exact htan w hw
+/-- **Simon Ch. 3, Remark 1.8(1), first assertion, localized to `U`** (Lusin decomposition of a
+rectifiable varifold): the carrier `M` of `V = v(M, θ)` is, up to an `Hⁿ`-null set, a countable
+union of compact sets `C ⊆ M` on each of which `θ` is continuous.  Proof: exhaust `U` by compact
+sets `K m`; pass to a Borel `M' ⊆ M` of full measure and a Borel representative `g` of `θ`, equal
+to `θ` off a Borel `Hⁿ`-null set `Z`; `μ_V ⌞ K m` is finite because `θ` is integrable on
+`M ∩ K m`, so Lusin's theorem (Simon 1.17, proved inline through rational intervals and closed
+inner regularity of finite measures) gives closed, hence compact, `C m i ⊆ A m = (M' ∩ K m) \ Z`
+on which `θ = g` is continuous, with leftover `μ_V`-mass `< 1/i`; the leftover
+`A m \ ⋃ i, C m i` is `μ_V`-null, hence `Hⁿ`-null because `θ > 0` on `M`. -/
+theorem tae_mult_lusin_compact_pieces : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), IsOpen U → ∃ C : ℕ → Set (Amb n ℓ), (∀ i, IsCompact (C i) ∧ C i ⊆ V.carrier ∧ ContinuousOn V.mult (C i)) ∧ (μHE[n] : Measure (Amb n ℓ)) (V.carrier \ ⋃ i, C i) = 0 := by
+  intro n ℓ U V hU
+  -- Step 1: a compact exhaustion `K m` of `U`.
+  obtain ⟨F, hFclosed, hFsub, hFU, hFmono⟩ := hU.exists_iUnion_isClosed
+  set K : ℕ → Set (Amb n ℓ) := fun m => F m ∩ closedBall 0 m
+  have hKc : ∀ m, IsCompact (K m) := fun m =>
+    (isCompact_closedBall (0 : Amb n ℓ) m).of_isClosed_subset
+      ((hFclosed m).inter isClosed_closedBall) inter_subset_right
+  have hKU : ∀ m, K m ⊆ U := fun m => inter_subset_left.trans (hFsub m)
+  have hKcover : ∀ x ∈ U, ∃ m, x ∈ K m := by
+    intro x hx
+    rw [← hFU] at hx
+    obtain ⟨m, hm⟩ := mem_iUnion.1 hx
+    obtain ⟨k, hk⟩ := exists_nat_ge ‖x‖
+    refine ⟨max m k, hFmono (le_max_left m k) hm, ?_⟩
+    rw [mem_closedBall, dist_zero_right]
+    exact hk.trans (by exact_mod_cast le_max_right m k)
+  -- Step 2: Borel versions `M'` of `M` and `g` of `θ`, and the Borel sets `A m ⊆ M`.
+  set H : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
+  set M := V.carrier
+  have hMnull : NullMeasurableSet M H := V.nullMeasurableSet_carrier
+  set g : Amb n ℓ → ℝ := V.aemeasurable_mult.mk V.mult
+  have hgm : Measurable g := V.aemeasurable_mult.measurable_mk
+  have hgae : V.mult =ᵐ[H.restrict M] g := V.aemeasurable_mult.ae_eq_mk
+  set Z : Set (Amb n ℓ) := toMeasurable H ({x | V.mult x ≠ g x} ∩ M) with hZdef
+  have hZm : MeasurableSet Z := measurableSet_toMeasurable _ _
+  have hZnull : H Z = 0 := by
+    rw [hZdef, measure_toMeasurable, ← Measure.restrict_apply₀' hMnull]
+    exact hgae
+  have hZsub : {x | V.mult x ≠ g x} ∩ M ⊆ Z := subset_toMeasurable _ _
+  obtain ⟨M', hM'M, hM'm, hM'ae⟩ := hMnull.exists_measurable_subset_ae_eq
+  have hMM'null : H (M \ M') = 0 := (ae_eq_set.1 hM'ae).2
+  set A : ℕ → Set (Amb n ℓ) := fun m => (M' ∩ K m) \ Z
+  have hAm : ∀ m, MeasurableSet (A m) := fun m =>
+    (hM'm.inter (hKc m).isClosed.measurableSet).diff hZm
+  have hAM : ∀ m, A m ⊆ M := fun m x hx => hM'M hx.1.1
+  have hAK : ∀ m, A m ⊆ K m := fun m x hx => hx.1.2
+  have hAeq : ∀ m, ∀ x ∈ A m, V.mult x = g x := by
+    intro m x hx
+    by_contra hne
+    exact hx.2 (hZsub ⟨hne, hAM m hx⟩)
+  -- Step 3: `μ_V ⌞ K m` is a finite measure.
+  have hfin : ∀ m, V.weight (K m) ≠ ∞ := by
+    intro m
+    rw [RectifiableVarifold.weight, withDensity_apply _ (hKc m).isClosed.measurableSet,
+      Measure.restrict_restrict (hKc m).isClosed.measurableSet]
+    have hint : IntegrableOn V.mult (K m ∩ M) H := by
+      rw [inter_comm]; exact V.integrableOn_mult (K m) (hKc m) (hKU m)
+    exact hint.lintegral_lt_top.ne
+  -- Step 4: Lusin's theorem (Simon 1.17) for `g` and a finite Borel measure `ν`, proved inline:
+  -- for each rational interval, `ν`-almost all of `B` is covered by two closed sets on which `g`
+  -- lies inside / outside the interval, and `g` is continuous on the intersection of these unions.
+  have lusin : ∀ ν : Measure (Amb n ℓ), IsFiniteMeasure ν → ∀ B : Set (Amb n ℓ),
+      MeasurableSet B → ∀ ε : ℝ≥0∞, ε ≠ 0 →
+      ∃ C ⊆ B, IsClosed C ∧ ν (B \ C) < ε ∧ ContinuousOn g C := by
+    intro ν hν B hB ε hε
+    have : ν.WeaklyRegular := Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure ν
+    obtain ⟨δ, hδpos, hδsum⟩ := ENNReal.exists_pos_sum_of_countable hε (ℚ × ℚ)
+    have hsplit : ∀ q : ℚ × ℚ, ∃ P ⊆ B ∩ g ⁻¹' Ioo (q.1 : ℝ) q.2, IsClosed P ∧
+        ∃ P' ⊆ B \ g ⁻¹' Ioo (q.1 : ℝ) q.2, IsClosed P' ∧ ν (B \ (P ∪ P')) ≤ δ q := by
+      intro q
+      have hin : MeasurableSet (B ∩ g ⁻¹' Ioo (q.1 : ℝ) q.2) := hB.inter (hgm measurableSet_Ioo)
+      have hout : MeasurableSet (B \ g ⁻¹' Ioo (q.1 : ℝ) q.2) := hB.diff (hgm measurableSet_Ioo)
+      have hδ2 : (δ q : ℝ≥0∞) / 2 ≠ 0 :=
+        (ENNReal.half_pos (ENNReal.coe_ne_zero.2 (hδpos q).ne')).ne'
+      obtain ⟨P, hPin, hPc, hP⟩ := hin.exists_isClosed_sdiff_lt (measure_ne_top ν _) hδ2
+      obtain ⟨P', hP'out, hP'c, hP'⟩ := hout.exists_isClosed_sdiff_lt (measure_ne_top ν _) hδ2
+      refine ⟨P, hPin, hPc, P', hP'out, hP'c, ?_⟩
+      calc ν (B \ (P ∪ P'))
+          ≤ ν ((B ∩ g ⁻¹' Ioo (q.1 : ℝ) q.2) \ P ∪ (B \ g ⁻¹' Ioo (q.1 : ℝ) q.2) \ P') := by
+            refine measure_mono fun x hx => ?_
+            by_cases hgx : g x ∈ Ioo (q.1 : ℝ) q.2
+            · exact Or.inl ⟨⟨hx.1, hgx⟩, fun h => hx.2 (Or.inl h)⟩
+            · exact Or.inr ⟨⟨hx.1, hgx⟩, fun h => hx.2 (Or.inr h)⟩
+        _ ≤ ν ((B ∩ g ⁻¹' Ioo (q.1 : ℝ) q.2) \ P) + ν ((B \ g ⁻¹' Ioo (q.1 : ℝ) q.2) \ P') :=
+            measure_union_le _ _
+        _ ≤ δ q / 2 + δ q / 2 := add_le_add hP.le hP'.le
+        _ = δ q := ENNReal.add_halves _
+    choose P hPin hPc P' hP'out hP'c hPP' using hsplit
+    refine ⟨⋂ q, (P q ∪ P' q), fun x hx => ?_, isClosed_iInter fun q => (hPc q).union (hP'c q),
+      ?_, ?_⟩
+    · rcases mem_iInter.1 hx (0, 0) with h | h
+      · exact (hPin _ h).1
+      · exact (hP'out _ h).1
+    · rw [sdiff_iInter]
+      calc ν (⋃ q, B \ (P q ∪ P' q)) ≤ ∑' q, ν (B \ (P q ∪ P' q)) := measure_iUnion_le _
+        _ ≤ ∑' q, (δ q : ℝ≥0∞) := ENNReal.tsum_le_tsum hPP'
+        _ < ε := hδsum
+    · rw [Metric.continuousOn_iff]
+      intro x hx e he
+      obtain ⟨a, ha₁, ha₂⟩ := exists_rat_btwn (show g x - e < g x by linarith)
+      obtain ⟨b, hb₁, hb₂⟩ := exists_rat_btwn (show g x < g x + e by linarith)
+      have hxP' : x ∉ P' (a, b) := fun h => (hP'out _ h).2 ⟨ha₂, hb₁⟩
+      obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.1 (hP'c (a, b)).isOpen_compl x hxP'
+      refine ⟨r, hr, fun y hy hyx => ?_⟩
+      have hyP : y ∈ P (a, b) := by
+        rcases mem_iInter.1 hy (a, b) with h | h
+        · exact h
+        · exact absurd h (hball (mem_ball.2 hyx))
+      obtain ⟨hy₁, hy₂⟩ := (hPin _ hyP).2
+      rw [Real.dist_eq, abs_sub_lt_iff]
+      constructor <;> linarith
+  -- Lusin pieces `C m i ⊆ A m` for `μ_V ⌞ K m`: closed, hence compact, and `θ` is continuous on them.
+  have hLusin : ∀ m i : ℕ, ∃ C ⊆ A m, IsClosed C ∧
+      (V.weight.restrict (K m)) (A m \ C) < (i : ℝ≥0∞)⁻¹ ∧ ContinuousOn g C := fun m i =>
+    lusin _ (isFiniteMeasure_restrict.2 (hfin m)) (A m) (hAm m) _
+      (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top i))
+  choose C hCA hCclosed hCsmall hCcont using hLusin
+  have hCK : ∀ m i, IsCompact (C m i) := fun m i =>
+    (hKc m).of_isClosed_subset (hCclosed m i) ((hCA m i).trans (hAK m))
+  have hCM : ∀ m i, C m i ⊆ M := fun m i => (hCA m i).trans (hAM m)
+  have hCcont' : ∀ m i, ContinuousOn V.mult (C m i) := fun m i =>
+    (hCcont m i).congr (fun x hx => hAeq m x (hCA m i hx))
+  -- Step 5: the leftover `S m = A m \ ⋃ i, C m i` is `μ_V`-null, hence `Hⁿ`-null.
+  set S : ℕ → Set (Amb n ℓ) := fun m => A m \ ⋃ i, C m i
+  have hSm : ∀ m, MeasurableSet (S m) := fun m =>
+    (hAm m).diff (MeasurableSet.iUnion fun i => (hCclosed m i).measurableSet)
+  have hSnull : ∀ m, H (S m) = 0 := by
+    intro m
+    have hν : (V.weight.restrict (K m)) (S m) = 0 := by
+      refine nonpos_iff_eq_zero.1 ?_
+      refine ge_of_tendsto' ENNReal.tendsto_inv_nat_nhds_zero fun i => ?_
+      exact (measure_mono (sdiff_subset_sdiff_right (subset_iUnion _ i))).trans (hCsmall m i).le
+    have hw : V.weight (S m) = 0 := by
+      rwa [Measure.restrict_apply (hSm m), inter_eq_left.2 (sdiff_subset.trans (hAK m))] at hν
+    rw [RectifiableVarifold.weight,
+      withDensity_apply_eq_zero' V.aemeasurable_mult.ennreal_ofReal] at hw
+    have hsub : S m ⊆ {x | ENNReal.ofReal (V.mult x) ≠ 0} ∩ S m := by
+      intro x hx
+      refine ⟨?_, hx⟩
+      have hpos := V.mult_pos x (hAM m hx.1)
+      simpa [ENNReal.ofReal_eq_zero, not_le] using hpos
+    have h2 : (H.restrict M) (S m) = 0 := measure_mono_null hsub hw
+    rwa [Measure.restrict_apply (hSm m), inter_eq_left.2 (sdiff_subset.trans (hAM m))] at h2
+  -- Step 6: enumerate the pieces `C m i` by `k ↦ Nat.unpair k`.
+  refine ⟨fun k => C (Nat.unpair k).1 (Nat.unpair k).2,
+    fun k => ⟨hCK _ _, hCM _ _, hCcont' _ _⟩, ?_⟩
+  have hcover : M \ ⋃ k, C (Nat.unpair k).1 (Nat.unpair k).2 ⊆ (M \ M') ∪ Z ∪ ⋃ m, S m := by
+    rintro x ⟨hxM, hxC⟩
+    obtain ⟨m, hm⟩ := hKcover x (V.carrier_subset hxM)
+    by_cases hxM' : x ∈ M'
+    · by_cases hxZ : x ∈ Z
+      · exact Or.inl (Or.inr hxZ)
+      · refine Or.inr (mem_iUnion.2 ⟨m, ⟨⟨hxM', hm⟩, hxZ⟩, ?_⟩)
+        intro hx
+        obtain ⟨i, hi⟩ := mem_iUnion.1 hx
+        apply hxC
+        refine mem_iUnion.2 ⟨Nat.pair m i, ?_⟩
+        simpa [Nat.unpair_pair] using hi
+    · exact Or.inl (Or.inl ⟨hxM, hxM'⟩)
+  refine measure_mono_null hcover ?_
+  exact measure_union_null (measure_union_null hMM'null hZnull) (measure_iUnion_null hSnull)
 
 end Submission
 
