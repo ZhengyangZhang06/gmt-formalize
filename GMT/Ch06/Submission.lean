@@ -448,6 +448,48 @@ theorem Submission.polyhedral_approx_finite_smooth_ext :
   · rw [sub_eq_zero.mp (hx hxO)]
   · simp [hb x hxO]
 
+/-- Integrable densities `g₁ μ₁`, `g₂ μ₂` that agree on every `C^∞` function with compact support
+in an open set `O` agree on every bounded Borel `b` vanishing outside `O` (the uniqueness behind
+Simon Ch. 6, (2.7)–(2.9), p. 136).  Split `gᵢ μᵢ = pᵢ − nᵢ` into finite measures
+(`polyhedral_approx_density_split`).  The finite measures `λ₁ = p₁ + n₂`, `λ₂ = p₂ + n₁` satisfy
+`∫ c dλ₁ − ∫ c dλ₂ = ∫ c g₁ dμ₁ − ∫ c g₂ dμ₂` for bounded Borel `c` (★), so they agree on smooth
+tests in `O`, hence on `b` (`polyhedral_approx_finite_smooth_ext`); (★) with `c = b` concludes. -/
+theorem Submission.polyhedral_approx_integrable_smooth_ext :
+    ∀ (P : ℕ) (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ), Integrable g₁ μ₁ →
+      Integrable g₂ μ₂ → ∀ O : Set (Eucl P), IsOpen O →
+      (∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ →
+        tsupport ψ ⊆ O → ∫ x, ψ x * g₁ x ∂μ₁ = ∫ x, ψ x * g₂ x ∂μ₂) →
+      ∀ b : Eucl P → ℝ, Measurable b → (∃ C : ℝ, ∀ x, |b x| ≤ C) → (∀ x, x ∉ O → b x = 0) →
+        ∫ x, b x * g₁ x ∂μ₁ = ∫ x, b x * g₂ x ∂μ₂ := by
+  intro P μ₁ μ₂ g₁ g₂ hg₁ hg₂ O hO hψ b hb hbC hbO
+  -- Step 1: `gᵢ μᵢ = pᵢ − nᵢ` with `pᵢ`, `nᵢ` finite.
+  obtain ⟨p₁, n₁, hp₁, hn₁, h₁⟩ := Submission.polyhedral_approx_density_split P μ₁ g₁ hg₁
+  obtain ⟨p₂, n₂, hp₂, hn₂, h₂⟩ := Submission.polyhedral_approx_density_split P μ₂ g₂ hg₂
+  -- Steps 2–3: `λ₁ = p₁ + n₂` and `λ₂ = p₂ + n₁` are finite, and for bounded Borel `c`
+  -- (★) `∫ c dλ₁ − ∫ c dλ₂ = ∫ c g₁ dμ₁ − ∫ c g₂ dμ₂`.
+  have key : ∀ c : Eucl P → ℝ, Measurable c → (∃ C : ℝ, ∀ x, |c x| ≤ C) →
+      ∫ x, c x ∂(p₁ + n₂) - ∫ x, c x ∂(p₂ + n₁) =
+        ∫ x, c x * g₁ x ∂μ₁ - ∫ x, c x * g₂ x ∂μ₂ := by
+    rintro c hc ⟨C, hC⟩
+    -- A bounded Borel `c` is integrable against every finite measure.
+    have hint : ∀ (ν : Measure (Eucl P)) [IsFiniteMeasure ν], Integrable c ν := fun ν _ =>
+      Integrable.of_bound hc.aestronglyMeasurable C
+        (ae_of_all ν fun x => (Real.norm_eq_abs (c x)).le.trans (hC x))
+    rw [integral_add_measure (hint p₁) (hint n₂), integral_add_measure (hint p₂) (hint n₁)]
+    linarith [h₁ c hc ⟨C, hC⟩, h₂ c hc ⟨C, hC⟩]
+  -- Step 4: by (★), `λ₁` and `λ₂` agree on smooth tests with compact support in `O`.
+  have hsmooth : ∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ O → ∫ x, ψ x ∂(p₁ + n₂) = ∫ x, ψ x ∂(p₂ + n₁) := by
+    intro ψ hψs hψc hψO
+    obtain ⟨C, hC⟩ := hψs.continuous.bounded_above_of_compact_support hψc
+    linarith [key ψ hψs.continuous.measurable
+      ⟨C, fun x => (Real.norm_eq_abs (ψ x)).symm.le.trans (hC x)⟩, hψ ψ hψs hψc hψO]
+  -- Step 5: hence `λ₁` and `λ₂` agree on `b`, which vanishes outside `O`.
+  have hext := Submission.polyhedral_approx_finite_smooth_ext P (p₁ + n₂) (p₂ + n₁)
+    inferInstance inferInstance O hO hsmooth b hbO
+  -- Step 6: (★) with `c = b`.
+  linarith [key b hb hbC]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
