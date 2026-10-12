@@ -451,6 +451,106 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Chebyshev selection of a point with small heights over a finite family (Simon Ch. 5, proof of
+Lemma 2.5, (1), (4), (5)).  On `B̄_{2r}(y)` one has `|q|² ≤ (2r)^m |q|² / |x − y|^m`, where
+`q = (x − y) − p_{T(x)}(x − y)`, and `B̄_r(ξ) ⊆ B̄_{2r}(y)`; summing over `y ∈ F` gives
+`∫_{B̄_r(ξ)} Σ_y |q_{T(x)}(x − y)|² dμ ≤ #F (2r)^m c`.  If every `Q`-point `x ∈ B̄_s(ξ)` had some
+`|q_{T(x)}(y − x)|² > λ`, the sum would be `≥ λ` a.e. on `B̄_s(ξ)`, forcing
+`λ μ(B̄_s(ξ)) ≤ #F (2r)^m c`. -/
+theorem Submission.dorag_aa_exists_low_height_point : ∀ (P m : ℕ) (μ : Measure (Euclid P)) (T : Euclid P → Submodule ℝ (Euclid P)) (Q : Euclid P → Prop) (F : Finset (Euclid P)) (ξ : Euclid P) (r s c lam : ℝ), AEStronglyMeasurable (fun x => (T x).starProjection) μ → (∀ᵐ x ∂μ, Q x) → 0 < r → s ≤ r → (∀ y ∈ F, dist y ξ ≤ r) → (∀ y ∈ F, ∫⁻ x in closedBall y (2 * r), ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ m) ∂μ ≤ ENNReal.ofReal c) → (F.card : ℝ≥0∞) * ENNReal.ofReal ((2 * r) ^ m * c) < ENNReal.ofReal lam * μ (closedBall ξ s) → ∃ x₀ ∈ closedBall ξ s, Q x₀ ∧ ∀ y ∈ F, ‖(y - x₀) - (T x₀).starProjection (y - x₀)‖ ^ 2 ≤ lam := by
+  intro P m μ T Q F ξ r s c lam hT hQ hr hsr hF hc hmass
+  -- Step 1: `x ↦ ofReal |q_{T(x)}(x − y)|²` is a.e. measurable (evaluate `p_{T(x)}` at `x − y`)
+  have hmeas : ∀ y : Euclid P, AEMeasurable
+      (fun x => ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2)) μ := by
+    intro y
+    have hsub : AEStronglyMeasurable (fun x : Euclid P => x - y) μ :=
+      (continuous_id.sub continuous_const).aestronglyMeasurable
+    have hproj : AEStronglyMeasurable (fun x => (T x).starProjection (x - y)) μ :=
+      (ContinuousLinearMap.id ℝ (Euclid P →L[ℝ] Euclid P)).aestronglyMeasurable_comp₂ hT hsub
+    exact ((hsub.sub hproj).norm.pow 2).aemeasurable.ennreal_ofReal
+  -- Steps 2–3: `∫_{B̄_r(ξ)} |q_{T(x)}(x − y)|² dμ ≤ (2r)^m c` for every `y ∈ F`
+  have hstep3 : ∀ y ∈ F, ∫⁻ x in closedBall ξ r,
+      ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2) ∂μ ≤
+        ENNReal.ofReal ((2 * r) ^ m * c) := by
+    intro y hy
+    have hball : closedBall ξ r ⊆ closedBall y (2 * r) := by
+      intro x hx
+      rw [mem_closedBall] at hx ⊢
+      calc dist x y ≤ dist x ξ + dist ξ y := dist_triangle x ξ y
+        _ ≤ r + r := add_le_add hx (by rw [dist_comm]; exact hF y hy)
+        _ = 2 * r := by ring
+    -- Simon (1): `|q|² ≤ (2r)^m |q|² / |x − y|^m` on `B̄_{2r}(y)`
+    have hpt : ∀ᵐ x ∂μ.restrict (closedBall y (2 * r)),
+        ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2) ≤
+          ENNReal.ofReal ((2 * r) ^ m) *
+            ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ m) := by
+      filter_upwards [ae_restrict_mem measurableSet_closedBall] with x hx
+      rw [← ENNReal.ofReal_mul (by positivity)]
+      apply ENNReal.ofReal_le_ofReal
+      rw [mem_closedBall, dist_eq_norm] at hx
+      rcases (norm_nonneg (x - y)).eq_or_lt with h0 | hpos
+      · have hxy : x - y = 0 := norm_eq_zero.mp h0.symm
+        simp [hxy]
+      · calc ‖(x - y) - (T x).starProjection (x - y)‖ ^ 2
+            = ‖x - y‖ ^ m * (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ m) := by
+              rw [mul_div_cancel₀ _ (pow_pos hpos m).ne']
+          _ ≤ (2 * r) ^ m * (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ m) :=
+              mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) hx m) (by positivity)
+    calc ∫⁻ x in closedBall ξ r, ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2) ∂μ
+        ≤ ∫⁻ x in closedBall y (2 * r),
+            ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2) ∂μ :=
+          lintegral_mono_set hball
+      _ ≤ ∫⁻ x in closedBall y (2 * r), ENNReal.ofReal ((2 * r) ^ m) *
+            ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ m) ∂μ :=
+          lintegral_mono_ae hpt
+      _ = ENNReal.ofReal ((2 * r) ^ m) * ∫⁻ x in closedBall y (2 * r),
+            ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ m) ∂μ :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ ≤ ENNReal.ofReal ((2 * r) ^ m) * ENNReal.ofReal c := by gcongr; exact hc y hy
+      _ = ENNReal.ofReal ((2 * r) ^ m * c) := (ENNReal.ofReal_mul (by positivity)).symm
+  -- Step 4: summation over `F`
+  have hstep4 : ∫⁻ x in closedBall ξ r,
+      ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2) ∂μ ≤
+        (F.card : ℝ≥0∞) * ENNReal.ofReal ((2 * r) ^ m * c) := by
+    rw [lintegral_finsetSum' F (fun y _ => (hmeas y).restrict)]
+    calc ∑ y ∈ F, ∫⁻ x in closedBall ξ r,
+          ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2) ∂μ
+        ≤ ∑ _y ∈ F, ENNReal.ofReal ((2 * r) ^ m * c) := Finset.sum_le_sum hstep3
+      _ = (F.card : ℝ≥0∞) * ENNReal.ofReal ((2 * r) ^ m * c) := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+  -- Step 5: otherwise the sum is `≥ λ` a.e. on `B̄_s(ξ)`, contradicting the mass condition
+  by_contra hcon
+  push Not at hcon
+  have hae : ∀ᵐ x ∂μ.restrict (closedBall ξ s), ENNReal.ofReal lam ≤
+      ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2) := by
+    filter_upwards [ae_restrict_mem measurableSet_closedBall, ae_restrict_of_ae hQ] with x hx hQx
+    obtain ⟨y, hy, hlt⟩ := hcon x hx hQx
+    have hsymm : ‖(x - y) - (T x).starProjection (x - y)‖ =
+        ‖(y - x) - (T x).starProjection (y - x)‖ := by
+      rw [← neg_sub y x, map_neg, ← norm_neg]
+      congr 1
+      abel
+    calc ENNReal.ofReal lam
+        ≤ ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2) := by
+          rw [hsymm]
+          exact ENNReal.ofReal_le_ofReal hlt.le
+      _ ≤ ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2) :=
+          Finset.single_le_sum
+            (f := fun y => ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2))
+            (fun _ _ => zero_le) hy
+  have hle : ENNReal.ofReal lam * μ (closedBall ξ s) ≤
+      (F.card : ℝ≥0∞) * ENNReal.ofReal ((2 * r) ^ m * c) :=
+    calc ENNReal.ofReal lam * μ (closedBall ξ s)
+        = ∫⁻ _x in closedBall ξ s, ENNReal.ofReal lam ∂μ := (setLIntegral_const _ _).symm
+      _ ≤ ∫⁻ x in closedBall ξ s,
+            ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2) ∂μ :=
+          lintegral_mono_ae hae
+      _ ≤ ∫⁻ x in closedBall ξ r,
+            ∑ y ∈ F, ENNReal.ofReal (‖(x - y) - (T x).starProjection (x - y)‖ ^ 2) ∂μ :=
+          lintegral_mono_set (closedBall_subset_closedBall hsr)
+      _ ≤ (F.card : ℝ≥0∞) * ENNReal.ofReal ((2 * r) ^ m * c) := hstep4
+  exact absurd hmass (not_lt.mpr hle)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
