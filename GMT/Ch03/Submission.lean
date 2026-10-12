@@ -761,6 +761,497 @@ theorem Submission.gaussGreenRep_bv_functional_extension : ∀ (N : ℕ) (U E : 
     (Submission.gaussGreenRep_c1_uniform_approx N)
     (fun g h hg hgc _ hh hhc _ ↦ hadd g h hg hgc hh hhc) (fun c g hg _ _ ↦ hsmul c g hg)
     (Submission.gaussGreenRep_divergence_integral_local_bound N U E hU hE hBV)
+/-- **Carathéodory-measurable fields have Borel a.e.-versions** (Step 6 of the proof of the
+Riesz representation on open sets, after Simon Ch. 1, Thm. 4.14): let `X` be Hausdorff, locally
+compact and `σ`-compact with its Borel `σ`-algebra, and `μ` a measure on `X` finite on compact
+sets. If `ν : X → ℝᴺ` is measurable for the Carathéodory `σ`-algebra of the outer measure `μ*`,
+then `ν` agrees `μ`-a.e. with a Borel (strongly measurable) map. Since `μ` is `σ`-finite, every
+Carathéodory set `A` is the countable union of the Carathéodory sets `A ∩ Sₙ` of finite measure;
+the Carathéodory identity for `A ∩ Sₙ` tested on its measurable hull makes the hull exceed it by a
+null set, so `A` is `μ`-null-measurable. Hence `ν` is null-measurable, and as the Borel
+`σ`-algebra of `ℝᴺ` is countably generated, `ν` is `μ`-a.e. measurable. -/
+theorem Submission.gaussGreenRep_riesz_caratheodory_borel_version : ∀ (X : Type)
+    [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SigmaCompactSpace X]
+    [MeasurableSpace X] [BorelSpace X] (μ : Measure X) (N : ℕ) (ν : X → Rn N),
+    (∀ K : Set X, IsCompact K → μ K < ∞) → Measurable[μ.toOuterMeasure.caratheodory] ν →
+    ∃ ν' : X → Rn N, StronglyMeasurable ν' ∧ ν =ᵐ[μ] ν' := by
+  intro X _ _ _ _ _ _ μ N ν hμ hν
+  -- Step 2: `μ` is finite on compact sets, hence `σ`-finite on the `σ`-compact space `X`; its
+  -- spanning sets `Sₙ` are measurable, of finite measure, and cover `X`.
+  have : IsFiniteMeasureOnCompacts μ := ⟨hμ⟩
+  -- Step 3: every Carathéodory-measurable set is `μ`-null-measurable.
+  have hnull : ∀ A : Set X, MeasurableSet[μ.toOuterMeasure.caratheodory] A →
+      NullMeasurableSet A μ := by
+    intro A hA
+    have hpiece : ∀ n, NullMeasurableSet (A ∩ spanningSets μ n) μ := by
+      intro n
+      set B := A ∩ spanningSets μ n
+      -- `B` is Carathéodory measurable (Borel sets are) and has finite measure.
+      have hB : MeasurableSet[μ.toOuterMeasure.caratheodory] B :=
+        hA.inter (le_toOuterMeasure_caratheodory μ _ (measurableSet_spanningSets μ n))
+      have hBfin : μ B ≠ ∞ :=
+        ((measure_mono inter_subset_right).trans_lt (measure_spanningSets_lt_top μ n)).ne
+      -- The Carathéodory identity for `B` tested on its measurable hull `H ⊇ B`, `μ H = μ B`,
+      -- gives `μ B = μ B + μ (H \ B)`, so `μ (H \ B) = 0`.
+      have hcar : μ (toMeasurable μ B) =
+          μ (toMeasurable μ B ∩ B) + μ (toMeasurable μ B \ B) :=
+        (OuterMeasure.isCaratheodory_iff _).1 hB _
+      rw [inter_eq_right.2 (subset_toMeasurable μ B), measure_toMeasurable] at hcar
+      have hdiff : μ (toMeasurable μ B \ B) = 0 :=
+        (ENNReal.add_right_inj hBfin).1 (by rw [add_zero]; exact hcar.symm)
+      -- Hence `B = H` up to a `μ`-null set.
+      refine (measurableSet_toMeasurable μ B).nullMeasurableSet.congr (ae_eq_set.2 ⟨hdiff, ?_⟩)
+      rw [sdiff_eq_empty.2 (subset_toMeasurable μ B), measure_empty]
+    -- `A = ⋃ₙ (A ∩ Sₙ)` is a countable union of null-measurable sets.
+    rw [← inter_univ A, ← iUnion_spanningSets μ, inter_iUnion]
+    exact .iUnion hpiece
+  -- Step 4: preimages of Borel sets under `ν` are Carathéodory, hence null-measurable.
+  have hν₀ : NullMeasurable ν μ := fun s hs ↦ hnull _ (hν hs)
+  -- Steps 5–6: the Borel `σ`-algebra of `ℝᴺ` is countably generated, so `ν` is a.e.-measurable,
+  -- hence a.e.-strongly measurable; its strongly measurable representative is the version.
+  have hsm := hν₀.aemeasurable.aestronglyMeasurable
+  exact ⟨hsm.mk ν, hsm.stronglyMeasurable_mk, hsm.ae_eq_mk⟩
+
+/-- **Riesz representation with a Borel unit field on a σ-compact locally compact Hausdorff
+space**: Simon Ch. 1, Theorem 4.14 (`chapter-01.txt` lines 1654–1663) with `H = ℝᴺ`, as used
+for (4.1). For an orthonormal basis `b` of `ℝᴺ`, each component `ℓᵢ h = L (h • bᵢ)` is bounded
+above on the order intervals `[0, f]` of `C_c(X, ℝ)`. Hence `q f = sup {ℓᵢ g : 0 ≤ g ≤ f}` is
+additive (split `g ≤ f₁ + f₂` as `g ⊓ f₁ + g₂`) and positively homogeneous on the cone, and
+`ℓᵢ = Aᵢ - Bᵢ` with the positive functionals `Aᵢ = q`, `Bᵢ = q - ℓᵢ`. Mathlib's
+Riesz–Markov–Kakutani theorem represents `Aᵢ` and `Bᵢ` by Radon measures, which have Borel
+Radon–Nikodym densities with respect to their sum `μ₀`; so `L f = ∫ ⟨f, ρ⟩ dμ₀` for a Borel field
+`ρ = ∑ᵢ dᵢ bᵢ`, locally `μ₀`-integrable. The polar decomposition `μ = |ρ| μ₀`, `ν = ρ / |ρ|`
+gives the claim. -/
+theorem Submission.gaussGreenRep_riesz_sigmaCompact_borel : ∀ (X : Type) [TopologicalSpace X]
+    [T2Space X] [LocallyCompactSpace X] [SigmaCompactSpace X] [MeasurableSpace X] [BorelSpace X]
+    (N : ℕ) (L : C_c(X, Rn N) →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ C : ℝ,
+      ∀ f : C_c(X, Rn N), (∀ x, ‖f x‖ ≤ 1) → tsupport f ⊆ K → L f ≤ C) →
+    ∃ (μ : Measure X) (ν : X → Rn N), (∀ K : Set X, IsCompact K → μ K < ∞) ∧
+      StronglyMeasurable ν ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧
+      ∀ f : C_c(X, Rn N), L f = ∫ x, inner ℝ (f x) (ν x) ∂μ := by
+  intro X _ _ _ _ _ _ N L hbound
+  -- Step 1 (Jordan decomposition): a real functional `ℓ` on `C_c(X, ℝ)` that is bounded above on
+  -- every order interval `[0, f]` is a difference of two positive functionals.
+  have jordan : ∀ ℓ : C_c(X, ℝ) →ₗ[ℝ] ℝ,
+      (∀ f : C_c(X, ℝ≥0), BddAbove ((fun g : C_c(X, ℝ≥0) ↦ ℓ g.toReal) '' {g | g ≤ f})) →
+      ∃ A B : C_c(X, ℝ) →ₚ[ℝ] ℝ, ∀ h, ℓ h = A h - B h := by
+    intro ℓ hℓ
+    have h0le : ∀ f : C_c(X, ℝ≥0), 0 ≤ f := fun f ↦
+      CompactlySupportedContinuousMap.le_def.2 fun x ↦ by simp
+    have htoReal0 : (0 : C_c(X, ℝ≥0)).toReal = 0 := by ext x; simp
+    have hsmulR : ∀ (c : ℝ≥0) (f : C_c(X, ℝ≥0)), (c • f).toReal = (c : ℝ) • f.toReal :=
+      fun c f ↦ by ext x; simp [NNReal.smul_def]
+    -- `q f = sup {ℓ g : 0 ≤ g ≤ f}`, the positive part of `ℓ` on the cone `C_c(X, ℝ≥0)`.
+    obtain ⟨q, hq⟩ : ∃ q : C_c(X, ℝ≥0) → ℝ,
+        ∀ f, q f = sSup ((fun g : C_c(X, ℝ≥0) ↦ ℓ g.toReal) '' {g | g ≤ f}) := ⟨_, fun _ ↦ rfl⟩
+    have hle : ∀ f g : C_c(X, ℝ≥0), g ≤ f → ℓ g.toReal ≤ q f := fun f g hg ↦ by
+      rw [hq]; exact le_csSup (hℓ f) ⟨g, hg, rfl⟩
+    have hsup : ∀ (f : C_c(X, ℝ≥0)) (c : ℝ),
+        (∀ g : C_c(X, ℝ≥0), g ≤ f → ℓ g.toReal ≤ c) → q f ≤ c := by
+      intro f c hc
+      rw [hq]
+      exact csSup_le ⟨_, ⟨0, h0le f, rfl⟩⟩ (by rintro _ ⟨g, hg, rfl⟩; exact hc g hg)
+    -- Additivity: `g ≤ f₁ + f₂` splits as `(g ⊓ f₁) + g₂` with `g₂ ≤ f₂`.
+    have hq_add : ∀ f₁ f₂ : C_c(X, ℝ≥0), q (f₁ + f₂) = q f₁ + q f₂ := by
+      intro f₁ f₂
+      apply le_antisymm
+      · refine hsup _ _ fun g hg ↦ ?_
+        obtain ⟨g₂, hg₂⟩ :=
+          CompactlySupportedContinuousMap.exists_add_of_le (inf_le_left : g ⊓ f₁ ≤ g)
+        have h₂ : g₂ ≤ f₂ := by
+          rw [CompactlySupportedContinuousMap.le_def] at hg ⊢
+          intro x
+          have hx := hg x
+          have hgx := congrArg (fun φ : C_c(X, ℝ≥0) ↦ φ x) hg₂
+          simp only [CompactlySupportedContinuousMap.add_apply,
+            CompactlySupportedContinuousMap.inf_apply] at hx hgx
+          rcases le_total (g x) (f₁ x) with h | h
+          · rw [inf_eq_left.2 h] at hgx
+            have : g₂ x = 0 := by simpa using hgx
+            rw [this]
+            exact zero_le
+          · rw [inf_eq_right.2 h] at hgx
+            rw [← hgx] at hx
+            exact le_of_add_le_add_left hx
+        rw [← hg₂, CompactlySupportedContinuousMap.toReal_add, map_add]
+        exact add_le_add (hle _ _ inf_le_right) (hle _ _ h₂)
+      · have h1 : q f₁ ≤ q (f₁ + f₂) - q f₂ := hsup _ _ fun g₁ hg₁ ↦ by
+          have h2 : q f₂ ≤ q (f₁ + f₂) - ℓ g₁.toReal := hsup _ _ fun g₂ hg₂ ↦ by
+            have := hle (f₁ + f₂) (g₁ + g₂) (add_le_add hg₁ hg₂)
+            rw [CompactlySupportedContinuousMap.toReal_add, map_add] at this
+            linarith
+          linarith
+        linarith
+    -- Positive homogeneity.
+    have hq_le_smul : ∀ (c : ℝ≥0) (f : C_c(X, ℝ≥0)), c ≠ 0 → q (c • f) ≤ c * q f := by
+      intro c f hc
+      refine hsup _ _ fun g hg ↦ ?_
+      have hg' : c⁻¹ • g ≤ f := by
+        rw [CompactlySupportedContinuousMap.le_def] at hg ⊢
+        intro x
+        rw [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul]
+        calc c⁻¹ * g x ≤ c⁻¹ * (c • f) x := mul_le_mul_of_nonneg_left (hg x) zero_le
+          _ = f x := by
+            rw [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul, inv_mul_cancel_left₀ hc]
+      have h2 : ℓ g.toReal = c * ℓ (c⁻¹ • g).toReal := by
+        rw [hsmulR, map_smul, smul_eq_mul, NNReal.coe_inv, ← mul_assoc,
+          mul_inv_cancel₀ (NNReal.coe_ne_zero.2 hc), one_mul]
+      rw [h2]
+      exact mul_le_mul_of_nonneg_left (hle f _ hg') c.coe_nonneg
+    have hq_smul : ∀ (c : ℝ≥0) (f : C_c(X, ℝ≥0)), q (c • f) = c * q f := by
+      intro c f
+      rcases eq_or_ne c 0 with rfl | hc
+      · have h0 := hq_add 0 0
+        rw [add_zero] at h0
+        rw [zero_smul, NNReal.coe_zero, zero_mul]
+        linarith
+      · refine le_antisymm (hq_le_smul c f hc) ?_
+        have h1 := hq_le_smul c⁻¹ (c • f) (inv_ne_zero hc)
+        rw [inv_smul_smul₀ hc, NNReal.coe_inv] at h1
+        have hc' : (0 : ℝ) < c := NNReal.coe_pos.2 (pos_iff_ne_zero.2 hc)
+        calc (c : ℝ) * q f ≤ c * ((c : ℝ)⁻¹ * q (c • f)) := mul_le_mul_of_nonneg_left h1 hc'.le
+          _ = q (c • f) := by rw [← mul_assoc, mul_inv_cancel₀ hc'.ne', one_mul]
+    have hq_nonneg : ∀ f, 0 ≤ q f := fun f ↦ by
+      have := hle f 0 (h0le f)
+      rwa [htoReal0, map_zero] at this
+    have hq_ge : ∀ f, ℓ f.toReal ≤ q f := fun f ↦ hle f f le_rfl
+    -- The positive part `P = q` and the negative part `Q = q - ℓ` on the cone.
+    let P : C_c(X, ℝ≥0) →ₗ[ℝ≥0] ℝ≥0 :=
+      { toFun := fun f ↦ Real.toNNReal (q f)
+        map_add' := fun f₁ f₂ ↦ by
+          simp only [hq_add]
+          exact Real.toNNReal_add (hq_nonneg f₁) (hq_nonneg f₂)
+        map_smul' := fun c f ↦ by
+          simp only [hq_smul, RingHom.id_apply, smul_eq_mul]
+          rw [Real.toNNReal_mul c.coe_nonneg, Real.toNNReal_coe] }
+    let Q : C_c(X, ℝ≥0) →ₗ[ℝ≥0] ℝ≥0 :=
+      { toFun := fun f ↦ Real.toNNReal (q f - ℓ f.toReal)
+        map_add' := fun f₁ f₂ ↦ by
+          simp only [hq_add, CompactlySupportedContinuousMap.toReal_add, map_add]
+          rw [← Real.toNNReal_add (sub_nonneg.2 (hq_ge f₁)) (sub_nonneg.2 (hq_ge f₂))]
+          congr 1
+          ring
+        map_smul' := fun c f ↦ by
+          simp only [hq_smul, hsmulR, map_smul, RingHom.id_apply, smul_eq_mul]
+          rw [← mul_sub, Real.toNNReal_mul c.coe_nonneg, Real.toNNReal_coe] }
+    have hPQ : ∀ f : C_c(X, ℝ≥0), ((P f : ℝ≥0) : ℝ) - ((Q f : ℝ≥0) : ℝ) = ℓ f.toReal := by
+      intro f
+      show ((Real.toNNReal (q f) : ℝ≥0) : ℝ) - ((Real.toNNReal (q f - ℓ f.toReal) : ℝ≥0) : ℝ) =
+        ℓ f.toReal
+      rw [Real.coe_toNNReal _ (hq_nonneg f), Real.coe_toNNReal _ (sub_nonneg.2 (hq_ge f))]
+      ring
+    refine ⟨CompactlySupportedContinuousMap.toRealPositiveLinear P,
+      CompactlySupportedContinuousMap.toRealPositiveLinear Q, fun h ↦ ?_⟩
+    rw [CompactlySupportedContinuousMap.toRealPositiveLinear_apply,
+      CompactlySupportedContinuousMap.toRealPositiveLinear_apply]
+    conv_lhs => rw [← CompactlySupportedContinuousMap.nnrealPart_sub_nnrealPart_neg h]
+    rw [map_sub, ← hPQ, ← hPQ]
+    ring
+  -- Step 2: the components `ℓᵢ h = L (h • bᵢ)` of `L` in an orthonormal basis `b` of `ℝᴺ`.
+  obtain ⟨b⟩ : Nonempty (OrthonormalBasis (Fin N) ℝ (Rn N)) :=
+    ⟨EuclideanSpace.basisFun (Fin N) ℝ⟩
+  have hbn : ∀ i, ‖b i‖ = 1 := fun i ↦ b.orthonormal.1 i
+  let E : Fin N → C_c(X, ℝ) →ₗ[ℝ] C_c(X, Rn N) := fun i ↦
+    { toFun := fun h ↦ ⟨⟨fun x ↦ h x • b i, h.continuous.smul continuous_const⟩,
+        h.hasCompactSupport.smul_right⟩
+      map_add' := fun h₁ h₂ ↦ by ext x; simp [add_smul]
+      map_smul' := fun c h ↦ by ext x; simp [smul_smul] }
+  have hE : ∀ i (h : C_c(X, ℝ)) (x : X), E i h x = h x • b i := fun _ _ _ ↦ rfl
+  let comp : Fin N → C_c(X, Rn N) → C_c(X, ℝ) := fun i g ↦
+    ⟨⟨fun x ↦ inner ℝ (b i) (g x), continuous_const.inner g.continuous⟩,
+      g.hasCompactSupport.comp_left (g := fun y ↦ inner ℝ (b i) y) (inner_zero_right _)⟩
+  have hcomp : ∀ i (g : C_c(X, Rn N)) (x : X), comp i g x = inner ℝ (b i) (g x) :=
+    fun _ _ _ ↦ rfl
+  have hdecomp : ∀ g : C_c(X, Rn N), L g = ∑ i, L (E i (comp i g)) := by
+    intro g
+    rw [← map_sum]
+    congr 1
+    refine CompactlySupportedContinuousMap.ext fun x ↦ ?_
+    rw [CompactlySupportedContinuousMap.sum_apply]
+    simp only [hE, hcomp]
+    exact (b.sum_repr' (g x)).symm
+  -- The local bound on `L` bounds each `ℓᵢ` above on the order intervals `[0, f]`.
+  have hℓbdd : ∀ i (f : C_c(X, ℝ≥0)),
+      BddAbove ((fun g : C_c(X, ℝ≥0) ↦ (L ∘ₗ E i) g.toReal) '' {g | g ≤ f}) := by
+    intro i f
+    obtain ⟨C, hC⟩ := hbound (tsupport f) f.hasCompactSupport
+    obtain ⟨M, hM⟩ := (f.hasCompactSupport.isCompact_range f.continuous).bddAbove
+    have hM1 : (0 : ℝ) < (M : ℝ) + 1 := by positivity
+    refine ⟨((M : ℝ) + 1) * C, ?_⟩
+    rintro _ ⟨g, hg, rfl⟩
+    have hgf : ∀ x, (g x : ℝ) ≤ M := fun x ↦
+      NNReal.coe_le_coe.2 ((CompactlySupportedContinuousMap.le_def.1 hg x).trans (hM ⟨x, rfl⟩))
+    have hφ1 : ∀ x, ‖E i (((M : ℝ) + 1)⁻¹ • g.toReal) x‖ ≤ 1 := fun x ↦ by
+      rw [hE, CompactlySupportedContinuousMap.smul_apply,
+        CompactlySupportedContinuousMap.toReal_apply, smul_eq_mul, norm_smul, hbn, mul_one,
+        Real.norm_eq_abs, abs_of_nonneg (by positivity), inv_mul_le_iff₀ hM1]
+      linarith [hgf x]
+    have hφK : tsupport (E i (((M : ℝ) + 1)⁻¹ • g.toReal)) ⊆ tsupport f := by
+      refine closure_mono fun x hx ↦ ?_
+      rw [Function.mem_support] at hx ⊢
+      intro hfx
+      apply hx
+      have hgx : g x = 0 :=
+        le_antisymm ((CompactlySupportedContinuousMap.le_def.1 hg x).trans hfx.le) zero_le
+      rw [hE, CompactlySupportedContinuousMap.smul_apply,
+        CompactlySupportedContinuousMap.toReal_apply, hgx]
+      simp
+    calc (L ∘ₗ E i) g.toReal = ((M : ℝ) + 1) * L (E i (((M : ℝ) + 1)⁻¹ • g.toReal)) := by
+          rw [LinearMap.comp_apply, map_smul, map_smul, smul_eq_mul, ← mul_assoc,
+            mul_inv_cancel₀ hM1.ne', one_mul]
+      _ ≤ ((M : ℝ) + 1) * C := mul_le_mul_of_nonneg_left (hC _ hφ1 hφK) hM1.le
+  -- Step 3: Jordan decompositions `ℓᵢ = Aᵢ - Bᵢ` and the Riesz measures of `Aᵢ`, `Bᵢ` (Mathlib's
+  -- Riesz–Markov–Kakutani theorem), all absolutely continuous with respect to their sum `μ₀`.
+  choose A B hAB using fun i ↦ jordan (L ∘ₗ E i) (hℓbdd i)
+  have hAB' : ∀ i h, L (E i h) = A i h - B i h := hAB
+  obtain ⟨μ₀, hμ₀⟩ : ∃ μ₀ : Measure X,
+      μ₀ = ∑ i, (RealRMK.rieszMeasure (A i) + RealRMK.rieszMeasure (B i)) := ⟨_, rfl⟩
+  have hμ₀K : ∀ K : Set X, IsCompact K → μ₀ K < ∞ := by
+    intro K hK
+    rw [hμ₀, Measure.finsetSum_apply]
+    exact ENNReal.sum_lt_top.2 fun i _ ↦ by
+      rw [Measure.add_apply]
+      exact ENNReal.add_lt_top.2 ⟨hK.measure_lt_top, hK.measure_lt_top⟩
+  have : IsFiniteMeasureOnCompacts μ₀ := ⟨hμ₀K⟩
+  have hac : ∀ i, RealRMK.rieszMeasure (A i) ≪ μ₀ ∧ RealRMK.rieszMeasure (B i) ≪ μ₀ := by
+    intro i
+    have h0 : ∀ s, μ₀ s = 0 →
+        RealRMK.rieszMeasure (A i) s = 0 ∧ RealRMK.rieszMeasure (B i) s = 0 := by
+      intro s hs
+      rw [hμ₀, Measure.finsetSum_apply, Finset.sum_eq_zero_iff] at hs
+      have := hs i (Finset.mem_univ i)
+      rwa [Measure.add_apply, add_eq_zero] at this
+    exact ⟨fun ⦃s⦄ hs ↦ (h0 s hs).1, fun ⦃s⦄ hs ↦ (h0 s hs).2⟩
+  -- Radon–Nikodym: a measure `m ≪ μ₀` finite on compact sets is `μ₀` with a density `d`.
+  have rn : ∀ m : Measure X, IsFiniteMeasureOnCompacts m → m ≪ μ₀ →
+      ∃ d : X → ℝ≥0∞, Measurable d ∧ (∀ K : Set X, IsCompact K → ∫⁻ x in K, d x ∂μ₀ < ∞) ∧
+        ∀ h : C_c(X, ℝ), Integrable (fun x ↦ (d x).toReal * h x) μ₀ ∧
+          ∫ x, h x ∂m = ∫ x, (d x).toReal * h x ∂μ₀ := by
+    intro m hm hmac
+    have hwd : μ₀.withDensity (m.rnDeriv μ₀) = m := by
+      conv_rhs => rw [m.haveLebesgueDecomposition_add μ₀]
+      rw [Measure.singularPart_eq_zero_of_ac hmac, zero_add]
+    have hlt := Measure.rnDeriv_lt_top m μ₀
+    refine ⟨m.rnDeriv μ₀, Measure.measurable_rnDeriv m μ₀, fun K hK ↦
+      Measure.lintegral_rnDeriv_lt_top_of_measure_ne_top μ₀ hK.measure_lt_top.ne,
+      fun h ↦ ⟨?_, ?_⟩⟩
+    · have hint : Integrable (fun x ↦ h x) (μ₀.withDensity (m.rnDeriv μ₀)) := by
+        rw [hwd]
+        exact h.continuous.integrable_of_hasCompactSupport h.hasCompactSupport
+      exact (integrable_withDensity_iff_integrable_smul' (Measure.measurable_rnDeriv m μ₀) hlt).1
+        hint
+    · calc ∫ x, h x ∂m = ∫ x, h x ∂(μ₀.withDensity (m.rnDeriv μ₀)) := by rw [hwd]
+        _ = ∫ x, (m.rnDeriv μ₀ x).toReal • h x ∂μ₀ :=
+          integral_withDensity_eq_integral_toReal_smul (Measure.measurable_rnDeriv m μ₀) hlt _
+  -- Each `ℓᵢ` has a locally `μ₀`-integrable density `dᵢ`.
+  have hd : ∀ i, ∃ d : X → ℝ, Measurable d ∧
+      (∀ K : Set X, IsCompact K → ∫⁻ x in K, ‖d x‖ₑ ∂μ₀ < ∞) ∧
+      ∀ h : C_c(X, ℝ), Integrable (fun x ↦ d x * h x) μ₀ ∧ L (E i h) = ∫ x, d x * h x ∂μ₀ := by
+    intro i
+    obtain ⟨dA, hdAm, hdAK, hdA⟩ := rn _ inferInstance (hac i).1
+    obtain ⟨dB, hdBm, hdBK, hdB⟩ := rn _ inferInstance (hac i).2
+    refine ⟨fun x ↦ (dA x).toReal - (dB x).toReal, hdAm.ennreal_toReal.sub hdBm.ennreal_toReal,
+      fun K hK ↦ ?_, fun h ↦ ?_⟩
+    · have hpt : ∀ x, ‖(dA x).toReal - (dB x).toReal‖ₑ ≤ dA x + dB x := fun x ↦ by
+        refine enorm_sub_le.trans (add_le_add ?_ ?_) <;>
+          rw [Real.enorm_eq_ofReal_abs, abs_of_nonneg ENNReal.toReal_nonneg] <;>
+          exact ENNReal.ofReal_toReal_le
+      calc ∫⁻ x in K, ‖(dA x).toReal - (dB x).toReal‖ₑ ∂μ₀ ≤ ∫⁻ x in K, (dA x + dB x) ∂μ₀ :=
+            lintegral_mono hpt
+        _ = ∫⁻ x in K, dA x ∂μ₀ + ∫⁻ x in K, dB x ∂μ₀ := lintegral_add_left hdAm _
+        _ < ∞ := ENNReal.add_lt_top.2 ⟨hdAK K hK, hdBK K hK⟩
+    · obtain ⟨hiA, hA⟩ := hdA h
+      obtain ⟨hiB, hB⟩ := hdB h
+      refine ⟨(hiA.sub hiB).congr (ae_of_all _ fun x ↦ ?_), ?_⟩
+      · simp only [Pi.sub_apply]
+        ring
+      · rw [hAB', ← RealRMK.integral_rieszMeasure (A i), ← RealRMK.integral_rieszMeasure (B i),
+          hA, hB, ← integral_sub hiA hiB]
+        refine integral_congr_ae (ae_of_all _ fun x ↦ ?_)
+        beta_reduce
+        ring
+  choose d hdm hdK hdrep using hd
+  -- Step 4: the field `ρ = ∑ᵢ dᵢ bᵢ` represents `L` against `μ₀`.
+  obtain ⟨ρ, hρ⟩ : ∃ ρ : X → Rn N, ρ = fun x ↦ ∑ i, d i x • b i := ⟨_, rfl⟩
+  have hρm : Measurable ρ := by
+    rw [hρ]
+    exact Finset.measurable_sum _ fun i _ ↦ (hdm i).smul_const _
+  have hρK : ∀ K : Set X, IsCompact K → ∫⁻ x in K, ‖ρ x‖ₑ ∂μ₀ < ∞ := by
+    intro K hK
+    have hpt : ∀ x, ‖ρ x‖ₑ ≤ ∑ i, ‖d i x‖ₑ := fun x ↦ by
+      rw [hρ]
+      refine (enorm_sum_le _ _).trans (Finset.sum_le_sum fun i _ ↦ ?_)
+      rw [enorm_smul, ← ofReal_norm (b i), hbn, ENNReal.ofReal_one, mul_one]
+    calc ∫⁻ x in K, ‖ρ x‖ₑ ∂μ₀ ≤ ∫⁻ x in K, ∑ i, ‖d i x‖ₑ ∂μ₀ := lintegral_mono hpt
+      _ = ∑ i, ∫⁻ x in K, ‖d i x‖ₑ ∂μ₀ := lintegral_finsetSum _ fun i _ ↦ (hdm i).enorm
+      _ < ∞ := ENNReal.sum_lt_top.2 fun i _ ↦ hdK i K hK
+  have hrep₀ : ∀ g : C_c(X, Rn N), L g = ∫ x, inner ℝ (g x) (ρ x) ∂μ₀ := by
+    intro g
+    rw [hdecomp g, Finset.sum_congr rfl fun i _ ↦ (hdrep i (comp i g)).2,
+      ← integral_finsetSum _ fun i _ ↦ (hdrep i (comp i g)).1]
+    refine integral_congr_ae (ae_of_all _ fun x ↦ ?_)
+    simp only [hρ, inner_sum, real_inner_smul_right, hcomp]
+    exact Finset.sum_congr rfl fun i _ ↦ by rw [real_inner_comm]
+  -- Step 5 (polar decomposition): `μ = |ρ| μ₀` and `ν = ρ / |ρ|`.
+  refine ⟨μ₀.withDensity fun x ↦ ‖ρ x‖ₑ, fun x ↦ ‖ρ x‖⁻¹ • ρ x, fun K hK ↦ ?_,
+    (hρm.norm.inv.smul hρm).stronglyMeasurable, ?_, fun g ↦ ?_⟩
+  · rw [withDensity_apply _ hK.measurableSet]
+    exact hρK K hK
+  · rw [ae_withDensity_iff hρm.enorm]
+    refine ae_of_all _ fun x hx ↦ ?_
+    have hx0 : ρ x ≠ 0 := fun h ↦ hx (by rw [h, enorm_zero])
+    show ‖‖ρ x‖⁻¹ • ρ x‖ = 1
+    rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 hx0)]
+  · rw [hrep₀ g, integral_withDensity_eq_integral_toReal_smul hρm.enorm
+      (ae_of_all _ fun x ↦ enorm_lt_top)]
+    refine integral_congr_ae (ae_of_all _ fun x ↦ ?_)
+    show inner ℝ (g x) (ρ x) = (‖ρ x‖ₑ).toReal • inner ℝ (g x) (‖ρ x‖⁻¹ • ρ x)
+    rw [toReal_enorm, smul_eq_mul, real_inner_smul_right]
+    rcases eq_or_ne (ρ x) 0 with h | h
+    · simp [h]
+    · rw [mul_inv_cancel_left₀ (norm_ne_zero_iff.2 h)]
+/-- **Zero extension of a functional on admissible fields** (Steps 1–4 of the proof of the
+Gauss–Green representation on an open `U`, passing from `ℝᴺ` to `U` to apply Simon Ch. 1,
+Theorem 4.14, `chapter-01.txt` lines 1654–1663, in Ch. 2 (2.1)–(2.2), `chapter-02.txt`
+lines 485–496). For `f ∈ C_c(U; ℝᴺ)` the zero extension `f̃ = extend ι f 0` (`ι : U → ℝᴺ`) is
+continuous since `U` is open (`HasCompactSupport.continuous_extend_zero`), has
+`tsupport f̃ ⊆ ι(tsupport f) ⊆ U` (`tsupport_extend_zero_subset`) and is linear in `f`, so
+`L f := Λ f̃` is linear and inherits the bound of `Λ` on `ι(K)`. For admissible `g`, the
+restriction `g ∘ ι` vanishes off the compact `ι⁻¹(tsupport g)` and its zero extension is `g`. -/
+theorem Submission.gaussGreenRep_riesz_zero_extension_functional : ∀ (N : ℕ) (U : Set (Rn N)) (Λ : (Rn N → Rn N) → ℝ), IsOpen U → (∀ g h : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Continuous h → HasCompactSupport h → tsupport h ⊆ U → Λ (g + h) = Λ g + Λ h) → (∀ (c : ℝ) (g : Rn N → Rn N), Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ (c • g) = c * Λ g) → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ g : Rn N → Rn N, Continuous g → tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → Λ g ≤ C) → ∃ L : C_c(U, Rn N) →ₗ[ℝ] ℝ, (∀ K : Set U, IsCompact K → ∃ C : ℝ, ∀ f : C_c(U, Rn N), (∀ x, ‖f x‖ ≤ 1) → tsupport f ⊆ K → L f ≤ C) ∧ ∀ g : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → ∃ f : C_c(U, Rn N), (∀ y : U, f y = g ↑y) ∧ L f = Λ g := by
+  intro N U Λ hU hadd hsmul hbd
+  -- The zero extension `f̃ = extend ι f 0` of `f ∈ C_c(U; ℝᴺ)`, `ι : U → ℝᴺ` the inclusion.
+  let E : C_c(U, Rn N) → Rn N → Rn N := fun f ↦ Subtype.val.extend (⇑f) 0
+  have hEval : ∀ (f : C_c(U, Rn N)) (y : U), E f y = f y := fun f y ↦
+    Subtype.val_injective.extend_apply _ _ y
+  have hEout : ∀ (f : C_c(U, Rn N)) (x : Rn N), x ∉ U → E f x = 0 := fun f x hx ↦
+    Function.extend_apply' _ _ x fun ⟨y, hy⟩ ↦ hx (hy ▸ y.2)
+  -- `f̃` is admissible: continuous (`U` is open), compactly supported, `tsupport f̃ ⊆ ι(tsupport f)`.
+  have hEcont : ∀ f : C_c(U, Rn N), Continuous (E f) := fun f ↦
+    HasCompactSupport.continuous_extend_zero hU f.continuous f.hasCompactSupport
+  have hEcs : ∀ f : C_c(U, Rn N), HasCompactSupport (E f) := fun f ↦
+    f.hasCompactSupport.extend_zero continuous_subtype_val
+  have hEsupp : ∀ f : C_c(U, Rn N), tsupport (E f) ⊆ Subtype.val '' tsupport f := fun f ↦
+    f.hasCompactSupport.tsupport_extend_zero_subset continuous_subtype_val
+  have hEU : ∀ f : C_c(U, Rn N), tsupport (E f) ⊆ U := fun f ↦
+    (hEsupp f).trans (Subtype.coe_image_subset _ _)
+  -- The extension is linear in `f`.
+  have hEadd : ∀ f f' : C_c(U, Rn N), E (f + f') = E f + E f' := by
+    intro f f'
+    funext x
+    by_cases hx : x ∈ U
+    · lift x to U using hx
+      simp [hEval]
+    · simp [hEout _ _ hx]
+  have hEsmul : ∀ (c : ℝ) (f : C_c(U, Rn N)), E (c • f) = c • E f := by
+    intro c f
+    funext x
+    by_cases hx : x ∈ U
+    · lift x to U using hx
+      simp [hEval]
+    · simp [hEout _ _ hx]
+  refine ⟨{ toFun := fun f ↦ Λ (E f)
+            map_add' := fun f f' ↦ by
+              simp only [hEadd]
+              exact hadd _ _ (hEcont f) (hEcs f) (hEU f) (hEcont f') (hEcs f') (hEU f')
+            map_smul' := fun c f ↦ by
+              simp only [hEsmul, RingHom.id_apply, smul_eq_mul]
+              exact hsmul c _ (hEcont f) (hEcs f) (hEU f) }, ?_, ?_⟩
+  · -- (i) the local bound, from the bound for `Λ` on `ι(K)`.
+    intro K hK
+    obtain ⟨C, hC⟩ := hbd (Subtype.val '' K) (hK.image continuous_subtype_val)
+      (Subtype.coe_image_subset _ _)
+    refine ⟨C, fun f hf1 hfK ↦ hC (E f) (hEcont f) ((hEsupp f).trans (image_mono hfK)) ?_⟩
+    intro x
+    by_cases hx : x ∈ U
+    · lift x to U using hx
+      rw [hEval]
+      exact hf1 x
+    · rw [hEout _ _ hx, norm_zero]
+      exact zero_le_one
+  · -- (ii) the restriction `g ∘ ι` lies in `C_c(U; ℝᴺ)` and its zero extension is `g`.
+    intro g hg hgc hgU
+    have hK₀ : IsCompact (Subtype.val ⁻¹' tsupport g : Set U) := by
+      rw [Subtype.isCompact_iff, Subtype.image_preimage_coe, inter_eq_right.mpr hgU]
+      exact hgc
+    let f : C_c(U, Rn N) :=
+      ⟨⟨g ∘ Subtype.val, hg.comp continuous_subtype_val⟩,
+        HasCompactSupport.intro hK₀ fun y hy ↦ image_eq_zero_of_notMem_tsupport (f := g) hy⟩
+    have hEf : E f = g := by
+      funext x
+      by_cases hx : x ∈ U
+      · lift x to U using hx
+        rw [hEval]
+        rfl
+      · rw [hEout _ _ hx]
+        exact (image_eq_zero_of_notMem_tsupport fun h ↦ hx (hgU h)).symm
+    exact ⟨f, fun y ↦ rfl, show Λ (E f) = Λ g by rw [hEf]⟩
+/-- **Push-forward of a Riesz pair from a Borel set `U ⊆ ℝᴺ`** (step 7 of the proof that Simon's
+Riesz Representation Theorem, Ch. 1, 4.14 (`chapter-01.txt` lines 1654–1663), applied on `X = U`
+gives the measure `μ_E` and unit field `ν` on `ℝᴺ` of Ch. 3, (4.1) (`chapter-03.txt` lines
+556–564)). Let `ι : U → ℝᴺ` be the inclusion, `μ = ι_# μ₀` and `ν = extend ι ν₀ 0`, so
+`ν ∘ ι = ν₀`. As `U` is Borel, `ι` is a measurable embedding, so `μ(S) = μ₀(ι⁻¹ S)` for every `S`:
+`μ(ℝᴺ ∖ U) = μ₀(∅) = 0` and `μ(K) = μ₀(ι⁻¹ K) < ∞` for compact `K ⊆ U`. A.e. statements,
+a.e.-strong measurability and Bochner integrals transfer along `ι`. -/
+theorem Submission.gaussGreenRep_riesz_pushforward_subtype : ∀ (N : ℕ) (U : Set (Rn N)) (μ₀ : Measure U) (ν₀ : U → Rn N), MeasurableSet U → (∀ K : Set U, IsCompact K → μ₀ K < ∞) → AEStronglyMeasurable ν₀ μ₀ → (∀ᵐ y ∂μ₀, ‖ν₀ y‖ = 1) → ∃ (μ : Measure (Rn N)) (ν : Rn N → Rn N), μ Uᶜ = 0 ∧ (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) ∧ AEStronglyMeasurable ν μ ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧ ∀ g : Rn N → Rn N, ∫ x, inner ℝ (g x) (ν x) ∂μ = ∫ y, inner ℝ (g ↑y) (ν₀ y) ∂μ₀ := by
+  intro N U μ₀ ν₀ hU hfin hν₀ hnorm
+  -- Step 1: the inclusion `ι : U → ℝᴺ` is a measurable embedding since `U` is Borel.
+  have hι : MeasurableEmbedding ((↑) : U → Rn N) := MeasurableEmbedding.subtype_coe hU
+  -- Step 2: `ν` extends `ν₀` by zero, so `ν ∘ ι = ν₀`.
+  have hνι : (Function.extend ((↑) : U → Rn N) ν₀ 0) ∘ ((↑) : U → Rn N) = ν₀ :=
+    funext fun y ↦ Subtype.val_injective.extend_apply ν₀ 0 y
+  refine ⟨μ₀.map (↑), Function.extend ((↑) : U → Rn N) ν₀ 0, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Step 5: `μ(ℝᴺ ∖ U) = μ₀(ι⁻¹(ℝᴺ ∖ U)) = μ₀(∅) = 0`.
+    rw [hι.map_apply, preimage_compl, Subtype.coe_preimage_self, compl_univ, measure_empty]
+  · -- Step 6: for compact `K ⊆ U`, `ι⁻¹ K` is compact (its image is `U ∩ K = K`).
+    intro K hK hKU
+    rw [hι.map_apply]
+    refine hfin _ ?_
+    rwa [Subtype.isCompact_iff, Subtype.image_preimage_coe, inter_eq_right.2 hKU]
+  · -- Step 7: a.e.-strong measurability transfers along `ι`.
+    rw [hι.aestronglyMeasurable_map_iff, hνι]
+    exact hν₀
+  · -- Step 8: `|ν(ι y)| = |ν₀ y| = 1` for `μ₀`-a.e. `y`.
+    rw [hι.ae_map_iff]
+    filter_upwards [hnorm] with y hy
+    rwa [Subtype.val_injective.extend_apply]
+  · -- Step 9: change of variables `∫ F dμ = ∫ F ∘ ι dμ₀` for every `F`.
+    intro g
+    rw [hι.integral_map]
+    simp only [Subtype.val_injective.extend_apply]
+
+/-- **Riesz representation on an open set `U ⊆ ℝᴺ`** (Simon Ch. 1, Theorem 4.14,
+`chapter-01.txt` lines 1654–1663, applied with `X = U`, `H = ℝᴺ` as in Ch. 2, (2.1)–(2.2),
+`chapter-02.txt` lines 485–496). Zero extension identifies `C_c(U; ℝᴺ)` with the admissible
+fields, so `L f := Λ f̃` is linear and bounded on the unit fields supported in each compact
+`K ⊆ U`. As an open subset of `ℝᴺ`, `U` is Hausdorff, locally compact and second countable,
+hence `σ`-compact, and the Riesz representation with a Borel unit field gives `(μ₀, ν₀)` on `U`
+with `L f = ∫_U ⟨f, ν₀⟩ dμ₀`. Pushing forward along the inclusion `ι : U → ℝᴺ` gives `(μ, ν)`,
+and for admissible `g` with restriction `f = g ∘ ι`:
+`Λ g = L f = ∫_U ⟨g ∘ ι, ν₀⟩ dμ₀ = ∫ ⟨g, ν⟩ dμ`. -/
+theorem Submission.gaussGreenRep_riesz_on_open : ∀ (N : ℕ) (U : Set (Rn N)) (Λ : (Rn N → Rn N) → ℝ), IsOpen U → (∀ g h : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Continuous h → HasCompactSupport h → tsupport h ⊆ U → Λ (g + h) = Λ g + Λ h) → (∀ (c : ℝ) (g : Rn N → Rn N), Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ (c • g) = c * Λ g) → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ g : Rn N → Rn N, Continuous g → tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → Λ g ≤ C) → ∃ (μ : Measure (Rn N)) (ν : Rn N → Rn N), μ Uᶜ = 0 ∧ (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) ∧ AEStronglyMeasurable ν μ ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧ ∀ g : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ g = ∫ x, inner ℝ (g x) (ν x) ∂μ := by
+  intro N U Λ hU hadd hsmul hbd
+  -- Steps 2–4: the functional `L f := Λ f̃` on `C_c(U; ℝᴺ)`, bounded on unit fields supported in
+  -- each compact `K ⊆ U`; each admissible `g` is the zero extension of some `f = g ∘ ι`.
+  obtain ⟨L, hLbd, hLres⟩ :=
+    Submission.gaussGreenRep_riesz_zero_extension_functional N U Λ hU hadd hsmul hbd
+  -- Step 1: `U` is locally compact (open in `ℝᴺ`), hence `σ`-compact (second countable).
+  have : LocallyCompactSpace U := hU.locallyCompactSpace
+  have : SigmaCompactSpace U := sigmaCompactSpace_of_locallyCompact_secondCountable
+  -- Steps 5–6: Riesz representation of `L` on `U` with a Borel unit field `ν₀`.
+  obtain ⟨μ₀, ν₀, hμ₀, hν₀, hν₀1, hL⟩ :=
+    Submission.gaussGreenRep_riesz_sigmaCompact_borel U N L hLbd
+  -- Step 7: push `(μ₀, ν₀)` forward along the inclusion `ι : U → ℝᴺ` of the Borel set `U`.
+  obtain ⟨μ, ν, hμU, hμK, hν, hν1, hint⟩ :=
+    Submission.gaussGreenRep_riesz_pushforward_subtype N U μ₀ ν₀ hU.measurableSet hμ₀
+      hν₀.aestronglyMeasurable hν₀1
+  refine ⟨μ, ν, hμU, hμK, hν, hν1, fun g hg hgc hgU ↦ ?_⟩
+  -- Step 7(e): with `f = g ∘ ι`, `Λ g = L f = ∫_U ⟨g ∘ ι, ν₀⟩ dμ₀ = ∫ ⟨g, ν⟩ dμ`.
+  obtain ⟨f, hf, hLf⟩ := hLres g hg hgc hgU
+  calc Λ g = L f := hLf.symm
+    _ = ∫ y, inner ℝ (f y) (ν₀ y) ∂μ₀ := hL f
+    _ = ∫ y, inner ℝ (g ↑y) (ν₀ y) ∂μ₀ := by simp only [hf]
+    _ = ∫ x, inner ℝ (g x) (ν x) ∂μ := (hint g).symm
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry

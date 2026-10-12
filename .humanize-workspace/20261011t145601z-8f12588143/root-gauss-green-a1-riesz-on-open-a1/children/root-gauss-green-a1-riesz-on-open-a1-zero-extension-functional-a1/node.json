@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.riesz_on_open-a1.zero_extension_functional-a1",
+  "parent_id": "root.gauss_green-a1.riesz_on_open-a1",
+  "depth": 3,
+  "title": "Admissible fields on an open U ⊆ ℝ^N define a locally bounded linear functional on C_c(U; ℝ^N)",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open (carrying the subspace topology), and Λ : (ℝ^N → ℝ^N) → ℝ. Call g : ℝ^N → ℝ^N admissible if g is continuous with compact support and tsupport g ⊆ U. Assume Λ(g + h) = Λ(g) + Λ(h) and Λ(c g) = c Λ(g) for all admissible g, h and c ∈ ℝ. Assume also that for every compact K ⊆ U there is C ∈ ℝ with Λ(g) ≤ C for every continuous g with tsupport g ⊆ K and |g(x)| ≤ 1 for all x. Then there is an ℝ-linear map L : C_c(U; ℝ^N) → ℝ with two properties. (i) For every compact K ⊆ U (compact in the subspace U) there is C ∈ ℝ with L(f) ≤ C for every f ∈ C_c(U; ℝ^N) with |f(y)| ≤ 1 for all y ∈ U and tsupport f ⊆ K. (ii) For every admissible g there is f ∈ C_c(U; ℝ^N) with f(y) = g(y) for all y ∈ U and L(f) = Λ(g).",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Rn N)) (Λ : (Rn N → Rn N) → ℝ), IsOpen U → (∀ g h : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Continuous h → HasCompactSupport h → tsupport h ⊆ U → Λ (g + h) = Λ g + Λ h) → (∀ (c : ℝ) (g : Rn N → Rn N), Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ (c • g) = c * Λ g) → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ g : Rn N → Rn N, Continuous g → tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → Λ g ≤ C) → ∃ L : C_c(U, Rn N) →ₗ[ℝ] ℝ, (∀ K : Set U, IsCompact K → ∃ C : ℝ, ∀ f : C_c(U, Rn N), (∀ x, ‖f x‖ ≤ 1) → tsupport f ⊆ K → L f ≤ C) ∧ ∀ g : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → ∃ f : C_c(U, Rn N), (∀ y : U, f y = g ↑y) ∧ L f = Λ g",
+  "lean_name": "gaussGreenRep_riesz_zero_extension_functional",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-riesz-on-open-a1-zero-extension-functional-a1-a1"
+}
