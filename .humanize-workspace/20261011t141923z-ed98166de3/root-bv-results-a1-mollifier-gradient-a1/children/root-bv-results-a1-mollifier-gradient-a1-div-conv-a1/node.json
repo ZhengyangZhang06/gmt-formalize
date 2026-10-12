@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_gradient-a1.div_conv-a1",
+  "parent_id": "root.bv_results-a1.mollifier_gradient-a1",
+  "depth": 3,
+  "title": "Divergence commutes with convolution by a locally integrable kernel",
+  "statement": "Let n ∈ ℕ and E = ℝⁿ with Lebesgue measure. Let κ : E → ℝ be locally integrable and g : E → E a C¹ vector field with compact support. Then for every x ∈ E, div(κ * g)(x) = (κ * div g)(x). Here κ * g = convolution κ g (lsmul ℝ ℝ) volume, i.e. (κ * g)(x) = ∫ κ(t) g(x − t) dt; κ * div g is the scalar convolution; and div = Chapter02.euclideanDivergence, the trace of the Fréchet derivative.",
+  "lean_statement": "∀ (n : ℕ) (κ : Rn n → ℝ) (g : Rn n → Rn n), LocallyIntegrable κ volume → ContDiff ℝ 1 g → HasCompactSupport g → ∀ x, Chapter02.euclideanDivergence (convolution κ g (ContinuousLinearMap.lsmul ℝ ℝ) volume) x = convolution κ (Chapter02.euclideanDivergence g) (ContinuousLinearMap.lsmul ℝ ℝ) volume x",
+  "lean_name": "bv_euclideanDivergence_convolution",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-gradient-a1-div-conv-a1-a1"
+}
