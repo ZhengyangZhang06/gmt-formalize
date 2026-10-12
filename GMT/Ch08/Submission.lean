@@ -638,6 +638,96 @@ theorem Submission.intcpt_allard_wrm_first_variation_lower_bound :
         rw [integral_add hf12 hf3, integral_sub (hf1.const_mul _) (hf2.const_mul _),
           integral_const_mul, integral_const_mul, hw1, hw2]
     _ ≤ _ := integral_mono (hf12.add hf3) hdiv hpt
+/-- The gradient term `G(t) = ∫ φ(|z - y|²/t²) Dh(z)[p_S(z - y)] dW(z,S)` of the weighted radial
+monotonicity argument (Simon Ch. 8, 3.3–3.5; tilt-excess estimate) satisfies
+`|G(t)| ≤ M A^{n+1} ε t^{n+1}`: off `B_{tA}(y) × G(N,n)` the cutoff vanishes, on it the integrand is
+at most `M (tA) ‖p_S - p_P‖`, and the tilt-excess hypothesis bounds the integral of `‖p_S - p_P‖`. -/
+theorem Submission.intcpt_allard_wrm_gradient_term_bound :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n) (y : Euclidean N) (ε M A t : ℝ) (h : Euclidean N → ℝ) (φ : ℝ → ℝ), 0 ≤ ε → 0 ≤ M → 0 < A → 0 < t → (∫⁻ z in closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * (t * A) ^ n) → (∀ (z : Euclidean N) (S : Grassmannian N n), |fderiv ℝ h z (Grassmannian.project S (z - y))| ≤ M * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖ * ‖z - y‖) → (∀ s, 0 ≤ φ s ∧ φ s ≤ 1) → (∀ s, A ^ 2 ≤ s → φ s = 0) → |∫ p, φ (‖p.1 - y‖ ^ 2 / t ^ 2) * fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) ∂W.measure| ≤ M * A ^ (n + 1) * ε * t ^ (n + 1) := by
+  intro N n U W P y ε M A t h φ hε hM hA ht htilt hgrad hφ hφA
+  have htA : 0 < t * A := mul_pos ht hA
+  have hMtA : 0 ≤ M * (t * A) := mul_nonneg hM htA.le
+  -- Step 1: pointwise, `|g| ≤ 1_K · M (tA) ‖p_S - p_P‖` with `K = B_{tA}(y) × G(N,n)`.
+  have hpt : ∀ p : Euclidean N × Grassmannian N n,
+      ENNReal.ofReal ‖φ (‖p.1 - y‖ ^ 2 / t ^ 2) *
+          fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))‖ ≤
+        (closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n))).indicator
+          (fun z ↦ ENNReal.ofReal (M * (t * A)) * ENNReal.ofReal
+            ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖) p := by
+    intro p
+    by_cases hp : p ∈ closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n))
+    · -- On `K`: `|φ| ≤ 1` and (grad) with `|z - y| ≤ tA`.
+      rw [Set.indicator_of_mem hp, ← ENNReal.ofReal_mul hMtA]
+      apply ENNReal.ofReal_le_ofReal
+      have hdist : ‖p.1 - y‖ ≤ t * A := by
+        have h1 := hp.1
+        rwa [mem_closedBall, dist_eq_norm] at h1
+      have hφ1 : |φ (‖p.1 - y‖ ^ 2 / t ^ 2)| ≤ 1 := by
+        rw [abs_le]
+        constructor <;> linarith [hφ (‖p.1 - y‖ ^ 2 / t ^ 2)]
+      rw [Real.norm_eq_abs, abs_mul]
+      calc |φ (‖p.1 - y‖ ^ 2 / t ^ 2)| * |fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))|
+          ≤ 1 * |fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))| :=
+            mul_le_mul_of_nonneg_right hφ1 (abs_nonneg _)
+        _ = |fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))| := one_mul _
+        _ ≤ M * ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap p.2 - Grassmannian.projectionLinearMap P)‖ *
+              ‖p.1 - y‖ := hgrad p.1 p.2
+        _ ≤ M * ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap p.2 - Grassmannian.projectionLinearMap P)‖ *
+              (t * A) := mul_le_mul_of_nonneg_left hdist (mul_nonneg hM (norm_nonneg _))
+        _ = M * (t * A) * ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap p.2 - Grassmannian.projectionLinearMap P)‖ := by
+            ring
+    · -- Off `K`: `|z - y| > tA`, so `|z - y|²/t² > A²` and the cutoff vanishes.
+      rw [Set.indicator_of_notMem hp]
+      have hdist : t * A < ‖p.1 - y‖ := by
+        have h1 : p.1 ∉ closedBall y (t * A) := fun h1 ↦ hp ⟨h1, mem_univ _⟩
+        rwa [mem_closedBall, dist_eq_norm, not_le] at h1
+      have hs : A ^ 2 ≤ ‖p.1 - y‖ ^ 2 / t ^ 2 := by
+        rw [le_div_iff₀ (pow_pos ht 2)]
+        calc A ^ 2 * t ^ 2 = (t * A) ^ 2 := by ring
+          _ ≤ ‖p.1 - y‖ ^ 2 := pow_le_pow_left₀ htA.le hdist.le 2
+      rw [hφA _ hs, zero_mul, norm_zero, ENNReal.ofReal_zero]
+  -- Step 2: `∫⁻ |g| ≤ ofReal (M tA) · ∫⁻_K ‖p_S - p_P‖ ≤ ofReal (M tA · ε (tA)^n)`.
+  have hlint : ∫⁻ p, ENNReal.ofReal ‖φ (‖p.1 - y‖ ^ 2 / t ^ 2) *
+        fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))‖ ∂W.measure ≤
+      ENNReal.ofReal (M * (t * A) * (ε * (t * A) ^ n)) := by
+    calc ∫⁻ p, ENNReal.ofReal ‖φ (‖p.1 - y‖ ^ 2 / t ^ 2) *
+          fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))‖ ∂W.measure
+        ≤ ∫⁻ p, (closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n))).indicator
+          (fun z ↦ ENNReal.ofReal (M * (t * A)) * ENNReal.ofReal
+            ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖) p
+            ∂W.measure := lintegral_mono hpt
+      _ ≤ ∫⁻ z in closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n)),
+          ENNReal.ofReal (M * (t * A)) * ENNReal.ofReal
+            ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖
+            ∂W.measure := lintegral_indicator_le _ _
+      _ = ENNReal.ofReal (M * (t * A)) *
+          ∫⁻ z in closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n)),
+            ENNReal.ofReal ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖
+            ∂W.measure := lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ ≤ ENNReal.ofReal (M * (t * A)) * ENNReal.ofReal (ε * (t * A) ^ n) := by gcongr
+      _ = ENNReal.ofReal (M * (t * A) * (ε * (t * A) ^ n)) :=
+          (ENNReal.ofReal_mul hMtA).symm
+  -- Step 3: `|∫ g| ≤ (∫⁻ |g|).toReal ≤ M tA · ε (tA)^n = M A^{n+1} ε t^{n+1}`.
+  calc |∫ p, φ (‖p.1 - y‖ ^ 2 / t ^ 2) *
+        fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) ∂W.measure|
+      = ‖∫ p, φ (‖p.1 - y‖ ^ 2 / t ^ 2) *
+        fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) ∂W.measure‖ :=
+        (Real.norm_eq_abs _).symm
+    _ ≤ (∫⁻ p, ENNReal.ofReal ‖φ (‖p.1 - y‖ ^ 2 / t ^ 2) *
+        fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))‖ ∂W.measure).toReal :=
+        norm_integral_le_lintegral_norm _
+    _ ≤ (ENNReal.ofReal (M * (t * A) * (ε * (t * A) ^ n))).toReal :=
+        ENNReal.toReal_mono ENNReal.ofReal_ne_top hlint
+    _ = M * (t * A) * (ε * (t * A) ^ n) :=
+        ENNReal.toReal_ofReal (mul_nonneg hMtA (mul_nonneg hε (pow_nonneg htA.le n)))
+    _ = M * A ^ (n + 1) * ε * t ^ (n + 1) := by ring
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
