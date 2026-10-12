@@ -335,6 +335,73 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Projection lower comparison for caps of the unit sphere of an `(n+1)`-plane** (the graph
+map over `T_ζ` and the orthogonal projection `π_ζ`; Dall'Alba, Lemma 4.15; Mattila, Ch. 18).
+For a subspace `H ⊆ ℝᴺ` with `dim H = n + 1` and a unit vector `ζ ∈ H`, the `n`-plane
+`T = (ℝζ)^⊥ ∩ H` satisfies `Hⁿ(T ∩ B(0, ρ/2)) ≤ Hⁿ(S(H) ∩ B(ζ, ρ))` for `0 < ρ ≤ 2`, where
+`S(H) = {θ ∈ H : |θ| = 1}`. Every `w ∈ T ∩ B(0, ρ/2)` is `π ξ` for the lift
+`ξ = w + (1 - |w|²)^{1/2} ζ ∈ S(H) ∩ B(ζ, ρ)`, where `π` is the `1`-Lipschitz orthogonal
+projection onto `T`. -/
+theorem Submission.bf_sphereCap_lower_comparison : ∀ (n N : ℕ) (H : Submodule ℝ (Rn N)), finrank ℝ H = n + 1 → ∀ ζ ∈ H, ‖ζ‖ = 1 → ∃ T : Submodule ℝ (Rn N), finrank ℝ T = n ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ 2 → μHE[n] ((T : Set (Rn N)) ∩ Metric.ball 0 (ρ / 2)) ≤ μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ) := by
+  intro n N H hH ζ hζ hζ1
+  -- Step 1: the plane `T = (ℝζ)^⊥ ∩ H` has dimension `n`, since `ℝζ ⊆ H` is a line.
+  have hζ0 : ζ ≠ 0 := by
+    rintro rfl
+    simp at hζ1
+  have hTdim : finrank ℝ ((ℝ ∙ ζ)ᗮ ⊓ H : Submodule ℝ (Rn N)) = n :=
+    Submodule.finrank_add_inf_finrank_orthogonal' ((Submodule.span_singleton_le_iff_mem ζ H).2 hζ)
+      (by rw [finrank_span_singleton hζ0, hH, add_comm])
+  refine ⟨(ℝ ∙ ζ)ᗮ ⊓ H, hTdim, fun ρ hρ hρ2 ↦ ?_⟩
+  set T : Submodule ℝ (Rn N) := (ℝ ∙ ζ)ᗮ ⊓ H
+  -- Step 2: the orthogonal projection `π` onto `T` sends `ζ` to `0`, since `ζ ⊥ T`.
+  have hπζ : T.starProjection ζ = 0 := by
+    rw [Submodule.starProjection_apply_eq_zero_iff]
+    intro u hu
+    exact Submodule.mem_orthogonal_singleton_iff_inner_left.1 hu.1
+  -- Step 3: every `w ∈ T ∩ B(0, ρ/2)` is `π ξ` for `ξ = w + (1 - |w|²)^{1/2} ζ` in the cap.
+  have hsub : (T : Set (Rn N)) ∩ Metric.ball 0 (ρ / 2) ⊆
+      T.starProjection '' ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ) := by
+    rintro w ⟨hwT, hw⟩
+    have hwζ : inner ℝ w ζ = 0 := Submodule.mem_orthogonal_singleton_iff_inner_left.1 hwT.1
+    rw [mem_ball_zero_iff] at hw
+    set t : ℝ := ‖w‖ ^ 2
+    have ht0 : 0 ≤ t := by positivity
+    have ht1 : t < 1 := by nlinarith [norm_nonneg w]
+    have htρ : t < ρ ^ 2 / 4 := by nlinarith [norm_nonneg w]
+    set f : ℝ := Real.sqrt (1 - t)
+    have hf0 : 0 ≤ f := Real.sqrt_nonneg _
+    have hf2 : f ^ 2 = 1 - t := Real.sq_sqrt (by linarith)
+    have hf1 : f ≤ 1 := Real.sqrt_le_one.2 (by linarith)
+    have hft : 1 - t ≤ f := (Real.le_sqrt (by linarith) (by linarith)).2 (by nlinarith)
+    refine ⟨w + f • ζ, ⟨⟨H.add_mem hwT.2 (H.smul_mem f hζ), ?_⟩, ?_⟩, ?_⟩
+    · -- (b) `|ξ|² = |w|² + f² = 1`
+      have hsq : ‖w + f • ζ‖ ^ 2 = 1 := by
+        rw [norm_add_sq_real, inner_smul_right, hwζ, norm_smul, hζ1, Real.norm_of_nonneg hf0]
+        nlinarith
+      nlinarith [norm_nonneg (w + f • ζ)]
+    · -- (c) `|ξ - ζ|² = |w|² + (1 - f)² ≤ 2 |w|² < ρ²`
+      rw [Metric.mem_ball, dist_eq_norm]
+      have hsq : ‖w + f • ζ - ζ‖ ^ 2 = t + (1 - f) ^ 2 := by
+        rw [show w + f • ζ - ζ = w + (f - 1) • ζ by rw [sub_smul, one_smul]; abel,
+          norm_add_sq_real, inner_smul_right, hwζ, norm_smul, hζ1, Real.norm_eq_abs, mul_one,
+          sq_abs]
+        ring
+      have hlt : ‖w + f • ζ - ζ‖ ^ 2 < ρ ^ 2 := by
+        rw [hsq]
+        nlinarith [mul_nonneg (sub_nonneg.2 hf1) (sub_nonneg.2 hft),
+          mul_nonneg ht0 (sub_nonneg.2 hft), mul_nonneg ht0 (sub_nonneg.2 ht1.le)]
+      exact lt_of_pow_lt_pow_left₀ 2 hρ.le hlt
+    · -- (d) `π ξ = π w + f π ζ = w`
+      rw [map_add, map_smul, hπζ, smul_zero, add_zero, Submodule.starProjection_eq_self_iff.2 hwT]
+  -- Step 4: monotonicity and the Lipschitz image bound with constant `1`.
+  calc μHE[n] ((T : Set (Rn N)) ∩ Metric.ball 0 (ρ / 2))
+      ≤ μHE[n] (T.starProjection '' ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ)) :=
+        measure_mono hsub
+    _ ≤ ((1 : ℝ≥0) : ℝ≥0∞) ^ n * μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ) :=
+        Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+          T.lipschitzWith_starProjection.lipschitzOnWith
+    _ = μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ) := by simp
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
