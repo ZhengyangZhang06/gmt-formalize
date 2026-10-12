@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b6c28dd8eebcd7dc501e30d119f3d951016c2bbc63d35128f06e97549dede129",
+  "git_delta": {
+    "base_commit": "a974ecefe43b5648166cbbd2d0e87c34d9c1cf65",
+    "candidate_commit": "fcadd8a73118624f8cb2a77e622d5cd10f27c102",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_dlb_rescaledMeasure_prod_univ",
+    "diff_sha256": "6015a94a469a66f6ad3dd471c0a7822f7dfd91f89d8ddf4903b3e00b012f463f",
+    "source_sha256": "d9177d1f51f3b8bd0644f75b6b4c4418a271af83ac084238a16ba33972627280",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_dlb_rescaledMeasure_prod_univ",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (t : ℝ), (∀ A : Set (Euclidean N), MeasurableSet A → rescaledMeasure V x t (A ×ˢ (univ : Set (Grassmannian N n))) = ENNReal.ofReal (t⁻¹ ^ n) * V.weight {z | t⁻¹ • (z - x) ∈ A}) ∧ (0 < t → ∀ (y : Euclidean N) (ρ : ℝ), rescaledMeasure V x t (closedBall y ρ ×ˢ (univ : Set (Grassmannian N n))) = ENNReal.ofReal (t⁻¹ ^ n) * V.weight (closedBall (x + t • y) (t * ρ)))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
