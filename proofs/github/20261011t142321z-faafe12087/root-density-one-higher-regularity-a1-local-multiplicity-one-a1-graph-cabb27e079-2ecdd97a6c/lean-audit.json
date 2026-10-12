@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "319cfa7a0045499cffa89cf3b4c93e5ecf8486b5d50dd91496d17cc902fca278",
+  "git_delta": {
+    "base_commit": "ca5860f12b697185af0a323b0da4b3d43087b84f",
+    "candidate_commit": "4c24b1478edf2a6836cf16eeac3294967e4fb51b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_lmo_graph_tangent_rank",
+    "diff_sha256": "7223cbc7ae85ab9623f359c3393e334dfefb0c16ad4124ed8c133f27ee0b93b6",
+    "source_sha256": "89d399d727f6481a495ac176de30f3f712563e9d5a9cc8a7f71e8c160a2ae38b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_lmo_graph_tangent_rank",
+      "statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ) (R : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), ball ξ R ⊆ U → DifferentiableOn ℝ u (ball 0 R) → Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → (∀ᵐ y ∂V.weight, y ∈ ball ξ R → ∀ x ∈ ball (0 : Rn n) R, Q (y - ξ) = graphPoint x (u x) → V.tangentProj y = (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)).starProjection) → ∀ᵐ y ∂V.weight, y ∈ ball ξ R → ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj y = P.starProjection",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
