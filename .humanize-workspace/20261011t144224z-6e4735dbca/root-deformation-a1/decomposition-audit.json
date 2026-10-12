@@ -1,0 +1,95 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "deformation_(retraction|good_center|mass_restriction|im_completeness|im_pushforward_limit|onto_skeleton|skeleton_polyhedral|im_combination|dilation)",
+        "cthickening_subset_thickening|cthickening_cthickening_subset|mem_thickening_iff|cthickening_empty",
+        "theorem LipschitzOnWith.extend_real",
+        "def covectorEuclideanNorm|def massOn|def mass |structure GeometricCurrentOn|abbrev NVector|def nVectorPushforward|theorem nVectorPushforward_simple|axiom |sorry|admit",
+        "euclideanHausdorffMeasure_def|def euclideanHausdorffMeasure",
+        "sed -n '440,780p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/IndependentAudit_Statements.lean",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/V2_Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/deform_check/Scratch/IndependentAudit_Statements.lean",
+        "/tmp/deform_check/Scratch/V2_Assembly.lean"
+      ],
+      "conclusion": "The selected handoff is exactly root.deformation-a1, deformation_theorem : DeformationTheorem. The project contract matches the pinned snapshot byte-for-byte; Mathlib and SimonGMT revisions match the pinned dependencies. Searches found no declarations using the nine proposed names, and the latest inspected 136-node DAG reserves none of them. All names are bare identifiers. Every submitted type passes lexical validation and independently elaborates as Prop in the comparator scope, without child implementations or aliases. No Matrix/IsUnit construction occurs. Definitions confirm the stated mass norm, Hausdorff normalization, restriction and push-forward contracts. Child dependencies and the selected parent's prerequisite branches are acyclic and correctly directed. Splitting is appropriate: the obligations follow distinct steps of this deformation proof. The supplied assembly uses the exact child types and declared prerequisites to prove the selected DeformationTheorem, including strict support bounds and integrality. Its independent Lean rerun succeeded with only propext, Classical.choice and Quot.sound; this verifies assembly, while the child natural proofs were reviewed separately."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches the three explicitly requested properties. Radial gauges, compatible face compositions, periodic extension, the inductive distance estimate and segment argument establish a uniform c/σ Lipschitz bound. The proof supplies the construction and estimates without circular reliance."
+    },
+    {
+      "key": "good_center",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract correctly quantifies two arbitrary finite Borel measures. The covering argument, disjoint periodic tubes and corrected Fubini estimate yield a common centre and the required σ^(m+2) bounds. Zero measures and ℓ=1 are covered."
+    },
+    {
+      "key": "mass_restriction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match the Lean type. Riesz representation and the mass lemma produce the finite mass measure; local signed-measure uniqueness handles arbitrary alternative representations. Restriction existence, uniqueness and integrality follow from the supplied integral and tangent-locality arguments."
+    },
+    {
+      "key": "im_completeness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The universally quantified difference current is non-vacuous: the proof constructs differences from linear sequentially continuous functionals. The summable subsequence, density convergence and tangent/orientation identification prove the exact mass-closure statement without assuming finite total mass of each Tj."
+    },
+    {
+      "key": "im_pushforward_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prerequisite and approximation hypotheses are explicit and match the type. A fixed compact source set supplies domination; chartwise weak continuity of minors and summation prove convergence. The comparison proof establishes σ-finiteness using positivity and local integrability alone, then identifies the fixed integer-multiplicity witness independently of the approximating sequence."
+    },
+    {
+      "key": "onto_skeleton",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes both external prerequisites and every required intermediate conclusion. Declared children supply precisely the facts used. Good radii ensure finite boundary mass where needed; telescoping estimates, the corrected homotopy sign, mass limits and mollified tangentiality establish the conclusion. Degree-zero boundary cases and integrality are addressed."
+    },
+    {
+      "key": "skeleton_polyhedral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The assumed tangential property matches onto_skeleton's conclusion exactly; mentioning its origin creates no missing dependency. Face representations, medians, summation, supports and integrality prove the contract. The revised δ=1/(2√n) gives a strictly interior radius-1/4 ball even for n=1, and the supplied Poincaré and cutoff arguments establish both estimates. Checked against [Simon, Ch. 2, 2.7–2.9](https://web.stanford.edu/class/math285/ts-gmt.pdf#page=29) and [Gilbarg–Trudinger, (7.45)](https://djvu.online/file/jxRRleAzbYjsl)."
+    },
+    {
+      "key": "im_combination",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree for arbitrary integer coefficients and an explicitly specified result current. Locality and weight lemmas justify agreement of tangent spaces on overlaps. The signed multiplicity construction handles cancellation and proves all rectifiable-triple conditions, including degree zero."
+    },
+    {
+      "key": "dilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The four conjuncts precisely express pullback existence, dilation pairs, scaling properties and boundary compatibility. The proof establishes continuity, inverse scaling, mass and support identities, transported integer multiplicity and termwise lattice-chain scaling. These conclusions suffice for the parent's rescaling argument."
+    }
+  ],
+  "required_changes": []
+}

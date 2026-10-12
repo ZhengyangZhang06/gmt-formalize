@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1",
+  "parent_id": "root.deformation-a1",
+  "depth": 2,
+  "title": "Integer multiplicity Lipschitz push-forward as a limit of C¹ push-forwards (consistency step A3)",
+  "statement": "Lipschitz push-forward of an integer multiplicity current as the limit of C¹ push-forwards (the consistency step A3 behind the printed remark after display (21) of the proof of 5.1), conditional on Lemma 3.9. Assume LipschitzPushforwardIntegerMultiplicity. Let P, Q, k ∈ ℕ, X ∈ D_k(ℝ^P) with X(ω) = tauAction k M θ ξ ω for all ω, where IsRectifiableTriple univ k M θ ξ and θ is natural-valued on M, and let g : ℝ^P → ℝ^Q be Λ-Lipschitz with g⁻¹(K) ∩ spt X compact for every compact K. Then there is an integer multiplicity S ∈ D_k(ℝ^Q) with IsLipschitzPushforward X g S such that, for every sequence (g_j) of C¹ maps ℝ^P → ℝ^Q that are Λ′-Lipschitz for a common Λ′ and converge uniformly to g, and every test form ω on ℝ^Q, ∫_M θ(x)·⟨ω(g_j(x)), Dg_j(x)_#ξ(x)⟩ dH^k(x) → S(ω) (the integrand written as θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x))).",
+  "lean_statement": "LipschitzPushforwardIntegerMultiplicity → ∀ (P Q k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) k) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple (univ : Set (Eucl P)) k M θ ξ → (∀ x ∈ M, ∃ j : ℕ, θ x = j) → (∀ ω : TestFormOn (univ : Set (Eucl P)) k, X ω = tauAction k M θ ξ ω) → ∀ (g : Eucl P → Eucl Q) (Λ : ℝ≥0), LipschitzWith Λ g → (∀ K : Set (Eucl Q), IsCompact K → IsCompact (g ⁻¹' K ∩ X.support)) → ∃ S : GeometricCurrentOn (univ : Set (Eucl Q)) k, IsLipschitzPushforward X g S ∧ IsIntegerMultiplicity S ∧ ∀ (gj : ℕ → Eucl P → Eucl Q) (Λ' : ℝ≥0), (∀ j, ContDiff ℝ 1 (gj j)) → (∀ j, LipschitzWith Λ' (gj j)) → TendstoUniformly gj g atTop → ∀ ω : TestFormOn (univ : Set (Eucl Q)) k, Tendsto (fun j => ∫ x in M, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) ((ω : DifferentialForm (Eucl Q) k) (gj j x)) ∂(μHE[k] : Measure (Eucl P))) atTop (𝓝 (S ω))",
+  "lean_name": "deformation_im_pushforward_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-a1"
+}
