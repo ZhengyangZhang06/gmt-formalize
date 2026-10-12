@@ -1,0 +1,107 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tilt_excess_decay-a1.decay_at_origin-a1`
+- Child DAG node: `root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Notation: μ := V.weight; I(y, r) := ∫⁻_{B̄_r(y)} ‖H‖ₑ^p dμ in [0, ∞], so K(y, r) = (ofReal(r^{p-n}) · I(y, r))^{1/p}. Real powers of positive reals are Real.rpow; powers of elements of [0, ∞] are ENNReal.rpow.
+Part (a).
+1. B̄_s(z) ⊆ B̄_t(w) gives I(z, s) <= I(w, t) (monotonicity of the lower integral in the domain, lintegral_mono_set).
+2. As 0 < s <= t, s/t > 0 and s^{p-n} = (s/t)^{p-n} t^{p-n} (Real.div_rpow), so ofReal(s^{p-n}) = ofReal((s/t)^{p-n}) · ofReal(t^{p-n}) (ENNReal.ofReal_mul, nonnegative factors).
+3. Hence ofReal(s^{p-n}) I(z, s) <= ofReal((s/t)^{p-n}) · (ofReal(t^{p-n}) I(w, t)). The map x |-> x^{1/p} on [0, ∞] is monotone (1/p > 0, ENNReal.rpow_le_rpow) and multiplicative (ENNReal.mul_rpow_of_nonneg), so K(z, s) <= ofReal((s/t)^{p-n})^{1/p} · K(w, t).
+4. ofReal((s/t)^{p-n})^{1/p} = ofReal(((s/t)^{p-n})^{1/p}) (ENNReal.ofReal_rpow_of_nonneg) = ofReal((s/t)^{(p-n)/p}) (Real.rpow_mul for the nonnegative base s/t; (p - n)(1/p) = (p - n)/p). This proves (a).
+Part (b). Here p >= q > 0, so p > 0 and 0 <= 1 - q/p < 1.
+5. Hoelder on B := B̄_s(z): for every function g : R^{n+l} -> [0, ∞], measurable or not, ∫⁻_B g^q dμ <= (∫⁻_B g^p dμ)^{q/p} μ(B)^{1-q/p}. Proof: by exists_measurable_le_lintegral_eq (for g^q and the measure μ.restrict B) there is a measurable G <= g^q with ∫⁻_B G dμ = ∫⁻_B g^q dμ. Put G1 := G^{1/q}: G1 is measurable, G1 <= (g^q)^{1/q} = g, and G1^q = G (ENNReal.rpow_mul with (1/q) q = 1). If q = p, then ∫⁻_B G <= ∫⁻_B g^p, which is the claim because μ(B)^0 = 1. If q < p, Hoelder's inequality ENNReal.lintegral_mul_le_Lp_mul_Lq on μ.restrict B with the conjugate exponents P := p/q and Q := p/(p - q), applied to G1^q and the constant 1, gives ∫⁻_B G1^q <= (∫⁻_B (G1^q)^P)^{1/P} (∫⁻_B 1)^{1/Q} = (∫⁻_B G1^p)^{q/p} μ(B)^{1-q/p} <= (∫⁻_B g^p)^{q/p} μ(B)^{1-q/p}, using G1 <= g and the monotonicity of the lower integral and of x |-> x^{q/p}.
+6. Step 5 with g := ‖H‖ₑ, step 1, the hypothesis μ(B̄_s(z)) <= ofReal m and the monotonicity of x |-> x^{q/p} and x |-> x^{1-q/p} (nonnegative exponents) give ∫⁻_{B̄_s(z)} ‖H‖ₑ^q dμ <= I(z, s)^{q/p} μ(B̄_s(z))^{1-q/p} <= I(w, t)^{q/p} ofReal(m)^{1-q/p}.
+7. ofReal(m)^{1-q/p} = ofReal(m^{1-q/p}) (m >= 0 and 1 - q/p >= 0; ENNReal.ofReal_rpow_of_nonneg).
+8. Since t > 0, ofReal(t^{n-p}) · ofReal(t^{p-n}) = ofReal(t^{(n-p)+(p-n)}) = 1 (Real.rpow_add), so I(w, t) = ofReal(t^{n-p}) · (ofReal(t^{p-n}) I(w, t)), and by ENNReal.mul_rpow_of_nonneg, I(w, t)^{q/p} = ofReal(t^{n-p})^{q/p} · (ofReal(t^{p-n}) I(w, t))^{q/p}. Here ofReal(t^{n-p})^{q/p} = ofReal((t^{n-p})^{q/p}) = ofReal(t^{q(n-p)/p}) (Real.rpow_mul, t > 0), and (ofReal(t^{p-n}) I(w, t))^{q/p} = ((ofReal(t^{p-n}) I(w, t))^{1/p})^q = K(w, t)^q (ENNReal.rpow_mul, (1/p) q = q/p). These identities hold in [0, ∞] also when I(w, t) = ∞.
+9. Combining steps 6 to 8 with ofReal(m^{1-q/p}) · ofReal(t^{q(n-p)/p}) = ofReal(m^{1-q/p} t^{q(n-p)/p}) (ENNReal.ofReal_mul, m^{1-q/p} >= 0) gives (b).
+
+## Key steps
+
+1. (a): monotonicity of the p-integral in the ball and s^{p-n} = (s/t)^{p-n} t^{p-n}, then take 1/p-th powers
+2. (b): Hoelder on B̄_s(z) for an arbitrary [0,∞]-valued function via a measurable minorant with the same integral
+3. Bound μ(B̄_s(z)) by m and the p-integral over B̄_s(z) by the one over B̄_t(w)
+4. Rewrite (∫_{B̄_t(w)} ||H||^p)^{q/p} = t^{q(n-p)/p} K(w, t)^q
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n 'theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem hausdorffMeasure_image_le \(h : LipschitzOnWith|theorem _root_.LipschitzOnWith.absolutelyContinuousOnInterval|theorem AbsolutelyContinuousOnInterval.integral_deriv_eq_sub|theorem eLpNorm'_le_eLpNorm'_mul_rpow_measure_univ|theorem exists_measurable_le_lintegral_eq|theorem measure_compl_support|theorem ae_differentiableAt|theorem measurable_fderiv |theorem addHaar_sphere|exists_orthonormalBasis_extension' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem .*ae_differentiableAt|theorem .*ae_differentiableWithinAt' <snapshot>/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean; rg -n 'lemma measure_compl_support' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Support.lean; rg -n "theorem lintegral_withDensity_eq_lintegral_mul₀|theorem ae_withDensity_iff'" <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `grep -n 'theorem\|lemma' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean; grep -rln 'AbsolutelyContinuousOnInterval|integral_deriv_eq_sub' <snapshot>/mathlib/Mathlib`
+- `sed -n 1,260p <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; sed -n 1025,1060p <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `rg -n 'theorem .*area|theorem .*graph|lemma .*graph' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02 Chapter03; sed -n 40,90p .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean`
+- `python3 -I: list id/lean_name/status of all 200 nodes in <run>/dag.json; filter lean_statements containing rotatedPlane or graphPoint with span`
+- `rg -l -e 'tdo_exists_isometry_rotatedPlane|tdo_graph_plane_dist|tdo_graph_lintegral_le|tdo_one_dim_sup_le|tdo_scaledLpNorm_bounds|tdo_tiltExcess_le_of_subset|tdo_small_tilt_plane|tdo_graph_height_excess|tdo_graph_height_sup' <run>/dag.json <run>/nodes <snapshot>/project <snapshot>/mathlib/Mathlib GMT .lake/packages/simongmt/Poincare (no match)`
+- `sed -n 730,1000p book/chapter-05.txt (printed proof of 4.5)`
+- `lake env lean -o /tmp/tdo-decomp/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean; lean /tmp/tdo-decomp/checks/Types.lean; lean /tmp/tdo-decomp/checks/TypesPrint.lean; lean /tmp/tdo-decomp/checks/TypesNoOpen.lean; lean /tmp/tdo-decomp/checks/Final2.lean`
+- `lean /tmp/tdo-decomp/checks/ParseMine.lean (rfl parse checks of integral bodies followed by +)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/CompareExp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/tmp/tdo-decomp/checks/Types.lean`
+- `/tmp/tdo-decomp/checks/TypesPrint.lean`
+- `/tmp/tdo-decomp/checks/TypesNoOpen.lean`
+- `/tmp/tdo-decomp/checks/Final2.lean`
+- `/tmp/tdo-decomp/checks/ParseMine.lean`
+
+Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json). Its Contract.lean has the same sha256 (c966f51e...) as the workspace Contract.lean and Submission.lean.
+
+Mathlib declarations located for the child proofs (paths under mathlib/Mathlib):
+- Area bound (tdo_graph_lintegral_le):
+  - EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:187): μHE[d] = volume on EuclideanSpace ℝ (Fin d).
+  - euclideanHausdorffMeasure_def (same file): μHE[d] is a d-only scalar times μH[d].
+  - LipschitzOnWith.hausdorffMeasure_image_le (MeasureTheory/Measure/Hausdorff.lean:733).
+- One-dimensional FTC (tdo_one_dim_sup_le):
+  - LipschitzOnWith.absolutelyContinuousOnInterval (MeasureTheory/Function/AbsolutelyContinuous.lean:309).
+  - AbsolutelyContinuousOnInterval.integral_deriv_eq_sub (MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean:225).
+  - Rademacher: LipschitzOnWith.ae_differentiableWithinAt_of_mem (Analysis/Calculus/Rademacher.lean:361).
+  - measurable_fderiv (Analysis/Calculus/FDeriv/Measurable.lean:378).
+- Hoelder (tdo_scaledLpNorm_bounds):
+  - ENNReal.lintegral_mul_le_Lp_mul_Lq (MeasureTheory/Integral/MeanInequalities.lean:202).
+  - eLpNorm'_le_eLpNorm'_mul_rpow_measure_univ (MeasureTheory/Function/LpSeminorm/CompareExp.lean:32).
+  - exists_measurable_le_lintegral_eq (MeasureTheory/Integral/Lebesgue/Basic.lean:139), for non-measurable integrands.
+- Null sphere: addHaar_sphere_of_ne_zero (MeasureTheory/Measure/Lebesgue/EqHaar.lean:519).
+- Rotation (tdo_exists_isometry_rotatedPlane): Orthonormal.exists_orthonormalBasis_extension_of_card_eq (Analysis/InnerProductSpace/PiL2.lean:1044).
+- Weight measure:
+  - measure_compl_support (MeasureTheory/Measure/Support.lean:202).
+  - ae_withDensity_iff' (MeasureTheory/Measure/WithDensity.lean:291).
+  - lintegral_withDensity_eq_lintegral_mul₀ (MeasureTheory/Measure/WithDensity.lean:458).
+
+No-match results:
+- Mathlib has no varifold-specific results; this was already established for the parent.
+- None of the nine new tdo_ names occurs anywhere searched.
+
+Other packages and nodes:
+- simongmt (outside the snapshot) has a sorry-free injective area formula, injective_area_formula_lipschitzOn_simon_volume (Chapter02/AreaLiteral.lean:61). It is not needed, because the simpler Lipschitz-image bound gives the same constant 2^{n/2}.
+- dag.json: allard52_graph_plane_algebra has a rotation-existence conjunct but is not accepted (decomposing), so it cannot be reused. Its type also differs.
+
+The printed proof of 4.5 (book/chapter-05.txt:776-990) was compared with the supplied proof. The children cover its steps (1)-(22) as mapped in the rationale.
+
+Lean: all nine frozen lean_statements elaborate against the compiled Submission olean, with only the expected sorry warnings (Final2.lean). The integral-body parses were confirmed by rfl (ParseMine.lean).
