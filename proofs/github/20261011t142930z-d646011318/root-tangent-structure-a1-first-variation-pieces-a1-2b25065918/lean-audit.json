@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ea656f56623cd31e388cd9cefcc7f20ad2682a1f2ee2c2b023e68f160922d38a",
+  "git_delta": {
+    "base_commit": "3303817b07125b0220b3638a1c0685e3b7a33097",
+    "candidate_commit": "8205540e9fbd93c25e1afbfba78d2223cd376f73",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "e13663b95b8c50cdd2d56cdccda854eeb09d80972c3038c2652c750213ab17d7",
+    "source_sha256": "eb2fb81c4753497188a08d1559667c185ce76e8c442955aa44ed98cdc2ed97d7",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_first_variation_of_pieces",
+      "statement": "∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ) (N₀ : Set (Ambient n ℓ)) (C : ℕ → Set (EuclideanSpace ℝ (Fin n))) (F : ℕ → EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), 0 < n → MeasurableSet N₀ → (μHE[n] : Measure (Ambient n ℓ)) N₀ = 0 → a.M ⊆ N₀ ∪ ⋃ i, F i '' C i → (∀ i, IsCompact (C i) ∧ (∃ K : NNReal, LipschitzWith K (F i)) ∧ (∀ w ∈ C i, DifferentiableAt ℝ (F i) w ∧ Function.Injective (fderiv ℝ (F i) w)) ∧ ContinuousOn (fderiv ℝ (F i)) (C i) ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖F i v - F i w‖) → (∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M, ∀ i, ∀ w ∈ C i, F i w = x → (mk a).tangentSpace x = LinearMap.range (fderiv ℝ (F i) w).toLinearMap) → AEStronglyMeasurable (fun x ↦ ((mk a).tangentSpace x).starProjection) ((μHE[n] : Measure (Ambient n ℓ)).restrict a.M) → IsCompactVariation φ ε K → HasDerivAt (fun t ↦ (imageMass a (φ t) K).toReal) (∫ x, (mk a).tangentialDiv (fun y ↦ deriv (fun t ↦ φ t y) 0) x ∂(mk a).weight) 0",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
