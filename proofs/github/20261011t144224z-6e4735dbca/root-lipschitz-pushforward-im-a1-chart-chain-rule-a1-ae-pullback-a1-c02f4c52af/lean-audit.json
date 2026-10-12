@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b1bf3c023f4689b5f5fdaee3ca6600577c53d27f616621f93b39d32169596516",
+  "git_delta": {
+    "base_commit": "1da56b00ed844327bf2fa1cec916b1c86db3126a",
+    "candidate_commit": "841085c6a9d76231a52113cfbad8e6e3261f0a6f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_ccr_ae_pullback",
+    "diff_sha256": "a26a73141210d8ce69f870ca69b95f1edaeb99b0cd902360d9fa808c934d4928",
+    "source_sha256": "05a0ef766ad8c0b53118f766bd4ca3ae275fa15f640fc1268e889e1a8f5cdf91",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_ccr_ae_pullback",
+      "statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (p : Eucl P → Prop), MeasurableSet Ω → Measurable Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ Φ '' Ω)), p x) → NullMeasurableSet (Ω ∩ Φ ⁻¹' M) (volume : Measure (Eucl n)) ∧ ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' M)), p (Φ w)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
