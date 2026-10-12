@@ -2278,6 +2278,127 @@ theorem Submission.coarea_formula_on_straightening_chart : ∀ (N m k : ℕ) (M 
     hΨd hfΨ hS hSΨ hg
   exact ⟨hmeas, hpull.trans hfib⟩
 
+/-- **Simon Ch. 2, 6.6 (p. 67), co-area formula for Borel `g` on a Borel submanifold `M`.**
+Countably many straightening charts (`coarea_exists_straightening_chart`) cover the regular set
+`{J*_f ≠ 0}`. Their disjointed Borel pieces `S n` satisfy the one-chart formula
+(`coarea_formula_on_straightening_chart`) and sum by countable additivity. On the rest of `M`,
+`J*_f = 0`, so it adds nothing to the left side, and its fibres are `Hᵏ`-null for `Lᵐ`-a.e. `y`
+(`coarea_critical_fibers_null`). -/
+theorem Submission.coarea_formula_of_measurable : ∀ (N m k : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m) (g : Rn N → ℝ≥0∞), Chapter02.IsSimonSubmanifold (E := Rn (m + k)) 1 M → IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → (∀ (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → MeasurableSet M → Measurable g → AEMeasurable (fun y ↦ ∫⁻ x in M ∩ f ⁻¹' {y}, g x ∂μHE[k]) volume ∧ ∫⁻ x in M, g x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] = ∫⁻ y, ∫⁻ x in M ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂volume := by
+  intro N m k M U f g hM hU hMU hf hT hMm hg
+  -- Step 1. `f` is differentiable on `U`, and fibres of Borel subsets of `U` are Borel.
+  have hfd : ∀ x ∈ U, DifferentiableAt ℝ f x := fun x hx ↦
+    (hf.differentiableOn one_ne_zero).differentiableAt (hU.mem_nhds hx)
+  have hfib : ∀ X ⊆ U, MeasurableSet X → ∀ y, MeasurableSet (X ∩ f ⁻¹' {y}) := by
+    intro X hXU hX y
+    have hopen : IsOpen (U ∩ f ⁻¹' {y}ᶜ) :=
+      hf.continuousOn.isOpen_inter_preimage hU isOpen_compl_singleton
+    have heq : X ∩ f ⁻¹' {y} = X \ (U ∩ f ⁻¹' {y}ᶜ) := by
+      ext x
+      have hxU : x ∈ X → x ∈ U := fun hx ↦ hXU hx
+      simp only [mem_inter_iff, mem_preimage, mem_singleton_iff, Set.mem_sdiff, mem_compl_iff]
+      tauto
+    rw [heq]
+    exact hX.diff hopen.measurableSet
+  -- Step 2. Straightening charts at the regular points; countably many of them cover the regular
+  -- set, and padding with empty charts turns them into a sequence.
+  let R : Set (Rn N) := {x | x ∈ M ∧ coareaJacobian M f x ≠ 0}
+  choose Ω O Ψ hΩo hOo hxO hΨc hΨi hΨim hΨd hΨf hΨt using fun x : R ↦
+    Submission.coarea_exists_straightening_chart N m k M U f x hM hU hMU hf hT x.2.1 x.2.2
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable (fun x : R ↦ O x) hOo
+  have : Countable T := hTc.to_subtype
+  obtain ⟨e, he⟩ := exists_surjective_nat (Option T)
+  let Ω' : ℕ → Set (WithLp 2 (Rn m × Rn k)) := fun n ↦ (e n).elim ∅ (fun x ↦ Ω x)
+  let O' : ℕ → Set (Rn N) := fun n ↦ (e n).elim ∅ (fun x ↦ O x)
+  let Ψ' : ℕ → WithLp 2 (Rn m × Rn k) → Rn N := fun n ↦ (e n).elim 0 (fun x ↦ Ψ x)
+  have hchart : ∀ n, IsOpen (Ω' n) ∧ IsOpen (O' n) ∧ ContDiffOn ℝ 1 (Ψ' n) (Ω' n) ∧
+      InjOn (Ψ' n) (Ω' n) ∧ Ψ' n '' Ω' n = O' n ∩ M ∧
+      (∀ p ∈ Ω' n, Function.Injective (fderiv ℝ (Ψ' n) p)) ∧
+      (∀ p ∈ Ω' n, f (Ψ' n p) = WithLp.fst p) ∧
+      ∀ p ∈ Ω' n,
+        tangentSpace M (Ψ' n p) = LinearMap.range (fderiv ℝ (Ψ' n) p).toLinearMap := by
+    intro n
+    simp only [Ω', O', Ψ']
+    cases e n with
+    | none => simp
+    | some x => exact ⟨hΩo x, hOo x, hΨc x, hΨi x, hΨim x, hΨd x, hΨf x, hΨt x⟩
+  have hcover : ∀ x ∈ M, coareaJacobian M f x ≠ 0 → ∃ n, x ∈ O' n := by
+    intro x hxM hxJ
+    have hx : x ∈ ⋃ i : R, O i := mem_iUnion.2 ⟨⟨x, hxM, hxJ⟩, hxO _⟩
+    rw [← hTU] at hx
+    obtain ⟨i, hiT, hxi⟩ := mem_iUnion₂.1 hx
+    obtain ⟨n, hn⟩ := he (some ⟨i, hiT⟩)
+    refine ⟨n, ?_⟩
+    simp only [O', hn, Option.elim_some]
+    exact hxi
+  -- Step 3. Disjoint Borel pieces `S n ⊆ Ψ' n '' Ω' n` whose union `R'` contains every regular
+  -- point of `M`, so that `J*_f = 0` on `M \ R'`.
+  let A : ℕ → Set (Rn N) := fun n ↦ O' n ∩ M
+  have hAm : ∀ n, MeasurableSet (A n) := fun n ↦ (hchart n).2.1.measurableSet.inter hMm
+  let S : ℕ → Set (Rn N) := disjointed A
+  have hSm : ∀ n, MeasurableSet (S n) := MeasurableSet.disjointed hAm
+  have hSd : Pairwise (Function.onFun Disjoint S) := disjoint_disjointed A
+  have hSA : ∀ n, S n ⊆ A n := disjointed_subset A
+  have hSM : ∀ n, S n ⊆ M := fun n ↦ (hSA n).trans inter_subset_right
+  let R' : Set (Rn N) := ⋃ n, S n
+  have hR'eq : R' = ⋃ n, A n := iUnion_disjointed
+  have hR'm : MeasurableSet R' := MeasurableSet.iUnion hSm
+  have hR'M : R' ⊆ M := iUnion_subset hSM
+  have hC : ∀ x ∈ M \ R', coareaJacobian M f x = 0 := by
+    rintro x ⟨hxM, hxR'⟩
+    by_contra hJ
+    obtain ⟨n, hn⟩ := hcover x hxM hJ
+    exact hxR' (hR'eq ▸ mem_iUnion.2 ⟨n, hn, hxM⟩)
+  -- Step 4. The one-chart formula on every piece.
+  have hloc : ∀ n, Measurable (fun y ↦ ∫⁻ x in S n ∩ f ⁻¹' {y}, g x ∂μHE[k]) ∧
+      ∫⁻ x in S n, g x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] =
+        ∫⁻ y, ∫⁻ x in S n ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂volume := by
+    intro n
+    obtain ⟨hΩn, -, hΨcn, hΨin, hΨimn, hΨdn, hΨfn, hΨtn⟩ := hchart n
+    refine Submission.coarea_formula_on_straightening_chart N m k M f (Ω' n) (Ψ' n) (S n) g
+      hΩn hΨcn hΨin hΨdn ?_ hΨfn hΨtn (hSm n) ?_ hg
+    · intro p hp
+      have hmem : Ψ' n p ∈ O' n ∩ M := hΨimn ▸ mem_image_of_mem _ hp
+      exact hfd _ (hMU hmem.2)
+    · rw [hΨimn]
+      exact hSA n
+  -- Step 5. The left side: `R'` is the disjoint union of the `S n`, and `M \ R'` adds nothing.
+  have hLHS : ∫⁻ x in M, g x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] =
+      ∫⁻ y, ∑' n, ∫⁻ x in S n ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂volume := by
+    have hzero :
+        ∫⁻ x in M \ R', g x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] = 0 := by
+      rw [setLIntegral_congr_fun (hMm.diff hR'm) (g := fun _ ↦ 0)
+        (fun x hx ↦ by simp [hC x hx])]
+      simp
+    rw [← lintegral_inter_add_sdiff _ M hR'm, inter_eq_right.2 hR'M, hzero, add_zero,
+      lintegral_iUnion hSm hSd, lintegral_tsum (fun n ↦ (hloc n).1.aemeasurable)]
+    exact tsum_congr (fun n ↦ (hloc n).2)
+  -- Step 6. The regular part of every fibre is the disjoint union of the fibres of the `S n`.
+  have hreg : ∀ y, ∫⁻ x in R' ∩ f ⁻¹' {y}, g x ∂μHE[k] =
+      ∑' n, ∫⁻ x in S n ∩ f ⁻¹' {y}, g x ∂μHE[k] := by
+    intro y
+    rw [show R' ∩ f ⁻¹' {y} = ⋃ n, S n ∩ f ⁻¹' {y} from iUnion_inter _ _]
+    exact lintegral_iUnion (fun n ↦ hfib _ ((hSM n).trans hMU) (hSm n) y)
+      (fun i j hij ↦ (hSd hij).mono inter_subset_left inter_subset_left) _
+  -- Step 7. For `Lᵐ`-a.e. `y`, the critical part `(M \ R') ∩ f⁻¹{y}` of the fibre is null.
+  have hae : ∀ᵐ y ∂(volume : Measure (Rn m)), ∫⁻ x in M ∩ f ⁻¹' {y}, g x ∂μHE[k] =
+      ∑' n, ∫⁻ x in S n ∩ f ⁻¹' {y}, g x ∂μHE[k] := by
+    filter_upwards [Submission.coarea_critical_fibers_null N m k M U f hM hU hMU hf hT] with y hy
+    have hsub :
+        (M \ R') ∩ f ⁻¹' {y} ⊆ M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0} :=
+      fun x hx ↦ ⟨⟨hx.1.1, hx.2⟩, hC x hx.1⟩
+    have hnull : μHE[k] ((M \ R') ∩ f ⁻¹' {y}) = 0 := measure_mono_null hsub hy
+    have hsplit : M ∩ f ⁻¹' {y} = (R' ∩ f ⁻¹' {y}) ∪ ((M \ R') ∩ f ⁻¹' {y}) := by
+      rw [← union_inter_distrib_right, union_sdiff_cancel hR'M]
+    rw [hsplit, lintegral_union (hfib _ (sdiff_subset.trans hMU) (hMm.diff hR'm) y)
+      (disjoint_sdiff_right.mono inter_subset_left inter_subset_left),
+      setLIntegral_measure_zero _ _ hnull, add_zero, hreg y]
+  -- Step 8. The fibre integral agrees `Lᵐ`-a.e. with the Borel sum over the pieces.
+  have hmeas : Measurable (fun y ↦ ∑' n, ∫⁻ x in S n ∩ f ⁻¹' {y}, g x ∂μHE[k]) :=
+    Measurable.tsum fun n ↦ (hloc n).1
+  exact ⟨hmeas.aemeasurable.congr (hae.mono fun y hy ↦ hy.symm),
+    hLHS.trans (lintegral_congr_ae hae).symm⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
