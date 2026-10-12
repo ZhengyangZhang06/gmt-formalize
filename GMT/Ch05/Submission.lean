@@ -458,6 +458,111 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Lemma 2.6, (5) and (7) (pp. 111–112), via the Lipschitz Extension
+Theorem 1.2 of Ch. 2 (p. 40): if `g : ℝⁿ → ℝ^ℓ` is `M`-Lipschitz on `A` and `|g| ≤ R₀` on `A`,
+then `g|_A` extends to an `f : ℝⁿ → ℝ^ℓ` that is `√ℓ M`-Lipschitz with `|f| ≤ R₀` everywhere.
+Extend each coordinate `g_j` (`M`-Lipschitz on `A`, since `|g_j(x) − g_j(z)| ≤ |g(x) − g(z)|`) by
+McShane to an `M`-Lipschitz `h_j` (`LipschitzOnWith.extend_real`, which also covers `A = ∅`); then
+`h = (h_j)` agrees with `g` on `A` and `|h(x) − h(z)|² = Σ_j |h_j(x) − h_j(z)|² ≤ ℓ M² |x − z|²`.
+Instead of the book's componentwise truncation in (7), put `f = π ∘ h` with the radial retraction
+`π(v) = v` for `|v| ≤ R₀` and `π(v) = (R₀/|v|) v` otherwise: `π` fixes the closed ball
+`B_{R₀}(0)`, maps into it, and `⟨v − π v, w − π v⟩ ≤ 0` whenever `|w| ≤ R₀`; adding this for
+`w = π v'` to its instance with `v, v'` swapped and `w = π v` gives
+`|π v − π v'|² ≤ ⟨v − v', π v − π v'⟩ ≤ |v − v'| |π v − π v'|`, so `π` is `1`-Lipschitz. -/
+theorem lip_approx_bounded_extension : ∀ (n ℓ : ℕ) (A : Set (Rn n)) (g : Rn n → Rn ℓ) (M R₀ : ℝ), 0 ≤ M → 0 ≤ R₀ → (∀ x ∈ A, ∀ z ∈ A, ‖g x - g z‖ ≤ M * ‖x - z‖) → (∀ x ∈ A, ‖g x‖ ≤ R₀) → ∃ f : Rn n → Rn ℓ, (∀ x ∈ A, f x = g x) ∧ (∀ x z, ‖f x - f z‖ ≤ Real.sqrt ℓ * M * ‖x - z‖) ∧ ∀ x, ‖f x‖ ≤ R₀ := by
+  intro n ℓ A g M R₀ hM hR hg hgb
+  -- Steps 1–3: componentwise McShane extension `h`, which is `√ℓ M`-Lipschitz.
+  obtain ⟨h, hhA, hhL⟩ : ∃ h : Rn n → Rn ℓ,
+      (∀ x ∈ A, h x = g x) ∧ ∀ x z, ‖h x - h z‖ ≤ Real.sqrt ℓ * M * ‖x - z‖ := by
+    -- each coordinate `g_j` is `M`-Lipschitz on `A`
+    have hj : ∀ j : Fin ℓ, LipschitzOnWith (Real.toNNReal M) (fun x => g x j) A := by
+      intro j
+      refine LipschitzOnWith.of_dist_le_mul fun x hx z hz => ?_
+      rw [Real.coe_toNNReal _ hM, Real.dist_eq, dist_eq_norm]
+      calc |g x j - g z j| = ‖(g x - g z) j‖ := by simp [Real.norm_eq_abs]
+        _ ≤ ‖g x - g z‖ := PiLp.norm_apply_le _ _
+        _ ≤ M * ‖x - z‖ := hg x hx z hz
+    choose H hHL hHeq using fun j => (hj j).extend_real
+    refine ⟨fun x => WithLp.toLp 2 (fun j => H j x), ?_, ?_⟩
+    · intro x hx
+      ext j
+      simp [(hHeq j hx).symm]
+    · intro x z
+      have hcoord : ∀ j, |H j x - H j z| ≤ M * ‖x - z‖ := by
+        intro j
+        have := (hHL j).dist_le_mul x z
+        rwa [Real.coe_toNNReal _ hM, Real.dist_eq, dist_eq_norm] at this
+      have hsq : ‖(WithLp.toLp 2 (fun j => H j x) : Rn ℓ) - WithLp.toLp 2 (fun j => H j z)‖ ^ 2
+          ≤ (ℓ : ℝ) * (M * ‖x - z‖) ^ 2 := by
+        rw [EuclideanSpace.norm_sq_eq]
+        calc ∑ j : Fin ℓ,
+              ‖((WithLp.toLp 2 (fun j => H j x) : Rn ℓ) - WithLp.toLp 2 (fun j => H j z)) j‖ ^ 2
+            ≤ ∑ _j : Fin ℓ, (M * ‖x - z‖) ^ 2 := by
+              refine Finset.sum_le_sum fun j _ => ?_
+              simp only [PiLp.sub_apply, Real.norm_eq_abs]
+              exact pow_le_pow_left₀ (abs_nonneg _) (hcoord j) 2
+          _ = (ℓ : ℝ) * (M * ‖x - z‖) ^ 2 := by simp
+      have hnn : 0 ≤ Real.sqrt ℓ * M * ‖x - z‖ := by positivity
+      have e : (Real.sqrt ℓ * M * ‖x - z‖) ^ 2 = (ℓ : ℝ) * (M * ‖x - z‖) ^ 2 := by
+        rw [mul_assoc, mul_pow, Real.sq_sqrt (Nat.cast_nonneg _)]
+      exact (pow_le_pow_iff_left₀ (norm_nonneg _) hnn two_ne_zero).mp (by rw [e]; exact hsq)
+  -- Step 4: the radial retraction `P` onto the closed ball `B_{R₀}(0)` is `1`-Lipschitz.
+  obtain ⟨P, hPfix, hPL, hPb⟩ : ∃ P : Rn ℓ → Rn ℓ,
+      (∀ v, ‖v‖ ≤ R₀ → P v = v) ∧ (∀ v w, ‖P v - P w‖ ≤ ‖v - w‖) ∧ ∀ v, ‖P v‖ ≤ R₀ := by
+    let P : Rn ℓ → Rn ℓ := fun v => if ‖v‖ ≤ R₀ then v else (R₀ / ‖v‖) • v
+    have hPb : ∀ v, ‖P v‖ ≤ R₀ := by
+      intro v
+      by_cases hv : ‖v‖ ≤ R₀
+      · simp [P, hv]
+      · have hpos : 0 < ‖v‖ := lt_of_le_of_lt hR (not_le.mp hv)
+        simp only [P, hv, ite_false, norm_smul, Real.norm_eq_abs, abs_div, abs_of_nonneg hR,
+          abs_norm]
+        rw [div_mul_cancel₀ _ hpos.ne']
+    -- the variational inequality of the nearest-point projection onto the ball
+    have hvar : ∀ v w : Rn ℓ, ‖w‖ ≤ R₀ → inner ℝ (v - P v) (w - P v) ≤ 0 := by
+      intro v w hw
+      by_cases hv : ‖v‖ ≤ R₀
+      · simp [P, hv]
+      · have hpos : 0 < ‖v‖ := lt_of_le_of_lt hR (not_le.mp hv)
+        have hPv : P v = (R₀ / ‖v‖) • v := by simp [P, hv]
+        rw [hPv]
+        have e1 : v - (R₀ / ‖v‖) • v = (1 - R₀ / ‖v‖) • v := by rw [sub_smul, one_smul]
+        rw [e1, inner_smul_left, inner_sub_right, inner_smul_right, real_inner_self_eq_norm_sq]
+        have hcs : inner ℝ v w ≤ ‖v‖ * ‖w‖ := real_inner_le_norm v w
+        have ht1 : R₀ / ‖v‖ < 1 := (div_lt_one hpos).mpr (not_le.mp hv)
+        have e2 : R₀ / ‖v‖ * ‖v‖ ^ 2 = R₀ * ‖v‖ := by field_simp
+        simp only [RCLike.conj_to_real]
+        rw [e2]
+        have h3 : inner ℝ v w - R₀ * ‖v‖ ≤ 0 := by nlinarith [norm_nonneg v]
+        have h4 : 0 ≤ 1 - R₀ / ‖v‖ := by linarith
+        exact mul_nonpos_of_nonneg_of_nonpos h4 h3
+    refine ⟨P, fun v hv => by simp [P, hv], ?_, hPb⟩
+    intro v w
+    have h1 := hvar v (P w) (hPb w)
+    have h2 := hvar w (P v) (hPb v)
+    have key : ‖P v - P w‖ ^ 2 ≤ inner ℝ (v - w) (P v - P w) := by
+      have e : inner ℝ (v - P v) (P w - P v) + inner ℝ (w - P w) (P v - P w)
+          = ‖P v - P w‖ ^ 2 - inner ℝ (v - w) (P v - P w) := by
+        rw [← real_inner_self_eq_norm_sq]
+        have : P w - P v = -(P v - P w) := by abel
+        rw [this, inner_neg_right]
+        simp only [inner_sub_left, inner_sub_right]
+        ring
+      linarith
+    have hcs := real_inner_le_norm (v - w) (P v - P w)
+    rcases (norm_nonneg (P v - P w)).eq_or_lt with h0 | hpos
+    · rw [← h0]; exact norm_nonneg _
+    · nlinarith
+  -- Step 5: `f = P ∘ h` keeps `g` on `A`, the Lipschitz bound and `|f| ≤ R₀`.
+  refine ⟨fun x => P (h x), fun x hx => ?_, fun x z => (hPL _ _).trans (hhL x z), fun x => hPb _⟩
+  show P (h x) = g x
+  rw [hhA x hx]
+  exact hPfix _ (hgb x hx)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
