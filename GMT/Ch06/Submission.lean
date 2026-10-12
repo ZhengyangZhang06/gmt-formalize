@@ -726,6 +726,53 @@ theorem Submission.lpf_wtc_density_bound_of_tangent : ∀ (Q n : ℕ) (S : Set (
         exact mul_le_mul_of_nonneg_right hρ hρn.le
     _ = (L₀ + 1).toNNReal * ENNReal.ofReal (ρ ^ n) := ENNReal.ofReal_mul' hρn.le
 
+/-- Simon Ch. 3, Remark 1.8(1): if `T` is the approximate tangent space of `C ⊆ M` at `y ∈ C`
+(Definition 1.4), `θ ≥ 0` is `Hⁿ`-integrable on `M` near `y`, `θ|C` is continuous at `y` and
+`θ Hⁿ ⌞ (M ∖ C)` has `n`-density `0` at `y`, then `T` is the approximate tangent space of `M` at
+`y` with respect to `θ` (Definition 1.7).  After the change of variables `z = η_{y,t}(x)`, the
+weighted blow-up integral is `θ(y) ∫_{η_{y,t}(C)} φ`, which tends to `θ(y) ∫_T φ`, plus the
+oscillation of `θ` along `C` and the contribution of `M ∖ C`, both of which tend to `0`. -/
+theorem Submission.lpf_wtc_weighted_tangent_transfer :
+    ∀ (Q n : ℕ) (M C : Set (Eucl Q)) (θ : Eucl Q → ℝ) (y : Eucl Q) (T : Submodule ℝ (Eucl Q)),
+      NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) →
+      NullMeasurableSet C (μHE[n] : Measure (Eucl Q)) → C ⊆ M → y ∈ C →
+      (∀ x ∈ M, 0 ≤ θ x) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C y T →
+      (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (C ∩ closedBall y r) < ∞ ∧
+        IntegrableOn θ (M ∩ closedBall y r) (μHE[n] : Measure (Eucl Q))) →
+      ContinuousWithinAt θ C y →
+      Tendsto (fun ρ : ℝ => (∫⁻ x in (M \ C) ∩ closedBall y ρ, ENNReal.ofReal (θ x)
+        ∂(μHE[n] : Measure (Eucl Q))) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) →
+      HasWeightedApproximateTangentSpaceAt n M θ y T := by
+  intro Q n M C θ y T hM hC hCM _ hθ hT hr hθC hdens
+  -- `Hⁿ(C ∩ B̄_ρ(y)) ≤ K ρⁿ` for all small `ρ > 0`.
+  have hK := Submission.lpf_wtc_density_bound_of_tangent Q n C y T hT
+    (hr.imp fun _ h => ⟨h.1, h.2.1⟩)
+  refine ⟨hT.1, fun φ => ?_⟩
+  -- Main term: `(tⁿ)⁻¹ ∫_C φ ∘ η_{y,t} = ∫_{η_{y,t}(C)} φ → ∫_T φ`.
+  have h₁ : Tendsto (fun t : ℝ => θ y * ((t ^ n)⁻¹ * ∫ x in C,
+      φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) ∂(μHE[n] : Measure (Eucl Q))))
+      (𝓝[>] 0) (𝓝 (θ y * ∫ z in (T : Set (Eucl Q)), φ z ∂(μHE[n] : Measure (Eucl Q)))) := by
+    refine ((hT.2 φ).const_mul (θ y)).congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with t (ht : 0 < t)
+    rw [Submission.lpf_wtc_blowup_setIntegral_image Q n y t C φ ht]
+  -- The oscillation of `θ` along `C` and the contribution of `M ∖ C` vanish in the limit.
+  have h₂ := Submission.lpf_wtc_wtt_continuity_error_vanishes Q n C θ y φ hC hθC hK
+  have h₃ := Submission.lpf_wtc_wtt_remainder_vanishes Q n (M \ C) θ y φ (hM.diff hC)
+    (fun x hx => hθ x hx.1) hdens
+  have h := (h₁.add h₂).add h₃
+  rw [add_zero, add_zero] at h
+  refine h.congr' ?_
+  filter_upwards [self_mem_nhdsWithin,
+    Submission.lpf_wtc_wtt_blowup_integral_split Q n M C θ y φ hM hC hCM hr]
+    with t (ht : 0 < t) hsplit
+  -- Change of variables `z = η_{y,t}(x)`, under which `y + t • z = x`.
+  have hη : ∀ x, y + t • Poincare.SimonGMT.Chapter03.blowUpMap y t x = x := fun x => by
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, smul_inv_smul₀ ht.ne', add_sub_cancel]
+  rw [Submission.lpf_wtc_blowup_setIntegral_image Q n y t M _ ht]
+  simp_rw [hη]
+  rw [hsplit]
+  ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
