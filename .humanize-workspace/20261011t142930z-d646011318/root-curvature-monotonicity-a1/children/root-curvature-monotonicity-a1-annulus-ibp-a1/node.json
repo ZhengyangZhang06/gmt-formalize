@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.curvature_monotonicity-a1.annulus_ibp-a1",
+  "parent_id": "root.curvature_monotonicity-a1",
+  "depth": 2,
+  "title": "Integration by parts of the annular monotonicity identity against an absolutely continuous factor (parent Step 2)",
+  "statement": "Let n, ℓ ∈ ℕ, μ a measure on E = ℝ^{n+ℓ} (Borel σ-algebra) that is finite on compact sets, ξ ∈ E, w: E → ℝ with w(x) ≥ 0 for all x, a, e, F, F': ℝ → ℝ, and 0 < σ ≤ ρ. Write B_t for the closed ball of radius t about ξ and A := B_ρ∖B_σ. Assume: w is μ-integrable on A; e is Lebesgue integrable on (σ, ρ]; a(t) − a(s) = ∫_{B_t∖B_s} w dμ + ∫_{(s,t]} e(τ)dτ for all σ ≤ s ≤ t ≤ ρ; F' is integrable on (σ, ρ]; and F(t) = F(σ) + ∫_{(σ,t]} F'(τ)dτ for every t ∈ [σ, ρ]. Then x ↦ F(|x−ξ|)w(x) is μ-integrable on A, and F(ρ)a(ρ) − F(σ)a(σ) = ∫_A F(|x−ξ|)w(x)dμ(x) + ∫_{(σ,ρ]} (F(τ)e(τ) + F'(τ)a(τ))dτ.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (ξ : Ambient n ℓ) (w : Ambient n ℓ → ℝ) (a e F F' : ℝ → ℝ) (σ ρ : ℝ), IsFiniteMeasureOnCompacts μ → 0 < σ → σ ≤ ρ → (∀ x, 0 ≤ w x) → IntegrableOn w (closedBall ξ ρ \\ closedBall ξ σ) μ → IntegrableOn e (Ioc σ ρ) → (∀ s t : ℝ, σ ≤ s → s ≤ t → t ≤ ρ → a t - a s = ∫ x in closedBall ξ t \\ closedBall ξ s, w x ∂μ + ∫ τ in Ioc s t, e τ) → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun x ↦ F ‖x - ξ‖ * w x) (closedBall ξ ρ \\ closedBall ξ σ) μ ∧ F ρ * a ρ - F σ * a σ = ∫ x in closedBall ξ ρ \\ closedBall ξ σ, F ‖x - ξ‖ * w x ∂μ + ∫ τ in Ioc σ ρ, (F τ * e τ + F' τ * a τ)",
+  "lean_name": "mcm_annulus_integration_by_parts",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-curvature-monotonicity-a1-annulus-ibp-a1-a1"
+}

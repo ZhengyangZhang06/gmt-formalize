@@ -434,6 +434,28 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Unweighted monotonicity identity (Simon Ch. 4, 5.1 with `h ≡ 1`; cf. 3.16–3.18).** Given
+the weighted identity (first antecedent) and the standing facts on `μ_V` (second antecedent): if
+`V` has generalized mean curvature `H` in the open set `U`, `B_ρ(ξ) ⊆ U` and `0 < σ ≤ ρ`, then
+`τ ↦ τ⁻ⁿ⁻¹ ∫_{B_τ(ξ)} (x - ξ) · H dμ_V` is integrable on `(σ, ρ]`, `r⁻ⁿ|D^⊥r|²` is
+`μ_V`-integrable on `B_ρ(ξ) \ B_σ(ξ)`, and
+`ρ⁻ⁿμ_V(B_ρ(ξ)) - σ⁻ⁿμ_V(B_σ(ξ)) = ∫_{B_ρ(ξ) \ B_σ(ξ)} r⁻ⁿ|D^⊥r|² dμ_V
+  + ∫_σ^ρ τ⁻ⁿ⁻¹ ∫_{B_τ(ξ)} (x - ξ) · H dμ_V dτ`. -/
+theorem Submission.mcm_unit_weight_identity : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsFiniteMeasureOnCompacts V.weight → (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → V.HasMeanCurvatureIn U H → ContDiffOn ℝ 1 h U → tsupport h ∩ closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n)) (closedBall ξ ρ \ closedBall ξ σ) V.weight ∧ (∫ x in closedBall ξ ρ, h x ∂V.weight) / ρ ^ n - (∫ x in closedBall ξ σ, h x ∂V.weight) / σ ^ n = ∫ x in closedBall ξ ρ \ closedBall ξ σ, h x * (V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (V.tangentialGradient h x + h x • H x) ∂V.weight) / τ ^ (n + 1)) → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (ξ : Ambient n ℓ) (σ ρ : ℝ), 0 < n → IsOpen U → V.HasMeanCurvatureIn U H → closedBall ξ ρ ⊆ U → 0 < σ → σ ≤ ρ → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) (closedBall ξ ρ \ closedBall ξ σ) V.weight ∧ V.weight.real (closedBall ξ ρ) / ρ ^ n - V.weight.real (closedBall ξ σ) / σ ^ n = ∫ x in closedBall ξ ρ \ closedBall ξ σ, V.normalRadialSq ξ x / ‖x - ξ‖ ^ n ∂V.weight + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂V.weight) / τ ^ (n + 1) := by
+  intro WMI GF n ℓ V U H ξ σ ρ hn hU hH hball hσ hσρ
+  -- (GF) supplies the geometric hypotheses of (WMI) for `V`.
+  obtain ⟨hfin, hdim, hmeas⟩ := GF n ℓ V hn
+  -- Apply (WMI) to `h ≡ 1`: it is `C¹` on `U`, and `tsupport h ∩ B_ρ(ξ) ⊆ B_ρ(ξ) ⊆ U`.
+  obtain ⟨h1, h2, h3⟩ := WMI n ℓ V U H (fun _ ↦ 1) ξ σ ρ hn hfin hdim hmeas hU hH contDiffOn_const
+    (fun x hx ↦ hball hx.2) hσ hσρ
+  -- `∇^M 1 = p_{T_x V}(∇1) = p_{T_x V}(0) = 0`.
+  have hgrad : ∀ x, V.tangentialGradient (fun _ ↦ (1 : ℝ)) x = 0 := fun x ↦ by
+    simp [RectifiableVarifold.tangentialGradient, gradient_fun_const]
+  -- Simplify `0 + 1 • H = H`, `1 * w = w` and `∫_{B_t} 1 dμ_V = μ_V(B_t)`.
+  simp only [hgrad, zero_add, one_smul, one_mul, setIntegral_const, smul_eq_mul, mul_one]
+    at h1 h2 h3
+  exact ⟨h1, h2, h3⟩
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end

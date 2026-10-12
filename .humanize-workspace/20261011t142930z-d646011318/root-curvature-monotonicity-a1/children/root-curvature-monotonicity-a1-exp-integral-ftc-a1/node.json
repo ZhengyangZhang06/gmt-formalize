@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.curvature_monotonicity-a1.exp_integral_ftc-a1",
+  "parent_id": "root.curvature_monotonicity-a1",
+  "depth": 2,
+  "title": "Fundamental theorem of calculus for the integrating factor exp(−∫_0^τ g)",
+  "statement": "Let g: ℝ → ℝ and R ∈ ℝ with g Lebesgue integrable on (0, R], and put F(τ) := exp(−∫_{(0,τ]} g(s)ds). Then τ ↦ −g(τ)F(τ) is integrable on (0, R], and F(t) = F(σ) + ∫_{(σ,t]} (−g(τ)F(τ))dτ for all 0 ≤ σ ≤ t ≤ R.",
+  "lean_statement": "∀ (g : ℝ → ℝ) (R : ℝ), IntegrableOn g (Ioc 0 R) → IntegrableOn (fun τ ↦ -(g τ * Real.exp (-∫ s in Ioc 0 τ, g s))) (Ioc 0 R) ∧ ∀ σ t : ℝ, 0 ≤ σ → σ ≤ t → t ≤ R → Real.exp (-∫ s in Ioc 0 t, g s) = Real.exp (-∫ s in Ioc 0 σ, g s) + ∫ τ in Ioc σ t, -(g τ * Real.exp (-∫ s in Ioc 0 τ, g s))",
+  "lean_name": "mcm_exp_neg_integral_ftc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-curvature-monotonicity-a1-exp-integral-ftc-a1-a1"
+}
