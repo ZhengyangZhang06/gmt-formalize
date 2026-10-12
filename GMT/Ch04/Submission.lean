@@ -522,6 +522,210 @@ theorem Submission.mcm_primitive_radial_fubini : ∀ (X : Type) [MeasurableSpace
       _ = ∫ x in S, (∫ t in Ioc σ ρ, Φ (t, x)) ∂ν :=
           integral_integral_swap (f := fun t x ↦ Φ (t, x)) hΦ
       _ = ∫ x in S, g x * (F (r x) - F σ) ∂ν := setIntegral_congr_fun hS hx
+/-- **Integrating-factor FTC** (Simon Ch. 4, 3.17 and 4.4/4.7: `F = exp (-∫_{(0,τ]} g)` is
+absolutely continuous with `F' = -gF`). For `g` integrable on `(0, R]`, `-gF` is integrable on
+`(0, R]` and `F t = F σ + ∫_{(σ,t]} -gF` for `0 ≤ σ ≤ t ≤ R`. `F` is continuous on `[0, R]`; if
+`|F - F x| ≤ c` on `[x, z]`, then with `a = ∫_x^z g` and `0 ≤ e^{-a} - 1 + a ≤ a (1 - e^{-a})`,
+`|F z - F x + ∫_x^z gF| ≤ 2c ∫_x^z |g|`, and real induction on `[σ, t]` gives
+`|F t - F σ + ∫_σ^t gF| ≤ 2c ∫_σ^t |g|` for every `c > 0`. -/
+theorem Submission.mcm_exp_neg_integral_ftc : ∀ (g : ℝ → ℝ) (R : ℝ), IntegrableOn g (Ioc 0 R) → IntegrableOn (fun τ ↦ -(g τ * Real.exp (-∫ s in Ioc 0 τ, g s))) (Ioc 0 R) ∧ ∀ σ t : ℝ, 0 ≤ σ → σ ≤ t → t ≤ R → Real.exp (-∫ s in Ioc 0 t, g s) = Real.exp (-∫ s in Ioc 0 σ, g s) + ∫ τ in Ioc σ t, -(g τ * Real.exp (-∫ s in Ioc 0 τ, g s)) := by
+  intro g R hg
+  -- `Φ τ = ∫_{(0,τ]} g` and the integrating factor `F = exp (-Φ)`
+  obtain ⟨Φ, hΦ⟩ : ∃ Φ : ℝ → ℝ, Φ = fun τ ↦ ∫ s in Ioc 0 τ, g s := ⟨_, rfl⟩
+  obtain ⟨F, hF⟩ : ∃ F : ℝ → ℝ, F = fun τ ↦ Real.exp (-Φ τ) := ⟨_, rfl⟩
+  have hFτ : ∀ τ, Real.exp (-∫ s in Ioc 0 τ, g s) = F τ := fun τ ↦ by rw [hF, hΦ]
+  simp only [hFτ]
+  have hgIcc : IntegrableOn g (Icc 0 R) :=
+    (integrableOn_Icc_iff_integrableOn_Ioc (f := g) (a := 0) (b := R) (μ := volume)).2 hg
+  -- `Φ`, hence `F`, is continuous on `[0, R]`, so `g F` is integrable there
+  have hΦc : ContinuousOn Φ (Icc 0 R) := by
+    rw [hΦ]
+    exact intervalIntegral.continuousOn_primitive hgIcc
+  have hFc : ContinuousOn F (Icc 0 R) := by
+    rw [hF]
+    exact Real.continuous_exp.comp_continuousOn hΦc.neg
+  have hgF : IntegrableOn (fun τ ↦ g τ * F τ) (Icc 0 R) :=
+    hgIcc.mul_continuousOn hFc isCompact_Icc
+  refine ⟨(hgF.mono_set Ioc_subset_Icc_self).fun_neg, ?_⟩
+  intro σ t hσ hσt htR
+  have hag : IntegrableOn (fun τ ↦ |g τ|) (Icc 0 R) := Integrable.abs hgIcc
+  have hII : ∀ f : ℝ → ℝ, IntegrableOn f (Icc 0 R) → ∀ u v : ℝ, 0 ≤ u → u ≤ v → v ≤ R →
+      IntervalIntegrable f volume u v := fun f hf u v hu huv hv ↦
+    (intervalIntegrable_iff_integrableOn_Icc_of_le huv).2 (hf.mono_set (Icc_subset_Icc hu hv))
+  have hΦi : ∀ x, 0 ≤ x → Φ x = ∫ s in (0)..x, g s := fun x hx ↦ by
+    rw [hΦ, intervalIntegral.integral_of_le hx]
+  -- convexity of `exp`: `0 ≤ e^{-a} - 1 + a ≤ a (1 - e^{-a})`
+  have hconv : ∀ a : ℝ, |Real.exp (-a) - 1 + a| ≤ |a| * |1 - Real.exp (-a)| := by
+    intro a
+    have h1 := Real.add_one_le_exp (-a)
+    have h2 := Real.add_one_le_exp a
+    have h3 : Real.exp (-a) * Real.exp a = 1 := by
+      rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
+    have h4 := mul_le_mul_of_nonneg_left h2 (Real.exp_pos (-a)).le
+    rw [abs_of_nonneg (show (0 : ℝ) ≤ Real.exp (-a) - 1 + a by linarith)]
+    calc Real.exp (-a) - 1 + a ≤ a * (1 - Real.exp (-a)) := by nlinarith
+      _ ≤ |a * (1 - Real.exp (-a))| := le_abs_self _
+      _ = |a| * |1 - Real.exp (-a)| := abs_mul _ _
+  -- local estimate: if `F` is `c`-close to `F x` on `[x, z]`, the defect over `[x, z]` is small
+  have hstep : ∀ c : ℝ, 0 < c → ∀ x z : ℝ, σ ≤ x → x ≤ z → z ≤ t →
+      (∀ τ ∈ Icc x z, |F τ - F x| ≤ c) →
+      |F z - F x + ∫ τ in x..z, g τ * F τ| ≤ 2 * c * ∫ τ in x..z, |g τ| := by
+    intro c hc x z hσx hxz hzt hFxz
+    have hx0 : 0 ≤ x := hσ.trans hσx
+    have hzR : z ≤ R := hzt.trans htR
+    have hgxz := hII g hgIcc x z hx0 hxz hzR
+    have hgFxz := hII _ hgF x z hx0 hxz hzR
+    have hagxz := hII _ hag x z hx0 hxz hzR
+    set a := ∫ τ in x..z, g τ with ha
+    have hFz : F z = F x * Real.exp (-a) := by
+      have h1 : Φ z = Φ x + a := by
+        rw [hΦi z (hx0.trans hxz), hΦi x hx0, ha,
+          intervalIntegral.integral_add_adjacent_intervals
+            (hII g hgIcc 0 x le_rfl hx0 (hxz.trans hzR)) hgxz]
+      simp only [hF]
+      rw [h1, neg_add, Real.exp_add]
+    have hsplit : ∫ τ in x..z, g τ * F τ = (∫ τ in x..z, g τ * (F τ - F x)) + F x * a := by
+      have h : ∫ τ in x..z, g τ * (F τ - F x) = (∫ τ in x..z, g τ * F τ) - a * F x := by
+        simp_rw [mul_sub]
+        rw [intervalIntegral.integral_sub hgFxz (hgxz.mul_const _),
+          intervalIntegral.integral_mul_const]
+      rw [h]
+      ring
+    have hbound1 : |∫ τ in x..z, g τ * (F τ - F x)| ≤ c * ∫ τ in x..z, |g τ| := by
+      rw [← intervalIntegral.integral_const_mul]
+      show ‖∫ τ in x..z, g τ * (F τ - F x)‖ ≤ ∫ τ in x..z, c * |g τ|
+      refine intervalIntegral.norm_integral_le_of_norm_le hxz
+        (ae_of_all _ fun τ hτ ↦ ?_) (hagxz.const_mul c)
+      rw [Real.norm_eq_abs, abs_mul, mul_comm]
+      exact mul_le_mul_of_nonneg_right (hFxz τ (Ioc_subset_Icc_self hτ)) (abs_nonneg _)
+    have hbound2 : |a| ≤ ∫ τ in x..z, |g τ| := by
+      have h := intervalIntegral.norm_integral_le_integral_norm (f := g) (μ := volume) hxz
+      simpa only [Real.norm_eq_abs] using h
+    have hFx : 0 < F x := by
+      rw [hF]
+      exact Real.exp_pos _
+    have hbound3 : |F z - F x + F x * a| ≤ |a| * c := by
+      have hFzx : |F x - F z| ≤ c := by
+        rw [abs_sub_comm]
+        exact hFxz z ⟨hxz, le_rfl⟩
+      calc |F z - F x + F x * a| = F x * |Real.exp (-a) - 1 + a| := by
+            rw [hFz, show F x * Real.exp (-a) - F x + F x * a
+                = F x * (Real.exp (-a) - 1 + a) by ring, abs_mul, abs_of_pos hFx]
+        _ ≤ F x * (|a| * |1 - Real.exp (-a)|) := mul_le_mul_of_nonneg_left (hconv a) hFx.le
+        _ = |a| * |F x - F z| := by
+            rw [hFz, show F x - F x * Real.exp (-a) = F x * (1 - Real.exp (-a)) by ring, abs_mul,
+              abs_of_pos hFx]
+            ring
+        _ ≤ |a| * c := mul_le_mul_of_nonneg_left hFzx (abs_nonneg _)
+    calc |F z - F x + ∫ τ in x..z, g τ * F τ|
+        = |(F z - F x + F x * a) + ∫ τ in x..z, g τ * (F τ - F x)| := by
+          rw [hsplit]
+          congr 1
+          ring
+      _ ≤ |F z - F x + F x * a| + |∫ τ in x..z, g τ * (F τ - F x)| := abs_add_le _ _
+      _ ≤ |a| * c + c * ∫ τ in x..z, |g τ| := add_le_add hbound3 hbound1
+      _ ≤ 2 * c * ∫ τ in x..z, |g τ| := by nlinarith
+  -- the defect `D x = F x - F σ + ∫_σ^x g F` and the weight `J x = ∫_σ^x |g|`
+  obtain ⟨D, hD⟩ : ∃ D : ℝ → ℝ, D = fun x ↦ F x - F σ + ∫ τ in σ..x, g τ * F τ := ⟨_, rfl⟩
+  obtain ⟨J, hJ⟩ : ∃ J : ℝ → ℝ, J = fun x ↦ ∫ τ in σ..x, |g τ| := ⟨_, rfl⟩
+  have hsub : Icc σ t ⊆ Icc 0 R := Icc_subset_Icc hσ htR
+  have huIcc : uIcc σ t = Icc σ t := uIcc_of_le hσt
+  have hDc : ContinuousOn D (Icc σ t) := by
+    have h1 : IntegrableOn (fun τ ↦ g τ * F τ) (uIcc σ t) := by
+      rw [huIcc]
+      exact hgF.mono_set hsub
+    have h := intervalIntegral.continuousOn_primitive_interval h1
+    rw [huIcc] at h
+    rw [hD]
+    exact ((hFc.mono hsub).sub continuousOn_const).add h
+  have hJc : ContinuousOn J (Icc σ t) := by
+    have h1 : IntegrableOn (fun τ ↦ |g τ|) (uIcc σ t) := by
+      rw [huIcc]
+      exact hag.mono_set hsub
+    have h := intervalIntegral.continuousOn_primitive_interval h1
+    rw [huIcc] at h
+    rw [hJ]
+    exact h
+  have hDσ : D σ = 0 := by
+    rw [hD]
+    simp
+  have hJσ : J σ = 0 := by
+    rw [hJ]
+    simp
+  -- real induction on `[σ, t]`: `|D| ≤ 2 c J` for every `c > 0`
+  have hmain : ∀ c : ℝ, 0 < c → |D t| ≤ 2 * c * J t := by
+    intro c hc
+    let s : Set ℝ := (fun x ↦ 2 * c * J x - |D x|) ⁻¹' Ici 0
+    have hs : IsClosed (s ∩ Icc σ t) := by
+      rw [inter_comm]
+      exact ContinuousOn.preimage_isClosed_of_isClosed
+        ((continuousOn_const.mul hJc).sub hDc.abs) isClosed_Icc isClosed_Ici
+    have hmem : t ∈ s := by
+      refine hs.mem_of_ge_of_forall_exists_gt ?_ hσt ?_
+      · show 0 ≤ 2 * c * J σ - |D σ|
+        rw [hDσ, hJσ]
+        simp
+      · rintro x ⟨hxs, hσx, hxt⟩
+        have hxs' : |D x| ≤ 2 * c * J x := by
+          have h : 0 ≤ 2 * c * J x - |D x| := hxs
+          linarith
+        have hx0 : 0 ≤ x := hσ.trans hσx
+        obtain ⟨δ, hδ, hFδ⟩ :=
+          Metric.continuousWithinAt_iff.1 (hFc x ⟨hx0, hxt.le.trans htR⟩) c hc
+        obtain ⟨z, hz⟩ : ∃ z : ℝ, z = min t (x + δ / 2) := ⟨_, rfl⟩
+        have hxz : x < z := by
+          rw [hz]
+          exact lt_min hxt (by linarith)
+        have hzt : z ≤ t := by
+          rw [hz]
+          exact min_le_left _ _
+        have hzδ : z ≤ x + δ / 2 := by
+          rw [hz]
+          exact min_le_right _ _
+        refine ⟨z, ?_, hxz, hzt⟩
+        have hloc := hstep c hc x z hσx hxz.le hzt (fun τ hτ ↦ by
+          have hτR : τ ∈ Icc 0 R := ⟨hx0.trans hτ.1, hτ.2.trans (hzt.trans htR)⟩
+          have hd : dist τ x < δ := by
+            rw [Real.dist_eq, abs_of_nonneg (by linarith [hτ.1])]
+            linarith [hτ.2]
+          have h := hFδ hτR hd
+          rw [Real.dist_eq] at h
+          exact h.le)
+        have hDz : D z = D x + (F z - F x + ∫ τ in x..z, g τ * F τ) := by
+          simp only [hD]
+          rw [← intervalIntegral.integral_add_adjacent_intervals
+            (hII _ hgF σ x hσ hσx (hxt.le.trans htR)) (hII _ hgF x z hx0 hxz.le (hzt.trans htR))]
+          ring
+        have hJz : J z = J x + ∫ τ in x..z, |g τ| := by
+          simp only [hJ]
+          rw [intervalIntegral.integral_add_adjacent_intervals
+            (hII _ hag σ x hσ hσx (hxt.le.trans htR)) (hII _ hag x z hx0 hxz.le (hzt.trans htR))]
+        show 0 ≤ 2 * c * J z - |D z|
+        rw [hDz, hJz]
+        have h := abs_add_le (D x) (F z - F x + ∫ τ in x..z, g τ * F τ)
+        nlinarith
+    have h : 0 ≤ 2 * c * J t - |D t| := hmem
+    linarith
+  have hJt : 0 ≤ J t := by
+    rw [hJ]
+    exact intervalIntegral.integral_nonneg hσt fun τ _ ↦ abs_nonneg _
+  have hDt : D t = 0 := by
+    by_contra hne
+    have hpos : 0 < |D t| := abs_pos.2 hne
+    have h4 : 0 < 4 * (J t + 1) := by linarith
+    obtain ⟨c, hc⟩ : ∃ c : ℝ, c = |D t| / (4 * (J t + 1)) := ⟨_, rfl⟩
+    have hc0 : 0 < c := by
+      rw [hc]
+      exact div_pos hpos h4
+    have hcJ : c * (4 * (J t + 1)) = |D t| := by
+      rw [hc]
+      exact div_mul_cancel₀ _ h4.ne'
+    have h := hmain c hc0
+    nlinarith
+  rw [← intervalIntegral.integral_of_le hσt, intervalIntegral.integral_neg]
+  rw [hD] at hDt
+  simp only at hDt
+  linarith
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
