@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1",
+  "parent_id": "root.lipschitz_graph_corollary-a1",
+  "depth": 2,
+  "title": "Hole estimate (10') for graph points off spt V (corrected Simon 2.6 (9)-(10))",
+  "statement": "For n >= 1, l >= 0 and p > n there are delta_2 > 0, eps_2 > 0 and C_2 > 0, depending only on n, l, p, such that: if U is open, V = v(M, theta) is a RectifiableVarifold n l U with generalized mean curvature H in U, 0 < delta <= delta_2 and AllardHypotheses H p delta rho hold, q is a linear isometry of R^(n+l) with T_0 := rotatedPlane q and P := its orthogonal projection, f : R^n -> R^l is eps-Lipschitz on R^n with 0 <= eps <= eps_2, Fhat := q(graphOver f R^n), and zeta in Fhat satisfies |zeta| <= 2 delta rho and 0 < d := dist(zeta, spt V) <= delta rho (infDist to V.support), then there is y in spt V with |y - zeta| = d, and, with s := d/2, s^n <= C_2 [ mu(B_{3s}(zeta) \\ Fhat) + integral over B_{3s}(zeta) of |p_x - P|^2 dmu(x) ], where mu = V.weight, p_x = V.tangentProj x, |.| is the Hilbert-Schmidt norm (hsNormSq), the ball measure is taken as a real number (toReal) and the integral is the Bochner integral.",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₂ ε₂ C₂ : ℝ, 0 < δ₂ ∧ 0 < ε₂ ∧ 0 < C₂ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₂ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (ε : ℝ), 0 ≤ ε → ε ≤ ε₂ → LipschitzWith (Real.toNNReal ε) f → ∀ ζ ∈ q '' graphOver f univ, ‖ζ‖ ≤ 2 * (δ * ρ) → 0 < infDist ζ V.support → infDist ζ V.support ≤ δ * ρ → ∃ y ∈ V.support, dist y ζ = infDist ζ V.support ∧ (infDist ζ V.support / 2) ^ n ≤ C₂ * ((V.weight (closedBall ζ (3 * (infDist ζ V.support / 2)) \\ q '' graphOver f univ)).toReal + ∫ x in closedBall ζ (3 * (infDist ζ V.support / 2)), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight)",
+  "lean_name": "lgc_hole_estimate",
+  "depends_on": [
+    "root.lipschitz_graph_corollary-a1.tangent_plane_ae-a1",
+    "root.lipschitz_graph_corollary-a1.density_monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_graph_corollary-a1.tangent_plane_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_graph_corollary-a1.density_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-graph-corollary-a1-hole-estimate-a1-a1"
+}
