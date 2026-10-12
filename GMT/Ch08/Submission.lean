@@ -813,6 +813,129 @@ theorem Submission.varifold_tangents_restricted_radon_converges :
   rw [← key W μ hW] at hlim
   exact hlim.congr fun i ↦ (key (Ws i) (μs i) (hWs i)).symm
 
+/-- **Simon Ch. 8, the use of 3.7 in the proofs of 5.5 and 5.7** (child `density_lower_bound` of
+`varifold_tangents`): if 5.1 holds at `x` and
+`ρ^{-n} μ_V({y ∈ B_ρ(x) : Θ^n(μ_V, y) ≥ τ fails}) → 0`, then `Θ^n(μ_C, ·) ≥ τ` holds `μ_C`-a.e.
+for every `C ∈ VarTan(V, x)`.  On each ball `Ω = B°_R(0)`, the varifolds
+`W_i = τ⁻¹ V_{x,t_{j₀+i}} ⌞ (Ω × G)` converge to `τ⁻¹ C ⌞ (Ω × G)`.  For `O ⊂⊂ Ω` and
+`ρ = t_{j₀+i} R`, `‖δW_i‖(O) = O(ρ^{1-n}‖δV‖(B_ρ(x))) → 0`.  Also `Θ^n(μ_{W_i}, y) ≥ 1` unless
+`x + t_{j₀+i} y` lies in the bad set, whose `μ_{W_i}`-mass in `O` is
+`O(ρ^{-n} μ_V(bad ∩ B_ρ(x))) → 0`.  So 3.7 gives density `≥ 1` a.e. for the limit `τ⁻¹ μ_C ⌞ Ω`,
+i.e. `Θ^n(μ_C, ·) ≥ τ` `μ_C`-a.e. on `Ω`. -/
+theorem Submission.varifold_tangents_density_lower_bound :
+    DensitySemicontinuity → ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (τ : ℝ), V.HasLocallyBoundedFirstVariation → x ∈ U → 0 < τ → Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧ ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ} / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → ∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C → ∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal τ ≤ θ := by
+  intro hsemi N n U V x τ hV hx hτ hvar hbad C hC
+  obtain ⟨t, ht0, ht, hconv⟩ := hC
+  -- `c = τ⁻¹ ∈ (0, ∞)` normalizes the density bound `τ` to `1`.
+  obtain ⟨c, hc⟩ : ∃ c : ℝ≥0∞, c = (ENNReal.ofReal τ)⁻¹ := ⟨_, rfl⟩
+  have hτ0 : ENNReal.ofReal τ ≠ 0 := (ENNReal.ofReal_pos.2 hτ).ne'
+  have hc0 : c ≠ 0 := by rw [hc]; exact ENNReal.inv_ne_zero.2 ENNReal.ofReal_ne_top
+  have hctop : c ≠ ∞ := by rw [hc]; exact ENNReal.inv_ne_top.2 hτ0
+  have hc1 : c * ENNReal.ofReal τ = 1 := by
+    rw [hc]; exact ENNReal.inv_mul_cancel hτ0 ENNReal.ofReal_ne_top
+  have hcinv : c⁻¹ = ENNReal.ofReal τ := by rw [hc, inv_inv]
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hx
+  -- Step 0: it suffices to work on each ball `B°_R(0)`; the balls `B°_{k+1}(0)` exhaust `ℝ^N`.
+  suffices key : ∀ R : ℝ, 0 < R → ∀ᵐ y ∂C.weight, y ∈ ball (0 : Euclidean N) R →
+      ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal τ ≤ θ by
+    filter_upwards [ae_all_iff.2 fun k : ℕ ↦ key ((k : ℝ) + 1) k.cast_add_one_pos] with y hy
+    obtain ⟨k, hk⟩ := exists_nat_gt ‖y‖
+    exact hy k (mem_ball_zero_iff.2 (hk.trans (lt_add_one _)))
+  intro R hR
+  -- Step 1: `t_j R → 0⁺`; choose `j₀` with `t_j R < ε` and `γ(t_j R) < 1` for `j ≥ j₀`, where
+  -- `γ(ρ) = ρ^{1-n}‖δV‖(B_ρ(x))`.
+  have htR : Tendsto (fun j ↦ t j * R) atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.2 ⟨by simpa using ht.mul_const R, .of_forall fun j ↦ mul_pos (ht0 j) hR⟩
+  obtain ⟨j₀, hj₀⟩ := eventually_atTop.1
+    ((htR.eventually (hvar.eventually (eventually_lt_nhds zero_lt_one))).and
+      ((tendsto_nhdsWithin_iff.1 htR).1.eventually (eventually_lt_nhds hε)))
+  have hTU : ∀ i : ℕ, closedBall x (t (i + j₀) * R) ⊆ U := fun i ↦
+    (closedBall_subset_ball (hj₀ _ (Nat.le_add_left j₀ i)).2).trans hεU
+  have hKR : ENNReal.ofReal 1 * (ENNReal.ofReal R ^ n / ENNReal.ofReal R) ≠ ∞ :=
+    ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+      (ENNReal.div_ne_top (ENNReal.pow_ne_top ENNReal.ofReal_ne_top) (ENNReal.ofReal_pos.2 hR).ne')
+  -- Step 3: `W_i = τ⁻¹ V_{x,t_{j₀+i}} ⌞ (Ω × G)` and `C' = τ⁻¹ C ⌞ (Ω × G)` are varifolds on `Ω`.
+  have hWex : ∀ i : ℕ, ∃ W : Varifold N n (ball (0 : Euclidean N) R), W.measure =
+      c • (rescaledMeasure V x (t (i + j₀))).restrict
+        (ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n))) := by
+    intro i
+    refine Submission.varifold_tangents_dlb_exists_restricted_varifold N n
+      (ball (0 : Euclidean N) R) (rescaledMeasure V x (t (i + j₀))) c isOpen_ball hctop
+      fun K _ hKR ↦ ne_top_of_le_ne_top ?_
+        (measure_mono (prod_mono (hKR.trans ball_subset_closedBall) subset_rfl))
+    rw [(Submission.varifold_tangents_dlb_rescaledMeasure_prod_univ N n U V x (t (i + j₀))).2
+      (ht0 _) 0 R, smul_zero, add_zero]
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+      (V.weight_finite_on_compact _ (isCompact_closedBall _ _) (hTU i))
+  choose W hW using hWex
+  obtain ⟨C', hC'⟩ := Submission.varifold_tangents_dlb_exists_restricted_varifold N n
+    (ball (0 : Euclidean N) R) C.measure c isOpen_ball hctop fun K hK _ ↦
+      C.finite_on_compact K hK (subset_univ K)
+  -- Step 4: `W_i → C'` as Radon measures on `Gₙ(Ω)`.
+  have hRadon : Varifold.RadonConverges W C' :=
+    Submission.varifold_tangents_restricted_radon_converges N n (ball (0 : Euclidean N) R)
+      (fun i ↦ rescaledMeasure V x (t (i + j₀))) C.measure W C' c
+      (fun f ↦ (hconv f).comp (tendsto_add_atTop_nat j₀)) hctop hW hC'
+  -- Step 5: `‖δW_i‖(O) ≤ τ⁻¹ (R^n / R) γ(t_{j₀+i} R) → 0` for `O ⊂⊂ Ω`.
+  have hFV : ∀ i : ℕ, (W i).HasLocallyBoundedFirstVariation ∧
+      ∀ O : Set (Euclidean N), IsRelCompactOpenIn O (ball (0 : Euclidean N) R) →
+        variationMeasure (W i) O ≤ c * (ENNReal.ofReal 1 *
+          (ENNReal.ofReal R ^ n / ENNReal.ofReal R) * (ENNReal.ofReal (t (i + j₀) * R) *
+            variationMeasure V (closedBall x (t (i + j₀) * R)) /
+              ENNReal.ofReal (t (i + j₀) * R) ^ n)) := fun i ↦
+    Submission.varifold_tangents_dlb_restricted_firstVariation_control N n
+      (ball (0 : Euclidean N) R) (rescaledMeasure V x (t (i + j₀))) (W i) c _ hctop
+      (ENNReal.mul_ne_top hKR (ne_top_of_lt (hj₀ _ (Nat.le_add_left j₀ i)).1)) (hW i)
+      fun X hX hXc hXR hX1 ↦ Submission.varifold_tangents_rescaled_divergence_bound N n U V x
+        (t (i + j₀)) R 1 X hV (ht0 _) hR (hTU i) hX hXc hXR hX1
+  have hβ : Tendsto (fun i : ℕ ↦ c * (ENNReal.ofReal 1 *
+      (ENNReal.ofReal R ^ n / ENNReal.ofReal R) * (ENNReal.ofReal (t (i + j₀) * R) *
+        variationMeasure V (closedBall x (t (i + j₀) * R)) /
+          ENNReal.ofReal (t (i + j₀) * R) ^ n))) atTop (𝓝 0) := by
+    have h := ENNReal.Tendsto.const_mul (ENNReal.Tendsto.const_mul
+      ((hvar.comp htR).comp (tendsto_add_atTop_nat j₀)) (Or.inr hKR)) (Or.inr hctop)
+    rw [mul_zero, mul_zero] at h
+    exact h
+  have hliminf : ∀ O : Set (Euclidean N), IsRelCompactOpenIn O (ball (0 : Euclidean N) R) →
+      liminf (fun i ↦ variationMeasure (W i) O) atTop ≠ ∞ := by
+    intro O hO
+    rw [(tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hβ (fun _ ↦ zero_le)
+      fun i ↦ (hFV i).2 O hO).liminf_eq]
+    exact ENNReal.zero_ne_top
+  -- Step 6: `Θ^n(μ_{W_i}, y) ≥ 1` unless `x + t_{j₀+i} y` lies in the bad set.
+  have hdens : ∀ i : ℕ, ∀ y ∈ ball (0 : Euclidean N) R \ {y | x + t (i + j₀) • y ∈
+      {z | ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight z θ ∧ ENNReal.ofReal τ ≤ θ}},
+      ∃ θ : ℝ≥0∞, HasDensity n (W i).weight y θ ∧ 1 ≤ θ := by
+    rintro i y ⟨hyR, hyE⟩
+    simp only [mem_ofPred_eq, not_not] at hyE
+    obtain ⟨θ, hθ, hτθ⟩ := hyE
+    exact ⟨c * θ, Submission.varifold_tangents_dlb_restricted_hasDensity N n U V x (t (i + j₀)) R
+      c θ (W i) y (ht0 _) hctop (hW i) hyR hθ, hc1.symm.le.trans (mul_le_mul_right hτθ c)⟩
+  -- Step 7: `μ_{W_i}(bad ∩ O) ≤ τ⁻¹ R^n e(t_{j₀+i} R) → 0`, where
+  -- `e(ρ) = ρ^{-n} μ_V(bad ∩ B_ρ(x))`.
+  have hbadW : ∀ O : Set (Euclidean N), IsRelCompactOpenIn O (ball (0 : Euclidean N) R) →
+      Tendsto (fun i ↦ (W i).weight ({y | x + t (i + j₀) • y ∈
+        {z | ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight z θ ∧ ENNReal.ofReal τ ≤ θ}} ∩ O)) atTop
+        (𝓝 0) := by
+    intro O hO
+    have h := ENNReal.Tendsto.const_mul (ENNReal.Tendsto.const_mul
+      ((hbad.comp htR).comp (tendsto_add_atTop_nat j₀))
+        (Or.inr (ENNReal.pow_ne_top ENNReal.ofReal_ne_top : ENNReal.ofReal R ^ n ≠ ∞)))
+      (Or.inr hctop)
+    rw [mul_zero, mul_zero] at h
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h (fun _ ↦ zero_le)
+      fun i ↦ Submission.varifold_tangents_dlb_restricted_bad_set_weight_le N n U V x
+        (t (i + j₀)) R c (W i) _ O (ht0 _) hR (hW i) (subset_closure.trans hO.2.2)
+  -- Step 8: semicontinuity 3.7 on `Ω` gives `Θ^n(μ_{C'}, ·) ≥ 1` `μ_{C'}`-a.e.
+  obtain ⟨-, -, hC'ae⟩ := hsemi N n (ball (0 : Euclidean N) R) W C'
+    (fun i ↦ {y | x + t (i + j₀) • y ∈
+      {z | ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight z θ ∧ ENNReal.ofReal τ ≤ θ}})
+    hRadon (fun i ↦ (hFV i).1) hliminf hdens hbadW
+  -- Step 9: transfer back to `C` on `Ω`, multiplying the density by `c⁻¹ = τ`.
+  have h := Submission.varifold_tangents_dlb_ae_hasDensity_of_restricted N n univ
+    (ball (0 : Euclidean N) R) C C' c hc0 hctop hC' hC'ae
+  rwa [hcinv] at h
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
