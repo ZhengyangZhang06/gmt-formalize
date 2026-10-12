@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1.graph_geometry-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1",
+  "depth": 5,
+  "title": "Cone condition and Hausdorff measure of a rotated Lipschitz graph",
+  "statement": "Let n, k ∈ ℕ, T₀ ⊆ ℝ^{n+k} a linear subspace (P := p_{T₀}, Qu := u − Pu), ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} linear isometries with ⟨ιv, ι'w⟩ = 0 and P(ιv + ι'w) = ιv for all v, w, ξ ∈ ℝ^{n+k}, 0 ≤ Λ ≤ 1, and f : ℝⁿ → ℝᵏ with |f(v) − f(w)| ≤ Λ|v − w|. Let F := {ξ + ιv + ι'f(v) : v ∈ ℝⁿ}. Then (i) |Q(x − x')| ≤ Λ|x − x'| for all x, x' ∈ F, and (ii) Hⁿ(F ∩ B_r(x)) ≤ 2^{n/2}·ω_n·rⁿ for all x ∈ F and r > 0. Here Hⁿ = μHE[n] on ℝ^{n+k}, ω_n = unitBallVolume n and B_r(x) is the closed ball; as an extended-real inequality the bound reads ENNReal.ofReal(2^{n/2})·ω_n·ENNReal.ofReal(rⁿ).",
+  "lean_statement": "∀ (n k : ℕ) (T₀ : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (ξ : Euclid (n + k)) (f : Euclid n → Euclid k) (Λ : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v w, T₀.starProjection (ι v + ι' w) = ι v) → 0 ≤ Λ → Λ ≤ 1 → (∀ v w, ‖f v - f w‖ ≤ Λ * ‖v - w‖) → (∀ x ∈ range (fun v => ξ + ι v + ι' (f v)), ∀ x' ∈ range (fun v => ξ + ι v + ι' (f v)), ‖(x - x') - T₀.starProjection (x - x')‖ ≤ Λ * ‖x - x'‖) ∧ (∀ x ∈ range (fun v => ξ + ι v + ι' (f v)), ∀ r : ℝ, 0 < r → μHE[n] (range (fun v => ξ + ι v + ι' (f v)) ∩ closedBall x r) ≤ ENNReal.ofReal (2 ^ ((n : ℝ) / 2)) * unitBallVolume n * ENNReal.ofReal (r ^ n))",
+  "lean_name": "dorag_lip_graph_cone_hausdorff_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-d20d6ee052-a1"
+}

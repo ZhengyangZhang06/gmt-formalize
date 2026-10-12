@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1.coordinates-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1",
+  "depth": 5,
+  "title": "Orthonormal graph coordinates adapted to an n-plane",
+  "statement": "Let n, k ∈ ℕ and let T₀ be a linear subspace of ℝ^{n+k} (Euclid (n+k)) of dimension n; write P := p_{T₀} = T₀.starProjection for the orthogonal projection onto T₀. Then there are linear isometries ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} such that (a) ⟨ιv, ι'w⟩ = 0 for all v ∈ ℝⁿ, w ∈ ℝᵏ; (b) ιv ∈ T₀ for all v; (c) every x ∈ ℝ^{n+k} equals ιv + ι'w for some v ∈ ℝⁿ, w ∈ ℝᵏ; (d) P(ιv + ι'w) = ιv for all v, w.",
+  "lean_statement": "∀ (n k : ℕ) (T₀ : Submodule ℝ (Euclid (n + k))), Module.finrank ℝ T₀ = n → ∃ (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) ∧ (∀ v, ι v ∈ T₀) ∧ (∀ x, ∃ v w, x = ι v + ι' w) ∧ (∀ v w, T₀.starProjection (ι v + ι' w) = ι v)",
+  "lean_name": "dorag_lip_orthonormal_coordinates",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-d4e6f64702-a1"
+}

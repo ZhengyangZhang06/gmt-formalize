@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1.vitali_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1",
+  "depth": 5,
+  "title": "Two-measure 5r-covering bound (Vitali)",
+  "statement": "Let P ∈ ℕ, let μ, ν be measures on ℝᴾ (Euclid P), let A, B ⊆ ℝᴾ, r : ℝᴾ → ℝ, R₀ ∈ ℝ and c ∈ [0, ∞]. Suppose that for every y ∈ A: 0 < r(y) ≤ R₀, the closed ball B_{r(y)}(y) is contained in B, and μ(A ∩ B_{5r(y)}(y)) ≤ c·ν(B_{r(y)}(y)). Then μ(A) ≤ c·ν(B). No measurability of A, B or r is assumed; μ(A) is the outer measure.",
+  "lean_statement": "∀ (P : ℕ) (μ ν : Measure (Euclid P)) (A B : Set (Euclid P)) (r : Euclid P → ℝ) (R₀ : ℝ) (c : ℝ≥0∞), (∀ y ∈ A, 0 < r y ∧ r y ≤ R₀ ∧ closedBall y (r y) ⊆ B ∧ μ (A ∩ closedBall y (5 * r y)) ≤ c * ν (closedBall y (r y))) → μ A ≤ c * ν B",
+  "lean_name": "dorag_lip_vitali_two_measure_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-c3521b0aee-a1"
+}

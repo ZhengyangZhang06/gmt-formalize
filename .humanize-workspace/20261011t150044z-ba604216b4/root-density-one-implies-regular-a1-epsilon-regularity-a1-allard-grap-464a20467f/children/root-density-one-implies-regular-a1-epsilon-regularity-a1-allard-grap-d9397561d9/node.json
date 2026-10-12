@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1.graph_extension-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1",
+  "depth": 5,
+  "title": "A set with a small cone condition lies in a bounded Lipschitz graph",
+  "statement": "Let n, k ∈ ℕ, T₀ ⊆ ℝ^{n+k} a linear subspace, P := p_{T₀} = T₀.starProjection and Qu := u − Pu. Let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} be linear isometries such that every x ∈ ℝ^{n+k} equals ιv + ι'w for some v, w, and P(ιv + ι'w) = ιv for all v, w. Let ξ ∈ ℝ^{n+k}, G ⊆ ℝ^{n+k} and λ, A ∈ ℝ with 0 ≤ λ ≤ 1/2 and A ≥ 0. Assume |Q(y₂ − y₁)| ≤ λ|y₂ − y₁| for all y₁, y₂ ∈ G and |Q(y − ξ)| ≤ A for all y ∈ G. Then there is f : ℝⁿ → ℝᵏ with |f(v) − f(w)| ≤ 2√k·λ·|v − w| and |f(v)| ≤ √k·A for all v, w ∈ ℝⁿ, and G ⊆ {ξ + ιv + ι'f(v) : v ∈ ℝⁿ}.",
+  "lean_statement": "∀ (n k : ℕ) (T₀ : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (ξ : Euclid (n + k)) (G : Set (Euclid (n + k))) (lam A : ℝ), (∀ x, ∃ v w, x = ι v + ι' w) → (∀ v w, T₀.starProjection (ι v + ι' w) = ι v) → 0 ≤ lam → lam ≤ 1 / 2 → 0 ≤ A → (∀ y₁ ∈ G, ∀ y₂ ∈ G, ‖(y₂ - y₁) - T₀.starProjection (y₂ - y₁)‖ ≤ lam * ‖y₂ - y₁‖) → (∀ y ∈ G, ‖(y - ξ) - T₀.starProjection (y - ξ)‖ ≤ A) → ∃ f : Euclid n → Euclid k, (∀ v w, ‖f v - f w‖ ≤ 2 * Real.sqrt k * lam * ‖v - w‖) ∧ (∀ v, ‖f v‖ ≤ Real.sqrt k * A) ∧ G ⊆ range (fun v => ξ + ι v + ι' (f v))",
+  "lean_name": "dorag_lip_cone_set_graph_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-d9397561d9-a1"
+}
