@@ -413,6 +413,59 @@ theorem Submission.slicing_mb_pointwise_cutoff_tendsto :
         rw [hχ0 h (f x) hh (not_lt.mp hft), zero_mul]
     · rw [indicator_of_notMem (show x ∉ A from fun h => hx h.1), hF0 x hx]
       simp
+/-- Passing `ofReal |X_ε(h)| ≤ ofReal ((1 + ε) / h) · LW · a(h)` to the `liminf` as `h → 0+`
+and then letting `ε ↓ 0`, in `[0, ∞]`: if for every `ε > 0` some `X_ε(h) → r` as `h → 0+`
+satisfies this bound for all `h > 0`, then `ofReal |r| ≤ LW · liminf_{h → 0+} a(h) / ofReal h`.
+For fixed `ε`, `ofReal |r|` is the `liminf` of `ofReal |X_ε(h)|`, and
+`ofReal ((1 + ε) / h) · LW · a(h) = (ofReal (1 + ε) · LW) · (a(h) / ofReal h)` for `h > 0`;
+the finite constant `ofReal (1 + ε) · LW` commutes with the `liminf`, and
+`ofReal (1 + ε) → 1` as `ε → 0+`. -/
+theorem Submission.slicing_mb_pointwise_liminf_bound :
+    ∀ (a : ℝ → ℝ≥0∞) (LW : ℝ≥0) (r : ℝ),
+      (∀ ε : ℝ, 0 < ε → ∃ X : ℝ → ℝ, Tendsto X (𝓝[>] 0) (𝓝 r) ∧
+        ∀ h : ℝ, 0 < h →
+          ENNReal.ofReal |X h| ≤ ENNReal.ofReal ((1 + ε) / h) * (LW : ℝ≥0∞) * a h) →
+      ENNReal.ofReal |r| ≤
+        (LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0) := by
+  intro a LW r hX
+  -- For fixed `ε > 0`: `ofReal |r| ≤ ofReal (1 + ε) · (LW · liminf_{h → 0+} a(h) / ofReal h)`.
+  have key : ∀ ε : ℝ, 0 < ε → ENNReal.ofReal |r| ≤ ENNReal.ofReal (1 + ε) *
+      ((LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0)) := by
+    intro ε hε
+    obtain ⟨X, hXr, hXb⟩ := hX ε hε
+    -- `ofReal |X(h)| → ofReal |r|`, so `ofReal |r|` is the `liminf` of `ofReal |X(h)|`.
+    have hlim : Tendsto (fun h => ENNReal.ofReal |X h|) (𝓝[>] 0) (𝓝 (ENNReal.ofReal |r|)) :=
+      ENNReal.tendsto_ofReal hXr.abs
+    -- For `h > 0`: `ofReal ((1 + ε) / h) · LW · a(h) = (ofReal (1 + ε) · LW) · (a(h) / ofReal h)`.
+    have hle : ∀ᶠ h in 𝓝[>] (0 : ℝ), ENNReal.ofReal |X h| ≤
+        ENNReal.ofReal (1 + ε) * (LW : ℝ≥0∞) * (a h / ENNReal.ofReal h) := by
+      filter_upwards [self_mem_nhdsWithin] with h hh
+      calc ENNReal.ofReal |X h| ≤ ENNReal.ofReal ((1 + ε) / h) * (LW : ℝ≥0∞) * a h := hXb h hh
+        _ = ENNReal.ofReal (1 + ε) * (LW : ℝ≥0∞) * (a h / ENNReal.ofReal h) := by
+          rw [ENNReal.ofReal_div_of_pos hh, div_eq_mul_inv, div_eq_mul_inv]
+          ring
+    -- Monotonicity of the `liminf` and the `liminf` of a finite constant multiple.
+    calc ENNReal.ofReal |r| = liminf (fun h => ENNReal.ofReal |X h|) (𝓝[>] 0) :=
+          hlim.liminf_eq.symm
+      _ ≤ liminf (fun h => ENNReal.ofReal (1 + ε) * (LW : ℝ≥0∞) * (a h / ENNReal.ofReal h))
+            (𝓝[>] 0) := liminf_le_liminf hle
+      _ = ENNReal.ofReal (1 + ε) * (LW : ℝ≥0∞) *
+            liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0) :=
+          ENNReal.liminf_const_mul_of_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+            ENNReal.coe_ne_top)
+      _ = ENNReal.ofReal (1 + ε) *
+            ((LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0)) :=
+          mul_assoc _ _ _
+  -- `ofReal (1 + ε) · Y → Y` as `ε → 0+` (the limit factor `1` is nonzero), then `ε ↓ 0`.
+  have hone : Tendsto (fun ε : ℝ => ENNReal.ofReal (1 + ε)) (𝓝[>] 0) (𝓝 1) := by
+    have h1 : Tendsto (fun ε : ℝ => 1 + ε) (𝓝[>] 0) (𝓝 (1 + 0)) :=
+      ((continuous_const.add continuous_id).tendsto' 0 (1 + 0) rfl).mono_left nhdsWithin_le_nhds
+    have h2 := ENNReal.tendsto_ofReal h1
+    rwa [add_zero, ENNReal.ofReal_one] at h2
+  have hY := ENNReal.Tendsto.mul_const hone (Or.inl one_ne_zero)
+    (b := (LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0))
+  rw [one_mul] at hY
+  exact ge_of_tendsto hY (eventually_nhdsWithin_of_forall fun ε hε => key ε hε)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
