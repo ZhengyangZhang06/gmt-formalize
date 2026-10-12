@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "41f29389dd6b314eb1922b5fb4638a65ab6ee90c20d5e6a245a950ad1b776664",
+  "git_delta": {
+    "base_commit": "7c2c8f4bf5f4ef22c47aabd220c145a00e329f34",
+    "candidate_commit": "b3275c855bf24038f1046bd2ac474704e1666e21",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "polyhedral_approx_open_truncation",
+    "diff_sha256": "3916abd69cb62bc3da9bd39579cad2c6218ea23e1dd8228b4c78c43e93622303",
+    "source_sha256": "95f1f711e191f554b808d1244f90880d368841f7de4e8409ab855f1a33aa8ba1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_open_truncation",
+      "statement": "∀ (P n : ℕ) (U V M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ x ∈ M, ∃ k : ℕ, θ x = k) → CompactlyContainedOpen V U → ∃ X : GeometricCurrentOn (univ : Set (Eucl P)) n, IsIntegerMultiplicity X ∧ X.mass < ∞ ∧ ∀ ω : TestFormOn (univ : Set (Eucl P)) n, X ω = tauAction n (M ∩ V) θ ξ ω",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
