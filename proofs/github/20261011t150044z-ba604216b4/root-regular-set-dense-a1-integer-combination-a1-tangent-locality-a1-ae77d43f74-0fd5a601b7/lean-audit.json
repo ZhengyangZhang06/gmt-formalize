@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fbab24d3a38340a93ec8321391246b64d3312b87cbfdc3d6e66a831795e7602c",
+  "git_delta": {
+    "base_commit": "aae6d1a168aa0506c7f6f0596450eb65ab048a3e",
+    "candidate_commit": "59554bd31bdd940d8ec88786167544b43c31e563",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsdic_tl_ae_excess_le",
+    "diff_sha256": "8d703c80376889af6e543197c1aa0a9ad1fee99254ccf57318c023d136fa8d51",
+    "source_sha256": "3db7b27604c7b18352abf2659b34e967dbca86e380ca61b032ec01c7732b0e6f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsdic_tl_ae_excess_le",
+      "statement": "∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] ((B \\ A) ∩ closedBall x ρ) ≤ ε * μHE[n] (B ∩ closedBall x ρ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
