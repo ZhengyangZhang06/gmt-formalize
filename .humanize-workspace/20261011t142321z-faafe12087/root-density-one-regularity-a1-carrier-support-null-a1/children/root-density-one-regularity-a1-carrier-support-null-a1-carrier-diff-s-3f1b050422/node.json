@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.carrier_support_null-a1.carrier_diff_support_null-a1",
+  "parent_id": "root.density_one_regularity-a1.carrier_support_null-a1",
+  "depth": 3,
+  "title": "Carrier minus support is H^n-null (Simon 4.10(1); positivity of theta)",
+  "statement": "Let U be any subset of R^(n+l) and V = v(M, theta) a rectifiable n-varifold in U (contract structure: M ⊆ U, M H^n-null-measurable, theta > 0 on M, theta a.e.-measurable for H^n restricted to M). Its weight is mu = V.weight = (H^n restricted to M) with density ofReal(theta), and spt V = U ∩ spt mu. Then H^n(M \\ spt V) = 0, where H^n = muHE[n]. No density hypothesis and no openness of U is assumed.",
+  "lean_statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), (μHE[n] : Measure (Amb n ℓ)) (V.carrier \\ V.support) = 0",
+  "lean_name": "hausdorff_carrier_diff_support_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-carrier-support-null-a1-carrier-diff-s-3f1b050422-a1"
+}
