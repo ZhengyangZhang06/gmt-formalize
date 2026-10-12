@@ -839,6 +839,29 @@ theorem Submission.dohr_tp_gat_bilip_setIntegral_tendsto : ∀ (n ℓ : ℕ) (K 
   rw [Real.dist_eq, ← hΦA, abs_sub_lt_iff]
   constructor <;> linarith [hA1.1, hA1.2, hA2.1, hA2.2]
 
+/-- **Localizing set integrals to `B`.**  If `φ` vanishes off the measurable set `B`, then
+`φ = B.indicator φ`, so `∫_X φ dμ = ∫_{X ∩ B} φ dμ` for every set `X` (`setIntegral_indicator`;
+neither integrability of `φ` nor measurability of `X` is needed).  From `S ∩ B ⊆ T ⊆ S` we get
+`S ∩ B = T ∩ B`, hence `∫_S φ dμ = ∫_T φ dμ`. -/
+theorem dohr_tp_gat_setIntegral_eq_of_inter : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (φ : Amb n ℓ → ℝ) (S T B : Set (Amb n ℓ)), MeasurableSet B → (∀ w, w ∉ B → φ w = 0) → S ∩ B ⊆ T → T ⊆ S → ∫ w in S, φ w ∂μ = ∫ w in T, φ w ∂μ := by
+  intro n ℓ μ φ S T B hB hφ hST hTS
+  -- `φ = B.indicator φ`, since `φ` vanishes off `B`.
+  have hind : B.indicator φ = φ := by
+    funext w
+    by_cases hw : w ∈ B
+    · exact indicator_of_mem hw φ
+    · rw [indicator_of_notMem hw, hφ w hw]
+  -- `S ∩ B = T ∩ B`: `S ∩ B ⊆ T` gives `⊆`, and `T ⊆ S` gives `⊇`.
+  have hinter : S ∩ B = T ∩ B :=
+    Subset.antisymm (subset_inter hST inter_subset_right) (inter_subset_inter_left B hTS)
+  calc ∫ w in S, φ w ∂μ = ∫ w in S, B.indicator φ w ∂μ := by rw [hind]
+    _ = ∫ w in S ∩ B, φ w ∂μ := setIntegral_indicator hB
+    _ = ∫ w in T ∩ B, φ w ∂μ := by rw [hinter]
+    _ = ∫ w in T, B.indicator φ w ∂μ := (setIntegral_indicator hB).symm
+    _ = ∫ w in T, φ w ∂μ := by rw [hind]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
