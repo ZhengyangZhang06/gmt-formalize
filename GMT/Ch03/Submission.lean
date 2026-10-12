@@ -335,6 +335,51 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Linearity of `g ↦ ∫_S div g` on `C¹` vector fields** (Step 1 of the extension of
+`g ↦ ∫_{E ∩ U} div g` used for Simon Ch. 3, (4.1) (p. 80); the linearity behind the remark after
+Ch. 2, (2.1) (p. 48, `chapter-02.txt` lines 480–498)). For an arbitrary set `S ⊆ ℝᴺ`:
+(i) if `g, h` are `C¹` with compact support then `∫_S div(g + h) = ∫_S div g + ∫_S div h`;
+(ii) if `g` is `C¹` and `c ∈ ℝ` then `∫_S div(c g) = c ∫_S div g`. For `C¹` fields
+`D(g + h) = Dg + Dh` and `D(c g) = c Dg`, and the trace is linear, so the integrands agree
+pointwise. In (i), `div g = ∑ᵢ ⟨bᵢ, Dg(·) bᵢ⟩` is continuous and vanishes off `tsupport g`, hence
+is integrable on `S`, and the integral is additive; in (ii) the constant comes out of the integral
+without any integrability hypothesis. -/
+theorem Submission.gaussGreenRep_setIntegral_divergence_linear : ∀ (N : ℕ) (S : Set (Rn N)), (∀ g h : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → ContDiff ℝ 1 h → HasCompactSupport h → ∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence (g + h) x = (∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence g x) + ∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence h x) ∧ ∀ (c : ℝ) (g : Rn N → Rn N), ContDiff ℝ 1 g → ∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence (c • g) x = c * ∫ x in S, Poincare.SimonGMT.Chapter02.euclideanDivergence g x := by
+  intro N S
+  -- Steps 1–2: for `C¹` compactly supported `g`, `div g` is continuous with compact support,
+  -- hence integrable on `S`.
+  have hint : ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g →
+      IntegrableOn (Poincare.SimonGMT.Chapter02.euclideanDivergence g) S := by
+    intro g hg hgc
+    have hcont : Continuous (Poincare.SimonGMT.Chapter02.euclideanDivergence g) := by
+      have hDg := hg.continuous_fderiv one_ne_zero
+      simp only [funext (Poincare.SimonGMT.Chapter02.euclideanDivergence_eq_sum_inner
+        (stdOrthonormalBasis ℝ (Rn N)) g)]
+      exact continuous_finsetSum _ fun i _ ↦ continuous_const.inner (hDg.clm_apply continuous_const)
+    have hsupp : HasCompactSupport (Poincare.SimonGMT.Chapter02.euclideanDivergence g) :=
+      hgc.mono' (Poincare.SimonGMT.Chapter02.support_euclideanDivergence_subset g)
+    exact (hcont.integrable_of_hasCompactSupport hsupp).integrableOn
+  refine ⟨fun g h hg hgc hh hhc ↦ ?_, fun c g hg ↦ ?_⟩
+  · -- Steps 3–4: `div (g + h) = div g + div h` pointwise, and the integral is additive.
+    have hpt : ∀ x, Poincare.SimonGMT.Chapter02.euclideanDivergence (g + h) x =
+        Poincare.SimonGMT.Chapter02.euclideanDivergence g x +
+          Poincare.SimonGMT.Chapter02.euclideanDivergence h x := by
+      intro x
+      simp only [Poincare.SimonGMT.Chapter02.euclideanDivergence,
+        fderiv_add (hg.differentiable one_ne_zero x) (hh.differentiable one_ne_zero x),
+        ContinuousLinearMap.toLinearMap_add, map_add]
+    simp only [hpt]
+    exact integral_add (hint g hg hgc) (hint h hh hhc)
+  · -- Steps 5–6: `div (c • g) = c * div g` pointwise, and `c` comes out of the integral.
+    have hpt : ∀ x, Poincare.SimonGMT.Chapter02.euclideanDivergence (c • g) x =
+        c * Poincare.SimonGMT.Chapter02.euclideanDivergence g x := by
+      intro x
+      simp only [Poincare.SimonGMT.Chapter02.euclideanDivergence,
+        fderiv_const_smul (hg.differentiable one_ne_zero x) c,
+        ContinuousLinearMap.toLinearMap_smul, map_smul, smul_eq_mul]
+    simp only [hpt]
+    exact integral_const_mul c _
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
