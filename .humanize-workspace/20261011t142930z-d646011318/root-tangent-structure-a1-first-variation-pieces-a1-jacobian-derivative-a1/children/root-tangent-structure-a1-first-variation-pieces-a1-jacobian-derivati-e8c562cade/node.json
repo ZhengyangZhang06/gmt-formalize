@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.jacobian_derivative-a1.jacobi_formula-a1",
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1.jacobian_derivative-a1",
+  "depth": 4,
+  "title": "Jacobi's formula for an entrywise-differentiable matrix family, with a uniform bound and the value at the identity",
+  "statement": "Let N ∈ ℕ, let A : ℝ → (real N×N matrices indexed by Fin N), let A' be a real N×N matrix and let t, M, M' ∈ ℝ. Assume that for all i, j ∈ Fin N the entry function s ↦ A(s)_ij has derivative A'_ij at t, |A(t)_ij| ≤ M, and |A'_ij| ≤ M'. Then there is D ∈ ℝ such that s ↦ det A(s) has derivative D at t, |D| ≤ N!·N·M'·M^{N−1} (with N − 1 computed in ℕ), and, if A(t) is the identity matrix, D = trace A' = Σ_k A'_kk.",
+  "lean_statement": "∀ (N : ℕ) (A : ℝ → Matrix (Fin N) (Fin N) ℝ) (A' : Matrix (Fin N) (Fin N) ℝ) (t M M' : ℝ), (∀ i j, HasDerivAt (fun s ↦ A s i j) (A' i j) t) → (∀ i j, |A t i j| ≤ M) → (∀ i j, |A' i j| ≤ M') → ∃ D : ℝ, HasDerivAt (fun s ↦ (A s).det) D t ∧ |D| ≤ (N.factorial : ℝ) * N * M' * M ^ (N - 1) ∧ (A t = 1 → D = A'.trace)",
+  "lean_name": "ts_fv_hasDerivAt_det_of_entries",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-first-variation-pieces-a1-jacobian-derivati-e8c562cade-a1"
+}
