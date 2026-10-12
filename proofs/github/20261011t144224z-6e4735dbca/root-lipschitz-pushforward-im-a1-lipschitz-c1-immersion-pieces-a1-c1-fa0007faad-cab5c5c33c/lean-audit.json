@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "48ee056ac26b2790b9928b909f724df9c80c165a997bb0733003317a159ed54f",
+  "git_delta": {
+    "base_commit": "9533ddc31cda57d289b623b7afb9ee63941b57f7",
+    "candidate_commit": "961fc1089331625dcf27a53f631a38156cb2dd6e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_c1_local_antilipschitz",
+    "diff_sha256": "5c0177ed7f834437b4d8eb18b04a90737684b67a0384eb5371f825dacb673444",
+    "source_sha256": "2b65ddbf7be67bfa701d2e5dfc66bff439c7043b365089d7e6def315018eec57",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_c1_local_antilipschitz",
+      "statement": "∀ (n Q : ℕ) (G : Eucl n → Eucl Q) (w : Eucl n), ContDiff ℝ 1 G → Function.Injective (fderiv ℝ G w) → ∃ r : ℝ, 0 < r ∧ ∃ c : ℝ, 0 < c ∧ ∀ z ∈ ball w r, ∀ z' ∈ ball w r, c * ‖z - z'‖ ≤ ‖G z - G z'‖",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
