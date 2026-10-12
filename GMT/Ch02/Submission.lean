@@ -589,6 +589,35 @@ theorem Submission.ae_hausdorffMeasure_fiber_eq_zero_of_small_ball_covers : ∀ 
           _ ≤ S j y := hSy j y
     _ = 0 := hy
 
+/-- **Simon Ch. 2, §6 (p. 67), critical fibres of a `C¹` map on an open set of `ℝ^{m+k}`.** Let
+`V ⊆ ℝ^{m+k}` be open and `G : ℝ^{m+k} → ℝᵐ` of class `C¹` on `V`. Then for `Lᵐ`-a.e. `y`, the set
+`{x ∈ V : DG(x) not surjective} ∩ G⁻¹{y}` is `Hᵏ`-null. The open set `V` is σ-compact. On each
+compact piece `Q ⊆ V`, the small ball covers of the critical set
+(`critical_set_small_ball_covers_of_isCompact`) are exactly the hypothesis of the Fatou argument
+(`ae_hausdorffMeasure_fiber_eq_zero_of_small_ball_covers`). A countable union of `μH[k]`-null sets
+and `μHE[k] = c_k • μH[k]` then give the claim. -/
+theorem Submission.coarea_critical_fibers_null_euclidean : ∀ (m k : ℕ) (V : Set (Rn (m + k))) (G : Rn (m + k) → Rn m), IsOpen V → ContDiffOn ℝ 1 G V → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] ({x | x ∈ V ∧ ¬ Function.Surjective (fderiv ℝ G x)} ∩ G ⁻¹' {y}) = 0 := by
+  intro m k V G hV hG
+  -- An open subset of `ℝ^{m+k}` is σ-compact: `V = ⋃ n, Q n` with every `Q n` compact.
+  obtain ⟨Q, hQc, hQV⟩ : IsSigmaCompact V := by
+    have := hV.locallyCompactSpace
+    exact isSigmaCompact_iff_sigmaCompactSpace.mpr inferInstance
+  -- On each compact piece `Q n ⊆ V`, the small covers of `Q n ∩ C_G` give `Hᵏ`-null fibres a.e.
+  have hpiece : ∀ n, ∀ᵐ y ∂(volume : Measure (Rn m)),
+      μH[k] ({x | x ∈ Q n ∧ ¬ Function.Surjective (fderiv ℝ G x)} ∩ G ⁻¹' {y}) = 0 := fun n ↦
+    Submission.ae_hausdorffMeasure_fiber_eq_zero_of_small_ball_covers (Rn (m + k)) (Rn m) volume k
+      _ G (Submission.critical_set_small_ball_covers_of_isCompact m k V (Q n) G hV hG (hQc n)
+        (hQV ▸ subset_iUnion Q n))
+  filter_upwards [ae_all_iff.2 hpiece] with y hy
+  -- `C_G ∩ G⁻¹{y} ⊆ ⋃ n, (Q n ∩ C_G ∩ G⁻¹{y})`, a countable union of `μH[k]`-null sets.
+  have hH : μH[k] ({x | x ∈ V ∧ ¬ Function.Surjective (fderiv ℝ G x)} ∩ G ⁻¹' {y}) = 0 := by
+    refine measure_mono_null ?_ (measure_iUnion_null hy)
+    rintro x ⟨⟨hxV, hxs⟩, hxy⟩
+    obtain ⟨n, hn⟩ := mem_iUnion.1 (hQV.symm ▸ hxV : x ∈ ⋃ n, Q n)
+    exact mem_iUnion.2 ⟨n, ⟨hn, hxs⟩, hxy⟩
+  -- `μHE[k] = c_k • μH[k]`.
+  rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hH, smul_zero]
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
