@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "22bbbe4baea879cd5c252bc6579bbfad99b29450f7e5fb0c4b4c4c6af716613a",
+  "git_delta": {
+    "base_commit": "a874a0f7584cf26f1ffe971bc7881ac0b3d1ab97",
+    "candidate_commit": "be103994a34eff70dd2b36abb4fe7d3424b772cd",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_ext_variation_eq_zero_of_ae_eq_zero",
+    "diff_sha256": "de399c3e9b1e6e9c2c2a06ac7484344c249236740f731bf1ba535fb3f5790ecf",
+    "source_sha256": "1c1298e795b424e53737dfaa32b54dd8f8a78ff54d34d73dbc3626d5e932ab98",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_ext_variation_eq_zero_of_ae_eq_zero",
+      "statement": "∀ (n : ℕ) (A : Set (Rn n)) (u : Rn n → ℝ), MeasurableSet A → (∀ᵐ x ∂volume, x ∈ A → u x = 0) → Chapter02.bvVariationOn u A = 0",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
