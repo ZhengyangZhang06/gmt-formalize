@@ -373,6 +373,50 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Concavity of the distance to the complement of a convex set** (Simon 2.8, proof, C1(b)).
+For a convex `U ⊆ ℝⁿ`, `d(x) = infDist x Uᶜ` is concave on `U`; `U` need not be open, and
+`infDist x ∅ = 0`. Fix `x, y ∈ U` and `a, b ≥ 0` with `a + b = 1`, and put `z = a • x + b • y`,
+`s = a d(x) + b d(y)`. Suppose some `p ∈ Uᶜ` had `dist z p < s`, and put `h = p - z`. Then the
+shifted points `x + (d(x)/s) • h` and `y + (d(y)/s) • h` lie in `U`
+(`Metric.ball_infDist_compl_subset`), and their `a, b`-combination is `p`. This contradicts
+convexity, so `s ≤ d(z)` by `Metric.le_infDist`. -/
+theorem Submission.bv_ext_infDist_compl_concaveOn : ∀ (n : ℕ) (U : Set (Rn n)), Convex ℝ U → ConcaveOn ℝ U (fun x ↦ infDist x Uᶜ) := by
+  intro n U hU
+  -- Step 1: fix `x, y ∈ U` and weights `a, b ≥ 0` with `a + b = 1`.
+  refine ⟨hU, fun x hx y hy a b ha hb hab ↦ ?_⟩
+  simp only [smul_eq_mul]
+  -- Step 2: if `Uᶜ = ∅` both sides vanish; otherwise it suffices to bound `dist z p`, `p ∈ Uᶜ`.
+  rcases (Uᶜ).eq_empty_or_nonempty with hE | hne
+  · simp [hE]
+  rw [le_infDist hne]
+  intro p hp
+  -- Step 4: suppose `dist z p < s`; then `s > 0`, and `h = p - z` has `‖h‖ < s`.
+  by_contra! hlt
+  set s := a * infDist x Uᶜ + b * infDist y Uᶜ
+  have hs0 : 0 < s := dist_nonneg.trans_lt hlt
+  set h := p - (a • x + b • y) with hh
+  have hnorm : ‖h‖ < s := by rwa [hh, ← dist_eq_norm, dist_comm]
+  -- Steps 3 and 5: each shifted point `q + (d(q)/s) • h`, `q ∈ U`, lies in `U`.
+  have hshift : ∀ q ∈ U, q + (infDist q Uᶜ / s) • h ∈ U := by
+    intro q hq
+    rcases (infDist_nonneg (x := q) (s := Uᶜ)).eq_or_lt with h0 | hpos
+    · rw [← h0, zero_div, zero_smul, add_zero]
+      exact hq
+    · apply ball_infDist_compl_subset
+      rw [mem_ball, dist_self_add_left, norm_smul, Real.norm_of_nonneg (div_nonneg hpos.le hs0.le)]
+      calc infDist q Uᶜ / s * ‖h‖ < infDist q Uᶜ / s * s := by gcongr
+        _ = infDist q Uᶜ := div_mul_cancel₀ _ hs0.ne'
+  -- Step 6: the `a, b`-combination of the shifted points is `z + h = p`, so `p ∈ U`.
+  have hcoef : a * (infDist x Uᶜ / s) + b * (infDist y Uᶜ / s) = 1 := by
+    rw [mul_div_assoc', mul_div_assoc', ← add_div, div_self hs0.ne']
+  have hp' : a • (x + (infDist x Uᶜ / s) • h) + b • (y + (infDist y Uᶜ / s) • h) = p := by
+    calc a • (x + (infDist x Uᶜ / s) • h) + b • (y + (infDist y Uᶜ / s) • h)
+        = (a • x + b • y) + (a * (infDist x Uᶜ / s) + b * (infDist y Uᶜ / s)) • h := by
+          simp only [smul_add, smul_smul, add_smul]
+          abel
+      _ = p := by rw [hcoef, one_smul, hh, add_sub_cancel]
+  exact hp (hp' ▸ hU (hshift x hx) (hshift y hy) ha hb hab)
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
