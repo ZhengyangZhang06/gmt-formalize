@@ -501,6 +501,120 @@ theorem Submission.arp_contDiffOn_of_local_C1_reps : ∀ {m k : ℕ} (u : Rn m �
     rw [heq.fderiv_eq]
     exact hfL
   exact ⟨fun x hx => (key x hx).1.contDiffWithinAt, fun x hx => (key x hx).2⟩
+/-- The graph point `(x, y) ∈ ℝ^{n+ℓ}` is the inverse image of `(x, y)` under Mathlib's canonical
+equivalence `EuclideanSpace.finAddEquivProd : ℝ^{n+ℓ} ≃L[ℝ] ℝⁿ × ℝ^ℓ` (reindexing by
+`finSumFinEquiv.symm`, then splitting into the `Sum.inl`/`Sum.inr` parts).  Compare coordinates:
+every index of `Fin (n + ℓ)` is `Fin.castAdd ℓ j` or `Fin.natAdd n k` (`Fin.addCases`); there both
+sides equal `x j`, resp. `y k` (`Fin.append_left`/`Fin.append_right` on the left,
+`finSumFinEquiv_symm_apply_castAdd`/`finSumFinEquiv_symm_apply_natAdd` on the right). -/
+theorem rsod_graphPoint_eq_finAddEquivProd_symm : ∀ {n ℓ : ℕ} (x : Rn n) (y : Rn ℓ),
+    graphPoint x y = (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm (x, y) := by
+  intro n ℓ x y
+  ext i
+  refine Fin.addCases (fun j => ?_) (fun k => ?_) i
+  · simp [graphPoint]
+  · simp [graphPoint]
+/-- Pythagorean identity for graph points: `|(x, y)|² = |x|² + |y|²` for the point
+`(x, y) ∈ ℝⁿ × ℝ^ℓ = ℝ^{n+ℓ}`.  Expand the three squared Euclidean norms as sums of squared
+coordinates (`EuclideanSpace.real_norm_sq_eq`), split the sum over `Fin (n + ℓ)` into the indices
+`Fin.castAdd ℓ j` and `Fin.natAdd n k` (`Fin.sum_univ_add`), and read off the coordinates `x j`,
+resp. `y k`, of `graphPoint x y` there (`Fin.append_left`/`Fin.append_right`). -/
+theorem rsod_norm_graphPoint_sq : ∀ {n ℓ : ℕ} (x : Rn n) (y : Rn ℓ),
+    ‖graphPoint x y‖ ^ 2 = ‖x‖ ^ 2 + ‖y‖ ^ 2 := by
+  intro n ℓ x y
+  rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq,
+    EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_add]
+  simp [graphPoint]
+
+/-- Coordinates adapted to a rotated plane `q₀(ℝⁿ × {0})`: (i) the graph point `(a, b)` is
+`E⁻¹(a, b)` for `E = EuclideanSpace.finAddEquivProd`; (ii) `|(a, b)|² = |a|² + |b|²`; and
+(iii) `dist(q₀(a, b), q₀(ℝⁿ × {0})) = |b|`.  (i) and (ii) are
+`rsod_graphPoint_eq_finAddEquivProd_symm` and `rsod_norm_graphPoint_sq`.  For (iii), the isometry
+`q₀` maps `H = ℝⁿ × {0}` onto `rotatedPlane q₀` (`Submodule.map_coe`, `Metric.infDist_image`), and
+`H = {(a', 0)}`: `(a', 0) = Σᵢ a'ᵢ eᵢ ∈ H`, and `H` lies in the range of the linear map
+`a' ↦ E⁻¹(a', 0)`, which contains every generator `eᵢ = (eᵢ, 0)` (`Submodule.span_le`).  By (i),
+`(a, b) - (a', 0) = (a - a', b)`, so `(a, 0) ∈ H` is at distance `|(0, b)| = |b|`, and by (ii)
+every `(a', 0)` is at distance `|(a - a', b)| ≥ |b|` (`Metric.le_infDist`). -/
+theorem arp_rotatedPlane_graphPoint_coords : ∀ (n ℓ : ℕ),
+    (∀ (a : Rn n) (b : Rn ℓ),
+      graphPoint a b = (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm (a, b)) ∧
+    (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧
+    ∀ (q₀ : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (a : Rn n) (b : Rn ℓ),
+      infDist (q₀ (graphPoint a b)) (rotatedPlane q₀ : Set (Amb n ℓ)) = ‖b‖ := by
+  intro n ℓ
+  refine ⟨fun a b => rsod_graphPoint_eq_finAddEquivProd_symm a b,
+    fun a b => rsod_norm_graphPoint_sq a b, fun q₀ a b => ?_⟩
+  -- graph points are linear in the pair, as `E⁻¹` is
+  have hsub : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b') := by
+    intro a a' b b'
+    rw [rsod_graphPoint_eq_finAddEquivProd_symm, rsod_graphPoint_eq_finAddEquivProd_symm,
+      rsod_graphPoint_eq_finAddEquivProd_symm, ← map_sub, Prod.mk_sub_mk]
+  let L : Rn n →ₗ[ℝ] Amb n ℓ :=
+    ((EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm :
+      Rn n × Rn ℓ →L[ℝ] Amb n ℓ).toLinearMap ∘ₗ LinearMap.inl ℝ (Rn n) (Rn ℓ)
+  have hL : ∀ a' : Rn n, L a' = graphPoint a' 0 := by
+    intro a'
+    rw [rsod_graphPoint_eq_finAddEquivProd_symm]
+    rfl
+  have hl : ∀ (a' : Rn n) (b' : Rn ℓ) (i : Fin n), graphPoint a' b' (Fin.castAdd ℓ i) = a' i := by
+    intro a' b' i
+    simp [graphPoint]
+  have hr : ∀ (a' : Rn n) (b' : Rn ℓ) (j : Fin ℓ), graphPoint a' b' (Fin.natAdd n j) = b' j := by
+    intro a' b' j
+    simp [graphPoint]
+  have hne : ∀ (i : Fin n) (j : Fin ℓ), Fin.natAdd n j ≠ Fin.castAdd ℓ i := by
+    intro i j h
+    have h' := congrArg Fin.val h
+    simp only [Fin.val_natAdd, Fin.val_castAdd] at h'
+    omega
+  -- reduce to the horizontal plane `H`
+  have hset : (rotatedPlane q₀ : Set (Amb n ℓ)) = q₀ '' (horizontalPlane n ℓ : Set (Amb n ℓ)) :=
+    Submodule.map_coe _ _
+  rw [hset, infDist_image q₀.isometry]
+  -- `H = {graphPoint a' 0}`
+  have hmemH : ∀ a' : Rn n, graphPoint a' 0 ∈ horizontalPlane n ℓ := by
+    intro a'
+    have e : graphPoint a' (0 : Rn ℓ) =
+        ∑ i : Fin n, a' i • EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) := by
+      ext k
+      refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+      · rw [hl]
+        simp [Pi.single_apply, Fin.castAdd_inj]
+      · rw [hr]
+        simp [hne]
+    rw [e]
+    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  have hHle : horizontalPlane n ℓ ≤ LinearMap.range L := by
+    refine Submodule.span_le.mpr ?_
+    rintro _ ⟨i, rfl⟩
+    refine ⟨EuclideanSpace.single i 1, ?_⟩
+    rw [hL]
+    ext k
+    refine Fin.addCases (fun i' => ?_) (fun j => ?_) k
+    · rw [hl]
+      simp [Fin.castAdd_inj]
+    · rw [hr]
+      simp [hne i j]
+  have hnorm0 : ‖graphPoint (0 : Rn n) b‖ = ‖b‖ := by
+    have h := rsod_norm_graphPoint_sq (0 : Rn n) b
+    rw [norm_zero, zero_pow two_ne_zero, zero_add] at h
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h
+  apply le_antisymm
+  · calc infDist (graphPoint a b) (horizontalPlane n ℓ : Set (Amb n ℓ))
+        ≤ dist (graphPoint a b) (graphPoint a 0) := infDist_le_dist_of_mem (hmemH a)
+      _ = ‖graphPoint (a - a) (b - 0)‖ := by rw [dist_eq_norm, hsub]
+      _ = ‖b‖ := by rw [sub_self, sub_zero, hnorm0]
+  · refine (le_infDist ⟨0, (horizontalPlane n ℓ).zero_mem⟩).mpr ?_
+    intro p hp
+    obtain ⟨a', rfl⟩ := hHle hp
+    rw [hL, dist_eq_norm, hsub, sub_zero]
+    have hsq : ‖b‖ ^ 2 ≤ ‖graphPoint (a - a') b‖ ^ 2 := by
+      rw [rsod_norm_graphPoint_sq]
+      nlinarith [sq_nonneg ‖a - a'‖]
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp hsq
+
+end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
