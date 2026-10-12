@@ -721,6 +721,64 @@ theorem rsod_wfu_blowUp_freeze_weight_tendsto_zero : ∀ (n ℓ : ℕ) (C : Set 
         mul_le_mul_of_nonneg_left (hrΛ.trans (le_max_left _ _)) (mul_nonneg hM0 hε'.le)
     _ < (M + 1) * (Λ' + 1) * ε' := by nlinarith
     _ = ε := by rw [hε'eq]; field_simp
+/-- **Weighted tangent space from a good piece** (Simon Ch. 3, Remark 1.8(1)).  Let `A` be Borel
+with `Hⁿ(A) < ∞`, `ϑ` integrable on `A`, and `C ⊆ A` Borel with `ϑ|C` continuous at `x`.  If
+`T_x C = P` (Def. 1.4) and `ρ⁻ⁿ ∫_{(A \ C) ∩ B_ρ(x)} |ϑ| dHⁿ → 0` as `ρ ↓ 0`, then `T_x A = P` with
+respect to `ϑ` (Def. 1.7).  For `f ∈ C_c`, `r > 0` and `G = f ∘ η_{x,r}`, the change of variables
+gives `∫_{η(A)} f(y) ϑ(x + r y) dHⁿ(y)
+  = ϑ(x) ∫_{η(C)} f dHⁿ + r⁻ⁿ ∫_C G (ϑ − ϑ(x)) dHⁿ + r⁻ⁿ ∫_{A \ C} G ϑ dHⁿ`,
+and the three terms tend to `ϑ(x) ∫_P f dHⁿ`, `0` and `0`. -/
+theorem rsod_wfu_weightedApproxTangent_of_closed_piece : ∀ (n ℓ : ℕ) (A C : Set (Amb n ℓ)) (ϑ : Amb n ℓ → ℝ) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), MeasurableSet A → (μHE[n] : Measure (Amb n ℓ)) A < ∞ → IntegrableOn ϑ A (μHE[n] : Measure (Amb n ℓ)) → MeasurableSet C → C ⊆ A → ContinuousWithinAt ϑ C x → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C x P → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (((μHE[n] : Measure (Amb n ℓ)).restrict A).withDensity (fun z => ‖ϑ z‖ₑ)).real ((A \ C) ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n A ϑ x P := by
+  intro n ℓ A C ϑ x P hA hAfin hϑ hC hCA hϑC hT htail
+  -- `Hⁿ(C) ≤ Hⁿ(A) < ∞`.
+  have hCfin : (μHE[n] : Measure (Amb n ℓ)) C < ∞ := (measure_mono hCA).trans_lt hAfin
+  -- `finrank P = n` is part of `T_x C = P`; fix `f ∈ C_c`.
+  refine ⟨hT.1, fun f => ?_⟩
+  -- The three limits: `ϑ(x) ∫_{η(C)} f → ϑ(x) ∫_P f` as `T_x C = P`; the frozen-weight error on `C`
+  -- tends to `0`, fed by the ball-mass bound for `C`; and so does the tail on `A \ C`.
+  have hlim := (((hT.2 f).const_mul (ϑ x)).add
+    (Submission.rsod_wfu_blowUp_freeze_weight_tendsto_zero n ℓ C ϑ x hC hCfin hϑC
+      (Submission.rsod_wfu_approxTangent_ballMass_bound n ℓ C x P hCfin hT) f)).add
+    (Submission.rsod_wfu_blowUp_tail_tendsto_zero n ℓ A (A \ C) ϑ x (hA.diff hC) sdiff_subset
+      hϑ htail f)
+  rw [add_zero, add_zero] at hlim
+  -- It remains to prove the identity for every `r > 0`.
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  -- `G = f ∘ η` is continuous and bounded, so `G ϑ` is integrable on `A` and `G` on `C`.
+  have hGc : Continuous fun z => f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) := by
+    refine (map_continuous f).comp ?_
+    show Continuous fun z : Amb n ℓ => r⁻¹ • (z - x)
+    fun_prop
+  obtain ⟨M, hM⟩ := (map_continuous f).bounded_above_of_compact_support f.hasCompactSupport
+  have hGϑ : IntegrableOn (fun z => f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * ϑ z) A
+      (μHE[n] : Measure (Amb n ℓ)) :=
+    hϑ.bdd_mul hGc.aestronglyMeasurable (Eventually.of_forall fun z => hM _)
+  have hG : IntegrableOn (fun z => f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)) C
+      (μHE[n] : Measure (Amb n ℓ)) :=
+    IntegrableOn.of_bound hCfin hGc.aestronglyMeasurable M (Eventually.of_forall fun z => hM _)
+  -- Change of variables, with weight `ϑ` on `A` and weight `1` on `C`.
+  have hI := Submission.rsod_blowUp_setIntegral_eq n ℓ A f ϑ x r hr
+  have hTC := Submission.rsod_blowUp_setIntegral_eq n ℓ C f (fun _ => 1) x r hr
+  simp only [mul_one] at hTC
+  -- `∫_A = ∫_C + ∫_{A \ C}`, and `ϑ(x)` comes out of the frozen-weight integral.
+  have hsplit : ∫ z in A, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * ϑ z
+      ∂(μHE[n] : Measure (Amb n ℓ)) =
+      ∫ z in C, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * ϑ z
+        ∂(μHE[n] : Measure (Amb n ℓ)) +
+      ∫ z in A \ C, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * ϑ z
+        ∂(μHE[n] : Measure (Amb n ℓ)) := by
+    rw [← integral_inter_add_sdiff hC hGϑ, inter_eq_right.mpr hCA]
+  have hfreeze : ∫ z in C, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * (ϑ z - ϑ x)
+      ∂(μHE[n] : Measure (Amb n ℓ)) =
+      ∫ z in C, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * ϑ z
+        ∂(μHE[n] : Measure (Amb n ℓ)) -
+      (∫ z in C, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) ∂(μHE[n] : Measure (Amb n ℓ))) *
+        ϑ x := by
+    rw [← integral_mul_const, ← integral_sub (hGϑ.mono_set hCA) (hG.mul_const (ϑ x))]
+    simp_rw [mul_sub]
+  rw [hI, hTC, hsplit, hfreeze]
+  ring
 
 end Submission
 
