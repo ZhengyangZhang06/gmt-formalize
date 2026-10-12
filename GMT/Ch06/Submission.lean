@@ -372,6 +372,146 @@ theorem Submission.fiw_tb_ri_restrictDomain_mass_le :
   rintro _ ⟨ω, hω, rfl⟩
   -- `ιω` has the same underlying form as `ω`, so `tsupport ιω ⊆ W ⊆ U` and `|ιω(x)| ≤ 1`.
   exact Y.le_massOn (omega := testFormOnInclusion hWU k ω) ⟨hω.1.trans hWU, hω.2⟩
+/-- Locality of weighted approximate tangent spaces (Simon Ch. 3, 1.7), the locality step in the
+proof of Ch. 6, 6.3: the tangent spaces of `(M, θ)` at `x` only depend on `M ∩ V` up to
+`Hᵏ`-null sets and on `θ` up to `Hᵏ ⌞ (M ∩ V)`-null sets, `V ∋ x` open.  If `B_δ(x) ⊆ V` and
+`f = 0` off `B_R(0)`, then for `0 < r < δ / R` the blow-up integrands vanish off
+`W = η_{x,r}(V)`, and `Hᵏ(η_{x,r} Z) = r⁻ᵏ Hᵏ(Z)`; so the blow-up integrals of `(M, θ)` and
+`(M', θ')` agree for all small `r`. -/
+theorem Submission.br_weightedTangent_congr :
+    ∀ (P k : ℕ) (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (x : Eucl P) (V : Set (Eucl P)),
+      IsOpen V → x ∈ V → (μHE[k] : Measure (Eucl P)) (symmDiff M M' ∩ V) = 0 →
+      (∀ᵐ y ∂((μHE[k] : Measure (Eucl P)).restrict (M ∩ V)), θ y = θ' y) → θ x = θ' x →
+      ∀ L : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x L →
+        HasWeightedApproximateTangentSpaceAt k M' θ' x L := by
+  open Poincare.SimonGMT.Chapter03 (blowUpMap) in
+  intro P k M M' θ θ' x V hV hxV hMM' hθθ' hθx L hL
+  -- `η_r(y) = r⁻¹ (y - x)` maps `Hᵏ`-null sets to `Hᵏ`-null sets: `Hᵏ(η_r Z) = r⁻ᵏ Hᵏ(Z)`.
+  have hnull : ∀ r : ℝ, r ≠ 0 → ∀ Z : Set (Eucl P), (μHE[k] : Measure (Eucl P)) Z = 0 →
+      (μHE[k] : Measure (Eucl P)) (blowUpMap x r '' Z) = 0 := by
+    open scoped Pointwise in
+    intro r hr Z hZ
+    have himage : blowUpMap x r '' Z = r⁻¹ • (IsometryEquiv.subRight x '' Z) := by
+      rw [← Set.image_smul, Set.image_image]
+      rfl
+    rw [himage, Measure.euclideanHausdorffMeasure_smul₀ k (inv_ne_zero hr),
+      (IsometryEquiv.subRight x).isometry.euclideanHausdorffMeasure_image, hZ, smul_zero]
+  -- `y ↦ x + r • y` inverts `η_r`.
+  have hinv : ∀ r : ℝ, r ≠ 0 → ∀ z : Eucl P, x + r • blowUpMap x r z = z := by
+    intro r hr z
+    simp only [blowUpMap, smul_smul, mul_inv_cancel₀ hr, one_smul, add_sub_cancel]
+  -- A measurable `N ⊇ {θ ≠ θ'}` with `Hᵏ(N ∩ M ∩ V) = 0`.
+  obtain ⟨N, hNsub, hNmeas, hN0⟩ := exists_measurable_superset_of_null (ae_iff.mp hθθ')
+  rw [Measure.restrict_apply hNmeas] at hN0
+  refine ⟨hL.1, fun f => ?_⟩
+  rw [← hθx]
+  refine (hL.2 f).congr' ?_
+  -- `f = 0` off `B_R(0)` and `B_δ(x) ⊆ V`; the blow-up integrals agree for `0 < r < δ / R`.
+  obtain ⟨R, hR, hfR⟩ := f.hasCompactSupport.exists_pos_le_norm
+  obtain ⟨δ, hδ, hδV⟩ := Metric.isOpen_iff.mp hV x hxV
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hR)] with r hr
+  obtain ⟨hr0, hrR⟩ := hr
+  have hcont : Continuous fun y : Eucl P => x + r • y :=
+    continuous_const.add (continuous_const_smul r)
+  -- `W = η_r(V)` is open and the integrands `f(y) g(x + r y)` vanish off `W`.
+  set W : Set (Eucl P) := (fun y => x + r • y) ⁻¹' V with hW
+  have hWmeas : MeasurableSet W := (hV.preimage hcont).measurableSet
+  have hvan : ∀ g : Eucl P → ℝ, ∀ y, y ∉ W → f y * g (x + r • y) = 0 := by
+    intro g y hy
+    have hfy : f y = 0 := by
+      apply hfR
+      have h1 : x + r • y ∉ ball x δ := fun h => hy (hδV h)
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+        abs_of_pos hr0, not_lt] at h1
+      rw [lt_div_iff₀ hR] at hrR
+      exact le_of_lt (lt_of_mul_lt_mul_left (hrR.trans_le h1) hr0.le)
+    rw [hfy, zero_mul]
+  -- Cutting by `W`: `∫_{η_r(S)} = ∫_{W ∩ η_r(S)}`.
+  have hcut : ∀ (S : Set (Eucl P)) (g : Eucl P → ℝ),
+      ∫ y in blowUpMap x r '' S, f y * g (x + r • y) ∂(μHE[k] : Measure (Eucl P)) =
+        ∫ y in W ∩ blowUpMap x r '' S, f y * g (x + r • y) ∂(μHE[k] : Measure (Eucl P)) := by
+    intro S g
+    rw [← Measure.restrict_restrict hWmeas,
+      setIntegral_eq_integral_of_forall_compl_eq_zero (hvan g)]
+  -- `W ∩ η_r(M) = W ∩ η_r(M')` up to the null set `η_r((M ∆ M') ∩ V)`.
+  have hset : W ∩ blowUpMap x r '' M =ᵐ[(μHE[k] : Measure (Eucl P))] W ∩ blowUpMap x r '' M' := by
+    rw [ae_eq_set]
+    constructor
+    · refine measure_mono_null ?_ (hnull r hr0.ne' _ hMM')
+      rintro y ⟨⟨hyW, z, hzM, rfl⟩, hy⟩
+      refine ⟨z, ⟨Or.inl ⟨hzM, fun hzM' => hy ⟨hyW, z, hzM', rfl⟩⟩, ?_⟩, rfl⟩
+      simpa [hW, hinv r hr0.ne' z] using hyW
+    · refine measure_mono_null ?_ (hnull r hr0.ne' _ hMM')
+      rintro y ⟨⟨hyW, z, hzM, rfl⟩, hy⟩
+      refine ⟨z, ⟨Or.inr ⟨hzM, fun hzM' => hy ⟨hyW, z, hzM', rfl⟩⟩, ?_⟩, rfl⟩
+      simpa [hW, hinv r hr0.ne' z] using hyW
+  -- `θ(x + r y) = θ'(x + r y)` a.e. on `W ∩ η_r(M)`, off the null set `η_r(N ∩ M ∩ V)`.
+  have hae : ∀ᵐ y ∂((μHE[k] : Measure (Eucl P)).restrict (W ∩ blowUpMap x r '' M)),
+      f y * θ (x + r • y) = f y * θ' (x + r • y) := by
+    have hN'meas : MeasurableSet ((fun y => x + r • y) ⁻¹' N) :=
+      hNmeas.preimage hcont.measurable
+    rw [ae_iff]
+    refine measure_mono_null (t := (fun y => x + r • y) ⁻¹' N) ?_ ?_
+    · intro y hy
+      by_contra hyN
+      apply hy
+      have hθy : θ (x + r • y) = θ' (x + r • y) := by
+        by_contra hne
+        exact hyN (hNsub hne)
+      rw [hθy]
+    · rw [Measure.restrict_apply hN'meas]
+      refine measure_mono_null ?_ (hnull r hr0.ne' _ hN0)
+      rintro y ⟨hyN, hyW, z, hzM, rfl⟩
+      refine ⟨z, ⟨?_, hzM, ?_⟩, rfl⟩
+      · simpa [hinv r hr0.ne' z] using hyN
+      · simpa [hW, hinv r hr0.ne' z] using hyW
+  calc ∫ y in blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[k] : Measure (Eucl P))
+      = ∫ y in W ∩ blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[k] : Measure (Eucl P)) :=
+        hcut M θ
+    _ = ∫ y in W ∩ blowUpMap x r '' M, f y * θ' (x + r • y) ∂(μHE[k] : Measure (Eucl P)) :=
+        integral_congr_ae hae
+    _ = ∫ y in W ∩ blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[k] : Measure (Eucl P)) := by
+        rw [Measure.restrict_congr_set hset]
+    _ = ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[k] : Measure (Eucl P)) :=
+        (hcut M' θ').symm
+
+/-- Simon Ch. 6, 2.16 and 3.1: the restriction `Y|_W ∈ 𝒟ₖ(W)` of an integer multiplicity
+`Y = τ(M, θ, ξ) ∈ 𝒟ₖ(U)` to an open `W ⊆ U` is the integer multiplicity current
+`τ(M ∩ W, θ, ξ)`. -/
+theorem Submission.br_restrictDomain_isIntegerMultiplicity :
+    ∀ (P k : ℕ) (U W : Set (Eucl P)) (hWU : W ⊆ U), IsOpen W →
+      ∀ Y : GeometricCurrentOn U k, IsIntegerMultiplicity Y →
+        IsIntegerMultiplicity (Y.restrictDomain hWU) := by
+  rintro P k U W hWU hW Y ⟨M, θ, ξ, hM, hθ, hY⟩
+  have hMW : NullMeasurableSet (M ∩ W) (μHE[k] : Measure (Eucl P)) :=
+    hM.nullMeasurableSet.inter hW.measurableSet.nullMeasurableSet
+  refine ⟨M ∩ W, θ, ξ,
+    { subset := inter_subset_right
+      nullMeasurableSet := hMW
+      countablyRectifiable := hM.countablyRectifiable.mono inter_subset_left
+      pos := fun x hx => hM.pos x hx.1
+      integrableOn := fun K hK hKW =>
+        (hM.integrableOn K hK (hKW.trans hWU)).mono_set fun y hy => ⟨hy.1.1, hy.2⟩
+      aestronglyMeasurable := hM.aestronglyMeasurable.mono_set inter_subset_left
+      orients := ?_ }, fun x hx => hθ x hx.1, fun ω => ?_⟩
+  · -- `M` and `M ∩ W` agree in the open set `W`, so they have the same weighted approximate
+    -- tangent spaces at points of `W`.
+    have hnull : symmDiff M (M ∩ W) ∩ W = ∅ := by
+      ext y
+      simp only [mem_inter_iff, mem_symmDiff, mem_empty_iff_false, iff_false]
+      tauto
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset inter_subset_left hM.orients,
+      ae_restrict_mem₀ hMW] with x hxM hx
+    obtain ⟨τ, hτ, hTx, hξ⟩ := hxM
+    exact ⟨τ, hτ, Submission.br_weightedTangent_congr P k M (M ∩ W) θ θ x W hW hx.2
+      (by rw [hnull, measure_empty]) (ae_of_all _ fun _ => rfl) rfl _ hTx, hξ⟩
+  · -- A test form on `W` vanishes off `W`, so the integrals over `M` and `M ∩ W` agree.
+    have h0 : ∀ x, x ∉ W → θ x * ξ x ((ω : DifferentialForm (Eucl P) k) x) = 0 := fun x hx => by
+      rw [image_eq_zero_of_notMem_tsupport fun h => hx (ω.property.2 h), map_zero, mul_zero]
+    rw [GeometricCurrentOn.restrictDomain_apply, hY]
+    simp only [tauAction, testFormOnInclusion_coe]
+    rw [inter_comm M W, ← Measure.restrict_restrict hW.measurableSet,
+      setIntegral_eq_integral_of_forall_compl_eq_zero h0]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

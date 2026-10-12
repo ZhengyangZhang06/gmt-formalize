@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.tangent_locality-a1",
+  "parent_id": "root.boundary_rectifiability-a1",
+  "depth": 2,
+  "title": "Locality of weighted approximate tangent spaces",
+  "statement": "Let P, k ∈ ℕ, M, M′ ⊆ ℝ^P, θ, θ′ : ℝ^P → ℝ, x ∈ ℝ^P and V ⊆ ℝ^P open with x ∈ V. Assume Hᵏ((M Δ M′) ∩ V) = 0 (Hᵏ = μHE[k]), θ = θ′ holds Hᵏ⌞(M ∩ V)-almost everywhere, and θ(x) = θ′(x). Then every linear subspace L ⊆ ℝ^P which is the weighted approximate tangent space of (M, θ) at x in the sense of Simon Ch. 3, 1.7 (HasWeightedApproximateTangentSpaceAt k M θ x L: dim L = k and ∫_{η_{x,r}(M)} f(y)θ(x + ry) dHᵏ(y) → θ(x)∫_L f dHᵏ as r ↓ 0 for every f ∈ C_c(ℝ^P), η_{x,r}(y) = r⁻¹(y − x)) is also the weighted approximate tangent space of (M′, θ′) at x.",
+  "lean_statement": "∀ (P k : ℕ) (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (x : Eucl P) (V : Set (Eucl P)), IsOpen V → x ∈ V → (μHE[k] : Measure (Eucl P)) (symmDiff M M' ∩ V) = 0 → (∀ᵐ y ∂((μHE[k] : Measure (Eucl P)).restrict (M ∩ V)), θ y = θ' y) → θ x = θ' x → ∀ L : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x L → HasWeightedApproximateTangentSpaceAt k M' θ' x L",
+  "lean_name": "br_weightedTangent_congr",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-tangent-locality-a1-a1"
+}

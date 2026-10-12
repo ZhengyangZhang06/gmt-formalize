@@ -1,0 +1,104 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^def |^structure |^theorem main_theorem|^import|^open |^namespace",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero|variable|^theorem|^lemma",
+        "theorem extDeriv_apply|theorem Isometry.map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_zero|def succAboveOrderEmb",
+        "poincaré inequality|poincare inequality|cauchy.?binet",
+        "Poincaré|Poincare|poincare|trace|^theorem |^def ",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake build GMT.Ch06.Submission",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean LocalityProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean AssemblyChecked.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean LibraryAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1/parent-child-handoff.json",
+        "/tmp/br_independent_audit_324zdc3k/Challenges.lean",
+        "/tmp/br_independent_audit_324zdc3k/LocalityProofs.lean",
+        "/tmp/br_independent_audit_324zdc3k/AssemblyChecked.lean",
+        "/tmp/br_independent_audit_324zdc3k/LibraryAxioms.lean"
+      ],
+      "conclusion": "Verified the frozen contract and pinned, clean dependency revisions. All ten exact one-line propositions independently elaborate in the comparator scope without child implementations. The supplied tangent-locality and domain-restriction proofs recompile; conditional finite-mass and selected-parent assemblies also compile. These proofs and the checked supporting library lemmas use only propext, Classical.choice and Quot.sound. The snapshot supplies the required fundamental lemma, Hausdorff-measure normalization and exterior-derivative conventions. Searches found no matching BV Poincare inequality or Cauchy–Binet theorem; the supplied analytic arguments provide the needed estimates directly. The split appropriately establishes exactly BoundaryRectifiability. Every child contributes, dependencies are correctly directed and acyclic, and all ten bare declaration names are distinct and unreserved. No submitted type contains a Matrix/IsUnit construction. Acceptance of the remaining analytic children rests on independent step-by-step proof review, not merely elaboration."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly includes the local null-set, almost-everywhere weight, and pointwise weight hypotheses. Null-set preservation and eventual equality of blow-up integrals prove it without additional measurability assumptions. The supplied Lean proof independently rechecks."
+    },
+    {
+      "key": "restrict_domain_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Restricting the carrier to M ∩ W preserves the representation and triple conditions; orientation transfers through the declared tangent-locality dependency. The supplied Lean proof independently rechecks."
+    },
+    {
+      "key": "local_to_global_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The overlap argument establishes equality of carriers, weights and orientations using the verified fundamental lemma and dual-covector evaluations. Disjointification, compact-local integrability, tangent transfer and partition-of-unity representation complete the exact conclusion without assuming boundary rectifiability."
+    },
+    {
+      "key": "zero_dim_weak_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local mass bounds control both atom counts and integer coefficients. Subsequence extraction, collision cancellation and the explicit finite Dirac triple establish local integrality; the declared patching dependency gives the conclusion. Zero-dimensional ambient space and empty configurations are covered."
+    },
+    {
+      "key": "lattice_face_stokes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The affine parametrizations, normalized Hausdorff measures, omitted-coordinate indices and signs match the frozen definitions. Fubini and the fundamental theorem of calculus prove the stated identity for smooth forms, including m = 0."
+    },
+    {
+      "key": "lattice_boundary_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local finiteness makes each tested sum finite even for coefficients of infinite support. Stokes and finite incidence regrouping produce integer boundary coefficients; the relative-interior triple satisfies every required condition, including weighted tangency. Empty index types and m = 0 are handled."
+    },
+    {
+      "key": "top_dim_lattice_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies the integer density, L1 duality, variation bound, localized translation estimate and box inequalities. Integer medians have finite support; adjacent-cube estimates and bounded overlap give uniform boundary mass, while the residual estimate gives weak convergence. No essential estimate is deferred."
+    },
+    {
+      "key": "lattice_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The dimension split is exhaustive. The declared top-dimensional child handles equality of dimensions; the explicit DeformationTheorem hypothesis supplies integer coefficients and the required mass estimates in positive codimension. The zero-current case and weak-convergence estimate complete the exact contract."
+    },
+    {
+      "key": "finite_mass_boundary_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three declared children yield integer lattice boundaries converging weakly with bounded mass. Positive-dimensional boundaries are integral cycles, allowing the explicit weak-limit hypothesis; dimension zero uses its separate child. The conditional assembly independently compiles without circular assumptions."
+    },
+    {
+      "key": "localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen slicing estimate supplies a good radius. Cutoff limits identify ball restrictions for arbitrary measure representations, and the explicit restricted triple gives the global current with finite mass. Applying the slice identity to a cutoff form bounds its boundary mass and proves exactly the required local agreement."
+    }
+  ],
+  "required_changes": []
+}
