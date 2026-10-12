@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.tuple_sum_factorial-a1",
+  "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+  "depth": 4,
+  "title": "Full tuple sum of squared coefficients equals j!·|γ|²",
+  "statement": "For all m, j ∈ ℕ and every j-covector γ on ℝ^m (γ : Covector (Eucl m) j, a continuous alternating j-linear map (ℝ^m)^j → ℝ):\nΣ_{i : Fin j → Fin m} γ(e_{i(1)}, …, e_{i(j)})² = j!·|γ|².\nHere:\n- e_1, …, e_m is the standard basis of ℝ^m (EuclideanSpace.basisFun (Fin m) ℝ);\n- |γ| = covectorEuclideanNorm γ = √(Σ_{I : Fin j → Fin m strictly increasing} γ(e_{I(1)}, …, e_{I(j)})²);\n- the left-hand sum runs over all index tuples, not only injective or increasing ones.",
+  "lean_statement": "∀ (m j : ℕ) (γ : Covector (Eucl m) j), ∑ i : Fin j → Fin m, (γ (fun k => EuclideanSpace.basisFun (Fin m) ℝ (i k))) ^ 2 = (j.factorial : ℝ) * covectorEuclideanNorm γ ^ 2",
+  "lean_name": "iwl_sp_pn_sum_sq_tuples_eq_factorial_mul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53-a1"
+}

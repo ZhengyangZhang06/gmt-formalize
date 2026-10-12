@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'def sort|theorem monotone_sort|range_inj_of_wellFoundedLT|map_perm|map_eq_zero_of_not_injective|compContinuousLinearMap_apply|def curryLeft|curryLeft_apply|def consEquiv|theorem comp_cons|basisFun_apply|inner_single_left|inner_single_right|norm_eq' mathlib/Mathlib/Data/Fin/Tuple/Sort.lean mathlib/Mathlib/Order/WellFounded.lean mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean mathlib/Mathlib/LinearAlgebra/Multilinear/Curry.lean mathlib/Mathlib/Data/Fin/Tuple/Basic.lean mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "rg --no-ignore -n 'HilbertSchmidt|hilbertSchmidt' mathlib/Mathlib/Analysis/InnerProductSpace mathlib/Mathlib/LinearAlgebra",
+        "rg --no-ignore -n 'factorial' mathlib/Mathlib/LinearAlgebra/Alternating mathlib/Mathlib/Topology/Algebra/Module/Alternating",
+        "iwl_sp_pn_sum_sq_tuples_eq_factorial_mul",
+        "iwl_sp_pn_sum_sq_comp_basis_le",
+        "iwl_sp_pn_multilinear_sum_sq_le",
+        "/tmp/iwl-sp-pn-decomp/scripts/leanrun.sh /tmp/iwl-sp-pn-decomp/lean/EndToEnd.lean",
+        "/tmp/iwl-sp-pn-decomp/scripts/leanrun.sh /tmp/iwl-pullback-independent-audit-60mizwyq/StandaloneTypes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/WellFounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/parent-child-handoff.json",
+        "/tmp/iwl-sp-pn-decomp/lean/EndToEnd.lean",
+        "/tmp/iwl-pullback-independent-audit-60mizwyq/StandaloneTypes.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions, the Euclidean-space and covector definitions, and all cited proof ingredients. Inspected Mathlib files match the installed pinned sources. No HilbertSchmidt search matches were found; the alternating-map factorial matches concern alternatization, not this coefficient identity. All three frozen child types match the supplied propositions exactly, pass lexical validation, and independently elaborate as Prop without child implementations. The three bare names are unreserved in the current DAG. The related slicing factorial lemma is now accepted, contrary to the proposal's older status report, but has a different type and is not reused. Independently reran EndToEnd.lean: all children and the exact selected parent compile with only propext, Classical.choice and Quot.sound. The split is appropriate: three substantive obligations leave only factorial cancellation and comparison of nonnegative squares in the parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tuple_sum_factorial",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the universally quantified coefficient identity. Each proof step is valid: the defining sum is nonnegative; repeated indices vanish; permutation signs disappear after squaring; sorting and uniqueness of increasing enumerations give the required parametrization; reindexing contributes exactly j!. Empty and degree-zero cases require no additional hypotheses. The proof is complete, independent, and non-circular."
+    },
+    {
+      "key": "one_slot_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition correctly uses Euclidean spaces, the continuous-linear-map operator norm, and an arbitrary real linear functional. The coordinate construction establishes the Riesz identity without assuming continuity of f. The test-vector identity, Cauchy–Schwarz, operator bound, zero/positive norm cases, and squaring prove precisely the stated inequality, including zero dimensions. No undeclared dependency or circular step occurs."
+    },
+    {
+      "key": "multilinear_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly covers arbitrary real multilinear maps, with no alternation or continuity assumption. The proof correctly generalizes over β during induction, handles the unique empty tuple, splits tuples using Fin.cons, applies the induction hypothesis to the curried map, and uses one_slot_bound on explicitly linear slot functionals. Nonnegative factors justify all inequalities. Its sole dependency is correctly directed and acyclic. Applying this result to α.toMultilinearMap and using tuple_sum_factorial twice yields the exact frozen parent after positive factorial cancellation and comparison of nonnegative squares."
+    }
+  ],
+  "required_changes": []
+}

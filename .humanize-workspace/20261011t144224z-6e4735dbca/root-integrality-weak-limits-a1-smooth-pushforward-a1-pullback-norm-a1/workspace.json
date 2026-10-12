@@ -1,0 +1,276 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T144224Z-6e4735dbca",
+  "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch06/20261011t144224z-6e4735dbca/dispatch/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1",
+  "source_commit": "d8d46c9587747dee0751a1f780fcafdba16a3886",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch06/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.one_slot_bound-a1",
+      "key": "one_slot_bound",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-76834dc165-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-76834dc165",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (project d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp project/GMT/Ch06/Contract.lean workspace GMT/Ch06/Contract.lean (identical); cmp project/GMT/Ch06/Submission.lean project/GMT/Ch06/Contract.lean (identical)",
+              "rg -n 'covectorEuclideanNorm|abbrev Covector|def Covector|Covector ' simongmt/Poincare/SimonGMT/Chapter06/*.lean; sed -n 1,80p Mass.lean; sed -n 1,60p Forms.lean; sed -n 140,175p FormsDuality.lean",
+              "python3 -I scan of dag.json lean_name/lean_statement for covector/pullback/norm/factorial/iwl_sp names (slicing_mb_wn_sq_sum_eq_factorial_mul, slicing_mb_wn_norm_sq_eq_onb_sum, smr_ci_norm_eq_sqrt_sum_coord_sq, fiw_ims_sc_covectorNorm_le_opNorm, cmb_rb_covectorEuclideanNorm_add_le) and collision check of iwl_sp_pn_* names",
+              "rg -n 'range_inj|strictMono_unique' mathlib/Mathlib/Order mathlib/Mathlib/Data/Fin",
+              "rg -n 'theorem monotone_sort|def sort ' mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+              "rg -n 'map_perm|map_eq_zero_of_not_injective|compContinuousLinearMap_apply|toMultilinearMap' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+              "rg -n 'def curryLeft|curryLeft_apply' mathlib/Mathlib/LinearAlgebra/Multilinear/Curry.lean; rg -n 'def consEquiv|theorem comp_cons' mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+              "rg -ln 'HilbertSchmidt|hilbertSchmidt' mathlib/Mathlib/Analysis/InnerProductSpace mathlib/Mathlib/LinearAlgebra (no match); rg -n factorial mathlib/Mathlib/LinearAlgebra/Alternating mathlib/Mathlib/Topology/Algebra/Module/Alternating",
+              "rg -n 'theorem basisFun_apply' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "verifier gmt-compare.py contract_scope + lean_contract.validate_lean_statement -> /tmp/iwl-sp-pn-decomp/lean/Challenge_*.lean",
+              "leanrun.sh (lean-4.35.0-rc3, LEAN_PATH = workspace .lake/build + lake-packages-25730c7c) on Probe0.lean, Challenge_*.lean, Child1.lean, Child2.lean, Child3.lean, Assembly.lean, EndToEnd.lean with #print axioms",
+              "python3 -I /tmp/iwl-sp-pn-decomp/scripts/check_children.py (900 random numeric cases)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/WellFounded.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Hom/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/DomCoprod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/Curry.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/tmp/iwl-sp-pn-decomp/lean/EndToEnd.lean",
+              "/tmp/iwl-sp-pn-decomp/lean/Assembly.lean"
+            ],
+            "conclusion": "Snapshot and project state:\n- The snapshot is project d8d46c95 with Mathlib 25730c7c.\n- The snapshot Contract is byte-identical to the workspace Contract, and Submission is byte-identical to Contract, so no Submission.* declarations exist yet.\n- Covector E n = E [⋀^Fin n]→L[ℝ] ℝ (Forms.lean:31). covectorEuclideanNorm (Mass.lean:30) is the square root of the sum over strictly increasing I of alpha(basisFun ∘ I)².\n\nNo existing lemma to reuse:\n- No Mathlib lemma gives the pullback bound, a Hilbert–Schmidt estimate, or the factorial tuple identity. There is no HilbertSchmidt match, and the factorial hits under Alternating are only the unrelated alternatization and domCoprod identities. All three children must therefore be proved.\n\nThe Mathlib ingredients the children use all exist:\n- Tuple.sort and Tuple.monotone_sort (Data/Fin/Tuple/Sort.lean:80, 95);\n- StrictMono.range_inj_of_wellFoundedLT (Order/WellFounded.lean:249);\n- ContinuousAlternatingMap.map_eq_zero_of_not_injective and compContinuousLinearMap_apply (Topology/Algebra/Module/Alternating/Basic.lean:137, 319);\n- AlternatingMap.map_perm (LinearAlgebra/Alternating/Basic.lean:672);\n- MultilinearMap.curryLeft_apply (LinearAlgebra/Multilinear/Curry.lean:85);\n- Fin.consEquiv (Data/Fin/Tuple/Basic.lean:184);\n- EuclideanSpace.basisFun_apply (PiL2.lean:806).\n\nDAG:\n- The names iwl_sp_pn_sum_sq_tuples_eq_factorial_mul, iwl_sp_pn_sum_sq_comp_basis_le and iwl_sp_pn_multilinear_sum_sq_le are free.\n- slicing_mb_wn_sq_sum_eq_factorial_mul is related, but it has a different type and status rlcr-lean (not accepted), so it is not reused.\n\nScratch Lean checks (pinned lean-4.35.0-rc3):\n- All three child types elaborate in the comparator child scope and pass validate_lean_statement.\n- EndToEnd.lean proves the three children and the frozen parent from them, with no sorry and only the axioms propext, Classical.choice and Quot.sound.\n- An independent reviewer re-ran these files and accepted the split."
+          }
+        ],
+        "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+        "child_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.one_slot_bound-a1",
+        "subproblem": {
+          "key": "one_slot_bound",
+          "title": "One-slot Hilbert–Schmidt bound Σ_a f(Le_a)² ≤ ‖L‖²·Σ_b f(e′_b)²",
+          "statement": "For all P, Q ∈ ℕ, every continuous linear map L : ℝ^P → ℝ^Q (L : Eucl P →L[ℝ] Eucl Q) and every ℝ-linear functional f : ℝ^Q → ℝ (f : Eucl Q →ₗ[ℝ] ℝ):\nΣ_{a : Fin P} f(L e_a)² ≤ ‖L‖²·Σ_{b : Fin Q} f(e′_b)².\nHere:\n- e_a = EuclideanSpace.basisFun (Fin P) ℝ a and e′_b = EuclideanSpace.basisFun (Fin Q) ℝ b are the standard bases;\n- ‖L‖ is the operator norm of L for the Euclidean norms.",
+          "lean_statement": "∀ (P Q : ℕ) (L : Eucl P →L[ℝ] Eucl Q) (f : Eucl Q →ₗ[ℝ] ℝ), ∑ a : Fin P, (f (L (EuclideanSpace.basisFun (Fin P) ℝ a))) ^ 2 ≤ ‖L‖ ^ 2 * ∑ b : Fin Q, (f (EuclideanSpace.basisFun (Fin Q) ℝ b)) ^ 2",
+          "lean_name": "iwl_sp_pn_sum_sq_comp_basis_le",
+          "depends_on": [],
+          "natural_proof": "Provenance (for information only; nothing below depends on it): this is step 2 of the proof supplied for the parent theorem iwl_sp_covectorEuclideanNorm_pullback_le, with all details filled in.\n\nNotation. Fix P, Q ∈ ℕ, a continuous linear map L : ℝ^P → ℝ^Q (L : Eucl P →L[ℝ] Eucl Q) and an ℝ-linear map f : ℝ^Q → ℝ (f : Eucl Q →ₗ[ℝ] ℝ).\n- e_a := EuclideanSpace.basisFun (Fin P) ℝ a = EuclideanSpace.single a 1 and e′_b := EuclideanSpace.basisFun (Fin Q) ℝ b are the standard bases.\n- For x ∈ ℝ^n (n ∈ {P, Q}), x_c is its c-th coordinate.\n- |x| is the Euclidean norm, ⟨·,·⟩ the real inner product and ‖L‖ the operator norm.\n\n1. (Coordinates.) For x ∈ ℝ^n:\n   - x = Σ_c x_c e_c, since coordinatewise (Σ_c x_c e_c)_d = Σ_c x_c·[c = d] = x_d;\n   - ⟨e_c, x⟩ = x_c (EuclideanSpace.inner_single_left/right);\n   - |x|² = Σ_c x_c² (EuclideanSpace.norm_eq, then Real.sq_sqrt of a nonnegative sum).\n2. (Riesz vector of f.) Let g ∈ ℝ^Q be the vector with coordinates g_b := f(e′_b).\n   - For y ∈ ℝ^Q, by step 1 and linearity of f: f(y) = f(Σ_b y_b e′_b) = Σ_b y_b f(e′_b) = Σ_b g_b y_b.\n   - By step 1 (g = Σ_b g_b e′_b and ⟨e′_b, y⟩ = y_b) and linearity of the inner product in its first argument: ⟨g, y⟩ = Σ_b g_b ⟨e′_b, y⟩ = Σ_b g_b y_b.\n   - Hence f(y) = ⟨g, y⟩ for every y ∈ ℝ^Q.\n   - By step 1, |g|² = Σ_b g_b² = Σ_b f(e′_b)².\n3. (Test vector.) Let u ∈ ℝ^P be the vector with coordinates u_a := f(L e_a).\n   - By step 1, |u|² = Σ_a f(L e_a)².\n   - By step 1 and linearity of f∘L: f(Lu) = f(L(Σ_a u_a e_a)) = Σ_a u_a f(L e_a) = Σ_a f(L e_a)² = |u|².\n4. (Cauchy–Schwarz and the operator norm.) By steps 2 and 3, |u|² = f(Lu) = ⟨g, Lu⟩ ≤ |g|·|Lu| (real_inner_le_norm) ≤ |g|·(‖L‖·|u|) (ContinuousLinearMap.le_opNorm, and |g| ≥ 0).\n5. (Cancelling |u|.) We claim |u| ≤ ‖L‖·|g|.\n   - If |u| = 0, this holds because ‖L‖·|g| ≥ 0.\n   - If |u| > 0, step 4 reads |u|·|u| ≤ (‖L‖·|g|)·|u|, and dividing by |u| gives the claim.\n6. (Squaring.) Since 0 ≤ |u| ≤ ‖L‖·|g|, squaring gives |u|² ≤ (‖L‖·|g|)² = ‖L‖²·|g|². By steps 3 and 2 this reads Σ_{a : Fin P} f(L e_a)² ≤ ‖L‖²·Σ_{b : Fin Q} f(e′_b)².\n   If P = 0 or Q = 0, the corresponding sums are empty and the same argument applies verbatim. ∎",
+          "proof_key_steps": [
+            "Take the Riesz vector g with coordinates f(e′_b). Then f(y) = ⟨g, y⟩ and |g|² = Σ_b f(e′_b)².",
+            "Take the test vector u with coordinates f(L e_a). Then |u|² = Σ_a f(L e_a)² and f(Lu) = |u|².",
+            "By Cauchy–Schwarz and the operator norm, |u|² = ⟨g, Lu⟩ ≤ |g|·‖L‖·|u|.",
+            "Cancel |u| (the case |u| = 0 is trivial) to get |u| ≤ ‖L‖·|g|, then square."
+          ]
+        },
+        "audit": {
+          "key": "one_slot_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proposition correctly uses Euclidean spaces, the continuous-linear-map operator norm, and an arbitrary real linear functional. The coordinate construction establishes the Riesz identity without assuming continuity of f. The test-vector identity, Cauchy–Schwarz, operator bound, zero/positive norm cases, and squaring prove precisely the stated inequality, including zero dimensions. No undeclared dependency or circular step occurs."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-76834dc165/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-76834dc165/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-76834dc165/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.tuple_sum_factorial-a1",
+      "key": "tuple_sum_factorial",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (project d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp project/GMT/Ch06/Contract.lean workspace GMT/Ch06/Contract.lean (identical); cmp project/GMT/Ch06/Submission.lean project/GMT/Ch06/Contract.lean (identical)",
+              "rg -n 'covectorEuclideanNorm|abbrev Covector|def Covector|Covector ' simongmt/Poincare/SimonGMT/Chapter06/*.lean; sed -n 1,80p Mass.lean; sed -n 1,60p Forms.lean; sed -n 140,175p FormsDuality.lean",
+              "python3 -I scan of dag.json lean_name/lean_statement for covector/pullback/norm/factorial/iwl_sp names (slicing_mb_wn_sq_sum_eq_factorial_mul, slicing_mb_wn_norm_sq_eq_onb_sum, smr_ci_norm_eq_sqrt_sum_coord_sq, fiw_ims_sc_covectorNorm_le_opNorm, cmb_rb_covectorEuclideanNorm_add_le) and collision check of iwl_sp_pn_* names",
+              "rg -n 'range_inj|strictMono_unique' mathlib/Mathlib/Order mathlib/Mathlib/Data/Fin",
+              "rg -n 'theorem monotone_sort|def sort ' mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+              "rg -n 'map_perm|map_eq_zero_of_not_injective|compContinuousLinearMap_apply|toMultilinearMap' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+              "rg -n 'def curryLeft|curryLeft_apply' mathlib/Mathlib/LinearAlgebra/Multilinear/Curry.lean; rg -n 'def consEquiv|theorem comp_cons' mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+              "rg -ln 'HilbertSchmidt|hilbertSchmidt' mathlib/Mathlib/Analysis/InnerProductSpace mathlib/Mathlib/LinearAlgebra (no match); rg -n factorial mathlib/Mathlib/LinearAlgebra/Alternating mathlib/Mathlib/Topology/Algebra/Module/Alternating",
+              "rg -n 'theorem basisFun_apply' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "verifier gmt-compare.py contract_scope + lean_contract.validate_lean_statement -> /tmp/iwl-sp-pn-decomp/lean/Challenge_*.lean",
+              "leanrun.sh (lean-4.35.0-rc3, LEAN_PATH = workspace .lake/build + lake-packages-25730c7c) on Probe0.lean, Challenge_*.lean, Child1.lean, Child2.lean, Child3.lean, Assembly.lean, EndToEnd.lean with #print axioms",
+              "python3 -I /tmp/iwl-sp-pn-decomp/scripts/check_children.py (900 random numeric cases)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/WellFounded.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Hom/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/DomCoprod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/Curry.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/tmp/iwl-sp-pn-decomp/lean/EndToEnd.lean",
+              "/tmp/iwl-sp-pn-decomp/lean/Assembly.lean"
+            ],
+            "conclusion": "Snapshot and project state:\n- The snapshot is project d8d46c95 with Mathlib 25730c7c.\n- The snapshot Contract is byte-identical to the workspace Contract, and Submission is byte-identical to Contract, so no Submission.* declarations exist yet.\n- Covector E n = E [⋀^Fin n]→L[ℝ] ℝ (Forms.lean:31). covectorEuclideanNorm (Mass.lean:30) is the square root of the sum over strictly increasing I of alpha(basisFun ∘ I)².\n\nNo existing lemma to reuse:\n- No Mathlib lemma gives the pullback bound, a Hilbert–Schmidt estimate, or the factorial tuple identity. There is no HilbertSchmidt match, and the factorial hits under Alternating are only the unrelated alternatization and domCoprod identities. All three children must therefore be proved.\n\nThe Mathlib ingredients the children use all exist:\n- Tuple.sort and Tuple.monotone_sort (Data/Fin/Tuple/Sort.lean:80, 95);\n- StrictMono.range_inj_of_wellFoundedLT (Order/WellFounded.lean:249);\n- ContinuousAlternatingMap.map_eq_zero_of_not_injective and compContinuousLinearMap_apply (Topology/Algebra/Module/Alternating/Basic.lean:137, 319);\n- AlternatingMap.map_perm (LinearAlgebra/Alternating/Basic.lean:672);\n- MultilinearMap.curryLeft_apply (LinearAlgebra/Multilinear/Curry.lean:85);\n- Fin.consEquiv (Data/Fin/Tuple/Basic.lean:184);\n- EuclideanSpace.basisFun_apply (PiL2.lean:806).\n\nDAG:\n- The names iwl_sp_pn_sum_sq_tuples_eq_factorial_mul, iwl_sp_pn_sum_sq_comp_basis_le and iwl_sp_pn_multilinear_sum_sq_le are free.\n- slicing_mb_wn_sq_sum_eq_factorial_mul is related, but it has a different type and status rlcr-lean (not accepted), so it is not reused.\n\nScratch Lean checks (pinned lean-4.35.0-rc3):\n- All three child types elaborate in the comparator child scope and pass validate_lean_statement.\n- EndToEnd.lean proves the three children and the frozen parent from them, with no sorry and only the axioms propext, Classical.choice and Quot.sound.\n- An independent reviewer re-ran these files and accepted the split."
+          }
+        ],
+        "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+        "child_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.tuple_sum_factorial-a1",
+        "subproblem": {
+          "key": "tuple_sum_factorial",
+          "title": "Full tuple sum of squared coefficients equals j!·|γ|²",
+          "statement": "For all m, j ∈ ℕ and every j-covector γ on ℝ^m (γ : Covector (Eucl m) j, a continuous alternating j-linear map (ℝ^m)^j → ℝ):\nΣ_{i : Fin j → Fin m} γ(e_{i(1)}, …, e_{i(j)})² = j!·|γ|².\nHere:\n- e_1, …, e_m is the standard basis of ℝ^m (EuclideanSpace.basisFun (Fin m) ℝ);\n- |γ| = covectorEuclideanNorm γ = √(Σ_{I : Fin j → Fin m strictly increasing} γ(e_{I(1)}, …, e_{I(j)})²);\n- the left-hand sum runs over all index tuples, not only injective or increasing ones.",
+          "lean_statement": "∀ (m j : ℕ) (γ : Covector (Eucl m) j), ∑ i : Fin j → Fin m, (γ (fun k => EuclideanSpace.basisFun (Fin m) ℝ (i k))) ^ 2 = (j.factorial : ℝ) * covectorEuclideanNorm γ ^ 2",
+          "lean_name": "iwl_sp_pn_sum_sq_tuples_eq_factorial_mul",
+          "depends_on": [],
+          "natural_proof": "Provenance (for information only; nothing below depends on it): this is step 1 of the proof supplied for the parent theorem iwl_sp_covectorEuclideanNorm_pullback_le, with all details filled in.\n\nNotation. Fix m, j ∈ ℕ and γ ∈ Covector (Eucl m) j, a continuous alternating j-linear map (ℝ^m)^j → ℝ.\n- e_c := EuclideanSpace.basisFun (Fin m) ℝ c (c ∈ Fin m) is the standard basis.\n- For i : Fin j → Fin m, e∘i := (k ↦ e_{i(k)}) : Fin j → ℝ^m and F(i) := γ(e∘i)².\n- S := {I : Fin j → Fin m // StrictMono I} is a finite type, and Perm(Fin j) is the finite group of permutations of Fin j.\n- |γ| := covectorEuclideanNorm γ.\nThe claim is Σ_{i : Fin j → Fin m} F(i) = j!·|γ|².\n\n1. (The squared norm.) By definition |γ| = √N with N := Σ_{I : Fin j → Fin m} t_I, where t_I := F(I) if I is strictly increasing and t_I := 0 otherwise.\n   - Every t_I ≥ 0, so N ≥ 0 and |γ|² = (√N)² = N (Real.sq_sqrt).\n   - Dropping the zero terms, N = Σ_{I ∈ univ.filter StrictMono} F(I) = Σ_{I : S} F(I) (Finset.sum_filter, Finset.sum_subtype).\n   Hence |γ|² = Σ_{I : S} F(I).\n2. (Non-injective tuples contribute 0.) Let i be non-injective, say i(a) = i(b) with a ≠ b.\n   - Then e∘i takes the same value e_{i(a)} = e_{i(b)} at the positions a ≠ b, so e∘i is not injective.\n   - γ(e∘i) = 0 because γ is alternating (ContinuousAlternatingMap.map_eq_zero_of_not_injective).\n   Hence F(i) = 0.\n3. (Permutation invariance.) Let i : Fin j → Fin m and σ ∈ Perm(Fin j).\n   - e∘(i∘σ) = (e∘i)∘σ, and γ((e∘i)∘σ) = sign(σ)·γ(e∘i) (AlternatingMap.map_perm applied to γ.toAlternatingMap).\n   - sign(σ) ∈ {1, −1} (Int.units_eq_one_or), so squaring gives F(i∘σ) = F(i).\n4. (Parametrization of the injective tuples.) Define Φ : S × Perm(Fin j) → (Fin j → Fin m) by Φ(I, σ) := I∘σ.\n   (a) Φ is injective. Suppose I∘σ = I′∘σ′ with I, I′ strictly increasing.\n      - σ and σ′ are bijections, so range I = range(I∘σ) = range(I′∘σ′) = range I′ (EquivLike.range_comp).\n      - Two strictly increasing maps on the well-order Fin j with the same range are equal (StrictMono.range_inj_of_wellFoundedLT), so I = I′.\n      - Then I(σ(k)) = I(σ′(k)) for every k. Since I is strictly increasing, it is injective, so σ(k) = σ′(k) for all k, that is, σ = σ′.\n   (b) Every injective i is a value of Φ. Let τ := Tuple.sort i ∈ Perm(Fin j).\n      - i∘τ is monotone (Tuple.monotone_sort).\n      - i∘τ is injective, as a composition of injective maps.\n      - A monotone injective map between linear orders is strictly increasing (Monotone.strictMono_of_injective), so I := i∘τ ∈ S.\n      - Φ(I, τ⁻¹) = i∘τ∘τ⁻¹ = i.\n5. (Reindexing.) Let A := Finset.image Φ univ, the set of values of Φ.\n   (a) Σ_{i : Fin j → Fin m} F(i) = Σ_{i ∈ A} F(i). For i ∉ A, i is not injective by 4(b), so F(i) = 0 by step 2 (Finset.sum_subset).\n   (b) Σ_{i ∈ A} F(i) = Σ_{(I,σ) ∈ S × Perm(Fin j)} F(I∘σ), because Φ is injective by 4(a) (Finset.sum_image).\n   (c) By step 3, F(I∘σ) = F(I) for each pair. So the sum equals Σ_{I : S} Σ_{σ ∈ Perm(Fin j)} F(I) (Fintype.sum_prod_type), which is Σ_{I : S} |Perm(Fin j)|·F(I).\n   (d) |Perm(Fin j)| = (card (Fin j))! = j! (Fintype.card_perm, Fintype.card_fin). So the sum equals j!·Σ_{I : S} F(I).\n6. (Conclusion.) Combining steps 5 and 1: Σ_{i : Fin j → Fin m} F(i) = j!·Σ_{I : S} F(I) = j!·|γ|².\n   No restriction on m or j was used:\n   - for j = 0, S consists of the empty tuple and Perm(Fin 0) has 1 = 0! element;\n   - for j > m, S is empty and there are no injective tuples, so both sides are 0. ∎",
+          "proof_key_steps": [
+            "|γ|² = Σ_{I strictly increasing} F(I) with F(i) = γ(e∘i)². This follows from Real.sq_sqrt of the nonnegative defining sum, after dropping the zero terms.",
+            "F vanishes on non-injective tuples because γ is alternating (map_eq_zero_of_not_injective).",
+            "F(i∘σ) = F(i) for every permutation σ (AlternatingMap.map_perm, with sign(σ)² = 1).",
+            "Φ(I, σ) = I∘σ is injective on {strictly increasing I} × Perm(Fin j) (by equal ranges and StrictMono.range_inj_of_wellFoundedLT). It hits every injective tuple, via Tuple.sort and Tuple.monotone_sort.",
+            "Reindex: Σ_i F(i) = Σ_{(I,σ)} F(I∘σ) = Σ_I j!·F(I) = j!·|γ|² (Fintype.card_perm)."
+          ]
+        },
+        "audit": {
+          "key": "tuple_sum_factorial",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The one-line proposition exactly matches the universally quantified coefficient identity. Each proof step is valid: the defining sum is nonnegative; repeated indices vanish; permutation signs disappear after squaring; sorting and uniqueness of increasing enumerations give the required parametrization; reindexing contributes exactly j!. Empty and degree-zero cases require no additional hypotheses. The proof is complete, independent, and non-circular."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.multilinear_bound-a1",
+      "key": "multilinear_bound",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-ebd8351d5a-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-ebd8351d5a",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (project d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp project/GMT/Ch06/Contract.lean workspace GMT/Ch06/Contract.lean (identical); cmp project/GMT/Ch06/Submission.lean project/GMT/Ch06/Contract.lean (identical)",
+              "rg -n 'covectorEuclideanNorm|abbrev Covector|def Covector|Covector ' simongmt/Poincare/SimonGMT/Chapter06/*.lean; sed -n 1,80p Mass.lean; sed -n 1,60p Forms.lean; sed -n 140,175p FormsDuality.lean",
+              "python3 -I scan of dag.json lean_name/lean_statement for covector/pullback/norm/factorial/iwl_sp names (slicing_mb_wn_sq_sum_eq_factorial_mul, slicing_mb_wn_norm_sq_eq_onb_sum, smr_ci_norm_eq_sqrt_sum_coord_sq, fiw_ims_sc_covectorNorm_le_opNorm, cmb_rb_covectorEuclideanNorm_add_le) and collision check of iwl_sp_pn_* names",
+              "rg -n 'range_inj|strictMono_unique' mathlib/Mathlib/Order mathlib/Mathlib/Data/Fin",
+              "rg -n 'theorem monotone_sort|def sort ' mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+              "rg -n 'map_perm|map_eq_zero_of_not_injective|compContinuousLinearMap_apply|toMultilinearMap' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+              "rg -n 'def curryLeft|curryLeft_apply' mathlib/Mathlib/LinearAlgebra/Multilinear/Curry.lean; rg -n 'def consEquiv|theorem comp_cons' mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+              "rg -ln 'HilbertSchmidt|hilbertSchmidt' mathlib/Mathlib/Analysis/InnerProductSpace mathlib/Mathlib/LinearAlgebra (no match); rg -n factorial mathlib/Mathlib/LinearAlgebra/Alternating mathlib/Mathlib/Topology/Algebra/Module/Alternating",
+              "rg -n 'theorem basisFun_apply' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "verifier gmt-compare.py contract_scope + lean_contract.validate_lean_statement -> /tmp/iwl-sp-pn-decomp/lean/Challenge_*.lean",
+              "leanrun.sh (lean-4.35.0-rc3, LEAN_PATH = workspace .lake/build + lake-packages-25730c7c) on Probe0.lean, Challenge_*.lean, Child1.lean, Child2.lean, Child3.lean, Assembly.lean, EndToEnd.lean with #print axioms",
+              "python3 -I /tmp/iwl-sp-pn-decomp/scripts/check_children.py (900 random numeric cases)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/WellFounded.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Hom/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/DomCoprod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/Curry.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/tmp/iwl-sp-pn-decomp/lean/EndToEnd.lean",
+              "/tmp/iwl-sp-pn-decomp/lean/Assembly.lean"
+            ],
+            "conclusion": "Snapshot and project state:\n- The snapshot is project d8d46c95 with Mathlib 25730c7c.\n- The snapshot Contract is byte-identical to the workspace Contract, and Submission is byte-identical to Contract, so no Submission.* declarations exist yet.\n- Covector E n = E [⋀^Fin n]→L[ℝ] ℝ (Forms.lean:31). covectorEuclideanNorm (Mass.lean:30) is the square root of the sum over strictly increasing I of alpha(basisFun ∘ I)².\n\nNo existing lemma to reuse:\n- No Mathlib lemma gives the pullback bound, a Hilbert–Schmidt estimate, or the factorial tuple identity. There is no HilbertSchmidt match, and the factorial hits under Alternating are only the unrelated alternatization and domCoprod identities. All three children must therefore be proved.\n\nThe Mathlib ingredients the children use all exist:\n- Tuple.sort and Tuple.monotone_sort (Data/Fin/Tuple/Sort.lean:80, 95);\n- StrictMono.range_inj_of_wellFoundedLT (Order/WellFounded.lean:249);\n- ContinuousAlternatingMap.map_eq_zero_of_not_injective and compContinuousLinearMap_apply (Topology/Algebra/Module/Alternating/Basic.lean:137, 319);\n- AlternatingMap.map_perm (LinearAlgebra/Alternating/Basic.lean:672);\n- MultilinearMap.curryLeft_apply (LinearAlgebra/Multilinear/Curry.lean:85);\n- Fin.consEquiv (Data/Fin/Tuple/Basic.lean:184);\n- EuclideanSpace.basisFun_apply (PiL2.lean:806).\n\nDAG:\n- The names iwl_sp_pn_sum_sq_tuples_eq_factorial_mul, iwl_sp_pn_sum_sq_comp_basis_le and iwl_sp_pn_multilinear_sum_sq_le are free.\n- slicing_mb_wn_sq_sum_eq_factorial_mul is related, but it has a different type and status rlcr-lean (not accepted), so it is not reused.\n\nScratch Lean checks (pinned lean-4.35.0-rc3):\n- All three child types elaborate in the comparator child scope and pass validate_lean_statement.\n- EndToEnd.lean proves the three children and the frozen parent from them, with no sorry and only the axioms propext, Classical.choice and Quot.sound.\n- An independent reviewer re-ran these files and accepted the split."
+          }
+        ],
+        "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+        "child_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.multilinear_bound-a1",
+        "subproblem": {
+          "key": "multilinear_bound",
+          "title": "Multilinear tensor-power bound Σ_i β(Le∘i)² ≤ (‖L‖²)^j·Σ_i β(e′∘i)²",
+          "statement": "For all P, Q, j ∈ ℕ, every continuous linear map L : ℝ^P → ℝ^Q (L : Eucl P →L[ℝ] Eucl Q) and every j-multilinear map β : (ℝ^Q)^j → ℝ (β : MultilinearMap ℝ (fun _ : Fin j => Eucl Q) ℝ, not necessarily alternating or continuous):\nΣ_{i : Fin j → Fin P} β(L e_{i(1)}, …, L e_{i(j)})² ≤ (‖L‖²)^j·Σ_{i : Fin j → Fin Q} β(e′_{i(1)}, …, e′_{i(j)})².\nHere:\n- e and e′ are the standard bases of ℝ^P and ℝ^Q (EuclideanSpace.basisFun);\n- ‖L‖ is the operator norm for the Euclidean norms.",
+          "lean_statement": "∀ (P Q j : ℕ) (L : Eucl P →L[ℝ] Eucl Q) (β : MultilinearMap ℝ (fun _ : Fin j => Eucl Q) ℝ), ∑ i : Fin j → Fin P, (β (fun k => L (EuclideanSpace.basisFun (Fin P) ℝ (i k)))) ^ 2 ≤ (‖L‖ ^ 2) ^ j * ∑ i : Fin j → Fin Q, (β (fun k => EuclideanSpace.basisFun (Fin Q) ℝ (i k))) ^ 2",
+          "lean_name": "iwl_sp_pn_multilinear_sum_sq_le",
+          "depends_on": [
+            "one_slot_bound"
+          ],
+          "natural_proof": "Provenance (for information only; nothing below depends on it): this is step 3 of the proof supplied for the parent theorem iwl_sp_covectorEuclideanNorm_pullback_le, with all details filled in.\n\nSibling lemma used (one_slot_bound, iwl_sp_pn_sum_sq_comp_basis_le): for every continuous linear L : ℝ^P → ℝ^Q and every linear f : ℝ^Q → ℝ, Σ_{a : Fin P} f(L e_a)² ≤ ‖L‖²·Σ_{b : Fin Q} f(e′_b)².\n\nNotation. Fix P, Q ∈ ℕ and L : Eucl P →L[ℝ] Eucl Q.\n- e_a := EuclideanSpace.basisFun (Fin P) ℝ a and e′_b := EuclideanSpace.basisFun (Fin Q) ℝ b.\n- For i : Fin j → Fin P, Le∘i := (k ↦ L e_{i(k)}); for i : Fin j → Fin Q, e′∘i := (k ↦ e′_{i(k)}).\n- Fin.cons x w is the (j+1)-tuple with entry x at 0 and w(k) at k.succ.\n\nWe prove H(j) by induction on j, where H(j) says: for every multilinear map β : MultilinearMap ℝ (fun _ : Fin j => Eucl Q) ℝ,\n  Σ_{i : Fin j → Fin P} β(Le∘i)² ≤ (‖L‖²)^j · Σ_{i : Fin j → Fin Q} β(e′∘i)².\n\n1. (Base case j = 0.)\n   - Fin 0 → Fin P and Fin 0 → Fin Q each have exactly one element, so each sum has exactly one term (Fintype.sum_unique).\n   - Le∘i and e′∘i both lie in Fin 0 → ℝ^Q, which has only one element, so they are equal.\n   - Hence both sides equal β(())², since (‖L‖²)⁰ = 1, and H(0) holds with equality.\n2. (Inductive step: setup.) Assume H(j) and let β be (j+1)-multilinear.\n   (a) Splitting sums. For n ∈ {P, Q}, the map (a, i′) ↦ Fin.cons a i′ is a bijection Fin n × (Fin j → Fin n) → (Fin (j+1) → Fin n) (Fin.consEquiv). So for every G : (Fin (j+1) → Fin n) → ℝ, Σ_i G(i) = Σ_{a : Fin n} Σ_{i′ : Fin j → Fin n} G(Fin.cons a i′) (Fintype.sum_equiv, Fintype.sum_prod_type).\n   (b) Cons and composition. For every map h : Fin n → X, (k ↦ h((Fin.cons a i′)(k))) = Fin.cons (h(a)) (k ↦ h(i′(k))); check k = 0 and k = k′.succ (Fin.cases). In particular Le∘(Fin.cons a i′) = Fin.cons (L e_a) (Le∘i′) and e′∘(Fin.cons b i″) = Fin.cons e′_b (e′∘i″).\n   (c) Slot functionals. For w : Fin j → ℝ^Q, f_w(y) := β(Fin.cons y w) is ℝ-linear in y ∈ ℝ^Q, by multilinearity of β in slot 0 (MultilinearMap.cons_add, MultilinearMap.cons_smul).\n3. (H(j) for each a.) For a ∈ Fin P, let β_a := β.curryLeft (L e_a), the j-multilinear map v ↦ β(Fin.cons (L e_a) v) (MultilinearMap.curryLeft_apply). H(j) for β_a gives\n   Σ_{i′ : Fin j → Fin P} β(Fin.cons (L e_a) (Le∘i′))² ≤ (‖L‖²)^j · Σ_{i″ : Fin j → Fin Q} β(Fin.cons (L e_a) (e′∘i″))² = (‖L‖²)^j · Σ_{i″} f_{e′∘i″}(L e_a)².\n4. (Summing over a and exchanging sums.) By 2(a), 2(b) and step 3 (Finset.sum_le_sum, Finset.mul_sum, Finset.sum_comm):\n   Σ_{i : Fin (j+1) → Fin P} β(Le∘i)² = Σ_a Σ_{i′} β(Fin.cons (L e_a) (Le∘i′))²\n   ≤ Σ_a (‖L‖²)^j Σ_{i″} f_{e′∘i″}(L e_a)²\n   = (‖L‖²)^j · Σ_{i″} Σ_a f_{e′∘i″}(L e_a)².\n5. (One slot.) For each i″, one_slot_bound applied to L and the linear map f := f_{e′∘i″} gives\n   Σ_a f_{e′∘i″}(L e_a)² ≤ ‖L‖²·Σ_{b : Fin Q} f_{e′∘i″}(e′_b)² = ‖L‖²·Σ_b β(Fin.cons e′_b (e′∘i″))².\n   Since (‖L‖²)^j ≥ 0, multiplying by it and summing over i″ preserves the inequality, so\n   Σ_{i : Fin (j+1) → Fin P} β(Le∘i)² ≤ (‖L‖²)^j · Σ_{i″} ‖L‖²·Σ_b β(Fin.cons e′_b (e′∘i″))².\n6. (Reassembling.) Pull out ‖L‖², use (‖L‖²)^j·‖L‖² = (‖L‖²)^{j+1} (pow_succ), exchange the sums over i″ and b, then apply 2(b) and 2(a) with n = Q:\n   (‖L‖²)^j · Σ_{i″} ‖L‖²·Σ_b β(Fin.cons e′_b (e′∘i″))² = (‖L‖²)^{j+1} · Σ_b Σ_{i″} β(e′∘(Fin.cons b i″))² = (‖L‖²)^{j+1} · Σ_{i : Fin (j+1) → Fin Q} β(e′∘i)².\n   This is H(j+1).\n\nBy induction, H(j) holds for all j ∈ ℕ. As P, Q and L were arbitrary, this is the claim.\nNo restriction on P or Q is used. If P = 0 or Q = 0, the sums over Fin P or Fin Q in steps 4–6 are empty and every step holds verbatim. The base case holds for all P, Q, since Fin 0 → Fin n has exactly one element.\nβ need not be alternating, symmetric or continuous. ∎",
+          "proof_key_steps": [
+            "Induct on j, generalizing over β. The base case j = 0 is an equality because Fin 0 → X is a singleton.",
+            "Split sums over Fin (j+1) → Fin n through Fin.cons (Fin.consEquiv), and push maps through Fin.cons.",
+            "For each a ∈ Fin P, apply the induction hypothesis to β.curryLeft (L e_a).",
+            "Exchange the finite sums and apply one_slot_bound to the linear functionals y ↦ β(Fin.cons y (e′∘i″)).",
+            "Recombine with (‖L‖²)^j·‖L‖² = (‖L‖²)^{j+1} and Fin.consEquiv over Fin Q to get H(j+1)."
+          ]
+        },
+        "audit": {
+          "key": "multilinear_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proposition exactly covers arbitrary real multilinear maps, with no alternation or continuity assumption. The proof correctly generalizes over β during induction, handles the unique empty tuple, splits tuples using Fin.cons, applies the induction hypothesis to the curried map, and uses one_slot_bound on explicitly linear slot functionals. Nonnegative factors justify all inequalities. Its sole dependency is correctly directed and acyclic. Applying this result to α.toMultilinearMap and using tuple_sum_factorial twice yields the exact frozen parent after positive factorial cancellation and comparison of nonnegative squares."
+        },
+        "resolved_dependencies": [
+          "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.one_slot_bound-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-ebd8351d5a/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-ebd8351d5a/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-ebd8351d5a/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/task.md": "851788007dc8c3751d2eb432e671ed309656d733cb7f0945095ef6d498b86aea",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/problem.md": "2a7a835f77ed0c2d2d9344f4d74d4aca5aba45b602f54cca55c26b05d42f07c7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/problem.json": "c524959c2b363f8a0061c212b44cd7e69bb1645bf27826cb3a6bf3b6c474c290",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/reference-manifest.json": "754178a610ec50f104bdcaf2bcf3c0ceacdeda598b67255aba00da6a8cdbcdf7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/decomposition.json": "19ca44bf406036aae4036b8eb68d59b0ec08e1306ffa7a27708c6e8be70414ee",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/decomposition-audit.json": "36f2e08d30f945ab199d45ef43dde692df5518e06c0bd4128a2c6cb951a8af7c",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/controller-contract.json": "6753c097b624229cd25c20ce9ff1dd35a6c88a2084eb3ccb57d6c14f531038f6",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-76834dc165/parent-child-handoff.json": "cf44db2b583f06744b7fd762a2818627fddae02da17060851f82181590128413",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-76834dc165/parent-supplied-plan.md": "290d8dd88e103548c6b21a20508856cd2675ee4fcf2e27f0eec6a397523005da",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-76834dc165/parent-supplied-natural-proof.md": "c2b5495e5665f241697e83d8bd3143315c05ff54f3ef2b49fb8044caae3f466c",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-76834dc165/parent-supplied-natural-proof.json": "0b87de46f1d5790dc0a7c6781216272766e4c025be4f09e0f036d9a113e39202",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-76834dc165/node.json": "9a1be287e6a4a2f1831cef408e805990e34e722e7d8a554ac2f268488ed0e250",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53/parent-child-handoff.json": "09bb7bd3973cb91b404b644dffd212c6fbead6ae716d97bafc817bdec68dec3f",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53/parent-supplied-plan.md": "b33929455425cde0c54770ee258014115e260531235c4df1c0b8b0654c642daf",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53/parent-supplied-natural-proof.md": "d341546f46348767fb1adec6420e1a2676d8f3f27b5b822c1ba89c93097ecb38",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53/parent-supplied-natural-proof.json": "4846840a09e515e7af712031febbcd38dea8d9f8173194004daf57ffccdc2b26",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53/node.json": "f362108ce55e0f9b200847145850b7d62df346d4effdb17de689842acafd4094",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-ebd8351d5a/parent-child-handoff.json": "d43ec78cdfd19a4716390a1056dcda4c14fa1bea7d2465b52fec15435e1aa3d8",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-ebd8351d5a/parent-supplied-plan.md": "0c0eb404d973b47773c3885757eaa8d93f0a5bff7dcf77d3e14730a23a0e91ff",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-ebd8351d5a/parent-supplied-natural-proof.md": "dad201ea2e9357a267b50dd566e7254edcb649b6caa4257ee38e614822929147",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-ebd8351d5a/parent-supplied-natural-proof.json": "5dbbc18dc7b882e3002301a5747cdfa78759be4ed058882aff1e2a06af2bc12a",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/children/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-ebd8351d5a/node.json": "e7d79075e2a45eb659fb5ffc9f54bd99067f53b1e9d61351b3b7e76f6273c79c"
+  }
+}
