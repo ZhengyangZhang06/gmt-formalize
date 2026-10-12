@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "python3 -I scan of .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json nodes[*].lean_name (reserved declaration names)",
+        "grep -n 'HasWeightedApproximateTangentSpaceAt\\|def CountablyRectifiable\\|HasApproximateTangentSpaceAt\\|theorem .*ae.*tangent' -r .lake/packages/simongmt/Poincare/SimonGMT/Chapter03",
+        "grep -rn 'C¹ approximation\\|C1 approximation\\|Approximation Theorem\\|upper density\\|Upper density' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01 .lake/packages/simongmt/Poincare/SimonGMT/Chapter02",
+        "grep -n '^theorem' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "grep -rn 'theorem simon_theorem_1_17\\|theorem area_image_criticalSet_eq_zero\\|theorem hausdorff_blowUp_image\\|theorem integral_weighted_blowUp\\|theorem norm_normalProjection_eq_infDist' .lake/packages/simongmt/Poincare/SimonGMT",
+        "rg -n 'theorem (zero_of_nonpos|one_of_one_le|nonneg|le_one|contDiff|pos_of_pos)\\b' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "rg -n '^theorem contDiff_infty_iff_deriv|theorem contDiffAt_norm\\b|theorem trace_smulRight|starProjection_minimal|theorem infDist_eq_iInf\\b|theorem starProjection_add_starProjection_orthogonal|IsProj.trace' -g '*.lean' <snapshot>/mathlib/Mathlib",
+        "rg -n 'theorem hausdorffMeasure_smul|euclideanHausdorffMeasure_smul₀|hausdorffMeasure_homothety_image' -g '*.lean' <snapshot>/mathlib/Mathlib; rg -ln Lusin -g '*.lean' <snapshot>/mathlib/Mathlib",
+        "grep -rn 'theorem norm_fderiv_le_of_lipschitz\\b\\|theorem integral_hasDerivAt_right\\b\\|theorem contDiff_iff_contDiffAt\\b\\|trace_mul_comm' <snapshot>/mathlib/Mathlib/{Analysis/Calculus/FDeriv/Basic,MeasureTheory/Integral/IntervalIntegral/FundThmCalculus,Analysis/Calculus/ContDiff/Defs,LinearAlgebra/Trace}.lean",
+        "diff GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean",
+        "lean GMT/Ch05/Submission.lean -o /tmp/teh-decomp-elab/mybuild/GMT/Ch05/Submission.olean; lean /tmp/teh-decomp-elab/NodeCheck.lean (import GMT.Ch05.Submission + replayed contract scope + the 4 frozen child types)",
+        "lean /tmp/teh-decomp-elab/Skel.lean and Skel2.lean (parent assembly from the 4 children as hypotheses; sorry-free admissibility of X)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Differential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/ClassicalTangent.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt"
+      ],
+      "conclusion": "The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot project/GMT/Ch05/Contract.lean is byte-identical to the workspace contract.\n\nNone of the four proposed declarations exists locally. dag.json reserves only the 13 depth-0/1 names.\n\nChild ae_tangent_planes is a genuine open obligation:\n- SimonGMT Chapter03/Rectifiable.lean defines HasWeightedApproximateTangentSpaceAt and proves .unique, but says Simon 1.6/1.9 are \"not asserted here\".\n- SubmanifoldCover.lean has only the easy direction of Lemma 1.2.\n- Differential.lean calls the existence direction of 1.6 \"still-open\".\n\nTools available for that child:\n- simon_theorem_3_6 (Upper Density, Chapter01/DensityComparison.lean);\n- Lusin 1.17 (Chapter01/Lusin.lean);\n- area_image_criticalSet_eq_zero (Chapter02/AreaCritical.lean);\n- the injective area formula (Chapter02/AreaLipschitz.lean);\n- Rademacher and the Lipschitz image bound (Chapter02/Lipschitz.lean);\n- Whitney C^1 extension (Chapter02/WhitneyExtension.lean), towards the missing Ch. 2, 1.5 C^1 approximation;\n- Chapter04.hausdorff_blowUp_image;\n- Mathlib euclideanHausdorffMeasure_smul₀ and hausdorffMeasure_homothety_image.\n\nChild smooth_cutoff: Real.smoothTransition (contDiff, zero_of_nonpos, one_of_one_le, nonneg, le_one), contDiff_infty_iff_deriv, intervalIntegral.integral_hasDerivAt_right, contDiffAt_norm, contDiff_iff_contDiffAt, norm_fderiv_le_of_lipschitz.\n\nChild projection_algebra: LinearMap.trace_smulRight, IsProj.trace, trace_mul_comm, Submodule.starProjection_minimal, dist_starProjection_eq_infDist, starProjection_add_starProjection_orthogonal. SimonGMT Chapter04.norm_normalProjection_eq_infDist is exactly part (ii) for a general E.\n\nLean checks:\n- After compiling Submission.lean to an olean in /tmp, NodeCheck.lean elaborates all four frozen types in the comparator's scope (import GMT.Ch05.Submission plus the replayed open/namespace commands), with only sorry warnings.\n- Skel.lean (the four children as hypotheses) elaborates the parent's infinite case, the first-variation application, the mu-a.e. divergence rewrite and the operator/distance bound.\n- Skel2.lean proves sorry-free that X is C^1, compactly supported, has tsupport X ⊆ U, and that D zeta = 0 off B_rho(xi).\n\nThe book texts supply the printed proofs that are copied: Ch. 5 2.1; Ch. 3 1.2, 1.3, 1.6, 1.8, 1.9; Ch. 1 1.17, 3.6; Ch. 2 1.5, 3.1-3.5, 4.4."
+    }
+  ],
+  "parent_id": "root.tilt_excess_height_estimate-a1",
+  "child_id": "root.tilt_excess_height_estimate-a1.height_field_divergence-a1",
+  "subproblem": {
+    "key": "height_field_divergence",
+    "title": "Tangential divergence of the height test field ζ^2 · p_{T⊥}(x − ξ)",
+    "statement": "Let n, l ∈ N, U ⊆ R^{n+l} any set, and V a rectifiable n-varifold in U (contract structure). Let ζ : R^{n+l} → R, ξ, x ∈ R^{n+l}, and P, T n-dimensional linear subspaces. Assume ζ is differentiable at x and V.tangentProj x = p_P. Then the field X(y) := ζ(y)^2 p_{T⊥}(y − ξ) satisfies\n  div_M X(x) = trace(DX(x) ∘ p_P) = ζ(x)^2 · (1/2)|p_P − p_T|^2 + 2ζ(x) · Dζ(x)((p_P − p_T) p_{T⊥}(x − ξ)),\nwhere |·|^2 = hsNormSq.",
+    "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ζ : Amb n ℓ → ℝ) (ξ x : Amb n ℓ) (P T : Submodule ℝ (Amb n ℓ)), DifferentiableAt ℝ ζ x → Module.finrank ℝ P = n → Module.finrank ℝ T = n → V.tangentProj x = P.starProjection → V.divM (fun y => ζ y ^ 2 • Tᗮ.starProjection (y - ξ)) x = ζ x ^ 2 * (hsNormSq (P.starProjection - T.starProjection) / 2) + 2 * ζ x * fderiv ℝ ζ x ((P.starProjection - T.starProjection) (Tᗮ.starProjection (x - ξ)))",
+    "lean_name": "divM_height_test_field_eq",
+    "depends_on": [
+      "projection_algebra"
+    ],
+    "natural_proof": "Source: the divergence computation of the supplied proof (step 3; Simon 5.2.1 proof, displays (1)-(2)).\n\nNotation: A := p_{T⊥} = Tᗮ.starProjection, q := p_T = T.starProjection, p := p_P = P.starProjection = V.tangentProj x, x' := A(x − ξ), and X(y) := ζ(y)^2 A(y − ξ). By the contract's definition, V.divM X x = trace(DX(x) ∘ V.tangentProj x).\n\n1. The derivative of X at x.\n  - ζ is differentiable at x, so y ↦ ζ(y)^2 is differentiable at x with derivative 2ζ(x) Dζ(x) (chain rule for t ↦ t^2).\n  - y ↦ A(y − ξ) is affine with derivative A.\n  - By the product rule for scalar multiplication (HasFDerivAt.smul), X is differentiable at x and, for all v,\n      DX(x)v = ζ(x)^2 A v + 2ζ(x) (Dζ(x)v) x'.\n    That is, DX(x) = ζ(x)^2 A + 2ζ(x) · (Dζ(x)).smulRight(x').\n2. Taking the trace. Since V.tangentProj x = p, linearity of the trace gives\n    V.divM X x = trace(DX(x) ∘ p) = ζ(x)^2 trace(A ∘ p) + 2ζ(x) trace((Dζ(x) ∘ p).smulRight(x')).\n3. Rank-one trace. For a linear functional φ and a vector w, trace(v ↦ φ(v) w) = φ(w) (LinearMap.trace_smulRight). Hence\n    trace((Dζ(x) ∘ p).smulRight(x')) = Dζ(x)(p x').\n4. Since x' = A(x − ξ) ∈ T⊥ and q vanishes on T⊥, q x' = 0. Therefore\n    p x' = (p − q) x' = (P.starProjection − T.starProjection)(Tᗮ.starProjection(x − ξ)).\n5. By the sibling lemma projection_algebra, part (iii) (applicable since dim P = n = dim T),\n    trace(A ∘ p) = trace(p_{T⊥} ∘ p_P) = hsNormSq(p_P − p_T)/2.\n6. Substituting steps 3-5 into step 2:\n    V.divM X x = ζ(x)^2 · (hsNormSq(p_P − p_T)/2) + 2ζ(x) · Dζ(x)((p_P − p_T)(p_{T⊥}(x − ξ))).\n   This is the claimed identity. ∎",
+    "proof_key_steps": [
+      "DX(x) = ζ(x)^2 p_{T⊥} + 2ζ(x)·Dζ(x).smulRight(x'), with x' = p_{T⊥}(x−ξ) (product rule)",
+      "div_M X(x) = ζ^2 trace(p_{T⊥} ∘ p_P) + 2ζ·Dζ(x)(p_P x') (trace linearity and trace_smulRight)",
+      "p_T x' = 0, so p_P x' = (p_P − p_T)x'",
+      "trace(p_{T⊥} ∘ p_P) = hsNormSq(p_P − p_T)/2 by projection_algebra (iii)"
+    ]
+  },
+  "audit": {
+    "key": "height_field_divergence",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Differentiability at x suffices for the stated product-rule calculation. Trace linearity and the rank-one trace formula produce Dζ(x)(p_P x′); orthogonality gives p_T x′ = 0, and projection_algebra supplies the remaining trace term. All rank and projection hypotheses are used correctly. The exact type matches the prose, its sole sibling dependency is correctly directed, and its bare name is unreserved."
+  },
+  "resolved_dependencies": [
+    "root.tilt_excess_height_estimate-a1.projection_algebra-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-height-field-divergence-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-height-field-divergence-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-height-field-divergence-a1/parent-supplied-natural-proof.json"
+}
