@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "77620c9f59b82c2e12fa910e72c1f02cdd953bc5746b2604d809f4986639f151",
+  "git_delta": {
+    "base_commit": "293e2956525887c84485638ba4c789c234fb4f5b",
+    "candidate_commit": "8c000d1fa9feee2acb018915bef93ab6fe6393ef",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "isoperimetric_abs_covector_apply_le",
+    "diff_sha256": "032ee8e7fc8cb3acefd2e9f9ab10397847862589b5205d008b557fccae4a1172",
+    "source_sha256": "afc25b767cf8300b60850a3b7082b8c27663b3da30534aa5f3dabf1d9b729cdf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.isoperimetric_abs_covector_apply_le",
+      "statement": "∀ (P n : ℕ) (α : Covector (Eucl P) n) (τ : Fin n → Eucl P), (∀ j, ‖τ j‖ ≤ 1) → |α τ| ≤ (P : ℝ) ^ n * covectorEuclideanNorm α",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
