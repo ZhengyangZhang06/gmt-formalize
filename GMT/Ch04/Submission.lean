@@ -434,6 +434,44 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Ball mass between blow-up integrals of cut-offs** (Simon Ch. 3, Remark 1.8(2)). Let `μ` be
+finite on compact sets, `t > 0` and `f ∈ C_c`. If `f ≤ 1` everywhere and `f ≤ 0` off the closed
+unit ball, then `∫ f(t⁻¹(y - x)) dμ(y) ≤ μ(B_t(x))`; if `f ≥ 0` everywhere and `f ≥ 1` on the
+closed unit ball, then `μ(B_t(x)) ≤ ∫ f(t⁻¹(y - x)) dμ(y)`. Both follow by integrating a pointwise
+comparison of `f(t⁻¹(y - x))` with the indicator of `B_t(x)`, as
+`‖t⁻¹(y - x)‖ ≤ 1 ↔ y ∈ B_t(x)`. -/
+theorem Submission.ts_blowup_cutoff_closedBall_bounds : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (x : Ambient n ℓ) (f : C_c(Ambient n ℓ, ℝ)) (t : ℝ), IsFiniteMeasureOnCompacts μ → 0 < t → ((∀ y : Ambient n ℓ, f y ≤ 1) → (∀ y : Ambient n ℓ, 1 < ‖y‖ → f y ≤ 0) → ∫ y, f (t⁻¹ • (y - x)) ∂μ ≤ μ.real (closedBall x t)) ∧ ((∀ y : Ambient n ℓ, 0 ≤ f y) → (∀ y : Ambient n ℓ, ‖y‖ ≤ 1 → 1 ≤ f y) → μ.real (closedBall x t) ≤ ∫ y, f (t⁻¹ • (y - x)) ∂μ) := by
+  intro n ℓ μ x f t _ ht
+  -- step 1: `η(y) = t⁻¹(y - x)` is a homeomorphism, so `f ∘ η` is continuous with compact
+  -- support, hence `μ`-integrable
+  let η : Ambient n ℓ ≃ₜ Ambient n ℓ :=
+    (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero t⁻¹ (inv_ne_zero ht.ne'))
+  have hF : Integrable (fun y ↦ f (t⁻¹ • (y - x))) μ :=
+    ((map_continuous f).comp η.continuous).integrable_of_hasCompactSupport
+      (f.hasCompactSupport.comp_homeomorph η)
+  -- step 2: `B_t(x)` is compact, so `1_{B_t(x)}` is `μ`-integrable with integral `μ(B_t(x))`
+  have hB : MeasurableSet (closedBall x t) := measurableSet_closedBall
+  have hI : Integrable ((closedBall x t).indicator (1 : Ambient n ℓ → ℝ)) μ :=
+    (integrable_indicator_iff hB).2 (integrableOn_const measure_closedBall_lt_top.ne)
+  rw [← integral_indicator_one hB]
+  -- step 3: `‖t⁻¹(y - x)‖ ≤ 1 ↔ y ∈ B_t(x)`
+  have hmem : ∀ y, ‖t⁻¹ • (y - x)‖ ≤ 1 ↔ y ∈ closedBall x t := fun y ↦ by
+    rw [mem_closedBall, dist_eq_norm, norm_smul_of_nonneg (inv_nonneg.2 ht.le),
+      inv_mul_le_iff₀ ht, mul_one]
+  -- steps 4 and 5: compare pointwise with `1_{B_t(x)}` and integrate
+  refine ⟨fun hle hout ↦ integral_mono hF hI fun y ↦ ?_,
+    fun hnn hin ↦ integral_mono hI hF fun y ↦ ?_⟩
+  · by_cases hy : y ∈ closedBall x t
+    · rw [indicator_of_mem hy]
+      exact hle _
+    · rw [indicator_of_notMem hy]
+      exact hout _ (not_le.1 fun h ↦ hy ((hmem y).1 h))
+  · by_cases hy : y ∈ closedBall x t
+    · rw [indicator_of_mem hy]
+      exact hin _ ((hmem y).2 hy)
+    · rw [indicator_of_notMem hy]
+      exact hnn _
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
