@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b3abe137e5a9e16c7a64bee8202aa9cbba5fd2155670f816d37327c8117b88bb",
+  "git_delta": {
+    "base_commit": "07522699771e13b136115f038a3b9ba1decc02af",
+    "candidate_commit": "207414b58c6dfa2d2af848902104e215ef55a24c",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "coareaJacobian_eq_zero_iff_not_surjective",
+    "diff_sha256": "b7c85d93a4d1cea39715b8c42c90698948bb60690dc3e93ee696d21e9077badb",
+    "source_sha256": "f48f58c0bcbf13ffde79e16429096236f2d9c8d032294748ba7081d34a78e9f5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.coareaJacobian_eq_zero_iff_not_surjective",
+      "statement": "∀ (N m n : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N) (A : Rn n →L[ℝ] Rn N), tangentSpace M x = LinearMap.range A.toLinearMap → (coareaJacobian M f x = 0 ↔ ¬ Function.Surjective ((fderiv ℝ f x).comp A))",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
