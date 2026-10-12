@@ -451,6 +451,84 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Uniform bounds for mollifications** (Rellich compactness step of the harmonic approximation
+lemma, Simon 5.3.1–5.3.4).  Let `ρ` be continuous, zero for `‖z‖ ≥ 1`, bounded by `C` and
+`C`-Lipschitz, `0 < ε ≤ s / 2`, and `v(x) = ∫ u(x − εz)ρ(z) dz`.  On `K = closedBall(0, 1 − s)`
+we have `|v| ≤ ε⁻ⁿC∫_{B₁(0)}|u|` and `v` is `ε⁻⁽ⁿ⁺¹⁾C∫_{B₁(0)}|u|`-Lipschitz.  Substituting
+`y = x − εz` gives `v(x) = ε⁻ⁿ∫ u(y)ρ(ε⁻¹(x − y)) dy`, and for `x ∈ K`, `‖y‖ ≥ 1` we have
+`‖x − y‖ ≥ s ≥ ε`, so the integrand vanishes off `B₁(0)`; the bounds follow from `|ρ| ≤ C` and
+`|ρ(ε⁻¹(x − y)) − ρ(ε⁻¹(x' − y))| ≤ Cε⁻¹‖x − x'‖`. -/
+theorem Submission.dorag_ha_rb_mollify_bounds : ∀ (n : ℕ) (u ρ : Euclid n → ℝ) (C ε s : ℝ), Continuous u → Continuous ρ → (∀ z : Euclid n, 1 ≤ ‖z‖ → ρ z = 0) → (∀ z, |ρ z| ≤ C) → (∀ z z', |ρ z - ρ z'| ≤ C * ‖z - z'‖) → 0 < ε → ε ≤ s / 2 → (∀ x ∈ closedBall (0 : Euclid n) (1 - s), |∫ z, u (x - ε • z) * ρ z| ≤ (ε ^ n)⁻¹ * C * ∫ y in ball (0 : Euclid n) 1, |u y|) ∧ ∀ x ∈ closedBall (0 : Euclid n) (1 - s), ∀ x' ∈ closedBall (0 : Euclid n) (1 - s), |(∫ z, u (x - ε • z) * ρ z) - ∫ z, u (x' - ε • z) * ρ z| ≤ (ε ^ (n + 1))⁻¹ * C * ‖x - x'‖ * ∫ y in ball (0 : Euclid n) 1, |u y| := by
+  intro n u ρ C ε s hu hρ hsupp hbd hlip hε hεs
+  have hεn : 0 < (ε ^ n)⁻¹ := inv_pos.mpr (pow_pos hε n)
+  -- (1) support: for `x ∈ K` and `y ∉ B₁(0)`, `‖ε⁻¹(x − y)‖ ≥ 1`, so `ρ(ε⁻¹(x − y)) = 0`
+  have hzero : ∀ x ∈ closedBall (0 : Euclid n) (1 - s), ∀ y ∉ ball (0 : Euclid n) 1,
+      ρ (ε⁻¹ • (x - y)) = 0 := by
+    intro x hx y hy
+    rw [mem_closedBall_zero_iff] at hx
+    rw [mem_ball_zero_iff, not_lt] at hy
+    apply hsupp
+    rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr hε.le), one_le_inv_mul₀ hε]
+    calc ε ≤ ‖y‖ - ‖x‖ := by linarith
+      _ ≤ ‖y - x‖ := norm_sub_norm_le _ _
+      _ = ‖x - y‖ := norm_sub_rev _ _
+  -- (2) continuous functions are integrable on `B₁(0)`
+  have hint : ∀ f : Euclid n → ℝ, Continuous f → IntegrableOn f (ball (0 : Euclid n) 1) :=
+    fun f hf => (hf.continuousOn.integrableOn_compact (isCompact_closedBall 0 1)).mono_set
+      ball_subset_closedBall
+  have hcf : ∀ x : Euclid n, Continuous fun y => u y * ρ (ε⁻¹ • (x - y)) := fun x =>
+    hu.mul (hρ.comp ((continuous_const.sub continuous_id).const_smul ε⁻¹))
+  -- (3) change of variables `y = x − εz`: `v(x) = ε⁻ⁿ∫_{B₁(0)} u(y)ρ(ε⁻¹(x − y)) dy`
+  have hcov : ∀ x ∈ closedBall (0 : Euclid n) (1 - s), ∫ z, u (x - ε • z) * ρ z =
+      (ε ^ n)⁻¹ * ∫ y in ball (0 : Euclid n) 1, u y * ρ (ε⁻¹ • (x - y)) := by
+    intro x hx
+    have h1 := Measure.integral_comp_smul_of_nonneg (volume : Measure (Euclid n))
+      (fun w => u (x - w) * ρ (ε⁻¹ • w)) ε (hR := hε.le)
+    simp only [inv_smul_smul₀ hε.ne', finrank_euclideanSpace_fin, smul_eq_mul] at h1
+    rw [h1, setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => by
+      rw [hzero x hx y hy, mul_zero]]
+    congr 1
+    simpa only [sub_sub_cancel] using
+      integral_sub_left_eq_self (fun y => u y * ρ (ε⁻¹ • (x - y))) volume x
+  refine ⟨fun x hx => ?_, fun x hx x' hx' => ?_⟩
+  -- (4) sup bound from `|ρ| ≤ C`
+  · have hb : |∫ y in ball (0 : Euclid n) 1, u y * ρ (ε⁻¹ • (x - y))| ≤
+        ∫ y in ball (0 : Euclid n) 1, |u y| * C := by
+      rw [← Real.norm_eq_abs]
+      refine norm_integral_le_of_norm_le ((hint _ hu.abs).mul_const C)
+        (Eventually.of_forall fun y => ?_)
+      rw [Real.norm_eq_abs, abs_mul]
+      exact mul_le_mul_of_nonneg_left (hbd _) (abs_nonneg _)
+    rw [integral_mul_const] at hb
+    rw [hcov x hx, abs_mul, abs_of_pos hεn]
+    calc (ε ^ n)⁻¹ * |∫ y in ball (0 : Euclid n) 1, u y * ρ (ε⁻¹ • (x - y))|
+        ≤ (ε ^ n)⁻¹ * ((∫ y in ball (0 : Euclid n) 1, |u y|) * C) :=
+          mul_le_mul_of_nonneg_left hb hεn.le
+      _ = (ε ^ n)⁻¹ * C * ∫ y in ball (0 : Euclid n) 1, |u y| := by ring
+  -- (5) Lipschitz bound from `|ρ(ε⁻¹(x − y)) − ρ(ε⁻¹(x' − y))| ≤ Cε⁻¹‖x − x'‖`
+  · have hb : |∫ y in ball (0 : Euclid n) 1,
+          (u y * ρ (ε⁻¹ • (x - y)) - u y * ρ (ε⁻¹ • (x' - y)))| ≤
+        ∫ y in ball (0 : Euclid n) 1, |u y| * (C * ε⁻¹ * ‖x - x'‖) := by
+      rw [← Real.norm_eq_abs]
+      refine norm_integral_le_of_norm_le ((hint _ hu.abs).mul_const _)
+        (Eventually.of_forall fun y => ?_)
+      rw [Real.norm_eq_abs, ← mul_sub, abs_mul]
+      refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+      calc |ρ (ε⁻¹ • (x - y)) - ρ (ε⁻¹ • (x' - y))|
+          ≤ C * ‖ε⁻¹ • (x - y) - ε⁻¹ • (x' - y)‖ := hlip _ _
+        _ = C * ε⁻¹ * ‖x - x'‖ := by
+          rw [← smul_sub, sub_sub_sub_cancel_right, norm_smul,
+            Real.norm_of_nonneg (inv_nonneg.mpr hε.le), mul_assoc]
+    rw [integral_mul_const, integral_sub (hint _ (hcf x)) (hint _ (hcf x'))] at hb
+    rw [hcov x hx, hcov x' hx', ← mul_sub, abs_mul, abs_of_pos hεn]
+    calc (ε ^ n)⁻¹ * |(∫ y in ball (0 : Euclid n) 1, u y * ρ (ε⁻¹ • (x - y))) -
+          ∫ y in ball (0 : Euclid n) 1, u y * ρ (ε⁻¹ • (x' - y))|
+        ≤ (ε ^ n)⁻¹ * ((∫ y in ball (0 : Euclid n) 1, |u y|) * (C * ε⁻¹ * ‖x - x'‖)) :=
+          mul_le_mul_of_nonneg_left hb hεn.le
+      _ = (ε ^ (n + 1))⁻¹ * C * ‖x - x'‖ * ∫ y in ball (0 : Euclid n) 1, |u y| := by
+          rw [pow_succ, mul_inv]
+          ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
