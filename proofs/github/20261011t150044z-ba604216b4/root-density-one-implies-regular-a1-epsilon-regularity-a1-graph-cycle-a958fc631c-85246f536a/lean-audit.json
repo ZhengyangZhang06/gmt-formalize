@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ace9780730fc92fa1709555c10ac341fecec44f475874e2700b86bacce7883fc",
+  "git_delta": {
+    "base_commit": "e3d56e8772aa92a58992791e8ee7ad64c9fc53e2",
+    "candidate_commit": "a8c49c6cc954f64a765a7e999224b918f23cb614",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgcr_orthogonal_coordinates",
+    "diff_sha256": "a799adbca9d254b65f9a41c29aea98b4068763e795a5c0cb584df5f4c1233951",
+    "source_sha256": "229e3dcf5e5abd611567faaff7ae03ddc1fe4af153bb912ea3a994fa66802672",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgcr_orthogonal_coordinates",
+      "statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ x : Euclid (n + k), ∃ v : Euclid n, ∃ w : Euclid k, x = ι v + ι' w) ∧ ∀ (v : Euclid n) (w : Euclid k), ‖ι v + ι' w‖ ^ 2 = ‖v‖ ^ 2 + ‖w‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
