@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.FormsDuality
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
@@ -1611,6 +1612,78 @@ theorem Submission.lpf_lipschitz_c1_immersion_pieces :
     refine mem_iUnion.2 ⟨Nat.pair m (Nat.pair i j), ?_⟩
     simp only [E', O, hk, ite_eq_left hgood]
     exact ⟨hwj, hwm, hwi⟩
+/-- **Simon Ch. 3, Lemma 1.2 ("only if").**  A countably `n`-rectifiable `M ⊆ ℝ^P` is covered,
+up to an `Hⁿ`-null set, by the images `Φ_j(Ω_j)` of `C¹` maps `Φ_j : ℝⁿ → ℝ^P` which are
+Lipschitz and antilipschitz on open sets `Ω_j ⊆ ℝⁿ`. -/
+theorem Submission.lpf_countably_rectifiable_c1_cover : ∀ (P n : ℕ) (M : Set (Eucl P)), CountablyRectifiable n M → ∃ (Φ : ℕ → Eucl n → Eucl P) (Ω : ℕ → Set (Eucl n)), (∀ j, IsOpen (Ω j)) ∧ (∀ j, ContDiff ℝ 1 (Φ j)) ∧ (∀ j, ∃ K : ℝ≥0, LipschitzOnWith K (Φ j) (Ω j)) ∧ (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) ∧ (μHE[n] : Measure (Eucl P)) (M \ ⋃ j, Φ j '' Ω j) = 0 := by
+  intro P n M hM
+  -- Ch. 3, 1.1: `M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ)` with `Hⁿ(M₀) = 0` and every `F_j` Lipschitz.
+  obtain ⟨M₀, hM₀, F, hF, hMsub⟩ := hM
+  choose K hK using hF
+  -- Step 1: `C¹` maps `G j k`, antilipschitz on open `O j k`, with `F j = G j k` on
+  -- `E j k ⊆ O j k`; a.e. point where `F j` has injective derivative lies in some `E j k`.
+  choose G O E hO hG hanti _ hEO _ hFG hae using fun j =>
+    Submission.lpf_lipschitz_c1_immersion_pieces n P univ (F j) isOpen_univ
+      (hK j).locallyLipschitz.locallyLipschitzOn
+  -- Steps 2–5: `F j (ℝⁿ)` is covered by the sets `G j k (O j k)` up to an `Hⁿ`-null set.
+  have hnull : ∀ j, (μHE[n] : Measure (Eucl P)) (range (F j) \ ⋃ k, G j k '' O j k) = 0 := by
+    intro j
+    set R := Poincare.SimonGMT.Chapter02.areaRegularSet (F j)
+    -- Steps 3–4: the images of the nondifferentiability set (Rademacher) and of the critical
+    -- set (area formula) are `Hⁿ`-null.
+    have h₁ : (μHE[n] : Measure (Eucl P)) (F j '' (univ \ R)) = 0 := by
+      have h := Poincare.SimonGMT.Chapter02.area_image_compl_regularSet_eq_zero (hK j) univ
+      rwa [finrank_euclideanSpace_fin] at h
+    -- Step 3: the regular points outside `⋃_k E j k` form an `Lⁿ`-null set, and `Hⁿ = Lⁿ` on
+    -- `ℝⁿ`, so their image under the Lipschitz map `F j` is `Hⁿ`-null.
+    have hZ : (volume : Measure (Eucl n)) (R \ ⋃ k, E j k) = 0 := by
+      refine measure_mono_null ?_ (ae_iff.mp (hae j))
+      intro w hw h
+      exact hw.2 (h (mem_univ w) ⟨fderiv ℝ (F j) w, hw.1.1.hasFDerivAt, hw.1.2⟩)
+    have h₂ : (μHE[n] : Measure (Eucl P)) (F j '' (R \ ⋃ k, E j k)) = 0 := by
+      have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+        ((hK j).lipschitzOnWith (s := R \ ⋃ k, E j k))
+      rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume n, hZ, mul_zero] at h
+      exact le_antisymm h bot_le
+    -- Step 5: `F j = G j k` on `E j k ⊆ O j k`.
+    refine measure_mono_null ?_ (measure_union_null h₁ h₂)
+    rintro _ ⟨⟨w, rfl⟩, hw⟩
+    by_cases hR : w ∈ R
+    · refine Or.inr ⟨w, ⟨hR, fun hE => hw ?_⟩, rfl⟩
+      obtain ⟨k, hk⟩ := mem_iUnion.mp hE
+      exact mem_iUnion.mpr ⟨k, w, (hEO j k hk).1, (hFG j k w hk).1.symm⟩
+    · exact Or.inl ⟨w, ⟨mem_univ w, hR⟩, rfl⟩
+  -- Step 6: a `C¹` map is Lipschitz on every ball, by the mean value inequality, since its
+  -- derivative is bounded on the compact closed ball.
+  have hball : ∀ Ψ : Eucl n → Eucl P, ContDiff ℝ 1 Ψ → ∀ r : ℝ,
+      ∃ C : ℝ≥0, LipschitzOnWith C Ψ (ball 0 r) := by
+    intro Ψ hΨ r
+    obtain ⟨C, hC⟩ := (isCompact_closedBall (0 : Eucl n) r).exists_bound_of_continuousOn
+      (hΨ.continuous_fderiv one_ne_zero).continuousOn
+    refine ⟨C.toNNReal, (convex_ball (0 : Eucl n) r).lipschitzOnWith_of_nnnorm_fderiv_le (𝕜 := ℝ)
+      (fun x _ => hΨ.differentiable one_ne_zero x) fun x hx => ?_⟩
+    rw [← NNReal.coe_le_coe, coe_nnnorm]
+    exact (hC x (ball_subset_closedBall hx)).trans (Real.le_coe_toNNReal C)
+  -- So we shrink `O j k` to the bounded open sets `O j k ∩ B(0, m)`, on which `G j k` stays
+  -- antilipschitz, and enumerate the triples `(j, k, m)`.
+  let e : ℕ ≃ ℕ × ℕ × ℕ := (Denumerable.eqv (ℕ × ℕ × ℕ)).symm
+  refine ⟨fun l => G (e l).1 (e l).2.1, fun l => O (e l).1 (e l).2.1 ∩ ball 0 ((e l).2.2 : ℝ),
+    fun l => (hO _ _).inter isOpen_ball, fun l => hG _ _, fun l => ?_, fun l => ?_, ?_⟩
+  · obtain ⟨C, hC⟩ := hball _ (hG (e l).1 (e l).2.1) ((e l).2.2 : ℝ)
+    exact ⟨C, hC.mono inter_subset_right⟩
+  · obtain ⟨c, hc, h⟩ := hanti (e l).1 (e l).2.1
+    exact ⟨c, hc, fun w hw w' hw' => h w hw.1 w' hw'.1⟩
+  -- Step 7: `M ∖ ⋃_l Φ_l(Ω_l) ⊆ M₀ ∪ ⋃_j (F_j(ℝⁿ) ∖ ⋃_k G j k (O j k))`, a countable union
+  -- of `Hⁿ`-null sets.
+  · refine measure_mono_null ?_ (measure_union_null hM₀ (measure_iUnion_null hnull))
+    rintro x ⟨hxM, hxΦ⟩
+    refine (hMsub hxM).imp id fun hx => ?_
+    obtain ⟨j, hj⟩ := mem_iUnion.mp hx
+    refine mem_iUnion.mpr ⟨j, hj, fun hcov => hxΦ ?_⟩
+    obtain ⟨k, w, hw, rfl⟩ := mem_iUnion.mp hcov
+    obtain ⟨m, hm⟩ := exists_nat_gt ‖w‖
+    refine mem_iUnion.mpr ⟨e.symm (j, k, m), w, ?_, ?_⟩ <;> simp only [Equiv.apply_symm_apply]
+    exact ⟨hw, mem_ball_zero_iff.mpr hm⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
