@@ -3402,6 +3402,224 @@ theorem Submission.bf_compact_cover_reduction : ∀ (n ℓ : ℕ) (Q : Set (Rn (
       refine Or.inr (mem_iUnion.2 ⟨Nat.pair j i, ?_⟩)
       simpa only [Nat.unpair_pair] using hi
     · exact Or.inl (mem_iUnion.2 ⟨j, Or.inr ⟨hxP, by simpa only [mem_iUnion] using hxK⟩⟩)
+/-- **Simon Ch. 2, proof of Theorem 1.9, choice (1)** (`chapter-02.txt` lines 366–370), for
+Mathlib's unnormalized Hausdorff measure: if `μH[d](s) < ∞`, then for every `r > 0` and `ε ≠ 0`
+some countable cover `(tₙ)` of `s` by sets of diameter `≤ r` has `∑ₙ diam(tₙ)^d ≤ μH[d](s) + ε`
+(empty `tₙ` cost `0`). By `hausdorffMeasure_apply` the infimum over such covers is at most
+`μH[d](s) < μH[d](s) + ε`, so some cover lies strictly below that bound. -/
+theorem Submission.hausdorffMeasure_exists_cover_tsum_le_add : ∀ {X : Type} [EMetricSpace X]
+    [MeasurableSpace X] [BorelSpace X] (d : ℝ) (s : Set X) (r ε : ℝ≥0∞), 0 < r → ε ≠ 0 →
+    μH[d] s ≠ ∞ → ∃ t : ℕ → Set X, s ⊆ ⋃ n, t n ∧ (∀ n, Metric.ediam (t n) ≤ r) ∧
+      ∑' n, ⨆ _ : (t n).Nonempty, Metric.ediam (t n) ^ d ≤ μH[d] s + ε := by
+  intro X _ _ _ d s r ε hr hε hs
+  -- The infimum over covers by sets of diameter `≤ r` is the `r`-term of the supremum.
+  have hle : (⨅ (t : ℕ → Set X) (_ : s ⊆ ⋃ n, t n) (_ : ∀ n, Metric.ediam (t n) ≤ r),
+      ∑' n, ⨆ _ : (t n).Nonempty, Metric.ediam (t n) ^ d) ≤ μH[d] s := by
+    rw [Measure.hausdorffMeasure_apply]
+    exact le_iSup₂_of_le r hr le_rfl
+  have hlt := hle.trans_lt (ENNReal.lt_add_right hs hε)
+  simp only [iInf_lt_iff] at hlt
+  obtain ⟨t, hst, htr, hsum⟩ := hlt
+  exact ⟨t, hst, htr, hsum.le⟩
+/-- **Volume–diameter bound**, the step of Simon Ch. 2, proof of Theorem 1.9
+(`chapter-02.txt` lines 401–406) where `Lᵐ(f(C_{ij})) ≤ ωₘ (diam f(C_{ij})/2)ᵐ` is taken from the
+isodiametric inequality 2.10, with the cruder constant of a closed-ball inclusion:
+`Lᵐ(closure S) ≤ ωₘ (diam S)ᵐ` for every `S ⊆ ℝᵐ`, where `ωₘ = Lᵐ(B₁(0))`. The cases `S = ∅`,
+`m = 0` (`B₁(0) = ℝ⁰`, power `1`) and `diam S = ∞` (`ωₘ > 0`) are immediate. Otherwise
+`closure S ⊆ B̄_{diam S}(s₀)` for any `s₀ ∈ S`, and `Lᵐ(B̄_D(s₀)) = Dᵐ ωₘ` by `addHaar_closedBall`. -/
+theorem Submission.volume_closure_le_unitBall_mul_ediam_pow : ∀ (m : ℕ) (S : Set (Rn m)),
+    volume (closure S) ≤ volume (Metric.ball (0 : Rn m) 1) * Metric.ediam S ^ m := by
+  intro m S
+  rcases S.eq_empty_or_nonempty with rfl | ⟨s₀, hs₀⟩
+  · simp
+  by_cases hm : m = 0
+  · -- `ℝ⁰` is a single point, so `B₁(0)` is the whole space and the power is `1`.
+    subst hm
+    have hball : Metric.ball (0 : Rn 0) 1 = univ := by
+      ext x; simp [Subsingleton.elim x 0]
+    rw [pow_zero, mul_one, hball]
+    exact measure_mono (subset_univ _)
+  have hω0 : volume (Metric.ball (0 : Rn m) 1) ≠ 0 :=
+    (Metric.measure_ball_pos volume (0 : Rn m) one_pos).ne'
+  by_cases hD : Metric.ediam S = ∞
+  · rw [hD, ENNReal.top_pow hm, ENNReal.mul_top hω0]
+    exact le_top
+  -- `S` is bounded and `closure S` has the same diameter, so it lies in `B̄_{diam S}(s₀)`.
+  have hb : Bornology.IsBounded S := Metric.isBounded_iff_ediam_ne_top.2 hD
+  have hsub : closure S ⊆ Metric.closedBall s₀ (Metric.diam S) := by
+    intro x hx
+    rw [Metric.mem_closedBall, ← Metric.diam_closure]
+    exact Metric.dist_le_diam_of_mem hb.closure hx (subset_closure hs₀)
+  calc volume (closure S) ≤ volume (Metric.closedBall s₀ (Metric.diam S)) := measure_mono hsub
+    _ = ENNReal.ofReal (Metric.diam S ^ m) * volume (Metric.ball (0 : Rn m) 1) := by
+        rw [Measure.addHaar_closedBall volume s₀ Metric.diam_nonneg, finrank_euclideanSpace_fin]
+    _ = volume (Metric.ball (0 : Rn m) 1) * Metric.ediam S ^ m := by
+        rw [mul_comm, ENNReal.ofReal_pow Metric.diam_nonneg, Metric.diam, ENNReal.ofReal_toReal hD]
+
+/-- **Simon Ch. 2, Theorem 1.9 (pp. 45–46), Eilenberg's inequality when `H^{m+k}(A) < ∞`**
+(`chapter-02.txt` lines 366–411), for Mathlib's unnormalized Hausdorff measures `μH[·]` and an
+arbitrary `A ⊆ ℝᴺ`: an `L`-Lipschitz `f : ℝᴺ → ℝᵐ` has a Borel `g ≥ μH[k](A ∩ f⁻¹{y})` with
+`∫ g dLᵐ ≤ ωₘ Lᵐ μH[m+k](A)`, `ωₘ = Lᵐ(B₁(0))`. As in (1)–(2), take covers `Cᵢⱼ` of `A` with
+`diam Cᵢⱼ ≤ 1/i` and `∑ⱼ diam(Cᵢⱼ)^{m+k} ≤ μH[m+k](A) + 1/i`, and the Borel functions
+`gᵢ = ∑ⱼ diam(Cᵢⱼ)ᵏ 1_{closure f(Cᵢⱼ)}`. The majorant is `g = liminf gᵢ`, so Fatou's lemma
+replaces the upper integral of Remark 1.10, and `Lᵐ(closure S) ≤ ωₘ (diam S)ᵐ` replaces the
+isodiametric inequality. -/
+theorem Submission.eilenberg_hausdorff_upper_integral_of_ne_top :
+    ∀ (N m k : ℕ) (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f →
+      μH[((m + k : ℕ) : ℝ)] A ≠ ∞ → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧
+        (∀ y, μH[(k : ℝ)] (A ∩ f ⁻¹' {y}) ≤ g y) ∧
+        ∫⁻ y, g y ≤ volume (Metric.ball (0 : Rn m) 1) * (L : ℝ≥0∞) ^ m *
+          μH[((m + k : ℕ) : ℝ)] A := by
+  intro N m k A f L hf hA
+  set ω := volume (Metric.ball (0 : Rn m) 1)
+  -- (1): covers `C i j` of `A` with `diam (C i j) ≤ 1/i` and cost `≤ μH[m+k](A) + 1/i`.
+  choose C hCcov hCdiam hCsum using fun i : ℕ ↦
+    Submission.hausdorffMeasure_exists_cover_tsum_le_add ((m + k : ℕ) : ℝ) A (i : ℝ≥0∞)⁻¹
+      (i : ℝ≥0∞)⁻¹ (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top i))
+      (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top i)) hA
+  set G : ℕ → Rn m → ℝ≥0∞ := fun i y ↦
+    ∑' j, (closure (f '' C i j)).indicator (fun _ ↦ Metric.ediam (C i j) ^ (k : ℝ)) y with hG
+  have hGj : ∀ i j, Measurable ((closure (f '' C i j)).indicator
+      fun _ : Rn m ↦ Metric.ediam (C i j) ^ (k : ℝ)) := fun i j ↦
+    measurable_const.indicator isClosed_closure.measurableSet
+  have hGmeas : ∀ i, Measurable (G i) := fun i ↦ Measurable.tsum (hGj i)
+  refine ⟨fun y ↦ liminf (fun i ↦ G i y) atTop, Measurable.liminf hGmeas, fun y ↦ ?_, ?_⟩
+  · -- (2): the `C i j` with `y ∈ f '' C i j` cover `A ∩ f⁻¹{y}`, at a cost of at most `G i y`.
+    have hcov : ∀ i, A ∩ f ⁻¹' {y} ⊆ ⋃ j : {j : ℕ // y ∈ f '' C i j}, C i j := fun i x hx ↦ by
+      obtain ⟨j, hj⟩ := mem_iUnion.1 (hCcov i hx.1)
+      exact mem_iUnion.2 ⟨⟨j, x, hj, hx.2⟩, hj⟩
+    refine (Measure.hausdorffMeasure_le_liminf_tsum (ι := fun i : ℕ ↦ {j : ℕ // y ∈ f '' C i j})
+      (k : ℝ) (A ∩ f ⁻¹' {y}) (l := atTop) (fun i : ℕ ↦ (i : ℝ≥0∞)⁻¹)
+      ENNReal.tendsto_inv_nat_nhds_zero (fun i j ↦ C i j)
+      (Eventually.of_forall fun i j ↦ hCdiam i j) (Eventually.of_forall hcov)).trans
+      (liminf_le_liminf (Eventually.of_forall fun i ↦ ?_))
+    calc ∑' j : {j : ℕ // y ∈ f '' C i j}, Metric.ediam (C i j.1) ^ (k : ℝ)
+        = ∑' j, {j : ℕ | y ∈ f '' C i j}.indicator (fun j ↦ Metric.ediam (C i j) ^ (k : ℝ)) j :=
+          tsum_subtype {j : ℕ | y ∈ f '' C i j} fun j ↦ Metric.ediam (C i j) ^ (k : ℝ)
+      _ ≤ G i y := ENNReal.tsum_le_tsum fun j ↦ by
+          by_cases hj : y ∈ f '' C i j
+          · rw [Set.indicator_of_mem (show j ∈ {j : ℕ | y ∈ f '' C i j} from hj),
+              Set.indicator_of_mem (subset_closure hj)]
+          · rw [Set.indicator_of_notMem (show j ∉ {j : ℕ | y ∈ f '' C i j} from hj)]
+            exact zero_le
+  · -- `∫ G i ≤ ωₘ Lᵐ (μH[m+k](A) + 1/i)`, since `Lᵐ(closure f(C)) ≤ ωₘ (L diam C)ᵐ`.
+    have hint : ∀ i : ℕ, ∫⁻ y, G i y ≤
+        ω * (L : ℝ≥0∞) ^ m * (μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹) := by
+      intro i
+      rw [hG]
+      dsimp only
+      rw [lintegral_tsum fun j ↦ (hGj i j).aemeasurable]
+      calc ∑' j, ∫⁻ y, (closure (f '' C i j)).indicator
+              (fun _ ↦ Metric.ediam (C i j) ^ (k : ℝ)) y
+          = ∑' j, Metric.ediam (C i j) ^ (k : ℝ) * volume (closure (f '' C i j)) :=
+            tsum_congr fun j ↦ lintegral_indicator_const isClosed_closure.measurableSet _
+        _ ≤ ∑' j, ω * (L : ℝ≥0∞) ^ m *
+              ⨆ _ : (C i j).Nonempty, Metric.ediam (C i j) ^ ((m + k : ℕ) : ℝ) :=
+            ENNReal.tsum_le_tsum fun j ↦ by
+              rcases (C i j).eq_empty_or_nonempty with h | h
+              · simp [h]
+              rw [iSup_pos h]
+              calc Metric.ediam (C i j) ^ (k : ℝ) * volume (closure (f '' C i j))
+                  ≤ Metric.ediam (C i j) ^ (k : ℝ) * (ω * Metric.ediam (f '' C i j) ^ m) := by
+                    gcongr
+                    exact Submission.volume_closure_le_unitBall_mul_ediam_pow m _
+                _ ≤ Metric.ediam (C i j) ^ (k : ℝ) *
+                      (ω * ((L : ℝ≥0∞) * Metric.ediam (C i j)) ^ m) := by
+                    gcongr
+                    exact hf.ediam_image_le _
+                _ = ω * (L : ℝ≥0∞) ^ m * Metric.ediam (C i j) ^ ((m + k : ℕ) : ℝ) := by
+                    rw [ENNReal.rpow_natCast, ENNReal.rpow_natCast, mul_pow, pow_add]
+                    ring
+        _ = ω * (L : ℝ≥0∞) ^ m *
+              ∑' j, ⨆ _ : (C i j).Nonempty, Metric.ediam (C i j) ^ ((m + k : ℕ) : ℝ) :=
+            ENNReal.tsum_mul_left
+        _ ≤ ω * (L : ℝ≥0∞) ^ m * (μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹) := by
+            gcongr
+            exact hCsum i
+    -- Fatou's lemma, and `1/i → 0`.
+    have hlim : Tendsto (fun i : ℕ ↦ ω * (L : ℝ≥0∞) ^ m *
+        (μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹)) atTop
+        (𝓝 (ω * (L : ℝ≥0∞) ^ m * μH[((m + k : ℕ) : ℝ)] A)) := by
+      have h : Tendsto (fun i : ℕ ↦ μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹) atTop
+          (𝓝 (μH[((m + k : ℕ) : ℝ)] A + 0)) :=
+        tendsto_const_nhds.add ENNReal.tendsto_inv_nat_nhds_zero
+      rw [add_zero] at h
+      exact ENNReal.Tendsto.const_mul h
+        (Or.inr (ENNReal.mul_ne_top measure_ball_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top)))
+    calc ∫⁻ y, liminf (fun i ↦ G i y) atTop ≤ liminf (fun i ↦ ∫⁻ y, G i y) atTop :=
+          lintegral_liminf_le hGmeas
+      _ ≤ liminf (fun i : ℕ ↦ ω * (L : ℝ≥0∞) ^ m *
+            (μH[((m + k : ℕ) : ℝ)] A + (i : ℝ≥0∞)⁻¹)) atTop :=
+          liminf_le_liminf (Eventually.of_forall hint)
+      _ = ω * (L : ℝ≥0∞) ^ m * μH[((m + k : ℕ) : ℝ)] A := hlim.liminf_eq
+
+/-- **Eilenberg's inequality, Simon Ch. 2, Theorem 1.9 and Remark 1.10 (pp. 45–46)**
+(`chapter-02.txt` lines 335–411; `k = 0` is Theorem 1.8(ii)), in upper-integral form for an
+arbitrary `A`: a Borel `g ≥ Hᵏ(A ∩ f⁻¹{y})` with `∫ g dLᵐ ≤ C Lᵐ H^{m+k}(A)`. Writing
+`μHE[d] = c_d • μH[d]` and `ωₘ = Lᵐ(B₁(0))`, take `C = ωₘ c_k / c_{m+k}` (any constant will do,
+so the isodiametric inequality is not needed). If `μH[m+k](A) < ∞`, then `g = c_k g₀` for the
+majorant `g₀` of `Submission.eilenberg_hausdorff_upper_integral_of_ne_top`. Otherwise
+`H^{m+k}(A) = ∞`, and `g ≡ ∞` works unless `C Lᵐ = 0`, i.e. `L = 0` and `m ≥ 1`; then `f` is
+constant, equal to `y₀` say, and `g = ∞ · 1_{y₀}` has integral `0`. -/
+theorem Submission.eilenberg_upper_integral_inequality : ∀ (N m k : ℕ), ∃ C : ℝ≥0,
+    ∀ (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f →
+      ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μHE[k] (A ∩ f ⁻¹' {y}) ≤ g y) ∧
+        ∫⁻ y, g y ≤ ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A := by
+  intro N m k
+  -- `μHE[d] = c d • μH[d]` with `c d ≠ 0`, and `ω = Lᵐ(B₁(0)) ∈ (0, ∞)`.
+  obtain ⟨c, hc_eq⟩ : ∃ c : ℕ → ℝ≥0, ∀ d, c d =
+      Measure.addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin d))) μH[d] :=
+    ⟨_, fun _ ↦ rfl⟩
+  have hc : ∀ d, c d ≠ 0 := fun d ↦ by
+    rw [hc_eq]; exact Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero d
+  have hHE : ∀ (d : ℕ) (S : Set (Rn N)), μHE[d] S = c d * μH[(d : ℝ)] S := fun d S ↦ by
+    rw [hc_eq, Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+      smul_eq_mul]
+  set ω := volume (Metric.ball (0 : Rn m) 1)
+  have hω0 : ω ≠ 0 := (Metric.measure_ball_pos volume (0 : Rn m) one_pos).ne'
+  have hω : ω ≠ ∞ := measure_ball_ne_top
+  set C : ℝ≥0 := ω.toNNReal * c k / c (m + k) with hC
+  have hC0 : C ≠ 0 :=
+    div_ne_zero (mul_ne_zero (ENNReal.toNNReal_pos hω0 hω).ne' (hc k)) (hc (m + k))
+  have hCc : (C : ℝ≥0∞) * c (m + k) = ω * c k := by
+    rw [← ENNReal.coe_mul, hC, div_mul_cancel₀ _ (hc (m + k)), ENNReal.coe_mul,
+      ENNReal.coe_toNNReal hω]
+  refine ⟨C, fun A f L hf ↦ ?_⟩
+  by_cases hA : μH[((m + k : ℕ) : ℝ)] A = ∞
+  · have hAE : μHE[m + k] A = ∞ := by
+      rw [hHE, hA, ENNReal.mul_top (ENNReal.coe_ne_zero.2 (hc (m + k)))]
+    by_cases hCL : C * L ^ m = 0
+    · -- `L = 0` and `m ≠ 0`, so `f ≡ f 0` and `{f 0}` is `Lᵐ`-null.
+      obtain ⟨rfl, hm⟩ := pow_eq_zero_iff'.1 ((mul_eq_zero.1 hCL).resolve_left hC0)
+      have hfc : ∀ x, f x = f 0 := fun x ↦ (LipschitzWith.zero_iff f).1 hf x 0
+      have : Nontrivial (Rn m) := Module.nontrivial_of_finrank_pos (R := ℝ)
+        (by rw [finrank_euclideanSpace_fin]; exact Nat.pos_of_ne_zero hm)
+      refine ⟨({f 0} : Set (Rn m)).indicator fun _ ↦ ∞,
+        measurable_const.indicator (measurableSet_singleton _), fun y ↦ ?_, ?_⟩
+      · by_cases hy : y = f 0
+        · rw [Set.indicator_of_mem (Set.mem_singleton_iff.2 hy)]
+          exact le_top
+        · have hS : A ∩ f ⁻¹' {y} = ∅ := Set.eq_empty_of_forall_notMem fun x hx ↦
+            hy ((show f x = y from hx.2).symm.trans (hfc x))
+          rw [hS, measure_empty]
+          exact zero_le
+      · rw [lintegral_indicator_const (measurableSet_singleton _), measure_singleton, mul_zero]
+        exact zero_le
+    · refine ⟨fun _ ↦ ∞, measurable_const, fun _ ↦ le_top, ?_⟩
+      rw [hAE, ENNReal.mul_top (ENNReal.coe_ne_zero.2 hCL)]
+      exact le_top
+  · obtain ⟨g₀, hg₀, hle, hint⟩ :=
+      Submission.eilenberg_hausdorff_upper_integral_of_ne_top N m k A f L hf hA
+    refine ⟨fun y ↦ c k * g₀ y, hg₀.const_mul _, fun y ↦ ?_, ?_⟩
+    · show μHE[k] (A ∩ f ⁻¹' {y}) ≤ c k * g₀ y
+      rw [hHE]
+      gcongr
+      exact hle y
+    · calc ∫⁻ y, (c k : ℝ≥0∞) * g₀ y = c k * ∫⁻ y, g₀ y := lintegral_const_mul _ hg₀
+        _ ≤ c k * (ω * L ^ m * μH[((m + k : ℕ) : ℝ)] A) := by gcongr
+        _ = C * c (m + k) * L ^ m * μH[((m + k : ℕ) : ℝ)] A := by rw [hCc]; ring
+        _ = ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A := by
+          rw [hHE, ENNReal.coe_mul, ENNReal.coe_pow]; ring
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry

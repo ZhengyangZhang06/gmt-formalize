@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.eilenberg_inequality-a1.eilenberg_core_finite-a1",
+  "parent_id": "root.eilenberg_inequality-a1",
+  "depth": 2,
+  "title": "Eilenberg's inequality for unnormalized Hausdorff measure when H^{m+k}(A) < ∞ (Simon Ch. 2, Thm 1.9, proof lines 366–411)",
+  "statement": "Let N, m, k ∈ ℕ, let A ⊆ ℝ^N be arbitrary (not necessarily measurable), L ∈ [0, ∞), and f : ℝ^N → ℝᵐ L-Lipschitz (ℝ^d = EuclideanSpace ℝ (Fin d)). Let μH[s] be Mathlib's unnormalized s-dimensional Hausdorff (outer) measure on ℝ^N (gauge diam^s; the exponents are the real numbers k and m + k), λₘ = volume on ℝᵐ, and ωₘ := λₘ(B₁(0)) with B₁(0) the open unit ball of ℝᵐ. If μH[m+k](A) < ∞, there is a Borel measurable g : ℝᵐ → [0, ∞] with μH[k](A ∩ f⁻¹{y}) ≤ g(y) for every y ∈ ℝᵐ and ∫ g dλₘ ≤ ωₘ·L^m·μH[m+k](A).",
+  "lean_statement": "∀ (N m k : ℕ) (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0), LipschitzWith L f → μH[((m + k : ℕ) : ℝ)] A ≠ ∞ → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧ (∀ y, μH[(k : ℝ)] (A ∩ f ⁻¹' {y}) ≤ g y) ∧ ∫⁻ y, g y ≤ volume (Metric.ball (0 : Rn m) 1) * (L : ℝ≥0∞) ^ m * μH[((m + k : ℕ) : ℝ)] A",
+  "lean_name": "eilenberg_hausdorff_upper_integral_of_ne_top",
+  "depends_on": [
+    "root.eilenberg_inequality-a1.hausdorff_near_optimal_cover-a1",
+    "root.eilenberg_inequality-a1.volume_diameter_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.eilenberg_inequality-a1.hausdorff_near_optimal_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.eilenberg_inequality-a1.volume_diameter_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-eilenberg-inequality-a1-eilenberg-core-finite-a1-a1"
+}
