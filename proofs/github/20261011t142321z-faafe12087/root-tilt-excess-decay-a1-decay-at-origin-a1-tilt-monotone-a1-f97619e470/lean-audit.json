@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "020df444ae07152eb00fb0fea77021bb52925133dc383b2192dc83d29e19394a",
+  "git_delta": {
+    "base_commit": "6013848f1ba1fe4a5e83e75984dc99fe2a191ede",
+    "candidate_commit": "517c00e4909809e36224e8a937c98710bdae7fb0",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_tiltExcess_le_of_subset",
+    "diff_sha256": "38dafdf48671295e0d8d8b80ac9c36ae5b4d1378e563d5fa6a358c3ac78db9ca",
+    "source_sha256": "f2653d82cb700c5064a92a57c414e3cdc4f8fa3e8df2506aec9951c25bb4c655",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_tiltExcess_le_of_subset",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (z w : Amb n ℓ) (s t : ℝ) (S : Submodule ℝ (Amb n ℓ)), 0 < s → s ≤ t → closedBall z s ⊆ closedBall w t → closedBall w t ⊆ U → V.tiltExcess z s S ≤ (t / s) ^ n * V.tiltExcess w t S",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

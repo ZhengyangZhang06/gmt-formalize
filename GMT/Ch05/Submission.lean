@@ -458,6 +458,71 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 5, Remark 4.6 (p. 116)**: the trivial comparison of tilt-excesses on nested balls.
+If `0 < s ≤ t` and `B_s(z) ⊆ B_t(w) ⊆ U` (closed balls), then for every subspace `S`
+`E(z, s, S) ≤ (t/s)ⁿ E(w, t, S)`.  The integrand `φ(x) = |p_{T_x M} − p_S|²` satisfies
+`0 ≤ φ ≤ 4(n + ℓ)`, since both projections have operator norm `≤ 1`, and it is `μ_V`-a.e. strongly
+measurable because `A ↦ |A − p_S|²` is continuous.  As `B_t(w) ⊆ U` is compact,
+`μ_V(B_t(w)) = ∫_{M ∩ B_t(w)} θ dHⁿ < ∞`, so `φ` is integrable on `B_t(w)` and
+`∫_{B_s(z)} φ dμ_V ≤ ∫_{B_t(w)} φ dμ_V`; finally `s⁻ⁿ = (t/s)ⁿ t⁻ⁿ`. -/
+theorem tdo_tiltExcess_le_of_subset : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (z w : Amb n ℓ) (s t : ℝ) (S : Submodule ℝ (Amb n ℓ)), 0 < s → s ≤ t → closedBall z s ⊆ closedBall w t → closedBall w t ⊆ U → V.tiltExcess z s S ≤ (t / s) ^ n * V.tiltExcess w t S := by
+  intro n ℓ U V hmeas z w s t S hs hst hsub hU
+  -- Notation: `φ(x) = |p_{T_x M} − p_S|²`.
+  set φ : Amb n ℓ → ℝ := fun x => hsNormSq (V.tangentProj x - S.starProjection)
+  -- Step 1: `0 ≤ φ ≤ 4(n + ℓ)`, as `‖p_{T_x M}‖ ≤ 1` (a projection, or `0`) and `‖p_S‖ ≤ 1`.
+  have hnorm : ∀ x, ‖V.tangentProj x‖ ≤ 1 := by
+    intro x
+    unfold RectifiableVarifold.tangentProj
+    split_ifs
+    · exact Submodule.starProjection_norm_le _
+    · simp
+  have hφ0 : ∀ x, 0 ≤ φ x := fun x => Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hφle : ∀ x, ‖φ x‖ ≤ 4 * ((n + ℓ : ℕ) : ℝ) := by
+    intro x
+    rw [Real.norm_of_nonneg (hφ0 x)]
+    have hA : ‖V.tangentProj x - S.starProjection‖ ≤ 2 :=
+      (norm_sub_le _ _).trans (by linarith [hnorm x, S.starProjection_norm_le])
+    calc φ x ≤ ∑ _i : Fin (n + ℓ), (2 : ℝ) ^ 2 := by
+          refine Finset.sum_le_sum fun i _ => pow_le_pow_left₀ (norm_nonneg _) ?_ 2
+          calc _ ≤ ‖V.tangentProj x - S.starProjection‖ * ‖EuclideanSpace.single i (1 : ℝ)‖ :=
+                (V.tangentProj x - S.starProjection).le_opNorm _
+            _ ≤ 2 := by simpa using hA
+      _ = 4 * ((n + ℓ : ℕ) : ℝ) := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+          ring
+  -- Step 2: `φ` is `μ_V`-a.e. strongly measurable, since `A ↦ |A − p_S|²` is continuous.
+  have hcont : Continuous fun A : Amb n ℓ →L[ℝ] Amb n ℓ => hsNormSq (A - S.starProjection) := by
+    unfold hsNormSq
+    exact continuous_finsetSum _ fun i _ =>
+      (((continuous_id.sub continuous_const).clm_apply continuous_const).norm).pow 2
+  have hφmeas : AEStronglyMeasurable φ V.weight := hcont.comp_aestronglyMeasurable hmeas
+  -- Step 3: `μ_V(B_t(w)) = ∫_{M ∩ B_t(w)} θ dHⁿ < ∞`, as `B_t(w) ⊆ U` is compact.
+  have hK : IsCompact (closedBall w t) := isCompact_closedBall w t
+  have hfin : V.weight (closedBall w t) < ⊤ := by
+    rw [RectifiableVarifold.weight, withDensity_apply _ hK.isClosed.measurableSet,
+      Measure.restrict_restrict hK.isClosed.measurableSet, inter_comm (closedBall w t) V.carrier]
+    exact (V.integrableOn_mult _ hK hU).lintegral_lt_top
+  -- Step 4: `φ` is integrable on `B_t(w)`, so `∫_{B_s(z)} φ dμ_V ≤ ∫_{B_t(w)} φ dμ_V`.
+  have hint : IntegrableOn φ (closedBall w t) V.weight :=
+    Measure.integrableOn_of_bounded hfin.ne hφmeas (Eventually.of_forall hφle)
+  have hmono : ∫ x in closedBall z s, φ x ∂V.weight ≤ ∫ x in closedBall w t, φ x ∂V.weight :=
+    setIntegral_mono_set hint (Eventually.of_forall hφ0) (Eventually.of_forall hsub)
+  -- Step 5: `s⁻ⁿ = (t/s)ⁿ t⁻ⁿ`, as `0 < s ≤ t`.
+  have ht : 0 < t := lt_of_lt_of_le hs hst
+  have hscale : (s ^ n)⁻¹ = (t / s) ^ n * (t ^ n)⁻¹ := by
+    rw [div_pow]
+    field_simp
+  unfold RectifiableVarifold.tiltExcess
+  calc (s ^ n)⁻¹ * ∫ x in closedBall z s, φ x ∂V.weight
+      ≤ (s ^ n)⁻¹ * ∫ x in closedBall w t, φ x ∂V.weight :=
+        mul_le_mul_of_nonneg_left hmono (inv_nonneg.2 (pow_nonneg hs.le n))
+    _ = (t / s) ^ n * ((t ^ n)⁻¹ * ∫ x in closedBall w t, φ x ∂V.weight) := by
+        rw [hscale, mul_assoc]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
