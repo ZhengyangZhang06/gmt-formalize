@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7354a2e0372b2d45fa80f5fef4a059095e9e2fe93b84a5f064efb92556074d72",
+  "git_delta": {
+    "base_commit": "30ec1945d1d0e9d83925cd72d6d417afac975888",
+    "candidate_commit": "f232db531b90cc3b9d6f27fd8e2099ef0ff8a273",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "tgc_dim_zero_tangent_points_countable",
+    "diff_sha256": "0db1f906b81555168cc15b19695224ecc867490be441f0990a6ce269ef5507bb",
+    "source_sha256": "9506dd2f1e9c2006695fa14afd4b3d6cf692488a6a71fd70587b47ae92b38f57",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tgc_dim_zero_tangent_points_countable",
+      "statement": "∀ (N : ℕ) (U : Set (Euclidean N)) (V : Varifold N 0 U), {x : Euclidean N | ∃ (T : Grassmannian N 0) (θ : ℝ), HasTangentPlane V x T θ}.Countable",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
