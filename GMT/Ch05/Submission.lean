@@ -509,6 +509,30 @@ theorem aal_packing_finite_net : ∀ (X : Type) [MetricSpace X] [MeasurableSpace
   have hle := le_csSup hCbdd hmem
   rw [Finset.card_insert_of_notMem hyF, hFcard] at hle
   omega
+/-- Simon Ch. 5, proof of Lemma 2.5 (p. 109), (1), first inequality: for any measure `μ` and any
+map `x ↦ P x`, on `B_s(y)` we have `|v(x)|² = |x - y|^{n+2} · |v(x)|² |x - y|^{-n-2}
+≤ s^{n+2} · |v(x)|² |x - y|^{-n-2}` with `v(x) = (x - y) - P x (x - y)` (both sides vanish at
+`x = y`), hence `∫_{B_s(y)} |v|² dμ ≤ s^{n+2} ∫_{B_s(y)} |v|² |x - y|^{-n-2} dμ`. -/
+theorem aal_normal_sq_lintegral_le_conical : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (P : Amb n ℓ → Amb n ℓ →L[ℝ] Amb n ℓ) (y : Amb n ℓ) (s : ℝ), 0 < s → ∫⁻ x in closedBall y s, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ ≤ ENNReal.ofReal (s ^ (n + 2)) * ∫⁻ x in closedBall y s, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂μ := by
+  intro n ℓ μ P y s hs
+  -- Move the finite constant `ofReal (s ^ (n + 2))` inside and compare integrands on the ball.
+  rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+  refine setLIntegral_mono' measurableSet_closedBall fun x hx => ?_
+  rw [← ENNReal.ofReal_mul (pow_nonneg hs.le _)]
+  refine ENNReal.ofReal_le_ofReal ?_
+  rcases eq_or_ne x y with rfl | hxy
+  · -- At `x = y` both sides vanish, since `P x 0 = 0`.
+    simp
+  · -- For `0 < |x - y| ≤ s`: `|v|² = |x - y|^{n+2} (|v|² / |x - y|^{n+2}) ≤ s^{n+2} (|v|² / |x - y|^{n+2})`.
+    have hd : 0 < ‖x - y‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hxy)
+    have hds : ‖x - y‖ ≤ s := by rwa [mem_closedBall, dist_eq_norm] at hx
+    have hpow : 0 < ‖x - y‖ ^ (n + 2) := pow_pos hd _
+    calc ‖(x - y) - P x (x - y)‖ ^ 2
+        = ‖x - y‖ ^ (n + 2) * (‖(x - y) - P x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) :=
+          (mul_div_cancel₀ _ hpow.ne').symm
+      _ ≤ s ^ (n + 2) * (‖(x - y) - P x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) :=
+          mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hd.le hds _)
+            (div_nonneg (sq_nonneg _) hpow.le)
 
 end Submission
 
