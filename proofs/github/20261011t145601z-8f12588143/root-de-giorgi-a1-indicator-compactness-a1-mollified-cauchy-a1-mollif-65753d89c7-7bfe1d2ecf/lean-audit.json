@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9703253b687e6a985f10aa7b2ed52f9a52b5caf4cd494c0172af6c8605929497",
+  "git_delta": {
+    "base_commit": "79993a39611586de4c058bb1a9ea75c826b1d838",
+    "candidate_commit": "b51edf96571c87ea5c7e4f25340c5f32d770ed25",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "indCompact_mollCauchy_l1_error",
+    "diff_sha256": "477fd8f665abebd080cecc36eacaa586b4c1d7ad0e8b75cc8f9d60825808ff0d",
+    "source_sha256": "f67c126b7e2b1080e07be3d765d66e3494f708f784e9f975c8aad0e97fb0e714",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.indCompact_mollCauchy_l1_error",
+      "statement": "∀ (N : ℕ) (F : Set (Rn N)) (ρ : Rn N → ℝ) (σ R C : ℝ), NullMeasurableSet F volume → Continuous ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → ∫ y, ρ y = 1 → Function.support ρ ⊆ Metric.closedBall (0 : Rn N) σ → 0 ≤ C → (∀ h : Rn N, ‖h‖ ≤ σ → volume (Metric.ball (0 : Rn N) R ∩ symmDiff ((fun y ↦ y + h) ⁻¹' F) F) ≤ ENNReal.ofReal (C * ‖h‖)) → ∫⁻ y in Metric.ball (0 : Rn N) R, ENNReal.ofReal |(∫ z in F, ρ (y - z)) - F.indicator (fun _ ↦ (1 : ℝ)) y| ≤ ENNReal.ofReal (σ * C)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
