@@ -410,6 +410,132 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Density sum over a fibre with at least two points (Simon Ch. 8, 5.11(∗) from (8), in the proof
+of 5.9): with `d` the minimal distance between distinct points of `s`, the per-point bounds at
+`τ = d/16`, `σ = d/(8δ²)` and the cluster bound at `(σ, d/4)` sum to
+`Σ_{y∈s} Θ(y) ≤ (1 + δ) μ(B_1(x))/ω_n + δ`, the constants being absorbed by `Aδ ≤ 1`. -/
+theorem Submission.intcpt_allard_fdsb_separated_sum_bound :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (P : Grassmannian N n) (x : Euclidean N) (s : Finset (Euclidean N)) (Θ : Euclidean N → ℝ≥0∞) (K c δ ε : ℝ) (M : ℕ), 0 ≤ K → 0 ≤ c → 0 < δ → δ ≤ 1 / 2 → 0 < ε → ε ≤ δ ^ 4 → (2 + 2 * c + 2 * c / (unitBallVolume n).toReal + 2 * (M : ℝ) * K / (unitBallVolume n).toReal) * δ ≤ 1 → 2 ≤ s.card → s.card ≤ M → (∀ y ∈ s, ‖y - x‖ < ε ∧ ∀ τ σ : ℝ, 0 < τ → τ ≤ 1 / 4 → 0 < σ → σ < 1 → Θ y ≤ (ENNReal.ofReal (Real.exp ε) * (μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 4 * τ}) / ENNReal.ofReal σ ^ n) + ENNReal.ofReal (K * ε * σ / τ)) / unitBallVolume n) → (∀ σ τ : ℝ, 0 < σ → σ ≤ δ ^ 2 → 2 * δ ^ 2 * σ ≤ τ → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → 4 * τ ≤ ‖y - y'‖) → ∑ y ∈ s, μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ ENNReal.ofReal (1 + c * δ ^ 2) * μ (closedBall x 1) + ENNReal.ofReal (c * δ ^ 2)) → ∑ y ∈ s, Θ y ≤ ENNReal.ofReal (1 + δ) * μ (closedBall x 1) / unitBallVolume n + ENNReal.ofReal δ := by
+  intro N n μ P x s Θ K c δ ε M hK hc hδ hδh hε hεδ hA hs2 hsM hpt hCB
+  -- Step 0: `ω_n ∈ (0, ∞)`; `ω := ω_n.toReal` is positive with `ofReal ω = ω_n`.
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  obtain ⟨ω, hω_def⟩ : ∃ ω, (unitBallVolume n).toReal = ω := ⟨_, rfl⟩
+  have hω : 0 < ω := hω_def ▸ ENNReal.toReal_pos hω0 hωtop
+  have hωW : ENNReal.ofReal ω = unitBallVolume n := hω_def ▸ ENNReal.ofReal_toReal hωtop
+  rw [hω_def] at hA
+  -- `δ² ≤ 1/4`, `ε ≤ δ⁴ ≤ δ²` and `e^ε ≤ 1 + 2ε ≤ 1 + 2δ²`.
+  have hδ0 : δ ≠ 0 := hδ.ne'
+  have hδ2pos : 0 < δ ^ 2 := by positivity
+  have hδ2 : δ ^ 2 ≤ 1 / 4 := by nlinarith
+  have hδ4 : δ ^ 4 ≤ δ ^ 2 := by nlinarith [mul_le_mul_of_nonneg_left hδ2 hδ2pos.le]
+  have hexp : Real.exp ε ≤ 1 + 2 * δ ^ 2 := by
+    have h := Real.abs_exp_sub_one_le (x := ε) (by rw [abs_of_pos hε]; linarith)
+    rw [abs_of_pos hε] at h
+    linarith [le_abs_self (Real.exp ε - 1)]
+  -- Step 1: the minimal distance `d` between distinct points of `s`; `0 < d < 2ε`.
+  obtain ⟨p, hp, hpmin⟩ := s.offDiag.exists_min_image (fun q ↦ ‖q.1 - q.2‖) (by
+    obtain ⟨a, ha, b, hb, hab⟩ := Finset.one_lt_card.1 (by omega : 1 < s.card)
+    exact ⟨(a, b), Finset.mem_offDiag.2 ⟨ha, hb, hab⟩⟩)
+  obtain ⟨hp1, hp2, hp12⟩ := Finset.mem_offDiag.1 hp
+  obtain ⟨d, hd_def⟩ : ∃ d, ‖p.1 - p.2‖ = d := ⟨_, rfl⟩
+  have hdmin : ∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → d ≤ ‖y - y'‖ := by
+    intro y hy y' hy' h
+    rw [← hd_def]
+    exact hpmin (y, y') (Finset.mem_offDiag.2 ⟨hy, hy', h⟩)
+  have hd : 0 < d := hd_def ▸ norm_pos_iff.2 (sub_ne_zero.2 hp12)
+  have hdε : d < 2 * ε := by
+    rw [← hd_def]
+    calc ‖p.1 - p.2‖ = ‖(p.1 - x) - (p.2 - x)‖ := by rw [sub_sub_sub_cancel_right]
+      _ ≤ ‖p.1 - x‖ + ‖p.2 - x‖ := norm_sub_le _ _
+      _ < ε + ε := add_lt_add (hpt _ hp1).1 (hpt _ hp2).1
+      _ = 2 * ε := by ring
+  -- Step 2: the scales `τ = d/16` and `σ = d/(8δ²)`.
+  obtain ⟨τ, hτ⟩ : ∃ τ : ℝ, τ = d / 16 := ⟨_, rfl⟩
+  obtain ⟨σ, hσ⟩ : ∃ σ : ℝ, σ = d / (8 * δ ^ 2) := ⟨_, rfl⟩
+  have hd0 : d ≠ 0 := hd.ne'
+  have hτ0 : 0 < τ := by rw [hτ]; positivity
+  have hτ1 : τ ≤ 1 / 4 := by rw [hτ]; linarith
+  have hσ0 : 0 < σ := by rw [hσ]; positivity
+  have hσδ : σ ≤ δ ^ 2 := by
+    rw [hσ, div_le_iff₀ (by positivity)]
+    nlinarith [pow_pos hδ 4]
+  have hσ1 : σ < 1 := by linarith
+  have hστ : 2 * δ ^ 2 * σ ≤ 4 * τ := le_of_eq (by rw [hσ, hτ]; field_simp; ring)
+  have hsep : ∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → 4 * (4 * τ) ≤ ‖y - y'‖ := by
+    intro y hy y' hy' h
+    rw [hτ]
+    linarith [hdmin y hy y' hy' h]
+  have hk : K * ε * σ / τ ≤ 2 * K * δ ^ 2 := by
+    have e : K * ε * σ / τ = 2 * K * ε / δ ^ 2 := by
+      rw [hσ, hτ]; field_simp; ring
+    rw [e, div_le_iff₀ hδ2pos]
+    nlinarith [mul_le_mul_of_nonneg_left hεδ hK]
+  -- Step 6: the real absorption inequalities, from `Aδ ≤ 1`.
+  have ha : 0 ≤ 2 * c / ω := by positivity
+  have hb : 0 ≤ 2 * (M : ℝ) * K / ω := by positivity
+  have hA1 : (2 + 2 * c) * δ ≤ 1 := by
+    nlinarith [mul_nonneg ha hδ.le, mul_nonneg hb hδ.le]
+  have hA2 : (2 * c / ω + 2 * (M : ℝ) * K / ω) * δ ≤ 1 := by
+    nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ 2 + 2 * c) hδ.le]
+  have hi : Real.exp ε * (1 + c * δ ^ 2) ≤ 1 + δ := by
+    have h1 : Real.exp ε * (1 + c * δ ^ 2) ≤ (1 + 2 * δ ^ 2) * (1 + c * δ ^ 2) :=
+      mul_le_mul_of_nonneg_right hexp (by positivity)
+    have h2 : (2 + 2 * c) * δ * δ ≤ 1 * δ := mul_le_mul_of_nonneg_right hA1 hδ.le
+    have h3 : 0 ≤ c * (δ ^ 2 * (1 - 2 * δ ^ 2)) :=
+      mul_nonneg hc (mul_nonneg hδ2pos.le (by linarith))
+    nlinarith [h1, h2, h3]
+  have hii : Real.exp ε * (c * δ ^ 2) + (M : ℝ) * (2 * K * δ ^ 2) ≤ δ * ω := by
+    have h1 : Real.exp ε * (c * δ ^ 2) ≤ 2 * (c * δ ^ 2) :=
+      mul_le_mul_of_nonneg_right (by linarith) (by positivity)
+    have h2 : (2 * c / ω + 2 * (M : ℝ) * K / ω) * δ * (δ * ω) ≤ 1 * (δ * ω) :=
+      mul_le_mul_of_nonneg_right hA2 (by positivity)
+    have h3 : (2 * c / ω + 2 * (M : ℝ) * K / ω) * δ * (δ * ω) =
+        (2 * c + 2 * (M : ℝ) * K) * δ ^ 2 := by
+      field_simp
+    nlinarith [h1, h2, h3]
+  -- Steps 3–5: sum the per-point bounds at `(τ, σ)` and apply (CB) at `(σ, 4τ)`, `#s ≤ M`.
+  have hCB' := hCB σ (4 * τ) hσ0 hσδ hστ hsep
+  have hfin : ENNReal.ofReal (Real.exp ε) * (ENNReal.ofReal (1 + c * δ ^ 2) * μ (closedBall x 1) +
+        ENNReal.ofReal (c * δ ^ 2)) + (M : ℝ≥0∞) * ENNReal.ofReal (2 * K * δ ^ 2) ≤
+      ENNReal.ofReal (1 + δ) * μ (closedBall x 1) + ENNReal.ofReal δ * unitBallVolume n := by
+    have e1 : ENNReal.ofReal (Real.exp ε) * ENNReal.ofReal (1 + c * δ ^ 2) ≤
+        ENNReal.ofReal (1 + δ) := by
+      rw [← ENNReal.ofReal_mul (Real.exp_pos ε).le]
+      exact ENNReal.ofReal_le_ofReal hi
+    have h1 : 0 ≤ Real.exp ε * (c * δ ^ 2) := by positivity
+    have h2 : 0 ≤ (M : ℝ) * (2 * K * δ ^ 2) := by positivity
+    have e2 : ENNReal.ofReal (Real.exp ε) * ENNReal.ofReal (c * δ ^ 2) +
+        (M : ℝ≥0∞) * ENNReal.ofReal (2 * K * δ ^ 2) ≤ ENNReal.ofReal δ * unitBallVolume n := by
+      rw [← hωW, ← ENNReal.ofReal_mul (Real.exp_pos ε).le, ← ENNReal.ofReal_natCast,
+        ← ENNReal.ofReal_mul (Nat.cast_nonneg _), ← ENNReal.ofReal_add h1 h2,
+        ← ENNReal.ofReal_mul hδ.le]
+      exact ENNReal.ofReal_le_ofReal hii
+    calc _ = ENNReal.ofReal (Real.exp ε) * ENNReal.ofReal (1 + c * δ ^ 2) * μ (closedBall x 1) +
+          (ENNReal.ofReal (Real.exp ε) * ENNReal.ofReal (c * δ ^ 2) +
+            (M : ℝ≥0∞) * ENNReal.ofReal (2 * K * δ ^ 2)) := by ring
+      _ ≤ _ := add_le_add (mul_le_mul_left e1 _) e2
+  calc ∑ y ∈ s, Θ y
+      ≤ ∑ y ∈ s, (ENNReal.ofReal (Real.exp ε) * (μ (closedBall y σ ∩
+          {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 4 * τ}) / ENNReal.ofReal σ ^ n) +
+          ENNReal.ofReal (K * ε * σ / τ)) / unitBallVolume n :=
+        Finset.sum_le_sum fun y hy ↦ (hpt y hy).2 τ σ hτ0 hτ1 hσ0 hσ1
+    _ = (ENNReal.ofReal (Real.exp ε) * ∑ y ∈ s, μ (closedBall y σ ∩
+          {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 4 * τ}) / ENNReal.ofReal σ ^ n +
+          (s.card : ℝ≥0∞) * ENNReal.ofReal (K * ε * σ / τ)) / unitBallVolume n := by
+        rw [← ENNReal.sum_div, Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_const,
+          nsmul_eq_mul]
+    _ ≤ (ENNReal.ofReal (Real.exp ε) * (ENNReal.ofReal (1 + c * δ ^ 2) * μ (closedBall x 1) +
+          ENNReal.ofReal (c * δ ^ 2)) + (M : ℝ≥0∞) * ENNReal.ofReal (2 * K * δ ^ 2)) /
+          unitBallVolume n :=
+        ENNReal.div_le_div_right (add_le_add (mul_le_mul_right hCB' _)
+          (mul_le_mul' (by exact_mod_cast hsM) (ENNReal.ofReal_le_ofReal hk))) _
+    _ ≤ (ENNReal.ofReal (1 + δ) * μ (closedBall x 1) + ENNReal.ofReal δ * unitBallVolume n) /
+          unitBallVolume n := ENNReal.div_le_div_right hfin _
+    _ = ENNReal.ofReal (1 + δ) * μ (closedBall x 1) / unitBallVolume n + ENNReal.ofReal δ := by
+        rw [ENNReal.add_div, ENNReal.mul_div_cancel_right hω0 hωtop]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
