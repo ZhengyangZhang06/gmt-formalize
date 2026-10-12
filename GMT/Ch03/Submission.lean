@@ -551,6 +551,42 @@ theorem Submission.bf_stabilizerOrbit_null : ∀ (N n : ℕ) (V : Submodule ℝ 
       exact horbit x hx
     rw [lintegral_congr_ae hae, lintegral_const, Measure.restrict_apply_univ]
   exact (mul_eq_zero.mp (h2.symm.trans h1)).resolve_right hpos.ne'
+/-- **Simon Ch. 3, Theorem 3.6 (p. 80)** (`chapter-03.txt` lines 530–536; the book defers the
+proof to [Fed69]/[Ros84]), Step 6 of the frame-averaging argument: Fubini over left cosets.
+Let `θ` be a finite and `θ'` a probability measure on `𝓛 = ℝᴺ →L[ℝ] ℝᴺ`, with `(r_k)_# θ = θ`
+for `θ'`-a.e. `k`, where `r_k(g) = g k`. If `θ'{g : h g ∈ B} = 0` for `θ`-a.e. `h`, then
+`θ(B) = 0`. The set `D = {(h, g) : h g ∈ B}` is measurable (multiplication on the
+second-countable normed ring `𝓛` is continuous), and Tonelli in both orders gives
+`0 = ∫ θ'{g : h g ∈ B} dθ(h) = (θ ⊗ θ')(D) = ∫ θ(r_g⁻¹ B) dθ'(g) = θ(B) θ'(𝓛) = θ(B)`. -/
+theorem Submission.bf_haar_null_of_cosetFibres_null :
+    ∀ (N : ℕ) (θ θ' : Measure (Rn N →L[ℝ] Rn N)), IsFiniteMeasure θ → IsProbabilityMeasure θ' →
+      (∀ᵐ k ∂θ', Measure.map (fun g ↦ g * k) θ = θ) → ∀ B : Set (Rn N →L[ℝ] Rn N),
+        MeasurableSet B → (∀ᵐ h ∂θ, θ' {g | h * g ∈ B} = 0) → θ B = 0 := by
+  intro N θ θ' _ _ hinv B hB hfib
+  -- Step 1: `D = {(h, g) | h * g ∈ B}` is measurable, as multiplication is continuous.
+  set D : Set ((Rn N →L[ℝ] Rn N) × (Rn N →L[ℝ] Rn N)) := {p | p.1 * p.2 ∈ B}
+  have hD : MeasurableSet D := measurable_mul hB
+  -- Step 2: slicing in `g` first, `(θ ⊗ θ')(D) = ∫ θ'{g | h * g ∈ B} dθ(h) = 0`.
+  have h0 : θ.prod θ' D = 0 := by
+    rw [Measure.prod_apply hD]
+    calc ∫⁻ h, θ' (Prod.mk h ⁻¹' D) ∂θ = ∫⁻ _, 0 ∂θ := by
+          refine lintegral_congr_ae ?_
+          filter_upwards [hfib] with h hh
+          exact hh
+      _ = 0 := lintegral_zero
+  -- Step 3: slicing in `h` first, `θ{h | h * k ∈ B} = (r_k)_# θ (B) = θ(B)` for `θ'`-a.e. `k`.
+  have h1 : θ.prod θ' D = θ B := by
+    rw [Measure.prod_apply_symm hD]
+    calc ∫⁻ k, θ ((fun h ↦ (h, k)) ⁻¹' D) ∂θ' = ∫⁻ _, θ B ∂θ' := by
+          refine lintegral_congr_ae ?_
+          filter_upwards [hinv] with k hk
+          calc θ ((fun h ↦ (h, k)) ⁻¹' D) = θ ((fun g ↦ g * k) ⁻¹' B) := rfl
+            _ = Measure.map (fun g ↦ g * k) θ B :=
+              (Measure.map_apply (measurable_mul_const k) hB).symm
+            _ = θ B := by rw [hk]
+      _ = θ B := by rw [lintegral_const, measure_univ, mul_one]
+  -- Step 4: compare the two evaluations of `(θ ⊗ θ')(D)`.
+  rw [← h1, h0]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
