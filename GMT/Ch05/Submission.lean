@@ -460,4 +460,40 @@ def RegularSetOpenDense : Prop :=
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
+namespace Submission
+
+theorem allard52_am_fc_ball_integrable : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (R S : ℝ), S < R → μ (closedBall y R) < ⊤ → IntegrableOn H (closedBall y R) μ → AEStronglyMeasurable w (μ.restrict (ball y R)) → (∀ᵐ x ∂μ, x ∈ ball y R → 0 ≤ w x ∧ w x ≤ 1) → IntegrableOn (fun _ => (1 : ℝ)) (closedBall y S) μ ∧ IntegrableOn (fun x => inner ℝ (x - y) (H x)) (closedBall y S) μ ∧ IntegrableOn w (closedBall y S) μ := by
+  intro n ℓ μ H w y R S hSR hR hH hw hwb
+  -- Step 1: `B_S(y) ⊆ B̆_R(y) ⊆ B_R(y)`, so `μ(B_S(y)) < ∞`.
+  have hSball : closedBall y S ⊆ ball y R := closedBall_subset_ball hSR
+  have hSR' : closedBall y S ⊆ closedBall y R := closedBall_subset_closedBall hSR.le
+  have hS : μ (closedBall y S) ≠ ⊤ := (lt_of_le_of_lt (measure_mono hSR') hR).ne
+  -- Step 2: the constant `1` is integrable on a set of finite measure.
+  have h1 : IntegrableOn (fun _ => (1 : ℝ)) (closedBall y S) μ := integrableOn_const hS
+  refine ⟨h1, ?_, ?_⟩
+  · -- Step 3: `|(x - y) · H(x)| ≤ R |H(x)|` on `B_S(y)`, and `R |H|` is integrable there.
+    have hHS : IntegrableOn H (closedBall y S) μ := hH.mono_set hSR'
+    have hmeas : AEStronglyMeasurable (fun x => inner ℝ (x - y) (H x))
+        (μ.restrict (closedBall y S)) :=
+      Continuous.comp_aestronglyMeasurable₂ (g := fun u v : Amb n ℓ => inner ℝ u v)
+        continuous_inner (continuous_id.sub continuous_const).aestronglyMeasurable
+        hHS.aestronglyMeasurable
+    refine Integrable.mono' (hHS.norm.const_mul R) hmeas ?_
+    rw [ae_restrict_iff' measurableSet_closedBall]
+    refine Eventually.of_forall (fun x hx => ?_)
+    rw [mem_closedBall, dist_eq_norm] at hx
+    calc ‖inner ℝ (x - y) (H x)‖ ≤ ‖x - y‖ * ‖H x‖ := norm_inner_le_norm _ _
+      _ ≤ R * ‖H x‖ := mul_le_mul_of_nonneg_right (hx.trans hSR.le) (norm_nonneg _)
+  · -- Step 4: `w` is a.e.-strongly measurable on `B_S(y)` and `|w| ≤ 1` a.e. there.
+    have hwS : AEStronglyMeasurable w (μ.restrict (closedBall y S)) :=
+      hw.mono_measure (Measure.restrict_mono hSball le_rfl)
+    refine Integrable.mono' h1 hwS ?_
+    rw [ae_restrict_iff' measurableSet_closedBall]
+    filter_upwards [hwb] with x hx hxS
+    obtain ⟨hw0, hw1⟩ := hx (hSball hxS)
+    rw [Real.norm_eq_abs, abs_of_nonneg hw0]
+    exact hw1
+
+end Submission
+
 end GMT.Ch05
