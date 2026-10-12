@@ -1307,6 +1307,117 @@ theorem Submission.ts_fv_lintegral_image_eq_of_pieces : ∀ (X : Type) [Measurab
         (lintegral_iUnion₀ hm (fun i j hij ↦ (hd i j hij).aedisjoint) g).symm
     _ = ∫⁻ x in Z, g x ∂μ := setLIntegral_congr hZae.symm
 
+/-- **Image mass by the area formula on Lipschitz pieces (Simon Ch. 4, 1.5–1.7).** Let the carrier
+`M` of `a = (M, θ)` be covered, up to the `Hⁿ`-null Borel set `N₀`, by the images `F i (C i)` of
+compact sets under Lipschitz maps injective on `C i`, with `T_x V = range DF i (w)` whenever
+`F i (w) = x`, for `Hⁿ`-a.e. `x ∈ M`. If `f` is injective, Lipschitz and differentiable, then
+`M(f_#(V ⌞ K)) = ∫_{M ∩ K} θ jac(Df, T_x V) dHⁿ`, with
+`jac(Λ, P) = √det(⟪Λ p eᵢ, Λ p eⱼ⟫ + ⟪q eᵢ, q eⱼ⟫)` the tangential Jacobian of `Λ` along `P`.
+The cover is disjointified into the Borel sets `D i = F i (C i) \ (N₀ ∪ ⋃_{j < i} F j (C j))`;
+`ts_fv_piece_image_area_formula` applies to a Borel hull of each piece `M ∩ K ∩ D i` inside `D i`,
+and `ts_fv_lintegral_image_eq_of_pieces` glues the pieces. -/
+theorem Submission.ts_fv_image_mass_area_formula : ∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ) (N₀ : Set (Ambient n ℓ)) (C : ℕ → Set (EuclideanSpace ℝ (Fin n))) (F : ℕ → EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (f : Ambient n ℓ → Ambient n ℓ) (K : Set (Ambient n ℓ)), 0 < n → MeasurableSet N₀ → (μHE[n] : Measure (Ambient n ℓ)) N₀ = 0 → a.M ⊆ N₀ ∪ ⋃ i, F i '' C i → (∀ i, IsCompact (C i) ∧ (∃ K : NNReal, LipschitzWith K (F i)) ∧ (∀ w ∈ C i, DifferentiableAt ℝ (F i) w ∧ Function.Injective (fderiv ℝ (F i) w)) ∧ ContinuousOn (fderiv ℝ (F i)) (C i) ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖F i v - F i w‖) → (∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)).restrict a.M, ∀ i, ∀ w ∈ C i, F i w = x → (mk a).tangentSpace x = LinearMap.range (fderiv ℝ (F i) w).toLinearMap) → Function.Injective f → (∃ L : NNReal, LipschitzWith L f) → (∀ y, DifferentiableAt ℝ f y) → MeasurableSet K → imageMass a f K = ∫⁻ x in a.M ∩ K, ENNReal.ofReal (a.θ x * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (n + ℓ) ↦ inner ℝ (fderiv ℝ f x (((mk a).tangentSpace x).starProjection (EuclideanSpace.single i (1 : ℝ)))) (fderiv ℝ f x (((mk a).tangentSpace x).starProjection (EuclideanSpace.single j (1 : ℝ)))) + inner ℝ (EuclideanSpace.single i (1 : ℝ) - ((mk a).tangentSpace x).starProjection (EuclideanSpace.single i (1 : ℝ))) (EuclideanSpace.single j (1 : ℝ) - ((mk a).tangentSpace x).starProjection (EuclideanSpace.single j (1 : ℝ)))))) ∂μHE[n] := by
+  intro n ℓ a N₀ C F f K _hn hN₀ hN₀0 hcover hpieces htan hfinj hfLip hfdiff hK
+  obtain ⟨L, hL⟩ := hfLip
+  -- `jac P y = √det(⟪Df(y) p eᵢ, Df(y) p eⱼ⟫ + ⟪q eᵢ, q eⱼ⟫)`, `p = P.starProjection`, `q = 1 - p`
+  let jac : Submodule ℝ (Ambient n ℓ) → Ambient n ℓ → ℝ := fun P y ↦
+    Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (n + ℓ) ↦
+      inner ℝ (fderiv ℝ f y (P.starProjection (EuclideanSpace.single i (1 : ℝ))))
+          (fderiv ℝ f y (P.starProjection (EuclideanSpace.single j (1 : ℝ)))) +
+        inner ℝ
+          (EuclideanSpace.single i (1 : ℝ) - P.starProjection (EuclideanSpace.single i (1 : ℝ)))
+          (EuclideanSpace.single j (1 : ℝ) - P.starProjection (EuclideanSpace.single j (1 : ℝ)))))
+  -- the density `u = θ ∘ f⁻¹` of the image and the density `g = θ jac(Df, T)` on `M`
+  let u : Ambient n ℓ → ℝ≥0∞ := fun y ↦ ENNReal.ofReal (a.θ (Function.invFun f y))
+  let g : Ambient n ℓ → ℝ≥0∞ := fun x ↦ ENNReal.ofReal (a.θ x * jac ((mk a).tangentSpace x) x)
+  show ∫⁻ y in f '' (a.M ∩ K), u y ∂μHE[n] = ∫⁻ x in a.M ∩ K, g x ∂μHE[n]
+  -- `f` maps `Hⁿ`-null sets to null sets (it is Lipschitz) and Borel sets to Borel sets
+  -- (Lusin–Souslin), hence null-measurable sets to null-measurable sets
+  have hnull : ∀ Y : Set (Ambient n ℓ), (μHE[n] : Measure (Ambient n ℓ)) Y = 0 →
+      (μHE[n] : Measure (Ambient n ℓ)) (f '' Y) = 0 := fun Y hY ↦
+    le_antisymm ((Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      hL.lipschitzOnWith).trans (by rw [hY, mul_zero])) bot_le
+  have hnm : ∀ Y : Set (Ambient n ℓ), NullMeasurableSet Y (μHE[n] : Measure (Ambient n ℓ)) →
+      NullMeasurableSet (f '' Y) (μHE[n] : Measure (Ambient n ℓ)) := by
+    intro Y hY
+    obtain ⟨Y₀, hY₀Y, hY₀, hY₀ae⟩ := hY.exists_measurable_subset_ae_eq
+    rw [← Set.union_sdiff_cancel hY₀Y, Set.image_union]
+    exact (hY₀.image_of_continuousOn_injOn hL.continuous.continuousOn
+      hfinj.injOn).nullMeasurableSet.union
+        (NullMeasurableSet.of_null (hnull _ (ae_le_set.1 hY₀ae.symm.le)))
+  -- disjointify the cover: the Borel sets `D i = F i (C i) \ (N₀ ∪ ⋃_{j < i} F j (C j))`
+  have hFC : ∀ i, MeasurableSet (F i '' C i) := fun i ↦ by
+    obtain ⟨hCc, ⟨LF, hLF⟩, -⟩ := hpieces i
+    exact (hCc.image hLF.continuous).measurableSet
+  let D : ℕ → Set (Ambient n ℓ) := fun i ↦ F i '' C i \ (N₀ ∪ ⋃ j : Fin i, F j '' C j)
+  have hDm : ∀ i, MeasurableSet (D i) := fun i ↦
+    (hFC i).diff (hN₀.union (MeasurableSet.iUnion fun j : Fin i ↦ hFC j))
+  have hDsub : ∀ i, D i ⊆ F i '' C i := fun _ ↦ Set.sdiff_subset
+  have hDdisj : Pairwise fun i j ↦ Disjoint (D i) (D j) := by
+    intro i j hij
+    rcases lt_or_gt_of_ne hij with h | h
+    · exact Set.disjoint_left.2 fun x hxi hxj ↦ hxj.2 (Or.inr (Set.mem_iUnion.2 ⟨⟨i, h⟩, hxi.1⟩))
+    · exact Set.disjoint_left.2 fun x hxi hxj ↦ hxi.2 (Or.inr (Set.mem_iUnion.2 ⟨⟨j, h⟩, hxj.1⟩))
+  -- the `D i` cover `(M ∩ K) \ N₀`: a point of `M \ N₀` lies in `D i` for the least `i` with
+  -- `x ∈ F i (C i)`
+  have hrem : (μHE[n] : Measure (Ambient n ℓ)) ((a.M ∩ K) \ ⋃ i, D i) = 0 := by
+    classical
+    refine measure_mono_null (fun x hx ↦ ?_) hN₀0
+    by_contra hxN
+    have hex : ∃ i, x ∈ F i '' C i := Set.mem_iUnion.1 (Or.resolve_left (hcover hx.1.1) hxN)
+    refine hx.2 (Set.mem_iUnion.2 ⟨Nat.find hex, Nat.find_spec hex, ?_⟩)
+    rintro (h | h)
+    · exact hxN h
+    · obtain ⟨j, hj⟩ := Set.mem_iUnion.1 h
+      exact Nat.find_min hex j.2 hj
+  refine Submission.ts_fv_lintegral_image_eq_of_pieces (Ambient n ℓ) μHE[n] f (a.M ∩ K) D u g
+    hfinj hnull hnm (a.isRectifiablePair.measurable.inter hK.nullMeasurableSet) hDm hDdisj hrem
+    fun i ↦ ?_
+  -- the piece `M ∩ K ∩ D i`
+  obtain ⟨hCc, ⟨LF, hLF⟩, hdiff, -, c, hc, hlow⟩ := hpieces i
+  -- `F i` is injective on `C i` by the lower bound `c ‖v - w‖ ≤ ‖F i v - F i w‖`
+  have hinj : Set.InjOn (F i) (C i) := fun v hv w hw hvw ↦ by
+    by_contra hne
+    have h := hlow v hv w hw
+    rw [hvw, sub_self, norm_zero] at h
+    exact not_le.2 (mul_pos hc (norm_pos_iff.2 (sub_ne_zero.2 hne))) h
+  -- a Borel hull `A' ∩ D i` of the piece, which differs from it by an `Hⁿ`-null set
+  have hZnm : NullMeasurableSet (a.M ∩ K ∩ D i) (μHE[n] : Measure (Ambient n ℓ)) :=
+    (a.isRectifiablePair.measurable.inter hK.nullMeasurableSet).inter (hDm i).nullMeasurableSet
+  obtain ⟨A', hA'Z, hA', hA'ae⟩ := hZnm.exists_measurable_superset_ae_eq
+  have hZA : a.M ∩ K ∩ D i ⊆ A' ∩ D i := fun x hx ↦ ⟨hA'Z hx, hx.2⟩
+  have hAZ : (μHE[n] : Measure (Ambient n ℓ)) ((A' ∩ D i) \ (a.M ∩ K ∩ D i)) = 0 :=
+    measure_mono_null (Set.sdiff_subset_sdiff_left Set.inter_subset_left) (ae_le_set.1 hA'ae.le)
+  have hAae : A' ∩ D i =ᵐ[(μHE[n] : Measure (Ambient n ℓ))] a.M ∩ K ∩ D i :=
+    ae_eq_set.2 ⟨hAZ, by rw [Set.sdiff_eq_empty.2 hZA, measure_empty]⟩
+  have hfAae : f '' (A' ∩ D i) =ᵐ[(μHE[n] : Measure (Ambient n ℓ))] f '' (a.M ∩ K ∩ D i) :=
+    ae_eq_set.2 ⟨by rw [← Set.image_sdiff hfinj]; exact hnull _ hAZ,
+      by rw [Set.sdiff_eq_empty.2 (Set.image_mono hZA), measure_empty]⟩
+  -- the area formula on the hull, with the tangent planes `P y = range DF i (F i⁻¹ y)`
+  let P : Ambient n ℓ → Submodule ℝ (Ambient n ℓ) := fun y ↦
+    LinearMap.range (fderiv ℝ (F i) (Function.invFunOn (F i) (C i) y)).toLinearMap
+  have harea : ∫⁻ y in f '' (A' ∩ D i), u y ∂μHE[n] =
+      ∫⁻ y in A' ∩ D i, ENNReal.ofReal (jac (P y) y) * u (f y) ∂μHE[n] :=
+    Submission.ts_fv_piece_image_area_formula n ℓ (C i) (F i) f (A' ∩ D i) P u hCc.measurableSet
+      ⟨LF, hLF⟩ (fun v hv ↦ (hdiff v hv).1) hinj ⟨L, hL⟩ hfinj.injOn (fun y _ ↦ hfdiff y)
+      (hA'.inter (hDm i)) (Set.inter_subset_right.trans (hDsub i)) fun v hv _ ↦ by
+        show LinearMap.range
+          (fderiv ℝ (F i) (Function.invFunOn (F i) (C i) (F i v))).toLinearMap = _
+        rw [hinj.leftInvOn_invFunOn hv]
+  rw [setLIntegral_congr hfAae.symm, harea, setLIntegral_congr hAae]
+  -- on the piece, `P x = T_x V` a.e. by the tangent hypothesis, and `u (f x) = θ x`
+  refine lintegral_congr_ae ?_
+  filter_upwards [ae_restrict_mem₀ hZnm,
+    ae_restrict_of_ae_restrict_of_subset (fun x hx ↦ hx.1.1 : a.M ∩ K ∩ D i ⊆ a.M) htan]
+    with x hx htx
+  have hxC : x ∈ F i '' C i := hDsub i hx.2
+  have hT : (mk a).tangentSpace x = P x :=
+    htx i _ (Function.invFunOn_mem hxC) (Function.invFunOn_eq hxC)
+  have hjac : 0 ≤ jac (P x) x := Real.sqrt_nonneg _
+  show ENNReal.ofReal (jac (P x) x) * ENNReal.ofReal (a.θ (Function.invFun f (f x))) =
+    ENNReal.ofReal (a.θ x * jac ((mk a).tangentSpace x) x)
+  rw [Function.leftInverse_invFun hfinj x, hT, ENNReal.ofReal_mul' hjac, mul_comm]
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
