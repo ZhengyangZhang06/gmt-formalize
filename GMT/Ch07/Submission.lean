@@ -799,6 +799,56 @@ theorem Submission.regcomp_localized_boundary_zero : ∀ (P m : ℕ) (U M₁ : S
     conv_lhs => rw [hdecomp]
     rw [map_add, map_sum]
   rw [hlin, h0, Finset.sum_eq_zero fun i _ => hi i, add_zero]
+/-- Boundary estimate from step 5 of the proof of **Simon 7.5.11**, in integral form.  Suppose
+`T₁(θ) = ∫_{M₁} ⟨θ, ξ⟩ dH^{m+1}` and `|ξ(x)(α)| ≤ ‖α‖` for `H^{m+1}`-a.e. `x ∈ M₁`.  Let
+`F = fω` with `f` differentiable.  Then `|∂T₁(F)| = |∫_{M₁} ⟨dF, ξ⟩ dH^{m+1}| ≤ ∫_{M₁} ‖dF‖ dH^{m+1}`.
+The product rule gives `‖dF(x)‖ ≤ (m + 1) ‖DF(x)‖ ≤ (m + 1)(|f(x)| ‖Dω(x)‖ + ‖Df(x)‖ ‖ω(x)‖)`. -/
+theorem Submission.regcomp_boundary_smul_estimate : ∀ (P m : ℕ) (U M₁ : Set (Euclid P)) (T₁ : GeometricCurrentOn U (m + 1)) (ξ : Euclid P → MultiVector P (m + 1)), (∀ ω : TestFormOn U (m + 1), T₁ ω = ∫ x in M₁, ξ x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]) → (∀ᵐ x ∂(μHE[m + 1].restrict M₁), ∀ α : Covector (Euclid P) (m + 1), |ξ x α| ≤ ‖α‖) → ∀ (f : Euclid P → ℝ) (ω F : TestFormOn U m), Differentiable ℝ f → (∀ x, (F : DifferentialForm (Euclid P) m) x = f x • (ω : DifferentialForm (Euclid P) m) x) → ENNReal.ofReal |T₁.boundary F| ≤ ∫⁻ x in M₁, ENNReal.ofReal (((m : ℝ) + 1) * (|f x| * ‖fderiv ℝ (ω : DifferentialForm (Euclid P) m) x‖ + ‖fderiv ℝ f x‖ * ‖(ω : DifferentialForm (Euclid P) m) x‖)) ∂μHE[m + 1] := by
+  intro P m U M₁ T₁ ξ h2 h3 f ω F hf hF
+  -- `∂T₁(F) = T₁(dF) = ∫_{M₁} ⟨dF, ξ⟩ dH^{m+1}`
+  have hb : T₁.boundary F = ∫ x in M₁,
+      ξ x (exteriorDerivative (F : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1] := by
+    rw [GeometricCurrentOn.boundary_apply, h2]
+    rfl
+  -- `|∫ g| ≤ ∫⁻ |g|`; no integrability is needed
+  have hint : ENNReal.ofReal |T₁.boundary F| ≤ ∫⁻ x in M₁,
+      ENNReal.ofReal |ξ x (exteriorDerivative (F : DifferentialForm (Euclid P) m) x)| ∂μHE[m + 1] := by
+    rw [hb, ← Real.enorm_eq_ofReal_abs]
+    simp_rw [← Real.enorm_eq_ofReal_abs]
+    exact enorm_integral_le_lintegral_enorm _
+  -- pointwise, `‖dF(x)‖ ≤ (m + 1)(|f(x)| ‖Dω(x)‖ + ‖Df(x)‖ ‖ω(x)‖)`
+  have hpt : ∀ x, ‖exteriorDerivative (F : DifferentialForm (Euclid P) m) x‖ ≤
+      ((m : ℝ) + 1) * (|f x| * ‖fderiv ℝ (ω : DifferentialForm (Euclid P) m) x‖ +
+        ‖fderiv ℝ f x‖ * ‖(ω : DifferentialForm (Euclid P) m) x‖) := by
+    intro x
+    have hω : DifferentiableAt ℝ (ω : DifferentialForm (Euclid P) m) x :=
+      (ω.property.1.1.differentiable (by simp)).differentiableAt
+    -- the product rule `DF(x) = f(x) Dω(x) + Df(x) ⊗ ω(x)`
+    have hd : fderiv ℝ (F : DifferentialForm (Euclid P) m) x =
+        f x • fderiv ℝ (ω : DifferentialForm (Euclid P) m) x +
+          (fderiv ℝ f x).smulRight ((ω : DifferentialForm (Euclid P) m) x) := by
+      rw [show (F : DifferentialForm (Euclid P) m) = f • (ω : DifferentialForm (Euclid P) m) from
+        funext hF]
+      exact fderiv_smul (hf x) hω
+    -- `dF(x)` alternates `DF(x)`, which costs at most a factor `m + 1`
+    calc ‖exteriorDerivative (F : DifferentialForm (Euclid P) m) x‖
+        ≤ ((m : ℝ) + 1) * ‖fderiv ℝ (F : DifferentialForm (Euclid P) m) x‖ :=
+          ContinuousAlternatingMap.norm_alternatizeUncurryFin_le _
+      _ ≤ ((m : ℝ) + 1) * (‖f x • fderiv ℝ (ω : DifferentialForm (Euclid P) m) x‖ +
+            ‖(fderiv ℝ f x).smulRight ((ω : DifferentialForm (Euclid P) m) x)‖) := by
+          rw [hd]
+          gcongr
+          exact norm_add_le (f x • fderiv ℝ (ω : DifferentialForm (Euclid P) m) x)
+            ((fderiv ℝ f x).smulRight ((ω : DifferentialForm (Euclid P) m) x))
+      _ ≤ ((m : ℝ) + 1) * (|f x| * ‖fderiv ℝ (ω : DifferentialForm (Euclid P) m) x‖ +
+            ‖fderiv ℝ f x‖ * ‖(ω : DifferentialForm (Euclid P) m) x‖) := by
+          rw [ContinuousLinearMap.norm_smulRight_apply, ← Real.norm_eq_abs]
+          gcongr
+          exact ContinuousLinearMap.opNorm_smul_le _ _
+  -- `|ξ(x)(dF(x))| ≤ ‖dF(x)‖` a.e. on `M₁`, then monotonicity of the lower integral
+  refine hint.trans (lintegral_mono_ae ?_)
+  filter_upwards [h3] with x hx
+  exact ENNReal.ofReal_le_ofReal ((hx _).trans (hpt x))
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
