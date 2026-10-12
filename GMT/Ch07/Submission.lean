@@ -451,6 +451,435 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 5, proof of 2.6, (9)–(10), corrected** (estimate (10') of the Lipschitz
+approximation: `B_σ(η)` becomes `B_{3s}(η)`, and as only `κσ₀ ≤ 1` is used there is no additive
+error `Cδσⁿ`).
+For `η ∈ (F ∖ spt μ) ∩ B_{σ₀/4}(ξ)` let `y ∈ spt μ` be a nearest point and `s = |y − η|/2`.  Then
+`μ(B_s(η)) = 0`, the density bounds give `ωsⁿ/2 ≤ μ(B_{3s}(η)) ≤ 2·5ⁿωsⁿ`, and monotonicity with
+radii `s < 3s` and `e^{3κs} ≤ 2` gives `μ(B_{3s}(η)) ≤ 2·3ⁿs⁻²∫_{B_{3s}(η)}|p_x^⊥(x − η)|² dμ`.
+Splitting `p_x^⊥(x − η) = Q(x − η) + (P − p_x)(x − η)` (cone condition on `F`, Hilbert–Schmidt
+bound) and absorbing the `λ²`-term yields `sⁿ ≤ C₉[μ(B_{3s}(η) ∖ F) + ∫_{B_{3s}(η)}|p_x − P|² dμ]`,
+with `λ₀ = (288·15ⁿ)^{-1/2}` and `C₉ = 144·3ⁿ/ω`. -/
+theorem Submission.dorag_lip_off_support_estimate : ∀ (n k : ℕ), ∃ lam₀ C₉ : ℝ, 0 < lam₀ ∧ 0 < C₉ ∧ ∀ (μ : Measure (Euclid (n + k))) (τ : Euclid (n + k) → Submodule ℝ (Euclid (n + k))) (T₀ : Submodule ℝ (Euclid (n + k))) (F : Set (Euclid (n + k))) (ξ : Euclid (n + k)) (σ₀ κ lam : ℝ), 0 < σ₀ → 0 ≤ κ → κ * σ₀ ≤ 1 → 0 ≤ lam → lam ≤ lam₀ → ξ ∈ μ.support → (∀ x ∈ F, ∀ x' ∈ F, ‖(x - x') - T₀.starProjection (x - x')‖ ≤ lam * ‖x - x'‖) → (∀ y ∈ closedBall ξ (σ₀ / 2), ∀ t : ℝ, 0 < t → t ≤ 5 * σ₀ / 8 → μ (closedBall y t) ≤ 2 * unitBallVolume n * ENNReal.ofReal (t ^ n)) → (∀ y ∈ μ.support ∩ closedBall ξ (σ₀ / 2), ∀ t : ℝ, 0 < t → t ≤ σ₀ / 8 → unitBallVolume n * ENNReal.ofReal (t ^ n) ≤ 2 * μ (closedBall y t)) → (∀ (y : Euclid (n + k)) (s t : ℝ), y ∈ closedBall ξ (σ₀ / 4) → 0 < s → s < t → t ≤ 3 * σ₀ / 8 → ENNReal.ofReal (Real.exp (-(κ * t)) / t ^ n) * μ (closedBall y t) ≤ ENNReal.ofReal (Real.exp (-(κ * s)) / s ^ n) * μ (closedBall y s) + ∫⁻ x in closedBall y t \ closedBall y s, ENNReal.ofReal (‖(x - y) - (τ x).starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂μ) → ∀ η ∈ (F \ μ.support) ∩ closedBall ξ (σ₀ / 4), ∃ s : ℝ, ∃ y ∈ μ.support, 0 < s ∧ 2 * s ≤ dist η ξ ∧ dist y η = 2 * s ∧ ENNReal.ofReal (s ^ n) ≤ ENNReal.ofReal C₉ * (μ (closedBall η (3 * s) \ F) + ∫⁻ x in closedBall η (3 * s), ENNReal.ofReal (∑ i : Fin (n + k), ‖(τ x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ) := by
+  intro n k
+  -- Hilbert–Schmidt bound `‖A u‖² ≤ (∑ᵢ ‖A eᵢ‖²) ‖u‖²`
+  have hHS : ∀ (A : Euclid (n + k) →L[ℝ] Euclid (n + k)) (u : Euclid (n + k)),
+      ‖A u‖ ^ 2 ≤ (∑ i : Fin (n + k), ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖u‖ ^ 2 := by
+    intro A u
+    have hu : ∑ i : Fin (n + k), u i • EuclideanSpace.single i (1 : ℝ) = u := by
+      have h := (EuclideanSpace.basisFun (Fin (n + k)) ℝ).sum_repr u
+      simpa using h
+    have hAu : A u = ∑ i : Fin (n + k), u i • A (EuclideanSpace.single i (1 : ℝ)) := by
+      conv_lhs => rw [← hu]
+      rw [map_sum]
+      exact Finset.sum_congr rfl fun i _ => map_smul A _ _
+    have h1 : ‖A u‖ ≤ ∑ i : Fin (n + k), |u i| * ‖A (EuclideanSpace.single i (1 : ℝ))‖ := by
+      rw [hAu]
+      refine (norm_sum_le _ _).trans (le_of_eq ?_)
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [norm_smul, Real.norm_eq_abs]
+    have h2 : (∑ i : Fin (n + k), |u i| * ‖A (EuclideanSpace.single i (1 : ℝ))‖) ^ 2 ≤
+        (∑ i : Fin (n + k), |u i| ^ 2) *
+          ∑ i : Fin (n + k), ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 :=
+      Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+    have h3 : ∑ i : Fin (n + k), |u i| ^ 2 = ‖u‖ ^ 2 := by
+      rw [EuclideanSpace.real_norm_sq_eq]
+      exact Finset.sum_congr rfl fun i _ => sq_abs _
+    calc ‖A u‖ ^ 2 ≤ (∑ i : Fin (n + k), |u i| * ‖A (EuclideanSpace.single i (1 : ℝ))‖) ^ 2 :=
+          pow_le_pow_left₀ (norm_nonneg _) h1 2
+      _ ≤ (∑ i : Fin (n + k), |u i| ^ 2) *
+          ∑ i : Fin (n + k), ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := h2
+      _ = (∑ i : Fin (n + k), ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖u‖ ^ 2 := by
+          rw [h3, mul_comm]
+  -- pointwise splitting `u - S u = (u - T u) + (T u - S u)` with the Hilbert–Schmidt bound
+  have hsplit : ∀ (T S : Submodule ℝ (Euclid (n + k))) (u : Euclid (n + k)) (r q : ℝ),
+      ‖u‖ ≤ r → ‖u - T.starProjection u‖ ≤ q →
+      ‖u - S.starProjection u‖ ^ 2 ≤ 2 * q ^ 2 + 2 * r ^ 2 *
+        ∑ i : Fin (n + k), ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := by
+    intro T S u r q hr hq
+    have hHS0 : 0 ≤ ∑ i : Fin (n + k), ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+        T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 :=
+      Finset.sum_nonneg fun i _ => sq_nonneg _
+    have hA := hHS (T.starProjection - S.starProjection) u
+    have e : ∑ i : Fin (n + k), ‖(T.starProjection - S.starProjection)
+        (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 =
+        ∑ i : Fin (n + k), ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := by
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [sub_apply, norm_sub_rev]
+    rw [e, sub_apply] at hA
+    have hu0 : 0 ≤ ‖u‖ := norm_nonneg _
+    have hur : ‖u‖ ^ 2 ≤ r ^ 2 := pow_le_pow_left₀ hu0 hr 2
+    have hq2 : ‖u - T.starProjection u‖ ^ 2 ≤ q ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hq 2
+    have htri : ‖u - S.starProjection u‖ ≤
+        ‖u - T.starProjection u‖ + ‖T.starProjection u - S.starProjection u‖ := by
+      have e2 : u - S.starProjection u =
+          (u - T.starProjection u) + (T.starProjection u - S.starProjection u) := by abel
+      rw [e2]
+      exact norm_add_le _ _
+    have hB : ‖T.starProjection u - S.starProjection u‖ ^ 2 ≤
+        (∑ i : Fin (n + k), ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+          T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * r ^ 2 :=
+      hA.trans (mul_le_mul_of_nonneg_left hur hHS0)
+    have ha0 : 0 ≤ ‖u - T.starProjection u‖ := norm_nonneg _
+    have hb0 : 0 ≤ ‖T.starProjection u - S.starProjection u‖ := norm_nonneg _
+    have hc0 : 0 ≤ ‖u - S.starProjection u‖ := norm_nonneg _
+    have hsq : ‖u - S.starProjection u‖ ^ 2 ≤
+        (‖u - T.starProjection u‖ + ‖T.starProjection u - S.starProjection u‖) ^ 2 :=
+      pow_le_pow_left₀ hc0 htri 2
+    nlinarith [sq_nonneg (‖u - T.starProjection u‖ - ‖T.starProjection u - S.starProjection u‖)]
+  -- the pointwise bound in `ℝ≥0∞`, in the two cases `x ∈ F` / `x ∉ F`
+  have hptE : ∀ (T S : Submodule ℝ (Euclid (n + k))) (u : Euclid (n + k)) (s lam : ℝ)
+      (c : ℝ≥0∞), ‖u‖ ≤ 3 * s →
+      (‖u - T.starProjection u‖ ≤ lam * (3 * s) ∨ c = ENNReal.ofReal (18 * s ^ 2)) →
+      ENNReal.ofReal (‖u - S.starProjection u‖ ^ 2) ≤
+        ENNReal.ofReal (18 * lam ^ 2 * s ^ 2) + c + ENNReal.ofReal (18 * s ^ 2) *
+          ENNReal.ofReal (∑ i : Fin (n + k), ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+            T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) := by
+    intro T S u s lam c hu h
+    have hHS0 : 0 ≤ ∑ i : Fin (n + k), ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+        T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 :=
+      Finset.sum_nonneg fun i _ => sq_nonneg _
+    rcases h with hq | hc
+    · have h1 := hsplit T S u (3 * s) (lam * (3 * s)) hu hq
+      calc ENNReal.ofReal (‖u - S.starProjection u‖ ^ 2)
+          ≤ ENNReal.ofReal (18 * lam ^ 2 * s ^ 2 + 18 * s ^ 2 *
+            ∑ i : Fin (n + k), ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+              T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) := by
+            apply ENNReal.ofReal_le_ofReal
+            refine h1.trans (le_of_eq ?_)
+            ring
+        _ = ENNReal.ofReal (18 * lam ^ 2 * s ^ 2) + ENNReal.ofReal (18 * s ^ 2) *
+            ENNReal.ofReal (∑ i : Fin (n + k),
+              ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+                T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) := by
+            rw [ENNReal.ofReal_add (by positivity) (by positivity),
+              ENNReal.ofReal_mul (p := 18 * s ^ 2) (by positivity)]
+        _ ≤ _ := add_le_add le_self_add le_rfl
+    · have hq : ‖u - T.starProjection u‖ ≤ 3 * s := by
+        calc ‖u - T.starProjection u‖ = ‖Tᗮ.starProjection u‖ := by
+              rw [Submodule.starProjection_orthogonal_val]
+          _ ≤ ‖u‖ := Submodule.norm_starProjection_apply_le _ _
+          _ ≤ 3 * s := hu
+      have h1 := hsplit T S u (3 * s) (3 * s) hu hq
+      rw [hc]
+      calc ENNReal.ofReal (‖u - S.starProjection u‖ ^ 2)
+          ≤ ENNReal.ofReal (18 * s ^ 2 + 18 * s ^ 2 *
+            ∑ i : Fin (n + k), ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+              T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) := by
+            apply ENNReal.ofReal_le_ofReal
+            refine h1.trans (le_of_eq ?_)
+            ring
+        _ = ENNReal.ofReal (18 * s ^ 2) + ENNReal.ofReal (18 * s ^ 2) *
+            ENNReal.ofReal (∑ i : Fin (n + k),
+              ‖S.starProjection (EuclideanSpace.single i (1 : ℝ)) -
+                T.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) := by
+            rw [ENNReal.ofReal_add (by positivity) (by positivity),
+              ENNReal.ofReal_mul (p := 18 * s ^ 2) (by positivity)]
+        _ ≤ _ := add_le_add le_add_self le_rfl
+  -- monotonicity with radii `s < 3 s`, combined with `e^{3κs} ≤ 2`
+  have hexpb : ∀ (κ s : ℝ) (a J I₂ : ℝ≥0∞), 0 ≤ κ → 0 < s → κ * (3 * s) ≤ 3 / 8 →
+      ENNReal.ofReal (Real.exp (-(κ * (3 * s))) / (3 * s) ^ n) * a ≤ J →
+      J ≤ ENNReal.ofReal (1 / s ^ (n + 2)) * I₂ →
+      a ≤ ENNReal.ofReal (2 * 3 ^ n / s ^ 2) * I₂ := by
+    intro κ s a J I₂ hκ hs hκs hM hJ
+    have hexp : Real.exp (κ * (3 * s)) ≤ 2 := by
+      have h0 : 0 ≤ κ * (3 * s) := by positivity
+      calc Real.exp (κ * (3 * s)) ≤ (2 + κ * (3 * s)) / (2 - κ * (3 * s)) :=
+            Real.exp_le_two_add_div_two_sub h0 (by linarith)
+        _ ≤ 2 := by
+            rw [div_le_iff₀ (by linarith)]
+            linarith
+    have hc : 0 ≤ Real.exp (κ * (3 * s)) * (3 * s) ^ n := by positivity
+    have hcinv : ENNReal.ofReal (Real.exp (κ * (3 * s)) * (3 * s) ^ n) *
+        ENNReal.ofReal (Real.exp (-(κ * (3 * s))) / (3 * s) ^ n) = 1 := by
+      rw [← ENNReal.ofReal_mul hc, ← ENNReal.ofReal_one]
+      congr 1
+      have h1 : Real.exp (κ * (3 * s)) * Real.exp (-(κ * (3 * s))) = 1 := by
+        rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
+      have h2 : (3 * s) ^ n / (3 * s) ^ n = 1 := div_self (by positivity)
+      calc Real.exp (κ * (3 * s)) * (3 * s) ^ n * (Real.exp (-(κ * (3 * s))) / (3 * s) ^ n)
+          = (Real.exp (κ * (3 * s)) * Real.exp (-(κ * (3 * s)))) *
+            ((3 * s) ^ n / (3 * s) ^ n) := by ring
+        _ = 1 := by rw [h1, h2, one_mul]
+    have hcs : Real.exp (κ * (3 * s)) * (3 * s) ^ n * (1 / s ^ (n + 2)) ≤
+        2 * 3 ^ n / s ^ 2 := by
+      rw [mul_one_div, div_le_div_iff₀ (by positivity) (by positivity), mul_pow, pow_add]
+      have hpos : 0 ≤ 3 ^ n * s ^ n * s ^ 2 := by positivity
+      nlinarith
+    calc a = ENNReal.ofReal (Real.exp (κ * (3 * s)) * (3 * s) ^ n) *
+          (ENNReal.ofReal (Real.exp (-(κ * (3 * s))) / (3 * s) ^ n) * a) := by
+          rw [← mul_assoc, hcinv, one_mul]
+      _ ≤ ENNReal.ofReal (Real.exp (κ * (3 * s)) * (3 * s) ^ n) *
+          (ENNReal.ofReal (1 / s ^ (n + 2)) * I₂) := mul_le_mul_right (hM.trans hJ) _
+      _ = ENNReal.ofReal (Real.exp (κ * (3 * s)) * (3 * s) ^ n * (1 / s ^ (n + 2))) * I₂ := by
+          rw [← mul_assoc, ← ENNReal.ofReal_mul hc]
+      _ ≤ ENNReal.ofReal (2 * 3 ^ n / s ^ 2) * I₂ :=
+          mul_le_mul_left (ENNReal.ofReal_le_ofReal hcs) _
+  -- the final absorption argument (pure `ℝ≥0∞` arithmetic)
+  have hfinal : ∀ (ω s lam : ℝ) (a I₂ X₁ X₂ : ℝ≥0∞), 0 < ω → 0 < s →
+      72 * 15 ^ n * lam ^ 2 ≤ 1 / 4 → ENNReal.ofReal (ω * s ^ n / 2) ≤ a →
+      a ≤ ENNReal.ofReal (2 * 5 ^ n * ω * s ^ n) →
+      a ≤ ENNReal.ofReal (2 * 3 ^ n / s ^ 2) * I₂ →
+      I₂ ≤ ENNReal.ofReal (18 * lam ^ 2 * s ^ 2) * a + ENNReal.ofReal (18 * s ^ 2) * X₁ +
+        ENNReal.ofReal (18 * s ^ 2) * X₂ →
+      ENNReal.ofReal (s ^ n) ≤ ENNReal.ofReal (144 * 3 ^ n / ω) * (X₁ + X₂) := by
+    intro ω s lam a I₂ X₁ X₂ hω hs hlam2 ha_lower ha_upper haI hI
+    have e1 : ENNReal.ofReal (36 * 3 ^ n * lam ^ 2) =
+        ENNReal.ofReal (2 * 3 ^ n / s ^ 2) * ENNReal.ofReal (18 * lam ^ 2 * s ^ 2) := by
+      rw [← ENNReal.ofReal_mul (by positivity)]
+      congr 1
+      rw [div_mul_eq_mul_div, eq_div_iff (by positivity)]
+      ring
+    have e2 : ENNReal.ofReal (36 * 3 ^ n) =
+        ENNReal.ofReal (2 * 3 ^ n / s ^ 2) * ENNReal.ofReal (18 * s ^ 2) := by
+      rw [← ENNReal.ofReal_mul (by positivity)]
+      congr 1
+      rw [div_mul_eq_mul_div, eq_div_iff (by positivity)]
+      ring
+    have hmain : a ≤ ENNReal.ofReal (36 * 3 ^ n * lam ^ 2) * a +
+        ENNReal.ofReal (36 * 3 ^ n) * (X₁ + X₂) := by
+      calc a ≤ ENNReal.ofReal (2 * 3 ^ n / s ^ 2) * I₂ := haI
+        _ ≤ ENNReal.ofReal (2 * 3 ^ n / s ^ 2) * (ENNReal.ofReal (18 * lam ^ 2 * s ^ 2) * a +
+            ENNReal.ofReal (18 * s ^ 2) * X₁ + ENNReal.ofReal (18 * s ^ 2) * X₂) :=
+            mul_le_mul_right hI _
+        _ = ENNReal.ofReal (36 * 3 ^ n * lam ^ 2) * a +
+            ENNReal.ofReal (36 * 3 ^ n) * (X₁ + X₂) := by
+            rw [e1, e2]
+            ring
+    have hlamterm : ENNReal.ofReal (36 * 3 ^ n * lam ^ 2) * a ≤
+        ENNReal.ofReal (ω * s ^ n / 4) := by
+      calc ENNReal.ofReal (36 * 3 ^ n * lam ^ 2) * a
+          ≤ ENNReal.ofReal (36 * 3 ^ n * lam ^ 2) * ENNReal.ofReal (2 * 5 ^ n * ω * s ^ n) :=
+            mul_le_mul_right ha_upper _
+        _ = ENNReal.ofReal (72 * 15 ^ n * lam ^ 2 * (ω * s ^ n)) := by
+            rw [← ENNReal.ofReal_mul (by positivity)]
+            congr 1
+            rw [show (15 : ℝ) ^ n = 3 ^ n * 5 ^ n by rw [← mul_pow]; norm_num]
+            ring
+        _ ≤ ENNReal.ofReal (1 / 4 * (ω * s ^ n)) := by
+            apply ENNReal.ofReal_le_ofReal
+            exact mul_le_mul_of_nonneg_right hlam2 (by positivity)
+        _ = ENNReal.ofReal (ω * s ^ n / 4) := by
+            congr 1
+            ring
+    have hfin : ENNReal.ofReal (ω * s ^ n / 4) ≤ ENNReal.ofReal (36 * 3 ^ n) * (X₁ + X₂) := by
+      have h1 : ENNReal.ofReal (ω * s ^ n / 4) + ENNReal.ofReal (ω * s ^ n / 4) ≤
+          ENNReal.ofReal (ω * s ^ n / 4) + ENNReal.ofReal (36 * 3 ^ n) * (X₁ + X₂) := by
+        calc ENNReal.ofReal (ω * s ^ n / 4) + ENNReal.ofReal (ω * s ^ n / 4)
+            = ENNReal.ofReal (ω * s ^ n / 2) := by
+              rw [← ENNReal.ofReal_add (by positivity) (by positivity)]
+              congr 1
+              ring
+          _ ≤ a := ha_lower
+          _ ≤ ENNReal.ofReal (36 * 3 ^ n * lam ^ 2) * a +
+              ENNReal.ofReal (36 * 3 ^ n) * (X₁ + X₂) := hmain
+          _ ≤ ENNReal.ofReal (ω * s ^ n / 4) + ENNReal.ofReal (36 * 3 ^ n) * (X₁ + X₂) :=
+              add_le_add hlamterm le_rfl
+      exact (ENNReal.add_le_add_iff_left ENNReal.ofReal_ne_top).mp h1
+    calc ENNReal.ofReal (s ^ n) = ENNReal.ofReal (4 / ω) * ENNReal.ofReal (ω * s ^ n / 4) := by
+          rw [← ENNReal.ofReal_mul (by positivity)]
+          congr 1
+          rw [div_mul_div_comm, eq_div_iff (by positivity)]
+          ring
+      _ ≤ ENNReal.ofReal (4 / ω) * (ENNReal.ofReal (36 * 3 ^ n) * (X₁ + X₂)) :=
+          mul_le_mul_right hfin _
+      _ = ENNReal.ofReal (144 * 3 ^ n / ω) * (X₁ + X₂) := by
+          rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
+          congr 2
+          ring
+  -- Step 0: the constants `λ₀ = (288·15ⁿ)^{-1/2}` and `C₉ = 144·3ⁿ/ω`
+  have hV_pos : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    exact measure_ball_pos _ _ one_pos
+  have hV_lt : unitBallVolume n < ∞ := by
+    unfold unitBallVolume
+    exact measure_ball_lt_top
+  obtain ⟨ω, hω_def⟩ : ∃ ω : ℝ, ω = (unitBallVolume n).toReal := ⟨_, rfl⟩
+  have hω_pos : 0 < ω := by
+    rw [hω_def]
+    exact ENNReal.toReal_pos hV_pos.ne' hV_lt.ne
+  have hV_eq : unitBallVolume n = ENNReal.ofReal ω := by
+    rw [hω_def, ENNReal.ofReal_toReal hV_lt.ne]
+  refine ⟨1 / Real.sqrt (288 * 15 ^ n), 144 * 3 ^ n / ω, by positivity, by positivity, ?_⟩
+  intro μ τ T₀ F ξ σ₀ κ lam hσ₀ hκ hκσ hlam hlam₀ hξ hF hDa hDb hM2 η hη
+  obtain ⟨⟨hηF, hηS⟩, hηξ'⟩ := hη
+  have hηξ : dist η ξ ≤ σ₀ / 4 := mem_closedBall.mp hηξ'
+  -- `72·15ⁿ·λ² ≤ 1/4` for `0 ≤ λ ≤ λ₀`
+  have hlam2 : 72 * 15 ^ n * lam ^ 2 ≤ 1 / 4 := by
+    have hpos : (0 : ℝ) < 288 * 15 ^ n := by positivity
+    have hsq : lam ^ 2 ≤ 1 / (288 * 15 ^ n) := by
+      have h1 : lam ^ 2 ≤ (1 / Real.sqrt (288 * 15 ^ n)) ^ 2 := pow_le_pow_left₀ hlam hlam₀ 2
+      rwa [div_pow, Real.sq_sqrt hpos.le, one_pow] at h1
+    calc 72 * 15 ^ n * lam ^ 2 ≤ 72 * 15 ^ n * (1 / (288 * 15 ^ n)) :=
+          mul_le_mul_of_nonneg_left hsq (by positivity)
+      _ = 1 / 4 := by
+          rw [mul_one_div, div_eq_iff hpos.ne']
+          ring
+  -- Step 1: nearest point of the support
+  have hSc : IsClosed μ.support := Measure.isClosed_support
+  have hSne : μ.support.Nonempty := ⟨ξ, hξ⟩
+  have hd_pos : 0 < Metric.infDist η μ.support := (hSc.notMem_iff_infDist_pos hSne).mp hηS
+  have hd_le : Metric.infDist η μ.support ≤ dist η ξ := Metric.infDist_le_dist_of_mem hξ
+  obtain ⟨y, hyS, hyd⟩ := hSc.exists_infDist_eq_dist hSne η
+  obtain ⟨s, hs_def⟩ : ∃ s : ℝ, s = Metric.infDist η μ.support / 2 := ⟨_, rfl⟩
+  have hs : 0 < s := by
+    rw [hs_def]
+    positivity
+  have h2s : 2 * s ≤ dist η ξ := by
+    rw [hs_def]
+    linarith
+  have hyη : dist y η = 2 * s := by
+    rw [dist_comm, ← hyd, hs_def]
+    ring
+  have hs8 : s ≤ σ₀ / 8 := by linarith
+  have hyξ : dist y ξ ≤ σ₀ / 2 := by linarith [dist_triangle y η ξ]
+  refine ⟨s, y, hyS, hs, h2s, hyη, ?_⟩
+  -- Step 2: the small ball around `η` misses the support
+  have hμs0 : μ (closedBall η s) = 0 := by
+    have hsub : closedBall η s ⊆ μ.supportᶜ := by
+      intro x hx
+      rw [mem_compl_iff]
+      intro hxS
+      have h1 := Metric.infDist_le_dist_of_mem (x := η) hxS
+      have h2 : dist x η ≤ s := mem_closedBall.mp hx
+      rw [dist_comm] at h1
+      linarith
+    exact measure_mono_null hsub (Measure.measure_compl_support (μ := μ))
+  -- Step 3: mass bounds `½ωsⁿ ≤ μ(B_{3s}(η)) ≤ 2·5ⁿωsⁿ`
+  have hsub1 : closedBall y s ⊆ closedBall η (3 * s) := by
+    intro x hx
+    rw [mem_closedBall] at hx ⊢
+    linarith [dist_triangle x y η]
+  have hsub2 : closedBall η (3 * s) ⊆ closedBall y (5 * s) := by
+    intro x hx
+    rw [mem_closedBall] at hx ⊢
+    have h := dist_triangle x η y
+    rw [dist_comm η y] at h
+    linarith
+  have hDb' := hDb y ⟨hyS, mem_closedBall.mpr hyξ⟩ s hs hs8
+  have hDa' := hDa y (mem_closedBall.mpr hyξ) (5 * s) (by positivity) (by linarith)
+  have ha_lower : ENNReal.ofReal (ω * s ^ n / 2) ≤ μ (closedBall η (3 * s)) := by
+    have h1 : ENNReal.ofReal (ω * s ^ n) ≤ 2 * μ (closedBall η (3 * s)) := by
+      calc ENNReal.ofReal (ω * s ^ n) = unitBallVolume n * ENNReal.ofReal (s ^ n) := by
+            rw [hV_eq, ENNReal.ofReal_mul hω_pos.le]
+        _ ≤ 2 * μ (closedBall y s) := hDb'
+        _ ≤ 2 * μ (closedBall η (3 * s)) := mul_le_mul_right (measure_mono hsub1) _
+    rw [ENNReal.ofReal_div_of_pos (by norm_num : (0 : ℝ) < 2), ENNReal.ofReal_ofNat]
+    exact ENNReal.div_le_of_le_mul' h1
+  have ha_upper : μ (closedBall η (3 * s)) ≤ ENNReal.ofReal (2 * 5 ^ n * ω * s ^ n) := by
+    calc μ (closedBall η (3 * s)) ≤ μ (closedBall y (5 * s)) := measure_mono hsub2
+      _ ≤ 2 * unitBallVolume n * ENNReal.ofReal ((5 * s) ^ n) := hDa'
+      _ = ENNReal.ofReal (2 * 5 ^ n * ω * s ^ n) := by
+        rw [hV_eq, ← ENNReal.ofReal_ofNat 2, ← ENNReal.ofReal_mul (by norm_num),
+          ← ENNReal.ofReal_mul (by positivity)]
+        congr 1
+        ring
+  -- Step 4: monotonicity at `η` with radii `s < 3 s`
+  have hM2' := hM2 η s (3 * s) hηξ' hs (by linarith) (by linarith)
+  rw [hμs0, mul_zero, zero_add] at hM2'
+  have hJ : ∫⁻ x in closedBall η (3 * s) \ closedBall η s,
+      ENNReal.ofReal (‖(x - η) - (τ x).starProjection (x - η)‖ ^ 2 / ‖x - η‖ ^ (n + 2)) ∂μ ≤
+      ENNReal.ofReal (1 / s ^ (n + 2)) * ∫⁻ x in closedBall η (3 * s),
+        ENNReal.ofReal (‖(x - η) - (τ x).starProjection (x - η)‖ ^ 2) ∂μ := by
+    calc ∫⁻ x in closedBall η (3 * s) \ closedBall η s,
+          ENNReal.ofReal (‖(x - η) - (τ x).starProjection (x - η)‖ ^ 2 / ‖x - η‖ ^ (n + 2)) ∂μ
+        ≤ ∫⁻ x in closedBall η (3 * s) \ closedBall η s, ENNReal.ofReal (1 / s ^ (n + 2)) *
+          ENNReal.ofReal (‖(x - η) - (τ x).starProjection (x - η)‖ ^ 2) ∂μ := by
+          refine setLIntegral_mono' (measurableSet_closedBall.diff measurableSet_closedBall) ?_
+          intro x hx
+          have hx2 : s < ‖x - η‖ := by
+            rw [← dist_eq_norm]
+            have h := hx.2
+            rw [mem_closedBall, not_le] at h
+            exact h
+          rw [← ENNReal.ofReal_mul (by positivity)]
+          apply ENNReal.ofReal_le_ofReal
+          calc ‖(x - η) - (τ x).starProjection (x - η)‖ ^ 2 / ‖x - η‖ ^ (n + 2)
+              ≤ ‖(x - η) - (τ x).starProjection (x - η)‖ ^ 2 / s ^ (n + 2) := by
+                gcongr
+            _ = 1 / s ^ (n + 2) * ‖(x - η) - (τ x).starProjection (x - η)‖ ^ 2 := by ring
+      _ = ENNReal.ofReal (1 / s ^ (n + 2)) * ∫⁻ x in closedBall η (3 * s) \ closedBall η s,
+          ENNReal.ofReal (‖(x - η) - (τ x).starProjection (x - η)‖ ^ 2) ∂μ :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ ≤ ENNReal.ofReal (1 / s ^ (n + 2)) * ∫⁻ x in closedBall η (3 * s),
+          ENNReal.ofReal (‖(x - η) - (τ x).starProjection (x - η)‖ ^ 2) ∂μ :=
+          mul_le_mul_right (lintegral_mono_set sdiff_subset) _
+  -- Step 5: the exponential factor
+  have hκs : κ * (3 * s) ≤ 3 / 8 := by nlinarith [mul_le_mul_of_nonneg_left hs8 hκ]
+  have ha_I2 := hexpb κ s _ _ _ hκ hs hκs hM2' hJ
+  -- Step 6: pointwise bound on the ball `B_{3s}(η)`
+  obtain ⟨M, hM_def⟩ : ∃ M : Set (Euclid (n + k)),
+      M = toMeasurable μ (closedBall η (3 * s) \ F) := ⟨_, rfl⟩
+  have hMmeas : MeasurableSet M := by
+    rw [hM_def]
+    exact measurableSet_toMeasurable _ _
+  have hMsub : closedBall η (3 * s) \ F ⊆ M := by
+    rw [hM_def]
+    exact subset_toMeasurable _ _
+  have hMmu : μ M = μ (closedBall η (3 * s) \ F) := by
+    rw [hM_def]
+    exact measure_toMeasurable _
+  have hpt : ∀ x ∈ closedBall η (3 * s),
+      ENNReal.ofReal (‖(x - η) - (τ x).starProjection (x - η)‖ ^ 2) ≤
+        ENNReal.ofReal (18 * lam ^ 2 * s ^ 2) +
+          M.indicator (fun _ => ENNReal.ofReal (18 * s ^ 2)) x +
+          ENNReal.ofReal (18 * s ^ 2) * ENNReal.ofReal (∑ i : Fin (n + k),
+            ‖(τ x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+              T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) := by
+    intro x hx
+    have hxr : ‖x - η‖ ≤ 3 * s := by
+      rw [← dist_eq_norm]
+      exact mem_closedBall.mp hx
+    apply hptE T₀ (τ x) (x - η) s lam _ hxr
+    by_cases hxF : x ∈ F
+    · left
+      exact (hF x hxF η hηF).trans (mul_le_mul_of_nonneg_left hxr hlam)
+    · right
+      exact Set.indicator_of_mem (hMsub ⟨hx, hxF⟩) _
+  -- Step 7: integration over `B_{3s}(η)`
+  have hI2 : ∫⁻ x in closedBall η (3 * s),
+        ENNReal.ofReal (‖(x - η) - (τ x).starProjection (x - η)‖ ^ 2) ∂μ ≤
+      ENNReal.ofReal (18 * lam ^ 2 * s ^ 2) * μ (closedBall η (3 * s)) +
+        ENNReal.ofReal (18 * s ^ 2) * μ (closedBall η (3 * s) \ F) +
+        ENNReal.ofReal (18 * s ^ 2) * ∫⁻ x in closedBall η (3 * s), ENNReal.ofReal
+          (∑ i : Fin (n + k), ‖(τ x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+              T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ := by
+    calc ∫⁻ x in closedBall η (3 * s),
+          ENNReal.ofReal (‖(x - η) - (τ x).starProjection (x - η)‖ ^ 2) ∂μ
+        ≤ ∫⁻ x in closedBall η (3 * s), (ENNReal.ofReal (18 * lam ^ 2 * s ^ 2) +
+            M.indicator (fun _ => ENNReal.ofReal (18 * s ^ 2)) x +
+            ENNReal.ofReal (18 * s ^ 2) * ENNReal.ofReal (∑ i : Fin (n + k),
+              ‖(τ x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+                T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2)) ∂μ :=
+          setLIntegral_mono' measurableSet_closedBall hpt
+      _ = ∫⁻ x in closedBall η (3 * s), (ENNReal.ofReal (18 * lam ^ 2 * s ^ 2) +
+            M.indicator (fun _ => ENNReal.ofReal (18 * s ^ 2)) x) ∂μ +
+          ∫⁻ x in closedBall η (3 * s), ENNReal.ofReal (18 * s ^ 2) *
+            ENNReal.ofReal (∑ i : Fin (n + k),
+              ‖(τ x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+                T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ :=
+          lintegral_add_left ((measurable_const.indicator hMmeas).const_add _) _
+      _ = ENNReal.ofReal (18 * lam ^ 2 * s ^ 2) * μ (closedBall η (3 * s)) +
+            ENNReal.ofReal (18 * s ^ 2) * μ (M ∩ closedBall η (3 * s)) +
+          ENNReal.ofReal (18 * s ^ 2) * ∫⁻ x in closedBall η (3 * s), ENNReal.ofReal
+            (∑ i : Fin (n + k), ‖(τ x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+                T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ := by
+          rw [lintegral_add_left measurable_const, setLIntegral_const,
+            lintegral_indicator_const hMmeas, Measure.restrict_apply hMmeas,
+            lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+      _ ≤ ENNReal.ofReal (18 * lam ^ 2 * s ^ 2) * μ (closedBall η (3 * s)) +
+            ENNReal.ofReal (18 * s ^ 2) * μ (closedBall η (3 * s) \ F) +
+          ENNReal.ofReal (18 * s ^ 2) * ∫⁻ x in closedBall η (3 * s), ENNReal.ofReal
+            (∑ i : Fin (n + k), ‖(τ x).starProjection (EuclideanSpace.single i (1 : ℝ)) -
+                T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂μ := by
+          have hμM : μ (M ∩ closedBall η (3 * s)) ≤ μ (closedBall η (3 * s) \ F) :=
+            (measure_mono inter_subset_left).trans hMmu.le
+          exact add_le_add (add_le_add le_rfl (mul_le_mul_right hμM _)) le_rfl
+  -- Step 8: absorption of the `λ²`-term
+  exact hfinal ω s lam _ _ _ _ hω_pos hs hlam2 ha_lower ha_upper ha_I2 hI2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
