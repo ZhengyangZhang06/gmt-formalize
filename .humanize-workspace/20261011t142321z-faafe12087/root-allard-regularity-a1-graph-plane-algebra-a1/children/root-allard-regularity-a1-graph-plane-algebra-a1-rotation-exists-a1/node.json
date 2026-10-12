@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.rotation_exists-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1",
+  "depth": 3,
+  "title": "Every n-dimensional subspace of R^(n+l) is a rotated coordinate plane",
+  "statement": "For all natural numbers n, l and every linear subspace T of R^(n+l) = Amb n l with dim T = n, there is a linear isometry equivalence q of R^(n+l) with rotatedPlane q = T, where rotatedPlane q = (horizontalPlane n l).map q and horizontalPlane n l = span{EuclideanSpace.single (Fin.castAdd l i) 1 : i < n} = R^n x {0}.",
+  "lean_statement": "∀ (n ℓ : ℕ) (T : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ T = n → ∃ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, rotatedPlane q = T",
+  "lean_name": "allard52_gpa_exists_rotatedPlane_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-rotation-exists-a1-a1"
+}

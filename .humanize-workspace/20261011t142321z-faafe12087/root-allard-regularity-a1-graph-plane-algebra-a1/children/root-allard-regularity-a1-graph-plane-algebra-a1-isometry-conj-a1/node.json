@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.isometry_conj-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1",
+  "depth": 3,
+  "title": "Conjugation by a linear isometry: projections onto rotated subspaces and invariance of hsNormSq",
+  "statement": "Let n, l be natural numbers and q a linear isometry equivalence of R^(n+l); write Q and Q' for q and q^(-1) = q.symm as continuous linear maps of R^(n+l). (a) For every linear subspace K of R^(n+l), the orthogonal projection onto q(K) = K.map q equals Q o p_K o Q', where p_K is the orthogonal projection onto K. (b) For every continuous linear X : R^(n+l) -> R^(n+l), hsNormSq (Q o X o Q') = hsNormSq X (Hilbert-Schmidt norm squared, computed in the standard basis).",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ K : Submodule ℝ (Amb n ℓ), (K.map q.toLinearEquiv.toLinearMap).starProjection = q.toLinearIsometry.toContinuousLinearMap ∘L K.starProjection ∘L q.symm.toLinearIsometry.toContinuousLinearMap) ∧ ∀ X : Amb n ℓ →L[ℝ] Amb n ℓ, hsNormSq (q.toLinearIsometry.toContinuousLinearMap ∘L X ∘L q.symm.toLinearIsometry.toContinuousLinearMap) = hsNormSq X",
+  "lean_name": "allard52_gpa_isometry_conj",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-isometry-conj-a1-a1"
+}
