@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1ddd67d12a012592ba1b003555d0e2bed22d8a33fa3862e8846cc917d19bfed1",
+  "git_delta": {
+    "base_commit": "b06716dc2d4110f8370e4f25f66fdffa6e7942fb",
+    "candidate_commit": "066cbc3bc1438a9399e0060ee2af4277affbdbb0",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_raf_fiber_sum_glue",
+    "diff_sha256": "0074e3bdf8d7e826f6f784b97fd44cfbf2d410053e749299a2885c6d521d4ed7",
+    "source_sha256": "f1f8f2d986eef20f8c0bafd8f692886f06fa9f7ee686ac22b31bd3ca61b72a9c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_raf_fiber_sum_glue",
+      "statement": "∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] (μ : Measure X) (ν : Measure Y) (f : X → Y) (h F : X → ℝ≥0∞) (A Z : Set X) (B : ℕ → Set X), (∀ m, B m ⊆ A) → Pairwise (Function.onFun Disjoint B) → (∀ m, NullMeasurableSet (B m) μ) → (A ⊆ Z ∪ ⋃ m, B m) → μ Z = 0 → ν (f '' Z) = 0 → (∀ m, AEMeasurable (fun y => ∑' x : {x : X // x ∈ B m ∧ f x = y}, h x) ν ∧ ∫⁻ x in B m, F x ∂μ = ∫⁻ y, ∑' x : {x : X // x ∈ B m ∧ f x = y}, h x ∂ν) → AEMeasurable (fun y => ∑' x : {x : X // x ∈ A ∧ f x = y}, h x) ν ∧ ∫⁻ x in A, F x ∂μ = ∫⁻ y, ∑' x : {x : X // x ∈ A ∧ f x = y}, h x ∂ν",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
