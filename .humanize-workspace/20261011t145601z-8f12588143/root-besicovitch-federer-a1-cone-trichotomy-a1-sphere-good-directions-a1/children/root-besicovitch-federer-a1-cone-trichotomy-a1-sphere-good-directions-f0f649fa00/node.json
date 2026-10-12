@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_good_directions-a1.axis_free_measurable-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.sphere_good_directions-a1",
+  "depth": 4,
+  "title": "The unit directions of H that are not axis directions of A form a Borel set (σ-compactness of the axis set, Step 2)",
+  "statement": "Let N ∈ ℕ, E := Rn N = ℝ^N, H ⊆ E a linear subspace with orthogonal projection p_H := H.starProjection, A ⊆ E compact, δ ∈ ℝ and a ∈ E. Then the following is a Borel (measurable) subset of E: the set of θ ∈ E such that θ ∈ H, |θ| = 1, and there is no b ∈ A with b ≠ a, dist(b, a) < δ and p_H(b − a) − (p_H(b − a)·θ)θ = 0.",
+  "lean_statement": "∀ (N : ℕ) (H : Submodule ℝ (Rn N)) (A : Set (Rn N)), IsCompact A → ∀ (δ : ℝ) (a : Rn N), MeasurableSet {θ : Rn N | θ ∈ H ∧ ‖θ‖ = 1 ∧ ¬ ∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ H.starProjection (b - a) - inner ℝ (H.starProjection (b - a)) θ • θ = 0}",
+  "lean_name": "bf_sphereGood_axisFree_measurableSet",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-sphere-good-directions-f0f649fa00-a1"
+}

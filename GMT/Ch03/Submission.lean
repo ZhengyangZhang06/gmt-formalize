@@ -525,6 +525,599 @@ theorem Submission.bf_coneExceptional_measurableSet : ∀ (n ℓ : ℕ) {X : Typ
     exact MeasurableSet.iUnion fun j ↦ (isClosedMap_fst_of_compactSpace _ (hC j)).measurableSet
   -- Step 7: the exceptional set is `α⁻¹(A) ∖ ({Φ0} ∪ {Φ∞} ∪ {Ax})`, and `α⁻¹(A)` is closed.
   exact (hA.isClosed.preimage hα).measurableSet.inter (h0.union (hinf.union hax)).compl
+/-- **Density dichotomy** (Step 4 of the supplied proof of the sphere lemma in the
+Besicovitch–Federer argument, Simon Ch. 3, Theorem 3.6; cf. Dall'Alba, Lemma 4.15 and
+Theorem 4.16, and Mattila, *Geometry of Sets and Measures in Euclidean Spaces*, Ch. 18).
+Let `σ` be a finite measure on `ℝᴺ` and `S ⊆ ℝᴺ` with `c₁ ρⁿ ≤ σ(B_ρ(ζ))` for `ζ ∈ S`,
+`0 < ρ ≤ 2`, and `σ(B_ρ(ζ)) ≤ C₁ ρⁿ` for `ζ ∈ S`, `ρ > 0`. Let `m` be an outer measure and
+`F ⊆ S` a Borel set with `m(F) = 0`. Then for `σ`-a.e. `θ ∈ F` either (α) `m(S ∩ B_t(θ)) = o(tⁿ)`
+or (β) `m(S ∩ B_t(θ)) / tⁿ` is unbounded as `t ↓ 0`. By inner regularity `F` may be taken
+closed. Then `Fⱼ = {θ ∈ F : m(S ∩ B_t(θ)) ≤ (j+1) tⁿ for 0 < t < 1/(j+1)}` is closed and
+`m`-null, and covers the points of `F` where (β) fails. A Vitali covering of
+`(S ∩ B_t(θ)) ∖ Fⱼ` by balls of radius `dist(·, Fⱼ)/2` and the lower bound give
+`m(S ∩ B_t(θ)) ≤ ((j+1) 10ⁿ/c₁) σ(B̄_{2t}(θ) ∖ Fⱼ)`; at the `σ`-density points of `Fⱼ`
+(Besicovitch) the upper bound turns this into (α). -/
+theorem Submission.bf_sphereGood_densityDichotomy : ∀ (N n : ℕ) (σ : Measure (Rn N)), IsFiniteMeasure σ → ∀ (S : Set (Rn N)) (c₁ C₁ : ℝ), 0 < c₁ → (∀ ζ ∈ S, ∀ ρ : ℝ, 0 < ρ → ρ ≤ 2 → ENNReal.ofReal (c₁ * ρ ^ n) ≤ σ (Metric.ball ζ ρ)) → (∀ ζ ∈ S, ∀ ρ : ℝ, 0 < ρ → σ (Metric.ball ζ ρ) ≤ ENNReal.ofReal (C₁ * ρ ^ n)) → ∀ (m : OuterMeasure (Rn N)) (F : Set (Rn N)), MeasurableSet F → F ⊆ S → m F = 0 → σ {θ | θ ∈ F ∧ ¬ (∀ c : ℝ, 0 < c → ∃ η : ℝ, 0 < η ∧ ∀ t : ℝ, 0 < t → t < η → m (S ∩ Metric.ball θ t) ≤ ENNReal.ofReal (c * t ^ n)) ∧ ¬ (∀ K : ℝ, ∀ η : ℝ, 0 < η → ∃ t : ℝ, 0 < t ∧ t < η ∧ ENNReal.ofReal (K * t ^ n) < m (S ∩ Metric.ball θ t))} = 0 := by
+  intro N n σ hσ S c₁ C₁ hc₁ hL hU m F hFm hFS hmF
+  -- Step 3 (covering estimate): if `G` is closed and `m`-null and `m(S ∩ B_t(φ)) ≤ L tⁿ` for
+  -- `φ ∈ G`, `0 < t < λ`, then `m(S ∩ B_t(θ)) ≤ (L 10ⁿ/c₁) σ(B̄_{2t}(θ) ∖ G)` for `θ ∈ G`,
+  -- `0 < t ≤ 1` and `10 t < λ`.
+  have hcover : ∀ G : Set (Rn N), IsClosed G → m G = 0 → ∀ L lam : ℝ, 0 ≤ L →
+      (∀ φ ∈ G, ∀ t : ℝ, 0 < t → t < lam →
+        m (S ∩ Metric.ball φ t) ≤ ENNReal.ofReal (L * t ^ n)) →
+      ∀ θ ∈ G, ∀ t : ℝ, 0 < t → 10 * t < lam → t ≤ 1 →
+        m (S ∩ Metric.ball θ t) ≤
+          ENNReal.ofReal (L * 10 ^ n / c₁) * σ (Metric.closedBall θ (2 * t) \ G) := by
+    intro G hG hmG L lam hL0 hGdef θ hθ t ht htlam ht1
+    -- `R = (S ∩ B_t(θ)) ∖ G` carries all of the `m`-mass, as `m(G) = 0`.
+    set R : Set (Rn N) := (S ∩ Metric.ball θ t) \ G
+    have hmR : m (S ∩ Metric.ball θ t) ≤ m R :=
+      calc m (S ∩ Metric.ball θ t) ≤ m (R ∪ G) := by
+            refine measure_mono fun x hx ↦ ?_
+            by_cases hxG : x ∈ G
+            · exact Or.inr hxG
+            · exact Or.inl ⟨hx, hxG⟩
+        _ ≤ m R + m G := measure_union_le _ _
+        _ = m R := by rw [hmG, add_zero]
+    refine hmR.trans ?_
+    have hGne : G.Nonempty := ⟨θ, hθ⟩
+    -- (a) The radii `s_ζ = dist(ζ, G)/2` satisfy `0 < s_ζ < t/2` for `ζ ∈ R`.
+    set s : Rn N → ℝ := fun ζ ↦ Metric.infDist ζ G / 2 with hs
+    have hinf_pos : ∀ ζ ∈ R, 0 < Metric.infDist ζ G := fun ζ hζ ↦
+      (hG.notMem_iff_infDist_pos hGne).1 hζ.2
+    have hs_pos : ∀ ζ ∈ R, 0 < s ζ := fun ζ hζ ↦ half_pos (hinf_pos ζ hζ)
+    have hs_lt : ∀ ζ ∈ R, s ζ < t / 2 := by
+      intro ζ hζ
+      have h1 : Metric.infDist ζ G ≤ dist ζ θ := Metric.infDist_le_dist_of_mem hθ
+      have h2 : dist ζ θ < t := hζ.1.2
+      simp only [hs]
+      linarith
+    -- (c), (d) Vitali: a disjoint, hence countable, subfamily `u` whose 5-fold enlargements
+    -- cover `R`.
+    obtain ⟨u, huR, hudisj, hucov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement_ball R
+      (fun ζ ↦ ζ) s (t / 2) (fun ζ hζ ↦ (hs_lt ζ hζ).le) 5 (by norm_num)
+    have hu_count : u.Countable := hudisj.countable_of_isOpen (fun ζ _ ↦ Metric.isOpen_ball)
+      (fun ζ hζ ↦ ⟨ζ, Metric.mem_ball_self (hs_pos ζ (huR hζ))⟩)
+    have hRcov : R ⊆ ⋃ ζ ∈ u, S ∩ Metric.ball ζ (5 * s ζ) := by
+      intro ζ hζ
+      obtain ⟨ζ', hζ'u, hsub⟩ := hucov ζ hζ
+      exact mem_biUnion hζ'u ⟨hζ.1.1, hsub (Metric.mem_ball_self (hs_pos ζ hζ))⟩
+    -- (e) Each enlarged ball lies in a ball of radius `10 s_ζ` about some `φ ∈ G`, and the
+    -- lower bound at `ζ ∈ S` controls `s_ζⁿ` by `σ(B_{s_ζ}(ζ))`.
+    have hpiece : ∀ ζ ∈ u, m (S ∩ Metric.ball ζ (5 * s ζ)) ≤
+        ENNReal.ofReal (L * 10 ^ n / c₁) * σ (Metric.ball ζ (s ζ)) := by
+      intro ζ hζu
+      have hζR := huR hζu
+      have hsζ := hs_pos ζ hζR
+      have hsζt := hs_lt ζ hζR
+      have hinf := hinf_pos ζ hζR
+      obtain ⟨φ, hφG, hφ⟩ : ∃ φ ∈ G, dist ζ φ < 5 * s ζ := by
+        refine (Metric.infDist_lt_iff hGne).1 ?_
+        simp only [hs]
+        linarith
+      have hball : Metric.ball ζ (5 * s ζ) ⊆ Metric.ball φ (10 * s ζ) :=
+        Metric.ball_subset_ball' (by linarith)
+      calc m (S ∩ Metric.ball ζ (5 * s ζ)) ≤ m (S ∩ Metric.ball φ (10 * s ζ)) :=
+            measure_mono (inter_subset_inter_right _ hball)
+        _ ≤ ENNReal.ofReal (L * (10 * s ζ) ^ n) := hGdef φ hφG _ (by positivity) (by linarith)
+        _ = ENNReal.ofReal (L * 10 ^ n / c₁) * ENNReal.ofReal (c₁ * s ζ ^ n) := by
+            rw [← ENNReal.ofReal_mul (div_nonneg (mul_nonneg hL0 (by positivity)) hc₁.le)]
+            congr 1
+            rw [mul_pow, div_mul_eq_mul_div, eq_div_iff hc₁.ne']
+            ring
+        _ ≤ ENNReal.ofReal (L * 10 ^ n / c₁) * σ (Metric.ball ζ (s ζ)) := by
+            gcongr
+            exact hL ζ hζR.1.1 _ hsζ (by linarith)
+    -- (f) Countable subadditivity of `m`, additivity of `σ` on the disjoint balls, and (b):
+    -- `B_{s_ζ}(ζ) ⊆ B̄_{2t}(θ) ∖ G`.
+    calc m R ≤ m (⋃ ζ ∈ u, S ∩ Metric.ball ζ (5 * s ζ)) := measure_mono hRcov
+      _ ≤ ∑' ζ : u, m (S ∩ Metric.ball ζ (5 * s ζ)) := measure_biUnion_le m hu_count _
+      _ ≤ ∑' ζ : u, ENNReal.ofReal (L * 10 ^ n / c₁) * σ (Metric.ball ζ (s ζ)) :=
+          ENNReal.tsum_le_tsum fun ζ ↦ hpiece ζ ζ.2
+      _ = ENNReal.ofReal (L * 10 ^ n / c₁) * ∑' ζ : u, σ (Metric.ball ζ (s ζ)) :=
+          ENNReal.tsum_mul_left
+      _ = ENNReal.ofReal (L * 10 ^ n / c₁) * σ (⋃ ζ ∈ u, Metric.ball ζ (s ζ)) := by
+          rw [measure_biUnion hu_count hudisj fun _ _ ↦ measurableSet_ball]
+      _ ≤ ENNReal.ofReal (L * 10 ^ n / c₁) * σ (Metric.closedBall θ (2 * t) \ G) := by
+          gcongr
+          intro x hx
+          simp only [mem_iUnion] at hx
+          obtain ⟨ζ, hζu, hxζ⟩ := hx
+          have hζR := huR hζu
+          have hsζt := hs_lt ζ hζR
+          have hinf := hinf_pos ζ hζR
+          rw [Metric.mem_ball] at hxζ
+          refine ⟨?_, fun hxG ↦ ?_⟩
+          · rw [Metric.mem_closedBall]
+            have : dist ζ θ < t := hζR.1.2
+            linarith [dist_triangle x ζ θ]
+          · have h1 : Metric.infDist ζ G ≤ dist ζ x := Metric.infDist_le_dist_of_mem hxG
+            rw [dist_comm] at h1
+            simp only [hs] at hxζ
+            linarith
+  -- Step 4: with `G`, `L`, `λ` as in Step 3 and `G ⊆ S`, (α) holds at every `θ ∈ G` where the
+  -- `σ`-density `q_θ(ρ) = σ(G ∩ B̄_ρ(θ)) / σ(B̄_ρ(θ))` tends to `1` as `ρ ↓ 0`.
+  have halpha : ∀ G : Set (Rn N), IsClosed G → G ⊆ S → m G = 0 → ∀ L lam : ℝ, 0 ≤ L → 0 < lam →
+      (∀ φ ∈ G, ∀ t : ℝ, 0 < t → t < lam →
+        m (S ∩ Metric.ball φ t) ≤ ENNReal.ofReal (L * t ^ n)) →
+      ∀ θ ∈ G, Tendsto (fun r ↦ σ (G ∩ Metric.closedBall θ r) / σ (Metric.closedBall θ r))
+          (𝓝[>] 0) (𝓝 1) →
+        ∀ c : ℝ, 0 < c → ∃ η : ℝ, 0 < η ∧ ∀ t : ℝ, 0 < t → t < η →
+          m (S ∩ Metric.ball θ t) ≤ ENNReal.ofReal (c * t ^ n) := by
+    intro G hG hGS hmG L lam hL0 hlam hGdef θ hθ hdens c hc
+    have hθS : θ ∈ S := hGS hθ
+    -- 0(b) Closed balls about `θ ∈ S` have positive, finite `σ`-measure.
+    have hpos : ∀ ρ : ℝ, 0 < ρ → σ (Metric.closedBall θ ρ) ≠ 0 := by
+      intro ρ hρ
+      have h1 : ENNReal.ofReal (c₁ * (min ρ 2) ^ n) ≤ σ (Metric.ball θ (min ρ 2)) :=
+        hL θ hθS _ (lt_min hρ two_pos) (min_le_right _ _)
+      have h2 : σ (Metric.ball θ (min ρ 2)) ≤ σ (Metric.closedBall θ ρ) :=
+        measure_mono ((Metric.ball_subset_ball (min_le_left _ _)).trans
+          Metric.ball_subset_closedBall)
+      have h3 : 0 < ENNReal.ofReal (c₁ * (min ρ 2) ^ n) :=
+        ENNReal.ofReal_pos.2 (mul_pos hc₁ (pow_pos (lt_min hρ two_pos) n))
+      exact (h3.trans_le (h1.trans h2)).ne'
+    have hfin : ∀ ρ : ℝ, σ (Metric.closedBall θ ρ) ≠ ∞ := fun ρ ↦ measure_ne_top σ _
+    -- (a), (c) `σ(B̄_{2t}(θ) ∖ G) / σ(B̄_{2t}(θ)) = 1 - q_θ(2t) → 0` as `t ↓ 0`.
+    have h2t : Tendsto (fun t : ℝ ↦ 2 * t) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_iff.2 ⟨?_, ?_⟩
+      · have : Tendsto (fun t : ℝ ↦ 2 * t) (𝓝 0) (𝓝 (2 * 0)) :=
+          (continuous_const.mul continuous_id).tendsto 0
+        rw [mul_zero] at this
+        exact this.mono_left nhdsWithin_le_nhds
+      · filter_upwards [self_mem_nhdsWithin] with t ht
+        exact mul_pos two_pos (show (0 : ℝ) < t from ht)
+    have hq := hdens.comp h2t
+    have hf : Tendsto (fun t : ℝ ↦ σ (Metric.closedBall θ (2 * t) \ G) /
+        σ (Metric.closedBall θ (2 * t))) (𝓝[>] 0) (𝓝 0) := by
+      have hsub := ENNReal.Tendsto.sub tendsto_const_nhds hq (Or.inl ENNReal.one_ne_top)
+      rw [tsub_self] at hsub
+      refine hsub.congr' ?_
+      filter_upwards [self_mem_nhdsWithin] with t (ht : 0 < t)
+      simp only [Function.comp_apply]
+      have hρ : 0 < 2 * t := mul_pos two_pos ht
+      have hadd := measure_inter_add_sdiff (μ := σ) (Metric.closedBall θ (2 * t)) hG.measurableSet
+      have hdiff : σ (Metric.closedBall θ (2 * t) \ G) =
+          σ (Metric.closedBall θ (2 * t)) - σ (Metric.closedBall θ (2 * t) ∩ G) :=
+        ENNReal.eq_sub_of_add_eq (measure_ne_top σ _) (by rw [add_comm]; exact hadd)
+      rw [hdiff, ENNReal.sub_div (fun _ _ ↦ hpos _ hρ), ENNReal.div_self (hpos _ hρ) (hfin _),
+        inter_comm]
+    -- (b) With `M = (L 10ⁿ/c₁) C₁ 4ⁿ`, Step 3 and the upper bound at radius `4t` give
+    -- `m(S ∩ B_t(θ)) ≤ tⁿ · M · σ(B̄_{2t}(θ) ∖ G) / σ(B̄_{2t}(θ))`; choose `η` from (c).
+    obtain ⟨M, hM⟩ : ∃ M : ℝ≥0∞,
+        M = ENNReal.ofReal (L * 10 ^ n / c₁) * ENNReal.ofReal (C₁ * 4 ^ n) := ⟨_, rfl⟩
+    have hMf : M ≠ ∞ := by
+      rw [hM]
+      exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top ENNReal.ofReal_ne_top
+    have hMf' : Tendsto (fun t : ℝ ↦ M * (σ (Metric.closedBall θ (2 * t) \ G) /
+        σ (Metric.closedBall θ (2 * t)))) (𝓝[>] 0) (𝓝 0) := by
+      have := ENNReal.Tendsto.const_mul hf (Or.inr hMf)
+      rwa [mul_zero] at this
+    have hev : ∀ᶠ t in 𝓝[>] (0 : ℝ), M * (σ (Metric.closedBall θ (2 * t) \ G) /
+        σ (Metric.closedBall θ (2 * t))) < ENNReal.ofReal c :=
+      hMf'.eventually (gt_mem_nhds (ENNReal.ofReal_pos.2 hc))
+    obtain ⟨u, hu, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 hev
+    refine ⟨min u (min (lam / 10) 1), lt_min hu (lt_min (by positivity) one_pos),
+      fun t ht htη ↦ ?_⟩
+    have htu : t < u := htη.trans_le (min_le_left _ _)
+    have htlam : 10 * t < lam := by
+      have := htη.trans_le ((min_le_right _ _).trans (min_le_left _ _))
+      linarith
+    have ht1 : t ≤ 1 := (htη.trans_le ((min_le_right _ _).trans (min_le_right _ _))).le
+    have hρ : 0 < 2 * t := mul_pos two_pos ht
+    have hlt : M * (σ (Metric.closedBall θ (2 * t) \ G) / σ (Metric.closedBall θ (2 * t))) <
+        ENNReal.ofReal c := hsub ⟨ht, htu⟩
+    have hball : σ (Metric.closedBall θ (2 * t)) ≤
+        ENNReal.ofReal (C₁ * 4 ^ n) * ENNReal.ofReal (t ^ n) := by
+      calc σ (Metric.closedBall θ (2 * t)) ≤ σ (Metric.ball θ (4 * t)) :=
+            measure_mono (Metric.closedBall_subset_ball (by linarith))
+        _ ≤ ENNReal.ofReal (C₁ * (4 * t) ^ n) := hU θ hθS _ (by positivity)
+        _ = ENNReal.ofReal (C₁ * 4 ^ n) * ENNReal.ofReal (t ^ n) := by
+            rw [mul_pow, ← mul_assoc, ENNReal.ofReal_mul' (by positivity)]
+    calc m (S ∩ Metric.ball θ t)
+        ≤ ENNReal.ofReal (L * 10 ^ n / c₁) * σ (Metric.closedBall θ (2 * t) \ G) :=
+          hcover G hG hmG L lam hL0 hGdef θ hθ t ht htlam ht1
+      _ = ENNReal.ofReal (L * 10 ^ n / c₁) * (σ (Metric.closedBall θ (2 * t)) *
+            (σ (Metric.closedBall θ (2 * t) \ G) / σ (Metric.closedBall θ (2 * t)))) := by
+          rw [ENNReal.mul_div_cancel (hpos _ hρ) (hfin _)]
+      _ ≤ ENNReal.ofReal (L * 10 ^ n / c₁) * ((ENNReal.ofReal (C₁ * 4 ^ n) *
+            ENNReal.ofReal (t ^ n)) * (σ (Metric.closedBall θ (2 * t) \ G) /
+              σ (Metric.closedBall θ (2 * t)))) := by
+          gcongr
+      _ = ENNReal.ofReal (t ^ n) * (M * (σ (Metric.closedBall θ (2 * t) \ G) /
+            σ (Metric.closedBall θ (2 * t)))) := by
+          rw [hM]
+          ring
+      _ ≤ ENNReal.ofReal (t ^ n) * ENNReal.ofReal c := mul_le_mul' le_rfl hlt.le
+      _ = ENNReal.ofReal (c * t ^ n) := by
+          rw [ENNReal.ofReal_mul' (pow_nonneg ht.le n), mul_comm]
+  -- Steps 2 and 5: the statement for a closed `F' ⊆ S` with `m(F') = 0`.
+  have hclosed : ∀ F' : Set (Rn N), IsClosed F' → F' ⊆ S → m F' = 0 →
+      σ {θ | θ ∈ F' ∧ ¬ (∀ c : ℝ, 0 < c → ∃ η : ℝ, 0 < η ∧ ∀ t : ℝ, 0 < t → t < η →
+          m (S ∩ Metric.ball θ t) ≤ ENNReal.ofReal (c * t ^ n)) ∧
+        ¬ (∀ K : ℝ, ∀ η : ℝ, 0 < η → ∃ t : ℝ, 0 < t ∧ t < η ∧
+          ENNReal.ofReal (K * t ^ n) < m (S ∩ Metric.ball θ t))} = 0 := by
+    intro F' hFc hF'S hmF'
+    -- Step 2: `F'ⱼ = {θ ∈ F' : m(S ∩ B_t(θ)) ≤ (j+1) tⁿ for 0 < t < 1/(j+1)}`.
+    let Fj : ℕ → Set (Rn N) := fun j ↦ {θ | θ ∈ F' ∧ ∀ t : ℝ, 0 < t → t < 1 / ((j : ℝ) + 1) →
+      m (S ∩ Metric.ball θ t) ≤ ENNReal.ofReal (((j : ℝ) + 1) * t ^ n)}
+    have hFjF : ∀ j, Fj j ⊆ F' := fun j θ hθ ↦ hθ.1
+    -- (b) `F'ⱼ` is closed: `B_t(θ) ⊆ B_{t+τ}(θ')` for `θ' ∈ F'ⱼ` near `θ`; let `τ ↓ 0`.
+    have hFjc : ∀ j, IsClosed (Fj j) := by
+      intro j
+      rw [← closure_subset_iff_isClosed]
+      intro θ hθ
+      have hθF : θ ∈ F' := hFc.closure_subset_iff.2 (hFjF j) hθ
+      refine ⟨hθF, fun t ht htj ↦ ?_⟩
+      have key : ∀ τ ∈ Ioo (0 : ℝ) (1 / ((j : ℝ) + 1) - t),
+          m (S ∩ Metric.ball θ t) ≤ ENNReal.ofReal (((j : ℝ) + 1) * (t + τ) ^ n) := by
+        rintro τ ⟨hτ, hτ'⟩
+        obtain ⟨θ', hθ', hd⟩ := Metric.mem_closure_iff.1 hθ τ hτ
+        calc m (S ∩ Metric.ball θ t) ≤ m (S ∩ Metric.ball θ' (t + τ)) :=
+              measure_mono (inter_subset_inter_right _ (Metric.ball_subset_ball' (by linarith)))
+          _ ≤ _ := hθ'.2 (t + τ) (by linarith) (by linarith)
+      have hcont : Tendsto (fun τ : ℝ ↦ ENNReal.ofReal (((j : ℝ) + 1) * (t + τ) ^ n)) (𝓝[>] 0)
+          (𝓝 (ENNReal.ofReal (((j : ℝ) + 1) * t ^ n))) := by
+        have h : Continuous fun τ : ℝ ↦ ENNReal.ofReal (((j : ℝ) + 1) * (t + τ) ^ n) :=
+          ENNReal.continuous_ofReal.comp
+            (continuous_const.mul ((continuous_const.add continuous_id).pow n))
+        have := h.tendsto 0
+        simp only [add_zero] at this
+        exact this.mono_left nhdsWithin_le_nhds
+      exact ge_of_tendsto hcont (mem_of_superset (Ioo_mem_nhdsGT
+        (by linarith : (0 : ℝ) < 1 / ((j : ℝ) + 1) - t)) fun τ hτ ↦ key τ hτ)
+    -- (a) `m(F'ⱼ) ≤ m(F') = 0`.
+    have hmFj : ∀ j, m (Fj j) = 0 := fun j ↦ measure_mono_null (hFjF j) hmF'
+    -- (c) A point of `F'` where (β) fails lies in some `F'ⱼ`.
+    have hβ : ∀ θ ∈ F', ¬ (∀ K : ℝ, ∀ η : ℝ, 0 < η → ∃ t : ℝ, 0 < t ∧ t < η ∧
+        ENNReal.ofReal (K * t ^ n) < m (S ∩ Metric.ball θ t)) → ∃ j, θ ∈ Fj j := by
+      intro θ hθ hnβ
+      push Not at hnβ
+      obtain ⟨K, η, hη, hK⟩ := hnβ
+      obtain ⟨j, hj⟩ := exists_nat_ge (max K (1 / η))
+      refine ⟨j, hθ, fun t ht htj ↦ ?_⟩
+      have hjK : K ≤ (j : ℝ) + 1 := by linarith [le_max_left K (1 / η)]
+      have hjη : 1 / ((j : ℝ) + 1) ≤ η := by
+        rw [div_le_iff₀ (by positivity)]
+        have : 1 / η ≤ j := (le_max_right _ _).trans hj
+        rw [div_le_iff₀ hη] at this
+        nlinarith
+      calc m (S ∩ Metric.ball θ t) ≤ ENNReal.ofReal (K * t ^ n) := hK t ht (by linarith)
+        _ ≤ ENNReal.ofReal (((j : ℝ) + 1) * t ^ n) :=
+            ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right hjK (by positivity))
+    -- Step 4 with the Besicovitch density theorem: (α) fails only on a `σ`-null part of `F'ⱼ`.
+    have hnull : ∀ j, σ {θ | θ ∈ Fj j ∧ ¬ (∀ c : ℝ, 0 < c → ∃ η : ℝ, 0 < η ∧ ∀ t : ℝ, 0 < t →
+        t < η → m (S ∩ Metric.ball θ t) ≤ ENNReal.ofReal (c * t ^ n))} = 0 := by
+      intro j
+      have h := Besicovitch.ae_tendsto_measure_inter_div σ (Fj j)
+      rw [ae_restrict_iff' (hFjc j).measurableSet, ae_iff] at h
+      refine measure_mono_null ?_ h
+      rintro θ ⟨hθ, hnα⟩ hall
+      exact hnα (halpha (Fj j) (hFjc j) ((hFjF j).trans hF'S) (hmFj j) ((j : ℝ) + 1)
+        (1 / ((j : ℝ) + 1)) (by positivity) (by positivity) (fun φ hφ ↦ hφ.2) θ hθ (hall hθ))
+    -- Step 5: the exceptional set lies in `⋃ⱼ {θ ∈ F'ⱼ : (α) fails at θ}`.
+    refine measure_mono_null ?_ (measure_iUnion_null hnull)
+    rintro θ ⟨hθF, hnα, hnβ⟩
+    obtain ⟨j, hj⟩ := hβ θ hθF hnβ
+    exact mem_iUnion.2 ⟨j, hj, hnα⟩
+  -- Step 1: reduction to closed sets. Inner regularity gives closed `Fₖ ⊆ F` with
+  -- `σ(F ∖ Fₖ) < 1/k`, and the exceptional set lies in `(F ∖ ⋃ₖ Fₖ) ∪ ⋃ₖ Exc(Fₖ)`.
+  have happrox : ∀ k : ℕ, ∃ Fk, Fk ⊆ F ∧ IsClosed Fk ∧ σ (F \ Fk) < (k : ℝ≥0∞)⁻¹ := fun k ↦
+    hFm.exists_isClosed_sdiff_lt (measure_ne_top σ F) (by simp)
+  choose Fk hFkF hFkc hFkσ using happrox
+  have hD : σ (F \ ⋃ k, Fk k) = 0 := by
+    refine le_antisymm (ge_of_tendsto' ENNReal.tendsto_inv_nat_nhds_zero fun k ↦ ?_) zero_le
+    exact (measure_mono (sdiff_subset_sdiff_right (subset_iUnion Fk k))).trans (hFkσ k).le
+  refine measure_mono_null ?_ (measure_union_null hD (measure_iUnion_null fun k ↦
+    hclosed (Fk k) (hFkc k) ((hFkF k).trans hFS) (measure_mono_null (hFkF k) hmF)))
+  rintro θ ⟨hθF, hnα, hnβ⟩
+  by_cases h : θ ∈ ⋃ k, Fk k
+  · obtain ⟨k, hk⟩ := mem_iUnion.1 h
+    exact Or.inr (mem_iUnion.2 ⟨k, hk, hnα, hnβ⟩)
+  · exact Or.inl ⟨hθF, h⟩
+/-- **The non-axis unit directions of a subspace form a Borel set** (Step 2 of the supplied proof
+of the sphere lemma in the Besicovitch–Federer argument, Simon Ch. 3, Theorem 3.6). Let
+`H ⊆ ℝᴺ` be a subspace with orthogonal projection `p_H`, `A ⊆ ℝᴺ` compact, `δ ∈ ℝ` and `a ∈ ℝᴺ`.
+The unit vectors `θ ∈ H` for which no `b ∈ A` with `0 < |b - a| < δ` has
+`p_H(b - a) - (p_H(b - a) · θ) θ = 0` form a Borel set: with `S(H) = H ∩ ∂B₁(0)` (compact) and
+the compact sets `Kⱼ = {(θ, b) ∈ S(H) × A : 1/(j+1) ≤ |b - a| ≤ δ - 1/(j+1),
+p_H(b - a) - (p_H(b - a) · θ) θ = 0}`, the set is `S(H) ∖ ⋃ⱼ π₁(Kⱼ)`, and each `π₁(Kⱼ)` is
+compact, hence closed. -/
+theorem Submission.bf_sphereGood_axisFree_measurableSet : ∀ (N : ℕ) (H : Submodule ℝ (Rn N)) (A : Set (Rn N)), IsCompact A → ∀ (δ : ℝ) (a : Rn N), MeasurableSet {θ : Rn N | θ ∈ H ∧ ‖θ‖ = 1 ∧ ¬ ∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ H.starProjection (b - a) - inner ℝ (H.starProjection (b - a)) θ • θ = 0} := by
+  intro N H A hA δ a
+  -- Step 1: the unit sphere `S(H) = H ∩ ∂B₁(0)` of `H` is compact (`H` is closed).
+  let S : Set (Rn N) := (H : Set (Rn N)) ∩ Metric.sphere 0 1
+  have hS : IsCompact S := (isCompact_sphere 0 1).inter_left H.closed_of_finiteDimensional
+  -- Step 2: `g(θ, b) = p_H(b - a) - (p_H(b - a) · θ) θ` is continuous on `ℝᴺ × ℝᴺ`.
+  let g : Rn N × Rn N → Rn N := fun p ↦
+    H.starProjection (p.2 - a) - inner ℝ (H.starProjection (p.2 - a)) p.1 • p.1
+  have hg : Continuous g := by
+    have hp : Continuous fun p : Rn N × Rn N ↦ H.starProjection (p.2 - a) :=
+      H.starProjection.continuous.comp (continuous_snd.sub continuous_const)
+    exact hp.sub ((hp.inner continuous_fst).fun_smul continuous_fst)
+  have hd : Continuous fun p : Rn N × Rn N ↦ dist p.2 a := continuous_snd.dist continuous_const
+  -- Step 3: `Kⱼ` is a closed subset of the compact set `S(H) × A`, so `Pⱼ = π₁(Kⱼ)` is closed.
+  let K : ℕ → Set (Rn N × Rn N) := fun j ↦
+    S ×ˢ A ∩ {p | 1 / ((j : ℝ) + 1) ≤ dist p.2 a} ∩ {p | dist p.2 a ≤ δ - 1 / ((j : ℝ) + 1)} ∩
+      {p | g p = 0}
+  have hP : ∀ j, IsClosed (Prod.fst '' K j) := fun j ↦
+    ((((hS.prod hA).inter_right (isClosed_le continuous_const hd)).inter_right
+      (isClosed_le hd continuous_const)).inter_right
+        (isClosed_eq hg continuous_const)).image continuous_fst |>.isClosed
+  -- Step 5: `S(H) ∖ ⋃ⱼ Pⱼ` is Borel.
+  have hmeas : MeasurableSet (S \ ⋃ j, Prod.fst '' K j) :=
+    hS.isClosed.measurableSet.diff (.iUnion fun j ↦ (hP j).measurableSet)
+  convert hmeas using 1
+  -- Step 4: for `θ ∈ S(H)`, some `b ∈ A` with `0 < |b - a| < δ` and `g(θ, b) = 0` exists iff
+  -- `θ ∈ ⋃ⱼ Pⱼ` (Archimedean choice of `j`).
+  ext θ
+  constructor
+  · rintro ⟨hθH, hθ1, hno⟩
+    refine ⟨⟨hθH, mem_sphere_zero_iff_norm.2 hθ1⟩, fun hmem ↦ hno ?_⟩
+    obtain ⟨j, ⟨θ', b⟩, ⟨⟨⟨⟨-, hbA⟩, hlo⟩, hhi⟩, hg0⟩, rfl⟩ := Set.mem_iUnion.1 hmem
+    have hlo' : 1 / ((j : ℝ) + 1) ≤ dist b a := hlo
+    have hhi' : dist b a ≤ δ - 1 / ((j : ℝ) + 1) := hhi
+    have hj : (0 : ℝ) < 1 / ((j : ℝ) + 1) := by positivity
+    refine ⟨b, hbA, fun hba ↦ ?_, by linarith, hg0⟩
+    rw [hba, dist_self] at hlo'
+    linarith
+  · rintro ⟨hθS, hno⟩
+    refine ⟨hθS.1, mem_sphere_zero_iff_norm.1 hθS.2, ?_⟩
+    rintro ⟨b, hbA, hba, hbδ, hg0⟩
+    obtain ⟨j, hj⟩ := exists_nat_one_div_lt (lt_min (dist_pos.2 hba) (sub_pos.2 hbδ))
+    have hlo : 1 / ((j : ℝ) + 1) ≤ dist b a := (hj.trans_le (min_le_left _ _)).le
+    have hhi : dist b a ≤ δ - 1 / ((j : ℝ) + 1) := by
+      linarith [hj.trans_le (min_le_right _ _)]
+    exact hno (Set.mem_iUnion.2 ⟨j, (θ, b), ⟨⟨⟨⟨hθS, hbA⟩, hlo⟩, hhi⟩, hg0⟩, rfl⟩)
+/-- **Double-cone outer measure on directions** (Steps 1–3 of the supplied proof of the
+sphere-good-directions lemma for the Besicovitch–Federer theorem, Simon Ch. 3, Theorem 3.6; cf.
+Dall'Alba, Theorem 4.16). With `y_x = p_H(x - a)` and the double cone
+`Λ(E') = {x : y_x ≠ 0, ±y_x/|y_x| ∈ E'}`, the outer measure
+`m(E') = sup_{0<r<δ} Hⁿ(A ∩ B_r(a) ∩ Λ(E')) / rⁿ` vanishes on the unit directions of `H` whose
+axis through `a` meets no `b ∈ A ∖ {a}` with `|b - a| < δ`, and its cap densities control the
+slab-cone densities of `A` at `a`, since
+`Z_θ(s) ⊆ Λ(S(H) ∩ B_{2s}(θ))` and `Λ(S(H) ∩ B_t(θ)) ⊆ Z_θ(t)`. -/
+theorem Submission.bf_sphereGood_doubleCone_outerMeasure : ∀ (N n : ℕ) (H : Submodule ℝ (Rn N)) (A : Set (Rn N)) (δ : ℝ), 0 < δ → ∀ a : Rn N, ∃ m : OuterMeasure (Rn N), m {θ | θ ∈ H ∧ ‖θ‖ = 1 ∧ ¬ ∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ H.starProjection (b - a) - inner ℝ (H.starProjection (b - a)) θ • θ = 0} = 0 ∧ ∀ θ ∈ H, ‖θ‖ = 1 → ((∀ c : ℝ, 0 < c → ∃ η : ℝ, 0 < η ∧ ∀ t : ℝ, 0 < t → t < η → m ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩ Metric.ball θ t) ≤ ENNReal.ofReal (c * t ^ n)) → ∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μHE[n] (A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ < s * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∧ ((∀ K : ℝ, ∀ η : ℝ, 0 < η → ∃ t : ℝ, 0 < t ∧ t < η ∧ ENNReal.ofReal (K * t ^ n) < m ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩ Metric.ball θ t)) → ∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μHE[n] (A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ < s * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r))) := by
+  intro N n H A δ hδ a
+  -- Step 0: `d(v, θ) = |v - (v·θ)θ|` is the distance from `v` to the line `ℝθ`.
+  have perp_smul : ∀ (θ v : Rn N) (c : ℝ),
+      c • v - inner ℝ (c • v) θ • θ = c • (v - inner ℝ v θ • θ) := by
+    intro θ v c
+    rw [real_inner_smul_left, smul_sub, smul_smul]
+  have perp_neg : ∀ θ v : Rn N, -v - inner ℝ (-v) θ • θ = -(v - inner ℝ v θ • θ) := by
+    intro θ v
+    rw [inner_neg_left, neg_smul]
+    abel
+  -- `d(v, θ) ≤ |v - θ|` for a unit vector `θ`.
+  have perp_le : ∀ θ v : Rn N, ‖θ‖ = 1 → ‖v - inner ℝ v θ • θ‖ ≤ ‖v - θ‖ := by
+    intro θ v hθ
+    have h1 : ‖v - inner ℝ v θ • θ‖ ^ 2 = ‖v‖ ^ 2 - (inner ℝ v θ) ^ 2 := by
+      rw [norm_sub_sq_real, real_inner_smul_right, norm_smul, Real.norm_eq_abs, mul_pow, sq_abs,
+        hθ]
+      ring
+    have h2 : ‖v - θ‖ ^ 2 = ‖v‖ ^ 2 - 2 * inner ℝ v θ + 1 := by
+      rw [norm_sub_sq_real, hθ]
+      ring
+    have h3 : ‖v - inner ℝ v θ • θ‖ ^ 2 ≤ ‖v - θ‖ ^ 2 := by
+      rw [h1, h2]
+      nlinarith [sq_nonneg (inner ℝ v θ - 1)]
+    nlinarith [norm_nonneg (v - inner ℝ v θ • θ), norm_nonneg (v - θ)]
+  -- `|ξ - θ| ≤ 2 d(ξ, θ)` for unit vectors `ξ, θ` with `ξ·θ ≥ 0`.
+  have sub_le_two_perp : ∀ θ ξ : Rn N, ‖θ‖ = 1 → ‖ξ‖ = 1 → 0 ≤ inner ℝ ξ θ →
+      ‖ξ - θ‖ ≤ 2 * ‖ξ - inner ℝ ξ θ • θ‖ := by
+    intro θ ξ hθ hξ hpos
+    have h1 : ‖ξ - inner ℝ ξ θ • θ‖ ^ 2 = 1 - (inner ℝ ξ θ) ^ 2 := by
+      rw [norm_sub_sq_real, real_inner_smul_right, norm_smul, Real.norm_eq_abs, mul_pow, sq_abs,
+        hθ, hξ]
+      ring
+    have h2 : ‖ξ - θ‖ ^ 2 = 2 - 2 * inner ℝ ξ θ := by
+      rw [norm_sub_sq_real, hθ, hξ]
+      ring
+    have hle : inner ℝ ξ θ ≤ 1 := by
+      have := real_inner_le_norm ξ θ
+      rw [hθ, hξ] at this
+      linarith
+    have h3 : ‖ξ - θ‖ ^ 2 ≤ (2 * ‖ξ - inner ℝ ξ θ • θ‖) ^ 2 := by
+      rw [mul_pow, h1, h2]
+      nlinarith [mul_nonneg (sub_nonneg.2 hle) (by linarith : (0 : ℝ) ≤ 1 + 2 * inner ℝ ξ θ)]
+    nlinarith [norm_nonneg (ξ - θ), norm_nonneg (ξ - inner ℝ ξ θ • θ)]
+  -- Step 1: the double cone `Λ(E')` over a set of directions `E'`, with vertex `a`.
+  obtain ⟨Λ, hΛ⟩ : ∃ Λ : Set (Rn N) → Set (Rn N), ∀ (E' : Set (Rn N)) (x : Rn N),
+      x ∈ Λ E' ↔ H.starProjection (x - a) ≠ 0 ∧
+        (‖H.starProjection (x - a)‖⁻¹ • H.starProjection (x - a) ∈ E' ∨
+          -(‖H.starProjection (x - a)‖⁻¹ • H.starProjection (x - a)) ∈ E') :=
+    ⟨fun E' ↦ {x | H.starProjection (x - a) ≠ 0 ∧
+      (‖H.starProjection (x - a)‖⁻¹ • H.starProjection (x - a) ∈ E' ∨
+        -(‖H.starProjection (x - a)‖⁻¹ • H.starProjection (x - a)) ∈ E')}, fun _ _ ↦ Iff.rfl⟩
+  have Λ_mono : ∀ {E₁ E₂ : Set (Rn N)}, E₁ ⊆ E₂ → Λ E₁ ⊆ Λ E₂ := by
+    intro E₁ E₂ h x hx
+    rw [hΛ] at hx ⊢
+    obtain ⟨hx0, hx | hx⟩ := hx
+    · exact ⟨hx0, Or.inl (h hx)⟩
+    · exact ⟨hx0, Or.inr (h hx)⟩
+  have Λ_iUnion : ∀ s : ℕ → Set (Rn N), Λ (⋃ i, s i) = ⋃ i, Λ (s i) := by
+    intro s
+    ext x
+    simp only [hΛ, mem_iUnion]
+    constructor
+    · rintro ⟨hx0, ⟨i, hi⟩ | ⟨i, hi⟩⟩
+      · exact ⟨i, hx0, Or.inl hi⟩
+      · exact ⟨i, hx0, Or.inr hi⟩
+    · rintro ⟨i, hx0, hi | hi⟩
+      · exact ⟨hx0, Or.inl ⟨i, hi⟩⟩
+      · exact ⟨hx0, Or.inr ⟨i, hi⟩⟩
+  have Λ_empty : Λ ∅ = ∅ := by
+    ext x
+    simp [hΛ]
+  -- Step 2: the outer measure `m(E') = sup_{0<r<δ} Hⁿ(A ∩ B_r(a) ∩ Λ(E')) / rⁿ`.
+  obtain ⟨m, hm⟩ : ∃ m : OuterMeasure (Rn N), ∀ E' : Set (Rn N),
+      m E' = ⨆ r ∈ Set.Ioo (0 : ℝ) δ,
+        μHE[n] (A ∩ Metric.ball a r ∩ Λ E') / ENNReal.ofReal (r ^ n) := by
+    refine ⟨{ measureOf := fun E' ↦ ⨆ r ∈ Set.Ioo (0 : ℝ) δ,
+                μHE[n] (A ∩ Metric.ball a r ∩ Λ E') / ENNReal.ofReal (r ^ n)
+              empty := ?_
+              mono := ?_
+              iUnion_nat := ?_ }, fun _ ↦ rfl⟩
+    · simp [Λ_empty]
+    · intro s₁ s₂ h
+      exact iSup₂_mono fun r _ ↦
+        ENNReal.div_le_div_right (measure_mono (inter_subset_inter_right _ (Λ_mono h))) _
+    · intro s _
+      refine iSup₂_le fun r hr ↦ ?_
+      rw [Λ_iUnion, inter_iUnion]
+      calc μHE[n] (⋃ i, A ∩ Metric.ball a r ∩ Λ (s i)) / ENNReal.ofReal (r ^ n)
+          ≤ (∑' i, μHE[n] (A ∩ Metric.ball a r ∩ Λ (s i))) / ENNReal.ofReal (r ^ n) :=
+            ENNReal.div_le_div_right (measure_iUnion_le _) _
+        _ = ∑' i, μHE[n] (A ∩ Metric.ball a r ∩ Λ (s i)) / ENNReal.ofReal (r ^ n) := by
+            simp only [div_eq_mul_inv, ENNReal.tsum_mul_right]
+        _ ≤ ∑' i, ⨆ r ∈ Set.Ioo (0 : ℝ) δ,
+              μHE[n] (A ∩ Metric.ball a r ∩ Λ (s i)) / ENNReal.ofReal (r ^ n) :=
+            ENNReal.tsum_le_tsum fun i ↦ le_iSup₂_of_le r hr le_rfl
+  refine ⟨m, ?_, ?_⟩
+  · -- Step 3: no point of `A ∩ B_r(a)` lies in the double cone over the axis-free directions.
+    rw [hm]
+    refine le_antisymm (iSup₂_le fun r hr ↦ ?_) zero_le
+    have hnull : A ∩ Metric.ball a r ∩ Λ {θ | θ ∈ H ∧ ‖θ‖ = 1 ∧ ¬ ∃ b ∈ A, b ≠ a ∧
+        dist b a < δ ∧ H.starProjection (b - a) - inner ℝ (H.starProjection (b - a)) θ • θ = 0}
+        = ∅ := by
+      refine eq_empty_of_forall_notMem ?_
+      rintro x ⟨⟨hxA, hxr⟩, hxΛ⟩
+      rw [hΛ] at hxΛ
+      obtain ⟨hy0, hξ⟩ := hxΛ
+      have hxa : x ≠ a := by
+        intro h
+        apply hy0
+        rw [h, sub_self, map_zero]
+      have hdist : dist x a < δ := (Metric.mem_ball.1 hxr).trans hr.2
+      set y := H.starProjection (x - a) with hy
+      have hyn : ‖y‖ ≠ 0 := norm_ne_zero_iff.2 hy0
+      have hcoef : ‖y‖⁻¹ * ‖y‖ ^ 2 * ‖y‖⁻¹ = 1 := by field_simp
+      have hcol1 : y - inner ℝ y (‖y‖⁻¹ • y) • (‖y‖⁻¹ • y) = 0 := by
+        rw [real_inner_smul_right, real_inner_self_eq_norm_sq, smul_smul, hcoef, one_smul,
+          sub_self]
+      have hcol2 : y - inner ℝ y (-(‖y‖⁻¹ • y)) • (-(‖y‖⁻¹ • y)) = 0 := by
+        rw [inner_neg_right, real_inner_smul_right, real_inner_self_eq_norm_sq, neg_smul, smul_neg,
+          neg_neg, smul_smul, hcoef, one_smul, sub_self]
+      rcases hξ with hξ | hξ
+      · exact hξ.2.2 ⟨x, hxA, hxa, hdist, hcol1⟩
+      · exact hξ.2.2 ⟨x, hxA, hxa, hdist, hcol2⟩
+    rw [hnull, measure_empty, ENNReal.zero_div]
+  · intro θ hθH hθ1
+    refine ⟨fun hα c hc ↦ ?_, fun hβ K ε hε ↦ ?_⟩
+    · -- Step 5: small caps give small slab cones, via `Z_θ(s) ⊆ Λ(S(H) ∩ B_{2s}(θ))`.
+      obtain ⟨η, hη, hηt⟩ := hα (c / 2 ^ n) (div_pos hc (by positivity))
+      refine ⟨η / 2, half_pos hη, fun s hs hsε r hr hrδ ↦ ?_⟩
+      have hrn : ENNReal.ofReal (r ^ n) ≠ 0 := by
+        rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+        exact pow_pos hr n
+      have hsub : A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖
+          < s * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r) ⊆
+          A ∩ Metric.ball a r ∩ Λ ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩ Metric.ball θ (2 * s)) := by
+        rintro x ⟨hxA, hxZ, hxr⟩
+        refine ⟨⟨hxA, hxr⟩, ?_⟩
+        have hx' : ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ <
+            s * ‖H.starProjection (x - a)‖ := hxZ
+        have hyH : H.starProjection (x - a) ∈ H := H.starProjection_apply_mem _
+        rw [hΛ]
+        set y := H.starProjection (x - a) with hy
+        have hy0 : y ≠ 0 := by
+          intro h0
+          rw [h0] at hx'
+          simp at hx'
+        have hyn : 0 < ‖y‖ := norm_pos_iff.2 hy0
+        set w : Rn N := ‖y‖⁻¹ • y with hw
+        have hwH : w ∈ H := H.smul_mem _ hyH
+        have hw1 : ‖w‖ = 1 := by
+          rw [hw, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hyn.ne']
+        have hdw : ‖w - inner ℝ w θ • θ‖ < s := by
+          rw [hw, perp_smul, norm_smul, norm_inv, norm_norm, inv_mul_lt_iff₀ hyn]
+          linarith [hx', mul_comm s ‖y‖]
+        refine ⟨hy0, ?_⟩
+        rcases le_or_gt 0 (inner ℝ w θ) with hpos | hneg
+        · left
+          refine ⟨⟨hwH, hw1⟩, ?_⟩
+          rw [Metric.mem_ball, dist_eq_norm]
+          calc ‖w - θ‖ ≤ 2 * ‖w - inner ℝ w θ • θ‖ := sub_le_two_perp θ w hθ1 hw1 hpos
+            _ < 2 * s := by linarith
+        · right
+          refine ⟨⟨H.neg_mem hwH, by rw [norm_neg, hw1]⟩, ?_⟩
+          rw [Metric.mem_ball, dist_eq_norm]
+          have hpos' : 0 ≤ inner ℝ (-w) θ := by
+            rw [inner_neg_left]
+            linarith
+          calc ‖-w - θ‖ ≤ 2 * ‖-w - inner ℝ (-w) θ • θ‖ :=
+                sub_le_two_perp θ (-w) hθ1 (by rw [norm_neg, hw1]) hpos'
+            _ = 2 * ‖w - inner ℝ w θ • θ‖ := by rw [perp_neg, norm_neg]
+            _ < 2 * s := by linarith
+      refine (measure_mono hsub).trans ?_
+      -- `Hⁿ(A ∩ B_r(a) ∩ Λ(E')) ≤ rⁿ m(E')` for `0 < r < δ`.
+      have hK : μHE[n] (A ∩ Metric.ball a r ∩ Λ ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩
+          Metric.ball θ (2 * s))) ≤
+          m ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩ Metric.ball θ (2 * s)) * ENNReal.ofReal (r ^ n) := by
+        rw [← ENNReal.div_le_iff hrn ENNReal.ofReal_ne_top, hm]
+        exact le_iSup₂_of_le (f := fun r (_ : r ∈ Set.Ioo (0 : ℝ) δ) ↦
+          μHE[n] (A ∩ Metric.ball a r ∩ Λ ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩
+            Metric.ball θ (2 * s))) / ENNReal.ofReal (r ^ n)) r ⟨hr, hrδ⟩ le_rfl
+      refine hK.trans ?_
+      calc m ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩ Metric.ball θ (2 * s)) * ENNReal.ofReal (r ^ n)
+          ≤ ENNReal.ofReal (c / 2 ^ n * (2 * s) ^ n) * ENNReal.ofReal (r ^ n) := by
+            gcongr
+            exact hηt (2 * s) (by positivity) (by linarith)
+        _ = ENNReal.ofReal (c * (r * s) ^ n) := by
+            rw [← ENNReal.ofReal_mul (by positivity)]
+            congr 1
+            rw [mul_pow, mul_pow]
+            field_simp
+    · -- Step 6: large caps give large slab cones, via `Λ(S(H) ∩ B_t(θ)) ⊆ Z_θ(t)`.
+      by_cases hK : K ≤ 0
+      · refine ⟨ε / 2, half_pos hε, by linarith, δ / 2, half_pos hδ, by linarith, ?_⟩
+        rw [ENNReal.ofReal_of_nonpos (mul_nonpos_of_nonpos_of_nonneg hK (by positivity))]
+        exact zero_le
+      · rw [not_le] at hK
+        obtain ⟨t, ht, htε, hlt⟩ := hβ K ε hε
+        rw [hm] at hlt
+        obtain ⟨r, hr, hlt'⟩ : ∃ r ∈ Set.Ioo (0 : ℝ) δ, ENNReal.ofReal (K * t ^ n) <
+            μHE[n] (A ∩ Metric.ball a r ∩ Λ ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩
+              Metric.ball θ t)) / ENNReal.ofReal (r ^ n) := by
+          simpa only [lt_iSup_iff, exists_prop] using hlt
+        have hrn : ENNReal.ofReal (r ^ n) ≠ 0 := by
+          rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+          exact pow_pos hr.1 n
+        refine ⟨t, ht, htε, r, hr.1, hr.2, ?_⟩
+        have h2 := (ENNReal.lt_div_iff_mul_lt (Or.inl hrn) (Or.inl ENNReal.ofReal_ne_top)).1 hlt'
+        rw [← ENNReal.ofReal_mul (mul_pos hK (pow_pos ht n)).le] at h2
+        have hsub : A ∩ Metric.ball a r ∩ Λ ({ζ | ζ ∈ H ∧ ‖ζ‖ = 1} ∩ Metric.ball θ t) ⊆
+            A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ <
+              t * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r) := by
+          rintro x ⟨⟨hxA, hxr⟩, hxΛ⟩
+          refine ⟨hxA, ?_, hxr⟩
+          rw [hΛ] at hxΛ
+          obtain ⟨hy0, hξ⟩ := hxΛ
+          show ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ <
+            t * ‖H.starProjection (x - a)‖
+          set y := H.starProjection (x - a) with hy
+          have hyn : 0 < ‖y‖ := norm_pos_iff.2 hy0
+          set w : Rn N := ‖y‖⁻¹ • y with hw
+          have hyw : y = ‖y‖ • w := by
+            rw [hw, smul_smul, mul_inv_cancel₀ hyn.ne', one_smul]
+          have key : ‖y - inner ℝ y θ • θ‖ = ‖y‖ * ‖w - inner ℝ w θ • θ‖ := by
+            conv_lhs => rw [hyw]
+            rw [perp_smul, norm_smul, norm_norm]
+          have hdist : ‖w - inner ℝ w θ • θ‖ < t := by
+            rcases hξ with ⟨_, hb⟩ | ⟨_, hb⟩
+            · rw [Metric.mem_ball, dist_eq_norm] at hb
+              exact (perp_le θ w hθ1).trans_lt hb
+            · rw [Metric.mem_ball, dist_eq_norm] at hb
+              have := (perp_le θ (-w) hθ1).trans_lt hb
+              rwa [perp_neg, norm_neg] at this
+          rw [key]
+          calc ‖y‖ * ‖w - inner ℝ w θ • θ‖ < ‖y‖ * t := mul_lt_mul_of_pos_left hdist hyn
+            _ = t * ‖y‖ := mul_comm _ _
+        calc ENNReal.ofReal (K * (r * t) ^ n) = ENNReal.ofReal (K * t ^ n * r ^ n) := by
+              congr 1
+              ring
+          _ ≤ _ := h2.le
+          _ ≤ _ := measure_mono hsub
 /-- **Uniform `Hⁿ`-measure of open balls in `n`-planes** (flat-ball step of the sphere-cap bounds
 for the Besicovitch–Federer theorem; Dall'Alba, Lemma 4.15; Mattila, Ch. 18). For each `n` the
 constant `ω = Lⁿ(B_{ℝⁿ}(0, 1)) > 0` satisfies `Hⁿ(T ∩ B(w, ρ)) = ω ρⁿ` for every `n`-dimensional
@@ -804,6 +1397,64 @@ theorem Submission.bf_sphereCap_measure_bounds : ∀ (n ℓ : ℕ), 0 < n → �
           refine ENNReal.ofReal_le_ofReal ?_
           -- `2ⁿ (ω + σ) ρⁿ - σ = ω (2ρ)ⁿ + σ ((2ρ)ⁿ - 1) ≥ 0`
           nlinarith [mul_nonneg hσ0 (sub_nonneg.2 h1), mul_nonneg hω.le (zero_le_one.trans h1)]
+
+/-- **Almost every unit direction of `H` is good** (the sphere lemma of the Besicovitch–Federer
+argument, Simon Ch. 3, Theorem 3.6; Dall'Alba, Theorem 4.16; Mattila Ch. 18). Let `n ≥ 1`,
+`H ⊆ ℝ^{n+ℓ}` a subspace of dimension `n + 1` with orthogonal projection `p_H`, `A ⊆ ℝ^{n+ℓ}`
+compact with `Hⁿ(A) < ∞`, `δ > 0` and `a ∈ ℝ^{n+ℓ}`. For `Hⁿ`-a.e. unit vector `θ ∈ H`, the slab
+cones `Z_θ(s) = {x : |p_H(x - a) - (p_H(x - a) · θ) θ| < s |p_H(x - a)|}` with vertex `a` satisfy
+`Hⁿ(A ∩ Z_θ(s) ∩ B_r(a)) = o((rs)ⁿ)` as `s ↓ 0`, uniformly in `r ∈ (0, δ)` (`Ψ0`), or the ratios
+`Hⁿ(A ∩ Z_θ(s) ∩ B_r(a)) / (rs)ⁿ`, `r ∈ (0, δ)`, are unbounded as `s ↓ 0` (`Ψ∞`), or the axis of `θ`
+meets `A ∖ {a}` within distance `δ` after projecting to `H` (`Ax′`). With `σ_H = Hⁿ ⌞ S(H)` (finite,
+with cap bounds `c₁ρⁿ ≤ σ_H(B_ρ(ζ)) ≤ C₁ρⁿ`) and the double-cone outer measure `m` on directions,
+the axis-free directions form a Borel `m`-null set `F ⊆ S(H)`; by the density dichotomy, `σ_H`-a.e.
+`θ ∈ F` has vanishing or infinite upper `m`-density of caps, which gives `Ψ0` or `Ψ∞` at `θ`. -/
+theorem Submission.bf_sphere_ae_slabGood : ∀ (n ℓ : ℕ), 0 < n → ∀ H : Submodule ℝ (Rn (n + ℓ)), finrank ℝ H = n + 1 → ∀ A : Set (Rn (n + ℓ)), IsCompact A → μHE[n] A < ∞ → ∀ δ : ℝ, 0 < δ → ∀ a : Rn (n + ℓ), μHE[n] {θ | θ ∈ H ∧ ‖θ‖ = 1 ∧ ¬ ((∀ c : ℝ, 0 < c → ∃ ε : ℝ, 0 < ε ∧ ∀ s : ℝ, 0 < s → s < ε → ∀ r : ℝ, 0 < r → r < δ → μHE[n] (A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ < s * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r)) ≤ ENNReal.ofReal (c * (r * s) ^ n)) ∨ (∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μHE[n] (A ∩ ({x | ‖H.starProjection (x - a) - inner ℝ (H.starProjection (x - a)) θ • θ‖ < s * ‖H.starProjection (x - a)‖} ∩ Metric.ball a r))) ∨ ∃ b ∈ A, b ≠ a ∧ dist b a < δ ∧ H.starProjection (b - a) - inner ℝ (H.starProjection (b - a)) θ • θ = 0)} = 0 := by
+  intro n ℓ hn H hH A hA _ δ hδ a
+  -- Step 0: the unit sphere `S(H)` of `H` is closed; `σ_H = Hⁿ ⌞ S(H)`.
+  let S : Set (Rn (n + ℓ)) := {θ | θ ∈ H ∧ ‖θ‖ = 1}
+  have hSmeas : MeasurableSet S :=
+    (H.closed_of_finiteDimensional.inter
+      (isClosed_eq continuous_norm continuous_const)).measurableSet
+  have hσ : ∀ (ζ : Rn (n + ℓ)) (ρ : ℝ),
+      (μHE[n] : Measure (Rn (n + ℓ))).restrict S (Metric.ball ζ ρ) =
+        μHE[n] (S ∩ Metric.ball ζ ρ) := fun ζ ρ ↦ by
+    rw [Measure.restrict_apply' hSmeas, inter_comm]
+  -- The cap bounds `c₁ρⁿ ≤ σ_H(B_ρ(ζ)) ≤ C₁ρⁿ` (sibling `sphere_cap_bounds`).
+  obtain ⟨c₁, C₁, hc₁, hcap⟩ := Submission.bf_sphereCap_measure_bounds n ℓ hn H hH
+  -- `σ_H` is finite: `S(H) ⊆ B₃(ζ₀)` for any `ζ₀ ∈ S(H)`.
+  have hSfin : μHE[n] S < ∞ := by
+    rcases S.eq_empty_or_nonempty with hS0 | ⟨ζ₀, hζ₀⟩
+    · rw [hS0, measure_empty]
+      exact ENNReal.zero_lt_top
+    · have hsub : S ⊆ S ∩ Metric.ball ζ₀ 3 := fun θ hθ ↦ ⟨hθ, by
+        rw [Metric.mem_ball, dist_eq_norm]
+        linarith [norm_sub_le θ ζ₀, hθ.2, hζ₀.2]⟩
+      calc μHE[n] S ≤ μHE[n] (S ∩ Metric.ball ζ₀ 3) := measure_mono hsub
+        _ ≤ ENNReal.ofReal (C₁ * 3 ^ n) := (hcap ζ₀ hζ₀.1 hζ₀.2 3 (by norm_num)).2
+        _ < ∞ := ENNReal.ofReal_lt_top
+  have hσfin : IsFiniteMeasure ((μHE[n] : Measure (Rn (n + ℓ))).restrict S) :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact hSfin⟩
+  -- Steps 1–3: the double-cone outer measure `m` on directions; it vanishes on the Borel set
+  -- `F = S(H) ∖ C` of axis-free directions, and its cap densities control `Ψ0` and `Ψ∞`.
+  obtain ⟨m, hmF, hm⟩ :=
+    Submission.bf_sphereGood_doubleCone_outerMeasure (n + ℓ) n H A δ hδ a
+  -- Step 4: the density dichotomy for `σ_H` and `m` on `F`.
+  have hnull := Submission.bf_sphereGood_densityDichotomy (n + ℓ) n
+    ((μHE[n] : Measure (Rn (n + ℓ))).restrict S) hσfin S c₁ C₁ hc₁
+    (fun ζ hζ ρ hρ hρ2 ↦ by rw [hσ]; exact (hcap ζ hζ.1 hζ.2 ρ hρ).1 hρ2)
+    (fun ζ hζ ρ hρ ↦ by rw [hσ]; exact (hcap ζ hζ.1 hζ.2 ρ hρ).2) m _
+    (Submission.bf_sphereGood_axisFree_measurableSet (n + ℓ) H A hA δ a)
+    (fun θ hθ ↦ ⟨hθ.1, hθ.2.1⟩) hmF
+  rw [Measure.restrict_apply' hSmeas] at hnull
+  -- Step 5: a non-good direction is axis-free and has neither vanishing nor infinite upper cap
+  -- density, so it lies in the `σ_H`-null exceptional set of the dichotomy.
+  refine measure_mono_null ?_ hnull
+  rintro θ ⟨hθH, hθ1, hbad⟩
+  obtain ⟨hΨ0, hbad⟩ := not_or.1 hbad
+  obtain ⟨hΨinf, hAx⟩ := not_or.1 hbad
+  exact ⟨⟨⟨hθH, hθ1, hAx⟩, fun hα ↦ hΨ0 ((hm θ hθH hθ1).1 hα),
+    fun hβ ↦ hΨinf ((hm θ hθH hθ1).2 hβ)⟩, hθH, hθ1⟩
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
