@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ef49479e744ff04e24f8ed33b63fcaf55b443132c409f7b51cf8dbb49fd7e77c",
+  "git_delta": {
+    "base_commit": "60b1417e3fa797feba0a171a0e0748fa62f32183",
+    "candidate_commit": "0e9b0c22da46cb4a9c47e537a0f94f8d175d9e5b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "constancy_riesz_bounded_density_of_dominated_additive",
+    "diff_sha256": "1e21c6c3963f7d117377030884288800175c43c69e8fc44b4fea03c790943a84",
+    "source_sha256": "9d7dd505cabfd1607232515cb4e052d64ed616dfd6e9d18e37cbe763f5fb08dc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.constancy_riesz_bounded_density_of_dominated_additive",
+      "statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α), IsFiniteMeasure μ → ∀ (ν : Set α → ℝ) (C : ℝ), 0 ≤ C → (∀ A B : Set α, MeasurableSet A → MeasurableSet B → Disjoint A B → ν (A ∪ B) = ν A + ν B) → (∀ A : Set α, MeasurableSet A → |ν A| ≤ C * μ.real A) → ∃ θ : α → ℝ, Measurable θ ∧ (∀ x, |θ x| ≤ C) ∧ ∀ A : Set α, MeasurableSet A → ν A = ∫ x in A, θ x ∂μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
