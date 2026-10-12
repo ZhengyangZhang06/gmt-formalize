@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.density_eq_mult_ae-a1.withdensity_density_ae-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.density_eq_mult_ae-a1",
+  "depth": 4,
+  "title": "Besicovitch differentiation of a density measure at points where the base measure has unit density",
+  "statement": "Let n, l be natural numbers and X := R^(n+l) = EuclideanSpace R (Fin (n+l)) (Lean: Amb n l) with its Borel sigma-algebra. Let nu be a locally finite measure on X and f : X -> [0, inf] a nu-a.e.-measurable function such that rho := nu.withDensity f is also locally finite. Then for nu-almost every y the following holds: for every gauge c : R -> [0, inf], if nu(B_r(y)) / c(r) -> 1 as r -> 0+, then rho(B_r(y)) / c(r) -> f(y) as r -> 0+. Here B_r(y) is the closed ball, division is in [0, inf], and r -> 0+ is the filter nhdsWithin 0 (Ioi 0).",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (ν : Measure (Amb n ℓ)) (f : Amb n ℓ → ℝ≥0∞), IsLocallyFiniteMeasure ν → IsLocallyFiniteMeasure (ν.withDensity f) → AEMeasurable f ν → ∀ᵐ y ∂ν, ∀ c : ℝ → ℝ≥0∞, Tendsto (fun r : ℝ => ν (closedBall y r) / c r) (𝓝[>] 0) (𝓝 1) → Tendsto (fun r : ℝ => (ν.withDensity f) (closedBall y r) / c r) (𝓝[>] 0) (𝓝 (f y))",
+  "lean_name": "dohr_lmo_dema_withDensity_density_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-local-multiplicity-one-a1-densi-f4103233c0-a1"
+}
