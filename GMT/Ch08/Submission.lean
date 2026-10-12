@@ -3507,6 +3507,307 @@ theorem Submission.frt_varifold_eq_tangent_graph_measure :
     · rwa [← hτT x T θ hT]
   refine ⟨(hg hA).nullMeasurableSet.congr hAe.symm, ?_⟩
   rw [hV, Measure.map_apply hg hA, measure_congr hAe]
+/-- **Simon Ch. 8, Lemma 1.3, printed (1)–(2)** (child `slice_density` of `plane_disintegration`):
+for continuous `β ≥ 0` on `G(N,n)`, the `β`-weighted slices `γ(B) = ∫_{Gₙ(B)} β(S) dV(y,S)` of `V`
+are differentiated by `μ_V`: the ratio `γ(B_ρ(x)) / μ_V(B_ρ(x))` tends to a Borel `e(x)` for
+`μ_V`-a.e. `x`, and `γ(A) = ∫_A e dμ_V` for Borel `A`.  Since `γ ≤ ‖β‖ μ_V`, `γ` is the zero
+extension of a locally finite measure on `U`, so SimonGMT's Besicovitch differentiation on `U`
+(`Varifold.ae_tendsto_firstVariationDensity_of_domainMeasure`) and Radon–Nikodym apply, with
+`e = (dγ/dμ_V).toReal`. -/
+theorem Submission.plane_disint_slice_density :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (β : C(Grassmannian N n, ℝ)), (∀ S, 0 ≤ β S) → ∃ e : Euclidean N → ℝ, Measurable e ∧ (∀ᵐ x ∂V.weight, Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (e x))) ∧ ∀ A : Set (Euclidean N), MeasurableSet A → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, ENNReal.ofReal (e x) ∂V.weight := by
+  intro N n U V β hβ
+  have hU : IsOpen U := V.isOpen_domain
+  -- `γ(B) = ∫_{Gₙ(B)} β dV`, i.e. `γ = π_#(V ⌞ β)`.
+  obtain ⟨γ, hγ⟩ : ∃ γ : Measure (Euclidean N), ∀ B, MeasurableSet B →
+      γ B = ∫⁻ z in B ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure :=
+    ⟨(V.measure.withDensity fun z ↦ ENNReal.ofReal (β z.2)).map Prod.fst, fun B hB ↦ by
+      rw [Measure.map_apply measurable_fst hB, withDensity_apply _ (measurable_fst hB),
+        ← Set.prod_univ]⟩
+  -- `γ ≤ ‖β‖ μ_V`: so `γ ≪ μ_V`, `γ` vanishes off `U` and is finite on compact subsets of `U`.
+  have hγle : ∀ B, MeasurableSet B → γ B ≤ ENNReal.ofReal ‖β‖ * V.weight B := by
+    intro B hB
+    rw [hγ B hB, V.weight_apply hB, ← setLIntegral_const]
+    exact lintegral_mono fun z ↦ ENNReal.ofReal_le_ofReal
+      ((le_abs_self _).trans (β.norm_coe_le_norm z.2))
+  have hγac : γ ≪ V.weight :=
+    Measure.absolutelyContinuous_of_le_smul (Measure.le_iff.2 fun B hB ↦ hγle B hB)
+  have hUc : V.weight Uᶜ = 0 := by
+    rw [V.weight_apply hU.measurableSet.compl]
+    exact V.supported
+  have hγU : γ Uᶜ = 0 := by
+    have := hγle Uᶜ hU.measurableSet.compl
+    rwa [hUc, mul_zero, nonpos_iff_eq_zero] at this
+  -- `γ` is the zero extension of the locally finite measure `γ.comap Subtype.val` on `U`.
+  have hemb := MeasurableEmbedding.subtype_coe hU.measurableSet
+  obtain ⟨γU, hmap, hγUfin⟩ : ∃ γU : Measure U,
+      γU.map Subtype.val = γ ∧ IsLocallyFiniteMeasure γU := by
+    refine ⟨γ.comap Subtype.val, ?_, ?_⟩
+    · rw [map_comap_subtype_coe hU.measurableSet]
+      apply Measure.restrict_eq_self_of_ae_mem
+      rw [ae_iff]
+      exact hγU
+    · have : LocallyCompactSpace U := hU.locallyCompactSpace
+      refine ⟨fun x ↦ ?_⟩
+      obtain ⟨K, hK, hKx⟩ := exists_compact_mem_nhds x
+      have hK' : IsCompact (Subtype.val '' K) := hK.image continuous_subtype_val
+      refine ⟨K, hKx, ?_⟩
+      rw [hemb.comap_apply]
+      exact (hγle _ hK'.measurableSet).trans_lt (ENNReal.mul_lt_top ENNReal.ofReal_lt_top
+        (lt_top_iff_ne_top.2 (V.weight_finite_on_compact _ hK'
+          (by rintro _ ⟨y, _, rfl⟩; exact y.2))))
+  have : SigmaFinite γ := by
+    rw [← hmap]
+    exact hemb.sigmaFinite_map
+  -- Besicovitch differentiation on `U`: `γ(B_ρ(x)) / μ_V(B_ρ(x)) → dγ/dμ_V(x)` for `μ_V`-a.e. `x`.
+  have hdiff := V.ae_tendsto_firstVariationDensity_of_domainMeasure γU
+  rw [hmap] at hdiff
+  refine ⟨fun x ↦ (γ.rnDeriv V.weight x).toReal,
+    (Measure.measurable_rnDeriv γ V.weight).ennreal_toReal, ?_, fun A hA ↦ ?_⟩
+  · -- (1): near `x ∈ U` the real quotient is the `toReal` of the `[0,∞]` quotient.
+    have hUae : ∀ᵐ x ∂V.weight, x ∈ U := by
+      rw [ae_iff]
+      exact hUc
+    filter_upwards [hdiff, Measure.rnDeriv_lt_top γ V.weight, hUae] with x hx hfin hxU
+    obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.1 hU x hxU
+    refine ((ENNReal.tendsto_toReal hfin.ne).comp hx).congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT hr] with ρ hρ
+    have hfinB : V.measure (closedBall x ρ ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ :=
+      V.finite_on_compact _ (isCompact_closedBall x ρ)
+        ((closedBall_subset_ball hρ.2).trans hrU)
+    have hint : IntegrableOn (fun z : Euclidean N × Grassmannian N n ↦ β z.2)
+        (closedBall x ρ ×ˢ univ) V.measure :=
+      Measure.integrableOn_of_bounded hfinB
+        (β.continuous.comp continuous_snd).aestronglyMeasurable
+        (M := ‖β‖) (ae_of_all _ fun z ↦ β.norm_coe_le_norm z.2)
+    rw [Function.comp_apply, ENNReal.toReal_div, hγ _ measurableSet_closedBall,
+      ← ofReal_integral_eq_lintegral_ofReal hint (ae_of_all _ fun z ↦ hβ z.2),
+      ENNReal.toReal_ofReal (integral_nonneg fun z : Euclidean N × Grassmannian N n ↦ hβ z.2)]
+  · -- (2): Radon–Nikodym, `γ = μ_V ⌞ (dγ/dμ_V)` with `dγ/dμ_V < ∞` `μ_V`-a.e.
+    have hRN : V.weight.withDensity (γ.rnDeriv V.weight) A = γ A := by
+      rw [Measure.withDensity_rnDeriv_eq γ V.weight hγac]
+    rw [withDensity_apply _ hA] at hRN
+    rw [← hγ A hA, ← hRN]
+    refine setLIntegral_congr_fun_ae hA ?_
+    filter_upwards [Measure.rnDeriv_lt_top γ V.weight] with x hx _
+    exact (ENNReal.ofReal_toReal hx.ne).symm
+/-- **Simon Ch. 8, proof of Lemma 1.3, printed (3)–(4) and the Riesz step** (child `riesz_limit` of
+`plane_disintegration`): if `m ρ` is eventually a probability measure on `G(N,n)` and `∫ f dm_ρ`
+converges along the nontrivial filter `l` for every `f` in a dense `D ⊆ C(G(N,n), ℝ)`, then
+`∫ f dm_ρ → ∫ f dη` for every `f ∈ C(G(N,n), ℝ)` and some probability measure `η`.  The estimate
+`|∫ f dm - ∫ g dm| ≤ ‖f - g‖` makes `ρ ↦ ∫ f dm_ρ` Cauchy along `l`; the limit `L f` is a positive
+linear functional with `L 1 = 1`, and Riesz–Markov–Kakutani on the compact space `G(N,n)`
+represents it by `η`. -/
+theorem Submission.plane_disint_riesz_limit :
+    ∀ (N n : ℕ) (l : Filter ℝ) (m : ℝ → Measure (Grassmannian N n))
+      (D : Set C(Grassmannian N n, ℝ)), l.NeBot → (∀ᶠ ρ in l, IsProbabilityMeasure (m ρ)) →
+      Dense D → (∀ f ∈ D, ∃ c : ℝ, Tendsto (fun ρ ↦ ∫ S, f S ∂(m ρ)) l (𝓝 c)) →
+      ∃ η : Measure (Grassmannian N n), IsProbabilityMeasure η ∧
+        ∀ f : C(Grassmannian N n, ℝ), Tendsto (fun ρ ↦ ∫ S, f S ∂(m ρ)) l (𝓝 (∫ S, f S ∂η)) := by
+  intro N n l m D hl hprob hD hlim
+  have hint : ∀ μ : Measure (Grassmannian N n), IsProbabilityMeasure μ →
+      ∀ f : C(Grassmannian N n, ℝ), Integrable (fun S ↦ f S) μ := fun μ _ f ↦
+    f.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  -- Printed (3): `|∫ f dμ - ∫ g dμ| ≤ ‖f - g‖` for a probability measure `μ`.
+  have hest : ∀ μ : Measure (Grassmannian N n), IsProbabilityMeasure μ →
+      ∀ f g : C(Grassmannian N n, ℝ), dist (∫ S, f S ∂μ) (∫ S, g S ∂μ) ≤ dist f g := by
+    intro μ hμ f g
+    rw [dist_eq_norm, ← integral_sub (hint μ hμ f) (hint μ hμ g), dist_eq_norm]
+    calc ‖∫ S, f S - g S ∂μ‖ ≤ ‖f - g‖ * μ.real univ :=
+          norm_integral_le_of_norm_le_const
+            (Eventually.of_forall fun S ↦ (f - g).norm_coe_le_norm S)
+      _ = ‖f - g‖ := by simp
+  -- Printed (4): approximating `f` by `g ∈ D` makes `ρ ↦ ∫ f dm_ρ` Cauchy along `l`.
+  have hconv : ∀ f : C(Grassmannian N n, ℝ), ∃ c : ℝ,
+      Tendsto (fun ρ ↦ ∫ S, f S ∂(m ρ)) l (𝓝 c) := by
+    intro f
+    refine cauchy_map_iff_exists_tendsto.mp (Metric.cauchy_iff.mpr ⟨inferInstance, fun ε hε ↦ ?_⟩)
+    obtain ⟨g, hgD, hfg⟩ := hD.exists_dist_lt f (by positivity : (0 : ℝ) < ε / 4)
+    obtain ⟨c, hc⟩ := hlim g hgD
+    refine ⟨ball c (ε / 2), ?_, fun x hx y hy ↦ ?_⟩
+    · rw [mem_map]
+      filter_upwards [hprob, hc (ball_mem_nhds c (by positivity : (0 : ℝ) < ε / 4))] with ρ hρ hgρ
+      calc dist (∫ S, f S ∂(m ρ)) c
+          ≤ dist (∫ S, f S ∂(m ρ)) (∫ S, g S ∂(m ρ)) + dist (∫ S, g S ∂(m ρ)) c :=
+            dist_triangle _ _ _
+        _ < ε / 4 + ε / 4 := add_lt_add ((hest (m ρ) hρ f g).trans_lt hfg) hgρ
+        _ = ε / 2 := by ring
+    · calc dist x y ≤ dist x c + dist y c := dist_triangle_right _ _ _
+        _ < ε / 2 + ε / 2 := add_lt_add hx hy
+        _ = ε := by ring
+  choose L hL using hconv
+  -- `L` is additive, homogeneous, monotone and `L 1 = 1`: limits of eventual identities.
+  have hadd : ∀ f g : C(Grassmannian N n, ℝ), L (f + g) = L f + L g := fun f g ↦
+    tendsto_nhds_unique (hL (f + g)) (((hL f).add (hL g)).congr' (by
+      filter_upwards [hprob] with ρ hρ
+      exact (integral_add (hint _ hρ f) (hint _ hρ g)).symm))
+  have hsmul : ∀ (a : ℝ) (f : C(Grassmannian N n, ℝ)), L (a • f) = a * L f := fun a f ↦
+    tendsto_nhds_unique (hL (a • f)) (((hL f).const_mul a).congr'
+      (Eventually.of_forall fun ρ ↦ (integral_const_mul a _).symm))
+  have hmono : ∀ f g : C(Grassmannian N n, ℝ), (∀ S, f S ≤ g S) → L f ≤ L g := fun f g hfg ↦
+    le_of_tendsto_of_tendsto (hL f) (hL g) (by
+      filter_upwards [hprob] with ρ hρ
+      exact integral_mono (hint _ hρ f) (hint _ hρ g) hfg)
+  have hone : L 1 = 1 :=
+    tendsto_nhds_unique (hL 1) (tendsto_const_nhds.congr' (by
+      filter_upwards [hprob] with ρ hρ
+      simp))
+  -- Riesz (Ch. 1, 4.12): `C(G(N,n), ℝ) = C_c(G(N,n), ℝ)` as `G(N,n)` is compact.
+  let Λ : C_c(Grassmannian N n, ℝ) →ₚ[ℝ] ℝ :=
+    { toFun := fun f ↦ L f.toContinuousMap
+      map_add' := fun f g ↦ hadd f.toContinuousMap g.toContinuousMap
+      map_smul' := fun a f ↦ hsmul a f.toContinuousMap
+      monotone' := fun f g hfg ↦ hmono f.toContinuousMap g.toContinuousMap hfg }
+  have hη : ∀ f : C(Grassmannian N n, ℝ), ∫ S, f S ∂(RealRMK.rieszMeasure Λ) = L f := fun f ↦
+    RealRMK.integral_rieszMeasure Λ ⟨f, HasCompactSupport.of_compactSpace _⟩
+  refine ⟨RealRMK.rieszMeasure Λ, ⟨?_⟩, fun f ↦ by rw [hη f]; exact hL f⟩
+  have h1 := hη 1
+  rw [hone] at h1
+  simp only [ContinuousMap.one_apply, integral_const, smul_eq_mul, mul_one] at h1
+  rwa [measureReal_def, ENNReal.toReal_eq_one_iff] at h1
+/-- **Simon Ch. 8, proof of Lemma 1.3, first part, pp. 207–208** (child `pointwise_measure` of
+`plane_disintegration`): for `μ_V`-a.e. `x` the normalized slices of `V` over `B_ρ(x)` converge, as
+`ρ ↓ 0`, to a probability measure `η` on `G(N,n)`.  Take a dense sequence `f_j` in the separable
+space `C(G(N,n), ℝ)` and apply `plane_disint_slice_density` to `β_j = f_j + ‖f_j‖ ≥ 0`.  At a point
+`x ∈ U ∩ spt μ_V` where all these limits exist, the slice measures
+`m_ρ = μ_V(B_ρ(x))⁻¹ σ_#(V ⌞ (B_ρ(x) × G(N,n)))`, `σ(y, S) = S`, satisfy
+`∫ f dm_ρ = (∫_{B_ρ(x) × G(N,n)} f(S) dV) / μ_V(B_ρ(x))` and are probability measures for small
+`ρ`, and `∫ f_j dm_ρ = ∫ β_j dm_ρ - ‖f_j‖` converges for every `j`; `plane_disint_riesz_limit`
+gives `η`. -/
+theorem Submission.plane_disint_pointwise_measure :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), ∀ᵐ x ∂V.weight, ∃ η : Measure (Grassmannian N n), IsProbabilityMeasure η ∧ ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂η)) := by
+  intro N n U V
+  -- `C(G(N,n), ℝ)` is separable: the matrix entries `S ↦ S i j` separate the points of `G(N,n)`,
+  -- so by Stone–Weierstrass the subalgebra they generate is dense, and it is spanned by the
+  -- countably many monomials in these entries.
+  have : TopologicalSpace.SeparableSpace C(Grassmannian N n, ℝ) := by
+    obtain ⟨g, hg⟩ : ∃ g : Fin N × Fin N → C(Grassmannian N n, ℝ), ∀ p S, g p S = S.1 p.1 p.2 :=
+      ⟨fun p ↦ ⟨fun S ↦ S.1 p.1 p.2, continuous_subtype_val.matrix_elem p.1 p.2⟩, fun _ _ ↦ rfl⟩
+    have hsep : (Algebra.adjoin ℝ (range g)).SeparatesPoints := by
+      intro S T hST
+      obtain ⟨i, j, hij⟩ : ∃ i j, S.1 i j ≠ T.1 i j := by
+        by_contra! h
+        exact hST (Subtype.ext (Matrix.ext h))
+      refine ⟨_, ⟨g (i, j), Algebra.subset_adjoin ⟨(i, j), rfl⟩, rfl⟩, ?_⟩
+      simpa only [hg] using hij
+    have hcount : (Submonoid.closure (range g) : Set C(Grassmannian N n, ℝ)).Countable := by
+      rw [Submonoid.closure_eq_image_prod, ← Set.range_list_map_coe, ← Set.range_comp]
+      exact countable_range _
+    have hA : TopologicalSpace.IsSeparable
+        (Algebra.adjoin ℝ (range g) : Set C(Grassmannian N n, ℝ)) := by
+      rw [← Subalgebra.coe_toSubmodule, Algebra.adjoin_eq_span]
+      exact hcount.isSeparable.span
+    rw [← TopologicalSpace.isSeparable_univ_iff, ← Algebra.coe_top (R := ℝ),
+      ← ContinuousMap.subalgebra_topologicalClosure_eq_top_of_separatesPoints _ hsep,
+      Subalgebra.topologicalClosure_coe]
+    exact hA.closure
+  -- A dense sequence `f_j` in `C(G(N,n), ℝ)` and the nonnegative shifts `β_j = f_j + ‖f_j‖`.
+  obtain ⟨f, hf⟩ := TopologicalSpace.exists_dense_seq C(Grassmannian N n, ℝ)
+  obtain ⟨β, hβ⟩ : ∃ β : ℕ → C(Grassmannian N n, ℝ), ∀ j S, β j S = f j S + ‖f j‖ :=
+    ⟨fun j ↦ f j + ContinuousMap.const (Grassmannian N n) ‖f j‖, fun _ _ ↦ rfl⟩
+  have hβ_nonneg : ∀ j S, 0 ≤ β j S := fun j S ↦ by
+    rw [hβ]
+    linarith [neg_abs_le (f j S), Real.norm_eq_abs (f j S), (f j).norm_coe_le_norm S]
+  -- Printed (1) for every `β_j`.
+  have hlim : ∀ j, ∃ e : Euclidean N → ℝ, ∀ᵐ x ∂V.weight,
+      Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)),
+          β j z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (e x)) :=
+    fun j ↦ by
+      obtain ⟨e, -, he, -⟩ := Submission.plane_disint_slice_density N n U V (β j) (hβ_nonneg j)
+      exact ⟨e, he⟩
+  choose e he using hlim
+  -- Countably many conull conditions: `x ∈ U`, `x ∈ spt μ_V`, and the limits for every `β_j`.
+  have hU : ∀ᵐ x ∂V.weight, x ∈ U := by
+    rw [ae_iff]
+    change V.weight Uᶜ = 0
+    rw [V.weight_apply V.isOpen_domain.measurableSet.compl]
+    exact V.supported
+  filter_upwards [hU, Measure.support_mem_ae (μ := V.weight), ae_all_iff.2 he]
+    with x hxU hxspt hxlim
+  obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hxU
+  -- The slice measures `m_ρ = μ_V(B_ρ(x))⁻¹ σ_#(V ⌞ (B_ρ(x) × G(N,n)))`, `σ(y, S) = S`.
+  obtain ⟨m, hm⟩ : ∃ m : ℝ → Measure (Grassmannian N n), ∀ ρ, m ρ =
+      (V.weight (closedBall x ρ))⁻¹ •
+        (V.measure.restrict (closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)))).map Prod.snd :=
+    ⟨_, fun _ ↦ rfl⟩
+  -- `∫ f dm_ρ` is the quotient of the statement, for every `ρ`.
+  have hm_int : ∀ (ρ : ℝ) (g : C(Grassmannian N n, ℝ)), ∫ S, g S ∂(m ρ) =
+      (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), g z.2 ∂V.measure) /
+        (V.weight (closedBall x ρ)).toReal := by
+    intro ρ g
+    rw [hm, integral_smul_measure, integral_map measurable_snd.aemeasurable
+      g.continuous.aestronglyMeasurable, ENNReal.toReal_inv, smul_eq_mul, div_eq_inv_mul]
+  -- For `0 < ρ < r`, `0 < μ_V(B_ρ(x)) < ∞` (`x ∈ spt μ_V`, `B_ρ(x) ⊆ U` compact), so `m_ρ(G) = 1`.
+  have hm_prob : ∀ ρ ∈ Ioo 0 r, IsProbabilityMeasure (m ρ) := by
+    intro ρ hρ
+    have hpos : 0 < V.weight (closedBall x ρ) :=
+      (Measure.mem_support_iff_forall x).1 hxspt _ (closedBall_mem_nhds x hρ.1)
+    have hfin : V.weight (closedBall x ρ) ≠ ∞ :=
+      V.weight_finite_on_compact _ (isCompact_closedBall x ρ)
+        ((closedBall_subset_ball hρ.2).trans hrU)
+    constructor
+    rw [hm, Measure.smul_apply, Measure.map_apply measurable_snd MeasurableSet.univ,
+      preimage_univ, Measure.restrict_apply_univ, ← V.weight_apply measurableSet_closedBall,
+      smul_eq_mul]
+    exact ENNReal.inv_mul_cancel hpos.ne' hfin
+  -- Printed (4) on the dense family: `∫ f_j dm_ρ = ∫ β_j dm_ρ - ‖f_j‖ → e_j(x) - ‖f_j‖`.
+  have hm_lim : ∀ g ∈ range f, ∃ c : ℝ, Tendsto (fun ρ ↦ ∫ S, g S ∂(m ρ)) (𝓝[>] 0) (𝓝 c) := by
+    rintro _ ⟨j, rfl⟩
+    refine ⟨e j x - ‖f j‖, ((hxlim j).sub_const ‖f j‖).congr' ?_⟩
+    filter_upwards [Ioo_mem_nhdsGT hr] with ρ hρ
+    have := hm_prob ρ hρ
+    rw [← hm_int]
+    simp only [hβ]
+    rw [integral_add ((f j).continuous.integrable_of_hasCompactSupport
+        (HasCompactSupport.of_compactSpace _)) (integrable_const _), integral_const,
+      probReal_univ, one_smul, add_sub_cancel_right]
+  -- Printed (3), (4) and the Riesz representation.
+  obtain ⟨η, hη, hηlim⟩ := Submission.plane_disint_riesz_limit N n (𝓝[>] 0) m (range f)
+    inferInstance (by filter_upwards [Ioo_mem_nhdsGT hr] using hm_prob) hf hm_lim
+  exact ⟨η, hη, fun g ↦ (hηlim g).congr fun ρ ↦ hm_int ρ g⟩
+
+/-- **Simon Ch. 8, Lemma 1.3, last part** (child `identity_of_limits` of `plane_disintegration`):
+if for `μ_V`-a.e. `x` the measure `η(x)` on `G(N,n)` is a probability measure and the slice ratios
+`(∫_{Gₙ(B_ρ(x))} β(S) dV(y,S)) / μ_V(B_ρ(x))` tend to `∫ β dη(x)` for every continuous `β`, then
+`∫_{Gₙ(A)} β(S) dV(y,S) = ∫_A ∫ β dη(x) dμ_V(x)` for Borel `A` and continuous `β ≥ 0`.  The density
+`e` of `plane_disint_slice_density` is the limit of the same ratios, so `e(x) = ∫ β dη(x)` for
+`μ_V`-a.e. `x` by uniqueness of limits ("`e(x,j)` is exactly `η̃_V^(x)(β_j)`"). -/
+theorem Submission.plane_disint_identity_of_limits :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (η : Euclidean N → Measure (Grassmannian N n)), (∀ᵐ x ∂V.weight, IsProbabilityMeasure (η x) ∧ ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂(η x)))) → ∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A → (∀ S, 0 ≤ β S) → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, (∫⁻ S, ENNReal.ofReal (β S) ∂(η x)) ∂V.weight := by
+  intro N n U V η hη A β hA hβ
+  -- Printed (1)–(2) for `β`: the slice ratios tend to `e(x)` a.e. and `γ(A) = ∫_A e dμ_V`.
+  obtain ⟨e, -, he, hslice⟩ := Submission.plane_disint_slice_density N n U V β hβ
+  rw [hslice A hA]
+  refine setLIntegral_congr_fun_ae hA ?_
+  -- `e(x) = ∫ β dη(x)` by uniqueness of limits as `ρ ↓ 0`; `β` is bounded, so `η(x)`-integrable.
+  filter_upwards [hη, he] with x ⟨hprob, hlim⟩ hex _
+  rw [tendsto_nhds_unique hex (hlim β)]
+  exact ofReal_integral_eq_lintegral_ofReal
+    (β.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace β))
+    (ae_of_all _ hβ)
+
+/-- **Simon Ch. 8, Lemma 1.3, pp. 207–208** (child `plane_disintegration` of `main_theorem`): the
+measures `η_V^(x)` on `G(N,n)` that disintegrate `V` along its weight `μ_V`.  Child
+`plane_disint_pointwise_measure` gives, for `μ_V`-a.e. `x`, a probability measure that is the limit
+of the normalized slices of `V` over `B_ρ(x)`.  `η(x)` is such a measure wherever one exists; its
+value on the remaining `μ_V`-null set is irrelevant (the printed lemma only defines `η_V^(x)` for
+`μ_V`-a.e. `x`).  The second part is child `plane_disint_identity_of_limits` applied to this `η`. -/
+theorem Submission.plane_disintegration :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U),
+      ∃ η : Euclidean N → Measure (Grassmannian N n),
+        (∀ᵐ x ∂V.weight, IsProbabilityMeasure (η x) ∧
+          ∀ β : C(Grassmannian N n, ℝ),
+            Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)),
+                β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal)
+              (𝓝[>] 0) (𝓝 (∫ S, β S ∂(η x)))) ∧
+        ∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A →
+          (∀ S, 0 ≤ β S) →
+          ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure =
+            ∫⁻ x in A, (∫⁻ S, ENNReal.ofReal (β S) ∂(η x)) ∂V.weight := by
+  intro N n U V
+  -- `Filter.skolem` chooses `η(x)` from the first part wherever it exists.
+  obtain ⟨η, hη⟩ := Filter.skolem.1 (Submission.plane_disint_pointwise_measure N n U V)
+  exact ⟨η, hη, Submission.plane_disint_identity_of_limits N n U V η hη⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
