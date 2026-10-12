@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.weighted_monotonicity-a1.radial_test_field-a1",
+  "parent_id": "root.weighted_monotonicity-a1",
+  "depth": 2,
+  "title": "Radial cutoff fields h·γ(|x−ξ|)(x−ξ) are test fields (parent Step 2)",
+  "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ = ℝ^{n+ℓ}, U ⊆ E open, h: E → ℝ with h ∈ C¹(U) (ContDiffOn ℝ 1 h U), γ: ℝ → ℝ of class C¹, ξ ∈ E and a, b ∈ ℝ with a > 0, γ(t) = γ(0) for every t ≤ a, γ(t) = 0 for every t ≥ b, and tsupport h ∩ B_b(ξ) ⊆ U (B_b(ξ) the closed ball). Then the vector field X(x) := (h(x)·γ(|x − ξ|))·(x − ξ) is a test field in U (IsTestField U X): X is C¹ on all of E, X has compact support, and tsupport X ⊆ U.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (ξ : Ambient n ℓ) (a b : ℝ), IsOpen U → ContDiffOn ℝ 1 h U → ContDiff ℝ 1 γ → 0 < a → (∀ t, t ≤ a → γ t = γ 0) → (∀ t, b ≤ t → γ t = 0) → tsupport h ∩ closedBall ξ b ⊆ U → IsTestField U (fun x ↦ (h x * γ ‖x - ξ‖) • (x - ξ))",
+  "lean_name": "weighted_mono_radial_test_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-weighted-monotonicity-a1-radial-test-field-a1-a1"
+}

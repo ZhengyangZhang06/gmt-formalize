@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.weighted_monotonicity-a1.cutoff_first_variation-a1.cutoff_identity-a1",
+  "parent_id": "root.weighted_monotonicity-a1.cutoff_first_variation-a1",
+  "depth": 3,
+  "title": "Cutoff identity from the radial first-variation identity along γ = φ(·/τ), for a general measure (parent Steps 7–10)",
+  "statement": "Let n, ℓ ∈ ℕ, E := Ambient n ℓ = ℝ^{n+ℓ} with its Borel σ-algebra, μ a measure on E that is finite on compact sets, U ⊆ E any set, h, q : E → ℝ, g, H : E → E, φ : ℝ → ℝ of class C¹, ξ ∈ E and c, τ, R, A ∈ ℝ. Write r = r(x) := |x − ξ|, B := B_R(ξ) = closedBall ξ R (closed ball), φ' := deriv φ, γ(t) := φ(t/τ), γ' := deriv γ and G(x) := ⟨x − ξ, g(x) + h(x)H(x)⟩. Assume: (i) tsupport h ∩ B ⊆ U; (ii) g(x) = 0 for every x ∉ tsupport h; (iii) h and q are a.e. strongly measurable with respect to μ restricted to B; (iv) |h(x)| ≤ A and |q(x)| ≤ 1 for every x ∈ B; (v) x ↦ ⟨x − ξ, g(x)⟩ and G are μ-integrable on B; (vi) φ(t) = 0 for every t ≥ c; (vii) τ > 0 and cτ ≤ R; (viii) (RFV_τ) ∫_U [h(x)(n·φ(r/τ) + r·γ'(r)·(1 − q(x))) + φ(r/τ)⟨x − ξ, g(x)⟩] dμ(x) = −∫_U h(x)φ(r/τ)⟨x − ξ, H(x)⟩ dμ(x), where ∫_U is the Bochner integral with respect to μ restricted to U. Then n·∫_E h(x)φ(r/τ) dμ + ∫_E h(x)(1 − q(x))·((r/τ)φ'(r/τ)) dμ + ∫_E φ(r/τ)G(x) dμ = 0 (Bochner integrals over E).",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (U : Set (Ambient n ℓ)) (h q : Ambient n ℓ → ℝ) (g H : Ambient n ℓ → Ambient n ℓ) (φ : ℝ → ℝ) (ξ : Ambient n ℓ) (c τ R A : ℝ), IsFiniteMeasureOnCompacts μ → tsupport h ∩ closedBall ξ R ⊆ U → (∀ x, x ∉ tsupport h → g x = 0) → AEStronglyMeasurable h (μ.restrict (closedBall ξ R)) → AEStronglyMeasurable q (μ.restrict (closedBall ξ R)) → (∀ x ∈ closedBall ξ R, |h x| ≤ A ∧ |q x| ≤ 1) → IntegrableOn (fun x ↦ inner ℝ (x - ξ) (g x)) (closedBall ξ R) μ → IntegrableOn (fun x ↦ inner ℝ (x - ξ) (g x + h x • H x)) (closedBall ξ R) μ → ContDiff ℝ 1 φ → (∀ t, c ≤ t → φ t = 0) → 0 < τ → c * τ ≤ R → ∫ x in U, (h x * ((n : ℝ) * φ (‖x - ξ‖ / τ) + ‖x - ξ‖ * deriv (fun t ↦ φ (t / τ)) ‖x - ξ‖ * (1 - q x)) + φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (g x)) ∂μ = -∫ x in U, h x * φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (H x) ∂μ → (n : ℝ) * ∫ x, h x * φ (‖x - ξ‖ / τ) ∂μ + ∫ x, h x * (1 - q x) * (‖x - ξ‖ / τ * deriv φ (‖x - ξ‖ / τ)) ∂μ + ∫ x, φ (‖x - ξ‖ / τ) * inner ℝ (x - ξ) (g x + h x • H x) ∂μ = 0",
+  "lean_name": "weighted_mono_cutoff_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-weighted-monotonicity-a1-cutoff-first-variation-a1-cutoff-identity-a1-a1"
+}

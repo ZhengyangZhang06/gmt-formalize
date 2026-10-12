@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_monotonicity-a1.ratio_limit-a1",
+  "parent_id": "root.stationary_monotonicity-a1",
+  "depth": 2,
+  "title": "Monotonicity, existence of the density and the full-ball identity from the annulus identity (Simon 3.8–3.10)",
+  "statement": "Let n, ℓ ∈ ℕ, V a rectifiable n-varifold in ℝ^{n+ℓ} with weight μ = μ_V, ξ ∈ ℝ^{n+ℓ} and R ∈ ℝ. Write B_r = B_r(ξ) for the closed ball, μ(S) for the real value μ.real S, q_ξ = V.normalRadialSq ξ, w(x) = q_ξ(x)/|x − ξ|ⁿ and a(r) = μ(B_r)/rⁿ. Assume that for all 0 < σ ≤ ρ < R, w is μ-integrable on B_ρ ∖ B_σ and a(ρ) − a(σ) = ∫_{B_ρ∖B_σ} w dμ. Then: (1) a is nondecreasing on (0, R); (2) for every 0 < ρ < R, w is μ-integrable on B_ρ and μ(B_ρ)/(ω_nρⁿ) − Θⁿ(μ, ξ) = ω_n^{-1}∫_{B_ρ} w dμ, where Θⁿ(μ, ξ) = V.density ξ; (3) if R > 0, then μ(B_s)/(ω_n sⁿ) → V.density ξ as s ↓ 0 (V.HasDensityAt ξ (V.density ξ)); (4) for every 0 < ρ < R, V.density ξ ≤ μ(B_ρ)/(ω_nρⁿ).",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (ξ : Ambient n ℓ) (R : ℝ), (∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ < R → IntegrableOn (fun x ↦ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) (closedBall ξ ρ \\ closedBall ξ σ) V.weight ∧ V.weight.real (closedBall ξ ρ) / ρ ^ n - V.weight.real (closedBall ξ σ) / σ ^ n = ∫ x in closedBall ξ ρ \\ closedBall ξ σ, V.normalRadialSq ξ x / ‖x - ξ‖ ^ n ∂V.weight) → MonotoneOn (fun ρ ↦ V.weight.real (closedBall ξ ρ) / ρ ^ n) (Ioo 0 R) ∧ (∀ ρ : ℝ, 0 < ρ → ρ < R → IntegrableOn (fun x ↦ V.normalRadialSq ξ x / ‖x - ξ‖ ^ n) (closedBall ξ ρ) V.weight ∧ V.weight.real (closedBall ξ ρ) / (omega n * ρ ^ n) - V.density ξ = (omega n)⁻¹ * ∫ x in closedBall ξ ρ, V.normalRadialSq ξ x / ‖x - ξ‖ ^ n ∂V.weight) ∧ (0 < R → V.HasDensityAt ξ (V.density ξ)) ∧ ∀ ρ : ℝ, 0 < ρ → ρ < R → V.density ξ ≤ V.weight.real (closedBall ξ ρ) / (omega n * ρ ^ n)",
+  "lean_name": "stationary_ratio_limit_of_annulus_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-stationary-monotonicity-a1-ratio-limit-a1-a1"
+}
