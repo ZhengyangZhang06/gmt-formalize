@@ -373,6 +373,139 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, Lemma 5.11 (p. 65), integrability of the stable second-variation integrand.**
+Let `M` be measurable with `y ↦ P_y` continuous on `M`, `X` the initial velocity of `φ`, `C¹` and
+vanishing off the closed set `K`, `M ∩ K` compact with `Hⁿ(M ∩ K) < ∞`, and
+`η · D_τ X(y) = -X(y) · B_y(τ, η)` for `y ∈ M` and `τ, η ∈ T_y M`. Then the integrand
+`∑ᵢ |(D_{τᵢ}X)^⊥|² - ∑_{i,j} (X · B(τᵢ, τⱼ))²` vanishes on `M \ K` and is `Hⁿ`-integrable on `M`.
+The frame `τ` is chosen pointwise, so the integrand is first written frame-free on `M` as
+`tr(DX* (I - P) DX ∘ P) - tr(DX* P DX ∘ P)`, using `∑ᵢ τᵢ · L τᵢ = tr(L ∘ P)`, the hypothesis and
+Parseval in `T_y M`. This is continuous on `M`, hence measurable and bounded on `M ∩ K`. -/
+theorem Submission.stable_second_variation_integrand_integrableOn : ∀ (n N : ℕ) (M K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), MeasurableSet M → ContinuousOn (tangentProjection M) M → ContDiff ℝ 1 (initialVelocity φ) → IsClosed K → (∀ x ∉ K, initialVelocity φ x = 0) → IsCompact (M ∩ K) → μHE[n] (M ∩ K) < ⊤ → (∀ y ∈ M, ∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, inner ℝ η (fderiv ℝ (initialVelocity φ) y τ) = -inner ℝ (initialVelocity φ y) (secondFundamentalForm M y τ η)) → (∀ y ∈ M, y ∉ K → stableSecondVariationIntegrand M φ y = 0) ∧ IntegrableOn (stableSecondVariationIntegrand M φ) M μHE[n] := by
+  intro n N M K φ hM hP hX hK hXK hMK hfin hB
+  -- Step 1: `DX = 0` off `K`, since `X = 0` on the open set `Kᶜ`.
+  have hD0 : ∀ y, y ∉ K → fderiv ℝ (initialVelocity φ) y = 0 := by
+    intro y hy
+    have hev : initialVelocity φ =ᶠ[𝓝 y] fun _ => (0 : Rn N) := by
+      filter_upwards [hK.isOpen_compl.mem_nhds hy] with x hx using hXK x hx
+    rw [hev.fderiv_eq, fderiv_const_apply]
+  -- Step 2: conclusion (i), as `X(y) = 0` and `DX(y) = 0` for `y ∉ K`.
+  have hS0 : ∀ y ∈ M, y ∉ K → stableSecondVariationIntegrand M φ y = 0 := by
+    intro y _ hy
+    simp [stableSecondVariationIntegrand, normalPart, hD0 y hy, hXK y hy]
+  refine ⟨hS0, ?_⟩
+  -- Step 3: frame sums are traces, `∑ᵢ ⟨τᵢ, L τᵢ⟩ = tr (L ∘ P_y)`: write `P_y = ι ∘ q_y`, use
+  -- cyclicity of the trace and the trace formula in the orthonormal basis `τ` of `T_y`.
+  have htr : ∀ (y : Rn N) (L : Rn N →L[ℝ] Rn N),
+      ∑ i, inner ℝ (tangentFrame M y i) (L (tangentFrame M y i)) =
+        LinearMap.trace ℝ (Rn N) (L ∘L tangentProjection M y).toLinearMap := by
+    intro y L
+    have hLP : (L ∘L tangentProjection M y).toLinearMap =
+        (L.toLinearMap ∘ₗ (tangentSpace M y).subtype) ∘ₗ
+          (tangentSpace M y).orthogonalProjectionOnto.toLinearMap := rfl
+    rw [hLP, LinearMap.trace_comp_comm',
+      LinearMap.trace_eq_sum_inner _ (stdOrthonormalBasis ℝ (tangentSpace M y))]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp only [LinearMap.coe_comp, Function.comp_apply, ContinuousLinearMap.coe_coe,
+      Submodule.coe_subtype, Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left]
+    rfl
+  -- Step 4: on `M` the integrand `S` equals `F := tr (DX* (I - P) DX ∘ P) - tr (DX* P DX ∘ P)`.
+  let F : Rn N → ℝ := fun y =>
+    LinearMap.trace ℝ (Rn N) ((ContinuousLinearMap.adjoint (fderiv ℝ (initialVelocity φ) y) ∘L
+        (ContinuousLinearMap.id ℝ (Rn N) - tangentProjection M y) ∘L
+          fderiv ℝ (initialVelocity φ) y) ∘L tangentProjection M y).toLinearMap -
+      LinearMap.trace ℝ (Rn N) ((ContinuousLinearMap.adjoint (fderiv ℝ (initialVelocity φ) y) ∘L
+        tangentProjection M y ∘L fderiv ℝ (initialVelocity φ) y) ∘L
+          tangentProjection M y).toLinearMap
+  have hSF : ∀ y ∈ M, stableSecondVariationIntegrand M φ y = F y := by
+    intro y hy
+    -- (a) `v - P v ⊥ P v`.
+    have horth : ∀ v : Rn N,
+        inner ℝ (v - tangentProjection M y v) (tangentProjection M y v) = 0 := fun v =>
+      Submodule.starProjection_inner_eq_zero v _
+        (Submodule.starProjection_apply_mem (tangentSpace M y) v)
+    -- (b) `‖(DX τᵢ)^⊥‖² = ⟨τᵢ, DX* (I - P) DX τᵢ⟩`.
+    have h1 : ∀ i, ‖normalPart M y (fderiv ℝ (initialVelocity φ) y (tangentFrame M y i))‖ ^ 2 =
+        inner ℝ (tangentFrame M y i)
+          ((ContinuousLinearMap.adjoint (fderiv ℝ (initialVelocity φ) y) ∘L
+            (ContinuousLinearMap.id ℝ (Rn N) - tangentProjection M y) ∘L
+              fderiv ℝ (initialVelocity φ) y) (tangentFrame M y i)) := by
+      intro i
+      set v := fderiv ℝ (initialVelocity φ) y (tangentFrame M y i)
+      set P := tangentProjection M y
+      rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.adjoint_inner_right,
+        ContinuousLinearMap.comp_apply, sub_apply, ContinuousLinearMap.id_apply, normalPart,
+        ← real_inner_self_eq_norm_sq]
+      have e1 : inner ℝ (v - P v) (v - P v) = inner ℝ v (v - P v) - inner ℝ (P v) (v - P v) :=
+        inner_sub_left _ _ _
+      have e2 : inner ℝ (P v) (v - P v) = inner ℝ (v - P v) (P v) := real_inner_comm _ _
+      rw [e1, e2, horth v, sub_zero]
+    -- (c) by (h) and Parseval in `T_y`, `∑ⱼ ⟨X, B(τᵢ, τⱼ)⟩² = ‖P DX τᵢ‖² = ⟨τᵢ, DX* P DX τᵢ⟩`.
+    have h2 : ∀ i, ∑ j, inner ℝ (initialVelocity φ y)
+          (secondFundamentalForm M y (tangentFrame M y i) (tangentFrame M y j)) ^ 2 =
+        inner ℝ (tangentFrame M y i)
+          ((ContinuousLinearMap.adjoint (fderiv ℝ (initialVelocity φ) y) ∘L
+            tangentProjection M y ∘L fderiv ℝ (initialVelocity φ) y) (tangentFrame M y i)) := by
+      intro i
+      set b := stdOrthonormalBasis ℝ (tangentSpace M y)
+      set v := fderiv ℝ (initialVelocity φ) y (tangentFrame M y i)
+      have hsq : ∀ j, inner ℝ (initialVelocity φ y)
+          (secondFundamentalForm M y (tangentFrame M y i) (tangentFrame M y j)) ^ 2 =
+          inner ℝ (b j) ((tangentSpace M y).orthogonalProjectionOnto v) ^ 2 := by
+        intro j
+        have h := hB y hy (tangentFrame M y i) (b i).2 (tangentFrame M y j) (b j).2
+        rw [Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left]
+        change _ = inner ℝ (tangentFrame M y j)
+          (fderiv ℝ (initialVelocity φ) y (tangentFrame M y i)) ^ 2
+        rw [h, neg_sq]
+      rw [Finset.sum_congr rfl fun j _ => hsq j, OrthonormalBasis.sum_sq_inner_right,
+        ContinuousLinearMap.comp_apply, ContinuousLinearMap.adjoint_inner_right,
+        ContinuousLinearMap.comp_apply]
+      have hn : ‖(tangentSpace M y).orthogonalProjectionOnto v‖ = ‖tangentProjection M y v‖ := rfl
+      have e1 := horth v
+      rw [inner_sub_left] at e1
+      rw [hn, ← real_inner_self_eq_norm_sq]
+      linarith
+    -- (d) sum over `i` and use step 3.
+    show ∑ i, ‖normalPart M y (fderiv ℝ (initialVelocity φ) y (tangentFrame M y i))‖ ^ 2 -
+        ∑ i, ∑ j, inner ℝ (initialVelocity φ y)
+          (secondFundamentalForm M y (tangentFrame M y i) (tangentFrame M y j)) ^ 2 = F y
+    rw [Finset.sum_congr rfl fun i _ => h1 i, Finset.sum_congr rfl fun i _ => h2 i, htr, htr]
+  -- Step 5: `F` is continuous on `M`.
+  have hDc : Continuous (fderiv ℝ (initialVelocity φ)) := hX.continuous_fderiv one_ne_zero
+  have hDadj : Continuous fun y => ContinuousLinearMap.adjoint (fderiv ℝ (initialVelocity φ) y) :=
+    (ContinuousLinearMap.adjoint : (Rn N →L[ℝ] Rn N) ≃ₗᵢ⋆[ℝ] (Rn N →L[ℝ] Rn N)).continuous.comp hDc
+  have htrc : Continuous fun A : Rn N →L[ℝ] Rn N => LinearMap.trace ℝ (Rn N) A.toLinearMap :=
+    (LinearMap.trace ℝ (Rn N) ∘ₗ ContinuousLinearMap.coeLM ℝ).continuous_of_finiteDimensional
+  have hIP : ContinuousOn (fun y => ContinuousLinearMap.id ℝ (Rn N) - tangentProjection M y) M :=
+    continuousOn_const.sub hP
+  have hFc : ContinuousOn F M :=
+    (htrc.comp_continuousOn
+        ((hDadj.continuousOn.clm_comp (hIP.clm_comp hDc.continuousOn)).clm_comp hP)).sub
+      (htrc.comp_continuousOn
+        ((hDadj.continuousOn.clm_comp (hP.clm_comp hDc.continuousOn)).clm_comp hP))
+  -- Step 6: `S = F` on `M`, so `S` is a.e.-strongly measurable for `Hⁿ ⌊ M`.
+  have hSm : AEStronglyMeasurable (stableSecondVariationIntegrand M φ) (μHE[n].restrict M) := by
+    refine (hFc.aestronglyMeasurable hM).congr ?_
+    rw [Filter.EventuallyEq, ae_restrict_iff' hM]
+    exact Filter.Eventually.of_forall fun y hy => (hSF y hy).symm
+  -- Step 7: `|S| = |F| ≤ C` on the compact set `M ∩ K`.
+  obtain ⟨C, hC⟩ := hMK.exists_bound_of_continuousOn (hFc.mono inter_subset_left)
+  -- Step 8: `S` is integrable on `K ∩ M`, which has finite measure.
+  have hKm : MeasurableSet K := hK.measurableSet
+  have hint : IntegrableOn (stableSecondVariationIntegrand M φ) (K ∩ M) μHE[n] := by
+    have hKfin : (μHE[n].restrict M) K ≠ ⊤ := by
+      rw [Measure.restrict_apply hKm, inter_comm]
+      exact hfin.ne
+    have hbdd : ∀ᵐ y ∂((μHE[n].restrict M).restrict K),
+        ‖stableSecondVariationIntegrand M φ y‖ ≤ C := by
+      rw [Measure.restrict_restrict hKm, ae_restrict_iff' (hKm.inter hM)]
+      exact Filter.Eventually.of_forall fun y hy => hSF y hy.2 ▸ hC y ⟨hy.2, hy.1⟩
+    have h := Measure.integrableOn_of_bounded hKfin hSm hbdd
+    rwa [IntegrableOn, Measure.restrict_restrict hKm] at h
+  -- Step 9: `S = 0` on `M \ K`, so integrability extends to `M`.
+  exact hint.of_forall_sdiff_eq_zero hM fun y hy => hS0 y hy.1 fun hyK => hy.2 ⟨hyK, hy.1⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
