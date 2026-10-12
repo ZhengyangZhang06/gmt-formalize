@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "22b95b79c4670b9773f4ff832d56b8eb33962f1c96c1efdbfed1aeb868d050c8",
+  "git_delta": {
+    "base_commit": "e4c3f11b52d8e5d8c241bd78caa2e9cdadab917b",
+    "candidate_commit": "bc2cf2ca788135e1526c80b05dcc7161ff3b32c7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_pb_sq_integral_le",
+    "diff_sha256": "45ed9abdaa04cbdd9d1722af14a6cd984351d926254c900b046c115d2870d27f",
+    "source_sha256": "4887b43aff5985b1fecf58c40a345ebd095a87b492df6e90cfd41f391407524c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_pb_sq_integral_le",
+      "statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (h : α → ℝ), μ univ ≠ ∞ → MemLp h 2 μ → (∫ x, h x ∂μ) ^ 2 ≤ (μ univ).toReal * ∫ x, h x ^ 2 ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
