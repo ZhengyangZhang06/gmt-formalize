@@ -487,6 +487,60 @@ theorem Submission.dorag_ha_pb_sq_integral_le : ∀ {α : Type} [MeasurableSpace
     rw [hexp, sub_nonneg, div_le_iff₀ hmpos] at hnn
     linarith
 
+/-- **Poincaré inequality on a ball** (Simon Ch. 5, proof of Lemma 3.1; Gilbarg–Trudinger,
+Lemma 7.16), the averaging step, for any `s ⊆ ℝⁿ` with `ω = Lⁿ(s) < ∞` and `f ∈ L²(s)`:
+`∫_s (f − f̄)² ≤ ω⁻¹ ∫_s ∫_s (f(x) − f(y))² dy dx`, `f̄ = ω⁻¹ ∫_s f` (both sides vanish if
+`ω = 0`).  For each `x`, `f(x) − f̄ = ω⁻¹ ∫_s (f(x) − f(y)) dy`, so Cauchy–Schwarz
+(`dorag_ha_pb_sq_integral_le`) gives `(f(x) − f̄)² ≤ ω⁻¹ ∫_s (f(x) − f(y))² dy`.  This is
+integrated over `s`; the right side is integrable since `(f(x) − f(y))² ≤ 2f(x)² + 2f(y)²`. -/
+theorem Submission.dorag_ha_pb_variance_bound : ∀ (n : ℕ) (s : Set (Euclid n)) (f : Euclid n → ℝ), volume s ≠ ∞ → MemLp f 2 (volume.restrict s) → ∫ x in s, (f x - (∫ y in s, f y) / (volume s).toReal) ^ 2 ≤ ((volume s).toReal)⁻¹ * ∫ x in s, ∫ y in s, (f x - f y) ^ 2 := by
+  intro n s f hs hf
+  set μ : Measure (Euclid n) := volume.restrict s
+  set ω : ℝ := (volume s).toReal
+  -- Step 1: `μ` is finite with `μ(ℝⁿ).toReal = ω`, and `f, f² ∈ L¹(μ)`
+  have hμuniv : μ univ = volume s := Measure.restrict_apply_univ s
+  have hμfin : μ univ ≠ ∞ := hμuniv ▸ hs
+  have : IsFiniteMeasure μ := isFiniteMeasure_restrict.2 hs
+  have hf1 : Integrable f μ := hf.integrable one_le_two
+  have hf2 : Integrable (fun x => f x ^ 2) μ := by
+    simpa only [Real.norm_eq_abs, sq_abs] using hf.integrable_norm_pow two_ne_zero
+  -- Step 2: if `ω = 0` then `μ = 0` and both sides vanish
+  rcases eq_or_ne ω 0 with hω0 | hω0
+  · have hμ0 : μ = 0 :=
+      Measure.restrict_eq_zero.2 (((ENNReal.toReal_eq_zero_iff _).1 hω0).resolve_right hs)
+    rw [hω0, inv_zero, zero_mul, hμ0, integral_zero_measure]
+  -- Step 3: the pointwise bound `(f(x) − f̄)² ≤ ω⁻¹ ∫_s (f(x) − f(y))² dy`
+  have hpt : ∀ x, (f x - (∫ y, f y ∂μ) / ω) ^ 2 ≤ ω⁻¹ * ∫ y, (f x - f y) ^ 2 ∂μ := by
+    intro x
+    have hmem : MemLp (fun y => f x - f y) 2 μ := (memLp_const (f x)).sub hf
+    have hCS := Submission.dorag_ha_pb_sq_integral_le μ (fun y => f x - f y) hμfin hmem
+    rw [hμuniv] at hCS
+    have hI : ∫ y, (f x - f y) ∂μ = ω * f x - ∫ y, f y ∂μ := by
+      rw [integral_sub (integrable_const (f x)) hf1, integral_const, smul_eq_mul, measureReal_def,
+        hμuniv]
+    have hdiff : f x - (∫ y, f y ∂μ) / ω = ω⁻¹ * ∫ y, (f x - f y) ∂μ := by
+      rw [hI]
+      field_simp
+    rw [hdiff, mul_pow]
+    calc (ω⁻¹) ^ 2 * (∫ y, (f x - f y) ∂μ) ^ 2
+        ≤ (ω⁻¹) ^ 2 * (ω * ∫ y, (f x - f y) ^ 2 ∂μ) := by gcongr
+      _ = ω⁻¹ * ∫ y, (f x - f y) ^ 2 ∂μ := by field_simp
+  -- Step 4: `(x, y) ↦ (f(x) − f(y))²` is `μ ⊗ μ`-integrable, being `≤ 2f(x)² + 2f(y)²`
+  have hprod : Integrable (fun p : Euclid n × Euclid n => (f p.1 - f p.2) ^ 2) (μ.prod μ) := by
+    have hm := hf.aestronglyMeasurable
+    refine Integrable.mono' (((hf2.comp_fst μ).const_mul 2).add ((hf2.comp_snd μ).const_mul 2))
+      ((hm.comp_fst.sub hm.comp_snd).pow 2) (ae_of_all _ fun p => ?_)
+    show ‖(f p.1 - f p.2) ^ 2‖ ≤ 2 * f p.1 ^ 2 + 2 * f p.2 ^ 2
+    rw [Real.norm_of_nonneg (sq_nonneg _)]
+    nlinarith [sq_nonneg (f p.1 + f p.2)]
+  have hinner : Integrable (fun x => ∫ y, (f x - f y) ^ 2 ∂μ) μ := hprod.integral_prod_left
+  -- Step 5: integrate the pointwise bound over `s`
+  calc ∫ x, (f x - (∫ y, f y ∂μ) / ω) ^ 2 ∂μ
+      ≤ ∫ x, ω⁻¹ * ∫ y, (f x - f y) ^ 2 ∂μ ∂μ :=
+        integral_mono_of_nonneg (ae_of_all _ fun x => sq_nonneg _) (hinner.const_mul ω⁻¹)
+          (ae_of_all _ hpt)
+    _ = ω⁻¹ * ∫ x, ∫ y, (f x - f y) ^ 2 ∂μ ∂μ := integral_const_mul _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
