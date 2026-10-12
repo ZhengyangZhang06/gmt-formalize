@@ -498,6 +498,119 @@ theorem Submission.bv_convolution_bound_and_lipschitz : ∀ (n : ℕ) (ρ F : Rn
         have hLip := hK.dist_le_mul (x - t) (y - t)
         rwa [Real.dist_eq, dist_eq_norm, sub_sub_sub_cancel_right] at hLip
       _ = K * ‖x - y‖ * ∫ t, |F t| := integral_const_mul _ _
+/-- **Simon Ch. 2, proof of Theorem 2.6: finite `L¹(Q)`-nets (the Arzelà step).** Let `Q ⊂ ℝⁿ` be
+compact and `u_k ∈ L¹(Q)`. Suppose that for each `ε > 0` there are `w_k`, bounded by `B` and
+`Λ`-Lipschitz on `Q` (`B`, `Λ` independent of `k`), with `∫_Q |u_k - w_k| ≤ ε`. Then for each
+`ε > 0` finitely many `u_j` form an `ε`-net of `{u_k}` in `L¹(Q)`. The values of the `w_k` on a
+finite `r`-net `T ⊂ Q` lie in a compact ball of `T → ℝ`, so up to `η / 2` they take finitely many
+values; `w_k`, `w_j` with nearby values on `T` are uniformly `η`-close on `Q`. -/
+theorem Submission.bv_lintegral_finite_net_of_lipschitz_approx : ∀ (n : ℕ) (Q : Set (Rn n)) (u : ℕ → Rn n → ℝ), IsCompact Q → (∀ k, IntegrableOn (u k) Q volume) → (∀ ε : ℝ, 0 < ε → ∃ (B Λ : ℝ) (w : ℕ → Rn n → ℝ), (∀ k, ∀ x ∈ Q, |w k x| ≤ B) ∧ (∀ k, ∀ x ∈ Q, ∀ y ∈ Q, |w k x - w k y| ≤ Λ * ‖x - y‖) ∧ ∀ k, (∫⁻ x in Q, ‖u k x - w k x‖ₑ) ≤ ENNReal.ofReal ε) → ∀ ε : ℝ, 0 < ε → ∃ F : Finset ℕ, ∀ k, ∃ j ∈ F, (∫⁻ x in Q, ‖u k x - u j x‖ₑ) < ENNReal.ofReal ε := by
+  intro n Q u hQ hu happrox ε hε
+  -- Step 1: `Q` is closed, hence measurable, and `Lⁿ(Q) < ∞`; put `m = Lⁿ(Q)`.
+  have hQm : MeasurableSet Q := hQ.isClosed.measurableSet
+  have hQfin : volume Q < ⊤ := hQ.measure_lt_top
+  set m : ℝ := (volume Q).toReal with hm
+  have hm0 : 0 ≤ m := ENNReal.toReal_nonneg
+  -- Step 3: approximate at accuracy `ε / 4`; `Λ' = max Λ 0 ≥ 0` is also a Lipschitz constant.
+  obtain ⟨B, Λ, w, hB, hΛ, hw⟩ := happrox (ε / 4) (by positivity)
+  obtain ⟨Λ', hΛ'0, hwΛ'⟩ : ∃ Λ' : ℝ, 0 ≤ Λ' ∧
+      ∀ k, ∀ x ∈ Q, ∀ y ∈ Q, |w k x - w k y| ≤ Λ' * ‖x - y‖ :=
+    ⟨max Λ 0, le_max_right _ _, fun k x hx y hy ↦
+      (hΛ k x hx y hy).trans (mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg _))⟩
+  -- Step 4 (with the Remark's radius): `η = ε / (4 (m + 1))`, `r = η / (4 (Λ' + 1))`, and a finite
+  -- `T ⊂ Q` with `Q ⊂ ⋃_{q ∈ T} B(q, r)` (open balls).
+  set η : ℝ := ε / (4 * (m + 1)) with hη
+  have hη0 : 0 < η := by positivity
+  set r : ℝ := η / (4 * (Λ' + 1)) with hr
+  have hr0 : 0 < r := by positivity
+  obtain ⟨T, hTQ, hTfin, hQT⟩ := hQ.finite_cover_balls hr0
+  have : Fintype T := hTfin.fintype
+  -- Steps 5–6 (Remark): `p_k = (w_k(q))_{q ∈ T}` lies in the compact closed ball of radius
+  -- `max B 0` of the sup-normed `T → ℝ`, so `{p_k}` has a finite `η / 2`-net `t ⊂ {p_k}`; `F`
+  -- consists of one index `j` with `p_j = y` for each `y ∈ t`.
+  let p : ℕ → T → ℝ := fun k q ↦ w k q
+  have hpB : Set.range p ⊆ closedBall 0 (max B 0) := by
+    rintro _ ⟨k, rfl⟩
+    rw [mem_closedBall, dist_pi_le_iff (le_max_right _ _)]
+    intro q
+    rw [Real.dist_eq, Pi.zero_apply, sub_zero]
+    exact (hB k q (hTQ q.2)).trans (le_max_left _ _)
+  have hptb : TotallyBounded (Set.range p) := (isCompact_closedBall _ _).totallyBounded.subset hpB
+  obtain ⟨t, htp, htfin, hpt⟩ := Metric.finite_approx_of_totallyBounded hptb (η / 2) (by positivity)
+  refine ⟨htfin.toFinset.image (Function.invFun p), fun k ↦ ?_⟩
+  obtain ⟨y, hyt, hky⟩ : ∃ y ∈ t, p k ∈ ball y (η / 2) := by
+    simpa using hpt (Set.mem_range_self k)
+  set j := Function.invFun p y
+  have hpj : p j = y := Function.invFun_eq (htp hyt)
+  refine ⟨j, Finset.mem_image.2 ⟨y, htfin.mem_toFinset.2 hyt, rfl⟩, ?_⟩
+  -- Step 7: `|w_k(q) - w_j(q)| ≤ dist p_k p_j < η / 2` for `q ∈ T`.
+  have hT : ∀ q ∈ T, |w k q - w j q| < η / 2 := fun q hq ↦ by
+    have hd : dist (p k) (p j) < η / 2 := by rw [hpj]; exact hky
+    have hq' := dist_le_pi_dist (p k) (p j) ⟨q, hq⟩
+    rw [Real.dist_eq] at hq'
+    exact hq'.trans_lt hd
+  -- Step 8: for `x ∈ Q` and `q ∈ T` with `|x - q| < r`,
+  -- `|w_k(x) - w_j(x)| ≤ Λ' r + η / 2 + Λ' r ≤ η`, since `Λ' r ≤ η / 4`.
+  have hΛr : Λ' * r ≤ η / 4 := by
+    rw [hr, mul_div_assoc', div_le_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith
+  have hQpt : ∀ x ∈ Q, ‖w k x - w j x‖ₑ ≤ ENNReal.ofReal η := fun x hx ↦ by
+    obtain ⟨q, hqT, hxq⟩ : ∃ q ∈ T, x ∈ ball q r := by simpa using hQT hx
+    have hq : q ∈ Q := hTQ hqT
+    rw [mem_ball, dist_eq_norm] at hxq
+    have h1 : |w k x - w k q| ≤ Λ' * r :=
+      (hwΛ' k x hx q hq).trans (mul_le_mul_of_nonneg_left hxq.le hΛ'0)
+    have h2 : |w j q - w j x| ≤ Λ' * r := by
+      refine (hwΛ' j q hq x hx).trans (mul_le_mul_of_nonneg_left ?_ hΛ'0)
+      rw [norm_sub_rev]
+      exact hxq.le
+    have h3 : |w k x - w j x| ≤ η := calc
+      |w k x - w j x| = |(w k x - w k q) + (w k q - w j q) + (w j q - w j x)| := by
+        congr 1; ring
+      _ ≤ |w k x - w k q| + |w k q - w j q| + |w j q - w j x| := abs_add_three _ _ _
+      _ ≤ η := by linarith [hT q hqT]
+    rw [Real.enorm_eq_ofReal_abs]
+    exact ENNReal.ofReal_le_ofReal h3
+  -- Step 9: `∫_Q |w_k - w_j| ≤ η m ≤ ε / 4`.
+  have hηm : η * m ≤ ε / 4 := by
+    rw [hη, div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith
+  have hwkj : (∫⁻ x in Q, ‖w k x - w j x‖ₑ) ≤ ENNReal.ofReal (ε / 4) := calc
+    (∫⁻ x in Q, ‖w k x - w j x‖ₑ) ≤ ∫⁻ _ in Q, ENNReal.ofReal η :=
+      setLIntegral_mono measurable_const hQpt
+    _ = ENNReal.ofReal (η * m) := by
+      rw [setLIntegral_const, ENNReal.ofReal_mul hη0.le, hm, ENNReal.ofReal_toReal hQfin.ne]
+    _ ≤ ENNReal.ofReal (ε / 4) := ENNReal.ofReal_le_ofReal hηm
+  -- Step 10: `u_k` is a.e.-strongly measurable for `Lⁿ ⌞ Q`, and so is each `w_i`, being
+  -- Lipschitz, hence continuous, on the measurable set `Q`.
+  have hwm : ∀ i, AEStronglyMeasurable (w i) (volume.restrict Q) := fun i ↦
+    (LipschitzOnWith.of_dist_le_mul (K := Real.toNNReal Λ') fun x hx y hy ↦ by
+      rw [Real.dist_eq, dist_eq_norm, Real.coe_toNNReal _ hΛ'0]
+      exact hwΛ' i x hx y hy).continuousOn.aestronglyMeasurable hQm
+  have hk : AEMeasurable (fun x ↦ ‖u k x - w k x‖ₑ) (volume.restrict Q) :=
+    ((hu k).aestronglyMeasurable.sub (hwm k)).enorm
+  have hkj : AEMeasurable (fun x ↦ ‖u k x - w k x‖ₑ + ‖w k x - w j x‖ₑ) (volume.restrict Q) :=
+    hk.add ((hwm k).sub (hwm j)).enorm
+  -- Step 11: `|u_k - u_j| ≤ |u_k - w_k| + |w_k - w_j| + |u_j - w_j|`; integrate (additivity with
+  -- a.e.-measurable left summands) and use the approximation for `k` and `j` and Step 9.
+  calc (∫⁻ x in Q, ‖u k x - u j x‖ₑ)
+      ≤ ∫⁻ x in Q, (‖u k x - w k x‖ₑ + ‖w k x - w j x‖ₑ + ‖u j x - w j x‖ₑ) := by
+        refine lintegral_mono fun x ↦ ?_
+        calc ‖u k x - u j x‖ₑ = ‖(u k x - w k x) + (w k x - w j x) + (w j x - u j x)‖ₑ := by
+              congr 1; ring
+          _ ≤ ‖u k x - w k x‖ₑ + ‖w k x - w j x‖ₑ + ‖w j x - u j x‖ₑ :=
+              (enorm_add_le _ _).trans (add_le_add (enorm_add_le _ _) le_rfl)
+          _ = _ := by rw [enorm_sub_rev (w j x)]
+    _ = (∫⁻ x in Q, ‖u k x - w k x‖ₑ) + (∫⁻ x in Q, ‖w k x - w j x‖ₑ) +
+          ∫⁻ x in Q, ‖u j x - w j x‖ₑ := by
+        rw [lintegral_add_left' hkj, lintegral_add_left' hk]
+    _ ≤ ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) :=
+        add_le_add (add_le_add (hw k) hwkj) (hw j)
+    _ = ENNReal.ofReal (3 * ε / 4) := by
+        rw [← ENNReal.ofReal_add (by positivity) (by positivity),
+          ← ENNReal.ofReal_add (by positivity) (by positivity)]
+        ring_nf
+    _ < ENNReal.ofReal ε := (ENNReal.ofReal_lt_ofReal_iff hε).2 (by linarith)
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
