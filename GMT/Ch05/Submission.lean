@@ -859,6 +859,62 @@ theorem ble_smooth_annulus_estimate : ∀ n : ℕ, 1 ≤ n → ∀ (φ : Rn n �
     nlinarith [mul_nonneg h0 (by linarith : (0 : ℝ) ≤ 4 - a / 4)]
   exact add_le_add (mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal c1) (by positivity))
     (mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal c2) (by positivity))
+/-- Convergence of squared `L²` norms under `L²` convergence (the step "by Minkowski the `L²` norms
+converge" in the proof of the boundary-layer estimate).  If `f ∈ L²(μ)`, the `φ_j` are `μ`-a.e.
+strongly measurable and `∫ |φ_j − f|² dμ → 0`, then `∫ |φ_j|² dμ → ∫ |f|² dμ` in `[0, ∞]`.
+Proof: with `N(h) = eLpNorm h 2 μ`, `∫ |h|² dμ = N(h)²` for a.e. strongly measurable `h`, so
+`N(φ_j − f) → 0` (`x ↦ x^{1/2}` is continuous on `[0, ∞]`).  Minkowski gives
+`N(f) − N(φ_j − f) ≤ N(φ_j) ≤ N(f) + N(φ_j − f)`, and both bounds tend to `N(f) < ∞`; hence
+`N(φ_j) → N(f)`, and squaring is continuous on `[0, ∞]`. -/
+theorem ble_lintegral_sq_tendsto_of_l2_tendsto : ∀ {α : Type} [MeasurableSpace α] {E : Type} [NormedAddCommGroup E] (μ : Measure α) (f : α → E) (φ : ℕ → α → E), MemLp f 2 μ → (∀ j, AEStronglyMeasurable (φ j) μ) → Tendsto (fun j => ∫⁻ x, ‖φ j x - f x‖ₑ ^ 2 ∂μ) atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x, ‖φ j x‖ₑ ^ 2 ∂μ) atTop (𝓝 (∫⁻ x, ‖f x‖ₑ ^ 2 ∂μ)) := by
+  intro α _ E _ μ f φ hf hφ hlim
+  have hfm : AEStronglyMeasurable f μ := hf.aestronglyMeasurable
+  -- Step 1: `∫⁻ ‖h‖ₑ ^ 2 = (eLpNorm h 2 μ) ^ 2` for a.e. strongly measurable `h`.
+  have hsq : ∀ h : α → E, AEStronglyMeasurable h μ →
+      ∫⁻ x, ‖h x‖ₑ ^ 2 ∂μ = eLpNorm h 2 μ ^ 2 := by
+    intro h hh
+    have := eLpNorm_nnreal_pow_eq_lintegral (p := 2) (by norm_num) hh
+    simp only [NNReal.coe_ofNat, ENNReal.coe_ofNat, ENNReal.rpow_two] at this
+    exact this.symm
+  -- Notation: `a j` is the error norm, `b j` the approximant norm, `c < ∞` the limit norm.
+  set a : ℕ → ℝ≥0∞ := fun j => eLpNorm (φ j - f) 2 μ
+  set b : ℕ → ℝ≥0∞ := fun j => eLpNorm (φ j) 2 μ with hb
+  set c : ℝ≥0∞ := eLpNorm f 2 μ with hc
+  have hc_top : c ≠ ∞ := hf.eLpNorm_lt_top.ne
+  -- Step 2: `a j → 0`, as the square root of `a j ^ 2 = ∫⁻ ‖φ j - f‖ₑ ^ 2 → 0`.
+  have ha0 : Tendsto a atTop (𝓝 0) := by
+    have h2 : Tendsto (fun j => a j ^ 2) atTop (𝓝 0) :=
+      hlim.congr fun j => hsq _ ((hφ j).sub hfm)
+    have h3 : Tendsto (fun j => (a j ^ 2) ^ (1 / 2 : ℝ)) atTop (𝓝 ((0 : ℝ≥0∞) ^ (1 / 2 : ℝ))) :=
+      (ENNReal.continuous_rpow_const.tendsto 0).comp h2
+    rw [ENNReal.zero_rpow_of_pos (by norm_num)] at h3
+    refine h3.congr fun j => ?_
+    rw [← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]
+    norm_num
+  -- Step 3: Minkowski, `b j ≤ c + a j` and `c ≤ b j + a j`.
+  have hup : ∀ j, b j ≤ c + a j := by
+    intro j
+    have : φ j = f + (φ j - f) := by abel
+    calc b j = eLpNorm (f + (φ j - f)) 2 μ := by rw [hb]; dsimp only; rw [← this]
+      _ ≤ eLpNorm f 2 μ + eLpNorm (φ j - f) 2 μ := eLpNorm_add_le (by norm_num)
+  have hlow : ∀ j, c ≤ b j + a j := by
+    intro j
+    have : f = φ j - (φ j - f) := by abel
+    calc c = eLpNorm (φ j - (φ j - f)) 2 μ := by rw [hc]; rw [← this]
+      _ ≤ eLpNorm (φ j) 2 μ + eLpNorm (φ j - f) 2 μ := eLpNorm_sub_le (by norm_num)
+  -- Step 4: squeeze `c - a j ≤ b j ≤ c + a j`; both bounds tend to `c` because `c ≠ ∞`.
+  have hbc : Tendsto b atTop (𝓝 c) := by
+    have hU : Tendsto (fun j => c + a j) atTop (𝓝 (c + 0)) := tendsto_const_nhds.add ha0
+    have hL : Tendsto (fun j => c - a j) atTop (𝓝 (c - 0)) :=
+      ENNReal.Tendsto.sub tendsto_const_nhds ha0 (Or.inl hc_top)
+    rw [add_zero] at hU
+    rw [tsub_zero] at hL
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le hL hU
+      (fun j => tsub_le_iff_right.2 (hlow j)) hup
+  -- Step 5: square the limit and convert back to lintegrals by Step 1.
+  have := ENNReal.Tendsto.pow (n := 2) hbc
+  rw [hsq f hfm]
+  exact this.congr fun j => (hsq _ (hφ j)).symm
 
 end Submission
 
