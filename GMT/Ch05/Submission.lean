@@ -458,6 +458,42 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Translation invariance** (Simon Ch. 5; re-centring the hypotheses 2.3 at a point `ζ`, as in
+the proof of Remark 5.3).  Let `V'` be the translate of `V` by `τ(x) = x − ζ`: `μ_{V'} = τ_# μ_V`,
+`θ' = θ(ζ + ·)` and `p_{T_x M'} = p_{T_{ζ+x} M}`.  Then for every real `s`:
+`μ_{V'}(B_s(0)) = μ_V(B_s(ζ))`, `E'(0, s, T) = E(ζ, s, T)`,
+`(s^{p−n} ∫_{B_s(0)} |H(ζ + ·)|ᵖ dμ_{V'})^{1/p} = (s^{p−n} ∫_{B_s(ζ)} |H|ᵖ dμ_V)^{1/p}`, and
+`θ ≥ 1` `μ_V`-a.e. implies `θ' ≥ 1` `μ_{V'}`-a.e.
+Proof: `τ` is a measurable embedding with `τ⁻¹(B_s(0)) = B_s(ζ)`; along a measurable embedding,
+push-forward evaluation holds for every set and change of variables for every integrand. -/
+theorem any_radius_gr_translate_identities : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (V' : RectifiableVarifold n ℓ U') (ζ : Amb n ℓ), V'.weight = V.weight.map (fun x => x - ζ) → (∀ x, V'.mult x = V.mult (ζ + x)) → (∀ x, V'.tangentProj x = V.tangentProj (ζ + x)) → (∀ s : ℝ, V'.weight (closedBall 0 s) = V.weight (closedBall ζ s)) ∧ (∀ (s : ℝ) (T : Submodule ℝ (Amb n ℓ)), V'.tiltExcess 0 s T = V.tiltExcess ζ s T) ∧ (∀ (H : Amb n ℓ → Amb n ℓ) (p s : ℝ), V'.scaledLpNorm (fun x => H (ζ + x)) p 0 s = V.scaledLpNorm H p ζ s) ∧ ((∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ∀ᵐ x ∂V'.weight, 1 ≤ V'.mult x) := by
+  intro n ℓ U U' V V' ζ hw hm ht
+  have hτ : MeasurableEmbedding fun x : Amb n ℓ => x - ζ := measurableEmbedding_subRight ζ
+  -- `τ⁻¹(B_s(0)) = B_s(ζ)`, for every real `s`.
+  have hball : ∀ s : ℝ, (fun x : Amb n ℓ => x - ζ) ⁻¹' closedBall 0 s = closedBall ζ s := by
+    intro s
+    ext y
+    simp [dist_eq_norm]
+  refine ⟨fun s => ?_, fun s T => ?_, fun H p s => ?_, fun h1 => ?_⟩
+  · -- (R1): `μ_{V'}(B_s(0)) = μ_V(τ⁻¹ B_s(0)) = μ_V(B_s(ζ))`.
+    rw [hw, hτ.map_apply, hball]
+  · -- (R2): change of variables in the tilt integral, then `ζ + (y − ζ) = y`.
+    unfold tiltExcess
+    rw [hw, hτ.setIntegral_map, hball]
+    simp only [ht, add_sub_cancel]
+  · -- (R3): the same for the lower integral of `|H(ζ + ·)|ᵖ`.
+    unfold scaledLpNorm
+    rw [hw, hτ.restrict_map, hτ.lintegral_map, hball]
+    simp only [add_sub_cancel]
+  · -- (R4): `τ⁻¹{θ' < 1} = {θ < 1}` is `μ_V`-null.
+    rw [hw, hτ.ae_map_iff]
+    filter_upwards [h1] with y hy
+    simpa only [hm, add_sub_cancel] using hy
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
