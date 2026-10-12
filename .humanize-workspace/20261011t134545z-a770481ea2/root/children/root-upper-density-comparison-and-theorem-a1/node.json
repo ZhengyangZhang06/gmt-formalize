@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.upper_density_comparison_and_theorem-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Upper density comparison and upper density theorem (Simon 3.3, 3.6, with 3.4, 3.5)",
+  "statement": "For metric spaces X (in a common universe) and Borel regular outer measures μ on X, and real n ≥ 0: (3.3) if t ≥ 0 is real, A₁ ⊆ A₂ ⊆ X and Θ^{*n}(μ, A₂, x) ≥ t for all x ∈ A₁, then t·Hⁿ(A₁) ≤ μ(A₂); (3.6) if A ⊆ X is μ-measurable with μ(A) < ∞, then Θ^{*n}(μ, A, x) = 0 for Hⁿ-a.e. x ∈ X ∖ A.",
+  "lean_statement": "UpperDensityComparison.{u} ∧ UpperDensityTheorem.{u}",
+  "lean_name": "upper_density_comparison_and_theorem",
+  "depends_on": [
+    "root.borel_regular_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.borel_regular_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-upper-density-comparison-and-theorem-a1-a1"
+}

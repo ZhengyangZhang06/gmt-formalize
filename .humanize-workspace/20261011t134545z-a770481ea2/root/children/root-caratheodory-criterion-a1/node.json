@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.caratheodory_criterion-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Carathéodory's criterion (Simon 1.13, with Lemma 1.6)",
+  "statement": "For every metric space (X, d) and every outer measure μ on X such that μ(A ∪ B) = μ(A) + μ(B) whenever A, B ⊆ X admit a real r > 0 with r ≤ d(a, b) for all a ∈ A, b ∈ B, every Borel set E ⊆ X is μ-measurable in Carathéodory's sense (μ.IsCaratheodory E).",
+  "lean_statement": "CaratheodoryCriterion",
+  "lean_name": "caratheodory_criterion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-caratheodory-criterion-a1-a1"
+}

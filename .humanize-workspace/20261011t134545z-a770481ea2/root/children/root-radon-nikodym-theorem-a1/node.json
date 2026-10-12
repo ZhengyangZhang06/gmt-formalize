@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.radon_nikodym_theorem-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Radon–Nikodym theorem via densities (Simon 3.24, with 3.13–3.15, 3.19, 3.21, 3.23)",
+  "statement": "For a metric space X and outer measures μ, μ₀ on X that are Borel regular and open σ-finite, μ₀ with the Symmetric Vitali Property, and Θ(x) := limsup_{ρ↓0} μ(B_ρ(x))/μ₀(B_ρ(x)): (0) for μ₀-a.e. x the quotient converges to Θ(x); (i) if μ₀(E) = 0 ⇒ μ(E) = 0 for all E, then μ(A) = ∫_A Θ dμ₀ for every Borel A; (ii) there is a Borel Z with μ₀(Z) = 0 and μ(A) = ∫_A Θ dμ₀ + μ(Z ∩ A) for every Borel A; (iii) if μ also has the Symmetric Vitali Property, then Z_∞ := {x : the quotient tends to ∞} has μ₀(Z_∞) = 0 and μ(A) = ∫_A Θ dμ₀ + μ(Z_∞ ∩ A) for every Borel A.",
+  "lean_statement": "RadonNikodymTheorem",
+  "lean_name": "radon_nikodym_theorem",
+  "depends_on": [
+    "root.borel_regular_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.borel_regular_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-radon-nikodym-theorem-a1-a1"
+}

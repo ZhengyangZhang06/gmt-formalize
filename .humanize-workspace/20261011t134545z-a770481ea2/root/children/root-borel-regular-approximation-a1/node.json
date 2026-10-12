@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.borel_regular_approximation-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Outer and inner regularity of open σ-finite Borel-regular measures (Simon 1.15)",
+  "statement": "For every topological space X in which every closed set is a countable intersection of open sets, and every outer measure μ on X that is Borel regular and open σ-finite (X = ⋃ V_n, V_n open, μ(V_n) < ∞): (1) μ(A) = inf{μ(U) : U ⊇ A open} for every A ⊆ X, and (2) μ(A) = sup{μ(C) : C ⊆ A closed} for every μ-measurable A ⊆ X.",
+  "lean_statement": "BorelRegularApproximation",
+  "lean_name": "borel_regular_approximation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-borel-regular-approximation-a1-a1"
+}

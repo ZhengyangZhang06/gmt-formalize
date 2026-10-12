@@ -91,6 +91,19 @@ def CaratheodoryCriterion : Prop :=
       μ (A ∪ B) = μ A + μ B) →
     ∀ E : Set X, MeasurableSet[borel X] E → μ.IsCaratheodory E
 
+/-- Simon Ch. 1, Theorem 1.13, from Mathlib's `OuterMeasure.IsMetric.borel_le_caratheodory`:
+sets that are `Metric.AreSeparated` with constant `r ≠ 0` are separated by the real number
+`(min r 1).toReal > 0`, so the hypothesis makes `μ` a metric outer measure. -/
+theorem Submission.caratheodory_criterion : CaratheodoryCriterion := by
+  intro X _ μ hμ E hE
+  have hm : μ.IsMetric := by
+    rintro A B ⟨r, hr, hAB⟩
+    refine hμ A B ⟨(min r 1).toReal, ENNReal.toReal_pos (by simp [hr])
+      (ne_top_of_le_ne_top ENNReal.one_ne_top (min_le_right r 1)), fun a ha b hb => ?_⟩
+    exact ENNReal.toReal_le_of_le_ofReal dist_nonneg
+      ((min_le_left r 1).trans ((hAB a ha b hb).trans_eq (edist_dist a b)))
+  exact hm.borel_le_caratheodory E hE
+
 /-- **Outer and inner regularity of open σ-finite Borel-regular measures.**
 Simon Ch. 1, Theorem 1.15 (p. 7).
 

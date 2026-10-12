@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.riesz_vector-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Riesz representation theorem, vector-valued (Simon 4.14, with 4.7, 4.10)",
+  "statement": "For every locally compact Hausdorff space X, finite-dimensional real inner product space H, and linear L : C_c(X; H) → ℝ that is bounded above on {f : |f| ≤ 1, spt f ⊆ K} for each compact K, there are a Radon outer measure μ on X and a μ-measurable ν : X → H with |ν| = 1 μ-a.e. and L(f) = ∫_X ⟨f, ν⟩ dμ for all f ∈ C_c(X; H).",
+  "lean_statement": "RieszVector",
+  "lean_name": "riesz_vector",
+  "depends_on": [
+    "root.riesz_positive-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.riesz_positive-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch01/20261011t134545z-a770481ea2/root-riesz-vector-a1-a1"
+}
