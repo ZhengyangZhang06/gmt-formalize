@@ -871,6 +871,42 @@ theorem rsod_weight_closedBall_eq_ofReal_integral : ∀ (n ℓ : ℕ) (U : Set (
   rw [RectifiableVarifold.weight, withDensity_apply _ measurableSet_closedBall,
     Measure.restrict_restrict measurableSet_closedBall, inter_comm (closedBall x r) V.carrier,
     ofReal_integral_eq_lintegral_ofReal hint.integrable hnn]
+/-- **Simon Ch. 3, Remark 1.8(2)** for `V = v(M, θ)` at a point of `M`.  If `x ∈ M` and `P` is the
+approximate tangent space of `M` at `x` with respect to `θ` (Ch. 3, Definition 1.7), then
+`Θⁿ(μ_V, x) = θ(x)`.  As `x ∈ M ⊆ U`, `r⁻ⁿ ∫_{M ∩ B_r(x)} θ dHⁿ → ω_n θ(x)` as `r ↓ 0`, and
+`μ_V(B_r(x)) = ∫_{M ∩ B_r(x)} θ dHⁿ` as soon as `B_r(x) ⊆ U`, so `μ_V(B_r(x)) / (ω_n rⁿ) → θ(x)`. -/
+theorem tae_hasDensity_of_weightedApproxTangent : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), 1 ≤ n → IsOpen U → x ∈ V.carrier → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P → V.HasDensity x (V.mult x) := by
+  intro n ℓ U V x P hn hU hxM hP
+  -- `x ∈ M ⊆ U`.
+  have hx : x ∈ U := V.carrier_subset hxM
+  -- `ω_n = π^{n/2} / Γ(n/2 + 1) > 0`.
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    exact div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  -- `B̆_d(x) ⊆ U` for some `d > 0`.
+  obtain ⟨d, hd, hdU⟩ := Metric.isOpen_iff.1 hU x hx
+  -- `J(r) := r⁻ⁿ ∫_{M ∩ B_r(x)} θ dHⁿ → ω_n θ(x)`, hence `ofReal (J(r) / ω_n) → ofReal θ(x)`.
+  have hlim : Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹ *
+      (∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ))) /
+        unitBallVolume n)) (𝓝[>] 0) (𝓝 (ENNReal.ofReal (V.mult x))) := by
+    have hJ := (Submission.rsod_tendsto_scaled_mult_integral n ℓ hn U hU V x P hx hP).div_const
+      (unitBallVolume n)
+    rw [mul_div_cancel_left₀ _ hω.ne'] at hJ
+    exact ENNReal.tendsto_ofReal hJ
+  -- For `0 < r < d`, `B_r(x) ⊆ U`, so `μ_V(B_r(x)) / (ω_n rⁿ) = ofReal (J(r) / ω_n)`.
+  have heq : ∀ r ∈ Ioo (0 : ℝ) d,
+      ENNReal.ofReal ((r ^ n)⁻¹ *
+          (∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ))) /
+            unitBallVolume n) =
+        V.weight (closedBall x r) / ENNReal.ofReal (unitBallVolume n * r ^ n) := by
+    intro r hr
+    rw [Submission.rsod_weight_closedBall_eq_ofReal_integral n ℓ U V x r
+        ((closedBall_subset_ball hr.2).trans hdU),
+      ← ENNReal.ofReal_div_of_pos (mul_pos hω (pow_pos hr.1 n))]
+    congr 1
+    ring
+  unfold RectifiableVarifold.HasDensity
+  exact hlim.congr' (eventuallyEq_of_mem (Ioo_mem_nhdsGT hd) heq)
 
 end Submission
 
