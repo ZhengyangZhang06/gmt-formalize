@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.retraction-a1.cube_core-a1.radial_map-a1",
+  "parent_id": "root.deformation-a1.retraction-a1.cube_core-a1",
+  "depth": 4,
+  "title": "Radial retraction of a face of the unit cube onto its relative boundary, with its pointwise Lipschitz estimate (printed ψ_F and (8))",
+  "statement": "Let D ∈ ℕ, a ∈ ℝ^D = Eucl D with 1/4 < a_i < 3/4 for all i, J a set of indices and c ∈ ℝ^D with c_i = a_i for all i ∈ J; write F := {x ∈ [0,1]^D : x_i = c_i for all i ∉ J} and |·| for the Euclidean norm. There is a map g : ℝ^D → ℝ^D such that for every x ∈ F with x ≠ c: (i) g(x) ∈ [0,1]^D; (ii) g(x)_i ∈ {0,1} for some i ∈ J; and (iii) there is s > 0 such that g(x)_i − c_i = s·(x_i − c_i) for all i, s·|x − c| ≤ √D, and for every ε > 0 there is δ > 0 with |g(x′) − g(x)| ≤ ((1 + 4√D)·s + ε)·|x′ − x| for all x′ ∈ F with |x′ − x| < δ. (Informal remark, not part of the statement: when c is a face centre a_F, i.e. also c_i ∈ {0,1} for i ∉ J, such a g is the printed radial retraction ψ_F of F ∖ {a_F} onto the relative boundary of F, and s is the printed ratio t = |ψ_F(x) − a_F|/|x − a_F|.)",
+  "lean_statement": "∀ (D : ℕ) (a : Eucl D), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) → ∀ (J : Finset (Fin D)) (c : Eucl D), (∀ i ∈ J, c i = a i) → ∃ g : Eucl D → Eucl D, ∀ x : Eucl D, (∀ i, 0 ≤ x i ∧ x i ≤ 1) → (∀ i ∉ J, x i = c i) → x ≠ c → (∀ i, 0 ≤ g x i ∧ g x i ≤ 1) ∧ (∃ i ∈ J, g x i = 0 ∨ g x i = 1) ∧ ∃ s : ℝ, 0 < s ∧ (∀ i, g x i - c i = s * (x i - c i)) ∧ s * dist x c ≤ Real.sqrt (D : ℝ) ∧ ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' : Eucl D, (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → (∀ i ∉ J, x' i = c i) → dist x' x < δ → dist (g x') (g x) ≤ ((1 + 4 * Real.sqrt (D : ℝ)) * s + ε) * dist x' x",
+  "lean_name": "dr_cc_radial_map",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-retraction-a1-cube-core-a1-radial-map-a1-a1"
+}
