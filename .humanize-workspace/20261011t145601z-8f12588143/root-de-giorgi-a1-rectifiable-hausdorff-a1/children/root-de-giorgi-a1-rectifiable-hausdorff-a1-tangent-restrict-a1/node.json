@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.tangent_restrict-a1",
+  "parent_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1",
+  "depth": 3,
+  "title": "Approximate tangent planes with multiplicity persist when μ is restricted to an open neighbourhood (parent Step 5)",
+  "statement": "Let n, N ∈ ℕ, let μ be a Borel measure on ℝ^N, let W ⊆ ℝ^N be open, x ∈ W, P ⊆ ℝ^N a linear subspace and θ ∈ ℝ. Suppose HasApproxTangentPlaneWithMultiplicity n μ x P θ holds: dim P = n, and (rⁿ)⁻¹∫ f(η_{x,r}(y)) dμ(y) → θ∫_P f dHⁿ as r ↓ 0 for every f ∈ C_c(ℝ^N, ℝ), where η_{x,r}(y) = r⁻¹(y − x) and Hⁿ = μHE[n]. Then HasApproxTangentPlaneWithMultiplicity n (μ⌞W) x P θ also holds, where μ⌞W is the restriction B ↦ μ(B ∩ W).",
+  "lean_statement": "∀ (n N : ℕ) (μ : Measure (Rn N)) (W : Set (Rn N)) (x : Rn N) (P : Submodule ℝ (Rn N)) (θ : ℝ), IsOpen W → x ∈ W → HasApproxTangentPlaneWithMultiplicity n μ x P θ → HasApproxTangentPlaneWithMultiplicity n (μ.restrict W) x P θ",
+  "lean_name": "deGiorgiRH_tangentPlane_restrict_open",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-rectifiable-hausdorff-a1-tangent-restrict-a1-a1"
+}

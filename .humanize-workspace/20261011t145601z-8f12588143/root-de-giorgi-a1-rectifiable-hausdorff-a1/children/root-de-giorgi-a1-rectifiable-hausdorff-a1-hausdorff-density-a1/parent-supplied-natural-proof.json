@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean",
+        "grep -n 'def HasApproxTangentPlaneWithMultiplicity|def ApproximateTangentCharacterization' <snapshot>/project/GMT/Ch03/Contract.lean",
+        "grep -rn 'simon_theorem_3_3|def dimensionalUpperDensity|def dimensionalDensityQuotient|def realUnitBallVolume|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure' .lake/packages/simongmt/Poincare/SimonGMT",
+        "grep -n 'def IsBorelRegularOuterMeasure|theorem measure_toOuterMeasure_isBorelRegular' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        "grep -n 'def simonHausdorffOuterMeasureReal|def simonHausdorffMeasureReal|theorem simonHausdorffMeasureReal_toOuterMeasure' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "grep -n 'theorem realUnitBallVolume_nat_eq|theorem volume_euclidean_ball_eq' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+        "grep -rn 'dimensionalUpperDensity.*≤ |2 ^ n' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01 (no 2^n upper-density bound present)",
+        "grep -n 'def CountablyRectifiable|theorem countablyRectifiable_of_measure_zero|theorem countablyRectifiable_iUnion|def blowUpMap|def HasApproximateTangentSpaceAt' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "grep -n 'theorem ae_tendsto_rnDeriv|theorem tendsto_filterAt|protected def vitaliFamily' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "grep -rn 'theorem withDensity_rnDeriv_eq' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Decomposition",
+        "grep -rn 'theorem restrict_iUnion_congr|exists_iUnion_isCompact|IsOpen.exists_iUnion_' <snapshot>/mathlib/Mathlib (restrict_iUnion_congr found; no ready-made exhaustion lemma for open subsets)",
+        "grep -n 'theorem addHaar_closedBall|theorem addHaar_ball_of_pos|theorem addHaar_closedBall_eq_addHaar_ball' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "sed -n 1,200p <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_def, Isometry.euclideanHausdorffMeasure_image, euclideanHausdorffMeasure_smul₀, euclideanHausdorffMeasure_homothety_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume)",
+        "grep -n 'theorem _root_.Set.measure_eq_iInf_isOpen' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "grep -rn 'theorem.*infEDist_zero|theorem.*infEDist_pos' <snapshot>/mathlib/Mathlib/Topology",
+        "sed -n 560,640p book/chapter-01.txt (Simon Thm 3.3) and book/chapter-03.txt (Thm 4.3 proof, line 604)",
+        "python3 -I dag.json lean_name collision check (143 nodes): none",
+        "python3 -I verifier/gmt-compare.py child_modules(contract mode) and verifier/lean_contract.py validate_lean_statement on the 10 statements; lake env lean on the 10 generated NodeChallenge files: all OK",
+        "lake env lean GMT/Scratch/RectifiableHausdorffSplitDecision.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/RectifiableHausdorffSplitDecision.lean"
+      ],
+      "conclusion": "The snapshot contract is byte-identical to the workspace contract (project d09bc8a, Mathlib 25730c7c). Neither Mathlib nor the pinned SimonGMT contains this statement, the 2^n upper-density covering bound (only the reverse comparison, simon_theorem_3_3, is present), a vague-limit-to-plane squeeze, or a ready-made exhaustion of open subsets. Those become children. The children's proofs can draw on the following library facts: Besicovitch.ae_tendsto_rnDeriv; Measure.withDensity_rnDeriv_eq (needs import Mathlib.MeasureTheory.Measure.Decomposition.RadonNikodym); Measure.restrict_iUnion_congr; Set.measure_eq_iInf_isOpen with OuterRegular inferred from IsFiniteMeasureOnCompacts; Measure.addHaar_closedBall; Isometry.euclideanHausdorffMeasure_image; euclideanHausdorffMeasure_smul₀; EuclideanSpace.euclideanHausdorffMeasure_eq_volume; Metric.infEDist lemmas; SimonGMT simon_theorem_3_3, measure_toOuterMeasure_isBorelRegular, simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure, simonHausdorffMeasureReal_toOuterMeasure, volume_euclidean_ball_eq, countablyRectifiable_iUnion and countablyRectifiable_of_measure_zero. All ten child types elaborate in the exact NodeChallenge scope. The scratch assembly compiles the parent and the core child against stubs. Five children are already proved there with standard axioms only."
+    }
+  ],
+  "proof": "Source: parent proof, Step 7, the density computation for Hⁿ⌞M_i at points with an approximate tangent space (Simon Ch. 3, Remark 1.5(3)). The argument is routed through the sibling vague_unit_ball.\n\nNotation. η_{x,r}(y) := r⁻¹(y − x); Hⁿ := μHE[n], used as an outer measure on arbitrary sets; ω_n := Lⁿ(B_1(0)); quotients are taken in [0, ∞].\n\n1. Scaling of Hⁿ under η_{x,r}. For r > 0 and B ⊆ ℝ^N we have η_{x,r}(B) = r⁻¹·(B − x).\n   - Translation y ↦ y − x is an isometry, so Hⁿ(B − x) = Hⁿ(B) (Mathlib Isometry.euclideanHausdorffMeasure_image).\n   - For c ≠ 0, Hⁿ(c·E) = |c|ⁿHⁿ(E) (Mathlib MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀).\n   - Hence Hⁿ(η_{x,r}(B)) = r^{−n}Hⁿ(B) = Hⁿ(B)/rⁿ.\n\n2. Balls. For r > 0 and R ∈ ℝ we have B̄_R(0) ∩ η_{x,r}(M) = η_{x,r}(M ∩ B̄_{rR}(x)), because for y ∈ M, |η_{x,r}(y)| = |y − x|/r ≤ R holds iff |y − x| ≤ rR.\n\n3. The blow-up measures. Define ν_r := Hⁿ⌞η_{x,r}(M), the restriction of Hⁿ to the set η_{x,r}(M). The ball B̄_R(0) is closed, hence Borel, so for r > 0:\n   ν_r(B̄_R(0)) = Hⁿ(B̄_R(0) ∩ η_{x,r}(M)) = Hⁿ(η_{x,r}(M ∩ B̄_{rR}(x))) = Hⁿ(M ∩ B̄_{rR}(x))/rⁿ,\n   by steps 1 and 2.\n\n4. Hypothesis (i) of vague_unit_ball. For 0 < r < δ/2, ν_r(B̄_2(0)) = Hⁿ(M ∩ B̄_{2r}(x))/rⁿ ≤ Hⁿ(M ∩ B̄_δ(x))/rⁿ < ∞.\n\n5. Hypothesis (ii) of vague_unit_ball. For f ∈ C_c(ℝ^N, ℝ), ∫ f dν_r = ∫_{η_{x,r}(M)} f dHⁿ. This tends to ∫_P f dHⁿ as r ↓ 0 by the definition of HasApproximateTangentSpaceAt n M x P, which also gives dim P = n.\n\n6. Conclusion. By vague_unit_ball, ν_r(B̄_1(0)) → ω_n as r ↓ 0. By step 3 with R = 1, ν_r(B̄_1(0)) = Hⁿ(M ∩ B̄_r(x))/rⁿ for r > 0. Hence Hⁿ(M ∩ B̄_ρ(x))/ρⁿ → ω_n as ρ ↓ 0. ∎",
+  "key_steps": [
+    "Hⁿ(η_{x,r}(B)) = Hⁿ(B)/rⁿ, by translation invariance and homogeneity of Hⁿ",
+    "B̄_R(0) ∩ η_{x,r}(M) = η_{x,r}(M ∩ B̄_{rR}(x))",
+    "ν_r := Hⁿ⌞η_{x,r}(M) satisfies ν_r(B̄_R(0)) = Hⁿ(M ∩ B̄_{rR}(x))/rⁿ, finite for R = 2 and small r",
+    "∫ f dν_r = ∫_{η_{x,r}(M)} f dHⁿ → ∫_P f dHⁿ (Def. 1.4)",
+    "Apply vague_unit_ball with R = 1"
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

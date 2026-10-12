@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.open_exhaustion-a1",
+  "parent_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1",
+  "depth": 3,
+  "title": "Exhaustion of an open set of ℝ^N by open sets with compact closure inside it (parent Step 2)",
+  "statement": "For every N ∈ ℕ and every open set U ⊆ ℝ^N (ℝ^N = Rn N = EuclideanSpace ℝ (Fin N)) there is a sequence (W_i)_{i∈ℕ} of open subsets of ℝ^N such that, for every i, the closure of W_i is compact and contained in U, and ⋃_{i∈ℕ} W_i = U.",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Rn N)), IsOpen U → ∃ W : ℕ → Set (Rn N), (∀ i, IsOpen (W i) ∧ IsCompact (closure (W i)) ∧ closure (W i) ⊆ U) ∧ ⋃ i, W i = U",
+  "lean_name": "deGiorgiRH_open_exhaustion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-rectifiable-hausdorff-a1-open-exhaustion-a1-a1"
+}
