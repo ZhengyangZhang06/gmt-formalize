@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6eb02a0a33816880ec7f79d474896129b668134616067eee3ec7ce00b3bc61b5",
+  "git_delta": {
+    "base_commit": "03dd48de7bcd9ff993d001d9c2aa42b97dd1f3d2",
+    "candidate_commit": "c75bb5e20a2f24c08ef5ad9cb6fdff4841ebb5e1",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rectifiability_mickle_rado_density_zero",
+    "diff_sha256": "1251d42a26b2e735585fc218de390a48201360e8a75e7d0a0c4f92dca65837e6",
+    "source_sha256": "0287d059fd4eecd425be8ea88edaa81af9d1e51f891a05e98c638b613814ad2e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_mickle_rado_density_zero",
+      "statement": "∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))) (K : Set (Eucl (m + 1))) (C : ℝ≥0∞) (r : ℝ), IsClosed K → ψ K = 0 → C ≠ ⊤ → 0 < r → (∀ z ∈ K, ∀ τ ∈ Ioo (0 : ℝ) r, ψ (ball z τ) ≤ C * ENNReal.ofReal (τ ^ (m + 1))) → ∀ᵐ c ∂((volume : Measure (Eucl (m + 1))).restrict K), limsup (fun t : ℝ => ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) (𝓝[>] 0) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
