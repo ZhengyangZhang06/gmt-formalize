@@ -509,6 +509,51 @@ theorem Submission.polyhedral_approx_flat_seq_tendsto :
       C₁ hC₁ hdω hRk)
     (Submission.br_la_abs_apply_le_mul_mass P n U (S k) ω C₀ hC₀ hω hSk))
 
+/-- Simon Ch. 6, 6.2 (p. 169), first paragraph of the proof, for a sequence `X_k` of integer
+multiplicity currents with `M(X_k) + M(∂X_k) < ∞`: deforming `X_k` at a scale `ρ_k ↓ 0` with
+`ρ_k (M(X_k) + M(∂X_k)) ≤ 1/(k+1)` gives lattice chains `Pc_k` with integer coefficients and
+`Pc_k(ω) − X_k(ω) → 0` for every test form `ω`. -/
+theorem Submission.polyhedral_approx_finite_mass_seq : DeformationTheorem → ∀ m ℓ : ℕ, 1 ≤ ℓ → ∀ X : ℕ → GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), (∀ k, IsIntegerMultiplicity (X k)) → (∀ k, (X k).mass + (X k).boundary.mass < ∞) → ∃ (ρ : ℕ → ℝ) (β : ℕ → LatticeFaceIndex (m + 1) (m + 1 + ℓ) → ℤ) (Pc : ℕ → GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1)), (∀ k, 0 < ρ k) ∧ Antitone ρ ∧ Tendsto ρ atTop (𝓝 0) ∧ (∀ k, IsLatticeChain (ρ k) (fun F => (β k F : ℝ)) (Pc k)) ∧ ∀ ω : TestFormOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), Tendsto (fun k => Pc k ω - X k ω) atTop (𝓝 0) := by
+  intro hDT m ℓ hℓ X hXint hXfin
+  -- The constant `C = C(m + 1, ℓ)` of the deformation theorem.
+  obtain ⟨C, hC⟩ := hDT m ℓ hℓ
+  -- Scales `ρ_k ↓ 0` with `ρ_k a_k ≤ 1/(k+1)`, where `a_k = M(X_k) + M(∂X_k) < ∞`.
+  obtain ⟨a, ha⟩ : ∃ a : ℕ → ℝ, ∀ k, a k = ((X k).mass + (X k).boundary.mass).toReal :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨ρ, hρpos, hρanti, hρlim, hρa⟩ := Submission.polyhedral_approx_scale_seq a
+  -- Deform `X_k` at scale `ρ_k`: `X_k − Pc_k = ∂R_k + S_k`, `M(R_k) ≤ C ρ_k M(X_k)`,
+  -- `M(S_k) ≤ C ρ_k M(∂X_k)`, and the coefficients are integers as `X_k` is integer multiplicity.
+  choose Pc β' R S hlat hXPc _ _ hR hS _ _ hint _ using
+    fun k => hC (X k) (hXfin k) (ρ k) (hρpos k)
+  choose β hβ using fun k => (hint k (hXint k)).1
+  refine ⟨ρ, β, Pc, hρpos, hρanti, hρlim, fun k => ?_, ?_⟩
+  · have hβk : β' k = fun F => (β k F : ℝ) := funext (hβ k)
+    simpa only [hβk] using hlat k
+  -- `M(R_k), M(S_k) ≤ C ρ_k a_k ≤ C/(k+1) → 0`; conclude by the flat convergence lemma.
+  have hmass : ∀ k (x : ℝ≥0∞), x ≤ (X k).mass + (X k).boundary.mass →
+      (C : ℝ≥0∞) * ENNReal.ofReal (ρ k) * x ≤ C * ENNReal.ofReal (1 / ((k : ℝ) + 1)) := by
+    intro k x hx
+    have hsum : (X k).mass + (X k).boundary.mass = ENNReal.ofReal (a k) := by
+      rw [ha, ENNReal.ofReal_toReal (hXfin k).ne]
+    calc (C : ℝ≥0∞) * ENNReal.ofReal (ρ k) * x
+        ≤ C * ENNReal.ofReal (ρ k) * ENNReal.ofReal (a k) :=
+          mul_le_mul_right (hsum ▸ hx) _
+      _ = C * ENNReal.ofReal (ρ k * a k) := by
+          rw [mul_assoc, ENNReal.ofReal_mul (hρpos k).le]
+      _ ≤ C * ENNReal.ofReal (1 / ((k : ℝ) + 1)) :=
+          mul_le_mul_right (ENNReal.ofReal_le_ofReal (hρa k)) _
+  have hlim : Tendsto (fun k : ℕ => (C : ℝ≥0∞) * ENNReal.ofReal (1 / ((k : ℝ) + 1))) atTop
+      (𝓝 0) := by
+    have h := ENNReal.Tendsto.const_mul
+      (ENNReal.tendsto_ofReal tendsto_one_div_add_atTop_nhds_zero_nat)
+      (Or.inr (ENNReal.coe_ne_top (r := C)))
+    rwa [ENNReal.ofReal_zero, mul_zero] at h
+  exact Submission.polyhedral_approx_flat_seq_tendsto _ _ _ X Pc S R hXPc
+    (tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
+      fun k => (hR k).trans (hmass k _ le_self_add))
+    (tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
+      fun k => (hS k).trans (hmass k _ le_add_self))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
