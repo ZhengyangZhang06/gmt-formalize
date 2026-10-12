@@ -458,6 +458,22 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+/-- **Integrability of `‖W'‖` for a Lipschitz curve.**  If `W : ℝ → ℝ^ℓ` is `K`-Lipschitz on
+`[-a, a]`, then `r ↦ ‖deriv W r‖` is integrable on `(-a, a)`: it is measurable
+(`measurable_deriv`), bounded by `K` on `(-a, a)` because `[-a, a]` is a neighbourhood of each
+point there (`norm_deriv_le_of_lipschitzOn`), and `(-a, a)` has finite measure. -/
+theorem Submission.tdo_ods_integrableOn_norm_deriv : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), LipschitzOnWith K W (Icc (-a) a) → IntegrableOn (fun r => ‖deriv W r‖) (Ioo (-a) a) := by
+  intro ℓ W a K hW
+  -- (1) measurability of `‖W'‖`, (4) finite measure of `(-a, a)`
+  refine Measure.integrableOn_of_bounded (M := K) measure_Ioo_lt_top.ne
+    (measurable_deriv W).norm.aestronglyMeasurable ?_
+  -- (3) the a.e. bound on `(-a, a)` follows from the pointwise one
+  rw [ae_restrict_iff' measurableSet_Ioo]
+  refine Filter.Eventually.of_forall fun r hr => ?_
+  -- (2) `[-a, a]` is a neighbourhood of `r ∈ (-a, a)`, so `‖W'(r)‖ ≤ K`
+  rw [norm_norm]
+  exact norm_deriv_le_of_lipschitzOn (Icc_mem_nhds hr.1 hr.2) hW
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
