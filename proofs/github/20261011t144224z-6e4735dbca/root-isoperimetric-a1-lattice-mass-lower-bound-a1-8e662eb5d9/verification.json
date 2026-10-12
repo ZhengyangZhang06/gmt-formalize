@@ -1,0 +1,20 @@
+{
+  "node_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/765",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "b1a770c375be212de585c186965d7d1f653fb13a",
+  "integrated_commit": "",
+  "proof_base_commit": "293e2956525887c84485638ba4c789c234fb4f5b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.isoperimetric-a1",
+  "requires": [
+    "root.isoperimetric-a1.lattice_mass_lower_bound-a1.coord_covector-a1",
+    "root.isoperimetric-a1.lattice_mass_lower_bound-a1.box_measure-a1",
+    "root.isoperimetric-a1.lattice_mass_lower_bound-a1.face_cutoff-a1",
+    "root.isoperimetric-a1.lattice_mass_lower_bound-a1.isolating_form-a1"
+  ]
+}

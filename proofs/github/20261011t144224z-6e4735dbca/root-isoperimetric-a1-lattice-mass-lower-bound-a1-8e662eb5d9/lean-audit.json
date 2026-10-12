@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "536d780e7bf757246ba16142926eb48428d3dfbdb89a2b7fa4c7aafe3b507686",
+  "git_delta": {
+    "base_commit": "8223fb9ee0b28cd49b9ffd77191d207c17151056",
+    "candidate_commit": "b1a770c375be212de585c186965d7d1f653fb13a",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "98b39d7520b908f629240387428a304e0c56ceed50cc3e24835d48058b50ce9c",
+    "source_sha256": "12a103b048c0826b79d9e9b98c190efef1695db9848ee012ea9cf1a141b9679a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.isoperimetric_lattice_chain_mass_ge",
+      "statement": "∀ (m N : ℕ) (ρ : ℝ) (β : LatticeFaceIndex (m + 1) N → ℝ) (Pc : GeometricCurrentOn (univ : Set (Eucl N)) (m + 1)), 0 < ρ → IsLatticeChain ρ β Pc → ∀ F : LatticeFaceIndex (m + 1) N, ENNReal.ofReal (|β F| * ρ ^ (m + 1)) ≤ Pc.mass",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
