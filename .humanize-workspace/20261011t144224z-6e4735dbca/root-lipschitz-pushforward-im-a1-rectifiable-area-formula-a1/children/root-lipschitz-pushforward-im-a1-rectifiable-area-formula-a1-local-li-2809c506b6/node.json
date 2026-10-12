@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.local_lipschitz_area-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1",
+  "depth": 3,
+  "title": "Area formula with fibre-sum measurability for locally Lipschitz maps on open subsets of ℝⁿ",
+  "statement": "Let n, Q ∈ ℕ, Ω ⊆ ℝⁿ open, u : ℝⁿ → ℝ^Q locally Lipschitz on Ω, D ⊆ Ω Lⁿ-null-measurable, and w : ℝⁿ → [0,∞] a.e.-measurable for Lⁿ⌞D. With Ju(x) := √det(⟨Du(x)e_i, Du(x)e_j⟩)_{i,j}, Du(x) = fderiv ℝ u x, the fibre sum N(y) := Σ_{x ∈ D, u(x) = y} w(x) is Hⁿ-a.e. measurable on ℝ^Q and ∫_D w(x)·Ju(x) dLⁿ(x) = ∫_{ℝ^Q} N dHⁿ.",
+  "lean_statement": "∀ (n Q : ℕ) (Ω D : Set (Eucl n)) (u : Eucl n → Eucl Q) (w : Eucl n → ℝ≥0∞), IsOpen Ω → LocallyLipschitzOn Ω u → D ⊆ Ω → NullMeasurableSet D (volume : Measure (Eucl n)) → AEMeasurable w ((volume : Measure (Eucl n)).restrict D) → AEMeasurable (fun y => ∑' x : {x : Eucl n // x ∈ D ∧ u x = y}, w x) (μHE[n] : Measure (Eucl Q)) ∧ ∫⁻ x in D, w x * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ u x (EuclideanSpace.single i 1)) (fderiv ℝ u x (EuclideanSpace.single j 1))).det) ∂(volume : Measure (Eucl n)) = ∫⁻ y, ∑' x : {x : Eucl n // x ∈ D ∧ u x = y}, w x ∂(μHE[n] : Measure (Eucl Q))",
+  "lean_name": "lpf_raf_local_lipschitz_area",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.fiber_sum_glue-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.fiber_sum_glue-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-local-li-2809c506b6-a1"
+}
