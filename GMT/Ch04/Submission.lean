@@ -486,6 +486,88 @@ theorem Submission.wm_smoothed_scale_integral_continuousOn : ∀ (n ℓ : ℕ) (
     filter_upwards with x
     exact continuousOn_const.mul (hψ.comp_continuousOn
       (continuousOn_const.div continuousOn_id fun τ hτσ ↦ (hτ τ hτσ).1.ne'))
+/-- **Fubini for the smoothed monotonicity kernel** (Simon Ch. 4, 3.3–3.5, p. 90). Put
+`r = |x - ξ|`, `κ(τ, x) = -(r / τ²) χ(r / τ) / τᵏ` and `B = B_R(ξ)`. If `0 < σ`, `0 < c`,
+`c ρ < R`, `μ` is finite on compact sets, `w` is a.e. strongly measurable and bounded by `A` on
+`B`, `χ` is continuous and `χ(t) = 0` for `t > c`, then `κ(τ, x) = 0` for `τ ∈ (σ, ρ]` and
+`x ∉ B`. So both sides are iterated integrals of `f(τ, x) = 1_B w(x) κ(τ, x)`. With `|χ| ≤ M` on
+`[0, R / σ]`, `|f| ≤ A (R / σ²) M / σᵏ 1_B` for a.e. `(τ, x)`, which is integrable for
+`λ⌞(σ, ρ] ⊗ μ` since `μ(B) < ∞`; Fubini (`integral_integral_swap`) gives the identity. -/
+theorem Submission.wm_smoothed_kernel_fubini : ∀ (n ℓ k : ℕ) (μ : Measure (Ambient n ℓ)) (w : Ambient n ℓ → ℝ) (χ : ℝ → ℝ) (ξ : Ambient n ℓ) (c σ ρ R A : ℝ), IsFiniteMeasureOnCompacts μ → 0 < σ → 0 < c → c * ρ < R → AEStronglyMeasurable w (μ.restrict (closedBall ξ R)) → (∀ x ∈ closedBall ξ R, |w x| ≤ A) → Continuous χ → (∀ t, c < t → χ t = 0) → ∫ τ in Ioc σ ρ, (∫ x, w x * (-(‖x - ξ‖ / τ ^ 2) * χ (‖x - ξ‖ / τ)) ∂μ) / τ ^ k = ∫ x, w x * (∫ τ in Ioc σ ρ, -(‖x - ξ‖ / τ ^ 2) * χ (‖x - ξ‖ / τ) / τ ^ k) ∂μ := by
+  intro n ℓ k μ w χ ξ c σ ρ R A hμ hσ hc hcρ hw hwA hχ hχ0
+  -- step 1: for `τ ∈ (σ, ρ]` and `x ∉ B`, `|x - ξ| / τ > c`, so `χ(|x - ξ| / τ) = 0`
+  have hvan : ∀ τ ∈ Ioc σ ρ, ∀ x ∉ closedBall ξ R, χ (‖x - ξ‖ / τ) = 0 := by
+    intro τ hτ x hx
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    exact hχ0 _ ((lt_div_iff₀ (hσ.trans hτ.1)).2
+      ((mul_le_mul_of_nonneg_left hτ.2 hc.le).trans_lt (hcρ.trans hx)))
+  -- step 2: `|χ| ≤ M` on the compact interval `[0, R / σ]`
+  obtain ⟨M, hM⟩ :=
+    (isCompact_Icc : IsCompact (Icc 0 (R / σ))).exists_bound_of_continuousOn hχ.continuousOn
+  -- steps 3–4: the left side is `∫_{(σ,ρ]} ∫ f(τ, x) dμ dτ`
+  have hL : ∫ τ in Ioc σ ρ, (∫ x, w x * (-(‖x - ξ‖ / τ ^ 2) * χ (‖x - ξ‖ / τ)) ∂μ) / τ ^ k =
+      ∫ τ in Ioc σ ρ, ∫ x, (closedBall ξ R).indicator w x *
+        (-(‖x - ξ‖ / τ ^ 2) * χ (‖x - ξ‖ / τ) / τ ^ k) ∂μ := by
+    refine setIntegral_congr_fun measurableSet_Ioc fun τ hτ ↦ ?_
+    rw [← integral_div]
+    refine integral_congr_ae (Eventually.of_forall fun x ↦ ?_)
+    by_cases hx : x ∈ closedBall ξ R
+    · simp only [indicator_of_mem hx]
+      ring
+    · simp only [indicator_of_notMem hx, hvan τ hτ x hx]
+      ring
+  -- step 5: the right side is `∫ ∫_{(σ,ρ]} f(τ, x) dτ dμ`
+  have hR : ∫ x, (∫ τ in Ioc σ ρ, (closedBall ξ R).indicator w x *
+        (-(‖x - ξ‖ / τ ^ 2) * χ (‖x - ξ‖ / τ) / τ ^ k)) ∂μ =
+      ∫ x, w x * (∫ τ in Ioc σ ρ, -(‖x - ξ‖ / τ ^ 2) * χ (‖x - ξ‖ / τ) / τ ^ k) ∂μ := by
+    refine integral_congr_ae (Eventually.of_forall fun x ↦ ?_)
+    dsimp only
+    rw [integral_const_mul]
+    by_cases hx : x ∈ closedBall ξ R
+    · rw [indicator_of_mem hx]
+    · have h0 : ∫ τ in Ioc σ ρ, -(‖x - ξ‖ / τ ^ 2) * χ (‖x - ξ‖ / τ) / τ ^ k = 0 :=
+        setIntegral_eq_zero_of_forall_eq_zero fun τ hτ ↦ by rw [hvan τ hτ x hx, mul_zero, zero_div]
+      rw [indicator_of_notMem hx, h0, zero_mul, mul_zero]
+  -- steps 6–8: `f` is integrable for `λ⌞(σ, ρ] ⊗ μ`
+  have hμB : μ (closedBall ξ R) < ⊤ := (isCompact_closedBall ξ R).measure_lt_top
+  have hg : Integrable ((closedBall ξ R).indicator fun _ ↦ A * (R / σ ^ 2 * M / σ ^ k)) μ :=
+    (integrableOn_const hμB.ne).integrable_indicator measurableSet_closedBall
+  have hint : Integrable (Function.uncurry fun τ x ↦ (closedBall ξ R).indicator w x *
+      (-(‖x - ξ‖ / τ ^ 2) * χ (‖x - ξ‖ / τ) / τ ^ k)) ((volume.restrict (Ioc σ ρ)).prod μ) := by
+    refine (hg.comp_snd (volume.restrict (Ioc σ ρ))).mono' ?_ ?_
+    · -- step 6: `1_B w` is a.e. strongly measurable and the kernel is Borel
+      have hr : Measurable fun p : ℝ × Ambient n ℓ ↦ ‖p.2 - ξ‖ := (measurable_snd.sub_const ξ).norm
+      exact ((aestronglyMeasurable_indicator_iff measurableSet_closedBall).2 hw).comp_snd.mul
+        (((hr.div (measurable_fst.pow_const 2)).neg.mul
+          (hχ.measurable.comp (hr.div measurable_fst))).div
+            (measurable_fst.pow_const k)).aestronglyMeasurable
+    · -- step 7: `|f(τ, x)| ≤ A (R / σ²) M / σᵏ 1_B(x)` for a.e. `(τ, x)`, as `τ ∈ (σ, ρ]`
+      filter_upwards [Measure.quasiMeasurePreserving_fst.ae (ae_restrict_mem measurableSet_Ioc)]
+      rintro ⟨τ, x⟩ hτ
+      have hστ : σ < τ := hτ.1
+      have hτ0 : 0 < τ := hσ.trans hστ
+      simp only [Function.uncurry_apply_pair]
+      by_cases hx : x ∈ closedBall ξ R
+      · have hxR : ‖x - ξ‖ ≤ R := by rwa [mem_closedBall, dist_eq_norm] at hx
+        have hR0 : 0 ≤ R := (norm_nonneg _).trans hxR
+        have hA0 : 0 ≤ A := (abs_nonneg _).trans (hwA x hx)
+        have hs : ‖x - ξ‖ / τ ∈ Icc 0 (R / σ) :=
+          ⟨by positivity, (div_le_div_of_nonneg_right hxR hτ0.le).trans
+            (div_le_div_of_nonneg_left hR0 hσ hστ.le)⟩
+        have hχM : |χ (‖x - ξ‖ / τ)| ≤ M := by rw [← Real.norm_eq_abs]; exact hM _ hs
+        have hM0 : 0 ≤ M := (abs_nonneg _).trans hχM
+        have h1 : ‖x - ξ‖ / τ ^ 2 ≤ R / σ ^ 2 :=
+          (div_le_div_of_nonneg_right hxR (by positivity)).trans
+            (div_le_div_of_nonneg_left hR0 (by positivity) (pow_le_pow_left₀ hσ.le hστ.le 2))
+        have h2 : ‖x - ξ‖ / τ ^ 2 * |χ (‖x - ξ‖ / τ)| / τ ^ k ≤ R / σ ^ 2 * M / σ ^ k :=
+          div_le_div₀ (by positivity) (mul_le_mul h1 hχM (abs_nonneg _) (by positivity))
+            (by positivity) (pow_le_pow_left₀ hσ.le hστ.le k)
+        simp only [indicator_of_mem hx, norm_mul, norm_div, norm_neg, norm_pow, Real.norm_eq_abs,
+          abs_norm, abs_of_pos hτ0]
+        exact mul_le_mul (hwA x hx) h2 (by positivity) hA0
+      · simp only [indicator_of_notMem hx, zero_mul, norm_zero, le_refl]
+  -- step 9: Fubini
+  exact hL.trans ((integral_integral_swap hint).trans hR)
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
