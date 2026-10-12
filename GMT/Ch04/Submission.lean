@@ -639,6 +639,90 @@ theorem Submission.sobolev_level_energy_tonelli : ∀ (n ℓ : ℕ) (μ : Measur
       rw [← ENNReal.ofReal_add (integral_nonneg hD0) (integral_nonneg hhK'0),
         integral_add hDi hhKi]
       simp only [hhK']
+/-- **Shifted layer-cake identity (Simon Ch. 4, 4.11 with `α = n/(n-1)`, `t₀ = ε`; used in the
+proof of 5.7, p. 100).** If `n ≥ 2`, `μ` is finite on compact sets, `h ≥ 0` is continuous with
+compact support and `ε > 0`, then with `M_s = {x : h(x) > s}` and `p = n/(n-1)`,
+`∫_0^∞ (t + ε)^{1/(n-1)} μ(M_{t+ε}) dt = ((n-1)/n) ∫_{M_ε} (h^p - ε^p) dμ`. -/
+theorem Submission.sobolev_level_layer_cake : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (ε : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → 0 < ε → ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((t + ε) ^ ((n : ℝ) - 1)⁻¹ * μ.real {x | t + ε < h x}) = ENNReal.ofReal (((n : ℝ) - 1) / n * ∫ x in {x | ε < h x}, (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ) := by
+  intro n ℓ μ h ε hn hμ hh hhc hh0 hε
+  -- (1) Exponents: `b = 1/(n-1) > 0`, `p = n/(n-1) = b + 1 > 0` and `1/p = (n-1)/n`.
+  have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hn0 : (0 : ℝ) < n := by linarith
+  have hn1 : (0 : ℝ) < n - 1 := by linarith
+  set b : ℝ := ((n : ℝ) - 1)⁻¹ with hb_def
+  set p : ℝ := (n : ℝ) / ((n : ℝ) - 1) with hp_def
+  have hb : 0 < b := inv_pos.2 hn1
+  have hp : 0 < p := div_pos hn0 hn1
+  have hbp : b + 1 = p := by
+    rw [hb_def, hp_def]
+    field_simp
+    ring
+  have hpinv : p⁻¹ = ((n : ℝ) - 1) / n := by rw [hp_def, inv_div]
+  -- (2) Sets: for `s > 0`, `M_s = {h > s}` lies in the compact `tsupport h`, so `μ(M_s) < ∞`;
+  -- `M_ε` is open, hence measurable.
+  have hK : IsCompact (tsupport h) := hhc.isCompact
+  have hsubK : ∀ s, 0 < s → {x | s < h x} ⊆ tsupport h := fun s hs x (hx : s < h x) ↦
+    subset_tsupport h (hs.trans hx).ne'
+  have hfin : ∀ s, 0 < s → μ {x | s < h x} ≠ ⊤ := fun s hs ↦
+    ((measure_mono (hsubK s hs)).trans_lt hK.measure_lt_top).ne
+  have hM : MeasurableSet {x | ε < h x} := (isOpen_lt continuous_const hh).measurableSet
+  -- (3) With `f = max(h - ε, 0)` and `g(t) = (t + ε)^b`, the integrand is `μ{f > t} g(t)`.
+  have hg : Continuous fun t : ℝ ↦ (t + ε) ^ b :=
+    (continuous_id.add continuous_const).rpow_const fun _ ↦ Or.inr hb.le
+  have step3 :
+      ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((t + ε) ^ b * μ.real {x | t + ε < h x}) =
+      ∫⁻ t in Ioi (0 : ℝ), μ {x | t < max (h x - ε) 0} * ENNReal.ofReal ((t + ε) ^ b) := by
+    refine setLIntegral_congr_fun measurableSet_Ioi fun t (ht : 0 < t) ↦ ?_
+    have hset : {x | t < max (h x - ε) 0} = {x | t + ε < h x} := by
+      ext x
+      show t < max (h x - ε) 0 ↔ t + ε < h x
+      rw [lt_max_iff]
+      constructor
+      · rintro (hx | hx) <;> linarith
+      · intro hx
+        left
+        linarith
+    rw [hset, ENNReal.ofReal_mul (Real.rpow_nonneg (show (0 : ℝ) ≤ t + ε by linarith) b),
+      ofReal_measureReal (hfin (t + ε) (by linarith)), mul_comm]
+  -- (4) Layer cake (Tonelli): `∫⁻ μ{f > t} g(t) dt = ∫⁻ ofReal (∫_0^{f(x)} g) dμ(x)`.
+  have step4 : ∫⁻ x, ENNReal.ofReal (∫ t in (0 : ℝ)..max (h x - ε) 0, (t + ε) ^ b) ∂μ =
+      ∫⁻ t in Ioi (0 : ℝ), μ {x | t < max (h x - ε) 0} * ENNReal.ofReal ((t + ε) ^ b) :=
+    lintegral_comp_eq_lintegral_meas_lt_mul μ (f := fun x ↦ max (h x - ε) 0)
+      (g := fun t ↦ (t + ε) ^ b) (ae_of_all _ fun x ↦ le_max_right _ _)
+      ((hh.sub continuous_const).max continuous_const).measurable.aemeasurable
+      (fun t _ ↦ hg.intervalIntegrable 0 t)
+      (ae_restrict_of_forall_mem measurableSet_Ioi fun t (ht : 0 < t) ↦
+        show 0 ≤ (t + ε) ^ b from Real.rpow_nonneg (by linarith) b)
+  -- (5) Inner integral: `∫_0^{f(x)} (t + ε)^b dt = 1_{M_ε}(x) (h(x)^p - ε^p)/p`.
+  have step5 : ∀ x, ENNReal.ofReal (∫ t in (0 : ℝ)..max (h x - ε) 0, (t + ε) ^ b) =
+      {x | ε < h x}.indicator
+        (fun x ↦ ENNReal.ofReal (((n : ℝ) - 1) / n * (h x ^ p - ε ^ p))) x := by
+    intro x
+    by_cases hx : ε < h x
+    · rw [indicator_of_mem (show x ∈ {x | ε < h x} from hx),
+        max_eq_left (by linarith : (0 : ℝ) ≤ h x - ε)]
+      congr 1
+      calc ∫ t in (0 : ℝ)..h x - ε, (t + ε) ^ b
+          = ∫ u in (0 + ε)..(h x - ε + ε), u ^ b :=
+            intervalIntegral.integral_comp_add_right (fun u ↦ u ^ b) ε
+        _ = ∫ u in ε..h x, u ^ b := by rw [zero_add, sub_add_cancel]
+        _ = (h x ^ (b + 1) - ε ^ (b + 1)) / (b + 1) := integral_rpow (Or.inl (by linarith))
+        _ = ((n : ℝ) - 1) / n * (h x ^ p - ε ^ p) := by
+            rw [hbp, div_eq_mul_inv, mul_comm, hpinv]
+    · rw [indicator_of_notMem (show x ∉ {x | ε < h x} from hx),
+        max_eq_right (by linarith : h x - ε ≤ 0), intervalIntegral.integral_same,
+        ENNReal.ofReal_zero]
+  -- (6)–(7) Restrict to `M_ε` and return to the Bochner integral.
+  have hcont : Continuous fun x ↦ ((n : ℝ) - 1) / n * (h x ^ p - ε ^ p) :=
+    continuous_const.mul ((hh.rpow_const fun _ ↦ Or.inr hp.le).sub continuous_const)
+  have hint : IntegrableOn (fun x ↦ ((n : ℝ) - 1) / n * (h x ^ p - ε ^ p)) {x | ε < h x} μ :=
+    (hcont.continuousOn.integrableOn_compact hK).mono_set (hsubK ε hε)
+  have hnn :
+      0 ≤ᵐ[μ.restrict {x | ε < h x}] fun x ↦ ((n : ℝ) - 1) / n * (h x ^ p - ε ^ p) :=
+    ae_restrict_of_forall_mem hM fun x (hx : ε < h x) ↦
+      mul_nonneg (div_nonneg hn1.le hn0.le) (sub_nonneg.2 (Real.rpow_le_rpow hε.le hx.le hp.le))
+  rw [step3, ← step4, lintegral_congr step5, lintegral_indicator hM,
+    ← ofReal_integral_eq_lintegral_ofReal hint hnn, integral_const_mul]
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
