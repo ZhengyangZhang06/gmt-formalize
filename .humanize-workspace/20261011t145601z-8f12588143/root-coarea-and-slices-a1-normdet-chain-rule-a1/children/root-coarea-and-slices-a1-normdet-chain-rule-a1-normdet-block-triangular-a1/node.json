@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.normdet_chain_rule-a1.normdet_block_triangular-a1",
+  "parent_id": "root.coarea_and_slices-a1.normdet_chain_rule-a1",
+  "depth": 3,
+  "title": "Block-triangular factorization of normDet along K ⊕ K^⊥ → f(K) ⊕ f(K)^⊥",
+  "statement": "Let V and X be finite-dimensional real inner product spaces, f : V → X a bijective linear map, K ⊆ V a linear subspace, and W ⊆ X a linear subspace with W = (f(K))^⊥. Let p_W : X → W be the orthogonal projection (Submodule.orthogonalProjectionOnto, as a linear map), and let ι_K : K → V and ι_{K^⊥} : K^⊥ → V be the inclusions. Then normDet(f) = normDet(f ∘ ι_K) · normDet(p_W ∘ f ∘ ι_{K^⊥}).",
+  "lean_statement": "∀ {V X : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [NormedAddCommGroup X] [InnerProductSpace ℝ X] [FiniteDimensional ℝ X] (f : V →ₗ[ℝ] X) (K : Submodule ℝ V) (W : Submodule ℝ X), Function.Bijective f → W = (K.map f)ᗮ → f.normDet = (f ∘ₗ K.subtype).normDet * ((W.orthogonalProjectionOnto : X →ₗ[ℝ] W) ∘ₗ f ∘ₗ Kᗮ.subtype).normDet",
+  "lean_name": "coarea_normDet_block_triangular",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-normdet-chain-rule-a1-normdet-block-triangular-a1-a1"
+}
