@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.slab_to_cone-a1.slab_projection-a1",
+  "parent_id": "root.besicovitch_federer-a1.cone_trichotomy-a1.slab_to_cone-a1",
+  "depth": 4,
+  "title": "Orthogonal projection onto W ⊕ ℝu for a unit vector u orthogonal to W (parent step 2)",
+  "statement": "Let N ∈ ℕ, E := ℝ^N (EuclideanSpace ℝ (Fin N)) with inner product x·y and norm |·|, W ⊆ E a linear subspace with orthogonal projection P := W.starProjection, and u ∈ W^⊥ with |u| = 1. Let H := W ⊔ span{u} with orthogonal projection p := H.starProjection. Then p(y) = P(y) + (y·u)u for every y ∈ E.",
+  "lean_statement": "∀ (N : ℕ) (W : Submodule ℝ (Rn N)) (u : Rn N), u ∈ Wᗮ → ‖u‖ = 1 → ∀ y : Rn N, (W ⊔ Submodule.span ℝ {u}).starProjection y = W.starProjection y + inner ℝ y u • u",
+  "lean_name": "bf_starProjection_sup_span_unit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-trichotomy-a1-slab-to-cone-a1-slab-p-c635d873eb-a1"
+}

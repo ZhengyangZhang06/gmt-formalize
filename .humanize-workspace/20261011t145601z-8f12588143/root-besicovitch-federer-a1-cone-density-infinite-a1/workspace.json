@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T145601Z-8f12588143",
+  "parent_id": "root.besicovitch_federer-a1.cone_density_infinite-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch03/20261011t145601z-8f12588143/dispatch/root-besicovitch-federer-a1-cone-density-infinite-a1",
+  "source_commit": "d09bc8a18ce60face651f042976e8465f21f0f68",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch03/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_density_infinite-a1.plane_ball_measure-a1",
+      "key": "plane_ball_measure",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-ball-measure-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/children/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-ball-measure-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat manifest.json (project d09bc8a18ce60face651f042976e8465f21f0f68, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "rg -n \"theorem exists_disjoint_covering_ae\\b\" mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+              "rg -n \"theorem addHaar_closedBall'\" mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "rg -n \"instance MeasureTheory.isAddHaarMeasure_euclideanHausdorffMeasure|theorem Isometry.euclideanHausdorffMeasure_image|theorem InnerProductSpace.euclideanHausdorffMeasure_eq_volume\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n \"starProjection_apply_mem\" mathlib/Mathlib/Analysis/InnerProductSpace/",
+              "rg -n \"^theorem measure_biUnion |^theorem measure_biUnion_le\" mathlib/Mathlib/MeasureTheory",
+              "rg -n \"protected theorem Tendsto.const_div|theorem tendsto_ofReal_atTop\" mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+              "rg -n -i \"vitali|closedBall\" project/GMT/Ch03/Contract.lean",
+              "rg -n \"^import\" project/GMT/Ch03/Submission.lean",
+              "rg -l -i \"vitali\" simongmt/Poincare/SimonGMT",
+              "rg -n \"Submodule.*closedBall|closedBall.*Submodule\" simongmt/Poincare/SimonGMT",
+              "rg -n \"addHaar_closedBall|exists_disjoint_covering_ae\" simongmt/Poincare/SimonGMT",
+              "rg -c \"bf_plane\" dag.json; rg -l \"bf_plane\" nodes/ (lean_name collision check)",
+              "lake env lean GMT/Scratch/ConeDensityInfiniteSplitDecision.lean (import GMT.Ch03.Submission + contract namespace/opens; exact child types, child proofs, parent assembly, #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/SymmetricVitali.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/ConeDensityInfiniteSplitDecision.lean"
+            ],
+            "conclusion": "Pinned snapshot: project d09bc8a and Mathlib 25730c7c, plus the pinned simongmt package.\n\nReused by the children:\n- Vitali.exists_disjoint_covering_ae (Vitali.lean:237)\n- Measure.addHaar_closedBall' (EqHaar.lean:475)\n- isAddHaarMeasure_euclideanHausdorffMeasure (Geometry/Euclidean/Volume/Measure.lean:104)\n- Isometry.euclideanHausdorffMeasure_image (same file, :131)\n- isometry_subtype_coe, Subtype.borelSpace, Subtype.dist_eq\n\nUsed by the parent assembly:\n- Submodule.starProjection_apply_mem (Projection/Basic.lean:156)\n- measure_biUnion (Measure/Basic.lean:132) and measure_biUnion_le (OuterMeasure/Basic.lean:74)\n- ENNReal.Tendsto.const_div (ENNReal/Lemmas.lean:476) and ENNReal.tendsto_ofReal_atTop (:160)\n\nNo usable match for either child's fact:\n- The contract has no Vitali or plane-disc lemma.\n- Mathlib states Haar and Vitali facts only on whole spaces.\n- SimonGMT's Chapter04 planeMeasure_unit_closedBall covers only the unit ball at 0 with n > 0. Chapter01 hasSymmetricVitaliProperty_of_finite_doubling requires finite total mass. Neither module is imported by GMT.Ch03.Submission (which imports only Chapter02.BV and Chapter03.Rectifiable).\n- No DAG node reserves a bf_plane_* name.\n\nThe two plane facts are therefore supplied by the new children. Simon Ch. 1, 2.9 (lines 445–470), 3.4–3.5 (lines 609–660) and 3.10–3.11(2) (lines 765–799) are their textual sources.\n\nThe machine check in GMT/Scratch/ConeDensityInfiniteSplitDecision.lean compiles. Both exact child types and the frozen parent type are proved there, with axioms only [propext, Classical.choice, Quot.sound]."
+          }
+        ],
+        "parent_id": "root.besicovitch_federer-a1.cone_density_infinite-a1",
+        "child_id": "root.besicovitch_federer-a1.cone_density_infinite-a1.plane_ball_measure-a1",
+        "subproblem": {
+          "key": "plane_ball_measure",
+          "title": "Hausdorff measure of closed discs in an n-plane (Hⁿ(W ∩ B̄(y, ρ)) = ofReal(ρⁿ)·ω, ω < ∞)",
+          "statement": "Let n, N ∈ ℕ and let W be a linear subspace of ℝ^N = EuclideanSpace ℝ (Fin N) with dim W = n. Let Hⁿ := μHE[n] (Mathlib's Euclidean-normalized n-dimensional Hausdorff measure on ℝ^N), B̄(y, ρ) := {x : |x − y| ≤ ρ} and ω := Hⁿ(W ∩ B̄(0, 1)). Then ω < ∞, and for every y ∈ W and every real ρ ≥ 0, Hⁿ(W ∩ B̄(y, ρ)) = ENNReal.ofReal(ρⁿ) · ω.",
+          "lean_statement": "∀ (n N : ℕ) (W : Submodule ℝ (Rn N)), finrank ℝ W = n → μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall 0 1) < ∞ ∧ ∀ y ∈ W, ∀ ρ : ℝ, 0 ≤ ρ → μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall y ρ) = ENNReal.ofReal (ρ ^ n) * μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall 0 1)",
+          "lean_name": "bf_plane_closedBall_measure_eq",
+          "depends_on": [],
+          "natural_proof": "Source. This is the part of fact (F2) of the parent proof used in steps 5–6 (ω < ∞ and the scaling formula; positivity of ω is not needed), isolated: Simon, Introduction to GMT, Ch. 1, Theorem 2.9 (printed p. 11; book/chapter-01.txt lines 445–470: Lⁿ = Hⁿ on ℝⁿ), combined with the invariance of Hausdorff measure under isometries and the scaling of Lebesgue measure under dilations. Mathlib packages these facts as MeasureTheory.isAddHaarMeasure_euclideanHausdorffMeasure (Mathlib/Geometry/Euclidean/Volume/Measure.lean:104: μHE[finrank V] is an additive Haar measure on every finite-dimensional real normed space V with its Borel σ-algebra), Isometry.euclideanHausdorffMeasure_image (same file, line 131: μHE[d](f '' s) = μHE[d](s) for an isometry f) and Measure.addHaar_closedBall' (Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean:475: μ(closedBall x r) = ofReal(r^(finrank)) · μ(closedBall 0 1) for an additive Haar measure μ and r ≥ 0).\n\nNotation. Hⁿ := μHE[n] on ℝ^N. Let V be W regarded as a type (the subtype {x // x ∈ W}) with the induced norm, inner product and metric and the induced σ-algebra, which is the Borel σ-algebra of V because ℝ^N carries its Borel σ-algebra (Mathlib Subtype.borelSpace). Let j : V → ℝ^N, j(v) = v, be the inclusion; for z ∈ V and r ∈ ℝ let B̄_V(z, r) := {v ∈ V : dist(v, z) ≤ r}; let μ := μHE[n] computed intrinsically on V; and ω := Hⁿ(W ∩ B̄(0, 1)).\n\n1. Since dim W = n we may replace n by finrank_ℝ V everywhere (in Lean: subst the hypothesis finrank ℝ W = n). V is a finite-dimensional real inner product space, hence a proper metric space: every closed ball B̄_V(z, r) is compact.\n\n2. μ = μHE[finrank V] on V is an additive Haar measure on V (Mathlib isAddHaarMeasure_euclideanHausdorffMeasure; mathematically, Simon 1.2.9 transported to V by a linear isometry ℝⁿ ≅ V). Consequently (a) μ is finite on compact sets, and (b) for every z ∈ V and r ≥ 0, μ(B̄_V(z, r)) = ofReal(rⁿ) · μ(B̄_V(0, 1)) (Mathlib Measure.addHaar_closedBall').\n\n3. For z ∈ V and r ∈ ℝ, W ∩ B̄(j z, r) = j(B̄_V(z, r)). Indeed the metric of V is the restriction of that of ℝ^N: dist(v, z) = |j v − j z| (Subtype.dist_eq). If v ∈ B̄_V(z, r), then j v ∈ W and |j v − j z| ≤ r, so j v ∈ W ∩ B̄(j z, r). Conversely, if x ∈ W ∩ B̄(j z, r), then v := ⟨x, x ∈ W⟩ ∈ V satisfies dist(v, z) = |x − j z| ≤ r and j v = x.\n\n4. j is an isometry (Mathlib isometry_subtype_coe), hence Hⁿ(j(E)) = μHE[n](E) = μ(E) for every E ⊆ V (Mathlib Isometry.euclideanHausdorffMeasure_image). With 3: Hⁿ(W ∩ B̄(j z, r)) = μ(B̄_V(z, r)) for all z ∈ V, r ∈ ℝ. Taking z = 0 (note j 0 = 0) and r = 1 gives ω = μ(B̄_V(0, 1)).\n\n5. Finiteness. B̄_V(0, 1) is compact by 1 and μ is finite on compact sets by 2(a); hence ω = μ(B̄_V(0, 1)) < ∞.\n\n6. Scaling. Let y ∈ W and ρ ≥ 0, and put z := ⟨y, y ∈ W⟩ ∈ V, so that j z = y. By 4, 2(b) and 4 again,\n Hⁿ(W ∩ B̄(y, ρ)) = μ(B̄_V(z, ρ)) = ofReal(ρⁿ) · μ(B̄_V(0, 1)) = ofReal(ρⁿ) · ω.\nTogether with 5 this proves both conjuncts of the statement: μHE[n] (W ∩ closedBall 0 1) < ∞, and μHE[n] (W ∩ closedBall y ρ) = ENNReal.ofReal (ρ ^ n) * μHE[n] (W ∩ closedBall 0 1) for all y ∈ W and ρ ≥ 0. ∎",
+          "proof_key_steps": [
+            "Regard W as the n-dimensional inner product space V (subtype, Borel σ-algebra); with n = finrank V, μHE[n] on V is an additive Haar measure (isAddHaarMeasure_euclideanHausdorffMeasure).",
+            "The inclusion V → ℝ^N is an isometry mapping the closed ball B̄_V(z, r) onto W ∩ B̄(z, r), so Hⁿ(W ∩ B̄(z, r)) = μHE[n]_V(B̄_V(z, r)) (Isometry.euclideanHausdorffMeasure_image).",
+            "A Haar measure is finite on the compact ball B̄_V(0, 1) and satisfies μ(B̄_V(z, ρ)) = ofReal(ρⁿ) μ(B̄_V(0, 1)) (Measure.addHaar_closedBall').",
+            "Hence ω = μ(B̄_V(0,1)) < ∞ and Hⁿ(W ∩ B̄(y, ρ)) = ofReal(ρⁿ) ω for y ∈ W, ρ ≥ 0."
+          ]
+        },
+        "audit": {
+          "key": "plane_ball_measure",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The one-line proposition exactly includes the prose hypotheses and both conclusions. The supplied proof identifies intrinsic closed balls with ambient discs, transports Hausdorff measure through the isometric inclusion, obtains finiteness from compactness and Haar local finiteness, and applies the verified scaling theorem. This covers n = 0 and radius zero. The proof is complete and non-circular; its conclusion supplies the parent's finite constant and disc estimates. The bare name is unreserved, and the type is independently usable."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-ball-measure-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-ball-measure-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-ball-measure-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.besicovitch_federer-a1.cone_density_infinite-a1.plane_vitali_cover-a1",
+      "key": "plane_vitali_cover",
+      "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-vitali-cover-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/children/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-vitali-cover-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat manifest.json (project d09bc8a18ce60face651f042976e8465f21f0f68, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "rg -n \"theorem exists_disjoint_covering_ae\\b\" mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+              "rg -n \"theorem addHaar_closedBall'\" mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "rg -n \"instance MeasureTheory.isAddHaarMeasure_euclideanHausdorffMeasure|theorem Isometry.euclideanHausdorffMeasure_image|theorem InnerProductSpace.euclideanHausdorffMeasure_eq_volume\" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n \"starProjection_apply_mem\" mathlib/Mathlib/Analysis/InnerProductSpace/",
+              "rg -n \"^theorem measure_biUnion |^theorem measure_biUnion_le\" mathlib/Mathlib/MeasureTheory",
+              "rg -n \"protected theorem Tendsto.const_div|theorem tendsto_ofReal_atTop\" mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+              "rg -n -i \"vitali|closedBall\" project/GMT/Ch03/Contract.lean",
+              "rg -n \"^import\" project/GMT/Ch03/Submission.lean",
+              "rg -l -i \"vitali\" simongmt/Poincare/SimonGMT",
+              "rg -n \"Submodule.*closedBall|closedBall.*Submodule\" simongmt/Poincare/SimonGMT",
+              "rg -n \"addHaar_closedBall|exists_disjoint_covering_ae\" simongmt/Poincare/SimonGMT",
+              "rg -c \"bf_plane\" dag.json; rg -l \"bf_plane\" nodes/ (lean_name collision check)",
+              "lake env lean GMT/Scratch/ConeDensityInfiniteSplitDecision.lean (import GMT.Ch03.Submission + contract namespace/opens; exact child types, child proofs, parent assembly, #print axioms)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/SymmetricVitali.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/ConeDensityInfiniteSplitDecision.lean"
+            ],
+            "conclusion": "Pinned snapshot: project d09bc8a and Mathlib 25730c7c, plus the pinned simongmt package.\n\nReused by the children:\n- Vitali.exists_disjoint_covering_ae (Vitali.lean:237)\n- Measure.addHaar_closedBall' (EqHaar.lean:475)\n- isAddHaarMeasure_euclideanHausdorffMeasure (Geometry/Euclidean/Volume/Measure.lean:104)\n- Isometry.euclideanHausdorffMeasure_image (same file, :131)\n- isometry_subtype_coe, Subtype.borelSpace, Subtype.dist_eq\n\nUsed by the parent assembly:\n- Submodule.starProjection_apply_mem (Projection/Basic.lean:156)\n- measure_biUnion (Measure/Basic.lean:132) and measure_biUnion_le (OuterMeasure/Basic.lean:74)\n- ENNReal.Tendsto.const_div (ENNReal/Lemmas.lean:476) and ENNReal.tendsto_ofReal_atTop (:160)\n\nNo usable match for either child's fact:\n- The contract has no Vitali or plane-disc lemma.\n- Mathlib states Haar and Vitali facts only on whole spaces.\n- SimonGMT's Chapter04 planeMeasure_unit_closedBall covers only the unit ball at 0 with n > 0. Chapter01 hasSymmetricVitaliProperty_of_finite_doubling requires finite total mass. Neither module is imported by GMT.Ch03.Submission (which imports only Chapter02.BV and Chapter03.Rectifiable).\n- No DAG node reserves a bf_plane_* name.\n\nThe two plane facts are therefore supplied by the new children. Simon Ch. 1, 2.9 (lines 445–470), 3.4–3.5 (lines 609–660) and 3.10–3.11(2) (lines 765–799) are their textual sources.\n\nThe machine check in GMT/Scratch/ConeDensityInfiniteSplitDecision.lean compiles. Both exact child types and the frozen parent type are proved there, with axioms only [propext, Classical.choice, Quot.sound]."
+          }
+        ],
+        "parent_id": "root.besicovitch_federer-a1.cone_density_infinite-a1",
+        "child_id": "root.besicovitch_federer-a1.cone_density_infinite-a1.plane_vitali_cover-a1",
+        "subproblem": {
+          "key": "plane_vitali_cover",
+          "title": "Vitali covering for Hⁿ by closed discs in an n-plane",
+          "statement": "Let n, N ∈ ℕ, let W be a linear subspace of ℝ^N = EuclideanSpace ℝ (Fin N) with dim W = n, and Hⁿ := μHE[n] on ℝ^N. Let ι be a type, S ⊆ W an arbitrary (not necessarily measurable) set, t ⊆ ι, c : ι → ℝ^N and ρ : ι → ℝ such that c(i) ∈ W and ρ(i) > 0 for every i ∈ t, and suppose the family is fine at S: for every x ∈ S and ε > 0 there is i ∈ t with c(i) = x and ρ(i) ≤ ε. Then there is a countable u ⊆ t such that the sets D_i := W ∩ B̄(c(i), ρ(i)) (i ∈ u) are pairwise disjoint as an indexed family (D_i ∩ D_k = ∅ for distinct i, k ∈ u) and Hⁿ(S ∖ ⋃_{i∈u} D_i) = 0.",
+          "lean_statement": "∀ (n N : ℕ) (W : Submodule ℝ (Rn N)), finrank ℝ W = n → ∀ (ι : Type) (S : Set (Rn N)) (t : Set ι) (c : ι → Rn N) (ρ : ι → ℝ), S ⊆ (W : Set (Rn N)) → (∀ i ∈ t, c i ∈ W ∧ 0 < ρ i) → (∀ x ∈ S, ∀ ε : ℝ, 0 < ε → ∃ i ∈ t, c i = x ∧ ρ i ≤ ε) → ∃ u ⊆ t, u.Countable ∧ u.PairwiseDisjoint (fun i ↦ (W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i)) ∧ μHE[n] (S \\ ⋃ i ∈ u, ((W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i))) = 0",
+          "lean_name": "bf_plane_vitali_disjoint_cover",
+          "depends_on": [],
+          "natural_proof": "Source. This is step 3 of the parent proof, isolated: the Vitali covering theorem for the doubling measure Hⁿ restricted to the n-plane W, i.e. Simon, Introduction to GMT, Ch. 1, Definition 3.10 (Symmetric Vitali Property) and Remark 3.11(2) (printed pp. 17–18; book/chapter-01.txt lines 765–799), where that property is derived for doubling measures on separable spaces from the 5-times covering lemma 3.4 and Corollary 3.5 (lines 609–660). Since Hⁿ restricted to W has infinite total mass when n ≥ 1 (so the finite-mass hypothesis of Simon 3.11(2) is unavailable), and S need be neither measurable nor of finite measure, we use the locally finite form of this theorem in Mathlib, Vitali.exists_disjoint_covering_ae (Mathlib/MeasureTheory/Covering/Vitali.lean:237): let α be a second-countable pseudometric space whose σ-algebra contains the open sets, μ a locally finite measure on α, s ⊆ α arbitrary, t ⊆ ι, C ≥ 0, r : ι → ℝ, c : ι → α and B : ι → Set α such that for every a ∈ t: B a ⊆ B̄(c a, r a), μ(B̄(c a, 3 r a)) ≤ C · μ(B a), interior(B a) ≠ ∅ and B a is closed; and for every x ∈ s and ε > 0 there is a ∈ t with r a ≤ ε and c a = x. Then there is a countable u ⊆ t such that (B a)_{a∈u} is pairwise disjoint and μ(s ∖ ⋃_{a∈u} B a) = 0.\n\nNotation. Hⁿ := μHE[n] on ℝ^N. V := W regarded as a type (the subtype {x // x ∈ W}) with the induced norm and metric and the induced σ-algebra (= the Borel σ-algebra of V, Mathlib Subtype.borelSpace); j : V → ℝ^N the inclusion; B̄_V(z, r) := {v ∈ V : dist(v, z) ≤ r}; μ := μHE[n] computed intrinsically on V; D_i := W ∩ B̄(c(i), ρ(i)).\n\n1. Properties of V and μ. V is a finite-dimensional real normed space of dimension n, hence a proper (so locally compact) and second-countable metric space whose σ-algebra contains the open sets. Replacing n by finrank_ℝ V (in Lean: subst the hypothesis finrank ℝ W = n), μ = μHE[finrank V] is an additive Haar measure on V (Mathlib isAddHaarMeasure_euclideanHausdorffMeasure), hence finite on compact sets and therefore locally finite; moreover μ(B̄_V(z, r)) = ofReal(rⁿ) · μ(B̄_V(0, 1)) for all z ∈ V and r ≥ 0 (Mathlib Measure.addHaar_closedBall').\n\n2. Lifted data. For i ∈ ι put c′(i) := ⟨c(i), h⟩ ∈ V if h : c(i) ∈ W, and c′(i) := 0 otherwise. By hypothesis c(i) ∈ W for i ∈ t, so j(c′(i)) = c(i) for every i ∈ t. Put B_i := B̄_V(c′(i), ρ(i)) and S′ := j⁻¹(S) ⊆ V.\n\n3. Images of the balls. For i ∈ t, j(B_i) = D_i. Indeed dist(v, c′(i)) = |j v − j c′(i)| = |j v − c(i)| for v ∈ V (Subtype.dist_eq), so v ∈ B_i iff j v ∈ B̄(c(i), ρ(i)), and always j v ∈ W; conversely every x ∈ D_i equals j⟨x, x ∈ W⟩ with ⟨x, x ∈ W⟩ ∈ B_i.\n\n4. Hypotheses of the Vitali theorem on (V, μ), with s := S′, the index set t, radii ρ, centres c′, sets B and constant C := 3ⁿ. Let i ∈ t, so ρ(i) > 0.\n (a) B_i ⊆ B̄_V(c′(i), ρ(i)) (they are equal).\n (b) Doubling: by 1, μ(B̄_V(c′(i), 3ρ(i))) = ofReal((3ρ(i))ⁿ) · μ(B̄_V(0, 1)) = ofReal(3ⁿ) · ofReal(ρ(i)ⁿ) · μ(B̄_V(0, 1)) = 3ⁿ · μ(B_i), using (3ρ)ⁿ = 3ⁿρⁿ, ofReal(ab) = ofReal(a) · ofReal(b) for a, b ≥ 0, and ofReal(3ⁿ) = 3ⁿ; in particular μ(B̄_V(c′(i), 3ρ(i))) ≤ 3ⁿ · μ(B_i).\n (c) The interior of B_i contains the open ball B_V(c′(i), ρ(i)), which contains c′(i) because ρ(i) > 0; so interior(B_i) ≠ ∅.\n (d) B_i is closed (closed balls are closed).\n (e) Fineness on S′: let x ∈ S′, i.e. j x ∈ S, and ε > 0. By the fineness hypothesis there is i ∈ t with c(i) = j x and ρ(i) ≤ ε. Then j(c′(i)) = c(i) = j x, and j is injective, so c′(i) = x.\n\n5. Vitali. By 1 and 4 the Vitali covering theorem (Mathlib Vitali.exists_disjoint_covering_ae; S′ need not be measurable) yields a countable u ⊆ t such that (B_i)_{i∈u} is pairwise disjoint and μ(S′ ∖ ⋃_{i∈u} B_i) = 0.\n\n6. Disjointness of the discs. Let i, k ∈ u with i ≠ k. By 3 (as u ⊆ t), D_i = j(B_i) and D_k = j(B_k). Since j is injective and B_i ∩ B_k = ∅, D_i ∩ D_k = j(B_i ∩ B_k) = ∅. So (D_i)_{i∈u} is pairwise disjoint.\n\n7. The uncovered part. Claim: S ∖ ⋃_{i∈u} D_i = j(S′ ∖ ⋃_{i∈u} B_i). (⊆) Let x ∈ S with x ∉ D_i for every i ∈ u. Since S ⊆ W, x = j x′ with x′ := ⟨x, x ∈ W⟩ ∈ S′. If x′ ∈ B_i for some i ∈ u, then x = j x′ ∈ j(B_i) = D_i by 3, a contradiction; hence x′ ∈ S′ ∖ ⋃_{i∈u} B_i. (⊇) Let x′ ∈ S′ ∖ ⋃_{i∈u} B_i; then j x′ ∈ S. If j x′ ∈ D_i = j(B_i) for some i ∈ u, then j x′ = j b for some b ∈ B_i, so x′ = b ∈ B_i by injectivity of j, a contradiction.\n\n8. Transfer of the null set. j is an isometry (Mathlib isometry_subtype_coe), so Hⁿ(j(E)) = μHE[n](E) = μ(E) for every E ⊆ V (Mathlib Isometry.euclideanHausdorffMeasure_image). By 7 and 5, Hⁿ(S ∖ ⋃_{i∈u} D_i) = μ(S′ ∖ ⋃_{i∈u} B_i) = 0. Together with u ⊆ t, u countable (5) and the pairwise disjointness of (D_i)_{i∈u} (6), u is as required. ∎",
+          "proof_key_steps": [
+            "Work in the subtype V = W: with n = finrank V, μ := μHE[n] on V is an additive Haar measure, hence locally finite, and μ(B̄_V(z, 3r)) = 3ⁿ μ(B̄_V(z, r)) (Measure.addHaar_closedBall').",
+            "Lift the centres to c′(i) ∈ V and let B_i := B̄_V(c′(i), ρ(i)); the inclusion j maps B_i onto D_i = W ∩ B̄(c(i), ρ(i)) for i ∈ t.",
+            "The B_i are closed with nonempty interior, 3ⁿ-doubling, and fine at S′ := j⁻¹(S); Vitali.exists_disjoint_covering_ae gives a countable u ⊆ t with (B_i)_{i∈u} disjoint and μ(S′ ∖ ⋃_{i∈u} B_i) = 0.",
+            "Transfer along the injective isometry j: the D_i (i ∈ u) are pairwise disjoint and S ∖ ⋃ D_i = j(S′ ∖ ⋃ B_i), so Hⁿ(S ∖ ⋃_{i∈u} D_i) = 0."
+          ]
+        },
+        "audit": {
+          "key": "plane_vitali_cover",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The one-line proposition exactly matches the arbitrary-set, indexed-family prose contract. Every Vitali hypothesis is established: subtype topology and measure instances, positive-radius nonempty interiors, closedness, doubling and fineness. Injectivity transports indexed disjointness, while S ⊆ W establishes the exact uncovered-set image identity needed for nullity. No measurability or finite-total-mass assumption is missing. The proof directly uses library Haar facts, so no sibling dependency is required. It supplies the selected parent's covering step without circularity. The bare name is unreserved; no matrix-instance hazard occurs."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-vitali-cover-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-vitali-cover-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-vitali-cover-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/task.md": "e75273998f7c4f95ebf065f0fad2d086525ca06c562b9d468f9786e0824e1b5d",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/problem.md": "d450b947d5616531ac8cc4a99158db188c875f9e857bfcaf8b809a207631a989",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/problem.json": "8a4e29f58fc3cd9ec56e6ed45bec4c9008d5eb705e95bd016943fc957faf50db",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/reference-manifest.json": "b6a97248df40c5dc702e39c00119a850911686a21d507e00b0849f87a8d3d512",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/decomposition.json": "f8c6831bde484581666117fa954ac2ae93a7f597a79f3e19790029ec86d59cea",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/decomposition-audit.json": "0bee7c3007f05c20dce40af2f83f8a5286ab32c286d0793de9751f6cdce8b4fc",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/controller-contract.json": "31d3ac7a976c9c9beab4104bf5eed7a165f1f72155288ca9c3600d33f425a627",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/children/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-ball-measure-a1/parent-child-handoff.json": "0d7db95b78df3612fc1e652026457b0df21c1e16bea653754ae673212f4e5dd8",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/children/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-ball-measure-a1/parent-supplied-plan.md": "95ed9a504391a9289de57fd80e49e78d3f25c1a1f01fc5e9bf13355d2d946a9e",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/children/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-ball-measure-a1/parent-supplied-natural-proof.md": "1ecccc2c8ea357a9552c351209d592957991fcf6297b477ca53548c40a5ea3e4",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/children/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-ball-measure-a1/parent-supplied-natural-proof.json": "b634e30020755190f477f64a870003fa22fbfe398d1cebcc0ec94810be26b242",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/children/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-ball-measure-a1/node.json": "f26be1636248e0922fcbe1184d757cc3910d6661c371d9aad25252945e98036a",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/children/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-vitali-cover-a1/parent-child-handoff.json": "adc65c4bfc91a617dbb12688190eece7e7aa469b84a45188b66e3c6a4d4f914a",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/children/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-vitali-cover-a1/parent-supplied-plan.md": "21b313d8ce839821bbc50389e4d36edf477392214ff209871eb9e1593a75255e",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/children/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-vitali-cover-a1/parent-supplied-natural-proof.md": "a6737cda6e9f50727794de943cd58a0c6566aaad06d8a264efc1fde79809597e",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/children/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-vitali-cover-a1/parent-supplied-natural-proof.json": "d49d349a8523cf5d0ccfad8b33ad21871f17611291c743d0dfeb41567c55d9dd",
+    ".humanize-workspace/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1/children/root-besicovitch-federer-a1-cone-density-infinite-a1-plane-vitali-cover-a1/node.json": "399a08fe227fed506efff9b298d6286a4b36d923a9fb0685f4c9cd9570b52770"
+  }
+}

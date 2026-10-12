@@ -1,0 +1,47 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "rg -n -A 38 -B 18 'theorem exists_disjoint_covering_ae\\b' mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "addHaar_closedBall\\x27",
+        "isAddHaarMeasure_euclideanHausdorffMeasure",
+        "theorem Isometry.euclideanHausdorffMeasure_image",
+        "rg -n '^(import|namespace|open|abbrev Rn)|vitali|closedBall|bf_plane' project/GMT/Ch03/Contract.lean project/GMT/Ch03/Submission.lean",
+        "bf_plane_closedBall_measure_eq",
+        "bf_plane_vitali_disjoint_cover",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cone-density-independent-audit-coysqguq/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-besicovitch-federer-a1-cone-density-infinite-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/ConeDensityInfiniteSplitDecision.lean",
+        "/tmp/cone-density-independent-audit-coysqguq/Audit.lean"
+      ],
+      "conclusion": "Confirmed pinned revisions and byte agreement between relevant snapshot and compiler sources. Volume/Measure.lean:104,131 supplies the intrinsic Haar instance and isometric image equality; EqHaar.lean:475 includes nonnegative radii; Vitali.lean:237–244 permits arbitrary sets with locally finite measures. No conflicting reservation exists in the active DAG or other node artifacts. The split isolates two genuine reusable obligations with acyclic, correctly empty dependency lists. Together they give the selected parent's projection estimate and zero limit. Both raw child types elaborate before their implementations. The supplied proofs and exact frozen parent type compile under the intended Submission names, with axioms only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly includes the prose hypotheses and both conclusions. The supplied proof identifies intrinsic closed balls with ambient discs, transports Hausdorff measure through the isometric inclusion, obtains finiteness from compactness and Haar local finiteness, and applies the verified scaling theorem. This covers n = 0 and radius zero. The proof is complete and non-circular; its conclusion supplies the parent's finite constant and disc estimates. The bare name is unreserved, and the type is independently usable."
+    },
+    {
+      "key": "plane_vitali_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the arbitrary-set, indexed-family prose contract. Every Vitali hypothesis is established: subtype topology and measure instances, positive-radius nonempty interiors, closedness, doubling and fineness. Injectivity transports indexed disjointness, while S ⊆ W establishes the exact uncovered-set image identity needed for nullity. No measurability or finite-total-mass assumption is missing. The proof directly uses library Haar facts, so no sibling dependency is required. It supplies the selected parent's covering step without circularity. The bare name is unreserved; no matrix-instance hazard occurs."
+    }
+  ],
+  "required_changes": []
+}

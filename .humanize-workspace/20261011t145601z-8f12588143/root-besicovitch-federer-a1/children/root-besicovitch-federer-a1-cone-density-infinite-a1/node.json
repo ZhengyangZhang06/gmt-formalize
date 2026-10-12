@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_density_infinite-a1",
+  "parent_id": "root.besicovitch_federer-a1",
+  "depth": 2,
+  "title": "Infinite cone density has Hⁿ-null projection (Dall'Alba Lemma 5.3)",
+  "statement": "Let n ≥ 1, ℓ ∈ ℕ, N := n + ℓ, W ⊆ ℝ^N an n-dimensional subspace, P := W.starProjection, X(a, r, s) := {x : |P(x − a)| < s|x − a|} ∩ B(a, r), A ⊆ ℝ^N compact with Hⁿ(A) < ∞, and δ > 0. Let A₂ be the set of a ∈ A such that for every K ∈ ℝ and ε > 0 there are 0 < s < ε and 0 < r < δ with K(rs)ⁿ ≤ Hⁿ(A ∩ X(a, r, s)) (i.e. Φ_δ(a, W^⊥) = ∞). Then Hⁿ(P(A₂)) = 0.",
+  "lean_statement": "∀ (n ℓ : ℕ), 0 < n → ∀ (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∀ A : Set (Rn (n + ℓ)), IsCompact A → μHE[n] A < ∞ → ∀ δ : ℝ, 0 < δ → μHE[n] (W.starProjection '' {a | a ∈ A ∧ ∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μHE[n] (A ∩ ({x | ‖W.starProjection (x - a)‖ < s * ‖x - a‖} ∩ Metric.ball a r))}) = 0",
+  "lean_name": "bf_coneDensity_top_projection_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-density-infinite-a1-a1"
+}
