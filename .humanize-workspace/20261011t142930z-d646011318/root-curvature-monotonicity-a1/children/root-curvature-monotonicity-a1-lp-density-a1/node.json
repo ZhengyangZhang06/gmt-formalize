@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.curvature_monotonicity-a1.lp_density-a1",
+  "parent_id": "root.curvature_monotonicity-a1",
+  "depth": 2,
+  "title": "Existence and upper semicontinuity of the density for Lᵖ mean curvature (Simon 4.9; parent Step 6)",
+  "statement": "Assume (GF) [as in bounded_curvature] and the contract proposition LpMonotonicity. Then LpDensity holds: for n > 0, ℓ, V, open U, H such that V has generalized mean curvature H in U, and p > n with H ∈ L^p_loc(U) (H ∈ L^p(μ_V⌞K) for every compact K ⊆ U), V.HasDensityAt ξ (V.density ξ) for every ξ ∈ U and V.density is upper semicontinuous on U.",
+  "lean_statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → LpMonotonicity → LpDensity",
+  "lean_name": "mcm_lp_density_of_monotonicity",
+  "depends_on": [
+    "root.curvature_monotonicity-a1.density_usc-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.curvature_monotonicity-a1.density_usc-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-curvature-monotonicity-a1-lp-density-a1-a1"
+}
