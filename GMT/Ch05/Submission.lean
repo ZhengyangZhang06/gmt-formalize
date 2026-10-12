@@ -458,6 +458,29 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, Remark 4.10(1)** (`spt V` versus the carrier `M`, first half): the part of the
+carrier outside `spt V` is `Hⁿ`-null, `Hⁿ(M \ spt V) = 0`, for any `U` and with no density
+hypothesis.  `μ_V` vanishes off `spt μ_V` (`ℝ^{n+ℓ}` is second countable), so `θ = 0`
+`Hⁿ ⌞ M`-a.e. off `spt μ_V`; as `θ > 0` on `M ⊆ U`, `M \ spt V` is `Hⁿ`-null. -/
+theorem hausdorff_carrier_diff_support_null : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), (μHE[n] : Measure (Amb n ℓ)) (V.carrier \ V.support) = 0 := by
+  intro n ℓ U V
+  -- `μ_V(ℝ^{n+ℓ} \ spt μ_V) = 0`; as `μ_V` is `Hⁿ ⌞ M` with density `θ`, the set
+  -- `{θ > 0} \ spt μ_V` is `Hⁿ ⌞ M`-null.
+  have h0 : ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier)
+      ({x | ENNReal.ofReal (V.mult x) ≠ 0} ∩ V.weight.supportᶜ) = 0 :=
+    (withDensity_apply_eq_zero' V.aemeasurable_mult.ennreal_ofReal).mp
+      Measure.measure_compl_support
+  -- `M \ spt V` lies in this set and in `M`: `θ > 0` on `M`, and `M ⊆ U`, `spt V = U ∩ spt μ_V`.
+  have hsub : V.carrier \ V.support ⊆
+      ({x | ENNReal.ofReal (V.mult x) ≠ 0} ∩ V.weight.supportᶜ) ∩ V.carrier := fun x hx =>
+    ⟨⟨(ENNReal.ofReal_pos.mpr (V.mult_pos x hx.1)).ne', fun hs => hx.2 ⟨V.carrier_subset hx.1, hs⟩⟩,
+      hx.1⟩
+  exact measure_mono_null hsub (nonpos_iff_eq_zero.mp ((Measure.le_restrict_apply _ _).trans h0.le))
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
