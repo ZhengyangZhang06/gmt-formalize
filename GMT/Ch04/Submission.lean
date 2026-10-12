@@ -434,6 +434,36 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **`Hⁿ`-measure of balls in an `n`-plane.** If `P ⊆ ℝ^{n+ℓ}` is a linear subspace with
+`dim P = n` and `s ≥ 0`, then `(Hⁿ ⌞ P)(B_s(0)) = Hⁿ(P ∩ B_s(0)) = ωₙ sⁿ`. -/
+theorem Submission.ts_plane_closedBall_measure : ∀ (n ℓ : ℕ) (P : Submodule ℝ (Ambient n ℓ)) (s : ℝ), Module.finrank ℝ P = n → 0 ≤ s → ((μHE[n] : Measure (Ambient n ℓ)).restrict (P : Set (Ambient n ℓ))) (closedBall (0 : Ambient n ℓ) s) = ENNReal.ofReal (omega n * s ^ n) := by
+  intro n ℓ P s hP hs
+  -- `Hⁿ ⌞ P` is the push-forward of `Hⁿ` on `P` under the isometric inclusion `ι`, and
+  -- `ι⁻¹(B_s(0))` is the closed ball `B_s(0)` of `P`.
+  have hrange : Set.range (P.subtypeₗᵢ : P → Ambient n ℓ) = (P : Set (Ambient n ℓ)) := by
+    ext x
+    simp
+  have hpre : (P.subtypeₗᵢ : P → Ambient n ℓ) ⁻¹' closedBall 0 s = closedBall (0 : P) s := by
+    ext x
+    simp [mem_closedBall, dist_eq_norm]
+  have h1 : ((μHE[n] : Measure (Ambient n ℓ)).restrict (P : Set (Ambient n ℓ)))
+      (closedBall (0 : Ambient n ℓ) s) = (μHE[n] : Measure P) (closedBall (0 : P) s) := by
+    rw [← hrange, ← P.subtypeₗᵢ.isometry.map_euclideanHausdorffMeasure,
+      Measure.map_apply P.subtypeₗᵢ.continuous.measurable measurableSet_closedBall, hpre]
+  -- Orthonormal coordinates `e : P ≃ ℝⁿ` preserve `Hⁿ` and map `B_s(0)` onto `B_s(0)`.
+  let e : P ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin n) :=
+    ((stdOrthonormalBasis ℝ P).reindex (finCongr hP)).repr
+  have h2 : (μHE[n] : Measure P) (closedBall (0 : P) s) =
+      (μHE[n] : Measure (EuclideanSpace ℝ (Fin n))) (closedBall 0 s) := by
+    rw [← e.isometry.euclideanHausdorffMeasure_image, e.image_closedBall, map_zero]
+  -- `Lⁿ(B_1(0))` is finite, so it equals `ofReal ωₙ`.
+  have h3 : volume (ball (0 : EuclideanSpace ℝ (Fin n)) 1) = ENNReal.ofReal (omega n) := by
+    rw [omega, ENNReal.ofReal_toReal measure_ball_lt_top.ne]
+  -- `Hⁿ = Lⁿ` on `ℝⁿ`, and Haar scaling gives `Lⁿ(B_s(0)) = sⁿ Lⁿ(B_1(0))`.
+  rw [h1, h2, EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+    Measure.addHaar_closedBall _ _ hs, finrank_euclideanSpace_fin, h3,
+    ← ENNReal.ofReal_mul (pow_nonneg hs n), mul_comm]
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
