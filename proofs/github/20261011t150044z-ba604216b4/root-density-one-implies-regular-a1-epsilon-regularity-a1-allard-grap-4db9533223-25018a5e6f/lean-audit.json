@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "efeb8ef3339b4220231490800ed26e05f74bb5659e61dbd690a7b4dac4c2eb0e",
+  "git_delta": {
+    "base_commit": "70ee8e82b7a3349e956edabd2d65d803332362ef",
+    "candidate_commit": "b9f6d4708f18b578a73526f602af79a3ec87d3b0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "doragm_rfv_trace_radial_field",
+    "diff_sha256": "b62f10d6624cc2a06f5a92593d5fa57f86d4dba7e0e184dc9535dadad38bf7f6",
+    "source_sha256": "ff5573a3bb2b6a874c4cb00a16e78791cebae684fabdb1ed01f65c5ba2087f88",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.doragm_rfv_trace_radial_field",
+      "statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (y x : Euclid P) (φ : ℝ → ℝ) (τ : ℝ), ContDiff ℝ 1 φ → (∀ u, u ≤ 1 → φ u = 1) → 0 < τ → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ (fderiv ℝ (fun z : Euclid P => φ (‖z - y‖ / τ) • (z - y)) x).toLinearMap) = (Module.finrank ℝ Q : ℝ) * φ (‖x - y‖ / τ) + ‖x - y‖ / τ * deriv φ (‖x - y‖ / τ) * (1 - ‖(x - y) - Q.starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ 2)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
