@@ -853,6 +853,80 @@ theorem poincare_ball_double_integral_exhaustion : ∀ (n : ℕ) (f : Rn n → �
         refine (lintegral_mono_set (hBmono (le_max_left k m))).trans ?_
         exact lintegral_mono fun x => lintegral_mono_set (hBmono (le_max_right k m))
     _ ≤ K := hK' _
+/-- Simon Ch. 5, proof of Lemma 3.1 (p. 114), Poincaré inequality, mean-deviation step: for a
+measurable `s ⊆ ℝⁿ` of finite measure and `f ∈ L²(s)`,
+`∫_s |f - ⨍_s f|² ≤ |s|⁻¹ ∫_s ∫_s |f(x) - f(y)|² dy dx` in `[0, ∞]`.  If `|s| = 0` the left side
+vanishes.  Otherwise `f(x) - ⨍_s f = |s|⁻¹ ∫_s (f(x) - f(y)) dy`, and Cauchy–Schwarz on `s`
+(`L¹ ≤ L²` for the finite measure `volume.restrict s`) gives
+`|f(x) - ⨍_s f|² ≤ |s|⁻¹ ∫_s |f(x) - f(y)|² dy` for every `x`; integrate over `x ∈ s`. -/
+theorem poincare_set_mean_deviation_sq_bound : ∀ (n : ℕ) (s : Set (Rn n)) (f : Rn n → ℝ), MeasurableSet s → volume s ≠ ∞ → MemLp f 2 (volume.restrict s) → ∫⁻ x in s, ‖f x - ⨍ y in s, f y‖ₑ ^ 2 ≤ (volume s)⁻¹ * ∫⁻ x in s, ∫⁻ y in s, ‖f x - f y‖ₑ ^ 2 := by
+  intro n s f hs hfin hf
+  -- 1. null set: the left side vanishes
+  by_cases h0 : volume s = 0
+  · have : volume.restrict s = 0 := Measure.restrict_eq_zero.mpr h0
+    simp [this]
+  -- 2. pass to a strongly measurable representative (no side changes)
+  have hfa := hf.aestronglyMeasurable
+  have hff' : f =ᵐ[volume.restrict s] hfa.mk f := hfa.ae_eq_mk
+  have hf'L2 : MemLp (hfa.mk f) 2 (volume.restrict s) := (memLp_congr_ae hff').mp hf
+  have hdbl : ∫⁻ x in s, ∫⁻ y in s, ‖f x - f y‖ₑ ^ 2 =
+      ∫⁻ x in s, ∫⁻ y in s, ‖hfa.mk f x - hfa.mk f y‖ₑ ^ 2 := by
+    have h1 : ∀ x, ∫⁻ y in s, ‖f x - f y‖ₑ ^ 2 = ∫⁻ y in s, ‖f x - hfa.mk f y‖ₑ ^ 2 := fun x =>
+      lintegral_congr_ae (hff'.mono fun y hy => by simp [hy])
+    simp_rw [h1]
+    exact lintegral_congr_ae (hff'.mono fun x hx => by simp [hx])
+  rw [hdbl]
+  have havg : ⨍ y in s, f y = ⨍ y in s, hfa.mk f y := by
+    rw [setAverage_eq, setAverage_eq, integral_congr_ae hff']
+  rw [havg]
+  set f' := hfa.mk f
+  set c := ⨍ y in s, f' y with hc
+  rw [lintegral_congr_ae (g := fun x => ‖f' x - c‖ₑ ^ 2) (hff'.mono fun x hx => by simp only [hx])]
+  have : IsFiniteMeasure (volume.restrict s) :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact hfin.lt_top⟩
+  rw [← lintegral_const_mul' _ _ (ENNReal.inv_ne_top.mpr h0)]
+  apply lintegral_mono
+  intro x
+  -- 3. f(x) - λ = |s|⁻¹ ∫_s (f(x) - f(y)) dy
+  have hint : Integrable f' (volume.restrict s) := hf'L2.integrable one_le_two
+  have hkey : f' x - c = (volume.real s)⁻¹ * ∫ y in s, (f' x - f' y) := by
+    have hu : (volume.restrict s).real univ = volume.real s := by simp [Measure.real]
+    have hreal : volume.real s ≠ 0 := by
+      simp [Measure.real, ENNReal.toReal_eq_zero_iff, h0, hfin]
+    rw [integral_sub (integrable_const _) hint, integral_const, hu, hc, setAverage_eq]
+    simp only [smul_eq_mul]
+    field_simp
+  -- 4. Cauchy–Schwarz on s: (∫_s |u|)^2 ≤ |s| ∫_s |u|^2
+  have hCS : (∫⁻ y in s, ‖f' x - f' y‖ₑ) ^ 2 ≤ volume s * ∫⁻ y in s, ‖f' x - f' y‖ₑ ^ 2 := by
+    have hh : AEStronglyMeasurable (fun y => f' x - f' y) (volume.restrict s) :=
+      aestronglyMeasurable_const.sub hint.aestronglyMeasurable
+    have key := eLpNorm_le_eLpNorm_mul_rpow_measure_univ (p := 1) (q := 2)
+      (μ := volume.restrict s) one_le_two hh
+    rw [eLpNorm_one_eq_lintegral_enorm hh,
+      eLpNorm_eq_lintegral_rpow_enorm_toReal two_ne_zero ENNReal.ofNat_ne_top hh] at key
+    have e1 : (1 / (1 : ℝ≥0∞).toReal - 1 / (2 : ℝ≥0∞).toReal) = 1 / 2 := by norm_num
+    rw [e1, Measure.restrict_apply_univ] at key
+    have e2 : ∀ y, ‖f' x - f' y‖ₑ ^ (2 : ℝ≥0∞).toReal = ‖f' x - f' y‖ₑ ^ 2 := fun y => by simp
+    simp_rw [e2] at key
+    calc (∫⁻ y in s, ‖f' x - f' y‖ₑ) ^ 2
+        ≤ ((∫⁻ y in s, ‖f' x - f' y‖ₑ ^ 2) ^ (1 / (2 : ℝ≥0∞).toReal) *
+            volume s ^ (1 / 2 : ℝ)) ^ 2 := by gcongr
+      _ = volume s * ∫⁻ y in s, ‖f' x - f' y‖ₑ ^ 2 := by
+        rw [mul_pow, ← ENNReal.rpow_mul_natCast, ← ENNReal.rpow_mul_natCast]
+        norm_num
+        rw [mul_comm]
+  -- 5. pointwise bound and conclusion
+  have hnorm : ‖f' x - c‖ₑ ≤ (volume s)⁻¹ * ∫⁻ y in s, ‖f' x - f' y‖ₑ := by
+    rw [hkey, enorm_mul]
+    gcongr
+    · rw [Measure.real, Real.enorm_eq_ofReal (inv_nonneg.mpr ENNReal.toReal_nonneg),
+        ENNReal.ofReal_inv_of_pos (ENNReal.toReal_pos h0 hfin), ENNReal.ofReal_toReal hfin]
+    · exact enorm_integral_le_lintegral_enorm _
+  calc ‖f' x - c‖ₑ ^ 2 ≤ ((volume s)⁻¹ * ∫⁻ y in s, ‖f' x - f' y‖ₑ) ^ 2 := by gcongr
+    _ = (volume s)⁻¹ ^ 2 * (∫⁻ y in s, ‖f' x - f' y‖ₑ) ^ 2 := by rw [mul_pow]
+    _ ≤ (volume s)⁻¹ ^ 2 * (volume s * ∫⁻ y in s, ‖f' x - f' y‖ₑ ^ 2) := by gcongr
+    _ = (volume s)⁻¹ * ∫⁻ y in s, ‖f' x - f' y‖ₑ ^ 2 := by
+      rw [pow_two, ← mul_assoc, mul_assoc _ _ (volume s), ENNReal.inv_mul_cancel h0 hfin, mul_one]
 
 end Submission
 
