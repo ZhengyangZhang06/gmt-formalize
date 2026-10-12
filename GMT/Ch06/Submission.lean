@@ -359,6 +359,154 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The orientation error term of the blow-up (Simon Ch. 6, proof of 8.2): write
+`b(s) = ∫⁻_{M ∩ B̄_s(x)} θ dHⁿ` and `a(s) = ∫⁻_{M ∩ B̄_s(x)} θ ‖ξ - ξ(x)‖ₑ dHⁿ`.  If
+`b(s) ≤ C sⁿ` for small `s > 0` and `a(s) / b(s) → 0`, then for every continuous compactly
+supported `ω`, `∫_M θ(y) (ξ(y) - ξ(x))(r⁻ⁿ ω(r⁻¹(y - x))) dHⁿ(y) → 0` as `r → 0⁺`.
+With `tsupport ω ⊆ B̄_R(0)` and `‖ω‖ ≤ B`, the integral has extended norm at most
+`B Rⁿ · a(R r) / (R r)ⁿ`, and `a(s) / sⁿ ≤ C · a(s) / b(s) → 0`. -/
+theorem Submission.ind_ab_orientation_error_vanishes :
+    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (x : Eucl P) (ω : Eucl P → Covector (Eucl P) n), NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ y ∈ M, 0 ≤ θ y) → Continuous ω → HasCompactSupport ω → (∃ C : ℝ≥0, ∀ᶠ s in 𝓝[>] (0 : ℝ), ∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P)) ≤ C * ENNReal.ofReal (s ^ n)) → Tendsto (fun s : ℝ => (∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ ∂(μHE[n] : Measure (Eucl P))) / (∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P)))) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => ∫ y in M, θ y * (ξ y - ξ x) ((r ^ n)⁻¹ • ω (r⁻¹ • (y - x))) ∂(μHE[n] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0) := by
+  intro P n M θ ξ x ω hM hθ hω hωc hgrowth hratio
+  obtain ⟨C, hC⟩ := hgrowth
+  -- An estimate in `[0, ∞]`: if `0 < d < ∞`, `b ≤ c d` and `a / b < 1`, then `a / d ≤ c (a / b)`.
+  have key : ∀ (a b d : ℝ≥0∞) (c : ℝ≥0), d ≠ 0 → d ≠ ⊤ → b ≤ c * d → a / b < 1 →
+      a / d ≤ c * (a / b) := by
+    intro a b d c hd0 hdtop hbd hab
+    rw [ENNReal.div_le_iff hd0 hdtop]
+    by_cases hb0 : b = 0
+    · have ha0 : a = 0 := by
+        by_contra hne
+        rw [hb0, ENNReal.div_zero hne] at hab
+        exact absurd hab (not_lt.2 le_top)
+      rw [ha0]; exact zero_le
+    · have hbtop : b ≠ ⊤ := ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.coe_ne_top hdtop) hbd
+      calc a = (a / b) * b := (ENNReal.div_mul_cancel hb0 hbtop).symm
+        _ ≤ (a / b) * ((c : ℝ≥0∞) * d) := by gcongr
+        _ = (c : ℝ≥0∞) * (a / b) * d := by ring
+  -- The normalized error `a(s) / sⁿ` tends to `0`.
+  have hε : Tendsto (fun s : ℝ => (∫⁻ y in M ∩ closedBall x s,
+      ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ ∂(μHE[n] : Measure (Eucl P))) / ENNReal.ofReal (s ^ n))
+      (𝓝[>] 0) (𝓝 0) := by
+    have h1 : ∀ᶠ s in 𝓝[>] (0 : ℝ), (∫⁻ y in M ∩ closedBall x s,
+        ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ ∂(μHE[n] : Measure (Eucl P))) /
+          ENNReal.ofReal (s ^ n) ≤
+        (C : ℝ≥0∞) * ((∫⁻ y in M ∩ closedBall x s,
+          ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ ∂(μHE[n] : Measure (Eucl P))) /
+            (∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P)))) := by
+      filter_upwards [hC, hratio.eventually (gt_mem_nhds (show (0 : ℝ≥0∞) < 1 from zero_lt_one)),
+        self_mem_nhdsWithin] with s hbs hrs hs
+      have hs' : (0 : ℝ) < s := hs
+      exact key _ _ _ C (ENNReal.ofReal_pos.2 (pow_pos hs' n)).ne' ENNReal.ofReal_ne_top hbs hrs
+    have h2 := ENNReal.Tendsto.const_mul hratio (Or.inr (ENNReal.coe_ne_top (r := C)))
+    rw [mul_zero] at h2
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h2
+      (Eventually.of_forall fun _ => zero_le) h1
+  -- A radius `R > 0` with `tsupport ω ⊆ B̄_R(0)` and a bound `B` for `‖ω‖`.
+  obtain ⟨R₀, hR₀⟩ := (hωc.isCompact.isBounded).subset_closedBall (0 : Eucl P)
+  obtain ⟨R, hRpos, hRsub⟩ : ∃ R : ℝ, 0 < R ∧ tsupport ω ⊆ closedBall (0 : Eucl P) R :=
+    ⟨max R₀ 1, lt_max_of_lt_right one_pos,
+      hR₀.trans (closedBall_subset_closedBall (le_max_left _ _))⟩
+  obtain ⟨B, hB⟩ := hωc.exists_bound_of_continuous hω
+  have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
+  -- For `r > 0` the integrand vanishes off `B̄_{Rr}(x)` and is bounded on `M` by
+  -- `(rⁿ)⁻¹ B θ ‖ξ - ξ(x)‖`.
+  have hbound : ∀ r : ℝ, 0 < r →
+      ‖∫ y in M, θ y * (ξ y - ξ x) ((r ^ n)⁻¹ • ω (r⁻¹ • (y - x))) ∂(μHE[n] : Measure (Eucl P))‖ₑ ≤
+        ENNReal.ofReal ((r ^ n)⁻¹ * B) *
+          ∫⁻ y in M ∩ closedBall x (R * r), ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ
+            ∂(μHE[n] : Measure (Eucl P)) := by
+    intro r hr
+    refine (enorm_integral_le_lintegral_enorm _).trans ?_
+    have hpt : ∀ᵐ y ∂((μHE[n] : Measure (Eucl P)).restrict M),
+        ‖θ y * (ξ y - ξ x) ((r ^ n)⁻¹ • ω (r⁻¹ • (y - x)))‖ₑ ≤
+          (closedBall x (R * r)).indicator
+            (fun y => ENNReal.ofReal ((r ^ n)⁻¹ * B) * (ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ)) y := by
+      filter_upwards [ae_restrict_mem₀ hM] with y hy
+      by_cases hyB : y ∈ closedBall x (R * r)
+      · rw [indicator_of_mem hyB]
+        have hcn : 0 ≤ (r ^ n)⁻¹ := inv_nonneg.2 (pow_nonneg hr.le n)
+        have hreal : ‖θ y * (ξ y - ξ x) ((r ^ n)⁻¹ • ω (r⁻¹ • (y - x)))‖ ≤
+            ((r ^ n)⁻¹ * B) * (θ y * ‖ξ y - ξ x‖) := by
+          rw [norm_mul, Real.norm_of_nonneg (hθ y hy)]
+          have hθy := hθ y hy
+          calc θ y * ‖(ξ y - ξ x) ((r ^ n)⁻¹ • ω (r⁻¹ • (y - x)))‖
+              ≤ θ y * (‖ξ y - ξ x‖ * ‖(r ^ n)⁻¹ • ω (r⁻¹ • (y - x))‖) := by
+                gcongr
+                exact (ξ y - ξ x).le_opNorm _
+            _ ≤ θ y * (‖ξ y - ξ x‖ * ((r ^ n)⁻¹ * B)) := by
+                gcongr
+                rw [norm_smul, Real.norm_of_nonneg hcn]
+                gcongr
+                exact hB _
+            _ = ((r ^ n)⁻¹ * B) * (θ y * ‖ξ y - ξ x‖) := by ring
+        calc ‖θ y * (ξ y - ξ x) ((r ^ n)⁻¹ • ω (r⁻¹ • (y - x)))‖ₑ
+            = ENNReal.ofReal ‖θ y * (ξ y - ξ x) ((r ^ n)⁻¹ • ω (r⁻¹ • (y - x)))‖ :=
+              (ofReal_norm _).symm
+          _ ≤ ENNReal.ofReal (((r ^ n)⁻¹ * B) * (θ y * ‖ξ y - ξ x‖)) := ENNReal.ofReal_le_ofReal hreal
+          _ = ENNReal.ofReal ((r ^ n)⁻¹ * B) * (ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ) := by
+              have he : ENNReal.ofReal ‖ξ y - ξ x‖ = ‖ξ y - ξ x‖ₑ :=
+                ofReal_norm (E := NVector (Eucl P) n) _
+              rw [ENNReal.ofReal_mul (mul_nonneg hcn hB0), ENNReal.ofReal_mul (hθ y hy), he]
+      · rw [indicator_of_notMem hyB]
+        have hω0 : ω (r⁻¹ • (y - x)) = 0 := by
+          apply image_eq_zero_of_notMem_tsupport
+          intro hmem
+          apply hyB
+          have h1 := hRsub hmem
+          rw [mem_closedBall, dist_zero_right, norm_smul,
+            Real.norm_of_nonneg (inv_nonneg.2 hr.le), inv_mul_le_iff₀ hr] at h1
+          rw [mem_closedBall, dist_eq_norm]
+          linarith
+        simp [hω0]
+    calc ∫⁻ y in M, ‖θ y * (ξ y - ξ x) ((r ^ n)⁻¹ • ω (r⁻¹ • (y - x)))‖ₑ
+          ∂(μHE[n] : Measure (Eucl P))
+        ≤ ∫⁻ y in M, (closedBall x (R * r)).indicator
+            (fun y => ENNReal.ofReal ((r ^ n)⁻¹ * B) * (ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ)) y
+            ∂(μHE[n] : Measure (Eucl P)) := lintegral_mono_ae hpt
+      _ = ∫⁻ y in M ∩ closedBall x (R * r),
+            ENNReal.ofReal ((r ^ n)⁻¹ * B) * (ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ)
+            ∂(μHE[n] : Measure (Eucl P)) := by
+          rw [lintegral_indicator measurableSet_closedBall,
+            Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+      _ = ENNReal.ofReal ((r ^ n)⁻¹ * B) * ∫⁻ y in M ∩ closedBall x (R * r),
+            ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ ∂(μHE[n] : Measure (Eucl P)) :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+  -- Rewrite the bound as `B Rⁿ · a(R r) / (R r)ⁿ`.
+  have hbound2 : ∀ r : ℝ, 0 < r →
+      ‖∫ y in M, θ y * (ξ y - ξ x) ((r ^ n)⁻¹ • ω (r⁻¹ • (y - x))) ∂(μHE[n] : Measure (Eucl P))‖ₑ ≤
+        ENNReal.ofReal (B * R ^ n) * ((∫⁻ y in M ∩ closedBall x (R * r),
+          ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ ∂(μHE[n] : Measure (Eucl P))) /
+            ENNReal.ofReal ((R * r) ^ n)) := by
+    intro r hr
+    refine (hbound r hr).trans (le_of_eq ?_)
+    have hRr : 0 < R * r := mul_pos hRpos hr
+    have hd0 : ENNReal.ofReal ((R * r) ^ n) ≠ 0 := (ENNReal.ofReal_pos.2 (pow_pos hRr n)).ne'
+    have hdt : ENNReal.ofReal ((R * r) ^ n) ≠ ⊤ := ENNReal.ofReal_ne_top
+    conv_lhs => rw [← ENNReal.div_mul_cancel hd0 hdt (b := ∫⁻ y in M ∩ closedBall x (R * r),
+      ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ ∂(μHE[n] : Measure (Eucl P)))]
+    rw [mul_comm _ (ENNReal.ofReal ((R * r) ^ n)), ← mul_assoc,
+      ← ENNReal.ofReal_mul (mul_nonneg (inv_nonneg.2 (pow_nonneg hr.le n)) hB0)]
+    congr 2
+    rw [mul_pow]
+    field_simp
+  -- As `r → 0⁺`, `R r → 0⁺`, so the bound tends to `0`.
+  have hcomp : Tendsto (fun r : ℝ => R * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have h1 : Tendsto (fun r : ℝ => R * r) (𝓝 0) (𝓝 (R * 0)) := tendsto_const_nhds.mul tendsto_id
+      rw [mul_zero] at h1
+      exact h1.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hRpos hr
+  have hlim := ENNReal.Tendsto.const_mul (hε.comp hcomp)
+    (Or.inr (ENNReal.ofReal_ne_top (r := B * R ^ n)))
+  rw [mul_zero] at hlim
+  rw [tendsto_zero_iff_enorm_tendsto_zero]
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
+    (Eventually.of_forall fun _ => zero_le) ?_
+  filter_upwards [self_mem_nhdsWithin] with r hr
+  exact hbound2 r hr
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
