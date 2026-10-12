@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1.monotonicity_identity-a1",
+  "parent_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1",
+  "depth": 3,
+  "title": "Monotonicity identity at every centre and every radius for a stationary varifold on ℝ^N",
+  "statement": "Assume StationaryMonotonicityIdentity (Simon 8.3.4). Let C be a stationary n-varifold on U = ℝ^N, with weight μ := μ_C. Then for every y ∈ ℝ^N:\n(a) there is θ ∈ [0,∞] such that Θ^n(μ, y) exists and equals θ (HasDensity n μ y θ), and θ + ω⁻¹·D_y(ρ) = R_μ(y,ρ) for every ρ > 0;\n(b) ρ ↦ R_μ(y,ρ) is non-decreasing on (0,∞).\nHere D_y(ρ) := normalDefect C y (B_ρ(y)) = ∫_{B_ρ(y) × G} ofReal(|(x−y) − p_S(x−y)|² / |x−y|^{n+2}) dC(x,S), R_μ(y,ρ) = μ(B_ρ(y)) / (ω·ofReal(ρ)^n), B_ρ(y) is the closed ball, and ω = unitBallVolume n.",
+  "lean_statement": "StationaryMonotonicityIdentity → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))), C.Stationary → ∀ y : Euclidean N, (∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ∀ ρ : ℝ, 0 < ρ → θ + (unitBallVolume n)⁻¹ * normalDefect C y (closedBall y ρ) = densityRatio n C.weight y ρ) ∧ MonotoneOn (densityRatio n C.weight y) (Ioi 0)",
+  "lean_name": "allard_tc_scf_monotonicity_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-stationary-cone-flat-a1-monotonicity-identity-a1-a1"
+}

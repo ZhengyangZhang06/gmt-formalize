@@ -1,0 +1,82 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.allard_tangent_cones-a1.stationary_cone_flat-a1`
+- Child DAG node: `root.allard_tangent_cones-a1.stationary_cone_flat-a1.ratio_upper_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 of the parent proof, which is the printed display before 5.5(2): μ_C(B_ρ(y))/(ω_nρ^n) ≤ μ_C(B_R(y))/(ω_nR^n) ≤ μ_C(B_{R+|y|}(0))/(ω_nR^n) = θ₀(1+|y|/R)^n → θ₀ as R ↑ ∞. Notation: ω := unitBallVolume n = vol_n(B°_1(0)) (volume of the open unit ball of EuclideanSpace ℝ (Fin n)), as an element of [0,∞]; B_ρ(y) := closedBall y ρ; R_μ(y,ρ) := densityRatio n μ y ρ = μ(B_ρ(y)) / (ω · ofReal(ρ)^n); G := Grassmannian N n.
+1. ω ∈ (0,∞). Lebesgue measure on EuclideanSpace ℝ (Fin n) is an additive Haar measure, so it is positive on the nonempty open set B°_1(0) (Metric.measure_ball_pos) and finite on the bounded set B°_1(0) (measure_ball_lt_top). This holds for n = 0 too: the space is one point and ω = 1.
+2. Fix y ∈ ℝ^N and ρ > 0, and let ρ' ≥ ρ, so ρ' > 0. By (i), R(y,ρ) ≤ R(y,ρ').
+3. B_ρ'(y) ⊆ B_{ρ'+|y|}(0): if |z − y| ≤ ρ' then |z| = |(z − y) + y| ≤ |z − y| + |y| ≤ ρ' + |y|. By monotonicity of μ and (ii) with radius ρ' + |y| > 0, μ(B_ρ'(y)) ≤ μ(B_{ρ'+|y|}(0)) = a·ω·ofReal(ρ'+|y|)^n.
+4. Divide by ω·ofReal(ρ')^n (division in [0,∞] is monotone in the numerator). Then cancel ω ∈ (0,∞) (ENNReal.mul_div_mul_left):
+   R(y,ρ') ≤ a·ω·ofReal(ρ'+|y|)^n / (ω·ofReal(ρ')^n) = a·(ofReal(ρ'+|y|)^n / ofReal(ρ')^n).
+   Since ρ'+|y| ≥ 0 and ρ' > 0, ofReal(s)^n = ofReal(s^n) (s ≥ 0) and ofReal(p)/ofReal(q) = ofReal(p/q) (q > 0). So the right side is a·ofReal(((ρ'+|y|)/ρ')^n) = a·ofReal((1 + |y|/ρ')^n).
+5. By steps 2–4, R(y,ρ) ≤ f(ρ') := a·ofReal((1 + |y|/ρ')^n) for every ρ' ≥ ρ, i.e. eventually as ρ' → ∞.
+6. As ρ' → ∞, |y|/ρ' → 0, so (1 + |y|/ρ')^n → 1 in ℝ. By continuity of ofReal, ofReal((1+|y|/ρ')^n) → 1 in [0,∞]. Left multiplication by the constant a is continuous at the limit 1 ≠ 0 (ENNReal.Tendsto.const_mul), so f(ρ') → a·1 = a.
+7. A constant bounded above by f eventually is bounded by its limit (ge_of_tendsto). So R(y,ρ) ≤ a. ∎
+Remark: if a = ∞ the conclusion is trivial, and the argument above also covers it.
+
+## Key steps
+
+1. Monotonicity gives R(y,ρ) ≤ R(y,ρ') for ρ' ≥ ρ.
+2. B_ρ'(y) ⊆ B_{ρ'+|y|}(0) and hypothesis (ii) bound R(y,ρ') by a·ofReal((1+|y|/ρ')^n), after cancelling ω ∈ (0,∞).
+3. (1+|y|/ρ')^n → 1 as ρ' → ∞, so the bound tends to a; hence R(y,ρ) ≤ a.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum project/GMT/Ch08/Contract.lean GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487); git rev-parse HEAD in .lake/packages/simongmt (2b3663083f3fe399b6296fb8eaee52169170e197) and .lake/packages/mathlib (25730c7c)`
+- `sed -n 560,640p book/chapter-08.txt (printed proof of 5.5: display (2), (7), (8), Constancy 4.1)`
+- `grep -n '^theorem' Chapter08/TangentRadialRigidity.lean Chapter08/ConstancyTangentGraph.lean Chapter08/StationaryMonotonicity.lean`
+- `grep -rn 'def project|def plane|def normalProject|theorem continuous_normalProject|theorem eq_of_plane_eq|theorem normalProject_eq_sub|finrank_plane|instance.*CompactSpace' Poincare/SimonGMT`
+- `grep 'def IsSimonSubmanifold|def IsSimonLocalRepresentation|def IsProperOnInto' Chapter02/Submanifold.lean`
+- `grep 'structure Varifold|def weight|theorem weight_apply|weight_finite_on_compact|def Stationary|def StationaryOn|Stationary.stationaryOn|fst_mem_weight_support_of_mem_support|structure TestVectorField' Chapter08`
+- `grep 'mem_support_iff_forall|support_subset_of_isClosed|support_mem_ae' mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `grep 'theorem tendsto_measure_iInter_atTop' mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `grep 'theorem addHaar_closedBall|addHaar_unitClosedBall_eq_addHaar_unitBall|Nontrivial' mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `grep 'theorem|notation' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (Isometry.euclideanHausdorffMeasure_image/_preimage, EuclideanSpace.euclideanHausdorffMeasure_eq_volume)`
+- `grep 'theorem coe_norm|theorem norm_coe' mathlib/Mathlib/Analysis/Normed/Group/Submodule.lean mathlib/Mathlib/Analysis/Normed/Group/Subgroup.lean`
+- `python3 dump of dag.json node ids, lean_names, statuses and statements; grep -c allard_tc_scf dag.json (0); grep -rl allard_tc_scf GMT and the run's nodes/*.json/*.md (none); git log --all -S allard_tc_scf (none)`
+- `contract_scope(Contract.lean, 'GMT.Ch08.main_theorem') from verifier/gmt-compare.py and validate_lean_statement from verifier/lean_contract.py (all 8 child types and the parent pass)`
+- `lake env lean /tmp/scf-decomp-k7q2/lean/Types.lean (8 child types plus the parent in the replayed scope, autoImplicit false: only sorry warnings)`
+- `lake env lean /tmp/scf-decomp-k7q2/lean/Full.lean (sorry-free proofs of the 8 children and the parent assembly, comparator-form targets, #print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/scf-decomp-k7q2/lean/{NoExtraImports,Imp4,Imp7,ImpP}.lean (minimal extra imports per child and for the parent)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Group/Submodule.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/Normed/Group/Subgroup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-stationary-cone-flat-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-stationary-cone-flat-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-flat-blowup-ball-limits-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryMonotonicity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/StationaryCutoff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRadialRigidity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangentGraph.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangent.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancySupport.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/tmp/scf-decomp-k7q2/lean/Types.lean`
+- `/tmp/scf-decomp-k7q2/lean/Full.lean`
+
+The snapshot is project 63436ae6 with Mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace Contract and Submission, and the pinned SimonGMT is 2b366308. Mathlib supplies the measure-theoretic tools the children cite: Measure.mem_support_iff_forall, Measure.support_subset_of_isClosed, tendsto_measure_iInter_atTop, Measure.addHaar_closedBall (no Nontrivial assumption, so n = 0 needs no special case), Isometry.euclideanHausdorffMeasure_preimage, EuclideanSpace.euclideanHausdorffMeasure_eq_volume and Submodule.norm_coe. SimonGMT supplies Grassmannian.continuous_project, normalProject_eq_sub, eq_of_plane_eq, finrank_plane, Varifold.weight_support_eq_fst_image_support, weight_finite_on_compact, weight_apply and IsSimonSubmanifold/IsSimonLocalRepresentation/IsProperOnInto, all with standard axioms. TangentRadialRigidity proves the zero-defect step only at centre 0 under a constant-ratio hypothesis, so a general-centre child (zero_defect_plane) is needed. No existing comparator-accepted declaration has the type of any proposed child. All 8 child types elaborate in the comparator scope and pass validate_lean_statement. Sorry-free proofs of all children and of the parent assembly compile. The only axioms are propext, Classical.choice and Quot.sound.

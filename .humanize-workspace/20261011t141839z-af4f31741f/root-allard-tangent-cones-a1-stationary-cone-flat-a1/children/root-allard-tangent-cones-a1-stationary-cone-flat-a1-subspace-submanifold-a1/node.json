@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1.subspace_submanifold-a1",
+  "parent_id": "root.allard_tangent_cones-a1.stationary_cone_flat-a1",
+  "depth": 3,
+  "title": "An n-dimensional linear subspace of ℝ^N is a C² Simon submanifold",
+  "statement": "For every linear subspace P of ℝ^N with dim P = n (Module.finrank ℝ P = n), P is an n-dimensional C² submanifold in Simon's sense (Ch. 2, §4): Chapter02.IsSimonSubmanifold (E := ℝ^n) 2 P. That is, 1 ≤ 2, and every point of P lies in an open set W carrying a one-to-one C² parametrization φ of W ∩ P from an open V ⊆ ℝ^n that is proper relative to (V, W) and has injective derivative everywhere.",
+  "lean_statement": "∀ (N n : ℕ) (P : Submodule ℝ (Euclidean N)), Module.finrank ℝ P = n → Chapter02.IsSimonSubmanifold (E := Euclidean n) 2 (P : Set (Euclidean N))",
+  "lean_name": "allard_tc_scf_subspace_submanifold",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-stationary-cone-flat-a1-subspace-submanifold-a1-a1"
+}

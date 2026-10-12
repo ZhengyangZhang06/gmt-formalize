@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def StationaryMonotonicityIdentity|def ConstancyTheorem|noncomputable def (unitBallVolume|densityRatio|normalDefect|planeVarifoldMeasure)|def (HasDensity|classicalTangentSpace)",
+        "mem_support_iff_forall|support_subset_of_isClosed",
+        "theorem tendsto_measure_iInter_atTop",
+        "theorem addHaar_closedBall",
+        "euclideanHausdorffMeasure_preimage|euclideanHausdorffMeasure_eq_volume",
+        "protected theorem Tendsto.const_mul|theorem Tendsto.const_mul",
+        "weight_support_eq_fst_image_support",
+        "theorem continuous_project|theorem continuous_normalProject",
+        "theorem eq_of_plane_eq",
+        "allard_tc_scf_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env python3 /tmp/scf-independent-audit-smm7i9fl/run_checks.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env python3 /tmp/scf-independent-audit-smm7i9fl/compare_types.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialFirstVariation.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangent.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyTangentGraph.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-stationary-cone-flat-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-stationary-cone-flat-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+        "/tmp/scf-decomp-k7q2/lean/Full.lean",
+        "/tmp/scf-independent-audit-smm7i9fl/ChallengeTypes.lean",
+        "/tmp/scf-independent-audit-smm7i9fl/Full.lean",
+        "/tmp/scf-independent-audit-smm7i9fl/LibraryAxioms.lean",
+        "/tmp/scf-independent-audit-smm7i9fl/PPBase.log",
+        "/tmp/scf-independent-audit-smm7i9fl/PPExtra.log"
+      ],
+      "conclusion": "The eight-child split is appropriate and establishes exactly the selected parent contract. The snapshot and installed package revisions agree; inspected Mathlib files match the snapshot, and the contract matches the workspace byte-for-byte. All child statements are standalone one-line propositions, elaborate without child implementations, and retain identical fully elaborated types after the additional imports. All names are bare identifiers; no collisions were found in the 164-node DAG or 71 other decomposition plans, and no accepted declaration is reused. Actual sibling references match depends_on and form an acyclic graph. Independent step-by-step proof review found no gap. Fresh compilation of the supplied eight proofs, exact parent assembly, and comparator-form targets succeeded; their only axioms are propext, Classical.choice and Quot.sound. Measure scaling resolves correctly, and no inline matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "monotonicity_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. Global stationarity supplies each local identity; uniqueness on the nontrivial right-neighborhood filter identifies the densities. Increasing integer radii cover every positive radius, and monotonicity of the defect integral proves the second conclusion without circular reliance."
+    },
+    {
+      "key": "ratio_upper_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Ball inclusion and ratio monotonicity give the stated bound, with valid cancellation of positive finite unit-ball volume. The limiting multiplier tends to one; ENNReal multiplication is continuous there even when a is infinity. The proof covers n = 0."
+    },
+    {
+      "key": "ratio_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finiteness, monotonicity and almost-everywhere density hypotheses match exactly. The proof obtains good points in every support neighborhood without assuming their set is measurable, compares shifted balls, and applies continuity from above to measurable decreasing finite-measure balls. Division uses a positive finite denominator."
+    },
+    {
+      "key": "zero_defect_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact arbitrary-domain statement. Measurability justifies the zero-integral implication, the case x = y is handled separately, and countably many radii exhaust the ambient space. Continuity then extends the almost-everywhere identity to the support, giving membership in the projection range."
+    },
+    {
+      "key": "subspace_submanifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The dimension hypothesis supplies the required isometric parametrization. The global chart satisfies every field of IsSimonLocalRepresentation, including relative properness and injectivity of the derivative. Its Euclidean source is complete, so the closed-embedding argument is justified. The prose matches the exact C² proposition."
+    },
+    {
+      "key": "subspace_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches the contract's curve-based tangent definition. Difference quotients eventually lie in the closed finite-dimensional subspace, proving one inclusion; affine curves prove the reverse inclusion. The hypothesis y ∈ P is used correctly, with no sibling or parent reliance."
+    },
+    {
+      "key": "constancy_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit ConstancyTheorem premise and geometric hypotheses match. Exactly the two declared siblings supply the submanifold and tangent facts. Convexity gives preconnectedness; uniqueness of the Grassmannian plane identifies the constancy set. Measurable map/restriction formulas and measure extensionality yield the claimed equality."
+    },
+    {
+      "key": "plane_ball_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cylinder-mass statement matches the prose exactly. Map and restriction evaluation reduce it to Hausdorff measure on the plane; a dimension-matched linear isometry transfers this to Euclidean volume. The pinned addHaar_closedBall theorem requires no nontriviality assumption, so the computation also covers n = 0."
+    }
+  ],
+  "required_changes": []
+}
