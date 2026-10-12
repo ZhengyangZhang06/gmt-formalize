@@ -335,6 +335,28 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Basic facts at a reduced-boundary point** (Steps 1 and 4 of the normal-average bounds in the
+proof of Simon Ch. 3, Theorem 4.3; definition (4.2) of `∂*E`, `chapter-03.txt` lines 576–580, and
+of `ν_E(x)` in 4.3, lines 588–596). If `x ∈ ∂*E`, then `x ∈ U` and the averages
+`A(ρ) = μ(B_ρ(x))⁻¹ ∫_{B_ρ(x)} ν dμ` tend to some `v` with `|v| = 1` as `ρ ↓ 0`; by uniqueness
+of limits along the nontrivial filter `𝓝[>] 0`, `ν_E(x) = limUnder A = v`. If `μ(B_ρ(x)) = 0`
+for some `ρ > 0`, then `μ(B_r(x)) = 0` and `A(r) = 0⁻¹ • ∫ ν = 0` for `r ∈ (0, ρ)`, so `A → 0`
+and `v = 0`, contradicting `|v| = 1`. -/
+theorem Submission.deGiorgiNAB_reducedBoundary_basic : ∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), ∀ x ∈ reducedBoundary U μ ν, x ∈ U ∧ ‖reducedNormal μ ν x‖ = 1 ∧ Tendsto (normalAverage μ ν x) (𝓝[>] 0) (𝓝 (reducedNormal μ ν x)) ∧ ∀ ρ : ℝ, 0 < ρ → 0 < μ (Metric.ball x ρ) := by
+  intro N U μ ν x hx
+  -- Step 1: `x ∈ U` and `A → v` along `𝓝[>] 0` with `‖v‖ = 1`.
+  obtain ⟨hxU, v, hv, hv1⟩ := hx
+  -- Steps 2–3: `ν_E(x) = limUnder A = v` (`𝓝[>] 0` is nontrivial and `ℝᴺ` is Hausdorff).
+  have he : reducedNormal μ ν x = v := hv.limUnder_eq
+  refine ⟨hxU, he ▸ hv1, he ▸ hv, fun ρ hρ ↦ pos_iff_ne_zero.2 fun h0 ↦ ?_⟩
+  -- Step 4: if `μ(B_ρ(x)) = 0`, then `A = 0` on `(0, ρ)`, so `v = 0`, contradicting `‖v‖ = 1`.
+  have hA : normalAverage μ ν x =ᶠ[𝓝[>] 0] fun _ ↦ 0 := by
+    filter_upwards [Ioo_mem_nhdsGT hρ] with r hr
+    rw [normalAverage, measure_mono_null (Metric.ball_subset_ball hr.2.le) h0,
+      ENNReal.toReal_zero, inv_zero, zero_smul]
+  have hv0 : v = 0 := tendsto_nhds_unique_of_eventuallyEq hv tendsto_const_nhds hA
+  simp [hv0] at hv1
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
