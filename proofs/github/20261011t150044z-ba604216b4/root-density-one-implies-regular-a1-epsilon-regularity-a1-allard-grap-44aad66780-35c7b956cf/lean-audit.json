@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a11877f91b2264a1ba397d4330b166a60ba51acc44e21c5c8f579bc43509aa37",
+  "git_delta": {
+    "base_commit": "8e62c746ab1be9035958b3575386379f9315716c",
+    "candidate_commit": "f75cf269601ce58dd438b7944058b9ba561cf141",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_th_trace_proj_comp_compl",
+    "diff_sha256": "14e7204ae90132def17b9fab5e7a4e42fdde079aec7e9b17d70bf51944a91872",
+    "source_sha256": "e007609f8280e935c12e667b38c0ad091c9e4330cce8c104a6d01591973c8453",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_th_trace_proj_comp_compl",
+      "statement": "∀ (P : ℕ) (T S : Submodule ℝ (Euclid P)), Module.finrank ℝ T = Module.finrank ℝ S → LinearMap.trace ℝ (Euclid P) (T.starProjection.toLinearMap ∘ₗ (ContinuousLinearMap.id ℝ (Euclid P) - S.starProjection).toLinearMap) = 1 / 2 * ∑ i : Fin P, ‖T.starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
