@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8259b777a271f64907d92689a91e6238298e122da405f50676a11df76828cc90",
+  "git_delta": {
+    "base_commit": "f6931624e73b37c02d9f92ba21391a09b0a82fe1",
+    "candidate_commit": "0b7b368e1df4961e51d3af01bcbc14a66b714a0b",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_lbm_vague_cylinder_bounds",
+    "diff_sha256": "7cb4279990743c267c3bf8398edb57ef72b16e8e3840a0a91d8450f5e16c774a",
+    "source_sha256": "ff06202de6379aa20136b0c86f94429946947def3775d30368776c92258def27",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_lbm_vague_cylinder_bounds",
+      "statement": "∀ (N n : ℕ) (μs : ℕ → Measure (Euclidean N × Grassmannian N n)) (μ : Measure (Euclidean N × Grassmannian N n)) (a b : ℝ) (La Lb : ℝ≥0∞), VagueConverges μs μ → a < b → μ (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ → Tendsto (fun j ↦ μs j (closedBall (0 : Euclidean N) a ×ˢ (univ : Set (Grassmannian N n)))) atTop (𝓝 La) → Tendsto (fun j ↦ μs j (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n)))) atTop (𝓝 Lb) → Lb ≠ ∞ → μ (closedBall (0 : Euclidean N) a ×ˢ (univ : Set (Grassmannian N n))) ≤ Lb ∧ La ≤ μ (closedBall (0 : Euclidean N) b ×ˢ (univ : Set (Grassmannian N n)))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
