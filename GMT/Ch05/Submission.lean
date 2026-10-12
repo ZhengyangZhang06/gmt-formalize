@@ -560,6 +560,47 @@ theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗ�
     obtain ⟨h, hh, rfl⟩ := Submodule.mem_map.mp hw
     rw [← map_sub, hsub, sub_self, sub_zero]
     exact (q.inner_map_map _ _).trans (horth h hh)
+/-- **Tilt-excess as a lower integral** (Simon Ch. 5, 4.1; proof of 5.2, (10)).  If
+`y ↦ p_{T_y M}` is `μ_V`-a.e. strongly measurable and `μ_V(B_s(ζ)) < ∞`, then
+`∫⁻_{B_s(ζ)} |p_{T_y M} − p_T|² dμ_V = sⁿ E(ζ, s, T)`.  Both projections have operator norm
+`≤ 1`, so the integrand lies in `[0, 4(n + ℓ)]`; it is therefore integrable on the ball, and its
+lower integral is the real integral `∫_{B_s(ζ)} |p_{T_y M} − p_T|² dμ_V = sⁿ E(ζ, s, T)`. -/
+theorem allard52_cft_tilt_lintegral_eq : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (ζ : Amb n ℓ) (s : ℝ) (T : Submodule ℝ (Amb n ℓ)), 0 < s → V.weight (closedBall ζ s) < ⊤ → ∫⁻ y in closedBall ζ s, ENNReal.ofReal (hsNormSq (V.tangentProj y - T.starProjection)) ∂V.weight = ENNReal.ofReal (s ^ n * V.tiltExcess ζ s T) := by
+  intro n ℓ U V hmeas ζ s T hs hfin
+  -- every tangent projection is an orthogonal projection or `0`, so has operator norm `≤ 1`
+  have hp : ∀ y, ‖V.tangentProj y‖ ≤ 1 := by
+    intro y
+    rw [RectifiableVarifold.tangentProj]
+    split
+    · exact Submodule.starProjection_norm_le _
+    · simp
+  -- pointwise bounds `0 ≤ |p_y - p_T|² ≤ 4 (n + ℓ)`, from `‖p_y - p_T‖ ≤ 2` and `|eᵢ| = 1`
+  have hbd : ∀ y, 0 ≤ hsNormSq (V.tangentProj y - T.starProjection) ∧
+      hsNormSq (V.tangentProj y - T.starProjection) ≤ ∑ _i : Fin (n + ℓ), (2 : ℝ) ^ 2 := by
+    intro y
+    have hA : ‖V.tangentProj y - T.starProjection‖ ≤ 2 := by
+      calc ‖V.tangentProj y - T.starProjection‖
+          ≤ ‖V.tangentProj y‖ + ‖T.starProjection‖ := norm_sub_le _ _
+        _ ≤ 1 + 1 := add_le_add (hp y) T.starProjection_norm_le
+        _ = 2 := by norm_num
+    refine ⟨Finset.sum_nonneg fun i _ => sq_nonneg _, Finset.sum_le_sum fun i _ => ?_⟩
+    have h1 := (V.tangentProj y - T.starProjection).le_opNorm (EuclideanSpace.single i 1)
+    rw [PiLp.norm_single, norm_one, mul_one] at h1
+    exact pow_le_pow_left₀ (norm_nonneg _) (h1.trans hA) 2
+  -- `A ↦ |A - p_T|²` is continuous, so `y ↦ |p_y - p_T|²` is a.e. strongly measurable; being
+  -- bounded on the ball of finite measure, it is integrable there
+  have hcont : Continuous fun A : Amb n ℓ →L[ℝ] Amb n ℓ => hsNormSq (A - T.starProjection) := by
+    unfold hsNormSq
+    fun_prop
+  have hint : IntegrableOn (fun y => hsNormSq (V.tangentProj y - T.starProjection))
+      (closedBall ζ s) V.weight :=
+    Measure.integrableOn_of_bounded hfin.ne (hcont.comp_aestronglyMeasurable hmeas)
+      (Eventually.of_forall fun y => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (hbd y).1]
+        exact (hbd y).2)
+  -- `sⁿ E(ζ, s, T) = ∫_{B_s(ζ)} |p_y - p_T|² dμ_V`, and the integrand is nonnegative
+  rw [RectifiableVarifold.tiltExcess, mul_inv_cancel_left₀ (pow_ne_zero n hs.ne'),
+    ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall fun y => (hbd y).1)]
 
 end Submission
 

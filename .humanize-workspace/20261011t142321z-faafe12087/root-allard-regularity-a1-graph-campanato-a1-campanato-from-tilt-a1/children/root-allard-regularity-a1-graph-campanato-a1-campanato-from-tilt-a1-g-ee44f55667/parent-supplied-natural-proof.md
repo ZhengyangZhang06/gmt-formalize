@@ -1,0 +1,115 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.allard_regularity-a1.graph_campanato-a1.campanato_from_tilt-a1`
+- Child DAG node: `root.allard_regularity-a1.graph_campanato-a1.campanato_from_tilt-a1.graph_sqrt_two-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1(a)-1(c) of the parent proof, stated for an arbitrary set D on which f is 1-Lipschitz; the parent applies it with D = B^n_R(0). The graph-coordinate identities of step 1(a) come from the sibling child graph_coordinates, i.e. the accepted declaration lip_approx_graph_coordinates n ℓ q. Only parts (i) and (ii) are used:
+(i) graphPoint a b − graphPoint a' b' = graphPoint (a − a') (b − b');
+(ii) ‖graphPoint a b‖² = ‖a‖² + ‖b‖².
+Parts (iii)-(iv) are not used.
+
+Setting. n, ℓ ∈ ℕ, q a linear isometry (LinearIsometryEquiv) of ℝ^{n+ℓ}, f : ℝ^n → ℝ^ℓ, and D ⊆ ℝ^n with f 1-Lipschitz on D (LipschitzOnWith 1 f D). Put F(x) := q(graphPoint x (f x)).
+
+1. For x, x' ∈ D: ‖f x − f x'‖ = dist(f x, f x') ≤ 1 · dist(x, x') = ‖x − x'‖ (LipschitzOnWith.dist_le_mul, dist_eq_norm).
+
+2. For x, x' ∈ D: since q is linear, F(x) − F(x') = q(graphPoint x (f x) − graphPoint x' (f x')) (map_sub). Since q preserves norms (LinearIsometryEquiv.norm_map), and by (i), ‖F(x) − F(x')‖ = ‖graphPoint x (f x) − graphPoint x' (f x')‖ = ‖graphPoint (x − x') (f x − f x')‖.
+
+3. By (ii) and step 1: ‖graphPoint (x − x') (f x − f x')‖² = ‖x − x'‖² + ‖f x − f x'‖² ≤ 2‖x − x'‖² = (√2 · ‖x − x'‖)². This uses (√2)² = 2 (Real.sq_sqrt, as 0 ≤ 2) and ‖f x − f x'‖² ≤ ‖x − x'‖², which is step 1 squared (both sides nonnegative).
+
+4. Both a := ‖graphPoint (x − x') (f x − f x')‖ and b := √2 · ‖x − x'‖ are ≥ 0, and for nonnegative reals a² ≤ b² implies a ≤ b (pow_le_pow_iff_left₀ with exponent 2 ≠ 0). With step 2 this gives ‖F(x) − F(x')‖ ≤ √2 ‖x − x'‖ for all x, x' ∈ D, which is part (a).
+
+5. graphPoint 0 0 = 0. By (i) with a = a' = 0 and b = b' = 0: 0 = graphPoint 0 0 − graphPoint 0 0 = graphPoint (0 − 0) (0 − 0) = graphPoint 0 0. Hence if f(0) = 0, then F(0) = q(graphPoint 0 (f 0)) = q(graphPoint 0 0) = q(0) = 0 (map_zero).
+
+6. Part (b): assume f(0) = 0 and 0 ∈ D, and let x ∈ D. Apply part (a) to x and x' = 0 ∈ D, and use F(0) = 0 from step 5: ‖F(x)‖ = ‖F(x) − F(0)‖ ≤ √2 ‖x − 0‖ = √2 ‖x‖. ∎
+
+## Key steps
+
+1. ‖f x − f x'‖ ≤ ‖x − x'‖ for x, x' ∈ D (LipschitzOnWith.dist_le_mul)
+2. ‖F x − F x'‖ = ‖graphPoint (x − x') (f x − f x')‖ by map_sub, LinearIsometryEquiv.norm_map and graph coordinates (i)
+3. ‖graphPoint (x − x') (f x − f x')‖² = ‖x − x'‖² + ‖f x − f x'‖² ≤ (√2 ‖x − x'‖)², then compare nonnegative square roots
+4. graphPoint 0 0 = 0 from (i), so F(0) = 0 when f(0) = 0; apply (a) with x' = 0 to get ‖F x‖ ≤ √2 ‖x‖
+
+## Reference use
+
+### local-project
+
+Queries:
+- `sha256sum <snapshot>/project/GMT/Ch05/Submission.lean GMT/Ch05/Submission.lean GMT/Ch05/Contract.lean`
+- `rg -n 'tiltExcess' <snapshot>/project -t lean (outside Contract.lean/Submission.lean)`
+- `rg -ln 'graphPoint' <snapshot> -t lean`
+- `rg -n 'theorem setLIntegral_congr_fun|theorem setLIntegral_le_lintegral|theorem lintegral_indicator|theorem ofReal_integral_eq_lintegral_ofReal|theorem integrableOn_of_bounded|theorem starProjection_norm_le|theorem withDensity_apply ' <snapshot>/mathlib/Mathlib`
+- `rg -n 'integrableOn_of_bounded|Integrable.of_bound|norm_single|opNorm_le_bound|le_opNorm' <snapshot>/mathlib/Mathlib`
+- `rg -n 'pow_le_pow_iff_left₀|Continuous.comp_aestronglyMeasurable|mul_inv_cancel_left₀|dist_le_mul|sq_sqrt|norm_map' <snapshot>/mathlib/Mathlib`
+- `python: scan dag.json lean_statement for graphPoint, hsNormSq+tangentProj, tiltExcess, 'weight ... < ⊤', IsCompact+weight; list lean_names matching weight|lt_top|finite|hsNormSq|tilt`
+- `python: cross-parent reuse precedents in dag.json (children/depends_on whose parent differs); status and candidate_commit of rsod_weight_closedBall_eq_ofReal_integral, lip_approx_graph_coordinates, rsod_norm_graphPoint_sq, lip_approx_gm_graph_map_lipschitz`
+- `grep -n '_existing_lean_name_problem|def _accepted_checkpoint|existing_by_name|store.ensure' runtime.py`
+- `grep max_nodes|max_depth|max_children swarm-project.json and newest .humanize/swarm-configs/*.json`
+- `for nm in allard52_cft_tilt_lintegral_eq allard52_cft_graph_map_sqrt_two: rg -l nm <snapshot>; grep -rl nm GMT .lake/packages/simongmt <run>/nodes; grep nm dag.json; git log --all -S nm`
+- `git show 02c3706f8b397dd9abf13122f4a7824d7bf445d3:GMT/Ch05/Submission.lean; git show e2915745b92c2117161b0d9eaeb226a1f6c30d1b:GMT/Ch05/Submission.lean (accepted proofs of the reused declarations)`
+- `lean src/Submission.lean -o build/GMT/Ch05/Submission.olean (toolchains/lean-4.35.0-rc3-linux, LEAN_PATH = scratch build + lake-packages-25730c7c)`
+- `lean check/Types.lean; lean check/Children.lean; lean check/Assembly.lean; lean check/Full.lean (+ #print axioms)`
+- `python: lean_contract.validate_lean_statement on the four child types; byte comparison of the child and parent types against dag.json`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/GroupWithZero/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Real/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/LinearIsometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1-campanato-from-tilt-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-weight-ba-26a0dc4b42/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-coordinates-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-tangent-ae-a1-density-from-tangent-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/swarm-project.json`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/lean_contract.py`
+- `/tmp/cft-decomp-Sbg0wT/check/Types.lean`
+- `/tmp/cft-decomp-Sbg0wT/check/Children.lean`
+- `/tmp/cft-decomp-Sbg0wT/check/Assembly.lean`
+- `/tmp/cft-decomp-Sbg0wT/check/Full.lean`
+
+The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot Submission.lean, the workspace Submission.lean and Contract.lean are identical (sha256 c966f51e...).
+
+The snapshot project has no tiltExcess or graphPoint lemmas beyond the frozen contract (no match), so the reusable pieces come from the DAG:
+- rsod_weight_closedBall_eq_ofReal_integral: accepted, candidate 02c3706f.
+- lip_approx_graph_coordinates: accepted, candidate e2915745.
+- lip_approx_gm_graph_map_lipschitz: accepted but unusable, because it needs f globally 1-Lipschitz.
+- any_radius_gr_tilt_integral_facts and lgc_hsNormSq_bounds: unaccepted, reserved by other branches.
+
+Mathlib lemmas used, with snapshot locations:
+- Measure.integrableOn_of_bounded: IntegrableOn.lean:716.
+- ofReal_integral_eq_lintegral_ofReal: Bochner/Basic.lean:739.
+- setLIntegral_congr_fun (EqOn form), setLIntegral_le_lintegral, lintegral_indicator: Lebesgue/Basic.lean:298, 258, 510.
+- withDensity_apply: WithDensity.lean:44.
+- Submodule.starProjection_norm_le: Projection/Basic.lean:386.
+- ContinuousLinearMap.le_opNorm: Operator/Basic.lean:234.
+- pow_le_pow_iff_left₀: GroupWithZero/Basic.lean:681.
+- Continuous.comp_aestronglyMeasurable: AEStronglyMeasurable.lean:233.
+- mul_inv_cancel_left₀: GroupWithZero/Defs.lean:257.
+- LipschitzOnWith.dist_le_mul: MetricSpace/Lipschitz.lean:57.
+- Real.sq_sqrt: Real/Sqrt.lean:177.
+
+Runtime rules: an accepted declaration may be reused across parents only with an identical frozen type; there are many precedents in dag.json. The two new names allard52_cft_tilt_lintegral_eq and allard52_cft_graph_map_sqrt_two occur nowhere in dag.json, the snapshot, GMT/, simongmt, run nodes or git history. Limits are max_depth 6, max_children 12 and max_nodes 1000; the DAG has 340 nodes.
+
+Lean checks:
+- All four child types elaborate and pass validate_lean_statement.
+- Assembly proves the exact frozen parent type from them.
+- The two new children are fully proved.
+- Full.lean, with the accepted proofs inserted, compiles with no sorry, and allard52_campanato_from_tilt depends only on propext, Classical.choice and Quot.sound.
