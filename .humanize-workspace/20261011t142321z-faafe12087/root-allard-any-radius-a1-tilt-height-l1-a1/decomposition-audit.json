@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "rg -n 'ted_lemma_a_tilt_height|allard52_tangent_ae|any_radius_tilt_height_l1' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "sed -n '1,225p' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "support_mem_ae|withDensity_absolutelyContinuous|withDensity_apply\\b|integrableOn_compact_subset|aestronglyMeasurable_of_tendsto_ae\\b",
+        "trace_smulRight|theorem IsProj.trace",
+        "sed -n '80,118p;310,385p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tilt_l1_independent_audit_yk4zsikh/Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tilt_l1_independent_audit_yk4zsikh/Solution.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-tilt-height-l1-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-tangent-ae-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lemma-a-tilt-height-a1/isolated-comparator-result.json",
+        "/tmp/tilt_l1_independent_audit_yk4zsikh/source/GMT/Ch05/Submission.lean",
+        "/tmp/tilt_l1_independent_audit_yk4zsikh/Challenge.lean",
+        "/tmp/tilt_l1_independent_audit_yk4zsikh/Solution.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and the selected handoff. The declaration-name search found no matches in the snapshot project. Contract definitions and the inspected measure, projection and trace APIs support the supplied arguments. Both names have unique comparator-accepted owners with byte-identical frozen types; no conflicting type reservation was found. The reachable proof graph remains acyclic. Independently reconstructed and compiled the two accepted candidates. Both child types and the selected parent type elaborate against the frozen base without child implementations. The direct parent assembly also compiles; both children and that assembly depend only on propext, Classical.choice and Quot.sound. The inherited root sorry is not a dependency. The split is appropriate: tangent_ae supplies exactly the two hypotheses required by Lemma A. Projection differences infer continuous-linear-map types; there is no problematic inline matrix construction. The cited geometric ingredients were also checked against [Simon’s text, Chapter 3 §1 and Chapter 5 §2](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes the contract hypotheses and matches all three conjuncts of the standalone, one-line Lean proposition. Independently checked null-set transfer, localization, Lusin/C1 pieces, upper-density estimates, weighted blow-ups, the density squeeze, and the Borel second-moment quotients. These prove all three conclusions, including the density conclusion unused by this parent, without circular reliance or deferred proof construction. The bare name allard52_tangent_ae validly reuses accepted node root.allard_regularity-a1.tangent_ae-a1 with its identical frozen type."
+    },
+    {
+      "key": "lemma_a_tilt_height",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone, one-line Lean proposition agree, including both explicit tangent hypotheses, closed balls and Bochner integrals. The proof establishes finite mass, integrability and the a.e. support condition; constructs the cutoff with derivative bound 3/r; derives the projection-trace identity; and performs Young absorption yielding exactly 144 and 4. Its hypotheses make depends_on=[] correct. The parent supplies those hypotheses using tangent_ae, and the exact assembly was independently compiled. The bare name ted_lemma_a_tilt_height validly reuses accepted node root.tilt_excess_decay-a1.lemma_a_tilt_height-a1 with its identical frozen type."
+    }
+  ],
+  "required_changes": []
+}
