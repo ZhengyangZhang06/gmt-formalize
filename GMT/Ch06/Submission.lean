@@ -465,6 +465,45 @@ theorem Submission.fiw_ims_sc_continuous_of_bound : ∀ (P n : ℕ) (U : Set (Eu
     _ < ε := by
       rw [mul_div_assoc', div_lt_iff₀ hA1]
       nlinarith [abs_nonneg A]
+/-- **Integer-weighted series estimate** (behind the `M`-absolutely convergent integer series
+`∑_r c_r T_r` of currents, Simon Ch. 6, 3.13, pp. 149–150, used in the proof of 7.2).  If
+`ofReal |a_r| ≤ m_r · ofReal C` for every `r` and `∑' r, |c_r| m_r < ∞` in `[0, ∞]`, then
+`r ↦ c_r a_r` is summable and `ofReal |∑' r, c_r a_r| ≤ ofReal C · ∑' r, |c_r| m_r`.
+Termwise `ofReal |c_r a_r| = |c_r| · ofReal |a_r| ≤ ofReal C · (|c_r| m_r)`, so
+`∑' r, ofReal |c_r a_r|` is finite; this gives absolute summability, and the estimate follows
+from `|∑' r, x_r| ≤ ∑' r, |x_r|`. -/
+theorem Submission.fiw_ims_sc_series_bound : ∀ (a : ℕ → ℝ) (c : ℕ → ℤ) (m : ℕ → ℝ≥0∞) (C : ℝ), (∀ r, ENNReal.ofReal |a r| ≤ m r * ENNReal.ofReal C) → (∑' r, ((c r).natAbs : ℝ≥0∞) * m r) < ∞ → Summable (fun r => (c r : ℝ) * a r) ∧ ENNReal.ofReal |∑' r, (c r : ℝ) * a r| ≤ ENNReal.ofReal C * ∑' r, ((c r).natAbs : ℝ≥0∞) * m r := by
+  intro a c m C ha hsum
+  -- `ofReal |(c_r : ℝ)| = |c_r|` in `[0, ∞]`.
+  have hc : ∀ r, ENNReal.ofReal |(c r : ℝ)| = ((c r).natAbs : ℝ≥0∞) := fun r => by
+    rw [← Int.cast_abs, ← Int.natCast_natAbs, Int.cast_natCast, ENNReal.ofReal_natCast]
+  -- Termwise bound `ofReal |c_r a_r| ≤ ofReal C · (|c_r| m_r)`.
+  have hterm : ∀ r, ENNReal.ofReal |(c r : ℝ) * a r| ≤
+      ENNReal.ofReal C * (((c r).natAbs : ℝ≥0∞) * m r) := fun r => by
+    rw [abs_mul, ENNReal.ofReal_mul (abs_nonneg _), hc]
+    calc ((c r).natAbs : ℝ≥0∞) * ENNReal.ofReal |a r|
+        ≤ ((c r).natAbs : ℝ≥0∞) * (m r * ENNReal.ofReal C) := by gcongr; exact ha r
+      _ = ENNReal.ofReal C * (((c r).natAbs : ℝ≥0∞) * m r) := by ring
+  -- Summing: `∑' ofReal |c_r a_r| ≤ ofReal C · ∑' |c_r| m_r < ∞`.
+  have hle : ∑' r, ENNReal.ofReal |(c r : ℝ) * a r| ≤
+      ENNReal.ofReal C * ∑' r, ((c r).natAbs : ℝ≥0∞) * m r := by
+    rw [← ENNReal.tsum_mul_left]
+    exact ENNReal.tsum_le_tsum hterm
+  have hfin : ∑' r, ENNReal.ofReal |(c r : ℝ) * a r| ≠ ∞ :=
+    (hle.trans_lt (ENNReal.mul_lt_top ENNReal.ofReal_lt_top hsum)).ne
+  -- Absolute summability, hence summability.
+  have habs : Summable fun r => |(c r : ℝ) * a r| :=
+    (ENNReal.summable_toReal hfin).congr fun r => ENNReal.toReal_ofReal (abs_nonneg _)
+  refine ⟨habs.of_abs, ?_⟩
+  -- `|∑' x_r| ≤ ∑' |x_r|`, and `ofReal` commutes with the nonnegative sum.
+  have hnorm : Summable fun r => ‖(c r : ℝ) * a r‖ := by simpa only [Real.norm_eq_abs] using habs
+  have htri : |∑' r, (c r : ℝ) * a r| ≤ ∑' r, |(c r : ℝ) * a r| := by
+    simpa only [Real.norm_eq_abs] using norm_tsum_le_tsum_norm hnorm
+  calc ENNReal.ofReal |∑' r, (c r : ℝ) * a r|
+      ≤ ENNReal.ofReal (∑' r, |(c r : ℝ) * a r|) := ENNReal.ofReal_le_ofReal htri
+    _ = ∑' r, ENNReal.ofReal |(c r : ℝ) * a r| :=
+        ENNReal.ofReal_tsum_of_nonneg (fun r => abs_nonneg _) habs
+    _ ≤ ENNReal.ofReal C * ∑' r, ((c r).natAbs : ℝ≥0∞) * m r := hle
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
