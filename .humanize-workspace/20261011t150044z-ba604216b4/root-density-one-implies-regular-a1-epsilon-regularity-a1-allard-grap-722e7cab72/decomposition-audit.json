@@ -1,0 +1,50 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "tilt|excess|hilbert.?schmidt|grassmann|starProjection",
+        "isStarProjection_iff_eq_starProjection_range|range_starProjection|norm_starProjection_apply_le|inner_starProjection_left_eq_right|trace_eq_sum_inner|theorem IsProj.trace|isProj_range|norm_sq_eq_of_L2|cauchySeq_of_le_geometric|dist_le_of_le_geometric_of_tendsto|setLIntegral_const|lintegral_add_left.|lintegral_const_mul.",
+        "tendsto.*starProjection|starProjection.*tendsto|closed.*starProjection|isClosed.*IsStarProjection|IsStarProjection.*isClosed",
+        "theorem lintegral_add_left.|theorem lintegral_add_right|theorem lintegral_const_mul.|theorem AEStronglyMeasurable.restrict",
+        "rg -l --hidden -g '*.json' -g '!**/local-references/**' 'dorag_ted_(planes_limit|hs_integral_compare)' .humanize"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Submodule.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-722e7cab72/parent-child-handoff.json",
+        "/tmp/ted-decomp-k7q2/final/Solution_planes_limit.lean",
+        "/tmp/ted-decomp-k7q2/final/Solution_hs_integral_compare.lean",
+        "/tmp/ted-decomp-k7q2/final/Assembly.lean",
+        "/tmp/ted-independent-audit-qlgs2ldq/Challenge_planes_limit.lean",
+        "/tmp/ted-independent-audit-qlgs2ldq/Challenge_hs_integral_compare.lean"
+      ],
+      "conclusion": "The pinned contract is byte-identical to the workspace compiler context. The projection, trace, geometric-convergence and lower-integral APIs support the supplied proofs. The convergence search found monotone-family results, not the required geometric rank-preserving statement; Ch05 supplies definitions and a sorry-backed theorem, which was not reused. Independently generated challenge modules elaborate. Both complete child proofs and the assembly independently recompile with only propext, Classical.choice and Quot.sound. Assembly signatures exactly match both proposed children, the three frozen siblings and the selected dorag_tilt_excess_decay conclusion. Thus the split supplies the required integrated comparisons and limit plane, while the supplied iteration and interpolation establish this exact parent. The relevant dependency closure is acyclic; scans of eight workspace DAGs found neither name reserved."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "planes_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition agree. Every proof step is justified: a ≥ 0 follows at j = 0; the PiLp 2 construction gives geometric Cauchy convergence; contraction and symmetry identify the limit as an orthogonal projection; trace preserves dimension; squaring the tail estimate gives exactly 4*a*q^j. This also covers q = 0 and zero-dimensional spaces. The proof is complete and non-circular, supplies parent Step 4, and needs no child dependencies. The bare name dorag_ted_planes_limit is unreserved, and all projection and norm instances have the intended meaning."
+    },
+    {
+      "key": "hs_integral_compare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition agree, including arbitrary sets and possibly infinite measures. The pointwise squared triangle inequality, continuous evaluation of the operator field, restriction of AE strong measurability, and lower-integral additivity justify both inequalities with exactly the stated constants. No measurable-set or finiteness hypothesis is missing. The proof is complete and non-circular and supplies parent Steps 2 and 5 using the frozen measurability sibling. Empty child dependencies are correct; dorag_ted_hs_integral_compare is an unreserved bare identifier."
+    }
+  ],
+  "required_changes": []
+}
