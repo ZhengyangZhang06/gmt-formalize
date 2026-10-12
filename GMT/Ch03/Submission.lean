@@ -406,6 +406,97 @@ theorem Submission.critSlices_ae_slice_null_of_covers : ∀ (n m k : ℕ) (S : S
   have hμH : μH[(k : ℝ)] (S ∩ G ⁻¹' {y}) = 0 := le_antisymm (hH.trans hy.le) zero_le
   -- `μHE[k] = c_k • μH[k]`.
   rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hμH, smul_zero]
+/-- **Volume of a slab intersected with a ball**: for a unit vector `ν` of `ℝᵐ`,
+`Lᵐ{w : |⟨w - c, ν⟩| ≤ r, |w - c| ≤ R} ≤ 2r (2R)^{m-1}`. This is the slab estimate in a direct
+covering proof that critical slices are null (Simon Ch. 2, p. 66: the consequence of 6.3 stated
+before 6.4, which Simon derives from the co-area formula 6.3, whose proof he defers to [Har79],
+[Fed69]). The set is empty if `r < 0` or `R < 0`, and `‖ν‖ = 1` forces `m ≥ 1`. The reflection
+`ρ` of `ℝᵐ` in `(ℝ (ν - e₀))ᗮ` maps `ν` to `e₀`, so `w ↦ ρ(w - c)` maps the set into the box
+`[-r, r] × [-R, R]^{m-1}`, since `⟨ρ(w - c), e₀⟩ = ⟨w - c, ν⟩` and `|x_i| ≤ |x| = |w - c|`.
+Translation, `ρ` and `ofLp` preserve Lebesgue measure, and the box has volume `2r (2R)^{m-1}`. -/
+theorem Submission.critSlices_slab_volume_le : ∀ (m : ℕ) (ν c : Rn m) (r R : ℝ), ‖ν‖ = 1 → volume {w : Rn m | |inner ℝ (w - c) ν| ≤ r ∧ ‖w - c‖ ≤ R} ≤ ENNReal.ofReal (2 * r * (2 * R) ^ (m - 1)) := by
+  intro m ν c r R hν
+  -- Step 1: for `r < 0` or `R < 0` the set is empty.
+  by_cases hr : r < 0
+  · have hempty : {w : Rn m | |inner ℝ (w - c) ν| ≤ r ∧ ‖w - c‖ ≤ R} = ∅ := by
+      ext w
+      simp only [mem_ofPred_eq, mem_empty_iff_false, iff_false, not_and]
+      intro h
+      exact absurd ((abs_nonneg _).trans h) (not_le.2 hr)
+    rw [hempty, measure_empty]
+    positivity
+  by_cases hR : R < 0
+  · have hempty : {w : Rn m | |inner ℝ (w - c) ν| ≤ r ∧ ‖w - c‖ ≤ R} = ∅ := by
+      ext w
+      simp only [mem_ofPred_eq, mem_empty_iff_false, iff_false, not_and]
+      intro _ h
+      exact absurd ((norm_nonneg _).trans h) (not_le.2 hR)
+    rw [hempty, measure_empty]
+    positivity
+  push Not at hr hR
+  -- Step 2: `‖ν‖ = 1` rules out `m = 0`.
+  obtain ⟨m', rfl⟩ : ∃ m', m = m' + 1 := by
+    rcases m with _ | m'
+    · exfalso
+      have h0 : ν = 0 := Subsingleton.elim _ _
+      rw [h0, norm_zero] at hν
+      exact zero_ne_one hν
+    · exact ⟨m', rfl⟩
+  -- Step 3: the reflection `ρ` in `(ℝ (ν - e₀))ᗮ` satisfies `ρ ν = e₀`.
+  set e₀ : Rn (m' + 1) := EuclideanSpace.single 0 1 with he₀
+  have he₀n : ‖e₀‖ = 1 := by simp [he₀]
+  set ρ : Rn (m' + 1) ≃ₗᵢ[ℝ] Rn (m' + 1) := (ℝ ∙ (ν - e₀))ᗮ.reflection with hρ
+  have hρν : ρ ν = e₀ := Submodule.reflection_sub (hν.trans he₀n.symm)
+  -- Step 4: `w ↦ ofLp (ρ (w - c))` maps the set into the box `Icc a b`.
+  set a : Fin (m' + 1) → ℝ := fun i ↦ if i = 0 then -r else -R with ha
+  set b : Fin (m' + 1) → ℝ := fun i ↦ if i = 0 then r else R with hb
+  have hsub : {w : Rn (m' + 1) | |inner ℝ (w - c) ν| ≤ r ∧ ‖w - c‖ ≤ R} ⊆
+      (WithLp.ofLp ∘ ρ ∘ fun w ↦ w - c) ⁻¹' Icc a b := by
+    intro w hw
+    obtain ⟨h1, h2⟩ := hw
+    simp only [mem_preimage, Function.comp_apply, mem_Icc]
+    set x := ρ (w - c) with hx
+    have hx0 : x.ofLp 0 = inner ℝ (w - c) ν := by
+      have h : inner ℝ x e₀ = x.ofLp 0 := by
+        rw [he₀, EuclideanSpace.inner_single_right]
+        simp
+      rw [← h, ← hρν, hx, LinearIsometryEquiv.inner_map_map]
+    have hxn : ‖x‖ = ‖w - c‖ := LinearIsometryEquiv.norm_map _ _
+    have hcoord : ∀ i, |x.ofLp i| ≤ R := by
+      intro i
+      have := PiLp.norm_apply_le x i
+      rw [Real.norm_eq_abs] at this
+      exact this.trans (hxn ▸ h2)
+    refine ⟨fun i ↦ ?_, fun i ↦ ?_⟩
+    · by_cases hi : i = 0
+      · subst hi
+        simp only [ha, ite_true]
+        rw [hx0]
+        exact (abs_le.1 h1).1
+      · simp only [ha, hi, ite_false]
+        exact (abs_le.1 (hcoord i)).1
+    · by_cases hi : i = 0
+      · subst hi
+        simp only [hb, ite_true]
+        rw [hx0]
+        exact (abs_le.1 h1).2
+      · simp only [hb, hi, ite_false]
+        exact (abs_le.1 (hcoord i)).2
+  -- Step 5: translation, `ρ` and `ofLp` preserve Lebesgue measure.
+  have hmp : MeasurePreserving (WithLp.ofLp ∘ ρ ∘ fun w : Rn (m' + 1) ↦ w - c) volume volume :=
+    (PiLp.volume_preserving_ofLp (Fin (m' + 1))).comp
+      (ρ.measurePreserving.comp (measurePreserving_sub_right volume c))
+  -- Steps 6–7: the box has volume `2r (2R)^{m'}`; conclude by monotonicity.
+  calc volume {w : Rn (m' + 1) | |inner ℝ (w - c) ν| ≤ r ∧ ‖w - c‖ ≤ R}
+      ≤ volume ((WithLp.ofLp ∘ ρ ∘ fun w ↦ w - c) ⁻¹' Icc a b) := measure_mono hsub
+    _ = volume (Icc a b) := hmp.measure_preimage measurableSet_Icc.nullMeasurableSet
+    _ = ∏ i, ENNReal.ofReal (b i - a i) := Real.volume_Icc_pi
+    _ = ENNReal.ofReal (2 * r * (2 * R) ^ (m' + 1 - 1)) := by
+      rw [Fin.prod_univ_succ]
+      simp only [ha, hb, ite_true, Fin.succ_ne_zero, ite_false, Finset.prod_const,
+        Finset.card_univ, Fintype.card_fin, Nat.add_sub_cancel]
+      rw [ENNReal.ofReal_mul (by linarith), ← ENNReal.ofReal_pow (by linarith)]
+      congr 2 <;> ring
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
