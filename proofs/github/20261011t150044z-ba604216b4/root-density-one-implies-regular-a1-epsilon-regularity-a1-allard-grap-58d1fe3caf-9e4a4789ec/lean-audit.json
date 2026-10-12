@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "82f0f6828b5523861458a69694c3d84b34964cd580b53e021dbf623e0b52987c",
+  "git_delta": {
+    "base_commit": "e796a9b1135e3b016581d81288452116f5a867a0",
+    "candidate_commit": "7979ba9a221b12d3c05974be57180c091cbbe9f6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_dbs_density_constants",
+    "diff_sha256": "3d71b532fd920f43e4967a3aa765ab1a6fdd4b4e3c6d5c8cf505389908c5afb4",
+    "source_sha256": "f93ed0ac99b72fd375db1685d39d4b35b6231a21cd7ef5d327ee402497bc1555",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_dbs_density_constants",
+      "statement": "∀ n : ℕ, ∃ δ₁ C₁ : ℝ, 0 < δ₁ ∧ δ₁ ≤ 1 / 8 ∧ 0 < C₁ ∧ C₁ * δ₁ ≤ 1 / 2 ∧ ∀ δ : ℝ, 0 ≤ δ → δ ≤ δ₁ → Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n ≤ 1 + C₁ * δ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
