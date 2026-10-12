@@ -501,6 +501,49 @@ theorem Submission.fiw_ims_sc_converges_zero_small : ∀ (P n : ℕ) (U : Set (E
         rw [mul_div_assoc', div_le_iff₀ (by positivity)]
         nlinarith
 
+/-- **Cut-off of a finite-mass current (Simon Ch. 6, 2.1, 2.4).**  If `χ` is smooth with
+`tsupport χ ⊆ U` and `|χ| ≤ 1`, and `X ∈ 𝒟_q(U)` has `M(X) < ∞`, then `Y(ω) = X(χ ω)` is a
+current in `ℝ^P`.  If `ω_j → 0` in `𝒟^q(ℝ^P)`, eventually `|χ ω_j(x)| ≤ |ω_j(x)| ≤ δ` for every
+`x` (`Submission.fiw_ims_sc_converges_zero_small`), so `|Y(ω_j)| ≤ δ · M(X)` by
+`Submission.br_la_abs_apply_le_mul_mass`. -/
+theorem Submission.fiw_tb_ext_cutoff_current : ∀ (P q : ℕ) (U : Set (Eucl P)) (χ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ → tsupport χ ⊆ U → (∀ x, |χ x| ≤ 1) → ∀ X : GeometricCurrentOn U q, X.mass ≠ ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Eucl P)) q, ∀ (ω : TestFormOn (univ : Set (Eucl P)) q) (η : TestFormOn U q), (∀ x, (η : DifferentialForm (Eucl P) q) x = χ x • (ω : DifferentialForm (Eucl P) q) x) → Y ω = X η := by
+  intro P q U χ hχ hχU hχ1 X hX
+  -- `L ω = χ ω` is a linear map `𝒟^q(ℝ^P) → 𝒟^q(U)`, and `Y = X ∘ L`.
+  obtain ⟨L, hL⟩ := Submission.fiw_tb_ext_smul_testForm P q (univ : Set (Eucl P)) U χ hχ hχU
+  refine ⟨⟨X.toCurrent.comp L, ?_⟩, ?_⟩
+  · intro ωs hωs
+    obtain ⟨_, -, -, -, hsmall⟩ := Submission.fiw_ims_sc_converges_zero_small P q univ ωs hωs
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    set μX := X.mass.toReal
+    have hμ0 : 0 ≤ μX := ENNReal.toReal_nonneg
+    have hδ : 0 < ε / (μX + 1) := by positivity
+    -- Eventually `|ω_j(x)| ≤ δ := ε / (M(X) + 1)` for every `x`.
+    obtain ⟨j₀, hj₀⟩ := eventually_atTop.mp (hsmall (ε / (μX + 1)) hδ)
+    refine ⟨j₀, fun j hj => ?_⟩
+    rw [Real.dist_eq, sub_zero]
+    -- Then `|χ ω_j(x)| = |χ(x)| |ω_j(x)| ≤ δ`, as `|χ| ≤ 1`.
+    have hbound : ∀ x, covectorEuclideanNorm
+        ((L (ωs j) : DifferentialForm (Eucl P) q) x) ≤ ε / (μX + 1) := by
+      intro x
+      rw [hL, Submission.fiw_tb_ext_covectorNorm_smul]
+      calc |χ x| * covectorEuclideanNorm ((ωs j : DifferentialForm (Eucl P) q) x)
+          ≤ 1 * (ε / (μX + 1)) :=
+            mul_le_mul (hχ1 x) (hj₀ j hj x) (covectorEuclideanNorm_nonneg _) zero_le_one
+        _ = ε / (μX + 1) := one_mul _
+    -- The mass estimate gives `|Y(ω_j)| ≤ δ · M(X) < ε`.
+    have hY := Submission.br_la_abs_apply_le_mul_mass P q U X (L (ωs j)) _ hδ hbound hX
+    change |X (L (ωs j))| < ε
+    calc |X (L (ωs j))| ≤ ε / (μX + 1) * μX := hY
+      _ < ε := by
+        rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+        nlinarith
+  · -- `L ω = η` whenever `η = χ ω` pointwise.
+    intro ω η hη
+    change X (L ω) = X η
+    congr 1
+    exact Subtype.ext (funext fun x => by rw [hL, hη])
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
