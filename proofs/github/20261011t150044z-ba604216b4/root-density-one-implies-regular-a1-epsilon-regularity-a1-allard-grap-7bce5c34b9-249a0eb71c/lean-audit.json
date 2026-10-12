@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6d87f89b19d46e77595ef97d6f67f89c730f94ce6be2ea9ccb2a65f63901a68c",
+  "git_delta": {
+    "base_commit": "e88fee6174604f898351508c1134f4b44b67ab27",
+    "candidate_commit": "c50304dbed80d138d929488dabbddc5daa4fa293",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "doragm_sab_cutoff_profile",
+    "diff_sha256": "33f84c40fd45b282da45698a14f8780d7fb815181d72ee955ab24e02756618c8",
+    "source_sha256": "5843955d16b46459a3ef2f49ca9e57f9fd9ac18e356d3f5bf85d7f620b15781f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.doragm_sab_cutoff_profile",
+      "statement": "∀ (A : ℝ), 1 < A → ∃ φ : ℝ → ℝ, ContDiff ℝ 1 φ ∧ Antitone φ ∧ (∀ u, 0 ≤ φ u ∧ φ u ≤ 1) ∧ (∀ u, u ≤ 1 → φ u = 1) ∧ (∀ u, A ≤ u → φ u = 0) ∧ (∀ u, deriv φ u ≤ 0) ∧ (∀ u, deriv φ u ≠ 0 → 1 < u ∧ u < A)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
