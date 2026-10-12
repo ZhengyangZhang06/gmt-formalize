@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d284825388a7eee99d711d0176e19aeadd329b3491ad5cd4e9ea4df616ceeadf",
+  "git_delta": {
+    "base_commit": "70eaa4b79ac1be0ce2c20e3e33f2617f71389072",
+    "candidate_commit": "4b14fb2e31e24943c462b47c14ccc1135807c164",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_mb_cdb_grad_lintegral_le",
+    "diff_sha256": "1506dfb5e601d50c415579eb1e93f1145c0c5b68f96e496f24c43bc2695e69b9",
+    "source_sha256": "ed12ee4c52e8ca66f2563dd256104feea834f852230f1e69e541b47e6c907bba",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_cdb_grad_lintegral_le",
+      "statement": "∀ (P m : ℕ) (μ : Measure (Eucl P)) (ω : DifferentialForm (Eucl P) m) (f g : Eucl P → ℝ) (LW : ℝ≥0) (χ : ℝ → ℝ) (t h c δ : ℝ), (∀ x, covectorEuclideanNorm (ω x) ≤ 1) → Differentiable ℝ g → Differentiable ℝ χ → (∀ x ∈ tsupport ω, |g x - f x| ≤ δ) → (∀ x ∈ tsupport ω, ‖fderiv ℝ g x‖₊ ≤ LW) → (∀ s, |deriv χ s| ≤ c) → (∀ s, s ∉ Ioo (t - h) t → deriv χ s = 0) → ∫⁻ x, (‖fderiv ℝ (fun y => χ (g y)) x‖₊ : ℝ≥0∞) * ENNReal.ofReal (covectorEuclideanNorm (ω x)) ∂μ ≤ ENNReal.ofReal c * (LW : ℝ≥0∞) * μ (tsupport ω ∩ f ⁻¹' Ioo (t - h - δ) (t + δ))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
