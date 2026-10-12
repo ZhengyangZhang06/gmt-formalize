@@ -460,4 +460,67 @@ def RegularSetOpenDense : Prop :=
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
+namespace Submission
+
+/-- **Fixed-scale comparison on a set carrying `M`.**  If `ψ` is measurable, `|ψ| ≤ K` and `ψ = 0`
+off the measurable set `B`, and `Hⁿ ⌞ (M ∩ B)` is carried by `S` with `Hⁿ(S ∩ B) < ∞`, then
+`|∫_M ψ θ dHⁿ - c ∫_S ψ dHⁿ| ≤ K ∫_{S ∩ B} |1_M θ - c| dHⁿ`, provided the right side is finite.
+Both integrals localize to `S ∩ B`, where the difference is `∫_{S ∩ B} ψ (1_M θ - c) dHⁿ`. -/
+theorem dohr_tp_wtlp_ball_comparison_le : ∀ (n ℓ : ℕ) (M S B : Set (Amb n ℓ)) (θ ψ : Amb n ℓ → ℝ) (c K : ℝ), MeasurableSet B → NullMeasurableSet M (μHE[n] : Measure (Amb n ℓ)) → AEMeasurable θ ((μHE[n] : Measure (Amb n ℓ)).restrict M) → (μHE[n] : Measure (Amb n ℓ)) ((M ∩ B) \ S) = 0 → (μHE[n] : Measure (Amb n ℓ)) (S ∩ B) ≠ ⊤ → Measurable ψ → (∀ w, |ψ w| ≤ K) → (∀ w, w ∉ B → ψ w = 0) → ∫⁻ w in S ∩ B, ‖M.indicator θ w - c‖ₑ ∂(μHE[n] : Measure (Amb n ℓ)) ≠ ⊤ → |∫ w in M, ψ w * θ w ∂(μHE[n] : Measure (Amb n ℓ)) - c * ∫ w in S, ψ w ∂(μHE[n] : Measure (Amb n ℓ))| ≤ K * (∫⁻ w in S ∩ B, ‖M.indicator θ w - c‖ₑ ∂(μHE[n] : Measure (Amb n ℓ))).toReal := by
+  intro n ℓ M S B θ ψ c K
+  generalize (μHE[n] : Measure (Amb n ℓ)) = μ
+  intro hB hM hθ hMBS hSB hψ hψK hψB hΛ
+  have hψK' : ∀ w, ‖ψ w‖ ≤ K := fun w => by rw [Real.norm_eq_abs]; exact hψK w
+  -- The `S`-integral localizes to `S ∩ B`, as `ψ = 0` off `B`.
+  have h1 : ∫ w in S, ψ w ∂μ = ∫ w in S ∩ B, ψ w ∂μ := by
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (μ := μ.restrict S) hψB,
+      Measure.restrict_restrict hB, inter_comm B S]
+  -- The `M`-integral localizes to `M ∩ B =ᵐ M ∩ (S ∩ B)`, i.e. to the integral of `ψ · 1_M θ`
+  -- over `S ∩ B`.
+  have h2 : ∫ w in M, ψ w * θ w ∂μ = ∫ w in S ∩ B, ψ w * M.indicator θ w ∂μ := by
+    have hae : (M ∩ B : Set (Amb n ℓ)) =ᵐ[μ] (M ∩ (S ∩ B) : Set (Amb n ℓ)) := by
+      refine ae_eq_set.mpr ⟨measure_mono_null (fun w hw => ?_) hMBS, ?_⟩
+      · exact ⟨hw.1, fun hS => hw.2 ⟨hw.1.1, hS, hw.1.2⟩⟩
+      · rw [show (M ∩ (S ∩ B)) \ (M ∩ B) = ∅ from
+          eq_empty_of_forall_notMem fun w hw => hw.2 ⟨hw.1.1, hw.1.2.2⟩, measure_empty]
+    have hMν : NullMeasurableSet M (μ.restrict (S ∩ B)) := hM.mono Measure.restrict_le_self
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (μ := μ.restrict M) (s := B)
+        (f := fun w => ψ w * θ w) (fun w hw => by rw [hψB w hw, zero_mul]),
+      Measure.restrict_restrict hB, inter_comm B M, setIntegral_congr_set hae,
+      ← Measure.restrict_restrict₀ hMν, ← integral_indicator₀ hMν]
+    congr 1
+    funext w
+    exact indicator_mul_right M ψ θ
+  -- Integrability on `S ∩ B`, which has finite measure.
+  have : IsFiniteMeasure (μ.restrict (S ∩ B)) := isFiniteMeasure_restrict.mpr hSB
+  have hf : AEStronglyMeasurable (M.indicator θ) (μ.restrict (S ∩ B)) :=
+    ((aemeasurable_indicator_iff₀ hM).mpr hθ).restrict.aestronglyMeasurable
+  have hfc : Integrable (fun w => M.indicator θ w - c) (μ.restrict (S ∩ B)) :=
+    ⟨hf.sub aestronglyMeasurable_const, hasFiniteIntegral_iff_enorm.mpr hΛ.lt_top⟩
+  have hfi : Integrable (M.indicator θ) (μ.restrict (S ∩ B)) :=
+    (hfc.add (integrable_const c)).congr (ae_of_all _ fun w => by simp)
+  have hψb : ∀ᵐ w ∂(μ.restrict (S ∩ B)), ‖ψ w‖ ≤ K := ae_of_all _ hψK'
+  have hψi : Integrable ψ (μ.restrict (S ∩ B)) :=
+    (integrable_const K).mono' hψ.aestronglyMeasurable hψb
+  have hψf : Integrable (fun w => ψ w * M.indicator θ w) (μ.restrict (S ∩ B)) :=
+    hfi.bdd_mul hψ.aestronglyMeasurable hψb
+  -- Linearity: the difference is `∫_{S ∩ B} ψ (1_M θ - c)`.
+  have h6 : ∫ w in S ∩ B, ψ w * M.indicator θ w ∂μ - c * ∫ w in S ∩ B, ψ w ∂μ =
+      ∫ w in S ∩ B, ψ w * (M.indicator θ w - c) ∂μ := by
+    rw [← integral_const_mul, ← integral_sub hψf (hψi.const_mul c)]
+    congr 1
+    funext w
+    ring
+  -- `|ψ (1_M θ - c)| ≤ K |1_M θ - c|`, and `∫ |1_M θ - c| = Λ.toReal`.
+  have hle : ‖∫ w in S ∩ B, ψ w * (M.indicator θ w - c) ∂μ‖ ≤
+      ∫ w in S ∩ B, K * ‖M.indicator θ w - c‖ ∂μ :=
+    norm_integral_le_of_norm_le (hfc.norm.const_mul K) (ae_of_all _ fun w => by
+      rw [norm_mul]
+      exact mul_le_mul_of_nonneg_right (hψK' w) (norm_nonneg _))
+  rw [integral_const_mul, integral_norm_eq_lintegral_enorm hfc.aestronglyMeasurable] at hle
+  rw [h2, h1, h6, ← Real.norm_eq_abs]
+  exact hle
+
+end Submission
+
 end GMT.Ch05
