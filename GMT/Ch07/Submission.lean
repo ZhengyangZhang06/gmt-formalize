@@ -451,6 +451,135 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.3.1** (proof, display (4)): if `∫ f dμⱼ → ∫ f dμ` for every continuous compactly
+supported `f`, `μ` is finite on balls, each ball is eventually `μⱼ`-finite and `μ(∂B_ρ(0)) = 0`,
+then `μⱼ(B_ρ(0)) → μ(B_ρ(0))`.  The radial cut-offs `φ_{a,b}` (`1` on `B̄_a(0)`, `0` off
+`B_b(0)`) give `μ(B̄_{ρ-1/(k+1)}(0)) ≤ liminf μⱼ(B_ρ(0))` and
+`limsup μⱼ(B̄_ρ(0)) ≤ μ(B_{ρ+1/(k+1)}(0))`; letting `k → ∞` and using the null sphere closes the
+liminf/limsup sandwich. -/
+theorem Submission.dtc_tendsto_measure_ball_of_vague : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)) (ρ : ℝ), 0 < ρ → (∀ r : ℝ, 0 < r → μ (ball 0 r) ≠ ∞) → (∀ r : ℝ, 0 < r → ∀ᶠ j in atTop, μs j (ball 0 r) ≠ ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ y, f y ∂(μs j)) atTop (𝓝 (∫ y, f y ∂μ))) → μ (sphere 0 ρ) = 0 → Tendsto (fun j => μs j (ball 0 ρ)) atTop (𝓝 (μ (ball 0 ρ))) := by
+  intro P μs μ ρ hρ hμ hμs hvague hsph
+  -- Step 1: cut-offs `φ a b = min 1 (max 0 ((b - ‖·‖) / (b - a)))`: `1` on `closedBall 0 a`,
+  -- `0` off `ball 0 b`, continuous with compact support
+  obtain ⟨φ, hφ_cont, hφ_nonneg, hφ_le_one, hφ_one, hφ_zero⟩ : ∃ φ : ℝ → ℝ → Euclid P → ℝ,
+      (∀ a b, Continuous (φ a b)) ∧ (∀ a b y, 0 ≤ φ a b y) ∧ (∀ a b y, φ a b y ≤ 1) ∧
+      (∀ a b y, a < b → ‖y‖ ≤ a → φ a b y = 1) ∧ (∀ a b y, a < b → b ≤ ‖y‖ → φ a b y = 0) := by
+    refine ⟨fun a b y => min 1 (max 0 ((b - ‖y‖) / (b - a))), fun a b => ?_,
+      fun a b y => le_min zero_le_one (le_max_left _ _), fun a b y => min_le_left _ _,
+      fun a b y hab hy => ?_, fun a b y hab hy => ?_⟩
+    · exact continuous_const.min (continuous_const.max
+        ((continuous_const.sub continuous_norm).div_const _))
+    · have h1 : 1 ≤ (b - ‖y‖) / (b - a) := by
+        rw [le_div_iff₀ (sub_pos.2 hab)]
+        linarith
+      simp only [max_eq_right (zero_le_one.trans h1), min_eq_left h1]
+    · have h0 : (b - ‖y‖) / (b - a) ≤ 0 :=
+        div_nonpos_of_nonpos_of_nonneg (by linarith) (sub_pos.2 hab).le
+      simp only [max_eq_left h0, min_eq_right zero_le_one]
+  have hφ_supp : ∀ a b, a < b → HasCompactSupport (φ a b) := fun a b hab =>
+    HasCompactSupport.intro (isCompact_closedBall (0 : Euclid P) b) fun y hy =>
+      hφ_zero a b y hab (not_le.1 (mt mem_closedBall_zero_iff.2 hy)).le
+  -- Step 2: `∫ φ dν = (∫⁻ ofReal φ dν).toReal`, and `1_E ≤ ofReal φ ≤ 1_{ball 0 b}`
+  have hint : ∀ (ν : Measure (Euclid P)) a b,
+      ∫ y, φ a b y ∂ν = (∫⁻ y, ENNReal.ofReal (φ a b y) ∂ν).toReal := fun ν a b =>
+    integral_eq_lintegral_of_nonneg_ae (ae_of_all _ (hφ_nonneg a b))
+      (hφ_cont a b).aestronglyMeasurable
+  have hlint_le : ∀ (ν : Measure (Euclid P)) a b, a < b →
+      ∫⁻ y, ENNReal.ofReal (φ a b y) ∂ν ≤ ν (ball 0 b) := by
+    intro ν a b hab
+    rw [← lintegral_indicator_one measurableSet_ball]
+    refine lintegral_mono fun y => ?_
+    by_cases hy : y ∈ ball (0 : Euclid P) b
+    · rw [indicator_of_mem hy, Pi.one_apply, ← ENNReal.ofReal_one]
+      exact ENNReal.ofReal_le_ofReal (hφ_le_one a b y)
+    · rw [hφ_zero a b y hab (not_lt.1 (mt mem_ball_zero_iff.2 hy)), ENNReal.ofReal_zero]
+      exact zero_le
+  -- (i) `ofReal (∫ φ dν) ≤ ν (ball 0 b)`
+  have hint_le : ∀ (ν : Measure (Euclid P)) a b, a < b →
+      ENNReal.ofReal (∫ y, φ a b y ∂ν) ≤ ν (ball 0 b) := fun ν a b hab => by
+    rw [hint]
+    exact ENNReal.ofReal_toReal_le.trans (hlint_le ν a b hab)
+  -- (ii) `ν E ≤ ofReal (∫ φ dν)` if `ν (ball 0 b) ≠ ∞` and `φ = 1` on `E`
+  have hle_int : ∀ (ν : Measure (Euclid P)) a b (E : Set (Euclid P)), a < b →
+      ν (ball 0 b) ≠ ∞ → MeasurableSet E → (∀ y ∈ E, φ a b y = 1) →
+      ν E ≤ ENNReal.ofReal (∫ y, φ a b y ∂ν) := by
+    intro ν a b E hab hfin hE hφE
+    rw [hint, ENNReal.ofReal_toReal (ne_top_of_le_ne_top hfin (hlint_le ν a b hab)),
+      ← lintegral_indicator_one hE]
+    refine lintegral_mono fun y => ?_
+    by_cases hy : y ∈ E
+    · rw [indicator_of_mem hy, Pi.one_apply, hφE y hy, ENNReal.ofReal_one]
+    · rw [indicator_of_notMem hy]
+      exact zero_le
+  have htend : ∀ a b, a < b → Tendsto (fun j => ENNReal.ofReal (∫ y, φ a b y ∂(μs j))) atTop
+      (𝓝 (ENNReal.ofReal (∫ y, φ a b y ∂μ))) := fun a b hab =>
+    (ENNReal.continuous_ofReal.tendsto _).comp (hvague _ (hφ_cont a b) (hφ_supp a b hab))
+  have hk : Tendsto (fun k : ℕ => 1 / ((k : ℝ) + 1)) atTop (𝓝 0) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  have hk_pos : ∀ k : ℕ, 0 < 1 / ((k : ℝ) + 1) := fun k => by positivity
+  have hk_anti : Antitone fun k : ℕ => 1 / ((k : ℝ) + 1) := fun i j hij =>
+    one_div_le_one_div_of_le (by positivity) (by exact_mod_cast Nat.add_le_add_right hij 1)
+  -- Step 3: `μ (ball 0 ρ) ≤ liminf μⱼ (ball 0 ρ)`, with `closedBall 0 (ρ - 1/(k+1)) ↑ ball 0 ρ`
+  have hliminf : μ (ball 0 ρ) ≤ liminf (fun j => μs j (ball 0 ρ)) atTop := by
+    have ha_lt : ∀ k : ℕ, ρ - 1 / ((k : ℝ) + 1) < ρ := fun k => by linarith [hk_pos k]
+    have hU : ⋃ k : ℕ, closedBall (0 : Euclid P) (ρ - 1 / ((k : ℝ) + 1)) = ball 0 ρ := by
+      refine Subset.antisymm (iUnion_subset fun k => closedBall_subset_ball (ha_lt k))
+        fun y hy => ?_
+      have ha : Tendsto (fun k : ℕ => ρ - 1 / ((k : ℝ) + 1)) atTop (𝓝 ρ) := by
+        simpa using (tendsto_const_nhds (x := ρ)).sub hk
+      obtain ⟨k, hk'⟩ := (ha.eventually (lt_mem_nhds (mem_ball_zero_iff.1 hy))).exists
+      exact mem_iUnion.2 ⟨k, mem_closedBall_zero_iff.2 hk'.le⟩
+    have hmono : Monotone fun k : ℕ => closedBall (0 : Euclid P) (ρ - 1 / ((k : ℝ) + 1)) :=
+      fun i j hij => closedBall_subset_closedBall (by linarith [hk_anti hij])
+    have hμU : μ (ball 0 ρ) = ⨆ k : ℕ, μ (closedBall 0 (ρ - 1 / ((k : ℝ) + 1))) := by
+      rw [← hU, hmono.measure_iUnion]
+    rw [hμU]
+    refine iSup_le fun k => ?_
+    calc μ (closedBall 0 (ρ - 1 / ((k : ℝ) + 1)))
+        ≤ ENNReal.ofReal (∫ y, φ (ρ - 1 / ((k : ℝ) + 1)) ρ y ∂μ) :=
+          hle_int μ _ ρ _ (ha_lt k) (hμ ρ hρ) measurableSet_closedBall
+            fun y hy => hφ_one _ _ y (ha_lt k) (mem_closedBall_zero_iff.1 hy)
+      _ = liminf (fun j => ENNReal.ofReal (∫ y, φ (ρ - 1 / ((k : ℝ) + 1)) ρ y ∂(μs j))) atTop :=
+          ((htend _ _ (ha_lt k)).liminf_eq).symm
+      _ ≤ liminf (fun j => μs j (ball 0 ρ)) atTop :=
+          liminf_le_liminf (Eventually.of_forall fun j => hint_le (μs j) _ ρ (ha_lt k))
+  -- Step 4: `limsup μⱼ (closedBall 0 ρ) ≤ μ (closedBall 0 ρ)`, with `ball 0 (ρ + 1/(k+1)) ↓`
+  have hlimsup : limsup (fun j => μs j (closedBall 0 ρ)) atTop ≤ μ (closedBall 0 ρ) := by
+    have hb_gt : ∀ k : ℕ, ρ < ρ + 1 / ((k : ℝ) + 1) := fun k => by linarith [hk_pos k]
+    have hI : ⋂ k : ℕ, ball (0 : Euclid P) (ρ + 1 / ((k : ℝ) + 1)) = closedBall 0 ρ := by
+      refine Subset.antisymm (fun y hy => ?_)
+        (subset_iInter fun k => closedBall_subset_ball (hb_gt k))
+      have hb : Tendsto (fun k : ℕ => ρ + 1 / ((k : ℝ) + 1)) atTop (𝓝 ρ) := by
+        simpa using (tendsto_const_nhds (x := ρ)).add hk
+      exact mem_closedBall_zero_iff.2
+        (ge_of_tendsto' hb fun k => (mem_ball_zero_iff.1 (mem_iInter.1 hy k)).le)
+    have hanti : Antitone fun k : ℕ => ball (0 : Euclid P) (ρ + 1 / ((k : ℝ) + 1)) :=
+      fun i j hij => ball_subset_ball (by linarith [hk_anti hij])
+    have hμI : μ (closedBall 0 ρ) = ⨅ k : ℕ, μ (ball 0 (ρ + 1 / ((k : ℝ) + 1))) := by
+      rw [← hI, hanti.measure_iInter (fun k => measurableSet_ball.nullMeasurableSet)
+        ⟨0, hμ _ (hρ.trans (hb_gt 0))⟩]
+    rw [hμI]
+    refine le_iInf fun k => ?_
+    calc limsup (fun j => μs j (closedBall 0 ρ)) atTop
+        ≤ limsup (fun j => ENNReal.ofReal (∫ y, φ ρ (ρ + 1 / ((k : ℝ) + 1)) y ∂(μs j))) atTop := by
+          refine limsup_le_limsup ?_
+          filter_upwards [hμs _ (hρ.trans (hb_gt k))] with j hj
+          exact hle_int (μs j) ρ _ _ (hb_gt k) hj measurableSet_closedBall
+            fun y hy => hφ_one _ _ y (hb_gt k) (mem_closedBall_zero_iff.1 hy)
+      _ = ENNReal.ofReal (∫ y, φ ρ (ρ + 1 / ((k : ℝ) + 1)) y ∂μ) := (htend _ _ (hb_gt k)).limsup_eq
+      _ ≤ μ (ball 0 (ρ + 1 / ((k : ℝ) + 1))) := hint_le μ ρ _ (hb_gt k)
+  -- Step 5: the sphere is `μ`-null, so `μ (closedBall 0 ρ) ≤ μ (ball 0 ρ)`
+  have hcb : μ (closedBall 0 ρ) ≤ μ (ball 0 ρ) :=
+    calc μ (closedBall 0 ρ) = μ (ball 0 ρ ∪ sphere 0 ρ) := by rw [ball_union_sphere]
+      _ ≤ μ (ball 0 ρ) + μ (sphere 0 ρ) := measure_union_le _ _
+      _ = μ (ball 0 ρ) := by rw [hsph, add_zero]
+  -- Step 6: the liminf/limsup sandwich in `[0, ∞]`
+  refine tendsto_of_le_liminf_of_limsup_le hliminf ?_
+  calc limsup (fun j => μs j (ball 0 ρ)) atTop ≤ limsup (fun j => μs j (closedBall 0 ρ)) atTop :=
+        limsup_le_limsup (Eventually.of_forall fun j => measure_mono ball_subset_closedBall)
+    _ ≤ μ (closedBall 0 ρ) := hlimsup
+    _ ≤ μ (ball 0 ρ) := hcb
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
