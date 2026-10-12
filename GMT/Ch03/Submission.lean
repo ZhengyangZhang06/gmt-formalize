@@ -573,6 +573,31 @@ theorem Submission.section3_chart_coordinateProjection_pos :
   rw [Set.image_comp]
   exact Set.image_mono (Set.image_mono Set.inter_subset_left)
 
+/-- **Simon Ch. 3, Theorem 3.8 (p. 80)** (`chapter-03.txt` lines 540–548), given Theorem 3.6.
+Erratum: line 540 "by combining 3.2 and 3.7" should read "3.2 and 3.6". Lemma 3.2 splits
+`A = R ∪ P` with `R` countably `n`-rectifiable and `P` purely `n`-unrectifiable. Since
+`P = ⋃ⱼ (P ∩ Aⱼ)` with `Hⁿ(P ∩ Aⱼ) ≤ Hⁿ(Aⱼ) < ∞`, Theorem 3.6 makes `Hⁿ(p(P)) = 0` for almost all
+`p`, so the hypothesis with `B := P` forces `Hⁿ(P) = 0`. Adding `P` to the null exceptional set
+of a Lipschitz cover of `R` shows that `A` is countably `n`-rectifiable. -/
+theorem Submission.section3_rectifiabilityTheorem_of_besicovitchFederer :
+    BesicovitchFedererProjectionTheorem → RectifiabilityTheoremForSets := by
+  rintro hBF n ℓ A ⟨Aj, hAeq, hAj⟩ hpos
+  obtain ⟨R, P, hRP, -, hR, hP⟩ :=
+    (Submission.section3_rectifiableDecomposition n ℓ A ⟨Aj, hAeq, hAj⟩).1
+  have hPA : P ⊆ A := hRP ▸ subset_union_right
+  have hPproj : ForAlmostAllProjections (n + ℓ) n (fun p ↦ μHE[n] (p '' P) = 0) := by
+    refine hBF n ℓ P hP ⟨fun j ↦ P ∩ Aj j, ?_, fun j ↦ ?_⟩
+    · rw [← inter_iUnion, ← hAeq, inter_eq_left.mpr hPA]
+    · exact (measure_mono inter_subset_right).trans_lt (hAj j)
+  have hP0 : μHE[n] P = 0 := by
+    by_contra hne
+    exact hpos P hPA (pos_iff_ne_zero.mpr hne) hPproj
+  obtain ⟨M₀, hM₀, F, hF, hRcover⟩ := hR
+  refine ⟨M₀ ∪ P, measure_union_null hM₀ hP0, F, hF, ?_⟩
+  calc A = R ∪ P := hRP
+    _ ⊆ (M₀ ∪ ⋃ j, range (F j)) ∪ P := union_subset_union_left P hRcover
+    _ = M₀ ∪ P ∪ ⋃ j, range (F j) := union_right_comm _ _ _
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
