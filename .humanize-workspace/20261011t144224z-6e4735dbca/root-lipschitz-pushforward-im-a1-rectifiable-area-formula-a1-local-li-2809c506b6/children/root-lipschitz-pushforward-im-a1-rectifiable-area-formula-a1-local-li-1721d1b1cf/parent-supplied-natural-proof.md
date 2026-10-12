@@ -1,0 +1,117 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.local_lipschitz_area-a1`
+- Child DAG node: `root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.local_lipschitz_area-a1.disjoint_lipschitz_pieces-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝⁿ = Eucl n = EuclideanSpace ℝ (Fin n), and Lⁿ = volume on ℝⁿ. `LocallyLipschitzOn Ω u` means: every x ∈ Ω has K ∈ ℝ≥0 and a set t ∈ 𝓝[Ω] x on which u is K-Lipschitz. For a sequence of sets V, `disjointed V m` = V m \ ⋃_{l<m} V l (Mathlib `disjointed`). Hypotheses: Ω ⊆ ℝⁿ open, u locally Lipschitz on Ω, D ⊆ Ω, D Lⁿ-null-measurable. This is steps 2–3 of the parent proof (countable Lipschitz cover and disjoint pieces). It is import-free: everything used is in the frozen import closure of GMT.Ch06.Submission plus the sibling countable_lipschitz_cover.
+
+1. (Countable Lipschitz cover.) Apply the sibling theorem countable_lipschitz_cover (Submission.lpf_lli_countable_lipschitz_cover) with P := n, Q := Q, U := Ω, f := u. It gives open sets O_m ⊆ ℝⁿ and constants K_m ∈ ℝ≥0 (m ∈ ℕ) with Ω ⊆ ⋃_m O_m and u K_m-Lipschitz on O_m ∩ Ω for every m.
+
+2. (Open Lipschitz pieces inside Ω.) Put V_m := O_m ∩ Ω.
+   - V_m is open, as the intersection of two open sets (IsOpen.inter).
+   - V_m ⊆ Ω.
+   - u is K_m-Lipschitz on V_m by step 1.
+   - Ω ⊆ ⋃_m V_m: if x ∈ Ω, then x ∈ O_m for some m by step 1, so x ∈ O_m ∩ Ω = V_m.
+
+3. (Disjointification.) Let W_m := disjointed V m. By Mathlib:
+   - W_m ⊆ V_m (disjointed_subset);
+   - the W_m are pairwise disjoint (disjoint_disjointed);
+   - each W_m is measurable (MeasurableSet.disjointed, since each V_m is open and hence Borel measurable);
+   - ⋃_m W_m = ⋃_m V_m (iUnion_disjointed).
+
+4. (Pieces.) Put B_m := D ∩ W_m.
+   (a) B_m ⊆ D ∩ V_m, because W_m ⊆ V_m (Set.inter_subset_inter_right).
+   (b) For i ≠ j, B_i and B_j are disjoint, since B_i ⊆ W_i, B_j ⊆ W_j and W_i, W_j are disjoint (Disjoint.mono).
+   (c) Each B_m is Lⁿ-null-measurable: it is the intersection of the null-measurable set D with the measurable set W_m (NullMeasurableSet.inter with MeasurableSet.nullMeasurableSet).
+   (d) D ⊆ ⋃_m B_m. Let x ∈ D. Then x ∈ Ω ⊆ ⋃_m V_m = ⋃_m W_m by steps 2 and 3, so x ∈ W_m for some m, and hence x ∈ D ∩ W_m = B_m.
+
+5. (Conclusion.) The sequences V, B and K satisfy every conclusion. V_m is open, V_m ⊆ Ω and u is K_m-Lipschitz on V_m (step 2). Moreover B_m ⊆ D ∩ V_m, the B_m are pairwise disjoint, every B_m is Lⁿ-null-measurable, and D ⊆ ⋃_m B_m (step 4). ∎
+
+## Key steps
+
+1. Apply countable_lipschitz_cover (lpf_lli_countable_lipschitz_cover) to U := Ω, f := u: open O_m and K_m with Ω ⊆ ⋃ O_m and u K_m-Lipschitz on O_m ∩ Ω.
+2. V_m := O_m ∩ Ω is open, V_m ⊆ Ω, u is K_m-Lipschitz on V_m, and Ω ⊆ ⋃ V_m.
+3. W_m := disjointed V m: measurable, pairwise disjoint, W_m ⊆ V_m and ⋃ W_m = ⋃ V_m (MeasurableSet.disjointed, disjoint_disjointed, disjointed_subset, iUnion_disjointed).
+4. B_m := D ∩ W_m is contained in D ∩ V_m, pairwise disjoint and null-measurable, and D ⊆ Ω ⊆ ⋃ W_m gives D ⊆ ⋃ B_m.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean (identical); cmp of NormDet, GramMatrix, PiL2, FDeriv/Congr, Measure/Restrict, RCLike/Basic, EMetricSpace/Lipschitz, Topology/Bases, Order/Disjointed, MeasurableSpace/Basic in the snapshot vs lake-packages-25730c7c/mathlib (all identical)`
+- `python3 json read of nodes/...local-li-2809c506b6/parent-child-handoff.json, nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1/decomposition-v1.json and dag.json (frozen parent, sibling fiber_sum_glue type, lean_name collision scan, reuse-edge scan: 44 cross-parent reuses, accepted lpf_lli_countable_lipschitz_cover)`
+- `sed -n 60,90p and grep -n LocallyLipschitzOn mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean (definition, LipschitzOnWith.mono, lipschitzOnWith_empty)`
+- `grep -n 'theorem countable_cover_nhdsWithin' mathlib/Mathlib/Topology/Bases.lean; grep 'iUnion_disjointed|disjoint_disjointed' mathlib/Mathlib/Order/Disjointed.lean; grep 'MeasurableSet.disjointed' mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `grep -n 'theorem|def' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean; sed -n 53,80p and 294,325p (normDet def, normDet_nonneg, normDet_sq_eq_det_gram); grep 'def gram' GramMatrix.lean; grep basisFun_apply PiL2.lean; grep finrank_euclideanSpace_fin PiL2.lean; grep Filter.EventuallyEq.fderiv_eq FDeriv/Congr.lean; grep ae_restrict_mem₀ Measure/Restrict.lean; grep ofReal_real_eq_id RCLike/Basic.lean`
+- `cat simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean; grep -n 'def weightedAreaFiberSum|def areaFiber|def areaJacobianAt' simongmt/Poincare/SimonGMT/Chapter02/*.lean`
+- `grep -rln LocallyLipschitzOn and grep -rn 'countable_cover_nhdsWithin|exists_eq_range|disjointed' simongmt/Poincare (Chapter03/SubmanifoldCover.lean, Chapter02/AreaSubmanifoldExample.lean; no countable-partition lemma)`
+- `git show 6941b70:GMT/Ch06/Submission.lean (accepted cover proof) and git show 066cbc3:GMT/Ch06/Submission.lean (accepted fiber_sum_glue proof); read nodes/...countable-dc002d2f60/{parent-supplied-natural-proof.md,isolated-comparator-result.json,lean-audit-v1.json}`
+- `read controller code: _recursive_lean/leaf_verification.py check_source_delta, parent_verification.py check_parent_git_delta, runtime.py _machine_leaf/_existing_lean_name_problem/_overlay_accepted_children/_publish_decomposition_workspace, store.py ensure; swarm-configs/c718b0527dbf4e2f85c040256be3f788.json (leaf_lean_agent_review=false); problem.md helper rule; git show of accepted machine-nonleaf candidates 2f36576/b4c070e (added imports)`
+- `python3 gmt-compare.contract_scope/child_modules (contract mode) and lean_contract.validate_lean_statement on the child and parent statements`
+- `lean Scratch/Stmts.lean, AssemblyB.lean, AssemblyR.lean, ChildA.lean, DefHash.lean (two builds), Sub3 + C2_NodeChallenge/C2_NodeSolution, Sub4 + parent_NodeChallenge/parent_NodeSolution with #print axioms`
+- `python3 _recursive_lean.leaf_verification.check_source_delta(c2_base.lean, src3 Submission, 'lpf_raf_lla_disjoint_lipschitz_pieces') = PASS; negative control with the added import = FAIL`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Disjointed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/RCLike/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaMultiplicity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaSubmanifoldExample.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-local-li-2809c506b6/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-local-li-2809c506b6/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-fiber-sum-glue-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-countable-dc002d2f60/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-countable-dc002d2f60/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-countable-dc002d2f60/lean-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/swarm-configs/c718b0527dbf4e2f85c040256be3f788.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/parent_verification.py`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py`
+- `/tmp/lla-decomp-UOdPXO/Scratch/Stmts.lean`
+- `/tmp/lla-decomp-UOdPXO/Scratch/AssemblyR.lean`
+- `/tmp/lla-decomp-UOdPXO/Scratch/ChildA.lean`
+- `/tmp/lla-decomp-UOdPXO/Scratch/DefHash.lean`
+- `/tmp/lla-decomp-UOdPXO/src3/GMT/Ch06/Submission.lean`
+- `/tmp/lla-decomp-UOdPXO/src4/GMT/Ch06/Submission.lean`
+- `/tmp/lla-decomp-UOdPXO/Scratch/C2_NodeSolution.lean`
+- `/tmp/lla-decomp-UOdPXO/Scratch/parent_NodeSolution.lean`
+
+Snapshot: project d8d46c95, Mathlib 25730c7c; the snapshot files match the pinned lake packages. SimonGMT is pinned at 2b36630.
+
+Frozen child scope (import GMT.Ch06.Submission plus the replayed namespace GMT.Ch06 and its opens):
+- It has LocallyLipschitzOn and LipschitzOnWith.mono, TopologicalSpace.countable_cover_nhdsWithin, the disjointed API (MeasurableSet.disjointed, disjoint_disjointed, disjointed_subset, iUnion_disjointed), μHE, Matrix.det and EuclideanSpace.single.
+- It lacks LinearMap.normDet, Matrix.gram and the SimonGMT Chapter02 AreaDomain lemmas (weighted_area_formula_lipschitzOn_fiberSum, aemeasurable_weightedAreaFiberSum_lipschitzOn, ae_fderivWithin_eq_of_lipschitz_extension, exists_lipschitz_extension_finiteDimensional). These need `import Poincare.SimonGMT.Chapter02.AreaDomain`, which changes no GMT.Ch06 declaration (56 hashes identical).
+
+Gates: leaf gates forbid imports and helpers, while non-leaf parents may add imports. So the import-dependent steps stay in this node.
+
+Reuse: no Mathlib or SimonGMT lemma gives the countable disjoint Lipschitz partition. The DAG already has the comparator-accepted lpf_lli_countable_lipschitz_cover (standard axioms), and it is reused with a byte-identical type.
+
+Scratch checks in the exact comparator scope:
+- the new pieces lemma passes the controller's leaf gate on the real cover commit and closes with [propext, Classical.choice, Quot.sound];
+- the parent proof, built from the real accepted glue, the reused cover, the pieces lemma and the local SimonGMT steps, closes with the same three axioms.
+
+The new name lpf_raf_lla_disjoint_lipschitz_pieces does not collide with any name in dag.json.
