@@ -773,6 +773,27 @@ theorem Submission.varifold_tangents_rh_measure_homogeneous :
   have hA : s • A = T ⁻¹' A := (Set.preimage_smul_inv₀ hs.ne' A).symm
   rw [hA, ← MeasurableEquiv.map_apply T A, hν, Measure.smul_apply, smul_eq_mul]
 
+/-- **Simon Ch. 8, 5.3 (p. 215), corrected**: radial homogeneity of a stationary varifold `C` on
+`ℝ^N` with `y ∈ S` for `C`-a.e. `(y, S)`, namely `μ_C(s A) = sⁿ μ_C(A)` for every `s > 0` and
+every set `A ⊆ ℝ^N` (the printed `λ^{-n} μ_C(η_{0,λ}(A)) = μ_C(A)` has the wrong power).  Testing
+`δC = 0` against `g(y) y` gives Euler's identity `∫ (n g + Dg(y)(y)) dμ_C = 0`; this yields the
+dilation law `∫ g(s⁻¹ y) dμ_C(y) = sⁿ ∫ g dμ_C` for `C¹_c` functions, mollification extends it to
+`C_c`, and Riesz uniqueness turns it into the stated identity on all sets. -/
+theorem Submission.varifold_tangents_radial_stationary_homogeneous :
+    ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))), C.Stationary → (∀ᵐ z ∂C.measure, Grassmannian.project z.2 z.1 = z.1) → ∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A := by
+  intro N n C hC hrad s A hs
+  -- `μ_C` is finite on compact sets, since every compact set lies in the domain `ℝ^N`.
+  have hfin : IsFiniteMeasureOnCompacts C.weight :=
+    ⟨fun K hK ↦ lt_top_iff_ne_top.2 (C.weight_finite_on_compact K hK (subset_univ K))⟩
+  -- Step 1: Euler's identity `∫ (n g + Dg(y)(y)) dμ_C = 0` for `g ∈ C¹_c`.
+  have hH := Submission.varifold_tangents_rh_radial_euler_identity N n C hC hrad
+  -- Step 2: the dilation law `∫ g(s⁻¹ y) dμ_C(y) = sⁿ ∫ g dμ_C` for `g ∈ C¹_c`.
+  have hS1 := Submission.varifold_tangents_rh_scaling_of_euler_identity N n C.weight hfin hH
+  -- Step 3: mollification extends the law to `C_c`; steps 4–5: Riesz uniqueness gives it on sets.
+  exact Submission.varifold_tangents_rh_measure_homogeneous N n C.weight s hfin hs
+    (Submission.varifold_tangents_rh_scaling_continuous N n C.weight s hfin hs
+      fun g hg hgc ↦ hS1 g hg hgc s hs) A
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
