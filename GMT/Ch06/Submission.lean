@@ -520,6 +520,139 @@ theorem Submission.lpf_raf_local_lipschitz_area : ∀ (n Q : ℕ) (Ω D : Set (E
         (fderiv ℝ u x (EuclideanSpace.single j 1))).det))
     D ∅ B (fun m => (hBDV m).trans inter_subset_left) hBd hBm (hDB.trans subset_union_right)
     measure_empty (by rw [image_empty, measure_empty]) hpiece
+/-- Antilipschitz charts pull back `Hⁿ`-null sets to `Lⁿ`-null sets (Simon Ch. 3, proof of 2.6;
+used for Ch. 6, 3.9): if `c ‖w - w'‖ ≤ ‖Φ w - Φ w'‖` on `Ω` with `c > 0`, then `Φ` has a
+`c⁻¹`-Lipschitz inverse `Ψ` on `Φ(Ω)` with `Ω ∩ Φ⁻¹(Z) ⊆ Ψ(Φ(Ω) ∩ Z)`, so `Hⁿ(Z) = 0` gives
+`Lⁿ(Ω ∩ Φ⁻¹(Z)) = Hⁿ(Ω ∩ Φ⁻¹(Z)) = 0`. -/
+theorem Submission.lpf_raf_chart_preimage_null : ∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (c : ℝ), 0 < c → (∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∀ Z : Set (Eucl P), (μHE[n] : Measure (Eucl P)) Z = 0 → (volume : Measure (Eucl n)) (Ω ∩ Φ ⁻¹' Z) = 0 := by
+  intro P n Φ Ω c hc hΦ Z hZ
+  -- `Φ` is injective on `Ω`, so `Ψ := invFunOn Φ Ω` is a left inverse of `Φ` on `Ω`.
+  have hinj : InjOn Φ Ω := by
+    intro w hw w' hw' h
+    have h1 := hΦ w hw w' hw'
+    rw [h, sub_self, norm_zero] at h1
+    have h2 : ‖w - w'‖ ≤ 0 := by
+      by_contra h3
+      exact absurd h1 (not_le.mpr (mul_pos hc (lt_of_not_ge h3)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
+  set Ψ := Function.invFunOn Φ Ω
+  have hleft : LeftInvOn Ψ Φ Ω := hinj.leftInvOn_invFunOn
+  -- `Ψ` is `c⁻¹`-Lipschitz on `Φ '' Ω`.
+  have hlip : LipschitzOnWith (Real.toNNReal c⁻¹) Ψ (Φ '' Ω) := by
+    refine LipschitzOnWith.of_dist_le_mul ?_
+    rintro _ ⟨w, hw, rfl⟩ _ ⟨w', hw', rfl⟩
+    rw [hleft hw, hleft hw', dist_eq_norm, dist_eq_norm,
+      Real.coe_toNNReal _ (inv_nonneg.mpr hc.le), inv_mul_eq_div, le_div_iff₀ hc, mul_comm]
+    exact hΦ w hw w' hw'
+  -- `Ω ∩ Φ⁻¹(Z) ⊆ Ψ(Φ(Ω) ∩ Z)`, and the latter is `Hⁿ`-null by the Lipschitz image bound.
+  have hsub : Ω ∩ Φ ⁻¹' Z ⊆ Ψ '' (Φ '' Ω ∩ Z) := by
+    rintro w ⟨hw, hwZ⟩
+    exact ⟨Φ w, ⟨⟨w, hw, rfl⟩, hwZ⟩, hleft hw⟩
+  have himg : (μHE[n] : Measure (Eucl n)) (Ψ '' (Φ '' Ω ∩ Z)) = 0 := by
+    have h1 := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+      (A := Φ '' Ω ∩ Z) n (hlip.mono fun _ hy => hy.1)
+    have h2 : (μHE[n] : Measure (Eucl P)) (Φ '' Ω ∩ Z) = 0 :=
+      measure_mono_null (fun _ hy => hy.2) hZ
+    rw [h2, mul_zero] at h1
+    exact nonpos_iff_eq_zero.mp h1
+  -- On `ℝⁿ`, `Hⁿ = Lⁿ`.
+  rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  exact measure_mono_null hsub himg
+
+/-- Change of variables along an injective Lipschitz chart (Simon Ch. 3, 2.6 with a weight;
+used for Ch. 6, 3.9): if `Φ` is Lipschitz and `c`-antilipschitz on the open set `Ω` and
+`A ⊆ Φ(Ω)` is `Hⁿ`-null-measurable, then `D = Ω ∩ Φ⁻¹(A)` is `Lⁿ`-null-measurable, `g ∘ Φ` is
+a.e.-measurable on `D`, and `∫_A g dHⁿ = ∫_D g(Φ(w)) JΦ(w) dLⁿ(w)`.  This is the area formula
+for `Φ` on `D`, whose fibre sums are `1_A g` because `Φ` is injective on `Ω`. -/
+theorem Submission.lpf_raf_chart_change_of_variables : ∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (A : Set (Eucl P)) (g : Eucl P → ℝ≥0∞), IsOpen Ω → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → A ⊆ Φ '' Ω → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → AEMeasurable g ((μHE[n] : Measure (Eucl P)).restrict A) → NullMeasurableSet (Ω ∩ Φ ⁻¹' A) (volume : Measure (Eucl n)) ∧ AEMeasurable (fun w => g (Φ w)) ((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)) ∧ ∫⁻ x in A, g x ∂(μHE[n] : Measure (Eucl P)) = ∫⁻ w in Ω ∩ Φ ⁻¹' A, g (Φ w) * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det) ∂(volume : Measure (Eucl n)) := by
+  intro P n Φ Ω A g hΩ ⟨K, hK⟩ ⟨c, hc, hΦ⟩ hAΩ hA hg
+  -- `Φ` is injective and continuous on `Ω`.
+  have hinj : InjOn Φ Ω := by
+    intro w hw w' hw' h
+    have h1 := hΦ w hw w' hw'
+    rw [h, sub_self, norm_zero] at h1
+    have h2 : ‖w - w'‖ ≤ 0 := by
+      by_contra h3
+      exact absurd h1 (not_le.mpr (mul_pos hc (lt_of_not_ge h3)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
+  have hcont : ContinuousOn Φ Ω := hK.continuousOn
+  classical
+  -- `Ω ∩ Φ⁻¹(B)` is Borel for Borel `B`: replace `Φ` by its Borel extension `Ω.piecewise Φ 0`.
+  have hborel : ∀ B : Set (Eucl P), MeasurableSet B → MeasurableSet (Ω ∩ Φ ⁻¹' B) := by
+    intro B hB
+    have hm : Measurable (Ω.piecewise Φ (fun _ => (0 : Eucl P))) :=
+      hcont.measurable_piecewise continuousOn_const hΩ.measurableSet
+    have heq : Ω ∩ Φ ⁻¹' B = Ω ∩ (Ω.piecewise Φ (fun _ => (0 : Eucl P))) ⁻¹' B := by
+      ext w
+      simp only [mem_inter_iff, mem_preimage]
+      constructor
+      · rintro ⟨hw, hwB⟩
+        exact ⟨hw, by rwa [Set.piecewise_eq_of_mem _ _ _ hw]⟩
+      · rintro ⟨hw, hwB⟩
+        exact ⟨hw, by rwa [Set.piecewise_eq_of_mem _ _ _ hw] at hwB⟩
+    rw [heq]
+    exact hΩ.measurableSet.inter (hm hB)
+  -- `D = (Ω ∩ Φ⁻¹(B)) ∪ (Ω ∩ Φ⁻¹(A ∖ B))` with `B ⊆ A` Borel and `Hⁿ(A ∖ B) = 0`, so `D` is
+  -- `Lⁿ`-null-measurable.
+  obtain ⟨B, hBA, hBm, hBae⟩ := hA.exists_measurable_subset_ae_eq
+  have hnull : (μHE[n] : Measure (Eucl P)) (A \ B) = 0 := (ae_eq_set.mp hBae).2
+  have hD : NullMeasurableSet (Ω ∩ Φ ⁻¹' A) (volume : Measure (Eucl n)) := by
+    have hsplit : Ω ∩ Φ ⁻¹' A = (Ω ∩ Φ ⁻¹' B) ∪ (Ω ∩ Φ ⁻¹' (A \ B)) := by
+      ext w
+      simp only [mem_inter_iff, mem_preimage, mem_union, Set.mem_sdiff]
+      constructor
+      · rintro ⟨hw, hwA⟩
+        by_cases hwB : Φ w ∈ B
+        · exact Or.inl ⟨hw, hwB⟩
+        · exact Or.inr ⟨hw, hwA, hwB⟩
+      · rintro (⟨hw, hwB⟩ | ⟨hw, hwA, -⟩)
+        · exact ⟨hw, hBA hwB⟩
+        · exact ⟨hw, hwA⟩
+    rw [hsplit]
+    exact (hborel B hBm).nullMeasurableSet.union
+      (NullMeasurableSet.of_null (Submission.lpf_raf_chart_preimage_null P n Φ Ω c hc hΦ _ hnull))
+  -- `g ∘ Φ = g' ∘ Φ` a.e. on `D` for a measurable `g' = g` (`Hⁿ⌞A`-a.e.), since `Φ` pulls the
+  -- `Hⁿ`-null set `{g ≠ g'} ∩ A` back to an `Lⁿ`-null set.
+  have hgae : AEMeasurable (fun w => g (Φ w))
+      ((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)) := by
+    have hZ : (μHE[n] : Measure (Eucl P)) ({x | g x ≠ hg.mk g x} ∩ A) = 0 := by
+      rw [← Measure.restrict_apply₀' hA]
+      exact hg.ae_eq_mk
+    have hpre := Submission.lpf_raf_chart_preimage_null P n Φ Ω c hc hΦ _ hZ
+    have hΦae : AEMeasurable Φ ((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)) :=
+      (hcont.aemeasurable hΩ.measurableSet).mono_measure
+        (Measure.restrict_mono inter_subset_left le_rfl)
+    refine (hg.measurable_mk.comp_aemeasurable hΦae).congr ?_
+    have h1 : ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)),
+        w ∈ Ω ∩ Φ ⁻¹' A := ae_restrict_mem₀ hD
+    have h2 : ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)),
+        w ∉ Ω ∩ Φ ⁻¹' ({x | g x ≠ hg.mk g x} ∩ A) :=
+      ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.mp hpre)
+    filter_upwards [h1, h2] with w hw1 hw2
+    simp only [Function.comp_apply]
+    by_contra hne
+    exact hw2 ⟨hw1.1, Ne.symm hne, hw1.2⟩
+  -- The area formula for `Φ` (locally Lipschitz on `Ω`) on `D` with weight `g ∘ Φ`.
+  have hloc : LocallyLipschitzOn Ω Φ := fun _ _ => ⟨K, Ω, self_mem_nhdsWithin, hK⟩
+  obtain ⟨-, harea⟩ := Submission.lpf_raf_local_lipschitz_area n P Ω (Ω ∩ Φ ⁻¹' A) Φ
+    (fun w => g (Φ w)) hΩ hloc inter_subset_left hD hgae
+  -- By injectivity, the fibre of `D` over `y` is a singleton for `y ∈ A` and empty otherwise.
+  have hfib : ∀ y, (∑' x : {x : Eucl n // x ∈ Ω ∩ Φ ⁻¹' A ∧ Φ x = y}, g (Φ x)) =
+      A.indicator g y := by
+    intro y
+    by_cases hy : y ∈ A
+    · obtain ⟨w₀, hw₀, rfl⟩ := hAΩ hy
+      rw [indicator_of_mem hy,
+        tsum_eq_single (⟨w₀, ⟨hw₀, hy⟩, rfl⟩ : {x : Eucl n // x ∈ Ω ∩ Φ ⁻¹' A ∧ Φ x = Φ w₀})]
+      intro b hb
+      exact absurd (Subtype.ext (hinj b.2.1.1 hw₀ b.2.2)) hb
+    · rw [indicator_of_notMem hy]
+      have : IsEmpty {x : Eucl n // x ∈ Ω ∩ Φ ⁻¹' A ∧ Φ x = y} :=
+        ⟨fun x => hy (x.2.2 ▸ x.2.1.2)⟩
+      exact tsum_empty
+  refine ⟨hD, hgae, ?_⟩
+  rw [harea, ← lintegral_indicator₀ hA]
+  exact lintegral_congr fun y => (hfib y).symm
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
