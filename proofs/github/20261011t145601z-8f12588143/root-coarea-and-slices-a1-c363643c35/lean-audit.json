@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "6cbfce1f9fb891759283e7841f4862b18dbf697a7b121568d5a1a4838f5d466c",
+  "git_delta": {
+    "base_commit": "8ab3aca46af46f4f9c7a0d2b496d1d411c04e4bc",
+    "candidate_commit": "a6297ede5f34b59833368e50c97110104f4f3737",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "86ce7eb4442cb28616a9bebf9e19c5005f2818164a37f3edf2be582417589c63",
+    "source_sha256": "d8776809fcda6e3cf8c01037c94289360522f670bef2c3a811588ccda9ab9fcd",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.coareaFormula_and_slices_hold",
+      "statement": "CoareaFormula ∧ SlicesAreRectifiable",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
