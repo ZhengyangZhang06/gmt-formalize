@@ -486,6 +486,46 @@ theorem Submission.dorag_lip_vitali_two_measure_bound : ∀ (P : ℕ) (μ ν : M
         gcongr
         exact iUnion₂_subset fun b hb => (h b (huA hb)).2.2.1
 
+/-- **`Hⁿ`-measure of the graph off the support** (Simon Ch. 5, proof of Lemma 2.6, the estimate
+after (10) via the covering (11), with the balls `B_{3s}(η)`).  Let `A ⊆ F`, let
+`Hⁿ(F ∩ B_r(η)) ≤ K rⁿ` for `η ∈ A` and `r > 0`, and let every `η ∈ A` have a radius
+`0 < s_η ≤ R₀` with `B_{3s_η}(η) ⊆ B` and `s_ηⁿ ≤ C₉ (μ(B_{3s_η}(η) ∖ F) + ∫_{B_{3s_η}(η)} e⁺ dμ)`.
+The comparison measure `ν = μ⌞Fᶜ + μ.withDensity e⁺` has `ν(S) = μ(S ∖ F) + ∫_S e⁺ dμ` for
+measurable `S`.  The growth bound at radius `15s_η = 5 · 3s_η` gives
+`Hⁿ(A ∩ B_{5·3s_η}(η)) ≤ K 15ⁿ C₉ ν(B_{3s_η}(η))`, and the two-measure Vitali bound with the
+radii `3s_η` gives `Hⁿ(A) ≤ K 15ⁿ C₉ ν(B)`. -/
+theorem Submission.dorag_lip_graph_hole_measure_bound : ∀ (n k : ℕ) (μ : Measure (Euclid (n + k))) (e : Euclid (n + k) → ℝ) (F A B : Set (Euclid (n + k))) (K : ℝ≥0∞) (C₉ R₀ : ℝ), MeasurableSet B → A ⊆ F → (∀ η ∈ A, ∀ r : ℝ, 0 < r → μHE[n] (F ∩ closedBall η r) ≤ K * ENNReal.ofReal (r ^ n)) → (∀ η ∈ A, ∃ s : ℝ, 0 < s ∧ s ≤ R₀ ∧ closedBall η (3 * s) ⊆ B ∧ ENNReal.ofReal (s ^ n) ≤ ENNReal.ofReal C₉ * (μ (closedBall η (3 * s) \ F) + ∫⁻ x in closedBall η (3 * s), ENNReal.ofReal (e x) ∂μ)) → μHE[n] A ≤ K * ENNReal.ofReal (15 ^ n * C₉) * (μ (B \ F) + ∫⁻ x in B, ENNReal.ofReal (e x) ∂μ) := by
+  intro n k μ e F A B K C₉ R₀ hB hAF hball hrad
+  -- Step 1: the radii `r(η) = 3s_η`
+  choose! s hs0 hsR hsB hsineq using hrad
+  -- Step 2: the comparison measure `ν = μ⌞Fᶜ + μ.withDensity e⁺` (`F` need not be measurable)
+  set ν : Measure (Euclid (n + k)) :=
+    μ.restrict Fᶜ + μ.withDensity (fun x => ENNReal.ofReal (e x)) with hν
+  have hνS : ∀ S : Set (Euclid (n + k)), MeasurableSet S →
+      ν S = μ (S \ F) + ∫⁻ x in S, ENNReal.ofReal (e x) ∂μ := by
+    intro S hS
+    rw [hν, Measure.add_apply, Measure.restrict_apply hS, withDensity_apply _ hS, Set.sdiff_eq]
+  -- Step 4: the two-measure Vitali bound gives `Hⁿ(A) ≤ K 15ⁿ C₉ ν(B)`
+  rw [← hνS B hB]
+  refine Submission.dorag_lip_vitali_two_measure_bound (n + k) μHE[n] ν A B (fun η => 3 * s η)
+    (3 * R₀) (K * ENNReal.ofReal (15 ^ n * C₉)) fun η hη => ?_
+  -- Step 3: its hypotheses at `η ∈ A`
+  have hs0η := hs0 η hη
+  refine ⟨by linarith, by linarith [hsR η hη], hsB η hη, ?_⟩
+  calc μHE[n] (A ∩ closedBall η (5 * (3 * s η)))
+      ≤ μHE[n] (F ∩ closedBall η (15 * s η)) :=
+        measure_mono (Set.inter_subset_inter hAF (closedBall_subset_closedBall (by linarith)))
+    _ ≤ K * ENNReal.ofReal ((15 * s η) ^ n) := hball η hη _ (by linarith)
+    _ = K * ENNReal.ofReal (15 ^ n) * ENNReal.ofReal (s η ^ n) := by
+        rw [mul_pow, ENNReal.ofReal_mul (by positivity), mul_assoc]
+    _ ≤ K * ENNReal.ofReal (15 ^ n) * (ENNReal.ofReal C₉ * (μ (closedBall η (3 * s η) \ F) +
+          ∫⁻ x in closedBall η (3 * s η), ENNReal.ofReal (e x) ∂μ)) := by
+        gcongr
+        exact hsineq η hη
+    _ = K * ENNReal.ofReal (15 ^ n * C₉) * ν (closedBall η (3 * s η)) := by
+        rw [hνS _ measurableSet_closedBall, ENNReal.ofReal_mul (by positivity)]
+        ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
