@@ -754,6 +754,117 @@ theorem Submission.br_zd_dirac_massOn_ge :
       Finset.sum_filter_of_ne]
     intro x _ hne ha
     exact hne (by simp [ha])
+/-- The case `n = 0` of Simon Ch. 6, 8.2 (p. 176, "trivial in case `n = 0`"), on a set `W` with
+`closure W` compact (used for 6.3): let `X_j ⇀ X` and, on test forms supported in `W`, let
+`X_j(ω) = ∑ᶠ_{x ∈ N_j} c_j(x) ω(x)` with integers `c_j ≠ 0` on `N_j`, `N_j ∩ W` finite and
+`∑_{x ∈ N_j ∩ W} |c_j(x)| ≤ Λ`.  Then on such forms `X(ω) = ∑_{x ∈ D} a(x) ω(x)` for a finite
+`D ⊆ W` and integers `a`.  Each `N_j ∩ W` has at most `Q = ⌊Λ⌋₊` points, with `|c_j| ≤ ⌊Λ⌋`;
+padding with `0`-weighted copies of `0` gives configurations of length `Q` in a compact set, a
+subsequence converges, limit points outside `W` contribute `0` and equal ones are grouped. -/
+theorem Submission.br_zd_dirac_local_limit : ∀ (P : ℕ) (U W : Set (Eucl P)) (Xj : ℕ → GeometricCurrentOn U 0) (X : GeometricCurrentOn U 0) (N : ℕ → Set (Eucl P)) (c : ℕ → Eucl P → ℤ) (Λ : ℝ), IsCompact (closure W) → WeaklyConvergesOn Xj X → (∀ j, ∀ x ∈ N j, c j x ≠ 0) → (∀ j, (N j ∩ W).Finite) → (∀ j (S : Finset (Eucl P)), (↑S : Set (Eucl P)) ⊆ N j ∩ W → ∑ x ∈ S, |(c j x : ℝ)| ≤ Λ) → (∀ j (ω : TestFormOn U 0), tsupport (ω : DifferentialForm (Eucl P) 0) ⊆ W → Xj j ω = ∑ᶠ x ∈ N j, (c j x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![]) → ∃ (D : Finset (Eucl P)) (a : Eucl P → ℤ), (↑D : Set (Eucl P)) ⊆ W ∧ ∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Eucl P) 0) ⊆ W → X ω = ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![] := by
+  intro P U W Xj X N c Λ hW hconv hc hfin hbound hrepr
+  classical
+  -- `ω°(x) = ω(x)(![])` is continuous and vanishes off `tsupport ω`.
+  have hcont : ∀ ω : TestFormOn U 0,
+      Continuous fun x => (ω : DifferentialForm (Eucl P) 0) x ![] := fun ω =>
+    ω.property.1.1.continuous.eval_const _
+  have hvan : ∀ (ω : TestFormOn U 0) (x : Eucl P),
+      x ∉ tsupport (ω : DifferentialForm (Eucl P) 0) →
+        (ω : DifferentialForm (Eucl P) 0) x ![] = 0 := fun ω x hx => by
+    rw [image_eq_zero_of_notMem_tsupport hx, ContinuousAlternatingMap.coe_zero, Pi.zero_apply]
+  -- Step 1: on forms supported in `W`, `X_j(ω) = ∑_{x ∈ A_j} c_j(x) ω°(x)`, `A_j = N_j ∩ W`.
+  let A : ℕ → Finset (Eucl P) := fun j => (hfin j).toFinset
+  have hA : ∀ j x, x ∈ A j ↔ x ∈ N j ∧ x ∈ W := fun j x => by simp [A]
+  have hXj : ∀ j (ω : TestFormOn U 0), tsupport (ω : DifferentialForm (Eucl P) 0) ⊆ W →
+      Xj j ω = ∑ x ∈ A j, (c j x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![] := by
+    intro j ω hω
+    rw [hrepr j ω hω]
+    refine finsum_mem_eq_sum_of_subset _ ?_ fun x hx => ((hA j x).1 hx).1
+    rintro x ⟨hxN, hx0⟩
+    refine (hA j x).2 ⟨hxN, by_contra fun hxW => hx0 ?_⟩
+    simp [hvan ω x fun h => hxW (hω h)]
+  -- Step 2: `#A_j ≤ Q = ⌊Λ⌋₊` (as `|c_j| ≥ 1` on `N_j`) and `|c_j| ≤ m = ⌊Λ⌋` on `A_j`.
+  have hΛ : 0 ≤ Λ := by simpa using hbound 0 ∅ (by simp)
+  obtain ⟨Q, hcard⟩ : ∃ Q : ℕ, ∀ j, (A j).card ≤ Q := by
+    refine ⟨⌊Λ⌋₊, fun j => Nat.le_floor ?_⟩
+    calc ((A j).card : ℝ) = ∑ x ∈ A j, (1 : ℝ) := by simp
+      _ ≤ ∑ x ∈ A j, |(c j x : ℝ)| := Finset.sum_le_sum fun x hx => by
+          exact_mod_cast Int.one_le_abs (hc j x ((hA j x).1 hx).1)
+      _ ≤ Λ := hbound j (A j) fun x hx => (hA j x).1 hx
+  obtain ⟨m, hm, hcoef⟩ : ∃ m : ℤ, 0 ≤ m ∧ ∀ j, ∀ x ∈ A j, |c j x| ≤ m := by
+    refine ⟨⌊Λ⌋, Int.floor_nonneg.2 hΛ, fun j x hx => Int.le_floor.2 ?_⟩
+    simpa using hbound j {x} (by simpa using (hA j x).1 hx)
+  -- Step 3: pad each configuration to length `Q` by points `0` with coefficient `0`.
+  have pad : ∀ (n : ℕ) (B : Finset (Eucl P)), B.card ≤ n → ∀ d : Eucl P → ℤ,
+      ∃ (p : Fin n → Eucl P) (b : Fin n → ℤ), (∀ ℓ, p ℓ ∈ B ∨ p ℓ = 0) ∧
+        (∀ ℓ, b ℓ = 0 ∨ ∃ x ∈ B, b ℓ = d x) ∧
+        ∀ g : Eucl P → ℝ, ∑ x ∈ B, (d x : ℝ) * g x = ∑ ℓ, (b ℓ : ℝ) * g (p ℓ) := by
+    intro n
+    induction n with
+    | zero =>
+      intro B hB d
+      obtain rfl : B = ∅ := Finset.card_eq_zero.1 (Nat.le_zero.1 hB)
+      exact ⟨Fin.elim0, Fin.elim0, fun ℓ => ℓ.elim0, fun ℓ => ℓ.elim0, fun g => by simp⟩
+    | succ n ih =>
+      intro B hB d
+      rcases B.eq_empty_or_nonempty with rfl | ⟨x, hx⟩
+      · exact ⟨fun _ => 0, fun _ => 0, fun _ => Or.inr rfl, fun _ => Or.inl rfl, fun g => by simp⟩
+      obtain ⟨p, b, hp, hb, hpb⟩ :=
+        ih (B.erase x) (by rw [Finset.card_erase_of_mem hx]; omega) d
+      refine ⟨Fin.cons x p, Fin.cons (d x) b, fun ℓ => ?_, fun ℓ => ?_, fun g => ?_⟩
+      · refine Fin.cases (by simp [hx]) (fun i => ?_) ℓ
+        simpa using (hp i).imp_left Finset.mem_of_mem_erase
+      · refine Fin.cases (Or.inr ⟨x, hx, by simp⟩) (fun i => ?_) ℓ
+        simpa using (hb i).imp_right fun ⟨z, hz, h⟩ => ⟨z, Finset.mem_of_mem_erase hz, h⟩
+      · rw [← Finset.add_sum_erase B _ hx, hpb g, Fin.sum_univ_succ]
+        simp
+  choose p b hp hb hpb using fun j => pad Q (A j) (hcard j) (c j)
+  -- Step 4: `(p_j, b_j) ∈ (closure W ∪ {0})^Q × [-m, m]^Q`, which is compact; extract a
+  -- subsequence `ψ` with `(p_{ψ i}, b_{ψ i}) → (y, β)`.
+  have hK : IsCompact ((Set.univ.pi fun _ : Fin Q => closure W ∪ {0}) ×ˢ
+      (Set.univ.pi fun _ : Fin Q => Set.Icc (-m) m)) :=
+    (isCompact_univ_pi fun _ => hW.union isCompact_singleton).prod
+      (isCompact_univ_pi fun _ => (Set.finite_Icc _ _).isCompact)
+  have hmem : ∀ j, (p j, b j) ∈ (Set.univ.pi fun _ : Fin Q => closure W ∪ {0}) ×ˢ
+      (Set.univ.pi fun _ : Fin Q => Set.Icc (-m) m) := by
+    refine fun j => ⟨fun ℓ _ => ?_, fun ℓ _ => ?_⟩
+    · exact (hp j ℓ).imp (fun h => subset_closure ((hA j _).1 h).2) id
+    · show b j ℓ ∈ Set.Icc (-m) m
+      rcases hb j ℓ with h | ⟨x, hx, h⟩
+      · rw [h]
+        exact ⟨neg_nonpos.2 hm, hm⟩
+      · rw [h]
+        exact abs_le.1 (hcoef j x hx)
+  obtain ⟨⟨y, β⟩, -, ψ, hψ, hlim⟩ := hK.tendsto_subseq hmem
+  -- Step 5: `X(ω) = ∑_ℓ β_ℓ ω°(y_ℓ)` by continuity of `(p, b) ↦ ∑_ℓ b_ℓ ω°(p_ℓ)`.
+  have hX : ∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Eucl P) 0) ⊆ W →
+      X ω = ∑ ℓ, (β ℓ : ℝ) * (ω : DifferentialForm (Eucl P) 0) (y ℓ) ![] := by
+    intro ω hω
+    have hΦ : Continuous fun q : (Fin Q → Eucl P) × (Fin Q → ℤ) =>
+        ∑ ℓ, (q.2 ℓ : ℝ) * (ω : DifferentialForm (Eucl P) 0) (q.1 ℓ) ![] :=
+      continuous_finsetSum _ fun ℓ _ =>
+        ((continuous_of_discreteTopology (f := fun z : ℤ => (z : ℝ))).comp
+          ((continuous_apply ℓ).comp continuous_snd)).mul
+          ((hcont ω).comp ((continuous_apply ℓ).comp continuous_fst))
+    refine tendsto_nhds_unique ((hconv ω).comp hψ.tendsto_atTop) ?_
+    refine ((hΦ.tendsto (y, β)).comp hlim).congr fun i => ?_
+    simp only [Function.comp_apply]
+    rw [hXj (ψ i) ω hω, hpb (ψ i)]
+  -- Steps 6–7: limit points outside `W` contribute `0`; group the others by position.
+  let s : Finset (Fin Q) := Finset.univ.filter fun ℓ => y ℓ ∈ W
+  refine ⟨s.image y, fun z => ∑ ℓ ∈ s.filter fun ℓ => y ℓ = z, β ℓ, ?_, fun ω hω => ?_⟩
+  · intro z hz
+    rw [Finset.coe_image] at hz
+    obtain ⟨ℓ, hℓ, rfl⟩ := hz
+    simpa [s] using hℓ
+  · rw [hX ω hω, ← Finset.sum_subset (Finset.subset_univ s) fun ℓ _ hℓ => ?_,
+      ← Finset.sum_fiberwise_of_maps_to fun ℓ hℓ => Finset.mem_image_of_mem y hℓ]
+    · refine Finset.sum_congr rfl fun z _ => ?_
+      push_cast
+      rw [Finset.sum_mul]
+      exact Finset.sum_congr rfl fun ℓ hℓ => by rw [(Finset.mem_filter.1 hℓ).2]
+    · have hyW : y ℓ ∉ W := by simpa [s] using hℓ
+      rw [hvan ω (y ℓ) fun h => hyW (hω h), mul_zero]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
