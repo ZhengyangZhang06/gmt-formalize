@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1.graph_fderiv-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1",
+  "depth": 3,
+  "title": "Derivative of the graph parametrization x -> (x, u(x))",
+  "statement": "Let n, l be natural numbers, u : R^n -> R^l and x in R^n, and suppose u is (Frechet) differentiable at x. Then the graph map G(z) := graphPoint z (u z) = (z, u(z)) in R^(n+l) is differentiable at x, and DG(x) v = graphPoint v (Du(x) v) = (v, Du(x) v) for every v in R^n.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (u : Rn n → Rn ℓ) (x : Rn n), DifferentiableAt ℝ u x → DifferentiableAt ℝ (fun z : Rn n => graphPoint z (u z)) x ∧ ∀ v : Rn n, fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x v = graphPoint v (fderiv ℝ u x v)",
+  "lean_name": "dohr_vel_graph_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-euler-lagrange-a1-graph-fderiv-a1-a1"
+}

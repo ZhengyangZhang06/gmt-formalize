@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1.vertical_test_field-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1",
+  "depth": 3,
+  "title": "Compactly supported ambient extension of a vertical variation of a graph",
+  "statement": "Let n, l be natural numbers, xi in R^(n+l), Q a linear isometry equivalence of R^(n+l), s > 0, r real, u : R^n -> R^l continuous on the open ball Bo^n_r(0) with |(x, u(x))| < s for every x in Bo^n_r(0), and phi : R^n -> R^l of class C^1 with compact support and tsupport phi contained in Bo^n_r(0). Then there is X : R^(n+l) -> R^(n+l) of class C^1 with compact support and tsupport X contained in the open ball Bo_s(xi) such that for every x in R^n: X(xi + Q^{-1}(x, u(x))) = Q^{-1}(0, phi(x)), and for all v in R^n, w in R^l, DX(xi + Q^{-1}(x, u(x)))[Q^{-1}(v, w)] = Q^{-1}(0, Dphi(x) v). (Here (v, w) = graphPoint v w.)",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (ξ : Amb n ℓ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (s r : ℝ) (u φ : Rn n → Rn ℓ), 0 < s → ContinuousOn u (ball 0 r) → (∀ x ∈ ball (0 : Rn n) r, ‖graphPoint x (u x)‖ < s) → ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 r → ∃ X : Amb n ℓ → Amb n ℓ, ContDiff ℝ 1 X ∧ HasCompactSupport X ∧ tsupport X ⊆ ball ξ s ∧ (∀ x : Rn n, X (ξ + Q.symm (graphPoint x (u x))) = Q.symm (graphPoint 0 (φ x))) ∧ ∀ (x v : Rn n) (w : Rn ℓ), fderiv ℝ X (ξ + Q.symm (graphPoint x (u x))) (Q.symm (graphPoint v w)) = Q.symm (graphPoint 0 (fderiv ℝ φ x v))",
+  "lean_name": "dohr_vel_vertical_test_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-euler-lagrange-a1-vertical-test-field-a1-a1"
+}

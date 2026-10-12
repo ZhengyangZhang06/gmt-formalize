@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1.linear_graph_area-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1",
+  "depth": 3,
+  "title": "Linear graph area formula and positivity of the graph Gram determinant",
+  "statement": "Let n, l be natural numbers, e_a = EuclideanSpace.single a 1 the standard basis of R^n, and P : R^n -> R^l a continuous linear map. Put g(P) := I_n + (<P e_a, P e_b>)_{a,b} (the matrix 1 + Matrix.of (fun a b => inner (P e_a) (P e_b))) and Lambda_P(v) := graphPoint v (P v) = (v, P v). Then det g(P) > 0, and for every set S of R^n (no measurability assumed), H^n(Lambda_P(S)) = sqrt(det g(P)) * L^n(S), where H^n = muHE[n] on R^(n+l) and L^n = volume on R^n (as an identity in [0, infinity], the factor being ENNReal.ofReal of the square root).",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn ℓ, 0 < Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))) ∧ ∀ S : Set (Rn n), (μHE[n] : Measure (Amb n ℓ)) ((fun v => graphPoint v (P v)) '' S) = ENNReal.ofReal (Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) * (volume : Measure (Rn n)) S",
+  "lean_name": "dohr_vel_linear_graph_area",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-euler-lagrange-a1-linear-graph-area-a1-a1"
+}

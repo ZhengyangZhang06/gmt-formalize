@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1.graph_area_transport-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1",
+  "depth": 3,
+  "title": "Transport of mu_V-integrals over B_s(xi) to the parameter domain of the C^1 graph",
+  "statement": "Let n, l be natural numbers, U a subset of R^(n+l), V = v(M, theta) a rectifiable n-varifold in U (RectifiableVarifold n l U) with weight mu_V and support Sigma := V.support, xi in R^(n+l), s, R reals with s <= R, Q a linear isometry equivalence of R^(n+l), and u : R^n -> R^l of class C^1 on the open ball Bo^n_R(0). Assume Q(Sigma - xi) cap Bo_R(0) = graph_{Bo^n_R(0)} u cap Bo_R(0) and that mu_V restricted to Bo_s(xi) equals H^n restricted to Sigma cap Bo_s(xi) (H^n = muHE[n]). Let D_s := {x in Bo^n_R(0) : |(x, u(x))| < s} and J(P) := sqrt(det(delta_{ab} + <P e_a, P e_b>)_{a,b}). Then for every function f : R^(n+l) -> R (no measurability or integrability assumed; Bochner integrals), the integral over Bo_s(xi) of f d mu_V equals the integral over D_s, with respect to Lebesgue measure, of J(Du(x)) f(xi + Q^{-1}(x, u(x))) dx.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ) (s R : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), s ≤ R → ContDiffOn ℝ 1 u (ball 0 R) → Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → V.weight.restrict (ball ξ s) = (μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ ball ξ s) → ∀ f : Amb n ℓ → ℝ, ∫ y in ball ξ s, f y ∂V.weight = ∫ x in {x : Rn n | x ∈ ball (0 : Rn n) R ∧ ‖graphPoint x (u x)‖ < s}, Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ))))) * f (ξ + Q.symm (graphPoint x (u x)))",
+  "lean_name": "dohr_vel_graph_area_transport",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.euler_lagrange-a1.graph_area_formula-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.euler_lagrange-a1.graph_area_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-euler-lagrange-a1-graph-area-transport-a1-a1"
+}
