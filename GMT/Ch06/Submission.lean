@@ -397,6 +397,33 @@ theorem Submission.lpf_raf_chart_preimage_null : ∀ (P n : ℕ) (Φ : Eucl n �
   -- On `ℝⁿ`, `Hⁿ = Lⁿ`.
   rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
   exact measure_mono_null hsub himg
+/-- Countable Lipschitz cover (Lindelöf): if `f` is locally Lipschitz on an arbitrary `U ⊆ ℝ^P`,
+then countably many open sets `O i` cover `U` and `f` is `K i`-Lipschitz on each `O i ∩ U`. -/
+theorem Submission.lpf_lli_countable_lipschitz_cover : ∀ (P Q : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q), LocallyLipschitzOn U f → ∃ (O : ℕ → Set (Eucl P)) (K : ℕ → ℝ≥0), (∀ i, IsOpen (O i)) ∧ U ⊆ ⋃ i, O i ∧ ∀ i, LipschitzOnWith (K i) f (O i ∩ U) := by
+  intro P Q U f hf
+  -- Step 1: each `x ∈ U` has an open `o x ∋ x` with `f` `k x`-Lipschitz on `o x ∩ U`.
+  have hloc : ∀ x ∈ U, ∃ (o : Set (Eucl P)) (k : ℝ≥0),
+      IsOpen o ∧ x ∈ o ∧ LipschitzOnWith k f (o ∩ U) := by
+    intro x hx
+    obtain ⟨k, t, ht, hft⟩ := hf hx
+    obtain ⟨o, ho, hxo, hot⟩ := mem_nhdsWithin.1 ht
+    exact ⟨o, k, ho, hxo, hft.mono hot⟩
+  choose! o k ho hxo hfo using hloc
+  -- Step 2: `ℝ^P` is hereditarily Lindelöf, so countably many `o x` (`x ∈ T ⊆ U`) cover `U`.
+  obtain ⟨T, hTc, hTU, hUT⟩ := (HereditarilyLindelofSpace.isLindelof U).elim_nhds_subcover o
+    fun x hx => (ho x hx).mem_nhds (hxo x hx)
+  rcases T.eq_empty_or_nonempty with rfl | hTne
+  · -- Step 3: `T = ∅` forces `U = ∅`; take empty pieces.
+    refine ⟨fun _ => ∅, fun _ => 0, fun _ => isOpen_empty, fun x hx => ?_, fun _ => ?_⟩
+    · simpa using hUT hx
+    · simp
+  · -- Step 4: enumerate `T = range g` and take `O i = o (g i)`, `K i = k (g i)`.
+    obtain ⟨g, rfl⟩ := hTc.exists_eq_range hTne
+    refine ⟨fun i => o (g i), fun i => k (g i), fun i => ho _ (hTU _ (mem_range_self i)),
+      fun x hx => ?_, fun i => hfo _ (hTU _ (mem_range_self i))⟩
+    -- Step 5: the pieces cover `U`.
+    obtain ⟨y, ⟨i, rfl⟩, hxy⟩ := mem_iUnion₂.1 (hUT hx)
+    exact mem_iUnion.2 ⟨i, hxy⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
