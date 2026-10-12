@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e54a2393ec9f74796b4b0c6f733427970302a256c0affba5edf12cf60af52e84",
+  "git_delta": {
+    "base_commit": "00270810725ecc7c7842aaf19e58b43c808df0e8",
+    "candidate_commit": "cc5244b41f90815bc99960bb4029e51b24cbf83d",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "1c7eed2ff572b1abd8b7f48f63c38592b8a4349c69dcd7da1dca16bf04c81f21",
+    "source_sha256": "bc6db2df651043dc651efb9deb76b73cc6278f38d8fafc5c11f17d31b55be41e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lgc_hole_estimate",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₂ ε₂ C₂ : ℝ, 0 < δ₂ ∧ 0 < ε₂ ∧ 0 < C₂ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₂ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (ε : ℝ), 0 ≤ ε → ε ≤ ε₂ → LipschitzWith (Real.toNNReal ε) f → ∀ ζ ∈ q '' graphOver f univ, ‖ζ‖ ≤ 2 * (δ * ρ) → 0 < infDist ζ V.support → infDist ζ V.support ≤ δ * ρ → ∃ y ∈ V.support, dist y ζ = infDist ζ V.support ∧ (infDist ζ V.support / 2) ^ n ≤ C₂ * ((V.weight (closedBall ζ (3 * (infDist ζ V.support / 2)) \\ q '' graphOver f univ)).toReal + ∫ x in closedBall ζ (3 * (infDist ζ V.support / 2)), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
