@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.density_lower_bound-a1.bad_set_weight-a1",
+  "parent_id": "root.varifold_tangents-a1.density_lower_bound-a1",
+  "depth": 3,
+  "title": "Mass bound for rescaled bad sets in the restricted blow-up",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N, x ∈ ℝ^N, t > 0, R > 0, and c ∈ [0,∞]. Let W be an n-varifold on the open ball B°_R(0) with W.measure = c • (rescaledMeasure V x t)⌞(B°_R(0) × G(N,n)), and let E, O ⊆ ℝ^N be arbitrary sets with O ⊆ B°_R(0). Then μ_W({y : x + t•y ∈ E} ∩ O) ≤ c·(ofReal(R)^n·(μ_V({z : z ∈ B_{tR}(x) ∧ z ∈ E}) / ofReal(tR)^n)), where B_{tR}(x) is the closed ball and the measures are applied to arbitrary sets as outer measures.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (t R : ℝ) (c : ℝ≥0∞) (W : Varifold N n (ball (0 : Euclidean N) R)) (E O : Set (Euclidean N)), 0 < t → 0 < R → W.measure = c • (rescaledMeasure V x t).restrict (ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n))) → O ⊆ ball (0 : Euclidean N) R → W.weight ({y | x + t • y ∈ E} ∩ O) ≤ c * (ENNReal.ofReal R ^ n * (V.weight {z | z ∈ closedBall x (t * R) ∧ z ∈ E} / ENNReal.ofReal (t * R) ^ n))",
+  "lean_name": "varifold_tangents_dlb_restricted_bad_set_weight_le",
+  "depends_on": [
+    "root.varifold_tangents-a1.density_lower_bound-a1.rescaled_mass_formula-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.varifold_tangents-a1.density_lower_bound-a1.rescaled_mass_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-density-lower-bound-a1-bad-set-weight-a1-a1"
+}
