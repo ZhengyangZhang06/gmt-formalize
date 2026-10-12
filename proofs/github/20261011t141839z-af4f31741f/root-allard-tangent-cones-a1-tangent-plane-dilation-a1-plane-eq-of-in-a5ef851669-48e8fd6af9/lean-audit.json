@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "89746f122a310f8d5729058621683949a8e2f1a44140c4230545d2051c23792d",
+  "git_delta": {
+    "base_commit": "cc4ec2c1de39f5ed1ad781938f15d2864a734efe",
+    "candidate_commit": "e56989fe789d6d6e70acd8285e10677affe16ce6",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_tpd_plane_eq_of_integral_eq",
+    "diff_sha256": "c4920856af0ce1ee1a7a06dde4f3bc0483ee179364d54ad65f7946f803c5c034",
+    "source_sha256": "e131b2edf9f720b2f77dd847e1070a5d8be9198be3dacd90f1e2837e252cf447",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_tpd_plane_eq_of_integral_eq",
+      "statement": "∀ (N n : ℕ) (T T' : Grassmannian N n), (∀ g : C_c(Euclidean N, ℝ), ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] = ∫ y in (T'.plane : Set (Euclidean N)), g y ∂μHE[n]) → T' = T",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
