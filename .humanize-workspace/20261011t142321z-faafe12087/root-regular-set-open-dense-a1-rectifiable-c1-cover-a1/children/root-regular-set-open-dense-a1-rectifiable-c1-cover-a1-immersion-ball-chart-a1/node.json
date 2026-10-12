@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.immersion_ball_chart-a1",
+  "parent_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1",
+  "depth": 3,
+  "title": "Immersion patch: G(B̆_σ(a)) is a finite-measure C¹ submanifold",
+  "statement": "Let n, ℓ ∈ ℕ, G : ℝⁿ → ℝ^{n+ℓ} be of class C¹, and a ∈ ℝⁿ such that DG(a) = fderiv ℝ G a is injective. Then there is σ > 0 such that G(B̆_σ(a)) (B̆_σ(a) = ball a σ, the open ball) is an n-dimensional C¹ submanifold in the sense of IsC1Submanifold n and Hⁿ(G(B̆_σ(a))) < ∞ (Hⁿ = μHE[n]).",
+  "lean_statement": "∀ (n ℓ : ℕ) (G : Rn n → Amb n ℓ) (a : Rn n), ContDiff ℝ 1 G → Function.Injective (fderiv ℝ G a) → ∃ σ : ℝ, 0 < σ ∧ IsC1Submanifold n (G '' ball a σ) ∧ (μHE[n] : Measure (Amb n ℓ)) (G '' ball a σ) < ∞",
+  "lean_name": "rsod_c1_immersion_ball_isC1Submanifold",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-rectifiable-c1-cover-a1-immersion-ball-chart-a1-a1"
+}
