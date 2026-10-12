@@ -410,6 +410,72 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- A finite Borel measure on a pseudo-metrizable space is determined by the lower integrals of
+nonnegative continuous functions (the uniqueness step behind "from the arbitrariness of `A` and `β`
+it then easily follows" in the proof of Simon Ch. 8, 1.2, p. 208): each closed `F` is approximated
+by `max 0 (1 - (j + 1) d(·, F))`, and closed sets form a π-system generating the Borel σ-algebra. -/
+theorem Submission.frt_vgm_ext_finite_of_lintegral_continuous :
+    ∀ (X : Type) [TopologicalSpace X] [TopologicalSpace.PseudoMetrizableSpace X] [MeasurableSpace X] [BorelSpace X] (m₁ m₂ : Measure X), IsFiniteMeasure m₁ → (∀ β : C(X, ℝ), (∀ x, 0 ≤ β x) → ∫⁻ x, ENNReal.ofReal (β x) ∂m₁ = ∫⁻ x, ENNReal.ofReal (β x) ∂m₂) → m₁ = m₂ := by
+  intro X _ _ _ _ m₁ m₂ h₁ hβ
+  -- Step 1: a pseudometric `d` inducing the topology of `X`.
+  let : PseudoMetricSpace X := TopologicalSpace.pseudoMetrizableSpacePseudoMetric X
+  -- Step 2: testing with `β ≡ 1`, `m₁ X = m₂ X`, so `m₂` is finite as well.
+  have huniv : m₁ univ = m₂ univ := by
+    simpa using hβ (ContinuousMap.const X 1) fun _ ↦ zero_le_one
+  have h₂ : IsFiniteMeasure m₂ := ⟨huniv ▸ measure_lt_top m₁ univ⟩
+  -- Step 3: `m₁ F = m₂ F` for every closed `F`.
+  have hclosed : ∀ F : Set X, IsClosed F → m₁ F = m₂ F := by
+    intro F hF
+    -- (a) `F = ∅`.
+    rcases F.eq_empty_or_nonempty with rfl | hFne
+    · simp
+    -- (b)–(c) with `d_F = infDist · F` continuous, the cutoffs `β_j = max 0 (1 - (j + 1) d_F)`
+    -- are continuous and `0 ≤ β_j ≤ 1`.
+    let β : ℕ → C(X, ℝ) := fun j ↦
+      ⟨fun x ↦ max 0 (1 - ((j : ℝ) + 1) * infDist x F),
+        continuous_const.max (continuous_const.sub (continuous_const.mul (continuous_infDist_pt F)))⟩
+    have hβ0 : ∀ j x, 0 ≤ β j x := fun j x ↦ le_max_left _ _
+    have hβ1 : ∀ j x, ENNReal.ofReal (β j x) ≤ 1 := by
+      intro j x
+      refine ENNReal.ofReal_le_one.2 (max_le zero_le_one ?_)
+      have : 0 ≤ ((j : ℝ) + 1) * infDist x F := mul_nonneg (by positivity) infDist_nonneg
+      linarith
+    have hmeas : ∀ j, Measurable fun x ↦ ENNReal.ofReal (β j x) :=
+      fun j ↦ ENNReal.measurable_ofReal.comp (β j).continuous.measurable
+    -- (d) `ofReal ∘ β_j → 1_F` pointwise.
+    have hlim : ∀ x, Tendsto (fun j ↦ ENNReal.ofReal (β j x)) atTop (𝓝 (F.indicator 1 x)) := by
+      intro x
+      by_cases hx : x ∈ F
+      · have h1 : ∀ j, ENNReal.ofReal (β j x) = 1 := by
+          intro j
+          show ENNReal.ofReal (max 0 (1 - ((j : ℝ) + 1) * infDist x F)) = 1
+          simp [infDist_zero_of_mem hx]
+        simp only [h1, indicator_of_mem hx, Pi.one_apply]
+        exact tendsto_const_nhds
+      · have hpos : 0 < infDist x F := (hF.notMem_iff_infDist_pos hFne).1 hx
+        obtain ⟨j₀, hj₀⟩ := exists_nat_gt (infDist x F)⁻¹
+        rw [indicator_of_notMem hx]
+        refine tendsto_atTop_of_eventually_const (i₀ := j₀) fun j hj ↦ ?_
+        have hj' : (j₀ : ℝ) ≤ j := by exact_mod_cast hj
+        have h1 : 1 < ((j : ℝ) + 1) * infDist x F := by
+          calc (1 : ℝ) = (infDist x F)⁻¹ * infDist x F := (inv_mul_cancel₀ hpos.ne').symm
+            _ < ((j : ℝ) + 1) * infDist x F := mul_lt_mul_of_pos_right (by linarith) hpos
+        show ENNReal.ofReal (max 0 (1 - ((j : ℝ) + 1) * infDist x F)) = 0
+        rw [max_eq_left (by linarith), ENNReal.ofReal_zero]
+    -- (e) dominated convergence with the bound `1` for a finite measure.
+    have key : ∀ m : Measure X, IsFiniteMeasure m →
+        Tendsto (fun j ↦ ∫⁻ x, ENNReal.ofReal (β j x) ∂m) atTop (𝓝 (m F)) := by
+      intro m hm
+      have := tendsto_lintegral_of_dominated_convergence (μ := m) (fun _ ↦ 1) hmeas
+        (fun j ↦ ae_of_all _ (hβ1 j)) (by simp) (ae_of_all _ hlim)
+      rwa [lintegral_indicator_one hF.measurableSet] at this
+    -- (f) uniqueness of limits.
+    exact tendsto_nhds_unique (key m₁ h₁)
+      ((key m₂ h₂).congr fun j ↦ (hβ (β j) (hβ0 j)).symm)
+  -- Step 4: closed sets form a π-system generating the Borel σ-algebra.
+  refine ext_of_generate_finite {s | IsClosed s} ?_ isPiSystem_isClosed hclosed huniv
+  rw [BorelSpace.measurable_eq (α := X), borel_eq_generateFrom_isClosed]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
