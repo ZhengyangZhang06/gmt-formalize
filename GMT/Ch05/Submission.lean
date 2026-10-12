@@ -458,6 +458,82 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+/-- **Pointwise conical height bound at a graph point of small slope** (steps 4–5 of the height
+transfer for Simon's Remark 5.3).  Let `‖A‖ ≤ 1/7`, `|b| ≤ |x|/7`, let `P` fix `q(x, A x)` and
+satisfy `|w| ≤ (1 + ‖A‖²)^{1/2} |q(0, w) − P q(0, w)|` for all `w`.  Then, with `Y = q(x, b)`,
+`|b − A x|² / |x|^{n+2} ≤ 2^{n+4} |Y − P Y|² / |Y|^{n+2}` (real division by `0` gives `0`). -/
+theorem Submission.any_radius_gr_ht_pointwise_height : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (P : Amb n ℓ →L[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ) (x : Rn n) (b : Rn ℓ), ‖A‖ ≤ 1 / 7 → ‖b‖ ≤ ‖x‖ / 7 → P (q (graphPoint x (A x))) = q (graphPoint x (A x)) → (∀ w : Rn ℓ, ‖w‖ ≤ Real.sqrt (1 + ‖A‖ ^ 2) * ‖q (graphPoint (0 : Rn n) w) - P (q (graphPoint (0 : Rn n) w))‖) → ‖b - A x‖ ^ 2 / ‖x‖ ^ (n + 2) ≤ 2 ^ (n + 4) * (‖q (graphPoint x b) - P (q (graphPoint x b))‖ ^ 2 / ‖q (graphPoint x b)‖ ^ (n + 2)) := by
+  intro n ℓ q P A x b hA hb hT hN
+  -- (G1) `graphPoint` is additive in both arguments
+  have hadd : ∀ (a a' : Rn n) (c c' : Rn ℓ),
+      graphPoint (a + a') (c + c') = graphPoint a c + graphPoint a' c' := by
+    intro a a' c c'
+    ext i
+    refine Fin.addCases (fun i => ?_) (fun j => ?_) i
+    · simp [graphPoint]
+    · simp [graphPoint]
+  -- (G4) `|graphPoint(a, c)|² = |a|² + |c|²`
+  have hsq : ∀ (a : Rn n) (c : Rn ℓ), ‖graphPoint a c‖ ^ 2 = ‖a‖ ^ 2 + ‖c‖ ^ 2 := by
+    intro a c
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp [graphPoint]
+  set Y := q (graphPoint x b) with hY
+  have hRHS : 0 ≤ 2 ^ (n + 4) * (‖Y - P Y‖ ^ 2 / ‖Y‖ ^ (n + 2)) := by positivity
+  rcases eq_or_ne x 0 with rfl | hx
+  · -- `|x|^(n+2) = 0`, so the left side is `0`
+    rw [norm_zero, zero_pow (by omega), div_zero]
+    exact hRHS
+  -- (a) `Y = q(graphPoint(x, A x)) + q(graphPoint(0, w))` with `w = b - A x`
+  have hdec : graphPoint x b = graphPoint x (A x) + graphPoint (0 : Rn n) (b - A x) := by
+    have h := hadd x 0 (A x) (b - A x)
+    rwa [add_zero, add_sub_cancel] at h
+  -- (b) `Y - P Y = y_w - P y_w`
+  have hres : Y - P Y =
+      q (graphPoint (0 : Rn n) (b - A x)) - P (q (graphPoint (0 : Rn n) (b - A x))) := by
+    rw [hY, hdec, map_add, map_add, hT]
+    abel
+  -- (c) `|w| ≤ 2 |Y - P Y|`, hence `|w|² ≤ 4 |Y - P Y|²`
+  have hsqrt : Real.sqrt (1 + ‖A‖ ^ 2) ≤ 2 := by
+    rw [Real.sqrt_le_left (by norm_num)]
+    have h0 : 0 ≤ ‖A‖ := norm_nonneg A
+    nlinarith
+  have hw2 : ‖b - A x‖ ≤ 2 * ‖Y - P Y‖ := by
+    rw [hres]
+    exact (hN (b - A x)).trans (mul_le_mul_of_nonneg_right hsqrt (norm_nonneg _))
+  have hw4 : ‖b - A x‖ ^ 2 ≤ 4 * ‖Y - P Y‖ ^ 2 := by
+    calc ‖b - A x‖ ^ 2 ≤ (2 * ‖Y - P Y‖) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hw2 2
+      _ = 4 * ‖Y - P Y‖ ^ 2 := by ring
+  -- (d) `|Y|² = |x|² + |b|²`, so `|x| ≤ |Y| ≤ 2 |x|`
+  have hYsq : ‖Y‖ ^ 2 = ‖x‖ ^ 2 + ‖b‖ ^ 2 := by
+    rw [hY, LinearIsometryEquiv.norm_map, hsq]
+  have hxpos : 0 < ‖x‖ := norm_pos_iff.mpr hx
+  have hxY : ‖x‖ ≤ ‖Y‖ := by
+    refine (sq_le_sq₀ (norm_nonneg x) (norm_nonneg Y)).mp ?_
+    rw [hYsq]
+    nlinarith [sq_nonneg ‖b‖]
+  have hY2x : ‖Y‖ ≤ 2 * ‖x‖ := by
+    refine (sq_le_sq₀ (norm_nonneg Y) (by positivity)).mp ?_
+    have hb2 : ‖b‖ ^ 2 ≤ (‖x‖ / 7) ^ 2 := pow_le_pow_left₀ (norm_nonneg b) hb 2
+    rw [hYsq]
+    nlinarith [sq_nonneg ‖x‖]
+  have hYpos : 0 < ‖Y‖ := hxpos.trans_le hxY
+  -- (e) `|Y|^(n+2) ≤ 2^(n+2) |x|^(n+2)`
+  have hpow : ‖Y‖ ^ (n + 2) ≤ 2 ^ (n + 2) * ‖x‖ ^ (n + 2) := by
+    rw [← mul_pow]
+    exact pow_le_pow_left₀ (norm_nonneg _) hY2x _
+  have hxk : 0 < ‖x‖ ^ (n + 2) := pow_pos hxpos _
+  have hYk : 0 < ‖Y‖ ^ (n + 2) := pow_pos hYpos _
+  -- (f) combination
+  calc ‖b - A x‖ ^ 2 / ‖x‖ ^ (n + 2) ≤ 4 * ‖Y - P Y‖ ^ 2 / ‖x‖ ^ (n + 2) :=
+        div_le_div_of_nonneg_right hw4 hxk.le
+    _ = 2 ^ (n + 4) * ‖Y - P Y‖ ^ 2 / (2 ^ (n + 2) * ‖x‖ ^ (n + 2)) := by
+        rw [div_eq_div_iff hxk.ne' (by positivity)]
+        ring
+    _ ≤ 2 ^ (n + 4) * ‖Y - P Y‖ ^ 2 / ‖Y‖ ^ (n + 2) :=
+        div_le_div_of_nonneg_left (by positivity) hYk hpow
+    _ = 2 ^ (n + 4) * (‖Y - P Y‖ ^ 2 / ‖Y‖ ^ (n + 2)) := mul_div_assoc _ _ _
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
