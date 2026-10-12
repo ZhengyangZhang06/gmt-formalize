@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5df5d470cd2f4e83ea27e6b21e0dc4c2770cc2e6904b01faec3a8d17137a82d8",
+  "git_delta": {
+    "base_commit": "9e11b556040e1655298cf55b945a52f525eff594",
+    "candidate_commit": "95b2849f73be0b02090d4fae2a90552fdccaee80",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aetp_blowUp_integral_tendsto_zero_of_density_zero",
+    "diff_sha256": "589d063e5a4a320c502e41baf80b322f2b7a97fb61a3c1353c3c9954b79af048",
+    "source_sha256": "501825ddcf607c4d323dc6cc727570008e6b7b1c72833cffcb731fc2651a98b1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aetp_blowUp_integral_tendsto_zero_of_density_zero",
+      "statement": "∀ (n ℓ : ℕ) (x : Amb n ℓ) (S : Set (Amb n ℓ)), Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) (S ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0) → ∀ f : CompactlySupportedContinuousMap (Amb n ℓ) ℝ, Tendsto (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' S, f y ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
