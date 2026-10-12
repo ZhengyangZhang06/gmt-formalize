@@ -410,6 +410,44 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Euler's identity on the dilates (used for the radial homogeneity of tangent cones, Simon
+Ch. 8, 5.3): if `∫ (n h + Dh(y) y) dμ = 0` for every compactly supported `C¹` function `h`, then
+`n ∫ g(t⁻¹ y) dμ + ∫ Dg(t⁻¹ y)(t⁻¹ y) dμ = 0` for every such `g` and every `t > 0`. -/
+theorem Submission.varifold_tangents_rh_edc_euler_dilate :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)), IsFiniteMeasureOnCompacts μ → (∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∫ y, ((n : ℝ) * g y + fderiv ℝ g y y) ∂μ = 0) → ∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∀ t : ℝ, 0 < t → (n : ℝ) * (∫ y, g (t⁻¹ • y) ∂μ) + ∫ y, fderiv ℝ g (t⁻¹ • y) (t⁻¹ • y) ∂μ = 0 := by
+  intro N n μ hμ H g hg hgc t ht
+  have hc : t⁻¹ ≠ 0 := inv_ne_zero ht.ne'
+  -- Step 2: the dilate `y ↦ g (t⁻¹ • y)` is `C¹` with compact support.
+  have hdil : ContDiff ℝ 1 (fun y : Euclidean N ↦ g (t⁻¹ • y)) :=
+    hg.comp (contDiff_id.const_smul t⁻¹)
+  have hdilc : HasCompactSupport (fun y : Euclidean N ↦ g (t⁻¹ • y)) := hgc.comp_smul hc
+  -- Step 3: chain rule, `D(g(t⁻¹ •))(y) y = Dg(t⁻¹ • y)(t⁻¹ • y)`.
+  have hchain : ∀ y : Euclidean N,
+      fderiv ℝ (fun z : Euclidean N ↦ g (t⁻¹ • z)) y y = fderiv ℝ g (t⁻¹ • y) (t⁻¹ • y) := by
+    intro y
+    have hy : HasFDerivAt (fun z : Euclidean N ↦ g (t⁻¹ • z))
+        ((fderiv ℝ g (t⁻¹ • y)).comp (t⁻¹ • ContinuousLinearMap.id ℝ (Euclidean N))) y :=
+      ((hg.differentiable one_ne_zero) (t⁻¹ • y)).hasFDerivAt.comp y
+        ((hasFDerivAt_id y).const_smul t⁻¹)
+    rw [hy.fderiv, ContinuousLinearMap.comp_apply, smul_apply,
+      ContinuousLinearMap.id_apply]
+  -- Step 4: both summands are continuous with compact support, hence `μ`-integrable.
+  have hi₁ : Integrable (fun y : Euclidean N ↦ (n : ℝ) * g (t⁻¹ • y)) μ :=
+    (hdil.continuous.integrable_of_hasCompactSupport hdilc).const_mul _
+  have hDc : Continuous (fun x : Euclidean N ↦ fderiv ℝ g x x) :=
+    (hg.continuous_fderiv one_ne_zero).clm_apply continuous_id
+  -- `Dg(x) = 0` off `tsupport g`, so `x ↦ Dg(x) x` is supported in the compact `tsupport g`.
+  have hDs : HasCompactSupport (fun x : Euclidean N ↦ fderiv ℝ g x x) := by
+    refine hgc.mono' fun x hx ↦ ?_
+    by_contra hxg
+    exact hx (by simp only [fderiv_of_notMem_tsupport ℝ hxg, zero_apply])
+  have hi₂ : Integrable (fun y : Euclidean N ↦ fderiv ℝ g (t⁻¹ • y) (t⁻¹ • y)) μ :=
+    (hDc.comp (continuous_const_smul t⁻¹)).integrable_of_hasCompactSupport (hDs.comp_smul hc)
+  -- Step 5: apply the hypothesis to the dilate, rewrite by the chain rule and split the integral.
+  have hH := H _ hdil hdilc
+  simp only [hchain] at hH
+  rwa [integral_add hi₁ hi₂, integral_const_mul] at hH
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
