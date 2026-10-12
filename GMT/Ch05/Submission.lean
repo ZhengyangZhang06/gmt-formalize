@@ -499,6 +499,43 @@ theorem tdo_slb_setLIntegral_rpow_le_holder : ∀ (X : Type) [MeasurableSpace X]
     _ ≤ (∫⁻ x in B, g x ^ p ∂μ) ^ (q / p) * μ B ^ (1 - q / p) := by
         gcongr
         exact hGp _
+/-- Scaling of the scaled `Lᵖ` norm of `H` on nested closed balls (Simon Ch. 5, end of the proof of
+4.5, p. 121, where `B_{θσ}(0) ⊆ B_σ(0)` gives
+`((θσ)^{p−n} ∫_{B_{θσ}(0)} |H|ᵖ dμ_V)^{1/p} ≤ θ^{1−n/p} (σ^{p−n} ∫_{B_σ(0)} |H|ᵖ dμ_V)^{1/p}`):
+if `p > 0`, `0 < s ≤ t` and `B_s(z) ⊆ B_t(w)`, then
+`(s^{p−n} ∫_{B_s(z)} |H|ᵖ dμ_V)^{1/p} ≤ (s/t)^{(p−n)/p} (t^{p−n} ∫_{B_t(w)} |H|ᵖ dμ_V)^{1/p}`.
+The integral over the smaller ball is at most the one over the larger ball, the weight splits as
+`s^{p−n} = (s/t)^{p−n} t^{p−n}`, and `x ↦ x^{1/p}` is monotone and multiplicative on `[0, ∞]`. -/
+theorem tdo_slb_scaledLpNorm_le_of_subset : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ) (z w : Amb n ℓ) (s t : ℝ), 0 < p → 0 < s → s ≤ t → closedBall z s ⊆ closedBall w t → V.scaledLpNorm H p z s ≤ ENNReal.ofReal ((s / t) ^ ((p - n) / p)) * V.scaledLpNorm H p w t := by
+  intro n ℓ U V H p z w s t hp hs hst hsub
+  -- Step 1: `t > 0` and `s / t > 0`
+  have ht : 0 < t := hs.trans_le hst
+  have hst' : 0 ≤ s / t := (div_pos hs ht).le
+  -- Step 2: monotonicity of the lower integral in the domain (no measurability needed)
+  have hI : ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ p ∂V.weight
+      ≤ ∫⁻ x in closedBall w t, ‖H x‖ₑ ^ p ∂V.weight :=
+    lintegral_mono_set hsub
+  -- Step 3: `ofReal (s^{p−n}) = ofReal ((s/t)^{p−n}) * ofReal (t^{p−n})`
+  have hsplit : ENNReal.ofReal (s ^ (p - n))
+      = ENNReal.ofReal ((s / t) ^ (p - n)) * ENNReal.ofReal (t ^ (p - n)) := by
+    rw [← ENNReal.ofReal_mul (Real.rpow_nonneg hst' _), Real.div_rpow hs.le ht.le,
+      div_mul_cancel₀ _ (Real.rpow_pos_of_pos ht _).ne']
+  have hp' : 0 ≤ 1 / p := (one_div_pos.mpr hp).le
+  unfold RectifiableVarifold.scaledLpNorm
+  -- Steps 4–6: compare inside, take `1/p`-th powers, and simplify the coefficient
+  calc (ENNReal.ofReal (s ^ (p - n)) * ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p)
+      ≤ (ENNReal.ofReal ((s / t) ^ (p - n)) * (ENNReal.ofReal (t ^ (p - n))
+          * ∫⁻ x in closedBall w t, ‖H x‖ₑ ^ p ∂V.weight)) ^ (1 / p) := by
+        refine ENNReal.rpow_le_rpow ?_ hp'
+        rw [hsplit, mul_assoc]
+        gcongr
+    _ = ENNReal.ofReal ((s / t) ^ (p - n)) ^ (1 / p) * (ENNReal.ofReal (t ^ (p - n))
+          * ∫⁻ x in closedBall w t, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p) :=
+        ENNReal.mul_rpow_of_nonneg _ _ hp'
+    _ = ENNReal.ofReal ((s / t) ^ ((p - n) / p)) * (ENNReal.ofReal (t ^ (p - n))
+          * ∫⁻ x in closedBall w t, ‖H x‖ₑ ^ p ∂V.weight) ^ (1 / p) := by
+        rw [ENNReal.ofReal_rpow_of_nonneg (Real.rpow_nonneg hst' _) hp', ← Real.rpow_mul hst',
+          mul_one_div]
 
 end Submission
 
