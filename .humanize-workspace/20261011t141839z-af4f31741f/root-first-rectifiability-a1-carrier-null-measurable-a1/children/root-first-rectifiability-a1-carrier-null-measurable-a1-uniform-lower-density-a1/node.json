@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.carrier_null_measurable-a1.uniform_lower_density-a1",
+  "parent_id": "root.first_rectifiability-a1.carrier_null_measurable-a1",
+  "depth": 3,
+  "title": "Positive density gives a uniform lower density-ratio bound for 0 < ρ ≤ 1/(k+1)",
+  "statement": "Let N, n ∈ ℕ, μ a measure on ℝ^N = Euclidean N, x ∈ ℝ^N and t ∈ [0, ∞] with t > 0 (t = ∞ allowed). Suppose HasDensity n μ x t, i.e. densityRatio n μ x ρ = μ(B_ρ(x))/(ω_n ρ^n) → t as ρ ↓ 0. Here B_ρ(x) is the closed ball, ω_n = unitBallVolume n (so ω_0 = 1), and the quotient is taken in [0, ∞]. Then there are m, k ∈ ℕ such that (2(m + 1))⁻¹ ≤ densityRatio n μ x ρ in [0, ∞] for every real ρ with 0 < ρ ≤ 1/(k + 1).",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (t : ℝ≥0∞), 0 < t → HasDensity n μ x t → ∃ m k : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 / ((k : ℝ) + 1) → (2 * ((m : ℝ≥0∞) + 1))⁻¹ ≤ densityRatio n μ x ρ",
+  "lean_name": "frt_cnm_exists_uniform_densityRatio_lower",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-carrier-null-measurable-a1-uniform-lower-density-a1-a1"
+}

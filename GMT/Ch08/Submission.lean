@@ -1657,6 +1657,42 @@ theorem Submission.frt_measure_null_of_hausdorff_null_ball_bound :
 theorem Submission.frt_ball_bound_of_finite_density :
     ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞), θ ≠ ∞ → HasDensity n μ x θ → ∃ K j : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 / ((j : ℝ) + 1) → μ (closedBall x ρ) ≤ (K : ℝ≥0∞) * ENNReal.ofReal ρ ^ n := by
   intro N n μ x θ hθ hdens
+/-- Uniform lower density bound (Simon Ch. 8, 1.2, Step 1 "uniform pieces" of the proof that `M` is
+`H^n`-measurable): if `Θ^n(μ, x) = t > 0` (`t = ∞` allowed), then for some `m, k ∈ ℕ`,
+`(2(m+1))⁻¹ ≤ μ(B_ρ(x))/(ω_n ρ^n)` for every `0 < ρ ≤ 1/(k+1)`. -/
+theorem Submission.frt_cnm_exists_uniform_densityRatio_lower :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (t : ℝ≥0∞), 0 < t → HasDensity n μ x t → ∃ m k : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 / ((k : ℝ) + 1) → (2 * ((m : ℝ≥0∞) + 1))⁻¹ ≤ densityRatio n μ x ρ := by
+  intro N n μ x t ht hdens
+  -- Step 1: `m⁻¹ < t` for some `m ∈ ℕ`, hence `(m + 1)⁻¹ ≤ m⁻¹ < t`.
+  obtain ⟨m, hm⟩ := ENNReal.exists_inv_nat_lt ht.ne'
+  have hm1 : ((m : ℝ≥0∞) + 1)⁻¹ ≤ t :=
+    (ENNReal.inv_le_inv.2 (le_add_of_nonneg_right zero_le_one)).trans hm.le
+  -- Step 2: `a = m + 1 ∈ (0, ∞)` gives `a = 1 * a < 2 * a`, so `c = (2a)⁻¹ < a⁻¹ ≤ t`.
+  have ha0 : (m : ℝ≥0∞) + 1 ≠ 0 := (zero_lt_one.trans_le (le_add_of_nonneg_left zero_le)).ne'
+  have hatop : (m : ℝ≥0∞) + 1 ≠ ∞ :=
+    ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top m, ENNReal.one_ne_top⟩
+  have hc : (2 * ((m : ℝ≥0∞) + 1))⁻¹ < t := by
+    refine lt_of_lt_of_le (ENNReal.inv_lt_inv.2 ?_) hm1
+    calc (m : ℝ≥0∞) + 1 = 1 * ((m : ℝ≥0∞) + 1) := (one_mul _).symm
+      _ < 2 * ((m : ℝ≥0∞) + 1) := ENNReal.mul_lt_mul_left ha0 hatop ENNReal.one_lt_two
+  -- Step 3: `Ioi c` is a neighbourhood of `t`, so its preimage `S` lies in `𝓝[>] 0`.
+  have hS : densityRatio n μ x ⁻¹' Ioi (2 * ((m : ℝ≥0∞) + 1))⁻¹ ∈ 𝓝[>] (0 : ℝ) :=
+    Filter.tendsto_def.1 hdens _ (Ioi_mem_nhds hc)
+  -- Step 4: some `(0, u)` lies in `S`, and `1/(k+1) < u` for some `k ∈ ℕ`.
+  obtain ⟨u, hu, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 hS
+  obtain ⟨k, hk⟩ := exists_nat_one_div_lt (show (0 : ℝ) < u from hu)
+  -- Step 5: every `ρ ∈ (0, 1/(k+1)]` lies in `(0, u) ⊆ S`.
+  refine ⟨m, k, fun ρ hρ hρk ↦ ?_⟩
+  have hρS : ρ ∈ densityRatio n μ x ⁻¹' Ioi (2 * ((m : ℝ≥0∞) + 1))⁻¹ :=
+    hsub ⟨hρ, hρk.trans_lt hk⟩
+  exact le_of_lt hρS
+/-- Uniform lower density-ratio bounds pass to the closure (Step 4 of the proof that the carrier `M`
+in Simon Ch. 8, 1.2 is `H^n`-measurable): if `c ≤ μ(B_ρ(x))/(ω_n ρ^n)` for all `x ∈ E` and
+`0 < ρ ≤ δ`, then the same holds for all `y ∈ closure E`, since `B_s(x) ⊆ B_ρ(y)` whenever
+`s + |x - y| ≤ ρ`, and `s ↑ ρ`. -/
+theorem Submission.frt_cnm_densityRatio_lower_closure :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (E : Set (Euclidean N)) (c : ℝ≥0∞) (δ : ℝ), (∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ ≤ δ → c ≤ densityRatio n μ x ρ) → ∀ y ∈ closure E, ∀ ρ : ℝ, 0 < ρ → ρ ≤ δ → c ≤ densityRatio n μ y ρ := by
+  intro N n μ E c δ hE y hy ρ hρ hρδ
   -- Step 1: `0 < ω_n < ∞` (`volume` on `ℝ^n` is an additive Haar measure).
   have hω0 : unitBallVolume n ≠ 0 :=
     (Metric.measure_ball_pos (volume : Measure (EuclideanSpace ℝ (Fin n))) 0 one_pos).ne'
@@ -1704,6 +1740,33 @@ theorem Submission.frt_weight_null_of_hausdorff_null :
       fun _ hx ↦ hx.2
   -- Countable subadditivity over `(K, j) ∈ ℕ × ℕ`.
   exact measure_mono_null hcover (measure_iUnion_null fun K ↦ measure_iUnion_null (hnull K))
+  -- Step 2: the denominators `D(s) = ω_n ofReal(s)^n` are finite, and nonzero for `s > 0`.
+  have hD0 : ∀ s : ℝ, 0 < s → unitBallVolume n * ENNReal.ofReal s ^ n ≠ 0 := fun s hs ↦
+    mul_ne_zero hω0 (pow_ne_zero n (ENNReal.ofReal_pos.2 hs).ne')
+  have hDtop : ∀ s : ℝ, unitBallVolume n * ENNReal.ofReal s ^ n ≠ ∞ := fun s ↦
+    ENNReal.mul_ne_top hωtop (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  -- Step 3: for `s > 0`, `c ≤ densityRatio n μ z s ↔ c D(s) ≤ μ(B_s(z))`.
+  have hiff : ∀ (z : Euclidean N) (s : ℝ), 0 < s → (c ≤ densityRatio n μ z s ↔
+      c * (unitBallVolume n * ENNReal.ofReal s ^ n) ≤ μ (closedBall z s)) := fun z s hs ↦
+    ENNReal.le_div_iff_mul_le (Or.inl (hD0 s hs)) (Or.inl (hDtop s))
+  -- Step 4: it suffices to show `c D(ρ) ≤ μ(B_ρ(y))`.
+  refine (hiff y ρ hρ).2 ?_
+  -- Step 5: for `0 < s < ρ` pick `x ∈ E` with `|x - y| < ρ - s`; then `B_s(x) ⊆ B_ρ(y)`.
+  have hbound : ∀ s ∈ Ioo 0 ρ,
+      c * (unitBallVolume n * ENNReal.ofReal s ^ n) ≤ μ (closedBall y ρ) := by
+    rintro s ⟨hs0, hsρ⟩
+    obtain ⟨x, hx, hyx⟩ := Metric.mem_closure_iff.1 hy (ρ - s) (sub_pos.2 hsρ)
+    calc c * (unitBallVolume n * ENNReal.ofReal s ^ n) ≤ μ (closedBall x s) :=
+          (hiff x s hs0).1 (hE x hx s hs0 (hsρ.le.trans hρδ))
+      _ ≤ μ (closedBall y ρ) :=
+          measure_mono (Metric.closedBall_subset_closedBall' (by rw [dist_comm]; linarith))
+  -- Step 6: let `s ↑ ρ`; `c D(s) → c D(ρ)` since `ω_n ≠ ∞` and `D(ρ) ≠ 0` (this covers `c = ∞`).
+  have hlim : Tendsto (fun s : ℝ ↦ c * (unitBallVolume n * ENNReal.ofReal s ^ n)) (𝓝[<] ρ)
+      (𝓝 (c * (unitBallVolume n * ENNReal.ofReal ρ ^ n))) :=
+    ENNReal.Tendsto.const_mul (ENNReal.Tendsto.const_mul
+      ((((ENNReal.continuous_pow n).comp ENNReal.continuous_ofReal).tendsto ρ).mono_left
+        nhdsWithin_le_nhds) (Or.inr hωtop)) (Or.inl (hD0 ρ hρ))
+  exact le_of_tendsto hlim (mem_of_superset (Ioo_mem_nhdsLT hρ) hbound)
 /-- `ω_n = π^{n/2} / Γ(n/2 + 1)` for every `n ∈ ℕ` (including `ω_0 = 1`): for `n = 0` the volume
 of `EuclideanSpace ℝ (Fin 0)` is the Dirac mass at `0`, and for `n ≥ 1` this is
 `EuclideanSpace.volume_ball` at radius `1` together with `√π ^ n = π ^ (n / 2)`. -/
@@ -1825,6 +1888,62 @@ theorem Submission.frt_hausdorff_null_of_weight_null :
     (measure_iUnion_null fun m : ℕ ↦ hnull _ (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top m)))
   obtain ⟨m, hm⟩ := ENNReal.exists_inv_nat_lt (hpos x hx).ne'
   exact mem_iUnion.2 ⟨m, hx, hm.le⟩
+/-- The carrier is `H^n`-measurable (Simon Ch. 8, 1.2, the printed claim "`M` is `H^n`-measurable",
+which Ch. 3, 1.9 presupposes): if `M ⊆ U`, `μ_V(ℝ^N ∖ M) = 0` and `Θ^n(μ_V, x) = θ(x) > 0` for every
+`x ∈ M`, then `M` is `H^n`-null-measurable.  `M` is the countable union of the sets
+`M ∩ closure (F_{m,k} ∩ C_j)`, where `F_{m,k} ⊆ M` carries a uniform lower density bound and the
+closed sets `C_j ⊆ U` cover `U`; each is a closed set minus an `H^n`-null set. -/
+theorem Submission.frt_carrier_nullMeasurable :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), M ⊆ U → V.weight Mᶜ = 0 → (∀ x ∈ M, 0 < θ x ∧ HasDensity n V.weight x (ENNReal.ofReal (θ x))) → NullMeasurableSet M μHE[n] := by
+  intro N n U V M θ hMU hMc hθ
+  -- Step 0: `U` is open and `μ_V` is finite on compact subsets of `U`.
+  have hU : IsOpen U := V.isOpen_domain
+  have hfin : ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → V.weight K ≠ ∞ :=
+    V.weight_finite_on_compact
+  -- Step 1: the uniform pieces `F m k ⊆ M`, with `(2(m+1))⁻¹ ≤ densityRatio` on `(0, 1/(k+1)]`.
+  set F : ℕ → ℕ → Set (Euclidean N) := fun m k ↦ {x | x ∈ M ∧ ∀ ρ : ℝ, 0 < ρ →
+    ρ ≤ 1 / ((k : ℝ) + 1) → (2 * ((m : ℝ≥0∞) + 1))⁻¹ ≤ densityRatio n V.weight x ρ}
+  -- Step 2: countably many closed sets `C j ⊆ U` cover `U`.
+  obtain ⟨C, hCclosed, hCU, hCcover, -⟩ := hU.exists_iUnion_isClosed
+  -- Steps 3–6: each `M ∩ closure (F m k ∩ C j)` is `H^n`-null-measurable.
+  have hpiece : ∀ m k j, NullMeasurableSet (M ∩ closure (F m k ∩ C j)) μHE[n] := by
+    intro m k j
+    -- Step 3: the closure stays inside the closed set `C j ⊆ U`.
+    have hclU : closure (F m k ∩ C j) ⊆ U :=
+      (closure_minimal inter_subset_right (hCclosed j)).trans (hCU j)
+    -- Step 4: the lower bound passes to the closure, so `limsup densityRatio > 0` there.
+    have hc0 : (0 : ℝ≥0∞) < (2 * ((m : ℝ≥0∞) + 1))⁻¹ :=
+      ENNReal.inv_pos.2 (ENNReal.mul_ne_top ENNReal.ofNat_ne_top
+        (ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top m, ENNReal.one_ne_top⟩))
+    have hlim : ∀ y ∈ closure (F m k ∩ C j), 0 < limsup (densityRatio n V.weight y) (𝓝[>] 0) := by
+      intro y hy
+      have hlow := Submission.frt_cnm_densityRatio_lower_closure N n V.weight (F m k ∩ C j) _ _
+        (fun x hx ↦ hx.1.2) y hy
+      refine hc0.trans_le (le_limsup_of_frequently_le (Eventually.frequently ?_))
+      filter_upwards [Ioo_mem_nhdsGT (Nat.one_div_pos_of_nat (n := k))] with ρ hρ
+      exact hlow ρ hρ.1 hρ.2.le
+    -- Step 5: the defect `closure (F m k ∩ C j) ∖ M` is `μ_V`-null, hence `H^n`-null.
+    have hZ : μHE[n] (closure (F m k ∩ C j) \ M) = 0 :=
+      Submission.frt_hausdorff_null_of_weight_null N n V.weight U _ hU hfin
+        (sdiff_subset.trans hclU) (measure_mono_null (fun x hx ↦ hx.2) hMc)
+        (fun y hy ↦ hlim y hy.1)
+    -- Step 6: `M ∩ closure (F m k ∩ C j)` is a closed set minus an `H^n`-null set.
+    rw [inter_comm, ← Set.sdiff_sdiff_right_self]
+    exact isClosed_closure.measurableSet.nullMeasurableSet.diff (NullMeasurableSet.of_null hZ)
+  -- Step 7: `M` is the countable union of these pieces.
+  have hcover : M = ⋃ m, ⋃ k, ⋃ j, M ∩ closure (F m k ∩ C j) := by
+    refine Subset.antisymm (fun x hx ↦ ?_)
+      (iUnion_subset fun m ↦ iUnion_subset fun k ↦ iUnion_subset fun j ↦ inter_subset_left)
+    obtain ⟨m, k, hmk⟩ := Submission.frt_cnm_exists_uniform_densityRatio_lower N n V.weight x _
+      (ENNReal.ofReal_pos.2 (hθ x hx).1) (hθ x hx).2
+    have hxC : x ∈ ⋃ j, C j := by
+      rw [hCcover]
+      exact hMU hx
+    obtain ⟨j, hj⟩ := mem_iUnion.1 hxC
+    exact mem_iUnion.2 ⟨m, mem_iUnion.2 ⟨k, mem_iUnion.2 ⟨j, hx, subset_closure ⟨⟨hx, hmk⟩, hj⟩⟩⟩⟩
+  rw [hcover]
+  exact NullMeasurableSet.iUnion fun m ↦ NullMeasurableSet.iUnion fun k ↦
+    NullMeasurableSet.iUnion fun j ↦ hpiece m k j
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
