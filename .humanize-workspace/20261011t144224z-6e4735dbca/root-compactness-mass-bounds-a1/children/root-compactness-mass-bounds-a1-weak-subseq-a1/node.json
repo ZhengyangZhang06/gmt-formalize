@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_mass_bounds-a1.weak_subseq-a1",
+  "parent_id": "root.compactness_mass_bounds-a1",
+  "depth": 2,
+  "title": "Weakly convergent subsequence under local mass bounds (Banach–Alaoglu step of 2.15)",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, and let T : ℕ → GeometricCurrentOn U n satisfy sup_q M_W(T_q) < ∞ for every W with CompactlyContainedOpen W U. Then there are a strictly increasing φ : ℕ → ℕ and T₀ ∈ GeometricCurrentOn U n such that T_{φ(q)} ⇀ T₀ in U, i.e. T_{φ(q)}(ω) → T₀(ω) for every ω ∈ TestFormOn U n (WeaklyConvergesOn (fun q => T (φ q)) T₀).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : ℕ → GeometricCurrentOn U n, (∀ W, CompactlyContainedOpen W U → (⨆ q, (T q).massOn W) < ∞) → ∃ (φ : ℕ → ℕ) (T₀ : GeometricCurrentOn U n), StrictMono φ ∧ WeaklyConvergesOn (fun q => T (φ q)) T₀",
+  "lean_name": "cmb_exists_weakly_convergent_subseq",
+  "depends_on": [
+    "root.compactness_mass_bounds-a1.exhaustion-a1",
+    "root.compactness_mass_bounds-a1.mass_bound-a1",
+    "root.compactness_mass_bounds-a1.testform_separable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_mass_bounds-a1.exhaustion-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_mass_bounds-a1.mass_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_mass_bounds-a1.testform_separable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-weak-subseq-a1-a1"
+}
