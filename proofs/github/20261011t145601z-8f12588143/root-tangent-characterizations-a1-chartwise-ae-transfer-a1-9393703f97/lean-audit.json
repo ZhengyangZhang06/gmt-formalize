@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "99912491d337f03ba85cb784274081892f010d47ed7f0e07b62a6700e2a77d04",
+  "git_delta": {
+    "base_commit": "384f7fcf3c21e114abf2805872ced4a8afaf3a3f",
+    "candidate_commit": "eda3d44b30acb765d7952a6a427b5668c94e6808",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "ae_of_ae_on_submanifold_charts",
+    "diff_sha256": "66867295154139aa8c4506a536c0db153205edff6b7707a9040c05d0fa737f43",
+    "source_sha256": "bf304f5d79c13ea3892ed90787018ac2a89791f8d79c102141de4d3a577e268c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ae_of_ae_on_submanifold_charts",
+      "statement": "∀ (n N : ℕ) (M N₀ : Set (Rn N)) (S : ℕ → Set (Rn N)) (Q : Rn N → Prop), μHE[n] N₀ = 0 → (∀ j, IsC1Submanifold n (S j)) → M ⊆ N₀ ∪ ⋃ j, S j → (∀ (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M → Q (ψ u)) → ∀ᵐ x ∂(μHE[n] : Measure (Rn N)), x ∈ M → Q x",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
