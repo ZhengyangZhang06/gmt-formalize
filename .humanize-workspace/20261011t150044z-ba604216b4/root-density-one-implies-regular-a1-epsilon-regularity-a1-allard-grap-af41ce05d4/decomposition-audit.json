@@ -1,0 +1,113 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rellich|kondrachov|dorag_ha_rb_",
+        "absolutelyContinuousOnInterval|integral_deriv_eq_sub",
+        "integral_mono_of_nonneg|norm_toLp|toLp_sub|toLp_coeFn|integral_pos_of_hasCompactSupport_nonneg_nonzero|ContinuousOn.memLp_of_isCompact|memLp_of_isCompact",
+        "isFiniteMeasure_restrict|measure_ball_lt_top|measure_lt_top.*IsBounded|IsBounded.measure_lt_top",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rellich-independent-audit-i9z6fvra/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rellich-independent-audit-i9z6fvra/LibraryChecks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rellich-independent-audit-i9z6fvra/Instances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rellich-independent-audit-i9z6fvra/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-af41ce05d4/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-af41ce05d4/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Complete.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        "/tmp/rellich-independent-audit-i9z6fvra/Types.lean",
+        "/tmp/rellich-independent-audit-i9z6fvra/LibraryChecks.lean",
+        "/tmp/rellich-independent-audit-i9z6fvra/Instances.lean",
+        "/tmp/rellich-independent-audit-i9z6fvra/Assembly.lean"
+      ],
+      "conclusion": "Verified the pinned project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. No Rellich/Kondrachov match occurred in the searched snapshot roots. All twelve exact, one-line child propositions elaborate independently without child declarations, match their prose hypotheses and conclusions, and use the intended Euclidean volume, continuous-linear-map operator norm, and Lp instances. All names are bare identifiers; scanning 350 DAG nodes and 3417 node JSON files found no competing reservation. Dependencies are acyclic and match the proofs' actual uses. The split is appropriate: each child contributes to the selected Rellich theorem. An independent Lean proof derives the exact frozen parent type from the total_bounded and l2_subseq contracts as explicit hypotheses, establishing MemLp from Lipschitz boundedness on the finite-measure ball. This assembly and the nineteen checked library declarations use only propext, Classical.choice, and Quot.sound. The stated additional FTC import is available and sufficient. The advertised full-child scratch proofs were absent; acceptance rests on independent review of every supplied natural proof, not those compilation claims."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "line_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Lipschitz composition supplies absolute continuity; the stated a.e. differentiability hypothesis permits the chain rule on the integration interval. Oriented FTC and a.e. integral congruence prove the exact statement for arbitrary a and b."
+    },
+    {
+      "key": "segment_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Rademacher, translation invariance, and Fubini on the measurable differentiability set supply line_ftc's hypothesis for a.e. base point. The dependency is correctly directed and the quantifiers are preserved."
+    },
+    {
+      "key": "ray_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Nonzero dilations preserve null sets, and σ = 0 is a null exception in ℝ. Fubini produces a single conull set of x with global a.e. differentiability along the ray, allowing line_ftc for every t."
+    },
+    {
+      "key": "translation_l2",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Transported segment FTC, Cauchy–Schwarz on a unit-length interval, and the stated ball containment yield the pointwise estimate. Bounded localization justifies Fubini and translation invariance, including empty-ball cases."
+    },
+    {
+      "key": "dilation_average",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The lintegral reduction correctly handles nonintegrable Bochner integrands. Tonelli, the Jacobian bound t⁻ⁿ ≤ 2ⁿ, and the admissible-parameter length bound 2s give exactly 2^(n+1)s under the stated hypotheses."
+    },
+    {
+      "key": "boundary_layer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Ray FTC and the interval variance calculation give u² ≤ 4I₁ + J. Measurability and boundedness justify integration; applying dilation_average twice yields the exact boundary-layer constant."
+    },
+    {
+      "key": "mollify_l2",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact support ensures the weighted integrals exist. Weighted Jensen, explicit product domination, Fubini, and translation_l2 prove the ε² estimate without an unstated upper bound on s."
+    },
+    {
+      "key": "mollify_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Support localization and y = x − εz give the ε⁻ⁿ factor. The kernel bounds supply the sup estimate and the additional ε⁻¹ Lipschitz factor. C ≥ 0 follows from the absolute-value bound; kernel positivity or normalization is unnecessary."
+    },
+    {
+      "key": "kernel",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The tent function is nonnegative, compactly supported, and 1-Lipschitz. Its positive integral permits normalization, proving all six properties, including in dimension zero."
+    },
+    {
+      "key": "sup_net",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "A finite spatial cover reduces the problem to bounded evaluation vectors in a finite-dimensional space. Choosing representatives from the sequence and applying the three-term estimate gives the required index net; the construction also covers empty K."
+    },
+    {
+      "key": "total_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit positive choices of s, ε, and δ make the three error contributions at most η/3 each. Uniform L¹ control gives uniform mollification bounds, and the five declared dependencies produce the finite L² net without invoking Rellich compactness."
+    },
+    {
+      "key": "l2_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The squared-integral identity converts the hypothesis into total boundedness in Lp ℝ 2 μ. Completeness holds for arbitrary μ; compact subsequence extraction and the representative identity establish precisely the stated MemLp and integral convergence conclusion."
+    }
+  ],
+  "required_changes": []
+}
