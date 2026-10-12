@@ -458,6 +458,150 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, 2.4, the elementary inequalities (E1)–(E5) behind the pinched density bounds, with
+`κ > 0` and `ω > 0` arbitrary: put `e = exp 1`, `A = 1 + n 2^{n+4}`, `B = (9/8) 2ⁿ`,
+`C₊ = A + (2e²B + 2e/ω)/κ`, `C₋ = (1 + 1/ω)/κ`, `C_c = eA + (e²B + e/ω)/κ`,
+`C_P = max {1, C₊, C₋, C_c}` and `δ_P = min {1/8, κ, 1/(2C_P)}`.  For `t ∈ (0, δ_P]`, with
+`Λ = t/κ ∈ (0, 1]` and `a = (1 + t)/(1 − 4t)ⁿ`, the bounds `1 − Λ ≤ e^{−Λ} ≤ 1`, `e^Λ ≤ e`,
+`e^Λ ≤ 1 + eΛ`, `e^{2Λ} ≤ 1 + 2e²Λ` (from `1 + x ≤ eˣ` and monotonicity of `exp`) and
+`0 ≤ a ≤ 1 + At`, `a ≤ B` (Bernoulli and `(1 − 4t)ⁿ ≥ 2⁻ⁿ`) give the three inequalities. -/
+theorem aal_pinched_constants : ∀ (n : ℕ) (κ ω : ℝ), 0 < κ → 0 < ω → ∃ Cp δp : ℝ, 1 ≤ Cp ∧ 0 < δp ∧ δp ≤ 1 / 8 ∧ δp ≤ κ ∧ Cp * δp ≤ 1 / 2 ∧ ∀ t : ℝ, 0 < t → t ≤ δp → Real.exp (2 * (t / κ)) * ((1 + t) / (1 - 4 * t) ^ n * ω) + 2 * Real.exp (t / κ) * (t / κ) ≤ (1 + Cp * t) * ω ∧ (1 - Cp * t) * ω ≤ Real.exp (-(t / κ)) * (ω - t / κ) ∧ Real.exp (t / κ) * (Real.exp (t / κ) * ((1 + t) / (1 - 4 * t) ^ n * ω) + t / κ - ω) ≤ Cp * ω * t := by
+  intro n κ ω hκ hω
+  -- Step 1: the constants `e = exp 1`, `A = 1 + n 2^{n+4}`, `B = (9/8) 2ⁿ`, `C₊`, `C₋`, `C_c`.
+  set e : ℝ := Real.exp 1 with he_def
+  set A : ℝ := 1 + (n : ℝ) * 2 ^ (n + 4) with hA_def
+  set B : ℝ := 9 / 8 * 2 ^ n with hB_def
+  have he : 0 < e := Real.exp_pos 1
+  have hA0 : 0 ≤ A := by positivity
+  have hB0 : 0 ≤ B := by positivity
+  clear_value e A B
+  -- `C_P = max {1, C₊, C₋, C_c}` dominates `1`, `C₊`, `C₋` and `C_c`.
+  obtain ⟨Cp, hCp1, hCplus, hCminus, hCc⟩ : ∃ Cp : ℝ, 1 ≤ Cp ∧
+      A + (2 * e ^ 2 * B + 2 * e / ω) / κ ≤ Cp ∧ (1 + 1 / ω) / κ ≤ Cp ∧
+      e * A + (e ^ 2 * B + e / ω) / κ ≤ Cp :=
+    ⟨max (max 1 (A + (2 * e ^ 2 * B + 2 * e / ω) / κ))
+        (max ((1 + 1 / ω) / κ) (e * A + (e ^ 2 * B + e / ω) / κ)),
+      (le_max_left _ _).trans (le_max_left _ _), (le_max_right _ _).trans (le_max_left _ _),
+      (le_max_left _ _).trans (le_max_right _ _), (le_max_right _ _).trans (le_max_right _ _)⟩
+  have hCp0 : 0 < Cp := by linarith
+  -- `δ_P = min {1/8, κ, 1/(2 C_P)}`: positive, `≤ 1/8`, `≤ κ` and `C_P δ_P ≤ 1/2`.
+  refine ⟨Cp, min (min (1 / 8) κ) (1 / (2 * Cp)), hCp1,
+    lt_min (lt_min (by norm_num) hκ) (div_pos one_pos (mul_pos two_pos hCp0)),
+    (min_le_left _ _).trans (min_le_left _ _), (min_le_left _ _).trans (min_le_right _ _), ?_, ?_⟩
+  · calc Cp * min (min (1 / 8) κ) (1 / (2 * Cp)) ≤ Cp * (1 / (2 * Cp)) :=
+          mul_le_mul_of_nonneg_left (min_le_right _ _) hCp0.le
+      _ = 1 / 2 := by field_simp
+  intro t ht htδ
+  have ht8 : t ≤ 1 / 8 := htδ.trans ((min_le_left _ _).trans (min_le_left _ _))
+  have htκ : t ≤ κ := htδ.trans ((min_le_left _ _).trans (min_le_right _ _))
+  -- Step 2: `Λ = t/κ ∈ (0, 1]`.
+  set Λ : ℝ := t / κ with hΛ_def
+  have hΛ0 : 0 < Λ := div_pos ht hκ
+  have hΛ1 : Λ ≤ 1 := (div_le_one hκ).mpr htκ
+  clear_value Λ
+  -- Step 3 (E1): exponential bounds from `1 + x ≤ eˣ` and monotonicity of `exp`.
+  have hEm_lb : 1 - Λ ≤ Real.exp (-Λ) := Real.one_sub_le_exp_neg Λ
+  have hEm_le : Real.exp (-Λ) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+  have hE_le : Real.exp Λ ≤ e := by rw [he_def]; exact Real.exp_le_exp.mpr hΛ1
+  have hE_pos : 0 < Real.exp Λ := Real.exp_pos Λ
+  -- `e^Λ (1 − Λ) ≤ e^Λ e^{−Λ} = 1`, so `e^Λ ≤ 1 + Λ e^Λ ≤ 1 + eΛ`.
+  have hE_lin : Real.exp Λ ≤ 1 + e * Λ := by
+    have h1 : Real.exp Λ * (1 - Λ) ≤ 1 := by
+      have h := mul_le_mul_of_nonneg_left hEm_lb hE_pos.le
+      rwa [← Real.exp_add, add_neg_cancel, Real.exp_zero] at h
+    linarith [mul_le_mul_of_nonneg_left hE_le hΛ0.le]
+  -- `e^{2Λ} (1 − 2Λ) ≤ 1` and `e^{2Λ} ≤ e²`, so `e^{2Λ} ≤ 1 + 2Λ e^{2Λ} ≤ 1 + 2e²Λ`.
+  have hE2 : Real.exp (2 * Λ) ≤ 1 + 2 * e ^ 2 * Λ := by
+    have h1 : Real.exp (2 * Λ) * (1 - 2 * Λ) ≤ 1 := by
+      have h := mul_le_mul_of_nonneg_left (Real.one_sub_le_exp_neg (2 * Λ))
+        (Real.exp_pos (2 * Λ)).le
+      rwa [← Real.exp_add, add_neg_cancel, Real.exp_zero] at h
+    have h2 : Real.exp (2 * Λ) ≤ e ^ 2 := by
+      rw [he_def, ← Real.exp_nat_mul]
+      exact Real.exp_le_exp.mpr (by push_cast; linarith)
+    linarith [mul_le_mul_of_nonneg_left h2 hΛ0.le]
+  -- Step 4 (E2): bounds on `a = (1 + t)/(1 − 4t)ⁿ`; note `1 − 4t ≥ 1/2`.
+  set P : ℝ := (1 - 4 * t) ^ n with hP_def
+  have hP0 : 0 < P := pow_pos (by linarith) n
+  -- (a) Bernoulli: `(1 − 4t)ⁿ ≥ 1 − 4nt`.
+  have hBern : 1 - 4 * n * t ≤ P := by
+    have h := one_add_mul_le_pow (show (-2 : ℝ) ≤ -4 * t by linarith) n
+    rw [hP_def, show (1 : ℝ) - 4 * t = 1 + -4 * t by ring]
+    linarith
+  -- (b) `2ⁿ (1 − 4t)ⁿ = (2 − 8t)ⁿ ≥ 1`, i.e. `1/(1 − 4t)ⁿ ≤ 2ⁿ`.
+  have hQP : 1 ≤ 2 ^ n * P := by
+    rw [hP_def, ← mul_pow]
+    exact one_le_pow₀ (by linarith)
+  clear_value P
+  have h4 : (2 : ℝ) ^ (n + 2) = 4 * 2 ^ n := by rw [pow_add]; norm_num; ring
+  have h16 : (2 : ℝ) ^ (n + 4) = 16 * 2 ^ n := by rw [pow_add]; norm_num; ring
+  -- (c) With `c = n 2^{n+2}`: `(1 + ct)(1 − 4t)ⁿ ≥ (1 − 4nt) + 4nt = 1`.
+  have hc0 : 0 ≤ (n : ℝ) * 2 ^ (n + 2) := by positivity
+  have hc : 1 ≤ (1 + (n : ℝ) * 2 ^ (n + 2) * t) * P := by
+    rw [h4]
+    linarith [mul_le_mul_of_nonneg_left hQP (mul_nonneg (by positivity : (0 : ℝ) ≤ 4 * n) ht.le)]
+  -- (d) `a ≤ (1 + t)(1 + ct) ≤ 1 + At`, since `ct² ≤ 3ct` and `4c = n 2^{n+4}`.
+  set a : ℝ := (1 + t) / P with ha_def
+  have ha0 : 0 ≤ a := div_nonneg (by linarith) hP0.le
+  clear_value a
+  have haA : a ≤ 1 + A * t := by
+    rw [ha_def, div_le_iff₀ hP0, hA_def, h16]
+    have hct : 0 ≤ (n : ℝ) * 2 ^ (n + 2) * t * (3 - t) * P :=
+      mul_nonneg (mul_nonneg (mul_nonneg hc0 ht.le) (by linarith)) hP0.le
+    have hmul := mul_le_mul_of_nonneg_left hc (show (0 : ℝ) ≤ 1 + t by linarith)
+    rw [h4] at hct hmul
+    linarith
+  -- (e) `a ≤ (9/8) 2ⁿ = B`, since `1 + t ≤ 9/8` and `2ⁿ (1 − 4t)ⁿ ≥ 1`.
+  have haB : a ≤ B := by
+    rw [ha_def, div_le_iff₀ hP0, hB_def]
+    linarith
+  have haω0 : 0 ≤ a * ω := mul_nonneg ha0 hω.le
+  have haωA : a * ω ≤ ω + A * t * ω := by linarith [mul_le_mul_of_nonneg_right haA hω.le]
+  have haωB : a * ω ≤ B * ω := mul_le_mul_of_nonneg_right haB hω.le
+  have htω : 0 ≤ t * ω := mul_nonneg ht.le hω.le
+  refine ⟨?_, ?_, ?_⟩
+  · -- (E3): `e^{2Λ}(aω) + 2e^Λ Λ ≤ ω + Atω + 2e²BΛω + 2eΛ = (1 + C₊ t) ω ≤ (1 + C_P t) ω`.
+    have hid : (A + (2 * e ^ 2 * B + 2 * e / ω) / κ) * (t * ω) =
+        A * t * ω + 2 * e ^ 2 * B * Λ * ω + 2 * e * Λ := by
+      rw [hΛ_def]; field_simp; ring
+    have h1 := mul_le_mul_of_nonneg_right hE2 haω0
+    have h2 := mul_le_mul_of_nonneg_left haωB (mul_nonneg (by positivity : 0 ≤ 2 * e ^ 2) hΛ0.le)
+    have h3 := mul_le_mul_of_nonneg_right hE_le hΛ0.le
+    have h4 := mul_le_mul_of_nonneg_right hCplus htω
+    linarith
+  · -- (E4): `(1 − C_P t) ω ≤ (1 − C₋ t) ω = ω − Λω − Λ ≤ e^{−Λ}(ω − Λ)`.
+    have hid : (1 + 1 / ω) / κ * (t * ω) = Λ * ω + Λ := by
+      rw [hΛ_def]; field_simp
+    have h1 := mul_le_mul_of_nonneg_right hCminus htω
+    have h2 : ω - Λ * ω - Λ ≤ Real.exp (-Λ) * (ω - Λ) := by
+      rcases le_or_gt 0 (ω - Λ) with hc' | hc'
+      · linarith [mul_le_mul_of_nonneg_right hEm_lb hc', sq_nonneg Λ]
+      · linarith [mul_le_mul_of_nonpos_right hEm_le hc'.le, mul_pos hΛ0 hω]
+    linarith
+  · -- (E5): with `b = e^Λ(aω) + Λ − ω ≤ b' = Atω + eΛBω + Λ`, `e^Λ b ≤ e b' = C_c ω t ≤ C_P ω t`.
+    have hid : (e * A + (e ^ 2 * B + e / ω) / κ) * (ω * t) =
+        e * (A * t * ω + e * Λ * B * ω + Λ) := by
+      rw [hΛ_def]; field_simp; ring
+    have hb : Real.exp Λ * (a * ω) + Λ - ω ≤ A * t * ω + e * Λ * B * ω + Λ := by
+      linarith [mul_le_mul_of_nonneg_right hE_lin haω0,
+        mul_le_mul_of_nonneg_left haωB (mul_nonneg he.le hΛ0.le)]
+    have hb' : 0 ≤ A * t * ω + e * Λ * B * ω + Λ :=
+      add_nonneg (add_nonneg (mul_nonneg (mul_nonneg hA0 ht.le) hω.le)
+        (mul_nonneg (mul_nonneg (mul_nonneg he.le hΛ0.le) hB0) hω.le)) hΛ0.le
+    have h1 : Real.exp Λ * (Real.exp Λ * (a * ω) + Λ - ω) ≤
+        e * (A * t * ω + e * Λ * B * ω + Λ) := by
+      rcases le_or_gt 0 (Real.exp Λ * (a * ω) + Λ - ω) with hb0 | hb0
+      · calc Real.exp Λ * (Real.exp Λ * (a * ω) + Λ - ω)
+            ≤ e * (Real.exp Λ * (a * ω) + Λ - ω) := mul_le_mul_of_nonneg_right hE_le hb0
+          _ ≤ e * (A * t * ω + e * Λ * B * ω + Λ) := mul_le_mul_of_nonneg_left hb he.le
+      · linarith [mul_neg_of_pos_of_neg hE_pos hb0, mul_nonneg he.le hb']
+    have h2 := mul_le_mul_of_nonneg_right hCc (mul_nonneg hω.le ht.le)
+    linarith
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
