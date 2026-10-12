@@ -1030,6 +1030,100 @@ theorem Submission.slicing_mb_leibniz_bound :
   rw [hη₃, ← enorm_eq_nnnorm, ← ofReal_norm, ← ENNReal.ofReal_mul (norm_nonneg _)]
   exact ENNReal.ofReal_le_ofReal (Submission.slicing_mb_wedge_norm_le P m _ _)
 
+/-- The cut-off defect bound in the proof of Simon Ch. 6, 4.9 for Lipschitz `f` (4.11 and the
+bound of its right side, p. 158, with `f^{(σ)}` in place of `f`, then `σ ↓ 0`).  Let
+`K = spt ω ⊆ W`, `|ω| ≤ 1`, `|v| ≤ 1` on covectors, `|Df| ≤ L_W` a.e. on the open `W ⊆ U`, and
+`|χ| ≤ 1`, `|χ'| ≤ c`, `χ' = 0` off `(t - h, t)`.  Then
+`|∫ χ(f) ⟨ω, v₂⟩ dμ₂ - ∫ χ(f) ⟨dω, v₁⟩ dμ₁| ≤ c L_W μ(K ∩ {t - h ≤ f ≤ t})`, i.e.
+`∂T(χ(f) ω) - T(χ(f) dω)` computed through the representations of `∂T` and `T`.  For smooth
+`g_j` with `|g_j - f| ≤ 1/(j+1)` and `|Dg_j| ≤ L_W` on `K`, 4.11 for `ψ_j = χ ∘ g_j` gives the
+bound with the band `K ∩ {t - h - 1/(j+1) < f < t + 1/(j+1)}`; let `j → ∞` by dominated
+convergence on the left and continuity from above on the right. -/
+theorem Submission.slicing_mb_cutoff_defect_bound :
+    ∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Eucl P))
+      (v : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ v →
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) →
+      (∀ (x : Eucl P) (α : Covector (Eucl P) (m + 1)), |v x α| ≤ covectorEuclideanNorm α) →
+      ∀ (μ₁ : Measure (Eucl P)) (v₁ : Eucl P → NVector (Eucl P) (m + 1)),
+      IsMeasureRepresentation T μ₁ v₁ →
+      ∀ (μ₂ : Measure (Eucl P)) (v₂ : Eucl P → NVector (Eucl P) m),
+      IsMeasureRepresentation T.boundary μ₂ v₂ →
+      ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U →
+      ∀ W : Set (Eucl P), IsOpen W → W ⊆ U →
+      ∀ LW : ℝ≥0, (∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W → ‖fderiv ℝ f x‖₊ ≤ LW) →
+      ∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Eucl P) m) ⊆ W →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) m) x) ≤ 1) →
+      ∀ (χ : ℝ → ℝ) (t h c : ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ → (∀ s, |χ s| ≤ 1) →
+      (∀ s, |deriv χ s| ≤ c) → (∀ s, s ∉ Ioo (t - h) t → deriv χ s = 0) →
+      ENNReal.ofReal |∫ x, χ (f x) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂ -
+        ∫ x, χ (f x) * v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁| ≤
+      ENNReal.ofReal c * (LW : ℝ≥0∞) *
+        μ (tsupport (ω : DifferentialForm (Eucl P) m) ∩ f ⁻¹' Icc (t - h) t) := by
+  intro P m U T μ v hμv hμK hv μ₁ v₁ hμ₁ μ₂ v₂ hμ₂ f L hf W hW hWU LW hLW ω hωW hω1 χ t h c hχ
+    hχ1 hχc hχ0
+  -- `K = spt ω` is compact and `K ⊆ W ⊆ U`.
+  have hKc : IsCompact (tsupport (ω : DifferentialForm (Eucl P) m)) := ω.property.1.2
+  have hKU : tsupport (ω : DifferentialForm (Eucl P) m) ⊆ U := hωW.trans hWU
+  -- Smooth `g_j` with `|g_j - f| ≤ 1/(j+1)` and `‖Dg_j‖ ≤ L_W` on `K`.
+  choose g hg hgf hgD using fun j : ℕ =>
+    Submission.slicing_mb_smooth_approx P W hW f L (hf.mono hWU) LW hLW _ hKc hωW
+      (1 / ((j : ℝ) + 1)) (by positivity)
+  -- 4.11 for `ψ_j = χ ∘ g_j`, evaluated through the representations of `∂T` and `T`; its right
+  -- side is at most `c L_W μ(K ∩ {t - h - 1/(j+1) < f < t + 1/(j+1)})`.
+  have key : ∀ j : ℕ,
+      ENNReal.ofReal |∫ x, χ (g j x) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂ -
+        ∫ x, χ (g j x) * v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁| ≤
+      ENNReal.ofReal c * (LW : ℝ≥0∞) * μ (tsupport (ω : DifferentialForm (Eucl P) m) ∩
+        f ⁻¹' Ioo (t - h - 1 / ((j : ℝ) + 1)) (t + 1 / ((j : ℝ) + 1))) := by
+    intro j
+    obtain ⟨η₁, η₂, hη₁, hη₂, hle⟩ := Submission.slicing_mb_leibniz_bound P m U T μ v hμv hv ω
+      (fun y => χ (g j y)) (hχ.comp (hg j))
+    have e₁ : T.boundary η₁ =
+        ∫ x, χ (g j x) * v₂ x ((ω : DifferentialForm (Eucl P) m) x) ∂μ₂ := by
+      rw [(hμ₂ η₁).2]
+      congr 1
+      funext x
+      rw [hη₁ x, map_smul, smul_eq_mul]
+    have e₂ : T η₂ =
+        ∫ x, χ (g j x) * v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∂μ₁ := by
+      rw [(hμ₁ η₂).2]
+      congr 1
+      funext x
+      rw [hη₂ x, map_smul, smul_eq_mul]
+    rw [← e₁, ← e₂]
+    exact hle.trans (Submission.slicing_mb_cdb_grad_lintegral_le P m μ _ f (g j) LW χ t h c
+      (1 / ((j : ℝ) + 1)) hω1 ((hg j).differentiable (by simp)) (hχ.differentiable (by simp))
+      (hgf j) (hgD j) hχc hχ0)
+  -- `g_j → f` pointwise on `K`.
+  have hconv : ∀ x ∈ tsupport (ω : DifferentialForm (Eucl P) m),
+      Tendsto (fun j => g j x) atTop (𝓝 (f x)) := by
+    intro x hx
+    rw [tendsto_iff_dist_tendsto_zero]
+    refine squeeze_zero (fun j => dist_nonneg) (fun j => ?_)
+      tendsto_one_div_add_atTop_nhds_zero_nat
+    rw [Real.dist_eq]
+    exact hgf j x hx
+  -- Left side: dominated convergence in both integrals, whose densities vanish off `K`.
+  have hL₂ := Submission.slicing_mb_cdb_multiplier_integral_tendsto P μ₂
+    (fun x => v₂ x ((ω : DifferentialForm (Eucl P) m) x)) _ f g χ (hμ₂ ω).1
+    (fun x hx => by simp [image_eq_zero_of_notMem_tsupport hx])
+    (fun j => (hg j).continuous.measurable) hconv hχ.continuous hχ1
+  have hL₁ := Submission.slicing_mb_cdb_multiplier_integral_tendsto P μ₁
+    (fun x => v₁ x (exteriorDerivative (ω : DifferentialForm (Eucl P) m) x)) _ f g χ
+    (hμ₁ (exteriorDerivativeTestOn U m ω)).1
+    (fun x hx => by
+      have hx' : x ∉ tsupport (exteriorDerivative (ω : DifferentialForm (Eucl P) m)) :=
+        fun h' => hx (tsupport_exteriorDerivative_subset _ h')
+      simp [image_eq_zero_of_notMem_tsupport hx'])
+    (fun j => (hg j).continuous.measurable) hconv hχ.continuous hχ1
+  -- Right side: continuity from above for the bands, as `μ(K) < ∞`.
+  have hR := ENNReal.Tendsto.const_mul (a := ENNReal.ofReal c * (LW : ℝ≥0∞))
+    (Submission.slicing_mb_cdb_band_measure_tendsto P μ _ f (t - h) t (isClosed_tsupport _)
+      (hf.continuousOn.mono hKU) (hμK _ hKc hKU))
+    (Or.inr (ENNReal.mul_ne_top ENNReal.ofReal_ne_top ENNReal.coe_ne_top))
+  exact le_of_tendsto_of_tendsto' ((ENNReal.continuous_ofReal.tendsto _).comp (hL₂.sub hL₁).abs)
+    hR key
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
