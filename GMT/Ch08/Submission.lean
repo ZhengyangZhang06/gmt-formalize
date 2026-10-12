@@ -480,6 +480,49 @@ theorem Submission.exists_urysohn_integral_sandwich :
     · simpa [hx] using (hg01 x).2
     · simp [hx, image_eq_zero_of_notMem_tsupport fun h ↦ hx (hLO (hgL h))]
 
+/-- Portmanteau (P1) for vague convergence (Simon Ch. 8, proof of 3.7): if `∫ g dμᵢ → ∫ g dμ` for
+every continuous compactly supported `g` with support in `U`, and all measures are finite on
+compact subsets of `U`, then `μ(O) ≤ liminf μᵢ(O)` for every open `O ⊆ U`. -/
+theorem Submission.measure_open_le_liminf_of_tendsto_integral :
+    ∀ (N : ℕ) (U : Set (Euclidean N)) (μs : ℕ → Measure (Euclidean N)) (μ : Measure (Euclidean N)), (∀ (i : ℕ) (K : Set (Euclidean N)), IsCompact K → K ⊆ U → μs i K ≠ ∞) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → (∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Tendsto (fun i ↦ ∫ x, g x ∂(μs i)) atTop (𝓝 (∫ x, g x ∂μ))) → ∀ O : Set (Euclidean N), IsOpen O → O ⊆ U → μ O ≤ liminf (fun i ↦ μs i O) atTop := by
+  intro N U μs μ hμs hμ hlim O hO hOU
+  -- Step 1: closed sets `F m ⊆ O`, increasing in `m`, with union `O`.
+  obtain ⟨F, hFc, hFO, hFU, hFm⟩ := hO.exists_iUnion_isClosed
+  -- Step 2: the compact sets `K m = F m ∩ B_m(0)` are increasing and lie in `O`.
+  let K : ℕ → Set (Euclidean N) := fun m ↦ F m ∩ closedBall 0 m
+  have hKc : ∀ m, IsCompact (K m) := fun m ↦ (isCompact_closedBall 0 m).inter_left (hFc m)
+  have hKO : ∀ m, K m ⊆ O := fun m ↦ inter_subset_left.trans (hFO m)
+  have hKm : Monotone K := fun a b hab ↦
+    inter_subset_inter (hFm hab) (closedBall_subset_closedBall (Nat.cast_le.mpr hab))
+  -- Step 3: `⋃ m, K m = O`.
+  have hKU : ⋃ m, K m = O := by
+    refine Subset.antisymm (iUnion_subset hKO) fun x hx ↦ ?_
+    rw [← hFU] at hx
+    obtain ⟨a, ha⟩ := mem_iUnion.mp hx
+    obtain ⟨b, hb⟩ := exists_nat_ge ‖x‖
+    refine mem_iUnion.mpr ⟨max a b, hFm (le_max_left a b) ha, ?_⟩
+    rw [mem_closedBall, dist_zero_right]
+    exact hb.trans (Nat.cast_le.mpr (le_max_right a b))
+  -- Step 4: `μ(O) = ⨆ m, μ(K m)`, so it suffices to bound each `μ(K m)`.
+  have hμO : μ O = ⨆ m, μ (K m) := by
+    rw [← hKU]
+    exact hKm.measure_iUnion
+  rw [hμO]
+  refine iSup_le fun m ↦ ?_
+  -- Step 5: the Urysohn sandwich function for `K m ⊆ O`; every `μᵢ` and `μ` is admissible.
+  obtain ⟨g, hgc, hgs, hgO, hg⟩ :=
+    Submission.exists_urysohn_integral_sandwich N (K m) O (hKc m) hO (hKO m)
+  -- Step 6: `ofReal (∫ g dμᵢ) → ofReal (∫ g dμ)`.
+  have ht : Tendsto (fun i ↦ ENNReal.ofReal (∫ x, g x ∂(μs i))) atTop
+      (𝓝 (ENNReal.ofReal (∫ x, g x ∂μ))) :=
+    ENNReal.tendsto_ofReal (hlim g hgc hgs (hgO.trans hOU))
+  -- Step 7: `μ(K m) ≤ ofReal ∫ g dμ = liminf ofReal ∫ g dμᵢ ≤ liminf μᵢ(O)`.
+  calc μ (K m) ≤ ENNReal.ofReal (∫ x, g x ∂μ) :=
+        (hg μ fun L hL hLO ↦ hμ L hL (hLO.trans hOU)).1
+    _ = liminf (fun i ↦ ENNReal.ofReal (∫ x, g x ∂(μs i))) atTop := ht.liminf_eq.symm
+    _ ≤ liminf (fun i ↦ μs i O) atTop := liminf_le_liminf (Eventually.of_forall fun i ↦
+        (hg (μs i) fun L hL hLO ↦ hμs i L hL (hLO.trans hOU)).2)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
