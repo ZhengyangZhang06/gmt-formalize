@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1.local_on_balls-a1.mollifier_limit-a1",
+  "parent_id": "root.constancy-a1.local_on_balls-a1",
+  "depth": 3,
+  "title": "Passing to the limit ε ↓ 0 in the mollified representation (Step 5 of Simon 2.34)",
+  "statement": "Let n ∈ ℕ, U ⊆ ℝⁿ and u : (ℝⁿ → ℝ) → ℝ satisfying the following continuity condition (C): whenever K ⊆ U is compact, a_k (k ∈ ℕ) and b are C^∞ functions ℝⁿ → ℝ with spt a_k ⊆ K for all k (spt g denotes the closed support of g, the closure of {g ≠ 0}; Lean: tsupport g) and spt b ⊆ K, and D^q a_k → D^q b uniformly on ℝⁿ for every q ∈ ℕ, then u(a_k) → u(b). Let x₀ ∈ ℝⁿ, ρ > 0 and R ∈ ℝ with B̄_R(x₀) ⊆ U, and put B := B_ρ(x₀). For k ∈ ℕ let ψ_k : ℝⁿ → ℝ be continuous and r_k ≥ 0 with spt ψ_k ⊆ B̄_{r_k}(0) and ρ + r_k ≤ R, and assume that for every C^∞ compactly supported b : ℝⁿ → ℝ and every q ∈ ℕ, D^q(ψ_k ∗ b) → D^q b uniformly on ℝⁿ as k → ∞. Let c_k ∈ ℝ (k ∈ ℕ) satisfy u(ψ_k ∗ (1_B f)) = c_k ∫_B f dLⁿ for every k and every f integrable on B. Here (ψ ∗ g)(x) = ∫ ψ(t) g(x − t) dLⁿ(t), 1_B f is f on B and 0 off B, and D^q is the q-th Fréchet derivative. Then there is c₀ ∈ ℝ with u(b) = c₀ ∫ b dLⁿ for every C^∞ compactly supported b : ℝⁿ → ℝ with spt b ⊆ B.",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Eucl n)) (u : (Eucl n → ℝ) → ℝ), (∀ (a : ℕ → Eucl n → ℝ) (b : Eucl n → ℝ) (K : Set (Eucl n)), IsCompact K → K ⊆ U → (∀ k, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (a k)) → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → (∀ k, tsupport (a k) ⊆ K) → tsupport b ⊆ K → (∀ q : ℕ, TendstoUniformly (fun k x => iteratedFDeriv ℝ q (a k) x) (fun x => iteratedFDeriv ℝ q b x) atTop) → Tendsto (fun k => u (a k)) atTop (𝓝 (u b))) → ∀ (x₀ : Eucl n) (ρ R : ℝ), 0 < ρ → closedBall x₀ R ⊆ U → ∀ (ψ : ℕ → Eucl n → ℝ) (r : ℕ → ℝ), (∀ k, Continuous (ψ k)) → (∀ k, tsupport (ψ k) ⊆ closedBall 0 (r k)) → (∀ k, 0 ≤ r k) → (∀ k, ρ + r k ≤ R) → (∀ b : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → HasCompactSupport b → ∀ q : ℕ, TendstoUniformly (fun k x => iteratedFDeriv ℝ q (convolution (ψ k) b (ContinuousLinearMap.lsmul ℝ ℝ) volume) x) (fun x => iteratedFDeriv ℝ q b x) atTop) → ∀ c : ℕ → ℝ, (∀ (k : ℕ) (f : Eucl n → ℝ), IntegrableOn f (ball x₀ ρ) volume → u (convolution (ψ k) ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) = c k * ∫ x in ball x₀ ρ, f x ∂volume) → ∃ c₀ : ℝ, ∀ b : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → HasCompactSupport b → tsupport b ⊆ ball x₀ ρ → u b = c₀ * ∫ x, b x ∂volume",
+  "lean_name": "constancy_local_of_mollified_const",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-local-on-balls-a1-mollifier-limit-a1-a1"
+}
