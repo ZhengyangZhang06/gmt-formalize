@@ -500,6 +500,60 @@ theorem Submission.varifold_tangents_lbm_vague_cylinder_bounds :
   have hFlim := ENNReal.tendsto_ofReal (hconv F)
   exact ⟨hμa.trans (le_of_tendsto_of_tendsto hFlim hLb (hev.mono fun j hj ↦ hj.2)),
     (le_of_tendsto_of_tendsto hLa hFlim (hev.mono fun j hj ↦ hj.1)).trans hμF⟩
+/-- **Simon Ch. 8, 5.1–5.2, the ball-mass computation** (child `rescaled_ball_mass` of
+`varifold_tangents`): if `Θ^n(μ_V, x) = θ`, then `V_{x,t}(B_R(0) × G(N,n)) → θ ω_n R^n` as `t ↓ 0`.
+For `t > 0` the preimage of `B_R(0) × G(N,n)` under `(z, S) ↦ (t⁻¹(z - x), S)` is
+`B_{tR}(x) × G(N,n)`, so `V_{x,t}(B_R(0) × G(N,n)) = t^{-n} μ_V(B_{tR}(x))`, which equals
+`densityRatio n μ_V x (tR) · ω_n R^n` because `0 < ω_n < ∞`; then compose `HasDensity` with
+`t ↦ tR` (as in SimonGMT's `Varifold.tendsto_blowUpWeight_closedBall_of_density`). -/
+theorem Submission.varifold_tangents_rescaled_ball_mass_tendsto :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (θ : ℝ≥0∞) (R : ℝ), HasDensity n V.weight x θ → 0 < R → Tendsto (fun t : ℝ ↦ rescaledMeasure V x t (closedBall (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n)))) (𝓝[>] 0) (𝓝 (θ * unitBallVolume n * ENNReal.ofReal R ^ n)) := by
+  intro N n U V x θ R hθ hR
+  have hθ' : Tendsto (densityRatio n V.weight x) (𝓝[>] 0) (𝓝 θ) := hθ
+  -- `c = ω_n R^n` is a positive finite constant.
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hc0 : unitBallVolume n * ENNReal.ofReal R ^ n ≠ 0 :=
+    mul_ne_zero hω0 (pow_ne_zero _ (ENNReal.ofReal_pos.2 hR).ne')
+  have hctop : unitBallVolume n * ENNReal.ofReal R ^ n ≠ ∞ :=
+    ENNReal.mul_ne_top hωtop (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  -- `t ↦ tR` maps `𝓝[>] 0` to `𝓝[>] 0`.
+  have hs : Tendsto (fun t : ℝ ↦ t * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_iff.2 ⟨?_, ?_⟩
+    · simpa only [zero_mul, id_eq] using
+        ((tendsto_id.mono_left inf_le_left : Tendsto (fun t : ℝ ↦ t) (𝓝[>] 0) (𝓝 0)).mul_const R)
+    · filter_upwards [self_mem_nhdsWithin] with t ht
+      exact mul_pos ht hR
+  rw [mul_assoc]
+  refine (ENNReal.Tendsto.mul_const (hθ'.comp hs) (Or.inr hctop)).congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with t (ht : 0 < t)
+  -- `V_{x,t}(B_R(0) × G) = t^{-n} μ_V(B_{tR}(x))`.
+  have hpre : (fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - x), z.2)) ⁻¹'
+      (closedBall (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n))) =
+      closedBall x (t * R) ×ˢ univ := by
+    ext z
+    simp only [mem_preimage, mem_prod, mem_closedBall, dist_eq_norm, sub_zero, mem_univ,
+      and_true, norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos ht]
+    exact inv_mul_le_iff₀ ht
+  have hmeas : Measurable (fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - x), z.2)) := by
+    fun_prop
+  rw [Function.comp_apply, densityRatio, rescaledMeasure, Measure.smul_apply, smul_eq_mul,
+    Measure.map_apply hmeas (measurableSet_closedBall.prod MeasurableSet.univ), hpre,
+    ← V.weight_apply measurableSet_closedBall]
+  -- `μ / (ω (tR)^n) · (ω R^n) = t^{-n} μ`, cancelling the positive finite `ω R^n`.
+  have ha0 : ENNReal.ofReal t ^ n ≠ 0 := pow_ne_zero _ (ENNReal.ofReal_pos.2 ht).ne'
+  have hatop : ENNReal.ofReal t ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+  rw [ENNReal.ofReal_mul ht.le, mul_pow, mul_left_comm (unitBallVolume n),
+    ENNReal.ofReal_pow (inv_nonneg.2 ht.le), ENNReal.ofReal_inv_of_pos ht, ← ENNReal.inv_pow,
+    ENNReal.div_eq_inv_mul, ENNReal.mul_inv (Or.inl ha0) (Or.inl hatop)]
+  calc (ENNReal.ofReal t ^ n)⁻¹ * (unitBallVolume n * ENNReal.ofReal R ^ n)⁻¹ *
+        V.weight (closedBall x (t * R)) * (unitBallVolume n * ENNReal.ofReal R ^ n)
+      = (ENNReal.ofReal t ^ n)⁻¹ * V.weight (closedBall x (t * R)) *
+          ((unitBallVolume n * ENNReal.ofReal R ^ n)⁻¹ *
+            (unitBallVolume n * ENNReal.ofReal R ^ n)) := by ring
+    _ = (ENNReal.ofReal t ^ n)⁻¹ * V.weight (closedBall x (t * R)) := by
+      rw [ENNReal.inv_mul_cancel hc0 hctop, mul_one]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
