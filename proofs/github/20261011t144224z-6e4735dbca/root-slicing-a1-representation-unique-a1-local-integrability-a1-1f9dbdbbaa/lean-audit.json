@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "12a3162cc08478710dadb3faadac1aea42db7e7c54107dc767251f32cfa30a40",
+  "git_delta": {
+    "base_commit": "956d5f19d9a881b05966bd4ee2f27f228011214e",
+    "candidate_commit": "0b6482f55907df2087f274240153ce8af01892cb",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_ru_integrableOn_apply",
+    "diff_sha256": "51a198473529012892b2f58ffde8a8ae4e5e64adac0c734bc0e54e693e6109a7",
+    "source_sha256": "c4615f8e1d6aaac7cdea723b04902dac7801c35ba54bfbf3004d35bbba67f104",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_ru_integrableOn_apply",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), (∀ ω : TestFormOn U k, Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) μ) → ∀ L : Set (Eucl P), IsCompact L → L ⊆ U → ∀ c : Covector (Eucl P) k, IntegrableOn (fun x => v x c) L μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
