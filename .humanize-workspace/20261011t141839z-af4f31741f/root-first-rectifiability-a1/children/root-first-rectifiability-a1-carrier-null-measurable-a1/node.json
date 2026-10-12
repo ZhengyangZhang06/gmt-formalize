@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.carrier_null_measurable-a1",
+  "parent_id": "root.first_rectifiability-a1",
+  "depth": 2,
+  "title": "The carrier of positive densities is H^n-measurable (printed 'M is H^n-measurable')",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N, μ := μ_V, M ⊆ U with μ(ℝ^N ∖ M) = 0, and θ : ℝ^N → ℝ with θ(x) > 0 and Θ^n(μ, x) = θ(x) (HasDensity n μ x (ENNReal.ofReal θ(x))) for every x ∈ M. Then M is H^n-null-measurable.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), M ⊆ U → V.weight Mᶜ = 0 → (∀ x ∈ M, 0 < θ x ∧ HasDensity n V.weight x (ENNReal.ofReal (θ x))) → NullMeasurableSet M μHE[n]",
+  "lean_name": "frt_carrier_nullMeasurable",
+  "depends_on": [
+    "root.first_rectifiability-a1.hausdorff_null_of_weight_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.first_rectifiability-a1.hausdorff_null_of_weight_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-carrier-null-measurable-a1-a1"
+}

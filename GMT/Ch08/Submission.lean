@@ -566,6 +566,583 @@ theorem Submission.allard_tc_cri_setLIntegral_congr_off_null :
     ae_iff.2 (measure_mono_null (fun x hx hxZ ↦ hx (hfg x (hZG hxZ))) hZc)
   -- Step 5: `lintegral_congr_ae`, then `μ.restrict D = μ.restrict D'` (`setLIntegral_congr`).
   exact (lintegral_congr_ae hfg_ae).trans (setLIntegral_congr hDeq)
+/-- Weight blow-ups at a tangent point (Simon Ch. 8, Definition 1.1 tested with `f(y,S) = g(y)`):
+if `V` has tangent plane `T` with multiplicity `θ` at `x`, then for every `g ∈ C_c(ℝ^N)`,
+`t^{-n} ∫ g(t^{-1}(z - x)) dμ_V(z) → θ ∫_T g dH^n` as `t ↓ 0`. -/
+theorem Submission.frt_weight_blowup_tendsto :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ g : C_c(Euclidean N, ℝ), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z - x)) ∂V.weight) (𝓝[>] 0) (𝓝 (θ * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n])) := by
+  intro N n U V x T θ hT g
+  -- Step 1: the test function `f(y, S) = g(y)` is compactly supported, `G(N,n)` being compact.
+  have hf : HasCompactSupport (fun z : Euclidean N × Grassmannian N n ↦ g z.1) :=
+    HasCompactSupport.intro (g.hasCompactSupport.isCompact.prod isCompact_univ) fun z hz ↦
+      image_eq_zero_of_notMem_tsupport fun h ↦ hz ⟨h, mem_univ _⟩
+  let f : C_c(Euclidean N × Grassmannian N n, ℝ) :=
+    ⟨⟨fun z ↦ g z.1, (map_continuous g).comp continuous_fst⟩, hf⟩
+  have hfc : Continuous (f : Euclidean N × Grassmannian N n → ℝ) := map_continuous f
+  -- Step 2: the convergence clause of Definition 1.1 applied to `f`.
+  have hlim := hT.2.2 f
+  -- Step 3: plane side, `∫ f dv(T) = ∫_T g dH^n`.
+  have hplane : ∫ z, f z ∂(planeVarifoldMeasure T) =
+      ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] := by
+    rw [planeVarifoldMeasure, integral_map (φ := fun y : Euclidean N ↦ (y, T)) (by fun_prop)
+      hfc.aestronglyMeasurable]
+    rfl
+  rw [hplane] at hlim
+  -- Steps 4–5: for `t > 0`, `∫ f dV_{x,t} = t^{-n} ∫ g(t^{-1}(z - x)) dμ_V(z)`.
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  have ht' : (0 : ℝ) ≤ t⁻¹ ^ n := pow_nonneg (inv_nonneg.2 (le_of_lt ht)) n
+  have hg : Continuous fun y : Euclidean N ↦ g (t⁻¹ • (y - x)) := by fun_prop
+  rw [rescaledMeasure, integral_smul_measure,
+    integral_map (φ := fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - x), z.2))
+      (by fun_prop) hfc.aestronglyMeasurable, ENNReal.toReal_ofReal ht', smul_eq_mul,
+    Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable]
+  rfl
+/-- An `n`-plane `T ∈ G(N,n)` is determined by the `H^n`-integrals over it of compactly supported
+continuous functions (the plane half of the step `Θ^n(μ_C, λy) = Θ^n(μ_C, y)` in the proof of
+Simon Ch. 8, 5.7): equal integrals force `H^n ⌞ T' = H^n ⌞ T` (uniqueness in the Riesz
+representation for regular measures), so the supports `T'.plane` and `T.plane` agree, and a point
+of `G(N,n)` is the matrix of the orthogonal projection onto its plane. -/
+theorem Submission.allard_tc_tpd_plane_eq_of_integral_eq :
+    ∀ (N n : ℕ) (T T' : Grassmannian N n), (∀ g : C_c(Euclidean N, ℝ), ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] = ∫ y in (T'.plane : Set (Euclidean N)), g y ∂μHE[n]) → T' = T := by
+  intro N n T T' h
+  -- Steps 1–2: `finrank T.plane = finrank T'.plane = n`, so both restrictions of `H^n` are regular.
+  have : ((μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N))).Regular :=
+    Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule T.finrank_plane
+  have : ((μHE[n] : Measure (Euclidean N)).restrict (T'.plane : Set (Euclidean N))).Regular :=
+    Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule T'.finrank_plane
+  -- Step 3: Riesz uniqueness, `H^n ⌞ T'.plane = H^n ⌞ T.plane`.
+  have hμ : (μHE[n] : Measure (Euclidean N)).restrict (T'.plane : Set (Euclidean N)) =
+      (μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N)) :=
+    Measure.ext_of_integral_eq_on_compactlySupported fun g ↦ (h g).symm
+  -- Step 4: the support of `H^n ⌞ P` is `P`, so `T'.plane = T.plane`.
+  have hplane : T'.plane = T.plane := by
+    apply SetLike.coe_injective
+    rw [← Chapter03.support_euclideanHausdorffMeasure_restrict_submodule T'.finrank_plane,
+      ← Chapter03.support_euclideanHausdorffMeasure_restrict_submodule T.finrank_plane, hμ]
+  -- Step 5: `p_S` is a symmetric idempotent, hence the orthogonal projection onto `S.plane`.
+  have hproj : ∀ S : Grassmannian N n,
+      S.projectionLinearMap = S.plane.starProjection.toLinearMap := fun S ↦
+    (LinearMap.isSymmetricProjection_iff_eq_coe_starProjection_range.mp
+      ⟨S.projectionLinearMap_comp_self, S.projectionLinearMap_isSymmetric⟩).2
+  -- Step 6: compare coordinate matrices.
+  apply Subtype.ext
+  rw [← T'.toMatrix_projectionLinearMap, ← T.toMatrix_projectionLinearMap, hproj T', hproj T,
+    hplane]
+/-- The `n`-dimensional Hausdorff measure of the closed and open balls `B_r(0)` of an `n`-plane
+`T ∈ G(N,n)` is `ω_n r^n` (step 6 of the flat blow-up ball limits used for Simon Ch. 8, 5.5):
+`H^n` is transported to Lebesgue measure on `ℝ^n` along an isometric parametrization of `T`. -/
+theorem Submission.allard_tc_fbl_plane_ball_measure :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 < r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n ∧ (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ ball 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n T r hr
+  -- Step 1: a linear isometry `J : ℝ^n → ℝ^N` with range `T.plane`, from an orthonormal basis
+  -- of `T.plane` indexed by `Fin n`.
+  let b : OrthonormalBasis (Fin n) ℝ T.plane :=
+    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane)
+  let J : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
+    T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+  -- Step 2: `H^n (J '' E) = vol E` for every `E ⊆ ℝ^n`.
+  have hmeas : ∀ E : Set (EuclideanSpace ℝ (Fin n)),
+      (μHE[n] : Measure (Euclidean N)) (J '' E) = volume E := by
+    intro E
+    rw [J.isometry.euclideanHausdorffMeasure_image,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- Step 3: `T.plane ∩ {‖w‖ ∈ A} = J '' {‖y‖ ∈ A}`, since `J` preserves norms and has range
+  -- `T.plane`.
+  have himage : ∀ A : Set ℝ,
+      (T.plane : Set (Euclidean N)) ∩ {w | ‖w‖ ∈ A} = J '' {y | ‖y‖ ∈ A} := by
+    intro A
+    ext w
+    constructor
+    · rintro ⟨hw, hwA⟩
+      refine ⟨b.repr ⟨w, hw⟩, ?_, ?_⟩
+      · simpa using hwA
+      · simp [J]
+    · rintro ⟨y, hy, rfl⟩
+      exact ⟨by simp [J], by simpa using hy⟩
+  have hcl : (T.plane : Set (Euclidean N)) ∩ closedBall 0 r = J '' closedBall 0 r := by
+    simpa only [Set.mem_Iic, ← mem_closedBall_zero_iff, Set.ofPred_mem_eq] using himage (Set.Iic r)
+  have hop : (T.plane : Set (Euclidean N)) ∩ ball 0 r = J '' ball 0 r := by
+    simpa only [Set.mem_Iio, ← mem_ball_zero_iff, Set.ofPred_mem_eq] using himage (Set.Iio r)
+  -- Steps 4–5: `vol (B_r(0)) = vol (B°_r(0)) = ω_n r^n` in `ℝ^n` (`r > 0`).
+  have hcl_vol : volume (closedBall (0 : EuclideanSpace ℝ (Fin n)) r) =
+      unitBallVolume n * ENNReal.ofReal r ^ n := by
+    rw [Measure.addHaar_closedBall _ _ hr.le, finrank_euclideanSpace_fin,
+      ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+  have hop_vol : volume (ball (0 : EuclideanSpace ℝ (Fin n)) r) =
+      unitBallVolume n * ENNReal.ofReal r ^ n := by
+    rw [Measure.addHaar_ball_of_pos _ _ hr, finrank_euclideanSpace_fin,
+      ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+  -- Step 6: conclusion.
+  exact ⟨by rw [hcl, hmeas, hcl_vol], by rw [hop, hmeas, hop_vol]⟩
+
+/-- The plane integrals of the unit-ball cut-offs `φ_k⁺ = max(0, 1 - (k+1) max(0, |y| - 1))` and
+`φ_k⁻ = min(1, (k+1) max(0, 1 - |y|))` over an `n`-plane `T ∈ G(N,n)` both converge to `ω_n`
+(steps 5–6 of the flat blow-up ball limits used for Simon Ch. 8, 5.5): dominated convergence with
+the bound `1_{B_2(0)}` and the pointwise limits `1_{B_1(0)}`, `1_{B°_1(0)}`, whose integrals are
+`ω_n` by `allard_tc_fbl_plane_ball_measure`. -/
+theorem Submission.allard_tc_fbl_plane_cutoff_limits :
+    ∀ (N n : ℕ) (T : Grassmannian N n), Tendsto (fun k : ℕ ↦ ∫ y in (T.plane : Set (Euclidean N)), max 0 (1 - ((k : ℝ) + 1) * max 0 (‖y‖ - 1)) ∂(μHE[n] : Measure (Euclidean N))) atTop (𝓝 (unitBallVolume n).toReal) ∧ Tendsto (fun k : ℕ ↦ ∫ y in (T.plane : Set (Euclidean N)), min 1 (((k : ℝ) + 1) * max 0 (1 - ‖y‖)) ∂(μHE[n] : Measure (Euclidean N))) atTop (𝓝 (unitBallVolume n).toReal) := by
+  intro N n T
+  set μ : Measure (Euclidean N) :=
+    (μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N)) with hμ
+  -- Step 1: masses of balls under `μ = H^n ⌞ T.plane`, from `allard_tc_fbl_plane_ball_measure`.
+  have hball : ∀ r : ℝ, 0 < r → μ (closedBall 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n ∧
+      μ (ball 0 r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+    intro r hr
+    obtain ⟨h₁, h₂⟩ := Submission.allard_tc_fbl_plane_ball_measure N n T r hr
+    rw [hμ, Measure.restrict_apply measurableSet_closedBall,
+      Measure.restrict_apply measurableSet_ball, inter_comm, h₁, inter_comm, h₂]
+    exact ⟨rfl, rfl⟩
+  have hω : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have h₂ : μ (closedBall 0 2) ≠ ∞ := by
+    rw [(hball 2 two_pos).1]
+    exact ENNReal.mul_ne_top hω (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  have h₁cl : μ (closedBall 0 1) = unitBallVolume n := by
+    rw [(hball 1 one_pos).1, ENNReal.ofReal_one, one_pow, mul_one]
+  have h₁op : μ (ball 0 1) = unitBallVolume n := by
+    rw [(hball 1 one_pos).2, ENNReal.ofReal_one, one_pow, mul_one]
+  -- Step 2: the dominating function `g = 1_{B_2(0)}` is `μ`-integrable.
+  have hg : Integrable ((closedBall (0 : Euclidean N) 2).indicator 1) μ :=
+    (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const (C := (1 : ℝ)) h₂)
+  have hk : ∀ k : ℕ, (1 : ℝ) ≤ (k : ℝ) + 1 := fun k ↦ le_add_of_nonneg_left (Nat.cast_nonneg k)
+  constructor
+  · -- Steps 3–6 for `φ_k⁺`, with pointwise limit `1_{B_1(0)}`.
+    have key := tendsto_integral_of_dominated_convergence (μ := μ)
+      (F := fun (k : ℕ) (y : Euclidean N) ↦ max 0 (1 - ((k : ℝ) + 1) * max 0 (‖y‖ - 1)))
+      (f := (closedBall (0 : Euclidean N) 1).indicator 1)
+      ((closedBall (0 : Euclidean N) 2).indicator 1)
+      (fun k ↦ by fun_prop) hg ?_ ?_
+    · rwa [integral_indicator_one measurableSet_closedBall, Measure.real, h₁cl] at key
+    · -- Step 3: `|φ_k⁺| ≤ 1_{B_2(0)}`.
+      intro k
+      refine Eventually.of_forall fun y ↦ ?_
+      rcases le_or_gt ‖y‖ 2 with hy | hy
+      · rw [indicator_of_mem (mem_closedBall_zero_iff.2 hy), Pi.one_apply,
+          Real.norm_of_nonneg (le_max_left _ _)]
+        exact max_le zero_le_one
+          (sub_le_self _ (mul_nonneg (zero_le_one.trans (hk k)) (le_max_left _ _)))
+      · rw [indicator_of_notMem (fun h ↦ hy.not_ge (mem_closedBall_zero_iff.1 h)),
+          max_eq_right (by linarith : (0 : ℝ) ≤ ‖y‖ - 1),
+          max_eq_left (by nlinarith [hk k] : 1 - ((k : ℝ) + 1) * (‖y‖ - 1) ≤ 0), norm_zero]
+    · -- Step 4(a): `φ_k⁺ → 1_{B_1(0)}` pointwise; the sequence is eventually constant.
+      refine Eventually.of_forall fun y ↦ ?_
+      rcases le_or_gt ‖y‖ 1 with hy | hy
+      · rw [indicator_of_mem (mem_closedBall_zero_iff.2 hy), Pi.one_apply]
+        have h : ∀ k : ℕ, max 0 (1 - ((k : ℝ) + 1) * max 0 (‖y‖ - 1)) = 1 := fun k ↦ by
+          rw [max_eq_left (by linarith : ‖y‖ - 1 ≤ 0), mul_zero, sub_zero,
+            max_eq_right zero_le_one]
+        exact tendsto_const_nhds.congr fun k ↦ (h k).symm
+      · rw [indicator_of_notMem (fun h ↦ hy.not_ge (mem_closedBall_zero_iff.1 h))]
+        have h₁ : 0 < ‖y‖ - 1 := sub_pos.2 hy
+        obtain ⟨k₀, hk₀⟩ := exists_nat_gt (1 / (‖y‖ - 1))
+        rw [div_lt_iff₀ h₁] at hk₀
+        apply tendsto_nhds_of_eventually_eq
+        filter_upwards [eventually_ge_atTop k₀] with k hk'
+        have h₃ : (k₀ : ℝ) ≤ k := Nat.cast_le.2 hk'
+        rw [max_eq_right h₁.le]
+        exact max_eq_left (by nlinarith)
+  · -- Steps 3–6 for `φ_k⁻`, with pointwise limit `1_{B°_1(0)}`.
+    have key := tendsto_integral_of_dominated_convergence (μ := μ)
+      (F := fun (k : ℕ) (y : Euclidean N) ↦ min 1 (((k : ℝ) + 1) * max 0 (1 - ‖y‖)))
+      (f := (ball (0 : Euclidean N) 1).indicator 1)
+      ((closedBall (0 : Euclidean N) 2).indicator 1)
+      (fun k ↦ by fun_prop) hg ?_ ?_
+    · rwa [integral_indicator_one measurableSet_ball, Measure.real, h₁op] at key
+    · -- Step 3: `|φ_k⁻| ≤ 1_{B_2(0)}`.
+      intro k
+      refine Eventually.of_forall fun y ↦ ?_
+      rcases le_or_gt ‖y‖ 2 with hy | hy
+      · rw [indicator_of_mem (mem_closedBall_zero_iff.2 hy), Pi.one_apply,
+          Real.norm_of_nonneg
+            (le_min zero_le_one (mul_nonneg (zero_le_one.trans (hk k)) (le_max_left _ _)))]
+        exact min_le_left _ _
+      · rw [indicator_of_notMem (fun h ↦ hy.not_ge (mem_closedBall_zero_iff.1 h)),
+          max_eq_left (by linarith : 1 - ‖y‖ ≤ 0), mul_zero, min_eq_right zero_le_one, norm_zero]
+    · -- Step 4(b): `φ_k⁻ → 1_{B°_1(0)}` pointwise; the sequence is eventually constant.
+      refine Eventually.of_forall fun y ↦ ?_
+      rcases lt_or_ge ‖y‖ 1 with hy | hy
+      · rw [indicator_of_mem (mem_ball_zero_iff.2 hy), Pi.one_apply]
+        have h₁ : 0 < 1 - ‖y‖ := sub_pos.2 hy
+        obtain ⟨k₀, hk₀⟩ := exists_nat_gt (1 / (1 - ‖y‖))
+        rw [div_lt_iff₀ h₁] at hk₀
+        apply tendsto_nhds_of_eventually_eq
+        filter_upwards [eventually_ge_atTop k₀] with k hk'
+        have h₃ : (k₀ : ℝ) ≤ k := Nat.cast_le.2 hk'
+        rw [max_eq_right h₁.le]
+        exact min_eq_left (by nlinarith)
+      · rw [indicator_of_notMem (fun h ↦ hy.not_gt (mem_ball_zero_iff.1 h))]
+        have h : ∀ k : ℕ, min 1 (((k : ℝ) + 1) * max 0 (1 - ‖y‖)) = 0 := fun k ↦ by
+          rw [max_eq_left (by linarith : 1 - ‖y‖ ≤ 0), mul_zero, min_eq_right zero_le_one]
+        exact tendsto_const_nhds.congr fun k ↦ (h k).symm
+/-- Cut-off sandwich for the rescaled ball integral (flat blow-up ball limits for Simon Ch. 8, 5.5):
+if `r > 0`, `B_{2r}(x) ⊆ U`, `β ≥ 0` is continuous on `G(N,n)` and `a = k + 1`, then
+`∫ φ⁻ β dV_{x,r} ≤ r⁻ⁿ ∫_{B_r(x) × G(N,n)} β dV ≤ ∫ φ⁺ β dV_{x,r}`, where
+`φ⁻(y) = min(1, a max(0, 1 - |y|))` and `φ⁺(y) = max(0, 1 - a max(0, |y| - 1))`. -/
+theorem Submission.allard_tc_fbl_rescaled_sandwich :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (β : C(Grassmannian N n, ℝ)) (r : ℝ) (k : ℕ), 0 < r → closedBall x (2 * r) ⊆ U → (∀ S, 0 ≤ β S) → (∫ z, min 1 (((k : ℝ) + 1) * max 0 (1 - ‖z.1‖)) * β z.2 ∂(rescaledMeasure V x r)) ≤ (∫ z in closedBall x r ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / r ^ n ∧ (∫ z in closedBall x r ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / r ^ n ≤ ∫ z, max 0 (1 - ((k : ℝ) + 1) * max 0 (‖z.1‖ - 1)) * β z.2 ∂(rescaledMeasure V x r) := by
+  intro N n U V x β r k hr hU hβ
+  -- Notation: `a = k + 1`, `B = B_r(x) × G`, `K = B_{2r}(x) × G`; `Φ(y,S) = (r⁻¹(y - x), S)`.
+  set a : ℝ := (k : ℝ) + 1 with ha_def
+  have ha : 1 ≤ a := by rw [ha_def]; linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+  set B : Set (Euclidean N × Grassmannian N n) := closedBall x r ×ˢ univ
+  set K : Set (Euclidean N × Grassmannian N n) := closedBall x (2 * r) ×ˢ univ
+  -- Step 1: `V(K) < ∞`, since `B_{2r}(x)` is compact and contained in `U`.
+  have hKfin : V.measure K ≠ ∞ := V.finite_on_compact _ (isCompact_closedBall x (2 * r)) hU
+  have hBm : MeasurableSet B := measurableSet_closedBall.prod MeasurableSet.univ
+  have hBK : B ⊆ K := prod_mono (closedBall_subset_closedBall (by linarith)) subset_rfl
+  -- `|β(S)| ≤ ‖β‖`, as `G` is compact. The cut-off facts of Step 2 are checked inline below.
+  have hβb : ∀ S, ‖β S‖ ≤ ‖β‖ := β.norm_coe_le_norm
+  -- Step 3: geometry of `Φ`: `‖Φ(y,S).1‖ = |y - x| / r`.
+  have hnorm : ∀ z : Euclidean N × Grassmannian N n, ‖r⁻¹ • (z.1 - x)‖ = dist z.1 x / r := by
+    intro z
+    rw [norm_smul, norm_inv, Real.norm_of_nonneg hr.le, dist_eq_norm, inv_mul_eq_div]
+  have hB_iff : ∀ z, z ∈ B ↔ ‖r⁻¹ • (z.1 - x)‖ ≤ 1 := by
+    intro z
+    rw [hnorm, div_le_one hr]
+    simp only [B, mem_prod, mem_closedBall, mem_univ, and_true]
+  have hK_out : ∀ z, z ∉ K → 2 < ‖r⁻¹ • (z.1 - x)‖ := by
+    intro z hz
+    rw [hnorm, lt_div_iff₀ hr]
+    simp only [K, mem_prod, mem_closedBall, mem_univ, and_true, not_le] at hz
+    exact hz
+  -- Step 4: change of variables, `∫ g dV_{x,r} = r⁻ⁿ ∫ g ∘ Φ dV` for continuous `g`.
+  have hcv : ∀ g : Euclidean N × Grassmannian N n → ℝ, Continuous g →
+      ∫ z, g z ∂(rescaledMeasure V x r) = r⁻¹ ^ n * ∫ z, g (r⁻¹ • (z.1 - x), z.2) ∂V.measure := by
+    intro g hg
+    have hΦ : Continuous (fun z : Euclidean N × Grassmannian N n ↦ (r⁻¹ • (z.1 - x), z.2)) := by
+      fun_prop
+    rw [rescaledMeasure, integral_smul_measure,
+      integral_map hΦ.measurable.aemeasurable hg.aestronglyMeasurable,
+      ENNReal.toReal_ofReal (pow_nonneg (inv_nonneg.2 hr.le) n), smul_eq_mul]
+  -- Step 5: the middle term is `r⁻ⁿ ∫ 1_B β dV`.
+  have hmid : (∫ z in B, β z.2 ∂V.measure) / r ^ n =
+      r⁻¹ ^ n * ∫ z, B.indicator (fun z ↦ β z.2) z ∂V.measure := by
+    rw [integral_indicator hBm, inv_pow, div_eq_inv_mul]
+  -- Step 6: a function bounded by `‖β‖` and vanishing off `K` is `V`-integrable.
+  have hint : ∀ h : Euclidean N × Grassmannian N n → ℝ, AEStronglyMeasurable h V.measure →
+      (∀ z, ‖h z‖ ≤ ‖β‖) → (∀ z, z ∉ K → h z = 0) → Integrable h V.measure := fun h hm hb h0 ↦
+    (Measure.integrableOn_of_bounded hKfin hm (ae_of_all _ hb)).integrable_of_forall_notMem_eq_zero
+      h0
+  have hm_int : Integrable
+      (fun z ↦ min 1 (a * max 0 (1 - ‖r⁻¹ • (z.1 - x)‖)) * β z.2) V.measure := by
+    refine hint _ (Continuous.aestronglyMeasurable (by fun_prop)) (fun z ↦ ?_) (fun z hz ↦ ?_)
+    · have h0 : 0 ≤ min 1 (a * max 0 (1 - ‖r⁻¹ • (z.1 - x)‖)) :=
+        le_min zero_le_one (mul_nonneg (by linarith) (le_max_left _ _))
+      calc ‖min 1 (a * max 0 (1 - ‖r⁻¹ • (z.1 - x)‖)) * β z.2‖
+          = min 1 (a * max 0 (1 - ‖r⁻¹ • (z.1 - x)‖)) * ‖β z.2‖ := by
+            rw [norm_mul, Real.norm_of_nonneg h0]
+        _ ≤ 1 * ‖β‖ := mul_le_mul (min_le_left _ _) (hβb _) (norm_nonneg _) zero_le_one
+        _ = ‖β‖ := one_mul _
+    · have h2 := hK_out z hz
+      have : max 0 (1 - ‖r⁻¹ • (z.1 - x)‖) = 0 := max_eq_left (by linarith)
+      simp [this]
+  have hp_int : Integrable
+      (fun z ↦ max 0 (1 - a * max 0 (‖r⁻¹ • (z.1 - x)‖ - 1)) * β z.2) V.measure := by
+    refine hint _ (Continuous.aestronglyMeasurable (by fun_prop)) (fun z ↦ ?_) (fun z hz ↦ ?_)
+    · have h0 : 0 ≤ max 0 (1 - a * max 0 (‖r⁻¹ • (z.1 - x)‖ - 1)) := le_max_left _ _
+      have h1 : max 0 (1 - a * max 0 (‖r⁻¹ • (z.1 - x)‖ - 1)) ≤ 1 :=
+        max_le zero_le_one (by nlinarith [le_max_left (0 : ℝ) (‖r⁻¹ • (z.1 - x)‖ - 1)])
+      calc ‖max 0 (1 - a * max 0 (‖r⁻¹ • (z.1 - x)‖ - 1)) * β z.2‖
+          = max 0 (1 - a * max 0 (‖r⁻¹ • (z.1 - x)‖ - 1)) * ‖β z.2‖ := by
+            rw [norm_mul, Real.norm_of_nonneg h0]
+        _ ≤ 1 * ‖β‖ := mul_le_mul h1 (hβb _) (norm_nonneg _) zero_le_one
+        _ = ‖β‖ := one_mul _
+    · have h2 := hK_out z hz
+      have h3 : max 0 (‖r⁻¹ • (z.1 - x)‖ - 1) = ‖r⁻¹ • (z.1 - x)‖ - 1 := max_eq_right (by linarith)
+      have : max 0 (1 - a * max 0 (‖r⁻¹ • (z.1 - x)‖ - 1)) = 0 :=
+        max_eq_left (by rw [h3]; nlinarith)
+      simp [this]
+  have hB_int : Integrable (B.indicator (fun z ↦ β z.2)) V.measure := by
+    refine hint _ ((Continuous.aestronglyMeasurable (by fun_prop)).indicator hBm)
+      (fun z ↦ (norm_indicator_le_norm_self _ _).trans (hβb _)) (fun z hz ↦ ?_)
+    exact indicator_of_notMem (fun h ↦ hz (hBK h)) _
+  -- Step 7: pointwise sandwich `φ⁻(Φ.1) β ≤ 1_B β ≤ φ⁺(Φ.1) β`.
+  have hlow : ∀ z, min 1 (a * max 0 (1 - ‖r⁻¹ • (z.1 - x)‖)) * β z.2 ≤
+      B.indicator (fun z ↦ β z.2) z := by
+    intro z
+    by_cases hz : z ∈ B
+    · rw [indicator_of_mem hz]
+      exact mul_le_of_le_one_left (hβ _) (min_le_left _ _)
+    · rw [indicator_of_notMem hz]
+      have h1 : 1 < ‖r⁻¹ • (z.1 - x)‖ := lt_of_not_ge fun h ↦ hz ((hB_iff z).2 h)
+      have : max 0 (1 - ‖r⁻¹ • (z.1 - x)‖) = 0 := max_eq_left (by linarith)
+      simp [this]
+  have hup : ∀ z, B.indicator (fun z ↦ β z.2) z ≤
+      max 0 (1 - a * max 0 (‖r⁻¹ • (z.1 - x)‖ - 1)) * β z.2 := by
+    intro z
+    by_cases hz : z ∈ B
+    · rw [indicator_of_mem hz]
+      have h1 := (hB_iff z).1 hz
+      have : max 0 (‖r⁻¹ • (z.1 - x)‖ - 1) = 0 := max_eq_left (by linarith)
+      simp [this]
+    · rw [indicator_of_notMem hz]
+      exact mul_nonneg (le_max_left _ _) (hβ _)
+  -- Step 8: integrate, multiply by `r⁻ⁿ ≥ 0`, and change variables back.
+  have hlow_eq : ∫ z, min 1 (a * max 0 (1 - ‖z.1‖)) * β z.2 ∂(rescaledMeasure V x r) =
+      r⁻¹ ^ n * ∫ z, min 1 (a * max 0 (1 - ‖r⁻¹ • (z.1 - x)‖)) * β z.2 ∂V.measure :=
+    hcv (fun z ↦ min 1 (a * max 0 (1 - ‖z.1‖)) * β z.2) (by fun_prop)
+  have hup_eq : ∫ z, max 0 (1 - a * max 0 (‖z.1‖ - 1)) * β z.2 ∂(rescaledMeasure V x r) =
+      r⁻¹ ^ n * ∫ z, max 0 (1 - a * max 0 (‖r⁻¹ • (z.1 - x)‖ - 1)) * β z.2 ∂V.measure :=
+    hcv (fun z ↦ max 0 (1 - a * max 0 (‖z.1‖ - 1)) * β z.2) (by fun_prop)
+  have hc : 0 ≤ r⁻¹ ^ n := pow_nonneg (inv_nonneg.2 hr.le) n
+  rw [hlow_eq, hup_eq, hmid]
+  exact ⟨mul_le_mul_of_nonneg_left (integral_mono hm_int hB_int hlow) hc,
+    mul_le_mul_of_nonneg_left (integral_mono hB_int hp_int hup) hc⟩
+/-- Squeeze along a filter by approximating families (the `ε`-argument closing the flat blow-up
+ball limits used for Simon Ch. 8, 5.5): if for each `k` eventually `a_k ≤ m ≤ b_k` along `l`,
+`a_k → A_k` and `b_k → B_k` along `l`, and `A_k → L`, `B_k → L` as `k → ∞`, then `m → L` along `l`. -/
+theorem Submission.allard_tc_fbl_squeeze :
+    ∀ {ι : Type} (l : Filter ι) (m : ι → ℝ) (a b : ℕ → ι → ℝ) (A B : ℕ → ℝ) (L : ℝ), (∀ k, ∀ᶠ i in l, a k i ≤ m i ∧ m i ≤ b k i) → (∀ k, Tendsto (a k) l (𝓝 (A k))) → (∀ k, Tendsto (b k) l (𝓝 (B k))) → Tendsto A atTop (𝓝 L) → Tendsto B atTop (𝓝 L) → Tendsto m l (𝓝 L) := by
+  intro ι l m a b A B L hab ha hb hA hB
+  -- Step 1: by `Metric.tendsto_nhds` it suffices that `|m i - L| < ε` eventually along `l`.
+  refine Metric.tendsto_nhds.2 fun ε hε ↦ ?_
+  have hε2 : 0 < ε / 2 := half_pos hε
+  -- Step 2: one index `k` with `|A k - L| < ε / 2` and `|B k - L| < ε / 2`.
+  obtain ⟨k, hAk, hBk⟩ :=
+    ((Metric.tendsto_nhds.1 hA _ hε2).and (Metric.tendsto_nhds.1 hB _ hε2)).exists
+  -- Step 3: eventually along `l`, `a k i ≤ m i ≤ b k i`, `|a k i - A k| < ε / 2` and
+  -- `|b k i - B k| < ε / 2`.
+  filter_upwards [hab k, Metric.tendsto_nhds.1 (ha k) _ hε2, Metric.tendsto_nhds.1 (hb k) _ hε2]
+    with i hi hai hbi
+  -- Step 4: hence `L - ε < a k i ≤ m i ≤ b k i < L + ε`.
+  rw [Real.dist_eq, abs_lt] at hAk hBk hai hbi ⊢
+  constructor <;> linarith [hi.1, hi.2, hAk.1, hAk.2, hBk.1, hBk.2, hai.1, hai.2, hbi.1, hbi.2]
+
+/-- Ball-integral limit at a flat blow-up for `β ≥ 0` (flat blow-up ball limits for Simon Ch. 8,
+5.5): if `t_i → 0⁺` along `l` and `∫ f dV_{x,t_i} → θ ∫ f dv(T)` for every `f ∈ C_c(ℝ^N × G(N,n))`,
+then `t_i⁻ⁿ ∫_{B_{t_i}(x) × G(N,n)} β dV → θ ω_n β(T)` for every continuous `β ≥ 0` on `G(N,n)`. -/
+theorem Submission.allard_tc_fbl_nonneg_limit :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ) {ι : Type} (l : Filter ι) (t : ι → ℝ), x ∈ U → Tendsto t l (𝓝[>] 0) → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), Tendsto (fun i ↦ ∫ z, f z ∂(rescaledMeasure V x (t i))) l (𝓝 (θ * ∫ z, f z ∂(planeVarifoldMeasure T)))) → ∀ β : C(Grassmannian N n, ℝ), (∀ S, 0 ≤ β S) → Tendsto (fun i ↦ (∫ z in closedBall x (t i) ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / t i ^ n) l (𝓝 (θ * (unitBallVolume n).toReal * β T)) := by
+  intro N n U V x T θ ι l t hx ht hconv β hβ
+  -- Step 1: good radii. `B°_ε(x) ⊆ U` for some `ε > 0`, and eventually `0 < t i < ε / 2`,
+  -- so then `B_{2 t i}(x) ⊆ U`.
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hx
+  have hgood : ∀ᶠ i in l, 0 < t i ∧ closedBall x (2 * t i) ⊆ U := by
+    filter_upwards [ht.eventually_mem (Ioo_mem_nhdsGT (half_pos hε))] with i hi
+    exact ⟨hi.1, (closedBall_subset_ball (by linarith [hi.2])).trans hball⟩
+  -- Step 2: the cut-offs `φ_k^±` vanish where `|y| > 2`, i.e. off the compact set `B_2(0) × G`.
+  have hK : IsCompact (closedBall (0 : Euclidean N) 2 ×ˢ (univ : Set (Grassmannian N n))) :=
+    (isCompact_closedBall 0 2).prod isCompact_univ
+  have hK_out : ∀ z : Euclidean N × Grassmannian N n,
+      z ∉ closedBall (0 : Euclidean N) 2 ×ˢ (univ : Set (Grassmannian N n)) → 2 < ‖z.1‖ := by
+    intro z hz
+    simpa using hz
+  -- Steps 3 and 5: `F_k^± = φ_k^± β ∈ C_c(ℝ^N × G)`, so the hypothesis applies to them.
+  have hlow : ∀ k : ℕ, Tendsto (fun i ↦ ∫ z, min 1 (((k : ℝ) + 1) * max 0 (1 - ‖z.1‖)) * β z.2
+      ∂(rescaledMeasure V x (t i))) l
+      (𝓝 (θ * ∫ z, min 1 (((k : ℝ) + 1) * max 0 (1 - ‖z.1‖)) * β z.2
+        ∂(planeVarifoldMeasure T))) := by
+    intro k
+    have hcs : HasCompactSupport fun z : Euclidean N × Grassmannian N n ↦
+        min 1 (((k : ℝ) + 1) * max 0 (1 - ‖z.1‖)) * β z.2 := by
+      refine HasCompactSupport.intro hK fun z hz ↦ ?_
+      have : max 0 (1 - ‖z.1‖) = 0 := max_eq_left (by linarith [hK_out z hz])
+      simp [this]
+    exact hconv ⟨⟨_, by fun_prop⟩, hcs⟩
+  have hupp : ∀ k : ℕ, Tendsto (fun i ↦ ∫ z, max 0 (1 - ((k : ℝ) + 1) * max 0 (‖z.1‖ - 1)) * β z.2
+      ∂(rescaledMeasure V x (t i))) l
+      (𝓝 (θ * ∫ z, max 0 (1 - ((k : ℝ) + 1) * max 0 (‖z.1‖ - 1)) * β z.2
+        ∂(planeVarifoldMeasure T))) := by
+    intro k
+    have hcs : HasCompactSupport fun z : Euclidean N × Grassmannian N n ↦
+        max 0 (1 - ((k : ℝ) + 1) * max 0 (‖z.1‖ - 1)) * β z.2 := by
+      refine HasCompactSupport.intro hK fun z hz ↦ ?_
+      have h2 := hK_out z hz
+      have hk : (1 : ℝ) ≤ (k : ℝ) + 1 := by linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+      have h3 : max 0 (‖z.1‖ - 1) = ‖z.1‖ - 1 := max_eq_right (by linarith)
+      have : max 0 (1 - ((k : ℝ) + 1) * max 0 (‖z.1‖ - 1)) = 0 :=
+        max_eq_left (by rw [h3]; nlinarith)
+      simp [this]
+    exact hconv ⟨⟨_, by fun_prop⟩, hcs⟩
+  -- Step 4: plane side, `∫ φ(y) β(S) dv(T) = (∫_T φ dHⁿ) β(T)` for continuous `φ`.
+  have hplane : ∀ φ : Euclidean N → ℝ, Continuous φ →
+      ∫ z, φ z.1 * β z.2 ∂(planeVarifoldMeasure T) =
+        (∫ y in (T.plane : Set (Euclidean N)), φ y ∂(μHE[n] : Measure (Euclidean N))) * β T := by
+    intro φ hφ
+    rw [planeVarifoldMeasure,
+      integral_map (by fun_prop : Continuous fun y : Euclidean N ↦ (y, T)).aemeasurable
+        (by fun_prop : Continuous fun z : Euclidean N × Grassmannian N n ↦
+          φ z.1 * β z.2).aestronglyMeasurable]
+    exact integral_mul_const (β T) φ
+  -- Step 6: `c_k^± → ω_n` (plane cut-off limits), so `θ c_k^± β(T) → θ ω_n β(T)`.
+  obtain ⟨hcp, hcm⟩ := Submission.allard_tc_fbl_plane_cutoff_limits N n T
+  -- Steps 7 and 8: eventually `a_k(i) ≤ m(i) ≤ b_k(i)` (sandwich), then squeeze.
+  refine Submission.allard_tc_fbl_squeeze l _
+    (fun k i ↦ ∫ z, min 1 (((k : ℝ) + 1) * max 0 (1 - ‖z.1‖)) * β z.2 ∂(rescaledMeasure V x (t i)))
+    (fun k i ↦ ∫ z, max 0 (1 - ((k : ℝ) + 1) * max 0 (‖z.1‖ - 1)) * β z.2
+      ∂(rescaledMeasure V x (t i)))
+    (fun k ↦ θ * ∫ z, min 1 (((k : ℝ) + 1) * max 0 (1 - ‖z.1‖)) * β z.2 ∂(planeVarifoldMeasure T))
+    (fun k ↦ θ * ∫ z, max 0 (1 - ((k : ℝ) + 1) * max 0 (‖z.1‖ - 1)) * β z.2
+      ∂(planeVarifoldMeasure T))
+    _ (fun k ↦ ?_) hlow hupp ?_ ?_
+  · filter_upwards [hgood] with i hi
+    exact Submission.allard_tc_fbl_rescaled_sandwich N n U V x β (t i) k hi.1 hi.2 hβ
+  · rw [mul_assoc]
+    refine ((hcm.mul_const (β T)).const_mul θ).congr fun k ↦ ?_
+    rw [hplane (fun y ↦ min 1 (((k : ℝ) + 1) * max 0 (1 - ‖y‖))) (by fun_prop)]
+  · rw [mul_assoc]
+    refine ((hcp.mul_const (β T)).const_mul θ).congr fun k ↦ ?_
+    rw [hplane (fun y ↦ max 0 (1 - ((k : ℝ) + 1) * max 0 (‖y‖ - 1))) (by fun_prop)]
+
+/-- Ball limits at a flat blow-up (the portmanteau step in the proof of Simon Ch. 8, 5.5: the limit
+stated right after display (9), p. 218): if `V_{x,t_i} → θ v(T)` as Radon measures along `l`, with
+`t_i → 0⁺`, then `t_i^{-n} ∫_{B_{t_i}(x) × G(N,n)} β(S) dV(y,S) → θ ω_n β(T)` for every continuous
+`β` on `G(N,n)`, and `t_i^{-n} μ_V(B_{t_i}(x)) → θ ω_n`. -/
+theorem Submission.allard_tc_flat_blowup_ball_limits :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ) {ι : Type} (l : Filter ι) (t : ι → ℝ), x ∈ U → Tendsto t l (𝓝[>] 0) → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), Tendsto (fun i ↦ ∫ z, f z ∂(rescaledMeasure V x (t i))) l (𝓝 (θ * ∫ z, f z ∂(planeVarifoldMeasure T)))) → (∀ β : C(Grassmannian N n, ℝ), Tendsto (fun i ↦ (∫ z in closedBall x (t i) ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / t i ^ n) l (𝓝 (θ * (unitBallVolume n).toReal * β T))) ∧ Tendsto (fun i ↦ (V.weight (closedBall x (t i))).toReal / t i ^ n) l (𝓝 (θ * (unitBallVolume n).toReal)) := by
+  intro N n U V x T θ ι l t hx ht hconv
+  -- Step 1: `U` is open, so eventually along `l` the closed ball `B_{t_i}(x)` is a compact subset
+  -- of `U`, hence `V(B_{t_i}(x) × G(N,n)) < ∞`.
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hx
+  have hfin : ∀ᶠ i in l,
+      V.measure (closedBall x (t i) ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ := by
+    filter_upwards [ht (Ioo_mem_nhdsGT (half_pos hε))] with i hi
+    exact V.finite_on_compact _ (isCompact_closedBall x (t i))
+      ((closedBall_subset_ball (by linarith [hi.2])).trans hεU)
+  -- Step 2: the case `β ≥ 0` is the sibling `nonneg_limit`.
+  have hnn := Submission.allard_tc_fbl_nonneg_limit N n U V x T θ l t hx ht hconv
+  -- Step 3: a general `β` is `(β + ‖β‖) - ‖β‖`, a difference of nonnegative continuous functions
+  -- (`G(N,n)` is compact, so `‖β‖ = sup_S |β(S)| < ∞`), and both are integrable on
+  -- `B_{t_i}(x) × G(N,n)` once that set has finite `V`-measure.
+  have hβ : ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun i ↦ (∫ z in closedBall x (t i) ×ˢ
+      (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / t i ^ n) l
+      (𝓝 (θ * (unitBallVolume n).toReal * β T)) := by
+    intro β
+    have hpos : ∀ S, 0 ≤ (β + ContinuousMap.const _ ‖β‖ : C(Grassmannian N n, ℝ)) S := fun S ↦ by
+      have hS := β.norm_coe_le_norm S
+      rw [Real.norm_eq_abs] at hS
+      rw [ContinuousMap.add_apply, ContinuousMap.const_apply]
+      linarith [neg_abs_le (β S)]
+    have hlim := (hnn _ hpos).sub (hnn (ContinuousMap.const _ ‖β‖) fun _ ↦ norm_nonneg β)
+    simp only [ContinuousMap.add_apply, ContinuousMap.const_apply, mul_add,
+      add_sub_cancel_right] at hlim
+    refine hlim.congr' ?_
+    filter_upwards [hfin] with i hi
+    have hint : IntegrableOn (fun z : Euclidean N × Grassmannian N n ↦ β z.2)
+        (closedBall x (t i) ×ˢ (univ : Set (Grassmannian N n))) V.measure :=
+      Measure.integrableOn_of_bounded hi (β.continuous.comp continuous_snd).aestronglyMeasurable
+        (ae_of_all _ fun z ↦ β.norm_coe_le_norm z.2)
+    rw [integral_add hint (integrableOn_const hi), add_div, add_sub_cancel_right]
+  refine ⟨hβ, ?_⟩
+  -- Step 4: `β ≡ 1` gives the weight, since `∫_{B × G(N,n)} 1 dV = V(B × G(N,n)) = μ_V(B)`.
+  have h1 := hβ (ContinuousMap.const _ 1)
+  simp only [ContinuousMap.const_apply, mul_one] at h1
+  refine h1.congr fun i ↦ ?_
+  rw [setIntegral_const, smul_eq_mul, mul_one, measureReal_def,
+    V.weight_apply measurableSet_closedBall]
+
+/-- **At a tangent point the density equals the multiplicity** (child `tangent_plane_density` of
+`allard_tangent_cones`; Simon Ch. 8, 1.1 with Ch. 1, 3.1): if `V` has tangent plane `T` with
+multiplicity `θ` at `x`, then `Θ^n(μ_V, x) = θ`.  Child `flat_blowup_ball_limits` along `t = id` on
+`𝓝[>] 0` gives `μ_V(B_ρ(x)) / ρ^n → θ ω_n`.  For `B_ρ(x) ⊆ U` the ball mass is finite, so with
+`0 < ω_n < ∞` the density ratio is `ofReal (μ_V(B_ρ(x)) / ρ^n / ω_n)`; continuity of `ofReal`
+concludes. -/
+theorem Submission.allard_tc_tangent_plane_density :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → HasDensity n V.weight x (ENNReal.ofReal θ) := by
+  intro N n U V x T θ hT
+  obtain ⟨hxU, -, hconv⟩ := hT
+  -- `0 < ω_n < ∞`.
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hω : 0 < (unitBallVolume n).toReal := ENNReal.toReal_pos hω0 hωtop
+  -- `μ_V(B_ρ(x)) / ρ^n → θ ω_n` as `ρ ↓ 0`.
+  have hball : Tendsto (fun ρ : ℝ ↦ (V.weight (closedBall x ρ)).toReal / ρ ^ n) (𝓝[>] 0)
+      (𝓝 (θ * (unitBallVolume n).toReal)) :=
+    (Submission.allard_tc_flat_blowup_ball_limits N n U V x T θ (𝓝[>] 0) id hxU tendsto_id
+      hconv).2
+  -- Hence `ofReal (μ_V(B_ρ(x)) / ρ^n / ω_n) → ofReal θ`.
+  have hlim := ENNReal.tendsto_ofReal (hball.div_const (unitBallVolume n).toReal)
+  rw [mul_div_cancel_right₀ θ hω.ne'] at hlim
+  -- On `(0, δ)` with `B_δ(x) ⊆ U` this is the density ratio.
+  obtain ⟨δ, hδ, hδU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hxU
+  refine hlim.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT hδ] with ρ hρ
+  have hfin : V.weight (closedBall x ρ) ≠ ∞ := V.weight_finite_on_compact _
+    (isCompact_closedBall x ρ) ((closedBall_subset_ball hρ.2).trans hδU)
+  have hden : unitBallVolume n * ENNReal.ofReal ρ ^ n =
+      ENNReal.ofReal ((unitBallVolume n).toReal * ρ ^ n) := by
+    rw [ENNReal.ofReal_mul hω.le, ENNReal.ofReal_pow hρ.1.le, ENNReal.ofReal_toReal hωtop]
+  rw [densityRatio, hden, div_div, mul_comm (ρ ^ n),
+    ENNReal.ofReal_div_of_pos (mul_pos hω (pow_pos hρ.1 n)), ENNReal.ofReal_toReal hfin]
+
+/-- **Tangent planes of a homogeneous varifold are dilation invariant** (the step
+`Θ^n(μ_C, λy) = Θ^n(μ_C, y)` "by 5.3" in the proof of Simon Ch. 8, 5.7, with 5.3 in its corrected
+form `μ_C(sA) = s^n μ_C(A)`).  If `C` has tangent plane `T` with multiplicity `θ` at `y` and `T'`
+with multiplicity `θ'` at `s y`, then `T' = T` and `θ' = θ`: the density ratio and the weight
+blow-ups of `C` at `s y` and scale `s t` are those at `y` and scale `t`.  With `s = 1` this is the
+uniqueness of the tangent plane and multiplicity at a point. -/
+theorem Submission.allard_tc_tangent_plane_dilation :
+    ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (s : ℝ) (y : Euclidean N) (T T' : Grassmannian N n) (θ θ' : ℝ), 0 < s → (∀ A : Set (Euclidean N), C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A) → HasTangentPlane C y T θ → HasTangentPlane C (s • y) T' θ' → T' = T ∧ θ' = θ := by
+  intro N n C s y T T' θ θ' hs hhom hT hT'
+  have hs0 : s ≠ 0 := hs.ne'
+  -- The dilation `t ↦ s t` maps `𝓝[>] 0` into itself.
+  have hscale : Tendsto (fun t : ℝ ↦ s * t) (𝓝[>] 0) (𝓝[>] 0) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
+      (((by fun_prop : Continuous fun t : ℝ ↦ s * t).tendsto' 0 0 (mul_zero s)).mono_left
+        nhdsWithin_le_nhds)
+      (by filter_upwards [self_mem_nhdsWithin] with t ht using mul_pos hs ht)
+  -- Step 1: `θ' = θ`.  By homogeneity and `s B_r(y) = B_{sr}(s y)`, the density ratio at `s y` and
+  -- radius `s r` is the one at `y` and radius `r`; both multiplicities are densities.
+  have hratio : ∀ r : ℝ, 0 < r →
+      densityRatio n C.weight (s • y) (s * r) = densityRatio n C.weight y r := by
+    intro r hr
+    have hball : closedBall (s • y) (s * r) = s • closedBall y r := by
+      rw [smul_closedBall s y hr.le, Real.norm_of_nonneg hs.le]
+    simp only [densityRatio]
+    rw [hball, hhom, ENNReal.ofReal_mul hs.le, mul_pow, mul_left_comm (unitBallVolume n),
+      ENNReal.mul_div_mul_left _ _ (pow_ne_zero n (ENNReal.ofReal_pos.2 hs).ne')
+        (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)]
+  have hθ : θ' = θ := by
+    have hy : Tendsto (densityRatio n C.weight y) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) :=
+      Submission.allard_tc_tangent_plane_density N n univ C y T θ hT
+    have hsy : Tendsto (densityRatio n C.weight (s • y)) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ')) :=
+      Submission.allard_tc_tangent_plane_density N n univ C (s • y) T' θ' hT'
+    have hy' : Tendsto (densityRatio n C.weight y) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ')) :=
+      (hsy.comp hscale).congr'
+        (by filter_upwards [self_mem_nhdsWithin] with r hr using hratio r hr)
+    exact (ENNReal.ofReal_eq_ofReal_iff hT'.2.1.le hT.2.1.le).1 (tendsto_nhds_unique hy' hy)
+  -- Step 3: by homogeneity, `μ_C` pushed forward by `z ↦ s⁻¹ z` is `s^n μ_C`, so the weight
+  -- blow-up of `C` at `s y` and scale `s t` is the one at `y` and scale `t`.
+  have hmap : C.weight.map (fun z : Euclidean N ↦ s⁻¹ • z) = ENNReal.ofReal s ^ n • C.weight := by
+    ext A hA
+    rw [Measure.map_apply (measurable_const_smul s⁻¹) hA, Set.preimage_smul_inv₀ hs0, hhom,
+      Measure.smul_apply, smul_eq_mul]
+  have hblow : ∀ (g : C_c(Euclidean N, ℝ)) (t : ℝ),
+      (s * t)⁻¹ ^ n * ∫ z, g ((s * t)⁻¹ • (z - s • y)) ∂C.weight =
+        t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z - y)) ∂C.weight := by
+    intro g t
+    have hG : Continuous fun w : Euclidean N ↦ g (t⁻¹ • (w - y)) := by fun_prop
+    have hpt : ∀ z : Euclidean N, (s * t)⁻¹ • (z - s • y) = t⁻¹ • (s⁻¹ • z - y) := fun z ↦ by
+      rw [mul_inv, mul_comm s⁻¹, mul_smul, smul_sub, inv_smul_smul₀ hs0]
+    have hint : ∫ z, g (t⁻¹ • (s⁻¹ • z - y)) ∂C.weight =
+        s ^ n * ∫ z, g (t⁻¹ • (z - y)) ∂C.weight := by
+      have h := integral_map (μ := C.weight) (φ := fun z : Euclidean N ↦ s⁻¹ • z)
+        (measurable_const_smul s⁻¹).aemeasurable hG.aestronglyMeasurable
+      rw [hmap, integral_smul_measure, ENNReal.toReal_pow, ENNReal.toReal_ofReal hs.le,
+        smul_eq_mul] at h
+      exact h.symm
+    have hc : (s * t)⁻¹ ^ n * s ^ n = t⁻¹ ^ n := by
+      rw [mul_inv, mul_pow, mul_right_comm, ← mul_pow, inv_mul_cancel₀ hs0, one_pow, one_mul]
+    simp_rw [hpt]
+    rw [hint, ← mul_assoc, hc]
+  -- Steps 2 and 4: the weight blow-ups at `y` tend to `θ ∫_T g dH^n` and, through `t ↦ s t`,
+  -- to `θ' ∫_{T'} g dH^n`; as `θ' = θ > 0`, the `H^n`-integrals over `T` and `T'` agree.
+  have hplane : ∀ g : C_c(Euclidean N, ℝ),
+      ∫ x in (T.plane : Set (Euclidean N)), g x ∂μHE[n] =
+        ∫ x in (T'.plane : Set (Euclidean N)), g x ∂μHE[n] := by
+    intro g
+    have hy := Submission.frt_weight_blowup_tendsto N n univ C y T θ hT g
+    have hy' : Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z - y)) ∂C.weight) (𝓝[>] 0)
+        (𝓝 (θ' * ∫ x in (T'.plane : Set (Euclidean N)), g x ∂μHE[n])) :=
+      ((Submission.frt_weight_blowup_tendsto N n univ C (s • y) T' θ' hT' g).comp hscale).congr'
+        (Eventually.of_forall fun t ↦ hblow g t)
+    have h := tendsto_nhds_unique hy' hy
+    rw [hθ] at h
+    exact (mul_left_cancel₀ hT.2.1.ne' h).symm
+  -- Step 5: an `n`-plane is determined by these integrals.
+  exact ⟨Submission.allard_tc_tpd_plane_eq_of_integral_eq N n T T' hplane, hθ⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
