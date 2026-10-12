@@ -726,6 +726,212 @@ theorem Submission.ts_pwb_density_points_of_image_ae : ∀ (n ℓ : ℕ) (C : Se
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
+/-- Simon Ch. 3, proof of Theorem 1.6 (⇒) with Remark 1.8(1), and Ch. 4, 1.1 (pp. 71–72, 75, 86):
+the weighted blow-up at a good point of a Lusin piece. Let `μ = μ_V` for `V = v(M, θ)`, let
+`N` be Borel with `Hⁿ(N) < ∞`, `K ⊆ M ∩ N` compact, `θ|K` continuous at `x`, and `f ∈ C_c`.
+If `Hⁿ(N ∩ B_ρ(x)) ≤ Γρⁿ` for `ρ > 0`, `μ(B_r(x) \ K) / rⁿ → 0`, `Hⁿ(N ∩ B_r(x) \ K) / rⁿ → 0`
+and `t⁻ⁿ ∫_N f(t⁻¹(y - x)) dHⁿ(y) → L`, then `t⁻ⁿ ∫ f(t⁻¹(y - x)) dμ(y) → θ(x) L` as `t ↓ 0`.
+With `g_t = f(t⁻¹(· - x))`, which vanishes off `B_{Rt}(x)` when `f` vanishes off `B_R(0)`,
+`t⁻ⁿ ∫ g_t dμ = θ(x) t⁻ⁿ ∫_N g_t - θ(x) t⁻ⁿ ∫_{N \ K} g_t + t⁻ⁿ ∫_K (θ - θ(x)) g_t
+  + t⁻ⁿ ∫_{Kᶜ} g_t dμ`, and the last three terms tend to `0`. -/
+theorem Submission.ts_pwb_blowup_at_good_point : ∀ (n ℓ : ℕ) (a : RectifiablePair n ℓ) (N K : Set (Ambient n ℓ)) (x : Ambient n ℓ) (f : C_c(Ambient n ℓ, ℝ)) (Γ L : ℝ), MeasurableSet N → (μHE[n] : Measure (Ambient n ℓ)) N ≠ ⊤ → IsCompact K → K ⊆ a.M ∩ N → x ∈ K → ContinuousWithinAt a.θ K x → (∀ ρ : ℝ, 0 < ρ → (μHE[n] : Measure (Ambient n ℓ)) (N ∩ closedBall x ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n)) → Tendsto (fun r : ℝ ↦ (mk a).weight.real (Kᶜ ∩ closedBall x r) / r ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ ↦ ((μHE[n] : Measure (Ambient n ℓ)).restrict N).real (Kᶜ ∩ closedBall x r) / r ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y in N, f (t⁻¹ • (y - x)) ∂μHE[n]) (𝓝[>] 0) (𝓝 L) → Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y, f (t⁻¹ • (y - x)) ∂(mk a).weight) (𝓝[>] 0) (𝓝 (a.θ x * L)) := by
+  intro n ℓ a N K x f Γ L hNm hNfin hKc hKMN _ hθc hΓ hA hB hI1
+  -- `μ_V` is finite on compact sets and `∫ h dμ_V = ∫_M θ h dHⁿ` for every `h`.
+  obtain ⟨hfin, hint⟩ := Submission.ts_pwb_pair_weight_integral n ℓ a
+  have hKm : MeasurableSet K := hKc.isClosed.measurableSet
+  have hKM : K ⊆ a.M := fun y hy ↦ (hKMN hy).1
+  have hKN : K ⊆ N := fun y hy ↦ (hKMN hy).2
+  have hMm := a.isRectifiablePair.measurable
+  -- `|f| ≤ m`, and `f = 0` off `B_R(0)`.
+  obtain ⟨m, hm⟩ : ∃ m, ∀ z, ‖f z‖ ≤ m :=
+    f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+  have hm0 : 0 ≤ m := (norm_nonneg _).trans (hm 0)
+  obtain ⟨R, hR, hRs⟩ : ∃ R : ℝ, 0 < R ∧ ∀ z, R < ‖z‖ → f z = 0 := by
+    obtain ⟨C, hC⟩ := isBounded_iff_forall_norm_le.1 f.hasCompactSupport.isCompact.isBounded
+    refine ⟨max C 1, lt_of_lt_of_le one_pos (le_max_right _ _), fun z hz ↦ ?_⟩
+    apply image_eq_zero_of_notMem_tsupport
+    intro hzs
+    exact absurd (hC z hzs) (not_le.2 (lt_of_le_of_lt (le_max_left _ _) hz))
+  -- `g_t = f(t⁻¹(· - x))` is continuous, bounded by `m`, and vanishes off `B_{Rt}(x)`.
+  set g : ℝ → Ambient n ℓ → ℝ := fun t y ↦ f (t⁻¹ • (y - x)) with hg
+  have hgc : ∀ t, Continuous (g t) := fun t ↦
+    f.continuous.comp (by fun_prop)
+  have hgb : ∀ t y, ‖g t y‖ ≤ m := fun t y ↦ hm _
+  have hgs : ∀ t, 0 < t → ∀ y, y ∉ closedBall x (R * t) → g t y = 0 := by
+    intro t ht y hy
+    apply hRs
+    rw [mem_closedBall, dist_eq_norm, not_le] at hy
+    rw [norm_smul, norm_inv, Real.norm_of_nonneg ht.le, lt_inv_mul_iff₀ ht]
+    linarith [mul_comm R t]
+  -- Integrability: `g_t` on `N` (as `Hⁿ(N) < ∞`), and `θ g_t` on `M` (it vanishes off the
+  -- compact ball `B_{Rt}(x)`, on which `θ` is integrable).
+  have hgN : ∀ t, IntegrableOn (g t) N μHE[n] := fun t ↦
+    IntegrableOn.of_bound (lt_top_iff_ne_top.2 hNfin) (hgc t).aestronglyMeasurable m
+      (Eventually.of_forall (hgb t))
+  have hθg : ∀ t, 0 < t → IntegrableOn (fun y ↦ a.θ y * g t y) a.M μHE[n] := by
+    intro t ht
+    have h1 : IntegrableOn a.θ (a.M ∩ closedBall x (R * t)) μHE[n] :=
+      a.isRectifiablePair.locallyIntegrable _ (isCompact_closedBall _ _)
+    have h2 : IntegrableOn (fun y ↦ a.θ y * g t y) (a.M ∩ closedBall x (R * t)) μHE[n] :=
+      Integrable.mul_bdd h1 (hgc t).aestronglyMeasurable (Eventually.of_forall (hgb t))
+    refine h2.of_ae_sdiff_eq_zero hMm (Eventually.of_forall fun y hy ↦ ?_)
+    rw [hgs t ht y (fun hyB ↦ hy.2 ⟨hy.1, hyB⟩), mul_zero]
+  -- The four-term decomposition `t⁻ⁿ ∫ g_t dμ = θ(x) T₁ - θ(x) T₂ + T₃ + T₄`.
+  have hdec : ∀ t, 0 < t → (t ^ n)⁻¹ * ∫ y, g t y ∂(mk a).weight =
+      a.θ x * ((t ^ n)⁻¹ * ∫ y in N, g t y ∂μHE[n]) -
+        a.θ x * ((t ^ n)⁻¹ * ∫ y in N \ K, g t y ∂μHE[n]) +
+        (t ^ n)⁻¹ * ∫ y in K, (a.θ y - a.θ x) * g t y ∂μHE[n] +
+        (t ^ n)⁻¹ * ∫ y in Kᶜ, g t y ∂(mk a).weight := by
+    intro t ht
+    have e1 : ∫ y, g t y ∂(mk a).weight = ∫ y in a.M, a.θ y * g t y ∂μHE[n] := hint (g t)
+    have e2 : ∫ y in a.M, a.θ y * g t y ∂μHE[n] =
+        ∫ y in K, a.θ y * g t y ∂μHE[n] + ∫ y in a.M \ K, a.θ y * g t y ∂μHE[n] := by
+      rw [← integral_inter_add_sdiff hKm (hθg t ht), inter_eq_right.2 hKM]
+    have e3 : ∫ y in a.M \ K, a.θ y * g t y ∂μHE[n] = ∫ y in Kᶜ, g t y ∂(mk a).weight := by
+      rw [← integral_indicator hKm.compl, hint, sdiff_eq, ← setIntegral_indicator hKm.compl]
+      congr 1
+      ext y
+      by_cases hy : y ∈ Kᶜ <;> simp [indicator, hy]
+    have hgK : IntegrableOn (g t) K μHE[n] := (hgN t).mono_set hKN
+    have hθgK : IntegrableOn (fun y ↦ a.θ y * g t y) K μHE[n] := (hθg t ht).mono_set hKM
+    have e4 : ∫ y in K, a.θ y * g t y ∂μHE[n] =
+        a.θ x * ∫ y in K, g t y ∂μHE[n] + ∫ y in K, (a.θ y - a.θ x) * g t y ∂μHE[n] := by
+      have : (fun y ↦ (a.θ y - a.θ x) * g t y) = fun y ↦ a.θ y * g t y - a.θ x * g t y := by
+        ext y; ring
+      rw [this, integral_sub hθgK (hgK.const_mul _), integral_const_mul]
+      ring
+    have e5 : ∫ y in K, g t y ∂μHE[n] = ∫ y in N, g t y ∂μHE[n] - ∫ y in N \ K, g t y ∂μHE[n] := by
+      rw [← integral_inter_add_sdiff hKm (hgN t), inter_eq_right.2 hKN]
+      ring
+    rw [e1, e2, e3, e4, e5]
+    ring
+  -- Rescaling the excess-density hypotheses by `r = Rt`.
+  have hRt : Tendsto (fun t : ℝ ↦ R * t) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have : Tendsto (fun t : ℝ ↦ R * t) (𝓝 0) (𝓝 (R * 0)) :=
+        (continuous_const.mul continuous_id).tendsto 0
+      rw [mul_zero] at this
+      exact this.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with t ht
+      exact mul_pos hR ht
+  have hA' := hA.comp hRt
+  have hB' := hB.comp hRt
+  -- `|T₂(t)| ≤ m Rⁿ (Hⁿ ⌞ N)(Kᶜ ∩ B_{Rt}(x)) / (Rt)ⁿ → 0`.
+  have hT2 : Tendsto (fun t ↦ (t ^ n)⁻¹ * ∫ y in N \ K, g t y ∂μHE[n]) (𝓝[>] 0) (𝓝 0) := by
+    have hlim : Tendsto (fun t ↦ m * R ^ n * (((μHE[n] : Measure (Ambient n ℓ)).restrict N).real
+        (Kᶜ ∩ closedBall x (R * t)) / (R * t) ^ n)) (𝓝[>] 0) (𝓝 0) := by
+      simpa using hB'.const_mul (m * R ^ n)
+    refine squeeze_zero_norm' ?_ hlim
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    have ht' : (0 : ℝ) < t := ht
+    have hsplit : ∫ y in N \ K, g t y ∂μHE[n] =
+        ∫ y in (N \ K) ∩ closedBall x (R * t), g t y ∂μHE[n] :=
+      setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (hNm.diff hKm) inter_subset_left
+        (fun y hy ↦ hgs t ht' y (fun hyB ↦ hy.2 ⟨hy.1, hyB⟩))
+    have hmeas : (μHE[n] : Measure (Ambient n ℓ)) ((N \ K) ∩ closedBall x (R * t)) < ⊤ :=
+      (measure_mono (inter_subset_left.trans sdiff_subset)).trans_lt (lt_top_iff_ne_top.2 hNfin)
+    have hbound := norm_setIntegral_le_of_norm_le_const hmeas (fun y _ ↦ hgb t y)
+    have hreal : (μHE[n] : Measure (Ambient n ℓ)).real ((N \ K) ∩ closedBall x (R * t)) =
+        ((μHE[n] : Measure (Ambient n ℓ)).restrict N).real (Kᶜ ∩ closedBall x (R * t)) := by
+      rw [Measure.real, Measure.real,
+        Measure.restrict_apply (hKm.compl.inter measurableSet_closedBall)]
+      congr 2
+      ext y
+      simp only [mem_inter_iff, Set.mem_sdiff, mem_compl_iff]
+      tauto
+    rw [norm_mul, hsplit, norm_inv, norm_pow, Real.norm_of_nonneg ht'.le]
+    calc (t ^ n)⁻¹ * ‖∫ y in (N \ K) ∩ closedBall x (R * t), g t y ∂μHE[n]‖
+        ≤ (t ^ n)⁻¹ * (m * (μHE[n] : Measure (Ambient n ℓ)).real
+            ((N \ K) ∩ closedBall x (R * t))) := by gcongr
+      _ = m * R ^ n * (((μHE[n] : Measure (Ambient n ℓ)).restrict N).real
+            (Kᶜ ∩ closedBall x (R * t)) / (R * t) ^ n) := by
+        rw [hreal, mul_pow]
+        field_simp
+  -- `|T₄(t)| ≤ m Rⁿ μ_V(Kᶜ ∩ B_{Rt}(x)) / (Rt)ⁿ → 0`.
+  have hT4 : Tendsto (fun t ↦ (t ^ n)⁻¹ * ∫ y in Kᶜ, g t y ∂(mk a).weight) (𝓝[>] 0) (𝓝 0) := by
+    have hlim : Tendsto (fun t ↦ m * R ^ n * ((mk a).weight.real
+        (Kᶜ ∩ closedBall x (R * t)) / (R * t) ^ n)) (𝓝[>] 0) (𝓝 0) := by
+      simpa using hA'.const_mul (m * R ^ n)
+    refine squeeze_zero_norm' ?_ hlim
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    have ht' : (0 : ℝ) < t := ht
+    have hsplit : ∫ y in Kᶜ, g t y ∂(mk a).weight =
+        ∫ y in Kᶜ ∩ closedBall x (R * t), g t y ∂(mk a).weight :=
+      setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hKm.compl inter_subset_left
+        (fun y hy ↦ hgs t ht' y (fun hyB ↦ hy.2 ⟨hy.1, hyB⟩))
+    have hmeas : (mk a).weight (Kᶜ ∩ closedBall x (R * t)) < ⊤ :=
+      (measure_mono inter_subset_right).trans_lt (isCompact_closedBall _ _).measure_lt_top
+    rw [norm_mul, hsplit, norm_inv, norm_pow, Real.norm_of_nonneg ht'.le]
+    calc (t ^ n)⁻¹ * ‖∫ y in Kᶜ ∩ closedBall x (R * t), g t y ∂(mk a).weight‖
+        ≤ (t ^ n)⁻¹ * (m * (mk a).weight.real (Kᶜ ∩ closedBall x (R * t))) := by
+          gcongr
+          exact norm_setIntegral_le_of_norm_le_const hmeas (fun y _ ↦ hgb t y)
+      _ = m * R ^ n * ((mk a).weight.real (Kᶜ ∩ closedBall x (R * t)) / (R * t) ^ n) := by
+        rw [mul_pow]
+        field_simp
+  -- `|T₃(t)| ≤ (ε / c) m Rⁿ max(Γ, 0) < ε` for `0 < t < δ / R`, by continuity of `θ|K` at `x`
+  -- and the bound `Hⁿ(K ∩ B_{Rt}(x)) ≤ Hⁿ(N ∩ B_{Rt}(x)) ≤ Γ (Rt)ⁿ`.
+  have hT3 : Tendsto (fun t ↦ (t ^ n)⁻¹ * ∫ y in K, (a.θ y - a.θ x) * g t y ∂μHE[n])
+      (𝓝[>] 0) (𝓝 0) := by
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    set c := m * max Γ 0 * R ^ n + 1 with hc
+    have hc0 : 0 < c := by positivity
+    obtain ⟨δ, hδ, hδθ⟩ := Metric.continuousWithinAt_iff.1 hθc (ε / c) (div_pos hε hc0)
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hR)] with t ht
+    obtain ⟨ht0, htδ⟩ := ht
+    have hRtδ : R * t < δ := by
+      rw [lt_div_iff₀ hR] at htδ
+      linarith [mul_comm R t]
+    have hsplit : ∫ y in K, (a.θ y - a.θ x) * g t y ∂μHE[n] =
+        ∫ y in K ∩ closedBall x (R * t), (a.θ y - a.θ x) * g t y ∂μHE[n] :=
+      setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hKm inter_subset_left
+        (fun y hy ↦ by rw [hgs t ht0 y (fun hyB ↦ hy.2 ⟨hy.1, hyB⟩), mul_zero])
+    have hmeasN : (μHE[n] : Measure (Ambient n ℓ)) (N ∩ closedBall x (R * t)) < ⊤ :=
+      (measure_mono inter_subset_left).trans_lt (lt_top_iff_ne_top.2 hNfin)
+    have hmeasK : (μHE[n] : Measure (Ambient n ℓ)) (K ∩ closedBall x (R * t)) < ⊤ :=
+      (measure_mono (inter_subset_inter_left _ hKN)).trans_lt hmeasN
+    have hpt : ∀ y ∈ K ∩ closedBall x (R * t), ‖(a.θ y - a.θ x) * g t y‖ ≤ ε / c * m := by
+      intro y hy
+      rw [norm_mul]
+      have h1 : dist y x < δ := lt_of_le_of_lt (mem_closedBall.1 hy.2) hRtδ
+      have h2 := hδθ hy.1 h1
+      rw [Real.dist_eq] at h2
+      exact mul_le_mul (le_of_lt (by simpa [Real.norm_eq_abs] using h2)) (hgb t y)
+        (norm_nonneg _) (div_pos hε hc0).le
+    have hbound := norm_setIntegral_le_of_norm_le_const hmeasK hpt
+    have hKreal : (μHE[n] : Measure (Ambient n ℓ)).real (K ∩ closedBall x (R * t)) ≤
+        max Γ 0 * (R * t) ^ n := by
+      calc (μHE[n] : Measure (Ambient n ℓ)).real (K ∩ closedBall x (R * t))
+          ≤ (μHE[n] : Measure (Ambient n ℓ)).real (N ∩ closedBall x (R * t)) :=
+            measureReal_mono (inter_subset_inter_left _ hKN) hmeasN.ne
+        _ ≤ (ENNReal.ofReal (Γ * (R * t) ^ n)).toReal :=
+            ENNReal.toReal_mono ENNReal.ofReal_ne_top (hΓ _ (mul_pos hR ht0))
+        _ = max (Γ * (R * t) ^ n) 0 := ENNReal.toReal_ofReal'
+        _ ≤ max Γ 0 * (R * t) ^ n := by
+          have hp : 0 ≤ (R * t) ^ n := by positivity
+          rcases le_total Γ 0 with h | h
+          · rw [max_eq_right h, max_eq_right (mul_nonpos_of_nonpos_of_nonneg h hp), zero_mul]
+          · rw [max_eq_left h, max_eq_left (mul_nonneg h hp)]
+    rw [dist_zero_right, norm_mul, hsplit, norm_inv, norm_pow, Real.norm_of_nonneg ht0.le]
+    have hεc : 0 ≤ ε / c * m := mul_nonneg (div_pos hε hc0).le hm0
+    calc (t ^ n)⁻¹ * ‖∫ y in K ∩ closedBall x (R * t), (a.θ y - a.θ x) * g t y ∂μHE[n]‖
+        ≤ (t ^ n)⁻¹ * (ε / c * m * (μHE[n] : Measure (Ambient n ℓ)).real
+            (K ∩ closedBall x (R * t))) := by gcongr
+      _ ≤ (t ^ n)⁻¹ * (ε / c * m * (max Γ 0 * (R * t) ^ n)) := by gcongr
+      _ = ε / c * (m * max Γ 0 * R ^ n) := by
+        rw [mul_pow]
+        field_simp
+      _ < ε := by
+        rw [div_mul_eq_mul_div, div_lt_iff₀ hc0, hc]
+        nlinarith
+  -- Sum the four limits: `θ(x) L - θ(x) · 0 + 0 + 0 = θ(x) L`.
+  have hsum := (((hI1.const_mul (a.θ x)).sub (hT2.const_mul (a.θ x))).add hT3).add hT4
+  rw [mul_zero, sub_zero, add_zero, add_zero] at hsum
+  refine hsum.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  exact (hdec t ht).symm
+
 end
 
 end GMT.Ch04
