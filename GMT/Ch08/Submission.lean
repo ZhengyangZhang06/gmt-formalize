@@ -670,6 +670,25 @@ theorem Submission.allard_tc_fbl_rescaled_sandwich :
   rw [hlow_eq, hup_eq, hmid]
   exact ⟨mul_le_mul_of_nonneg_left (integral_mono hm_int hB_int hlow) hc,
     mul_le_mul_of_nonneg_left (integral_mono hB_int hp_int hup) hc⟩
+/-- Squeeze along a filter by approximating families (the `ε`-argument closing the flat blow-up
+ball limits used for Simon Ch. 8, 5.5): if for each `k` eventually `a_k ≤ m ≤ b_k` along `l`,
+`a_k → A_k` and `b_k → B_k` along `l`, and `A_k → L`, `B_k → L` as `k → ∞`, then `m → L` along `l`. -/
+theorem Submission.allard_tc_fbl_squeeze :
+    ∀ {ι : Type} (l : Filter ι) (m : ι → ℝ) (a b : ℕ → ι → ℝ) (A B : ℕ → ℝ) (L : ℝ), (∀ k, ∀ᶠ i in l, a k i ≤ m i ∧ m i ≤ b k i) → (∀ k, Tendsto (a k) l (𝓝 (A k))) → (∀ k, Tendsto (b k) l (𝓝 (B k))) → Tendsto A atTop (𝓝 L) → Tendsto B atTop (𝓝 L) → Tendsto m l (𝓝 L) := by
+  intro ι l m a b A B L hab ha hb hA hB
+  -- Step 1: by `Metric.tendsto_nhds` it suffices that `|m i - L| < ε` eventually along `l`.
+  refine Metric.tendsto_nhds.2 fun ε hε ↦ ?_
+  have hε2 : 0 < ε / 2 := half_pos hε
+  -- Step 2: one index `k` with `|A k - L| < ε / 2` and `|B k - L| < ε / 2`.
+  obtain ⟨k, hAk, hBk⟩ :=
+    ((Metric.tendsto_nhds.1 hA _ hε2).and (Metric.tendsto_nhds.1 hB _ hε2)).exists
+  -- Step 3: eventually along `l`, `a k i ≤ m i ≤ b k i`, `|a k i - A k| < ε / 2` and
+  -- `|b k i - B k| < ε / 2`.
+  filter_upwards [hab k, Metric.tendsto_nhds.1 (ha k) _ hε2, Metric.tendsto_nhds.1 (hb k) _ hε2]
+    with i hi hai hbi
+  -- Step 4: hence `L - ε < a k i ≤ m i ≤ b k i < L + ε`.
+  rw [Real.dist_eq, abs_lt] at hAk hBk hai hbi ⊢
+  constructor <;> linarith [hi.1, hi.2, hAk.1, hAk.2, hBk.1, hBk.2, hai.1, hai.2, hbi.1, hbi.2]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
