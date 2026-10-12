@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4af84fa573396fe6d50e6007d35db4f0f38596059f2cac224556997572939e3a",
+  "git_delta": {
+    "base_commit": "ec9be34e30772bc1bd77d9477954c51d591e1bf7",
+    "candidate_commit": "3dcce9d73b9f4ab4de32096f05554101470537ad",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_tde_chart_directional_deriv",
+    "diff_sha256": "38675056cb19abf1075604ba5f09636a0c1d8638c5a3d9d3391f7f42126918ed",
+    "source_sha256": "735dbe0d133832fb7b3d3e3e9aee7ffdeb18404d1e2fa62e531a338cfc47dbf5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_tde_chart_directional_deriv",
+      "statement": "∀ (P Q n : ℕ) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P) (w : Eucl n) (A : Eucl n →L[ℝ] Eucl P) (B : Eucl n →L[ℝ] Eucl Q) (K : ℝ≥0) (ρ : ℝ), 0 < ρ → LipschitzOnWith K f (ball (Φ w) ρ) → HasFDerivAt Φ A w → HasFDerivAt (f ∘ Φ) B w → ∀ s : Eucl n, HasDerivAt (fun t : ℝ => f (Φ w + t • A s)) (B s) 0 ∧ ‖B s‖ ≤ (K : ℝ) * ‖A s‖",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
