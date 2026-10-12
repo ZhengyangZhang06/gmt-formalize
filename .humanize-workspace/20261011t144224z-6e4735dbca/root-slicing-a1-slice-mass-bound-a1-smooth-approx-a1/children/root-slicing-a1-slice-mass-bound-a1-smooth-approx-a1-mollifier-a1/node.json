@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1.mollifier-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.smooth_approx-a1",
+  "depth": 4,
+  "title": "Normalized smooth mollifier supported in the σ-ball (parent Step 4)",
+  "statement": "For every P ∈ ℕ and every real σ > 0 there is a function ρ : ℝ^P → ℝ with all of the following properties:\n- ρ is C^∞;\n- ρ has compact support;\n- ρ(y) ≥ 0 for every y;\n- ρ(y) = 0 for every y with |y| ≥ σ;\n- ∫_{ℝ^P} ρ dλ^P = 1.\nHere λ^P is Lebesgue measure (`volume` on `Eucl P`) and |·| is the Euclidean norm.",
+  "lean_statement": "∀ (P : ℕ) (σ : ℝ), 0 < σ → ∃ ρ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ρ ∧ HasCompactSupport ρ ∧ (∀ y, 0 ≤ ρ y) ∧ (∀ y : Eucl P, σ ≤ ‖y‖ → ρ y = 0) ∧ ∫ y, ρ y = 1",
+  "lean_name": "slicing_mb_sa_mollifier_exists",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-smooth-approx-a1-mollifier-a1-a1"
+}
