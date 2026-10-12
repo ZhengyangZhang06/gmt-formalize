@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.riesz_on_open-a1.caratheodory_borel_version-a1",
+  "parent_id": "root.gauss_green-a1.riesz_on_open-a1",
+  "depth": 3,
+  "title": "Carathéodory-measurable fields have Borel a.e.-versions on σ-compact locally compact Hausdorff spaces",
+  "statement": "Let X be a Hausdorff, locally compact, σ-compact topological space with its Borel σ-algebra, μ a measure on X with μ(K) < ∞ for every compact K ⊆ X, N ∈ ℕ, and ν : X → ℝ^N measurable from the Carathéodory σ-algebra of the outer measure μ* induced by μ to the Borel σ-algebra of ℝ^N (i.e. ν⁻¹(B) is μ*-Carathéodory measurable for every Borel B ⊆ ℝ^N). Then there is ν' : X → ℝ^N, strongly measurable for the Borel σ-algebra of X, with ν = ν' μ-almost everywhere (μ*({x : ν(x) ≠ ν'(x)}) = 0).",
+  "lean_statement": "∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SigmaCompactSpace X] [MeasurableSpace X] [BorelSpace X] (μ : Measure X) (N : ℕ) (ν : X → Rn N), (∀ K : Set X, IsCompact K → μ K < ∞) → Measurable[μ.toOuterMeasure.caratheodory] ν → ∃ ν' : X → Rn N, StronglyMeasurable ν' ∧ ν =ᵐ[μ] ν'",
+  "lean_name": "gaussGreenRep_riesz_caratheodory_borel_version",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-riesz-on-open-a1-caratheodory-borel-version-a1-a1"
+}
