@@ -533,6 +533,106 @@ theorem Submission.slicing_mb_dm_lintegral_lowerLeftDini_le :
       ≤ ∫⁻ t in Ioo a b, liminf (fun n => F n t) atTop := setLIntegral_mono' measurableSet_Ioo hpt
     _ ≤ liminf (fun n => ∫⁻ t in Ioo a b, F n t) atTop := lintegral_liminf_le hF_meas
     _ ≤ ENNReal.ofReal (G b - G a) := liminf_le_of_frequently_le' (Frequently.of_forall hbound)
+/-- **Lower left density versus the lower left Dini derivative** (Simon Ch. 6, p. 158, the step
+"4.9 gives 4.10").  Let `ν((a, b)) < ∞`, `G r = ν((a, b) ∩ (-∞, r])` (as a real number) and
+`t ∈ (a, b)`.  Then `liminf_{h → 0+} ν([t - h, t]) / h ≤ liminf_{k → 0+} (G t - G (t - k)) / k`.
+For `c > 1` and `0 < k < t - a`, `[t - k / c, t] ⊆ (a, b) ∩ (t - k, t]`, a band of mass
+`G t - G (t - k)`, so the density at `h = k / c` is at most `c · (G t - G (t - k)) / k`.
+Reparametrizing `h = k / c` gives `liminf ≤ c · liminf`, and `c ↓ 1` finishes. -/
+theorem Submission.slicing_mb_dm_density_le_lowerLeftDini : ∀ (ν : Measure ℝ) (a b : ℝ), ν (Ioo a b) ≠ ∞ → ∀ t ∈ Ioo a b, liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) ≤ liminf (fun k : ℝ => ENNReal.ofReal (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k)) (𝓝[>] 0) := by
+  intro ν a b hν t ht
+  obtain ⟨hat, htb⟩ := ht
+  -- Step 1: `A_r = (a, b) ∩ (-∞, r]` has finite measure, so `G r = ν(A_r).toReal` is monotone.
+  have hfin : ∀ r : ℝ, ν (Ioo a b ∩ Iic r) ≠ ∞ := fun r =>
+    ne_top_of_le_ne_top hν (measure_mono inter_subset_left)
+  have hmono : ∀ r r' : ℝ, r ≤ r' →
+      (ν (Ioo a b ∩ Iic r)).toReal ≤ (ν (Ioo a b ∩ Iic r')).toReal := fun r r' hr =>
+    ENNReal.toReal_mono (hfin r') (measure_mono (inter_subset_inter_right _ (Iic_subset_Iic.2 hr)))
+  -- Step 2: for `s' ≤ s`, `A_s = A_{s'} ⊔ ((a, b) ∩ (s', s])`, so
+  -- `ν((a, b) ∩ (s', s]) = G s - G s'`.
+  have hincr : ∀ s' s : ℝ, s' ≤ s → ν (Ioo a b ∩ Ioc s' s) =
+      ENNReal.ofReal ((ν (Ioo a b ∩ Iic s)).toReal - (ν (Ioo a b ∩ Iic s')).toReal) := by
+    intro s' s hs
+    have hunion : Ioo a b ∩ Iic s = (Ioo a b ∩ Iic s') ∪ (Ioo a b ∩ Ioc s' s) := by
+      ext x
+      simp only [mem_inter_iff, mem_union, mem_Iic, mem_Ioc]
+      constructor
+      · rintro ⟨hx, hxs⟩
+        by_cases hxs' : x ≤ s'
+        · exact Or.inl ⟨hx, hxs'⟩
+        · exact Or.inr ⟨hx, lt_of_not_ge hxs', hxs⟩
+      · rintro (⟨hx, hxs'⟩ | ⟨hx, -, hxs⟩)
+        · exact ⟨hx, hxs'.trans hs⟩
+        · exact ⟨hx, hxs⟩
+    have hdisj : Disjoint (Ioo a b ∩ Iic s') (Ioo a b ∩ Ioc s' s) := by
+      rw [Set.disjoint_left]
+      rintro x ⟨-, hx₁⟩ ⟨-, hx₂, -⟩
+      exact absurd hx₁ (not_le.2 hx₂)
+    have hB : ν (Ioo a b ∩ Ioc s' s) ≠ ∞ :=
+      ne_top_of_le_ne_top hν (measure_mono inter_subset_left)
+    have hadd : (ν (Ioo a b ∩ Iic s)).toReal =
+        (ν (Ioo a b ∩ Iic s')).toReal + (ν (Ioo a b ∩ Ioc s' s)).toReal := by
+      rw [hunion, measure_union hdisj (measurableSet_Ioo.inter measurableSet_Ioc),
+        ENNReal.toReal_add (hfin s') hB]
+    rw [← ENNReal.ofReal_toReal hB, hadd, add_sub_cancel_left]
+  -- Step 3: for `c > 1` and `0 < k < t - a`, `h = k / c` gives `[t - h, t] ⊆ (a, b) ∩ (t - k, t]`,
+  -- hence `ν([t - h, t]) / h ≤ c · (G t - G (t - k)) / k`.
+  have hband : ∀ c : ℝ, 1 < c → ∀ᶠ k in 𝓝[>] (0 : ℝ),
+      ν (Icc (t - k / c) t) / ENNReal.ofReal (k / c) ≤ ENNReal.ofReal c * ENNReal.ofReal
+        (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k) := by
+    intro c hc
+    filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 hat)] with k hk
+    obtain ⟨hk0, hkt⟩ := hk
+    have hc0 : 0 < c := zero_lt_one.trans hc
+    have hhk : k / c < k := div_lt_self hk0 hc
+    have hsub : Icc (t - k / c) t ⊆ Ioo a b ∩ Ioc (t - k) t := by
+      rintro x ⟨hx₁, hx₂⟩
+      exact ⟨⟨by linarith, by linarith⟩, by linarith, hx₂⟩
+    have hΔ0 : 0 ≤ ((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k :=
+      div_nonneg (sub_nonneg.2 (hmono _ _ (by linarith))) hk0.le
+    apply ENNReal.div_le_of_le_mul
+    calc ν (Icc (t - k / c) t) ≤ ν (Ioo a b ∩ Ioc (t - k) t) := measure_mono hsub
+      _ = ENNReal.ofReal (c * (((ν (Ioo a b ∩ Iic t)).toReal -
+            (ν (Ioo a b ∩ Iic (t - k))).toReal) / k) * (k / c)) := by
+        rw [hincr _ _ (by linarith)]
+        congr 1
+        field_simp
+      _ = _ := by
+        rw [ENNReal.ofReal_mul (mul_nonneg hc0.le hΔ0), ENNReal.ofReal_mul hc0.le]
+  -- Steps 4–5: reparametrize `h = k / c` and factor out the constant `ofReal c`.
+  have hc_bound : ∀ c : ℝ, 1 < c →
+      liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) ≤
+        ENNReal.ofReal c * liminf (fun k : ℝ => ENNReal.ofReal
+          (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k)) (𝓝[>] 0) := by
+    intro c hc
+    have hc0 : 0 < c := zero_lt_one.trans hc
+    have htend : Tendsto (fun k : ℝ => k / c) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+      · have h0 : Tendsto (fun k : ℝ => k / c) (𝓝 0) (𝓝 (0 / c)) := tendsto_id.div_const c
+        rw [zero_div] at h0
+        exact h0.mono_left nhdsWithin_le_nhds
+      · filter_upwards [self_mem_nhdsWithin] with k hk
+        exact div_pos hk hc0
+    calc liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0)
+        ≤ liminf (fun k : ℝ => ν (Icc (t - k / c) t) / ENNReal.ofReal (k / c)) (𝓝[>] 0) :=
+          htend.liminf_le_liminf_comp
+      _ ≤ liminf (fun k : ℝ => ENNReal.ofReal c * ENNReal.ofReal
+            (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k)) (𝓝[>] 0) :=
+          liminf_le_liminf (hband c hc)
+      _ = _ := ENNReal.liminf_const_mul_of_ne_top ENNReal.ofReal_ne_top
+  -- Step 6: let `c_n = 1 + 1 / (n + 1) ↓ 1`.
+  set D := liminf (fun k : ℝ => ENNReal.ofReal
+    (((ν (Ioo a b ∩ Iic t)).toReal - (ν (Ioo a b ∩ Iic (t - k))).toReal) / k)) (𝓝[>] 0)
+  rcases eq_or_ne D ∞ with hD | hD
+  · rw [hD]
+    exact le_top
+  · have h1 : Tendsto (fun n : ℕ => 1 + 1 / ((n : ℝ) + 1)) atTop (𝓝 1) := by
+      simpa using tendsto_one_div_add_atTop_nhds_zero_nat.const_add (1 : ℝ)
+    have h2 : Tendsto (fun n : ℕ => ENNReal.ofReal (1 + 1 / ((n : ℝ) + 1)) * D) atTop (𝓝 D) := by
+      simpa using ENNReal.Tendsto.mul_const (ENNReal.tendsto_ofReal h1) (Or.inr hD)
+    refine ge_of_tendsto h2 (Eventually.of_forall fun n => hc_bound _ ?_)
+    have : (0 : ℝ) < 1 / ((n : ℝ) + 1) := by positivity
+    linarith
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
