@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.smooth_approximation-a1.l2_approximate_identity-a1",
+  "parent_id": "root.harmonic_approximation-a1.smooth_approximation-a1",
+  "depth": 3,
+  "title": "Mollifiers form an approximate identity in L^2(R^n; E)",
+  "statement": "Let n be a natural number, E a real Banach space, and mu Lebesgue measure on R^n. Let H : R^n -> E be integrable with H in L^2(mu; E). For j in N let rho_j : R^n -> R be continuous with rho_j >= 0 and int rho_j = 1, and let eps_j in R satisfy rho_j(z) = 0 whenever ||z|| >= eps_j, with eps_j -> 0. Then int^-_x ||int_z rho_j(z) H(x - z) dz - H(x)||_e^2 dx -> 0 as j -> infinity (lintegrals of squared extended norms).",
+  "lean_statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] (H : Rn n → E), Integrable H → MemLp H 2 volume → ∀ (ρ : ℕ → Rn n → ℝ) (ε : ℕ → ℝ), (∀ j, Continuous (ρ j)) → (∀ j z, 0 ≤ ρ j z) → (∀ j, ∫ z, ρ j z = 1) → (∀ j z, ε j ≤ ‖z‖ → ρ j z = 0) → Tendsto ε atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x, ‖(∫ z, ρ j z • H (x - z)) - H x‖ₑ ^ 2) atTop (𝓝 0)",
+  "lean_name": "mollifier_l2_tendsto",
+  "depends_on": [
+    "root.harmonic_approximation-a1.smooth_approximation-a1.l2_contraction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.harmonic_approximation-a1.smooth_approximation-a1.l2_contraction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-smooth-approximation-a1-l2-approximate-659564e226-a1"
+}
