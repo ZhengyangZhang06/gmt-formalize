@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.local_bilipschitz-a1",
+  "parent_id": "root.chart_tangent_differential-a1",
+  "depth": 2,
+  "title": "C¹ immersions are bi-Lipschitz on small balls (parent Step 2, localization)",
+  "statement": "Let n, N ∈ ℕ, V ⊆ ℝⁿ open and ψ : ℝⁿ → ℝ^N of class C¹ on V (ContDiffOn ℝ 1 ψ V) such that Dψ(u) = fderiv ℝ ψ u is injective for every u ∈ V. Then for every u₀ ∈ V there are r > 0 with B_r(u₀) ⊆ V, a constant K ∈ ℝ≥0 and c > 0 such that ψ is K-Lipschitz on the open ball B_r(u₀) and c|u − u'| ≤ |ψ(u) − ψ(u')| for all u, u' ∈ B_r(u₀).",
+  "lean_statement": "∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) → ∀ u₀ ∈ V, ∃ r : ℝ, 0 < r ∧ Metric.ball u₀ r ⊆ V ∧ ∃ (K : ℝ≥0) (c : ℝ), 0 < c ∧ LipschitzOnWith K ψ (Metric.ball u₀ r) ∧ ∀ u ∈ Metric.ball u₀ r, ∀ u' ∈ Metric.ball u₀ r, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖",
+  "lean_name": "chartTD_immersion_local_biLipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-local-bilipschitz-a1-a1"
+}

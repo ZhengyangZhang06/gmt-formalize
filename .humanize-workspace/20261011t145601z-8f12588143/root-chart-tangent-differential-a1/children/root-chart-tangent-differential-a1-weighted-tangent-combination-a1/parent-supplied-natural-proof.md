@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.chart_tangent_differential-a1`
+- Child DAG node: `root.chart_tangent_differential-a1.weighted_tangent_combination-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Parent proof Step 4, which is Simon's proof of Theorem 1.6 '⇒' (chapter-03.txt lines 113-143: the decomposition ∫_{η_{x,λ}(M)} f = ∫_{η_{x,λ}(N_j)} f − ∫_{η_{x,λ}(N_j∖M_j)} f + ∫_{η_{x,λ}(M∖M_j)} f and the two upper-density estimates) in the weighted form of Remark 1.8(1) (lines 298-306) and Definition 1.7 (lines 284-295). Uses the sibling blowup_scaling. All other lemmas used are available after `import GMT.Ch03.Submission`.
+
+1. finrank P = n is part of the hypothesis HasApproximateTangentSpaceAt n Γ x P. Fix f ∈ C_c(ℝ^N, ℝ). Choose R > 0 with f = 0 outside B_R(0) (f has compact support) and put ‖f‖ := sup|f| < ∞. For λ > 0 let g_λ(z) := f(η_{x,λ}(z)) = f((z − x)/λ). Then g_λ is continuous, |g_λ| ≤ ‖f‖, and g_λ(z) ≠ 0 implies z ∈ B_{Rλ}(x).
+
+2. Rewriting the weighted blow-up. For λ > 0 and z ∈ ℝ^N, x + λ·η_{x,λ}(z) = z. Apply the sibling scaling identity (blowup_scaling) with A = M and g(y) := f(y)θ(x + λy); since g(η_{x,λ}(z)) = g_λ(z)θ(z),
+ I(λ) := ∫_{η_{x,λ}(M)} f(y)θ(x + λy) dHⁿ(y) = λ^{-n}∫_M g_λθ dHⁿ.
+ Applying it with A = Γ and g = f: ∫_{η_{x,λ}(Γ)} f dHⁿ = λ^{-n}∫_Γ g_λ dHⁿ. (∗)
+
+3. Integrability, for fixed λ > 0. K_λ := B̄_{Rλ}(x) is compact, so θ is integrable on M ∩ K_λ; θ is Hⁿ⌞M-measurable and g_λ is continuous, bounded and zero off K_λ, so |g_λθ| ≤ ‖f‖·|θ|·1_{K_λ} and g_λθ is Hⁿ⌞M-integrable, hence integrable on M ∖ Γ and on M ∩ Γ. g_λ is Hⁿ⌞Γ-integrable (bounded, continuous, Hⁿ(Γ) < ∞), hence integrable on M ∩ Γ and on Γ ∖ M. Consequently g_λ(θ − θ(x)) = g_λθ − θ(x)g_λ is integrable on M ∩ Γ. (Nothing is claimed about θ on Γ ∖ M, where θ is uncontrolled; it is not needed.)
+
+4. Decomposition. Using the null-measurability of M and Γ to split integrals over the disjoint decompositions M = (M ∖ Γ) ∪ (M ∩ Γ) and Γ = (M ∩ Γ) ∪ (Γ ∖ M) (e.g. Mathlib integral_inter_add_sdiff₀ (formerly integral_inter_add_diff₀), which needs only null-measurability of the cutting set and integrability on the whole set):
+ λ^{-n}∫_M g_λθ = λ^{-n}∫_{M∖Γ} g_λθ + λ^{-n}∫_{M∩Γ} g_λθ,
+ λ^{-n}∫_{M∩Γ} g_λθ = θ(x)·λ^{-n}∫_{M∩Γ} g_λ + λ^{-n}∫_{M∩Γ} g_λ(θ − θ(x)),
+ λ^{-n}∫_{M∩Γ} g_λ = λ^{-n}∫_Γ g_λ − λ^{-n}∫_{Γ∖M} g_λ.
+ With (∗) this gives I(λ) = E₁(λ) + θ(x)·[∫_{η_{x,λ}(Γ)} f dHⁿ − E₂(λ)] + E₃(λ), where
+ E₁(λ) := λ^{-n}∫_{M∖Γ} g_λθ dHⁿ, E₂(λ) := λ^{-n}∫_{Γ∖M} g_λ dHⁿ, E₃(λ) := λ^{-n}∫_{M∩Γ} g_λ(θ − θ(x)) dHⁿ.
+
+5. Estimates. Since g_λ vanishes outside B_{Rλ}(x), each integral may be restricted to the intersection of its domain with B_{Rλ}(x) (e.g. setIntegral_eq_of_subset_of_forall_sdiff_eq_zero); with |g_λ| ≤ ‖f‖ and λ^{-n} = Rⁿ(Rλ)^{-n}:
+ |E₁(λ)| ≤ ‖f‖Rⁿ·(Rλ)^{-n}∫_{(M∖Γ)∩B_{Rλ}(x)} |θ| dHⁿ,
+ |E₂(λ)| ≤ ‖f‖Rⁿ·(Rλ)^{-n}Hⁿ((Γ∖M) ∩ B_{Rλ}(x)),
+ |E₃(λ)| ≤ ‖f‖Rⁿ·(Rλ)^{-n}∫_{M∩Γ∩B_{Rλ}(x)} |θ(z) − θ(x)| dHⁿ(z).
+ As λ ↓ 0 we have Rλ ↓ 0 (λ ↦ Rλ maps 𝓝[>]0 into 𝓝[>]0 because R > 0), so by (P1), (P2), (P3) the three right-hand sides tend to 0; hence E₁(λ), E₂(λ), E₃(λ) → 0.
+
+6. By HasApproximateTangentSpaceAt n Γ x P, ∫_{η_{x,λ}(Γ)} f dHⁿ → ∫_P f dHⁿ as λ ↓ 0. Combining with steps 4-5, I(λ) → 0 + θ(x)(∫_P f dHⁿ − 0) + 0 = θ(x)∫_P f dHⁿ.
+
+7. Since f ∈ C_c(ℝ^N, ℝ) was arbitrary, steps 1 and 6 are exactly HasWeightedApproximateTangentSpaceAt n M θ x P. (Neither x ∈ M nor θ(x) > 0 is used. For n = 0 the argument is unchanged.) ∎
+
+## Key steps
+
+1. Scaling identity (sibling) rewrites ∫_{η_{x,λ}(M)} f(y)θ(x+λy) dHⁿ as λ^{-n}∫_M (f∘η_{x,λ})θ and ∫_{η_{x,λ}(Γ)} f as λ^{-n}∫_Γ f∘η_{x,λ}.
+2. Integrability: (f∘η_{x,λ})θ on M, f∘η_{x,λ} on Γ, (f∘η_{x,λ})(θ − θ(x)) on M∩Γ.
+3. Split M = (M∖Γ) ∪ (M∩Γ), Γ = (M∩Γ) ∪ (Γ∖M): I(λ) = E₁ + θ(x)[∫_{η(Γ)} f − E₂] + E₃.
+4. |E_i(λ)| ≤ ‖f‖Rⁿ × (the (P_i) quotient at ρ = Rλ) → 0.
+5. The Def. 1.4 limit for Γ gives I(λ) → θ(x)∫_P f dHⁿ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n "^def |^noncomputable def |^abbrev " project/GMT/Ch03/Contract.lean (Rn, IsPositiveLocallyIntegrableWeight, HasTangentialDifferentialAt; contract scope replayed via verifier/gmt-compare.py contract_scope)`
+- `grep -n "def blowUpMap|def HasApproximateTangentSpaceAt|def HasWeightedApproximateTangentSpaceAt|IsLocallyIntegrableMultiplicity" simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -rn "theorem simon_theorem_3_6|simon_remark_3_7_of_openSigmaFinite|ae_dimensionalUpperDensity_eq_zero_outside_of_openSigmaFinite|def dimensionalUpperDensity|def dimensionalDensityQuotient|def IsBorelRegularOuterMeasure|def IsOpenSigmaFinite|measure_toOuterMeasure_isBorelRegular|realUnitBallVolume_pos" simongmt/Poincare/SimonGMT/Chapter01`
+- `grep -rn "injective_area_formula_lipschitzOn|weighted_area_formula_lipschitzOn_fiberSum|def weightedAreaFiberSum|def areaFiber|areaJacobianWithin|euclideanHausdorffMeasure_image_le_of_lipschitzOn|nullMeasurableSet_image_of_lipschitzOn|rademacher_ae_differentiableAt|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure" simongmt/Poincare/SimonGMT/Chapter02`
+- `rg -n "euclideanHausdorffMeasure_homothety_image|euclideanHausdorffMeasure_homothety_preimage|euclideanHausdorffMeasure_smul₀|Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n "normDet_sq|euclideanHausdorffMeasure_image_eq_normDet_mul_volume|hausdorffMeasure_image" mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `rg -n "ae_tendsto_average_norm_sub|tendsto_filterAt|ae_tendsto_rnDeriv" mathlib/Mathlib/MeasureTheory/Covering`
+- `rg -n "ae_differentiableWithinAt_of_mem|LipschitzWith.ae_differentiableAt" mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `rg -n "isOpen_biUnion_countable|ae_ball_iff|isCompact_closure|addHaar_closedBall|image_of_continuousOn_injOn|exists_antilipschitzWith|finrank_range_of_inj|integral_inter_add_sdiff₀|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|exists_measurable_subset_ae_eq|ContDiffAt.exists_lipschitzOnWith|continuousOn_fderiv_of_isOpen|lipschitzOnWith_of_nnnorm_fderiv_le|tendsto_integral_filter_of_dominated_convergence|integral_comp_smul|integral_withDensity_eq_integral_smul|measurable_fderiv" mathlib/Mathlib`
+- `lake env lean GMT/Scratch/ChartCheckAvail*.lean (#check availability of every cited lemma after `import GMT.Ch03.Submission`)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaMultiplicity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+
+Snapshot manifest: project d09bc8a (Contract.lean byte-identical to the workspace), Mathlib 25730c7c, plus the pinned simongmt package. Found and cited by the children: SimonGMT blowUpMap, HasApproximateTangentSpaceAt (Def. 1.4) and HasWeightedApproximateTangentSpaceAt (Def. 1.7). Also cited: SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn (F2) and nullMeasurableSet_image_of_lipschitzOn (Simon 1.8(i)), and weighted_area_formula_lipschitzOn_fiberSum (injective area formula on an open Lipschitz domain; needs import Chapter02.AreaDomain). Also: the density machinery ae_dimensionalUpperDensity_eq_zero_outside_of_openSigmaFinite / simon_remark_3_7_of_openSigmaFinite (Simon 1.3.6, 3.7(2); needs import Chapter01.DensityComparison), with measure_toOuterMeasure_isBorelRegular and simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure (needs import Chapter02.AreaLiteral). Mathlib: euclideanHausdorffMeasure_homothety_image/_preimage, Isometry.euclideanHausdorffMeasure_image, LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume, ContinuousLinearMap.normDet_sq, VitaliFamily.ae_tendsto_average_norm_sub with Besicovitch.vitaliFamily/tendsto_filterAt, and LipschitzOnWith.ae_differentiableWithinAt_of_mem (Rademacher). Further Mathlib lemmas: MeasurableSet.image_of_continuousOn_injOn (Lusin-Souslin), Measure.addHaar_closedBall, LinearMap.exists_antilipschitzWith, Convex.lipschitzOnWith_of_nnnorm_fderiv_le, ContDiffAt.exists_lipschitzOnWith, tendsto_integral_filter_of_dominated_convergence, Measure.integral_comp_smul, integral_withDensity_eq_integral_smul, TopologicalSpace.isOpen_biUnion_countable and ae_ball_iff. Every Mathlib lemma cited is visible after `import GMT.Ch03.Submission` (checked with #check). No match in the snapshot for: a ready-made 'C¹ chart image has the classical tangent plane as approximate tangent space' lemma, a weighted locality lemma for approximate tangent planes, a blow-up change-of-variables lemma for blowUpMap, or a ρⁿ-normalized Lebesgue-point lemma for Hⁿ⌞S. These are supplied as children blowup_scaling, chart_blowup_tangent, weighted_tangent_combination and lebesgue_points. SimonGMT's Chapter03 Differential.lean tangential notions are not used.
