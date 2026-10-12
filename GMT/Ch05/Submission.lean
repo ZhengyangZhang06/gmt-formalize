@@ -1239,6 +1239,180 @@ theorem lp_corrected_mass_ratio_monotoneOn : ∀ {n ℓ : ℕ} {U : Set (Amb n �
         have := div_le_div_of_nonneg_right hmono (pow_pos ht0 n).le
         linarith
   · rw [hστ']
+/-- **Simon Ch. 4, 4.9 (p. 95), via the monotonicity 4.8 (p. 94) and the argument of 3.11 (p. 91).**
+Let `V = v(M, θ)` have generalized mean curvature `H` in the open set `U`, with `H` locally in
+`Lᵖ(μ_V)` for some `p > n`, `x ↦ p_{T_x V}` `μ_V`-a.e. strongly measurable, and `p_{T_x V}` the
+projection onto an `n`-dimensional subspace for `μ_V`-a.e. `x`.  Then at every `ξ ∈ U` the density
+`Θⁿ(μ_V, ξ) = d ≥ 0` exists, and `Θⁿ(μ_V, ·)` is upper semicontinuous at `ξ`: every density
+`Θⁿ(μ_V, y) = t` at a point `y` near `ξ` satisfies `t ≤ d + ε`.  Both follow from the monotonicity
+of `σ ↦ exp((Λ/2)(σ/R)^{1−n/p}) (σ⁻ⁿ μ_V(B_σ(y)) + 1)` on `(0, R]`, uniformly for `y` near `ξ`. -/
+theorem exists_density_upperSemicontinuous_of_locallyLp : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), 1 ≤ n → IsOpen U → (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → AEStronglyMeasurable V.tangentProj V.weight → (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → ∀ ξ ∈ U, ∃ d : ℝ, 0 ≤ d ∧ V.HasDensity ξ d ∧ ∀ ε : ℝ, 0 < ε → ∀ᶠ y in 𝓝 ξ, ∀ t : ℝ, V.HasDensity y t → t ≤ d + ε := by
+  intro n ℓ U V H p hn hU hp hH hLp hG2 hG1 ξ hξ
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    apply div_pos (Real.rpow_pos_of_pos Real.pi_pos _)
+    apply Real.Gamma_pos_of_pos
+    positivity
+  set ω := unitBallVolume n with hω_def
+  -- Step 1: `μ_V` is finite on compact subsets of `U`.
+  have hfin : ∀ K : Set (Amb n ℓ), IsCompact K → K ⊆ U → V.weight K < ∞ := by
+    intro K hK hKU
+    have hint := V.integrableOn_mult K hK hKU
+    rw [RectifiableVarifold.weight, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, Set.inter_comm]
+    exact hint.lintegral_lt_top
+  obtain ⟨R, hR, hball⟩ : ∃ R > 0, closedBall ξ (2 * R) ⊆ U := by
+    obtain ⟨r, hr, hsub⟩ := Metric.isOpen_iff.mp hU ξ hξ
+    refine ⟨r / 4, by positivity, ?_⟩
+    exact (closedBall_subset_ball (by linarith)).trans hsub
+  have hp0 : 0 < p := lt_of_le_of_lt (Nat.cast_nonneg n) hp
+  set κ : ℝ := (p - n) / (4 * p) with hκ_def
+  have hκ : 0 < κ := div_pos (sub_pos.mpr hp) (by positivity)
+  -- `Λ = κ⁻¹ (R^{p−n} ∫_{B_{2R}(ξ)} |H|ᵖ dμ_V)^{1/p}` bounds the scaled `Lᵖ` norm on every
+  -- `B_R(y) ⊆ B_{2R}(ξ)`, `y ∈ B_R(ξ)`, so the monotonicity formula holds there with radius `R`.
+  set A := ∫⁻ x in closedBall ξ (2 * R), ‖H x‖ₑ ^ p ∂V.weight with hA_def
+  have hA : A < ∞ := hLp _ (isCompact_closedBall _ _) hball
+  set s : ℝ≥0∞ := (ENNReal.ofReal (R ^ (p - n)) * A) ^ (1 / p) with hs_def
+  have hs : s ≠ ∞ := by
+    apply ENNReal.rpow_ne_top_of_nonneg (by positivity)
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hA.ne
+  set Λ : ℝ := s.toReal / κ with hΛ_def
+  have hΛ : 0 ≤ Λ := div_nonneg ENNReal.toReal_nonneg hκ.le
+  have hκΛ : ENNReal.ofReal (κ * Λ) = s := by
+    rw [hΛ_def, mul_div_cancel₀ _ hκ.ne', ENNReal.ofReal_toReal hs]
+  have hsub2 : ∀ y ∈ closedBall ξ R, closedBall y R ⊆ closedBall ξ (2 * R) := by
+    intro y hy
+    apply closedBall_subset_closedBall'
+    have : dist y ξ ≤ R := hy
+    linarith
+  have hscale : ∀ y ∈ closedBall ξ R, V.scaledLpNorm H p y R ≤ ENNReal.ofReal (κ * Λ) := by
+    intro y hy
+    rw [hκΛ, RectifiableVarifold.scaledLpNorm]
+    apply ENNReal.rpow_le_rpow _ (by positivity)
+    exact mul_le_mul_right (lintegral_mono_set (hsub2 y hy)) _
+  set f : ℝ → ℝ := fun σ => Real.exp (Λ / 2 * (σ / R) ^ (1 - (n : ℝ) / p)) with hf_def
+  set G : Amb n ℓ → ℝ → ℝ := fun y σ =>
+    f σ * ((V.weight (closedBall y σ)).toReal / σ ^ n + 1) with hG_def
+  have hmono : ∀ y ∈ closedBall ξ R, MonotoneOn (G y) (Ioc 0 R) := by
+    intro y hy
+    exact Submission.lp_corrected_mass_ratio_monotoneOn V H p hn hp hH hG2 hG1 y R Λ hR hΛ
+      ((hsub2 y hy).trans hball) (hscale y hy)
+  -- Step 2: the factor `f(σ) = exp((Λ/2)(σ/R)^{1−n/p})` is positive and tends to `1` as `σ ↓ 0`.
+  have he : 0 < 1 - (n : ℝ) / p := sub_pos.mpr ((div_lt_one hp0).mpr hp)
+  have hf1 : Tendsto f (𝓝[>] 0) (𝓝 1) := by
+    have hc : Continuous f := by
+      apply Real.continuous_exp.comp
+      exact continuous_const.mul
+        ((continuous_id.div_const R).rpow_const (fun _ => Or.inr he.le))
+    have ht := (hc.tendsto 0).mono_left (show 𝓝[>] (0 : ℝ) ≤ 𝓝 0 from nhdsWithin_le_nhds)
+    simpa [hf_def, zero_div, Real.zero_rpow he.ne'] using ht
+  have hfpos : ∀ σ, 0 < f σ := fun σ => Real.exp_pos _
+  have hfinball : ∀ y ∈ closedBall ξ R, ∀ σ, σ ≤ R → V.weight (closedBall y σ) ≠ ∞ := by
+    intro y hy σ hσ
+    exact ((measure_mono (closedBall_subset_closedBall hσ)).trans_lt
+      (hfin _ (isCompact_closedBall _ _) ((hsub2 y hy).trans hball))).ne
+  set m : Amb n ℓ → ℝ → ℝ := fun y σ => (V.weight (closedBall y σ)).toReal / σ ^ n with hm_def
+  -- Step 3: `Θⁿ(μ_V, y) = t` means `σ⁻ⁿ μ_V(B_σ(y)) → ω_n max(t, 0)` as `σ ↓ 0`.
+  have hconv : ∀ y ∈ closedBall ξ R, ∀ t : ℝ, V.HasDensity y t →
+      Tendsto (m y) (𝓝[>] 0) (𝓝 (ω * max t 0)) := by
+    intro y hy t ht
+    have h1 := (ENNReal.tendsto_toReal ENNReal.ofReal_ne_top).comp ht
+    rw [ENNReal.toReal_ofReal'] at h1
+    have h2 := h1.const_mul ω
+    apply h2.congr'
+    filter_upwards [Ioc_mem_nhdsGT hR] with σ hσ
+    have hσn : 0 < σ ^ n := pow_pos hσ.1 n
+    simp only [Function.comp_apply, hm_def]
+    rw [ENNReal.toReal_div, ENNReal.toReal_ofReal (by positivity), ← hω_def]
+    field_simp
+  have hξR : ξ ∈ closedBall ξ R := mem_closedBall_self hR.le
+  -- Step 4: the monotone `G ξ` has a limit as `σ ↓ 0`, hence so does `σ⁻ⁿ μ_V(B_σ(ξ))`.
+  have hne : (Ioo (0 : ℝ) R).Nonempty := ⟨R / 2, by positivity, by linarith⟩
+  have hGnonneg : ∀ σ ∈ Ioo 0 R, 0 ≤ G ξ σ := fun σ hσ =>
+    mul_nonneg (hfpos σ).le (add_nonneg (div_nonneg ENNReal.toReal_nonneg
+      (pow_pos hσ.1 n).le) zero_le_one)
+  have hGlim := MonotoneOn.tendsto_nhdsWithin_Ioo_right hne
+    ((hmono ξ hξR).mono Ioo_subset_Ioc_self)
+    ⟨0, by rintro _ ⟨σ, hσ, rfl⟩; exact hGnonneg σ hσ⟩
+  set L := sInf (G ξ '' Ioo 0 R) with hL_def
+  have hm_lim : Tendsto (m ξ) (𝓝[>] 0) (𝓝 (L - 1)) := by
+    have h := (hGlim.div hf1 one_ne_zero).sub_const 1
+    rw [div_one] at h
+    apply h.congr'
+    filter_upwards with σ
+    simp only [Pi.div_apply, hG_def, hm_def]
+    rw [mul_div_cancel_left₀ _ (hfpos σ).ne']
+    ring
+  have hL1 : 0 ≤ L - 1 := by
+    apply ge_of_tendsto hm_lim
+    filter_upwards [self_mem_nhdsWithin] with σ hσ
+    exact div_nonneg ENNReal.toReal_nonneg (pow_pos hσ n).le
+  set d := (L - 1) / ω with hd_def
+  have hωd : ω * d = L - 1 := by rw [hd_def]; field_simp
+  refine ⟨d, div_nonneg hL1 hω.le, ?_, ?_⟩
+  · -- `Θⁿ(μ_V, ξ) = d`
+    unfold RectifiableVarifold.HasDensity
+    have h := (ENNReal.continuous_ofReal.tendsto _).comp (hm_lim.div_const ω)
+    apply h.congr'
+    filter_upwards [Ioc_mem_nhdsGT hR] with σ hσ
+    have hσn : 0 < σ ^ n := pow_pos hσ.1 n
+    simp only [Function.comp_apply, hm_def]
+    rw [div_div, mul_comm (σ ^ n) ω, ENNReal.ofReal_div_of_pos (by positivity),
+      ENNReal.ofReal_toReal (hfinball ξ hξR σ hσ.2)]
+  · -- Steps 5–7: upper semicontinuity at `ξ`.
+    intro ε hε
+    set T := ω * (d + ε) + 1 with hT_def
+    -- Step 6: a small scale `τ` with `f(τ)(τ⁻ⁿ μ_V(B_τ(ξ)) + 1) < T` ...
+    have hlim0 : Tendsto (fun τ => f τ * (m ξ τ + 1)) (𝓝[>] 0) (𝓝 (1 * (L - 1 + 1))) :=
+      hf1.mul (hm_lim.add_const 1)
+    have hlt0 : 1 * (L - 1 + 1) < T := by
+      rw [← hωd, hT_def]
+      nlinarith [mul_pos hω hε]
+    obtain ⟨τ, hτlt, hτ⟩ :=
+      ((hlim0.eventually (gt_mem_nhds hlt0)).and (Ioo_mem_nhdsGT (half_pos hR))).exists
+    -- ... and, by continuity from above of `δ ↦ μ_V(B_{τ+δ}(ξ))`, a radius `δ` keeping it `< T`.
+    have hcont : Tendsto (fun δ => V.weight (closedBall ξ (τ + δ))) (𝓝[>] 0)
+        (𝓝 (V.weight (closedBall ξ τ))) := by
+      have h := tendsto_measure_cthickening_of_isClosed (μ := V.weight)
+        (s := closedBall ξ τ) ⟨R / 2, half_pos hR, by
+          rw [cthickening_closedBall (half_pos hR).le hτ.1.le]
+          exact hfinball ξ hξR _ (by linarith [hτ.2])⟩ isClosed_closedBall
+      apply (h.mono_left (show 𝓝[>] (0 : ℝ) ≤ 𝓝 0 from nhdsWithin_le_nhds)).congr'
+      filter_upwards [self_mem_nhdsWithin] with δ hδ
+      rw [cthickening_closedBall (le_of_lt hδ) hτ.1.le, add_comm δ τ]
+    have hcontR : Tendsto (fun δ => f τ * ((V.weight (closedBall ξ (τ + δ))).toReal / τ ^ n + 1))
+        (𝓝[>] 0) (𝓝 (f τ * (m ξ τ + 1))) := by
+      have h := (ENNReal.tendsto_toReal (hfinball ξ hξR τ (by linarith [hτ.2]))).comp hcont
+      exact ((h.div_const (τ ^ n)).add_const 1).const_mul (f τ)
+    obtain ⟨δ, hδlt, hδ⟩ :=
+      ((hcontR.eventually (gt_mem_nhds hτlt)).and (Ioo_mem_nhdsGT (half_pos hR))).exists
+    -- Step 7: on `B̆_δ(ξ)`, `ω_n max(t, 0) + 1 ≤ G y τ ≤ f(τ)(τ⁻ⁿ μ_V(B_{τ+δ}(ξ)) + 1) < T`.
+    filter_upwards [ball_mem_nhds ξ hδ.1] with y hy t ht
+    have hyξ : dist y ξ < δ := hy
+    have hyR : y ∈ closedBall ξ R := by
+      show dist y ξ ≤ R
+      linarith [hδ.2]
+    have hlimy := hconv y hyR t ht
+    have hGy : Tendsto (G y) (𝓝[>] 0) (𝓝 (1 * (ω * max t 0 + 1))) :=
+      hf1.mul (hlimy.add_const 1)
+    -- Step 5: monotonicity of `G y` bounds its limit at `0⁺` by its value at `τ`.
+    have hle : 1 * (ω * max t 0 + 1) ≤ G y τ := by
+      apply le_of_tendsto hGy
+      filter_upwards [Ioc_mem_nhdsGT hτ.1] with σ hσ
+      exact hmono y hyR ⟨hσ.1, hσ.2.trans (by linarith [hτ.2])⟩
+        ⟨hτ.1, by linarith [hτ.2]⟩ hσ.2
+    have hball_sub : closedBall y τ ⊆ closedBall ξ (τ + δ) := by
+      apply closedBall_subset_closedBall'
+      linarith
+    have hGyτ : G y τ ≤ f τ * ((V.weight (closedBall ξ (τ + δ))).toReal / τ ^ n + 1) := by
+      apply mul_le_mul_of_nonneg_left _ (hfpos τ).le
+      have hτn : 0 < τ ^ n := pow_pos hτ.1 n
+      have := ENNReal.toReal_mono (hfinball ξ hξR (τ + δ) (by linarith [hτ.2, hδ.2]))
+        (measure_mono hball_sub)
+      gcongr
+    have h3 : ω * max t 0 < ω * (d + ε) := by linarith
+    have h4 := lt_of_mul_lt_mul_left h3 hω.le
+    linarith [le_max_left t 0]
 
 end Submission
 
