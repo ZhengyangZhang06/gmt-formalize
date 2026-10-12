@@ -473,4 +473,55 @@ theorem Submission.bv_ext_norm_fderiv_infDist_eq_one : ∀ (n : ℕ) (S : Set (R
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
+/-- **The distance gradient points into `U` near `∂U`** (Simon 2.8, proof, C2, inequality (1)).
+Let `U ⊆ ℝⁿ` be open and convex with `Uᶜ ≠ ∅`, `r > 0`, `closedBall ξ r ⊆ U`, and
+`d(y) = infDist y Uᶜ`. Take `η > 0` to be the minimum of `d` over the compact ball
+`closedBall ξ r ⊆ U`. Fix `x ∈ U` with `d(x) < η` at which `d` is differentiable, and put
+`L = Dd(x)`. Then `‖L‖ = 1` (`Submission.bv_ext_norm_fderiv_infDist_eq_one`), so the Riesz
+vector `ν` of `L` is a unit vector with `L ν = 1`. The point `w = ξ - r • ν` lies in the ball,
+so `d(x) < η ≤ d(w)`. Since `d` is concave on `U` (`Submission.bv_ext_infDist_compl_concaveOn`),
+its restriction to the segment from `x` to `w` gives `d(w) - d(x) ≤ L (w - x) = -L (x - ξ) - r`
+(`ConcaveOn.slope_le_of_hasDerivAt`). -/
+theorem Submission.bv_ext_infDist_compl_fderiv_lt : ∀ (n : ℕ) (U : Set (Rn n)) (ξ : Rn n) (r : ℝ), IsOpen U → Convex ℝ U → Uᶜ.Nonempty → 0 < r → closedBall ξ r ⊆ U → ∃ η : ℝ, 0 < η ∧ ∀ x ∈ U, infDist x Uᶜ < η → DifferentiableAt ℝ (fun y ↦ infDist y Uᶜ) x → r < -fderiv ℝ (fun y ↦ infDist y Uᶜ) x (x - ξ) := by
+  intro n U ξ r hUo hUc hne hr hball
+  -- Step 1: `Uᶜ` is closed and nonempty, so `d > 0` on `U`.
+  have hcl : IsClosed Uᶜ := hUo.isClosed_compl
+  have hpos : ∀ y ∈ U, 0 < infDist y Uᶜ := fun y hy ↦
+    (hcl.notMem_iff_infDist_pos hne).1 (Set.notMem_compl_iff.2 hy)
+  -- Step 2: `η = d(y₀)` is the minimum of `d` over the compact ball `closedBall ξ r ⊆ U`.
+  obtain ⟨y₀, hy₀, hmin⟩ := (isCompact_closedBall ξ r).exists_isMinOn
+    (nonempty_closedBall.2 hr.le) (continuous_infDist_pt Uᶜ).continuousOn
+  refine ⟨infDist y₀ Uᶜ, hpos y₀ (hball hy₀), fun x hx hxη hdiff ↦ ?_⟩
+  -- Step 3: `L = Dd(x)` has norm `1`.
+  generalize hL : fderiv ℝ (fun y ↦ infDist y Uᶜ) x = L
+  have hfd : HasFDerivAt (fun y ↦ infDist y Uᶜ) L x := hL ▸ hdiff.hasFDerivAt
+  have hLnorm : ‖L‖ = 1 := hL ▸ Submission.bv_ext_norm_fderiv_infDist_eq_one n Uᶜ x hcl hne
+    (Set.notMem_compl_iff.2 hx) hdiff
+  -- Step 4: the Riesz vector `ν` of `L` is a unit vector with `L ν = 1`.
+  obtain ⟨ν, hν, hLν⟩ : ∃ ν : Rn n, ‖ν‖ = 1 ∧ L ν = 1 := by
+    set e := InnerProductSpace.toDual ℝ (Rn n)
+    refine ⟨e.symm L, by rw [LinearIsometryEquiv.norm_map, hLnorm], ?_⟩
+    rw [← InnerProductSpace.toDual_symm_apply (x := e.symm L) (y := L),
+      real_inner_self_eq_norm_sq, LinearIsometryEquiv.norm_map, hLnorm, one_pow]
+  -- Step 5: `w = ξ - r • ν` lies in `closedBall ξ r ⊆ U`, so `d(x) < η ≤ d(w)`.
+  obtain ⟨w, hw⟩ : ∃ w : Rn n, w = ξ - r • ν := ⟨_, rfl⟩
+  have hwball : w ∈ closedBall ξ r := by
+    rw [mem_closedBall, dist_eq_norm, hw, sub_sub_cancel_left, norm_neg, norm_smul, hν, mul_one,
+      Real.norm_of_nonneg hr.le]
+  have hdw : infDist x Uᶜ < infDist w Uᶜ := hxη.trans_le (isMinOn_iff.1 hmin w hwball)
+  -- Step 6: concavity of `d` along the segment from `x` to `w` gives `d(w) - d(x) ≤ L (w - x)`.
+  have hsuper : infDist w Uᶜ - infDist x Uᶜ ≤ L (w - x) := by
+    have hcv := (Submission.bv_ext_infDist_compl_concaveOn n U hUc).comp_affineMap
+      (AffineMap.lineMap x w)
+    have hder := hfd.comp_hasDerivAt_of_eq 0 (AffineMap.hasDerivAt_lineMap (a := x) (b := w))
+      (AffineMap.lineMap_apply_zero x w).symm
+    simpa [slope_def_field] using
+      hcv.slope_le_of_hasDerivAt (by simpa using hx) (by simpa using hball hwball) zero_lt_one hder
+  -- Step 7: `L (w - x) = -L (x - ξ) - r`.
+  have hcomp : L (w - x) = -L (x - ξ) - r := by
+    rw [show w - x = -(x - ξ) - r • ν by rw [hw]; abel, map_sub, map_neg, map_smul, hLν,
+      smul_eq_mul, mul_one]
+  -- Step 8: `0 < d(w) - d(x) ≤ -L (x - ξ) - r`.
+  linarith
+
 end GMT.Ch02
