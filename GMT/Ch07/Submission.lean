@@ -451,6 +451,128 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+theorem Submission.dorag_gc_graph_slope_le_projection : ∀ (n k P : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid P) (ι' : Euclid k →ₗᵢ[ℝ] Euclid P) (A₁ A₂ : Euclid n →L[ℝ] Euclid k), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → ‖A₁‖ ≤ 1 / 4 → ‖A₂‖ ≤ 1 / 4 → ∑ i : Fin n, ‖(A₁ - A₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 ≤ 4 * ∑ j : Fin P, ‖(LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ A₁.toLinearMap)).starProjection (EuclideanSpace.single j (1 : ℝ)) - (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ A₂.toLinearMap)).starProjection (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+  intro n k P ι ι' A₁ A₂ horth hA₁ hA₂
+  set T₁ := LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ A₁.toLinearMap) with hT₁
+  set T₂ := LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ A₂.toLinearMap) with hT₂
+  set X : Euclid P →L[ℝ] Euclid P := T₁.starProjection - T₂.starProjection with hX
+  have pyth : ∀ (v : Euclid n) (b : Euclid k), ‖ι v + ι' b‖ ^ 2 = ‖v‖ ^ 2 + ‖b‖ ^ 2 := by
+    intro v b
+    rw [norm_add_sq_real, horth, LinearIsometry.norm_map, LinearIsometry.norm_map]; ring
+  have hXsa : ∀ u u' : Euclid P, inner ℝ (X u) u' = inner ℝ u (X u') := by
+    intro u u'
+    simp only [hX, sub_apply, inner_sub_left, inner_sub_right,
+      Submodule.inner_starProjection_left_eq_right]
+  set q : Euclid n → Euclid P := fun x => ι x + ι' (A₁ x) with hq
+  -- pointwise estimate
+  have hpt : ∀ x, ‖(A₁ - A₂) x‖ ^ 2 ≤ 17 / 16 * ‖X (q x)‖ ^ 2 := by
+    intro x
+    have hqT₁ : q x ∈ T₁ := ⟨x, by simp [hq]⟩
+    have hP₁ : T₁.starProjection (q x) = q x := (Submodule.starProjection_eq_self_iff).2 hqT₁
+    have hmem : T₂.starProjection (q x) ∈ T₂ := Submodule.starProjection_apply_mem _ _
+    obtain ⟨w, hw⟩ := hmem
+    have hw' : T₂.starProjection (q x) = ι w + ι' (A₂ w) := by
+      rw [← hw]; simp
+    have hXq : X (q x) = ι (x - w) + ι' (A₁ x - A₂ w) := by
+      rw [hX, sub_apply, hP₁, hw']
+      simp only [hq, map_sub]; abel
+    have hnorm : ‖X (q x)‖ ^ 2 = ‖x - w‖ ^ 2 + ‖A₁ x - A₂ w‖ ^ 2 := by rw [hXq, pyth]
+    have htri : ‖(A₁ - A₂) x‖ ≤ ‖A₁ x - A₂ w‖ + 1 / 4 * ‖x - w‖ := by
+      have hsplit : (A₁ - A₂) x = (A₁ x - A₂ w) + A₂ (w - x) := by
+        simp only [sub_apply, map_sub]; abel
+      rw [hsplit]
+      calc ‖(A₁ x - A₂ w) + A₂ (w - x)‖ ≤ ‖A₁ x - A₂ w‖ + ‖A₂ (w - x)‖ := norm_add_le _ _
+        _ ≤ ‖A₁ x - A₂ w‖ + ‖A₂‖ * ‖w - x‖ := by gcongr; exact A₂.le_opNorm _
+        _ ≤ ‖A₁ x - A₂ w‖ + 1 / 4 * ‖x - w‖ := by
+            rw [norm_sub_rev w x]; gcongr
+    rw [hnorm]
+    have h0 := norm_nonneg ((A₁ - A₂) x)
+    nlinarith [norm_nonneg (A₁ x - A₂ w), norm_nonneg (x - w),
+      sq_nonneg (‖A₁ x - A₂ w‖ / 4 - ‖x - w‖), mul_self_le_mul_self h0 htri]
+  -- frame bound
+  have hframe : ∀ y : Euclid P, ∑ i : Fin n, (inner ℝ (q (EuclideanSpace.single i (1 : ℝ))) y) ^ 2
+      ≤ 17 / 16 * ‖y‖ ^ 2 := by
+    intro y
+    set a : Euclid n := (ι.toContinuousLinearMap.adjoint) y with ha
+    set b : Euclid k := (ι'.toContinuousLinearMap.adjoint) y with hb
+    set c : Euclid n := (A₁.adjoint) b with hc
+    have hcoord : ∀ i, inner ℝ (q (EuclideanSpace.single i (1 : ℝ))) y = (a + c) i := by
+      intro i
+      have e1 : inner ℝ (ι (EuclideanSpace.single i (1 : ℝ))) y =
+          inner ℝ (EuclideanSpace.single i (1 : ℝ)) a := by
+        rw [ha, ContinuousLinearMap.adjoint_inner_right]; rfl
+      have e2 : inner ℝ (ι' (A₁ (EuclideanSpace.single i (1 : ℝ)))) y =
+          inner ℝ (EuclideanSpace.single i (1 : ℝ)) c := by
+        rw [hc, ContinuousLinearMap.adjoint_inner_right, hb,
+          ContinuousLinearMap.adjoint_inner_right]; rfl
+      simp only [hq, inner_add_left, e1, e2, EuclideanSpace.inner_single_left, map_one,
+        one_mul, PiLp.add_apply]
+    have hsum : ∑ i : Fin n, (inner ℝ (q (EuclideanSpace.single i (1 : ℝ))) y) ^ 2 = ‖a + c‖ ^ 2 := by
+      rw [EuclideanSpace.norm_sq_eq]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [hcoord i, Real.norm_eq_abs, sq_abs]
+    have hcb : ‖c‖ ≤ 1 / 4 * ‖b‖ := by
+      calc ‖c‖ ≤ ‖A₁.adjoint‖ * ‖b‖ := ContinuousLinearMap.le_opNorm _ _
+        _ ≤ 1 / 4 * ‖b‖ := by
+            gcongr
+            rw [LinearIsometryEquiv.norm_map]; exact hA₁
+    have hab : ‖a‖ ^ 2 + ‖b‖ ^ 2 ≤ ‖y‖ ^ 2 := by
+      set u := ι a + ι' b with hu
+      have hu2 : ‖u‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := pyth a b
+      have huy : inner ℝ u y = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
+        rw [hu, inner_add_left]
+        have e1 : inner ℝ (ι a) y = inner ℝ a a := by
+          rw [show inner ℝ (ι a) y = inner ℝ (ι.toContinuousLinearMap a) y from rfl,
+            ← ContinuousLinearMap.adjoint_inner_right]
+        have e2 : inner ℝ (ι' b) y = inner ℝ b b := by
+          rw [show inner ℝ (ι' b) y = inner ℝ (ι'.toContinuousLinearMap b) y from rfl,
+            ← ContinuousLinearMap.adjoint_inner_right]
+        rw [e1, e2, real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq]
+      have hle : ‖u‖ ^ 2 ≤ ‖u‖ * ‖y‖ := by
+        rw [hu2, ← huy]; exact real_inner_le_norm u y
+      have hu0 := norm_nonneg u
+      have hy0 := norm_nonneg y
+      have : ‖u‖ ≤ ‖y‖ := by
+        rcases hu0.lt_or_eq with h | h
+        · nlinarith
+        · rw [← h]; exact hy0
+      rw [← hu2]; nlinarith
+    rw [hsum]
+    have hn := norm_add_le a c
+    nlinarith [norm_nonneg a, norm_nonneg b, norm_nonneg c, norm_nonneg (a + c),
+      sq_nonneg (‖a‖ / 4 - ‖b‖), mul_self_le_mul_self (norm_nonneg (a + c)) hn]
+  -- summation
+  have hpar : ∀ v : Euclid P, ‖v‖ ^ 2 = ∑ j : Fin P, (inner ℝ v (EuclideanSpace.single j (1 : ℝ))) ^ 2 := by
+    intro v
+    rw [EuclideanSpace.norm_sq_eq]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [EuclideanSpace.inner_single_right]; simp
+  calc ∑ i : Fin n, ‖(A₁ - A₂) (EuclideanSpace.single i (1 : ℝ))‖ ^ 2
+      ≤ ∑ i : Fin n, 17 / 16 * ‖X (q (EuclideanSpace.single i (1 : ℝ)))‖ ^ 2 :=
+        Finset.sum_le_sum fun i _ => hpt _
+    _ = 17 / 16 * ∑ j : Fin P, ∑ i : Fin n,
+          (inner ℝ (q (EuclideanSpace.single i (1 : ℝ))) (X (EuclideanSpace.single j (1 : ℝ)))) ^ 2 := by
+        rw [← Finset.mul_sum, Finset.sum_comm]
+        congr 1
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [hpar]
+        refine Finset.sum_congr rfl fun j _ => ?_
+        rw [hXsa]
+    _ ≤ 17 / 16 * ∑ j : Fin P, 17 / 16 * ‖X (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+        gcongr with j
+        exact hframe _
+    _ ≤ 4 * ∑ j : Fin P, ‖T₁.starProjection (EuclideanSpace.single j (1 : ℝ)) -
+          T₂.starProjection (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+        rw [← Finset.mul_sum, ← mul_assoc]
+        have hs : 0 ≤ ∑ j : Fin P, ‖X (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 :=
+          Finset.sum_nonneg fun j _ => sq_nonneg _
+        have : ∑ j : Fin P, ‖X (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 = ∑ j : Fin P,
+            ‖T₁.starProjection (EuclideanSpace.single j (1 : ℝ)) -
+              T₂.starProjection (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+          simp [hX]
+        rw [← this]
+        nlinarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
