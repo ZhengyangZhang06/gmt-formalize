@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cdcb1a32620581d3db28c1633873056ffbbafa319d5b2e441a43f9591e460b15",
+  "git_delta": {
+    "base_commit": "3244993746be90b2270588145f67288bb837e9a2",
+    "candidate_commit": "5c4bf4ca7a1ba2912d81d606a95d5b378e79fb0e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "constancy_testFormOn_eq_finset_sum_subordinate",
+    "diff_sha256": "a2f127a7b6066da51d6da7e19707e24d5fe056c6318c4f3554febb7c019d5e7d",
+    "source_sha256": "11cbb4b86b2ae02d3ab0d2528d9db86c8f724c551c011a150f6325f644bda11f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.constancy_testFormOn_eq_finset_sum_subordinate",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (ι : Type) (V : ι → Set (Eucl P)), (∀ i, IsOpen (V i)) → ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ ⋃ i, V i → ∃ (s : Finset ι) (η : ι → TestFormOn U n), (∀ i ∈ s, tsupport (η i : DifferentialForm (Eucl P) n) ⊆ V i) ∧ ω = ∑ i ∈ s, η i",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

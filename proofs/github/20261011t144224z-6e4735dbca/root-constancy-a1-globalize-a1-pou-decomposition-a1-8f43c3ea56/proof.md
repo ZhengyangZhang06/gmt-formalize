@@ -1,0 +1,183 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.constancy-a1.globalize-a1`
+- Child DAG node: `root.constancy-a1.globalize-a1.pou_decomposition-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Steps 6–7 of the supplied proof of `constancy_of_local_constancy`. That proof expands the final clause of Simon, Introduction to Geometric Measure Theory, Ch. 6, Theorem 2.34, printed proof p. 143: "... on each ball B_ρ(x₀) with B̄_σ(x₀) ⊆ U, and the result follows". Those steps take a smooth partition of unity on spt ω subordinate to finitely many balls and write ω = Σ_k χ_k ω. This lemma states that construction for an arbitrary open cover (V_i)_{i∈ι}, arbitrary P, n and an arbitrary set U. The printed text has no separate argument for this step, so the proof below is the parent's Step 6–7 argument with every detail filled in.
+
+Notation.
+- spt := topological support (Lean: tsupport).
+- Dⁿ(U) (Lean: TestFormOn U n) is the submodule of forms ω : ℝ^P → Covector ℝ^P n that satisfy all of the following:
+  - ω is C^∞ (Lean: ContDiff ℝ ∞ with ∞ = ((⊤ : ℕ∞) : WithTop ℕ∞));
+  - ω has compact support;
+  - spt ω ⊆ U.
+- Equality in Dⁿ(U) is equality of the underlying forms (Subtype.ext). The underlying form of a finite sum is the pointwise sum (Submodule.coe_sum, Finset.sum_apply).
+
+Proof.
+
+1. (Finite subcover.) Let K := spt ω. Since ω has compact support, K is compact, and by hypothesis K ⊆ ⋃_{i∈ι} V_i with every V_i open. By compactness there is a finite set s ⊆ ι with K ⊆ ⋃_{i∈s} V_i (Lean: IsCompact.elim_finite_subcover, which gives a Finset s). Regard s also as a finite index type (the subtype of elements of s). Then K ⊆ ⋃_{i : s} V_i.
+
+2. (Smooth partition of unity.) K is closed. ℝ^P, viewed as a smooth manifold modelled on itself (model 𝓘(ℝ, ℝ^P)), is finite-dimensional, Hausdorff and σ-compact, and (V_i)_{i∈s} is a family of open sets covering K. Smooth partitions of unity subordinate to an open cover of a closed set exist (Lean: SmoothPartitionOfUnity.exists_isSubordinate 𝓘(ℝ, Eucl P) (isClosed_tsupport _) (fun i : s => V i) (fun i => hV i) hcov). So there are functions χ_i : ℝ^P → ℝ (i ∈ s) such that:
+ (a) spt χ_i ⊆ V_i for every i ∈ s (IsSubordinate);
+ (b) Σ_{i∈s} χ_i(x) = 1 for every x ∈ K (SmoothPartitionOfUnity.sum_eq_one; this is a finsum over a finite index type, equal to the Finset sum by finsum_eq_sum_of_fintype);
+ (c) each χ_i is C^∞ as an ordinary function ℝ^P → ℝ (each χ_i is a smooth map 𝓘(ℝ, ℝ^P) → 𝓘(ℝ); convert with contMDiff_iff_contDiff).
+
+3. (The pieces.) For i ∈ s let η_i be the form x ↦ χ_i(x)·ω(x); for i ∉ s let η_i := 0.
+ (a) For i ∈ s, η_i is C^∞ as the product of the C^∞ scalar function χ_i and the C^∞ form ω (ContDiff.smul).
+ (b) If η_i(x) ≠ 0 then ω(x) ≠ 0. Hence spt η_i ⊆ spt ω = K (tsupport_smul_subset_right). So spt η_i is a closed subset of the compact set K, hence compact (HasCompactSupport.mono'), and spt η_i ⊆ spt ω ⊆ U. Therefore η_i ∈ Dⁿ(U). For i ∉ s, η_i = 0 ∈ Dⁿ(U) trivially.
+ (c) For i ∈ s: if η_i(x) ≠ 0 then χ_i(x) ≠ 0, so spt η_i ⊆ spt χ_i ⊆ V_i by 2(a) (tsupport_smul_subset_left). This is the support condition of the claim.
+
+4. (The sum.) Since η_i = χ_i ω for i ∈ s, Σ_{i∈s} η_i = Σ_{i : s} χ_i ω, by re-indexing the Finset sum over the subtype of s (Finset.sum_attach). It suffices to compare underlying forms at each x ∈ ℝ^P:
+ Σ_{i∈s} χ_i(x)·ω(x) = (Σ_{i∈s} χ_i(x))·ω(x) (Finset.sum_smul).
+ - If x ∈ K, then Σ_{i∈s} χ_i(x) = 1 by 2(b), so the sum equals ω(x).
+ - If x ∉ K = spt ω, then ω(x) = 0 (image_eq_zero_of_notMem_tsupport), so the sum is 0 = ω(x).
+ Hence ω = Σ_{i∈s} η_i in Dⁿ(U). This also covers K = ∅: then ω = 0 and every x falls in the second case.
+
+Together with 3(c), the finite set s and the family (η_i)_{i∈ι} satisfy the claim. ∎
+
+Formalization appendix (non-normative). This proof was kernel-checked during the decomposition with Lean v4.35.0-rc3 and Mathlib 25730c7c. It was placed inside `namespace GMT.Ch06` (after the contract's closing `end` of the noncomputable section, before `main_theorem`) in a Submission variant with the extra import `Mathlib.Geometry.Manifold.PartitionOfUnity`. The generated NodeSolution target depends only on propext, Classical.choice and Quot.sound. Use `open scoped Manifold in` for the 𝓘 notation. Do not `open scoped ContDiff`: it makes `ω` a notation token and breaks the frozen binder `ω`.
+```lean
+open scoped Manifold in
+theorem Submission.constancy_testFormOn_eq_finset_sum_subordinate : ∀ (P n : ℕ) (U : Set (Eucl P)) (ι : Type) (V : ι → Set (Eucl P)), (∀ i, IsOpen (V i)) → ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ ⋃ i, V i → ∃ (s : Finset ι) (η : ι → TestFormOn U n), (∀ i ∈ s, tsupport (η i : DifferentialForm (Eucl P) n) ⊆ V i) ∧ ω = ∑ i ∈ s, η i := by
+  intro P n U ι V hV ω hsub
+  classical
+  set K := tsupport (ω : DifferentialForm (Eucl P) n) with hKdef
+  have hK : IsCompact K := ω.property.1.2
+  obtain ⟨s, hs⟩ := hK.elim_finite_subcover V hV hsub
+  have hcov : K ⊆ ⋃ i : s, V i := by
+    intro x hx
+    have := hs hx
+    simp only [mem_iUnion] at this ⊢
+    obtain ⟨i, hi, hxi⟩ := this
+    exact ⟨⟨i, hi⟩, hxi⟩
+  obtain ⟨f, hf⟩ := SmoothPartitionOfUnity.exists_isSubordinate 𝓘(ℝ, Eucl P)
+    (isClosed_tsupport _) (fun i : s => V i) (fun i => hV i) hcov
+  have hfsmooth : ∀ i : s, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (f i) := fun i =>
+    contMDiff_iff_contDiff.mp (f i).contMDiff
+  let piece : s → TestFormOn U n := fun i =>
+    ⟨fun x => f i x • (ω : DifferentialForm (Eucl P) n) x,
+      ⟨((hfsmooth i).smul ω.property.1.1),
+        ω.property.1.2.mono' ((subset_tsupport _).trans (tsupport_smul_subset_right _ _))⟩,
+      (tsupport_smul_subset_right _ _).trans ω.property.2⟩
+  have hpiece_coe : ∀ i : s, ((piece i : TestFormOn U n) : DifferentialForm (Eucl P) n) =
+      fun x => f i x • (ω : DifferentialForm (Eucl P) n) x := fun i => rfl
+  let η : ι → TestFormOn U n := fun i => if h : i ∈ s then piece ⟨i, h⟩ else 0
+  refine ⟨s, η, ?_, ?_⟩
+  · intro i hi
+    simp only [η, hi, ↓reduceDIte, hpiece_coe]
+    exact (tsupport_smul_subset_left _ _).trans (hf ⟨i, hi⟩)
+  · have hsum : ∑ i ∈ s, η i = ∑ i : s, piece i := by
+      rw [← Finset.sum_attach s]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      simp only [η, i.2, ↓reduceDIte]
+    rw [hsum]
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_sum, Finset.sum_apply]
+    simp only [hpiece_coe]
+    rw [← Finset.sum_smul]
+    by_cases hx : x ∈ K
+    · have h1 : ∑ i : s, f i x = 1 := by
+        rw [← finsum_eq_sum_of_fintype]
+        exact f.sum_eq_one hx
+      rw [h1, one_smul]
+    · have h0 : (ω : DifferentialForm (Eucl P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
+      rw [h0, smul_zero]
+```
+
+## Key steps
+
+1. K := spt ω is compact; extract a finite s ⊆ ι with K ⊆ ⋃_{i∈s} V_i.
+2. Take a smooth partition of unity (χ_i)_{i∈s} on the closed set K subordinate to (V_i)_{i∈s}: each χ_i is C^∞ (contMDiff_iff_contDiff), spt χ_i ⊆ V_i, and Σ_{i∈s} χ_i = 1 on K.
+3. Set η_i := χ_i ω for i ∈ s and η_i := 0 otherwise: each η_i is C^∞, spt η_i ⊆ spt ω (compact, ⊆ U), so η_i ∈ Dⁿ(U), and spt η_i ⊆ spt χ_i ⊆ V_i.
+4. Σ_{i∈s} η_i(x) = (Σ_{i∈s} χ_i(x)) ω(x), which equals ω(x) for x ∈ K and 0 = ω(x) for x ∉ K; hence ω = Σ_{i∈s} η_i.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp project/GMT/Ch06/Contract.lean against the workspace GMT/Ch06/Contract.lean and against project/GMT/Ch06/Submission.lean (all byte-identical)`
+- `git diff --name-only d8d46c95 d74ec47 (node base commit): only .humanize-workspace metadata, no Lean/Lake changes`
+- `sed -n 1,160p Chapter06/Currents.lean (testFormOnSubmodule, TestFormOn, TestFormOnConverges, GeometricCurrentOn) and Chapter06/Forms.lean (Covector, DifferentialForm, IsSmoothForm = ContDiff ℝ ∞, IsTestForm)`
+- `cat Chapter06/CurrentLocalEquality.lean (testFormOnInclusion, restrictDomain, VanishesOn, support; no partition-of-unity decomposition)`
+- `grep -rn -i 'partition|PartitionOfUnity|exists_isSubordinate|IsLocallyConstant|exists_eq_const' simongmt/Poincare/SimonGMT`
+- `grep -rn 'SmoothPartitionOfUnity|ContDiffBump|exists_contDiff_tsupport_subset' simongmt/Poincare/SimonGMT`
+- `grep -n '^def|^theorem' Chapter06/FormsDuality.lean Chapter06/WedgeForms.lean; sed -n 110,160p Chapter06/FormsDuality.lean (wedgeCovectors, wedgeCovectors_apply_det)`
+- `grep -n 'theorem exists_isSubordinate {s : Set M}|def IsSubordinate|theorem sum_eq_one' mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `grep -n 'theorem integral_normed|theorem tsupport_normed_eq|theorem contDiff_normed|theorem hasCompactSupport_normed' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `grep -n 'theorem contMDiff_iff_contDiff' mathlib/Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean; grep -n 'theorem IsCompact.elim_finite_subcover' mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `grep -n 'theorem tsupport_smul_subset_left|theorem tsupport_smul_subset_right' mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `grep -n 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean; grep -n 'theorem integral_finsetSum' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean; grep -rn 'theorem exists_eq_const' mathlib/Mathlib/Topology/LocallyConstant/Basic.lean`
+- `python3 -I: list lean_name values in dag.json (195 nodes, all distinct; neither proposed name present); grep proposed names in dag.json, DAG.md, issue-workers.json (0 matches); grep dag.json nodes for partition/bump/det statements (none reusable with identical type)`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement and verifier/gmt-compare.py child_modules (contract scope) for both children and the parent, generating NodeChallenge/NodeSolution files in /tmp/globalize_decomp_check`
+- `lean NodeChallenge_{unit_form,pou_split,parent}.lean against GMT.Ch06.Submission compiled from the frozen contract (only the expected sorry warning)`
+- `lean Scratch/UnitForm.lean, Scratch/PoU.lean (#print axioms: propext, Classical.choice, Quot.sound); lean Scratch/Assembly.lean (parent from sorry stubs, sorryAx only from stubs; frozen-type restatement closes by exact)`
+- `lean /tmp/globalize_decomp_check2/GMT/Ch06/Submission.lean (variant with full child proofs and parent assembly) then lean NodeSolution_{unit_form,pou_split,parent}.lean: #print axioms HumanizeNodeComparator.target = [propext, Classical.choice, Quot.sound]`
+- `grep -n 'Constancy' book/chapter-06.txt; sed -n 565,640p (printed proof of 2.34, p. 142-143)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/LocallyConstant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/WedgeForms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyManifoldGluing.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1/decomposition-v1.json`
+- `/tmp/globalize_decomp_check/Scratch/UnitForm.lean`
+- `/tmp/globalize_decomp_check/Scratch/PoU.lean`
+- `/tmp/globalize_decomp_check/Scratch/Assembly.lean`
+- `/tmp/globalize_decomp_check2/GMT/Ch06/Submission.lean`
+
+Snapshot context:
+- Project d8d46c95, Mathlib 25730c7c.
+- The frozen Contract and Submission are byte-identical.
+- The node base commit d74ec47 changes no Lean files.
+
+Definitions (SimonGMT, Chapter06/Currents.lean and Forms.lean):
+- `TestFormOn U n` = smooth (ContDiff ℝ ∞, ∞ = (⊤ : ℕ∞)), compactly supported forms with tsupport ⊆ U.
+- `GeometricCurrentOn` wraps a linear map `toCurrent`, so `map_sum T.toCurrent` gives finite additivity.
+
+No partition-of-unity decomposition of test forms exists in SimonGMT:
+- No match for SmoothPartitionOfUnity or exists_isSubordinate.
+- CurrentLocalEquality only has restriction and support notions.
+- Chapter01/RadonTopology uses continuous, not smooth, partitions.
+- No DAG node provides a reusable test-form decomposition or unit-integral top form with an identical frozen type.
+- Child (B) is therefore a genuine new reusable lemma.
+
+API used by the children, all found in the pinned Mathlib/SimonGMT:
+- Child (A): ContDiffBump.normed with contDiff_normed, tsupport_normed_eq, hasCompactSupport_normed and integral_normed; SimonGMT wedgeCovectors plus wedgeCovectors_apply_det for the covector dx with dx(e) = 1.
+- Child (B): SmoothPartitionOfUnity.exists_isSubordinate, contMDiff_iff_contDiff, IsCompact.elim_finite_subcover, tsupport_smul_subset_left/right.
+- Parent: IsLocallyConstant.iff_eventually_eq and exists_eq_const (pattern as in SimonGMT Chapter08/DistributionalConstancy.lean), integral_finsetSum, setIntegral_eq_integral_of_forall_compl_eq_zero.
+
+Checks:
+- Both child statements and the parent statement pass validate_lean_statement.
+- All three elaborate in the exact comparator contract scope.
+- Full Lean proofs of both children compile, as does the parent assembly from them.
+- All three generated NodeSolution targets depend only on propext, Classical.choice and Quot.sound.
+- The two proposed names are unique among the 195 DAG nodes.
+
+Printed source: the proof of 2.34 ends with '...on each ball B_ρ(x₀) with B̄_σ(x₀) ⊆ U, and the result follows'. There is no printed argument for the globalization, so the child proofs are extracted from the supplied expansion (Steps 2–3 and 6–7).
