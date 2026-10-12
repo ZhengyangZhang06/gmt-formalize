@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e3180c61969a6468c029c64f2111261a0c563a9b7fc46dd21732e9c54ba34e54",
+  "git_delta": {
+    "base_commit": "a1735f78bffbfaf8e5878bfde3bf6323b005e3ef",
+    "candidate_commit": "4e5d18cb88b82a04faa67d6fff4c3ced2856566b",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "polyhedral_approx_finite_smooth_ext",
+    "diff_sha256": "a6aec06136e72ff2d6e9b53bf7fa47a021fe78e2f9cdd13eb9227c22ba2577ce",
+    "source_sha256": "2e8522b6edfdfcf80027fcfeebfad9276e068dc369858700bce0088c9cf01aa7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_finite_smooth_ext",
+      "statement": "∀ (P : ℕ) (ν₁ ν₂ : Measure (Eucl P)), IsFiniteMeasure ν₁ → IsFiniteMeasure ν₂ → ∀ O : Set (Eucl P), IsOpen O → (∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ O → ∫ x, ψ x ∂ν₁ = ∫ x, ψ x ∂ν₂) → ∀ b : Eucl P → ℝ, (∀ x, x ∉ O → b x = 0) → ∫ x, b x ∂ν₁ = ∫ x, b x ∂ν₂",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
