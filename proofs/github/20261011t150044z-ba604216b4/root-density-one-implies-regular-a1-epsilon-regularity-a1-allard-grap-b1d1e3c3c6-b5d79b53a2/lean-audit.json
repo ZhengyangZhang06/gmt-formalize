@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5f3a7def1486c138024ebefb541b54e131e7b1faff4394436df219cc36d7874a",
+  "git_delta": {
+    "base_commit": "ee28c5263fbe205d3e527f885593b4805b3ae7e0",
+    "candidate_commit": "17fda861e26f4e24367507f83cd0b1994f74690b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_tes_gah_mult_one_le_hausdorff",
+    "diff_sha256": "6f3a6b7d976a008448202a0f7b4e1932fad76659750cdd4a543a022640ff57be",
+    "source_sha256": "fd0b85f2f4f35c55f89d5ecd9ad5d8d3b7d78c336a3e4674d32fe1494ab5236a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_tes_gah_mult_one_le_hausdorff",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (B : Set (Euclid P)), MeasurableSet B → (∀ᵐ x ∂R.measure, x ∈ B → R.mult x = 1) → R.measure.restrict B ≤ (μHE[n] : Measure (Euclid P)).restrict B ∧ ∀ (A : Set (Euclid P)) (h : Euclid P → ℝ≥0∞), A ⊆ B → (∫⁻ x in A, h x ∂R.measure) ≤ ∫⁻ x in A, h x ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
