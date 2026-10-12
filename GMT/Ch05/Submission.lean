@@ -458,6 +458,67 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Lebesgue points of a bounded Borel operator field for the squared Hilbert–Schmidt
+oscillation (used in the proof of Simon Ch. 5, Theorem 5.2, p. 123; Lebesgue's differentiation
+theorem, Ch. 1, Theorem 3.23).  If `G : ℝⁿ → L(ℝᵐ, ℝᵏ)` is Borel with `‖G‖ ≤ B`, then for
+`Lⁿ`-a.e. `z`,
+`Lⁿ(B_t(z))⁻¹ ∫_{B_t(z)} |G(x) − G(z)|² dx → 0` as `t → 0⁺`.  Since `|A|² ≤ m ‖A‖²` and
+`‖G(x) − G(z)‖ ≤ 2B`, the integrand is at most `2mB ‖G(x) − G(z)‖`, whose ball averages tend
+to `0` at a.e. `z` by the differentiation theorem for the locally integrable `G` along the
+Vitali family of the doubling measure `Lⁿ`. -/
+theorem allard52_cae_hsNormSq_lebesgue_ae : ∀ (n m k : ℕ) (G : Rn n → (Rn m →L[ℝ] Rn k)) (B : ℝ), Measurable G → (∀ x, ‖G x‖ ≤ B) → ∀ᵐ z ∂(volume : Measure (Rn n)), Tendsto (fun t : ℝ => (volume (closedBall z t))⁻¹ * ∫⁻ x in closedBall z t, ENNReal.ofReal (hsNormSq (G x - G z))) (𝓝[>] 0) (𝓝 0) := by
+  intro n m k G B hG hB
+  -- A bounded Borel map into the finite-dimensional space `L(ℝᵐ, ℝᵏ)` is locally integrable.
+  have hloc : LocallyIntegrable G (volume : Measure (Rn n)) :=
+    locallyIntegrable_iff.2 fun K hK =>
+      Measure.integrableOn_of_bounded hK.measure_lt_top.ne hG.aestronglyMeasurable
+        (ae_of_all _ hB)
+  -- Pointwise comparison: `|G(x) − G(z)|² ≤ m ‖G(x) − G(z)‖² ≤ 2mB ‖G(x) − G(z)‖`.
+  have hpt : ∀ x z, ENNReal.ofReal (hsNormSq (G x - G z)) ≤
+      ENNReal.ofReal (2 * m * B) * ‖G x - G z‖ₑ := by
+    intro x z
+    have hT : ‖G x - G z‖ ≤ 2 * B := by
+      linarith [norm_sub_le (G x) (G z), hB x, hB z]
+    have hsum : hsNormSq (G x - G z) ≤ m * ‖G x - G z‖ ^ 2 := by
+      unfold hsNormSq
+      calc ∑ i : Fin m, ‖(G x - G z) (EuclideanSpace.single i 1)‖ ^ 2
+          ≤ ∑ _i : Fin m, ‖G x - G z‖ ^ 2 := by
+            gcongr with i
+            calc ‖(G x - G z) (EuclideanSpace.single i 1)‖
+                ≤ ‖G x - G z‖ * ‖EuclideanSpace.single i (1 : ℝ)‖ := (G x - G z).le_opNorm _
+              _ = ‖G x - G z‖ := by simp
+        _ = m * ‖G x - G z‖ ^ 2 := by simp
+    rw [← ofReal_norm, ← ENNReal.ofReal_mul' (norm_nonneg (G x - G z))]
+    apply ENNReal.ofReal_le_ofReal
+    have hm : (0 : ℝ) ≤ m * ‖G x - G z‖ := mul_nonneg (Nat.cast_nonneg m) (norm_nonneg _)
+    nlinarith [mul_le_mul_of_nonneg_left hT hm]
+  -- Lebesgue differentiation along the closed balls `B_t(z)`, `t → 0⁺`.
+  filter_upwards [(IsUnifLocDoublingMeasure.vitaliFamily (volume : Measure (Rn n)) 1).ae_tendsto_lintegral_enorm_sub_div hloc] with z hz
+  have hballs : Tendsto (fun t : ℝ => closedBall z t) (𝓝[>] 0)
+      ((IsUnifLocDoublingMeasure.vitaliFamily (volume : Measure (Rn n)) 1).filterAt z) :=
+    IsUnifLocDoublingMeasure.tendsto_closedBall_filterAt (volume : Measure (Rn n))
+      (fun _ => z) id tendsto_id (by
+        filter_upwards [self_mem_nhdsWithin] with t ht
+        exact mem_closedBall_self (by simpa using (Set.mem_Ioi.1 ht).le))
+  have hlim := ENNReal.Tendsto.const_mul (a := ENNReal.ofReal (2 * m * B)) (hz.comp hballs)
+    (Or.inr ENNReal.ofReal_ne_top)
+  rw [mul_zero] at hlim
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
+    fun t => ?_
+  -- Average the pointwise comparison over `B_t(z)`.
+  calc (volume (closedBall z t))⁻¹ * ∫⁻ x in closedBall z t, ENNReal.ofReal (hsNormSq (G x - G z))
+      ≤ (volume (closedBall z t))⁻¹ *
+          ∫⁻ x in closedBall z t, ENNReal.ofReal (2 * m * B) * ‖G x - G z‖ₑ := by
+        gcongr with x
+        exact hpt x z
+    _ = ENNReal.ofReal (2 * m * B) *
+          ((∫⁻ x in closedBall z t, ‖G x - G z‖ₑ) / volume (closedBall z t)) := by
+        rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, ENNReal.div_eq_inv_mul, mul_left_comm]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05

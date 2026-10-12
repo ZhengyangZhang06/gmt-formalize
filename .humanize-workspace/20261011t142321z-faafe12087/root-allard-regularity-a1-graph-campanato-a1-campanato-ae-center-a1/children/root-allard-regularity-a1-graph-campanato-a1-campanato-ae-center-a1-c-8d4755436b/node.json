@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.campanato_ae_center-a1.center_eq_at_lebesgue_point-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1.campanato_ae_center-a1",
+  "depth": 4,
+  "title": "At a quadratic Lebesgue point, Campanato decay identifies the centre",
+  "statement": "Let n, m, k >= 0 be natural numbers and let G : R^n -> L(R^m, R^k) be Borel measurable (continuous linear maps with the operator norm). Let z be in R^n, T in L(R^m, R^k), and A, R, alpha, s0 real with R > 0, alpha > 0, s0 > 0. Write hsNormSq(S) = sum_{i<m} ||S e_i||^2, B_t(z) for closed balls and L^n for Lebesgue measure (volume) on R^n. Assume:\n(i) L^n(B_t(z))^(-1) * (lintegral over B_t(z) of ofReal(hsNormSq(G(x) - G(z))) dx) tends to 0 in [0, infinity] as t -> 0+;\n(ii) for every 0 < s <= s0, the lintegral over B_{s/2}(z) of ofReal(hsNormSq(G(x) - T)) dx is <= ofReal(A s^n (s/R)^(2 alpha)).\nThen G(z) = T.",
+  "lean_statement": "∀ (n m k : ℕ) (G : Rn n → (Rn m →L[ℝ] Rn k)) (z : Rn n) (T : Rn m →L[ℝ] Rn k) (A R α s₀ : ℝ), 0 < R → 0 < α → 0 < s₀ → Measurable G → Tendsto (fun t : ℝ => (volume (closedBall z t))⁻¹ * ∫⁻ x in closedBall z t, ENNReal.ofReal (hsNormSq (G x - G z))) (𝓝[>] 0) (𝓝 0) → (∀ s : ℝ, 0 < s → s ≤ s₀ → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - T)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → G z = T",
+  "lean_name": "allard52_cae_center_eq_at_lebesgue_point",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-campanato-ae-center-a1-c-8d4755436b-a1"
+}
