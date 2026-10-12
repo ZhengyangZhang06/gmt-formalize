@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0f22dec8bfc2e2acba049028830de6fa32cdbc875952bd95a0bb2e62a51130fe",
+  "git_delta": {
+    "base_commit": "38342f8c5431a905a10d1e25cf32b90621ec4eb6",
+    "candidate_commit": "a31774a4af2a2964400bca44639e27c2281d1221",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rectifiability_bf_infinite_fibre_null",
+    "diff_sha256": "0c5975f92ceca981b5532d703ee867fdf5bd580e8d40b6fac00925073114518c",
+    "source_sha256": "96fb0c70db5af05180257a400d00c93aa7a3cb8930713e8f746ff0d5ff3f07e4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rectifiability_bf_infinite_fibre_null",
+      "statement": "∀ (N m : ℕ) (E : Set (Eucl N)) (f : Eucl N → Eucl (m + 1)) (K : ℝ≥0), MeasurableSet E → (μHE[m + 1] : Measure (Eucl N)) E < ∞ → LipschitzWith K f → (volume : Measure (Eucl (m + 1))) {y : Eucl (m + 1) | (E ∩ f ⁻¹' {y}).Infinite} = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
