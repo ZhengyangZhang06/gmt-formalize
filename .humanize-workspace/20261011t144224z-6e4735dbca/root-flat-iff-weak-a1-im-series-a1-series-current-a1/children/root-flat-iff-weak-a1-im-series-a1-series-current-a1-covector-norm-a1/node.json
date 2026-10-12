@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1.covector_norm-a1",
+  "parent_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1",
+  "depth": 4,
+  "title": "Euclidean coefficient norm of a covector is at most √(P^n) times its operator norm",
+  "statement": "For all P, n ∈ ℕ and every n-covector α ∈ Covector (Eucl P) n = Eucl P [⋀^Fin n]→L[ℝ] ℝ, with ‖α‖ its operator norm as a continuous alternating map: covectorEuclideanNorm α ≤ √(P^n)·‖α‖. Here covectorEuclideanNorm α = √(Σ_{I : Fin n → Fin P} t_I), where t_I = α(b_{I(0)}, …, b_{I(n−1)})² if I is strictly increasing and t_I = 0 otherwise, and b_i = EuclideanSpace.basisFun (Fin P) ℝ i is the standard basis of ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (α : Covector (Eucl P) n), covectorEuclideanNorm α ≤ Real.sqrt ((P : ℝ) ^ n) * ‖α‖",
+  "lean_name": "fiw_ims_sc_covectorNorm_le_opNorm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-series-current-a1-covector-norm-a1-a1"
+}

@@ -1,0 +1,119 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.flat_iff_weak-a1.im_series-a1.series_current-a1`
+- Child DAG node: `root.flat_iff_weak-a1.im_series-a1.series_current-a1.series_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Notation: for r ∈ ℕ write |c_r| := ((c_r).natAbs : [0, ∞]) and x_r := (c_r : ℝ)·a_r. Let Σ := Σ'_r |c_r|·m_r ∈ [0, ∞]; Σ < ∞ by hypothesis. No sign condition on C is needed: if C ≤ 0 then ofReal C = 0, and the argument below covers that case unchanged.
+
+1. For every r, ENNReal.ofReal|(c_r : ℝ)| = |c_r|.
+   - |(c_r : ℝ)| is the real cast of the integer |c_r| (Int.cast_abs), which is the cast of the natural number (c_r).natAbs (Int.natCast_natAbs, Int.cast_natCast).
+   - ENNReal.ofReal of the real cast of a natural number k equals (k : [0, ∞]) (ENNReal.ofReal_natCast).
+2. Termwise bound. For every r:
+   - ofReal|x_r| = ofReal(|(c_r : ℝ)|·|a_r|) (abs_mul);
+   - = ofReal|(c_r : ℝ)|·ofReal|a_r| (ENNReal.ofReal_mul, since |(c_r : ℝ)| ≥ 0);
+   - = |c_r|·ofReal|a_r| (step 1);
+   - ≤ |c_r|·(m_r·ofReal C), multiplying the hypothesis ofReal|a_r| ≤ m_r·ofReal C on the left by |c_r|. Multiplication in [0, ∞] is monotone, so this holds also when c_r = 0 or m_r = ∞ (gcongr);
+   - = ofReal C·(|c_r|·m_r) (commutativity and associativity; ring).
+3. Sum step 2 over r (ENNReal.tsum_le_tsum) and pull out the constant (ENNReal.tsum_mul_left): Σ'_r ofReal|x_r| ≤ Σ'_r ofReal C·(|c_r|·m_r) = ofReal C·Σ.
+4. ofReal C < ∞ (ENNReal.ofReal_lt_top) and Σ < ∞, so ofReal C·Σ < ∞ (ENNReal.mul_lt_top). With step 3, Σ'_r ofReal|x_r| ≠ ∞.
+5. Summability.
+   - By ENNReal.summable_toReal and step 4, r ↦ (ofReal|x_r|).toReal is summable in ℝ.
+   - Since |x_r| ≥ 0, (ofReal|x_r|).toReal = |x_r| (ENNReal.toReal_ofReal). So r ↦ |x_r| is summable.
+   - Therefore r ↦ x_r = (c_r : ℝ)·a_r is summable (Summable.of_abs). This is the first conclusion.
+6. On ℝ, ‖·‖ = |·| (Real.norm_eq_abs). By norm_tsum_le_tsum_norm, using the summability of r ↦ |x_r| from step 5, |Σ'_r x_r| ≤ Σ'_r |x_r|. Hence ofReal|Σ'_r x_r| ≤ ofReal(Σ'_r |x_r|) (ENNReal.ofReal_le_ofReal).
+7. Every |x_r| ≥ 0 and r ↦ |x_r| is summable (step 5), so ofReal(Σ'_r |x_r|) = Σ'_r ofReal|x_r| (ENNReal.ofReal_tsum_of_nonneg).
+8. Chaining steps 6, 7 and 3: ofReal|Σ'_r (c_r : ℝ)·a_r| ≤ Σ'_r ofReal|x_r| ≤ ofReal C·Σ'_r |c_r|·m_r. This is the second conclusion. ∎
+
+## Key steps
+
+1. ofReal|(c_r : ℝ)| = ((c_r).natAbs : [0,∞]) (Int.cast_abs, Int.natCast_natAbs, ENNReal.ofReal_natCast)
+2. termwise: ofReal|c_r a_r| ≤ ofReal C·(|c_r|·m_r) (ENNReal.ofReal_mul, gcongr)
+3. sum: Σ' ofReal|c_r a_r| ≤ ofReal C·Σ'|c_r| m_r < ∞ (ENNReal.tsum_le_tsum, ENNReal.tsum_mul_left)
+4. ENNReal.summable_toReal and Summable.of_abs give summability of c_r a_r
+5. |Σ' c_r a_r| ≤ Σ'|c_r a_r| (norm_tsum_le_tsum_norm) and ENNReal.ofReal_tsum_of_nonneg give the [0,∞] bound
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `diff project/GMT/Ch06/Contract.lean project/GMT/Ch06/Submission.lean (IDENTICAL)`
+- `grep -n 'def covectorEuclideanNorm|def massAdmissibleOn|massOn|le_massOn|structure GeometricCurrentOn|def TestFormOnConverges|abbrev TestFormOn|def testFormOnSubmodule|abbrev Covector|abbrev DifferentialForm|def IsSmoothForm|def IsTestForm|instance.*CoeFun' SimonGMT/Chapter06/*.lean`
+- `grep -n '^(public )?import' SimonGMT/Chapter06/*.lean; grep -n '^theorem|^lemma|^def|^abbrev|^structure|^instance' FormSupNorm.lean CurrentLocalEquality.lean FixedSupportCurrentTopology.lean`
+- `python3 scan of dag.json (207 nodes) lean_name/lean_statement and nodes/*/decomposition-v*.json (193 files) for fiw_ims_sc_* and for statements mentioning covectorEuclideanNorm with a norm, or TestFormOnConverges`
+- `rg Mathlib snapshot: exists_open_between_and_isCompact_closure, HasCompactMulSupport.exists_bound_of_continuous, ContinuousAlternatingMap.le_opNorm, EuclideanSpace.basisFun_apply, norm_iteratedFDeriv_zero, iteratedFDeriv_fun_zero, Metric.tendstoUniformlyOn_iff, image_eq_zero_of_notMem_tsupport, ENNReal.summable_toReal, ENNReal.tsum_mul_left, ENNReal.ofReal_tsum_of_nonneg, norm_tsum_le_tsum_norm, Summable.of_abs, Int.natCast_natAbs, Int.cast_abs`
+- `git archive d8d46c9 | tar -x -C /tmp/sc_v2.rJJTMk; ln -s lake-packages-25730c7c .lake/packages; lake build GMT.Ch06.Submission (Build completed successfully, 3152 jobs)`
+- `python3 gmt-compare.contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') and lean_contract.validate_lean_statement on the 5 child types`
+- `lake env lean Scratch/ChildTypes.lean (5 child types + parent + mass_bound elaborate in comparator scope)`
+- `lake env lean Scratch/Proofs.lean (#print axioms: 5 children and assembly = [propext, Classical.choice, Quot.sound])`
+- `lake env lean Scratch/Comparator.lean (exact Submission.X closes each frozen child type; exact frozen parent derived from children + fiw_ims_mass_bound stub; sorryAx only from the stub)`
+- `grep -n 'lean_name' /runtime/flows/gmt-claude-0135a42af877/_recursive_lean/runtime.py; sed -n 6480,6560p (_existing_lean_name_problem)`
+- `python3 read of issue-workers.json and dag.json entry for this node (attempt 2, children = []); read of decomposition-v1.json, decomposition-audit-v1.json`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FixedSupportCurrentTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/InfiniteSum.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/InfiniteSum/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/Group/Unbundled/Int.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/Ring/Cast.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-series-current-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-series-current-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-series-current-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-0135a42af877/_recursive_lean/runtime.py`
+- `/tmp/sc_v2.rJJTMk/Scratch/ChildTypes.lean`
+- `/tmp/sc_v2.rJJTMk/Scratch/Proofs.lean`
+- `/tmp/sc_v2.rJJTMk/Scratch/Comparator.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 contract; Contract.lean and Submission.lean are identical.
+
+The pinned SimonGMT Chapter06 provides only the definitions used here: covectorEuclideanNorm, massAdmissibleOn, massOn and le_massOn, TestFormOn/testFormOnSubmodule, TestFormOnConverges, and GeometricCurrentOn with its sequential-continuity field. It has none of the five needed facts:
+- no comparison of covectorEuclideanNorm with the operator norm;
+- no test-form boundedness lemma;
+- no null-sequence smallness lemma and no bound-implies-continuity criterion;
+- no integer-weighted series estimate.
+FormSupNorm.lean only defines testFormEuclideanSupNorm and is not imported by the contract. CurrentLocalEquality and FixedSupportCurrentTopology contain nothing applicable. The only related DAG lemma, isoperimetric_abs_covector_apply_le, is the converse inequality. So the five facts become the children.
+
+Mathlib supplies every tool cited in the child proofs:
+- exists_open_between_and_isCompact_closure;
+- the additive form of HasCompactMulSupport.exists_bound_of_continuous;
+- ContinuousAlternatingMap.le_opNorm and EuclideanSpace.basisFun_apply;
+- norm_iteratedFDeriv_zero and iteratedFDeriv_fun_zero;
+- Metric.tendstoUniformlyOn_iff and image_eq_zero_of_notMem_tsupport;
+- ENNReal.summable_toReal, ENNReal.tsum_mul_left and ENNReal.ofReal_tsum_of_nonneg;
+- norm_tsum_le_tsum_norm and Summable.of_abs;
+- Int.natCast_natAbs and Int.cast_abs.
+
+Gotcha: in the contract scope a bare ∞ elaborates as the ℝ≥0∞ infinity, so smoothness must be kept as IsSmoothForm.
+
+Fresh scratch build of the frozen commit:
+- all 5 child types elaborate in the comparator scope;
+- complete child proofs compile with axioms [propext, Classical.choice, Quot.sound];
+- exact Submission.X closes each frozen type;
+- the exact frozen parent follows from the children plus the fiw_ims_mass_bound contract, with sorryAx only from that stub.
+
+No fiw_ims_sc_* name is a DAG node (207 nodes scanned). The only proposal using these names is this node's own unregistered v1, and the flow's _existing_lean_name_problem checks DAG nodes only.
