@@ -359,6 +359,287 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Integrals over a lattice face as integrals over the parameter cube: for every `g`,
+`∫_{latticeFace ρ G} g dHᵈ = ∫_{[0,ρ]^d} g(∑_l ρ w_l e_l + ∑_j s_j e_{γ(j)}) ds`, `G = (w, γ)`.
+The map `L(t) = ∑_l ρ w_l e_l + ∑_j t_j e_{γ(j)}` is an isometry (`(e_{γ(j)})_j` is orthonormal)
+whose range contains the face, so `L_* Hᵈ = Hᵈ ⌞ range L` and the integral is pulled back along
+`L` and then along the volume-preserving `toLp : (Fin d → ℝ) → ℝᵈ`; the face pulls back to
+`[0,ρ]^d`. -/
+theorem Submission.br_latticeFace_setIntegral_eq_cube :
+    ∀ (P d : ℕ) (ρ : ℝ) (G : LatticeFaceIndex d P) (g : Eucl P → ℝ),
+      ∫ x in latticeFace ρ G, g x ∂(μHE[d] : Measure (Eucl P)) =
+        ∫ s in Set.Icc (0 : Fin d → ℝ) (fun _ => ρ),
+          g (∑ l, (ρ * (G.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) +
+            ∑ j, s j • EuclideanSpace.single (G.2 j) (1 : ℝ)) := by
+  intro P d ρ G g
+  -- The parametrization `L(t) = ∑_l ρ w_l e_l + ∑_j t_j e_{γ(j)}` of the face.
+  obtain ⟨L, hL⟩ : ∃ L : EuclideanSpace ℝ (Fin d) → Eucl P, ∀ t, L t =
+      ∑ l, (ρ * (G.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) +
+        ∑ j, t j • EuclideanSpace.single (G.2 j) (1 : ℝ) := ⟨_, fun _ => rfl⟩
+  -- Coordinates: `L(t)_{γ(j)} = ρ w_{γ(j)} + t_j` and `L(t)_l = ρ w_l` for `l ∉ range γ`.
+  have hcoord : ∀ (t : EuclideanSpace ℝ (Fin d)) (l : Fin P),
+      L t l = ρ * (G.1 l : ℝ) + ∑ j, if l = G.2 j then t j else 0 := by
+    intro t l
+    rw [hL]
+    simp [Pi.single_apply]
+  have hcoord₁ : ∀ (t : EuclideanSpace ℝ (Fin d)) (j : Fin d),
+      L t (G.2 j) = ρ * (G.1 (G.2 j) : ℝ) + t j := by
+    intro t j
+    rw [hcoord]
+    simp
+  have hcoord₂ : ∀ (t : EuclideanSpace ℝ (Fin d)) (l : Fin P), l ∉ Set.range G.2 →
+      L t l = ρ * (G.1 l : ℝ) := by
+    intro t l hl
+    rw [hcoord, add_eq_left]
+    exact Finset.sum_eq_zero fun j _ => ite_eq_right fun h => hl ⟨j, h.symm⟩
+  -- `L` is an isometry because `(e_{γ(j)})_j` is orthonormal.
+  have hv : Orthonormal ℝ (fun j => EuclideanSpace.single (G.2 j) (1 : ℝ)) :=
+    (EuclideanSpace.orthonormal_single (𝕜 := ℝ) (ι := Fin P)).comp _ G.2.injective
+  have hiso : Isometry L := by
+    refine Isometry.of_dist_eq fun t t' => ?_
+    have hdiff : L t - L t' = ∑ j, (t j - t' j) • EuclideanSpace.single (G.2 j) (1 : ℝ) := by
+      rw [hL, hL]
+      simp [sub_smul, Finset.sum_sub_distrib]
+    have h2 : ‖L t - L t'‖ ^ 2 = ‖t - t'‖ ^ 2 := by
+      rw [hdiff, ← real_inner_self_eq_norm_sq, hv.inner_sum, EuclideanSpace.norm_sq_eq]
+      simp [sq]
+    rw [dist_eq_norm, dist_eq_norm]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h2
+  -- The face lies in the range of `L`.
+  have hrange : latticeFace ρ G ⊆ Set.range L := by
+    intro x hx
+    refine ⟨WithLp.toLp 2 (fun j => x (G.2 j) - ρ * (G.1 (G.2 j) : ℝ)), PiLp.ext fun l => ?_⟩
+    by_cases hl : l ∈ Set.range G.2
+    · obtain ⟨j, rfl⟩ := hl
+      rw [hcoord₁]
+      simp
+    · rw [hcoord₂ _ _ hl]
+      exact ((hx l).2 hl).symm
+  -- The face pulls back to the cube `[0,ρ]^d` of parameters.
+  have hpre : (WithLp.toLp 2 : (Fin d → ℝ) → EuclideanSpace ℝ (Fin d)) ⁻¹'
+      (L ⁻¹' latticeFace ρ G) = Set.Icc 0 (fun _ => ρ) := by
+    ext s
+    simp only [Set.mem_preimage, Set.mem_Icc]
+    constructor
+    · intro h
+      refine ⟨fun j => ?_, fun j => ?_⟩
+      · have := ((h (G.2 j)).1 ⟨j, rfl⟩).1
+        rw [hcoord₁] at this
+        simp only [Pi.zero_apply]
+        linarith
+      · have := ((h (G.2 j)).1 ⟨j, rfl⟩).2
+        rw [hcoord₁] at this
+        linarith
+    · rintro ⟨h0, h1⟩ i
+      refine ⟨?_, hcoord₂ _ i⟩
+      rintro ⟨j, rfl⟩
+      rw [hcoord₁]
+      have h0j := h0 j
+      have h1j := h1 j
+      simp only [Pi.zero_apply] at h0j
+      constructor <;> nlinarith
+  -- `L_* Hᵈ = Hᵈ ⌞ range L`; change variables along `L`, then along `toLp`.
+  calc ∫ x in latticeFace ρ G, g x ∂(μHE[d] : Measure (Eucl P))
+      = ∫ x in latticeFace ρ G, g x
+          ∂((μHE[d] : Measure (EuclideanSpace ℝ (Fin d))).map L) := by
+        rw [hiso.map_euclideanHausdorffMeasure, Measure.restrict_restrict_of_subset hrange]
+    _ = ∫ t in L ⁻¹' latticeFace ρ G, g (L t)
+          ∂(μHE[d] : Measure (EuclideanSpace ℝ (Fin d))) :=
+        hiso.isClosedEmbedding.setIntegral_map _
+    _ = ∫ t in L ⁻¹' latticeFace ρ G, g (L t) := by
+        rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    _ = ∫ s in (WithLp.toLp 2 : (Fin d → ℝ) → EuclideanSpace ℝ (Fin d)) ⁻¹'
+          (L ⁻¹' latticeFace ρ G), g (L (WithLp.toLp 2 s)) :=
+        ((PiLp.volume_preserving_toLp (Fin d)).setIntegral_preimage_emb
+          (MeasurableEquiv.toLp 2 (Fin d → ℝ)).measurableEmbedding
+          (fun t => g (L t)) (L ⁻¹' latticeFace ρ G)).symm
+    _ = _ := by
+        rw [hpre]
+        simp only [hL]
+/-- Fubini and the fundamental theorem of calculus on the cube `[0,ρ]^{n+1}`: for `φ` of class
+`C¹` and `e_i = Pi.single i 1`,
+`∫_{[0,ρ]^{n+1}} Dφ(s)(e_i) ds = ∫_{[0,ρ]^n} (φ(insertNth_i(ρ, s')) - φ(insertNth_i(0, s'))) ds'`.
+The measure-preserving map `(t, s') ↦ insertNth_i(t, s')` pulls the cube back to
+`[0,ρ] × [0,ρ]^n`, Fubini puts the `t`-integral inside, and
+`d/dt φ(insertNth_i(t, s')) = Dφ(insertNth_i(t, s'))(e_i)`. -/
+theorem Submission.br_cube_integral_fderiv_eq_faces :
+    ∀ (n : ℕ) (ρ : ℝ), 0 ≤ ρ → ∀ (φ : (Fin (n + 1) → ℝ) → ℝ), ContDiff ℝ 1 φ →
+      ∀ (i : Fin (n + 1)),
+        ∫ s in Set.Icc (0 : Fin (n + 1) → ℝ) (fun _ => ρ), fderiv ℝ φ s (Pi.single i 1) =
+          ∫ s in Set.Icc (0 : Fin n → ℝ) (fun _ => ρ),
+            (φ (Fin.insertNth i ρ s) - φ (Fin.insertNth i 0 s)) := by
+  intro n ρ hρ φ hφ i
+  -- `g(s) = Dφ(s)(e_i)` is continuous.
+  have hg : Continuous fun s => fderiv ℝ φ s (Pi.single i 1) :=
+    (hφ.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  -- `(t, s') ↦ insertNth_i(t, s')` is measure preserving and pulls `[0,ρ]^{n+1}` back to
+  -- `[0,ρ] × [0,ρ]^n` (as in Mathlib's `torusIntegral_succAbove`).
+  set e : ℝ × (Fin n → ℝ) ≃ᵐ (Fin (n + 1) → ℝ) :=
+    (MeasurableEquiv.piFinSuccAbove (fun _ => ℝ) i).symm
+  have hem : MeasurePreserving e :=
+    (volume_preserving_piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) i).symm _
+  have heI : (e ⁻¹' Set.Icc 0 fun _ => ρ) =
+      Set.Icc 0 ρ ×ˢ Set.Icc (0 : Fin n → ℝ) fun _ => ρ :=
+    ((Fin.insertNthOrderIso (fun _ => ℝ) i).preimage_Icc _ _).trans (Set.Icc_prod_eq _ _)
+  have hint : Integrable (fun z => fderiv ℝ φ (e z) (Pi.single i 1))
+      ((volume.restrict (Set.Icc (0 : ℝ) ρ)).prod
+        (volume.restrict (Set.Icc (0 : Fin n → ℝ) fun _ => ρ))) := by
+    rw [Measure.prod_restrict, ← Measure.volume_eq_prod]
+    exact (hg.comp (continuous_fst.finInsertNth i continuous_snd)).continuousOn.integrableOn_compact
+      (isCompact_Icc.prod isCompact_Icc)
+  rw [← hem.map_eq, setIntegral_map_equiv, heI, Measure.volume_eq_prod, ← Measure.prod_restrict,
+    integral_prod_symm _ hint]
+  -- Fundamental theorem of calculus in the `i`-th coordinate, for each `s'`.
+  congr 1
+  funext y
+  have hcurve : ∀ t : ℝ,
+      HasDerivAt (fun t : ℝ => (Fin.insertNth i t y : Fin (n + 1) → ℝ)) (Pi.single i 1) t := by
+    intro t
+    refine hasDerivAt_pi.2 fun j => ?_
+    rcases Fin.eq_self_or_eq_succAbove i j with rfl | ⟨k, rfl⟩
+    · simp only [Fin.insertNth_apply_same, Pi.single_eq_same]
+      exact hasDerivAt_id' t
+    · simp only [Fin.insertNth_apply_succAbove, Pi.single_eq_of_ne (Fin.succAbove_ne _ k)]
+      exact hasDerivAt_const t (y k)
+  have hderiv : ∀ t : ℝ, HasDerivAt (fun t : ℝ => φ (Fin.insertNth i t y))
+      (fderiv ℝ φ (Fin.insertNth i t y) (Pi.single i 1)) t := fun t =>
+    ((hφ.differentiable one_ne_zero) _).hasFDerivAt.comp_hasDerivAt t (hcurve t)
+  have hcont : Continuous fun t : ℝ => fderiv ℝ φ (Fin.insertNth i t y) (Pi.single i 1) :=
+    hg.comp (continuous_iff_continuousAt.2 fun t => (hcurve t).continuousAt)
+  rw [integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le hρ]
+  exact intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hderiv t)
+    (hcont.intervalIntegrable 0 ρ)
+
+/-- Stokes' theorem on the parameter cube of the lattice face `ρ (z + F_α)`, `F = (z, α)`.  Put
+`p = ρ z`, `v_j = e_{α j}`, `A(s) = p + ∑_j s_j v_j` and `α_i = α ∘ succAbove_i`; then
+`∫_{[0,ρ]^{m+1}} dω(A(s))(v) ds` is the alternating sum over `i` of the integrals of `ω(·)(e_{α_i})`
+over the faces `s_i = ρ` and `s_i = 0`, i.e. of
+`∫_{[0,ρ]^m} ω(ρ (z + e_{α i}) + ∑_k s_k e_{α_i k})(e_{α_i})` minus
+`∫_{[0,ρ]^m} ω(p + ∑_k s_k e_{α_i k})(e_{α_i})`.
+By `exteriorDerivative_apply` and the chain rule, `dω(A(s))(v) = ∑_i (-1)^i Dφ_i(s)(e_i)` for
+`φ_i(s) = ω(A(s))(removeNth_i v)`; `br_cube_integral_fderiv_eq_faces` integrates each term, and
+`A(insertNth_i(t, s')) = p + t v_i + ∑_k s'_k e_{α_i k}` identifies the two faces. -/
+theorem Submission.br_cube_stokes_lattice :
+    ∀ (P m : ℕ) (ρ : ℝ), 0 < ρ → ∀ (F : LatticeFaceIndex (m + 1) P)
+      (ω : DifferentialForm (Eucl P) m), IsSmoothForm ω →
+      ∫ s in Set.Icc (0 : Fin (m + 1) → ℝ) (fun _ => ρ),
+        exteriorDerivative ω (∑ l, (ρ * (F.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) +
+          ∑ j, s j • EuclideanSpace.single (F.2 j) (1 : ℝ))
+          (fun j => EuclideanSpace.single (F.2 j) (1 : ℝ)) =
+      ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) *
+        ((∫ s in Set.Icc (0 : Fin m → ℝ) (fun _ => ρ),
+          ω (∑ l, (ρ * (((F.1 + Pi.single (F.2 i) 1 : Fin P → ℤ) l : ℤ) : ℝ)) •
+              EuclideanSpace.single l (1 : ℝ) +
+            ∑ j, s j • EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) j) (1 : ℝ))
+            (fun j => EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) j) (1 : ℝ))) -
+        ∫ s in Set.Icc (0 : Fin m → ℝ) (fun _ => ρ),
+          ω (∑ l, (ρ * (F.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) +
+            ∑ j, s j • EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) j) (1 : ℝ))
+            (fun j => EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) j)
+              (1 : ℝ))) := by
+  intro P m ρ hρ F ω hω
+  -- The base point `p = ρ z`, the frame `v j = e_{α j}` and `A s = p + ∑ j, s j • v j`.
+  set p : Eucl P := ∑ l, (ρ * (F.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) with hp
+  set v : Fin (m + 1) → Eucl P := fun j => EuclideanSpace.single (F.2 j) (1 : ℝ) with hv
+  have hωd : Differentiable ℝ ω := hω.differentiable (by simp)
+  -- `A` is affine with linear part `DA s = ∑ j, s j • v j`.
+  let DA : (Fin (m + 1) → ℝ) →L[ℝ] Eucl P := ∑ j, (ContinuousLinearMap.proj j).smulRight (v j)
+  have hDA : ∀ s, DA s = ∑ j, s j • v j := fun s => by simp [DA]
+  have hAeq : (fun s : Fin (m + 1) → ℝ => p + ∑ j, s j • v j) = fun s => p + DA s := by
+    funext s; rw [hDA]
+  have hA : ∀ s, HasFDerivAt (fun s : Fin (m + 1) → ℝ => p + ∑ j, s j • v j) DA s := fun s => by
+    rw [hAeq]
+    exact DA.hasFDerivAt.const_add p
+  -- `φ i s = ω (A s) (removeNth i v)` is `C¹`: evaluation at a fixed frame is continuous linear.
+  set φ : Fin (m + 1) → (Fin (m + 1) → ℝ) → ℝ :=
+    fun i s => ω (p + ∑ j, s j • v j) (Fin.removeNth i v)
+  have hφ : ∀ i, ContDiff ℝ 1 (φ i) := by
+    intro i
+    have h1 : ContDiff ℝ 1 (fun y => ω y (Fin.removeNth i v)) :=
+      (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ (Fin.removeNth i v)).contDiff.comp
+        (hω.of_le (by simp))
+    have h2 : ContDiff ℝ 1 (fun s : Fin (m + 1) → ℝ => p + ∑ j, s j • v j) := by
+      rw [hAeq]
+      exact contDiff_const.add DA.contDiff
+    exact h1.comp h2
+  -- Pointwise `dω(A s)(v) = ∑ i, (-1)^i Dφ_i(s)(e_i)`, by the chain rule and `DA e_i = v i`.
+  have hpt : ∀ s : Fin (m + 1) → ℝ, exteriorDerivative ω (p + ∑ j, s j • v j) v =
+      ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * fderiv ℝ (φ i) s (Pi.single i 1) := by
+    intro s
+    rw [exteriorDerivative_apply (hωd _) v]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    have hc : HasFDerivAt (fun y => ω y (Fin.removeNth i v))
+        (fderiv ℝ (fun y => ω y (Fin.removeNth i v)) (p + ∑ j, s j • v j))
+        (p + ∑ j, s j • v j) :=
+      ((hωd _).continuousAlternatingMap_apply_const _).hasFDerivAt
+    have hφi : φ i = (fun y => ω y (Fin.removeNth i v)) ∘ (fun s => p + ∑ j, s j • v j) := rfl
+    rw [hφi, (hc.comp s (hA s)).fderiv, ContinuousLinearMap.comp_apply, hDA]
+    have hsum : ∑ j, (Pi.single i (1 : ℝ) : Fin (m + 1) → ℝ) j • v j = v i := by
+      simp [Pi.single_apply]
+    rw [hsum, zsmul_eq_mul]
+    push_cast
+    ring
+  -- Integrate the finite sum of continuous functions over the cube term by term.
+  have hcont : ∀ i, Continuous fun s => fderiv ℝ (φ i) s (Pi.single i 1) :=
+    fun i => ((hφ i).continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hint : ∀ i : Fin (m + 1), IntegrableOn
+      (fun s => (-1 : ℝ) ^ (i : ℕ) * fderiv ℝ (φ i) s (Pi.single i 1))
+      (Set.Icc (0 : Fin (m + 1) → ℝ) (fun _ => ρ)) :=
+    fun i => (continuous_const.mul (hcont i)).continuousOn.integrableOn_compact isCompact_Icc
+  rw [setIntegral_congr_fun measurableSet_Icc (fun s _ => hpt s),
+    integral_finsetSum _ (fun i _ => hint i)]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  -- Fubini and the fundamental theorem of calculus in the `i`-th coordinate.
+  rw [integral_const_mul, Submission.br_cube_integral_fderiv_eq_faces m ρ hρ.le (φ i) (hφ i) i]
+  congr 1
+  have hcI : ∀ c : ℝ, IntegrableOn (fun s' : Fin m → ℝ => φ i (Fin.insertNth i c s'))
+      (Set.Icc 0 fun _ => ρ) := fun c =>
+    ((hφ i).continuous.comp (continuous_const.finInsertNth i continuous_id)).continuousOn
+      |>.integrableOn_compact isCompact_Icc
+  rw [integral_sub (hcI ρ) (hcI 0)]
+  -- Identify the faces `s_i = ρ` and `s_i = 0`.
+  have hA_ins : ∀ (c : ℝ) (s' : Fin m → ℝ),
+      p + ∑ j, Fin.insertNth (α := fun _ => ℝ) i c s' j • v j =
+        (p + c • v i) + ∑ k, s' k •
+          EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) k) (1 : ℝ) := by
+    intro c s'
+    rw [Fin.sum_univ_succAbove _ i, Fin.insertNth_apply_same, add_assoc]
+    simp only [Fin.insertNth_apply_succAbove]
+    rfl
+  have hrem : Fin.removeNth i v =
+      fun k => EuclideanSpace.single (((Fin.succAboveOrderEmb i).trans F.2) k) (1 : ℝ) := rfl
+  have htop : ∑ l, (ρ * (((F.1 + Pi.single (F.2 i) 1 : Fin P → ℤ) l : ℤ) : ℝ)) •
+      EuclideanSpace.single l (1 : ℝ) = p + ρ • v i := by
+    simp only [Pi.add_apply, Int.cast_add, mul_add, add_smul, Finset.sum_add_distrib, hp, hv]
+    congr 1
+    rw [Finset.sum_eq_single (F.2 i)]
+    · simp
+    · intro b _ hb; simp [hb]
+    · simp
+  congr 1
+  · refine setIntegral_congr_fun measurableSet_Icc fun s' _ => ?_
+    simp only [φ, hA_ins, htop, hrem]
+  · refine setIntegral_congr_fun measurableSet_Icc fun s' _ => ?_
+    simp only [φ, hA_ins, hrem, zero_smul, add_zero]
+
+/-- Stokes' theorem on a lattice face (Simon Ch. 6, §5 and the proof of 6.3): for
+`F = (z, α) ∈ 𝓛ₘ₊₁(ρ)` and a smooth `m`-form `ω`,
+`[[F]](dω) = ∑ᵢ (-1)ⁱ ([[(z + e_{α(i)}, α ∘ succAboveᵢ)]](ω) - [[(z, α ∘ succAboveᵢ)]](ω))`.
+Every face integral is the integral over its parameter cube `[0, ρ]ᵈ`, and on the cube this is
+Stokes' theorem (Fubini and the fundamental theorem of calculus). -/
+theorem Submission.br_lattice_face_stokes :
+    ∀ (P m : ℕ) (ρ : ℝ), 0 < ρ → ∀ (F : LatticeFaceIndex (m + 1) P)
+      (ω : DifferentialForm (Eucl P) m), IsSmoothForm ω →
+      latticeFaceAction ρ F (exteriorDerivative ω) =
+        ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) *
+          (latticeFaceAction ρ (F.1 + Pi.single (F.2 i) 1, (Fin.succAboveOrderEmb i).trans F.2) ω -
+            latticeFaceAction ρ (F.1, (Fin.succAboveOrderEmb i).trans F.2) ω) := by
+  intro P m ρ hρ F ω hω
+  -- Both sides become integrals over parameter cubes: `[0, ρ]ᵐ⁺¹` for `F` and `[0, ρ]ᵐ` for
+  -- the two faces opposite in direction `α(i)`.
+  simp only [latticeFaceAction, Submission.br_latticeFace_setIntegral_eq_cube]
+  exact Submission.br_cube_stokes_lattice P m ρ hρ F ω hω
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
