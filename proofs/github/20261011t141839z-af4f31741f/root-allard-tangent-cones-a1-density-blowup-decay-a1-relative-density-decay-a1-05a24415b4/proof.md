@@ -1,0 +1,90 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.allard_tangent_cones-a1.density_blowup_decay-a1`
+- Child DAG node: `root.allard_tangent_cones-a1.density_blowup_decay-a1.relative_density_decay-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 8–9 of the parent proof, with three changes. The density value θ = Θ^n(μ_V, x) = ofReal θ0 is generalized to any finite θ. The sets A = {Θ̃ < p} and E = E_τ are abstracted. The parent's inclusion E_τ ⊆ Z ∪ A_p, with μ(Z) = 0, becomes the hypothesis "μ-a.e. point of E lies in A". Notation: ω := unitBallVolume n = volume(ball (0 : ℝ^n) 1), B_ρ := closedBall x ρ, P_ρ := ofReal(ρ)^n, κ(ρ) := μ(A ∩ B_ρ)/μ(B_ρ), f(ρ) := μ(B_ρ)/P_ρ, g(ρ) := μ(B_ρ ∩ E)/P_ρ. All values and quotients lie in [0,∞] with Lean's conventions: a/0 = ∞ for a ≠ 0, 0/0 = 0, ∞/b = ∞ for b ≠ ∞. "As ρ ↓ 0" means along the filter 𝓝[>] 0.
+
+1. 0 < ω < ∞. ω is the Lebesgue measure of the open unit ball of ℝ^n. It is positive because the ball is open and nonempty (measure_ball_pos), and finite because the ball is bounded (measure_ball_lt_top). For n = 0 the space is a point and ω = 1.
+
+2. Normalized ball mass converges. For every real ρ, by definition densityRatio n μ x ρ = μ(B_ρ)/(ω·P_ρ). So ω·densityRatio n μ x ρ = (ω·μ(B_ρ))/(ω·P_ρ) = μ(B_ρ)/P_ρ = f(ρ), using mul_div_assoc and ENNReal.mul_div_mul_left with ω ≠ 0 and ω ≠ ∞. The hypothesis HasDensity n μ x θ says densityRatio n μ x ρ → θ as ρ ↓ 0. Since ω ≠ ∞, ENNReal.Tendsto.const_mul gives f(ρ) → ω·θ, and ω·θ ≠ ∞ because ω ≠ ∞ and θ ≠ ∞.
+
+3. The product tends to 0. By hypothesis κ(ρ) → 0. ENNReal.Tendsto.mul applies, since ω·θ ≠ ∞ and 0 ≠ ∞. It gives κ(ρ)·f(ρ) → 0·(ω·θ) = 0 as ρ ↓ 0.
+
+4. Eventual finiteness. Since f(ρ) → ω·θ < ∞, the set {ρ : f(ρ) < ∞} belongs to 𝓝[>] 0. Fix ρ in it. P_ρ ≠ ∞, as a power of the finite number ofReal ρ. Hence μ(B_ρ) ≠ ∞: otherwise f(ρ) = ∞/P_ρ = ∞ (ENNReal.top_div_of_ne_top). The parent's step 8 obtained this from B_ρ(x) ⊆ U; here it follows from the finite density, so no domain hypothesis is needed.
+
+5. Pointwise bound. For every ρ as in step 4:
+   (a) μ(B_ρ ∩ E) ≤ μ(A ∩ B_ρ). By hypothesis, for μ-a.e. y, y ∈ B_ρ ∩ E implies y ∈ A ∩ B_ρ. So B_ρ ∩ E ≤ᵐ A ∩ B_ρ, and measure_mono_ae applies. This is the parent's μ(E_τ ∩ B_ρ) ≤ μ(Z) + μ(A_p ∩ B_ρ) = μ(A_p ∩ B_ρ).
+   (b) μ(A ∩ B_ρ) ≤ κ(ρ)·μ(B_ρ). If μ(B_ρ) = 0, then μ(A ∩ B_ρ) ≤ μ(B_ρ) = 0, while κ(ρ)·0 = 0. Otherwise 0 < μ(B_ρ) < ∞ (step 4), and κ(ρ)·μ(B_ρ) = μ(A ∩ B_ρ) by ENNReal.div_mul_cancel.
+   (c) Division by P_ρ is monotone in the numerator, so g(ρ) ≤ κ(ρ)·μ(B_ρ)/P_ρ = κ(ρ)·f(ρ) (mul_div_assoc).
+
+6. Squeeze. We have 0 ≤ g(ρ) for all ρ, g(ρ) ≤ κ(ρ)·f(ρ) for ρ eventually in 𝓝[>] 0 (steps 4–5), and κ(ρ)·f(ρ) → 0 (step 3). By tendsto_of_tendsto_of_tendsto_of_le_of_le', g(ρ) = μ(closedBall x ρ ∩ E)/ofReal(ρ)^n → 0 as ρ ↓ 0. ∎
+
+## Key steps
+
+1. 0 < ω_n < ∞, and μ(B_ρ)/ρ^n = ω_n·densityRatio(ρ) → ω_nθ < ∞ (ENNReal.mul_div_mul_left, ENNReal.Tendsto.const_mul).
+2. κ(ρ)·μ(B_ρ)/ρ^n → 0·ω_nθ = 0 (ENNReal.Tendsto.mul).
+3. Eventually μ(B_ρ)/ρ^n < ∞, hence μ(B_ρ) < ∞. Then μ(B_ρ ∩ E) ≤ μ(A ∩ B_ρ) ≤ κ(ρ)·μ(B_ρ), by measure_mono_ae and the cases μ(B_ρ) = 0 or ENNReal.div_mul_cancel.
+4. Squeeze: 0 ≤ μ(B_ρ ∩ E)/ρ^n ≤ κ(ρ)·μ(B_ρ)/ρ^n → 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)`
+- `grep -n 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div_of_measurableSet|theorem ae_tendsto_measure_inter_div|theorem tendsto_filterAt' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `grep -n 'instHasBesicovitchCovering' mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `grep -n "theorem restrict_apply'|theorem restrict_eq_self_of_ae_mem|theorem map_comap_subtype_coe" mathlib/Mathlib/MeasureTheory/Measure/`
+- `grep -rn 'indicator_of_notMem|mulIndicator_of_notMem' Mathlib/Algebra/Notation/Indicator.lean`
+- `grep -rn 'ae_tendsto_measure_inter_div|ae_tendsto_rnDeriv|Besicovitch\.|vitaliFamily' .lake/packages/simongmt/Poincare --include=*.lean`
+- `grep -n 'structure Varifold|def weight|theorem weight_apply|theorem weight_finite_on_compact|domainWeight|map_domainWeight|instSigmaFinite' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `import chain check: grep '^public import' Chapter08/VarifoldConvergence.lean, FirstVariationRiesz.lean, FirstVariationDecomposition.lean (reaches FirstVariationDensity)`
+- `sed -n 540,640p book/chapter-08.txt (Simon 5.5–5.7, proof of 5.5 (3)–(4)); sed -n 1040,1140p book/sources/chapter-01-source.txt (Simon Ch. 1, 3.23–3.24)`
+- `python3 -I: gmt-compare.contract_scope(Contract.lean, 'GMT.Ch08.main_theorem'), gmt-compare.child_modules(...,'contract'), lean_contract.validate_lean_statement on both child statements`
+- `lake env lean /tmp/dbd-decomp/scratch/{Stmts,ChildA,ChildB,Final,Stub2,Final2}.lean and /tmp/dbd-decomp/challenge/{allard_tc_dbd_lebesgue_density,allard_tc_dbd_relative_decay}_Challenge.lean`
+- `python3 -I scan of dag.json lean_name (90 nodes, 90 distinct, proposed names absent); grep -rIl 'allard_tc_dbd_' over dag.json, nodes/ and GMT/ (no match)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/Notation/Indicator.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-01-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-density-blowup-decay-a1/parent-child-handoff.json`
+- `/tmp/dbd-decomp/scratch/Stub2.lean`
+- `/tmp/dbd-decomp/scratch/Final2.lean`
+- `/tmp/dbd-decomp/scratch/ChildA.lean`
+- `/tmp/dbd-decomp/scratch/ChildB.lean`
+- `/tmp/dbd-decomp/challenge/allard_tc_dbd_lebesgue_density_Challenge.lean`
+- `/tmp/dbd-decomp/challenge/allard_tc_dbd_relative_decay_Challenge.lean`
+
+Snapshot: project 63436ae6 with Mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace Contract and Submission (sha256 2e5cd5b3…).
+
+Mathlib:
+- Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet (Covering/Besicovitch.lean:1089) needs IsLocallyFiniteMeasure on the whole space. μ_V can fail this at ∂U, which is why child A localizes.
+- instHasBesicovitchCovering (BesicovitchVectorSpace.lean:499) covers Euclidean N.
+- Measure.restrict_apply' (Restrict.lean:111), restrict_eq_self_of_ae_mem (:347) and map_comap_subtype_coe (:934) give the restriction and transfer steps.
+- Set.indicator_of_notMem is the additive form of mulIndicator_of_notMem (Algebra/Notation/Indicator.lean).
+
+SimonGMT (pinned 2b366308) is imported transitively by GMT.Ch08.Submission via VarifoldConvergence → FirstVariationRiesz → FirstVariationDecomposition → FirstVariationDensity.
+- It supplies hasBesicovitchCovering_subtype and the varifold facts isOpen_domain, supported, weight_apply and weight_finite_on_compact.
+- Its ae_tendsto_firstVariationDensity_of_domainMeasure is only the RN-derivative analogue for V.weight, not child A's density-point statement, so child A is new.
+- No local declaration proves child B.
+
+Both child statements validate and elaborate in the comparator scope, and the parent compiles from them. With full child proofs, every declaration uses only propext, Classical.choice and Quot.sound. The proposed names occur nowhere in the DAG, run nodes or GMT/.
