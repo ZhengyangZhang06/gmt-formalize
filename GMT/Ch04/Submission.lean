@@ -470,13 +470,6 @@ theorem Submission.sobolev_energy_integrable : ∀ (n ℓ : ℕ) (V : Rectifiabl
       subset_tsupport g (left_ne_zero_of_mul hx)).1
       (IntegrableOn.continuousOn_mul hC1.continuous.continuousOn hHK.norm hgc)
 
-theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
-
-end
-
-end GMT.Ch04
-
-
 /-- Simon 5.5 for `g ∈ C¹_c(U)`, `g ≥ 0`, at every pair of radii `0 < s ≤ r` (node
 `monotonicity_inequality`): assuming the weighted monotonicity identity (W),
 `s⁻ⁿ ∫_{B_s(ζ)} g dμ_V ≤ r⁻ⁿ ∫_{B_r(ζ)} g dμ_V + ∫_{(s,r]} τ⁻ⁿ ∫_{B_τ(ζ)} (|∇^M g| + g|H|) dμ_V dτ`.
@@ -554,3 +547,9 @@ theorem Submission.sobolev_monotonicity_inequality : (∀ (n ℓ : ℕ) (V : Rec
     setIntegral_mono_on hLint.neg hΦint measurableSet_Ioc hbound
   rw [integral_neg] at hJ
   linarith
+
+theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
+
+end
+
+end GMT.Ch04
