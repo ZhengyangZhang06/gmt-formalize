@@ -940,6 +940,39 @@ theorem Submission.variation_submanifold_image_area : ∀ (n N N' : ℕ) (M S : 
     (hBd hij).image hinj (hBS i) (hBS j)
   rw [← hBU, image_iUnion, measure_iUnion hfBd hfBm, lintegral_iUnion hBm hBd]
   exact tsum_congr hpiece
+/-- **Tangential Jacobian as an ambient Gram determinant** (Simon Ch. 2, §5, p. 62: basis-free
+form of the Jacobian `J_t = √det(b_ij)` behind the variation formulas 5.3–5.4). Let `T ⊆ ℝᴺ` be
+a subspace with orthogonal projection `P` and inclusion `ι_T`, and let `A : ℝᴺ → ℝ^{N'}` be
+linear. Then `areaJacobian (A ∘ ι_T) = √det(I - P + P A* A P)`. With `L = A ∘ ι_T` we have
+`L* = π_T ∘ A*`. In the orthogonal splitting `T × Tᗮ ≃ ℝᴺ`, `(u, w) ↦ u + w`, the operator
+`Σ = I - P + P A* A P` is block diagonal, acting as `L* L` on `T` and as the identity on `Tᗮ`.
+Hence `det Σ = det (L* L) · det I = det (L* L)`, also when `T = 0`. -/
+theorem Submission.variation_gram_det_identity : ∀ (N N' : ℕ) (T : Submodule ℝ (Rn N)) (A : Rn N →L[ℝ] Rn N'), areaJacobian (A.comp T.subtypeL) = Real.sqrt ((1 - T.starProjection + T.starProjection ∘L ContinuousLinearMap.adjoint A ∘L A ∘L T.starProjection).det) := by
+  intro N N' T A
+  -- Step 1: for `L = A ∘ ι_T`, the adjoint of `ι_T` is `π_T`, so `L* = π_T ∘ A*`.
+  have hadj : ContinuousLinearMap.adjoint (A.comp T.subtypeL) =
+      T.orthogonalProjectionOnto ∘L ContinuousLinearMap.adjoint A := by
+    rw [ContinuousLinearMap.adjoint_comp, T.adjoint_subtypeL]
+  -- Step 2: the orthogonal splitting `T × Tᗮ ≃ ℝᴺ`, `(u, w) ↦ u + w`.
+  let e : (T × Tᗮ) ≃ₗ[ℝ] Rn N := Submodule.prodEquivOfIsCompl T Tᗮ T.isCompl_orthogonal
+  -- Step 3: block structure. Since `P u = u` for `u ∈ T` and `P w = 0` for `w ∈ Tᗮ`,
+  -- `Σ (u + w) = P A* A u + w = L* L u + w`, i.e. `Σ = e ∘ (L* L × I) ∘ e⁻¹`.
+  have hblock : ((1 - T.starProjection + T.starProjection ∘L ContinuousLinearMap.adjoint A ∘L
+        A ∘L T.starProjection : Rn N →L[ℝ] Rn N) : Rn N →ₗ[ℝ] Rn N) =
+      (e : (T × Tᗮ) →ₗ[ℝ] Rn N) ∘ₗ
+        (LinearMap.prodMap ((ContinuousLinearMap.adjoint (A.comp T.subtypeL) ∘L
+          A.comp T.subtypeL : T →L[ℝ] T) : T →ₗ[ℝ] T) LinearMap.id) ∘ₗ
+        (e.symm : Rn N →ₗ[ℝ] (T × Tᗮ)) := by
+    rw [← LinearMap.comp_assoc, LinearEquiv.eq_comp_toLinearMap_symm]
+    refine LinearMap.ext fun ⟨u, w⟩ => ?_
+    have hu : T.starProjection (u : Rn N) = u := T.starProjection_mem_subspace_eq_self u
+    have hw : T.starProjection (w : Rn N) = 0 := T.starProjection_apply_eq_zero_iff.mpr w.2
+    simp [e, hadj, hu, hw, add_comm]
+  -- Steps 4-5: a block-diagonal determinant is the product of the block determinants, so
+  -- `det Σ = det (L* L) · det I = det (L* L)` (also when `T = 0`); take square roots.
+  unfold areaJacobian
+  rw [ContinuousLinearMap.det, ContinuousLinearMap.det, hblock, LinearMap.det_conj,
+    LinearMap.det_prodMap, LinearMap.det_id, mul_one]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
