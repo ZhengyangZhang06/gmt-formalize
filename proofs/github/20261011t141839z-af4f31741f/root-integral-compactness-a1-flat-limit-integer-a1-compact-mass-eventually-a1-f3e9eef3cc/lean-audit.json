@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ff64e07d64d1798b668033e3d2abed58770ba49bf3e6a36fbab6178ba5522169",
+  "git_delta": {
+    "base_commit": "01ad0288cc8142c2ad5ec72ad527b6143a36c799",
+    "candidate_commit": "e693f2499cbf7735c9a29a3e3e88b44945fa1f44",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_fli_weight_compact_eventually_lt",
+    "diff_sha256": "450d3f620932c826accd241fee2c7bf7bd556c805303c2d6878088581b030f09",
+    "source_sha256": "a915ae7d8202a5f47a84163740289f5262fdf5e0b793c7fbef1890037359d7e6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_fli_weight_compact_eventually_lt",
+      "statement": "∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), 0 < θ₀ → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∀ (K O : Set (Euclidean N)) (c : ℝ≥0∞), IsCompact K → IsOpen O → K ⊆ O → O ⊆ ball (0 : Euclidean N) 5 → ENNReal.ofReal θ₀ * (μHE[n] : Measure (Euclidean N)) ((P.plane : Set (Euclidean N)) ∩ O) < c → ∀ᶠ k in atTop, (W k).weight K < c",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
