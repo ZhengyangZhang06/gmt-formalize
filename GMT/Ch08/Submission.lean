@@ -440,6 +440,45 @@ theorem Submission.varifold_weight_integral_tendsto_of_radonConverges :
     rfl
   -- Step 4: apply `RadonConverges` to `F` and rewrite both sides with step 3.
   simpa only [hdom] using hconv F
+/-- Urysohn sandwich (Simon Ch. 8, proof of 3.7): for compact `K` inside open `O` there is one
+continuous `g` with compact support in `O` such that `ν(K) ≤ ∫ g dν ≤ ν(O)` for every measure
+`ν` that is finite on compact subsets of `O`. -/
+theorem Submission.exists_urysohn_integral_sandwich :
+    ∀ (N : ℕ) (K O : Set (Euclidean N)), IsCompact K → IsOpen O → K ⊆ O → ∃ g : Euclidean N → ℝ, Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ O ∧ ∀ ν : Measure (Euclidean N), (∀ L : Set (Euclidean N), IsCompact L → L ⊆ O → ν L ≠ ∞) → ν K ≤ ENNReal.ofReal (∫ x, g x ∂ν) ∧ ENNReal.ofReal (∫ x, g x ∂ν) ≤ ν O := by
+  intro N K O hK hO hKO
+  -- Step 1: a compact buffer `L` with `K ⊆ interior L` and `L ⊆ O`.
+  obtain ⟨L, hL, hKL, hLO⟩ := exists_compact_between hK hO hKO
+  -- Step 2: Urysohn's lemma: `g = 1` on `K`, `g = 0` off `interior L`, `0 ≤ g ≤ 1`.
+  obtain ⟨g, hg1, hg0, hgc, hg01⟩ :=
+    exists_continuous_one_zero_of_isCompact hK isOpen_interior.isClosed_compl
+      (disjoint_compl_right_iff_subset.mpr hKL)
+  -- Step 3: `tsupport g ⊆ L ⊆ O`, as `support g ⊆ interior L` and `L` is closed.
+  have hgL : tsupport g ⊆ L := by
+    refine closure_minimal (fun x hx ↦ ?_) hL.isClosed
+    by_contra hxL
+    exact hx (hg0 fun hx' ↦ hxL (interior_subset hx'))
+  refine ⟨g, g.continuous, hgc, hgL.trans hLO, fun ν hν ↦ ?_⟩
+  -- Steps 4–5: `ν L < ∞` and `|g| ≤ 1` with `support g ⊆ L`, so `g` is `ν`-integrable.
+  have hint : Integrable g ν := by
+    rw [← integrableOn_iff_integrable_of_support_subset ((subset_tsupport g).trans hgL)]
+    refine Measure.integrableOn_of_bounded (M := 1) (hν L hL hLO)
+      g.continuous.aestronglyMeasurable (Eventually.of_forall fun x ↦ ?_)
+    rw [Real.norm_eq_abs, abs_le]
+    exact ⟨by linarith [(hg01 x).1], (hg01 x).2⟩
+  -- Step 6: `g ≥ 0`, so `ofReal (∫ g dν) = ∫⁻ ofReal ∘ g dν`.
+  rw [ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall fun x ↦ (hg01 x).1)]
+  -- Steps 7–8: integrate `1_K ≤ ofReal ∘ g ≤ 1_O` (`K` closed and `O` open are measurable).
+  constructor
+  · rw [← lintegral_indicator_one hK.isClosed.measurableSet]
+    refine lintegral_mono fun x ↦ ?_
+    by_cases hx : x ∈ K
+    · simp [hx, hg1 hx]
+    · simp [hx]
+  · rw [← lintegral_indicator_one hO.measurableSet]
+    refine lintegral_mono fun x ↦ ?_
+    by_cases hx : x ∈ O
+    · simpa [hx] using (hg01 x).2
+    · simp [hx, image_eq_zero_of_notMem_tsupport fun h ↦ hx (hLO (hgL h))]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
