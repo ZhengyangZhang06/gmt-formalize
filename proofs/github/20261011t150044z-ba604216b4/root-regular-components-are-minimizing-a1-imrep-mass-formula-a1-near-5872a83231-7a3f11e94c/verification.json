@@ -1,0 +1,15 @@
+{
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.near_maximizer-a1.unit_ball_dense_seq-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/2545",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "5c11e74e661b263bbdae70afa4ac6555c8a82fc6",
+  "integrated_commit": "",
+  "proof_base_commit": "2582a5324d6e8614878be4c1565192af07e087a5",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.near_maximizer-a1",
+  "requires": []
+}
