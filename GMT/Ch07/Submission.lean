@@ -539,6 +539,55 @@ theorem Submission.dsmc_att_blowUp_points_of_approxTangent : ∀ (P n : ℕ) (M 
   refine ⟨y, hy, ?_⟩
   rw [mem_ball, dist_eq_norm] at hz
   simpa [hη, Poincare.SimonGMT.Chapter03.blowUpMap] using hz
+/-- **Simon Ch. 3, 1.4–1.5** (last step of `TₓM ⊆ TₓN`): rescaled-secant limits lie in the
+range of the secant-approximating map.  If every `y ∈ N` near `x` has `|y − x − Aa| ≤ ε|y − x|`
+for some `a` (any `ε > 0`), and for every `s > 0` and all small `λ > 0` some `y ∈ N` has
+`|λ⁻¹(y − x) − w| < s`, then `w ∈ L = A(ℝᵈ)`.  `L` is a finite-dimensional, hence closed,
+subspace; for `η = 2s`, `K ≥ |w| + s` and `εK < s`, a blow-up point `y` at a scale `λ < δ/K`
+has `|y − x| < λK < δ`, and its secant approximant `Aa` gives `A(λ⁻¹a) ∈ L` within
+`s + εK < η` of `w`. -/
+theorem Submission.dsmc_att_mem_range_of_secant_blowUp : ∀ (P d : ℕ) (N : Set (Euclid P)) (x w : Euclid P) (A : Euclid d →L[ℝ] Euclid P), (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y ∈ N, dist y x < δ → ∃ a : Euclid d, ‖y - x - A a‖ ≤ ε * ‖y - x‖) → (∀ s : ℝ, 0 < s → ∃ lam₀ : ℝ, 0 < lam₀ ∧ ∀ lam : ℝ, 0 < lam → lam < lam₀ → ∃ y ∈ N, ‖lam⁻¹ • (y - x) - w‖ < s) → w ∈ Set.range A := by
+  intro P d N x w A hsec hblow
+  -- `L = A(ℝᵈ)` is a finite-dimensional, hence closed, subspace: approximate `w` within `η`
+  have hL : IsClosed (Set.range A) := by
+    rw [← ContinuousLinearMap.coe_coe, ← LinearMap.coe_range]
+    exact Submodule.closed_of_finiteDimensional _
+  rw [← hL.closure_eq, Metric.mem_closure_iff]
+  intro η hη
+  -- `η = s + s`, `K ≥ |w| + s` and `εK < s`
+  obtain ⟨s, hs, rfl⟩ : ∃ s : ℝ, 0 < s ∧ s + s = η := ⟨η / 2, half_pos hη, add_halves η⟩
+  obtain ⟨K, hK, hwK⟩ : ∃ K : ℝ, 0 < K ∧ ‖w‖ + s ≤ K := ⟨‖w‖ + s, by positivity, le_rfl⟩
+  obtain ⟨ε, hε, hεK⟩ : ∃ ε : ℝ, 0 < ε ∧ ε * K < s := ⟨s / (K + 1), by positivity, by
+    rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+    nlinarith⟩
+  obtain ⟨δ, hδ, hδsec⟩ := hsec ε hε
+  obtain ⟨lam₀, hlam₀, hlam⟩ := hblow s hs
+  -- the scale `λ = min(λ₀, δ/K)/2` lies in `(0, λ₀)` and has `λK < δ`
+  have hm : 0 < min lam₀ (δ / K) := lt_min hlam₀ (div_pos hδ hK)
+  obtain ⟨lam, hlam_pos, hlam_lt, hlamK⟩ : ∃ lam : ℝ, 0 < lam ∧ lam < lam₀ ∧ lam * K < δ :=
+    ⟨min lam₀ (δ / K) / 2, half_pos hm, (half_lt_self hm).trans_le (min_le_left _ _),
+      (lt_div_iff₀ hK).mp ((half_lt_self hm).trans_le (min_le_right _ _))⟩
+  -- a blow-up point `y ∈ N` has `λ⁻¹|y − x| < |w| + s ≤ K`, so `|y − x| < λK < δ`
+  obtain ⟨y, hyN, hy⟩ := hlam lam hlam_pos hlam_lt
+  have hlam_inv : 0 ≤ lam⁻¹ := inv_nonneg.mpr hlam_pos.le
+  have hyK : lam⁻¹ * ‖y - x‖ < K := by
+    rw [← norm_smul_of_nonneg hlam_inv]
+    linarith [norm_sub_norm_le (lam⁻¹ • (y - x)) w]
+  have hyδ : dist y x < δ := by
+    rw [dist_eq_norm]
+    linarith [(inv_mul_lt_iff₀ hlam_pos).mp hyK]
+  -- its secant approximant `Aa` gives `ℓ = A(λ⁻¹a) ∈ L` with `|λ⁻¹(y − x) − ℓ| < εK < s`
+  obtain ⟨a, ha⟩ := hδsec y hyN hyδ
+  have hℓ : dist (lam⁻¹ • (y - x)) (A (lam⁻¹ • a)) < s := by
+    rw [dist_eq_norm, map_smul, ← smul_sub, norm_smul_of_nonneg hlam_inv]
+    calc lam⁻¹ * ‖y - x - A a‖ ≤ lam⁻¹ * (ε * ‖y - x‖) := by gcongr
+      _ = ε * (lam⁻¹ * ‖y - x‖) := by ring
+      _ < ε * K := by gcongr
+      _ < s := hεK
+  -- the triangle inequality gives `|w − ℓ| < s + s = η`
+  have hw : dist w (lam⁻¹ • (y - x)) < s := by rwa [dist_comm, dist_eq_norm]
+  exact ⟨A (lam⁻¹ • a), ⟨lam⁻¹ • a, rfl⟩,
+    (dist_triangle w (lam⁻¹ • (y - x)) _).trans_lt (add_lt_add hw hℓ)⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
