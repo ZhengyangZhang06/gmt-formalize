@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.density_lower_bound-a1.restricted_density-a1",
+  "parent_id": "root.varifold_tangents-a1.density_lower_bound-a1",
+  "depth": 3,
+  "title": "Densities of the restricted blow-up at points whose image has a density",
+  "statement": "Let V be an n-varifold on U ⊆ ℝ^N, x ∈ ℝ^N, t > 0, R ∈ ℝ, c ∈ [0,∞] with c ≠ ∞, and θ ∈ [0,∞]. Let W be an n-varifold on the open ball B°_R(0) with W.measure = c • (rescaledMeasure V x t)⌞(B°_R(0) × G(N,n)), and let y ∈ B°_R(0) satisfy HasDensity n μ_V (x + t•y) θ. Then HasDensity n μ_W y (c·θ).",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (t R : ℝ) (c θ : ℝ≥0∞) (W : Varifold N n (ball (0 : Euclidean N) R)) (y : Euclidean N), 0 < t → c ≠ ∞ → W.measure = c • (rescaledMeasure V x t).restrict (ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n))) → y ∈ ball (0 : Euclidean N) R → HasDensity n V.weight (x + t • y) θ → HasDensity n W.weight y (c * θ)",
+  "lean_name": "varifold_tangents_dlb_restricted_hasDensity",
+  "depends_on": [
+    "root.varifold_tangents-a1.density_lower_bound-a1.density_scaling-a1",
+    "root.varifold_tangents-a1.density_lower_bound-a1.rescaled_mass_formula-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.varifold_tangents-a1.density_lower_bound-a1.density_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.varifold_tangents-a1.density_lower_bound-a1.rescaled_mass_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-density-lower-bound-a1-restricted-density-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.density_lower_bound-a1.density_scaling-a1",
+  "parent_id": "root.varifold_tangents-a1.density_lower_bound-a1",
+  "depth": 3,
+  "title": "Densities transfer under ball-mass scaling",
+  "statement": "Let N, n ∈ ℕ, let μ, ν be measures on ℝ^N (Euclidean N), y, z ∈ ℝ^N, t > 0, δ > 0, c ∈ [0,∞] with c ≠ ∞, and θ ∈ [0,∞]. Suppose that for every ρ with 0 < ρ < δ, ν(B_ρ(y)) = c·(ofReal((t⁻¹)^n)·μ(B_{tρ}(z))) (closed balls, arithmetic in ℝ≥0∞), and that HasDensity n μ z θ, i.e. densityRatio n μ z ρ = μ(B_ρ(z))/(ω_n·ofReal(ρ)^n) → θ as ρ ↓ 0. Then HasDensity n ν y (c·θ).",
+  "lean_statement": "∀ (N n : ℕ) (μ ν : Measure (Euclidean N)) (y z : Euclidean N) (t δ : ℝ) (c θ : ℝ≥0∞), 0 < t → 0 < δ → c ≠ ∞ → (∀ ρ : ℝ, 0 < ρ → ρ < δ → ν (closedBall y ρ) = c * (ENNReal.ofReal (t⁻¹ ^ n) * μ (closedBall z (t * ρ)))) → HasDensity n μ z θ → HasDensity n ν y (c * θ)",
+  "lean_name": "varifold_tangents_dlb_hasDensity_of_closedBall_scaling",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-density-lower-bound-a1-density-scaling-a1-a1"
+}
