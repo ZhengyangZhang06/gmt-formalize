@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.normal_average_bounds-a1.reduced_boundary_basic-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.normal_average_bounds-a1",
+  "depth": 4,
+  "title": "Basic facts at a reduced-boundary point: x ∈ U, unit reduced normal, convergence of the normal averages to it, and positive mass at every scale (parent Steps 1 and 4)",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N, μ a measure on ℝ^N and ν : ℝ^N → ℝ^N (no further hypotheses). Let x ∈ reducedBoundary U μ ν and e := reducedNormal μ ν x = limUnder_{ρ↓0} normalAverage μ ν x ρ, where normalAverage μ ν x ρ = μ(B_ρ(x)).toReal⁻¹ • ∫_{B_ρ(x)} ν dμ. Then x ∈ U, |e| = 1, normalAverage μ ν x ρ → e as ρ ↓ 0 (along 𝓝[>] 0), and μ(B_ρ(x)) > 0 for every ρ > 0.",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), ∀ x ∈ reducedBoundary U μ ν, x ∈ U ∧ ‖reducedNormal μ ν x‖ = 1 ∧ Tendsto (normalAverage μ ν x) (𝓝[>] 0) (𝓝 (reducedNormal μ ν x)) ∧ ∀ ρ : ℝ, 0 < ρ → 0 < μ (Metric.ball x ρ)",
+  "lean_name": "deGiorgiNAB_reducedBoundary_basic",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-normal-average-bounds-a1-reduc-a87af9b396-a1"
+}

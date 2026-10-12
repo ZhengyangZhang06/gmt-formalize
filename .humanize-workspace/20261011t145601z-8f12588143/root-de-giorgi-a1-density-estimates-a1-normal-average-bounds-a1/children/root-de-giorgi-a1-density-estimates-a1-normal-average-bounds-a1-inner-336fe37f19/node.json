@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.normal_average_bounds-a1.inner_average_limit-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.normal_average_bounds-a1",
+  "depth": 4,
+  "title": "The scalar normal averages μ(B_ρ(x))⁻¹ ∫_{B_ρ(x)} ⟨ν, ν_E(x)⟩ dμ tend to 1 at a reduced-boundary point (Simon (1); parent Steps 2, 3 and 5)",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open, μ a measure on ℝ^N with μ(K) < ∞ for every compact K ⊆ U, and ν : ℝ^N → ℝ^N μ-a.e. strongly measurable with |ν| = 1 μ-a.e. Let x ∈ reducedBoundary U μ ν and e := reducedNormal μ ν x. Then μ(B_ρ(x)).toReal⁻¹ · ∫_{B_ρ(x)} ⟨ν(y), e⟩ dμ(y) → 1 as ρ ↓ 0 (along 𝓝[>] 0), with the Lean convention 0⁻¹ = 0.",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ∀ x ∈ reducedBoundary U μ ν, Tendsto (fun ρ : ℝ ↦ (μ (Metric.ball x ρ)).toReal⁻¹ * ∫ y in Metric.ball x ρ, inner ℝ (ν y) (reducedNormal μ ν x) ∂μ) (𝓝[>] 0) (𝓝 1)",
+  "lean_name": "deGiorgiNAB_innerAverage_tendsto_one",
+  "depends_on": [
+    "root.de_giorgi-a1.density_estimates-a1.normal_average_bounds-a1.reduced_boundary_basic-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.density_estimates-a1.normal_average_bounds-a1.reduced_boundary_basic-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-normal-average-bounds-a1-inner-336fe37f19-a1"
+}
