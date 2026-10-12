@@ -2710,6 +2710,119 @@ theorem Submission.simon_submanifold_measurableSet : ∀ (n N : ℕ) (r : ℕ∞
   exact .biUnion hTc fun y hy ↦
     (hrep y (hTM hy)).2.1.measurableSet.inter isClosed_closure.measurableSet
 
+/-- **Simon Ch. 2, 5.3 and 5.4 (pp. 61–63), first and second variation formulas** (5.4 with the
+`C³` correction). Put `S = M ∩ K`, `e y = (y, P_y)` with `P_y = tangentProjection M y`, and
+`g (t, (x, P)) = √det(I - P + P (Dφ_t x)* (Dφ_t x) P)`. For `|t| < 1` the map `φ_t` is
+differentiable and injective on `S` with injective derivative, so the area formula on `M`
+(`variation_submanifold_image_area`) and the Gram identity (`variation_gram_det_identity`) give
+`Hⁿ(φ_t(S)) = ∫_S g(t, e y) dHⁿ(y)`. `S` is Borel with `Hⁿ(S) < ∞`, and `e` is continuous on `S`
+(`simon_submanifold_tangent_basics`) with values in the compact set
+`C = K × {P : ‖P‖ ≤ 1, P ∘ P = P}`, where `g` is `C¹` (`C²` in class `C³`) at `t = 0`
+(`variation_jacobian_family`). Differentiating under the integral sign
+(`variation_param_integral_deriv`) and identifying the `t`-derivatives of `g(t, e y)` at `0` with
+`div_M X y` and `secondVariationIntegrand M φ y` (`variation_jacobian_family`) gives both
+formulas. Both integrands vanish off `K`, so `∫_S = ∫_M`. -/
+theorem Submission.first_and_second_variation : FirstVariation ∧ SecondVariation := by
+  have hImage := Submission.variation_submanifold_image_area
+  have hGram := Submission.variation_gram_det_identity
+  have hFamily := Submission.variation_jacobian_family
+  have hParam := Submission.variation_param_integral_deriv
+  have hTangent := Submission.simon_submanifold_tangent_basics
+  -- Both formulas follow from one statement for a deformation of class `C²`; class `C³` adds the
+  -- second variation.
+  suffices H : ∀ (n ℓ : ℕ) (M U K : Set (Rn (n + ℓ))) (φ : ℝ → Rn (n + ℓ) → Rn (n + ℓ)),
+      Chapter02.IsSimonSubmanifold (E := Rn n) 1 M →
+      (∀ K', IsCompact K' → K' ⊆ U → μHE[n] (K' ∩ M) < ⊤) → IsAdmissibleDeformation 2 U K φ →
+      HasDerivAt (deformedArea n M K φ)
+          (∫ y in M, tangentialDivergence M (initialVelocity φ) y ∂μHE[n]) 0 ∧
+        (IsAdmissibleDeformation 3 U K φ →
+          (∀ᶠ t in 𝓝 0, DifferentiableAt ℝ (deformedArea n M K φ) t) ∧
+            HasDerivAt (deriv (deformedArea n M K φ))
+              (∫ y in M, secondVariationIntegrand M φ y ∂μHE[n]) 0) by
+    refine ⟨fun n ℓ M U K φ hM _ _ hfin hφ ↦ (H n ℓ M U K φ hM hfin hφ).1,
+      fun n ℓ M U K φ hM _ _ hfin hφ ↦ (H n ℓ M U K φ hM hfin ?_).2 hφ⟩
+    obtain ⟨h₁, h₂, h₃, h₄, h₅, h₆, h₇⟩ := hφ
+    exact ⟨h₁, h₂, h₃, h₄.of_le (by norm_num), h₅, h₆, h₇⟩
+  intro n ℓ M U K φ hM hfin hφ
+  obtain ⟨hUo, hKc, hKU, hΦ, -, -, hφbij⟩ := id hφ
+  obtain ⟨hF2, hF3, hFV⟩ := hFamily (n + ℓ) U K φ
+  obtain ⟨hMmeas, hPcont⟩ := hTangent.2 n (n + ℓ) 1 M hM
+  -- Step 1: `S = M ∩ K` is a Borel set of finite measure.
+  have hS : MeasurableSet (M ∩ K) := hMmeas.inter hKc.measurableSet
+  have hμS : μHE[n] (M ∩ K) < ⊤ := by
+    rw [inter_comm]
+    exact hfin K hKc hKU
+  -- Step 2: the family Jacobian `g` and `e y = (y, P_y)`, which maps `S` into the compact set
+  -- `C = K × {P : ‖P‖ ≤ 1, P ∘ P = P}`.
+  set g : ℝ × (Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ))) → ℝ := fun p ↦
+    Real.sqrt ((1 - p.2.2 + p.2.2 ∘L ContinuousLinearMap.adjoint (fderiv ℝ (φ p.1) p.2.1) ∘L
+      fderiv ℝ (φ p.1) p.2.1 ∘L p.2.2).det)
+  set e : Rn (n + ℓ) → Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ)) :=
+    fun y ↦ (y, tangentProjection M y)
+  set C : Set (Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ))) :=
+    K ×ˢ (closedBall 0 1 ∩ {P | P ∘L P = P})
+  have hC : IsCompact C :=
+    hKc.prod ((isCompact_closedBall 0 1).inter_right
+      (isClosed_eq (continuous_id.clm_comp continuous_id) continuous_id))
+  have heC : ∀ z ∈ M ∩ K, e z ∈ C := fun z hz ↦
+    ⟨hz.2, mem_closedBall_zero_iff.mpr (Submodule.starProjection_norm_le _),
+      (Submodule.isIdempotentElem_starProjection _).eq⟩
+  have hem : AEStronglyMeasurable e (μHE[n].restrict (M ∩ K)) :=
+    (continuousOn_id.prodMk (hPcont.mono inter_subset_left)).aestronglyMeasurable hS
+  have hP := hParam (Rn (n + ℓ)) (Rn (n + ℓ) × (Rn (n + ℓ) →L[ℝ] Rn (n + ℓ))) μHE[n] (M ∩ K) C e g
+    hS hμS hC heC hem
+  have hg1 : ∀ x ∈ C, ContDiffAt ℝ 1 g (0, x) := fun x hx ↦
+    (hF2 hφ).1 x.1 (hKU hx.1) x.2 hx.2.2
+  obtain ⟨hint, hderiv⟩ := hP.1 hg1
+  -- Step 3: area formula, `Hⁿ(φ_t(S)) = ∫_S g(t, e y) dHⁿ(y)` for `|t| < 1`.
+  have harea : ∀ t ∈ Ioo (-1 : ℝ) 1,
+      μHE[n] (φ t '' (M ∩ K)) = ∫⁻ y in M ∩ K, ENNReal.ofReal (g (t, e y)) ∂μHE[n] := by
+    intro t ht
+    have hT : ∀ (V : Set (Rn n)) (W : Set (Rn (n + ℓ))) (ψ : Rn n → Rn (n + ℓ)),
+        Chapter02.IsSimonLocalRepresentation 1 M V W ψ →
+          ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap :=
+      fun V W ψ hψ ↦ hTangent.1 n (n + ℓ) 1 M V W ψ le_rfl hψ
+    have hdiff : ∀ y ∈ M ∩ K, DifferentiableAt ℝ (φ t) y := by
+      intro y hy
+      have hΦy : DifferentiableAt ℝ (fun p : ℝ × Rn (n + ℓ) ↦ φ p.1 p.2) (t, y) :=
+        (hΦ.contDiffAt ((isOpen_Ioo.prod hUo).mem_nhds ⟨ht, hKU hy.2⟩)).differentiableAt
+          (by norm_num)
+      exact hΦy.comp y ((differentiableAt_const t).prodMk differentiableAt_id)
+    rw [hImage n (n + ℓ) (n + ℓ) M (M ∩ K) (φ t) hM hT hS inter_subset_left hdiff
+      (fun y hy ↦ ((hφbij t ht).2 y (hKU hy.2)).1)
+      (InjOn.mono (fun y hy ↦ hKU hy.2) (hφbij t ht).1.injOn)]
+    refine lintegral_congr fun y ↦ ?_
+    rw [hGram]
+    rfl
+  -- Hence `t ↦ Hⁿ(φ_t(S))` agrees near `0` with `t ↦ ∫_S g(t, e y) dHⁿ(y)`.
+  have heq : deformedArea n M K φ =ᶠ[𝓝 0] fun t ↦ ∫ z in M ∩ K, g (t, e z) ∂μHE[n] := by
+    filter_upwards [hint, Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0) one_pos] with t hti ht
+    rw [integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall fun z ↦ Real.sqrt_nonneg _)
+      hti.aestronglyMeasurable, ← harea t ht]
+    rfl
+  -- Step 4: first variation; the integrand vanishes off `K`, so `∫_S = ∫_M`.
+  have hval : ∫ z in M ∩ K, deriv (fun t ↦ g (t, e z)) 0 ∂μHE[n] =
+      ∫ y in M, tangentialDivergence M (initialVelocity φ) y ∂μHE[n] := by
+    rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hMmeas inter_subset_left
+      fun y hy ↦ (hFV 2 hφ M y fun hyK ↦ hy.2 ⟨hy.1, hyK⟩).1]
+    exact setIntegral_congr_fun hS fun z hz ↦ ((hF2 hφ).2 M z (hKU hz.2)).deriv
+  refine ⟨hval ▸ hderiv.congr_of_eventuallyEq heq, fun hφ3 ↦ ?_⟩
+  -- Step 5: second variation (class `C³`).
+  have hg2 : ∀ x ∈ C, ContDiffAt ℝ 2 g (0, x) := fun x hx ↦
+    (hF3 hφ3).1 x.1 (hKU hx.1) x.2 hx.2.2
+  obtain ⟨hderivs, hderiv2⟩ := hP.2 hg2
+  have hev : ∀ᶠ t in 𝓝 0, HasDerivAt (deformedArea n M K φ)
+      (∫ z in M ∩ K, deriv (fun s ↦ g (s, e z)) t ∂μHE[n]) t := by
+    filter_upwards [hderivs, heq.eventuallyEq_nhds] with t ht hteq
+    exact ht.congr_of_eventuallyEq hteq
+  have hval2 : ∫ z in M ∩ K, deriv (fun t ↦ deriv (fun s ↦ g (s, e z)) t) 0 ∂μHE[n] =
+      ∫ y in M, secondVariationIntegrand M φ y ∂μHE[n] := by
+    rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hMmeas inter_subset_left
+      fun y hy ↦ (hFV 3 hφ3 M y fun hyK ↦ hy.2 ⟨hy.1, hyK⟩).2]
+    exact setIntegral_congr_fun hS fun z hz ↦ ((hF3 hφ3).2 M z (hKU hz.2)).deriv
+  exact ⟨hev.mono fun t ht ↦ ht.differentiableAt,
+    hval2 ▸ hderiv2.congr_of_eventuallyEq (hev.mono fun t ht ↦ ht.deriv)⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
