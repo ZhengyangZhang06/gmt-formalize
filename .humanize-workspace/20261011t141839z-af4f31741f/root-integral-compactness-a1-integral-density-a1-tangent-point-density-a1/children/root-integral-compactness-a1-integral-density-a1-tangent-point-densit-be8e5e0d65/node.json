@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.ball_mass_upper-a1",
+  "parent_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1",
+  "depth": 4,
+  "title": "Upper ball-mass bound at a weighted approximate tangent point",
+  "statement": "Let N, n ∈ ℕ and H^n := μHE[n] on ℝ^N = Euclidean N. Let M ⊆ ℝ^N be H^n-null-measurable, θ : ℝ^N → ℝ with θ ≥ 0 on M, x ∈ M, P a linear subspace of ℝ^N, and r₀ > 0 with θ H^n-integrable on M ∩ B̄_{r₀}(x). Assume M has weighted approximate tangent space P at x with respect to θ (Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P). Let ν := (H^n⌞M).withDensity(ofReal ∘ θ) and ω̂_n := unitBallVolume n. Then for every c ∈ [0, ∞] with ofReal(θ(x)) · ω̂_n < c, eventually as t → 0⁺: ν(B̄_t(x)) ≤ c · ofReal(t)^n.",
+  "lean_statement": "∀ (N n : ℕ) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (P : Submodule ℝ (Euclidean N)) (r₀ : ℝ), NullMeasurableSet M (μHE[n] : Measure (Euclidean N)) → (∀ y ∈ M, 0 ≤ θ y) → x ∈ M → 0 < r₀ → IntegrableOn θ (M ∩ closedBall x r₀) μHE[n] → Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P → ∀ c : ℝ≥0∞, ENNReal.ofReal (θ x) * unitBallVolume n < c → ∀ᶠ t in 𝓝[>] (0 : ℝ), (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity fun y ↦ ENNReal.ofReal (θ y)) (closedBall x t) ≤ c * ENNReal.ofReal t ^ n",
+  "lean_name": "intcpt_id_tpd_ball_mass_upper",
+  "depends_on": [
+    "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.ball_sandwich-a1",
+    "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.plane_cutoff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.ball_sandwich-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.integral_density-a1.tangent_point_density-a1.plane_cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-integral-density-a1-tangent-point-densit-be8e5e0d65-a1"
+}
