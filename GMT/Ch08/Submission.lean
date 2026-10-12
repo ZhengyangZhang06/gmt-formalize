@@ -410,6 +410,81 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- A compact exhaustion of an open `U ⊆ ℝ^N` (preamble of the proof of Simon Ch. 8, 1.2): compact
+`K_p ⊆ U`, `p ∈ ℕ`, with `K_p ⊆ interior K_{p+1}`, increasing in `p`, and `⋃_p K_p = U`.  If
+`U = ℝ^N` then `K_p = B_{p+1}(0)`; otherwise, with `F = ℝ^N ∖ U`,
+`K_p = {x : |x| ≤ p + 1, dist(x, F) ≥ 1/(p + 1)}`. -/
+theorem Submission.frt_weq_open_compact_exhaustion :
+    ∀ (N : ℕ) (U : Set (Euclidean N)), IsOpen U → ∃ K : ℕ → Set (Euclidean N), (∀ p, IsCompact (K p)) ∧ (∀ p, K p ⊆ U) ∧ (∀ p, K p ⊆ interior (K (p + 1))) ∧ Monotone K ∧ ⋃ p, K p = U := by
+  intro N U hU
+  by_cases hUu : U = univ
+  · -- Case 1: `U = ℝ^N`; take `K_p = B_{p+1}(0)`.
+    subst hUu
+    refine ⟨fun p : ℕ ↦ closedBall (0 : Euclidean N) ((p : ℝ) + 1),
+      fun p ↦ isCompact_closedBall _ _, fun p ↦ subset_univ _, fun p ↦ ?_, fun p q hpq ↦ ?_, ?_⟩
+    · -- `B_{p+1}(0) ⊆ U_{p+2}(0) = interior B_{p+2}(0)`.
+      rw [interior_closedBall _ (by positivity)]
+      exact closedBall_subset_ball (by push_cast; linarith)
+    · -- The radii increase with `p`.
+      exact closedBall_subset_closedBall (by simpa using hpq)
+    · -- Every `x` lies in `B_{q+1}(0)` once `q ≥ |x|`.
+      refine eq_univ_of_forall fun x ↦ mem_iUnion.2 ?_
+      obtain ⟨q, hq⟩ := exists_nat_ge ‖x‖
+      exact ⟨q, mem_closedBall_zero_iff.2 (by linarith)⟩
+  · -- Case 2: `F = ℝ^N ∖ U` is closed and nonempty;
+    -- take `K_p = {x : |x| ≤ p + 1, dist(x, F) ≥ 1/(p + 1)}`.
+    have hF : (Uᶜ).Nonempty := nonempty_compl.2 hUu
+    have hFc : IsClosed Uᶜ := hU.isClosed_compl
+    let K : ℕ → Set (Euclidean N) := fun p ↦
+      {x | ‖x‖ ≤ (p : ℝ) + 1 ∧ 1 / ((p : ℝ) + 1) ≤ infDist x Uᶜ}
+    -- (a) `K_p` is closed and lies in the compact ball `B_{p+1}(0)`.
+    have hKc : ∀ p, IsCompact (K p) := fun p ↦
+      (isCompact_closedBall (0 : Euclidean N) ((p : ℝ) + 1)).of_isClosed_subset
+        ((isClosed_le continuous_norm continuous_const).inter
+          (isClosed_le continuous_const (continuous_infDist_pt _)))
+        fun x hx ↦ mem_closedBall_zero_iff.2 hx.1
+    -- (b) `K_p` misses `F`, as `dist(x, F) = 0 < 1/(p + 1)` for `x ∈ F`.
+    have hKU : ∀ p, K p ⊆ U := by
+      intro p x hx
+      by_contra hxU
+      have h0 : infDist x Uᶜ = 0 := infDist_zero_of_mem hxU
+      have hpos : (0 : ℝ) < 1 / ((p : ℝ) + 1) := Nat.one_div_pos_of_nat
+      linarith [hx.2]
+    -- (c) The open set `O_p = {|x| < p + 2, dist(x, F) > 1/(p + 2)}` contains `K_p` and lies in
+    -- `K_{p+1}`, hence in `interior K_{p+1}`.
+    have hKint : ∀ p, K p ⊆ interior (K (p + 1)) := by
+      intro p
+      have hO : IsOpen {x : Euclidean N | ‖x‖ < (p : ℝ) + 2 ∧ 1 / ((p : ℝ) + 2) < infDist x Uᶜ} :=
+        (isOpen_lt continuous_norm continuous_const).inter
+          (isOpen_lt continuous_const (continuous_infDist_pt _))
+      have hOK : {x : Euclidean N | ‖x‖ < (p : ℝ) + 2 ∧ 1 / ((p : ℝ) + 2) < infDist x Uᶜ} ⊆
+          K (p + 1) := by
+        intro x hx
+        refine ⟨?_, ?_⟩
+        · push_cast; linarith [hx.1]
+        · push_cast
+          have : (p : ℝ) + 1 + 1 = (p : ℝ) + 2 := by ring
+          rw [this]; exact hx.2.le
+      refine Subset.trans ?_ (interior_maximal hOK hO)
+      intro x hx
+      refine ⟨by linarith [hx.1], lt_of_lt_of_le ?_ hx.2⟩
+      exact one_div_lt_one_div_of_lt (by positivity) (by linarith)
+    -- (d) Monotonicity, by induction from `K_p ⊆ interior K_{p+1} ⊆ K_{p+1}`.
+    have hKmono : Monotone K := monotone_nat_of_le_succ fun p ↦ (hKint p).trans interior_subset
+    refine ⟨K, hKc, hKU, hKint, hKmono, ?_⟩
+    -- (e) Each `x ∈ U` has `dist(x, F) > 0`, so `x ∈ K_m` with `m = max p q` for `p, q` below.
+    refine Subset.antisymm (iUnion_subset hKU) fun x hx ↦ ?_
+    have hδ : 0 < infDist x Uᶜ := (hFc.notMem_iff_infDist_pos hF).1 fun h ↦ h hx
+    obtain ⟨p, hp⟩ := exists_nat_one_div_lt hδ
+    obtain ⟨q, hq⟩ := exists_nat_ge ‖x‖
+    have hpm : (p : ℝ) ≤ (max p q : ℕ) := by exact_mod_cast le_max_left p q
+    have hqm : (q : ℝ) ≤ (max p q : ℕ) := by exact_mod_cast le_max_right p q
+    refine mem_iUnion.2 ⟨max p q, ?_, ?_⟩
+    · linarith
+    · have : 1 / (((max p q : ℕ) : ℝ) + 1) ≤ 1 / ((p : ℝ) + 1) :=
+        one_div_le_one_div_of_le (by positivity) (by linarith)
+      linarith
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
