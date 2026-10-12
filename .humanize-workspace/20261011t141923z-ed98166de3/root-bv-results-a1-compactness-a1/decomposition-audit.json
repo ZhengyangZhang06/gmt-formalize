@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "BVCompactness|2.6|open.*W|W.*open",
+        "def BVCompactness|def IsLocallyBV|def TendstoLocallyInL1On|def IsRelativelyCompactIn|def compactlySupportedSupNorm|def bvVariationOn",
+        "convolution_lsmul_swap|def convolution",
+        "integral_normed|support_normed_eq|contDiff_normed|nonneg_normed|hasCompactSupport_normed",
+        "exists_cthickening_subset_open|closure_thickening_subset_cthickening|IsCompact.cthickening",
+        "Lp.edist_toLp_toLp|edist_toLp_toLp|eLpNorm_one_eq_lintegral_enorm|locallyIntegrableOn_iff|isCompact_univ_pi|FirstCountableTopology.*∀|IsCompact.tendsto_subseq",
+        "Kolmogorov.?Riesz|Frechet.?Kolmogorov|Rellich|bv_compactness_uniform_bounds|bv_integral_div_le_of_variation_le|bv_convolution_bound_and_lipschitz|bv_lintegral_finite_net_of_lipschitz_approx|bv_exists_subseq_tendstoLocallyInL1On",
+        ". ./env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Types.lean",
+        ". ./env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean AssemblyFinal.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-compactness-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-compactness-a1/decomposition-v1.json",
+        "/tmp/bvcompactness-independent-audit-qnukcjph/AuditBase.lean",
+        "/tmp/bvcompactness-independent-audit-qnukcjph/Types.lean",
+        "/tmp/bvcompactness-independent-audit-qnukcjph/Truth12.lean",
+        "/tmp/bvcompactness-independent-audit-qnukcjph/Truth3.lean",
+        "/tmp/bvcompactness-independent-audit-qnukcjph/Child4.lean",
+        "/tmp/bvcompactness-independent-audit-qnukcjph/Child5.lean",
+        "/tmp/bvcompactness-independent-audit-qnukcjph/AssemblyFinal.lean"
+      ],
+      "conclusion": "The snapshot confirms the exact BVCompactness contract, including the constant inside the integrand and the open-W conclusion. Inspected compiler-package sources match the pinned snapshot; mathlib and SimonGMT revisions match their pins. The named compactness search found no matches in the snapshot. The five-way split appropriately isolates A0, test-field normalization, convolution bounds, finite nets, and subsequence extraction. All names are bare, distinct, and unreserved in other DAG branches and decompositions. Empty child dependency lists are correct; the selected node's dependency closure is acyclic. All five exact statement strings pass lexical validation and independently elaborate using frozen definitions without any parent or child theorem. The scalar convolution interpretation and countable-product first-countability instance were checked. Independently rerun proofs of all five exact child types, and the assembly from those types plus the exact authorized mollifier dependency to BVCompactness, compile with only propext, Classical.choice, and Quot.sound. Each supplied natural proof is complete and non-circular."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "uniform_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match, including openness, finite measure, and the weighted supremum hypothesis. The proof handles W empty, uses positivity on nonempty open sets, splits off the measurable constant without assuming measurability of u, and obtains both finite bounds by ENNReal division and toReal."
+    },
+    {
+      "key": "test_field_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement permits arbitrary W and u. The proof establishes a finite nonnegative sup norm, handles its zero case, normalizes the field, verifies admissibility and divergence scaling, and rescales the integral bound. The integral identities require no omitted integrability hypothesis."
+    },
+    {
+      "key": "convolution_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses both stated estimates with scalar multiplication and K coerced to a real. The proof justifies the swapped convolution formula, integrability of each product, subtraction of integrals, and the two integrable majorants. No compact-support assumption is needed."
+    },
+    {
+      "key": "finite_net",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match. The proof handles empty Q and potentially negative Lambda, constructs finitely many representative indices, supplies restricted-measure measurability, and combines three epsilon/4 bounds to obtain the required strict epsilon bound. Both the rounding argument and supplied finite-dimensional shortcut are complete."
+    },
+    {
+      "key": "diagonal_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches local integrability and convergence on every compact subset. The proof supplies a cofinal compact exhaustion, total boundedness in complete L1 spaces, a strictly increasing common subsequence, compatibility of representatives, and justified gluing. It derives both local integrability and the exact TendstoLocallyInL1On conclusion, including empty and whole-space cases."
+    }
+  ],
+  "required_changes": []
+}
