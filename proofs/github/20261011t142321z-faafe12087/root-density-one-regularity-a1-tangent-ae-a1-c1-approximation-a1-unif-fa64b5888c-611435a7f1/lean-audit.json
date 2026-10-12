@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c87e716648ee8fb95c1f4718c2eae12e1a1c552b6cafa5bea49c56d6798f4d99",
+  "git_delta": {
+    "base_commit": "cc59bc46c4c1f1391d21197539b68cf37a53888a",
+    "candidate_commit": "c54581faa11756e42e3a6a010bce10c1826a240e",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tae_c1_uniform_remainder",
+    "diff_sha256": "7d93abc62c30b709c00f6ba867a450d62f96d760ee8be4062befc9af1088f3dd",
+    "source_sha256": "3945b79373d645f437ebfa3b4267237fcd75f6ff38905b122dc7200c0759092c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tae_c1_uniform_remainder",
+      "statement": "∀ {n : ℕ} (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ C : Set (Rn n), IsClosed C → C ⊆ {x | DifferentiableAt ℝ f x} → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ A : Set (Rn n), A ⊆ C ∧ IsClosed A ∧ volume (C \\ A) < δ ∧ ∀ Q : Set (Rn n), IsCompact Q → Q ⊆ A → ∀ η : ℝ, 0 < η → ∃ ρ : ℝ, 0 < ρ ∧ ∀ x ∈ Q, ∀ y ∈ A, dist x y < ρ → ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ η * ‖y - x‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
