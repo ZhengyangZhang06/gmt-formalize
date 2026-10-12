@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e622182b3f79ce669c4f0a4dfe8aac0595f68b5270a75fbdfe0e5eb50915e320",
+  "git_delta": {
+    "base_commit": "9887557c4b1f6be4135a69c25b348a3123441812",
+    "candidate_commit": "99177d99dec778aced193ba5c81f19760268d0fe",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "45e1ac1d65cd9c1555074024073cc83f4618d663fdfe7b6fd6947bab8b2da977",
+    "source_sha256": "e9e8ebe88788bff705000c7fa301256399f64fc4c32dc529f69c622e49076bad",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiDens_lipschitz_sobolev",
+      "statement": "∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (u : Rn (n + 1) → ℝ) (K : ℝ≥0), LipschitzWith K u → HasCompactSupport u → eLpNorm u ((n + 1 : ℝ≥0∞) / n) volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ u y‖)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
