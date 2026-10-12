@@ -1,0 +1,19 @@
+{
+  "node_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1.smooth_annulus_estimate-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/914",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "ab96515f35714490d02ba976b2c99a137127d225",
+  "integrated_commit": "",
+  "proof_base_commit": "eab10a7e1c53a358ffc637956797ce1a9ebccd21",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.harmonic_approximation-a1.boundary_layer_estimate-a1",
+  "requires": [
+    "root.harmonic_approximation-a1.boundary_layer_estimate-a1.smooth_annulus_estimate-a1.dilation_formula-a1",
+    "root.harmonic_approximation-a1.boundary_layer_estimate-a1.smooth_annulus_estimate-a1.ray_inequality-a1",
+    "root.harmonic_approximation-a1.boundary_layer_estimate-a1.smooth_annulus_estimate-a1.annulus_kernel_bound-a1"
+  ]
+}
