@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.eilenberg_inequality-a1.compact_fiber_measurable-a1.compact_open_cover_content-a1",
+  "parent_id": "root.eilenberg_inequality-a1.compact_fiber_measurable-a1",
+  "depth": 3,
+  "title": "Hausdorff measure of a compact set as a countable supremum of finite open-cover contents",
+  "statement": "Let X be a metric space with its Borel σ-algebra, k > 0 real and F ⊆ X compact. For δ ∈ [0,∞] let U_δ(F) ∈ [0,∞] be the infimum (inf ∅ = ∞) of Σ_{i∈I} (ediam O_i)^k. The infimum runs over all finite sets I ⊆ ℕ and all families O : ℕ → Set X such that every O_i with i ∈ I is open with ediam O_i < δ, and F ⊆ ⋃_{i∈I} O_i. Here ediam = Metric.ediam is the extended diameter (ediam ∅ = 0), and powers in [0,∞] are ENNReal.rpow. Then μH[k](F) = sup_{n∈ℕ} U_{1/(n+1)}(F), where μH[k] = MeasureTheory.Measure.hausdorffMeasure k is Mathlib's unnormalized k-dimensional Hausdorff measure and 1/(n+1) = ((n : ℝ≥0∞) + 1)⁻¹.",
+  "lean_statement": "∀ (X : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] (k : ℝ) (F : Set X), 0 < k → IsCompact F → MeasureTheory.Measure.hausdorffMeasure k F = ⨆ n : ℕ, ⨅ (I : Finset ℕ) (O : ℕ → Set X) (_ : ∀ i ∈ I, IsOpen (O i) ∧ Metric.ediam (O i) < ((n : ℝ≥0∞) + 1)⁻¹) (_ : F ⊆ ⋃ i ∈ I, O i), ∑ i ∈ I, Metric.ediam (O i) ^ k",
+  "lean_name": "eilenberg_compact_hausdorff_eq_iSup_open_content",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-eilenberg-inequality-a1-compact-fiber-measurable-a1-compact-open-8baf5482ea-a1"
+}

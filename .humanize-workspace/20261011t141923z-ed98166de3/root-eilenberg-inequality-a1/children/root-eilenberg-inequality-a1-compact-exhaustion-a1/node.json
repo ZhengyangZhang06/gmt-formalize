@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.eilenberg_inequality-a1.compact_exhaustion-a1",
+  "parent_id": "root.eilenberg_inequality-a1",
+  "depth": 2,
+  "title": "Monotone compact exhaustion modulo a null set (σ-compact metric space)",
+  "statement": "Let X be a σ-compact metric space with its Borel σ-algebra, μ any measure on X, and A ⊆ X μ-null-measurable with μ(A) < ∞. Then there are compact sets Q_0 ⊆ Q_1 ⊆ Q_2 ⊆ … contained in A with μ(A ∖ ⋃_j Q_j) = 0.",
+  "lean_statement": "∀ (X : Type) [MetricSpace X] [SigmaCompactSpace X] [MeasurableSpace X] [BorelSpace X] (μ : Measure X) (A : Set X), NullMeasurableSet A μ → μ A < ⊤ → ∃ Q : ℕ → Set X, (∀ j, IsCompact (Q j)) ∧ (∀ j, Q j ⊆ A) ∧ Monotone Q ∧ μ (A \\ ⋃ j, Q j) = 0",
+  "lean_name": "eilenberg_compact_exhaustion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-eilenberg-inequality-a1-compact-exhaustion-a1-a1"
+}
