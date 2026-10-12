@@ -1,0 +1,15 @@
+{
+  "node_id": "root.de_giorgi-a1.blowup_halfspace-a1.blowup_perimeter_bound-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1804",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "9eb3a583d19f080df61712070fdad05142f0e3e5",
+  "integrated_commit": "",
+  "proof_base_commit": "2ea17955400a71f5ea4a7d908bf41b43de55a189",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.de_giorgi-a1.blowup_halfspace-a1",
+  "requires": []
+}
