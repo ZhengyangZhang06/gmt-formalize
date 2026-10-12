@@ -3101,6 +3101,32 @@ theorem Submission.weighted_monotonicity_identity : ∀ (n ℓ : ℕ) (V : Recti
         hσρ hε hεR hu hq hbd hG hφ h0 fun τ hτ ↦
           hode ε φ hε hεR hφ h1 h0 τ (hσ.trans_le hτ.1) hτ.2
 
+/-- **Monotonicity with mean curvature** (Ch. 4, 3.16–3.18 and 4.1–4.9, pp. 92–95), given the
+structure facts of §1 for every varifold (`μ_V` finite on compact sets, `dim T_x V = n` for
+`μ_V`-a.e. `x`, and `x ↦ p_{T_x V}` `μ_V`-measurable). The weighted monotonicity identity with
+`h ≡ 1` is 3.16/4.1 integrated from `σ` to `ρ` with the cutoff removed: for `B_ρ(ξ) ⊆ U` and
+`0 < σ ≤ ρ`, `a(ρ) - a(σ) = ∫_{B_ρ(ξ) \ B_σ(ξ)} r⁻ⁿ|D^⊥r|² dμ_V + ∫_σ^ρ e`, where
+`a(τ) = τ⁻ⁿμ_V(B_τ(ξ))` and `e(τ) = τ^{-n-1} ∫_{B_τ(ξ)} (x - ξ)·H dμ_V`. Then `|e| ≤ δ/τ` gives
+3.18; `|e| ≤ Λa` (3.15) and the Hölder bound `|e(τ)| ≤ (κΛ/R)(τ/R)^{-n/p}(1 + a(τ))` (4.2–4.3),
+integrated by parts against `F = exp(-∫₀^ρ e/a)`, resp. `F = exp(-∫₀^ρ e/(1 + a))`, give 3.17
+and 4.5–4.8; and the resulting monotone quantities give the existence and upper semicontinuity
+of `Θⁿ(μ_V, ·)` (the remark after 3.17, and 4.9). -/
+theorem Submission.mean_curvature_monotonicity : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ),
+    0 < n → IsFiniteMeasureOnCompacts V.weight ∧
+      (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧
+      AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) →
+    BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity := by
+  intro hStruct
+  -- 3.16 and 4.1 integrated from `σ` to `ρ`: the weighted identity with `h ≡ 1`.
+  have hUnit :=
+    Submission.mcm_unit_weight_identity Submission.weighted_monotonicity_identity hStruct
+  -- 4.2–4.8, from which 4.9 follows.
+  have hLpMono := Submission.mcm_lp_monotonicity_of_identity hStruct hUnit
+  -- 3.17 with the remark after it, 3.18, 4.5–4.8 and 4.9.
+  exact ⟨Submission.mcm_bounded_curvature_of_identity hStruct hUnit,
+    Submission.mcm_log_error_of_identity hUnit, hLpMono,
+    Submission.mcm_lp_density_of_monotonicity hStruct hLpMono⟩
+
 end
 
 end GMT.Ch04
