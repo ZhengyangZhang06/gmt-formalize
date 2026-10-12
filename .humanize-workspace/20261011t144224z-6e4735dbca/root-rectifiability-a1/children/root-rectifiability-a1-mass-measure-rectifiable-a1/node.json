@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.mass_measure_rectifiable-a1",
+  "parent_id": "root.rectifiability-a1",
+  "depth": 2,
+  "title": "The mass measure is rectifiable: μ = θHⁿ⌞M with M countably rectifiable (Simon 6, proof of 8.1, (1)-(8))",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U ⊆ ℝ^P open, T ∈ D_n(U) with M_W(T) + M_W(∂T) < ∞ for every open W ⊂⊂ U, and μ a Borel measure on ℝ^P with IsMassMeasure T μ such that the upper density Θ*ⁿ(μ, x) (dimensionalUpperDensity μ n univ x) is > 0 for μ-a.e. x. Then there are a Borel set M ⊆ U which is countably n-rectifiable and a Borel function θ : ℝ^P → ℝ with θ > 0 on M and θ Hⁿ-integrable on M ∩ K for every compact K ⊆ U, such that μ = θHⁿ⌞M, i.e. μ = (μHE[n]⌞M).withDensity(x ↦ ofReal θ(x)) (μ(A) = ∫_{A∩M} θ dHⁿ for Borel A).",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W + T.boundary.massOn W < ∞) → ∀ μ : Measure (Eucl P), IsMassMeasure T μ → (∀ᵐ x ∂μ, 0 < dimensionalUpperDensity μ.toOuterMeasure ((m + 1 : ℕ) : ℝ) univ x) → ∃ (M : Set (Eucl P)) (θ : Eucl P → ℝ), M ⊆ U ∧ MeasurableSet M ∧ CountablyRectifiable (m + 1) M ∧ Measurable θ ∧ (∀ x ∈ M, 0 < θ x) ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) (μHE[m + 1] : Measure (Eucl P))) ∧ μ = ((μHE[m + 1] : Measure (Eucl P)).restrict M).withDensity (fun x => ENNReal.ofReal (θ x))",
+  "lean_name": "rectifiability_mass_measure_rectifiable",
+  "depends_on": [
+    "root.rectifiability-a1.projection_null-a1",
+    "root.rectifiability-a1.mass_measure_abs_continuous-a1",
+    "root.rectifiability-a1.density_comparison-a1",
+    "root.rectifiability-a1.structure_projection-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.mass_measure_abs_continuous-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.density_comparison-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.structure_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-mass-measure-rectifiable-a1-a1"
+}
