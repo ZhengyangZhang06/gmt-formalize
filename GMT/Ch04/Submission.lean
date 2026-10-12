@@ -1007,6 +1007,46 @@ theorem Submission.sobolev_energy_integrable : ∀ (n ℓ : ℕ) (V : Rectifiabl
       subset_tsupport g (left_ne_zero_of_mul hx)).1
       (IntegrableOn.continuousOn_mul hC1.continuous.continuousOn hHK.norm hgc)
 
+/-- **Sobolev inequality from the superlevel inequality (Simon Ch. 4, 5.7–5.9, Steps 5–6, with
+4.11).** Let `n ≥ 2`, let `μ_V` be finite on compact sets with `x ↦ p_{T_x V}` `μ_V`-a.e. strongly
+measurable, `U` open, `H` locally `μ_V`-integrable on `U` and `C ≥ 0`. If every nonnegative
+`g ∈ C¹(U)` with compact support in `U` satisfies
+`∫_{g ≥ 1} g dμ_V ≤ C (∫ g dμ_V)^{1/n} ∫ (|∇^M g| + g|H|) dμ_V`, then every nonnegative
+`h ∈ C¹(U)` with compact support in `U` satisfies
+`(∫ h^{n/(n-1)} dμ_V)^{(n-1)/n} ≤ (n/(n-1)) C ∫ (|∇^M h| + h|H|) dμ_V`. -/
+theorem Submission.sobolev_of_superlevel_inequality : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (h : Ambient n ℓ → ℝ) (C : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts V.weight → AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → IsOpen U → LocallyIntegrableOn H U V.weight → 0 ≤ C → (∀ g : Ambient n ℓ → ℝ, ContDiffOn ℝ 1 g U → HasCompactSupport g → tsupport g ⊆ U → (∀ x, 0 ≤ g x) → ∫ x in {x | 1 ≤ g x}, g x ∂V.weight ≤ C * (∫ x, g x ∂V.weight) ^ (n : ℝ)⁻¹ * ∫ x, (‖V.tangentialGradient g x‖ + g x * ‖H x‖) ∂V.weight) → ContDiffOn ℝ 1 h U → HasCompactSupport h → tsupport h ⊆ U → (∀ x, 0 ≤ h x) → (∫ x, h x ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂V.weight) ^ (((n : ℝ) - 1) / n) ≤ (n : ℝ) / ((n : ℝ) - 1) * C * ∫ x, (‖V.tangentialGradient h x‖ + h x * ‖H x‖) ∂V.weight := by
+  intro n ℓ V U H h C hn hfin hproj hU hH hC hsup hh hhc hhU hh0
+  -- (1) `h ∈ C¹(ℝ^{n+ℓ})`, `|∇^M h|` is `μ_V`-integrable, and `|H|` is integrable on the compact
+  -- set `tsupport h ⊆ U`.
+  obtain ⟨hC1, -, hgrad, -⟩ :=
+    Submission.sobolev_energy_integrable n ℓ V U H h hfin hproj hU hH hh hhc hhU
+  have hHK : IntegrableOn (fun x ↦ ‖H x‖) (tsupport h) V.weight :=
+    (hH.integrableOn_compact_subset hhU hhc).norm
+  -- (7)–(8) Letting `ε ↓ 0`, it suffices to prove the level-integral bound for each `ε ∈ (0, 1]`,
+  -- with `J = ∫ (|∇^M h| + h|H|) dμ_V ≥ 0`.
+  refine Submission.sobolev_of_level_integral_bounds n ℓ V.weight h C _ hn hfin hC1.continuous hhc
+    hh0 hC (integral_nonneg fun x ↦ add_nonneg (norm_nonneg _) (mul_nonneg (hh0 x) (norm_nonneg _)))
+    fun ε hε _ ↦ ?_
+  -- (2) The cut-off `γ(s) = ψ(s/ε)`, `ψ = Real.smoothTransition`: `C¹`, nondecreasing, with
+  -- values in `[0, 1]`, `γ = 0` on `(-∞, 0]` and `γ = 1` on `[ε, ∞)`.
+  let γ : ℝ → ℝ := fun s ↦ Real.smoothTransition (s / ε)
+  have hγC1 : ContDiff ℝ 1 γ := Real.smoothTransition.contDiff.comp (contDiff_id.div_const ε)
+  have hγmono : Monotone γ := fun a b hab ↦
+    Real.smoothTransition.monotone (div_le_div_of_nonneg_right hab hε.le)
+  have hγbd : ∀ s, 0 ≤ γ s ∧ γ s ≤ 1 := fun s ↦
+    ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩
+  have hγ0 : ∀ s, s ≤ 0 → γ s = 0 := fun s hs ↦
+    Real.smoothTransition.zero_of_nonpos (div_nonpos_of_nonpos_of_nonneg hs hε.le)
+  have hγ1 : ∀ s, ε ≤ s → γ s = 1 := fun s hs ↦
+    Real.smoothTransition.one_of_one_le ((one_le_div hε).2 hs)
+  -- (3)–(6) The superlevel inequality for the truncations `γ(h - t)`, `t ≥ 0`, integrated over
+  -- the levels `t` (with `D = |∇^M h|` and `K = |H|`).
+  exact Submission.sobolev_level_integral_bound n ℓ V.weight h (fun x ↦ ‖V.tangentialGradient h x‖)
+    (fun x ↦ ‖H x‖) γ C ε hn hfin hC1.continuous hhc hh0 (fun _ ↦ norm_nonneg _) hgrad
+    (fun _ ↦ norm_nonneg _) hHK hγC1 hγmono hγbd hγ0 hC hε fun t ht ↦
+      Submission.sobolev_truncation_superlevel_bound n ℓ V U H h γ C ε t hfin hH hC hsup hC1 hhc
+        hhU hh0 hgrad hγC1 hγmono hγbd hγ0 hε hγ1 ht
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
