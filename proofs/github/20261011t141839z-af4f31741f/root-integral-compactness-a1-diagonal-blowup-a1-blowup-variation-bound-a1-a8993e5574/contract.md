@@ -1,0 +1,757 @@
+<!-- theorem-id: gmt-ch08/root.integral_compactness-a1.diagonal_blowup-a1.blowup_variation_bound-a1 -->
+
+## Theorem `Submission.intcpt_diag_blowup_variation_bound`
+
+Let N, n ∈ ℕ, U ⊆ ℝ^N, V an n-varifold on U with locally bounded first variation, ξ ∈ ℝ^N, t > 0 and R > 0 with ξ + t·y ∈ U for every y ∈ B°_R(0). Then there is an n-varifold W on B°_R(0) such that W.measure = (rescaledMeasure V ξ t).restrict (B°_R(0) × G(N,n)) (i.e. W = V_{ξ,t} ⌞ G_n(B°_R(0))), W has locally bounded first variation, and variationMeasure W (B°_R(0)) ≤ ofReal(t^{-n}·t)·variationMeasure V (B_{tR}(ξ)), where B_ρ(x) is the closed ball and variationMeasure is ‖δ·‖.
+
+Node: `root.integral_compactness-a1.diagonal_blowup-a1.blowup_variation_bound-a1`
+
+Root: https://github.com/ZhengyangZhang06/gmt-formalize/issues/2
+
+Parent: https://github.com/ZhengyangZhang06/gmt-formalize/issues/896
+
+Prerequisites: None
+
+Decomposition children: None
+
+## Lean problem
+
+Declaration: `Submission.intcpt_diag_blowup_variation_bound`
+
+```lean
+∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (ξ : Euclidean N) (t R : ℝ), V.HasLocallyBoundedFirstVariation → 0 < t → 0 < R → (∀ y ∈ ball (0 : Euclidean N) R, ξ + t • y ∈ U) → ∃ W : Varifold N n (ball (0 : Euclidean N) R), W.measure = (rescaledMeasure V ξ t).restrict (ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n))) ∧ W.HasLocallyBoundedFirstVariation ∧ variationMeasure W (ball (0 : Euclidean N) R) ≤ ENNReal.ofReal (t⁻¹ ^ n * t) * variationMeasure V (closedBall ξ (t * R))
+```
+
+### Frozen project context
+
+`GMT/Ch08/Contract.lean` at `63436ae63eb6a2fd7525bef73c73cf88e2cd7e93` supplies the original imports, definitions and root contract. Child hypotheses are stated above; prerequisite declarations are linked in their issues.
+
+```lean
+import Poincare.SimonGMT.Chapter08.VarifoldConvergence
+import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter02.Submanifold
+import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 8 (printed pp. 205–224)
+
+## Theory of General Varifolds — frozen contract
+
+Ambient space `ℝ^{n+ℓ}` is `Euclidean N = EuclideanSpace ℝ (Fin N)` (so `N = n + ℓ`), `U` is an
+open subset, and an `n`-varifold on `U` is `Poincare.SimonGMT.Chapter08.Varifold N n U`: a Borel
+measure on `ℝ^N × G(N,n)` that vanishes off `U × G(N,n)` and is finite on `K × G(N,n)` for every
+compact `K ⊆ U` (i.e. the zero extension of a Radon measure on `Gₙ(U)`).  `G(N,n)` is
+`Grassmannian N n`, realized by orthogonal projection matrices (Simon's own metric on `G(n+ℓ,n)`
+is the Frobenius distance of these matrices).  Reused, already verified SimonGMT notions:
+`Varifold.weight` (`μ_V = π_# V`), `Varifold.firstVariation` (`δV(X) = ∫ div_S X dV`, 2.3),
+`Varifold.TestVectorField U` (`K(U;ℝ^{n+ℓ})`: compactly supported `C¹` fields with support in `U`),
+`Varifold.firstVariationNormOn` (the supremum in 2.5), `Varifold.HasLocallyBoundedFirstVariation`,
+`Varifold.IsFirstVariationMeasure` (characterization 2.5 of `‖δV‖`), `Varifold.Stationary`,
+`Varifold.RadonConverges` (convergence as Radon measures on `Gₙ(U)`), `Varifold.pushforwardMeasure`
+(formula 2.1), `Chapter03.CountablyRectifiable`, `Chapter03.HasWeightedApproximateTangentSpaceAt`
+(Ch. 3, 1.7), `Chapter02.IsSimonSubmanifold` (Ch. 2, §4).  `H^n` is Mathlib's `μHE[n]` (normalized
+so that it agrees with Lebesgue measure on `n`-planes, as Simon's `H^n` does).
+Simon's `B_ρ(x)` is the closed ball `Metric.closedBall x ρ`.
+-/
+
+open Set Filter MeasureTheory Metric
+open scoped Topology ENNReal CompactlySupported Pointwise
+
+namespace GMT.Ch08
+
+open Poincare.SimonGMT
+open Poincare.SimonGMT.Chapter08
+
+section Definitions
+
+variable {N n : ℕ} {U : Set (Euclidean N)}
+
+/-- `ω_n`, the volume of the unit ball of `ℝ^n` (Simon Ch. 1; `ω_0 = 1`). -/
+noncomputable def unitBallVolume (n : ℕ) : ℝ≥0∞ :=
+  volume (Metric.ball (0 : EuclideanSpace ℝ (Fin n)) 1)
+
+/-- The density quotient `μ(B_ρ(x)) / (ω_n ρ^n)` (Simon Ch. 1, 3.1), closed balls. -/
+noncomputable def densityRatio (n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (ρ : ℝ) :
+    ℝ≥0∞ :=
+  μ (closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal ρ ^ n)
+
+/-- `Θ^n(μ, x)` exists and equals `θ ∈ [0, ∞]`: `lim_{ρ↓0} μ(B_ρ(x))/(ω_n ρ^n) = θ`
+(Simon Ch. 1, 3.1; used throughout Ch. 8 with `μ = μ_V`). -/
+def HasDensity (n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞) : Prop :=
+  Tendsto (densityRatio n μ x) (𝓝[>] 0) (𝓝 θ)
+
+/-- Simon's `W ⊂⊂ U` for open `W`: `W` is open with compact closure contained in `U`. -/
+def IsRelCompactOpenIn (W U : Set (Euclidean N)) : Prop :=
+  IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U
+
+/-- `‖δV‖`, the total variation measure of `δV` (Simon Ch. 8, 2.5, p. 209), zero-extended off `U`.
+When `V` has locally bounded first variation this is SimonGMT's Riesz construction
+`firstVariationRieszMeasure`, which is proved (`Varifold.isFirstVariationMeasure_riesz`) to be locally
+finite on `U` with `‖δV‖(W) = sup {|δV(X)| : X ∈ K(U;ℝ^N), |X| ≤ 1, spt X ⊆ W}` for every open
+`W ⊂⊂ U`; such a Radon measure is unique.  It is only used under that hypothesis. -/
+noncomputable def variationMeasure (V : Varifold N n U) : Measure (Euclidean N) :=
+  open Classical in
+  if h : V.HasLocallyBoundedFirstVariation then V.firstVariationRieszMeasure h else 0
+
+/-- `D_{μ_V} ‖δV‖ (x) = lim_{ρ↓0} ‖δV‖(B_ρ(x)) / μ_V(B_ρ(x))` (Simon Ch. 8, 2.7), taken as the
+`limsup` so that it is defined everywhere (it is a genuine limit `μ_V`-a.e.). -/
+noncomputable def variationDensity (V : Varifold N n U) (x : Euclidean N) : ℝ≥0∞ :=
+  limsup (fun ρ : ℝ ↦ variationMeasure V (closedBall x ρ) / V.weight (closedBall x ρ)) (𝓝[>] 0)
+
+/-- The generalized boundary `Z = {x ∈ U : D_{μ_V}‖δV‖(x) = +∞}` (Simon Ch. 8, 2.9). -/
+def generalizedBoundary (V : Varifold N n U) : Set (Euclidean N) :=
+  U ∩ {x | variationDensity V x = ∞}
+
+/-- The generalized boundary measure `σ = ‖δV‖ ⌞ Z` (Simon Ch. 8, 2.9). -/
+noncomputable def generalizedBoundaryMeasure (V : Varifold N n U) : Measure (Euclidean N) :=
+  (variationMeasure V).restrict (generalizedBoundary V)
+
+/-- The generalized mean curvature `H = (D_{μ_V}‖δV‖) ν` (Simon Ch. 8, 2.8), for a given
+polar field `ν` of `δV` (the real factor is set to `0` where the density is `+∞`, a `μ_V`-null set). -/
+noncomputable def generalizedMeanCurvature (V : Varifold N n U) (ν : Euclidean N → Euclidean N)
+    (x : Euclidean N) : Euclidean N :=
+  (variationDensity V x).toReal • ν x
+
+/-- `∫_{Gₙ(A)} r^{-n-2} |p_{S^⊥}(y - x)|² dV(y,S)` with `r = |y - x|` (the defect term in Simon
+Ch. 8, 3.3–3.4); here `p_{S^⊥}(v) = v - p_S(v)`. -/
+noncomputable def normalDefect (V : Varifold N n U) (x : Euclidean N) (A : Set (Euclidean N)) :
+    ℝ≥0∞ :=
+  ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)),
+    ENNReal.ofReal (‖(z.1 - x) - Grassmannian.project z.2 (z.1 - x)‖ ^ 2 / ‖z.1 - x‖ ^ (n + 2))
+    ∂V.measure
+
+/-- The rescaled varifold `V_{x,λ} = η_{x,λ #} V` (Simon Ch. 8, 1.1 and 5.1), as a measure on
+`ℝ^N × G(N,n)`: `V_{x,λ}(A) = λ^{-n} V({(λy + x, S) : (y,S) ∈ A} ∩ Gₙ(U))`. -/
+noncomputable def rescaledMeasure (V : Varifold N n U) (x : Euclidean N) (t : ℝ) :
+    Measure (Euclidean N × Grassmannian N n) :=
+  ENNReal.ofReal (t⁻¹ ^ n) • V.measure.map (fun z ↦ (t⁻¹ • (z.1 - x), z.2))
+
+/-- The varifold `v(T)` of an `n`-plane `T` with multiplicity one:
+`v(T)(A) = H^n({y ∈ T : (y, T) ∈ A})`. -/
+noncomputable def planeVarifoldMeasure (T : Grassmannian N n) :
+    Measure (Euclidean N × Grassmannian N n) :=
+  ((μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N))).map (fun y ↦ (y, T))
+
+/-- Simon Ch. 8, Definition 1.1 (p. 206): `V` has tangent space `T` with multiplicity
+`θ ∈ (0,∞)` at `x ∈ U`, i.e. `lim_{λ↓0} V_{x,λ} = θ v(T)` as Radon measures on `Gₙ(ℝ^{n+ℓ})`. -/
+def HasTangentPlane (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ) :
+    Prop :=
+  x ∈ U ∧ 0 < θ ∧
+    ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ),
+      Tendsto (fun t : ℝ ↦ ∫ z, f z ∂(rescaledMeasure V x t)) (𝓝[>] 0)
+        (𝓝 (θ * ∫ z, f z ∂(planeVarifoldMeasure T)))
+
+/-- Convergence in the sense of Radon measures on `Gₙ(ℝ^{n+ℓ})`: convergence of integrals of
+every continuous compactly supported function. -/
+def VagueConverges (μs : ℕ → Measure (Euclidean N × Grassmannian N n))
+    (μ : Measure (Euclidean N × Grassmannian N n)) : Prop :=
+  ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ),
+    Tendsto (fun j ↦ ∫ z, f z ∂(μs j)) atTop (𝓝 (∫ z, f z ∂μ))
+
+/-- Simon Ch. 8, Definition 5.4 (p. 215): `C ∈ VarTan(V, x)`, i.e. `C = lim_j η_{x,λ_j #} V`
+(Radon measures on `Gₙ(ℝ^{n+ℓ})`) for some `λ_j > 0`, `λ_j → 0`. -/
+def IsVarifoldTangent (V : Varifold N n U) (x : Euclidean N)
+    (C : Varifold N n (univ : Set (Euclidean N))) : Prop :=
+  ∃ t : ℕ → ℝ, (∀ j, 0 < t j) ∧ Tendsto t atTop (𝓝 0) ∧
+    VagueConverges (fun j ↦ rescaledMeasure V x (t j)) C.measure
+
+/-- `V = v(M, θ)` (Simon Ch. 8, p. 206, with Ch. 4 §1 and Ch. 3, 1.7): `M ⊆ U` is
+`H^n`-measurable and countably `n`-rectifiable, `θ > 0` on `M` is locally `H^n`-integrable in `U`, and
+`V(A) = μ(π(TM ∩ A))` for Borel `A`, where `μ = H^n ⌞ θ`, `TM = {(x, T_x M) : x ∈ M_*}` and `M_*`
+is the set of `x ∈ M` at which `M` has an approximate tangent space `T_x M` with respect to `θ`.
+No tangent field is supplied as data: `T_x M` is the (unique, as `θ(x) > 0`) plane satisfying
+Ch. 3, 1.7. -/
+def IsVarifoldOf (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) : Prop :=
+  M ⊆ U ∧ NullMeasurableSet M (μHE[n] : Measure (Euclidean N)) ∧
+    Chapter03.CountablyRectifiable n M ∧ (∀ x ∈ M, 0 < θ x) ∧
+    (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) μHE[n]) ∧
+    ∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A →
+      V.measure A =
+        ∫⁻ x in {x | x ∈ M ∧ ∃ S : Grassmannian N n,
+            Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ∧ (x, S) ∈ A},
+          ENNReal.ofReal (θ x) ∂μHE[n]
+
+/-- `V` is an `n`-rectifiable varifold: `V = v(M, θ)` for some `M`, `θ` as in `IsVarifoldOf`
+(Simon Ch. 8, p. 206 and 5.5). -/
+def IsRectifiable (V : Varifold N n U) : Prop :=
+  ∃ (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsVarifoldOf V M θ
+
+/-- `V` is an integer multiplicity (integral) rectifiable `n`-varifold: `V = v(M, θ)` with `θ`
+integer-valued `H^n`-a.e. on `M` (Simon Ch. 4 §1, Ch. 8, 5.9). -/
+def IsIntegral (V : Varifold N n U) : Prop :=
+  ∃ (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsVarifoldOf V M θ ∧
+    ∀ᵐ x ∂((μHE[n] : Measure (Euclidean N)).restrict M), ∃ k : ℕ, θ x = k
+
+/-- The classical tangent space `T_y M` of a `C¹` submanifold (Simon Ch. 2, §4, p. 55): velocities
+`γ'(0)` of `C¹` curves `γ : (-1,1) → M` with `γ(0) = y`. -/
+def classicalTangentSpace (M : Set (Euclidean N)) (y : Euclidean N) : Set (Euclidean N) :=
+  {ξ | ∃ γ : ℝ → Euclidean N, ContDiffOn ℝ 1 γ (Ioo (-1) 1) ∧ MapsTo γ (Ioo (-1) 1) M ∧
+    γ 0 = y ∧ HasDerivAt γ ξ 0}
+
+end Definitions
+
+/-- **Simon Ch. 8, 1.2 (First Rectifiability Theorem), p. 206.**
+If an `n`-varifold `V` on `U` has a tangent space `T_x` with multiplicity `θ(x) ∈ (0,∞)` (in the
+sense of 1.1) at `μ_V`-a.e. `x ∈ U`, then `V` is `n`-rectifiable; in fact, for the set
+`M = {x ∈ spt μ_V : T_x and θ(x) both exist}` and the multiplicity function `θ`, `M` is
+`H^n`-measurable and countably `n`-rectifiable, `θ` is locally `H^n`-integrable on `M`, and
+`V = v(M, θ)`. (`spt V` is read as `spt μ_V`.) -/
+def FirstRectifiabilityTheorem : Prop :=
+  ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U),
+    (∀ᵐ x ∂V.weight, ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ) →
+    ∃ θ : Euclidean N → ℝ,
+      (∀ x ∈ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
+          HasTangentPlane V x T θ'}, ∃ T : Grassmannian N n, HasTangentPlane V x T (θ x)) ∧
+      IsVarifoldOf V {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
+          HasTangentPlane V x T θ'} θ
+
+/-- **Simon Ch. 8, 2.2–2.4 (first variation of a general varifold), pp. 208–209.**
+Let `φ : (-1,1) × U → U` be a `C²` one-parameter family as in Ch. 2, 5.1/5.6: `φ_0 = id`, each
+`φ_t` maps `U` injectively into `U` (a diffeomorphism of `U` onto itself in the book; injectivity
+is all that is used), and `φ_t = id` on `U ∖ K` for a fixed compact `K ⊆ U`; let `X = ∂φ/∂t|_{t=0}`.
+Then `t ↦ M(φ_{t#} V ⌞ Gₙ(K))` (with `φ_{t#}V` as in 2.1) is differentiable at `0` with derivative
+`δV(X) = ∫ div_S X dV(x,S)` (2.2 = 2.3), and `div_S X = Σ_i τ_i · D_{τ_i} X` for every orthonormal
+basis `τ_1,…,τ_n` of `S` (2.4). -/
+def FirstVariationIsMassDerivative : Prop :=
+  (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U)
+      (φ : ℝ × Euclidean N → Euclidean N) (K : Set (Euclidean N)) (X : Euclidean N → Euclidean N),
+      IsCompact K → K ⊆ U →
+      ContDiffOn ℝ 2 φ (Ioo (-1 : ℝ) 1 ×ˢ U) →
+      (∀ x ∈ U, φ (0, x) = x) →
+      (∀ t ∈ Ioo (-1 : ℝ) 1, MapsTo (fun x ↦ φ (t, x)) U U ∧ InjOn (fun x ↦ φ (t, x)) U) →
+      (∀ t ∈ Ioo (-1 : ℝ) 1, ∀ x ∈ U, x ∉ K → φ (t, x) = x) →
+      (∀ x ∈ U, HasDerivAt (fun t ↦ φ (t, x)) (X x) 0) →
+      HasDerivAt
+        (fun t : ℝ ↦ (V.pushforwardMeasure (fun x ↦ φ (t, x))
+          (K ×ˢ (univ : Set (Grassmannian N n)))).toReal)
+        (V.firstVariation X) 0) ∧
+  (∀ (N n : ℕ) (X : Euclidean N → Euclidean N) (x : Euclidean N) (S : Grassmannian N n)
+      (b : OrthonormalBasis (Fin n) ℝ S.plane),
+      Varifold.tangentialDivergence X x S =
+        ∑ i, inner ℝ (b i : Euclidean N) ((fderiv ℝ X x) (b i : Euclidean N)))
+
+/-- **Simon Ch. 8, 2.5–2.10 (total variation, mean curvature, generalized boundary), pp. 209–210.**
+If `V` has locally bounded first variation in `U`, then: `‖δV‖` is a Radon measure on `U`
+characterized by 2.5; there is a Borel field `ν` with `|ν| = 1` `‖δV‖`-a.e. and
+`δV(X) = -∫ ν·X d‖δV‖` (2.6); `D_{μ_V}‖δV‖(x)` exists and is finite for `μ_V`-a.e. `x` (2.7);
+`Z = {D_{μ_V}‖δV‖ = ∞}` has `μ_V(Z) = 0` (2.9); and with `H = (D_{μ_V}‖δV‖) ν`, `σ = ‖δV‖⌞Z`,
+`δV(X) = -∫ H·X dμ_V - ∫_Z ν·X dσ` for all `X ∈ K(U;ℝ^{n+ℓ})` (2.8, 2.10), all integrals being
+absolutely convergent. -/
+def FirstVariationRepresentation : Prop :=
+  ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U),
+    V.HasLocallyBoundedFirstVariation →
+      V.IsFirstVariationMeasure (variationMeasure V) ∧
+      (∀ᵐ x ∂V.weight, variationDensity V x ≠ ∞ ∧
+        Tendsto (fun ρ : ℝ ↦ variationMeasure V (closedBall x ρ) / V.weight (closedBall x ρ))
+          (𝓝[>] 0) (𝓝 (variationDensity V x))) ∧
+      V.weight (generalizedBoundary V) = 0 ∧
+      ∃ ν : Euclidean N → Euclidean N, Measurable ν ∧
+        (∀ᵐ x ∂(variationMeasure V), ‖ν x‖ = 1) ∧
+        ∀ X : Varifold.TestVectorField U,
+          Integrable (fun x ↦ inner ℝ (ν x) (X x)) (variationMeasure V) ∧
+          V.firstVariation X = -∫ x, inner ℝ (ν x) (X x) ∂(variationMeasure V) ∧
+          Integrable (fun x ↦ inner ℝ (generalizedMeanCurvature V ν x) (X x)) V.weight ∧
+          Integrable (fun x ↦ inner ℝ (ν x) (X x)) (generalizedBoundaryMeasure V) ∧
+          V.firstVariation X =
+            -(∫ x, inner ℝ (generalizedMeanCurvature V ν x) (X x) ∂V.weight) -
+              ∫ x, inner ℝ (ν x) (X x) ∂(generalizedBoundaryMeasure V)
+
+/-- **Simon Ch. 8, 3.3 (monotonicity with `‖δV‖ ≤ Λ μ_V`), p. 210.**
+Let `V` have locally bounded first variation in `U`, `x ∈ U`, `0 < ρ₀` with `B_{ρ₀}(x) ⊆ U`
+(the book's `ρ₀ < dist(x, ∂U)`), `Λ ≥ 0`, and `‖δV‖(B_ρ(x)) ≤ Λ μ_V(B_ρ(x))` for `0 < ρ < ρ₀` (3.1).
+Then `e^{Λρ} ρ^{-n} μ_V(B_ρ(x))` is increasing on `(0, ρ₀)`, `Θ^n(μ_V, x)` exists (and is finite),
+and for `0 < σ ≤ ρ < ρ₀`:
+`Θ^n(μ_V,x) ≤ e^{Λσ} ω_n^{-1} σ^{-n} μ_V(B_σ(x))` and
+`e^{Λσ} ω_n^{-1} σ^{-n} μ_V(B_σ(x)) + ω_n^{-1} ∫_{Gₙ(B_ρ(x) ∖ B_σ(x))} r^{-n-2}|p_{S^⊥}(y-x)|² dV
+  ≤ e^{Λρ} ω_n^{-1} ρ^{-n} μ_V(B_ρ(x))` (the book's subtraction, rearranged; all terms finite). -/
+def MonotonicityFormula : Prop :=
+  ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (ρ₀ Λ : ℝ),
+    V.HasLocallyBoundedFirstVariation → 0 < ρ₀ → ball x ρ₀ ⊆ U → 0 ≤ Λ →
+    (∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+      variationMeasure V (closedBall x ρ) ≤ ENNReal.ofReal Λ * V.weight (closedBall x ρ)) →
+    MonotoneOn (fun ρ : ℝ ↦
+        ENNReal.ofReal (Real.exp (Λ * ρ)) * V.weight (closedBall x ρ) / ENNReal.ofReal ρ ^ n)
+      (Ioo 0 ρ₀) ∧
+    ∃ θ : ℝ≥0∞, HasDensity n V.weight x θ ∧ θ ≠ ∞ ∧
+      ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ < ρ₀ →
+        θ ≤ ENNReal.ofReal (Real.exp (Λ * σ)) * densityRatio n V.weight x σ ∧
+        ENNReal.ofReal (Real.exp (Λ * σ)) * densityRatio n V.weight x σ +
+            (unitBallVolume n)⁻¹ * normalDefect V x (closedBall x ρ \ closedBall x σ) ≤
+          ENNReal.ofReal (Real.exp (Λ * ρ)) * densityRatio n V.weight x ρ
+
+/-- **Simon Ch. 8, 3.4 (monotonicity identity, `Λ = 0`), p. 211.**
+If `B_{ρ₀}(x) ⊆ U` and `V` is stationary in `B_{ρ₀}(x)` (`δV(X) = 0` whenever `spt X ⊆ B_{ρ₀}(x)`),
+then `Θ^n(μ_V, x)` exists and for `0 < ρ < ρ₀`
+`Θ^n(μ_V,x) = ω_n^{-1} ρ^{-n} μ_V(B_ρ(x)) - ω_n^{-1} ∫_{Gₙ(B_ρ(x))} r^{-n-2}|p_{S^⊥}(y-x)|² dV`
+(stated additively; all terms are finite).  The section's global hypothesis of locally bounded first
+variation is not needed and is omitted. -/
+def StationaryMonotonicityIdentity : Prop :=
+  ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (ρ₀ : ℝ),
+    0 < ρ₀ → ball x ρ₀ ⊆ U →
+    (∀ X : Varifold.TestVectorField U, tsupport X.toFun ⊆ ball x ρ₀ → V.firstVariation X = 0) →
+    ∃ θ : ℝ≥0∞, HasDensity n V.weight x θ ∧
+      ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ →
+        θ + (unitBallVolume n)⁻¹ * normalDefect V x (closedBall x ρ) =
+          densityRatio n V.weight x ρ
+
+/-- **Simon Ch. 8, 3.6 (Lemma), p. 211.**
+If `V` has locally bounded first variation in `U`, then `Θ^n(μ_V, x)` exists and is real-valued for
+`μ_V`-a.e. `x ∈ U`, and `x ↦ Θ^n(μ_V, x)` is `μ_V`-measurable (it agrees `μ_V`-a.e. with a Borel
+function).  (The "in fact" clause — existence wherever `‖δV‖(B_ρ(x)) ≤ Λ(x) μ_V(B_ρ(x))` for small
+`ρ` — is the density part of `MonotonicityFormula`.) -/
+def DensityExistsAE : Prop :=
+  ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U),
+    V.HasLocallyBoundedFirstVariation →
+    ∃ Θ : Euclidean N → ℝ≥0∞, Measurable Θ ∧
+      ∀ᵐ x ∂V.weight, Θ x ≠ ∞ ∧ HasDensity n V.weight x (Θ x)
+
+/-- **Simon Ch. 8, 3.7 (semi-continuity of `Θ^n` under varifold convergence), p. 211.**
+Suppose `V_i → V` as Radon measures on `Gₙ(U)`, each `V_i` has locally bounded first variation with
+`liminf_i ‖δV_i‖(W) < ∞` for each `W ⊂⊂ U`, and `Θ^n(μ_{V_i}, y) ≥ 1` for `y ∈ U ∖ B_i`, where
+`μ_{V_i}(B_i ∩ W) → 0` for each `W ⊂⊂ U`.  Then `V` has locally bounded first variation,
+`‖δV‖(W) ≤ liminf_i ‖δV_i‖(W)` for each open `W ⊂⊂ U`, and `Θ^n(μ_V, y) ≥ 1` for `μ_V`-a.e. `y`. -/
+def DensitySemicontinuity : Prop :=
+  ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U)
+    (B : ℕ → Set (Euclidean N)),
+    Varifold.RadonConverges Vi V →
+    (∀ i, (Vi i).HasLocallyBoundedFirstVariation) →
+    (∀ W, IsRelCompactOpenIn W U → liminf (fun i ↦ variationMeasure (Vi i) W) atTop ≠ ∞) →
+    (∀ i, ∀ y ∈ U \ B i, ∃ θ : ℝ≥0∞, HasDensity n (Vi i).weight y θ ∧ 1 ≤ θ) →
+    (∀ W, IsRelCompactOpenIn W U → Tendsto (fun i ↦ (Vi i).weight (B i ∩ W)) atTop (𝓝 0)) →
+    V.HasLocallyBoundedFirstVariation ∧
+    (∀ W, IsRelCompactOpenIn W U →
+      variationMeasure V W ≤ liminf (fun i ↦ variationMeasure (Vi i) W) atTop) ∧
+    ∀ᵐ y ∂V.weight, ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ 1 ≤ θ
+
+/-- **Simon Ch. 8, 4.1 (Constancy Theorem), p. 213 — corrected.**
+Suppose `V` is stationary in `U`, `U ∩ spt μ_V ⊆ M` where `M` is an `n`-dimensional `C²` submanifold
+of `ℝ^{n+ℓ}` (Ch. 2, §4) and **`M ∩ U` is connected**.  Then `V = θ₀ v(M ∩ U)` for a constant
+`θ₀ ≥ 0`, i.e. `V(A) = θ₀ H^n({x ∈ M ∩ U : (x, T_x M) ∈ A})` for Borel `A`.
+Erratum: the book assumes only that `M` is connected; that version is false (SimonGMT
+`ConstancyDomainCounterexample.counterexample_constancy_printed_hypotheses`: `U = ℝ ∖ {0}`,
+`M = ℝ`, `V = v((0,∞))`).  The book's proof uses connectedness of `M ∩ U`. -/
+def ConstancyTheorem : Prop :=
+  ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)),
+    V.Stationary →
+    Chapter02.IsSimonSubmanifold (E := Euclidean n) 2 M →
+    U ∩ V.weight.support ⊆ M →
+    IsPreconnected (M ∩ U) →
+    ∃ θ₀ : ℝ, 0 ≤ θ₀ ∧
+      ∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A →
+        V.measure A = ENNReal.ofReal θ₀ *
+          (μHE[n] : Measure (Euclidean N))
+            {x | x ∈ M ∩ U ∧ ∃ S : Grassmannian N n,
+              (S.plane : Set (Euclidean N)) = classicalTangentSpace M x ∧ (x, S) ∈ A}
+
+/-- **Simon Ch. 8, 5.1–5.4 (varifold tangents), p. 215 — with corrected 5.2 and 5.3.**
+Let `V` have locally bounded first variation in `U`, `x ∈ U`, `Θ^n(μ_V, x) = θ₀ ∈ (0,∞)` and
+`lim_{ρ↓0} ρ^{1-n} ‖δV‖(B_ρ(x)) = 0` (5.1).  Then (a) every sequence `λ_j ↓ 0` has a subsequence
+along which `η_{x,λ_j #} V` converges as Radon measures to some varifold `C` on `ℝ^{n+ℓ}`; and
+(b) every such limit `C` (`C ∈ VarTan(V,x)`) is stationary in `ℝ^{n+ℓ}`, satisfies
+`μ_C(B_ρ(0)) = θ₀ ω_n ρ^n` for all `ρ > 0` (5.2), and `μ_C(s A) = s^n μ_C(A)` for all `s > 0` and
+`A ⊆ ℝ^{n+ℓ}` (5.3).
+Errata: 5.2 prints `μ_C(B_ρ(x))`; the centre must be `0`.  5.3 prints
+`λ^{-n} μ_C(η_{0,λ}(A)) = μ_C(A)` with `η_{0,λ}(y) = λ^{-1}y`, which has the wrong power; the
+correct homogeneity is `λ^{n} μ_C(η_{0,λ}(A)) = μ_C(A)`, i.e. `μ_C(sA) = s^n μ_C(A)` (SimonGMT
+`TangentScalingCounterexample`). -/
+def VarifoldTangentCones : Prop :=
+  ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (θ₀ : ℝ),
+    V.HasLocallyBoundedFirstVariation → x ∈ U → 0 < θ₀ →
+    HasDensity n V.weight x (ENNReal.ofReal θ₀) →
+    Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) /
+      ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) →
+    (∀ t : ℕ → ℝ, (∀ j, 0 < t j) → Tendsto t atTop (𝓝 0) →
+      ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ C : Varifold N n (univ : Set (Euclidean N)),
+        VagueConverges (fun j ↦ rescaledMeasure V x (t (φ j))) C.measure) ∧
+    ∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C →
+      C.Stationary ∧
+      (∀ ρ : ℝ, 0 < ρ →
+        C.weight (closedBall 0 ρ) = ENNReal.ofReal θ₀ * unitBallVolume n * ENNReal.ofReal ρ ^ n) ∧
+      ∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → C.weight (s • A) = ENNReal.ofReal s ^ n * C.weight A
+
+/-- **Simon Ch. 8, 5.7 (Corollary), p. 216.**
+If `x ∈ U` satisfies 5.1 (with `V` of locally bounded first variation) and
+`lim_{ρ↓0} ρ^{-n} μ_V({y ∈ B_ρ(x) : Θ^n(μ_V, y) < 1}) = 0`, then every `C ∈ VarTan(V, x)` is
+rectifiable and `η_{0,λ #} C = C` for all `λ > 0` (tangent cones are rectifiable cones).
+Here `{Θ^n(μ_V, y) < 1}` is read as the set where `Θ^n(μ_V, y) ≥ 1` fails (it differs from the set
+where `Θ^n` exists and is `< 1` by a `μ_V`-null set, by 3.6). -/
+def TangentConesAreRectifiableCones : Prop :=
+  ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (θ₀ : ℝ),
+    V.HasLocallyBoundedFirstVariation → x ∈ U → 0 < θ₀ →
+    HasDensity n V.weight x (ENNReal.ofReal θ₀) →
+    Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) /
+      ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) →
+    Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧
+        ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ 1 ≤ θ} / ENNReal.ofReal ρ ^ n)
+      (𝓝[>] 0) (𝓝 0) →
+    ∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C →
+      IsRectifiable C ∧ ∀ s : ℝ, 0 < s → rescaledMeasure C 0 s = C.measure
+
+/-- **Simon Ch. 8, 5.5 (Allard's Rectifiability Theorem), p. 215, with Remark 5.6.**
+If `V` has locally bounded first variation in `U` and `Θ^n(μ_V, x) > 0` for `μ_V`-a.e. `x ∈ U`,
+then `V` is an `n`-rectifiable varifold (`V = v(M, θ)`); moreover (5.6) `V` has a tangent plane
+with positive multiplicity in the sense of 1.1 at `μ_V`-a.e. `x`. -/
+def AllardRectifiabilityTheorem : Prop :=
+  ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U),
+    V.HasLocallyBoundedFirstVariation →
+    (∀ᵐ x ∂V.weight, ∃ θ : ℝ≥0∞, HasDensity n V.weight x θ ∧ 0 < θ) →
+    IsRectifiable V ∧ ∀ᵐ x ∂V.weight, ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ
+
+/-- **Simon Ch. 8, 5.8 (Compactness Theorem for rectifiable `n`-varifolds), p. 218.**
+Let `V_j` be rectifiable `n`-varifolds in `U` with locally bounded first variation,
+`sup_j (μ_{V_j}(W) + ‖δV_j‖(W)) < ∞` for each `W ⊂⊂ U`, and `Θ^n(μ_{V_j}, x) ≥ 1` on `U ∖ A_j`
+where `μ_{V_j}(A_j ∩ W) → 0` for each `W ⊂⊂ U`.  Then there are a subsequence `V_{j'}` and a
+rectifiable varifold `V` with locally bounded first variation in `U` such that `V_{j'} → V` as Radon
+measures on `Gₙ(U)`, `Θ^n(μ_V, x) ≥ 1` for `μ_V`-a.e. `x`, and `‖δV‖(W) ≤ liminf_{j'} ‖δV_{j'}‖(W)`
+for each open `W ⊂⊂ U` (the `liminf` is along the subsequence, as in the book's proof). -/
+def CompactnessTheorem : Prop :=
+  ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vj : ℕ → Varifold N n U) (A : ℕ → Set (Euclidean N)),
+    (∀ j, IsRectifiable (Vj j)) →
+    (∀ j, (Vj j).HasLocallyBoundedFirstVariation) →
+    (∀ W, IsRelCompactOpenIn W U →
+      ⨆ j, ((Vj j).weight W + variationMeasure (Vj j) W) ≠ ∞) →
+    (∀ j, ∀ x ∈ U \ A j, ∃ θ : ℝ≥0∞, HasDensity n (Vj j).weight x θ ∧ 1 ≤ θ) →
+    (∀ W, IsRelCompactOpenIn W U → Tendsto (fun j ↦ (Vj j).weight (A j ∩ W)) atTop (𝓝 0)) →
+    ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ V : Varifold N n U,
+      Varifold.RadonConverges (fun j ↦ Vj (φ j)) V ∧
+      IsRectifiable V ∧ V.HasLocallyBoundedFirstVariation ∧
+      (∀ᵐ x ∂V.weight, ∃ θ : ℝ≥0∞, HasDensity n V.weight x θ ∧ 1 ≤ θ) ∧
+      ∀ W, IsRelCompactOpenIn W U →
+        variationMeasure V W ≤ liminf (fun j ↦ variationMeasure (Vj (φ j)) W) atTop
+
+/-- **Simon Ch. 8, 5.9 (Allard's Integral Compactness Theorem), p. 218.**
+If the `V_j` are integer multiplicity rectifiable `n`-varifolds in `U` with locally bounded first
+variation and `sup_j (μ_{V_j}(W) + ‖δV_j‖(W)) < ∞` for each `W ⊂⊂ U`, then some subsequence converges
+as Radon measures on `Gₙ(U)` to an integer multiplicity `V` with locally bounded first variation and
+`‖δV‖(W) ≤ liminf_{j'} ‖δV_{j'}‖(W)` for open `W ⊂⊂ U`; moreover every limit (as Radon measures on
+`Gₙ(U)`) of a subsequence of the `V_j` is integer multiplicity. -/
+def IntegralCompactnessTheorem : Prop :=
+  ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vj : ℕ → Varifold N n U),
+    (∀ j, IsIntegral (Vj j)) →
+    (∀ j, (Vj j).HasLocallyBoundedFirstVariation) →
+    (∀ W, IsRelCompactOpenIn W U →
+      ⨆ j, ((Vj j).weight W + variationMeasure (Vj j) W) ≠ ∞) →
+    (∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ V : Varifold N n U,
+      Varifold.RadonConverges (fun j ↦ Vj (φ j)) V ∧
+      IsIntegral V ∧ V.HasLocallyBoundedFirstVariation ∧
+      ∀ W, IsRelCompactOpenIn W U →
+        variationMeasure V W ≤ liminf (fun j ↦ variationMeasure (Vj (φ j)) W) atTop) ∧
+    ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
+      Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
+
+theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
+
+end GMT.Ch08
+```
+
+## Natural-language proof
+
+Reviewed mathematical argument; formal verification state: `accepted`.
+
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integral_compactness-a1.diagonal_blowup-a1`
+- Child DAG node: `root.integral_compactness-a1.diagonal_blowup-a1.blowup_variation_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 4 and 6 of the parent proof, i.e. Simon 8.5.9 printed (4) ("(by (2)) ‖δW_i‖(B_R(0)) → 0"), for one blow-up; the Riesz and polar-representation facts are SimonGMT Varifold.firstVariationRieszMeasure_eq_norm and Varifold.isFirstVariationPolarRepresentation_riesz. Notation: G := Grassmannian N n; O := B°_R(0) = ball 0 R; σ(y) := ξ + t • y and η(z) := t⁻¹ • (z − ξ), mutually inverse homeomorphisms of ℝ^N (t ≠ 0); Φ(z, S) := (η z, S); V_{ξ,t} := rescaledMeasure V ξ t = ofReal(t⁻¹^n) • (V.measure).map Φ; c_t := t⁻¹^n · t ≥ 0; hV : V.HasLocallyBoundedFirstVariation. By hypothesis σ(O) ⊆ U, and σ(O) ⊆ closedBall ξ (t·R) because |σ(y) − ξ| = t|y|.
+
+1. (The varifold W.) Let m := V_{ξ,t}.restrict (O ×ˢ univ). (a) O is open. (b) m(Oᶜ ×ˢ univ) = V_{ξ,t}((Oᶜ ×ˢ univ) ∩ (O ×ˢ univ)) = V_{ξ,t}(∅) = 0 (Measure.restrict_apply; Oᶜ ×ˢ univ is measurable). (c) Let K ⊆ O be compact. m(K ×ˢ univ) ≤ V_{ξ,t}(K ×ˢ univ) = ofReal(t⁻¹^n) · V.measure(Φ⁻¹(K ×ˢ univ)) (Measure.restrict_apply_le, Measure.map_apply with Φ measurable) and Φ⁻¹(K ×ˢ univ) = η⁻¹(K) ×ˢ univ = σ(K) ×ˢ univ. σ(K) is compact and σ(K) ⊆ σ(O) ⊆ U, so V.measure(σ(K) ×ˢ univ) ≠ ∞ (V.finite_on_compact) and m(K ×ˢ univ) ≠ ∞. Hence W := ⟨isOpen_ball, m, (b), (c)⟩ is an n-varifold on O with W.measure = V_{ξ,t}.restrict (O ×ˢ univ): the first assertion.
+
+2. (Integrals against W.) If h : ℝ^N × G → ℝ is continuous and h = 0 off O ×ˢ univ, then ∫ h dW.measure = ∫ h dV_{ξ,t} (setIntegral_eq_integral_of_forall_compl_eq_zero) = t⁻¹^n · ∫ h(Φ z) dV.measure(z) (integral_smul_measure with (ofReal(t⁻¹^n)).toReal = t⁻¹^n, and integral_map; Φ measurable, h continuous).
+
+3. (Pulled-back test fields.) Let X be a test field on O (Varifold.TestVectorField O: C¹, compact support, tsupport X ⊆ O) and Y := X ∘ η, Y(z) = X(t⁻¹ • (z − ξ)). (a) Y is C¹ (ContDiff.comp with the affine map η). (b) tsupport Y ⊆ η⁻¹(tsupport X) = σ(tsupport X) (tsupport_comp_subset_preimage; σ = η⁻¹ as homeomorphisms); σ(tsupport X) is compact, so Y has compact support, and σ(tsupport X) ⊆ σ(O) ⊆ U. Hence Y is a test field on U. (c) ‖Y z‖ = ‖X(η z)‖, so if ‖X‖ ≤ 1 everywhere then ‖Y‖ ≤ 1 everywhere; if tsupport X ⊆ O' then tsupport Y ⊆ σ(O'). So X.UnitSupportedIn O' implies Y.UnitSupportedIn σ(O'), where σ(O') = (fun y ↦ ξ + t • y) '' O'. (d) By the chain rule (fderiv_comp) and fderiv η z = t⁻¹ • id, fderiv Y z = t⁻¹ • fderiv X (η z); as clmToMatrix is linear, jacobian Y z = t⁻¹ • jacobian X (η z), hence for every S ∈ G: tangentialDivergence Y z S = trace(S.1 * jacobian Y z) = t⁻¹ · tangentialDivergence X (η z) S.
+
+4. (First-variation scaling, printed (4).) For X, Y as in 3, h(y, S) := tangentialDivergence X y S is continuous (Varifold.continuous_tangentialDivergence) and vanishes off tsupport X ×ˢ univ ⊆ O ×ˢ univ (Varifold.support_tangentialDivergence_subset). By 2 and 3(d): δW(X) = ∫ h dW.measure = t⁻¹^n · ∫ tangentialDivergence X (η z) S dV(z, S) = t⁻¹^n · ∫ t · tangentialDivergence Y z S dV(z, S) = t⁻¹^n · t · δV(Y) = c_t · δV(Y) (integral_const_mul).
+
+5. (Comparison of first-variation norms.) For every set O' ⊆ ℝ^N: firstVariationNormOn W O' ≤ ofReal(c_t) · firstVariationNormOn V (σ(O')). Indeed firstVariationNormOn W O' is the supremum over test fields X on O of [ofReal|δW(X)| if X.UnitSupportedIn O', else 0]. The terms 0 are trivially bounded. If X.UnitSupportedIn O', then Y from 3 satisfies Y.UnitSupportedIn σ(O') (3c), so ofReal|δV(Y)| ≤ firstVariationNormOn V (σ(O')) (Varifold.le_firstVariationNormOn), and by 4, ofReal|δW(X)| = ofReal(c_t·|δV(Y)|) = ofReal(c_t)·ofReal|δV(Y)| (ENNReal.ofReal_mul, c_t ≥ 0) ≤ ofReal(c_t)·firstVariationNormOn V (σ(O')). Take the supremum (iSup_le).
+
+6. (W has locally bounded first variation.) Let O' be open with closure O' compact and closure O' ⊆ O. Since σ is a homeomorphism, σ(O') is open and closure σ(O') = σ(closure O'), which is compact and contained in σ(O) ⊆ U. By hV, firstVariationNormOn V (σ(O')) ≠ ∞, so by 5 firstVariationNormOn W O' ≤ ofReal(c_t) · firstVariationNormOn V (σ(O')) ≠ ∞. This proves W.HasLocallyBoundedFirstVariation (hW): the second assertion.
+
+7. (‖δV‖ dominates the norm.) By definition of variationMeasure (dif_pos hV), variationMeasure V = V.firstVariationRieszMeasure hV, and Varifold.firstVariationNormOn_le_of_polarRepresentation applied to Varifold.isFirstVariationPolarRepresentation_riesz V hV gives firstVariationNormOn V A ≤ variationMeasure V A for every set A.
+
+8. (‖δW‖ on all of O.) By 6, variationMeasure W = W.firstVariationRieszMeasure hW. For j ∈ ℕ let R_j := R·(j+1)/(j+2) (so 0 < R_j < R, R_j increasing, R_j → R) and O_j := ball 0 R_j. O_j is open and closure O_j = closedBall 0 R_j (R_j ≠ 0) is compact and contained in O, so Varifold.firstVariationRieszMeasure_eq_norm gives variationMeasure W O_j = firstVariationNormOn W O_j. By 5 and 7 and σ(O_j) ⊆ σ(O) ⊆ closedBall ξ (t·R): variationMeasure W O_j ≤ ofReal(c_t)·firstVariationNormOn V (σ(O_j)) ≤ ofReal(c_t)·variationMeasure V (σ(O_j)) ≤ ofReal(c_t)·variationMeasure V (closedBall ξ (t·R)). The O_j increase and ⋃_j O_j = O (for |y| < R choose j with R_j > |y|), so by continuity from below (Monotone.measure_iUnion) variationMeasure W O = ⨆_j variationMeasure W O_j ≤ ofReal(t⁻¹^n · t)·variationMeasure V (closedBall ξ (t·R)): the third assertion. ∎
+
+Lean realization (informative; compiled during decomposition, complete, depending only on the axioms propext, Classical.choice, Quot.sound, against the pinned toolchain, placed in GMT/Ch08/Submission.lean inside `namespace GMT.Ch08` after `end Definitions`, i.e. in the frozen contract scope `open Set Filter MeasureTheory Metric`, `open scoped Topology ENNReal CompactlySupported Pointwise`, `open Poincare.SimonGMT`, `open Poincare.SimonGMT.Chapter08`; scratch copy /tmp/diagdecomp/FullCheck.lean):
+
+set_option maxHeartbeats 1000000 in
+theorem Submission.intcpt_diag_blowup_variation_bound : ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (ξ : Euclidean N) (t R : ℝ), V.HasLocallyBoundedFirstVariation → 0 < t → 0 < R → (∀ y ∈ ball (0 : Euclidean N) R, ξ + t • y ∈ U) → ∃ W : Varifold N n (ball (0 : Euclidean N) R), W.measure = (rescaledMeasure V ξ t).restrict (ball (0 : Euclidean N) R ×ˢ (univ : Set (Grassmannian N n))) ∧ W.HasLocallyBoundedFirstVariation ∧ variationMeasure W (ball (0 : Euclidean N) R) ≤ ENNReal.ofReal (t⁻¹ ^ n * t) * variationMeasure V (closedBall ξ (t * R)) := by
+  intro N n U V ξ t R hV ht hR hσU
+  set O : Set (Euclidean N) := ball (0 : Euclidean N) R with hOdef
+  have hOm : MeasurableSet O := measurableSet_ball
+  -- the homeomorphism σ(y) = ξ + t • y, with inverse η(z) = t⁻¹ • (z - ξ)
+  let σ : Euclidean N ≃ₜ Euclidean N :=
+    { toFun := fun y ↦ ξ + t • y
+      invFun := fun z ↦ t⁻¹ • (z - ξ)
+      left_inv := by intro y; simp [smul_smul, ht.ne']
+      right_inv := by intro z; simp [smul_smul, ht.ne']
+      continuous_toFun := by fun_prop
+      continuous_invFun := by fun_prop }
+  have hσ : ∀ y, σ y = ξ + t • y := fun _ ↦ rfl
+  have hσs : ∀ z, σ.symm z = t⁻¹ • (z - ξ) := fun _ ↦ rfl
+  have hσO : σ '' O ⊆ U := by
+    rintro _ ⟨y, hy, rfl⟩
+    exact hσU y hy
+  have hσball : σ '' O ⊆ closedBall ξ (t * R) := by
+    rintro _ ⟨y, hy, rfl⟩
+    rw [hσ, mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+      abs_of_pos ht]
+    rw [hOdef, mem_ball, dist_zero_right] at hy
+    exact mul_le_mul_of_nonneg_left hy.le ht.le
+  have hΦc : Continuous (fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - ξ), z.2)) := by
+    fun_prop
+  -- Step 1: the varifold W
+  let W : Varifold N n O :=
+    { isOpen_domain := isOpen_ball
+      measure := (rescaledMeasure V ξ t).restrict (O ×ˢ (univ : Set (Grassmannian N n)))
+      supported := by
+        rw [Measure.restrict_apply (hOm.compl.prod MeasurableSet.univ)]
+        have : (Oᶜ ×ˢ (univ : Set (Grassmannian N n))) ∩ (O ×ˢ (univ : Set (Grassmannian N n))) = ∅ := by
+          ext z; simp
+        rw [this, measure_empty]
+      finite_on_compact := by
+        intro K hK hKO
+        apply ne_top_of_le_ne_top _ (Measure.restrict_apply_le _ _)
+        rw [rescaledMeasure, Measure.smul_apply,
+          Measure.map_apply hΦc.measurable (hK.measurableSet.prod MeasurableSet.univ), smul_eq_mul]
+        apply ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+        have he : (fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - ξ), z.2)) ⁻¹'
+            (K ×ˢ (univ : Set (Grassmannian N n))) = (σ '' K) ×ˢ (univ : Set (Grassmannian N n)) := by
+          ext z
+          simp only [mem_preimage, mem_prod, mem_univ, and_true]
+          rw [σ.image_eq_preimage_symm]
+          rfl
+        rw [he]
+        exact V.finite_on_compact _ (hK.image σ.continuous) ((image_mono hKO).trans hσO) }
+  have hWmeas : W.measure = (rescaledMeasure V ξ t).restrict (O ×ˢ (univ : Set (Grassmannian N n))) := rfl
+  refine ⟨W, rfl, ?_⟩
+  -- Step 3: pulled-back test fields and the first-variation scaling (Step 4)
+  have hη : ContDiff ℝ 1 (fun z : Euclidean N ↦ t⁻¹ • (z - ξ)) := by fun_prop
+  have hfd : ∀ z : Euclidean N, fderiv ℝ (fun z : Euclidean N ↦ t⁻¹ • (z - ξ)) z =
+      t⁻¹ • ContinuousLinearMap.id ℝ (Euclidean N) :=
+    fun z ↦ (((hasFDerivAt_id z).sub_const ξ).const_smul t⁻¹).fderiv
+  have hpull : ∀ X : Varifold.TestVectorField (N := N) O, ∃ Y : Varifold.TestVectorField (N := N) U,
+      (∀ z, Y z = X (t⁻¹ • (z - ξ))) ∧ tsupport Y.toFun ⊆ σ '' tsupport X.toFun ∧
+      W.firstVariation X = t⁻¹ ^ n * t * V.firstVariation Y := by
+    intro X
+    let Yf : Euclidean N → Euclidean N := fun z ↦ X (t⁻¹ • (z - ξ))
+    have hYsupp : tsupport Yf ⊆ σ '' tsupport X.toFun := by
+      rw [σ.image_eq_preimage_symm]
+      exact tsupport_comp_subset_preimage X.toFun σ.symm.continuous
+    let Y : Varifold.TestVectorField (N := N) U :=
+      { toFun := Yf
+        contDiff := X.contDiff.comp hη
+        compactSupport :=
+          (X.compactSupport.isCompact.image σ.continuous).of_isClosed_subset (isClosed_tsupport _)
+            hYsupp
+        support_subset := hYsupp.trans ((image_mono X.support_subset).trans hσO) }
+    refine ⟨Y, fun z ↦ rfl, hYsupp, ?_⟩
+    have hdiv : ∀ z (S : Grassmannian N n), Varifold.tangentialDivergence Y z S =
+        t⁻¹ * Varifold.tangentialDivergence X (t⁻¹ • (z - ξ)) S := by
+      intro z S
+      have hX' : DifferentiableAt ℝ X.toFun (t⁻¹ • (z - ξ)) :=
+        (X.contDiff.differentiable one_ne_zero) _
+      have hcomp : fderiv ℝ Yf z = t⁻¹ • fderiv ℝ X.toFun (t⁻¹ • (z - ξ)) := by
+        have h1 : fderiv ℝ (X.toFun ∘ fun z ↦ t⁻¹ • (z - ξ)) z =
+            (fderiv ℝ X.toFun (t⁻¹ • (z - ξ))).comp (fderiv ℝ (fun z ↦ t⁻¹ • (z - ξ)) z) :=
+          fderiv_comp z hX' ((hη.differentiable one_ne_zero) z)
+        rw [show Yf = X.toFun ∘ fun z ↦ t⁻¹ • (z - ξ) from rfl, h1, hfd]
+        ext v
+        simp
+      change Matrix.trace (S.1 * Varifold.clmToMatrix (fderiv ℝ Yf z)) =
+        t⁻¹ * Matrix.trace (S.1 * Varifold.clmToMatrix (fderiv ℝ X.toFun (t⁻¹ • (z - ξ))))
+      rw [hcomp, map_smul, Matrix.mul_smul, Matrix.trace_smul, smul_eq_mul]
+    have hdivX_cont := Varifold.continuous_tangentialDivergence (n := n) X.contDiff
+    have hvanish : ∀ z ∉ O ×ˢ (univ : Set (Grassmannian N n)),
+        Varifold.tangentialDivergence X.toFun z.1 z.2 = 0 := by
+      intro z hz
+      by_contra hne
+      exact hz (prod_mono X.support_subset subset_rfl
+        (Varifold.support_tangentialDivergence_subset X.toFun hne))
+    calc W.firstVariation X = ∫ z, Varifold.tangentialDivergence X.toFun z.1 z.2 ∂W.measure := rfl
+      _ = ∫ z, Varifold.tangentialDivergence X.toFun z.1 z.2 ∂(rescaledMeasure V ξ t) := by
+          rw [hWmeas]; exact setIntegral_eq_integral_of_forall_compl_eq_zero hvanish
+      _ = t⁻¹ ^ n * ∫ z, Varifold.tangentialDivergence X.toFun (t⁻¹ • (z.1 - ξ)) z.2 ∂V.measure := by
+          rw [rescaledMeasure, integral_smul_measure,
+            integral_map hΦc.measurable.aemeasurable hdivX_cont.aestronglyMeasurable,
+            ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
+      _ = t⁻¹ ^ n * ∫ z, t * Varifold.tangentialDivergence Y z.1 z.2 ∂V.measure := by
+          congr 1
+          apply integral_congr_ae
+          filter_upwards with z
+          rw [hdiv]
+          field_simp
+      _ = t⁻¹ ^ n * t * V.firstVariation Y := by
+          rw [integral_const_mul, mul_assoc]
+          rfl
+  -- Step 5: comparison of the first-variation norms
+  have hc0 : (0 : ℝ) ≤ t⁻¹ ^ n * t := by positivity
+  have hcmp : ∀ O' : Set (Euclidean N), W.firstVariationNormOn O' ≤
+      ENNReal.ofReal (t⁻¹ ^ n * t) * V.firstVariationNormOn (σ '' O') := by
+    intro O'
+    classical
+    generalize hB : V.firstVariationNormOn (σ '' O') = B
+    unfold Varifold.firstVariationNormOn
+    refine iSup_le fun X ↦ ?_
+    split_ifs with hX
+    · obtain ⟨Y, hYz, hYsupp, hδ⟩ := hpull X
+      have hY : Y.UnitSupportedIn (σ '' O') := by
+        refine ⟨hYsupp.trans (image_mono hX.1), fun z ↦ ?_⟩
+        rw [hYz]
+        exact hX.2 _
+      have hle := Varifold.le_firstVariationNormOn V (σ '' O') Y hY
+      rw [hB] at hle
+      rw [hδ, abs_mul, abs_of_nonneg hc0, ENNReal.ofReal_mul hc0]
+      exact mul_le_mul_of_nonneg_left hle zero_le
+    · exact zero_le
+  -- Step 6: W has locally bounded first variation
+  have hW : W.HasLocallyBoundedFirstVariation := by
+    intro O' hO' hO'c
+    have hσO' : IsOpen (σ '' O') := σ.isOpenMap _ hO'
+    have hcl : closure (σ '' O') = σ '' closure O' := (σ.image_closure O').symm
+    have hfin := hV (σ '' O') hσO'
+      ⟨by rw [hcl]; exact hO'c.1.image σ.continuous,
+       by rw [hcl]; exact (image_mono hO'c.2).trans hσO⟩
+    exact ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hfin) (hcmp O')
+  refine ⟨hW, ?_⟩
+  -- Steps 7-8: the Riesz measures and the exhaustion of O
+  have hvW : variationMeasure W = W.firstVariationRieszMeasure hW := by
+    simp [variationMeasure, hW]
+  have hvV : variationMeasure V = V.firstVariationRieszMeasure hV := by
+    simp [variationMeasure, hV]
+  have hpolar : ∀ A, V.firstVariationNormOn A ≤ variationMeasure V A := by
+    intro A
+    rw [hvV]
+    exact V.firstVariationNormOn_le_of_polarRepresentation
+      (V.isFirstVariationPolarRepresentation_riesz hV) A
+  set r : ℕ → ℝ := fun j ↦ R * (((j : ℝ) + 1) / ((j : ℝ) + 2)) with hr
+  have hrpos : ∀ j, 0 < r j := fun j ↦ by positivity
+  have hrlt : ∀ j, r j < R := by
+    intro j
+    have : ((j : ℝ) + 1) / ((j : ℝ) + 2) < 1 := by rw [div_lt_one (by positivity)]; linarith
+    calc r j = R * (((j : ℝ) + 1) / ((j : ℝ) + 2)) := rfl
+      _ < R * 1 := mul_lt_mul_of_pos_left this hR
+      _ = R := mul_one R
+  have hrmono : Monotone r := by
+    apply monotone_nat_of_le_succ
+    intro j
+    apply mul_le_mul_of_nonneg_left _ hR.le
+    push_cast
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith
+  have hrlim : Tendsto r atTop (𝓝 R) := by
+    have h1 : Tendsto (fun m : ℕ ↦ ((m : ℝ) + 1) / ((m : ℝ) + 2)) atTop (𝓝 1) := by
+      have := tendsto_natCast_div_add_atTop (𝕜 := ℝ) (1 : ℝ)
+      have h2 : Tendsto (fun m : ℕ ↦ ((m + 1 : ℕ) : ℝ) / ((m + 1 : ℕ) + 1)) atTop (𝓝 1) :=
+        this.comp (tendsto_add_atTop_nat 1)
+      refine h2.congr (fun m ↦ ?_)
+      push_cast
+      ring_nf
+    simpa using h1.const_mul R
+  have hunion : O = ⋃ j, ball (0 : Euclidean N) (r j) := by
+    ext y
+    simp only [hOdef, mem_iUnion, mem_ball, dist_zero_right]
+    constructor
+    · intro hy
+      exact (hrlim.eventually (lt_mem_nhds hy)).exists
+    · rintro ⟨j, hj⟩
+      exact hj.trans (hrlt j)
+  have hmono : Monotone (fun j ↦ ball (0 : Euclidean N) (r j)) :=
+    fun a b hab ↦ ball_subset_ball (hrmono hab)
+  have hOj : ∀ j, variationMeasure W (ball (0 : Euclidean N) (r j)) ≤
+      ENNReal.ofReal (t⁻¹ ^ n * t) * variationMeasure V (closedBall ξ (t * R)) := by
+    intro j
+    have hclj : closure (ball (0 : Euclidean N) (r j)) = closedBall 0 (r j) :=
+      closure_ball _ (hrpos j).ne'
+    rw [hvW, Varifold.firstVariationRieszMeasure_eq_norm W hW _ isOpen_ball
+      ⟨by rw [hclj]; exact isCompact_closedBall _ _,
+       by rw [hclj]; exact closedBall_subset_ball (hrlt j)⟩]
+    refine (hcmp _).trans (mul_le_mul_of_nonneg_left ((hpolar _).trans (measure_mono ?_)) zero_le)
+    exact (image_mono (ball_subset_ball (hrlt j).le)).trans hσball
+  calc variationMeasure W O = variationMeasure W (⋃ j, ball (0 : Euclidean N) (r j)) :=
+        congrArg _ hunion
+    _ = ⨆ j, variationMeasure W (ball (0 : Euclidean N) (r j)) := hmono.measure_iUnion
+    _ ≤ _ := iSup_le hOj
+
+## Key steps
+
+1. W := V_{ξ,t} ⌞ (B°_R(0) × G) is a varifold on B°_R(0): supported there and finite on K × G since σ(K) = ξ + tK is a compact subset of U.
+2. For a test field X on B°_R(0), Y := X(t⁻¹(· − ξ)) is a test field on U with tsupport Y ⊆ σ(tsupport X) and div_S Y(z) = t⁻¹ div_S X(t⁻¹(z − ξ)).
+3. First-variation scaling: δW(X) = t^{-n}·t·δV(Y) (rescaling formula for integrals).
+4. Hence firstVariationNormOn W O' ≤ ofReal(t^{-n}t)·firstVariationNormOn V (σ(O')) for every O'.
+5. σ maps O' ⊂⊂ B°_R(0) to σ(O') ⊂⊂ U, so W has locally bounded first variation.
+6. Riesz: ‖δW‖(O_j) = firstVariationNormOn W O_j on balls O_j ↑ B°_R(0); polar representation: firstVariationNormOn V ≤ ‖δV‖; σ(O_j) ⊆ B_{tR}(ξ); continuity from below.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum project/GMT/Ch08/Contract.lean (2e5cd5b3…, identical to workspace GMT/Ch08/Contract.lean and Submission.lean)`
+- `rg -n 'theorem integral_smul_measure|theorem integral_map |theorem _root_.MeasurableEmbedding.integral_map|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem ofReal_integral_eq_lintegral_ofReal|theorem norm_setIntegral_le_of_norm_le_const|lemma Measure.integrableOn_of_bounded|theorem integrableOn_iff_integrable_of_support_subset|theorem Integrable.smul_measure|theorem integrable_map_measure|theorem eventually_all_finset|theorem tendsto_one_div_add_atTop_nhds_zero_nat|theorem tendsto_measure_iUnion_atTop|theorem _root_.Monotone.measure_iUnion|lemma Topology.IsInducing.isCompact_preimage|theorem Countable.exists_eq_range|theorem dist_apply_le_dist|theorem hasBasis_compactConvergenceUniformity|def toCocompactMap|theorem restrict_apply_self|theorem lintegral_indicator_one' mathlib/Mathlib`
+- `grep -rn 'theorem exists_continuous_one_zero_of_isCompact|theorem Frequently.and_eventually|frequently_lt_of_liminf_lt|Filter.Tendsto.eventually_const_lt (to_dual eventually_lt_const)|theorem exists_countable_dense_subset|IsSeparable.exists_countable_dense_subset' mathlib/Mathlib`
+- `grep -rn 'SeparableSpace C(|SecondCountableTopology C(' mathlib/Mathlib/Topology mathlib/Mathlib/Analysis (only ContinuousMap/SecondCountableSpace.lean)`
+- `sed CompactlySupported.lean (CompactlySupportedContinuousMap.comp with →co, Mul/smul instances) and CocompactMap.lean (Homeomorph.toCocompactMap)`
+- `grep -n in simongmt Chapter08/{Varifold,VarifoldConvergence,FirstVariationRiesz,FirstVariationBounds,TangentRescaling}.lean, Chapter04/WeightedBlowUp.lean, Chapter03/Rectifiable.lean: structure Varifold, domainMeasure, map_domainMeasure, RadonConverges, divergenceDomainTest, integral_divergenceDomainTest, TestVectorField, firstVariationNormOn, le_firstVariationNormOn, firstVariationNormOn_le_of_polarRepresentation, isFirstVariationPolarRepresentation_riesz, firstVariationRieszMeasure_eq_norm, tangentialDivergence, jacobian, clmToMatrix, support_tangentialDivergence_subset, continuous_tangentialDivergence, blowUpMeasure, blowUp, blowUpHomeomorph, blowUpMap, Grassmannian.instCompactSpace/instSecondCountableTopology`
+- `lake env lean /tmp/diagdecomp/{Inst,Avail,Avail2}.lean (#check under import GMT.Ch08.Submission: SecondCountableTopology C(L,ℝ) and SeparableSpace C(L,ℝ) fail; Chapter04.blowUpHomeomorph and Varifold.blowUpMeasure unknown; Stone–Weierstrass, Urysohn, denseSeq, compact-convergence uniformity available)`
+- `git show 2721e20337252ca8e1f6204843570bd04ba673c8:GMT/Ch08/Submission.lean (accepted Submission.radon_compactlySupported_countable_approx: inlined second countability of C(X,ℝ))`
+- `python3 verifier/gmt-compare.py contract_scope(Contract.lean, GMT.Ch08.main_theorem); verifier/lean_contract.py validate_lean_statement on the 5 lean_statements`
+- `lake env lean /tmp/diagdecomp/Chal_*.lean (comparator form) and /tmp/diagdecomp/FullCheck.lean (#print axioms)`
+- `grep 'intcpt_diag_' in dag.json and nodes/*; git grep over all 107 local branches and remotes (no matches)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/UrysohnsLemma.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/CocompactMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/UniformSpace/CompactConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Filter/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Filter/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRescaling.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-diagonal-blowup-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1/decomposition-v1.json`
+- `/tmp/diagdecomp/FullCheck.lean`
+- `/tmp/diagdecomp/AssemblyFinal.lean`
+
+Snapshot = project 63436ae6 + Mathlib 25730c7c; its Contract is byte-identical to the workspace Contract and Submission (sha256 2e5cd5b3…). Mathlib has no varifold theory, so the Ch. 8 objects come from the pinned SimonGMT package. SimonGMT already supplies the facts the children need: domainMeasure/map_domainMeasure and divergenceDomainTest, used for the transfer in child (1); RadonConverges; TestVectorField and firstVariationNormOn with le_firstVariationNormOn; the Riesz identities firstVariationRieszMeasure_eq_norm and isFirstVariationPolarRepresentation_riesz with firstVariationNormOn_le_of_polarRepresentation, used in child (4); and the Grassmannian compactness and second-countability instances. These are standard-axiom declarations reachable from `import GMT.Ch08.Submission`. TangentRescaling (blowUpMeasure, definitionally the contract's rescaledMeasure) and Chapter04.blowUpHomeomorph are NOT imported, so the children build the dilation homeomorphism directly. Every Mathlib lemma cited in the child proofs exists in the snapshot with matching hypotheses. The exception is second countability of C(X,ℝ), which sits in a non-imported file and is therefore inlined in child (3), as in the accepted radon_compactlySupported_countable_approx (commit 2721e203). The 5 child statements elaborate in comparator form, and the 5 children were proved completely in Lean with only propext, Classical.choice and Quot.sound. The parent assembly compiles from them plus the sibling rescaled_integral stub, with sorryAx only through that stub. No intcpt_diag_* name is reserved anywhere.
+
+
+## Acceptance
+
+The exact contract must pass deterministic Git identity checks and the machine comparator, without a Lean agent review, changed assumptions or proof holes. Every node delivers an immutable accepted candidate after its original proof checks. Parents compose dependencies in isolated worktrees. Only the root integrates and validates the final target tree. Every child retains its issue and review PR.
+
+Solution PR: Pending
+
+After proof acceptance and exact solution PR publication, close this theorem issue. Issue closure does not assert Git merge or final root delivery.
+
+Child PRs remain review records; only confirmed root delivery closes those PRs without merging them.
+
+Proof status (`accepted` / `merged`) and GitHub PR state are separate.
