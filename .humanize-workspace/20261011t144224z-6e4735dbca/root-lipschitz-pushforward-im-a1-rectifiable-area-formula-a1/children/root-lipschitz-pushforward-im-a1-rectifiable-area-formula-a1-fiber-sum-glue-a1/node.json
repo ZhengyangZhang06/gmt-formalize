@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.fiber_sum_glue-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1",
+  "depth": 3,
+  "title": "Countable gluing of fibre-sum area identities over disjoint pieces and a null remainder",
+  "statement": "Let X, Y be measurable spaces, μ a measure on X, ν a measure on Y, f : X → Y, h, F : X → [0,∞], A, Z ⊆ X and B : ℕ → Set X such that (a) B_m ⊆ A for all m, (b) the B_m are pairwise disjoint, (c) every B_m is μ-null-measurable, (d) A ⊆ Z ∪ ⋃_m B_m, (e) μ(Z) = 0, (f) ν(f(Z)) = 0, and (g) for every m the fibre sum N_{B_m}(y) := Σ_{x ∈ B_m, f(x) = y} h(x) is ν-a.e. measurable and ∫_{B_m} F dμ = ∫_Y N_{B_m} dν. Then N_A(y) := Σ_{x ∈ A, f(x) = y} h(x) is ν-a.e. measurable and ∫_A F dμ = ∫_Y N_A dν.",
+  "lean_statement": "∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] (μ : Measure X) (ν : Measure Y) (f : X → Y) (h F : X → ℝ≥0∞) (A Z : Set X) (B : ℕ → Set X), (∀ m, B m ⊆ A) → Pairwise (Function.onFun Disjoint B) → (∀ m, NullMeasurableSet (B m) μ) → (A ⊆ Z ∪ ⋃ m, B m) → μ Z = 0 → ν (f '' Z) = 0 → (∀ m, AEMeasurable (fun y => ∑' x : {x : X // x ∈ B m ∧ f x = y}, h x) ν ∧ ∫⁻ x in B m, F x ∂μ = ∫⁻ y, ∑' x : {x : X // x ∈ B m ∧ f x = y}, h x ∂ν) → AEMeasurable (fun y => ∑' x : {x : X // x ∈ A ∧ f x = y}, h x) ν ∧ ∫⁻ x in A, F x ∂μ = ∫⁻ y, ∑' x : {x : X // x ∈ A ∧ f x = y}, h x ∂ν",
+  "lean_name": "lpf_raf_fiber_sum_glue",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-fiber-sum-glue-a1-a1"
+}

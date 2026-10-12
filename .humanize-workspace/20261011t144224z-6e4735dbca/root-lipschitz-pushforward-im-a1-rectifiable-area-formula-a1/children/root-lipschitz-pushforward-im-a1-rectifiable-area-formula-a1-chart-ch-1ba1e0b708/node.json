@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1",
+  "depth": 3,
+  "title": "Change of variables through an injective Lipschitz–antilipschitz chart",
+  "statement": "Let P, n ∈ ℕ, Ω ⊆ ℝⁿ open, Φ : ℝⁿ → ℝ^P Lipschitz on Ω and c-antilipschitz on Ω for some c > 0, A ⊆ Φ(Ω) Hⁿ-null-measurable, and g : ℝ^P → [0,∞] a.e.-measurable for Hⁿ⌞A. Let D := Ω ∩ Φ⁻¹(A) and JΦ(w) := √det(⟨DΦ(w)e_i, DΦ(w)e_j⟩), DΦ(w) = fderiv ℝ Φ w. Then D is Lⁿ-null-measurable, g∘Φ is a.e.-measurable for Lⁿ⌞D, and ∫_A g dHⁿ = ∫_D g(Φ(w))·JΦ(w) dLⁿ(w).",
+  "lean_statement": "∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (A : Set (Eucl P)) (g : Eucl P → ℝ≥0∞), IsOpen Ω → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → A ⊆ Φ '' Ω → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → AEMeasurable g ((μHE[n] : Measure (Eucl P)).restrict A) → NullMeasurableSet (Ω ∩ Φ ⁻¹' A) (volume : Measure (Eucl n)) ∧ AEMeasurable (fun w => g (Φ w)) ((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' A)) ∧ ∫⁻ x in A, g x ∂(μHE[n] : Measure (Eucl P)) = ∫⁻ w in Ω ∩ Φ ⁻¹' A, g (Φ w) * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det) ∂(volume : Measure (Eucl n))",
+  "lean_name": "lpf_raf_chart_change_of_variables",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.local_lipschitz_area-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_preimage_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.local_lipschitz_area-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_preimage_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-ch-1ba1e0b708-a1"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_jacobian_ae-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1",
+  "depth": 3,
+  "title": "A.e. Jacobian identity on a C¹ antilipschitz chart of a rectifiable triple",
+  "statement": "Assume (S1) ‖simpleNVector v‖² = det(⟨v_i, v_j⟩)_{i,j} for all P, n and all v : Fin n → ℝ^P, and (S2) simpleNVector(i ↦ Σ_j B_ij τ_j) = det(B)·simpleNVector τ for all P, n, all real n×n matrices B and all τ : Fin n → ℝ^P (this conjunction is verbatim the frozen type of the already-reserved theorem lpf_simple_nvector_algebra; it is taken as a hypothesis so that this lemma is provable independently and the parent discharges it with Submission.lpf_simple_nvector_algebra). Let P, Q, n ∈ ℕ, U ⊆ ℝ^P, IsRectifiableTriple U n M θ ξ, f : ℝ^P → ℝ^Q, L : ℝ^P → L(ℝ^P, ℝ^Q), Ω ⊆ ℝⁿ open, Φ : ℝⁿ → ℝ^P C¹ and c-antilipschitz on Ω for some c > 0, and suppose that for Lⁿ-a.e. w ∈ Ω ∩ Φ⁻¹(M), range DΦ(w) is a weighted approximate tangent space of (M, θ) at Φ(w) and f∘Φ has Fréchet derivative L(Φ(w))∘DΦ(w) at w. Then for Lⁿ-a.e. w ∈ Ω ∩ Φ⁻¹(M): ‖L(Φ(w))_#ξ(Φ(w))‖ₑ·JΦ(w) = J(f∘Φ)(w) in [0,∞], where JΦ(w) = √det(⟨DΦ(w)e_i, DΦ(w)e_j⟩) and J(f∘Φ)(w) = √det(⟨D(f∘Φ)(w)e_i, D(f∘Φ)(w)e_j⟩) (both embedded by ENNReal.ofReal).",
+  "lean_statement": "((∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) → ∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)), IsRectifiableTriple U n M θ ξ → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → (∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' M)), HasWeightedApproximateTangentSpaceAt n M θ (Φ w) (LinearMap.range (fderiv ℝ Φ w).toLinearMap) ∧ HasFDerivAt (f ∘ Φ) ((L (Φ w)).comp (fderiv ℝ Φ w)) w) → ∀ᵐ w ∂((volume : Measure (Eucl n)).restrict (Ω ∩ Φ ⁻¹' M)), ‖nVectorPushforward n (L (Φ w)) (ξ (Φ w))‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det) = ENNReal.ofReal (Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single i 1)) (fderiv ℝ (f ∘ Φ) w (EuclideanSpace.single j 1))).det)",
+  "lean_name": "lpf_raf_chart_jacobian_ae",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_preimage_null-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.jacobian_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_preimage_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.jacobian_identity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-ja-6ec72b8d86-a1"
+}

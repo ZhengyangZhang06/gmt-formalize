@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.jacobian_identity-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1",
+  "depth": 3,
+  "title": "Jacobian identity ‖L_#ξ‖·J(A) = J(L∘A) for frames of the tangent plane",
+  "statement": "Assume (S1) ‖simpleNVector v‖² = det(⟨v_i, v_j⟩)_{i,j} for all P, n and all v : Fin n → ℝ^P, and (S2) simpleNVector(i ↦ Σ_j B_ij τ_j) = det(B)·simpleNVector τ for all P, n, all real n×n matrices B and all τ : Fin n → ℝ^P (this conjunction is verbatim the frozen type of the already-reserved theorem lpf_simple_nvector_algebra; it is taken as a hypothesis so that this lemma is provable independently and the parent discharges it with Submission.lpf_simple_nvector_algebra). Then for all P, Q, n, every continuous linear A : ℝⁿ → ℝ^P, every orthonormal τ : Fin n → ℝ^P with A(v) ∈ span{τ_1, …, τ_n} for all v, every n-vector ξ with ξ = simpleNVector τ or ξ = −simpleNVector τ, and every continuous linear L : ℝ^P → ℝ^Q: ‖L_#ξ‖·√det(⟨A e_i, A e_j⟩) = √det(⟨L A e_i, L A e_j⟩), where L_# = nVectorPushforward n L and e_i = EuclideanSpace.single i 1.",
+  "lean_statement": "((∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) → ∀ (P Q n : ℕ) (A : Eucl n →L[ℝ] Eucl P) (τ : Fin n → Eucl P) (ξ : NVector (Eucl P) n) (L : Eucl P →L[ℝ] Eucl Q), Orthonormal ℝ τ → (∀ v, A v ∈ Submodule.span ℝ (range τ)) → (ξ = simpleNVector τ ∨ ξ = -simpleNVector τ) → ‖nVectorPushforward n L ξ‖ * Real.sqrt (Matrix.of fun i j => inner ℝ (A (EuclideanSpace.single i 1)) (A (EuclideanSpace.single j 1))).det = Real.sqrt (Matrix.of fun i j => inner ℝ (L (A (EuclideanSpace.single i 1))) (L (A (EuclideanSpace.single j 1)))).det",
+  "lean_name": "lpf_raf_jacobian_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-jacobian-937dbe37df-a1"
+}
