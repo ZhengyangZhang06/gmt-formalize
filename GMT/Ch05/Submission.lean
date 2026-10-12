@@ -676,6 +676,28 @@ theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗ�
     rw [← map_sub, hsub, sub_self, sub_zero]
     exact (q.inner_map_map _ _).trans (horth h hh)
 
+/-- Simon Ch. 5, proof of Lemma 2.6, fact (Gr) (Ch. 2, 1.8(i) and `Hⁿ = Lⁿ` on `ℝⁿ`): for a linear
+isometry `q` of `ℝ^{n+ℓ}`, a `1`-Lipschitz `f : ℝⁿ → ℝ^ℓ` and `r ≥ 0`,
+`Hⁿ(q(graph f|B_r(c))) ≤ 2^{n/2} ω_n rⁿ`.
+The set is the image of `B_r(c)` under `Γ(x) = q(x, f(x))`, which is `√2`-Lipschitz
+(`lip_approx_gm_graph_map_lipschitz`); a `K`-Lipschitz map multiplies `Hⁿ` by at most `Kⁿ`
+(SimonGMT `euclideanHausdorffMeasure_image_le_of_lipschitzOn`); `Hⁿ(B_r(c)) = ω_n rⁿ`
+(`lip_approx_gm_ball_measure`); and `(√2)ⁿ = 2^{n/2}`. -/
+theorem lip_approx_graph_measure : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), (∀ x z, ‖f x - f z‖ ≤ ‖x - z‖) → ∀ (c : Rn n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver f (closedBall c r)) ≤ ENNReal.ofReal (2 ^ ((n : ℝ) / 2) * unitBallVolume n * r ^ n) := by
+  intro n ℓ hn q f hf c r hr
+  -- `(√2)ⁿ = 2^{n/2}`
+  have hsqrt : ((NNReal.sqrt 2 : ℝ≥0) : ℝ≥0∞) ^ n = ENNReal.ofReal (2 ^ ((n : ℝ) / 2)) := by
+    rw [← ENNReal.ofReal_coe_nnreal, Real.coe_sqrt, NNReal.coe_ofNat,
+      ← ENNReal.ofReal_pow (Real.sqrt_nonneg 2), Real.sqrt_eq_rpow,
+      ← Real.rpow_mul_natCast zero_le_two, one_div_mul_eq_div]
+  -- `q(graph f|B_r(c)) = Γ(B_r(c))` for `Γ(x) = q(x, f(x))`
+  rw [graphOver, Set.image_image]
+  -- `Hⁿ(Γ(B_r(c))) ≤ (√2)ⁿ Hⁿ(B_r(c)) = 2^{n/2} ω_n rⁿ`
+  refine (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+    (Submission.lip_approx_gm_graph_map_lipschitz n ℓ q f hf).lipschitzOnWith).trans_eq ?_
+  rw [Submission.lip_approx_gm_ball_measure n hn c r hr, hsqrt, mul_assoc,
+    ENNReal.ofReal_mul (Real.rpow_nonneg zero_le_two _)]
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
