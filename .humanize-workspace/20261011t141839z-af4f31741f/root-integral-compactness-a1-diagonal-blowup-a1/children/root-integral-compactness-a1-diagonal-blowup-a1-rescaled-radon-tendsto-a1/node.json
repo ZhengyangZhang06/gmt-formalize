@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.diagonal_blowup-a1.rescaled_radon_tendsto-a1",
+  "parent_id": "root.integral_compactness-a1.diagonal_blowup-a1",
+  "depth": 3,
+  "title": "Blow-ups preserve Radon convergence for tests supported in the blown-up domain (steps 0(a)–(b); printed 'η_{ξ,λ#}V_i → η_{ξ,λ#}V for each fixed λ')",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, and V_i (i ∈ ℕ), V n-varifolds on U (so U is open) with V_i → V as Radon measures on G_n(U) (Varifold.RadonConverges Vi V: ∫ f d(V_i.domainMeasure) → ∫ f d(V.domainMeasure) for every f ∈ C_c(U × G(N,n))). Let ξ ∈ ℝ^N, t > 0 and F ∈ C_c(ℝ^N × G(N,n)) such that ξ + t·y ∈ U for every (y, S) ∈ tsupport F. Then ∫ F d(V_i)_{ξ,t} → ∫ F dV_{ξ,t} as i → ∞, where V'_{ξ,t} := rescaledMeasure V' ξ t = ofReal(t^{-n})·(V'.measure)_#[(z, S) ↦ (t^{-1}(z − ξ), S)].",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U) (ξ : Euclidean N) (t : ℝ) (F : C_c(Euclidean N × Grassmannian N n, ℝ)), Varifold.RadonConverges Vi V → 0 < t → (∀ z ∈ tsupport F, ξ + t • z.1 ∈ U) → Tendsto (fun i ↦ ∫ z, F z ∂(rescaledMeasure (Vi i) ξ t)) atTop (𝓝 (∫ z, F z ∂(rescaledMeasure V ξ t)))",
+  "lean_name": "intcpt_diag_rescaled_radon_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-diagonal-blowup-a1-rescaled-radon-tendsto-a1-a1"
+}

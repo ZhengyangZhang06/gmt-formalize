@@ -1,0 +1,153 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integral_compactness-a1.diagonal_blowup-a1`
+- Child DAG node: `root.integral_compactness-a1.diagonal_blowup-a1.dense_family_tendsto-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 7 of the parent proof (extension of the convergence from the countable family {f_m} to every admissible f by a uniform mass bound), stated for two sequences of measures. Notation: Z := ℝ^N × G, A := O ×ˢ univ (measurable since O is), C₀ := C.toReal ≥ 0 (C ≠ ∞).
+
+1. (Integrability.) Let μ' be a measure on Z with μ'(A) ≤ C and h ∈ C_c(Z, ℝ) with tsupport h ⊆ A. h is continuous with compact support, hence bounded (|h| ≤ M: HasCompactSupport.exists_bound_of_continuous) and a.e. strongly measurable; μ'(A) ≤ C < ∞, so h is integrable on A (Measure.integrableOn_of_bounded), and since support h ⊆ tsupport h ⊆ A, h is μ'-integrable (integrableOn_iff_integrable_of_support_subset).
+
+2. (Basic estimate.) Let μ' satisfy μ'(A) ≤ C, η ≥ 0 and h : Z → ℝ with h(z) = 0 for z ∉ A and |h(z)| ≤ η for all z. Then ∫ h dμ' = ∫_A h dμ' (setIntegral_eq_integral_of_forall_compl_eq_zero) and |∫_A h dμ'| ≤ η · μ'.real(A) (norm_setIntegral_le_of_norm_le_const, μ'(A) < ∞) ≤ η · C₀ (ENNReal.toReal_mono).
+
+3. Fix f ∈ C_c(Z, ℝ) with tsupport f ⊆ A, and ε > 0. Put η := ε / (4(C₀ + 1)) > 0 and choose m with |f(z) − g_m(z)| ≤ η for all z (density hypothesis). The function h := f − g_m satisfies |h| ≤ η and h(z) = 0 for z ∉ A (f(z) = 0 because z ∉ tsupport f, and g_m(z) = 0 because z ∉ tsupport g_m ⊆ A).
+
+4. By hypothesis, for all sufficiently large k (finitely many eventual statements): μ_k(A) ≤ C, ν_k(A) ≤ C, and |∫ g_m dμ_k − ∫ g_m dν_k| < ε/2 (the latter from ∫ g_m dμ_k − ∫ g_m dν_k → 0). Fix such k. By 1, f and g_m are integrable for μ_k and for ν_k, so ∫ f dμ_k − ∫ g_m dμ_k = ∫ h dμ_k and ∫ f dν_k − ∫ g_m dν_k = ∫ h dν_k (integral_sub), and by 2 both have absolute value ≤ ηC₀.
+
+5. Hence |∫ f dμ_k − ∫ f dν_k| ≤ |∫ h dμ_k| + |∫ g_m dμ_k − ∫ g_m dν_k| + |∫ h dν_k| < 2ηC₀ + ε/2 ≤ ε, since 2ηC₀ = (ε/2)·C₀/(C₀+1) < ε/2. As ε > 0 was arbitrary, ∫ f dμ_k − ∫ f dν_k → 0 (Metric.tendsto_atTop). ∎
+
+Lean realization (informative; compiled during decomposition, complete, depending only on the axioms propext, Classical.choice, Quot.sound, against the pinned toolchain, placed in GMT/Ch08/Submission.lean inside `namespace GMT.Ch08` after `end Definitions`, i.e. in the frozen contract scope `open Set Filter MeasureTheory Metric`, `open scoped Topology ENNReal CompactlySupported Pointwise`, `open Poincare.SimonGMT`, `open Poincare.SimonGMT.Chapter08`; scratch copy /tmp/diagdecomp/FullCheck.lean):
+
+theorem Submission.intcpt_diag_dense_family_tendsto : ∀ (N n : ℕ) (O : Set (Euclidean N)) (g : ℕ → C_c(Euclidean N × Grassmannian N n, ℝ)) (μ ν : ℕ → Measure (Euclidean N × Grassmannian N n)) (C : ℝ≥0∞), MeasurableSet O → C ≠ ∞ → (∀ m, tsupport (g m) ⊆ O ×ˢ (univ : Set (Grassmannian N n))) → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ O ×ˢ (univ : Set (Grassmannian N n)) → ∀ η : ℝ, 0 < η → ∃ m, ∀ z, |f z - g m z| ≤ η) → (∀ᶠ k in atTop, μ k (O ×ˢ (univ : Set (Grassmannian N n))) ≤ C) → (∀ᶠ k in atTop, ν k (O ×ˢ (univ : Set (Grassmannian N n))) ≤ C) → (∀ m, Tendsto (fun k ↦ ∫ z, g m z ∂(μ k) - ∫ z, g m z ∂(ν k)) atTop (𝓝 0)) → ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ O ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(μ k) - ∫ z, f z ∂(ν k)) atTop (𝓝 0) := by
+  intro N n O g μ ν C hO hC hgsupp hdense hμ hν hconv f hf
+  set A : Set (Euclidean N × Grassmannian N n) := O ×ˢ (univ : Set (Grassmannian N n)) with hA
+  set C₀ : ℝ := C.toReal with hC₀
+  have hC₀nn : 0 ≤ C₀ := ENNReal.toReal_nonneg
+  have hintegr : ∀ (μ' : Measure (Euclidean N × Grassmannian N n))
+      (h : C_c(Euclidean N × Grassmannian N n, ℝ)),
+      μ' A ≤ C → tsupport h ⊆ A → Integrable (fun z ↦ h z) μ' := by
+    intro μ' h hμ' hh
+    obtain ⟨M, hM⟩ := h.hasCompactSupport.exists_bound_of_continuous h.continuous
+    have hOn : IntegrableOn (fun z ↦ h z) A μ' :=
+      Measure.integrableOn_of_bounded (M := M) (ne_top_of_le_ne_top hC hμ')
+        h.continuous.aestronglyMeasurable (Eventually.of_forall hM)
+    exact (integrableOn_iff_integrable_of_support_subset ((subset_tsupport _).trans hh)).mp hOn
+  have hest : ∀ (μ' : Measure (Euclidean N × Grassmannian N n))
+      (h : Euclidean N × Grassmannian N n → ℝ) (η : ℝ),
+      0 ≤ η → μ' A ≤ C → (∀ z, z ∉ A → h z = 0) → (∀ z, |h z| ≤ η) → |∫ z, h z ∂μ'| ≤ η * C₀ := by
+    intro μ' h η hηnn hμ' h0 hη
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero h0]
+    have hlt : μ' A < ∞ := lt_of_le_of_lt hμ' (lt_top_iff_ne_top.mpr hC)
+    have h1 := norm_setIntegral_le_of_norm_le_const (μ := μ') (s := A) (f := h) (C := η) hlt
+      (fun z _ ↦ by simpa [Real.norm_eq_abs] using hη z)
+    rw [Real.norm_eq_abs] at h1
+    refine h1.trans (mul_le_mul_of_nonneg_left ?_ hηnn)
+    exact ENNReal.toReal_mono hC hμ'
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  set η : ℝ := ε / (4 * (C₀ + 1)) with hηdef
+  have hηpos : 0 < η := by positivity
+  obtain ⟨m, hm⟩ := hdense f hf η hηpos
+  obtain ⟨K₁, hK₁⟩ := Metric.tendsto_atTop.mp (hconv m) (ε / 2) (by positivity)
+  obtain ⟨K₂, hK₂⟩ := eventually_atTop.mp hμ
+  obtain ⟨K₃, hK₃⟩ := eventually_atTop.mp hν
+  refine ⟨max K₁ (max K₂ K₃), fun k hk ↦ ?_⟩
+  have hk1 : K₁ ≤ k := le_of_max_le_left hk
+  have hk2 : K₂ ≤ k := le_trans (le_max_left _ _) (le_of_max_le_right hk)
+  have hk3 : K₃ ≤ k := le_trans (le_max_right _ _) (le_of_max_le_right hk)
+  have hμk := hK₂ k hk2
+  have hνk := hK₃ k hk3
+  have hgk := hK₁ k hk1
+  rw [Real.dist_eq, sub_zero] at hgk ⊢
+  have hfμ := hintegr (μ k) f hμk hf
+  have hgμ := hintegr (μ k) (g m) hμk (hgsupp m)
+  have hfν := hintegr (ν k) f hνk hf
+  have hgν := hintegr (ν k) (g m) hνk (hgsupp m)
+  have h0 : ∀ z, z ∉ A → f z - g m z = 0 := by
+    intro z hz
+    rw [image_eq_zero_of_notMem_tsupport (fun h ↦ hz (hf h)),
+      image_eq_zero_of_notMem_tsupport (fun h ↦ hz (hgsupp m h)), sub_zero]
+  have e1 := hest (μ k) (fun z ↦ f z - g m z) η hηpos.le hμk h0 hm
+  have e2 := hest (ν k) (fun z ↦ f z - g m z) η hηpos.le hνk h0 hm
+  rw [integral_sub hfμ hgμ] at e1
+  rw [integral_sub hfν hgν] at e2
+  have hsmall : 2 * (η * C₀) < ε / 2 := by
+    have h4 : 0 < C₀ + 1 := by linarith
+    have hrw : η * C₀ = ε / 4 * (C₀ / (C₀ + 1)) := by
+      rw [hηdef]; field_simp
+    have hfrac : C₀ / (C₀ + 1) < 1 := by rw [div_lt_one h4]; linarith
+    have hfrac0 : 0 ≤ C₀ / (C₀ + 1) := div_nonneg hC₀nn h4.le
+    rw [hrw]; nlinarith
+  have a1 := abs_le.mp e1
+  have a2 := abs_le.mp e2
+  have a3 := abs_lt.mp hgk
+  rw [abs_lt]
+  constructor <;> linarith [a1.1, a1.2, a2.1, a2.2, a3.1, a3.2]
+
+## Key steps
+
+1. Tests supported in A are integrable for any measure with finite mass on A.
+2. If |h| ≤ η and h = 0 off A then |∫ h dμ'| ≤ η·μ'(A).
+3. Approximate f by g_m within η := ε/(4(C₀+1)); for large k the mass bounds and |∫ g_m dμ_k − ∫ g_m dν_k| < ε/2 hold.
+4. Triangle inequality gives |∫ f dμ_k − ∫ f dν_k| < ε for large k.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum project/GMT/Ch08/Contract.lean (2e5cd5b3…, identical to workspace GMT/Ch08/Contract.lean and Submission.lean)`
+- `rg -n 'theorem integral_smul_measure|theorem integral_map |theorem _root_.MeasurableEmbedding.integral_map|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem ofReal_integral_eq_lintegral_ofReal|theorem norm_setIntegral_le_of_norm_le_const|lemma Measure.integrableOn_of_bounded|theorem integrableOn_iff_integrable_of_support_subset|theorem Integrable.smul_measure|theorem integrable_map_measure|theorem eventually_all_finset|theorem tendsto_one_div_add_atTop_nhds_zero_nat|theorem tendsto_measure_iUnion_atTop|theorem _root_.Monotone.measure_iUnion|lemma Topology.IsInducing.isCompact_preimage|theorem Countable.exists_eq_range|theorem dist_apply_le_dist|theorem hasBasis_compactConvergenceUniformity|def toCocompactMap|theorem restrict_apply_self|theorem lintegral_indicator_one' mathlib/Mathlib`
+- `grep -rn 'theorem exists_continuous_one_zero_of_isCompact|theorem Frequently.and_eventually|frequently_lt_of_liminf_lt|Filter.Tendsto.eventually_const_lt (to_dual eventually_lt_const)|theorem exists_countable_dense_subset|IsSeparable.exists_countable_dense_subset' mathlib/Mathlib`
+- `grep -rn 'SeparableSpace C(|SecondCountableTopology C(' mathlib/Mathlib/Topology mathlib/Mathlib/Analysis (only ContinuousMap/SecondCountableSpace.lean)`
+- `sed CompactlySupported.lean (CompactlySupportedContinuousMap.comp with →co, Mul/smul instances) and CocompactMap.lean (Homeomorph.toCocompactMap)`
+- `grep -n in simongmt Chapter08/{Varifold,VarifoldConvergence,FirstVariationRiesz,FirstVariationBounds,TangentRescaling}.lean, Chapter04/WeightedBlowUp.lean, Chapter03/Rectifiable.lean: structure Varifold, domainMeasure, map_domainMeasure, RadonConverges, divergenceDomainTest, integral_divergenceDomainTest, TestVectorField, firstVariationNormOn, le_firstVariationNormOn, firstVariationNormOn_le_of_polarRepresentation, isFirstVariationPolarRepresentation_riesz, firstVariationRieszMeasure_eq_norm, tangentialDivergence, jacobian, clmToMatrix, support_tangentialDivergence_subset, continuous_tangentialDivergence, blowUpMeasure, blowUp, blowUpHomeomorph, blowUpMap, Grassmannian.instCompactSpace/instSecondCountableTopology`
+- `lake env lean /tmp/diagdecomp/{Inst,Avail,Avail2}.lean (#check under import GMT.Ch08.Submission: SecondCountableTopology C(L,ℝ) and SeparableSpace C(L,ℝ) fail; Chapter04.blowUpHomeomorph and Varifold.blowUpMeasure unknown; Stone–Weierstrass, Urysohn, denseSeq, compact-convergence uniformity available)`
+- `git show 2721e20337252ca8e1f6204843570bd04ba673c8:GMT/Ch08/Submission.lean (accepted Submission.radon_compactlySupported_countable_approx: inlined second countability of C(X,ℝ))`
+- `python3 verifier/gmt-compare.py contract_scope(Contract.lean, GMT.Ch08.main_theorem); verifier/lean_contract.py validate_lean_statement on the 5 lean_statements`
+- `lake env lean /tmp/diagdecomp/Chal_*.lean (comparator form) and /tmp/diagdecomp/FullCheck.lean (#print axioms)`
+- `grep 'intcpt_diag_' in dag.json and nodes/*; git grep over all 107 local branches and remotes (no matches)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/UrysohnsLemma.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/CocompactMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/ContinuousMap/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/UniformSpace/CompactConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Filter/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Order/Filter/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationRiesz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/TangentRescaling.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1-diagonal-blowup-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-integral-compactness-a1/decomposition-v1.json`
+- `/tmp/diagdecomp/FullCheck.lean`
+- `/tmp/diagdecomp/AssemblyFinal.lean`
+
+Snapshot = project 63436ae6 + Mathlib 25730c7c; its Contract is byte-identical to the workspace Contract and Submission (sha256 2e5cd5b3…). Mathlib has no varifold theory, so the Ch. 8 objects come from the pinned SimonGMT package. SimonGMT already supplies the facts the children need: domainMeasure/map_domainMeasure and divergenceDomainTest, used for the transfer in child (1); RadonConverges; TestVectorField and firstVariationNormOn with le_firstVariationNormOn; the Riesz identities firstVariationRieszMeasure_eq_norm and isFirstVariationPolarRepresentation_riesz with firstVariationNormOn_le_of_polarRepresentation, used in child (4); and the Grassmannian compactness and second-countability instances. These are standard-axiom declarations reachable from `import GMT.Ch08.Submission`. TangentRescaling (blowUpMeasure, definitionally the contract's rescaledMeasure) and Chapter04.blowUpHomeomorph are NOT imported, so the children build the dilation homeomorphism directly. Every Mathlib lemma cited in the child proofs exists in the snapshot with matching hypotheses. The exception is second countability of C(X,ℝ), which sits in a non-imported file and is therefore inlined in child (3), as in the accepted radon_compactlySupported_countable_approx (commit 2721e203). The 5 child statements elaborate in comparator form, and the 5 children were proved completely in Lean with only propext, Classical.choice and Quot.sound. The parent assembly compiles from them plus the sibling rescaled_integral stub, with sorryAx only through that stub. No intcpt_diag_* name is reserved anywhere.
