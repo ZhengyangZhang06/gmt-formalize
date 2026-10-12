@@ -656,6 +656,25 @@ theorem any_radius_gr_la_hsNorm_facts : (∀ (m k : ℕ) (M N : Rn m →L[ℝ] R
           refine Finset.sum_le_sum fun i _ => pow_le_pow_left₀ (norm_nonneg _) ?_ 2
           simpa using K.norm_starProjection_apply_le (EuclideanSpace.single i (1 : ℝ))
       _ = m := by simp
+/-- Linear algebra behind the graph-rate step of Simon Ch. 5, Remark 5.3 (p. 122): graph
+coordinates on `ℝ^{n+ℓ} = ℝⁿ × ℝ^ℓ`, the rotated plane `T₀ = q(ℝⁿ × {0})` of Lemma 2.6 (p. 110), and
+the Hilbert–Schmidt norm `|A|` (Notation p. ix; footnote 2 on p. 115).  For a linear isometry `q`:
+(L1)–(L3) `(a, b)` is additive, subtractive and homogeneous in the pair; (L4)
+`|(a, b)|² = |a|² + |b|²`; (L5) `p_{T₀}(q(a, b)) = q(a, 0)`; (L6) `dist(q(a, b), T₀) = |b|`;
+(L7) `dim T₀ = n`; (L8) for `M, N : ℝᵐ → ℝᵏ`: `|M|² ≥ 0`, `|M|² = (|M|)²`,
+`|M + N|² ≤ 2|M|² + 2|N|²`, `|−M|² = |M|²`, `|M|² = 0 ⇒ M = 0` and `‖M‖ ≤ |M| ≤ √m ‖M‖`;
+(L9) `|p_K|² ≤ m` for every subspace `K ⊆ ℝᵐ`.
+(L1)–(L4) are part of the coordinate algebra of `(a, b)`, (L5)–(L7) are the projection, distance and
+dimension facts for `T₀`, and (L8), (L9) are the Hilbert–Schmidt facts. -/
+theorem any_radius_gr_linear_algebra_basics : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint (a + a') (b + b') = graphPoint a b + graphPoint a' b') ∧ (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint (a - a') (b - b') = graphPoint a b - graphPoint a' b') ∧ (∀ (t : ℝ) (a : Rn n) (b : Rn ℓ), graphPoint (t • a) (t • b) = t • graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a (0 : Rn ℓ))) ∧ (∀ (a : Rn n) (b : Rn ℓ), infDist (q (graphPoint a b)) (rotatedPlane q : Set (Amb n ℓ)) = ‖b‖) ∧ Module.finrank ℝ (rotatedPlane q) = n ∧ (∀ (m k : ℕ) (M N : Rn m →L[ℝ] Rn k), 0 ≤ hsNormSq M ∧ hsNorm M ^ 2 = hsNormSq M ∧ hsNormSq (M + N) ≤ 2 * hsNormSq M + 2 * hsNormSq N ∧ hsNormSq (-M) = hsNormSq M ∧ (hsNormSq M = 0 → M = 0) ∧ ‖M‖ ≤ hsNorm M ∧ hsNorm M ≤ Real.sqrt m * ‖M‖) ∧ ∀ (m : ℕ) (K : Submodule ℝ (Rn m)), hsNormSq K.starProjection ≤ m := by
+  intro n ℓ q
+  -- (L1)–(L4): additivity, subtraction, homogeneity and the norm of `graphPoint`
+  obtain ⟨-, -, hadd, hsub, hsmul, hnorm, -⟩ :=
+    Submission.any_radius_gr_la_graphPoint_algebra n ℓ
+  -- (L5)–(L7): projection onto, distance to and dimension of `T₀ = q(ℝⁿ × {0})`
+  obtain ⟨hproj, hdist, hrank⟩ := Submission.any_radius_gr_la_rotatedPlane_facts n ℓ q
+  -- (L8), (L9): the Hilbert–Schmidt facts
+  exact ⟨hadd, hsub, hsmul, hnorm, hproj, hdist, hrank, Submission.any_radius_gr_la_hsNorm_facts⟩
 
 end Submission
 
