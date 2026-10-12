@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "CompactlyContainedOpen|HasWeightedApproximateTangentSpaceAt|CountablyRectifiable|blowUpMap",
+        "continuous_infEDist|mem_closure_iff_infEDist_zero|exists_inv_nat_lt|euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero|theorem hausdorffMeasure_image_le|setIntegral_eq_integral_of_forall_compl_eq_zero|exists_measurable_superset_of_null|theorem restrict_congr_set",
+        "rg -n 'CountablyRectifiable|HasWeightedApproximateTangentSpaceAt|blowUpMap' Mathlib",
+        "git show cb89cc7f436bbfa9b474f73003fa9aa79ebad102 -- GMT/Ch06/Submission.lean",
+        "git show def607d836e2e6071aa1efb85ad37d0ca1d1ac19 -- GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake build GMT.Ch06.Submission",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/wta-independent-audit-ef0qofj4/StandaloneContracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/wta-independent-audit-ef0qofj4/ReplayGlue.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-weighted-tangent-ae-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-weighted-tangent-ae-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-exhaustion-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-tangent-locality-a1/accepted-candidate.json",
+        ".humanize/swarm-configs/76bc108496c244659ad30448cab757f3.json",
+        "/tmp/wta-independent-audit-ef0qofj4/StandaloneContracts.lean",
+        "/tmp/wta-independent-audit-ef0qofj4/ReplayGlue.lean"
+      ],
+      "conclusion": "Verified the pinned project, Mathlib and SimonGMT revisions and relevant definitions. The tangent predicates are absent from snapshot Mathlib and defined in pinned SimonGMT. Both proposed types elaborate independently in comparator scope and exactly match their comparator-accepted contracts. Replayed both candidate proofs and the localization implication to the exact selected parent type, conditional on the bounded case established by retained Steps 1 and 3–6; all report only propext, Classical.choice and Quot.sound. The reuse-only split appropriately supplies Step 2, creates no nodes at the verified 200-node limit, and introduces no dependency cycle or conflicting name reservation."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches both exhaustion properties and all hypotheses. The proof establishes openness, compact closure, containment and compact-set cofinality, including empty-set and empty-complement cases. Singleton compact sets give the cover required by the selected parent's localization. The bare name reuses an accepted declaration with identical frozen type and no dependencies; the proof is complete and non-circular."
+    },
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition includes precisely the open-neighborhood, local symmetric-difference nullity, restricted almost-everywhere weight equality and pointwise weight equality hypotheses. Null-set preservation, measurable null supersets and restriction identities justify eventual equality of the blow-up integrals without unstated measurability or integrability assumptions. The limit and dimension condition transfer in the direction needed from M ∩ W_q to M. The bare name reuses an accepted declaration with identical frozen type and no dependencies; the proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}
