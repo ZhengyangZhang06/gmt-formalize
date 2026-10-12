@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "git show d8d46c9:GMT/Ch06/{Contract,Submission}.lean; cmp Contract.lean Submission.lean; cmp with snapshot project/GMT/Ch06/Contract.lean (all byte-identical)",
+        "cat -n GMT/Ch06/Contract.lean (DeformationTheorem, IsLatticeChain, LatticeFaceIndex, IsIntegerMultiplicity, Eucl)",
+        "cat simongmt Chapter06/Mass.lean, Currents.lean, Forms.lean, FormSupNorm.lean (covectorEuclideanNorm{_zero,_nonneg,_neg}, massAdmissibleOn, massOn, mass, le_massOn, GeometricCurrentOn.boundary_apply, exteriorDerivativeTestOn, WeaklyConvergesOn, TestFormOn, testFormEuclideanSupNorm)",
+        "grep -rn 'covectorEuclideanNorm_smul|covectorEuclideanNorm_continuous|continuous_covectorEuclideanNorm|abs_apply_le|le_mass_mul|mass_mul_sup' simongmt/Poincare/SimonGMT (only Chapter01 abs_apply_le_integral_vectorFunctionalEnvelopeMeasure; no mass inequality, homogeneity or continuity lemma for covectorEuclideanNorm)",
+        "rg -n 'theorem map_linearDependent' mathlib/Mathlib",
+        "rg -n 'theorem fintype_card_le_finrank' mathlib/Mathlib",
+        "rg -n 'theorem finrank_euclideanSpace_fin' mathlib/Mathlib",
+        "rg -n 'bounded_above_of_compact_support' mathlib/Mathlib",
+        "rg -n 'ContinuousEvalConst' mathlib/Mathlib/Topology/Algebra/Module/Alternating",
+        "rg -n \"theorem mono'\" mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "rg -n 'theorem eventually_ne_nhds' mathlib/Mathlib/Topology/Separation",
+        "rg -n 'theorem tendsto_toReal|theorem tendsto_ofReal|protected theorem Tendsto.const_mul' mathlib/Mathlib/Topology/Instances/ENNReal",
+        "rg -n 'theorem tendsto_one_div_add_atTop_nhds_zero_nat' mathlib/Mathlib/Analysis/SpecificLimits",
+        "lake env lean Scratch/Probe.lean (#check ENNReal.ofReal_le_iff_le_toReal, squeeze_zero_norm', ENNReal.Tendsto.mul_const, ContinuousAlternatingMap.ext, AlternatingMap.map_linearDependent, continuous_eval_const on Covector (Eucl P) n)",
+        "python3 gmt-compare.py contract_scope replay (open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasWeightedApproximateTangentSpaceAt); open Poincare.SimonGMT.Chapter01 (dimensionalUpperDensity); noncomputable section; end)",
+        "lake build GMT.Ch06.Submission (scratch /tmp/la-decomp-0Vm2C2/proj at frozen commit d8d46c9, pinned shared packages, no package rebuild)",
+        "lake env lean Scratch/Split.lean -o Split.olean (4 children fully proved; parent br_lattice_approximation and literal variant br_lattice_approximation_v0 from the children plus a stand-in for br_top_dim_lattice_approximation; #print axioms)",
+        "gmt-compare.py child_modules -> Checks/Challenge_{0..3}.lean (sorry) and Checks/Solution_{0..3}.lean (exact Submission.X); lake env lean on each (0 errors; solutions use only propext, Classical.choice, Quot.sound)",
+        "python3 scan of dag.json lean_name values (155 nodes; no br_la_* collision)",
+        "grep -n 'Evidently (1), (2)|^2.4|^2.5' book/sources/chapter-06-source.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Dimension/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-06-source.txt",
+        "/tmp/la-decomp-0Vm2C2/proj/Scratch/Probe.lean",
+        "/tmp/la-decomp-0Vm2C2/proj/Scratch/Split.lean",
+        "/tmp/la-decomp-0Vm2C2/proj/Scratch/C2c.lean",
+        "/tmp/la-decomp-0Vm2C2/proj/Checks/Challenge_0.lean",
+        "/tmp/la-decomp-0Vm2C2/proj/Checks/Solution_0.lean"
+      ],
+      "conclusion": "Snapshot (project d8d46c95, Mathlib 25730c7c): the frozen Ch06 contract is byte-identical to Submission.lean at the frozen commit.\n\nWhat the libraries do and do not provide:\n- SimonGMT has covectorEuclideanNorm with only _zero, _nonneg and _neg lemmas. It has massAdmissibleOn, massOn and mass with le_massOn, massOn_mono and lower semicontinuity. It has boundary_apply and exteriorDerivativeTestOn.\n- SimonGMT has no mass inequality, no homogeneity or continuity lemma for covectorEuclideanNorm, and no vanishing lemma for degree > P.\n- FormSupNorm.lean defines testFormEuclideanSupNorm (a sup over U only, with no boundedness lemma), so it is not used.\n- Mathlib supplies AlternatingMap.map_linearDependent, LinearIndependent.fintype_card_le_finrank, finrank_euclideanSpace_fin, ContinuousAlternatingMap.instContinuousEvalConst, HasCompactSupport.mono', Continuous.bounded_above_of_compact_support, ENNReal.ofReal_le_iff_le_toReal, ENNReal.tendsto_toReal, eventually_ne_nhds, squeeze_zero_norm', ENNReal.Tendsto.const_mul/mul_const, ENNReal.tendsto_ofReal and tendsto_one_div_add_atTop_nhds_zero_nat.\n- Using these, all four children were proved in scratch with axioms [propext, Classical.choice, Quot.sound]. HasCompactSupport.comp_left caused a whnf heartbeat timeout; mono' works, and the testform_bounded proof says so.\n\nComparator checks: with the exact comparator child scope, the four NodeChallenge modules elaborate and the four NodeSolution modules close. The parent typechecks from the children plus the sibling br_top_dim_lattice_approximation, with sorryAx only from that sibling's stand-in.\n\nNames: no br_la_* name occurs in dag.json or SimonGMT.\n\nThese checks do not certify the sibling br_top_dim_lattice_approximation or DeformationTheorem; both are separate DAG nodes."
+    }
+  ],
+  "parent_id": "root.boundary_rectifiability-a1.lattice_approximation-a1",
+  "child_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.mass_estimate-a1",
+  "subproblem": {
+    "key": "mass_estimate",
+    "title": "Mass inequality |Y(ω)| ≤ C·M(Y) under a pointwise bound |ω| ≤ C",
+    "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set, let Y ∈ D_n(U) (a GeometricCurrentOn U n) and ω ∈ Dⁿ(U) (a TestFormOn U n, i.e. a smooth compactly supported n-form on ℝ^P with tsupport ω ⊆ U), and let C ∈ ℝ with C > 0 and |ω(x)| ≤ C for every x ∈ ℝ^P, where |α| = covectorEuclideanNorm α = (Σ_{I : Fin n → Fin P strictly increasing} α(e_{I(0)}, …, e_{I(n−1)})²)^{1/2} is Simon's Euclidean coefficient norm. Assume the mass M(Y) = Y.mass = M_U(Y) is finite. Then |Y(ω)| ≤ C·M(Y), where M(Y) ∈ [0, ∞) is read as a real number (ENNReal.toReal).",
+    "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (Y : GeometricCurrentOn U n) (ω : TestFormOn U n) (C : ℝ), 0 < C → (∀ x : Eucl P, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) → Y.mass ≠ ∞ → |Y ω| ≤ C * Y.mass.toReal",
+    "lean_name": "br_la_abs_apply_le_mul_mass",
+    "depends_on": [],
+    "natural_proof": "Source: Simon Ch. 6, 2.4–2.5 (M(T) = sup over ω ∈ Dⁿ(U) with |ω| ≤ 1 of T(ω), the inner-product norm of Remark 2.6), and step 0 (Mass estimate) of the parent proof. Here the bound C > 0 plays the role of ‖ω‖ = sup|ω|.\n\nNotation. |α| = covectorEuclideanNorm α. By definition Y.mass = Y.massOn U is the supremum in [0, ∞] of ENNReal.ofReal(Y(η)) over η ∈ massAdmissibleOn U n U. That set consists of the η ∈ Dⁿ(U) with tsupport η ⊆ U and |η(x)| ≤ 1 for all x ∈ ℝ^P. In particular (GeometricCurrentOn.le_massOn), every such η satisfies ENNReal.ofReal(Y(η)) ≤ Y.mass.\n\n1. (Homogeneity of |·|.) For c ∈ ℝ and α ∈ Λⁿ(ℝ^P) we have |cα| = |c|·|α|.\n  - For every strictly increasing I, (cα)(e_I) = c·α(e_I), so ((cα)(e_I))² = c²·α(e_I)². For I not strictly increasing, both summands are 0 = c²·0.\n  - So the sum of squares for cα is c² times the sum s ≥ 0 for α: factor c² out of the finite sum.\n  - Hence |cα| = √(c²·s) = √(c²)·√s = |c|·√s = |c|·|α|.\n  (Lean: unfold covectorEuclideanNorm; use (c • α) v = c * α v, mul_pow, Finset.mul_sum, Real.sqrt_mul (sq_nonneg c) and Real.sqrt_sq_eq_abs.)\n  The library also gives |−α| = |α| (covectorEuclideanNorm_neg).\n2. (Admissibility.) Let η ∈ Dⁿ(U) with |η(x)| ≤ C for all x ∈ ℝ^P, and put η′ := C⁻¹·η.\n  - η′ ∈ Dⁿ(U), since Dⁿ(U) is a real submodule; hence tsupport η′ ⊆ U.\n  - η′(x) = C⁻¹·η(x), so by step 1 and C⁻¹ > 0: |η′(x)| = C⁻¹·|η(x)| ≤ C⁻¹·C = 1 for every x.\n  - So η′ ∈ massAdmissibleOn U n U, and ENNReal.ofReal(Y(η′)) ≤ Y.mass.\n3. (One-sided bound.) Since Y.mass ≠ ∞, ENNReal.ofReal(a) ≤ Y.mass is equivalent to a ≤ (Y.mass).toReal (ENNReal.ofReal_le_iff_le_toReal). Y is linear, so Y(η′) = C⁻¹·Y(η). Hence C⁻¹·Y(η) ≤ (Y.mass).toReal. Multiplying by C > 0 gives Y(η) ≤ C·(Y.mass).toReal.\n4. Apply steps 2–3 to η := ω, which satisfies |ω(x)| ≤ C by hypothesis: Y(ω) ≤ C·(Y.mass).toReal.\n   Apply them to η := −ω, which satisfies |(−ω)(x)| = |−ω(x)| = |ω(x)| ≤ C by step 1: Y(−ω) = −Y(ω) ≤ C·(Y.mass).toReal.\n5. Together, |Y(ω)| = max(Y(ω), −Y(ω)) ≤ C·(Y.mass).toReal. ∎",
+    "proof_key_steps": [
+      "|cα| = |c|·|α| for the Euclidean coefficient norm (factor c² out of the sum of squares, √(c²s) = |c|√s).",
+      "If |η| ≤ C pointwise then C⁻¹η is mass-admissible, so ENNReal.ofReal(C⁻¹·Y(η)) ≤ M(Y).",
+      "Because M(Y) ≠ ∞ this gives Y(η) ≤ C·M(Y).toReal.",
+      "Apply to η = ω and η = −ω to obtain |Y(ω)| ≤ C·M(Y).toReal."
+    ]
+  },
+  "audit": {
+    "key": "mass_estimate",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proposition exactly matches the stated positive pointwise bound and finite mass assumption. The proof establishes homogeneity of the actual coefficient norm, preserves test-form support under scaling, derives the one-sided estimate using finite-mass toReal conversion, and applies it to both signs. It works for arbitrary U and contains no circular reliance."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1/parent-supplied-natural-proof.json"
+}
