@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1.lusin_exhaustion-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1",
+  "depth": 4,
+  "title": "Lusin exhaustion of a finite-measure Borel set by closed continuity sets (Simon Thm 1.1.17 as used in Remark 3.1.8(1))",
+  "statement": "Let n, ℓ ∈ ℕ and Hⁿ := μHE[n] on ℝ^{n+ℓ}. Let A ⊆ ℝ^{n+ℓ} be a Borel set with Hⁿ(A) < ∞, and let ϑ : ℝ^{n+ℓ} → ℝ be Borel measurable. Then there are sets C_i ⊆ ℝ^{n+ℓ} (i ∈ ℕ), each closed, contained in A and with ϑ continuous on C_i (ContinuousOn ϑ C_i), such that Hⁿ(A ∖ ⋃_i C_i) = 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (A : Set (Amb n ℓ)) (ϑ : Amb n ℓ → ℝ), MeasurableSet A → (μHE[n] : Measure (Amb n ℓ)) A < ∞ → Measurable ϑ → ∃ C : ℕ → Set (Amb n ℓ), (∀ i, IsClosed (C i) ∧ C i ⊆ A ∧ ContinuousOn ϑ (C i)) ∧ (μHE[n] : Measure (Amb n ℓ)) (A \\ ⋃ i, C i) = 0",
+  "lean_name": "rsod_wfu_lusin_closed_exhaustion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-weighted-f-b56f317887-a1"
+}

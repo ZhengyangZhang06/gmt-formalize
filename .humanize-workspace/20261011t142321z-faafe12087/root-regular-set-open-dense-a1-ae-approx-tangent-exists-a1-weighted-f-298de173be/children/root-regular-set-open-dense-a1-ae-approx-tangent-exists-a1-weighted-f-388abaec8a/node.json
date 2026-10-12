@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1.tail_vanish-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1",
+  "depth": 4,
+  "title": "Blow-up integrals over a part of zero |ϑ|-weighted density vanish",
+  "statement": "Let n, ℓ ∈ ℕ and Hⁿ := μHE[n] on ℝ^{n+ℓ}. Let A, S ⊆ ℝ^{n+ℓ} with S Borel and S ⊆ A, let ϑ : ℝ^{n+ℓ} → ℝ be Hⁿ-integrable on A, and let x ∈ ℝ^{n+ℓ}. Put μ' := (Hⁿ⌞A).withDensity(‖ϑ‖ₑ), so that μ'(T) = ∫_{T∩A} |ϑ| dHⁿ for Borel T. Suppose (ρⁿ)⁻¹·μ'.real(S ∩ B_ρ(x)) → 0 as ρ ↓ 0, where B_ρ(x) is the closed ball. Then for every f ∈ C_c(ℝ^{n+ℓ}, ℝ), (rⁿ)⁻¹·∫_S f(η_{x,r}(z))·ϑ(z) dHⁿ(z) → 0 as r ↓ 0, where η_{x,r}(z) = r⁻¹(z − x) (Chapter03.blowUpMap x r).",
+  "lean_statement": "∀ (n ℓ : ℕ) (A S : Set (Amb n ℓ)) (ϑ : Amb n ℓ → ℝ) (x : Amb n ℓ), MeasurableSet S → S ⊆ A → IntegrableOn ϑ A (μHE[n] : Measure (Amb n ℓ)) → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (((μHE[n] : Measure (Amb n ℓ)).restrict A).withDensity (fun z => ‖ϑ z‖ₑ)).real (S ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → ∀ f : CompactlySupportedContinuousMap (Amb n ℓ) ℝ, Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z in S, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * ϑ z ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "rsod_wfu_blowUp_tail_tendsto_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-weighted-f-388abaec8a-a1"
+}

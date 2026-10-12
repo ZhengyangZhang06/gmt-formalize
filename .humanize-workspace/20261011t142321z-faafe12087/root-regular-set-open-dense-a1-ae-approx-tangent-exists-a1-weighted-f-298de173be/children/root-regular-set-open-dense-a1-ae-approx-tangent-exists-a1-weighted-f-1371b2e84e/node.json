@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1.ball_mass_bound-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1",
+  "depth": 4,
+  "title": "Bounded density ratio at a point with an approximate tangent space (Simon Remark 3.1.5(3))",
+  "statement": "Let n, ℓ ∈ ℕ, Hⁿ := μHE[n] on ℝ^{n+ℓ}, C ⊆ ℝ^{n+ℓ} a set with Hⁿ(C) < ∞ (no measurability assumed), x ∈ ℝ^{n+ℓ}, and P a linear subspace that is the approximate tangent space of C at x (Simon Def. 3.1.4; Chapter03.HasApproximateTangentSpaceAt n C x P). Then for every R > 0 there is Λ ∈ ℝ such that (rⁿ)⁻¹·Hⁿ(C ∩ B_{rR}(x)) ≤ Λ for all sufficiently small r > 0, i.e. eventually in the filter 𝓝[>] 0. Here B_{rR}(x) is the closed ball and Hⁿ(·) is taken as a real number (Measure.real).",
+  "lean_statement": "∀ (n ℓ : ℕ) (C : Set (Amb n ℓ)) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), (μHE[n] : Measure (Amb n ℓ)) C < ∞ → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C x P → ∀ R : ℝ, 0 < R → ∃ Λ : ℝ, ∀ᶠ r in 𝓝[>] (0 : ℝ), (r ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real (C ∩ closedBall x (r * R)) ≤ Λ",
+  "lean_name": "rsod_wfu_approxTangent_ballMass_bound",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.blowup_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-blowup-ch-45b63ae1fc-a1",
+      "result_commit": "98fd790d5bc2f705d0efa953dadfb274b5462997",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-weighted-f-1371b2e84e-a1"
+}
