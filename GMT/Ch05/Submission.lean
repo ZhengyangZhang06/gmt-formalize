@@ -544,6 +544,135 @@ theorem dohr_vel_linear_graph_area : ∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn 
   rw [himage, hι.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
     Measure.addHaar_image_linearMap, hdet, Real.sqrt_sq_eq_abs]
 
+/-- Derivative of the graph area integrand (Jacobi's formula).  For a linear map `P : ℝⁿ → ℝ^ℓ`
+put `g(P) = I + (⟨P eₐ, P e_b⟩)_{a,b}` and `J(P) = √(det g(P))`.  Then `J` is differentiable at
+`P` and `DJ(P)[Ψ] = J(P) Σ_{a,c} (g(P)⁻¹)_{ac} ⟨P e_c, Ψ eₐ⟩`.
+The entries of `g` have derivative `E(Ψ)_{ab} = ⟨P eₐ, Ψ e_b⟩ + ⟨Ψ eₐ, P e_b⟩`, `det` is a
+polynomial in the entries (Leibniz formula), and `D det(g)[E] = det g · tr(g⁻¹ E)` because
+`det(g + s E) = det g · det(1 + s g⁻¹ E)` (`Matrix.det_one_add_smul`).  Since `det g > 0`
+(`dohr_vel_linear_graph_area`) and `g⁻¹` is symmetric, `tr(g⁻¹ E(Ψ)) = 2 Σ_{a,c} (g⁻¹)_{ac} ⟨P e_c, Ψ eₐ⟩`,
+and the chain rule for `√` at `det g > 0` gives the formula. -/
+theorem dohr_vel_area_integrand_fderiv : ∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn ℓ, DifferentiableAt ℝ (fun P' : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P' (EuclideanSpace.single a (1 : ℝ))) (P' (EuclideanSpace.single b (1 : ℝ)))))) P ∧ ∀ Ψ : Rn n →L[ℝ] Rn ℓ, fderiv ℝ (fun P' : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P' (EuclideanSpace.single a (1 : ℝ))) (P' (EuclideanSpace.single b (1 : ℝ)))))) P Ψ = Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))) * ∑ a : Fin n, ∑ c : Fin n, ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))⁻¹ a c * inner ℝ (P (EuclideanSpace.single c (1 : ℝ))) (Ψ (EuclideanSpace.single a (1 : ℝ))) := by
+  intro n ℓ P
+  -- the Gram-type matrix as a map into the normed space of arrays, and det on arrays
+  let Gm : (Rn n →L[ℝ] Rn ℓ) → (Fin n → Fin n → ℝ) := fun P' a b =>
+    (1 : Matrix (Fin n) (Fin n) ℝ) a b +
+      inner ℝ (P' (EuclideanSpace.single a (1 : ℝ))) (P' (EuclideanSpace.single b (1 : ℝ)))
+  let detPi : (Fin n → Fin n → ℝ) → ℝ := fun M => Matrix.det (Matrix.of M)
+  have hJ : (fun P' : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+      Matrix.of fun a b : Fin n => inner ℝ (P' (EuclideanSpace.single a (1 : ℝ)))
+        (P' (EuclideanSpace.single b (1 : ℝ)))))) = fun P' => Real.sqrt (detPi (Gm P')) := rfl
+  set g : Matrix (Fin n) (Fin n) ℝ := (1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n =>
+    inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))) with hg
+  have hgG : Matrix.of (Gm P) = g := rfl
+  -- g is positive definite, symmetric, invertible
+  have hdetpos : 0 < g.det := (dohr_vel_linear_graph_area n ℓ P).1
+  have hunit : IsUnit g.det := isUnit_iff_ne_zero.mpr hdetpos.ne'
+  have hgT : g.transpose = g := by
+    ext a c
+    simp only [hg, Matrix.transpose_apply, Matrix.add_apply, Matrix.of_apply, Matrix.one_apply]
+    rw [real_inner_comm]
+    by_cases hac : a = c
+    · subst hac; rfl
+    · rw [ite_eq_right hac, ite_eq_right (Ne.symm hac)]
+  have hsymm : ∀ a c, g⁻¹ a c = g⁻¹ c a := by
+    intro a c
+    have h1 : (g⁻¹).transpose = g⁻¹ := by rw [Matrix.transpose_nonsing_inv, hgT]
+    have h2 := congrFun (congrFun h1 c) a
+    simpa [Matrix.transpose_apply] using h2
+  -- derivative of Gm
+  let Gd : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Fin n → Fin n → ℝ) :=
+    ContinuousLinearMap.pi fun a => ContinuousLinearMap.pi fun b =>
+      (fderivInnerCLM ℝ (P (EuclideanSpace.single a (1 : ℝ)), P (EuclideanSpace.single b (1 : ℝ)))).comp
+        ((ContinuousLinearMap.apply ℝ (Rn ℓ) (EuclideanSpace.single a (1 : ℝ))).prod
+          (ContinuousLinearMap.apply ℝ (Rn ℓ) (EuclideanSpace.single b (1 : ℝ))))
+  have hGd : ∀ Ψ a b, Gd Ψ a b = inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (Ψ (EuclideanSpace.single b (1 : ℝ))) +
+      inner ℝ (Ψ (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))) := by
+    intro Ψ a b
+    simp [Gd, fderivInnerCLM_apply]
+  have hGm : HasFDerivAt Gm Gd P := by
+    refine hasFDerivAt_pi.mpr (fun a => hasFDerivAt_pi.mpr (fun b => ?_))
+    have ha := (ContinuousLinearMap.apply ℝ (Rn ℓ) (EuclideanSpace.single a (1 : ℝ))).hasFDerivAt (x := P)
+    have hb := (ContinuousLinearMap.apply ℝ (Rn ℓ) (EuclideanSpace.single b (1 : ℝ))).hasFDerivAt (x := P)
+    exact (ha.inner ℝ hb).const_add _
+  -- det is differentiable on arrays (Leibniz formula)
+  have hdetDiff : Differentiable ℝ detPi := by
+    have hform : detPi = fun M => ∑ σ : Equiv.Perm (Fin n),
+        ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ i, M (σ i) i := by
+      funext M
+      simp only [detPi, Matrix.det_apply, Matrix.of_apply, Units.smul_def, zsmul_eq_mul]
+    rw [hform]
+    refine Differentiable.fun_sum (fun σ _ => ?_)
+    refine Differentiable.const_mul (fun M => ?_) _
+    have hcoord : ∀ i ∈ (Finset.univ : Finset (Fin n)), HasFDerivAt (fun M : Fin n → Fin n → ℝ => M (σ i) i)
+        ((ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin n => ℝ) i).comp
+          (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin n => Fin n → ℝ) (σ i))) M := fun i _ =>
+      ((ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin n => ℝ) i).comp
+          (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin n => Fin n → ℝ) (σ i))).hasFDerivAt
+    exact (HasFDerivAt.finsetProd (g := fun i (M : Fin n → Fin n → ℝ) => M (σ i) i) hcoord).differentiableAt
+  -- Jacobi's formula for the directional derivative of det at an invertible matrix
+  have hdir : ∀ (G E : Fin n → Fin n → ℝ), IsUnit (Matrix.of G).det →
+      fderiv ℝ detPi G E = (Matrix.of G).det * Matrix.trace ((Matrix.of G)⁻¹ * Matrix.of E) := by
+    intro G E hG
+    have h1 : HasDerivAt (fun s : ℝ => G + s • E) E 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).smul_const E).const_add G
+    have h0 : (fun s : ℝ => G + s • E) 0 = G := by simp
+    have hline : HasDerivAt (fun s : ℝ => detPi (G + s • E)) (fderiv ℝ detPi G E) 0 := by
+      have h2 := ((hdetDiff G).hasFDerivAt).comp_hasDerivAt_of_eq 0 h1 h0.symm
+      exact h2
+    set A : Matrix (Fin n) (Fin n) ℝ := (Matrix.of G)⁻¹ * Matrix.of E with hA
+    set p2 : Polynomial ℝ := (1 + (Polynomial.X : Polynomial ℝ) • A.map Polynomial.C).det.divX.divX with hp2
+    have heq : (fun s : ℝ => detPi (G + s • E)) =
+        fun s => (Matrix.of G).det * (1 + A.trace * s + p2.eval s * s ^ 2) := by
+      funext s
+      have hm : Matrix.of (G + s • E) = Matrix.of G * (1 + s • A) := by
+        rw [Matrix.mul_add, Matrix.mul_one, Matrix.mul_smul, hA, ← Matrix.mul_assoc,
+          Matrix.mul_nonsing_inv _ hG, Matrix.one_mul]
+        rfl
+      show Matrix.det (Matrix.of (G + s • E)) = _
+      rw [hm, Matrix.det_mul, Matrix.det_one_add_smul]
+    have hpoly : HasDerivAt (fun s : ℝ => (Matrix.of G).det * (1 + A.trace * s + p2.eval s * s ^ 2))
+        ((Matrix.of G).det * A.trace) 0 := by
+      have h3 : HasDerivAt (fun s : ℝ => 1 + A.trace * s + p2.eval s * s ^ 2)
+          (A.trace * 1 + (p2.derivative.eval 0 * 0 ^ 2 + p2.eval 0 * (↑2 * 0 ^ (2 - 1)))) 0 :=
+        (((hasDerivAt_id (0 : ℝ)).const_mul A.trace).const_add 1).add
+          ((p2.hasDerivAt 0).mul (hasDerivAt_pow 2 (0 : ℝ)))
+      have h4 := h3.const_mul (Matrix.of G).det
+      convert h4 using 1
+      simp
+    rw [heq] at hline
+    exact hline.unique hpoly
+  -- assemble
+  have hΔ : HasFDerivAt (fun P' => detPi (Gm P')) ((fderiv ℝ detPi (Gm P)).comp Gd) P :=
+    (hdetDiff (Gm P)).hasFDerivAt.comp P hGm
+  have hΔpos : 0 < detPi (Gm P) := hdetpos
+  have hJd := hΔ.sqrt hΔpos.ne'
+  rw [hJ]
+  refine ⟨hJd.differentiableAt, fun Ψ => ?_⟩
+  rw [hJd.fderiv]
+  simp only [smul_apply, ContinuousLinearMap.comp_apply, smul_eq_mul]
+  rw [hdir (Gm P) (Gd Ψ) (by rw [hgG]; exact hunit), hgG]
+  have htr : Matrix.trace (g⁻¹ * Matrix.of (Gd Ψ)) =
+      2 * ∑ a : Fin n, ∑ c : Fin n, g⁻¹ a c *
+        inner ℝ (P (EuclideanSpace.single c (1 : ℝ))) (Ψ (EuclideanSpace.single a (1 : ℝ))) := by
+    simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, Matrix.of_apply, hGd, mul_add,
+      Finset.sum_add_distrib]
+    have h2 : ∑ a : Fin n, ∑ c : Fin n, g⁻¹ a c *
+          inner ℝ (Ψ (EuclideanSpace.single c (1 : ℝ))) (P (EuclideanSpace.single a (1 : ℝ))) =
+        ∑ a : Fin n, ∑ c : Fin n, g⁻¹ a c *
+          inner ℝ (P (EuclideanSpace.single c (1 : ℝ))) (Ψ (EuclideanSpace.single a (1 : ℝ))) := by
+      rw [Finset.sum_comm]
+      refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun c _ => ?_))
+      rw [hsymm c a, real_inner_comm]
+    rw [h2]
+    ring
+  have hsq : Real.sqrt (detPi (Gm P)) ^ 2 = detPi (Gm P) := Real.sq_sqrt hΔpos.le
+  have hsqpos : 0 < Real.sqrt (detPi (Gm P)) := Real.sqrt_pos.mpr hΔpos
+  have hdg : detPi (Gm P) = g.det := rfl
+  rw [htr, ← hdg]
+  field_simp
+  rw [hsq]
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
