@@ -506,6 +506,98 @@ theorem lgc_hsNormSq_bounds : ∀ (m k : ℕ), Continuous (fun A : Rn m →L[ℝ
       _ ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) := h2
       _ = (∑ i, ‖A (e i)‖ ^ 2) * ‖v‖ ^ 2 := by rw [h3, mul_comm]
 
+/-- **Reduction to a plane of small tilt and small height** (Simon Ch. 5, proof of Theorem 4.5,
+steps (1), (2)).  Write `g = δ^{1/(2n+2)}`, `σ = δρ` and `K(y, r) = V.scaledLpNorm H p y r`.  The
+scaling bound gives `K(0, 2σ) ≤ K(0, ρ) ≤ δ`, so affine approximation at the origin and scale `2σ`
+yields a plane `T̃` with `E(0, σ, T̃) ≤ C₀ g²` and `dist(x, T̃) ≤ C₀ g σ` on `spt V ∩ B_{2σ}(0)`.
+If `E(0, σ, T) > C₀ g²` we take `T' = T̃`, which does not increase `E_*`.  Otherwise `T' = T`:
+integrating `|p_T − p_T̃|² ≤ 2|p_x − p_T|² + 2|p_x − p_T̃|²` against the lower mass bound
+`μ_V(B_σ(0)) ≥ ω_n σⁿ/2` gives `|p_T − p_T̃| ≤ (8 C₀/ω_n)^{1/2} g`, and
+`dist(x, T) ≤ dist(x, T̃) + |p_T − p_T̃| |x|` transfers the height bound to `T`. -/
+theorem tdo_small_tilt_plane : AffineApproximationLemma → ∀ n ℓ : ℕ, 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C : ℝ, 0 < C ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ 1 / 4 → V.AllardHypotheses H p δ ρ → AEStronglyMeasurable V.tangentProj V.weight → ENNReal.ofReal (unitBallVolume n * (δ * ρ) ^ n / 2) ≤ V.weight (closedBall 0 (δ * ρ)) → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → ∃ T' : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T' = n ∧ V.tiltExcessStar H p δ 0 (δ * ρ) T' ≤ V.tiltExcessStar H p δ 0 (δ * ρ) T ∧ V.tiltExcess 0 (δ * ρ) T' ≤ C * (δ ^ (1 / (2 * (n : ℝ) + 2))) ^ 2 ∧ ∀ x ∈ V.support ∩ closedBall 0 (2 * (δ * ρ)), infDist x (T' : Set (Amb n ℓ)) ≤ C * δ ^ (1 / (2 * (n : ℝ) + 2)) * (δ * ρ) := by
+  intro hAff n ℓ hn p hnp
+  obtain ⟨C₀, hC₀, hA⟩ := tdo_stp_origin_affine_plane hAff n ℓ hn p hnp
+  -- `ω_n = π^{n/2} / Γ(n/2 + 1) > 0`.
+  have hω : 0 < unitBallVolume n :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  set C₁ : ℝ := Real.sqrt (8 * C₀ / unitBallVolume n) with hC₁
+  have hC₁0 : 0 ≤ C₁ := Real.sqrt_nonneg _
+  refine ⟨C₀ + 2 * C₁, by linarith, ?_⟩
+  intro U hU V H δ ρ hδ hδ4 hAH hmeas hmass T hT
+  have hρ : 0 < ρ := hAH.1
+  have hσ : 0 < δ * ρ := mul_pos hδ hρ
+  have h2σ : 2 * (δ * ρ) ≤ ρ := by
+    have := mul_le_mul_of_nonneg_right hδ4 hρ.le
+    linarith
+  have hp : 0 < p := (Nat.cast_nonneg n).trans_lt hnp
+  -- Step (1a): `K(0, 2δρ) ≤ (2δρ/ρ)^{(p-n)/p} K(0, ρ) ≤ K(0, ρ) ≤ δ`.
+  have hK2σ : V.scaledLpNorm H p 0 (2 * (δ * ρ)) ≤ ENNReal.ofReal δ := by
+    have hr : (2 * (δ * ρ) / ρ) ^ ((p - n) / p) ≤ 1 :=
+      Real.rpow_le_one (div_nonneg (by linarith) hρ.le) ((div_le_one hρ).2 h2σ)
+        (div_nonneg (sub_nonneg.2 hnp.le) hp.le)
+    calc V.scaledLpNorm H p 0 (2 * (δ * ρ))
+        ≤ ENNReal.ofReal ((2 * (δ * ρ) / ρ) ^ ((p - n) / p)) * V.scaledLpNorm H p 0 ρ :=
+          tdo_scaledLpNorm_bounds.1 n ℓ U V H p 0 0 (2 * (δ * ρ)) ρ hp (by linarith) h2σ
+            (closedBall_subset_closedBall h2σ)
+      _ ≤ V.scaledLpNorm H p 0 ρ :=
+          mul_le_of_le_one_left zero_le (ENNReal.ofReal_le_one.2 hr)
+      _ ≤ ENNReal.ofReal δ := hAH.2.2.2.2.2.2
+  -- The plane `T̃` of affine approximation at the origin and scale `2δρ`.
+  obtain ⟨T₁, hT₁, hE₁, hH₁⟩ := hA U hU V H δ ρ hδ hδ4 hAH hK2σ
+  set g : ℝ := δ ^ (1 / (2 * (n : ℝ) + 2))
+  have hg0 : 0 ≤ g := Real.rpow_nonneg hδ.le _
+  by_cases hcase : C₀ * g ^ 2 < V.tiltExcess 0 (δ * ρ) T
+  · -- Case A: replace `T` by `T̃`, which does not increase `E_*`.
+    refine ⟨T₁, hT₁, ?_, hE₁.trans (mul_le_mul_of_nonneg_right (by linarith) (sq_nonneg g)),
+      fun x hx => (hH₁ x hx).trans ?_⟩
+    · unfold RectifiableVarifold.tiltExcessStar
+      exact max_le_max (hE₁.trans hcase.le) le_rfl
+    · exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (by linarith) hg0) hσ.le
+  · -- Case B: keep `T` and transfer the height bound from `T̃` to `T`.
+    have hET : V.tiltExcess 0 (δ * ρ) T ≤ C₀ * g ^ 2 := not_lt.1 hcase
+    refine ⟨T, hT, le_rfl, hET.trans (mul_le_mul_of_nonneg_right (by linarith) (sq_nonneg g)),
+      fun x hx => ?_⟩
+    -- `ω_n (δρ)ⁿ/2 ≤ μ_V(B_{δρ}(0)) ≤ μ_V(B_ρ(0)) < ∞`.
+    have hfin : V.weight (closedBall 0 (δ * ρ)) ≠ ⊤ :=
+      ne_top_of_le_ne_top (ne_top_of_le_ne_top ENNReal.ofReal_ne_top hAH.2.2.2.2.2.1)
+        (measure_mono (closedBall_subset_closedBall (by linarith)))
+    have hw : unitBallVolume n * (δ * ρ) ^ n / 2 ≤ (V.weight (closedBall 0 (δ * ρ))).toReal :=
+      (ENNReal.ofReal_le_iff_le_toReal hfin).1 hmass
+    have hD0 : 0 ≤ hsNormSq (T.starProjection - T₁.starProjection) := by
+      unfold hsNormSq
+      positivity
+    -- `|p_T − p_T̃|² ≤ 8 C₀ g²/ω_n`.
+    have hDsq : hsNormSq (T.starProjection - T₁.starProjection) ≤
+        8 * C₀ / unitBallVolume n * g ^ 2 := by
+      have h1 : unitBallVolume n * (δ * ρ) ^ n / 2 *
+          hsNormSq (T.starProjection - T₁.starProjection) ≤
+          2 * (δ * ρ) ^ n * (C₀ * g ^ 2 + C₀ * g ^ 2) :=
+        calc _ ≤ (V.weight (closedBall 0 (δ * ρ))).toReal *
+              hsNormSq (T.starProjection - T₁.starProjection) :=
+              mul_le_mul_of_nonneg_right hw hD0
+          _ ≤ 2 * (δ * ρ) ^ n * (V.tiltExcess 0 (δ * ρ) T + V.tiltExcess 0 (δ * ρ) T₁) :=
+              tdo_stp_hsNormSq_sub_le_tiltExcess n ℓ U V hmeas 0 (δ * ρ) hσ hfin T T₁
+          _ ≤ 2 * (δ * ρ) ^ n * (C₀ * g ^ 2 + C₀ * g ^ 2) :=
+              mul_le_mul_of_nonneg_left (add_le_add hET hE₁)
+                (mul_nonneg zero_le_two (pow_pos hσ n).le)
+      have h2 : unitBallVolume n * hsNormSq (T.starProjection - T₁.starProjection) ≤
+          8 * C₀ * g ^ 2 :=
+        le_of_mul_le_mul_right (by linarith) (pow_pos hσ n)
+      rw [div_mul_eq_mul_div, le_div_iff₀ hω]
+      linarith
+    have hDn : hsNorm (T.starProjection - T₁.starProjection) ≤ C₁ * g :=
+      calc hsNorm (T.starProjection - T₁.starProjection)
+          = Real.sqrt (hsNormSq (T.starProjection - T₁.starProjection)) := rfl
+        _ ≤ Real.sqrt (8 * C₀ / unitBallVolume n * g ^ 2) := Real.sqrt_le_sqrt hDsq
+        _ = C₁ * g := by rw [hC₁, Real.sqrt_mul' _ (sq_nonneg g), Real.sqrt_sq hg0]
+    calc infDist x (T : Set (Amb n ℓ))
+        ≤ infDist x (T₁ : Set (Amb n ℓ)) + hsNorm (T.starProjection - T₁.starProjection) * ‖x‖ :=
+          tdo_stp_infDist_le_infDist_add_hsNorm n ℓ T T₁ x
+      _ ≤ C₀ * g * (δ * ρ) + C₁ * g * (2 * (δ * ρ)) :=
+          add_le_add (hH₁ x hx)
+            (mul_le_mul hDn (mem_closedBall_zero_iff.1 hx.2) (norm_nonneg x) (mul_nonneg hC₁0 hg0))
+      _ = (C₀ + 2 * C₁) * g * (δ * ρ) := by ring
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
