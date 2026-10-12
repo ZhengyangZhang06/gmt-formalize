@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cd0a970a51c6ecb6882d36f8d88aacd93b21d5ad0b5ffaef2a2a00c01a883d4e",
+  "git_delta": {
+    "base_commit": "40a295ceb92948e3f56c016347f044491c03d902",
+    "candidate_commit": "7b7f84f3150f0fee93d4b9092bd8edfeebc929c7",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "annular_identity_limit_at_zero",
+    "diff_sha256": "355fef722b0a2f36c3ad03d2034541748236c2f36fc587895155862595cd403f",
+    "source_sha256": "aed6ad5dd324ba68b6702eb68b5bc8c467d2c83342f241767779ef1f55a1c476",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.annular_identity_limit_at_zero",
+      "statement": "∀ (P : ℝ → ℝ≥0∞) (D : ℝ → ℝ → ℝ≥0∞) (T : ℝ → ℝ≥0∞) (ρ₀ : ℝ), 0 < ρ₀ → (∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ < ρ₀ → P σ + D σ ρ = P ρ) → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → Tendsto (fun σ : ℝ ↦ D σ ρ) (𝓝[>] 0) (𝓝 (T ρ))) → ∃ θ : ℝ≥0∞, Tendsto P (𝓝[>] 0) (𝓝 θ) ∧ ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → θ + T ρ = P ρ",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
