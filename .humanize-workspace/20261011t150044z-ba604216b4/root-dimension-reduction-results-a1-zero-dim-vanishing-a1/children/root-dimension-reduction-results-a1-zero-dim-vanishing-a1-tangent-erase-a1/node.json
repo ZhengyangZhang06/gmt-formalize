@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.tangent_erase-a1",
+  "parent_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+  "depth": 3,
+  "title": "Deleting a point other than the base point preserves approximate tangent spaces",
+  "statement": "Let P, n ∈ ℕ, let M ⊆ ℝ^P be a Borel set, let x, p ∈ ℝ^P with x ≠ p, and let Q be a linear subspace of ℝ^P.\n\nSuppose Q is an approximate tangent space of M at x in the sense of SimonGMT's HasApproximateTangentSpaceAt n M x Q (Simon Ch. 3, Def. 1.4):\n- dim Q = n;\n- for every compactly supported continuous f : ℝ^P → ℝ (f ∈ C_c(ℝ^P, ℝ)), ∫_{η_{x,r}(M)} f dHⁿ → ∫_Q f dHⁿ as r → 0⁺.\nHere η_{x,r}(y) = blowUpMap x r y = r⁻¹(y − x) and Hⁿ = μHE[n].\n\nThen Q is also an approximate tangent space of M ∖ {p} at x, i.e. HasApproximateTangentSpaceAt n (M ∖ {p}) x Q.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x p : Euclid P) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → x ≠ p → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n (M \\ {p}) x Q",
+  "lean_name": "dimred_zdv_approxTangent_sdiff_singleton",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-tangent-erase-a1-a1"
+}
