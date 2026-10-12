@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.graph_fibre_bound-a1.graph_hausdorff_bound-a1",
+  "parent_id": "root.integral_compactness-a1.graph_fibre_bound-a1",
+  "depth": 3,
+  "title": "Hausdorff measure of an L-Lipschitz graph piece is at most (1+L²)^{n/2} times that of its projection",
+  "statement": "Let N, n ∈ ℕ, P ∈ G(N,n) with orthogonal projection p := Grassmannian.project P onto the n-plane P.plane, L ≥ 0, and let A ⊆ ℝ^N be an L-Lipschitz graph over P, i.e. |(y − z) − p(y − z)| ≤ L|p(y − z)| for all y, z ∈ A (A need not be closed or measurable). Then H^n(A) ≤ (1 + L²)^{n/2} H^n(p(A)), where H^n = μHE[n] is the Euclidean Hausdorff (outer) measure on ℝ^N and the constant is ENNReal.ofReal((1 + L²)^{n/2}).",
+  "lean_statement": "∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (A : Set (Euclidean N)), 0 ≤ L → (∀ y ∈ A, ∀ z ∈ A, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → (μHE[n] : Measure (Euclidean N)) A ≤ ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) * (μHE[n] : Measure (Euclidean N)) (Grassmannian.project P '' A)",
+  "lean_name": "intcpt_graph_hausdorff_le_projection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-graph-fibre-bound-a1-graph-hausdorff-bound-a1-a1"
+}
