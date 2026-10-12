@@ -458,6 +458,73 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Translation (difference-quotient) estimate for `W^{1,2}(B)` (Evans, *PDE*, §5.8.2, Theorem 3(i);
+Gilbarg–Trudinger §7.11), used for Rellich compactness in the proof of Simon Ch. 5, Lemma 3.1
+(p. 114): if `0 < r` and `‖z‖ < 1 - r`, then `∫_{B_r} |f(x - z) - f(x)|² ≤ |z|² ∫_B |g|²`.
+With `s = r + ‖z‖ ∈ (0, 1)`, take smooth `φ_j` with `φ_j → f` and `∇φ_j → g` in `L²(B_s)`.  The
+`C¹` estimate gives `∫_{B_r} |φ_j(x - z) - φ_j(x)|² ≤ |z|² ∫_{B_s} |∇φ_j|²`; the translation
+differences of `φ_j` converge to those of `f` in `L²(B_r)`, with error at most
+`4 ∫_{B_s} |φ_j - f|²`, so the estimate passes to the limit, and `B_s ⊆ B`. -/
+theorem w12_ball_translation_estimate : ∀ n : ℕ, 1 ≤ n → ∀ (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∀ (r : ℝ) (z : Rn n), 0 < r → ‖z‖ < 1 - r → ∫⁻ x in ball (0 : Rn n) r, ‖f (x - z) - f x‖ₑ ^ 2 ≤ ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 := by
+  intro n hn f g hfg r z hr hz
+  -- Step 0: `B_r ⊆ B_s ⊆ B` for `s = r + ‖z‖ ∈ (0, 1)`; `f`, `g`, `f(· - z)` are measurable there.
+  have hs0 : 0 < r + ‖z‖ := add_pos_of_pos_of_nonneg hr (norm_nonneg z)
+  have hs1 : r + ‖z‖ < 1 := by linarith
+  have hBs : ball (0 : Rn n) (r + ‖z‖) ⊆ ball 0 1 := ball_subset_ball hs1.le
+  have hBr : ball (0 : Rn n) r ⊆ ball 0 (r + ‖z‖) :=
+    ball_subset_ball (le_add_of_nonneg_right (norm_nonneg z))
+  have hfs : AEStronglyMeasurable f (volume.restrict (ball (0 : Rn n) (r + ‖z‖))) :=
+    hfg.1.aestronglyMeasurable.mono_measure (Measure.restrict_mono hBs le_rfl)
+  have hgs : AEStronglyMeasurable g (volume.restrict (ball (0 : Rn n) (r + ‖z‖))) :=
+    hfg.2.1.aestronglyMeasurable.mono_measure (Measure.restrict_mono hBs le_rfl)
+  have hfr : AEStronglyMeasurable f (volume.restrict (ball (0 : Rn n) r)) :=
+    hfs.mono_measure (Measure.restrict_mono hBr le_rfl)
+  have hfzr : AEStronglyMeasurable (fun x => f (x - z)) (volume.restrict (ball (0 : Rn n) r)) :=
+    Submission.aestronglyMeasurable_ball_comp_sub n f r (r + ‖z‖) z le_rfl hfs
+  -- Step 1: smooth `φ_j` with `φ_j → f` and `∇φ_j → g` in `L²(B_s)`.
+  obtain ⟨φ, hφ, hφf, hφg⟩ :=
+    Submission.w12_ball_smooth_approximation n hn f g hfg (r + ‖z‖) hs0 hs1
+  have hφ1 : ∀ j, ContDiff ℝ 1 (φ j) := fun j => (hφ j).of_le (by exact_mod_cast le_top)
+  have hφc : ∀ j, Continuous (φ j) := fun j => (hφ j).continuous
+  have hgradc : ∀ j, Continuous (gradient (φ j)) := fun j =>
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp
+      ((hφ1 j).continuous_fderiv one_ne_zero)
+  -- Step 2: the `C¹` estimate for each `φ_j`.
+  have hsmooth : ∀ j, ∫⁻ x in ball (0 : Rn n) r, ‖φ j (x - z) - φ j x‖ₑ ^ 2 ≤
+      ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖gradient (φ j) x‖ₑ ^ 2 :=
+    fun j => Submission.contDiff_one_ball_translation_estimate n (φ j) (hφ1 j) r z
+  -- Step 3: the translation differences of `φ_j` converge to those of `f` in `L²(B_r)`.
+  have hdiff : ∀ j, ∫⁻ x in ball (0 : Rn n) r,
+      ‖(φ j (x - z) - φ j x) - (f (x - z) - f x)‖ₑ ^ 2 ≤
+        4 * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖φ j x - f x‖ₑ ^ 2 := by
+    intro j
+    calc ∫⁻ x in ball (0 : Rn n) r, ‖(φ j (x - z) - φ j x) - (f (x - z) - f x)‖ₑ ^ 2
+        = ∫⁻ x in ball (0 : Rn n) r, ‖(φ j (x - z) - f (x - z)) - (φ j x - f x)‖ₑ ^ 2 :=
+          lintegral_congr fun x => by rw [sub_sub_sub_comm]
+      _ ≤ 4 * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖φ j x - f x‖ₑ ^ 2 :=
+          Submission.lintegral_ball_translation_difference_le n (fun x => φ j x - f x) r
+            (r + ‖z‖) z le_rfl ((hφc j).aestronglyMeasurable.sub hfs)
+  have hconv : Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r,
+      ‖(φ j (x - z) - φ j x) - (f (x - z) - f x)‖ₑ ^ 2) atTop (𝓝 0) := by
+    have h4 := ENNReal.Tendsto.const_mul (a := 4) hφf (Or.inr (by norm_num))
+    rw [mul_zero] at h4
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h4 (fun _ => zero_le) hdiff
+  -- Step 4: pass to the limit in `L²(B_r)` and `L²(B_s)`, then enlarge `B_s` to `B`.
+  calc ∫⁻ x in ball (0 : Rn n) r, ‖f (x - z) - f x‖ₑ ^ 2
+      ≤ ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖g x‖ₑ ^ 2 :=
+        Submission.lintegral_sq_le_of_l2_approximation (volume.restrict (ball (0 : Rn n) r))
+          (volume.restrict (ball (0 : Rn n) (r + ‖z‖))) (ENNReal.ofReal (‖z‖ ^ 2))
+          (fun j x => φ j (x - z) - φ j x) (fun x => f (x - z) - f x)
+          (fun j => gradient (φ j)) g ENNReal.ofReal_ne_top
+          (fun j => (((hφc j).comp (continuous_sub_right z)).sub (hφc j)).aestronglyMeasurable)
+          (hfzr.sub hfr) (fun j => (hgradc j).aestronglyMeasurable) hgs hconv hφg hsmooth
+    _ ≤ ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2 :=
+        mul_le_mul_right (lintegral_mono_set hBs) _
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
