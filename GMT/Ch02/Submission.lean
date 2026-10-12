@@ -612,6 +612,66 @@ theorem Submission.convex_poincare_smooth_lintegral_le : ∀ (n : ℕ) (O : Set 
     _ = ENNReal.ofReal (2 ^ n * D) * ∫⁻ x in O, ‖fderiv ℝ w x‖ₑ := by
         rw [ENNReal.inv_mul_cancel hm0 hmt, one_mul, hFint, ENNReal.ofReal_mul (by positivity),
           ENNReal.ofReal_pow (by norm_num), ENNReal.ofReal_ofNat]
+/-- **Inner exhaustion of an open convex set** (Simon 2.7, "`W = {x ∈ U : dist(x, ∂U) > σ}`").
+Every open convex `U ⊆ ℝⁿ` is the increasing union of open convex sets `O_j` with
+`closedBall x σ_j ⊆ U` for `x ∈ O_j`, where `σ_j > 0` and `σ_j → 0`. Take `σ_j = 1/(j+1)`. If
+`U = ℝⁿ`, let `O_j = ℝⁿ`. Otherwise `Uᶜ` is closed and nonempty; with `d = infDist(·, Uᶜ)` let
+`O_j = {d > σ_j}`. A point `z` with `dist(x, z) < d(x)` lies in `U`; this gives the margins and
+`O_j ⊆ U`, and `d > 0` on `U` gives `⋃_j O_j = U`. Convexity: if `‖v‖ < min(d(x), d(y))` then
+`x + v, y + v ∈ U`, so `a(x + v) + b(y + v) = ax + by + v ∈ U`; hence `d(ax + by) ≥ min(d(x), d(y))`. -/
+theorem Submission.convex_open_exists_inner_exhaustion : ∀ (n : ℕ) (U : Set (Rn n)), IsOpen U → Convex ℝ U → ∃ (O : ℕ → Set (Rn n)) (σ : ℕ → ℝ), Monotone O ∧ ⋃ j, O j = U ∧ Tendsto σ atTop (𝓝 0) ∧ ∀ j, IsOpen (O j) ∧ Convex ℝ (O j) ∧ 0 < σ j ∧ ∀ x ∈ O j, closedBall x (σ j) ⊆ U := by
+  intro n U hU hconv
+  -- Step 1: the radii `σ_j = 1/(j+1)` are positive and decreasing.
+  have hσpos : ∀ j : ℕ, (0 : ℝ) < 1 / ((j : ℝ) + 1) := fun j ↦ by positivity
+  have hσanti : ∀ i j : ℕ, i ≤ j → 1 / ((j : ℝ) + 1) ≤ 1 / ((i : ℝ) + 1) := fun i j hij ↦
+    one_div_le_one_div_of_le (by positivity) (by exact_mod_cast Nat.add_le_add_right hij 1)
+  by_cases hUniv : U = univ
+  · -- Step 2: `U = ℝⁿ`; take `O_j = ℝⁿ`.
+    subst hUniv
+    exact ⟨fun _ ↦ univ, fun j ↦ 1 / ((j : ℝ) + 1), monotone_const, iUnion_const _,
+      tendsto_one_div_add_atTop_nhds_zero_nat,
+      fun j ↦ ⟨isOpen_univ, convex_univ, hσpos j, fun _ _ ↦ subset_univ _⟩⟩
+  -- Step 3: `Uᶜ` is closed and nonempty; `O_j = {x | σ_j < infDist x Uᶜ}`.
+  have hne : (Uᶜ).Nonempty := nonempty_compl.2 hUniv
+  have hcl : IsClosed Uᶜ := hU.isClosed_compl
+  -- (a) A point closer to `x` than `infDist x Uᶜ` lies in `U`.
+  have key : ∀ x z : Rn n, dist x z < infDist x Uᶜ → z ∈ U := fun x z h ↦
+    notMem_compl_iff.1 (notMem_of_dist_lt_infDist h)
+  refine ⟨fun j ↦ {x | 1 / ((j : ℝ) + 1) < infDist x Uᶜ}, fun j ↦ 1 / ((j : ℝ) + 1), ?_, ?_,
+    tendsto_one_div_add_atTop_nhds_zero_nat, fun j ↦ ⟨?_, ?_, hσpos j, ?_⟩⟩
+  · -- (b) Monotone: `σ_j ≤ σ_i` for `i ≤ j`.
+    intro i j hij x hx
+    exact (hσanti i j hij).trans_lt hx
+  · -- (e) Union: `x ∈ O_j` gives `x ∈ U` by (a); `x ∈ U` gives `0 < infDist x Uᶜ`.
+    ext x
+    simp only [mem_iUnion, mem_ofPred_eq]
+    constructor
+    · rintro ⟨j, hj⟩
+      exact key x x (by rw [dist_self]; exact (hσpos j).trans hj)
+    · intro hx
+      exact exists_nat_one_div_lt ((hcl.notMem_iff_infDist_pos hne).1 (notMem_compl_iff.2 hx))
+  · -- (c) Open: `infDist · Uᶜ` is continuous.
+    exact isOpen_lt continuous_const (continuous_infDist_pt _)
+  · -- (f) Convex: `min (infDist x Uᶜ) (infDist y Uᶜ) ≤ infDist (a • x + b • y) Uᶜ`.
+    intro x hx y hy a b ha hb hab
+    simp only [mem_ofPred_eq] at hx hy ⊢
+    refine (lt_min hx hy).trans_le ((le_infDist hne).2 fun p hp ↦ not_lt.1 fun hlt ↦ hp ?_)
+    -- `v = p - (a • x + b • y)` has `‖v‖ < min (infDist x Uᶜ) (infDist y Uᶜ)`, so `x + v`,
+    -- `y + v ∈ U` by (a), and `a • (x + v) + b • (y + v) = p` lies in `U` by convexity.
+    rw [dist_comm, dist_eq_norm] at hlt
+    have hxv : x + (p - (a • x + b • y)) ∈ U := key x _ (by
+      rw [dist_eq_norm, sub_add_cancel_left, norm_neg]
+      exact hlt.trans_le (min_le_left _ _))
+    have hyv : y + (p - (a • x + b • y)) ∈ U := key y _ (by
+      rw [dist_eq_norm, sub_add_cancel_left, norm_neg]
+      exact hlt.trans_le (min_le_right _ _))
+    have hcomb : a • (x + (p - (a • x + b • y))) + b • (y + (p - (a • x + b • y))) = p := by
+      rw [smul_add, smul_add, add_add_add_comm, ← add_smul, hab, one_smul, add_sub_cancel]
+    exact hcomb ▸ hconv hxv hyv ha hb hab
+  · -- (d) Margin: `dist x p ≤ σ_j < infDist x Uᶜ` for `p ∈ closedBall x σ_j`.
+    intro x hx p hp
+    rw [mem_closedBall, dist_comm] at hp
+    exact key x p (hp.trans_lt hx)
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
