@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ca15fb70f3cf5cbb39fe8b2920c3779cb02a7b7660368f46ff6ef22cf4a9686c",
+  "git_delta": {
+    "base_commit": "d08cb54493c90b85338e43138a7930181c102506",
+    "candidate_commit": "a27af14fbe5b9b8fd75f1a6ab34eb12128ea5de0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "adr_secant_rescaling_of_infinite",
+    "diff_sha256": "05e7809ca757f820eb59ec1d9f1c3f5f11470339eecec2bf71f340d90f766cf7",
+    "source_sha256": "c58bcf1741df3b14714af2d5462eb88f2aaa8f83720c12474486e8926dfdb603",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.adr_secant_rescaling_of_infinite",
+      "statement": "∀ (P : ℕ) (S : Set (Euclid P)) (σ : ℝ), σ < 1 → (S ∩ ball (0 : Euclid P) σ).Infinite → ∃ (x : Euclid P) (lams : ℕ → ℝ) (zs : ℕ → Euclid P) (z : Euclid P), ‖x‖ < 1 ∧ (∀ k, 0 < lams k) ∧ StrictAnti lams ∧ Tendsto lams atTop (𝓝 0) ∧ (∀ k, lams k < 1) ∧ (∀ k, ‖x‖ ≤ 1 - lams k) ∧ (∀ k, x + lams k • zs k ∈ S) ∧ (∀ k, ‖zs k‖ = 1 / 2) ∧ Tendsto zs atTop (𝓝 z) ∧ ‖z‖ = 1 / 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
