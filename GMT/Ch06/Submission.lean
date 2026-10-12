@@ -359,6 +359,136 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, proof of 7.2 (translation estimate): for `φ ∈ C_c^∞(ℝⁿ)`, `n = m + 1`, and
+`h ∈ ℝⁿ`, the test `m`-form `ω = φ α` with `α = ∑ₖ (-1)ᵏ hₖ dx⁽ᵏ⁾`, where `dx⁽ᵏ⁾` is the wedge of
+the coordinate covectors `dxʲ`, `j ≠ k`, in increasing order (indices `0, …, m`), satisfies
+`|ω(x)| = ‖h‖ |φ(x)|` and `dω(x)(e₀, …, eₘ) = ∑ᵢ hᵢ ∂ᵢφ(x) = Dφ(x) h`. -/
+theorem Submission.fiw_tb_te_directional_form :
+    ∀ (m : ℕ) (φ : Eucl (m + 1) → ℝ) (h : Eucl (m + 1)),
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ →
+      ∃ ω : TestFormOn (univ : Set (Eucl (m + 1))) m,
+        (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl (m + 1)) m) x) ≤ ‖h‖ * |φ x|) ∧
+        ∀ x, ((exteriorDerivativeTestOn (univ : Set (Eucl (m + 1))) m ω :
+            TestFormOn (univ : Set (Eucl (m + 1))) (m + 1)) : DifferentialForm (Eucl (m + 1)) (m + 1))
+          x (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ φ x h := by
+  intro m φ h hφ hcs
+  -- The coordinate `m`-covector omitting direction `k`, on the frame omitting `eᵢ`, is `δₖᵢ`.
+  have hcoord : ∀ k i : Fin (m + 1),
+      (wedgeCovectors m (fun a => (EuclideanSpace.proj (k.succAbove a) : Eucl (m + 1) →L[ℝ] ℝ)))
+        (fun b => EuclideanSpace.single (i.succAbove b) (1 : ℝ)) = if k = i then 1 else 0 := by
+    intro k i
+    rw [wedgeCovectors_apply_det]
+    by_cases hki : k = i
+    · subst hki
+      rw [ite_eq_left rfl]
+      have hM : (Matrix.of fun a b => (EuclideanSpace.proj (k.succAbove a) : Eucl (m + 1) →L[ℝ] ℝ)
+          (EuclideanSpace.single (k.succAbove b) (1 : ℝ))) = 1 := by
+        ext a b
+        simp [Matrix.one_apply]
+      rw [hM, Matrix.det_one]
+    · -- `i = k.succAbove a₀` for some `a₀`, and row `a₀` of the matrix vanishes.
+      rw [ite_eq_right hki]
+      obtain ⟨a₀, ha₀⟩ : i ∈ Set.range k.succAbove := by
+        rw [Fin.range_succAbove]; exact Ne.symm hki
+      apply Matrix.det_eq_zero_of_row_eq_zero a₀
+      intro b
+      simp [ha₀, (Fin.succAbove_ne i b).symm]
+  -- The strictly increasing `I : Fin m → Fin (m + 1)` are exactly the maps `k.succAbove`.
+  have hincr : ∀ I : Fin m → Fin (m + 1), StrictMono I → ∃ k : Fin (m + 1), I = k.succAbove := by
+    intro I hI
+    have hinj := hI.injective
+    have hns : ¬ Function.Surjective I := by
+      intro hs
+      have := Fintype.card_le_of_surjective I hs
+      simp at this
+    simp only [Function.Surjective, not_forall, not_exists] at hns
+    obtain ⟨k, hk⟩ := hns
+    refine ⟨k, ?_⟩
+    have hsub : Set.range I ⊆ Set.range k.succAbove := by
+      rw [Fin.range_succAbove]
+      rintro _ ⟨a, rfl⟩
+      exact hk a
+    have hcard : (Set.range k.succAbove).ncard ≤ (Set.range I).ncard := by
+      rw [Set.ncard_range_of_injective hinj,
+        Set.ncard_range_of_injective Fin.succAbove_right_injective]
+    have heq : Set.range I = Set.range k.succAbove := Set.eq_of_subset_of_ncard_le hsub hcard
+    exact (StrictMono.range_inj_of_wellFoundedLT hI (Fin.strictMono_succAbove k)).1 heq
+  -- The constant covector `α` with `α(e ∘ i.succAbove) = (-1)ⁱ hᵢ`.
+  set α : Covector (Eucl (m + 1)) m := ∑ k : Fin (m + 1), ((-1 : ℝ) ^ (k : ℕ) * h k) •
+    wedgeCovectors m (fun a => (EuclideanSpace.proj (k.succAbove a) : Eucl (m + 1) →L[ℝ] ℝ))
+    with hα
+  have hαe : ∀ i : Fin (m + 1),
+      α (fun b => EuclideanSpace.single (i.succAbove b) (1 : ℝ)) = (-1 : ℝ) ^ (i : ℕ) * h i := by
+    intro i
+    simp only [hα, ContinuousAlternatingMap.sum_apply, ContinuousAlternatingMap.smul_apply,
+      smul_eq_mul, hcoord, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
+      ite_true]
+  -- `ω₀ = φ α` is a test form on `univ`.
+  set ω₀ : DifferentialForm (Eucl (m + 1)) m := fun y => φ y • α with hω₀
+  have hsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω₀ := hφ.smul contDiff_const
+  have hcs₀ : HasCompactSupport ω₀ := hcs.smul_right
+  have hmem : ω₀ ∈ testFormOnSubmodule (univ : Set (Eucl (m + 1))) m :=
+    ⟨⟨hsmooth, hcs₀⟩, subset_univ _⟩
+  refine ⟨⟨ω₀, hmem⟩, ?_, ?_⟩
+  · -- Norm: reindex the increasing multi-indices by `k ↦ k.succAbove`; then `|ω₀(x)| = |φ(x)| ‖h‖`.
+    intro x
+    apply le_of_eq
+    change covectorEuclideanNorm (φ x • α) = ‖h‖ * |φ x|
+    unfold covectorEuclideanNorm
+    have hsum : (∑ I : Fin m → Fin (m + 1),
+        if StrictMono I then
+          ((φ x • α) (fun i ↦ EuclideanSpace.basisFun (Fin (m + 1)) ℝ (I i))) ^ 2
+        else 0) = ∑ k : Fin (m + 1), (φ x) ^ 2 * (h k) ^ 2 := by
+      symm
+      apply Fintype.sum_of_injective (fun k : Fin (m + 1) => k.succAbove)
+        Fin.succAbove_left_injective
+      · intro I hI
+        rw [ite_eq_right]
+        intro hmono
+        obtain ⟨k, rfl⟩ := hincr I hmono
+        exact hI ⟨k, rfl⟩
+      · intro k
+        simp only [Fin.strictMono_succAbove, ite_true, EuclideanSpace.basisFun_apply,
+          ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+        rw [hαe k, mul_pow, mul_pow, ← pow_mul, mul_comm (k : ℕ) 2, pow_mul]
+        norm_num
+    rw [hsum, ← Finset.mul_sum, Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq_eq_abs,
+      EuclideanSpace.norm_eq, mul_comm]
+    congr 2
+    apply Finset.sum_congr rfl
+    intro k _
+    rw [Real.norm_eq_abs, sq_abs]
+  · -- Exterior derivative: `dω₀(x)(e) = ∑ᵢ (-1)ⁱ (-1)ⁱ hᵢ Dφ(x) eᵢ = Dφ(x) h`.
+    intro x
+    change exteriorDerivative ω₀ x (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ φ x h
+    have hdiff : DifferentiableAt ℝ ω₀ x := (hsmooth.differentiable (by simp)).differentiableAt
+    have hφd : DifferentiableAt ℝ φ x := (hφ.differentiable (by simp)).differentiableAt
+    rw [exteriorDerivative_apply hdiff]
+    have key : ∀ i : Fin (m + 1),
+        (fun y => ω₀ y (i.removeNth (fun j => EuclideanSpace.single j (1 : ℝ)))) =
+          fun y => ((-1 : ℝ) ^ (i : ℕ) * h i) * φ y := by
+      intro i
+      funext y
+      change (φ y • α) (fun b => EuclideanSpace.single (i.succAbove b) (1 : ℝ)) = _
+      rw [ContinuousAlternatingMap.smul_apply, hαe i, smul_eq_mul, mul_comm]
+    have hstep : ∀ i : Fin (m + 1),
+        (-1 : ℤ) ^ (i : ℕ) • fderiv ℝ
+            (fun y => ω₀ y (i.removeNth (fun j => EuclideanSpace.single j (1 : ℝ)))) x
+            (EuclideanSpace.single i (1 : ℝ)) =
+          h i * fderiv ℝ φ x (EuclideanSpace.single i (1 : ℝ)) := by
+      intro i
+      rw [key i, fderiv_const_mul hφd]
+      simp only [smul_apply, smul_eq_mul, zsmul_eq_mul]
+      push_cast
+      rw [← mul_assoc, ← mul_assoc, ← pow_add, ← two_mul, pow_mul]
+      norm_num
+    rw [Finset.sum_congr rfl (fun i _ => hstep i)]
+    conv_rhs => rw [← (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).sum_repr h]
+    rw [map_sum]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [map_smul, EuclideanSpace.basisFun_repr, EuclideanSpace.basisFun_apply, smul_eq_mul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
