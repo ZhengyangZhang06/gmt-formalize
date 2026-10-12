@@ -1074,6 +1074,381 @@ theorem Submission.weighted_mono_cutoff_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Mea
   obtain ⟨hint', hderiv⟩ := hasDerivAt_integral_of_dominated_loc_of_deriv_le hNnhds hF_meas
     hF_int hF'_meas h_bound (hind _) h_diff
   exact ⟨hF_int, hint', hderiv⟩
+/-- **Cutoff sequence** (the `C¹` cutoffs `φ(r/ρ)` of Simon Ch. 4, 3.3–3.6, with widths `→ 0`).
+With `ψ = Real.smoothTransition`, `ε_m = a / (m + 2)` and `φ_m t = 1 - ψ ((t - 1) / ε_m)`:
+`0 < ε_m < a`, `ε_m → 0`, `φ_m` is `C¹` and nonincreasing, `φ_m = 1` on `(-∞, 1]`,
+`φ_m = 0` on `[1 + ε_m, ∞)`, and `0 ≤ φ_m ≤ 1`. -/
+theorem Submission.weighted_mono_cutoff_seq_exists : ∀ (a : ℝ), 0 < a → ∃ (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), Tendsto ε atTop (𝓝 0) ∧ ∀ m, 0 < ε m ∧ ε m < a ∧ ContDiff ℝ 1 (φ m) ∧ Antitone (φ m) ∧ (∀ t, t ≤ 1 → φ m t = 1) ∧ (∀ t, 1 + ε m ≤ t → φ m t = 0) ∧ (∀ t, 0 ≤ φ m t ∧ φ m t ≤ 1) := by
+  intro a ha
+  refine ⟨fun m t ↦ 1 - Real.smoothTransition ((t - 1) / (a / ((m : ℝ) + 2))),
+    fun m ↦ a / ((m : ℝ) + 2), ?_, fun m ↦ ?_⟩
+  -- `ε_m = a / (m + 2) → 0` since `m + 2 → ∞`
+  · exact (tendsto_atTop_add_const_right atTop 2 tendsto_natCast_atTop_atTop).const_div_atTop a
+  dsimp only
+  have hm : (0 : ℝ) < (m : ℝ) + 2 := by positivity
+  have hε : 0 < a / ((m : ℝ) + 2) := div_pos ha hm
+  refine ⟨hε, ?_, ?_, fun s t hst ↦ ?_, fun t ht ↦ ?_, fun t ht ↦ ?_, fun t ↦ ?_⟩
+  · -- `a < a (m + 2)` because `a (m + 1) > 0`
+    rw [div_lt_iff₀ hm]
+    nlinarith [mul_pos ha (show (0 : ℝ) < (m : ℝ) + 1 by positivity)]
+  · exact contDiff_const.sub (Real.smoothTransition.contDiff.comp
+      ((contDiff_id.sub contDiff_const).div_const _))
+  · -- `t ↦ (t - 1) / ε_m` is increasing and `ψ` is monotone
+    have h : (s - 1) / (a / ((m : ℝ) + 2)) ≤ (t - 1) / (a / ((m : ℝ) + 2)) := by gcongr
+    linarith [Real.smoothTransition.monotone h]
+  · -- `(t - 1) / ε_m ≤ 0`, so `ψ = 0` there
+    rw [Real.smoothTransition.zero_of_nonpos
+      (div_nonpos_of_nonpos_of_nonneg (sub_nonpos.2 ht) hε.le), sub_zero]
+  · -- `(t - 1) / ε_m ≥ 1`, so `ψ = 1` there
+    rw [Real.smoothTransition.one_of_one_le ((one_le_div₀ hε).2 (le_sub_iff_add_le'.2 ht)),
+      sub_self]
+  · exact ⟨sub_nonneg.2 (Real.smoothTransition.le_one _),
+      sub_le_self _ (Real.smoothTransition.nonneg _)⟩
+/-- **Radial cutoff limit (dominated convergence; Simon Ch. 4, 3.4–3.5 and 5.1, letting the cutoff
+`φ` tend to the indicator of `(-∞, 1]`).** If `f` is `μ`-integrable on `B_R(ξ)`, `t > 0`,
+`ε_m → 0` with `(1 + ε_m) t ≤ R`, and the measurable `φ_m : ℝ → [0, 1]` satisfy `φ_m = 1` on
+`(-∞, 1]` and `φ_m = 0` on `[1 + ε_m, ∞)`, then `∫ φ_m(|x - ξ|/t) f(x) dμ → ∫_{B_t(ξ)} f dμ`. -/
+theorem Submission.weighted_mono_cutoff_integral_tendsto : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (f : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (t R : ℝ) (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), 0 < t → IntegrableOn f (closedBall ξ R) μ → Tendsto ε atTop (𝓝 0) → (∀ m, (1 + ε m) * t ≤ R) → (∀ m, Measurable (φ m)) → (∀ m s, 0 ≤ φ m s ∧ φ m s ≤ 1) → (∀ m s, s ≤ 1 → φ m s = 1) → (∀ m s, 1 + ε m ≤ s → φ m s = 0) → Tendsto (fun m ↦ ∫ x, φ m (‖x - ξ‖ / t) * f x ∂μ) atTop (𝓝 (∫ x in closedBall ξ t, f x ∂μ)) := by
+  intro n ℓ μ f ξ t R φ ε ht hf hε hR hφm hφ01 hφ1 hφ0
+  -- Step 1: `φ_m(r/t) = 0` off `B_R(ξ)`, since `(1 + ε_m) t ≤ R < r` and `t > 0`.
+  have hoff : ∀ m x, x ∉ closedBall ξ R → φ m (‖x - ξ‖ / t) = 0 := by
+    intro m x hx
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    exact hφ0 m _ ((le_div_iff₀ ht).2 ((hR m).trans hx.le))
+  -- Hence `F_m = 1_{B_R(ξ)} F_m`, where `F_m(x) = φ_m(r/t) f(x)`.
+  have hind : ∀ m, (fun x ↦ φ m (‖x - ξ‖ / t) * f x) =
+      (closedBall ξ R).indicator (fun x ↦ φ m (‖x - ξ‖ / t) * f x) := by
+    intro m
+    funext x
+    by_cases hx : x ∈ closedBall ξ R
+    · rw [indicator_of_mem hx]
+    · rw [indicator_of_notMem hx, hoff m x hx, zero_mul]
+  -- Step 2: `F_m` is `μ`-a.e. strongly measurable.
+  have hmeas : ∀ m, AEStronglyMeasurable (fun x ↦ φ m (‖x - ξ‖ / t) * f x) μ := by
+    intro m
+    rw [hind m, aestronglyMeasurable_indicator_iff measurableSet_closedBall]
+    have hc : Measurable (fun x : Ambient n ℓ ↦ φ m (‖x - ξ‖ / t)) :=
+      (hφm m).comp ((continuous_norm.comp (continuous_id.sub continuous_const)).div_const t).measurable
+    exact hc.aestronglyMeasurable.mul hf.aestronglyMeasurable
+  -- Step 3: `|F_m| ≤ 1_{B_R(ξ)} |f|`, which is `μ`-integrable.
+  have hbound : ∀ m, ∀ᵐ x ∂μ,
+      ‖φ m (‖x - ξ‖ / t) * f x‖ ≤ (closedBall ξ R).indicator (fun x ↦ ‖f x‖) x := by
+    intro m
+    refine Filter.Eventually.of_forall fun x ↦ ?_
+    by_cases hx : x ∈ closedBall ξ R
+    · rw [indicator_of_mem hx, norm_mul, Real.norm_of_nonneg (hφ01 m _).1]
+      exact mul_le_of_le_one_left (norm_nonneg _) (hφ01 m _).2
+    · rw [indicator_of_notMem hx, hoff m x hx, zero_mul, norm_zero]
+  have hbi : Integrable ((closedBall ξ R).indicator (fun x ↦ ‖f x‖)) μ :=
+    (integrable_indicator_iff measurableSet_closedBall).2 hf.norm
+  -- Step 4: `F_m → 1_{B_t(ξ)} f` pointwise: `F_m(x) = f(x)` for all `m` if `r ≤ t`, and
+  -- `F_m(x) = 0` once `ε_m < r/t - 1` if `r > t`.
+  have hlim : ∀ x, Tendsto (fun m ↦ φ m (‖x - ξ‖ / t) * f x) atTop
+      (𝓝 ((closedBall ξ t).indicator f x)) := by
+    intro x
+    by_cases hx : x ∈ closedBall ξ t
+    · rw [indicator_of_mem hx]
+      have hle : ‖x - ξ‖ / t ≤ 1 := by
+        rw [div_le_one ht, ← dist_eq_norm]
+        exact hx
+      simp only [hφ1 _ _ hle, one_mul]
+      exact tendsto_const_nhds
+    · rw [indicator_of_notMem hx]
+      rw [mem_closedBall, dist_eq_norm, not_le] at hx
+      have hδ : 0 < ‖x - ξ‖ / t - 1 := by
+        rw [sub_pos, one_lt_div ht]
+        exact hx
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [hε.eventually (gt_mem_nhds hδ)] with m hm
+      rw [hφ0 m _ (by linarith), zero_mul]
+  -- Step 5: dominated convergence, and `∫ 1_{B_t(ξ)} f dμ = ∫_{B_t(ξ)} f dμ`.
+  have h := tendsto_integral_of_dominated_convergence _ hmeas hbi hbound
+    (Filter.Eventually.of_forall hlim)
+  rwa [integral_indicator measurableSet_closedBall] at h
+/-- **Monotonicity kernels: measurability, uniform bound, support and pointwise limit.**
+Let `0 < σ ≤ ρ`, `εₘ → 0` with `0 < εₘ ≤ 1`, and let `φₘ` be nonincreasing with `φₘ = 1` on
+`(-∞, 1]` and `φₘ = 0` on `[1 + εₘ, ∞)`. Put
+`kₘ(s) = ∫_{(σ,ρ]} -(s/τ²) φₘ'(s/τ) / τⁿ dτ` and `Dₘ(s) = φₘ(s/ρ) - φₘ(s/σ)`. If
+`Dₘ(s)/sⁿ ≤ kₘ(s) ≤ (1 + εₘ)ⁿ Dₘ(s)/sⁿ` for `s > 0`, then each `kₘ` is measurable,
+`|kₘ(s)| ≤ 2ⁿ/σⁿ` for `s ≥ 0`, `kₘ(s) = 0` for `s > (1 + εₘ)ρ`, and
+`kₘ(s) → 1_{(σ,ρ]}(s) s⁻ⁿ` for every `s ≥ 0`. -/
+theorem Submission.weighted_mono_kernel_limit : ∀ (n : ℕ) (σ ρ : ℝ) (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), 0 < σ → σ ≤ ρ → Tendsto ε atTop (𝓝 0) → (∀ m, 0 < ε m ∧ ε m ≤ 1) → (∀ m, Antitone (φ m)) → (∀ m t, t ≤ 1 → φ m t = 1) → (∀ m t, 1 + ε m ≤ t → φ m t = 0) → (∀ m s, 0 < s → (φ m (s / ρ) - φ m (s / σ)) / s ^ n ≤ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n ∧ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n ≤ (1 + ε m) ^ n * ((φ m (s / ρ) - φ m (s / σ)) / s ^ n)) → (∀ m, Measurable (fun s ↦ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n)) ∧ (∀ m s, 0 ≤ s → |∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n| ≤ 2 ^ n / σ ^ n) ∧ (∀ m s, (1 + ε m) * ρ < s → ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n = 0) ∧ (∀ s, 0 ≤ s → Tendsto (fun m ↦ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n) atTop (𝓝 ((Ioc σ ρ).indicator (fun s ↦ (s ^ n)⁻¹) s))) := by
+  intro n σ ρ φ ε hσ hσρ hε hε01 hanti hone hzero hbd
+  have hρ : 0 < ρ := hσ.trans_le hσρ
+  -- Step 0: `0 ≤ φₘ ≤ 1`, by antitonicity and the boundary values.
+  have hφ1 : ∀ m t, φ m t ≤ 1 := fun m t ↦
+    (hanti m (min_le_left t 1)).trans_eq (hone m _ (min_le_right t 1))
+  have hφ0 : ∀ m t, 0 ≤ φ m t := fun m t ↦
+    (hzero m _ (le_max_right t (1 + ε m))).symm.le.trans (hanti m (le_max_left t (1 + ε m)))
+  -- Step 1: `0 ≤ Dₘ(s) ≤ 1` for `s > 0`, and `Dₘ(s) = 0` for `0 < s ≤ σ`.
+  have hdiv : ∀ s, 0 < s → s / ρ ≤ s / σ := fun s hs ↦ div_le_div_of_nonneg_left hs.le hσ hσρ
+  have hD0 : ∀ m s, 0 < s → 0 ≤ φ m (s / ρ) - φ m (s / σ) := fun m s hs ↦
+    sub_nonneg.2 (hanti m (hdiv s hs))
+  have hD1 : ∀ m s, φ m (s / ρ) - φ m (s / σ) ≤ 1 := fun m s ↦ by
+    linarith [hφ1 m (s / ρ), hφ0 m (s / σ)]
+  have hDlo : ∀ m s, 0 < s → s ≤ σ → φ m (s / ρ) - φ m (s / σ) = 0 := by
+    intro m s hs hsσ
+    rw [hone m (s / ρ) ((div_le_one₀ hρ).2 (hsσ.trans hσρ)), hone m (s / σ) ((div_le_one₀ hσ).2 hsσ),
+      sub_self]
+  -- Step 2: where `Dₘ(s) = 0` (and `s > 0`), the assumed two-sided bound forces `kₘ(s) = 0`.
+  have hsq : ∀ m s, 0 < s → φ m (s / ρ) - φ m (s / σ) = 0 →
+      ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n = 0 := by
+    intro m s hs hD
+    obtain ⟨h1, h2⟩ := hbd m s hs
+    rw [hD, zero_div] at h1
+    rw [hD, zero_div, mul_zero] at h2
+    exact le_antisymm h2 h1
+  -- Step 3: `kₘ(s) = 0` for `0 ≤ s ≤ σ` (for `s = 0` the integrand vanishes).
+  have hklo : ∀ m s, 0 ≤ s → s ≤ σ →
+      ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n = 0 := by
+    intro m s hs hsσ
+    rcases hs.eq_or_lt with rfl | hs
+    · simp
+    · exact hsq m s hs (hDlo m s hs hsσ)
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · -- (1) The integrand is Borel on `ℝ × ℝ` (`measurable_deriv`), so the parametric integral is
+    -- measurable.
+    intro m
+    have hm : Measurable (fun p : ℝ × ℝ ↦ -(p.1 / p.2 ^ 2) * deriv (φ m) (p.1 / p.2) / p.2 ^ n) := by
+      fun_prop
+    exact (hm.stronglyMeasurable.integral_prod_right' (ν := volume.restrict (Ioc σ ρ))).measurable
+  · -- (2) For `s > σ`: `0 ≤ kₘ(s) ≤ (1 + εₘ)ⁿ Dₘ(s)/sⁿ ≤ 2ⁿ · (1/σⁿ)`.
+    intro m s hs
+    rcases le_or_gt s σ with hsσ | hsσ
+    · rw [hklo m s hs hsσ, abs_zero]
+      positivity
+    have hs0 : 0 < s := hσ.trans hsσ
+    obtain ⟨h1, h2⟩ := hbd m s hs0
+    have hDs : 0 ≤ (φ m (s / ρ) - φ m (s / σ)) / s ^ n :=
+      div_nonneg (hD0 m s hs0) (pow_nonneg hs0.le n)
+    rw [abs_of_nonneg (hDs.trans h1)]
+    refine h2.trans ?_
+    rw [div_eq_mul_one_div (2 ^ n) (σ ^ n)]
+    refine mul_le_mul ?_ ?_ hDs (by positivity)
+    · exact pow_le_pow_left₀ (by linarith [(hε01 m).1]) (by linarith [(hε01 m).2]) n
+    · calc (φ m (s / ρ) - φ m (s / σ)) / s ^ n ≤ 1 / s ^ n :=
+            div_le_div_of_nonneg_right (hD1 m s) (pow_nonneg hs0.le n)
+        _ ≤ 1 / σ ^ n := one_div_le_one_div_of_le (pow_pos hσ n) (pow_le_pow_left₀ hσ.le hsσ.le n)
+  · -- (3) For `s > (1 + εₘ)ρ`: `s/σ ≥ s/ρ ≥ 1 + εₘ`, so `Dₘ(s) = 0 - 0`.
+    intro m s hs
+    have hs0 : 0 < s := (mul_pos (by linarith [(hε01 m).1]) hρ).trans hs
+    have h1 : 1 + ε m ≤ s / ρ := (le_div_iff₀ hρ).2 hs.le
+    refine hsq m s hs0 ?_
+    rw [hzero m _ h1, hzero m _ (h1.trans (hdiv s hs0)), sub_self]
+  · -- (4) Pointwise limit, by cases on the position of `s`.
+    intro s hs
+    rcases le_or_gt s σ with hsσ | hsσ
+    · -- `s ≤ σ`: `kₘ(s) = 0` for all `m`, and `s ∉ (σ, ρ]`.
+      rw [indicator_of_notMem (fun h : s ∈ Ioc σ ρ ↦ (not_lt.2 hsσ) h.1)]
+      exact tendsto_const_nhds.congr fun m ↦ (hklo m s hs hsσ).symm
+    have hs0 : 0 < s := hσ.trans hsσ
+    rcases le_or_gt s ρ with hsρ | hsρ
+    · -- `σ < s ≤ ρ`: eventually `Dₘ(s) = 1 - 0`; squeeze between `s⁻ⁿ` and `(1 + εₘ)ⁿ s⁻ⁿ`.
+      rw [indicator_of_mem (show s ∈ Ioc σ ρ from ⟨hsσ, hsρ⟩)]
+      have hev : ∀ᶠ m in atTop, ε m < s / σ - 1 :=
+        hε.eventually_lt_const (by rw [sub_pos, one_lt_div₀ hσ]; exact hsσ)
+      have hD : ∀ᶠ m in atTop, φ m (s / ρ) - φ m (s / σ) = 1 := by
+        filter_upwards [hev] with m hm
+        rw [hone m _ ((div_le_one₀ hρ).2 hsρ), hzero m _ (by linarith), sub_zero]
+      have hup : Tendsto (fun m ↦ (1 + ε m) ^ n * (s ^ n)⁻¹) atTop (𝓝 ((s ^ n)⁻¹)) := by
+        have h := ((tendsto_const_nhds (x := (1 : ℝ))).add hε).pow n |>.mul_const (s ^ n)⁻¹
+        rwa [add_zero, one_pow, one_mul] at h
+      refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hup ?_ ?_
+      · filter_upwards [hD] with m hm
+        have h := (hbd m s hs0).1
+        rwa [hm, one_div] at h
+      · filter_upwards [hD] with m hm
+        have h := (hbd m s hs0).2
+        rwa [hm, one_div] at h
+    · -- `s > ρ`: eventually `s/σ ≥ s/ρ ≥ 1 + εₘ`, so `kₘ(s) = 0`; and `s ∉ (σ, ρ]`.
+      rw [indicator_of_notMem (fun h : s ∈ Ioc σ ρ ↦ (not_le.2 hsρ) h.2)]
+      have hev : ∀ᶠ m in atTop, ε m < s / ρ - 1 :=
+        hε.eventually_lt_const (by rw [sub_pos, one_lt_div₀ hρ]; exact hsρ)
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [hev] with m hm
+      have h1 : 1 + ε m ≤ s / ρ := by linarith
+      refine (hsq m s hs0 ?_).symm
+      rw [hzero m _ h1, hzero m _ (h1.trans (hdiv s hs0)), sub_self]
+/-- **Annulus term of the limit 3.5 → 3.6** (Simon Ch. 4, p. 90: letting the cutoff decrease to
+the indicator of `(-∞, 1]`). With `r = ‖x - ξ‖`, `x ∈ B_ρ(ξ) \ B_σ(ξ)` iff `r ∈ (σ, ρ]`, and there
+`|u (q / rⁿ)| ≤ A / σⁿ`, so the limit integrand is integrable on the annulus. The integrands
+`u q k_m(r)` vanish off `B_R(ξ)`, are dominated by `A C 1_{B_R(ξ)}`, and converge pointwise to
+`1_{B_ρ(ξ) \ B_σ(ξ)} u (q / rⁿ)`; dominated convergence and `integral_indicator` give the limit. -/
+theorem Submission.weighted_mono_kernel_term_tendsto : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (u q : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ R A C : ℝ) (k : ℕ → ℝ → ℝ), IsFiniteMeasureOnCompacts μ → 0 < σ → ρ ≤ R → AEStronglyMeasurable u (μ.restrict (closedBall ξ R)) → AEStronglyMeasurable q (μ.restrict (closedBall ξ R)) → (∀ x ∈ closedBall ξ R, |u x| ≤ A ∧ |q x| ≤ 1) → (∀ m, Measurable (k m)) → (∀ m s, 0 ≤ s → |k m s| ≤ C) → (∀ m s, R < s → k m s = 0) → (∀ s, 0 ≤ s → Tendsto (fun m ↦ k m s) atTop (𝓝 ((Ioc σ ρ).indicator (fun s ↦ (s ^ n)⁻¹) s))) → IntegrableOn (fun x ↦ u x * (q x / ‖x - ξ‖ ^ n)) (closedBall ξ ρ \ closedBall ξ σ) μ ∧ Tendsto (fun m ↦ ∫ x, u x * q x * k m ‖x - ξ‖ ∂μ) atTop (𝓝 (∫ x in closedBall ξ ρ \ closedBall ξ σ, u x * (q x / ‖x - ξ‖ ^ n) ∂μ)) := by
+  intro n ℓ μ u q ξ σ ρ R A C k hμ hσ hρR hu hq hbd hk hkC hk0 hlim
+  -- `μ (B_R(ξ)) < ∞`, the annulus lies in `B_R(ξ)`, and `x` is in it iff `‖x - ξ‖ ∈ (σ, ρ]`
+  have hBfin : μ (closedBall ξ R) < ⊤ := measure_closedBall_lt_top
+  have hAB : closedBall ξ ρ \ closedBall ξ σ ⊆ closedBall ξ R :=
+    fun x hx ↦ closedBall_subset_closedBall hρR hx.1
+  have hAm : MeasurableSet (closedBall ξ ρ \ closedBall ξ σ) :=
+    measurableSet_closedBall.diff measurableSet_closedBall
+  have hmemA : ∀ x, x ∈ closedBall ξ ρ \ closedBall ξ σ ↔ ‖x - ξ‖ ∈ Ioc σ ρ := by
+    intro x
+    simp only [Set.mem_sdiff, mem_closedBall, dist_eq_norm, mem_Ioc, not_le]
+    tauto
+  have hnotB : ∀ x, x ∉ closedBall ξ R → R < ‖x - ξ‖ := by
+    intro x hx
+    simpa [mem_closedBall, dist_eq_norm] using hx
+  -- integrability on the annulus, where the integrand is bounded by `A / σⁿ`
+  have hint : IntegrableOn (fun x ↦ u x * (q x / ‖x - ξ‖ ^ n))
+      (closedBall ξ ρ \ closedBall ξ σ) μ := by
+    have hmono : μ.restrict (closedBall ξ ρ \ closedBall ξ σ) ≤ μ.restrict (closedBall ξ R) :=
+      Measure.restrict_mono hAB le_rfl
+    have hrc : Continuous fun x : Ambient n ℓ ↦ ‖x - ξ‖ ^ n := by fun_prop
+    refine IntegrableOn.of_bound ((measure_mono hAB).trans_lt hBfin)
+      ((hu.mono_measure hmono).mul ((hq.mono_measure hmono).div₀ hrc.aestronglyMeasurable))
+      (A / σ ^ n) ?_
+    filter_upwards [ae_restrict_mem hAm] with x hx
+    obtain ⟨hux, hqx⟩ := hbd x (hAB hx)
+    have hA : 0 ≤ A := (abs_nonneg _).trans hux
+    have hσn : 0 < σ ^ n := pow_pos hσ n
+    have hrn : σ ^ n ≤ ‖x - ξ‖ ^ n := pow_le_pow_left₀ hσ.le ((hmemA x).1 hx).1.le n
+    rw [Real.norm_eq_abs, abs_mul, abs_div, abs_of_pos (hσn.trans_le hrn)]
+    calc |u x| * (|q x| / ‖x - ξ‖ ^ n) ≤ A * (1 / ‖x - ξ‖ ^ n) := by gcongr
+      _ ≤ A * (1 / σ ^ n) := by gcongr
+      _ = A / σ ^ n := by ring
+  refine ⟨hint, ?_⟩
+  -- dominated convergence with bound `A C 1_{B_R(ξ)}`
+  rw [← integral_indicator hAm]
+  refine tendsto_integral_filter_of_dominated_convergence
+    ((closedBall ξ R).indicator fun _ ↦ A * C) ?_ ?_ ?_ ?_
+  · -- `u q k_m(r)` vanishes off `B_R(ξ)` and is a.e. strongly measurable on `B_R(ξ)`
+    refine Eventually.of_forall fun m ↦ ?_
+    have hF : (fun x ↦ u x * q x * k m ‖x - ξ‖) =
+        (closedBall ξ R).indicator fun x ↦ u x * q x * k m ‖x - ξ‖ := by
+      funext x
+      by_cases hx : x ∈ closedBall ξ R
+      · rw [indicator_of_mem hx]
+      · rw [indicator_of_notMem hx, hk0 m _ (hnotB x hx), mul_zero]
+    rw [hF, aestronglyMeasurable_indicator_iff measurableSet_closedBall]
+    have hkm : Measurable fun x : Ambient n ℓ ↦ k m ‖x - ξ‖ :=
+      (hk m).comp (continuous_norm.comp (continuous_id.sub continuous_const)).measurable
+    exact (hu.mul hq).mul hkm.aestronglyMeasurable
+  · -- `|u q k_m(r)| ≤ A C` on `B_R(ξ)` and `= 0` off it
+    refine Eventually.of_forall fun m ↦ Eventually.of_forall fun x ↦ ?_
+    by_cases hx : x ∈ closedBall ξ R
+    · rw [indicator_of_mem hx]
+      obtain ⟨hux, hqx⟩ := hbd x hx
+      have hA : 0 ≤ A := (abs_nonneg _).trans hux
+      have hkx := hkC m ‖x - ξ‖ (norm_nonneg _)
+      rw [Real.norm_eq_abs, abs_mul, abs_mul]
+      calc |u x| * |q x| * |k m ‖x - ξ‖| ≤ A * 1 * C := by gcongr
+        _ = A * C := by ring
+    · rw [indicator_of_notMem hx, hk0 m _ (hnotB x hx), mul_zero, norm_zero]
+  · exact (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const hBfin.ne)
+  · -- pointwise limit `u q 1_{(σ, ρ]}(r) r⁻ⁿ = 1_{B_ρ(ξ) \ B_σ(ξ)} u (q / rⁿ)`
+    refine Eventually.of_forall fun x ↦ ?_
+    convert (hlim ‖x - ξ‖ (norm_nonneg _)).const_mul (u x * q x) using 2
+    by_cases hx : x ∈ closedBall ξ ρ \ closedBall ξ σ
+    · rw [indicator_of_mem hx, indicator_of_mem ((hmemA x).1 hx)]
+      ring
+    · rw [indicator_of_notMem hx, indicator_of_notMem fun h ↦ hx ((hmemA x).2 h)]
+      ring
+
+/-- **Curvature term of the `h`-weighted monotonicity identity** (Simon Ch. 4, 5.1, p. 96:
+integrate 5.1 over `(σ, ρ]` and let `φ` increase to `1_{(-∞, 1]}`; `G` stands for
+`(x - ξ) · (∇^M h + hH)`). Let `G` be `μ`-integrable on `B_R(ξ)`, `0 < σ ≤ ρ`, and let `φ_m` be
+continuous with `0 ≤ φ_m ≤ 1`, `φ_m = 1` on `(-∞, 1]` and `φ_m = 0` on `[1 + ε_m, ∞)`, where
+`ε_m > 0`, `ε_m → 0` and `(1 + ε_m)ρ ≤ R`. Then `τ ↦ τ^{-n-1} ∫_{B_τ(ξ)} G dμ` is integrable on
+`(σ, ρ]` and `∫_{(σ,ρ]} τ^{-n-1} ∫ φ_m(|x - ξ|/τ) G(x) dμ(x) dτ` converges to its integral.
+For `0 < τ ≤ ρ` the `x`-integrand vanishes off `B_R(ξ)` and is dominated by `g = 1_{B_R(ξ)} |G|`,
+so `L_m(τ) = ∫ φ_m(|x - ξ|/τ) G dμ` is continuous on `[σ, ρ]` with `|L_m| ≤ C = ∫ g dμ`;
+`weighted_mono_cutoff_integral_tendsto` gives `L_m(τ) → ∫_{B_τ(ξ)} G dμ` on `(σ, ρ]`, and dominated
+convergence with the constant bound `C/σ^{n+1}` concludes. -/
+theorem Submission.weighted_mono_curvature_term_tendsto : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (G : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ R : ℝ) (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), 0 < σ → σ ≤ ρ → IntegrableOn G (closedBall ξ R) μ → Tendsto ε atTop (𝓝 0) → (∀ m, 0 < ε m) → (∀ m, (1 + ε m) * ρ ≤ R) → (∀ m, Continuous (φ m)) → (∀ m s, 0 ≤ φ m s ∧ φ m s ≤ 1) → (∀ m s, s ≤ 1 → φ m s = 1) → (∀ m s, 1 + ε m ≤ s → φ m s = 0) → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, G x ∂μ) / τ ^ (n + 1)) (Ioc σ ρ) ∧ Tendsto (fun m ↦ ∫ τ in Ioc σ ρ, (∫ x, φ m (‖x - ξ‖ / τ) * G x ∂μ) / τ ^ (n + 1)) atTop (𝓝 (∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, G x ∂μ) / τ ^ (n + 1))) := by
+  intro n ℓ μ G ξ σ ρ R φ ε hσ hσρ hG hε hεpos hεR hφc hφ01 hφ1 hφ0
+  -- Step 1: for `0 < τ ≤ ρ` the cutoff vanishes off `B_R(ξ)`, as `(1 + ε_m)τ ≤ R < |x - ξ|`
+  have hvan : ∀ m τ x, 0 < τ → τ ≤ ρ → x ∉ closedBall ξ R → φ m (‖x - ξ‖ / τ) = 0 := by
+    intro m τ x hτ hτρ hx
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    refine hφ0 m _ ((le_div_iff₀ hτ).2 ?_)
+    have := mul_le_mul_of_nonneg_left hτρ (by linarith [hεpos m] : (0 : ℝ) ≤ 1 + ε m)
+    linarith [hεR m]
+  -- Step 2: the `x`-integrands are a.e. strongly measurable and dominated by `g = 1_{B_R(ξ)} |G|`
+  obtain ⟨g, hg⟩ : ∃ g : Ambient n ℓ → ℝ, g = (closedBall ξ R).indicator fun x ↦ ‖G x‖ :=
+    ⟨_, rfl⟩
+  have hg_int : Integrable g μ := by
+    rw [hg]
+    exact IntegrableOn.integrable_indicator (Integrable.norm hG) measurableSet_closedBall
+  have hg0 : ∀ x, 0 ≤ g x := by
+    rw [hg]
+    exact indicator_nonneg fun x _ ↦ norm_nonneg _
+  have hdom : ∀ m τ x, 0 < τ → τ ≤ ρ → ‖φ m (‖x - ξ‖ / τ) * G x‖ ≤ g x := by
+    intro m τ x hτ hτρ
+    by_cases hx : x ∈ closedBall ξ R
+    · rw [hg, indicator_of_mem hx, norm_mul, Real.norm_of_nonneg (hφ01 m _).1]
+      exact mul_le_of_le_one_left (norm_nonneg _) (hφ01 m _).2
+    · rw [hvan m τ x hτ hτρ hx, zero_mul, norm_zero]
+      exact hg0 x
+  have hmeas : ∀ m τ, 0 < τ → τ ≤ ρ →
+      AEStronglyMeasurable (fun x ↦ φ m (‖x - ξ‖ / τ) * G x) μ := by
+    intro m τ hτ hτρ
+    have hc : Continuous fun x : Ambient n ℓ ↦ φ m (‖x - ξ‖ / τ) :=
+      (hφc m).comp ((continuous_id.sub continuous_const).norm.div_const τ)
+    have hind : (closedBall ξ R).indicator (fun x ↦ φ m (‖x - ξ‖ / τ) * G x) =
+        fun x ↦ φ m (‖x - ξ‖ / τ) * G x := by
+      funext x
+      by_cases hx : x ∈ closedBall ξ R
+      · rw [indicator_of_mem hx]
+      · rw [indicator_of_notMem hx, hvan m τ x hτ hτρ hx, zero_mul]
+    rw [← hind]
+    exact (aestronglyMeasurable_indicator_iff measurableSet_closedBall).2
+      (hc.aestronglyMeasurable.mul hG.aestronglyMeasurable)
+  -- Step 3: `|L_m(τ)| ≤ C = ∫ g dμ` for `0 < τ ≤ ρ`
+  obtain ⟨C, hC⟩ : ∃ C : ℝ, C = ∫ x, g x ∂μ := ⟨_, rfl⟩
+  have hC0 : 0 ≤ C := by
+    rw [hC]
+    exact integral_nonneg hg0
+  have hLbd : ∀ m τ, 0 < τ → τ ≤ ρ → ‖∫ x, φ m (‖x - ξ‖ / τ) * G x ∂μ‖ ≤ C := by
+    intro m τ hτ hτρ
+    rw [hC]
+    exact norm_integral_le_of_norm_le hg_int (Eventually.of_forall fun x ↦ hdom m τ x hτ hτρ)
+  -- Step 4: `L_m` is continuous on `[σ, ρ]` (continuity of dominated parameter integrals)
+  have hLcont : ∀ m, ContinuousOn (fun τ ↦ ∫ x, φ m (‖x - ξ‖ / τ) * G x ∂μ) (Icc σ ρ) := by
+    intro m
+    refine continuousOn_of_dominated (fun τ hτ ↦ hmeas m τ (hσ.trans_le hτ.1) hτ.2)
+      (fun τ hτ ↦ Eventually.of_forall fun x ↦ hdom m τ x (hσ.trans_le hτ.1) hτ.2) hg_int
+      (Eventually.of_forall fun x ↦ ?_)
+    refine ContinuousOn.mul ((hφc m).comp_continuousOn ?_) continuousOn_const
+    exact continuousOn_const.div continuousOn_id fun τ hτ ↦ (hσ.trans_le hτ.1).ne'
+  -- Step 5: `h_m(τ) = L_m(τ)/τ^{n+1}` is continuous on `[σ, ρ]`, so a.e. strongly measurable on
+  -- `(σ, ρ]`
+  have hhmeas : ∀ m, AEStronglyMeasurable
+      (fun τ ↦ (∫ x, φ m (‖x - ξ‖ / τ) * G x ∂μ) / τ ^ (n + 1)) (volume.restrict (Ioc σ ρ)) := by
+    intro m
+    have hcont : ContinuousOn (fun τ ↦ (∫ x, φ m (‖x - ξ‖ / τ) * G x ∂μ) / τ ^ (n + 1))
+        (Icc σ ρ) :=
+      (hLcont m).div (continuous_pow (n + 1)).continuousOn fun τ hτ ↦
+        pow_ne_zero _ (hσ.trans_le hτ.1).ne'
+    exact (hcont.mono Ioc_subset_Icc_self).aestronglyMeasurable measurableSet_Ioc
+  -- Step 6: pointwise convergence on `(σ, ρ]`, by the sibling lemma at `t = τ`
+  have hlim : ∀ τ ∈ Ioc σ ρ, Tendsto (fun m ↦ (∫ x, φ m (‖x - ξ‖ / τ) * G x ∂μ) / τ ^ (n + 1))
+      atTop (𝓝 ((∫ x in closedBall ξ τ, G x ∂μ) / τ ^ (n + 1))) := by
+    intro τ hτ
+    have hτR : ∀ m, (1 + ε m) * τ ≤ R := fun m ↦
+      (mul_le_mul_of_nonneg_left hτ.2 (by linarith [hεpos m])).trans (hεR m)
+    exact (Submission.weighted_mono_cutoff_integral_tendsto n ℓ μ G ξ τ R φ ε (hσ.trans hτ.1) hG
+      hε hτR (fun m ↦ (hφc m).measurable) hφ01 hφ1 hφ0).div_const _
+  -- Step 7: `|h_m(τ)| ≤ C/σ^{n+1}` on `(σ, ρ]`
+  have hhbd : ∀ m, ∀ τ ∈ Ioc σ ρ,
+      ‖(∫ x, φ m (‖x - ξ‖ / τ) * G x ∂μ) / τ ^ (n + 1)‖ ≤ C / σ ^ (n + 1) := by
+    intro m τ hτ
+    have hτ0 : 0 < τ := hσ.trans hτ.1
+    rw [norm_div, norm_pow, Real.norm_of_nonneg hτ0.le]
+    exact (div_le_div_of_nonneg_right (hLbd m τ hτ0 hτ.2) (pow_nonneg hτ0.le _)).trans
+      (div_le_div_of_nonneg_left hC0 (pow_pos hσ _) (pow_le_pow_left₀ hσ.le hτ.1.le _))
+  -- Step 8: the limit is a.e. strongly measurable and bounded by `C/σ^{n+1}`, so integrable
+  have hlim_ae := ae_restrict_of_forall_mem (μ := volume) measurableSet_Ioc hlim
+  have hint : IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, G x ∂μ) / τ ^ (n + 1)) (Ioc σ ρ) :=
+    IntegrableOn.of_bound measure_Ioc_lt_top
+      (aestronglyMeasurable_of_tendsto_ae atTop hhmeas hlim_ae) (C / σ ^ (n + 1))
+      (ae_restrict_of_forall_mem measurableSet_Ioc fun τ hτ ↦
+        le_of_tendsto (hlim τ hτ).norm (Eventually.of_forall fun m ↦ hhbd m τ hτ))
+  -- Step 9: dominated convergence on `(σ, ρ]` with the constant bound `C/σ^{n+1}`
+  exact ⟨hint, tendsto_integral_filter_of_dominated_convergence (fun _ ↦ C / σ ^ (n + 1))
+    (Eventually.of_forall hhmeas)
+    (Eventually.of_forall fun m ↦ ae_restrict_of_forall_mem measurableSet_Ioc (hhbd m))
+    (integrableOn_const measure_Ioc_lt_top.ne) hlim_ae⟩
 /-- **Kernel bounds for the monotonicity identity** (Simon Ch. 4, 3.5, with the corrected
 prefactors). For `φ` `C¹` and nonincreasing with `φ = 1` on `(-∞, 1]` and `φ = 0` on `[1 + ε, ∞)`,
 `g τ = φ (s / τ)` has `g' τ = -(s / τ ^ 2) φ' (s / τ) ≥ 0` and `∫_{(σ,ρ]} g' = φ (s / ρ) - φ (s / σ)`;
@@ -1244,6 +1619,66 @@ theorem Submission.weighted_mono_smoothed_identity : ∀ (n ℓ : ℕ) (μ : Mea
   rw [Submission.wm_smoothed_kernel_fubini n ℓ n μ (fun x ↦ u x * q x) (deriv φ) ξ (1 + ε) σ ρ R A
     hμ hσ hc hR huqm huqA hφ'c hφ'] at hftc
   exact hftc
+/-- **Removing the cutoff from the weighted monotonicity identity** (Simon Ch. 4, p. 90, 3.5 → 3.6,
+and the same limit before 3.17: letting `ε ↓ 0`, so that `φ` decreases to the indicator of
+`(-∞, 1]`). If the smoothed identity `(S_φ)` holds for every `C¹` nonincreasing cutoff `φ` of width
+`ε` with `(1 + ε)ρ < R`, apply it to the cutoffs `φₘ` of `weighted_mono_cutoff_seq_exists` with
+widths `εₘ < min(1, (R - ρ)/ρ)`. Each term converges: the cutoff integrals of `u` by
+`weighted_mono_cutoff_integral_tendsto`, the kernel term by `weighted_mono_kernel_term_tendsto`
+(kernel facts from `weighted_mono_kernel_bounds` and `weighted_mono_kernel_limit`) and the
+curvature term by `weighted_mono_curvature_term_tendsto`; these two also give (ii) and (i).
+Uniqueness of limits gives the identity (iii). -/
+theorem Submission.weighted_mono_cutoff_limit : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (u q G : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (σ ρ R A : ℝ), IsFiniteMeasureOnCompacts μ → 0 < σ → σ ≤ ρ → ρ < R → AEStronglyMeasurable u (μ.restrict (closedBall ξ R)) → AEStronglyMeasurable q (μ.restrict (closedBall ξ R)) → (∀ x ∈ closedBall ξ R, |u x| ≤ A ∧ |q x| ≤ 1) → IntegrableOn G (closedBall ξ R) μ → (∀ (ε : ℝ) (φ : ℝ → ℝ), 0 < ε → (1 + ε) * ρ < R → ContDiff ℝ 1 φ → Antitone φ → (∀ t, t ≤ 1 → φ t = 1) → (∀ t, 1 + ε ≤ t → φ t = 0) → (∫ x, u x * φ (‖x - ξ‖ / ρ) ∂μ) / ρ ^ n - (∫ x, u x * φ (‖x - ξ‖ / σ) ∂μ) / σ ^ n = ∫ x, u x * q x * (∫ τ in Ioc σ ρ, -(‖x - ξ‖ / τ ^ 2) * deriv φ (‖x - ξ‖ / τ) / τ ^ n) ∂μ + ∫ τ in Ioc σ ρ, (∫ x, φ (‖x - ξ‖ / τ) * G x ∂μ) / τ ^ (n + 1)) → IntegrableOn (fun τ ↦ (∫ x in closedBall ξ τ, G x ∂μ) / τ ^ (n + 1)) (Ioc σ ρ) ∧ IntegrableOn (fun x ↦ u x * (q x / ‖x - ξ‖ ^ n)) (closedBall ξ ρ \ closedBall ξ σ) μ ∧ (∫ x in closedBall ξ ρ, u x ∂μ) / ρ ^ n - (∫ x in closedBall ξ σ, u x ∂μ) / σ ^ n = ∫ x in closedBall ξ ρ \ closedBall ξ σ, u x * (q x / ‖x - ξ‖ ^ n) ∂μ + ∫ τ in Ioc σ ρ, (∫ x in closedBall ξ τ, G x ∂μ) / τ ^ (n + 1) := by
+  intro n ℓ μ u q G ξ σ ρ R A hμ hσ hσρ hρR hu hq hbd hG hS
+  have hρ : 0 < ρ := hσ.trans_le hσρ
+  -- Step 1: cutoffs `φₘ` with widths `εₘ < min(1, (R - ρ)/ρ)`, so `εₘ ≤ 1` and `(1 + εₘ)ρ < R`;
+  -- hence `(S_{φₘ})` holds for every `m`.
+  obtain ⟨φ, ε, hε, hφ⟩ :=
+    Submission.weighted_mono_cutoff_seq_exists _ (lt_min one_pos (div_pos (sub_pos.2 hρR) hρ))
+  have hε0 : ∀ m, 0 < ε m := fun m ↦ (hφ m).1
+  have hε1 : ∀ m, ε m ≤ 1 := fun m ↦ ((hφ m).2.1.trans_le (min_le_left _ _)).le
+  have hC1 : ∀ m, ContDiff ℝ 1 (φ m) := fun m ↦ (hφ m).2.2.1
+  have hanti : ∀ m, Antitone (φ m) := fun m ↦ (hφ m).2.2.2.1
+  have hone : ∀ m t, t ≤ 1 → φ m t = 1 := fun m ↦ (hφ m).2.2.2.2.1
+  have hzero : ∀ m t, 1 + ε m ≤ t → φ m t = 0 := fun m ↦ (hφ m).2.2.2.2.2.1
+  have h01 : ∀ m t, 0 ≤ φ m t ∧ φ m t ≤ 1 := fun m ↦ (hφ m).2.2.2.2.2.2
+  have hεR : ∀ m, (1 + ε m) * ρ < R := by
+    intro m
+    have h := (hφ m).2.1.trans_le (min_le_right _ _)
+    rw [lt_div_iff₀ hρ] at h
+    linarith
+  have hSm := fun m ↦ hS (ε m) (φ m) (hε0 m) (hεR m) (hC1 m) (hanti m) (hone m) (hzero m)
+  -- Step 2: the kernels `kₘ(s) = ∫_{(σ,ρ]} -(s/τ²) φₘ'(s/τ) / τⁿ dτ` are measurable, bounded by
+  -- `2ⁿ/σⁿ`, vanish for `s > (1 + εₘ)ρ` (so for `s > R`), and tend to `1_{(σ,ρ]}(s) s⁻ⁿ`.
+  obtain ⟨hkm, hkC, hk0, hklim⟩ := Submission.weighted_mono_kernel_limit n σ ρ φ ε hσ hσρ hε
+    (fun m ↦ ⟨hε0 m, hε1 m⟩) hanti hone hzero fun m s hs ↦
+      Submission.weighted_mono_kernel_bounds n (φ m) (ε m) σ ρ s (hC1 m) (hanti m) (hone m)
+        (hzero m) (hε0 m) hσ hσρ hs
+  -- Step 3: (ii) and the limit of the kernel term `∫ u q kₘ(r) dμ`.
+  obtain ⟨hii, hK⟩ := Submission.weighted_mono_kernel_term_tendsto n ℓ μ u q ξ σ ρ R A
+    (2 ^ n / σ ^ n) (fun m s ↦ ∫ τ in Ioc σ ρ, -(s / τ ^ 2) * deriv (φ m) (s / τ) / τ ^ n) hμ hσ
+    hρR.le hu hq hbd hkm hkC (fun m s hs ↦ hk0 m s ((hεR m).trans hs)) hklim
+  -- Step 4: (i) and the limit of the curvature term `∫_{(σ,ρ]} (∫ φₘ(r/τ) G dμ) / τⁿ⁺¹ dτ`.
+  obtain ⟨hi, hT⟩ := Submission.weighted_mono_curvature_term_tendsto n ℓ μ G ξ σ ρ R φ ε hσ hσρ hG
+    hε hε0 (fun m ↦ (hεR m).le) (fun m ↦ (hC1 m).continuous) h01 hone hzero
+  -- Step 5: the cutoff integrals of `u` (integrable on `B_R(ξ)`, being bounded there) at the radii
+  -- `ρ` and `σ`, using `(1 + εₘ)σ ≤ (1 + εₘ)ρ < R`.
+  have huR : IntegrableOn u (closedBall ξ R) μ := by
+    refine IntegrableOn.of_bound measure_closedBall_lt_top hu A ?_
+    filter_upwards [ae_restrict_mem measurableSet_closedBall] with x hx
+    exact (hbd x hx).1
+  have hmeas : ∀ m, Measurable (φ m) := fun m ↦ (hC1 m).continuous.measurable
+  have hUρ := Submission.weighted_mono_cutoff_integral_tendsto n ℓ μ u ξ ρ R φ ε hρ huR hε
+    (fun m ↦ (hεR m).le) hmeas h01 hone hzero
+  have hUσ := Submission.weighted_mono_cutoff_integral_tendsto n ℓ μ u ξ σ R φ ε hσ huR hε
+    (fun m ↦ (mul_le_mul_of_nonneg_left hσρ (by linarith [hε0 m])).trans (hεR m).le) hmeas h01
+    hone hzero
+  have hcomm : ∀ m (t : ℝ), ∫ x, φ m (‖x - ξ‖ / t) * u x ∂μ = ∫ x, u x * φ m (‖x - ξ‖ / t) ∂μ :=
+    fun m t ↦ integral_congr_ae (Eventually.of_forall fun x ↦ mul_comm _ _)
+  -- Step 6: both sides of `(S_{φₘ})` converge, so their limits (iii) agree.
+  refine ⟨hi, hii, tendsto_nhds_unique (((hUρ.div_const (ρ ^ n)).sub
+    (hUσ.div_const (σ ^ n))).congr fun m ↦ ?_) ((hK.add hT).congr fun m ↦ (hSm m).symm)⟩
+  rw [hcomm, hcomm]
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
