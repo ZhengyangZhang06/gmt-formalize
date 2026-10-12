@@ -1,0 +1,24 @@
+{
+  "node_id": "root.density_semicontinuity-a1.lower_density_ae-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/546",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "d2f24f236c31da9397a666ce50b4ed62687e6144",
+  "integrated_commit": "",
+  "proof_base_commit": "54295e6c79ed665caddb17eb13d33a48b75e033b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_semicontinuity-a1",
+  "requires": [
+    "root.density_semicontinuity-a1.weight_portmanteau-a1",
+    "root.density_semicontinuity-a1.besicovitch_ratio_cover-a1",
+    "root.density_semicontinuity-a1.monotonicity_mass_lower_bound-a1",
+    "root.density_semicontinuity-a1.limit_mass_lower_bound-a1",
+    "root.density_semicontinuity-a1.lower_density_ae-a1.thickening_rel_compact-a1",
+    "root.density_semicontinuity-a1.lower_density_ae-a1.relcompact_exhaustion_ae-a1",
+    "root.density_semicontinuity-a1.lower_density_ae-a1.bad_interior_null-a1",
+    "root.density_semicontinuity-a1.lower_density_ae-a1.nearby_good_points-a1"
+  ]
+}

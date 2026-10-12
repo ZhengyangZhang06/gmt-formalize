@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c7d5d479debd89de30bb93d9625764190988135fc91c7717c2b2d43e07d8d324",
+  "git_delta": {
+    "base_commit": "d2ab5e8fd1ae3b07dd61dff6c331026b17336a54",
+    "candidate_commit": "d2f24f236c31da9397a666ce50b4ed62687e6144",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "dbdf897505aaaf170b569ad581ca08dd0cfe56fcc773694a7f7980af43775551",
+    "source_sha256": "75c4ee4bb1b7e66a7bf123f0c710c096feb8d4987e216c1e452fdfeff81c68fb",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lower_density_ge_one_ae_of_radonConverges",
+      "statement": "MonotonicityFormula → ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U) (B : ℕ → Set (Euclidean N)), Varifold.RadonConverges Vi V → (∀ i, (Vi i).HasLocallyBoundedFirstVariation) → (∀ W, IsRelCompactOpenIn W U → liminf (fun i ↦ variationMeasure (Vi i) W) atTop ≠ ∞) → (∀ i, ∀ y ∈ U \\ B i, ∃ θ : ℝ≥0∞, HasDensity n (Vi i).weight y θ ∧ 1 ≤ θ) → (∀ W, IsRelCompactOpenIn W U → Tendsto (fun i ↦ (Vi i).weight (B i ∩ W)) atTop (𝓝 0)) → ∀ᵐ y ∂V.weight, 1 ≤ liminf (densityRatio n V.weight y) (𝓝[>] 0)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
