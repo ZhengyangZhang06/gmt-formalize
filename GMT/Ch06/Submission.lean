@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.FormsDuality
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
+import Poincare.SimonGMT.Chapter02.AreaDomain
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
@@ -443,6 +444,193 @@ theorem Submission.lpf_wtc_chart_image_measurable_locally_finite :
       ((hLip.hausdorffMeasure_image_le n.cast_nonneg).trans_lt ?_)
     exact ENNReal.mul_lt_top (ENNReal.rpow_lt_top_of_nonneg n.cast_nonneg ENNReal.coe_ne_top)
       (isCompact_closedBall w₀ (D / c)).measure_lt_top
+/-- For a `C¹` map `Φ : ℝⁿ → ℝ^Q` with `c |w - w'| ≤ |Φ w - Φ w'|` on an open `Ω ⊆ ℝⁿ` and a
+compact `K ⊆ ℝ^Q`, `Ω ∩ Φ⁻¹(K)` lies in a bounded open `s ⊆ Ω` on which `Φ` is Lipschitz. -/
+theorem Submission.lpf_wtc_caf_lipschitz_localization :
+    ∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)) (K : Set (Eucl Q)), IsOpen Ω →
+      ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) →
+      IsCompact K → ∃ (s : Set (Eucl n)) (L : ℝ≥0), IsOpen s ∧ s ⊆ Ω ∧ Ω ∩ Φ ⁻¹' K ⊆ s ∧
+        Bornology.IsBounded s ∧ LipschitzOnWith L Φ s := by
+  intro Q n Φ Ω K hΩ hΦ ⟨c, hc, hcΦ⟩ hK
+  rcases (Ω ∩ Φ ⁻¹' K).eq_empty_or_nonempty with h | ⟨w₀, hw₀, hw₀K⟩
+  · exact ⟨∅, 0, isOpen_empty, empty_subset Ω, h.subset, Bornology.isBounded_empty,
+      lipschitzOnWith_empty 0 Φ⟩
+  -- `s = Ω ∩ B_ρ(w₀)` with `ρ = D / c + 1`, `D ≥ diam K`.
+  obtain ⟨D, hD⟩ := Metric.isBounded_iff.1 hK.isBounded
+  -- `DΦ` is bounded on the compact convex ball `B̄_ρ(w₀)`, so `Φ` is Lipschitz on it.
+  obtain ⟨C, hC⟩ := (isCompact_closedBall w₀ (D / c + 1)).exists_bound_of_continuousOn
+    (hΦ.continuous_fderiv one_ne_zero).continuousOn
+  have hLip : LipschitzOnWith (Real.toNNReal C) Φ (closedBall w₀ (D / c + 1)) :=
+    (convex_closedBall w₀ (D / c + 1)).lipschitzOnWith_of_nnnorm_fderiv_le
+      (fun x _ => hΦ.differentiable one_ne_zero x)
+      (fun x hx => by
+        rw [← NNReal.coe_le_coe, coe_nnnorm]
+        exact (hC x hx).trans (Real.le_coe_toNNReal C))
+  refine ⟨Ω ∩ ball w₀ (D / c + 1), Real.toNNReal C, hΩ.inter isOpen_ball, inter_subset_left,
+    fun v ⟨hv, hvK⟩ => ⟨hv, ?_⟩, isBounded_ball.subset inter_subset_right,
+    hLip.mono (inter_subset_right.trans ball_subset_closedBall)⟩
+  -- `c |v - w₀| ≤ |Φ v - Φ w₀| ≤ D`, so `|v - w₀| ≤ D / c < ρ`.
+  rw [mem_ball, dist_eq_norm]
+  refine lt_of_le_of_lt ?_ (lt_add_one (D / c))
+  rw [le_div_iff₀ hc, mul_comm]
+  exact (hcΦ v hv w₀ hw₀).trans ((dist_eq_norm (Φ v) (Φ w₀)).symm.trans_le (hD hvK hw₀K))
+/-- Signed area formula from the nonnegative one: if `∫⁻_{Φ(s)} g dHⁿ = ∫⁻_s J · (g ∘ Φ) dLⁿ`
+for every Borel `g ≥ 0`, then `∫_{Φ(Ω)} h dHⁿ = ∫_Ω J · (h ∘ Φ) dLⁿ` for every continuous
+compactly supported `h` with `Ω ∩ Φ⁻¹(spt h) ⊆ s`. -/
+theorem Submission.lpf_wtc_caf_signed_of_lintegral :
+    ∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω s : Set (Eucl n)) (J : Eucl n → ℝ) (h : Eucl Q → ℝ),
+      IsOpen Ω → IsOpen s → s ⊆ Ω → Bornology.IsBounded s → Continuous Φ → InjOn Φ Ω →
+      Continuous J → (∀ v, 0 ≤ J v) → Continuous h → HasCompactSupport h →
+      Ω ∩ Φ ⁻¹' tsupport h ⊆ s →
+      (∀ g : Eucl Q → ℝ≥0∞, Measurable g →
+        ∫⁻ y in Φ '' s, g y ∂(μHE[n] : Measure (Eucl Q)) =
+          ∫⁻ v in s, ENNReal.ofReal (J v) * g (Φ v) ∂(volume : Measure (Eucl n))) →
+      ∫ x in Φ '' Ω, h x ∂(μHE[n] : Measure (Eucl Q)) =
+        ∫ v in Ω, J v * h (Φ v) ∂(volume : Measure (Eucl n)) := by
+  intro Q n Φ Ω s J h hΩ hs hsΩ hsb hΦ hinj hJ hJ0 hh hhc hsupp H
+  -- `h ∘ Φ` vanishes on `Ω \ s`.
+  have hvan : ∀ v ∈ Ω \ s, h (Φ v) = 0 := fun v hv =>
+    image_eq_zero_of_notMem_tsupport fun hK => hv.2 (hsupp ⟨hv.1, hK⟩)
+  -- Bounds: `‖J‖ ≤ C` on `s`, `‖h‖ ≤ M`, and `Lⁿ(s) < ∞`.
+  obtain ⟨C, hC⟩ := hsb.isCompact_closure.exists_bound_of_continuousOn hJ.continuousOn
+  have hJC : ∀ v ∈ s, ‖J v‖ ≤ C := fun v hv => hC v (subset_closure hv)
+  obtain ⟨M, hM⟩ := hh.bounded_above_of_compact_support hhc
+  have hvol : volume s < ∞ := hsb.measure_lt_top
+  -- `Hⁿ(Φ(s)) < ∞`: the identity with `g ≡ 1`.
+  have hfin : (μHE[n] : Measure (Eucl Q)) (Φ '' s) < ∞ := by
+    have h1 := H (fun _ => 1) measurable_const
+    rw [setLIntegral_one] at h1
+    rw [h1]
+    calc ∫⁻ v in s, ENNReal.ofReal (J v) * 1 ∂volume
+        ≤ ∫⁻ _ in s, ENNReal.ofReal C ∂volume :=
+          setLIntegral_mono measurable_const fun v hv => by
+            rw [mul_one]
+            exact ENNReal.ofReal_le_ofReal ((Real.le_norm_self _).trans (hJC v hv))
+      _ = ENNReal.ofReal C * volume s := setLIntegral_const s _
+      _ < ∞ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hvol
+  -- Integrability of `h` on `Φ(s)` and of `J · (h ∘ Φ)` on `s`.
+  have hint₁ : IntegrableOn h (Φ '' s) (μHE[n] : Measure (Eucl Q)) :=
+    Measure.integrableOn_of_bounded hfin.ne hh.aestronglyMeasurable (ae_of_all _ hM)
+  have hint₂ : IntegrableOn (fun v => J v * h (Φ v)) s volume := by
+    refine Measure.integrableOn_of_bounded (M := C * M) hvol.ne
+      (hJ.mul (hh.comp hΦ)).aestronglyMeasurable
+      (ae_restrict_of_forall_mem hs.measurableSet fun v hv => ?_)
+    rw [norm_mul]
+    exact mul_le_mul_of_nonneg' (hJC v hv) (hM _) (norm_nonneg _)
+      ((norm_nonneg _).trans (hJC v hv))
+  -- The identity for `ofReal ∘ h` and `ofReal ∘ (-h)`, using `J ≥ 0`.
+  have ePos : ∫⁻ y in Φ '' s, ENNReal.ofReal (h y) ∂(μHE[n] : Measure (Eucl Q)) =
+      ∫⁻ v in s, ENNReal.ofReal (J v * h (Φ v)) ∂(volume : Measure (Eucl n)) := by
+    rw [H (fun y => ENNReal.ofReal (h y)) (ENNReal.measurable_ofReal.comp hh.measurable)]
+    exact lintegral_congr fun v => (ENNReal.ofReal_mul (hJ0 v)).symm
+  have eNeg : ∫⁻ y in Φ '' s, ENNReal.ofReal (-h y) ∂(μHE[n] : Measure (Eucl Q)) =
+      ∫⁻ v in s, ENNReal.ofReal (-(J v * h (Φ v))) ∂(volume : Measure (Eucl n)) := by
+    rw [H (fun y => ENNReal.ofReal (-h y)) (ENNReal.measurable_ofReal.comp hh.measurable.neg)]
+    exact lintegral_congr fun v => by rw [← mul_neg, ENNReal.ofReal_mul (hJ0 v)]
+  -- The signed identity on `s`.
+  have key : ∫ x in Φ '' s, h x ∂(μHE[n] : Measure (Eucl Q)) =
+      ∫ v in s, J v * h (Φ v) ∂(volume : Measure (Eucl n)) := by
+    rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part hint₁,
+      integral_eq_lintegral_pos_part_sub_lintegral_neg_part hint₂, ePos, eNeg]
+  -- The integrands vanish on `Ω \ s` and `Φ(Ω) \ Φ(s)`; `Φ(Ω)` is Borel by Lusin–Souslin.
+  have eΩ : ∫ v in Ω, J v * h (Φ v) ∂(volume : Measure (Eucl n)) =
+      ∫ v in s, J v * h (Φ v) ∂(volume : Measure (Eucl n)) :=
+    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hΩ.measurableSet hsΩ fun v hv => by
+      rw [hvan v hv, mul_zero]
+  have eΦΩ : ∫ x in Φ '' Ω, h x ∂(μHE[n] : Measure (Eucl Q)) =
+      ∫ x in Φ '' s, h x ∂(μHE[n] : Measure (Eucl Q)) := by
+    refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
+      (hΩ.measurableSet.image_of_continuousOn_injOn hΦ.continuousOn hinj) (image_mono hsΩ) ?_
+    rintro _ ⟨⟨v, hv, rfl⟩, hvs⟩
+    exact hvan v ⟨hv, fun hvs' => hvs (mem_image_of_mem Φ hvs')⟩
+  rw [eΦΩ, eΩ, key]
+/-- Injective area formula on a `C¹` antilipschitz chart (Simon Ch. 2, (3.1), (3.2), (3.5)):
+if `Φ : ℝⁿ → ℝ^Q` is `C¹`, `Ω ⊆ ℝⁿ` is open and `c |w - w'| ≤ |Φ w - Φ w'|` on `Ω` for some
+`c > 0`, then `∫_{Φ(Ω)} h dHⁿ = ∫_Ω JΦ(v) h(Φ(v)) dLⁿ(v)` for every `h ∈ C_c(ℝ^Q, ℝ)`, where
+`JΦ(v) = √det(⟨DΦ(v)eᵢ, DΦ(v)eⱼ⟩)`.
+
+Proof.  `JΦ(v) = normDet(DΦ(v))` (`LinearMap.normDet_sq_eq_det_gram` for the standard basis), and
+`JΦ` is continuous and nonnegative; `Φ` is injective on `Ω`.  Localize to a bounded open
+`s ⊆ Ω` containing `Ω ∩ Φ⁻¹(spt h)` on which `Φ` is Lipschitz
+(`lpf_wtc_caf_lipschitz_localization`).  As `Φ` is injective on `s`, the fibre sum of the
+weighted area formula on `s` (`weighted_area_formula_lipschitzOn_fiberSum`, weight `g ∘ Φ`) is
+the indicator of the Borel set `Φ(s)` applied to `g`, and the within Jacobian on the open `s` is
+`JΦ`; this gives `∫⁻_{Φ(s)} g dHⁿ = ∫⁻_s JΦ (g ∘ Φ) dLⁿ` for every Borel `g ≥ 0`.  The signed
+identity on `Ω` then follows from `lpf_wtc_caf_signed_of_lintegral`. -/
+theorem Submission.lpf_wtc_chart_area_formula : ∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∀ h : Eucl Q → ℝ, Continuous h → HasCompactSupport h → ∫ x in Φ '' Ω, h x ∂(μHE[n] : Measure (Eucl Q)) = ∫ v in Ω, Real.sqrt (Matrix.of fun i j : Fin n => inner ℝ (fderiv ℝ Φ v (EuclideanSpace.single i 1)) (fderiv ℝ Φ v (EuclideanSpace.single j 1))).det * h (Φ v) := by
+  intro Q n Φ Ω hΩ hΦ hanti h hh hsupp
+  -- The Gram-determinant Jacobian `JΦ(v) = √det(⟨DΦ(v)eᵢ, DΦ(v)eⱼ⟩)`.
+  set J : Eucl n → ℝ := fun v => Real.sqrt (Matrix.of fun i j : Fin n =>
+    inner ℝ (fderiv ℝ Φ v (EuclideanSpace.single i 1))
+      (fderiv ℝ Φ v (EuclideanSpace.single j 1))).det with hJ
+  -- Step 1: `JΦ(v) = normDet(DΦ(v))`, since `normDet(A)² = det(⟨A eᵢ, A eⱼ⟩)` and `normDet ≥ 0`.
+  have hJdet : ∀ v, J v = (fderiv ℝ Φ v).normDet := by
+    intro v
+    have hgram := LinearMap.normDet_sq_eq_det_gram (fderiv ℝ Φ v).toLinearMap
+      (EuclideanSpace.basisFun (Fin n) ℝ)
+    simp only [EuclideanSpace.basisFun_apply, ContinuousLinearMap.coe_coe] at hgram
+    rw [hJ]
+    change Real.sqrt (Matrix.gram ℝ fun i : Fin n =>
+      fderiv ℝ Φ v (EuclideanSpace.single i 1)).det = _
+    rw [← hgram]
+    exact Real.sqrt_sq (LinearMap.normDet_nonneg _)
+  -- `JΦ` is continuous (`DΦ` is continuous) and nonnegative.
+  have hJcont : Continuous J := by
+    have hD : Continuous fun v => fderiv ℝ Φ v := hΦ.continuous_fderiv one_ne_zero
+    have hcol : ∀ i : Fin n, Continuous fun v => fderiv ℝ Φ v (EuclideanSpace.single i 1) :=
+      fun i => hD.clm_apply continuous_const
+    exact Real.continuous_sqrt.comp
+      (continuous_matrix fun i j => (hcol i).inner (hcol j)).matrix_det
+  have hJnonneg : ∀ v, 0 ≤ J v := fun v => Real.sqrt_nonneg _
+  -- `Φ` is injective on `Ω` by the lower bound.
+  have hinj : InjOn Φ Ω := by
+    obtain ⟨c, hc, hcΦ⟩ := hanti
+    intro w hw w' hw' hww'
+    have hle := hcΦ w hw w' hw'
+    rw [hww', sub_self, norm_zero] at hle
+    have h0 : ‖w - w'‖ ≤ 0 := by
+      by_contra hpos
+      exact absurd hle (not_le.2 (mul_pos hc (lt_of_not_ge hpos)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h0)
+  -- Step 2: a bounded open `s ⊆ Ω` carrying `Ω ∩ Φ⁻¹(spt h)` on which `Φ` is Lipschitz.
+  obtain ⟨s, L, hs, hsΩ, hcover, hsb, hLip⟩ :=
+    Submission.lpf_wtc_caf_lipschitz_localization Q n Φ Ω (tsupport h) hΩ hΦ hanti hsupp
+  -- Step 3: the nonnegative identity on `s`, from the injective weighted area formula.
+  have hlint : ∀ g : Eucl Q → ℝ≥0∞, Measurable g →
+      ∫⁻ y in Φ '' s, g y ∂(μHE[n] : Measure (Eucl Q)) =
+        ∫⁻ v in s, ENNReal.ofReal (J v) * g (Φ v) ∂(volume : Measure (Eucl n)) := by
+    intro g hg
+    have hinjs : InjOn Φ s := hinj.mono hsΩ
+    have hsm : MeasurableSet s := hs.measurableSet
+    have harea := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitzOn_fiberSum
+      hsm.nullMeasurableSet hLip (w := fun v => g (Φ v))
+      (hg.comp hΦ.continuous.measurable).aemeasurable
+    rw [finrank_euclideanSpace_fin] at harea
+    -- Injectivity: the fibre sum is the indicator of `Φ(s)` applied to `g`.
+    have hfib : ∀ y, Poincare.SimonGMT.Chapter02.weightedAreaFiberSum s Φ (fun v => g (Φ v)) y =
+        (Φ '' s).indicator g y := by
+      intro y
+      unfold Poincare.SimonGMT.Chapter02.weightedAreaFiberSum
+        Poincare.SimonGMT.Chapter02.areaFiber
+      by_cases hy : y ∈ Φ '' s
+      · obtain ⟨x, hx, rfl⟩ := hy
+        rw [indicator_of_mem (mem_image_of_mem Φ hx),
+          tsum_eq_single (⟨x, hx, rfl⟩ : {x' // x' ∈ s ∧ Φ x' = Φ x})]
+        intro z hz
+        exact absurd (Subtype.ext (hinjs z.2.1 hx z.2.2)) hz
+      · rw [indicator_of_notMem hy]
+        have : IsEmpty {x' // x' ∈ s ∧ Φ x' = y} := ⟨fun z => hy ⟨z.1, z.2.1, z.2.2⟩⟩
+        exact tsum_empty
+    simp_rw [hfib] at harea
+    rw [lintegral_indicator (hsm.image_of_continuousOn_injOn hΦ.continuous.continuousOn hinjs)]
+      at harea
+    rw [harea]
+    refine setLIntegral_congr_fun hsm fun v hv => ?_
+    simp only [Poincare.SimonGMT.Chapter02.areaJacobianWithin, fderivWithin_of_isOpen hs hv,
+      hJdet v]
+  -- Steps 4–5: the signed identity, extended from `s, Φ(s)` back to `Ω, Φ(Ω)`.
+  exact Submission.lpf_wtc_caf_signed_of_lintegral Q n Φ Ω s J h hΩ hs hsΩ hsb hΦ.continuous
+    hinj hJcont hJnonneg hh hsupp hcover hlint
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
