@@ -3609,6 +3609,43 @@ theorem Submission.mean_curvature_monotonicity : (∀ (n ℓ : ℕ) (V : Rectifi
     Submission.mcm_log_error_of_identity hUnit, hLpMono,
     Submission.mcm_lp_density_of_monotonicity hStruct hLpMono⟩
 
+/-- **Ch. 4, 3.12, 3.13 (p. 91) and 4.10(1) (p. 95), canonical representatives.** Assume
+`ApproxTangentAE` and that every `μ_V` is finite on compacts, with `dim T_x V = n` `μ_V`-a.e.
+and `x ↦ p_{T_x V}` `μ_V`-measurable. Both conclusions only use that `Θⁿ(μ_V, ·)` exists on the
+open set `U` and is upper semicontinuous there, which is 3.9, 3.11 for stationary `V` and 4.9 for
+`H ∈ L^p_loc`, `p > n`. Then `(M_V, Θⁿ(μ_V, ·))` is an admissible pair with weight `μ_V ⌞ U`
+(`canonicalCarrier_rectifiablePair_weight`); `{x ∈ M_V : Θⁿ(μ_V, x) ≥ α}` is relatively closed
+in `U` for `α > 0`, and if `θ ≥ α > 0` then `M_V = spt V ∩ U` and `Θⁿ(μ_V, ·) ≥ α` on `M_V`
+(`canonicalCarrier_closed_support`). With `α = 1` this is 4.10(1). -/
+theorem Submission.canonical_representatives : ApproxTangentAE →
+    (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n →
+      IsFiniteMeasureOnCompacts V.weight ∧
+        (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧
+        AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) →
+    CanonicalRepresentative ∧ LpSupportRepresentation := by
+  intro hTangent hStruct
+  refine ⟨fun n ℓ V U hn hU hV ↦ ?_, fun n ℓ V U H p hn hU hH hp hHp hθ ↦ ?_⟩
+  · -- 3.9, 3.11: `Θⁿ(μ_V, ·)` exists on `U` and is upper semicontinuous there.
+    obtain ⟨hDensity, hUSC⟩ :=
+      (Submission.stationary_monotonicity_density hStruct).2 n ℓ V U hn hU hV
+    -- 3.12: `(M_V, Θ)` is admissible with weight `μ_V ⌞ U`; 3.13: closedness and `spt V`.
+    obtain ⟨hPair, hWeight⟩ := Submission.canonicalCarrier_rectifiablePair_weight hTangent n ℓ V U
+      hn hU (hStruct n ℓ V hn).1 hDensity
+    obtain ⟨hClosed, hSupport⟩ :=
+      Submission.canonicalCarrier_closed_support hTangent n ℓ V U hn hU hDensity hUSC
+    exact ⟨hPair, hWeight, hClosed, hSupport⟩
+  · -- 4.9: `Θⁿ(μ_V, ·)` exists on `U` and is upper semicontinuous there.
+    obtain ⟨hDensity, hUSC⟩ :=
+      (Submission.mean_curvature_monotonicity hStruct).2.2.2 n ℓ V U H p hn hU hH hp hHp
+    obtain ⟨hPair, hWeight⟩ := Submission.canonicalCarrier_rectifiablePair_weight hTangent n ℓ V U
+      hn hU (hStruct n ℓ V hn).1 hDensity
+    -- 3.13 with `α = 1`: `M_V = spt V ∩ U` and `Θ ≥ 1` on `M_V`.
+    obtain ⟨hCarrier, hOne⟩ :=
+      (Submission.canonicalCarrier_closed_support hTangent n ℓ V U hn hU hDensity hUSC).2 1
+        one_pos hθ
+    rw [hCarrier] at hPair hWeight hOne
+    exact ⟨hOne, hPair, hWeight⟩
+
 end
 
 end GMT.Ch04
