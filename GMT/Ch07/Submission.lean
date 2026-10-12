@@ -451,6 +451,142 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Change of variables for `Hⁿ` under the dilation `T(x) = cx`, `c > 0`**: formula (1.1) for the
+scaling of the mass measure of a cone (proof of Simon 7.4.5, chapter-07.txt lines 697–699, "by
+virtue of the fact that `C` is a cone").  For every `M ⊆ ℝᴾ`: (i) `T_#(Hⁿ⌞T⁻¹(M)) = c⁻ⁿ Hⁿ⌞M`;
+(ii) `∫⁻_{T⁻¹(M)} g(cz) dHⁿ(z) = c⁻ⁿ ∫⁻_M g dHⁿ` for every `g : ℝᴾ → [0, ∞]`; (iii) the same for
+the Bochner integral of every `g : ℝᴾ → ℝ`.  `T` is a homeomorphism, hence a measurable embedding,
+and `T⁻¹(B) = c⁻¹B` with `Hⁿ(c⁻¹B) = c⁻ⁿ Hⁿ(B)` gives `T_#Hⁿ = c⁻ⁿ Hⁿ`; restriction and integrals
+commute with the push-forward along `T`. -/
+theorem Submission.euclid_hausdorff_dilation_change_of_variables : ∀ (P n : ℕ) (c : ℝ), 0 < c → ∀ M : Set (Euclid P), Measure.map (fun x : Euclid P => c • x) (μHE[n].restrict ((fun x => c • x) ⁻¹' M)) = ENNReal.ofReal (c⁻¹ ^ n) • μHE[n].restrict M ∧ (∀ g : Euclid P → ℝ≥0∞, ∫⁻ z in (fun x => c • x) ⁻¹' M, g (c • z) ∂μHE[n] = ENNReal.ofReal (c⁻¹ ^ n) * ∫⁻ y in M, g y ∂μHE[n]) ∧ ∀ g : Euclid P → ℝ, ∫ z in (fun x => c • x) ⁻¹' M, g (c • z) ∂μHE[n] = c⁻¹ ^ n * ∫ y in M, g y ∂μHE[n] := by
+  intro P n c hc M
+  -- Step 1: `T(x) = cx` is a homeomorphism, hence a measurable embedding.
+  have hT : MeasurableEmbedding (fun x : Euclid P => c • x) :=
+    (Homeomorph.smulOfNeZero c hc.ne').measurableEmbedding
+  -- Step 2: `T_#Hⁿ = c⁻ⁿ Hⁿ`, since `Hⁿ(T⁻¹(B)) = Hⁿ(c⁻¹B) = ‖c⁻¹‖ⁿ Hⁿ(B)` for Borel `B`.
+  have hmap : Measure.map (fun x : Euclid P => c • x) (μHE[n] : Measure (Euclid P)) =
+      ENNReal.ofReal (c⁻¹ ^ n) • (μHE[n] : Measure (Euclid P)) := by
+    ext B hB
+    rw [Measure.map_apply hT.measurable hB, Set.preimage_smul₀ hc.ne',
+      Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hc.ne'), Measure.smul_apply,
+      ENNReal.smul_def, smul_eq_mul, smul_eq_mul, ← ENNReal.ofReal_coe_nnreal]
+    congr 2
+    simp [abs_of_pos hc]
+  -- Step 3, (i): `T_#(Hⁿ⌞T⁻¹(M)) = (T_#Hⁿ)⌞M = c⁻ⁿ Hⁿ⌞M`.
+  have h1 : Measure.map (fun x : Euclid P => c • x) (μHE[n].restrict ((fun x => c • x) ⁻¹' M)) =
+      ENNReal.ofReal (c⁻¹ ^ n) • μHE[n].restrict M := by
+    rw [← hT.restrict_map, hmap, Measure.restrict_smul]
+  refine ⟨h1, fun g => ?_, fun g => ?_⟩
+  -- Step 4, (ii): `∫⁻ g ∘ T dν = ∫⁻ g d(T_#ν)` for `ν = Hⁿ⌞T⁻¹(M)`, then (i).
+  · have h := hT.lintegral_map (μ := μHE[n].restrict ((fun x => c • x) ⁻¹' M)) g
+    rw [h1, lintegral_smul_measure, smul_eq_mul] at h
+    exact h.symm
+  -- Step 5, (iii): the same for Bochner integrals, with `(ofReal c⁻ⁿ).toReal = c⁻ⁿ`.
+  · have h := hT.integral_map (μ := μHE[n].restrict ((fun x => c • x) ⁻¹' M)) g
+    rw [h1, integral_smul_measure, ENNReal.toReal_ofReal (by positivity), smul_eq_mul] at h
+    exact h.symm
+/-- **Approximate tangent spaces under dilation** (Simon Ch. 3, 1.4).  For `c > 0` the blow-ups
+of `c⁻¹M = {x : cx ∈ M}` at `z` are blow-ups of `M` at `cz`: `η_{z,r}(c⁻¹M) = η_{cz,cr}(M)`, as
+`(cr)⁻¹(m − cz) = r⁻¹(c⁻¹m − z)`.  Since `cr ↓ 0` as `r ↓ 0`, the limits defining `Q` as the
+approximate tangent space of `M` at `cz` give the limits for `c⁻¹M` at `z`. -/
+theorem Submission.approx_tangent_space_smul_preimage : ∀ (P n : ℕ) (M : Set (Euclid P)) (c : ℝ) (z : Euclid P) (Q : Submodule ℝ (Euclid P)), 0 < c → HasApproximateTangentSpaceAt n M (c • z) Q → HasApproximateTangentSpaceAt n ((fun x => c • x) ⁻¹' M) z Q := by
+  intro P n M c z Q hc hT
+  have hc0 : c ≠ 0 := hc.ne'
+  -- `η_{cz,cr}(m) = (cr)⁻¹(m − cz) = r⁻¹(c⁻¹m − z) = η_{z,r}(c⁻¹m)`
+  have hη : ∀ (r : ℝ) (m : Euclid P), Poincare.SimonGMT.Chapter03.blowUpMap (c • z) (c * r) m =
+      Poincare.SimonGMT.Chapter03.blowUpMap z r (c⁻¹ • m) := by
+    intro r m
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, Poincare.SimonGMT.Chapter03.blowUpMap, mul_inv_rev,
+      ← smul_smul, smul_sub c⁻¹, inv_smul_smul₀ hc0]
+  -- `η_{z,r}(c⁻¹M) = η_{cz,cr}(M)` for every `r`
+  have hset : ∀ r : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap z r '' ((fun x => c • x) ⁻¹' M) =
+      Poincare.SimonGMT.Chapter03.blowUpMap (c • z) (c * r) '' M := by
+    intro r
+    ext y
+    constructor
+    · rintro ⟨m', hm', rfl⟩
+      exact ⟨c • m', hm', by rw [hη, inv_smul_smul₀ hc0]⟩
+    · rintro ⟨m, hm, rfl⟩
+      refine ⟨c⁻¹ • m, ?_, (hη r m).symm⟩
+      show c • c⁻¹ • m ∈ M
+      rwa [smul_inv_smul₀ hc0]
+  -- `r ↦ cr` tends to `0` within `(0, ∞)`: it is continuous, vanishes at `0` and is positive
+  -- for `r > 0`
+  have hφ : Tendsto (fun r : ℝ => c * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have h : Tendsto (fun r : ℝ => c * r) (𝓝 0) (𝓝 (c * 0)) := (continuous_const_mul c).tendsto 0
+      rw [mul_zero] at h
+      exact h.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hc hr
+  -- the limit at `cz` along `cr ↓ 0` is the limit at `z` along `r ↓ 0`
+  refine ⟨hT.1, fun f => ((hT.2 f).comp hφ).congr fun r => ?_⟩
+  rw [Function.comp_apply, hset r]
+
+/-- **Dilating an integer multiplicity triple** (Simon Ch. 6, 3.1 and 2.23).  For `c > 0` and
+`T x = c • x`, the triple `(T⁻¹M, θ ∘ T, ξ ∘ T)` is again integer multiplicity in `ℝᴾ`.  By the
+change of variables `T_#(Hⁿ⌞T⁻¹M) = c⁻ⁿ Hⁿ⌞M`, null sets, local integrability and
+`Hⁿ⌞M`-a.e. statements transfer through the measurable embedding `T`; the maps `c⁻¹ • Fⱼ`
+parametrize `T⁻¹M`, and approximate tangent spaces are dilation invariant. -/
+theorem Submission.imrep_univ_smul_rescale_exists : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (c : ℝ), 0 < c → ∃ R' : IMRep (univ : Set (Euclid P)) n, R'.carrier = (fun x => c • x) ⁻¹' R.carrier ∧ (∀ x, R'.mult x = R.mult (c • x)) ∧ ∀ x, R'.orient x = R.orient (c • x) := by
+  intro P n R c hc
+  have hc0 : c ≠ 0 := hc.ne'
+  -- `T x = c • x` is a homeomorphism of `ℝᴾ`, hence measurable and a measurable embedding
+  have hT : Measurable (fun x : Euclid P => c • x) := measurable_const_smul c
+  have hTemb : MeasurableEmbedding (fun x : Euclid P => c • x) :=
+    (Homeomorph.smulOfNeZero c hc0).measurableEmbedding
+  -- (CV): `T_#(Hⁿ⌞T⁻¹S) = c⁻ⁿ Hⁿ⌞S` and the lower-integral change of variables, for every `S`
+  have hCV := Submission.euclid_hausdorff_dilation_change_of_variables P n c hc
+  -- (∗) `T_#(Hⁿ⌞T⁻¹M) = c⁻ⁿ Hⁿ⌞M` for `M = R.carrier`
+  have hstar := (hCV R.carrier).1
+  refine ⟨{ carrier := (fun x : Euclid P => c • x) ⁻¹' R.carrier
+            mult := fun x => R.mult (c • x)
+            orient := fun x => R.orient (c • x)
+            measurableSet_carrier := hT R.measurableSet_carrier
+            carrier_subset := subset_univ _
+            rectifiable := ?_
+            measurable_mult := R.measurable_mult.comp hT
+            mult_pos := fun x hx => R.mult_pos (c • x) hx
+            locallyIntegrable_mult := ?_
+            aestronglyMeasurable_orient := ?_
+            orients := ?_ }, rfl, fun _ => rfl, fun _ => rfl⟩
+  · -- rectifiability: `T⁻¹M ⊆ T⁻¹M₀ ∪ ⋃ⱼ range (c⁻¹ • Fⱼ)` with `Hⁿ(T⁻¹M₀) = 0`
+    obtain ⟨M₀, hM₀, F, hF, hcover⟩ := R.rectifiable
+    refine ⟨(fun x : Euclid P => c • x) ⁻¹' M₀, ?_, fun j w => c⁻¹ • F j w, fun j => ?_, ?_⟩
+    · -- evaluate `T_#(Hⁿ⌞T⁻¹M₀) = c⁻ⁿ Hⁿ⌞M₀` on `univ`
+      have h := congrArg (fun μ : Measure (Euclid P) => μ univ) (hCV M₀).1
+      simp only at h
+      rwa [Measure.map_apply hT MeasurableSet.univ, preimage_univ, Measure.restrict_apply_univ,
+        Measure.smul_apply, Measure.restrict_apply_univ, hM₀, smul_zero] at h
+    · -- `c⁻¹ • Fⱼ` is `‖c⁻¹‖₊ Kⱼ`-Lipschitz
+      obtain ⟨K, hK⟩ := hF j
+      exact ⟨‖c⁻¹‖₊ * K, (lipschitzWith_smul c⁻¹).comp hK⟩
+    · -- if `c • z = Fⱼ w` then `z = c⁻¹ • Fⱼ w`
+      intro z hz
+      rcases hcover hz with h0 | h1
+      · exact Or.inl h0
+      · obtain ⟨j, w, hw⟩ := mem_iUnion.mp h1
+        exact Or.inr (mem_iUnion.mpr ⟨j, w, by simp only [hw, inv_smul_smul₀ hc0]⟩)
+  · -- local integrability: `T⁻¹M ∩ K = T⁻¹(M ∩ T(K))` with `T(K)` compact
+    intro K hK _
+    have hTK : IsCompact ((fun x : Euclid P => c • x) '' K) := hK.image (continuous_const_smul c)
+    have hset : (fun x : Euclid P => c • x) ⁻¹' R.carrier ∩ K =
+        (fun x : Euclid P => c • x) ⁻¹' (R.carrier ∩ (fun x : Euclid P => c • x) '' K) := by
+      rw [preimage_inter, hTemb.injective.preimage_image]
+    rw [hset, (hCV (R.carrier ∩ (fun x : Euclid P => c • x) '' K)).2.1 fun y => (R.mult y : ℝ≥0∞)]
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+      (R.locallyIntegrable_mult _ hTK (subset_univ _))
+  · -- `ξ` is a.e.-strongly measurable for `c⁻ⁿ Hⁿ⌞M = T_#(Hⁿ⌞T⁻¹M)`; compose with `T`
+    have h := R.aestronglyMeasurable_orient.smul_measure (ENNReal.ofReal (c⁻¹ ^ n))
+    rw [← hstar] at h
+    exact h.comp_aemeasurable hT.aemeasurable
+  · -- the orientation statement holds `T_#(Hⁿ⌞T⁻¹M)`-a.e., i.e. at `c • z` for a.e. `z ∈ T⁻¹M`;
+    -- there `Q` is also the approximate tangent space of `T⁻¹M` at `z`
+    have h := Measure.ae_smul_measure R.orients (ENNReal.ofReal (c⁻¹ ^ n))
+    rw [← hstar, hTemb.ae_map_iff] at h
+    filter_upwards [h] with z ⟨Q, hQ, hξ⟩
+    exact ⟨Q, Submission.approx_tangent_space_smul_preimage P n R.carrier c z Q hc hQ, hξ⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

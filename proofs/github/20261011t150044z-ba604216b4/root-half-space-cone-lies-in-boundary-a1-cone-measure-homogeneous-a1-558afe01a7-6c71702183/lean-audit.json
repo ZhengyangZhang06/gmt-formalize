@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4de2bc1052f44871d2cbe307fc1d47fa1c391fe3caaea408a18d4273c8540b0c",
+  "git_delta": {
+    "base_commit": "5d2b4c99f96250fe82bb968c8de5f4caf6e938fe",
+    "candidate_commit": "6993ea79a585ece27e16f35334536fbd43ef748b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "imrep_univ_smul_rescale_exists",
+    "diff_sha256": "1e36d53386d6f44dbf3f4d71cd46c217e4881dd1dbfe85f8c0a812fc40e022ad",
+    "source_sha256": "bd5868ce44207ddf9d577625482646abc1f23988f49c9c17b754924dff9abc3b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imrep_univ_smul_rescale_exists",
+      "statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (c : ℝ), 0 < c → ∃ R' : IMRep (univ : Set (Euclid P)) n, R'.carrier = (fun x => c • x) ⁻¹' R.carrier ∧ (∀ x, R'.mult x = R.mult (c • x)) ∧ ∀ x, R'.orient x = R.orient (c • x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
