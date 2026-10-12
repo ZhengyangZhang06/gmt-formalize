@@ -410,6 +410,34 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- The ball integral `x ↦ ∫_{B_r(x) × G(N,n)} β(S) dν(y,S)` is Borel measurable for every
+s-finite measure `ν` on `ℝ^N × G(N,n)`, every `r` and every continuous `β` (step 3 of the Borel
+choice of `x ↦ T_x` in the proof of Simon Ch. 8, 1.2): it equals
+`x ↦ ∫ 1_{E_r}(x, z) β(z.2) dν(z)` for the closed set `E_r = {(x, z) : |z.1 - x| ≤ r}`, which is
+measurable in `x` by `StronglyMeasurable.integral_prod_right'`. -/
+theorem Submission.frt_vgm_mps_ball_integral_measurable :
+    ∀ (N n : ℕ) (ν : Measure (Euclidean N × Grassmannian N n)), SFinite ν → ∀ (r : ℝ) (β : C(Grassmannian N n, ℝ)), Measurable (fun x : Euclidean N ↦ ∫ z in closedBall x r ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂ν) := by
+  intro N n ν hν r β
+  -- Steps 1–2: `E_r = {(x, z) | dist z.1 x ≤ r}` is closed in `ℝ^N × (ℝ^N × G(N,n))`, hence
+  -- measurable (the factors are second countable).
+  have hE : IsClosed {p : Euclidean N × (Euclidean N × Grassmannian N n) | dist p.2.1 p.1 ≤ r} :=
+    isClosed_le ((continuous_fst.comp continuous_snd).dist continuous_fst) continuous_const
+  -- Step 3: `F = 1_{E_r}(x, z) β(z.2)` is measurable, hence strongly measurable.
+  have hF : StronglyMeasurable
+      ({p : Euclidean N × (Euclidean N × Grassmannian N n) | dist p.2.1 p.1 ≤ r}.indicator
+        fun p ↦ β p.2.2) :=
+    ((β.continuous.measurable.comp (measurable_snd.comp measurable_snd)).indicator
+      hE.measurableSet).stronglyMeasurable
+  -- Step 4: `ν` is s-finite, so `x ↦ ∫ F(x, z) dν(z)` is (strongly) measurable.
+  convert (hF.integral_prod_right' (ν := ν)).measurable using 1
+  -- Steps 5–6: by `integral_indicator` the ball integral at `x` is `∫ 1_{B_r(x) × G}(z) β(z.2) dν`,
+  -- and `1_{B_r(x) × G}(z) β(z.2) = F(x, z)` for every `z`.
+  funext x
+  rw [← integral_indicator (measurableSet_closedBall.prod MeasurableSet.univ)]
+  congr 1
+  funext z
+  simp [Set.indicator, Set.mem_prod, Metric.mem_closedBall]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
