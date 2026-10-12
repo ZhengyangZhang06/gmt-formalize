@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.chart_coarea-a1.chart_fiber_disintegration-a1",
+  "parent_id": "root.coarea_formula-a1.chart_coarea-a1",
+  "depth": 3,
+  "title": "Fibrewise disintegration of the vertical-Jacobian chart integral",
+  "statement": "Let N, m, k ∈ ℕ, f : ℝᴺ → ℝᵐ, and P := WithLp 2 (ℝᵐ × ℝᵏ) with its Lebesgue measure (volume) dp. Let j : ℝᵏ → P be the continuous linear map (WithLp.prodContinuousLinearEquiv 2 ℝ ℝᵐ ℝᵏ).symm ∘L inr, so j(b) = toLp(0,b). Let Ω ⊆ P be open and let Ψ : P → ℝᴺ be C¹ on Ω and injective on Ω, with DΨ(p) injective and f(Ψ p) = WithLp.fst p for every p ∈ Ω. Let S ⊆ Ψ(Ω) be a Borel set and g : ℝᴺ → [0,∞] Borel measurable. Then y ↦ ∫_{S∩f⁻¹{y}} g dμHE[k] is Borel measurable on ℝᵐ, and ∫_{Ω∩Ψ⁻¹(S)} ofReal(normDet(DΨ(p)∘j))·g(Ψ p) dp = ∫_{ℝᵐ} ∫_{S∩f⁻¹{y}} g dμHE[k] dLᵐ(y), where normDet is Mathlib's LinearMap.normDet.",
+  "lean_statement": "∀ (N m k : ℕ) (f : Rn N → Rn m) (Ω : Set (WithLp 2 (Rn m × Rn k))) (Ψ : WithLp 2 (Rn m × Rn k) → Rn N) (S : Set (Rn N)) (g : Rn N → ℝ≥0∞), IsOpen Ω → ContDiffOn ℝ 1 Ψ Ω → InjOn Ψ Ω → (∀ p ∈ Ω, Function.Injective (fderiv ℝ Ψ p)) → (∀ p ∈ Ω, f (Ψ p) = WithLp.fst p) → MeasurableSet S → S ⊆ Ψ '' Ω → Measurable g → Measurable (fun y ↦ ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k]) ∧ ∫⁻ p in Ω ∩ Ψ ⁻¹' S, ENNReal.ofReal (((fderiv ℝ Ψ p).comp ((WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm.toContinuousLinearMap.comp (ContinuousLinearMap.inr ℝ (Rn m) (Rn k)))).toLinearMap.normDet) * g (Ψ p) = ∫⁻ y, ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂volume",
+  "lean_name": "coarea_chart_fiber_disintegration",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-chart-coarea-a1-chart-fiber-disintegration-a1-a1"
+}
