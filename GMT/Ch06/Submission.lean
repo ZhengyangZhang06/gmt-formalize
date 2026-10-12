@@ -359,6 +359,48 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Compact inner approximation inside an open `W ⊆ U`: if `μ` is finite on compact subsets of
+`U`, `E` is Borel and `c < μ (W ∩ E)`, then some compact `K ⊆ W ∩ E` has `c < μ K`. -/
+theorem Submission.smr_ufd_cl_inner_compact : ∀ (P : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)), (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → ∀ E : Set (Eucl P), MeasurableSet E → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → ∀ c : ℝ≥0∞, c < μ (W ∩ E) → ∃ K : Set (Eucl P), IsCompact K ∧ K ⊆ W ∩ E ∧ c < μ K := by
+  intro P U μ hfin E hE W hW hWU c hc
+  -- Step 1: compact sets `K j = F j ∩ closedBall 0 j ⊆ W`, increasing, with `⋃ j, K j = W`,
+  -- where `F j` are closed, increasing and exhaust `W`.
+  obtain ⟨F, hFc, hFW, hFU, hFm⟩ := hW.exists_iUnion_isClosed
+  set K : ℕ → Set (Eucl P) := fun j => F j ∩ closedBall 0 j
+  have hKc : ∀ j, IsCompact (K j) := fun j => (isCompact_closedBall 0 (j : ℝ)).inter_left (hFc j)
+  have hKW : ∀ j, K j ⊆ W := fun j => inter_subset_left.trans (hFW j)
+  have hKm : Monotone K := fun i j hij =>
+    inter_subset_inter (hFm hij) (closedBall_subset_closedBall (Nat.cast_le.2 hij))
+  have hKU : ⋃ j, K j = W := by
+    refine Subset.antisymm (iUnion_subset hKW) fun x hx => ?_
+    rw [← hFU] at hx
+    obtain ⟨i, hi⟩ := mem_iUnion.1 hx
+    obtain ⟨n, hn⟩ := exists_nat_ge ‖x‖
+    refine mem_iUnion.2 ⟨max i n, hFm (le_max_left i n) hi, ?_⟩
+    rw [mem_closedBall, dist_zero_right]
+    exact hn.trans (Nat.cast_le.2 (le_max_right i n))
+  -- Step 2: continuity from below gives `j` with `c < μ (E ∩ K j)`.
+  have hlim : Tendsto (fun j => μ (E ∩ K j)) atTop (𝓝 (μ (W ∩ E))) := by
+    have h := tendsto_measure_iUnion_atTop (μ := μ) (s := fun j => E ∩ K j)
+      (fun i j hij => inter_subset_inter_right E (hKm hij))
+    rwa [← inter_iUnion, hKU, inter_comm E W] at h
+  obtain ⟨j, hj⟩ := ((tendsto_order.1 hlim).1 c hc).exists
+  -- Step 3: `E' = E ∩ K j` is Borel, `E' ⊆ W ∩ E` and `μ E' ≤ μ (K j) < ∞`.
+  set E' := E ∩ K j
+  have hE'm : MeasurableSet E' := hE.inter (hKc j).isClosed.measurableSet
+  have hE'W : E' ⊆ W ∩ E := fun x hx => ⟨hKW j hx.2, hx.1⟩
+  have hE'fin : μ E' < ∞ :=
+    (measure_mono inter_subset_right).trans_lt (hfin _ (hKc j) ((hKW j).trans hWU))
+  -- Step 4: the finite measure `μ ⌞ E'` on `ℝ^P` is inner regular by compact sets.
+  have : IsFiniteMeasure (μ.restrict E') :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact hE'fin⟩
+  have hcE' : c < μ.restrict E' E' := by rwa [Measure.restrict_apply_self]
+  obtain ⟨L, hLE', hLc, hL⟩ :=
+    hE'm.exists_lt_isCompact_of_ne_top (μ := μ.restrict E') (measure_ne_top _ E') hcE'
+  -- Step 5: `L` is compact, `L ⊆ E' ⊆ W ∩ E` and `c < μ L`.
+  refine ⟨L, hLc, hLE'.trans hE'W, ?_⟩
+  rwa [Measure.restrict_eq_self μ hLE'] at hL
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
