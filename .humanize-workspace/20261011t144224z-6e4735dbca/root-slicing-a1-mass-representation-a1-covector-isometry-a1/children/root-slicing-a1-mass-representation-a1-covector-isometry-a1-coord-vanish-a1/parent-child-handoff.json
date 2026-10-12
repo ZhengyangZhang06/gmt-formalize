@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp snapshot project/GMT/Ch06/Contract.lean and project/GMT/Ch06/Submission.lean against workspace GMT/Ch06/Contract.lean and Submission.lean (identical; sha256 ea3ee0dd…)",
+        "rg -n 'covectorEuclideanNorm|euclideanCovectorCoordinate|wedgeCovectors|SimonMultiIndex' project (snapshot; only LatticeFaceIndex mentions SimonMultiIndex)",
+        "rg -n 'smr_ci_|smr_covector_coord_isometry' project (no match, rc=1)",
+        "rg -n '^structure WithLp' mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean; rg -n 'theorem EuclideanSpace.norm_eq|basisFun_apply' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean; rg -n range_inj_of_wellFoundedLT mathlib/Mathlib/Order; rg -n 'theorem monotone_sort' mathlib/Mathlib/Data/Fin/Tuple/Sort.lean; rg -n ext_alternating mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean; rg -n 'theorem det_eq_zero_of_row_eq_zero' mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "grep -n covectorEuclideanNorm, wedgeCovectors_apply_det, euclideanCovectorCoordinate, SimonMultiIndex in the pinned simongmt Chapter06 (Mass.lean, FormsDuality.lean, Forms.lean)",
+        "#synth Fintype (SimonMultiIndex 2 3) (RelEmbedding.instFintype); #synth DecidableEq (SimonMultiIndex 2 3) (fails); #check Module.Basis.ext_alternating, Tuple.sort, Tuple.monotone_sort, OrderEmbedding.range_inj_of_wellFoundedLT, LinearEquiv.ofBijective(_apply), EuclideanSpace.basisFun_apply, ContinuousAlternatingMap.sum_apply, AlternatingMap.map_perm, injective_iff_map_eq_zero, Equiv.sum_comp, Finset.sum_bij', PiLp.single_apply",
+        "git show 6c6b4b2753e8214a3e45619bb0b65d8d553557a5 (kernel-checked template cmb_covector_eq_sum_coord_smul_wedge)",
+        "python3 listing of dag.json lean_name/lean_statement: covector-related nodes; exact and alpha-normalized type comparison and name lookup for the three proposed names (no matches); status/candidate_commit of polyhedral_approx_pairing_covector_ext and _wedge_kronecker (accepted, not proved)",
+        "grep -rl smr_ci_ dag.json nodes/ simongmt; git log --all -S<name> for each proposed name (no matches)",
+        "read nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1/decomposition-v1.json and parent-child-handoff.json",
+        "grep -n '_existing_lean_name_problem|_accepted_checkpoint' runtime.py and 'unproved child belongs to another parent' parallel.py in /runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean",
+        "python3 contract_scope/child_modules from verifier/gmt-compare.py (contract mode) to generate NodeChallenge/NodeSolution modules",
+        "lake env lean /tmp/smr-ci-split/Scratch/{Probe,Split,Split2,SolutionSim2,Inst}.lean and /tmp/smr-ci-split/Challenge/*_NodeChallenge.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Hom/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/parallel.py",
+        "/tmp/smr-ci-split/Scratch/Split2.lean",
+        "/tmp/smr-ci-split/Scratch/SolutionSim2.lean",
+        "/tmp/smr-ci-split/Challenge/smr_ci_coord_sum_smul_wedge_NodeChallenge.lean",
+        "/tmp/smr-ci-split/Challenge/smr_ci_covector_eq_zero_of_coord_NodeChallenge.lean",
+        "/tmp/smr-ci-split/Challenge/smr_ci_norm_eq_sqrt_sum_coord_sq_NodeChallenge.lean",
+        "/tmp/smr-ci-split/Challenge/smr_covector_coord_isometry_NodeChallenge.lean"
+      ],
+      "conclusion": "Snapshot manifest: mode local-project, project d8d46c95, Mathlib 25730c7c. The snapshot's project/GMT/Ch06/Contract.lean and Submission.lean are byte-identical to the workspace files (sha256 ea3ee0dd…). The frozen Submission contains no covector lemmas: rg finds SimonMultiIndex only in LatticeFaceIndex, and rg for smr_ci_/smr_covector_coord_isometry has no match. So every child must be proved from SimonGMT and Mathlib.\n\nAvailable in SimonGMT (pinned package):\n- covectorEuclideanNorm (Mass.lean), whose sum runs over StrictMono I : Fin k → Fin P with basisFun vectors;\n- SimonMultiIndex = Fin k ↪o Fin P, euclideanCovectorCoordinate (values on EuclideanSpace.single tuples), wedgeCovectors and wedgeCovectors_apply_det (FormsDuality.lean).\n\nAvailable in the snapshot Mathlib:\n- WithLp is a structure with toLp/ofLp (WithLp.lean:49);\n- EuclideanSpace.norm_eq (PiL2.lean:145) and basisFun_apply (PiL2.lean:806);\n- OrderEmbedding.range_inj_of_wellFoundedLT (Order/Hom/Set.lean:193);\n- Tuple.monotone_sort (Data/Fin/Tuple/Sort.lean:95);\n- Module.Basis.ext_alternating (LinearAlgebra/Alternating/Basic.lean:907);\n- Matrix.det_eq_zero_of_row_eq_zero (Determinant/Basic.lean:362).\n\nFintype (SimonMultiIndex k P) is RelEmbedding.instFintype. DecidableEq (SimonMultiIndex k P) is not synthesized, hence the summed/vanishing child forms.\n\nA kernel-checked template (commit 6c6b4b27, cmb_covector_eq_sum_coord_smul_wedge) covers the Kronecker and extensionality arguments. Its name, and the accepted polyhedral_approx_pairing_* names, cannot be reused: the runtime name check rejected v1, and parallel.py rejects unproved children of another parent. So fresh smr_ci_ names are used; none occurs in the DAG, nodes/, the snapshot, SimonGMT or git history.\n\nAll three child types and the parent type elaborate in the comparator child scope, and the children imply the frozen parent type in Lean with axioms [propext, Classical.choice, Quot.sound]."
+    }
+  ],
+  "parent_id": "root.slicing-a1.mass_representation-a1.covector_isometry-a1",
+  "child_id": "root.slicing-a1.mass_representation-a1.covector_isometry-a1.coord_vanish-a1",
+  "subproblem": {
+    "key": "coord_vanish",
+    "title": "A k-covector on ℝ^P vanishing on all increasing standard-basis tuples is zero",
+    "statement": "Let P, k ∈ ℕ and let α ∈ Covector (Eucl P) k be a k-covector on ℝ^P = Eucl P = EuclideanSpace ℝ (Fin P), i.e. a continuous alternating k-linear map (ℝ^P)^k → ℝ. Let b_i := EuclideanSpace.single i 1 (i ∈ Fin P) be the standard basis. Suppose euclideanCovectorCoordinate α I = α(b_{I(0)}, …, b_{I(k−1)}) = 0 for every strictly increasing multi-index I ∈ SimonMultiIndex k P = Fin k ↪o Fin P. Then α = 0.",
+    "lean_statement": "∀ (P k : ℕ) (α : Covector (Eucl P) k), (∀ I : SimonMultiIndex k P, euclideanCovectorCoordinate α I = 0) → α = 0",
+    "lean_name": "smr_ci_covector_eq_zero_of_coord",
+    "depends_on": [],
+    "natural_proof": "Conventions.\n- ℝ^P = Eucl P = EuclideanSpace ℝ (Fin P).\n- For i ∈ Fin P, b_i := EuclideanSpace.single i 1 = EuclideanSpace.basisFun (Fin P) ℝ i (EuclideanSpace.basisFun_apply); these form the standard orthonormal basis.\n- For f : Fin k → Fin P put e_f := (b_{f(0)}, …, b_{f(k−1)}).\n- SimonMultiIndex k P = Fin k ↪o Fin P (order embeddings = strictly increasing maps), and euclideanCovectorCoordinate α I = α(e_I) by definition.\nSource: steps 3–4 of the supplied proof of smr_covector_coord_isometry.\n\nFix P, k ∈ ℕ and a k-covector α (a continuous alternating k-linear map (ℝ^P)^k → ℝ) with α(e_I) = 0 for every I ∈ SimonMultiIndex k P.\n\n1. (Non-injective coordinate tuples.) Let f : Fin k → Fin P be non-injective, say f(i) = f(j) with i ≠ j. Then the tuple e_f has the equal entries b_{f(i)} = b_{f(j)} at the distinct positions i and j, so α(e_f) = 0 because α is alternating.\n2. (Injective coordinate tuples.) Let f : Fin k → Fin P be injective.\n   - Let τ := Tuple.sort f, a permutation of Fin k such that f ∘ τ is monotone (Tuple.monotone_sort).\n   - f ∘ τ is also injective (a composition of injective maps), so it is strictly monotone (Monotone.strictMono_of_injective).\n   - Let I := OrderEmbedding.ofStrictMono (f ∘ τ) ∈ SimonMultiIndex k P. Its underlying map is f ∘ τ, so e_I = e_f ∘ τ, the tuple e_f with its entries permuted by τ.\n   - As α is alternating, α(e_f ∘ τ) = sign(τ)·α(e_f), with sign(τ) ∈ {1, −1} (AlternatingMap.map_perm, applied to the underlying alternating map of α).\n   - By hypothesis α(e_I) = 0, hence sign(τ)·α(e_f) = 0. Since sign(τ) = ±1 is nonzero, α(e_f) = 0.\n   By steps 1 and 2, α(e_f) = 0 for every f : Fin k → Fin P.\n3. (Multilinear extensionality.) Let w = (w_0, …, w_{k−1}) ∈ (ℝ^P)^k be arbitrary and write w_j = Σ_{i ∈ Fin P} w_j(i)·b_i. Expanding α(w) by multilinearity in each of the k arguments gives α(w) = Σ_{f : Fin k → Fin P} (∏_{j ∈ Fin k} w_j(f(j)))·α(e_f) = 0. Hence α(w) = 0 for all w, i.e. α = 0 as a continuous alternating map.\n   Mathlib route: by ContinuousAlternatingMap.toAlternatingMap_injective it suffices that the underlying alternating maps of α and 0 agree. Module.Basis.ext_alternating with the basis (EuclideanSpace.basisFun (Fin P) ℝ).toBasis reduces this to α(e_f) = 0 for injective f, which is step 2. Step 1 is the reason injective tuples suffice.\n4. (Edge cases.) The argument is uniform in P and k.\n   - If k > P, SimonMultiIndex k P is empty and every f : Fin k → Fin P is non-injective. So step 1 alone gives α(e_f) = 0, and step 3 gives α = 0.\n   - If k = 0, the empty map is the unique f and the unique order embedding, so α(()) = α(e_∅) = 0. Step 3 (with the empty product equal to 1) reads α(()) = α(e_∅), giving α = 0. ∎",
+    "proof_key_steps": [
+      "For non-injective f : Fin k → Fin P, α(e_f) = 0 since e_f has two equal entries and α is alternating.",
+      "For injective f, τ := Tuple.sort f makes f ∘ τ strictly increasing; with I := OrderEmbedding.ofStrictMono (f ∘ τ), 0 = α(e_I) = α(e_f ∘ τ) = sign(τ)·α(e_f), so α(e_f) = 0.",
+      "A multilinear map vanishing on all standard-basis tuples is zero (Module.Basis.ext_alternating + ContinuousAlternatingMap.toAlternatingMap_injective), so α = 0."
+    ]
+  },
+  "audit": {
+    "key": "coord_vanish",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The exact vanishing hypothesis and conclusion match. Alternation eliminates noninjective coordinate tuples; sorting an injective tuple gives an order embedding, and its invertible permutation sign transfers vanishing. Basis extensionality then proves equality with the zero covector. The argument includes k = 0 and k > P, requires no other child or parent conclusion, and gives sufficient formalization detail. The name is bare and unreserved."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-coord-vanish-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-coord-vanish-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-coord-vanish-a1/parent-supplied-natural-proof.json"
+}
