@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cf1d2895daa125a5c3a8cc19f83dc83ba8036d9aa3880d564251131bbf60ad5a",
+  "git_delta": {
+    "base_commit": "a6b27d63ebdd5bbfbed860a0ad341121141b548e",
+    "candidate_commit": "0b160230aeb0f788d2813ae3a2282b20fc1bb229",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "pcoarea_c1_injOn_area_formula",
+    "diff_sha256": "d3e9432ddc6d7d6377ef42d4cce73c85dd2ffec82d5681e7e07c6c4538914b13",
+    "source_sha256": "6d9f4ae3dba30677ed7521efa6681c61f76a55465cc5f178806a13672d91d01f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.pcoarea_c1_injOn_area_formula",
+      "statement": "∀ (k N : ℕ) (V : Set (Rn k)) (χ : Rn k → Rn N), IsOpen V → ContDiffOn ℝ 1 χ V → InjOn χ V → ∀ S ⊆ V, MeasurableSet S → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → ∫⁻ x in χ '' S, φ x ∂μHE[k] = ∫⁻ z in S, φ (χ z) * ENNReal.ofReal ((fderiv ℝ χ z).toLinearMap.normDet)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
