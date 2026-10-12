@@ -705,6 +705,150 @@ theorem Submission.mcm_exp_neg_integral_ftc : ∀ (g : ℝ → ℝ) (R : ℝ), I
   rw [hD] at hDt
   simp only at hDt
   linarith
+/-- **Density from uniformly almost-monotone ratios (Simon 3.17 remark, 4.9).** Let `μ_V` be finite
+on compact sets. If every `ξ ∈ U` has `r > 0` and `c(ρ) → 0` (`ρ ↓ 0`) such that for every centre
+`η` with `|η - ξ| < r`, some `F ∈ [e^{-c}, e^{c}]` and `|E| ≤ c` make
+`ρ ↦ F(ρ) μ_V(B_ρ(η))/ρⁿ + E(ρ)` nondecreasing on `(0, r)`, then `Θⁿ(μ_V, ξ)` exists at every
+`ξ ∈ U` and `Θⁿ(μ_V, ·)` is upper semicontinuous on `U`. -/
+theorem Submission.mcm_density_usc_of_monotone : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ)), IsFiniteMeasureOnCompacts V.weight → (∀ ξ ∈ U, ∃ r : ℝ, 0 < r ∧ ∃ c : ℝ → ℝ, Tendsto c (𝓝[>] 0) (𝓝 0) ∧ ∀ η ∈ ball ξ r, ∃ F E : ℝ → ℝ, (∀ ρ ∈ Ioo 0 r, F ρ ∈ Icc (Real.exp (-c ρ)) (Real.exp (c ρ)) ∧ |E ρ| ≤ c ρ) ∧ MonotoneOn (fun ρ ↦ F ρ * (V.weight.real (closedBall η ρ) / ρ ^ n) + E ρ) (Ioo 0 r)) → (∀ ξ ∈ U, V.HasDensityAt ξ (V.density ξ)) ∧ UpperSemicontinuousOn V.density U := by
+  intro n ℓ V U _ hU
+  -- `ωₙ > 0`: the open unit ball of `ℝⁿ` is nonempty and bounded.
+  have hω : 0 < omega n :=
+    ENNReal.toReal_pos (measure_ball_pos volume _ one_pos).ne' measure_ball_lt_top.ne
+  -- Step 1: from the data at a centre `η`, `a_η(ρ) = μ_V(B_ρ(η))/ρⁿ → ωₙ Θ(η)`, the density
+  -- exists at `η`, and `ωₙ Θ(η) ≤ e^{c(ρ)} a_η(ρ) + c(ρ)` for `0 < ρ < r`.
+  have key : ∀ (η : Ambient n ℓ) (r : ℝ) (c F E : ℝ → ℝ), 0 < r → Tendsto c (𝓝[>] 0) (𝓝 0) →
+      (∀ ρ ∈ Ioo 0 r, F ρ ∈ Icc (Real.exp (-c ρ)) (Real.exp (c ρ)) ∧ |E ρ| ≤ c ρ) →
+      MonotoneOn (fun ρ ↦ F ρ * (V.weight.real (closedBall η ρ) / ρ ^ n) + E ρ) (Ioo 0 r) →
+      V.HasDensityAt η (V.density η) ∧
+      Tendsto (fun ρ ↦ V.weight.real (closedBall η ρ) / ρ ^ n) (𝓝[>] 0)
+        (𝓝 (omega n * V.density η)) ∧
+      ∀ ρ ∈ Ioo 0 r, omega n * V.density η ≤
+        Real.exp (c ρ) * (V.weight.real (closedBall η ρ) / ρ ^ n) + c ρ := by
+    intro η r c F E hr hc hFE hmono
+    set a : ℝ → ℝ := fun ρ ↦ V.weight.real (closedBall η ρ) / ρ ^ n
+    set Ψ : ℝ → ℝ := fun ρ ↦ F ρ * a ρ + E ρ
+    have hΨm : MonotoneOn Ψ (Ioo 0 r) := hmono
+    have ha0 : ∀ ρ, 0 < ρ → 0 ≤ a ρ := fun ρ hρ ↦ div_nonneg measureReal_nonneg (pow_nonneg hρ.le n)
+    have hIoo : Ioo 0 r ∈ 𝓝[>] (0 : ℝ) := Ioo_mem_nhdsGT hr
+    -- `Ψ ≥ -c` on `(0, r)`, since `F > 0`, `a ≥ 0` and `E ≥ -|E| ≥ -c`.
+    have hΨc : ∀ ρ ∈ Ioo 0 r, -c ρ ≤ Ψ ρ := fun ρ hρ ↦ by
+      have h1 : 0 ≤ F ρ * a ρ :=
+        mul_nonneg ((Real.exp_pos _).le.trans (hFE ρ hρ).1.1) (ha0 ρ hρ.1)
+      have h2 := neg_abs_le (E ρ)
+      have h3 := (hFE ρ hρ).2
+      show -c ρ ≤ F ρ * a ρ + E ρ
+      linarith
+    -- `Ψ ≥ -1` on `(0, r)`: below `ρ` there is `σ` with `c(σ) ≤ 1`, and `Ψ` is monotone.
+    have hbdd : BddBelow (Ψ '' Ioo 0 r) := by
+      refine ⟨-1, ?_⟩
+      rintro _ ⟨ρ, hρ, rfl⟩
+      obtain ⟨σ, hσc, hσ⟩ :=
+        ((hc.eventually (Iic_mem_nhds zero_lt_one)).and (Ioo_mem_nhdsGT hρ.1)).exists
+      have hσr : σ ∈ Ioo 0 r := ⟨hσ.1, hσ.2.trans hρ.2⟩
+      calc (-1 : ℝ) ≤ -c σ := neg_le_neg hσc
+        _ ≤ Ψ σ := hΨc σ hσr
+        _ ≤ Ψ ρ := hΨm hσr hρ hσ.2.le
+    -- (a) the monotone function `Ψ` converges as `ρ ↓ 0`.
+    have hΨlim := hΨm.tendsto_nhdsWithin_Ioo_right (nonempty_Ioo.2 hr) hbdd
+    set L := sInf (Ψ '' Ioo 0 r)
+    -- (b) `F → 1`, `E → 0`, hence `a = (Ψ - E)/F → L`.
+    have hF1 : Tendsto F (𝓝[>] 0) (𝓝 1) := by
+      have h1 : Tendsto (fun ρ ↦ Real.exp (-c ρ)) (𝓝[>] 0) (𝓝 1) := by
+        simpa [Function.comp_def] using (Real.continuous_exp.tendsto _).comp hc.neg
+      have h2 : Tendsto (fun ρ ↦ Real.exp (c ρ)) (𝓝[>] 0) (𝓝 1) := by
+        simpa [Function.comp_def] using (Real.continuous_exp.tendsto _).comp hc
+      refine tendsto_of_tendsto_of_tendsto_of_le_of_le' h1 h2 ?_ ?_
+      · filter_upwards [hIoo] with ρ hρ using (hFE ρ hρ).1.1
+      · filter_upwards [hIoo] with ρ hρ using (hFE ρ hρ).1.2
+    have hE0 : Tendsto E (𝓝[>] 0) (𝓝 0) := by
+      refine squeeze_zero_norm' ?_ hc
+      filter_upwards [hIoo] with ρ hρ
+      rw [Real.norm_eq_abs]
+      exact (hFE ρ hρ).2
+    have ha : Tendsto a (𝓝[>] 0) (𝓝 L) := by
+      have h := (hΨlim.sub hE0).div hF1 one_ne_zero
+      rw [sub_zero, div_one] at h
+      refine h.congr' ?_
+      filter_upwards [hIoo] with ρ hρ
+      have hFpos : 0 < F ρ := (Real.exp_pos _).trans_le (hFE ρ hρ).1.1
+      show (F ρ * a ρ + E ρ - E ρ) / F ρ = a ρ
+      rw [add_sub_cancel_right, mul_div_cancel_left₀ _ hFpos.ne']
+    -- (c) `μ_V(B_ρ(η))/(ωₙρⁿ) = a(ρ)/ωₙ → L/ωₙ`, so `Θ(η) = L/ωₙ` exists.
+    have hdens : Tendsto (fun ρ ↦ V.weight.real (closedBall η ρ) / (omega n * ρ ^ n)) (𝓝[>] 0)
+        (𝓝 (L / omega n)) := by
+      refine (ha.div_const (omega n)).congr fun ρ ↦ ?_
+      show V.weight.real (closedBall η ρ) / ρ ^ n / omega n =
+        V.weight.real (closedBall η ρ) / (omega n * ρ ^ n)
+      rw [div_mul_eq_div_div_swap]
+    have hdeq : V.density η = L / omega n := hdens.limUnder_eq
+    have hωd : omega n * V.density η = L := by rw [hdeq, mul_div_cancel₀ _ hω.ne']
+    refine ⟨?_, ?_, ?_⟩
+    · show Tendsto _ _ _
+      rw [hdeq]
+      exact hdens
+    · rw [hωd]
+      exact ha
+    · -- (d) `ωₙ Θ(η) = L ≤ Ψ(ρ) ≤ e^{c(ρ)} a(ρ) + c(ρ)`.
+      intro ρ hρ
+      rw [hωd]
+      have hLΨ : L ≤ Ψ ρ := by
+        refine le_of_tendsto hΨlim ?_
+        filter_upwards [Ioo_mem_nhdsGT hρ.1] with σ hσ
+        exact hΨm ⟨hσ.1, hσ.2.trans hρ.2⟩ hρ hσ.2.le
+      calc L ≤ Ψ ρ := hLΨ
+        _ = F ρ * a ρ + E ρ := rfl
+        _ ≤ Real.exp (c ρ) * a ρ + c ρ :=
+          add_le_add (mul_le_mul_of_nonneg_right (hFE ρ hρ).1.2 (ha0 ρ hρ.1))
+            ((le_abs_self _).trans (hFE ρ hρ).2)
+  refine ⟨fun ξ hξ ↦ ?_, upperSemicontinuousOn_iff.2 fun ξ hξ ↦
+    upperSemicontinuousWithinAt_iff.2 fun t ht ↦ ?_⟩
+  · -- Step 2: existence of the density at `ξ ∈ U` (take `η = ξ`).
+    obtain ⟨r, hr, c, hc, hη⟩ := hU ξ hξ
+    obtain ⟨F, E, hFE, hmono⟩ := hη ξ (mem_ball_self hr)
+    exact (key ξ r c F E hr hc hFE hmono).1
+  · -- Step 3: upper semicontinuity at `ξ ∈ U`; fix `t > Θ(ξ)`.
+    obtain ⟨r, hr, c, hc, hη⟩ := hU ξ hξ
+    obtain ⟨F, E, hFE, hmono⟩ := hη ξ (mem_ball_self hr)
+    have ha := (key ξ r c F E hr hc hFE hmono).2.1
+    -- `e^{c(ρ)} a_ξ(ρ) + c(ρ) → ωₙ Θ(ξ) < ωₙ t`: fix such a `ρ ∈ (0, r)`.
+    have h1 : Tendsto (fun ρ ↦ Real.exp (c ρ) * (V.weight.real (closedBall ξ ρ) / ρ ^ n) + c ρ)
+        (𝓝[>] 0) (𝓝 (omega n * V.density ξ)) := by
+      simpa using (((Real.continuous_exp.tendsto 0).comp hc).mul ha).add hc
+    obtain ⟨ρ, hρt, hρ⟩ := ((h1.eventually (gt_mem_nhds (mul_lt_mul_of_pos_left ht hω))).and
+      (Ioo_mem_nhdsGT hr)).exists
+    -- Continuity from above: `μ_V(B_{ρ+δ}(ξ)) → μ_V(B_ρ(ξ))` as `δ ↓ 0`.
+    have h2 : Tendsto (fun δ ↦ V.weight.real (closedBall ξ (ρ + δ))) (𝓝[>] 0)
+        (𝓝 (V.weight.real (closedBall ξ ρ))) := by
+      have hinter : ⋂ δ > (0 : ℝ), closedBall ξ (ρ + δ) = closedBall ξ ρ := by
+        ext x
+        simp only [mem_iInter, mem_closedBall]
+        exact ⟨fun h ↦ le_of_forall_pos_le_add h, fun hx δ hδ ↦ by linarith⟩
+      have h := tendsto_measure_biInter_gt (μ := V.weight) (s := fun δ ↦ closedBall ξ (ρ + δ))
+        (a := (0 : ℝ)) (fun _ _ ↦ measurableSet_closedBall.nullMeasurableSet)
+        (fun _ _ _ hij ↦ closedBall_subset_closedBall (by linarith))
+        ⟨1, one_pos, measure_closedBall_lt_top.ne⟩
+      rw [hinter] at h
+      exact (ENNReal.tendsto_toReal measure_closedBall_lt_top.ne).comp h
+    have h3 : Tendsto (fun δ ↦ Real.exp (c ρ) * (V.weight.real (closedBall ξ (ρ + δ)) / ρ ^ n) +
+        c ρ) (𝓝[>] 0) (𝓝 (Real.exp (c ρ) * (V.weight.real (closedBall ξ ρ) / ρ ^ n) + c ρ)) :=
+      ((h2.div_const _).const_mul _).add_const _
+    obtain ⟨δ, hδt, hδ⟩ := ((h3.eventually (gt_mem_nhds hρt)).and (Ioo_mem_nhdsGT hr)).exists
+    -- Every `η` with `|η - ξ| < δ` has `Θ(η) < t`, by step 1(d) and `B_ρ(η) ⊆ B_{ρ+δ}(ξ)`.
+    filter_upwards [mem_nhdsWithin_of_mem_nhds (ball_mem_nhds ξ hδ.1)] with η hηδ
+    obtain ⟨F', E', hFE', hmono'⟩ := hη η (ball_subset_ball hδ.2.le hηδ)
+    have hsub : closedBall η ρ ⊆ closedBall ξ (ρ + δ) :=
+      closedBall_subset_closedBall' (by rw [mem_ball] at hηδ; linarith)
+    have hlt : omega n * V.density η < omega n * t :=
+      calc omega n * V.density η
+          ≤ Real.exp (c ρ) * (V.weight.real (closedBall η ρ) / ρ ^ n) + c ρ :=
+            (key η r c F' E' hr hc hFE' hmono').2.2 ρ hρ
+        _ ≤ Real.exp (c ρ) * (V.weight.real (closedBall ξ (ρ + δ)) / ρ ^ n) + c ρ :=
+            add_le_add (mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right
+              (measureReal_mono hsub measure_closedBall_lt_top.ne) (pow_nonneg hρ.1.le n))
+              (Real.exp_pos _).le) le_rfl
+        _ < omega n * t := hδt
+    exact lt_of_mul_lt_mul_left hlt hω.le
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
