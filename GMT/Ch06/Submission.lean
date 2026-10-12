@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.FormsDuality
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
+import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
@@ -358,6 +359,100 @@ def IntegralityOfWeakLimits : Prop :=
       WeaklyConvergesOn Tj T → IsIntegerMultiplicity T
 
 end
+
+/-- Rescaling about `x` by `r > 0`: `Y = η_# X` for the dilation `η(y) = r⁻¹(y − x)`, the
+push-forward along the proper affine map `η = b + L` with `L = r⁻¹ • id`, `b = −(r⁻¹ • x)`
+(`GeometricCurrentOn.affinePushforward`).  The pull-back of `ω` is `η^# ω = r⁻ⁿ ω ∘ η`, so
+`Y(ω) = X(η^# ω)`; `∂Y = η_#(∂X)`; `Y = τ(η(M), θ ∘ η⁻¹, ξ ∘ η⁻¹)` if `X = τ(M, θ, ξ)`; and
+`M_W(Y) ≤ r⁻ⁿ M_{η⁻¹(W)}(X)`. -/
+theorem Submission.ind_rescaled_current :
+    ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (x : Eucl P) (r : ℝ),
+      0 < r → ∃ Y : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1),
+        (∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1),
+          ∃ η : TestFormOn (univ : Set (Eucl P)) (m + 1), ∀ y,
+            (η : DifferentialForm (Eucl P) (m + 1)) y =
+              (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x))) ∧
+        (∀ ω η : TestFormOn (univ : Set (Eucl P)) (m + 1),
+          (∀ y, (η : DifferentialForm (Eucl P) (m + 1)) y =
+            (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x))) →
+          Y ω = X η) ∧
+        (IsIntegerMultiplicity X → IsIntegerMultiplicity Y) ∧
+        (X.boundary = 0 → Y.boundary = 0) ∧
+        ∀ W : Set (Eucl P),
+          Y.massOn W ≤ ENNReal.ofReal ((r ^ (m + 1))⁻¹) * X.massOn {y | r⁻¹ • (y - x) ∈ W} := by
+  have hrect := @Submission.ind_rs_rectifiableTriple_dilation
+  have htau := @Submission.ind_rs_tauAction_dilation
+  have hmass := @Submission.ind_rs_massOn_dilation_le
+  intro P m X x r hr
+  -- `η(y) = b + L y = r⁻¹ • (y - x)`.
+  let L : Eucl P →L[ℝ] Eucl P := r⁻¹ • ContinuousLinearMap.id ℝ (Eucl P)
+  let b : Eucl P := -(r⁻¹ • x)
+  have hbL : ∀ y, b + L y = r⁻¹ • (y - x) := by
+    intro y
+    simp only [b, L, smul_apply, ContinuousLinearMap.id_apply, smul_sub]
+    abel
+  -- `η` is a homeomorphism, hence proper.
+  have hproper : IsProperMap (fun y => b + L y) := by
+    have he : (fun y => b + L y) = ⇑((Homeomorph.addRight (-x)).trans
+        (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))) := by
+      funext y
+      simp [hbL, sub_eq_add_neg]
+    rw [he]
+    exact Homeomorph.isProperMap _
+  -- `α ∘ L = r⁻ⁿ α` for every `n`-covector `α`.
+  have hcov : ∀ α : Covector (Eucl P) (m + 1),
+      α.compContinuousLinearMap L = (r ^ (m + 1))⁻¹ • α := by
+    intro α
+    ext v
+    have hv : L ∘ v = fun i => r⁻¹ • v i := by
+      funext i
+      simp [L]
+    rw [ContinuousAlternatingMap.compContinuousLinearMap_apply, hv, α.map_smul_univ,
+      ContinuousAlternatingMap.smul_apply, Finset.prod_const, Finset.card_univ, Fintype.card_fin,
+      inv_pow]
+  -- The pull-back `η^# ω ∈ 𝒟ⁿ(ℝ^P)` (`affinePullbackTestOn`) is `r⁻ⁿ ω ∘ η`.
+  have hpb : ∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1), ∀ y,
+      (affinePullbackTestOn L b hproper univ (m + 1) ω : DifferentialForm (Eucl P) (m + 1)) y =
+        (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x)) := by
+    intro ω y
+    rw [affinePullbackTestOn_coe]
+    simp only [affinePullbackForm, hbL, hcov]
+  -- `Y = η_# X`, i.e. `Y(ω) = X(η^# ω)`, regarding `X` as a current on `η⁻¹(ℝ^P) = ℝ^P`.
+  let X' : GeometricCurrentOn ((fun y => b + L y) ⁻¹' (univ : Set (Eucl P))) (m + 1) := X
+  let Y : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1) :=
+    GeometricCurrentOn.affinePushforward L b hproper X'
+  have hA : ∀ ω : TestFormOn (univ : Set (Eucl P)) (m + 1),
+      ∃ η : TestFormOn (univ : Set (Eucl P)) (m + 1), ∀ y,
+        (η : DifferentialForm (Eucl P) (m + 1)) y =
+          (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x)) :=
+    fun ω => ⟨affinePullbackTestOn L b hproper univ (m + 1) ω, hpb ω⟩
+  have hB : ∀ ω η : TestFormOn (univ : Set (Eucl P)) (m + 1),
+      (∀ y, (η : DifferentialForm (Eucl P) (m + 1)) y =
+        (r ^ (m + 1))⁻¹ • (ω : DifferentialForm (Eucl P) (m + 1)) (r⁻¹ • (y - x))) →
+      Y ω = X η := by
+    intro ω η hη
+    change X (affinePullbackTestOn L b hproper univ (m + 1) ω) = X η
+    congr 1
+    exact Subtype.ext (funext fun y => (hpb ω y).trans (hη y).symm)
+  refine ⟨Y, hA, hB, ?_, ?_, hmass P (m + 1) X Y x r hr hA hB⟩
+  · -- `X = τ(M, θ, ξ)` gives `Y = τ(η(M), θ ∘ η⁻¹, ξ ∘ η⁻¹)`.
+    rintro ⟨M, θ, ξ, hT, hθ, hX⟩
+    refine ⟨(fun y => r⁻¹ • (y - x)) '' M, fun z => θ (x + r • z), fun z => ξ (x + r • z),
+      hrect P (m + 1) M θ ξ x r hr hT, ?_, fun ω => ?_⟩
+    · rintro _ ⟨y, hy, rfl⟩
+      obtain ⟨k, hk⟩ := hθ y hy
+      exact ⟨k, by simp only [smul_inv_smul₀ hr.ne', add_sub_cancel, hk]⟩
+    · obtain ⟨η, hη⟩ := hA ω
+      rw [hB ω η hη, hX η, ← htau P (m + 1) M θ ξ x r ω hr]
+      congr 1
+      exact funext hη
+  · -- `∂Y = η_#(∂X) = 0`.
+    intro hX0
+    have hX0' : X'.boundary = 0 := hX0
+    change (GeometricCurrentOn.affinePushforward L b hproper X').boundary = 0
+    rw [GeometricCurrentOn.boundary_affinePushforward, hX0']
+    ext ω
+    rfl
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
