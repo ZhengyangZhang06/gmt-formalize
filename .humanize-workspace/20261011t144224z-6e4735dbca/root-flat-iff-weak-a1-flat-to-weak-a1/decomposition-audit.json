@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "flatDistance|CompactlyContainedOpen|fiw_flat_to_weak|WeaklyConvergesOn",
+        "covectorEuclideanNorm|massAdmissibleOn|le_massOn|def massOn|WeaklyConvergesOn|boundary_apply|tsupport_exteriorDerivative_subset|def exteriorDerivativeTestOn|def TestFormOn|testFormEuclideanSupNorm",
+        "continuous_infEDist|infEDist_pos_iff_notMem_closure|infEDist_zero_of_mem",
+        "bounded_above_of_compact_support|theorem comp_left|instContinuousEvalConst|exists_isMinOn",
+        "covectorEuclideanNorm_smul|abs_apply_le_of_massOn_le|exists_compactly_contained_exhaustion|fiw_flat_to_weak",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/IndependentAuditTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/AssemblyExact.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-flat-to-weak-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-exhaustion-a1/accepted-candidate.json",
+        "/tmp/ftw-decomp-scratch/Scratch/IndependentAuditTypes.lean",
+        "/tmp/ftw-decomp-scratch/Scratch/AssemblyExact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+      ],
+      "conclusion": "Verified the pinned contract and relevant library definitions, including the three nested infima defining flatDistance, mass admissibility, boundary evaluation, derivative support, and extended-distance exhaustion tools. The searched helper names have no matches in the frozen project or SimonGMT Chapter06; both proposed declarations instead have verified comparator-accepted candidates with byte-identical frozen types. Candidate source hashes match their acceptance records, and their proofs occur verbatim in the assembly. Both exact child propositions elaborate independently before their implementations. Rerunning the assembly proves the exact selected parent and both children with only propext, Classical.choice and Quot.sound. The reuse-only split is appropriate: exhaustion supplies W containing both test-form supports; near-optimal decompositions supply finite masses; mass_bound then gives the epsilon estimate proving WeaklyConvergesOn. Adding the two reuse edges preserves DAG acyclicity and creates no new nodes."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches every stated hypothesis and conclusion, including arbitrary U and W. The bare identifier validly reuses comparator-accepted candidate ba202ac0407b6e93210594416fcd0729874b2eff with an identical frozen type. Independently checked all proof steps: coefficient-norm homogeneity; C ≥ 0 by evaluation at zero; admissibility of both signed rescalings for c > C; conversion from ofReal inequalities using B ≥ 0; and the explicit epsilon argument yielding |T ω| ≤ B*C. This also handles B = 0 and C = 0. The proof is complete, non-circular, and directly applicable to the finite-mass decomposition currents in the selected parent. No dependencies are omitted."
+    },
+    {
+      "key": "exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly expresses the two stated exhaustion properties and openness hypothesis. The bare identifier validly reuses comparator-accepted candidate cb89cc7f436bbfa9b474f73003fa9aa79ebad102 with an identical frozen type. Independently checked continuity and positivity of infEDist to the closed complement, openness of W_i, compactness of its closure by Euclidean properness, and containment in U using the positive reciprocal threshold. For nonempty compact K, boundedness and an attained positive extended-distance minimum give the required index; the empty case is explicit. Extended-real inversion also handles U = univ and an infinite minimum. The proof is complete, independent of the parent and sibling, and supplies precisely the compactly contained neighborhood needed by the parent."
+    }
+  ],
+  "required_changes": []
+}
