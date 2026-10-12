@@ -15,13 +15,18 @@
 
 `main_theorem` has no hypotheses. Its type is a conjunction of fifteen closed propositions, one for
 each headline result of Chapter 1. The Lean proof is a single conjunction introduction: each
-conjunct is supplied by an accepted child declaration (two children supply two conjuncts each).
+conjunct is supplied by an accepted child declaration. Three children supply two conjuncts each:
+`lebesgue_eq_hausdorff_and_isodiametric`, `upper_density_comparison_and_theorem` and
+`general_density_and_differentiation`. The other nine supply one conjunct each.
 Section 2 explains this root step, including the only non-obvious point, which concerns universe
 levels. Section 3 records how each child proves its conjunct, with every library theorem it uses
 and that theorem's exact provenance. Section 4 lists the dependencies actually used, contrasts
 them with the planned decomposition, and shows that there is no circularity. Section 6 describes
-the only change made in this implementation round: a reordering of declarations. Sections 5, 7
-and 8 cover history, verification and the local-reference search.
+the changes made while implementing the root:
+- a reordering of declarations in the Lean file (§6.1);
+- in a later round, corrections to this prose only (§6.2).
+
+Sections 5, 7 and 8 cover history, verification and the local-reference search.
 
 ## 1. The statement
 
@@ -233,14 +238,18 @@ The Lean proof follows the printed proof. It does not call the library's `simon_
    - Their intersection lies in `⋃_j (L_{ij} \ C_j)`. Indeed, a point `x` of the intersection lies
      in `L_{i j₀}` for `j₀ = ⌊(i+1) f(x)⌋` but not in `C_{j₀}`.
    - Hence `μ(⋂_J E_J) ≤ Σ_j η_j < δ_i`.
-   - Continuity from above of the finite measure `μ.toMeasure` (Mathlib `tendsto_measure_iInter_atTop`;
-     `E_0` has measure at most `μ(A) < ∞`) gives a `J` with `μ(E_J) < δ_i`.
+   - Let `μ̂ := μ.toMeasure` be the measure on the σ-algebra of `μ`-measurable sets. It agrees with
+     `μ` on measurable sets (Mathlib `MeasureTheory.toMeasure_apply`). **`μ̂` need not be a finite
+     measure**: only `μ(A) < ∞` is assumed. Continuity from above (Mathlib
+     `tendsto_measure_iInter_atTop`) applies to a decreasing sequence of measurable sets as soon as
+     one of them has finite measure. Here `E_0 ⊆ A`, so `μ̂(E_0) ≤ μ̂(A) = μ(A) < ∞`. Therefore
+     `μ(E_J) = μ̂(E_J) → μ̂(⋂_J E_J) = μ(⋂_J E_J) < δ_i`, which gives a `J` with `μ(E_J) < δ_i`.
    - Put `D_i := ⋃_{|j| ≤ J} C_j`. It is closed, `D_i ⊆ A`, and `μ(A \ D_i) < δ_i`.
    - The `C_j` lie in the pairwise disjoint level sets. If `a ∈ C_{j₀} ⊆ D_i`, the open set
      `U := X \ ⋃_{|j| ≤ J, j ≠ j₀} C_j` contains `a`, and every `b ∈ D_i ∩ U` lies in `C_{j₀}`.
      Hence `⌊(i+1) f⌋` is constant on `D_i ∩ U`.
 5. **The closed set.** Put `C := ⋂_i D_i`. It is closed, `C ⊆ A`, and
-   `μ(A \ C) ≤ Σ_i μ(A \ D_i) < Σ_i δ_i < ε`.
+   `μ(A \ C) = μ(⋃_i (A \ D_i)) ≤ Σ_i μ(A \ D_i) ≤ Σ_i δ_i < ε`.
 6. **Continuity.**
    - On `C`, the functions `g_i := ⌊(i+1) f⌋/(i+1)` are locally constant (step 4), hence continuous.
    - `|f − g_i| < 1/(i+1)` everywhere, so `g_i → f` uniformly.
@@ -346,7 +355,7 @@ The library theorem `simon_corollary_3_17_of_caratheodory` (`GeneralDifferentiat
 the same hypotheses and conclusion, except that both its integrals are taken against
 `hμ.toBorelMeasure`. The child transports between the two measures.
 1. **The trim.** On Borel sets, `caratheodoryMeasure μ` takes the value `μ(s)`, by Mathlib's
-   `toMeasure_apply` since Borel sets are `μ`-measurable. So does `hμ.toBorelMeasure`. Hence the trim
+   `MeasureTheory.toMeasure_apply` since Borel sets are `μ`-measurable. So does `hμ.toBorelMeasure`. Hence the trim
    of `caratheodoryMeasure μ` to `borel X` equals `hμ.toBorelMeasure` (Mathlib `trim_measurableSet_eq`
    and `Measure.ext`).
 2. **Measurability.** `f` is a.e.-measurable for `hμ.toBorelMeasure`
@@ -466,12 +475,70 @@ Then there are a Radon `μ` and a `μ`-measurable `ν` with `|ν| = 1` `μ`-a.e.
   (`IsRadonOuterMeasure.toCaratheodoryMeasure_apply_all`, `RadonOuterMeasure.lean:246`), so the
   exceptional set is `μ`-null.
 
-*Library proof.* Simon's argument:
-- the positive envelope `λ(f) = sup{L(ω) : |ω| ≤ f}` is represented by a Radon measure;
-- the `L¹` extension of `L` has norm at most one;
-- finite-measure Hilbert duality on compact pieces gives a measurable field bounded by one;
-- localized cutoffs show it has unit norm a.e.;
-- the pieces are glued, without any countability hypothesis on `X`. ∎
+*Library proof.* `simon_theorem_4_14` gives `X` and `H` their Borel σ-algebras. It follows Simon's
+proof (pp. 36–37) with two changes, which avoid any σ-finiteness or countability hypothesis on
+`X`:
+- the printed proof's `L¹(μ)` duality is applied on compact pieces, and the results are glued
+  (step 3);
+- a final modification turns unit norm on each compact set into the global clause (step 5).
+
+File names below are in `Poincare/SimonGMT/Chapter01/`. Line numbers without a file name refer to
+`RadonPolarRepresentation.lean`.
+1. **Envelope measure.** The positive envelope is `λ(f) = sup{L(ω) : |ω| ≤ f}` on
+   `C_c(X, ℝ≥0)`. Mathlib's real Riesz–Markov–Kakutani theorem represents `λ` by a regular Borel
+   measure `μ₀ := vectorFunctionalEnvelopeMeasure L hL` (`VectorFunctionalEnvelope.lean:270`).
+   - The equality (†) of p. 36, `λ(f) = ∫ f dμ₀`, is `simon_theorem_4_14_positive_envelope`
+     (`VectorFunctionalEnvelope.lean:280`).
+   - The Radon witness `μ` is the outer measure of `μ₀` (`vectorFunctionalEnvelopeMeasure_isRadon`,
+     `VectorFunctionalEnvelope.lean:290`). Write `μ̄` for its Carathéodory measure, which is
+     `caratheodoryMeasure μ` in the contract. `μ̄` is regular
+     (`IsRadonOuterMeasure.toCaratheodoryMeasure_regular`, `RadonOuterMeasure.lean:260`).
+   - `|L ω| ≤ ∫ |ω| dμ₀` (`VectorFunctionalEnvelope.lean:311`).
+2. **`L¹` extension.** `C_c(X, H)` is dense in `L¹(μ₀; H)`, so `L` extends to `L̄` on
+   `L¹(μ₀; H)` with `‖L̄‖ ≤ 1` (`simon_theorem_4_14_l1_extension`, `VectorFunctionalL1.lean:147`).
+3. **A field bounded by one.**
+   - For each compact `C`, the restriction `μ₀⌞C` is finite. Riesz representation on
+     `L²(μ₀⌞C; H)` gives a Borel field `ν_C` with `|ν_C(x)| ≤ 1` for every `x`. It represents `L̄`
+     on functions supported in `C`, extended by zero (`LocalFiniteL1Dual.lean:101`).
+   - These fields are glued along a maximal family of pairwise almost-disjoint compact sets of
+     positive measure (`RadonCompactDecomposition.lean:179`, `RadonFieldGluing.lean:262`). The
+     supports of only countably many members meet a given compact set. The supports of the
+     members cover each compact set up to a null set.
+   - The glued field `ν` is measurable for the full Carathéodory σ-algebra. This uses the fact
+     that a set is `μ`-measurable as soon as its intersection with every compact set is
+     (`RadonLocalMeasurability.lean:28`).
+   - `|ν(x)| ≤ 1` for every `x`, and `ν = ν_C` almost everywhere on every compact `C`
+     (`RadonLocalDualField.lean:64`).
+   - Every test function vanishes off a compact set. Hence `L f = ∫ ⟨f, ν⟩ dμ̄` for all
+     `f ∈ C_c(X, H)` (`exists_radon_caratheodory_L1_dual_field`,
+     `RadonCaratheodoryIntegral.lean:135`, used by `simon_theorem_4_14_bounded_caratheodory`,
+     line 135).
+4. **Unit norm on each compact set** (`norm_eq_one_on_compact_of_measure_envelope`, line 34). Let
+   `K` be compact.
+   1. Urysohn's lemma gives `f ∈ C_c(X, ℝ≥0)` with `f = 1` on `K`.
+   2. Every `ω` with `|ω| ≤ f` satisfies `L ω = ∫ ⟨ω, ν⟩ dμ̄ ≤ ∫ f |ν| dμ̄`. Taking the supremum
+      over `ω` gives `∫ f dμ̄ = λ(f) ≤ ∫ f |ν| dμ̄`.
+   3. Since `|ν| ≤ 1`, also `∫ f |ν| dμ̄ ≤ ∫ f dμ̄`. Hence `f |ν| = f` `μ̄`-a.e., so `|ν| = 1`
+      `μ̄`-a.e. on `K`.
+
+   This is a separate statement for each compact `K`. `X` need not be σ-compact and `μ̄` need
+   not be σ-finite, so it does **not** by itself give `|ν| = 1` `μ̄`-a.e. on `X`.
+5. **Global unit norm** (lines 180–198). The two cases are as follows.
+   - *`H ≠ {0}`.* Fix a unit vector `e ∈ H`. Put `η(x) := ν(x)` where `|ν(x)| = 1`, and
+     `η(x) := e` elsewhere (`exists_unit_modification_on_compacts`, line 104).
+     - The set `{|ν| = 1}` is measurable, so `η` is measurable for the Carathéodory σ-algebra.
+     - `|η(x)| = 1` for **every** `x`. So the unit-norm clause holds everywhere, and in
+       particular `μ̄`-a.e. No global null set is involved.
+     - By step 4, `η = ν` `μ̄`-a.e. on every compact set. Every `f ∈ C_c(X, H)` vanishes off the
+       compact set `spt f`. Hence `∫ ⟨f, η⟩ dμ̄ = ∫ ⟨f, ν⟩ dμ̄ = L f`
+       (`integral_inner_eq_of_ae_eq_on_compacts`, line 87).
+     - The library returns `η`.
+   - *`H = {0}`.* No unit vector exists.
+     - Here `|ν(x)| = 0` for every `x`, so step 4 gives `μ̄(K) = 0` for every compact `K`.
+     - `μ̄` is inner regular on the open set `X`, so `μ̄(X) = 0`, that is, `μ̄ = 0`.
+     - The unit-norm clause therefore holds vacuously, and the library returns `ν` unchanged.
+
+The child's adapter, above, then passes from `μ̄`-a.e. to `μ`-a.e. ∎
 
 ### 3.12 Theorem 4.16 (corrected) — `Submission.radon_compactness : RadonCompactness`
 
@@ -641,10 +708,13 @@ The final Lean route agrees with that outline, with these refinements:
 
 The speculative root draft `5c877e9` wrote the present `main_theorem` body.
 
-## 6. This implementation round: the repair
+## 6. Changes made while implementing the root
 
-**The failure.** The comparator rejected the previous candidate `a7bfaca` (log:
-`nodes/root/comparator-v1.log`) with:
+### 6.1 Lean: the declaration-order repair (commit `81b1eaa`)
+
+**The failure.** The comparator rejected the previous candidate `a7bfaca`. Its evidence is in
+`cluster-state/verification/results/hoa34/20261012T011631Z-ch01-root-dycwe_uh/`, with
+`status: failed` and the error at line 987 of `comparator.log`:
 
 ```
 GMT/Ch01/Submission.lean:962:4: error: Unknown identifier `Submission.hausdorff_density_bounds`
@@ -663,6 +733,34 @@ verbatim to directly after `def HausdorffDensityBounds`. That is where every oth
 - The diff is a pure move: 74 lines added and 74 removed, the same multiset of lines.
 
 No statement, definition, import or proof text changed.
+
+An earlier version of this prose cited the run-directory log `nodes/root/comparator-v1.log` for this
+failure. The controller has since overwritten that file with its later, passing run on `d0b46c7`.
+The evidence directory above is the permanent record.
+
+### 6.2 Prose only: corrections after the publication-prose audit
+
+The controller reviewed the previous version of this file and did not accept it. That version is
+blob `ae163c100a3fa0915c57c1d43215f8a95a56cdbf` at commit `d0b46c7`; the review is recorded in
+`nodes/root/publication-prose-audit-v1.json`, which is left untouched. The audit raised four
+issues, and this revision addresses each of them.
+
+`GMT/Ch01/Submission.lean` is unchanged by this revision: it is byte-identical to `81b1eaa`, with
+sha256 `518ee03c00e7332a9fc79d2d640a80bb59c528ff903e137a76e81e2ae3db48bf`.
+
+| # | Audit issue | Change in this revision |
+| --- | --- | --- |
+| 1 | §3.11 did not explain how unit norm on each compact set yields the global a.e. clause. | The library-proof summary in §3.11 now spells this out. Step 4 proves unit norm `μ̄`-a.e. on each compact set separately, and notes that this alone does not give a global statement. Step 5 replaces non-unit values by a fixed unit vector `e`, which keeps agreement on compact sets and hence every test-function integral. It also treats the case `H = {0}` separately (`RadonPolarRepresentation.lean:104`, lines 180–198). |
+| 2 | §3.3 step 4 called `μ.toMeasure` a finite measure. | Step 4 now uses continuity from above for `μ̂ = μ.toMeasure`. This needs only `μ̂(E_0) ≤ μ(A) < ∞`, and the text states that `μ̂` need not be finite. Step 5's estimate now reads `≤ Σ_i δ_i < ε`, as in the Lean proof. |
+| 3 | §0 said that two children supply two conjuncts each. | §0 now says three and names them, as §2 does. |
+| 4 | §8 named `OuterMeasure.toMeasure_apply`. | §8 now names `MeasureTheory.toMeasure_apply`, the declaration at `Mathlib/MeasureTheory/Measure/OuterMeasure.lean:46` inside `namespace MeasureTheory`. §3.3 and §3.7 use the same name. |
+
+While re-checking the whole file against the pinned sources, two further corrections were made:
+- the failure citation in §6.1, described above;
+- the page range of Simon's proof of 4.14, which is pp. 36–37 (the statement is on p. 35).
+
+All `file:line` citations in §3 were re-checked against the pinned `simongmt` package and the
+snapshot's Mathlib.
 
 ## 7. Verification by the author
 
@@ -685,6 +783,22 @@ All checks used the pinned toolchain and the shared package tree.
      byte-identical to the frozen commit.
 5. **Comparator.** The exact configured command was run on the committed candidate; its result is
    recorded in §7.1.
+
+**Re-run in the §6.2 round.** `GMT/Ch01/Submission.lean` was unchanged (sha256 `518ee03c…48bf`).
+Items 1–4 were nevertheless repeated on 2026-10-12.
+- A scratch file outside the repository held the whole of `Submission.lean`, followed by one theorem
+  for each of the 18 accepted DAG nodes. Each theorem states the node's frozen `lean_statement`,
+  taken verbatim from `dag.json`. The theorems sit in `namespace GMT.Ch01.InterfaceCheck`, under the
+  contract's `open` lines and `universe u v`. That namespace is nested in `GMT.Ch01`, so names resolve
+  as in the contract scope. Each theorem is proved by `exact Submission.<lean_name>`.
+- `lake env lean` with the pinned toolchain compiled it with exit status 0 and no errors or warnings.
+- `#print axioms` reports `[propext, Classical.choice, Quot.sound]` for `GMT.Ch01.main_theorem` and
+  for all 18 interface theorems.
+- The text checks of item 4 were repeated with the same results:
+  - the contract header is identical;
+  - each of the 37 blank-line-separated contract blocks occurs exactly once;
+  - there is one `main_theorem`, no forbidden token and no duplicate name;
+  - the five build inputs are identical to `ec1c322`.
 
 ### 7.1 Comparator result
 
@@ -725,7 +839,7 @@ enabled. Results:
   is `cd39a2cd430276151c2ede52af70793c8649cc80388f1f99c957f02514338915`, and the candidate
   `Submission.lean` has sha256 `518ee03c00e7332a9fc79d2d640a80bb59c528ff903e137a76e81e2ae3db48bf`.
 
-The previous candidate `a7bfaca` was rejected; see §6.
+The previous candidate `a7bfaca` was rejected; see §6.1.
 
 ## 8. Reference use
 
@@ -770,7 +884,8 @@ There is exactly one entry, and its source is `local-project`.
     `git grep` for `toMeasure_apply`, `multiplicity`, `isEmpty_satelliteConfig_multiplicity`, `tendsto_pi_nhds`
     and `Measure.ext` → `ENNReal.rpow_natCast` at `Analysis/SpecialFunctions/Pow/NNReal.lean:686`,
     `ENNReal.lt_iff_exists_rat_btwn` at `Basic/ENNReal/Basic.lean:585`,
-    `OuterMeasure.toMeasure_apply` at `MeasureTheory/Measure/OuterMeasure.lean:46`,
+    `MeasureTheory.toMeasure_apply` at `MeasureTheory/Measure/OuterMeasure.lean:46` (inside
+    `namespace MeasureTheory`, line 26),
     `Besicovitch.multiplicity` at `MeasureTheory/Covering/BesicovitchVectorSpace.lean:98`,
     `isEmpty_satelliteConfig_multiplicity` at `BesicovitchVectorSpace.lean:488`, `tendsto_pi_nhds` at
     `Topology/Constructions.lean:811`, `Measure.ext` at `MeasureTheory/Measure/MeasureSpaceDef.lean:144`
@@ -779,6 +894,34 @@ There is exactly one entry, and its source is `local-project`.
     They were read in the pinned package `lake-packages-25730c7c/simongmt`
     (`git rev-parse HEAD` = `2b3663083f3fe399b6296fb8eaee52169170e197`, the revision in
     `project/lake-manifest.json`).
+  - Queries added in the §6.2 revision:
+    - `rg -n "^namespace|^end|theorem toMeasure_apply\b" mathlib/Mathlib/MeasureTheory/Measure/OuterMeasure.lean`
+      → `namespace MeasureTheory` at 26, `theorem toMeasure_apply` at 46, `end MeasureTheory` at 72.
+      So the declaration is `MeasureTheory.toMeasure_apply`, not `OuterMeasure.toMeasure_apply`.
+    - `rg -n -A3 "theorem tendsto_measure_iInter_atTop" mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+      → line 220. Its only finiteness hypothesis is `hf : ∃ i, μ (s i) ≠ ∞` (line 222), so no finite
+      measure is needed (§3.3).
+    - `rg -n "simon_theorem_4_14|exists_unit_modification_on_compacts|norm_eq_one_on_compact_of_measure_envelope|integral_inner_eq_of_ae_eq_on_compacts" project`
+      → only `project/GMT/Ch01/README.md:41`, a prose row naming `simon_theorem_4_14`. **No match**
+      for any of the four declarations in a Lean file of the snapshot.
+    - `git -C mathlib grep -c -E "exists_unit_modification_on_compacts|simon_theorem_4_14|RadonPolarRepresentation" HEAD -- Mathlib`
+      → **no match** (exit status 1). The unit-modification step of §3.11 is therefore cited from the
+      pinned package, `simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean`, at lines
+      34, 87, 104, 135, 150, 180–198 and 206, all re-read for this revision.
+    - `git -C mathlib grep -n -E "(theorem|lemma) ([A-Za-z_.]*\.)?(exists_continuousMap_one_of_isCompact_subset_isOpen|integral_eq_iff_of_ae_le|measure_eq_iSup_isCompact|exists_norm_eq)\b" HEAD -- Mathlib`
+      → the Mathlib lemmas used in that library proof:
+      - `exists_continuousMap_one_of_isCompact_subset_isOpen` at `Topology/UrysohnsLemma.lean:529`
+        (Urysohn);
+      - `integral_eq_iff_of_ae_le` at `MeasureTheory/Integral/Bochner/Basic.lean:776`;
+      - `IsOpen.measure_eq_iSup_isCompact` at `MeasureTheory/Measure/Regular.lean:1112`;
+      - `exists_norm_eq` at `Analysis/Normed/Module/RCLike/Real.lean:108` (the unit vector `e`).
+
+      The query also matches `MeasurableSet.measure_eq_iSup_isCompact` at `Regular.lean:704`, which
+      is not used.
+    - `rg -n "RieszVector|riesz_vector|Submission\." project/GMT` → `def RieszVector` (line 279)
+      and the unsolved `main_theorem … := by sorry` (line 313) in both `Contract.lean` and
+      `Submission.lean`, plus `README.md:4,10,41`. **No match** for `riesz_vector` or for any
+      `Submission.*` declaration.
 - **files:** `manifest.json`, `project/GMT/Ch01/Contract.lean`, `project/GMT/Ch01/Submission.lean`,
   `project/GMT/Ch01/README.md`, `project/lakefile.toml`, `project/lake-manifest.json`, and the Mathlib
   files listed above (all under the snapshot root).
