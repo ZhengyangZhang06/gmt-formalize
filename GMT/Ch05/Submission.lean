@@ -5464,6 +5464,77 @@ theorem any_radius_tangent_ae : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb
   subst hTP
   exact ⟨T, hP, hT, hTx⟩
 
+/-- **Graph comparison for a `C¹` graph piece of `spt V`** (facts (UD), (Area), (Leb) and step 7(a)
+of the proof of Simon's Remark 5.3; Simon Ch. 1, 3.6 and 3.23; Ch. 3, Remark 1.8(1)).  Let
+`F(x) = q(x, u(x))` and `Γ = F(Ω) ⊆ spt V ∩ B̆_ρ(0)`.  With `κ = (p − n)/(4p)` and
+`δ_E = min(κ, κ ω_n/2)`, every `0 < δ ≤ δ_E` has `Λ = 4pδ/(p − n) = δ/κ ≤ ω_n/2`.  So (M2) of
+`any_radius_monotonicity_bounds` gives `μ_V(B_s(y)) ≥ c sⁿ` with `c = e^{−Λ}(ω_n − Λ) > 0` for
+`y ∈ Γ` and `0 < s < ρ − |y|`, as `B_{ρ − |y|}(y) ⊆ B_ρ(0)`.  Since also `θ ≥ 1` `μ_V`-a.e. and
+`μ_V(B̆_ρ(0)) < ∞`, this gives `Hⁿ ⌞ Γ ≤ μ_V` (`anyrad_gc_hausdorff_restrict_le_weight`).  The
+area comparison along `F` (`anyrad_gc_graph_lintegral_transfer`) then gives (E1) and carries
+`μ_V`-null sets to `𝓛ⁿ`-null parameter sets.  (E2) is `anyrad_gc_graph_tangentProj_ae`.  For
+(E3), `y ↦ p_y` is `μ_V`-a.e. strongly measurable (`ted_tangent_plane_facts`) with `‖p_y‖ ≤ 1`,
+so `μ_V`-a.e. point of `B̆_ρ(0) ⊇ Γ` is a quadratic Lebesgue point
+(`anyrad_gc_hsNormSq_lebesgue_ae`); transfer these points to the parameters. -/
+theorem any_radius_graph_comparison : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δE : ℝ, 0 < δE ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δE → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (Ω : Set (Rn n)), IsOpen Ω → ContDiffOn ℝ 1 u Ω → q '' graphOver u Ω ⊆ V.support ∩ ball 0 ρ → (∀ A : Set (Rn n), MeasurableSet A → A ⊆ Ω → ∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in A, g (q (graphPoint x (u x))) ≤ ∫⁻ y in q '' graphOver u A, g y ∂V.weight) ∧ (∀ᵐ x ∂(volume.restrict Ω), V.tangentProj (q (graphPoint x (u x))) = (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u x v)))).starProjection) ∧ ∀ᵐ x ∂(volume.restrict Ω), Tendsto (fun s : ℝ => (V.weight (closedBall (q (graphPoint x (u x))) s))⁻¹ * ∫⁻ y in closedBall (q (graphPoint x (u x))) s, ENNReal.ofReal (hsNormSq (V.tangentProj y - V.tangentProj (q (graphPoint x (u x))))) ∂V.weight) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ hn p hp
+  -- Step 0: `κ = (p − n)/(4p) > 0`, `ω_n > 0` and `δ_E = min(κ, κ ω_n/2) > 0`.
+  have hpn : 0 < p - n := sub_pos.2 hp
+  have h4p : 0 < 4 * p := by linarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)]
+  have hκ : 0 < (p - n) / (4 * p) := div_pos hpn h4p
+  have hω : 0 < unitBallVolume n :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  refine ⟨min ((p - n) / (4 * p)) ((p - n) / (4 * p) * unitBallVolume n / 2),
+    lt_min hκ (div_pos (mul_pos hκ hω) two_pos), ?_⟩
+  intro U hU V H δ ρ hδ hδE hA q u Ω hΩ hu hΓ
+  have hA' := hA
+  obtain ⟨-, -, hθ, -, -, hmass, -⟩ := hA'
+  -- `δ ≤ κ`, and `Λ = 4pδ/(p − n) ≤ ω_n/2`, so `c = e^{−Λ}(ω_n − Λ) > 0`.
+  have hδκ : δ ≤ (p - n) / (4 * p) := hδE.trans (min_le_left _ _)
+  have hΛ : 4 * p * δ / (p - n) ≤ unitBallVolume n / 2 := by
+    have hcancel : (p - n) / (4 * p) * (4 * p) = p - n := div_mul_cancel₀ _ h4p.ne'
+    rw [div_le_iff₀ hpn]
+    calc 4 * p * δ ≤ 4 * p * ((p - n) / (4 * p) * unitBallVolume n / 2) :=
+          mul_le_mul_of_nonneg_left (hδE.trans (min_le_right _ _)) h4p.le
+      _ = (p - n) / (4 * p) * (4 * p) * unitBallVolume n / 2 := by ring
+      _ = unitBallVolume n / 2 * (p - n) := by rw [hcancel]; ring
+  have hc : 0 < Real.exp (-(4 * p * δ / (p - n))) * (unitBallVolume n - 4 * p * δ / (p - n)) :=
+    mul_pos (Real.exp_pos _) (by linarith)
+  -- Step 2: by (M2), `μ_V(B_s(y)) ≥ c sⁿ` for `y ∈ Γ` and `0 < s < ρ − |y|`.
+  obtain ⟨-, hM2, -⟩ :=
+    Submission.any_radius_monotonicity_bounds n ℓ hn p hp U hU V H δ ρ hδ hδκ hA
+  have hdens : ∀ y ∈ q '' graphOver u Ω, ∃ c s₀ : ℝ, 0 < c ∧ 0 < s₀ ∧ ∀ s : ℝ, 0 < s → s < s₀ →
+      ENNReal.ofReal (c * s ^ n) ≤ V.weight (closedBall y s) := by
+    intro y hy
+    have hyρ : ‖y‖ < ρ := mem_ball_zero_iff.1 (hΓ hy).2
+    refine ⟨_, ρ - ‖y‖, hc, sub_pos.2 hyρ, fun s hs hsR => ENNReal.ofReal_le_of_le_toReal ?_⟩
+    refine hM2 y (hΓ hy).1 (ρ - ‖y‖) s hs hsR (closedBall_subset_closedBall' ?_)
+    rw [dist_zero_right]
+    linarith
+  -- Steps 3–4: `Hⁿ ⌞ Γ ≤ μ_V`, as `θ ≥ 1` `μ_V`-a.e. and `μ_V(B̆_ρ(0)) < ∞`.
+  have hfin : V.weight (ball (0 : Amb n ℓ) ρ) < ⊤ :=
+    (measure_mono ball_subset_closedBall).trans_lt (hmass.trans_lt ENNReal.ofReal_lt_top)
+  have hHW : (μHE[n] : Measure (Amb n ℓ)).restrict (q '' graphOver u Ω) ≤ V.weight :=
+    Submission.anyrad_gc_hausdorff_restrict_le_weight n ℓ U V (ball 0 ρ) (q '' graphOver u Ω)
+      isOpen_ball hfin (fun y hy => (hΓ hy).2) hθ hdens
+  -- Step 5: (E1), and `μ_V`-null sets have `𝓛ⁿ`-null parameter sets.
+  obtain ⟨-, hE1, htr⟩ := Submission.anyrad_gc_graph_lintegral_transfer n ℓ q u Ω
+    hΩ.measurableSet hu.continuousOn V.weight hHW
+  -- Step 6: (E2).
+  refine ⟨hE1, Submission.anyrad_gc_graph_tangentProj_ae n ℓ hn U hU V q u Ω hΩ hu htr, ?_⟩
+  -- Step 7: (E3).  `‖p_w‖ ≤ 1`, since `p_w` is an orthogonal projection or `0`.
+  have hnorm : ∀ w, ‖V.tangentProj w‖ ≤ 1 := by
+    intro w
+    rw [RectifiableVarifold.tangentProj]
+    split_ifs
+    · exact Submodule.starProjection_norm_le _
+    · rw [norm_zero]
+      exact zero_le_one
+  have hleb := Submission.anyrad_gc_hsNormSq_lebesgue_ae n ℓ V.weight (ball 0 ρ) isOpen_ball hfin
+    V.tangentProj 1 (ted_tangent_plane_facts n ℓ hn U hU V).2.2.1 hnorm
+  filter_upwards [htr _ hleb, ae_restrict_mem hΩ.measurableSet] with x hx hxΩ
+  exact hx (hΓ (mem_image_of_mem q (mem_image_of_mem (fun x => graphPoint x (u x)) hxΩ))).2
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
