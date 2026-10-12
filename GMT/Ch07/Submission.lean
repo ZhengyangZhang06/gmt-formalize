@@ -451,6 +451,126 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Ball mean value from the radial kernel identity.**  Let `r > 0`, let `h` be continuous on
+`B̄_r(x)`, and suppose `∫ h(x - y) g(|y|²) dy = h(x) ∫ g(|y|²) dy` for every continuous `g`
+vanishing on `[r², ∞)`.  Then `∫_{B_r(x)} h = |B_r(x)| h(x)`.  The proof applies the identity to
+`g_k(t) = min{1, max{0, (k + 1)(r² - t)}}`, which tend pointwise to `1_{[0, r²)}`.  Dominated
+convergence passes to the limit, with bounds `A₀ 1_{B̄_r(0)}` and `1_{B̄_r(0)}`.  The reflection
+`y ↦ x - y` then turns `B_r(0)` into `B_r(x)`. -/
+theorem Submission.dorag_ha_mv_ball_of_kernel : ∀ (n : ℕ) (h : Euclid n → ℝ) (x : Euclid n) (r : ℝ), 0 < r → ContinuousOn h (closedBall x r) → (∀ g : ℝ → ℝ, Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∫ y : Euclid n, h (x - y) * g (‖y‖ ^ 2) = h x * ∫ y : Euclid n, g (‖y‖ ^ 2)) → ∫ y in ball x r, h y = (volume (ball x r)).toReal * h x := by
+  intro n h x r hr hhc hker
+  -- the profiles `g_k`: continuous, `0 ≤ g_k ≤ 1`, zero on `[r², ∞)`
+  set gk : ℕ → ℝ → ℝ := fun k t => min 1 (max 0 (((k : ℝ) + 1) * (r ^ 2 - t))) with hgk
+  have gk_cont : ∀ k, Continuous (gk k) := fun k => by
+    simp only [hgk]; fun_prop
+  have gk_zero : ∀ k t, r ^ 2 ≤ t → gk k t = 0 := by
+    intro k t ht
+    simp only [hgk]
+    have : ((k : ℝ) + 1) * (r ^ 2 - t) ≤ 0 :=
+      mul_nonpos_of_nonneg_of_nonpos (by positivity) (by linarith)
+    rw [max_eq_left this, min_eq_right zero_le_one]
+  have gk_nonneg : ∀ k t, 0 ≤ gk k t := fun k t => le_min zero_le_one (le_max_left _ _)
+  have gk_le : ∀ k t, gk k t ≤ 1 := fun k t => min_le_left _ _
+  have gkz : ∀ k (y : Euclid n), r ≤ ‖y‖ → gk k (‖y‖ ^ 2) = 0 := fun k y hy =>
+    gk_zero k _ (pow_le_pow_left₀ hr.le hy 2)
+  have gk_cont' : ∀ k, Continuous fun y : Euclid n => gk k (‖y‖ ^ 2) := fun k =>
+    (gk_cont k).comp (by fun_prop : Continuous fun y : Euclid n => ‖y‖ ^ 2)
+  -- `g_k(|y|²) → 1_{B_r(0)}(y)`: eventually `1` inside the ball, always `0` outside
+  have gk_lim : ∀ y : Euclid n, Tendsto (fun k => gk k (‖y‖ ^ 2)) atTop
+      (𝓝 ((ball (0 : Euclid n) r).indicator 1 y)) := by
+    intro y
+    by_cases hy : ‖y‖ < r
+    · rw [indicator_of_mem (by rwa [mem_ball, dist_zero_right]), Pi.one_apply]
+      have hpos : 0 < r ^ 2 - ‖y‖ ^ 2 := by nlinarith [norm_nonneg y]
+      obtain ⟨K, hK⟩ := exists_nat_ge (1 / (r ^ 2 - ‖y‖ ^ 2))
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [eventually_ge_atTop K] with k hk
+      simp only [hgk]
+      have hKk : (K : ℝ) ≤ k := by exact_mod_cast hk
+      rw [div_le_iff₀ hpos] at hK
+      have : 1 ≤ ((k : ℝ) + 1) * (r ^ 2 - ‖y‖ ^ 2) := by nlinarith
+      rw [max_eq_right (by linarith), min_eq_left this]
+    · push Not at hy
+      rw [indicator_of_notMem (by rwa [mem_ball, dist_zero_right, not_lt])]
+      exact tendsto_const_nhds.congr' (Eventually.of_forall fun k => (gkz k y hy).symm)
+  -- `|h| ≤ A₀` on the compact ball `B̄_r(x)`, which contains `x - y` for `|y| ≤ r`
+  obtain ⟨A₀, hA₀⟩ := (isCompact_closedBall x r).exists_bound_of_continuousOn hhc
+  have hmem : ∀ y : Euclid n, ‖y‖ ≤ r → x - y ∈ closedBall x r := by
+    intro y hy; rw [mem_closedBall, dist_eq_norm, sub_sub_cancel_left, norm_neg]; exact hy
+  have hcb : ∀ y : Euclid n, y ∈ closedBall (0 : Euclid n) r ↔ ‖y‖ ≤ r := fun y => by
+    rw [mem_closedBall, dist_zero_right]
+  -- the integrands vanish off `B̄_r(0)` and are continuous on it
+  have hF_meas : ∀ k,
+      AEStronglyMeasurable (fun y : Euclid n => h (x - y) * gk k (‖y‖ ^ 2)) volume := by
+    intro k
+    have : (fun y : Euclid n => h (x - y) * gk k (‖y‖ ^ 2)) =
+        (closedBall (0 : Euclid n) r).indicator (fun y => h (x - y) * gk k (‖y‖ ^ 2)) := by
+      funext y
+      by_cases hy : ‖y‖ ≤ r
+      · rw [indicator_of_mem ((hcb y).2 hy)]
+      · rw [indicator_of_notMem (fun h' => hy ((hcb y).1 h')), gkz k y (le_of_not_ge hy), mul_zero]
+    rw [this, aestronglyMeasurable_indicator_iff measurableSet_closedBall]
+    refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_closedBall
+    refine ContinuousOn.mul ?_ (gk_cont' k).continuousOn
+    exact hhc.comp (by fun_prop : Continuous fun y : Euclid n => x - y).continuousOn
+      (fun y hy => hmem y ((hcb y).1 hy))
+  have hbint : ∀ c : ℝ, Integrable ((closedBall (0 : Euclid n) r).indicator fun _ => c) := fun c =>
+    IntegrableOn.integrable_indicator
+      (integrableOn_const (measure_closedBall_lt_top (x := (0 : Euclid n)) (r := r)).ne)
+      measurableSet_closedBall
+  -- dominated convergence for both sides of the kernel identity
+  have lim1 : Tendsto (fun k => ∫ y : Euclid n, h (x - y) * gk k (‖y‖ ^ 2)) atTop
+      (𝓝 (∫ y : Euclid n, h (x - y) * (ball (0 : Euclid n) r).indicator 1 y)) := by
+    refine tendsto_integral_of_dominated_convergence
+      ((closedBall (0 : Euclid n) r).indicator fun _ => A₀) hF_meas (hbint A₀) ?_ ?_
+    · intro k
+      refine Eventually.of_forall fun y => ?_
+      by_cases hy : ‖y‖ ≤ r
+      · rw [indicator_of_mem ((hcb y).2 hy), norm_mul]
+        have h1 := hA₀ _ (hmem y hy)
+        have h2 : ‖gk k (‖y‖ ^ 2)‖ ≤ 1 := by
+          rw [Real.norm_eq_abs, abs_of_nonneg (gk_nonneg _ _)]; exact gk_le _ _
+        nlinarith [norm_nonneg (h (x - y)), norm_nonneg (gk k (‖y‖ ^ 2))]
+      · rw [indicator_of_notMem (fun h' => hy ((hcb y).1 h')), gkz k y (le_of_not_ge hy), mul_zero,
+          norm_zero]
+    · exact Eventually.of_forall fun y => (gk_lim y).const_mul (h (x - y))
+  have lim2 : Tendsto (fun k => ∫ y : Euclid n, gk k (‖y‖ ^ 2)) atTop
+      (𝓝 (∫ y : Euclid n, (ball (0 : Euclid n) r).indicator 1 y)) := by
+    refine tendsto_integral_of_dominated_convergence
+      ((closedBall (0 : Euclid n) r).indicator fun _ => 1)
+      (fun k => (gk_cont' k).aestronglyMeasurable)
+      (hbint 1) ?_ (Eventually.of_forall gk_lim)
+    intro k
+    refine Eventually.of_forall fun y => ?_
+    by_cases hy : ‖y‖ ≤ r
+    · rw [indicator_of_mem ((hcb y).2 hy), Real.norm_eq_abs, abs_of_nonneg (gk_nonneg _ _)]
+      exact gk_le _ _
+    · rw [indicator_of_notMem (fun h' => hy ((hcb y).1 h')), gkz k y (le_of_not_ge hy), norm_zero]
+  -- the hypothesis identifies the two sequences, so the limits agree
+  have heq : (fun k => ∫ y : Euclid n, h (x - y) * gk k (‖y‖ ^ 2)) =
+      fun k => h x * ∫ y : Euclid n, gk k (‖y‖ ^ 2) :=
+    funext fun k => hker (gk k) (gk_cont k) (gk_zero k)
+  rw [heq] at lim1
+  have hlim := tendsto_nhds_unique lim1 (lim2.const_mul (h x))
+  -- left limit: the reflection `y ↦ x - y` preserves volume and maps `B_r(0)` onto `B_r(x)`
+  have e1 : ∫ y : Euclid n, h (x - y) * (ball (0 : Euclid n) r).indicator 1 y =
+      ∫ y in ball x r, h y := by
+    have : (fun y : Euclid n => h (x - y) * (ball (0 : Euclid n) r).indicator 1 y) =
+        (ball (0 : Euclid n) r).indicator (fun y => h (x - y)) := by
+      funext y; by_cases hy : y ∈ ball (0 : Euclid n) r <;> simp [hy]
+    rw [this, integral_indicator measurableSet_ball]
+    have hmp : MeasurePreserving (fun y : Euclid n => x - y) volume volume :=
+      Measure.measurePreserving_sub_left volume x
+    have hpre : (fun y : Euclid n => x - y) ⁻¹' (ball x r) = ball 0 r := by
+      ext y; simp [mem_ball, dist_eq_norm]
+    rw [← hpre]
+    exact hmp.setIntegral_preimage_emb (MeasurableEquiv.subLeft x).measurableEmbedding h (ball x r)
+  -- right limit: `∫ 1_{B_r(0)} = |B_r(0)| = |B_r(x)|` by translation invariance
+  have e2 : ∫ y : Euclid n, (ball (0 : Euclid n) r).indicator 1 y = (volume (ball x r)).toReal := by
+    rw [integral_indicator_one measurableSet_ball, Measure.addHaar_ball_center volume x r]
+    rfl
+  rw [← e1, hlim, e2, mul_comm]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
