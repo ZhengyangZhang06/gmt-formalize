@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem ae_tendsto_rnDeriv|theorem rnDeriv_withDensity\\b|theorem restrict_withDensity\\b|theorem .*euclideanHausdorffMeasure.*|theorem addHaar_closedBall\\b|theorem integral_indicator_one|setLIntegral_mono|theorem withDensity_absolutelyContinuous",
+        "rsd_tendsto_closedBall_density_of_approxTangent|rsd_ae_tendsto_withDensity_div_closedBall|rsd_tendsto_ball_density_of_closedBall|rsd_imrep_compact_measure_ne_top|rsd_ae_hasMassDensity_mult|rsd_massOn_eq_measure",
+        "theorem .*density|theorem .*Density|lemma .*density|lemma .*Density|theorem .*IMRep|lemma .*IMRep|locallyIntegrable_mult",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dem-split/out/Solo_rsd_tendsto_closedBall_density_of_approxTangent.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dem-split/out/Solo_rsd_ae_tendsto_withDensity_div_closedBall.lean",
+        "python3 /tmp/dem-independent-audit-w2749jni/run_lean.py /tmp/dem-split/out/Solo_rsd_tendsto_ball_density_of_closedBall.lean",
+        "python3 /tmp/dem-independent-audit-w2749jni/run_lean.py /tmp/dem-independent-audit-w2749jni/ExactAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1/decomposition-v1.json",
+        "/tmp/dem-split/AllChildren.lean",
+        "/tmp/dem-split/out/Solo_rsd_tendsto_closedBall_density_of_approxTangent.lean",
+        "/tmp/dem-split/out/Solo_rsd_ae_tendsto_withDensity_div_closedBall.lean",
+        "/tmp/dem-split/out/Solo_rsd_tendsto_ball_density_of_closedBall.lean",
+        "/tmp/dem-split/out/Solo_rsd_imrep_compact_measure_ne_top.lean",
+        "/tmp/dem-independent-audit-w2749jni/ExactAudit.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected rsd_ae_hasMassDensity_mult contract. The snapshot contract matches the workspace, and inspected Mathlib sources match pinned revision 25730c7c. The cited Hausdorff-measure, Haar-volume, restriction and differentiation lemmas have the required hypotheses. No proposed name is reserved in the DAG or found in the snapshot project or 133 local Git refs. All four names are bare identifiers. Each frozen type independently elaborates as Prop before any child declaration. All four supplied proof appendices were matched exactly and independently recompiled; each uses only propext, Classical.choice and Quot.sound. The supplied assembly also compiles against the exact selected parent type, conditional only on its existing mass_eq_weight prerequisite. Eventual positivity and finiteness justify cancellation, and absolute continuity transfers the conclusion to R.measure. The proposed dependency graph is acyclic, with no hidden child or parent reliance."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unweighted_density_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line type agree. Plane-ball normalization, blow-up scaling, cutoff integrability, both limit bounds and conversion to ENNReal are justified. Local finiteness suffices without an additional measurability assumption on M. The argument covers n = 0 and does not assume n > 0. The supplied proof independently compiles without circular dependencies."
+    },
+    {
+      "key": "localized_besicovitch",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the μ-a.e. conditional conclusion match. The exhaustion works also for U = univ. Compact finiteness supplies the local-finiteness and sigma-finiteness instances required for differentiation and rnDeriv_withDensity. Countable intersection of full-measure sets and eventual equality of localized ball ratios complete the exact claim. The supplied proof independently compiles."
+    },
+    {
+      "key": "closed_to_open_ball_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the general measure statement, including θ = ∞ and n = 0. The proof supplies both order-topology bounds. Choosing 0 < t < 1 makes ofReal(t^n) positive and finite, validating cancellation and strict multiplication inequalities even at an infinite limit. No local-finiteness hypothesis or parent theorem is used. The supplied proof independently compiles."
+    },
+    {
+      "key": "imrep_local_finiteness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type correctly require only an IMRep and a compact K contained in U. The restriction identity identifies the weight with the finite multiplicity integral; positivity of the integer multiplicity bounds the unweighted measure by that integral. Openness and representation of a current are correctly unnecessary. This supplies the parent assembly's finiteness obligations, and the supplied proof independently compiles."
+    }
+  ],
+  "required_changes": []
+}
