@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev MultiVector|def IsUnitOrientationOf|structure IMRep|def IMRep.action|def IMRep.Represents",
+        "testFormOnSubmodule|TestFormOnConverges|structure GeometricCurrentOn|IntegerRectifiableCurrentData.action|def TestFormOn|abbrev TestFormOn",
+        "norm_integral_le_of_norm_le|integral_eq_lintegral_of_nonneg_ae|integrable_indicator_iff|hasFiniteIntegral_iff_ofReal|theorem Integrable.mono.|isBoundedBilinearMap_apply|exists_bound_of_continuous|norm_iteratedFDeriv_zero",
+        "norm_iteratedFDeriv_zero|alternatization_apply_apply",
+        "rsd_cmr_ic_action_integrable|rsd_cmr_ic_action_abs_le",
+        "git diff b4d606db1da5da8fa2c0292ad4924d97de8b3c4b 2e5d20d49a4a41f79e81db1a65e850fb919b38ba -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rsd-cmr-ic-decomp/gen/GenFull.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imrep-independent-audit-4yrndeos/Challenges.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/HasFiniteIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-current-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-current-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-2d6f974584/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-2d6f974584/comparator-v1.log",
+        "/tmp/rsd-cmr-ic-decomp/gen/GenFull.lean",
+        "/tmp/imrep-independent-audit-4yrndeos/Challenges.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected rsd_cmr_imrep_represents_exists contract. Integrability supplies linearity; the support estimate and zeroth-derivative convergence supply sequential continuity; packaging proves exactly the frozen parent statement. The dependency graph is acyclic and correctly directed. All names are bare identifiers. Neither new name is reserved elsewhere; the orientation declaration is comparator-accepted at the identical frozen type. Snapshot compatibility was checked against project b4d606d, mathlib 25730c7c and SimonGMT 2b36630. All three child propositions and the parent proposition independently elaborated without child implementations. The complete supplied proof file also compiled successfully; all four declarations depend only on propext, Classical.choice and Quot.sound. Operator norms, evaluation topology and restricted measures match the intended constructions. There is no matrix-unit construction."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "orientation_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean type match exactly, and reuse preserves the accepted frozen type. The operator-norm inequality proves the bound. The explicitly constructed alternatized covector evaluates to one on the orthonormal frame, proving nonvanishing, including n = 0. The supplied argument is complete and independent of the parent and other children."
+    },
+    {
+      "key": "action_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement includes the required IMRep and TestFormOn hypotheses and matches the exact integrand and restricted measure. The proof establishes compact-support boundedness, integrability of the multiplicity indicator, and a.e. strong measurability through continuous evaluation with compatible instances. The orientation bound then gives domination and integrability. Only orientation_norm is needed; no circular reliance or additional openness hypothesis occurs."
+    },
+    {
+      "key": "action_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and conclusion match the one-line Lean proposition. The proof correctly establishes integrability of the multiplicity indicator, computes its integral as the stated lower integral's toReal, and bounds the action integrand on and outside K. The pinned norm_integral_le_of_norm_le requires only integrability of the bound, so no action_integrable dependency is missing. The global norm bound already implies ε ≥ 0. The proof covers empty support and is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

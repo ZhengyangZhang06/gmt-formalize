@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "57a257852a46869fd6973262628e1a6e63b56b0a5cada22e5e8df46cec5aa448",
+  "git_delta": {
+    "base_commit": "b24b62f3b09dd6b8db27ddced67bae54a4e68956",
+    "candidate_commit": "ec3f8ec4a9ed996e84a702d0b41afec85233a1ee",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "402348462896650966354fcff3e02b6e882d385ce9559625666d2e9c671fd801",
+    "source_sha256": "c9fe1af20b60db5462caf6c3fbdb4cb837115d9e0ca14f9ac4fb819d7f1b80ec",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_cmr_imrep_represents_exists",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∃ T : GeometricCurrentOn U n, R.Represents T",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
