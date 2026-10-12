@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "979b1e028f82be11b2b4ff397670f9e9ddd7f254d0ac1c2801df93b49d8018ab",
+  "git_delta": {
+    "base_commit": "3c48814e5f35d9b5450324565d2e20dd5c5beb81",
+    "candidate_commit": "def607d836e2e6071aa1efb85ad37d0ca1d1ac19",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_weightedTangent_congr",
+    "diff_sha256": "5b9596ecea37dec772677ebeef0a8fd991d578d7aff930ffde0776480f1e4cd3",
+    "source_sha256": "e6172284a5266ce935e176a4ca13259f7a7bccc64f07996601e9437165a5c929",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_weightedTangent_congr",
+      "statement": "∀ (P k : ℕ) (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (x : Eucl P) (V : Set (Eucl P)), IsOpen V → x ∈ V → (μHE[k] : Measure (Eucl P)) (symmDiff M M' ∩ V) = 0 → (∀ᵐ y ∂((μHE[k] : Measure (Eucl P)).restrict (M ∩ V)), θ y = θ' y) → θ x = θ' x → ∀ L : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x L → HasWeightedApproximateTangentSpaceAt k M' θ' x L",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
