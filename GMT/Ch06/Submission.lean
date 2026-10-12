@@ -930,6 +930,101 @@ theorem Submission.smr_riesz_borel_euclidean :
   rw [hLg, hrep g, hμm]
   simp only [hg]
 
+/-- Riesz representation of a locally bounded linear functional `L` on the continuous compactly
+supported `k`-forms in `U` (Simon Ch. 6, 2.7, from Ch. 1, 4.14): `L(φ) = ∫ ⟨φ, v⟩ dμ` with
+`|v(x)(α)| ≤ |α|` and, `μ`-a.e., `v(x)(α) = 1` for some `|α| ≤ 1`.  The isometry
+`J : Λᵏ(ℝ^P) ≅ ℝ^N` of `Submission.smr_covector_coord_isometry` (continuous in finite dimension)
+transfers `L` to `L_H(f) = L(J⁻¹ ∘ f)` on `ℝ^N`-valued functions;
+`Submission.smr_riesz_borel_euclidean` gives `L_H(f) = ∫ ⟨f, ν⟩ dμ` with Borel `ν`, `‖ν‖ ≤ 1`
+and `‖ν‖ = 1` `μ`-a.e.; and `v(x)(α) = ⟨ν(x), Jα⟩`, with unit witness `α = J⁻¹(ν(x))`. -/
+theorem Submission.smr_riesz_continuous_forms :
+    ∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ L : (Eucl P → Covector (Eucl P) k) → ℝ,
+      (∀ φ ψ : Eucl P → Covector (Eucl P) k, Continuous φ → HasCompactSupport φ →
+        tsupport φ ⊆ U → Continuous ψ → HasCompactSupport ψ → tsupport ψ ⊆ U →
+          L (φ + ψ) = L φ + L ψ) →
+      (∀ (c : ℝ) (φ : Eucl P → Covector (Eucl P) k), Continuous φ → HasCompactSupport φ →
+        tsupport φ ⊆ U → L (c • φ) = c * L φ) →
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ B : ℝ, ∀ φ : Eucl P → Covector (Eucl P) k,
+        Continuous φ → tsupport φ ⊆ K → (∀ x, covectorEuclideanNorm (φ x) ≤ 1) → |L φ| ≤ B) →
+      ∃ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k),
+        (∀ φ : Eucl P → Covector (Eucl P) k, Continuous φ → HasCompactSupport φ →
+          tsupport φ ⊆ U → Integrable (fun x => v x (φ x)) μ ∧ L φ = ∫ x, v x (φ x) ∂μ) ∧
+        μ Uᶜ = 0 ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) ∧
+        (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) ∧
+        (∀ α : Covector (Eucl P) k, Measurable (fun x => v x α)) ∧
+        ∀ᵐ x ∂μ, ∃ α : Covector (Eucl P) k, covectorEuclideanNorm α ≤ 1 ∧ v x α = 1 := by
+  intro P k U hU L hadd hsmul hbd
+  -- Step 1: the coordinate isometry `J`; covectors are finite-dimensional, so `J` and `J⁻¹`
+  -- are continuous, and `|J⁻¹ h| = ‖h‖`.
+  obtain ⟨N, J, hJ⟩ := Submission.smr_covector_coord_isometry P k
+  have : FiniteDimensional ℝ (Covector (Eucl P) k) := J.symm.finiteDimensional
+  let Jc : Covector (Eucl P) k ≃L[ℝ] EuclideanSpace ℝ (Fin N) := J.toContinuousLinearEquiv
+  have hJsymm : ∀ h, covectorEuclideanNorm (J.symm h) = ‖h‖ := fun h => by
+    rw [hJ, J.apply_symm_apply]
+  -- Step 2: `f ↦ J⁻¹ ∘ f` maps `CF_N(U)` into `CF(U)`, so `L_H(f) = L(J⁻¹ ∘ f)` is additive,
+  -- homogeneous and bounded above by the bound `B` of `L` on each compact `K ⊆ U`.
+  have hcont : ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f →
+      Continuous (fun x => J.symm (f x)) := fun f hf => Jc.symm.continuous.comp hf
+  have hcpt : ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), HasCompactSupport f →
+      HasCompactSupport (fun x => J.symm (f x)) := fun f hf => hf.comp_left (map_zero J.symm)
+  have htsupp : ∀ f : Eucl P → EuclideanSpace ℝ (Fin N),
+      tsupport (fun x => J.symm (f x)) ⊆ tsupport f := fun f =>
+    tsupport_comp_subset (map_zero J.symm) f
+  -- Step 3: Riesz for `L_H`.
+  obtain ⟨μ, ν, hν, hμU, hμK, hνle, hνone, hrep⟩ :=
+    Submission.smr_riesz_borel_euclidean P N U hU (fun f => L (fun x => J.symm (f x)))
+      (by
+        intro f g hf hfc hfU hg hgc hgU
+        have hfg : (fun x => J.symm ((f + g) x)) =
+            (fun x => J.symm (f x)) + (fun x => J.symm (g x)) := by
+          funext x
+          simp
+        rw [hfg]
+        exact hadd _ _ (hcont f hf) (hcpt f hfc) ((htsupp f).trans hfU)
+          (hcont g hg) (hcpt g hgc) ((htsupp g).trans hgU))
+      (by
+        intro c f hf hfc hfU
+        have hcf : (fun x => J.symm ((c • f) x)) = c • (fun x => J.symm (f x)) := by
+          funext x
+          simp
+        rw [hcf]
+        exact hsmul c _ (hcont f hf) (hcpt f hfc) ((htsupp f).trans hfU))
+      (by
+        intro K hK hKU
+        obtain ⟨B, hB⟩ := hbd K hK hKU
+        refine ⟨B, fun f hf hfK hf1 => ?_⟩
+        exact (le_abs_self _).trans (hB _ (hcont f hf) ((htsupp f).trans hfK)
+          (fun x => (hJsymm (f x)).le.trans (hf1 x))))
+  -- Step 4: the `k`-vector field `v(x)(α) = ⟨ν(x), Jα⟩`.
+  let v : Eucl P → NVector (Eucl P) k := fun x =>
+    (innerSL ℝ (ν x)).comp (Jc : Covector (Eucl P) k →L[ℝ] EuclideanSpace ℝ (Fin N))
+  have hv : ∀ x α, v x α = inner ℝ (ν x) (J α) := fun x α => rfl
+  refine ⟨μ, v, ?_, hμU, hμK, ?_, ?_, ?_⟩
+  · -- Step 5: representation, via `f = J ∘ φ ∈ CF_N(U)` with `J⁻¹ ∘ f = φ`.
+    intro φ hφ hφc hφU
+    obtain ⟨hint, hLf⟩ := hrep (fun x => J (φ x)) (Jc.continuous.comp hφ)
+      (hφc.comp_left (map_zero J)) ((tsupport_comp_subset (map_zero J) φ).trans hφU)
+    have heq : (fun x => inner ℝ (J (φ x)) (ν x)) = fun x => v x (φ x) := by
+      funext x
+      rw [hv, real_inner_comm]
+    have hLφ : (fun x => J.symm (J (φ x))) = φ := by
+      funext x
+      exact J.symm_apply_apply (φ x)
+    rw [heq] at hint hLf
+    rw [hLφ] at hLf
+    exact ⟨hint, hLf⟩
+  · -- (i) Cauchy–Schwarz with `‖ν(x)‖ ≤ 1`: `|v(x)(α)| ≤ ‖Jα‖ = |α|`.
+    intro x α
+    rw [hv, hJ]
+    exact (abs_real_inner_le_norm _ _).trans (mul_le_of_le_one_left (norm_nonneg _) (hνle x))
+  · -- (ii) `x ↦ ⟨ν(x), Jα⟩` is Borel since `ν` is.
+    intro α
+    exact ((continuous_id.inner continuous_const).measurable).comp hν
+  · -- (iii) Where `‖ν(x)‖ = 1`, `α = J⁻¹(ν(x))` has `|α| = 1` and `v(x)(α) = ‖ν(x)‖² = 1`.
+    filter_upwards [hνone] with x hx
+    refine ⟨J.symm (ν x), (hJsymm (ν x)).trans_le hx.le, ?_⟩
+    rw [hv, J.apply_symm_apply, real_inner_self_eq_norm_sq, hx, one_pow]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
