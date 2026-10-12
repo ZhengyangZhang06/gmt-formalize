@@ -1502,14 +1502,6 @@ theorem Submission.ts_fv_cv_first_order_regularity : ∀ (n ℓ : ℕ) (φ : ℝ
     fun t ht y ↦ ⟨ht, mem_univ y⟩
   have h0 : (0 : ℝ) ∈ Ioo (-ε) ε := ⟨neg_lt_zero.mpr hφ.pos, hφ.pos⟩
   have hKc : IsOpen Kᶜ := hφ.compact.isClosed.isOpen_compl
-/-- Simon 2.1, 2.4 (pp. 87–88): the initial velocity `X = ∂φ_t/∂t|_{t=0}` of a family as in 2.1
-with `K ⊆ U` is a test field, `X ∈ C¹_c(U; ℝ^{n+ℓ})`; in fact `tsupport X ⊆ K`. -/
-theorem Submission.compactVariation_velocity_isTestField : ∀ (n ℓ : ℕ) (U : Set (Ambient n ℓ)) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → K ⊆ U → IsTestField U (fun y ↦ deriv (fun t ↦ φ t y) 0) := by
-  intro n ℓ U φ ε K hφ hKU
-  -- `Φ(q) = φ q.1 q.2` is `C^∞` on the open set `S = (-ε, ε) × ℝ^{n+ℓ}`, and `(0, y) ∈ S`.
-  have hS : IsOpen (Ioo (-ε) ε ×ˢ (univ : Set (Ambient n ℓ))) := isOpen_Ioo.prod isOpen_univ
-  have hmem : ∀ y : Ambient n ℓ, ((0 : ℝ), y) ∈ Ioo (-ε) ε ×ˢ (univ : Set (Ambient n ℓ)) :=
-    fun y ↦ ⟨⟨neg_lt_zero.mpr hφ.pos, hφ.pos⟩, mem_univ _⟩
   -- Chain rule along `t ↦ (t, y)`: `X(y) = DΦ(0, y)(1, 0)`.
   have hvel : ∀ y, deriv (fun t ↦ φ t y) 0 =
       fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) (0, y) (1, 0) := by
@@ -1522,13 +1514,6 @@ theorem Submission.compactVariation_velocity_isTestField : ∀ (n ℓ : ℕ) (U 
   -- (a) `DΦ` is `C¹` on `S`, so `y ↦ DΦ(0, y)(1, 0)` is `C¹`.
   have ha : ContDiff ℝ 1 (fun y ↦ deriv (fun t ↦ φ t y) 0) := by
     have h1 : ContDiffOn ℝ 1 (fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2))
-      (hφ.smooth.contDiffAt (hS.mem_nhds (hmem y))).differentiableAt (by simp)
-    have hg : HasDerivAt (fun t : ℝ ↦ (t, y)) ((1 : ℝ), (0 : Ambient n ℓ)) 0 :=
-      (hasDerivAt_id (0 : ℝ)).prodMk (hasDerivAt_const (0 : ℝ) y)
-    exact (hdiff.hasFDerivAt.comp_hasDerivAt (0 : ℝ) hg).deriv
-  -- `DΦ` is `C¹` on the open set `S`, so `y ↦ DΦ(0, y)(1, 0)` is `C¹`.
-  have hcd : ContDiff ℝ 1 (fun y ↦ deriv (fun t ↦ φ t y) 0) := by
-    have h1 : ContDiffOn ℝ 1 (fun q ↦ fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) q)
         (Ioo (-ε) ε ×ˢ univ) :=
       hφ.smooth.fderiv_of_isOpen hS (WithTop.coe_le_coe.mpr le_top)
     have h2 : ContDiff ℝ 1
@@ -1539,11 +1524,6 @@ theorem Submission.compactVariation_velocity_isTestField : ∀ (n ℓ : ℕ) (U 
     exact h2.clm_apply contDiff_const
   -- Off `K`, `t ↦ φ t y` is constant near `0`, so `X(y) = 0`.
   have hzero : ∀ y ∉ K, deriv (fun t ↦ φ t y) 0 = 0 := by
-      exact h1.comp (contDiff_const.prodMk contDiff_id).contDiffOn (fun y _ ↦ hmem y)
-    simp_rw [hvel]
-    exact h2.clm_apply contDiff_const
-  -- Off `K`, `t ↦ φ t y` is constant near `0`, so `X(y) = 0`.
-  have hzero : ∀ y, y ∉ K → deriv (fun t ↦ φ t y) 0 = 0 := by
     intro y hy
     have : (fun t ↦ φ t y) =ᶠ[𝓝 0] fun _ ↦ y := by
       filter_upwards [Ioo_mem_nhds (neg_lt_zero.mpr hφ.pos) hφ.pos] with t ht
@@ -1581,6 +1561,47 @@ theorem Submission.compactVariation_velocity_isTestField : ∀ (n ℓ : ℕ) (U 
   by_cases hy : y ∈ K
   · exact (hL₀ y hy).trans (le_max_left _ _)
   · exact (hout y hy).trans (le_max_right _ _)
+
+/-- Simon 2.1, 2.4 (pp. 87–88): the initial velocity `X = ∂φ_t/∂t|_{t=0}` of a family as in 2.1
+with `K ⊆ U` is a test field, `X ∈ C¹_c(U; ℝ^{n+ℓ})`; in fact `tsupport X ⊆ K`. -/
+theorem Submission.compactVariation_velocity_isTestField : ∀ (n ℓ : ℕ) (U : Set (Ambient n ℓ)) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → K ⊆ U → IsTestField U (fun y ↦ deriv (fun t ↦ φ t y) 0) := by
+  intro n ℓ U φ ε K hφ hKU
+  -- `Φ(q) = φ q.1 q.2` is `C^∞` on the open set `S = (-ε, ε) × ℝ^{n+ℓ}`, and `(0, y) ∈ S`.
+  have hS : IsOpen (Ioo (-ε) ε ×ˢ (univ : Set (Ambient n ℓ))) := isOpen_Ioo.prod isOpen_univ
+  have hmem : ∀ y : Ambient n ℓ, ((0 : ℝ), y) ∈ Ioo (-ε) ε ×ˢ (univ : Set (Ambient n ℓ)) :=
+    fun y ↦ ⟨⟨neg_lt_zero.mpr hφ.pos, hφ.pos⟩, mem_univ _⟩
+  -- Chain rule along `t ↦ (t, y)`: `X(y) = DΦ(0, y)(1, 0)`.
+  have hvel : ∀ y, deriv (fun t ↦ φ t y) 0 =
+      fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) (0, y) (1, 0) := by
+    intro y
+    have hdiff : DifferentiableAt ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) (0, y) :=
+      (hφ.smooth.contDiffAt (hS.mem_nhds (hmem y))).differentiableAt (by simp)
+    have hg : HasDerivAt (fun t : ℝ ↦ (t, y)) ((1 : ℝ), (0 : Ambient n ℓ)) 0 :=
+      (hasDerivAt_id (0 : ℝ)).prodMk (hasDerivAt_const (0 : ℝ) y)
+    exact (hdiff.hasFDerivAt.comp_hasDerivAt (0 : ℝ) hg).deriv
+  -- `DΦ` is `C¹` on the open set `S`, so `y ↦ DΦ(0, y)(1, 0)` is `C¹`.
+  have hcd : ContDiff ℝ 1 (fun y ↦ deriv (fun t ↦ φ t y) 0) := by
+    have h1 : ContDiffOn ℝ 1 (fun q ↦ fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) q)
+        (Ioo (-ε) ε ×ˢ univ) :=
+      hφ.smooth.fderiv_of_isOpen hS (WithTop.coe_le_coe.mpr le_top)
+    have h2 : ContDiff ℝ 1
+        (fun y : Ambient n ℓ ↦ fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) (0, y)) := by
+      rw [← contDiffOn_univ]
+      exact h1.comp (contDiff_const.prodMk contDiff_id).contDiffOn (fun y _ ↦ hmem y)
+    simp_rw [hvel]
+    exact h2.clm_apply contDiff_const
+  -- Off `K`, `t ↦ φ t y` is constant near `0`, so `X(y) = 0`.
+  have hzero : ∀ y, y ∉ K → deriv (fun t ↦ φ t y) 0 = 0 := by
+    intro y hy
+    have : (fun t ↦ φ t y) =ᶠ[𝓝 0] fun _ ↦ y := by
+      filter_upwards [Ioo_mem_nhds (neg_lt_zero.mpr hφ.pos) hφ.pos] with t ht
+      exact hφ.fixed t ht y hy
+    rw [this.deriv_eq]; simp
+  -- `K` is compact, hence closed: `tsupport X ⊆ K ⊆ U` and `X` has compact support.
+  have hsupp : tsupport (fun y ↦ deriv (fun t ↦ φ t y) 0) ⊆ K :=
+    closure_minimal (fun y hy ↦ by_contra fun h ↦ hy (hzero y h)) hφ.compact.isClosed
+  exact ⟨hcd, HasCompactSupport.intro hφ.compact hzero, hsupp.trans hKU⟩
+
 /-- Simon 2.1 (p. 87): for a family as in 2.1 and `0 < δ < ε`, the spatial derivatives
 `Dφ_t(x)` (`|t| < δ`, `x ∈ ℝ^{n+ℓ}`) and their inverses are bounded uniformly:
 `‖Dφ_t(x)‖ ≤ B` and `|v| ≤ B |Dφ_t(x) v|`. -/
@@ -4825,11 +4846,7 @@ theorem Submission.lipschitz_range_piece_cover : ∀ (n ℓ : ℕ) (K : NNReal)
     obtain ⟨-, -, hreg, c, hc, hlow⟩ := hT (Nat.unpair i).1
     exact ⟨hcpt, fun w hw ↦ hreg w (hsub hw), hcont, c, hc,
       fun v hv w hw ↦ hlow v (hsub hv) w (hsub hw)⟩
-    rw [this.deriv_eq]; simp
-  -- `K` is compact, hence closed: `tsupport X ⊆ K ⊆ U` and `X` has compact support.
-  have hsupp : tsupport (fun y ↦ deriv (fun t ↦ φ t y) 0) ⊆ K :=
-    closure_minimal (fun y hy ↦ by_contra fun h ↦ hy (hzero y h)) hφ.compact.isClosed
-  exact ⟨hcd, HasCompactSupport.intro hφ.compact hzero, hsupp.trans hKU⟩
+
 /-- **Ch. 4, 2.1 and 2.4 (pp. 87–88), linear variations.** If `X` is `C^∞` with compact support,
 then `φ_t(y) = y + tX(y)` is a family as in 2.1 with `K = spt X` and initial velocity
 `∂φ_t/∂t|_{t=0} = X`, as used in the equivalence of 2.4. With `L ≥ sup |DX|` and
@@ -5129,8 +5146,6 @@ theorem Submission.stationary_iff_variational_of_first_variation :
         (fun k ↦ ⟨(hY k).1.of_le (WithTop.coe_le_coe.mpr le_top), (hY k).2.2⟩) hYX) ?_
     exact tendsto_const_nhds.congr fun k ↦
       (hsmooth (Y k) (hY k).1 (hY k).2.1 ((hY k).2.2.trans hKU)).symm
-
-theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 /-- **Lipschitz pieces of a countably `n`-rectifiable set** (Ch. 3, 1.1, with Rademacher, the
 area formula and Lusin in place of the `C¹` cover of Ch. 3, 1.2). Up to a Borel `Hⁿ`-null set
@@ -7487,25 +7502,6 @@ theorem Submission.mcm_lp_density_of_monotonicity : (∀ (n ℓ : ℕ) (V : Rect
       Real.exp (Λ / 2) * Λ * (ρ / R) ^ (1 - (n : ℝ) / p) := by nlinarith
   exact ⟨⟨(Real.exp_le_exp.2 (neg_le_neg h₁)).trans hF₁, hF₂.trans (Real.exp_le_exp.2 h₁)⟩,
     hF₃.trans h₂⟩
-
-theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
-theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by
-  -- §1–§2: `T_x V` exists a.e. (1.3, Ch. 3 1.9); `μ_V` is Radon, `dim T_x V = n` a.e. and
-  -- `x ↦ p_{T_x V}` is `μ_V`-measurable (used by every later section); first variation (2.2).
-  obtain ⟨hTangent, hStruct, hFirstVar⟩ := Submission.tangent_structure_first_variation
-  -- §3: stationary monotonicity and density (3.6–3.11).
-  obtain ⟨hStatMono, hStatDensity⟩ := Submission.stationary_monotonicity_density hStruct
-  -- 3.12–3.13 and 4.10(1): the canonical representatives.
-  obtain ⟨hCanonical, hLpSupport⟩ := Submission.canonical_representatives hTangent hStruct
-  -- 3.17, 3.18 and §4: monotonicity in the presence of mean curvature.
-  obtain ⟨hBounded, hLog, hLpMono, hLpDensity⟩ := Submission.mean_curvature_monotonicity hStruct
-  -- 6.1 and 6.2.
-  obtain ⟨hBall, hHull⟩ := Submission.support_in_ball_convex_hull hStruct
-  exact ⟨hTangent, hFirstVar,
-    Submission.stationary_iff_variational_of_first_variation hStruct hFirstVar,
-    hStatMono, hStatDensity, hCanonical, hBounded, hLog, hLpMono, hLpDensity, hLpSupport,
-    Submission.poincare_inequality hTangent hStruct, Submission.sobolev_inequality hTangent hStruct,
-    hBall, hHull, Submission.classical_tangent hTangent hStruct⟩
 
 /-- **Fubini on the annulus** `A = B_ρ(ξ) \ B_σ(ξ)` (the radial integration by parts behind the
 integrating factors of Simon Ch. 4, 3.17 and 4.7). If `μ` is finite on compact sets, `w` is
@@ -11558,6 +11554,30 @@ theorem Submission.classical_tangent : ApproxTangentAE → (∀ (n ℓ : ℕ) (V
   exact Submission.classical_tangent_support_flatness n ℓ V.weight V.support x P (omega n / 2) ρ₀
     hfin (half_pos hω) hρ₀ hlower fun ε hε ↦
       Submission.classical_tangent_off_plane_mass_decay n ℓ V x P ε hfin hP hε
+
+/-- **Simon, Ch. 4 (pp. 85–102): the chapter's headline results.** Assembled from the accepted
+section theorems. `tangent_structure_first_variation` gives 1.3 (`ApproxTangentAE`), the
+structural facts (GF) — `μ_V` is finite on compact sets, `dim T_x V = n` `μ_V`-a.e. and
+`x ↦ p_{T_x V}` is `μ_V`-a.e. strongly measurable — and the first variation formula 2.2; every
+other conjunct is the corresponding section theorem applied to (GF) (and to 1.3 where the
+representative `(M, θ)` of `V` is used). -/
+theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by
+  -- §1–§2: `T_x V` exists a.e. (1.3, Ch. 3 1.9); (GF); the first variation formula (2.2).
+  obtain ⟨hTangent, hStruct, hFirstVar⟩ := Submission.tangent_structure_first_variation
+  -- §3: stationary monotonicity and density (3.6–3.11).
+  obtain ⟨hStatMono, hStatDensity⟩ := Submission.stationary_monotonicity_density hStruct
+  -- 3.12–3.13 and 4.10(1): the canonical representatives.
+  obtain ⟨hCanonical, hLpSupport⟩ := Submission.canonical_representatives hTangent hStruct
+  -- 3.17, 3.18 and §4: monotonicity in the presence of mean curvature.
+  obtain ⟨hBounded, hLog, hLpMono, hLpDensity⟩ := Submission.mean_curvature_monotonicity hStruct
+  -- 6.1 and 6.2.
+  obtain ⟨hBall, hHull⟩ := Submission.support_in_ball_convex_hull hStruct
+  -- 2.4, 5.6, 5.7/5.9 and 6.3.
+  exact ⟨hTangent, hFirstVar,
+    Submission.stationary_iff_variational_of_first_variation hStruct hFirstVar,
+    hStatMono, hStatDensity, hCanonical, hBounded, hLog, hLpMono, hLpDensity, hLpSupport,
+    Submission.poincare_inequality hTangent hStruct, Submission.sobolev_inequality hTangent hStruct,
+    hBall, hHull, Submission.classical_tangent hTangent hStruct⟩
 
 end
 
