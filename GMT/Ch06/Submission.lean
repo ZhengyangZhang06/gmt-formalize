@@ -408,6 +408,25 @@ theorem Submission.fiw_tb_ext_smul_testForm :
     change χ x • (c • (a : DifferentialForm (Eucl P) q) x) =
       c • (χ x • (a : DifferentialForm (Eucl P) q) x)
     rw [smul_comm]
+/-- Locality of a current (cf. the support `spt T`, Simon Ch. 6, 2.11): if `Z` vanishes on every
+test form whose support misses `K`, and `η = ω` on an open `N ⊇ K`, then `Z(η) = Z(ω)`.  The difference
+`η - ω` vanishes on `N`, so its support lies in the closed set `ℝ^P ∖ N`, which misses `K`; by
+linearity `Z(η) - Z(ω) = Z(η - ω) = 0`. -/
+theorem Submission.fiw_tb_ext_apply_eq_of_eqOn : ∀ (P q : ℕ) (V K N : Set (Eucl P)) (Z : GeometricCurrentOn V q), IsOpen N → K ⊆ N → (∀ ω : TestFormOn V q, Disjoint (tsupport (ω : DifferentialForm (Eucl P) q)) K → Z ω = 0) → ∀ ω η : TestFormOn V q, (∀ x ∈ N, (η : DifferentialForm (Eucl P) q) x = (ω : DifferentialForm (Eucl P) q) x) → Z η = Z ω := by
+  intro P q V K N Z hN hKN hZ ω η hηω
+  -- `η - ω` vanishes on the open set `N`, so its support lies in the closed set `Nᶜ`.
+  have hsupp : tsupport ((η - ω : TestFormOn V q) : DifferentialForm (Eucl P) q) ⊆ Nᶜ := by
+    apply closure_minimal _ hN.isClosed_compl
+    intro x hx hxN
+    apply hx
+    change (η : DifferentialForm (Eucl P) q) x - (ω : DifferentialForm (Eucl P) q) x = 0
+    rw [hηω x hxN, sub_self]
+  -- `Nᶜ` misses `K ⊆ N`, so `Z(η - ω) = 0`; conclude by linearity.
+  have h0 : Z (η - ω) = 0 :=
+    hZ _ (Disjoint.mono_left hsupp (disjoint_compl_left.mono_right hKN))
+  have h1 : Z (η - ω) = Z η - Z ω := Z.toCurrent.map_sub η ω
+  rw [h1] at h0
+  exact sub_eq_zero.mp h0
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
