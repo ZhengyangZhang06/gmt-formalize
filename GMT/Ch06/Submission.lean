@@ -425,6 +425,41 @@ theorem Submission.br_la_testForm_covectorNorm_bounded : ∀ (P n : ℕ) (U : Se
   linarith [le_abs_self (covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x)),
     (Real.norm_eq_abs _).symm.trans_le (hC₀ x)]
 
+/-- **Flat decompositions with vanishing masses converge weakly** (the step "Evidently (1), (2)
+give `P_k(ω) → T(ω)`" in the proof of Simon Ch. 6, 6.2, p. 169).  Let `X − P_k = ∂R_k + S_k` with
+`M(R_k), M(S_k) → 0`, and fix `ω` with `|ω| ≤ C₁` and `|dω| ≤ C₂`.  Since `∂R_k(ω) = R_k(dω)`,
+once both masses are finite `|X(ω) − P_k(ω)| ≤ |R_k(dω)| + |S_k(ω)| ≤ C₂ M(R_k) + C₁ M(S_k)`,
+and the right-hand side tends to `0`. -/
+theorem Submission.br_la_weaklyConvergesOn_of_flat_decomposition : ∀ (P m : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U (m + 1)) (Pk S : ℕ → GeometricCurrentOn U (m + 1)) (R : ℕ → GeometricCurrentOn U (m + 2)), (∀ (k : ℕ) (ω : TestFormOn U (m + 1)), X ω - Pk k ω = (R k).boundary ω + S k ω) → Tendsto (fun k => (R k).mass) atTop (𝓝 0) → Tendsto (fun k => (S k).mass) atTop (𝓝 0) → WeaklyConvergesOn Pk X := by
+  intro P m U X Pk S R hdec hR hS ω
+  -- `|ω| ≤ C₁` and `|dω| ≤ C₂` everywhere, where `dω ∈ 𝒟^{m+2}(U)`.
+  obtain ⟨C₁, hC₁, hω⟩ := Submission.br_la_testForm_covectorNorm_bounded P (m + 1) U ω
+  obtain ⟨C₂, hC₂, hdω⟩ := Submission.br_la_testForm_covectorNorm_bounded P (m + 2) U
+    (exteriorDerivativeTestOn U (m + 1) ω)
+  -- `M(R_k), M(S_k) → 0` in `[0, ∞]`: eventually finite, with real values tending to `0`.
+  have hRfin : ∀ᶠ k in atTop, (R k).mass ≠ ∞ :=
+    hR.eventually (eventually_ne_nhds ENNReal.zero_ne_top)
+  have hSfin : ∀ᶠ k in atTop, (S k).mass ≠ ∞ :=
+    hS.eventually (eventually_ne_nhds ENNReal.zero_ne_top)
+  have hRreal : Tendsto (fun k => (R k).mass.toReal) atTop (𝓝 0) := by
+    simpa [Function.comp_def] using (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hR
+  have hSreal : Tendsto (fun k => (S k).mass.toReal) atTop (𝓝 0) := by
+    simpa [Function.comp_def] using (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hS
+  -- For large `k`: `|X(ω) − P_k(ω)| = |R_k(dω) + S_k(ω)| ≤ C₂ M(R_k) + C₁ M(S_k)`.
+  have hbound : ∀ᶠ k in atTop,
+      ‖X ω - Pk k ω‖ ≤ C₂ * (R k).mass.toReal + C₁ * (S k).mass.toReal := by
+    filter_upwards [hRfin, hSfin] with k hRk hSk
+    rw [hdec k ω, GeometricCurrentOn.boundary_apply, Real.norm_eq_abs]
+    exact (abs_add_le _ _).trans (add_le_add
+      (Submission.br_la_abs_apply_le_mul_mass P (m + 2) U (R k)
+        (exteriorDerivativeTestOn U (m + 1) ω) C₂ hC₂ hdω hRk)
+      (Submission.br_la_abs_apply_le_mul_mass P (m + 1) U (S k) ω C₁ hC₁ hω hSk))
+  -- Squeeze: `X(ω) − P_k(ω) → 0`, hence `P_k(ω) → X(ω)`.
+  have hlim : Tendsto (fun k => C₂ * (R k).mass.toReal + C₁ * (S k).mass.toReal) atTop
+      (𝓝 0) := by
+    simpa using (hRreal.const_mul C₂).add (hSreal.const_mul C₁)
+  simpa using (tendsto_const_nhds (x := X ω)).sub (squeeze_zero_norm' hbound hlim)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
