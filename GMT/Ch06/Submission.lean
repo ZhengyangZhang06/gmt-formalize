@@ -359,6 +359,91 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Extension by zero from `↥U` to `ℝ^P` transfers a locally bounded functional `L` on
+`CF_N(U)` to a locally bounded linear functional `L'` on `C_c(↥U, ℝ^N)`, with `L f = L' (f ∘ ι)`
+for every `f ∈ CF_N(U)`. -/
+theorem Submission.smr_rb_transfer_functional :
+    ∀ (P N : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ L : (Eucl P → EuclideanSpace ℝ (Fin N)) → ℝ,
+      (∀ f g : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → HasCompactSupport f →
+        tsupport f ⊆ U → Continuous g → HasCompactSupport g → tsupport g ⊆ U →
+        L (f + g) = L f + L g) →
+      (∀ (c : ℝ) (f : Eucl P → EuclideanSpace ℝ (Fin N)), Continuous f → HasCompactSupport f →
+        tsupport f ⊆ U → L (c • f) = c * L f) →
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ B : ℝ,
+        ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → tsupport f ⊆ K →
+          (∀ x, ‖f x‖ ≤ 1) → L f ≤ B) →
+      ∃ L' : CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin N)) →ₗ[ℝ] ℝ,
+        (∀ K : Set ↥U, IsCompact K → ∃ B : ℝ,
+          ∀ g : CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin N)),
+            (∀ y, ‖g y‖ ≤ 1) → tsupport g ⊆ K → L' g ≤ B) ∧
+        ∀ f : Eucl P → EuclideanSpace ℝ (Fin N), Continuous f → HasCompactSupport f →
+          tsupport f ⊆ U →
+          ∃ g : CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin N)),
+            (∀ y : ↥U, g y = f ↑y) ∧ L f = L' g := by
+  intro P N U hU L hadd hsmul hbd
+  -- The zero extension `E g = Function.extend Subtype.val g 0` of `g ∈ C_c(↥U, ℝ^N)`.
+  set E : CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin N)) →
+      Eucl P → EuclideanSpace ℝ (Fin N) := fun g => Function.extend Subtype.val (⇑g) 0
+  have hEval : ∀ g x (hx : x ∈ U), E g x = g ⟨x, hx⟩ := fun g x hx =>
+    Subtype.val_injective.extend_apply (⇑g) 0 ⟨x, hx⟩
+  have hEout : ∀ g x, x ∉ U → E g x = 0 := fun g x hx =>
+    Function.extend_apply' _ _ _ fun ⟨y, hy⟩ => hx (hy ▸ y.2)
+  -- `E g ∈ CF_N(U)`, with `tsupport (E g) ⊆ ι(tsupport g)`; continuity uses that `U` is open.
+  have hEsupp : ∀ g, tsupport (E g) ⊆ Subtype.val '' tsupport g := fun g =>
+    g.hasCompactSupport.tsupport_extend_zero_subset continuous_subtype_val
+  have hEU : ∀ g, tsupport (E g) ⊆ U := fun g =>
+    (hEsupp g).trans (Subtype.coe_image_subset _ _)
+  have hEcpt : ∀ g, HasCompactSupport (E g) := fun g =>
+    g.hasCompactSupport.extend_zero continuous_subtype_val
+  have hEcont : ∀ g, Continuous (E g) := fun g =>
+    HasCompactSupport.continuous_extend_zero hU g.continuous g.hasCompactSupport
+  -- The extension is linear.
+  have hEadd : ∀ g h, E (g + h) = E g + E h := by
+    intro g h; funext x
+    by_cases hx : x ∈ U
+    · simp only [Pi.add_apply, hEval _ x hx, CompactlySupportedContinuousMap.add_apply]
+    · simp only [Pi.add_apply, hEout _ x hx, add_zero]
+  have hEsmul : ∀ (c : ℝ) g, E (c • g) = c • E g := by
+    intro c g; funext x
+    by_cases hx : x ∈ U
+    · simp only [Pi.smul_apply, hEval _ x hx, CompactlySupportedContinuousMap.smul_apply]
+    · simp only [Pi.smul_apply, hEout _ x hx, smul_zero]
+  -- `L' g = L (E g)` is linear by the additivity and homogeneity of `L` on `CF_N(U)`.
+  let L' : CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin N)) →ₗ[ℝ] ℝ :=
+    { toFun := fun g => L (E g)
+      map_add' := fun g h => by
+        show L (E (g + h)) = L (E g) + L (E h)
+        rw [hEadd]
+        exact hadd _ _ (hEcont g) (hEcpt g) (hEU g) (hEcont h) (hEcpt h) (hEU h)
+      map_smul' := fun c g => by
+        show L (E (c • g)) = c * L (E g)
+        rw [hEsmul]
+        exact hsmul c _ (hEcont g) (hEcpt g) (hEU g) }
+  refine ⟨L', fun K hK => ?_, fun f hf hfc hfU => ?_⟩
+  · -- The bound for the compact set `ι(K) ⊆ U` serves for `L'` on `K`.
+    obtain ⟨B, hB⟩ := hbd (Subtype.val '' K) (hK.image continuous_subtype_val)
+      (Subtype.coe_image_subset _ _)
+    refine ⟨B, fun g hg hgK => hB (E g) (hEcont g) ((hEsupp g).trans (image_mono hgK)) fun x => ?_⟩
+    by_cases hx : x ∈ U
+    · rw [hEval g x hx]; exact hg _
+    · rw [hEout g x hx, norm_zero]; exact zero_le_one
+  · -- `g = f ∘ ι` vanishes off the compact set `ι⁻¹(tsupport f)`, and `E g = f`.
+    have hcpt : HasCompactSupport (f ∘ Subtype.val : ↥U → EuclideanSpace ℝ (Fin N)) := by
+      refine HasCompactSupport.intro (K := Subtype.val ⁻¹' tsupport f) ?_ fun y hy => ?_
+      · exact (Topology.IsInducing.subtypeVal.isCompact_preimage_iff
+          (hfU.trans Subtype.range_coe.symm.subset)).2 hfc
+      · exact image_eq_zero_of_notMem_tsupport (f := f) hy
+    let g : CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin N)) :=
+      ⟨⟨f ∘ Subtype.val, hf.comp continuous_subtype_val⟩, hcpt⟩
+    refine ⟨g, fun y => rfl, ?_⟩
+    show L f = L (E g)
+    congr 1
+    funext x
+    by_cases hx : x ∈ U
+    · rw [hEval g x hx]; rfl
+    · rw [hEout g x hx]
+      exact image_eq_zero_of_notMem_tsupport fun h => hx (hfU h)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
