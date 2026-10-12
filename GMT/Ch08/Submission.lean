@@ -492,6 +492,58 @@ theorem Submission.intcpt_allard_ccb_cylinder_grouping :
   -- Step 6: `(1 + u)^k ≤ 1 + (2^k - 1) u` for `0 ≤ u ≤ 1`.
   have hF1 : ∀ k : ℕ, (1 + u) ^ k ≤ 1 + (2 ^ k - 1) * u := by
     intro k
+    induction k with
+    | zero => simp
+    | succ k ih =>
+      have h2k : (1 : ℝ) ≤ 2 ^ k := one_le_pow₀ (by norm_num)
+      calc (1 + u) ^ (k + 1) = (1 + u) ^ k * (1 + u) := pow_succ _ _
+        _ ≤ (1 + (2 ^ k - 1) * u) * (1 + u) := mul_le_mul_of_nonneg_right ih (by linarith)
+        _ ≤ 1 + (2 ^ (k + 1) - 1) * u := by
+          rw [pow_succ]
+          nlinarith [mul_nonneg (mul_nonneg (sub_nonneg.2 h2k) hu0) (sub_nonneg.2 hu1)]
+  -- Step 7: rescaling, `X / ρ^n ≤ κ (X / (ρ + S)^n)` with `κ = ofReal (1 + (2^n - 1) u)`.
+  have hk1 : (1 : ℝ) ≤ 1 + (2 ^ n - 1) * u := by
+    have h2n : (1 : ℝ) ≤ 2 ^ n := one_le_pow₀ (by norm_num)
+    nlinarith
+  have hreal : (ρ + S) ^ n ≤ (1 + (2 ^ n - 1) * u) * ρ ^ n := by
+    calc (ρ + S) ^ n ≤ ((1 + u) * ρ) ^ n := pow_le_pow_left₀ (by linarith) (by linarith) n
+      _ = (1 + u) ^ n * ρ ^ n := mul_pow _ _ _
+      _ ≤ (1 + (2 ^ n - 1) * u) * ρ ^ n :=
+          mul_le_mul_of_nonneg_right (hF1 n) (pow_nonneg hρ.le n)
+  have hκ : ENNReal.ofReal (ρ + S) ^ n ≤
+      ENNReal.ofReal (1 + (2 ^ n - 1) * u) * ENNReal.ofReal ρ ^ n := by
+    rw [← ENNReal.ofReal_pow (by linarith), ← ENNReal.ofReal_pow hρ.le,
+      ← ENNReal.ofReal_mul (by linarith)]
+    exact ENNReal.ofReal_le_ofReal hreal
+  have hκ0 : ENNReal.ofReal (1 + (2 ^ n - 1) * u) ≠ 0 := by
+    rw [Ne, ENNReal.ofReal_eq_zero, not_le]
+    linarith
+  have hresc : ∀ X : ℝ≥0∞, X / ENNReal.ofReal ρ ^ n ≤
+      ENNReal.ofReal (1 + (2 ^ n - 1) * u) * (X / ENNReal.ofReal (ρ + S) ^ n) := by
+    intro X
+    rw [← ENNReal.mul_div_mul_left X (ENNReal.ofReal ρ ^ n) hκ0 ENNReal.ofReal_ne_top,
+      ← mul_div_assoc]
+    exact ENNReal.div_le_div_left hκ _
+  -- Step 8: group the sum over `s` by representatives, then rescale.
+  calc ∑ y ∈ s, μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) /
+        ENNReal.ofReal ρ ^ n
+      = ∑ w ∈ Z, ∑ y ∈ s with r y = w,
+          μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) /
+            ENNReal.ofReal ρ ^ n :=
+        (Finset.sum_fiberwise_of_maps_to hrZ _).symm
+    _ = ∑ w ∈ Z, (∑ y ∈ s with r y = w,
+          μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2})) /
+            ENNReal.ofReal ρ ^ n := by
+        simp_rw [ENNReal.sum_div]
+    _ ≤ ∑ w ∈ Z, μ (closedBall w (ρ + S) ∩
+          {z | ‖(z - w) - Grassmannian.project P (z - w)‖ < d / 2 + S}) / ENNReal.ofReal ρ ^ n :=
+        Finset.sum_le_sum fun w hw ↦ ENNReal.div_le_div_right (hfib w hw) _
+    _ ≤ ∑ w ∈ Z, ENNReal.ofReal (1 + (2 ^ n - 1) * u) * (μ (closedBall w (ρ + S) ∩
+          {z | ‖(z - w) - Grassmannian.project P (z - w)‖ < d / 2 + S}) /
+            ENNReal.ofReal (ρ + S) ^ n) :=
+        Finset.sum_le_sum fun w _ ↦ hresc _
+    _ = _ := (Finset.mul_sum _ _ _).symm
+
 /-- One-point bound from monotonicity (Simon Ch. 8, 5.10, proof of (8), one point): if
 `‖y - x‖ < ε ≤ δ⁴`, `0 < δ ≤ 1/2`, `0 < σ ≤ δ²` and `r ↦ e^{εr} μ(B_r(y)) / r^n` is non-decreasing
 on `(0,1)`, then `μ(B_σ(y)) / σ^n ≤ (1 + 2^{n+2} δ²) μ(B_1(x))`. -/
@@ -545,51 +597,6 @@ theorem Submission.intcpt_allard_ccb_one_point_ball_bound :
       have h2k : (1 : ℝ) ≤ 2 ^ k := one_le_pow₀ (by norm_num)
       calc (1 + u) ^ (k + 1) = (1 + u) ^ k * (1 + u) := pow_succ _ _
         _ ≤ (1 + (2 ^ k - 1) * u) * (1 + u) := mul_le_mul_of_nonneg_right ih (by linarith)
-        _ ≤ 1 + (2 ^ (k + 1) - 1) * u := by
-          rw [pow_succ]
-          nlinarith [mul_nonneg (mul_nonneg (sub_nonneg.2 h2k) hu0) (sub_nonneg.2 hu1)]
-  -- Step 7: rescaling, `X / ρ^n ≤ κ (X / (ρ + S)^n)` with `κ = ofReal (1 + (2^n - 1) u)`.
-  have hk1 : (1 : ℝ) ≤ 1 + (2 ^ n - 1) * u := by
-    have h2n : (1 : ℝ) ≤ 2 ^ n := one_le_pow₀ (by norm_num)
-    nlinarith
-  have hreal : (ρ + S) ^ n ≤ (1 + (2 ^ n - 1) * u) * ρ ^ n := by
-    calc (ρ + S) ^ n ≤ ((1 + u) * ρ) ^ n := pow_le_pow_left₀ (by linarith) (by linarith) n
-      _ = (1 + u) ^ n * ρ ^ n := mul_pow _ _ _
-      _ ≤ (1 + (2 ^ n - 1) * u) * ρ ^ n :=
-          mul_le_mul_of_nonneg_right (hF1 n) (pow_nonneg hρ.le n)
-  have hκ : ENNReal.ofReal (ρ + S) ^ n ≤
-      ENNReal.ofReal (1 + (2 ^ n - 1) * u) * ENNReal.ofReal ρ ^ n := by
-    rw [← ENNReal.ofReal_pow (by linarith), ← ENNReal.ofReal_pow hρ.le,
-      ← ENNReal.ofReal_mul (by linarith)]
-    exact ENNReal.ofReal_le_ofReal hreal
-  have hκ0 : ENNReal.ofReal (1 + (2 ^ n - 1) * u) ≠ 0 := by
-    rw [Ne, ENNReal.ofReal_eq_zero, not_le]
-    linarith
-  have hresc : ∀ X : ℝ≥0∞, X / ENNReal.ofReal ρ ^ n ≤
-      ENNReal.ofReal (1 + (2 ^ n - 1) * u) * (X / ENNReal.ofReal (ρ + S) ^ n) := by
-    intro X
-    rw [← ENNReal.mul_div_mul_left X (ENNReal.ofReal ρ ^ n) hκ0 ENNReal.ofReal_ne_top,
-      ← mul_div_assoc]
-    exact ENNReal.div_le_div_left hκ _
-  -- Step 8: group the sum over `s` by representatives, then rescale.
-  calc ∑ y ∈ s, μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) /
-        ENNReal.ofReal ρ ^ n
-      = ∑ w ∈ Z, ∑ y ∈ s with r y = w,
-          μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) /
-            ENNReal.ofReal ρ ^ n :=
-        (Finset.sum_fiberwise_of_maps_to hrZ _).symm
-    _ = ∑ w ∈ Z, (∑ y ∈ s with r y = w,
-          μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2})) /
-            ENNReal.ofReal ρ ^ n := by
-        simp_rw [ENNReal.sum_div]
-    _ ≤ ∑ w ∈ Z, μ (closedBall w (ρ + S) ∩
-          {z | ‖(z - w) - Grassmannian.project P (z - w)‖ < d / 2 + S}) / ENNReal.ofReal ρ ^ n :=
-        Finset.sum_le_sum fun w hw ↦ ENNReal.div_le_div_right (hfib w hw) _
-    _ ≤ ∑ w ∈ Z, ENNReal.ofReal (1 + (2 ^ n - 1) * u) * (μ (closedBall w (ρ + S) ∩
-          {z | ‖(z - w) - Grassmannian.project P (z - w)‖ < d / 2 + S}) /
-            ENNReal.ofReal (ρ + S) ^ n) :=
-        Finset.sum_le_sum fun w _ ↦ hresc _
-    _ = _ := (Finset.mul_sum _ _ _).symm
         _ = 1 + 2 ^ k * u + (2 ^ k - 1) * u ^ 2 := by ring
         _ ≤ 1 + 2 ^ k * u + (2 ^ k - 1) * u := by
           have hu2 : u ^ 2 ≤ u := by nlinarith
@@ -791,6 +798,7 @@ theorem Submission.intcpt_allard_ccb_reduction_step :
   rw [hcoef]
   calc _ ≤ _ := hstep4
     _ ≤ _ := add_le_add hgroup le_rfl
+
 /-- Composing two affine bounds in `[0,∞]` (Simon Ch. 8, proof of 5.10 (8), recombination of the
 induction constants): if `X ≤ (1 + b δ²) Y + k δ²` and `Y ≤ (1 + c δ²) M + c δ²` with `b, c, k ≥ 0`,
 `δ² ≤ 1`, `b + c + b c ≤ c'` and `(1 + b) c + k ≤ c'`, then `X ≤ (1 + c' δ²) M + c' δ²`
@@ -820,6 +828,7 @@ theorem Submission.intcpt_allard_ccb_affine_combine :
         ENNReal.ofReal_mul hp, ENNReal.ofReal_mul hp]
       ring
     _ ≤ ENNReal.ofReal (1 + c' * δ ^ 2) * M + ENNReal.ofReal (c' * δ ^ 2) := by gcongr
+
 /-- Cluster selection (Simon Ch. 8, proof of 5.10 (8)): if two distinct points of a finite set `s`
 with `#s ≥ 2` are at distance `≤ d`, there are centres `Z ⊆ s` with `#Z < #s` and a radius
 `0 ≤ S ≤ (10 #s)^{#s} d` such that every `y ∈ s` is within `S` of `Z` and distinct centres are at
