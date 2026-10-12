@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.mass_upper_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+  "depth": 3,
+  "title": "Upper mass bound M_W(T) ≤ μ_R(W)",
+  "statement": "Let P, n be natural numbers, U ⊆ ℝ^P, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), and R = (M, θ, ξ) : IMRep U n with R.Represents T, i.e. T(ω) = R.action ω for all ω ∈ 𝒟ⁿ(U). Then M_W(T) ≤ μ_R(W) in [0, ∞] for every set W ⊆ ℝ^P. Here μ_R = R.measure, and M_W(T) = T.massOn W is the supremum of ofReal T(ω) over ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ W and covectorEuclideanNorm (ω(x)) ≤ 1 for all x.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ W : Set (Euclid P), T.massOn W ≤ R.measure W",
+  "lean_name": "dor_ims_massOn_le_measure",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.action_integral_formula-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.action_integral_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-mass-up-4048586780-a1"
+}

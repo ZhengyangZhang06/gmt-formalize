@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.mass_lower_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+  "depth": 3,
+  "title": "Lower mass bound μ_R(W) ≤ M_W(T) for open W",
+  "statement": "Let P, n be natural numbers, U ⊆ ℝ^P open, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), and R = (M, θ, ξ) : IMRep U n with R.Represents T. Then μ_R(W) ≤ M_W(T) in [0, ∞] for every open W ⊆ ℝ^P, where μ_R = R.measure and M_W(T) = T.massOn W.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → R.measure W ≤ T.massOn W",
+  "lean_name": "dor_ims_measure_le_massOn",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.action_integral_formula-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.action_integral_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-mass-lo-f48857d288-a1"
+}

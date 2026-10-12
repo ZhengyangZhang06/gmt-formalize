@@ -1,0 +1,131 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.imrep_mass_and_support-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.imrep_mass_and_support-a1.mass_lower_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 of the parent proof. Its 4(a) (Lusin) and 4(c)–(d) (smooth approximation) are the siblings dor_ims_lusin_continuousOn and dor_ims_smooth_unit_approx. The estimate 4(e) is regrouped to fit the packaged approximation: it uses |ω − ξ^♭| ≤ δ on K' and |ω| ≤ 1 everywhere.
+Notation: M = R.carrier, θ = R.mult, ξ = R.orient, ν := Hⁿ⌞M, μ := R.measure = ν.withDensity θ ≪ ν, |·| = covectorEuclideanNorm. Measures of sets are in [0, ∞].
+0. (Duality and the good set.) Fix a continuous linear L : Λₙ → Λⁿ by dor_ims_unitOrientation_dual. Call x good if (i) |ξ(x)(α)| ≤ |α| for all α, (ii) |L(ξ(x))| ≤ 1, and (iii) ξ(x)(L(ξ(x))) = 1. By R.orients, for ν-a.e. x some Q has IsUnitOrientationOf (ξ(x)) Q, so ν-a.e. x is good, hence μ-a.e. x is good (μ ≪ ν). Choose a measurable μ-null set Z containing all bad points (exists_measurable_superset_of_null). Put β(x) := L(ξ(x)), the parent's ξ^♭. β is μ-a.e. strongly measurable: ξ is ν-a.e., hence μ-a.e., strongly measurable, and L is continuous.
+1. (Finiteness, concentration.) For compact K ⊆ U, μ(K) = ∫_{M∩K} θ dHⁿ < ∞ (R.locallyIntegrable_mult). Also μ(ℝ^P ∖ U) = 0, because ν(ℝ^P ∖ M) = 0 and M ⊆ U.
+2. (Reduction to G.) G := W ∩ U is open, and μ(W) = μ(G) because μ(G) ≤ μ(W) ≤ μ(G) + μ(ℝ^P ∖ U) = μ(G).
+3. (Real thresholds.) By ENNReal.le_of_forall_nnreal_lt it suffices to prove r ≤ M_W(T) for every real r ≥ 0 with r < μ(G). Fix such r and choose η > 0 with r + 4η < μ(G): η := 1 if μ(G) = ∞, and η := (μ(G) − r)/5 otherwise.
+4. (Inner compact approximation.) For j ∈ ℕ let G_j := B̄_j(0) ∖ {x : dist(x, ℝ^P ∖ G) < 1/(j+1)}, the closed ball minus the open 1/(j+1)-neighbourhood of ℝ^P ∖ G (empty if G = ℝ^P).
+ - Each G_j is closed and bounded, hence compact; G_j ⊆ G; and G_j increases with j.
+ - ⋃_j G_j = G: for x ∈ G there is ε > 0 with B_ε(x) ⊆ G. So x is outside the 1/(j+1)-neighbourhood of ℝ^P ∖ G once 1/(j+1) ≤ ε, and x ∈ G_j once also j ≥ |x|.
+ By continuity of μ from below (tendsto_measure_iUnion_atTop), μ(G_j) → μ(G). So there is a compact K := G_j ⊆ G with μ(K) > r + 4η, and μ(K) < ∞ by step 1 since K ⊆ U.
+5. (Lusin.) Apply dor_ims_lusin_continuousOn to μ, A := K ∖ Z (measurable, μ(A) ≤ μ(K) < ∞), f := β and ε := η. This gives a compact K' ⊆ K ∖ Z with μ((K ∖ Z) ∖ K') < η and β continuous on K'. Then μ(K ∖ K') ≤ μ((K ∖ Z) ∖ K') + μ(Z) < η. Every x ∈ K' is good, since K' ∩ Z = ∅; in particular |β(x)| ≤ 1 on K'.
+6. (Outer open approximation.) K' is compact and G open, so there is ρ > 0 with cthickening(ρ, K') ⊆ G (IsCompact.exists_cthickening_subset_open). This set is compact and contained in U, so its μ-measure is finite. Consider the open sets V_j := thickening(ρ/(j+1), K') = {x : dist(x, K') < ρ/(j+1)}:
+ - they decrease, contain K' and lie in cthickening(ρ, K');
+ - ⋂_j V_j = K': if x ∉ K', some ball B_ε(x) misses the closed set K', so x ∉ V_j once ρ/(j+1) ≤ ε.
+ By continuity of μ from above (tendsto_measure_iInter_atTop, with μ(V_0) < ∞), μ(V_j) → μ(K'). Since μ(K') < ∞, μ(V_j ∖ K') = μ(V_j) − μ(K') → 0. Fix V := V_j with μ(V ∖ K') < η. Then V is open and K' ⊆ V ⊆ G.
+7. (Smooth admissible form.) Let δ := η/(μ(K) + 1) > 0, with μ(K) as a real number. Apply dor_ims_smooth_unit_approx to K', V, β and δ. This gives an n-form ω₀ that is C^∞ with compact support, with tsupport ω₀ ⊆ V, |ω₀(x)| ≤ 1 for all x, and |ω₀(x) − β(x)| ≤ δ for x ∈ K'.
+ - Since tsupport ω₀ ⊆ V ⊆ G ⊆ U, ω₀ defines ω ∈ 𝒟ⁿ(U) = TestFormOn U n.
+ - Since tsupport ω ⊆ V ⊆ W and |ω| ≤ 1, ω is admissible for M_W(T), so ofReal(T(ω)) ≤ M_W(T) (GeometricCurrentOn.le_massOn).
+8. (Integral representation.) By R.Represents T and dor_ims_action_eq_integral, T(ω) = ∫ f dμ, where f(x) := ξ(x)(ω₀(x)) is μ-integrable.
+9. (Pointwise lower bound.) For μ-a.e. x:
+ - x ∈ K' (good): f(x) = ξ(x)(β(x)) + ξ(x)(ω₀(x) − β(x)) ≥ 1 − |ω₀(x) − β(x)| ≥ 1 − δ, by (iii) and (i);
+ - x ∈ V ∖ K' (good a.e.): f(x) ≥ −|ξ(x)(ω₀(x))| ≥ −|ω₀(x)| ≥ −1;
+ - x ∉ V: ω₀(x) = 0 because x ∉ tsupport ω₀, so f(x) = 0.
+ So f ≥ h := (1 − δ)·1_{K'} − 1_{V∖K'} μ-a.e. h is μ-integrable, since μ(K') ≤ μ(K) < ∞ and μ(V ∖ K') < η. Hence T(ω) = ∫ f dμ ≥ ∫ h dμ = (1 − δ)·μ(K') − μ(V ∖ K').
+10. (Arithmetic; all measures are finite reals.)
+ - μ(K) = μ(K') + μ(K ∖ K') with μ(K ∖ K') < η, so μ(K') > μ(K) − η > r + 3η.
+ - δ·μ(K') ≤ δ·μ(K) = η·μ(K)/(μ(K) + 1) < η.
+ - μ(V ∖ K') < η.
+ Therefore T(ω) ≥ μ(K') − δ·μ(K') − μ(V ∖ K') > (r + 3η) − η − η = r + η > r. Thus r = ofReal(r) ≤ ofReal(T(ω)) ≤ M_W(T).
+11. Since r was an arbitrary real number below μ(G) = μ(W), μ(W) ≤ M_W(T). (This argument is machine-checked from the four sibling types: /tmp/imrep-ms-decomp/C4Skeleton.lean.)
+
+## Key steps
+
+1. μ_R-a.e. x is good for the duality map L (|ξ(α)| ≤ |α|, |L ξ| ≤ 1, ξ(L ξ) = 1); remove a measurable null set Z.
+2. Reduce to G = W ∩ U and a real r < μ_R(G); choose η and, by compact exhaustion, a compact K ⊆ G with μ_R(K) > r + 4η.
+3. Lusin gives a compact K' ⊆ K ∖ Z with μ_R(K ∖ K') < η and β = L ∘ ξ continuous on K'; thickenings give an open V with K' ⊆ V ⊆ G and μ_R(V ∖ K') < η.
+4. The smooth-approximation sibling gives an admissible ω with |ω − β| ≤ δ on K', tsupport ω ⊆ V and |ω| ≤ 1.
+5. T(ω) = ∫ ξ(ω) dμ_R ≥ (1 − δ)μ_R(K') − μ_R(V ∖ K') > r, hence μ_R(W) ≤ M_W(T).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n -i lusin <snapshot>/mathlib/Mathlib (also -l)`
+- `rg -n 'TietzeExtension' <snapshot>/mathlib/Mathlib (Topology/TietzeExtension.lean, Analysis/Complex/Tietze.lean)`
+- `rg -n 'exists_hasCompactSupport_integral_sub_le|exists_hasCompactSupport_eLpNorm_sub_le' <snapshot>/mathlib/Mathlib`
+- `rg -n 'dist_normed_convolution_le|convolution_tendsto_right' <snapshot>/mathlib/Mathlib`
+- `rg -n 'instance.*Regular|InnerRegularCompactLTTop' Mathlib/MeasureTheory/Measure/Regular.lean Mathlib/MeasureTheory/Measure/RegularityCompacts.lean`
+- `sed -n 1,80p Mathlib/MeasureTheory/Measure/Support.lean | rg 'def|theorem|lemma' (Measure.support, mem_support_iff_forall)`
+- `rg -n 'exists_cthickening_subset_open|closure_eq_iInter_thickening|cthickening_eq_iInter_thickening' Mathlib/Topology/MetricSpace/Thickening.lean`
+- `rg -n 'le_of_forall_nnreal_lt|le_of_forall_pos_le_add' Mathlib/Basic/ENNReal`
+- `rg -n 'integral_indicator_one|integral_withDensity_eq_integral_smul|withDensity_absolutelyContinuous|exists_measurable_superset_of_null|AbsolutelyContinuous.ae_le|comp_aestronglyMeasurable₂|image_eq_zero_of_notMem_tsupport' <snapshot>/mathlib/Mathlib`
+- `rg -n 'covectorEuclideanNorm' lake-packages-25730c7c/simongmt/Poincare/SimonGMT; rg -n '^(theorem|lemma|def|abbrev) ' Chapter06/{WedgeForms,FormsDuality,GeometricPointProduct,Representation}.lean`
+- `grep -rln FormsDuality simongmt (not imported by the Ch07 contract)`
+- `grep dor_ims_{unitOrientation_dual,action_eq_integral,massOn_le_measure,lusin_continuousOn,smooth_unit_approx,measure_le_massOn,support_of_massOn_eq} in dag.json, simongmt/Poincare, GMT/, mathlib/Mathlib (no match)`
+- `lake env lean /tmp/imrep-ms-decomp/Parent.lean; Children.lean; Sanity.lean; C2Check.lean; C4Skeleton.lean; final/Final.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/TietzeExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Tietze.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/tmp/imrep-ms-decomp/final/Final.lean`
+- `/tmp/imrep-ms-decomp/final/statements.json`
+- `/tmp/imrep-ms-decomp/C2Check.lean`
+- `/tmp/imrep-ms-decomp/Sanity.lean`
+- `/tmp/imrep-ms-decomp/C4Skeleton.lean`
+
+Snapshot: project b4d606d, mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Reusable facts found:
+- SimonGMT Chapter06/Mass.lean: covectorEuclideanNorm, massAdmissibleOn, GeometricCurrentOn.massOn and le_massOn.
+- Chapter06/CurrentLocalEquality.lean: VanishesOn, zeroRegion and support (spt T = U ∖ zeroRegion).
+- Chapter06/FormsDuality.lean: wedgeCovectors and wedgeCovectors_apply_det give the coordinate covectors dx^I and the frame covector δ_τ used in the Cauchy–Binet child. The module is not imported by the Ch07 contract, so it must be imported in Submission.
+- Mathlib: Measure.mem_support_iff_forall; finite measures on completely metrizable spaces are InnerRegular (RegularityCompacts.lean); Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure.
+- Mathlib Tietze: ContinuousMap.exists_restrict_eq with RCLike.instTietzeExtensionTVS for finite-dimensional real spaces.
+- Mathlib bump functions: ContDiffBump.dist_normed_convolution_le and convolution_tendsto_right_of_continuous.
+- Mathlib Integrable.exists_hasCompactSupport_integral_sub_le (not needed on the chosen route).
+- Mathlib measure and topology API: IsCompact.exists_cthickening_subset_open, tendsto_measure_iUnion_atTop, tendsto_measure_iInter_atTop, ENNReal.le_of_forall_nnreal_lt, integral_withDensity_eq_integral_smul, integral_indicator_one, Continuous.comp_aestronglyMeasurable₂ (with isBoundedBilinearMap_apply.continuous).
+
+Not available:
+- Lusin's continuity theorem. Only Lusin–Souslin and Lusin separation are present (Polish/Basic.lean), so it becomes the child lusin_covector.
+- The mass formula M_W(T) = μ_T(W) for the contract's Euclidean coefficient norm. Chapter06/Representation.lean has only the assumed comass MassRepresentation field.
+- A Cauchy–Binet / exterior-power coefficient expansion for continuous alternating maps.
+
+Lean checks:
+- All seven exact child types elaborate in the comparator scope, and `exact Submission.X` closes each.
+- The parent assembly from C3, C4 and C5 type-checks, with sorryAx only from the stubs.
+- C2 and C5 are fully proved with propext, Classical.choice and Quot.sound only.
+- C3 is proved from the C1 and C2 types.
+- C4 is proved from the types of C1, C2, Lusin and the smooth approximation.
+- The seven dor_ims_* names have no matches anywhere.
