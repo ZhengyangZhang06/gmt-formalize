@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "80685a2e8d22903b75cbb17af6165e92cba949e418ef75f2a6302f31103739d7",
+  "git_delta": {
+    "base_commit": "55b4e0cba4ff7def010ba8526c62118fd6822cf1",
+    "candidate_commit": "43933f9dfbcfd43d74a1a2249d717b5b30ed533a",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "21e942d92e123175cb2efbf276489f912b38274b13a21f28e5d7555199db6ba1",
+    "source_sha256": "7fed4e961d51baee801e2abe3458cf21e4063048ecdd8e0eff4b029dd7c3630a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_piece_tangent_projection_field",
+      "statement": "∀ (n ℓ : ℕ) (C : ℕ → Set (EuclideanSpace ℝ (Fin n))) (F : ℕ → EuclideanSpace ℝ (Fin n) → Ambient n ℓ), (∀ i, IsCompact (C i) ∧ (∃ K : NNReal, LipschitzWith K (F i)) ∧ (∀ w ∈ C i, DifferentiableAt ℝ (F i) w ∧ Function.Injective (fderiv ℝ (F i) w)) ∧ ContinuousOn (fderiv ℝ (F i)) (C i) ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖F i v - F i w‖) → ∃ g : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), StronglyMeasurable g ∧ ∀ i, ∀ w ∈ C i, (∀ j < i, F i w ∉ F j '' C j) → g (F i w) = (LinearMap.range (fderiv ℝ (F i) w).toLinearMap).starProjection",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
