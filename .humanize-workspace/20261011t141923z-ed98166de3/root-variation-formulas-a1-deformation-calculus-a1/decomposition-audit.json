@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(import|namespace|open|abbrev Rn)|IsAdmissibleDeformation|initialVelocity|initialAcceleration|variation_deformation",
+        "theorem ContDiffAt.isSymmSndFDerivAt|theorem IsSymmSndFDerivAt.eq|def IsSymmSndFDerivAt|minSmoothness_of_isRCLikeNormedField|theorem ContDiffOn.fderiv_of_isOpen|theorem ContDiffOn.contDiffAt|theorem ContDiffOn.congr|theorem ContDiffAt.eventually|theorem ContDiffAt.differentiableAt|theorem ContDiffAt.fderiv_right|theorem ContDiffOn.clm_comp|theorem ContDiffOn.clm_apply",
+        "variation_deformation_vanish_off_closed|variation_deformation_partials_contDiffOn|variation_deformation_mixed_partial",
+        "hasDerivAt_familySpatialDerivative|familySpatialDerivative_eq_fderiv|initialVelocity_eq_deriv|contDiffAt_initialVelocity|^(import|namespace|open)",
+        "#print axioms _root_.HumanizeNodeComparator.target"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DeformationFamily.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-deformation-calculus-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/defcalc-decomp-6Hb6gC/checks/ChildV.lean",
+        "/tmp/defcalc-decomp-6Hb6gC/checks/ChildP.lean",
+        "/tmp/defcalc-decomp-6Hb6gC/checks/ChildM.lean",
+        "/tmp/defcalc-decomp-6Hb6gC/checks/Assembly.lean",
+        "/tmp/defcalc-independent-audit-dn5uabsr/proofs/GMT/Ch02/Submission.lean"
+      ],
+      "conclusion": "The split is appropriate: its three independent obligations establish the selected parent’s V, C2 and C3 clauses, with repeated applications of mixed_partial to the deformation and its time derivative. Pinned sources provide the required germ, regularity and symmetry lemmas; inspected Mathlib sources match the compiler packages byte-for-byte. No proposed name occurs in another DAG reservation or node proposal, or in the searched reference sources. All names are bare identifiers and all dependency lists are correctly empty. Fresh Lean builds compiled all four exact comparator-generated challenge types against the frozen Submission, before any child implementation, and all four solution modules against the supplied proofs and assembly. Every solution’s axiom closure is limited to propext, Classical.choice and Quot.sound. The stated Symmetric import is permitted. Smoothness exponents and continuous-linear-map constructions elaborate correctly; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and includes both hypotheses. Constancy on the open time interval proves velocity and acceleration vanish without assuming differentiability. Closedness of K then supplies spatial neighborhoods where both fields vanish, proving both Fréchet derivatives are zero. The proof is complete and independent of the parent."
+    },
+    {
+      "key": "partials_contdiffon",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes openness, joint C^n regularity and m + 1 ≤ n. The argument works for every stated WithTop ℕ∞ exponent: n is nonzero, DF is C^m, and chain rules identify both partial derivatives on O. Continuous-linear-map composition, evaluation and congruence prove both conclusions without another child."
+    },
+    {
+      "key": "mixed_partial",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly states interchange at arbitrary (t,y). Finite-order ContDiffAt supplies the neighborhood needed for both germ identities. Differentiating DF along the two embeddings and applying symmetry identifies the continuous-linear-map derivatives; eventual equality transfers the result. Every step is supplied, non-circular and sufficient for formalization."
+    }
+  ],
+  "required_changes": []
+}
