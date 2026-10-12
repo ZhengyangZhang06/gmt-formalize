@@ -1530,6 +1530,130 @@ theorem Submission.pcoarea_formula_on_chart : ∀ (m k N : ℕ) (ψ : Rn (m + k)
   refine setLIntegral_congr_fun hBm (fun u hu ↦ ?_)
   rw [← hjac u (hB hu), ENNReal.ofReal_mul (LinearMap.normDet_nonneg _), Φ.left_inv (hB hu)]
   ring
+/-- **Lindelöf gluing of the parametric co-area identity**: the localization step of the proof of
+the `C¹` co-area formula (Simon Ch. 2, 6.3 and 6.6, whose proof Simon omits; [Fed69, 3.2.12,
+3.2.22]). Let `D ⊆ ℝⁿ` be open, `Z ⊆ ℝⁿ` arbitrary, `ψ : ℝⁿ → ℝᴺ` continuous and injective on `D`,
+`G : ℝⁿ → ℝᵐ` continuous and `w ≥ 0` arbitrary. Call a Borel set `B ⊆ D` good if for every Borel
+`φ ≥ 0` the function `y ↦ ∫_{ψ(B ∩ G⁻¹{y})} φ dHᵏ` is `Lᵐ`-a.e. measurable and
+`∫_B φ(ψ(u)) w(u) dLⁿ(u) = ∫_{ℝᵐ} ∫_{ψ(B ∩ G⁻¹{y})} φ dHᵏ dLᵐ(y)`. If every Borel `B ⊆ D` with
+`B ⊆ Z` is good, and every `p ∈ D \ Z` has an open neighbourhood `O` such that every Borel
+`B ⊆ D ∩ O` is good, then every Borel `B ⊆ D` is good. By Lindelöf, countably many of these
+neighbourhoods cover `D \ Z`. They cut `B` into disjoint Borel pieces, one inside `Z` and each of
+the others inside a single neighbourhood. For every `y` the images `ψ(B_t ∩ G⁻¹{y})` of the
+pieces' slices are Borel (Lusin–Souslin) and pairwise disjoint (`ψ` is injective on `D`), so both
+sides of the identity are countably additive over the pieces. -/
+theorem Submission.pcoarea_gluing : ∀ (n N m k : ℕ) (D Z : Set (Rn n)) (ψ : Rn n → Rn N) (G : Rn n → Rn m) (w : Rn n → ℝ≥0∞), IsOpen D → ContinuousOn ψ D → InjOn ψ D → Continuous G → (∀ B ⊆ D, MeasurableSet B → B ⊆ Z → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧ ∫⁻ u in B, φ (ψ u) * w u = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume) → (∀ p ∈ D, p ∉ Z → ∃ O : Set (Rn n), IsOpen O ∧ p ∈ O ∧ ∀ B ⊆ D ∩ O, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧ ∫⁻ u in B, φ (ψ u) * w u = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume) → ∀ B ⊆ D, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ → AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧ ∫⁻ u in B, φ (ψ u) * w u = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume := by
+  intro n N m k D Z ψ G w _hD hψc hψi hG hCrit hLoc B hBD hBm φ hφ
+  classical
+  -- Step 1 (Lindelöf): a good open neighbourhood `O p` of each `p ∈ D \ Z`, and a countable
+  -- subfamily `(O i)_{i ∈ T}` with the same union.
+  have hLoc' : ∀ p : ↥(D \ Z), ∃ O : Set (Rn n), IsOpen O ∧ (p : Rn n) ∈ O ∧
+      ∀ B ⊆ D ∩ O, MeasurableSet B → ∀ φ : Rn N → ℝ≥0∞, Measurable φ →
+        AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧
+          ∫⁻ u in B, φ (ψ u) * w u =
+            ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume :=
+    fun p ↦ hLoc p p.2.1 p.2.2
+  choose O hOo hpO hOgood using hLoc'
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable O hOo
+  have hcovT : D \ Z ⊆ ⋃ i ∈ T, O i := by
+    intro x hx
+    rw [hTU]
+    exact mem_iUnion.2 ⟨⟨x, hx⟩, hpO _⟩
+  -- If the subfamily is empty (the case the proof pads with `∅`), then `D ⊆ Z`, so `B` is good
+  -- by (Crit).
+  by_cases hT : T.Nonempty
+  swap
+  · have hBZ : B ⊆ Z := by
+      intro x hxB
+      by_contra hxZ
+      obtain ⟨i, hiT, -⟩ := mem_iUnion₂.1 (hcovT ⟨hBD hxB, hxZ⟩)
+      exact hT ⟨i, hiT⟩
+    exact hCrit B hBD hBm hBZ φ hφ
+  -- Otherwise list it as a sequence `U j = O (e j)`, `j ∈ ℕ`, covering `D \ Z`.
+  obtain ⟨e, he⟩ := hTc.exists_eq_range hT
+  set U : ℕ → Set (Rn n) := fun j ↦ O (e j) with hUdef
+  have hUo : ∀ j, IsOpen (U j) := fun j ↦ hOo _
+  have hcover : D \ Z ⊆ ⋃ j, U j := by
+    intro x hx
+    obtain ⟨i, hiT, hxi⟩ := mem_iUnion₂.1 (hcovT hx)
+    rw [he] at hiT
+    obtain ⟨j, rfl⟩ := hiT
+    exact mem_iUnion.2 ⟨j, hxi⟩
+  -- Step 2 (disjoint pieces): `P = disjointed C` with `C 0 = B \ ⋃ j, U j` and
+  -- `C (j + 1) = B ∩ U j`, so `P 0 = B \ ⋃ j, U j` and `P (j + 1) = (B ∩ U j) \ ⋃_{i < j} U i`.
+  let C : ℕ → Set (Rn n) := fun t ↦ Nat.casesOn t (B \ ⋃ j, U j) (fun j ↦ B ∩ U j)
+  have hCm : ∀ t, MeasurableSet (C t) := by
+    intro t
+    cases t with
+    | zero => exact hBm.diff (MeasurableSet.iUnion fun j ↦ (hUo j).measurableSet)
+    | succ j => exact hBm.inter (hUo j).measurableSet
+  have hCB : ∀ t, C t ⊆ B := by
+    intro t
+    cases t with
+    | zero => exact sdiff_subset
+    | succ j => exact inter_subset_left
+  have hCU : ⋃ t, C t = B := by
+    refine Subset.antisymm (iUnion_subset hCB) fun x hxB ↦ ?_
+    by_cases hx : x ∈ ⋃ j, U j
+    · obtain ⟨j, hxj⟩ := mem_iUnion.1 hx
+      exact mem_iUnion.2 ⟨j + 1, ⟨hxB, hxj⟩⟩
+    · exact mem_iUnion.2 ⟨0, ⟨hxB, hx⟩⟩
+  set P : ℕ → Set (Rn n) := disjointed C with hPdef
+  have hPm : ∀ t, MeasurableSet (P t) := MeasurableSet.disjointed hCm
+  have hPd : Pairwise (Function.onFun Disjoint P) := disjoint_disjointed C
+  have hPU : ⋃ t, P t = B := by rw [hPdef, iUnion_disjointed, hCU]
+  have hPC : ∀ t, P t ⊆ C t := disjointed_subset C
+  have hPD : ∀ t, P t ⊆ D := fun t ↦ (hPC t).trans ((hCB t).trans hBD)
+  -- Every piece is good: `P 0 ⊆ Z` by (Crit), and `P (j + 1) ⊆ D ∩ U j` by (Loc).
+  have hPgood : ∀ t, ∀ φ : Rn N → ℝ≥0∞, Measurable φ →
+      AEMeasurable (fun y : Rn m ↦ ∫⁻ x in ψ '' (P t ∩ G ⁻¹' {y}), φ x ∂μHE[k]) volume ∧
+        ∫⁻ u in P t, φ (ψ u) * w u =
+          ∫⁻ y, (∫⁻ x in ψ '' (P t ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume := by
+    intro t
+    cases t with
+    | zero =>
+      refine hCrit (P 0) (hPD 0) (hPm 0) fun x hx ↦ ?_
+      have hx' : x ∈ B \ ⋃ j, U j := hPC 0 hx
+      by_contra hxZ
+      exact hx'.2 (hcover ⟨hBD hx'.1, hxZ⟩)
+    | succ j =>
+      refine hOgood (e j) (P (j + 1)) (fun x hx ↦ ⟨hPD _ hx, ?_⟩) (hPm _)
+      have hx' : x ∈ B ∩ U j := hPC (j + 1) hx
+      exact hx'.2
+  -- Step 3 (slices): for each `y` the sets `ψ '' (P t ∩ G ⁻¹' {y})` are Borel (Lusin–Souslin)
+  -- and pairwise disjoint, with union `ψ '' (B ∩ G ⁻¹' {y})`.
+  have hslice : ∀ y : Rn m,
+      ψ '' (B ∩ G ⁻¹' {y}) = ⋃ t, ψ '' (P t ∩ G ⁻¹' {y}) := by
+    intro y
+    rw [← image_iUnion, ← iUnion_inter, hPU]
+  have hslice_meas : ∀ (y : Rn m) t, MeasurableSet (ψ '' (P t ∩ G ⁻¹' {y})) := by
+    intro y t
+    have hsub : P t ∩ G ⁻¹' {y} ⊆ D := inter_subset_left.trans (hPD t)
+    exact ((hPm t).inter (isClosed_singleton.preimage hG).measurableSet).image_of_continuousOn_injOn
+      (hψc.mono hsub) (hψi.mono hsub)
+  have hslice_disj : ∀ y : Rn m,
+      Pairwise (Function.onFun Disjoint fun t ↦ ψ '' (P t ∩ G ⁻¹' {y})) := by
+    intro y a b hab
+    exact Disjoint.image ((hPd hab).mono inter_subset_left inter_subset_left) hψi
+      (inter_subset_left.trans (hPD a)) (inter_subset_left.trans (hPD b))
+  have hfun : (fun y : Rn m ↦ ∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) =
+      fun y ↦ ∑' t, ∫⁻ x in ψ '' (P t ∩ G ⁻¹' {y}), φ x ∂μHE[k] := by
+    funext y
+    rw [hslice y, lintegral_iUnion (hslice_meas y) (hslice_disj y)]
+  -- Step 4 (measurability): a countable sum of a.e.-measurable functions.
+  refine ⟨?_, ?_⟩
+  · rw [hfun]
+    exact AEMeasurable.tsum fun t ↦ (hPgood t φ hφ).1
+  -- Step 5 (identity): countable additivity on the left, goodness of the pieces, `lintegral_tsum`.
+  · calc ∫⁻ u in B, φ (ψ u) * w u = ∫⁻ u in ⋃ t, P t, φ (ψ u) * w u := by rw [hPU]
+      _ = ∑' t, ∫⁻ u in P t, φ (ψ u) * w u := lintegral_iUnion hPm hPd _
+      _ = ∑' t, ∫⁻ y, (∫⁻ x in ψ '' (P t ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume := by
+        congr 1
+        funext t
+        exact (hPgood t φ hφ).2
+      _ = ∫⁻ y, ∑' t, (∫⁻ x in ψ '' (P t ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume :=
+        (lintegral_tsum fun t ↦ (hPgood t φ hφ).1).symm
+      _ = ∫⁻ y, (∫⁻ x in ψ '' (B ∩ G ⁻¹' {y}), φ x ∂μHE[k]) ∂volume := by rw [hfun]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
