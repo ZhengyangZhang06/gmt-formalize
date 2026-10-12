@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "614c0a7d605854d9876bd1da10d26a5c810bd1ccfa60575e2fa2aeb831b97be7",
+  "git_delta": {
+    "base_commit": "e85cf00b1bdd5997f4cb0c4d0320ac0d5013a15a",
+    "candidate_commit": "02c3706f8b397dd9abf13122f4a7824d7bf445d3",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_weight_closedBall_eq_ofReal_integral",
+    "diff_sha256": "5bcf2f89267a3705c1a96ad80fd40839b6fbd5e3c4e01fde57636556bfffd9ed",
+    "source_sha256": "8a33df85d1c443abecae77e4faf0393e84f33cdb431290bd9694d61bc711a61a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_weight_closedBall_eq_ofReal_integral",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (r : ℝ), closedBall x r ⊆ U → V.weight (closedBall x r) = ENNReal.ofReal (∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ)))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
