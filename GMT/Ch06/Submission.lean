@@ -615,6 +615,70 @@ theorem Submission.fiw_tl_growth_bound :
         mul_le_mul_of_nonneg_left hIs.le (pow_nonneg hs0.le _)
     _ = _ := mul_comm _ _
 
+/-- Simon Ch. 3, Remarks 1.5(2), 1.8(1): pointwise transfer of a weighted approximate tangent
+space.  If `θ₂(x) = c θ₁(x)` and `h = 1_{M₂}θ₂ − c 1_{M₁}θ₁` is `o(∫_{M₁ ∩ B̄_s(x)} θ₁ dHⁿ)` in
+`L¹(B̄_s(x))` as `s ↓ 0`, then every tangent space `Q` of `(M₁, θ₁)` at `x` is one of `(M₂, θ₂)`.
+For `f ∈ C_c(ℝ^P)` (`f = 0` off `B_R(0)`, `|f| ≤ K`) the tangent integrals are
+`I_i(r) = r⁻ⁿ ∫_{M_i} f(η_r z) θ_i(z) dHⁿ(z)` by `fiw_tl_blowup_setIntegral`, so
+`|I₂(r) − c I₁(r)| ≤ r⁻ⁿ K ∫_{B̄_{Rr}(x)} |h| dHⁿ` (`fiw_tl_tr_weighted_diff_bound`), which tends
+to `0` by `fiw_tl_growth_bound` and `fiw_tl_tr_scaling_limit`.  Hence
+`I₂(r) → c θ₁(x) ∫_Q f dHⁿ = θ₂(x) ∫_Q f dHⁿ`. -/
+theorem Submission.fiw_tl_transfer :
+    ∀ (P n : ℕ) (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ) (x : Eucl P) (c ρ : ℝ), 0 < ρ → NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) → NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) → (∀ y ∈ M₁, 0 ≤ θ₁ y) → IntegrableOn θ₁ (M₁ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) → IntegrableOn θ₂ (M₂ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) → θ₂ x = c * θ₁ x → (∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), ∫⁻ z in closedBall x s, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ∂(μHE[n] : Measure (Eucl P)) ≤ ENNReal.ofReal ε * ∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) ∂(μHE[n] : Measure (Eucl P))) → ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M₁ θ₁ x Q → HasWeightedApproximateTangentSpaceAt n M₂ θ₂ x Q := by
+  intro P n M₁ M₂ θ₁ θ₂ x c ρ hρ hM₁ hM₂ hθ₁ hθ₁i hθ₂i hx hsmall Q hT
+  -- Step 2: `∫⁻_{M₁ ∩ B̄_s(x)} θ₁ dHⁿ ≤ C₀ sⁿ` for all small `s > 0`.
+  obtain ⟨C₀, hC₀⟩ := Submission.fiw_tl_growth_bound P n M₁ θ₁ x ρ Q hρ hM₁ hθ₁ hθ₁i hT
+  -- Step 1: `finrank Q = n` is inherited; fix `f ∈ C_c(ℝ^P)`.
+  refine ⟨hT.1, fun f => ?_⟩
+  -- Step 3: `f = 0` off `B_R(0)` and `‖f‖ ≤ K`.
+  obtain ⟨R, hR, hfR⟩ := f.hasCompactSupport.exists_pos_le_norm
+  obtain ⟨K, hK⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+  -- Steps 4–7: `D(r) := I₂(r) − c I₁(r) → 0` as `r ↓ 0`.
+  have hD : Tendsto (fun r : ℝ =>
+      (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M₂, f y * θ₂ (x + r • y)
+        ∂(μHE[n] : Measure (Eucl P))) -
+      c * ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M₁, f y * θ₁ (x + r • y)
+        ∂(μHE[n] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0) := by
+    refine Submission.fiw_tl_tr_scaling_limit n _
+      (fun s => ∫⁻ z in closedBall x s, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ
+        ∂(μHE[n] : Measure (Eucl P)))
+      (fun s => ∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) ∂(μHE[n] : Measure (Eucl P)))
+      R K C₀ hR hsmall hC₀ ?_
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hρ hR)] with r hr
+    obtain ⟨hr0, hrρ⟩ := hr
+    have hRr : R * r ≤ ρ := by
+      rw [lt_div_iff₀ hR, mul_comm] at hrρ
+      exact hrρ.le
+    -- `η_r(z) = r⁻¹(z − x)`: `x + r η_r(z) = z` and `‖η_r(z)‖ = |z − x| / r`.
+    have hη : ∀ z, Poincare.SimonGMT.Chapter03.blowUpMap x r z = r⁻¹ • (z - x) := fun z => rfl
+    have hxη : ∀ z, x + r • Poincare.SimonGMT.Chapter03.blowUpMap x r z = z := fun z => by
+      rw [hη, smul_inv_smul₀ hr0.ne', add_sub_cancel]
+    have hnη : ∀ z, ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z‖ = dist z x / r := fun z => by
+      rw [hη, norm_smul, norm_inv, Real.norm_of_nonneg hr0.le, dist_eq_norm, inv_mul_eq_div]
+    have hηc : Continuous (Poincare.SimonGMT.Chapter03.blowUpMap x r) := by
+      show Continuous fun z => r⁻¹ • (z - x)
+      fun_prop
+    -- Step 4: `I_i(r) = r⁻ⁿ ∫_{M_i} f(η_r z) θ_i(z) dHⁿ(z)`.
+    have hcv₁ := Submission.fiw_tl_blowup_setIntegral P n x r M₁
+      (fun y => f y * θ₁ (x + r • y)) hr0
+    have hcv₂ := Submission.fiw_tl_blowup_setIntegral P n x r M₂
+      (fun y => f y * θ₂ (x + r • y)) hr0
+    simp only [hxη] at hcv₁ hcv₂
+    -- Steps 5–6: the weight `f ∘ η_r` is continuous, bounded by `K` and `0` off `B̄_{Rr}(x)`.
+    have hA := Submission.fiw_tl_tr_weighted_diff_bound P n M₁ M₂ θ₁ θ₂
+      (fun z => f (Poincare.SimonGMT.Chapter03.blowUpMap x r z)) x c ρ (R * r) K hM₁ hM₂ hθ₁i
+      hθ₂i (f.continuous.comp hηc) (fun z => hK _) (fun z hz => hfR _ (by
+        rw [mem_closedBall, not_le] at hz
+        rw [hnη, le_div_iff₀ hr0]
+        exact hz.le)) hRr
+    rw [hcv₁, hcv₂, mul_left_comm c, ← mul_sub, enorm_mul,
+      Real.enorm_eq_ofReal (inv_nonneg.2 (pow_nonneg hr0.le n)), mul_assoc]
+    exact mul_le_mul_of_nonneg_left hA zero_le
+  -- Step 8: `c I₁(r) → c θ₁(x) ∫_Q f dHⁿ = θ₂(x) ∫_Q f dHⁿ`, so `I₂(r) = D(r) + c I₁(r)` converges.
+  have h := hD.add ((hT.2 f).const_mul c)
+  rw [zero_add, ← mul_assoc, ← hx] at h
+  exact h.congr fun r => sub_add_cancel _ _
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
