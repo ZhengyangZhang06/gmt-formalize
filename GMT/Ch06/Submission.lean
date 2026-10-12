@@ -533,6 +533,277 @@ theorem Submission.lpf_pic_density_dominated : ∀ (P Q n : ℕ) (U Z M : Set (E
         exact hpush _ _
     _ ≤ θ x * (C ^ n * 1) := by gcongr
     _ = C ^ n * θ x := by ring
+/-- If `M ⊆ U` is `μ`-null on every open `W ⊂⊂ U` on which `T` vanishes, then `μ(M ∖ spt T) = 0`:
+`M ∖ spt T` lies in the zero region (Simon 2.11), a countable union of such `W` (Lindelöf). -/
+theorem Submission.lpf_rsn_null_diff_support_of_local_null : ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (μ : Measure (Eucl P)), M ⊆ U → (∀ W : Set (Eucl P), IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → μ (M ∩ W) = 0) → μ (M \ T.support) = 0 := by
+  intro P n U T M μ hMU hloc
+  -- Countably many of the open sets whose union is `T.zeroRegion` already cover it.
+  obtain ⟨S, hSc, hSsub, hSeq⟩ := TopologicalSpace.isOpen_sUnion_countable
+    {W : Set (Eucl P) | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ T.VanishesOn W}
+    fun W hW => hW.1
+  -- As `M ⊆ U`, every point of `M ∖ spt T` lies in `T.zeroRegion = ⋃₀ S`.
+  have hsub : M \ T.support ⊆ ⋃ W ∈ S, M ∩ W := by
+    rintro x ⟨hxM, hxs⟩
+    have hxZ : x ∈ ⋃₀ S := by
+      rw [hSeq]
+      by_contra hxZ
+      exact hxs ⟨hMU hxM, hxZ⟩
+    obtain ⟨W, hWS, hxW⟩ := hxZ
+    exact mem_biUnion hWS ⟨hxM, hxW⟩
+  refine measure_mono_null hsub ((measure_biUnion_null_iff hSc).2 fun W hWS => ?_)
+  obtain ⟨hWo, hWc, hWU, hWv⟩ := hSsub hWS
+  exact hloc W hWo hWc hWU hWv
+/-- Finitely many `n`-covectors separate `n`-vectors (Simon Ch. 6, §1; used for Lemma 3.9 to show
+that a representation `τ(M, θ, ξ)` of `T` lives on `spt T` up to an `Hⁿ`-null set).  Evaluation on
+tuples of standard basis vectors, `Φ(α)(r) = α(e_{r(1)}, …, e_{r(n)})`, embeds `Λⁿ(ℝ^P)` linearly
+into `ℝ^(Fin n → Fin P)`, since a multilinear map is determined by its values on basis vectors.
+So `Λⁿ(ℝ^P)` is finite-dimensional, and an `n`-vector vanishing on a basis `b₁, …, b_N` is zero. -/
+theorem Submission.lpf_rsn_covector_separating_family : ∀ (P n : ℕ), ∃ (N : ℕ) (b : Fin N → Covector (Eucl P) n), ∀ w : NVector (Eucl P) n, (∀ i, w (b i) = 0) → w = 0 := by
+  intro P n
+  -- Step 1: evaluation on `n`-tuples of standard basis vectors of `ℝ^P` is linear.
+  let e : Module.Basis (Fin P) ℝ (Eucl P) := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
+  let Φ : Covector (Eucl P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
+    { toFun := fun α r => α (fun i => e (r i))
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl }
+  -- Step 2: `Φ` is injective, as a multilinear map is determined by its values on basis vectors.
+  have hΦ : Function.Injective Φ := by
+    intro α β h
+    have hm : α.toContinuousMultilinearMap.toMultilinearMap =
+        β.toContinuousMultilinearMap.toMultilinearMap :=
+      Module.Basis.ext_multilinear (fun _ => e) (fun r => congrFun h r)
+    ext v
+    exact congrArg (fun m : MultilinearMap ℝ (fun _ : Fin n => Eucl P) ℝ => m v) hm
+  -- Step 3: hence `Λⁿ(ℝ^P)` is finite-dimensional; take a basis `b₁, …, b_N`.
+  have : FiniteDimensional ℝ (Covector (Eucl P) n) := FiniteDimensional.of_injective Φ hΦ
+  let b := Module.finBasis ℝ (Covector (Eucl P) n)
+  refine ⟨Module.finrank ℝ (Covector (Eucl P) n), b, ?_⟩
+  -- Step 4: a linear functional vanishing on a basis is zero.
+  intro w hw
+  have hlin : (w : Covector (Eucl P) n →ₗ[ℝ] ℝ) = 0 := b.ext (fun i => by simpa using hw i)
+  ext α
+  simpa using congrArg (fun l : Covector (Eucl P) n →ₗ[ℝ] ℝ => l α) hlin
+/-- **Fundamental lemma of the calculus of variations with a positive weight** (a step of the
+proof that a rectifiable `τ(M, θ, ξ)` lives on its support, Simon Ch. 6, 3.9).  If `θ > 0` on `M`,
+`θ` is `μ`-integrable on `M ∩ W` with `W` open, `g` is a.e.-strongly measurable and a.e. bounded
+for `μ ⌞ M`, and `∫_M θ φ g dμ = 0` for every smooth compactly supported `φ` with
+`tsupport φ ⊆ W`, then `g = 0` `μ ⌞ M`-a.e. on `W`.  Mathlib's fundamental lemma applied to `θ g`,
+which is integrable on `W` for `μ ⌞ M`, gives `θ g = 0` there; divide by `θ`. -/
+theorem Submission.lpf_rsn_weighted_fundamental_lemma : ∀ (P : ℕ) (μ : Measure (Eucl P)) (M W : Set (Eucl P)) (θ g : Eucl P → ℝ) (C : ℝ), IsOpen W → NullMeasurableSet M μ → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) μ → AEStronglyMeasurable g (μ.restrict M) → (∀ᵐ x ∂(μ.restrict M), |g x| ≤ C) → (∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ W → ∫ x in M, θ x * (φ x * g x) ∂μ = 0) → ∀ᵐ x ∂(μ.restrict M), x ∈ W → g x = 0 := by
+  intro P μ M W θ g C hW hM hpos hθ hg hgC hint
+  -- Step 1: `θ g` is integrable on `W` for `μ ⌞ M`, as `(μ ⌞ M) ⌞ W = μ ⌞ (M ∩ W)`.
+  have hfint : IntegrableOn (fun x => θ x * g x) W (μ.restrict M) := by
+    rw [IntegrableOn, Measure.restrict_restrict hW.measurableSet, Set.inter_comm]
+    have hθ' : Integrable θ (μ.restrict (M ∩ W)) := hθ
+    have hg' : AEStronglyMeasurable g (μ.restrict (M ∩ W)) :=
+      hg.mono_measure (Measure.restrict_mono Set.inter_subset_left le_rfl)
+    have hgC' : ∀ᵐ x ∂(μ.restrict (M ∩ W)), ‖g x‖ ≤ C := by
+      filter_upwards [ae_restrict_of_ae_restrict_of_subset Set.inter_subset_left hgC] with x hx
+      simpa [Real.norm_eq_abs] using hx
+    exact hθ'.mul_bdd hg' hgC'
+  -- Steps 2–3: the tests `∫ φ • (θ g) d(μ ⌞ M)` vanish, so `θ g = 0` `μ ⌞ M`-a.e. on `W`.
+  have hzero := hW.ae_eq_zero_of_integral_contDiff_smul_eq_zero hfint.locallyIntegrableOn
+    (fun φ hφ hφc hφW => by
+      rw [← hint φ hφ hφc hφW]
+      refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+      simp only [smul_eq_mul]
+      ring)
+  -- Step 4: `μ ⌞ M`-a.e. point lies in `M`, where `θ > 0`.
+  filter_upwards [hzero, ae_restrict_mem₀ hM] with x hx hxM hxW
+  rcases mul_eq_zero.mp (hx hxW) with h | h
+  · exact absurd h (hpos x hxM).ne'
+  · exact h
+
+/-- **A representation is null where the current vanishes (steps 5–8 of (P2) in Simon Ch. 6,
+Lemma 3.9).**  If `T = τ(M, θ, ξ)` with `‖ξ‖ = 1` `Hⁿ`-a.e. on `M`, `T` vanishes on the open set
+`W ⊆ U` and `θ` is integrable on `M ∩ W`, then `Hⁿ(M ∩ W) = 0`.  Testing `T` with `φ α`
+(`φ ∈ C_c^∞(W)`, `α` an `n`-covector) gives `∫_M θ φ ⟨α, ξ⟩ dHⁿ = 0`, so `⟨α, ξ⟩ = 0` a.e. on
+`M ∩ W` (`lpf_rsn_weighted_fundamental_lemma`).  Finitely many covectors separate `n`-vectors
+(`lpf_rsn_covector_separating_family`), so `ξ = 0` a.e. on `M ∩ W`; as `‖ξ‖ = 1` a.e. on `M`,
+the set `M ∩ W` is null. -/
+theorem Submission.lpf_rsn_local_null : ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsOpen W → W ⊆ U → T.VanishesOn W → NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) (μHE[n] : Measure (Eucl P)) → AEStronglyMeasurable ξ ((μHE[n] : Measure (Eucl P)).restrict M) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ‖ξ x‖ = 1) → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (μHE[n] : Measure (Eucl P)) (M ∩ W) = 0 := by
+  intro P n U W T M θ ξ hW hWU hvan hM hpos hθ hξm hξ1 hrep
+  -- Each coordinate `x ↦ ξ x α` is bounded by `‖α‖` and vanishes a.e. on `M ∩ W`.
+  have key : ∀ α : Covector (Eucl P) n,
+      ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ W → ξ x α = 0 := by
+    intro α
+    refine Submission.lpf_rsn_weighted_fundamental_lemma P (μHE[n] : Measure (Eucl P)) M W θ
+      (fun x => ξ x α) ‖α‖ hW hM hpos hθ ?_ ?_ ?_
+    · exact (ContinuousLinearMap.apply ℝ ℝ α).continuous.comp_aestronglyMeasurable hξm
+    · filter_upwards [hξ1] with x hx
+      calc |ξ x α| = ‖ξ x α‖ := (Real.norm_eq_abs _).symm
+        _ ≤ ‖ξ x‖ * ‖α‖ := (ξ x).le_opNorm α
+        _ = ‖α‖ := by rw [hx, one_mul]
+    · -- `ω = φ α` is a test form supported in `W`, so `T ω = 0`.
+      intro φ hφ hφc hφW
+      let ω : DifferentialForm (Eucl P) n := fun x => φ x • α
+      have hωs : IsSmoothForm ω := hφ.smul contDiff_const
+      have hωc : HasCompactSupport ω := hφc.smul_right
+      have hωW : tsupport ω ⊆ W := (tsupport_smul_subset_left φ (fun _ => α)).trans hφW
+      let ωU : TestFormOn U n := ⟨ω, ⟨hωs, hωc⟩, hωW.trans hWU⟩
+      have h0 : T ωU = 0 := hvan ωU hωW
+      rw [hrep ωU] at h0
+      simpa [tauAction, ωU, ω, map_smul, smul_eq_mul] using h0
+  -- A finite separating family of covectors gives `ξ = 0` a.e. on `M ∩ W`, where `‖ξ‖ = 1`.
+  obtain ⟨N, b, hb⟩ := Submission.lpf_rsn_covector_separating_family P n
+  have hall : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ i, x ∈ W → ξ x (b i) = 0 :=
+    ae_all_iff.mpr fun i => key (b i)
+  have hnotW : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∉ W := by
+    filter_upwards [hall, hξ1] with x hx h1 hxW
+    rw [hb (ξ x) fun i => hx i hxW, ContinuousLinearMap.opNorm_zero] at h1
+    exact zero_ne_one h1
+  have hres : (μHE[n] : Measure (Eucl P)).restrict M W = 0 := by
+    rw [ae_iff] at hnotW
+    simpa using hnotW
+  rwa [Measure.restrict_apply hW.measurableSet, Set.inter_comm] at hres
+/-- **Simple `n`-vectors (step (P1) of Simon Ch. 6, Lemma 3.9).**  The operator norm of
+`v₁ ∧ ⋯ ∧ vₙ = simpleNVector v` is the square root of the Gram determinant `det (⟪vᵢ, vⱼ⟫)`, and a
+change of frame `τ ↦ Bτ` multiplies `simpleNVector τ` by `det B`.  The second identity is the
+uniqueness of alternating forms on `ℝⁿ` (`AlternatingMap.eq_smul_basis_det`).  A dependent `v`
+makes both sides of the first vanish.  An independent `v` is `Bτ` for an orthonormal basis `τ` of
+`span v`, so `G(v) = B Bᵀ`; `|α τ| ≤ ‖α‖` and the covector `u ↦ det (⟪τᵢ, uⱼ⟫)` (norm `≤ 1` by
+Hadamard's and Bessel's inequalities, value `1` at `τ`) give `‖simpleNVector v‖ = |det B|`. -/
+theorem Submission.lpf_simple_nvector_algebra : (∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ := by
+  -- Change of frame: `α(Bτ) = det B · α(τ)` for every `n`-covector `α`, since
+  -- `B ↦ α(Bτ)` is alternating in the rows of `B` (`AlternatingMap.eq_smul_basis_det`).
+  have hframe : ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P),
+      simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ := by
+    intro P n B τ
+    ext α
+    simp only [simpleNVector_apply, FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
+    set f : (Fin n → ℝ) [⋀^Fin n]→ₗ[ℝ] ℝ :=
+      α.toAlternatingMap.compLinearMap (Fintype.linearCombination ℝ τ) with hf
+    have h1 : f (fun i j => B i j) = α (fun i => ∑ j, B i j • τ j) := by
+      simp [hf, Fintype.linearCombination_apply]
+    have h2 : f (Pi.basisFun ℝ (Fin n)) = α τ := by
+      simp [hf, Fintype.linearCombination_apply_single]
+    rw [← h1, AlternatingMap.eq_smul_basis_det (Pi.basisFun ℝ (Fin n)) f,
+      AlternatingMap.smul_apply, h2, Pi.basisFun_det, smul_eq_mul, mul_comm]
+    rfl
+  refine ⟨fun P n v => ?_, hframe⟩
+  by_cases hv : LinearIndependent ℝ v
+  · -- Independent family: `v = Bτ` for an orthonormal basis `τ` of `W = span v`,
+    -- `B i j = ⟪v i, τ j⟫`, so `G(v) = B Bᵀ` and `simpleNVector v = det B • simpleNVector τ`.
+    set W := Submodule.span ℝ (Set.range v) with hW_def
+    have hW : Module.finrank ℝ W = n := by rw [finrank_span_eq_card hv, Fintype.card_fin]
+    set b : OrthonormalBasis (Fin n) ℝ W := (stdOrthonormalBasis ℝ W).reindex (finCongr hW)
+    set τ : Fin n → Eucl P := fun j => (b j : Eucl P) with hτ_def
+    have hτ : Orthonormal ℝ τ := b.orthonormal.comp_linearIsometry W.subtypeₗᵢ
+    have hvW : ∀ i, v i ∈ W := fun i => Submodule.subset_span (Set.mem_range_self i)
+    set B : Matrix (Fin n) (Fin n) ℝ := Matrix.of fun i j => inner ℝ (v i) (τ j) with hB_def
+    have hvB : (fun i => ∑ j, B i j • τ j) = v := by
+      funext i
+      have h := congrArg Subtype.val (b.sum_repr' ⟨v i, hvW i⟩)
+      simp only [Submodule.coe_sum, Submodule.coe_smul, Submodule.coe_inner] at h
+      simpa [hB_def, hτ_def, real_inner_comm] using h
+    have hgram : (Matrix.of fun i j => inner ℝ (v i) (v j)) = B * B.transpose := by
+      ext i k
+      have h := b.sum_inner_mul_inner ⟨v i, hvW i⟩ ⟨v k, hvW k⟩
+      simp only [Submodule.coe_inner] at h
+      simp only [Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply, hB_def]
+      rw [← h]
+      simp [hτ_def, real_inner_comm]
+    have hsv : ∀ α : Covector (Eucl P) n, simpleNVector v α = B.det * α τ := by
+      intro α
+      rw [← hvB, hframe]
+      simp only [FunLike.coe_smul, Pi.smul_apply, smul_eq_mul, simpleNVector_apply]
+    -- Upper bound: `|α τ| ≤ ‖α‖ ∏ ‖τ i‖ = ‖α‖`.
+    have hup : ∀ α : Covector (Eucl P) n, |α τ| ≤ ‖α‖ := by
+      intro α
+      have h := α.le_opNorm τ
+      simp only [hτ.1, Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
+      exact h
+    -- Lower bound: the calibrating covector `α₀(u) = det (⟪τ i, u j⟫)` has `α₀ τ = 1` and
+    -- `‖α₀‖ ≤ 1` by Hadamard's inequality for the columns `c j = (⟪τ i, u j⟫)ᵢ` together with
+    -- Bessel's inequality `‖c j‖ ≤ ‖u j‖`.
+    set α₀ : Covector (Eucl P) n := wedgeCovectors n fun i => innerSL ℝ (τ i) with hα₀_def
+    have hα₀τ : α₀ τ = 1 := by
+      rw [hα₀_def, wedgeCovectors_apply_det]
+      have h : (Matrix.of fun i j => innerSL ℝ (τ i) (τ j)) = 1 := by
+        ext i j
+        simp [Matrix.one_apply, orthonormal_iff_ite.mp hτ i j]
+      rw [h, Matrix.det_one]
+    have hα₀ : ‖α₀‖ ≤ 1 := by
+      refine ContinuousAlternatingMap.opNorm_le_bound _ zero_le_one fun u => ?_
+      rw [one_mul, hα₀_def, wedgeCovectors_apply_det, Real.norm_eq_abs]
+      set c : Fin n → EuclideanSpace ℝ (Fin n) :=
+        fun j => WithLp.toLp 2 fun i => inner ℝ (τ i) (u j) with hc
+      set e := EuclideanSpace.basisFun (Fin n) ℝ
+      have hdet : (Matrix.of fun i j => innerSL ℝ (τ i) (u j)).det = e.toBasis.det c := by
+        rw [Module.Basis.det_apply]
+        congr 1
+      have hHad : |e.toBasis.det c| ≤ ∏ j, ‖c j‖ := by
+        have : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = n) :=
+          ⟨finrank_euclideanSpace_fin⟩
+        rw [← e.toBasis.orientation.volumeForm_robust' e c]
+        exact e.toBasis.orientation.abs_volumeForm_apply_le c
+      have hBessel : ∀ j, ‖c j‖ ≤ ‖u j‖ := by
+        intro j
+        rw [EuclideanSpace.norm_eq, ← Real.sqrt_sq (norm_nonneg (u j))]
+        apply Real.sqrt_le_sqrt
+        simpa [hc] using hτ.sum_inner_products_le (u j) (s := Finset.univ)
+      rw [hdet]
+      calc |e.toBasis.det c| ≤ ∏ j, ‖c j‖ := hHad
+        _ ≤ ∏ j, ‖u j‖ := by gcongr with j; exact hBessel j
+    -- Hence `‖simpleNVector v‖ = |det B|`.
+    have hnorm : ‖simpleNVector v‖ = |B.det| := by
+      apply le_antisymm
+      · refine ContinuousLinearMap.opNorm_le_bound _ (abs_nonneg _) fun α => ?_
+        rw [hsv, Real.norm_eq_abs, abs_mul]
+        exact mul_le_mul_of_nonneg_left (hup α) (abs_nonneg _)
+      · calc |B.det| = ‖simpleNVector v α₀‖ := by rw [hsv, hα₀τ, mul_one, Real.norm_eq_abs]
+          _ ≤ ‖simpleNVector v‖ * ‖α₀‖ := (simpleNVector v).le_opNorm α₀
+          _ ≤ ‖simpleNVector v‖ * 1 :=
+            mul_le_mul_of_nonneg_left hα₀ (ContinuousLinearMap.opNorm_nonneg _)
+          _ = ‖simpleNVector v‖ := mul_one _
+    rw [hnorm, hgram, Matrix.det_mul, Matrix.det_transpose, sq_abs, sq]
+  · -- Dependent family: every alternating map vanishes on `v`, and `G(v) g = 0` for a
+    -- nontrivial relation `∑ g j • v j = 0`, so both sides vanish.
+    have h0 : ‖simpleNVector v‖ = 0 := by
+      refine le_antisymm (ContinuousLinearMap.opNorm_le_bound _ le_rfl fun α => ?_)
+        (ContinuousLinearMap.opNorm_nonneg _)
+      have hα : α v = 0 := α.toAlternatingMap.map_linearDependent v hv
+      rw [simpleNVector_apply, hα, norm_zero, zero_mul]
+    obtain ⟨g, hg, i₀, hi₀⟩ := Fintype.not_linearIndependent_iff.mp hv
+    have hdet : (Matrix.of fun i j => inner ℝ (v i) (v j)).det = 0 := by
+      rw [← Matrix.exists_mulVec_eq_zero_iff]
+      refine ⟨g, fun h => hi₀ (congrFun h i₀), ?_⟩
+      funext i
+      have h := congrArg (inner ℝ (v i)) hg
+      simp only [inner_sum, inner_smul_right, inner_zero_right] at h
+      simpa [Matrix.mulVec, dotProduct, mul_comm] using h
+    rw [h0, hdet, sq, mul_zero]
+
+/-- **A rectifiable representation lives on the support (step (P2) of Simon Ch. 6, Lemma 3.9).**
+If `T = τ(M, θ, ξ)` then `Hⁿ(M \ spt T) = 0`.  An orthonormal frame `τ` has Gram matrix `1`, so
+`‖simpleNVector τ‖ = 1` by `lpf_simple_nvector_algebra` and `‖ξ‖ = 1` `Hⁿ`-a.e. on `M`
+(`orients`).  Hence `Hⁿ(M ∩ W) = 0` for every open `W ⊂⊂ U` on which `T` vanishes
+(`lpf_rsn_local_null`), and countably many such `W` cover the zero region of `T`
+(`lpf_rsn_null_diff_support_of_local_null`). -/
+theorem Submission.lpf_rectifiable_support_null : ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (μHE[n] : Measure (Eucl P)) (M \ T.support) = 0 := by
+  intro P n U T M θ ξ hM hT
+  -- Unit norm: `ξ x = ±simpleNVector τ` with `τ` orthonormal for `Hⁿ`-a.e. `x ∈ M`, and
+  -- `‖simpleNVector τ‖ ^ 2 = det (⟪τᵢ, τⱼ⟫) = det 1 = 1`.
+  have hξ : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ‖ξ x‖ = 1 := by
+    filter_upwards [hM.orients] with x hx
+    obtain ⟨τ, hτ, -, hξx⟩ := hx
+    have hgram : (Matrix.of fun i j => inner ℝ (τ i) (τ j)) = 1 := by
+      ext i j
+      simp [Matrix.one_apply, orthonormal_iff_ite.mp hτ i j]
+    have hτ1 : ‖simpleNVector τ‖ = 1 := by
+      refine (pow_eq_one_iff_of_nonneg (ContinuousLinearMap.opNorm_nonneg _) two_ne_zero).mp ?_
+      rw [Submission.lpf_simple_nvector_algebra.1, hgram, Matrix.det_one]
+    rcases hξx with h | h
+    · rw [h, hτ1]
+    · rw [h, ContinuousLinearMap.opNorm_neg, hτ1]
+  -- It suffices that `Hⁿ(M ∩ W) = 0` for each open `W ⊂⊂ U` on which `T` vanishes; there `θ` is
+  -- integrable on `M ∩ W ⊆ M ∩ closure W`.
+  refine Submission.lpf_rsn_null_diff_support_of_local_null P n U T M _ hM.subset
+    fun W hW hWc hWU hTW => ?_
+  exact Submission.lpf_rsn_local_null P n U W T M θ ξ hW (subset_closure.trans hWU) hTW
+    hM.nullMeasurableSet hM.pos
+    ((hM.integrableOn _ hWc hWU).mono_set (Set.inter_subset_inter_right M subset_closure))
+    hM.aestronglyMeasurable hξ hT
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

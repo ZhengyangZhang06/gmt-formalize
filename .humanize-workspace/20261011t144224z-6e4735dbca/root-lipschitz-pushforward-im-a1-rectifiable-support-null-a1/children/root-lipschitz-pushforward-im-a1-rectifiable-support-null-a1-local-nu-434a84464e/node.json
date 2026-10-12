@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1.local_null_on_vanishing_open-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1",
+  "depth": 3,
+  "title": "A unit-oriented rectifiable representation has null carrier where the current vanishes",
+  "statement": "Let P, n ∈ ℕ and U, W ⊆ ℝ^P with W open and W ⊆ U. Let T ∈ D_n(U) (T : GeometricCurrentOn U n) vanish on W (T(ω) = 0 for every ω ∈ Dⁿ(U) with tsupport ω ⊆ W). Let M ⊆ ℝ^P be Hⁿ-null-measurable (Hⁿ = μHE[n]), θ : ℝ^P → ℝ with θ > 0 on M and θ Hⁿ-integrable on M ∩ W, and ξ : ℝ^P → NVector (Eucl P) n a.e.-strongly measurable for Hⁿ⌞M with ‖ξ(x)‖ = 1 (operator norm) for Hⁿ⌞M-a.e. x. If T(ω) = τ(M, θ, ξ)(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dHⁿ(x) for every ω ∈ Dⁿ(U), then Hⁿ(M ∩ W) = 0.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsOpen W → W ⊆ U → T.VanishesOn W → NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) (μHE[n] : Measure (Eucl P)) → AEStronglyMeasurable ξ ((μHE[n] : Measure (Eucl P)).restrict M) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ‖ξ x‖ = 1) → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (μHE[n] : Measure (Eucl P)) (M ∩ W) = 0",
+  "lean_name": "lpf_rsn_local_null",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1.weighted_fundamental_lemma-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1.covector_separating_family-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1.weighted_fundamental_lemma-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1.covector_separating_family-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1-local-nu-434a84464e-a1"
+}
