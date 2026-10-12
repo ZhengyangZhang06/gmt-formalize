@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5895bdb622ad497fa6f0f32eba4bee12d7a2084068e4f8127129610cbde3c0ec",
+  "git_delta": {
+    "base_commit": "02ed25d53e8def661dfb0606cd4990139b54dc35",
+    "candidate_commit": "c9c0b2a076fdcb94e85c57b503323dc2ef173ec4",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiRH_closedBall_tendsto_of_vague_plane",
+    "diff_sha256": "afc14978402f1e0b23482f72e6b453c02cf285c6156a8965001c020d105fab94",
+    "source_sha256": "081a079cbd901b4887b6cd59f6be20228109890c6b34bbacab0eaf4ade0f610b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiRH_closedBall_tendsto_of_vague_plane",
+      "statement": "∀ (n N : ℕ) (ν : ℝ → Measure (Rn N)) (P : Submodule ℝ (Rn N)), finrank ℝ P = n → (∀ᶠ r in 𝓝[>] (0 : ℝ), ν r (Metric.closedBall 0 2) < ∞) → (∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ ∫ y, f y ∂(ν r)) (𝓝[>] 0) (𝓝 (∫ y in (P : Set (Rn N)), f y ∂μHE[n]))) → Tendsto (fun r : ℝ ↦ ν r (Metric.closedBall 0 1)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1)))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
