@@ -359,6 +359,76 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, Theorem 2.34, Step 5 of the proof (p. 143, "letting ε ↓ 0"): let `u` be
+sequentially continuous on C^∞ functions supported in a fixed compact `K ⊆ U` (condition (C)),
+`B̄_R(x₀) ⊆ U`, and let continuous kernels `ψ_k` with `spt ψ_k ⊆ B̄_{r_k}(0)`, `ρ + r_k ≤ R`, satisfy
+`D^q(ψ_k ∗ b) → D^q b` uniformly for every C^∞ compactly supported `b`.  If
+`u(ψ_k ∗ (1_{B_ρ(x₀)} f)) = c_k ∫_{B_ρ(x₀)} f` for all `k` and all `f` integrable on `B_ρ(x₀)`,
+then `u(b) = c₀ ∫ b` for one constant `c₀` and every C^∞ compactly supported `b` with
+`spt b ⊆ B_ρ(x₀)`. -/
+theorem Submission.constancy_local_of_mollified_const : ∀ (n : ℕ) (U : Set (Eucl n)) (u : (Eucl n → ℝ) → ℝ), (∀ (a : ℕ → Eucl n → ℝ) (b : Eucl n → ℝ) (K : Set (Eucl n)), IsCompact K → K ⊆ U → (∀ k, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (a k)) → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → (∀ k, tsupport (a k) ⊆ K) → tsupport b ⊆ K → (∀ q : ℕ, TendstoUniformly (fun k x => iteratedFDeriv ℝ q (a k) x) (fun x => iteratedFDeriv ℝ q b x) atTop) → Tendsto (fun k => u (a k)) atTop (𝓝 (u b))) → ∀ (x₀ : Eucl n) (ρ R : ℝ), 0 < ρ → closedBall x₀ R ⊆ U → ∀ (ψ : ℕ → Eucl n → ℝ) (r : ℕ → ℝ), (∀ k, Continuous (ψ k)) → (∀ k, tsupport (ψ k) ⊆ closedBall 0 (r k)) → (∀ k, 0 ≤ r k) → (∀ k, ρ + r k ≤ R) → (∀ b : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → HasCompactSupport b → ∀ q : ℕ, TendstoUniformly (fun k x => iteratedFDeriv ℝ q (convolution (ψ k) b (ContinuousLinearMap.lsmul ℝ ℝ) volume) x) (fun x => iteratedFDeriv ℝ q b x) atTop) → ∀ c : ℕ → ℝ, (∀ (k : ℕ) (f : Eucl n → ℝ), IntegrableOn f (ball x₀ ρ) volume → u (convolution (ψ k) ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) = c k * ∫ x in ball x₀ ρ, f x ∂volume) → ∃ c₀ : ℝ, ∀ b : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → HasCompactSupport b → tsupport b ⊆ ball x₀ ρ → u b = c₀ * ∫ x, b x ∂volume := by
+  intro n U u hC x₀ ρ R hρ hRU ψ r hψc hψs hr0 hrR hconv c hc
+  -- Steps 1–3: for every C^∞ compactly supported `b` with `spt b ⊆ B_ρ(x₀)`,
+  -- `c_k ∫ b = u(ψ_k ∗ b) → u(b)`.
+  have key : ∀ b : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → HasCompactSupport b →
+      tsupport b ⊆ ball x₀ ρ →
+        Tendsto (fun k => c k * ∫ x, b x ∂volume) atTop (𝓝 (u b)) := by
+    intro b hb hbc hbs
+    -- Step 1: `1_B b = b` and `∫_B b = ∫ b`, so `u(ψ_k ∗ b) = c_k ∫ b`.
+    have hrep : ∀ k, u (convolution (ψ k) b (ContinuousLinearMap.lsmul ℝ ℝ) volume) =
+        c k * ∫ x, b x ∂volume := by
+      intro k
+      have hint : IntegrableOn b (ball x₀ ρ) volume :=
+        (hb.continuous.integrable_of_hasCompactSupport hbc).integrableOn
+      have hind : (ball x₀ ρ).indicator b = b :=
+        Set.indicator_eq_self.2 ((subset_tsupport b).trans hbs)
+      have hset : ∫ x in ball x₀ ρ, b x ∂volume = ∫ x, b x ∂volume :=
+        setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx =>
+          image_eq_zero_of_notMem_tsupport fun h => hx (hbs h)
+      have h := hc k b hint
+      rwa [hind, hset] at h
+    -- Step 2: `ψ_k ∗ b` is C^∞ with `spt (ψ_k ∗ b) ⊆ B̄_{ρ + r_k}(x₀) ⊆ K := B̄_R(x₀)`;
+    -- also `spt b ⊆ K`.
+    have hsmooth : ∀ k, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+        (convolution (ψ k) b (ContinuousLinearMap.lsmul ℝ ℝ) volume) := fun k =>
+      hbc.contDiff_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ) (hψc k).locallyIntegrable hb
+    have hsupp : ∀ k, tsupport (convolution (ψ k) b (ContinuousLinearMap.lsmul ℝ ℝ) volume) ⊆
+        closedBall x₀ R := by
+      intro k
+      refine closure_minimal (fun x hx => ?_) isClosed_closedBall
+      obtain ⟨s, hs, t, ht, rfl⟩ :=
+        Set.mem_add.1 (support_convolution_subset (ContinuousLinearMap.lsmul ℝ ℝ) hx)
+      have h1 : ‖s‖ ≤ r k := mem_closedBall_zero_iff.1 (hψs k (subset_tsupport _ hs))
+      have h2 : ‖t - x₀‖ < ρ := by
+        have h := hbs (subset_tsupport _ ht)
+        rwa [mem_ball, dist_eq_norm] at h
+      rw [mem_closedBall, dist_eq_norm, add_sub_assoc]
+      linarith [norm_add_le s (t - x₀), hrR k]
+    have hbK : tsupport b ⊆ closedBall x₀ R :=
+      hbs.trans (ball_subset_closedBall.trans
+        (closedBall_subset_closedBall (by linarith [hrR 0, hr0 0])))
+    -- Step 3: the convergence hypothesis and (C) give `u(ψ_k ∗ b) → u(b)`.
+    exact Tendsto.congr hrep
+      (hC (fun k => convolution (ψ k) b (ContinuousLinearMap.lsmul ℝ ℝ) volume) b
+        (closedBall x₀ R) (isCompact_closedBall x₀ R) hRU hsmooth hb hsupp hbK (hconv b hb hbc))
+  -- Steps 4–5: the constants `c_k` converge, to `c₀ := u(b₀) / ∫ b₀` for any admissible `b₀`
+  -- with `∫ b₀ ≠ 0`, and uniqueness of limits gives `u(b) = c₀ ∫ b`.  (If every admissible
+  -- `b` has `∫ b = 0`, then `u(b) = lim c_k · 0 = 0` and any `c₀` works.)
+  by_cases h : ∃ b₀ : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b₀ ∧ HasCompactSupport b₀ ∧
+      tsupport b₀ ⊆ ball x₀ ρ ∧ ∫ x, b₀ x ∂volume ≠ 0
+  · obtain ⟨b₀, hb₀, hb₀c, hb₀s, hI⟩ := h
+    refine ⟨u b₀ / ∫ x, b₀ x ∂volume, fun b hb hbc hbs => ?_⟩
+    have hck : Tendsto c atTop (𝓝 (u b₀ / ∫ x, b₀ x ∂volume)) :=
+      Tendsto.congr (fun k => mul_div_cancel_right₀ (c k) hI)
+        ((key b₀ hb₀ hb₀c hb₀s).div_const _)
+    exact tendsto_nhds_unique (key b hb hbc hbs) (hck.mul_const _)
+  · push Not at h
+    refine ⟨0, fun b hb hbc hbs => ?_⟩
+    have h0 := h b hb hbc hbs
+    have hlim := key b hb hbc hbs
+    simp only [h0, mul_zero] at hlim ⊢
+    exact tendsto_nhds_unique hlim tendsto_const_nhds
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
