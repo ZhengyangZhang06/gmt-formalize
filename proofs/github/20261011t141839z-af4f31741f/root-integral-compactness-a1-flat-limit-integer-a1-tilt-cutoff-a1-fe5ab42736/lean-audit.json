@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bc5e5c33ef6083a731d200196272f002cb8c50d3be5c073f37ea8be78a829c30",
+  "git_delta": {
+    "base_commit": "229867f1a492ea45ca09251902c21af2338946f0",
+    "candidate_commit": "d624740029bf0a63c0aa33e1a2e77dbc024fe902",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_fli_tilt_cutoff_cc",
+    "diff_sha256": "a8370f9654ffe6e9f806634a904bce22830b4a4f092b3b3a4689987217a4880a",
+    "source_sha256": "78ebce43117797b2d047ed7af638d7c4de7ef88d7782e8963644172fb94335fb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_fli_tilt_cutoff_cc",
+      "statement": "∀ (N n : ℕ) (P : Grassmannian N n) (χ : Euclidean N → ℝ), Continuous χ → HasCompactSupport χ → ∃ f : C_c(Euclidean N × Grassmannian N n, ℝ), (∀ (z : Euclidean N) (S : Grassmannian N n), f (z, S) = χ z * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖) ∧ tsupport f ⊆ tsupport χ ×ˢ (univ : Set (Grassmannian N n))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
