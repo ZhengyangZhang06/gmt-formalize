@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b0a0d069e14f2d8ad6fbf7a77832336e088a42e95ea317e6596047f6c0ce3e8a",
+  "git_delta": {
+    "base_commit": "ee682c43ac60f3f759a17ab00fec690affa7a513",
+    "candidate_commit": "0f587a14d3c13b596442b36f8aef78f99dc3b7c6",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_lcc_face_integral_pos",
+    "diff_sha256": "6a7eb4ebd7d62160255ff39bd1b7627dcaf98ee299e74149c85ba9fcc1c0e96a",
+    "source_sha256": "6c2469a399f3f1aedf59879075747e487a8bd251f8769dbc4834f64ce9b6e84e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_lcc_face_integral_pos",
+      "statement": "∀ (n N : ℕ) (ρ : ℝ) (F : LatticeFaceIndex n N) (g : Eucl N → ℝ) (p : Eucl N), 0 < ρ → Continuous g → (∀ x, 0 ≤ g x) → 0 < g p → (∀ i : Fin N, (i ∈ range F.2 → ρ * (F.1 i : ℝ) < p i ∧ p i < ρ * ((F.1 i : ℝ) + 1)) ∧ (i ∉ range F.2 → p i = ρ * (F.1 i : ℝ))) → 0 < ∫ x in latticeFace ρ F, g x ∂(μHE[n] : Measure (Eucl N))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
