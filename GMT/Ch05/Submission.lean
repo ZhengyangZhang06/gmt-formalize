@@ -458,6 +458,88 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Integral comparison for mutually bounded measures (the bi-Lipschitz sandwich step for
+Simon Ch. 5, Theorem 7.1): if `μ₁ ≤ κ μ₂` and `μ₂ ≤ κ μ₁` with `κ ≥ 1`, `μ₂` is finite and `φ` is
+continuous with `|φ| ≤ M`, then `|∫ φ dμ₁ - ∫ φ dμ₂| ≤ 2 (κ - 1) κ M μ₂(ℝ^{n+ℓ})`.
+For continuous `g` with values in `[0, M]`, `a = ∫ g dμ₂ ∈ [0, M μ₂(ℝ^{n+ℓ})]` and `b = ∫ g dμ₁`
+satisfy `b ≤ κ a` and `a ≤ κ b`, so `|b - a| ≤ (κ - 1) κ a`; apply this to `max φ 0` and
+`max (-φ) 0`, whose difference is `φ`. -/
+theorem dohr_tp_gat_bilip_integral_sandwich : ∀ (n ℓ : ℕ) (μ₁ μ₂ : Measure (Amb n ℓ)) (φ : Amb n ℓ → ℝ) (κ M : ℝ), IsFiniteMeasure μ₂ → Continuous φ → (∀ w, |φ w| ≤ M) → 1 ≤ κ → μ₁ ≤ ENNReal.ofReal κ • μ₂ → μ₂ ≤ ENNReal.ofReal κ • μ₁ → |∫ w, φ w ∂μ₁ - ∫ w, φ w ∂μ₂| ≤ 2 * ((κ - 1) * κ * (M * (μ₂ univ).toReal)) := by
+  intro n ℓ μ₁ μ₂ φ κ M hμ₂ hφ hM hκ h12 h21
+  have hκ0 : 0 ≤ κ := by linarith
+  have hκ1 : 0 ≤ κ - 1 := by linarith
+  have hκtop : ENNReal.ofReal κ ≠ ⊤ := ENNReal.ofReal_ne_top
+  have hκreal : (ENNReal.ofReal κ).toReal = κ := ENNReal.toReal_ofReal hκ0
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+  -- `μ₁ ≤ κ μ₂` makes `μ₁` finite.
+  have hμ₁ : IsFiniteMeasure μ₁ := by
+    refine ⟨lt_of_le_of_lt (Measure.le_iff'.1 h12 univ) ?_⟩
+    rw [Measure.smul_apply, smul_eq_mul]
+    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (measure_lt_top μ₂ univ)
+  -- The comparison for a continuous `g` with values in `[0, M]`.
+  have key : ∀ g : Amb n ℓ → ℝ, Continuous g → (∀ w, 0 ≤ g w) → (∀ w, g w ≤ M) →
+      |∫ w, g w ∂μ₁ - ∫ w, g w ∂μ₂| ≤ (κ - 1) * κ * (M * (μ₂ univ).toReal) := by
+    intro g hg hg0 hgM
+    have hgb : ∀ w, ‖g w‖ ≤ M := fun w => by
+      rw [Real.norm_eq_abs, abs_of_nonneg (hg0 w)]
+      exact hgM w
+    have hi₁ : Integrable g μ₁ := Integrable.of_bound hg.aestronglyMeasurable M (ae_of_all _ hgb)
+    have hi₂ : Integrable g μ₂ := Integrable.of_bound hg.aestronglyMeasurable M (ae_of_all _ hgb)
+    have ha0 : 0 ≤ ∫ w, g w ∂μ₂ := integral_nonneg hg0
+    have haM : ∫ w, g w ∂μ₂ ≤ M * (μ₂ univ).toReal := by
+      have h := norm_integral_le_of_norm_le_const (μ := μ₂) (ae_of_all _ hgb)
+      rw [Real.norm_eq_abs, measureReal_def] at h
+      exact (le_abs_self _).trans h
+    have hba : ∫ w, g w ∂μ₁ ≤ κ * ∫ w, g w ∂μ₂ :=
+      calc ∫ w, g w ∂μ₁ ≤ ∫ w, g w ∂(ENNReal.ofReal κ • μ₂) :=
+            integral_mono_measure h12 (ae_of_all _ hg0) (hi₂.smul_measure hκtop)
+        _ = κ * ∫ w, g w ∂μ₂ := by rw [integral_smul_measure, hκreal, smul_eq_mul]
+    have hab : ∫ w, g w ∂μ₂ ≤ κ * ∫ w, g w ∂μ₁ :=
+      calc ∫ w, g w ∂μ₂ ≤ ∫ w, g w ∂(ENNReal.ofReal κ • μ₁) :=
+            integral_mono_measure h21 (ae_of_all _ hg0) (hi₁.smul_measure hκtop)
+        _ = κ * ∫ w, g w ∂μ₁ := by rw [integral_smul_measure, hκreal, smul_eq_mul]
+    -- With `a = ∫ g dμ₂`, `b = ∫ g dμ₁`, `V = μ₂(ℝ^{n+ℓ})`:
+    -- `b - a ≤ (κ - 1) a ≤ (κ - 1) κ a ≤ (κ - 1) κ M V` and
+    -- `a - b ≤ (κ - 1) b ≤ (κ - 1) κ a ≤ (κ - 1) κ M V`.
+    have h1 : 0 ≤ (κ - 1) * ((κ - 1) * ∫ w, g w ∂μ₂) := mul_nonneg hκ1 (mul_nonneg hκ1 ha0)
+    have h2 : (κ - 1) * κ * ∫ w, g w ∂μ₂ ≤ (κ - 1) * κ * (M * (μ₂ univ).toReal) :=
+      mul_le_mul_of_nonneg_left haM (mul_nonneg hκ1 hκ0)
+    have h3 : (κ - 1) * ∫ w, g w ∂μ₁ ≤ (κ - 1) * (κ * ∫ w, g w ∂μ₂) :=
+      mul_le_mul_of_nonneg_left hba hκ1
+    rw [abs_sub_le_iff]
+    constructor <;> linarith
+  -- Split `φ = max φ 0 - max (-φ) 0`; both parts are continuous with values in `[0, M]`.
+  have hp : Continuous fun w => max (φ w) 0 := hφ.max continuous_const
+  have hn : Continuous fun w => max (-φ w) 0 := hφ.neg.max continuous_const
+  have hp0 : ∀ w, 0 ≤ max (φ w) 0 := fun w => le_max_right _ _
+  have hn0 : ∀ w, 0 ≤ max (-φ w) 0 := fun w => le_max_right _ _
+  have hpM : ∀ w, max (φ w) 0 ≤ M := fun w => max_le ((le_abs_self _).trans (hM w)) hM0
+  have hnM : ∀ w, max (-φ w) 0 ≤ M := fun w => max_le ((neg_le_abs _).trans (hM w)) hM0
+  have hsplit : ∀ μ : Measure (Amb n ℓ), IsFiniteMeasure μ →
+      ∫ w, φ w ∂μ = ∫ w, max (φ w) 0 ∂μ - ∫ w, max (-φ w) 0 ∂μ := by
+    intro μ hμ
+    have hpb : ∀ w, ‖max (φ w) 0‖ ≤ M := fun w => by
+      rw [Real.norm_eq_abs, abs_of_nonneg (hp0 w)]
+      exact hpM w
+    have hnb : ∀ w, ‖max (-φ w) 0‖ ≤ M := fun w => by
+      rw [Real.norm_eq_abs, abs_of_nonneg (hn0 w)]
+      exact hnM w
+    rw [← integral_sub (Integrable.of_bound hp.aestronglyMeasurable M (ae_of_all _ hpb))
+      (Integrable.of_bound hn.aestronglyMeasurable M (ae_of_all _ hnb))]
+    simp only [max_zero_sub_max_neg_zero_eq_self]
+  have hP : |∫ w, max (φ w) 0 ∂μ₁ - ∫ w, max (φ w) 0 ∂μ₂| ≤
+      (κ - 1) * κ * (M * (μ₂ univ).toReal) := key _ hp hp0 hpM
+  have hN : |∫ w, max (-φ w) 0 ∂μ₁ - ∫ w, max (-φ w) 0 ∂μ₂| ≤
+      (κ - 1) * κ * (M * (μ₂ univ).toReal) := key _ hn hn0 hnM
+  have e₁ := hsplit μ₁ hμ₁
+  have e₂ := hsplit μ₂ hμ₂
+  rw [abs_le] at hP hN ⊢
+  constructor <;> linarith [hP.1, hP.2, hN.1, hN.2]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
