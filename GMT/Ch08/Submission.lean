@@ -508,6 +508,45 @@ theorem Submission.frt_vgm_tba_plane_cutoff_bounds :
     · rw [indicator_of_mem hy, Pi.one_apply]
       exact hχ1 (1 + κ) y
     · rw [indicator_of_notMem hy, hχ_out (1 + κ) y (not_le.1 (mt mem_closedBall_zero_iff.2 hy)).le]
+/-- Simon Ch. 8, Definition 1.1 tested on a product function: if `V` has tangent plane `T` with
+multiplicity `θ` at `x`, then for `g ∈ C_c(ℝ^N)` and continuous `β` on `G(N,n)`,
+`t^{-n} ∫ g(t⁻¹(y - x)) β(S) dV(y,S) → θ β(T) ∫_T g dH^n` as `t ↓ 0` (the test function is
+`f(y,S) = g(y) β(S)`; used for the tangent-ball averages in the proof of 1.2). -/
+theorem Submission.frt_vgm_tba_product_blowup_tendsto :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ (g : C_c(Euclidean N, ℝ)) (β : C(Grassmannian N n, ℝ)), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z.1 - x)) * β z.2 ∂V.measure) (𝓝[>] 0) (𝓝 (θ * (β T * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n]))) := by
+  intro N n U V x T θ hT g β
+  -- Step 1: the product test function `f(y,S) = g(y) β(S)` lies in `C_c(ℝ^N × G(N,n))`: it is
+  -- continuous and vanishes off the compact set `tsupport g × G(N,n)`.
+  have hcont : Continuous (fun z : Euclidean N × Grassmannian N n ↦ g z.1 * β z.2) :=
+    (g.continuous.comp continuous_fst).mul (β.continuous.comp continuous_snd)
+  have hsupp : HasCompactSupport (fun z : Euclidean N × Grassmannian N n ↦ g z.1 * β z.2) := by
+    refine HasCompactSupport.intro (g.hasCompactSupport.isCompact.prod isCompact_univ) ?_
+    intro z hz
+    have hz1 : z.1 ∉ tsupport g := fun h ↦ hz ⟨h, mem_univ _⟩
+    simp [image_eq_zero_of_notMem_tsupport hz1]
+  let f : C_c(Euclidean N × Grassmannian N n, ℝ) := ⟨⟨_, hcont⟩, hsupp⟩
+  -- Step 2: Def. 1.1 applied to `f`.
+  have h := hT.2.2 f
+  -- Step 3: the plane side, `∫ f dv(T) = β(T) ∫_T g dH^n`.
+  have hplane : ∫ z, f z ∂(planeVarifoldMeasure T) =
+      β T * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] := by
+    rw [planeVarifoldMeasure, integral_map (φ := fun y : Euclidean N ↦ (y, T))
+      (continuous_id.prodMk continuous_const).aemeasurable (map_continuous f).aestronglyMeasurable]
+    change ∫ y in (T.plane : Set (Euclidean N)), g y * β T ∂μHE[n] = _
+    rw [integral_mul_const, mul_comm]
+  -- Step 4: the rescaled side, `∫ f dV_{x,t} = t^{-n} ∫ g(t⁻¹(y - x)) β(S) dV` for `t > 0`.
+  have hresc : ∀ t ∈ Ioi (0 : ℝ), ∫ z, f z ∂(rescaledMeasure V x t) =
+      t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z.1 - x)) * β z.2 ∂V.measure := by
+    intro t ht
+    rw [rescaledMeasure, integral_smul_measure,
+      integral_map (φ := fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - x), z.2))
+        (show Continuous (fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - x), z.2)) by
+          fun_prop).aemeasurable (map_continuous f).aestronglyMeasurable,
+      ENNReal.toReal_ofReal (pow_nonneg (inv_nonneg.mpr (mem_Ioi.mp ht).le) n), smul_eq_mul]
+    rfl
+  -- Step 5: the two sides agree on `(0, ∞) ∈ 𝓝[>] 0`, so the limit transfers.
+  rw [hplane] at h
+  exact h.congr' (eventually_nhdsWithin_of_forall hresc)
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
