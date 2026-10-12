@@ -359,6 +359,44 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Weighted approximate tangent spaces (Simon Ch. 3, 1.7) are invariant under the dilation
+`η(w) = r⁻¹(w − x)`, `r > 0`: if `Q` is the approximate tangent space of `(M, θ)` at `y`, it is
+the approximate tangent space of `(η(M), θ ∘ η⁻¹)` at `η(y)`.  The blow-up of `η(M)` at `η(y)`
+with ratio `s` is the blow-up of `M` at `y` with ratio `r s`, and `s ↦ r s` preserves `𝓝[>] 0`. -/
+theorem Submission.ind_rs_weightedTangent_dilation :
+    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x y : Eucl P) (r : ℝ)
+      (Q : Submodule ℝ (Eucl P)), 0 < r → HasWeightedApproximateTangentSpaceAt n M θ y Q →
+        HasWeightedApproximateTangentSpaceAt n ((fun w => r⁻¹ • (w - x)) '' M)
+          (fun z => θ (x + r • z)) (r⁻¹ • (y - x)) Q := by
+  intro P n M θ x y r Q hr hQ
+  -- The new multiplicity at `η(y)` is `θ(y)`.
+  have hval : θ (x + r • r⁻¹ • (y - x)) = θ y := by
+    rw [smul_inv_smul₀ hr.ne', add_sub_cancel]
+  -- Blow-ups of `η(M)` at `η(y)` are blow-ups of `M` at `y` with the ratio multiplied by `r`.
+  have hset : ∀ s : ℝ,
+      Poincare.SimonGMT.Chapter03.blowUpMap (r⁻¹ • (y - x)) s '' ((fun w => r⁻¹ • (w - x)) '' M) =
+        Poincare.SimonGMT.Chapter03.blowUpMap y (r * s) '' M := by
+    intro s
+    rw [Set.image_image]
+    refine Set.image_congr fun w _ => ?_
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+    rw [← smul_sub, sub_sub_sub_cancel_right, smul_smul, mul_inv_rev]
+  have hweight : ∀ (s : ℝ) (u : Eucl P),
+      θ (x + r • (r⁻¹ • (y - x) + s • u)) = θ (y + (r * s) • u) := by
+    intro s u
+    rw [smul_add, smul_inv_smul₀ hr.ne', smul_smul, ← add_assoc, add_sub_cancel]
+  -- `s ↦ r s` maps `𝓝[>] 0` to itself.
+  have hlim : Tendsto (fun s : ℝ => r * s) (𝓝[>] 0) (𝓝[>] 0) := by
+    have h0 : Tendsto (fun s : ℝ => r * s) (𝓝 0) (𝓝 (r * 0)) := (continuous_const_mul r).tendsto 0
+    rw [mul_zero] at h0
+    exact tendsto_nhdsWithin_iff.2 ⟨h0.mono_left nhdsWithin_le_nhds,
+      eventually_nhdsWithin_of_forall fun s hs => mul_pos hr hs⟩
+  refine ⟨hQ.1, fun f => ?_⟩
+  show Tendsto _ _ (𝓝 (θ (x + r • r⁻¹ • (y - x)) * _))
+  rw [hval]
+  refine ((hQ.2 f).comp hlim).congr fun s => ?_
+  simp only [Function.comp_apply, hset, hweight]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
