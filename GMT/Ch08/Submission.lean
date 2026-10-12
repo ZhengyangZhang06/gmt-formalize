@@ -847,6 +847,69 @@ theorem Submission.frt_vgm_tba_nonneg_ball_limit :
       (pow_nonneg (inv_nonneg.2 ht.1.le) n)
     linarith
 
+/-- Averages over balls at a tangent plane (Simon Ch. 8, proof of 1.2, p. 208, with the erratum
+`η_V^{(x)}(β) = β(T_x)`): if `V` has tangent plane `T` with multiplicity `θ` at `x` (Def. 1.1),
+then `μ_V(B_ρ(x))⁻¹ ∫_{Gₙ(B_ρ(x))} β(S) dV(y,S) → β(T)` as `ρ ↓ 0` for every continuous `β` on
+`G(N,n)`.  The multiplicity cancels because the averages are normalised by `μ_V(B_ρ(x))`. -/
+theorem Submission.frt_vgm_tangent_ball_average :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (β T)) := by
+  intro N n U V x T θ hT β
+  -- Step 1: `ω_n = (unitBallVolume n).toReal` is positive (the unit ball has positive, finite
+  -- volume).
+  have hω : 0 < (unitBallVolume n).toReal := by
+    rw [unitBallVolume]
+    exact ENNReal.toReal_pos (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+      measure_ball_lt_top.ne
+  -- Step 2: `x ∈ U` and `U` is open, so for small `t > 0` the closed ball `B_t(x)` is a compact
+  -- subset of `U`, hence `V(B_t(x) × G(N,n)) < ∞`.
+  obtain ⟨δ, hδ, hδU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hT.1
+  have hfin : ∀ᶠ t in 𝓝[>] (0 : ℝ),
+      V.measure (closedBall x t ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ := by
+    filter_upwards [Ioo_mem_nhdsGT hδ] with t ht
+    exact V.finite_on_compact _ (isCompact_closedBall x t)
+      ((closedBall_subset_ball ht.2).trans hδU)
+  -- Step 8: `β = β⁺ - β⁻` with `β⁺ = max(β, 0)` and `β⁻ = max(-β, 0)` continuous and `≥ 0`. The
+  -- sibling `nonneg_ball_limit` gives `t^{-n} ∫_{Gₙ(B_t(x))} β^± dV → θ ω_n β^±(T)`, and the ball
+  -- integrals split once `V(B_t(x) × G(N,n)) < ∞`.
+  let βp : C(Grassmannian N n, ℝ) := ⟨fun S ↦ max (β S) 0, β.continuous.max continuous_const⟩
+  let βm : C(Grassmannian N n, ℝ) := ⟨fun S ↦ max (-β S) 0, β.continuous.neg.max continuous_const⟩
+  have hβpm : ∀ S, βp S - βm S = β S := fun S ↦ max_zero_sub_max_neg_zero_eq_self (β S)
+  have hnum : Tendsto (fun t : ℝ ↦ t⁻¹ ^ n *
+      ∫ z in closedBall x t ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) (𝓝[>] 0)
+      (𝓝 (θ * (unitBallVolume n).toReal * β T)) := by
+    have hlim := (Submission.frt_vgm_tba_nonneg_ball_limit N n U V x T θ hT βp
+      fun _ ↦ le_max_right _ _).sub
+      (Submission.frt_vgm_tba_nonneg_ball_limit N n U V x T θ hT βm fun _ ↦ le_max_right _ _)
+    rw [← mul_sub, hβpm] at hlim
+    refine hlim.congr' ?_
+    filter_upwards [hfin] with t ht
+    have hint : ∀ γ : C(Grassmannian N n, ℝ), IntegrableOn (fun z : Euclidean N ×
+        Grassmannian N n ↦ γ z.2) (closedBall x t ×ˢ (univ : Set (Grassmannian N n))) V.measure :=
+      fun γ ↦ Measure.integrableOn_of_bounded ht
+        (γ.continuous.comp continuous_snd).aestronglyMeasurable
+        (ae_of_all _ fun z ↦ γ.norm_coe_le_norm z.2)
+    rw [← mul_sub, ← integral_sub (hint βp) (hint βm)]
+    simp only [hβpm]
+  -- Step 9: `β ≡ 1` gives the weight, since
+  -- `∫_{Gₙ(B_t(x))} 1 dV = V(B_t(x) × G(N,n)) = μ_V(B_t(x))`; so `t^{-n} μ_V(B_t(x)) → θ ω_n ≠ 0`.
+  have hden : Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * (V.weight (closedBall x t)).toReal) (𝓝[>] 0)
+      (𝓝 (θ * (unitBallVolume n).toReal)) := by
+    have h1 := Submission.frt_vgm_tba_nonneg_ball_limit N n U V x T θ hT
+      (ContinuousMap.const _ 1) fun _ ↦ zero_le_one
+    simp only [ContinuousMap.const_apply, mul_one] at h1
+    refine h1.congr fun t ↦ ?_
+    rw [setIntegral_const, smul_eq_mul, mul_one, measureReal_def,
+      V.weight_apply measurableSet_closedBall]
+  have hne : θ * (unitBallVolume n).toReal ≠ 0 := (mul_pos hT.2.1 hω).ne'
+  -- Step 10: divide.  The factor `t^{-n} ≠ 0` cancels for `t > 0`, and `θ ω_n` cancels in the
+  -- limit.
+  have hratio := hnum.div hden hne
+  rw [mul_div_cancel_left₀ _ hne] at hratio
+  refine hratio.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  rw [Pi.div_apply]
+  exact mul_div_mul_left _ _ (pow_ne_zero n (inv_ne_zero (ne_of_gt ht)))
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
