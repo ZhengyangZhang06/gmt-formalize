@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5ef797cc8a6f6627d1cda3eebbc27ea98455c1255712ca8682c0b832ab673c76",
+  "git_delta": {
+    "base_commit": "cee7100b515e514cc35a1c2cb26517fed9ff05e4",
+    "candidate_commit": "3333c2671699c38a1a06be34c7a0b9ada4b473e8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dsmc_em_cutoff_integral_hasDerivAt",
+    "diff_sha256": "e318ff19fb0ef25a94783d150507f328968aa89d83d73ad23f76ce697c1e4887",
+    "source_sha256": "7b1671ff32b7466c2612ec1107f28ec1b5d01c9a7da6878370fba47d916a1d0c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_em_cutoff_integral_hasDerivAt",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (z : Euclid P) (r : ℝ) (η : ℝ → ℝ), μ (ball z r) < ∞ → ContDiff ℝ 1 η → (∀ u, 1 ≤ u → η u = 0) → ContinuousOn (fun t => ∫ x, η (‖x - z‖ ^ 2 / t ^ 2) ∂μ) (Ioc 0 r) ∧ ∀ s ∈ Ioo 0 r, HasDerivAt (fun t => ∫ x, η (‖x - z‖ ^ 2 / t ^ 2) ∂μ) (-(∫ x, 2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2) ∂μ) / s) s",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -451,6 +451,110 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Differentiation of radial cutoff integrals** (Simon Ch. 4, 3.3–3.4, where
+`I(ρ) = ∫ φ(r/ρ) dμ` is differentiated in `ρ`; here the cutoff is written in the squared ratio
+`|x - z|²/t²`).  If `μ(B_r(z)) < ∞` and `η` is `C¹` with `η = 0` on `[1, ∞)`, then
+`I(t) = ∫ η(|x - z|²/t²) dμ` is continuous on `(0, r]` and, for `0 < s < r`,
+`I'(s) = -(∫ 2 (|x - z|²/s²) η'(|x - z|²/s²) dμ)/s` (dominated convergence and differentiation
+under the integral sign). -/
+theorem Submission.dsmc_em_cutoff_integral_hasDerivAt : ∀ (P : ℕ) (μ : Measure (Euclid P)) (z : Euclid P) (r : ℝ) (η : ℝ → ℝ), μ (ball z r) < ∞ → ContDiff ℝ 1 η → (∀ u, 1 ≤ u → η u = 0) → ContinuousOn (fun t => ∫ x, η (‖x - z‖ ^ 2 / t ^ 2) ∂μ) (Ioc 0 r) ∧ ∀ s ∈ Ioo 0 r, HasDerivAt (fun t => ∫ x, η (‖x - z‖ ^ 2 / t ^ 2) ∂μ) (-(∫ x, 2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2) ∂μ) / s) s := by
+  intro P μ z r η hμ hη hη1
+  have hηc : Continuous η := hη.continuous
+  have hη'c : Continuous (deriv η) := hη.continuous_deriv le_rfl
+  -- `η' = deriv η` vanishes on `(1, ∞)` (where `η` is locally zero), hence on `[1, ∞)`.
+  have hη'1 : ∀ u, 1 ≤ u → deriv η u = 0 := by
+    have hIoi : Ioi (1 : ℝ) ⊆ {u | deriv η u = 0} := fun u hu => by
+      have hloc : η =ᶠ[𝓝 u] fun _ => (0 : ℝ) := by
+        filter_upwards [Ioi_mem_nhds hu] with v hv
+        exact hη1 v (le_of_lt hv)
+      show deriv η u = 0
+      rw [hloc.deriv_eq, deriv_const]
+    have hIci : Ici (1 : ℝ) ⊆ {u | deriv η u = 0} := by
+      rw [← closure_Ioi]
+      exact closure_minimal hIoi (isClosed_eq hη'c continuous_const)
+    exact fun u hu => hIci hu
+  -- Bounds on `[0, 1]` for `η` and for `u ↦ 2 u η'(u)`.
+  obtain ⟨C, hC⟩ := isCompact_Icc.exists_bound_of_continuousOn (s := Icc (0 : ℝ) 1)
+    hηc.continuousOn
+  obtain ⟨K, hK⟩ := isCompact_Icc.exists_bound_of_continuousOn (s := Icc (0 : ℝ) 1)
+    (f := fun u : ℝ => 2 * u * deriv η u) (by fun_prop)
+  have hg1 : ∀ u, 1 ≤ u → 2 * u * deriv η u = 0 := fun u hu => by
+    rw [hη'1 u hu, mul_zero]
+  -- For `0 < t ≤ r`, `g(|x - z|²/t²)` vanishes off `B_t(z) ⊆ B_r(z)` and is dominated there.
+  have hdom : ∀ (g : ℝ → ℝ) (B : ℝ), (∀ u, 1 ≤ u → g u = 0) → (∀ u ∈ Icc (0 : ℝ) 1, ‖g u‖ ≤ B) →
+      ∀ t, 0 < t → t ≤ r → ∀ x : Euclid P,
+        ‖g (‖x - z‖ ^ 2 / t ^ 2)‖ ≤ (ball z r).indicator (fun _ => B) x := by
+    intro g B hg0 hgB t ht htr x
+    have hB : 0 ≤ B := (norm_nonneg _).trans (hgB 0 ⟨le_rfl, zero_le_one⟩)
+    by_cases hx : ‖x - z‖ < t
+    · have hxr : x ∈ ball z r := by
+        rw [mem_ball, dist_eq_norm]
+        exact hx.trans_le htr
+      rw [indicator_of_mem hxr]
+      apply hgB
+      refine ⟨by positivity, ?_⟩
+      rw [div_le_one (by positivity)]
+      exact pow_le_pow_left₀ (norm_nonneg _) hx.le 2
+    · rw [not_lt] at hx
+      rw [hg0 _ ?_, norm_zero]
+      · exact indicator_nonneg (fun _ _ => hB) x
+      · rw [le_div_iff₀ (by positivity), one_mul]
+        exact pow_le_pow_left₀ ht.le hx 2
+  have hint : ∀ c : ℝ, Integrable ((ball z r).indicator (fun _ => c)) μ := fun c =>
+    (integrable_indicator_iff measurableSet_ball).2 (integrableOn_const hμ.ne)
+  have hcont : ∀ t : ℝ, Continuous fun x : Euclid P => η (‖x - z‖ ^ 2 / t ^ 2) := fun t => by
+    fun_prop
+  -- Pointwise derivative in `t ≠ 0`.
+  have hderiv : ∀ x : Euclid P, ∀ t : ℝ, t ≠ 0 →
+      HasDerivAt (fun t => η (‖x - z‖ ^ 2 / t ^ 2))
+        (-(2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)) / t) t := by
+    intro x t ht
+    have h1 := (hasDerivAt_const t (‖x - z‖ ^ 2)).div (hasDerivAt_pow 2 t) (pow_ne_zero 2 ht)
+    have h2 := (hη.differentiable one_ne_zero (‖x - z‖ ^ 2 / t ^ 2)).hasDerivAt.comp t h1
+    refine h2.congr_deriv ?_
+    field_simp
+    ring
+  refine ⟨?_, fun s hs => ?_⟩
+  · -- (i) continuity on `(0, r]` by dominated convergence
+    refine continuousOn_of_dominated (F := fun t x => η (‖x - z‖ ^ 2 / t ^ 2))
+      (bound := (ball z r).indicator (fun _ => C)) (fun t _ => (hcont t).aestronglyMeasurable)
+      (fun t ht => Eventually.of_forall (hdom η C hη1 hC t ht.1 ht.2)) (hint C)
+      (Eventually.of_forall fun x t ht => (hderiv x t ht.1.ne').continuousAt.continuousWithinAt)
+  · -- (ii) differentiation under the integral sign on `(s/2, r)`
+    have hs0 : 0 < s := hs.1
+    have hb : ∀ x : Euclid P, ∀ t ∈ Ioo (s / 2) r,
+        ‖-(2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)) / t‖ ≤
+          (ball z r).indicator (fun _ => K) x / (s / 2) := by
+      intro x t ht
+      have ht0 : 0 < t := by linarith [ht.1]
+      have h1 : ‖2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)‖ ≤
+          (ball z r).indicator (fun _ => K) x :=
+        hdom (fun u => 2 * u * deriv η u) K hg1 hK t ht0 ht.2.le x
+      have h2 : 0 ≤ (ball z r).indicator (fun _ => K) x := (norm_nonneg _).trans h1
+      rw [norm_div, norm_neg, Real.norm_of_nonneg ht0.le]
+      calc ‖2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)‖ / t
+          ≤ (ball z r).indicator (fun _ => K) x / t := by gcongr
+        _ ≤ (ball z r).indicator (fun _ => K) x / (s / 2) := by
+          gcongr
+          exact ht.1.le
+    have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := μ) (x₀ := s)
+      (F := fun t x => η (‖x - z‖ ^ 2 / t ^ 2))
+      (F' := fun t x => -(2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)) / t)
+      (bound := fun x => (ball z r).indicator (fun _ => K) x / (s / 2))
+      (Ioo_mem_nhds (by linarith) hs.2)
+      (Eventually.of_forall fun t => (hcont t).aestronglyMeasurable)
+      ((hint C).mono' (hcont s).aestronglyMeasurable
+        (Eventually.of_forall (hdom η C hη1 hC s hs0 hs.2.le)))
+      (by fun_prop : Continuous fun x : Euclid P =>
+        -(2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2)) / s).aestronglyMeasurable
+      (Eventually.of_forall hb) ((hint K).div_const (s / 2))
+      (Eventually.of_forall fun x t ht => hderiv x t (by linarith [ht.1] : 0 < t).ne')
+    have hval : ∫ x, -(2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2)) / s ∂μ =
+        -(∫ x, 2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2) ∂μ) / s := by
+      rw [integral_div, integral_neg]
+    rw [← hval]
+    exact key.2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
