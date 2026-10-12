@@ -550,6 +550,52 @@ theorem Submission.simon_submanifold_range_starProjection_continuousOn : ∀ (n 
         ContinuousLinearMap.adjoint A)) A₀ :=
     continuousAt_id.clm_comp (hinv.clm_comp hadj.continuousAt)
   exact hcont.continuousWithinAt.congr (fun A hA ↦ (hF A hA).symm) (hF A₀ hA₀).symm
+/-- **Simon Ch. 2, §4 (p. 55).** A `C^r` submanifold `M ⊆ ℝᴺ` in the sense of 4.1 is a Borel set.
+If `(V, W, ψ)` is a local representation, relative properness and continuity of `ψ` on `V` give
+`W ∩ closure (W ∩ M) ⊆ M`, so `W ∩ M = W ∩ closure (W ∩ M)` is the intersection of an open set and a
+closed set. By second countability, countably many chart sets `W_y` (`y ∈ M`) cover `M`. Hence `M`
+is a countable union of such intersections. -/
+theorem Submission.simon_submanifold_measurableSet : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M := by
+  intro n N r M hM
+  -- Step 1: local closedness. For every local representation `(V, W, ψ)`,
+  -- `W ∩ closure (W ∩ M) ⊆ M`.
+  have hloc : ∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N),
+      Chapter02.IsSimonLocalRepresentation r M V W ψ → W ∩ closure (W ∩ M) ⊆ M := by
+    rintro V W ψ ⟨hV, -, hψ, -, himg, hprop, -⟩ z ⟨hzW, hz⟩
+    obtain ⟨u, huWM, hu⟩ := mem_closure_iff_seq_limit.1 hz
+    -- `Q = {u j : j ∈ ℕ} ∪ {z} ⊆ W` is compact, so relative properness makes `V ∩ ψ⁻¹(Q)` compact.
+    have hK : IsCompact (V ∩ ψ ⁻¹' insert z (range u)) :=
+      hprop _ hu.isCompact_insert_range (insert_subset hzW (range_subset_iff.2 fun j ↦ (huWM j).1))
+    -- Since `u j ∈ W ∩ M = ψ(V)`, choose `x j ∈ V` with `ψ (x j) = u j`.
+    have hpre : ∀ j, ∃ x ∈ V, ψ x = u j := fun j ↦ (mem_image ψ V (u j)).1 (himg ▸ huWM j)
+    choose x hxV hψx using hpre
+    obtain ⟨a, ⟨haV, -⟩, φ, hφ, hxa⟩ := hK.tendsto_subseq (x := x) fun j ↦
+      ⟨hxV j, mem_insert_of_mem _ ⟨j, (hψx j).symm⟩⟩
+    -- `ψ` is continuous at `a ∈ V`, so `ψ a = lim ψ (x (φ k)) = lim u (φ k) = z`.
+    have hψa : Tendsto (ψ ∘ x ∘ φ) atTop (𝓝 (ψ a)) :=
+      (hψ.continuousOn.continuousAt (hV.mem_nhds haV)).tendsto.comp hxa
+    have hz' : Tendsto (ψ ∘ x ∘ φ) atTop (𝓝 z) := by
+      have hcomp : ψ ∘ x ∘ φ = u ∘ φ := funext fun k ↦ hψx (φ k)
+      rw [hcomp]
+      exact hu.comp hφ.tendsto_atTop
+    have hzimg : z ∈ ψ '' V := ⟨a, haV, tendsto_nhds_unique hψa hz'⟩
+    exact (himg ▸ hzimg).2
+  -- Step 3: Lindelöf. Choose a local representation `(V y, W y, ψ y)` with `y ∈ W y` for every
+  -- `y ∈ M`; the union of the open sets `W y`, `y ∈ M`, is a union over a countable `T ⊆ M`.
+  choose! V W ψ hyW hrep using hM.2
+  obtain ⟨T, hTM, hTc, hTU⟩ :=
+    TopologicalSpace.isOpen_biUnion_countable M W fun y hy ↦ (hrep y hy).2.1
+  -- Steps 2 and 4: `M = ⋃ y ∈ T, (W y ∩ closure (W y ∩ M))`; `⊆` uses
+  -- `W y ∩ M ⊆ closure (W y ∩ M)`, and `⊇` is Step 1.
+  have hMeq : M = ⋃ y ∈ T, (W y ∩ closure (W y ∩ M)) := by
+    refine Subset.antisymm (fun z hz ↦ ?_) (iUnion₂_subset fun y hy ↦ hloc _ _ _ (hrep y (hTM hy)))
+    have hzT : z ∈ ⋃ y ∈ T, W y := hTU ▸ mem_biUnion hz (hyW z hz)
+    obtain ⟨y, hy, hzy⟩ := mem_iUnion₂.1 hzT
+    exact mem_biUnion hy ⟨hzy, subset_closure ⟨hzy, hz⟩⟩
+  -- Step 5: each `W y ∩ closure (W y ∩ M)` is Borel, and `T` is countable.
+  rw [hMeq]
+  exact .biUnion hTc fun y hy ↦
+    (hrep y (hTM hy)).2.1.measurableSet.inter isClosed_closure.measurableSet
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
