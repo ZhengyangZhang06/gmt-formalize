@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_regularity-a1.carrier_support_null-a1.upper_density_null-a1",
+  "parent_id": "root.density_one_regularity-a1.carrier_support_null-a1",
+  "depth": 3,
+  "title": "Upper Density Theorem in the contract normalization (Simon Ch. 1, 3.6)",
+  "statement": "Let n, l be natural numbers, nu any measure on R^(n+l), and A ⊆ R^(n+l) a nu-null-measurable set with nu(A) < infinity. Here nu is defined on the Borel sigma-algebra and evaluated on arbitrary sets through its outer measure; no local finiteness is assumed. Then H^n({x : x ∉ A and limsup_{r -> 0+} nu(A ∩ B_r(x)) / ofReal(omega_n r^n) ≠ 0}) = 0. Here B_r(x) is the closed ball, omega_n = unitBallVolume n = pi^(n/2)/Gamma(n/2+1), the quotient is ENNReal division in [0, infinity], and H^n = muHE[n]. In words: the upper density Theta^{*n}(nu, A, x) vanishes for H^n-a.e. x outside A.",
+  "lean_statement": "∀ {n ℓ : ℕ} (ν : Measure (Amb n ℓ)) (A : Set (Amb n ℓ)), NullMeasurableSet A ν → ν A < ∞ → (μHE[n] : Measure (Amb n ℓ)) {x | x ∉ A ∧ limsup (fun r : ℝ => ν (A ∩ closedBall x r) / ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) ≠ 0} = 0",
+  "lean_name": "upperDensity_ne_zero_outside_hausdorff_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-carrier-support-null-a1-upper-density-null-a1-a1"
+}
