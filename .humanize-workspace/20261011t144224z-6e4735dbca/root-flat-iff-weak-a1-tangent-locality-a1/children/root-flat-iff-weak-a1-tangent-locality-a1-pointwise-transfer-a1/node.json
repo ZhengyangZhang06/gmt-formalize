@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1",
+  "parent_id": "root.flat_iff_weak-a1.tangent_locality-a1",
+  "depth": 3,
+  "title": "Pointwise transfer of weighted approximate tangent spaces under relative L¹-closeness",
+  "statement": "Let P, n ∈ ℕ and H := μHE[n] on ℝ^P. Let M₁, M₂ ⊆ ℝ^P be H-null-measurable, θ₁, θ₂ : ℝ^P → ℝ, x ∈ ℝ^P, c ∈ ℝ and ρ > 0. Assume:\n(i) θ₁ ≥ 0 on M₁;\n(ii) θ_i is H-integrable on M_i ∩ B̄_ρ(x) for i = 1, 2;\n(iii) θ₂(x) = c·θ₁(x);\n(iv) for every ε > 0 and all sufficiently small s > 0, ∫⁻_{B̄_s(x)} ‖1_{M₂}θ₂ − c·1_{M₁}θ₁‖ₑ dH ≤ ofReal(ε)·∫⁻_{M₁∩B̄_s(x)} ofReal(θ₁) dH.\nThen for every linear subspace Q ⊆ ℝ^P, HasWeightedApproximateTangentSpaceAt n M₁ θ₁ x Q implies HasWeightedApproximateTangentSpaceAt n M₂ θ₂ x Q.",
+  "lean_statement": "∀ (P n : ℕ) (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ) (x : Eucl P) (c ρ : ℝ), 0 < ρ → NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) → NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) → (∀ y ∈ M₁, 0 ≤ θ₁ y) → IntegrableOn θ₁ (M₁ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) → IntegrableOn θ₂ (M₂ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) → θ₂ x = c * θ₁ x → (∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), ∫⁻ z in closedBall x s, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ∂(μHE[n] : Measure (Eucl P)) ≤ ENNReal.ofReal ε * ∫⁻ z in M₁ ∩ closedBall x s, ENNReal.ofReal (θ₁ z) ∂(μHE[n] : Measure (Eucl P))) → ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M₁ θ₁ x Q → HasWeightedApproximateTangentSpaceAt n M₂ θ₂ x Q",
+  "lean_name": "fiw_tl_transfer",
+  "depends_on": [
+    "root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1",
+    "root.flat_iff_weak-a1.tangent_locality-a1.growth_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.growth_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-a1"
+}
