@@ -1,0 +1,20 @@
+{
+  "node_id": "root.density_one_higher_regularity-a1.allard_graph-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/474",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "191cc1d92dbade936e0dd47e4116a0b76b354ea2",
+  "integrated_commit": "",
+  "proof_base_commit": "64408b0869cf2ff6ffc80931578afc2335e64b5a",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_one_higher_regularity-a1",
+  "requires": [
+    "root.density_one_higher_regularity-a1.translate_varifold-a1",
+    "root.density_one_regularity-a1.allard_scale-a1",
+    "root.density_one_regularity-a1.translate_varifold-a1",
+    "root.density_one_regularity-a1.holder_class-a1"
+  ]
+}
