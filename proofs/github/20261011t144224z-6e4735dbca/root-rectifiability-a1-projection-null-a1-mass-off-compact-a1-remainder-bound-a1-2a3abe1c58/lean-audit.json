@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "56257605e1b7204678c7925507ae4c9c5a158cd2a6be9d7e78010177b4b0ec3d",
+  "git_delta": {
+    "base_commit": "c1a767ef49862eafbda41158bf89c8f7cc06bb60",
+    "candidate_commit": "6b2bcfc06b1130c15d37f3a3c0eb7a60dd08348e",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_moc_abs_apply_le_mul_measure_diff",
+    "diff_sha256": "d5b84410b2c7f35410daca95be9954897492058ded0ed75fba73179cbf98c243",
+    "source_sha256": "ae3a192192ff25e9a4b74e92c73d8166e50b10f7b1ced16d42355a46bb1ba80c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_moc_abs_apply_le_mul_measure_diff",
+      "statement": "∀ (P n : ℕ) (U W K : Set (Eucl P)) (T : GeometricCurrentOn U n) (μ : Measure (Eucl P)) (ξ : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ ξ → IsOpen W → IsCompact K → μ (W \\ K) ≠ ∞ → ∀ (θ : Covector (Eucl P) n) (h : Eucl P → ℝ) (c c' : ℝ), (∀ x, |h x| ≤ c) → (∀ x, x ∉ W → h x = 0) → (∀ x ∈ K, h x = 0) → (∀ᵐ x ∂μ, |ξ x θ| ≤ c') → ∀ φ : TestFormOn U n, (∀ x, (φ : DifferentialForm (Eucl P) n) x = h x • θ) → |T φ| ≤ c * c' * (μ (W \\ K)).toReal",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
