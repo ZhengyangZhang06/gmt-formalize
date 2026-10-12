@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3b30adfb5b28af3ea074a9dc42149ac60ef081748b8cf8ba460bff28f5bdc9f6",
+  "git_delta": {
+    "base_commit": "707fc857bc56adc5cae40b354272c3ffb50f7baa",
+    "candidate_commit": "90286fff0a53715fd131ad654c3181474ac12dad",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_convolution_sub_lintegral_le_of_translate",
+    "diff_sha256": "5009076016a232672c35c8b6d7614b3747c6355695fa03866d171451e77614da",
+    "source_sha256": "08d46bc9a8850e71eb0a5ee7d4ae2f17c6dbca4988b606bef2c92a955f2ec233",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_convolution_sub_lintegral_le_of_translate",
+      "statement": "∀ (n : ℕ) (F ρ : Rn n → ℝ) (Q : Set (Rn n)) (σ : ℝ) (C : ℝ≥0∞), Integrable F volume → Continuous ρ → (∀ x, 0 ≤ ρ x) → Function.support ρ ⊆ ball 0 σ → ∫ x, ρ x = 1 → (∀ t : Rn n, ‖t‖ < σ → ∫⁻ x in Q, ‖F (x - t) - F x‖ₑ ≤ C) → ∫⁻ x in Q, ‖convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x - F x‖ₑ ≤ C",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
