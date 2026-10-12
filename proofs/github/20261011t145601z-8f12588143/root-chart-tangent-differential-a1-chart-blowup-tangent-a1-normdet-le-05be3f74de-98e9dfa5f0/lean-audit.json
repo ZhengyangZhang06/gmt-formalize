@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ad03beb3c34a48d2164fb3e55d266e668143806c1599d535b46d8bcd33e65a42",
+  "git_delta": {
+    "base_commit": "581e7c59a001d57700701c59029db18a623640ea",
+    "candidate_commit": "502799439a0fe55a9378cf1d395022a93e2fba7d",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "chartTD_normDet_le_opNorm_pow",
+    "diff_sha256": "63f01c57a1ab42815f6753508d955c8cb1e018b163287591f6718dda9ccbfa6c",
+    "source_sha256": "f70cee28a62758d85346ec713fc42a6b350b92b4880a3d3b768ad0037bd7a50e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.chartTD_normDet_le_opNorm_pow",
+      "statement": "∀ (n N : ℕ) (A : Rn n →L[ℝ] Rn N), A.toLinearMap.normDet ≤ ‖A‖ ^ n",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
