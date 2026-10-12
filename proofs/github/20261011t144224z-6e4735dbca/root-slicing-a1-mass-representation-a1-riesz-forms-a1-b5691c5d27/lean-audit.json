@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c9db22dbbcfd6aa3e9d0916b5b77e9626c0ba27152fd062336f7a1ab09a43323",
+  "git_delta": {
+    "base_commit": "35c616115dbdba578c761012f4e876f91c6b120a",
+    "candidate_commit": "7b60523bff83853b436fb1415afc631a916df0b8",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "smr_riesz_continuous_forms",
+    "diff_sha256": "2db34429d83e308d0730c4d0bc4c990cf9848372c9357fafd862448cfc4cd8f8",
+    "source_sha256": "477f308df6dd3617061b1f59d3316dc1a22afa607a8ac87b091c479be9c4d08e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.smr_riesz_continuous_forms",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ L : (Eucl P → Covector (Eucl P) k) → ℝ, (∀ φ ψ : Eucl P → Covector (Eucl P) k, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ U → Continuous ψ → HasCompactSupport ψ → tsupport ψ ⊆ U → L (φ + ψ) = L φ + L ψ) → (∀ (c : ℝ) (φ : Eucl P → Covector (Eucl P) k), Continuous φ → HasCompactSupport φ → tsupport φ ⊆ U → L (c • φ) = c * L φ) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ B : ℝ, ∀ φ : Eucl P → Covector (Eucl P) k, Continuous φ → tsupport φ ⊆ K → (∀ x, covectorEuclideanNorm (φ x) ≤ 1) → |L φ| ≤ B) → ∃ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), (∀ φ : Eucl P → Covector (Eucl P) k, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ U → Integrable (fun x => v x (φ x)) μ ∧ L φ = ∫ x, v x (φ x) ∂μ) ∧ μ Uᶜ = 0 ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) ∧ (∀ α : Covector (Eucl P) k, Measurable (fun x => v x α)) ∧ ∀ᵐ x ∂μ, ∃ α : Covector (Eucl P) k, covectorEuclideanNorm α ≤ 1 ∧ v x α = 1",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
