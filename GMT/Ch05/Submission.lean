@@ -458,6 +458,39 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Smoothness and Legendre ellipticity of the area integrand (Step 1 of the elliptic bootstrap for
+Simon Ch. 5, Theorem 7.1, second assertion).  For a linear `P : ℝⁿ → ℝ^ℓ` put
+`G(P)_{ab} = ⟨P eₐ, P e_b⟩` and `J(P) = √(det(I + G(P)))`.  Then
+(i) `J` is `C^∞` on `L(ℝⁿ, ℝ^ℓ)`, and
+(ii) there is `ε > 0` with `½ ‖Q‖² ≤ D²J(P)[Q][Q]` for every `Q` whenever `‖P‖ ≤ ε`
+(operator norms, `D²J(P)[Q][Q] = fderiv ℝ (fderiv ℝ J) P Q Q`).
+Since `J` is `C²`, continuity of `D²J` at `0` gives `ε` with
+`|D²J(P)[Q][Q] − D²J(0)[Q][Q]| ≤ ½ ‖Q‖²` for `‖P‖ ≤ ε`, while
+`D²J(0)[Q][Q] = Σₐ |Q eₐ|² ≥ ‖Q‖²` (Cauchy–Schwarz). -/
+theorem dohr_eb_area_integrand_legendre : ∀ n ℓ : ℕ, ContDiff ℝ (⊤ : ℕ∞) (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) ∧ ∃ ε : ℝ, 0 < ε ∧ ∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q : Rn n →L[ℝ] Rn ℓ, 1 / 2 * ‖Q‖ ^ 2 ≤ fderiv ℝ (fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))))) P Q Q := by
+  intro n ℓ
+  -- (i) `J` is `C^∞`
+  refine ⟨Submission.dohr_eb_ail_contDiff n ℓ, ?_⟩
+  -- (ii) `J` is in particular `C²`
+  have hC2 := (Submission.dohr_eb_ail_contDiff n ℓ).of_le (m := 2) (by norm_cast)
+  -- continuity of `D²J` at `0` with `δ = 1/2`:
+  -- `|D²J(P)[Q][Q'] − D²J(0)[Q][Q']| ≤ ½ ‖Q‖ ‖Q'‖` whenever `‖P − 0‖ ≤ ε`
+  obtain ⟨ε, hε, hunif⟩ :=
+    Submission.dohr_eb_ail_hessian_local_unif _ hC2 0 (1 / 2) (by norm_num)
+  refine ⟨ε, hε, fun P hP Q => ?_⟩
+  have hclose := hunif P (by simpa using hP) Q Q
+  -- `D²J(0)[Q][Q] = Σₐ |Q eₐ|²`
+  rw [Submission.dohr_eb_ail_hessian_zero n ℓ Q] at hclose
+  -- `‖Q‖² ≤ Σₐ |Q eₐ|²`
+  have hHS := Submission.dohr_eb_ail_opNorm_sq_le n ℓ Q
+  -- `D²J(P)[Q][Q] ≥ Σₐ |Q eₐ|² − ½ ‖Q‖² ≥ ‖Q‖² − ½ ‖Q‖²`
+  have hlow := (abs_le.mp hclose).1
+  nlinarith [hlow, hHS]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
