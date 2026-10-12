@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "474805a443e09d306416dd00978780499fa52a81ed35fede01a19e3d30c727e8",
+  "git_delta": {
+    "base_commit": "771949c6e41f5f5d5da40d09ca0277175d203388",
+    "candidate_commit": "28bf6bf74df96c7216fea6901442a7b9cb513f5d",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_lmo_weight_restrict_eq",
+    "diff_sha256": "1eb5443cd9e3f10c9196fe23d631f061e92862fab4946aeaa8c401fe25e3c638",
+    "source_sha256": "7a0aef801ddf85090890b1ffe319e7ff22a0edc5d1c2eab96948b652e553e3f0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_lmo_weight_restrict_eq",
+      "statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (O : Set (Amb n ℓ)), MeasurableSet O → (∀ᵐ x ∂V.weight, x ∈ O → V.mult x = 1) → (μHE[n] : Measure (Amb n ℓ)) (symmDiff (V.carrier ∩ O) (V.support ∩ O)) = 0 → V.weight.restrict O = (μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ O)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
