@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.sff_chart-a1.range_projection_diff-a1",
+  "parent_id": "root.stationary_results-a1.sff_chart-a1",
+  "depth": 3,
+  "title": "Differentiability of the orthogonal projection onto the range of an injective linear map",
+  "statement": "Let n, N ∈ ℕ and write ℝ^d := EuclideanSpace ℝ (Fin d) (= Rn d). Equip L(ℝⁿ, ℝᴺ) := (ℝⁿ →L[ℝ] ℝᴺ) and L(ℝᴺ, ℝᴺ) := (ℝᴺ →L[ℝ] ℝᴺ) with the operator norm. For B ∈ L(ℝⁿ, ℝᴺ) let Πr(B) := (LinearMap.range B.toLinearMap).starProjection ∈ L(ℝᴺ, ℝᴺ) be the orthogonal projection of ℝᴺ onto the range of B. If A ∈ L(ℝⁿ, ℝᴺ) is injective, then the map Πr : L(ℝⁿ, ℝᴺ) → L(ℝᴺ, ℝᴺ), B ↦ Πr(B), is Fréchet differentiable at A.",
+  "lean_statement": "∀ (n N : ℕ) (A : Rn n →L[ℝ] Rn N), Function.Injective A → DifferentiableAt ℝ (fun B : Rn n →L[ℝ] Rn N ↦ (LinearMap.range B.toLinearMap).starProjection) A",
+  "lean_name": "sff_range_starProjection_differentiableAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-sff-chart-a1-range-projection-diff-a1-a1"
+}

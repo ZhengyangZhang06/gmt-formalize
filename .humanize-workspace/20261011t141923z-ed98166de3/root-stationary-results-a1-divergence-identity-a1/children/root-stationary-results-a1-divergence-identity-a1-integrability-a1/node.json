@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.divergence_identity-a1.integrability-a1",
+  "parent_id": "root.stationary_results-a1.divergence_identity-a1",
+  "depth": 3,
+  "title": "Integrability on M of div_M Y and ⟨Y, H⟩ for C¹ fields vanishing off a closed set meeting M compactly",
+  "statement": "Let n, N ∈ ℕ and M ⊆ ℝᴺ a measurable set such that y ↦ tangentProjection M y and y ↦ meanCurvature M y are continuous on M, and μHE[n](C) < ∞ for every compact C ⊆ M. Let Y : ℝᴺ → ℝᴺ be C¹ and F ⊆ ℝᴺ closed with Y(x) = 0 for all x ∉ F and M ∩ F compact. Then y ↦ tangentialDivergence M Y y and y ↦ ⟨Y(y), meanCurvature M y⟩ are both integrable on M with respect to μHE[n].",
+  "lean_statement": "∀ (n N : ℕ) (M F : Set (Rn N)) (Y : Rn N → Rn N), MeasurableSet M → ContinuousOn (tangentProjection M) M → ContinuousOn (meanCurvature M) M → (∀ C ⊆ M, IsCompact C → μHE[n] C < ⊤) → ContDiff ℝ 1 Y → IsClosed F → (∀ x ∉ F, Y x = 0) → IsCompact (M ∩ F) → IntegrableOn (tangentialDivergence M Y) M μHE[n] ∧ IntegrableOn (fun y ↦ inner ℝ (Y y) (meanCurvature M y)) M μHE[n]",
+  "lean_name": "tangentialDivergence_meanCurvature_integrableOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-divergence-identity-a1-integrability-a1-a1"
+}
