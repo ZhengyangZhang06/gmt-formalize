@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1eb70d67c06369c3e1e38595c38aaee9b81e5cc0bb24e00e3e25faa5513c6083",
+  "git_delta": {
+    "base_commit": "4a88187547c73682c00e0a5fb57af15bd5b7c568",
+    "candidate_commit": "2e93f9d707cf1ea314a4fe72f27f8bc07e9d8b17",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_c1ab_utr_closed_egoroff",
+    "diff_sha256": "0f2b96e0c557e1e51c13c661bdafb64cb9a33a7de37fd838aa78ed5aeffb5236",
+    "source_sha256": "41f3cd7c67931e95185b2e9c27e2e9f35499562d94f484ebf4228db55c878dfd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_c1ab_utr_closed_egoroff",
+      "statement": "∀ (n : ℕ) (g : ℕ → Rn n → ℝ), (∀ k, Measurable (g k)) → ∀ C : Set (Rn n), MeasurableSet C → volume C ≠ ∞ → (∀ x ∈ C, Tendsto (fun k => g k x) atTop (𝓝 0)) → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ A : Set (Rn n), A ⊆ C ∧ IsClosed A ∧ volume (C \\ A) < δ ∧ TendstoUniformlyOn g (fun _ => 0) atTop A",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
