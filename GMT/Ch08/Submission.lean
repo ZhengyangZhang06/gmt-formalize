@@ -410,6 +410,39 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- The plane varifold `v(T)` of an `n`-plane `T ∈ G(N,n)` has mass `ω_n r^n` over the cylinder
+`B_r(0) × G(N,n)` (step 8 of the proof that a stationary cone with density `≥ θ₀` a.e. is `θ₀ v(T)`,
+used for Simon Ch. 8, 5.5): `v(T)(B_r(0) × G(N,n)) = H^n(B_r(0) ∩ T)`, and `H^n` is transported to
+Lebesgue measure on `ℝ^n` along an isometric parametrization of `T`. -/
+theorem Submission.allard_tc_scf_plane_ball_mass :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 < r → planeVarifoldMeasure T (closedBall (0 : Euclidean N) r ×ˢ (univ : Set (Grassmannian N n))) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n T r hr
+  -- Step 1: `v(T)(B_r(0) × G(N,n)) = H^n(B_r(0) ∩ T)`, by `map_apply` and `restrict_apply`.
+  rw [planeVarifoldMeasure, Measure.map_apply measurable_prodMk_right
+      (measurableSet_closedBall.prod MeasurableSet.univ), mk_preimage_prod_left (mem_univ T),
+    Measure.restrict_apply measurableSet_closedBall]
+  -- Step 2: a linear isometry `J : ℝ^n → ℝ^N` with range `T`, from an orthonormal basis of `T`
+  -- indexed by `Fin n`.
+  let b : OrthonormalBasis (Fin n) ℝ T.plane :=
+    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane)
+  let J : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
+    T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+  have hrange : range J = (T.plane : Set (Euclidean N)) := by
+    ext w
+    constructor
+    · rintro ⟨x, rfl⟩
+      exact (b.repr.symm x).2
+    · intro hw
+      exact ⟨b.repr ⟨w, hw⟩, by simp [J]⟩
+  -- Step 3: `H^n(B_r(0) ∩ T) = H^n(J⁻¹(B_r(0)))` and `J⁻¹(B_r(0)) = B_r(0) ⊆ ℝ^n`.
+  have hpre : J ⁻¹' closedBall 0 r = closedBall 0 r := by
+    ext x
+    simp
+  rw [← hrange, ← J.isometry.euclideanHausdorffMeasure_preimage, hpre]
+  -- Steps 4–6: `H^n` is Lebesgue measure on `ℝ^n` and `vol(B_r(0)) = ω_n r^n`.
+  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr.le,
+    finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
