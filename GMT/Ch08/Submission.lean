@@ -410,6 +410,72 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Blow-ups preserve Radon convergence (Simon Ch. 8, proof of 5.9: "`V_i → V`, and hence
+`η_{ξ,λ#}V_i → η_{ξ,λ#}V` for each fixed `λ > 0`").  If `V_i → V` as Radon measures on `Gₙ(U)`,
+`t > 0` and `F ∈ C_c(ℝ^N × G(N,n))` has `ξ + t y ∈ U` for every `(y, S) ∈ spt F`, then
+`∫ F dV_{i,ξ,t} → ∫ F dV_{ξ,t}`. -/
+theorem Submission.intcpt_diag_rescaled_radon_tendsto :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U)
+      (ξ : Euclidean N) (t : ℝ) (F : C_c(Euclidean N × Grassmannian N n, ℝ)),
+      Varifold.RadonConverges Vi V → 0 < t → (∀ z ∈ tsupport F, ξ + t • z.1 ∈ U) →
+      Tendsto (fun i ↦ ∫ z, F z ∂(rescaledMeasure (Vi i) ξ t)) atTop
+        (𝓝 (∫ z, F z ∂(rescaledMeasure V ξ t))) := by
+  intro N n U Vi V ξ t F hconv ht hF
+  -- The dilation `Φ (y, S) = (t⁻¹ (y - ξ), S)` is a homeomorphism with inverse `(ξ + t y, S)`.
+  let Φ : Euclidean N × Grassmannian N n ≃ₜ Euclidean N × Grassmannian N n :=
+    { toFun := fun z ↦ (t⁻¹ • (z.1 - ξ), z.2)
+      invFun := fun z ↦ (ξ + t • z.1, z.2)
+      left_inv := by
+        intro z
+        ext1
+        · simp [smul_smul, ht.ne']
+        · rfl
+      right_inv := by
+        intro z
+        ext1
+        · simp [smul_smul, ht.ne']
+        · rfl
+      continuous_toFun := by fun_prop
+      continuous_invFun := by fun_prop }
+  -- The pulled-back test function `H = F ∘ Φ` is supported in `U × G(N,n)`.
+  let H : C_c(Euclidean N × Grassmannian N n, ℝ) := F.comp Φ.toCocompactMap
+  have hHsupp : tsupport H ⊆ U ×ˢ (univ : Set (Grassmannian N n)) := by
+    intro z hz
+    have hz' : Φ z ∈ tsupport F := tsupport_comp_subset_preimage F Φ.continuous hz
+    refine ⟨?_, trivial⟩
+    have := hF _ hz'
+    simpa [Φ, smul_smul, ht.ne'] using this
+  -- Rescaling formula: `∫ F dV'_{ξ,t} = t⁻ⁿ ∫ H dV'`.
+  have hresc : ∀ V' : Varifold N n U,
+      ∫ z, F z ∂(rescaledMeasure V' ξ t) = t⁻¹ ^ n * ∫ z, H z ∂V'.measure := by
+    intro V'
+    have hm : Continuous (fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - ξ), z.2)) := by
+      fun_prop
+    rw [rescaledMeasure, integral_smul_measure,
+      integral_map hm.measurable.aemeasurable (map_continuous F).aestronglyMeasurable,
+      ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
+    rfl
+  -- The restriction `h` of `H` to Simon's open product `Gₙ(U)` is a test function there.
+  let Ω := U ×ˢ (univ : Set (Grassmannian N n))
+  let h : C_c(Ω, ℝ) :=
+    { toFun := fun w ↦ H w.1
+      continuous_toFun := H.continuous.comp continuous_subtype_val
+      hasCompactSupport' := by
+        have hK : IsCompact ((Subtype.val : Ω → Euclidean N × Grassmannian N n) ⁻¹' tsupport H) :=
+          Topology.IsInducing.subtypeVal.isCompact_preimage' H.hasCompactSupport.isCompact (by
+            intro z hz
+            exact ⟨⟨z, hHsupp hz⟩, rfl⟩)
+        exact hK.of_isClosed_subset (isClosed_tsupport _)
+          (tsupport_comp_subset_preimage H continuous_subtype_val) }
+  have hdom : ∀ V' : Varifold N n U, ∫ w, h w ∂V'.domainMeasure = ∫ z, H z ∂V'.measure := by
+    intro V'
+    rw [← V'.map_domainMeasure, (MeasurableEmbedding.subtype_coe
+      (V'.isOpen_domain.measurableSet.prod MeasurableSet.univ)).integral_map]
+    rfl
+  have := (hconv h).const_mul (t⁻¹ ^ n)
+  simp only [hdom] at this
+  simpa only [hresc] using this
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
