@@ -634,6 +634,94 @@ theorem Submission.frt_vgm_tba_plane_cutoff_bounds :
       exact hχ1 (1 + κ) y
     · rw [indicator_of_notMem hy, hχ_out (1 + κ) y (not_le.1 (mt mem_closedBall_zero_iff.2 hy)).le]
 
+/-- Ball integrals at a tangent plane for `β ≥ 0` (the step "`ν_V^{(x)}(β) = θ(x) β(T_x)`" in the
+proof of Simon Ch. 8, 1.2, p. 207, for the ratios of 1.3): if `V` has tangent space `T` with
+multiplicity `θ` at `x` (1.1), then `t^{-n} ∫_{B_t(x) × G(N,n)} β(S) dV(y,S) → θ ω_n β(T)` as
+`t ↓ 0` for every continuous `β ≥ 0` on `G(N,n)`. -/
+theorem Submission.frt_vgm_tba_nonneg_ball_limit :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ β : C(Grassmannian N n, ℝ), (∀ S, 0 ≤ β S) → Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z in closedBall x t ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) (𝓝[>] 0) (𝓝 (θ * (unitBallVolume n).toReal * β T)) := by
+  intro N n U V x T θ hT β hβ
+  -- `J(t) = t^{-n} ∫_{B_t(x) × G(N,n)} β dV` is to tend to `c = θ β(T) ω_n`; here `θ β(T) ≥ 0`
+  -- since `θ > 0` and `β ≥ 0`.
+  have hθβ : 0 ≤ θ * β T := mul_nonneg hT.2.1.le (hβ T)
+  set c : ℝ := θ * β T * (unitBallVolume n).toReal with hc
+  -- Step 1: `x ∈ U` and `U` is open, so eventually as `t → 0⁺`, `t > 0` and `B_{2t}(x) ⊆ U`.
+  obtain ⟨δ, hδ, hδU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hT.1
+  have hgood : ∀ᶠ t in 𝓝[>] (0 : ℝ), 0 < t ∧ closedBall x (2 * t) ⊆ U := by
+    filter_upwards [Ioo_mem_nhdsGT (half_pos hδ)] with t ht
+    exact ⟨ht.1, (closedBall_subset_ball (by linarith [ht.2])).trans hδU⟩
+  -- Step 2: the cut-off `χ_a(y) = max(0, min(1, (a - |y|)/κ))` is continuous and vanishes off the
+  -- compact ball `B_a(0)`, so it is an element of `C_c(ℝ^N)`.
+  have hcut : ∀ a κ : ℝ, 0 < κ →
+      ∃ g : C_c(Euclidean N, ℝ), ∀ y, g y = max 0 (min 1 ((a - ‖y‖) / κ)) := by
+    intro a κ hκ
+    refine ⟨⟨⟨fun y ↦ max 0 (min 1 ((a - ‖y‖) / κ)), by fun_prop⟩,
+      HasCompactSupport.intro (isCompact_closedBall (0 : Euclidean N) a) fun y hy ↦ ?_⟩,
+      fun _ ↦ rfl⟩
+    have hay : a < ‖y‖ := by simpa using hy
+    exact max_eq_left ((min_le_right _ _).trans (div_neg_of_neg_of_pos (by linarith) hκ).le)
+  -- Step 3: by `tendsto_order`, show that eventually `a' < J(t)` for each `a' < c`, and
+  -- `J(t) < b'` for each `b' > c`.
+  rw [show θ * (unitBallVolume n).toReal * β T = c by rw [hc]; ring]
+  refine tendsto_order.2 ⟨fun a' ha' ↦ ?_, fun b' hb' ↦ ?_⟩
+  · -- Step 4: with `ε = c - a'`, fix `κ ∈ (0,1)` such that `c (1 - κ)^n > c - ε/2`.
+    have hε : 0 < c - a' := sub_pos.2 ha'
+    have hcont : Tendsto (fun κ : ℝ ↦ c * (1 - κ) ^ n) (𝓝[>] 0) (𝓝 c) := by
+      have h : Continuous fun κ : ℝ ↦ c * (1 - κ) ^ n := by fun_prop
+      simpa using (h.tendsto 0).mono_left nhdsWithin_le_nhds
+    obtain ⟨κ, hκc, hκ⟩ := ((hcont.eventually (lt_mem_nhds (sub_lt_self c (half_pos hε)))).and
+      (Ioo_mem_nhdsGT one_pos)).exists
+    -- (a) `I⁻(t) = t^{-n} ∫ χ⁻(t⁻¹(y - x)) β(S) dV → θ β(T) c⁻` with `c⁻ = ∫_T χ⁻ dHⁿ`.
+    obtain ⟨g, hg⟩ := hcut 1 κ hκ.1
+    have hlim := Submission.frt_vgm_tba_product_blowup_tendsto N n U V x T θ hT g β
+    simp only [hg] at hlim
+    -- (b) `c (1 - κ)^n ≤ θ β(T) c⁻`, from `ω_n (1 - κ)^n ≤ c⁻`.
+    have hL : c * (1 - κ) ^ n ≤ θ * (β T * ∫ y in (T.plane : Set (Euclidean N)),
+        max 0 (min 1 ((1 - ‖y‖) / κ)) ∂μHE[n]) := by
+      calc c * (1 - κ) ^ n = θ * β T * ((unitBallVolume n).toReal * (1 - κ) ^ n) := by
+            rw [hc]; ring
+        _ ≤ θ * β T * ∫ y in (T.plane : Set (Euclidean N)),
+            max 0 (min 1 ((1 - ‖y‖) / κ)) ∂μHE[n] :=
+          mul_le_mul_of_nonneg_left
+            (Submission.frt_vgm_tba_plane_cutoff_bounds N n T κ hκ.1 hκ.2).1 hθβ
+        _ = _ := mul_assoc _ _ _
+    -- (c), (d): eventually `a' < I⁻(t) ≤ J(t)`, the second by the ball cut-off sandwich.
+    filter_upwards [hlim.eventually (lt_mem_nhds (sub_lt_self _ (half_pos hε))), hgood]
+      with t hI ht
+    have hJ := mul_le_mul_of_nonneg_left
+      (Submission.frt_vgm_tba_ball_cutoff_sandwich N n U V x β κ t hκ.1 hκ.2 ht.1 ht.2 hβ).1
+      (pow_nonneg (inv_nonneg.2 ht.1.le) n)
+    linarith
+  · -- Step 5: with `ε = b' - c`, fix `κ ∈ (0,1)` such that `c (1 + κ)^n < c + ε/2`.
+    have hε : 0 < b' - c := sub_pos.2 hb'
+    have hcont : Tendsto (fun κ : ℝ ↦ c * (1 + κ) ^ n) (𝓝[>] 0) (𝓝 c) := by
+      have h : Continuous fun κ : ℝ ↦ c * (1 + κ) ^ n := by fun_prop
+      simpa using (h.tendsto 0).mono_left nhdsWithin_le_nhds
+    obtain ⟨κ, hκc, hκ⟩ := ((hcont.eventually
+      (gt_mem_nhds (lt_add_of_pos_right c (half_pos hε)))).and (Ioo_mem_nhdsGT one_pos)).exists
+    -- (a) `I⁺(t) = t^{-n} ∫ χ⁺(t⁻¹(y - x)) β(S) dV → θ β(T) c⁺` with `c⁺ = ∫_T χ⁺ dHⁿ`.
+    obtain ⟨g, hg⟩ := hcut (1 + κ) κ hκ.1
+    have hlim := Submission.frt_vgm_tba_product_blowup_tendsto N n U V x T θ hT g β
+    simp only [hg] at hlim
+    -- (b) `θ β(T) c⁺ ≤ c (1 + κ)^n`, from `c⁺ ≤ ω_n (1 + κ)^n`.
+    have hU : θ * (β T * ∫ y in (T.plane : Set (Euclidean N)),
+        max 0 (min 1 ((1 + κ - ‖y‖) / κ)) ∂μHE[n]) ≤ c * (1 + κ) ^ n := by
+      calc θ * (β T * ∫ y in (T.plane : Set (Euclidean N)),
+            max 0 (min 1 ((1 + κ - ‖y‖) / κ)) ∂μHE[n])
+          = θ * β T * ∫ y in (T.plane : Set (Euclidean N)),
+            max 0 (min 1 ((1 + κ - ‖y‖) / κ)) ∂μHE[n] := (mul_assoc _ _ _).symm
+        _ ≤ θ * β T * ((unitBallVolume n).toReal * (1 + κ) ^ n) :=
+          mul_le_mul_of_nonneg_left
+            (Submission.frt_vgm_tba_plane_cutoff_bounds N n T κ hκ.1 hκ.2).2 hθβ
+        _ = c * (1 + κ) ^ n := by rw [hc]; ring
+    -- (c), (d): eventually `J(t) ≤ I⁺(t) < b'`, the first by the ball cut-off sandwich.
+    filter_upwards [hlim.eventually (gt_mem_nhds (lt_add_of_pos_right _ (half_pos hε))), hgood]
+      with t hI ht
+    have hJ := mul_le_mul_of_nonneg_left
+      (Submission.frt_vgm_tba_ball_cutoff_sandwich N n U V x β κ t hκ.1 hκ.2 ht.1 ht.2 hβ).2
+      (pow_nonneg (inv_nonneg.2 ht.1.le) n)
+    linarith
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
