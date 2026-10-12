@@ -458,6 +458,44 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 2, proof of Theorem 1.5 (p. 44): **Egoroff's theorem with a closed good set** in `ℝⁿ`.
+If `g_k : ℝⁿ → ℝ` are Borel measurable and `g_k → 0` pointwise on a measurable `C` with `Lⁿ(C) < ∞`,
+then for every `δ > 0` there is a closed `A ⊆ C` with `Lⁿ(C \ A) < δ` on which `g_k → 0` uniformly:
+Egoroff's theorem on `C` with tolerance `δ'/2`, then a closed subset of the good set by inner
+regularity of `Lⁿ` with tolerance `δ'/2`, where `δ' = min δ 1`. -/
+theorem rsod_c1ab_utr_closed_egoroff : ∀ (n : ℕ) (g : ℕ → Rn n → ℝ), (∀ k, Measurable (g k)) → ∀ C : Set (Rn n), MeasurableSet C → volume C ≠ ∞ → (∀ x ∈ C, Tendsto (fun k => g k x) atTop (𝓝 0)) → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ A : Set (Rn n), A ⊆ C ∧ IsClosed A ∧ volume (C \ A) < δ ∧ TendstoUniformlyOn g (fun _ => 0) atTop A := by
+  intro n g hg C hC hCfin hconv δ hδ
+  -- Step 1: the finite tolerance `δ' = min δ 1`, so `0 < δ'/2 < ∞` and `δ'/2 + δ'/2 = δ' ≤ δ`.
+  set δ' : ℝ≥0∞ := min δ 1
+  have hδ'0 : δ' ≠ 0 := (lt_min (pos_iff_ne_zero.2 hδ) one_pos).ne'
+  have hδ'top : δ' ≠ ∞ := ne_top_of_le_ne_top ENNReal.one_ne_top (min_le_right δ 1)
+  have hhalf : 0 < δ' / 2 := ENNReal.half_pos hδ'0
+  -- Step 2 (Egoroff): a measurable `t ⊆ C` with `Lⁿ(t) ≤ δ'/2` and `g_k → 0` uniformly on `C \ t`.
+  obtain ⟨t, htC, htm, ht, hunif⟩ := tendstoUniformlyOn_of_ae_tendsto (μ := volume)
+    (fun k => (hg k).stronglyMeasurable) stronglyMeasurable_const hC hCfin
+    (ae_of_all _ fun x hx => hconv x hx) hhalf
+  -- Step 3 (inner regularity): a closed `A ⊆ C \ t` with `Lⁿ((C \ t) \ A) < δ'/2`.
+  obtain ⟨A, hAsub, hAcl, hA⟩ := (hC.diff htm).exists_isClosed_sdiff_lt
+    (ne_top_of_le_ne_top hCfin (measure_mono sdiff_subset)) hhalf.ne'
+  -- Step 4: `A` is closed, `A ⊆ C \ t ⊆ C`, and the uniform convergence restricts to `A`.
+  refine ⟨A, hAsub.trans sdiff_subset, hAcl, ?_, hunif.mono hAsub⟩
+  -- Step 5: `C \ A ⊆ t ∪ ((C \ t) \ A)`, so `Lⁿ(C \ A) < δ'/2 + δ'/2 = δ' ≤ δ`.
+  have hsub : C \ A ⊆ t ∪ ((C \ t) \ A) := by
+    rintro x ⟨hxC, hxA⟩
+    by_cases hxt : x ∈ t
+    · exact Or.inl hxt
+    · exact Or.inr ⟨⟨hxC, hxt⟩, hxA⟩
+  calc volume (C \ A) ≤ volume (t ∪ ((C \ t) \ A)) := measure_mono hsub
+    _ ≤ volume t + volume ((C \ t) \ A) := measure_union_le _ _
+    _ < δ' / 2 + δ' / 2 := ENNReal.add_lt_add_of_le_of_lt
+      (ne_top_of_le_ne_top (ENNReal.div_ne_top hδ'top two_ne_zero) ht) ht hA
+    _ = δ' := ENNReal.add_halves δ'
+    _ ≤ δ := min_le_left δ 1
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
