@@ -6101,6 +6101,332 @@ theorem Submission.tangentialGradient_comp_of_differentiableAt : ∀ (n ℓ : �
     (hψ.hasDerivAt.comp_hasFDerivAt x hh.hasFDerivAt).fderiv
   -- `∇f(x) = (toDual ℝ _).symm (Df(x))` and `p_{T_x V}` are both linear
   simp only [tangentialGradient, gradient, hcomp, map_smul]
+/-- **Ch. 4, 6.3(1) (p. 101), uniform lower density.** Under the hypotheses of 6.3 there is
+`ρ₀ > 0` with `μ_V(B_s(ζ)) ≥ (ωₙ/2) sⁿ` for all `ζ ∈ spt V ∩ B_{ρ₀}(x)` and `0 < s ≤ ρ₀`. One `Λ`
+bounds the `Lᵖ` quantity of 4.2 at every centre `ζ ∈ B_R(x)`; letting `σ ↓ 0` in 4.7–4.8 gives
+`F(s) s⁻ⁿ μ_V(B_s(ζ)) + F(s) - 1 ≥ ωₙ Θⁿ(μ_V, ζ) ≥ ωₙ` (4.9, 4.10(1)), and `F(s) → 1`. -/
+theorem Submission.classical_tangent_uniform_lower_density : LpMonotonicity → LpDensity →
+    LpSupportRepresentation → ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (U : Set (Ambient n ℓ))
+    (H : Ambient n ℓ → Ambient n ℓ) (p : ℝ) (x : Ambient n ℓ), 0 < n → IsOpen U →
+    V.HasMeanCurvatureIn U H → V.MultiplicityGE 1 U → (n : ℝ) < p → V.IsLocallyLp U H p →
+    x ∈ U → ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ ∀ ζ ∈ V.support ∩ closedBall x ρ₀, ∀ s : ℝ, 0 < s → s ≤ ρ₀ →
+      omega n / 2 * s ^ n ≤ V.weight.real (closedBall ζ s) := by
+  intro hMono hDensity hSupport n ℓ V U H p x hn hU hH hθ hp hLp hx
+  -- Step 1: `p > 0`, `κ = (p - n)/(4p) > 0`, `e = 1 - n/p > 0` and `ωₙ > 0`.
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hp0 : 0 < p := by linarith
+  have hκ : 0 < lpKappa n p := by
+    unfold lpKappa
+    apply div_pos <;> linarith
+  have he : 0 < 1 - (n : ℝ) / p := sub_pos.mpr ((div_lt_one hp0).mpr hp)
+  have hω : 0 < omega n := by
+    unfold omega
+    exact ENNReal.toReal_pos (measure_ball_pos volume _ one_pos).ne' measure_ball_lt_top.ne
+  -- Step 2: `R > 0` with `B_{2R}(x) ⊆ U`.
+  obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.mp hU x hx
+  obtain ⟨R, rfl⟩ : ∃ R : ℝ, r = 4 * R := ⟨r / 4, by ring⟩
+  have hR : 0 < R := by linarith
+  have h2R : closedBall x (2 * R) ⊆ U := (closedBall_subset_ball (by linarith)).trans hrU
+  -- Step 3: with `I₀ = ∫_{B_{2R}(x)} |H|^p dμ_V` and `Λ = (R^{p-n} I₀)^{1/p} / κ`,
+  -- `(R^{p-n} ∫_{B_R(ζ)} |H|^p dμ_V)^{1/p} ≤ κΛ` for every `ζ ∈ B_R(x)`.
+  have hint : IntegrableOn (fun y ↦ ‖H y‖ ^ p) (closedBall x (2 * R)) V.weight := by
+    have := (hLp _ (isCompact_closedBall x (2 * R)) h2R).integrable_norm_rpow
+      (by simpa using hp0) ENNReal.ofReal_ne_top
+    rwa [ENNReal.toReal_ofReal hp0.le] at this
+  have hI : ∀ s : Set (Ambient n ℓ), 0 ≤ R ^ (p - n) * ∫ y in s, ‖H y‖ ^ p ∂V.weight := fun s ↦
+    mul_nonneg (Real.rpow_nonneg hR.le _)
+      (integral_nonneg fun y ↦ Real.rpow_nonneg (norm_nonneg _) _)
+  obtain ⟨Λ, hΛdef⟩ : ∃ Λ : ℝ, Λ = (R ^ (p - n) *
+      ∫ y in closedBall x (2 * R), ‖H y‖ ^ p ∂V.weight) ^ (1 / p) / lpKappa n p := ⟨_, rfl⟩
+  have hΛ : 0 ≤ Λ := by
+    rw [hΛdef]
+    exact div_nonneg (Real.rpow_nonneg (hI _) _) hκ.le
+  have hball : ∀ ζ ∈ closedBall x R, closedBall ζ R ⊆ closedBall x (2 * R) := by
+    intro ζ hζ y hy
+    rw [mem_closedBall] at hζ hy ⊢
+    linarith [dist_triangle y ζ x]
+  have hbound : ∀ ζ ∈ closedBall x R,
+      (R ^ (p - n) * ∫ y in closedBall ζ R, ‖H y‖ ^ p ∂V.weight) ^ (1 / p) ≤
+        lpKappa n p * Λ := by
+    intro ζ hζ
+    rw [hΛdef, mul_div_cancel₀ _ hκ.ne']
+    refine Real.rpow_le_rpow (hI _) (mul_le_mul_of_nonneg_left ?_ (Real.rpow_nonneg hR.le _))
+      (by positivity)
+    exact setIntegral_mono_set hint
+      (Eventually.of_forall fun y ↦ Real.rpow_nonneg (norm_nonneg _) _)
+      (Eventually.of_forall (hball ζ hζ))
+  -- Steps 4–6: at `ζ ∈ spt V ∩ B_R(x)` and `0 < s ≤ R`, 4.5 and 4.8 give `F(s)` with
+  -- `e^{-Λt/2} ≤ F(s) ≤ e^{Λt/2}` and `F(s) a_ζ(s) ≥ ωₙ - C t`, where `a_ζ(s) = s⁻ⁿ μ_V(B_s(ζ))`,
+  -- `t = (s/R)^e` and `C = e^{Λ/2} Λ / 2`.
+  have key : ∀ ζ ∈ V.support ∩ closedBall x R, ∀ s : ℝ, 0 < s → s ≤ R →
+      ∃ F : ℝ, Real.exp (-(Λ / 2 * (s / R) ^ (1 - (n : ℝ) / p))) ≤ F ∧
+        F ≤ Real.exp (Λ / 2 * (s / R) ^ (1 - (n : ℝ) / p)) ∧
+        omega n - Real.exp (Λ / 2) / 2 * Λ * (s / R) ^ (1 - (n : ℝ) / p) ≤
+          F * (V.weight.real (closedBall ζ s) / s ^ n) := by
+    intro ζ hζ s hs hsR
+    have hζU : ζ ∈ U := h2R (closedBall_subset_closedBall (by linarith) hζ.2)
+    obtain ⟨F, -, hF, -, hFmono⟩ := hMono n ℓ V U H p ζ R Λ hn hU hH hp hLp hR
+      ((hball ζ hζ.2).trans h2R) (hbound ζ hζ.2)
+    have hdens : V.HasDensityAt ζ (V.density ζ) :=
+      (hDensity n ℓ V U H p hn hU hH hp hLp).1 ζ hζU
+    have hΘ : 1 ≤ V.density ζ := (hSupport n ℓ V U H p hn hU hH hp hLp hθ).1 ζ ⟨hζ.1, hζU⟩
+    -- (a) `a_ζ(t) → ωₙ Θⁿ(μ_V, ζ)` as `t ↓ 0`.
+    have ha : Tendsto (fun t ↦ V.weight.real (closedBall ζ t) / t ^ n) (𝓝[>] 0)
+        (𝓝 (omega n * V.density ζ)) := by
+      refine (hdens.const_mul (omega n)).congr' ?_
+      filter_upwards with t
+      rw [mul_div_assoc', mul_div_mul_left _ _ hω.ne']
+    -- (b) `F(t) → 1` as `t ↓ 0`, since `|F(t) - 1| ≤ C (t/R)^e` on `(0, R]`.
+    have htR : Tendsto (fun t : ℝ ↦ (t / R) ^ (1 - (n : ℝ) / p)) (𝓝[>] 0) (𝓝 0) := by
+      have hc : ContinuousAt (fun t : ℝ ↦ (t / R) ^ (1 - (n : ℝ) / p)) 0 :=
+        (continuousAt_id.div_const R).rpow_const (Or.inr he.le)
+      have := hc.tendsto
+      simp only [zero_div, Real.zero_rpow he.ne'] at this
+      exact tendsto_nhdsWithin_of_tendsto_nhds this
+    have hev : ∀ᶠ t in 𝓝[>] (0 : ℝ), t ∈ Ioc 0 R := by
+      filter_upwards [Ioo_mem_nhdsGT hR] with t ht
+      exact ⟨ht.1, ht.2.le⟩
+    have hF1 : Tendsto F (𝓝[>] 0) (𝓝 1) := by
+      have hup := (htR.const_mul (Real.exp (Λ / 2) / 2 * Λ)).const_add 1
+      have hlo := (htR.const_mul (Real.exp (Λ / 2) / 2 * Λ)).const_sub 1
+      simp only [mul_zero, add_zero, sub_zero] at hup hlo
+      refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hlo hup ?_ ?_
+      · filter_upwards [hev] with t ht
+        linarith [(abs_le.mp (hF t ht).2.2).1]
+      · filter_upwards [hev] with t ht
+        linarith [(abs_le.mp (hF t ht).2.2).2]
+    -- (c) `Ψ(t) = F(t) a_ζ(t) + (F(t) - 1) → ωₙ Θⁿ(μ_V, ζ)` as `t ↓ 0`.
+    have hΨ : Tendsto (fun t ↦ F t * (V.weight.real (closedBall ζ t) / t ^ n) + (F t - 1))
+        (𝓝[>] 0) (𝓝 (omega n * V.density ζ)) := by
+      simpa using (hF1.mul ha).add (hF1.sub_const 1)
+    -- Step 6: `Ψ` is monotone on `(0, R]`, so `ωₙ ≤ ωₙ Θⁿ(μ_V, ζ) ≤ Ψ(s)`.
+    have hle : omega n * V.density ζ ≤
+        F s * (V.weight.real (closedBall ζ s) / s ^ n) + (F s - 1) := by
+      refine le_of_tendsto hΨ ?_
+      filter_upwards [Ioo_mem_nhdsGT hs] with t ht
+      exact hFmono ⟨ht.1, ht.2.le.trans hsR⟩ ⟨hs, hsR⟩ ht.2.le
+    have hωΘ : omega n ≤ omega n * V.density ζ := le_mul_of_one_le_right hω.le hΘ
+    obtain ⟨hF₁, hF₂, hF₃⟩ := hF s ⟨hs, hsR⟩
+    refine ⟨F s, hF₁, hF₂, ?_⟩
+    linarith [(abs_le.mp hF₃).2]
+  -- Step 7: `t₀ ∈ (0, 1]` with `C t₀ ≤ ωₙ/4` and `e^{Λt₀/2} ≤ 3/2`, and `ρ₀ = R t₀^{1/e} ≤ R`,
+  -- so that `(s/R)^e ≤ t₀` for `0 < s ≤ ρ₀`.
+  have hlog : 0 < Real.log (3 / 2) := Real.log_pos (by norm_num)
+  have hC : 0 ≤ Real.exp (Λ / 2) / 2 * Λ := by positivity
+  obtain ⟨t₀, ht₀def⟩ : ∃ t₀ : ℝ, t₀ = min (min 1 (omega n / (4 * (Real.exp (Λ / 2) / 2 * Λ + 1))))
+      (Real.log (3 / 2) / (Λ / 2 + 1)) := ⟨_, rfl⟩
+  have ht₀ : 0 < t₀ := by
+    rw [ht₀def]
+    exact lt_min (lt_min one_pos (by positivity)) (by positivity)
+  have ht₀1 : t₀ ≤ 1 := by
+    rw [ht₀def]
+    exact (min_le_left _ _).trans (min_le_left _ _)
+  have ht₀C : Real.exp (Λ / 2) / 2 * Λ * t₀ ≤ omega n / 4 := by
+    have h : t₀ ≤ omega n / (4 * (Real.exp (Λ / 2) / 2 * Λ + 1)) := by
+      rw [ht₀def]
+      exact (min_le_left _ _).trans (min_le_right _ _)
+    rw [le_div_iff₀ (by positivity)] at h
+    linarith
+  have ht₀Λ : Real.exp (Λ / 2 * t₀) ≤ 3 / 2 := by
+    have h : t₀ ≤ Real.log (3 / 2) / (Λ / 2 + 1) := by
+      rw [ht₀def]
+      exact min_le_right _ _
+    rw [le_div_iff₀ (by positivity)] at h
+    calc Real.exp (Λ / 2 * t₀) ≤ Real.exp (Real.log (3 / 2)) := Real.exp_le_exp.mpr (by linarith)
+      _ = 3 / 2 := Real.exp_log (by norm_num)
+  obtain ⟨ρ₀, hρ₀def⟩ : ∃ ρ₀ : ℝ, ρ₀ = R * t₀ ^ (1 / (1 - (n : ℝ) / p)) := ⟨_, rfl⟩
+  have hρ₀ : 0 < ρ₀ := by
+    rw [hρ₀def]
+    exact mul_pos hR (Real.rpow_pos_of_pos ht₀ _)
+  have hρ₀R : ρ₀ ≤ R := by
+    rw [hρ₀def]
+    exact mul_le_of_le_one_right hR.le (Real.rpow_le_one ht₀.le ht₀1 (by positivity))
+  have hts : ∀ s, 0 < s → s ≤ ρ₀ → (s / R) ^ (1 - (n : ℝ) / p) ≤ t₀ := by
+    intro s hs hsρ
+    have h : s / R ≤ t₀ ^ (1 / (1 - (n : ℝ) / p)) := by
+      rw [div_le_iff₀ hR, mul_comm _ R, ← hρ₀def]
+      exact hsρ
+    calc (s / R) ^ (1 - (n : ℝ) / p) ≤ (t₀ ^ (1 / (1 - (n : ℝ) / p))) ^ (1 - (n : ℝ) / p) :=
+          Real.rpow_le_rpow (by positivity) h he.le
+      _ = t₀ := by rw [← Real.rpow_mul ht₀.le, one_div_mul_cancel he.ne', Real.rpow_one]
+  -- Step 8: `F(s) a_ζ(s) ≥ ωₙ - C t₀ ≥ 3ωₙ/4` and `0 < F(s) ≤ e^{Λt₀/2} ≤ 3/2`, so
+  -- `a_ζ(s) ≥ ωₙ/2`.
+  refine ⟨ρ₀, hρ₀, ?_⟩
+  rintro ζ ⟨hζs, hζx⟩ s hs hsρ
+  obtain ⟨F, hF₁, hF₂, hF₃⟩ :=
+    key ζ ⟨hζs, closedBall_subset_closedBall hρ₀R hζx⟩ s hs (hsρ.trans hρ₀R)
+  have htt := hts s hs hsρ
+  have hF0 : 0 < F := (Real.exp_pos _).trans_le hF₁
+  have hF32 : F ≤ 3 / 2 :=
+    hF₂.trans ((Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left htt (by positivity))).trans ht₀Λ)
+  have hFa : 3 / 4 * omega n ≤ F * (V.weight.real (closedBall ζ s) / s ^ n) := by
+    linarith [mul_le_mul_of_nonneg_left htt hC]
+  have ha0 : 0 < V.weight.real (closedBall ζ s) / s ^ n :=
+    pos_of_mul_pos_right (by linarith) hF0.le
+  have ha2 : omega n / 2 ≤ V.weight.real (closedBall ζ s) / s ^ n := by nlinarith
+  have hsn : 0 < s ^ n := pow_pos hs n
+  calc omega n / 2 * s ^ n ≤ V.weight.real (closedBall ζ s) / s ^ n * s ^ n :=
+        mul_le_mul_of_nonneg_right ha2 hsn.le
+    _ = V.weight.real (closedBall ζ s) := div_mul_cancel₀ _ hsn.ne'
+/-- **Blow-up step of Ch. 4, 6.3 (p. 101).** If `μ_V` is finite on compact sets and `P` is an
+approximate tangent space of `V` at `x`, then for every `ε > 0` the `μ_V`-mass of `B_ρ(x)` at
+distance `≥ ερ` from `x + P` is `o(ρⁿ)` as `ρ ↓ 0`: test the blow-up limit against a cutoff
+`f ∈ C_c` with `f = 0` on `P` and `f = 1` on `{z : |z| ≤ 1, dist(z, P) ≥ ε}`. -/
+theorem Submission.classical_tangent_off_plane_mass_decay : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)) (ε : ℝ), IsFiniteMeasureOnCompacts V.weight → V.IsApproxTangentAt x P → 0 < ε → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * V.weight.real (closedBall x ρ \ {y | infDist (y - x) (P : Set (Ambient n ℓ)) < ε * ρ})) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ V x P ε hfin hP hε
+  obtain ⟨-, c, -, hc⟩ := hP
+  -- The cutoff `f = g₁ g₂`, `g₁ = min 1 (max 0 (2 - |z|))`, `g₂ = min 1 (max 0 (2 dist(z, P)/ε - 1))`.
+  obtain ⟨f, hf0, hfn, hfP, hf1⟩ : ∃ f : C_c(Ambient n ℓ, ℝ), (∀ z, 2 < ‖z‖ → f z = 0) ∧
+      (∀ z, 0 ≤ f z) ∧ (∀ z ∈ (P : Set (Ambient n ℓ)), f z = 0) ∧
+      ∀ z, ‖z‖ ≤ 1 → ε ≤ infDist z (P : Set (Ambient n ℓ)) → f z = 1 := by
+    let f₀ : Ambient n ℓ → ℝ := fun z ↦ min 1 (max 0 (2 - ‖z‖)) *
+      min 1 (max 0 (2 * infDist z (P : Set (Ambient n ℓ)) / ε - 1))
+    have hf₀0 : ∀ z, 2 < ‖z‖ → f₀ z = 0 := fun z hz ↦ by
+      simp only [f₀, max_eq_left (by linarith : 2 - ‖z‖ ≤ 0), min_eq_right zero_le_one, zero_mul]
+    refine ⟨⟨⟨f₀, ?_⟩, ?_⟩, hf₀0, fun z ↦ ?_, fun z hz ↦ ?_, fun z hz1 hzP ↦ ?_⟩
+    · exact (continuous_const.min (continuous_const.max (continuous_const.sub continuous_norm))).mul
+        (continuous_const.min (continuous_const.max
+          (((continuous_const.mul (continuous_infDist_pt _)).div_const ε).sub continuous_const)))
+    · refine HasCompactSupport.intro (isCompact_closedBall 0 2) fun z hz ↦ hf₀0 z ?_
+      rwa [mem_closedBall, dist_zero_right, not_le] at hz
+    · exact mul_nonneg (le_min zero_le_one (le_max_left _ _)) (le_min zero_le_one (le_max_left _ _))
+    · show f₀ z = 0
+      simp only [f₀, infDist_zero_of_mem hz, mul_zero, zero_div, zero_sub,
+        max_eq_left (by norm_num : (-1 : ℝ) ≤ 0), min_eq_right zero_le_one]
+    · show f₀ z = 1
+      have h2 : 1 ≤ 2 * infDist z (P : Set (Ambient n ℓ)) / ε - 1 := by
+        rw [le_sub_iff_add_le, le_div_iff₀ hε]
+        linarith
+      simp only [f₀]
+      rw [min_eq_left (le_max_of_le_right (by linarith)), min_eq_left (le_max_of_le_right h2),
+        one_mul]
+  -- `f = 0` on `P`, so the blow-up limit `c ∫_P f dHⁿ` is `0`.
+  have hlim := hc f
+  rw [setIntegral_eq_zero_of_forall_eq_zero hfP, mul_zero] at hlim
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim ?_ ?_
+  · filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+    exact mul_nonneg (inv_nonneg.2 (pow_nonneg hρ.le n)) measureReal_nonneg
+  · filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+    refine mul_le_mul_of_nonneg_left ?_ (inv_nonneg.2 (pow_nonneg hρ.le n))
+    have hmeas : MeasurableSet
+        (closedBall x ρ \ {y | infDist (y - x) (P : Set (Ambient n ℓ)) < ε * ρ}) :=
+      measurableSet_closedBall.diff (isOpen_lt
+        ((continuous_infDist_pt _).comp (continuous_id.sub continuous_const))
+        continuous_const).measurableSet
+    -- `y ↦ f(ρ⁻¹(y - x))` is continuous and vanishes off `B_{2ρ}(x)`, so it is integrable.
+    have hsupp : HasCompactSupport fun y ↦ f (ρ⁻¹ • (y - x)) := by
+      refine HasCompactSupport.intro (isCompact_closedBall x (2 * ρ)) fun y hy ↦ hf0 _ ?_
+      rw [mem_closedBall, dist_eq_norm, not_le] at hy
+      rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρ, lt_inv_mul_iff₀ hρ]
+      linarith
+    have hint : Integrable (fun y ↦ f (ρ⁻¹ • (y - x))) V.weight :=
+      (f.continuous.comp (by fun_prop)).integrable_of_hasCompactSupport hsupp
+    -- `1_{A_ρ} ≤ f(ρ⁻¹(· - x))`, where `A_ρ = B_ρ(x) \ {dist(· - x, P) < ερ}`.
+    rw [← integral_indicator_one hmeas]
+    refine integral_mono_of_nonneg (Eventually.of_forall fun y ↦ ?_) hint
+      (Eventually.of_forall fun y ↦ ?_)
+    · exact indicator_nonneg (fun _ _ ↦ zero_le_one) y
+    · by_cases hy : y ∈ closedBall x ρ \ {y | infDist (y - x) (P : Set (Ambient n ℓ)) < ε * ρ}
+      · rw [indicator_of_mem hy, Pi.one_apply]
+        obtain ⟨hyB, hyP⟩ := hy
+        rw [mem_closedBall, dist_eq_norm] at hyB
+        replace hyP : ε * ρ ≤ infDist (y - x) (P : Set (Ambient n ℓ)) := not_lt.1 hyP
+        refine (hf1 _ ?_ ?_).ge
+        · rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρ, inv_mul_le_iff₀ hρ]
+          linarith
+        -- `dist(ρ⁻¹(y - x), P) ≥ ε`, since `ρw ∈ P` for `w ∈ P`.
+        · refine (le_infDist ⟨0, P.zero_mem⟩).2 fun w hw ↦ ?_
+          have h1 := infDist_le_dist_of_mem (x := y - x) (P.smul_mem ρ hw)
+          have h2 : y - x - ρ • w = ρ • (ρ⁻¹ • (y - x) - w) := by
+            rw [smul_sub, smul_inv_smul₀ hρ.ne']
+          rw [dist_eq_norm, h2, norm_smul, Real.norm_eq_abs, abs_of_pos hρ] at h1
+          rw [dist_eq_norm]
+          exact le_of_mul_le_mul_left (by linarith) hρ
+      · rw [indicator_of_notMem hy]
+        exact hfn _
+/-- **Support flatness** (Ch. 4, 6.3(2) and the concluding step). Let `μ` be finite on compact
+sets with the uniform lower bound `μ(B_s(ζ)) ≥ a sⁿ` for `ζ ∈ S ∩ B_{ρ₀}(x)` and `0 < s ≤ ρ₀`. If
+for every `ε > 0` the mass of `B_ρ(x)` away from `{dist(· - x, P) < ερ}` is `o(ρⁿ)`, then `S` is
+flat at `x`: `sup {ρ⁻¹ dist(y - x, P) : y ∈ S ∩ B_ρ(x)} → 0` as `ρ ↓ 0`. -/
+theorem Submission.classical_tangent_support_flatness : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ))
+    (S : Set (Ambient n ℓ)) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)) (a ρ₀ : ℝ),
+    IsFiniteMeasureOnCompacts μ → 0 < a → 0 < ρ₀ →
+    (∀ ζ ∈ S ∩ closedBall x ρ₀, ∀ s : ℝ, 0 < s → s ≤ ρ₀ → a * s ^ n ≤ μ.real (closedBall ζ s)) →
+    (∀ ε : ℝ, 0 < ε → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * μ.real (closedBall x ρ \
+      {y | infDist (y - x) (P : Set (Ambient n ℓ)) < ε * ρ})) (𝓝[>] 0) (𝓝 0)) →
+    Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
+      (S ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ μ S x P a ρ₀ hμ ha hρ₀ hlower hdecay
+  rw [Metric.tendsto_nhdsWithin_nhds]
+  intro η hη
+  -- Parameters `ε = η/8` and `α = min(η/8, 1/4)`.
+  have hε : 0 < η / 8 := by positivity
+  obtain ⟨α, hα, hα4, hαη⟩ : ∃ α : ℝ, 0 < α ∧ α ≤ 1 / 4 ∧ α ≤ η / 8 :=
+    ⟨min (η / 8) (1 / 4), lt_min hε (by norm_num), min_le_right _ _, min_le_left _ _⟩
+  -- By the mass decay, the off-plane mass of `B_r(x)` is `< a αⁿ rⁿ` for `0 < r < ρ₁`.
+  obtain ⟨ρ₁, hρ₁, hmass⟩ := Metric.tendsto_nhdsWithin_nhds.1 (hdecay (η / 8) hε) (a * α ^ n)
+    (mul_pos ha (pow_pos hα n))
+  refine ⟨min ρ₀ ρ₁ / 2, half_pos (lt_min hρ₀ hρ₁), fun ρ hρ hρδ ↦ ?_⟩
+  have hρ : 0 < ρ := hρ
+  rw [dist_zero_right, Real.norm_eq_abs, abs_of_pos hρ] at hρδ
+  have h2ρ : 0 < 2 * ρ := by positivity
+  have hρρ₀ : 2 * ρ ≤ ρ₀ := by linarith [min_le_left ρ₀ ρ₁]
+  have hρρ₁ : 2 * ρ < ρ₁ := by linarith [min_le_right ρ₀ ρ₁]
+  have hA : μ.real (closedBall x (2 * ρ) \
+      {y | infDist (y - x) (P : Set (Ambient n ℓ)) < η / 8 * (2 * ρ)}) <
+      (2 * ρ) ^ n * (a * α ^ n) := by
+    have h : dist (((2 * ρ) ^ n)⁻¹ * μ.real (closedBall x (2 * ρ) \
+        {y | infDist (y - x) (P : Set (Ambient n ℓ)) < η / 8 * (2 * ρ)})) 0 < a * α ^ n :=
+      hmass (Set.mem_Ioi.2 h2ρ) (by rwa [dist_zero_right, Real.norm_eq_abs, abs_of_pos h2ρ])
+    rw [dist_zero_right, Real.norm_eq_abs] at h
+    exact (inv_mul_lt_iff₀ (pow_pos h2ρ n)).1 ((le_abs_self _).trans_lt h)
+  -- 6.3(2) at radius `2ρ`: every `ζ ∈ S ∩ B_ρ(x)` has `dist(ζ - x, P) < (ε + α)·2ρ`.
+  have hclaim : ∀ ζ ∈ S ∩ closedBall x ρ,
+      infDist (ζ - x) (P : Set (Ambient n ℓ)) < (η / 8 + α) * (2 * ρ) := by
+    rintro ζ ⟨hζS, hζx⟩
+    have hζx : dist ζ x ≤ ρ := hζx
+    refine not_le.1 fun hcon ↦ ?_
+    have hαρ : α * (2 * ρ) ≤ 1 / 4 * (2 * ρ) := mul_le_mul_of_nonneg_right hα4 h2ρ.le
+    -- Otherwise `B_{α·2ρ}(ζ)` lies in the off-plane part of `B_{2ρ}(x)`.
+    have hsub : closedBall ζ (α * (2 * ρ)) ⊆ closedBall x (2 * ρ) \
+        {y | infDist (y - x) (P : Set (Ambient n ℓ)) < η / 8 * (2 * ρ)} := by
+      intro y hy
+      have hy : dist y ζ ≤ α * (2 * ρ) := hy
+      refine ⟨?_, fun hlt ↦ ?_⟩
+      · show dist y x ≤ 2 * ρ
+        linarith [dist_triangle y ζ x]
+      · have hlt : infDist (y - x) (P : Set (Ambient n ℓ)) < η / 8 * (2 * ρ) := hlt
+        have hlip : infDist (ζ - x) (P : Set (Ambient n ℓ)) ≤
+            infDist (y - x) (P : Set (Ambient n ℓ)) + dist (ζ - x) (y - x) :=
+          infDist_le_infDist_add_dist
+        rw [dist_sub_right, dist_comm] at hlip
+        linarith
+    have hfin : μ (closedBall x (2 * ρ) \
+        {y | infDist (y - x) (P : Set (Ambient n ℓ)) < η / 8 * (2 * ρ)}) ≠ ⊤ :=
+      ((measure_mono Set.sdiff_subset).trans_lt measure_closedBall_lt_top).ne
+    have hle := measureReal_mono hsub hfin
+    have hlow := hlower ζ ⟨hζS, show dist ζ x ≤ ρ₀ by linarith⟩ (α * (2 * ρ))
+      (mul_pos hα h2ρ) (by linarith)
+    rw [mul_pow] at hlow
+    linarith
+  have hnn : 0 ≤ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
+      (S ∩ closedBall x ρ)) := by
+    refine Real.sSup_nonneg ?_
+    rintro _ ⟨y, -, rfl⟩
+    exact mul_nonneg (inv_nonneg.2 hρ.le) infDist_nonneg
+  have hup : sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
+      (S ∩ closedBall x ρ)) ≤ η / 2 := by
+    refine Real.sSup_le ?_ (by positivity)
+    rintro _ ⟨y, hy, rfl⟩
+    show ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ)) ≤ η / 2
+    rw [inv_mul_le_iff₀ hρ]
+    have := hclaim y hy
+    have hαρ : α * ρ ≤ η / 8 * ρ := mul_le_mul_of_nonneg_right hαη hρ.le
+    linarith
+  show dist (sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
+    (S ∩ closedBall x ρ))) 0 < η
+  rw [dist_zero_right, Real.norm_eq_abs, abs_of_nonneg hnn]
+  linarith
 /-- **Simon Ch. 1, Thm 3.3 (special case).** If `μ` is finite on compact sets, `μ(A) = 0`, and
 at every `x ∈ A` the density `lim_{ρ↓0} μ(B_ρ(x)) / (ωₙρⁿ)` exists and is `≥ t > 0`, then
 `Hⁿ(A) = 0`. Proof: for `ε > 0` take an open `O ⊇ A` with `μ(O)` small, choose at each `x ∈ A`
@@ -11190,6 +11516,31 @@ theorem Submission.support_in_ball_convex_hull : (∀ (n ℓ : ℕ) (V : Rectifi
   -- 6.2: `conv K` is the intersection of the closed balls containing `K`, and `V` has
   -- generalized mean curvature `0` outside each of them.
   exact ⟨hBall, Submission.convex_hull_property_of_support_in_ball hBall⟩
+/-- **Classical tangent plane** (Ch. 4, 6.3). The uniform lower density bound 6.3(1),
+`μ_V(B_s(ζ)) ≥ (ωₙ/2) sⁿ` for `ζ ∈ spt V` near `x` and small `s`, comes from 4.7 and 4.10(1);
+the blow-up to `c Hⁿ ⌞ P` makes the mass of `B_ρ(x)` away from `x + P` of order `o(ρⁿ)`; and 6.3(2)
+combines the two into the flatness of `spt V` at `x`. -/
+theorem Submission.classical_tangent : ApproxTangentAE → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ),
+    0 < n → IsFiniteMeasureOnCompacts V.weight ∧
+      (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧
+      AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) →
+    ClassicalTangent := by
+  intro hTangent hStruct
+  -- 4.7–4.9 (`LpMonotonicity`, `LpDensity`) and 4.10(1) (`LpSupportRepresentation`).
+  obtain ⟨-, -, hLpMono, hLpDensity⟩ := Submission.mean_curvature_monotonicity hStruct
+  obtain ⟨-, hLpSupport⟩ := Submission.canonical_representatives hTangent hStruct
+  intro n ℓ V U H p x P hn hU hH hθ hp hLp hx hP
+  have hfin : IsFiniteMeasureOnCompacts V.weight := (hStruct n ℓ V hn).1
+  -- 6.3(1): `μ_V(B_s(ζ)) ≥ (ωₙ/2) sⁿ` for `ζ ∈ spt V ∩ B_{ρ₀}(x)` and `0 < s ≤ ρ₀`.
+  obtain ⟨ρ₀, hρ₀, hlower⟩ := Submission.classical_tangent_uniform_lower_density hLpMono
+    hLpDensity hLpSupport n ℓ V U H p x hn hU hH hθ hp hLp hx
+  have hω : 0 < omega n :=
+    ENNReal.toReal_pos (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+      measure_ball_lt_top.ne
+  -- 6.3(2), fed by the blow-up: `ρ⁻ⁿ μ_V(B_ρ(x) \ {dist(· - x, P) < ερ}) → 0` for every `ε > 0`.
+  exact Submission.classical_tangent_support_flatness n ℓ V.weight V.support x P (omega n / 2) ρ₀
+    hfin (half_pos hω) hρ₀ hlower fun ε hε ↦
+      Submission.classical_tangent_off_plane_mass_decay n ℓ V x P ε hfin hP hε
 
 end
 
