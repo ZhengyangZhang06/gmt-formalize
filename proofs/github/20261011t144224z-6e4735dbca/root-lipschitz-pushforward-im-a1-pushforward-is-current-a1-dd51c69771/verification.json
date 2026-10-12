@@ -1,0 +1,20 @@
+{
+  "node_id": "root.lipschitz_pushforward_im-a1.pushforward_is_current-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/738",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "4cf8ae752e5f48194b008fabb79be36811a47d0f",
+  "integrated_commit": "",
+  "proof_base_commit": "93f3462dde9fe25fdf74219a3064c1d34e6b724d",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.lipschitz_pushforward_im-a1",
+  "requires": [
+    "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1",
+    "root.lipschitz_pushforward_im-a1.pushforward_is_current-a1.current_of_dominated_density-a1",
+    "root.lipschitz_pushforward_im-a1.pushforward_is_current-a1.density_measurable-a1",
+    "root.lipschitz_pushforward_im-a1.pushforward_is_current-a1.density_dominated-a1"
+  ]
+}
