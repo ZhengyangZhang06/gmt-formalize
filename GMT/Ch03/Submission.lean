@@ -335,6 +335,57 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Carathéodory-measurable fields have Borel a.e.-versions** (Step 6 of the proof of the
+Riesz representation on open sets, after Simon Ch. 1, Thm. 4.14): let `X` be Hausdorff, locally
+compact and `σ`-compact with its Borel `σ`-algebra, and `μ` a measure on `X` finite on compact
+sets. If `ν : X → ℝᴺ` is measurable for the Carathéodory `σ`-algebra of the outer measure `μ*`,
+then `ν` agrees `μ`-a.e. with a Borel (strongly measurable) map. Since `μ` is `σ`-finite, every
+Carathéodory set `A` is the countable union of the Carathéodory sets `A ∩ Sₙ` of finite measure;
+the Carathéodory identity for `A ∩ Sₙ` tested on its measurable hull makes the hull exceed it by a
+null set, so `A` is `μ`-null-measurable. Hence `ν` is null-measurable, and as the Borel
+`σ`-algebra of `ℝᴺ` is countably generated, `ν` is `μ`-a.e. measurable. -/
+theorem Submission.gaussGreenRep_riesz_caratheodory_borel_version : ∀ (X : Type)
+    [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SigmaCompactSpace X]
+    [MeasurableSpace X] [BorelSpace X] (μ : Measure X) (N : ℕ) (ν : X → Rn N),
+    (∀ K : Set X, IsCompact K → μ K < ∞) → Measurable[μ.toOuterMeasure.caratheodory] ν →
+    ∃ ν' : X → Rn N, StronglyMeasurable ν' ∧ ν =ᵐ[μ] ν' := by
+  intro X _ _ _ _ _ _ μ N ν hμ hν
+  -- Step 2: `μ` is finite on compact sets, hence `σ`-finite on the `σ`-compact space `X`; its
+  -- spanning sets `Sₙ` are measurable, of finite measure, and cover `X`.
+  have : IsFiniteMeasureOnCompacts μ := ⟨hμ⟩
+  -- Step 3: every Carathéodory-measurable set is `μ`-null-measurable.
+  have hnull : ∀ A : Set X, MeasurableSet[μ.toOuterMeasure.caratheodory] A →
+      NullMeasurableSet A μ := by
+    intro A hA
+    have hpiece : ∀ n, NullMeasurableSet (A ∩ spanningSets μ n) μ := by
+      intro n
+      set B := A ∩ spanningSets μ n
+      -- `B` is Carathéodory measurable (Borel sets are) and has finite measure.
+      have hB : MeasurableSet[μ.toOuterMeasure.caratheodory] B :=
+        hA.inter (le_toOuterMeasure_caratheodory μ _ (measurableSet_spanningSets μ n))
+      have hBfin : μ B ≠ ∞ :=
+        ((measure_mono inter_subset_right).trans_lt (measure_spanningSets_lt_top μ n)).ne
+      -- The Carathéodory identity for `B` tested on its measurable hull `H ⊇ B`, `μ H = μ B`,
+      -- gives `μ B = μ B + μ (H \ B)`, so `μ (H \ B) = 0`.
+      have hcar : μ (toMeasurable μ B) =
+          μ (toMeasurable μ B ∩ B) + μ (toMeasurable μ B \ B) :=
+        (OuterMeasure.isCaratheodory_iff _).1 hB _
+      rw [inter_eq_right.2 (subset_toMeasurable μ B), measure_toMeasurable] at hcar
+      have hdiff : μ (toMeasurable μ B \ B) = 0 :=
+        (ENNReal.add_right_inj hBfin).1 (by rw [add_zero]; exact hcar.symm)
+      -- Hence `B = H` up to a `μ`-null set.
+      refine (measurableSet_toMeasurable μ B).nullMeasurableSet.congr (ae_eq_set.2 ⟨hdiff, ?_⟩)
+      rw [sdiff_eq_empty.2 (subset_toMeasurable μ B), measure_empty]
+    -- `A = ⋃ₙ (A ∩ Sₙ)` is a countable union of null-measurable sets.
+    rw [← inter_univ A, ← iUnion_spanningSets μ, inter_iUnion]
+    exact .iUnion hpiece
+  -- Step 4: preimages of Borel sets under `ν` are Carathéodory, hence null-measurable.
+  have hν₀ : NullMeasurable ν μ := fun s hs ↦ hnull _ (hν hs)
+  -- Steps 5–6: the Borel `σ`-algebra of `ℝᴺ` is countably generated, so `ν` is a.e.-measurable,
+  -- hence a.e.-strongly measurable; its strongly measurable representative is the version.
+  have hsm := hν₀.aemeasurable.aestronglyMeasurable
+  exact ⟨hsm.mk ν, hsm.stronglyMeasurable_mk, hsm.ae_eq_mk⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
