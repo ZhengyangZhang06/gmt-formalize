@@ -1,0 +1,18 @@
+{
+  "node_id": "root.constancy-a1.globalize-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/970",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "151404f8d9c33e6ee003f3859bb80e657e76d7fe",
+  "integrated_commit": "",
+  "proof_base_commit": "d74ec47d38c6d2a56133d67a9a9943203a86a284",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.constancy-a1",
+  "requires": [
+    "root.constancy-a1.globalize-a1.unit_top_form-a1",
+    "root.constancy-a1.globalize-a1.pou_decomposition-a1"
+  ]
+}
