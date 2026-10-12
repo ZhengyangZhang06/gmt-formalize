@@ -451,6 +451,24 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, 1.2 (p. 132)**: `Λⁿ(ℝᴾ)` is finite-dimensional.  An `n`-covector `α` is
+determined by its values `α(e_{I(1)}, …, e_{I(n)})` on tuples of standard basis vectors (alternating
+maps agreeing on distinct basis vectors are equal), so `α ↦ (α(e ∘ I))_{I : Fin n → Fin P}` is an
+injective linear map into the finite-dimensional space `ℝ^(Fin n → Fin P)`. -/
+theorem Submission.imsupp_covector_finiteDimensional : ∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n) := by
+  intro P n
+  -- the standard basis `e` of `ℝᴾ`
+  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
+  -- `L α = (α(e ∘ I))_I`, linear since addition and scaling of covectors are pointwise
+  let L : Covector (Euclid P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
+    { toFun := fun α I => α fun i => e (I i)
+      map_add' := fun α β => rfl
+      map_smul' := fun c α => rfl }
+  -- `L α = L β` identifies `α` and `β` on distinct basis vectors, hence everywhere
+  refine FiniteDimensional.of_injective L fun α β h => ?_
+  exact ContinuousAlternatingMap.toAlternatingMap_injective
+    (e.ext_alternating fun v _ => congr_fun h v)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
