@@ -451,6 +451,99 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon, Remark A.5** (invariance forces a plane indicator).  If `ψ ∈ L¹_loc(μH[n])` on `ℝᴾ`
+satisfies `ψ(y + λx) = ψ(x)` for all `y ∈ L`, `λ > 0`, where `dim L ≥ n`, then
+`ψ = ψ(0) 1_{L'}` for an `n`-dimensional subspace `L'` (taken inside `L`).  Off `L'`, at `x ∉ L'`,
+`ψ ≡ ψ(x)` on the image of a small closed ball around `(0, 1)` under the injective linear map
+`L' × ℝ → ℝᴾ`, `(y, t) ↦ y + t x`; this compact piece of the `(n + 1)`-plane `L' + ℝx` has positive
+`μH[n + 1]` measure, hence infinite `μH[n]` measure, so local integrability forces `ψ(x) = 0`. -/
+theorem Submission.adr_invariant_eq_indicator : ∀ (P n Q : ℕ) (ψ : Euclid P → Euclid Q) (L : Submodule ℝ (Euclid P)), LocallyIntegrable ψ μH[(n : ℝ)] → n ≤ Module.finrank ℝ L → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, ψ (y + lam • x) = ψ x) → ∃ L' : Submodule ℝ (Euclid P), Module.finrank ℝ L' = n ∧ ψ = Set.indicator (L' : Set (Euclid P)) (fun _ => ψ 0) := by
+  intro P n Q ψ L hψ hn hinv
+  -- an `n`-dimensional subspace `L' ≤ L`
+  obtain ⟨f, hf⟩ := exists_linearIndependent_of_le_finrank hn
+  have hb : LinearIndependent ℝ (L.subtype ∘ f) := hf.map' L.subtype L.ker_subtype
+  obtain ⟨L', hL'⟩ : ∃ L' : Submodule ℝ (Euclid P), L' = Submodule.span ℝ (range (L.subtype ∘ f)) :=
+    ⟨_, rfl⟩
+  have hL'L : L' ≤ L := by
+    rw [hL', Submodule.span_le]
+    rintro _ ⟨i, rfl⟩
+    exact (f i).2
+  have hL'rank : Module.finrank ℝ L' = n := by
+    rw [hL', finrank_span_eq_card hb, Fintype.card_fin]
+  refine ⟨L', hL'rank, ?_⟩
+  funext v
+  by_cases hv : v ∈ L'
+  · rw [Set.indicator_of_mem hv]
+    simpa using hinv v (hL'L hv) 1 one_pos 0
+  · rw [Set.indicator_of_notMem hv]
+    -- the injective linear map `g (y, t) = y + t • v` on `L' × ℝ`
+    let g : (L' × ℝ) →ₗ[ℝ] Euclid P :=
+      L'.subtype.coprod (LinearMap.toSpanSingleton ℝ (Euclid P) v)
+    have hg : ∀ p : L' × ℝ, g p = (p.1 : Euclid P) + p.2 • v := fun p => rfl
+    have hker : LinearMap.ker g = ⊥ := by
+      rw [LinearMap.ker_eq_bot']
+      rintro ⟨y, t⟩ h
+      rw [hg] at h
+      by_cases ht : t = 0
+      · subst ht
+        simp only [zero_smul, add_zero, ZeroMemClass.coe_eq_zero] at h
+        simp [h]
+      · exfalso
+        apply hv
+        have h' : t • v = -(y : Euclid P) := eq_neg_of_add_eq_zero_right h
+        have : v = t⁻¹ • -(y : Euclid P) := by rw [← h', inv_smul_smul₀ ht]
+        rw [this]
+        exact L'.smul_mem _ (L'.neg_mem y.2)
+    obtain ⟨K, -, hK⟩ := g.exists_antilipschitzWith hker
+    have hgc : Continuous g := g.continuous_of_finiteDimensional
+    -- local integrability at `v`
+    obtain ⟨s, hs, hint⟩ := hψ v
+    obtain ⟨r, hr, hrs⟩ := Metric.mem_nhds_iff.mp hs
+    have hg0 : g ((0 : L'), (1 : ℝ)) = v := by simp [hg]
+    have hT : g ⁻¹' ball v r ∩ {p : L' × ℝ | 0 < p.2} ∈ 𝓝 ((0 : L'), (1 : ℝ)) := by
+      refine Filter.inter_mem ?_ ?_
+      · apply hgc.continuousAt.preimage_mem_nhds
+        rw [hg0]
+        exact ball_mem_nhds v hr
+      · exact (isOpen_lt continuous_const continuous_snd).mem_nhds (by simp)
+    obtain ⟨ε, hε, hεT⟩ := Metric.mem_nhds_iff.mp hT
+    have hUT : closedBall ((0 : L'), (1 : ℝ)) (ε / 2) ⊆ g ⁻¹' ball v r ∩ {p : L' × ℝ | 0 < p.2} :=
+      (closedBall_subset_ball (by linarith)).trans hεT
+    have hSc : IsCompact (g '' closedBall ((0 : L'), (1 : ℝ)) (ε / 2)) :=
+      (isCompact_closedBall _ _).image hgc
+    have hSs : g '' closedBall ((0 : L'), (1 : ℝ)) (ε / 2) ⊆ s := by
+      rintro _ ⟨p, hp, rfl⟩
+      exact hrs (hUT hp).1
+    have hSψ : EqOn ψ (fun _ => ψ v) (g '' closedBall ((0 : L'), (1 : ℝ)) (ε / 2)) := by
+      rintro _ ⟨p, hp, rfl⟩
+      show ψ (g p) = ψ v
+      rw [hg]
+      exact hinv p.1 (hL'L p.1.2) p.2 (hUT hp).2 v
+    -- the `(n + 1)`-dimensional piece has infinite `μH[n]` measure
+    have hU_pos : 0 < μH[(Module.finrank ℝ (L' × ℝ) : ℝ)] (closedBall ((0 : L'), (1 : ℝ)) (ε / 2)) :=
+      Metric.measure_closedBall_pos _ _ (by linarith)
+    have hrank : (Module.finrank ℝ (L' × ℝ) : ℝ) = (n : ℝ) + 1 := by
+      rw [Module.finrank_prod, Module.finrank_self, hL'rank]
+      push_cast
+      ring
+    rw [hrank] at hU_pos
+    have hS_pos : μH[(n : ℝ) + 1] (g '' closedBall ((0 : L'), (1 : ℝ)) (ε / 2)) ≠ 0 := by
+      intro h0
+      have := hK.le_hausdorffMeasure_image (d := (n : ℝ) + 1) (by positivity)
+        (closedBall ((0 : L'), (1 : ℝ)) (ε / 2))
+      rw [h0, mul_zero] at this
+      exact hU_pos.ne' (nonpos_iff_eq_zero.mp this)
+    have hS_top : μH[(n : ℝ)] (g '' closedBall ((0 : L'), (1 : ℝ)) (ε / 2)) = ∞ :=
+      (Measure.hausdorffMeasure_zero_or_top (lt_add_one (n : ℝ)) _).resolve_left hS_pos
+    -- a nonzero constant is not integrable on a set of infinite measure
+    have h1 : IntegrableOn (fun _ => ψ v) (g '' closedBall ((0 : L'), (1 : ℝ)) (ε / 2)) μH[(n : ℝ)] :=
+      (hint.mono_set hSs).congr_fun hSψ hSc.isClosed.measurableSet
+    rw [integrableOn_const_iff] at h1
+    rcases h1 with h1 | h1
+    · simpa using h1
+    · rw [hS_top] at h1
+      exact absurd h1 (lt_irrefl _)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
