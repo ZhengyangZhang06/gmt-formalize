@@ -451,6 +451,23 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A continuous determinant `n`-covector on `ℝⁿ`**: some `δ ∈ Λⁿ(ℝⁿ)` (a continuous
+alternating `n`-form) has `δ(e₁, …, eₙ) = 1` for the standard basis `eᵢ`.  Take the volume form
+`ω` of the orientation of the standard orthonormal basis `B`; Hadamard's inequality
+`|ω(v)| ≤ ∏ᵢ ‖vᵢ‖` makes it continuous, and `ω = det_B` gives `δ(e₁, …, eₙ) = det_B(B) = 1`. -/
+theorem Submission.dgoj_exists_det_covector : ∀ n : ℕ, ∃ δ : Covector (Euclid n) n, δ (fun i => EuclideanSpace.single i (1 : ℝ)) = 1 := by
+  intro n
+  have : Fact (Module.finrank ℝ (Euclid n) = n) := ⟨finrank_euclideanSpace_fin⟩
+  let b := EuclideanSpace.basisFun (Fin n) ℝ
+  let o : Orientation ℝ (Euclid n) (Fin n) := b.toBasis.orientation
+  refine ⟨o.volumeForm.mkContinuous 1 fun m => ?_, ?_⟩
+  · rw [one_mul, Real.norm_eq_abs]
+    exact o.abs_volumeForm_apply_le m
+  · rw [AlternatingMap.coe_mkContinuous, o.volumeForm_robust b rfl]
+    have h : (fun i => EuclideanSpace.single i (1 : ℝ)) = ⇑b.toBasis := by
+      funext i; simp [b]
+    rw [h, Module.Basis.det_self]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
