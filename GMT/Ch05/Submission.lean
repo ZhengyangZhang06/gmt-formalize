@@ -506,6 +506,76 @@ theorem lgc_hsNormSq_bounds : ∀ (m k : ℕ), Continuous (fun A : Rn m →L[ℝ
       _ ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) := h2
       _ = (∑ i, ‖A (e i)‖ ^ 2) * ‖v‖ ^ 2 := by rw [h3, mul_comm]
 
+/-- **Comparison of two planes by their tilt-excess** (proof of Simon Ch. 5, Theorem 4.5, p. 117:
+`E(0, ρ, T)` and `E(0, ρ, T̃)` small give `|p_T − p_T̃|` small).  If `x ↦ p_{T_x M}` is
+`μ_V`-a.e. strongly measurable and `μ_V(B_s(z)) < ∞`, then for all subspaces `P, Q`
+`μ_V(B_s(z)) |p_P − p_Q|² ≤ 2 sⁿ (E(z, s, P) + E(z, s, Q))`: column by column,
+`|a − b|² ≤ 2|a|² + 2|b|²` gives `|p_P − p_Q|² ≤ 2|p_{T_x M} − p_P|² + 2|p_{T_x M} − p_Q|²`
+for every `x`, and integrating over `B_s(z)` gives the claim (the integrands are bounded since
+all projections have operator norm `≤ 1`). -/
+theorem tdo_stp_hsNormSq_sub_le_tiltExcess : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (z : Amb n ℓ) (s : ℝ), 0 < s → V.weight (closedBall z s) ≠ ⊤ → ∀ P Q : Submodule ℝ (Amb n ℓ), (V.weight (closedBall z s)).toReal * hsNormSq (P.starProjection - Q.starProjection) ≤ 2 * s ^ n * (V.tiltExcess z s P + V.tiltExcess z s Q) := by
+  intro n ℓ U V hmeas z s hs hfin P Q
+  obtain ⟨hcont, hbd⟩ := lgc_hsNormSq_bounds (n + ℓ) (n + ℓ)
+  -- Tangent projections are orthogonal projections or `0`, so of operator norm `≤ 1`.
+  have hproj : ∀ x, ‖V.tangentProj x‖ ≤ 1 := by
+    intro x
+    unfold RectifiableVarifold.tangentProj
+    split_ifs
+    · exact Submodule.starProjection_norm_le _
+    · simp
+  -- `x ↦ |p_{T_x M} − p_R|²` is a.e. strongly measurable and bounded by `4(n+ℓ)`, hence
+  -- integrable on the ball of finite measure.
+  have hint : ∀ R : Submodule ℝ (Amb n ℓ), IntegrableOn
+      (fun x => hsNormSq (V.tangentProj x - R.starProjection)) (closedBall z s) V.weight := by
+    intro R
+    refine Measure.integrableOn_of_bounded (M := ((n + ℓ : ℕ) : ℝ) * 2 ^ 2) hfin
+      (hcont.comp_aestronglyMeasurable (hmeas.sub aestronglyMeasurable_const))
+      (Filter.Eventually.of_forall fun x => ?_)
+    obtain ⟨h0, h1, -⟩ := hbd (V.tangentProj x - R.starProjection)
+    rw [Real.norm_eq_abs, abs_of_nonneg h0]
+    refine h1.trans ?_
+    gcongr
+    calc ‖V.tangentProj x - R.starProjection‖
+        ≤ ‖V.tangentProj x‖ + ‖R.starProjection‖ := norm_sub_le _ _
+      _ ≤ 1 + 1 := add_le_add (hproj x) R.starProjection_norm_le
+      _ = 2 := by norm_num
+  -- Pointwise `|p_P − p_Q|² ≤ 2|p_{T_x M} − p_P|² + 2|p_{T_x M} − p_Q|²`, column by column.
+  have hpt : ∀ x, hsNormSq (P.starProjection - Q.starProjection) ≤
+      2 * hsNormSq (V.tangentProj x - P.starProjection) +
+        2 * hsNormSq (V.tangentProj x - Q.starProjection) := by
+    intro x
+    unfold hsNormSq
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_le_sum fun i _ => ?_
+    simp only [sub_apply]
+    set a := V.tangentProj x (EuclideanSpace.single i 1) - Q.starProjection (EuclideanSpace.single i 1)
+    set b := V.tangentProj x (EuclideanSpace.single i 1) - P.starProjection (EuclideanSpace.single i 1)
+    have hab : P.starProjection (EuclideanSpace.single i 1) - Q.starProjection (EuclideanSpace.single i 1)
+        = a - b := by
+      simp only [a, b]
+      abel
+    rw [hab]
+    nlinarith [norm_sub_le a b, sq_nonneg (‖a‖ - ‖b‖), norm_nonneg a, norm_nonneg b,
+      norm_nonneg (a - b)]
+  -- Integrate the pointwise inequality over the ball.
+  have hP := (hint P).const_mul 2
+  have hQ := (hint Q).const_mul 2
+  have key := setIntegral_ge_of_const_le_real measurableSet_closedBall hfin
+    (fun x _ => hpt x) (hP.add hQ)
+  rw [integral_add hP hQ, integral_const_mul, integral_const_mul, measureReal_def] at key
+  -- `sⁿ E(z, s, R) = ∫_{B_s(z)} |p_{T_x M} − p_R|² dμ_V` since `s > 0`.
+  unfold RectifiableVarifold.tiltExcess
+  have hsn : s ^ n ≠ 0 := pow_ne_zero _ hs.ne'
+  have hrw : 2 * s ^ n * ((s ^ n)⁻¹ *
+        ∫ x in closedBall z s, hsNormSq (V.tangentProj x - P.starProjection) ∂V.weight +
+      (s ^ n)⁻¹ *
+        ∫ x in closedBall z s, hsNormSq (V.tangentProj x - Q.starProjection) ∂V.weight) =
+      2 * ∫ x in closedBall z s, hsNormSq (V.tangentProj x - P.starProjection) ∂V.weight +
+        2 * ∫ x in closedBall z s, hsNormSq (V.tangentProj x - Q.starProjection) ∂V.weight := by
+    field_simp
+  rw [hrw]
+  linarith [key]
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
