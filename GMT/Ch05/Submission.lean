@@ -458,6 +458,152 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, 3.4** (differentiating a scaled radial cutoff integral with a bounded weight).
+Let `φ` be `C¹` and nonincreasing with `φ = 1` on `(-∞, 1]` and `φ = 0` on `[1 + ε, ∞)`, let
+`μ(B_S(y)) < ∞`, and let `q` be a.e. strongly measurable with `|q| ≤ B` a.e.; write
+`r = ‖x − y‖`.  If `0 < t` and `(1 + ε) t < S`, then `φ(r/t) q` and `(r/t) φ'(r/t) q` are
+`μ`-integrable, and `s ↦ ∫ φ(r/s) q dμ` has derivative `-(1/t) ∫ (r/t) φ'(r/t) q dμ` at `t`.
+For `0 < s < S/(1 + ε)` the integrands vanish off `B_S(y)`, so the integrals may be taken against
+the finite measure `μ ⌞ B_S(y)`.  There `|u φ'(u)| ≤ C` for `u ≥ 0` bounds the `s`-derivatives by
+`2CB/t` on `(t/2, S/(1 + ε))`, and one differentiates under the integral sign. -/
+theorem aal_cfs_hasDerivAt_cutoff_integral : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (q : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℝ → ℝ) (S ε B t : ℝ), 0 < ε → μ (closedBall y S) < ⊤ → AEStronglyMeasurable q μ → (∀ᵐ x ∂μ, |q x| ≤ B) → ContDiff ℝ 1 φ → Antitone φ → (∀ s : ℝ, s ≤ 1 → φ s = 1) → (∀ s : ℝ, 1 + ε ≤ s → φ s = 0) → 0 < t → (1 + ε) * t < S → Integrable (fun x => φ (‖x - y‖ / t) * q x) μ ∧ Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x) μ ∧ HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) * q x ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x ∂μ) / t) t := by
+  intro n ℓ μ q y φ S ε B t hε hμS hq hqB hφ hanti hone hzero ht htS
+  have hε1 : (0 : ℝ) < 1 + ε := by linarith
+  -- Step 1: `0 ≤ φ ≤ 1`, `φ` and `φ'` are continuous, `φ' = 0` on `(1 + ε, ∞)`, and
+  -- `|u φ'(u)| ≤ C` for `u ≥ 0`.
+  have hφc : Continuous φ := hφ.continuous
+  have hdφc : Continuous (deriv φ) := hφ.continuous_deriv_one
+  have hφnn : ∀ s, 0 ≤ φ s := fun s => by
+    have h := hanti (le_max_left s (1 + ε))
+    rwa [hzero _ (le_max_right _ _)] at h
+  have hφle : ∀ s, φ s ≤ 1 := fun s => by
+    have h := hanti (min_le_left s 1)
+    rwa [hone _ (min_le_right _ _)] at h
+  have hdzero : ∀ s, 1 + ε < s → deriv φ s = 0 := fun s hs => by
+    have h : φ =ᶠ[𝓝 s] fun _ => (0 : ℝ) := by
+      filter_upwards [lt_mem_nhds hs] with u hu
+      exact hzero u hu.le
+    exact h.deriv_eq.trans (deriv_const s 0)
+  obtain ⟨C, hC0, hC⟩ : ∃ C : ℝ, 0 ≤ C ∧ ∀ u : ℝ, 0 ≤ u → |u * deriv φ u| ≤ C := by
+    obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := 1 + ε)).exists_bound_of_continuousOn
+      (continuous_id.mul hdφc).continuousOn
+    refine ⟨max C 0, le_max_right _ _, fun u hu => ?_⟩
+    rcases le_or_gt u (1 + ε) with h | h
+    · have h' := hC u ⟨hu, h⟩
+      rw [Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
+    · rw [hdzero u h, mul_zero, abs_zero]
+      exact le_max_right _ _
+  -- Step 2: for `s ≠ 0`, `d/ds φ(r/s) = -(r/s) φ'(r/s) / s`.
+  have hderiv : ∀ (r s : ℝ), s ≠ 0 →
+      HasDerivAt (fun u => φ (r / u)) (-(r / s * deriv φ (r / s)) / s) s := by
+    intro r s hs
+    have h1 : HasDerivAt (fun u : ℝ => r / u) (r * -(s ^ 2)⁻¹) s := by
+      have := (hasDerivAt_inv hs).const_mul r
+      convert this using 1
+      funext u
+      exact div_eq_mul_inv r u
+    have h2 := ((hφ.differentiable (by simp) (r / s)).hasDerivAt).comp s h1
+    have heq : -(r / s * deriv φ (r / s)) / s = deriv φ (r / s) * (r * -(s ^ 2)⁻¹) := by
+      rw [sq, mul_inv]
+      ring
+    rw [heq]
+    exact h2
+  -- Step 3: for `0 < s < R = S/(1 + ε)` the integrands vanish off `K = B_S(y)`, so their
+  -- `μ`-integrals are integrals for the finite measure `ν = μ ⌞ K`.
+  set K : Set (Amb n ℓ) := closedBall y S with hKdef
+  set ν : Measure (Amb n ℓ) := μ.restrict K with hνdef
+  have : IsFiniteMeasure ν := isFiniteMeasure_restrict.mpr hμS.ne
+  set R : ℝ := S / (1 + ε) with hRdef
+  have hRiff : ∀ s : ℝ, s < R ↔ (1 + ε) * s < S := fun s => by
+    rw [hRdef, lt_div_iff₀ hε1, mul_comm]
+  have htR : t < R := (hRiff t).2 htS
+  have hout : ∀ s, 0 < s → s < R → ∀ x, x ∉ K → 1 + ε < ‖x - y‖ / s := by
+    intro s hs hsR x hx
+    have hxS : S < ‖x - y‖ := by
+      simpa [hKdef, mem_closedBall, dist_eq_norm, not_le] using hx
+    rw [lt_div_iff₀ hs]
+    linarith [(hRiff s).1 hsR]
+  have hconv : ∀ s, 0 < s → s < R →
+      ∫ x, φ (‖x - y‖ / s) * q x ∂μ = ∫ x, φ (‖x - y‖ / s) * q x ∂ν := by
+    intro s hs hsR
+    rw [hνdef, setIntegral_eq_integral_of_forall_compl_eq_zero]
+    intro x hx
+    rw [hzero _ (hout s hs hsR x hx).le, zero_mul]
+  have hconv' : ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x ∂μ =
+      ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x ∂ν := by
+    rw [hνdef, setIntegral_eq_integral_of_forall_compl_eq_zero]
+    intro x hx
+    rw [hdzero _ (hout t ht htR x hx), mul_zero, zero_mul]
+  -- Step 4: the integrands are bounded by `B` and `C B` on the finite measure `ν`, hence
+  -- `ν`-integrable; vanishing off `K`, they are `μ`-integrable.
+  have hqν : AEStronglyMeasurable q ν := hq.restrict
+  have hqBν : ∀ᵐ x ∂ν, |q x| ≤ B := ae_restrict_of_ae hqB
+  have hint1 : ∀ s, Integrable (fun x => φ (‖x - y‖ / s) * q x) ν := by
+    intro s
+    refine Integrable.of_bound ((hφc.comp (by fun_prop :
+      Continuous fun x : Amb n ℓ => ‖x - y‖ / s)).aestronglyMeasurable.mul hqν) B ?_
+    filter_upwards [hqBν] with x hx
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (hφnn _)]
+    calc φ (‖x - y‖ / s) * |q x| ≤ 1 * |q x| :=
+          mul_le_mul_of_nonneg_right (hφle _) (abs_nonneg _)
+      _ ≤ B := by rw [one_mul]; exact hx
+  have hint2 : Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x) ν := by
+    refine Integrable.of_bound ((by fun_prop : Continuous fun x : Amb n ℓ =>
+      ‖x - y‖ / t * deriv φ (‖x - y‖ / t)).aestronglyMeasurable.mul hqν) (C * B) ?_
+    filter_upwards [hqBν] with x hx
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+    exact mul_le_mul (hC _ (div_nonneg (norm_nonneg _) ht.le)) hx (abs_nonneg _) hC0
+  have hμint : ∀ f : Amb n ℓ → ℝ, Integrable f ν → (∀ x, x ∉ K → f x = 0) → Integrable f μ := by
+    intro f hf hf0
+    refine (integrableOn_iff_integrable_of_support_subset (s := K) ?_).mp hf
+    intro x hx
+    by_contra h
+    exact hx (hf0 x h)
+  refine ⟨hμint _ (hint1 t) (fun x hx => by rw [hzero _ (hout t ht htR x hx).le, zero_mul]),
+    hμint _ hint2 (fun x hx => by rw [hdzero _ (hout t ht htR x hx), mul_zero, zero_mul]), ?_⟩
+  -- Step 5: differentiate under the integral sign for `ν` on `U = (t/2, R)`, with the
+  -- integrable constant bound `2 C B / t`.
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := ν)
+    (F := fun s x => φ (‖x - y‖ / s) * q x)
+    (F' := fun s x => -(‖x - y‖ / s * deriv φ (‖x - y‖ / s)) / s * q x)
+    (x₀ := t) (bound := fun _ => 2 * C * B / t) (s := Ioo (t / 2) R)
+    (Ioo_mem_nhds (half_lt_self ht) htR) ?_ (hint1 t) ?_ ?_ (integrable_const _) ?_
+  -- Step 6: the `ν`- and `μ`-integrals agree near `t`, so the derivative transfers to `μ`.
+  · have hderivν := key.2
+    have heq : (∫ x, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t * q x ∂ν) =
+        -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * q x ∂μ) / t := by
+      rw [hconv', ← integral_neg, ← integral_div]
+      congr 1
+      funext x
+      ring
+    rw [heq] at hderivν
+    refine hderivν.congr_of_eventuallyEq ?_
+    filter_upwards [Ioo_mem_nhds ht htR] with s hs
+    exact hconv s hs.1 hs.2
+  · exact Eventually.of_forall fun s => (hφc.comp (by fun_prop :
+      Continuous fun x : Amb n ℓ => ‖x - y‖ / s)).aestronglyMeasurable.mul hqν
+  · exact (by fun_prop : Continuous fun x : Amb n ℓ =>
+      -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t).aestronglyMeasurable.mul hqν
+  · filter_upwards [hqBν] with x hx s hs
+    have hs0 : 0 < s := lt_trans (half_pos ht) hs.1
+    have hB : 0 ≤ B := (abs_nonneg _).trans hx
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_div, abs_neg, abs_of_pos hs0]
+    calc |‖x - y‖ / s * deriv φ (‖x - y‖ / s)| / s * |q x| ≤ C / s * B :=
+          mul_le_mul (div_le_div_of_nonneg_right
+            (hC _ (div_nonneg (norm_nonneg _) hs0.le)) hs0.le) hx (abs_nonneg _)
+            (div_nonneg hC0 hs0.le)
+      _ ≤ 2 * C * B / t := by
+          rw [div_mul_eq_mul_div, div_le_div_iff₀ hs0 ht]
+          nlinarith [hs.1, mul_nonneg hC0 hB]
+  · filter_upwards with x s hs
+    have hs0 : 0 < s := lt_trans (half_pos ht) hs.1
+    exact (hderiv ‖x - y‖ s hs0.ne').mul_const (q x)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
