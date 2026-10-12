@@ -614,6 +614,33 @@ theorem Submission.imsupp_vanishesOn_of_measure_eq_zero : ∀ (P n : ℕ) (U W :
   filter_upwards [measure_eq_zero_iff_ae_notMem.1 hνK] with x hx
   rw [image_eq_zero_of_notMem_tsupport hx, map_zero, mul_zero, Pi.zero_apply]
 
+/-- **Simon 6.2.11–6.2.12 and 6.3.2(3)** (`spt T = U ∩ spt μ_T`): if `T = τ(M, θ, ξ)` in the open
+set `U`, then `spt T` is the part in `U` of the support of the weight `μ_T = θHⁿ⌞M`.  If
+`x ∈ spt T` had a `μ_T`-null neighbourhood `N`, a ball `B_ε(x)` with `B̄_ε(x) ⊆ N ∩ U` would be
+`μ_T`-null, so `T` would vanish on it and `x` would lie in the zero region.  Conversely, a piece
+`W` of the zero region (open, `W̄ ⊆ U` compact, `T` vanishing on `W`) has `μ_T(W) = 0`, so it
+misses `spt μ_T`. -/
+theorem Submission.imrep_represents_support_eq_inter_measure_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → T.support = U ∩ R.measure.support := by
+  intro P n U T R hU hRT
+  ext x
+  simp only [GeometricCurrentOn.support, Set.mem_sdiff, mem_inter_iff]
+  refine and_congr_right fun hxU => ⟨fun hxZ => ?_, fun hxμ hxZ => ?_⟩
+  · -- `spt T ⊆ spt μ_T`: for a `μ_T`-null neighbourhood `N` of `x`, a ball `B_ε(x)` with
+    -- `B̄_ε(x) ⊆ N ∩ U` is `μ_T`-null, so `T` vanishes on it and `x` lies in the zero region
+    refine (Measure.mem_support_iff_forall x).2 fun N hN => pos_iff_ne_zero.2 fun hμN => hxZ ?_
+    obtain ⟨ε, hε, hεN⟩ := nhds_basis_closedBall.mem_iff.1 (inter_mem hN (hU.mem_nhds hxU))
+    refine mem_sUnion.2 ⟨ball x ε, ⟨isOpen_ball,
+      (isCompact_closedBall x ε).of_isClosed_subset isClosed_closure closure_ball_subset_closedBall,
+      closure_ball_subset_closedBall.trans (hεN.trans inter_subset_right), ?_⟩, mem_ball_self hε⟩
+    exact Submission.imsupp_vanishesOn_of_measure_eq_zero P n U (ball x ε) T R hRT
+      (measure_mono_null (ball_subset_closedBall.trans (hεN.trans inter_subset_left)) hμN)
+  · -- `U ∩ spt μ_T ⊆ spt T`: a piece `W ∋ x` of the zero region has `μ_T(W) = 0`, while `W` is
+    -- an open neighbourhood of `x ∈ spt μ_T`
+    obtain ⟨W, ⟨hWo, -, hWU, hTW⟩, hxW⟩ := mem_sUnion.1 hxZ
+    exact ((Measure.mem_support_iff_forall x).1 hxμ W (hWo.mem_nhds hxW)).ne'
+      (Submission.imsupp_measure_eq_zero_of_vanishesOn P n U W T R hRT hWo
+        (subset_closure.trans hWU) hTW)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
