@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -693,6 +694,175 @@ theorem Submission.regcomp_atl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euc
       Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le]
   -- Step 4: conclusion
   rw [hset, hscale]
+
+/-- **The approximate tangent plane of a Lipschitz graph, transferred to an integer multiplicity
+carrier** (Simon Ch. 3, Definition 1.4, Remarks 1.5(1)–(2) and the proof of Theorem 1.6 "⇒";
+Ch. 2, area formula 3.2–3.5 and Example 3.6(3); Ch. 1, Upper Density Theorem 3.6).
+Let `Φ(u) = a + ιu + ι'(f u)`, `F = Φ(ℝⁿ)` and `P_v = range (ι + ι' ∘ Df(v))`.  With the graph
+Jacobian `Ĵ(T) = normDet (ι + ι' ∘ T)` (continuous in `T`, SimonGMT `continuous_normDet`), the
+injective Lipschitz area formula (SimonGMT `injective_area_formula_lipschitz`, Rademacher) gives
+`Hⁿ⌞(graph of g through 0) = (w ↦ ιw + ι'(g w))_# (Ĵ(Dg) Lⁿ)` for Lipschitz `g`.  Applied to the
+blow-ups `η_{Φ(v),r}(F)`, graphs of the difference quotients `f_{v,r}` with `Df_{v,r}(w) =
+Df(v + rw)`, and to `P_v`, the graph of `Df(v)`, this turns the weighted blow-up limit for the
+bounded measurable weight `G = Ĵ ∘ Df` into `HasApproximateTangentSpaceAt n F (Φ v) P_v` for
+`Lⁿ`-a.e. `v`.  The exceptional parameters have `Hⁿ`-null image, and the approximate tangent
+planes of `F` and of the carrier `M` agree `Hⁿ`-a.e. on `M ∩ F ∩ W` (both are Borel and locally
+`Hⁿ`-finite in `W`, `θ ≥ 1` on `M`); uniqueness of the approximate tangent plane concludes. -/
+theorem Submission.dorag_lipschitz_graph_approxTangent : ∀ (n k : ℕ), 0 < n → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (a : Euclid (n + k)) (f : Euclid n → Euclid k) (L : NNReal), IsOpen W → W ⊆ U → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → LipschitzWith L f → ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), ∀ v : Euclid n, x = a + ι v + ι' (f v) → DifferentiableAt ℝ f v ∧ approxTangentPlane n R.carrier x = LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap) := by
+  intro n k _ U W R ι ι' a f L hW hWU horth hf
+  -- Step 0: the graph Jacobian `Ĵ(T) = normDet (ι + ι' ∘ T)` is continuous in `T`.
+  obtain ⟨Jh, hJh_def⟩ : ∃ Jh : (Euclid n →L[ℝ] Euclid k) → ℝ, ∀ T, Jh T =
+      ((ι.toContinuousLinearMap + ι'.toContinuousLinearMap.comp T :
+        Euclid n →L[ℝ] Euclid (n + k)) : Euclid n →ₗ[ℝ] Euclid (n + k)).normDet :=
+    ⟨_, fun _ => rfl⟩
+  have hJh : Continuous Jh := by
+    rw [show Jh = fun T => ((ι.toContinuousLinearMap + ι'.toContinuousLinearMap.comp T :
+        Euclid n →L[ℝ] Euclid (n + k)) : Euclid n →ₗ[ℝ] Euclid (n + k)).normDet from
+      funext hJh_def]
+    exact Poincare.SimonGMT.Chapter02.continuous_normDet.comp
+      (continuous_const.add (continuous_const.clm_comp continuous_id))
+  have hJh0 : ∀ T, 0 ≤ Jh T := fun T => by
+    rw [hJh_def]
+    exact LinearMap.normDet_nonneg _
+  -- Step 2, area formula (Simon Ch. 2, 3.2–3.5) for a Lipschitz graph through the origin, as an
+  -- identity of measures `Hⁿ⌞(graph g) = (w ↦ ιw + ι'(g w))_# (Ĵ(Dg) Lⁿ)` (Rademacher).
+  have area : ∀ (g : Euclid n → Euclid k) (K : NNReal), LipschitzWith K g →
+      (μHE[n] : Measure (Euclid (n + k))).restrict (Set.range fun u => ι u + ι' (g u)) =
+        Measure.map (fun u => ι u + ι' (g u)) ((volume : Measure (Euclid n)).withDensity
+          fun u => ENNReal.ofReal (Jh (fderiv ℝ g u))) := by
+    intro g K hg
+    obtain ⟨h1, h2, -, -, -⟩ :=
+      Submission.doraggt_lipschitz_graph_map_basics n k ι ι' 0 g K horth hg
+    simp only [zero_add] at h1 h2
+    have hinj : Injective fun u => ι u + ι' (g u) := fun u u' h => by
+      have h' : ι u + ι' (g u) = ι u' + ι' (g u') := h
+      have h3 := h1 u u'
+      rw [h', dist_self] at h3
+      exact dist_le_zero.1 h3
+    have hmeas : Measurable fun u => ι u + ι' (g u) := h2.continuous.measurable
+    ext S hS
+    rw [Measure.restrict_apply hS, Measure.map_apply hmeas hS, withDensity_apply _ (hmeas hS),
+      ← Set.image_preimage_eq_inter_range]
+    have key :=
+      Poincare.SimonGMT.Chapter02.injective_area_formula_lipschitz h2 (hmeas hS) hinj.injOn
+    rw [finrank_euclideanSpace_fin] at key
+    rw [key]
+    refine lintegral_congr_ae (ae_restrict_of_ae ?_)
+    filter_upwards [hg.ae_differentiableAt (μ := volume)] with u hu
+    have hd : HasFDerivAt (fun u => ι u + ι' (g u))
+        (ι.toContinuousLinearMap + ι'.toContinuousLinearMap.comp (fderiv ℝ g u)) u :=
+      ι.toContinuousLinearMap.hasFDerivAt.add
+        (ι'.toContinuousLinearMap.hasFDerivAt.comp u hu.hasFDerivAt)
+    rw [Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet, hd.fderiv, hJh_def]
+  -- Hence `∫_{graph g} ψ dHⁿ = ∫ ψ(ιw + ι'(g w)) Ĵ(Dg(w)) dw` for every continuous `ψ`.
+  have areaInt : ∀ (g : Euclid n → Euclid k) (K : NNReal), LipschitzWith K g →
+      ∀ ψ : Euclid (n + k) → ℝ, Continuous ψ →
+        ∫ y in Set.range (fun u => ι u + ι' (g u)), ψ y ∂μHE[n] =
+          ∫ w, ψ (ι w + ι' (g w)) * Jh (fderiv ℝ g w) := by
+    intro g K hg ψ hψ
+    have h2 := (Submission.doraggt_lipschitz_graph_map_basics n k ι ι' 0 g K horth hg).2.1
+    simp only [zero_add] at h2
+    have hJm : Measurable fun u => ENNReal.ofReal (Jh (fderiv ℝ g u)) :=
+      (hJh.measurable.comp (measurable_fderiv ℝ g)).ennreal_ofReal
+    rw [area g K hg, integral_map h2.continuous.measurable.aemeasurable hψ.aestronglyMeasurable,
+      integral_withDensity_eq_integral_toReal_smul hJm
+        (Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
+    refine integral_congr_ae (Eventually.of_forall fun w => ?_)
+    simp only [smul_eq_mul]
+    rw [ENNReal.toReal_ofReal (hJh0 _), mul_comm]
+  -- Step 1: the weight `G = Ĵ ∘ Df` is measurable and bounded (`‖Df‖ ≤ L`).
+  obtain ⟨G, hG⟩ : ∃ G : Euclid n → ℝ, ∀ u, G u = Jh (fderiv ℝ f u) :=
+    ⟨fun u => Jh (fderiv ℝ f u), fun _ => rfl⟩
+  have hGm : Measurable G := by
+    rw [show G = fun u => Jh (fderiv ℝ f u) from funext hG]
+    exact hJh.measurable.comp (measurable_fderiv ℝ f)
+  obtain ⟨C, hC⟩ :=
+    (isCompact_closedBall (0 : Euclid n →L[ℝ] Euclid k) L).exists_bound_of_continuousOn
+      hJh.continuousOn
+  have hGC : ∀ u, |G u| ≤ C := fun u => by
+    rw [hG, ← Real.norm_eq_abs]
+    exact hC _ (mem_closedBall_zero_iff.2 (norm_fderiv_le_of_lipschitz ℝ hf))
+  -- Step 2, blow-up limit: at good parameters `v`, `F` has approximate tangent plane `P_v`
+  -- at `Φ(v)`.
+  have tangentF : ∀ v : Euclid n, (∀ ψ : Euclid (n + k) → ℝ, Continuous ψ → HasCompactSupport ψ →
+        Tendsto (fun r : ℝ => ∫ w, ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w))
+          (𝓝[>] 0) (𝓝 (G v * ∫ w, ψ (ι w + ι' (fderiv ℝ f v w))))) →
+      HasApproximateTangentSpaceAt n (Set.range fun u => a + ι u + ι' (f u)) (a + ι v + ι' (f v))
+        (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap)) := by
+    intro v hlim
+    have hD1 := (Submission.doraggt_lipschitz_graph_map_basics n k ι ι' 0 (fderiv ℝ f v)
+      ‖fderiv ℝ f v‖₊ horth (fderiv ℝ f v).lipschitzWith).1
+    simp only [zero_add] at hD1
+    have hPset : ((LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ
+        (fderiv ℝ f v).toLinearMap) : Submodule ℝ (Euclid (n + k))) : Set (Euclid (n + k))) =
+        Set.range fun u => ι u + ι' (fderiv ℝ f v u) := by
+      rw [LinearMap.coe_range]
+      rfl
+    refine ⟨?_, fun ψ => ?_⟩
+    · rw [LinearMap.finrank_range_of_inj, finrank_euclideanSpace_fin]
+      intro u u' h
+      have h' : ι u + ι' (fderiv ℝ f v u) = ι u' + ι' (fderiv ℝ f v u') := h
+      have h3 := hD1 u u'
+      rw [h', dist_self] at h3
+      exact dist_le_zero.1 h3
+    · have hval : ∫ y in ((LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ
+          (fderiv ℝ f v).toLinearMap) : Submodule ℝ (Euclid (n + k))) : Set (Euclid (n + k))),
+            ψ y ∂μHE[n] = G v * ∫ w, ψ (ι w + ι' (fderiv ℝ f v w)) := by
+        rw [hPset, areaInt _ _ (fderiv ℝ f v).lipschitzWith ψ (map_continuous ψ)]
+        simp only [ContinuousLinearMap.fderiv]
+        rw [integral_mul_const, hG, mul_comm]
+      rw [hval]
+      refine (hlim ψ (map_continuous ψ) ψ.hasCompactSupport).congr' ?_
+      filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+      have hfr : LipschitzWith L fun w' => r⁻¹ • (f (v + r • w') - f v) := by
+        refine LipschitzWith.of_dist_le_mul fun w w' => ?_
+        rw [dist_smul₀, dist_sub_right, Real.norm_of_nonneg (inv_nonneg.2 hr.le)]
+        calc r⁻¹ * dist (f (v + r • w)) (f (v + r • w'))
+            ≤ r⁻¹ * (L * dist (v + r • w) (v + r • w')) :=
+              mul_le_mul_of_nonneg_left (hf.dist_le_mul _ _) (inv_nonneg.2 hr.le)
+          _ = L * dist w w' := by
+              rw [dist_add_left, dist_smul₀, Real.norm_of_nonneg hr.le, mul_left_comm,
+                inv_mul_cancel_left₀ hr.ne']
+      obtain ⟨hset, hder⟩ := Submission.doraggt_graph_blowup_rescaling n k ι ι' a f v r hr.ne'
+      rw [hset, areaInt _ L hfr ψ (map_continuous ψ)]
+      refine integral_congr_ae (Eventually.of_forall fun w => ?_)
+      simp only [hder w, hG]
+  -- Steps 1–2: Rademacher and the weighted blow-up limit hold at `Lⁿ`-a.e. parameter.
+  have hgood :=
+    Submission.doraggt_ae_weighted_graph_blowup_tendsto n k ι ι' f L G C horth hf hGm hGC
+  have hgood' : ∀ᵐ v ∂(volume : Measure (Euclid n)), DifferentiableAt ℝ f v ∧
+      HasApproximateTangentSpaceAt n (Set.range fun u => a + ι u + ι' (f u)) (a + ι v + ι' (f v))
+        (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap)) :=
+    hgood.mono fun v hv => ⟨hv.1, tangentF v hv.2⟩
+  -- Steps 1 and 3: the bad parameters have `Hⁿ`-null image; `M` and `F` are Borel and locally
+  -- `Hⁿ`-finite in `W` (`θ ≥ 1` on `M`), so their approximate tangent planes agree a.e. (Step 4).
+  obtain ⟨-, -, hFclosed, hFfin, hnull⟩ :=
+    Submission.doraggt_lipschitz_graph_map_basics n k ι ι' a f L horth hf
+  have hN := hnull _ (ae_iff.1 hgood')
+  have hMfin : ∀ K : Set (Euclid (n + k)), IsCompact K → K ⊆ W → μHE[n] (R.carrier ∩ K) ≠ ∞ := by
+    intro K hK hKW
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK (hKW.trans hWU)) ?_
+    rw [← setLIntegral_one]
+    refine setLIntegral_mono' (R.measurableSet_carrier.inter hK.isClosed.measurableSet)
+      fun x hx => ?_
+    exact Nat.one_le_cast.2 (R.mult_pos x hx.1)
+  have htransfer := Submission.doraggt_ae_approxTangent_transfer (n + k) n W R.carrier
+    (Set.range fun u => a + ι u + ι' (f u)) hW R.measurableSet_carrier hFclosed.measurableSet
+    hMfin (fun K hK _ => hFfin K hK)
+  -- Step 5: conclusion, by uniqueness of the approximate tangent plane (Remark 1.5(1)).
+  rw [ae_restrict_iff' (R.measurableSet_carrier.inter hW.measurableSet)]
+  filter_upwards [htransfer, measure_eq_zero_iff_ae_notMem.1 hN] with x hxT hxN
+  rintro ⟨hxM, hxW⟩ v rfl
+  obtain ⟨hdiff, hF⟩ : DifferentiableAt ℝ f v ∧
+      HasApproximateTangentSpaceAt n (Set.range fun u => a + ι u + ι' (f u)) (a + ι v + ι' (f v))
+        (LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap)) := by
+    by_contra hcon
+    exact hxN ⟨v, hcon, rfl⟩
+  have hM := (hxT hxW hxM ⟨v, rfl⟩ _).2 hF
+  have hex : ∃ Q, HasApproximateTangentSpaceAt n R.carrier (a + ι v + ι' (f v)) Q := ⟨_, hM⟩
+  refine ⟨hdiff, ?_⟩
+  rw [approxTangentPlane, dite_eq_left hex]
+  exact hex.choose_spec.unique hM
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
