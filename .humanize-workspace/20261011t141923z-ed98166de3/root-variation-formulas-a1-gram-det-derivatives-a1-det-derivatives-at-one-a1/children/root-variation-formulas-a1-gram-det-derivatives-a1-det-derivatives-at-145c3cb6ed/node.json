@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.gram_det_derivatives-a1.det_derivatives_at_one-a1.first_order_at_one-a1",
+  "parent_id": "root.variation_formulas-a1.gram_det_derivatives-a1.det_derivatives_at_one-a1",
+  "depth": 4,
+  "title": "First-order Leibniz sum at the identity matrix equals the trace",
+  "statement": "Let ι be a finite index set with decidable equality and let H be a real ι×ι matrix. Write I for the ι×ι identity matrix, so I_{ab} = δ_{ab} (1 if a = b and 0 otherwise). Then Σ_{σ∈Perm(ι)} sgn(σ) · Σ_{m∈ι} (Π_{j∈ι∖{m}} I_{σ(j) j}) · H_{σ(m) m} = tr H. Here Perm(ι) is the finite group of permutations of ι, sgn(σ) ∈ {1, −1} is regarded as a real number, and tr H = Σ_{m∈ι} H_{mm}.",
+  "lean_statement": "∀ (ι : Type) [Fintype ι] [DecidableEq ι] (H : Matrix ι ι ℝ), ∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ m : ι, (∏ j ∈ Finset.univ.erase m, (1 : Matrix ι ι ℝ) (σ j) j) * H (σ m) m = H.trace",
+  "lean_name": "variation_matrix_det_leibniz_first_order_at_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-gram-det-derivatives-a1-det-derivatives-at-145c3cb6ed-a1"
+}

@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n \"theorem det_apply|theorem det_apply'\" mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "rg -n 'HasDerivAt.(fun_finsetProd|fun_sum|mul|const_mul|congr_of_eventuallyEq)' mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean mathlib/Mathlib/Analysis/Calculus/Deriv/Add.lean mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        "rg -n 'sign_swap' mathlib/Mathlib/GroupTheory/Perm/Sign.lean",
+        "rg -n 'one_apply_(eq|ne)|def trace' mathlib/Mathlib/Data/Matrix/Diagonal.lean mathlib/Mathlib/LinearAlgebra/Matrix/Trace.lean",
+        "rg -n '(theorem|lemma) .*(det|Det).*(Deriv|deriv|Diff|diff)|(theorem|lemma) .*(Deriv|deriv|Diff|diff).*(det|Det)' mathlib/Mathlib/Analysis mathlib/Mathlib/LinearAlgebra mathlib/Mathlib/Topology/Algebra/Module",
+        "rg -n 'coeff_det_one_add_X_smul_one|det_one_add_X_smul|det_one_add_smul' mathlib/Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean",
+        "rg -n -w 'variation_matrix_det_hasDerivAt_leibniz|variation_matrix_det_leibniz_first_order_at_one|variation_matrix_det_leibniz_second_order_at_one' GMT .humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -o ContractAudit.olean ContractAudit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -o SolutionAudit.olean SolutionAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/GroupTheory/Perm/Sign.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Logic/Equiv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Matrix/Diagonal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Matrix/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-gram-det-derivatives-a1-det-derivatives-at-one-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-gram-det-derivatives-a1-det-derivatives-at-one-a1/decomposition-v1.json",
+        "/tmp/independent-det-audit-rccz2tpb/ContractAudit.lean",
+        "/tmp/independent-det-audit-rccz2tpb/SolutionAudit.lean",
+        "/tmp/independent-det-audit-rccz2tpb/names.json"
+      ],
+      "conclusion": "The pinned sources supply the stated determinant expansion, calculus rules, permutation facts and matrix operations; inspected sources match the compiler checkout. No direct analytic determinant-derivative theorem was found in the searched trees. Charpoly/Coeff.lean also contains a general principal-minor coefficient formula, so the proposal's 'only first-order' description is overly broad, without affecting this split. Fresh challenge types elaborate against the pristine frozen context. Explicit instance checks confirm ordinary matrix multiplication and identity. Rebuilt child proofs, exact solution-type checks and an implication from the three child contracts to the exact selected parent pass with only propext, Classical.choice and Quot.sound. All names are bare identifiers, with no reservation in another DAG or decomposition branch. The split is appropriate: its independent obligations supply precisely the formulas needed by the parent's calculus assembly; dependencies are acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "leibniz_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the arbitrary-point, entrywise derivative hypotheses and signed Leibniz conclusion. Each proof step follows from det_apply', the finite-product rule, constant multiplication and finite summation. It requires neither the parent theorem nor another child and covers empty index sets."
+    },
+    {
+      "key": "first_order_at_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean type agree, including the matrix identity and real sign cast. The proof correctly finds a moved index outside any excluded singleton, forces every nonidentity contribution to vanish, and evaluates the identity contribution as the trace. No hypothesis, dependency or further proof construction is missing."
+    },
+    {
+      "key": "second_order_at_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type correctly encodes both erased indices and ordinary matrix multiplication. The supplied proof fully establishes the identity-or-transposition classification, evaluates both signs and entries, restores the zero diagonal terms, and obtains the two trace expressions. Ordered-pair counting is correct, no symmetry assumption is needed, and the argument is non-circular and valid for empty index sets."
+    }
+  ],
+  "required_changes": []
+}
