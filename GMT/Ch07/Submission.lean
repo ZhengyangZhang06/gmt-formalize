@@ -637,6 +637,42 @@ theorem Submission.dorag_ha_mv_green_identity : ∀ (n : ℕ) (V : Set (Euclid n
   simp_rw [Finset.mul_sum]
   rw [integral_finsetSum _ (fun i _ => (key i).2.1), ← Finset.sum_neg_distrib]
   exact Finset.sum_congr rfl fun i _ => (key i).2.2
+/-- **Derivatives of `z ↦ h(x − s z)`** (the chain-rule step in the proof of the mean-value
+property of harmonic functions, cited in Simon Ch. 5 before 3.2; chapter-05.txt lines 643–644).
+For an arbitrary `h : ℝⁿ → ℝ` and `G(z) = h(x − s z)`: `DG(y) a = −s·Dh(x − s y) a` and
+`D²G(y)(a, b) = s²·D²h(x − s y)(a, b)`, with Mathlib's total derivatives (`0` where undefined).
+If `s = 0`, `G` is constant.  Otherwise `G = h(x + ·) ∘ L` for the continuous linear equivalence
+`L z = (−s) z`, and `fderiv`, `iteratedFDeriv` commute with `∘ L` and with translations for every
+function. -/
+theorem Submission.dorag_ha_mv_affine_comp_deriv : ∀ (n : ℕ) (h : Euclid n → ℝ) (x : Euclid n) (s : ℝ) (y a b : Euclid n), fderiv ℝ (fun z : Euclid n => h (x - s • z)) y a = -(s * fderiv ℝ h (x - s • y) a) ∧ iteratedFDeriv ℝ 2 (fun z : Euclid n => h (x - s • z)) y ![a, b] = s ^ 2 * iteratedFDeriv ℝ 2 h (x - s • y) ![a, b] := by
+  intro n h x s y a b
+  rcases eq_or_ne s 0 with rfl | hs
+  -- `s = 0`: `G` is the constant `h x`, so both sides vanish.
+  · simp only [zero_smul, sub_zero, zero_mul, neg_zero]
+    rw [iteratedFDeriv_const_of_ne (by norm_num)]
+    simp
+  -- `s ≠ 0`: `G = h (x + ·) ∘ L` with `L z = (-s) • z`.
+  · let L : Euclid n ≃L[ℝ] Euclid n :=
+      ContinuousLinearEquiv.smulLeft (Units.mk0 (-s) (neg_ne_zero.2 hs))
+    have hL : ∀ z, L z = (-s) • z := fun z => rfl
+    have hfun : (fun z : Euclid n => h (x - s • z)) = (fun w => h (x + w)) ∘ L := by
+      funext z; simp [hL, sub_eq_add_neg, neg_smul]
+    constructor
+    -- `DG(y) a = Dh(x + L y)(L a)`, and `L a = (-s) • a`.
+    · rw [hfun, ContinuousLinearEquiv.comp_right_fderiv, fderiv_comp_add_left]
+      simp [hL, sub_eq_add_neg, neg_smul, map_smul]
+    -- `D²G(y)(a, b) = D²h(x + L y)(L a, L b) = (-s) * (-s) * D²h(x - s • y)(a, b)`.
+    · rw [hfun]
+      have hcomp := L.iteratedFDerivWithin_comp_right (fun w => h (x + w)) uniqueDiffOn_univ
+        (mem_univ (L y)) 2
+      rw [preimage_univ, iteratedFDerivWithin_univ, iteratedFDerivWithin_univ] at hcomp
+      rw [hcomp, ContinuousMultilinearMap.compContinuousLinearMap_apply,
+        iteratedFDeriv_comp_add_left]
+      have hv : (fun i : Fin 2 => (L : Euclid n →L[ℝ] Euclid n) (![a, b] i)) =
+          fun i => (-s) • ![a, b] i := by
+        funext i; exact hL _
+      rw [hv, ContinuousMultilinearMap.map_smul_univ]
+      simp [hL, sub_eq_add_neg, neg_smul, sq]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
