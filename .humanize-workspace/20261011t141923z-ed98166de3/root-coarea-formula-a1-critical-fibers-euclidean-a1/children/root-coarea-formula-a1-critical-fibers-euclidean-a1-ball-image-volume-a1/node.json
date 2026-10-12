@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1.ball_image_volume-a1",
+  "parent_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1",
+  "depth": 3,
+  "title": "Images of small balls around a point with non-surjective derivative are thin",
+  "statement": "Let n, m ∈ ℕ, G : ℝⁿ → ℝᵐ (Euclidean spaces), x ∈ ℝⁿ and r, η, L ∈ ℝ with r ≥ 0. Assume: (i) G is differentiable at every z in the closed ball B̄(x,r); (ii) ‖DG(z) − DG(x)‖ ≤ η for every z ∈ B̄(x,r), where DG = fderiv ℝ G and the norm is the operator norm; (iii) ‖DG(x)‖ ≤ L; (iv) the linear map DG(x) : ℝⁿ → ℝᵐ is not surjective. Then Lᵐ(G(B̄(x,r))) ≤ ENNReal.ofReal(2(ηr)·(2((L+η)r))^{m−1}), with truncated subtraction m − 1 and Lᵐ = volume.",
+  "lean_statement": "∀ (n m : ℕ) (G : Rn n → Rn m) (x : Rn n) (r η L : ℝ), 0 ≤ r → (∀ z ∈ closedBall x r, DifferentiableAt ℝ G z) → (∀ z ∈ closedBall x r, ‖fderiv ℝ G z - fderiv ℝ G x‖ ≤ η) → ‖fderiv ℝ G x‖ ≤ L → ¬ Function.Surjective (fderiv ℝ G x) → volume (G '' closedBall x r) ≤ ENNReal.ofReal (2 * (η * r) * (2 * ((L + η) * r)) ^ (m - 1))",
+  "lean_name": "volume_image_closedBall_le_of_fderiv_not_surjective",
+  "depends_on": [
+    "root.coarea_formula-a1.critical_fibers_euclidean-a1.slab_volume-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1.slab_volume-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-critical-fibers-euclidean-a1-ball-image-volume-a1-a1"
+}
