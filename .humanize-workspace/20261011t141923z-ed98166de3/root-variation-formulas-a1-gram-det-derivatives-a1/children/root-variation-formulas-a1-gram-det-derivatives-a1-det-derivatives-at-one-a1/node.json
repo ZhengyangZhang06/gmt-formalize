@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.gram_det_derivatives-a1.det_derivatives_at_one-a1",
+  "parent_id": "root.variation_formulas-a1.gram_det_derivatives-a1",
+  "depth": 3,
+  "title": "First and second derivatives of det G(t) at a point where G = I (derivative form of det(I + A) = 1 + tr A + ½(tr A)² − ½ tr(A²) + O(|A|³))",
+  "statement": "Let ι be a finite index set (with decidable equality) and let G : ℝ → ℝ^{ι×ι} be a function with values in the real ι×ι matrices such that G(0) = I, the identity matrix. Put h(t) := det G(t). (1) Let G₁ be a real ι×ι matrix such that for all i, k ∈ ι the entry function t ↦ G(t)_{ik} has derivative (G₁)_{ik} at 0. Then h has derivative tr G₁ at 0. (2) Let G′ : ℝ → ℝ^{ι×ι} and let G₂ be a real ι×ι matrix. Suppose that for every t in some neighbourhood of 0 and all i, k ∈ ι, the function s ↦ G(s)_{ik} has derivative G′(t)_{ik} at t, and that for all i, k ∈ ι the function t ↦ G′(t)_{ik} has derivative (G₂)_{ik} at 0. Then h is differentiable at every point of some neighbourhood of 0, and the function deriv h has derivative tr G₂ + (tr G′(0))² − tr(G′(0)·G′(0)) at 0, where G′(0)·G′(0) is the matrix product.",
+  "lean_statement": "∀ (ι : Type) [Fintype ι] [DecidableEq ι] (G : ℝ → Matrix ι ι ℝ), G 0 = 1 → (∀ G₁ : Matrix ι ι ℝ, (∀ i k, HasDerivAt (fun t ↦ G t i k) (G₁ i k) 0) → HasDerivAt (fun t ↦ (G t).det) G₁.trace 0) ∧ ∀ (G' : ℝ → Matrix ι ι ℝ) (G₂ : Matrix ι ι ℝ), (∀ᶠ t in 𝓝 0, ∀ i k, HasDerivAt (fun s ↦ G s i k) (G' t i k) t) → (∀ i k, HasDerivAt (fun t ↦ G' t i k) (G₂ i k) 0) → (∀ᶠ t in 𝓝 0, DifferentiableAt ℝ (fun s ↦ (G s).det) t) ∧ HasDerivAt (deriv (fun t ↦ (G t).det)) (G₂.trace + (G' 0).trace ^ 2 - (G' 0 * G' 0).trace) 0",
+  "lean_name": "variation_matrix_det_derivatives_at_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-gram-det-derivatives-a1-det-derivatives-at-one-a1-a1"
+}

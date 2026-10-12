@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "python3 -I scope.py (gmt-compare.py contract_scope on GMT/Ch02/Contract.lean -> namespace GMT.Ch02, opens MeasureTheory Metric Set Filter Topology, ENNReal NNReal, Poincare.SimonGMT)",
+        "rg -n \"theorem det_apply|theorem det_apply'\" mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "rg -n \"finset_prod|finsetProd\" mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean",
+        "rg -n \"theorem HasDerivAt.fun_sum|theorem HasDerivAt.sum|theorem HasDerivAt.const_mul|theorem HasDerivAt.mul |theorem HasDerivAt.congr_of_eventuallyEq|theorem Filter.EventuallyEq.deriv_eq\" mathlib/Mathlib/Analysis/Calculus",
+        "rg -n \"theorem sign_swap\" mathlib/Mathlib/GroupTheory/Perm/Sign.lean; rg -n \"theorem swap_apply_of_ne_of_ne|theorem swap_apply_left|theorem swap_apply_right\" mathlib/Mathlib/Logic/Equiv/*.lean; rg -n \"theorem one_apply_ne|theorem one_apply_eq\" mathlib/Mathlib/Data/Matrix/*.lean; rg -n \"theorem prod_pair|theorem prod_subset\" mathlib/Mathlib/Algebra/BigOperators/Group/Finset/*.lean; rg -n \"def trace\" mathlib/Mathlib/LinearAlgebra/Matrix/Trace.lean",
+        "rg -n \"theorem .*(hasDerivAt|HasDerivAt|hasFDerivAt|HasFDerivAt|deriv|fderiv).*[dD]et\\b|theorem .*[dD]et.*(hasDerivAt|HasDerivAt|HasFDerivAt|hasFDerivAt|_deriv|_fderiv)\" mathlib/Mathlib",
+        "rg -n \"det_one_add_X_smul|coeff_det_one_add_X_smul_one|det_one_add_smul\" mathlib/Mathlib",
+        "rg -n \"coeff_det_one_add_X_smul_two|det_one_add_smul.*sq|trace_sq|trace_pow_two\" mathlib/Mathlib",
+        "rg -n \"det_one_add|HasDerivAt.*\\.det|deriv.*\\.det\\b|Equiv.Perm.sign\" lake-packages-25730c7c/simongmt/Poincare",
+        "rg -n \"Matrix.det|\\.det\\b|trace\" project/GMT/Ch02/Contract.lean",
+        "python3 -I numcheck.py (exact rational brute-force check of the three child formulas, |ι| ≤ 4)",
+        "lean -o cand/olean/GMT/Ch02/Submission.olean cand/src/Submission.lean; lean probe/Stmts.lean; lean probe/Children.lean; lean probe/Assembly.lean; lean probe/Inst.lean (pp.explicit instance check)",
+        "python3 -I gen_checks.py (gmt-compare.py child_modules contract mode + lean_contract.validate_lean_statement); lean checks/NodeChallenge_0{0..3}_*.lean against pristine olean; lean checks/NodeSolution_0{0..3}_*.lean + #print axioms against candidate olean",
+        "python3 -I scan of dag.json lean_name fields and nodes/*/decomposition-v*.json subproblem lean_names; rg of the three proposed names in simongmt/Poincare, GMT sources, dag.json and nodes/"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/GMT/Ch02/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/GroupTheory/Perm/Sign.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Logic/Equiv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Data/Matrix/Diagonal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/FirstVariation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-gram-det-derivatives-a1-det-derivatives-at-one-a1/parent-child-handoff.json",
+        "/tmp/detsplit-mTxVqt/probe/Stmts.lean",
+        "/tmp/detsplit-mTxVqt/probe/Children.lean",
+        "/tmp/detsplit-mTxVqt/probe/Assembly.lean",
+        "/tmp/detsplit-mTxVqt/probe/Inst.lean",
+        "/tmp/detsplit-mTxVqt/cand/src/Submission.lean",
+        "/tmp/detsplit-mTxVqt/checks/NodeChallenge_00_variation_matrix_det_hasDerivAt_leibniz.lean",
+        "/tmp/detsplit-mTxVqt/checks/NodeChallenge_01_variation_matrix_det_leibniz_first_order_at_one.lean",
+        "/tmp/detsplit-mTxVqt/checks/NodeChallenge_02_variation_matrix_det_leibniz_second_order_at_one.lean",
+        "/tmp/detsplit-mTxVqt/checks/NodeChallenge_03_variation_matrix_det_derivatives_at_one.lean",
+        "/tmp/detsplit-mTxVqt/checks/NodeSolution_00_variation_matrix_det_hasDerivAt_leibniz.lean",
+        "/tmp/detsplit-mTxVqt/checks/NodeSolution_01_variation_matrix_det_leibniz_first_order_at_one.lean",
+        "/tmp/detsplit-mTxVqt/checks/NodeSolution_02_variation_matrix_det_leibniz_second_order_at_one.lean",
+        "/tmp/detsplit-mTxVqt/checks/NodeSolution_03_variation_matrix_det_derivatives_at_one.lean",
+        "/tmp/detsplit-mTxVqt/proposal.json",
+        "/tmp/detsplit-scripts/numcheck.py",
+        "/tmp/detsplit-scripts/gen_checks.py",
+        "/tmp/detsplit-scripts/scope.py"
+      ],
+      "conclusion": "The pinned snapshot (Mathlib 25730c7c, SimonGMT 2b36630) has no analytic derivative of Matrix.det along a matrix-valued function and no second-order coefficient of det(1 + A), so neither child can be taken from the library.\n\nNo-match and partial-match results:\n- The det-with-derivative rg over Mathlib matched only measure-theoretic lemmas in MeasureTheory/Function/Jacobian.lean.\n- Charpoly/Coeff.lean has only first-order polynomial lemmas: coeff_det_one_add_X_smul_one, det_one_add_X_smul and det_one_add_smul.\n- The second-order coefficient search had no match.\n- SimonGMT has only the first-order polynomial lemma derivative_eval_zero_det_one_add_X_smul_add_sq_smul, in Chapter08/FirstVariation.lean.\n- The snapshot's Ch02 contract mentions det only in the areaJacobian and coarea definitions.\n\nAll ingredients the children need exist in the snapshot:\n- Child A: Matrix.det_apply' (Determinant/Basic.lean:70), HasDerivAt.fun_finsetProd (Deriv/Mul.lean:398), HasDerivAt.const_mul (Mul.lean:344) and HasDerivAt.fun_sum (Deriv/Add.lean:218).\n- Children B and C: Matrix.one_apply_eq/one_apply_ne (Data/Matrix/Diagonal.lean:238/242), Equiv.swap_apply_left/right/of_ne_of_ne (Logic/Equiv/Basic.lean:652–659), Equiv.Perm.sign_swap (GroupTheory/Perm/Sign.lean:388), Finset.prod_pair/prod_subset (BigOperators/Group/Finset/Basic.lean:86/203) and Matrix.trace (Trace.lean:43).\n- Parent assembly: HasDerivAt.mul (Mul.lean:255) and HasDerivAt.congr_of_eventuallyEq (Deriv/Basic.lean:606).\n\nScratch Lean results:\n- All three children were fully proved.\n- The frozen parent type was proved from them.\n- Every NodeChallenge module elaborates, and every NodeSolution module passes with only propext, Classical.choice and Quot.sound.\n- An independent reviewer re-ran all of this, added a nanoda replay, and accepted.\n\nThe three proposed names do not occur in dag.json, any decomposition file, SimonGMT or the GMT sources."
+    }
+  ],
+  "proof": "Source: Steps 1–2 of the supplied proof of variation_matrix_det_derivatives_at_one (the Leibniz-expansion argument behind the derivative form of Simon's expansion of det(I + A), Simon Ch. 2, p. 62).\n\nNotation. Perm(ι) is the finite group of permutations of ι, and sgn(σ) ∈ {1, −1} is the sign of σ, viewed as the real number ((sgn σ : ℤ) : ℝ). For m ∈ ι, Π_{j≠m} denotes the product over the finite set ι∖{m} (Finset.univ.erase m). \"f has derivative c at x\" means HasDerivAt f c x.\n\n1. Leibniz expansion. For every real ι×ι matrix M, det M = Σ_{σ∈Perm(ι)} sgn(σ) · Π_{i∈ι} M_{σ(i) i} (Matrix.det_apply', where ε σ denotes ((sgn σ : ℤ) : ℝ)). Apply this to M = G(t) for every real t. Then the functions t ↦ det G(t) and F(t) := Σ_σ sgn(σ) · Π_{i∈ι} G(t)_{σ(i) i} are equal (function extensionality). So it suffices to prove that F has derivative L := Σ_σ sgn(σ) · Σ_{m∈ι} (Π_{j≠m} G(x)_{σ(j) j}) · H_{σ(m) m} at x.\n\n2. One permutation. Fix σ ∈ Perm(ι). For i ∈ ι put f_i(t) := G(t)_{σ(i) i}. The hypothesis for the entry (σ(i), i) says that f_i has derivative H_{σ(i) i} at x. The product rule for a finite product of real functions over the finite set ι (HasDerivAt.fun_finsetProd with u = Finset.univ) now applies. It shows that t ↦ Π_{i∈ι} f_i(t) has derivative Σ_{m∈ι} (Π_{j∈ι∖{m}} f_j(x)) · H_{σ(m) m} at x. In ℝ the scalar action • of that lemma is multiplication (smul_eq_mul). Since f_j(x) = G(x)_{σ(j) j}, this derivative is Σ_m (Π_{j≠m} G(x)_{σ(j) j}) · H_{σ(m) m}.\n\n3. Constant factor. Multiply by the constant real number sgn(σ) (HasDerivAt.const_mul). Then t ↦ sgn(σ) · Π_{i∈ι} G(t)_{σ(i) i} has derivative sgn(σ) · Σ_m (Π_{j≠m} G(x)_{σ(j) j}) · H_{σ(m) m} at x.\n\n4. Sum over permutations. Perm(ι) is finite. Apply the sum rule for a finite sum of functions (HasDerivAt.fun_sum over Finset.univ of Perm(ι)) to the functions of step 3. So F has derivative Σ_σ sgn(σ) · Σ_m (Π_{j≠m} G(x)_{σ(j) j}) · H_{σ(m) m} = L at x.\n\n5. By steps 1 and 4, t ↦ det G(t) has derivative L at x, which is the claim. The argument is uniform in ι, including ι = ∅. Then Perm(ι) = {id}, the product over ι is empty (equal to 1) and the inner sum over m is empty (equal to 0).",
+  "key_steps": [
+    "Leibniz expansion det M = Σ_σ sgn σ Π_i M_{σ(i)i} (Matrix.det_apply'), so t ↦ det G(t) equals F(t) := Σ_σ sgn σ Π_i G(t)_{σ(i)i}.",
+    "For fixed σ, the finite product rule (HasDerivAt.fun_finsetProd over Finset.univ) shows that t ↦ Π_i G(t)_{σ(i)i} has derivative Σ_m (Π_{j≠m} G(x)_{σ(j)j}) H_{σ(m)m} at x.",
+    "The constant-multiple and finite-sum rules over Perm(ι) give F′(x) = Σ_σ sgn σ Σ_m (Π_{j≠m} G(x)_{σ(j)j}) H_{σ(m)m}. Since F = det ∘ G, this is the claim."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
