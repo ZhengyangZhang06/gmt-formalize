@@ -1998,6 +1998,96 @@ theorem Submission.chartTD_comp_differentiable_lineDeriv_ae : ∀ (n N p : ℕ) 
   exact ⟨hdiff, Submission.chartTD_hasLineDerivAt_of_comp_differentiableAt n N p U f ψ u hU hf
     huU ((hψ.contDiffAt (hV.mem_nhds huV)).differentiableAt one_ne_zero) hdiff⟩
 
+/-- **Simon Ch. 3, Remark 1.5(2) and proof of Theorem 1.6 "⇒", in the weighted form of
+Remark 1.8(1); Ch. 2, (4.8)–(4.10)** (`chapter-03.txt` lines 87–90, 113–143, 284–306;
+`chapter-02.txt` lines 925–957), for one `C¹` chart `ψ` on an open `V ⊆ ℝⁿ` with injective `Dψ`.
+For `Lⁿ`-a.e. `u ∈ V` with `ψ(u) ∈ M`: (A) `range Dψ(u)` is the approximate tangent space of `M`
+at `ψ(u)` with respect to `θ` (Def. 1.7); (B) `f ∘ ψ` is differentiable at `u` (Rademacher);
+(C) `D(f ∘ ψ)(u) w = d/dt f(ψ(u) + t Dψ(u) w)|_{t=0}` (Ch. 2 (4.10)).
+For (A), `V` is covered by countably many balls `B` on which `ψ` is bi-Lipschitz. With
+`Γ = ψ(B)`: by the upper density theorem and Lebesgue's differentiation theorem, `Hⁿ`-a.e.
+`x ∈ M ∩ Γ` satisfies the density conditions (P1)–(P3) of the proof of 1.6; the blow-ups of `Γ` at
+`ψ(u)` converge to `range Dψ(u)` (Remark 1.5(2)); so (A) holds off the preimage of an `Hⁿ`-null
+set, which is `Lⁿ`-null in `B` because `ψ⁻¹` is Lipschitz on `Γ`. -/
+theorem Submission.chart_approx_tangent_and_differential : ∀ (n ℓ p : ℕ) (M U : Set (Rn (n + ℓ)))
+    (θ : Rn (n + ℓ) → ℝ) (f : Rn (n + ℓ) → Rn p) (V : Set (Rn n)) (ψ : Rn n → Rn (n + ℓ)),
+    NullMeasurableSet M μHE[n] → IsPositiveLocallyIntegrableWeight n M θ → IsOpen U → M ⊆ U →
+    LocallyLipschitzOn U f → IsOpen V → ContDiffOn ℝ 1 ψ V →
+    (∀ u ∈ V, Function.Injective (fderiv ℝ ψ u)) →
+    ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M →
+      HasWeightedApproximateTangentSpaceAt n M θ (ψ u)
+          (LinearMap.range (fderiv ℝ ψ u).toLinearMap) ∧
+        DifferentiableAt ℝ (f ∘ ψ) u ∧
+        ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w) := by
+  intro n ℓ p M U θ f V ψ hM hθ hU hMU hf hV hψ hinj
+  -- (B), (C): Rademacher's theorem in the chart and Ch. 2 (4.10), at points with `ψ u ∈ U`.
+  have hBC := Submission.chartTD_comp_differentiable_lineDeriv_ae n (n + ℓ) p U f V ψ hU hf hV hψ
+  -- (A) on a ball `B ⊆ V` around each `u₀ ∈ V` on which `ψ` is bi-Lipschitz.
+  have hloc : ∀ u₀ ∈ V, ∃ r : ℝ, 0 < r ∧ Metric.ball u₀ r ⊆ V ∧
+      ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ Metric.ball u₀ r → ψ u ∈ M →
+        HasWeightedApproximateTangentSpaceAt n M θ (ψ u)
+          (LinearMap.range (fderiv ℝ ψ u).toLinearMap) := by
+    intro u₀ hu₀
+    obtain ⟨r, hr, hrV, K, c, hc, hLip, hlow⟩ :=
+      Submission.chartTD_immersion_local_biLipschitz n (n + ℓ) V ψ hV hψ hinj u₀ hu₀
+    refine ⟨r, hr, hrV, ?_⟩
+    set B := Metric.ball u₀ r
+    -- `Γ = ψ(B)` is `Hⁿ`-measurable and bounded, `Hⁿ(Γ) < ∞`, `Hⁿ(Γ ∩ B̄_ρ(x)) ≤ C ρⁿ`, and
+    -- preimages in `B` of `Hⁿ`-null sets are `Lⁿ`-null.
+    obtain ⟨hΓm, hΓb, hΓfin, ⟨C, hC⟩, hnull⟩ :=
+      Submission.chartTD_biLipschitz_image_measure_facts n (n + ℓ) B ψ K c Metric.isOpen_ball
+        Metric.isBounded_ball hLip hc hlow
+    set Γ := ψ '' B
+    -- (P1): `θ Hⁿ ⌞ (M \ Γ)` has `n`-density `0` at `Hⁿ`-a.e. point of `M ∩ Γ`.
+    have hP1 := Submission.chartTD_upper_density_zero_ae n (n + ℓ) (M \ Γ) θ (hM.diff hΓm)
+      fun K hK ↦ (hθ.2.2 K hK).mono_set (inter_subset_inter_left K sdiff_subset)
+    -- (P2): `Hⁿ ⌞ (Γ \ M)` has `n`-density `0` at `Hⁿ`-a.e. point of `M ∩ Γ`.
+    have hP2 := Submission.chartTD_upper_density_zero_ae n (n + ℓ) (Γ \ M) (fun _ ↦ (1 : ℝ))
+      (hΓm.diff hM) fun K _ ↦ integrableOn_const
+        ((measure_mono (inter_subset_left.trans sdiff_subset)).trans_lt hΓfin).ne
+    -- (P3): `Hⁿ`-a.e. point of `M ∩ Γ` is a Lebesgue point of `θ`, with the `ρⁿ` normalization.
+    have hP3 := Submission.chartTD_lebesgue_point_ae n (n + ℓ) (M ∩ Γ) θ C (hM.inter hΓm)
+      ((measure_mono inter_subset_right).trans_lt hΓfin)
+      ((hθ.2.2 _ hΓb.isCompact_closure).mono_set (inter_subset_inter_right M subset_closure))
+      fun x hx ρ hρ ↦ (measure_mono (inter_subset_inter_left _ inter_subset_right)).trans
+        (hC x hx.2 ρ hρ)
+    have hgood : ∀ᵐ x ∂(μHE[n] : Measure (Rn (n + ℓ))), x ∈ M → x ∈ Γ →
+        Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in (M \ Γ) ∩ Metric.ball x ρ, |θ z| ∂μHE[n])
+          (𝓝[>] 0) (𝓝 0) ∧
+        Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * (μHE[n] ((Γ \ M) ∩ Metric.ball x ρ)).toReal)
+          (𝓝[>] 0) (𝓝 0) ∧
+        Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in M ∩ Γ ∩ Metric.ball x ρ, |θ z - θ x| ∂μHE[n])
+          (𝓝[>] 0) (𝓝 0) := by
+      filter_upwards [hP1, hP2, hP3] with x h1 h2 h3 hxM hxΓ
+      refine ⟨h1 fun h ↦ h.2 hxΓ, ?_, h3 ⟨hxM, hxΓ⟩⟩
+      simpa [setIntegral_const, Measure.real] using h2 fun h ↦ h.2 hxM
+    -- Off the `Lⁿ`-null preimage of the set where (P1)–(P3) fail, the blow-ups of `Γ` at `ψ u`
+    -- converge to `range Dψ(u)` (Remark 1.5(2)), and (P1)–(P3) transfer this to `M` and `θ`.
+    refine ae_iff.2 (measure_mono_null (fun u hu ↦ ?_) (hnull _ (ae_iff.1 hgood)))
+    simp only [mem_ofPred_eq, not_imp] at hu
+    obtain ⟨huB, huM, hnot⟩ := hu
+    refine ⟨huB, ?_⟩
+    simp only [mem_preimage, mem_ofPred_eq, not_imp]
+    refine ⟨huM, mem_image_of_mem ψ huB, ?_⟩
+    rintro ⟨h1, h2, h3⟩
+    exact hnot (Submission.chartTD_weighted_tangent_of_density n (n + ℓ) M Γ θ (ψ u) _ hM hΓm
+      hΓfin hθ (Submission.chartTD_biLipschitz_chart_approx_tangent n (n + ℓ) B ψ K c
+        Metric.isOpen_ball (hψ.mono hrV) hLip hc hlow u huB) h1 h2 h3)
+  -- Countably many of these balls cover `V` (Lindelöf).
+  choose! r hr hrV hae using hloc
+  obtain ⟨T, hTV, hTc, hTcover⟩ := TopologicalSpace.isOpen_biUnion_countable V
+    (fun u ↦ Metric.ball u (r u)) fun u _ ↦ Metric.isOpen_ball
+  have hA : ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ M →
+      HasWeightedApproximateTangentSpaceAt n M θ (ψ u)
+        (LinearMap.range (fderiv ℝ ψ u).toLinearMap) := by
+    filter_upwards [(ae_ball_iff hTc).2 fun i hi ↦ hae i (hTV hi)] with u hu huV huM
+    have hmem : u ∈ ⋃ i ∈ T, Metric.ball i (r i) :=
+      hTcover ▸ mem_biUnion huV (Metric.mem_ball_self (hr u huV))
+    obtain ⟨i, hi, hui⟩ := mem_iUnion₂.1 hmem
+    exact hu i hi hui huM
+  filter_upwards [hA, hBC] with u hAu hBCu huV huM
+  exact ⟨hAu huV huM, hBCu huV (hMU huM)⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
