@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1b865b7403a0196fbb2e5bb41d6a00e1f37b7ed7c2fc3925e5c9966bdaa8a5d1",
+  "git_delta": {
+    "base_commit": "ddbd3c14f206c1b5949a12993e7b5c0b67a62aba",
+    "candidate_commit": "15740b60a5fc207276b3cf55995bed6a4dced37f",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_id_measurable_densities",
+    "diff_sha256": "d846badf4cf9a9efdfa5ddead722ae7d8b47239598488773fafa2ad4c0537cea",
+    "source_sha256": "38c1a121e684ec57442a3acfdd25c735ece99ea93cdd7915aa7c01bd6e63b909",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_id_measurable_densities",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) [SFinite μ], Measurable (fun x ↦ limsup (densityRatio n μ x) (𝓝[>] 0)) ∧ Measurable (fun x ↦ liminf (densityRatio n μ x) (𝓝[>] 0)) ∧ ∀ c : ℝ≥0∞, MeasurableSet {x | HasDensity n μ x c}",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
