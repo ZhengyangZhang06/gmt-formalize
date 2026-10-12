@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "382d46de16141313ddc29102ad6f839231f09d83ffddcd991d36a44dce71cc49",
+  "git_delta": {
+    "base_commit": "047ad423f3b8dd30c98d39fc4971580114c26533",
+    "candidate_commit": "23a09ec3ed6b4a5d6f9d89d422b58f3860528881",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_ie_fderiv_apply_harmonic",
+    "diff_sha256": "e5f71ea17efc4adc9f7a81ca4efd7f1b1eeb5a13f2c60dd9036c578c3024f99c",
+    "source_sha256": "0762aad7ece92148bc72f600a40d0ed4cd726f1b25bbe97f764e224a3ed06188",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_ie_fderiv_apply_harmonic",
+      "statement": "∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ) (e : Euclid n), IsOpen U → (∀ m : ℕ, ContDiffOn ℝ m h U) → (∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → (∀ m : ℕ, ContDiffOn ℝ m (fun y => fderiv ℝ h y e) U) ∧ ∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 (fun z => fderiv ℝ h z e) y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
