@@ -451,6 +451,119 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Integrability of the action integrand** (Simon Ch. 6, 3.1 (‡)).  For an integer
+multiplicity triple `R = (C, θ, ξ)` in `U` and `ω ∈ 𝒟ⁿ(U)`, `x ↦ θ(x) ⟨ω(x), ξ(x)⟩` is
+`Hⁿ⌞C`-integrable: `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal `Hⁿ`-a.e. on `C`, so
+`|⟨α, ξ(x)⟩| ≤ ‖α‖`, and the integrand is dominated by `B θ 1_{spt ω}` (`B` a bound for `‖ω‖`),
+which is integrable because `spt ω` is a compact subset of `U` and `∫_{C ∩ K} θ dHⁿ < ∞` for
+such `K`. -/
+theorem Submission.regcomp_rim_action_integrable : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (ω : TestFormOn U n), Integrable (fun x => (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)) (μHE[n].restrict R.carrier) := by
+  intro P n U R ω
+  obtain ⟨⟨hsmooth, hcpt⟩, hU⟩ := ω.2
+  set f : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n)
+  set K : Set (Euclid P) := tsupport f
+  /- Step 1: `ω` is continuous, bounded by some `B`, and vanishes off the compact set
+  `K = spt ω ⊆ U`. -/
+  have hcont : Continuous f := hsmooth.continuous
+  obtain ⟨B, hB⟩ := hcont.bounded_above_of_compact_support hcpt
+  have hKm : MeasurableSet K := (isClosed_tsupport f).measurableSet
+  /- Step 2: `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal gives `|⟨α, ξ(x)⟩| = |α(τ)| ≤ ‖α‖`
+  for `Hⁿ`-a.e. `x ∈ C`. -/
+  have hξ : ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n,
+      ‖R.orient x α‖ ≤ ‖α‖ := by
+    filter_upwards [R.orients] with x hx α
+    obtain ⟨Q, -, τ, hτ, -, hor⟩ := hx
+    have hατ : ‖α τ‖ ≤ ‖α‖ := by
+      simpa [hτ.norm_eq_one] using α.le_opNorm τ
+    rcases hor with h | h
+    · rw [h]
+      exact hατ
+    · rw [h, norm_neg]
+      exact hατ
+  /- Step 3: the integrand is a.e. strongly measurable (evaluation is continuous). -/
+  have hθm : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+  have happly : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
+    continuous_fst.clm_apply continuous_snd
+  have hev : AEStronglyMeasurable (fun x => R.orient x (f x)) (μHE[n].restrict R.carrier) :=
+    happly.comp_aestronglyMeasurable
+      (R.aestronglyMeasurable_orient.prodMk hcont.aestronglyMeasurable)
+  have hF : AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (f x))
+      (μHE[n].restrict R.carrier) := hθm.aestronglyMeasurable.mul hev
+  /- Step 4: `B θ 1_K` is integrable, since `∫_{C ∩ K} θ dHⁿ < ∞`. -/
+  have hθK : IntegrableOn (fun x => (R.mult x : ℝ)) K (μHE[n].restrict R.carrier) := by
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm, Measure.restrict_restrict hKm, inter_comm]
+    simpa only [Real.enorm_natCast] using (R.locallyIntegrable_mult K hcpt hU).lt_top
+  have hg : Integrable (fun x => B * K.indicator (fun x => (R.mult x : ℝ)) x)
+      (μHE[n].restrict R.carrier) := (hθK.integrable_indicator hKm).const_mul B
+  /- Step 5: `|θ ⟨ω, ξ⟩| ≤ B θ 1_K` a.e. on `C`. -/
+  have hbound : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      ‖(R.mult x : ℝ) * R.orient x (f x)‖ ≤ B * K.indicator (fun x => (R.mult x : ℝ)) x := by
+    filter_upwards [hξ] with x hx
+    by_cases hxK : x ∈ K
+    · rw [indicator_of_mem hxK, norm_mul, Real.norm_natCast, mul_comm B]
+      exact mul_le_mul_of_nonneg_left ((hx (f x)).trans (hB x)) (Nat.cast_nonneg _)
+    · rw [indicator_of_notMem hxK, image_eq_zero_of_notMem_tsupport hxK, map_zero]
+      simp
+  /- Step 6: dominated by an integrable function. -/
+  exact hg.mono' hF hbound
+
+/-- **Splitting the multiplicity of an integer multiplicity triple** (Simon 7.5.11, proof).  Let
+`R = (C, θ, ξ)`, `R₁ = (C₁, θ₁, ξ)` and `R₂ = (C₂, θ₂, ξ)` be triples in `U` with `C₁, C₂ ⊆ C`
+and `θ = 1_{C₁} θ₁ + 1_{C₂} θ₂` on `C`.  Then the weights add, `θ Hⁿ⌞C = θ₁ Hⁿ⌞C₁ + θ₂ Hⁿ⌞C₂`,
+and so do the actions, `τ(C, θ, ξ)(ω) = τ(C₁, θ₁, ξ)(ω) + τ(C₂, θ₂, ξ)(ω)` for `ω ∈ 𝒟ⁿ(U)`: the
+densities agree `Hⁿ⌞C`-a.e., and the integrands of `R₁`, `R₂` are integrable
+(`Submission.regcomp_rim_action_integrable`), so the integral over `C` splits. -/
+theorem Submission.regcomp_rim_imrep_split : ∀ (P n : ℕ) (U : Set (Euclid P)) (R R₁ R₂ : IMRep U n), R₁.carrier ⊆ R.carrier → R₂.carrier ⊆ R.carrier → R₁.orient = R.orient → R₂.orient = R.orient → (∀ x ∈ R.carrier, R.mult x = R₁.carrier.indicator R₁.mult x + R₂.carrier.indicator R₂.mult x) → R.measure = R₁.measure + R₂.measure ∧ ∀ ω : TestFormOn U n, R.action (ω : DifferentialForm (Euclid P) n) = R₁.action (ω : DifferentialForm (Euclid P) n) + R₂.action (ω : DifferentialForm (Euclid P) n) := by
+  intro P n U R R₁ R₂ h₁ h₂ ho₁ ho₂ hθ
+  have hC₁ : MeasurableSet R₁.carrier := R₁.measurableSet_carrier
+  have hC₂ : MeasurableSet R₂.carrier := R₂.measurableSet_carrier
+  refine ⟨?_, fun ω => ?_⟩
+  · /- Measures: `θ = 1_{C₁} θ₁ + 1_{C₂} θ₂` `Hⁿ⌞C`-a.e. as `ℝ≥0∞`-valued densities, so
+    `θ Hⁿ⌞C = θ₁ Hⁿ⌞(C₁ ∩ C) + θ₂ Hⁿ⌞(C₂ ∩ C)`, and `Cᵢ ∩ C = Cᵢ`. -/
+    have hae : (fun x => (R.mult x : ℝ≥0∞)) =ᵐ[μHE[n].restrict R.carrier]
+        R₁.carrier.indicator (fun x => (R₁.mult x : ℝ≥0∞)) +
+          R₂.carrier.indicator (fun x => (R₂.mult x : ℝ≥0∞)) := by
+      filter_upwards [ae_restrict_mem R.measurableSet_carrier] with x hx
+      rw [hθ x hx, Nat.cast_add, Pi.add_apply]
+      congr 1
+      · by_cases h : x ∈ R₁.carrier <;> simp [h]
+      · by_cases h : x ∈ R₂.carrier <;> simp [h]
+    have hm₁ : Measurable (R₁.carrier.indicator fun x => (R₁.mult x : ℝ≥0∞)) :=
+      (measurable_from_nat.comp R₁.measurable_mult).indicator hC₁
+    unfold IMRep.measure
+    rw [withDensity_congr_ae hae, withDensity_add_left hm₁, withDensity_indicator hC₁,
+      withDensity_indicator hC₂, Measure.restrict_restrict hC₁, Measure.restrict_restrict hC₂,
+      inter_eq_left.mpr h₁, inter_eq_left.mpr h₂]
+  · /- Actions: with `Fᵢ = θᵢ ⟨ω, ξ⟩`, `θ ⟨ω, ξ⟩ = 1_{C₁} F₁ + 1_{C₂} F₂` on `C`, and each
+    `1_{Cᵢ} Fᵢ` is `Hⁿ⌞C`-integrable, so `∫_C θ ⟨ω, ξ⟩ = ∫_{C ∩ C₁} F₁ + ∫_{C ∩ C₂} F₂`. -/
+    set f : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n)
+    set F₁ : Euclid P → ℝ := fun x => (R₁.mult x : ℝ) * R₁.orient x (f x)
+    set F₂ : Euclid P → ℝ := fun x => (R₂.mult x : ℝ) * R₂.orient x (f x)
+    have hF₁ : Integrable (R₁.carrier.indicator F₁) (μHE[n].restrict R.carrier) :=
+      (IntegrableOn.integrable_indicator (Submission.regcomp_rim_action_integrable P n U R₁ ω)
+        hC₁).restrict
+    have hF₂ : Integrable (R₂.carrier.indicator F₂) (μHE[n].restrict R.carrier) :=
+      (IntegrableOn.integrable_indicator (Submission.regcomp_rim_action_integrable P n U R₂ ω)
+        hC₂).restrict
+    have hpt : EqOn (fun x => (R.mult x : ℝ) * R.orient x (f x))
+        (fun x => R₁.carrier.indicator F₁ x + R₂.carrier.indicator F₂ x) R.carrier := by
+      intro x hx
+      simp only [F₁, F₂, hθ x hx, Nat.cast_add, ho₁, ho₂]
+      by_cases hx₁ : x ∈ R₁.carrier <;> by_cases hx₂ : x ∈ R₂.carrier <;>
+        simp [hx₁, hx₂, add_mul]
+    calc R.action f
+        = ∫ x in R.carrier, (R₁.carrier.indicator F₁ x + R₂.carrier.indicator F₂ x) ∂μHE[n] :=
+          setIntegral_congr_fun R.measurableSet_carrier hpt
+      _ = ∫ x in R.carrier, R₁.carrier.indicator F₁ x ∂μHE[n] +
+            ∫ x in R.carrier, R₂.carrier.indicator F₂ x ∂μHE[n] := integral_add hF₁ hF₂
+      _ = ∫ x in R.carrier ∩ R₁.carrier, F₁ x ∂μHE[n] +
+            ∫ x in R.carrier ∩ R₂.carrier, F₂ x ∂μHE[n] := by
+          rw [setIntegral_indicator hC₁, setIntegral_indicator hC₂]
+      _ = R₁.action f + R₂.action f := by
+          rw [inter_eq_right.mpr h₁, inter_eq_right.mpr h₂]
+          rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
