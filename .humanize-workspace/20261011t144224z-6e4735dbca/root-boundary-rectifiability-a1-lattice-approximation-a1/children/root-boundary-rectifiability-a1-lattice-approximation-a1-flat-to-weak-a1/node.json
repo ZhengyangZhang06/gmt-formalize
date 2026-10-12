@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.flat_to_weak-a1",
+  "parent_id": "root.boundary_rectifiability-a1.lattice_approximation-a1",
+  "depth": 3,
+  "title": "Decompositions X − P_k = ∂R_k + S_k with vanishing masses imply weak convergence",
+  "statement": "Let P, m ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set and let X ∈ D_{m+1}(U). For k ∈ ℕ let P_k, S_k ∈ D_{m+1}(U) and R_k ∈ D_{m+2}(U) (GeometricCurrentOn) satisfy X(ω) − P_k(ω) = ∂R_k(ω) + S_k(ω) for every k and every ω ∈ D^{m+1}(U), where ∂R_k(ω) = R_k(dω). Suppose M(R_k) → 0 and M(S_k) → 0 in [0, ∞] as k → ∞, where M = mass = M_U. Then P_k ⇀ X, i.e. P_k(ω) → X(ω) for every ω ∈ D^{m+1}(U) (WeaklyConvergesOn P_k X).",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U (m + 1)) (Pk S : ℕ → GeometricCurrentOn U (m + 1)) (R : ℕ → GeometricCurrentOn U (m + 2)), (∀ (k : ℕ) (ω : TestFormOn U (m + 1)), X ω - Pk k ω = (R k).boundary ω + S k ω) → Tendsto (fun k => (R k).mass) atTop (𝓝 0) → Tendsto (fun k => (S k).mass) atTop (𝓝 0) → WeaklyConvergesOn Pk X",
+  "lean_name": "br_la_weaklyConvergesOn_of_flat_decomposition",
+  "depends_on": [
+    "root.boundary_rectifiability-a1.lattice_approximation-a1.mass_estimate-a1",
+    "root.boundary_rectifiability-a1.lattice_approximation-a1.testform_bounded-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.mass_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.testform_bounded-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1-flat-to-weak-a1-a1"
+}
