@@ -1,0 +1,17 @@
+{
+  "node_id": "root.deformation-a1.retraction-a1.globalize-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/2542",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "4c4af507c4056593ddb72c39d7e118b10a47dbc0",
+  "integrated_commit": "",
+  "proof_base_commit": "1c7e200dff092722755720170476c45d64949d57",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.deformation-a1.retraction-a1",
+  "requires": [
+    "root.deformation-a1.retraction-a1.dini_segment-a1"
+  ]
+}
