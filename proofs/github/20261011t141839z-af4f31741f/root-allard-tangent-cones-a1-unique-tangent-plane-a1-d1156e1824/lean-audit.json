@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "818cd15575b446ea989ac0e87f5de01c6ec28cb6e3a653d00cb89c7a577189b8",
+  "git_delta": {
+    "base_commit": "ef92e09a5ec86c5b38febfd3300c6974c7f57922",
+    "candidate_commit": "d76859859b28e63a146bb963d9ff07fd6a69e7b3",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_unique_tangent_plane",
+    "diff_sha256": "ac205f8f090295ba2a6d4f09a89b7d3d7634cd20c70681b9fcdd77a477f717d7",
+    "source_sha256": "c58a6ead143bc150663fc3ac661b97f2f4cdb4f2adee7fb9dd4981e7bcb10ab1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_unique_tangent_plane",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (θ₀ : ℝ) (ν : Measure (Grassmannian N n)), x ∈ U → 0 < θ₀ → (∀ t : ℕ → ℝ, (∀ j, 0 < t j) → Tendsto t atTop (𝓝 0) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ C : Varifold N n (univ : Set (Euclidean N)), VagueConverges (fun j ↦ rescaledMeasure V x (t (φ j))) C.measure) → (∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C → ∃ T : Grassmannian N n, C.measure = ENNReal.ofReal θ₀ • planeVarifoldMeasure T) → (∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂ν))) → ∃ T : Grassmannian N n, HasTangentPlane V x T θ₀",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
