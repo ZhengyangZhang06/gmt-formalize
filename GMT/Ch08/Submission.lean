@@ -410,6 +410,36 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Composing two affine bounds in `[0,∞]` (Simon Ch. 8, proof of 5.10 (8), recombination of the
+induction constants): if `X ≤ (1 + b δ²) Y + k δ²` and `Y ≤ (1 + c δ²) M + c δ²` with `b, c, k ≥ 0`,
+`δ² ≤ 1`, `b + c + b c ≤ c'` and `(1 + b) c + k ≤ c'`, then `X ≤ (1 + c' δ²) M + c' δ²`
+(`M = ∞` allowed). -/
+theorem Submission.intcpt_allard_ccb_affine_combine :
+    ∀ (b c c' k δ : ℝ) (X Y M : ℝ≥0∞), 0 ≤ b → 0 ≤ c → 0 ≤ k → δ ^ 2 ≤ 1 → b + c + b * c ≤ c' → (1 + b) * c + k ≤ c' → X ≤ ENNReal.ofReal (1 + b * δ ^ 2) * Y + ENNReal.ofReal (k * δ ^ 2) → Y ≤ ENNReal.ofReal (1 + c * δ ^ 2) * M + ENNReal.ofReal (c * δ ^ 2) → X ≤ ENNReal.ofReal (1 + c' * δ ^ 2) * M + ENNReal.ofReal (c' * δ ^ 2) := by
+  intro b c c' k δ X Y M hb hc hk hδ hbc hbck hX hY
+  -- Step 1: `0 ≤ δ² ≤ 1`, so `b c δ⁴ ≤ b c δ²`.
+  have hδ0 : 0 ≤ δ ^ 2 := sq_nonneg δ
+  have hδ4 : b * c * (δ ^ 2 * δ ^ 2) ≤ b * c * δ ^ 2 :=
+    mul_le_mul_of_nonneg_left (mul_le_of_le_one_left hδ0 hδ) (mul_nonneg hb hc)
+  have hp : 0 ≤ 1 + b * δ ^ 2 := by positivity
+  -- Step 2: `(1 + b δ²)(1 + c δ²) ≤ 1 + (b + c + b c) δ² ≤ 1 + c' δ²`.
+  have h1 : (1 + b * δ ^ 2) * (1 + c * δ ^ 2) ≤ 1 + c' * δ ^ 2 := by
+    nlinarith [mul_le_mul_of_nonneg_right hbc hδ0]
+  -- Step 3: `(1 + b δ²) c δ² + k δ² ≤ ((1 + b) c + k) δ² ≤ c' δ²`.
+  have h2 : (1 + b * δ ^ 2) * (c * δ ^ 2) + k * δ ^ 2 ≤ c' * δ ^ 2 := by
+    nlinarith [mul_le_mul_of_nonneg_right hbck hδ0]
+  -- Steps 4–5: substitute the bound on `Y`, distribute in `[0,∞]`, and compare coefficients.
+  calc X ≤ ENNReal.ofReal (1 + b * δ ^ 2) * Y + ENNReal.ofReal (k * δ ^ 2) := hX
+    _ ≤ ENNReal.ofReal (1 + b * δ ^ 2) *
+          (ENNReal.ofReal (1 + c * δ ^ 2) * M + ENNReal.ofReal (c * δ ^ 2)) +
+          ENNReal.ofReal (k * δ ^ 2) := by gcongr
+    _ = ENNReal.ofReal ((1 + b * δ ^ 2) * (1 + c * δ ^ 2)) * M +
+          ENNReal.ofReal ((1 + b * δ ^ 2) * (c * δ ^ 2) + k * δ ^ 2) := by
+      rw [ENNReal.ofReal_add (mul_nonneg hp (mul_nonneg hc hδ0)) (mul_nonneg hk hδ0),
+        ENNReal.ofReal_mul hp, ENNReal.ofReal_mul hp]
+      ring
+    _ ≤ ENNReal.ofReal (1 + c' * δ ^ 2) * M + ENNReal.ofReal (c' * δ ^ 2) := by gcongr
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
