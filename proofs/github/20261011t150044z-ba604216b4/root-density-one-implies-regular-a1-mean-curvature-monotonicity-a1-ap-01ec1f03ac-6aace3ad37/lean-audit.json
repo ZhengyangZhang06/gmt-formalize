@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ffb9187e039ec395f470f02a8711873a523d2b899472a286ca9384238ec9ea91",
+  "git_delta": {
+    "base_commit": "91f1514188f54e7dc7c4ef02e3206cf480922ccc",
+    "candidate_commit": "7ba268af921b5ea14ebcb924406ff480f79ad705",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dsmc_att_blowUpMap_image_null",
+    "diff_sha256": "dd38265efe8b829632bc1ec38badcdf0f2454dd3cfde1d6a891b66c3a4aee94a",
+    "source_sha256": "24c402f54b3ecfa7d31e2499947b28beed7b7ca78faa10c0a85d76f61c1837af",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dsmc_att_blowUpMap_image_null",
+      "statement": "∀ (P n : ℕ) (E : Set (Euclid P)) (x : Euclid P) (lam : ℝ), lam ≠ 0 → μHE[n] E = 0 → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x lam '' E) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
