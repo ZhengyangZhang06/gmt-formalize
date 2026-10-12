@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c77a8898d93b613f000ffcda606dda3d5c7f7d5463dc515a6ccb303e3ac95909",
+  "git_delta": {
+    "base_commit": "5625c681f6ede4a90a06cdbc377c4cce00f665ca",
+    "candidate_commit": "d9d0df143bb921ddcf7929b52c8eea576087f128",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "mcm_primitive_radial_fubini",
+    "diff_sha256": "37c84352497dfe830a5c0fed5e9a1676c59d2dd82f2a68ecca5ed0545eb66a39",
+    "source_sha256": "d9ae6b8aa6461d06f44c3240829bdae8f7038b318620b649638e887009dcb28b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mcm_primitive_radial_fubini",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (S : Set X) (r g : X → ℝ) (F F' : ℝ → ℝ) (σ ρ : ℝ), SFinite ν → MeasurableSet S → Measurable r → (∀ x ∈ S, r x ∈ Ioc σ ρ) → IntegrableOn g S ν → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun x ↦ g x * (F (r x) - F σ)) S ν ∧ IntegrableOn (fun t ↦ F' t * ∫ x in S ∩ {x | t < r x}, g x ∂ν) (Ioc σ ρ) ∧ ∫ t in Ioc σ ρ, F' t * ∫ x in S ∩ {x | t < r x}, g x ∂ν = ∫ x in S, g x * (F (r x) - F σ) ∂ν",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
