@@ -335,6 +335,37 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Translation change of variables for indicator differences** (Step 5(a) of the supplied
+proof of the BV translation estimate used for the compactness of sets of bounded perimeter in
+De Giorgi's theorem, Simon Ch. 3, Theorem 4.3). For `L^N`-measurable `F ⊆ ℝᴺ`, integrable `ψ`
+and `h ∈ ℝᴺ`, `∫ (χ_F(y + h) - χ_F(y)) ψ(y) dy = ∫_F (ψ(z - h) - ψ(z)) dz`: pointwise the
+integrand is `G(y + h) - H(y)` with `G = χ_F ψ(· - h)` and `H = χ_F ψ`, and Lebesgue measure is
+translation invariant. -/
+theorem Submission.indCompact_transEst_integral_indicator_shift_mul : ∀ (N : ℕ) (F : Set (Rn N)) (ψ : Rn N → ℝ) (h : Rn N), NullMeasurableSet F volume → Integrable ψ volume → ∫ y, (F.indicator (1 : Rn N → ℝ) (y + h) - F.indicator (1 : Rn N → ℝ) y) * ψ y = ∫ z in F, (ψ (z - h) - ψ z) := by
+  intro N F ψ h hF hψ
+  -- The translate `ψ_h = ψ (· - h)` is integrable.
+  have hψh : Integrable (fun z ↦ ψ (z - h)) volume := hψ.comp_sub_right h
+  -- `y ↦ G (y + h)` with `G = 1_F ψ_h`, and `H = 1_F ψ`, are integrable.
+  have hG : Integrable (fun y ↦ F.indicator (fun z ↦ ψ (z - h)) (y + h)) volume :=
+    (hψh.indicator₀ hF).comp_add_right h
+  have hH : Integrable (F.indicator ψ) volume := hψ.indicator₀ hF
+  -- Pointwise, `(1_F (y + h) - 1_F y) ψ y = G (y + h) - H y` (four cases).
+  have hpt : ∀ y, (F.indicator (1 : Rn N → ℝ) (y + h) - F.indicator (1 : Rn N → ℝ) y) * ψ y =
+      F.indicator (fun z ↦ ψ (z - h)) (y + h) - F.indicator ψ y := by
+    intro y
+    by_cases hy₁ : y + h ∈ F <;> by_cases hy₂ : y ∈ F <;> simp [hy₁, hy₂]
+  -- Linearity, translation invariance, indicator integrals, linearity on `F`.
+  calc ∫ y, (F.indicator (1 : Rn N → ℝ) (y + h) - F.indicator (1 : Rn N → ℝ) y) * ψ y
+      = ∫ y, (F.indicator (fun z ↦ ψ (z - h)) (y + h) - F.indicator ψ y) :=
+        integral_congr_ae (Eventually.of_forall hpt)
+    _ = (∫ y, F.indicator (fun z ↦ ψ (z - h)) (y + h)) - ∫ y, F.indicator ψ y :=
+        integral_sub hG hH
+    _ = (∫ z in F, ψ (z - h)) - ∫ z in F, ψ z := by
+        rw [integral_add_right_eq_self (F.indicator fun z ↦ ψ (z - h)) h,
+          integral_indicator₀ hF, integral_indicator₀ hF]
+    _ = ∫ z in F, (ψ (z - h) - ψ z) :=
+        (integral_sub hψh.integrableOn hψ.integrableOn).symm
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
