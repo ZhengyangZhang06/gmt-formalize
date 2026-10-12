@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1",
+  "depth": 3,
+  "title": "Slices of a rectifiable triple are rectifiable triples for a.e. t (Simon Ch. 6, 4.1–4.4)",
+  "statement": "Let P, m ∈ ℕ, n := m+1, U ⊆ ℝ^P open, (M, θ, ξ) with IsRectifiableTriple U n M θ ξ, f : ℝ^P → ℝ L-Lipschitz and G : ℝ^P → ℝ^P Borel with |G| ≤ L everywhere and the tangential-gradient property (for Hⁿ-a.e. x ∈ M and every weighted approximate tangent plane Q of (M, θ) at x: G(x) ∈ Q and d/ds f(x+su)|₀ = ⟨G(x), u⟩ for u ∈ Q). For t ∈ ℝ let M_t := {x ∈ M : f(x) = t, G(x) ≠ 0} and let ξ_t(x) ∈ Λ_m be the interior product ξ(x)⌞ν(x), ν(x) := |G(x)|⁻¹G(x), i.e. ξ_t(x)(α) = ξ(x)(ν(x)♭∧α) for α ∈ Λ^m (in Lean: (ξ x).comp ((alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖G x‖⁻¹ • G x))))). Then for L¹-a.e. t ∈ ℝ, IsRectifiableTriple U m M_t θ ξ_t holds.",
+  "lean_statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → LipschitzWith L f → Measurable G → (∀ x, ‖G x‖ ≤ L) → (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) → ∀ᵐ t ∂(volume : Measure ℝ), IsRectifiableTriple U m {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} θ (fun x => (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖G x‖⁻¹ • G x)))))",
+  "lean_name": "slicing_im_slice_triple",
+  "depends_on": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-a1"
+}

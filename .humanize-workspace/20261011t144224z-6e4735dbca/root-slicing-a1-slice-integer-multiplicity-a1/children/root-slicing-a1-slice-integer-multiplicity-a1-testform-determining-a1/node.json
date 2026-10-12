@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.testform_determining-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1",
+  "depth": 3,
+  "title": "A countable family of test forms determines currents",
+  "statement": "For all P, k ∈ ℕ and every open U ⊆ ℝ^P there is a countable set E ⊆ D^k(U) (= TestFormOn U k) such that any two currents S, R ∈ D_k(U) (GeometricCurrentOn U k) with S(e) = R(e) for all e ∈ E are equal.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ E : Set (TestFormOn U k), E.Countable ∧ ∀ S R : GeometricCurrentOn U k, (∀ e ∈ E, S e = R e) → S = R",
+  "lean_name": "slicing_im_testform_determining",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-testform-determining-a1-a1"
+}
