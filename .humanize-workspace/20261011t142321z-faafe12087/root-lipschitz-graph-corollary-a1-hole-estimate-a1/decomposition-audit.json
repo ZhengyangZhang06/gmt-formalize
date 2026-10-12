@@ -1,0 +1,83 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "sed -n '1,230p' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "rg -n 'lgc_hsNormSq_bounds|lgc_rotated_graph_slope|lgc_support_closest_point|lgc_hole_annulus_lower|lgc_hole_split_upper' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "HasOrthogonalProjection.ofCompleteSpace|dist_starProjection_eq_infDist|starProjection_norm_le|structure HasOrthogonalProjection|class HasOrthogonalProjection",
+        "theorem infDist_le_dist_of_mem|theorem infDist_le_infDist_of_subset|theorem _root_.IsClosed.exists_infDist_eq_dist",
+        "integrableOn_of_bounded",
+        "sum_mul_sq_le_sq_mul_sq",
+        "comp_aestronglyMeasurable₂",
+        "^theorem integral_indicator|^theorem setIntegral_const|^theorem setIntegral_mono_set",
+        "python3 /tmp/lgc-hole-independent-audit-a2bkkreu/check.py Types",
+        "python3 /tmp/lgc-hole-independent-audit-a2bkkreu/check.py Children",
+        "python3 /tmp/lgc-hole-independent-audit-a2bkkreu/check.py AssemblyOnly",
+        "python3 /tmp/lgc-hole-independent-audit-a2bkkreu/check.py Instances",
+        "python3 /tmp/lgc-hole-independent-audit-a2bkkreu/check.py Comparator",
+        "python3 /tmp/lgc-hole-independent-audit-a2bkkreu/check.py Assembly"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/BigOperators/Ring/Finset.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1/decomposition-v5.json",
+        "/tmp/lgc-hole-independent-audit-a2bkkreu/src/Audit/Types.lean",
+        "/tmp/lgc-hole-independent-audit-a2bkkreu/src/Audit/Children.lean",
+        "/tmp/lgc-hole-independent-audit-a2bkkreu/src/Audit/AssemblyOnly.lean",
+        "/tmp/lgc-hole-independent-audit-a2bkkreu/src/Audit/Instances.lean",
+        "/tmp/lgc-hole-independent-audit-a2bkkreu/src/Audit/Comparator.lean",
+        "/tmp/lgc-hole-independent-audit-a2bkkreu/src/Audit/Assembly.lean"
+      ],
+      "conclusion": "The five-way split is appropriate for the selected lgc_hole_estimate. The pinned definitions and inspected Mathlib sources support the supplied arguments; installed sources match the snapshot. No proposed declaration name occurs in the snapshot project. Name checks found no reservations in the final 224-node DAG, other proposals, or inspected wiki/worktree files. All names are bare identifiers. The sole internal dependency, hole_split_upper on hs_norm_bounds, is correctly directed; the authorized sibling dependencies do not lead back to the selected node. Fresh Lean checks passed: all six frozen propositions elaborate without child implementations; every supplied child proof compiles; exact-type comparators pass; and each child uses only propext, Classical.choice and Quot.sound. The supplied assembly also compiles with the exact child and sibling contracts as explicit hypotheses, proving the selected frozen conclusion without sorry axioms. Thus the children suffice, including radius bookkeeping and absorption. Instance checks confirm ordinary orthogonal projections and ContinuousLinearMap.hasOpNorm; no Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hs_norm_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches all four prose claims, including zero-dimensional cases. Finite-sum continuity, unit-basis operator bounds, coordinate expansion and Cauchy–Schwarz prove the exact inequalities. The supplied proof is complete, independent and non-circular."
+    },
+    {
+      "key": "rotated_graph_slope",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type include global Lipschitzness and ε ≥ 0. The coordinate identities establish a complete antilipschitz graph embedding and hence closedness. Comparing with the horizontal component in rotatedPlane gives the stated projection-distance bound. All projection instances are available in finite dimensions."
+    },
+    {
+      "key": "support_closest_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses suffice without openness of U or positivity of d. Properness produces a nearest ambient-support point; the radius hypothesis places it inside U, forcing equality with the distance to V.support. The open d-ball misses the ambient support, whose complement is null. Both conclusions follow without circularity."
+    },
+    {
+      "key": "hole_annulus_lower",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every analytic hypothesis is explicit and matches the prose. The proof establishes measurability and integrability, controls the annular denominator using s > 0, justifies the mass conversion using finiteness, and combines the ball inclusion with monotonicity. Absorbing c yields exactly the stated coefficient and exponent; no parent or sibling theorem is assumed implicitly."
+    },
+    {
+      "key": "hole_split_upper",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared hs_norm_bounds dependency supplies precisely the continuity and norm comparisons used. Projection contraction and the squared slope bound give the pointwise factor 18s²; squaring remains valid without ε ≥ 0. Bounded measurable tilt and the measurable complement indicator justify integration and the exact off-F mass term. No additional hypothesis or proof-planning step is needed."
+    }
+  ],
+  "required_changes": []
+}
