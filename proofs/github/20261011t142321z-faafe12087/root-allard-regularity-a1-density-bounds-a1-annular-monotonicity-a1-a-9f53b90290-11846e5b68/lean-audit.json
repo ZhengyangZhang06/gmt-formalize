@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "518cc20ec754648cf2f88789f19e4d0d3cb9b3cfffd541d4be2f281aca45ad27",
+  "git_delta": {
+    "base_commit": "f6922da56c06b2e34e43c813d708861c0ab990d2",
+    "candidate_commit": "8f2bec0b66af3561b307d661c3b68eb2c8d910aa",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_amt_kernel_lower_bound",
+    "diff_sha256": "29f8180cccee20c26d13dc33011878efa223fed1aae7805bb3b919645e6a5df9",
+    "source_sha256": "5afcbc771749fb96d6c23a0d5c8c97907bc6cf64f10dd9c46515e9f35e664420",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_amt_kernel_lower_bound",
+      "statement": "∀ (n : ℕ) (φ : ℝ → ℝ) (ε s r c : ℝ), 0 < ε → ContDiff ℝ 1 φ → Antitone φ → (∀ u : ℝ, u ≤ 1 → φ u = 1) → (∀ u : ℝ, 1 + ε ≤ u → φ u = 0) → 0 < s → (1 + ε) * s ≤ c → c ≤ r → 1 / c ^ n ≤ ∫ t in s..r, -(c / t * deriv φ (c / t)) / t / t ^ n",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
