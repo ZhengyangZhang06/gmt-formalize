@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "sed -n 1,270p lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DeformationFamily.lean (hasDerivAt_familySpatialDerivative, familySpatialDerivative_eq_fderiv, initialVelocity_eq_deriv, contDiffAt_initialVelocity)",
+        "grep -rn 'abbrev Euclidean' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/*.lean",
+        "grep -rn 'initialVelocity\\|initialAcceleration\\|IsAdmissibleDeformation' local-references/ff09f3909baeeae7/project/GMT --include=*.lean",
+        "rg -n 'theorem ContDiffAt.isSymmSndFDerivAt|theorem IsSymmSndFDerivAt.eq|^def IsSymmSndFDerivAt|minSmoothness_of_isRCLikeNormedField' mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean",
+        "grep -n 'theorem ContDiffOn.fderiv_of_isOpen\\|theorem ContDiffOn.contDiffAt\\|theorem ContDiffOn.congr\\|theorem ContDiffAt.eventually\\|theorem ContDiffAt.differentiableAt' mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "grep -n 'theorem ContDiffOn.clm_comp\\|theorem ContDiffOn.clm_apply\\|fderiv_right' mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "grep -rn 'theorem hasFDerivAt_prodMk_right\\|theorem HasFDerivAt.comp_hasDerivAt\\|comp_hasDerivAt_of_eq\\|theorem HasDerivAt.clm_comp\\|theorem HasDerivAt.congr_of_eventuallyEq\\|EventuallyEq.deriv_eq\\|EventuallyEq.fderiv_eq\\|theorem HasDerivAt.prodMk\\|theorem fderiv_const_apply\\|theorem deriv_const\\|theorem fderiv_id' in mathlib/Mathlib/Analysis/Calculus/FDeriv/{Prod,Congr,Basic,Const}.lean and Deriv/{Comp,Mul,Basic,Prod}.lean",
+        "python3 -I scripts/scope.py and scripts/gen_checks.py (verifier gmt-compare.py contract_scope/child_modules + lean_contract.validate_lean_statement) then lean NodeChallenge_00..03 against the frozen GMT.Ch02.Submission olean and NodeSolution_00..03 against a Submission containing the four proofs (built with lean -R root -o)",
+        "lean checks/Stmts.lean, ChildV.lean, ChildP.lean, ChildM.lean, ChildM_noimport.lean, Assembly.lean (#print axioms)",
+        "python3 -I scan of dag.json lean_name fields and nodes/*/*.json lean_name fields; git grep of all refs/heads and grep of simongmt/Poincare for the three proposed names",
+        "git show <accepted candidate commits>:GMT/Ch02/Submission.lean | grep ^import (import-header practice); sed -n 300,384p verifier/gmt-compare.py (Submission.lean is not byte-checked)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DeformationFamily.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/GMT/Ch02/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-deformation-calculus-a1/parent-child-handoff.json",
+        "/tmp/defcalc-decomp-6Hb6gC/checks/ChildV.lean",
+        "/tmp/defcalc-decomp-6Hb6gC/checks/ChildP.lean",
+        "/tmp/defcalc-decomp-6Hb6gC/checks/ChildM.lean",
+        "/tmp/defcalc-decomp-6Hb6gC/checks/ChildM_noimport.lean",
+        "/tmp/defcalc-decomp-6Hb6gC/checks/Assembly.lean",
+        "/tmp/defcalc-decomp-6Hb6gC/rootP/GMT/Ch02/Submission.lean",
+        "/tmp/defcalc-decomp-6Hb6gC/nodechecks/NodeChallenge_03_variation_deformation_calculus.lean",
+        "/tmp/defcalc-decomp-6Hb6gC/nodechecks/NodeSolution_03_variation_deformation_calculus.lean",
+        "/tmp/defcalc-decomp-6Hb6gC/scripts/gen_checks.py",
+        "/tmp/defcalc-decomp-6Hb6gC/proposal/subproblems.json"
+      ],
+      "conclusion": "No lemma in the snapshot states the selected theorem or its children in the contract's fderiv/deriv form. The closest is SimonGMT Chapter08 hasDerivAt_familySpatialDerivative, which differs in three ways: it is stated only at t = 0; it uses an uncurried F with familySpatialDerivative = DF∘inr and its own initialVelocity F x = DF(0,x)(1,0), not the contract's deriv-based initialVelocity; and it needs an extra import. The children therefore state the interchange generally, at any (t,y), directly for fderiv ℝ (Φ s) y and deriv (s ↦ Φ s x) t. The pinned Mathlib supplies every ingredient: ContDiffAt.isSymmSndFDerivAt with minSmoothness_of_isRCLikeNormedField (FDeriv/Symmetric.lean, not reachable from the frozen header, so Submission.lean must add the import; gmt-compare.py does not byte-check Submission.lean), ContDiffOn.fderiv_of_isOpen, ContDiffOn.contDiffAt, ContDiffOn.congr, ContDiffAt.eventually, ContDiffAt.differentiableAt, ContDiffAt.fderiv_right, ContDiffOn.clm_comp/clm_apply, hasFDerivAt_prodMk_right, HasFDerivAt.comp_hasDerivAt(_of_eq), HasDerivAt.prodMk, HasDerivAt.clm_comp, HasDerivAt.congr_of_eventuallyEq, Filter.EventuallyEq.deriv_eq/fderiv_eq, fderiv_const_apply, deriv_const and fderiv_id. Lean results: the three children are proved in scratch, the parent is proved from them, and all comparator-style modules compile with propext, Classical.choice and Quot.sound only. The three names collide with nothing in dag.json, the decomposition proposals, any branch or SimonGMT."
+    }
+  ],
+  "parent_id": "root.variation_formulas-a1.deformation_calculus-a1",
+  "child_id": "root.variation_formulas-a1.deformation_calculus-a1.mixed_partial-a1",
+  "subproblem": {
+    "key": "mixed_partial",
+    "title": "Interchanging time and space derivatives of a family that is C² at a point (Schwarz)",
+    "statement": "Let N ∈ ℕ, Φ : ℝ → ℝᴺ → ℝᴺ, t ∈ ℝ and y ∈ ℝᴺ, and suppose (s,x) ↦ Φ s x is C² at (t,y) (ContDiffAt ℝ 2). Then the map s ↦ fderiv ℝ (Φ s) y, from ℝ to the continuous linear maps ℝᴺ → ℝᴺ, has derivative fderiv ℝ (x ↦ deriv (s ↦ Φ s x) t) y at s = t.",
+    "lean_statement": "∀ (N : ℕ) (Φ : ℝ → Rn N → Rn N) (t : ℝ) (y : Rn N), ContDiffAt ℝ 2 (fun p : ℝ × Rn N ↦ Φ p.1 p.2) (t, y) → HasDerivAt (fun s ↦ fderiv ℝ (Φ s) y) (fderiv ℝ (fun x ↦ deriv (fun s ↦ Φ s x) t) y) t",
+    "lean_name": "variation_deformation_mixed_partial",
+    "depends_on": [],
+    "natural_proof": "Provenance: the mixed-partials step of the parent proof of variation_deformation_calculus: ∂_t Dφ_t = D(∂_tφ), by symmetry of the second derivative. The parent uses it at (0,y), at every (t,y) with |t| < 1, and for the family ∂_tφ. Here it is stated once, for a general family Φ at an arbitrary point (t,y), under the pointwise hypothesis that F is C² at (t,y). The proof below is self-contained.\n\nNotation. F(s,x) := Φ s x. DF(p) := fderiv ℝ F p. D²F(p) := fderiv ℝ (fderiv ℝ F) p, a continuous linear map from ℝ × ℝᴺ to the continuous linear maps ℝ × ℝᴺ → ℝᴺ. e₀ := (1,0). inr v := (0,v).\n\n1. Partial derivatives at points of differentiability. Let F be differentiable at (s,x).\n (a) The map x′ ↦ (s,x′) has derivative inr, and Φ s = F ∘ (x′ ↦ (s,x′)). By the chain rule, fderiv ℝ (Φ s) x = DF(s,x) ∘ inr.\n (b) The map s′ ↦ (s′,x) has derivative e₀ at s, and s′ ↦ Φ s′ x equals s′ ↦ F(s′,x). By the chain rule, deriv (s′ ↦ Φ s′ x) s = DF(s,x) e₀.\n2. F is C² near (t,y). F is C² at (t,y) and the exponent 2 is finite, so F is C² at every point of some neighbourhood W of (t,y) (Mathlib ContDiffAt.eventually). In particular F is differentiable at every point of W.\n3. DF is differentiable at (t,y). F is C² at (t,y), so DF is C¹ at (t,y) (ContDiffAt.fderiv_right, using 1 + 1 ≤ 2). Hence DF is differentiable at (t,y) with derivative D²F(t,y).\n4. Localisation. The maps s ↦ (s,y) and x ↦ (t,x) are continuous and take the value (t,y) at s = t and at x = y. So (s,y) ∈ W for all s near t, and (t,x) ∈ W for all x near y.\n - By 1(a) and 2, fderiv ℝ (Φ s) y = DF(s,y) ∘ inr for all s near t.\n - By 1(b) and 2, deriv (s′ ↦ Φ s′ x) t = DF(t,x) e₀ for all x near y.\n5. Derivative in s. By 3 and the chain rule along s ↦ (s,y), whose derivative is e₀, the map s ↦ DF(s,y) has derivative D²F(t,y) e₀ at t (HasFDerivAt.comp_hasDerivAt). Compose on the right with the constant map s ↦ inr, using the product rule for composition of continuous linear maps (HasDerivAt.clm_comp). The constant factor contributes DF(t,y) ∘ 0 = 0. So s ↦ DF(s,y) ∘ inr has derivative (D²F(t,y) e₀) ∘ inr at t.\n6. Derivative in x. By 3 and the chain rule along x ↦ (t,x), whose derivative is inr, the map x ↦ DF(t,x) has derivative D²F(t,y) ∘ inr at y. Now apply the continuous linear evaluation B ↦ B e₀. So x ↦ DF(t,x) e₀ has derivative v ↦ D²F(t,y)(inr v)(e₀) at y.\n7. By 4, x ↦ deriv (s ↦ Φ s x) t coincides near y with x ↦ DF(t,x) e₀. By 6, and because derivatives depend only on germs (Filter.EventuallyEq.fderiv_eq), fderiv ℝ (x ↦ deriv (s ↦ Φ s x) t) y is the linear map v ↦ D²F(t,y)(inr v)(e₀).\n8. Symmetry (Schwarz).\n - F is C² at (t,y), and over ℝ the smoothness threshold minSmoothness ℝ 2 equals 2. So D²F(t,y) is symmetric: D²F(t,y)(a)(b) = D²F(t,y)(b)(a) for all a, b ∈ ℝ × ℝᴺ.\n - This is Mathlib ContDiffAt.isSymmSndFDerivAt, in Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean. The frozen header does not import that file, so the Lean proof must add the import.\n - Take a = inr v and b = e₀ and use step 7: fderiv ℝ (x ↦ deriv (s ↦ Φ s x) t) y v = D²F(t,y)(e₀)(inr v) for every v. That is, fderiv ℝ (x ↦ deriv (s ↦ Φ s x) t) y = (D²F(t,y) e₀) ∘ inr.\n9. Conclusion. By 4, s ↦ fderiv ℝ (Φ s) y coincides near t with s ↦ DF(s,y) ∘ inr. By 5, the latter has derivative (D²F(t,y) e₀) ∘ inr at t. So, by HasDerivAt.congr_of_eventuallyEq, s ↦ fderiv ℝ (Φ s) y has derivative (D²F(t,y) e₀) ∘ inr at t. By 8 this derivative equals fderiv ℝ (x ↦ deriv (s ↦ Φ s x) t) y.",
+    "proof_key_steps": [
+      "F(s,x) = Φ s x is C², hence differentiable, on a neighbourhood of (t,y) (ContDiffAt.eventually). DF is differentiable at (t,y) with derivative D²F(t,y).",
+      "Near t, fderiv ℝ (Φ s) y = DF(s,y) ∘ inr, and this has s-derivative D²F(t,y)(e₀) ∘ inr at t.",
+      "Near y, deriv (s ↦ Φ s x) t = DF(t,x)e₀, and this has x-derivative v ↦ D²F(t,y)(inr v)(e₀) at y.",
+      "Symmetry of D²F(t,y) (ContDiffAt.isSymmSndFDerivAt) identifies the two derivatives. Conclude with HasDerivAt.congr_of_eventuallyEq."
+    ]
+  },
+  "audit": {
+    "key": "mixed_partial",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proposition exactly states interchange at arbitrary (t,y). Finite-order ContDiffAt supplies the neighborhood needed for both germ identities. Differentiating DF along the two embeddings and applying symmetry identifies the continuous-linear-map derivatives; eventual equality transfers the result. Every step is supplied, non-circular and sufficient for formalization."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-deformation-calculus-a1-mixed-partial-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-deformation-calculus-a1-mixed-partial-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-deformation-calculus-a1-mixed-partial-a1/parent-supplied-natural-proof.json"
+}
