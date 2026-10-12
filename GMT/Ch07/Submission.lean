@@ -451,6 +451,156 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Green's first identity** for a compactly supported `C¹` function `Ψ` against a function `G`
+that is `C²` on an open set `V ⊇ tsupport Ψ` (step 4 of the mean value argument):
+`∫ ∑ᵢ DΨ(y)eᵢ · DG(y)eᵢ dy = -∫ Ψ(y) ∑ᵢ D²G(y)(eᵢ, eᵢ) dy`.
+
+For each direction `v = eᵢ`, the product `h = Ψ · DG(·)v` is differentiable everywhere (it vanishes
+near every point off `K = tsupport Ψ ⊆ V`), and `y ↦ Dh(y)v = DΨ(y)v · DG(y)v + Ψ(y) D²G(y)(v, v)`
+is continuous with compact support.  By translation invariance `t ↦ ∫ h(y + tv) dy` is constant,
+and differentiating under the integral at `t = 0` gives `∫ Dh(y)v dy = 0`.  Summing over `i`, with
+every summand integrable, gives the identity. -/
+theorem Submission.dorag_ha_mv_green_identity : ∀ (n : ℕ) (V : Set (Euclid n)) (G Ψ : Euclid n → ℝ), IsOpen V → ContDiffOn ℝ 2 G V → ContDiff ℝ 1 Ψ → HasCompactSupport Ψ → tsupport Ψ ⊆ V → ∫ y : Euclid n, ∑ i : Fin n, fderiv ℝ Ψ y (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ)) = -∫ y : Euclid n, Ψ y * ∑ i : Fin n, iteratedFDeriv ℝ 2 G y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] := by
+  intro n V G Ψ hV hG hΨ hΨc hΨV
+  -- Step 1: `DG` is `C¹` on the open set `V`
+  have hG1 : ContDiffOn ℝ 1 (fderiv ℝ G) V := hG.fderiv_of_isOpen hV (by norm_num)
+  have hGd : ∀ y ∈ V, DifferentiableAt ℝ (fderiv ℝ G) y := fun y hy =>
+    (hG1.differentiableOn one_ne_zero y hy).differentiableAt (hV.mem_nhds hy)
+  have hG1c : ContinuousOn (fderiv ℝ G) V := hG1.continuousOn
+  have hG2c : ContinuousOn (fderiv ℝ (fderiv ℝ G)) V :=
+    hG1.continuousOn_fderiv_of_isOpen hV le_rfl
+  -- Step 2: `Ψ` and `DΨ` vanish off `K = tsupport Ψ`
+  have hΨ0 : ∀ y, y ∉ tsupport Ψ → Ψ y = 0 := fun y hy => image_eq_zero_of_notMem_tsupport hy
+  have hdΨ0 : ∀ y, y ∉ tsupport Ψ → fderiv ℝ Ψ y = 0 := fun y hy => by
+    by_contra h'
+    exact hy (support_fderiv_subset ℝ h')
+  have hdΨc : Continuous (fderiv ℝ Ψ) := hΨ.continuous_fderiv one_ne_zero
+  have hKo : ∀ y, y ∉ tsupport Ψ → (tsupport Ψ)ᶜ ∈ 𝓝 y := fun y hy =>
+    (isClosed_tsupport Ψ).isOpen_compl.mem_nhds hy
+  -- Step 3: continuous on `V` and zero off `K` gives continuous with compact support
+  have glue : ∀ f : Euclid n → ℝ, ContinuousOn f V → (∀ y, y ∉ tsupport Ψ → f y = 0) →
+      Continuous f ∧ HasCompactSupport f := by
+    intro f hf h0
+    refine ⟨continuous_iff_continuousAt.2 fun y => ?_, ?_⟩
+    · by_cases hy : y ∈ V
+      · exact hf.continuousAt (hV.mem_nhds hy)
+      · have hy' : y ∉ tsupport Ψ := fun h => hy (hΨV h)
+        have hfy : f =ᶠ[𝓝 y] fun _ => 0 := by
+          filter_upwards [hKo y hy'] with z hz
+          exact h0 z hz
+        exact continuousAt_const.congr hfy.symm
+    · refine IsCompact.of_isClosed_subset hΨc (isClosed_tsupport _) ?_
+      refine closure_minimal (fun y hy => ?_) (isClosed_tsupport Ψ)
+      by_contra h
+      exact hy (h0 y h)
+  -- the derivative along `v` of a compactly supported function has integral zero
+  have core : ∀ (h k : Euclid n → ℝ) (v : Euclid n), Continuous h → HasCompactSupport h →
+      Continuous k → HasCompactSupport k →
+      (∀ (y : Euclid n) (t : ℝ), HasDerivAt (fun s : ℝ => h (y + s • v)) (k (y + t • v)) t) →
+      ∫ y, k y = 0 := by
+    intro h k v hh hhc hk hkc hd
+    obtain ⟨C, hC⟩ := hk.bounded_above_of_compact_support hkc
+    have hSc : IsCompact (cthickening ‖v‖ (tsupport k)) := IsCompact.cthickening hkc
+    have hbound : ∀ (y : Euclid n) (t : ℝ), t ∈ ball (0 : ℝ) 1 →
+        ‖k (y + t • v)‖ ≤ (cthickening ‖v‖ (tsupport k)).indicator (fun _ => C) y := by
+      intro y t ht
+      by_cases hy : y ∈ cthickening ‖v‖ (tsupport k)
+      · rw [indicator_of_mem hy]
+        exact hC _
+      · rw [indicator_of_notMem hy]
+        have hk0 : k (y + t • v) = 0 := by
+          by_contra hne
+          apply hy
+          refine mem_cthickening_of_dist_le y (y + t • v) ‖v‖ (tsupport k)
+            (subset_tsupport k hne) ?_
+          have ht1 : ‖t‖ < 1 := by simpa using ht
+          rw [dist_eq_norm, sub_add_cancel_left, norm_neg, norm_smul]
+          nlinarith [norm_nonneg v, norm_nonneg t]
+        simp [hk0]
+    have hderiv := (hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := volume)
+      (F := fun (t : ℝ) (y : Euclid n) => h (y + t • v))
+      (F' := fun (t : ℝ) (y : Euclid n) => k (y + t • v))
+      (x₀ := 0) (bound := (cthickening ‖v‖ (tsupport k)).indicator (fun _ => C))
+      (ball_mem_nhds 0 one_pos)
+      (Eventually.of_forall fun t =>
+        (hh.comp (continuous_id.add continuous_const)).aestronglyMeasurable)
+      (by simpa using hh.integrable_of_hasCompactSupport hhc)
+      ((hk.comp (continuous_id.add continuous_const)).aestronglyMeasurable)
+      (ae_of_all _ fun y t ht => hbound y t ht)
+      ((integrableOn_const hSc.measure_lt_top.ne).integrable_indicator
+        isClosed_cthickening.measurableSet)
+      (ae_of_all _ fun y t _ => hd y t)).2
+    have hconst : (fun t : ℝ => ∫ y, h (y + t • v)) = fun _ => ∫ y, h y := by
+      funext t
+      exact integral_add_right_eq_self (fun y => h y) (t • v)
+    rw [hconst] at hderiv
+    simpa using hderiv.unique (hasDerivAt_const (0 : ℝ) (∫ y, h y))
+  -- Steps 4–6: one coordinate direction
+  have key : ∀ i : Fin n,
+      Integrable (fun y => fderiv ℝ Ψ y (EuclideanSpace.single i (1 : ℝ)) *
+        fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ))) ∧
+      Integrable (fun y => Ψ y * iteratedFDeriv ℝ 2 G y
+        ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)]) ∧
+      ∫ y, fderiv ℝ Ψ y (EuclideanSpace.single i (1 : ℝ)) *
+          fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ)) =
+        -∫ y, Ψ y * iteratedFDeriv ℝ 2 G y
+          ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] := by
+    intro i
+    set v : Euclid n := EuclideanSpace.single i (1 : ℝ)
+    have h2 : (fun y => Ψ y * iteratedFDeriv ℝ 2 G y ![v, v]) =
+        fun y => Ψ y * fderiv ℝ (fderiv ℝ G) y v v := by
+      funext y
+      simp [iteratedFDeriv_two_apply]
+    rw [h2]
+    have hgc : ContinuousOn (fun y => fderiv ℝ G y v) V :=
+      (ContinuousLinearMap.apply ℝ ℝ v).continuous.comp_continuousOn hG1c
+    have hg2c : ContinuousOn (fun y => fderiv ℝ (fderiv ℝ G) y v v) V :=
+      ((ContinuousLinearMap.apply ℝ ℝ v).continuous.comp
+        (ContinuousLinearMap.apply ℝ (Euclid n →L[ℝ] ℝ) v).continuous).comp_continuousOn hG2c
+    obtain ⟨hAc, hAs⟩ := glue (fun y => fderiv ℝ Ψ y v * fderiv ℝ G y v)
+      ((hdΨc.clm_apply continuous_const).continuousOn.mul hgc)
+      (fun y hy => by simp [hdΨ0 y hy])
+    obtain ⟨hBc, hBs⟩ := glue (fun y => Ψ y * fderiv ℝ (fderiv ℝ G) y v v)
+      (hΨ.continuous.continuousOn.mul hg2c) (fun y hy => by simp [hΨ0 y hy])
+    obtain ⟨hhc, hhs⟩ := glue (fun y => Ψ y * fderiv ℝ G y v)
+      (hΨ.continuous.continuousOn.mul hgc) (fun y hy => by simp [hΨ0 y hy])
+    -- the product `Ψ · DG(·)v` is differentiable everywhere
+    have hF : ∀ z, HasFDerivAt (fun y => Ψ y * fderiv ℝ G y v)
+        (Ψ z • ((ContinuousLinearMap.apply ℝ ℝ v).comp (fderiv ℝ (fderiv ℝ G) z)) +
+          fderiv ℝ G z v • fderiv ℝ Ψ z) z := by
+      intro z
+      by_cases hz : z ∈ V
+      · exact (hΨ.differentiable one_ne_zero z).hasFDerivAt.mul
+          ((ContinuousLinearMap.apply ℝ ℝ v).hasFDerivAt.comp z (hGd z hz).hasFDerivAt)
+      · have hz' : z ∉ tsupport Ψ := fun h => hz (hΨV h)
+        rw [hΨ0 z hz', hdΨ0 z hz', zero_smul, smul_zero, add_zero]
+        refine (hasFDerivAt_const (0 : ℝ) z).congr_of_eventuallyEq ?_
+        filter_upwards [hKo z hz'] with y hy
+        simp [hΨ0 y hy]
+    have hd : ∀ (y : Euclid n) (t : ℝ),
+        HasDerivAt (fun s : ℝ => Ψ (y + s • v) * fderiv ℝ G (y + s • v) v)
+          ((fun y => fderiv ℝ Ψ y v * fderiv ℝ G y v + Ψ y * fderiv ℝ (fderiv ℝ G) y v v)
+            (y + t • v)) t := by
+      intro y t
+      have hp : HasDerivAt (fun s : ℝ => y + s • v) v t := by
+        simpa using ((hasDerivAt_id t).smul_const v).const_add y
+      refine ((hF (y + t • v)).comp_hasDerivAt t hp).congr_deriv ?_
+      simp only [add_apply, smul_apply, ContinuousLinearMap.comp_apply,
+        ContinuousLinearMap.apply_apply, smul_eq_mul]
+      ring
+    have hA := hAc.integrable_of_hasCompactSupport (μ := volume) hAs
+    have hB := hBc.integrable_of_hasCompactSupport (μ := volume) hBs
+    have h0 := core (fun y => Ψ y * fderiv ℝ G y v)
+      (fun y => fderiv ℝ Ψ y v * fderiv ℝ G y v + Ψ y * fderiv ℝ (fderiv ℝ G) y v v) v
+      hhc hhs (hAc.add hBc) (hAs.add hBs) hd
+    rw [integral_add hA hB] at h0
+    exact ⟨hA, hB, by linarith⟩
+  -- Step 7: sum over the coordinate directions
+  rw [integral_finsetSum _ (fun i _ => (key i).1)]
+  simp_rw [Finset.mul_sum]
+  rw [integral_finsetSum _ (fun i _ => (key i).2.1), ← Finset.sum_neg_distrib]
+  exact Finset.sum_congr rfl fun i _ => (key i).2.2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

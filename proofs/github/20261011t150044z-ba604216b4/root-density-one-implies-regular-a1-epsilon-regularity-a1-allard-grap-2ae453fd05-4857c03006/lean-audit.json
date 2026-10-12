@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "906611faf7d269504e6adcf0bfff61fb1d5fd359d1bccea8b5219d34ee8cdfaa",
+  "git_delta": {
+    "base_commit": "1288a6d2b82594072902597fdaca72fdc81a78b8",
+    "candidate_commit": "953172f678148ffb6e3ed7dcc965ae9f5918f2a2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_mv_green_identity",
+    "diff_sha256": "ceb00ee731cf18b10c971c0ec45f2dbe4caeb84ee0362a55608f51a819377c85",
+    "source_sha256": "3567a2a30c39ad837c254171af40ec5b84c216ec2cac5680ea39c78e54666629",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_mv_green_identity",
+      "statement": "∀ (n : ℕ) (V : Set (Euclid n)) (G Ψ : Euclid n → ℝ), IsOpen V → ContDiffOn ℝ 2 G V → ContDiff ℝ 1 Ψ → HasCompactSupport Ψ → tsupport Ψ ⊆ V → ∫ y : Euclid n, ∑ i : Fin n, fderiv ℝ Ψ y (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ)) = -∫ y : Euclid n, Ψ y * ∑ i : Fin n, iteratedFDeriv ℝ 2 G y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
