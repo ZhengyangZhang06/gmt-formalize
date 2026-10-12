@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1.rotated_graph_slope-a1",
+  "parent_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1",
+  "depth": 3,
+  "title": "Rotated Lipschitz graph: closedness and slope bound relative to T_0",
+  "statement": "Let n, l be natural numbers, q a linear isometry of R^(n+l) onto itself, f : R^n -> R^l and eps >= 0, and suppose f is eps-Lipschitz on all of R^n (LipschitzWith (Real.toNNReal eps) f). Put Fhat := q(graphOver f R^n) = { q(graphPoint u (f u)) : u in R^n }, T_0 := rotatedPlane q = q(R^n x {0}), and let P be the orthogonal projection onto T_0 (T_0.starProjection). Then (a) Fhat is closed in R^(n+l), and (b) |(x - z) - P(x - z)| <= eps |x - z| for all x, z in Fhat.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (ε : ℝ), 0 ≤ ε → LipschitzWith (Real.toNNReal ε) f → IsClosed (q '' graphOver f univ) ∧ ∀ x ∈ q '' graphOver f univ, ∀ z ∈ q '' graphOver f univ, ‖(x - z) - (rotatedPlane q).starProjection (x - z)‖ ≤ ε * ‖x - z‖",
+  "lean_name": "lgc_rotated_graph_slope",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-graph-corollary-a1-hole-estimate-a1-rotated-graph-slope-a1-a1"
+}

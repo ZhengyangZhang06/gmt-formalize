@@ -1,0 +1,212 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_graph_corollary-a1.hole_estimate-a1`
+- Child DAG node: `root.lipschitz_graph_corollary-a1.hole_estimate-a1.rotated_graph_slope-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 5 (the graph cone bound |Q(x - zeta)| <= eps |x - zeta| for x in Fhat, where Q = I - P, and the closedness of Fhat used to make Fhat Borel). Here it is proved for any two points x, z of Fhat.
+
+Notation. graphPoint a b in R^(n+l) is the point whose first n coordinates are those of a in R^n and whose last l coordinates are those of b in R^l (Fin.append); its coordinates are indexed by Fin.castAdd l i (i < n) and Fin.natAdd n j (j < l). horizontalPlane n l is the span of the vectors e_(castAdd i) := EuclideanSpace.single (Fin.castAdd l i) 1, i < n, i.e. R^n x {0}. T_0 := rotatedPlane q = q(horizontalPlane n l), P := T_0.starProjection is the orthogonal projection onto T_0, and g(u) := graphPoint u (f u), so graphOver f R^n = range g and Fhat = q(range g).
+
+1. Coordinate identities (compare coordinates separately at the indices castAdd i and natAdd j).
+   (i) graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b'), and graphPoint a b + graphPoint a' b' = graphPoint (a + a') (b + b').
+   (ii) |graphPoint a b|^2 = |a|^2 + |b|^2: split the sum of the squared coordinates over Fin (n + l) into the n indices castAdd i and the l indices natAdd j. Consequently |a| <= |graphPoint a b| (as |b|^2 >= 0) and |graphPoint 0 b| = |b| (both sides are nonnegative with equal squares).
+   (iii) graphPoint a 0 = sum_{i<n} a_i e_(castAdd i). At an index castAdd j both sides equal a_j. At an index natAdd k the left side is 0, and each term on the right vanishes because castAdd i and natAdd k are different indices (their values are i < n and n + k >= n). Hence graphPoint a 0 is a linear combination of the spanning vectors of horizontalPlane n l and lies in it.
+2. Lipschitz bound. Since eps >= 0, the real number underlying Real.toNNReal eps is eps. Hence the hypothesis LipschitzWith (Real.toNNReal eps) f gives |f u - f v| = dist(f u, f v) <= eps dist(u, v) = eps |u - v| for all u, v in R^n.
+3. Closedness, part (a).
+   (i) By 1(i) and 1(ii), |g u - g v|^2 = |graphPoint (u - v) (f u - f v)|^2 = |u - v|^2 + |f u - f v|^2.
+   (ii) Hence |u - v| <= |g u - g v|, i.e. g is antilipschitz with constant 1.
+   (iii) Also |g u - g v|^2 <= (|u - v| + |f u - f v|)^2 with both bases nonnegative, so |g u - g v| <= |u - v| + |f u - f v| <= (1 + eps)|u - v| by step 2. Thus g is Lipschitz, hence uniformly continuous.
+   (iv) range g is closed: if g(u_k) -> w, then (g(u_k)) is Cauchy, so (u_k) is Cauchy by (ii); since R^n is complete, u_k -> u for some u, and by continuity g(u_k) -> g(u), so w = g(u) lies in range g. (This is the general fact that an antilipschitz, uniformly continuous map on a complete space has closed range.)
+   (v) q is a linear isometry of R^(n+l) onto itself, hence a homeomorphism, and therefore maps the closed set range g = graphOver f R^n onto a closed set. So Fhat = q(graphOver f R^n) is closed.
+4. The difference of two points of Fhat. Let x, z in Fhat, say x = q(g(u)) and z = q(g(v)) with u, v in R^n. By linearity of q and 1(i), x - z = q(g u - g v) = q(graphPoint (u - v) (f u - f v)). Put w := q(graphPoint (u - v) 0). By 1(iii), graphPoint (u - v) 0 lies in horizontalPlane n l, so w lies in its image T_0. By linearity of q and 1(i), (x - z) - w = q(graphPoint (u - v) (f u - f v) - graphPoint (u - v) 0) = q(graphPoint 0 (f u - f v)).
+5. Distance to T_0. T_0 is a finite-dimensional, hence complete, subspace, and the orthogonal projection realises the distance to it: |y - P y| = dist(y, P y) = infDist(y, T_0) for every y. Since w lies in T_0, and q preserves norms, step 4 and 1(ii) give
+   |(x - z) - P(x - z)| = infDist(x - z, T_0) <= dist(x - z, w) = |q(graphPoint 0 (f u - f v))| = |graphPoint 0 (f u - f v)| = |f u - f v|.
+6. Conclusion, part (b). By step 2, then 1(ii) together with eps >= 0, then step 4 and the fact that q preserves norms:
+   |f u - f v| <= eps |u - v| <= eps |graphPoint (u - v) (f u - f v)| = eps |q(graphPoint (u - v) (f u - f v))| = eps |x - z|.
+   Combined with step 5, |(x - z) - P(x - z)| <= eps |x - z| for all x, z in Fhat. Together with step 3 this proves both assertions. QED
+
+Lean notes (Mathlib names that worked under the pinned toolchain; for convenience only):
+- ext i with Fin.addCases and simp [graphPoint] for 1(i); EuclideanSpace.norm_sq_eq and Fin.sum_univ_add for 1(ii);
+- Submodule.sum_mem, Submodule.smul_mem, Submodule.subset_span and Pi.single_eq_of_ne for 1(iii);
+- AntilipschitzWith.of_le_mul_dist, LipschitzWith.of_dist_le_mul, AntilipschitzWith.isClosed_range and q.toHomeomorph.isClosedMap (with LinearIsometryEquiv.coe_toHomeomorph) for step 3;
+- Submodule.mem_map_of_mem for w in T_0;
+- Submodule.dist_starProjection_eq_infDist and Metric.infDist_le_dist_of_mem for step 5;
+- LinearIsometryEquiv.norm_map and Real.coe_toNNReal throughout.
+
+Remark (verified Lean realization; not part of the mathematical argument). The declaration below was compiled in this decomposition session (attempt 5, fresh scratch root; Lean v4.35.0-rc3, Mathlib 25730c7c, simongmt 2b366308) inside `namespace GMT.Ch05` / `namespace Submission`, in a module importing a freshly compiled copy of the frozen GMT/Ch05/Submission.lean, with the contract's `open MeasureTheory Metric Set Filter Topology`, `open scoped ENNReal NNReal` and `open RectifiableVarifold` in effect. The candidate module compiled with no errors. Its only `sorry`s were the two sibling contracts lgc_tangent_plane_ae and lgc_density_monotonicity, which this child does not use. In the contract scope, `theorem _root_.HumanizeNodeComparator.target_<name> : (<frozen type>) := by exact Submission.<name>` type-checks against the compiled module, and `#print axioms` lists only propext, Classical.choice and Quot.sound. The declaration can be pasted into GMT/Ch05/Submission.lean inside `namespace Submission`, before `main_theorem`.
+
+theorem lgc_rotated_graph_slope : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (ε : ℝ), 0 ≤ ε → LipschitzWith (Real.toNNReal ε) f → IsClosed (q '' graphOver f univ) ∧ ∀ x ∈ q '' graphOver f univ, ∀ z ∈ q '' graphOver f univ, ‖(x - z) - (rotatedPlane q).starProjection (x - z)‖ ≤ ε * ‖x - z‖ := by
+  intro n ℓ q f ε hε hf
+  have gsub : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b') := by
+    intro a a' b b'
+    ext i
+    refine Fin.addCases (fun i => ?_) (fun i => ?_) i <;> simp [graphPoint]
+  have gadd : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      graphPoint a b + graphPoint a' b' = graphPoint (a + a') (b + b') := by
+    intro a a' b b'
+    ext i
+    refine Fin.addCases (fun i => ?_) (fun i => ?_) i <;> simp [graphPoint]
+  have gnorm : ∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
+    intro a b
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp [graphPoint]
+  have gmem : ∀ a : Rn n, graphPoint a (0 : Rn ℓ) ∈ horizontalPlane n ℓ := by
+    intro a
+    have : graphPoint a (0 : Rn ℓ) =
+        ∑ i : Fin n, a i • EuclideanSpace.single (Fin.castAdd ℓ i) (1 : ℝ) := by
+      ext j
+      refine Fin.addCases (fun j => ?_) (fun j => ?_) j
+      · simp [graphPoint, Pi.single_apply]
+      · simp only [graphPoint]
+        simp only [Fin.append_right, PiLp.zero_apply, WithLp.ofLp_sum, WithLp.ofLp_smul,
+          PiLp.ofLp_single, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+        symm
+        refine Finset.sum_eq_zero fun x _ => ?_
+        have hne : Fin.natAdd n j ≠ Fin.castAdd ℓ x := by
+          intro h
+          have := congrArg Fin.val h
+          simp at this
+          omega
+        rw [Pi.single_eq_of_ne hne, mul_zero]
+    rw [this]
+    refine Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ ?_
+    exact Submodule.subset_span ⟨i, rfl⟩
+  have gnorm_le : ∀ (a : Rn n) (b : Rn ℓ), ‖a‖ ≤ ‖graphPoint a b‖ := by
+    intro a b
+    have h := gnorm a b
+    have := sq_nonneg ‖b‖
+    nlinarith [norm_nonneg a, norm_nonneg (graphPoint a b)]
+  have gnorm0 : ∀ b : Rn ℓ, ‖graphPoint (0 : Rn n) b‖ = ‖b‖ := by
+    intro b
+    have h := gnorm 0 b
+    rw [norm_zero] at h
+    have h' : ‖graphPoint (0 : Rn n) b‖ ^ 2 = ‖b‖ ^ 2 := by rw [h]; ring
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 h'
+  have hfl : ∀ u v : Rn n, ‖f u - f v‖ ≤ ε * ‖u - v‖ := by
+    intro u v
+    have := hf.dist_le_mul u v
+    rwa [Real.coe_toNNReal ε hε, dist_eq_norm, dist_eq_norm] at this
+  constructor
+  · have hanti : AntilipschitzWith 1 (fun u : Rn n => graphPoint u (f u)) := by
+      refine AntilipschitzWith.of_le_mul_dist fun u v => ?_
+      simp only [NNReal.coe_one, one_mul]
+      rw [dist_eq_norm, dist_eq_norm, gsub]
+      exact gnorm_le _ _
+    have hlip : LipschitzWith (1 + Real.toNNReal ε) (fun u : Rn n => graphPoint u (f u)) := by
+      refine LipschitzWith.of_dist_le_mul fun u v => ?_
+      rw [dist_eq_norm, dist_eq_norm, gsub]
+      have h1 : ‖graphPoint (u - v) (f u - f v)‖ ≤ ‖u - v‖ + ‖f u - f v‖ := by
+        have h := gnorm (u - v) (f u - f v)
+        have hsq : ‖graphPoint (u - v) (f u - f v)‖ ^ 2 ≤ (‖u - v‖ + ‖f u - f v‖) ^ 2 := by
+          rw [h]; nlinarith [norm_nonneg (u - v), norm_nonneg (f u - f v)]
+        exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).1 hsq
+      push_cast
+      rw [Real.coe_toNNReal ε hε]
+      nlinarith [hfl u v]
+    have hclosed : IsClosed (graphOver f univ) := by
+      rw [graphOver, image_univ]
+      exact hanti.isClosed_range hlip.uniformContinuous
+    have := q.toHomeomorph.isClosedMap _ hclosed
+    simpa [LinearIsometryEquiv.coe_toHomeomorph] using this
+  · rintro x ⟨_, ⟨u, -, rfl⟩, rfl⟩ z ⟨_, ⟨v, -, rfl⟩, rfl⟩
+    have hw : q (graphPoint (u - v) (0 : Rn ℓ)) ∈ rotatedPlane q :=
+      Submodule.mem_map_of_mem (gmem (u - v))
+    have hxz : q (graphPoint u (f u)) - q (graphPoint v (f v)) =
+        q (graphPoint (u - v) (f u - f v)) := by
+      rw [← map_sub, gsub]
+    have hsplit : q (graphPoint u (f u)) - q (graphPoint v (f v)) - q (graphPoint (u - v) 0) =
+        q (graphPoint 0 (f u - f v)) := by
+      rw [hxz, ← map_sub, gsub]
+      simp
+    calc ‖(q (graphPoint u (f u)) - q (graphPoint v (f v))) -
+          (rotatedPlane q).starProjection (q (graphPoint u (f u)) - q (graphPoint v (f v)))‖
+        = infDist (q (graphPoint u (f u)) - q (graphPoint v (f v))) (rotatedPlane q : Set (Amb n ℓ)) := by
+          rw [← dist_eq_norm, Submodule.dist_starProjection_eq_infDist]
+      _ ≤ dist (q (graphPoint u (f u)) - q (graphPoint v (f v))) (q (graphPoint (u - v) 0)) :=
+          infDist_le_dist_of_mem hw
+      _ = ‖f u - f v‖ := by
+          rw [dist_eq_norm, hsplit, LinearIsometryEquiv.norm_map, gnorm0]
+      _ ≤ ε * ‖u - v‖ := hfl u v
+      _ ≤ ε * ‖graphPoint (u - v) (f u - f v)‖ := mul_le_mul_of_nonneg_left (gnorm_le _ _) hε
+      _ = ε * ‖q (graphPoint u (f u)) - q (graphPoint v (f v))‖ := by
+          rw [hxz, LinearIsometryEquiv.norm_map]
+
+## Key steps
+
+1. Coordinate identities: graphPoint is additive, |graphPoint a b|^2 = |a|^2 + |b|^2, and graphPoint a 0 lies in horizontalPlane
+2. eps >= 0 turns LipschitzWith (toNNReal eps) f into |f u - f v| <= eps |u - v|
+3. g(u) = graphPoint u (f u) is antilipschitz and Lipschitz, so its range is closed; q is a homeomorphism, so Fhat is closed
+4. For x = q(g u), z = q(g v): w = q(graphPoint (u - v) 0) lies in T_0 and (x - z) - w = q(graphPoint 0 (f u - f v))
+5. |(x - z) - P(x - z)| = infDist(x - z, T_0) <= |(x - z) - w| = |f u - f v| <= eps |u - v| <= eps |x - z|
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json (project ea5607598f3133b40a13241f2e51517a8c6423cd, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum GMT/Ch05/Submission.lean GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean (all c966f51efddb5a68ce15ef2a2a322fd9df0ca69da4626c7acef05b05d1691e12)`
+- `rg -n 'lgc_|hsNormSq_bounds|support_closest_point|rotated_graph_slope|hole_annulus_lower|hole_split_upper' <snapshot>/project (no match)`
+- `rg -n 'hsNormSq' <snapshot>/project (only the contract definition, Submission.lean:47, and its uses)`
+- `rg -n 'lemma isClosed_support|lemma measure_compl_support' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `rg -n 'exists_infDist_eq_dist|theorem infDist_le_infDist_of_subset|theorem infDist_le_dist_of_mem' <snapshot>/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `rg -n 'dist_starProjection_eq_infDist|theorem starProjection_norm_le|HasOrthogonalProjection.ofCompleteSpace' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `rg -n 'integrableOn_of_bounded' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean; rg -n 'integral_mono_of_nonneg' .../Integral/Bochner/Basic.lean; rg -n 'theorem setIntegral_mono_set|theorem integral_indicator|theorem setIntegral_const' .../Integral/Bochner/Set.lean`
+- `rg -n 'isClosed_range' .../Topology/MetricSpace/Antilipschitz.lean; rg -n 'sum_mul_sq_le_sq_mul_sq' .../Algebra/Order/BigOperators/Ring/Finset.lean; rg -n 'comp_aestronglyMeasurable₂' .../MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `python3: lean_name collision scan of <run>/dag.json for the five names; grep of <run>/nodes/*/decomposition-v*.json (other nodes), .humanize/math-wiki and .swarm-worktrees/*/gmt-ch05/GMT/Ch05/Submission.lean (159 files): no match`
+- `python3: max_nodes in .humanize/swarm-configs/e7e4b943ce8d47d69f960d0598137f28.json (200) and 11abe17eae34407eb92f02a80299a0ca.json (1000); len(dag.json nodes); grep -n 'remaining = self.config.max_nodes' /runtime/flows/gmt-claude-a2c7949d39d0/_recursive_lean/runtime.py`
+- `grep -n '(9)|(10)' and sed -n 470,600p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt (printed proof of Simon 2.6, displays (9)-(10), pp. 112-113)`
+- `lean -o /tmp/lgc-hole-v5-x104/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean (fresh byte copy of the frozen Submission)`
+- `lean -o /tmp/lgc-hole-v5-x104/olean/Cand/Cand.olean Cand/Cand.lean (sibling contracts sorry + five children + assembly)`
+- `lean Cand/Types.lean; lean Cand/Exact.lean; lean Cand/Comparator.lean; lean Cand/AsmOnly.lean; lean Cand/Inst.lean (all exit 0)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/BigOperators/Ring/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1/decomposition-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1/decomposition-audit-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-hole-estimate-a1/decomposition-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/swarm-configs/e7e4b943ce8d47d69f960d0598137f28.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/swarm-configs/11abe17eae34407eb92f02a80299a0ca.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/logs/gmt-ch05/e7e4b943ce8d47d69f960d0598137f28.log`
+- `/runtime/flows/gmt-claude-a2c7949d39d0/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/tmp/lgc-hole-v5-x104/src/Cand/Cand.lean`
+- `/tmp/lgc-hole-v5-x104/src/Cand/Types.lean`
+- `/tmp/lgc-hole-v5-x104/src/Cand/Exact.lean`
+- `/tmp/lgc-hole-v5-x104/src/Cand/Comparator.lean`
+- `/tmp/lgc-hole-v5-x104/src/Cand/AsmOnly.lean`
+- `/tmp/lgc-hole-v5-x104/src/Cand/Inst.lean`
+
+Snapshot and contract. manifest.json pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace Submission.lean, the workspace Contract.lean and the snapshot Contract.lean are byte-identical (sha256 c966f51e…). The snapshot project contains none of the five proposed names; hsNormSq occurs only as the contract definition and its uses. No existing hsNormSq/operator-norm comparison for continuous linear maps exists to reuse. The accepted wiki theorem hsNorm_starProjection_trace_identities has a different type, so it cannot be reused by exact name.
+Mathlib facts used by the child proofs, all present in the snapshot:
+- isClosed_support and measure_compl_support (Measure/Support.lean:115, 202)
+- IsClosed.exists_infDist_eq_dist, infDist_le_dist_of_mem and infDist_le_infDist_of_subset (HausdorffDistance.lean:615, 500, 505)
+- HasOrthogonalProjection.ofCompleteSpace, dist_starProjection_eq_infDist and starProjection_norm_le (Projection/Basic.lean:53, 234, 386)
+- Measure.integrableOn_of_bounded (IntegrableOn.lean:716) and integral_mono_of_nonneg (Bochner/Basic.lean:676)
+- integral_indicator, setIntegral_const and setIntegral_mono_set (Bochner/Set.lean:185, 524, 737)
+- AntilipschitzWith.isClosed_range (Antilipschitz.lean:175) and Finset.sum_mul_sq_le_sq_mul_sq (Ring/Finset.lean:171)
+- Continuous.comp_aestronglyMeasurable₂ (AEStronglyMeasurable.lean:263)
+The printed proof of Simon 2.6 (chapter-05.txt, displays (9)-(10), pp. 112-113) matches the supplied corrected steps.
+Names and activation. None of the five names is reserved in dag.json, in other nodes' proposals, in the math wiki or in the 159 proof worktrees. The earlier accepted splits were blocked only by max_nodes = 200 in the previous worker's config. The current worker has max_nodes = 1000 and dag.json has fewer than 230 nodes.
+Lean (this session). All six frozen types elaborate. The five child proofs compile with only standard axioms. The assembly proves the exact selected parent type from the five child types and the two sibling contracts.
