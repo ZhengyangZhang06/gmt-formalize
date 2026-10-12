@@ -12407,7 +12407,21 @@ theorem Submission.simon_submanifold_measurableSet : ∀ (n N : ℕ) (r : ℕ∞
     (hrep y (hTM hy)).2.1.measurableSet.inter isClosed_closure.measurableSet
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
-theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
+theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by
+  -- Each conjunct is a child theorem `Submission.*` (the submanifold tangent-space helper
+  -- `Submission.simon_submanifold_tangent_basics` is only used inside those children).
+  obtain ⟨lipschitzExtension, rademacher⟩ := Submission.lipschitz_extension_and_rademacher
+  obtain ⟨bvCompactness, bvPoincare, bvExtensionEstimate⟩ :=
+    Submission.bv_compactness_poincare_extension
+  obtain ⟨firstVariation, secondVariation⟩ := Submission.first_and_second_variation
+  obtain ⟨stationaryIffMeanCurvatureZero, secondVariationStationary⟩ :=
+    Submission.stationary_mean_curvature_and_stable_variation
+  exact ⟨lipschitzExtension, rademacher, Submission.c1_approximation_theorem,
+    Submission.whitney_extension_theorem, Submission.lipschitz_image_hausdorff_theorem,
+    Submission.eilenberg_inequality_theorem, bvCompactness, bvPoincare, bvExtensionEstimate,
+    Submission.area_formula_theorem, firstVariation, secondVariation,
+    stationaryIffMeanCurvatureZero, secondVariationStationary,
+    Submission.coarea_formula_theorem, Submission.c1_sard_theorem⟩
 
 /-- **Simon Ch. 2, proof of Theorem 1.9 (pp. 45–46), covering majorant**, with a Borel majorant
 `G` in place of the upper integral of Remark 1.10. Put `s = m + k`, `M = μH[s](E)` (finite, as
