@@ -451,6 +451,68 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon, proof of A.4** (the rescaled secants): if `S ∩ B_σ(0)` is infinite for some `σ < 1`,
+there are `x` with `|x| < 1`, scales `λ_k ↓ 0` with `λ_k < 1` and `|x| ≤ 1 − λ_k`, and points
+`z_k → z` with `|z_k| = |z| = 1/2` and `x + λ_k z_k ∈ S`.  Distinct points of `S ∩ B_σ(0)`
+subconverge to some `x ∈ B̄_σ(0)`; a tail `q_k ∈ S \ {x}` still tends to `x`, so the scales
+`λ = 2|q − x| > 0` tend to `0` and are made strictly decreasing and `≤ (1 − |x|)/2` along
+inductively chosen indices; the secants `(q − x)/λ` lie on the compact sphere `|w| = 1/2`, so a
+further subsequence converges. -/
+theorem Submission.adr_secant_rescaling_of_infinite : ∀ (P : ℕ) (S : Set (Euclid P)) (σ : ℝ), σ < 1 → (S ∩ ball (0 : Euclid P) σ).Infinite → ∃ (x : Euclid P) (lams : ℕ → ℝ) (zs : ℕ → Euclid P) (z : Euclid P), ‖x‖ < 1 ∧ (∀ k, 0 < lams k) ∧ StrictAnti lams ∧ Tendsto lams atTop (𝓝 0) ∧ (∀ k, lams k < 1) ∧ (∀ k, ‖x‖ ≤ 1 - lams k) ∧ (∀ k, x + lams k • zs k ∈ S) ∧ (∀ k, ‖zs k‖ = 1 / 2) ∧ Tendsto zs atTop (𝓝 z) ∧ ‖z‖ = 1 / 2 := by
+  intro P S σ hσ hinf
+  -- pairwise distinct points `p k ∈ S ∩ B_σ(0)`
+  let e := Set.Infinite.natEmbedding _ hinf
+  let p : ℕ → Euclid P := fun k => (e k : Euclid P)
+  have hp : Injective p := Subtype.val_injective.comp e.injective
+  -- a subsequence `p ∘ m` converges to some `x ∈ B̄_σ(0)`, so `|x| ≤ σ < 1`
+  obtain ⟨x, hxσ, m, hm, hpx⟩ := (isCompact_closedBall (0 : Euclid P) σ).tendsto_subseq
+    fun k => ball_subset_closedBall (e k).2.2
+  have hx : ‖x‖ < 1 := (mem_closedBall_zero_iff.mp hxσ).trans_lt hσ
+  -- by injectivity at most one `p (m j)` equals `x`, so a tail `q k = p (m (k + j₁))` avoids `x`
+  obtain ⟨j₁, hj₁⟩ : ∃ j₁, ∀ j ≥ j₁, p (m j) ≠ x := by
+    by_cases h : ∃ j₀, p (m j₀) = x
+    · obtain ⟨j₀, hj₀⟩ := h
+      exact ⟨j₀ + 1, fun j hj hjx => (hm (Nat.lt_of_succ_le hj)).ne' (hp (hjx.trans hj₀.symm))⟩
+    · push Not at h
+      exact ⟨0, fun j _ => h j⟩
+  let q : ℕ → Euclid P := fun k => p (m (k + j₁))
+  have hqS : ∀ k, q k ∈ S := fun k => (e (m (k + j₁))).2.1
+  have hqx : ∀ k, ‖q k - x‖ ≠ 0 := fun k =>
+    norm_ne_zero_iff.mpr (sub_ne_zero.mpr (hj₁ _ (Nat.le_add_left _ _)))
+  have hq : Tendsto q atTop (𝓝 x) := hpx.comp (tendsto_add_atTop_nat j₁)
+  -- the scales `a k = 2|q k − x|` are positive and tend to `0`
+  let a : ℕ → ℝ := fun k => 2 * ‖q k - x‖
+  have ha : ∀ k, 0 < a k := fun k => mul_pos two_pos ((norm_nonneg _).lt_of_ne' (hqx k))
+  have ha0 : Tendsto a atTop (𝓝 0) := by
+    have h := (tendsto_iff_norm_sub_tendsto_zero.mp hq).const_mul 2
+    rwa [mul_zero] at h
+  -- indices `ks j` with `a (ks 0) ≤ (1 − |x|)/2` along which `a` strictly decreases
+  obtain ⟨k₀, hk₀⟩ := (ha0.eventually (ge_mem_nhds (half_pos (sub_pos.mpr hx)))).exists
+  have hnext : ∀ k, ∃ k', k < k' ∧ a k' < a k := fun k =>
+    ((eventually_gt_atTop k).and (ha0.eventually (gt_mem_nhds (ha k)))).exists
+  choose nxt hnxt using hnext
+  let ks : ℕ → ℕ := fun j => Nat.rec (motive := fun _ => ℕ) k₀ (fun _ kj => nxt kj) j
+  have hks : StrictMono ks := strictMono_nat_of_lt_succ fun j => (hnxt (ks j)).1
+  have haks : StrictAnti (a ∘ ks) := strictAnti_nat_of_succ_lt fun j => (hnxt (ks j)).2
+  have haks_le : ∀ j, a (ks j) ≤ (1 - ‖x‖) / 2 := fun j =>
+    (haks.antitone (Nat.zero_le j)).trans hk₀
+  -- the rescaled secants `w j = (q (ks j) − x)/a (ks j)` lie on the sphere `|w| = 1/2`
+  let w : ℕ → Euclid P := fun j => (a (ks j))⁻¹ • (q (ks j) - x)
+  have hw : ∀ j, ‖w j‖ = 1 / 2 := fun j => by
+    change ‖(2 * ‖q (ks j) - x‖)⁻¹ • (q (ks j) - x)‖ = 1 / 2
+    rw [norm_smul, norm_inv, Real.norm_of_nonneg (ha _).le, mul_inv, mul_assoc,
+      inv_mul_cancel₀ (hqx _), mul_one, one_div]
+  obtain ⟨z, hz, ψ, hψ, hwz⟩ := (isCompact_sphere (0 : Euclid P) (1 / 2)).tendsto_subseq
+    fun j => mem_sphere_zero_iff_norm.mpr (hw j)
+  refine ⟨x, fun i => a (ks (ψ i)), fun i => w (ψ i), z, hx, fun i => ha _,
+    haks.comp_strictMono hψ, ha0.comp (hks.comp hψ).tendsto_atTop, fun i => ?_, fun i => ?_,
+    fun i => ?_, fun i => hw _, hwz, mem_sphere_zero_iff_norm.mp hz⟩
+  · linarith [haks_le (ψ i), norm_nonneg x]
+  · linarith [haks_le (ψ i)]
+  · change x + a (ks (ψ i)) • (a (ks (ψ i)))⁻¹ • (q (ks (ψ i)) - x) ∈ S
+    rw [smul_inv_smul₀ (ha _).ne', add_sub_cancel]
+    exact hqS _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
