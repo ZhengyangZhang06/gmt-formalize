@@ -458,6 +458,199 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Lemma 2.6, end of step 2 and step 3 (pp. 111–112): a set `S` satisfying
+the cone condition `dist(y − z, T₀) ≤ ε |y − z|` (`ε ≤ 1/2`) and the height bound
+`dist(y, T₀) ≤ R₀` relative to `T₀ = q(ℝⁿ × {0})` lies in `q(graph f)` for a
+`2√ℓ ε`-Lipschitz `f : ℝⁿ → ℝ^ℓ` with `|f| ≤ R₀`.
+Write `q⁻¹ w = (a(w), b(w)) ∈ ℝⁿ × ℝ^ℓ`; then `|a(w)|² + |b(w)|² = |w|²` and
+`|b(w)| ≤ dist(w, T₀)`, so on `S` the cone condition gives `|b(y) − b(z)| ≤ 2ε |a(y) − a(z)|`.
+Thus `g(a(y)) = b(y)` is a well-defined `2ε`-Lipschitz function on `a(S)` with `|g| ≤ R₀`.
+Extend each coordinate of `g` by McShane (`LipschitzOnWith.extend_real`) to a `2ε`-Lipschitz
+function on `ℝⁿ`; the resulting `h` is `2√ℓ ε`-Lipschitz.  Compose with the radial retraction
+`π` onto the closed ball `B_{R₀}(0)` (`1`-Lipschitz, fixing the ball): `f = π ∘ h` agrees with `g`
+on `a(S)`, so `y = q(a(y), f(a(y)))` with `|a(y)| ≤ |y|`. -/
+theorem lgc_cone_graph_extension : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (S : Set (Amb n ℓ)) (ε R₀ : ℝ), 0 ≤ ε → ε ≤ 1 / 2 → 0 ≤ R₀ → (∀ y ∈ S, ∀ z ∈ S, infDist (y - z) (rotatedPlane q : Set (Amb n ℓ)) ≤ ε * ‖y - z‖) → (∀ y ∈ S, infDist y (rotatedPlane q : Set (Amb n ℓ)) ≤ R₀) → ∃ f : Rn n → Rn ℓ, LipschitzWith (Real.toNNReal (2 * Real.sqrt ℓ * ε)) f ∧ (∀ x, ‖f x‖ ≤ R₀) ∧ ∀ y ∈ S, ∃ x : Rn n, ‖x‖ ≤ ‖y‖ ∧ q (graphPoint x (f x)) = y := by
+  intro n ℓ q S ε R₀ hε0 hε1 hR hcone hheight
+  classical
+  -- Step 1: the coordinates `q⁻¹ w = (a w, b w)`.
+  let a : Amb n ℓ → Rn n := fun w => WithLp.toLp 2 (fun i => q.symm w (Fin.castAdd ℓ i))
+  let b : Amb n ℓ → Rn ℓ := fun w => WithLp.toLp 2 (fun j => q.symm w (Fin.natAdd n j))
+  have hab : ∀ w, graphPoint (a w) (b w) = q.symm w := by
+    intro w
+    simp only [graphPoint, a, b]
+    rw [Fin.append_castAdd_natAdd, WithLp.toLp_ofLp]
+  have hasub : ∀ y z, a (y - z) = a y - a z := by
+    intro y z
+    ext i
+    simp [a]
+  have hbsub : ∀ y z, b (y - z) = b y - b z := by
+    intro y z
+    ext j
+    simp [b]
+  have hnorm : ∀ w, ‖w‖ ^ 2 = ‖a w‖ ^ 2 + ‖b w‖ ^ 2 := by
+    intro w
+    rw [← q.symm.norm_map w]
+    simp only [EuclideanSpace.norm_sq_eq, Fin.sum_univ_add, a, b]
+  have hbdist : ∀ w, ‖b w‖ ≤ infDist w (rotatedPlane q : Set (Amb n ℓ)) := by
+    intro w
+    rw [Metric.le_infDist ⟨0, (rotatedPlane q).zero_mem⟩]
+    intro p hp
+    rw [SetLike.mem_coe, rotatedPlane, Submodule.mem_map] at hp
+    obtain ⟨h, hh, rfl⟩ := hp
+    have hh0 : ∀ j : Fin ℓ, h (Fin.natAdd n j) = 0 := by
+      intro j
+      induction hh using Submodule.span_induction with
+      | mem x hx =>
+        obtain ⟨i, rfl⟩ := hx
+        have hne : Fin.natAdd n j ≠ Fin.castAdd ℓ i := by
+          intro heq
+          have := congrArg Fin.val heq
+          simp only [Fin.val_natAdd, Fin.val_castAdd] at this
+          omega
+        simp [hne]
+      | zero => simp
+      | add x y _ _ hx hy => simp [hx, hy]
+      | smul c x _ hx => simp [hx]
+    have hbh : b (q.toLinearEquiv.toLinearMap h) = 0 := by
+      ext j
+      simp [b, hh0 j]
+    rw [dist_eq_norm]
+    have hle : ‖b (w - q.toLinearEquiv.toLinearMap h)‖ ≤ ‖w - q.toLinearEquiv.toLinearMap h‖ := by
+      have := hnorm (w - q.toLinearEquiv.toLinearMap h)
+      exact (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp
+        (by nlinarith [sq_nonneg ‖a (w - q.toLinearEquiv.toLinearMap h)‖])
+    rwa [hbsub, hbh, sub_zero] at hle
+  -- Step 2: on `S`, `|b y − b z| ≤ 2ε |a y − a z|`.
+  have hlipS : ∀ y ∈ S, ∀ z ∈ S, ‖b y - b z‖ ≤ 2 * ε * ‖a y - a z‖ := by
+    intro y hy z hz
+    have h1 : ‖b y - b z‖ ≤ ε * ‖y - z‖ := by
+      rw [← hbsub]
+      exact (hbdist (y - z)).trans (hcone y hy z hz)
+    have h2 : ‖y - z‖ ^ 2 = ‖a y - a z‖ ^ 2 + ‖b y - b z‖ ^ 2 := by
+      rw [hnorm, hasub, hbsub]
+    have h3 : ‖y - z‖ ≤ ‖a y - a z‖ + ‖b y - b z‖ := by
+      refine (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).mp ?_
+      nlinarith [norm_nonneg (a y - a z), norm_nonneg (b y - b z)]
+    have h4 : ε * ‖y - z‖ ≤ ε * (‖a y - a z‖ + ‖b y - b z‖) :=
+      mul_le_mul_of_nonneg_left h3 hε0
+    have h5 : 0 ≤ (1 / 2 - ε) * ‖b y - b z‖ :=
+      mul_nonneg (sub_nonneg.mpr hε1) (norm_nonneg _)
+    nlinarith
+  -- Step 3: `g (a y) = b y` on `a(S)`.
+  let g : Rn n → Rn ℓ := fun x => b (Function.invFunOn a S x)
+  have hgS : ∀ y ∈ S, g (a y) = b y := by
+    intro y hy
+    have hex : ∃ y' ∈ S, a y' = a y := ⟨y, hy, rfl⟩
+    have := hlipS _ (Function.invFunOn_mem hex) y hy
+    rw [Function.invFunOn_eq hex, sub_self, norm_zero, mul_zero] at this
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp this)
+  have hglip : ∀ x ∈ a '' S, ∀ x' ∈ a '' S, ‖g x - g x'‖ ≤ 2 * ε * ‖x - x'‖ := by
+    rintro _ ⟨y, hy, rfl⟩ _ ⟨z, hz, rfl⟩
+    rw [hgS y hy, hgS z hz]
+    exact hlipS y hy z hz
+  have hgb : ∀ y ∈ S, ‖b y‖ ≤ R₀ := fun y hy => (hbdist y).trans (hheight y hy)
+  -- Step 4: componentwise McShane extension `h`, which is `√ℓ (2ε)`-Lipschitz.
+  obtain ⟨h, hhA, hhL⟩ : ∃ h : Rn n → Rn ℓ,
+      (∀ x ∈ a '' S, h x = g x) ∧ ∀ x z, ‖h x - h z‖ ≤ Real.sqrt ℓ * (2 * ε) * ‖x - z‖ := by
+    have hM : 0 ≤ 2 * ε := by linarith
+    have hj : ∀ j : Fin ℓ, LipschitzOnWith (Real.toNNReal (2 * ε)) (fun x => g x j) (a '' S) := by
+      intro j
+      refine LipschitzOnWith.of_dist_le_mul fun x hx z hz => ?_
+      rw [Real.coe_toNNReal _ hM, Real.dist_eq, dist_eq_norm]
+      calc |g x j - g z j| = ‖(g x - g z) j‖ := by simp [Real.norm_eq_abs]
+        _ ≤ ‖g x - g z‖ := PiLp.norm_apply_le _ _
+        _ ≤ 2 * ε * ‖x - z‖ := hglip x hx z hz
+    choose H hHL hHeq using fun j => (hj j).extend_real
+    refine ⟨fun x => WithLp.toLp 2 (fun j => H j x), ?_, ?_⟩
+    · intro x hx
+      ext j
+      simp [(hHeq j hx).symm]
+    · intro x z
+      have hcoord : ∀ j, |H j x - H j z| ≤ 2 * ε * ‖x - z‖ := by
+        intro j
+        have := (hHL j).dist_le_mul x z
+        rwa [Real.coe_toNNReal _ hM, Real.dist_eq, dist_eq_norm] at this
+      have hsq : ‖(WithLp.toLp 2 (fun j => H j x) : Rn ℓ) - WithLp.toLp 2 (fun j => H j z)‖ ^ 2
+          ≤ (ℓ : ℝ) * (2 * ε * ‖x - z‖) ^ 2 := by
+        rw [EuclideanSpace.norm_sq_eq]
+        calc ∑ j : Fin ℓ,
+              ‖((WithLp.toLp 2 (fun j => H j x) : Rn ℓ) - WithLp.toLp 2 (fun j => H j z)) j‖ ^ 2
+            ≤ ∑ _j : Fin ℓ, (2 * ε * ‖x - z‖) ^ 2 := by
+              refine Finset.sum_le_sum fun j _ => ?_
+              simp only [PiLp.sub_apply, Real.norm_eq_abs]
+              exact pow_le_pow_left₀ (abs_nonneg _) (hcoord j) 2
+          _ = (ℓ : ℝ) * (2 * ε * ‖x - z‖) ^ 2 := by simp
+      have hnn : 0 ≤ Real.sqrt ℓ * (2 * ε) * ‖x - z‖ := by positivity
+      have e : (Real.sqrt ℓ * (2 * ε) * ‖x - z‖) ^ 2 = (ℓ : ℝ) * (2 * ε * ‖x - z‖) ^ 2 := by
+        rw [mul_assoc, mul_pow, Real.sq_sqrt (Nat.cast_nonneg _)]
+      exact (pow_le_pow_iff_left₀ (norm_nonneg _) hnn two_ne_zero).mp (by rw [e]; exact hsq)
+  -- Step 5: the radial retraction `P` onto the closed ball `B_{R₀}(0)` is `1`-Lipschitz.
+  obtain ⟨P, hPfix, hPL, hPb⟩ : ∃ P : Rn ℓ → Rn ℓ,
+      (∀ v, ‖v‖ ≤ R₀ → P v = v) ∧ (∀ v w, ‖P v - P w‖ ≤ ‖v - w‖) ∧ ∀ v, ‖P v‖ ≤ R₀ := by
+    let P : Rn ℓ → Rn ℓ := fun v => if ‖v‖ ≤ R₀ then v else (R₀ / ‖v‖) • v
+    have hPb : ∀ v, ‖P v‖ ≤ R₀ := by
+      intro v
+      by_cases hv : ‖v‖ ≤ R₀
+      · simp [P, hv]
+      · have hpos : 0 < ‖v‖ := lt_of_le_of_lt hR (not_le.mp hv)
+        simp only [P, hv, ite_false, norm_smul, Real.norm_eq_abs, abs_div, abs_of_nonneg hR,
+          abs_norm]
+        rw [div_mul_cancel₀ _ hpos.ne']
+    -- the variational inequality of the nearest-point projection onto the ball
+    have hvar : ∀ v w : Rn ℓ, ‖w‖ ≤ R₀ → inner ℝ (v - P v) (w - P v) ≤ 0 := by
+      intro v w hw
+      by_cases hv : ‖v‖ ≤ R₀
+      · simp [P, hv]
+      · have hpos : 0 < ‖v‖ := lt_of_le_of_lt hR (not_le.mp hv)
+        have hPv : P v = (R₀ / ‖v‖) • v := by simp [P, hv]
+        rw [hPv]
+        have e1 : v - (R₀ / ‖v‖) • v = (1 - R₀ / ‖v‖) • v := by rw [sub_smul, one_smul]
+        rw [e1, inner_smul_left, inner_sub_right, inner_smul_right, real_inner_self_eq_norm_sq]
+        have hcs : inner ℝ v w ≤ ‖v‖ * ‖w‖ := real_inner_le_norm v w
+        have ht1 : R₀ / ‖v‖ < 1 := (div_lt_one hpos).mpr (not_le.mp hv)
+        have e2 : R₀ / ‖v‖ * ‖v‖ ^ 2 = R₀ * ‖v‖ := by field_simp
+        simp only [RCLike.conj_to_real]
+        rw [e2]
+        have h3 : inner ℝ v w - R₀ * ‖v‖ ≤ 0 := by nlinarith [norm_nonneg v]
+        have h4 : 0 ≤ 1 - R₀ / ‖v‖ := by linarith
+        exact mul_nonpos_of_nonneg_of_nonpos h4 h3
+    refine ⟨P, fun v hv => by simp [P, hv], ?_, hPb⟩
+    intro v w
+    have h1 := hvar v (P w) (hPb w)
+    have h2 := hvar w (P v) (hPb v)
+    have key : ‖P v - P w‖ ^ 2 ≤ inner ℝ (v - w) (P v - P w) := by
+      have e : inner ℝ (v - P v) (P w - P v) + inner ℝ (w - P w) (P v - P w)
+          = ‖P v - P w‖ ^ 2 - inner ℝ (v - w) (P v - P w) := by
+        rw [← real_inner_self_eq_norm_sq]
+        have : P w - P v = -(P v - P w) := by abel
+        rw [this, inner_neg_right]
+        simp only [inner_sub_left, inner_sub_right]
+        ring
+      linarith
+    have hcs := real_inner_le_norm (v - w) (P v - P w)
+    rcases (norm_nonneg (P v - P w)).eq_or_lt with h0 | hpos
+    · rw [← h0]; exact norm_nonneg _
+    · nlinarith
+  -- Step 6: `f = P ∘ h` and `y = q (a y, f (a y))` for `y ∈ S`.
+  refine ⟨fun x => P (h x), ?_, fun x => hPb _, ?_⟩
+  · have hK : 0 ≤ 2 * Real.sqrt ℓ * ε := by positivity
+    refine LipschitzWith.of_dist_le_mul fun x z => ?_
+    rw [Real.coe_toNNReal _ hK, dist_eq_norm, dist_eq_norm]
+    calc ‖P (h x) - P (h z)‖ ≤ ‖h x - h z‖ := hPL _ _
+      _ ≤ Real.sqrt ℓ * (2 * ε) * ‖x - z‖ := hhL x z
+      _ = 2 * Real.sqrt ℓ * ε * ‖x - z‖ := by ring
+  · intro y hy
+    refine ⟨a y, ?_, ?_⟩
+    · have := hnorm y
+      exact (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp
+        (by nlinarith [sq_nonneg ‖b y‖])
+    · show q (graphPoint (a y) (P (h (a y)))) = y
+      rw [hhA (a y) ⟨y, hy, rfl⟩, hgS y hy, hPfix _ (hgb y hy), hab, q.apply_symm_apply]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
