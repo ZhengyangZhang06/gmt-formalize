@@ -458,6 +458,41 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Elliptic bootstrap in the proof of Simon Ch. 5, Theorem 7.1, second assertion (p. 127): if `h`
+is `C^{m+1}` on the open set `V` and `0 < α ≤ 1`, then `Dᵐh` is `α`-Hölder on every compact
+`K ⊆ V`.  `Dᵐh` is `C¹` near each point of `K`, so Lipschitz near it by the mean value inequality,
+hence Lipschitz on the compact `K`; and `‖x - y‖ ≤ D^{1-α} ‖x - y‖^α` for `x, y ∈ K`,
+`‖x - y‖ ≤ D`. -/
+theorem dohr_eb_holder_of_contDiffOn_succ : ∀ (E₁ E₂ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] (m : ℕ) (α : ℝ) (h : E₁ → E₂) (V : Set E₁), 0 < α → α ≤ 1 → IsOpen V → ContDiffOn ℝ (m + 1 : ℕ) h V → ∀ K : Set E₁, IsCompact K → K ⊆ V → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m h x - iteratedFDeriv ℝ m h y‖ ≤ C * ‖x - y‖ ^ α := by
+  intro E₁ E₂ _ _ _ _ m α h V hα hα1 hV hh K hK hKV
+  -- Step 1: `Dᵐh` is `C¹` near every point of `K ⊆ V`, hence locally Lipschitz on `K`.
+  have hloc : LocallyLipschitzOn K (iteratedFDeriv ℝ m h) := by
+    intro x hx
+    have hx' : ContDiffAt ℝ 1 (iteratedFDeriv ℝ m h) x :=
+      (hh.contDiffAt (hV.mem_nhds (hKV hx))).iteratedFDeriv_right (by norm_cast; omega)
+    obtain ⟨L, t, ht, hL⟩ := hx'.exists_lipschitzOnWith
+    exact ⟨L, t, mem_nhdsWithin_of_mem_nhds ht, hL⟩
+  -- Steps 2–4: by compactness, `Dᵐh` is Lipschitz on `K`.
+  obtain ⟨L, hL⟩ := hloc.exists_lipschitzOnWith_of_compact hK
+  -- Step 5: `K` is bounded, and Lipschitz on a bounded set gives `α`-Hölder.
+  obtain ⟨D, hD⟩ := Metric.isBounded_iff.1 hK.isBounded
+  refine ⟨L * D ^ (1 - α), fun x hx y hy => ?_⟩
+  have h0 : 0 ≤ ‖x - y‖ := norm_nonneg _
+  have h1 : 1 - α + α ≠ 0 := by rw [sub_add_cancel]; exact one_ne_zero
+  have hxy : ‖x - y‖ ≤ D := by rw [← dist_eq_norm]; exact hD hx hy
+  have hd : ‖x - y‖ ≤ D ^ (1 - α) * ‖x - y‖ ^ α :=
+    calc ‖x - y‖ = ‖x - y‖ ^ (1 - α) * ‖x - y‖ ^ α := by
+          rw [← Real.rpow_add' h0 h1, sub_add_cancel, Real.rpow_one]
+      _ ≤ D ^ (1 - α) * ‖x - y‖ ^ α :=
+          mul_le_mul_of_nonneg_right (Real.rpow_le_rpow h0 hxy (sub_nonneg.2 hα1))
+            (Real.rpow_nonneg h0 α)
+  rw [mul_assoc]
+  exact hL.norm_sub_le_of_le hx hy hd
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
