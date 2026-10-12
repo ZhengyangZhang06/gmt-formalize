@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "daa588c4076ac07bafc58f80fdcae0d9c4479b3491d0c1fa202695aa5ea4acad",
+  "git_delta": {
+    "base_commit": "886f6704dc1ec4b4ff080822d0376e2545faaa01",
+    "candidate_commit": "246213c2e7634f376cfe5afa167524625018789f",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_cri_hausdorff_dilation_lintegral",
+    "diff_sha256": "3662a05baecf8233b26e275de89bbf4bfbdf817794969a941f75fc676d1aa9bc",
+    "source_sha256": "7e6651dc50dc77f059ad6053f40f9abeebc42a770a0dd6ec725031798842e18b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_cri_hausdorff_dilation_lintegral",
+      "statement": "∀ (N n : ℕ) (s : ℝ) (D : Set (Euclidean N)) (f : Euclidean N → ℝ≥0∞), 0 < s → ∫⁻ x in D, f x ∂(μHE[n] : Measure (Euclidean N)) = ENNReal.ofReal s ^ n * ∫⁻ w in {w : Euclidean N | s • w ∈ D}, f (s • w) ∂(μHE[n] : Measure (Euclidean N))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
