@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dbe65f098d154cdb73cd43bbf3524679e025b367448bbbd690f2bd6779fd899c",
+  "git_delta": {
+    "base_commit": "91725bc6273f8c4b48ea9977ee2458d60f2167ef",
+    "candidate_commit": "702e7082a5a7012f7a8f6efd9d272697e426f50b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_imrep_compact_measure_ne_top",
+    "diff_sha256": "66c2ca781b7484826c64a1378c29d151981cf5ba2426a17f5226c6d6dcb721da",
+    "source_sha256": "ae61fa5d5f07ed11c1936db288099c585c77cc2ceeca3a310f74cace74a002c5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_imrep_compact_measure_ne_top",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (K : Set (Euclid P)), IsCompact K → K ⊆ U → μHE[n] (R.carrier ∩ K) ≠ ∞ ∧ R.measure K ≠ ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
