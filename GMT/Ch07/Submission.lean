@@ -539,6 +539,25 @@ theorem Submission.adr_radial_segment_hausdorff_pos : ∀ (P : ℕ) (S : Set (Eu
   calc (0 : ℝ≥0∞) < edist ((1 / 2 : ℝ) • z) z := edist_pos.mpr hne
     _ = μH[1] (segment ℝ ((1 / 2 : ℝ) • z) z) := (hausdorffMeasure_segment _ _).symm
     _ ≤ μH[1] (S ∩ ball (0 : Euclid P) 1) := measure_mono hsub
+/-- **Lemma T** (Simon, proof of A.4: limits of singular points are singular).  Let `F` satisfy
+A.3c (`sing φ` closed) and A.3(3) (upper semicontinuity of `sing` under weak convergence).  If
+`φ_k ∈ F` converge weakly to `ψ ∈ F`, `z_k ∈ B_1(0) ∩ sing φ_k` and `z_k → z`, then `z ∈ sing ψ`:
+A.3(3) with `ε / 2` puts each `z_k` with `k` large within `ε / 2` of `sing ψ`, so `z` lies within
+`ε` of `sing ψ` for every `ε > 0`, and `sing ψ` is closed. -/
+theorem Submission.adr_sing_mem_of_tendsto : ∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → ∀ ψ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) → ∀ (zs : ℕ → Euclid P) (z : Euclid P), (∀ k, zs k ∈ ball (0 : Euclid P) 1 ∩ sing (φs k)) → Tendsto zs atTop (𝓝 z) → z ∈ sing ψ := by
+  intro P n Q F sing hclosed husc ψ hψ φs hφs hweak zs z hzs hz
+  rw [← (hclosed ψ hψ).closure_eq, Metric.mem_closure_iff]
+  intro ε hε
+  -- A.3(3) with `ε / 2` puts `z_k` within `ε / 2` of `sing ψ` for `k ≥ k₀`
+  obtain ⟨k₀, hk₀⟩ := husc ψ hψ φs hφs hweak (ε / 2) (half_pos hε)
+  -- `z_k → z` puts `z_k` within `ε / 2` of `z` for `k ≥ k₁`
+  obtain ⟨k₁, hk₁⟩ := Metric.tendsto_atTop.mp hz (ε / 2) (half_pos hε)
+  obtain ⟨v, hv, hzv⟩ := hk₀ (max k₀ k₁) (le_max_left _ _) (hzs (max k₀ k₁))
+  have hz' : dist z (zs (max k₀ k₁)) < ε / 2 := by
+    rw [dist_comm]
+    exact hk₁ (max k₀ k₁) (le_max_right _ _)
+  exact ⟨v, hv, (dist_triangle z (zs (max k₀ k₁)) v).trans_lt
+    ((add_lt_add hz' hzv).trans_eq (add_halves ε))⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
