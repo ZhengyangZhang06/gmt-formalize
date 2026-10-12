@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1.uniform_taylor_remainder-a1.remainder_sup_control-a1",
+  "parent_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1.uniform_taylor_remainder-a1",
+  "depth": 5,
+  "title": "Borel majorants of the first-order Taylor remainder that vanish pointwise on the differentiability set",
+  "statement": "Let n ∈ ℕ, K ∈ ℝ≥0, and let f : ℝⁿ → ℝ (ℝⁿ = EuclideanSpace ℝ (Fin n)) be K-Lipschitz. Let C ⊆ ℝⁿ be closed and suppose f is differentiable at every point of C; write Df(x) := fderiv ℝ f x. Then there are functions η_k : ℝⁿ → ℝ (k ∈ ℕ) such that: (i) every η_k is Borel measurable; (ii) η_k(x) → 0 as k → ∞ for every x ∈ C; (iii) for every k ∈ ℕ and all x, y ∈ C with 0 < |y − x| < 1/(k+1), |f(y) − f(x) − Df(x)(y − x)| ≤ η_k(x)·|y − x|.",
+  "lean_statement": "∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ C : Set (Rn n), IsClosed C → (∀ x ∈ C, DifferentiableAt ℝ f x) → ∃ η : ℕ → Rn n → ℝ, (∀ k, Measurable (η k)) ∧ (∀ x ∈ C, Tendsto (fun k => η k x) atTop (𝓝 0)) ∧ ∀ k : ℕ, ∀ x ∈ C, ∀ y ∈ C, 0 < ‖y - x‖ → ‖y - x‖ < 1 / ((k : ℝ) + 1) → ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ η k x * ‖y - x‖",
+  "lean_name": "rsod_c1ab_utr_remainder_sup_control",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-rectifiable-c1-cover-a1-c1-approx-ball-d185427832-a1"
+}
