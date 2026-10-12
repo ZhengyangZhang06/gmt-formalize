@@ -482,6 +482,74 @@ theorem Submission.bv_translate_sub_lintegral_le_of_tendsto : ∀ (n : ℕ) (F :
     have h := (he.add (tendsto_const_nhds : Tendsto (fun _ : ℕ ↦ C) atTop (𝓝 C))).add he
     rwa [zero_add, add_zero] at h
   exact ge_of_tendsto' hlim hbound
+/-- **Kernel average of translations** (the mollification estimate in the proof of Simon Ch. 2,
+Theorem 2.6, p. 50; cf. [GT01, Thm 7.22]). Let `F ∈ L¹(ℝⁿ)` and let `ρ` be a continuous kernel
+with `ρ ≥ 0`, `support ρ ⊆ ball 0 σ` and `∫ ρ = 1`. If `∫_Q |F(x - t) - F(x)| dx ≤ C` for every
+`|t| < σ`, then `∫_Q |ρ * F - F| ≤ C`, for any `Q ⊆ ℝⁿ` and `C ∈ [0, ∞]`. Since `∫ ρ = 1`,
+`(ρ * F)(x) - F(x) = ∫ ρ(t) (F(x - t) - F(x)) dt`. Integrate over `Q`, swap the integrals by
+Tonelli (joint measurability via quasi-measure-preserving subtraction) and use the bound for each
+`t` with `ρ t ≠ 0`. Then `∫ ρ = 1` bounds the total by `C`. -/
+theorem Submission.bv_convolution_sub_lintegral_le_of_translate : ∀ (n : ℕ) (F ρ : Rn n → ℝ) (Q : Set (Rn n)) (σ : ℝ) (C : ℝ≥0∞), Integrable F volume → Continuous ρ → (∀ x, 0 ≤ ρ x) → Function.support ρ ⊆ ball 0 σ → ∫ x, ρ x = 1 → (∀ t : Rn n, ‖t‖ < σ → ∫⁻ x in Q, ‖F (x - t) - F x‖ₑ ≤ C) → ∫⁻ x in Q, ‖convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x - F x‖ₑ ≤ C := by
+  intro n F ρ Q σ C hF hρc hρn hρs hρi hT
+  -- Step 1 (kernel facts): `ρ` is supported in the compact `closedBall 0 σ`, so it is integrable.
+  have hρcs : HasCompactSupport ρ :=
+    HasCompactSupport.of_support_subset_isCompact (isCompact_closedBall (0 : Rn n) σ)
+      (hρs.trans ball_subset_closedBall)
+  have hρint : Integrable ρ volume := hρc.integrable_of_hasCompactSupport hρcs
+  -- Step 2 (pointwise representation): since `∫ ρ = 1`,
+  -- `(ρ * F)(x) - F(x) = ∫ ρ(t) (F(x - t) - F(x)) dt`.
+  have hpt : ∀ x, ‖convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x - F x‖ₑ ≤
+      ∫⁻ t, ‖ρ t‖ₑ * ‖F (x - t) - F x‖ₑ := by
+    intro x
+    have h1 : Integrable (fun t ↦ ρ t * F (x - t)) volume := by
+      simpa [ConvolutionExistsAt] using
+        hρcs.convolutionExists_left (ContinuousLinearMap.lsmul ℝ ℝ) hρc hF.locallyIntegrable x
+    have h2 : Integrable (fun t ↦ ρ t * F x) volume := hρint.mul_const _
+    have heq : convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x - F x =
+        ∫ t, (ρ t * F (x - t) - ρ t * F x) := by
+      rw [integral_sub h1 h2, integral_mul_const, hρi, one_mul, convolution_lsmul]
+      simp only [smul_eq_mul]
+    rw [heq]
+    refine (enorm_integral_le_lintegral_enorm _).trans (le_of_eq ?_)
+    refine lintegral_congr fun t ↦ ?_
+    rw [← mul_sub, enorm_mul]
+  -- Step 3 (joint measurability): `(x, t) ↦ x - t` and `(x, t) ↦ x` are quasi-measure-preserving,
+  -- and `volume.restrict Q ⊗ volume ≪ volume ⊗ volume`.
+  have hmeas : AEMeasurable (Function.uncurry fun x t ↦ ‖ρ t‖ₑ * ‖F (x - t) - F x‖ₑ)
+      ((volume.restrict Q).prod volume) := by
+    have hsub : Measure.QuasiMeasurePreserving (fun p : Rn n × Rn n ↦ p.1 - p.2)
+        (volume.prod volume) volume :=
+      quasiMeasurePreserving_sub_of_right_invariant volume volume
+    have hA : AEStronglyMeasurable (fun p : Rn n × Rn n ↦ F (p.1 - p.2) - F p.1)
+        (volume.prod volume) :=
+      (hF.aestronglyMeasurable.comp_quasiMeasurePreserving hsub).sub
+        (hF.aestronglyMeasurable.comp_quasiMeasurePreserving Measure.quasiMeasurePreserving_fst)
+    have hB : AEMeasurable (fun p : Rn n × Rn n ↦ ‖ρ p.2‖ₑ * ‖F (p.1 - p.2) - F p.1‖ₑ)
+        (volume.prod volume) :=
+      (hρc.measurable.enorm.comp measurable_snd).aemeasurable.mul hA.enorm
+    exact hB.mono_ac ((Measure.absolutelyContinuous_of_le Measure.restrict_le_self).prod
+      Measure.AbsolutelyContinuous.rfl)
+  -- Total mass of the kernel: `∫⁻ ‖ρ‖ₑ = ofReal (∫ ρ) = 1`.
+  have hρ1 : ∫⁻ t, ‖ρ t‖ₑ = 1 := by
+    have h1 := ofReal_integral_eq_lintegral_ofReal hρint (Eventually.of_forall hρn)
+    rw [hρi, ENNReal.ofReal_one] at h1
+    rw [h1]
+    exact lintegral_congr fun t ↦ Real.enorm_eq_ofReal (hρn t)
+  -- Steps 4–6: integrate over `Q`, swap by Tonelli, and use the translation bound where
+  -- `ρ t ≠ 0`, i.e. for `‖t‖ < σ`.
+  calc ∫⁻ x in Q, ‖convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x - F x‖ₑ
+      ≤ ∫⁻ x in Q, ∫⁻ t, ‖ρ t‖ₑ * ‖F (x - t) - F x‖ₑ := lintegral_mono hpt
+    _ = ∫⁻ t, ∫⁻ x in Q, ‖ρ t‖ₑ * ‖F (x - t) - F x‖ₑ := lintegral_lintegral_swap hmeas
+    _ = ∫⁻ t, ‖ρ t‖ₑ * ∫⁻ x in Q, ‖F (x - t) - F x‖ₑ :=
+        lintegral_congr fun t ↦ lintegral_const_mul' _ _ enorm_ne_top
+    _ ≤ ∫⁻ t, ‖ρ t‖ₑ * C := by
+        refine lintegral_mono fun t ↦ ?_
+        by_cases ht : ρ t = 0
+        · simp [ht]
+        · gcongr
+          exact hT t (mem_ball_zero_iff.1 (hρs ht))
+    _ = (∫⁻ t, ‖ρ t‖ₑ) * C := lintegral_mul_const'' _ hρint.aestronglyMeasurable.enorm
+    _ = C := by rw [hρ1, one_mul]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
