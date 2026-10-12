@@ -451,6 +451,156 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Radial cut-off** (step 1 of the tilt-excess/height estimate, Simon 5.2.1: `ζ ≡ 1` in
+`B_{ρ/2}`, `ζ ≡ 0` outside `B_ρ`, `|∇ζ| ≤ 3/ρ`).  For `r > 0` there is a `C¹` function `ζ` on `ℝᴾ`
+with `0 ≤ ζ ≤ 1`, `ζ = 1` on `B̄_{r/2}(ξ)`, `tsupport ζ ⊆ B̄_r(ξ)` and `‖Dζ‖ ≤ 3/r`.  Take
+`ζ(x) = φ(‖x − ξ‖/r)` for a `C^∞` profile `φ` that is `1` on `(−∞, 1/2]`, `0` on `[1, ∞)` and
+`3`-Lipschitz: `φ(σ) = 1 − c⁻¹∫_{1/2}^σ g`, where `g` is a smooth bump on `[1/2, 1]` equal to `1`
+on `[7/12, 11/12]` and `c = ∫_{1/2}^1 g ≥ 1/3`.  Then `ζ` is constant near `ξ` and smooth away
+from `ξ`, and `(3/r)`-Lipschitz by the reverse triangle inequality. -/
+theorem Submission.dorag_th_radial_cutoff : ∀ (P : ℕ) (ξ : Euclid P) (r : ℝ), 0 < r → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ x ∈ closedBall ξ (r / 2), ζ x = 1) ∧ tsupport ζ ⊆ closedBall ξ r ∧ ∀ x, ‖fderiv ℝ ζ x‖ ≤ 3 / r := by
+  intro P ξ r hr
+  -- Steps 1–2: an admissible profile `φ`, the smoothTransition primitive of the Remark
+  obtain ⟨φ, hφ_smooth, hφ_bounds, hφ_one, hφ_zero, hφ_lip⟩ : ∃ φ : ℝ → ℝ,
+      ContDiff ℝ (⊤ : ℕ∞) φ ∧ (∀ t, 0 ≤ φ t ∧ φ t ≤ 1) ∧ (∀ t, t ≤ 1 / 2 → φ t = 1) ∧
+      (∀ t, 1 ≤ t → φ t = 0) ∧ LipschitzWith 3 φ := by
+    -- the bump `g(t) = S(12(t − 1/2)) S(12(1 − t))`
+    set g : ℝ → ℝ := fun t =>
+      Real.smoothTransition (12 * (t - 1 / 2)) * Real.smoothTransition (12 * (1 - t)) with hg_eq
+    have hg_smooth : ContDiff ℝ (⊤ : ℕ∞) g := by
+      have h₁ : ContDiff ℝ (⊤ : ℕ∞) fun t : ℝ => 12 * (t - 1 / 2) := by fun_prop
+      have h₂ : ContDiff ℝ (⊤ : ℕ∞) fun t : ℝ => 12 * (1 - t) := by fun_prop
+      exact (Real.smoothTransition.contDiff.comp h₁).mul (Real.smoothTransition.contDiff.comp h₂)
+    have hg_cont : Continuous g := hg_smooth.continuous
+    have hg_int : ∀ a b : ℝ, IntervalIntegrable g volume a b := fun a b =>
+      hg_cont.intervalIntegrable a b
+    have hg_nonneg : ∀ t, 0 ≤ g t := fun t =>
+      mul_nonneg (Real.smoothTransition.nonneg _) (Real.smoothTransition.nonneg _)
+    have hg_le_one : ∀ t, g t ≤ 1 := fun t =>
+      (mul_le_of_le_one_left (Real.smoothTransition.nonneg _) (Real.smoothTransition.le_one _)).trans
+        (Real.smoothTransition.le_one _)
+    have hg_left : ∀ t, t ≤ 1 / 2 → g t = 0 := fun t ht => by
+      simp only [hg_eq]
+      rw [Real.smoothTransition.zero_of_nonpos (by linarith), zero_mul]
+    have hg_right : ∀ t, 1 ≤ t → g t = 0 := fun t ht => by
+      simp only [hg_eq]
+      rw [Real.smoothTransition.zero_of_nonpos (by linarith : 12 * (1 - t) ≤ 0), mul_zero]
+    have hg_mid : ∀ t, 7 / 12 ≤ t → t ≤ 11 / 12 → g t = 1 := fun t h₁ h₂ => by
+      simp only [hg_eq]
+      rw [Real.smoothTransition.one_of_one_le (by linarith),
+        Real.smoothTransition.one_of_one_le (by linarith), mul_one]
+    -- `c = ∫_{1/2}^1 g ≥ ∫_{7/12}^{11/12} 1 = 1/3`, so `c⁻¹ ≤ 3`
+    set c : ℝ := ∫ s in (1 / 2 : ℝ)..1, g s with hc_eq
+    have hc_ge : 1 / 3 ≤ c := by
+      have h : ∫ s in (7 / 12 : ℝ)..(11 / 12), g s = 1 / 3 := by
+        rw [intervalIntegral.integral_congr (g := fun _ => (1 : ℝ)) ?_]
+        · simp only [intervalIntegral.integral_const, smul_eq_mul, mul_one]
+          norm_num
+        · intro s hs
+          rw [uIcc_of_le (by norm_num)] at hs
+          exact hg_mid s hs.1 hs.2
+      rw [← h]
+      exact intervalIntegral.integral_mono_interval (by norm_num) (by norm_num) (by norm_num)
+        (ae_of_all _ hg_nonneg) (hg_int _ _)
+    have hc_pos : 0 < c := by linarith
+    have hcinv_le : c⁻¹ ≤ 3 := by
+      rw [inv_le_comm₀ hc_pos (by norm_num)]
+      linarith
+    -- the primitive `F(t) = ∫_{1/2}^t g`, with `F' = g`
+    set F : ℝ → ℝ := fun t => ∫ s in (1 / 2 : ℝ)..t, g s with hF_eq
+    have hF_deriv : ∀ t, HasDerivAt F (g t) t := fun t =>
+      (hg_cont.integral_hasStrictDerivAt (1 / 2) t).hasDerivAt
+    have hF_smooth : ContDiff ℝ (⊤ : ℕ∞) F :=
+      contDiff_infty_iff_deriv.2 ⟨fun t => (hF_deriv t).differentiableAt,
+        (funext fun t => (hF_deriv t).deriv : deriv F = g) ▸ hg_smooth⟩
+    have hF_left : ∀ t, t ≤ 1 / 2 → F t = 0 := fun t ht => by
+      simp only [hF_eq]
+      rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) ?_]
+      · simp
+      · intro s hs
+        rw [uIcc_of_ge ht] at hs
+        exact hg_left s hs.2
+    have hF_right : ∀ t, 1 ≤ t → F t = c := fun t ht => by
+      simp only [hF_eq, hc_eq]
+      rw [← intervalIntegral.integral_add_adjacent_intervals (hg_int (1 / 2) 1) (hg_int 1 t)]
+      have h : ∫ s in (1 : ℝ)..t, g s = 0 := by
+        rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) ?_]
+        · simp
+        · intro s hs
+          rw [uIcc_of_le ht] at hs
+          exact hg_right s hs.1
+      rw [h, add_zero]
+    have hF_bounds : ∀ t, 0 ≤ F t ∧ F t ≤ c := fun t => by
+      rcases le_total t (1 / 2) with ht | ht
+      · rw [hF_left t ht]
+        exact ⟨le_rfl, hc_pos.le⟩
+      rcases le_total 1 t with ht' | ht'
+      · rw [hF_right t ht']
+        exact ⟨hc_pos.le, le_rfl⟩
+      exact ⟨intervalIntegral.integral_nonneg ht fun u _ => hg_nonneg u,
+        intervalIntegral.integral_mono_interval le_rfl ht ht' (ae_of_all _ hg_nonneg) (hg_int _ _)⟩
+    -- `φ = 1 − c⁻¹F`, with `φ' = −c⁻¹g`
+    have hφ_deriv : ∀ t, HasDerivAt (fun t => 1 - c⁻¹ * F t) (-(c⁻¹ * g t)) t := fun t => by
+      simpa using ((hF_deriv t).const_mul c⁻¹).const_sub 1
+    refine ⟨fun t => 1 - c⁻¹ * F t, contDiff_const.sub (contDiff_const.mul hF_smooth), ?_, ?_, ?_, ?_⟩
+    · intro t
+      obtain ⟨h₀, h₁⟩ := hF_bounds t
+      have hci : 0 ≤ c⁻¹ := inv_nonneg.2 hc_pos.le
+      have h : c⁻¹ * F t ≤ 1 := by
+        calc c⁻¹ * F t ≤ c⁻¹ * c := mul_le_mul_of_nonneg_left h₁ hci
+          _ = 1 := inv_mul_cancel₀ hc_pos.ne'
+      exact ⟨by linarith, by linarith [mul_nonneg hci h₀]⟩
+    · intro t ht
+      simp only [hF_left t ht, mul_zero, sub_zero]
+    · intro t ht
+      simp only [hF_right t ht, inv_mul_cancel₀ hc_pos.ne', sub_self]
+    · refine lipschitzWith_of_nnnorm_deriv_le (fun t => (hφ_deriv t).differentiableAt) fun t => ?_
+      rw [(hφ_deriv t).deriv, ← NNReal.coe_le_coe, coe_nnnorm, Real.norm_eq_abs, abs_neg,
+        abs_of_nonneg (mul_nonneg (inv_nonneg.2 hc_pos.le) (hg_nonneg t))]
+      calc c⁻¹ * g t ≤ c⁻¹ * 1 := mul_le_mul_of_nonneg_left (hg_le_one t) (inv_nonneg.2 hc_pos.le)
+        _ ≤ 3 := by rw [mul_one]; exact hcinv_le
+        _ = ((3 : NNReal) : ℝ) := by norm_num
+  -- Step 3: `ζ(x) = φ(‖x − ξ‖/r)`.  Step 6: `ζ` is `C^∞` — constant `1` on `B_{r/2}(ξ)`, and
+  -- `φ` composed with the smooth map `‖· − ξ‖/r` on `ℝᴾ \ {ξ}`
+  have hC : ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => φ (‖x - ξ‖ / r)) := by
+    rw [contDiff_iff_contDiffAt]
+    intro x
+    rcases eq_or_ne x ξ with rfl | hx
+    · refine (contDiffAt_const (c := (1 : ℝ))).congr_of_eventuallyEq ?_
+      filter_upwards [Metric.ball_mem_nhds x (half_pos hr)] with y hy
+      rw [Metric.mem_ball, dist_eq_norm] at hy
+      exact hφ_one _ ((div_le_iff₀ hr).2 (by linarith))
+    · have h : ContDiffAt ℝ (⊤ : ℕ∞) (fun y : Euclid P => ‖y - ξ‖ / r) x :=
+        ((contDiffAt_id.sub contDiffAt_const).norm ℝ (sub_ne_zero.2 hx)).div_const r
+      exact hφ_smooth.contDiffAt.comp x h
+  -- Step 7: `ζ` is `(3/r)`-Lipschitz (`φ` is `3`-Lipschitz, reverse triangle inequality)
+  have hlip : LipschitzWith (3 / r.toNNReal) fun y : Euclid P => φ (‖y - ξ‖ / r) := by
+    refine LipschitzWith.of_dist_le_mul fun y z => ?_
+    rw [NNReal.coe_div, Real.coe_toNNReal r hr.le]
+    calc dist (φ (‖y - ξ‖ / r)) (φ (‖z - ξ‖ / r))
+        ≤ (3 : NNReal) * dist (‖y - ξ‖ / r) (‖z - ξ‖ / r) := hφ_lip.dist_le_mul _ _
+      _ = 3 / r * |‖y - ξ‖ - ‖z - ξ‖| := by
+          rw [Real.dist_eq, ← sub_div, abs_div, abs_of_pos hr, NNReal.coe_ofNat]; ring
+      _ ≤ 3 / r * ‖(y - ξ) - (z - ξ)‖ := by gcongr; exact abs_norm_sub_norm_le _ _
+      _ = (3 : NNReal) / r * dist y z := by
+          rw [sub_sub_sub_cancel_right, dist_eq_norm, NNReal.coe_ofNat]
+  refine ⟨fun x => φ (‖x - ξ‖ / r), hC.of_le (by norm_cast), fun x => hφ_bounds _,
+    fun x hx => hφ_one _ ?_, ?_, fun x => ?_⟩
+  -- Step 4: plateau, `‖x − ξ‖ ≤ r/2 ⇒ ‖x − ξ‖/r ≤ 1/2`
+  · rw [Metric.mem_closedBall, dist_eq_norm] at hx
+    rw [div_le_iff₀ hr]
+    linarith
+  -- Step 5: `ζ = 0` off `B_r(ξ)`, so `tsupport ζ ⊆ closure B_r(ξ) ⊆ B̄_r(ξ)`
+  · refine (closure_mono ?_).trans closure_ball_subset_closedBall
+    intro x hx
+    by_contra hxb
+    apply hx
+    rw [Metric.mem_ball, dist_eq_norm, not_lt] at hxb
+    exact hφ_zero _ ((le_div_iff₀ hr).2 (by linarith))
+  -- Step 7: `‖Dζ(x)‖ ≤ 3/r` from the Lipschitz bound
+  · have h := norm_fderiv_le_of_lipschitz ℝ hlip (x₀ := x)
+    rwa [NNReal.coe_div, Real.coe_toNNReal r hr.le] at h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
