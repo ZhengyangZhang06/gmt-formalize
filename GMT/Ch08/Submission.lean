@@ -601,6 +601,62 @@ theorem Submission.frt_hausdorff_null_of_weight_null :
     (measure_iUnion_null fun m : ℕ ↦ hnull _ (ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top m)))
   obtain ⟨m, hm⟩ := ENNReal.exists_inv_nat_lt (hpos x hx).ne'
   exact mem_iUnion.2 ⟨m, hx, hm.le⟩
+/-- The carrier is `H^n`-measurable (Simon Ch. 8, 1.2, the printed claim "`M` is `H^n`-measurable",
+which Ch. 3, 1.9 presupposes): if `M ⊆ U`, `μ_V(ℝ^N ∖ M) = 0` and `Θ^n(μ_V, x) = θ(x) > 0` for every
+`x ∈ M`, then `M` is `H^n`-null-measurable.  `M` is the countable union of the sets
+`M ∩ closure (F_{m,k} ∩ C_j)`, where `F_{m,k} ⊆ M` carries a uniform lower density bound and the
+closed sets `C_j ⊆ U` cover `U`; each is a closed set minus an `H^n`-null set. -/
+theorem Submission.frt_carrier_nullMeasurable :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), M ⊆ U → V.weight Mᶜ = 0 → (∀ x ∈ M, 0 < θ x ∧ HasDensity n V.weight x (ENNReal.ofReal (θ x))) → NullMeasurableSet M μHE[n] := by
+  intro N n U V M θ hMU hMc hθ
+  -- Step 0: `U` is open and `μ_V` is finite on compact subsets of `U`.
+  have hU : IsOpen U := V.isOpen_domain
+  have hfin : ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → V.weight K ≠ ∞ :=
+    V.weight_finite_on_compact
+  -- Step 1: the uniform pieces `F m k ⊆ M`, with `(2(m+1))⁻¹ ≤ densityRatio` on `(0, 1/(k+1)]`.
+  set F : ℕ → ℕ → Set (Euclidean N) := fun m k ↦ {x | x ∈ M ∧ ∀ ρ : ℝ, 0 < ρ →
+    ρ ≤ 1 / ((k : ℝ) + 1) → (2 * ((m : ℝ≥0∞) + 1))⁻¹ ≤ densityRatio n V.weight x ρ}
+  -- Step 2: countably many closed sets `C j ⊆ U` cover `U`.
+  obtain ⟨C, hCclosed, hCU, hCcover, -⟩ := hU.exists_iUnion_isClosed
+  -- Steps 3–6: each `M ∩ closure (F m k ∩ C j)` is `H^n`-null-measurable.
+  have hpiece : ∀ m k j, NullMeasurableSet (M ∩ closure (F m k ∩ C j)) μHE[n] := by
+    intro m k j
+    -- Step 3: the closure stays inside the closed set `C j ⊆ U`.
+    have hclU : closure (F m k ∩ C j) ⊆ U :=
+      (closure_minimal inter_subset_right (hCclosed j)).trans (hCU j)
+    -- Step 4: the lower bound passes to the closure, so `limsup densityRatio > 0` there.
+    have hc0 : (0 : ℝ≥0∞) < (2 * ((m : ℝ≥0∞) + 1))⁻¹ :=
+      ENNReal.inv_pos.2 (ENNReal.mul_ne_top ENNReal.ofNat_ne_top
+        (ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top m, ENNReal.one_ne_top⟩))
+    have hlim : ∀ y ∈ closure (F m k ∩ C j), 0 < limsup (densityRatio n V.weight y) (𝓝[>] 0) := by
+      intro y hy
+      have hlow := Submission.frt_cnm_densityRatio_lower_closure N n V.weight (F m k ∩ C j) _ _
+        (fun x hx ↦ hx.1.2) y hy
+      refine hc0.trans_le (le_limsup_of_frequently_le (Eventually.frequently ?_))
+      filter_upwards [Ioo_mem_nhdsGT (Nat.one_div_pos_of_nat (n := k))] with ρ hρ
+      exact hlow ρ hρ.1 hρ.2.le
+    -- Step 5: the defect `closure (F m k ∩ C j) ∖ M` is `μ_V`-null, hence `H^n`-null.
+    have hZ : μHE[n] (closure (F m k ∩ C j) \ M) = 0 :=
+      Submission.frt_hausdorff_null_of_weight_null N n V.weight U _ hU hfin
+        (sdiff_subset.trans hclU) (measure_mono_null (fun x hx ↦ hx.2) hMc)
+        (fun y hy ↦ hlim y hy.1)
+    -- Step 6: `M ∩ closure (F m k ∩ C j)` is a closed set minus an `H^n`-null set.
+    rw [inter_comm, ← Set.sdiff_sdiff_right_self]
+    exact isClosed_closure.measurableSet.nullMeasurableSet.diff (NullMeasurableSet.of_null hZ)
+  -- Step 7: `M` is the countable union of these pieces.
+  have hcover : M = ⋃ m, ⋃ k, ⋃ j, M ∩ closure (F m k ∩ C j) := by
+    refine Subset.antisymm (fun x hx ↦ ?_)
+      (iUnion_subset fun m ↦ iUnion_subset fun k ↦ iUnion_subset fun j ↦ inter_subset_left)
+    obtain ⟨m, k, hmk⟩ := Submission.frt_cnm_exists_uniform_densityRatio_lower N n V.weight x _
+      (ENNReal.ofReal_pos.2 (hθ x hx).1) (hθ x hx).2
+    have hxC : x ∈ ⋃ j, C j := by
+      rw [hCcover]
+      exact hMU hx
+    obtain ⟨j, hj⟩ := mem_iUnion.1 hxC
+    exact mem_iUnion.2 ⟨m, mem_iUnion.2 ⟨k, mem_iUnion.2 ⟨j, hx, subset_closure ⟨⟨hx, hmk⟩, hj⟩⟩⟩⟩
+  rw [hcover]
+  exact NullMeasurableSet.iUnion fun m ↦ NullMeasurableSet.iUnion fun k ↦
+    NullMeasurableSet.iUnion fun j ↦ hpiece m k j
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
