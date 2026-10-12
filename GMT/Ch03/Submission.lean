@@ -3264,6 +3264,82 @@ theorem Submission.bf_coneTrichotomy_ae_frames :
   intro a ha
   exact ⟨ha, ha.1⟩
 
+/-- **Besicovitch–Federer for compact purely unrectifiable sets of finite measure**, given
+Eilenberg's inequality (Step 10 of the proof of Simon Ch. 3, Theorem 3.6, `chapter-03.txt`
+lines 530–536, whose proof Simon defers to [Fed69]/[Ros84]; M. G. Dall'Alba, *The
+Besicovitch–Federer Projection Theorem*, Padova 2020, proof of Theorem 5.1; P. Mattila, *Geometry
+of Sets and Measures in Euclidean Spaces*, Theorem 18.1). For a.e. frame `v` the cone trichotomy
+holds off an `Hⁿ`-null set at every scale `δᵢ = 1/(i+1)`; let `P = p_{span v}`. A point `a ∈ A`
+outside that set, outside the `Hⁿ`-null set of zero cone density and outside the set of infinite
+cone density (whose `P`-image is null) has, for every `i`, a point `b ≠ a` of `A` with
+`|b - a| < δᵢ` and `Pb = Pa`; so its fibre `A ∩ P⁻¹(Pa)` is infinite, and the infinite fibres
+have `Hⁿ`-null image by Eilenberg's inequality. As `P` is Lipschitz, `Hⁿ(P(A)) = 0`. -/
+theorem Submission.bf_compact_projection_null :
+    (∀ (N m k : ℕ), ∃ C : ℝ≥0, ∀ (A : Set (Rn N)) (f : Rn N → Rn m) (L : ℝ≥0),
+      LipschitzWith L f → ∃ g : Rn m → ℝ≥0∞, Measurable g ∧
+        (∀ y, μHE[k] (A ∩ f ⁻¹' {y}) ≤ g y) ∧
+          ∫⁻ y, g y ≤ ((C * L ^ m : ℝ≥0) : ℝ≥0∞) * μHE[m + k] A) →
+      ∀ (n ℓ : ℕ), 0 < n → 0 < ℓ → ∀ A : Set (Rn (n + ℓ)), IsCompact A →
+        PurelyUnrectifiable n A → μHE[n] A < ∞ →
+          ForAlmostAllProjections (n + ℓ) n (fun p ↦ μHE[n] (p '' A) = 0) := by
+  intro hEil n ℓ hn hℓ A hAc hAu hAfin
+  -- Step 2: for a.e. frame `v`, for every `i` the cone trichotomy at scale `δᵢ = 1/(i+1)` holds
+  -- off an `Hⁿ`-null set `Gᵢ(v)` (a countable intersection of full-measure sets of frames).
+  have htri := fun i : ℕ ↦
+    Submission.bf_coneTrichotomy_ae_frames n ℓ hn hℓ A hAc hAfin (1 / ((i : ℝ) + 1))
+      Nat.one_div_pos_of_nat
+  unfold ForAlmostAllProjections at htri ⊢
+  filter_upwards [ae_all_iff.2 htri] with v hv hli
+  -- Step 3: `p_{span v}` is the orthogonal projection `P` onto the `n`-plane `W = span v`.
+  obtain ⟨W, hWdef⟩ : ∃ W : Submodule ℝ (Rn (n + ℓ)), W = Submodule.span ℝ (Set.range v) :=
+    ⟨_, rfl⟩
+  have hW : finrank ℝ W = n := by rw [hWdef, finrank_span_eq_card hli, Fintype.card_fin]
+  have hPW : frameProjection v = W.starProjection := by subst hWdef; rfl
+  rw [hPW] at hv ⊢
+  -- `P` is `1`-Lipschitz, so it maps `Hⁿ`-null sets to `Hⁿ`-null sets.
+  have hPnull : ∀ S : Set (Rn (n + ℓ)), μHE[n] S = 0 → μHE[n] (W.starProjection '' S) = 0 := by
+    intro S hS
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+      (A := S) n W.lipschitzWith_starProjection.lipschitzOnWith
+    rwa [hS, mul_zero, nonpos_iff_eq_zero] at h
+  -- Step 4: the exceptional sets, each `Hⁿ`-null or with `Hⁿ`-null image under `P`.
+  have hA1 := fun i : ℕ ↦
+    Submission.bf_coneDensity_zero_null n ℓ hn W hW A hAu (1 / ((i : ℝ) + 1))
+      Nat.one_div_pos_of_nat
+  have hA2 := fun i : ℕ ↦
+    Submission.bf_coneDensity_top_projection_null n ℓ hn W hW A hAc hAfin (1 / ((i : ℝ) + 1))
+      Nat.one_div_pos_of_nat
+  have hA3 := Submission.bf_infiniteFibre_projection_null hEil n ℓ W hW A hAfin
+  -- Steps 5–6: `P(A)` is covered by the images of the exceptional sets.
+  refine measure_mono_null ?_ (measure_union_null (measure_union_null
+    (hPnull _ (measure_iUnion_null fun i ↦ measure_union_null (hv i hli) (hA1 i)))
+    (measure_iUnion_null hA2)) hA3)
+  rintro _ ⟨a, ha, rfl⟩
+  by_contra hcon
+  obtain ⟨h12, h3⟩ := not_or.1 hcon
+  obtain ⟨h1, h2⟩ := not_or.1 h12
+  refine h3 ⟨a, ⟨ha, ?_⟩, rfl⟩
+  -- At every scale `δᵢ` only the third alternative of the trichotomy is left: some `b ≠ a` in `A`
+  -- has `|b - a| < δᵢ` and `P(b - a) = 0`.
+  have hax : ∀ i : ℕ, ∃ b ∈ A, b ≠ a ∧ dist b a < 1 / ((i : ℝ) + 1) ∧
+      W.starProjection (b - a) = 0 := by
+    intro i
+    by_contra hnot
+    refine h1 ⟨a, mem_iUnion.2 ⟨i, Or.inl ⟨ha, ?_⟩⟩, rfl⟩
+    rintro (h0 | htop | hb)
+    · exact h1 ⟨a, mem_iUnion.2 ⟨i, Or.inr ⟨ha, h0⟩⟩, rfl⟩
+    · exact h2 (mem_iUnion.2 ⟨i, a, ⟨ha, htop⟩, rfl⟩)
+    · exact hnot hb
+  -- Hence the fibre `{b ∈ A | Pb = Pa}` is infinite: were it finite, its points other than `a`
+  -- would form a closed set missing `a`, hence missing a ball `B(a, ε)` with `ε > δᵢ` for some `i`.
+  intro hfin
+  obtain ⟨ε, hε, hball⟩ :=
+    Metric.isOpen_iff.1 (hfin.sdiff (t := {a})).isClosed.isOpen_compl a fun h ↦ h.2 rfl
+  obtain ⟨i, hi⟩ := exists_nat_one_div_lt hε
+  obtain ⟨b, hbA, hba, hdist, hPb⟩ := hax i
+  rw [map_sub, sub_eq_zero] at hPb
+  exact hball (Metric.mem_ball.2 (hdist.trans hi)) ⟨⟨hbA, hPb⟩, hba⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
