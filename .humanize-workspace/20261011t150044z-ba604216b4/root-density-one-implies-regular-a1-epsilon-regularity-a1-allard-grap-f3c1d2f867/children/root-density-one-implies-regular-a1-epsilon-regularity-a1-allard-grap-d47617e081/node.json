@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.smoothed_bounds-a1.mass_sandwich-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.smoothed_bounds-a1",
+  "depth": 6,
+  "title": "Cutoff mass between the masses of two closed balls",
+  "statement": "Let P ∈ ℕ, μ a measure on ℝ^P, y ∈ ℝ^P, φ : ℝ → ℝ and A, τ ∈ ℝ, with τ > 0, 0 ≤ φ(u) ≤ 1 for every u, φ(u) = 1 for every u ≤ 1, φ(u) = 0 for every u ≥ A, and x ↦ φ(|x − y|/τ) μ-integrable. Then, in [0, ∞], μ(B̄_τ(y)) ≤ ENNReal.ofReal(∫ φ(|x − y|/τ) dμ) ≤ μ(B̄_{Aτ}(y)), where B̄ denotes closed balls.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (y : Euclid P) (φ : ℝ → ℝ) (A τ : ℝ), 0 < τ → (∀ u, 0 ≤ φ u ∧ φ u ≤ 1) → (∀ u, u ≤ 1 → φ u = 1) → (∀ u, A ≤ u → φ u = 0) → Integrable (fun x => φ (‖x - y‖ / τ)) μ → μ (closedBall y τ) ≤ ENNReal.ofReal (∫ x, φ (‖x - y‖ / τ) ∂μ) ∧ ENNReal.ofReal (∫ x, φ (‖x - y‖ / τ) ∂μ) ≤ μ (closedBall y (A * τ))",
+  "lean_name": "doragm_sab_cutoff_mass_sandwich",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-d47617e081-a1"
+}

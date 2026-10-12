@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.smoothed_bounds-a1.squeeze-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.smoothed_bounds-a1",
+  "depth": 6,
+  "title": "Comparison of the scale-derivative weights (Simon 3.5)",
+  "statement": "Let P, n ∈ ℕ, μ a measure on ℝ^P, y ∈ ℝ^P, φ : ℝ → ℝ, N : ℝ^P → ℝ and A, s, τ ∈ ℝ, with A > 1 and 0 < s ≤ τ. Write φ' := deriv φ, and assume φ'(u) ≤ 0 for every u, φ'(u) ≠ 0 implies 1 < u < A, and N(x) ≥ 0 for every x. Put r(x) := |x − y|, d(x) := −(r(x)/τ²)·φ'(r(x)/τ) and q(x) := N(x)/max(s, r(x))ⁿ. If d·q and d·N are μ-integrable, then (i) ∫ d·N dμ ≥ 0; (ii) ∫ d·q dμ ≤ (∫ d·N dμ)/τⁿ; (iii) (∫ d·N dμ)/τⁿ ≤ Aⁿ·∫ d·q dμ.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (y : Euclid P) (φ : ℝ → ℝ) (N : Euclid P → ℝ) (A s τ : ℝ), 1 < A → 0 < s → s ≤ τ → (∀ u, deriv φ u ≤ 0) → (∀ u, deriv φ u ≠ 0 → 1 < u ∧ u < A) → (∀ x, 0 ≤ N x) → Integrable (fun x => -(‖x - y‖ / τ ^ 2) * deriv φ (‖x - y‖ / τ) * (N x / (max s ‖x - y‖) ^ n)) μ → Integrable (fun x => -(‖x - y‖ / τ ^ 2) * deriv φ (‖x - y‖ / τ) * N x) μ → 0 ≤ ∫ x, -(‖x - y‖ / τ ^ 2) * deriv φ (‖x - y‖ / τ) * N x ∂μ ∧ ∫ x, -(‖x - y‖ / τ ^ 2) * deriv φ (‖x - y‖ / τ) * (N x / (max s ‖x - y‖) ^ n) ∂μ ≤ (∫ x, -(‖x - y‖ / τ ^ 2) * deriv φ (‖x - y‖ / τ) * N x ∂μ) / τ ^ n ∧ (∫ x, -(‖x - y‖ / τ ^ 2) * deriv φ (‖x - y‖ / τ) * N x ∂μ) / τ ^ n ≤ A ^ n * ∫ x, -(‖x - y‖ / τ ^ 2) * deriv φ (‖x - y‖ / τ) * (N x / (max s ‖x - y‖) ^ n) ∂μ",
+  "lean_name": "doragm_sab_deriv_weight_squeeze",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-21980b3014-a1"
+}

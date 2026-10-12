@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.smoothed_bounds-a1.profile-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.smoothed_bounds-a1",
+  "depth": 6,
+  "title": "Smooth nonincreasing cutoff profile with derivative supported in (1, A)",
+  "statement": "Let A ∈ ℝ with A > 1. There is φ : ℝ → ℝ such that: φ is C¹ (ContDiff ℝ 1 φ); φ is nonincreasing (Antitone); 0 ≤ φ(u) ≤ 1 for every u; φ(u) = 1 for every u ≤ 1; φ(u) = 0 for every u ≥ A; φ'(u) ≤ 0 for every u; and φ'(u) ≠ 0 implies 1 < u < A. Here φ' := deriv φ is Mathlib's derivative (0 at points of non-differentiability).",
+  "lean_statement": "∀ (A : ℝ), 1 < A → ∃ φ : ℝ → ℝ, ContDiff ℝ 1 φ ∧ Antitone φ ∧ (∀ u, 0 ≤ φ u ∧ φ u ≤ 1) ∧ (∀ u, u ≤ 1 → φ u = 1) ∧ (∀ u, A ≤ u → φ u = 0) ∧ (∀ u, deriv φ u ≤ 0) ∧ (∀ u, deriv φ u ≠ 0 → 1 < u ∧ u < A)",
+  "lean_name": "doragm_sab_cutoff_profile",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-7bce5c34b9-a1"
+}
