@@ -434,6 +434,55 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Cutoff, radial profile and radial test field outside a ball** (Simon Ch. 4, 6.1, proof
+steps 2–4). A bump function `ζ` centred at `ξ` is `1` near the compact set `K`; the profile
+`γ(t) = g(t² - (R + ε)²)`, `g = expNegInvGlue`, vanishes on `[0, R + ε]`, is positive beyond and
+nondecreasing on `[0, ∞)`; and `X(x) = (ζ(x)γ(|x - ξ|))(x - ξ)` is a `C¹` field with compact
+support in `ℝ^{n+ℓ} \ B_R(ξ)` (`γ(|x - ξ|) = g(|x - ξ|² - (R + ε)²)` is smooth even at `ξ`). -/
+theorem Submission.exists_radial_cutoff_test_field : ∀ (n ℓ : ℕ) (K : Set (Ambient n ℓ)) (ξ : Ambient n ℓ) (R ε : ℝ), IsCompact K → 0 ≤ R → 0 < ε → ∃ (ζ : Ambient n ℓ → ℝ) (γ : ℝ → ℝ), ContDiff ℝ 1 ζ ∧ (∀ x ∈ K, ζ x = 1 ∧ gradient ζ x = 0) ∧ ContDiff ℝ 1 γ ∧ (∀ t : ℝ, 0 ≤ t → 0 ≤ γ t ∧ 0 ≤ deriv γ t) ∧ (∀ t : ℝ, 0 ≤ t → t ≤ R + ε → γ t = 0) ∧ (∀ t : ℝ, R + ε < t → 0 < γ t) ∧ IsTestField (closedBall ξ R)ᶜ (fun x ↦ (ζ x * γ ‖x - ξ‖) • (x - ξ)) := by
+  intro n ℓ K ξ R ε hK hR hε
+  -- step 1: `K ⊆ W = B(ξ, ρ₀)` with `ρ₀ = |ρ| + 1 > 0`
+  obtain ⟨ρ, hρ⟩ := hK.isBounded.subset_ball ξ
+  have hρ₀ : 0 < |ρ| + 1 := by positivity
+  have hKW : K ⊆ ball ξ (|ρ| + 1) := hρ.trans (ball_subset_ball (by linarith [le_abs_self ρ]))
+  -- step 2: `ζ` is the bump function at `ξ` with `rIn = ρ₀`, `rOut = ρ₀ + 1`
+  let f : ContDiffBump ξ := ⟨|ρ| + 1, |ρ| + 2, hρ₀, by linarith⟩
+  -- steps 4 and 6: `γ(t) = g(t² - (R + ε)²)` vanishes for `0 ≤ t ≤ R + ε`
+  have hc : 0 < R + ε := by linarith
+  have hzero : ∀ t : ℝ, 0 ≤ t → t ≤ R + ε → expNegInvGlue (t ^ 2 - (R + ε) ^ 2) = 0 :=
+    fun t ht htc ↦ expNegInvGlue.zero_of_nonpos (by nlinarith)
+  refine ⟨f, fun t ↦ expNegInvGlue (t ^ 2 - (R + ε) ^ 2), f.contDiff, fun x hx ↦ ?_,
+    expNegInvGlue.contDiff.comp ((contDiff_id.pow 2).sub contDiff_const), fun t ht ↦ ?_, hzero,
+    fun t ht ↦ expNegInvGlue.pos_of_pos (by nlinarith), ?_, ?_, ?_⟩
+  · -- step 3: `ζ ≡ 1` on a neighbourhood of `x ∈ K`, so `ζ(x) = 1` and `∇ζ(x) = 0`
+    have h1 : (f : Ambient n ℓ → ℝ) =ᶠ[𝓝 x] fun _ ↦ 1 := f.eventuallyEq_one_of_mem_ball (hKW hx)
+    exact ⟨h1.eq_of_nhds, h1.gradient_eq.trans (gradient_fun_const x 1)⟩
+  · -- step 5: `γ'(t) = g'(t² - (R + ε)²) · 2t` with `g' ≥ 0` since `g` is monotone
+    refine ⟨expNegInvGlue.nonneg _, ?_⟩
+    have hin : HasDerivAt (fun t : ℝ ↦ t ^ 2 - (R + ε) ^ 2) (2 * t) t := by
+      simpa using (hasDerivAt_pow 2 t).sub_const ((R + ε) ^ 2)
+    have hg : HasDerivAt expNegInvGlue (deriv expNegInvGlue (t ^ 2 - (R + ε) ^ 2))
+        (t ^ 2 - (R + ε) ^ 2) :=
+      ((expNegInvGlue.contDiff (n := 1)).differentiable one_ne_zero _).hasDerivAt
+    have hd := hg.comp t hin
+    rw [Function.comp_def] at hd
+    rw [hd.deriv]
+    exact mul_nonneg expNegInvGlue.monotone.deriv_nonneg (by linarith)
+  · -- step 8: `x ↦ γ(|x - ξ|) = g(|x - ξ|² - (R + ε)²)` is smooth, hence `X` is `C¹`
+    have hγ : ContDiff ℝ 1 fun x : Ambient n ℓ ↦ expNegInvGlue (‖x - ξ‖ ^ 2 - (R + ε) ^ 2) :=
+      expNegInvGlue.contDiff.comp (((contDiff_id.sub contDiff_const).norm_sq ℝ).sub contDiff_const)
+    exact (f.contDiff.mul hγ).smul (contDiff_id.sub contDiff_const)
+  · -- step 9: `supp X ⊆ supp ζ`, which is compact
+    exact f.hasCompactSupport.mono fun x hx hfx ↦ hx (by simp [hfx])
+  · -- step 10: `supp X ⊆ {|x - ξ| ≥ R + ε}`, a closed set inside `(B_R(ξ))ᶜ`
+    have hcl : IsClosed {x : Ambient n ℓ | R + ε ≤ ‖x - ξ‖} :=
+      isClosed_le continuous_const (continuous_id.sub continuous_const).norm
+    refine (closure_minimal (fun x hx ↦ ?_) hcl).trans fun x hx ↦ ?_
+    · by_contra hlt
+      exact hx (by simp [hzero ‖x - ξ‖ (norm_nonneg _) (not_le.1 hlt).le])
+    · simp only [mem_compl_iff, mem_closedBall, dist_eq_norm, not_le]
+      exact lt_of_lt_of_le (by linarith) hx
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
