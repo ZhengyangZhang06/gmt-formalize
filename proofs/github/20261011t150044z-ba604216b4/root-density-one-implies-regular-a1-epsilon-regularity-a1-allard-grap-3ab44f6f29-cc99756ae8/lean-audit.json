@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "015642604b9fbedc0da5f776f6295d8f255023999ce11a094eaaf5073dbdf814",
+  "git_delta": {
+    "base_commit": "2081ee4767092759a314ee0973683506247dd9e6",
+    "candidate_commit": "0bb1118fb667a72b5f86991638fb1293849a456d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_tes_componentwise_affine_assembly",
+    "diff_sha256": "2f2bae256980f62a46897a755c3d1ea8a8da279cfb709da6fa3e74f4f6a284ab",
+    "source_sha256": "d062d7e2f31f98b401aacd4cffd743e94ffef201efe67c91f9c2cfc012e15602",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_tes_componentwise_affine_assembly",
+      "statement": "∀ (n k : ℕ) (f : Euclid n → Euclid k) (s A B Q t : ℝ), Continuous f → 0 < s → (∀ j : Fin k, ∃ (a : ℝ) (b : Euclid n →L[ℝ] ℝ), ‖b‖ ≤ B ∧ |a| ≤ A ∧ ∫ v in ball (0 : Euclid n) t, (s⁻¹ * EuclideanSpace.proj j (f v) - a - b v) ^ 2 ≤ Q) → ∃ (c : Euclid k) (Λ : Euclid n →L[ℝ] Euclid k), ‖c‖ ≤ k * s * A ∧ ‖Λ‖ ≤ k * s * B ∧ ∫⁻ v in ball (0 : Euclid n) t, ENNReal.ofReal (‖f v - c - Λ v‖ ^ 2) ≤ ENNReal.ofReal (k * s ^ 2 * Q)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
