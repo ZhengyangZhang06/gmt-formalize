@@ -547,6 +547,26 @@ theorem Submission.regcomp_atl_pc_density_rescale_tendsto : ∀ (n : ℕ) (g : �
           rw [ENNReal.mul_inv_cancel hb0 hbtop, one_mul, ENNReal.inv_pow]
   -- Step 5: the two functions agree eventually along `𝓝[>] 0`
   exact hconst.congr' heq
+/-- Asymptotically equal blow-up integrals give equal approximate tangent spaces (Simon Ch. 3,
+Definition 1.4; last step of the proof of 3.1.6).  With `η_r = η_{x,r}`, `I(r) = ∫_{η_r(M)} f dHⁿ`,
+`I'(r) = ∫_{η_r(M')} f dHⁿ` and `I(r) − I'(r) → 0` as `r ↓ 0` for every `f ∈ C_c(ℝᴾ)`:
+`I' = I − (I − I')` and `I = I' + (I − I')` have the same limit `∫_Q f dHⁿ` as `I`, resp. `I'`,
+while the condition `dim Q = n` does not involve `M`, `M'`. -/
+theorem Submission.regcomp_atl_pc_tangent_iff_of_integral_sub_tendsto : ∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P), (∀ f : CompactlySupportedContinuousMap (Euclid P) ℝ, Tendsto (fun r : ℝ => (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M', f y ∂μHE[n]) (𝓝[>] 0) (𝓝 0)) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q := by
+  intro P n M M' x hD Q
+  constructor
+  · -- (⇒) `I' = I − (I − I') → L − 0 = L`
+    rintro ⟨hQ, hM⟩
+    refine ⟨hQ, fun f => ?_⟩
+    have h := (hM f).sub (hD f)
+    rw [sub_zero] at h
+    exact h.congr fun r => sub_sub_cancel _ _
+  · -- (⇐) `I = I' + (I − I') → L + 0 = L`
+    rintro ⟨hQ, hM'⟩
+    refine ⟨hQ, fun f => ?_⟩
+    have h := (hM' f).add (hD f)
+    rw [add_zero] at h
+    exact h.congr fun r => add_sub_cancel _ _
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
