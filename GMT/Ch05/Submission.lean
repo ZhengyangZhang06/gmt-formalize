@@ -1038,6 +1038,76 @@ theorem dohr_translate_varifold : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : R
   rw [hw, Submission.dohr_tv_support_map_sub n ℓ V.weight ξ,
     Set.image_inter (sub_left_injective (b := ξ))]
 
+/-- **Simon Ch. 5, Theorem 7.1, proof, first paragraph (p. 127).**  Assume Allard's theorem 5.2.
+If `V` has generalized mean curvature `H` in the open set `U`, `H` is locally in `Lᵖ(μ_V)` for some
+`p > n`, `θ ≥ 1` `μ_V`-a.e. and `Θⁿ(μ_V, ξ) = 1` at `ξ ∈ U`, then there are `R > 0` with
+`B_R(ξ) ⊆ U`, a linear isometry `Q` and `u`, `C¹` on `B̆ⁿ_R(0)` with `(1 − n/p)`-Hölder `Du`,
+`u(0) = 0` and `Du(0) = 0`, such that `Q(spt V − ξ) ∩ B̆_R(0) = graph u ∩ B̆_R(0)`. -/
+theorem dohr_allard_graph_at_density_one : AllardRegularityTheorem → ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ∀ ξ ∈ U, V.HasDensity ξ 1 → ∃ R > 0, ∃ (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), closedBall ξ R ⊆ U ∧ ContDiffOn ℝ 1 u (ball 0 R) ∧ u 0 = 0 ∧ fderiv ℝ u 0 = 0 ∧ (∃ K : ℝ, ∀ x ∈ ball (0 : Rn n) R, ∀ y ∈ ball (0 : Rn n) R, ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ K * ‖x - y‖ ^ (1 - (n : ℝ) / p)) ∧ Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R := by
+  intro hAllard n ℓ hn U hU V H p hp hH hLp hθ ξ hξU hξ
+  -- Step 1: Allard's constants `δ₀, γ, C` for `(n, ℓ, p)`; take `δ := δ₀`.
+  obtain ⟨δ₀, γ, C, hδ₀, -, hγ, hγ1, hA⟩ := hAllard n ℓ hn p hp
+  -- Steps 3–4: `ξ ∈ spt V`, and a scale `ρ` with `B_ρ(ξ) ⊆ U`, mass ratio at most `1 + δ₀` and
+  -- scaled `Lᵖ` norm of `H` at most `δ₀`.
+  obtain ⟨hξspt, ρ, hρ, hρU, hmass, hLpρ⟩ :=
+    density_one_allard_scale V H p ξ δ₀ hU hp hLp hξU hξ hδ₀
+  -- Steps 2 and 5: the translate `V'` of `V` by `−ξ`, in the open set `τ(U)`, has
+  -- `spt V' = τ(spt V)` and satisfies the hypotheses 5.1 at `(p, δ₀, ρ)`; apply Theorem 5.2.
+  obtain ⟨V', -, -, -, hspt, -, hAH⟩ := exists_translated_varifold_allardHypotheses V ξ
+  obtain ⟨q, u, hu, hu0, hDu0, hgraph, hnorm⟩ :=
+    hA _ (isOpenMap_sub_right ξ U hU) V' _ δ₀ ρ hδ₀ le_rfl
+      (hAH H p δ₀ ρ hH hθ hξspt hρ hρU hmass hLpρ)
+  -- Step 6: `R := γρ > 0` and `Q := q⁻¹`; the Hölder exponent `1 − n/p` is positive.
+  have hR : 0 < γ * ρ := mul_pos hγ hρ
+  have hα : 0 < 1 - (n : ℝ) / p := by
+    rw [sub_pos, div_lt_one ((Nat.cast_nonneg n).trans_lt hp)]
+    exact hp
+  -- Steps 7–8: the finite scaled `C^{1,α}` norm makes `u` a `C^{1,α}` function on `B̆ⁿ_R(0)`.
+  obtain ⟨hu', -, K, hK⟩ := isHolderCk_one_of_scaledC1AlphaNorm_ne_top u (closedBall 0 (γ * ρ))
+    (ball 0 (γ * ρ)) (1 - (n : ℝ) / p) ρ hα hρ hu ball_subset_interior_closedBall
+    (ne_top_of_le_ne_top ENNReal.ofReal_ne_top hnorm)
+  -- The first iterated derivative is the derivative, up to a linear isometry.
+  have hiter : ∀ z, iteratedFDeriv ℝ 1 u z =
+      (continuousMultilinearCurryFin1 ℝ (Rn n) (Rn ℓ)).symm (fderiv ℝ u z) := by
+    intro z
+    ext m
+    simp
+  -- Step 9: `|(x, y)|² = |x|² + |y|²`, so a graph point in `B̆_R(0)` lies over `B̆ⁿ_R(0)`.
+  have hsq : ∀ (x : Rn n) (y : Rn ℓ), ‖graphPoint x y‖ ^ 2 = ‖x‖ ^ 2 + ‖y‖ ^ 2 := by
+    intro x y
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp [graphPoint]
+  have hle : ∀ (x : Rn n) (y : Rn ℓ), ‖x‖ ≤ ‖graphPoint x y‖ := fun x y =>
+    (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1
+      ((le_add_of_nonneg_right (sq_nonneg ‖y‖)).trans (hsq x y).ge)
+  refine ⟨γ * ρ, hR, q.symm, u, ?_, by exact_mod_cast hu', hu0, ?_, ⟨K, fun x hx y hy => ?_⟩, ?_⟩
+  · -- `B_R(ξ) ⊆ B_ρ(ξ) ⊆ U`, since `γ < 1`.
+    exact (closedBall_subset_closedBall (mul_le_of_le_one_left hρ.le hγ1.le)).trans hρU
+  · -- `B_R(0)` is a neighbourhood of `0`, so the derivative within it is the derivative.
+    rw [← fderivWithin_of_mem_nhds (closedBall_mem_nhds (0 : Rn n) hR)]
+    exact hDu0
+  · have h := hK x hx y hy
+    rwa [hiter, hiter, ← map_sub, LinearIsometryEquiv.norm_map] at h
+  · -- Rotate the closed-ball identity of 5.2 back by `Q = q⁻¹` and pass to the open ball.
+    rw [← hspt]
+    ext z
+    constructor
+    · rintro ⟨⟨y, hy, rfl⟩, hz⟩
+      rw [mem_ball_zero_iff, LinearIsometryEquiv.norm_map] at hz
+      obtain ⟨⟨_, ⟨x, -, rfl⟩, rfl⟩, -⟩ : y ∈ q '' graphOver u (closedBall 0 (γ * ρ)) ∩
+          closedBall 0 (γ * ρ) := hgraph ▸ ⟨hy, mem_closedBall_zero_iff.2 hz.le⟩
+      rw [LinearIsometryEquiv.norm_map] at hz
+      rw [LinearIsometryEquiv.symm_apply_apply]
+      exact ⟨⟨x, mem_ball_zero_iff.2 ((hle x (u x)).trans_lt hz), rfl⟩, mem_ball_zero_iff.2 hz⟩
+    · rintro ⟨⟨x, hx, rfl⟩, hz⟩
+      rw [mem_ball_zero_iff] at hz
+      have hq : q (graphPoint x (u x)) ∈ V'.support ∩ closedBall 0 (γ * ρ) := by
+        rw [hgraph]
+        exact ⟨⟨_, ⟨x, ball_subset_closedBall hx, rfl⟩, rfl⟩,
+          mem_closedBall_zero_iff.2 ((q.norm_map _).trans_le hz.le)⟩
+      exact ⟨⟨_, hq.1, q.symm_apply_apply _⟩, mem_ball_zero_iff.2 hz⟩
+
 end Submission
 
 end GMT.Ch05
