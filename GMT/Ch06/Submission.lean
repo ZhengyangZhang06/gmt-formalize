@@ -1511,6 +1511,107 @@ theorem Submission.lpf_lipschitz_localization :
       fun m => hg _, fun m => hug _⟩
     rwa [biUnion_range] at hΩT
 
+/-- Simon Ch. 2, Theorem 1.5 (C¹ Approximation Theorem, p. 42) combined with the
+inverse-function-theorem estimate of Ch. 3, Lemma 1.2 (p. 70), as used for Ch. 6, Lemma 3.9
+(p. 148).  A map `u : ℝⁿ → ℝ^Q` that is locally Lipschitz on an open `Ω` agrees, together with its
+derivative, with `C¹` maps `G_k` on pairwise disjoint Borel sets `E_k ⊆ O_k ∩ Ω`, where `G_k` is
+antilipschitz on the open set `O_k`; and `Lⁿ`-a.e. point of `Ω` at which `u` has an injective
+derivative lies in `⋃_k E_k`. -/
+theorem Submission.lpf_lipschitz_c1_immersion_pieces :
+    ∀ (n Q : ℕ) (Ω : Set (Eucl n)) (u : Eucl n → Eucl Q), IsOpen Ω → LocallyLipschitzOn Ω u →
+      ∃ (G : ℕ → Eucl n → Eucl Q) (O E : ℕ → Set (Eucl n)), (∀ k, IsOpen (O k)) ∧
+        (∀ k, ContDiff ℝ 1 (G k)) ∧
+        (∀ k, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ O k, ∀ w' ∈ O k, c * ‖w - w'‖ ≤ ‖G k w - G k w'‖) ∧
+        (∀ k, MeasurableSet (E k)) ∧ (∀ k, E k ⊆ O k ∩ Ω) ∧
+        Pairwise (Function.onFun Disjoint E) ∧
+        (∀ k, ∀ w ∈ E k, u w = G k w ∧ HasFDerivAt u (fderiv ℝ (G k) w) w) ∧
+        ∀ᵐ w ∂(volume : Measure (Eucl n)), w ∈ Ω →
+          (∃ D : Eucl n →L[ℝ] Eucl Q, HasFDerivAt u D w ∧ Function.Injective D) →
+            w ∈ ⋃ k, E k := by
+  intro n Q Ω u hΩ hu
+  -- Open sets `B m ⊆ Ω` covering `Ω`, and Lipschitz maps `v m` with `u = v m` on `B m`.
+  obtain ⟨B, v, hBo, hBΩ, hΩB, hv, huv⟩ := Submission.lpf_lipschitz_localization n Q Ω u hΩ hu
+  choose K hK using hv
+  -- C¹ approximation of `v m` with `ε = 1 / i`: closed sets `A m i` with `Lⁿ(ℝⁿ ∖ A m i) < 1 / i`
+  -- and `C¹` maps `G m i` with `v m = G m i` and `D(v m) = D(G m i)` on `A m i`.
+  have happrox : ∀ m i : ℕ, ∃ (A : Set (Eucl n)) (G : Eucl n → Eucl Q), IsClosed A ∧
+      (volume : Measure (Eucl n)) Aᶜ < (i : ℝ≥0∞)⁻¹ ∧ ContDiff ℝ 1 G ∧
+      ∀ x ∈ A, v m x = G x ∧ HasFDerivAt (v m) (fderiv ℝ G x) x := fun m i =>
+    Submission.lpf_c1_approximation_eucl n Q (v m) (K m) (hK m) _
+      (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top i))
+  choose A G hAc hA hG hAG using happrox
+  -- On `B m ∩ A m i`, `u = G m i` and `Du = D(G m i)`, because `u = v m` on the open set `B m`.
+  have huG : ∀ m i, ∀ w ∈ B m ∩ A m i, u w = G m i w ∧ HasFDerivAt u (fderiv ℝ (G m i) w) w := by
+    rintro m i w ⟨hwB, hwA⟩
+    exact ⟨(huv m hwB).trans (hAG m i w hwA).1, (hAG m i w hwA).2.congr_of_eventuallyEq
+      (Filter.eventuallyEq_of_mem ((hBo m).mem_nhds hwB) (huv m))⟩
+  -- A sequence `b j` of open sets forming a basis of the topology of `ℝⁿ`.
+  obtain ⟨b, hb⟩ := TopologicalSpace.exists_seq_basis (Eucl n)
+  -- Index `k ↔ (m, i, j)`.  The triple is *good* when `b j ⊆ B m` and `G m i` is antilipschitz on
+  -- `b j`; then `O k := b j`, otherwise `O k := ∅`.  `E' k := O k ∩ B m ∩ A m i`, and
+  -- `E := disjointed E'`.
+  classical
+  let good : ℕ × ℕ × ℕ → Prop := fun t => b t.2.2 ⊆ B t.1 ∧
+    ∃ c : ℝ, 0 < c ∧ ∀ w ∈ b t.2.2, ∀ w' ∈ b t.2.2, c * ‖w - w'‖ ≤ ‖G t.1 t.2.1 w - G t.1 t.2.1 w'‖
+  let idx : ℕ → ℕ × ℕ × ℕ := fun k => ((Nat.unpair k).1, Nat.unpair (Nat.unpair k).2)
+  let O : ℕ → Set (Eucl n) := fun k => if good (idx k) then b (idx k).2.2 else ∅
+  let E' : ℕ → Set (Eucl n) := fun k => O k ∩ (B (idx k).1 ∩ A (idx k).1 (idx k).2.1)
+  have hOo : ∀ k, IsOpen (O k) := by
+    intro k
+    by_cases h : good (idx k)
+    · simp only [O, ite_eq_left h]
+      exact hb.isOpen ⟨_, rfl⟩
+    · simp only [O, ite_eq_right h]
+      exact isOpen_empty
+  have hE' : ∀ k, MeasurableSet (E' k) := fun k =>
+    (hOo k).measurableSet.inter ((hBo _).measurableSet.inter (hAc _ _).measurableSet)
+  refine ⟨fun k => G (idx k).1 (idx k).2.1, O, disjointed E', hOo, fun k => hG _ _, ?_,
+    MeasurableSet.disjointed hE', ?_, disjoint_disjointed E', ?_, ?_⟩
+  · -- `G k` is antilipschitz on `O k` (vacuously if `O k = ∅`).
+    intro k
+    by_cases h : good (idx k)
+    · simp only [O, ite_eq_left h]
+      exact h.2
+    · simp only [O, ite_eq_right h]
+      exact ⟨1, one_pos, fun w hw => absurd hw (notMem_empty w)⟩
+  · -- `E k ⊆ E' k ⊆ O k ∩ B m ⊆ O k ∩ Ω`.
+    intro k w hw
+    have hw' : w ∈ E' k := disjointed_subset E' k hw
+    exact ⟨hw'.1, hBΩ _ hw'.2.1⟩
+  · intro k w hw
+    have hw' : w ∈ E' k := disjointed_subset E' k hw
+    exact huG _ _ w hw'.2
+  · -- For each `m`, the points outside every `A m i` form a null set, as `Lⁿ(ℝⁿ ∖ A m i) < 1 / i`.
+    have hnull : ∀ m, (volume : Measure (Eucl n)) (⋂ i, (A m i)ᶜ) = 0 := by
+      intro m
+      by_contra h
+      obtain ⟨i, hi⟩ := ENNReal.exists_inv_nat_lt h
+      exact lt_asymm hi ((measure_mono (iInter_subset _ i)).trans_lt (hA m i))
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 (measure_iUnion_null hnull)]
+      with w hwN hwΩ hDw
+    obtain ⟨D, hD, hDinj⟩ := hDw
+    obtain ⟨m, hwm⟩ := mem_iUnion.1 (hΩB hwΩ)
+    obtain ⟨i, hwi⟩ : ∃ i, w ∈ A m i := by
+      by_contra h
+      exact hwN (mem_iUnion.2 ⟨m, mem_iInter.2 fun i => mem_compl (not_exists.1 h i)⟩)
+    -- `D = D(G m i)(w)` by uniqueness of the derivative, so `D(G m i)(w)` is injective.
+    have hDG : D = fderiv ℝ (G m i) w := hD.unique (huG m i w ⟨hwm, hwi⟩).2
+    rw [hDG] at hDinj
+    -- `G m i` is antilipschitz on a ball `B_r(w)`, hence on a basis set `b j` with
+    -- `w ∈ b j ⊆ B_r(w) ∩ B m`; so `(m, i, j)` is good and `w ∈ E' k` for `k ↔ (m, i, j)`.
+    obtain ⟨r, hr, c, hc, hcr⟩ :=
+      Submission.lpf_c1_local_antilipschitz n Q (G m i) w (hG m i) hDinj
+    obtain ⟨_, ⟨j, rfl⟩, hwj, hjs⟩ := hb.exists_subset_of_mem_open
+      (show w ∈ ball w r ∩ B m from ⟨mem_ball_self hr, hwm⟩) (isOpen_ball.inter (hBo m))
+    have hk : idx (Nat.pair m (Nat.pair i j)) = (m, i, j) := by
+      simp only [idx, Nat.unpair_pair]
+    have hgood : good (m, i, j) :=
+      ⟨fun z hz => (hjs hz).2, c, hc, fun z hz z' hz' => hcr z (hjs hz).1 z' (hjs hz').1⟩
+    rw [iUnion_disjointed]
+    refine mem_iUnion.2 ⟨Nat.pair m (Nat.pair i j), ?_⟩
+    simp only [E', O, hk, ite_eq_left hgood]
+    exact ⟨hwj, hwm, hwi⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
