@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "48b35101f0d5f1b7311374de5c06bb6458c149236c18fc617c5940811caed69e",
+  "git_delta": {
+    "base_commit": "b1c4bd72a27355ba5ff48da2e8f9e05c9a5eff6c",
+    "candidate_commit": "44f064adfe7a4d64a606bdd417afaac31203aa74",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiDens_ball_isoperimetric",
+    "diff_sha256": "6c07cfe869fa158fd2ccf2740e84696cbdcf865dc9d42059344533dd86585ed1",
+    "source_sha256": "44e369d9f50284ebdfe752acca95d7818010b995fbd77ef1fef9485e31d3f775",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiDens_ball_isoperimetric",
+      "statement": "∀ (n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (U G : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (x : Rn (n + 1)) (ρ d : ℝ), 0 < ρ → Metric.closedBall x ρ ⊆ U → 0 < volume (G ∩ Metric.ball x ρ) → HasDerivAt (fun r : ℝ ↦ (volume (G ∩ Metric.ball x r)).toReal) d ρ → (volume (G ∩ Metric.ball x ρ)).toReal ^ ((n : ℝ) / (n + 1)) ≤ c * ((μ (Metric.ball x ρ)).toReal + d)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
