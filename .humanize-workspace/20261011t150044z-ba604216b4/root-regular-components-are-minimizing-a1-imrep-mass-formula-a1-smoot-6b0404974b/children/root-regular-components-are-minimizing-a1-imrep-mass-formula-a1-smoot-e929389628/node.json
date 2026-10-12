@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1.radial_retraction-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1",
+  "depth": 4,
+  "title": "Radial retraction onto the closed unit ball is nonexpansive towards points of the ball",
+  "statement": "Let E be a real inner product space and x, y ∈ E with ‖y‖ ≤ 1. Then ‖(max 1 ‖x‖)⁻¹ • x − y‖ ≤ ‖x − y‖.",
+  "lean_statement": "∀ (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℝ E] (x y : E), ‖y‖ ≤ 1 → ‖(max 1 ‖x‖)⁻¹ • x - y‖ ≤ ‖x - y‖",
+  "lean_name": "regcomp_norm_radial_retraction_sub_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-smoot-e929389628-a1"
+}

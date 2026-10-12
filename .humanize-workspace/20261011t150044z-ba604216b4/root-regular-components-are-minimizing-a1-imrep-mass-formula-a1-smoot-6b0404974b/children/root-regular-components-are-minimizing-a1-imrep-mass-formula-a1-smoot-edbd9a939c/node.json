@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1.opnorm_basis_bound-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1",
+  "depth": 4,
+  "title": "Operator norm of an n-covector is at most P^n times a bound on its standard-basis values",
+  "statement": "Let P, n ∈ ℕ, α ∈ Covector (Euclid P) n and C ≥ 0 such that |α(e_{j(0)}, …, e_{j(n−1)})| ≤ C for every j : Fin n → Fin P, where e = EuclideanSpace.basisFun (Fin P) ℝ is the standard orthonormal basis of ℝ^P. Then the operator norm of α satisfies ‖α‖ ≤ P^n·C.",
+  "lean_statement": "∀ (P n : ℕ) (α : Covector (Euclid P) n) (C : ℝ), 0 ≤ C → (∀ j : Fin n → Fin P, |α (fun k => EuclideanSpace.basisFun (Fin P) ℝ (j k))| ≤ C) → ‖α‖ ≤ (P : ℝ) ^ n * C",
+  "lean_name": "regcomp_covector_opNorm_le_of_basis_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-smoot-edbd9a939c-a1"
+}
