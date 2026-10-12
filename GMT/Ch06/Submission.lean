@@ -385,13 +385,13 @@ theorem Submission.slicing_mb_dm_distribution_mono_rightcont :
     · intro h r hr
       exact ⟨h.1, h.2.trans hr.le⟩
   -- Continuity of `ν` from above along `r ↓ s`, using `ν(A_{s+1}) < ∞`.
-  have htend : Tendsto (fun r => ν (Ioo a b ∩ Iic r)) (𝓝[>] s) (𝓝 (ν (Ioo a b ∩ Iic s))) := by
+  have hlim : Tendsto (fun r => ν (Ioo a b ∩ Iic r)) (𝓝[>] s) (𝓝 (ν (Ioo a b ∩ Iic s))) := by
     rw [← hinter]
     exact tendsto_measure_biInter_gt (s := fun r => Ioo a b ∩ Iic r)
       (fun r _ => (measurableSet_Ioo.inter measurableSet_Iic).nullMeasurableSet)
       (fun i j _ hij => hsub i j hij) ⟨s + 1, by linarith, hfin (s + 1)⟩
   -- `toReal` is continuous at the finite value `ν(A_s)`.
-  exact (ENNReal.tendsto_toReal (hfin s)).comp htend
+  exact (ENNReal.tendsto_toReal (hfin s)).comp hlim
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
