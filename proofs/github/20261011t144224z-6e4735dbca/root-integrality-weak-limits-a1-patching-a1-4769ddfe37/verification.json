@@ -1,0 +1,21 @@
+{
+  "node_id": "root.integrality_weak_limits-a1.patching-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/928",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "c9a4db0e8a686783d4a87a419764a7f41ce45f24",
+  "integrated_commit": "",
+  "proof_base_commit": "7b19010629f37b5502f7e27a04540212ef7b0bcf",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.integrality_weak_limits-a1",
+  "requires": [
+    "root.integrality_weak_limits-a1.tangent_locality-a1",
+    "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_congr_on_open-a1",
+    "root.boundary_rectifiability-a1.tangent_locality-a1",
+    "root.slicing-a1.representation_unique-a1.covector_expansion-a1",
+    "root.lipschitz_pushforward_im-a1.simple_nvector_algebra-a1"
+  ]
+}
