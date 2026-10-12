@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "263e4b5c59533fe19f74efd256e6f44c7c0f82b2d763d4645c38209630042400",
+  "git_delta": {
+    "base_commit": "1288a6d2b82594072902597fdaca72fdc81a78b8",
+    "candidate_commit": "325f50169a373013f6d29b45b5bf654d0e677820",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_mv_affine_comp_deriv",
+    "diff_sha256": "9bdeaf0d0ba836614aaee703b5e99b0ba4238ee3c23da9b15f5eeefce4cd8640",
+    "source_sha256": "2241af52eb270cfb2a4500583e8a1ff389ba91b5540f8ffb22a55c3aefbab249",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_mv_affine_comp_deriv",
+      "statement": "∀ (n : ℕ) (h : Euclid n → ℝ) (x : Euclid n) (s : ℝ) (y a b : Euclid n), fderiv ℝ (fun z : Euclid n => h (x - s • z)) y a = -(s * fderiv ℝ h (x - s • y) a) ∧ iteratedFDeriv ℝ 2 (fun z : Euclid n => h (x - s • z)) y ![a, b] = s ^ 2 * iteratedFDeriv ℝ 2 h (x - s • y) ![a, b]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
