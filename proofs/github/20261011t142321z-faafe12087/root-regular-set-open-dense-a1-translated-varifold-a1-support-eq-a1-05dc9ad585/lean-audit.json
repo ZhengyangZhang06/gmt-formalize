@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5af36710ca2babe8e7d76d776d4f4a33b9412070e3ccdc268d796821dc4f04e7",
+  "git_delta": {
+    "base_commit": "e8359b53bb7bc46effe2f2815350ceac0145cb4b",
+    "candidate_commit": "833e4323fd5acccacfdb4613924ccfd8e6096469",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_tv_support_eq",
+    "diff_sha256": "b6b64c35c045063be4f30c81327cd691b53362121590244474ffdcd670d9569b",
+    "source_sha256": "85e05f00c3dcf40cd9e78773c79b67bf22f739160eb94e11fb11d1cb662824ea",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_tv_support_eq",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ) (W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U)), W.weight = V.weight.map (fun y => y - x₀) → W.support = (fun y => y + x₀) ⁻¹' V.support",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
