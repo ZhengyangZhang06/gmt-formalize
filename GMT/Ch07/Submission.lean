@@ -488,6 +488,54 @@ theorem Submission.adr_exists_strictAnti_radii : ∀ (Q : ℝ → Prop) (δ₀ :
     | succ k =>
       rw [hsucc]
       exact hgQ _ (hmin k)
+/-- **An `H^ℓ`-null set has open covers of arbitrarily small `ℓ`-dimensional cost**: the open
+balls covering `sing ψ` with `∑ⱼ ω_ℓ ρⱼ^ℓ < ε` in the proof of Simon A.4 (chapter-A.txt
+lines 88–97), with thickenings in place of balls.  The scale-`1` term of `hausdorffMeasure_apply`
+gives a cover `E ⊆ ⋃ₙ tₙ` with `diam tₙ ≤ 1` and `∑ₙ c(tₙ) < ε / 2`, where `c(t) = (diam t)^ℓ`
+for `t ≠ ∅` and `c(∅) = 0`.  With slack `δₙ > 0`, `∑ₙ δₙ < ε / 2`, each `tₙ` is replaced by its
+open `rₙ`-thickening, `rₙ > 0` so small that `(diam tₙ + 2rₙ)^ℓ < (diam tₙ)^ℓ + δₙ`. -/
+theorem Submission.adr_null_open_cover : ∀ (P : ℕ) (ℓ : ℝ) (E : Set (Euclid P)) (ε : ℝ≥0∞), 0 < ℓ → μH[ℓ] E = 0 → 0 < ε → ∃ U : ℕ → Set (Euclid P), (∀ j, IsOpen (U j)) ∧ E ⊆ ⋃ j, U j ∧ ∑' j, Metric.ediam (U j) ^ ℓ < ε := by
+  intro P ℓ E ε hℓ hE hε
+  have hε2 : 0 < ε / 2 := ENNReal.half_pos hε.ne'
+  -- the scale-`1` term of the formula for `μH[ℓ] E = 0` gives a cheap cover `t`
+  obtain ⟨t, hEt, ht1, ht⟩ : ∃ t : ℕ → Set (Euclid P), E ⊆ ⋃ n, t n ∧
+      (∀ n, ediam (t n) ≤ 1) ∧ ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ ℓ < ε / 2 := by
+    have h1 : (⨅ (t : ℕ → Set (Euclid P)) (_ : E ⊆ ⋃ n, t n) (_ : ∀ n, ediam (t n) ≤ 1),
+        ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ ℓ) < ε / 2 := by
+      refine lt_of_le_of_lt ?_ hε2
+      rw [← hE, Measure.hausdorffMeasure_apply]
+      exact le_iSup₂_of_le (1 : ℝ≥0∞) one_pos le_rfl
+    simpa only [iInf_lt_iff, exists_prop] using h1
+  -- slack `δₙ > 0` with `∑ₙ δₙ < ε / 2`
+  obtain ⟨δ, hδ, hδsum⟩ := ENNReal.exists_pos_sum_of_countable' hε2.ne' ℕ
+  -- radii `rₙ > 0` with `(diam tₙ + 2rₙ)^ℓ < (diam tₙ)^ℓ + δₙ`, by continuity at `0`
+  have hr : ∀ n, ∃ r : NNReal, 0 < r ∧
+      (ediam (t n) + 2 * (r : ℝ≥0∞)) ^ ℓ < ediam (t n) ^ ℓ + δ n := by
+    intro n
+    have hcont : Continuous fun r : NNReal => (ediam (t n) + 2 * (r : ℝ≥0∞)) ^ ℓ := by
+      fun_prop (disch := norm_num)
+    have hfin : ediam (t n) ^ ℓ ≠ ∞ :=
+      ENNReal.rpow_ne_top_of_nonneg hℓ.le ((ht1 n).trans_lt ENNReal.one_lt_top).ne
+    have hev : ∀ᶠ r : NNReal in 𝓝 0,
+        (ediam (t n) + 2 * (r : ℝ≥0∞)) ^ ℓ < ediam (t n) ^ ℓ + δ n :=
+      (isOpen_lt hcont continuous_const).mem_nhds
+        (by simpa using ENNReal.lt_add_right hfin (hδ n).ne')
+    exact (Filter.Eventually.and self_mem_nhdsWithin
+      (hev.filter_mono nhdsWithin_le_nhds) : ∀ᶠ r : NNReal in 𝓝[>] 0, 0 < r ∧ _).exists
+  choose r hr0 hr using hr
+  -- `Uₙ` is the open `rₙ`-thickening of `tₙ`; `diam Uₙ ≤ diam tₙ + 2rₙ`
+  refine ⟨fun n => thickening (r n) (t n), fun n => isOpen_thickening, ?_, ?_⟩
+  · exact hEt.trans (iUnion_mono fun n => self_subset_thickening (NNReal.coe_pos.mpr (hr0 n)) _)
+  calc ∑' n, ediam (thickening (r n) (t n)) ^ ℓ
+      ≤ ∑' n, ((⨆ _ : (t n).Nonempty, ediam (t n) ^ ℓ) + δ n) := by
+        refine ENNReal.tsum_le_tsum fun n => ?_
+        rcases (t n).eq_empty_or_nonempty with h | h
+        · simp [h, ENNReal.zero_rpow_of_pos hℓ]
+        · rw [iSup_pos h]
+          exact (ENNReal.rpow_le_rpow (ediam_thickening_le (r n)) hℓ.le).trans (hr n).le
+    _ = ∑' n, (⨆ _ : (t n).Nonempty, ediam (t n) ^ ℓ) + ∑' n, δ n := ENNReal.tsum_add
+    _ < ε / 2 + ε / 2 := ENNReal.add_lt_add ht hδsum
+    _ = ε := ENNReal.add_halves ε
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
