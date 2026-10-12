@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e19dc47fe0c1ba19a2ec3fb863d62886eba40ec88d0c59b49aa8c2ac7cfaa118",
+  "git_delta": {
+    "base_commit": "4f63722ba6c6dd049952866e43e49f055e7b12fe",
+    "candidate_commit": "2b2d626519e4fa0614aa7db98d667e391e9c1c2c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "exists_plane_cutoff_quadratic_moment_eq",
+    "diff_sha256": "d2b89ff2c06ac5aef6d4491cde70f135a4718f16345913dcb1beca41382c0bc9",
+    "source_sha256": "4d196eb8f5f0d2f85dec5111b1b50394f1c2b0b27721fcd27f154549a884da90",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.exists_plane_cutoff_quadratic_moment_eq",
+      "statement": "∀ n : ℕ, 0 < n → ∃ c : ℝ, 0 < c ∧ ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)), Module.finrank ℝ Q = n → ∀ u : Euclid P, ∫ y in (Q : Set (Euclid P)), max (1 - ‖y‖ ^ 2) 0 * inner ℝ u y ^ 2 ∂μHE[n] = c * ‖Q.starProjection u‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
