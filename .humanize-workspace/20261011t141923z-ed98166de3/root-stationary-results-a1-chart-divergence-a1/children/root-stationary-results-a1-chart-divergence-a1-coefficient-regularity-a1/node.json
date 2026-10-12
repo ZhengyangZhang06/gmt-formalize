@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.chart_divergence-a1.coefficient_regularity-a1",
+  "parent_id": "root.stationary_results-a1.chart_divergence-a1",
+  "depth": 3,
+  "title": "C¹ regularity of the tangential coefficient field G⁻¹A*u",
+  "statement": "For all n, N ∈ ℕ, every open V ⊆ ℝⁿ, every ψ : ℝⁿ → ℝᴺ that is C² on V with fderiv ℝ ψ x injective for all x ∈ V, and every u : ℝⁿ → ℝᴺ that is C¹ on V: the tangential coefficient field a(x) := G(x)⁻¹(A(x)* u(x)), where A(x) := fderiv ℝ ψ x, A(x)* := ContinuousLinearMap.adjoint A(x) and G(x)⁻¹ := Ring.inverse (A(x)* ∘ A(x)), is C¹ on V.",
+  "lean_statement": "∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N) (u : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ x ∈ V, Function.Injective (fderiv ℝ ψ x)) → ContDiffOn ℝ 1 u V → ContDiffOn ℝ 1 (fun x ↦ Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) (u x))) V",
+  "lean_name": "chart_tangential_coefficient_contDiffOn",
+  "depends_on": [
+    "root.stationary_results-a1.chart_divergence-a1.gram_projection-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.stationary_results-a1.chart_divergence-a1.gram_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-chart-divergence-a1-coefficient-regularity-a1-a1"
+}

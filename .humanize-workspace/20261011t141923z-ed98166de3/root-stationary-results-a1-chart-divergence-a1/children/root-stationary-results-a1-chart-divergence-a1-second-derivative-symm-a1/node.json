@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.chart_divergence-a1.second_derivative_symm-a1",
+  "parent_id": "root.stationary_results-a1.chart_divergence-a1",
+  "depth": 3,
+  "title": "Symmetry of the second derivative of a C² map on an open set (Schwarz)",
+  "statement": "For all n, N ∈ ℕ, every open V ⊆ ℝⁿ and every ψ : ℝⁿ → ℝᴺ that is C² on V: for all x ∈ V and v, w ∈ ℝⁿ, fderiv ℝ (fderiv ℝ ψ) x v w = fderiv ℝ (fderiv ℝ ψ) x w v, i.e. D²ψ(x)[v, w] = D²ψ(x)[w, v].",
+  "lean_statement": "∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → ∀ x ∈ V, ∀ v w : Rn n, fderiv ℝ (fderiv ℝ ψ) x v w = fderiv ℝ (fderiv ℝ ψ) x w v",
+  "lean_name": "fderiv_fderiv_symm_of_contDiffOn_two",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-chart-divergence-a1-second-derivative-symm-a1-a1"
+}

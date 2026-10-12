@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.chart_divergence-a1.chart_mean_curvature-a1",
+  "parent_id": "root.stationary_results-a1.chart_divergence-a1",
+  "depth": 3,
+  "title": "Mean curvature through an injective parametrization differential",
+  "statement": "For all n, N ∈ ℕ, M ⊆ ℝᴺ, y ∈ ℝᴺ, every injective continuous linear map A : ℝⁿ → ℝᴺ with tangentSpace M y = range A, and every continuous linear S : ℝⁿ → L(ℝⁿ, ℝᴺ) (a bilinear map (a, b) ↦ S a b, not assumed symmetric) such that secondFundamentalForm M y (A a) (A b) = normalPart M y (S a b) for all a, b ∈ ℝⁿ: meanCurvature M y = normalPart M y (Σ_{l ∈ Fin n} S e_l (G⁻¹ e_l)), where e_l := EuclideanSpace.single l 1 is the standard basis of ℝⁿ and G⁻¹ := Ring.inverse (A* ∘ A), A* := ContinuousLinearMap.adjoint A.",
+  "lean_statement": "∀ (n N : ℕ) (M : Set (Rn N)) (y : Rn N) (A : Rn n →L[ℝ] Rn N) (S : Rn n →L[ℝ] Rn n →L[ℝ] Rn N), Function.Injective A → tangentSpace M y = LinearMap.range A.toLinearMap → (∀ a b : Rn n, secondFundamentalForm M y (A a) (A b) = normalPart M y (S a b)) → meanCurvature M y = normalPart M y (∑ l : Fin n, S (EuclideanSpace.single l 1) (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) (EuclideanSpace.single l 1)))",
+  "lean_name": "chart_meanCurvature_eq_normalPart_gram_sum",
+  "depends_on": [
+    "root.stationary_results-a1.chart_divergence-a1.gram_projection-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.stationary_results-a1.chart_divergence-a1.gram_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-chart-divergence-a1-chart-mean-curvature-a1-a1"
+}

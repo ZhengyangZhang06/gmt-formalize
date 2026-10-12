@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.stationary_results-a1.chart_divergence-a1`
+- Child DAG node: `root.stationary_results-a1.chart_divergence-a1.gram_projection-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Notation. ℝᵈ := EuclideanSpace ℝ (Fin d) = Rn d with the standard inner product ⟨·,·⟩; L(E, F) := E →L[ℝ] F and L(ℝⁿ) := ℝⁿ →L[ℝ] ℝⁿ, a ring whose multiplication is composition (f * g = f ∘L g holds by rfl) with identity 1; for A ∈ L(ℝⁿ, ℝᴺ), A* := ContinuousLinearMap.adjoint A, so ⟨A* z, c⟩ = ⟨z, A c⟩ (ContinuousLinearMap.adjoint_inner_left) and ⟨c, A* z⟩ = ⟨A c, z⟩ (ContinuousLinearMap.adjoint_inner_right); G := A* ∘L A and G⁻¹ := Ring.inverse G; trace means LinearMap.trace ℝ ℝⁿ applied to the underlying linear map (.toLinearMap); e_l := EuclideanSpace.single l 1 (l ∈ Fin n) is the standard orthonormal basis of ℝⁿ (= EuclideanSpace.basisFun (Fin n) ℝ l). Every lemma cited below resolves after `import GMT.Ch02.Submission` (checked with #check).
+Source: parent proof, Setting and step 2 (P_{ψ(x)} = A G⁻¹ A*), specialized to an arbitrary injective A.
+Setting. Fix n, N, K and A with A injective and K = range A (= LinearMap.range A.toLinearMap). K is finite-dimensional, so it has an orthogonal projection P := K.starProjection, with P z ∈ K (Submodule.starProjection_apply_mem) and z − P z ∈ Kᗮ (Submodule.sub_starProjection_mem_orthogonal) for every z ∈ ℝᴺ.
+1. (G is symmetric.) For v, w ∈ ℝⁿ: ⟨G v, w⟩ = ⟨A*(A v), w⟩ = ⟨A v, A w⟩ and ⟨v, G w⟩ = ⟨v, A*(A w)⟩ = ⟨A v, A w⟩. Hence ⟨G v, w⟩ = ⟨v, G w⟩.
+2. (G is injective.) If G c = 0, then 0 = ⟨G c, c⟩ = ⟨A c, A c⟩ = ‖A c‖², so A c = 0, and c = 0 because A is injective.
+3. (First conjunct: G is a unit of L(ℝⁿ).) By step 2 the kernel of the linear map G is ⊥, so G is a unit of the ring of linear endomorphisms of the finite-dimensional space ℝⁿ (LinearMap.isUnit_iff_ker_eq_bot) and hence det G ≠ 0 (LinearMap.isUnit_iff_isUnit_det). Then e := ContinuousLinearMap.toContinuousLinearEquivOfDetNeZero G is a continuous linear equivalence with underlying map G, and its inverse e.symm ∈ L(ℝⁿ) satisfies G ∘L e.symm = 1 = e.symm ∘L G (e.apply_symm_apply, e.symm_apply_apply, ContinuousLinearMap.ext). So IsUnit G in L(ℝⁿ). (For n = 0, L(ℝ⁰) is the zero ring and the argument still applies.) Consequently G ∘L G⁻¹ = 1 and G⁻¹ ∘L G = 1 (Ring.mul_inverse_cancel, Ring.inverse_mul_cancel).
+4. (Second conjunct: G⁻¹ is symmetric.) For v, w ∈ ℝⁿ, using G(G⁻¹w) = w, step 1 and G(G⁻¹v) = v: ⟨G⁻¹v, w⟩ = ⟨G⁻¹v, G(G⁻¹w)⟩ = ⟨G(G⁻¹v), G⁻¹w⟩ = ⟨v, G⁻¹w⟩.
+5. (Q := A ∘L G⁻¹ ∘L A* is the identity on K.) If z ∈ K = range A, write z = A c; then Q z = A(G⁻¹(A*(A c))) = A(G⁻¹(G c)) = A c = z.
+6. (Q vanishes on Kᗮ.) If z ∈ Kᗮ, then for every c ∈ ℝⁿ, ⟨A* z, c⟩ = ⟨z, A c⟩ = 0 since A c ∈ K. With c := A* z this gives ‖A* z‖² = 0, so A* z = 0 and Q z = A(G⁻¹ 0) = 0.
+7. (Third conjunct: K.starProjection = Q.) For any z ∈ ℝᴺ, P z ∈ K and z − P z ∈ Kᗮ, so by linearity of Q and steps 5–6, Q z = Q(P z) + Q(z − P z) = P z + 0 = P z. As z is arbitrary, K.starProjection = Q = A ∘L Ring.inverse (A* ∘L A) ∘L A* (ContinuousLinearMap.ext). Equivalently: Q z ∈ K (it lies in range A) and z − Q z ⊥ K, because ⟨z − Q z, A c⟩ = ⟨A* z − A*(A(G⁻¹(A* z))), c⟩ = ⟨A* z − G(G⁻¹(A* z)), c⟩ = 0; so Q z = P z by Submodule.eq_starProjection_of_mem_of_inner_eq_zero.
+Steps 3, 4 and 7 are the three conjuncts. ∎
+
+## Key steps
+
+1. G = A*A is symmetric and injective because ⟨Gc, c⟩ = ‖Ac‖² and A is injective.
+2. ker G = ⊥ ⇒ det G ≠ 0 ⇒ toContinuousLinearEquivOfDetNeZero gives a two-sided inverse in L(ℝⁿ), so IsUnit G and G G⁻¹ = G⁻¹ G = 1.
+3. ⟨G⁻¹v, w⟩ = ⟨G⁻¹v, G G⁻¹w⟩ = ⟨G G⁻¹v, G⁻¹w⟩ = ⟨v, G⁻¹w⟩.
+4. Q = A G⁻¹ A* fixes K = range A and kills Kᗮ (A*z = 0 there); z = Pz + (z − Pz) gives K.starProjection = Q.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat -n GMT/Ch02/Contract.lean (lines 79-120: tangentSpace, tangentProjection, normalPart, tangentFrame, tangentialDivergence, secondFundamentalForm, meanCurvature)`
+- `cat -n simongmt/Poincare/SimonGMT/Chapter02/{Submanifold,Area,SubmanifoldCalculus,SecondFundamentalFormCalculus,SecondFundamentalForm}.lean`
+- `grep -rn 'contDiffAt_ringInverse\|hasFDerivAt_ringInverse\|contDiffAt_map_inverse' mathlib/Mathlib`
+- `grep -rln Jacobi mathlib/Mathlib; grep -rn 'hasFDerivAt_det\|fderiv_det\|hasStrictFDerivAt_det\|deriv_det\|contDiff_det' mathlib/Mathlib (no derivative of det)`
+- `grep -rn 'continuous_det\|det_one_add_smul\|derivative_det_one_add_X_smul' mathlib/Mathlib`
+- `grep -rn 'theorem fderiv_fun_smul\|theorem fderiv_comp\|trace_smulRight\|theorem trace_comp_comm'\|inner_starProjection_left_eq_right\|trace_eq_sum_inner' mathlib/Mathlib`
+- `grep -rn 'ContDiffAt.isSymmSndFDerivAt\|ContDiffOn.fderiv_of_isOpen\|ContDiffOn.clm_comp\|ContDiffOn.clm_apply\|fderiv_clm_apply\|fderiv_clm_comp\|adjoint_inner_left\|starProjection_apply_mem\|sub_starProjection_mem_orthogonal\|ContDiffAt.sqrt\|isUnit_iff_ker_eq_bot\|toContinuousLinearEquivOfDetNeZero\|norm_image_sub_le_of_norm_deriv_le_segment'' mathlib/Mathlib`
+- `grep -rn 'theorem.*[Ss]ymm.*fderiv\|IsSymmSndFDerivAt\|iteratedFDeriv.*comm' mathlib/Mathlib (only FDeriv/Symmetric.lean, VectorField.lean, CurveIntegral/Poincare.lean)`
+- `lake env lean Probe.lean / Probe2.lean: #check of every cited name after `import GMT.Ch02.Submission` (unknown: ContDiffAt.isSymmSndFDerivAt, second_derivative_symmetric_of_eventually, Chapter02.submanifoldDivergenceAt_eq_sum_inner, Convex.taylor_approx_two_segment; all others resolve)`
+- `sed -n 60,115p /runtime/flows/gmt-claude-6e6a457c9391/_recursive_lean/leaf_verification.py (check_source_delta); grep leaf_lean_agent_review .humanize/swarm-configs/*.json`
+- `python3 -I collision check of the 8 lean_names against dag.json (149 nodes) + grep over the run directory, snapshot project, SimonGMT and Mathlib (no match); python3 -I regex scan of dag.json lean_statements for D²ψ symmetry / det derivative (no node)`
+- `python3 -I gen.py (lean_contract.validate_lean_statement + gmt-compare.contract_scope replay); lake build GMT.Ch02.Submission; lake env lean challenges8/NodeChallenge_00..07.lean`
+- `lake env lean AssemblyCheck8.lean (frozen parent type from 8 child stubs + frozen sff_chart stub; #print axioms HumanizeNodeComparator.target)`
+- `lake env lean Child4.lean, rev/Child15.lean, rev/Child2.lean, rev/Child3.lean, rev/Child6.lean (sibling-interface proofs, no sorry); lake env lean InstCheck.lean`
+- `python3 -I numcheck.py; python3 -I numcheck2.py (finite-difference checks)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SecondFundamentalFormCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-6e6a457c9391/_recursive_lean/leaf_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-chart-divergence-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-chart-divergence-a1/parent-supplied-natural-proof.md`
+- `/tmp/chartdiv-decomp/AssemblyCheck8.lean`
+- `/tmp/chartdiv-decomp/InstCheck.lean`
+- `/tmp/chartdiv-probe/Probe.lean`
+- `/tmp/chartdiv-probe/Probe2.lean`
+- `/tmp/chartdiv-probe/Child4.lean`
+- `/tmp/chartdiv-probe/rev/Child15.lean`
+- `/tmp/chartdiv-probe/rev/Child2.lean`
+- `/tmp/chartdiv-probe/rev/Child3.lean`
+- `/tmp/chartdiv-probe/rev/Child6.lean`
+- `/tmp/chartdiv-scripts/numcheck.py`
+- `/tmp/chartdiv-scripts/numcheck2.py`
+
+Contract.lean (lines 83-119) fixes tangentSpace/tangentProjection (starProjection)/normalPart/tangentFrame (stdOrthonormalBasis)/tangentialDivergence (frame sum of fderiv)/secondFundamentalForm (fderivWithin of tangentProjection)/meanCurvature (frame trace). In scope after `import GMT.Ch02.Submission`: SimonGMT Area.lean (areaJacobianAt_eq_normDet, areaJacobianAt_eq_sqrt_det_adjoint_comp, areaJacobianAt_sq_eq_det_adjoint_comp, areaJacobianAt_nonneg) and Submanifold.lean (IsSimonLocalRepresentation accessors); Mathlib LinearMap.normDet_ne_zero_tfae (1-based TFAE indices), contDiffAt_ringInverse, ContDiffOn.fderiv_of_isOpen/clm_comp/clm_apply, fderiv_clm_apply/fderiv_clm_comp, fderiv_fun_smul, LinearMap.trace_smulRight/trace_comp_comm'/trace_eq_sum_inner/trace_eq_matrix_trace, Matrix.det_one_add_smul, Matrix.det_apply, LinearMap.det_toMatrix, ContDiffAt.sqrt, HasFDerivAt.sqrt, norm_image_sub_le_of_norm_deriv_le_segment', ContinuousLinearMap.toContinuousLinearEquivOfDetNeZero, Submodule.eq_starProjection_of_mem_of_inner_eq_zero. NOT in scope (no match): ContDiffAt.isSymmSndFDerivAt, second_derivative_symmetric_of_eventually, Convex.taylor_approx_two_segment (FDeriv/Symmetric.lean is not imported) and SimonGMT submanifoldDivergenceAt_eq_sum_inner (SubmanifoldCalculus.lean is not imported) — the parent handoff's claim that these are available is wrong after the frozen imports. Mathlib has no derivative of det (no hasFDerivAt_det/fderiv_det/contDiff_det). Since a childless node may only append one theorem (leaf_verification.check_source_delta), symmetry of D²ψ and Jacobi's formula for det are genuine new obligations and became children. All 8 statements validate and elaborate; AssemblyCheck8.lean proves the frozen parent type from them plus the frozen sff_chart type (axioms propext, sorryAx from stubs, Classical.choice, Quot.sound); every sibling interface compiles sorry-free; the 8 names are unused in dag.json, the run, the snapshot project, SimonGMT and Mathlib.
