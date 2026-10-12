@@ -507,6 +507,129 @@ theorem Submission.br_zd_im_dirac_repr :
   · have hx' : x ∉ tsupport f := fun h => hx.2 (by rw [hSM]; exact ⟨hx.1, h⟩)
     have h0 : (ω : DifferentialForm (Eucl P) 0) x = 0 := hzero x hx'
     simp [h0]
+/-- The mass lower bound for a locally finite Dirac sum (the `0`-dimensional step in the proof of
+Simon Ch. 6, 6.3): if `Y(ω) = ∑ᶠ_{x ∈ N} c(x) ω(x)` with `N ∩ K` finite for compact `K ⊆ U`, then
+`∑_{x ∈ S} |c(x)| ≤ M_W(Y)` for every finite `S ⊆ N ∩ W`, `W ⊆ U` open.  Test with
+`ω = ∑_{x ∈ S} sign(c(x)) φₓ`, where the bumps `φₓ` (`φₓ(x) = 1`) have pairwise disjoint
+supports `B(x, δ) ⊆ W` meeting `N` only in `x`: then `|ω| ≤ 1` and `Y(ω) = ∑_{x ∈ S} |c(x)|`. -/
+theorem Submission.br_zd_dirac_massOn_ge :
+    ∀ (P : ℕ) (U W N : Set (Eucl P)) (Y : GeometricCurrentOn U 0) (c : Eucl P → ℤ), IsOpen W →
+      W ⊆ U → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → (N ∩ K).Finite) →
+      (∀ ω : TestFormOn U 0,
+        Y ω = ∑ᶠ x ∈ N, (c x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![]) →
+      ∀ S : Finset (Eucl P), (↑S : Set (Eucl P)) ⊆ N ∩ W →
+        ENNReal.ofReal (∑ x ∈ S, |(c x : ℝ)|) ≤ Y.massOn W := by
+  classical
+  intro P U W N Y c hW hWU hN hY S hS
+  -- A common radius `δ > 0`: for `x ∈ S`, `B̄(x, 2δ) ⊆ W` and `N ∩ B̄(x, 2δ) = {x}`.
+  have hloc : ∀ x ∈ S, ∀ᶠ δ in 𝓝[>] (0 : ℝ),
+      closedBall x (2 * δ) ⊆ W ∧ ∀ y ∈ N, dist y x ≤ 2 * δ → y = x := by
+    intro x hx
+    obtain ⟨r, hr, hrW⟩ := Metric.isOpen_iff.mp hW x (hS hx).2
+    have hfin : (N ∩ closedBall x (r / 2)).Finite :=
+      hN _ (isCompact_closedBall x (r / 2))
+        (((closedBall_subset_ball (half_lt_self hr)).trans hrW).trans hWU)
+    obtain ⟨ε, hε, hεF⟩ := Metric.isOpen_iff.mp
+      (hfin.subset (sdiff_subset (t := {x}))).isClosed.isOpen_compl x (by simp)
+    filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < min (r / 4) (ε / 4) by positivity)]
+      with δ ⟨hδ0, hδ⟩
+    have h1 : δ < r / 4 := hδ.trans_le (min_le_left _ _)
+    have h2 : δ < ε / 4 := hδ.trans_le (min_le_right _ _)
+    refine ⟨(closedBall_subset_ball (by linarith)).trans hrW, fun y hyN hyx => ?_⟩
+    by_contra hne
+    exact hεF (mem_ball.2 (by linarith)) ⟨⟨hyN, mem_closedBall.2 (by linarith)⟩, hne⟩
+  obtain ⟨δ, hδS, hδ : 0 < δ⟩ :=
+    (((Filter.eventually_all_finset S).2 hloc).and self_mem_nhdsWithin).exists
+  -- Bumps `φ x` with `φ x = 1` on `B̄(x, δ/2)`, support `B(x, δ)`, and signs `s x` of `c x`.
+  let φ : (x : Eucl P) → ContDiffBump x := fun x => ⟨δ / 2, δ, half_pos hδ, half_lt_self hδ⟩
+  let s : Eucl P → ℝ := fun x => if 0 ≤ (c x : ℝ) then 1 else -1
+  have hφ0 : ∀ x y, δ ≤ dist y x → φ x y = 0 := fun x y h => (φ x).zero_of_le_dist h
+  have hφ1 : ∀ x, φ x x = 1 := fun x =>
+    (φ x).one_of_mem_closedBall (mem_closedBall_self (half_pos hδ).le)
+  -- The balls `B(x, δ)`, `x ∈ S`, are pairwise disjoint.
+  have hsep : ∀ x ∈ S, ∀ x' ∈ S, x' ≠ x → ∀ y, dist y x < δ → δ ≤ dist y x' := by
+    intro x hx x' hx' hne y hy
+    by_contra h
+    refine hne ((hδS x hx).2 x' (hS hx').1 ?_)
+    have := dist_triangle x' y x
+    rw [dist_comm x' y] at this
+    linarith
+  let h : Eucl P → ℝ := fun y => ∑ x ∈ S, s x * φ x y
+  have hh0 : ∀ y, h y ≠ 0 → ∃ x ∈ S, dist y x < δ := by
+    intro y hy
+    by_contra hcon
+    exact hy (Finset.sum_eq_zero fun x hx => by
+      rw [hφ0 x y (not_lt.1 fun h' => hcon ⟨x, hx, h'⟩), mul_zero])
+  have hhS : ∀ x ∈ S, h x = s x := by
+    intro x hx
+    rw [show h x = ∑ x' ∈ S, s x' * φ x' x from rfl,
+      Finset.sum_eq_single_of_mem x hx fun x' hx' hne =>
+        by rw [hφ0 x' x (hsep x hx x' hx' hne x (by simpa using hδ)), mul_zero],
+      hφ1, mul_one]
+  have hh1 : ∀ y, |h y| ≤ 1 := by
+    intro y
+    by_cases hy : h y = 0
+    · simp [hy]
+    obtain ⟨x, hx, hyx⟩ := hh0 y hy
+    rw [show h y = ∑ x' ∈ S, s x' * φ x' y from rfl,
+      Finset.sum_eq_single_of_mem x hx fun x' hx' hne =>
+        by rw [hφ0 x' y (hsep x hx x' hx' hne y hyx), mul_zero], abs_mul]
+    have hs : |s x| = 1 := by simp only [s]; split_ifs <;> simp
+    rw [hs, one_mul, abs_of_nonneg (φ x).nonneg]
+    exact (φ x).le_one
+  -- The test form `ω = h • 𝟙`, where `𝟙` is the `0`-covector with value `1`.
+  let e : Covector (Eucl P) 0 :=
+    ContinuousAlternatingMap.constOfIsEmpty ℝ (Eucl P) (Fin 0) (1 : ℝ)
+  let f : DifferentialForm (Eucl P) 0 := fun y => h y • e
+  have hfe : ∀ y, f y ![] = h y := fun y => by simp [f, e]
+  set B : Set (Eucl P) := ⋃ x ∈ S, closedBall x δ
+  have hB : IsCompact B := S.isCompact_biUnion fun x _ => isCompact_closedBall x δ
+  have hBW : B ⊆ W := iUnion₂_subset fun x hx =>
+    (closedBall_subset_closedBall (by linarith)).trans (hδS x hx).1
+  have hfB : ∀ y, y ∉ B → f y = 0 := by
+    intro y hy
+    by_contra hne
+    obtain ⟨x, hx, hyx⟩ := hh0 y fun h0 => hne (by simp [f, h0])
+    exact hy (mem_iUnion₂.2 ⟨x, hx, mem_closedBall.2 hyx.le⟩)
+  have hfsupp : tsupport f ⊆ B :=
+    closure_minimal (fun y hy => by_contra fun hyB => hy (hfB y hyB)) hB.isClosed
+  have hfsmooth : IsSmoothForm f :=
+    (ContDiff.sum fun x _ => contDiff_const.mul (φ x).contDiff).smul contDiff_const
+  have hfcpt : HasCompactSupport f := HasCompactSupport.intro hB hfB
+  let ω : TestFormOn U 0 := ⟨f, show IsTestForm f ∧ tsupport f ⊆ U from
+    ⟨⟨hfsmooth, hfcpt⟩, hfsupp.trans (hBW.trans hWU)⟩⟩
+  have hadm : ω ∈ massAdmissibleOn U 0 W := by
+    refine show tsupport f ⊆ W ∧ ∀ y, covectorEuclideanNorm (f y) ≤ 1 from
+      ⟨hfsupp.trans hBW, fun y => ?_⟩
+    -- For a `0`-covector `α`, the coefficient norm is `|α(![])|`.
+    rw [covectorEuclideanNorm, Fintype.sum_unique, ite_eq_left (Subsingleton.strictMono _),
+      show (fun i => EuclideanSpace.basisFun (Fin P) ℝ ((default : Fin 0 → Fin P) i)) = ![] from
+        Subsingleton.elim _ _, hfe, Real.sqrt_sq_eq_abs]
+    exact hh1 y
+  -- Only the points of `S` contribute to `Y(ω) = ∑ᶠ_{y ∈ N} c(y) h(y)`, and `h = s` on `S`.
+  have hval : Y ω = ∑ x ∈ S, |(c x : ℝ)| := by
+    rw [hY]
+    change ∑ᶠ y ∈ N, (c y : ℝ) * f y ![] = _
+    simp_rw [hfe]
+    rw [finsum_mem_eq_sum_of_inter_support_eq (fun y => (c y : ℝ) * h y) (t := S) ?_]
+    · refine Finset.sum_congr rfl fun x hx => ?_
+      rw [hhS x hx]
+      simp only [s]
+      split_ifs with h0
+      · rw [mul_one, abs_of_nonneg h0]
+      · rw [mul_neg_one, abs_of_neg (not_le.1 h0)]
+    · ext y
+      simp only [mem_inter_iff, Function.mem_support, Finset.mem_coe]
+      constructor
+      · rintro ⟨hyN, hy⟩
+        refine ⟨?_, hy⟩
+        obtain ⟨x, hx, hyx⟩ := hh0 y (right_ne_zero_of_mul hy)
+        rw [(hδS x hx).2 y hyN (by linarith)]
+        exact hx
+      · rintro ⟨hyS, hy⟩
+        exact ⟨(hS hyS).1, hy⟩
+  calc ENNReal.ofReal (∑ x ∈ S, |(c x : ℝ)|) = ENNReal.ofReal (Y ω) := by rw [hval]
+    _ ≤ Y.massOn W := Y.le_massOn hadm
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
