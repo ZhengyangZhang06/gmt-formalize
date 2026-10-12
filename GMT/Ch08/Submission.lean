@@ -453,6 +453,27 @@ theorem Submission.intcpt_canon_nt_open_cover_finite_measure :
     refine mem_iUnion.2 ⟨i, ?_⟩
     simp only [hi, Option.elim_some]
     exact hxy
+/-- **Open neighbourhood of small measure inside an open set of finite measure** (child
+`open_subset_measure_lt` of `null_transfer`; step 4 of the supplied proof of
+`intcpt_canon_hausdorff_null_of_weight_null`): if `W ⊆ ℝ^N` is open with `μ W < ∞` and `A ⊆ W` is
+an arbitrary set with `μ A < ε` (outer measure), then some open `O` with `A ⊆ O ⊆ W` has
+`μ O < ε`.  The restriction `μ ⌞ W` is a finite Borel measure on a metric space, hence outer regular
+(`WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure`); since `(μ ⌞ W) A ≤ μ A < ε`, there is
+an open `O' ⊇ A` with `(μ ⌞ W) O' < ε`, and `O = O' ∩ W` has `μ O = (μ ⌞ W) O'`. -/
+theorem Submission.intcpt_canon_nt_exists_open_subset_measure_lt :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (W A : Set (Euclidean N)) (ε : ℝ≥0∞), IsOpen W →
+      μ W ≠ ∞ → A ⊆ W → μ A < ε →
+      ∃ O : Set (Euclidean N), IsOpen O ∧ A ⊆ O ∧ O ⊆ W ∧ μ O < ε := by
+  intro N μ W A ε hW hWfin hAW hAε
+  -- `μ ⌞ W` is finite, hence outer regular (`ℝ^N` is metrizable with its Borel σ-algebra).
+  have : IsFiniteMeasure (μ.restrict W) :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact hWfin.lt_top⟩
+  -- Outer regularity at the arbitrary set `A`, as `(μ ⌞ W) A ≤ μ A < ε`.
+  obtain ⟨O', hAO', hO', hO'ε⟩ :=
+    Set.exists_isOpen_lt_of_lt A ε ((Measure.restrict_apply_le W A).trans_lt hAε)
+  -- `O' ∩ W` works: `O'` is open, hence measurable, so `μ (O' ∩ W) = (μ ⌞ W) O' < ε`.
+  refine ⟨O' ∩ W, hO'.inter hW, subset_inter hAO' hAW, inter_subset_right, ?_⟩
+  rwa [Measure.restrict_apply hO'.measurableSet] at hO'ε
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
