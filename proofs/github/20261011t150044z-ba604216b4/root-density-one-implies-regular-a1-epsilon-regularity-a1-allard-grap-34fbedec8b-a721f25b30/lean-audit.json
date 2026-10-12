@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e7b5f1a25049d9a0b465e778e7806b1e75fb6cc68f55a892297e5afeebabf41d",
+  "git_delta": {
+    "base_commit": "0ced47154e9d73e5c02c93df92778086cb1fc102",
+    "candidate_commit": "aef23e01a17d31958c869e11c886b0fc01cc34e1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_approxTangent_starProjection_aesm",
+    "diff_sha256": "3e1fc5621e76b18bab1b5ada4b060a69d0673732ea219b66e495d0dce93e72b3",
+    "source_sha256": "c75ca17a8437c3071e9fa77da487ca94f96c5f824bf3a5df2eadf3d9f9f8c760",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_approxTangent_starProjection_aesm",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
