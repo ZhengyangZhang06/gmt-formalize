@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure CompactExhaustion|exists_superset_of_isCompact|def choice|locallyIntegrableOn_iff|integrableOn_compact_subset|eLpNorm_one_eq_lintegral_enorm|edist_toLp_toLp|instCompleteSpace|tendsto_subseq|isCompact_univ_pi|instFirstCountableTopology",
+        "infEDist_zero_of_mem|continuous_infEDist|mem_closure_iff_infEDist_zero|isCompact_of_isClosed|totallyBounded_iff|elim_directed_cover|lintegral_add_left.|lintegral_eq_zero_iff.|ae_restrict_iff.|def TendstoLocallyInL1On",
+        "bv_isOpen_exists_compact_exhaustion|bv_exists_subseq_tendsto_lintegral_of_finite_nets|bv_tendstoLocallyInL1On_of_exhaustion_limits",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Audit/FullChain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Audit/Challenges.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Complete.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-compactness-a1-diagonal-subseq-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-bv-results-a1-compactness-a1-diagonal-subseq-a1/decomposition-v1.json",
+        "/tmp/diagonal-independent-audit-sblx853j/Audit/Challenges.lean",
+        "/tmp/diagonal-independent-audit-sblx853j/Audit/FullChain.lean"
+      ],
+      "conclusion": "The three-way split is appropriate: its independent obligations have acyclic, correctly empty sibling dependencies and assemble to the exact frozen bv_exists_subseq_tendstoLocallyInL1On contract. Snapshot/workspace contract files and 16 inspected mathlib files match the compiled sources. No proposed name is reserved in the DAG, other decompositions, or Lean files across 427 Git refs; nearby exhaustion declarations have different types. All three one-line propositions pass lexical validation and compile as comparator challenges without child implementations. Independently rebuilt supplied child proofs, a fresh exact-parent assembly, and the full chain all pass with only propext, Classical.choice, and Quot.sound. Explicit checks also confirm the intended volume, Lp completeness, and countable-product topology instances."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "compact_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree. The explicit infEDist construction proves compactness, containment in U, monotonicity, and compact cofinality through a directed open cover, including empty/full U and n = 0. The proof is complete and non-circular. The bare declaration name is valid and unreserved."
+    },
+    {
+      "key": "simultaneous_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including arbitrary Q_j. Integrability supplies the measurability required by the L¹ distance formulas. Finite nets yield compact closures; sequential compactness of their countable product supplies one strictly increasing subsequence. Representatives provide precisely the stated integrable limits and integral convergence. No extra set-measurability assumption or circular dependency is used. The bare name is valid and unreserved."
+    },
+    {
+      "key": "glue_limits",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All stated hypotheses match the Lean type. The proof justifies compatibility using a.e. measurability, glues by the least index on the union of Q_j, and establishes both local integrability and the exact convergence predicate by compact cofinality. It does not silently require Q_j ⊆ U or integrability of w_k. The argument is complete and non-circular; the bare name is valid and unreserved."
+    }
+  ],
+  "required_changes": []
+}

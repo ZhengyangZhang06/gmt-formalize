@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.compactness-a1.diagonal_subseq-a1.glue_limits-a1",
+  "parent_id": "root.bv_results-a1.compactness-a1.diagonal_subseq-a1",
+  "depth": 4,
+  "title": "Compatible L¹ limits on a cofinal compact exhaustion glue to an L¹_loc limit (steps 5–8 of the diagonal extraction)",
+  "statement": "Let n ∈ ℕ, U ⊆ ℝⁿ open, Q_j ⊆ ℝⁿ (j ∈ ℕ) compact sets with Q_i ⊆ Q_j for i ≤ j such that every compact K ⊆ U is contained in some Q_j. Let w_k : ℝⁿ → ℝ (k ∈ ℕ) be functions that are a.e.-strongly measurable for Lebesgue measure restricted to each Q_j, and G_j : ℝⁿ → ℝ (j ∈ ℕ) functions with every G_j integrable on Q_j and ∫⁻_{Q_j} ‖w_k(x) − G_j(x)‖ₑ dx → 0 as k → ∞ for every j. Then there is v : ℝⁿ → ℝ, locally integrable on U, with ∫⁻_K ‖w_k(x) − v(x)‖ₑ dx → 0 for every compact K ⊆ U (SimonGMT Chapter02.TendstoLocallyInL1On w v U atTop).",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Rn n)) (Q : ℕ → Set (Rn n)) (w G : ℕ → Rn n → ℝ), IsOpen U → (∀ j, IsCompact (Q j)) → Monotone Q → (∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ j, K ⊆ Q j) → (∀ j k, AEStronglyMeasurable (w k) (volume.restrict (Q j))) → (∀ j, IntegrableOn (G j) (Q j) volume) → (∀ j, Tendsto (fun k ↦ ∫⁻ x in Q j, ‖w k x - G j x‖ₑ) atTop (𝓝 0)) → ∃ v : Rn n → ℝ, LocallyIntegrableOn v U volume ∧ Chapter02.TendstoLocallyInL1On w v U atTop",
+  "lean_name": "bv_tendstoLocallyInL1On_of_exhaustion_limits",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-compactness-a1-diagonal-subseq-a1-glue-limits-a1-a1"
+}

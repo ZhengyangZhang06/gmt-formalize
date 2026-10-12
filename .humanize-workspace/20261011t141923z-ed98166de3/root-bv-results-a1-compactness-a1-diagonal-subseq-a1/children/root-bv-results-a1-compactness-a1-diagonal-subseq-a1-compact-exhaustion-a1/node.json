@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.compactness-a1.diagonal_subseq-a1.compact_exhaustion-a1",
+  "parent_id": "root.bv_results-a1.compactness-a1.diagonal_subseq-a1",
+  "depth": 4,
+  "title": "Monotone compact exhaustion of an open subset of ℝⁿ that absorbs every compact subset (step 1 of the diagonal extraction)",
+  "statement": "For every n ∈ ℕ and every open set U ⊆ ℝⁿ (ℝⁿ = Rn n = EuclideanSpace ℝ (Fin n)) there are sets Q_j ⊆ ℝⁿ (j ∈ ℕ) such that: every Q_j is compact; Q_j ⊆ U for every j; Q_i ⊆ Q_j whenever i ≤ j (Q is monotone); and every compact set K ⊆ U is contained in some Q_j.",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Rn n)), IsOpen U → ∃ Q : ℕ → Set (Rn n), (∀ j, IsCompact (Q j)) ∧ (∀ j, Q j ⊆ U) ∧ Monotone Q ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ j, K ⊆ Q j",
+  "lean_name": "bv_isOpen_exists_compact_exhaustion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-compactness-a1-diagonal-subseq-a1-compact-exhaustion-a1-a1"
+}
