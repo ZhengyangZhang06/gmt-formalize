@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "819f28ee31f58b687a6d9d2e8d3e2647066d7a7bba486f369d199cf1753835f9",
+  "git_delta": {
+    "base_commit": "3f50fd501342abdc6778853edcb822459de2de83",
+    "candidate_commit": "07780671a4301a1fbfc0e1a377f66517386326ae",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "ed513c9b714749c002aaff98ee7c676973666045504a813408a799c74d670aa3",
+    "source_sha256": "022366c8cde78c36ab16a8cff5151df8c0bf49aecbc2ad1783a61ae52e36090d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.classical_tangent",
+      "statement": "ApproxTangentAE → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → ClassicalTangent",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
