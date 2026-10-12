@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0f534646ed1b5c5df36741021c21580ad0c8d8a20c6814afa8fc32c4294b19ed",
+  "git_delta": {
+    "base_commit": "cf43d56caf89a2a081f982ee6723de5b9961e4e9",
+    "candidate_commit": "8baf06de88646e165720c527baa115b1c82d72ca",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_campanato_center_holder",
+    "diff_sha256": "3168305556b44370fa6512185af27fb3ee7d73f85b20ce492a31eec35d618d58",
+    "source_sha256": "d025f71910145c00300f7636b14c2352a88722209a95f5b4c279693198a77c60",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_campanato_center_holder",
+      "statement": "∀ (n : ℕ), 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (m k : ℕ) (G c : Rn n → (Rn m →L[ℝ] Rn k)) (A R α : ℝ), 0 ≤ A → 0 < R → 0 < α → α ≤ 1 → Measurable G → (∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - c z)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → ∀ x ∈ ball (0 : Rn n) (R / 16), ∀ y ∈ ball (0 : Rn n) (R / 16), hsNorm (c x - c y) ≤ C * Real.sqrt A * (‖x - y‖ / R) ^ α",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
