@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.whitney_extension-a1.whitney_gluing-a1.derivative_continuity-a1",
+  "parent_id": "root.whitney_extension-a1.whitney_gluing-a1",
+  "depth": 3,
+  "title": "Continuity of the derivative of the glued function at points of A",
+  "statement": "Let n ∈ ℕ, ℝⁿ = EuclideanSpace ℝ (Fin n), A ⊆ ℝⁿ closed, h : ℝⁿ → ℝ, and ν : ℝⁿ → ℝⁿ continuous on A, and assume (W): for every compact K ⊆ A and every ε > 0 there is δ > 0 with |h(y) − h(x) − ⟨ν(x), y − x⟩| ≤ ε|y − x| for all x ∈ K and y ∈ A with 0 < |y − x| < δ. Let ι be a type, φ_i : ℝⁿ → ℝ and p_i ∈ ℝⁿ (i ∈ ι), C ≥ 0 and M ≥ 0 reals, and g : ℝⁿ → ℝ. Write d(x) := dist(x, A), Dψ(x) := fderiv ℝ ψ x with the operator norm ‖·‖, L_v := ⟨v, ·⟩ = innerSL ℝ v, and P_i(x) := h(p_i) + ⟨ν(p_i), x − p_i⟩. Assume p_i ∈ A for all i, Dg(x) = L_{ν(x)} for every x ∈ A, and (R') for every x ∉ A there is a finite S ⊆ ι such that φ_i(x) ≥ 0 and |x − p_i| ≤ C·d(x) for all i ∈ S, Σ_{i∈S} φ_i(x) = 1, Σ_{i∈S} Dφ_i(x) = 0, d(x) ≤ 1 implies Σ_{i∈S} ‖Dφ_i(x)‖ ≤ M/d(x), and Dg(x) = Σ_{i∈S}(φ_i(x)·L_{ν(p_i)} + P_i(x)·Dφ_i(x)). Then x ↦ Dg(x) (the function fderiv ℝ g) is continuous at every a ∈ A.",
+  "lean_statement": "∀ (n : ℕ) (A : Set (Rn n)) (h : Rn n → ℝ) (ν : Rn n → Rn n) (ι : Type) (φ : ι → Rn n → ℝ) (p : ι → Rn n) (C M : ℝ) (g : Rn n → ℝ), IsClosed A → ContinuousOn ν A → (∀ K ⊆ A, IsCompact K → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ K, ∀ y ∈ A, 0 < ‖y - x‖ → ‖y - x‖ < δ → |h y - h x - inner ℝ (ν x) (y - x)| ≤ ε * ‖y - x‖) → 0 ≤ C → 0 ≤ M → (∀ i, p i ∈ A) → (∀ x ∈ A, fderiv ℝ g x = innerSL ℝ (ν x)) → (∀ x ∉ A, ∃ S : Finset ι, (∀ i ∈ S, 0 ≤ φ i x ∧ ‖x - p i‖ ≤ C * Metric.infDist x A) ∧ ∑ i ∈ S, φ i x = 1 ∧ ∑ i ∈ S, fderiv ℝ (φ i) x = 0 ∧ (Metric.infDist x A ≤ 1 → ∑ i ∈ S, ‖fderiv ℝ (φ i) x‖ ≤ M / Metric.infDist x A) ∧ fderiv ℝ g x = ∑ i ∈ S, (φ i x • innerSL ℝ (ν (p i)) + (h (p i) + inner ℝ (ν (p i)) (x - p i)) • fderiv ℝ (φ i) x)) → ∀ a ∈ A, ContinuousAt (fderiv ℝ g) a",
+  "lean_name": "whitney_gluing_continuousAt_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-whitney-extension-a1-whitney-gluing-a1-derivative-continuity-a1-a1"
+}
