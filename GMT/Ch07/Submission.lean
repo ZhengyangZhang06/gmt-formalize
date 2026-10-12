@@ -720,6 +720,100 @@ theorem Submission.adr_weak_tendsto_comp_affine : ∀ (P n Q : ℕ) (gs : ℕ �
   rw [hR]
   exact hlim.congr fun k => (hL k).symm
 
+/-- **Simon, proof of A.4, Lemma I** (chapter-A.txt lines 125–134: `ψ_{y,1} = ψ` for `y ∈ S` and
+`ψ_{βx,1} = ψ` for `β ∈ ℝ`).  If `φ ∈ F` is invariant under the subspace `S` and its blow-ups
+`φ_{x,λₖ} ∈ F` converge weakly to a homogeneous `ψ ∈ F`, then `ψ` is invariant under `S + ℝx`.
+Weak limits in `F` are unique (fundamental lemma and (H0)), every translate `ψ(w + ·)` lies in `F`
+((A.1) with `θ = 1/(2 + |w|)` and homogeneity), and `ψ(w + ·) = ψ` as soon as
+`φ_{x,λₖ}(w + ·) = φ_{x,λₖ}(cₖ ·)` for large `k`, with `cₖ > 0`, `cₖ → 1`
+(`adr_weak_tendsto_comp_affine` twice).  This holds for `w ∈ S` with `cₖ = 1`, and for `w = βx`
+with `cₖ = 1/(1 + βλₖ)` by the homogeneity of `φ`. -/
+theorem Submission.adr_tangent_invariance : ∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)), (∀ φ ∈ F, ∀ ψ ∈ F, (∀ᵐ x ∂μH[(n : ℝ)], φ x = ψ x) → φ = ψ) → (∀ φ ∈ F, LocallyIntegrable φ μH[(n : ℝ)]) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → ∀ φ ∈ F, ∀ S : Submodule ℝ (Euclid P), (∀ y ∈ S, ∀ lam : ℝ, 0 < lam → ∀ x, φ (y + lam • x) = φ x) → ∀ (x : Euclid P) (lams : ℕ → ℝ) (ψ : Euclid P → Euclid Q), (∀ k, 0 < lams k) → Tendsto lams atTop (𝓝 0) → (∀ k, (fun z => φ (x + lams k • z)) ∈ F) → ψ ∈ F → (∀ lam : ℝ, 0 < lam → ∀ z, ψ (lam • z) = ψ z) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ z, f z • φ (x + lams k • z) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ z, f z • ψ z ∂μH[(n : ℝ)]))) → ∀ y ∈ S ⊔ Submodule.span ℝ {x}, ∀ lam : ℝ, 0 < lam → ∀ z, ψ (y + lam • z) = ψ z := by
+  intro P n Q F H0 H1 A1 φ hφ S hS x lams ψ hlams_pos hlams hFk hψ hψhom hconv
+  -- weak limits in `F` are unique
+  have uniq : ∀ g ∈ F, (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f →
+      ∫ z, f z • g z ∂μH[(n : ℝ)] = ∫ z, f z • ψ z ∂μH[(n : ℝ)]) → g = ψ := by
+    intro g hg hint
+    exact H0 g hg ψ hψ (ae_eq_of_integral_contDiff_smul_eq (H1 g hg) (H1 ψ hψ)
+      fun f hf hfs => hint f hf.continuous hfs)
+  -- every translate `ψ (w + ·) = ψ (θ • w + θ • ·)`, `θ = 1 / (2 + ‖w‖)`, lies in `F` by (A.1)
+  have transl : ∀ w : Euclid P, (fun z => ψ (w + z)) ∈ F := by
+    intro w
+    have h2 : 0 < 2 + ‖w‖ := by positivity
+    set θ : ℝ := 1 / (2 + ‖w‖) with hθ
+    have hθpos : 0 < θ := by positivity
+    have hθlt : θ < 1 := by
+      rw [hθ, div_lt_one h2]
+      linarith [norm_nonneg w]
+    have hθw : ‖θ • w‖ ≤ 1 - θ := by
+      rw [norm_smul, Real.norm_of_nonneg hθpos.le, hθ, div_mul_eq_mul_div, one_mul,
+        div_le_iff₀ h2, sub_mul, div_mul_cancel₀ _ h2.ne']
+      linarith
+    convert A1 ψ hψ (θ • w) θ hθpos hθlt hθw using 1
+    funext z
+    rw [← smul_add, hψhom θ hθpos]
+  -- if `φ (x + λₖ • (w + ·)) = φ (x + λₖ • (cₖ • ·))` for large `k`, `cₖ → 1`, then `ψ (w + ·) = ψ`
+  have key : ∀ (w : Euclid P) (c : ℕ → ℝ), (∀ k, 0 < c k) → Tendsto c atTop (𝓝 1) →
+      (∀ᶠ k in atTop, ∀ z, φ (x + lams k • (w + z)) = φ (x + lams k • (c k • z))) →
+      ∀ z, ψ (w + z) = ψ z := by
+    intro w c hcpos hc hev
+    have hloc : ∀ k, LocallyIntegrable (fun z => φ (x + lams k • z)) μH[(n : ℝ)] :=
+      fun k => H1 _ (hFk k)
+    have hint : ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f →
+        ∫ z, f z • ψ (w + z) ∂μH[(n : ℝ)] = ∫ z, f z • ψ z ∂μH[(n : ℝ)] := by
+      intro f hf hfs
+      have h1 := Submission.adr_weak_tendsto_comp_affine P n Q (fun k z => φ (x + lams k • z)) ψ
+        w (fun _ => 1) hloc (fun _ => one_pos) tendsto_const_nhds hconv f hf hfs
+      have h2 := Submission.adr_weak_tendsto_comp_affine P n Q (fun k z => φ (x + lams k • z)) ψ
+        0 c hloc hcpos hc hconv f hf hfs
+      simp only [one_smul, zero_add] at h1 h2
+      refine tendsto_nhds_unique (h1.congr' ?_) h2
+      filter_upwards [hev] with k hk
+      simp only [hk]
+    exact congrFun (uniq _ (transl w) hint)
+  -- translations in `S`: `φ (x + λₖ • (s + z)) = φ (λₖ • s + 1 • (x + λₖ • z))`
+  have hSinv : ∀ s ∈ S, ∀ z, ψ (s + z) = ψ z := by
+    intro s hs
+    refine key s (fun _ => 1) (fun _ => one_pos) tendsto_const_nhds
+      (Eventually.of_forall fun k z => ?_)
+    have := hS (lams k • s) (S.smul_mem _ hs) 1 one_pos (x + lams k • z)
+    rw [one_smul] at this ⊢
+    rw [← this]
+    congr 1
+    module
+  -- translations along `x`: `φ (x + λₖ • (β • x + z)) = φ (aₖ • (x + λₖ • (aₖ⁻¹ • z)))`,
+  -- `aₖ = 1 + β λₖ > 0` for large `k`
+  have hxinv : ∀ β : ℝ, ∀ z, ψ (β • x + z) = ψ z := by
+    intro β
+    have ha : Tendsto (fun k => 1 + β * lams k) atTop (𝓝 1) := by
+      simpa using (tendsto_const_nhds (x := (1 : ℝ))).add (hlams.const_mul β)
+    have hev : ∀ᶠ k in atTop, 0 < 1 + β * lams k := ha.eventually (eventually_gt_nhds one_pos)
+    let c : ℕ → ℝ := fun k => if 0 < 1 + β * lams k then (1 + β * lams k)⁻¹ else 1
+    have hc : ∀ᶠ k in atTop, c k = (1 + β * lams k)⁻¹ := by
+      filter_upwards [hev] with k hk
+      simp only [c, hk, ite_true]
+    refine key (β • x) c (fun k => ?_) ?_ ?_
+    · by_cases h : 0 < 1 + β * lams k
+      · simp only [c, h, ite_true]
+        positivity
+      · simp only [c, h, ite_false]
+        exact one_pos
+    · refine (tendsto_congr' hc).2 ?_
+      simpa using ha.inv₀ one_ne_zero
+    · filter_upwards [hev, hc] with k hk hck z
+      rw [hck]
+      have := hS 0 S.zero_mem (1 + β * lams k) hk (x + lams k • ((1 + β * lams k)⁻¹ • z))
+      rw [zero_add] at this
+      rw [← this]
+      congr 1
+      rw [smul_add (1 + β * lams k), smul_comm (1 + β * lams k) (lams k),
+        smul_inv_smul₀ hk.ne']
+      module
+  intro y hy lam hlam z
+  obtain ⟨s, hs, t, ht, rfl⟩ := Submodule.mem_sup.mp hy
+  obtain ⟨β, rfl⟩ := Submodule.mem_span_singleton.mp ht
+  rw [add_assoc, hSinv s hs, hxinv β, hψhom lam hlam]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
