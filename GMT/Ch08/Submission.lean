@@ -2,6 +2,9 @@ import Poincare.SimonGMT.Chapter08.VarifoldConvergence
 import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter02.Submanifold
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Poincare.SimonGMT.Chapter01.DensityComparison
+import Poincare.SimonGMT.Chapter01.EuclideanHausdorffUpper
+import Poincare.SimonGMT.Chapter02.AreaLiteral
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 8 (printed pp. 205–224)
@@ -474,6 +477,75 @@ theorem Submission.intcpt_canon_nt_exists_open_subset_measure_lt :
   -- `O' ∩ W` works: `O'` is open, hence measurable, so `μ (O' ∩ W) = (μ ⌞ W) O' < ε`.
   refine ⟨O' ∩ W, hO'.inter hW, subset_inter hAO' hAW, inter_subset_right, ?_⟩
   rwa [Measure.restrict_apply hO'.measurableSet] at hO'ε
+/-- Step 4 of the canonical representation in the proof of Simon Ch. 8, 5.9 (child `null_transfer`
+of `canonical_representation`), via Simon Ch. 1, 3.3: let `U` be open and `μ` finite on compact
+subsets of `U`.  If `Z ⊆ U` is `μ`-null and `limsup_{ρ↓0} μ(B_ρ(x)) / (ω_n ρ^n) > 0` at every
+`x ∈ Z`, then `H^n(Z) = 0`.  Cover `U` by open `W_i ⊆ U` of finite mass
+(`intcpt_canon_nt_open_cover_finite_measure`) and put
+`Z_{i,k} = {x ∈ Z ∩ W_i : limsup ≥ 1/(k+1)}`.  For `ε > 0` there is an open `O` with
+`Z_{i,k} ⊆ O ⊆ W_i` and `μ(O) < ε` (`intcpt_canon_nt_exists_open_subset_measure_lt`); on `Z_{i,k}`
+the upper density of `μ` relative to `O` is that `limsup`, so Simon 3.3 gives
+`(k+1)⁻¹ H^n(Z_{i,k}) ≤ μ(O) < ε`.  Hence each `Z_{i,k}`, and so `Z`, is `H^n`-null. -/
+theorem Submission.intcpt_canon_hausdorff_null_of_weight_null :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (U Z : Set (Euclidean N)), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → Z ⊆ U → μ Z = 0 → (∀ x ∈ Z, 0 < limsup (densityRatio n μ x) (𝓝[>] 0)) → (μHE[n] : Measure (Euclidean N)) Z = 0 := by
+  intro N n μ U Z hU hfin hZU hZ hpos
+  -- Step 1(a): `ω_n` is Simon's normalization `realUnitBallVolume n`, also for `n = 0`.
+  have hω : unitBallVolume n = Chapter01.realUnitBallVolume (n : ℝ) := by
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · rw [Nat.cast_zero, Chapter01.realUnitBallVolume_zero, unitBallVolume,
+        volume_euclideanSpace_eq_dirac (Fin 0), Measure.dirac_apply_of_mem (mem_ball_self one_pos)]
+    · rw [unitBallVolume, Chapter01.volume_euclidean_ball_eq hn, ENNReal.ofReal_one, one_pow,
+        mul_one]
+  -- Step 1(b): Simon's `H^n` is `μHE[n]` on all sets.
+  have hH : ∀ A : Set (Euclidean N),
+      Chapter01.simonHausdorffOuterMeasureReal (n : ℝ) A = (μHE[n] : Measure (Euclidean N)) A := by
+    intro A
+    rw [← Chapter01.simonHausdorffMeasureReal_toOuterMeasure (Nat.cast_nonneg n),
+      Measure.toOuterMeasure_apply,
+      Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure]
+  -- Step 1(c): Borel sets are Carathéodory measurable for `μ`.
+  have hcar : borel (Euclidean N) ≤ μ.toOuterMeasure.caratheodory := by
+    rw [← BorelSpace.measurable_eq]
+    exact le_toOuterMeasure_caratheodory μ
+  -- Step 2: countably many open `W_i ⊆ U` of finite mass cover `U ⊇ Z`.
+  obtain ⟨W, hW, hUW⟩ := Submission.intcpt_canon_nt_open_cover_finite_measure N μ U hU hfin
+  -- Step 3: `Z ⊆ ⋃_{i,k} Z_{i,k}`, as the positive `limsup` exceeds some `k⁻¹ ≥ (k+1)⁻¹`.
+  have hcover : Z ⊆ ⋃ i, ⋃ k : ℕ,
+      {x | x ∈ Z ∧ x ∈ W i ∧ ((k : ℝ≥0∞) + 1)⁻¹ ≤ limsup (densityRatio n μ x) (𝓝[>] 0)} := by
+    intro x hx
+    obtain ⟨i, hi⟩ := mem_iUnion.1 (hUW (hZU hx))
+    obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt (hpos x hx).ne'
+    exact mem_iUnion₂.2 ⟨i, k, hx, hi, (ENNReal.inv_le_inv.2 le_self_add).trans hk.le⟩
+  refine measure_mono_null hcover (measure_iUnion_null fun i ↦ measure_iUnion_null fun k ↦ ?_)
+  set A := {x | x ∈ Z ∧ x ∈ W i ∧ ((k : ℝ≥0∞) + 1)⁻¹ ≤ limsup (densityRatio n μ x) (𝓝[>] 0)}
+  -- Steps 4–6: `(k+1)⁻¹ H^n(Z_{i,k}) < ε` for every `ε > 0`.
+  have key : ∀ ε : ℝ≥0∞, 0 < ε →
+      ((k : ℝ≥0∞) + 1)⁻¹ * (μHE[n] : Measure (Euclidean N)) A < ε := by
+    intro ε hε
+    -- Step 4: `μ(Z_{i,k}) = 0 < ε` gives an open `O` with `Z_{i,k} ⊆ O ⊆ W_i` and `μ(O) < ε`.
+    obtain ⟨O, hO, hAO, -, hOε⟩ := Submission.intcpt_canon_nt_exists_open_subset_measure_lt N μ
+      (W i) A ε (hW i).1 (hW i).2.2 (fun x hx ↦ hx.2.1)
+      ((measure_mono_null (fun x hx ↦ hx.1) hZ).trans_lt hε)
+    -- Step 5: on `Z_{i,k}` the upper density of `μ` relative to `O` is `limsup densityRatio`,
+    -- because `O ∩ B_ρ(x) = B_ρ(x)` for small `ρ`.
+    have hden : ∀ x ∈ A, ((k : ℝ≥0∞) + 1)⁻¹ ≤
+        Chapter01.dimensionalUpperDensity μ.toOuterMeasure (n : ℝ) O x := by
+      intro x hx
+      obtain ⟨η, hη, hηO⟩ := Metric.isOpen_iff.1 hO x (hAO hx)
+      refine hx.2.2.trans_eq (limsup_congr ?_)
+      filter_upwards [Ioo_mem_nhdsGT hη] with ρ hρ
+      rw [Chapter01.dimensionalDensityQuotient, densityRatio, hω, ENNReal.rpow_natCast,
+        inter_eq_right.2 ((closedBall_subset_ball hρ.2).trans hηO), Measure.toOuterMeasure_apply]
+    -- Step 6: Simon 3.3 with `A₁ = Z_{i,k}`, `A₂ = O` and `t = (k+1)⁻¹`.
+    have h33 := Chapter01.mul_simonHausdorff_le_of_le_dimensionalUpperDensity μ.toOuterMeasure
+      hcar (Nat.cast_nonneg n) A O _ hden
+    rw [hH, Measure.toOuterMeasure_apply] at h33
+    exact h33.trans_lt hOε
+  -- Step 7: hence `(k+1)⁻¹ H^n(Z_{i,k}) = 0`, and `(k+1)⁻¹ ≠ 0`.
+  have h0 : ((k : ℝ≥0∞) + 1)⁻¹ * (μHE[n] : Measure (Euclidean N)) A = 0 := by
+    by_contra hne
+    exact lt_irrefl _ (key _ (pos_iff_ne_zero.2 hne))
+  exact (mul_eq_zero.1 h0).resolve_left (ENNReal.inv_ne_zero.2 (by simp))
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
