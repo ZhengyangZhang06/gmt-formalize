@@ -1251,6 +1251,131 @@ theorem Submission.chartTD_chart_blowup_integral_tendsto : ∀ (n N : ℕ) (B : 
   refine hDCT.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with r hr
   exact (hsub r hr).symm
+/-- **Vanishing normalized density of `|w|` kills the normalized blow-up integrals of `f w`**
+(Simon Ch. 3, proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 127–140, with a weight `w` as in
+Remark 1.8(1), lines 298–306): if `w` is `Hⁿ`-integrable on `S ∩ B_ρ(x)` for every `ρ > 0` and
+`ρ⁻ⁿ ∫_{S ∩ B_ρ(x)} |w| dHⁿ → 0` as `ρ ↓ 0`, then `r⁻ⁿ ∫_S f(η_{x,r}(z)) w(z) dHⁿ(z) → 0` as
+`r ↓ 0` for every `f ∈ C_c(ℝᴺ, ℝ)`. With `|f| ≤ C` and `f(y) = 0` for `‖y‖ ≥ R`, the integrand
+vanishes off `B_{Rr}(x)`, so `|∫_S f(η_{x,r}(z)) w(z) dHⁿ(z)| ≤ C ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ`
+(`setIntegral_indicator`, `norm_integral_le_of_norm_le`), and the normalized integral is at most
+`C Rⁿ · (Rr)⁻ⁿ ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ → 0`. -/
+theorem Submission.chartTD_blowup_integral_tendsto_zero : ∀ (n N : ℕ) (S : Set (Rn N)) (w : Rn N → ℝ) (x : Rn N), (∀ ρ : ℝ, 0 < ρ → IntegrableOn w (S ∩ Metric.ball x ρ) μHE[n]) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x ρ, |w z| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) → ∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ z in S, f (blowUpMap x r z) * w z ∂μHE[n]) (𝓝[>] 0) (𝓝 0) := by
+  intro n N S w x hw hlim f
+  -- `|f| ≤ C`, and `f y = 0` whenever `R ≤ ‖y‖`, for some `R > 0`.
+  obtain ⟨C, hC⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+  obtain ⟨R, hR, hfR⟩ := f.hasCompactSupport.exists_pos_le_norm
+  -- For `r > 0` the integrand vanishes off `B_{Rr}(x)`, which gives
+  -- `|∫_S f(η_{x,r}(z)) w(z) dHⁿ(z)| ≤ C ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ`.
+  have hbound : ∀ r : ℝ, 0 < r → ‖∫ z in S, f (blowUpMap x r z) * w z ∂μHE[n]‖ ≤
+      C * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n] := by
+    intro r hr
+    have hloc : (fun z ↦ f (blowUpMap x r z) * w z) =
+        (Metric.ball x (R * r)).indicator (fun z ↦ f (blowUpMap x r z) * w z) := by
+      funext z
+      by_cases hz : z ∈ Metric.ball x (R * r)
+      · rw [Set.indicator_of_mem hz]
+      · rw [Set.indicator_of_notMem hz]
+        rw [Metric.mem_ball, not_lt, dist_eq_norm] at hz
+        have hRz : R ≤ ‖blowUpMap x r z‖ := by
+          rw [blowUpMap, norm_smul, norm_inv, Real.norm_of_nonneg hr.le, le_inv_mul_iff₀' hr]
+          exact hz
+        rw [hfR _ hRz, zero_mul]
+    rw [hloc, setIntegral_indicator measurableSet_ball]
+    calc ‖∫ z in S ∩ Metric.ball x (R * r), f (blowUpMap x r z) * w z ∂μHE[n]‖
+        ≤ ∫ z in S ∩ Metric.ball x (R * r), C * |w z| ∂μHE[n] := by
+          refine norm_integral_le_of_norm_le ((hw _ (mul_pos hR hr)).abs.const_mul C)
+            (Eventually.of_forall fun z ↦ ?_)
+          rw [norm_mul, Real.norm_eq_abs (w z)]
+          exact mul_le_mul_of_nonneg_right (hC _) (abs_nonneg _)
+      _ = C * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n] := integral_const_mul C _
+  -- `r ↦ Rr` maps `𝓝[>] 0` into itself, so `C Rⁿ · (Rr)⁻ⁿ ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ → 0`.
+  have hRr : Tendsto (fun r : ℝ ↦ R * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have h0 : Tendsto (fun r : ℝ ↦ R * r) (𝓝 0) (𝓝 (R * 0)) := tendsto_id.const_mul R
+      rw [mul_zero] at h0
+      exact h0.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hR hr
+  have hmaj : Tendsto (fun r : ℝ ↦ C * R ^ n *
+      (((R * r) ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n])) (𝓝[>] 0) (𝓝 0) := by
+    have h := (hlim.comp hRr).const_mul (C * R ^ n)
+    rw [mul_zero] at h
+    exact h
+  -- Squeeze: `|r⁻ⁿ ∫_S f(η_{x,r}(z)) w(z) dHⁿ(z)| ≤ C Rⁿ · (Rr)⁻ⁿ ∫_{S ∩ B_{Rr}(x)} |w| dHⁿ`.
+  refine squeeze_zero_norm' ?_ hmaj
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  have hrn : 0 < r ^ n := pow_pos hr n
+  have hRn : 0 < R ^ n := pow_pos hR n
+  rw [norm_mul, norm_inv, norm_pow, Real.norm_of_nonneg hr.le]
+  calc (r ^ n)⁻¹ * ‖∫ z in S, f (blowUpMap x r z) * w z ∂μHE[n]‖
+      ≤ (r ^ n)⁻¹ * (C * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n]) :=
+        mul_le_mul_of_nonneg_left (hbound r hr) (inv_nonneg.mpr hrn.le)
+    _ = C * R ^ n * (((R * r) ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x (R * r), |w z| ∂μHE[n]) := by
+        rw [mul_pow]
+        field_simp
+/-- **Splitting the localized weighted blow-up integral along a comparison set** (the
+decomposition in Simon Ch. 3, proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 116–120, in the
+weighted form of Def. 1.7 and Remark 1.8(1), lines 284–306). Let `M`, `Γ` be `Hⁿ`-measurable with
+`Hⁿ(Γ) < ∞`, `θ` a positive locally integrable weight on `M`, `f ∈ C_c(ℝᴺ, ℝ)`, `r > 0` and
+`g = f ∘ η_{x,r}`. Then
+`∫_M g θ = ∫_{M ∖ Γ} g θ + θ(x) (∫_Γ g - ∫_{Γ ∖ M} g) + ∫_{M ∩ Γ} g (θ - θ(x))`.
+`g` is continuous, `|g| ≤ C`, and `g = 0` off the closed ball `K = B̄_{r R₀}(x)`, where
+`tsupport f ⊆ B_{R₀}(0)`. So `|g θ| ≤ 1_K C |θ|` makes `g θ` integrable on `M`, and `g` is
+integrable on `Γ`. The identity follows from `integral_inter_add_sdiff₀` (splitting `∫_M g θ` along
+`Γ` and `∫_Γ g` along `M`) and linearity on `M ∩ Γ`. -/
+theorem Submission.chartTD_weighted_blowup_integral_split : ∀ (n N : ℕ) (M Γ : Set (Rn N)) (θ : Rn N → ℝ) (x : Rn N) (f : C_c(Rn N, ℝ)) (r : ℝ), 0 < r → NullMeasurableSet M μHE[n] → NullMeasurableSet Γ μHE[n] → μHE[n] Γ < ∞ → IsPositiveLocallyIntegrableWeight n M θ → ∫ z in M, f (blowUpMap x r z) * θ z ∂μHE[n] = ∫ z in M \ Γ, f (blowUpMap x r z) * θ z ∂μHE[n] + θ x * (∫ z in Γ, f (blowUpMap x r z) ∂μHE[n] - ∫ z in Γ \ M, f (blowUpMap x r z) ∂μHE[n]) + ∫ z in M ∩ Γ, f (blowUpMap x r z) * (θ z - θ x) ∂μHE[n] := by
+  intro n N M Γ θ x f r hr hM hΓ hΓfin hθ
+  obtain ⟨-, hθmeas, hθint⟩ := hθ
+  -- Step 1: `g = f ∘ η_{x,r}` is continuous, `|g| ≤ C`, and `g = 0` off `K = B̄_{r R₀}(x)`
+  have hη : Continuous (blowUpMap x r) := by
+    unfold blowUpMap
+    fun_prop
+  have hgc : Continuous fun z ↦ f (blowUpMap x r z) := f.continuous.comp hη
+  obtain ⟨C, hC⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_ball (0 : Rn N)
+  set K := Metric.closedBall x (r * R₀)
+  have hgK : ∀ z, f (blowUpMap x r z) ≠ 0 → z ∈ K := by
+    intro z hz
+    have hball : blowUpMap x r z ∈ Metric.ball (0 : Rn N) R₀ := hR₀ (subset_tsupport _ hz)
+    rw [mem_ball_zero_iff, blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr,
+      inv_mul_lt_iff₀ hr] at hball
+    rw [Metric.mem_closedBall, dist_eq_norm]
+    exact hball.le
+  -- Step 2: `g θ` is `Hⁿ ⌞ M`-integrable, dominated by `1_K C |θ|`
+  have h1 : IntegrableOn (fun z ↦ f (blowUpMap x r z) * θ z) M μHE[n] := by
+    have hmaj : IntegrableOn (K.indicator fun z ↦ C * ‖θ z‖) M μHE[n] := by
+      rw [IntegrableOn, integrable_indicator_iff Metric.isClosed_closedBall.measurableSet,
+        IntegrableOn, Measure.restrict_restrict Metric.isClosed_closedBall.measurableSet,
+        inter_comm]
+      exact (hθint K (isCompact_closedBall x _)).norm.const_mul C
+    refine Integrable.mono' hmaj (hgc.aestronglyMeasurable.mul hθmeas.aestronglyMeasurable) ?_
+    refine Eventually.of_forall fun z ↦ ?_
+    by_cases hz : f (blowUpMap x r z) = 0
+    · rw [hz, zero_mul, norm_zero]
+      exact indicator_nonneg (fun _ _ ↦ mul_nonneg ((norm_nonneg _).trans (hC 0))
+        (norm_nonneg _)) z
+    · rw [indicator_of_mem (hgK z hz), norm_mul]
+      exact mul_le_mul_of_nonneg_right (hC _) (norm_nonneg _)
+  -- Step 3: `g` is `Hⁿ ⌞ Γ`-integrable (bounded and continuous, `Hⁿ(Γ) < ∞`)
+  have h2 : IntegrableOn (fun z ↦ f (blowUpMap x r z)) Γ μHE[n] :=
+    IntegrableOn.of_bound hΓfin hgc.aestronglyMeasurable C (Eventually.of_forall fun z ↦ hC _)
+  -- Step 4: `g θ` and `g` are integrable on `M ∩ Γ`
+  have h1' := h1.mono_set (inter_subset_left : M ∩ Γ ⊆ M)
+  have h2' := h2.mono_set (inter_subset_right : M ∩ Γ ⊆ Γ)
+  -- Step 5: split `∫_M g θ` along `Γ` and `∫_Γ g` along `M`; linearity on `M ∩ Γ`
+  have hA := integral_inter_add_sdiff₀ hΓ h1
+  have hB := integral_inter_add_sdiff₀ hM h2
+  rw [inter_comm Γ M] at hB
+  have hD : ∫ z in M ∩ Γ, f (blowUpMap x r z) * (θ z - θ x) ∂μHE[n] =
+      ∫ z in M ∩ Γ, f (blowUpMap x r z) * θ z ∂μHE[n] -
+        θ x * ∫ z in M ∩ Γ, f (blowUpMap x r z) ∂μHE[n] := by
+    rw [← integral_const_mul, ← integral_sub h1' (h2'.const_mul _)]
+    congr 1
+    funext z
+    ring
+  -- Step 6: substitute and rearrange
+  rw [hD, ← hB, ← hA]
+  ring
 /-- **Change of variables for blow-ups** (Simon Ch. 3, proof of Theorem 1.6 "⇒",
 `chapter-03.txt` lines 113–143, esp. line 133; Def. 1.7, lines 284–295): for `r > 0`, every set
 `A` and every `g`, `∫_{η_{x,r}(A)} g dHⁿ = r⁻ⁿ ∫_A g ∘ η_{x,r} dHⁿ`. The map
@@ -1713,6 +1838,62 @@ theorem Submission.chartTD_lebesgue_point_ae : ∀ (n N : ℕ) (S : Set (Rn N)) 
             ∂((μHE[n] : Measure (Rn N)).restrict S)) := by
           rw [← mul_assoc, mul_comm (ρ ^ n)]
           exact mul_le_mul_of_nonneg_right hmeas havg
+
+/-- **Weighted approximate tangent space from density estimates against a comparison set**
+(Simon Ch. 3, proof of Theorem 1.6 "⇒", `chapter-03.txt` lines 113–143, in the weighted form of
+Def. 1.7 and Remark 1.8(1), lines 284–306). Let `M`, `Γ` be `Hⁿ`-measurable with `Hⁿ(Γ) < ∞`,
+`θ` a positive locally integrable weight on `M`, and let `Γ` have approximate tangent space `P`
+at `x`. If, as `ρ ↓ 0`, `ρ⁻ⁿ ∫_{(M ∖ Γ) ∩ B_ρ(x)} |θ| dHⁿ → 0`, `ρ⁻ⁿ Hⁿ((Γ ∖ M) ∩ B_ρ(x)) → 0`
+and `ρ⁻ⁿ ∫_{M ∩ Γ ∩ B_ρ(x)} |θ - θ(x)| dHⁿ → 0`, then `P` is the approximate tangent space of
+`M` at `x` with respect to `θ`. For `f ∈ C_c(ℝᴺ, ℝ)` and `r > 0`, the change of variables
+`chartTD_setIntegral_blowUpMap_image` (with `x + r η_{x,r}(z) = z`) and the splitting
+`chartTD_weighted_blowup_integral_split` give
+`∫_{η_{x,r}(M)} f(y) θ(x + r y) dHⁿ(y) = E₁(r) + θ(x) (∫_{η_{x,r}(Γ)} f dHⁿ - E₂(r)) + E₃(r)`,
+where `E₁`, `E₂`, `E₃` are the `r⁻ⁿ`-normalized integrals of `f ∘ η_{x,r}` against `θ` over
+`M ∖ Γ`, `1` over `Γ ∖ M` and `θ - θ(x)` over `M ∩ Γ`. Each `Eᵢ(r) → 0` by
+`chartTD_blowup_integral_tendsto_zero`, and `∫_{η_{x,r}(Γ)} f dHⁿ → ∫_P f dHⁿ`. -/
+theorem Submission.chartTD_weighted_tangent_of_density : ∀ (n N : ℕ) (M Γ : Set (Rn N)) (θ : Rn N → ℝ) (x : Rn N) (P : Submodule ℝ (Rn N)), NullMeasurableSet M μHE[n] → NullMeasurableSet Γ μHE[n] → μHE[n] Γ < ∞ → IsPositiveLocallyIntegrableWeight n M θ → HasApproximateTangentSpaceAt n Γ x P → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in (M \ Γ) ∩ Metric.ball x ρ, |θ z| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * (μHE[n] ((Γ \ M) ∩ Metric.ball x ρ)).toReal) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in M ∩ Γ ∩ Metric.ball x ρ, |θ z - θ x| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) → HasWeightedApproximateTangentSpaceAt n M θ x P := by
+  intro n N M Γ θ x P hM hΓ hΓfin hθ hT h₁ h₂ h₃
+  refine ⟨hT.1, fun f ↦ ?_⟩
+  -- `θ` is integrable on `M ∩ B_ρ(x) ⊆ M ∩ B̄_ρ(x)`, and subsets of `Γ` have finite measure.
+  have hθball : ∀ ρ : ℝ, IntegrableOn θ (M ∩ Metric.ball x ρ) μHE[n] := fun ρ ↦
+    (hθ.2.2 _ (isCompact_closedBall x ρ)).mono_set
+      (inter_subset_inter_right _ Metric.ball_subset_closedBall)
+  have hΓsub : ∀ s ⊆ Γ, μHE[n] s ≠ ∞ := fun s hs ↦ ((measure_mono hs).trans_lt hΓfin).ne
+  -- `E₁(r) = r⁻ⁿ ∫_{M ∖ Γ} f(η_{x,r}(z)) θ(z) dHⁿ(z) → 0`
+  have hE₁ : Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ z in M \ Γ, f (blowUpMap x r z) * θ z ∂μHE[n])
+      (𝓝[>] 0) (𝓝 0) :=
+    Submission.chartTD_blowup_integral_tendsto_zero n N (M \ Γ) θ x
+      (fun ρ _ ↦ (hθball ρ).mono_set (inter_subset_inter_left _ sdiff_subset)) h₁ f
+  -- `E₂(r) = r⁻ⁿ ∫_{Γ ∖ M} f(η_{x,r}(z)) dHⁿ(z) → 0`, with the weight `w ≡ 1`
+  have hE₂ : Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ z in Γ \ M, f (blowUpMap x r z) ∂μHE[n])
+      (𝓝[>] 0) (𝓝 0) := by
+    have h := Submission.chartTD_blowup_integral_tendsto_zero n N (Γ \ M) (fun _ ↦ (1 : ℝ)) x
+      (fun ρ _ ↦ integrableOn_const (hΓsub _ (inter_subset_left.trans sdiff_subset)))
+      (h₂.congr fun ρ ↦ by
+        simp only [abs_one, setIntegral_const, smul_eq_mul, mul_one, measureReal_def]) f
+    simpa only [mul_one] using h
+  -- `E₃(r) = r⁻ⁿ ∫_{M ∩ Γ} f(η_{x,r}(z)) (θ(z) - θ(x)) dHⁿ(z) → 0`
+  have hE₃ : Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ *
+      ∫ z in M ∩ Γ, f (blowUpMap x r z) * (θ z - θ x) ∂μHE[n]) (𝓝[>] 0) (𝓝 0) := by
+    refine Submission.chartTD_blowup_integral_tendsto_zero n N (M ∩ Γ) (fun z ↦ θ z - θ x) x
+      (fun ρ _ ↦ ?_) h₃ f
+    have hc : IntegrableOn (fun _ ↦ θ x) (M ∩ Γ ∩ Metric.ball x ρ) μHE[n] :=
+      integrableOn_const (hΓsub _ (inter_subset_left.trans inter_subset_right))
+    exact ((hθball ρ).mono_set (inter_subset_inter_left _ inter_subset_left)).sub hc
+  -- Combine with `∫_{η_{x,r}(Γ)} f dHⁿ → ∫_P f dHⁿ`.
+  have hlim := (hE₁.add (((hT.2 f).sub hE₂).const_mul (θ x))).add hE₃
+  rw [zero_add, sub_zero, add_zero] at hlim
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  -- For `r > 0`: change variables (`x + r η_{x,r}(z) = z`), then split along `Γ`.
+  have hη : ∀ z, x + r • blowUpMap x r z = z := fun z ↦ by
+    rw [blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne', one_smul, add_sub_cancel]
+  rw [Submission.chartTD_setIntegral_blowUpMap_image N n x r hr M,
+    Submission.chartTD_setIntegral_blowUpMap_image N n x r hr Γ]
+  simp only [hη]
+  rw [Submission.chartTD_weighted_blowup_integral_split n N M Γ θ x f r hr hM hΓ hΓfin hθ]
+  ring
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
