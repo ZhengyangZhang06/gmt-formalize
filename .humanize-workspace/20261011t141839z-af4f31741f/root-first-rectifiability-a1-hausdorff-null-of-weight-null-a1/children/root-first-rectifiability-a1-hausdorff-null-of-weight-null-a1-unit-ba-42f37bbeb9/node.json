@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.hausdorff_null_of_weight_null-a1.unit_ball_volume-a1",
+  "parent_id": "root.first_rectifiability-a1.hausdorff_null_of_weight_null-a1",
+  "depth": 3,
+  "title": "Volume of the unit ball: ω_n = π^{n/2}/Γ(n/2+1) for all n ≥ 0",
+  "statement": "For every n ∈ ℕ, the contract's ω_n = unitBallVolume n is the Lebesgue measure of the open unit ball of ℝ^n = EuclideanSpace ℝ (Fin n), so ω_0 = 1. It satisfies ω_n = π^{n/2}/Γ(n/2 + 1). Here n/2 is the real number (n:ℝ)/2, the power is the real power, and the right side is taken in [0, ∞] via ENNReal.ofReal.",
+  "lean_statement": "∀ n : ℕ, unitBallVolume n = ENNReal.ofReal (Real.pi ^ ((n : ℝ) / 2) / Real.Gamma ((n : ℝ) / 2 + 1))",
+  "lean_name": "frt_hnw_unitBallVolume_eq_gamma",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-hausdorff-null-of-weight-null-a1-unit-ba-42f37bbeb9-a1"
+}
