@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "rg -n 'aetp_|rsod_|tae_gp_|tae_weightedApproxTangent_ae_on_piece|upperDensity_ne_zero' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "ae_dimensionalUpperDensity_eq_zero_outside|simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure|simonAreaNormalization_pos|simonAreaNormalization_ne_top|measure_toOuterMeasure_isBorelRegular|realUnitBallVolume_pos|realUnitBallVolume_ne_top|def dimensionalUpperDensity|def HasApproximateTangentSpaceAt|def HasWeightedApproximateTangentSpaceAt|def blowUpMap",
+        "euclideanHausdorffMeasure_homothety_image|Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_def|MeasurableEmbedding.integral_map|theorem integral_smul_measure|theorem restrict_apply|exists_cthickening_subset_open",
+        "git show 066406829f5683c27ac3a01e8406376a154ff75a:GMT/Ch05/Submission.lean",
+        "git show 98fd790d5bc2f705d0efa953dadfb274b5462997:GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/good-points-independent-audit-0za_mar2/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/good-points-independent-audit-0za_mar2/Proofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-tangent-ae-a1-good-points-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-tangent-ae-a1-good-points-a1/decomposition-v2.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-upper-density-zero-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-blowup-ch-45b63ae1fc/accepted-candidate.json",
+        "GMT/Scratch/tae_gp_v2/parent_single_theorem.lean.txt",
+        "/tmp/good-points-independent-audit-0za_mar2/Challenges.lean",
+        "/tmp/good-points-independent-audit-0za_mar2/Proofs.lean"
+      ],
+      "conclusion": "Accept the split for the selected parent. Snapshot project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d match the inspected compiler sources; the snapshot manifest also pins the installed clean SimonGMT revision 2b3663083f3fe399b6296fb8eaee52169170e197. Searching the snapshot project found no proposed child declarations. Both exist in comparator-accepted candidates with byte-identical frozen types and verified handoff hashes. Each name has exactly one accepted owner; both are independent leaves, so reuse introduces no cycle or new node. Fresh Lean checks elaborated both child propositions before either implementation existed. Separately, the accepted child proofs and supplied parent implementation compiled against the frozen definitions, with exact-type checks and only propext, Classical.choice and Quot.sound. The children supply the two density estimates and change-of-variables identities; the supplied localization, splitting, cutoff and continuity arguments establish this exact selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "upper_density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches the prose, including arbitrary Borel measures, finite measure only of A, closed balls, ENNReal quotients and n = 0. Each proof step is valid: Borel regularity supplies the Upper Density Theorem hypotheses; the positive finite normalization preserves null sets; nonnegativity converts zero limsup to convergence; multiplying by the finite unit-ball factor gives the exact quotient. No extra finiteness assumption or circular theorem is used. Both parent applications satisfy its hypotheses. The bare name and frozen type exactly match the accepted declaration, whose independent axiom check passed."
+    },
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the unrestricted-set, unrestricted-function prose. The proof correctly constructs the blow-up homeomorphism, derives Hausdorff image scaling for every set, and proves the restricted-measure identity by evaluation on Borel test sets. Restriction requires no measurability of M here. The inspected integral_smul_measure and MeasurableEmbedding.integral_map lemmas require no integrability hypothesis. Inverse cancellation and the factor (r ^ n)⁻¹ are correct, including n = 0. This complete independent argument supplies the parent's integral identities. The bare name and frozen type exactly match the accepted declaration, whose independent axiom check passed."
+    }
+  ],
+  "required_changes": []
+}
