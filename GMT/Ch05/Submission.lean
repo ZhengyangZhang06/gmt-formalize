@@ -1564,6 +1564,28 @@ theorem w12_ball_gradient_ae_eq_of_contDiffAt : ∀ n : ℕ, 1 ≤ n → ∀ (w 
   rw [ae_restrict_iff' measurableSet_ball]
   filter_upwards [h0] with x hx hxB
   exact sub_eq_zero.1 (hx hxB)
+/-- **Weyl's lemma** for `W^{1,2}(B)`, `B = B̆₁(0)` (Simon Ch. 5, proof of Lemma 3.1, p. 114: "Thus
+`w` is harmonic in `B`"; Weyl 1940, cf. Hörmander, ALPDO I, Thm. 4.4.1).  If `w` has weak gradient
+`g` on `B` and `∫_B ⟨g, ∇ζ⟩ = 0` for every `ζ ∈ C^∞_c(B)`, then `w` agrees a.e. on `B` with a
+function `u` harmonic near every point of `B`, and `∇u = g` a.e. on `B`.  Since `w ∈ L²(B) ⊆ L¹(B)`,
+`w` is weakly harmonic in Laplacian form; mollification and the mean value property give harmonic
+representatives on each `B_{1-ε}`, which glue to `u`; and the weak gradient of a `C¹`
+representative is its classical gradient. -/
+theorem w12_ball_weyl_lemma : ∀ n : ℕ, 1 ≤ n → ∀ (w : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient w g (ball 0 1) → (∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, inner ℝ (g x) (gradient ζ x) = 0) → ∃ u : Rn n → ℝ, InnerProductSpace.HarmonicOnNhd u (ball 0 1) ∧ (∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), u x = w x) ∧ ∀ᵐ x ∂(volume.restrict (ball (0 : Rn n) 1)), gradient u x = g x := by
+  intro n hn w g hwg hg
+  -- `w ∈ L²(B)` and `|B| < ∞`, so `w ∈ L¹(B)`.
+  have hint : IntegrableOn w (ball (0 : Rn n) 1) := by
+    have : IsFiniteMeasure (volume.restrict (ball (0 : Rn n) 1)) :=
+      isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+    exact hwg.1.integrable one_le_two
+  -- Weak harmonicity in Laplacian form: `∫_B w Δζ = 0` for every test function `ζ`.
+  have hlap := Submission.w12_ball_weak_laplacian_eq_zero n hn w g hwg hg
+  -- Harmonic representatives on the balls `B_{1-ε}`, glued into `u` harmonic on `B`, `u = w` a.e.
+  obtain ⟨u, hu, huw⟩ := Submission.ball_harmonic_patching n hn w
+    (Submission.ball_weakly_harmonic_local_representative n hn w hint hlap)
+  -- `u` is `C²`, hence `C¹`, near each point of `B`, so its gradient is the weak gradient `g`.
+  exact ⟨u, hu, huw, Submission.w12_ball_gradient_ae_eq_of_contDiffAt n hn w u g hwg
+    (fun x hx => (hu x hx).1.of_le one_le_two) huw⟩
 
 end Submission
 
