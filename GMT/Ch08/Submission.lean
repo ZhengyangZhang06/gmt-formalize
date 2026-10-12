@@ -499,6 +499,48 @@ theorem Submission.allard_tc_dbd_relative_decay :
           ENNReal.ofReal ρ ^ n := ENNReal.div_le_div_right (ha.trans hb) _
     _ = _ := mul_div_assoc _ _ _
 
+/-- Density blow-up decay (Simon Ch. 8, Remark 5.6(iii) and (3)–(4) in the proof of 5.5): assuming
+3.6, if `V` has locally bounded first variation, then for `μ_V`-a.e. `x`, whenever
+`Θ^n(μ_V, x) = θ₀` and `τ < θ₀`, `ρ^{-n} μ_V({y ∈ B_ρ(x) : not (Θ^n(μ_V, y) exists and is ≥ τ)})`
+tends to `0` as `ρ ↓ 0`. -/
+theorem Submission.allard_tc_density_blowup_decay :
+    DensityExistsAE → ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → ∀ᵐ x ∂V.weight, ∀ θ₀ τ : ℝ, HasDensity n V.weight x (ENNReal.ofReal θ₀) → τ < θ₀ → Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧ ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ} / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+  intro hD N n U V hV
+  -- Step 1: a Borel `Θ̃`, finite and equal to the density off a `μ_V`-null set.
+  obtain ⟨Θ, hΘm, hΘ⟩ := hD N n U V hV
+  -- Step 2: `μ_V(Uᶜ) = 0`.
+  have hUc : V.weight Uᶜ = 0 := by
+    rw [V.weight_apply V.isOpen_domain.measurableSet.compl]
+    exact V.supported
+  -- Steps 3–4: off one `μ_V`-null set, `x` is a Lebesgue density point of every
+  -- `A_p = {Θ̃ < p}`, `p ∈ ℚ`.
+  have hLeb : ∀ᵐ x ∂V.weight, ∀ p : ℚ,
+      Tendsto (fun ρ : ℝ ↦ V.weight ({y | Θ y < ENNReal.ofReal p} ∩ closedBall x ρ) /
+          V.weight (closedBall x ρ))
+        (𝓝[>] 0) (𝓝 ({y | Θ y < ENNReal.ofReal p}.indicator 1 x)) :=
+    ae_all_iff.2 fun p ↦ Submission.allard_tc_dbd_lebesgue_density N U V.weight V.isOpen_domain
+      hUc V.weight_finite_on_compact _ (measurableSet_lt hΘm measurable_const)
+  filter_upwards [hΘ, hLeb] with x hx hxL
+  intro θ₀ τ hθ₀ hτ
+  -- Step 5: `Θ̃(x) = θ₀`, so a rational `p ∈ (τ, θ₀)` has `x ∉ A_p`.
+  have heq : Θ x = ENNReal.ofReal θ₀ := tendsto_nhds_unique hx.2 hθ₀
+  obtain ⟨p, hτp, hpθ⟩ := exists_rat_btwn hτ
+  have hxA : x ∉ {y | Θ y < ENNReal.ofReal p} := by
+    rw [Set.mem_ofPred_eq, not_lt, heq]
+    exact ENNReal.ofReal_le_ofReal hpθ.le
+  -- Step 7: `μ_V(A_p ∩ B_ρ(x)) / μ_V(B_ρ(x)) → 0`.
+  have hκ := hxL p
+  rw [Set.indicator_of_notMem hxA] at hκ
+  -- Steps 8–9: the relative decay, applied with `A = A_p` and `E = E_τ`.
+  refine Submission.allard_tc_dbd_relative_decay N n V.weight x (ENNReal.ofReal θ₀)
+    {y | Θ y < ENNReal.ofReal p}
+    {y | ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ}
+    hθ₀ ENNReal.ofReal_ne_top hκ ?_
+  -- Step 6: `E_τ ⊆ Z ∪ A_p`.
+  filter_upwards [hΘ] with y hy hyE
+  by_contra hyA
+  exact hyE ⟨Θ y, hy.2, (ENNReal.ofReal_le_ofReal hτp.le).trans (not_lt.1 hyA)⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
