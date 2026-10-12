@@ -451,6 +451,35 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Step 1 of identifying the approximate tangent plane of a `C¹` graph (used for Simon 7.4.3):
+for linear isometries `ι : ℝⁿ → ℝ^{n+k}`, `ι' : ℝᵏ → ℝ^{n+k}` with `⟨ιv, ι'w⟩ = 0` and `u`
+differentiable at `v₀`, the graph map `Φ(v) = z + ιv + ι'u(v)` has `DΦ(v₀) = ι + ι' ∘ Du(v₀)`.
+By Pythagoras `‖DΦ(v₀)h‖² = ‖h‖² + ‖Du(v₀)h‖²`, so `DΦ(v₀)` is injective and its range is
+`n`-dimensional. -/
+theorem Submission.dgcr_atg_graph_tangent_finrank : ∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (v₀ : Euclid n), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → DifferentiableAt ℝ u v₀ → Module.finrank ℝ (LinearMap.range (fderiv ℝ (fun v => z + ι v + ι' (u v)) v₀ : Euclid n →ₗ[ℝ] Euclid (n + k))) = n := by
+  intro n k ι ι' u z v₀ horth hu
+  -- `DΦ(v₀) = ι + ι' ∘ Du(v₀)` by the sum and chain rules
+  have hΦ : HasFDerivAt (fun v => z + ι v + ι' (u v))
+      (ι.toContinuousLinearMap + ι'.toContinuousLinearMap ∘L fderiv ℝ u v₀) v₀ :=
+    (ι.toContinuousLinearMap.hasFDerivAt.const_add z).add
+      (ι'.toContinuousLinearMap.hasFDerivAt.comp v₀ hu.hasFDerivAt)
+  rw [hΦ.fderiv]
+  -- injectivity: `ιh + ι'(Du(v₀)h) = 0` gives `0 = ‖h‖² + ‖Du(v₀)h‖²`, so `h = 0`
+  have hinj : Function.Injective ((ι.toContinuousLinearMap +
+      ι'.toContinuousLinearMap ∘L fderiv ℝ u v₀ : Euclid n →L[ℝ] Euclid (n + k)) :
+        Euclid n →ₗ[ℝ] Euclid (n + k)) := by
+    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+    intro h hh
+    have h0 : ι h + ι' (fderiv ℝ u v₀ h) = 0 := by simpa using hh
+    have hpyth := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero (𝕜 := ℝ) (ι h)
+      (ι' (fderiv ℝ u v₀ h)) (horth _ _)
+    rw [h0, norm_zero, ι.norm_map, ι'.norm_map] at hpyth
+    have hh0 : ‖h‖ * ‖h‖ = 0 := by
+      linarith [mul_self_nonneg ‖h‖, mul_self_nonneg ‖fderiv ℝ u v₀ h‖]
+    simpa using hh0
+  -- `dim range DΦ(v₀) = dim ℝⁿ = n`
+  rw [LinearMap.finrank_range_of_inj hinj, finrank_euclideanSpace_fin]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
