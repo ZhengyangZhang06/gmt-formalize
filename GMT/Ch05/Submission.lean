@@ -458,6 +458,71 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Projections onto graph planes: the estimates (Nor), (Ang), (Gp) of the linear-algebra step in
+the graph-rate argument for Simon Ch. 5, Remark 5.3 (p. 122).  For a linear isometry `q` of
+`ℝ^{n+ℓ}` and `A : ℝⁿ → ℝ^ℓ`, let `P_A` be the orthogonal projection onto `G_A = q(graph A)` and `P₀`
+the one onto `T₀ = q(ℝⁿ × {0})`.  Then
+(P1) `P_A q(x, A x) = q(x, A x)`;
+(P2) (Nor) `|w| ≤ (1 + ‖A‖²)^{1/2} |q(0, w) − P_A q(0, w)|`;
+(P3) (Ang) `‖A‖ ≤ (1 + ‖A‖²)^{1/2} ‖P_A − P₀‖` (operator norms);
+(P4) (Gp) `|A − B| ≤ |P_A − P_B|` (Hilbert–Schmidt norms) whenever `|A|, |B| ≤ 1/4`.
+(P1), (P2) hold together with the bound `‖W_A‖ ≤ (1 + ‖A‖²)^{1/2}` for the graph map
+`W_A v = q(v, A v)`; (P3) follows because `P_A − P₀` maps `W_A v` to `q(0, A v)`; and (P4) follows from
+`2|A − B|² ≤ (1 + ‖A‖²)(1 + ‖B‖²)|P_A − P_B|²` together with `(17/16)² ≤ 2`. -/
+theorem any_radius_gr_graph_plane_projections : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (A : Rn n →L[ℝ] Rn ℓ) (x : Rn n), (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)))).starProjection (q (graphPoint x (A x))) = q (graphPoint x (A x))) ∧ (∀ (A : Rn n →L[ℝ] Rn ℓ) (w : Rn ℓ), ‖w‖ ≤ Real.sqrt (1 + ‖A‖ ^ 2) * ‖q (graphPoint (0 : Rn n) w) - (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)))).starProjection (q (graphPoint (0 : Rn n) w))‖) ∧ (∀ A : Rn n →L[ℝ] Rn ℓ, ‖A‖ ≤ Real.sqrt (1 + ‖A‖ ^ 2) * ‖(Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)))).starProjection - (rotatedPlane q).starProjection‖) ∧ ∀ A B : Rn n →L[ℝ] Rn ℓ, hsNorm A ≤ 1 / 4 → hsNorm B ≤ 1 / 4 → hsNorm (A - B) ≤ hsNorm ((Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)))).starProjection - (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v)))).starProjection) := by
+  intro n ℓ q
+  -- Steps 0–2: (P1), (P2) and the graph map `W_A v = q(v, A v)` with `‖W_A‖ ≤ (1 + ‖A‖²)^{1/2}`
+  obtain ⟨hP1, hP2, hW, -⟩ := Submission.any_radius_gr_pp_graph_param n ℓ q
+  -- (L2) `(a − a', b − b') = (a, b) − (a', b')`, (L4) `|(a, b)|² = |a|² + |b|²`,
+  -- (L5) `P₀ q(a, b) = q(a, 0)` and the Hilbert–Schmidt facts (L8)
+  obtain ⟨-, hsub, -, hnorm, hproj, -, -, hHS, -⟩ :=
+    Submission.any_radius_gr_linear_algebra_basics n ℓ q
+  refine ⟨hP1, hP2, fun A => ?_, fun A B hA hB => ?_⟩
+  · -- Step 3, (P3) (Ang).  Only (P1) is used about `P_A`, so argue for any `P` fixing all `q(x, A x)`.
+    suffices H : ∀ P : Amb n ℓ →L[ℝ] Amb n ℓ,
+        (∀ x, P (q (graphPoint x (A x))) = q (graphPoint x (A x))) →
+        ‖A‖ ≤ Real.sqrt (1 + ‖A‖ ^ 2) * ‖P - (rotatedPlane q).starProjection‖ from
+      H _ (hP1 A)
+    intro P hP
+    obtain ⟨W, hWv, hWn⟩ := hW A
+    refine A.opNorm_le_bound (mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _)) fun v => ?_
+    -- `(P − P₀)(W_A v) = q(v, A v) − q(v, 0) = q(0, A v)`, a vector of norm `|A v|`
+    have hAv : ‖A v‖ = ‖(P - (rotatedPlane q).starProjection) (W v)‖ := by
+      have h : ‖graphPoint (0 : Rn n) (A v)‖ = ‖A v‖ :=
+        (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).1 (by rw [hnorm, norm_zero]; ring)
+      rw [_root_.sub_apply, hWv, hP, hproj, ← q.map_sub, ← hsub, sub_self, sub_zero,
+        LinearIsometryEquiv.norm_map, h]
+    calc ‖A v‖ = ‖(P - (rotatedPlane q).starProjection) (W v)‖ := hAv
+      _ ≤ ‖P - (rotatedPlane q).starProjection‖ * ‖W v‖ :=
+        (P - (rotatedPlane q).starProjection).le_opNorm (W v)
+      _ ≤ ‖P - (rotatedPlane q).starProjection‖ * (Real.sqrt (1 + ‖A‖ ^ 2) * ‖v‖) :=
+        mul_le_mul_of_nonneg_left
+          ((W.le_opNorm v).trans (mul_le_mul_of_nonneg_right hWn (norm_nonneg v))) (norm_nonneg _)
+      _ = Real.sqrt (1 + ‖A‖ ^ 2) * ‖P - (rotatedPlane q).starProjection‖ * ‖v‖ := by ring
+  · -- Step 6, (P4) (Gp), from the key inequality `2|A − B|² ≤ (1 + ‖A‖²)(1 + ‖B‖²)|P_A − P_B|²`.
+    suffices H : ∀ X : Amb n ℓ →L[ℝ] Amb n ℓ,
+        2 * hsNormSq (A - B) ≤ (1 + ‖A‖ ^ 2) * (1 + ‖B‖ ^ 2) * hsNormSq X →
+        hsNorm (A - B) ≤ hsNorm X from
+      H _ (Submission.any_radius_gr_pp_key_inequality n ℓ q A B)
+    intro X hkey
+    -- (L8f) `‖A‖ ≤ |A|`, `‖B‖ ≤ |B|` and (L8a) `0 ≤ |X|²`
+    obtain ⟨-, -, -, -, -, hAop, -⟩ := hHS n ℓ A A
+    obtain ⟨-, -, -, -, -, hBop, -⟩ := hHS n ℓ B B
+    have hX0 : 0 ≤ hsNormSq X := (hHS (n + ℓ) (n + ℓ) X X).1
+    -- `‖A‖, ‖B‖ ≤ 1/4`, hence `(1 + ‖A‖²)(1 + ‖B‖²) ≤ (17/16)² ≤ 2`
+    have hA2 : ‖A‖ ^ 2 ≤ 1 / 16 := by nlinarith [norm_nonneg A, hAop.trans hA]
+    have hB2 : ‖B‖ ^ 2 ≤ 1 / 16 := by nlinarith [norm_nonneg B, hBop.trans hB]
+    have hc : (1 + ‖A‖ ^ 2) * (1 + ‖B‖ ^ 2) ≤ 2 := by
+      nlinarith [mul_nonneg (sub_nonneg.2 hA2) (sq_nonneg ‖B‖), sq_nonneg ‖A‖]
+    have hsq : hsNormSq (A - B) ≤ hsNormSq X := by
+      linarith [mul_le_mul_of_nonneg_right hc hX0]
+    -- `hsNorm = √hsNormSq` and the square root is monotone
+    exact Real.sqrt_le_sqrt hsq
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
