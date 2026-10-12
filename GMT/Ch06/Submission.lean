@@ -431,6 +431,81 @@ theorem Submission.fiw_ims_tt_unit_bound : ∀ (P n : ℕ) (τ : Fin n → Eucl 
   · exact h1
   · simpa [abs_neg] using h1
 
+/-- **A rectifiable triple defines a current `τ(M, θ, ξ)` (Simon Ch. 6, 3.1, p. 146).**  For a
+rectifiable triple `(M, θ, ξ)` in `U`, `ω ↦ ∫_M θ(x) ⟨ω(x), ξ(x)⟩ dHᵏ(x)` is a sequentially
+continuous linear functional on `𝒟ᵏ(U)`.  The integrand is integrable (`ltg_tau_integrable`) and
+linear in `ω`.  If `ω_j → 0` in `𝒟ᵏ(U)`, all `ω_j` are supported in one compact `K ⊆ U` and
+`ω_j → 0` uniformly; as `|⟨α, ξ⟩| ≤ ‖α‖` `Hᵏ⌞M`-a.e. (`fiw_ims_tt_unit_bound`), eventually
+`|θ ⟨ω_j, ξ⟩| ≤ |θ| 1_K ∈ L¹(Hᵏ⌞M)`, and dominated convergence gives `τ(M, θ, ξ)(ω_j) → 0`. -/
+theorem Submission.slicing_im_tau_current : ∀ (P k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M θ ξ → ∃ R : GeometricCurrentOn U k, ∀ ω : TestFormOn U k, R ω = tauAction k M θ ξ ω := by
+  intro P k U M θ ξ hT
+  -- Step 1: for a test form `ω`, `x ↦ θ(x) ⟨ω(x), ξ(x)⟩` is `Hᵏ`-integrable on `M`.
+  have hI : ∀ ω : TestFormOn U k, IntegrableOn
+      (fun x => θ x * ξ x ((ω : DifferentialForm (Eucl P) k) x)) M (μHE[k] : Measure (Eucl P)) :=
+    fun ω => (Submission.ltg_tau_integrable P k U M θ ξ hT).2 _
+      (ContDiff.continuous ω.property.1.1) ω.property.1.2 ω.property.2
+  -- Unit orientation: `|⟨α, ξ(x)⟩| ≤ ‖α‖` for `Hᵏ⌞M`-a.e. `x`.
+  have hunit : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M),
+      ∀ α : Covector (Eucl P) k, |ξ x α| ≤ ‖α‖ := by
+    filter_upwards [hT.orients] with x hx α
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    exact Submission.fiw_ims_tt_unit_bound P k τ (ξ x) hτ hξ α
+  refine ⟨⟨{ toFun := fun ω => tauAction k M θ ξ ω
+             map_add' := fun ω η => ?_
+             map_smul' := fun c ω => ?_ }, fun ωs hconv => ?_⟩, fun ω => rfl⟩
+  · -- Step 2 (additivity): `θ ⟨ω + η, ξ⟩ = θ ⟨ω, ξ⟩ + θ ⟨η, ξ⟩`, both integrable.
+    simp only [tauAction, Submodule.coe_add, Pi.add_apply, map_add, mul_add]
+    exact integral_add (hI ω) (hI η)
+  · -- Step 2 (homogeneity): `θ ⟨c ω, ξ⟩ = c θ ⟨ω, ξ⟩`.
+    simp only [tauAction, Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul,
+      RingHom.id_apply]
+    rw [← integral_const_mul]
+    congr 1
+    funext x
+    ring
+  · -- Step 3 (continuity): `ω_j → 0` in `𝒟ᵏ(U)`, all supported in a compact `K ⊆ U`.
+    show Tendsto (fun j => tauAction k M θ ξ (ωs j)) atTop (𝓝 0)
+    obtain ⟨K, hKc, hKU, hsupp, -, hderiv⟩ := hconv
+    have hKm : MeasurableSet K := hKc.isClosed.measurableSet
+    -- `sup_x ‖ω_j(x)‖ → 0`: zeroth derivatives converge uniformly on `K`, and `ω_j = 0` off `K`.
+    have hsmall : ∀ ε > 0, ∀ᶠ j in atTop, ∀ x, ‖(ωs j : DifferentialForm (Eucl P) k) x‖ < ε := by
+      intro ε hε
+      filter_upwards [Metric.tendstoUniformlyOn_iff.mp (hderiv 0) ε hε] with j hj x
+      by_cases hx : x ∈ K
+      · simpa using hj x hx
+      · rw [image_eq_zero_of_notMem_tsupport (fun h => hx (hsupp j h)), norm_zero]
+        exact hε
+    -- Dominated convergence on `Hᵏ⌞M` with the integrable bound `|θ| 1_K`.
+    have key := tendsto_integral_filter_of_dominated_convergence
+      (μ := (μHE[k] : Measure (Eucl P)).restrict M) (l := atTop)
+      (F := fun j x => θ x * ξ x ((ωs j : DifferentialForm (Eucl P) k) x))
+      (f := fun _ => (0 : ℝ)) (K.indicator fun x => |θ x|)
+      (Eventually.of_forall fun j => (hI (ωs j)).aestronglyMeasurable)
+      ?_ ?_ ?_
+    · simp only [integral_zero] at key
+      exact key
+    · -- Domination: once `‖ω_j‖ < 1`, `|θ ⟨ω_j, ξ⟩| ≤ |θ| 1_K` `Hᵏ⌞M`-a.e.
+      filter_upwards [hsmall 1 one_pos] with j hj
+      filter_upwards [hunit] with x hx
+      by_cases hxK : x ∈ K
+      · rw [indicator_of_mem hxK, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+        calc |θ x| * |ξ x ((ωs j : DifferentialForm (Eucl P) k) x)| ≤ |θ x| * 1 :=
+              mul_le_mul_of_nonneg_left ((hx _).trans (hj x).le) (abs_nonneg _)
+          _ = |θ x| := mul_one _
+      · rw [indicator_of_notMem hxK, image_eq_zero_of_notMem_tsupport (fun h => hxK (hsupp j h)),
+          map_zero, mul_zero, norm_zero]
+    · -- `|θ| 1_K` is integrable on `M`: `θ` is integrable on `M ∩ K`.
+      rw [integrable_indicator_iff hKm, IntegrableOn, Measure.restrict_restrict hKm, inter_comm]
+      exact (hT.integrableOn K hKc hKU).abs
+    · -- Pointwise limit: `ω_j(x) → 0`, so `θ(x) ⟨ω_j(x), ξ(x)⟩ → 0`.
+      refine Eventually.of_forall fun x => ?_
+      have h0 : Tendsto (fun j => (ωs j : DifferentialForm (Eucl P) k) x) atTop (𝓝 0) :=
+        Metric.tendsto_nhds.mpr fun ε hε => (hsmall ε hε).mono fun j hj => by
+          rw [dist_zero_right]; exact hj x
+      have h1 := ((ξ x).continuous.tendsto 0).comp h0
+      rw [map_zero] at h1
+      simpa using (tendsto_const_nhds (x := θ x)).mul h1
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
