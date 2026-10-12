@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "99c6dd4e2b62028196bea2fda83bfa0a96332a7dddfc21c85309976dd03a42b8",
+  "git_delta": {
+    "base_commit": "13ff686f52cfb3b05f997c6c06e834ff7617b5c9",
+    "candidate_commit": "897839f250d247f64d81132474211f0ab45b65b3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_dim_zero_carrier_finite",
+    "diff_sha256": "07bc6757d006bd9cff6a640eb6de348424c544714a505d687681739f139bbe4c",
+    "source_sha256": "5db5d5ec6c0378b4eee151bec8bec75a51f543ab75e09e5d21d3b2e59f31d132",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_dim_zero_carrier_finite",
+      "statement": "∀ (P : ℕ) (U K : Set (Euclid P)) (R : IMRep U 0), IsCompact K → K ⊆ U → (R.carrier ∩ K).Finite",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
