@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "real_norm_sq_eq|finAddEquivProd|def sumEquivProd",
+        "theorem prod_univ_add|theorem append_left|theorem append_right|finSumFinEquiv_apply_left|finSumFinEquiv_apply_right",
+        "theorem ContinuousOn.isOpen_inter_preimage|theorem ContinuousOn.preimage_isClosed_of_isClosed|theorem ContDiffOn.contDiffAt|theorem HasFDerivAt.prodMk|theorem IsCompact.of_isClosed_subset",
+        "rsod_norm_graphPoint_sq|rsod_graphPoint_eq_finAddEquivProd_symm|rsod_graphChart_injective_contDiffOn_fderiv_injective",
+        "python3 /tmp/c1gb-independent-audit-gg3y9yuw/run_lean.py -o build/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean",
+        "python3 /tmp/c1gb-independent-audit-gg3y9yuw/run_lean.py StandaloneTypes.lean",
+        "python3 /tmp/c1gb-independent-audit-gg3y9yuw/run_lean.py VerifiedProofs.lean",
+        "python3 /tmp/c1gb-independent-audit-gg3y9yuw/run_lean.py ParentFromContracts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/BigOperators/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Logic/Equiv/Fin/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees",
+        "/tmp/c1gb-check/draft/All2.lean",
+        "/tmp/c1gb-independent-audit-gg3y9yuw/StandaloneTypes.lean",
+        "/tmp/c1gb-independent-audit-gg3y9yuw/VerifiedProofs.lean",
+        "/tmp/c1gb-independent-audit-gg3y9yuw/ParentFromContracts.lean"
+      ],
+      "conclusion": "Verified the pinned definitions and cited APIs. The build uses Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; inspected Mathlib files match the snapshot byte-for-byte. All child types independently elaborate as propositions before their declarations exist, and exact comparator checks pass. The supplied proofs and the selected parent compile with only propext, Classical.choice and Quot.sound. A separate parent proof parameterized solely by the three frozen child propositions also compiles. Dependency inspection confirms that only graph_chart_immersion depends on graph_point_linear_equiv; neither foundational child depends on another Submission theorem. All names are bare identifiers, with no competing reservations in the checked DAG or other-node JSON records and no occurrences in the pinned project or 24 swarm GMT source trees. The split is appropriate: reusable coordinate facts and the immersion lemma discharge the selected parent's geometric and analytic obligations, while its remaining argument establishes the open domain, exact image and compact preimages."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "norm_graph_point_sq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean proposition agree for all dimensions, including zero. Each proof step is justified: expand Euclidean squared norms, split the Fin sum, identify append coordinates, and recombine. The proof is complete and independent. Its norm-inequality consequence supplies the parent's image and properness arguments."
+    },
+    {
+      "key": "graph_point_linear_equiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pinned finAddEquivProd has exactly the stated continuous linear equivalence type and coordinate action. The four proof steps identify its inverse coordinates and conclude the exact equality by Fin.addCases and extensionality. Product-space instances are compatible. This independent obligation supplies the required continuity and injectivity without assuming the parent."
+    },
+    {
+      "key": "graph_chart_immersion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and all three conclusions match the Lean proposition. Openness correctly upgrades C¹ regularity on Ω to differentiability at each point; the chain rule gives v ↦ q(L(v, Du(x)v)). Injectivity of q and L proves both global chart injectivity and derivative injectivity. The supplied proof is complete, uses exactly its declared sibling dependency, and supplies the parent's C¹, InjOn and derivative fields."
+    }
+  ],
+  "required_changes": []
+}
