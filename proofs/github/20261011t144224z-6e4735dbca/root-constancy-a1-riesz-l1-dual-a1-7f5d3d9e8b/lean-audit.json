@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0ff9eb8b12197698ffef01e9ff0696dae31ffd5cfd790ab712e7b10b03202bbb",
+  "git_delta": {
+    "base_commit": "d51d6852d8364264de727eccf9d9dac514cdf89a",
+    "candidate_commit": "471cfdd5be900997745a1625085083ac99541f84",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "ae1e23f80efc2aad54b3571733425dde34b3984daba52d7ae9fd76c79e1d113e",
+    "source_sha256": "200fef665203860a25018c4df8eed666d76d3451f9ae881927f82b38b947ad94",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.constancy_riesz_l1_dual_bounded_density",
+      "statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α), IsFiniteMeasure μ → ∀ (F : (α → ℝ) → ℝ) (C : ℝ), (∀ f g : α → ℝ, Integrable f μ → Integrable g μ → F (f + g) = F f + F g) → (∀ (c : ℝ) (f : α → ℝ), Integrable f μ → F (c • f) = c * F f) → (∀ f : α → ℝ, Integrable f μ → |F f| ≤ C * ∫ x, |f x| ∂μ) → ∃ θ : α → ℝ, Measurable θ ∧ (∃ M : ℝ, ∀ x, |θ x| ≤ M) ∧ ∀ f : α → ℝ, Integrable f μ → F f = ∫ x, f x * θ x ∂μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
