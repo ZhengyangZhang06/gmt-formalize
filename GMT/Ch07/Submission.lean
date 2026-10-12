@@ -451,6 +451,44 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The radial potential of the mean value property (Simon Ch. 5, 3.2–3.4).  For continuous `g`
+vanishing on `[r², ∞)`, `Ψ(y) = P(|y|²)` with `P(t) = ½∫_{r²}^t g` is `C¹` with
+`DΨ(y)v = P'(|y|²)·2⟨y, v⟩ = g(|y|²)⟨y, v⟩` (FTC and the chain rule), and `Ψ(y) = 0` for
+`|y| ≥ r`, so `tsupport Ψ ⊆ closedBall 0 r`, which is compact. -/
+theorem Submission.dorag_ha_mv_radial_potential : ∀ (n : ℕ) (r : ℝ) (g : ℝ → ℝ), 0 < r → Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∃ Ψ : Euclid n → ℝ, ContDiff ℝ 1 Ψ ∧ HasCompactSupport Ψ ∧ tsupport Ψ ⊆ closedBall 0 r ∧ ∀ y v : Euclid n, fderiv ℝ Ψ y v = g (‖y‖ ^ 2) * inner ℝ y v := by
+  intro n r g hr hg hgr
+  set P : ℝ → ℝ := fun t => (1/2 : ℝ) * ∫ τ in r ^ 2..t, g τ with hP
+  have hPd : ∀ t, HasDerivAt P ((1/2 : ℝ) * g t) t := fun t =>
+    ((hg.integral_hasStrictDerivAt (r ^ 2) t).hasDerivAt).const_mul (1/2 : ℝ)
+  have hPC : ContDiff ℝ 1 P := by
+    rw [contDiff_one_iff_deriv]
+    refine ⟨fun t => (hPd t).differentiableAt, ?_⟩
+    have : deriv P = fun t => (1/2 : ℝ) * g t := funext fun t => (hPd t).deriv
+    rw [this]; exact continuous_const.mul hg
+  have hP0 : ∀ t, r ^ 2 ≤ t → P t = 0 := by
+    intro t ht
+    simp only [hP]
+    rw [intervalIntegral.integral_congr (g := fun _ => (0:ℝ)) ?_]
+    · simp
+    · intro τ hτ
+      rw [uIcc_of_le ht] at hτ
+      exact hgr τ hτ.1
+  have hsupp : tsupport (fun y : Euclid n => P (‖y‖ ^ 2)) ⊆ closedBall 0 r := by
+    refine closure_minimal (fun y hy => ?_) isClosed_closedBall
+    rw [mem_closedBall, dist_zero_right]
+    by_contra hlt
+    push Not at hlt
+    exact hy (hP0 _ (pow_le_pow_left₀ hr.le hlt.le 2))
+  refine ⟨fun y => P (‖y‖ ^ 2), hPC.comp (contDiff_norm_sq ℝ), ?_, hsupp, ?_⟩
+  · exact IsCompact.of_isClosed_subset (isCompact_closedBall 0 r) (isClosed_tsupport _) hsupp
+  · intro y v
+    have hd : HasFDerivAt (fun y : Euclid n => P (‖y‖ ^ 2))
+        (((1/2 : ℝ) * g (‖y‖ ^ 2)) • (2 • innerSL ℝ y)) y :=
+      (hPd _).comp_hasFDerivAt y (hasStrictFDerivAt_norm_sq y).hasFDerivAt
+    rw [hd.fderiv]
+    simp only [smul_apply, innerSL_apply_apply, smul_eq_mul, nsmul_eq_mul]
+    ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
