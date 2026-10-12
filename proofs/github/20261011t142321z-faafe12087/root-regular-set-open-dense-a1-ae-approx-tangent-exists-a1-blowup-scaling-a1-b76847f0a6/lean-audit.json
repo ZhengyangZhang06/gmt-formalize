@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7ef848c52490b33374f6043fbad3d71bfff0a735ef24f4c834a123eeef5ff4f8",
+  "git_delta": {
+    "base_commit": "4426c5c3be12ae0223e04eeca9a50384f05dc92e",
+    "candidate_commit": "a0c1451df4767f6db165746517ad39470bee5a37",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_blowUpMap_measure_scaling",
+    "diff_sha256": "7caddac181f922e398b8bc73870ecb65c63adcd023e5d9e331dae36cc2213132",
+    "source_sha256": "09dac5152000e541b23553e1b35b668a081e738b3b2b9e9a85f69b366c4ac271",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_blowUpMap_measure_scaling",
+      "statement": "∀ (n ℓ : ℕ) (x : Amb n ℓ) (r : ℝ), 0 < r → ∀ B : Set (Amb n ℓ), ENNReal.ofReal (r ^ n) * (μHE[n] : Measure (Amb n ℓ)) (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B) = (μHE[n] : Measure (Amb n ℓ)) B ∧ ((μHE[n] : Measure (Amb n ℓ)).restrict B).map (Poincare.SimonGMT.Chapter03.blowUpMap x r) = ENNReal.ofReal (r ^ n) • (μHE[n] : Measure (Amb n ℓ)).restrict (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
