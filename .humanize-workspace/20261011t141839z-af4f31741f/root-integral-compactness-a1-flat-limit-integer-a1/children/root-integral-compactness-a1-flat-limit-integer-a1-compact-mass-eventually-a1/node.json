@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.compact_mass_eventually-a1",
+  "parent_id": "root.integral_compactness-a1.flat_limit_integer-a1",
+  "depth": 3,
+  "title": "Eventual compact-set mass bound from flat convergence (step 0(a))",
+  "statement": "Let N, n ∈ ℕ, P ∈ G(N,n), θ₀ > 0 and W_k (k ∈ ℕ) n-varifolds on B°_5(0) satisfying (H): ∫ f dW_k → θ₀ ∫ f dv(P) for every f ∈ C_c(ℝ^N × G(N,n), ℝ) with tsupport f ⊆ B°_5(0) × G(N,n). Let K be compact, O open with K ⊆ O ⊆ B°_5(0), and c ∈ [0,∞] with θ₀·H^n(P.plane ∩ O) < c (product in [0,∞], θ₀ read as ENNReal.ofReal θ₀). Then μ_{W_k}(K) < c for all sufficiently large k. Notation: H^n := μHE[n]; G(N,n) := Grassmannian N n; p_S := Grassmannian.project S (orthogonal projection onto S.plane); t_P(S) := ‖LinearMap.toContinuousLinearMap(projectionLinearMap S − projectionLinearMap P)‖ (operator norm of p_S − p_P); μ_W := W.weight; ‖δW‖ := variationMeasure W; v(T) := planeVarifoldMeasure T; B_ρ(y) := closedBall y ρ, B°_ρ(y) := ball y ρ; unitBallVolume n is the extended-real volume of the open unit ball of ℝ^n; ofReal := ENNReal.ofReal.",
+  "lean_statement": "∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), 0 < θ₀ → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∀ (K O : Set (Euclidean N)) (c : ℝ≥0∞), IsCompact K → IsOpen O → K ⊆ O → O ⊆ ball (0 : Euclidean N) 5 → ENNReal.ofReal θ₀ * (μHE[n] : Measure (Euclidean N)) ((P.plane : Set (Euclidean N)) ∩ O) < c → ∀ᶠ k in atTop, (W k).weight K < c",
+  "lean_name": "intcpt_fli_weight_compact_eventually_lt",
+  "depends_on": [
+    "root.integral_compactness-a1.flat_limit_integer-a1.weight_tendsto-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.weight_tendsto-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-flat-limit-integer-a1-compact-mass-eventually-a1-a1"
+}

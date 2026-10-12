@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.unit_disc_mass-a1",
+  "parent_id": "root.integral_compactness-a1.flat_limit_integer-a1",
+  "depth": 3,
+  "title": "Uniform eventual mass bound for unit balls centred on the unit disc of P (step 4(iv))",
+  "statement": "Let N, n ∈ ℕ, P ∈ G(N,n), θ₀ > 0 and W_k (k ∈ ℕ) n-varifolds on B°_5(0) satisfying (H): ∫ f dW_k → θ₀ ∫ f dv(P) for every f ∈ C_c(ℝ^N × G(N,n), ℝ) with tsupport f ⊆ B°_5(0) × G(N,n). Then for every η > 0, for all sufficiently large k: μ_{W_k}(B_1(a)) ≤ ofReal((θ₀ + η)ω) for every a ∈ P.plane with |a| ≤ 1, where ω := (unitBallVolume n).toReal. Notation: H^n := μHE[n]; G(N,n) := Grassmannian N n; p_S := Grassmannian.project S (orthogonal projection onto S.plane); t_P(S) := ‖LinearMap.toContinuousLinearMap(projectionLinearMap S − projectionLinearMap P)‖ (operator norm of p_S − p_P); μ_W := W.weight; ‖δW‖ := variationMeasure W; v(T) := planeVarifoldMeasure T; B_ρ(y) := closedBall y ρ, B°_ρ(y) := ball y ρ; unitBallVolume n is the extended-real volume of the open unit ball of ℝ^n; ofReal := ENNReal.ofReal.",
+  "lean_statement": "∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), 0 < θ₀ → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∀ η : ℝ, 0 < η → ∀ᶠ k in atTop, ∀ a ∈ (P.plane : Set (Euclidean N)), ‖a‖ ≤ 1 → (W k).weight (closedBall a 1) ≤ ENNReal.ofReal ((θ₀ + η) * (unitBallVolume n).toReal)",
+  "lean_name": "intcpt_fli_unit_disc_mass_eventually",
+  "depends_on": [
+    "root.integral_compactness-a1.flat_limit_integer-a1.plane_ball_measure-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.compact_mass_eventually-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.plane_ball_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.compact_mass_eventually-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-flat-limit-integer-a1-unit-disc-mass-a1-a1"
+}

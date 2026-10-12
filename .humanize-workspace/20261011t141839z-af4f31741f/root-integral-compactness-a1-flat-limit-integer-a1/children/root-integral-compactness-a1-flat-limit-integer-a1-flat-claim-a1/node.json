@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.flat_claim-a1",
+  "parent_id": "root.integral_compactness-a1.flat_limit_integer-a1",
+  "depth": 3,
+  "title": "The δ-claim of step 3: θ₀I₀ ≤ c₀δ⁴ + (1+(4δ⁴/ω)²)^{n/2}k₀I₀",
+  "statement": "Assume (hA), the frozen statement of the accepted sibling intcpt_allard_integrality_lemma with MonotonicityFormula discharged: for all N, n ∈ ℕ and Λ ∈ ℝ with 1 ≤ n and 1 ≤ Λ there are δ̄ > 0 and c₀ ≥ 0 such that for all δ ∈ (0,δ̄] and ε ∈ (0,δ⁴], every U ⊇ B°_3(0), every n-varifold W on U with locally bounded first variation and every P ∈ G(N,n) with μ_W(B°_3(0)) ≤ Λ, ‖δW‖(B°_3(0)) < ε² and ∫⁻_{B°_3(0)×G(N,n)} t_P dW < ε²: (a) μ_W(E) ≤ c₀ε, where E is the set of y ∈ B_2(0) ∩ spt μ_W violating (1) ‖δW‖(B_ρ(y)) ≤ εμ_W(B_ρ(y)) for all ρ ∈ (0,1) or (2) ∫⁻_{B_ρ(y)×G(N,n)} t_P dW ≤ ερ^n for all ρ ∈ (0,1); (b) for every x ∈ P.plane with |x| < 1, every finite set s of points y with p_P y = x, y ∈ B_2(0) ∩ spt μ_W, (1), (2) and |y − p_P y| < ε, and every Θ : ℝ^N → [0,∞] with HasDensity n μ_W y Θ(y) and Θ(y) ≥ 1 for y ∈ s: Σ_{y∈s} Θ(y) ≤ ofReal(1+δ)·μ_W(B_1(x))/unitBallVolume n + ofReal δ; (hD), the frozen statement of the accepted sibling intcpt_integral_density_integer: every integral n-varifold V on any U ⊆ ℝ^N has, for μ_V-a.e. x, HasDensity n μ_V x k for some integer k ≥ 1; (hC), the frozen statement of the accepted sibling intcpt_canonical_tangent_representation with AllardRectifiabilityTheorem and FirstRectifiabilityTheorem discharged: every n-varifold V on any U with locally bounded first variation and Θ^n(μ_V,x) > 0 for μ_V-a.e. x admits θ : ℝ^N → ℝ with IsVarifoldOf V M_V θ, where M_V := {x ∈ spt μ_V : V has a tangent plane at x}, such that every x ∈ M_V has a tangent plane with multiplicity θ(x) and HasDensity n μ_V x (ofReal θ(x)), and every μ_V-null Z ⊆ M_V is H^n-null; (hG), the frozen statement of the accepted sibling intcpt_lipschitz_graph_fibre_bound: for all N, n, P ∈ G(N,n), L ≥ 0, closed sets Γ_i (i ∈ ℕ) with |(y−z) − p_P(y−z)| ≤ L|p_P(y−z)| for all y, z ∈ Γ_i, every H^n-null-measurable set A ⊆ ⋃_i Γ_i and every h : ℝ^N → [0,∞]: ∫⁻_A h dH^n ≤ ofReal((1+L²)^{n/2})·∫⁻_{P.plane} Σ'_{y ∈ A, p_P y = a} h(y) dH^n(a); and (TGC), the tangent-graph-cover statement: for all N, n, 0 < L ≤ 1, U ⊆ ℝ^N, every n-varifold V on U and every P ∈ G(N,n) there are closed sets Γ_i (i ∈ ℕ) with |(y−z) − p_P(y−z)| ≤ L|p_P(y−z)| for all y, z ∈ Γ_i, such that every x at which V has some tangent plane T with some multiplicity θ (HasTangentPlane V x T θ) and |p_T v − p_P v| ≤ (L/4)|v| for all v ∈ ℝ^N lies in some Γ_i. Let N, n ∈ ℕ with n ≥ 1, P ∈ G(N,n), θ₀ > 0 and W_k (k ∈ ℕ) n-varifolds on B°_5(0), each integral with locally bounded first variation, with ‖δW_k‖(B°_5(0)) → 0 and (H): ∫ f dW_k → θ₀ ∫ f dv(P) for every f ∈ C_c(ℝ^N × G(N,n), ℝ) with tsupport f ⊆ B°_5(0) × G(N,n). Then there are δ̄ > 0, c₀ ≥ 0 and I₀ > 0 such that for every δ ∈ (0, δ̄] and k₀ ∈ ℕ with (1+δ)(θ₀+δ) + δ < k₀ + 1 and 4δ⁴ ≤ ω: θ₀I₀ ≤ c₀δ⁴ + (1 + (4δ⁴/ω)²)^{n/2}·k₀·I₀, where ω := (unitBallVolume n).toReal. Notation: H^n := μHE[n]; G(N,n) := Grassmannian N n; p_S := Grassmannian.project S (orthogonal projection onto S.plane); t_P(S) := ‖LinearMap.toContinuousLinearMap(projectionLinearMap S − projectionLinearMap P)‖ (operator norm of p_S − p_P); μ_W := W.weight; ‖δW‖ := variationMeasure W; v(T) := planeVarifoldMeasure T; B_ρ(y) := closedBall y ρ, B°_ρ(y) := ball y ρ; unitBallVolume n is the extended-real volume of the open unit ball of ℝ^n; ofReal := ENNReal.ofReal.",
+  "lean_statement": "(∀ (N n : ℕ) (Λ : ℝ), 1 ≤ n → 1 ≤ Λ → ∃ δbar c₀ : ℝ, 0 < δbar ∧ 0 ≤ c₀ ∧ ∀ δ ε : ℝ, 0 < δ → δ ≤ δbar → 0 < ε → ε ≤ δ ^ 4 → ∀ (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n), ball (0 : Euclidean N) 3 ⊆ U → W.HasLocallyBoundedFirstVariation → W.weight (ball (0 : Euclidean N) 3) ≤ ENNReal.ofReal Λ → variationMeasure W (ball (0 : Euclidean N) 3) < ENNReal.ofReal (ε ^ 2) → (∫⁻ z in ball (0 : Euclidean N) 3 ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) < ENNReal.ofReal (ε ^ 2) → W.weight {y | y ∈ closedBall (0 : Euclidean N) 2 ∧ y ∈ W.weight.support ∧ ¬ ((∀ ρ : ℝ, 0 < ρ → ρ < 1 → variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)) ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → (∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * ρ ^ n)))} ≤ ENNReal.ofReal (c₀ * ε) ∧ ∀ (x : Euclidean N) (s : Finset (Euclidean N)) (Θ : Euclidean N → ℝ≥0∞), x ∈ P.plane → ‖x‖ < 1 → (∀ y ∈ s, Grassmannian.project P y = x ∧ y ∈ closedBall (0 : Euclidean N) 2 ∧ y ∈ W.weight.support ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)) ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → (∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * ρ ^ n)) ∧ ‖y - Grassmannian.project P y‖ < ε ∧ HasDensity n W.weight y (Θ y) ∧ 1 ≤ Θ y) → ∑ y ∈ s, Θ y ≤ ENNReal.ofReal (1 + δ) * W.weight (closedBall x 1) / unitBallVolume n + ENNReal.ofReal δ) → (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), IsIntegral V → ∀ᵐ x ∂V.weight, ∃ k : ℕ, 1 ≤ k ∧ HasDensity n V.weight x (k : ℝ≥0∞)) → (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), V.HasLocallyBoundedFirstVariation → (∀ᵐ x ∂V.weight, ∃ θ : ℝ≥0∞, HasDensity n V.weight x θ ∧ 0 < θ) → ∃ θ : Euclidean N → ℝ, IsVarifoldOf V {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'} θ ∧ (∀ x ∈ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'}, (∃ T : Grassmannian N n, HasTangentPlane V x T (θ x)) ∧ HasDensity n V.weight x (ENNReal.ofReal (θ x))) ∧ ∀ Z ⊆ {x | x ∈ V.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ), HasTangentPlane V x T θ'}, V.weight Z = 0 → (μHE[n] : Measure (Euclidean N)) Z = 0) → (∀ (N n : ℕ) (P : Grassmannian N n) (L : ℝ) (Γ : ℕ → Set (Euclidean N)) (G : Set (Euclidean N)) (g : Euclidean N → ℝ≥0∞), 0 ≤ L → (∀ i, IsClosed (Γ i)) → (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) → G ⊆ ⋃ i, Γ i → NullMeasurableSet G (μHE[n] : Measure (Euclidean N)) → ∫⁻ y in G, g y ∂(μHE[n] : Measure (Euclidean N)) ≤ ENNReal.ofReal ((1 + L ^ 2) ^ ((n : ℝ) / 2)) * ∫⁻ a in (P.plane : Set (Euclidean N)), (∑' y : {y : Euclidean N // y ∈ G ∧ Grassmannian.project P y = a}, g y) ∂(μHE[n] : Measure (Euclidean N))) → (∀ (N n : ℕ) (L : ℝ), 0 < L → L ≤ 1 → ∀ (U : Set (Euclidean N)) (V : Varifold N n U) (P : Grassmannian N n), ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧ (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i, ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧ ∀ (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → (∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) → ∃ i, x ∈ Γ i) → ∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), 1 ≤ n → 0 < θ₀ → (∀ k, IsIntegral (W k)) → (∀ k, (W k).HasLocallyBoundedFirstVariation) → Tendsto (fun k ↦ variationMeasure (W k) (ball (0 : Euclidean N) 5)) atTop (𝓝 0) → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∃ δbar c₀ I₀ : ℝ, 0 < δbar ∧ 0 ≤ c₀ ∧ 0 < I₀ ∧ ∀ (δ : ℝ) (k₀ : ℕ), 0 < δ → δ ≤ δbar → (1 + δ) * (θ₀ + δ) + δ < k₀ + 1 → 4 * δ ^ 4 ≤ (unitBallVolume n).toReal → θ₀ * I₀ ≤ c₀ * δ ^ 4 + (1 + (4 * δ ^ 4 / (unitBallVolume n).toReal) ^ 2) ^ ((n : ℝ) / 2) * k₀ * I₀",
+  "lean_name": "intcpt_fli_flat_claim",
+  "depends_on": [
+    "root.integral_compactness-a1.flat_limit_integer-a1.weight_tendsto-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.plane_ball_measure-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.compact_mass_eventually-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.unit_disc_mass-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.tilt_excess_eventually-a1",
+    "root.integral_compactness-a1.flat_limit_integer-a1.good_mass_estimate-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.weight_tendsto-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.plane_ball_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.compact_mass_eventually-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.unit_disc_mass-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.tilt_excess_eventually-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.good_mass_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-flat-limit-integer-a1-flat-claim-a1-a1"
+}

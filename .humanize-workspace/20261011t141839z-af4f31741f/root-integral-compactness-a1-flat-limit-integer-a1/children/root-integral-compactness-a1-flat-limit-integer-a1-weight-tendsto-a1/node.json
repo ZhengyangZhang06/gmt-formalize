@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.flat_limit_integer-a1.weight_tendsto-a1",
+  "parent_id": "root.integral_compactness-a1.flat_limit_integer-a1",
+  "depth": 3,
+  "title": "Weight form of the flat convergence hypothesis (step 0(b))",
+  "statement": "Let N, n ∈ ℕ, P ∈ G(N,n), θ₀ ∈ ℝ and W_k (k ∈ ℕ) n-varifolds on B°_5(0) such that ∫ f dW_k → θ₀ ∫ f dv(P) for every f ∈ C_c(ℝ^N × G(N,n), ℝ) with tsupport f ⊆ B°_5(0) × G(N,n). Then for every continuous g : ℝ^N → ℝ with compact support and tsupport g ⊆ B°_5(0), ∫ g dμ_{W_k} → θ₀ ∫_{P.plane} g dH^n. Notation: H^n := μHE[n]; G(N,n) := Grassmannian N n; p_S := Grassmannian.project S (orthogonal projection onto S.plane); t_P(S) := ‖LinearMap.toContinuousLinearMap(projectionLinearMap S − projectionLinearMap P)‖ (operator norm of p_S − p_P); μ_W := W.weight; ‖δW‖ := variationMeasure W; v(T) := planeVarifoldMeasure T; B_ρ(y) := closedBall y ρ, B°_ρ(y) := ball y ρ; unitBallVolume n is the extended-real volume of the open unit ball of ℝ^n; ofReal := ENNReal.ofReal.",
+  "lean_statement": "∀ (N n : ℕ) (P : Grassmannian N n) (θ₀ : ℝ) (W : ℕ → Varifold N n (ball (0 : Euclidean N) 5)), (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclidean N) 5 → Tendsto (fun k ↦ ∫ x, g x ∂(W k).weight) atTop (𝓝 (θ₀ * ∫ x in (P.plane : Set (Euclidean N)), g x ∂(μHE[n] : Measure (Euclidean N))))",
+  "lean_name": "intcpt_fli_weight_integral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-flat-limit-integer-a1-weight-tendsto-a1-a1"
+}
