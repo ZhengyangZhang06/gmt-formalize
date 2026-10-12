@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "342b60b0a7bfd938006882d1d034aaa2fc4f3fc498a2e5b0981a73bbdc4a71ea",
+  "git_delta": {
+    "base_commit": "06bc2b0976dca2e54350d688f1e8c23219c00c03",
+    "candidate_commit": "741b3b5cb45fb5f95ca219492cdea2a48c750187",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_vgm_tba_ball_cutoff_sandwich",
+    "diff_sha256": "50fa28a9ea10742f1e8bd0500cbbac682e60ef3add12e2370494f9a0e70d080b",
+    "source_sha256": "49af28d261843911c466dbee7d7682d12d18e08599734bb96b1a02fecc887e26",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_vgm_tba_ball_cutoff_sandwich",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (β : C(Grassmannian N n, ℝ)) (κ t : ℝ), 0 < κ → κ < 1 → 0 < t → closedBall x (2 * t) ⊆ U → (∀ S, 0 ≤ β S) → (∫ z, max 0 (min 1 ((1 - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2 ∂V.measure) ≤ ∫ z in closedBall x t ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure ∧ ∫ z in closedBall x t ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure ≤ ∫ z, max 0 (min 1 ((1 + κ - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2 ∂V.measure",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
