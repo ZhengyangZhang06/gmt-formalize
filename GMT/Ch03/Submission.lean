@@ -1680,6 +1680,41 @@ theorem Submission.deGiorgiRH_measure_le_two_pow_mul_hausdorff : ∀ (n N : ℕ)
         ge_of_tendsto hlim (eventually_nhdsWithin_of_forall fun τ hτ' => hτ τ hτ')
     _ = 2 ^ n * μHE[n] A :=
         Submission.deGiorgiRH_unitBall_mul_hausdorffMeasure_eq_two_pow_mul n N A
+/-- **Equal `n`-dimensional densities force equality** (proof of Simon Ch. 3, Theorem 4.3, the
+final identification `μ_E = Hⁿ ⌞ ∂*E`; Besicovitch differentiation, Simon Ch. 1, Theorems
+3.22–3.24, and Radon–Nikodym). Let `μ, σ` be measures on `ℝᴺ`, finite on compact sets, with
+`μ ≪ σ`, such that for `σ`-a.e. `x` both `μ(B̄_ρ(x))/ρⁿ` and `σ(B̄_ρ(x))/ρⁿ` tend to
+`ωₙ = Lⁿ(B_1(0))` as `ρ ↓ 0`. Then `μ = σ`: by Besicovitch `μ(B̄_ρ(x))/σ(B̄_ρ(x)) → dμ/dσ(x)`
+`σ`-a.e., the density hypotheses make this ratio tend to `ωₙ/ωₙ = 1`, and the Lebesgue
+decomposition of `μ` with respect to `σ` has no singular part, so `μ = (dμ/dσ) σ = σ`. -/
+theorem Submission.deGiorgiRH_measure_eq_of_density : ∀ (n N : ℕ) (μ σ : Measure (Rn N)), (∀ K : Set (Rn N), IsCompact K → μ K < ∞) → (∀ K : Set (Rn N), IsCompact K → σ K < ∞) → μ ≪ σ → (∀ᵐ x ∂σ, Tendsto (fun ρ : ℝ ↦ μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1))) ∧ Tendsto (fun ρ : ℝ ↦ σ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1)))) → μ = σ := by
+  intro n N μ σ hμ hσ hac hdens
+  -- Step 1: finiteness on compacts makes `μ` and `σ` locally finite, hence σ-finite on `ℝᴺ`.
+  have : IsFiniteMeasureOnCompacts μ := ⟨hμ⟩
+  have : IsFiniteMeasureOnCompacts σ := ⟨hσ⟩
+  -- `ωₙ = Lⁿ(B_1(0)) ∈ (0, ∞)`.
+  have hω₀ : volume (Metric.ball (0 : Rn n) 1) ≠ 0 :=
+    (Metric.measure_ball_pos volume (0 : Rn n) one_pos).ne'
+  have hω : volume (Metric.ball (0 : Rn n) 1) ≠ ∞ := measure_ball_lt_top.ne
+  -- Steps 2–4: by Besicovitch differentiation `μ(B̄_ρ(x))/σ(B̄_ρ(x)) → dμ/dσ(x)` for `σ`-a.e. `x`,
+  -- while the density hypotheses force this ratio to tend to `ωₙ/ωₙ = 1`.
+  have hD : μ.rnDeriv σ =ᵐ[σ] 1 := by
+    filter_upwards [Besicovitch.ae_tendsto_rnDeriv μ σ, hdens] with x hx ⟨hxμ, hxσ⟩
+    have hq := ENNReal.Tendsto.div hxμ (Or.inl hω₀) hxσ (Or.inl hω)
+    rw [ENNReal.div_self hω₀ hω] at hq
+    refine tendsto_nhds_unique hx (hq.congr' ?_)
+    filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+    -- Cancel the finite nonzero factor `(ρⁿ)⁻¹`.
+    have hc : ENNReal.ofReal (ρ ^ n) ≠ 0 := (ENNReal.ofReal_pos.2 (pow_pos hρ n)).ne'
+    rw [div_eq_mul_inv (μ _), div_eq_mul_inv (σ _)]
+    exact ENNReal.mul_div_mul_right _ _ (ENNReal.inv_ne_zero.2 ENNReal.ofReal_ne_top)
+      (ENNReal.inv_ne_top.2 hc)
+  -- Step 5: Radon–Nikodym: the singular part vanishes as `μ ≪ σ`, so `μ = (dμ/dσ) σ = σ`.
+  calc μ = μ.singularPart σ + σ.withDensity (μ.rnDeriv σ) :=
+        Measure.haveLebesgueDecomposition_add μ σ
+    _ = σ := by
+      rw [Measure.singularPart_eq_zero_of_ac hac, zero_add, withDensity_congr_ae hD,
+        withDensity_one]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
