@@ -373,6 +373,36 @@ def C1Sard : Prop :=
 
 end
 
+/-- **First-order Leibniz sum at the identity matrix is the trace** (Simon Ch. 2, p. 62: the
+first-order term `tr A` of `det(I + A)`). For a real `ι × ι` matrix `H`,
+`∑_σ sgn σ · ∑_m (∏_{j ≠ m} I_{σ j, j}) · H_{σ m, m} = tr H`. A permutation `σ ≠ 1` moves some
+`j ≠ m` (a moved `y` if `y ≠ m`, else `σ m`, by injectivity), so the factor `I_{σ j, j} = 0` kills
+every product and the `σ`-summand vanishes (`Finset.sum_eq_single`). The `σ = 1` summand is
+`1 · ∑_m 1 · H_{m m} = tr H`. -/
+theorem Submission.variation_matrix_det_leibniz_first_order_at_one : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (H : Matrix ι ι ℝ), ∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ m : ι, (∏ j ∈ Finset.univ.erase m, (1 : Matrix ι ι ℝ) (σ j) j) * H (σ m) m = H.trace := by
+  intro ι _ _ H
+  -- Step 3: only the `σ = 1` summand survives.
+  rw [Finset.sum_eq_single (1 : Equiv.Perm ι)]
+  · -- Step 4: `sgn 1 = 1`, every `I_{j j} = 1`, and `∑_m H_{m m} = tr H`.
+    have hprod : ∀ m : ι,
+        ∏ j ∈ Finset.univ.erase m, (1 : Matrix ι ι ℝ) ((1 : Equiv.Perm ι) j) j = 1 :=
+      fun m ↦ Finset.prod_eq_one fun j _ ↦ Matrix.one_apply_eq j
+    simp [hprod, Matrix.trace]
+  · intro σ _ hσ
+    -- Step 1: `σ ≠ 1` moves some `y`.
+    obtain ⟨y, hy⟩ : ∃ y, σ y ≠ y := not_forall.1 fun h ↦ hσ (Equiv.ext h)
+    -- Step 2: for each `m`, a moved `j ≠ m` gives the zero factor `I_{σ j, j}`.
+    refine mul_eq_zero_of_right _ (Finset.sum_eq_zero fun m _ ↦ ?_)
+    obtain ⟨j, hjm, hj⟩ : ∃ j, j ≠ m ∧ σ j ≠ j := by
+      by_cases hym : y = m
+      · rw [hym] at hy
+        exact ⟨σ m, hy, fun h ↦ hy (σ.injective h)⟩
+      · exact ⟨y, hym, hy⟩
+    have hzero : ∏ j ∈ Finset.univ.erase m, (1 : Matrix ι ι ℝ) (σ j) j = 0 :=
+      Finset.prod_eq_zero (Finset.mem_erase.2 ⟨hjm, Finset.mem_univ j⟩) (Matrix.one_apply_ne hj)
+    rw [hzero, zero_mul]
+  · exact fun h ↦ absurd (Finset.mem_univ _) h
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
