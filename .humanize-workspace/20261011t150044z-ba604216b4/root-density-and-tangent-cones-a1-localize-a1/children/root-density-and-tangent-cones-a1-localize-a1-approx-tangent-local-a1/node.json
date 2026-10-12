@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.localize-a1.approx_tangent_local-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.localize-a1",
+  "depth": 3,
+  "title": "Approximate tangent planes are local and unchanged by removing Hⁿ-null sets",
+  "statement": "Let P, n ∈ ℕ, M' ⊆ M ⊆ ℝ^P be arbitrary sets, V ⊆ ℝ^P open, x ∈ V, and Q a linear subspace of ℝ^P. Suppose Hⁿ((M ∖ M') ∩ V) = 0, where Hⁿ = μHE[n]. Suppose Q is the approximate tangent space of M at x in the sense of Simon Ch. 3, 1.4 (HasApproximateTangentSpaceAt n M x Q): dim Q = n, and lim_{r↓0} ∫_{η_{x,r}(M)} f dHⁿ = ∫_Q f dHⁿ for every f ∈ C_c(ℝ^P), where η_{x,r}(y) = r⁻¹(y − x). Then Q is also the approximate tangent space of M' at x.",
+  "lean_statement": "∀ (P n : ℕ) (M M' V : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), M' ⊆ M → IsOpen V → x ∈ V → μHE[n] ((M \\ M') ∩ V) = 0 → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n M' x Q",
+  "lean_name": "dtc_approxTangent_of_null_diff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-approx-tangent-local-a1-a1"
+}

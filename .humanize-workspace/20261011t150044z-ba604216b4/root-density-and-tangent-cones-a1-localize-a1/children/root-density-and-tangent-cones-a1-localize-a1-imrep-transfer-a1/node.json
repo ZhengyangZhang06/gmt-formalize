@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.localize-a1.imrep_transfer-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.localize-a1",
+  "depth": 3,
+  "title": "An integer multiplicity triple essentially carried by a compact set can be moved to a larger domain",
+  "statement": "Let P, n ∈ ℕ, U, V ⊆ ℝ^P, and K ⊆ ℝ^P compact with K ⊆ V and K ⊆ U. Let R = (M, θ, ξ) be an IMRep of V (Simon 6.3.1 data in V) with Hⁿ(M ∖ K) = 0, where Hⁿ = μHE[n]. Then there is an IMRep R' of U with R'.carrier ⊆ K and R'.action ω = R.action ω for every n-form ω on ℝ^P. One can take R' = (M ∩ K, θ, ξ).",
+  "lean_statement": "∀ (P n : ℕ) (U V K : Set (Euclid P)) (R : IMRep V n), IsCompact K → K ⊆ V → K ⊆ U → μHE[n] (R.carrier \\ K) = 0 → ∃ R' : IMRep U n, R'.carrier ⊆ K ∧ ∀ ω : DifferentialForm (Euclid P) n, R'.action ω = R.action ω",
+  "lean_name": "dtc_imrep_of_null_off_compact",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.localize-a1.approx_tangent_local-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.approx_tangent_local-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-imrep-transfer-a1-a1"
+}

@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasApproximateTangentSpaceAt|def blowUpMap|CountablyRectifiable.mono",
+        "VanishesOn|zeroRegion|def .*support|support_subset_domain|massAdmissibleOn|def .*massOn",
+        "euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero",
+        "hausdorffMeasure_image_le",
+        "exists_contMDiffMap_one_nhds_of_subset_interior|extDeriv_eq",
+        "theorem restrict_congr_set|theorem restrict_restrict|setIntegral_eq_integral_of_forall_compl_eq_zero|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|integrable_indicator_iff",
+        "rg -n 'dtc_massOn_eq_of_agreeOn|dtc_approxTangent_of_null_diff|dtc_restrictDomain_isIntegerMultiplicity|dtc_imrep_of_null_off_compact|dtc_imrep_current|dtc_extend_by_zero' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json GMT/Ch07/Submission.lean",
+        "env PATH=\"/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH\" lake env lean Check/All.lean",
+        "env PATH=\"/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH\" lake env lean /tmp/localize-independent-audit-zkew3e66/Audit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/tmp/loc-decomp-jznkee/proj/Check/All.lean",
+        "/tmp/localize-independent-audit-zkew3e66/Audit.lean"
+      ],
+      "conclusion": "The handoff preserves the selected dtc_localize contract. Snapshot Contract, Submission, manifest and toolchain files match the compilation workspace; package revisions match the pinned dependencies. All six statements are standalone one-line propositions matching their prose, and all names are valid bare identifiers with no reservation matches in the current DAG or Submission. Dependencies are acyclic and correctly directed. Independently recompiled the supplied proofs at the exact proposed types as Submission declarations: each uses only propext, Classical.choice and Quot.sound. The exact parent type also compiles from these children and the three frozen sibling hypotheses, without sorryAx. The split is appropriate and establishes all five selected conclusions. A supplementary project build stalled on filesystem access and was stopped; the exact-type compilation and axiom checks completed successfully."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_agree",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and conclusion match exactly. Repackaging the same underlying forms gives both inclusions between admissible value sets, preserving the Euclidean coefficient-norm condition. Equal suprema follow without additional openness assumptions or circular reliance."
+    },
+    {
+      "key": "approx_tangent_local",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the stated result for arbitrary sets. Compact test-function support localizes sufficiently small blow-ups inside V; Lipschitz images preserve Hausdorff-null sets. Equality of restricted measures gives eventual equality of integrals without omitted measurability or integrability assumptions."
+    },
+    {
+      "key": "restrict_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every IMRep field is checked for the restricted carrier. The declared tangent-locality dependency applies because the removed set misses V, and supported forms give the representation identity. The proof requires only the stated openness of V, not openness of U."
+    },
+    {
+      "key": "imrep_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact-carrier construction satisfies every IMRep field. Integrability follows from finiteness over K; tangent locality applies with V = univ. Equality of restricted measures proves action equality for every ambient form, including forms without integrability assumptions."
+    },
+    {
+      "key": "imrep_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies the required construction: measurable integrands, compact-support domination, linearity, and sequential continuity from uniform zeroth-derivative convergence. The orientation norm bound is valid, including degree zero. No current-construction theorem or parent conclusion is assumed."
+    },
+    {
+      "key": "extend_by_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two declared dependencies construct the representation and current independently. The proof establishes restriction equality, support containment, compactness and integer multiplicity. Boundary vanishing follows from a smooth cutoff and derivative locality, with degree zero handled explicitly. The integral-based construction is non-circular and supplies exactly the extension needed by the parent comparison."
+    }
+  ],
+  "required_changes": []
+}
