@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c6b7726a541ad72ecf89e272c90e056e6b8c4e9bd8882c68192606ecdb028d7d",
+  "git_delta": {
+    "base_commit": "d74ec47d38c6d2a56133d67a9a9943203a86a284",
+    "candidate_commit": "d6285a34810db6592c5949a4329cc5b0fcc16e51",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "constancy_mollifier_iteratedFDeriv_norm_le_integral",
+    "diff_sha256": "397c42b1513395878b93869d68727fe5aa7a5f1afc13c0a02ba5080c4ea396a8",
+    "source_sha256": "c5c16d40f9dff0a52cca3f1c3fea15fc8bb9be226ca76f22f8651073affc5cb3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.constancy_mollifier_iteratedFDeriv_norm_le_integral",
+      "statement": "∀ (n : ℕ) (φ : Eucl n → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → ∀ q : ℕ, ∃ C : ℝ, ∀ g : Eucl n → ℝ, Integrable g volume → ∀ x : Eucl n, ‖iteratedFDeriv ℝ q (convolution φ g (ContinuousLinearMap.lsmul ℝ ℝ) volume) x‖ ≤ C * ∫ y, |g y| ∂volume",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
