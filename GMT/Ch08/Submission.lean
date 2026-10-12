@@ -471,6 +471,47 @@ theorem Submission.intcpt_ri_countablyRectifiable_similarity_preimage :
     refine Or.inr (mem_iUnion.2 ⟨j, v, ?_⟩)
     show t⁻¹ • (F j v - ξ) = y
     rw [hv, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ ht0, one_smul]
+/-- Weighted approximate tangent planes (Simon Ch. 3, 1.7) are local: if `O` is open and `y ∈ O`,
+then `O ∩ M` has weighted approximate tangent space `P` at `y` with respect to `θ` if and only if
+`M` has. -/
+theorem Submission.intcpt_ri_weightedApproxTangent_inter_open_iff :
+    ∀ (N n : ℕ) (O M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (y : Euclidean N)
+      (P : Submodule ℝ (Euclidean N)), IsOpen O → y ∈ O →
+      (Chapter03.HasWeightedApproximateTangentSpaceAt n (O ∩ M) θ y P ↔
+        Chapter03.HasWeightedApproximateTangentSpaceAt n M θ y P) := by
+  intro N n O M θ y P hO hy
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hO y hy
+  -- The dimension conditions and the prescribed limits `θ(y) ∫_P f` coincide.
+  unfold Chapter03.HasWeightedApproximateTangentSpaceAt
+  refine and_congr Iff.rfl (forall_congr' fun f ↦ ?_)
+  -- `f` vanishes off `B = closedBall 0 R` for some `R > 0`.
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall 0
+  have hRpos : (0 : ℝ) < max R₀ 1 := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hsupp : tsupport f ⊆ closedBall (0 : Euclidean N) (max R₀ 1) :=
+    hR₀.trans (closedBall_subset_closedBall (le_max_left _ _))
+  -- The blow-up integrals for `O ∩ M` and `M` agree for `0 < r < ε / R`.
+  refine tendsto_congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hε hRpos)] with r hr
+  -- Cut-off: integrals over any `A` only see `B ∩ A`; no integrability is needed.
+  have hcut : ∀ A : Set (Euclidean N),
+      ∫ v in A, f v * θ (y + r • v) ∂μHE[n] =
+        ∫ v in closedBall (0 : Euclidean N) (max R₀ 1) ∩ A, f v * θ (y + r • v) ∂μHE[n] := by
+    intro A
+    rw [← Measure.restrict_restrict measurableSet_closedBall]
+    refine (setIntegral_eq_integral_of_forall_compl_eq_zero fun v hv ↦ ?_).symm
+    rw [image_eq_zero_of_notMem_tsupport (fun h ↦ hv (hsupp h)), zero_mul]
+  -- Within `B`, every blow-up point of `M` comes from `ball y ε ∩ M ⊆ O ∩ M`.
+  have hset : closedBall (0 : Euclidean N) (max R₀ 1) ∩ Chapter03.blowUpMap y r '' (O ∩ M) =
+      closedBall (0 : Euclidean N) (max R₀ 1) ∩ Chapter03.blowUpMap y r '' M := by
+    refine Subset.antisymm (inter_subset_inter_right _ (image_mono inter_subset_right)) ?_
+    rintro v ⟨hvB, z, hzM, rfl⟩
+    refine ⟨hvB, z, ⟨hball ?_, hzM⟩, rfl⟩
+    rw [mem_closedBall_zero_iff, Chapter03.blowUpMap, norm_smul, norm_inv,
+      Real.norm_of_nonneg hr.1.le, inv_mul_le_iff₀ hr.1] at hvB
+    have hrR : r * max R₀ 1 < ε := (lt_div_iff₀ hRpos).1 hr.2
+    rw [mem_ball, dist_eq_norm]
+    exact lt_of_le_of_lt hvB hrR
+  rw [hcut (Chapter03.blowUpMap y r '' (O ∩ M)), hcut (Chapter03.blowUpMap y r '' M), hset]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
