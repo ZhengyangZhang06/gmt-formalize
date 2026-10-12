@@ -609,6 +609,53 @@ theorem Submission.adr_affine_invariant_closed_set : ∀ (P : ℕ) (S : Set (Euc
   exact hS.mem_of_tendsto hlim
     (eventually_nhdsWithin_of_forall fun lam hlam => (hi y hy lam hlam z).mpr hz)
 
+/-- **Simon A.4, last claim (p. 228).**  If `sing φ ∩ B₁(0)` is `μH[1]`-null for every `φ ∈ F`
+(the case `d = 0`), then `sing φ ∩ B_σ(0)` is finite for `σ < 1`.  Otherwise
+`adr_secant_rescaling_of_infinite` gives `x`, `|x| < 1`, admissible scales `λₖ ↓ 0` and points
+`zₖ → z`, `|zₖ| = |z| = 1/2`, with `x + λₖzₖ ∈ sing φ`.  A.2 gives a homogeneous `ψ ∈ F` with
+`φ_{x,λₖ'} ⇀ ψ`; by A.1 and A.3(2), `zₖ' ∈ B₁(0) ∩ sing φ_{x,λₖ'}`, so `z ∈ sing ψ`
+(`adr_sing_mem_of_tendsto`).  Homogeneity and A.3(2) make the closed set `sing ψ` invariant
+under the dilations `w ↦ λw` (`adr_affine_invariant_closed_set` with `L = {0}`), so it contains
+the segment `(0, z]` and `μH[1](sing ψ ∩ B₁(0)) > 0` (`adr_radial_segment_hausdorff_pos`),
+contradicting the hypothesis for `ψ`. -/
+theorem Submission.adr_finite_of_dim_zero : ∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → (∀ φ ∈ F, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ k, 0 < lams k) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ψ : Euclid P → Euclid Q), StrictMono sub ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φ (y + lams (sub k) • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) ∧ ∀ lam : ℝ, 0 < lam → ∀ x, ψ (lam • x) = ψ x) → (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → sing (fun x => φ (y + lam • x)) = (fun x => y + lam • x) ⁻¹' sing φ) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → (∀ φ ∈ F, μH[1] (sing φ ∩ ball (0 : Euclid P) 1) = 0) → ∀ φ ∈ F, ∀ σ : ℝ, σ < 1 → (sing φ ∩ ball (0 : Euclid P) σ).Finite := by
+  intro P n Q F sing hA1 hA2 hclosed hA32 hA33 hnull φ hφ σ hσ
+  refine Set.not_infinite.1 fun hinf => ?_
+  -- an accumulation point `x` of `sing φ`, admissible scales and rescaled singular points
+  obtain ⟨x, lams, zs, z, hx, hpos, hanti, hlim, hlt, hle, hmem, hzs, hzlim, hz⟩ :=
+    Submission.adr_secant_rescaling_of_infinite P (sing φ) σ hσ hinf
+  -- A.2: a homogeneous tangent function `ψ` of `φ` at `x`
+  obtain ⟨sub, ψ, hsub, hψ, hconv, hhom⟩ := hA2 φ hφ x hx lams hpos hanti hlim
+  -- A.1 and A.3(2): `zₖ'` is a singular point of the blow-up `φ_{x,λₖ'}` in `B₁(0)`
+  have hzsing : ∀ k, zs (sub k) ∈ ball (0 : Euclid P) 1 ∩
+      sing (fun w => φ (x + lams (sub k) • w)) := fun k =>
+    ⟨by rw [mem_ball_zero_iff, hzs]; norm_num, by
+      rw [hA32 φ hφ x (lams (sub k)) (hpos _) (hlt _) (hle _)]
+      exact hmem (sub k)⟩
+  -- Lemma T: `z ∈ sing ψ`
+  have hzψ : z ∈ sing ψ :=
+    Submission.adr_sing_mem_of_tendsto P n Q F sing hclosed hA33 ψ hψ
+      (fun k w => φ (x + lams (sub k) • w))
+      (fun k => hA1 φ hφ x (lams (sub k)) (hpos _) (hlt _) (hle _)) hconv
+      (fun k => zs (sub k)) z hzsing (hzlim.comp hsub.tendsto_atTop)
+  -- Lemma S with `L = {0}`: `t • w ∈ sing ψ ↔ w ∈ sing ψ` for `t > 0`
+  have hray := (Submission.adr_affine_invariant_closed_set P (sing ψ) ⊥ (hclosed ψ hψ)
+    fun y hy lam hlam hlam1 hy1 => by
+      obtain rfl := (Submodule.mem_bot ℝ).1 hy
+      have hdil : (fun w => ψ (0 + lam • w)) = ψ := funext fun w => by
+        rw [zero_add]
+        exact hhom lam hlam w
+      have h := hA32 ψ hψ 0 lam hlam hlam1 hy1
+      rw [hdil] at h
+      exact h.symm).1 0 (Submodule.zero_mem ⊥)
+  -- the segment `(0, z]` lies in `sing ψ`, so `sing ψ ∩ B₁(0)` is not `μH[1]`-null
+  have hz0 : z ≠ 0 := by
+    rintro rfl
+    norm_num at hz
+  have hseg := Submission.adr_radial_segment_hausdorff_pos P (sing ψ) z hz0
+    (by rw [hz]; norm_num) fun t ht _ => by simpa using (hray t ht z).2 hzψ
+  exact hseg.ne' (hnull ψ hψ)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
