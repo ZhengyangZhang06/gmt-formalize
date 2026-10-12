@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d961724634267e0d575a2960fa1dbf6153dafffc9677fbfaa08ccc5ff90f6ed1",
+  "git_delta": {
+    "base_commit": "e631e41ea45c6c5afd279369ede1cbf7971fc282",
+    "candidate_commit": "369dd6be7a02dd84ca0ee61a990363077157d791",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_tv_gmc_transfer",
+    "diff_sha256": "6454f8b5d84ec1f039953d3f39928fae3eecdc0d609a95f253c127d83eb4a571",
+    "source_sha256": "5995988695696327054edc2be865caef94b81f53b5f7deaa45acb06e8936a132",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_tv_gmc_transfer",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ) (V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U)), V'.weight = V.weight.map (fun x => x - ξ) → (∀ y, V'.tangentProj y = V.tangentProj (y + ξ)) → ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun y => H (y + ξ))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
