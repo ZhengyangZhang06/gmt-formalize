@@ -614,6 +614,114 @@ theorem Submission.doragm_approxTangent_lower_density : ∀ (P n : ℕ) (M : Set
   filter_upwards [htend.eventually hev2] with ρ hρ
   rwa [div_mul_cancel₀ ρ hA.ne'] at hρ
 
+/-- **Unit lower bound for the monotone ball ratio at support points** (Simon Ch. 4, 3.8–3.11
+and 4.10(1)).  Let `μ = θ Hⁿ⌞M`, and let `f_z(ρ) = e^{κρ} ρ^{−n} μ(B_ρ(z))` be nondecreasing in
+`ρ` whenever `B_ρ(z) ⊆ W`.  Then `ωₙ ≤ f_y(t)` for every `y ∈ spt μ` and `t > 0` with
+`B_t(y) ⊆ W`.
+
+Suppose `f_y(t) < ωₙ`.  By continuity from above there is `δ > 0` with `B_{t+δ}(y) ⊆ W` and
+`b = e^{κt} t^{−n} μ(B_{t+δ}(y)) < c < ωₙ` for some `c`.  As `y ∈ spt μ`, `μ(B_δ(y)) > 0`, so
+`B_δ(y)` contains a point `x` at which `M` has an approximate tangent space (`μ`-a.e. point does).
+Then `Submission.doragm_approxTangent_lower_density` gives `c σⁿ ≤ Hⁿ(M ∩ B_σ(x))` for some
+`0 < σ < t`.  Since `e^{κσ} ≥ 1`, `θ ≥ 1` on `M` and `B_t(x) ⊆ B_{t+δ}(y)`, monotonicity at `x`
+gives `c ≤ f_x(σ) ≤ f_x(t) ≤ b`, a contradiction. -/
+theorem Submission.doragm_support_ball_ratio_ge : ∀ (P n : ℕ) (U W : Set (Euclid P)) (R : IMRep U n) (κ : ℝ), 0 < n → IsOpen W → W ⊆ U → 0 ≤ κ → (∀ (z : Euclid P) (s t : ℝ), 0 < s → s < t → closedBall z t ⊆ W → ENNReal.ofReal (Real.exp (κ * s) / s ^ n) * R.measure (closedBall z s) ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall z t)) → ∀ y ∈ R.measure.support, ∀ t : ℝ, 0 < t → closedBall y t ⊆ W → unitBallVolume n ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t) := by
+  intro P n U W R κ hn hW hWU hκ hmono y hy t ht hyt
+  -- `μ ≥ Hⁿ⌞M` on measurable sets, since `θ ≥ 1` on `M`
+  have hHμ : ∀ S : Set (Euclid P), MeasurableSet S → μHE[n] (R.carrier ∩ S) ≤ R.measure S := by
+    intro S hS
+    rw [IMRep.measure, withDensity_apply _ hS, Measure.restrict_restrict hS, inter_comm,
+      ← setLIntegral_one]
+    apply setLIntegral_mono' (hS.inter R.measurableSet_carrier)
+    intro x hx
+    exact_mod_cast R.mult_pos x hx.2
+  -- `μ` is finite on compact subsets of `U`
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → R.measure K ≠ ∞ := by
+    intro K hK hKU
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact R.locallyIntegrable_mult K hK hKU
+  -- `μ`-a.e. point has an approximate tangent space, as `μ ≪ Hⁿ⌞M`
+  have hgood : ∀ᵐ x ∂R.measure, ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n R.carrier x Q :=
+    (withDensity_absolutelyContinuous _ _).ae_le
+      (R.orients.mono fun x ⟨Q, hQ, _⟩ => ⟨Q, hQ⟩)
+  -- suppose `f_y(t) < ωₙ`
+  by_contra hlt
+  rw [not_le] at hlt
+  set A : ℝ≥0∞ := ENNReal.ofReal (Real.exp (κ * t) / t ^ n)
+  -- `B_{t+δ₀}(y) ⊆ W`, and `μ(B_{t+δ₀/(m+1)}(y)) → μ(B_t(y))` by continuity from above
+  obtain ⟨δ₀, hδ₀, hδ₀W⟩ := (isCompact_closedBall y t).exists_cthickening_subset_open hW hyt
+  rw [cthickening_closedBall hδ₀.le ht.le] at hδ₀W
+  have hanti : Antitone (fun m : ℕ => closedBall y (t + δ₀ / ((m : ℝ) + 1))) := by
+    intro i j hij
+    apply closedBall_subset_closedBall
+    have hi : (0 : ℝ) < (i : ℝ) + 1 := by positivity
+    have hij' : (i : ℝ) + 1 ≤ (j : ℝ) + 1 := by exact_mod_cast Nat.add_le_add_right hij 1
+    have : δ₀ / ((j : ℝ) + 1) ≤ δ₀ / ((i : ℝ) + 1) :=
+      div_le_div_of_nonneg_left hδ₀.le hi hij'
+    linarith
+  have hinter : (⋂ m : ℕ, closedBall y (t + δ₀ / ((m : ℝ) + 1))) = closedBall y t := by
+    ext z
+    simp only [mem_iInter, mem_closedBall]
+    constructor
+    · intro h
+      have hlim : Tendsto (fun m : ℕ => t + δ₀ * (1 / ((m : ℝ) + 1))) atTop (𝓝 (t + δ₀ * 0)) :=
+        tendsto_const_nhds.add (tendsto_one_div_add_atTop_nhds_zero_nat.const_mul δ₀)
+      rw [mul_zero, add_zero] at hlim
+      exact ge_of_tendsto' hlim fun m => by rw [mul_one_div]; exact h m
+    · intro h m
+      have : 0 < δ₀ / ((m : ℝ) + 1) := by positivity
+      linarith
+  have hfin0 : R.measure (closedBall y (t + δ₀ / (((0 : ℕ) : ℝ) + 1))) ≠ ∞ := by
+    apply hfin _ (isCompact_closedBall _ _)
+    refine Subset.trans (closedBall_subset_closedBall ?_) (hδ₀W.trans hWU)
+    simp only [Nat.cast_zero, zero_add, div_one]
+    linarith
+  have hT : Tendsto (fun m : ℕ => A * R.measure (closedBall y (t + δ₀ / ((m : ℝ) + 1)))) atTop
+      (𝓝 (A * R.measure (closedBall y t))) := by
+    have h := tendsto_measure_iInter_atTop (μ := R.measure)
+      (fun m => measurableSet_closedBall.nullMeasurableSet) hanti ⟨0, hfin0⟩
+    rw [hinter] at h
+    exact ENNReal.Tendsto.const_mul h (Or.inr ENNReal.ofReal_ne_top)
+  -- fix `δ = δ₀/(m+1)` with `b = A μ(B_{t+δ}(y)) < c < ωₙ`
+  obtain ⟨m, hm⟩ := (hT.eventually (gt_mem_nhds hlt)).exists
+  set δ : ℝ := δ₀ / ((m : ℝ) + 1)
+  have hδ : 0 < δ := by positivity
+  have hδδ₀ : δ ≤ δ₀ := div_le_self hδ₀.le (by linarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m)])
+  obtain ⟨c, hbc, hcω⟩ := exists_between hm
+  -- `y ∈ spt μ`, so `B_δ(y)` has positive measure and contains a point `x` with a tangent space
+  have hpos : R.measure (ball y δ) ≠ 0 :=
+    ((Measure.mem_support_iff_forall y).1 hy _ (ball_mem_nhds y hδ)).ne'
+  obtain ⟨x, hx, Q, hQ⟩ :=
+    Measure.exists_mem_of_measure_ne_zero_of_ae hpos (ae_restrict_of_ae hgood)
+  -- `B_t(x) ⊆ B_{t+δ}(y) ⊆ W`
+  have hxy : dist x y < δ := mem_ball.1 hx
+  have hBx : closedBall x t ⊆ closedBall y (t + δ) := closedBall_subset_closedBall' (by linarith)
+  have hBxW : closedBall x t ⊆ W :=
+    hBx.trans ((closedBall_subset_closedBall (by linarith)).trans hδ₀W)
+  -- the tangent lower density at `x`: `c σⁿ ≤ Hⁿ(M ∩ B_σ(x))` for some `0 < σ < t`
+  obtain ⟨σ, hσc, hσ0, hσt⟩ :=
+    ((Submission.doragm_approxTangent_lower_density P n R.carrier x Q hn hQ c hcω).and
+      (Ioo_mem_nhdsGT ht)).exists
+  have hσn : 0 < σ ^ n := pow_pos hσ0 n
+  have hcoef : ENNReal.ofReal (1 / σ ^ n) ≤ ENNReal.ofReal (Real.exp (κ * σ) / σ ^ n) :=
+    ENNReal.ofReal_le_ofReal
+      (div_le_div_of_nonneg_right (Real.one_le_exp (mul_nonneg hκ hσ0.le)) hσn.le)
+  have hone : ENNReal.ofReal (1 / σ ^ n) * ENNReal.ofReal (σ ^ n) = 1 := by
+    rw [← ENNReal.ofReal_mul (by positivity), one_div, inv_mul_cancel₀ hσn.ne', ENNReal.ofReal_one]
+  -- `c ≤ f_x(σ) ≤ f_x(t) ≤ b < c`
+  have key : c ≤ A * R.measure (closedBall y (t + δ)) :=
+    calc c = ENNReal.ofReal (1 / σ ^ n) * (c * ENNReal.ofReal (σ ^ n)) := by
+          rw [mul_comm c, ← mul_assoc, hone, one_mul]
+      _ ≤ ENNReal.ofReal (Real.exp (κ * σ) / σ ^ n) * μHE[n] (R.carrier ∩ closedBall x σ) :=
+          mul_le_mul' hcoef hσc
+      _ ≤ ENNReal.ofReal (Real.exp (κ * σ) / σ ^ n) * R.measure (closedBall x σ) :=
+          mul_le_mul' le_rfl (hHμ _ measurableSet_closedBall)
+      _ ≤ A * R.measure (closedBall x t) := hmono x σ t hσ0 hσt hBxW
+      _ ≤ A * R.measure (closedBall y (t + δ)) := mul_le_mul' le_rfl (measure_mono hBx)
+  exact absurd (key.trans_lt hbc) (lt_irrefl c)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
