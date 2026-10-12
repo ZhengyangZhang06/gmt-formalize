@@ -1,0 +1,15 @@
+{
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1.fderiv_of_line_integral-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3032",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "83e7fae6e32395b369c5598a3bb25743b1f08293",
+  "integrated_commit": "",
+  "proof_base_commit": "819d5918c9dcfc1c50033e9d575a99bdb3333b9a",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1",
+  "requires": []
+}
