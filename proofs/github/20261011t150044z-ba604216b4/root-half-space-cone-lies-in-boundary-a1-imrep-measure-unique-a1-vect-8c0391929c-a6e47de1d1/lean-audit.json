@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "61207aae2ce25c8e5fb0034f321185a6af52e22e0c21106b2ade3d81ae6026ec",
+  "git_delta": {
+    "base_commit": "399f9ad6bbb46fad7911a228603da5ca4567c815",
+    "candidate_commit": "2d0f5bbe8de725944c1d9c73d65c6163f6d67b07",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "imrep_weighted_orient_indicator_ae_eq",
+    "diff_sha256": "7d6d5ee7f8aa572d2a0c387f3348e3c4de2b88da85f03004499132dba79019d9",
+    "source_sha256": "a2bd0881bf9b22f09ea8344b02c054f322583b81e59e8c98c07af531aa5f53f0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imrep_weighted_orient_indicator_ae_eq",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R₁ R₂ : IMRep U n), IsOpen U → R₁.Represents T → R₂.Represents T → ∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∪ R₂.carrier)), R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x = R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
