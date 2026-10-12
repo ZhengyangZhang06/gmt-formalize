@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "80ba80725d7b0fcced56a3f987af68658fb1541edcadf30cb57d77716e21773a",
+  "git_delta": {
+    "base_commit": "d74ec47d38c6d2a56133d67a9a9943203a86a284",
+    "candidate_commit": "933d7e87b08bdbd248dc3c909705de2b22ce39d0",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "constancy_approx_identity_iteratedFDeriv_tendstoUniformly",
+    "diff_sha256": "7c8de84ac02bc322fd91c3a954438aa6a99c1b2f592c6321b96ab103bcbeea12",
+    "source_sha256": "6698a0b3f9ef4952d402e9e122557a4759bc7a1b73ac3986301514199b088864",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.constancy_approx_identity_iteratedFDeriv_tendstoUniformly",
+      "statement": "∀ (n : ℕ) (b : Eucl n → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) b → HasCompactSupport b → ∀ (ψ : ℕ → Eucl n → ℝ) (r : ℕ → ℝ), (∀ k, Continuous (ψ k)) → (∀ k x, 0 ≤ ψ k x) → (∀ k, ∫ x, ψ k x ∂volume = 1) → (∀ k, tsupport (ψ k) ⊆ closedBall 0 (r k)) → Tendsto r atTop (𝓝 0) → ∀ q : ℕ, TendstoUniformly (fun k x => iteratedFDeriv ℝ q (convolution (ψ k) b (ContinuousLinearMap.lsmul ℝ ℝ) volume) x) (fun x => iteratedFDeriv ℝ q b x) atTop",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
