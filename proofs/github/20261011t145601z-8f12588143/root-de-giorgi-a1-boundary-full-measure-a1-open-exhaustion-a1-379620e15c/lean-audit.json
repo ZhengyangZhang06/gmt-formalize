@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a182fcb83e5c67a28eee3b066a5801fbb8e461e796c1869802f09301f6cdbcbd",
+  "git_delta": {
+    "base_commit": "aa1c328103501a793c89f78ad3225d0ed44db2e0",
+    "candidate_commit": "2fbe2ffd761af441be06ef441d2b81589889622f",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiBFM_exists_open_exhaustion",
+    "diff_sha256": "7883d7648f1b1659b685c51cc831a33fd677a37c0860fe7db00fcc2248885554",
+    "source_sha256": "8732aa3fef15908ed9109f1ff6021bf1997b7febcb5476f75b972d1f24567b0d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiBFM_exists_open_exhaustion",
+      "statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)), IsOpen U → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → ∃ W : ℕ → Set (Rn N), (∀ i, IsOpen (W i)) ∧ (∀ i, μ (W i) < ∞) ∧ ⋃ i, W i = U",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
