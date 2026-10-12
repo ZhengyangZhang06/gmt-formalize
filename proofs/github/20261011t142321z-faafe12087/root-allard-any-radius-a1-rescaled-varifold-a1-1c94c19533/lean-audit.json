@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8cb5695f77ff7341517489dcd6ae45039eab49a0b5993d907bcf0a4605e82bf4",
+  "git_delta": {
+    "base_commit": "54e247e78a350835bb5d5b4c63549fa1b3d6f441",
+    "candidate_commit": "fa9b5ee6e60d652185d92e67c32eb218618a9c4d",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "102283d5c6eb5787114c5a4d1ed953a007ddd29eadeef26e77978f03e5a9ba8b",
+    "source_sha256": "44393e19abd9b6c39152fdb53e8ae9aa6a12f3e81bec8dab6e1185fc1a7611bd",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_rescaled_varifold",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∃ V' : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), V'.carrier = (fun x => c + R • x) ⁻¹' V.carrier ∧ (∀ x, V'.mult x = V.mult (c + R • x)) ∧ V'.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) ∧ V'.support = (fun x => c + R • x) ⁻¹' V.support ∧ (∀ x, V'.tangentProj x = V.tangentProj (c + R • x)) ∧ ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun x => R • H (c + R • x))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
