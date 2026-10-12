@@ -359,6 +359,44 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Kronecker duality of coordinate wedges (Simon Ch. 6, 1.1–1.2).**  For an increasing
+multi-index `I`, `dx^I = dx^{I₁} ∧ ⋯ ∧ dx^{Iₙ}` has coordinate `1` at `I` and `0` at every
+increasing `J ≠ I`: by (1.1), `dx^I(e_{J₁}, …, e_{Jₙ}) = det [I i = J j]`.  For `J = I` this matrix
+is the identity, as `I` is injective.  For `J ≠ I` some `I i ∉ range J` (otherwise the finite
+ranges, of equal cardinality, coincide, and increasing enumerations with equal ranges are equal),
+so row `i` vanishes. -/
+theorem Submission.polyhedral_approx_pairing_wedge_kronecker : ∀ (P n : ℕ) (I : SimonMultiIndex n P), euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) I = 1 ∧ ∀ J : SimonMultiIndex n P, J ≠ I → euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) J = 0 := by
+  intro P n I
+  -- (1)–(2) The coordinate at `J` is the determinant of the matrix `[I i = J j]`.
+  have hdet : ∀ J : SimonMultiIndex n P,
+      euclideanCovectorCoordinate (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) J =
+        Matrix.det (Matrix.of fun i j => if I i = J j then (1 : ℝ) else 0) := by
+    intro J
+    rw [euclideanCovectorCoordinate, wedgeCovectors_apply_det]
+    congr 1
+    ext i j
+    simp [PiLp.single_apply]
+  refine ⟨?_, fun J hJ => ?_⟩
+  · -- (3) For `J = I` the matrix is the identity, as `I` is injective.
+    have hone : (Matrix.of fun i j => if I i = I j then (1 : ℝ) else 0) = 1 := by
+      ext i j
+      simp [Matrix.one_apply, I.injective.eq_iff]
+    rw [hdet, hone, Matrix.det_one]
+  · -- (4) Some `I i` lies outside `range J`: otherwise `range I = range J` and `I = J`.
+    obtain ⟨i, hi⟩ : ∃ i, ∀ j, I i ≠ J j := by
+      by_contra h
+      have hsub : range I ⊆ range J := by
+        rintro _ ⟨i, rfl⟩
+        by_contra hi
+        exact h ⟨i, fun j hj => hi ⟨j, hj.symm⟩⟩
+      have hrange : range I = range J :=
+        Set.eq_of_subset_of_ncard_le hsub (by
+          rw [Set.ncard_range_of_injective I.injective, Set.ncard_range_of_injective J.injective])
+      exact hJ (OrderEmbedding.range_inj_of_wellFoundedLT.mp hrange).symm
+    -- (5) Row `i` of the matrix vanishes, so the determinant is `0`.
+    rw [hdet]
+    exact Matrix.det_eq_zero_of_row_eq_zero i fun j => by simp [hi j]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
