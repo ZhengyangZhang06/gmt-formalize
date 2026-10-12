@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ecce1776408c9c3b40fa40df3f4b2bbec242af9fb6531c22542237bbfbe0adad",
+  "git_delta": {
+    "base_commit": "cf556face01e9ac477ed0393778bbdc527e9722f",
+    "candidate_commit": "3cd72266f61ab742c78938b6d509fa0d10824f42",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "cmb_rb_measureRepresentation_integrableOn_coeff",
+    "diff_sha256": "f72799c63fe455f4d088608aebb9885c74e364ba35565e19860afda544eb3524",
+    "source_sha256": "5ec428edebce9ab5422074baa7e4b22739c2e5e7b80ebb34298c1fa3c17809c3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmb_rb_measureRepresentation_integrableOn_coeff",
+      "statement": "∀ (P n : ℕ) (U W : Set (Eucl P)), IsOpen W → W ⊆ U → ∀ (T : GeometricCurrentOn U n) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ v → ∀ K : Set (Eucl P), IsCompact K → K ⊆ W → ∀ β : SimonMultiIndex n P, IntegrableOn (fun x => euclideanNVectorCoordinate (v x) β) K μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
