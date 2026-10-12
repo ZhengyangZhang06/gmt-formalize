@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c6de549fa898a98d7e9d7c15da0addec69714093e17979c7488350c5171561ba",
+  "git_delta": {
+    "base_commit": "2c87a1695b3eb21572e87de1592f511dd455aba7",
+    "candidate_commit": "1d327e46e1cf94e149261ae6958c7053533007af",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "ltg_tau_integrable",
+    "diff_sha256": "54ce5c6634f0189748269eea1cab69d434ca5c3aaa0b362638e5b5404c5322dc",
+    "source_sha256": "e85c3b7849c6742c337f4f4a6a8f606b7d249e690415952288ba052d2b1d1531",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ltg_tau_integrable",
+      "statement": "∀ (P k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M θ ξ → (∀ (K : Set (Eucl P)) (b : Covector (Eucl P) k), IsCompact K → K ⊆ U → IntegrableOn (fun x => θ x * ξ x b) (M ∩ K) (μHE[k] : Measure (Eucl P))) ∧ ∀ ω : Eucl P → Covector (Eucl P) k, Continuous ω → HasCompactSupport ω → tsupport ω ⊆ U → IntegrableOn (fun x => θ x * ξ x (ω x)) M (μHE[k] : Measure (Eucl P))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
