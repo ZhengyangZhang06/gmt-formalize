@@ -458,6 +458,109 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 2, proof of Theorem 1.5 (p. 44), Egorov step: if `f : ℝⁿ → ℝ` is `K`-Lipschitz and
+differentiable at every point of the closed set `C`, then for every `δ > 0` there is a closed
+`A ⊆ C` with `Lⁿ(C \ A) < δ` on whose compact subsets the first-order Taylor remainder is uniformly
+small: `|f(y) - f(x) - Df(x)(y - x)| ≤ η |y - x|` for `x ∈ Q`, `y ∈ A`, `|x - y| < ρ`.  The
+quotients `σₖ(x, L) = sup {|f(x + v) - f(x) - L v| / |v| : 0 < |v| < 1/(k+1)}` are bounded by
+`K + ‖L‖` and lower semicontinuous in `(x, L)`, so `x ↦ σₖ(x, Df(x))` is Borel, and they tend to
+`0` at every point of `C`.  Egorov's theorem on the finite-measure pieces `B(0, J) ∩ C` with
+summable tolerances and outer regularity give an open `U` of measure `< δ` containing the
+exceptional sets; `A = C \ U` works, since a compact `Q ⊆ A` lies in some `B(0, J)`. -/
+theorem tae_c1_uniform_remainder : ∀ {n : ℕ} (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ C : Set (Rn n), IsClosed C → C ⊆ {x | DifferentiableAt ℝ f x} → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ A : Set (Rn n), A ⊆ C ∧ IsClosed A ∧ volume (C \ A) < δ ∧ ∀ Q : Set (Rn n), IsCompact Q → Q ⊆ A → ∀ η : ℝ, 0 < η → ∃ ρ : ℝ, 0 < ρ ∧ ∀ x ∈ Q, ∀ y ∈ A, dist x y < ρ → ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ η * ‖y - x‖ := by
+  intro n f K hf C hC hCd δ hδ
+  have hfc : Continuous f := hf.continuous
+  -- Remainder quotients `σ k (x, L) = sup {|f (x + v) - f x - L v| / |v| : 0 < |v| < 1/(k+1)}`.
+  obtain ⟨σ, hσ0, hσle, hσge, hσlsc⟩ : ∃ σ : ℕ → Rn n × (Rn n →L[ℝ] ℝ) → ℝ,
+      (∀ k p, 0 ≤ σ k p) ∧
+      (∀ (k : ℕ) p (v : Rn n), 0 < ‖v‖ → ‖v‖ < 1 / ((k : ℝ) + 1) →
+        |f (p.1 + v) - f p.1 - p.2 v| ≤ σ k p * ‖v‖) ∧
+      (∀ (k : ℕ) p (t : ℝ), 0 ≤ t → (∀ v : Rn n, 0 < ‖v‖ → ‖v‖ < 1 / ((k : ℝ) + 1) →
+        |f (p.1 + v) - f p.1 - p.2 v| ≤ t * ‖v‖) → σ k p ≤ t) ∧
+      ∀ k, LowerSemicontinuous (σ k) := by
+    have hbdd : ∀ (k : ℕ) (p : Rn n × (Rn n →L[ℝ] ℝ)), BddAbove (range fun v :
+        {v : Rn n // 0 < ‖v‖ ∧ ‖v‖ < 1 / ((k : ℝ) + 1)} =>
+          |f (p.1 + v) - f p.1 - p.2 v| / ‖(v : Rn n)‖) := by
+      intro k p
+      refine ⟨K + ‖p.2‖, ?_⟩
+      rintro _ ⟨v, rfl⟩
+      rw [div_le_iff₀ v.2.1]
+      have h1 := hf.dist_le_mul (p.1 + v) p.1
+      rw [Real.dist_eq, dist_eq_norm, add_sub_cancel_left] at h1
+      have h2 := p.2.le_opNorm v
+      rw [Real.norm_eq_abs] at h2
+      calc |f (p.1 + v) - f p.1 - p.2 v| ≤ |f (p.1 + v) - f p.1| + |p.2 v| := abs_sub _ _
+        _ ≤ K * ‖(v : Rn n)‖ + ‖p.2‖ * ‖(v : Rn n)‖ := add_le_add h1 h2
+        _ = (K + ‖p.2‖) * ‖(v : Rn n)‖ := by ring
+    refine ⟨fun k p => ⨆ v : {v : Rn n // 0 < ‖v‖ ∧ ‖v‖ < 1 / ((k : ℝ) + 1)},
+      |f (p.1 + v) - f p.1 - p.2 v| / ‖(v : Rn n)‖, fun k p => Real.iSup_nonneg fun v =>
+        div_nonneg (abs_nonneg _) (norm_nonneg _), fun k p v hv0 hv1 => ?_,
+      fun k p t ht hle => Real.iSup_le (fun v => ?_) ht, fun k => ?_⟩
+    · rw [← div_le_iff₀ hv0]
+      exact le_ciSup (f := fun v : {v : Rn n // 0 < ‖v‖ ∧ ‖v‖ < 1 / ((k : ℝ) + 1)} =>
+        |f (p.1 + v) - f p.1 - p.2 v| / ‖(v : Rn n)‖) (hbdd k p) ⟨v, hv0, hv1⟩
+    · rw [div_le_iff₀ v.2.1]
+      exact hle v v.2.1 v.2.2
+    · refine lowerSemicontinuous_ciSup (hbdd k) fun v => Continuous.lowerSemicontinuous ?_
+      exact (((hfc.comp (continuous_fst.add continuous_const)).sub (hfc.comp continuous_fst)).sub
+        (continuous_snd.clm_apply continuous_const)).abs.div_const _
+  have hσm : ∀ k, Measurable fun x => σ k (x, fderiv ℝ f x) := fun k =>
+    (hσlsc k).measurable.comp (measurable_id.prodMk (measurable_fderiv ℝ f))
+  have hσlim : ∀ x, DifferentiableAt ℝ f x →
+      Tendsto (fun k => σ k (x, fderiv ℝ f x)) atTop (𝓝 0) := by
+    intro x hx
+    rw [Metric.tendsto_atTop]
+    intro t ht
+    obtain ⟨ρ, hρ, hball⟩ := Metric.eventually_nhds_iff.1
+      (Asymptotics.isLittleO_iff.1 hx.hasFDerivAt.isLittleO (half_pos ht))
+    obtain ⟨k₀, hk₀⟩ := exists_nat_one_div_lt hρ
+    refine ⟨k₀, fun k hk => ?_⟩
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg (hσ0 k _)]
+    refine lt_of_le_of_lt (hσge k _ (t / 2) (by positivity) fun v hv0 hv1 => ?_) (half_lt_self ht)
+    have hk' : 1 / ((k : ℝ) + 1) ≤ 1 / ((k₀ : ℝ) + 1) :=
+      one_div_le_one_div_of_le (by positivity) (by exact_mod_cast Nat.add_le_add_right hk 1)
+    have h1 := @hball (x + v) (by rw [dist_eq_norm, add_sub_cancel_left]; linarith)
+    rwa [add_sub_cancel_left, Real.norm_eq_abs] at h1
+  -- Egorov on the finite-measure pieces `B(0, J) ∩ C`, with summable tolerances.
+  obtain ⟨δs, hδs0, hδsum⟩ := ENNReal.exists_pos_sum_of_countable hδ ℕ
+  have hEg : ∀ J : ℕ, ∃ t ⊆ ball (0 : Rn n) J ∩ C, MeasurableSet t ∧
+      volume t ≤ δs J ∧ TendstoUniformlyOn (fun k x => σ k (x, fderiv ℝ f x)) (fun _ => (0 : ℝ))
+        atTop ((ball (0 : Rn n) J ∩ C) \ t) := fun J =>
+    tendstoUniformlyOn_of_ae_tendsto (fun k => (hσm k).stronglyMeasurable) stronglyMeasurable_const
+      (measurableSet_ball.inter hC.measurableSet) ((measure_mono inter_subset_left).trans_lt
+        measure_ball_lt_top).ne (Filter.Eventually.of_forall fun x hx => hσlim x (hCd hx.2))
+      (by exact_mod_cast hδs0 J)
+  choose t _ _ htle htu using hEg
+  -- An open `U ⊇ ⋃ J, t J` of measure `< δ`; take `A = C \ U`.
+  obtain ⟨U, hZU, hUo, hUδ⟩ := Set.exists_isOpen_lt_of_lt (⋃ J, t J) δ
+    (((measure_iUnion_le _).trans (ENNReal.tsum_le_tsum htle)).trans_lt hδsum)
+  refine ⟨C \ U, sdiff_subset, hC.sdiff hUo, (measure_mono fun x hx => ?_).trans_lt hUδ,
+    fun Q hQ hQA η hη => ?_⟩
+  · by_contra hxU
+    exact hx.2 ⟨hx.1, hxU⟩
+  -- A compact `Q ⊆ C \ U` lies in some `B(0, J)`, on which `σ k (·, Df ·) → 0` uniformly.
+  obtain ⟨R, hR⟩ := hQ.isBounded.subset_ball (0 : Rn n)
+  obtain ⟨J, hJ⟩ := exists_nat_gt R
+  obtain ⟨k, hk⟩ := (Metric.tendstoUniformlyOn_iff.1 (htu J) η hη).exists
+  refine ⟨1 / ((k : ℝ) + 1), by positivity, fun x hx y _ hxy => ?_⟩
+  rcases eq_or_ne y x with rfl | hyx
+  · simp
+  have hxJ : x ∈ (ball (0 : Rn n) J ∩ C) \ t J :=
+    ⟨⟨ball_subset_ball hJ.le (hR hx), (hQA hx).1⟩,
+      fun h' => (hQA hx).2 (hZU (mem_iUnion.2 ⟨J, h'⟩))⟩
+  have h1 := hk x hxJ
+  rw [Real.dist_eq, zero_sub, abs_neg, abs_of_nonneg (hσ0 _ _)] at h1
+  have h2 : |f (x + (y - x)) - f x - fderiv ℝ f x (y - x)| ≤ σ k (x, fderiv ℝ f x) * ‖y - x‖ :=
+    hσle k (x, fderiv ℝ f x) (y - x) (norm_pos_iff.2 (sub_ne_zero.2 hyx))
+      (by rwa [← dist_eq_norm, dist_comm])
+  rw [add_sub_cancel] at h2
+  rw [Real.norm_eq_abs]
+  exact h2.trans (mul_le_mul_of_nonneg_right h1.le (norm_nonneg _))
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
