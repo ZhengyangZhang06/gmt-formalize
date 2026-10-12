@@ -451,6 +451,68 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Integration by parts for a Lipschitz `u` against `C¹` fields `Φᵢ` with compact support in
+`B = B_R(0)`: `∫_B Σᵢ Du(x)eᵢ Φᵢ(x) dx = −∫_B u(x) Σᵢ DΦᵢ(x)eᵢ dx`.  Each `Φᵢ` is Lipschitz, so
+Lipschitz integration by parts in direction `eᵢ` (`LipschitzWith.integral_lineDeriv_mul_eq`) applies
+on `ℝⁿ`; by Rademacher, `lineDeriv u x eᵢ = Du(x)eᵢ` for a.e. `x`.  Both integrands are integrable
+(`Du` is bounded by the Lipschitz constant) and vanish off `B`, so summing over `i` concludes. -/
+theorem Submission.dorag_ha_lsc_ibp_lipschitz : ∀ (n : ℕ) (R : ℝ) (u : Euclid n → ℝ) (Φ : Fin n → Euclid n → ℝ), (∃ L : NNReal, LipschitzWith L u) → (∀ i, ContDiff ℝ 1 (Φ i)) → (∀ i, HasCompactSupport (Φ i)) → (∀ i, tsupport (Φ i) ⊆ ball (0 : Euclid n) R) → ∫ x in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ u x (EuclideanSpace.single i (1 : ℝ)) * Φ i x = -∫ x in ball (0 : Euclid n) R, u x * ∑ i : Fin n, fderiv ℝ (Φ i) x (EuclideanSpace.single i (1 : ℝ)) := by
+  intro n R u Φ ⟨L, hu⟩ hΦ hΦc hΦs
+  set e : Fin n → Euclid n := fun i => EuclideanSpace.single i (1 : ℝ)
+  have hΦL : ∀ i, ∃ C, LipschitzWith C (Φ i) := fun i =>
+    ContDiff.lipschitzWith_of_hasCompactSupport (hΦc i) (hΦ i) one_ne_zero
+  choose C hC using hΦL
+  -- integrability of the two families of integrands
+  have hint1 : ∀ i, Integrable (fun x => fderiv ℝ u x (e i) * Φ i x) := by
+    intro i
+    refine Integrable.bdd_mul (c := L * ‖e i‖)
+      ((hΦ i).continuous.integrable_of_hasCompactSupport (hΦc i))
+      (measurable_fderiv_apply_const ℝ u (e i)).aestronglyMeasurable ?_
+    refine Eventually.of_forall fun x => ?_
+    exact ((fderiv ℝ u x).le_opNorm (e i)).trans
+      (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hu) (norm_nonneg _))
+  have hcontd : ∀ i, Continuous fun x => fderiv ℝ (Φ i) x (e i) := fun i =>
+    ((hΦ i).continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hint2 : ∀ i, Integrable (fun x => u x * fderiv ℝ (Φ i) x (e i)) := by
+    intro i
+    refine (hu.continuous.mul (hcontd i)).integrable_of_hasCompactSupport ?_
+    exact ((hΦc i).fderiv_apply (𝕜 := ℝ) (e i)).mul_left
+  -- per-coordinate identity on the whole space
+  have key : ∀ i, ∫ x, fderiv ℝ u x (e i) * Φ i x = -∫ x, u x * fderiv ℝ (Φ i) x (e i) := by
+    intro i
+    have h1 :=
+      hu.integral_lineDeriv_mul_eq (μ := (volume : Measure (Euclid n))) (hC i) (hΦc i) (e i)
+    have h2 : (fun x => lineDeriv ℝ u x (e i) * Φ i x) =ᵐ[volume]
+        fun x => fderiv ℝ u x (e i) * Φ i x := by
+      filter_upwards [hu.ae_differentiableAt] with x hx
+      rw [hx.lineDeriv_eq_fderiv]
+    have h3 : (fun x => lineDeriv ℝ (Φ i) x (-e i) * u x) =
+        fun x => -(u x * fderiv ℝ (Φ i) x (e i)) := by
+      funext x
+      rw [(((hΦ i).differentiable one_ne_zero) x).lineDeriv_eq_fderiv, map_neg]
+      ring
+    rw [integral_congr_ae h2, h3, integral_neg] at h1
+    exact h1
+  -- integrands vanish off the ball
+  have hzero1 : ∀ x, x ∉ ball (0 : Euclid n) R →
+      ∑ i : Fin n, fderiv ℝ u x (e i) * Φ i x = 0 := by
+    intro x hx
+    refine Finset.sum_eq_zero fun i _ => ?_
+    have : x ∉ tsupport (Φ i) := fun h => hx (hΦs i h)
+    rw [image_eq_zero_of_notMem_tsupport this, mul_zero]
+  have hzero2 : ∀ x, x ∉ ball (0 : Euclid n) R →
+      u x * ∑ i : Fin n, fderiv ℝ (Φ i) x (e i) = 0 := by
+    intro x hx
+    rw [Finset.sum_eq_zero fun i _ => ?_, mul_zero]
+    have : x ∉ tsupport (Φ i) := fun h => hx (hΦs i h)
+    rw [fderiv_of_notMem_tsupport ℝ this]; rfl
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero hzero1,
+    setIntegral_eq_integral_of_forall_compl_eq_zero hzero2]
+  simp_rw [Finset.mul_sum]
+  rw [integral_finsetSum _ fun i _ => hint1 i, integral_finsetSum _ fun i _ => hint2 i,
+    ← Finset.sum_neg_distrib]
+  exact Finset.sum_congr rfl fun i _ => key i
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
