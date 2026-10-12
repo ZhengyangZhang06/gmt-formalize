@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8aa73495ce27bf35e4d4180969be521993d4d87917a5dea8c67991db5451f402",
+  "git_delta": {
+    "base_commit": "ec9be34e30772bc1bd77d9477954c51d591e1bf7",
+    "candidate_commit": "d9f5b44bfc7833808051c4a02273d2978a8d8bb6",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_tde_continuous_left_inverse",
+    "diff_sha256": "850fd8720dd5a8435386ffac1797e26dfb547afb8df3c5ee572b9005148d6ddc",
+    "source_sha256": "a6ec1d39e16f1b6153e17e2460ed81881229ec0a52b87a4169fa3ff385130c80",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_tde_continuous_left_inverse",
+      "statement": "∀ (n P : ℕ), ∃ Λ : (Eucl n →L[ℝ] Eucl P) → (Eucl P →L[ℝ] Eucl n), ContinuousOn Λ {A : Eucl n →L[ℝ] Eucl P | Function.Injective A} ∧ ∀ A : Eucl n →L[ℝ] Eucl P, Function.Injective A → (Λ A).comp A = ContinuousLinearMap.id ℝ (Eucl n) ∧ ∀ v : Eucl P, ‖A (Λ A v)‖ ≤ ‖v‖",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
