@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_homotopy-a1.integrand_identity-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_homotopy-a1",
+  "depth": 4,
+  "title": "Pointwise radial-homotopy integrand identity (cross-term cancellation)",
+  "statement": "Let P, k ∈ ℕ and E := ℝ^P (Eucl P). Let L : E → Λ^{k+1}(E) be a continuous linear map into the space Covector E (k+1) of continuous alternating (k+1)-linear forms on E. Let α ∈ Λ^{k+1}(E), x ∈ E, u = (u_0, …, u_k) ∈ E^{k+1} (u : Fin (k+1) → E) and t ∈ ℝ. Let Alt(L) := ContinuousAlternatingMap.alternatizeUncurryFin L ∈ Λ^{k+2}(E), so that Alt(L)(w) = Σ_{i=0}^{k+1} (−1)^i L(w_i)(removeNth i w). Write (y, v) := Fin.cons y v and û_j := Fin.removeNth j u ∈ E^k. Then t^{k+1}·Alt(L)(x, u) + Σ_{j=0}^{k} (−1)^j·( t^k·( t·L(u_j)(x, û_j) + α(u_j, û_j) ) ) = t^{k+1}·L(x)(u) + (k+1)·t^k·α(u).",
+  "lean_statement": "∀ (P k : ℕ) (L : Eucl P →L[ℝ] Covector (Eucl P) (k + 1)) (α : Covector (Eucl P) (k + 1)) (x : Eucl P) (u : Fin (k + 1) → Eucl P) (t : ℝ), t ^ (k + 1) * ContinuousAlternatingMap.alternatizeUncurryFin L (Fin.cons x u) + ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) * (t ^ k * (t * L (u j) (Fin.cons x (Fin.removeNth j u)) + α (Fin.cons (u j) (Fin.removeNth j u)))) = t ^ (k + 1) * L x u + ((k : ℝ) + 1) * t ^ k * α u",
+  "lean_name": "iwl_cr_rh_integrand_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-radial-homotopy-a1-b30921add2-a1"
+}

@@ -1,0 +1,97 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.radial_homotopy-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.radial_homotopy-a1.radial_ftc-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 6 of the supplied proof (the fundamental theorem of calculus applied to g(t) = t^{k+1}φ(tx)(u)), with the degree k+1 of φ replaced by an arbitrary n and the power k by an arbitrary m.
+
+Notation. E := ℝ^P and D := fderiv ℝ. ev_u : Λ^n(E) → ℝ, c ↦ c(u), is the continuous linear map ContinuousAlternatingMap.apply ℝ E ℝ u. Put I(t) := t^{m+1}·Dφ(t x)[x](u) + ((m:ℝ)+1)·t^m·φ(t x)(u) and g(s) := s^{m+1}·φ(s x)(u).
+
+1. (Regularity.) φ is C^∞, and the order ∞ is ≥ 1 (in particular ≠ 0). So φ is differentiable at every point (ContDiff.differentiable), φ is continuous (ContDiff.continuous), and y ↦ Dφ(y) is continuous (ContDiff.continuous_fderiv).
+2. (Chain rule.) Fix t ∈ ℝ. The map s ↦ s•x has derivative 1•x = x at t (hasDerivAt_id, HasDerivAt.smul_const, one_smul). By Step 1, φ has Fréchet derivative Dφ(t x) at t x, so s ↦ φ(s x) has derivative Dφ(t x)[x] at t (HasFDerivAt.comp_hasDerivAt). ev_u is continuous linear and is its own derivative, so composing gives that s ↦ φ(s x)(u) has derivative Dφ(t x)[x](u) at t.
+3. (Product rule.) The map s ↦ s^{m+1} has derivative ((m+1 : ℕ) : ℝ)·t^{(m+1)−1} = ((m:ℝ)+1)·t^m at t (hasDerivAt_pow). By the product rule (HasDerivAt.mul) and Step 2, g has derivative ((m:ℝ)+1)·t^m·φ(t x)(u) + t^{m+1}·Dφ(t x)[x](u) at t. This equals I(t) after rearranging in the commutative ring ℝ (push_cast; ring). It holds for every t, in particular for every t ∈ [0, 1].
+4. (Integrability.) The map t ↦ t•x is continuous. By Step 1, so are t ↦ Dφ(t x), t ↦ Dφ(t x)[x] (Continuous.clm_apply with the constant x) and t ↦ φ(t x). Their evaluations at the fixed tuple u are continuous too (Continuous.eval_const), since evaluation at a fixed tuple is continuous on continuous alternating maps. Together with continuity of t ↦ t^{m+1} and t ↦ ((m:ℝ)+1)·t^m, this makes I continuous, hence interval integrable on [0, 1] (Continuous.intervalIntegrable).
+5. (Fundamental theorem of calculus.) Apply intervalIntegral.integral_eq_sub_of_hasDerivAt, using Steps 3 and 4: ∫_0^1 I(t) dt = g(1) − g(0) = 1^{m+1}·φ(1•x)(u) − 0^{m+1}·φ(0•x)(u). Since 1•x = x, 1^{m+1} = 1, and 0^{m+1} = 0 because m+1 ≥ 1, this equals φ(x)(u) − 0 = φ(x)(u). ∎
+
+## Key steps
+
+1. φ is C^∞, so it is differentiable with continuous fderiv.
+2. Chain rule plus the continuous linear evaluation at u: d/ds φ(s x)(u) at t equals Dφ(t x)[x](u).
+3. Product rule with hasDerivAt_pow: g(s) = s^{m+1}φ(s x)(u) has derivative equal to the integrand t^{m+1}Dφ(t x)[x](u) + (m+1)t^mφ(t x)(u).
+4. The integrand is continuous, hence interval integrable on [0,1].
+5. FTC (integral_eq_sub_of_hasDerivAt): the integral is g(1) − g(0) = φ(x)(u) − 0^{m+1}φ(0)(u) = φ(x)(u).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (project_commit d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean; cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean; sha256sum GMT/Ch06/Contract.lean`
+- `grep -rn 'theorem alternatizeUncurryFin_apply|theorem alternatizeUncurryFin_curryLeft|def alternatizeUncurryFin|theorem extDeriv_apply|def extDeriv\b|theorem curryLeft_apply_apply|theorem cons_comp_succ_succAbove|theorem removeNth_zero|theorem integral_eq_sub_of_hasDerivAt\b|theorem integral_finsetSum|theorem integral_finset_sum' <snapshot>/mathlib/Mathlib`
+- `grep -rn 'continuous_eval_const|theorem apply_apply|def apply |continuousAlternatingMap_apply' <snapshot>/mathlib/Mathlib/Topology/Algebra/Module/Alternating/*.lean <snapshot>/mathlib/Mathlib/Analysis/Normed/Module/Alternating/*.lean <snapshot>/mathlib/Mathlib/Analysis/Calculus/FDeriv/*.lean`
+- `rg -n -i 'radial homotopy|poincare_lemma|poincaré lemma|homotopy formula|coneOperator|radialHomotopy' <snapshot>/mathlib/Mathlib <snapshot>/project/GMT`
+- `rg -n -i 'radial|homotopy formula|alternatizeUncurryFin_curryLeft|cons_comp_succ_succAbove' lake-packages-25730c7c/simongmt/Poincare; grep -rn 'DifferentialForm\b' simongmt/Poincare/SimonGMT/Chapter06/*.lean`
+- `rg -n 'theorem integral_eq_sub_of_hasDerivAt\b|theorem integral_const_mul|theorem integral_add ' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/*.lean`
+- `python3 -I: lean_name scan of dag.json and nodes/*/decomposition-v*.json; git log --all --oneline -S 'iwl_cr_rh_'; grep iwl_cr_rh_ dag.json issue-workers.json GMT/Ch06/Submission.lean`
+- `python3 -I /tmp/rh-decomp/scripts/gen.py (verifier gmt-compare.py child_modules in contract mode + lean_contract.validate_lean_statement); lake env lean /tmp/rh-decomp/gen/*__NodeChallenge.lean /tmp/rh-decomp/gen/*__SolutionEmu.lean`
+- `lake env lean /tmp/rh-decomp/Elab1.lean, Elab2.lean, Assembly.lean, ChildA.lean, ChildB.lean, ChildC.lean, Full.lean (#print axioms)`
+- `WebSearch: Poincaré lemma star-shaped homotopy operator identity ω = I dω + d I ω`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/CurveIntegral/Poincare.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-radial-homotopy-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1/decomposition-scope-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/rh-decomp/scripts/gen.py`
+- `/tmp/rh-decomp/Assembly.lean`
+- `/tmp/rh-decomp/ChildA.lean`
+- `/tmp/rh-decomp/ChildB.lean`
+- `/tmp/rh-decomp/ChildC.lean`
+- `/tmp/rh-decomp/Full.lean`
+
+**Snapshot.** Project d8d46c95, Mathlib 25730c7c. Its Ch06 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0dd…).
+
+**Definitions used by the statements.**
+- SimonGMT Chapter06/Forms.lean: Covector E n := E [⋀^Fin n]→L[ℝ] ℝ and DifferentialForm E n := E → Covector E n.
+- Mathlib DifferentialForm/Basic.lean:72: extDeriv ω x := alternatizeUncurryFin (fderiv ℝ ω x), defined for every ω.
+
+**Library inputs.**
+- Normed Alternating/Uncurry/Fin.lean: alternatizeUncurryFin_apply (:137), with a ℤ-power coefficient (-1)^i • …, and alternatizeUncurryFin_curryLeft (:154).
+- Normed Alternating/Curry.lean:57: curryLeft_apply_apply, stated with Matrix.vecCons, which equals Fin.cons by rfl (checked in Lean).
+- Data/Fin/Tuple/Basic.lean:882: Fin.cons_comp_succ_succAbove; also Fin.removeNth_zero and Fin.tail_cons.
+- IntervalIntegral/FundThmCalculus.lean:1148: integral_eq_sub_of_hasDerivAt.
+- IntervalIntegral/Basic.lean: integral_add (:774), integral_finsetSum (:778; integral_finset_sum is deprecated) and integral_const_mul (:817).
+- hasDerivAt_pow (derivative ↑n * x^(n-1)) and ContDiff.continuous_fderiv.
+- Topology/Algebra/Module/Alternating/Topology.lean: ContinuousAlternatingMap.apply (:294, evaluation as a continuous linear map) and the ContinuousEvalConst instance (:189).
+
+**No-match results.**
+- No radial homotopy formula or Poincaré lemma for k-forms exists in the snapshot Mathlib. CurveIntegral/Poincare.lean covers only 1-forms via curve integrals on convex sets and does not apply.
+- No such formula exists in the project or the SimonGMT package (rg found only unrelated 'radial' files in Chapters 04, 05 and 08).
+- The names iwl_cr_rh_integrand_identity, iwl_cr_rh_radial_ftc and iwl_cr_rh_degree_zero are unused in dag.json, the decomposition files, Submission.lean and all git refs.
+
+**Lean checks (lake env lean, contract scope after import GMT.Ch06.Submission).**
+- The three child types pass validate_lean_statement and elaborate as the comparator's generated NodeChallenge modules.
+- An assembly proves the frozen parent type from the three children.
+- Scratch proofs of all children together with the assembled parent compile with no sorry. #print axioms shows [propext, Classical.choice, Quot.sound].
+- Emulated NodeSolution checks (exact Submission.X) pass.
+
+**Public citation.** Wikipedia, 'Poincaré lemma' (https://en.wikipedia.org/wiki/Poincar%C3%A9_lemma), states the homotopy formula h_1^* − h_0^* = dJ + Jd, here for the homotopy f_t(x) = tx. For background, see also the standard star-shaped Poincaré lemma in Spivak, Calculus on Manifolds, Thm 4-11. The children's proofs are self-contained direct computations extracted from the supplied parent proof.

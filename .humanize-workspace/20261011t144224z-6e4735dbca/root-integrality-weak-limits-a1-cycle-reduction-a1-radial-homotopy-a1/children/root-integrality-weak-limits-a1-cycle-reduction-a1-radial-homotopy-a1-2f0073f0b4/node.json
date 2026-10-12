@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_homotopy-a1.degree_zero-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_homotopy-a1",
+  "depth": 4,
+  "title": "Radial homotopy formula in degree zero",
+  "statement": "Let P ∈ ℕ. Let φ be a C^∞ 0-form on ℝ^P (DifferentialForm (Eucl P) 0, ContDiff ℝ of order ((⊤ : ℕ∞) : WithTop ℕ∞)), and let χ be any 0-form on ℝ^P. Suppose χ(x)(v) = ∫_0^1 t^0·dφ(t·x)(x, v) dt for all x ∈ ℝ^P and all v : Fin 0 → ℝ^P. Here d = Mathlib's extDeriv (dφ(y) = alternatizeUncurryFin (fderiv ℝ φ y)) and (x, v) = Fin.cons x v. Then χ(x) = φ(x) − φ(0) for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (φ χ : DifferentialForm (Eucl P) 0), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → (∀ (x : Eucl P) (v : Fin 0 → Eucl P), χ x v = ∫ t in (0 : ℝ)..1, t ^ 0 * extDeriv φ (t • x) (Fin.cons x v)) → ∀ x, χ x = φ x - φ 0",
+  "lean_name": "iwl_cr_rh_degree_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-radial-homotopy-a1-2f0073f0b4-a1"
+}
