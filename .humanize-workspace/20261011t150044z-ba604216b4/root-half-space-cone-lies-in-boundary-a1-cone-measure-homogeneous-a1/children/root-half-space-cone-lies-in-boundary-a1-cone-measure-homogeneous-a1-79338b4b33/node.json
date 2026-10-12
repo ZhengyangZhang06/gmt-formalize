@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.rescaled_action_measure-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+  "depth": 3,
+  "title": "Action and weight of the dilated triple (parent steps 4 and 6)",
+  "statement": "Let P, n ∈ ℕ, c > 0, and let R = (M, θ, ξ) and R' be IMRep univ n triples with R'.carrier = {x : cx ∈ M}, R'.mult x = θ(cx) and R'.orient x = ξ(cx) for all x. Then (1) for every n-form ω : ℝ^P → Λ^n(ℝ^P) (no regularity assumed), τ(R')(ω) = τ(R)(ω_c), where ω_c(y) := c^{-n}·ω(c^{-1}y) and τ(R)(ω) = ∫_M θ·⟨ω, ξ⟩ dH^n is IMRep.action; (2) for every Borel set A ⊆ ℝ^P, μ_{R'}(A) = c^{-n}·μ_R(cA), where μ_R = θH^n⌞M is IMRep.measure and cA = {ca : a ∈ A}.",
+  "lean_statement": "∀ (P n : ℕ) (R R' : IMRep (univ : Set (Euclid P)) n) (c : ℝ), 0 < c → R'.carrier = (fun x => c • x) ⁻¹' R.carrier → (∀ x, R'.mult x = R.mult (c • x)) → (∀ x, R'.orient x = R.orient (c • x)) → (∀ ω : DifferentialForm (Euclid P) n, R'.action ω = R.action (fun y => (c⁻¹ ^ n) • ω (c⁻¹ • y))) ∧ ∀ A : Set (Euclid P), MeasurableSet A → R'.measure A = ENNReal.ofReal (c⁻¹ ^ n) * R.measure ((fun x => c • x) '' A)",
+  "lean_name": "imrep_smul_rescale_action_measure",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.dilation_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.dilation_change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-79338b4b33-a1"
+}

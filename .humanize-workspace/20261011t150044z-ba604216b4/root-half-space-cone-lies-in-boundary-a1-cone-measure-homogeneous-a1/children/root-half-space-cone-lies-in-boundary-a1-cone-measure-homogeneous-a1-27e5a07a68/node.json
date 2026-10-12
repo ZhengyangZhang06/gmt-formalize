@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.cone_pullback_identity-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+  "depth": 3,
+  "title": "The cone identity in terms of test forms (parent step 2)",
+  "statement": "Let P, n ∈ ℕ and C ∈ 𝒟_n(ℝ^P) a cone current (IsConeCurrent C: for every λ > 0 and every test form ω ∈ 𝒟^n(ℝ^P), currentEval (blowUp C 0 λ) ω = C(ω), where blowUp C 0 λ = η_{0,λ#}C is the proper affine push-forward of C by η(y) = −λ^{-1}·0 + λ^{-1}y). Then for every λ > 0 and every test form ω ∈ 𝒟^n(ℝ^P) there is a test form ω' ∈ 𝒟^n(ℝ^P) with ω'(y) = λ^{-n}·ω(λ^{-1}y) for every y ∈ ℝ^P and C(ω') = C(ω).",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsConeCurrent C → ∀ lam : ℝ, 0 < lam → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ ω' : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (ω' : DifferentialForm (Euclid P) n) y = (lam⁻¹ ^ n) • (ω : DifferentialForm (Euclid P) n) (lam⁻¹ • y)) ∧ C ω' = C ω",
+  "lean_name": "cone_current_apply_dilation_pullback",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-27e5a07a68-a1"
+}

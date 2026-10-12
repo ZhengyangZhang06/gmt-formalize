@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.dilation_change_of_variables-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+  "depth": 3,
+  "title": "Change of variables for H^n under a dilation (parent step 1, formula (1.1))",
+  "statement": "Let P, n ∈ ℕ, c > 0, T : ℝ^P → ℝ^P, T(x) = cx, H^n = μHE[n] the normalized n-dimensional Hausdorff measure on ℝ^P, and M ⊆ ℝ^P an arbitrary set (so T^{-1}(M) = {z : cz ∈ M} = c^{-1}M). Then (i) T_#(H^n⌞T^{-1}(M)) = c^{-n}·(H^n⌞M) as measures on ℝ^P (scalar ENNReal.ofReal(c^{-n})); (ii) for every g : ℝ^P → [0,∞] (no measurability assumed), ∫⁻_{T^{-1}(M)} g(cz) dH^n(z) = c^{-n}·∫⁻_M g dH^n; (iii) for every g : ℝ^P → ℝ (no integrability assumed; Bochner integrals, with value 0 for non-integrable functions), ∫_{T^{-1}(M)} g(cz) dH^n(z) = c^{-n}·∫_M g dH^n.",
+  "lean_statement": "∀ (P n : ℕ) (c : ℝ), 0 < c → ∀ M : Set (Euclid P), Measure.map (fun x : Euclid P => c • x) (μHE[n].restrict ((fun x => c • x) ⁻¹' M)) = ENNReal.ofReal (c⁻¹ ^ n) • μHE[n].restrict M ∧ (∀ g : Euclid P → ℝ≥0∞, ∫⁻ z in (fun x => c • x) ⁻¹' M, g (c • z) ∂μHE[n] = ENNReal.ofReal (c⁻¹ ^ n) * ∫⁻ y in M, g y ∂μHE[n]) ∧ ∀ g : Euclid P → ℝ, ∫ z in (fun x => c • x) ⁻¹' M, g (c • z) ∂μHE[n] = c⁻¹ ^ n * ∫ y in M, g y ∂μHE[n]",
+  "lean_name": "euclid_hausdorff_dilation_change_of_variables",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-862a12a643-a1"
+}

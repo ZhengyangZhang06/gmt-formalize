@@ -1,0 +1,85 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1`
+- Child DAG node: `root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.rescaled_action_measure-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent step 4 ("R_λ.action(ω) = ∫_{M'} θ(λz) ξ(λz)(ω(z)) dH^n(z) = λ^{-n} ∫_M θ(y) ξ(y)(ω(λ^{-1}y)) dH^n(y) = ∫_M θ(y) ξ(y)(λ^{-n}ω(λ^{-1}y)) dH^n(y) = R.action(η^#ω)", by (1.1) and linearity of ξ(y)) and step 6 ("For measurable A, M' ∩ A = S(M ∩ λA), so by (1.1) R_λ.measure(A) = ∫_{M'∩A} θ' dH^n = λ^{-n}∫_{M∩λA} θ dH^n = λ^{-n}·R.measure(λA)"), with λ = c. Uses the sibling child dilation_change_of_variables, cited as (CV)(ii) and (CV)(iii).
+
+Notation: M := R.carrier, θ := R.mult, ξ := R.orient, H^n := μHE[n], T(x) := cx (c > 0, so T is a homeomorphism of ℝ^P with inverse x ↦ c^{-1}x, hence an injective measurable embedding). By hypothesis M' := R'.carrier = T^{-1}(M), R'.mult z = θ(cz) and R'.orient z = ξ(cz) for all z. Recall the definitions R.action ω = ∫_{R.carrier} (R.mult x : ℝ) · R.orient x (ω x) dH^n(x) (Bochner integral) and R.measure = (H^n⌞R.carrier).withDensity (x ↦ (R.mult x : [0,∞])).
+
+1. Action, change of variables. Fix an arbitrary ω : ℝ^P → Λ^n(ℝ^P) (a DifferentialForm; no regularity or integrability is needed). By the definition of action and the hypotheses on R',
+ R'.action ω = ∫_{T^{-1}(M)} θ(cz) · ξ(cz)(ω(z)) dH^n(z).
+ Define g : ℝ^P → ℝ by g(y) := θ(y) · ξ(y)(ω(c^{-1}y)). Since c^{-1}(cz) = z, g(cz) = θ(cz) · ξ(cz)(ω(z)) for every z. By (CV)(iii) (valid for every real-valued function):
+ R'.action ω = ∫_{T^{-1}(M)} g(cz) dH^n(z) = c^{-n} · ∫_M g dH^n.
+
+2. Action, linearity. A constant factor moves inside a Bochner integral for every integrand (∫ a·f dμ = a·∫ f dμ, integral_const_mul), so c^{-n} ∫_M g dH^n = ∫_M c^{-n} · θ(y) · ξ(y)(ω(c^{-1}y)) dH^n(y). Since ξ(y) is a (continuous) linear map, ξ(y)(c^{-n} · ω(c^{-1}y)) = c^{-n} · ξ(y)(ω(c^{-1}y)) (map_smul), so for every y the integrand equals θ(y) · ξ(y)(c^{-n} · ω(c^{-1}y)) (commutativity of real multiplication). Therefore
+ R'.action ω = ∫_M θ(y) · ξ(y)((c^{-1})^n • ω(c^{-1} • y)) dH^n(y) = R.action (y ↦ (c^{-1})^n • ω(c^{-1} • y)),
+ by the definition of R.action. This proves the first conjunct.
+
+3. Weight, reduction to a set integral. Fix a Borel set A ⊆ ℝ^P. Its image T(A) = (x ↦ cx) '' A is Borel, because T is a measurable embedding (MeasurableEmbedding.measurableSet_image). By the definition of R'.measure and withDensity_apply on the measurable set A,
+ R'.measure(A) = ∫⁻_A θ(cz) d(H^n⌞M')(z) = ∫⁻_{A ∩ M'} θ(cz) dH^n(z),
+ using (H^n⌞M')⌞A = H^n⌞(A ∩ M') for measurable A (Measure.restrict_restrict). Since T is injective, z ∈ A ⇔ cz ∈ T(A); hence A ∩ M' = T^{-1}(T(A)) ∩ T^{-1}(M) = T^{-1}(T(A) ∩ M) (preimage_image_eq, preimage_inter).
+
+4. Weight, change of variables. By (CV)(ii) applied to the set T(A) ∩ M and the function g(y) := θ(y) ∈ [0,∞]:
+ ∫⁻_{T^{-1}(T(A)∩M)} θ(cz) dH^n(z) = ENNReal.ofReal(c^{-n}) · ∫⁻_{T(A)∩M} θ dH^n.
+ By withDensity_apply on the measurable set T(A) and Measure.restrict_restrict again, ∫⁻_{T(A)∩M} θ dH^n = ∫⁻_{T(A)} θ d(H^n⌞M) = R.measure(T(A)). Combining with step 3,
+ R'.measure(A) = ENNReal.ofReal((c^{-1})^n) · R.measure((x ↦ c • x) '' A),
+ which is the second conjunct.
+
+## Key steps
+
+1. Write R'.action ω = ∫_{T^{-1}M} g(cz) dH^n with g(y) = θ(y)ξ(y)(ω(c^{-1}y)) and apply the Bochner change of variables (sibling).
+2. Move c^{-n} inside the integral and use linearity of ξ(y) to obtain R.action(y ↦ c^{-n}ω(c^{-1}y)).
+3. For Borel A: R'.measure A = ∫⁻_{A∩M'} θ(c·) dH^n and A ∩ M' = T^{-1}(cA ∩ M).
+4. The lower-integral change of variables (sibling) gives c^{-n}·R.measure(cA).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp ... GMT/Ch07/Submission.lean (both identical); git -C .lake/packages/{simongmt,mathlib} log -1 (2b3663083f3fe399b6296fb8eaee52169170e197, 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cat -n GMT/Ch07/Contract.lean (IMRep, IMRep.action/Represents/measure, currentEval, dilationCLM, dilation, blowUp, IsConeCurrent)`
+- `cat -n simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean (affinePullbackForm, affinePullbackTestOn_coe, GeometricCurrentOn.affinePushforward_apply)`
+- `grep -rn restrictDomain simongmt/Poincare/SimonGMT; cat -n Chapter06/CurrentLocalEquality.lean (restrictDomain_apply, testFormOnInclusion_coe)`
+- `sed -n 1,200p Chapter06/Currents.lean; sed -n 1,80p Chapter06/Forms.lean (TestFormOn, GeometricCurrentOn, Covector, DifferentialForm, IsTestForm)`
+- `sed -n 1,200p Chapter03/Rectifiable.lean (CountablyRectifiable, blowUpMap, HasApproximateTangentSpaceAt)`
+- `rg -n HasApproximateTangentSpaceAt simongmt | grep -iE 'smul|dilat|scale|homothet|preimage|image'; rg -n 'theorem .*(smul|dilat|homothet|rescale)' Chapter03 Chapter04 Chapter06; grep '^theorem' Chapter08/TangentRescaling.lean`
+- `grep -rn 'hausdorffMeasure_smul\|euclideanHausdorffMeasure_smul\|euclideanHausdorffMeasure_homothety\|map_euclideanHausdorffMeasure\|euclideanHausdorffMeasure_image' mathlib/Mathlib; sed -n 100,180p Mathlib/Geometry/Euclidean/Volume/Measure.lean; sed -n 745,770p Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `grep -rn 'theorem map_smul_univ' mathlib/Mathlib; sed -n 510,525p Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `grep -n lipschitzWith_smul Mathlib/Analysis/Normed/MulAction.lean; grep -n 'protected theorem comp' Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `grep -rhoE '"lean_name": *"[^"]+"' nodes dag.json | sort -u; grep -rlE 'euclid_hausdorff_dilation_change_of_variables|approx_tangent_space_smul_preimage|imrep_univ_smul_rescale_exists|cone_current_apply_dilation_pullback|imrep_smul_rescale_action_measure' nodes dag.json problem.json GMT (no match)`
+- `sed -n 694,700p book/chapter-07.txt; sed -n 404,410p book/chapter-06.txt; grep -n '1.4 Definition' book/chapter-03.txt`
+- `lake env lean /tmp/cmh-decomp/{Stmts,ChildA,ChildB,ChildE,ChildF,ChildD,Final,Inst}.lean (#print axioms; pp.explicit instance check)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/TangentRescaling.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/MulAction.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/cmh-decomp/Final.lean`
+- `/tmp/cmh-decomp/Inst.lean`
+
+The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean, and the installed simongmt (2b366308) and mathlib (25730c7c) match the pins. SimonGMT supplies the pieces the children need: affinePullbackForm, affinePullbackTestOn_coe and affinePushforward_apply (AffineCurrentPushforward.lean); restrictDomain_apply and testFormOnInclusion_coe (CurrentLocalEquality.lean); CountablyRectifiable, blowUpMap and HasApproximateTangentSpaceAt (Rectifiable.lean, Simon 3.1.1 and 3.1.4). It has no dilation-invariance lemma for HasApproximateTangentSpaceAt or for triples: Chapter08/TangentRescaling.lean treats Chapter 8 general varifolds only. Snapshot Mathlib supplies Measure.euclideanHausdorffMeasure_smul₀ (Geometry/Euclidean/Volume/Measure.lean:152), ContinuousAlternatingMap.map_smul_univ (Topology/Algebra/Module/Alternating/Basic.lean:518), lipschitzWith_smul (Analysis/Normed/MulAction.lean:51) and the measurable-embedding API (restrict_map, lintegral_map, integral_map, ae_map_iff, measurableSet_image). All five child types elaborate after import GMT.Ch07.Submission in namespace GMT.Ch07 with the contract's opens. Each is proved in scratch using only propext, Classical.choice and Quot.sound. The parent's exact frozen type follows from them plus the sibling imrep_measure_eq_of_represents_same_current; the only sorryAx is that sibling stub. None of the five proposed names occurs in the DAG. Book lines cited by the proofs were checked: chapter-07.txt 697–698, chapter-06.txt 408, chapter-03.txt 77. No network sources were needed.
