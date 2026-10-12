@@ -458,6 +458,44 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 2, proof of Theorem 1.5 (p. 44), the uniform first-order Taylor estimate.  Let `f` be
+`K`-Lipschitz on `ℝⁿ` and differentiable at every point of the closed set `C`, with `Lⁿ(C) < ∞`, and
+let `δ > 0`.  Then there is a closed `A ⊆ C` with `Lⁿ(C \ A) < δ` such that for every `τ > 0` some
+`ρ > 0` gives `|f(y) − f(x) − Df(x)(y − x)| ≤ τ |y − x|` for all `x, y ∈ A` with `|x − y| < ρ`.
+Proof: the Borel majorants `η_k` of the normalised remainder tend to `0` pointwise on `C`
+(`rsod_c1ab_utr_remainder_sup_control`).  Egoroff's theorem with inner regularity makes the
+convergence uniform on a closed `A ⊆ C` with `Lⁿ(C \ A) < δ` (`rsod_c1ab_utr_closed_egoroff`).
+Given `τ > 0`, take `k` with `η_k < τ` on `A` and put `ρ = 1/(k+1)`. -/
+theorem rsod_c1ab_uniform_taylor_remainder : ∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ C : Set (Rn n), IsClosed C → volume C ≠ ∞ → (∀ x ∈ C, DifferentiableAt ℝ f x) → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ A : Set (Rn n), A ⊆ C ∧ IsClosed A ∧ volume (C \ A) < δ ∧ ∀ τ : ℝ, 0 < τ → ∃ ρ : ℝ, 0 < ρ ∧ ∀ x ∈ A, ∀ y ∈ A, dist x y < ρ → ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ τ * ‖y - x‖ := by
+  intro n f K hf C hC hCfin hdiff δ hδ
+  -- Step 1: Borel `η_k` with `η_k → 0` pointwise on `C` and
+  -- `|f(y) − f(x) − Df(x)(y − x)| ≤ η_k(x) |y − x|` for `x, y ∈ C`, `0 < |y − x| < 1/(k+1)`.
+  obtain ⟨η, hηm, hηlim, hηbd⟩ :=
+    Submission.rsod_c1ab_utr_remainder_sup_control n f K hf C hC hdiff
+  -- Step 2: a closed `A ⊆ C` with `Lⁿ(C \ A) < δ` and `η_k → 0` uniformly on `A`.
+  obtain ⟨A, hAC, hAcl, hCA, hunif⟩ :=
+    Submission.rsod_c1ab_utr_closed_egoroff n η hηm C hC.measurableSet hCfin hηlim δ hδ
+  refine ⟨A, hAC, hAcl, hCA, fun τ hτ => ?_⟩
+  -- Step 3: uniform convergence gives `k` with `|η_k| < τ` on `A`; take `ρ = 1/(k+1)`.
+  obtain ⟨k, hk⟩ := (Metric.tendstoUniformlyOn_iff.1 hunif τ hτ).exists
+  refine ⟨1 / ((k : ℝ) + 1), by positivity, fun x hx y hy hxy => ?_⟩
+  -- Step 4: for `y = x` both sides vanish.
+  rcases eq_or_ne y x with rfl | hyx
+  · simp
+  -- Step 5: for `y ≠ x`, `0 < |y − x| < 1/(k+1)`, so the bound of step 1 applies with `η_k(x) < τ`.
+  have hηk : η k x < τ := by
+    have h := hk x hx
+    rw [dist_comm, Real.dist_0_eq_abs] at h
+    exact (le_abs_self _).trans_lt h
+  rw [dist_comm, dist_eq_norm] at hxy
+  calc ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ η k x * ‖y - x‖ :=
+        hηbd k x (hAC hx) y (hAC hy) (norm_pos_iff.2 (sub_ne_zero.2 hyx)) hxy
+    _ ≤ τ * ‖y - x‖ := mul_le_mul_of_nonneg_right hηk.le (norm_nonneg _)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
