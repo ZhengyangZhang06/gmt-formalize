@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "3dd487370a0389879e625136a8f435bcb8c7674ffd2d0ce266753c4fc94c2c69",
+  "git_delta": {
+    "base_commit": "80626037c09c5d67eb9e6f0556069081fdcb89de",
+    "candidate_commit": "fe7261a7994455c3038216e085ef9bc8ec6b346b",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "1718141d223db5ad80cd5e004b1de78a1b6767f0811a0b608d27bdc3ac1ad655",
+    "source_sha256": "dee04707ec7b0ae8708feed81f6146d57d4d13d8c8c383b6bd699f7f045ff27c",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.w12_ball_poincare_inequality",
+      "statement": "∀ n : ℕ, 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∫⁻ x in ball (0 : Rn n) 1, ‖f x - ⨍ y in ball (0 : Rn n) 1, f y‖ₑ ^ 2 ≤ ENNReal.ofReal C * ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
