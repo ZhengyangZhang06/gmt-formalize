@@ -603,29 +603,6 @@ theorem any_radius_rv_support_eq : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : 
   have hψc : Continuous fun x : Amb n ℓ => c + R • x := by fun_prop
   have hφc : Continuous fun y : Amb n ℓ => R⁻¹ • (y - c) := by fun_prop
   let e : Amb n ℓ ≃ₜ Amb n ℓ :=
-/-- **Generalized mean curvature of a rescaled varifold** (Simon Ch. 4, Definition 3.14; used for
-the rescalings behind Ch. 5, Remark 5.3).  Let `ψ(x) = c + R x` and `φ(y) = R⁻¹ (y − c)`, `R > 0`.
-If `μ_W = R⁻ⁿ φ_# μ_V` and `p_{T_x W} = p_{T_{ψ x} V}`, then `W` has generalized mean curvature
-`R H ∘ ψ` in `ψ⁻¹ U`: neighbourhoods `t ∈ 𝓝[U] (ψ x)` pull back to `ψ⁻¹ t ∈ 𝓝[ψ⁻¹ U] x`, and for
-`X ∈ C¹_c(ψ⁻¹ U)` the field `X̃ = R X ∘ φ ∈ C¹_c(U)` has `DX̃ = DX ∘ φ`, so `div_W X ∘ φ = div_V X̃`
-and `X ∘ φ · R H = X̃ · H`; changing variables along `φ` turns the first variation of `W` at `X`
-into `R⁻ⁿ` times that of `V` at `X̃`. -/
-theorem any_radius_rv_meanCurvature : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∀ W : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) → (∀ x, W.tangentProj x = V.tangentProj (c + R • x)) → ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → W.HasGeneralizedMeanCurvature (fun x => R • H (c + R • x)) := by
-  intro n ℓ U V c R hR W hw hT H hH
-  obtain ⟨hHloc, hHfv⟩ := hH
-  have hR0 : R ≠ 0 := hR.ne'
-  -- `κ = R⁻ⁿ` is finite.
-  have hκ : (ENNReal.ofReal (R ^ n))⁻¹ ≠ ∞ :=
-    ENNReal.inv_ne_top.2 (ENNReal.ofReal_pos.2 (pow_pos hR n)).ne'
-  -- `ψ (φ y) = y` and `φ (ψ x) = x`.
-  have hψφ : ∀ y : Amb n ℓ, c + R • R⁻¹ • (y - c) = y := fun y => by
-    rw [smul_smul, mul_inv_cancel₀ hR0, one_smul, add_sub_cancel]
-  have hφψ : ∀ x : Amb n ℓ, R⁻¹ • (c + R • x - c) = x := fun x => by
-    rw [add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hR0, one_smul]
-  have hψc : Continuous (fun x : Amb n ℓ => c + R • x) :=
-    continuous_const.add (continuous_const_smul R)
-  -- `φ` is a homeomorphism with inverse `ψ`; as a measurable equivalence, `μ_W = κ • φ_# μ_V`.
-  let φ : Amb n ℓ ≃ₜ Amb n ℓ :=
     { toFun := fun y => R⁻¹ • (y - c)
       invFun := fun x => c + R • x
       left_inv := hψφ
@@ -737,6 +714,33 @@ theorem any_radius_rv_tangentProj_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)
   · have h₂ : ¬∃ P, Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier
         V.mult (c + R • x) P := fun h => h₁ ((exists_congr key).2 h)
     rw [dite_eq_right h₁, dite_eq_right h₂]
+/-- **Generalized mean curvature of a rescaled varifold** (Simon Ch. 4, Definition 3.14; used for
+the rescalings behind Ch. 5, Remark 5.3).  Let `ψ(x) = c + R x` and `φ(y) = R⁻¹ (y − c)`, `R > 0`.
+If `μ_W = R⁻ⁿ φ_# μ_V` and `p_{T_x W} = p_{T_{ψ x} V}`, then `W` has generalized mean curvature
+`R H ∘ ψ` in `ψ⁻¹ U`: neighbourhoods `t ∈ 𝓝[U] (ψ x)` pull back to `ψ⁻¹ t ∈ 𝓝[ψ⁻¹ U] x`, and for
+`X ∈ C¹_c(ψ⁻¹ U)` the field `X̃ = R X ∘ φ ∈ C¹_c(U)` has `DX̃ = DX ∘ φ`, so `div_W X ∘ φ = div_V X̃`
+and `X ∘ φ · R H = X̃ · H`; changing variables along `φ` turns the first variation of `W` at `X`
+into `R⁻ⁿ` times that of `V` at `X̃`. -/
+theorem any_radius_rv_meanCurvature : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∀ W : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) → (∀ x, W.tangentProj x = V.tangentProj (c + R • x)) → ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → W.HasGeneralizedMeanCurvature (fun x => R • H (c + R • x)) := by
+  intro n ℓ U V c R hR W hw hT H hH
+  obtain ⟨hHloc, hHfv⟩ := hH
+  have hR0 : R ≠ 0 := hR.ne'
+  -- `κ = R⁻ⁿ` is finite.
+  have hκ : (ENNReal.ofReal (R ^ n))⁻¹ ≠ ∞ :=
+    ENNReal.inv_ne_top.2 (ENNReal.ofReal_pos.2 (pow_pos hR n)).ne'
+  -- `ψ (φ y) = y` and `φ (ψ x) = x`.
+  have hψφ : ∀ y : Amb n ℓ, c + R • R⁻¹ • (y - c) = y := fun y => by
+    rw [smul_smul, mul_inv_cancel₀ hR0, one_smul, add_sub_cancel]
+  have hφψ : ∀ x : Amb n ℓ, R⁻¹ • (c + R • x - c) = x := fun x => by
+    rw [add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hR0, one_smul]
+  have hψc : Continuous (fun x : Amb n ℓ => c + R • x) :=
+    continuous_const.add (continuous_const_smul R)
+  -- `φ` is a homeomorphism with inverse `ψ`; as a measurable equivalence, `μ_W = κ • φ_# μ_V`.
+  let φ : Amb n ℓ ≃ₜ Amb n ℓ :=
+    { toFun := fun y => R⁻¹ • (y - c)
+      invFun := fun x => c + R • x
+      left_inv := hψφ
+      right_inv := hφψ
       continuous_toFun := (continuous_sub_right c).const_smul R⁻¹
       continuous_invFun := hψc }
   have hw' : W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map φ.toMeasurableEquiv := hw
