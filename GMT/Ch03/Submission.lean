@@ -431,6 +431,43 @@ theorem Submission.deGiorgiBFM_exists_open_exhaustion : ∀ (N : ℕ) (U : Set (
             ENNReal.inv_le_inv.2 (by exact_mod_cast (show n ≤ max n m + 1 by omega))
         _ < Metric.infEDist y Uᶜ := hn
 
+/-- **The reduced boundary has full `μ`-measure** (Simon Ch. 3, after (4.2) (p. 81): "Since
+`|ν| = 1` `μ_E`-a.e. in `U`, by virtue of Theorem 3.23 of Ch. 1 we have `μ_E(U ∖ ∂*E) = 0`").
+Let `U ⊆ ℝᴺ` be open, `μ` a Borel measure with `μ(Uᶜ) = 0` and `μ(K) < ∞` for compact `K ⊆ U`,
+and `ν` `μ`-measurable with `|ν| = 1` `μ`-a.e. Exhaust `U = ⋃ᵢ Wᵢ` by open `Wᵢ` with
+`μ(Wᵢ) < ∞`. Then `μ ⌞ Wᵢ` is finite and `ν ∈ L¹(μ ⌞ Wᵢ)`, so by Lebesgue–Besicovitch
+differentiation along open balls, `⨍_{B_ρ(x)} ν d(μ ⌞ Wᵢ) → ν(x)` as `ρ ↓ 0` for `μ`-a.e.
+`x ∈ Wᵢ`. For such `x` and small `ρ`, `B_ρ(x) ⊆ Wᵢ`, where `μ ⌞ Wᵢ` and `μ` agree; so
+`⨍_{B_ρ(x)} ν dμ → ν(x)`, a unit vector `μ`-a.e., i.e. `x ∈ ∂*E`. As `μ(Uᶜ) = 0`, countable
+subadditivity gives `μ(ℝᴺ ∖ ∂*E) = 0` (no measurability of `∂*E` is needed). -/
+theorem Submission.deGiorgi_measure_compl_reducedBoundary : ∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → μ (reducedBoundary U μ ν)ᶜ = 0 := by
+  intro N U μ ν hU hUc hK hν hν1
+  -- Localization: `U = ⋃ᵢ Wᵢ` with `Wᵢ` open and `μ(Wᵢ) < ∞`.
+  obtain ⟨W, hWo, hWfin, hWU⟩ := Submission.deGiorgiBFM_exists_open_exhaustion N U μ hU hK
+  -- Differentiate `ν ∈ L¹(μ ⌞ Wᵢ)` along open balls; read back as a `μ`-a.e. statement on `Wᵢ`.
+  have hdiff : ∀ i, ∀ᵐ x ∂μ, x ∈ W i →
+      Tendsto (normalAverage (μ.restrict (W i)) ν x) (𝓝[>] 0) (𝓝 (ν x)) := by
+    intro i
+    have hfin : IsFiniteMeasure (μ.restrict (W i)) := isFiniteMeasure_restrict.2 (hWfin i).ne
+    have hint : Integrable ν (μ.restrict (W i)) :=
+      Integrable.of_bound hν.restrict 1 (ae_restrict_of_ae (hν1.mono fun y hy ↦ hy.le))
+    exact (ae_restrict_iff' (hWo i).measurableSet).1
+      (Submission.deGiorgiBFM_normalAverage_tendsto_ae N (μ.restrict (W i)) ν hfin hint)
+  have hUae : ∀ᵐ x ∂μ, x ∈ U :=
+    (measure_eq_zero_iff_ae_notMem.1 hUc).mono fun x hx ↦ notMem_compl_iff.1 hx
+  -- Off a `μ`-null set, `x ∈ U = ⋃ᵢ Wᵢ` and all the above hold, so `x` is in the reduced boundary.
+  rw [measure_eq_zero_iff_ae_notMem]
+  filter_upwards [ae_all_iff.2 hdiff, hUae, hν1] with x hxdiff hxU hx1
+  rw [notMem_compl_iff]
+  obtain ⟨i, hi⟩ := mem_iUnion.1 (show x ∈ ⋃ i, W i by rwa [hWU])
+  obtain ⟨R, hR, hRW⟩ := Metric.isOpen_iff.1 (hWo i) x hi
+  refine ⟨hxU, ν x, (hxdiff i hi).congr' ?_, hx1⟩
+  -- For `0 < ρ < R`, `B_ρ(x) ⊆ Wᵢ`, so the averages for `μ ⌞ Wᵢ` and for `μ` coincide.
+  filter_upwards [Ioo_mem_nhdsGT hR] with ρ hρ
+  have hsub : Metric.ball x ρ ⊆ W i := (Metric.ball_subset_ball hρ.2.le).trans hRW
+  simp only [normalAverage, Measure.restrict_eq_self μ hsub,
+    Measure.restrict_restrict_of_subset hsub]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
