@@ -410,6 +410,52 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 8, proof of Lemma 5.10, the Besicovitch step (p. 221)** (child `besicovitch_cover`
+of `bad_set_bound`): if every `x ∈ A` is the centre of a closed ball `B_σ(x) ⊆ O`, `0 < σ ≤ R`, with
+`μ(B_σ(x)) ≤ t ν(B_σ(x))`, then `μ(A) ≤ C t ν(O)`, where `C` is the Besicovitch number of `ℝ^N`
+(Ch. 1, 3.12).  The covering lemma splits a subfamily of these balls covering `A` into `C`
+disjoint, hence countable, subfamilies; sum the ratio bound over each. -/
+theorem Submission.intcpt_allard_bsb_besicovitch_cover :
+    ∀ N : ℕ, ∃ C : ℕ, ∀ (μ ν : Measure (Euclidean N)) (A O : Set (Euclidean N)) (R : ℝ)
+      (t : ℝ≥0∞), (∀ x ∈ A, ∃ σ : ℝ, 0 < σ ∧ σ ≤ R ∧ closedBall x σ ⊆ O ∧
+        μ (closedBall x σ) ≤ t * ν (closedBall x σ)) →
+      μ A ≤ (C : ℝ≥0∞) * t * ν O := by
+  intro N
+  -- `C` admits no satellite configuration of `C + 1` balls in `ℝ^N`.
+  obtain ⟨C, τ, hτ, hC⟩ := HasBesicovitchCovering.no_satelliteConfig (α := Euclidean N)
+  refine ⟨C, fun μ ν A O R t h ↦ ?_⟩
+  choose σ hσ0 hσR hσO hσ using h
+  obtain ⟨s, hdisj, hcov⟩ := Besicovitch.exist_disjoint_covering_families hτ hC
+    { c := ((↑) : A → Euclidean N), r := fun x ↦ σ x x.2, rpos := fun x ↦ hσ0 x x.2,
+      r_bound := R, r_le := fun x ↦ hσR x x.2 }
+  set B : A → Set (Euclidean N) := fun x ↦ closedBall (x : Euclidean N) (σ x x.2)
+  have hdisj' : ∀ i, (s i).PairwiseDisjoint B := hdisj
+  have hcov' : A ⊆ ⋃ i, ⋃ x ∈ s i, B x := fun y hy ↦ by
+    have hy' := hcov ⟨⟨y, hy⟩, rfl⟩
+    simp only [mem_iUnion] at hy' ⊢
+    obtain ⟨i, x, hx, hyx⟩ := hy'
+    exact ⟨i, x, hx, ball_subset_closedBall hyx⟩
+  -- Each disjoint subfamily is countable: its balls have nonempty interior.
+  have hcount : ∀ i, (s i).Countable := fun i ↦
+    (hdisj' i).countable_of_nonempty_interior fun x _ ↦
+      ⟨x, ball_subset_interior_closedBall (mem_ball_self (hσ0 x x.2))⟩
+  have hsub : ∀ x : A, B x ⊆ O := fun x ↦ hσO x x.2
+  calc μ A ≤ μ (⋃ i, ⋃ x ∈ s i, B x) := measure_mono hcov'
+    _ ≤ ∑ i, μ (⋃ x ∈ s i, B x) := measure_iUnion_fintype_le μ _
+    _ ≤ ∑ i, ∑' x : s i, μ (B x) :=
+        Finset.sum_le_sum fun i _ ↦ measure_biUnion_le μ (hcount i) B
+    _ ≤ ∑ i, ∑' x : s i, t * ν (B x) :=
+        Finset.sum_le_sum fun i _ ↦ ENNReal.tsum_le_tsum fun x ↦ hσ _ x.1.2
+    _ = ∑ i, t * ν (⋃ x ∈ s i, B x) := by
+        refine Finset.sum_congr rfl fun i _ ↦ ?_
+        rw [ENNReal.tsum_mul_left,
+          measure_biUnion (hcount i) (hdisj' i) fun x _ ↦ measurableSet_closedBall]
+    _ ≤ ∑ _i : Fin C, t * ν O :=
+        Finset.sum_le_sum fun i _ ↦
+          mul_le_mul_right (measure_mono (iUnion₂_subset fun x _ ↦ hsub x)) t
+    _ = (C : ℝ≥0∞) * t * ν O := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_assoc]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
