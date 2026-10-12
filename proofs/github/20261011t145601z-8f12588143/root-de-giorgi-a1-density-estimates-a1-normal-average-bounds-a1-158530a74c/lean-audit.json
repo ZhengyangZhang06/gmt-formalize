@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5b637e4648e674ff9e6cd380fded78f6d638eaec7a8268b6c41228fc4638bc63",
+  "git_delta": {
+    "base_commit": "f57a1c3a2bbcee64754444c6938e0024365e1c94",
+    "candidate_commit": "9f0ac8a504a006fcfb35b7a256a80fde498283b1",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "ad78c84721af289ee7588e81c95f5243e001abc5e5317f5b470c40cf5a727a55",
+    "source_sha256": "6fc9253486b14da889a750bd1b56fec96a83a7a3eedddb90a2fa4e5590485527",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiDens_normalAverage_bounds",
+      "statement": "∀ (N : ℕ) (U : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ∀ x ∈ reducedBoundary U μ ν, ‖reducedNormal μ ν x‖ = 1 ∧ (∃ ρ₀ : ℝ, 0 < ρ₀ ∧ Metric.ball x ρ₀ ⊆ U ∧ ∀ ρ ∈ Ioo 0 ρ₀, 0 < μ (Metric.ball x ρ) ∧ (μ (Metric.ball x ρ)).toReal ≤ 2 * ∫ y in Metric.ball x ρ, inner ℝ (ν y) (reducedNormal μ ν x) ∂μ) ∧ ∀ (n : ℕ) (C ρ₂ : ℝ), 0 < ρ₂ → (∀ ρ ∈ Ioo 0 ρ₂, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ y in Metric.ball x ρ, ‖ν y - reducedNormal μ ν x‖ ∂μ) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
