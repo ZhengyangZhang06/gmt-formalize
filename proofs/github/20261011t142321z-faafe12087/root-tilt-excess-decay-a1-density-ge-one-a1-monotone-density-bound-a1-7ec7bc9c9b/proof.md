@@ -1,0 +1,197 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tilt_excess_decay-a1.density_ge_one-a1`
+- Child DAG node: `root.tilt_excess_decay-a1.density_ge_one-a1.monotone_density_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Steps 2-4 of the parent proof of ted_density_ge_one (Simon, Introduction to GMT, Ch. 4, 3.9-3.10 and 4.5-4.9; the identification of the limit with the multiplicity is Step 4, via Ch. 3, Remark 1.8(2)). There, Step 2 shows that the monotone quantity Phi_z(t) = F_z(t) t^(-n) mu(B_t(z)) + F_z(t) - 1 has a limit l_z as t -> 0+ with l_z <= Phi_z(t), Step 3 uses |F - 1| <= c to get "omega_n Theta(z') = l_(z') <= Phi_(z')(t) <= (1 + c) t^(-n) mu(B_t(z')) + c", and Step 4 identifies the limit with omega_n theta(x) at points where V.HasDensity x (theta x) holds. This child isolates that chain at a single point at which the density is already known to exist. The correction factor F, the monotonicity of Phi and the density are abstract hypotheses, so the statement holds for an arbitrary measure mu.
+
+Notation.
+- B_s(x) := closedBall x s (closed ball).
+- m(s) := toReal(mu(B_s(x))) for s in R, with toReal(infinity) = 0; so m(s) >= 0 always.
+- c(s) := A (s/R)^beta, the real power (rpow); s^n is the natural power.
+- Phi(s) := F(s) (m(s)/s^n) + (F(s) - 1).
+
+Hypotheses: omega > 0, R > 0, beta > 0, theta_0 >= 0, and
+ (a) |F(t) - 1| <= c(t) for all t in (0, R];
+ (b) Phi(s) <= Phi(t) whenever 0 < s <= t <= R;
+ (c) mu(B_r(x)) / ofReal(omega r^n) -> ofReal(theta_0) in [0, infinity] as r -> 0+.
+No sign condition on A and no finiteness of mu(B_R(x)) is assumed or needed.
+
+Fix t with 0 < t <= R. We prove omega theta_0 <= (1 + c(t)) (m(t)/t^n) + c(t).
+
+1. c(s) -> 0 as s -> 0+. The map s -> s/R is continuous with value 0 at s = 0. Since beta > 0, u -> u^beta is continuous at u = 0 (Filter.Tendsto.rpow_const, side condition 0 <= beta) and 0^beta = 0 (Real.zero_rpow, beta /= 0). Hence c(s) = A (s/R)^beta -> A * 0 = 0 as s -> 0, and therefore also along the right-neighbourhood filter s -> 0+.
+
+2. F(s) -> 1 as s -> 0+. The interval (0, t) is a right-neighbourhood of 0, and every s in (0, t) satisfies 0 < s <= R, so (a) gives 0 <= |F(s) - 1| <= c(s). By step 1 and the squeeze theorem (squeeze_zero'), |F(s) - 1| -> 0, i.e. F(s) -> 1 as s -> 0+.
+
+3. m(s)/s^n -> omega theta_0 as s -> 0+.
+ (i) For s in (0, t) put D(s) := ofReal(omega s^n). Since omega s^n > 0, D(s) is finite and toReal(D(s)) = omega s^n.
+ (ii) For all Y, D in [0, infinity], toReal(Y/D) = toReal(Y)/toReal(D) (ENNReal.toReal_div; for Y = infinity both sides are 0 when D is finite). Hence, for s in (0, t), omega * toReal(mu(B_s(x)) / D(s)) = omega * m(s)/(omega s^n) = m(s)/s^n.
+ (iii) By (c), mu(B_s(x))/D(s) -> ofReal(theta_0), which is a finite point of [0, infinity], and toReal is continuous at finite points (ENNReal.tendsto_toReal). Hence toReal(mu(B_s(x))/D(s)) -> toReal(ofReal(theta_0)) = theta_0, using theta_0 >= 0.
+ (iv) Multiplying by the constant omega and using the identity (ii) on the right-neighbourhood (0, t) of 0 gives m(s)/s^n -> omega theta_0 as s -> 0+.
+
+4. Phi(s) -> omega theta_0 as s -> 0+. By steps 2 and 3 and the limit rules for products, sums and differences, Phi(s) = F(s)(m(s)/s^n) + (F(s) - 1) -> 1 * (omega theta_0) + (1 - 1) = omega theta_0.
+
+5. omega theta_0 <= Phi(t). For every s in (0, t) we have 0 < s <= t <= R, hence Phi(s) <= Phi(t) by (b). The interval (0, t) belongs to the right-neighbourhood filter of 0, which is a non-trivial filter on R. Letting s -> 0+ and using step 4 (le_of_tendsto) gives omega theta_0 <= Phi(t).
+
+6. Upper bound for Phi(t). By (a) at this t, F(t) - 1 <= |F(t) - 1| <= c(t), so F(t) <= 1 + c(t). Since m(t) >= 0 and t^n > 0, the ratio m(t)/t^n is >= 0, hence F(t)(m(t)/t^n) <= (1 + c(t))(m(t)/t^n). Adding F(t) - 1 <= c(t) gives Phi(t) <= (1 + c(t))(m(t)/t^n) + c(t).
+
+7. Conclusion. Steps 5 and 6 give omega theta_0 <= (1 + A (t/R)^beta)(toReal(mu(B_t(x)))/t^n) + A (t/R)^beta. Since t in (0, R] was arbitrary, the claim holds for every t in (0, R].
+
+Remark (use in the parent; not part of the proof). The parent applies this child with mu = V.weight, omega = omega_n, R = r = (rho - |y|)/8, A = e^(Lambda/2) Lambda / 2, beta = 1 - n/p and theta_0 = theta(x) >= 1, at mu-a.e. x in B°_r(y). There F is the function given by ted_lp_monotonicity at (x, r, 2r, Lambda): its third bound is (a), its monotonicity conclusion is (b) verbatim, and (c) is V.HasDensity x (theta x) from ted_tangent_plane_facts (3).
+
+Remark (verified Lean realization; not part of the mathematical argument). The following proof compiled with Lean v4.35.0-rc3 / Mathlib 25730c7c inside `namespace GMT.Ch05` / `namespace Submission`, placed before `main_theorem` in a copy of GMT/Ch05/Submission.lean, i.e. in the scope of the frozen contract's `open` commands. `#print axioms` reports only propext, Classical.choice and Quot.sound, and the comparator module generated by verifier/gmt-compare.py child_modules (`exact Submission.ted_dge1_density_le_monotone_bound`) compiles:
+
+```lean
+theorem ted_dge1_density_le_monotone_bound : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (x : Amb n ℓ) (ω R A β θ₀ : ℝ) (F : ℝ → ℝ), 0 < ω → 0 < R → 0 < β → 0 ≤ θ₀ → (∀ t : ℝ, 0 < t → t ≤ R → |F t - 1| ≤ A * (t / R) ^ β) → (∀ s t : ℝ, 0 < s → s ≤ t → t ≤ R → F s * ((μ (closedBall x s)).toReal / s ^ n) + (F s - 1) ≤ F t * ((μ (closedBall x t)).toReal / t ^ n) + (F t - 1)) → Tendsto (fun r : ℝ => μ (closedBall x r) / ENNReal.ofReal (ω * r ^ n)) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ₀)) → ∀ t : ℝ, 0 < t → t ≤ R → ω * θ₀ ≤ (1 + A * (t / R) ^ β) * ((μ (closedBall x t)).toReal / t ^ n) + A * (t / R) ^ β := by
+  intro n ℓ μ x ω R A β θ₀ F hω hR hβ hθ₀ hF hmono hdens t ht htR
+  have hc : Tendsto (fun s : ℝ => A * (s / R) ^ β) (𝓝[>] 0) (𝓝 0) := by
+    have h1 : Tendsto (fun s : ℝ => A * (s / R) ^ β) (𝓝 0) (𝓝 (A * ((0:ℝ) / R) ^ β)) :=
+      (((continuous_id.div_const R).tendsto 0).rpow_const (Or.inr hβ.le)).const_mul A
+    rw [zero_div, Real.zero_rpow hβ.ne', mul_zero] at h1
+    exact h1.mono_left nhdsWithin_le_nhds
+  have hev : ∀ᶠ s in 𝓝[>] (0:ℝ), s ∈ Ioo 0 t := Ioo_mem_nhdsGT ht
+  have hF1 : Tendsto F (𝓝[>] 0) (𝓝 1) := by
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    refine squeeze_zero' (Eventually.of_forall fun s => norm_nonneg _) ?_ hc
+    filter_upwards [hev] with s hs
+    rw [Real.norm_eq_abs]
+    exact hF s hs.1 (hs.2.le.trans htR)
+  have hm : Tendsto (fun s : ℝ => (μ (closedBall x s)).toReal / s ^ n) (𝓝[>] 0) (𝓝 (ω * θ₀)) := by
+    have h1 : Tendsto (fun s => (μ (closedBall x s) / ENNReal.ofReal (ω * s ^ n)).toReal)
+        (𝓝[>] 0) (𝓝 θ₀) := by
+      have := (ENNReal.tendsto_toReal ENNReal.ofReal_ne_top).comp hdens
+      rwa [ENNReal.toReal_ofReal hθ₀] at this
+    have h2 : ∀ᶠ s in 𝓝[>] (0:ℝ), ω * (μ (closedBall x s) / ENNReal.ofReal (ω * s ^ n)).toReal =
+        (μ (closedBall x s)).toReal / s ^ n := by
+      filter_upwards [hev] with s hs
+      have hs0 : 0 < s ^ n := pow_pos hs.1 n
+      rw [ENNReal.toReal_div, ENNReal.toReal_ofReal (by positivity)]
+      field_simp
+    exact (h1.const_mul ω).congr' h2
+  have hΦ : Tendsto (fun s => F s * ((μ (closedBall x s)).toReal / s ^ n) + (F s - 1)) (𝓝[>] 0)
+      (𝓝 (ω * θ₀)) := by
+    have := (hF1.mul hm).add (hF1.sub_const 1)
+    simpa using this
+  have hle : ω * θ₀ ≤ F t * ((μ (closedBall x t)).toReal / t ^ n) + (F t - 1) := by
+    apply le_of_tendsto hΦ
+    filter_upwards [hev] with s hs
+    exact hmono s t hs.1 hs.2.le htR
+  have hFt := hF t ht htR
+  have hmt : 0 ≤ (μ (closedBall x t)).toReal / t ^ n := div_nonneg ENNReal.toReal_nonneg (by positivity)
+  have hFle : F t ≤ 1 + A * (t / R) ^ β := by linarith [le_abs_self (F t - 1)]
+  have := mul_le_mul_of_nonneg_right hFle hmt
+  linarith [le_abs_self (F t - 1)]
+```
+
+## Key steps
+
+1. c(s) = A (s/R)^beta -> 0 as s -> 0+ because beta > 0; with (a) and squeezing, F(s) -> 1.
+2. toReal(mu(B_s(x))/ofReal(omega s^n)) = m(s)/(omega s^n), and continuity of toReal at the finite limit ofReal(theta_0) gives m(s)/s^n -> omega theta_0.
+3. Phi(s) = F(s) m(s)/s^n + F(s) - 1 -> omega theta_0 as s -> 0+.
+4. Phi(s) <= Phi(t) for s in (0, t) and le_of_tendsto give omega theta_0 <= Phi(t).
+5. F(t) <= 1 + c(t), F(t) - 1 <= c(t) and m(t)/t^n >= 0 give Phi(t) <= (1 + c(t)) m(t)/t^n + c(t).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; cmp GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean (both identical; sha256 c966f51e...)`
+- `timeout 300 rg -n 'ted_dge1|density_le_monotone_bound|support_density_lower_bound|ted_density_ge_one' <snapshot>/project (no match)`
+- `timeout 1500 rg -l -i 'varifold' <snapshot>/mathlib/Mathlib (no match)`
+- `rg -n 'theorem mem_support_iff_forall|lemma mem_support_iff_forall' MeasureTheory/Measure/Support.lean (in <snapshot>/mathlib/Mathlib)`
+- `rg -n 'theorem tendsto_measure_biInter_gt' MeasureTheory/Measure/Continuity.lean`
+- `rg -n 'theorem biInter_gt_closedBall|theorem squeeze_zero.|lemma squeeze_zero.' Topology/MetricSpace/Pseudo/Lemmas.lean`
+- `rg -n 'theorem tendsto_toReal ' Topology/Instances/ENNReal/Lemmas.lean`
+- `rg -n 'toReal_div\b|lemma toReal_mono\b|theorem toReal_mono\b|ofReal_of_nonpos\b|theorem ofReal_toReal\b|rpow_lt_top_iff_of_pos|theorem mul_lt_top_iff\b' Basic/ENNReal Data/ENNReal Analysis/SpecialFunctions/Pow/NNReal.lean`
+- `rg -n 'theorem Filter.Tendsto.rpow_const|theorem zero_rpow ' Analysis/SpecialFunctions/Pow/Continuity.lean Analysis/SpecialFunctions/Pow/Real.lean`
+- `rg -n 'theorem measure_mono_null' MeasureTheory/OuterMeasure/Basic.lean; rg -n 'theorem ae_iff' MeasureTheory/OuterMeasure/AE.lean`
+- `rg -n 'theorem withDensity_apply |theorem restrict_restrict |theorem lintegral_mono_set ' MeasureTheory/Measure/WithDensity.lean MeasureTheory/Measure/Restrict.lean MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `rg -n 'theorem le_of_tendsto |theorem Gamma_pos_of_pos|theorem rpow_le_rpow ' Topology/Order Analysis/SpecialFunctions/Gamma/Basic.lean Analysis/SpecialFunctions/Pow/Real.lean`
+- `ls .lake/packages/simongmt/Poincare/SimonGMT/Chapter04; rg -n 'theorem one_le_stationaryDensityReal_of_mem_support_lp|theorem upperSemicontinuousOn_stationaryDensityReal_lp|theorem scaledLpMeanCurvature_mono_ball|def stationaryDensityReal' .lake/packages/simongmt/Poincare/SimonGMT/Chapter04`
+- `python3 -I scan of dag.json: lean_name, lean_statement and status of root.tilt_excess_decay-a1.{density_ge_one,lp_monotonicity,tangent_plane_facts}-a1 and root.affine_approximation-a1.density_ge_one-a1{,.monotone_density_bound-a1,.support_lower_density-a1}; nodes whose lean_name is ted_dge1_density_le_monotone_bound or ted_dge1_support_density_lower_bound (none); duplicate lean_names (none)`
+- `grep -n 'def _solve_children|def _existing_lean_name_problem|max_nodes' /runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py; max_nodes in .humanize/swarm-configs/1625d2a705464ec1a08f788eb20c9abc.json (200) and 7e4cfed8fb4c4d699cb2d2db6572f1b6.json (1000)`
+- `sha256 of parent-supplied natural proof (handoff subproblem.natural_proof) = a1f701e37437e4bfbc04bf2851fcb40e0bbe4315e73ef440b4318581532b4bc1, equal to decomposition-scope-v1.json proof_sha256`
+- `python3 -I /tmp/claude-1000/ted-dge1-a3/scripts/{extract.py,gen.py,mksrc.py} (frozen types from decomposition-v1.json/dag.json; verifier gmt-compare.py contract_scope + child_modules; lean_contract.py validate_lean_statement)`
+- `scripts/runlean.sh '' src{1,2,3} -o b{1,2,3}/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean; scripts/runlean.sh b1 gen/<name>__NodeChallenge.lean (3 types); scripts/runlean.sh b2 gen/ted_dge1_*__NodeSolution.lean, checks/AxChildren.lean, checks/Assembly.lean; scripts/runlean.sh b3 gen/ted_density_ge_one__NodeSolution.lean, checks/AxParent.lean`
+- `sed -n 318,365p book/chapter-04.txt; sed -n 518,570p book/chapter-04.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Gamma/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Density.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-density-ge-one-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-density-ge-one-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-density-ge-one-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-density-ge-one-a1/decomposition-scope-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/swarm-configs/1625d2a705464ec1a08f788eb20c9abc.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/swarm-configs/7e4cfed8fb4c4d699cb2d2db6572f1b6.json`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/tmp/claude-1000/ted-dge1-a3/scripts/extract.py`
+- `/tmp/claude-1000/ted-dge1-a3/scripts/gen.py`
+- `/tmp/claude-1000/ted-dge1-a3/scripts/mksrc.py`
+- `/tmp/claude-1000/ted-dge1-a3/scripts/runlean.sh`
+- `/tmp/claude-1000/ted-dge1-a3/checks/Assembly.lean`
+- `/tmp/claude-1000/ted-dge1-a3/checks/AxChildren.lean`
+- `/tmp/claude-1000/ted-dge1-a3/checks/AxParent.lean`
+- `/tmp/claude-1000/ted-dge1-a3/logs`
+
+Pins and contract. Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json). The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical. The supplied proof is unchanged since v1 (sha256 a1f701e3...).
+
+No-match searches. The snapshot project contains no declaration named ted_dge1_*, density_le_monotone_bound, support_density_lower_bound or ted_density_ge_one. Mathlib has no varifold file.
+
+Names. dag.json (220 nodes) has no node named ted_dge1_density_le_monotone_bound or ted_dge1_support_density_lower_bound, and no duplicate lean_name. The twins aal_dge1_density_le_monotone_bound (rlcr-lean) and aal_dge1_support_density_lower_bound (decomposing) have byte-identical types but are not accepted checkpoints. Fresh names are therefore required, and both proposed names are free.
+
+Mathlib lemmas used by the child proofs and the assembly, located in the snapshot:
+- Measure.mem_support_iff_forall (Support.lean:75).
+- tendsto_measure_biInter_gt (Continuity.lean:266).
+- Metric.biInter_gt_closedBall and squeeze_zero' (Pseudo/Lemmas.lean:100, :32).
+- ENNReal.tendsto_toReal (Instances/ENNReal/Lemmas.lean:102).
+- ENNReal.toReal_div (Basic/ENNReal/Inv.lean:977), toReal_mono (Basic/ENNReal/Real.lean:67) and ofReal_toReal (Basic/ENNReal/Basic.lean:248).
+- ENNReal.mul_lt_top_iff (Operations.lean:211) and ENNReal.rpow_lt_top_iff_of_pos (Pow/NNReal.lean:602).
+- Filter.Tendsto.rpow_const (Pow/Continuity.lean:246), Real.zero_rpow (Pow/Real.lean:128) and Real.rpow_le_rpow (Pow/Real.lean:549).
+- measure_mono_null (OuterMeasure/Basic.lean:54) and ae_iff (OuterMeasure/AE.lean:134).
+- withDensity_apply (WithDensity.lean:44), Measure.restrict_restrict (Restrict.lean:205) and lintegral_mono_set (Lebesgue/Basic.lean:98).
+- le_of_tendsto (OrderClosed.lean:133) and Real.Gamma_pos_of_pos (Gamma/Basic.lean:443).
+
+SimonGMT. Chapter04 (Density.lean:57 stationaryDensityReal; LpDensity.lean:125 scaledLpMeanCurvature_mono_ball) is stated for the strengthened Chapter04.RectifiableVarifold. The chapter README says it needs a bridge via Ch. 3, 1.9, and the queried u.s.c. and lower-density names have no match. Nothing from it is used, since both children are abstract measure lemmas.
+
+Runtime. The v1 worker config has max_nodes = 200 and the current config has 1000. runtime.py's _solve_children node bound explains why the audited v1 split was not activated and why the same two new ids now fit.
+
+Lean checks, fresh in /tmp/claude-1000/ted-dge1-a3:
+- All three NodeChallenge modules elaborate against a contract-only Submission.
+- Both child proofs compile with only standard axioms, and their NodeSolution modules compile.
+- The assembly with the frozen sibling types as hypotheses proves the frozen ted_density_ge_one type with axioms propext, Classical.choice and Quot.sound.
+- End to end, with sorry placeholders for the two siblings, the parent's NodeSolution module compiles.
