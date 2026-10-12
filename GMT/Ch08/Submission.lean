@@ -410,6 +410,29 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- `H^n ⌞ σ(A) = t^n σ_# (H^n ⌞ A)` for the similarity `σ(y) = ξ + t y`, `t > 0`, and every
+set `A` (measurable or not): `σ = (ξ + ·) ∘ (t • ·)` scales `H^n` of every set by `t^n`, and on a
+Borel set `B` both sides evaluate to `H^n(B ∩ σ(A)) = H^n(σ(σ⁻¹(B) ∩ A))`. -/
+theorem Submission.intcpt_ri_restrict_similarity_image :
+    ∀ (N n : ℕ) (ξ : Euclidean N) (t : ℝ) (A : Set (Euclidean N)), 0 < t → (μHE[n] : Measure (Euclidean N)).restrict ((fun y : Euclidean N ↦ ξ + t • y) '' A) = ENNReal.ofReal (t ^ n) • ((μHE[n] : Measure (Euclidean N)).restrict A).map (fun y : Euclidean N ↦ ξ + t • y) := by
+  intro N n ξ t A ht
+  -- Step 1: `σ = fun y ↦ ξ + t • y` is continuous, hence Borel measurable.
+  have hσ : Measurable (fun y : Euclidean N ↦ ξ + t • y) :=
+    (show Continuous (fun y : Euclidean N ↦ ξ + t • y) by fun_prop).measurable
+  -- Step 2: `H^n(σ(S)) = t^n H^n(S)` for every set `S`, since `σ(S) = ξ + t • S`.
+  have hscale : ∀ S : Set (Euclidean N),
+      (μHE[n] : Measure (Euclidean N)) ((fun y : Euclidean N ↦ ξ + t • y) '' S) =
+        ENNReal.ofReal (t ^ n) * μHE[n] S := by
+    intro S
+    rw [← Set.image_image (fun z : Euclidean N ↦ ξ + z) (fun y : Euclidean N ↦ t • y) S,
+      Set.image_smul, (isometry_add_left ξ).euclideanHausdorffMeasure_image,
+      Measure.euclideanHausdorffMeasure_smul₀ n ht.ne' S, ENNReal.smul_def, smul_eq_mul,
+      ← ENNReal.ofReal_coe_nnreal, NNReal.coe_pow, coe_nnnorm, Real.norm_of_nonneg ht.le]
+  -- Steps 3–6: both sides agree on every Borel set `B`.
+  ext B hB
+  rw [Measure.restrict_apply hB, Measure.smul_apply, Measure.map_apply hσ hB,
+    Measure.restrict_apply (hσ hB), smul_eq_mul, ← hscale, Set.image_preimage_inter]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
