@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8a2b26d390f296a4696c271041353f77b0275c07d1aa3c8a725238f4d9a78daa",
+  "git_delta": {
+    "base_commit": "6e2c5d7fcde8ad498d2e237f224889a5baf16811",
+    "candidate_commit": "71fc8e2638658f477b692a5a9bec25045d6c123f",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "weighted_mono_cutoff_integral_tendsto",
+    "diff_sha256": "b02160ef4a386f26dede787a6f9aec0ce75e7aa317c33c7ac7f38568ab9b64c2",
+    "source_sha256": "171337478e458e37dd99eca94ac0363a07cc811358d35c46804be771fb7ab463",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.weighted_mono_cutoff_integral_tendsto",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (f : Ambient n ℓ → ℝ) (ξ : Ambient n ℓ) (t R : ℝ) (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), 0 < t → IntegrableOn f (closedBall ξ R) μ → Tendsto ε atTop (𝓝 0) → (∀ m, (1 + ε m) * t ≤ R) → (∀ m, Measurable (φ m)) → (∀ m s, 0 ≤ φ m s ∧ φ m s ≤ 1) → (∀ m s, s ≤ 1 → φ m s = 1) → (∀ m s, 1 + ε m ≤ s → φ m s = 0) → Tendsto (fun m ↦ ∫ x, φ m (‖x - ξ‖ / t) * f x ∂μ) atTop (𝓝 (∫ x in closedBall ξ t, f x ∂μ))",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
