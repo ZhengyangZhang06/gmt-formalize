@@ -449,6 +449,79 @@ theorem Submission.bv_regularized_unit_field_admissible : ∀ (n : ℕ) (G : Rn 
       _ = ‖G x‖ := one_mul _
       _ ≤ Real.sqrt (‖G x‖ ^ 2 + η ^ 2) :=
         Real.le_sqrt_of_sq_le (le_add_of_nonneg_right (sq_nonneg η))
+/-- **Removing the `η`-regularization on a compact set.** Let `f ≥ 0` be continuous, `χ ≥ 0`
+continuous with compact support, `χ = 1` on the compact set `L`, and suppose
+`∫ χ f² / √(f² + η²) ≤ M` for every `η > 0`. Then `∫_L f ≤ M`. Pointwise on `L`,
+`f - η ≤ f² / √(f² + η²)`, so `∫_L f ≤ ∫ χ f² / √(f² + η²) + η Lⁿ(L)`; letting `η → 0` gives the
+bound for the Bochner integral, which equals the lower integral since `f ≥ 0` is integrable on `L`. -/
+theorem Submission.bv_set_lintegral_le_of_regularized_bound : ∀ (n : ℕ) (f χ : Rn n → ℝ) (L : Set (Rn n)) (M : ℝ≥0∞), Continuous f → (∀ x, 0 ≤ f x) → Continuous χ → HasCompactSupport χ → (∀ x, 0 ≤ χ x) → IsCompact L → (∀ x ∈ L, χ x = 1) → (∀ η : ℝ, 0 < η → ENNReal.ofReal (∫ x, χ x * f x ^ 2 / Real.sqrt (f x ^ 2 + η ^ 2)) ≤ M) → ∫⁻ x in L, ENNReal.ofReal (f x) ≤ M := by
+  intro n f χ L M hf hf0 hχ hχc hχ0 hL hχL hM
+  -- Step 0: the case `M = ∞` is trivial; otherwise `M = ofReal m` with `m = M.toReal ≥ 0`.
+  rcases eq_or_ne M ⊤ with rfl | hMtop
+  · exact le_top
+  obtain ⟨m, hm0, rfl⟩ : ∃ m : ℝ, 0 ≤ m ∧ M = ENNReal.ofReal m :=
+    ⟨M.toReal, ENNReal.toReal_nonneg, (ENNReal.ofReal_toReal hMtop).symm⟩
+  -- Step 1: `L` is measurable, and `f` and constants are integrable on the compact set `L`.
+  have hLmeas : MeasurableSet L := hL.measurableSet
+  have hfL : IntegrableOn f L := hf.continuousOn.integrableOn_compact hL
+  -- Steps 2–6: for fixed `η > 0`, `∫_L f ≤ m + Lⁿ(L) η`.
+  have key : ∀ η : ℝ, 0 < η → ∫ x in L, f x ≤ m + volume.real L * η := by
+    intro η hη
+    -- Step 2: `φ_η = χ f² / √(f² + η²)` is continuous, compactly supported, integrable, `≥ 0`.
+    have hden : ∀ x, 0 < Real.sqrt (f x ^ 2 + η ^ 2) := fun x ↦ Real.sqrt_pos.2 (by positivity)
+    have hφc : Continuous (fun x ↦ χ x * f x ^ 2 / Real.sqrt (f x ^ 2 + η ^ 2)) :=
+      (hχ.mul (hf.pow 2)).div ((hf.pow 2).add continuous_const).sqrt fun x ↦ (hden x).ne'
+    have hφs : HasCompactSupport (fun x ↦ χ x * f x ^ 2 / Real.sqrt (f x ^ 2 + η ^ 2)) := by
+      convert hχc.mul_right (f' := fun x ↦ f x ^ 2 / Real.sqrt (f x ^ 2 + η ^ 2)) using 1
+      funext x
+      simp only [Pi.mul_apply, mul_div_assoc]
+    have hφi : Integrable (fun x ↦ χ x * f x ^ 2 / Real.sqrt (f x ^ 2 + η ^ 2)) :=
+      hφc.integrable_of_hasCompactSupport hφs
+    have hφ0 : ∀ x, 0 ≤ χ x * f x ^ 2 / Real.sqrt (f x ^ 2 + η ^ 2) := fun x ↦
+      div_nonneg (mul_nonneg (hχ0 x) (sq_nonneg _)) (hden x).le
+    -- Step 3: the hypothesis gives `∫ φ_η ≤ m`.
+    have hint : ∫ x, χ x * f x ^ 2 / Real.sqrt (f x ^ 2 + η ^ 2) ≤ m :=
+      (ENNReal.ofReal_le_ofReal_iff hm0).1 (hM η hη)
+    -- Step 4: `t - η ≤ t² / √(t² + η²)` for `t ≥ 0`.
+    have elem : ∀ t : ℝ, 0 ≤ t → t - η ≤ t ^ 2 / Real.sqrt (t ^ 2 + η ^ 2) := by
+      intro t ht
+      have hs : 0 < Real.sqrt (t ^ 2 + η ^ 2) := Real.sqrt_pos.2 (by positivity)
+      have hle : Real.sqrt (t ^ 2 + η ^ 2) ≤ t + η :=
+        (Real.sqrt_le_left (by linarith)).2 (by nlinarith [mul_nonneg ht hη.le])
+      rw [le_div_iff₀ hs]
+      rcases le_or_gt t η with h | h
+      · nlinarith [mul_nonneg (sub_nonneg.2 h) hs.le, sq_nonneg t]
+      · nlinarith [mul_le_mul_of_nonneg_left hle (sub_nonneg.2 h.le), sq_nonneg η]
+    -- Step 5: on `L`, `χ = 1`, so `f - η ≤ φ_η`.
+    have hpt : ∀ x ∈ L, f x - η ≤ χ x * f x ^ 2 / Real.sqrt (f x ^ 2 + η ^ 2) := by
+      intro x hx
+      rw [hχL x hx, one_mul]
+      exact elem (f x) (hf0 x)
+    -- Step 6: `∫_L f = ∫_L (f - η) + Lⁿ(L) η ≤ ∫_L φ_η + Lⁿ(L) η ≤ ∫ φ_η + Lⁿ(L) η`.
+    have hcL : IntegrableOn (fun _ : Rn n ↦ η) L := continuous_const.continuousOn.integrableOn_compact hL
+    have hsplit : ∫ x in L, f x = (∫ x in L, (f x - η)) + volume.real L * η := by
+      rw [integral_sub hfL hcL, setIntegral_const, smul_eq_mul]
+      ring
+    have hmono : ∫ x in L, (f x - η) ≤ ∫ x in L, χ x * f x ^ 2 / Real.sqrt (f x ^ 2 + η ^ 2) :=
+      setIntegral_mono_on (hfL.sub hcL) hφi.integrableOn hLmeas hpt
+    have hsub : ∫ x in L, χ x * f x ^ 2 / Real.sqrt (f x ^ 2 + η ^ 2) ≤
+        ∫ x, χ x * f x ^ 2 / Real.sqrt (f x ^ 2 + η ^ 2) :=
+      setIntegral_le_integral hφi (ae_of_all _ hφ0)
+    linarith
+  -- Step 7: let `η → 0` via `η = ε / (Lⁿ(L) + 1)`.
+  have hLm : ∫ x in L, f x ≤ m := by
+    refine le_of_forall_pos_le_add fun ε hε ↦ ?_
+    have hμ0 : 0 ≤ volume.real L := measureReal_nonneg
+    have hη : 0 < ε / (volume.real L + 1) := div_pos hε (by linarith)
+    have h1 := key _ hη
+    have h2 : volume.real L * (ε / (volume.real L + 1)) ≤ ε := by
+      rw [mul_div_assoc', div_le_iff₀ (by linarith)]
+      nlinarith
+    linarith
+  -- Step 8: convert the Bochner integral of `f ≥ 0` on `L` to the lower integral.
+  calc ∫⁻ x in L, ENNReal.ofReal (f x) = ENNReal.ofReal (∫ x in L, f x) :=
+        (ofReal_integral_eq_lintegral_ofReal hfL.integrable (ae_of_all _ hf0)).symm
+    _ ≤ ENNReal.ofReal m := ENNReal.ofReal_le_ofReal hLm
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
