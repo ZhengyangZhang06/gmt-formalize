@@ -517,6 +517,43 @@ theorem Submission.frt_vgm_ext_prod_of_finite_rectangles :
     rintro _ ⟨A, ⟨hA, hμA⟩, B, hB, rfl⟩
     exact hrect A B hA hB hμA
 
+/-- Graph-measure extensionality (Simon Ch. 8, proof of 1.2, p. 208: "from the arbitrariness of
+`A` and `β`"): if `∫_{Gₙ(A)} β(S) dV(y,S) = ∫_A β(τ(x)) dμ_V(x)` for every Borel `A ⊆ ℝ^N` and
+every continuous `β ≥ 0` on `G(N,n)`, then `V = (μ_V)_#(x ↦ (x, τ(x)))`. -/
+theorem Submission.frt_vgm_eq_map_graph_of_lintegral :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (τ : Euclidean N → Grassmannian N n), Measurable τ → (∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A → (∀ S, 0 ≤ β S) → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, ENNReal.ofReal (β (τ x)) ∂V.weight) → V.measure = V.weight.map (fun x ↦ (x, τ x)) := by
+  intro N n U V τ hτ hH
+  -- Step 1: the graph map `x ↦ (x, τ x)` is measurable.
+  have hg : Measurable fun x : Euclidean N ↦ (x, τ x) := measurable_id.prodMk hτ
+  -- Step 5: `μ_V` is σ-finite and `V(A ×ˢ G) = μ_V(A)`, so it suffices to compare `V` with
+  -- `(μ_V)_#(x ↦ (x, τ x))` on rectangles `A ×ˢ B` with `μ_V(A) < ∞`.
+  refine Submission.frt_vgm_ext_prod_of_finite_rectangles (Euclidean N) (Grassmannian N n)
+    V.weight V.measure (V.weight.map fun x ↦ (x, τ x)) inferInstance
+    (fun A hA hAfin ↦ by rwa [← V.weight_apply hA]) fun A B hA hB hAfin ↦ ?_
+  -- Step 2: the slice measures `m₁(B) = V(A ×ˢ B)` and `m₂(B) = μ_V(A ∩ τ⁻¹ B)` on `G(N,n)`.
+  have hm₁B : (V.measure.restrict (A ×ˢ univ)).map Prod.snd B = V.measure (A ×ˢ B) := by
+    rw [Measure.map_apply measurable_snd hB, Measure.restrict_apply (measurable_snd hB)]
+    congr 1
+    ext z
+    simp [and_comm]
+  have hm₂B : (V.weight.restrict A).map τ B = V.weight (A ∩ τ ⁻¹' B) := by
+    rw [Measure.map_apply hτ hB, Measure.restrict_apply (hτ hB), inter_comm]
+  -- `m₁` is finite: `m₁(G) = V(A ×ˢ G) = μ_V(A) < ∞`.
+  have hfin : IsFiniteMeasure ((V.measure.restrict (A ×ˢ univ)).map Prod.snd) := by
+    have : IsFiniteMeasure (V.measure.restrict (A ×ˢ univ)) :=
+      isFiniteMeasure_restrict.2 (by rwa [← V.weight_apply hA])
+    infer_instance
+  -- Steps 3–4: equal integrals of every continuous `β ≥ 0` force `m₁ = m₂`.
+  have hm : (V.measure.restrict (A ×ˢ univ)).map Prod.snd = (V.weight.restrict A).map τ := by
+    refine Submission.frt_vgm_ext_finite_of_lintegral_continuous (Grassmannian N n) _ _ hfin
+      fun β hβ ↦ ?_
+    have hβm : Measurable fun S ↦ ENNReal.ofReal (β S) :=
+      ENNReal.measurable_ofReal.comp β.continuous.measurable
+    rw [lintegral_map hβm measurable_snd, lintegral_map hβm hτ]
+    exact hH A β hA hβ
+  rw [← hm₁B, hm, hm₂B, Measure.map_apply hg (hA.prod hB)]
+  rfl
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
