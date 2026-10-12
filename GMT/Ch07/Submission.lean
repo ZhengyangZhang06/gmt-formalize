@@ -740,6 +740,65 @@ theorem Submission.dorag_gc_decay_plane_eq_approxTangent : ∀ (P n : ℕ) (U W 
   rw [← Submodule.starProjection_eq_self_iff (K := S), ← Submodule.starProjection_eq_self_iff
     (K := approxTangentPlane n R.carrier x), ← hpx x, hpeq v]
 
+theorem Submission.dorag_gc_graph_tangent_ae : ∀ (n k : ℕ) (U W : Set (Euclid (n + k))) (R : IMRep U n) (κ : ℝ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (z : Euclid (n + k)) (a : ℝ), IsOpen W → W ⊆ U → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → (∀ y ∈ R.measure.support, ∀ t : ℝ, 0 < t → closedBall y t ⊆ W → unitBallVolume n ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t)) → μHE[n] ((R.measure.support ∩ W) \ R.carrier) = 0 → (∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), ∀ v : Euclid n, x = z + ι v + ι' (f v) → DifferentiableAt ℝ f v ∧ approxTangentPlane n R.carrier x = LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap)) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v w, ‖f v - f w‖ ≤ 1 / 4 * ‖v - w‖) → f 0 = 0 → 0 < a → closedBall z a ⊆ W → R.measure.support ∩ closedBall z a = range (fun v => z + ι v + ι' (f v)) ∩ closedBall z a → ∀ᵐ v ∂volume, v ∈ ball (0 : Euclid n) (4 * a / 5) → DifferentiableAt ℝ f v ∧ approxTangentPlane n R.carrier (z + ι v + ι' (f v)) = LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap) ∧ ∀ (S : Submodule ℝ (Euclid (n + k))) (s₀ K : ℝ), 0 < s₀ → (∀ s : ℝ, 0 < s → s ≤ s₀ → ∫⁻ x in closedBall (z + ι v + ι' (f v)) s, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (K * s ^ (n + 1))) → S = LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap) := by
+  intro n k U W R κ ι ι' f z a hW hWU hP hdens hnull htan horth hfL hf0 ha hball hspt
+  set Φ : Euclid n → Euclid (n + k) := fun v => z + ι v + ι' (f v) with hΦ
+  -- Step 1 (geometry): `f` is `¼`-Lipschitz, so `f` and `Φ` are continuous, and for `|v| < 4a/5`,
+  -- `|Φ(v) − z|² = |v|² + |f(v)|² ≤ (17/16)|v|² < a²`, so `Φ(v) ∈ spt μ ∩ B_a(z) ⊆ spt μ ∩ W`.
+  have hLip : LipschitzWith (1 / 4 : NNReal) f :=
+    LipschitzWith.of_dist_le_mul fun v w => by simpa [dist_eq_norm] using hfL v w
+  have hfc : Continuous f := hLip.continuous
+  have hΦc : Continuous Φ := by
+    simp only [hΦ]
+    fun_prop
+  have hgeo : ∀ v ∈ ball (0 : Euclid n) (4 * a / 5), Φ v ∈ R.measure.support ∩ W := by
+    intro v hv
+    rw [mem_ball_zero_iff] at hv
+    have hfv : ‖f v‖ ≤ 1 / 4 * ‖v‖ := by simpa [hf0] using hfL v 0
+    have hsq : ‖Φ v - z‖ ^ 2 = ‖v‖ ^ 2 + ‖f v‖ ^ 2 := by
+      have hΦz : Φ v - z = ι v + ι' (f v) := by
+        simp only [hΦ]
+        abel
+      rw [hΦz, norm_add_sq_real, horth, LinearIsometry.norm_map, LinearIsometry.norm_map]
+      ring
+    have h1 : ‖f v‖ ^ 2 ≤ (1 / 4 * ‖v‖) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hfv 2
+    have h2 : ‖v‖ ^ 2 ≤ (4 * a / 5) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hv.le 2
+    have hle : ‖Φ v - z‖ ^ 2 ≤ a ^ 2 := by nlinarith [sq_nonneg a]
+    have hmem : Φ v ∈ range Φ ∩ closedBall z a :=
+      ⟨mem_range_self v, mem_closedBall_iff_norm.2 (abs_le_of_sq_le_sq' hle ha.le).2⟩
+    rw [← hspt] at hmem
+    exact ⟨hmem.1, hball hmem.2⟩
+  -- Step 2 (transfer): graph_pushforward gives `Φ_#(Lⁿ⌞B̆_{4a/5}(0)) ≤ μ⌞Φ(B̆_{4a/5}(0)) ≤ μ`, so a
+  -- property of `μ`-a.e. `x` holds at `Φ(v)` for `Lⁿ`-a.e. `v ∈ B̆_{4a/5}(0)`.
+  have hmap := Submission.dorag_gc_graph_map_volume_le_measure n k (n + k) U W R ι ι' f z
+    (ball (0 : Euclid n) (4 * a / 5)) horth hfc hnull hgeo
+  have htransfer : ∀ Q : Euclid (n + k) → Prop, (∀ᵐ x ∂R.measure, Q x) →
+      ∀ᵐ v ∂volume, v ∈ ball (0 : Euclid n) (4 * a / 5) → Q (Φ v) := by
+    intro Q hQ
+    have hQ' : ∀ᵐ x ∂(Measure.map Φ (volume.restrict (ball (0 : Euclid n) (4 * a / 5)))), Q x :=
+      ae_mono (hmap.trans Measure.restrict_le_self) hQ
+    exact (ae_restrict_iff' measurableSet_ball).1 (ae_of_ae_map hΦc.measurable.aemeasurable hQ')
+  -- Step 3 (`htan` for `μ`): `μ⌞W = (Hⁿ⌞(M ∩ W)).withDensity θ ≪ Hⁿ⌞(M ∩ W)`.
+  have htanμ : ∀ᵐ x ∂R.measure, x ∈ W → ∀ v : Euclid n, x = z + ι v + ι' (f v) →
+      DifferentiableAt ℝ f v ∧ approxTangentPlane n R.carrier x =
+        LinearMap.range (ι.toLinearMap + ι'.toLinearMap ∘ₗ (fderiv ℝ f v).toLinearMap) := by
+    have hac : R.measure.restrict W ≪ μHE[n].restrict (R.carrier ∩ W) := by
+      unfold IMRep.measure
+      rw [restrict_withDensity hW.measurableSet, Measure.restrict_restrict hW.measurableSet,
+        inter_comm]
+      exact withDensity_absolutelyContinuous _ _
+    exact (ae_restrict_iff' hW.measurableSet).1 (hac.ae_le htan)
+  -- Step 4 (decay planes): by decay_plane, at `μ`-a.e. `x ∈ W` every plane `S` with a tilt-excess
+  -- decay bound at `x` is `TₓM`.
+  have hdecay := Submission.dorag_gc_decay_plane_eq_approxTangent (n + k) n U W R κ hW hWU hP
+    hdens
+  -- Step 5: combine Steps 3 and 4 at `x = Φ(v) ∈ W`, with the witness `v`.
+  filter_upwards [htransfer _ (htanμ.and hdecay)] with v hv hvB
+  obtain ⟨htv, hdv⟩ := hv hvB
+  have hΦW : Φ v ∈ W := (hgeo v hvB).2
+  obtain ⟨hdiff, hT⟩ := htv hΦW v rfl
+  exact ⟨hdiff, hT, fun S s₀ K hs₀ hS => (hdv hΦW S s₀ K hs₀ hS).trans hT⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
