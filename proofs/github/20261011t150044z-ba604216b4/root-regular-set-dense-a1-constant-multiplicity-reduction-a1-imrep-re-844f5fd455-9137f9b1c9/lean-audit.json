@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ee4544215b0fa43fbe73aa4032eb1f075fa0822c2ea9a243e99fb185be175ae3",
+  "git_delta": {
+    "base_commit": "7699097a076de38e1a73766ba983586a0bb92073",
+    "candidate_commit": "6d5fb477cd678ba8a2494f88aea12fb69f2dbbc3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_cmr_ir_blowUp_image_measure",
+    "diff_sha256": "a67a666d4304c51b5521d4b3196d4dd1efe317388bd218cbe2c875e6905c2c3a",
+    "source_sha256": "d6e1cbc7459329872e5897380de8daa83fcb87a713ec5e12cd08134df3e26e34",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_cmr_ir_blowUp_image_measure",
+      "statement": "∀ (P n : ℕ) (x : Euclid P) (r : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S) = ENNReal.ofReal (r⁻¹ ^ n) * μHE[n] S",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
