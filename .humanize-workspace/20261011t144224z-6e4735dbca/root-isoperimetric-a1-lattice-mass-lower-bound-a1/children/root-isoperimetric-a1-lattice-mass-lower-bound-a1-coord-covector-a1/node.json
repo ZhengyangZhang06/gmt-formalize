@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1.coord_covector-a1",
+  "parent_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1",
+  "depth": 3,
+  "title": "Coordinate covector dx^α: Kronecker evaluation on coordinate frames and unit coefficient norm",
+  "statement": "Let n, N ∈ ℕ and let α : Fin n ↪o Fin N be a strictly increasing multi-index (SimonMultiIndex n N). Let dx^α := wedgeCovectors n (i ↦ EuclideanSpace.proj (α i)) be the constant n-covector on ℝ^N given by dx^α(v_1, …, v_n) = det[(v_j)_{α(i)}]_{i,j}, and let e_a := EuclideanSpace.single a 1 be the standard basis vectors of ℝ^N. Then (i) dx^α(e_{α(1)}, …, e_{α(n)}) = 1; (ii) dx^α(e_{α'(1)}, …, e_{α'(n)}) = 0 for every multi-index α' : Fin n ↪o Fin N with α' ≠ α; and (iii) covectorEuclideanNorm(c • dx^α) = |c| for every real c, where covectorEuclideanNorm(ω) = (Σ_{I : Fin n → Fin N strictly increasing} ω(e_{I(1)}, …, e_{I(n)})²)^{1/2} is the Euclidean coefficient norm of SimonGMT.",
+  "lean_statement": "∀ (n N : ℕ) (α : SimonMultiIndex n N), (wedgeCovectors n (fun i => EuclideanSpace.proj (α i)) : Covector (Eucl N) n) (fun j => EuclideanSpace.single (α j) (1 : ℝ)) = 1 ∧ (∀ α' : SimonMultiIndex n N, α' ≠ α → (wedgeCovectors n (fun i => EuclideanSpace.proj (α i)) : Covector (Eucl N) n) (fun j => EuclideanSpace.single (α' j) (1 : ℝ)) = 0) ∧ ∀ c : ℝ, covectorEuclideanNorm (c • (wedgeCovectors n (fun i => EuclideanSpace.proj (α i)) : Covector (Eucl N) n)) = |c|",
+  "lean_name": "isoperimetric_coord_covector_eval",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-lattice-mass-lower-bound-a1-coord-covector-a1-a1"
+}
