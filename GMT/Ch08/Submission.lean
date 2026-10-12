@@ -729,6 +729,85 @@ theorem Submission.frt_td_hasDensity_of_ball_mass_bounds :
     obtain ⟨b', hab', hb'b⟩ := exists_between hb
     filter_upwards [hup _ (ENNReal.mul_lt_mul_left hω0 hωt hab')] with t ht
     exact (ENNReal.div_le_of_le_mul (by rwa [← mul_assoc])).trans_lt hb'b
+/-- Integration against a measure that is `θ H^n ⌞ M` on Borel sets (used in the proof of Simon
+Ch. 8, 1.2, where `μ_V = θ H^n ⌞ M`): if `μ B = ∫⁻_{B ∩ M} θ dH^n` for every Borel set `B`,
+`θ > 0` on `M`, `θ` is `H^n`-integrable on `M ∩ K` for a Borel set `K` and `h` vanishes off `K`,
+then `∫ h dμ = ∫_M h θ dH^n`.  `h` is arbitrary: no measurability or integrability is assumed. -/
+theorem Submission.frt_wat_integral_eq_setIntegral_mul :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M K : Set (Euclidean N)) (θ h : Euclidean N → ℝ), NullMeasurableSet M μHE[n] → (∀ y ∈ M, 0 < θ y) → MeasurableSet K → IntegrableOn θ (M ∩ K) μHE[n] → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ y in B ∩ M, ENNReal.ofReal (θ y) ∂μHE[n]) → (∀ z, z ∉ K → h z = 0) → ∫ z, h z ∂μ = ∫ z in M, h z * θ z ∂μHE[n] := by
+  intro N n μ M K θ h hM hθ hK hθK hμ hh
+  -- Step 1: `μ ⌞ K = (H^n ⌞ (M ∩ K)).withDensity (ofReal ∘ θ)`, compared on Borel sets `B`.
+  have hrestr : μ.restrict K =
+      ((μHE[n] : Measure (Euclidean N)).restrict (M ∩ K)).withDensity
+        (fun y ↦ ENNReal.ofReal (θ y)) := by
+    ext B hB
+    rw [Measure.restrict_apply hB, hμ _ (hB.inter hK), withDensity_apply _ hB,
+      Measure.restrict_restrict hB, inter_assoc, inter_comm K M]
+  -- `M ∩ K` is `H^n`-null-measurable, so `H^n ⌞ (M ∩ K)`-a.e. point lies in `M ∩ K`.
+  have hMK : NullMeasurableSet (M ∩ K) (μHE[n] : Measure (Euclidean N)) :=
+    hM.inter hK.nullMeasurableSet
+  calc ∫ z, h z ∂μ = ∫ z in K, h z ∂μ :=
+        -- Step 2: `h = 0` off `K`.
+        (setIntegral_eq_integral_of_forall_compl_eq_zero hh).symm
+    _ = ∫ z, (ENNReal.ofReal (θ z)).toReal • h z
+          ∂((μHE[n] : Measure (Euclidean N)).restrict (M ∩ K)) := by
+        -- Step 3: the density `ofReal ∘ θ` is a.e.-measurable (`θ` is integrable) and finite.
+        rw [hrestr, integral_withDensity_eq_integral_toReal_smul₀
+          (Integrable.aemeasurable hθK).ennreal_ofReal
+          (Eventually.of_forall fun _ ↦ ENNReal.ofReal_lt_top)]
+    _ = ∫ z in M ∩ K, h z * θ z ∂μHE[n] := by
+        -- Step 4: `(ofReal (θ z)).toReal = θ z` for a.e. `z ∈ M ∩ K`, as `θ > 0` on `M`.
+        refine integral_congr_ae ?_
+        filter_upwards [ae_restrict_mem₀ hMK] with z hz
+        rw [ENNReal.toReal_ofReal (hθ z hz.1).le, smul_eq_mul, mul_comm]
+    _ = ∫ z in M, h z * θ z ∂μHE[n] :=
+        -- Step 5: `h θ = 0` on `M \ (M ∩ K)` and `M` is null-measurable.
+        (setIntegral_eq_of_subset_of_ae_sdiff_eq_zero hM inter_subset_left
+          (Eventually.of_forall fun z hz ↦ by
+            rw [hh z fun hzK ↦ hz.2 ⟨hz.1, hzK⟩, zero_mul])).symm
+/-- Dilation change of variables for `H^n` set integrals over blow-up images (the homothety step
+behind Simon Ch. 8, 1.2 with Ch. 3, 1.7): for `r > 0`, `η = η_{x,r}` (`η y = r⁻¹ • (y - x)`), an
+arbitrary set `M` and an arbitrary `F : ℝ^N → ℝ`, `∫_{η(M)} F dH^n = r⁻¹ ^ n ∫_M F ∘ η dH^n`. -/
+theorem Submission.frt_wat_setIntegral_blowUpMap_image :
+    ∀ (N n : ℕ) (x : Euclidean N) (r : ℝ) (M : Set (Euclidean N)) (F : Euclidean N → ℝ), 0 < r → ∫ y in Chapter03.blowUpMap x r '' M, F y ∂μHE[n] = r⁻¹ ^ n * ∫ z in M, F (Chapter03.blowUpMap x r z) ∂μHE[n] := by
+  intro N n x r M F hr
+  -- Step 1: `η = blowUpMap x r` is a homeomorphism (inverse `y ↦ x + r • y`), hence an
+  -- injective measurable embedding.
+  let η : Euclidean N ≃ₜ Euclidean N :=
+    (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+  have hη : (η : Euclidean N → Euclidean N) = Chapter03.blowUpMap x r := rfl
+  have hemb : MeasurableEmbedding η := η.measurableEmbedding
+  -- Step 2: `H^n(η⁻¹ S) = r ^ n H^n(S)` for every set `S`, as `η⁻¹ S = x + r • S`.
+  have hpre : ∀ S : Set (Euclidean N), (μHE[n] : Measure (Euclidean N)) (η ⁻¹' S) =
+      ENNReal.ofReal (r ^ n) * μHE[n] S := by
+    intro S
+    have hS : (η : Euclidean N → Euclidean N) ⁻¹' S = (fun y ↦ x + y) '' (r • S) := by
+      ext y
+      simp only [Set.mem_preimage, Set.mem_image, Set.mem_smul_set]
+      constructor
+      · intro h
+        refine ⟨r • (r⁻¹ • (y - x)), ⟨_, h, rfl⟩, ?_⟩
+        simp [smul_smul, mul_inv_cancel₀ hr.ne']
+      · rintro ⟨_, ⟨s, hs, rfl⟩, rfl⟩
+        simpa [η, smul_smul, inv_mul_cancel₀ hr.ne'] using hs
+    rw [hS, (isometry_add_left x).euclideanHausdorffMeasure_image,
+      Measure.euclideanHausdorffMeasure_smul₀ n hr.ne', ENNReal.smul_def, smul_eq_mul,
+      ENNReal.coe_pow, ← enorm_eq_nnnorm, Real.enorm_eq_ofReal hr.le, ENNReal.ofReal_pow hr.le]
+  -- Step 3: `H^n.map η = r ^ n • H^n` (`Measure.ext` on Borel sets).
+  have hmap : (μHE[n] : Measure (Euclidean N)).map η =
+      ENNReal.ofReal (r ^ n) • (μHE[n] : Measure (Euclidean N)) := by
+    ext S hS
+    rw [Measure.map_apply hemb.measurable hS, hpre, Measure.smul_apply, smul_eq_mul]
+  -- Step 4: `(H^n ⌞ M).map η = r ^ n • H^n ⌞ η(M)`, using `η⁻¹(η(M)) = M`.
+  have hres : ((μHE[n] : Measure (Euclidean N)).restrict M).map η =
+      ENNReal.ofReal (r ^ n) • (μHE[n] : Measure (Euclidean N)).restrict (η '' M) := by
+    rw [← Measure.restrict_smul, ← hmap, hemb.restrict_map, Set.preimage_image_eq M η.injective]
+  -- Step 5: `∫_M F ∘ η dH^n = r ^ n ∫_{η(M)} F dH^n` (no measurability of `M` or `F` needed).
+  have hcov : ∫ z in M, F (η z) ∂μHE[n] = r ^ n * ∫ y in η '' M, F y ∂μHE[n] := by
+    rw [← hemb.integral_map, hres, integral_smul_measure,
+      ENNReal.toReal_ofReal (pow_nonneg hr.le n), smul_eq_mul]
+  -- Step 6: multiply by `r⁻¹ ^ n`, using `r⁻¹ ^ n * r ^ n = 1`.
+  rw [← hη, hcov, ← mul_assoc, ← mul_pow, inv_mul_cancel₀ hr.ne', one_pow, one_mul]
 /-- Weight blow-ups at a tangent point (Simon Ch. 8, Definition 1.1 tested with `f(y,S) = g(y)`):
 if `V` has tangent plane `T` with multiplicity `θ` at `x`, then for every `g ∈ C_c(ℝ^N)`,
 `t^{-n} ∫ g(t^{-1}(z - x)) dμ_V(z) → θ ∫_T g dH^n` as `t ↓ 0`. -/
@@ -2673,6 +2752,63 @@ theorem Submission.frt_weight_eq_multiplicity_hausdorff :
       _ = ∫⁻ x in toMeasurable V.weight B ∩ M, ENNReal.ofReal (θ x) ∂μHE[n] :=
         hBorel _ (measurableSet_toMeasurable _ _)
       _ = ∫⁻ x in B ∩ M, ENNReal.ofReal (θ x) ∂μHE[n] := (setLIntegral_congr hae).symm
+
+/-- Tangent planes of `V` are the approximate tangent planes of its carrier (Simon Ch. 8, proof of
+1.2, with Ch. 3, Definition 1.7): if `μ_V(B) = ∫_{B ∩ M} θ dH^n` for Borel `B` and `V` has tangent
+plane `T` with multiplicity `θ(x)` at `x`, then `T` is the unique `n`-plane that is an approximate
+tangent space of `M` at `x` with respect to `θ`. -/
+theorem Submission.frt_weighted_approx_tangent :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (T : Grassmannian N n), NullMeasurableSet M μHE[n] → (∀ y ∈ M, 0 < θ y) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) μHE[n]) → (∀ B : Set (Euclidean N), MeasurableSet B → V.weight B = ∫⁻ y in B ∩ M, ENNReal.ofReal (θ y) ∂μHE[n]) → HasTangentPlane V x T (θ x) → ∀ S : Grassmannian N n, Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ↔ S = T := by
+  intro N n U V M θ x T hM hθ hint hweight hT
+  -- Steps 1, 4 and 5: `T.plane` is an approximate tangent space of `M` at `x` w.r.t. `θ`.
+  have hTM : Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x T.plane := by
+    refine ⟨T.finrank_plane, fun f ↦ ?_⟩
+    -- Radii `0 < r < ε / R` with `B_ε(x) ⊆ U` and `spt f ⊆ B_R(0)`, so that `B_{rR}(x) ⊆ U`.
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hT.1
+    obtain ⟨R₀, hR₀⟩ :=
+      f.hasCompactSupport.isCompact.isBounded.subset_closedBall (0 : Euclidean N)
+    have hR : (0 : ℝ) < max R₀ 1 := lt_max_of_lt_right one_pos
+    refine (Submission.frt_weight_blowup_tendsto N n U V x T (θ x) hT f).congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hε hR)] with r hr
+    have hr0 : 0 < r := hr.1
+    have hKU : closedBall x (r * max R₀ 1) ⊆ U :=
+      (closedBall_subset_ball ((lt_div_iff₀ hR).1 hr.2)).trans hεU
+    -- `z ↦ f(r⁻¹(z - x))` vanishes off the compact set `B_{rR}(x) ⊆ U`.
+    have hvanish : ∀ z, z ∉ closedBall x (r * max R₀ 1) → f (r⁻¹ • (z - x)) = 0 := by
+      intro z hz
+      by_contra hfz
+      have hmem := hR₀ (subset_tsupport _ hfz)
+      rw [mem_closedBall_zero_iff, norm_smul, norm_inv, Real.norm_of_nonneg hr0.le] at hmem
+      refine hz (mem_closedBall_iff_norm.2 ?_)
+      calc ‖z - x‖ = r * (r⁻¹ * ‖z - x‖) := by
+            rw [← mul_assoc, mul_inv_cancel₀ hr0.ne', one_mul]
+        _ ≤ r * max R₀ 1 := mul_le_mul_of_nonneg_left (hmem.trans (le_max_left _ _)) hr0.le
+    -- Step 2: `∫ f(r⁻¹(z - x)) dμ_V(z) = ∫_M f(r⁻¹(z - x)) θ(z) dH^n(z)`.
+    have h₁ : ∫ z, f (r⁻¹ • (z - x)) ∂V.weight =
+        ∫ z in M, f (r⁻¹ • (z - x)) * θ z ∂μHE[n] :=
+      Submission.frt_wat_integral_eq_setIntegral_mul N n V.weight M
+        (closedBall x (r * max R₀ 1)) θ (fun z ↦ f (r⁻¹ • (z - x))) hM hθ
+        measurableSet_closedBall (hint _ (isCompact_closedBall x _) hKU) hweight hvanish
+    -- Step 3: the homothety change of variables `y = η_{x,r}(z)`, with `x + r η_{x,r}(z) = z`.
+    have h₂ : ∫ y in Chapter03.blowUpMap x r '' M, f y * θ (x + r • y) ∂μHE[n] =
+        r⁻¹ ^ n * ∫ z in M, f (Chapter03.blowUpMap x r z) *
+          θ (x + r • Chapter03.blowUpMap x r z) ∂μHE[n] :=
+      Submission.frt_wat_setIntegral_blowUpMap_image N n x r M (fun y ↦ f y * θ (x + r • y)) hr0
+    have h₃ : ∀ z, f (Chapter03.blowUpMap x r z) * θ (x + r • Chapter03.blowUpMap x r z) =
+        f (r⁻¹ • (z - x)) * θ z := fun z ↦ by
+      rw [Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr0.ne', one_smul, add_sub_cancel]
+    simp only [h₃] at h₂
+    rw [h₁, h₂]
+  -- Step 6: weighted approximate tangent planes are unique as `θ(x) ≠ 0`, and a point of
+  -- `G(N,n)` is determined by its plane.
+  intro S
+  refine ⟨fun hS ↦ ?_, fun hST ↦ hST ▸ hTM⟩
+  have hplane : S.plane = T.plane :=
+    Chapter03.HasWeightedApproximateTangentSpaceAt.unique hT.2.1.ne' hS hTM
+  calc S = Grassmannian.ofSubmodule S.plane S.finrank_plane :=
+        (Grassmannian.ofSubmodule_plane S).symm
+    _ = Grassmannian.ofSubmodule T.plane T.finrank_plane := by simp only [hplane]
+    _ = T := Grassmannian.ofSubmodule_plane T
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
