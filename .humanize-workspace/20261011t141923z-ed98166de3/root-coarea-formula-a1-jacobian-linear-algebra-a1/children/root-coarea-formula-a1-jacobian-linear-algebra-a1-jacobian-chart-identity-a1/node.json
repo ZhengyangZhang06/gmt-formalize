@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1.jacobian_chart_identity-a1",
+  "parent_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1",
+  "depth": 3,
+  "title": "Chart identity: coareaJacobian · normDet(A) = normDet(B)",
+  "statement": "Let N, m, k ∈ ℕ, M ⊆ ℝᴺ, f : ℝᴺ → ℝᵐ and x ∈ ℝᴺ, where ℝⁿ = EuclideanSpace ℝ (Fin n).\nLet P := WithLp 2 (ℝᵐ × ℝᵏ) be the Euclidean product, with first component p₁ = WithLp.fst p.\nSuppose A : P → ℝᴺ is an injective continuous linear map with tangentSpace M x = range A and (fderiv ℝ f x)(A p) = p₁ for all p ∈ P.\nSuppose B : ℝᵏ → ℝᴺ is a continuous linear map with B b = A(toLp(0, b)) for all b ∈ ℝᵏ.\nThen coareaJacobian M f x · normDet(A) = normDet(B), where normDet is Mathlib's LinearMap.normDet of the underlying linear maps.",
+  "lean_statement": "∀ (N m k : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N) (A : WithLp 2 (Rn m × Rn k) →L[ℝ] Rn N) (B : Rn k →L[ℝ] Rn N), Function.Injective A → tangentSpace M x = LinearMap.range A.toLinearMap → (∀ p, fderiv ℝ f x (A p) = WithLp.fst p) → (∀ b, B b = A (WithLp.toLp 2 (0, b))) → coareaJacobian M f x * A.toLinearMap.normDet = B.toLinearMap.normDet",
+  "lean_name": "coareaJacobian_mul_normDet_chart",
+  "depends_on": [
+    "root.coarea_formula-a1.jacobian_linear_algebra-a1.jacobian_normdet_bridge-a1",
+    "root.coarea_formula-a1.jacobian_linear_algebra-a1.chart_normdet_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1.jacobian_normdet_bridge-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1.chart_normdet_identity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-jacobian-linear-algebra-a1-jacobian-chart-identity-a1-a1"
+}

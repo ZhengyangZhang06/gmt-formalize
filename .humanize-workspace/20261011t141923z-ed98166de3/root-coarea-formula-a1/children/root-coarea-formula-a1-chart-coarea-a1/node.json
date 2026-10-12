@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.chart_coarea-a1",
+  "parent_id": "root.coarea_formula-a1",
+  "depth": 2,
+  "title": "Co-area formula on one straightening chart (Borel sets and Borel weights)",
+  "statement": "Let N, m, k ∈ ℕ, M ⊆ ℝᴺ, f : ℝᴺ → ℝᵐ and P := WithLp 2 (ℝᵐ × ℝᵏ). Let Ω ⊆ P be open and Ψ : P → ℝᴺ be C¹ on Ω and injective on Ω, with DΨ(p) injective for p ∈ Ω. Assume that for every p ∈ Ω: f is differentiable at Ψ(p), f(Ψ p) = WithLp.fst p, and tangentSpace M (Ψ p) = range DΨ(p). Let S ⊆ Ψ(Ω) be a Borel set and g : ℝᴺ → [0,∞] Borel measurable. Then y ↦ ∫_{S∩f⁻¹{y}} g dμHE[k] is Borel measurable on ℝᵐ, and ∫_S g·coareaJacobian M f dμHE[m+k] = ∫_{ℝᵐ} ∫_{S∩f⁻¹{y}} g dμHE[k] dLᵐ(y).",
+  "lean_statement": "∀ (N m k : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (Ω : Set (WithLp 2 (Rn m × Rn k))) (Ψ : WithLp 2 (Rn m × Rn k) → Rn N) (S : Set (Rn N)) (g : Rn N → ℝ≥0∞), IsOpen Ω → ContDiffOn ℝ 1 Ψ Ω → InjOn Ψ Ω → (∀ p ∈ Ω, Function.Injective (fderiv ℝ Ψ p)) → (∀ p ∈ Ω, DifferentiableAt ℝ f (Ψ p)) → (∀ p ∈ Ω, f (Ψ p) = WithLp.fst p) → (∀ p ∈ Ω, tangentSpace M (Ψ p) = LinearMap.range (fderiv ℝ Ψ p).toLinearMap) → MeasurableSet S → S ⊆ Ψ '' Ω → Measurable g → Measurable (fun y ↦ ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k]) ∧ ∫⁻ x in S, g x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] = ∫⁻ y, ∫⁻ x in S ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂volume",
+  "lean_name": "coarea_formula_on_straightening_chart",
+  "depends_on": [
+    "root.coarea_formula-a1.jacobian_linear_algebra-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-chart-coarea-a1-a1"
+}
