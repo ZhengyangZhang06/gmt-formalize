@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2669d55e2cba1d0f89fb6997f82a76f5c5ac5883b29c318c8f1339cdcf9d6909",
+  "git_delta": {
+    "base_commit": "3f406ac87669faf1346f3600d80e5febca2662a8",
+    "candidate_commit": "d765c5b1d75a969df33349c9b2b8c3f0fc71b2c5",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_tangent_plane_unique",
+    "diff_sha256": "3c008dca5a02f32af7b8b32c0080e131df68e9c91a3ccba2cdbeb1d9f1fd5244",
+    "source_sha256": "6e223783389cac750d75e047f4d5826bde4636ba2c87bfd2fa883e4b6b912303",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_tangent_plane_unique",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T T' : Grassmannian N n) (θ θ' : ℝ), HasTangentPlane V x T θ → HasTangentPlane V x T' θ' → T' = T ∧ θ' = θ",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
