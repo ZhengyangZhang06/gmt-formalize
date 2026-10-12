@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fee2bd0e7ee588a903a46a27086a74bd3d683ffa2570b49213c0ae98e6054303",
+  "git_delta": {
+    "base_commit": "d67a0abde336fec6f2f4e77581787364dd4534b5",
+    "candidate_commit": "2a973c1b02610d8ea7046935c27f193073ec8faa",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_dbs_mult_eq_one_of_density_lt_two",
+    "diff_sha256": "73ede0a692af7d0978a2dfb128a7b790ea208e92fd8ed590a32ecc7af7835e25",
+    "source_sha256": "827117c465c39aebc99a80b0335f997ec6e35ba14cdcf220b6fd0e0ea354a8d6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_dbs_mult_eq_one_of_density_lt_two",
+      "statement": "∀ (P n : ℕ) (U W S : Set (Euclid P)) (R : IMRep U n) (c₀ : ℝ), 0 < n → IsOpen W → W ⊆ U → S ⊆ W → c₀ < 2 → (∀ x ∈ S, ∀ᶠ t in 𝓝[>] (0 : ℝ), R.measure (closedBall x t) ≤ ENNReal.ofReal c₀ * unitBallVolume n * ENNReal.ofReal (t ^ n)) → ∀ᵐ x ∂R.measure, x ∈ S → R.mult x = 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
