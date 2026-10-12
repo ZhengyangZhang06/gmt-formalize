@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1.support_closest_point-a1",
+  "parent_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1",
+  "depth": 3,
+  "title": "Nearest point of spt V to a nearby point, and the empty ball around it",
+  "statement": "Let n, l be natural numbers, U a subset of R^(n+l), V a RectifiableVarifold n l U with weight mu = V.weight (so V.support = U ∩ spt mu, spt mu = Measure.support mu), rho real and zeta in R^(n+l); put d := infDist(zeta, V.support). If 0 ∈ V.support, the closed ball B_rho(0) ⊆ U, and |zeta| + d <= rho, then there is y in V.support with dist(y, zeta) = d, and the open ball of radius d about zeta has mu-measure 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ρ : ℝ) (ζ : Amb n ℓ), (0 : Amb n ℓ) ∈ V.support → closedBall (0 : Amb n ℓ) ρ ⊆ U → ‖ζ‖ + infDist ζ V.support ≤ ρ → ∃ y ∈ V.support, dist y ζ = infDist ζ V.support ∧ V.weight (ball ζ (infDist ζ V.support)) = 0",
+  "lean_name": "lgc_support_closest_point",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-graph-corollary-a1-hole-estimate-a1-support-closest-point-a1-a1"
+}
