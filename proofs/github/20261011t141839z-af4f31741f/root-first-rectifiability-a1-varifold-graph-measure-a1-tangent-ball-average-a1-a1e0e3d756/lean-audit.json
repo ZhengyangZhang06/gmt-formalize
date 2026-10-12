@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7362f93ab51544b95289df969f4d34d4a6f63d557460b2e9fd199c84c18e2b4d",
+  "git_delta": {
+    "base_commit": "f9f86fd52658b9cda339e298ba23d2fa5129ece2",
+    "candidate_commit": "d929a234933ea28d9bf23b056baff60ee7a24ccd",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "6419c2785d32061fa03e49d5270ddfc2e875162f7d36a88110c6b2cb2972eb93",
+    "source_sha256": "4d280ec751014a1505a11b7a0b02f6229f94f4ec7d27ef67641e989b79cce62d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_vgm_tangent_ball_average",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ → ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (β T))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
