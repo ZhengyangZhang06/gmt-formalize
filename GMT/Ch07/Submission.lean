@@ -451,6 +451,69 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 1, 3.1–3.2** (densities may be computed with closed or open balls; cf. 6.2.8 and
+`HasMassDensity`): if `ν(B̄_ρ(x)) / (ωₙρⁿ) → θ ∈ [0, ∞]` as `ρ ↓ 0`, then also
+`ν(B_ρ(x)) / (ωₙρⁿ) → θ`.  The upper bound follows from `B_ρ(x) ⊆ B̄_ρ(x)`.  For the lower
+bound, given `a < θ` pick `t ∈ (0, 1)` with `a < tⁿθ`; then `B̄_{tρ}(x) ⊆ B_ρ(x)` and
+`ωₙ(tρ)ⁿ = tⁿ ωₙρⁿ` give `ν(B_ρ(x)) / (ωₙρⁿ) ≥ tⁿ · ν(B̄_{tρ}(x)) / (ωₙ(tρ)ⁿ) > a` for small
+`ρ`. -/
+theorem Submission.rsd_tendsto_ball_density_of_closedBall : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (x : Euclid P) (θ : ℝ≥0∞), Tendsto (fun ρ : ℝ => ν (closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 θ) → Tendsto (fun ρ : ℝ => ν (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 θ) := by
+  intro P n ν x θ hg
+  set ω := unitBallVolume n
+  rw [tendsto_order]
+  refine ⟨fun a ha => ?_, fun b hb => ?_⟩
+  · -- Step 2: choose `t ∈ (0, 1)` with `a < tⁿθ`, using `tⁿθ → θ` as `t ↑ 1`
+    have hlim : Tendsto (fun t : ℝ => ENNReal.ofReal (t ^ n) * θ) (𝓝[<] 1) (𝓝 (1 * θ)) := by
+      refine ENNReal.Tendsto.mul_const ?_ (Or.inl one_ne_zero)
+      have : Tendsto (fun t : ℝ => ENNReal.ofReal (t ^ n)) (𝓝 1) (𝓝 (ENNReal.ofReal (1 ^ n))) :=
+        (ENNReal.continuous_ofReal.comp (continuous_pow n)).tendsto 1
+      simpa using this.mono_left nhdsWithin_le_nhds
+    rw [one_mul] at hlim
+    obtain ⟨t, hta, ht0, ht1⟩ : ∃ t : ℝ, a < ENNReal.ofReal (t ^ n) * θ ∧ 0 < t ∧ t < 1 := by
+      have h1 := (tendsto_order.1 hlim).1 a ha
+      have h2 : ∀ᶠ t in 𝓝[<] (1 : ℝ), t ∈ Ioo (0 : ℝ) 1 := Ioo_mem_nhdsLT (by norm_num)
+      obtain ⟨t, ht, ht'⟩ := (h1.and h2).exists
+      exact ⟨t, ht, ht'.1, ht'.2⟩
+    have hc0 : ENNReal.ofReal (t ^ n) ≠ 0 := by
+      rw [Ne, ENNReal.ofReal_eq_zero, not_le]
+      positivity
+    have hctop : ENNReal.ofReal (t ^ n) ≠ ∞ := ENNReal.ofReal_ne_top
+    have ha' : a / ENNReal.ofReal (t ^ n) < θ := by
+      rw [ENNReal.div_lt_iff (Or.inl hc0) (Or.inl hctop), mul_comm]
+      exact hta
+    -- Step 3: the rescaled closed-ball ratio `g(tρ)` still tends to `θ`
+    have hmap : Tendsto (fun ρ : ℝ => t * ρ) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+      · have h0 : Tendsto (fun ρ : ℝ => t * ρ) (𝓝 0) (𝓝 0) := by
+          simpa using (tendsto_id (x := 𝓝 (0 : ℝ))).const_mul t
+        exact h0.mono_left nhdsWithin_le_nhds
+      · filter_upwards [self_mem_nhdsWithin] with ρ hρ
+        exact mul_pos ht0 hρ
+    have hev := (tendsto_order.1 (hg.comp hmap)).1 _ ha'
+    filter_upwards [hev, self_mem_nhdsWithin] with ρ hρ hρpos
+    simp only [Function.comp] at hρ
+    have hρpos' : (0 : ℝ) < ρ := hρpos
+    -- Step 4: `ν(B̄_{tρ}(x)) / (ωₙ(tρ)ⁿ) · tⁿ = ν(B̄_{tρ}(x)) / (ωₙρⁿ)`
+    have hid : ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal ((t * ρ) ^ n)) * ENNReal.ofReal (t ^ n)
+        = ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal (ρ ^ n)) := by
+      rw [mul_pow, ENNReal.ofReal_mul (by positivity), mul_comm (ENNReal.ofReal (t ^ n)),
+        ← mul_assoc, div_eq_mul_inv, div_eq_mul_inv, ENNReal.mul_inv (Or.inr hctop) (Or.inr hc0),
+        mul_assoc, mul_assoc, ENNReal.inv_mul_cancel hc0 hctop, mul_one]
+    -- Step 5: `a < tⁿ g(tρ) ≤ h(ρ)`, as `B̄_{tρ}(x) ⊆ B_ρ(x)`
+    calc a = a / ENNReal.ofReal (t ^ n) * ENNReal.ofReal (t ^ n) :=
+          (ENNReal.div_mul_cancel hc0 hctop).symm
+      _ < ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal ((t * ρ) ^ n)) * ENNReal.ofReal (t ^ n) :=
+          (ENNReal.mul_lt_mul_iff_left hc0 hctop).2 hρ
+      _ = ν (closedBall x (t * ρ)) / (ω * ENNReal.ofReal (ρ ^ n)) := hid
+      _ ≤ ν (ball x ρ) / (ω * ENNReal.ofReal (ρ ^ n)) := by
+          gcongr
+          exact closedBall_subset_ball (by nlinarith)
+  · -- Step 1: `h(ρ) ≤ g(ρ)`, as `B_ρ(x) ⊆ B̄_ρ(x)`
+    filter_upwards [(tendsto_order.1 hg).2 b hb] with ρ hρ
+    refine lt_of_le_of_lt ?_ hρ
+    gcongr
+    exact ball_subset_closedBall
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
