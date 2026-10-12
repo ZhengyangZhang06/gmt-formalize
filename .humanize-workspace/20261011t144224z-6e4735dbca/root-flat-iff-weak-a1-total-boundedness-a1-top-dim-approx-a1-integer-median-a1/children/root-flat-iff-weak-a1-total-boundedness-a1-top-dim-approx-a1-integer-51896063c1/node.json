@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.integer_median-a1.mean_deviation-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.integer_median-a1",
+  "depth": 5,
+  "title": "Mean absolute deviation is bounded by the averaged pairwise difference",
+  "statement": "Let α be a type with a σ-algebra and μ a measure on it. Let F ⊆ α be measurable with μ(F) = ofReal a for a real number a > 0, and let u : α → ℝ be measurable and integrable on F. Put ū := a⁻¹ ∫_F u dμ. Then ∫⁻_F ofReal|u(x) − ū| dμ(x) ≤ ofReal(a⁻¹) · ∫⁻_F ∫⁻_F ofReal|u(x) − u(y)| dμ(y) dμ(x).",
+  "lean_statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a : ℝ) (u : α → ℝ), MeasurableSet F → 0 < a → μ F = ENNReal.ofReal a → Measurable u → IntegrableOn u F μ → ∫⁻ x in F, ENNReal.ofReal |u x - a⁻¹ * ∫ y in F, u y ∂μ| ∂μ ≤ ENNReal.ofReal a⁻¹ * ∫⁻ x in F, ∫⁻ y in F, ENNReal.ofReal |u x - u y| ∂μ ∂μ",
+  "lean_name": "fiw_tb_tda_im_mean_deviation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-integer-51896063c1-a1"
+}
