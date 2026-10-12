@@ -444,6 +444,46 @@ theorem Submission.varifold_tangents_rdb_rescaled_integral_eq :
     integral_map hφ.aemeasurable (Varifold.continuous_tangentialDivergence hX).aestronglyMeasurable]
   simp only [hdiv]
   rfl
+/-- **Simon Ch. 8, 2.5 (p. 209), the supremum bound** (child `first_variation_sup_bound` of the
+rescaled divergence bound for varifold tangents).  If `V` has locally bounded first variation,
+`W ⊂⊂ U` is open and `Y` is a `C¹` field with `spt Y ⊆ W` and `|Y| ≤ K`, then
+`|δV(Y)| ≤ K ‖δV‖(W)`: `Y` is a test field, `‖δV‖(W)` is the supremum in 2.5
+(`firstVariationRieszMeasure_eq_norm`), and `K⁻¹ Y` is admissible in that supremum. -/
+theorem Submission.varifold_tangents_rdb_firstVariation_le_variationMeasure :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (W : Set (Euclidean N)) (Y : Euclidean N → Euclidean N) (K : ℝ), V.HasLocallyBoundedFirstVariation → IsOpen W → IsCompact (closure W) → closure W ⊆ U → ContDiff ℝ 1 Y → tsupport Y ⊆ W → (∀ z, ‖Y z‖ ≤ K) → ENNReal.ofReal |V.firstVariation Y| ≤ ENNReal.ofReal K * variationMeasure V W := by
+  intro N n U V W Y K hV hW hWc hWU hY hYW hYK
+  -- Step 1: `spt Y ⊆ W ⊆ closure W`, which is compact and contained in `U`, so `Y` is a test field.
+  have hYc : HasCompactSupport Y :=
+    hWc.of_isClosed_subset (isClosed_tsupport Y) (hYW.trans subset_closure)
+  let Y' : Varifold.TestVectorField U := ⟨Y, hY, hYc, (hYW.trans subset_closure).trans hWU⟩
+  -- Step 2: `‖δV‖(W)` is the supremum in 2.5.
+  have hμW : variationMeasure V W = V.firstVariationNormOn W := by
+    rw [variationMeasure, dite_eq_left hV]
+    exact V.firstVariationRieszMeasure_eq_norm hV W hW ⟨hWc, hWU⟩
+  rw [hμW]
+  -- Step 3: `0 ≤ ‖Y 0‖ ≤ K`.
+  have hK : 0 ≤ K := (norm_nonneg _).trans (hYK 0)
+  rcases hK.eq_or_lt with rfl | hKpos
+  · -- Step 4: if `K = 0` then `Y = 0` and `δV(Y) = 0`.
+    have hY0 : Y = fun _ ↦ 0 := funext fun z ↦ norm_le_zero_iff.mp (hYK z)
+    rw [hY0, V.firstVariation_zero, abs_zero, ENNReal.ofReal_zero]
+    exact zero_le
+  · -- Step 5: `K⁻¹ Y` is a unit test field supported in `W`, so it enters the supremum.
+    have hunit : (Y'.scale K⁻¹).UnitSupportedIn W := by
+      refine ⟨(Y'.tsupport_scale_subset _).trans hYW, fun z ↦ ?_⟩
+      change ‖K⁻¹ • Y z‖ ≤ 1
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hKpos)]
+      calc K⁻¹ * ‖Y z‖ ≤ K⁻¹ * K := mul_le_mul_of_nonneg_left (hYK z) (inv_nonneg.mpr hK)
+        _ = 1 := inv_mul_cancel₀ hKpos.ne'
+    have hle := V.le_firstVariationNormOn W _ hunit
+    -- Step 6: `δV(K⁻¹ Y) = K⁻¹ δV(Y)`.
+    change ENNReal.ofReal |V.firstVariation (K⁻¹ • Y)| ≤ _ at hle
+    rw [V.firstVariation_const_smul K⁻¹ hY hYc, abs_mul, abs_of_pos (inv_pos.mpr hKpos)] at hle
+    -- Step 7: `|δV(Y)| = K (K⁻¹ |δV(Y)|)`.
+    calc ENNReal.ofReal |V.firstVariation Y|
+        = ENNReal.ofReal K * ENNReal.ofReal (K⁻¹ * |V.firstVariation Y|) := by
+          rw [← ENNReal.ofReal_mul hK, ← mul_assoc, mul_inv_cancel₀ hKpos.ne', one_mul]
+      _ ≤ ENNReal.ofReal K * V.firstVariationNormOn W := mul_le_mul_right hle _
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
