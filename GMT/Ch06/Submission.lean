@@ -487,6 +487,51 @@ theorem Submission.fiw_tl_tr_scaling_limit :
   rw [← ofReal_norm, ENNReal.ofReal_le_ofReal_iff (by positivity)] at h1
   rw [dist_zero_right]
   exact h1.trans_lt hε'
+/-- Change of variables under Simon's blow-up `η = η_{x,r}`, `η(z) = r⁻¹(z − x)` (Ch. 3, §1, p. 71),
+as used for the locality of approximate tangent spaces (Ch. 3, Remarks 1.5(2), 1.8(1)): for
+`r > 0`, every set `S` and every real function `g`, `∫_{η(S)} g dHⁿ = r⁻ⁿ ∫_S g ∘ η dHⁿ`.
+`η` is a homeomorphism (inverse `w ↦ x + r w`) and `η⁻¹(F) = x + r F`, so `Hⁿ(η⁻¹ F) = rⁿ Hⁿ(F)`
+by translation invariance and `n`-homogeneity of `Hⁿ`.  Hence `η_# Hⁿ = rⁿ Hⁿ`, and the change of
+variables along the measurable embedding `η` needs no integrability. -/
+theorem Submission.fiw_tl_blowup_setIntegral :
+    ∀ (P n : ℕ) (x : Eucl P) (r : ℝ) (S : Set (Eucl P)) (g : Eucl P → ℝ), 0 < r → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' S, g y ∂(μHE[n] : Measure (Eucl P)) = (r ^ n)⁻¹ * ∫ z in S, g (Poincare.SimonGMT.Chapter03.blowUpMap x r z) ∂(μHE[n] : Measure (Eucl P)) := by
+  intro P n x r S g hr
+  set η : Eucl P → Eucl P := Poincare.SimonGMT.Chapter03.blowUpMap x r
+  have hηapp : ∀ z, η z = r⁻¹ • (z - x) := fun _ => rfl
+  -- `η` is a homeomorphism with inverse `w ↦ x + r • w`.
+  let e : Eucl P ≃ₜ Eucl P :=
+    { toFun := η
+      invFun := fun w => x + r • w
+      left_inv := fun z => by simp [hηapp, smul_smul, hr.ne']
+      right_inv := fun w => by simp [hηapp, smul_smul, hr.ne']
+      continuous_toFun := by
+        show Continuous fun z : Eucl P => r⁻¹ • (z - x)
+        fun_prop
+      continuous_invFun := by fun_prop }
+  have hemb : MeasurableEmbedding η := e.measurableEmbedding
+  have hinj : Function.Injective η := e.injective
+  -- `η⁻¹(F) = x + r • F`, so `Hⁿ(η⁻¹ F) = ‖r‖₊ⁿ Hⁿ(F)` for every set `F`.
+  have hpre : ∀ F : Set (Eucl P), (μHE[n] : Measure (Eucl P)) (η ⁻¹' F) =
+      ‖r‖₊ ^ n • (μHE[n] : Measure (Eucl P)) F := by
+    intro F
+    have hF : η ⁻¹' F = (fun z => z + -x) ⁻¹' ((fun w => r⁻¹ • w) ⁻¹' F) := by
+      ext z
+      simp only [mem_preimage, hηapp, sub_eq_add_neg]
+    rw [hF, measure_preimage_add_right, preimage_smul_inv₀ hr.ne',
+      Measure.euclideanHausdorffMeasure_smul₀ n hr.ne']
+  -- Push-forward: `η_# Hⁿ = ‖r‖₊ⁿ Hⁿ`.
+  have hmap : Measure.map η (μHE[n] : Measure (Eucl P)) =
+      (‖r‖₊ ^ n) • (μHE[n] : Measure (Eucl P)) := by
+    ext F hF
+    rw [Measure.map_apply hemb.measurable hF, Measure.smul_apply, hpre]
+  -- Change of variables along the measurable embedding `η` (no integrability needed).
+  have h := hemb.setIntegral_map (μ := (μHE[n] : Measure (Eucl P))) g (η '' S)
+  rw [hmap, Measure.restrict_smul, integral_smul_nnreal_measure, preimage_image_eq S hinj,
+    NNReal.smul_def, smul_eq_mul] at h
+  have hc : ((‖r‖₊ ^ n : ℝ≥0) : ℝ) = r ^ n := by
+    rw [NNReal.coe_pow, coe_nnnorm, Real.norm_of_nonneg hr.le]
+  rw [hc] at h
+  rw [← h, inv_mul_cancel_left₀ (pow_ne_zero n hr.ne')]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
