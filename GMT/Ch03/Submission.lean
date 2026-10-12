@@ -751,6 +751,232 @@ theorem Submission.bf_coneDensity_zero_null : ∀ (n ℓ : ℕ), 0 < n →
   -- Step 5: every point of `Z` has the null neighbourhood `Z ∩ B(a, δ/8)` in `Z`.
   exact measure_null_of_locally_null Z fun a _ ↦ ⟨Z ∩ Metric.ball a (δ / 8),
     inter_mem_nhdsWithin Z (Metric.ball_mem_nhds a (div_pos hδ (by norm_num))), hnull a⟩
+/-- **Hausdorff measure of closed discs in an `n`-plane** (Simon Ch. 1, Theorem 2.9,
+`chapter-01.txt` lines 445–470: `Lⁿ = Hⁿ` on `ℝⁿ`, transported to an `n`-dimensional subspace).
+For a subspace `W ⊆ ℝᴺ` with `dim W = n`, `ω = Hⁿ(W ∩ B̄(0, 1)) < ∞` and
+`Hⁿ(W ∩ B̄(y, ρ)) = ρⁿ ω` for every `y ∈ W` and `ρ ≥ 0`. The inclusion `W → ℝᴺ` is an isometry
+mapping the intrinsic ball `B̄_W(y, ρ)` onto `W ∩ B̄(y, ρ)`, and `μHE[n]` on `W` is an additive
+Haar measure, finite on the compact unit ball and scaling closed balls by `ρⁿ`. -/
+theorem Submission.bf_plane_closedBall_measure_eq : ∀ (n N : ℕ) (W : Submodule ℝ (Rn N)), finrank ℝ W = n → μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall 0 1) < ∞ ∧ ∀ y ∈ W, ∀ ρ : ℝ, 0 ≤ ρ → μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall y ρ) = ENNReal.ofReal (ρ ^ n) * μHE[n] ((W : Set (Rn N)) ∩ Metric.closedBall 0 1) := by
+  intro n N W hW
+  subst hW
+  -- The ambient disc `W ∩ B̄(y, ρ)` is the image of the intrinsic ball `B̄_W(y, ρ)`.
+  have himg : ∀ (y : W) (ρ : ℝ), (W : Set (Rn N)) ∩ Metric.closedBall (y : Rn N) ρ =
+      Subtype.val '' Metric.closedBall y ρ := by
+    intro y ρ
+    ext x
+    constructor
+    · rintro ⟨hxW, hx⟩
+      exact ⟨⟨x, hxW⟩, by simpa [Metric.mem_closedBall, Subtype.dist_eq] using hx, rfl⟩
+    · rintro ⟨z, hz, rfl⟩
+      exact ⟨z.2, by simpa [Metric.mem_closedBall, Subtype.dist_eq] using hz⟩
+  -- The inclusion is an isometry, so `Hⁿ(W ∩ B̄(y, ρ))` is the intrinsic `μHE[n]` of the ball.
+  have hmeas : ∀ (y : W) (ρ : ℝ),
+      μHE[finrank ℝ W] ((W : Set (Rn N)) ∩ Metric.closedBall (y : Rn N) ρ) =
+        (μHE[finrank ℝ W] : Measure W) (Metric.closedBall y ρ) := by
+    intro y ρ
+    rw [himg, isometry_subtype_coe.euclideanHausdorffMeasure_image]
+  have h01 := hmeas 0 1
+  simp only [ZeroMemClass.coe_zero] at h01
+  refine ⟨?_, ?_⟩
+  · -- `μHE[n]` is an additive Haar measure on `W`, hence finite on the compact unit ball.
+    rw [h01]
+    exact (isCompact_closedBall _ _).measure_lt_top
+  · -- Scaling of closed balls under the additive Haar measure `μHE[n]` on `W`.
+    intro y hy ρ hρ
+    rw [show y = ((⟨y, hy⟩ : W) : Rn N) from rfl, hmeas ⟨y, hy⟩ ρ, h01,
+      Measure.addHaar_closedBall' _ _ hρ]
+/-- Vitali covering for `Hⁿ` by closed discs in an `n`-plane `W ⊆ ℝᴺ`: the Symmetric Vitali
+Property of Simon Ch. 1, Def. 3.10, for the doubling measure `Hⁿ ⌞ W` (`chapter-01.txt` lines
+765–799; Remark 3.11(2) derives it from the 5-times covering lemma 3.4 and Corollary 3.5, lines
+609–660). If the discs `W ∩ B̄(c i, ρ i)` (`i ∈ t`, `c i ∈ W`, `ρ i > 0`) cover an arbitrary
+`S ⊆ W` finely, then countably many pairwise disjoint ones cover `Hⁿ`-almost all of `S`. As
+`Hⁿ(W) = ∞` for `n ≥ 1`, Simon's finite-mass hypothesis is unavailable; we use instead the locally
+finite form `Vitali.exists_disjoint_covering_ae` on the subtype `W`, where `μHE[finrank W]` is an
+additive Haar measure whose closed balls are `3ⁿ`-doubling (`Measure.addHaar_closedBall'`), and
+transfer the result along the isometric inclusion `W → ℝᴺ`. -/
+theorem Submission.bf_plane_vitali_disjoint_cover : ∀ (n N : ℕ) (W : Submodule ℝ (Rn N)),
+    finrank ℝ W = n → ∀ (ι : Type) (S : Set (Rn N)) (t : Set ι) (c : ι → Rn N) (ρ : ι → ℝ),
+      S ⊆ (W : Set (Rn N)) → (∀ i ∈ t, c i ∈ W ∧ 0 < ρ i) →
+        (∀ x ∈ S, ∀ ε : ℝ, 0 < ε → ∃ i ∈ t, c i = x ∧ ρ i ≤ ε) →
+          ∃ u ⊆ t, u.Countable ∧
+            u.PairwiseDisjoint (fun i ↦ (W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i)) ∧
+            μHE[n] (S \ ⋃ i ∈ u, ((W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i))) = 0 := by
+  intro n N W hW ι S t c ρ hSW hct hfine
+  -- work intrinsically on the subtype `W`, with `n = finrank W`
+  subst hW
+  classical
+  set μ : Measure W := μHE[finrank ℝ W]
+  -- lifted centres `c' i ∈ W` and balls `B i = B̄_W(c' i, ρ i)`
+  let c' : ι → W := fun i ↦ if h : c i ∈ W then ⟨c i, h⟩ else 0
+  have hc' : ∀ i ∈ t, (c' i : Rn N) = c i := by
+    intro i hi
+    simp [c', (hct i hi).1]
+  let B : ι → Set W := fun i ↦ Metric.closedBall (c' i) (ρ i)
+  -- the inclusion maps `B i` onto the disc `W ∩ B̄(c i, ρ i)`
+  have himg : ∀ i ∈ t, Subtype.val '' B i = (W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i) := by
+    intro i hi
+    ext x
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      refine ⟨z.2, ?_⟩
+      have : dist z (c' i) ≤ ρ i := hz
+      rwa [Subtype.dist_eq, hc' i hi] at this
+    · rintro ⟨hxW, hx⟩
+      refine ⟨⟨x, hxW⟩, ?_, rfl⟩
+      show dist (⟨x, hxW⟩ : W) (c' i) ≤ ρ i
+      rwa [Subtype.dist_eq, hc' i hi]
+  -- hypotheses of the Vitali theorem: doubling with constant `3ⁿ`, nonempty interiors,
+  -- closedness and fineness at the preimage `S'` of `S` in `W`
+  have hdoub : ∀ i ∈ t, μ (Metric.closedBall (c' i) (3 * ρ i)) ≤
+      ((3 ^ finrank ℝ W : ℝ≥0) : ℝ≥0∞) * μ (B i) := by
+    intro i hi
+    have hρ : 0 ≤ ρ i := (hct i hi).2.le
+    rw [Measure.addHaar_closedBall' μ _ (by positivity), Measure.addHaar_closedBall' μ _ hρ,
+      mul_pow, ENNReal.ofReal_mul (by positivity), mul_assoc]
+    gcongr
+    rw [ENNReal.ofReal_pow (by norm_num)]
+    simp
+  have hint : ∀ i ∈ t, (interior (B i)).Nonempty := fun i hi ↦
+    ⟨c' i, Metric.ball_subset_interior_closedBall (Metric.mem_ball_self (hct i hi).2)⟩
+  have hclosed : ∀ i ∈ t, IsClosed (B i) := fun i _ ↦ Metric.isClosed_closedBall
+  have hfine' : ∀ x ∈ (Subtype.val ⁻¹' S : Set W), ∀ ε > (0 : ℝ), ∃ a ∈ t, ρ a ≤ ε ∧ c' a = x := by
+    intro x hx ε hε
+    obtain ⟨i, hi, hcx, hρε⟩ := hfine x hx ε hε
+    exact ⟨i, hi, hρε, Subtype.ext (by rw [hc' i hi, hcx])⟩
+  obtain ⟨u, hut, hu, hdisj, hnull⟩ := Vitali.exists_disjoint_covering_ae μ (Subtype.val ⁻¹' S) t
+    (3 ^ finrank ℝ W) ρ c' B (fun i _ ↦ subset_rfl) hdoub hint hclosed hfine'
+  refine ⟨u, hut, hu, ?_, ?_⟩
+  -- the inclusion is injective, so the discs are pairwise disjoint
+  · intro i hi j hj hij
+    simp only [Function.onFun]
+    rw [← himg i (hut hi), ← himg j (hut hj)]
+    exact (disjoint_image_iff Subtype.val_injective).mpr (hdisj hi hj hij)
+  -- `S \ ⋃ discs` is the image of `S' \ ⋃ B i`, and the inclusion preserves `μHE[n]`
+  · have hset : S \ ⋃ i ∈ u, ((W : Set (Rn N)) ∩ Metric.closedBall (c i) (ρ i)) =
+        Subtype.val '' ((Subtype.val ⁻¹' S : Set W) \ ⋃ i ∈ u, B i) := by
+      ext x
+      constructor
+      · rintro ⟨hxS, hxU⟩
+        refine ⟨⟨x, hSW hxS⟩, ⟨hxS, fun hmem ↦ hxU ?_⟩, rfl⟩
+        obtain ⟨i, hi, hiB⟩ := mem_iUnion₂.1 hmem
+        exact mem_iUnion₂.2 ⟨i, hi, himg i (hut hi) ▸ ⟨_, hiB, rfl⟩⟩
+      · rintro ⟨z, ⟨hzS, hzU⟩, rfl⟩
+        refine ⟨hzS, fun hmem ↦ hzU ?_⟩
+        obtain ⟨i, hi, hiD⟩ := mem_iUnion₂.1 hmem
+        rw [← himg i (hut hi)] at hiD
+        obtain ⟨w, hw, hwz⟩ := hiD
+        exact mem_iUnion₂.2 ⟨i, hi, Subtype.ext hwz ▸ hw⟩
+    rw [hset, isometry_subtype_coe.euclideanHausdorffMeasure_image]
+    exact hnull
+
+/-- **Infinite cone density has `Hⁿ`-null projection** (M. G. Dall'Alba, *The Besicovitch–Federer
+Projection Theorem*, Lemma 5.3; P. Mattila, *Geometry of Sets and Measures in Euclidean Spaces*,
+Ch. 18). Let `W ⊆ ℝ^{n+ℓ}` be an `n`-plane with orthogonal projection `P`, `A` compact with
+`Hⁿ(A) < ∞`, `δ > 0`, and `A₂` the set of `a ∈ A` with infinite cone density `Φ_δ(a, W^⊥)`: for
+every `K` and `ε > 0` there are `0 < s < ε`, `0 < r < δ` with `K (rs)ⁿ ≤ Hⁿ(A ∩ X(a, r, s))`, where
+`X(a, r, s) = {x : |P(x - a)| < s |x - a|} ∩ B_r(a)`. Then `Hⁿ(P(A₂)) = 0`. For fixed `K > 0` the
+discs `W ∩ B̄(P a, rs)` cover `P(A₂)` finely, so countably many disjoint ones cover `Hⁿ`-almost all
+of it (`bf_plane_vitali_disjoint_cover`). The cone pieces `A ∩ X(a, r, s)` project into their
+discs, hence are disjoint Borel subsets of `A`, and with `ω = Hⁿ(W ∩ B̄(0, 1))`
+(`bf_plane_closedBall_measure_eq`), `Hⁿ(P(A₂)) ≤ Σ ω (rs)ⁿ ≤ (ω / K) Hⁿ(A) → 0` as `K → ∞`. -/
+theorem Submission.bf_coneDensity_top_projection_null : ∀ (n ℓ : ℕ), 0 < n → ∀ (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∀ A : Set (Rn (n + ℓ)), IsCompact A → μHE[n] A < ∞ → ∀ δ : ℝ, 0 < δ → μHE[n] (W.starProjection '' {a | a ∈ A ∧ ∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧ r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤ μHE[n] (A ∩ ({x | ‖W.starProjection (x - a)‖ < s * ‖x - a‖} ∩ Metric.ball a r))}) = 0 := by
+  intro n ℓ _hn W hW A hA hAfin δ hδ
+  set P := W.starProjection
+  set A₂ := {a | a ∈ A ∧ ∀ K : ℝ, ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ s < ε ∧ ∃ r : ℝ, 0 < r ∧
+    r < δ ∧ ENNReal.ofReal (K * (r * s) ^ n) ≤
+      μHE[n] (A ∩ ({x | ‖P (x - a)‖ < s * ‖x - a‖} ∩ Metric.ball a r))}
+  set T := P '' A₂
+  obtain ⟨hωfin, hball⟩ := Submission.bf_plane_closedBall_measure_eq n (n + ℓ) W hW
+  set ω := μHE[n] ((W : Set (Rn (n + ℓ))) ∩ Metric.closedBall 0 1)
+  have hTW : T ⊆ (W : Set (Rn (n + ℓ))) := by
+    rintro _ ⟨b, -, rfl⟩
+    exact W.starProjection_apply_mem b
+  -- Step 1: a point `a y ∈ A₂` over each `y ∈ P(A₂)`
+  have hpre : ∀ y ∈ T, ∃ a, a ∈ A₂ ∧ P a = y := fun y hy ↦ hy
+  choose! a ha using hpre
+  -- the cone pieces `A ∩ X(b, r, s)` are Borel
+  let X : Rn (n + ℓ) → ℝ → ℝ → Set (Rn (n + ℓ)) := fun b r s ↦
+    {x | ‖P (x - b)‖ < s * ‖x - b‖} ∩ Metric.ball b r
+  have hXmeas : ∀ b r s, MeasurableSet (A ∩ X b r s) := by
+    intro b r s
+    refine hA.isClosed.measurableSet.inter (IsOpen.measurableSet ?_)
+    refine IsOpen.inter (isOpen_lt ?_ ?_) Metric.isOpen_ball
+    · exact (P.continuous.comp (continuous_id.sub continuous_const)).norm
+    · exact continuous_const.mul (continuous_id.sub continuous_const).norm
+  -- Step 4: `|P x - y| = |P(x - a y)| < s |x - a y| < rs`, so `P(X(a y, r, s)) ⊆ W ∩ B̄(y, rs)`
+  have hXproj : ∀ y ∈ T, ∀ r s : ℝ, 0 < s → ∀ x ∈ X (a y) r s,
+      P x ∈ (W : Set (Rn (n + ℓ))) ∩ Metric.closedBall y (r * s) := by
+    intro y hy r s hs x hx
+    refine ⟨W.starProjection_apply_mem x, ?_⟩
+    rw [Metric.mem_closedBall, dist_eq_norm,
+      show P x - y = P (x - a y) by rw [map_sub, (ha y hy).2]]
+    have h2 : ‖x - a y‖ < r := by simpa [dist_eq_norm] using hx.2
+    have h3 : ‖P (x - a y)‖ < s * ‖x - a y‖ := hx.1
+    nlinarith [norm_nonneg (x - a y)]
+  -- Steps 1–5 for a fixed `K > 0`: `Hⁿ(P(A₂)) ≤ (ω / K) Hⁿ(A)`
+  have key : ∀ K : ℝ, 0 < K → μHE[n] T ≤ ω / ENNReal.ofReal K * μHE[n] A := by
+    intro K hK
+    let t : Set (Rn (n + ℓ) × ℝ × ℝ) := {i | i.1 ∈ T ∧ 0 < i.2.1 ∧ i.2.1 < δ ∧ 0 < i.2.2 ∧
+      ENNReal.ofReal (K * (i.2.1 * i.2.2) ^ n) ≤ μHE[n] (A ∩ X (a i.1) i.2.1 i.2.2)}
+    -- Step 2: fineness, with `ε / δ` in the definition of `A₂`
+    have hfine : ∀ x ∈ T, ∀ ε : ℝ, 0 < ε → ∃ i ∈ t, i.1 = x ∧ i.2.1 * i.2.2 ≤ ε := by
+      intro x hx ε hε
+      obtain ⟨s, hs0, hsε, r, hr0, hrδ, hK'⟩ := (ha x hx).1.2 K (ε / δ) (div_pos hε hδ)
+      refine ⟨(x, r, s), ⟨hx, hr0, hrδ, hs0, hK'⟩, rfl, ?_⟩
+      have : r * s ≤ δ * (ε / δ) := mul_le_mul hrδ.le hsε.le hs0.le hδ.le
+      rwa [mul_div_cancel₀ _ hδ.ne'] at this
+    -- Step 3: a disjoint Vitali subfamily of discs covering `Hⁿ`-almost all of `P(A₂)`
+    obtain ⟨u, hut, hu, hdisj, hnull⟩ := Submission.bf_plane_vitali_disjoint_cover n (n + ℓ) W hW
+      (Rn (n + ℓ) × ℝ × ℝ) T t (fun i ↦ i.1) (fun i ↦ i.2.1 * i.2.2) hTW
+      (fun i hi ↦ ⟨hTW hi.1, mul_pos hi.2.1 hi.2.2.2.1⟩) hfine
+    let D : Rn (n + ℓ) × ℝ × ℝ → Set (Rn (n + ℓ)) := fun i ↦
+      (W : Set (Rn (n + ℓ))) ∩ Metric.closedBall i.1 (i.2.1 * i.2.2)
+    let Sp : Rn (n + ℓ) × ℝ × ℝ → Set (Rn (n + ℓ)) := fun i ↦ A ∩ X (a i.1) i.2.1 i.2.2
+    -- Step 4: the cone pieces project into the disjoint discs, so they are disjoint
+    have hSdisj : u.PairwiseDisjoint Sp := by
+      intro i hi j hj hij
+      refine Set.disjoint_left.2 fun x hxi hxj ↦ ?_
+      have hi' := hut hi
+      have hj' := hut hj
+      exact Set.disjoint_left.1 (hdisj hi hj hij)
+        (hXproj i.1 hi'.1 i.2.1 i.2.2 hi'.2.2.2.1 x hxi.2)
+        (hXproj j.1 hj'.1 j.2.1 j.2.2 hj'.2.2.2.1 x hxj.2)
+    -- Step 5: `Hⁿ(D_i) = ω (rs)ⁿ ≤ (ω / K) Hⁿ(S_i)`
+    have hDle : ∀ i ∈ u, μHE[n] (D i) ≤ ω / ENNReal.ofReal K * μHE[n] (Sp i) := by
+      intro i hi
+      have hi' := hut hi
+      have hK1 : ENNReal.ofReal K * ENNReal.ofReal ((i.2.1 * i.2.2) ^ n) ≤ μHE[n] (Sp i) := by
+        rw [← ENNReal.ofReal_mul hK.le]
+        exact hi'.2.2.2.2
+      have hKpos : ENNReal.ofReal K ≠ 0 := by simpa using hK
+      calc μHE[n] (D i) = ENNReal.ofReal ((i.2.1 * i.2.2) ^ n) * ω :=
+            hball i.1 (hTW hi'.1) _ (mul_pos hi'.2.1 hi'.2.2.2.1).le
+        _ = ω / ENNReal.ofReal K * (ENNReal.ofReal K * ENNReal.ofReal ((i.2.1 * i.2.2) ^ n)) := by
+            rw [← mul_assoc, ENNReal.div_mul_cancel hKpos ENNReal.ofReal_ne_top, mul_comm]
+        _ ≤ ω / ENNReal.ofReal K * μHE[n] (Sp i) := by gcongr
+    calc μHE[n] T ≤ μHE[n] (T \ ⋃ i ∈ u, D i) + μHE[n] (⋃ i ∈ u, D i) := by
+          refine (measure_mono fun x hx ↦ ?_).trans (measure_union_le _ _)
+          by_cases hxU : x ∈ ⋃ i ∈ u, D i
+          · exact Or.inr hxU
+          · exact Or.inl ⟨hx, hxU⟩
+      _ = μHE[n] (⋃ i ∈ u, D i) := by rw [hnull, zero_add]
+      _ ≤ ∑' i : u, μHE[n] (D i) := measure_biUnion_le _ hu _
+      _ ≤ ∑' i : u, ω / ENNReal.ofReal K * μHE[n] (Sp i) :=
+          ENNReal.tsum_le_tsum fun i ↦ hDle i i.2
+      _ = ω / ENNReal.ofReal K * ∑' i : u, μHE[n] (Sp i) := ENNReal.tsum_mul_left
+      _ = ω / ENNReal.ofReal K * μHE[n] (⋃ i ∈ u, Sp i) := by
+          rw [measure_biUnion hu hSdisj fun i _ ↦ hXmeas _ _ _]
+      _ ≤ ω / ENNReal.ofReal K * μHE[n] A := by
+          gcongr
+          exact iUnion₂_subset fun i _ ↦ inter_subset_left
+  -- Step 6: let `K → ∞`, using `ω < ∞` and `Hⁿ(A) < ∞`
+  have hlim : Tendsto (fun K : ℝ ↦ ω / ENNReal.ofReal K * μHE[n] A) atTop (𝓝 0) := by
+    have h2 : Tendsto (fun K : ℝ ↦ ω / ENNReal.ofReal K) atTop (𝓝 0) := by
+      simpa using ENNReal.Tendsto.const_div ENNReal.tendsto_ofReal_atTop (Or.inr hωfin.ne)
+    simpa using ENNReal.Tendsto.mul_const h2 (Or.inr hAfin.ne)
+  exact nonpos_iff_eq_zero.mp
+    (ge_of_tendsto hlim (by filter_upwards [eventually_gt_atTop 0] with K hK using key K hK))
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
