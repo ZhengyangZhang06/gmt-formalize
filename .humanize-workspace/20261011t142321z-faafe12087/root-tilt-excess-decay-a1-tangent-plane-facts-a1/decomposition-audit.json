@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rsod_blowUp_setIntegral_eq|upperDensity_ne_zero_outside_hausdorff_null|aetp_starProjection_range_continuousOn|rsod_graphPoint_eq_finAddEquivProd_symm|ted_tangent_plane_facts",
+        "theorem (integral_smul_measure|.*integral_map|.*restrict_apply)|finAddEquivProd|inverse_continuousAt|isOpen_injective|continuous_adjoint",
+        "measure_toOuterMeasure_isBorelRegular|exists_isClosed_sdiff_lt_of_finite|simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure|realUnitBallVolume_pos|HasWeightedApproximateTangentSpaceAt|remains a separate theorem|CountablyRectifiable",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tpf-independent-audit-uipixrld/IndependentReview.lean > /tmp/tpf-independent-audit-uipixrld/IndependentReview.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-tangent-plane-facts-a1/decomposition-v2.json",
+        "/tmp/tpf-independent-audit-uipixrld/IndependentReview.lean",
+        "/tmp/tpf-independent-audit-uipixrld/IndependentReview.log"
+      ],
+      "conclusion": "Verified the pinned revisions and contract identity. The snapshot project contains none of the proposed declaration names. Each name has exactly one comparator-accepted DAG owner, an identical frozen type, and no dependencies; reuse creates no cycle or new node. All names are bare identifiers. Independently reconstructed the four accepted proofs from their candidate commits. The scratch check, with the root placeholder omitted, elaborates the parent and child types before declaring any child, then compiles the proofs, exact-type checks and application wiring without warnings. Every child has only propext, Classical.choice and Quot.sound as axioms. Endomorphism multiplication was independently checked to be composition. The split appropriately supplies prerequisites for the selected proof's change of variables, complement-density estimates, graph linear algebra and projection continuity. The graph lemma, C¹ cover and final assembly remain parent obligations; the acknowledged absence of the rectifiable-to-C¹-cover theorem from SubmanifoldCover.lean is accurate."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the arbitrary-set, arbitrary-integrand statement with r > 0. The homeomorphism and Hausdorff scaling give the restricted-measure identity on measurable test sets. Both Bochner integral identities apply without integrability, and the inverse-map cancellation gives the stated factor. The proof is complete and independent."
+    },
+    {
+      "key": "upper_density_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly includes null measurability, finite mass on A, closed balls and ENNReal normalization. Borel regularity, closed approximation of finite measurable sets, the comparison estimate and countable threshold union prove the exceptional set is null. The normalization transfer is valid, including n = 0. The supplied localization correctly supports the parent's locally finite application without adding a global finiteness hypothesis."
+    },
+    {
+      "key": "projection_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type precisely states operator-norm continuity on injective maps. Injectivity makes L†L a unit in the composition ring of continuous linear endomorphisms. The orthogonality calculation identifies the projection, and continuity of adjoint, composition and inversion proves ContinuousOn. This also covers n = 0 and uses the correct multiplication instance."
+    },
+    {
+      "key": "graph_point_linear_equiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The continuous-linear equivalence and coordinate formula match the pinned definition and exact Lean type. Comparing the castAdd and natAdd coordinates and applying Fin.addCases proves the equality for all dimensions. The complete independent proof supplies the graph linearity and coordinate recovery required by the selected parent."
+    }
+  ],
+  "required_changes": []
+}
