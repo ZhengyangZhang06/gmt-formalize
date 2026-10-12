@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1",
+  "depth": 3,
+  "title": "Scaling and Hoelder bounds for the scaled L^p norm of the mean curvature",
+  "statement": "Let n, l be natural numbers, U any subset of R^{n+l}, V a contract rectifiable n-varifold in U with weight μ, H : R^{n+l} -> R^{n+l}, and K(y, r) := V.scaledLpNorm H p y r = (r^{p-n} ∫⁻_{B̄_r(y)} ||H||^p dμ)^{1/p} in [0, ∞] (closed balls; lower integrals; no measurability assumption on H). (a) If p > 0, 0 < s <= t and B̄_s(z) ⊆ B̄_t(w), then K(z, s) <= (s/t)^{(p-n)/p} K(w, t). (b) If 0 < q <= p, t > 0, m >= 0, B̄_s(z) ⊆ B̄_t(w) and μ(B̄_s(z)) <= m, then ∫⁻_{B̄_s(z)} ||H||^q dμ <= m^{1-q/p} t^{q(n-p)/p} K(w, t)^q.",
+  "lean_statement": "(∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ) (z w : Amb n ℓ) (s t : ℝ), 0 < p → 0 < s → s ≤ t → closedBall z s ⊆ closedBall w t → V.scaledLpNorm H p z s ≤ ENNReal.ofReal ((s / t) ^ ((p - n) / p)) * V.scaledLpNorm H p w t) ∧ (∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p q : ℝ) (z w : Amb n ℓ) (s t m : ℝ), 0 < q → q ≤ p → 0 < t → 0 ≤ m → closedBall z s ⊆ closedBall w t → V.weight (closedBall z s) ≤ ENNReal.ofReal m → ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ q ∂V.weight ≤ ENNReal.ofReal (m ^ (1 - q / p) * t ^ (q * (n - p) / p)) * V.scaledLpNorm H p w t ^ q)",
+  "lean_name": "tdo_scaledLpNorm_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-scaled-lp-bounds-a1-a1"
+}

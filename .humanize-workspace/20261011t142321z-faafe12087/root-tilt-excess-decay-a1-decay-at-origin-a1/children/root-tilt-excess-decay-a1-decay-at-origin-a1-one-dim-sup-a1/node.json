@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1",
+  "depth": 3,
+  "title": "One-dimensional sup bound by the L^2 norms of a Lipschitz function and of its derivative",
+  "statement": "Let l be a natural number, a > 0, K >= 0, and w : R^1 -> R^l (R^1 = EuclideanSpace R (Fin 1)) K-Lipschitz on the closed ball B̄_a(0). Then for every x in B̄_a(0): ||w(x)|| <= ((2a)^{-1} ∫_{B_a(0)} ||w||^2)^{1/2} + (2a ∫_{B_a(0)} hsNormSq(Dw))^{1/2}, where B_a(0) is the open ball, Dw(y) := fderiv w y, and the integrals are Bochner integrals for Lebesgue measure.",
+  "lean_statement": "∀ (ℓ : ℕ) (w : Rn 1 → Rn ℓ) (a : ℝ) (K : ℝ≥0), 0 < a → LipschitzOnWith K w (closedBall 0 a) → ∀ x ∈ closedBall (0 : Rn 1) a, ‖w x‖ ≤ Real.sqrt ((2 * a)⁻¹ * ∫ y in ball (0 : Rn 1) a, ‖w y‖ ^ 2) + Real.sqrt (2 * a * ∫ y in ball (0 : Rn 1) a, hsNormSq (fderiv ℝ w y))",
+  "lean_name": "tdo_one_dim_sup_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-a1"
+}

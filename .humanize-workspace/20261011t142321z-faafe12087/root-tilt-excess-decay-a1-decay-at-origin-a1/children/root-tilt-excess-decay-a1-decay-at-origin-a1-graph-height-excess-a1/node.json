@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_height_excess-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1",
+  "depth": 3,
+  "title": "Height excess of a varifold near a rotated Lipschitz graph (Simon 4.5, proof step (20a))",
+  "statement": "Let n, l be natural numbers, U ⊆ R^{n+l}, V a contract rectifiable n-varifold in U with weight μ, multiplicity θ and support spt V; q a linear isometry equivalence of R^{n+l}; f : R^n -> R^l; c in R^l; A : R^n -> R^l continuous linear; R, r, h, β real. Put τ := q(graphPoint(0, c)), S := span{q(graphPoint(v, A v)) : v in R^n}, λ(x') := c + A x' and Γ := q '' graphOver f B̄^n_R(0). Assume 0 < r <= R, B̄_R(0) ⊆ U, f is 1-Lipschitz on B̄^n_R(0), B̄_r(τ) ⊆ B̄_R(0), β >= 0, θ <= 2 μ-a.e. on B̄_r(τ), dist(x - τ, S) <= h for every x in spt V ∩ B̄_r(τ), and μ(B̄_R(0) ∩ (spt V \\ Γ)) <= β. Then ∫_{B̄_r(τ)} dist(x - τ, S)^2 dμ <= 2 · 2^{n/2} ∫_{B^n_r(0)} ||f - λ||^2 dL^n + h^2 β, where B^n_r(0) is the open ball and dist = infDist.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (c : Rn ℓ) (A : Rn n →L[ℝ] Rn ℓ) (R r h β : ℝ), 0 < r → r ≤ R → closedBall 0 R ⊆ U → LipschitzOnWith 1 f (closedBall (0 : Rn n) R) → closedBall (q (graphPoint (0 : Rn n) c)) r ⊆ closedBall 0 R → 0 ≤ β → (∀ᵐ x ∂V.weight, x ∈ closedBall (q (graphPoint (0 : Rn n) c)) r → V.mult x ≤ 2) → (∀ x ∈ V.support ∩ closedBall (q (graphPoint (0 : Rn n) c)) r, infDist (x - q (graphPoint (0 : Rn n) c)) (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v))) : Set (Amb n ℓ)) ≤ h) → V.weight (closedBall 0 R ∩ (V.support \\ q '' graphOver f (closedBall 0 R))) ≤ ENNReal.ofReal β → ∫ x in closedBall (q (graphPoint (0 : Rn n) c)) r, infDist (x - q (graphPoint (0 : Rn n) c)) (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v))) : Set (Amb n ℓ)) ^ 2 ∂V.weight ≤ 2 * Real.sqrt 2 ^ n * (∫ x' in ball (0 : Rn n) r, ‖f x' - (c + A x')‖ ^ 2) + h ^ 2 * β",
+  "lean_name": "tdo_graph_height_excess",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_plane_dist-a1",
+    "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_lintegral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_plane_dist-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_lintegral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1-a1"
+}
