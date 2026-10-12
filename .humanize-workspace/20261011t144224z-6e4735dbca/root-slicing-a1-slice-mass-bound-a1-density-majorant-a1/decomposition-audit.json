@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "ae_differentiableAt|intervalIntegrable_deriv|intervalIntegral_deriv_mem_uIcc|tendsto_measure_biInter_gt|liminf_const_mul_of_ne_top|ofReal_integral_eq_lintegral_ofReal|deriv_nonneg|liminf_eq_iSup_iInf|liminf_le_liminf_comp|continuousWithinAt_Ioi_iff_Ici",
+        "\\bdini\\b|lowerLeftDini|lowerDini|lower_dini|slicing_mb_dm_",
+        "continuousWithinAt_Ioi_iff_Ici|theorem nhdsGT_basis|theorem HasBasis.liminf_eq_iSup_iInf|Measurable.iInf_Prop|theorem Monotone.measurable|liminf_eq",
+        "rg -n 'def contract_scope|def child_modules|frozen_inputs|candidate_inputs|Submission|import' ../../verifier/gmt-compare.py",
+        "python3 /tmp/dm_independent_audit_wgj9soms/verify.py frozen",
+        "python3 /tmp/dm_independent_audit_wgj9soms/verify.py Challenges.lean",
+        "python3 /tmp/dm_independent_audit_wgj9soms/verify.py CombinedProofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/LeftRight.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-density-majorant-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-density-majorant-a1/decomposition-v1.json",
+        "../../verifier/gmt-compare.py",
+        "../../verifier/lean_contract.py",
+        "/tmp/dm_split_Cu6Gop/check/TrialFull.lean",
+        "/tmp/dm_independent_audit_wgj9soms/Challenges.lean",
+        "/tmp/dm_independent_audit_wgj9soms/CombinedProofs.lean",
+        "/tmp/dm_independent_audit_wgj9soms/CombinedProofs.lean.log"
+      ],
+      "conclusion": "Verified project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The frozen contract matches the workspace Submission, and the handoff matches the selected DAG node. Searches found no proposed-name collisions in the 226-node DAG or other decomposition files, and no named lower-Dini helper in the searched libraries; Dini matches concern uniform convergence. All four names are bare identifiers, and all four types are standalone one-line propositions matching their prose. The types elaborate without child implementations in the frozen comparator scope; Borel, ENNReal, filter and Lebesgue-measure instances were checked. Recompiling the supplied trial proofs and an assembly taking the four contracts as hypotheses succeeded with only propext, Classical.choice and Quot.sound. The additional DerivIntegrable import is permitted. The split is appropriate: its independent, acyclic obligations establish the exact selected parent through the infinite-mass case and the finite-mass indicator construction. Public corroboration: [Tao, Exercise 55](https://terrytao.wordpress.com/2010/10/16/245a-notes-5-differentiation-theorems/) addresses Dini measurability; [Schep, Theorem 4](https://people.math.sc.edu/schep/diffmonotone.pdf) states the monotone derivative integral bound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "distribution_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finiteness hypothesis matches the Lean type and suffices without a < b or global finiteness of ν. The proof establishes finite values, monotonicity, the exact decreasing-family intersection, continuity from above, and passage through toReal. No sibling or parent theorem is used."
+    },
+    {
+      "key": "dini_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both hypotheses are explicit and correctly used. Right-continuity gives convergence under rational approximation from the left in k; the rational-infimum equality and countable neighborhood basis yield the stated Borel measurability. The proof is complete and independent of distribution_regularity."
+    },
+    {
+      "key": "dini_lintegral_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof identifies the exact liminf with ofReal(deriv G) almost everywhere, applies the pinned monotone-derivative integrability and increment bounds, and correctly removes the Lebesgue-null endpoint. Neither right-continuity nor a separate measurability assumption on D is needed. The a = b case and required import are handled."
+    },
+    {
+      "key": "density_le_dini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite disjoint increments justify the real-valued distribution formula. The strict c-dilation gives the required closed-band inclusion, positive-denominator division, and correctly directed liminf comparison. Constant extraction and c ↓ 1 handle both finite and infinite D. All hypotheses are accounted for, with no sibling dependency or circular step."
+    }
+  ],
+  "required_changes": []
+}

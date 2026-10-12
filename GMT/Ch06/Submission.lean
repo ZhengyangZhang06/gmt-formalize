@@ -359,6 +359,40 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The distribution function `G(r) = ν((a,b) ∩ (-∞, r])` of a measure `ν` on `ℝ` with
+`ν((a,b)) < ∞` is nondecreasing and right-continuous. -/
+theorem Submission.slicing_mb_dm_distribution_mono_rightcont :
+    ∀ (ν : Measure ℝ) (a b : ℝ), ν (Ioo a b) ≠ ∞ →
+      Monotone (fun r : ℝ => (ν (Ioo a b ∩ Iic r)).toReal) ∧
+      ∀ s : ℝ, ContinuousWithinAt (fun r : ℝ => (ν (Ioo a b ∩ Iic r)).toReal) (Ici s) s := by
+  intro ν a b hab
+  -- Each `A_r = (a,b) ∩ (-∞, r]` lies in `(a,b)`, so `ν(A_r) < ∞`.
+  have hfin : ∀ r : ℝ, ν (Ioo a b ∩ Iic r) ≠ ∞ := fun r =>
+    ne_top_of_le_ne_top hab (measure_mono inter_subset_left)
+  -- `r ↦ A_r` is monotone, hence so is `G`.
+  have hsub : ∀ r r' : ℝ, r ≤ r' → Ioo a b ∩ Iic r ⊆ Ioo a b ∩ Iic r' := fun r r' h =>
+    inter_subset_inter_right _ (Iic_subset_Iic.2 h)
+  refine ⟨fun r r' h => ENNReal.toReal_mono (hfin r') (measure_mono (hsub r r' h)), fun s => ?_⟩
+  -- Continuity within `[s, ∞)` is continuity within `(s, ∞)`.
+  rw [← continuousWithinAt_Ioi_iff_Ici]
+  -- `⋂_{r > s} A_r = A_s`.
+  have hinter : (⋂ r > s, Ioo a b ∩ Iic r) = Ioo a b ∩ Iic s := by
+    ext x
+    simp only [mem_iInter, mem_inter_iff, mem_Iic]
+    constructor
+    · intro h
+      exact ⟨(h (s + 1) (by linarith)).1, le_of_forall_gt_imp_ge_of_dense fun r hr => (h r hr).2⟩
+    · intro h r hr
+      exact ⟨h.1, h.2.trans hr.le⟩
+  -- Continuity of `ν` from above along `r ↓ s`, using `ν(A_{s+1}) < ∞`.
+  have hlim : Tendsto (fun r => ν (Ioo a b ∩ Iic r)) (𝓝[>] s) (𝓝 (ν (Ioo a b ∩ Iic s))) := by
+    rw [← hinter]
+    exact tendsto_measure_biInter_gt (s := fun r => Ioo a b ∩ Iic r)
+      (fun r _ => (measurableSet_Ioo.inter measurableSet_Iic).nullMeasurableSet)
+      (fun i j _ hij => hsub i j hij) ⟨s + 1, by linarith, hfin (s + 1)⟩
+  -- `toReal` is continuous at the finite value `ν(A_s)`.
+  exact (ENNReal.tendsto_toReal (hfin s)).comp hlim
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
