@@ -441,6 +441,34 @@ theorem Submission.fiw_tb_ext_covectorNorm_smul : ∀ (P q : ℕ) (c : ℝ) (α 
   · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
   · simp
 
+/-- **Mass does not drop under restriction near the support (Simon Ch. 6, 2.4–2.5).**  If
+`Z ∈ 𝒟_q(ℝ^P)` vanishes on every test form whose support misses a compact `K ⊆ U` (`U` open),
+then `M(Z) ≤ M(Z|_U)` for `Z|_U = Z.restrictDomain`.  With a cutoff `χ` (`0 ≤ χ ≤ 1`,
+`tsupport χ ⊆ U`, `χ = 1` on an open `N ⊇ K`), every `ω` admissible for `M(Z)` gives the form
+`χ ω ∈ 𝒟^q(U)`, admissible for `M(Z|_U)` as `|χ ω| = χ |ω| ≤ 1`, and `χ ω = ω` on `N`, so
+`Z(ω) = Z(χ ω) = Z|_U(χ ω) ≤ M(Z|_U)`. -/
+theorem Submission.fiw_tb_ext_mass_le_restrictDomain : ∀ (P q : ℕ) (U K : Set (Eucl P)), IsOpen U → IsCompact K → K ⊆ U → ∀ Z : GeometricCurrentOn (univ : Set (Eucl P)) q, (∀ ω : TestFormOn (univ : Set (Eucl P)) q, Disjoint (tsupport (ω : DifferentialForm (Eucl P) q)) K → Z ω = 0) → Z.mass ≤ (Z.restrictDomain (subset_univ U)).mass := by
+  intro P q U K hU hK hKU Z hZ
+  obtain ⟨χ, N, hχ, hχ01, -, hχU, hN, hKN, hχN⟩ := Submission.fiw_tb_ext_cutoff P U K hU hK hKU
+  -- `L ω = χ ω`, a test form in `U`.
+  obtain ⟨L, hL⟩ := Submission.fiw_tb_ext_smul_testForm P q univ U χ hχ hχU
+  -- `M(Z)` is the supremum of `Z(ω)` over the admissible `ω`.
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  have hadm : L ω ∈ massAdmissibleOn U q U := by
+    refine ⟨(L ω).property.2, fun x => ?_⟩
+    rw [hL, Submission.fiw_tb_ext_covectorNorm_smul, abs_of_nonneg (hχ01 x).1]
+    exact (mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) (hχ01 x).2).trans (hω.2 x)
+  -- `L ω = ω` on `N ⊇ K`, so `Z` cannot tell them apart.
+  have hval : Z ω = Z.restrictDomain (subset_univ U) (L ω) := by
+    rw [GeometricCurrentOn.restrictDomain_apply]
+    refine (Submission.fiw_tb_ext_apply_eq_of_eqOn P q univ K N Z hN hKN hZ ω
+      (testFormOnInclusion (subset_univ U) q (L ω)) fun x hx => ?_).symm
+    rw [testFormOnInclusion_coe, hL, hχN x hx, one_smul]
+  show ENNReal.ofReal (Z ω) ≤ _
+  rw [hval]
+  exact (Z.restrictDomain (subset_univ U)).le_massOn hadm
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
