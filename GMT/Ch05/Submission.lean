@@ -458,6 +458,35 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Integrals over the open ball `B̆_a(0)` of `ℝ¹` are integrals over the interval `(-a, a)`, for
+every function `φ` and every radius `a` (no integrability hypothesis).  The coordinate map
+`e := toLp 2 ∘ (funUnique (Fin 1) ℝ).symm : ℝ ≃ᵐ ℝ¹` sends `t` to `EuclideanSpace.single 0 t` and is
+volume preserving (`volume_preserving_funUnique`, `PiLp.volume_preserving_toLp`), so
+`MeasurePreserving.setIntegral_preimage_emb` transfers the integral; the preimage of the ball is
+`{t | |t| < a} = Ioo (-a) a` since `‖single 0 t‖ = |t|` (`PiLp.norm_single`). -/
+theorem tdo_ods_ball_integral_eq_interval : ∀ (φ : Rn 1 → ℝ) (a : ℝ),
+    (∫ y in ball (0 : Rn 1) a, φ y) =
+      ∫ t in Ioo (-a) a, φ (EuclideanSpace.single (0 : Fin 1) t) := by
+  intro φ a
+  set e : ℝ ≃ᵐ Rn 1 :=
+    (MeasurableEquiv.funUnique (Fin 1) ℝ).symm.trans (MeasurableEquiv.toLp 2 (Fin 1 → ℝ))
+  have he : ∀ t, e t = EuclideanSpace.single (0 : Fin 1) t := by
+    intro t
+    ext i
+    fin_cases i
+    simp [e]
+  have hmp : MeasurePreserving e volume volume :=
+    (PiLp.volume_preserving_toLp (Fin 1)).comp (volume_preserving_funUnique (Fin 1) ℝ).symm
+  have hpre : e ⁻¹' ball (0 : Rn 1) a = Ioo (-a) a := by
+    ext t
+    simp [he, abs_lt]
+  rw [← hmp.setIntegral_preimage_emb e.measurableEmbedding φ (ball 0 a), hpre]
+  simp_rw [he]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
