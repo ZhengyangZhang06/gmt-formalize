@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a4ebb855d51ea8f54c9dce7f9b604b02c1cb3e4371c598dc5e4d2815ec9bcf85",
+  "git_delta": {
+    "base_commit": "bd425a21458739a29d577d23266ecebe6d4d6801",
+    "candidate_commit": "7c29ce33ecc6139efc620ce2e056b377c12a84ff",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_atl_pc_tangent_iff_of_integral_sub_tendsto",
+    "diff_sha256": "d9351896bdc685b2ad5883f0ef8899901e5e9e220600220fdeddbe119278741a",
+    "source_sha256": "a381612466556f407c527e217f9e068de540f1f63d313ac491304aa89e3b1eee",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_atl_pc_tangent_iff_of_integral_sub_tendsto",
+      "statement": "∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P), (∀ f : CompactlySupportedContinuousMap (Euclid P) ℝ, Tendsto (fun r : ℝ => (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M', f y ∂μHE[n]) (𝓝[>] 0) (𝓝 0)) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

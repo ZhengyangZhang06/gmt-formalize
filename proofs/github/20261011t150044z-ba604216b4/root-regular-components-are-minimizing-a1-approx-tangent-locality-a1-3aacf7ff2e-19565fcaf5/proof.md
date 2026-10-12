@@ -1,0 +1,99 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.pointwise_comparison-a1`
+- Child DAG node: `root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.pointwise_comparison-a1.tangent_transfer-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 3, Definition 1.4 (book/chapter-03.txt lines 77-84) and the last step of the proof of Theorem 1.6 "⇒" (lines 117-143). There, once the blow-up integrals over two sets differ by terms tending to 0, "T_x M exists and = T_x N_j". This child is Step 7 of the parent proof, stated for two arbitrary sets.
+
+Notation: μ := μHE[n] and η_r := Poincare.SimonGMT.Chapter03.blowUpMap x r. For f ∈ C_c(ℝ^P, ℝ), i.e. f : CompactlySupportedContinuousMap (Euclid P) ℝ, and r ∈ ℝ, put I(r) := ∫_{η_r(M)} f dμ, I'(r) := ∫_{η_r(M')} f dμ, D(r) := I(r) − I'(r), and L := ∫_Q f dμ, the integral over the set Q. By hypothesis D(r) → 0 along 𝓝[>]0 for every such f.
+
+1. (Definition.) By the definition in SimonGMT Chapter03, HasApproximateTangentSpaceAt n M x Q holds iff finrank Q = n and, for every f ∈ C_c(ℝ^P, ℝ), I(r) → L along 𝓝[>]0. The same holds for M' with I'(r) in place of I(r). The condition finrank Q = n does not involve M or M', so it is the same on both sides.
+
+2. (⇒) Assume HasApproximateTangentSpaceAt n M x Q. Then finrank Q = n. Let f ∈ C_c(ℝ^P, ℝ). We have I(r) → L and D(r) → 0 along 𝓝[>]0. By the limit of a difference of real-valued functions, I(r) − D(r) → L − 0 = L. For every r, I(r) − D(r) = I(r) − (I(r) − I'(r)) = I'(r). Hence I'(r) → L along 𝓝[>]0. Since f was arbitrary, HasApproximateTangentSpaceAt n M' x Q holds.
+
+3. (⇐) Assume HasApproximateTangentSpaceAt n M' x Q. Then finrank Q = n. Let f ∈ C_c(ℝ^P, ℝ). We have I'(r) → L and D(r) → 0, so I'(r) + D(r) → L + 0 = L. For every r, I'(r) + D(r) = I'(r) + (I(r) − I'(r)) = I(r). Hence I(r) → L along 𝓝[>]0, and HasApproximateTangentSpaceAt n M x Q holds.
+
+4. Steps 2 and 3 give the equivalence, for every linear subspace Q of ℝ^P. ∎
+
+## Key steps
+
+1. Unfold Simon Definition 1.4 (SimonGMT HasApproximateTangentSpaceAt): finrank Q = n and, for every f ∈ C_c, ∫_{η_r(·)} f dμHE[n] → ∫_Q f dμHE[n] along 𝓝[>]0. The dimension condition is common to both sides.
+2. (⇒) I_{M'}(r) = I_M(r) − (I_M(r) − I_{M'}(r)) → L − 0 = L.
+3. (⇐) I_M(r) = I_{M'}(r) + (I_M(r) − I_{M'}(r)) → L + 0 = L.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-bead2f32d3/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}`
+- `python3 -I scan of dag.json (214 nodes): ids containing approx_tangent_locality; nodes whose lean_statement equals the selected type; lean_names containing 'regcomp_atl' or 'pc_'; lean_statements containing 'blowUpMap' or 'HasApproximateTangentSpaceAt'`
+- `sed -n 1,160p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (blowUpMap line 96, HasApproximateTangentSpaceAt line 102)`
+- `grep -n '^open|^namespace|^end|^noncomputable|CompactlySupported|C_c' GMT/Ch07/Submission.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n 'scoped\[CompactlySupported\] notation' mathlib/Mathlib`
+- `rg -n 'theorem setIntegral_union|theorem norm_setIntegral_le_of_norm_le_const|integrableOn_of_bounded|theorem IntegrableOn.of_forall_sdiff_eq_zero|theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|protected theorem Tendsto.const_mul|protected theorem mul_inv \{|protected theorem mul_inv_cancel|protected theorem inv_pow|theorem ofReal_mul|theorem tendsto_toReal|theorem tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within|lemma Continuous.bounded_above_of_compact_support|theorem Tendsto.congr' mathlib/Mathlib`
+- `rg -n 'blowUpMap' simongmt/Poincare; rg -n 'theorem .*(tangent|Tangent).*(iff|congr|of_sdiff|of_null|union|diff)' simongmt/Poincare; env.contains check for Poincare.SimonGMT.Chapter04.{blowUpHomeomorph,hausdorff_blowUp_image,blowUp_image_inter_closedBall} after import GMT.Ch07.Submission`
+- `git -C .swarm-worktrees/b405db921480df316392/gmt-ch07 log --oneline -3; grep -n -A60 regcomp_atl_blowUp_measure_scaling GMT/Ch07/Submission.lean`
+- `lake env lean /tmp/pcmp-decomp-7f3a/Probe.lean (#check of cited Mathlib lemmas in contract scope)`
+- `lake env lean /tmp/pcmp-decomp-7f3a/StmtCheck.lean (child statements elaborate in contract scope)`
+- `lake env lean /tmp/pcmp-decomp-7f3a/Full.lean (3 children + verbatim uncle + parent assembly; #print axioms)`
+- `python3 -I gen_sim2.py using verifier/gmt-compare.py child_modules(mode='contract'); lake env lean /tmp/pcmp-decomp-7f3a/sim/{Chal,Sol}_*.lean`
+- `sed -n 60,150p book/chapter-03.txt; grep -n '1.4 Definition|1.5 Remarks|Proof of 1.6|Upper density Theorem|Thus we have shown' book/chapter-03.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-bead2f32d3/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-bead2f32d3/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-bead2f32d3/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/b405db921480df316392/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/NhdsWithin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Tendsto.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/pcmp-decomp-7f3a/Probe.lean`
+- `/tmp/pcmp-decomp-7f3a/StmtCheck.lean`
+- `/tmp/pcmp-decomp-7f3a/Full.lean`
+- `/tmp/pcmp-decomp-7f3a/sim`
+
+Scope and definitions:
+- The frozen contract (project b4d606d, mathlib 25730c7c; Contract.lean is byte-equal to Submission.lean) opens only CountablyRectifiable and HasApproximateTangentSpaceAt from SimonGMT Chapter03. It does not open the CompactlySupported notation. The child types therefore write Poincare.SimonGMT.Chapter03.blowUpMap and CompactlySupportedContinuousMap (Euclid P) ℝ in full.
+- Rectifiable.lean lines 96-114 define blowUpMap x r y = r⁻¹ • (y − x). HasApproximateTangentSpaceAt there means finrank Q = n and, for every f in C_c, the integral of f over blowUpMap x r '' M tends to ∫_Q f along 𝓝[>]0.
+
+Mathlib lemmas needed by the child proofs, as found in the snapshot:
+- setIntegral_union (Integral/Bochner/Set.lean:87)
+- setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (Bochner/Set.lean:466)
+- norm_setIntegral_le_of_norm_le_const (Bochner/Set.lean:613)
+- IntegrableOn.of_forall_sdiff_eq_zero (Integral/IntegrableOn.lean:435)
+- Measure.integrableOn_of_bounded (Integral/IntegrableOn.lean:716)
+- ENNReal.tendsto_toReal and ENNReal.Tendsto.const_mul (Topology/Instances/ENNReal/Lemmas.lean:102, 354)
+- ENNReal.inv_pow, mul_inv_cancel and mul_inv (Basic/ENNReal/Inv.lean:93, 103, 245)
+- ENNReal.ofReal_mul (Basic/ENNReal/Real.lean:297)
+- tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within (Topology/NhdsWithin.lean:470)
+- Continuous.bounded_above_of_compact_support (Analysis/Normed/Group/Bounded.lean:153)
+- Filter.Tendsto.congr' (Order/Filter/Tendsto.lean:104)
+
+No existing lemma to reuse:
+- SimonGMT's Chapter04 blow-up helpers (blowUpHomeomorph, hausdorff_blowUp_image, blowUp_image_inter_closedBall) are not in the import closure of GMT.Ch07.Submission (env.contains returns false).
+- Those helpers concern scaling only. No SimonGMT or Mathlib lemma proves any of the three children.
+
+Verification:
+- The accepted uncle Submission.regcomp_atl_blowUp_measure_scaling (candidate 0591fd7) is used only in the parent assembly.
+- The full prototype compiles with axioms propext, Classical.choice and Quot.sound only. It contains the three children, the verbatim uncle and the parent assembly.
+- Verifier-generated contract-mode challenge and solution modules pass for all three children and for the parent.
+- The proposed regcomp_atl_pc_* names are not reserved in dag.json.
