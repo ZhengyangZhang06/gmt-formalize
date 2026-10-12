@@ -359,6 +359,24 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, §5: a point of `ℝ^{(m+1)+ℓ}` with `ℓ` integer coordinates lies on the lattice
+`(m+1)`-skeleton.  It lies in the face `⌊x⌋ + F_α`, where `α` enumerates the other `m + 1`
+coordinates increasingly. -/
+theorem Submission.deformation_retraction_skeleton_mem : ∀ (m ℓ : ℕ) (x : Eucl (m + 1 + ℓ)), (∃ I : Finset (Fin (m + 1 + ℓ)), I.card = ℓ ∧ ∀ i ∈ I, ∃ k : ℤ, x i = k) → x ∈ ⋃ F : LatticeFaceIndex (m + 1) (m + 1 + ℓ), latticeFace 1 F := by
+  rintro m ℓ x ⟨I, hIcard, hI⟩
+  -- `Iᶜ` has `m + 1` elements; `α` is its increasing enumeration.
+  have hc : Iᶜ.card = m + 1 := by
+    rw [Finset.card_compl, Fintype.card_fin, hIcard, Nat.add_sub_cancel]
+  refine mem_iUnion.2 ⟨(fun i => ⌊x i⌋, Iᶜ.orderEmbOfFin hc), fun i => ⟨fun _ => ?_, fun hi => ?_⟩⟩
+  · simp only [one_mul]
+    exact ⟨Int.floor_le _, (Int.lt_floor_add_one _).le⟩
+  · -- Outside the range of `α` we are in `I`, where `x i` is an integer.
+    have hiI : i ∈ I := by
+      by_contra h
+      exact hi (by simpa [Finset.range_orderEmbOfFin] using h)
+    obtain ⟨k, hk⟩ := hI i hiI
+    simp only [one_mul, hk, Int.floor_intCast]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
