@@ -747,6 +747,31 @@ theorem Submission.varifold_tangents_rh_scaling_continuous :
       (fun ε hε ↦ (hunif ε hε).imp fun k₀ hk₀ k hk y ↦ hk₀ k hk (s⁻¹ • y))
   -- Step 6: by step 4 both limits are limits of the same sequence.
   exact tendsto_nhds_unique hlim2 ((hlim1.const_mul (s ^ n)).congr fun k ↦ (h4 k).symm)
+/-- **Simon Ch. 8, 5.3 (p. 215), from integrals to sets** (child `dilation_riesz_sets` of the radial
+homogeneity step for varifold tangents).  If `μ` is finite on compact sets, `s > 0` and
+`∫ g(s⁻¹ y) dμ(y) = sⁿ ∫ g dμ` for every `g ∈ C_c(ℝ^N)`, then `μ(s A) = sⁿ μ(A)` for every set `A`:
+the image of `μ` under `T y = s⁻¹ y` and `sⁿ μ` are regular and agree on `C_c`, so they are equal
+by uniqueness in the Riesz representation theorem, and an image under a measurable equivalence is
+evaluated exactly on every set, with `T⁻¹(A) = s A`. -/
+theorem Submission.varifold_tangents_rh_measure_homogeneous :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (s : ℝ), IsFiniteMeasureOnCompacts μ → 0 < s → (∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ) → ∀ A : Set (Euclidean N), μ (s • A) = ENNReal.ofReal s ^ n * μ A := by
+  intro N n μ s hμ hs hg A
+  -- Step 1: `T y = s⁻¹ • y` is a homeomorphism, hence a measurable equivalence.
+  have hs₀ : s⁻¹ ≠ 0 := inv_ne_zero hs.ne'
+  let T : Euclidean N ≃ᵐ Euclidean N := (Homeomorph.smulOfNeZero s⁻¹ hs₀).toMeasurableEquiv
+  -- Step 2: `μ` is regular (locally finite on `ℝ^N`), hence so are `μ.map T` and `sⁿ μ`.
+  have hc : ENNReal.ofReal s ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+  have h₁ : (μ.map T).Regular := Measure.Regular.map (Homeomorph.smulOfNeZero s⁻¹ hs₀)
+  have h₂ : (ENNReal.ofReal s ^ n • μ).Regular := Measure.Regular.smul hc
+  -- Steps 3–4: both measures give `∫ f(s⁻¹ y) dμ = sⁿ ∫ f dμ` to every `f ∈ C_c`, so they are equal.
+  have hν : μ.map T = ENNReal.ofReal s ^ n • μ := by
+    refine Measure.ext_of_integral_eq_on_compactlySupported fun f ↦ ?_
+    rw [integral_map_equiv, integral_smul_measure, ENNReal.toReal_pow, ENNReal.toReal_ofReal hs.le,
+      smul_eq_mul]
+    exact hg f f.continuous f.hasCompactSupport
+  -- Step 5: `s • A = T⁻¹(A)` and `(μ.map T)(A) = μ(T⁻¹(A))` for every set `A`.
+  have hA : s • A = T ⁻¹' A := (Set.preimage_smul_inv₀ hs.ne' A).symm
+  rw [hA, ← MeasurableEquiv.map_apply T A, hν, Measure.smul_apply, smul_eq_mul]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
