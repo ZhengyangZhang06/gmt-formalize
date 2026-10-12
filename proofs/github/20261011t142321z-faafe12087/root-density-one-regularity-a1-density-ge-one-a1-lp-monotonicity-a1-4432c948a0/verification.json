@@ -1,0 +1,17 @@
+{
+  "node_id": "root.density_one_regularity-a1.density_ge_one-a1.lp_monotonicity-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/962",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "d48a668fa1ca09586f9c0f588f445b37cf2e52a5",
+  "integrated_commit": "",
+  "proof_base_commit": "34a1b6c98c01243fd2e1c47be9b8e3544e6b5b3a",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_one_regularity-a1.density_ge_one-a1",
+  "requires": [
+    "root.density_one_regularity-a1.density_ge_one-a1.radial_first_variation-a1"
+  ]
+}
