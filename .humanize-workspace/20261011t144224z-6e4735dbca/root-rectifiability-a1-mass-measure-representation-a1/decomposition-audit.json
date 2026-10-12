@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmb_covector_eq_sum_coord_smul_wedge|br_la_apply_eq_zero_of_lt_degree|cmb_exists_compactly_contained_exhaustion|cmb_abs_apply_le_of_massOn_le|cmb_exists_testForm_uniform_approx|rectifiability_mass_measure_representation",
+        "exists_contDiff_dist_le|exists_contDiff_support_eq_eq_one_iff",
+        "theorem continuous_infEDist|theorem mem_closure_iff_infEDist_zero|theorem ext_alternating|theorem map_linearDependent|theorem ext_of_generateFrom_of_iUnion",
+        "theorem simon_theorem_4_14_caratheodory|theorem simon_theorem_4_14_positive_envelope|def IsLocallyBoundedCcFunctional|def vectorFunctionalEnvelopeMeasure",
+        "python3 /tmp/mmr-independent-audit-hyu8fq4b/audit_contracts.py",
+        "timeout 150 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/NodeChallenge_all.lean",
+        "timeout 180 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -o .lake/build/lib/lean/GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean",
+        "timeout 180 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/NodeSolution_all.lean",
+        "timeout 180 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Scratch/PrintDefinitions.lean > candidate-definitions.out"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/RadonCaratheodoryIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-mass-measure-representation-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-mass-measure-representation-a1/decomposition-v3.json",
+        "/tmp/mmr-independent-audit-hyu8fq4b/Scratch/NodeChallenge_all.lean",
+        "/tmp/mmr-independent-audit-hyu8fq4b/Scratch/NodeSolution_all.lean",
+        "/tmp/mmr-independent-audit-hyu8fq4b/verification-summary.json"
+      ],
+      "conclusion": "Verified the pinned revisions and selected handoff. No proposed declaration occurs in the frozen project. Each child name is a bare identifier with one accepted DAG holder and an identical frozen type; all dependency lists are empty. Independently reviewed all five proofs. Fresh Lean checks establish that all six contracts elaborate before implementation, the supplied candidate compiles, and all six exact-type solutions use only propext, Classical.choice and Quot.sound. The 29 frozen definitions print identically before and after the added import. The split is appropriate: these independent lemmas support the selected theorem, and the supplied parent argument completes extension, Riesz representation, mass identification, uniqueness, measurability and integrability without circularity. No problematic matrix-unit construction occurs. The full comparator executable was not rerun."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line type matches the prose for every P and n. The determinant identity, sorting of injective tuples and alternating-map basis extensionality prove the expansion, including zero and excessive degrees. This supplies the parent's coordinate identification without circular reliance."
+    },
+    {
+      "key": "degree_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The dimension inequality forces every argument family to be linearly dependent; alternation then makes every test form zero, and linearity gives X(ω)=0. The proof requires no openness of U and establishes exactly the stated contract, supporting the parent's degenerate case."
+    },
+    {
+      "key": "exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The extended-distance construction proves openness and compact closure inside U. Boundedness and a positive attained distance minimum establish cofinality for compact subsets, including the empty-set and U=univ cases. The exact type supplies the countable cover needed for parent measure uniqueness; monotonicity is unnecessary."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof derives C≥0, makes both signed rescalings admissible, correctly uses B≥0 when converting ENNReal inequalities, and passes c down to C. It covers C=0 and arbitrary U,W, with all hypotheses matching the exact one-line proposition."
+    },
+    {
+      "key": "mollify",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coefficient/operator-norm comparison, smooth approximation and cutoff give the required test form, compact support inside V and uniform ε estimate. All library hypotheses hold. The parent explicitly handles the resulting 1+ε norm bound when proving the mass identity and obtains linearity through independence of approximation."
+    }
+  ],
+  "required_changes": []
+}
