@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6db01858b5667ef4050ed11754a7afe4aca80711fa39d0d2d83c96cb56b68bf6",
+  "git_delta": {
+    "base_commit": "49073950a6f3e9b333e0a2bc5ac53cec09dfbe69",
+    "candidate_commit": "4279988c51a7fb5bacab62f84ff29cee447b8ec2",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "polyhedral_approx_integrable_smooth_ext",
+    "diff_sha256": "8bd7e7faa59d41d90e85d435cfe0dab0e51704763df4449fe1f55cce68fad4a3",
+    "source_sha256": "1c4b87a726da2425b7da509f78c94f682999bf48bfddf4406b4c150d1a95a4c5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_integrable_smooth_ext",
+      "statement": "∀ (P : ℕ) (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ), Integrable g₁ μ₁ → Integrable g₂ μ₂ → ∀ O : Set (Eucl P), IsOpen O → (∀ ψ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ O → ∫ x, ψ x * g₁ x ∂μ₁ = ∫ x, ψ x * g₂ x ∂μ₂) → ∀ b : Eucl P → ℝ, Measurable b → (∃ C : ℝ, ∀ x, |b x| ≤ C) → (∀ x, x ∉ O → b x = 0) → ∫ x, b x * g₁ x ∂μ₁ = ∫ x, b x * g₂ x ∂μ₂",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
