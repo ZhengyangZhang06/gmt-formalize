@@ -451,6 +451,108 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+namespace Submission
+
+/-- Weyl's lemma, convolution step: for locally integrable `f` and `φ` smooth with compact
+support, `F(x) = ∫ f(y) φ(x − y) dy` is `C^m` for every `m` and `ΔF(x) = ∫ f(y) Δφ(x − y) dy`,
+`Δψ(z) = Σᵢ D²ψ(z)(eᵢ, eᵢ)` (Evans, PDE, App. C, Thm 7(i)).  `F = f ⋆[L] φ` for multiplication
+`L`; differentiating under the integral twice gives `D(DF) = f ⋆ D²φ`, and evaluation at
+`(v, w)` commutes with the integral (`convolution_precompR_apply`). -/
+theorem dorag_ha_weyl_conv_laplacian : ∀ (n : ℕ) (f φ : Euclid n → ℝ), LocallyIntegrable f → (∀ m : ℕ, ContDiff ℝ m φ) → HasCompactSupport φ → (∀ m : ℕ, ContDiff ℝ m (fun x => ∫ y, f y * φ (x - y))) ∧ ∀ x : Euclid n, ∑ i : Fin n, iteratedFDeriv ℝ 2 (fun x => ∫ y, f y * φ (x - y)) x ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = ∫ y, f y * ∑ i : Fin n, iteratedFDeriv ℝ 2 φ (x - y) ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] := by
+  intro n f φ hf hφ hφc
+  -- `F = f ⋆[L] φ` for the multiplication bilinear map `L a b = a * b`.
+  set L : ℝ →L[ℝ] ℝ →L[ℝ] ℝ := ContinuousLinearMap.mul ℝ ℝ with hL
+  have hF : (fun x => ∫ y, f y * φ (x - y)) = convolution f φ L volume := by
+    funext x
+    rw [hL, convolution_mul]
+  have hφ1 : ContDiff ℝ 1 φ := by exact_mod_cast hφ 1
+  have hφ2 : ContDiff ℝ 2 φ := by exact_mod_cast hφ 2
+  have hdφ : ContDiff ℝ 1 (fderiv ℝ φ) := hφ2.fderiv_right one_add_one_eq_two.le
+  refine ⟨fun m => ?_, fun x => ?_⟩
+  · rw [hF]
+    exact hφc.contDiff_convolution_right L hf (hφ m)
+  -- `DF = f ⋆[L.precompR] Dφ` and `D(DF)(x) v w = ∫ f(y) D²φ(x − y) v w dy`.
+  have hD : fderiv ℝ (convolution f φ L volume) =
+      convolution f (fderiv ℝ φ) (L.precompR (Euclid n)) volume := by
+    ext1 x₀
+    exact (hφc.hasFDerivAt_convolution_right L hf hφ1 x₀).fderiv
+  have hc2 : Continuous (fderiv ℝ (fderiv ℝ φ)) := hdφ.continuous_fderiv one_ne_zero
+  have hs2 : HasCompactSupport (fderiv ℝ (fderiv ℝ φ)) := (hφc.fderiv ℝ).fderiv ℝ
+  have hD2 : ∀ v w : Euclid n, fderiv ℝ (fderiv ℝ (convolution f φ L volume)) x v w =
+      ∫ y, f y * fderiv ℝ (fderiv ℝ φ) (x - y) v w := by
+    intro v w
+    have hc3 : Continuous fun a => fderiv ℝ (fderiv ℝ φ) a v := hc2.clm_apply continuous_const
+    have hs3 : HasCompactSupport fun a => fderiv ℝ (fderiv ℝ φ) a v :=
+      hs2.comp_left (g := fun A : Euclid n →L[ℝ] Euclid n →L[ℝ] ℝ => A v) rfl
+    rw [hD, ((hφc.fderiv ℝ).hasFDerivAt_convolution_right (L.precompR (Euclid n)) hf hdφ x).fderiv,
+      convolution_precompR_apply (L.precompR (Euclid n)) hf hs2 hc2 x v,
+      convolution_precompR_apply L hf hs3 hc3 x w, hL, convolution_mul]
+  -- Each integrand `f(y) D²φ(x − y) v w` is integrable, so the sum over `i` commutes with `∫`.
+  have hint : ∀ v w : Euclid n, Integrable fun y => f y * fderiv ℝ (fderiv ℝ φ) (x - y) v w := by
+    intro v w
+    have hc4 : Continuous fun a => fderiv ℝ (fderiv ℝ φ) a v w :=
+      (hc2.clm_apply continuous_const).clm_apply continuous_const
+    have hs4 : HasCompactSupport fun a => fderiv ℝ (fderiv ℝ φ) a v w :=
+      hs2.comp_left (g := fun A : Euclid n →L[ℝ] Euclid n →L[ℝ] ℝ => A v w) rfl
+    exact hs4.convolutionExists_right L hf hc4 x
+  simp only [iteratedFDeriv_two_apply, Matrix.cons_val_zero, Matrix.cons_val_one]
+  rw [hF]
+  simp_rw [hD2, Finset.mul_sum]
+  rw [integral_finsetSum _ fun i _ => hint _ _]
+/-- Weyl's lemma, mollification step: if `W ∈ L¹(B)`, `B = B_R(0)`, is weakly harmonic in `B`
+and `φ` is smooth and vanishes for `‖y‖ ≥ ε`, then `F = (1_B W) ⋆ φ` is `C^m` for every `m` and
+`ΔF = 0` on `B_{R−ε}(0)`.  By `dorag_ha_weyl_conv_laplacian`, `ΔF(x) = ∫ (1_B W)(y) Δφ(x − y) dy`;
+for `‖x‖ < R − ε` the test function `ζ(y) = φ(x − y)` has `spt ζ ⊆ B̄_ε(x) ⊆ B` and
+`Δζ(y) = Δφ(x − y)`, so this is `∫_B W Δζ = 0`. -/
+theorem dorag_ha_weyl_mollify_harmonic : ∀ (n : ℕ) (R ε : ℝ) (W φ : Euclid n → ℝ), 0 < ε → IntegrableOn W (ball (0 : Euclid n) R) → (∀ ζ : Euclid n → ℝ, ContDiff ℝ 2 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∫ y in ball (0 : Euclid n) R, W y * ∑ i : Fin n, iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → (∀ m : ℕ, ContDiff ℝ m φ) → (∀ y : Euclid n, ε ≤ ‖y‖ → φ y = 0) → (∀ m : ℕ, ContDiff ℝ m (fun x => ∫ y, (ball (0 : Euclid n) R).indicator W y * φ (x - y))) ∧ ∀ x ∈ ball (0 : Euclid n) (R - ε), ∑ i : Fin n, iteratedFDeriv ℝ 2 (fun x => ∫ y, (ball (0 : Euclid n) R).indicator W y * φ (x - y)) x ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := by
+  intro n R ε W φ hε hW hharm hφ hφ0
+  -- `1_B W` is integrable, and `φ` vanishes off the compact ball `B̄_ε(0)`.
+  have hWB : Integrable ((ball (0 : Euclid n) R).indicator W) :=
+    hW.integrable_indicator measurableSet_ball
+  have hφc : HasCompactSupport φ :=
+    HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) ε) fun y hy =>
+      hφ0 y (by rw [mem_closedBall, dist_zero_right, not_le] at hy; exact hy.le)
+  obtain ⟨hsmooth, hlap⟩ := Submission.dorag_ha_weyl_conv_laplacian n
+    ((ball (0 : Euclid n) R).indicator W) φ hWB.locallyIntegrable hφ hφc
+  refine ⟨hsmooth, fun x hx => ?_⟩
+  rw [hlap x]
+  -- The test function `ζ(y) = φ(x − y)`, supported in `B̄_ε(x) ⊆ B`.
+  obtain ⟨ζ, hζ⟩ : ∃ ζ : Euclid n → ℝ, ζ = fun y => φ (x - y) := ⟨_, rfl⟩
+  have hζ2 : ContDiff ℝ 2 ζ := by
+    rw [hζ]
+    exact (hφ 2).comp (contDiff_const.sub contDiff_id)
+  have hζspt : tsupport ζ ⊆ closedBall x ε := by
+    refine closure_minimal (fun y hy => ?_) isClosed_closedBall
+    rw [mem_closedBall, dist_comm, dist_eq_norm]
+    by_contra h
+    exact hy (by rw [hζ]; exact hφ0 _ (not_le.1 h).le)
+  have hball : closedBall x ε ⊆ ball (0 : Euclid n) R := by
+    intro y hy
+    rw [mem_closedBall] at hy
+    rw [mem_ball] at hx ⊢
+    linarith [dist_triangle y x 0]
+  -- `D²ζ(y)(v, v) = D²φ(x − y)(v, v)`: write `ζ = φ(x + ·) ∘ (−id)`.
+  have hD2 : ∀ y v : Euclid n,
+      iteratedFDeriv ℝ 2 ζ y ![v, v] = iteratedFDeriv ℝ 2 φ (x - y) ![v, v] := by
+    intro y v
+    have hψ : ContDiff ℝ (2 : ℕ) fun z => φ (x + z) :=
+      (hφ 2).comp (contDiff_const.add contDiff_id)
+    have hζψ : ζ = (fun z => φ (x + z)) ∘ ⇑(-ContinuousLinearMap.id ℝ (Euclid n)) := by
+      rw [hζ]
+      funext z
+      simp [sub_eq_add_neg]
+    rw [hζψ, ContinuousLinearMap.iteratedFDeriv_comp_right _ hψ y le_rfl,
+      ContinuousMultilinearMap.compContinuousLinearMap_apply, iteratedFDeriv_comp_add_left,
+      iteratedFDeriv_two_apply, iteratedFDeriv_two_apply]
+    simp [sub_eq_add_neg]
+  -- `∫ 1_B W Δφ(x − ·) = ∫_B W Δζ = 0` by weak harmonicity.
+  have hζW := hharm ζ hζ2
+    ((isCompact_closedBall x ε).of_isClosed_subset (isClosed_tsupport ζ) hζspt) (hζspt.trans hball)
+  rw [← integral_indicator measurableSet_ball] at hζW
+  simpa only [Set.indicator_mul_left, hD2] using hζW
+
+end Submission
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
