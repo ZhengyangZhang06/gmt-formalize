@@ -1,0 +1,15 @@
+{
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.campanato_from_tilt-a1.tilt_lintegral-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/2756",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "7199a462a26fa9b30d3ceea5726d432d05898c7f",
+  "integrated_commit": "",
+  "proof_base_commit": "1ec2711f504b30c71b78960a500585d5b7fdc03d",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.allard_regularity-a1.graph_campanato-a1.campanato_from_tilt-a1",
+  "requires": []
+}
