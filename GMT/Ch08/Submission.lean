@@ -589,6 +589,24 @@ theorem Submission.limsup_measure_compact_le_of_tendsto_integral :
   -- Step 7: let `m → ∞`.
   exact ge_of_tendsto' htend key
 
+/-- Portmanteau for varifold weights (Simon Ch. 8, proof of 3.7): if `Vᵢ → V` as Radon measures on
+`Gₙ(U)`, then `μ_V(O) ≤ liminf μ_{Vᵢ}(O)` for every open `O ⊆ U` and
+`limsup μ_{Vᵢ}(K) ≤ μ_V(K)` for every compact `K ⊆ U`. -/
+theorem Submission.weight_portmanteau_of_radonConverges :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U), Varifold.RadonConverges Vi V → (∀ O : Set (Euclidean N), IsOpen O → O ⊆ U → V.weight O ≤ liminf (fun i ↦ (Vi i).weight O) atTop) ∧ ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → limsup (fun i ↦ (Vi i).weight K) atTop ≤ V.weight K := by
+  intro N n U Vi V hconv
+  -- Step 1 (T): `∫ g dμ_{Vᵢ} → ∫ g dμ_V` for every `g ∈ C_c(ℝ^N)` with `spt g ⊆ U`.
+  have hlim := Submission.varifold_weight_integral_tendsto_of_radonConverges N n U Vi V hconv
+  -- Step 2: every weight is finite on compact subsets of `U`.
+  have hfin : ∀ (X : Varifold N n U) (K : Set (Euclidean N)), IsCompact K → K ⊆ U →
+      X.weight K ≠ ∞ := fun X ↦ X.weight_finite_on_compact
+  -- Steps 3–5: (P1) by inner exhaustion of `O`, (P2) by outer approximation of `K` inside the
+  -- open set `U`, both via Urysohn functions and (T).
+  exact ⟨Submission.measure_open_le_liminf_of_tendsto_integral N U (fun i ↦ (Vi i).weight)
+      V.weight (fun i ↦ hfin (Vi i)) (hfin V) hlim,
+    Submission.limsup_measure_compact_le_of_tendsto_integral N U (fun i ↦ (Vi i).weight)
+      V.weight V.isOpen_domain (fun i ↦ hfin (Vi i)) (hfin V) hlim⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
