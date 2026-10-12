@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exists_isClosed_sdiff_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure|tendsto_measure_thickening_of_isClosed|exists_cthickening_subset_open|exists_iUnion_isClosed|exists_continuousMap_one_of_isCompact_subset_isOpen|instTietzeExtensionUnitClosedBall|exists_forall_mem_restrict_eq|enorm_integral_le_lintegral_enorm|Monotone.measure_iUnion",
+        "rg -n -i 'lusin' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory",
+        "rg -n 'gaussGreenVar_|gaussGreenRep_measure_eq_iSup_pairing' .humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/VarFormulaFull.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/VarFormulaSplit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/VarFormulaStmtCheck.lean",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/TietzeExtension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Complex/Tietze.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-gauss-green-a1-variation-formula-a1/decomposition-v1.json",
+        "GMT/Scratch/VarFormulaFull.lean",
+        "GMT/Scratch/VarFormulaSplit.lean",
+        "GMT/Scratch/VarFormulaStmtCheck.lean"
+      ],
+      "conclusion": "The handoff matches the selected frozen contract. The snapshot records project d09bc8a and Mathlib 25730c7c; inspected Mathlib files match the installed pinned package byte-for-byte. Regular.lean supplies finite-measure weak regularity and closed approximation; Metric.lean supplies convergence of thickening measures; the topology files supply compact exhaustion, Tietze extension into the Euclidean closed unit ball, and compactly supported cutoffs. The Mathlib Lusin search found separation/Souslin results only; pinned SimonGMT supplies the applicable scalar Lusin theorem. No proposed declaration name occurs in the searched frozen project, current DAG, or other decomposition artifacts. All six names are bare identifiers and all dependency lists are correctly empty. Each statement is a single, self-contained proposition, passes validate_lean_statement, and elaborates with the contract import alone. Exact string comparisons confirm that the checked proofs use the proposed child types and conclude the frozen parent type. Independently rerun full proofs and assembly succeed with only propext, Classical.choice, and Quot.sound. The six-way split is appropriate: its independent analytic obligations establish this selected variation formula, including N = 0 and infinite μ(O), without circular reliance."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pairing_upper_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including the absence of measurability assumptions. The a.e. indicator bound, unconditional extended-norm integral inequality, and measurable-indicator integral prove the exact conclusion, including the nonintegrable case."
+    },
+    {
+      "key": "compact_inner_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes precisely the stated hypotheses. Intersecting the increasing closed exhaustion with expanding compact balls gives an increasing compact exhaustion of O. Continuity from below proves the conclusion without any finiteness assumption."
+    },
+    {
+      "key": "open_outer_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match. A compact thickening inside O supplies finite measure; shrinking open thickenings converge in measure to K. Finite-measure subtraction yields the required strict error bound. Empty K and infinite ε are covered."
+    },
+    {
+      "key": "vector_lusin",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite restriction μ⌞A supplies weak regularity without assuming local finiteness of μ. Scalar Lusin applies to every coordinate; intersecting with the additional closed F handles N = 0. Subadditivity and coordinate continuity prove the exact stated conclusion."
+    },
+    {
+      "key": "unit_field_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and conclusion match exactly. Tietze extension and radial retraction preserve the values on C and the unit bound; the Urysohn cutoff supplies compact support inside V. The cited closed-unit-ball instance applies to Rn N with its Euclidean norm."
+    },
+    {
+      "key": "pairing_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including the conditional a.e. equality on C. Domination by 1_V establishes integrability. Integrating f ≥ 1_C − 1_(V\\C), then converting finite measure values through ENNReal.ofReal, proves the exact inequality."
+    }
+  ],
+  "required_changes": []
+}

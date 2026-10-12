@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.variation_formula-a1.compact_inner_approx-a1",
+  "parent_id": "root.gauss_green-a1.variation_formula-a1",
+  "depth": 3,
+  "title": "The measure of an open set is bounded by any common bound on its compact subsets",
+  "statement": "Let N ∈ ℕ, let O ⊆ ℝ^N (= EuclideanSpace ℝ (Fin N)) be open, let μ be any measure on the Borel σ-algebra of ℝ^N (no finiteness is assumed), and let c ∈ [0, ∞]. If μ(K) ≤ c for every compact K ⊆ O, then μ(O) ≤ c. In other words, μ(O) = sup{μ(K) : K ⊆ O compact}.",
+  "lean_statement": "∀ (N : ℕ) (O : Set (Rn N)) (μ : Measure (Rn N)) (c : ℝ≥0∞), IsOpen O → (∀ K : Set (Rn N), IsCompact K → K ⊆ O → μ K ≤ c) → μ O ≤ c",
+  "lean_name": "gaussGreenVar_measure_isOpen_le_of_isCompact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1-compact-inner-approx-a1-a1"
+}

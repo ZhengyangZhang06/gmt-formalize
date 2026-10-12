@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.gauss_green-a1.variation_formula-a1.pairing_upper_bound-a1",
+  "parent_id": "root.gauss_green-a1.variation_formula-a1",
+  "depth": 3,
+  "title": "The pairing of a unit field supported in O with a field ν with |ν| ≤ 1 a.e. is at most μ(O)",
+  "statement": "Let N ∈ ℕ, write ℝ^N for EuclideanSpace ℝ (Fin N) with its Euclidean norm and inner product, and let μ be any measure on the Borel σ-algebra of ℝ^N. Let O ⊆ ℝ^N be a Borel set. Let ν, g : ℝ^N → ℝ^N be arbitrary maps (no measurability is assumed) such that |ν(x)| ≤ 1 for μ-a.e. x, tsupport g (the closure of {g ≠ 0}) is contained in O, and |g(x)| ≤ 1 for every x. Then ofReal(∫⟨g(x), ν(x)⟩ dμ(x)) ≤ μ(O) in [0, ∞]. Here ∫ is the Bochner integral, which is 0 when the integrand is not μ-integrable, and ofReal(t) := max(t, 0).",
+  "lean_statement": "∀ (N : ℕ) (O : Set (Rn N)) (μ : Measure (Rn N)) (ν g : Rn N → Rn N), MeasurableSet O → (∀ᵐ x ∂μ, ‖ν x‖ ≤ 1) → tsupport g ⊆ O → (∀ x, ‖g x‖ ≤ 1) → ENNReal.ofReal (∫ x, inner ℝ (g x) (ν x) ∂μ) ≤ μ O",
+  "lean_name": "gaussGreenVar_ofReal_integral_inner_le_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-gauss-green-a1-variation-formula-a1-pairing-upper-bound-a1-a1"
+}
