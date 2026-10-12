@@ -677,6 +677,89 @@ theorem Submission.classical_tangent_off_plane_mass_decay : ∀ (n ℓ : ℕ) (V
           exact le_of_mul_le_mul_left (by linarith) hρ
       · rw [indicator_of_notMem hy]
         exact hfn _
+/-- **Support flatness** (Ch. 4, 6.3(2) and the concluding step). Let `μ` be finite on compact
+sets with the uniform lower bound `μ(B_s(ζ)) ≥ a sⁿ` for `ζ ∈ S ∩ B_{ρ₀}(x)` and `0 < s ≤ ρ₀`. If
+for every `ε > 0` the mass of `B_ρ(x)` away from `{dist(· - x, P) < ερ}` is `o(ρⁿ)`, then `S` is
+flat at `x`: `sup {ρ⁻¹ dist(y - x, P) : y ∈ S ∩ B_ρ(x)} → 0` as `ρ ↓ 0`. -/
+theorem Submission.classical_tangent_support_flatness : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ))
+    (S : Set (Ambient n ℓ)) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)) (a ρ₀ : ℝ),
+    IsFiniteMeasureOnCompacts μ → 0 < a → 0 < ρ₀ →
+    (∀ ζ ∈ S ∩ closedBall x ρ₀, ∀ s : ℝ, 0 < s → s ≤ ρ₀ → a * s ^ n ≤ μ.real (closedBall ζ s)) →
+    (∀ ε : ℝ, 0 < ε → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * μ.real (closedBall x ρ \
+      {y | infDist (y - x) (P : Set (Ambient n ℓ)) < ε * ρ})) (𝓝[>] 0) (𝓝 0)) →
+    Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
+      (S ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ μ S x P a ρ₀ hμ ha hρ₀ hlower hdecay
+  rw [Metric.tendsto_nhdsWithin_nhds]
+  intro η hη
+  -- Parameters `ε = η/8` and `α = min(η/8, 1/4)`.
+  have hε : 0 < η / 8 := by positivity
+  obtain ⟨α, hα, hα4, hαη⟩ : ∃ α : ℝ, 0 < α ∧ α ≤ 1 / 4 ∧ α ≤ η / 8 :=
+    ⟨min (η / 8) (1 / 4), lt_min hε (by norm_num), min_le_right _ _, min_le_left _ _⟩
+  -- By the mass decay, the off-plane mass of `B_r(x)` is `< a αⁿ rⁿ` for `0 < r < ρ₁`.
+  obtain ⟨ρ₁, hρ₁, hmass⟩ := Metric.tendsto_nhdsWithin_nhds.1 (hdecay (η / 8) hε) (a * α ^ n)
+    (mul_pos ha (pow_pos hα n))
+  refine ⟨min ρ₀ ρ₁ / 2, half_pos (lt_min hρ₀ hρ₁), fun ρ hρ hρδ ↦ ?_⟩
+  have hρ : 0 < ρ := hρ
+  rw [dist_zero_right, Real.norm_eq_abs, abs_of_pos hρ] at hρδ
+  have h2ρ : 0 < 2 * ρ := by positivity
+  have hρρ₀ : 2 * ρ ≤ ρ₀ := by linarith [min_le_left ρ₀ ρ₁]
+  have hρρ₁ : 2 * ρ < ρ₁ := by linarith [min_le_right ρ₀ ρ₁]
+  have hA : μ.real (closedBall x (2 * ρ) \
+      {y | infDist (y - x) (P : Set (Ambient n ℓ)) < η / 8 * (2 * ρ)}) <
+      (2 * ρ) ^ n * (a * α ^ n) := by
+    have h : dist (((2 * ρ) ^ n)⁻¹ * μ.real (closedBall x (2 * ρ) \
+        {y | infDist (y - x) (P : Set (Ambient n ℓ)) < η / 8 * (2 * ρ)})) 0 < a * α ^ n :=
+      hmass (Set.mem_Ioi.2 h2ρ) (by rwa [dist_zero_right, Real.norm_eq_abs, abs_of_pos h2ρ])
+    rw [dist_zero_right, Real.norm_eq_abs] at h
+    exact (inv_mul_lt_iff₀ (pow_pos h2ρ n)).1 ((le_abs_self _).trans_lt h)
+  -- 6.3(2) at radius `2ρ`: every `ζ ∈ S ∩ B_ρ(x)` has `dist(ζ - x, P) < (ε + α)·2ρ`.
+  have hclaim : ∀ ζ ∈ S ∩ closedBall x ρ,
+      infDist (ζ - x) (P : Set (Ambient n ℓ)) < (η / 8 + α) * (2 * ρ) := by
+    rintro ζ ⟨hζS, hζx⟩
+    have hζx : dist ζ x ≤ ρ := hζx
+    refine not_le.1 fun hcon ↦ ?_
+    have hαρ : α * (2 * ρ) ≤ 1 / 4 * (2 * ρ) := mul_le_mul_of_nonneg_right hα4 h2ρ.le
+    -- Otherwise `B_{α·2ρ}(ζ)` lies in the off-plane part of `B_{2ρ}(x)`.
+    have hsub : closedBall ζ (α * (2 * ρ)) ⊆ closedBall x (2 * ρ) \
+        {y | infDist (y - x) (P : Set (Ambient n ℓ)) < η / 8 * (2 * ρ)} := by
+      intro y hy
+      have hy : dist y ζ ≤ α * (2 * ρ) := hy
+      refine ⟨?_, fun hlt ↦ ?_⟩
+      · show dist y x ≤ 2 * ρ
+        linarith [dist_triangle y ζ x]
+      · have hlt : infDist (y - x) (P : Set (Ambient n ℓ)) < η / 8 * (2 * ρ) := hlt
+        have hlip : infDist (ζ - x) (P : Set (Ambient n ℓ)) ≤
+            infDist (y - x) (P : Set (Ambient n ℓ)) + dist (ζ - x) (y - x) :=
+          infDist_le_infDist_add_dist
+        rw [dist_sub_right, dist_comm] at hlip
+        linarith
+    have hfin : μ (closedBall x (2 * ρ) \
+        {y | infDist (y - x) (P : Set (Ambient n ℓ)) < η / 8 * (2 * ρ)}) ≠ ⊤ :=
+      ((measure_mono Set.sdiff_subset).trans_lt measure_closedBall_lt_top).ne
+    have hle := measureReal_mono hsub hfin
+    have hlow := hlower ζ ⟨hζS, show dist ζ x ≤ ρ₀ by linarith⟩ (α * (2 * ρ))
+      (mul_pos hα h2ρ) (by linarith)
+    rw [mul_pow] at hlow
+    linarith
+  have hnn : 0 ≤ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
+      (S ∩ closedBall x ρ)) := by
+    refine Real.sSup_nonneg ?_
+    rintro _ ⟨y, -, rfl⟩
+    exact mul_nonneg (inv_nonneg.2 hρ.le) infDist_nonneg
+  have hup : sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
+      (S ∩ closedBall x ρ)) ≤ η / 2 := by
+    refine Real.sSup_le ?_ (by positivity)
+    rintro _ ⟨y, hy, rfl⟩
+    show ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ)) ≤ η / 2
+    rw [inv_mul_le_iff₀ hρ]
+    have := hclaim y hy
+    have hαρ : α * ρ ≤ η / 8 * ρ := mul_le_mul_of_nonneg_right hαη hρ.le
+    linarith
+  show dist (sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
+    (S ∩ closedBall x ρ))) 0 < η
+  rw [dist_zero_right, Real.norm_eq_abs, abs_of_nonneg hnn]
+  linarith
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
