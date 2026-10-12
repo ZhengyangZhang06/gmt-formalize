@@ -1,0 +1,69 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.curvature_monotonicity-a1.annulus_ibp-a1`
+- Child DAG node: `root.curvature_monotonicity-a1.annulus_ibp-a1.primitive_fubini-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+1. Notation. λ is Lebesgue measure on ℝ and λ_I := λ⌞(σ, ρ], a finite measure (λ((σ, ρ]) = max(ρ − σ, 0) < ∞); ν_S := ν⌞S, which is s-finite because ν is. For t ∈ ℝ put T_t := {x ∈ X : t < r(x)}, and put T := {(t, x) ∈ ℝ × X : t < r(x)}. All integrals are Bochner (Lebesgue) integrals of real-valued functions; Fubini's theorem is applied below only to an integrable function on the product.
+2. Measurability. The maps (t, x) ↦ t and (t, x) ↦ r(x) are measurable on ℝ × X with the product σ-algebra, so T = {(t, x) : t < r(x)} is measurable. Likewise every T_t = r⁻¹((t, ∞)) is measurable in X, and every interval (−∞, u) is Borel in ℝ.
+3. Product integrand. Let Ψ(t, x) := F′(t)g(x) and Φ := 1_T·Ψ, i.e. Φ(t, x) = F′(t)g(x) if t < r(x) and Φ(t, x) = 0 otherwise. Since F′ ∈ L¹(λ_I) and g ∈ L¹(ν_S), Ψ is λ_I ⊗ ν_S-integrable: it is a.e.-strongly measurable as the product of an a.e.-strongly measurable function of t and one of x, and by Tonelli's theorem (valid for s-finite factors) ∫∫|Ψ| d(λ_I ⊗ ν_S) = (∫_{(σ,ρ]}|F′|dλ)·(∫_S|g|dν) < ∞. Because T is measurable (step 2), Φ = 1_T·Ψ is also λ_I ⊗ ν_S-integrable.
+4. Fubini. Both factors λ_I and ν_S are s-finite and Φ ∈ L¹(λ_I ⊗ ν_S), so Fubini's theorem, which holds for s-finite (not only σ-finite) factors, gives: (i) x ↦ ∫Φ(t, x)dλ_I(t) is ν_S-integrable; (ii) t ↦ ∫Φ(t, x)dν_S(x) is λ_I-integrable; (iii) ∫(∫Φ(t, x)dν_S(x))dλ_I(t) = ∫(∫Φ(t, x)dλ_I(t))dν_S(x).
+5. Sections at fixed t. For all t ∈ ℝ and x ∈ X, Φ(t, x) = F′(t)·(1_{T_t}g)(x). Pulling out the constant F′(t) and using that T_t is measurable (step 2), ∫Φ(t, x)dν_S(x) = F′(t)∫_S 1_{T_t}g dν = F′(t)∫_{S∩T_t} g dν for every t ∈ ℝ.
+6. Sections at fixed x ∈ S. For x ∈ S and t ∈ ℝ, Φ(t, x) = g(x)·(1_{(−∞, r(x))}F′)(t). Hence ∫Φ(t, x)dλ_I(t) = g(x)∫_{(σ,ρ]∩(−∞,r(x))} F′dλ. Because r(x) ∈ (σ, ρ] we have (σ, ρ] ∩ (−∞, r(x)) = (σ, r(x)) (if σ < t < r(x) then t < ρ). The sets (σ, r(x)) and (σ, r(x)] differ by the λ-null set {r(x)}, so ∫_{(σ,r(x))}F′ = ∫_{(σ,r(x)]}F′, and the hypothesis on F at the point t = r(x) ∈ (σ, ρ] ⊆ [σ, ρ] gives ∫_{(σ,r(x)]}F′ = F(r(x)) − F(σ). Therefore ∫Φ(t, x)dλ_I(t) = g(x)(F(r(x)) − F(σ)) for every x ∈ S.
+7. Conclusion (a). By step 6 the ν_S-integrable function of step 4(i) coincides with x ↦ g(x)(F(r(x)) − F(σ)) at every point of S. Since S is measurable, ν_S-almost every point lies in S, so the two functions are ν_S-a.e. equal; hence x ↦ g(x)(F(r(x)) − F(σ)) is ν-integrable on S.
+8. Conclusion (b). By step 5 the λ_I-integrable function of step 4(ii) equals t ↦ F′(t)∫_{S∩T_t} g dν at every t ∈ ℝ, so the latter is Lebesgue integrable on (σ, ρ].
+9. Conclusion (c). ∫_{(σ,ρ]}F′(t)(∫_{S∩T_t} g dν)dt = ∫(∫Φ(t, x)dν_S(x))dλ_I(t) by step 5, = ∫(∫Φ(t, x)dλ_I(t))dν_S(x) by step 4(iii), = ∫_S g(x)(F(r(x)) − F(σ))dν(x) by step 6, because the two integrands agree at every point of the measurable set S. ∎
+
+## Key steps
+
+1. T := {(t, x) : t < r(x)} is product-measurable and Φ(t, x) := 1_T(t, x)F′(t)g(x) is integrable for λ⌞(σ,ρ] ⊗ ν⌞S, being the restriction to T of the integrable product F′(t)g(x)
+2. Fubini: both partial integrals of Φ are integrable and the two iterated integrals agree
+3. t-section: ∫Φ(t, ·)dν⌞S = F′(t)∫_{S∩{t<r}} g dν for every t
+4. x-section for x ∈ S: (σ, ρ] ∩ (−∞, r(x)) = (σ, r(x)); drop the null endpoint r(x) and use F(r(x)) = F(σ) + ∫_{(σ,r(x)]}F′ to get g(x)(F(r(x)) − F(σ))
+5. Transfer the integrability statements and the identity through the two section formulas (a.e. on ν⌞S, pointwise in t)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `python3 -I: dag.json nodes[].lean_name collision check for mcm_primitive_radial_fubini / mcm_annulus_primitive_fubini / mcm_interval_primitive_fubini`
+- `python3 -I gmt-compare.py contract_scope(Contract.lean, GMT.Ch04.main_theorem) and child_modules(..., 'contract') to generate NodeChallenge files; lean_contract.validate_lean_statement on all four types`
+- `rg -n 'theorem integral_integral_swap|theorem Integrable.mul_prod|theorem Integrable.integral_prod_left|theorem Integrable.integral_prod_right|theorem setIntegral_indicator|theorem integral_Ioc_eq_integral_Ioo|theorem integral_Icc_eq_integral_Ioo|theorem integral_Ioc_eq_integral_Icc' <snapshot>/mathlib/Mathlib`
+- `rg -n 'IsFiniteMeasureOnCompacts.*SigmaFinite|sigmaFinite_of_isFiniteMeasureOnCompacts|instance.*sigmaFinite_of_locallyFinite|theorem sigmaFinite_of_locallyFinite|instance.*IsFiniteMeasureOnCompacts.*IsLocallyFiniteMeasure|isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts' <snapshot>/mathlib/Mathlib`
+- `grep -n '^theorem\|^lemma' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/{Layercake.lean,IntervalIntegral/IntegrationByParts.lean,IntervalIntegral/AbsolutelyContinuousFun.lean}`
+- `rg -n 'integral_integral_swap|integral_prod|Integrable.mul_prod|setIntegral_indicator' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04 lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03`
+- `rg -n '^(private )?(theorem|lemma) .*(fubini|Fubini|swap|primitive|ibp|parts)' lake-packages-25730c7c/simongmt/Poincare/SimonGMT`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/annulus-ibp-decomp/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/annulus-ibp-decomp/olean lean /tmp/annulus-ibp-decomp/lean/{Challenge_mcm_primitive_radial_fubini,Challenge_mcm_annulus_primitive_fubini,Challenge_mcm_interval_primitive_fubini,Challenge_PARENT_mcm_annulus_integration_by_parts,ProveC1,ProveC1sorry_C2C3,Assembly,Full,Inspect}.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-curvature-monotonicity-a1-annulus-ibp-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-curvature-monotonicity-a1-annulus-ibp-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/VectorMeasure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/IntegrationByParts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT`
+- `/tmp/annulus-ibp-decomp/lean/ProveC1.lean`
+- `/tmp/annulus-ibp-decomp/lean/ProveC1sorry_C2C3.lean`
+- `/tmp/annulus-ibp-decomp/lean/Assembly.lean`
+- `/tmp/annulus-ibp-decomp/lean/Full.lean`
+- `/tmp/annulus-ibp-decomp/lean/Inspect.lean`
+
+The snapshot (project ff75f52a, Mathlib 25730c7c) has a Contract.lean byte-identical to the workspace Contract.lean and Submission.lean (sha256 6e58e5dd…0f4770b). Mathlib supplies every tool the children need: integral_integral_swap, Integrable.mul_prod and Integrable.integral_prod_left/right (Integral/Prod.lean); setIntegral_indicator and integral_Ioc_eq_integral_Ioo (Integral/Bochner/Set.lean); SigmaFinite.of_isFiniteMeasureOnCompacts (Measure/Typeclasses/SFinite.lean). No existing declaration states the needed signed, bounded-interval Fubini identity. The layer-cake formulas in Layercake.lean require a nonnegative integrand and lintegrals. AbsolutelyContinuousOnInterval.integral_mul_deriv_eq_deriv_mul (AbsolutelyContinuousFun.lean) is phrased with deriv, so it would need Lebesgue differentiation to reach the given F′. SimonGMT at 2b366308 has no public Fubini/IBP helper: Ch03/Ch04 have no match, and the only name hit is the unrelated Chapter02 secondFundamentalForm_swap_eq_of_common_mixed_derivative. The abstract Fubini lemma is therefore new, and it is used twice. All four types (3 children + frozen parent) pass validate_lean_statement and elaborate in the exact gmt-compare contract scope. Iff.rfl parse checks confirm the Real.measureSpace.volume and Euclidean-norm instances. mcm_primitive_radial_fubini has a complete compiled proof. The two specializations compile from its sorry'd stub alone. The parent's exact frozen type compiles from sorry'd stubs of the two specializations alone. The full chain compiles sorry-free, with axioms propext, Classical.choice, Quot.sound. No lean_name collides with dag.json.

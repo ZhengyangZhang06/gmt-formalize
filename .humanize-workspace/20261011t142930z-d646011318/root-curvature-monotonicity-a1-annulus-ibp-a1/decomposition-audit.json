@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "theorem integral_integral_swap|theorem Integrable.mul_prod|theorem Integrable.integral_prod_left|theorem Integrable.integral_prod_right|theorem setIntegral_indicator|theorem integral_Ioc_eq_integral_Ioo|of_isFiniteMeasureOnCompacts",
+        "variable \\[SFinite|SFinite.*restrict|sfinite_restrict",
+        "primitive.*fubini|fubini.*primitive|annulus.*fubini|annulus.*integration_by_parts",
+        "class BorelSpace|measurable_eq :|theorem borel_eq|BorelSpace.measurable_eq",
+        "python3 -I /tmp/annulus-ibp-independent-audit/run_check.py Full.lean",
+        "python3 -I /tmp/annulus-ibp-independent-audit/run_check.py Inspect.lean",
+        "python3 -I /tmp/annulus-ibp-independent-audit/run_check.py Challenge_primitive_fubini.lean Challenge_annulus_fubini.lean Challenge_interval_fubini.lean Challenge_annulus_ibp.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-curvature-monotonicity-a1-annulus-ibp-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-curvature-monotonicity-a1-annulus-ibp-a1/decomposition-v1.json",
+        "/tmp/annulus-ibp-independent-audit/lean/Full.lean",
+        "/tmp/annulus-ibp-independent-audit/lean/Inspect.lean"
+      ],
+      "conclusion": "The pinned snapshot supplies product integrability, both partial-integral integrability results, Fubini for s-finite factors, indicator restriction identities, and Lebesgue endpoint removal. The named primitive/annulus-helper search returned no matches in the searched project and integral directories. Workspace Contract/Submission match the snapshot contract; the relevant installed Mathlib files match the snapshot. Independently regenerated challenge files elaborate without child implementations. Explicit-measure checks verify all four propositions' parsing, and instance checks verify Lebesgue measure, the Euclidean norm, and the Borel measurable space. Recompilation of the supplied complete chain succeeds; all four theorem axiom lists contain only propext, Classical.choice, and Quot.sound. All child names are bare, distinct, and unreserved in the current DAG. The split is appropriate: its shared Fubini core supports both specializations, whose conclusions provide the integrability and cancellation identities needed for exactly the selected frozen parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "primitive_fubini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches every prose hypothesis and conclusion and contains no implementation-dependent reference. Steps 1–9 establish measurable product restriction and absolute integrability, apply the supported s-finite Fubini theorem, compute both sections, remove only a Lebesgue-null endpoint, and transfer both integrability assertions and the equality. The proof is complete and non-circular; no additional measurability of F or ordering assumption is needed."
+    },
+    {
+      "key": "annulus_fubini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the Borel/Euclidean prose statement. Compact exhaustion establishes s-finiteness; the measurable radius has the required range on the annulus. The proved set identity converts all required conclusions of primitive_fubini into this child's conclusions. The argument remains valid for empty intervals and does not assume spheres are μ-null. Its sole declared dependency is correctly directed, and it supplies the selected parent's Step 8."
+    },
+    {
+      "key": "interval_fubini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line type matches the prose, including both integrability conclusions. The Lebesgue-measure/id specialization satisfies every abstract hypothesis. The triangle set identity and equality on the restricted integration domain establish all three conclusions, including degenerate intervals. The proof uses only its declared primitive_fubini dependency and supplies the selected parent's Step 9. Together with annulus_fubini, it justifies the parent's integral algebra without circular reliance."
+    }
+  ],
+  "required_changes": []
+}
