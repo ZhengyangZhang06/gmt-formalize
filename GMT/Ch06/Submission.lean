@@ -387,6 +387,91 @@ theorem Submission.slicing_ru_integrableOn_apply : ∀ (P k : ℕ) (U : Set (Euc
   -- Step 5: `χ = 1` on the closed set `L`.
   refine (h4.integrableOn (s := L)).congr_fun (fun x hx => ?_) hL.isClosed.measurableSet
   simp [(hχ1 x).1 hx]
+/-- **Step 4 of the uniqueness of the representation (2.7), Simon Ch. 6 (p. 136).**  If `g₁ μ₁`
+and `g₂ μ₂` (`gᵢ` `μᵢ`-integrable) agree on smooth compactly supported functions `φ` with
+`tsupport φ ⊆ O`, `O` open, they agree on continuous compactly supported functions `φ` with
+`tsupport φ ⊆ O`.  The approximants are `χ (ψ ⋆ φ)`: `ψ ⋆ φ` is the convolution of `φ` with a
+normalized smooth bump `ψ` supported in a ball whose radius is a uniform-continuity modulus of
+`φ`, and `χ` is a smooth cutoff with values in `[0, 1]`, equal to `1` exactly on `tsupport φ`,
+whose support `V` has compact closure in `O`.  Dominated convergence passes to the limit. -/
+theorem Submission.slicing_ru_smooth_to_continuous : ∀ (P : ℕ) (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ), Integrable g₁ μ₁ → Integrable g₂ μ₂ → ∀ O : Set (Eucl P), IsOpen O → (∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ O → ∫ x, φ x * g₁ x ∂μ₁ = ∫ x, φ x * g₂ x ∂μ₂) → ∀ φ : Eucl P → ℝ, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ O → ∫ x, φ x * g₁ x ∂μ₁ = ∫ x, φ x * g₂ x ∂μ₂ := by
+  intro P μ₁ μ₂ g₁ g₂ hg₁ hg₂ O hO hsmooth φ hφ hφc hφO
+  -- Step 1: for every `ε > 0` there is a smooth `η` with compact support, `tsupport η ⊆ O` and
+  -- `|η - φ| ≤ ε`.
+  have happrox : ∀ ε : ℝ, 0 < ε → ∃ η : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) η ∧
+      HasCompactSupport η ∧ tsupport η ⊆ O ∧ ∀ x, dist (η x) (φ x) ≤ ε := by
+    intro ε hε
+    -- An open `V` with `tsupport φ ⊆ V` and `closure V ⊆ O` compact, and a smooth cutoff
+    -- `χ : ℝ^P → [0, 1]` with `support χ = V` and `χ = 1` exactly on `tsupport φ`.
+    obtain ⟨V, hVo, hKV, hVO, hVc⟩ :=
+      exists_open_between_and_isCompact_closure hφc.isCompact hO hφO
+    obtain ⟨χ, hχ, hχr, hχs, hχ1⟩ :=
+      exists_contDiff_support_eq_eq_one_iff (n := ⊤) hVo (isClosed_tsupport φ) hKV
+    -- Mollification: `φ` is uniformly continuous with modulus `δ` at accuracy `ε`; `ψ` is a smooth
+    -- bump `≥ 0` with `∫ ψ = 1` and `support ψ ⊆ ball 0 δ`, so `f = ψ ⋆ φ` is smooth and
+    -- `dist (f x) (φ x) ≤ ε`.
+    obtain ⟨δ, hδ, hφδ⟩ :=
+      Metric.uniformContinuous_iff.mp (hφc.uniformContinuous_of_continuous hφ) ε hε
+    obtain ⟨ψ₀, hψ₀s, hψ₀c, hψ₀d, hψ₀r, hψ₀0⟩ :=
+      exists_contDiff_tsupport_subset (n := ⊤) (ball_mem_nhds (0 : Eucl P) hδ)
+    have hψ₀nn : ∀ y, 0 ≤ ψ₀ y := fun y => (hψ₀r (mem_range_self y)).1
+    have hψ₀int : 0 < ∫ y, ψ₀ y :=
+      hψ₀d.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hψ₀c (fun y => hψ₀nn y)
+        (hψ₀0.symm ▸ one_ne_zero : ψ₀ 0 ≠ 0)
+    set ψ : Eucl P → ℝ := fun y => (∫ z, ψ₀ z)⁻¹ * ψ₀ y with hψ_def
+    have hψd : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ := contDiff_const.mul hψ₀d
+    have hψc : HasCompactSupport ψ := hψ₀c.mul_left
+    have hψnn : ∀ y, 0 ≤ ψ y := fun y => mul_nonneg (inv_nonneg.mpr hψ₀int.le) (hψ₀nn y)
+    have hψs : Function.support ψ ⊆ ball 0 δ :=
+      (Function.support_mul_subset_right _ _).trans ((subset_tsupport ψ₀).trans hψ₀s)
+    have hψ1 : ∫ y, ψ y = 1 := by
+      rw [hψ_def, integral_const_mul, inv_mul_cancel₀ hψ₀int.ne']
+    obtain ⟨f, hf, hfd⟩ : ∃ f : Eucl P → ℝ,
+        ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f ∧ ∀ x, dist (f x) (φ x) ≤ ε :=
+      ⟨convolution ψ φ (ContinuousLinearMap.lsmul ℝ ℝ) volume,
+        hψc.contDiff_convolution_left _ hψd hφ.locallyIntegrable,
+        fun x => dist_convolution_le hε.le hψs hψnn hψ1 hφ.aestronglyMeasurable
+          fun y hy => (hφδ (mem_ball.mp hy)).le⟩
+    -- `η = χ f` is smooth with `tsupport η ⊆ closure V ⊆ O`; on `tsupport φ`, `η = f`, and off
+    -- it, `φ = 0` and `0 ≤ χ ≤ 1`.
+    have hηs : tsupport (fun x => χ x * f x) ⊆ closure V := by
+      refine tsupport_mul_subset_left.trans ?_
+      rw [tsupport, hχs]
+    refine ⟨fun x => χ x * f x, hχ.mul hf, hVc.of_isClosed_subset (isClosed_tsupport _) hηs,
+      hηs.trans hVO, fun x => ?_⟩
+    show dist (χ x * f x) (φ x) ≤ ε
+    by_cases hx : x ∈ tsupport φ
+    · rw [(hχ1 x).1 hx, one_mul]
+      exact hfd x
+    · have h0 : φ x = 0 := image_eq_zero_of_notMem_tsupport hx
+      have hχx := hχr (mem_range_self x)
+      have hfx : |f x| ≤ ε := by simpa [h0, Real.dist_eq] using hfd x
+      rw [h0, Real.dist_eq, sub_zero, abs_mul, abs_of_nonneg hχx.1]
+      exact (mul_le_of_le_one_left (abs_nonneg _) hχx.2).trans hfx
+  -- Step 2: approximants `η n` with `|η n - φ| ≤ 1 / (n + 1)`, and a bound `|φ| ≤ M`.
+  choose η hηd hηc hηO hηφ using fun n : ℕ => happrox (1 / ((n : ℝ) + 1)) Nat.one_div_pos_of_nat
+  obtain ⟨M, hM⟩ := hφc.exists_bound_of_continuous hφ
+  -- Step 3: dominated convergence with bound `(M + 1) |g|`: `∫ η n g dμ → ∫ φ g dμ`.
+  have hlim : ∀ (μ : Measure (Eucl P)) (g : Eucl P → ℝ), Integrable g μ →
+      Tendsto (fun n => ∫ x, η n x * g x ∂μ) atTop (𝓝 (∫ x, φ x * g x ∂μ)) := by
+    intro μ g hg
+    refine tendsto_integral_of_dominated_convergence (fun x => (M + 1) * ‖g x‖)
+      (fun n => (hηd n).continuous.aestronglyMeasurable.mul hg.aestronglyMeasurable)
+      (hg.norm.const_mul _) (fun n => Eventually.of_forall fun x => ?_)
+      (Eventually.of_forall fun x => ?_)
+    · rw [norm_mul]
+      refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
+      have h1 : dist (η n x) (φ x) ≤ 1 := (hηφ n x).trans <| by
+        rw [div_le_one (by positivity)]
+        linarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)]
+      calc ‖η n x‖ ≤ ‖φ x‖ + ‖η n x - φ x‖ := norm_le_norm_add_norm_sub' _ _
+        _ ≤ M + 1 := add_le_add (hM x) (by rwa [← dist_eq_norm])
+    · refine Tendsto.mul_const _ (tendsto_iff_dist_tendsto_zero.mpr ?_)
+      exact squeeze_zero (fun n => dist_nonneg) (fun n => hηφ n x)
+        tendsto_one_div_add_atTop_nhds_zero_nat
+  -- Step 4: the two sequences coincide termwise by the smooth hypothesis.
+  exact tendsto_nhds_unique
+    ((hlim μ₁ g₁ hg₁).congr fun n => hsmooth _ (hηd n) (hηc n) (hηO n)) (hlim μ₂ g₂ hg₂)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
