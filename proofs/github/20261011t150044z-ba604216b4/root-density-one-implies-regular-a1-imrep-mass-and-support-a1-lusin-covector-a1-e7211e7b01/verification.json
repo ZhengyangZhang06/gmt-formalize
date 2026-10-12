@@ -1,0 +1,18 @@
+{
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1288",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "83274ea8a2c789b573c5627b217349b67c52a1de",
+  "integrated_commit": "",
+  "proof_base_commit": "6366219d1d97a740d6498e0f7c9502a900136b65",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+  "requires": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.covector_finite_dimensional-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.lusin_measurable-a1"
+  ]
+}
