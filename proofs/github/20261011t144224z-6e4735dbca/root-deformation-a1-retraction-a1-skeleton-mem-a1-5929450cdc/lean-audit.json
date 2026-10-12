@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1e74d21e3e28dd28ba2d4e81976485b36d1dae120edfc50beca835cce8881f9e",
+  "git_delta": {
+    "base_commit": "1c7e200dff092722755720170476c45d64949d57",
+    "candidate_commit": "1bc3c7e40a8a19119970936ae62bed92e006c1c7",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "deformation_retraction_skeleton_mem",
+    "diff_sha256": "fb8a5217e5ff9aecd615fa1d92f92af86f8373acd83594fc5a3af893b6b7930d",
+    "source_sha256": "9a055d84dd4dbab2c7b6e9fba1d53d5a1461b14b3444e53cf3f0c420fd6a0d94",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_retraction_skeleton_mem",
+      "statement": "∀ (m ℓ : ℕ) (x : Eucl (m + 1 + ℓ)), (∃ I : Finset (Fin (m + 1 + ℓ)), I.card = ℓ ∧ ∀ i ∈ I, ∃ k : ℤ, x i = k) → x ∈ ⋃ F : LatticeFaceIndex (m + 1) (m + 1 + ℓ), latticeFace 1 F",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
