@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.sff_chart-a1.projection_field_identity-a1",
+  "parent_id": "root.stationary_results-a1.sff_chart-a1",
+  "depth": 3,
+  "title": "Derivative of an operator field that fixes the chart tangent vectors (B = (D²ψ)^⊥ computation)",
+  "statement": "Let n, N ∈ ℕ (ℝ^d := EuclideanSpace ℝ (Fin d)), ψ : ℝⁿ → ℝᴺ, Q : ℝᴺ → L(ℝᴺ, ℝᴺ) and x₀ ∈ ℝⁿ. Assume four things: ψ is differentiable at x₀; the derivative map x ↦ Dψ(x) = fderiv ℝ ψ x, from ℝⁿ to L(ℝⁿ, ℝᴺ), is differentiable at x₀; Q is differentiable at ψ(x₀); and Q(ψ(x))(Dψ(x)v) = Dψ(x)v for all v ∈ ℝⁿ and all x in some neighbourhood of x₀. Then for all a, b ∈ ℝⁿ: DQ(ψ(x₀))(Dψ(x₀)a)(Dψ(x₀)b) = D²ψ(x₀)[a, b] − Q(ψ(x₀))(D²ψ(x₀)[a, b]). Here DQ(y) = fderiv ℝ Q y ∈ L(ℝᴺ, L(ℝᴺ, ℝᴺ)) and D²ψ(x₀)[a, b] = fderiv ℝ (fderiv ℝ ψ) x₀ a b.",
+  "lean_statement": "∀ (n N : ℕ) (ψ : Rn n → Rn N) (Q : Rn N → (Rn N →L[ℝ] Rn N)) (x₀ : Rn n), DifferentiableAt ℝ ψ x₀ → DifferentiableAt ℝ (fderiv ℝ ψ) x₀ → DifferentiableAt ℝ Q (ψ x₀) → (∀ᶠ x in 𝓝 x₀, ∀ v : Rn n, Q (ψ x) (fderiv ℝ ψ x v) = fderiv ℝ ψ x v) → ∀ a b : Rn n, fderiv ℝ Q (ψ x₀) (fderiv ℝ ψ x₀ a) (fderiv ℝ ψ x₀ b) = fderiv ℝ (fderiv ℝ ψ) x₀ a b - Q (ψ x₀) (fderiv ℝ (fderiv ℝ ψ) x₀ a b)",
+  "lean_name": "sff_projection_field_fderiv_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-sff-chart-a1-projection-field-identity-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.sff_properties-a1.normal_field_identity-a1",
+  "parent_id": "root.stationary_results-a1.sff_properties-a1",
+  "depth": 3,
+  "title": "Derivative of a field normal along M: ⟨η, DY(y)τ⟩ = −⟨Y(y), B_y(τ, η)⟩",
+  "statement": "Let n, N ∈ ℕ and let M ⊆ ℝᴺ be an n-dimensional C² Simon submanifold. Assume (R) for every chart (V, W, ψ) of M of class 2 and every x ∈ V, tangentSpace M (ψ x) = range Dψ(x); and (C) for every chart (V, W, ψ) of M of class 2, every x ∈ V and all a, b ∈ ℝⁿ, secondFundamentalForm M (ψ x) (Dψ(x)a) (Dψ(x)b) = normalPart M (ψ x) (D²ψ(x)[a, b]) [(R) is (TH1) of the node root.submanifold_tangent-a1 restricted to class-2 charts of M; (C) is the conclusion of the node root.stationary_results-a1.sff_chart-a1 for M]. Let Y : ℝᴺ → ℝᴺ and y ∈ M be such that Y is (Fréchet) differentiable at y and Y is normal along M: ⟨Y(z), v⟩ = 0 for all z ∈ M and v ∈ tangentSpace M z. Then for all τ, η ∈ tangentSpace M y: ⟨η, DY(y)τ⟩ = −⟨Y(y), secondFundamentalForm M y τ η⟩, where DY(y) = fderiv ℝ Y y.",
+  "lean_statement": "∀ (n N : ℕ) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) 2 M → (∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → (∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → ∀ x ∈ V, ∀ a b : Rn n, secondFundamentalForm M (ψ x) (fderiv ℝ ψ x a) (fderiv ℝ ψ x b) = normalPart M (ψ x) (fderiv ℝ (fderiv ℝ ψ) x a b)) → ∀ (Y : Rn N → Rn N) (y : Rn N), y ∈ M → DifferentiableAt ℝ Y y → (∀ z ∈ M, ∀ v ∈ tangentSpace M z, inner ℝ (Y z) v = 0) → ∀ τ ∈ tangentSpace M y, ∀ η ∈ tangentSpace M y, inner ℝ η (fderiv ℝ Y y τ) = -inner ℝ (Y y) (secondFundamentalForm M y τ η)",
+  "lean_name": "inner_fderiv_normal_field_eq_neg_second_fundamental_form",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-sff-properties-a1-normal-field-identity-a1-a1"
+}
