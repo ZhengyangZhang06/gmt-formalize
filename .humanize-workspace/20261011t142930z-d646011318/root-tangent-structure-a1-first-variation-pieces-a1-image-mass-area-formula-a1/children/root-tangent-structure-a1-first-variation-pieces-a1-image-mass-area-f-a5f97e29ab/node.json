@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tangent_structure-a1.first_variation_pieces-a1.image_mass_area_formula-a1.image_lintegral_gluing-a1",
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1.image_mass_area_formula-a1",
+  "depth": 4,
+  "title": "Countable gluing of an image-integral identity over a disjoint measurable partition (parent steps 2 and 5)",
+  "statement": "Let X be a type with a σ-algebra and μ a measure on X. Let f: X → X be injective, mapping μ-null sets to μ-null sets and μ-null-measurable sets to μ-null-measurable sets. Let Z ⊆ X be μ-null-measurable, (D_i)_{i∈ℕ} pairwise disjoint measurable sets with μ(Z ∖ ⋃_i D_i) = 0, and u, g: X → [0, ∞] arbitrary functions such that ∫⁻_{f(Z ∩ D_i)} u dμ = ∫⁻_{Z ∩ D_i} g dμ for every i. Then ∫⁻_{f(Z)} u dμ = ∫⁻_Z g dμ.",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (f : X → X) (Z : Set X) (D : ℕ → Set X) (u g : X → ℝ≥0∞), Function.Injective f → (∀ Y : Set X, μ Y = 0 → μ (f '' Y) = 0) → (∀ Y : Set X, NullMeasurableSet Y μ → NullMeasurableSet (f '' Y) μ) → NullMeasurableSet Z μ → (∀ i, MeasurableSet (D i)) → Pairwise (fun i j ↦ Disjoint (D i) (D j)) → μ (Z \\ ⋃ i, D i) = 0 → (∀ i, ∫⁻ y in f '' (Z ∩ D i), u y ∂μ = ∫⁻ x in Z ∩ D i, g x ∂μ) → ∫⁻ y in f '' Z, u y ∂μ = ∫⁻ x in Z, g x ∂μ",
+  "lean_name": "ts_fv_lintegral_image_eq_of_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-tangent-structure-a1-first-variation-pieces-a1-image-mass-area-f-a5f97e29ab-a1"
+}
