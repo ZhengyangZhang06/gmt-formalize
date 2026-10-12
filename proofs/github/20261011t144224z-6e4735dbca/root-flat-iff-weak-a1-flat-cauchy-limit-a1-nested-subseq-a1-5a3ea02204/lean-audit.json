@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "68b895ed33198a6bde9f202bab14a8516b4396fadf7ecdb65465b7c57b002abd",
+  "git_delta": {
+    "base_commit": "bd443623f209846f7712998c0414496c43ee868f",
+    "candidate_commit": "ca04907a38670d444165bdcd2be60e94411dc927",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_fcl_nested_subseq",
+    "diff_sha256": "fe904e8b3fdd98593b764199bb6b93c097283fd037f9f5a61b8b2058a3d7fcd3",
+    "source_sha256": "90d237d6eb4677e30d973bc1dda1c443d761d1841124edd9b150731866dbc376",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_fcl_nested_subseq",
+      "statement": "∀ (Q : ℕ → ℕ → ℕ → Prop), (∀ r : ℕ, ∀ J : Set ℕ, J.Infinite → ∃ J' ⊆ J, J'.Infinite ∧ ∀ i ∈ J', ∀ j ∈ J', Q r i j) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ r : ℕ, Q r (φ r) (φ (r + 1))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
