@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "62105646223634dacc73890f45c73378ff800548d89f7d3dc1e4b9580317c517",
+  "git_delta": {
+    "base_commit": "3aa1de9f1f4bbc09ef4587bff3016656a82a0a94",
+    "candidate_commit": "d579e2e31b9f94e7e770cdd0bf0c3b50537ed3fa",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_vgm_ext_finite_of_lintegral_continuous",
+    "diff_sha256": "a8550e0a2bb072dc2d0ecd2f2227419e927c502f0ef2d365bf12b08499a53e90",
+    "source_sha256": "496b1f17b0765ac8519ea4a5288255c9eb9e089f7b46decd5a93cf676262c3ed",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_vgm_ext_finite_of_lintegral_continuous",
+      "statement": "∀ (X : Type) [TopologicalSpace X] [TopologicalSpace.PseudoMetrizableSpace X] [MeasurableSpace X] [BorelSpace X] (m₁ m₂ : Measure X), IsFiniteMeasure m₁ → (∀ β : C(X, ℝ), (∀ x, 0 ≤ β x) → ∫⁻ x, ENNReal.ofReal (β x) ∂m₁ = ∫⁻ x, ENNReal.ofReal (β x) ∂m₂) → m₁ = m₂",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
