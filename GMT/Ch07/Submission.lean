@@ -451,6 +451,109 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 4, 3.4 and 3.16** (differentiating `ρ ↦ ∫ φ(r/ρ) dμ` under the integral sign):
+for a `C¹` cutoff `φ` vanishing on `[A, ∞)` and a bounded weight `q`, with `0 < τ`, `Aτ < R₀`
+and `ν(B̄_{R₀}(y)) < ∞`, the integrands `φ(|x - y|/τ) q` and `-(|x - y|/τ²) φ'(|x - y|/τ) q` are
+`ν`-integrable and `σ ↦ ∫ φ(|x - y|/σ) q dν` has derivative `∫ -(|x - y|/τ²) φ'(|x - y|/τ) q dν`
+at `τ`.  For `σ ∈ (τ/2, R₀/A)` both integrands vanish off `B̄_{R₀}(y)` and are bounded on it
+uniformly in `σ`, so dominated differentiation applies. -/
+theorem Submission.doragm_radial_cutoff_hasDerivAt : ∀ (P : ℕ) (ν : Measure (Euclid P)) (y : Euclid P) (φ : ℝ → ℝ) (q : Euclid P → ℝ) (A B τ R₀ : ℝ), ContDiff ℝ 1 φ → (∀ u, A ≤ u → φ u = 0) → 0 < A → 0 < τ → A * τ < R₀ → ν (closedBall y R₀) ≠ ∞ → AEStronglyMeasurable q ν → (∀ x, ‖q x‖ ≤ B) → Integrable (fun x => φ (‖x - y‖ / τ) * q x) ν ∧ Integrable (fun x => -(‖x - y‖ / τ ^ 2) * deriv φ (‖x - y‖ / τ) * q x) ν ∧ HasDerivAt (fun σ => ∫ x, φ (‖x - y‖ / σ) * q x ∂ν) (∫ x, -(‖x - y‖ / τ ^ 2) * deriv φ (‖x - y‖ / τ) * q x ∂ν) τ := by
+  intro P ν y φ q A B τ R₀ hφ hφA hA hτ hAτ hν hq hqB
+  have hφd : Differentiable ℝ φ := hφ.differentiable one_ne_zero
+  have hφ'c : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+  -- `φ' = 0` on `(A, ∞)`, where `φ` vanishes identically
+  have hφ'A : ∀ u, A < u → deriv φ u = 0 := fun u hu => by
+    have h : φ =ᶠ[𝓝 u] fun _ => (0 : ℝ) :=
+      Filter.eventually_of_mem (Ioi_mem_nhds hu) fun v hv => hφA v (le_of_lt hv)
+    rw [h.deriv_eq, deriv_const]
+  have hR₀ : 0 < R₀ := (mul_pos hA hτ).trans hAτ
+  -- bounds `C₀`, `C₁` for `|φ|`, `|φ'|` on `[0, 2R₀/τ]`
+  obtain ⟨C₀, hC₀⟩ := isCompact_Icc.exists_bound_of_continuousOn
+    (s := Icc 0 (2 * R₀ / τ)) hφ.continuous.continuousOn
+  obtain ⟨C₁, hC₁⟩ := isCompact_Icc.exists_bound_of_continuousOn
+    (s := Icc 0 (2 * R₀ / τ)) hφ'c.continuousOn
+  have h0K : (0 : ℝ) ∈ Icc 0 (2 * R₀ / τ) := ⟨le_rfl, by positivity⟩
+  have hC₀0 : 0 ≤ C₀ := (norm_nonneg _).trans (hC₀ 0 h0K)
+  have hC₁0 : 0 ≤ C₁ := (norm_nonneg _).trans (hC₁ 0 h0K)
+  -- the neighbourhood `(τ/2, R₀/A)` of `τ`
+  have hτs : τ ∈ Ioo (τ / 2) (R₀ / A) := ⟨by linarith, by rw [lt_div_iff₀ hA]; linarith⟩
+  have hs : Ioo (τ / 2) (R₀ / A) ∈ 𝓝 τ := Ioo_mem_nhds hτs.1 hτs.2
+  -- for `σ ∈ (τ/2, R₀/A)`: off `B̄_{R₀}(y)`, `|x - y|/σ > A`; on it, `|x - y|/σ ∈ [0, 2R₀/τ]`
+  have hout : ∀ σ ∈ Ioo (τ / 2) (R₀ / A), ∀ x ∉ closedBall y R₀, A < ‖x - y‖ / σ := by
+    rintro σ ⟨hσ1, hσ2⟩ x hx
+    rw [mem_closedBall_iff_norm, not_le] at hx
+    rw [lt_div_iff₀ hA] at hσ2
+    have hσ : 0 < σ := by linarith
+    rw [lt_div_iff₀ hσ]
+    linarith
+  have hin : ∀ σ ∈ Ioo (τ / 2) (R₀ / A), ∀ x ∈ closedBall y R₀,
+      ‖x - y‖ / σ ∈ Icc 0 (2 * R₀ / τ) := by
+    rintro σ ⟨hσ1, -⟩ x hx
+    rw [mem_closedBall_iff_norm] at hx
+    have hσ : 0 < σ := by linarith
+    refine ⟨by positivity, ?_⟩
+    rw [div_le_div_iff₀ hσ hτ]
+    nlinarith [norm_nonneg (x - y)]
+  -- the integrands `F σ`, their `σ`-derivatives `F' σ`, and their measurability
+  set F : ℝ → Euclid P → ℝ := fun σ x => φ (‖x - y‖ / σ) * q x with hF
+  set F' : ℝ → Euclid P → ℝ := fun σ x => -(‖x - y‖ / σ ^ 2) * deriv φ (‖x - y‖ / σ) * q x
+    with hF'
+  have hr : Continuous fun x : Euclid P => ‖x - y‖ := (continuous_id.sub continuous_const).norm
+  have hF_meas : ∀ σ, AEStronglyMeasurable (F σ) ν := fun σ =>
+    (hφ.continuous.comp (hr.div_const σ)).aestronglyMeasurable.mul hq
+  have hF'_meas : ∀ σ, AEStronglyMeasurable (F' σ) ν := fun σ =>
+    ((hr.div_const _).neg.mul (hφ'c.comp (hr.div_const σ))).aestronglyMeasurable.mul hq
+  -- constant multiples of `1_{B̄_{R₀}(y)}` are integrable, as `ν(B̄_{R₀}(y)) < ∞`
+  have hind : ∀ c : ℝ, Integrable ((closedBall y R₀).indicator fun _ => c) ν := fun c =>
+    (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const hν)
+  -- (a): `|F τ| ≤ C₀ B 1_{B̄_{R₀}(y)}`
+  have hF_int : Integrable (F τ) ν := by
+    refine (hind (C₀ * B)).mono' (hF_meas τ) (ae_of_all _ fun x => ?_)
+    by_cases hx : x ∈ closedBall y R₀
+    · rw [Set.indicator_of_mem hx, hF]
+      simp only
+      rw [norm_mul]
+      exact mul_le_mul (hC₀ _ (hin τ hτs x hx)) (hqB x) (norm_nonneg _) hC₀0
+    · rw [Set.indicator_of_notMem hx, hF]
+      simp only
+      rw [hφA _ (hout τ hτs x hx).le, zero_mul, norm_zero]
+  -- domination: `|F' σ| ≤ (R₀/(τ/2)²) C₁ B 1_{B̄_{R₀}(y)}` for `σ ∈ (τ/2, R₀/A)`
+  have h_bound : ∀ᵐ x ∂ν, ∀ σ ∈ Ioo (τ / 2) (R₀ / A),
+      ‖F' σ x‖ ≤ (closedBall y R₀).indicator (fun _ => R₀ / (τ / 2) ^ 2 * C₁ * B) x := by
+    refine ae_of_all _ fun x σ hσs => ?_
+    have hσ : 0 < σ := by linarith [hσs.1]
+    by_cases hx : x ∈ closedBall y R₀
+    · rw [Set.indicator_of_mem hx, hF']
+      simp only
+      rw [norm_mul, norm_mul, norm_neg, Real.norm_of_nonneg (by positivity)]
+      have hrσ : ‖x - y‖ / σ ^ 2 ≤ R₀ / (τ / 2) ^ 2 :=
+        calc ‖x - y‖ / σ ^ 2 ≤ R₀ / σ ^ 2 := by gcongr; exact mem_closedBall_iff_norm.1 hx
+          _ ≤ R₀ / (τ / 2) ^ 2 := by gcongr; exact hσs.1.le
+      exact mul_le_mul (mul_le_mul hrσ (hC₁ _ (hin σ hσs x hx)) (norm_nonneg _) (by positivity))
+        (hqB x) (norm_nonneg _) (mul_nonneg (by positivity) hC₁0)
+    · rw [Set.indicator_of_notMem hx, hF']
+      simp only
+      rw [hφ'A _ (hout σ hσs x hx), mul_zero, zero_mul, norm_zero]
+  -- `∂_σ φ(|x - y|/σ) = -(|x - y|/σ²) φ'(|x - y|/σ)`
+  have h_diff : ∀ᵐ x ∂ν, ∀ σ ∈ Ioo (τ / 2) (R₀ / A), HasDerivAt (F · x) (F' σ x) σ := by
+    refine ae_of_all _ fun x σ hσs => ?_
+    have hσ : σ ≠ 0 := by linarith [hσs.1]
+    have h1 : HasDerivAt (fun σ => ‖x - y‖ / σ) (-(‖x - y‖ / σ ^ 2)) σ := by
+      convert (hasDerivAt_inv hσ).const_mul ‖x - y‖ using 1
+      · funext σ
+        rw [div_eq_mul_inv]
+      · ring
+    have h2 : HasDerivAt (fun σ => φ (‖x - y‖ / σ))
+        (deriv φ (‖x - y‖ / σ) * -(‖x - y‖ / σ ^ 2)) σ :=
+      (hφd _).hasDerivAt.comp σ h1
+    convert h2.mul_const (q x) using 1
+    rw [hF']
+    ring
+  -- (b), (c): dominated differentiation under the integral sign
+  obtain ⟨hF'_int, hderiv⟩ := hasDerivAt_integral_of_dominated_loc_of_deriv_le hs
+    (Filter.Eventually.of_forall hF_meas) hF_int (hF'_meas τ) h_bound (hind _) h_diff
+  exact ⟨hF_int, hF'_int, hderiv⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
