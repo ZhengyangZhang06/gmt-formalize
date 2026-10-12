@@ -806,6 +806,27 @@ theorem any_radius_rv_tangentProj_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)
       -((ENNReal.ofReal (R ^ n))⁻¹.toReal •
         ∫ y, inner ℝ (X (R⁻¹ • (y - c))) (R • H (c + R • R⁻¹ • (y - c))) ∂V.weight)
     simp only [hdiv, hpair, key, smul_neg]
+/-- **Translation and dilation of rectifiable varifolds** (fact (Inv) for Simon 5.3).  For
+`ψ(x) = c + R x` with `R > 0`, there is a varifold `V' = v(ψ⁻¹M, θ ∘ ψ)` in `U' = ψ⁻¹(U)` with
+weight `R⁻ⁿ φ_# μ_V` (`φ(y) = R⁻¹(y − c)`), support `ψ⁻¹(spt V)` and tangent projections
+`p_{T_x M'} = p_{T_{ψ(x)} M}`; if `V` has generalized mean curvature `H` in `U`, then `V'` has
+generalized mean curvature `R H ∘ ψ` in `U'`.
+Proof: `any_radius_rv_exists_structure` gives `V'` with carrier `ψ⁻¹M` and multiplicity `θ ∘ ψ`.
+These two identities give the weight (`any_radius_rv_weight_eq`) and the tangent projections
+(`any_radius_rv_tangentProj_eq`), and the weight and tangent projections in turn give the support
+(`any_radius_rv_support_eq`) and the mean curvature (`any_radius_rv_meanCurvature`). -/
+theorem any_radius_rescaled_varifold : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∃ V' : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), V'.carrier = (fun x => c + R • x) ⁻¹' V.carrier ∧ (∀ x, V'.mult x = V.mult (c + R • x)) ∧ V'.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c)) ∧ V'.support = (fun x => c + R • x) ⁻¹' V.support ∧ (∀ x, V'.tangentProj x = V.tangentProj (c + R • x)) ∧ ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun x => R • H (c + R • x)) := by
+  intro n ℓ U _ V c R hR
+  -- Steps 1–2: `V' = v(ψ⁻¹M, θ ∘ ψ)` is a rectifiable varifold in `ψ⁻¹(U)`.
+  obtain ⟨V', hcarrier, hmult⟩ := Submission.any_radius_rv_exists_structure n ℓ U V c R hR
+  -- Step 3: `μ_{V'} = R⁻ⁿ φ_# μ_V`, by change of variables.
+  have hweight := Submission.any_radius_rv_weight_eq n ℓ U _ V V' c R hR hcarrier hmult
+  -- Step 5: the blow-ups of `(ψ⁻¹M, θ ∘ ψ)` at `x` are those of `(M, θ)` at `ψ(x)`.
+  have htangent := Submission.any_radius_rv_tangentProj_eq n ℓ U _ V V' c R hR hcarrier hmult
+  -- Steps 4 and 6: support and first variation depend only on the weight and tangent planes.
+  exact ⟨V', hcarrier, hmult, hweight,
+    Submission.any_radius_rv_support_eq n ℓ U V c R hR V' hweight, htangent,
+    fun H hH => Submission.any_radius_rv_meanCurvature n ℓ U V c R hR V' hweight htangent H hH⟩
 
 end Submission
 
