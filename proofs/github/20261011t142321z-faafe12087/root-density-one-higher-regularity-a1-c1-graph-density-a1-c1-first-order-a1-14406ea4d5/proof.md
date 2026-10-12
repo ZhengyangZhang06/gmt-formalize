@@ -1,0 +1,135 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.c1_graph_density-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.c1_graph_density-a1.c1_first_order-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Step 2 of the parent proof: "Since Du is continuous at x0 ... choose eta > 0 with closed B^n_eta(x0) contained in open B^n_R(0), ||Du(x) - P0|| <= eps ... by the mean value inequality |u(x) - u(x0) - P0(x - x0)| <= eps |x - x0|". It is stated here for a general open set U and in the two-point form |u(x) - u(y) - Du(x0)(x - y)| <= eps|x - y|, which the Lipschitz comparisons of the sibling dohr_c1_graph_mass_pinching need.
+
+Notation. Du(z) := fderiv R u z, a continuous linear map R^n → R^l; ||·|| is its operator norm, and |·| denotes the Euclidean norms. Put P := Du(x0). Hypotheses: U open, u C^1 on U (ContDiffOn R 1 u U), x0 ∈ U, ε > 0.
+
+1. Differentiability and continuity of Du. Since u is C^1 on U, it is differentiable within U at every point of U (ContDiffOn.differentiableOn, smoothness order 1 ≠ 0). Because U is open, U is a neighbourhood of each of its points, so u is differentiable at every z ∈ U (DifferentiableWithinAt.differentiableAt). Also z ↦ Du(z) is continuous on U (ContDiffOn.continuousOn_fderiv_of_isOpen with 1 ≤ 1). Since U is a neighbourhood of x0, Du is continuous at x0.
+
+2. Choice of η. By openness there is η1 > 0 with B°_{η1}(x0) ⊆ U (Metric.isOpen_iff). By continuity at x0 there is η2 > 0 with ||Du(z) - P|| < ε whenever dist(z, x0) < η2 (Metric.continuousAt_iff). Put η := min(η1, η2)/2 > 0. Every z with dist(z, x0) ≤ η satisfies dist(z, x0) < η1 and dist(z, x0) < η2, because η < min(η1, η2). Hence the closed ball B_η(x0) ⊆ B°_{η1}(x0) ⊆ U, and ||Du(z) - P|| ≤ ε for all z ∈ B_η(x0).
+
+3. An auxiliary map. Let g(z) := u(z) - P z. For z ∈ B_η(x0) ⊆ U, u has derivative Du(z) at z (step 1), and the continuous linear map P has derivative P everywhere. So g has derivative Du(z) - P at z, and in particular within B_η(x0) at z. By step 2 this derivative has operator norm ≤ ε.
+
+4. Mean value inequality. The closed ball B_η(x0) is convex. Convex.norm_image_sub_le_of_norm_hasFDerivWithin_le, applied to g on B_η(x0) with bound ε, gives |g(x) - g(y)| ≤ ε|x - y| for all x, y ∈ B_η(x0). Since P is linear, g(x) - g(y) = u(x) - u(y) - P(x - y). With step 2 (B_η(x0) ⊆ U) this proves the claim. ∎
+
+Implementation aid (not part of the mathematical argument above). During decomposition, the following Lean proof of exactly this frozen statement compiled after `import GMT.Ch05.Submission`, inside `namespace GMT.Ch05` / `namespace Submission`, with the contract's `open MeasureTheory Metric Set Filter Topology`, `open scoped ENNReal NNReal` and `open RectifiableVarifold` (Lean 4.35.0-rc3, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d). It was compiled together with its sibling theorems and the assembled parent theorem, with no `sorry`; `#print axioms` reports only propext, Classical.choice and Quot.sound. It uses no sibling theorem.
+
+```lean
+theorem dohr_c1_uniform_first_order : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (u : Rn n → Rn ℓ), IsOpen U → ContDiffOn ℝ 1 u U → ∀ x₀ ∈ U, ∀ ε : ℝ, 0 < ε → ∃ η : ℝ, 0 < η ∧ closedBall x₀ η ⊆ U ∧ ∀ x ∈ closedBall x₀ η, ∀ y ∈ closedBall x₀ η, ‖u x - u y - fderiv ℝ u x₀ (x - y)‖ ≤ ε * ‖x - y‖ := by
+  intro n ℓ U u hU hu x₀ hx₀ ε hε
+  have hdiff : ∀ z ∈ U, DifferentiableAt ℝ u z := fun z hz =>
+    (hu.differentiableOn one_ne_zero z hz).differentiableAt (hU.mem_nhds hz)
+  have hcont : ContinuousOn (fderiv ℝ u) U := hu.continuousOn_fderiv_of_isOpen hU le_rfl
+  -- A radius on which `U` contains the ball and `Du` is `ε`-close to `Du(x₀)`.
+  obtain ⟨η₁, hη₁, hball⟩ := Metric.isOpen_iff.1 hU x₀ hx₀
+  have hca : ContinuousAt (fderiv ℝ u) x₀ := hcont.continuousAt (hU.mem_nhds hx₀)
+  obtain ⟨η₂, hη₂, hclose⟩ := Metric.continuousAt_iff.1 hca ε hε
+  refine ⟨min η₁ η₂ / 2, by positivity, ?_, ?_⟩
+  · intro z hz
+    apply hball
+    rw [mem_closedBall] at hz
+    rw [mem_ball]
+    have : min η₁ η₂ / 2 < η₁ := by
+      have := min_le_left η₁ η₂
+      linarith
+    linarith
+  · intro x hx y hy
+    set P := fderiv ℝ u x₀
+    have hsub : closedBall x₀ (min η₁ η₂ / 2) ⊆ U := by
+      intro z hz
+      apply hball
+      rw [mem_closedBall] at hz
+      rw [mem_ball]
+      have : min η₁ η₂ / 2 < η₁ := by
+        have := min_le_left η₁ η₂
+        linarith
+      linarith
+    have hderiv : ∀ z ∈ closedBall x₀ (min η₁ η₂ / 2),
+        HasFDerivWithinAt (fun w => u w - P w) (fderiv ℝ u z - P) (closedBall x₀ (min η₁ η₂ / 2)) z :=
+      fun z hz => ((hdiff z (hsub hz)).hasFDerivAt.sub P.hasFDerivAt).hasFDerivWithinAt
+    have hbound : ∀ z ∈ closedBall x₀ (min η₁ η₂ / 2), ‖fderiv ℝ u z - P‖ ≤ ε := by
+      intro z hz
+      rw [mem_closedBall] at hz
+      have : dist z x₀ < η₂ := by
+        have := min_le_right η₁ η₂
+        linarith
+      rw [← dist_eq_norm]
+      exact (hclose this).le
+    have := (convex_closedBall x₀ _).norm_image_sub_le_of_norm_hasFDerivWithin_le hderiv hbound hy hx
+    simpa [map_sub, sub_sub, sub_add_eq_sub_sub, add_comm, sub_eq_add_neg, add_assoc, add_left_comm] using this
+```
+
+## Key steps
+
+1. u is differentiable on the open set U and Du is continuous at x0
+2. choose η with the closed ball B_η(x0) ⊆ U and ||Du(z) - Du(x0)|| <= ε on it
+3. mean value inequality for g(z) = u(z) - Du(x0) z on the convex closed ball
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean (identical); diff GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean (identical)`
+- `rg -n 'theorem LipschitzOnWith.hausdorffMeasure_image_le|theorem hausdorffMeasure_image_le' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n norm_image_sub_le_of_norm_hasFDerivWithin_le <snapshot>/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `rg -n 'theorem ContDiffOn.continuousOn_fderiv_of_isOpen' <snapshot>/mathlib/Mathlib/Analysis/Calculus/ContDiff/*.lean`
+- `rg -n finrank_range_of_inj <snapshot>/mathlib/Mathlib/LinearAlgebra`
+- `rg -n 'theorem MeasureTheory.Measure.euclideanHausdorffMeasure_def|theorem InnerProductSpace.euclideanHausdorffMeasure_eq_volume|theorem Isometry.map_euclideanHausdorffMeasure' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n 'theorem restrict_apply \(' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean; rg -n 'theorem tendsto_order ' <snapshot>/mathlib/Mathlib/Topology/Order/Basic.lean; rg -n 'theorem addHaar_closedBall ' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean; rg -n 'theorem image_inter_preimage' <snapshot>/mathlib/Mathlib/Data/Set/Image.lean`
+- `rg -n 'noncomputable def normDet|theorem euclideanHausdorffMeasure_image_eq_normDet_mul_volume' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean; rg -n volume_closedBall <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `sed -n 1,200p .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean (areaJacobianWithin, ae_fderivWithin_eq_of_lipschitz_extension, injective_area_formula_lipschitzOn); sed -n 1,80p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (imports)`
+- `lake env lean -o /tmp/c1gd-v2/build/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean`
+- `lake env bash -c 'LEAN_PATH=$LEAN_PATH:/tmp/c1gd-v2/build lean /tmp/c1gd-v2/src/Avail.lean' (#check LipschitzOnWith.hausdorffMeasure_image_le, Convex.norm_image_sub_le_of_norm_hasFDerivWithin_le, ContDiffOn.continuousOn_fderiv_of_isOpen, LinearMap.finrank_range_of_inj, finrank_euclideanSpace_fin, Measure.restrict_apply, Measure.euclideanHausdorffMeasure_def, ENNReal.rpow_natCast, Ioc_mem_nhdsGT, tendsto_order)`
+- `lake env bash -c 'LEAN_PATH=$LEAN_PATH:/tmp/c1gd-v2/build lean /tmp/c1gd-v2/src/Unavail.lean' (#check LinearMap.normDet, Poincare.SimonGMT.Chapter02.injective_area_formula_lipschitzOn, InnerProductSpace.volume_closedBall, EuclideanSpace.volume_closedBall, LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume)`
+- `lake env bash -c 'LEAN_PATH=$LEAN_PATH:/tmp/c1gd-v2/build lean /tmp/c1gd-v2/src/Full.lean' (all 4 child proofs + parent assembly; #print axioms)`
+- `lake env lean --root=/tmp/c1gd-v2/sim -o /tmp/c1gd-v2/build2/GMT/Ch05/Submission.olean /tmp/c1gd-v2/sim/GMT/Ch05/Submission.lean (Submission copy with the 5 proofs in namespace Submission)`
+- `python3 -I /tmp/c1gd-v2/scripts/nodemods.py (verifier gmt-compare.py contract_scope/child_modules, mode contract); lean NodeChallenge.lean against /tmp/c1gd-v2/build and NodeSolution.lean + '#print axioms HumanizeNodeComparator.target' against /tmp/c1gd-v2/build2 for all 5 statements`
+- `python3 -I /tmp/c1gd-v2/scripts/mkstmts.py (verifier lean_contract.validate_lean_statement on the 4 statements; lean_name ownership in dag.json; rsod_planeMeasure_closedBall type copied from dag.json)`
+- `python3 -I (dag.json): list id | lean_name | status for all nodes (200, re-read later: 217); print lean_statement of all 68 accepted checkpoints`
+- `git -C .swarm-worktrees/7b984ce372887989aaee/gmt-ch05 show 7881dde:GMT/Ch05/Submission.lean (accepted proof of rsod_planeMeasure_closedBall)`
+- `ls -d .swarm-worktrees/*/gmt-ch05/GMT/Ch05 | xargs -P 16 grep -lr -E 'dohr_c1_uniform_first_order|dohr_c1_graph_mass_pinching|dohr_ratio_tendsto_one_of_pinching' (1000 worktrees: no match); grep -rl same names lake-packages-25730c7c/simongmt/Poincare (no match)`
+- `sed -n 1793,1990p and 6503,6545p /runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py (_solve_children reuse of accepted checkpoints and node bound; _existing_lean_name_problem); python3 -I: .humanize/swarm-configs/* with github_selected_issue 476 (max_nodes 1000)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Data/Set/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-c1-graph-density-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-c1-graph-density-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-c1-graph-density-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-tangent-plane-ae-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/math-wiki/submission-rsod-planemeasure-closedball.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py`
+- `/tmp/c1gd-v2/src/Avail.lean`
+- `/tmp/c1gd-v2/src/Unavail.lean`
+- `/tmp/c1gd-v2/src/Full.lean`
+- `/tmp/c1gd-v2/sim/GMT/Ch05/Submission.lean`
+- `/tmp/c1gd-v2/nodes/graph_mass_pinching/NodeChallenge.lean`
+- `/tmp/c1gd-v2/nodes/graph_mass_pinching/NodeSolution.lean`
+- `/tmp/c1gd-v2/final/stmts.json`
+
+Pinned snapshot (manifest.json): project ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot Contract.lean is byte-identical to the workspace Contract.lean, and the workspace Submission.lean is still a byte copy of the contract. Usable under the frozen imports (snapshot line numbers): LipschitzOnWith.hausdorffMeasure_image_le (Hausdorff.lean l.733), Convex.norm_image_sub_le_of_norm_hasFDerivWithin_le (MeanValue.lean l.422), ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean l.916), LinearMap.finrank_range_of_inj (Dimension/Finrank.lean l.127), euclideanHausdorffMeasure_def / Isometry.map_euclideanHausdorffMeasure / InnerProductSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean l.74/141/191), Measure.restrict_apply (Restrict.lean l.75), tendsto_order (Topology/Order/Basic.lean l.139), addHaar_closedBall (EqHaar.lean l.500) and Set.image_inter_preimage (Image.lean l.454). Not reachable: LinearMap.normDet and euclideanHausdorffMeasure_image_eq_normDet_mul_volume (NormDet.lean l.69/433), InnerProductSpace/EuclideanSpace.volume_closedBall (VolumeOfBalls.lean l.354/324) and simongmt Chapter02.injective_area_formula_lipschitzOn (AreaDomain.lean); Lean reports unknown constants/identifiers. This forces the supplied step 6 to be replaced by Lipschitz-image comparisons. Reuse: Submission.rsod_planeMeasure_closedBall is an accepted checkpoint (status accepted, candidate commit 7881dde5f7e308e54f05a8f95dc7a4b94e277e4c, math-wiki page). Its proof is import-free (it computes the unit-ball volume by Gaussian integrals). Its frozen type is copied byte-identically from dag.json, and runtime.py maps a child with that lean_name to the existing node. No match: dohr_c1_uniform_first_order, dohr_c1_graph_mass_pinching and dohr_ratio_tendsto_one_of_pinching occur nowhere in dag.json, the 1000 swarm worktrees or simongmt; the only other relevant prior artifact is this node's own unpublished decomposition-v1 (audited acceptable). Lean checks: all four child types pass validate_lean_statement and elaborate in the verifier-generated NodeChallenge modules against the frozen Submission. Full proofs of the four children and of the parent assembly compile; the NodeSolution checks `exact Submission.X` pass for all five; the axioms are only propext, Classical.choice and Quot.sound. The issue-476 worker configuration allows max_nodes = 1000 (217 nodes at the last re-read), so the three new nodes fit.
