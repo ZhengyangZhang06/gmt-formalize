@@ -544,6 +544,335 @@ theorem dohr_vel_linear_graph_area : ∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn 
   rw [himage, hι.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
     Measure.addHaar_image_linearMap, hdet, Real.sqrt_sq_eq_abs]
 
+/-- Area formula for the graph of a `C¹` map.  Let `u` be `C¹` on the open set `D ⊆ ℝⁿ` and
+`G(x) = (x, u x)`.  For measurable `A ⊆ D`, `Hⁿ(G(A)) = ∫_A √(det g(Du(x))) dx`, where
+`g(P) = I + (⟨P eₐ, P e_b⟩)_{a,b}`.  Near `x₀ ∈ D`, `u` is `ε`-close to `P = Du(x₀)`
+(`ApproximatesLinearOn`), so `G` and `v ↦ (v, P v)` are `(1+ε)`-Lipschitz equivalent on a small
+ball (`LipschitzOnWith.hausdorffMeasure_image_le`) and `√(det g(Du))` stays within a factor `1+ε`
+of `√(det g(P))`.  By `dohr_vel_linear_graph_area` both sides agree up to `(1+ε)^(n+1)` on each
+piece of a countable disjoint ball cover of `A`; let `ε → 0`. -/
+theorem dohr_vel_graph_area_formula : ∀ n ℓ : ℕ, ∀ (D : Set (Rn n)) (u : Rn n → Rn ℓ), IsOpen D → ContDiffOn ℝ 1 u D → ∀ A : Set (Rn n), MeasurableSet A → A ⊆ D → (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' A) = ∫⁻ x in A, ENNReal.ofReal (Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ)))))) := by
+  intro n ℓ D u hD hu A hA hAD
+  have linArea := dohr_vel_linear_graph_area n ℓ
+  have lipCompare : ∀ (u : Rn n → Rn ℓ) (P : Rn n →L[ℝ] Rn ℓ) (c : ℝ≥0) (S : Set (Rn n)),
+    ApproximatesLinearOn u P S c →
+    (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' S) ≤
+        (1 + (c : ℝ≥0∞)) ^ n * (μHE[n] : Measure (Amb n ℓ)) ((fun v => graphPoint v (P v)) '' S) ∧
+      (μHE[n] : Measure (Amb n ℓ)) ((fun v => graphPoint v (P v)) '' S) ≤
+        (1 + (c : ℝ≥0∞)) ^ n * (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' S) := by
+    intro u P c S hS
+    have hinner : ∀ (v v' : Rn n) (w w' : Rn ℓ),
+        inner ℝ (graphPoint v w) (graphPoint v' w') = inner ℝ v v' + inner ℝ w w' := by
+      intro v v' w w'
+      simp [graphPoint, PiLp.inner_apply, Fin.sum_univ_add]
+    have hsub : ∀ (v v' : Rn n) (w w' : Rn ℓ), graphPoint v w - graphPoint v' w' = graphPoint (v - v') (w - w') := by
+      intro v v' w w'
+      ext i
+      refine Fin.addCases (fun j => ?_) (fun k => ?_) i <;> simp [graphPoint]
+    have hadd : ∀ (v v' : Rn n) (w w' : Rn ℓ), graphPoint v w + graphPoint v' w' = graphPoint (v + v') (w + w') := by
+      intro v v' w w'
+      ext i
+      refine Fin.addCases (fun j => ?_) (fun k => ?_) i <;> simp [graphPoint]
+    have hnorm_ge : ∀ (v : Rn n) (w : Rn ℓ), ‖v‖ ≤ ‖graphPoint v w‖ := by
+      intro v w
+      have h1 : ‖graphPoint v w‖ ^ 2 = ‖v‖ ^ 2 + ‖w‖ ^ 2 := by
+        rw [← real_inner_self_eq_norm_sq, hinner, real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq]
+      nlinarith [norm_nonneg v, norm_nonneg w, norm_nonneg (graphPoint v w), sq_nonneg ‖w‖]
+    have hnorm0 : ∀ w : Rn ℓ, ‖graphPoint (0 : Rn n) w‖ = ‖w‖ := by
+      intro w
+      have h1 : ‖graphPoint (0 : Rn n) w‖ ^ 2 = ‖w‖ ^ 2 := by
+        rw [← real_inner_self_eq_norm_sq, hinner, real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq]
+        simp
+      rw [← Real.sqrt_sq (norm_nonneg (graphPoint (0 : Rn n) w)), h1, Real.sqrt_sq (norm_nonneg w)]
+    let π : Amb n ℓ → Rn n := fun z => WithLp.toLp 2 (fun j : Fin n => WithLp.ofLp z (Fin.castAdd ℓ j))
+    have hπG : ∀ (x : Rn n) (w : Rn ℓ), π (graphPoint x w) = x := by
+      intro x w
+      simp [π, graphPoint]
+    -- the key two-sided estimate on S
+    have hkey : ∀ x ∈ S, ∀ x' ∈ S,
+        ‖graphPoint x (u x) - graphPoint x' (u x')‖ ≤ (1 + (c : ℝ)) * ‖graphPoint x (P x) - graphPoint x' (P x')‖ ∧
+        ‖graphPoint x (P x) - graphPoint x' (P x')‖ ≤ (1 + (c : ℝ)) * ‖graphPoint x (u x) - graphPoint x' (u x')‖ := by
+      intro x hx x' hx'
+      have happ : ‖u x - u x' - P (x - x')‖ ≤ (c : ℝ) * ‖x - x'‖ := hS x hx x' hx'
+      have hdec : graphPoint (x - x') (u x - u x') =
+          graphPoint (x - x') (P (x - x')) + graphPoint 0 (u x - u x' - P (x - x')) := by
+        rw [hadd]
+        congr 1 <;> abel
+      have hP : graphPoint x (P x) - graphPoint x' (P x') = graphPoint (x - x') (P (x - x')) := by
+        rw [hsub, map_sub]
+      have hU : graphPoint x (u x) - graphPoint x' (u x') = graphPoint (x - x') (u x - u x') := by
+        rw [hsub]
+      have hc : (0 : ℝ) ≤ c := c.2
+      have h1 := hnorm_ge (x - x') (P (x - x'))
+      have h2 := hnorm_ge (x - x') (u x - u x')
+      constructor
+      · rw [hU, hP, hdec]
+        calc ‖graphPoint (x - x') (P (x - x')) + graphPoint 0 (u x - u x' - P (x - x'))‖
+            ≤ ‖graphPoint (x - x') (P (x - x'))‖ + ‖graphPoint (0 : Rn n) (u x - u x' - P (x - x'))‖ :=
+              norm_add_le _ _
+          _ ≤ ‖graphPoint (x - x') (P (x - x'))‖ + (c : ℝ) * ‖graphPoint (x - x') (P (x - x'))‖ := by
+              rw [hnorm0]
+              have := mul_le_mul_of_nonneg_left h1 hc
+              linarith
+          _ = (1 + (c : ℝ)) * ‖graphPoint (x - x') (P (x - x'))‖ := by ring
+      · rw [hU, hP]
+        have hdec' : graphPoint (x - x') (P (x - x')) =
+            graphPoint (x - x') (u x - u x') - graphPoint 0 (u x - u x' - P (x - x')) := by
+          rw [hdec]
+          abel
+        rw [hdec']
+        calc ‖graphPoint (x - x') (u x - u x') - graphPoint 0 (u x - u x' - P (x - x'))‖
+            ≤ ‖graphPoint (x - x') (u x - u x')‖ + ‖graphPoint (0 : Rn n) (u x - u x' - P (x - x'))‖ :=
+              norm_sub_le _ _
+          _ ≤ ‖graphPoint (x - x') (u x - u x')‖ + (c : ℝ) * ‖graphPoint (x - x') (u x - u x')‖ := by
+              rw [hnorm0]
+              have := mul_le_mul_of_nonneg_left h2 hc
+              linarith
+          _ = (1 + (c : ℝ)) * ‖graphPoint (x - x') (u x - u x')‖ := by ring
+    -- Lipschitz maps between the two images
+    have hψ : LipschitzOnWith (1 + c) (fun z => graphPoint (π z) (u (π z))) ((fun v => graphPoint v (P v)) '' S) := by
+      refine LipschitzOnWith.of_dist_le_mul (fun y hy y' hy' => ?_)
+      obtain ⟨x, hx, rfl⟩ := hy
+      obtain ⟨x', hx', rfl⟩ := hy'
+      simp only [hπG, dist_eq_norm, NNReal.coe_add, NNReal.coe_one]
+      exact (hkey x hx x' hx').1
+    have hφ : LipschitzOnWith (1 + c) (fun z => graphPoint (π z) (P (π z))) ((fun x => graphPoint x (u x)) '' S) := by
+      refine LipschitzOnWith.of_dist_le_mul (fun y hy y' hy' => ?_)
+      obtain ⟨x, hx, rfl⟩ := hy
+      obtain ⟨x', hx', rfl⟩ := hy'
+      simp only [hπG, dist_eq_norm, NNReal.coe_add, NNReal.coe_one]
+      exact (hkey x hx x' hx').2
+    have himg1 : (fun z => graphPoint (π z) (u (π z))) '' ((fun v => graphPoint v (P v)) '' S) =
+        (fun x => graphPoint x (u x)) '' S := by
+      rw [Set.image_image]
+      refine Set.image_congr (fun v _ => ?_)
+      simp only [hπG]
+    have himg2 : (fun z => graphPoint (π z) (P (π z))) '' ((fun x => graphPoint x (u x)) '' S) =
+        (fun v => graphPoint v (P v)) '' S := by
+      rw [Set.image_image]
+      refine Set.image_congr (fun v _ => ?_)
+      simp only [hπG]
+    have hscale : ∀ (f : Amb n ℓ → Amb n ℓ) (T : Set (Amb n ℓ)), LipschitzOnWith (1 + c) f T →
+        (μHE[n] : Measure (Amb n ℓ)) (f '' T) ≤ (1 + (c : ℝ≥0∞)) ^ n * (μHE[n] : Measure (Amb n ℓ)) T := by
+      intro f T hf
+      have h := hf.hausdorffMeasure_image_le (d := (n : ℝ)) (Nat.cast_nonneg n)
+      rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, Measure.smul_apply, ENNReal.smul_def,
+        ENNReal.smul_def, smul_eq_mul, smul_eq_mul]
+      rw [ENNReal.rpow_natCast] at h
+      push_cast at h
+      calc _ ≤ ((volume : Measure (Rn n)).addHaarScalarFactor μH[(n : ℝ)] : ℝ≥0∞) *
+            ((1 + (c : ℝ≥0∞)) ^ n * μH[(n : ℝ)] T) := by gcongr
+        _ = _ := by ring
+    refine ⟨?_, ?_⟩
+    · rw [← himg1]
+      exact hscale _ _ hψ
+    · rw [← himg2]
+      exact hscale _ _ hφ
+  set J : (Rn n →L[ℝ] Rn ℓ) → ℝ := fun P => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+    Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ)))
+      (P (EuclideanSpace.single b (1 : ℝ))))) with hJdef
+  have hJpos : ∀ P, 0 < J P := fun P => Real.sqrt_pos.mpr (linArea P).1
+  have hJcont : Continuous J := by
+    refine Real.continuous_sqrt.comp (Continuous.matrix_det ?_)
+    refine continuous_matrix (fun a b => ?_)
+    simp only [Matrix.add_apply, Matrix.of_apply]
+    exact continuous_const.add (Continuous.inner
+      (ContinuousLinearMap.apply ℝ (Rn ℓ) (EuclideanSpace.single a (1 : ℝ))).continuous
+      (ContinuousLinearMap.apply ℝ (Rn ℓ) (EuclideanSpace.single b (1 : ℝ))).continuous)
+  have hdiff : ∀ x ∈ D, DifferentiableAt ℝ u x := fun x hx =>
+    ((hu.differentiableOn one_ne_zero) x hx).differentiableAt (hD.mem_nhds hx)
+  have hfcont : ContinuousOn (fderiv ℝ u) D := hu.continuousOn_fderiv_of_isOpen hD le_rfl
+  let π : Amb n ℓ → Rn n := fun z => WithLp.toLp 2 (fun j : Fin n => WithLp.ofLp z (Fin.castAdd ℓ j))
+  have hπG : ∀ (x : Rn n) (w : Rn ℓ), π (graphPoint x w) = x := by
+    intro x w
+    simp [π, graphPoint]
+  have hGinj : Function.Injective (fun x : Rn n => graphPoint x (u x)) := by
+    intro x y h
+    have := congrArg π h
+    simpa [hπG] using this
+  have hGcont : ContinuousOn (fun x : Rn n => graphPoint x (u x)) D := by
+    intro x hx
+    let Γl : (Rn n × Rn ℓ) →ₗ[ℝ] Amb n ℓ :=
+      { toFun := fun p => graphPoint p.1 p.2
+        map_add' := by
+          intro p q
+          ext i
+          refine Fin.addCases (fun j => ?_) (fun k => ?_) i <;> simp [graphPoint]
+        map_smul' := by
+          intro c p
+          ext i
+          refine Fin.addCases (fun j => ?_) (fun k => ?_) i <;> simp [graphPoint] }
+    have hΓ : Continuous (LinearMap.toContinuousLinearMap Γl) := (LinearMap.toContinuousLinearMap Γl).continuous
+    exact (hΓ.continuousAt.comp_continuousWithinAt
+      (continuousWithinAt_id.prodMk ((hdiff x hx).continuousAt.continuousWithinAt)))
+  -- local two-sided estimate
+  have hloc : ∀ ε : ℝ, 0 < ε → ∀ x0 ∈ D, ∃ ρ > 0, ball x0 ρ ⊆ D ∧ ∀ S : Set (Rn n), MeasurableSet S →
+      S ⊆ ball x0 ρ →
+      (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' S) ≤
+          ENNReal.ofReal ((1 + ε) ^ (n + 1)) * ∫⁻ x in S, ENNReal.ofReal (J (fderiv ℝ u x)) ∧
+        ∫⁻ x in S, ENNReal.ofReal (J (fderiv ℝ u x)) ≤
+          ENNReal.ofReal ((1 + ε) ^ (n + 1)) * (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' S) := by
+    intro ε hε x0 hx0
+    have hJP := hJpos (fderiv ℝ u x0)
+    have hc2 : ContinuousAt (fderiv ℝ u) x0 := (hfcont x0 hx0).continuousAt (hD.mem_nhds hx0)
+    have hc1 : ContinuousAt (fun x => J (fderiv ℝ u x)) x0 := hJcont.continuousAt.comp hc2
+    obtain ⟨ρ1, hρ1, h1⟩ := Metric.continuousAt_iff.mp hc1 (ε / (1 + ε) * J (fderiv ℝ u x0)) (by positivity)
+    obtain ⟨ρ2, hρ2, h2⟩ := Metric.continuousAt_iff.mp hc2 ε hε
+    obtain ⟨ρ3, hρ3, h3⟩ := Metric.isOpen_iff.mp hD x0 hx0
+    have hρ : 0 < min ρ1 (min ρ2 ρ3) := lt_min hρ1 (lt_min hρ2 hρ3)
+    have hBD : ball x0 (min ρ1 (min ρ2 ρ3)) ⊆ D :=
+      (ball_subset_ball ((min_le_right _ _).trans (min_le_right _ _))).trans h3
+    refine ⟨min ρ1 (min ρ2 ρ3), hρ, hBD, fun S hS hSB => ?_⟩
+    set c : ℝ≥0 := ⟨ε, hε.le⟩ with hc
+    have hcR : (c : ℝ) = ε := rfl
+    have hcE : (c : ℝ≥0∞) = ENNReal.ofReal ε := by
+      rw [ENNReal.ofReal, Real.toNNReal_of_nonneg hε.le]
+      rfl
+    have happrox : ApproximatesLinearOn u (fderiv ℝ u x0) S c := by
+      intro x hx y hy
+      rw [hcR]
+      have hconv : Convex ℝ (ball x0 (min ρ1 (min ρ2 ρ3))) := convex_ball _ _
+      have hbound : ∀ z ∈ ball x0 (min ρ1 (min ρ2 ρ3)), ‖fderiv ℝ u z - fderiv ℝ u x0‖ ≤ ε := by
+        intro z hz
+        have hz' : dist z x0 < ρ2 := lt_of_lt_of_le (mem_ball.mp hz) ((min_le_right _ _).trans (min_le_left _ _))
+        have := h2 hz'
+        rw [dist_eq_norm] at this
+        exact this.le
+      have hmv := hconv.norm_image_sub_le_of_norm_hasFDerivWithin_le'
+        (fun z hz => (hdiff z (hBD hz)).hasFDerivAt.hasFDerivWithinAt) hbound (hSB hy) (hSB hx)
+      simpa using hmv
+    have hJb : ∀ x ∈ S, J (fderiv ℝ u x0) ≤ (1 + ε) * J (fderiv ℝ u x) ∧
+        J (fderiv ℝ u x) ≤ (1 + ε) * J (fderiv ℝ u x0) := by
+      intro x hx
+      have hx1 : dist x x0 < ρ1 := lt_of_lt_of_le (mem_ball.mp (hSB hx)) (min_le_left _ _)
+      have hxd := h1 hx1
+      rw [Real.dist_eq, abs_lt] at hxd
+      have hJx := hJpos (fderiv ℝ u x)
+      have key : ε / (1 + ε) * J (fderiv ℝ u x0) * (1 + ε) = ε * J (fderiv ℝ u x0) := by
+        field_simp
+      constructor
+      · nlinarith
+      · have : ε / (1 + ε) * J (fderiv ℝ u x0) ≤ ε * J (fderiv ℝ u x0) := by
+          have h1e : (1 : ℝ) ≤ 1 + ε := by linarith
+          have : ε / (1 + ε) ≤ ε := div_le_self hε.le h1e
+          exact mul_le_mul_of_nonneg_right this hJP.le
+        nlinarith
+    obtain ⟨hLC1, hLC2⟩ := lipCompare u (fderiv ℝ u x0) c S happrox
+    have hLA := (linArea (fderiv ℝ u x0)).2 S
+    have hfac : (1 + (c : ℝ≥0∞)) ^ n = ENNReal.ofReal ((1 + ε) ^ n) := by
+      rw [ENNReal.ofReal_pow (by linarith), ENNReal.ofReal_add zero_le_one hε.le, ENNReal.ofReal_one, hcE]
+    have hfac2 : ENNReal.ofReal ((1 + ε) ^ (n + 1)) = ENNReal.ofReal ((1 + ε) ^ n) * ENNReal.ofReal (1 + ε) := by
+      rw [pow_succ, ENNReal.ofReal_mul (by positivity)]
+    have hconst : ∫⁻ _ in S, ENNReal.ofReal (J (fderiv ℝ u x0)) =
+        ENNReal.ofReal (J (fderiv ℝ u x0)) * (volume : Measure (Rn n)) S := by
+      rw [setLIntegral_const]
+    constructor
+    · calc (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' S)
+          ≤ ENNReal.ofReal ((1 + ε) ^ n) * (ENNReal.ofReal (J (fderiv ℝ u x0)) * (volume : Measure (Rn n)) S) := by
+            rw [← hfac, ← hLA]; exact hLC1
+        _ = ENNReal.ofReal ((1 + ε) ^ n) * ∫⁻ _ in S, ENNReal.ofReal (J (fderiv ℝ u x0)) := by rw [hconst]
+        _ ≤ ENNReal.ofReal ((1 + ε) ^ n) * ∫⁻ x in S, ENNReal.ofReal (1 + ε) * ENNReal.ofReal (J (fderiv ℝ u x)) := by
+            refine mul_le_mul' le_rfl (setLIntegral_mono' hS (fun x hx => ?_))
+            rw [← ENNReal.ofReal_mul (by linarith)]
+            exact ENNReal.ofReal_le_ofReal (hJb x hx).1
+        _ = ENNReal.ofReal ((1 + ε) ^ (n + 1)) * ∫⁻ x in S, ENNReal.ofReal (J (fderiv ℝ u x)) := by
+            rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, hfac2, mul_assoc]
+    · calc ∫⁻ x in S, ENNReal.ofReal (J (fderiv ℝ u x))
+          ≤ ∫⁻ _ in S, ENNReal.ofReal (1 + ε) * ENNReal.ofReal (J (fderiv ℝ u x0)) := by
+            refine setLIntegral_mono' hS (fun x hx => ?_)
+            rw [← ENNReal.ofReal_mul (by linarith)]
+            exact ENNReal.ofReal_le_ofReal (hJb x hx).2
+        _ = ENNReal.ofReal (1 + ε) * (μHE[n] : Measure (Amb n ℓ)) ((fun v => graphPoint v (fderiv ℝ u x0 v)) '' S) := by
+            rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, hconst, hLA]
+        _ ≤ ENNReal.ofReal (1 + ε) * (ENNReal.ofReal ((1 + ε) ^ n) *
+              (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' S)) := by
+            refine mul_le_mul' le_rfl ?_
+            rw [← hfac]
+            exact hLC2
+        _ = ENNReal.ofReal ((1 + ε) ^ (n + 1)) * (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' S) := by
+            rw [hfac2]
+            ring
+  -- global two-sided estimate on A
+  have hglob : ∀ ε : ℝ, 0 < ε →
+      (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' A) ≤
+          ENNReal.ofReal ((1 + ε) ^ (n + 1)) * ∫⁻ x in A, ENNReal.ofReal (J (fderiv ℝ u x)) ∧
+        ∫⁻ x in A, ENNReal.ofReal (J (fderiv ℝ u x)) ≤
+          ENNReal.ofReal ((1 + ε) ^ (n + 1)) * (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' A) := by
+    intro ε hε
+    choose! ρ hρpos hρD hρest using hloc ε hε
+    obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable
+      (fun x : D => ball (x : Rn n) (ρ x)) (fun _ => isOpen_ball)
+    have hDcov : D ⊆ ⋃ i ∈ T, ball ((i : D) : Rn n) (ρ i) := by
+      intro x hx
+      rw [hTU]
+      exact Set.mem_iUnion.mpr ⟨⟨x, hx⟩, mem_ball_self (hρpos x hx)⟩
+    rcases T.eq_empty_or_nonempty with hT | hT
+    · have hA0 : A = ∅ := by
+        apply Set.subset_eq_empty (hAD.trans hDcov)
+        simp [hT]
+      subst hA0
+      simp
+    obtain ⟨f, hf⟩ := hTc.exists_eq_range hT
+    let B : ℕ → Set (Rn n) := fun k => ball ((f k : D) : Rn n) (ρ (f k))
+    have hAcov : A ⊆ ⋃ k, B k := by
+      intro x hx
+      have := hDcov (hAD hx)
+      rw [hf] at this
+      simp only [Set.mem_iUnion, Set.mem_range, exists_prop] at this
+      obtain ⟨i, ⟨k, rfl⟩, hxi⟩ := this
+      exact Set.mem_iUnion.mpr ⟨k, hxi⟩
+    let C : ℕ → Set (Rn n) := fun k => A ∩ disjointed B k
+    have hCmeas : ∀ k, MeasurableSet (C k) := fun k =>
+      hA.inter (MeasurableSet.disjointed (fun j => measurableSet_ball) k)
+    have hCdisj : Pairwise (Function.onFun Disjoint C) := by
+      intro i j hij
+      exact ((disjoint_disjointed B) hij).mono Set.inter_subset_right Set.inter_subset_right
+    have hCunion : ⋃ k, C k = A := by
+      simp only [C, ← Set.inter_iUnion, iUnion_disjointed]
+      exact Set.inter_eq_left.mpr hAcov
+    have hCB : ∀ k, C k ⊆ B k := fun k => Set.inter_subset_right.trans (disjointed_subset B k)
+    have hGCmeas : ∀ k, MeasurableSet ((fun x => graphPoint x (u x)) '' C k) := fun k =>
+      (hCmeas k).image_of_continuousOn_injOn (hGcont.mono ((Set.inter_subset_left).trans hAD))
+        hGinj.injOn
+    have hGCdisj : Pairwise (Function.onFun Disjoint (fun k => (fun x => graphPoint x (u x)) '' C k)) := by
+      intro i j hij
+      exact (Set.disjoint_image_iff hGinj).mpr (hCdisj hij)
+    have hGA : (fun x => graphPoint x (u x)) '' A = ⋃ k, (fun x => graphPoint x (u x)) '' C k := by
+      rw [← Set.image_iUnion, hCunion]
+    have hmeasG : (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' A) =
+        ∑' k, (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' C k) := by
+      rw [hGA, measure_iUnion hGCdisj hGCmeas]
+    have hlintA : ∫⁻ x in A, ENNReal.ofReal (J (fderiv ℝ u x)) =
+        ∑' k, ∫⁻ x in C k, ENNReal.ofReal (J (fderiv ℝ u x)) := by
+      conv_lhs => rw [← hCunion]
+      exact lintegral_iUnion hCmeas hCdisj _
+    have hk : ∀ k, (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' C k) ≤
+          ENNReal.ofReal ((1 + ε) ^ (n + 1)) * ∫⁻ x in C k, ENNReal.ofReal (J (fderiv ℝ u x)) ∧
+        ∫⁻ x in C k, ENNReal.ofReal (J (fderiv ℝ u x)) ≤
+          ENNReal.ofReal ((1 + ε) ^ (n + 1)) * (μHE[n] : Measure (Amb n ℓ)) ((fun x => graphPoint x (u x)) '' C k) :=
+      fun k => hρest (f k) (f k).2 (C k) (hCmeas k) (hCB k)
+    constructor
+    · rw [hmeasG, hlintA, ← ENNReal.tsum_mul_left]
+      exact ENNReal.tsum_le_tsum (fun k => (hk k).1)
+    · rw [hmeasG, hlintA, ← ENNReal.tsum_mul_left]
+      exact ENNReal.tsum_le_tsum (fun k => (hk k).2)
+  -- let ε → 0
+  have hlim : ∀ X Y : ℝ≥0∞, (∀ ε : ℝ, 0 < ε → X ≤ ENNReal.ofReal ((1 + ε) ^ (n + 1)) * Y) → X ≤ Y := by
+    intro X Y hXY
+    by_cases hY : Y = ⊤
+    · rw [hY]; exact le_top
+    · have h0 : Tendsto (fun ε : ℝ => (1 + ε) ^ (n + 1)) (𝓝[>] 0) (𝓝 1) := by
+        have hcont : Continuous (fun ε : ℝ => (1 + ε) ^ (n + 1)) := (continuous_const.add continuous_id).pow (n + 1)
+        have h := hcont.tendsto (0 : ℝ)
+        simp only [add_zero, one_pow] at h
+        exact h.mono_left nhdsWithin_le_nhds
+      have htend : Tendsto (fun ε : ℝ => ENNReal.ofReal ((1 + ε) ^ (n + 1)) * Y) (𝓝[>] 0) (𝓝 (1 * Y)) := by
+        refine ENNReal.Tendsto.mul_const ?_ (Or.inr hY)
+        simpa using ENNReal.tendsto_ofReal h0
+      rw [one_mul] at htend
+      exact ge_of_tendsto htend (eventually_nhdsWithin_of_forall (fun ε hε => hXY ε hε))
+  exact le_antisymm (hlim _ _ (fun ε hε => (hglob ε hε).1)) (hlim _ _ (fun ε hε => (hglob ε hε).2))
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
