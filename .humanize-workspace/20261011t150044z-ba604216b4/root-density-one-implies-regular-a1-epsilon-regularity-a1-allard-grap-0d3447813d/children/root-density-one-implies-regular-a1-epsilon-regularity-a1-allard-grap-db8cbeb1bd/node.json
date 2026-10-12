@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.weighted_blowup_limit-a1.diff_quotient_uniform-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.weighted_blowup_limit-a1",
+  "depth": 6,
+  "title": "Difference quotients converge uniformly on closed balls at a point of differentiability",
+  "statement": "Let n, k ∈ ℕ, f : ℝⁿ → ℝᵏ (ℝⁿ = Euclid n with the Euclidean norm) and v ∈ ℝⁿ, and suppose f is differentiable at v, with Fréchet derivative T := Df(v) (Mathlib fderiv ℝ f v). Then for every R ∈ ℝ, the difference quotients f_{v,r}(w) := r⁻¹(f(v + rw) − f(v)) converge to T w uniformly for w ∈ closedBall(0, R) as r ↓ 0. That is, for every ε > 0 there is a set S belonging to the filter 𝓝[>] 0 such that |T w − f_{v,r}(w)| < ε for all r ∈ S and all w with |w| ≤ R.",
+  "lean_statement": "∀ (n k : ℕ) (f : Euclid n → Euclid k) (v : Euclid n), DifferentiableAt ℝ f v → ∀ R : ℝ, TendstoUniformlyOn (fun (r : ℝ) (w : Euclid n) => r⁻¹ • (f (v + r • w) - f v)) (fun w => fderiv ℝ f v w) (𝓝[>] 0) (closedBall (0 : Euclid n) R)",
+  "lean_name": "dorwbl_diff_quotient_tendstoUniformlyOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-db8cbeb1bd-a1"
+}

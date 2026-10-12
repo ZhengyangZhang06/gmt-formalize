@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'doraggt_|dorwbl_|tendstoUniformlyOn.*fderiv|fderiv.*tendstoUniformlyOn|difference quotient' project/GMT mathlib/Mathlib/Analysis/Calculus",
+        "rg -n 'theorem LipschitzWith.ae_differentiableAt|hasFDerivAt_iff_isLittleO_nhds_zero|theorem HasFDerivAt.lim\\b' mathlib/Mathlib/Analysis/Calculus/Rademacher.lean mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "rg -n 'tendstoUniformlyOn_iff|comp_tendstoUniformlyOn|uniformContinuous_of_continuous|uniformContinuous_of_continuous' mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean mathlib/Mathlib/Topology/UniformSpace/UniformConvergence.lean mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean",
+        "rg -n 'setIntegral_eq_integral_of_forall_compl_eq_zero|norm_setIntegral_le_of_norm_le_const|norm_integral_le_of_norm_le|integrableOn_of_bounded|locallyIntegrable_iff|norm_add_sq_real|norm_add_sq_eq_norm_sq_add_norm_sq_real' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "dorwbl_diff_quotient_tendstoUniformlyOn",
+        "dorwbl_test_fn_diff_quotient_integral_tendsto_zero",
+        "dorwbl_weighted_blowup_tendsto_at_point",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/weighted-blowup-independent-review-713b5052/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/weighted-blowup-independent-review-713b5052/Proofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/UniformConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-0d3447813d/parent-child-handoff.json",
+        "/tmp/weighted-blowup-independent-review-713b5052/Contracts.lean",
+        "/tmp/weighted-blowup-independent-review-713b5052/Proofs.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical compiler contract. Snapshot searches found the required analytic ingredients, but no matching proposed declarations or uniform difference-quotient theorem. All three names are bare identifiers with no reservations in the DAG or other node JSON files. Each frozen proposition elaborates independently of child implementations in the comparator scope. Independently rerun prototypes match the frozen types exactly, pass the single-theorem source checks, and use only propext, Classical.choice and Quot.sound. The exact parent assembly also compiles with only these axioms when the pointwise child and declared Lebesgue-point dependency are explicit hypotheses. The latter dependency remains separately pending. The split is appropriate: its dependency chain is acyclic, every child contributes to this selected parent, and the inferred scalar, Euclidean and measure instances match the prose."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "diff_quotient_uniform",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose, including arbitrary real R. The proof derives the little-o estimate from differentiability, chooses R′ = max(R, 1), and obtains the uniform ε/2 bound for 0 < r < ρ/R′ using linearity and positive-scalar norm identities. Negative-radius balls and zero-dimensional spaces cause no gap. No child or parent theorem is assumed."
+    },
+    {
+      "key": "test_integral_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition includes all stated hypotheses and the correct restricted-volume integral. The proof uses only its declared predecessor: the isometry transfers uniform convergence to graph maps, uniform continuity transfers it through ψ, and the finite-measure estimate with η = ε/(volume.real B + 1) proves convergence of the integral. Continuity and boundedness justify integrability; empty balls are covered. The supplied argument is complete and directly formalizable."
+    },
+    {
+      "key": "pointwise_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition matches every hypothesis and quantifier in the prose. Orthogonality proves localization; bounded measurable integrands are integrable on the finite-measure ball; the algebraic splitting gives C·U(r) + M·V(r), which tends to zero by the declared child and the Lebesgue-point hypothesis. Squeeze proves the stated limit without circularity. Rademacher and bounded-weight local integrability then assemble the selected parent on a single full-measure set valid for every ψ."
+    }
+  ],
+  "required_changes": []
+}

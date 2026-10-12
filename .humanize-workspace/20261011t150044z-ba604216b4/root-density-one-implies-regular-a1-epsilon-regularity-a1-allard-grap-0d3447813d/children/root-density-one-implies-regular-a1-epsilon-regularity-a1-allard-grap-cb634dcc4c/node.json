@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.weighted_blowup_limit-a1.pointwise_limit-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.weighted_blowup_limit-a1",
+  "depth": 6,
+  "title": "Weighted graph blow-up integrals converge at a differentiability point that is a rescaled Lebesgue point of the weight",
+  "statement": "Let n, k ∈ ℕ. Let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} be linear isometries with ⟨ιx, ι'y⟩ = 0 for all x ∈ ℝⁿ, y ∈ ℝᵏ. Let f : ℝⁿ → ℝᵏ be continuous. Let C ∈ ℝ and let G : ℝⁿ → ℝ be Borel measurable with |G(u)| ≤ C for all u. Let v ∈ ℝⁿ be such that f is differentiable at v, with T := Df(v) (Mathlib fderiv ℝ f v), and such that for every R > 0, ∫_{closedBall(0,R)} |G(v + rw) − G(v)| dLⁿ(w) → 0 as r ↓ 0 (Lⁿ = volume on ℝⁿ). Then for every continuous compactly supported ψ : ℝ^{n+k} → ℝ, ∫_{ℝⁿ} ψ(ιw + ι'(r⁻¹(f(v + rw) − f(v))))·G(v + rw) dLⁿ(w) → G(v)·∫_{ℝⁿ} ψ(ιw + ι'(T w)) dLⁿ(w) as r ↓ 0 (along 𝓝[>] 0).",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k) (G : Euclid n → ℝ) (C : ℝ) (v : Euclid n), (∀ x y, inner ℝ (ι x) (ι' y) = 0) → Continuous f → Measurable G → (∀ u, |G u| ≤ C) → DifferentiableAt ℝ f v → (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ∫ w in closedBall (0 : Euclid n) R, |G (v + r • w) - G v|) (𝓝[>] 0) (𝓝 0)) → ∀ ψ : Euclid (n + k) → ℝ, Continuous ψ → HasCompactSupport ψ → Tendsto (fun r : ℝ => ∫ w, ψ (ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) * G (v + r • w)) (𝓝[>] 0) (𝓝 (G v * ∫ w, ψ (ι w + ι' (fderiv ℝ f v w))))",
+  "lean_name": "dorwbl_weighted_blowup_tendsto_at_point",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.weighted_blowup_limit-a1.test_integral_vanish-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.weighted_blowup_limit-a1.test_integral_vanish-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-cb634dcc4c-a1"
+}
