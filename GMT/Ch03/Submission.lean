@@ -1863,6 +1863,55 @@ theorem Submission.deGiorgiRH_locallyFinite_case : (∀ (n ℓ : ℕ) (μ : Meas
   -- Step 8: density comparison of `μ` and `σ`.
   exact ⟨hCR, Submission.deGiorgiRH_measure_eq_of_density n (n + ℓ) μ _ hμK hσK hac hσdens⟩
 
+/-- **A measure with unit-multiplicity tangent planes on its carrier is `Hⁿ ⌞ S`** (Simon Ch. 3,
+proof of Thm. 4.3, parent proof Parts 5c–5d; erratum E4: chapter-03.txt line 604 only sketches
+this, as Thm. 1.6 concerns `Hⁿ ⌞ M` rather than `μ_E`, so the measure form (RT) of 1.6 "⇐" and
+density comparison are used instead). Assume (RT) and (AT) (Thm. 1.6). Let `U ⊆ ℝ^{n+ℓ}` be open
+and `μ` a measure vanishing off `U`, finite on compact subsets of `U`, and carried by a measurable
+`S ⊆ U` at each point of which it has an approximate tangent plane with multiplicity `1`. Then
+`S` is countably `n`-rectifiable and `μ = Hⁿ ⌞ S`. Exhaust `U` by open `W_i` with compact closure
+in `U`: each `μ ⌞ W_i` is finite on all compacts, carried by `S ∩ W_i` and keeps the tangent
+planes there, so the globally finite case gives `S ∩ W_i` rectifiable and
+`μ ⌞ W_i = Hⁿ ⌞ (S ∩ W_i)`. Now `S = ⋃ᵢ S ∩ W_i`, and `μ`, `Hⁿ ⌞ S` are carried by
+`U = ⋃ᵢ W_i`. -/
+theorem Submission.deGiorgi_rectifiable_measure_eq_hausdorff : (∀ (n ℓ : ℕ) (μ : Measure (Rn (n + ℓ))), (∀ K : Set (Rn (n + ℓ)), IsCompact K → μ K < ∞) → (∀ᵐ x ∂μ, ∃ (P : Submodule ℝ (Rn (n + ℓ))) (θ : ℝ), 0 < θ ∧ HasApproxTangentPlaneWithMultiplicity n μ x P θ) → ∃ R : Set (Rn (n + ℓ)), MeasurableSet R ∧ CountablyRectifiable n R ∧ μ Rᶜ = 0) → ApproximateTangentCharacterization → ∀ (n ℓ : ℕ) (U S : Set (Rn (n + ℓ))) (μ : Measure (Rn (n + ℓ))), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Rn (n + ℓ)), IsCompact K → K ⊆ U → μ K < ∞) → MeasurableSet S → S ⊆ U → μ Sᶜ = 0 → (∀ x ∈ S, ∃ P : Submodule ℝ (Rn (n + ℓ)), HasApproxTangentPlaneWithMultiplicity n μ x P 1) → CountablyRectifiable n S ∧ μ = (μHE[n] : Measure (Rn (n + ℓ))).restrict S := by
+  intro RT AT n ℓ U S μ hU hμU hμK hS hSU hμS htan
+  -- Step 2 (localization): open `W_i` with compact closure in `U` and `⋃ᵢ W_i = U`.
+  obtain ⟨W, hW, hWU⟩ := Submission.deGiorgiRH_open_exhaustion (n + ℓ) U hU
+  -- Steps 3–8 for `μ ⌞ W_i` and its carrier `S ∩ W_i` (sibling `locally_finite_case`).
+  have hloc : ∀ i, CountablyRectifiable n (S ∩ W i) ∧
+      μ.restrict (W i) = (μHE[n] : Measure (Rn (n + ℓ))).restrict (S ∩ W i) := by
+    intro i
+    obtain ⟨hWo, hWc, hWsub⟩ := hW i
+    refine Submission.deGiorgiRH_locallyFinite_case RT AT n ℓ (S ∩ W i) (μ.restrict (W i))
+      (fun K _ ↦ ?_) (hS.inter hWo.measurableSet) ?_ fun x hx ↦ ?_
+    · -- `(μ ⌞ W_i)(K) ≤ μ(closure W_i) < ∞`, as `closure W_i` is a compact subset of `U`.
+      calc μ.restrict (W i) K ≤ μ.restrict (W i) univ := measure_mono (subset_univ K)
+        _ = μ (W i) := Measure.restrict_apply_univ _
+        _ ≤ μ (closure (W i)) := measure_mono subset_closure
+        _ < ∞ := hμK _ hWc hWsub
+    · -- `(μ ⌞ W_i)((S ∩ W_i)ᶜ) = μ(W_i ∖ S) ≤ μ(Sᶜ) = 0`.
+      rw [Measure.restrict_apply' hWo.measurableSet]
+      exact measure_mono_null (fun y hy hyS ↦ hy.1 ⟨hyS, hy.2⟩) hμS
+    · -- Tangent planes are local: `W_i` is an open neighbourhood of `x` (sibling
+      -- `tangent_restrict`).
+      obtain ⟨P, hP⟩ := htan x hx.1
+      exact ⟨P, Submission.deGiorgiRH_tangentPlane_restrict_open n (n + ℓ) μ (W i) x P 1 hWo
+        hx.2 hP⟩
+  -- Step 5: `S = ⋃ᵢ S ∩ W_i` (as `S ⊆ U`) is a countable union of rectifiable sets.
+  have hSW : S = ⋃ i, S ∩ W i := by rw [← inter_iUnion, hWU, inter_eq_left.2 hSU]
+  refine ⟨?_, ?_⟩
+  · rw [hSW]
+    exact Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun i ↦ (hloc i).1
+  -- Step 8: `μ` and `Hⁿ ⌞ S` are carried by `U = ⋃ᵢ W_i` and agree on every `W_i`.
+  have hμU' : μ.restrict U = μ := Measure.restrict_eq_self_of_ae_mem (ae_iff.2 hμU)
+  have hσU : ((μHE[n] : Measure (Rn (n + ℓ))).restrict S).restrict U =
+      (μHE[n] : Measure (Rn (n + ℓ))).restrict S := by
+    rw [Measure.restrict_restrict hU.measurableSet, inter_eq_right.2 hSU]
+  rw [← hμU', ← hσU, ← hWU, Measure.restrict_iUnion_congr]
+  intro i
+  rw [(hloc i).2, Measure.restrict_restrict (hW i).1.measurableSet, inter_comm]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
