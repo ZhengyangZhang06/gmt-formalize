@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "240dbd3a44b3574b1486ea242b9104b4c50263462708f4393a5041c612aa65f9",
+  "git_delta": {
+    "base_commit": "ecc53ec24a4257fbec663adb97bf513c2ccbefcb",
+    "candidate_commit": "24e3df5256a9a5aeb511fbc40fcae5062df412b2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgoj_graph_fderiv_left_inverse",
+    "diff_sha256": "8eb91612c691f39166de8f3e88782c60e7232a4077ab4818ff52fd20765f8c65",
+    "source_sha256": "0ab5dff265201889f1987379f7710bcdaae212475d5ac104087f86a32c3acbb3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgoj_graph_fderiv_left_inverse",
+      "statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → ContDiffOn ℝ 1 u (ball 0 s) → (∀ (v : Euclid n) (w : Euclid k), ι.toContinuousLinearMap.adjoint (ι v + ι' w) = v) ∧ ContinuousOn (fderiv ℝ (fun v => z + ι v + ι' (u v))) (ball (0 : Euclid n) s) ∧ ∀ v ∈ ball (0 : Euclid n) s, ∀ w : Euclid n, ι.toContinuousLinearMap.adjoint (fderiv ℝ (fun v => z + ι v + ι' (u v)) v w) = w",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
