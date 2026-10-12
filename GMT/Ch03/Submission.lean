@@ -536,6 +536,247 @@ theorem Submission.indCompact_transEst_abs_setIntegral_fderiv_le : ∀ (N : ℕ)
     rw [← mul_assoc, mul_neg, mul_inv_cancel₀ hpos.ne', neg_one_mul] at this
     linarith
   exact abs_le.mpr ⟨by linarith, e1⟩
+/-- **A.e. approximation by admissible `C¹` test functions** (the mollification part of the
+`L¹`-duality step of the proof of Simon Ch. 2, Thm. 2.6, used in Ch. 3, proof of Thm. 4.3): if `s`
+is a.e.-strongly measurable, `|s| ≤ 1` and `s = 0` off `B_R(0)`, then `C¹` functions `ψⱼ` with
+compact support, `tsupport ψⱼ ⊆ B_R(0)` and `|ψⱼ| ≤ 1` converge to `s` a.e. Here
+`ψⱼ = ρⱼ ⋆ (1_{B_{R - 2δⱼ}(0)} s)`, `δⱼ = R / (4 (j + 1))`, `ρⱼ` the bump with radii
+`δⱼ / 2 < δⱼ` normalized to integral `1`: `supp ψⱼ ⊆ B̄_{R - δⱼ}(0)`, `ψⱼ = ρⱼ ⋆ s` near each
+point of `B_R(0)` for large `j`, and `ρⱼ ⋆ s → s` a.e. by Lebesgue differentiation. -/
+theorem Submission.indCompact_l1Dual_exists_admissible_ae_tendsto : ∀ (N : ℕ) (R : ℝ)
+    (s : Rn N → ℝ), 0 < R → AEStronglyMeasurable s volume → (∀ y, |s y| ≤ 1) →
+    (∀ y, y ∉ Metric.ball (0 : Rn N) R → s y = 0) →
+    ∃ ψ : ℕ → Rn N → ℝ, (∀ j, ContDiff ℝ 1 (ψ j)) ∧ (∀ j, HasCompactSupport (ψ j)) ∧
+      (∀ j, tsupport (ψ j) ⊆ Metric.ball (0 : Rn N) R) ∧ (∀ j y, |ψ j y| ≤ 1) ∧
+      ∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ ψ j y) atTop (𝓝 (s y)) := by
+  intro N R s hR hs_meas hs_le hs_zero
+  -- Step 1. `|s| ≤ 1_{B_R(0)}` and `L^N(B_R(0)) < ∞`, so `s` is integrable.
+  have hs_int : Integrable s volume := by
+    refine Integrable.mono' (g := (Metric.ball (0 : Rn N) R).indicator fun _ ↦ (1 : ℝ))
+      ((integrable_indicator_iff measurableSet_ball).2 (integrableOn_const measure_ball_lt_top.ne))
+      hs_meas (Eventually.of_forall fun y ↦ ?_)
+    by_cases hy : y ∈ Metric.ball (0 : Rn N) R
+    · simpa [indicator_of_mem hy, Real.norm_eq_abs] using hs_le y
+    · simp [indicator_of_notMem hy, hs_zero y hy]
+  -- Step 2. Radii `δⱼ = R / (4 (j + 1)) > 0` with `δⱼ → 0`.
+  obtain ⟨δ, hδ_pos, hδ_lim⟩ : ∃ δ : ℕ → ℝ, (∀ j, 0 < δ j) ∧ Tendsto δ atTop (𝓝 0) :=
+    ⟨fun j ↦ R / 4 * (1 / ((j : ℝ) + 1)), fun j ↦ by positivity,
+      by simpa using tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (R / 4)⟩
+  -- Step 3. Mollifiers `ρⱼ = φⱼ / ∫ φⱼ`, `φⱼ` the bump with `rIn = δⱼ / 2`, `rOut = δⱼ`.
+  obtain ⟨ρ, hρ_cd, hρ_cs, hρ_nn, hρ_int, hρ_supp, hρ_le⟩ : ∃ ρ : ℕ → Rn N → ℝ,
+      (∀ j, ContDiff ℝ 1 (ρ j)) ∧ (∀ j, HasCompactSupport (ρ j)) ∧ (∀ j y, 0 ≤ ρ j y) ∧
+      (∀ j, ∫ y, ρ j y = 1) ∧ (∀ j, Function.support (ρ j) ⊆ Metric.ball 0 (δ j)) ∧
+      ∀ j y, ρ j y ≤ 2 ^ finrank ℝ (Rn N) / volume.real (Metric.closedBall (0 : Rn N) (δ j)) := by
+    let φ : ℕ → ContDiffBump (0 : Rn N) := fun j ↦
+      ⟨δ j / 2, δ j, half_pos (hδ_pos j), half_lt_self (hδ_pos j)⟩
+    have hφ_int : ∀ j, Integrable (φ j) volume := fun j ↦
+      (φ j).continuous.integrable_of_hasCompactSupport (φ j).hasCompactSupport
+    -- `φⱼ = 1` on `B̄_{δⱼ/2}(0)` and `φⱼ ≥ 0`, so `L^N(B̄_{δⱼ/2}(0)) ≤ ∫ φⱼ`.
+    have hφ_ge : ∀ j, volume.real (Metric.closedBall (0 : Rn N) (δ j / 2)) ≤ ∫ y, φ j y := by
+      intro j
+      calc volume.real (Metric.closedBall (0 : Rn N) (δ j / 2))
+          = ∫ y in Metric.closedBall (0 : Rn N) (δ j / 2), (1 : ℝ) := by simp
+        _ = ∫ y in Metric.closedBall (0 : Rn N) (δ j / 2), φ j y :=
+          setIntegral_congr_fun measurableSet_closedBall
+            fun y hy ↦ ((φ j).one_of_mem_closedBall hy).symm
+        _ ≤ ∫ y, φ j y :=
+          setIntegral_le_integral (hφ_int j) (Eventually.of_forall fun y ↦ (φ j).nonneg)
+    have hball : ∀ j, 0 < volume.real (Metric.closedBall (0 : Rn N) (δ j / 2)) := fun j ↦
+      ENNReal.toReal_pos (Metric.measure_closedBall_pos _ _ (half_pos (hδ_pos j))).ne'
+        measure_closedBall_lt_top.ne
+    have hI : ∀ j, 0 < ∫ y, φ j y := fun j ↦ (hball j).trans_le (hφ_ge j)
+    -- Scaling: `L^N(B̄_{δⱼ}(0)) = 2^N L^N(B̄_{δⱼ/2}(0))`.
+    have hscale : ∀ j, volume.real (Metric.closedBall (0 : Rn N) (δ j)) =
+        2 ^ finrank ℝ (Rn N) * volume.real (Metric.closedBall (0 : Rn N) (δ j / 2)) := by
+      intro j
+      have h := Measure.addHaar_closedBall_mul (volume : Measure (Rn N)) 0 zero_le_two
+        (half_pos (hδ_pos j)).le
+      rw [show (2 : ℝ) * (δ j / 2) = δ j by ring] at h
+      rw [measureReal_def, measureReal_def, h, ENNReal.toReal_mul,
+        ENNReal.toReal_ofReal (by positivity)]
+    refine ⟨fun j y ↦ (∫ y, φ j y)⁻¹ * φ j y, fun j ↦ contDiff_const.mul (φ j).contDiff,
+      fun j ↦ (φ j).hasCompactSupport.mul_left,
+      fun j y ↦ mul_nonneg (inv_nonneg.2 (hI j).le) (φ j).nonneg, fun j ↦ ?_, fun j y hy ↦ ?_,
+      fun j y ↦ ?_⟩
+    · show ∫ y, (∫ y, φ j y)⁻¹ * φ j y = 1
+      rw [integral_const_mul, inv_mul_cancel₀ (hI j).ne']
+    · have hy' : φ j y ≠ 0 := right_ne_zero_of_mul hy
+      rw [← Function.mem_support, (φ j).support_eq] at hy'
+      exact hy'
+    · show (∫ y, φ j y)⁻¹ * φ j y ≤ _
+      calc (∫ y, φ j y)⁻¹ * φ j y ≤ (∫ y, φ j y)⁻¹ * 1 :=
+            mul_le_mul_of_nonneg_left (φ j).le_one (inv_nonneg.2 (hI j).le)
+        _ ≤ (volume.real (Metric.closedBall (0 : Rn N) (δ j / 2)))⁻¹ := by
+            rw [mul_one]; exact inv_anti₀ (hball j) (hφ_ge j)
+        _ = 2 ^ finrank ℝ (Rn N) / volume.real (Metric.closedBall (0 : Rn N) (δ j)) := by
+            rw [hscale j]; field_simp
+  -- Step 4. Truncations `sⱼ = 1_{B_{R - 2δⱼ}(0)} s`.
+  obtain ⟨sj, hsj_int, hsj_le, hsj_supp, hsj_eq⟩ : ∃ sj : ℕ → Rn N → ℝ,
+      (∀ j, Integrable (sj j) volume) ∧ (∀ j y, |sj j y| ≤ 1) ∧
+      (∀ j, Function.support (sj j) ⊆ Metric.ball 0 (R - 2 * δ j)) ∧
+      ∀ j y, y ∈ Metric.ball (0 : Rn N) (R - 2 * δ j) → sj j y = s y := by
+    refine ⟨fun j ↦ (Metric.ball (0 : Rn N) (R - 2 * δ j)).indicator s,
+      fun j ↦ hs_int.indicator measurableSet_ball, fun j y ↦ ?_,
+      fun j ↦ support_indicator_subset, fun j y hy ↦ indicator_of_mem hy s⟩
+    show |(Metric.ball (0 : Rn N) (R - 2 * δ j)).indicator s y| ≤ 1
+    by_cases hy : y ∈ Metric.ball (0 : Rn N) (R - 2 * δ j)
+    · rw [indicator_of_mem hy]; exact hs_le y
+    · rw [indicator_of_notMem hy, abs_zero]; exact zero_le_one
+  -- Step 7. `supp (ρⱼ ⋆ sⱼ) ⊆ B_{δⱼ}(0) + B_{R - 2δⱼ}(0) ⊆ B̄_{R - δⱼ}(0) ⊆ B_R(0)`.
+  have hψ_supp : ∀ j, Function.support (convolution (ρ j) (sj j)
+      (ContinuousLinearMap.lsmul ℝ ℝ) volume) ⊆ Metric.closedBall 0 (R - δ j) := by
+    intro j x hx
+    obtain ⟨a, ha, b, hb, rfl⟩ := Set.mem_add.1 (support_convolution_subset _ hx)
+    have ha' := mem_ball_zero_iff.1 (hρ_supp j ha)
+    have hb' := mem_ball_zero_iff.1 (hsj_supp j hb)
+    rw [mem_closedBall_zero_iff]
+    linarith [norm_add_le a b]
+  have hψ_tsupp : ∀ j, tsupport (convolution (ρ j) (sj j)
+      (ContinuousLinearMap.lsmul ℝ ℝ) volume) ⊆ Metric.closedBall 0 (R - δ j) :=
+    fun j ↦ closure_minimal (hψ_supp j) Metric.isClosed_closedBall
+  have hball_sub : ∀ j, Metric.closedBall (0 : Rn N) (R - δ j) ⊆ Metric.ball 0 R :=
+    fun j ↦ Metric.closedBall_subset_ball (by linarith [hδ_pos j])
+  -- Step 9. Lebesgue differentiation: `ρⱼ ⋆ s → s` almost everywhere.
+  have hconv : ∀ᵐ x ∂(volume : Measure (Rn N)),
+      Tendsto (fun j ↦ convolution (ρ j) s (ContinuousLinearMap.lsmul ℝ ℝ) volume x) atTop
+        (𝓝 (s x)) := by
+    have hδ' : Tendsto δ atTop (𝓝[>] 0) :=
+      tendsto_nhdsWithin_iff.2 ⟨hδ_lim, Eventually.of_forall hδ_pos⟩
+    filter_upwards [IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub volume
+      hs_int.locallyIntegrable 1] with x hx
+    have hav := hx (fun _ ↦ x) δ hδ' (Eventually.of_forall fun j ↦
+      Metric.mem_closedBall_self (by linarith [hδ_pos j]))
+    simp only [convolution_eq_swap, ContinuousLinearMap.lsmul_apply]
+    refine tendsto_integral_smul_of_tendsto_average_norm_sub
+      (a := fun j ↦ Metric.closedBall x (δ j)) (g := fun j y ↦ ρ j (x - y))
+      (2 ^ finrank ℝ (Rn N)) hav (Eventually.of_forall fun j ↦ hs_int.integrableOn)
+      (tendsto_const_nhds.congr fun j ↦ ?_) (Eventually.of_forall fun j y hy ↦ ?_)
+      (Eventually.of_forall fun j y ↦ ?_)
+    · rw [integral_sub_left_eq_self (ρ j) volume x, hρ_int j]
+    · rw [Metric.mem_closedBall, dist_eq_norm, norm_sub_rev]
+      exact (mem_ball_zero_iff.1 (hρ_supp j hy)).le
+    · show |ρ j (x - y)| ≤ 2 ^ finrank ℝ (Rn N) / volume.real (Metric.closedBall x (δ j))
+      rw [abs_of_nonneg (hρ_nn j _), Measure.addHaar_real_closedBall_center]
+      exact hρ_le j (x - y)
+  -- Steps 5 (`C¹`), 7 (support) and 11.
+  refine ⟨fun j ↦ convolution (ρ j) (sj j) (ContinuousLinearMap.lsmul ℝ ℝ) volume,
+    fun j ↦ (hρ_cs j).contDiff_convolution_left _ (hρ_cd j) (hsj_int j).locallyIntegrable,
+    fun j ↦ HasCompactSupport.intro (isCompact_closedBall 0 (R - δ j))
+      fun x hx ↦ Function.notMem_support.1 fun h ↦ hx (hψ_supp j h),
+    fun j ↦ (hψ_tsupp j).trans (hball_sub j), fun j y ↦ ?_, ?_⟩
+  · -- Step 6. `|ρⱼ ⋆ sⱼ| ≤ ∫ ρⱼ = 1`.
+    have h := dist_convolution_le (μ := volume) (x₀ := y) (z₀ := (0 : ℝ)) zero_le_one
+      (hρ_supp j) (hρ_nn j) (hρ_int j) (hsj_int j).aestronglyMeasurable
+      fun x _ ↦ by rw [Real.dist_0_eq_abs]; exact hsj_le j x
+    rwa [Real.dist_0_eq_abs] at h
+  · -- Step 10. On `B_R(0)`, eventually `ψⱼ = ρⱼ ⋆ s` (step 8); off `B_R(0)`, `ψⱼ = 0 = s`.
+    filter_upwards [hconv] with x hx
+    by_cases hxB : x ∈ Metric.ball (0 : Rn N) R
+    · have hx' := mem_ball_zero_iff.1 hxB
+      have hη : 0 < (R - ‖x‖) / 3 := by linarith
+      refine hx.congr' ?_
+      filter_upwards [hδ_lim.eventually (gt_mem_nhds hη)] with j hj
+      show convolution (ρ j) s _ volume x = convolution (ρ j) (sj j) _ volume x
+      rw [convolution_def, convolution_def]
+      refine integral_congr_ae (Eventually.of_forall fun t ↦ ?_)
+      show ContinuousLinearMap.lsmul ℝ ℝ (ρ j t) (s (x - t)) =
+        ContinuousLinearMap.lsmul ℝ ℝ (ρ j t) (sj j (x - t))
+      by_cases ht : ρ j t = 0
+      · simp [ht]
+      · have ht' := mem_ball_zero_iff.1 (hρ_supp j ht)
+        rw [hsj_eq j (x - t) (mem_ball_zero_iff.2 (by linarith [norm_sub_le x t]))]
+    · rw [hs_zero x hxB]
+      refine tendsto_const_nhds.congr fun j ↦ ?_
+      show 0 = convolution (ρ j) (sj j) _ volume x
+      by_contra h
+      exact hxB ((hψ_supp j).trans (hball_sub j) (Ne.symm h))
+/-- **Dominated convergence for pairings with a function integrable on a ball**: the limit step of
+the `L¹`-duality argument in the compactness theorem (Simon Ch. 2, Thm. 2.6) as used in the proof
+of Ch. 3, Thm. 4.3. If `w` is integrable on `B = B_R(0)` and the a.e.-strongly measurable `ψ_j`
+satisfy `|ψ_j| ≤ 1`, vanish off `B` and converge a.e. to `s`, then `∫ w ψ_j → ∫ w s`. Dominated
+convergence with the integrable bound `1_B |w|`; `w ψ_j = 1_B (w ψ_j)` is a.e.-strongly measurable
+because `w` is on `B`. No measurability of `s` is needed, and `R ≤ 0` (`B = ∅`) is not special. -/
+theorem Submission.indCompact_l1Dual_tendsto_integral_mul : ∀ (N : ℕ) (w s : Rn N → ℝ) (R : ℝ)
+    (ψ : ℕ → Rn N → ℝ), IntegrableOn w (Metric.ball (0 : Rn N) R) volume →
+    (∀ j, AEStronglyMeasurable (ψ j) volume) → (∀ j y, |ψ j y| ≤ 1) →
+    (∀ j y, y ∉ Metric.ball (0 : Rn N) R → ψ j y = 0) →
+    (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ ψ j y) atTop (𝓝 (s y))) →
+    Tendsto (fun j ↦ ∫ y, w y * ψ j y) atTop (𝓝 (∫ y, w y * s y)) := by
+  intro N w s R ψ hw hψm hψ1 hψ0 hlim
+  have hB : MeasurableSet (Metric.ball (0 : Rn N) R) := Metric.isOpen_ball.measurableSet
+  -- Off the ball every `w ψ_j` vanishes, so `w ψ_j = 1_B (w ψ_j)`.
+  have hind : ∀ j, (fun y ↦ w y * ψ j y) = (Metric.ball (0 : Rn N) R).indicator
+      fun y ↦ w y * ψ j y := fun j ↦ funext fun y ↦ by
+    by_cases hy : y ∈ Metric.ball (0 : Rn N) R
+    · rw [indicator_of_mem hy]
+    · rw [indicator_of_notMem hy, hψ0 j y hy, mul_zero]
+  refine tendsto_integral_of_dominated_convergence ((Metric.ball (0 : Rn N) R).indicator
+      fun y ↦ ‖w y‖) (fun j ↦ ?_) ((integrable_indicator_iff hB).2 hw.norm)
+      (fun j ↦ ae_of_all _ fun y ↦ ?_) ?_
+  · -- Measurability: `w` is a.e.-strongly measurable on the ball.
+    rw [hind j, aestronglyMeasurable_indicator_iff hB]
+    exact hw.aestronglyMeasurable.mul (hψm j).restrict
+  · -- Domination by `1_B |w|`.
+    by_cases hy : y ∈ Metric.ball (0 : Rn N) R
+    · rw [indicator_of_mem hy, norm_mul]
+      exact mul_le_of_le_one_right (norm_nonneg _) ((Real.norm_eq_abs _).trans_le (hψ1 j y))
+    · rw [indicator_of_notMem hy, hψ0 j y hy, mul_zero, norm_zero]
+  · -- Pointwise a.e. convergence.
+    filter_upwards [hlim] with y hy
+    exact hy.const_mul (w y)
+
+/-- **`L¹` norm on a ball by duality with `C¹` test functions** (the `L¹`-duality step of the
+mollification proof of Simon Ch. 2, Thm. 2.6, used in Ch. 3, proof of Thm. 4.3): if `w` is
+integrable on `B_R(0)` and `∫ w ψ ≤ M` for every `C¹` function `ψ` with compact support,
+`tsupport ψ ⊆ B_R(0)` and `|ψ| ≤ 1`, then `∫_{B_R(0)} |w| ≤ M`. The test `ψ = 0` settles the
+empty ball `R ≤ 0`. For `R > 0` the sign function `s = 1_{B_R(0)} sgn w` (here `sgn 0 = 1`)
+satisfies `w s = 1_{B_R(0)} |w|`; admissible `ψⱼ → s` a.e.
+(`indCompact_l1Dual_exists_admissible_ae_tendsto`) and dominated convergence
+(`indCompact_l1Dual_tendsto_integral_mul`) give `M ≥ ∫ w ψⱼ → ∫_{B_R(0)} |w|`. -/
+theorem Submission.indCompact_ball_integral_abs_le_of_test_bound : ∀ (N : ℕ) (w : Rn N → ℝ)
+    (R M : ℝ), IntegrableOn w (Metric.ball (0 : Rn N) R) volume →
+    (∀ ψ : Rn N → ℝ, ContDiff ℝ 1 ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ Metric.ball (0 : Rn N) R → (∀ y, |ψ y| ≤ 1) → ∫ y, w y * ψ y ≤ M) →
+    ∫ y in Metric.ball (0 : Rn N) R, |w y| ≤ M := by
+  intro N w R M hw hM
+  rcases le_or_gt R 0 with hR | hR
+  · -- Empty ball: the admissible test `ψ = 0` gives `0 ≤ M`.
+    rw [Metric.ball_eq_empty.2 hR, setIntegral_empty]
+    simpa using hM 0 contDiff_const HasCompactSupport.zero (by simp) (by simp)
+  -- The sign function `s = 1_{B_R(0)} sgn w`: `|s| ≤ 1` and `s = 0` off the ball.
+  obtain ⟨s, hs⟩ : ∃ s : Rn N → ℝ,
+      s = (Metric.ball (0 : Rn N) R).indicator fun y ↦ if 0 ≤ w y then 1 else -1 := ⟨_, rfl⟩
+  have hs_meas : AEStronglyMeasurable s volume := by
+    rw [hs, aestronglyMeasurable_indicator_iff measurableSet_ball]
+    exact ((Measurable.ite measurableSet_Ici measurable_const measurable_const).comp_aemeasurable
+      hw.aestronglyMeasurable.aemeasurable).aestronglyMeasurable
+  have hs_le : ∀ y, |s y| ≤ 1 := by
+    intro y
+    by_cases hy : y ∈ Metric.ball (0 : Rn N) R
+    · rw [hs, indicator_of_mem hy]
+      split_ifs <;> simp
+    · simp [hs, indicator_of_notMem hy]
+  have hs_zero : ∀ y, y ∉ Metric.ball (0 : Rn N) R → s y = 0 := fun y hy ↦ by
+    rw [hs, indicator_of_notMem hy]
+  -- `w s = 1_{B_R(0)} |w|`.
+  have hws : ∫ y, w y * s y = ∫ y in Metric.ball (0 : Rn N) R, |w y| := by
+    rw [← integral_indicator measurableSet_ball]
+    congr 1
+    funext y
+    by_cases hy : y ∈ Metric.ball (0 : Rn N) R
+    · rw [hs, indicator_of_mem hy, indicator_of_mem hy]
+      split_ifs with h
+      · rw [mul_one, abs_of_nonneg h]
+      · rw [mul_neg_one, abs_of_neg (not_le.1 h)]
+    · rw [hs, indicator_of_notMem hy, indicator_of_notMem hy, mul_zero]
+  -- Admissible `ψⱼ → s` a.e., and dominated convergence `∫ w ψⱼ → ∫ w s`.
+  obtain ⟨ψ, hψ, hψc, hψt, hψb, hψs⟩ :=
+    Submission.indCompact_l1Dual_exists_admissible_ae_tendsto N R s hR hs_meas hs_le hs_zero
+  have hlim := Submission.indCompact_l1Dual_tendsto_integral_mul N w s R ψ hw
+    (fun j ↦ (hψ j).continuous.aestronglyMeasurable) hψb
+    (fun j y hy ↦ image_eq_zero_of_notMem_tsupport fun h ↦ hy (hψt j h)) hψs
+  rw [hws] at hlim
+  exact le_of_tendsto' hlim fun j ↦ hM (ψ j) (hψ j) (hψc j) (hψt j) (hψb j)
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
