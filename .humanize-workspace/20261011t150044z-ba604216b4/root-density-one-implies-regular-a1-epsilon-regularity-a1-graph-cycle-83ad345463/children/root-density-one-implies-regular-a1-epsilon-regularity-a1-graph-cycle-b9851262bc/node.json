@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.integer_density-a1.dominated_pullback-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.integer_density-a1",
+  "depth": 5,
+  "title": "Integrality, measurability and local integrability pull back along a parametrization dominated by Hⁿ",
+  "statement": "Let n, P ∈ ℕ, Lⁿ := volume on ℝⁿ = Euclid n, Hⁿ := μHE[n] on ℝ^P = Euclid P, let D ⊆ ℝⁿ be open and Φ : ℝⁿ → ℝ^P continuous on D, and assume the domination (MB): ∫⁻_A f(Φ(v)) dLⁿ(v) ≤ ∫⁻_{Φ(A)} f dHⁿ for every Borel A ⊆ D and every Borel f : ℝ^P → [0, ∞]. Let F : ℝ^P → [0, ∞] be Borel with ∫⁻_{Φ(K)} F dHⁿ ≠ ∞ for every compact K ⊆ D, and let g : ℝ^P → ℝ be a.e.-strongly measurable for Hⁿ⌞Φ(D) such that for Hⁿ⌞Φ(D)-a.e. x, g(x) is an integer and ‖g(x)‖ₑ ≤ F(x). Then G := g∘Φ is locally integrable on D with respect to Lⁿ, and G(v) is an integer for Lⁿ⌞D-a.e. v.",
+  "lean_statement": "∀ (n P : ℕ) (Φ : Euclid n → Euclid P) (D : Set (Euclid n)) (g : Euclid P → ℝ) (F : Euclid P → ℝ≥0∞), IsOpen D → ContinuousOn Φ D → (∀ (A : Set (Euclid n)) (f : Euclid P → ℝ≥0∞), MeasurableSet A → A ⊆ D → Measurable f → ∫⁻ v in A, f (Φ v) ≤ ∫⁻ x in Φ '' A, f x ∂μHE[n]) → Measurable F → (∀ K : Set (Euclid n), IsCompact K → K ⊆ D → ∫⁻ x in Φ '' K, F x ∂μHE[n] ≠ ∞) → AEStronglyMeasurable g (μHE[n].restrict (Φ '' D)) → (∀ᵐ x ∂(μHE[n].restrict (Φ '' D)), (∃ m : ℤ, g x = m) ∧ ‖g x‖ₑ ≤ F x) → LocallyIntegrableOn (fun v => g (Φ v)) D volume ∧ ∀ᵐ v ∂(volume.restrict D), ∃ m : ℤ, g (Φ v) = m",
+  "lean_name": "dgid_dominated_pullback_integer_locallyIntegrable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-b9851262bc-a1"
+}
