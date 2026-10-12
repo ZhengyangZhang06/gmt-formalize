@@ -1,0 +1,153 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.harmonic_approximation-a1.weyl_lemma-a1`
+- Child DAG node: `root.harmonic_approximation-a1.weyl_lemma-a1.mean_value_kernel-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Notation (used throughout). B_s := ball(0,s) (open), B := B_1, |.| the Euclidean norm, <.,.> the inner product of R^n = EuclideanSpace R (Fin n). A test function is zeta in C^infinity(R^n) (ContDiff R (top : N-infinity)) with compact support and tsupport zeta contained in B. (e_i)_{i<n} is the standard orthonormal basis (EuclideanSpace.basisFun). For a function f differentiable at x and v in R^n, Df(x)[v] := fderiv R f x v and d_v f(x) := Df(x)[v]; d_i := d_{e_i}. <grad f(x), v> = Df(x)[v] (gradient is the Riesz transport of fderiv; InnerProductSpace.toDual_symm_apply). D^2 f(x)[a,b] := iteratedFDeriv R 2 f x ![a,b] = (D(Df)(x)[a])[b] (iteratedFDeriv_two_apply). For f in C^2 the Laplacian is Laplacian(f)(x) = sum_i D^2 f(x)[e_i,e_i] (InnerProductSpace.laplacian_eq_iteratedFDeriv_orthonormalBasis with the orthonormal basis (e_i)). Fact (D2): if f is C^2 and e in R^n, the derivative of x -> Df(x)[e] in the direction e equals D^2 f(x)[e,e] (fderiv_clm_apply with the constant vector e, then iteratedFDeriv_two_apply).
+
+Source. This is the parent proof's steps 3 and 4 (a radial mollifier, its potential, and the mean value property proved by integration by parts on R^n), with the rescaling of step 4(c) included so that the conclusion is stated for the scaled kernel t^{-n} rho(y/t) in convolution form.
+
+Proof.
+1. The profile E. For sigma in R let E(sigma) := expNegInvGlue(1 - sigma). Recall expNegInvGlue(s) = 0 for s <= 0 and = exp(-1/s) for s > 0; it is C^infinity (expNegInvGlue.contDiff), nonnegative, and positive for s > 0. Hence E is C^infinity, E >= 0, E(sigma) = 0 for sigma >= 1, E(sigma) > 0 for sigma < 1, and E(0) = exp(-1) > 0.
+
+2. The kernel rho. Let rho0(z) := E(|z|^2). It is C^infinity (z -> |z|^2 is C^infinity, contDiff_norm_sq), rho0 >= 0, rho0(z) = 0 for |z| >= 1, rho0(z) > 0 for |z| < 1, and rho0(-z) = rho0(z). It is continuous with support contained in the compact set closedBall(0,1), hence integrable, and I0 := int rho0 > 0, because rho0 >= 0 and its support is the open unit ball, which has positive Lebesgue measure (integral_pos_iff_support_of_nonneg). Put c := 1/I0 > 0 and rho := c rho0. Then rho is C^infinity, rho >= 0, rho(z) = 0 for |z| >= 1, rho(-z) = rho(z), rho is continuous with compact support, and int rho = 1. The first two claimed properties of rho hold; it remains to prove the mean value identity.
+
+3. The potential Psi. Let P(sigma) := int_1^sigma E(s) ds (interval integral). E is continuous, so P is differentiable with P' = E (FTC, intervalIntegral.integral_hasDerivAt_right); since P' = E is C^infinity, P is C^infinity (contDiff_infty_iff_deriv). For sigma >= 1, P(sigma) = 0 because E vanishes on [1, sigma]. Put Psi(z) := (c/2) P(|z|^2). Then Psi is C^infinity, Psi(z) = 0 for |z| >= 1 (so Psi and its derivatives have compact support), and by the chain rule, using D(|.|^2)(z)[v] = 2<z, v> (HasFDerivAt.norm_sq),
+   DPsi(z)[v] = (c/2) E(|z|^2) 2<z, v> = rho(z) <z, v>.
+In particular d_i Psi(z) = rho(z) z_i with z_i := <z, e_i>.
+
+4. Setting. Fix h in C^2(R^n), x0 in R^n and t > 0 with Laplacian(h)(y) = 0 for every y in closedBall(x0, t). Dh is continuous.
+
+5. FTC along rays. For each z in R^n, sigma -> h(x0 + sigma z) is C^1 on R with derivative Dh(x0 + sigma z)[z] (chain rule). By the fundamental theorem of calculus (intervalIntegral.integral_eq_sub_of_hasDerivAt),
+   h(x0 + t z) - h(x0) = int_0^t Dh(x0 + sigma z)[z] dsigma.
+
+6. Averaging with rho and Fubini. Multiply step 5 by rho(z) and integrate over z in R^n. The left side becomes int rho(z) h(x0 + t z) dz - h(x0) int rho = int rho(z) h(x0 + t z) dz - h(x0) (both integrands continuous with compact support; int rho = 1). On the right, F(sigma, z) := rho(z) Dh(x0 + sigma z)[z] is continuous on R x R^n and vanishes for |z| >= 1. For sigma in [0, t] and |z| <= 1 the point x0 + sigma z lies in the compact set closedBall(x0, t), so |F| <= (sup rho) (sup over closedBall(x0,t) of ||Dh||) on [0, t] x R^n, and F vanishes off [0, t] x closedBall(0,1), a set of finite product measure. Hence F is integrable on [0, t] x R^n and Fubini (integral_integral_swap) gives
+   (6.1) int rho(z) h(x0 + t z) dz - h(x0) = int_{R^n} int_0^t F(sigma,z) dsigma dz = int_0^t I(sigma) dsigma,  where I(sigma) := int rho(z) Dh(x0 + sigma z)[z] dz.
+
+7. I(sigma) = 0 for 0 < sigma <= t. Fix such sigma and put H(z) := h(x0 + sigma z). H is C^2; by the chain rule d_i H(z) = sigma (d_i h)(x0 + sigma z). For second derivatives put h_0(y) := h(x0 + y), so that H = h_0 o (sigma id): ContinuousLinearMap.iteratedFDeriv_comp_right with the linear map sigma id gives D^2 H(z)[a,b] = D^2 h_0(sigma z)[sigma a, sigma b] = sigma^2 D^2 h_0(sigma z)[a,b], and iteratedFDeriv_comp_add_left gives D^2 h_0(sigma z) = D^2 h(x0 + sigma z). Hence D^2 H(z)[e_i,e_i] = sigma^2 D^2 h(x0 + sigma z)[e_i,e_i] and Laplacian(H)(z) = sigma^2 Laplacian(h)(x0 + sigma z).
+Writing z = sum_i z_i e_i and using linearity of Dh(y) and step 3,
+   rho(z) Dh(x0 + sigma z)[z] = sum_i rho(z) z_i (d_i h)(x0 + sigma z) = sigma^{-1} sum_i d_i H(z) d_i Psi(z),
+so I(sigma) = sigma^{-1} sum_i int d_i H(z) d_i Psi(z) dz (each summand is continuous and vanishes for |z| >= 1, hence integrable).
+Integration by parts on R^n (integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable with f = d_i H, g = Psi, direction e_i): f is C^1 because H is C^2, Psi is C^infinity, and the three products f d_i Psi, (d_i f) Psi and f Psi are continuous and vanish for |z| >= 1, hence integrable. It gives int d_i H d_i Psi = - int d_i(d_i H) Psi, and d_i(d_i H)(z) = D^2 H(z)[e_i,e_i] by Fact (D2). Summing over i,
+   I(sigma) = - sigma^{-1} int Laplacian(H)(z) Psi(z) dz = - sigma int Laplacian(h)(x0 + sigma z) Psi(z) dz.
+For every z: either |z| >= 1 and Psi(z) = 0, or |z| < 1, and then |(x0 + sigma z) - x0| = sigma |z| < t, so x0 + sigma z lies in closedBall(x0, t) and Laplacian(h)(x0 + sigma z) = 0. So the integrand vanishes identically and I(sigma) = 0.
+
+8. Hence I = 0 on (0, t], so int_0^t I(sigma) dsigma = 0 (the single point sigma = 0 is Lebesgue-null), and (6.1) gives
+   (8.1) int rho(z) h(x0 + t z) dz = h(x0).
+
+9. Rescaling. Let f(z) := rho(z) h(x0 - t z). By the scaling formula for Lebesgue measure (Measure.integral_comp_inv_smul_of_nonneg, with finrank R^n = n), int f(t^{-1} y) dy = t^n int f(z) dz. Since t (t^{-1} y) = y, f(t^{-1} y) = rho(t^{-1} y) h(x0 - y). Therefore
+   int t^{-n} rho(t^{-1} y) h(x0 - y) dy = int rho(z) h(x0 - t z) dz.
+By invariance of Lebesgue measure under z -> -z (integral_neg_eq_self) and evenness of rho, int rho(z) h(x0 - t z) dz = int rho(-z) h(x0 + t z) dz = int rho(z) h(x0 + t z) dz, which equals h(x0) by (8.1). This is the mean value identity int t^{-n} rho(t^{-1} y) h(x0 - y) dy = h(x0). QED
+
+Formalization note. integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable lives in Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts, which the contract does not import; add that import to GMT/Ch05/Submission.lean (permitted, as in the parent's formalization note). All other lemmas cited above are available under the current imports.
+
+## Key steps
+
+1. rho := c E(|z|^2) with E(sigma) = expNegInvGlue(1 - sigma) and c^{-1} = int E(|z|^2) dz > 0: smooth, even, supported in the closed unit ball, int rho = 1
+2. Potential Psi(z) := (c/2) P(|z|^2) with P' = E, P = 0 on [1, infinity): smooth, compactly supported, d_i Psi(z) = rho(z) z_i
+3. FTC along rays and Fubini: int rho(z) h(x0 + t z) dz - h(x0) = int_0^t I(sigma) dsigma with I(sigma) = int rho(z) Dh(x0 + sigma z)[z] dz
+4. For 0 < sigma <= t, integration by parts against Psi gives I(sigma) = - sigma int Laplacian(h)(x0 + sigma z) Psi(z) dz = 0
+5. Rescale y = t z and use evenness of rho: int t^{-n} rho(y/t) h(x0 - y) dy = int rho(z) h(x0 + t z) dz = h(x0)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; cmp <snapshot>/project/GMT/Ch05/Submission.lean GMT/Ch05/Submission.lean; sha256sum <snapshot>/project/GMT/Ch05/Contract.lean`
+- `rg -l -i "weyl's lemma|weyl lemma|weakly harmonic|weaklyHarmonic|distributional.*harmonic" <snapshot>/mathlib/Mathlib`
+- `rg -l -i "mean.value" <snapshot>/mathlib/Mathlib/Analysis`
+- `rg -l "laplacian" <snapshot>/mathlib/Mathlib | xargs rg -l "convolution"`
+- `rg -l "HarmonicOnNhd" <snapshot>/mathlib/Mathlib; rg -n "HarmonicOnNhd|laplacian" <snapshot>/project/GMT`
+- `rg -n "^theorem|^lemma" <snapshot>/mathlib/Mathlib/Analysis/Complex/Harmonic/MeanValue.lean <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic/HarmonicContOnCl.lean`
+- `grep -n "^theorem\|^lemma\|^noncomputable def\|notation" <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Laplacian.lean <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic/Basic.lean`
+- `grep -rn "theorem _root_.HasCompactSupport.contDiff_convolution_left\|hasFDerivAt_convolution_left\|hasFDerivAt_convolution_right\|contDiff_convolution_right\|theorem convolution_eq_swap\|theorem convolution_assoc\|theorem convolution_symm\|theorem convolution_precompR_apply" <snapshot>/mathlib/Mathlib/Analysis/Convolution.lean <snapshot>/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `grep -n "theorem\|lemma" <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean; grep -n "theorem (normed|nonneg_normed|integral_normed|support_normed_eq|contDiff_normed)" <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `grep -n "^theorem\|^lemma" <snapshot>/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean <snapshot>/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `grep -rn "theorem eqOn_open_of_ae_eq\|theorem integral_comp_inv_smul_of_nonneg\|protected theorem contDiff\|theorem contDiff_norm_sq\|iteratedFDeriv_two_apply\|iteratedFDeriv_comp_sub\|iteratedFDeriv_comp_right\|theorem fderiv_of_notMem_tsupport\|theorem integral_pos_iff_support_of_nonneg\|theorem sum_inner_mul_inner\|theorem ContDiffAt.continuousAt_fderiv" <snapshot>/mathlib/Mathlib`
+- `grep -rhoE '"lean_name": *"[^"]*"' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087 | sort -u (collision check for the six proposed names)`
+- `sed -n 25,135p .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `cmp of 7 consulted Mathlib files in the snapshot vs lake-packages-25730c7c/mathlib; git rev-parse HEAD of the compile-time mathlib package`
+- `lake env lean /tmp/weyl-decomp-check/src/Check2.lean, Check3.lean, Check4.lean, Check5.lean, Check6.lean (against a scratch olean of the frozen GMT/Ch05/Submission.lean)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Laplacian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Distribution/DerivNotation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Complex/Harmonic/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-weyl-lemma-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/tmp/weyl-decomp-check/src/Check2.lean`
+- `/tmp/weyl-decomp-check/src/Check4.lean`
+- `/tmp/weyl-decomp-check/src/Check5.lean`
+- `/tmp/weyl-decomp-check/src/Check6.lean`
+
+Pinned snapshot and compile check:
+- The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d.
+- The workspace Contract.lean and Submission.lean are byte-identical to the snapshot copies (sha256 c966f51efddb5a68ce15ef2a2a322fd9df0ca69da4626c7acef05b05d1691e12).
+- The seven consulted Mathlib files are byte-identical to the compile-time package, whose HEAD is 25730c7c. So the Lean checks below apply to the frozen contract.
+
+No relevant matches:
+- Mathlib has no Weyl lemma and no weakly or distributionally harmonic API.
+- Its only harmonic mean value theorem is the complex-plane circle average (HarmonicOnNhd.circleAverage_eq in Analysis/Complex/Harmonic/MeanValue.lean). The other mean-value hits are calculus mean value theorems. There is no n-dimensional mean value property.
+- No file mentions both laplacian and convolution, so there is no Laplacian-of-convolution lemma.
+- The project's GMT files use HarmonicOnNhd only in the frozen HarmonicApproximationLemma.
+
+Usable API, all checked to exist and to match how the child proofs use it:
+- Harmonic/Basic.lean: HarmonicAt, HarmonicOnNhd, harmonicAt_congr_nhds, HarmonicOnNhd.continuousOn.
+- Laplacian.lean: Laplacian.laplacian on Rn n -> R resolves to InnerProductSpace.instLaplacian (checked by rfl against tensorIteratedFDerivTwo); laplacian_eq_iteratedFDeriv_orthonormalBasis, applied with EuclideanSpace.basisFun.
+- ContDiff/Convolution.lean: HasCompactSupport.contDiff_convolution_right/left and hasFDerivAt_convolution_right/left.
+- Convolution.lean: convolution_def, convolution_eq_swap, convolution_precompR_apply, convolution_assoc, convolution_symm.
+- BumpFunction/Normed.lean and BumpFunction/Convolution.lean: the ContDiffBump.normed API, convolution_tendsto_right_of_continuous, and ae_convolution_tendsto_right_of_locallyIntegrable (K = 2).
+- LineDeriv/IntegrationByParts.lean: integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable, which needs differentiability only on the other factor's tsupport.
+- Distribution/AEEqOfIntegralContDiff.lean: IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero.
+- Measure/OpenPos.lean: Measure.eqOn_open_of_ae_eq.
+- Haar/NormedSpace.lean: Measure.integral_comp_inv_smul_of_nonneg.
+- SmoothTransition.lean: expNegInvGlue.contDiff.
+- FTaylorSeries.lean: iteratedFDeriv_two_apply and iteratedFDeriv_comp_add_left.
+- ContDiff/Basic.lean: ContinuousLinearMap.iteratedFDeriv_comp_right.
+- FDeriv/Const.lean: fderiv_of_notMem_tsupport and HasCompactSupport.fderiv_apply.
+
+Imports:
+- Under the contract's imports, three groups are unreachable: ContDiffBump.normed and its convergence lemmas, integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable, and integral_inner (Check5).
+- Adding Mathlib.Analysis.Calculus.BumpFunction.Convolution and Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts to Submission.lean was checked to suffice. ContinuousLinearMap.integral_comp_comm (innerSL R e) replaces integral_inner and was also checked (Check6). The child proofs record both points.
+
+simongmt: Chapter08/DistributionalConstancy.lean is a usable Lean template for the convolution-derivative and Lebesgue-differentiation steps (WeakDerivativesZero.fderiv_convolution_eq_zero, constancyMollifier with rOut = 2 rIn, ae_constancyMollifier_convolution_tendsto).
+
+Lean evidence:
+- Check4.lean is generated from the exact child type strings. All six types elaborate as GMT.Ch05.Submission.X after import GMT.Ch05.Submission with the contract's opens.
+- Check4 then proves the exact frozen parent type from the six children in nine lines. #print axioms reports propext, Classical.choice, Quot.sound and sorryAx; sorryAx comes only from the stubbed children.
+- Check2.lean type-checks the interface between mollifier_harmonic, mean_value_kernel and local_representative: the kernel scaling satisfies the vanishing hypothesis, HarmonicOnNhd follows from mollifier_harmonic's output, and the MVP applies to the bump mollifications on closedBall(x0, eps).
+
+Name check: none of the six proposed names occurs among the 103 lean_name values in the run's artifacts or the DAG.
+
+Public sources follow the same mollify, mean-value, limit route:
+- Wikipedia, Weyl's lemma (Laplace equation).
+- G. Liang, Weyl's Lemma (Emory notes).
+- V. Sverak, PDE course notes (University of Minnesota).
+- TauCeti PR #14110, which cites Hormander ALPDO I Thm 4.4.1 and Folland Cor. 2.20.
