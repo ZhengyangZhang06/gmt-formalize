@@ -410,6 +410,398 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- The monotonicity identity 3.4 at every centre of a stationary varifold `C` on `ℝ^N` (Simon
+Ch. 8, as used in the proof of 5.5): applying 3.4 with `U = ℝ^N` and `ρ₀ = k + 1` gives `θ_k` with
+`θ_k + ω_n^{-1} ∫_{Gₙ(B_ρ(y))} r^{-n-2}|p_{S^⊥}(x-y)|² dC = μ_C(B_ρ(y))/(ω_n ρ^n)` for
+`0 < ρ < k + 1`.  Limits along `ρ ↓ 0` are unique, so `θ_k = θ_0` and the identity holds for every
+`ρ > 0`; the defect integral is monotone in the ball, so the density ratio is non-decreasing. -/
+theorem Submission.allard_tc_scf_monotonicity_identity :
+    StationaryMonotonicityIdentity → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))), C.Stationary → ∀ y : Euclidean N, (∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ∀ ρ : ℝ, 0 < ρ → θ + (unitBallVolume n)⁻¹ * normalDefect C y (closedBall y ρ) = densityRatio n C.weight y ρ) ∧ MonotoneOn (densityRatio n C.weight y) (Ioi 0) := by
+  intro hSMI N n C hC y
+  -- Step 1: 3.4 with `U = ℝ^N` and `ρ₀ = k + 1`; global stationarity gives the local premise.
+  have hlocal : ∀ k : ℕ, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧
+      ∀ ρ : ℝ, 0 < ρ → ρ < (k : ℝ) + 1 →
+        θ + (unitBallVolume n)⁻¹ * normalDefect C y (closedBall y ρ) =
+          densityRatio n C.weight y ρ := fun k ↦
+    hSMI N n univ C y ((k : ℝ) + 1) (by positivity) (subset_univ _) (fun X _ ↦ hC X)
+  choose θ hθ hid using hlocal
+  -- Step 2: limits along `𝓝[>] 0` are unique, so `θ_k = θ_0`.
+  have hθk : ∀ k, θ k = θ 0 := fun k ↦ tendsto_nhds_unique (hθ k) (hθ 0)
+  -- Step 3: every `ρ > 0` lies below some `k + 1`.
+  have hall : ∀ ρ : ℝ, 0 < ρ →
+      θ 0 + (unitBallVolume n)⁻¹ * normalDefect C y (closedBall y ρ) =
+        densityRatio n C.weight y ρ := by
+    intro ρ hρ
+    obtain ⟨k, hk⟩ := exists_nat_gt ρ
+    rw [← hθk k]
+    exact hid k ρ hρ (by linarith)
+  refine ⟨⟨θ 0, hθ 0, hall⟩, ?_⟩
+  -- Step 4: `B_ρ(y) ⊆ B_ρ'(y)`, and a set lintegral is monotone in the set.
+  intro ρ hρ ρ' hρ' hle
+  rw [← hall ρ hρ, ← hall ρ' hρ']
+  gcongr
+  exact lintegral_mono_set (prod_mono (closedBall_subset_closedBall hle) subset_rfl)
+/-- Density ratios are bounded by the ball-mass constant about `0` (Simon Ch. 8, the display before
+5.5(2)): if `ρ ↦ μ(B_ρ(y))/(ω_n ρ^n)` is non-decreasing on `(0,∞)` for every `y` and
+`μ(B_ρ(0)) = a ω_n ρ^n` for every `ρ > 0`, then for `ρ' ≥ ρ`, using `B_{ρ'}(y) ⊆ B_{ρ'+|y|}(0)`,
+`μ(B_ρ(y))/(ω_n ρ^n) ≤ μ(B_{ρ'}(y))/(ω_n ρ'^n) ≤ a (1 + |y|/ρ')^n → a` as `ρ' → ∞`. -/
+theorem Submission.allard_tc_scf_ratio_le :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (a : ℝ≥0∞), (∀ y : Euclidean N, MonotoneOn (densityRatio n μ y) (Ioi 0)) → (∀ ρ : ℝ, 0 < ρ → μ (closedBall 0 ρ) = a * unitBallVolume n * ENNReal.ofReal ρ ^ n) → ∀ (y : Euclidean N) (ρ : ℝ), 0 < ρ → densityRatio n μ y ρ ≤ a := by
+  intro N n μ a hmono hball y ρ hρ
+  -- Step 1: `ω_n ∈ (0, ∞)`.
+  have hω₀ : unitBallVolume n ≠ 0 := (Metric.measure_ball_pos volume _ one_pos).ne'
+  have hω : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- Steps 2–4: for every `ρ' ≥ ρ`, `R(y, ρ) ≤ R(y, ρ') ≤ a (1 + |y|/ρ')^n`.
+  have hbound : ∀ ρ' : ℝ, ρ ≤ ρ' →
+      densityRatio n μ y ρ ≤ a * ENNReal.ofReal ((1 + ‖y‖ / ρ') ^ n) := by
+    intro ρ' hρρ'
+    have hρ' : 0 < ρ' := hρ.trans_le hρρ'
+    have hsub : closedBall y ρ' ⊆ closedBall 0 (ρ' + ‖y‖) :=
+      closedBall_subset_closedBall' (by rw [dist_zero_right])
+    have hmass : μ (closedBall y ρ') ≤ a * unitBallVolume n * ENNReal.ofReal (ρ' + ‖y‖) ^ n :=
+      (measure_mono hsub).trans_eq (hball _ (by positivity))
+    calc densityRatio n μ y ρ ≤ densityRatio n μ y ρ' := hmono y hρ hρ' hρρ'
+      _ ≤ a * unitBallVolume n * ENNReal.ofReal (ρ' + ‖y‖) ^ n /
+            (unitBallVolume n * ENNReal.ofReal ρ' ^ n) := ENNReal.div_le_div_right hmass _
+      _ = a * (ENNReal.ofReal (ρ' + ‖y‖) ^ n / ENNReal.ofReal ρ' ^ n) := by
+        rw [mul_comm a, mul_assoc, ENNReal.mul_div_mul_left _ _ hω₀ hω, mul_div_assoc]
+      _ = a * ENNReal.ofReal ((1 + ‖y‖ / ρ') ^ n) := by
+        rw [← ENNReal.ofReal_pow (by positivity), ← ENNReal.ofReal_pow hρ'.le,
+          ← ENNReal.ofReal_div_of_pos (pow_pos hρ' n), ← div_pow, add_div, div_self hρ'.ne']
+  -- Step 6: `a (1 + |y|/ρ')^n → a` as `ρ' → ∞`.
+  have hlim : Tendsto (fun ρ' : ℝ ↦ a * ENNReal.ofReal ((1 + ‖y‖ / ρ') ^ n)) atTop (𝓝 a) := by
+    have h : Tendsto (fun ρ' : ℝ ↦ (1 + ‖y‖ / ρ') ^ n) atTop (𝓝 ((1 + 0) ^ n)) :=
+      (tendsto_const_nhds.add (tendsto_const_nhds.div_atTop tendsto_id)).pow n
+    rw [add_zero, one_pow] at h
+    have h' := ENNReal.Tendsto.const_mul (a := a) (ENNReal.tendsto_ofReal h)
+      (Or.inl (by rw [ENNReal.ofReal_one]; exact one_ne_zero))
+    rwa [ENNReal.ofReal_one, mul_one] at h'
+  -- Steps 5 and 7: `R(y, ρ)` is eventually below a quantity tending to `a`.
+  exact ge_of_tendsto hlim ((eventually_ge_atTop ρ).mono hbound)
+/-- Density ratios at points of `spt μ` are bounded below by an a.e. lower bound of the density
+(the step "(and hence for every `y ∈ spt μ_C` by 3.4)" after Simon Ch. 8, 5.5(7)): if `μ` is finite
+on closed balls, `ρ ↦ R(x, ρ) = μ(B_ρ(x))/(ω_n ρ^n)` is non-decreasing on `(0, ∞)` for every `x`
+and `Θ^n(μ, x) ≥ a` for `μ`-a.e. `x`, then `a ≤ R(y, ρ)` for `y ∈ spt μ` and `ρ > 0`.  Each open
+ball of radius `1/(k+1)` about `y` contains a point `y_k` with
+`a ≤ Θ^n(μ, y_k) ≤ R(y_k, ρ) ≤ μ(B_{ρ+1/(k+1)}(y))/(ω_n ρ^n)`, and continuity from above for the
+decreasing closed balls `B_{ρ+1/(k+1)}(y)` lets `k → ∞`. -/
+theorem Submission.allard_tc_scf_ratio_ge_on_support :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (a : ℝ≥0∞), (∀ (y : Euclidean N) (ρ : ℝ), μ (closedBall y ρ) ≠ ∞) → (∀ y : Euclidean N, MonotoneOn (densityRatio n μ y) (Ioi 0)) → (∀ᵐ y ∂μ, ∃ θ : ℝ≥0∞, HasDensity n μ y θ ∧ a ≤ θ) → ∀ y ∈ μ.support, ∀ ρ : ℝ, 0 < ρ → a ≤ densityRatio n μ y ρ := by
+  intro N n μ a hfin hmono hae y hy ρ hρ
+  -- Step 1: `c = ω_n ρ^n ∈ (0, ∞)`.
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+  have hωt : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hc0 : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ 0 :=
+    mul_ne_zero hω0 (pow_ne_zero _ (ENNReal.ofReal_pos.2 hρ).ne')
+  have hct : unitBallVolume n * ENNReal.ofReal ρ ^ n ≠ ∞ :=
+    ENNReal.mul_ne_top hωt (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+  -- Step 2: the density at any point is at most its density ratio at radius `ρ`.
+  have hdens : ∀ (x : Euclidean N) (θ : ℝ≥0∞), HasDensity n μ x θ →
+      θ ≤ densityRatio n μ x ρ := by
+    intro x θ hx
+    refine le_of_tendsto hx ?_
+    filter_upwards [Ioo_mem_nhdsGT hρ] with s hs
+    exact hmono x hs.1 hρ hs.2.le
+  -- Steps 3–5: a point `z ∈ B°_{1/(k+1)}(y)` of density `θ ≥ a` exists since `y ∈ spt μ`, and
+  -- `a ≤ θ ≤ R(z, ρ) ≤ μ(B_{ρ+1/(k+1)}(y))/c`.
+  have hk : ∀ k : ℕ, a * (unitBallVolume n * ENNReal.ofReal ρ ^ n) ≤
+      μ (closedBall y (ρ + 1 / ((k : ℝ) + 1))) := by
+    intro k
+    have hr : (0 : ℝ) < 1 / ((k : ℝ) + 1) := Nat.one_div_pos_of_nat
+    obtain ⟨z, hz, θ, hzθ, haθ⟩ : ∃ z ∈ ball y (1 / ((k : ℝ) + 1)), ∃ θ : ℝ≥0∞,
+        HasDensity n μ z θ ∧ a ≤ θ := by
+      by_contra hcon
+      have h0 : μ (ball y (1 / ((k : ℝ) + 1))) = 0 :=
+        measure_mono_null (fun z hz hzθ ↦ hcon ⟨z, hz, hzθ⟩) (ae_iff.1 hae)
+      exact ((Measure.mem_support_iff_forall y).1 hy _ (ball_mem_nhds y hr)).ne' h0
+    rw [← ENNReal.le_div_iff_mul_le (Or.inl hc0) (Or.inl hct)]
+    calc a ≤ θ := haθ
+      _ ≤ densityRatio n μ z ρ := hdens z θ hzθ
+      _ ≤ μ (closedBall y (ρ + 1 / ((k : ℝ) + 1))) /
+          (unitBallVolume n * ENNReal.ofReal ρ ^ n) :=
+        ENNReal.div_le_div_right (measure_mono (closedBall_subset_closedBall'
+          (add_le_add le_rfl (mem_ball.1 hz).le))) _
+  -- Step 6: continuity from above for the decreasing closed balls `B_{ρ+1/(k+1)}(y)`.
+  have hinter : (⋂ k : ℕ, closedBall y (ρ + 1 / ((k : ℝ) + 1))) = closedBall y ρ := by
+    ext z
+    simp only [mem_iInter, mem_closedBall]
+    refine ⟨fun h ↦ ?_, fun h k ↦ h.trans (le_add_of_nonneg_right Nat.one_div_pos_of_nat.le)⟩
+    by_contra hlt
+    obtain ⟨k, hk⟩ := exists_nat_one_div_lt (sub_pos.2 (not_le.1 hlt))
+    linarith [h k]
+  have htend : Tendsto (fun k : ℕ ↦ μ (closedBall y (ρ + 1 / ((k : ℝ) + 1)))) atTop
+      (𝓝 (μ (closedBall y ρ))) := by
+    rw [← hinter]
+    exact tendsto_measure_iInter_atTop (fun _ ↦ measurableSet_closedBall.nullMeasurableSet)
+      (fun i j hij ↦ closedBall_subset_closedBall
+        (add_le_add le_rfl (Nat.one_div_le_one_div hij))) ⟨0, hfin _ _⟩
+  -- Step 7: pass to the limit and divide by `c`.
+  exact (ENNReal.le_div_iff_mul_le (Or.inl hc0) (Or.inl hct)).2 (ge_of_tendsto' htend hk)
+/-- Vanishing normal defect about `y` gives `x - y ∈ S` at every `(x, S) ∈ spt V` (Simon Ch. 8,
+proof of 5.5, p. 217, display (8)): if `∫_{Gₙ(B_ρ(y))} |x - y|^{-n-2} |p_{S^⊥}(x - y)|² dV = 0` for
+every `ρ > 0`, then `p_{S^⊥}(x - y) = 0` for `V`-a.e. `(x, S)`, hence, by continuity of
+`p_{S^⊥}(x - y)` in `(x, S)`, at every point of `spt V`. -/
+theorem Submission.allard_tc_scf_zero_defect_mem_plane :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (y : Euclidean N), (∀ ρ : ℝ, 0 < ρ → normalDefect V y (closedBall y ρ) = 0) → ∀ z ∈ V.measure.support, z.1 - y ∈ z.2.plane := by
+  intro N n U V y h z hz
+  -- Step 1: `(S, v) ↦ p_S(v)` is continuous (`S ↦ p_S` is the restriction to `G(N,n)` of a linear
+  -- map on the finite-dimensional matrix space), so `w(x, S) = (x - y) - p_S(x - y)` is too.
+  let Φ : Matrix (Fin N) (Fin N) ℝ →ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N) :=
+    (LinearMap.toContinuousLinearMap :
+        (Euclidean N →ₗ[ℝ] Euclidean N) ≃ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N)).toLinearMap.comp
+      (LinearMap.toMatrix Grassmannian.coordinateBasis.toBasis
+        Grassmannian.coordinateBasis.toBasis).symm.toLinearMap
+  have hp : Continuous (fun p : Grassmannian N n × Euclidean N ↦ Grassmannian.project p.1 p.2) :=
+    (Φ.continuous_of_finiteDimensional.comp (continuous_subtype_val.comp continuous_fst)).clm_apply
+      continuous_snd
+  have hg : Continuous (fun z : Euclidean N × Grassmannian N n ↦ (z.2, z.1 - y)) :=
+    continuous_snd.prodMk (continuous_fst.sub continuous_const)
+  have hpg := hp.comp hg
+  have hw : Continuous (fun z : Euclidean N × Grassmannian N n ↦
+      (z.1 - y) - Grassmannian.project z.2 (z.1 - y)) :=
+    (continuous_fst.sub continuous_const).sub hpg
+  -- Step 2: the defect integrand is measurable.
+  have hmeas : Measurable (fun z : Euclidean N × Grassmannian N n ↦
+      ENNReal.ofReal (‖(z.1 - y) - Grassmannian.project z.2 (z.1 - y)‖ ^ 2 /
+        ‖z.1 - y‖ ^ (n + 2))) :=
+    ENNReal.measurable_ofReal.comp ((hw.norm.pow 2).measurable.div
+      ((continuous_fst.sub continuous_const).norm.pow (n + 2)).measurable)
+  -- Steps 3–4: for each `k`, `w = 0` at `V`-a.e. point of `B_{k+1}(y) × G(N,n)`.
+  have hball : ∀ k : ℕ, ∀ᵐ z ∂V.measure,
+      z ∈ closedBall y ((k : ℝ) + 1) ×ˢ (univ : Set (Grassmannian N n)) →
+        (z.1 - y) - Grassmannian.project z.2 (z.1 - y) = 0 := by
+    intro k
+    have h0 := (lintegral_eq_zero_iff hmeas).mp (h ((k : ℝ) + 1) (by positivity))
+    filter_upwards [(ae_restrict_iff' (measurableSet_closedBall.prod MeasurableSet.univ)).mp h0]
+      with z hzero hzk
+    by_cases hzy : z.1 - y = 0
+    · -- At `x = y`: `w = 0 - p_S(0) = 0`.
+      rw [hzy, sub_eq_zero]
+      exact (map_zero z.2.projectionLinearMap).symm
+    · -- Off `x = y`: `|w|² / |x - y|^{n+2} ≤ 0` with a positive denominator, so `|w|² ≤ 0`.
+      have hpos : 0 < ‖z.1 - y‖ ^ (n + 2) := pow_pos (norm_pos_iff.mpr hzy) _
+      have hle := ENNReal.ofReal_eq_zero.mp (hzero hzk)
+      rw [div_le_iff₀ hpos, zero_mul] at hle
+      exact norm_eq_zero.mp ((pow_eq_zero_iff two_ne_zero).mp (le_antisymm hle (sq_nonneg _)))
+  -- Step 5: the balls `B_{k+1}(y)` exhaust `ℝ^N`, so `w = 0` `V`-a.e.
+  have hae : ∀ᵐ z ∂V.measure, (z.1 - y) - Grassmannian.project z.2 (z.1 - y) = 0 := by
+    filter_upwards [ae_all_iff.mpr hball] with z hzero
+    obtain ⟨k, hk⟩ := exists_nat_ge ‖z.1 - y‖
+    refine hzero k ⟨?_, mem_univ _⟩
+    rw [mem_closedBall, dist_eq_norm]
+    linarith
+  -- Step 6: `{w = 0}` is closed and of full measure, so it contains `spt V`.
+  have hz0 : (z.1 - y) - Grassmannian.project z.2 (z.1 - y) = 0 :=
+    Measure.support_subset_of_isClosed (isClosed_eq hw continuous_const) hae hz
+  -- Step 7: `p_S(x - y) = x - y`, so `x - y` lies in the range of `p_S`, which is `S.plane`.
+  exact ⟨z.1 - y, (sub_eq_zero.mp hz0).symm⟩
+/-- A linear subspace `P` of `ℝ^N` with `dim P = n` is an `n`-dimensional `C²` submanifold in
+Simon's sense (Ch. 2, §4), so the Constancy Theorem 4.1 applies with `M = P` (step 7(b) of the proof
+that a stationary cone with density `≥ θ₀` a.e. is `θ₀ v(T)`, used for Simon Ch. 8, 5.5): a linear
+isometry `J : ℝ^n → ℝ^N` with range `P` is a single global chart `(ℝ^n, ℝ^N, J)`. -/
+theorem Submission.allard_tc_scf_subspace_submanifold :
+    ∀ (N n : ℕ) (P : Submodule ℝ (Euclidean N)), Module.finrank ℝ P = n → Chapter02.IsSimonSubmanifold (E := Euclidean n) 2 (P : Set (Euclidean N)) := by
+  intro N n P hP
+  -- Step 1: a linear isometry `J : ℝ^n → ℝ^N` with range `P`, from an orthonormal basis of `P`
+  -- indexed by `Fin n`.
+  let b : OrthonormalBasis (Fin n) ℝ P := (stdOrthonormalBasis ℝ P).reindex (finCongr hP)
+  let e : Euclidean n ≃ₗᵢ[ℝ] P := b.repr.symm
+  let J : Euclidean n →L[ℝ] Euclidean N := P.subtypeL.comp (e : Euclidean n →L[ℝ] P)
+  have hJ : Isometry J :=
+    AddMonoidHomClass.isometry_of_norm J fun x ↦ (Submodule.norm_coe (e x)).trans (e.norm_map x)
+  have hrange : range J = (P : Set (Euclidean N)) := by
+    ext w
+    constructor
+    · rintro ⟨x, rfl⟩
+      exact (e x).2
+    · intro hw
+      exact ⟨e.symm ⟨w, hw⟩, by simp [J]⟩
+  -- Steps 2–3: `1 ≤ 2`, and the single global chart `(V', W, φ) = (ℝ^n, ℝ^N, J)` at every `y ∈ P`.
+  refine ⟨by norm_num, fun y _ ↦ ⟨univ, univ, J, mem_univ y, isOpen_univ, isOpen_univ,
+    J.contDiff.contDiffOn, hJ.injective.injOn, ?_, ?_, ?_⟩⟩
+  · -- (d) `J(ℝ^n) = range J = P = ℝ^N ∩ P`.
+    rw [image_univ, hrange, univ_inter]
+  · -- (e) `J` is proper: an isometry is a closed embedding, so compact sets have compact preimages.
+    intro K hK _
+    rw [univ_inter]
+    exact hJ.isClosedEmbedding.isCompact_preimage hK
+  · -- (f) `DJ(x) = J` is injective.
+    intro x _
+    rw [J.fderiv]
+    exact hJ.injective
+/-- **Simon Ch. 8, proof of 5.5, p. 215, the plane's classical tangent space** (child
+`subspace_tangent` of `stationary_cone_flat`, step 7): for a linear subspace `P` of `ℝ^N` and
+`y ∈ P`, the classical tangent space `T_y P` (Ch. 2, §4) is `P` itself. A velocity `γ'(0)` is the
+limit of the difference quotients `t⁻¹(γ(t) - y) ∈ P` and `P` is closed (finite-dimensional);
+conversely `ξ ∈ P` is the velocity of the line `s ↦ y + sξ`, which stays in `P`. -/
+theorem Submission.allard_tc_scf_subspace_classical_tangent :
+    ∀ (N : ℕ) (P : Submodule ℝ (Euclidean N)) (y : Euclidean N), y ∈ P →
+      classicalTangentSpace (P : Set (Euclidean N)) y = (P : Set (Euclidean N)) := by
+  intro N P y hy
+  ext ξ
+  constructor
+  · rintro ⟨γ, -, hγP, hγ0, hγ⟩
+    -- `t⁻¹ • (γ t - γ 0) → ξ` as `t → 0`, `t ≠ 0`; for `t ∈ (-1,1)` these quotients lie in `P`,
+    -- and `P` is closed.
+    refine P.closed_of_finiteDimensional.mem_of_tendsto hγ.tendsto_slope_zero ?_
+    filter_upwards [mem_nhdsWithin_of_mem_nhds (Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0) one_pos)]
+      with t ht
+    rw [zero_add, hγ0]
+    exact P.smul_mem _ (P.sub_mem (hγP ht) hy)
+  · intro hξ
+    -- The line `s ↦ y + s • ξ` lies in `P` and has velocity `ξ`.
+    refine ⟨fun s ↦ y + s • ξ, ?_, fun s _ ↦ P.add_mem hy (P.smul_mem s hξ), by simp, ?_⟩
+    · exact (contDiff_const.add (contDiff_id.smul contDiff_const)).contDiffOn
+    · simpa using ((hasDerivAt_id (0 : ℝ)).smul_const ξ).const_add y
+/-- **Simon Ch. 8, 4.1 for a plane** (child `constancy_plane` of `stationary_cone_flat`; the step
+"`C = θ₀ v(T)` by Constancy 4.1" in the proof of 5.5): a stationary `n`-varifold `C` on `ℝ^N` with
+`spt μ_C ⊆ T` is `θ v(T)` for a constant `θ ≥ 0`.  `ConstancyTheorem` applies with `U = ℝ^N` and
+`M = T`: `T` is a `C²` submanifold (`allard_tc_scf_subspace_submanifold`) and `T ∩ ℝ^N = T` is
+convex, hence connected.  Since `T_x T = T` (`allard_tc_scf_subspace_classical_tangent`) and a point
+of `G(N,n)` is determined by its plane, the constancy set of `A` is `{x ∈ T : (x, T) ∈ A}`, whose
+`H^n`-measure is `v(T)(A)`. -/
+theorem Submission.allard_tc_scf_constancy_plane :
+    ConstancyTheorem → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N)))
+      (T : Grassmannian N n), C.Stationary → C.weight.support ⊆ (T.plane : Set (Euclidean N)) →
+      ∃ θ : ℝ, 0 ≤ θ ∧ C.measure = ENNReal.ofReal θ • planeVarifoldMeasure T := by
+  intro hconst N n C T hC hspt
+  obtain ⟨θ, hθ, hA⟩ := hconst N n univ C (T.plane : Set (Euclidean N)) hC
+    (Submission.allard_tc_scf_subspace_submanifold N n T.plane T.finrank_plane)
+    (fun x hx ↦ hspt hx.2)
+    (by rw [inter_univ]; exact T.plane.convex.isPreconnected)
+  refine ⟨θ, hθ, Measure.ext fun A hA' ↦ ?_⟩
+  have hmeas : Measurable fun y : Euclidean N ↦ (y, T) := measurable_prodMk_right
+  rw [hA A hA', Measure.smul_apply, smul_eq_mul, planeVarifoldMeasure,
+    Measure.map_apply hmeas hA', Measure.restrict_apply (hmeas hA')]
+  -- The constancy set of `A` is `{x ∈ T : (x, T) ∈ A}`.
+  congr 2
+  ext x
+  simp only [mem_ofPred_eq, mem_inter_iff, mem_preimage, mem_univ, and_true, SetLike.mem_coe]
+  constructor
+  · rintro ⟨hx, S, hS, hxS⟩
+    rw [Submission.allard_tc_scf_subspace_classical_tangent N T.plane x hx] at hS
+    -- A point of `G(N,n)` is determined by its plane: `S = ofSubmodule S.plane = T`.
+    have hST : S = T := by
+      rw [← S.ofSubmodule_plane, ← T.ofSubmodule_plane]
+      congr 1
+      exact SetLike.coe_injective hS
+    rw [hST] at hxS
+    exact ⟨hxS, hx⟩
+  · rintro ⟨hxT, hx⟩
+    exact ⟨hx, T, (Submission.allard_tc_scf_subspace_classical_tangent N T.plane x hx).symm, hxT⟩
+/-- The plane varifold `v(T)` of an `n`-plane `T ∈ G(N,n)` has mass `ω_n r^n` over the cylinder
+`B_r(0) × G(N,n)` (step 8 of the proof that a stationary cone with density `≥ θ₀` a.e. is `θ₀ v(T)`,
+used for Simon Ch. 8, 5.5): `v(T)(B_r(0) × G(N,n)) = H^n(B_r(0) ∩ T)`, and `H^n` is transported to
+Lebesgue measure on `ℝ^n` along an isometric parametrization of `T`. -/
+theorem Submission.allard_tc_scf_plane_ball_mass :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (r : ℝ), 0 < r → planeVarifoldMeasure T (closedBall (0 : Euclidean N) r ×ˢ (univ : Set (Grassmannian N n))) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n T r hr
+  -- Step 1: `v(T)(B_r(0) × G(N,n)) = H^n(B_r(0) ∩ T)`, by `map_apply` and `restrict_apply`.
+  rw [planeVarifoldMeasure, Measure.map_apply measurable_prodMk_right
+      (measurableSet_closedBall.prod MeasurableSet.univ), mk_preimage_prod_left (mem_univ T),
+    Measure.restrict_apply measurableSet_closedBall]
+  -- Step 2: a linear isometry `J : ℝ^n → ℝ^N` with range `T`, from an orthonormal basis of `T`
+  -- indexed by `Fin n`.
+  let b : OrthonormalBasis (Fin n) ℝ T.plane :=
+    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr T.finrank_plane)
+  let J : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
+    T.plane.subtypeₗᵢ.comp b.repr.symm.toLinearIsometry
+  have hrange : range J = (T.plane : Set (Euclidean N)) := by
+    ext w
+    constructor
+    · rintro ⟨x, rfl⟩
+      exact (b.repr.symm x).2
+    · intro hw
+      exact ⟨b.repr ⟨w, hw⟩, by simp [J]⟩
+  -- Step 3: `H^n(B_r(0) ∩ T) = H^n(J⁻¹(B_r(0)))` and `J⁻¹(B_r(0)) = B_r(0) ⊆ ℝ^n`.
+  have hpre : J ⁻¹' closedBall 0 r = closedBall 0 r := by
+    ext x
+    simp
+  rw [← hrange, ← J.isometry.euclideanHausdorffMeasure_preimage, hpre]
+  -- Steps 4–6: `H^n` is Lebesgue measure on `ℝ^n` and `vol(B_r(0)) = ω_n r^n`.
+  rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr.le,
+    finrank_euclideanSpace_fin, ENNReal.ofReal_pow hr.le, unitBallVolume, mul_comm]
+/-- **Simon Ch. 8, proof of 5.5, pp. 216–217: a stationary cone with density `≥ θ₀` a.e. is
+`θ₀ v(T)`.** Let `C` be a stationary `n`-varifold on `ℝ^N` with `μ_C(B_ρ(0)) = θ₀ ω_n ρ^n` for every
+`ρ > 0` (printed (1)) and `Θ^n(μ_C, y) ≥ θ₀` for `μ_C`-a.e. `y` (printed (7)). By 3.4 at every
+centre, `R(y, ρ) = μ_C(B_ρ(y))/(ω_n ρ^n) ≤ θ₀` for all `y` (printed (2)) and `R(y, ρ) ≥ θ₀` for
+`y ∈ spt μ_C`, so `Θ^n(μ_C, y) = θ₀` and the normal defect about `y` vanishes; hence `x - y ∈ S` for
+`y ∈ spt μ_C` and `(x, S) ∈ spt C` (printed (8)). As `0 ∈ spt μ_C = π(spt C)`, some `(0, T)` lies in
+`spt C`, so `spt μ_C ⊆ T`; Constancy 4.1 gives `C = θ v(T)`, and the mass of `B_1(0)` gives
+`θ = θ₀`. -/
+theorem Submission.allard_tc_stationary_cone_flat :
+    StationaryMonotonicityIdentity → ConstancyTheorem → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))) (θ₀ : ℝ), 0 < θ₀ → C.Stationary → (∀ ρ : ℝ, 0 < ρ → C.weight (closedBall 0 ρ) = ENNReal.ofReal θ₀ * unitBallVolume n * ENNReal.ofReal ρ ^ n) → (∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal θ₀ ≤ θ) → ∃ T : Grassmannian N n, C.measure = ENNReal.ofReal θ₀ • planeVarifoldMeasure T := by
+  intro hSMI hconst N n C θ₀ hθ₀ hC hball hae
+  -- Step 0: `θ₀` and `ω_n` lie in `(0, ∞)`.
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+  have hωt : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have ha0 : ENNReal.ofReal θ₀ ≠ 0 := (ENNReal.ofReal_pos.2 hθ₀).ne'
+  -- Step 1: the monotonicity identity 3.4 at every centre; density ratios are non-decreasing.
+  have hMI := Submission.allard_tc_scf_monotonicity_identity hSMI N n C hC
+  have hmono : ∀ y, MonotoneOn (densityRatio n C.weight y) (Ioi 0) := fun y ↦ (hMI y).2
+  -- Step 2: `R(y, ρ) ≤ θ₀` everywhere (printed (2)) and `θ₀ ≤ R(y, ρ)` on `spt μ_C` (by (7)).
+  have hle := Submission.allard_tc_scf_ratio_le N n C.weight (ENNReal.ofReal θ₀) hmono hball
+  have hge := Submission.allard_tc_scf_ratio_ge_on_support N n C.weight (ENNReal.ofReal θ₀)
+    (fun y ρ ↦ C.weight_finite_on_compact _ (isCompact_closedBall y ρ) (subset_univ _)) hmono hae
+  -- Step 3: at `y ∈ spt μ_C`, `R(y, ·) ≡ θ₀`, so `Θ^n(μ_C, y) = θ₀` and 3.4 reads
+  -- `θ₀ + ω_n⁻¹ D_y(ρ) = θ₀`; as `θ₀ < ∞` and `ω_n⁻¹ ≠ 0`, the normal defect `D_y(ρ)` vanishes.
+  have hdefect : ∀ y ∈ C.weight.support, ∀ ρ : ℝ, 0 < ρ →
+      normalDefect C y (closedBall y ρ) = 0 := by
+    intro y hy ρ hρ
+    obtain ⟨θ, hθ, hid⟩ := (hMI y).1
+    have hR : ∀ r : ℝ, 0 < r → densityRatio n C.weight y r = ENNReal.ofReal θ₀ := fun r hr ↦
+      le_antisymm (hle y r hr) (hge y hy r hr)
+    have hθa : θ = ENNReal.ofReal θ₀ := by
+      refine tendsto_nhds_unique hθ (tendsto_const_nhds.congr' ?_)
+      filter_upwards [self_mem_nhdsWithin] with r hr
+      exact (hR r hr).symm
+    have h := hid ρ hρ
+    rw [hθa, hR ρ hρ, ← add_zero (ENNReal.ofReal θ₀), add_assoc, zero_add,
+      ENNReal.add_right_inj ENNReal.ofReal_ne_top] at h
+    exact (mul_eq_zero.1 h).resolve_left (ENNReal.inv_ne_zero.2 hωt)
+  -- Step 4: printed (8), `x - y ∈ S` for `y ∈ spt μ_C` and `(x, S) ∈ spt C`.
+  have h8 : ∀ y ∈ C.weight.support, ∀ z ∈ C.measure.support, z.1 - y ∈ z.2.plane :=
+    fun y hy ↦ Submission.allard_tc_scf_zero_defect_mem_plane N n univ C y (hdefect y hy)
+  -- Step 5: `0 ∈ spt μ_C`, since every ball about `0` has mass `θ₀ ω_n ρ^n > 0`.
+  have h0 : (0 : Euclidean N) ∈ C.weight.support := by
+    rw [Measure.mem_support_iff_forall]
+    intro s hs
+    obtain ⟨ε, hε, hεs⟩ := Metric.mem_nhds_iff.1 hs
+    refine lt_of_lt_of_le ?_ (measure_mono ((closedBall_subset_ball (half_lt_self hε)).trans hεs))
+    rw [hball _ (half_pos hε)]
+    exact pos_iff_ne_zero.2 (mul_ne_zero (mul_ne_zero ha0 hω0)
+      (pow_ne_zero _ (ENNReal.ofReal_pos.2 (half_pos hε)).ne'))
+  -- Step 6: `spt μ_C ⊆ π(spt C)`, as `π(spt C)` is closed (`G(N,n)` is compact) and `μ_C`-conull;
+  -- so some `(0, T)` lies in `spt C`.
+  obtain ⟨T, hT⟩ : ∃ T : Grassmannian N n, ((0 : Euclidean N), T) ∈ C.measure.support := by
+    have hc : IsClosed (Prod.fst '' C.measure.support) :=
+      isClosedMap_fst_of_compactSpace _ C.measure.isClosed_support
+    have hsub : C.weight.support ⊆ Prod.fst '' C.measure.support := by
+      refine Measure.support_subset_of_isClosed hc ?_
+      change ∀ᵐ x ∂C.measure.map Prod.fst, x ∈ Prod.fst '' C.measure.support
+      refine (ae_map_iff measurable_fst.aemeasurable hc.measurableSet).2 ?_
+      filter_upwards [C.measure.support_mem_ae] with z hz
+      exact mem_image_of_mem Prod.fst hz
+    obtain ⟨⟨x, S⟩, hS, hx⟩ := hsub h0
+    obtain rfl : x = 0 := hx
+    exact ⟨S, hS⟩
+  -- Step 7: `spt μ_C ⊆ T`, since (8) at `(x, S) = (0, T)` gives `-y ∈ T`.
+  have hspt : C.weight.support ⊆ (T.plane : Set (Euclidean N)) := by
+    intro y hy
+    have h : (0 : Euclidean N) - y ∈ T.plane := h8 y hy ((0 : Euclidean N), T) hT
+    rw [zero_sub] at h
+    simpa using T.plane.neg_mem h
+  -- Step 8: Constancy 4.1 gives `C = θ v(T)` with `θ ≥ 0`.
+  obtain ⟨θ, -, hCθ⟩ := Submission.allard_tc_scf_constancy_plane hconst N n C T hC hspt
+  -- Step 9: `μ_C(B_1(0)) = θ ω_n = θ₀ ω_n` and `ω_n ∈ (0, ∞)`, so `θ = θ₀`.
+  have h1 := hball 1 one_pos
+  rw [C.weight_apply measurableSet_closedBall, hCθ, Measure.smul_apply, smul_eq_mul,
+    Submission.allard_tc_scf_plane_ball_mass N n T 1 one_pos, ENNReal.ofReal_one, one_pow,
+    mul_one, mul_one, ENNReal.mul_left_inj hω0 hωt] at h1
+  exact ⟨T, by rw [hCθ, h1]⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
