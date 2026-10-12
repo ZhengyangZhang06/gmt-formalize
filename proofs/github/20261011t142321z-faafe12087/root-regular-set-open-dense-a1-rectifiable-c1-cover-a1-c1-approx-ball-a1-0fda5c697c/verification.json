@@ -1,0 +1,19 @@
+{
+  "node_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1223",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "ddc0d2c5f914269a4fce2ff017c2c3defba613c9",
+  "integrated_commit": "",
+  "proof_base_commit": "28fd9be0e269b4bccbc98308893373567357b94b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1",
+  "requires": [
+    "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1.clm_lusin_closed-a1",
+    "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1.uniform_taylor_remainder-a1",
+    "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1.whitney_c1_extension-a1"
+  ]
+}
