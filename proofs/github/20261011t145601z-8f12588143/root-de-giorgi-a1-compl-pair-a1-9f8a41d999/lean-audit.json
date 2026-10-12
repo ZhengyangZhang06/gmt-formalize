@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a59a248c4842c05e6cf8395abe791be2dbb214b3206e79eedb482a16dadc8e2f",
+  "git_delta": {
+    "base_commit": "e155cfc4aa2b59309b4ef86f5dc385d54ba2cbd5",
+    "candidate_commit": "d5241fac9935b31fb0726fa51730e5a71aa48273",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgi_gaussGreenPair_compl",
+    "diff_sha256": "56ad3666f6db6718ad158422f5a72574d9502716e92124e4e2264463b4c41cdd",
+    "source_sha256": "62f383d376be0d7bf202169839c255d6f57c20ef3ba1072200885290ab9f9ced",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgi_gaussGreenPair_compl",
+      "statement": "∀ (N : ℕ) (U E : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → IsGaussGreenPair U (U \\ E) μ (-ν)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
