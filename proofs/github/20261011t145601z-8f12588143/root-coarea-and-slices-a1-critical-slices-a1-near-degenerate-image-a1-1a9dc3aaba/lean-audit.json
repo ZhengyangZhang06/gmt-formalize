@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a2226972af891ec878b493ab3c07001bf72d49c42d4bfb1cb301e6f440b42ef8",
+  "git_delta": {
+    "base_commit": "634309ee011da1e1ad7f9f0e26ef2528aa10ef96",
+    "candidate_commit": "1e0201428e463f96047137f08872a7fbbe185946",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "critSlices_image_volume_le_of_fderiv_near",
+    "diff_sha256": "133717ab313e5a64d4c028064cd7b1d09abefa21d0f1f48d153674dad42b38b8",
+    "source_sha256": "c08e86d36a32c5f95a3498b937973ae2fe4e4fcea09efe06e65cb96757ffeb3a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.critSlices_image_volume_le_of_fderiv_near",
+      "statement": "∀ (n m : ℕ) (G : Rn n → Rn m) (S : Set (Rn n)) (P : Rn n →L[ℝ] Rn m) (u₀ : Rn n) (d ε Λ : ℝ), Convex ℝ S → u₀ ∈ S → (∀ v ∈ S, DifferentiableAt ℝ G v) → (∀ v ∈ S, ‖fderiv ℝ G v - P‖ ≤ ε) → (∀ v ∈ S, ‖v - u₀‖ ≤ d) → ¬ Function.Surjective P → ‖P‖ ≤ Λ → volume (G '' S) ≤ ENNReal.ofReal (2 * (ε * d) * (2 * ((Λ + ε) * d)) ^ (m - 1))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
