@@ -675,6 +675,50 @@ theorem arp_rgr_graph_map_fderiv : ∀ {n ℓ : ℕ} (q : Amb n ℓ ≃ₗᵢ[�
       (L.hasFDerivAt.comp x hpair).const_add y
     rw [hΨ, hΨx.fderiv]
     simp [hL]
+/-- Ball cover step of the patching argument for Simon Ch. 5, Remark 5.3 (p. 122): a closed set
+`D ∋ c` that is relatively open in the open ball `B̆_R(c)` (every `w ∈ D ∩ B̆_R(c)` has
+`B̆_ε(w) ∩ B̆_R(c) ⊆ D` for some `ε > 0`) contains `B̆_R(c)`.  The set `U = D ∩ B̆_R(c)` is open,
+meets the preconnected ball at `c`, and `closure U ∩ B̆_R(c) ⊆ U` since `D` is closed, so
+`IsPreconnected.subset_of_closure_inter_subset` gives `B̆_R(c) ⊆ U`. -/
+theorem arp_ball_subset_of_closed_rel_open : ∀ {m : ℕ} (D : Set (Rn m)) (c : Rn m) (R : ℝ), 0 < R → IsClosed D → c ∈ D → (∀ w ∈ D ∩ ball c R, ∃ ε : ℝ, 0 < ε ∧ ball w ε ∩ ball c R ⊆ D) → ball c R ⊆ D := by
+  intro m D c R hR hD hc hloc
+  -- Step 1: `U = D ∩ B̆_R(c)` is open; each `w ∈ U` has the neighbourhood `B̆_ε(w) ∩ B̆_R(c) ⊆ U`.
+  have hU : IsOpen (D ∩ ball c R) := by
+    refine isOpen_iff_mem_nhds.2 fun w hw => ?_
+    obtain ⟨ε, hε, hεD⟩ := hloc w hw
+    exact Filter.mem_of_superset
+      (Filter.inter_mem (ball_mem_nhds w hε) (isOpen_ball.mem_nhds hw.2)) fun x hx => ⟨hεD hx, hx.2⟩
+  -- Step 4: `closure U ⊆ closure D = D`.
+  have hcl : closure (D ∩ ball c R) ⊆ D :=
+    (closure_mono inter_subset_left).trans hD.closure_eq.subset
+  -- Steps 2, 3 and 5: the convex ball is preconnected and meets `U` at `c`.
+  have hsub : ball c R ⊆ D ∩ ball c R :=
+    (convex_ball c R).isPreconnected.subset_of_closure_inter_subset hU
+      ⟨c, mem_ball_self hR, hc, mem_ball_self hR⟩ fun x hx => ⟨hcl hx.1, hx.2⟩
+  exact hsub.trans inter_subset_left
+
+end Submission
+/-- **`C¹` regularity with a derivative bound is local** (the final part of patching local graphs
+into a single graph for Simon's Remark 5.3).  If near each `x₀ ∈ Ω` the map `u` agrees on
+`B̆_ε(x₀) ∩ Ω` with some `f` that is `C¹` on `B̆_ε(x₀)` with operator norm `‖Df(x₀)‖ ≤ L`, then
+`u = f` on a neighbourhood of `x₀`, so `u` is `C¹` at `x₀` and `Du(x₀) = Df(x₀)`; hence `u` is
+`C¹` on `Ω` and `‖Du‖ ≤ L` there. -/
+theorem Submission.arp_contDiffOn_of_local_C1_reps : ∀ {m k : ℕ} (u : Rn m → Rn k) (Ω : Set (Rn m)) (L : ℝ), IsOpen Ω → (∀ x₀ ∈ Ω, ∃ (ε : ℝ) (f : Rn m → Rn k), 0 < ε ∧ ContDiffOn ℝ 1 f (ball x₀ ε) ∧ ‖fderiv ℝ f x₀‖ ≤ L ∧ ∀ w ∈ ball x₀ ε ∩ Ω, u w = f w) → ContDiffOn ℝ 1 u Ω ∧ ∀ x ∈ Ω, ‖fderiv ℝ u x‖ ≤ L := by
+  intro m k u Ω L hΩ hloc
+  -- at `x₀ ∈ Ω`, `u` agrees with the representative `f` on the neighbourhood `B̆_ε(x₀) ∩ Ω`
+  have key : ∀ x₀ ∈ Ω, ContDiffAt ℝ 1 u x₀ ∧ ‖fderiv ℝ u x₀‖ ≤ L := by
+    intro x₀ hx₀
+    obtain ⟨ε, f, hε, hf, hfL, hfu⟩ := hloc x₀ hx₀
+    have hball : ball x₀ ε ∈ 𝓝 x₀ := Metric.ball_mem_nhds x₀ hε
+    have heq : u =ᶠ[𝓝 x₀] f :=
+      Filter.eventually_of_mem (Filter.inter_mem hball (hΩ.mem_nhds hx₀)) hfu
+    refine ⟨(hf.contDiffAt hball).congr_of_eventuallyEq heq, ?_⟩
+    rw [heq.fderiv_eq]
+    exact hfL
+  exact ⟨fun x hx => (key x hx).1.contDiffWithinAt, fun x hx => (key x hx).2⟩
+
+namespace Submission
+
 /-- The graph point `(x, y) ∈ ℝ^{n+ℓ}` is the inverse image of `(x, y)` under Mathlib's canonical
 equivalence `EuclideanSpace.finAddEquivProd : ℝ^{n+ℓ} ≃L[ℝ] ℝⁿ × ℝ^ℓ` (reindexing by
 `finSumFinEquiv.symm`, then splitting into the `Sum.inl`/`Sum.inr` parts).  Compare coordinates:
@@ -1106,6 +1150,186 @@ theorem arp_regraph_over_rotatedPlane : ∀ {n ℓ : ℕ} (q q₀ : Amb n ℓ �
     have hxX : x = X w := hX2 x hx w hw (by rw [heq, hπ])
     show b = σ (y + q (graphPoint (X w) (v (X w))))
     rw [← hxX, heq, hσ]
+/-- Patching local graphs into one graph over `B̆_R(0)` (the last step of the proof of Simon's
+Remark 5.3).  Write `K = S ∩ B_A(0)` and use the coordinates `P z = (E (q₀⁻¹ z)).1`,
+`Q z = (E (q₀⁻¹ z)).2` of `arp_rotatedPlane_graphPoint_coords` (`E = finAddEquivProd`), so that
+`z = q₀(P z, Q z)`, `|z|² = |P z|² + |Q z|²` and `dist(z, T₀) = |Q z|`.  The cone gives
+`(1 - κ)|z| ≤ |P z|` and `|Q z| ≤ κA` on `K`, hence `|z - y| ≤ s + 2κA ≤ t` whenever `z, y ∈ K` and
+`|P z - P y| ≤ s`; with the uniqueness clause at `P y₁` this makes `P` injective on `K`.  `K` is
+compact, so `D = P(K)` is closed; it contains `0`, and the existence clause plus the cone show that
+`B̆_s(w) ∩ B̆_R(0) ⊆ D` for `w ∈ D ∩ B̆_R(0)`, so `B̆_R(0) ⊆ D`
+(`arp_ball_subset_of_closed_rel_open`).  Choosing `Z x ∈ K` with `P (Z x) = x` and `u = Q ∘ Z`,
+injectivity gives the uniqueness clause, the cone puts `Z x` in `B̆_A(0)`, each `z ∈ S ∩ B̆_R(0)`
+lies in `K` with `|P z| ≤ |z| < R`, so `z = q₀(P z, u (P z))`, and near each `x₀` the uniqueness
+clause of the local graph at `Z x₀` shows `u = f` on `B̆_s(x₀) ∩ B̆_R(0)`, so `u` is `C¹` with
+`|Du| ≤ L` (`arp_contDiffOn_of_local_C1_reps`). -/
+theorem arp_global_graph_of_local_graphs : ∀ {n ℓ : ℕ} (S : Set (Amb n ℓ)) (q₀ : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (R A B s t κ L : ℝ), 0 < R → 0 < s → 0 ≤ κ → κ < 1 → R ≤ (1 - κ) * A → A + t ≤ B → s + 2 * κ * A ≤ t → IsClosed (S ∩ closedBall 0 A) → (0 : Amb n ℓ) ∈ S → (∀ z ∈ S ∩ closedBall 0 B, infDist z (rotatedPlane q₀ : Set (Amb n ℓ)) ≤ κ * ‖z‖) → (∀ y ∈ S ∩ closedBall 0 A, ∀ (c : Rn n) (d : Rn ℓ), y = q₀ (graphPoint c d) → ∃ f : Rn n → Rn ℓ, ContDiffOn ℝ 1 f (ball c s) ∧ (∀ w ∈ ball c s, ‖fderiv ℝ f w‖ ≤ L) ∧ (∀ w ∈ ball c s, q₀ (graphPoint w (f w)) ∈ S ∩ closedBall y t) ∧ (∀ w ∈ ball c s, ∀ b : Rn ℓ, q₀ (graphPoint w b) ∈ S ∩ closedBall y t → b = f w)) → ∃ u : Rn n → Rn ℓ, ContDiffOn ℝ 1 u (ball 0 R) ∧ (∀ x ∈ ball (0 : Rn n) R, ‖fderiv ℝ u x‖ ≤ L) ∧ (∀ x ∈ ball (0 : Rn n) R, q₀ (graphPoint x (u x)) ∈ S ∩ ball 0 A) ∧ (∀ x ∈ ball (0 : Rn n) R, ∀ b : Rn ℓ, q₀ (graphPoint x b) ∈ S ∩ closedBall 0 A → b = u x) ∧ S ∩ ball 0 R ⊆ q₀ '' graphOver u (ball 0 R) := by
+  intro n ℓ S q₀ R A B s t κ L hR hs hκ0 hκ1 hRA hAB hst hclosed h0S hcone hloc
+  obtain ⟨hgp, hpyth, hdist⟩ := Submission.arp_rotatedPlane_graphPoint_coords n ℓ
+  obtain ⟨E, hE⟩ : ∃ E : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ,
+      ∀ (a : Rn n) (b : Rn ℓ), graphPoint a b = E.symm (a, b) := ⟨_, hgp⟩
+  -- the coordinates `P z = (E (q₀⁻¹ z)).1` and `Q z = (E (q₀⁻¹ z)).2`
+  obtain ⟨P, Q, hPc, hrec, hPgp, hQgp, hPsub, hQsub, hP0⟩ :
+      ∃ (P : Amb n ℓ → Rn n) (Q : Amb n ℓ → Rn ℓ), Continuous P ∧
+        (∀ z, q₀ (graphPoint (P z) (Q z)) = z) ∧
+        (∀ a b, P (q₀ (graphPoint a b)) = a) ∧ (∀ a b, Q (q₀ (graphPoint a b)) = b) ∧
+        (∀ z y, P (z - y) = P z - P y) ∧ (∀ z y, Q (z - y) = Q z - Q y) ∧ P 0 = 0 := by
+    refine ⟨fun z => (E (q₀.symm z)).1, fun z => (E (q₀.symm z)).2,
+      (E.continuous.comp q₀.symm.continuous).fst, fun z => ?_, fun a b => ?_, fun a b => ?_,
+      fun z y => ?_, fun z y => ?_, ?_⟩
+    · simp only [hE, Prod.mk.eta, ContinuousLinearEquiv.symm_apply_apply,
+        LinearIsometryEquiv.apply_symm_apply]
+    · simp only [hE, LinearIsometryEquiv.symm_apply_apply, ContinuousLinearEquiv.apply_symm_apply]
+    · simp only [hE, LinearIsometryEquiv.symm_apply_apply, ContinuousLinearEquiv.apply_symm_apply]
+    · simp only [map_sub, Prod.fst_sub]
+    · simp only [map_sub, Prod.snd_sub]
+    · simp only [map_zero, Prod.fst_zero]
+  have hnormsq : ∀ z, ‖z‖ ^ 2 = ‖P z‖ ^ 2 + ‖Q z‖ ^ 2 := by
+    intro z
+    calc ‖z‖ ^ 2 = ‖q₀ (graphPoint (P z) (Q z))‖ ^ 2 := by rw [hrec z]
+      _ = ‖P z‖ ^ 2 + ‖Q z‖ ^ 2 := by rw [LinearIsometryEquiv.norm_map, hpyth]
+  have hPle : ∀ z, ‖P z‖ ≤ ‖z‖ := by
+    intro z
+    nlinarith [hnormsq z, norm_nonneg (P z), norm_nonneg z, sq_nonneg ‖Q z‖]
+  have htri : ∀ z, ‖z‖ ≤ ‖P z‖ + ‖Q z‖ := by
+    intro z
+    nlinarith [hnormsq z, norm_nonneg (P z), norm_nonneg (Q z), norm_nonneg z,
+      mul_nonneg (norm_nonneg (P z)) (norm_nonneg (Q z))]
+  have hdistQ : ∀ z, infDist z (rotatedPlane q₀ : Set (Amb n ℓ)) = ‖Q z‖ := by
+    intro z
+    have h := hdist q₀ (P z) (Q z)
+    rwa [hrec z] at h
+  -- parameters
+  have hκ1' : 0 < 1 - κ := by linarith
+  have hA : 0 < A := by
+    by_contra h
+    nlinarith [not_lt.mp h]
+  have hκA : 0 ≤ κ * A := mul_nonneg hκ0 hA.le
+  have ht : 0 < t := by linarith
+  have hAB' : A ≤ B := by linarith
+  have hRA' : R ≤ A := by linarith
+  -- the cone in coordinates, on `S ∩ B_B(0)` and on `K = S ∩ B_A(0)`
+  have hconeQ : ∀ z ∈ S ∩ closedBall (0 : Amb n ℓ) B, ‖Q z‖ ≤ κ * ‖z‖ := by
+    intro z hz
+    have h := hcone z hz
+    rwa [hdistQ z] at h
+  have hconeP : ∀ z ∈ S ∩ closedBall (0 : Amb n ℓ) B, (1 - κ) * ‖z‖ ≤ ‖P z‖ := by
+    intro z hz
+    have h1 := hconeQ z hz
+    have h2 := htri z
+    linarith
+  have hconeA : ∀ z ∈ S ∩ closedBall (0 : Amb n ℓ) B, ‖P z‖ < R → ‖z‖ < A := by
+    intro z hz hPz
+    have h1 := hconeP z hz
+    by_contra h
+    have h2 : (1 - κ) * A ≤ (1 - κ) * ‖z‖ := mul_le_mul_of_nonneg_left (not_lt.mp h) hκ1'.le
+    linarith
+  have hKB : ∀ z ∈ S ∩ closedBall (0 : Amb n ℓ) A, z ∈ S ∩ closedBall (0 : Amb n ℓ) B :=
+    fun z hz => ⟨hz.1, closedBall_subset_closedBall hAB' hz.2⟩
+  have hKQ : ∀ z ∈ S ∩ closedBall (0 : Amb n ℓ) A, ‖Q z‖ ≤ κ * A := by
+    intro z hz
+    calc ‖Q z‖ ≤ κ * ‖z‖ := hconeQ z (hKB z hz)
+      _ ≤ κ * A := mul_le_mul_of_nonneg_left (mem_closedBall_zero_iff.mp hz.2) hκ0
+  -- distance estimate
+  have hclose : ∀ z ∈ S ∩ closedBall (0 : Amb n ℓ) A, ∀ y ∈ S ∩ closedBall (0 : Amb n ℓ) A,
+      ‖P z - P y‖ ≤ s → ‖z - y‖ ≤ t := by
+    intro z hz y hy hzy
+    have h1 := htri (z - y)
+    rw [hPsub, hQsub] at h1
+    have h2 : ‖Q z - Q y‖ ≤ ‖Q z‖ + ‖Q y‖ := norm_sub_le _ _
+    have h3 := hKQ z hz
+    have h4 := hKQ y hy
+    linarith
+  -- `P` is injective on `K`
+  have hinj : ∀ y₁ ∈ S ∩ closedBall (0 : Amb n ℓ) A, ∀ y₂ ∈ S ∩ closedBall (0 : Amb n ℓ) A,
+      P y₁ = P y₂ → y₁ = y₂ := by
+    intro y₁ hy₁ y₂ hy₂ h12
+    obtain ⟨f, -, -, -, hfuniq⟩ := hloc y₁ hy₁ (P y₁) (Q y₁) (hrec y₁).symm
+    have hc : P y₁ ∈ ball (P y₁) s := mem_ball_self hs
+    have e₁ : Q y₁ = f (P y₁) := by
+      refine hfuniq (P y₁) hc (Q y₁) ?_
+      rw [hrec y₁]
+      exact ⟨hy₁.1, mem_closedBall_self ht.le⟩
+    have e₂ : Q y₂ = f (P y₁) := by
+      refine hfuniq (P y₁) hc (Q y₂) ?_
+      rw [h12, hrec y₂]
+      refine ⟨hy₂.1, ?_⟩
+      rw [mem_closedBall, dist_eq_norm]
+      refine hclose y₂ hy₂ y₁ hy₁ ?_
+      rw [h12, sub_self, norm_zero]
+      exact hs.le
+    calc y₁ = q₀ (graphPoint (P y₁) (Q y₁)) := (hrec y₁).symm
+      _ = q₀ (graphPoint (P y₂) (Q y₂)) := by rw [h12, e₁, e₂]
+      _ = y₂ := hrec y₂
+  -- `D = P(K)` is closed, contains `0` and is relatively open in `B̆_R(0)`, so it covers `B̆_R(0)`
+  have hKc : IsCompact (S ∩ closedBall (0 : Amb n ℓ) A) :=
+    (isCompact_closedBall (0 : Amb n ℓ) A).of_isClosed_subset hclosed inter_subset_right
+  have hDc : IsClosed (P '' (S ∩ closedBall (0 : Amb n ℓ) A)) := (hKc.image hPc).isClosed
+  have h0D : (0 : Rn n) ∈ P '' (S ∩ closedBall (0 : Amb n ℓ) A) :=
+    ⟨0, ⟨h0S, mem_closedBall_self hA.le⟩, hP0⟩
+  have hrel : ∀ w ∈ P '' (S ∩ closedBall (0 : Amb n ℓ) A) ∩ ball (0 : Rn n) R, ∃ ε : ℝ, 0 < ε ∧
+      ball w ε ∩ ball (0 : Rn n) R ⊆ P '' (S ∩ closedBall (0 : Amb n ℓ) A) := by
+    rintro w ⟨⟨y, hy, rfl⟩, -⟩
+    obtain ⟨f, -, -, hfex, -⟩ := hloc y hy (P y) (Q y) (hrec y).symm
+    refine ⟨s, hs, ?_⟩
+    rintro w' ⟨hw's, hw'R⟩
+    have hx' := hfex w' hw's
+    have hx'B : q₀ (graphPoint w' (f w')) ∈ S ∩ closedBall (0 : Amb n ℓ) B := by
+      refine ⟨hx'.1, mem_closedBall.mpr ?_⟩
+      linarith [dist_triangle (q₀ (graphPoint w' (f w'))) y 0, mem_closedBall.mp hx'.2,
+        mem_closedBall.mp hy.2]
+    have hx'A : ‖q₀ (graphPoint w' (f w'))‖ < A := by
+      refine hconeA _ hx'B ?_
+      rw [hPgp]
+      exact mem_ball_zero_iff.mp hw'R
+    exact ⟨_, ⟨hx'.1, mem_closedBall_zero_iff.mpr hx'A.le⟩, hPgp w' (f w')⟩
+  have hball : ball (0 : Rn n) R ⊆ P '' (S ∩ closedBall (0 : Amb n ℓ) A) :=
+    Submission.arp_ball_subset_of_closed_rel_open _ 0 R hR hDc h0D hrel
+  -- the global graph `u = Q ∘ Z`, where `Z x ∈ K` and `P (Z x) = x`
+  have hex : ∀ x ∈ ball (0 : Rn n) R, ∃ z ∈ S ∩ closedBall (0 : Amb n ℓ) A, P z = x :=
+    fun x hx => hball hx
+  choose! Z hZK hZP using hex
+  obtain ⟨u, hu⟩ : ∃ u : Rn n → Rn ℓ, ∀ x, u x = Q (Z x) := ⟨_, fun _ => rfl⟩
+  have hgraph : ∀ x ∈ ball (0 : Rn n) R, q₀ (graphPoint x (u x)) = Z x := by
+    intro x hx
+    have h := hrec (Z x)
+    rwa [hZP x hx, ← hu] at h
+  have huniq : ∀ x ∈ ball (0 : Rn n) R, ∀ b : Rn ℓ,
+      q₀ (graphPoint x b) ∈ S ∩ closedBall 0 A → b = u x := by
+    intro x hx b hb
+    have h : q₀ (graphPoint x b) = Z x := hinj _ hb _ (hZK x hx) (by rw [hPgp, hZP x hx])
+    calc b = Q (q₀ (graphPoint x b)) := (hQgp x b).symm
+      _ = u x := by rw [h, hu]
+  have hmem : ∀ x ∈ ball (0 : Rn n) R, q₀ (graphPoint x (u x)) ∈ S ∩ ball 0 A := by
+    intro x hx
+    rw [hgraph x hx]
+    refine ⟨(hZK x hx).1, mem_ball_zero_iff.mpr (hconeA _ (hKB _ (hZK x hx)) ?_)⟩
+    rw [hZP x hx]
+    exact mem_ball_zero_iff.mp hx
+  have hsub : S ∩ ball 0 R ⊆ q₀ '' graphOver u (ball 0 R) := by
+    rintro z ⟨hzS, hzR⟩
+    have hzA : z ∈ S ∩ closedBall (0 : Amb n ℓ) A :=
+      ⟨hzS, mem_closedBall_zero_iff.mpr ((mem_ball_zero_iff.mp hzR).le.trans hRA')⟩
+    have hw : P z ∈ ball (0 : Rn n) R :=
+      mem_ball_zero_iff.mpr ((hPle z).trans_lt (mem_ball_zero_iff.mp hzR))
+    have hQz : Q z = u (P z) := huniq (P z) hw (Q z) (by rw [hrec z]; exact hzA)
+    refine ⟨graphPoint (P z) (u (P z)), ⟨P z, hw, rfl⟩, ?_⟩
+    rw [← hQz, hrec z]
+  -- near `x₀`, `u` agrees with the local graph `f` at `Z x₀`
+  have hreg := Submission.arp_contDiffOn_of_local_C1_reps u (ball (0 : Rn n) R) L isOpen_ball
+    (by
+      intro x₀ hx₀
+      obtain ⟨f, hfC1, hfD, -, hfuniq⟩ := hloc (Z x₀) (hZK x₀ hx₀) x₀ (u x₀) (hgraph x₀ hx₀).symm
+      refine ⟨s, f, hs, hfC1, hfD x₀ (mem_ball_self hs), ?_⟩
+      rintro w ⟨hws, hwR⟩
+      refine hfuniq w hws (u w) ?_
+      rw [hgraph w hwR]
+      refine ⟨(hZK w hwR).1, ?_⟩
+      rw [mem_closedBall, dist_eq_norm]
+      refine hclose _ (hZK w hwR) _ (hZK x₀ hx₀) ?_
+      rw [hZP w hwR, hZP x₀ hx₀, ← dist_eq_norm]
+      exact (mem_ball.mp hws).le)
+  exact ⟨u, hreg.1, hreg.2, hmem, huniq, hsub⟩
 
 end Submission
 
