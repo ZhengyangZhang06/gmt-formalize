@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_local_to_global-a1",
+  "parent_id": "root.boundary_rectifiability-a1.local_to_global_im-a1",
+  "depth": 3,
+  "title": "Local-to-global for τ(M, θ, ξ) via a smooth partition of unity",
+  "statement": "Let P, k ∈ ℕ, U ⊆ ℝ^P, X ∈ D_k(U) (GeometricCurrentOn U k), and let (M, θ, ξ) satisfy IsRectifiableTriple U k M θ ξ. Suppose every x ∈ U has an open V ∋ x such that X(ω) = τ(M,θ,ξ)(ω) for every ω ∈ Dᵏ(U) with tsupport ω ⊆ V, where τ(M,θ,ξ)(ω) = tauAction k M θ ξ ω. Then X(ω) = τ(M,θ,ξ)(ω) for every ω ∈ Dᵏ(U).",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U k) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M θ ξ → (∀ x ∈ U, ∃ V : Set (Eucl P), IsOpen V ∧ x ∈ V ∧ ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ V → X ω = tauAction k M θ ξ ω) → ∀ ω : TestFormOn U k, X ω = tauAction k M θ ξ ω",
+  "lean_name": "ltg_tau_local_to_global",
+  "depends_on": [
+    "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_integrable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_integrable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-local-to-global-im-a1-tau-local-to-global-a1-a1"
+}
