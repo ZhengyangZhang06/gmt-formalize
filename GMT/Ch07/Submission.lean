@@ -451,6 +451,40 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Evaluation of `n`-covectors at an `n`-family `c`, `ev c = (α ↦ α c)`, is a continuous map
+into `n`-vectors: `‖ev c - ev c'‖ ≤ n · max(‖c‖, ‖c'‖)ⁿ⁻¹ · ‖c - c'‖`. -/
+theorem Submission.dgoj_exists_continuous_covector_eval : ∀ (P n : ℕ), ∃ ev : (Fin n → Euclid P) → MultiVector P n, Continuous ev ∧ ∀ (c : Fin n → Euclid P) (α : Covector (Euclid P) n), ev c α = α c := by
+  intro P n
+  let ev : (Fin n → Euclid P) → MultiVector P n := fun c =>
+    LinearMap.mkContinuous
+      { toFun := fun α => α c
+        map_add' := fun α β => rfl
+        map_smul' := fun r α => rfl }
+      (∏ i, ‖c i‖) fun α => by
+        simp only [LinearMap.coe_mk, AddHom.coe_mk]
+        calc ‖α c‖ ≤ ‖α‖ * ∏ i, ‖c i‖ := α.le_opNorm c
+          _ = (∏ i, ‖c i‖) * ‖α‖ := mul_comm _ _
+  have hev : ∀ (c : Fin n → Euclid P) (α : Covector (Euclid P) n), ev c α = α c := fun c α => rfl
+  refine ⟨ev, ?_, hev⟩
+  have key : ∀ c c' : Fin n → Euclid P,
+      ‖ev c - ev c'‖ ≤ (n : ℝ) * max ‖c‖ ‖c'‖ ^ (n - 1) * ‖c - c'‖ := by
+    intro c c'
+    refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun α => ?_
+    rw [sub_apply, hev, hev]
+    have h := α.norm_image_sub_le c c'
+    rw [Fintype.card_fin] at h
+    calc ‖α c - α c'‖ ≤ ‖α‖ * n * max ‖c‖ ‖c'‖ ^ (n - 1) * ‖c - c'‖ := h
+      _ = (n : ℝ) * max ‖c‖ ‖c'‖ ^ (n - 1) * ‖c - c'‖ * ‖α‖ := by ring
+  rw [continuous_iff_continuousAt]
+  intro c₀
+  have hcont : Continuous fun c : Fin n → Euclid P => (n : ℝ) * max ‖c‖ ‖c₀‖ ^ (n - 1) * ‖c - c₀‖ := by
+    fun_prop
+  have h0 := hcont.tendsto c₀
+  simp only [sub_self, norm_zero, mul_zero] at h0
+  have h1 : Tendsto (fun c => ‖ev c - ev c₀‖) (𝓝 c₀) (𝓝 0) :=
+    squeeze_zero (fun c => norm_nonneg (ev c - ev c₀)) (fun c => key c c₀) h0
+  exact (tendsto_iff_norm_sub_tendsto_zero (E := MultiVector P n) (f := ev) (b := ev c₀)).2 h1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cf7f9953b38ac9ec161c241d13fced7b9ae44968b1a4e7f02b807f89beb9d7f1",
+  "git_delta": {
+    "base_commit": "ecc53ec24a4257fbec663adb97bf513c2ccbefcb",
+    "candidate_commit": "05029c89c57ac9977d75f9a5152418dc3ceb1e73",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgoj_exists_continuous_covector_eval",
+    "diff_sha256": "dd04a4f91512e893aaf923e2a961553b1aa5569e56fa08a0bfb4c540765e4833",
+    "source_sha256": "b722fe9a98f4d10c7314b9da7092d31bfc5dfe5bf0231c767dacf3c28c842b6a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgoj_exists_continuous_covector_eval",
+      "statement": "∀ (P n : ℕ), ∃ ev : (Fin n → Euclid P) → MultiVector P n, Continuous ev ∧ ∀ (c : Fin n → Euclid P) (α : Covector (Euclid P) n), ev c α = α c",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
