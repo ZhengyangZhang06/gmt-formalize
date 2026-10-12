@@ -486,6 +486,47 @@ theorem Submission.euclid_hausdorff_dilation_change_of_variables : ∀ (P n : �
     rw [h1, integral_smul_measure, ENNReal.toReal_ofReal (by positivity), smul_eq_mul] at h
     exact h.symm
 
+/-- **Action and weight of a dilated triple** (Simon 6.3.1 (‡) and Ch. 4, 1.1, under
+`x ↦ cx`; used for the cone `C` of 7.3.1(2)).  If `c > 0` and `R' = (M', θ', ξ')` is
+`R = (M, θ, ξ)` pulled back by `x ↦ cx`, i.e. `M' = {x : cx ∈ M}`, `θ'(x) = θ(cx)` and
+`ξ'(x) = ξ(cx)`, then `τ(R')(ω) = τ(R)(ω_c)` with `ω_c(y) = c⁻ⁿ ω(c⁻¹y)` for every `n`-form `ω`,
+and `μ_{R'}(A) = c⁻ⁿ μ_R(cA)` for every Borel `A`.  Both follow from the change of variables
+`∫_{M'} g(cz) dHⁿ(z) = c⁻ⁿ ∫_M g dHⁿ`. -/
+theorem Submission.imrep_smul_rescale_action_measure : ∀ (P n : ℕ) (R R' : IMRep (univ : Set (Euclid P)) n) (c : ℝ), 0 < c → R'.carrier = (fun x => c • x) ⁻¹' R.carrier → (∀ x, R'.mult x = R.mult (c • x)) → (∀ x, R'.orient x = R.orient (c • x)) → (∀ ω : DifferentialForm (Euclid P) n, R'.action ω = R.action (fun y => (c⁻¹ ^ n) • ω (c⁻¹ • y))) ∧ ∀ A : Set (Euclid P), MeasurableSet A → R'.measure A = ENNReal.ofReal (c⁻¹ ^ n) * R.measure ((fun x => c • x) '' A) := by
+  intro P n R R' c hc hcar hmult horient
+  -- `T x = cx` is a measurable embedding with `c⁻¹ (cz) = z`.
+  have hT : MeasurableEmbedding (fun x : Euclid P => c • x) :=
+    measurableEmbedding_const_smul₀ hc.ne'
+  have hinv : ∀ z : Euclid P, c⁻¹ • c • z = z := fun z => by
+    rw [smul_smul, inv_mul_cancel₀ hc.ne', one_smul]
+  refine ⟨fun ω => ?_, fun A hA => ?_⟩
+  · -- Step 1: `R'.action ω = ∫_{T⁻¹M} g(cz) dHⁿ(z) = c⁻ⁿ ∫_M g dHⁿ` for
+    -- `g(y) = θ(y) ξ(y)(ω(c⁻¹y))`.
+    have hcv := (Submission.euclid_hausdorff_dilation_change_of_variables P n c hc
+      R.carrier).2.2 fun y => (R.mult y : ℝ) * R.orient y (ω (c⁻¹ • y))
+    simp only [hinv] at hcv
+    unfold IMRep.action
+    rw [hcar]
+    simp only [hmult, horient]
+    -- Step 2: move `c⁻ⁿ` inside the integral and use the linearity of `ξ(y)`.
+    rw [hcv, ← integral_const_mul]
+    congr 1
+    funext y
+    rw [ContinuousLinearMap.map_smul, smul_eq_mul]
+    ring
+  · -- Step 3: `R'.measure A = ∫⁻_{A ∩ M'} θ(c·) dHⁿ`, and `A ∩ M' = T⁻¹(cA ∩ M)`.
+    have hTA : MeasurableSet ((fun x : Euclid P => c • x) '' A) := hT.measurableSet_image.2 hA
+    have hset : A ∩ R'.carrier =
+        (fun x : Euclid P => c • x) ⁻¹' ((fun x : Euclid P => c • x) '' A ∩ R.carrier) := by
+      rw [preimage_inter, preimage_image_eq _ hT.injective, hcar]
+    unfold IMRep.measure
+    rw [withDensity_apply _ hA, withDensity_apply _ hTA, Measure.restrict_restrict hA,
+      Measure.restrict_restrict hTA, hset]
+    simp only [hmult]
+    -- Step 4: the lower-integral change of variables on `cA ∩ M`.
+    exact (Submission.euclid_hausdorff_dilation_change_of_variables P n c hc
+      ((fun x : Euclid P => c • x) '' A ∩ R.carrier)).2.1 fun y => (R.mult y : ℝ≥0∞)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
