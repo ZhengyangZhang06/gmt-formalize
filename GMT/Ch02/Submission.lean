@@ -1023,6 +1023,93 @@ theorem Submission.tangentialDivergence_add_inner_eq_sum_partition : ∀ (N p : 
     rw [← sum_inner, ← hval]
   -- Step 5: add the two identities and regroup the sums.
   rw [Finset.sum_add_distrib, hdiv, hinner]
+/-- **Simon Ch. 2, §5 (pp. 61–63), the hypothesis `Hⁿ(K ∩ M) < ∞`.** An `n`-dimensional `C^r`
+submanifold `M ⊆ ℝᴺ` has locally finite and locally positive `Hⁿ`-measure.
+(a) Compact `C ⊆ M`: near `y ∈ C` take a chart `ψ : V → W`; `C' = C ∩ B̄_{ρ/2}(y) ⊆ W` is `ψ(Q)` with
+`Q = V ∩ ψ⁻¹(C')` compact (relative properness), and `ψ` is locally Lipschitz on `V`, so
+`Hⁿ(C') < ∞`. (b) `y = ψ(x₀) ∈ O`: `V' = V ∩ ψ⁻¹(O ∩ W)` is an open neighbourhood of `x₀` with
+`ψ(V') ⊆ M ∩ O`. A linear left inverse `P` of the injective `Dψ(x₀)` makes `P ∘ ψ` open at `x₀`
+(inverse function theorem), so `0 < Lⁿ(P(ψ(V'))) ≤ ‖P‖ⁿ Hⁿ(ψ(V'))`. -/
+theorem Submission.simon_submanifold_hausdorff_finite_pos : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → (∀ C ⊆ M, IsCompact C → μHE[n] C < ⊤) ∧ ∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → 0 < μHE[n] (M ∩ O) := by
+  intro n N r M hM
+  have hr : (1 : WithTop ℕ∞) ≤ r := by exact_mod_cast hM.1
+  refine ⟨fun C hCM hC => ?_, fun y hyM O hO hyO => ?_⟩
+  · -- (a) It suffices that every `y ∈ C` has a relative neighbourhood `C'` of finite measure.
+    refine hC.measure_lt_top_of_nhdsWithin fun y hy => ?_
+    obtain ⟨V, W, ψ, hyW, hψ⟩ := hM.2 y (hCM hy)
+    obtain ⟨ρ, hρ, hρW⟩ := Metric.isOpen_iff.mp hψ.isOpen_target y hyW
+    -- `C' = C ∩ B̄_{ρ/2}(y)` is a compact subset of `W`, so `Q = V ∩ ψ⁻¹(C')` is compact.
+    have hC'W : C ∩ closedBall y (ρ / 2) ⊆ W := fun z hz =>
+      hρW (closedBall_subset_ball (by linarith) hz.2)
+    have hQ : IsCompact (V ∩ ψ ⁻¹' (C ∩ closedBall y (ρ / 2))) :=
+      hψ.isCompact_source_inter_preimage _ (hC.inter_right isClosed_closedBall) hC'W
+    -- `C' ⊆ M ∩ W = ψ(V)`, hence `C' = ψ(Q)`.
+    have himg : C ∩ closedBall y (ρ / 2) ⊆ ψ '' (V ∩ ψ ⁻¹' (C ∩ closedBall y (ρ / 2))) := by
+      intro z hz
+      have hz' : z ∈ W ∩ M := ⟨hC'W hz, hCM hz.1⟩
+      rw [← hψ.image_eq] at hz'
+      obtain ⟨x, hxV, rfl⟩ := hz'
+      exact ⟨x, ⟨hxV, hz⟩, rfl⟩
+    refine ⟨C ∩ closedBall y (ρ / 2), inter_mem_nhdsWithin C (closedBall_mem_nhds y (by positivity)),
+      (measure_mono himg).trans_lt ?_⟩
+    -- `ψ` is locally Lipschitz on `V`, so the compact `Q` is covered by finitely many pieces
+    -- with images of finite measure.
+    refine hQ.induction_on (p := fun s => μHE[n] (ψ '' s) < ⊤) (by simp) ?_ ?_ ?_
+    · intro s t hst ht
+      exact (measure_mono (image_mono hst)).trans_lt ht
+    · intro s t hs ht
+      rw [image_union]
+      exact (measure_union_le _ _).trans_lt (ENNReal.add_lt_top.2 ⟨hs, ht⟩)
+    · intro x hx
+      have hψx : ContDiffAt ℝ 1 ψ x :=
+        (hψ.contDiffOn.contDiffAt (hψ.isOpen_source.mem_nhds hx.1)).of_le hr
+      obtain ⟨K, t, ht, hK⟩ := hψx.exists_lipschitzOnWith
+      refine ⟨t ∩ ball x 1, mem_nhdsWithin_of_mem_nhds (inter_mem ht (ball_mem_nhds x one_pos)), ?_⟩
+      calc μHE[n] (ψ '' (t ∩ ball x 1)) ≤ (K : ℝ≥0∞) ^ n * μHE[n] (t ∩ ball x 1) :=
+            Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n (hK.mono inter_subset_left)
+        _ < ⊤ := by
+            refine ENNReal.mul_lt_top (ENNReal.pow_lt_top ENNReal.coe_lt_top) ?_
+            rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+            exact (measure_mono inter_subset_right).trans_lt measure_ball_lt_top
+  · -- (b) Write `y = ψ(x₀)`; `V' = V ∩ ψ⁻¹(O ∩ W)` is an open neighbourhood of `x₀`.
+    obtain ⟨V, W, ψ, hyW, hψ⟩ := hM.2 y hyM
+    have hy : y ∈ ψ '' V := by rw [hψ.image_eq]; exact ⟨hyW, hyM⟩
+    obtain ⟨x₀, hx₀V, rfl⟩ := hy
+    have hV' : IsOpen (V ∩ ψ ⁻¹' (O ∩ W)) :=
+      hψ.contDiffOn.continuousOn.isOpen_inter_preimage hψ.isOpen_source (hO.inter hψ.isOpen_target)
+    have hx₀ : x₀ ∈ V ∩ ψ ⁻¹' (O ∩ W) := ⟨hx₀V, hyO, hyW⟩
+    have himg : ψ '' (V ∩ ψ ⁻¹' (O ∩ W)) ⊆ M ∩ O := by
+      rintro _ ⟨x, ⟨hxV, hxO, -⟩, rfl⟩
+      have h : ψ x ∈ W ∩ M := hψ.image_eq ▸ mem_image_of_mem ψ hxV
+      exact ⟨h.2, hxO⟩
+    refine lt_of_lt_of_le ?_ (measure_mono himg)
+    -- `Dψ(x₀)` is injective, so it has a linear left inverse `P : ℝᴺ → ℝⁿ`.
+    obtain ⟨g, hg⟩ := (fderiv ℝ ψ x₀).toLinearMap.exists_leftInverse_of_injective
+      (LinearMap.ker_eq_bot.2 (hψ.injective_fderiv hx₀V))
+    set P : Rn N →L[ℝ] Rn n := LinearMap.toContinuousLinearMap g with hP
+    have hPL : P.comp (fderiv ℝ ψ x₀) = ((ContinuousLinearEquiv.refl ℝ (Rn n) : Rn n ≃L[ℝ] Rn n) :
+        Rn n →L[ℝ] Rn n) := by
+      refine ContinuousLinearMap.ext fun v => ?_
+      simpa [hP] using LinearMap.congr_fun hg v
+    -- `P ∘ ψ` has derivative `id` at `x₀`, so it maps neighbourhoods of `x₀` onto neighbourhoods.
+    have hPψ : HasStrictFDerivAt (fun x => P (ψ x))
+        ((ContinuousLinearEquiv.refl ℝ (Rn n) : Rn n ≃L[ℝ] Rn n) : Rn n →L[ℝ] Rn n) x₀ := by
+      rw [← hPL]
+      exact P.hasStrictFDerivAt.comp x₀
+        ((hψ.contDiffOn.contDiffAt (hψ.isOpen_source.mem_nhds hx₀V)).hasStrictFDerivAt
+          (lt_of_lt_of_le zero_lt_one hr).ne')
+    have hnhds : P '' (ψ '' (V ∩ ψ ⁻¹' (O ∩ W))) ∈ 𝓝 (P (ψ x₀)) := by
+      rw [image_image, ← hPψ.map_nhds_eq_of_equiv]
+      exact image_mem_map (hV'.mem_nhds hx₀)
+    -- `0 < Lⁿ(P(ψ(V'))) = Hⁿ(P(ψ(V'))) ≤ ‖P‖ⁿ Hⁿ(ψ(V'))`.
+    have hpos : 0 < μHE[n] (P '' (ψ '' (V ∩ ψ ⁻¹' (O ∩ W)))) := by
+      rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+      exact Measure.measure_pos_of_mem_nhds _ hnhds
+    have hle := Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (P.lipschitzWith.lipschitzOnWith (s := ψ '' (V ∩ ψ ⁻¹' (O ∩ W))))
+    refine pos_iff_ne_zero.2 fun h0 => hpos.ne' ?_
+    rw [h0, mul_zero] at hle
+    exact nonpos_iff_eq_zero.mp hle
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
