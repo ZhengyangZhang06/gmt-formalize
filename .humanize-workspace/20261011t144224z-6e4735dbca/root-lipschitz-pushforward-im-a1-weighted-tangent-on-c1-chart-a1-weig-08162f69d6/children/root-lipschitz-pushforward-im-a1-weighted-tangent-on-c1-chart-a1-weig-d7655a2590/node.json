@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.continuity_error_vanishes-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1",
+  "depth": 4,
+  "title": "Continuity of θ along C at y plus bounded upper n-density of C at y: the weight-oscillation blow-up term vanishes (parent Step 6, I₂ → 0)",
+  "statement": "Let Q, n ∈ ℕ. Let C ⊆ ℝ^Q be Hⁿ-null-measurable (Hⁿ = μHE[n] on ℝ^Q), θ : ℝ^Q → ℝ, y ∈ ℝ^Q and φ ∈ C_c(ℝ^Q, ℝ), and write η_t(x) = blowUpMap y t x = t⁻¹(x − y). Assume:\n- θ restricted to C is continuous at y (ContinuousWithinAt θ C y; y need not lie in C);\n- there is K ∈ ℝ≥0 with Hⁿ(C ∩ B̄_ρ(y)) ≤ K · ENNReal.ofReal(ρⁿ) for all sufficiently small ρ > 0.\nThen (tⁿ)⁻¹ ∫_C φ(η_t(x)) (θ(x) − θ(y)) dHⁿ(x) → 0 as t → 0+. The integral is the Bochner set integral, and no integrability is assumed.",
+  "lean_statement": "∀ (Q n : ℕ) (C : Set (Eucl Q)) (θ : Eucl Q → ℝ) (y : Eucl Q) (φ : CompactlySupportedContinuousMap (Eucl Q) ℝ), NullMeasurableSet C (μHE[n] : Measure (Eucl Q)) → ContinuousWithinAt θ C y → (∃ K : ℝ≥0, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), (μHE[n] : Measure (Eucl Q)) (C ∩ closedBall y ρ) ≤ K * ENNReal.ofReal (ρ ^ n)) → Tendsto (fun t : ℝ => (t ^ n)⁻¹ * ∫ x in C, φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) * (θ x - θ y) ∂(μHE[n] : Measure (Eucl Q))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "lpf_wtc_wtt_continuity_error_vanishes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-weig-d7655a2590-a1"
+}

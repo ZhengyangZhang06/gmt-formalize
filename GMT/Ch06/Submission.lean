@@ -359,6 +359,68 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Splitting of the blown-up weighted integral (Simon Ch. 3, Remark 1.8(1)): for `C ⊆ M` and all
+small `t > 0`, `∫_M φ(η_t) θ = θ(y) ∫_C φ(η_t) + ∫_C φ(η_t) (θ − θ(y)) + ∫_{M∖C} φ(η_t) θ`. -/
+theorem Submission.lpf_wtc_wtt_blowup_integral_split : ∀ (Q n : ℕ) (M C : Set (Eucl Q)) (θ : Eucl Q → ℝ) (y : Eucl Q) (φ : CompactlySupportedContinuousMap (Eucl Q) ℝ), NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → NullMeasurableSet C (μHE[n] : Measure (Eucl Q)) → C ⊆ M → (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (C ∩ closedBall y r) < ∞ ∧ IntegrableOn θ (M ∩ closedBall y r) (μHE[n] : Measure (Eucl Q))) → ∀ᶠ t in 𝓝[>] (0 : ℝ), ∫ x in M, φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) * θ x ∂(μHE[n] : Measure (Eucl Q)) = θ y * ∫ x in C, φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) ∂(μHE[n] : Measure (Eucl Q)) + ∫ x in C, φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) * (θ x - θ y) ∂(μHE[n] : Measure (Eucl Q)) + ∫ x in M \ C, φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) * θ x ∂(μHE[n] : Measure (Eucl Q)) := by
+  intro Q n M C θ y φ hM hC hCM ⟨r, hr, hCr, hθr⟩
+  -- Step 1: `tsupport φ ⊆ B_R(0)` and `|φ| ≤ A`.
+  obtain ⟨R, -, hR⟩ := φ.hasCompactSupport.isCompact.isBounded.subset_ball_lt 0 (0 : Eucl Q)
+  obtain ⟨A, hA⟩ := (map_continuous φ).bounded_above_of_compact_support φ.hasCompactSupport
+  -- Step 2: `t R < r` for all sufficiently small `t > 0`; fix such a `t`.
+  have hlim : Tendsto (fun t : ℝ => t * R) (𝓝[>] 0) (𝓝 0) := by
+    have h : Tendsto (fun t : ℝ => t) (𝓝[>] 0) (𝓝 0) := tendsto_id.mono_left nhdsWithin_le_nhds
+    simpa using h.mul_const R
+  filter_upwards [hlim.eventually (eventually_lt_nhds hr), self_mem_nhdsWithin] with t htR ht
+  -- Step 3: `F = φ ∘ η_t` is continuous, bounded by `A`, and vanishes off `B̄_r(y)`.
+  have hcont : Continuous fun x => φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) :=
+    (map_continuous φ).comp ((continuous_id.sub continuous_const).const_smul t⁻¹)
+  have hzero : ∀ x ∉ closedBall y r, φ (Poincare.SimonGMT.Chapter03.blowUpMap y t x) = 0 := by
+    intro x hx
+    by_contra hne
+    have hball := hR (subset_tsupport _ (Function.mem_support.2 hne))
+    rw [mem_ball_zero_iff, Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, norm_inv,
+      Real.norm_of_nonneg (le_of_lt ht), inv_mul_lt_iff₀ ht] at hball
+    exact hx (mem_closedBall.2 (by rw [dist_eq_norm]; linarith))
+  suffices key : ∀ F : Eucl Q → ℝ, Continuous F → (∀ x, ‖F x‖ ≤ A) →
+      (∀ x ∉ closedBall y r, F x = 0) →
+      ∫ x in M, F x * θ x ∂(μHE[n] : Measure (Eucl Q)) =
+        θ y * ∫ x in C, F x ∂(μHE[n] : Measure (Eucl Q)) +
+          ∫ x in C, F x * (θ x - θ y) ∂(μHE[n] : Measure (Eucl Q)) +
+            ∫ x in M \ C, F x * θ x ∂(μHE[n] : Measure (Eucl Q)) from
+    key _ hcont (fun x => hA _) hzero
+  intro F hFc hFA hF0
+  generalize (μHE[n] : Measure (Eucl Q)) = μ at hM hC hCr hθr ⊢
+  -- Step 4: `F θ` is integrable on `M ∩ B̄_r(y)`, and vanishes on the rest of `M`.
+  have hFθM : IntegrableOn (fun x => F x * θ x) M μ := by
+    refine IntegrableOn.of_ae_sdiff_eq_zero
+      (hθr.bdd_mul hFc.aestronglyMeasurable (Eventually.of_forall hFA)) hM
+      (Eventually.of_forall fun x hx => ?_)
+    rw [hF0 x fun h => hx.2 ⟨hx.1, h⟩, zero_mul]
+  -- Step 5: `F` is integrable on `C ∩ B̄_r(y)` (finite measure), and vanishes on the rest of `C`.
+  have hFC : IntegrableOn F C μ :=
+    (Measure.integrableOn_of_bounded hCr.ne hFc.aestronglyMeasurable
+      (Eventually.of_forall hFA)).of_ae_sdiff_eq_zero hC
+        (Eventually.of_forall fun x hx => hF0 x fun h => hx.2 ⟨hx.1, h⟩)
+  -- Step 6: derived integrabilities on `C` and `M \ C`.
+  have hFθC : IntegrableOn (fun x => F x * θ x) C μ := hFθM.mono_set hCM
+  have hFθMC : IntegrableOn (fun x => F x * θ x) (M \ C) μ := hFθM.mono_set sdiff_subset
+  have hθF : IntegrableOn (fun x => θ y * F x) C μ := hFC.const_mul _
+  have hFd : IntegrableOn (fun x => F x * (θ x - θ y)) C μ :=
+    (hFθC.sub hθF).congr (Eventually.of_forall fun x => by simp only [Pi.sub_apply]; ring)
+  -- Step 7: split `M = C ∪ (M \ C)`.
+  have h7 : ∫ x in M, F x * θ x ∂μ = ∫ x in C, F x * θ x ∂μ + ∫ x in M \ C, F x * θ x ∂μ := by
+    conv_lhs => rw [← union_sdiff_cancel hCM]
+    exact setIntegral_union₀ disjoint_sdiff_right.aedisjoint (hM.diff hC) hFθC hFθMC
+  -- Step 8: split the weight on `C`.
+  have h8 : ∫ x in C, F x * θ x ∂μ =
+      θ y * ∫ x in C, F x ∂μ + ∫ x in C, F x * (θ x - θ y) ∂μ := by
+    rw [← integral_const_mul, ← integral_add hθF hFd]
+    congr 1
+    funext x
+    ring
+  -- Step 9: combine.
+  rw [h7, h8]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
