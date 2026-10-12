@@ -610,6 +610,45 @@ theorem lgc_rotated_graph_slope : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ
       _ ≤ ε * ‖graphPoint (u - v) (f u - f v)‖ := mul_le_mul_of_nonneg_left (gnorm_le _ _) hε
       _ = ε * ‖q (graphPoint u (f u)) - q (graphPoint v (f v))‖ := by
           rw [hxz, LinearIsometryEquiv.norm_map]
+/-- **Nearest point of `spt V` and the empty ball around it** (closest-point step of the hole
+estimate in Simon's proof of Lemma 2.6, (9)–(10), pp. 112–113, as used for Corollary 2.7).
+Let `d = dist(ζ, spt V)`.  If `0 ∈ spt V`, `B_ρ(0) ⊆ U` and `|ζ| + d ≤ ρ`, then some `y ∈ spt V`
+has `|y − ζ| = d`, and `μ_V(B̆_d(ζ)) = 0`.
+Proof: `spt μ_V` is closed and contains `spt V = U ∩ spt μ_V ∋ 0`, so (`ℝ^{n+ℓ}` being proper) it
+has a point `y` nearest to `ζ`, and `|ζ − y| = dist(ζ, spt μ_V) ≤ d`.  Then `|y| ≤ |ζ| + d ≤ ρ`, so
+`y ∈ B_ρ(0) ⊆ U`, hence `y ∈ spt V` and `|ζ − y| = d`.  Thus `B̆_d(ζ)` misses `spt μ_V`, whose
+complement is `μ_V`-null (`ℝ^{n+ℓ}` is second countable, hence hereditarily Lindelöf). -/
+theorem lgc_support_closest_point : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ρ : ℝ) (ζ : Amb n ℓ), (0 : Amb n ℓ) ∈ V.support → closedBall (0 : Amb n ℓ) ρ ⊆ U → ‖ζ‖ + infDist ζ V.support ≤ ρ → ∃ y ∈ V.support, dist y ζ = infDist ζ V.support ∧ V.weight (ball ζ (infDist ζ V.support)) = 0 := by
+  intro n ℓ U V ρ ζ h0 hB hsum
+  set S := V.weight.support with hS
+  -- `S = spt μ_V` is closed, and `spt V = U ∩ S ⊆ S` is nonempty
+  have hSc : IsClosed S := Measure.isClosed_support
+  have hVS : V.support ⊆ S := fun x hx => hx.2
+  have hVne : V.support.Nonempty := ⟨0, h0⟩
+  have hSne : S.Nonempty := hVne.mono hVS
+  -- a point `y ∈ S` nearest to `ζ`; `dist(ζ, S) ≤ dist(ζ, spt V)`
+  obtain ⟨y, hyS, hy⟩ := hSc.exists_infDist_eq_dist hSne ζ
+  have hle : infDist ζ S ≤ infDist ζ V.support := infDist_le_infDist_of_subset hVS hVne
+  -- `|y| ≤ |ζ| + |ζ − y| ≤ ρ`, so `y ∈ B_ρ(0) ⊆ U` and `y ∈ spt V`
+  have hyU : y ∈ U := by
+    apply hB
+    rw [mem_closedBall, dist_zero_right]
+    have : ‖y‖ ≤ ‖ζ‖ + dist ζ y := by
+      rw [dist_eq_norm]
+      calc ‖y‖ = ‖ζ - (ζ - y)‖ := by rw [sub_sub_cancel]
+        _ ≤ ‖ζ‖ + ‖ζ - y‖ := norm_sub_le _ _
+    linarith
+  have hyV : y ∈ V.support := ⟨hyU, hyS⟩
+  have hge : infDist ζ V.support ≤ dist ζ y := infDist_le_dist_of_mem hyV
+  have heq : dist ζ y = infDist ζ V.support := le_antisymm (hy ▸ hle) hge
+  refine ⟨y, hyV, by rw [dist_comm]; exact heq, ?_⟩
+  -- `B̆_d(ζ)` misses `S`, and `μ_V(Sᶜ) = 0`
+  apply measure_mono_null _ (Measure.measure_compl_support (μ := V.weight))
+  intro x hx hxS
+  rw [mem_ball] at hx
+  have : infDist ζ S ≤ dist ζ x := infDist_le_dist_of_mem hxS
+  rw [dist_comm] at hx
+  linarith
 
 end Submission
 
