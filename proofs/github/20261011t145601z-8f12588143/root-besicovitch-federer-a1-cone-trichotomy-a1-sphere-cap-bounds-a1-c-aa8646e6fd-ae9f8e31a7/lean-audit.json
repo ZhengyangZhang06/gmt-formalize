@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "30a7ae3b5c2c636f443ad7a0addd45062070877484b3e1b7100313fea41403a6",
+  "git_delta": {
+    "base_commit": "fb0a95659267905db29ce033aa3e53b4edf5f26f",
+    "candidate_commit": "7295852db2d1afeb556eae59142018e100ce7a07",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "bf_sphereCap_upper_comparison",
+    "diff_sha256": "41862f4ecc7689b09804edcc7a2403e7e4ef799aee559eeea69c90df3e01b822",
+    "source_sha256": "d65596ceae0e267e8d39bb1b758be3ec3a31a1671782e25b8e0256d0f4d1713c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bf_sphereCap_upper_comparison",
+      "statement": "∀ (n N : ℕ) (H : Submodule ℝ (Rn N)), finrank ℝ H = n + 1 → ∀ ζ ∈ H, ‖ζ‖ = 1 → ∃ T : Submodule ℝ (Rn N), finrank ℝ T = n ∧ ∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 / 2 → μHE[n] ({θ | θ ∈ H ∧ ‖θ‖ = 1} ∩ Metric.ball ζ ρ) ≤ 2 ^ n * μHE[n] ((T : Set (Rn N)) ∩ Metric.ball 0 ρ)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
