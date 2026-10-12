@@ -13,6 +13,8 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.LinearAlgebra.Trace
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Mathlib.Analysis.Calculus.BumpFunction.Normed
+import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 5: The Allard Regularity Theorem (pp. 103–130)
@@ -457,6 +459,99 @@ def RegularSetOpenDense : Prop :=
     (∀ᵐ x ∂V.weight, x ∈ V.support → ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k) →
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
+
+namespace Submission
+
+/-- Interior smooth approximation of `W^{1,2}(B)`, `B = B̆₁(0)` (Friedrichs mollification; Evans,
+*PDE*, §5.3.1; Gilbarg–Trudinger §§7.2–7.3), used in the proof of Simon Ch. 5, Lemma 3.1 (p. 114):
+for `0 < r < 1` there are `C^∞` functions `φ_j` with `φ_j → f` and `∇φ_j → g` in `L²(B_r)`.
+With `F = 1_B f`, `G = 1_B g`, `ε_j = (1 - r)/(j + 2)` and `ρ_j` the normalized bump supported in
+`B_{ε_j}`, take `φ_j = ρ_j * F`.  It is smooth with `∇φ_j = ρ_j * G` on `B_{1-ε_j} ⊇ B_r`, and
+`F = f`, `G = g` on `B_r`, so the two errors on `B_r` are at most `∫_{ℝⁿ} |ρ_j * H - H|²` for
+`H = F, G`, which tends to `0`. -/
+theorem w12_ball_smooth_approximation : ∀ n : ℕ, 1 ≤ n → ∀ (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∀ r : ℝ, 0 < r → r < 1 → ∃ φ : ℕ → Rn n → ℝ, (∀ j, ContDiff ℝ (⊤ : ℕ∞) (φ j)) ∧ Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖φ j x - f x‖ₑ ^ 2) atTop (𝓝 0) ∧ Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖gradient (φ j) x - g x‖ₑ ^ 2) atTop (𝓝 0) := by
+  intro n _ f g hfg r hr hr1
+  -- Step 1: the zero extensions `F = 1_B f` and `G = 1_B g` lie in `L¹(ℝⁿ)` and `L²(ℝⁿ)`.
+  have hB : MeasurableSet (ball (0 : Rn n) 1) := measurableSet_ball
+  have : IsFiniteMeasure (volume.restrict (ball (0 : Rn n) 1)) :=
+    isFiniteMeasure_restrict.2 measure_ball_lt_top.ne
+  have hF2 : MemLp ((ball (0 : Rn n) 1).indicator f) 2 volume :=
+    (memLp_indicator_iff_restrict hB.nullMeasurableSet).2 hfg.1
+  have hG2 : MemLp ((ball (0 : Rn n) 1).indicator g) 2 volume :=
+    (memLp_indicator_iff_restrict hB.nullMeasurableSet).2 hfg.2.1
+  have hF1 : Integrable ((ball (0 : Rn n) 1).indicator f) :=
+    (integrable_indicator_iff hB).2 (hfg.1.integrable one_le_two)
+  have hG1 : Integrable ((ball (0 : Rn n) 1).indicator g) :=
+    (integrable_indicator_iff hB).2 (hfg.2.1.integrable one_le_two)
+  -- Step 2: radii `ε_j = (1 - r)/(j + 2) ∈ (0, 1 - r)` with `ε_j → 0`, and normalized bumps
+  -- `ρ_j ≥ 0` with `∫ ρ_j = 1` and `ρ_j = 0` off `B_{ε_j}`.
+  obtain ⟨ε, hεpos, hεlt, hεlim⟩ : ∃ ε : ℕ → ℝ,
+      (∀ j, 0 < ε j) ∧ (∀ j, ε j < 1 - r) ∧ Tendsto ε atTop (𝓝 0) := by
+    refine ⟨fun j => (1 - r) / ((j : ℝ) + 2), fun j => div_pos (sub_pos.2 hr1) (by positivity),
+      fun j => div_lt_self (sub_pos.2 hr1) ?_, ?_⟩
+    · have := (Nat.cast_nonneg j : (0 : ℝ) ≤ j)
+      linarith
+    · exact tendsto_const_nhds.div_atTop
+        (tendsto_atTop_add_const_right _ 2 tendsto_natCast_atTop_atTop)
+  obtain ⟨ρ, hρsmooth, hρcont, hρnonneg, hρint, hρsupp⟩ : ∃ ρ : ℕ → Rn n → ℝ,
+      (∀ j, ContDiff ℝ (⊤ : ℕ∞) (ρ j)) ∧ (∀ j, Continuous (ρ j)) ∧ (∀ j z, 0 ≤ ρ j z) ∧
+        (∀ j, ∫ z, ρ j z = 1) ∧ ∀ j z, ε j ≤ ‖z‖ → ρ j z = 0 := by
+    let b : ℕ → ContDiffBump (0 : Rn n) := fun j =>
+      ⟨ε j / 2, ε j, half_pos (hεpos j), half_lt_self (hεpos j)⟩
+    refine ⟨fun j => (b j).normed volume, fun j => (b j).contDiff_normed,
+      fun j => (b j).continuous_normed, fun j z => (b j).nonneg_normed z,
+      fun j => (b j).integral_normed, fun j z hz => ?_⟩
+    have hz' : z ∉ Function.support ((b j).normed volume) := by
+      rw [(b j).support_normed_eq, mem_ball_zero_iff, not_lt]
+      exact hz
+    exact Function.notMem_support.1 hz'
+  -- Step 3: `φ_j = ρ_j * F` is smooth, and `∇φ_j = ρ_j * G` on `B_{1 - ε_j}`.
+  have hmol := fun j : ℕ => Submission.w12_ball_mollification_gradient n f g hfg (ρ j) (ε j)
+    (hρsmooth j) (hρsupp j)
+  refine ⟨fun j x => ∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z),
+    fun j => (hmol j).1, ?_, ?_⟩
+  · -- Step 4: `F = f` on `B_r ⊆ B`, so the error is at most `∫_{ℝⁿ} |ρ_j * F - F|² → 0`.
+    have hlim := Submission.mollifier_l2_tendsto n ℝ ((ball (0 : Rn n) 1).indicator f) hF1 hF2
+      ρ ε hρcont hρnonneg hρint hρsupp hεlim
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
+      fun j => ?_
+    have hpt : ∀ x ∈ ball (0 : Rn n) r,
+        ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) - f x‖ₑ ^ 2 =
+          ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) -
+            (ball (0 : Rn n) 1).indicator f x‖ₑ ^ 2 := by
+      intro x hx
+      rw [indicator_of_mem (ball_subset_ball hr1.le hx)]
+    calc ∫⁻ x in ball (0 : Rn n) r,
+          ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) - f x‖ₑ ^ 2
+        = ∫⁻ x in ball (0 : Rn n) r,
+          ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) -
+            (ball (0 : Rn n) 1).indicator f x‖ₑ ^ 2 := setLIntegral_congr_fun measurableSet_ball hpt
+      _ ≤ ∫⁻ x, ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) -
+            (ball (0 : Rn n) 1).indicator f x‖ₑ ^ 2 := setLIntegral_le_lintegral _ _
+  · -- Step 5: on `B_r` we have `‖x‖ < 1 - ε_j`, so `∇φ_j = ρ_j * G` there, and `G = g`; the error
+    -- is at most `∫_{ℝⁿ} |ρ_j * G - G|² → 0`.
+    have hlim := Submission.mollifier_l2_tendsto n (Rn n) ((ball (0 : Rn n) 1).indicator g) hG1
+      hG2 ρ ε hρcont hρnonneg hρint hρsupp hεlim
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
+      fun j => ?_
+    have hpt : ∀ x ∈ ball (0 : Rn n) r,
+        ‖gradient (fun x => ∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) x - g x‖ₑ ^ 2 =
+          ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator g (x - z)) -
+            (ball (0 : Rn n) 1).indicator g x‖ₑ ^ 2 := by
+      intro x hx
+      have hx' : ‖x‖ < 1 - ε j := by
+        have := mem_ball_zero_iff.1 hx
+        linarith [hεlt j]
+      rw [(hmol j).2 x hx', indicator_of_mem (ball_subset_ball hr1.le hx)]
+    calc ∫⁻ x in ball (0 : Rn n) r,
+          ‖gradient (fun x => ∫ z, ρ j z • (ball (0 : Rn n) 1).indicator f (x - z)) x - g x‖ₑ ^ 2
+        = ∫⁻ x in ball (0 : Rn n) r,
+          ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator g (x - z)) -
+            (ball (0 : Rn n) 1).indicator g x‖ₑ ^ 2 := setLIntegral_congr_fun measurableSet_ball hpt
+      _ ≤ ∫⁻ x, ‖(∫ z, ρ j z • (ball (0 : Rn n) 1).indicator g (x - z)) -
+            (ball (0 : Rn n) 1).indicator g x‖ₑ ^ 2 := setLIntegral_le_lintegral _ _
+
+end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
