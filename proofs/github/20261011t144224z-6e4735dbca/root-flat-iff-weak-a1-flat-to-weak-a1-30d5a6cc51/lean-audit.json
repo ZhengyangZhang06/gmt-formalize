@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "754ea04418c01feec4fe2231049b29fc0371523cf83ec07c00b3fe2003c65410",
+  "git_delta": {
+    "base_commit": "c4f54217a7002f6e384b4ceec501a318290138d4",
+    "candidate_commit": "92fbe5f913e3934307b632c9d1a8d38074e53261",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "b6ebbf0a2119922695eac8eafeed7d975bd7dd0884e12422393022fb3fa812d3",
+    "source_sha256": "6745bd21f23754c814afc47b7fbbe988e08a5c95160b818ef18e07102c9a7120",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_flat_to_weak",
+      "statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (Tj : ℕ → GeometricCurrentOn U n), (∀ W, CompactlyContainedOpen W U → Tendsto (fun j => flatDistance W (Tj j) T) atTop (𝓝 0)) → WeaklyConvergesOn Tj T",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
