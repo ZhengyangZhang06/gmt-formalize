@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "67dbc8861a2b05a8667d1e5ecb15f6d855c1bfa77e5986fdda5ea62d96dd9d5f",
+  "git_delta": {
+    "base_commit": "d5ad6fe62f72531322112e6b6d937ba6014d99b8",
+    "candidate_commit": "39634bad5eec4be8528431168a20eb2a5ff79a28",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_zdm_imrep_zero_structure",
+    "diff_sha256": "895c526f628160610206e4aa9e11df02eaa19507898cd7bc4ea7fc9eb8f2a26c",
+    "source_sha256": "831f05d9f315a485d05890b104386816d896cdde547df1e7d334b4d08bf39f9d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_zdm_imrep_zero_structure",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (R : IMRep U 0), R.carrier.Countable ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → (R.carrier ∩ K).Finite ∧ R.measure K ≠ ∞) ∧ (∀ x ∈ R.carrier, (∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt 0 R.carrier x Q ∧ IsUnitOrientationOf (R.orient x) Q) ∧ R.orient x ≠ 0) ∧ (IsOpen U → U ∩ R.measure.support = R.carrier)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
