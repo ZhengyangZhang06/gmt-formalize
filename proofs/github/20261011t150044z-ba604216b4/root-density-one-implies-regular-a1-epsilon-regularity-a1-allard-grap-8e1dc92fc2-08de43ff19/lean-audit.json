@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "af17a11084e0db788c3445d3c6ebe08173e285065927807a68b38f8a055eae49",
+  "git_delta": {
+    "base_commit": "9b8c28eb92e6db7e9a586201c1a527e3328e3ae8",
+    "candidate_commit": "a0c1e365af0639f2f1429dcadfe841c2b3b2da44",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "doragm_approxTangent_lower_density",
+    "diff_sha256": "ae2699ebf4c2d24ebc6ee47cdfcde915f5ee5601f02fa66aaad3f1965f525cfd",
+    "source_sha256": "0619ff02091a546d102c1c37c5179797150cb4826e86b29d78f8eddf8fe2e1ad",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.doragm_approxTangent_lower_density",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), 0 < n → HasApproximateTangentSpaceAt n M x Q → ∀ c : ℝ≥0∞, c < unitBallVolume n → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal (ρ ^ n) ≤ μHE[n] (M ∩ closedBall x ρ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
