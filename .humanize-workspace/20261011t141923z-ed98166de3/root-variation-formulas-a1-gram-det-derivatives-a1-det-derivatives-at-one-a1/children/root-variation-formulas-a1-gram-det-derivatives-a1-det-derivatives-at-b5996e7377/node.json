@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.variation_formulas-a1.gram_det_derivatives-a1.det_derivatives_at_one-a1.leibniz_derivative-a1",
+  "parent_id": "root.variation_formulas-a1.gram_det_derivatives-a1.det_derivatives_at_one-a1",
+  "depth": 4,
+  "title": "Leibniz-form derivative of t ↦ det G(t) at a point",
+  "statement": "Let ι be a finite index set with decidable equality, let G : ℝ → ℝ^{ι×ι} be a function with values in the real ι×ι matrices, let H be a real ι×ι matrix and let x ∈ ℝ. Suppose that for all i, k ∈ ι the entry function s ↦ G(s)_{ik} has derivative H_{ik} at x. Then the function t ↦ det G(t) has derivative Σ_{σ∈Perm(ι)} sgn(σ) · Σ_{m∈ι} (Π_{j∈ι∖{m}} G(x)_{σ(j) j}) · H_{σ(m) m} at x. Here Perm(ι) is the finite group of permutations of ι, and the sign sgn(σ) ∈ {1, −1} is regarded as a real number (the unit sgn σ ∈ ℤˣ cast to ℤ and then to ℝ).",
+  "lean_statement": "∀ (ι : Type) [Fintype ι] [DecidableEq ι] (G : ℝ → Matrix ι ι ℝ) (H : Matrix ι ι ℝ) (x : ℝ), (∀ i k, HasDerivAt (fun s ↦ G s i k) (H i k) x) → HasDerivAt (fun t ↦ (G t).det) (∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ m : ι, (∏ j ∈ Finset.univ.erase m, G x (σ j) j) * H (σ m) m) x",
+  "lean_name": "variation_matrix_det_hasDerivAt_leibniz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-variation-formulas-a1-gram-det-derivatives-a1-det-derivatives-at-b5996e7377-a1"
+}
