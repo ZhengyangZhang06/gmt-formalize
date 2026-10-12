@@ -888,6 +888,28 @@ theorem Submission.regcomp_atl_tangent_iff_of_density_zero : ∀ (P n : ℕ) (A 
     (map_continuous f) hA hB hAB hr.1 hBfin hC hf0
   rwa [Submission.regcomp_atl_blowUp_measure_scaling P n x r R (B \ A) hr.1] at key
 
+/-- Almost-everywhere locality of approximate tangent spaces (Simon Ch. 3, Remark 1.5(2), from the
+proof of 3.1.6 "⇒"): if `U` is open, `A ⊆ B ⊆ U` are Borel and `Hⁿ(B ∩ K) < ∞` for compact
+`K ⊆ U`, then for `Hⁿ`-a.e. `x ∈ A`, `B` and `A` have the same approximate tangent spaces at `x`.
+The upper density theorem in `U` (Simon Ch. 1, Remark 3.7(2)) applied to `B \ A` gives
+`Hⁿ((B \ A) ∩ B̄_ρ(x))/ρⁿ → 0` for `Hⁿ`-a.e. `x ∈ A ⊆ U \ (B \ A)`; at such `x` choose `r₀ > 0`
+with `B̄_{r₀}(x) ⊆ U`, so that `Hⁿ(B ∩ B̄_{r₀}(x)) < ∞`, and compare the blow-ups of `B` and `A`. -/
+theorem Submission.regcomp_approx_tangent_locality : ∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q := by
+  intro P n U A B hU hA hB hAB hBU hfin
+  -- Step 1: `B \ A` has zero `n`-density at `Hⁿ`-a.e. `x ∈ U \ (B \ A)`
+  have hdens := Submission.regcomp_atl_local_density_zero P n U (B \ A) hU (hB.diff hA)
+    fun K hK hKU => ne_top_of_le_ne_top (hfin K hK hKU)
+      (measure_mono (inter_subset_inter_left K sdiff_subset))
+  -- Step 2: pass to `Hⁿ⌞A`, almost every point of which lies in `A`
+  filter_upwards [ae_restrict_of_ae hdens, ae_restrict_mem hA] with x hx hxA
+  have hxU : x ∈ U := hBU (hAB hxA)
+  -- Step 3: a closed ball `B̄_{r₀}(x) ⊆ U`, `r₀ = ε / 2`, on which `Hⁿ⌞B` is finite
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hU x hxU
+  have hsub : closedBall x (ε / 2) ⊆ U := (closedBall_subset_ball (half_lt_self hε)).trans hball
+  -- Step 4: the pointwise comparison of the blow-ups of `B` and `A`
+  exact Submission.regcomp_atl_tangent_iff_of_density_zero P n A B x (ε / 2) hA hB hAB
+    (half_pos hε) (hfin _ (isCompact_closedBall x (ε / 2)) hsub) (hx hxU fun h => h.2 hxA)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
