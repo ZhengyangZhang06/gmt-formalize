@@ -993,6 +993,36 @@ theorem Submission.tangentialDivergence_meanCurvature_integrableOn : ∀ (n N : 
   refine ⟨key _ hdiv fun y _ hy ↦ ?_, key _ (hY.continuous.continuousOn.inner hH) fun y _ hy ↦ ?_⟩
   · simp [tangentialDivergence, hD0 y hy]
   · simp [hYF y hy]
+/-- **Simon Ch. 2, partition-of-unity step for 4.22(*) and 4.29–4.30 (pp. 59–61).** With `div_M`
+as in 4.20 and `H` as in 4.27: let `Y` and `ζ_q` (`q < p`) be `C¹`, `Y = 0` off the closed set `S`,
+and `∑_q ζ_q = 1` on an open `O ⊇ M ∩ S`. Then at every `y ∈ M`,
+`div_M Y(y) + Y(y) · H(y) = ∑_q (div_M(ζ_q Y)(y) + ζ_q(y) Y(y) · H(y))`. Near `y`, `Y = ∑_q ζ_q Y`
+(on `O` if `y ∈ S`, on `Sᶜ` otherwise), so `DY(y) = ∑_q D(ζ_q Y)(y)`; both terms are linear. -/
+theorem Submission.tangentialDivergence_add_inner_eq_sum_partition : ∀ (N p : ℕ) (M S O : Set (Rn N)) (Y : Rn N → Rn N) (ζ : Fin p → Rn N → ℝ), ContDiff ℝ 1 Y → (∀ q, ContDiff ℝ 1 (ζ q)) → IsClosed S → (∀ x ∉ S, Y x = 0) → IsOpen O → M ∩ S ⊆ O → (∀ z ∈ O, ∑ q, ζ q z = 1) → ∀ y ∈ M, tangentialDivergence M Y y + inner ℝ (Y y) (meanCurvature M y) = ∑ q, (tangentialDivergence M (fun z ↦ ζ q z • Y z) y + inner ℝ (ζ q y • Y y) (meanCurvature M y)) := by
+  intro N p M S O Y ζ hY hζ hS hYS hO hMSO hsum y hy
+  -- Step 1: `Y = ∑_q ζ_q Y` near `y`: on `O` if `y ∈ S`, on `Sᶜ` (where `Y = 0`) otherwise.
+  have hloc : Y =ᶠ[𝓝 y] fun z ↦ ∑ q, ζ q z • Y z := by
+    by_cases hyS : y ∈ S
+    · filter_upwards [hO.mem_nhds (hMSO ⟨hy, hyS⟩)] with z hz
+      rw [← Finset.sum_smul, hsum z hz, one_smul]
+    · filter_upwards [hS.isOpen_compl.mem_nhds hyS] with z hz
+      simp [hYS z hz]
+  -- Step 2: `DY(y) = ∑_q D(ζ_q Y)(y)`, each `ζ_q Y` being `C¹`.
+  have hD : fderiv ℝ Y y = ∑ q, fderiv ℝ (fun z ↦ ζ q z • Y z) y := by
+    rw [hloc.fderiv_eq, fderiv_fun_sum fun q _ ↦
+      (((hζ q).fun_smul hY).differentiable one_ne_zero).differentiableAt]
+  -- Step 3: the frame sum is linear in `DY(y)`; exchange the two finite sums.
+  have hdiv : tangentialDivergence M Y y =
+      ∑ q, tangentialDivergence M (fun z ↦ ζ q z • Y z) y := by
+    simp only [tangentialDivergence, hD, _root_.sum_apply, inner_sum]
+    exact Finset.sum_comm
+  -- Step 4: `Y(y) = ∑_q ζ_q(y) Y(y)`, so the mean-curvature term splits the same way.
+  have hval : Y y = ∑ q, ζ q y • Y y := hloc.eq_of_nhds
+  have hinner : inner ℝ (Y y) (meanCurvature M y) =
+      ∑ q, inner ℝ (ζ q y • Y y) (meanCurvature M y) := by
+    rw [← sum_inner, ← hval]
+  -- Step 5: add the two identities and regroup the sums.
+  rw [Finset.sum_add_distrib, hdiv, hinner]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
