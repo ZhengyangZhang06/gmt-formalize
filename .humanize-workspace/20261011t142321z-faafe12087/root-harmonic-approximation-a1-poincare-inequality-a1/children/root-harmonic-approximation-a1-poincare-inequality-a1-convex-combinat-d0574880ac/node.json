@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.poincare_inequality-a1.convex_combination_bound-a1",
+  "parent_id": "root.harmonic_approximation-a1.poincare_inequality-a1",
+  "depth": 3,
+  "title": "Convex-combination substitution bound on a ball",
+  "statement": "For every n ∈ ℕ, every measurable h : ℝ^n → [0, ∞], every r > 0 and every t ∈ [0, 1], with B_r = ball(0, r) and Lebesgue measure |·|: ∫⁻_{x ∈ B_r} ∫⁻_{y ∈ B_r} h((1 − t)·y + t·x) dy dx ≤ 2^n · |B_r| · ∫⁻_{B_r} h (outer variable x, inner variable y; lintegrals in [0, ∞]).",
+  "lean_statement": "∀ (n : ℕ) (h : Rn n → ℝ≥0∞), Measurable h → ∀ r t : ℝ, 0 < r → 0 ≤ t → t ≤ 1 → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, h ((1 - t) • y + t • x) ≤ (2 : ℝ≥0∞) ^ n * volume (ball (0 : Rn n) r) * ∫⁻ z in ball (0 : Rn n) r, h z",
+  "lean_name": "poincare_ball_convex_combination_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-poincare-inequality-a1-convex-combinat-d0574880ac-a1"
+}
