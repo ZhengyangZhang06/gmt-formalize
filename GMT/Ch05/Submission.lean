@@ -473,6 +473,48 @@ theorem dohr_lmo_hausdorff_null_of_weight_null : ∀ n ℓ : ℕ, ∀ (U : Set (
   have hsub : A ⊆ ({x | ENNReal.ofReal (V.mult x) ≠ 0} ∩ A) ∩ V.carrier := fun x hx =>
     ⟨⟨(ENNReal.ofReal_pos.mpr (V.mult_pos x (hA hx))).ne', hx⟩, hA hx⟩
   exact measure_mono_null hsub (nonpos_iff_eq_zero.mp ((Measure.le_restrict_apply _ _).trans h0.le))
+/-- **`μ_V ⌞ O = Hⁿ ⌞ (spt V ∩ O)` where `θ = 1`** (node
+`root.density_one_higher_regularity-a1.local_multiplicity_one-a1.weight_restrict_eq-a1`; step 10 of
+`dohr_local_multiplicity_one`).  If `θ = 1` `μ_V`-a.e. on the measurable set `O` and
+`Hⁿ((M ∩ O) ∆ (spt V ∩ O)) = 0`, then `μ_V ⌞ O = Hⁿ ⌞ (spt V ∩ O)`.
+
+`N = {x ∈ M ∩ O : θ(x) ≠ 1}` is `μ_V`-null, hence `Hⁿ`-null by
+`dohr_lmo_hausdorff_null_of_weight_null`.  For measurable `S`,
+`μ_V(S ∩ O) = ∫_{S ∩ O ∩ M} θ dHⁿ = Hⁿ(S ∩ O ∩ M)` since `θ = 1` `Hⁿ`-a.e. on `S ∩ O ∩ M`, and
+`Hⁿ(S ∩ O ∩ M) = Hⁿ(S ∩ (spt V ∩ O))` since `M ∩ O = spt V ∩ O` up to an `Hⁿ`-null set. -/
+theorem dohr_lmo_weight_restrict_eq : ∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (O : Set (Amb n ℓ)), MeasurableSet O → (∀ᵐ x ∂V.weight, x ∈ O → V.mult x = 1) → (μHE[n] : Measure (Amb n ℓ)) (symmDiff (V.carrier ∩ O) (V.support ∩ O)) = 0 → V.weight.restrict O = (μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ O) := by
+  intro n ℓ U V O hO hθ hsd
+  /- Step 1: `N = {x ∈ M ∩ O : θ(x) ≠ 1}` is `μ_V`-null, hence `Hⁿ`-null. -/
+  have hNw : V.weight {x | x ∈ V.carrier ∩ O ∧ V.mult x ≠ 1} = 0 := by
+    have hθ' := ae_iff.1 hθ
+    refine measure_mono_null ?_ hθ'
+    intro x hx
+    show ¬(x ∈ O → V.mult x = 1)
+    exact fun h' => hx.2 (h' hx.1.2)
+  have hNH : (μHE[n] : Measure (Amb n ℓ)) {x | x ∈ V.carrier ∩ O ∧ V.mult x ≠ 1} = 0 :=
+    Submission.dohr_lmo_hausdorff_null_of_weight_null n ℓ U V _ (fun x hx => hx.1.1) hNw
+  ext S hS
+  /- Step 2: `μ_V(S ∩ O) = ∫_{S ∩ O ∩ M} θ dHⁿ`. -/
+  have hSO : MeasurableSet (S ∩ O) := hS.inter hO
+  rw [Measure.restrict_apply hS, Measure.restrict_apply hS, RectifiableVarifold.weight,
+    withDensity_apply _ hSO, Measure.restrict_restrict hSO]
+  /- Step 3: `θ = 1` `Hⁿ`-a.e. on `S ∩ O ∩ M`, so the integral is `Hⁿ(S ∩ O ∩ M)`. -/
+  have hX : NullMeasurableSet (S ∩ O ∩ V.carrier) (μHE[n] : Measure (Amb n ℓ)) :=
+    hSO.nullMeasurableSet.inter V.nullMeasurableSet_carrier
+  have h1 : ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)).restrict (S ∩ O ∩ V.carrier),
+      ENNReal.ofReal (V.mult x) = 1 := by
+    filter_upwards [ae_restrict_mem₀ hX,
+      ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.1 hNH)] with x hxX hxN
+    have hx1 : V.mult x = 1 := by
+      by_contra h
+      exact hxN ⟨⟨hxX.2, hxX.1.2⟩, h⟩
+    rw [hx1, ENNReal.ofReal_one]
+  rw [lintegral_congr_ae h1, setLIntegral_one]
+  /- Steps 4–5: `S ∩ O ∩ M = S ∩ (spt V ∩ O)` up to the `Hⁿ`-null `(M ∩ O) ∆ (spt V ∩ O)`. -/
+  have h2 : S ∩ (V.carrier ∩ O) =ᵐ[(μHE[n] : Measure (Amb n ℓ))] S ∩ (V.support ∩ O) :=
+    EventuallyEqSet.rfl.inter (measure_symmDiff_eq_zero_iff.1 hsd)
+  rw [inter_assoc, inter_comm O]
+  exact measure_congr h2
 
 end Submission
 
