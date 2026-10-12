@@ -426,6 +426,7 @@ theorem Submission.lpf_c1r_egoroff_closed : ∀ (n : ℕ) (C : Set (Eucl n)) (f 
     have h1 := hSle j x (hFsub j hj).2
     have h2 : ‖x‖ ≤ R := mem_closedBall_zero_iff.1 hx.2
     exact_mod_cast (h1.trans h2).trans (Nat.le_ceil R)
+
 /-- Simon Ch. 2, proof of Theorem 1.5 (C¹ Approximation Theorem, p. 44), the `η_k` step.  Let
 `g : ℝⁿ → ℝ` be Lipschitz and `C` closed, with `g` differentiable at every point of `C` and `Dg`
 continuous on `C`.  Then there is a closed `A ⊆ C` with `Lⁿ(C ∖ A) < ε` on which the remainder
@@ -497,8 +498,8 @@ theorem Submission.lpf_c1r_uniform_remainder :
     intro x hx
     rw [Metric.tendsto_atTop]
     intro γ hγ
-    obtain ⟨ρ, hρ, hball⟩ :=
-      Metric.eventually_nhds_iff.mp ((hdiff x hx).hasFDerivAt.isLittleO.def (half_pos hγ))
+    obtain ⟨ρ, hρ, hball⟩ := Metric.eventually_nhds_iff.mp
+      (Asymptotics.isLittleO_iff.mp (hdiff x hx).hasFDerivAt.isLittleO (half_pos hγ))
     obtain ⟨N, hN⟩ := exists_nat_one_div_lt hρ
     refine ⟨N, fun k hk => ?_⟩
     have hkN : 1 / ((k : ℝ) + 1) ≤ 1 / ((N : ℝ) + 1) := by gcongr
