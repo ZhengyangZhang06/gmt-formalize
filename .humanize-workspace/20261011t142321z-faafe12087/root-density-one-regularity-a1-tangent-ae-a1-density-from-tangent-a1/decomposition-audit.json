@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "euclideanHausdorffMeasure_eq_volume|homothety_image|map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_image",
+        "theorem volume_closedBall|ofReal_div_of_pos|theorem tendsto_ofReal|theorem integral_smul_measure|theorem MeasurableEmbedding.integral_map|theorem ofReal_integral_eq_lintegral_ofReal|theorem restrict_apply ",
+        "def blowUpMap|def HasWeightedApproximateTangentSpaceAt|def HasApproximateTangentSpaceAt",
+        "rsod_tendsto_scaled_mult_integral|rsod_blowUp_setIntegral_eq|rsod_planeMeasure_closedBall|rsod_weight_closedBall_eq_ofReal_integral|rsod_blowUp_integral_ballMass_bounds|tae_hasDensity_of_weightedApproxTangent",
+        "git show b30ebfa88273b4798c4d063b4dd1110287a8a190:GMT/Ch05/Submission.lean",
+        "git show 7881dde5f7e308e54f05a8f95dc7a4b94e277e4c:GMT/Ch05/Submission.lean",
+        "python3 /tmp/independent-density-audit-0ezdb6ha/run_lean_audit.py Types.lean",
+        "python3 /tmp/independent-density-audit-0ezdb6ha/run_lean_audit.py Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-tangent-ae-a1-density-from-tangent-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-tangent-ae-a1-density-from-tangent-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-scaled-mu-4d1307f0f9/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-blowup-ch-45b63ae1fc/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-plane-bal-a9b18bed1e/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-weight-ba-26a0dc4b42/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-blowup-ba-40eacdf648/accepted-candidate.json",
+        "/tmp/independent-density-audit-0ezdb6ha/Types.lean",
+        "/tmp/independent-density-audit-0ezdb6ha/Full.lean",
+        "/tmp/independent-density-audit-0ezdb6ha/Full.lean.log"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and the unchanged contract header. The snapshot supports the Hausdorff scaling, restriction, Bochner-integral and ENNReal facts used. No proposed declaration name occurs in the searched snapshot project/GMT tree. All five names are bare identifiers uniquely belonging to comparator-accepted DAG nodes; their frozen types, candidate commits and recorded source hashes match. Dependencies are correctly directed and acyclic. Independently compiled all five propositions without declaring their implementations, then compiled the accepted implementations and supplied assembly against the exact selected parent type. All six proof checks use only propext, Classical.choice and Quot.sound. The reuse split is appropriate: the real integral limit and ball-weight identity, followed by division by positive unitBallVolume and ENNReal.ofReal continuity, establish precisely the selected HasDensity conclusion."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "scaled_mult_integral_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type match, including the weaker assumption x ∈ U. The proof verifies cutoff support, integrability and both sibling comparisons. It correctly derives θ(x) ≥ 0 from a positive lower-cutoff plane integral before multiplying inequalities. The subsequent order-topology argument proves the exact real limit, including θ(x)=0, without assuming density or either parent theorem."
+    },
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary-set and arbitrary-function contract is sound. Scaling and bijectivity give the restricted-measure identity without measurability of M: only evaluated Borel sets need measurability. The cited measurable-embedding and scalar-measure integral identities are unconditional, covering non-integrable functions. The positive finite scaling factor and inverse-map simplification yield exactly the stated equality."
+    },
+    {
+      "key": "plane_ball_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes precisely the dimension, positivity and radius hypotheses in the prose. The subtype inclusion transfers Hausdorff measure correctly; n ≥ 1 supplies nontriviality for the ball-volume formula. The normalization and ofReal algebra are valid, including s=0. The identical-type accepted implementation also verifies this normalization within the frozen imports."
+    },
+    {
+      "key": "weight_ball_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly requires only containment of the closed ball in U, with arbitrary real radius. Compactness supplies integrability. Null-measurability of the carrier supplies almost-everywhere carrier membership and hence nonnegativity. The withDensity and restriction identities followed by ofReal_integral_eq_lintegral_ofReal prove the exact equality without extra openness or carrier-membership assumptions."
+    },
+    {
+      "key": "blowup_ball_mass_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and all three conclusions match the one-line proposition. The proof correctly uses its sole dependency for change of variables, establishes ball correspondence and integrability by domination, and obtains positivity almost everywhere on the null-measurable carrier. Both conditional inequalities then follow from valid integral comparisons and multiplication by positive r⁻ⁿ. No circular reliance occurs."
+    }
+  ],
+  "required_changes": []
+}
