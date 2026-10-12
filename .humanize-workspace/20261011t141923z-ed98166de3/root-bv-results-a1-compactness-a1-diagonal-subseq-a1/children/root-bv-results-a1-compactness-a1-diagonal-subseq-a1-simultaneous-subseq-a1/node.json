@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.compactness-a1.diagonal_subseq-a1.simultaneous_subseq-a1",
+  "parent_id": "root.bv_results-a1.compactness-a1.diagonal_subseq-a1",
+  "depth": 4,
+  "title": "Finite L¹ nets on countably many sets give one subsequence converging in L¹ on each of them (steps 0 and 2–4 of the diagonal extraction)",
+  "statement": "Let n ∈ ℕ, let Q_j ⊆ ℝⁿ (j ∈ ℕ) be arbitrary sets and u_k : ℝⁿ → ℝ (k ∈ ℕ) functions such that every u_k is Lebesgue integrable on every Q_j, and such that for every j and every ε > 0 there is a finite set F ⊆ ℕ with: every k ∈ ℕ has some i ∈ F with ∫⁻_{Q_j} ‖u_k(x) − u_i(x)‖ₑ dx < ofReal ε. Then there are a strictly increasing ψ : ℕ → ℕ and functions G_j : ℝⁿ → ℝ (j ∈ ℕ) such that every G_j is integrable on Q_j and, for every j, ∫⁻_{Q_j} ‖u_{ψ(k)}(x) − G_j(x)‖ₑ dx → 0 as k → ∞.",
+  "lean_statement": "∀ (n : ℕ) (Q : ℕ → Set (Rn n)) (u : ℕ → Rn n → ℝ), (∀ j k, IntegrableOn (u k) (Q j) volume) → (∀ j, ∀ ε : ℝ, 0 < ε → ∃ F : Finset ℕ, ∀ k, ∃ i ∈ F, (∫⁻ x in Q j, ‖u k x - u i x‖ₑ) < ENNReal.ofReal ε) → ∃ (ψ : ℕ → ℕ) (G : ℕ → Rn n → ℝ), StrictMono ψ ∧ (∀ j, IntegrableOn (G j) (Q j) volume) ∧ ∀ j, Tendsto (fun k ↦ ∫⁻ x in Q j, ‖u (ψ k) x - G j x‖ₑ) atTop (𝓝 0)",
+  "lean_name": "bv_exists_subseq_tendsto_lintegral_of_finite_nets",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-compactness-a1-diagonal-subseq-a1-simultaneous-subseq-a1-a1"
+}

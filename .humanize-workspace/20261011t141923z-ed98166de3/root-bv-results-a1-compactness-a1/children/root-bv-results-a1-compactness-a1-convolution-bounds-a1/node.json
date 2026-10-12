@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.compactness-a1.convolution_bounds-a1",
+  "parent_id": "root.bv_results-a1.compactness-a1",
+  "depth": 3,
+  "title": "Sup and Lipschitz bounds for convolution with a bounded Lipschitz kernel (step A1(ii), T1)",
+  "statement": "For every n ∈ ℕ, all ρ, F : ℝⁿ → ℝ, every real A and every K ∈ ℝ≥0 such that |ρ(x)| ≤ A for all x, ρ is K-Lipschitz and F is Lebesgue integrable on ℝⁿ, the convolution (ρ⋆F)(x) := convolution ρ F (lsmul ℝ ℝ) volume x = ∫ ρ(t)F(x − t) dt satisfies, for all x, y ∈ ℝⁿ: |(ρ⋆F)(x)| ≤ A·∫|F| and |(ρ⋆F)(x) − (ρ⋆F)(y)| ≤ K·‖x − y‖·∫|F|.",
+  "lean_statement": "∀ (n : ℕ) (ρ F : Rn n → ℝ) (A : ℝ) (K : ℝ≥0), (∀ x, |ρ x| ≤ A) → LipschitzWith K ρ → Integrable F volume → ∀ x y : Rn n, |convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x| ≤ A * (∫ t, |F t|) ∧ |convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume x - convolution ρ F (ContinuousLinearMap.lsmul ℝ ℝ) volume y| ≤ K * ‖x - y‖ * (∫ t, |F t|)",
+  "lean_name": "bv_convolution_bound_and_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-compactness-a1-convolution-bounds-a1-a1"
+}
