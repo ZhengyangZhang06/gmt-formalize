@@ -1,0 +1,53 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "MultiVector|IsUnitOrientationOf|structure IMRep|def Represents|locallyIntegrable_mult|def action|orients|μHE|^import|namespace",
+        "VanishesOn|zeroRegion|imsupp_unit_orientation_ne_zero_norm_le_one|imrep_carrier_inter_null_of_vanishesOn",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero|variable",
+        "isOpen_sUnion_countable|measure_biUnion_null_iff|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|ext_alternating",
+        "def GeometricCurrentOn.(VanishesOn|zeroRegion|support)",
+        "git diff c4996afd6a47ccb4eaff0a43e52254bf2e001e31 2e5d20d49a4a41f79e81db1a65e850fb919b38ba -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sn-decomp/Inst.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/support-null-independent-audit/Frozen.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-2d6f974584/accepted-candidate.json",
+        "/tmp/sn-decomp/All.lean",
+        "/tmp/sn-decomp/Inst.lean",
+        "/tmp/support-null-independent-audit/Frozen.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace, and the inspected dependencies match their pinned revisions. Searching the snapshot project found no matching child declarations or VanishesOn/zeroRegion lemmas. Both exact child propositions elaborate before their declarations with the frozen contract inlined. The complete supplied proof chain independently compiles using only propext, Classical.choice and Quot.sound; operator-norm and support-definition checks also pass. The split is appropriate: local_carrier_null depends only on unit_orientation_bounds, and countable reduction establishes exactly Submission.imrep_carrier_sdiff_support_null. Dependencies are acyclic and correctly directed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_orientation_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and uses the intended operator norms. The bare name validly reuses comparator-accepted candidate 2e5d20d49a4a41f79e81db1a65e850fb919b38ba with an identical frozen type. Independently checking the proof: orthonormality gives the norm bound; unnormalized alternatization constructs a covector evaluating to 1, including n = 0; either orientation sign therefore gives nonvanishing. No circular reliance or missing hypothesis occurs."
+    },
+    {
+      "key": "local_carrier_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition includes every stated hypothesis, allows arbitrary U as the proof requires, and has a bare name with no competing DAG reservation. The proof establishes finite localization and scalar integrability, transfers orientation facts to the restricted measure, constructs admissible smooth test forms, justifies restriction of the integral, applies the fundamental lemma, cancels positive multiplicity, and uses a justified finite covector basis to obtain the contradiction. Its sole child dependency is correctly declared. The argument is complete, non-circular, and supplies precisely the local nullity needed for the selected parent's countable reduction."
+    }
+  ],
+  "required_changes": []
+}
