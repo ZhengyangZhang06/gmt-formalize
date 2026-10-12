@@ -375,6 +375,27 @@ theorem Submission.rectifiability_mickle_rado_limsup_eq_iInf :
     obtain ⟨n, hn⟩ := exists_nat_one_div_lt hε
     refine (iInf_le _ n).trans ?_
     exact biSup_mono fun t ht => ⟨ht.1, ht.2.trans hn⟩
+theorem Submission.rectifiability_mickle_rado_sup_lsc : ∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))), (∀ (c : Eucl (m + 1)) (τ : ℝ), ψ (ball c τ) = ⨆ τ' ∈ Ioo (0 : ℝ) τ, ψ (ball c τ')) → ∀ r : ℝ, LowerSemicontinuous (fun c : Eucl (m + 1) => ⨆ t ∈ Ioo (0 : ℝ) r, ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) := by
+  intro m ψ hball r
+  -- step 1: `c ↦ ψ (ball c τ)` is lower semicontinuous, by inner continuity on balls
+  have hlsc : ∀ τ : ℝ, LowerSemicontinuous (fun c : Eucl (m + 1) => ψ (ball c τ)) := by
+    intro τ c a ha
+    change a < ψ (ball c τ) at ha
+    rw [hball c τ] at ha
+    obtain ⟨τ', hτ', hlt⟩ := lt_biSup_iff.1 ha
+    filter_upwards [ball_mem_nhds c (sub_pos.2 hτ'.2)] with c' hc'
+    refine hlt.trans_le (measure_mono ?_)
+    intro z hz
+    rw [mem_ball] at hz hc' ⊢
+    calc dist z c' ≤ dist z c + dist c c' := dist_triangle _ _ _
+      _ < τ' + (τ - τ') := by rw [dist_comm c c']; exact add_lt_add hz hc'
+      _ = τ := by ring
+  -- step 2: divide by the positive finite `tᵏ`, then take the supremum over `t ∈ (0, r)`
+  apply lowerSemicontinuous_biSup
+  intro t ht
+  have hden : ENNReal.ofReal (t ^ (m + 1)) ≠ 0 := (ENNReal.ofReal_pos.2 (pow_pos ht.1 _)).ne'
+  exact (ENNReal.continuous_div_const _ hden).comp_lowerSemicontinuous (hlsc t)
+    (fun _ _ h => ENNReal.div_le_div_right h _)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
