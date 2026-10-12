@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b2e5ded20d7903c8d861d7790d06db73cd21e18eab2ee2eb2214b05b4bfc5db1",
+  "git_delta": {
+    "base_commit": "2c2e689e8131be1db0f9cb0d7dcf96b1298d5495",
+    "candidate_commit": "dc13f906cc9ad1c830bc17ebc6eda76ec59ca041",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "measure_bad_interior_exceptional_eq_zero",
+    "diff_sha256": "747239c79acbc30f901a6fa471fabd278d3efeeccc70f706bcc568014921ec58",
+    "source_sha256": "549d4ddd2db056fda26d814b5c4480a8bcab4896b6de271faaa6efe56d535f0e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.measure_bad_interior_exceptional_eq_zero",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (μs : ℕ → Measure (Euclidean N)) (W : Set (Euclidean N)) (Bad : ℕ → ℕ → Set (Euclidean N)) (C : ℕ) (a b : ℕ → ℝ≥0∞), (∀ O : Set (Euclidean N), IsOpen O → O ⊆ W → μ O ≤ liminf (fun q ↦ μs q O) atTop) → (∀ q k, Bad q k ⊆ W) → liminf a atTop ≠ ∞ → Tendsto b atTop (𝓝 0) → (∀ q k : ℕ, 1 ≤ k → μs q (Bad q k) ≤ (C : ℝ≥0∞) * (k : ℝ≥0∞)⁻¹ * a q + b q) → μ (⋂ k : ℕ, ⋂ (_ : 1 ≤ k), ⋃ i : ℕ, interior (⋂ ℓ : ℕ, ⋂ (_ : i ≤ ℓ), Bad ℓ k)) = 0",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
