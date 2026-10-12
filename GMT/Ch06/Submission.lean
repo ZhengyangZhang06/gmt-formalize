@@ -392,6 +392,66 @@ theorem Submission.slicing_mb_dm_distribution_mono_rightcont :
       (fun i j _ hij => hsub i j hij) ⟨s + 1, by linarith, hfin (s + 1)⟩
   -- `toReal` is continuous at the finite value `ν(A_s)`.
   exact (ENNReal.tendsto_toReal (hfin s)).comp hlim
+/-- The lower left Dini derivative `D(t) = liminf_{k → 0+} ofReal ((G t - G (t - k)) / k)` of a
+nondecreasing right-continuous `G : ℝ → ℝ` is Borel measurable. -/
+theorem Submission.slicing_mb_dm_lowerLeftDini_measurable :
+    ∀ G : ℝ → ℝ, Monotone G → (∀ s : ℝ, ContinuousWithinAt G (Ici s) s) →
+      Measurable (fun t : ℝ => liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k))
+        (𝓝[>] 0)) := by
+  intro G hG hG_cont
+  -- The intervals `(0, 1/(j+1))`, `j ∈ ℕ`, form a basis of `𝓝[>] 0`.
+  have hbasis : (𝓝[>] (0 : ℝ)).HasBasis (fun _ : ℕ => True)
+      (fun j => Ioo 0 (1 / ((j : ℝ) + 1))) := by
+    refine (nhdsGT_basis (0 : ℝ)).to_hasBasis (fun δ hδ => ?_) (fun j _ => ?_)
+    · obtain ⟨j, hj⟩ := exists_nat_one_div_lt hδ
+      exact ⟨j, trivial, Ioo_subset_Ioo_right hj.le⟩
+    · exact ⟨1 / ((j : ℝ) + 1), Nat.one_div_pos_of_nat, subset_rfl⟩
+  -- Right-continuity of `G` makes `k ↦ F_t(k)` left-continuous at each `k > 0`.
+  have hleft : ∀ t k : ℝ, 0 < k → ContinuousWithinAt
+      (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (Iio k) k := by
+    intro t k hk
+    have hGk : ContinuousWithinAt (fun x : ℝ => G (t - x)) (Iio k) k := by
+      have h1 : ContinuousWithinAt G (Ioi (t - k)) (t - k) :=
+        continuousWithinAt_Ioi_iff_Ici.2 (hG_cont (t - k))
+      refine h1.comp (continuous_const.sub continuous_id).continuousWithinAt ?_
+      intro x hx
+      simp only [mem_Ioi, mem_Iio] at hx ⊢
+      linarith
+    exact ENNReal.continuous_ofReal.continuousAt.comp_continuousWithinAt
+      ((continuousWithinAt_const.sub hGk).div continuousWithinAt_id hk.ne')
+  -- The infimum over real `k ∈ (0, δ)` equals the infimum over rational `q ∈ (0, δ)`.
+  have hrat : ∀ t δ : ℝ, (⨅ k ∈ Ioo 0 δ, ENNReal.ofReal ((G t - G (t - k)) / k)) =
+      ⨅ (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 δ), ENNReal.ofReal ((G t - G (t - q)) / q) := by
+    intro t δ
+    refine le_antisymm (le_iInf₂ fun q hq => iInf₂_le (q : ℝ) hq) (le_iInf₂ fun k hk => ?_)
+    -- Approximate `k` from the left by rationals `q n ∈ (max 0 (k - 1/(n+1)), k)`.
+    have hex : ∀ n : ℕ, ∃ q : ℚ, max 0 (k - 1 / ((n : ℝ) + 1)) < q ∧ (q : ℝ) < k := fun n =>
+      exists_rat_btwn (max_lt hk.1 (sub_lt_self k Nat.one_div_pos_of_nat))
+    choose q hq_lo hq_hi using hex
+    have hq_tendsto : Tendsto (fun n => (q n : ℝ)) atTop (𝓝[<] k) := by
+      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_
+        (Eventually.of_forall hq_hi)
+      refine tendsto_of_tendsto_of_tendsto_of_le_of_le (g := fun n : ℕ => k - 1 / ((n : ℝ) + 1))
+        (h := fun _ => k) ?_ tendsto_const_nhds
+        (fun n => (le_max_right _ _).trans (hq_lo n).le) (fun n => (hq_hi n).le)
+      simpa using (tendsto_const_nhds (f := (atTop : Filter ℕ)) (x := k)).sub
+        tendsto_one_div_add_atTop_nhds_zero_nat
+    refine ge_of_tendsto' ((hleft t k hk.1).tendsto.comp hq_tendsto) fun n => ?_
+    exact iInf₂_le (q n) ⟨(le_max_left _ _).trans_lt (hq_lo n), (hq_hi n).trans hk.2⟩
+  -- Hence `D(t) = ⨆ j, ⨅ q ∈ ℚ ∩ (0, 1/(j+1)), F_t(q)`, a countable formula.
+  have hformula : (fun t : ℝ => liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k))
+      (𝓝[>] 0)) = fun t => ⨆ j : ℕ, ⨅ (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 (1 / ((j : ℝ) + 1))),
+        ENNReal.ofReal ((G t - G (t - q)) / q) := by
+    funext t
+    rw [hbasis.liminf_eq_iSup_iInf]
+    simp only [iSup_true]
+    exact iSup_congr fun j => hrat t _
+  -- `G` is monotone, hence measurable, so each `t ↦ F_t(q)` is measurable.
+  rw [hformula]
+  have hGm : Measurable G := hG.measurable
+  refine Measurable.iSup fun j => Measurable.iInf fun q => Measurable.iInf_Prop _ ?_
+  exact ENNReal.measurable_ofReal.comp
+    ((hGm.sub (hGm.comp (measurable_id.sub_const _))).div_const _)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
