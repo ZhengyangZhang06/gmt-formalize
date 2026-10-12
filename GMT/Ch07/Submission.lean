@@ -880,6 +880,72 @@ theorem Submission.dtc_blowUp_preimage : ∀ (P n : ℕ) (U : Set (Euclid P)) (x
           R₂.locallyIntegrable_mult K hK (hKU.trans hUV) },
       fun ω => hR₂ (testFormOnInclusion hUV n ω)⟩
 
+/-- **Blow-ups preserve minimality** (Simon 7.1.1, chapter-07.txt lines 12–18, for `η = η_{x,λ}`,
+`λ > 0`; used for `η_{x,λⱼ#}T` in the proof of 7.3.1, chapter-07.txt lines 329–337): if `T` is
+minimizing in `A`, then `η_#T` is minimizing in `η(A)`.
+
+`η_#T` is integer multiplicity (`dtc_blowUp_imrep`).  A competitor `S'` for `η_#T` on
+`W' ⊂⊂ η(U)` is `η_#S''` with `S''` integer multiplicity (`dtc_blowUp_preimage`), and `S''` is a
+competitor for `T` on `W = η⁻¹(W') ⊂⊂ U`: `∂S'' = ∂T` and
+`spt(S'' − T) = η⁻¹(spt(S' − η_#T)) ⊆ A ∩ W` (`dtc_blowUp_algebra`).  So
+`M_{W'}(η_#T) = λ⁻ⁿ M_W(T) ≤ λ⁻ⁿ M_W(S'') = M_{W'}(S')` (`dtc_blowUp_massOn_image`). -/
+theorem Submission.dtc_blowUp_isMinimizingIn : ∀ (P n : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), IsMinimizingIn T A → IsMinimizingIn (blowUp T x lam hlam.ne') (dilation x lam '' A) := by
+  intro P n U A T x lam hlam hT
+  obtain ⟨⟨R, hR⟩, hmin⟩ := hT
+  obtain ⟨hsub, hinj, hspt, hbdry⟩ := Submission.dtc_blowUp_algebra P U x lam hlam
+  -- `η = η_{x,λ}` as a homeomorphism
+  obtain ⟨e, he⟩ : ∃ e : Euclid P ≃ₜ Euclid P, ⇑e = dilation x lam :=
+    ⟨(Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
+      (Homeomorph.addLeft (-(lam⁻¹ • x))), by
+        funext y
+        simp [dilation, dilationCLM]⟩
+  refine ⟨?_, fun W' S' hW'o hW'c hS'im hS'bd hS'c hS'A => ?_⟩
+  · -- `η_#T` is integer multiplicity
+    obtain ⟨R', hR', -⟩ := Submission.dtc_blowUp_imrep P n U T x lam hlam R hR
+    exact ⟨R', hR'⟩
+  -- `S' = η_#S''` with `S''` integer multiplicity
+  obtain ⟨S'', rfl, hS''im⟩ := Submission.dtc_blowUp_preimage P n U x lam hlam S'
+  -- `W = η⁻¹(W')` is open and `W ⊂⊂ U`, since `closure W = η⁻¹(closure W')` and `η⁻¹(η(U)) = U`
+  have hWo : IsOpen (dilation x lam ⁻¹' W') := by
+    rw [← he]
+    exact hW'o.preimage e.continuous
+  have hWc : CompactlyContained (dilation x lam ⁻¹' W') U := by
+    obtain ⟨hc, hsub'⟩ := hW'c
+    rw [← he] at hsub' ⊢
+    refine ⟨?_, ?_⟩ <;> rw [← e.preimage_closure]
+    · exact e.isCompact_preimage.2 hc
+    · exact (preimage_mono hsub').trans (e.preimage_image U).subset
+  -- `∂S'' = ∂T`: `η_#(∂S'') = ∂S' = ∂(η_#T) = η_#(∂T)` and `η_#` is injective
+  have hbd : SameBoundary S'' T := by
+    cases n with
+    | zero => trivial
+    | succ m =>
+      show S''.boundary = T.boundary
+      apply hinj
+      rw [← hbdry, ← hbdry]
+      exact hS'bd
+  -- `spt(S' − η_#T) = η(spt(S'' − T))`, so `spt(S'' − T)` is compact and lies in `A ∩ W`
+  have hspt' : (blowUp S'' x lam hlam.ne' - blowUp T x lam hlam.ne').support =
+      dilation x lam '' (S'' - T).support := by
+    rw [← hsub, hspt]
+  rw [hspt', ← he] at hS'c hS'A
+  have hc : IsCompact (S'' - T).support := e.isCompact_image.1 hS'c
+  have hA : (S'' - T).support ⊆ A ∩ dilation x lam ⁻¹' W' := by
+    intro y hy
+    obtain ⟨⟨a, ha, hay⟩, hyW'⟩ := hS'A (mem_image_of_mem e hy)
+    rw [← he]
+    exact ⟨e.injective hay ▸ ha, hyW'⟩
+  -- `M_{W'}(η_#T) = λ⁻ⁿ M_W(T) ≤ λ⁻ⁿ M_W(S'') = M_{W'}(S')`, as `η(W) = W'`
+  have hle := hmin _ S'' hWo hWc (hS''im hS'im) hbd hc hA
+  have hW' : dilation x lam '' (dilation x lam ⁻¹' W') = W' := by
+    rw [← he]
+    exact e.image_preimage W'
+  have hmT := Submission.dtc_blowUp_massOn_image P n U T x lam hlam (dilation x lam ⁻¹' W')
+  have hmS := Submission.dtc_blowUp_massOn_image P n U S'' x lam hlam (dilation x lam ⁻¹' W')
+  rw [hW'] at hmT hmS
+  rw [hmT, hmS]
+  gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
