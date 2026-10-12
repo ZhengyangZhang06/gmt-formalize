@@ -1046,6 +1046,53 @@ theorem Submission.tgc_cone_density_graph_cover :
   refine ⟨Nat.pair m (Nat.pair k j), ?_⟩
   simpa only [Nat.unpair_pair] using hj
 
+/-- **Tangent points with nearly horizontal planes lie on countably many closed `L`-Lipschitz
+graphs** (node `tangent_graph_cover`; the cone argument of Simon's proof of Ch. 3, 1.6 "⇐", which
+the proof of Ch. 8, 1.2 invokes through Ch. 3, 1.9).  For `0 < L ≤ 1` and `P ∈ G(N,n)` there are
+closed sets `Γ_i` with `|q(y - z)| ≤ L |p(y - z)|` on each `Γ_i` (`p = p_P`, `q = I - p`) containing
+every point `x` at which `V` has a tangent plane `T` (Def. 1.1) with `‖p_T - p‖ ≤ L/4`.
+For `n = 0` such points are atoms of `μ_V`, hence countably many, and singletons are `L`-graphs.
+For `n ≥ 1` each such point satisfies the lower mass bound `c t^n ≤ μ_V(B_t(x))` for small `t`
+(any `0 < c < θ ω_n`) and the cone decay `μ_V({y ∈ B_t(x) : (L/16)|y - x| ≤ |q_T(y - x)|}) ≤ ε t^n`
+for small `t`, which is all the uniform-class/graph construction needs. -/
+theorem Submission.tangent_points_lipschitz_graph_cover :
+    ∀ (N n : ℕ) (L : ℝ), 0 < L → L ≤ 1 → ∀ (U : Set (Euclidean N)) (V : Varifold N n U)
+      (P : Grassmannian N n), ∃ Γ : ℕ → Set (Euclidean N), (∀ i, IsClosed (Γ i)) ∧
+        (∀ i, ∀ y ∈ Γ i, ∀ z ∈ Γ i,
+          ‖(y - z) - Grassmannian.project P (y - z)‖ ≤ L * ‖Grassmannian.project P (y - z)‖) ∧
+        ∀ (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ →
+          (∀ v : Euclidean N,
+            ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖) →
+          ∃ i, x ∈ Γ i := by
+  intro N n L hL0 hL1 U V P
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · -- `n = 0`: the tangent points form a countable set, so they are values `f i` of a sequence;
+    -- each singleton `{f i}` is closed, and an `L`-graph since `y - z = 0` on it.
+    obtain ⟨f, hf⟩ := Set.countable_iff_exists_subset_range.1
+      (Submission.tgc_dim_zero_tangent_points_countable N U V)
+    refine ⟨fun i ↦ {f i}, fun i ↦ isClosed_singleton, ?_, fun x T θ hx _ ↦ ?_⟩
+    · intro i y hy z hz
+      rw [Set.mem_singleton_iff.1 hy, Set.mem_singleton_iff.1 hz, sub_self]
+      simp [Grassmannian.project]
+    · obtain ⟨i, hi⟩ := hf ⟨T, θ, hx⟩
+      exact ⟨i, hi.symm⟩
+  · -- `n ≥ 1`: the cone/density graph cover, applied to `μ_V` and the set `A` of tangent points
+    -- whose plane is `L/4`-close to `P`, covers `A` by closed `L`-graphs over `P`.
+    refine (Submission.tgc_cone_density_graph_cover N n L V.weight P
+      {x | ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane V x T θ ∧
+        ∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ L / 4 * ‖v‖}
+      hL0 hL1 ?_).imp fun Γ ⟨hΓ, hgraph, hcover⟩ ↦
+        ⟨hΓ, hgraph, fun x T θ hx hTP ↦ hcover x ⟨T, θ, hx, hTP⟩⟩
+    -- Each `x ∈ A`, with plane `T` and multiplicity `θ > 0`, has the lower mass bound for any
+    -- `0 < c < θ ω_n` (`ω_n > 0`) and the cone decay with aperture `β = L/16`.
+    rintro x ⟨T, θ, hx, hTP⟩
+    have hω : unitBallVolume n ≠ 0 :=
+      (Metric.measure_ball_pos (volume : Measure (EuclideanSpace ℝ (Fin n))) 0 one_pos).ne'
+    obtain ⟨c, hc0, hc⟩ := exists_between (ENNReal.mul_pos (ENNReal.ofReal_pos.2 hx.2.1).ne' hω)
+    exact ⟨T, hTP, ⟨c, hc0, Submission.tgc_tangent_weight_lower_bound N n U V x T θ hx c hc⟩,
+      fun ε hε ↦ Submission.tgc_tangent_cone_weight_decay N n U V x T θ hn hx (L / 16)
+        (by positivity) ε hε⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
