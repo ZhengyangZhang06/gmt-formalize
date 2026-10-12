@@ -458,6 +458,54 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Cauchy–Schwarz on `(-a, a)`: `∫_{(-a,a)} g ≤ √(2a ∫_{(-a,a)} g²)`.  If `g` is not integrable on
+`(-a, a)`, the left side is `0` (`integral_undef`).  Otherwise put `I := ∫ g²`, `J := ∫ |g|` and
+`m := J / (2a)`.  Then `∫ g ≤ J` (`integral_mono`), the measure of `(-a, a)` is `2a`
+(`Real.volume_real_Ioo_of_le`), and the variance identity
+`0 ≤ ∫ (|g| - m)² = I - 2mJ + 2a m² = I - J² / (2a)` gives `J² ≤ 2a I`, so
+`J ≤ |J| ≤ √(2a I)` (`Real.abs_le_sqrt`). -/
+theorem tdo_ods_integral_le_sqrt : ∀ (g : ℝ → ℝ) (a : ℝ), 0 < a →
+    IntegrableOn (fun s => g s ^ 2) (Ioo (-a) a) →
+    (∫ s in Ioo (-a) a, g s) ≤ Real.sqrt (2 * a * ∫ s in Ioo (-a) a, g s ^ 2) := by
+  intro g a ha hg2
+  by_cases hg : IntegrableOn g (Ioo (-a) a)
+  swap
+  · rw [integral_undef hg]
+    exact Real.sqrt_nonneg _
+  set I := ∫ s in Ioo (-a) a, g s ^ 2
+  set J := ∫ s in Ioo (-a) a, |g s|
+  have hgJ : (∫ s in Ioo (-a) a, g s) ≤ J :=
+    integral_mono hg hg.abs fun s => le_abs_self (g s)
+  have hvol : volume.real (Ioo (-a) a) = 2 * a := by
+    rw [Real.volume_real_Ioo_of_le (by linarith)]; ring
+  set m := J / (2 * a) with hm
+  have hvar : ∫ s in Ioo (-a) a, (|g s| - m) ^ 2 = I - 2 * m * J + 2 * a * m ^ 2 := by
+    have hpt : ∀ s, (|g s| - m) ^ 2 = (g s ^ 2 - 2 * m * |g s|) + m ^ 2 := by
+      intro s; rw [sub_sq, sq_abs]; ring
+    have hgm : IntegrableOn (fun s => 2 * m * |g s|) (Ioo (-a) a) := hg.abs.const_mul (2 * m)
+    have hsub : IntegrableOn (fun s => g s ^ 2 - 2 * m * |g s|) (Ioo (-a) a) := hg2.sub hgm
+    have hc : IntegrableOn (fun _ : ℝ => m ^ 2) (Ioo (-a) a) :=
+      integrableOn_const measure_Ioo_lt_top.ne
+    simp_rw [hpt]
+    rw [integral_add hsub hc, integral_sub hg2 hgm, integral_const_mul, setIntegral_const, hvol,
+      smul_eq_mul]
+  have hnn : 0 ≤ ∫ s in Ioo (-a) a, (|g s| - m) ^ 2 :=
+    setIntegral_nonneg measurableSet_Ioo fun s _ => sq_nonneg _
+  have hJ2 : J ^ 2 ≤ 2 * a * I := by
+    rw [hvar, hm] at hnn
+    have h2a : (0 : ℝ) < 2 * a := by linarith
+    have key : I - 2 * (J / (2 * a)) * J + 2 * a * (J / (2 * a)) ^ 2 = I - J ^ 2 / (2 * a) := by
+      field_simp; ring
+    rw [key, sub_nonneg, div_le_iff₀ h2a] at hnn
+    linarith
+  calc (∫ s in Ioo (-a) a, g s) ≤ J := hgJ
+    _ ≤ |J| := le_abs_self J
+    _ ≤ Real.sqrt (2 * a * I) := Real.abs_le_sqrt hJ2
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
