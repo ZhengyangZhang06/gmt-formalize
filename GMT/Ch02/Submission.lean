@@ -830,6 +830,67 @@ theorem Submission.variation_areaJacobian_chain_rule : ∀ (n N N' : ℕ) (L : R
   rw [hJ, hJ, hJ]
   exact LinearMap.normDet_comp (L : Rn n →ₗ[ℝ] Rn N) (A : Rn N →ₗ[ℝ] Rn N')
 
+/-- **Simon Ch. 2, after 4.12 (p. 58), area formula for `f` on one chart of `M`.** Let
+`(V, W, ψ)` be a `C¹` local representation of `M` with `T_{ψ(x)} M = range Dψ(x)` for `x ∈ V`, and
+let `B ⊆ W ∩ M` be Borel. If `f` is differentiable at every point of `B`, with injective
+derivative, and `f` is injective on `B`, then `Hⁿ(f(B)) = ∫_B J^M_f dHⁿ`, where
+`J^M_f(y) = J(Df(y) ∘ ι_y)`. Proof: pull `B` back to the Borel set `B' = V ∩ ψ⁻¹(B)`, apply the area
+formula 3.2 to `f ∘ ψ` on `B'`, factor `J_{f∘ψ} = J_ψ · (J^M_f ∘ ψ)` by 4.11, and push the integral
+forward to `ψ(B') = B` by the weighted area formula 3.5 for `ψ`. -/
+theorem Submission.variation_chart_image_area : ∀ (n N N' : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N) (f : Rn N → Rn N') (B : Set (Rn N)), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → (∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → MeasurableSet B → B ⊆ W ∩ M → (∀ y ∈ B, DifferentiableAt ℝ f y) → (∀ y ∈ B, Function.Injective (fderiv ℝ f y)) → InjOn f B → μHE[n] (f '' B) = ∫⁻ y in B, ENNReal.ofReal (areaJacobian ((fderiv ℝ f y).comp (tangentSpace M y).subtypeL)) ∂μHE[n] := by
+  intro n N N' M V W ψ f B hrep hT hB hBWM hfd hfinj hfB
+  -- Step 1: `V` is open and `ψ` is `C¹` on `V`, so `ψ` is differentiable at every point of `V`.
+  have hV : IsOpen V := hrep.isOpen_source
+  have hψd : ∀ x ∈ V, DifferentiableAt ℝ ψ x := fun x hx ↦
+    (hrep.contDiffOn.differentiableOn (by simp)).differentiableAt (hV.mem_nhds hx)
+  -- Step 2: `B' = V ∩ ψ⁻¹(B)` is Borel: it is the image under the inclusion of the open set `V`
+  -- of the preimage of `B` under the continuous restriction `ψ|_V`.
+  have hB' : MeasurableSet (V ∩ ψ ⁻¹' B) := by
+    rw [← Subtype.image_preimage_coe]
+    exact (MeasurableEmbedding.subtype_coe hV.measurableSet).measurableSet_image'
+      ((continuousOn_iff_continuous_domRestrict.mp hrep.contDiffOn.continuousOn).measurable hB)
+  -- Step 3: `ψ(B') = ψ(V) ∩ B = B`, since `B ⊆ W ∩ M = ψ(V)`.
+  have hψB : ψ '' (V ∩ ψ ⁻¹' B) = B := by
+    rw [image_inter_preimage, hrep.image_eq, inter_eq_right.mpr hBWM]
+  -- Step 4: `F = f ∘ ψ` is differentiable on `B'` with injective derivative
+  -- `DF(x) = Df(ψ x) ∘ Dψ(x)`, and `F` is injective on `B'`.
+  have hF : ∀ x ∈ V ∩ ψ ⁻¹' B, fderiv ℝ (f ∘ ψ) x = (fderiv ℝ f (ψ x)).comp (fderiv ℝ ψ x) :=
+    fun x hx ↦ fderiv_comp x (hfd (ψ x) hx.2) (hψd x hx.1)
+  have hFd : ∀ x ∈ V ∩ ψ ⁻¹' B, DifferentiableAt ℝ (f ∘ ψ) x :=
+    fun x hx ↦ (hfd (ψ x) hx.2).comp x (hψd x hx.1)
+  have hFreg : ∀ x ∈ V ∩ ψ ⁻¹' B, Function.Injective (fderiv ℝ (f ∘ ψ) x) := by
+    intro x hx
+    rw [hF x hx, ContinuousLinearMap.coe_comp]
+    exact (hfinj (ψ x) hx.2).comp (hrep.injective_fderiv hx.1)
+  have hFinj : InjOn (f ∘ ψ) (V ∩ ψ ⁻¹' B) := by
+    intro x hx x' hx' h
+    have hψx : ψ x ∈ B := hx.2
+    have hψx' : ψ x' ∈ B := hx'.2
+    exact hrep.injOn hx.1 hx'.1 (hfB hψx hψx' h)
+  -- Step 5: the area formula 3.2 for `F` on `B'`, with `F(B') = f(ψ(B')) = f(B)`.
+  have h5 := Submission.variation_injective_area_formula n N' (V ∩ ψ ⁻¹' B) (f ∘ ψ) hB' hFd
+    hFreg hFinj
+  rw [image_comp, hψB] at h5
+  -- Step 6: 4.11 with `T = T_{ψ(x)} M = range Dψ(x)` gives `J_F(x) = J^M_f(ψ x) · J_ψ(x)` on `B'`.
+  have h6 : ∫⁻ x in V ∩ ψ ⁻¹' B, ENNReal.ofReal (areaJacobian (fderiv ℝ (f ∘ ψ) x)) ∂μHE[n] =
+      ∫⁻ x in V ∩ ψ ⁻¹' B, ENNReal.ofReal (areaJacobian (fderiv ℝ ψ x)) *
+        ENNReal.ofReal (areaJacobian ((fderiv ℝ f (ψ x)).comp (tangentSpace M (ψ x)).subtypeL))
+        ∂μHE[n] := by
+    refine setLIntegral_congr_fun hB' fun x hx ↦ ?_
+    have h0 : 0 ≤ areaJacobian ((fderiv ℝ f (ψ x)).comp (tangentSpace M (ψ x)).subtypeL) :=
+      Real.sqrt_nonneg _
+    show ENNReal.ofReal (areaJacobian (fderiv ℝ (f ∘ ψ) x)) = _
+    rw [hF x hx, Submission.variation_areaJacobian_chain_rule n N N' _ _ _ (hT x hx.1),
+      ENNReal.ofReal_mul h0, mul_comm]
+  -- Step 7: the weighted area formula 3.5 for `ψ` on `B'` with weight `J^M_f`, and `ψ(B') = B`.
+  have h7 := Submission.variation_injective_weighted_area_formula n N (V ∩ ψ ⁻¹' B) ψ
+    (fun y ↦ ENNReal.ofReal (areaJacobian ((fderiv ℝ f y).comp (tangentSpace M y).subtypeL)))
+    hB' (fun x hx ↦ hψd x hx.1) (fun x hx ↦ hrep.injective_fderiv hx.1)
+    (hrep.injOn.mono inter_subset_left)
+  rw [hψB] at h7
+  -- Step 8: combine steps 5–7.
+  exact h5.trans (h6.trans h7.symm)
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
