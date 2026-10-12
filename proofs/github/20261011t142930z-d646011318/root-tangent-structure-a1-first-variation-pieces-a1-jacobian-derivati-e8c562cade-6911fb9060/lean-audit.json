@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9d69111962c73f6539f22e4991371d7d09c9024b1ded5a259ad992bbd7ce0f3c",
+  "git_delta": {
+    "base_commit": "c97d312d0a38c8d10578c717cfb24db3c08af20a",
+    "candidate_commit": "ef25dce98d1e7cdbd0aa387a27f2b97871c3bc18",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "ts_fv_hasDerivAt_det_of_entries",
+    "diff_sha256": "dadb2800effcc5069c807a6220a1b01d27df76630d374de3376bc1ca8fd02849",
+    "source_sha256": "12037a92ece7643e01069abe45bc118b3d3cc8b0f31d4c9981256809df2e5dfd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ts_fv_hasDerivAt_det_of_entries",
+      "statement": "∀ (N : ℕ) (A : ℝ → Matrix (Fin N) (Fin N) ℝ) (A' : Matrix (Fin N) (Fin N) ℝ) (t M M' : ℝ), (∀ i j, HasDerivAt (fun s ↦ A s i j) (A' i j) t) → (∀ i j, |A t i j| ≤ M) → (∀ i j, |A' i j| ≤ M') → ∃ D : ℝ, HasDerivAt (fun s ↦ (A s).det) D t ∧ |D| ≤ (N.factorial : ℝ) * N * M' * M ^ (N - 1) ∧ (A t = 1 → D = A'.trace)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
