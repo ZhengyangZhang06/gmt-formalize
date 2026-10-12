@@ -2507,6 +2507,106 @@ theorem Submission.deGiorgiDens_ball_volume_ge : ∀ (n : ℕ), ∃ c : ℝ, 0 <
     hVpos hae ρ hρ
   rw [ENNReal.ofReal_le_iff_le_toReal (hfin ρ), ← mul_pow, one_div_mul_eq_div]
   exact hV
+/-- **The complement of a Gauss–Green pair** (Simon Ch. 3, proof of Theorem 4.3, "Repeating the
+same argument with `U ∖ E` in place of `E`", `chapter-03.txt` line 729): if `(μ, ν)` represents
+`D χ_E` in `U` (4.1), then `(μ, -ν)` represents `D χ_{U ∖ E}` in `U`. Only the Gauss–Green
+identity needs proof. For `g ∈ C¹_c(U; ℝᴺ)` we have `∫ div g = 0`: for each direction `v`,
+`t ↦ ∫ g(x + t v) dx` is constant by translation invariance, and differentiating under the
+integral sign at `t = 0` gives `∫ Dg(x) v dx = 0`. Since `div g` vanishes off `tsupport g ⊆ U`,
+`∫_{U ∖ E} div g = ∫_U div g - ∫_{E ∩ U} div g = ∫ g · ν dμ = -∫ g · (-ν) dμ`. -/
+theorem Submission.deGiorgi_gaussGreenPair_compl : ∀ (N : ℕ) (U E : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → IsGaussGreenPair U (U \ E) μ (-ν) := by
+  intro N U E μ ν hU hE hpair
+  obtain ⟨hμU, hμK, hνm, hν1, hGG⟩ := hpair
+  -- The clauses not involving the set: `μ` is unchanged and `|-ν| = |ν| = 1` `μ`-a.e.
+  refine ⟨hμU, hμK, hνm.neg, ?_, ?_⟩
+  · filter_upwards [hν1] with x hx
+    simpa using hx
+  intro g hg hgc hgU
+  set b := stdOrthonormalBasis ℝ (Rn N)
+  have hdiv : ∀ x, Poincare.SimonGMT.Chapter02.euclideanDivergence g x =
+      ∑ i, inner ℝ (b i) (fderiv ℝ g x (b i)) :=
+    Poincare.SimonGMT.Chapter02.euclideanDivergence_eq_sum_inner b g
+  have hDcont : ∀ v : Rn N, Continuous (fun x ↦ fderiv ℝ g x v) := fun v ↦
+    (hg.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  -- `Dg(·) v` and `div g` are continuous with compact support, hence integrable.
+  have hDg : ∀ v : Rn N, Integrable (fun x ↦ fderiv ℝ g x v) volume := fun v ↦
+    (hDcont v).integrable_of_hasCompactSupport (hgc.fderiv_apply (𝕜 := ℝ) v)
+  have hterm : ∀ i, Integrable (fun x ↦ inner ℝ (b i) (fderiv ℝ g x (b i))) volume := fun i ↦
+    (continuous_const.inner (hDcont (b i))).integrable_of_hasCompactSupport
+      ((hgc.fderiv_apply (𝕜 := ℝ) (b i)).comp_left (inner_zero_right (b i)))
+  have hint : Integrable (Poincare.SimonGMT.Chapter02.euclideanDivergence g) volume := by
+    rw [funext hdiv]
+    exact integrable_finsetSum _ fun i _ ↦ hterm i
+  -- `∫ Dg(x) v dx = 0` for every direction `v`: differentiate `t ↦ ∫ g(x + t v) dx` at `0`.
+  have hDzero : ∀ v : Rn N, ∫ x, fderiv ℝ g x v = 0 := by
+    intro v
+    obtain ⟨C, hC⟩ := (hg.continuous_fderiv one_ne_zero).bounded_above_of_compact_support
+      (hgc.fderiv ℝ)
+    have hC0 : 0 ≤ C := (norm_nonneg _).trans (hC 0)
+    -- For `|t| < 1` the derivatives `Dg(x + t v) v` are dominated by `C |v| 1_{K'}`.
+    set K' := Metric.cthickening ‖v‖ (tsupport g)
+    have hK' : IsCompact K' := hgc.isCompact.cthickening
+    have hderiv := hasDerivAt_integral_of_dominated_loc_of_deriv_le
+      (μ := (volume : Measure (Rn N))) (F := fun (t : ℝ) (x : Rn N) ↦ g (x + t • v))
+      (F' := fun (t : ℝ) (x : Rn N) ↦ fderiv ℝ g (x + t • v) v) (x₀ := 0)
+      (bound := K'.indicator (fun _ ↦ C * ‖v‖)) (s := Metric.ball 0 1)
+      (Metric.ball_mem_nhds 0 one_pos)
+      (Eventually.of_forall fun t ↦
+        (hg.continuous.comp (continuous_id.add continuous_const)).aestronglyMeasurable)
+      (by simpa using hg.continuous.integrable_of_hasCompactSupport hgc)
+      ((((hg.continuous_fderiv one_ne_zero).comp
+        (continuous_id.add continuous_const)).clm_apply continuous_const).aestronglyMeasurable)
+      (ae_of_all _ fun x t ht ↦ ?_)
+      ((integrableOn_const hK'.measure_lt_top.ne).integrable_indicator hK'.measurableSet)
+      (ae_of_all _ fun x t _ ↦ ?_)
+    · -- By translation invariance `t ↦ ∫ g(x + t v) dx` is constant, so its derivative vanishes.
+      have hconst : (fun t : ℝ ↦ ∫ x, g (x + t • v)) = fun _ ↦ ∫ x, g x :=
+        funext fun t ↦ integral_add_right_eq_self g (t • v)
+      have h2 := hderiv.2
+      rw [hconst] at h2
+      simpa using (hasDerivAt_const (0 : ℝ) (∫ x, g x)).unique h2 |>.symm
+    · -- The domination bound.
+      by_cases hx : x + t • v ∈ tsupport g
+      · have hxK : x ∈ K' := by
+          refine Metric.mem_cthickening_of_dist_le x (x + t • v) ‖v‖ (tsupport g) hx ?_
+          rw [dist_comm, dist_eq_norm, add_sub_cancel_left, norm_smul]
+          have : ‖t‖ ≤ 1 := by
+            have := Metric.mem_ball.1 ht
+            rw [dist_zero_right] at this
+            exact this.le
+          calc ‖t‖ * ‖v‖ ≤ 1 * ‖v‖ := mul_le_mul_of_nonneg_right this (norm_nonneg v)
+            _ = ‖v‖ := one_mul _
+        rw [indicator_of_mem hxK]
+        exact ((fderiv ℝ g (x + t • v)).le_opNorm v).trans
+          (mul_le_mul_of_nonneg_right (hC _) (norm_nonneg v))
+      · rw [fderiv_of_notMem_tsupport ℝ hx, zero_apply, norm_zero]
+        exact indicator_nonneg (fun _ _ ↦ mul_nonneg hC0 (norm_nonneg v)) x
+    · -- The derivative of `t ↦ g (x + t • v)` is `Dg(x + t v) v`.
+      have h1 : HasDerivAt (fun t : ℝ ↦ x + t • v) v t := by
+        simpa using ((hasDerivAt_id t).smul_const v).const_add x
+      exact ((hg.differentiable one_ne_zero (x + t • v)).hasFDerivAt).comp_hasDerivAt t h1
+  -- `∫ div g = ∑ᵢ ⟨bᵢ, ∫ Dg(x) bᵢ dx⟩ = 0`.
+  have hzero : ∫ x, Poincare.SimonGMT.Chapter02.euclideanDivergence g x = 0 := by
+    simp_rw [hdiv]
+    rw [integral_finsetSum _ fun i _ ↦ hterm i]
+    refine Finset.sum_eq_zero fun i _ ↦ ?_
+    have h := (innerSL ℝ (b i)).integral_comp_comm (hDg (b i))
+    simp only [innerSL_apply_apply] at h
+    rw [h, hDzero, inner_zero_right]
+  -- `div g` vanishes off `tsupport g ⊆ U`, so `∫_U div g = 0`.
+  have hU0 : ∫ x in U, Poincare.SimonGMT.Chapter02.euclideanDivergence g x = 0 := by
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero, hzero]
+    intro x hx
+    by_contra h
+    exact hx (hgU (Poincare.SimonGMT.Chapter02.support_euclideanDivergence_subset g h))
+  -- Split `U = (U ∩ E) ⊔ (U ∖ E)` and use the Gauss–Green identity for `(U, E)`.
+  have hsplit := integral_inter_add_sdiff₀ (s := U) hE hint.integrableOn
+  rw [inter_comm, hGG g hg hgc hgU, hU0] at hsplit
+  -- Negating the normal negates the right-hand side.
+  have hneg : ∫ x, inner ℝ (g x) ((-ν) x) ∂μ = -∫ x, inner ℝ (g x) (ν x) ∂μ := by
+    simp only [Pi.neg_apply, inner_neg_right, integral_neg]
+  rw [inter_eq_left.2 sdiff_subset, hneg]
+  linarith
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
