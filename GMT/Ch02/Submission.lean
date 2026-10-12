@@ -655,4 +655,42 @@ theorem Submission.simon_submanifold_tangentSpace_eq_range : ∀ (n N : ℕ) (r 
       (Submission.simon_submanifold_chart_inverse_continuousOn n N r M V W ψ h) x hx
   exact le_antisymm hB hA
 
+/-- **Simon Ch. 2, §4 (p. 55), from 4.1–4.3: the tangent projection `y ↦ P_y` is continuous on
+`M`.** Near `y₀ ∈ M` take a local representation `(V, W, ψ)` with `y₀ ∈ W` and let
+`g = invFunOn ψ V : W ∩ M → V`. As `T_{ψ(x)} M = range Dψ(x)` (4.3,
+`simon_submanifold_tangentSpace_eq_range`), `P_y = P_{range Dψ(g(y))}` for `y ∈ W ∩ M`. The right
+side is continuous on `W ∩ M`: it composes `g` (`simon_submanifold_chart_inverse_continuousOn`),
+`x ↦ Dψ(x)` (continuous on the open `V`, with injective values) and `A ↦ P_{range A}`
+(`simon_submanifold_range_starProjection_continuousOn`). As `W` is a neighbourhood of `y₀`,
+continuity within `W ∩ M` at `y₀` is continuity within `M`. -/
+theorem Submission.simon_submanifold_tangentProjection_continuousOn : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → ContinuousOn (tangentProjection M) M := by
+  intro n N r M hM y₀ hy₀
+  -- Step 1: a local representation `(V, W, ψ)` with `y₀ ∈ W`; `g = invFunOn ψ V`.
+  obtain ⟨V, W, ψ, hy₀W, hψ⟩ := hM.exists_localRepresentation hy₀
+  set g := Function.invFunOn ψ V
+  -- Step 2: `W ∩ M = ψ(V)`, so `g` maps `W ∩ M` into `V` and `ψ (g y) = y` there.
+  have hsurj : SurjOn ψ V (W ∩ M) := hψ.image_eq.symm.subset
+  have hgV : MapsTo g (W ∩ M) V := hsurj.mapsTo_invFunOn
+  have hψg : RightInvOn g ψ (W ∩ M) := hsurj.rightInvOn_invFunOn
+  -- Step 3: `P_y = P_{range Dψ(g(y))}` on `W ∩ M`, as `T_y M = T_{ψ(g(y))} M = range Dψ(g(y))`.
+  have hP : EqOn (tangentProjection M)
+      (fun y ↦ (LinearMap.range (fderiv ℝ ψ (g y)).toLinearMap).starProjection) (W ∩ M) := by
+    intro y hy
+    have hT := Submission.simon_submanifold_tangentSpace_eq_range n N r M V W ψ hM.1 hψ (g y)
+      (hgV hy)
+    rw [hψg hy] at hT
+    simp only [tangentProjection, hT]
+  -- Step 4: the right side is continuous on `W ∩ M`, as the composite of `g`, `x ↦ Dψ(x)` (which
+  -- maps `V` into the injective maps) and `A ↦ P_{range A}`.
+  have hDψ : ContinuousOn (fderiv ℝ ψ) V :=
+    hψ.contDiffOn.continuousOn_fderiv_of_isOpen hψ.isOpen_source (by exact_mod_cast hM.1)
+  have hcont : ContinuousOn
+      (fun y ↦ (LinearMap.range (fderiv ℝ ψ (g y)).toLinearMap).starProjection) (W ∩ M) :=
+    (Submission.simon_submanifold_range_starProjection_continuousOn n N).comp
+      (hDψ.comp (Submission.simon_submanifold_chart_inverse_continuousOn n N r M V W ψ hψ) hgV)
+      fun _ hy ↦ hψ.injective_fderiv (hgV hy)
+  -- Steps 5–6: so `P` is continuous within `W ∩ M` at `y₀`, and `W ∩ M ∈ 𝓝[M] y₀` as `W` is open.
+  exact (hcont.congr hP y₀ ⟨hy₀W, hy₀⟩).mono_of_mem_nhdsWithin
+    (mem_nhdsWithin.2 ⟨W, hψ.isOpen_target, hy₀W, subset_rfl⟩)
+
 end GMT.Ch02
