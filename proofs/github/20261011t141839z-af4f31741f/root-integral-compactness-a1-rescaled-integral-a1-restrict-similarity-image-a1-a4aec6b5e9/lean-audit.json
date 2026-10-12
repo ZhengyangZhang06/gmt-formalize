@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0d74568b7698338f4330ee982a7d60d47e79a94baa831fb46f015f83092c3a60",
+  "git_delta": {
+    "base_commit": "a4c64435f912b2f7eaf0a927198b65da81fc5e90",
+    "candidate_commit": "b82dda98146e40b06a5ef29243b4a96c97deb4da",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_ri_restrict_similarity_image",
+    "diff_sha256": "12f10f436550f0bb87163b0a57492b6a0c2b54da1d68102ebb8b7e0cf223aa09",
+    "source_sha256": "2d2e52c4c68fb5566ed8f7c9706c1f08e2a320b73c67f8edd2503118b00ed6df",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_ri_restrict_similarity_image",
+      "statement": "∀ (N n : ℕ) (ξ : Euclidean N) (t : ℝ) (A : Set (Euclidean N)), 0 < t → (μHE[n] : Measure (Euclidean N)).restrict ((fun y : Euclidean N ↦ ξ + t • y) '' A) = ENNReal.ofReal (t ^ n) • ((μHE[n] : Measure (Euclidean N)).restrict A).map (fun y : Euclidean N ↦ ξ + t • y)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
