@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.borel_coarea-a1",
+  "parent_id": "root.coarea_formula-a1",
+  "depth": 2,
+  "title": "Co-area formula on M for Borel weights",
+  "statement": "Let N, m, k ∈ ℕ. Let M ⊆ ℝᴺ be an (m+k)-dimensional C¹ Simon submanifold that is a Borel set, U ⊆ ℝᴺ open with M ⊆ U, and f : ℝᴺ → ℝᵐ of class C¹ on U. Assume (hT): for all V ⊆ ℝ^{m+k}, W ⊆ ℝᴺ and ψ : ℝ^{m+k} → ℝᴺ with IsSimonLocalRepresentation 1 M V W ψ, and every x ∈ V, tangentSpace M (ψ x) = range Dψ(x). Let g : ℝᴺ → [0,∞] be Borel measurable. Then y ↦ ∫_{M∩f⁻¹{y}} g dμHE[k] is Lᵐ-a.e.-measurable, and ∫_M g·coareaJacobian M f dμHE[m+k] = ∫_{ℝᵐ} ∫_{M∩f⁻¹{y}} g dμHE[k] dLᵐ(y).",
+  "lean_statement": "∀ (N m k : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m) (g : Rn N → ℝ≥0∞), Chapter02.IsSimonSubmanifold (E := Rn (m + k)) 1 M → IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → (∀ (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → MeasurableSet M → Measurable g → AEMeasurable (fun y ↦ ∫⁻ x in M ∩ f ⁻¹' {y}, g x ∂μHE[k]) volume ∧ ∫⁻ x in M, g x * ENNReal.ofReal (coareaJacobian M f x) ∂μHE[m + k] = ∫⁻ y, ∫⁻ x in M ∩ f ⁻¹' {y}, g x ∂μHE[k] ∂volume",
+  "lean_name": "coarea_formula_of_measurable",
+  "depends_on": [
+    "root.coarea_formula-a1.critical_fibers_submanifold-a1",
+    "root.coarea_formula-a1.straightening_chart-a1",
+    "root.coarea_formula-a1.chart_coarea-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.coarea_formula-a1.critical_fibers_submanifold-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.coarea_formula-a1.straightening_chart-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.coarea_formula-a1.chart_coarea-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-borel-coarea-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.straightening_chart-a1.chart_reparametrization-a1",
+  "parent_id": "root.coarea_formula-a1.straightening_chart-a1",
+  "depth": 3,
+  "title": "Reparametrizing a Simon local representation by a C¹ diffeomorphism",
+  "statement": "Let N, m, k ∈ ℕ, n := m + k, and P := WithLp 2 (ℝᵐ × ℝᵏ). Let M ⊆ ℝᴺ, V ⊆ ℝⁿ, W ⊆ ℝᴺ and ψ : ℝⁿ → ℝᴺ satisfy IsSimonLocalRepresentation 1 M V W ψ. That is: V and W are open; ψ is C¹ on V and injective on V; ψ(V) = W ∩ M; ψ is proper relative to V and W; and Dψ(x) is injective for x ∈ V. Assume tangentSpace M (ψ x) = range Dψ(x) for every x ∈ V. Let Ω ⊆ P be open, and let Λ : P → ℝⁿ be C¹ on Ω and injective on Ω, with Λ(Ω) open, Λ(Ω) ⊆ V, and fderiv ℝ Λ p bijective for every p ∈ Ω. Then there is an open set O ⊆ ℝᴺ such that: (ψ ∘ Λ)(Ω) = O ∩ M; ψ ∘ Λ is C¹ on Ω and injective on Ω; and for every p ∈ Ω, the derivative fderiv ℝ (ψ ∘ Λ) p is injective and tangentSpace M ((ψ ∘ Λ) p) = range(fderiv ℝ (ψ ∘ Λ) p).",
+  "lean_statement": "∀ (N m k : ℕ) (M : Set (Rn N)) (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N) (Ω : Set (WithLp 2 (Rn m × Rn k))) (Λ : WithLp 2 (Rn m × Rn k) → Rn (m + k)), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → (∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → IsOpen Ω → ContDiffOn ℝ 1 Λ Ω → InjOn Λ Ω → IsOpen (Λ '' Ω) → Λ '' Ω ⊆ V → (∀ p ∈ Ω, Function.Bijective (fderiv ℝ Λ p)) → ∃ O : Set (Rn N), IsOpen O ∧ (ψ ∘ Λ) '' Ω = O ∩ M ∧ ContDiffOn ℝ 1 (ψ ∘ Λ) Ω ∧ InjOn (ψ ∘ Λ) Ω ∧ (∀ p ∈ Ω, Function.Injective (fderiv ℝ (ψ ∘ Λ) p)) ∧ ∀ p ∈ Ω, tangentSpace M ((ψ ∘ Λ) p) = LinearMap.range (fderiv ℝ (ψ ∘ Λ) p).toLinearMap",
+  "lean_name": "coarea_straightening_reparametrize_chart",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-straightening-chart-a1-chart-reparametrization-a1-a1"
+}

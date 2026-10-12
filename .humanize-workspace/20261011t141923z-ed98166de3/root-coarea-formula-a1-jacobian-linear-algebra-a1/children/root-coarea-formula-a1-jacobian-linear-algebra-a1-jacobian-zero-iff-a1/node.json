@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1.jacobian_zero_iff-a1",
+  "parent_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1",
+  "depth": 3,
+  "title": "Vanishing criterion: the co-area Jacobian is zero iff df_x composed with a tangent parametrization is not surjective",
+  "statement": "Let N, m, n ∈ ℕ, M ⊆ ℝᴺ, f : ℝᴺ → ℝᵐ and x ∈ ℝᴺ, where ℝⁿ = EuclideanSpace ℝ (Fin n).\nLet A : ℝⁿ → ℝᴺ be a continuous linear map with tangentSpace M x = range A.\nThen coareaJacobian M f x = 0 if and only if (fderiv ℝ f x) ∘ A : ℝⁿ → ℝᵐ is not surjective.",
+  "lean_statement": "∀ (N m n : ℕ) (M : Set (Rn N)) (f : Rn N → Rn m) (x : Rn N) (A : Rn n →L[ℝ] Rn N), tangentSpace M x = LinearMap.range A.toLinearMap → (coareaJacobian M f x = 0 ↔ ¬ Function.Surjective ((fderiv ℝ f x).comp A))",
+  "lean_name": "coareaJacobian_eq_zero_iff_not_surjective",
+  "depends_on": [
+    "root.coarea_formula-a1.jacobian_linear_algebra-a1.jacobian_normdet_bridge-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1.jacobian_normdet_bridge-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-jacobian-linear-algebra-a1-jacobian-zero-iff-a1-a1"
+}

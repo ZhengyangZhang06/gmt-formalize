@@ -1,0 +1,97 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -il 'coarea' mathlib/Mathlib",
+        "rg -n 'theorem .*[Ss]ard' mathlib/Mathlib",
+        "rg -n 'def coareaJacobian|def tangentSpace|def CoareaFormula|def C1Sard' project/GMT/Ch02/Contract.lean",
+        "rg -n 'Submission\\.' project",
+        "rg -n 'theorem hausdorffMeasure_apply|theorem MeasureTheory.Measure.euclideanHausdorffMeasure_def|theorem euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib",
+        "rg -n 'theorem lintegral_liminf_le |theorem measurable_fderiv |theorem ContDiffOn.exists_lipschitzOnWith|def toOpenPartialHomeomorph|theorem OpenPartialHomeomorph.contDiffAt_symm|theorem WithLp.volume_preserving_toLp|theorem isOpen_iUnion_countable|theorem exists_surjective_nat|theorem normDet_comp |theorem normDet_codRestrict|theorem _root_.ContinuousLinearMap.normDet_sq' mathlib/Mathlib",
+        "grep -n '^theorem\\|^def' mathlib/Mathlib/Analysis/Calculus/Implicit.lean",
+        "grep -rn 'theorem iUnion_disjointed\\|theorem disjoint_disjointed\\|theorem MeasurableSet.disjointed\\|theorem lintegral_iUnion\\|theorem lintegral_tsum\\|theorem lintegral_union\\|theorem setLIntegral_measure_zero\\|theorem ContDiffOn.differentiableOn' mathlib/Mathlib",
+        "grep -n '^theorem\\|^lemma\\|^def\\|^noncomputable def' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/*.lean",
+        "#print axioms for Chapter02.weighted_area_formula_of_injective_derivative, weighted_area_formula_volume_of_injective_derivative, IsSimonLocalRepresentation.exists_open_image_eq_inter, coareaLinearJacobian_eq_zero_iff, coareaLinearJacobian_eq_sqrt_det, coareaHorizontalLinear_normDet, euclideanHausdorffMeasure_image_le_of_lipschitzOn, continuous_normDet, measurable_areaJacobianAt, coarea_projection_lintegral, coarea_linear_lintegral",
+        "python3 -I gen_checks.py (verifier gmt-compare.py child_modules/contract_scope + lean_contract.validate_lean_statement on the six statements); lean NodeChallenge_00..05.lean against a scratch olean of GMT.Ch02.Submission",
+        "lean FinalAssembly.lean (sorried stand-ins of the six child types and the frozen simon_submanifold_tangent_basics type; sorry-free check_C, check_F, check_parent : CoareaFormula; #print axioms)",
+        "lean SkeletonE.lean; lean Inst.lean (#synth InnerProductSpace ℝ (WithLp 2 (Rn m × Rn k))); python3 -I lemmaL2.py",
+        "python3 -I: list lean_name of every node in dag.json"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Implicit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Order/Disjointed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Normed/Lp/ProdLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinearAlgebra.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinear.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaProjection.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1/parent-child-handoff.json",
+        "/tmp/coarea-decomp-94z3yF/check/FinalAssembly.lean",
+        "/tmp/coarea-decomp-94z3yF/check/SkeletonE.lean"
+      ],
+      "conclusion": "Nothing in the snapshot proves the nonlinear co-area formula or a Sard-type theorem: rg -il coarea over mathlib/Mathlib finds no file, and rg 'theorem .*[Ss]ard' finds no match.\n\nproject/GMT/Ch02/Contract.lean fixes tangentSpace (l.86), coareaJacobian (l.123: √det(L∘L†) with L = fderiv f x ∘ subtypeL), CoareaFormula (l.349) and C1Sard (l.362). The project has no Submission.* declarations.\n\nMathlib supplies:\n- the normDet API (NormDet.lean: ContinuousLinearMap.normDet_sq l.267, normDet_comp l.324, normDet_codRestrict l.365, normDet_eq_norm_det_toMatrix);\n- μHE = c·μH (Measure.lean l.74) and hausdorffMeasure_apply (Hausdorff.lean l.546);\n- the C¹ inverse function theorem (InverseFunctionTheorem/ContDiff.lean l.31; OpenPartialHomeomorph.contDiffAt_symm, Operations.lean l.881) and the implicit-function version (Implicit.lean l.457);\n- measurable_fderiv (FDeriv/Measurable.lean l.378) and ContDiffOn.exists_lipschitzOnWith (RCLike.lean l.149);\n- WithLp.volume_preserving_toLp (Haar/InnerProductSpace.lean l.211), lintegral_prod, lintegral_liminf_le (Lebesgue/Add.lean l.233), lintegral_iUnion/lintegral_tsum, disjointed, TopologicalSpace.isOpen_iUnion_countable (Bases.lean l.932) and exists_surjective_nat.\n\nThe pinned SimonGMT package supplies:\n- weighted_area_formula_(volume_)of_injective_derivative (WeightedArea.lean);\n- IsSimonLocalRepresentation.exists_open_image_eq_inter (Simon 4.2, SubmanifoldTopology.lean);\n- coareaLinearJacobian_eq_zero_iff, coareaLinearJacobian_eq_sqrt_det and coareaHorizontalLinear_normDet (CoareaLinearAlgebra.lean);\n- euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz.lean) and continuous_normDet (AreaApproximation.lean).\n#print axioms reports only propext, Classical.choice and Quot.sound for all of them. These modules are not imported by the contract, so children must add the imports, which the comparator permits.\n\nNo node in dag.json reserves any of the six proposed bare names.\n\nAll six statements pass validate_lean_statement and elaborate in the comparator's replayed contract scope. The six generated NodeChallenge modules compile. #synth confirms that WithLp 2 (Rn m × Rn k) carries WithLp.instProdInnerProductSpace.\n\nIn FinalAssembly.lean, Lean accepts sorry-free proofs of coarea_critical_fibers_null, coarea_formula_of_measurable and CoareaFormula from sorried stand-ins of exactly the child types and of the frozen sibling type. The split therefore implies the selected parent."
+    }
+  ],
+  "parent_id": "root.coarea_formula-a1",
+  "child_id": "root.coarea_formula-a1.critical_fibers_submanifold-a1",
+  "subproblem": {
+    "key": "critical_fibers_submanifold",
+    "title": "Critical fibres of f on M are Hᵏ-null for Lᵐ-almost every value",
+    "statement": "Let N, m, k ∈ ℕ. Let M ⊆ ℝᴺ be an (m+k)-dimensional C¹ Simon submanifold (IsSimonSubmanifold (E := ℝ^{m+k}) 1 M), U ⊆ ℝᴺ open with M ⊆ U, and f : ℝᴺ → ℝᵐ of class C¹ on U. Assume (hT): for all V ⊆ ℝ^{m+k}, W ⊆ ℝᴺ and ψ : ℝ^{m+k} → ℝᴺ with IsSimonLocalRepresentation 1 M V W ψ, and every x ∈ V, tangentSpace M (ψ x) = range Dψ(x). Then for Lᵐ-almost every y ∈ ℝᵐ, μHE[k](M ∩ f⁻¹{y} ∩ {x : coareaJacobian M f x = 0}) = 0.",
+    "lean_statement": "∀ (N m k : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m), Chapter02.IsSimonSubmanifold (E := Rn (m + k)) 1 M → IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → (∀ (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (M ∩ f ⁻¹' {y} ∩ {x | coareaJacobian M f x = 0}) = 0",
+    "lean_name": "coarea_critical_fibers_null",
+    "depends_on": [
+      "jacobian_linear_algebra",
+      "critical_fibers_euclidean"
+    ],
+    "natural_proof": "Source: Step 1.2 of the parent proof.\n\nNotation: n := m + k and C := {x : coareaJacobian M f x = 0}. Since U is open and f is C¹ on U, f is differentiable at every point of U.\n\n1. Countable atlas. For each z ∈ M, the submanifold hypothesis gives V_z ⊆ ℝⁿ, W_z ⊆ ℝᴺ and ψ_z with z ∈ W_z and IsSimonLocalRepresentation 1 M V_z W_z ψ_z. In particular V_z and W_z are open, ψ_z is C¹ on V_z, and ψ_z(V_z) = W_z ∩ M. The open sets W_z cover M, and ℝᴺ is second countable. So (TopologicalSpace.isOpen_iUnion_countable) there is a countable set I ⊆ M with ∪_{z∈I} W_z = ∪_{z∈M} W_z ⊇ M.\n2. One chart. Fix z ∈ M and write V, W, ψ for V_z, W_z, ψ_z. For x ∈ V, ψ(x) ∈ W ∩ M ⊆ U. Let G := f ∘ ψ. G is C¹ on V as a composition, since ψ maps V into U. For x ∈ V the chain rule gives DG(x) = Df(ψ x) ∘ Dψ(x): ψ is differentiable at x because V is open, and f is differentiable at ψ(x) ∈ U.\n3. Critical points. Let x ∈ V with coareaJacobian M f (ψ x) = 0. By hT, tangentSpace M (ψ x) = range Dψ(x). By child coarea_jacobian_linear_algebra, part (1), with A := Dψ(x), the map Df(ψ x) ∘ Dψ(x) = DG(x) is not surjective. So x ∈ C_G := {x ∈ V : DG(x) not surjective}. Consequently, for every y,\n   (W ∩ M) ∩ f⁻¹{y} ∩ C ⊆ ψ(C_G ∩ G⁻¹{y}).\n   Indeed, a point of W ∩ M = ψ(V) is ψ(x) with x ∈ V, and f(ψ x) = y means G(x) = y.\n4. Lipschitz pieces. For each x ∈ V choose ε_x > 0 with B̄(x, ε_x) ⊆ V. The open balls B(x, ε_x) cover V, so by second countability countably many of them, indexed by a countable set I_V ⊆ V, cover V. Hence V ⊆ ∪_{x∈I_V} B̄(x, ε_x). Each B̄(x, ε_x) is convex and compact, and ψ is C¹ on it, so ψ is K_x-Lipschitz on B̄(x, ε_x) for some K_x (ContDiffOn.exists_lipschitzOnWith).\n5. Null fibres in one chart. Apply child coarea_critical_fibers_null_euclidean to V and G: there is an Lᵐ-null set Z_z such that μHE[k](C_G ∩ G⁻¹{y}) = 0 for y ∉ Z_z. Fix such a y. For x ∈ I_V, the Lipschitz image bound for Hausdorff measure (SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn) gives\n   μHE[k](ψ(B̄(x,ε_x) ∩ C_G ∩ G⁻¹{y})) ≤ K_x^k·μHE[k](B̄(x,ε_x) ∩ C_G ∩ G⁻¹{y}) ≤ K_x^k·μHE[k](C_G ∩ G⁻¹{y}) = 0.\n   Since C_G ⊆ V ⊆ ∪_{x∈I_V} B̄(x,ε_x), step 3 gives\n   (W ∩ M) ∩ f⁻¹{y} ∩ C ⊆ ∪_{x∈I_V} ψ(B̄(x,ε_x) ∩ C_G ∩ G⁻¹{y}),\n   a countable union of μHE[k]-null sets. Hence μHE[k](W_z ∩ M ∩ f⁻¹{y} ∩ C) = 0 for y ∉ Z_z.\n6. Conclusion. Z := ∪_{z∈I} Z_z is Lᵐ-null as a countable union. For y ∉ Z, step 1 gives M ∩ f⁻¹{y} ∩ C ⊆ ∪_{z∈I} (W_z ∩ M ∩ f⁻¹{y} ∩ C), so μHE[k](M ∩ f⁻¹{y} ∩ C) ≤ Σ_{z∈I} 0 = 0.",
+    "proof_key_steps": [
+      "Countably many Simon charts (V_z, W_z, ψ_z) with M ⊆ ∪W_z, by second countability.",
+      "On a chart, G := f∘ψ is C¹ on V with DG(x) = Df(ψx)∘Dψ(x); hT and child (1) turn coareaJacobian M f (ψx) = 0 into x ∈ C_G, so (W∩M)∩f⁻¹y∩C ⊆ ψ(C_G∩G⁻¹y).",
+      "Child coarea_critical_fibers_null_euclidean: μHE[k](C_G∩G⁻¹y) = 0 off an Lᵐ-null set.",
+      "ψ is Lipschitz on countably many closed balls covering V, and Lipschitz images of μHE[k]-null sets are null.",
+      "Take a countable union over the charts."
+    ]
+  },
+  "audit": {
+    "key": "critical_fibers_submanifold",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The universal tangent-space hypothesis is explicit in both statements. The chain rule and declared algebra dependency identify chart preimages of critical points. Countably many Lipschitz chart pieces transfer the Euclidean null-fiber conclusion, and a countable atlas completes the proof. All required hypotheses are available and dependencies are correctly directed."
+  },
+  "resolved_dependencies": [
+    "root.coarea_formula-a1.jacobian_linear_algebra-a1",
+    "root.coarea_formula-a1.critical_fibers_euclidean-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-critical-fibers-submanifold-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-critical-fibers-submanifold-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-critical-fibers-submanifold-a1/parent-supplied-natural-proof.json"
+}

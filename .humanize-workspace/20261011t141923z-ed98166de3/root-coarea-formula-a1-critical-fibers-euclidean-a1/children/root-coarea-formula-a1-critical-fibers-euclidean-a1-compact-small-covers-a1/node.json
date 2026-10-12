@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1.compact_small_covers-a1",
+  "parent_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1",
+  "depth": 3,
+  "title": "Small ball covers of the critical set of a C¹ map on a compact piece",
+  "statement": "Let m, k ∈ ℕ, n := m + k, V ⊆ ℝⁿ open, G : ℝⁿ → ℝᵐ of class C¹ on V (ContDiffOn ℝ 1 G V), and Q ⊆ V compact. Let K := {x ∈ Q : fderiv ℝ G x is not surjective}. Then for every ε > 0 and δ > 0 there are a finite set s ⊆ ℝⁿ and r > 0 such that 2r ≤ δ, K ⊆ ⋃_{x∈s} B̄(x,r) (closed balls), and Σ_{x∈s} ofReal((2r)^k)·Lᵐ(G(B̄(x,r))) ≤ ofReal(ε) in [0,∞], where Lᵐ = volume on ℝᵐ.",
+  "lean_statement": "∀ (m k : ℕ) (V Q : Set (Rn (m + k))) (G : Rn (m + k) → Rn m), IsOpen V → ContDiffOn ℝ 1 G V → IsCompact Q → Q ⊆ V → ∀ ε : ℝ, 0 < ε → ∀ δ : ℝ, 0 < δ → ∃ (s : Finset (Rn (m + k))) (r : ℝ), 0 < r ∧ 2 * r ≤ δ ∧ {x | x ∈ Q ∧ ¬ Function.Surjective (fderiv ℝ G x)} ⊆ ⋃ x ∈ s, closedBall x r ∧ ∑ x ∈ s, ENNReal.ofReal ((2 * r) ^ k) * volume (G '' closedBall x r) ≤ ENNReal.ofReal ε",
+  "lean_name": "critical_set_small_ball_covers_of_isCompact",
+  "depends_on": [
+    "root.coarea_formula-a1.critical_fibers_euclidean-a1.ball_image_volume-a1",
+    "root.coarea_formula-a1.critical_fibers_euclidean-a1.ball_cover_count-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1.ball_image_volume-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1.ball_cover_count-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-critical-fibers-euclidean-a1-compact-small-covers-a1-a1"
+}
