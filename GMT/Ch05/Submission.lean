@@ -458,6 +458,77 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 4, 4.3–4.4 (continuity in the scale of the cutoff pairing): let `φ` be continuous
+with `φ = 0` on `[T, ∞)` for some `T > 0`, and let `H` be `μ`-integrable on `B_S(y)`.  Then
+`L(s) = ∫ φ(‖x − y‖/s) (x − y)·H(x) dμ(x)` is continuous at every `t > 0` with `T t < S`.
+`|φ| ≤ K` on `[0, ∞)` (a bound on the compact `[0, T]`); for `0 < s < S/T` the integrand vanishes
+off `B_S(y)` and is bounded there by `K S ‖H‖`, so dominated convergence applies to `μ ⌞ B_S(y)`. -/
+theorem ted_lpm_fcm_cutoff_pairing_continuousAt : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (φ : ℝ → ℝ) (S T t : ℝ), 0 < T → IntegrableOn H (closedBall y S) μ → Continuous φ → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → ContinuousAt (fun s => ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂μ) t := by
+  intro n ℓ μ H y φ S T t hT hH hφc hzero ht htS
+  have hHν : Integrable H (μ.restrict (closedBall y S)) := hH
+  -- Step 1: `|φ| ≤ K` on `[0, ∞)`: `φ` is bounded on the compact `[0, T]` and vanishes beyond `T`.
+  obtain ⟨K, hK⟩ := isCompact_Icc.exists_bound_of_continuousOn (hφc.continuousOn (s := Icc 0 T))
+  have hK0 : 0 ≤ K := (norm_nonneg _).trans (hK 0 ⟨le_rfl, hT.le⟩)
+  have hφK : ∀ u, 0 ≤ u → ‖φ u‖ ≤ K := fun u hu => by
+    rcases le_or_gt u T with h | h
+    · exact hK u ⟨hu, h⟩
+    · rw [hzero u h.le, norm_zero]
+      exact hK0
+  -- `t < S/T`.
+  have htR : t < S / T := by
+    rw [lt_div_iff₀ hT]
+    linarith
+  -- Step 2: for `s ∈ (0, S/T)` the integrand vanishes off `B_S(y)` (there `‖x − y‖/s ≥ T`),
+  -- so `L(s)` is the integral against `μ ⌞ B_S(y)`.
+  have hconv : ∀ s ∈ Ioo 0 (S / T),
+      ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂(μ.restrict (closedBall y S)) =
+        ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂μ := by
+    rintro s ⟨hs, hsR⟩
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    rw [lt_div_iff₀ hT] at hsR
+    have h1 : T ≤ ‖x - y‖ / s := by
+      rw [le_div_iff₀ hs]
+      linarith
+    rw [hzero _ h1, zero_mul]
+  -- Step 3: dominated convergence for the `μ ⌞ B_S(y)`-integral at `t`, with bound `K S ‖H‖`.
+  have hmain : ContinuousAt (fun s =>
+      ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂(μ.restrict (closedBall y S))) t := by
+    refine continuousAt_of_dominated (bound := fun x => K * S * ‖H x‖) ?_ ?_
+      (hHν.norm.const_mul (K * S)) ?_
+    · -- Measurability: `x ↦ φ(‖x − y‖/s)` is continuous and `x ↦ (x − y)·H(x)` is
+      -- a.e. strongly measurable.
+      refine Eventually.of_forall fun s => ?_
+      have hcut : Continuous fun x : Amb n ℓ => φ (‖x - y‖ / s) := hφc.comp (by fun_prop)
+      exact hcut.aestronglyMeasurable.mul
+        (continuous_inner.comp_aestronglyMeasurable
+          ((by fun_prop : Continuous fun x : Amb n ℓ => x - y).aestronglyMeasurable.prodMk
+            hHν.aestronglyMeasurable))
+    · -- Domination for `s > 0`: on `B_S(y)`,
+      -- `|φ(‖x − y‖/s) (x − y)·H(x)| ≤ K ‖x − y‖ ‖H x‖ ≤ K S ‖H x‖`.
+      filter_upwards [Ioi_mem_nhds ht] with s hs
+      rw [ae_restrict_iff' measurableSet_closedBall]
+      refine Eventually.of_forall fun x hx => ?_
+      rw [mem_closedBall, dist_eq_norm] at hx
+      calc ‖φ (‖x - y‖ / s) * inner ℝ (x - y) (H x)‖
+          = ‖φ (‖x - y‖ / s)‖ * ‖inner ℝ (x - y) (H x)‖ := norm_mul _ _
+        _ ≤ K * (‖x - y‖ * ‖H x‖) :=
+            mul_le_mul (hφK _ (div_nonneg (norm_nonneg _) (le_of_lt hs)))
+              (norm_inner_le_norm _ _) (norm_nonneg _) hK0
+        _ ≤ K * (S * ‖H x‖) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hx (norm_nonneg _)) hK0
+        _ = K * S * ‖H x‖ := (mul_assoc _ _ _).symm
+    · -- Pointwise continuity in `s` at `t ≠ 0`, since `φ` is continuous.
+      refine Eventually.of_forall fun x => ?_
+      exact (hφc.continuousAt.comp (continuousAt_const.div continuousAt_id ht.ne')).mul
+        continuousAt_const
+  -- Step 4: both functions agree on the neighbourhood `(0, S/T)` of `t`.
+  exact hmain.congr (Filter.eventually_of_mem (Ioo_mem_nhds ht htR) hconv)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
