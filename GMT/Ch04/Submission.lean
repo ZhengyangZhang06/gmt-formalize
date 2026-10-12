@@ -960,6 +960,21 @@ theorem Submission.radial_first_variation : ∀ (n ℓ : ℕ) (V : RectifiableVa
         · simp_rw [real_inner_smul_left]
         · rw [hX0 x hxU, inner_zero_left]
 
+/-- Simon 6.1–6.2 (pp. 100–101): if for every `n ≥ 1` and every `V` the weight `μ_V` is finite
+on compact sets, `dim T_x V = n` for `μ_V`-a.e. `x` and `x ↦ p_{T_x V}` is `μ_V`-a.e. strongly
+measurable, then `spt V ⊆ B_R(ξ)` whenever `n⁻¹|H(x)·(x - ξ)| < 1` in `ℝ^{n+ℓ} \ B_R(ξ)` and
+`spt V` is compact (6.1), and `spt V ⊆ conv K` whenever `spt V` is compact and `V` is stationary
+in `ℝ^{n+ℓ} \ K` with `K` compact (6.2). -/
+theorem Submission.support_in_ball_convex_hull : (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → SupportInBall ∧ ConvexHullProperty := by
+  intro hGF
+  -- 6.1: the radial first variation identity (3.2–3.3, 3.14) for `X(x) = ζ(x) γ(r) (x - ξ)`,
+  -- with `ζ ≡ 1` near `spt V` and `γ = 0` on `(-∞, R + ε]`, forces `γ(r) = 0` `μ_V`-a.e.
+  have hBall : SupportInBall :=
+    Submission.support_in_ball_of_radial_first_variation Submission.radial_first_variation hGF
+  -- 6.2: `conv K` is the intersection of the closed balls containing `K`, and `V` has
+  -- generalized mean curvature `0` outside each of them.
+  exact ⟨hBall, Submission.convex_hull_property_of_support_in_ball hBall⟩
+
 end
 
 end GMT.Ch04
