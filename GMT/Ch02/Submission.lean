@@ -747,6 +747,277 @@ theorem Submission.variation_gram_det_derivatives : ∀ (N : ℕ) (T : Submodule
       rw [Finset.sum_comm (f := fun i k ↦ inner ℝ (b k : Rn N) (A₁ (b i : Rn N)) ^ 2)]
     rw [htr1, htr2, htr3, hnsum]
     ring
+/-- **Initial velocity, acceleration and their spatial derivatives vanish off a closed set fixed by
+the family** (Simon 5.1–5.2). If `K ⊆ ℝᴺ` is closed and `φ t x = x` for `t ∈ (-1,1)` and `x ∉ K`,
+then `X = initialVelocity φ` and `Z = initialAcceleration φ` vanish at every `x ∉ K`, and so do
+`DX(x)` and `DZ(x)`. For `y ∉ K`, `s ↦ φ s y` is constant on the open interval `(-1,1)`, so its
+derivative vanishes there (`Filter.EventuallyEq.deriv_eq`, `deriv_const`); at `t = 0` this is
+`X(y) = 0`, and since `t ↦ ∂ₜφ(t,y)` vanishes near `0`, also `Z(y) = 0`. As `Kᶜ` is open, `X` and
+`Z` vanish near each `x ∉ K`, so `DX(x) = DZ(x) = 0` (`Filter.EventuallyEq.fderiv_eq`,
+`fderiv_const_apply`). -/
+theorem Submission.variation_deformation_vanish_off_closed : ∀ (N : ℕ) (K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), IsClosed K → (∀ t ∈ Ioo (-1 : ℝ) 1, ∀ x, x ∉ K → φ t x = x) → ∀ x, x ∉ K → initialVelocity φ x = 0 ∧ initialAcceleration φ x = 0 ∧ fderiv ℝ (initialVelocity φ) x = 0 ∧ fderiv ℝ (initialAcceleration φ) x = 0 := by
+  intro N K φ hK hfix
+  -- Steps 1–2: for `y ∉ K`, `s ↦ φ s y` equals `y` near each `t ∈ (-1,1)`, so its derivative
+  -- vanishes there.
+  have hderiv : ∀ y, y ∉ K → ∀ t ∈ Ioo (-1 : ℝ) 1, deriv (fun s ↦ φ s y) t = 0 := by
+    intro y hy t ht
+    have hconst : (fun s ↦ φ s y) =ᶠ[𝓝 t] fun _ ↦ y := by
+      filter_upwards [isOpen_Ioo.mem_nhds ht] with s hs
+      exact hfix s hs y hy
+    rw [hconst.deriv_eq, deriv_const]
+  have h0 : (0 : ℝ) ∈ Ioo (-1 : ℝ) 1 := ⟨by norm_num, by norm_num⟩
+  -- Step 3: `X(y) = 0` for `y ∉ K` (step 2 at `t = 0`).
+  have hX : ∀ y, y ∉ K → initialVelocity φ y = 0 := fun y hy ↦ hderiv y hy 0 h0
+  -- Step 4: `Z(y) = 0` for `y ∉ K`, as `t ↦ deriv (s ↦ φ s y) t` vanishes near `0`.
+  have hZ : ∀ y, y ∉ K → initialAcceleration φ y = 0 := by
+    intro y hy
+    have hzero : (fun t ↦ deriv (fun s ↦ φ s y) t) =ᶠ[𝓝 0] fun _ ↦ (0 : Rn N) := by
+      filter_upwards [isOpen_Ioo.mem_nhds h0] with t ht
+      exact hderiv y hy t ht
+    change deriv (fun t ↦ deriv (fun s ↦ φ s y) t) 0 = 0
+    rw [hzero.deriv_eq, deriv_const]
+  -- Step 5: `Kᶜ` is an open neighbourhood of `x` on which `X` and `Z` vanish.
+  intro x hx
+  have hnhds : Kᶜ ∈ 𝓝 x := hK.isOpen_compl.mem_nhds hx
+  have hXloc : initialVelocity φ =ᶠ[𝓝 x] fun _ ↦ (0 : Rn N) := by
+    filter_upwards [hnhds] with y hy
+    exact hX y hy
+  have hZloc : initialAcceleration φ =ᶠ[𝓝 x] fun _ ↦ (0 : Rn N) := by
+    filter_upwards [hnhds] with y hy
+    exact hZ y hy
+  -- Step 6: combine.
+  refine ⟨hX x hx, hZ x hx, ?_, ?_⟩
+  · rw [hXloc.fderiv_eq, fderiv_const_apply]
+  · rw [hZloc.fderiv_eq, fderiv_const_apply]
+/-- **Partial derivatives of a jointly `C^n` family.** Let `O ⊆ ℝ × ℝᴺ` be open, let
+`F(t, x) = Φ t x` be `C^n` on `O`, and let `m + 1 ≤ n`. Then the spatial derivative
+`(t, x) ↦ fderiv ℝ (Φ t) x` and the time derivative `(t, x) ↦ deriv (s ↦ Φ s x) t` are `C^m` on
+`O`. On `O` they equal `DF(t, x) ∘ inr` and `DF(t, x) (1, 0)` (chain rule along `x' ↦ (t, x')` and
+`s ↦ (s, x)`), and `p ↦ DF(p)` is `C^m` on `O` (`ContDiffOn.fderiv_of_isOpen`). -/
+theorem Submission.variation_deformation_partials_contDiffOn : ∀ (N : ℕ) (Φ : ℝ → Rn N → Rn N) (O : Set (ℝ × Rn N)) (m n : WithTop ℕ∞), IsOpen O → ContDiffOn ℝ n (fun p : ℝ × Rn N ↦ Φ p.1 p.2) O → m + 1 ≤ n → ContDiffOn ℝ m (fun p : ℝ × Rn N ↦ fderiv ℝ (Φ p.1) p.2) O ∧ ContDiffOn ℝ m (fun p : ℝ × Rn N ↦ deriv (fun s ↦ Φ s p.2) p.1) O := by
+  intro N Φ O m n hO hF hmn
+  -- Step 1: `0 < 1 ≤ m + 1 ≤ n`, so `F` is differentiable at every point of the open set `O`.
+  have hn : n ≠ 0 := (zero_lt_one.trans_le (le_add_self.trans hmn)).ne'
+  have hdiff : ∀ p ∈ O, DifferentiableAt ℝ (fun p : ℝ × Rn N ↦ Φ p.1 p.2) p := fun p hp ↦
+    (hF.contDiffAt (hO.mem_nhds hp)).differentiableAt hn
+  -- Step 2: `p ↦ DF(p)` is `C^m` on `O`.
+  have hDF : ContDiffOn ℝ m (fderiv ℝ fun p : ℝ × Rn N ↦ Φ p.1 p.2) O :=
+    hF.fderiv_of_isOpen hO hmn
+  constructor
+  · -- Steps 3–4: `fderiv ℝ (Φ t) x = DF(t, x) ∘ inr` on `O`, by the chain rule along `x' ↦ (t, x')`.
+    refine (hDF.clm_comp (contDiffOn_const (c := ContinuousLinearMap.inr ℝ ℝ (Rn N)))).congr ?_
+    rintro ⟨t, x⟩ hp
+    exact ((hdiff (t, x) hp).hasFDerivAt.comp x (hasFDerivAt_prodMk_right t x)).fderiv
+  · -- Steps 5–6: `deriv (s ↦ Φ s x) t = DF(t, x) (1, 0)` on `O`, by the chain rule along `s ↦ (s, x)`.
+    refine (hDF.clm_apply (contDiffOn_const (c := ((1 : ℝ), (0 : Rn N))))).congr ?_
+    rintro ⟨t, x⟩ hp
+    exact ((hdiff (t, x) hp).hasFDerivAt.comp_hasDerivAt t
+      ((hasDerivAt_id t).prodMk (hasDerivAt_const t x))).deriv
+/-- **Simon Ch. 2, §5 (p. 62), mixed partials of a deformation.** The expansion
+`D_τ φ_t = τ + t D_τ X + (t²/2) D_τ Z + O(t³)` "by 5.2" interchanges `∂_t` and `D_x`. Here, for
+`F(s, x) = Φ s x` that is `C²` at `(t, y)`, `s ↦ DΦ_s(y)` has derivative `D(x ↦ ∂_s Φ(t, x))(y)` at
+`t`. Both sides equal `M(t, y) = D²F(t, y)(1, 0) ∘ inr`. For the left side this is the chain rule.
+For the right side, `x ↦ ∂_s Φ(t, x)` is the pointwise limit of the quotients
+`h⁻¹ (Φ (t + h) - Φ t)` as `h → 0`. Their spatial derivatives `h⁻¹ (D_x F(t + h, ·) - D_x F(t, ·))`
+converge to `M(t, ·)` uniformly near `y`, by the mean value theorem and the continuity of `D²F` at
+`(t, y)`. The uniform limit theorem for derivatives then applies. -/
+theorem Submission.variation_deformation_mixed_partial : ∀ (N : ℕ) (Φ : ℝ → Rn N → Rn N) (t : ℝ) (y : Rn N), ContDiffAt ℝ 2 (fun p : ℝ × Rn N ↦ Φ p.1 p.2) (t, y) → HasDerivAt (fun s ↦ fderiv ℝ (Φ s) y) (fderiv ℝ (fun x ↦ deriv (fun s ↦ Φ s x) t) y) t := by
+  intro N Φ t y hF
+  -- `F(s, x) = Φ s x`, `e₀ = (1, 0)`, `L = inr`, and `M p = D²F(p) e₀ ∘ L`, the time derivative of
+  -- the spatial derivative `D_x F = DF ∘ L`.
+  set F : ℝ × Rn N → Rn N := fun p ↦ Φ p.1 p.2
+  set e₀ : ℝ × Rn N := (1, 0)
+  set L : Rn N →L[ℝ] ℝ × Rn N := ContinuousLinearMap.inr ℝ ℝ (Rn N)
+  set M : ℝ × Rn N → (Rn N →L[ℝ] Rn N) := fun p ↦ (fderiv ℝ (fderiv ℝ F) p e₀).comp L
+  -- Step 1: `F` is `C²` on a ball `B = B_r(t, y)`. On `B`, `F` and `DF` are differentiable and
+  -- `D²F` is continuous.
+  obtain ⟨u, hu, hFu⟩ := hF.contDiffOn le_rfl (by simp)
+  obtain ⟨r, hr, hru⟩ := Metric.mem_nhds_iff.mp hu
+  have hB : IsOpen (ball (t, y) r) := isOpen_ball
+  have hFB : ContDiffOn ℝ 2 F (ball (t, y) r) := hFu.mono hru
+  have hDF : ContDiffOn ℝ 1 (fderiv ℝ F) (ball (t, y) r) :=
+    hFB.fderiv_of_isOpen hB (by norm_num)
+  have hD2 : ContDiffOn ℝ 0 (fderiv ℝ (fderiv ℝ F)) (ball (t, y) r) :=
+    hDF.fderiv_of_isOpen hB (by norm_num)
+  have hF1 : ∀ p ∈ ball (t, y) r, HasFDerivAt F (fderiv ℝ F p) p := fun p hp ↦
+    ((hFB.differentiableOn (by norm_num)) p hp).differentiableAt (hB.mem_nhds hp) |>.hasFDerivAt
+  have hF2 : ∀ p ∈ ball (t, y) r, HasFDerivAt (fderiv ℝ F) (fderiv ℝ (fderiv ℝ F) p) p :=
+    fun p hp ↦
+      ((hDF.differentiableOn (by norm_num)) p hp).differentiableAt (hB.mem_nhds hp) |>.hasFDerivAt
+  have hmem : ∀ s x, |s - t| < r → dist x y < r → (s, x) ∈ ball (t, y) r := by
+    intro s x hs hx
+    rw [mem_ball, Prod.dist_eq, max_lt_iff, Real.dist_eq]
+    exact ⟨hs, hx⟩
+  have hpath : ∀ (s : ℝ) (x : Rn N), HasDerivAt (fun σ : ℝ ↦ (σ, x)) e₀ s := fun s x ↦
+    (hasDerivAt_id s).prodMk (hasDerivAt_const s x)
+  -- Step 2 (chain rule at points `(s, x)` of `B`): `D(Φ s)(x) = DF(s, x) ∘ L`,
+  -- `∂_s Φ(s, x) = DF(s, x) e₀`, and `σ ↦ DF(σ, x) ∘ L` has derivative `M(s, x)` at `s`.
+  have ha : ∀ s x, (s, x) ∈ ball (t, y) r → HasFDerivAt (Φ s) ((fderiv ℝ F (s, x)).comp L) x :=
+    fun s x hp ↦ (hF1 (s, x) hp).comp x (hasFDerivAt_prodMk_right s x)
+  have hb : ∀ s x, (s, x) ∈ ball (t, y) r →
+      HasDerivAt (fun σ ↦ Φ σ x) (fderiv ℝ F (s, x) e₀) s :=
+    fun s x hp ↦ by
+      have h := (hF1 (s, x) hp).comp_hasDerivAt s (hpath s x)
+      exact h
+  have hc : ∀ s x, (s, x) ∈ ball (t, y) r →
+      HasDerivAt (fun σ ↦ (fderiv ℝ F (σ, x)).comp L) (M (s, x)) s := by
+    intro s x hp
+    have h1 : HasDerivAt (fun σ ↦ fderiv ℝ F (σ, x)) (fderiv ℝ (fderiv ℝ F) (s, x) e₀) s :=
+      (hF2 (s, x) hp).comp_hasDerivAt s (hpath s x)
+    simpa using h1.clm_comp (hasDerivAt_const s L)
+  -- Step 3: `x ↦ ∂_s Φ(t, x)` has derivative `M(t, y)` at `y`. It is the pointwise limit of
+  -- `f h = h⁻¹ (Φ (t + h) - Φ t)` as `h → 0`, `h ≠ 0`, and the derivatives
+  -- `f' h = h⁻¹ (D_x F(t + h, ·) - D_x F(t, ·))` converge to `M(t, ·)` uniformly near `y`.
+  have key : HasFDerivAt (fun x ↦ deriv (fun s ↦ Φ s x) t) (M (t, y)) y := by
+    refine hasFDerivAt_of_tendstoUniformlyOnFilter (l := 𝓝[≠] (0 : ℝ))
+      (f := fun h x ↦ h⁻¹ • (Φ (t + h) x - Φ t x))
+      (f' := fun h x ↦ h⁻¹ • ((fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L))
+      (g' := fun x ↦ M (t, x)) ?_ ?_ ?_
+    · -- Uniform convergence of `f'`: given `ε`, take `δ` from the continuity of `M` at `(t, y)`.
+      rw [Metric.tendstoUniformlyOnFilter_iff]
+      intro ε hε
+      have hMc : ContinuousAt M (t, y) :=
+        ((hD2.continuousOn.continuousAt (hB.mem_nhds (mem_ball_self hr))).clm_apply
+          continuousAt_const).clm_comp continuousAt_const
+      obtain ⟨δ, hδ, hδM⟩ := Metric.continuousAt_iff.mp hMc (ε / 2) (half_pos hε)
+      have hδ' : 0 < min δ r := lt_min hδ hr
+      have hev1 : ∀ᶠ h in 𝓝[≠] (0 : ℝ), |h| < min δ r ∧ h ≠ 0 := by
+        filter_upwards [nhdsWithin_le_nhds (ball_mem_nhds (0 : ℝ) hδ'), self_mem_nhdsWithin]
+          with h h1 h2
+        refine ⟨?_, h2⟩
+        rwa [mem_ball, Real.dist_eq, sub_zero] at h1
+      have hev2 : ∀ᶠ x in 𝓝 y, dist x y < min δ r := ball_mem_nhds y hδ'
+      filter_upwards [hev1.prod_mk hev2]
+      rintro ⟨h, x⟩ ⟨⟨hh, hh0⟩, hx⟩
+      dsimp only
+      have hxδ : dist x y < δ := lt_of_lt_of_le hx (min_le_left _ _)
+      have hxr : dist x y < r := lt_of_lt_of_le hx (min_le_right _ _)
+      have hclose : ∀ σ, |σ - t| < min δ r → dist (M (σ, x)) (M (t, y)) < ε / 2 := by
+        intro σ hσ
+        apply hδM
+        rw [Prod.dist_eq, max_lt_iff, Real.dist_eq]
+        exact ⟨lt_of_lt_of_le hσ (min_le_left _ _), hxδ⟩
+      -- Mean value theorem in time for `σ ↦ D_x F(σ, x) - σ • M(t, y)`, whose derivative
+      -- `M(σ, x) - M(t, y)` has norm `≤ ε / 2` for `|σ - t| < min δ r`.
+      have hmvt : ‖(fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L - h • M (t, y)‖
+          ≤ ε / 2 * |h| := by
+        have hderiv : ∀ σ ∈ ball t (min δ r), HasDerivWithinAt
+            (fun σ ↦ (fderiv ℝ F (σ, x)).comp L - σ • M (t, y)) (M (σ, x) - M (t, y))
+            (ball t (min δ r)) σ := by
+          intro σ hσ
+          rw [mem_ball, Real.dist_eq] at hσ
+          have h1 := hc σ x (hmem σ x (lt_of_lt_of_le hσ (min_le_right _ _)) hxr)
+          have h2 := (hasDerivAt_id' σ).smul_const (M (t, y))
+          have h3 := (h1.sub h2).hasDerivWithinAt (s := ball t (min δ r))
+          rw [one_smul] at h3
+          exact h3
+        have hbound : ∀ σ ∈ ball t (min δ r), ‖M (σ, x) - M (t, y)‖ ≤ ε / 2 := by
+          intro σ hσ
+          rw [mem_ball, Real.dist_eq] at hσ
+          rw [← dist_eq_norm]
+          exact (hclose σ hσ).le
+        have hth : t + h ∈ ball t (min δ r) := by
+          rw [mem_ball, Real.dist_eq, add_sub_cancel_left]
+          exact hh
+        have hlip := (convex_ball t (min δ r)).norm_image_sub_le_of_norm_hasDerivWithin_le
+          hderiv hbound (mem_ball_self hδ') hth
+        simp only [add_sub_cancel_left, Real.norm_eq_abs] at hlip
+        calc _ = ‖(fderiv ℝ F (t + h, x)).comp L - (t + h) • M (t, y)
+              - ((fderiv ℝ F (t, x)).comp L - t • M (t, y))‖ := by
+              congr 1
+              rw [show (t + h) • M (t, y) = t • M (t, y) + h • M (t, y) from add_smul t h (M (t, y))]
+              abel
+          _ ≤ ε / 2 * |h| := hlip
+      -- Hence `‖M(t, y) - f' h x‖ ≤ ε / 2`, and `‖M(t, x) - M(t, y)‖ < ε / 2`.
+      have hfinal : dist (M (t, y))
+          (h⁻¹ • ((fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L)) ≤ ε / 2 := by
+        rw [dist_eq_norm]
+        have e2 : M (t, y) - h⁻¹ • ((fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L)
+            = -(h⁻¹ • ((fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L
+              - h • M (t, y))) := by
+          rw [smul_sub (h⁻¹) _ (h • M (t, y)), smul_smul, inv_mul_cancel₀ hh0, one_smul]; abel
+        rw [e2, norm_neg, norm_smul, norm_inv, Real.norm_eq_abs]
+        have habs : 0 < |h| := abs_pos.mpr hh0
+        calc |h|⁻¹ * ‖_‖ ≤ |h|⁻¹ * (ε / 2 * |h|) := by gcongr
+          _ = ε / 2 := by field_simp
+      calc dist (M (t, x)) (h⁻¹ • ((fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L))
+          ≤ dist (M (t, x)) (M (t, y)) + dist (M (t, y))
+              (h⁻¹ • ((fderiv ℝ F (t + h, x)).comp L - (fderiv ℝ F (t, x)).comp L)) :=
+            dist_triangle _ _ _
+        _ < ε / 2 + ε / 2 := add_lt_add_of_lt_of_le (hclose t (by simpa using hδ')) hfinal
+        _ = ε := add_halves ε
+    · -- `f' h` is the derivative of `f h` near `y`, for small `h`.
+      have h1 : ∀ᶠ h in 𝓝[≠] (0 : ℝ), |h| < r := by
+        filter_upwards [nhdsWithin_le_nhds (ball_mem_nhds (0 : ℝ) hr)] with h h1
+        rwa [mem_ball, Real.dist_eq, sub_zero] at h1
+      have h2 : ∀ᶠ x in 𝓝 y, dist x y < r := ball_mem_nhds y hr
+      filter_upwards [h1.prod_mk h2]
+      rintro ⟨h, x⟩ ⟨hh, hx⟩
+      have p1 := ha (t + h) x (hmem (t + h) x (by simpa using hh) hx)
+      have p2 := ha t x (hmem t x (by simpa using hr) hx)
+      exact (p1.sub p2).const_smul h⁻¹
+    · -- `f h x → ∂_s Φ(t, x)` for `x` near `y`: the slopes converge to the derivative.
+      filter_upwards [ball_mem_nhds y hr] with x hx
+      have hbx := hb t x (hmem t x (by simpa using hr) hx)
+      show Tendsto (fun h ↦ h⁻¹ • (Φ (t + h) x - Φ t x)) (𝓝[≠] 0) (𝓝 (deriv (fun s ↦ Φ s x) t))
+      rw [hbx.deriv]
+      exact hbx.tendsto_slope_zero
+  -- Step 4: near `t`, `D(Φ s)(y) = D_x F(s, y)`, whose time derivative at `t` is `M(t, y)`.
+  rw [key.fderiv]
+  refine (hc t y (mem_ball_self hr)).congr_of_eventuallyEq ?_
+  filter_upwards [ball_mem_nhds t hr] with s hs
+  rw [mem_ball, Real.dist_eq] at hs
+  exact (ha s y (hmem s y hs (by simpa using hr))).fderiv
+
+/-- **Calculus of an admissible deformation** (Simon Ch. 2, 5.1–5.4). Write `X`, `Z` for the
+initial velocity and acceleration, `A(t,x) = fderiv ℝ (φ t) x` and `O = (-1,1) × U` (open).
+(V) `X`, `Z`, `DX`, `DZ` vanish off `K`: `K` is compact, hence closed, and `φ t = id` off `K`.
+(C2) `A` is `C¹` on `O` (`m = 1`, `n = 2` in `partials_contDiffOn`); `A(0,y) = I` since
+`φ 0 = id` near `y ∈ U`; and the interchange `mixed_partial` at `(0,y)` gives `∂ₜA(0,y) = DX(y)`,
+because `x ↦ deriv (s ↦ φ s x) 0` is `X` by definition.
+(C3) (Erratum: `C³`, not `C²`.) `A` and `Ψ(t,x) = deriv (s ↦ φ s x) t` are `C²` on `O`.
+`mixed_partial` at every `(t,y)`, `|t| < 1`, makes `s ↦ A(s,y)` differentiable near `0` with
+`∂ₜA(t,y) = D(Ψ t)(y)`; `mixed_partial` for `Ψ` at `(0,y)` differentiates this at `0`, and
+`x ↦ deriv (s ↦ Ψ s x) 0` is `Z` by definition. -/
+theorem Submission.variation_deformation_calculus : ∀ (N : ℕ) (U K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), (∀ r : ℕ∞, IsAdmissibleDeformation r U K φ → ∀ x, x ∉ K → initialVelocity φ x = 0 ∧ initialAcceleration φ x = 0 ∧ fderiv ℝ (initialVelocity φ) x = 0 ∧ fderiv ℝ (initialAcceleration φ) x = 0) ∧ (IsAdmissibleDeformation 2 U K φ → (∀ t ∈ Ioo (-1 : ℝ) 1, ∀ x ∈ U, ContDiffAt ℝ 1 (fun p : ℝ × Rn N ↦ fderiv ℝ (φ p.1) p.2) (t, x)) ∧ ∀ y ∈ U, fderiv ℝ (φ 0) y = 1 ∧ HasDerivAt (fun t ↦ fderiv ℝ (φ t) y) (fderiv ℝ (initialVelocity φ) y) 0) ∧ (IsAdmissibleDeformation 3 U K φ → (∀ t ∈ Ioo (-1 : ℝ) 1, ∀ x ∈ U, ContDiffAt ℝ 2 (fun p : ℝ × Rn N ↦ fderiv ℝ (φ p.1) p.2) (t, x)) ∧ ∀ y ∈ U, (∀ᶠ t in 𝓝 0, DifferentiableAt ℝ (fun s ↦ fderiv ℝ (φ s) y) t) ∧ HasDerivAt (deriv (fun s ↦ fderiv ℝ (φ s) y)) (fderiv ℝ (initialAcceleration φ) y) 0) := by
+  intro N U K φ
+  have h0 : (0 : ℝ) ∈ Ioo (-1 : ℝ) 1 := by norm_num
+  have hI : Ioo (-1 : ℝ) 1 ∈ 𝓝 0 := isOpen_Ioo.mem_nhds h0
+  refine ⟨?_, ?_, ?_⟩
+  · -- (V), items 1–2.
+    rintro r ⟨-, hK, -, -, -, hfix, -⟩
+    exact Submission.variation_deformation_vanish_off_closed N K φ hK.isClosed hfix
+  · -- (C2).
+    rintro ⟨hU, -, -, hC, hid, -, -⟩
+    have hO : IsOpen (Ioo (-1 : ℝ) 1 ×ˢ U) := isOpen_Ioo.prod hU
+    -- Items 3–4: `A` is `C¹` on `O`.
+    have hA := (Submission.variation_deformation_partials_contDiffOn N φ _ 1 _ hO hC
+      (by norm_num)).1
+    refine ⟨fun t ht x hx ↦ hA.contDiffAt (hO.mem_nhds ⟨ht, hx⟩), fun y hy ↦ ⟨?_, ?_⟩⟩
+    · -- Item 5: `φ 0 = id` on the neighbourhood `U` of `y`.
+      have hid' : φ 0 =ᶠ[𝓝 y] id := Filter.eventually_of_mem (hU.mem_nhds hy) hid
+      rw [hid'.fderiv_eq, fderiv_id]
+      rfl
+    · -- Items 6–7: interchange at `(0,y)`.
+      exact Submission.variation_deformation_mixed_partial N φ 0 y
+        (hC.contDiffAt (hO.mem_nhds ⟨h0, hy⟩))
+  · -- (C3).
+    rintro ⟨hU, -, -, hC, -, -, -⟩
+    have hO : IsOpen (Ioo (-1 : ℝ) 1 ×ˢ U) := isOpen_Ioo.prod hU
+    -- Items 8–10: `A` and `Ψ` are `C²` on `O`.
+    obtain ⟨hA, hΨ⟩ := Submission.variation_deformation_partials_contDiffOn N φ _ 2 _ hO hC
+      (by norm_num)
+    refine ⟨fun t ht x hx ↦ hA.contDiffAt (hO.mem_nhds ⟨ht, hx⟩), fun y hy ↦ ?_⟩
+    -- Item 9: interchange at every `(t,y)` with `|t| < 1`.
+    have hM : ∀ t ∈ Ioo (-1 : ℝ) 1, HasDerivAt (fun s ↦ fderiv ℝ (φ s) y)
+        (fderiv ℝ (fun x ↦ deriv (fun s ↦ φ s x) t) y) t := fun t ht ↦
+      Submission.variation_deformation_mixed_partial N φ t y
+        ((hC.contDiffAt (hO.mem_nhds ⟨ht, hy⟩)).of_le (by norm_num))
+    refine ⟨Filter.eventually_of_mem hI fun t ht ↦ (hM t ht).differentiableAt, ?_⟩
+    -- Item 11: interchange for `Ψ` at `(0,y)`, transported along `∂ₜA(t,y) = D(Ψ t)(y)` near `0`.
+    exact (Submission.variation_deformation_mixed_partial N (fun t x ↦ deriv (fun s ↦ φ s x) t)
+      0 y (hΨ.contDiffAt (hO.mem_nhds ⟨h0, hy⟩))).congr_of_eventuallyEq
+      (Filter.eventually_of_mem hI fun t ht ↦ (hM t ht).deriv)
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
