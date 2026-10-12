@@ -707,6 +707,317 @@ theorem Submission.fiw_ims_tsum_tau :
   simp only [hint] at hS
   exact hS
 
+/-- **Series of integer multiplicity currents, Simon Ch. 6, 3.13 (p. 149), as used in the proof
+of 7.2 (p. 170).**  Under tangent locality in `U`, an `M`-absolutely convergent series
+`∑ c_r τ(M_r, θ_r, ξ_r)` with `c_r ∈ ℤ` and integer `θ_r` is one integer multiplicity current
+`τ(M', θ', ξ')`.  Off an `Hⁿ`-null set, only finitely many `M_r` with `c_r ≠ 0` contain `x`,
+each `ξ_r` orients `M_r` at `x`, and `ξ_r(x) = ±ξ_{r'}(x)` whenever `x ∈ M_r ∩ M_{r'}`.  With
+`ξ̂ = ξ_{r(x)}` for the first index `r(x)` of an `M_r ∋ x` and `ξ_r = σ_r ξ̂` (`σ_r = ±1`),
+`θ̂ = ∑' r, 1_{M_r} c_r σ_r θ_r` is an integer-valued finite sum bounded by
+`∑' r, |c_r| 1_{M_r} θ_r`; then `M' = {θ̂ ≠ 0}`, `θ' = |θ̂|`, `ξ' = (θ̂/|θ̂|) ξ̂` give the sum of
+the series. -/
+theorem Submission.fiw_ims_combine : ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → (∀ (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ), M₁ ⊆ U → M₂ ⊆ U → NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) → NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) → (∀ x ∈ M₁, 0 < θ₁ x) → (∀ x ∈ M₂, 0 < θ₂ x) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ₁ (M₁ ∩ K) (μHE[n] : Measure (Eucl P))) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ₂ (M₂ ∩ K) (μHE[n] : Measure (Eucl P))) → ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M₁ θ₁ x Q → HasWeightedApproximateTangentSpaceAt n M₂ θ₂ x Q) → ∀ (M : ℕ → Set (Eucl P)) (θ : ℕ → Eucl P → ℝ) (ξ : ℕ → Eucl P → NVector (Eucl P) n) (c : ℕ → ℤ), (∀ r, IsRectifiableTriple U n (M r) (θ r) (ξ r)) → (∀ r, ∀ x ∈ M r, ∃ k : ℕ, θ r x = k) → (∀ W, CompactlyContainedOpen W U → (∑' r, ((c r).natAbs : ℝ≥0∞) * ∫⁻ x in M r ∩ W, ENNReal.ofReal (θ r x) ∂(μHE[n] : Measure (Eucl P))) < ∞) → ∃ (M' : Set (Eucl P)) (θ' : Eucl P → ℝ) (ξ' : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M' θ' ξ' ∧ (∀ x ∈ M', ∃ k : ℕ, θ' x = k) ∧ ∀ ω : TestFormOn U n, HasSum (fun r => (c r : ℝ) * tauAction n (M r) (θ r) (ξ r) ω) (tauAction n M' θ' ξ' ω) := by
+  intro P n U hU hTL M θ ξ c hT hθN hsum
+  classical
+  -- `NVector (Eucl P) n` is a normed space, but instance search does not find its
+  -- pseudometrizability; the operator-norm uniformity provides it.
+  have : TopologicalSpace.PseudoMetrizableSpace (NVector (Eucl P) n) := by
+    let u : UniformSpace (NVector (Eucl P) n) := PseudoMetricSpace.toUniformSpace
+    have : (uniformity (NVector (Eucl P) n)).IsCountablyGenerated :=
+      @EMetric.instIsCountablyGeneratedUniformity _ PseudoMetricSpace.toPseudoEMetricSpace
+    exact @UniformSpace.pseudoMetrizableSpace _ u this
+  /- Step 1: the exceptional null sets.  Off a null set, only finitely many `M r` with
+  `c r ≠ 0` contain `x`, every `M r ∋ x` is oriented at `x` by `ξ r`, and the orientations of
+  any two `M r, M r' ∋ x` agree up to sign. -/
+  have hθ1 : ∀ r, ∀ x ∈ M r, 1 ≤ θ r x := by
+    intro r x hx
+    obtain ⟨k, hk⟩ := hθN r x hx
+    have hpos := (hT r).pos x hx
+    rw [hk] at hpos ⊢
+    have hk0 : 0 < k := by exact_mod_cast hpos
+    exact_mod_cast hk0
+  obtain ⟨hΘ, hfin⟩ := Submission.fiw_ims_overlap_finite P n U hU M θ c
+    (fun r => (hT r).subset) (fun r => (hT r).nullMeasurableSet) (fun r => (hT r).integrableOn)
+    hθ1 hsum
+  have horient : ∀ r, ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), x ∈ M r →
+      ∃ τ : Fin n → Eucl P, Orthonormal ℝ τ ∧
+        HasWeightedApproximateTangentSpaceAt n (M r) (θ r) x (Submodule.span ℝ (range τ)) ∧
+        (ξ r x = simpleNVector τ ∨ ξ r x = -simpleNVector τ) := fun r =>
+    (ae_restrict_iff'₀ (hT r).nullMeasurableSet).1 (hT r).orients
+  have hsign : ∀ r r', ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), x ∈ M r → x ∈ M r' →
+      (ξ r x = ξ r' x ∨ ξ r x = -ξ r' x) := by
+    intro r r'
+    have h := Submission.fiw_ims_orientation_sign P n U (M r) (M r') (θ r) (θ r') (ξ r) (ξ r')
+      (hT r) (hT r') (hTL (M r) (M r') (θ r) (θ r') (hT r).subset (hT r').subset
+        (hT r).nullMeasurableSet (hT r').nullMeasurableSet (hT r).pos (hT r').pos
+        (hT r).integrableOn (hT r').integrableOn)
+    rw [ae_restrict_iff'₀ ((hT r).nullMeasurableSet.inter (hT r').nullMeasurableSet)] at h
+    filter_upwards [h] with x hx h1 h2 using hx ⟨h1, h2⟩
+  set G : Set (Eucl P) := {x | {r | c r ≠ 0 ∧ x ∈ M r}.Finite ∧
+    (∀ r, x ∈ M r → ∃ τ : Fin n → Eucl P, Orthonormal ℝ τ ∧
+        HasWeightedApproximateTangentSpaceAt n (M r) (θ r) x (Submodule.span ℝ (range τ)) ∧
+        (ξ r x = simpleNVector τ ∨ ξ r x = -simpleNVector τ)) ∧
+    ∀ r r', x ∈ M r → x ∈ M r' → (ξ r x = ξ r' x ∨ ξ r x = -ξ r' x)}
+  have hGae : ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), x ∈ G := by
+    have h3 : ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), ∀ r r', x ∈ M r → x ∈ M r' →
+        (ξ r x = ξ r' x ∨ ξ r x = -ξ r' x) :=
+      ae_all_iff.2 fun r => ae_all_iff.2 (hsign r)
+    filter_upwards [hfin, ae_all_iff.2 horient, h3] with x h1 h2 h3 using ⟨h1, h2, h3⟩
+  have hGnm : NullMeasurableSet G (μHE[n] : Measure (Eucl P)) :=
+    (NullMeasurableSet.of_null (ae_iff.1 hGae)).of_compl
+  /- Step 2: the first index `rf x` of a set `M r` containing `x`, and the sets `A r` on which
+  it equals `r`. -/
+  let rf : Eucl P → ℕ := fun x => if h : ∃ r, x ∈ M r then Nat.find h else 0
+  have hrf : ∀ r, ∀ x ∈ M r, x ∈ M (rf x) := by
+    intro r x hx
+    have h : ∃ r, x ∈ M r := ⟨r, hx⟩
+    simp only [rf, dite_eq_left h]
+    exact Nat.find_spec h
+  have hrfA : ∀ r x, x ∈ M r → (∀ r' < r, x ∉ M r') → rf x = r := by
+    intro r x hx hlt
+    have h : ∃ r, x ∈ M r := ⟨r, hx⟩
+    simp only [rf, dite_eq_left h]
+    exact (Nat.find_eq_iff h).2 ⟨hx, hlt⟩
+  have hMA : (⋃ r, M r) = ⋃ r, M r ∩ ⋂ r' ∈ {r' | r' < r}, (M r')ᶜ := by
+    ext x
+    simp only [mem_iUnion, mem_inter_iff, mem_iInter, mem_compl_iff, mem_ofPred_eq]
+    constructor
+    · rintro ⟨r, hr⟩
+      have h : ∃ r, x ∈ M r := ⟨r, hr⟩
+      exact ⟨Nat.find h, Nat.find_spec h, fun r' hr' => Nat.find_min h hr'⟩
+    · rintro ⟨r, hr, -⟩
+      exact ⟨r, hr⟩
+  /- Step 3: the reference orientation `ξh x = ξ (rf x) x`, a.e.-strongly measurable on
+  `⋃ r, M r` because it agrees with `ξ r` on `A r`. -/
+  let ξh : Eucl P → NVector (Eucl P) n := fun x => ξ (rf x) x
+  have hξh : AEStronglyMeasurable ξh
+      ((μHE[n] : Measure (Eucl P)).restrict (⋃ r, M r)) := by
+    rw [hMA, aestronglyMeasurable_iUnion_iff]
+    intro r
+    have hAnm : NullMeasurableSet (M r ∩ ⋂ r' ∈ {r' | r' < r}, (M r')ᶜ)
+        (μHE[n] : Measure (Eucl P)) :=
+      (hT r).nullMeasurableSet.inter
+        (NullMeasurableSet.iInter fun r' => NullMeasurableSet.iInter fun _ =>
+          (hT r').nullMeasurableSet.compl)
+    refine ((hT r).aestronglyMeasurable.mono_measure
+      (Measure.restrict_mono inter_subset_left le_rfl)).congr ?_
+    filter_upwards [ae_restrict_mem₀ hAnm] with x hx
+    simp only [mem_inter_iff, mem_iInter, mem_compl_iff] at hx
+    simp only [ξh, hrfA r x hx.1 hx.2]
+  /- Step 4: the signs `σ r x = ±1` with `ξ r x = σ r x • ξh x` on `G ∩ M r`. -/
+  let σ : ℕ → Eucl P → ℝ := fun r x => if ξ r x = ξh x then 1 else -1
+  have hσ : ∀ r, AEStronglyMeasurable (σ r) ((μHE[n] : Measure (Eucl P)).restrict (M r)) := by
+    intro r
+    have hE : NullMeasurableSet {x | ξ r x = ξh x}
+        ((μHE[n] : Measure (Eucl P)).restrict (M r)) :=
+      (hT r).aestronglyMeasurable.nullMeasurableSet_eq_fun
+        (hξh.mono_measure (Measure.restrict_mono (subset_iUnion M r) le_rfl))
+    have h := AEStronglyMeasurable.piecewise (f := fun _ => (1 : ℝ)) (g := fun _ => (-1 : ℝ))
+      hE aestronglyMeasurable_const aestronglyMeasurable_const
+    convert h using 1
+    funext x
+    simp only [σ, Set.piecewise, mem_ofPred_eq]
+  /- Step 5: `θ r` is a.e.-strongly measurable on `M r` (local integrability). -/
+  have hθm : ∀ r, AEStronglyMeasurable (θ r) ((μHE[n] : Measure (Eucl P)).restrict (M r)) := by
+    intro r
+    apply LocallyIntegrableOn.aestronglyMeasurable
+    intro x hx
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hU x ((hT r).subset hx)
+    refine ⟨M r ∩ closedBall x (ε / 2),
+      inter_mem_nhdsWithin _ (closedBall_mem_nhds x (half_pos hε)), ?_⟩
+    exact (hT r).integrableOn _ (isCompact_closedBall x (ε / 2))
+      ((closedBall_subset_ball (half_lt_self hε)).trans hball)
+  /- Step 6: the integer multiplicity `θh = ∑' r, t r`, `t r = 1_{M r} c r σ r θ r`. -/
+  let t : ℕ → Eucl P → ℝ := fun r => (M r).indicator fun y => (c r : ℝ) * (σ r y * θ r y)
+  have ht : ∀ r, AEStronglyMeasurable (t r) (μHE[n] : Measure (Eucl P)) := fun r =>
+    (aestronglyMeasurable_indicator_iff₀ (hT r).nullMeasurableSet).2
+      (((hσ r).mul (hθm r)).const_mul _)
+  have ht0 : ∀ x r, ¬(c r ≠ 0 ∧ x ∈ M r) → t r x = 0 := by
+    intro x r h
+    by_cases hx : x ∈ M r
+    · have hc : c r = 0 := by
+        by_contra hc
+        exact h ⟨hc, hx⟩
+      simp [t, hx, hc]
+    · simp [t, hx]
+  let θh : Eucl P → ℝ := fun x => ∑' r, t r x
+  have hθh_sum : ∀ x (hx : x ∈ G), θh x = ∑ r ∈ hx.1.toFinset, t r x := by
+    intro x hx
+    refine tsum_eq_sum fun r hr => ht0 x r ?_
+    rwa [Set.Finite.mem_toFinset] at hr
+  have hθh_hasSum : ∀ x ∈ G, HasSum (fun r => t r x) (θh x) := by
+    intro x hx
+    refine (summable_of_ne_finset_zero (s := hx.1.toFinset) fun r hr => ht0 x r ?_).hasSum
+    rwa [Set.Finite.mem_toFinset] at hr
+  have hθh : AEStronglyMeasurable θh (μHE[n] : Measure (Eucl P)) := by
+    refine aestronglyMeasurable_of_tendsto_ae atTop
+      (f := fun N x => ∑ r ∈ Finset.range N, t r x)
+      (fun N => Finset.aestronglyMeasurable_fun_sum _ fun r _ => ht r) ?_
+    filter_upwards [hGae] with x hx
+    exact (hθh_hasSum x hx).tendsto_sum_nat
+  -- `ofReal |t r x| = |c r| 1_{M r} ofReal (θ r x)`, so `ofReal |θh| ≤ Θ` on `G`.
+  have hterm : ∀ x r, ENNReal.ofReal |t r x| =
+      ((c r).natAbs : ℝ≥0∞) * (M r).indicator (fun y => ENNReal.ofReal (θ r y)) x := by
+    intro x r
+    by_cases hxr : x ∈ M r
+    · have hσabs : |σ r x| = 1 := by
+        simp only [σ]
+        split_ifs <;> simp
+      have htx : t r x = (c r : ℝ) * (σ r x * θ r x) := indicator_of_mem hxr _
+      rw [indicator_of_mem hxr, htx, abs_mul, abs_mul, hσabs, one_mul,
+        abs_of_pos ((hT r).pos x hxr), ENNReal.ofReal_mul (abs_nonneg _), ← Int.cast_abs,
+        ← Nat.cast_natAbs, ENNReal.ofReal_natCast]
+    · simp [t, hxr]
+  have hΘx : ∀ x ∈ G, ENNReal.ofReal |θh x| ≤
+      ∑' r, ((c r).natAbs : ℝ≥0∞) * (M r).indicator (fun y => ENNReal.ofReal (θ r y)) x := by
+    intro x hx
+    rw [hθh_sum x hx]
+    calc ENNReal.ofReal |∑ r ∈ hx.1.toFinset, t r x|
+        ≤ ENNReal.ofReal (∑ r ∈ hx.1.toFinset, |t r x|) :=
+          ENNReal.ofReal_le_ofReal (Finset.abs_sum_le_sum_abs _ _)
+      _ = ∑ r ∈ hx.1.toFinset, ENNReal.ofReal |t r x| :=
+          ENNReal.ofReal_sum_of_nonneg fun r _ => abs_nonneg _
+      _ = ∑ r ∈ hx.1.toFinset,
+            ((c r).natAbs : ℝ≥0∞) * (M r).indicator (fun y => ENNReal.ofReal (θ r y)) x :=
+          Finset.sum_congr rfl fun r _ => hterm x r
+      _ ≤ _ := ENNReal.sum_le_tsum _
+  /- Step 7: the new triple. -/
+  set M' : Set (Eucl P) := {x | x ∈ G ∧ θh x ≠ 0} with hM'
+  set θ' : Eucl P → ℝ := fun x => |θh x| with hθ'
+  set ξ' : Eucl P → NVector (Eucl P) n := fun x => (θh x / |θh x|) • ξh x
+  have hM'sub : M' ⊆ ⋃ r, M r := by
+    intro x hx
+    by_contra hcon
+    simp only [mem_iUnion, not_exists] at hcon
+    apply hx.2
+    have h0 : ∀ r, t r x = 0 := fun r => by simp [t, hcon r]
+    simp only [θh, h0, tsum_zero]
+  have hM'U : M' ⊆ U := hM'sub.trans (iUnion_subset fun r => (hT r).subset)
+  have hM'nm : NullMeasurableSet M' (μHE[n] : Measure (Eucl P)) := by
+    have hM'eq : M' = G ∩ θh ⁻¹' {0}ᶜ := by
+      ext x
+      simp only [hM', mem_ofPred_eq, mem_inter_iff, mem_preimage, mem_compl_iff,
+        mem_singleton_iff]
+    rw [hM'eq]
+    exact hGnm.inter (hθh.aemeasurable.nullMeasurable (measurableSet_singleton 0).compl)
+  have hθ'pos : ∀ x ∈ M', 0 < θ' x := fun x hx => abs_pos.2 hx.2
+  have hθ'N : ∀ x ∈ M', ∃ k : ℕ, θ' x = k := by
+    intro x hx
+    have hint : ∀ r, ∃ z : ℤ, t r x = z := by
+      intro r
+      by_cases hxr : x ∈ M r
+      · obtain ⟨k, hk⟩ := hθN r x hxr
+        have htx : t r x = (c r : ℝ) * (σ r x * θ r x) := indicator_of_mem hxr _
+        refine ⟨c r * ((if ξ r x = ξh x then 1 else -1) * k), ?_⟩
+        rw [htx, hk]
+        simp only [σ]
+        split_ifs <;> push_cast <;> ring
+      · exact ⟨0, by simp [t, hxr]⟩
+    obtain ⟨z, hz⟩ : ∃ z : ℤ, θh x = z := by
+      rw [hθh_sum x hx.1]
+      exact Finset.sum_induction (fun r => t r x) (fun a : ℝ => ∃ z : ℤ, a = z)
+        (fun a b ⟨za, ha⟩ ⟨zb, hb⟩ => ⟨za + zb, by rw [ha, hb, Int.cast_add]⟩)
+        ⟨0, by rw [Int.cast_zero]⟩ fun r _ => hint r
+    refine ⟨z.natAbs, ?_⟩
+    simp only [hθ', hz, Nat.cast_natAbs, Int.cast_abs]
+  have hθ'int : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+      IntegrableOn θ' (M' ∩ K) (μHE[n] : Measure (Eucl P)) := by
+    intro K hK hKU
+    refine ⟨(continuous_abs.comp_aestronglyMeasurable hθh).restrict, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm]
+    calc ∫⁻ x in M' ∩ K, ‖θ' x‖ₑ ∂(μHE[n] : Measure (Eucl P))
+        ≤ ∫⁻ x in M' ∩ K, ∑' r, ((c r).natAbs : ℝ≥0∞) *
+            (M r).indicator (fun y => ENNReal.ofReal (θ r y)) x ∂(μHE[n] : Measure (Eucl P)) := by
+          refine lintegral_mono_ae ?_
+          filter_upwards [ae_restrict_mem₀
+            (hM'nm.inter hK.isClosed.measurableSet.nullMeasurableSet)] with x hx
+          rw [Real.enorm_eq_ofReal_abs, hθ', abs_abs]
+          exact hΘx x hx.1.1
+      _ ≤ ∫⁻ x in K, ∑' r, ((c r).natAbs : ℝ≥0∞) *
+            (M r).indicator (fun y => ENNReal.ofReal (θ r y)) x ∂(μHE[n] : Measure (Eucl P)) :=
+          lintegral_mono_set inter_subset_right
+      _ < ∞ := hΘ K hK hKU
+  have hξ'meas : AEStronglyMeasurable ξ' ((μHE[n] : Measure (Eucl P)).restrict M') := by
+    have h1 : AEStronglyMeasurable (fun x => θh x / |θh x|) (μHE[n] : Measure (Eucl P)) :=
+      (hθh.aemeasurable.div
+        (continuous_abs.measurable.comp_aemeasurable hθh.aemeasurable)).aestronglyMeasurable
+    exact h1.restrict.smul (hξh.mono_measure (Measure.restrict_mono hM'sub le_rfl))
+  /- Step 10 (vii): orientation of `M'`, by tangent locality for `(M r, θ r)` and `(M', θ')`. -/
+  have hloc : ∀ r, ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), x ∈ M r ∩ M' →
+      ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n (M r) (θ r) x Q →
+        HasWeightedApproximateTangentSpaceAt n M' θ' x Q := fun r =>
+    (ae_restrict_iff'₀ ((hT r).nullMeasurableSet.inter hM'nm)).1
+      (hTL (M r) M' (θ r) θ' (hT r).subset hM'U (hT r).nullMeasurableSet hM'nm (hT r).pos
+        hθ'pos (hT r).integrableOn hθ'int)
+  have horient' : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M'),
+      ∃ τ : Fin n → Eucl P, Orthonormal ℝ τ ∧
+        HasWeightedApproximateTangentSpaceAt n M' θ' x (Submodule.span ℝ (range τ)) ∧
+        (ξ' x = simpleNVector τ ∨ ξ' x = -simpleNVector τ) := by
+    rw [ae_restrict_iff'₀ hM'nm]
+    filter_upwards [ae_all_iff.2 hloc] with x hlocx hxM'
+    obtain ⟨r0, hr0⟩ := mem_iUnion.1 (hM'sub hxM')
+    have hxr : x ∈ M (rf x) := hrf r0 x hr0
+    obtain ⟨τ, hτ, hTx, hξτ⟩ := hxM'.1.2.1 (rf x) hxr
+    refine ⟨τ, hτ, hlocx (rf x) ⟨hxr, hxM'⟩ _ hTx, ?_⟩
+    have hsgn : θh x / |θh x| = 1 ∨ θh x / |θh x| = -1 := by
+      rcases lt_or_gt_of_ne hxM'.2 with h | h
+      · right
+        rw [abs_of_neg h, div_neg, div_self hxM'.2]
+      · left
+        rw [abs_of_pos h, div_self hxM'.2]
+    change (θh x / |θh x|) • ξ (rf x) x = simpleNVector τ ∨
+      (θh x / |θh x|) • ξ (rf x) x = -simpleNVector τ
+    rcases hsgn with h | h <;> rw [h] <;> rcases hξτ with h' | h' <;> rw [h']
+    · exact Or.inl (one_smul ℝ _)
+    · exact Or.inr (one_smul ℝ _)
+    · exact Or.inr (ContinuousLinearMap.ext fun α => by
+        simp only [smul_apply, neg_apply, smul_eq_mul, neg_one_mul])
+    · exact Or.inl (ContinuousLinearMap.ext fun α => by
+        simp only [smul_apply, neg_apply, smul_eq_mul, neg_one_mul, neg_neg])
+  refine ⟨M', θ', ξ', ⟨hM'U, hM'nm,
+    (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion M
+      fun r => (hT r).countablyRectifiable).mono hM'sub,
+    hθ'pos, hθ'int, hξ'meas, horient'⟩, hθ'N, ?_⟩
+  /- Steps 8–9: `∑' r, 1_{M r} c r θ r ⟨ω, ξ r⟩ = 1_{M'} θ' ⟨ω, ξ'⟩` a.e., and `tsum_tau`. -/
+  intro ω
+  have h := Submission.fiw_ims_tsum_tau P n U hU M θ ξ c hT hsum ω
+  convert h using 1
+  unfold tauAction
+  rw [← integral_indicator₀ hM'nm]
+  refine integral_congr_ae ?_
+  filter_upwards [hGae] with x hx
+  have hterm' : ∀ r, (M r).indicator (fun y => (c r : ℝ) *
+      (θ r y * ξ r y ((ω : DifferentialForm (Eucl P) n) y))) x =
+        t r x * ξh x ((ω : DifferentialForm (Eucl P) n) x) := by
+    intro r
+    by_cases hxr : x ∈ M r
+    · have htx : t r x = (c r : ℝ) * (σ r x * θ r x) := indicator_of_mem hxr _
+      rw [indicator_of_mem hxr, htx]
+      have hs := hx.2.2 r (rf x) hxr (hrf r x hxr)
+      simp only [σ]
+      split_ifs with heq
+      · rw [heq]
+        ring
+      · rcases hs with hs | hs
+        · exact absurd hs heq
+        · change (c r : ℝ) * (θ r x * ξ r x _) = (c r : ℝ) * (-1 * θ r x) * ξ (rf x) x _
+          rw [hs, neg_apply]
+          ring
+    · simp [t, hxr]
+  rw [tsum_congr hterm', tsum_mul_right]
+  change _ = θh x * ξh x ((ω : DifferentialForm (Eucl P) n) x)
+  by_cases hxM' : x ∈ M'
+  · rw [indicator_of_mem hxM']
+    have hne : |θh x| ≠ 0 := abs_ne_zero.2 hxM'.2
+    simp only [θ', ξ', smul_apply, smul_eq_mul]
+    field_simp
+  · rw [indicator_of_notMem hxM']
+    have h0 : θh x = 0 := by
+      by_contra hne
+      exact hxM' ⟨hx, hne⟩
+    change (0 : ℝ) = θh x * _
+    rw [h0, zero_mul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
