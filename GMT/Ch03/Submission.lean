@@ -865,6 +865,114 @@ theorem Submission.deGiorgiDens_ball_normal_le_deriv : ∀ (N : ℕ) (U G : Set 
   exact le_of_tendsto_of_tendsto hL hR
     (by filter_upwards [Ioo_mem_nhdsLT hρ] with s hs using hkey s hs.1 hs.2)
 
+/-- **Upper mass bound from the half-average condition** (Simon Ch. 3, proof of 4.3, (5)–(6),
+p. 82, `chapter-03.txt` lines 641–652): if `B_{ρ₁}(x) ⊆ U`, `|w| ≤ 1` and
+`μ(B_ρ(x)) ≤ 2 ∫_{B_ρ(x)} ⟨ν, w⟩ dμ` for all `ρ ∈ (0, ρ₁)`, then
+`μ(B_ρ(x)) ≤ 2(n + 1) ω_{n+1} ρⁿ` for all `ρ ∈ (0, ρ₁)`, where `ω_{n+1} = L^{n+1}(B_1(0))`.
+`V(r) = L^{n+1}(E ∩ B_r(x))` is monotone, hence differentiable at `L¹`-a.e. `r`
+(`Monotone.ae_differentiableAt`). At such `r ∈ (0, ρ₁)` the first-variation bound
+(`deGiorgiDens_ball_normal_le_deriv`) and the hypothesis give `μ(B_r(x)) ≤ 2 V'(r)`, and
+`V'(r) ≤ (n + 1) ω_{n+1} rⁿ` because `t ↦ ω_{n+1} t^{n+1} − V(t)` is non-decreasing on `[0, ∞)`
+(`V(t) − V(s) ≤ L^{n+1}(B_t(x) ∖ B_s(x))`). For `ρ < t < ρ₁` such an `r ∈ (ρ, t)` gives
+`μ(B_ρ(x)) ≤ μ(B_r(x)) ≤ 2(n + 1) ω_{n+1} tⁿ`; let `t ↓ ρ`. -/
+theorem Submission.deGiorgiDens_ball_mass_le : ∀ (n : ℕ) (U E : Set (Rn (n + 1))) (μ : Measure (Rn (n + 1))) (ν : Rn (n + 1) → Rn (n + 1)), IsOpen U → NullMeasurableSet E volume → IsGaussGreenPair U E μ ν → ∀ (x w : Rn (n + 1)) (ρ₁ : ℝ), ‖w‖ ≤ 1 → Metric.ball x ρ₁ ⊆ U → (∀ ρ ∈ Ioo 0 ρ₁, (μ (Metric.ball x ρ)).toReal ≤ 2 * ∫ y in Metric.ball x ρ, inner ℝ (ν y) w ∂μ) → ∀ ρ ∈ Ioo 0 ρ₁, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (2 * (n + 1) * (volume (Metric.ball (0 : Rn (n + 1)) 1)).toReal * ρ ^ n) := by
+  intro n U E μ ν hU hE hpair x w ρ₁ hw hxU hhalf ρ hρ
+  set ω : ℝ := (volume (Metric.ball (0 : Rn (n + 1)) 1)).toReal with hω
+  have hω0 : 0 ≤ ω := ENNReal.toReal_nonneg
+  -- Step 1: `V(r) = L^{n+1}(E ∩ B_r(x))` is finite and monotone, and `μ(B_r(x)) < ∞` for
+  -- `r < ρ₁` (`B̄_r(x)` is a compact subset of `U`).
+  have hBfin : ∀ r : ℝ, volume (Metric.ball x r) ≠ ∞ := fun r => measure_ball_lt_top.ne
+  have hVfin : ∀ r : ℝ, volume (E ∩ Metric.ball x r) ≠ ∞ := fun r =>
+    ((measure_mono inter_subset_right).trans_lt measure_ball_lt_top).ne
+  have hVmono : Monotone fun r : ℝ ↦ (volume (E ∩ Metric.ball x r)).toReal := fun r s hrs =>
+    ENNReal.toReal_mono (hVfin s)
+      (measure_mono (inter_subset_inter_right E (Metric.ball_subset_ball hrs)))
+  have hμfin : ∀ r < ρ₁, μ (Metric.ball x r) ≠ ∞ := fun r hr =>
+    ((measure_mono Metric.ball_subset_closedBall).trans_lt (hpair.2.1 _ (isCompact_closedBall x r)
+      ((Metric.closedBall_subset_ball hr).trans hxU))).ne
+  -- Step 2: `L^{n+1}(B_r(x)) = ω r^{n+1}` for `r ≥ 0`.
+  have hball : ∀ r : ℝ, 0 ≤ r → (volume (Metric.ball x r)).toReal = ω * r ^ (n + 1) := by
+    intro r hr
+    rw [hω, Measure.addHaar_ball volume x hr, finrank_euclideanSpace_fin, ENNReal.toReal_mul,
+      ENNReal.toReal_ofReal (pow_nonneg hr _)]
+    exact mul_comm _ _
+  -- Step 3: `V(t) − V(s) ≤ ω (t^{n+1} − s^{n+1})` for `0 ≤ s ≤ t`, as
+  -- `E ∩ B_t(x) ⊆ (E ∩ B_s(x)) ∪ (B_t(x) ∖ B_s(x))`.
+  have hgrowth : ∀ s t : ℝ, 0 ≤ s → s ≤ t →
+      (volume (E ∩ Metric.ball x t)).toReal + ω * s ^ (n + 1) ≤
+        (volume (E ∩ Metric.ball x s)).toReal + ω * t ^ (n + 1) := by
+    intro s t hs hst
+    have hsub : Metric.ball x s ⊆ Metric.ball x t := Metric.ball_subset_ball hst
+    have hcover : E ∩ Metric.ball x t ⊆
+        (E ∩ Metric.ball x s) ∪ (Metric.ball x t \ Metric.ball x s) := by
+      intro y hy
+      by_cases hys : y ∈ Metric.ball x s
+      · exact Or.inl ⟨hy.1, hys⟩
+      · exact Or.inr ⟨hy.2, hys⟩
+    have hsplit : volume (Metric.ball x t \ Metric.ball x s) + volume (Metric.ball x s) =
+        volume (Metric.ball x t) := by
+      have h := measure_sdiff_add_inter (μ := volume) (Metric.ball x t)
+        (measurableSet_ball : MeasurableSet (Metric.ball x s))
+      rwa [inter_eq_right.2 hsub] at h
+    have hle : volume (E ∩ Metric.ball x t) + volume (Metric.ball x s) ≤
+        volume (E ∩ Metric.ball x s) + volume (Metric.ball x t) := by
+      calc volume (E ∩ Metric.ball x t) + volume (Metric.ball x s)
+          ≤ volume (E ∩ Metric.ball x s) + volume (Metric.ball x t \ Metric.ball x s) +
+              volume (Metric.ball x s) := by
+            gcongr
+            exact (measure_mono hcover).trans (measure_union_le _ _)
+        _ = volume (E ∩ Metric.ball x s) + volume (Metric.ball x t) := by rw [add_assoc, hsplit]
+    have h := ENNReal.toReal_mono (ENNReal.add_ne_top.2 ⟨hVfin s, hBfin t⟩) hle
+    rwa [ENNReal.toReal_add (hVfin t) (hBfin s), ENNReal.toReal_add (hVfin s) (hBfin t),
+      hball s hs, hball t (hs.trans hst)] at h
+  -- Step 4 (Simon (6) at a.e. radius): wherever `V` is differentiable in `(0, ρ₁)`,
+  -- `μ(B_r(x)) ≤ 2 V'(r) ≤ 2(n + 1) ω rⁿ`.
+  have hgood : ∀ᵐ r : ℝ, r ∈ Ioo 0 ρ₁ →
+      (μ (Metric.ball x r)).toReal ≤ 2 * (n + 1) * ω * r ^ n := by
+    filter_upwards [hVmono.ae_differentiableAt] with r hdiff hr
+    have hd := hdiff.hasDerivAt
+    -- (a) the first-variation bound (Simon (5)): `∫_{B_r(x)} ⟨ν, w⟩ dμ ≤ V'(r)`.
+    have h1 := Submission.deGiorgiDens_ball_normal_le_deriv (n + 1) U E μ ν hU hE hpair x w r _
+      hr.1 ((Metric.closedBall_subset_ball hr.2).trans hxU) hw hd
+    -- (b) `V'(r) ≤ (n + 1) ω rⁿ`: `t ↦ ω t^{n+1} − V(t)` has non-negative slopes right of `r`.
+    have hg : HasDerivAt (fun t : ℝ ↦ ω * t ^ (n + 1) - (volume (E ∩ Metric.ball x t)).toReal)
+        ((n + 1) * ω * r ^ n - deriv (fun t : ℝ ↦ (volume (E ∩ Metric.ball x t)).toReal) r) r :=
+      (((hasDerivAt_pow (n + 1) r).const_mul ω).sub hd).congr_deriv (by
+        rw [Nat.add_sub_cancel]; push_cast; ring)
+    have h2 : 0 ≤ (n + 1) * ω * r ^ n -
+        deriv (fun t : ℝ ↦ (volume (E ∩ Metric.ball x t)).toReal) r := by
+      refine ge_of_tendsto ((hasDerivAt_iff_tendsto_slope.1 hg).mono_left (nhdsGT_le_nhdsNE r)) ?_
+      filter_upwards [self_mem_nhdsWithin] with t ht
+      have hrt : r < t := ht
+      have hmono : ω * r ^ (n + 1) - (volume (E ∩ Metric.ball x r)).toReal ≤
+          ω * t ^ (n + 1) - (volume (E ∩ Metric.ball x t)).toReal := by
+        linarith [hgrowth r t hr.1.le hrt.le]
+      rw [slope_def_field]
+      exact div_nonneg (sub_nonneg.2 hmono) (sub_nonneg.2 hrt.le)
+    linarith [hhalf r hr]
+  -- Step 5 (Simon (6) at every radius): for `ρ < t < ρ₁` the interval `(ρ, t)` has positive
+  -- measure, so it contains such an `r`, and `μ(B_ρ(x)) ≤ μ(B_r(x)) ≤ 2(n + 1) ω tⁿ`; let `t ↓ ρ`.
+  obtain ⟨hρ0, hρ1⟩ := hρ
+  have hcoef : 0 ≤ 2 * ((n : ℝ) + 1) * ω := mul_nonneg (by positivity) hω0
+  have hbound : ∀ t ∈ Ioo ρ ρ₁, (μ (Metric.ball x ρ)).toReal ≤ 2 * (n + 1) * ω * t ^ n := by
+    intro t ht
+    have hpos : volume (Ioo ρ t) ≠ 0 := by
+      rw [Real.volume_Ioo, ne_eq, ENNReal.ofReal_eq_zero, not_le, sub_pos]
+      exact ht.1
+    obtain ⟨r, hr, hrgood⟩ :=
+      Measure.exists_mem_of_measure_ne_zero_of_ae hpos (ae_restrict_of_ae hgood)
+    have hr' : r ∈ Ioo 0 ρ₁ := ⟨hρ0.trans hr.1, hr.2.trans ht.2⟩
+    calc (μ (Metric.ball x ρ)).toReal ≤ (μ (Metric.ball x r)).toReal :=
+          ENNReal.toReal_mono (hμfin r hr'.2) (measure_mono (Metric.ball_subset_ball hr.1.le))
+      _ ≤ 2 * (n + 1) * ω * r ^ n := hrgood hr'
+      _ ≤ 2 * (n + 1) * ω * t ^ n :=
+          mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hr'.1.le hr.2.le n) hcoef
+  have hlim : Tendsto (fun t : ℝ ↦ 2 * (n + 1) * ω * t ^ n) (𝓝[>] ρ)
+      (𝓝 (2 * (n + 1) * ω * ρ ^ n)) :=
+    ((continuous_const.mul (continuous_pow n)).tendsto ρ).mono_left nhdsWithin_le_nhds
+  rw [ENNReal.le_ofReal_iff_toReal_le (hμfin ρ hρ1) (mul_nonneg hcoef (pow_nonneg hρ0.le n))]
+  exact ge_of_tendsto hlim (eventually_of_mem (Ioo_mem_nhdsGT hρ1) hbound)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
