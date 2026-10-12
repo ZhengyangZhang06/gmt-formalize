@@ -520,6 +520,49 @@ theorem Submission.variation_matrix_det_leibniz_second_order_at_one : ∀ (ι : 
           Finset.sum_mul_sum]
         rw [Finset.sum_comm (f := fun m l => B l l * B m m)]
 
+/-- **Derivatives of `det G(t)` where `G = I`** (derivative form of Simon's expansion
+`det(I + A) = 1 + tr A + ½(tr A)² - ½ tr(A²) + O(|A|³)`, Ch. 2, p. 62). Let `G(0) = I` and
+`h(t) = det G(t)`. (1) If the entries of `G` have derivatives `G₁` at `0`, then `h'(0) = tr G₁`.
+(2) If near `0` the entries of `G` have derivatives `G'(t)` at `t` and those of `G'` have
+derivatives `G₂` at `0`, then `h` is differentiable near `0` and
+`(deriv h)'(0) = tr G₂ + (tr G'(0))² - tr(G'(0) G'(0))`. The Leibniz expansion gives, near `0`,
+`h'(t) = φ(t) := ∑_σ sgn σ ∑_m (∏_{j ≠ m} G(t)_{σ(j) j}) G'(t)_{σ(m) m}`. The product and sum
+rules give `φ'(0)`. At `G(0) = I` its two parts are `tr G₂` and `(tr B)² - tr(B B)`, `B = G'(0)`. -/
+theorem Submission.variation_matrix_det_derivatives_at_one : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (G : ℝ → Matrix ι ι ℝ), G 0 = 1 → (∀ G₁ : Matrix ι ι ℝ, (∀ i k, HasDerivAt (fun t ↦ G t i k) (G₁ i k) 0) → HasDerivAt (fun t ↦ (G t).det) G₁.trace 0) ∧ ∀ (G' : ℝ → Matrix ι ι ℝ) (G₂ : Matrix ι ι ℝ), (∀ᶠ t in 𝓝 0, ∀ i k, HasDerivAt (fun s ↦ G s i k) (G' t i k) t) → (∀ i k, HasDerivAt (fun t ↦ G' t i k) (G₂ i k) 0) → (∀ᶠ t in 𝓝 0, DifferentiableAt ℝ (fun s ↦ (G s).det) t) ∧ HasDerivAt (deriv (fun t ↦ (G t).det)) (G₂.trace + (G' 0).trace ^ 2 - (G' 0 * G' 0).trace) 0 := by
+  intro ι _ _ G hG0
+  refine ⟨fun G₁ hG₁ ↦ ?_, fun G' G₂ hG' hG₂ ↦ ?_⟩
+  · -- Step 5: the Leibniz derivative at `0` with `H = G₁` is the first-order sum at `G 0 = 1`,
+    -- which is `tr G₁`.
+    have h := Submission.variation_matrix_det_hasDerivAt_leibniz ι G G₁ 0 hG₁
+    rwa [hG0, Submission.variation_matrix_det_leibniz_first_order_at_one] at h
+  · -- Step 6: near `0`, `h` has derivative `φ t` at `t`, so `h` is differentiable there.
+    have hdet : ∀ᶠ t in 𝓝 0, HasDerivAt (fun s ↦ (G s).det)
+        (∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
+          ∑ m : ι, (∏ j ∈ Finset.univ.erase m, G t (σ j) j) * G' t (σ m) m) t :=
+      hG'.mono fun t ht ↦ Submission.variation_matrix_det_hasDerivAt_leibniz ι G (G' t) t ht
+    refine ⟨hdet.mono fun t ht ↦ ht.differentiableAt, ?_⟩
+    -- Step 7: as `0` lies in the neighbourhood, the entries of `G` have derivatives `G' 0` at `0`.
+    -- The finite product, product, constant-multiple and sum rules give `φ'(0)`.
+    have hG'0 : ∀ i k, HasDerivAt (fun s ↦ G s i k) (G' 0 i k) 0 := hG'.self_of_nhds
+    have hφ : HasDerivAt (fun t ↦ ∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℝ) *
+          ∑ m : ι, (∏ j ∈ Finset.univ.erase m, G t (σ j) j) * G' t (σ m) m)
+        (∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ m : ι,
+          ((∑ l ∈ Finset.univ.erase m, (∏ j ∈ (Finset.univ.erase m).erase l, G 0 (σ j) j) *
+              G' 0 (σ l) l) * G' 0 (σ m) m +
+            (∏ j ∈ Finset.univ.erase m, G 0 (σ j) j) * G₂ (σ m) m)) 0 := by
+      refine HasDerivAt.fun_sum fun σ _ ↦ (HasDerivAt.fun_sum fun m _ ↦ ?_).const_mul _
+      refine HasDerivAt.fun_mul ?_ (hG₂ (σ m) m)
+      simpa only [smul_eq_mul] using
+        HasDerivAt.fun_finsetProd (u := Finset.univ.erase m) fun j _ ↦ hG'0 (σ j) j
+    -- Step 8: with `G 0 = 1`, `φ'(0) = V₁ + V₂`, where the second-order sum `V₁` is
+    -- `(tr B)² - tr (B B)` for `B = G' 0` and the first-order sum `V₂` is `tr G₂`.
+    rw [hG0] at hφ
+    simp only [mul_add, Finset.sum_add_distrib,
+      Submission.variation_matrix_det_leibniz_second_order_at_one,
+      Submission.variation_matrix_det_leibniz_first_order_at_one] at hφ
+    -- Step 9: `deriv h` agrees with `φ` near `0`.
+    exact (hφ.congr_deriv (by ring)).congr_of_eventuallyEq (hdet.mono fun t ht ↦ ht.deriv)
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
