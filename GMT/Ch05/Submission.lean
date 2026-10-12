@@ -458,6 +458,61 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, 4.2** (the scaled `Lᵖ` condition on the mean curvature).  Let `p > n`,
+`R, Λ > 0`, `t ≤ R`, `κ = (p − n)/(4p)` and `Q_s = ∫_{B_s(y)} |H|ᵖ dμ ∈ [0, ∞]`.  If
+`(R^{p−n} Q_R)^{1/p} ≤ κ Λ` in `[0, ∞]`, then `Q_t < ∞` and `Q_t^{1/p} ≤ κ Λ R^{n/p − 1}`.
+Proof: `Q_R < ∞`, since otherwise the left side is `∞^{1/p} = ∞`; in real numbers the hypothesis
+reads `R^{1 − n/p} Q_R^{1/p} ≤ κ Λ`; and `Q_t ≤ Q_R` by monotonicity in the domain. -/
+theorem allard52_am_fc_lp_scale : ∀ (n ℓ : ℕ) (p : ℝ), (n : ℝ) < p → ∀ (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (R Λ t : ℝ), 0 < R → 0 < Λ → t ≤ R → (ENNReal.ofReal (R ^ (p - n)) * ∫⁻ x in closedBall y R, ‖H x‖ₑ ^ p ∂μ) ^ (1 / p) ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → ∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ < ⊤ ∧ (∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) ≤ (p - n) / (4 * p) * Λ * R ^ ((n : ℝ) / p - 1) := by
+  intro n ℓ p hnp μ H y R Λ t hR hΛ htR hLp
+  -- Notation: `Q_s = ∫_{B_s(y)} |H|ᵖ dμ`, `c = R^{p−n}` and `κ = (p − n)/(4p)`.
+  set QR : ℝ≥0∞ := ∫⁻ x in closedBall y R, ‖H x‖ₑ ^ p ∂μ
+  set Qt : ℝ≥0∞ := ∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ
+  set c : ℝ := R ^ (p - n) with hc
+  set κ : ℝ := (p - n) / (4 * p)
+  -- Step 0: constants.
+  have hp : 0 < p := (Nat.cast_nonneg n).trans_lt hnp
+  have hp1 : 0 < 1 / p := one_div_pos.2 hp
+  have hc0 : 0 < c := Real.rpow_pos_of_pos hR _
+  have hκΛ : 0 ≤ κ * Λ := mul_nonneg (div_nonneg (sub_pos.2 hnp).le (by positivity)) hΛ.le
+  -- Step 1: `Q_R < ∞`; otherwise `(c Q_R)^{1/p} = ∞^{1/p} = ∞`, as `c > 0`.
+  have hcQ : ENNReal.ofReal c * QR ≠ ⊤ := by
+    intro h
+    rw [h, ENNReal.top_rpow_of_pos hp1] at hLp
+    exact ENNReal.ofReal_ne_top (top_le_iff.1 hLp)
+  have hQRfin : QR ≠ ⊤ := by
+    intro h
+    apply hcQ
+    rw [h]
+    exact ENNReal.mul_top (ENNReal.ofReal_pos.2 hc0).ne'
+  -- Step 2: the hypothesis in real numbers.
+  have hreal : (c * QR.toReal) ^ (1 / p) ≤ κ * Λ := by
+    rwa [← ENNReal.ofReal_toReal hQRfin, ← ENNReal.ofReal_mul hc0.le,
+      ENNReal.ofReal_rpow_of_nonneg (mul_nonneg hc0.le ENNReal.toReal_nonneg) hp1.le,
+      ENNReal.ofReal_le_ofReal_iff hκΛ] at hLp
+  -- Step 3: factoring, `(R^{p−n})^{1/p} = R^{1 − n/p}`.
+  have hfac : (c * QR.toReal) ^ (1 / p) = R ^ (1 - n / p) * QR.toReal ^ (1 / p) := by
+    rw [Real.mul_rpow hc0.le ENNReal.toReal_nonneg, hc, ← Real.rpow_mul hR.le]
+    congr 2
+    field_simp
+  -- Step 4: dividing by `R^{1 − n/p} > 0`.
+  have hRpos : 0 < R ^ (1 - n / p) := Real.rpow_pos_of_pos hR _
+  have hN : QR.toReal ^ (1 / p) ≤ κ * Λ * R ^ ((n : ℝ) / p - 1) := by
+    have hinv : R ^ ((n : ℝ) / p - 1) = (R ^ (1 - n / p))⁻¹ := by
+      rw [← Real.rpow_neg hR.le, neg_sub]
+    rw [hinv, ← div_eq_mul_inv, le_div_iff₀ hRpos, mul_comm, ← hfac]
+    exact hreal
+  -- Step 5: the sub-ball, `Q_t ≤ Q_R`.
+  have hQle : Qt ≤ QR := lintegral_mono_set (closedBall_subset_closedBall htR)
+  refine ⟨hQle.trans_lt (lt_top_iff_ne_top.2 hQRfin), ?_⟩
+  calc Qt.toReal ^ (1 / p) ≤ QR.toReal ^ (1 / p) :=
+        Real.rpow_le_rpow ENNReal.toReal_nonneg (ENNReal.toReal_mono hQRfin hQle) hp1.le
+    _ ≤ κ * Λ * R ^ ((n : ℝ) / p - 1) := hN
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
