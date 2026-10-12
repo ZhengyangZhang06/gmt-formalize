@@ -373,6 +373,56 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, §6 (pp. 66–67), co-area formula: critical fibres.** Volume of a thin slab in a
+closed ball: if `‖e‖ = 1`, `ε ≥ 0` and `R ≥ 0`, then
+`Lᵐ{v : ‖v - c‖ ≤ R, |⟨e, v - c⟩| ≤ ε} ≤ 2ε (2R)^{m-1}`. Extend `e` to an orthonormal basis `b` with
+`b₀ = e`; the coordinates `v ↦ (⟨bᵢ, v - c⟩)ᵢ` preserve Lebesgue measure and map the set into the box
+`[-ε, ε] × [-R, R]^{m-1}`. (`m ≥ 1`, as `ℝ⁰` contains no unit vector.) -/
+theorem Submission.euclidean_slab_inter_closedBall_volume_le : ∀ (m : ℕ) (e c : Rn m) (ε R : ℝ), ‖e‖ = 1 → 0 ≤ ε → 0 ≤ R → volume {v : Rn m | ‖v - c‖ ≤ R ∧ |inner ℝ e (v - c)| ≤ ε} ≤ ENNReal.ofReal (2 * ε * (2 * R) ^ (m - 1)) := by
+  intro m e c ε R he hε hR
+  -- Step 1: `m = n + 1`, since `ℝ⁰ = {0}` contains no unit vector.
+  obtain ⟨n, rfl⟩ : ∃ n, m = n + 1 := by
+    rcases m with _ | n
+    · rw [Subsingleton.elim e 0, norm_zero] at he
+      exact absurd he zero_ne_one
+    · exact ⟨n, rfl⟩
+  rw [Nat.add_sub_cancel]
+  -- Step 2: an orthonormal basis `b` of `ℝⁿ⁺¹` with `b₀ = e`.
+  obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (𝕜 := ℝ)
+    (E := Rn (n + 1)) (ι := Fin (n + 1)) (by simp) (v := fun _ ↦ e) (s := {0})
+    ⟨fun _ ↦ he, fun i j hij ↦ absurd (Subsingleton.elim i j) hij⟩
+  have hb0 : b 0 = e := hb 0 rfl
+  -- Step 3: the coordinates `Φ v = (⟨bᵢ, v - c⟩)ᵢ` preserve Lebesgue measure.
+  set Φ : Rn (n + 1) → Fin (n + 1) → ℝ := fun v ↦ (b.repr (v - c)).ofLp
+  have hΦ : MeasurePreserving Φ volume volume :=
+    (PiLp.volume_preserving_ofLp _).comp
+      (b.measurePreserving_repr.comp (measurePreserving_sub_right volume c))
+  -- Step 4: `Φ` maps the set into the box `∏ᵢ [-aᵢ, aᵢ]`, `a₀ = ε`, `aᵢ = R` for `i ≠ 0`.
+  set a : Fin (n + 1) → ℝ := Fin.cons ε fun _ ↦ R with ha
+  have hsub : {v : Rn (n + 1) | ‖v - c‖ ≤ R ∧ |inner ℝ e (v - c)| ≤ ε} ⊆ Φ ⁻¹' Icc (-a) a := by
+    rintro v ⟨hvR, hvε⟩
+    have hcoord : ∀ i, |Φ v i| ≤ a i := by
+      intro i
+      refine Fin.cases ?_ (fun j ↦ ?_) i
+      · show |(b.repr (v - c)).ofLp 0| ≤ a 0
+        rw [OrthonormalBasis.repr_apply_apply, hb0, ha, Fin.cons_zero]
+        exact hvε
+      · rw [ha, Fin.cons_succ, ← Real.norm_eq_abs]
+        calc ‖(b.repr (v - c)).ofLp j.succ‖ ≤ ‖b.repr (v - c)‖ := PiLp.norm_apply_le _ _
+          _ = ‖v - c‖ := b.repr.norm_map _
+          _ ≤ R := hvR
+    exact ⟨fun i ↦ neg_le_of_abs_le (hcoord i), fun i ↦ le_of_abs_le (hcoord i)⟩
+  -- Step 5: the box has volume `2ε (2R)ⁿ`.
+  calc volume {v : Rn (n + 1) | ‖v - c‖ ≤ R ∧ |inner ℝ e (v - c)| ≤ ε}
+      ≤ volume (Φ ⁻¹' Icc (-a) a) := measure_mono hsub
+    _ = volume (Icc (-a) a) := hΦ.measure_preimage measurableSet_Icc.nullMeasurableSet
+    _ = ∏ i, ENNReal.ofReal (a i - (-a) i) := Real.volume_Icc_pi
+    _ = ENNReal.ofReal (2 * ε * (2 * R) ^ n) := by
+      rw [Fin.prod_univ_succ, ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_pow (by positivity)]
+      simp only [ha, Pi.neg_apply, Fin.cons_zero, Fin.cons_succ, Finset.prod_const,
+        Finset.card_univ, Fintype.card_fin]
+      rw [show ε - -ε = 2 * ε by ring, show R - -R = 2 * R by ring]
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 

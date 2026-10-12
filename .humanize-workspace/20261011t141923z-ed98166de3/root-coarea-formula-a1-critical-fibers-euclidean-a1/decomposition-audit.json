@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'theorem .*[Ss]ard|coarea' mathlib/Mathlib",
+        "measure_toMeasurable|subset_toMeasurable",
+        "orthogonal_eq_bot_iff|volume_Icc_pi|addHaar_ball_of_pos|continuousOn_fderiv_of_isOpen",
+        "lintegral_liminf_le|lintegral_finsetSum",
+        "theorem ae_ball_iff|theorem measure_biUnion_null_iff",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -o FullFinal.olean FullFinal.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-coarea-formula-a1-critical-fibers-euclidean-a1/parent-child-handoff.json",
+        "/tmp/critfib-independent-audit-hxa0kuu6/GMT/Ch02/Submission.lean",
+        "/tmp/critfib-independent-audit-hxa0kuu6/Challenge_0.lean",
+        "/tmp/critfib-independent-audit-hxa0kuu6/Challenge_1.lean",
+        "/tmp/critfib-independent-audit-hxa0kuu6/Challenge_2.lean",
+        "/tmp/critfib-independent-audit-hxa0kuu6/Challenge_3.lean",
+        "/tmp/critfib-independent-audit-hxa0kuu6/Challenge_4.lean",
+        "/tmp/critfib-independent-audit-hxa0kuu6/FullFinal.lean",
+        "/tmp/critfib-independent-audit-hxa0kuu6/full.log"
+      ],
+      "conclusion": "The split is appropriate and proves the selected parent. Dependencies are acyclic: ball_image_volume uses slab_volume; compact_small_covers uses ball_image_volume and ball_cover_count; the parent combines compact_small_covers with fatou_hausdorff_null, then countable compact covering and Euclidean normalization. The Sard/coarea search returned no matches. The inspected snapshot supplies the required geometric, covering, measurable-hull and Hausdorff/Fatou results. Installed Mathlib matches the pinned revision; twelve inspected Mathlib files and the frozen Contract were byte-compared successfully. All five names are bare identifiers and absent from the inspected 54-node DAG. All statements passed validation and separately elaborated in comparator scope importing only frozen definitions, before any child implementation existed. Independently recompiling the supplied five proofs and exact parent type succeeded; every proof reports only propext, Classical.choice and Quot.sound. Euclidean norms, volumes and derivative instances are correct; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "slab_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and includes every hypothesis. The unit-vector hypothesis excludes m = 0. The supplied proof constructs orthonormal coordinates, justifies both measure-preserving maps, contains the slab in the stated box, and computes its volume with the required nonnegativity and exponent conventions. It is complete and independent."
+    },
+    {
+      "key": "ball_image_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract matches the prose, including r = 0. The proof correctly derives η ≥ 0 and L ≥ 0, obtains a unit normal from the proper finite-dimensional range, and applies the mean-value estimate to establish both slab inequalities. Its only child dependency is slab_volume, applied with all hypotheses justified. No additional regularity or measurability assumption is needed."
+    },
+    {
+      "key": "ball_cover_count",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly states the uniform covering and cardinality bound. The proof supplies a finite-volume thickening, positive unit-ball volume, a packing inequality, and an explicit greatest-cardinality construction. Maximality yields the closed-ball cover, and the final algebra gives a constant independent of r. Empty K and n = 0 are covered; compactness or measurability of K is not silently assumed."
+    },
+    {
+      "key": "fatou_hausdorff_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the stated generality. Measurable hulls preserve image measures without requiring measurable G or a σ-finite measure. The supplied sequence of covers, integral bounds, Fatou argument, filtered fibre covers and Hausdorff liminf estimate prove the asserted almost-everywhere nullity. The finite indexing and explicit k = 0 treatment avoid an empty-padding gap. No parent theorem is invoked."
+    },
+    {
+      "key": "compact_small_covers",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and proposition agree on all hypotheses and quantifiers. The proof handles m = 0, constructs a compact neighbourhood inside V, and obtains derivative bounds and uniform continuity. Its explicit choices of η and r satisfy every constraint. Critical centres permit the image estimate, while n = m + k gives the stated radius cancellation and sum bound. It uses exactly ball_image_volume and ball_cover_count and supplies a complete proof."
+    }
+  ],
+  "required_changes": []
+}

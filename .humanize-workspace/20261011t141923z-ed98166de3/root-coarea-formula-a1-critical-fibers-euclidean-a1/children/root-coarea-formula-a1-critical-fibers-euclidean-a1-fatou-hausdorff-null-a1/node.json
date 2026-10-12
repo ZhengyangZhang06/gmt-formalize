@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1.fatou_hausdorff_null-a1",
+  "parent_id": "root.coarea_formula-a1.critical_fibers_euclidean-a1",
+  "depth": 3,
+  "title": "Small ball covers with small image-weighted sums give a.e. Hausdorff-null fibres",
+  "statement": "Let X be a metric space (in Type) with its Borel σ-algebra, Y a measurable space with a measure ν, k ∈ ℕ, K ⊆ X and G : X → Y. Assume that for every ε > 0 and every δ > 0 there are a finite set s ⊆ X and r > 0 such that 2r ≤ δ, K ⊆ ⋃_{x∈s} B̄(x,r) (closed balls), and Σ_{x∈s} ofReal((2r)^k)·ν(G(B̄(x,r))) ≤ ofReal(ε) in [0,∞]. Then for ν-almost every y ∈ Y, μH[k](K ∩ G⁻¹{y}) = 0, where μH[k] is Mathlib's unnormalized k-dimensional Hausdorff measure on X.",
+  "lean_statement": "∀ (X Y : Type) [MetricSpace X] [MeasurableSpace X] [BorelSpace X] [MeasurableSpace Y] (ν : Measure Y) (k : ℕ) (K : Set X) (G : X → Y), (∀ ε : ℝ, 0 < ε → ∀ δ : ℝ, 0 < δ → ∃ (s : Finset X) (r : ℝ), 0 < r ∧ 2 * r ≤ δ ∧ K ⊆ ⋃ x ∈ s, closedBall x r ∧ ∑ x ∈ s, ENNReal.ofReal ((2 * r) ^ k) * ν (G '' closedBall x r) ≤ ENNReal.ofReal ε) → ∀ᵐ y ∂ν, μH[k] (K ∩ G ⁻¹' {y}) = 0",
+  "lean_name": "ae_hausdorffMeasure_fiber_eq_zero_of_small_ball_covers",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-critical-fibers-euclidean-a1-fatou-hausdorff-null-a1-a1"
+}
