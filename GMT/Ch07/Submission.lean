@@ -451,6 +451,81 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cone condition and `Hⁿ` bound for a rotated Lipschitz graph**: Steps 8–9 of the proof of the
+Lipschitz approximation lemma (Simon Ch. 5, proof of 2.6, chapter-05.txt lines 519–521 and
+544–545: `|Q(x − y)| ≤ Cβ|x − y|` on `F` "because `Lip f ≤ βL`", and `Hⁿ(B_{5σⱼ}(ξⱼ) ∩ F) ≤ Cσⱼⁿ`
+"since `F` is the graph of the Lipschitz function `f` with `Lip f ≤ 1`").  Here
+`Φ(v) = ξ + ιv + ι'f(v)`, `F = Φ(ℝⁿ)` and `P = p_{T₀}`, `Q = 1 − P`.  As `ι ⟂ ι'` are isometries,
+`|ιa + ι'b|² = |a|² + |b|²`, and `P(ιa + ι'b) = ιa`; so (i) `|Q(Φv − Φv')| = |f v − f v'| ≤ Λ|v − v'|
+≤ Λ|Φv − Φv'|`, and (ii) `F ∩ B_r(Φv₀) ⊆ Φ(Bⁿ_r(v₀))` with `Φ` `√2`-Lipschitz, whence
+`Hⁿ(F ∩ B_r(x)) ≤ (√2)ⁿ ωₙ rⁿ` by Simon Ch. 2, 1.8(i). -/
+theorem Submission.dorag_lip_graph_cone_hausdorff_bound : ∀ (n k : ℕ) (T₀ : Submodule ℝ (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (ξ : Euclid (n + k)) (f : Euclid n → Euclid k) (Λ : ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v w, T₀.starProjection (ι v + ι' w) = ι v) → 0 ≤ Λ → Λ ≤ 1 → (∀ v w, ‖f v - f w‖ ≤ Λ * ‖v - w‖) → (∀ x ∈ range (fun v => ξ + ι v + ι' (f v)), ∀ x' ∈ range (fun v => ξ + ι v + ι' (f v)), ‖(x - x') - T₀.starProjection (x - x')‖ ≤ Λ * ‖x - x'‖) ∧ (∀ x ∈ range (fun v => ξ + ι v + ι' (f v)), ∀ r : ℝ, 0 < r → μHE[n] (range (fun v => ξ + ι v + ι' (f v)) ∩ closedBall x r) ≤ ENNReal.ofReal (2 ^ ((n : ℝ) / 2)) * unitBallVolume n * ENNReal.ofReal (r ^ n)) := by
+  intro n k T₀ ι ι' ξ f Λ horth hproj hΛ0 hΛ1 hf
+  -- `Φ v − Φ v' = ι(v − v') + ι'(f v − f v')`, and Pythagoras `|ιa + ι'b|² = |a|² + |b|²`.
+  have hdiff : ∀ v v' : Euclid n, (ξ + ι v + ι' (f v)) - (ξ + ι v' + ι' (f v')) =
+      ι (v - v') + ι' (f v - f v') := by
+    intro v v'; rw [map_sub, map_sub]; abel
+  have hpyth : ∀ (a : Euclid n) (b : Euclid k), ‖ι a + ι' b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
+    intro a b
+    rw [norm_add_sq_real, horth a b, LinearIsometry.norm_map, LinearIsometry.norm_map]
+    ring
+  have hlow : ∀ (a : Euclid n) (b : Euclid k), ‖a‖ ≤ ‖ι a + ι' b‖ := by
+    intro a b
+    have h := hpyth a b
+    have h2 : ‖a‖ ^ 2 ≤ ‖ι a + ι' b‖ ^ 2 := by rw [h]; nlinarith [sq_nonneg ‖b‖]
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 h2
+  have hQ : ∀ (a : Euclid n) (b : Euclid k),
+      (ι a + ι' b) - T₀.starProjection (ι a + ι' b) = ι' b := by
+    intro a b; rw [hproj]; abel
+  constructor
+  · -- (i) `|Q(x − x')| = |f v − f v'| ≤ Λ|v − v'| ≤ Λ|x − x'|`.
+    rintro x ⟨v, rfl⟩ x' ⟨v', rfl⟩
+    dsimp only
+    rw [hdiff, hQ, LinearIsometry.norm_map]
+    exact (hf v v').trans (mul_le_mul_of_nonneg_left (hlow _ _) hΛ0)
+  · -- (ii) `F ∩ B_r(Φ v₀) ⊆ Φ(Bⁿ_r(v₀))`, `Φ` is `√2`-Lipschitz and `Hⁿ = Lⁿ` on `ℝⁿ`.
+    rintro x ⟨v₀, rfl⟩ r hr
+    set Φ : Euclid n → Euclid (n + k) := fun v => ξ + ι v + ι' (f v)
+    have hdiffΦ : ∀ v v', Φ v - Φ v' = ι (v - v') + ι' (f v - f v') := fun v v' => hdiff v v'
+    have hsub : range Φ ∩ closedBall (Φ v₀) r ⊆ Φ '' closedBall v₀ r := by
+      rintro x ⟨⟨v, rfl⟩, hx⟩
+      refine ⟨v, ?_, rfl⟩
+      rw [mem_closedBall, dist_eq_norm] at hx ⊢
+      calc ‖v - v₀‖ ≤ ‖ι (v - v₀) + ι' (f v - f v₀)‖ := hlow _ _
+        _ = ‖Φ v - Φ v₀‖ := by rw [hdiffΦ]
+        _ ≤ r := hx
+    have hLip : LipschitzOnWith (NNReal.sqrt 2) Φ (closedBall v₀ r) := by
+      apply LipschitzWith.lipschitzOnWith
+      apply LipschitzWith.of_dist_le_mul
+      intro v v'
+      rw [dist_eq_norm, dist_eq_norm, Real.coe_sqrt, NNReal.coe_ofNat]
+      have h := hpyth (v - v') (f v - f v')
+      have hfv := hf v v'
+      have hsq : ‖Φ v - Φ v'‖ ^ 2 ≤ (Real.sqrt 2 * ‖v - v'‖) ^ 2 := by
+        rw [hdiffΦ, h, mul_pow, Real.sq_sqrt (by norm_num)]
+        have h1 : ‖f v - f v'‖ ^ 2 ≤ (Λ * ‖v - v'‖) ^ 2 :=
+          pow_le_pow_left₀ (norm_nonneg _) hfv 2
+        have h2 : (Λ * ‖v - v'‖) ^ 2 ≤ ‖v - v'‖ ^ 2 := by
+          rw [mul_pow]
+          have : Λ ^ 2 ≤ 1 := by nlinarith
+          nlinarith [sq_nonneg ‖v - v'‖]
+        nlinarith
+      exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).1 hsq
+    have hpow : ((NNReal.sqrt 2 : NNReal) : ℝ≥0∞) ^ n = ENNReal.ofReal (2 ^ ((n : ℝ) / 2)) := by
+      rw [← ENNReal.ofReal_coe_nnreal, Real.coe_sqrt, NNReal.coe_ofNat,
+        ← ENNReal.ofReal_pow (Real.sqrt_nonneg _)]
+      congr 1
+      rw [Real.sqrt_eq_rpow, ← Real.rpow_natCast, ← Real.rpow_mul (by norm_num)]
+      ring_nf
+    calc μHE[n] (range Φ ∩ closedBall (Φ v₀) r) ≤ μHE[n] (Φ '' closedBall v₀ r) := measure_mono hsub
+      _ ≤ ((NNReal.sqrt 2 : NNReal) : ℝ≥0∞) ^ n * μHE[n] (closedBall v₀ r) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n hLip
+      _ = ENNReal.ofReal (2 ^ ((n : ℝ) / 2)) * unitBallVolume n * ENNReal.ofReal (r ^ n) := by
+          rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+            Measure.addHaar_closedBall _ _ hr.le, finrank_euclideanSpace_fin, hpow]
+          unfold unitBallVolume
+          ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
