@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1.blowup_integrand_continuous-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1",
+  "depth": 4,
+  "title": "Continuity in the centre of blow-up integrals against a locally finite measure",
+  "statement": "Let P ∈ ℕ and let μ be a measure on ℝ^P (Borel σ-algebra) such that μ(K) < ∞ for every compact K ⊆ ℝ^P. Let f : ℝ^P → ℝ be continuous with compact support, and let r > 0. Put η_{x,r}(y) := r⁻¹(y − x) (SimonGMT Chapter03.blowUpMap x r). Then the function x ↦ ∫ f(η_{x,r}(y)) dμ(y) is continuous on ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∀ r : ℝ, 0 < r → Continuous (fun x : Euclid P => ∫ y, f (Poincare.SimonGMT.Chapter03.blowUpMap x r y) ∂μ)",
+  "lean_name": "continuous_integral_comp_blowUpMap",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-c8ee899217-a1"
+}
