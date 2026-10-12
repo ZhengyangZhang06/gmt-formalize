@@ -451,6 +451,42 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.11** (`spt T`, chapter-06.txt lines 296–302) under `T = c T₀` in `V`: the support
+step of the reduction to multiplicity one behind 7.4.2 (chapter-07.txt lines 608–610), as in the
+proof of Ch. 5, 7.3 (chapter-05.txt lines 1388–1395).  If `V ⊆ U` is open, `c ≠ 0` and
+`T(ι ω) = c T₀(ω)` for every `ω ∈ 𝒟ⁿ(V)`, then `spt T₀ = spt T ∩ V`: a zero set of `T₀` is a zero
+set of `T`, because a form in `U` supported in it is `ι` of a form in `V`; and a zero set `W ∋ y`
+of `T` with `y ∈ V` shrinks to `W ∩ B_{s/2}(y)`, `B_s(y) ⊆ V`, a zero set of `T₀` as `c ≠ 0`. -/
+theorem Submission.rsd_cmr_support_eq_inter : ∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n) (T₀ : GeometricCurrentOn V n) (c : ℝ), IsOpen V → c ≠ 0 → (∀ ω : TestFormOn V n, T (testFormOnInclusion hVU n ω) = c * T₀ ω) → T₀.support = T.support ∩ V := by
+  intro P n U V hVU T T₀ c hV hc hT
+  -- Step 2: `Z(T₀) ⊆ Z(T)`; a form in `U` supported in `W ⊆ closure W ⊆ V` is `ι` of a form in `V`.
+  have hZ₀ : T₀.zeroRegion ⊆ T.zeroRegion := by
+    rintro y ⟨W, ⟨hWo, hWc, hWV, hW⟩, hyW⟩
+    refine ⟨W, ⟨hWo, hWc, hWV.trans hVU, fun ω hω => ?_⟩, hyW⟩
+    have hωV : (ω : DifferentialForm (Euclid P) n) ∈ testFormOnSubmodule V n :=
+      ⟨ω.property.1, hω.trans (subset_closure.trans hWV)⟩
+    calc T ω = T (testFormOnInclusion hVU n ⟨ω, hωV⟩) := rfl
+      _ = c * T₀ ⟨ω, hωV⟩ := hT _
+      _ = 0 := by rw [hW ⟨ω, hωV⟩ hω, mul_zero]
+  -- Step 3: `Z(T) ∩ V ⊆ Z(T₀)`; shrink `W ∋ y` to `W ∩ B_{s/2}(y)`, `B_s(y) ⊆ V`, and cancel `c`.
+  have hZ : T.zeroRegion ∩ V ⊆ T₀.zeroRegion := by
+    rintro y ⟨⟨W, ⟨hWo, hWc, -, hW⟩, hyW⟩, hyV⟩
+    obtain ⟨s, hs, hsV⟩ := Metric.isOpen_iff.1 hV y hyV
+    refine ⟨W ∩ ball y (s / 2), ⟨hWo.inter isOpen_ball,
+      hWc.of_isClosed_subset isClosed_closure (closure_mono inter_subset_left),
+      (closure_mono inter_subset_right).trans (closure_ball_subset_closedBall.trans
+        ((closedBall_subset_ball (half_lt_self hs)).trans hsV)), fun ω hω => ?_⟩,
+      hyW, mem_ball_self (half_pos hs)⟩
+    have h0 : c * T₀ ω = 0 := (hT ω).symm.trans (hW _ (hω.trans inter_subset_left))
+    exact (mul_eq_zero.1 h0).resolve_left hc
+  -- Steps 1 and 4: `spt T₀ = V \ Z(T₀) = V \ Z(T) = (U \ Z(T)) ∩ V`.
+  ext y
+  constructor
+  · rintro ⟨hyV, hy⟩
+    exact ⟨⟨hVU hyV, fun h => hy (hZ ⟨h, hyV⟩)⟩, hyV⟩
+  · rintro ⟨⟨-, hy⟩, hyV⟩
+    exact ⟨hyV, fun h => hy (hZ₀ h)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
