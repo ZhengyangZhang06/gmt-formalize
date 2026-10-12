@@ -596,6 +596,40 @@ theorem Submission.allard_tc_scf_zero_defect_mem_plane :
     Measure.support_subset_of_isClosed (isClosed_eq hw continuous_const) hae hz
   -- Step 7: `p_S(x - y) = x - y`, so `x - y` lies in the range of `p_S`, which is `S.plane`.
   exact ⟨z.1 - y, (sub_eq_zero.mp hz0).symm⟩
+/-- A linear subspace `P` of `ℝ^N` with `dim P = n` is an `n`-dimensional `C²` submanifold in
+Simon's sense (Ch. 2, §4), so the Constancy Theorem 4.1 applies with `M = P` (step 7(b) of the proof
+that a stationary cone with density `≥ θ₀` a.e. is `θ₀ v(T)`, used for Simon Ch. 8, 5.5): a linear
+isometry `J : ℝ^n → ℝ^N` with range `P` is a single global chart `(ℝ^n, ℝ^N, J)`. -/
+theorem Submission.allard_tc_scf_subspace_submanifold :
+    ∀ (N n : ℕ) (P : Submodule ℝ (Euclidean N)), Module.finrank ℝ P = n → Chapter02.IsSimonSubmanifold (E := Euclidean n) 2 (P : Set (Euclidean N)) := by
+  intro N n P hP
+  -- Step 1: a linear isometry `J : ℝ^n → ℝ^N` with range `P`, from an orthonormal basis of `P`
+  -- indexed by `Fin n`.
+  let b : OrthonormalBasis (Fin n) ℝ P := (stdOrthonormalBasis ℝ P).reindex (finCongr hP)
+  let e : Euclidean n ≃ₗᵢ[ℝ] P := b.repr.symm
+  let J : Euclidean n →L[ℝ] Euclidean N := P.subtypeL.comp (e : Euclidean n →L[ℝ] P)
+  have hJ : Isometry J :=
+    AddMonoidHomClass.isometry_of_norm J fun x ↦ (Submodule.norm_coe (e x)).trans (e.norm_map x)
+  have hrange : range J = (P : Set (Euclidean N)) := by
+    ext w
+    constructor
+    · rintro ⟨x, rfl⟩
+      exact (e x).2
+    · intro hw
+      exact ⟨e.symm ⟨w, hw⟩, by simp [J]⟩
+  -- Steps 2–3: `1 ≤ 2`, and the single global chart `(V', W, φ) = (ℝ^n, ℝ^N, J)` at every `y ∈ P`.
+  refine ⟨by norm_num, fun y _ ↦ ⟨univ, univ, J, mem_univ y, isOpen_univ, isOpen_univ,
+    J.contDiff.contDiffOn, hJ.injective.injOn, ?_, ?_, ?_⟩⟩
+  · -- (d) `J(ℝ^n) = range J = P = ℝ^N ∩ P`.
+    rw [image_univ, hrange, univ_inter]
+  · -- (e) `J` is proper: an isometry is a closed embedding, so compact sets have compact preimages.
+    intro K hK _
+    rw [univ_inter]
+    exact hJ.isClosedEmbedding.isCompact_preimage hK
+  · -- (f) `DJ(x) = J` is injective.
+    intro x _
+    rw [J.fderiv]
+    exact hJ.injective
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
