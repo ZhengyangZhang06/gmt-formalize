@@ -627,6 +627,30 @@ theorem Submission.allard_tc_tpr_weight_eq_restrict :
       _ = H (D ∩ (E ∩ B)) := by rw [inter_left_comm]
   -- Step 5: the two set integrals are integrals against equal measures.
   rw [hrep B hB, hres]
+/-- Integration against the weight `μ = H^n ⌞ θ` of `v(M, θ)` (Simon Ch. 8, p. 206): if
+`μ(B) = ∫_{M ∩ B} θ dH^n` for every Borel `B`, then `∫ g dμ = ∫_M g θ dH^n` for every
+`g : ℝ^N → ℝ`. -/
+theorem Submission.allard_tc_tpr_integral_eq_weighted :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), NullMeasurableSet M μHE[n] → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Euclidean N), IsCompact K → IntegrableOn θ (M ∩ K) μHE[n]) → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂μHE[n]) → ∀ g : Euclidean N → ℝ, ∫ z, g z ∂μ = ∫ z in M, g z * θ z ∂μHE[n] := by
+  intro N n μ M θ hM hθ hint hμ g
+  -- Step 1: `θ` is a.e.-measurable for `H^n ⌞ M`, exhausting `M` by the pieces `M ∩ B_k(0)`.
+  have hθm : AEMeasurable θ ((μHE[n] : Measure (Euclidean N)).restrict M) := by
+    have hcover : M = ⋃ k : ℕ, M ∩ closedBall (0 : Euclidean N) k := by
+      rw [← inter_iUnion, iUnion_closedBall_nat, inter_univ]
+    rw [hcover, aemeasurable_iUnion_iff]
+    exact fun k ↦ (hint _ (isCompact_closedBall 0 k)).aemeasurable
+  -- Step 2: `μ = (H^n ⌞ M).withDensity (ofReal ∘ θ)`, as both agree on Borel sets.
+  have hμeq : μ = ((μHE[n] : Measure (Euclidean N)).restrict M).withDensity
+      fun x ↦ ENNReal.ofReal (θ x) := by
+    ext B hB
+    rw [hμ B hB, withDensity_apply _ hB, Measure.restrict_restrict hB, Set.inter_comm M B]
+  -- Step 3: the `withDensity` identity for the Bochner integral, valid for every `g`.
+  rw [hμeq, integral_withDensity_eq_integral_toReal_smul₀ hθm.ennreal_ofReal
+    (ae_of_all _ fun _ ↦ ENNReal.ofReal_lt_top)]
+  -- Step 4: `(ofReal θ).toReal = θ` on `M`, and `H^n ⌞ M`-a.e. point lies in `M`.
+  refine integral_congr_ae ?_
+  filter_upwards [ae_restrict_mem₀ hM] with x hx
+  rw [ENNReal.toReal_ofReal (hθ x hx).le, smul_eq_mul, mul_comm]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
