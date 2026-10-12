@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.cutoff_boundary_vanishes-a1.localized_boundary_zero-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.cutoff_boundary_vanishes-a1",
+  "depth": 3,
+  "title": "∂T₁(η) = 0 when spt η meets closure(M₁) only inside M₁ (partition-of-unity localisation; Simon 7.5.11 (2), corrected)",
+  "statement": "Setting: P, m ∈ ℕ; U, M₁ ⊆ ℝ^P arbitrary sets (M₁ is not assumed measurable); T, T₁ ∈ 𝒟_{m+1}(U) (GeometricCurrentOn U (m+1)); ξ : ℝ^P → Λ_{m+1} (MultiVector P (m+1)). Assume:\n(h1) ∂T = 0.\n(h2) T₁(θ) = ∫_{M₁} ξ(x)(θ(x)) dH^{m+1}(x) for every θ ∈ 𝒟^{m+1}(U). This is a Bochner integral for μHE[m+1] restricted to M₁.\n(h4) Every z ∈ M₁ has an open set G ∋ z and a constant c ∈ ℝ with T₁(θ) = c·T(θ) for every θ ∈ 𝒟^{m+1}(U) with tsupport θ ⊆ G.\nThen ∂T₁(η) = T₁(dη) = 0 for every η ∈ 𝒟^m(U) (TestFormOn U m) with closure(M₁) ∩ tsupport η ⊆ M₁.",
+  "lean_statement": "∀ (P m : ℕ) (U M₁ : Set (Euclid P)) (T T₁ : GeometricCurrentOn U (m + 1)) (ξ : Euclid P → MultiVector P (m + 1)), T.boundary = 0 → (∀ ω : TestFormOn U (m + 1), T₁ ω = ∫ x in M₁, ξ x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]) → (∀ z ∈ M₁, ∃ G : Set (Euclid P), IsOpen G ∧ z ∈ G ∧ ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ G → T₁ ω = c * T ω) → ∀ η : TestFormOn U m, closure M₁ ∩ tsupport (η : DifferentialForm (Euclid P) m) ⊆ M₁ → T₁.boundary η = 0",
+  "lean_name": "regcomp_localized_boundary_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-cutoff-boundary-vanishes-a1-90733a24ba-a1"
+}
