@@ -724,6 +724,59 @@ theorem Submission.sobolev_level_layer_cake : ∀ (n ℓ : ℕ) (μ : Measure (A
   rw [step3, ← step4, lintegral_congr step5, lintegral_indicator hM,
     ← ofReal_integral_eq_lintegral_ofReal hint hnn, integral_const_mul]
 
+/-- **Integrated level-set estimate** (Simon Ch. 4, proof of 5.7, p. 100). Let `p = n/(n-1)`,
+`M_s = {x : h(x) > s}`, `P(t) = ∫ γ'(h - t) D dμ` and `R(t) = ∫_{M_t} K dμ`, and suppose
+`μ(M_{t+ε}) ≤ C μ(M_t)^{1/n} (P(t) + R(t))` for every `t ≥ 0`. Multiplying by `(t + ε)^{1/(n-1)}`
+and using the moment factor `(t + ε)^{1/(n-1)} μ(M_t)^{1/n} ≤ Q_ε^{1/n}`, where
+`Q_ε = ∫_{M_0} (h + ε)^p dμ`, gives `(t + ε)^{1/(n-1)} μ(M_{t+ε}) ≤ C Q_ε^{1/n} (P(t) + R(t))`.
+Integrating over `t ∈ (0, ∞)`, the right side is at most `C Q_ε^{1/n} ∫ (D + h K) dμ` by Tonelli,
+and the left side is `((n-1)/n) ∫_{M_ε} (h^p - ε^p) dμ` by the layer-cake identity 4.11. -/
+theorem Submission.sobolev_level_integral_bound : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h D K : Ambient n ℓ → ℝ) (γ : ℝ → ℝ) (C ε : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → (∀ x, 0 ≤ D x) → Integrable D μ → (∀ x, 0 ≤ K x) → IntegrableOn K (tsupport h) μ → ContDiff ℝ 1 γ → Monotone γ → (∀ s, 0 ≤ γ s ∧ γ s ≤ 1) → (∀ s, s ≤ 0 → γ s = 0) → 0 ≤ C → 0 < ε → (∀ t : ℝ, 0 ≤ t → μ.real {x | t + ε < h x} ≤ C * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹ * ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ)) → ((n : ℝ) - 1) / n * ∫ x in {x | ε < h x}, (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ ≤ C * (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹ * ∫ x, (D x + h x * K x) ∂μ := by
+  intro n ℓ μ h D K γ C ε hn hμ hhc hhcs hh0 hD0 hDi hK0 hKi hγ hγm hγb hγ0 hC hε hlev
+  -- the constants `A = C Q_ε^{1/n}` and `J = ∫ (D + h K) dμ` are nonnegative
+  set A : ℝ := C * (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹
+  set J : ℝ := ∫ x, (D x + h x * K x) ∂μ
+  have hA : 0 ≤ A := mul_nonneg hC (Real.rpow_nonneg
+    (integral_nonneg fun x ↦ Real.rpow_nonneg (by linarith [hh0 x]) _) _)
+  have hJ : 0 ≤ J := integral_nonneg fun x ↦ add_nonneg (hD0 x) (mul_nonneg (hh0 x) (hK0 x))
+  -- (5.a) for `t ≥ 0`: `(t + ε)^{1/(n-1)} μ(M_{t+ε}) ≤ A (P(t) + R(t))`
+  have hweight : ∀ t : ℝ, 0 ≤ t → (t + ε) ^ ((n : ℝ) - 1)⁻¹ * μ.real {x | t + ε < h x} ≤
+      A * ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ) := by
+    intro t ht
+    have hb : 0 ≤ (t + ε) ^ ((n : ℝ) - 1)⁻¹ := Real.rpow_nonneg (by linarith) _
+    have hPR : 0 ≤ (∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ :=
+      add_nonneg (integral_nonneg fun x ↦ mul_nonneg hγm.deriv_nonneg (hD0 x))
+        (integral_nonneg fun x ↦ hK0 x)
+    calc (t + ε) ^ ((n : ℝ) - 1)⁻¹ * μ.real {x | t + ε < h x}
+        ≤ (t + ε) ^ ((n : ℝ) - 1)⁻¹ * (C * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹ *
+            ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ)) :=
+          mul_le_mul_of_nonneg_left (hlev t ht) hb
+      _ = C * ((t + ε) ^ ((n : ℝ) - 1)⁻¹ * (μ.real {x | t < h x}) ^ (n : ℝ)⁻¹) *
+            ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ) := by ring
+      _ ≤ A * ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ) :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left
+            (Submission.sobolev_level_moment_factor n ℓ μ h ε t hn hμ hhc hhcs hh0 hε ht) hC) hPR
+  -- integrate over `t ∈ (0, ∞)`: the left side is 4.11, the right side is bounded by Tonelli
+  have hint : ENNReal.ofReal (((n : ℝ) - 1) / n * ∫ x in {x | ε < h x},
+      (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ) ≤
+      ENNReal.ofReal (A * J) := by
+    rw [← Submission.sobolev_level_layer_cake n ℓ μ h ε hn hμ hhc hhcs hh0 hε,
+      ENNReal.ofReal_mul hA]
+    calc ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((t + ε) ^ ((n : ℝ) - 1)⁻¹ *
+          μ.real {x | t + ε < h x})
+        ≤ ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal A *
+            ENNReal.ofReal ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ) :=
+          setLIntegral_mono' measurableSet_Ioi fun t ht ↦ by
+            rw [← ENNReal.ofReal_mul hA]
+            exact ENNReal.ofReal_le_ofReal (hweight t (mem_Ioi.1 ht).le)
+      _ = ENNReal.ofReal A * ∫⁻ t in Ioi (0 : ℝ),
+            ENNReal.ofReal ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ) :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ ≤ ENNReal.ofReal A * ENNReal.ofReal J :=
+          mul_le_mul_right (Submission.sobolev_level_energy_tonelli n ℓ μ h D K γ hμ hhc hhcs hh0
+            hD0 hDi hK0 hKi hγ hγm hγb hγ0) _
+  exact (ENNReal.ofReal_le_ofReal_iff (mul_nonneg hA hJ)).1 hint
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
