@@ -1,0 +1,15 @@
+{
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.small_tilt_plane-a1.origin_affine_plane-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3387",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "f47a61e48802b8f19ea8db48b0038f5978076077",
+  "integrated_commit": "",
+  "proof_base_commit": "0a76c7767ea6dfc3e155460f4c2baeff1553606e",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.tilt_excess_decay-a1.decay_at_origin-a1.small_tilt_plane-a1",
+  "requires": []
+}
