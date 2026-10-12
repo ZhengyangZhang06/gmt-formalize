@@ -979,6 +979,131 @@ theorem Submission.rectifiability_density_comparison : ∀ (P n : ℕ) (ν : Mea
       gcongr
     _ ≤ ν V := hsum
 
+/-- Normalized Lebesgue points (Simon Ch. 1, 3.23 with Theorem 3.3): for `Hᵏ⌞M`-a.e. `x` and
+every `R > 0`, `r⁻ᵏ ∫_{M ∩ B̄_{Rr}(x)} |f - f(x)| dHᵏ → 0` as `r ↓ 0`.  On a ball `W` with
+`K = B̄ ⊆ U`, Lebesgue–Besicovitch differentiation for the finite measure `λ = Hᵏ⌞(M ∩ K)` makes
+the `λ`-averages over `B̄_ρ(x)` tend to `0`, and density comparison gives `Θ*ᵏ(λ, x) < ∞`, so
+`λ(B̄_ρ(x)) ≤ C ωₖ ρᵏ` for small `ρ`. -/
+theorem Submission.iwl_imc_normalized_lebesgue_points : ∀ (P k : ℕ) (U M : Set (Eucl P)) (f : Eucl P → ℝ), IsOpen U → M ⊆ U → NullMeasurableSet M (μHE[k] : Measure (Eucl P)) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → (μHE[k] : Measure (Eucl P)) (M ∩ K) < ∞) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn f (M ∩ K) (μHE[k] : Measure (Eucl P))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ y in M ∩ closedBall x (R * r), ‖f y - f x‖ₑ ∂(μHE[k] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0) := by
+  intro P k U M f hU hMU hMm hfin hint
+  set H : Measure (Eucl P) := (μHE[k] : Measure (Eucl P)) with hH
+  -- The claim for `x` in one ball `W = B_s(y)` whose closure `K = B̄_s(y)` lies in `U`.
+  have key : ∀ p : Eucl P × ℝ, closedBall p.1 p.2 ⊆ U →
+      ∀ᵐ x ∂(H.restrict M), x ∈ ball p.1 p.2 → ∀ R : ℝ, 0 < R →
+        Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) *
+          ∫⁻ y in M ∩ closedBall x (R * r), ‖f y - f x‖ₑ ∂H) (𝓝[>] 0) (𝓝 0) := by
+    rintro ⟨y, s⟩ hKU
+    dsimp only at hKU ⊢
+    have hK : IsCompact (closedBall y s) := isCompact_closedBall y s
+    have hWK : ball y s ⊆ closedBall y s := ball_subset_closedBall
+    -- `λ = Hᵏ⌞(M ∩ K)` is a finite measure and `f ∈ L¹(λ)`.
+    set lam : Measure (Eucl P) := H.restrict (M ∩ closedBall y s) with hlam
+    have hMK : NullMeasurableSet (M ∩ closedBall y s) H :=
+      hMm.inter measurableSet_closedBall.nullMeasurableSet
+    have hlamfin : IsFiniteMeasure lam := isFiniteMeasure_restrict.2 (hfin _ hK hKU).ne
+    have hfl : Integrable f lam := hint _ hK hKU
+    -- Lebesgue–Besicovitch differentiation along closed balls (Simon Ch. 1, 3.23).
+    have hleb : ∀ᵐ x ∂lam, Tendsto (fun ρ : ℝ =>
+        (∫⁻ z in closedBall x ρ, ‖f z - f x‖ₑ ∂lam) / lam (closedBall x ρ)) (𝓝[>] 0) (𝓝 0) := by
+      filter_upwards [(Besicovitch.vitaliFamily lam).ae_tendsto_lintegral_enorm_sub_div
+        hfl.locallyIntegrable] with x hx
+      exact hx.comp (Besicovitch.tendsto_filterAt lam x)
+    have hleb' : ∀ᵐ x ∂(H.restrict M), x ∈ ball y s → Tendsto (fun ρ : ℝ =>
+        (∫⁻ z in closedBall x ρ, ‖f z - f x‖ₑ ∂lam) / lam (closedBall x ρ)) (𝓝[>] 0) (𝓝 0) := by
+      rw [hlam, ae_restrict_iff'₀ hMK] at hleb
+      rw [ae_restrict_iff'₀ hMm]
+      filter_upwards [hleb] with x hx hxM hxW
+      exact hx ⟨hxM, hWK hxW⟩
+    -- `Θ*ᵏ(λ, x) < ∞` for `Hᵏ`-a.e. `x ∈ W`: density comparison (Simon Ch. 1, 3.3) with `t = ∞`.
+    have hdens : ∀ᵐ x ∂(H.restrict M), x ∈ ball y s →
+        dimensionalUpperDensity lam.toOuterMeasure (k : ℝ) univ x < ∞ := by
+      have h0 : H {x | x ∈ ball y s ∧
+          dimensionalUpperDensity lam.toOuterMeasure (k : ℝ) univ x = ∞} = 0 := by
+        have h := Submission.rectifiability_density_comparison P k lam
+          {x | x ∈ ball y s ∧ dimensionalUpperDensity lam.toOuterMeasure (k : ℝ) univ x = ∞}
+          (ball y s) ∞ isOpen_ball (fun x hx => hx.1) (fun x hx => hx.2.ge)
+        by_contra hne
+        rw [ENNReal.top_mul hne] at h
+        exact measure_ne_top lam _ (top_le_iff.1 h)
+      refine ae_restrict_of_ae ?_
+      filter_upwards [measure_eq_zero_iff_ae_notMem.1 h0] with x hx hxW
+      exact lt_top_iff_ne_top.2 fun h => hx ⟨hxW, h⟩
+    filter_upwards [hleb', hdens, ae_restrict_mem₀ hMm] with x hlebx hdensx hxM hxW R hR
+    -- `λ(B̄_ρ(x)) ≤ C ωₖ ρᵏ` for small `ρ`, from `Θ*ᵏ(λ, x) < C < ∞`.
+    obtain ⟨C, hC, hCtop⟩ := exists_between (hdensx hxW)
+    set ω := Poincare.SimonGMT.Chapter01.realUnitBallVolume (k : ℝ) with hω
+    have hω0 : ω ≠ 0 :=
+      (Poincare.SimonGMT.Chapter01.realUnitBallVolume_pos (Nat.cast_nonneg k)).ne'
+    have hωtop : ω ≠ ∞ := Poincare.SimonGMT.Chapter01.realUnitBallVolume_ne_top _
+    have hbound : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), lam (closedBall x ρ) ≤ C * (ω * ENNReal.ofReal ρ ^ k) := by
+      filter_upwards [Filter.eventually_lt_of_limsup_lt hC, self_mem_nhdsWithin] with ρ hρ hρ0
+      simp only [Poincare.SimonGMT.Chapter01.dimensionalDensityQuotient,
+        Measure.toOuterMeasure_apply, univ_inter, ENNReal.rpow_natCast] at hρ
+      have hd0 : ω * ENNReal.ofReal ρ ^ k ≠ 0 :=
+        mul_ne_zero hω0 (pow_ne_zero _ (ENNReal.ofReal_pos.2 hρ0).ne')
+      have hdtop : ω * ENNReal.ofReal ρ ^ k ≠ ∞ :=
+        ENNReal.mul_ne_top hωtop (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+      exact ((ENNReal.div_lt_iff (Or.inl hd0) (Or.inl hdtop)).1 hρ).le
+    -- The rescaling `r ↦ R r` maps `𝓝[>] 0` to itself; small balls lie in `W`.
+    have hscale : Tendsto (fun r : ℝ => R * r) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_iff.2 ⟨?_, ?_⟩
+      · have h : Tendsto (fun r : ℝ => R * r) (𝓝 0) (𝓝 (R * 0)) :=
+          (continuous_const.mul continuous_id).tendsto 0
+        rw [mul_zero] at h
+        exact h.mono_left nhdsWithin_le_nhds
+      · filter_upwards [self_mem_nhdsWithin] with r hr
+        exact mul_pos hR hr
+    have hsub : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), closedBall x ρ ⊆ ball y s :=
+      (eventually_closedBall_subset (isOpen_ball.mem_nhds hxW)).filter_mono nhdsWithin_le_nhds
+    set a : ℝ → ℝ≥0∞ := fun ρ =>
+      (∫⁻ z in closedBall x ρ, ‖f z - f x‖ₑ ∂lam) / lam (closedBall x ρ) with ha
+    -- `r⁻ᵏ ∫_{M ∩ B̄_{Rr}(x)} |f - f(x)| dHᵏ ≤ C ωₖ Rᵏ a(R r) → 0`.
+    have hc : C * ω * ENNReal.ofReal R ^ k ≠ ∞ :=
+      ENNReal.mul_ne_top (ENNReal.mul_ne_top hCtop.ne hωtop)
+        (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+    have hlim := ENNReal.Tendsto.const_mul ((hlebx hxW).comp hscale) (Or.inr hc)
+    rw [mul_zero] at hlim
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
+      (Eventually.of_forall fun r => zero_le) ?_
+    filter_upwards [hscale.eventually hbound, hscale.eventually hsub, self_mem_nhdsWithin]
+      with r hrb hrW hr0
+    have hr0 : (0 : ℝ) < r := hr0
+    have hRr : (0 : ℝ) < R * r := mul_pos hR hr0
+    -- `M ∩ B̄_{Rr}(x) = B̄_{Rr}(x) ∩ (M ∩ K)`, so the integral is the `λ`-integral.
+    have hI : ∫⁻ z in M ∩ closedBall x (R * r), ‖f z - f x‖ₑ ∂H =
+        lam (closedBall x (R * r)) * a (R * r) := by
+      rw [ha, ENNReal.mul_div_cancel' (fun h0 => setLIntegral_measure_zero _ _ h0)
+        (fun htop => absurd htop (measure_ne_top lam _)), hlam,
+        Measure.restrict_restrict measurableSet_closedBall]
+      congr 2
+      ext z
+      exact ⟨fun hz => ⟨hz.2, hz.1, hWK (hrW hz.2)⟩, fun hz => ⟨hz.2.1, hz.1⟩⟩
+    have hpow : ENNReal.ofReal ((r ^ k)⁻¹) * ENNReal.ofReal (R * r) ^ k =
+        ENNReal.ofReal R ^ k := by
+      rw [← ENNReal.ofReal_pow hRr.le, ← ENNReal.ofReal_mul (inv_nonneg.2 (pow_nonneg hr0.le k)),
+        ← ENNReal.ofReal_pow hR.le, mul_pow, ← mul_assoc, mul_comm _ (R ^ k), mul_assoc,
+        inv_mul_cancel₀ (pow_ne_zero k hr0.ne'), mul_one]
+    calc ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ z in M ∩ closedBall x (R * r), ‖f z - f x‖ₑ ∂H
+        = ENNReal.ofReal ((r ^ k)⁻¹) * (lam (closedBall x (R * r)) * a (R * r)) := by rw [hI]
+      _ ≤ ENNReal.ofReal ((r ^ k)⁻¹) * (C * (ω * ENNReal.ofReal (R * r) ^ k) * a (R * r)) := by
+        gcongr
+      _ = C * ω * (ENNReal.ofReal ((r ^ k)⁻¹) * ENNReal.ofReal (R * r) ^ k) * a (R * r) := by
+        ring
+      _ = C * ω * ENNReal.ofReal R ^ k * a (R * r) := by rw [hpow]
+  -- Countably many balls `B_s(y)` with `B̄_s(y) ⊆ U` cover `U` (second countability).
+  obtain ⟨T, hTI, hTc, hTU⟩ := TopologicalSpace.isOpen_biUnion_countable
+    {p : Eucl P × ℝ | closedBall p.1 p.2 ⊆ U} (fun p => ball p.1 p.2) fun p _ => isOpen_ball
+  have hall : ∀ᵐ x ∂(H.restrict M), ∀ p ∈ T, x ∈ ball p.1 p.2 → ∀ R : ℝ, 0 < R →
+      Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) *
+        ∫⁻ y in M ∩ closedBall x (R * r), ‖f y - f x‖ₑ ∂H) (𝓝[>] 0) (𝓝 0) :=
+    (ae_ball_iff hTc).2 fun p hp => key p (hTI hp)
+  filter_upwards [hall, ae_restrict_mem₀ hMm] with x hx hxM
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x (hMU hxM)
+  have hxT : x ∈ ⋃ p ∈ T, ball p.1 p.2 := hTU ▸ mem_iUnion₂.2
+    ⟨(x, ε / 2), (closedBall_subset_ball (half_lt_self hε)).trans hεU, mem_ball_self (half_pos hε)⟩
+  obtain ⟨p, hp, hxp⟩ := mem_iUnion₂.1 hxT
+  exact hx p hp hxp
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
