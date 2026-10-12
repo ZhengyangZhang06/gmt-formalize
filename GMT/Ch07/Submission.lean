@@ -451,6 +451,165 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Integration by parts for a Lipschitz function against a `C²` test function on a ball**
+(Step 0 of the harmonic approximation lemma: the integration by parts in Simon Ch. 5, Lemma 3.1,
+made explicit for Lipschitz `u` via Rademacher's theorem).  Both integrands vanish off
+`tsupport ζ ⊆ B_R`, so the ball integrals are integrals over `ℝⁿ`.  In each direction `v`,
+`g = Dζ(·)v` is `C¹` with compact support, hence Lipschitz, and Mathlib's
+`LipschitzWith.integral_lineDeriv_mul_eq` gives `∫ ∂ᵥu · g = ∫ ∂₋ᵥg · u`; by Rademacher's theorem
+`∂ᵥu = Du(·)v` a.e., and `∂₋ᵥg = −D²ζ(·)(v, v)`.  Summing over `v = eᵢ` (every term is integrable)
+gives the identity. -/
+theorem Submission.dorag_haa_lipschitz_ibp : ∀ (n : ℕ) (R : ℝ) (u ζ : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ContDiff ℝ 2 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∫ y in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ u y (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ y (EuclideanSpace.single i (1 : ℝ)) = -∫ y in ball (0 : Euclid n) R, u y * ∑ i : Fin n, iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] := by
+  intro n R u ζ L hu hζ hcs hsub
+  -- both integrands vanish off `tsupport ζ ⊆ B_R`, since `Dζ` and `D²ζ` do
+  have hD1 : ∀ y, y ∉ tsupport ζ → fderiv ℝ ζ y = 0 := fun y hy =>
+    Function.notMem_support.mp fun h => hy (support_fderiv_subset ℝ h)
+  have hD2 : ∀ y, y ∉ tsupport ζ → iteratedFDeriv ℝ 2 ζ y = 0 := fun y hy =>
+    Function.notMem_support.mp fun h => hy (support_iteratedFDeriv_subset 2 h)
+  have hout : ∀ y, y ∉ ball (0 : Euclid n) R → y ∉ tsupport ζ := fun y hy h => hy (hsub h)
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => by simp [hD1 y (hout y hy)],
+    setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => by simp [hD2 y (hout y hy)]]
+  -- `Dζ` is `C¹`
+  have hζ1 : ContDiff ℝ 1 (fderiv ℝ ζ) := hζ.fderiv_right one_add_one_eq_two.le
+  -- integrability of the terms
+  have hint1 : ∀ v : Euclid n, Integrable (fun y => fderiv ℝ u y v * fderiv ℝ ζ y v) := by
+    intro v
+    have hg : Integrable (fun y => fderiv ℝ ζ y v) :=
+      (hζ1.continuous.clm_apply continuous_const).integrable_of_hasCompactSupport
+        (hcs.fderiv_apply ℝ v)
+    refine hg.bdd_mul (c := L * ‖v‖) (measurable_fderiv_apply_const ℝ u v).aestronglyMeasurable
+      (Eventually.of_forall fun y => ?_)
+    calc ‖fderiv ℝ u y v‖ ≤ ‖fderiv ℝ u y‖ * ‖v‖ := (fderiv ℝ u y).le_opNorm v
+      _ ≤ L * ‖v‖ := by gcongr; exact norm_fderiv_le_of_lipschitz ℝ hu
+  have hint2 : ∀ v : Euclid n, Integrable (fun y => u y * iteratedFDeriv ℝ 2 ζ y ![v, v]) := by
+    intro v
+    refine Continuous.integrable_of_hasCompactSupport ?_ ?_
+    · exact hu.continuous.mul ((hζ.continuous_iteratedFDeriv le_rfl).eval_const _)
+    · refine hcs.mono' (Function.support_subset_iff'.mpr fun y hy => ?_)
+      simp [hD2 y hy]
+  -- the identity in each direction `v`
+  have key : ∀ v : Euclid n,
+      ∫ y, fderiv ℝ u y v * fderiv ℝ ζ y v = -∫ y, u y * iteratedFDeriv ℝ 2 ζ y ![v, v] := by
+    intro v
+    have hg1 : ContDiff ℝ 1 (fun y => fderiv ℝ ζ y v) := hζ1.clm_apply contDiff_const
+    have hgcs : HasCompactSupport (fun y => fderiv ℝ ζ y v) := hcs.fderiv_apply ℝ v
+    obtain ⟨C, hgC⟩ := hg1.lipschitzWith_of_hasCompactSupport hgcs one_ne_zero
+    have ibp := hu.integral_lineDeriv_mul_eq hgC hgcs v (μ := volume)
+    have lhs : ∫ y, fderiv ℝ u y v * fderiv ℝ ζ y v = ∫ y, lineDeriv ℝ u y v * fderiv ℝ ζ y v := by
+      refine integral_congr_ae ?_
+      filter_upwards [hu.ae_differentiableAt (μ := volume)] with y hy
+      rw [hy.lineDeriv_eq_fderiv]
+    have rhs : ∀ y, lineDeriv ℝ (fun y => fderiv ℝ ζ y v) y (-v) * u y =
+        -(u y * iteratedFDeriv ℝ 2 ζ y ![v, v]) := by
+      intro y
+      have hd2 : DifferentiableAt ℝ (fderiv ℝ ζ) y := hζ1.differentiable one_ne_zero y
+      rw [(hg1.differentiable one_ne_zero y).lineDeriv_eq_fderiv,
+        fderiv_clm_apply hd2 (differentiableAt_const v), iteratedFDeriv_two_apply]
+      simp
+      ring
+    rw [lhs, ibp, ← integral_neg]
+    congr 1
+    funext y
+    exact rhs y
+  simp_rw [Finset.mul_sum]
+  rw [integral_finsetSum _ fun i _ => hint1 _, integral_finsetSum _ fun i _ => hint2 _,
+    ← Finset.sum_neg_distrib]
+  exact Finset.sum_congr rfl fun i _ => key _
+namespace Submission
+
+/-- Strong `L²(B_R)` convergence `fⱼ → W` gives `∫_{B_R} fⱼ g → ∫_{B_R} W g` for every
+`g ∈ L²(B_R)`: by Cauchy–Schwarz (Hölder with `p = q = 2`),
+`|∫ fⱼ g − ∫ W g| ≤ ∫ |fⱼ − W| |g| ≤ (∫ (fⱼ − W)²)^{1/2} (∫ g²)^{1/2} → 0`. -/
+theorem dorag_haa_l2_pairing_tendsto : ∀ (n : ℕ) (R : ℝ) (f : ℕ → Euclid n → ℝ) (W g : Euclid n → ℝ), (∀ j, MemLp (f j) 2 (volume.restrict (ball (0 : Euclid n) R))) → MemLp W 2 (volume.restrict (ball (0 : Euclid n) R)) → MemLp g 2 (volume.restrict (ball (0 : Euclid n) R)) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, (f j x - W x) ^ 2) atTop (𝓝 0) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, f j x * g x) atTop (𝓝 (∫ x in ball (0 : Euclid n) R, W x * g x)) := by
+  intro n R f W g hf hW hg hlim
+  -- Cauchy–Schwarz: `|∫ fⱼ g − ∫ W g| ≤ √(∫ (fⱼ − W)²) · √(∫ g²)`.
+  have hbound : ∀ j, ‖(∫ x in ball (0 : Euclid n) R, f j x * g x) -
+      ∫ x in ball (0 : Euclid n) R, W x * g x‖ ≤
+      √(∫ x in ball (0 : Euclid n) R, (f j x - W x) ^ 2) *
+        √(∫ x in ball (0 : Euclid n) R, g x ^ 2) := by
+    intro j
+    have hd : MemLp (fun x => f j x - W x) (ENNReal.ofReal 2)
+        (volume.restrict (ball (0 : Euclid n) R)) := by
+      rw [ENNReal.ofReal_ofNat]; exact (hf j).sub hW
+    have hg' : MemLp g (ENNReal.ofReal 2) (volume.restrict (ball (0 : Euclid n) R)) := by
+      rw [ENNReal.ofReal_ofNat]; exact hg
+    -- Products of two `L²` functions are integrable (Hölder `2, 2, 1`).
+    have hi₁ : Integrable (fun x => f j x * g x) (volume.restrict (ball (0 : Euclid n) R)) :=
+      (hf j).integrable_mul hg
+    have hi₂ : Integrable (fun x => W x * g x) (volume.restrict (ball (0 : Euclid n) R)) :=
+      hW.integrable_mul hg
+    rw [← integral_sub hi₁ hi₂, Real.norm_eq_abs]
+    calc |∫ x in ball (0 : Euclid n) R, (f j x * g x - W x * g x)|
+        ≤ ∫ x in ball (0 : Euclid n) R, |f j x * g x - W x * g x| := abs_integral_le_integral_abs
+      _ = ∫ x in ball (0 : Euclid n) R, ‖f j x - W x‖ * ‖g x‖ := by
+          congr 1; funext x; rw [← sub_mul, abs_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+      _ ≤ (∫ x in ball (0 : Euclid n) R, ‖f j x - W x‖ ^ (2 : ℝ)) ^ (1 / (2 : ℝ)) *
+            (∫ x in ball (0 : Euclid n) R, ‖g x‖ ^ (2 : ℝ)) ^ (1 / (2 : ℝ)) :=
+          integral_mul_norm_le_Lp_mul_Lq Real.HolderConjugate.two_two hd hg'
+      _ = _ := by simp only [Real.rpow_two, Real.norm_eq_abs, sq_abs, ← Real.sqrt_eq_rpow]
+  -- The bound tends to `√0 · √(∫ g²) = 0`; squeeze.
+  have hsq : Tendsto (fun j => √(∫ x in ball (0 : Euclid n) R, (f j x - W x) ^ 2) *
+      √(∫ x in ball (0 : Euclid n) R, g x ^ 2)) atTop (𝓝 0) := by
+    simpa using ((Real.continuous_sqrt.tendsto 0).comp hlim).mul_const
+      (√(∫ x in ball (0 : Euclid n) R, g x ^ 2))
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  exact squeeze_zero (fun j => norm_nonneg _) hbound hsq
+
+end Submission
+
+/-- **`L²` limits of almost-harmonic Lipschitz functions are weakly harmonic** (step A3 of the
+harmonic approximation, Simon Ch. 5, proof of Lemma 3.1, p. 114; chapter-05.txt lines 632–639,
+replacing "by the weak convergence of `∇f_{k'}` to `∇w` and by (1)").  Write `B = B̆_R(0)`,
+`eᵢ = EuclideanSpace.single i 1` and `Δζ = Σᵢ D²ζ(eᵢ, eᵢ)`.  For `vⱼ = uⱼ − cⱼ`, which is
+Lipschitz with `Dvⱼ = Duⱼ`, `dorag_haa_lipschitz_ibp` gives `∫_B vⱼ Δζ = −∫_B Σᵢ Duⱼ eᵢ · Dζ eᵢ`,
+so the hypothesis with `G = sup ‖Dζ‖` gives `|∫_B vⱼ Δζ| ≤ δⱼ G → 0`.  As `vⱼ → W` in `L²(B)`,
+`dorag_haa_l2_pairing_tendsto` gives `∫_B vⱼ Δζ → ∫_B W Δζ`, which is therefore `0`. -/
+theorem Submission.dorag_haa_weakly_harmonic_limit : ∀ (n : ℕ) (R : ℝ) (u : ℕ → Euclid n → ℝ) (c δ : ℕ → ℝ) (W : Euclid n → ℝ), (∀ j, ∃ L : NNReal, LipschitzWith L (u j)) → Tendsto δ atTop (𝓝 0) → MemLp W 2 (volume.restrict (ball (0 : Euclid n) R)) → Tendsto (fun j => ∫ x in ball (0 : Euclid n) R, (u j x - c j - W x) ^ 2) atTop (𝓝 0) → (∀ (j : ℕ) (ζ : Euclid n → ℝ), ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∀ G : ℝ, (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → |∫ v in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ (u j) v (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ δ j * G) → ∀ ζ : Euclid n → ℝ, ContDiff ℝ 2 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∫ y in ball (0 : Euclid n) R, W y * ∑ i : Fin n, iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := by
+  intro n R u c δ W hu hδ hW hconv hweak ζ hζ hζc hζB
+  -- Step 1: `Δζ` is continuous, `ζ` being `C²`
+  have hΔ : Continuous fun y => ∑ i : Fin n, iteratedFDeriv ℝ 2 ζ y
+      ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] :=
+    continuous_finsetSum _ fun i _ =>
+      (hζ.continuous_iteratedFDeriv (m := 2) le_rfl).eval_const _
+  -- Step 2: continuous functions are bounded on `B ⊆ closedBall 0 R`, hence in `L²(B)`
+  have : IsFiniteMeasure (volume.restrict (ball (0 : Euclid n) R)) :=
+    isFiniteMeasure_restrict.2 measure_ball_ne_top
+  have hL2 : ∀ f : Euclid n → ℝ, Continuous f →
+      MemLp f 2 (volume.restrict (ball (0 : Euclid n) R)) := by
+    intro f hf
+    obtain ⟨K, hK⟩ :=
+      (isCompact_closedBall (0 : Euclid n) R).exists_bound_of_continuousOn hf.continuousOn
+    exact MemLp.of_bound hf.aestronglyMeasurable K
+      (ae_restrict_of_forall_mem measurableSet_ball fun x hx => hK x (ball_subset_closedBall hx))
+  -- Step 3: `‖Dζ‖ ≤ G`, `Dζ` being continuous with compact support
+  obtain ⟨G, hG⟩ := (hζc.fderiv ℝ).exists_bound_of_continuous (hζ.continuous_fderiv two_ne_zero)
+  -- Step 4: integration by parts for `vⱼ = uⱼ − cⱼ` (`Dvⱼ = Duⱼ`) and the hypothesis give
+  -- `|∫_B vⱼ Δζ| = |∫_B Σᵢ Duⱼ eᵢ · Dζ eᵢ| ≤ δⱼ G`
+  have hbound : ∀ j, |∫ y in ball (0 : Euclid n) R, (u j y - c j) * ∑ i : Fin n,
+      iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)]|
+      ≤ δ j * G := by
+    intro j
+    obtain ⟨L, hL⟩ := hu j
+    have hibp := Submission.dorag_haa_lipschitz_ibp n R (fun y => u j y - c j) ζ (L + 0)
+      (hL.sub (LipschitzWith.const (c j))) hζ hζc hζB
+    simp only [fderiv_sub_const] at hibp
+    have h := hweak j ζ (hζ.of_le one_le_two) hζc hζB G hG
+    rwa [hibp, abs_neg] at h
+  -- Step 5: hence `∫_B vⱼ Δζ → 0`, as `δⱼ G → 0`
+  have h0 : Tendsto (fun j => ∫ y in ball (0 : Euclid n) R, (u j y - c j) * ∑ i : Fin n,
+      iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)])
+      atTop (𝓝 0) := by
+    refine squeeze_zero_norm (fun j => (Real.norm_eq_abs _).le.trans (hbound j)) ?_
+    simpa using hδ.mul_const G
+  -- Step 6: `vⱼ → W` in `L²(B)` and `Δζ ∈ L²(B)`, so `∫_B vⱼ Δζ → ∫_B W Δζ`
+  have hlim := Submission.dorag_haa_l2_pairing_tendsto n R (fun j y => u j y - c j) W _
+    (fun j => hL2 _ (by
+      obtain ⟨L, hL⟩ := hu j
+      exact hL.continuous.sub continuous_const))
+    hW (hL2 _ hΔ) hconv
+  -- Step 7: limits in `ℝ` are unique
+  exact tendsto_nhds_unique hlim h0
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
