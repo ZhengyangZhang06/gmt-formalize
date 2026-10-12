@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9df232de9d2f0457f3cb4a0956e233309115ad774c64e646d39ee9fadc48485f",
+  "git_delta": {
+    "base_commit": "5d0835a1e11f3a7b1f8204dc1113998f5500b6a5",
+    "candidate_commit": "6b331121e0b40b7e6599c3343157b4ed609f7b24",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_vel_graph_projection_trace",
+    "diff_sha256": "d68c340228b2f33dfd0be325f948f6de6cf1d23f0ceef3d55d8350fc976b57b2",
+    "source_sha256": "2ec8170a733e6b4f5331139973d3d19fc5028bf178101c088342e79a212f0832",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_vel_graph_projection_trace",
+      "statement": "∀ n ℓ : ℕ, ∀ (P Ψ : Rn n →L[ℝ] Rn ℓ) (L : Rn n →L[ℝ] Amb n ℓ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (D : Amb n ℓ →L[ℝ] Amb n ℓ), (∀ v : Rn n, L v = graphPoint v (P v)) → (∀ (v : Rn n) (w : Rn ℓ), D (Q.symm (graphPoint v w)) = Q.symm (graphPoint 0 (Ψ v))) → LinearMap.trace ℝ (Amb n ℓ) (D.toLinearMap ∘ₗ (Submodule.map Q.symm.toLinearEquiv.toLinearMap (LinearMap.range L.toLinearMap)).starProjection.toLinearMap) = ∑ a : Fin n, ∑ c : Fin n, ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))⁻¹ a c * inner ℝ (P (EuclideanSpace.single c (1 : ℝ))) (Ψ (EuclideanSpace.single a (1 : ℝ)))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
