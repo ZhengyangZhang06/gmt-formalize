@@ -1,0 +1,105 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def CompactlyContainedOpen|def IsMassMeasure|def IsMeasureRepresentation|abbrev Eucl|^import|^namespace|^open|mass_measure_representation|rectifiability_projection_null|rpn_",
+        "toSphere_apply_univ|measurePreserving_homeomorphUnitSphereProd|integral_fun_norm_addHaar|integrableOn_fun_norm_addHaar",
+        "contDiff_convolution_right|hasFDerivAt_convolution_right",
+        "abbrev SimonMultiIndex|def wedgeCovectors|theorem wedgeCovectors_apply_det|def euclideanNVectorCoordinate|covectorPullback_wedgeCovectors|abbrev Covector|abbrev NVector|def TestFormOn|abbrev TestFormOn|def exteriorDerivativeTestOn|def boundary",
+        "sign_cycleRange|cycleRange_symm_zero|cycleRange_symm_succ",
+        "newtonian potential|fundamental solution of (the )?laplace|riesz potential",
+        "python3 /tmp/projection-null-independent-audit-bc5ckdyo/audit_checks.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -o GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean ReferenceAxioms.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1/decomposition-v3.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-mass-measure-representation-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa3/20261012T091807Z-ch06-root.rectifiability-a1.mass_measure_representation-a1-6k3xwbpc/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa3/20261012T091807Z-ch06-root.rectifiability-a1.mass_measure_representation-a1-6k3xwbpc/comparator.log",
+        "/tmp/projection-null-independent-audit-bc5ckdyo/audit_checks.py",
+        "/tmp/projection-null-independent-audit-bc5ckdyo/Contracts.lean",
+        "/tmp/projection-null-independent-audit-bc5ckdyo/Contracts.log",
+        "/tmp/projection-null-independent-audit-bc5ckdyo/ReferenceAxioms.lean",
+        "/tmp/projection-null-independent-audit-bc5ckdyo/ReferenceAxioms.log"
+      ],
+      "conclusion": "The nine-child split appropriately establishes the selected rectifiability_projection_null contract. All nine one-line propositions independently elaborate in the comparator scope against a freshly compiled, byte-identical frozen Submission. A conditional assembly from the exact representation, mass_off_compact, compact_null and borel_null types proves the exact selected parent type; its axioms are only propext, Classical.choice and Quot.sound. The inspected library ingredients have compatible hypotheses and standard axioms. No Newtonian/Riesz-potential result matched the snapshot search, and BV.lean explicitly leaves compactness outstanding. The dependency graph is acyclic and correctly directed; the representation dependency has no path back to this parent. Its accepted frozen type is identical, and its retained comparator check permits only standard axioms. Scanning 423 reserved names found no conflicting reservations. All proposed names are bare identifiers, and every type is independent of its implementation. Smoothness orders, covector norms, projection constructions and measure coercions match the prose; no problematic matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "potential_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Local kernel integrability, convolution differentiation, the ray FTC and polar coordinates establish the divergence identity. The radius split gives the stated support-volume bound, including dimension one and zero support measure. Nonnegativity of M follows from its hypothesis. The proof is complete and non-circular."
+    },
+    {
+      "key": "potential_form_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant permutation signs agree with the pinned wedge and extDeriv normalization. Product and chain rules require exactly the stated pointwise differentiability hypotheses. Coordinate expansion cancels the repeated-index terms and yields the exact displayed identity, including m = 0."
+    },
+    {
+      "key": "mass_bound_opnorm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coefficient-norm comparison supplies the factor P^n. Homogeneity and admissibility of both scaled signs give the absolute-value estimate. The proof correctly derives C ≥ 0 and handles P^n C = 0 by a limit. No openness hypothesis is needed."
+    },
+    {
+      "key": "pullback_top_form_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three declared dependencies suffice. Multiplication by f supplies compact support for the potential form, and the derivative identity supplies the supported remainder. Finite masses and uniform operator-norm bounds produce a constant independent of a and M. The argument proves the exact general-linear-map contract."
+    },
+    {
+      "key": "covector_rotated_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Kronecker determinant calculation, sorting of injective tuples and alternating-map basis extensionality prove the standard expansion. Pullback through Q and Q.symm gives precisely the stated coefficients and wedges. Degree zero and the empty-index case n > P are covered."
+    },
+    {
+      "key": "null_compact_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Shrinking compact neighbourhoods provide arbitrarily small finite volume. The mollifier construction proves smoothness, the range bound, equality on F and the closed-support inclusion with the required radius margin. Compact support justifies the toReal comparison. The empty-set case is explicitly handled."
+    },
+    {
+      "key": "mass_off_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The rotated expansion and normalized coordinates give finite uniform coefficient bounds. The cutoff term tends to zero by the declared potential bound; the integrable remainder is dominated on W \\ K. Summation and the mass supremum yield one constant independent of W. Infinite measure and empty index sets are handled, with no undeclared mass-measure assumption."
+    },
+    {
+      "key": "compact_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact thickening construction gives decreasing relatively compact open neighbourhoods with intersection K. Local finiteness permits continuity from above for their differences with K, and finiteness of C forces μ(K) = 0. The cited thickening constructions also cover the empty compact set."
+    },
+    {
+      "key": "borel_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The countable relatively compact open cover localizes to finite Borel restrictions. Closed inner approximants inside each piece are compact subsets of E and U, so the hypothesis makes every piece null. Countable subadditivity and μ(Uᶜ) = 0 prove the exact conclusion without assuming global finiteness."
+    }
+  ],
+  "required_changes": []
+}

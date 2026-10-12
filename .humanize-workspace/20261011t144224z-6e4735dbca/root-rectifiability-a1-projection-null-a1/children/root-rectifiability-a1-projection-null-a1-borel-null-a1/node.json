@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.borel_null-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1",
+  "depth": 3,
+  "title": "Inner regularity: a Borel set whose compact subsets in U are all μ-null is μ-null (Simon 1.15; 6, Remark 2.37(1))",
+  "statement": "Let P ∈ ℕ and let U ⊆ ℝ^P be open. Let μ be a measure on ℝ^P with μ(ℝ^P∖U) = 0 and μ(W) < ∞ for every open W ⊂⊂ U. Let E ⊆ ℝ^P be a Borel set such that μ(K) = 0 for every compact K with K ⊆ E and K ⊆ U. Then μ(E) = 0.",
+  "lean_statement": "∀ (P : ℕ) (U E : Set (Eucl P)) (μ : Measure (Eucl P)), IsOpen U → μ Uᶜ = 0 → (∀ W, CompactlyContainedOpen W U → μ W < ∞) → MeasurableSet E → (∀ K, IsCompact K → K ⊆ E → K ⊆ U → μ K = 0) → μ E = 0",
+  "lean_name": "rpn_null_of_compact_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-borel-null-a1-a1"
+}

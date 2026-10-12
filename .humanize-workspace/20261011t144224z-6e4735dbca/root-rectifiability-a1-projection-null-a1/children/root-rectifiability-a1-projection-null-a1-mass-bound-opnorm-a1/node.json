@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.mass_bound_opnorm-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1",
+  "depth": 3,
+  "title": "Mass bound for test forms with bounded operator norm (Simon 6, 2.4–2.6)",
+  "statement": "Let P, n ∈ ℕ, U, W ⊆ ℝ^P, T ∈ D_n(U) (GeometricCurrentOn U n), ω ∈ Dⁿ(U) (TestFormOn U n), and B, C ∈ ℝ. Assume 0 ≤ B, M_W(T) ≤ B (that is, T.massOn W ≤ ENNReal.ofReal B), tsupport ω ⊆ W, and ‖ω(x)‖ ≤ C for every x ∈ ℝ^P, where ‖·‖ is the operator norm of continuous alternating maps on ℝ^P with its Euclidean norm. Then |T(ω)| ≤ P^n·B·C.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B C : ℝ), 0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → (∀ x, ‖(ω : DifferentialForm (Eucl P) n) x‖ ≤ C) → |T ω| ≤ (P : ℝ) ^ n * B * C",
+  "lean_name": "rpn_abs_apply_le_opNorm_mul_massOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-mass-bound-opnorm-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.covector_rotated_expansion-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1",
+  "depth": 3,
+  "title": "Expansion of covectors in the rotated basis Q^*dx^α (Simon 6, §1 and proof of 2.36)",
+  "statement": "For all P, n ∈ ℕ, every linear isometry Q of ℝ^P and every n-covector φ on ℝ^P, φ = Σ_{α∈I(n,P)} φ(Q^{−1}e_{α(0)}, …, Q^{−1}e_{α(n−1)})·Q^*dx^α. Here I(n,P) = SimonMultiIndex n P is the set of strictly increasing maps Fin n → Fin P, e_k is the k-th standard basis vector of ℝ^P, and Q^*dx^α := wedgeCovectors n (fun i => x^{α(i)}∘Q) is the wedge of the 1-covectors x ↦ (Qx)_{α(i)}.",
+  "lean_statement": "∀ (P n : ℕ) (Q : Eucl P ≃ₗᵢ[ℝ] Eucl P) (φ : Covector (Eucl P) n), φ = ∑ α : SimonMultiIndex n P, φ (fun i => Q.symm (EuclideanSpace.single (α i) (1 : ℝ))) • wedgeCovectors n (fun i => (EuclideanSpace.proj (α i) : Eucl P →L[ℝ] ℝ).comp (Q : Eucl P →L[ℝ] Eucl P))",
+  "lean_name": "rpn_covector_rotated_expansion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-covector-rotated-expansion-a1-a1"
+}
