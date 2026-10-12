@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "57131694525c315d23136ecdfcecd85b6cfffa058b3c8e3b9fa9f5e16ea0c5c1",
+  "git_delta": {
+    "base_commit": "c084f3b029a975c4c77c8b4209cd781991b4721a",
+    "candidate_commit": "1e268c45646a169adf1be0788b269c3e5c5bd3ed",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "frt_wat_integral_eq_setIntegral_mul",
+    "diff_sha256": "5e2c91965340f29c1756cd35e6a3aebb383fc9240ece392ae1eaf99873044714",
+    "source_sha256": "1ea2f3536e74cbf784f3b2ca0efd779a3834b8c841c2be1116913205f41c1118",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_wat_integral_eq_setIntegral_mul",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M K : Set (Euclidean N)) (θ h : Euclidean N → ℝ), NullMeasurableSet M μHE[n] → (∀ y ∈ M, 0 < θ y) → MeasurableSet K → IntegrableOn θ (M ∩ K) μHE[n] → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ y in B ∩ M, ENNReal.ofReal (θ y) ∂μHE[n]) → (∀ z, z ∉ K → h z = 0) → ∫ z, h z ∂μ = ∫ z in M, h z * θ z ∂μHE[n]",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
