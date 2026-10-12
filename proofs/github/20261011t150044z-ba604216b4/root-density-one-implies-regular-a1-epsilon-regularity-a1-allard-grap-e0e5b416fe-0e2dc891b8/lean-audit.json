@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7a314bad57ce960553c637f16d167a5d29975ccefc92bdcc8de75f16610fd8cf",
+  "git_delta": {
+    "base_commit": "1288a6d2b82594072902597fdaca72fdc81a78b8",
+    "candidate_commit": "39d4b8b3a2296bca385b24260895f43ee6d7cb33",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_mv_radial_potential",
+    "diff_sha256": "7015d3f616ae7b9e934f444cd600626c2c204d0a2a2071dd67b73138f3cbadd3",
+    "source_sha256": "7c3bd88fa5187ab9c5aaa917f475222479d75011a9072a180eae25b05f0ed809",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_mv_radial_potential",
+      "statement": "∀ (n : ℕ) (r : ℝ) (g : ℝ → ℝ), 0 < r → Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∃ Ψ : Euclid n → ℝ, ContDiff ℝ 1 Ψ ∧ HasCompactSupport Ψ ∧ tsupport Ψ ⊆ closedBall 0 r ∧ ∀ y v : Euclid n, fderiv ℝ Ψ y v = g (‖y‖ ^ 2) * inner ℝ y v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
