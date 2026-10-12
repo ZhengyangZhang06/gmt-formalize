@@ -1,0 +1,486 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T141839Z-af4f31741f",
+  "parent_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch08/20261011t141839z-af4f31741f/dispatch/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1",
+  "source_commit": "63436ae63eb6a2fd7525bef73c73cf88e2cd7e93",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch08/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.density_borel_representative-a1",
+      "key": "density_borel_representative",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-density-bor-0d8fbe7f96-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-density-bor-0d8fbe7f96",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); sha256sum GMT/Ch08/{Contract,Submission}.lean (2e5cd5b3…, identical)",
+              "rg -n 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "grep -rn 'theorem restrict_iUnion_apply_eq_iSup|setLIntegral_iUnion_of_directed|lintegral_restrict_iUnion_of_directed' mathlib/Mathlib/MeasureTheory",
+              "grep -rn 'CompactExhaustion|exists_open_between_and_isCompact_closure|exists_compact_between|IsSigmaCompact' mathlib/Mathlib/Topology (no open-subset exhaustion lemma)",
+              "rg -n 'measurable_measure_prodMk_left|Measurable.liminf|withDensity_rnDeriv_eq|withDensity_congr_ae|withDensity_apply|volume_euclideanSpace_eq_dirac|notMem_iff_infDist_pos|exists_nat_one_div_lt|ae_restrict_mem₀|measure_eq_zero_iff_ae_notMem|le_toOuterMeasure_caratheodory|Tendsto.liminf_eq|Tendsto.limsup_eq|Directed.measure_iUnion|measure_le_inter_add_sdiff|interior_closedBall|continuous_infDist_pt|infDist_zero_of_mem|tendsto_one_div_add_atTop_nhds_zero_nat|isFiniteMeasure_restrict|measure_ball_lt_top|measure_ball_pos' mathlib/Mathlib",
+              "grep -rn 'protected theorem Tendsto.mul|protected theorem Tendsto.div|theorem inv_mul_cancel|theorem mul_inv|top_div_of_ne_top' mathlib ENNReal files",
+              "grep -rn 'theorem mul_simonHausdorff_le_of_le_dimensionalUpperDensity|theorem volume_euclidean_ball_eq|realUnitBallVolume_zero|theorem simonHausdorffMeasureReal_toOuterMeasure|theorem simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|def dimensionalUpperDensity|def dimensionalDensityQuotient|def realUnitBallVolume' simongmt/Poincare/SimonGMT (rev 2b3663083f3fe399b6296fb8eaee52169170e197)",
+              "grep -n 'weight_finite_on_compact|weight.instSigmaFinite|isOpen_domain' simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "grep -rln 'exhaust' simongmt/Poincare/SimonGMT (no reusable open-set exhaustion lemma)",
+              "python3 dag.json: frozen lean_statement of the four sibling nodes; lean_name collision check for frt_weq_* in dag.json, run directory, .swarm-worktrees and .recursive-lean-dispatch-worktrees (0 hits)",
+              "gmt-compare.py contract_scope/child_modules replay + lean_contract.validate_lean_statement on the 5 child statements",
+              "lake env lean Scratch/Children.lean, Scratch/NC_<key>.lean (5 NodeChallenge files), Scratch/FullNames.lean (pp.fullNames)",
+              "lake env lean Scratch/Combined.lean (5 child proofs + sorry-free parent assembly; #print axioms)",
+              "sed book/chapter-08.txt lines 1-240 (printed proof of 1.2) and book/chapter-03.txt lines 280-420 (Ch. 3, 1.7-1.9)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OuterMeasure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 with Mathlib 25730c7c. Contract.lean and Submission.lean are byte-identical.\n\nMathlib supplies all of the following, so none of them needs a separate node:\n- Besicovitch.ae_tendsto_rnDeriv and ae_tendsto_measure_inter_div (Besicovitch.lean:1078 and :1105).\n- withDensity_rnDeriv_eq (RadonNikodym.lean:60) and withDensity_congr_ae / withDensity_apply (WithDensity.lean:88 and :44).\n- measurable_measure_prodMk_left (Prod.lean:97) and Measurable.liminf (BorelSpace/Order.lean:1058).\n- setLIntegral_iUnion_of_directed (Lebesgue/Basic.lean:668), which needs no measurability, and Directed.measure_iUnion (Continuity.lean:36).\n- volume_euclideanSpace_eq_dirac (Haar/InnerProductSpace.lean:142) and IsClosed.notMem_iff_infDist_pos (HausdorffDistance.lean:584).\n- ENNReal.Tendsto.mul and ENNReal.Tendsto.div (ENNReal/Lemmas.lean:337 and :471).\n\nMathlib has CompactExhaustion only for whole spaces. Neither Mathlib nor SimonGMT has a ready exhaustion of an open subset with K_p ⊆ interior K_{p+1}, so child 1 is a genuine obligation.\n\nSimonGMT supplies:\n- Chapter01.mul_simonHausdorff_le_of_le_dimensionalUpperDensity (DensityComparison.lean:251), valid for every real dimension n ≥ 0.\n- simonHausdorffMeasureReal_toOuterMeasure (Hausdorff.lean:445) and realUnitBallVolume_zero (Hausdorff.lean:510).\n- volume_euclidean_ball_eq (EuclideanHausdorffUpper.lean:71, n > 0).\n- Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure (AreaLiteral.lean:42, every n ∈ ℕ).\n- Varifold.weight_finite_on_compact and weight.instSigmaFinite (Varifold.lean:576 and :615).\nWith these, the upper-density child holds uniformly for every n ≥ 0.\n\nAll five child lean_statements elaborate in the comparator's NodeChallenge scope and pass validate_lean_statement. Complete scratch proofs of all five use only propext, Classical.choice and Quot.sound. The parent proof checks against its exact frozen type, with sorryAx coming only from the four sibling stubs, whose types are byte-identical to dag.json. The frt_weq_* names collide with nothing."
+          }
+        ],
+        "parent_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1",
+        "child_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.density_borel_representative-a1",
+        "subproblem": {
+          "key": "density_borel_representative",
+          "title": "Borel representative of the n-density of an s-finite measure",
+          "statement": "Let N, n ∈ ℕ and let μ be an s-finite Borel measure on ℝ^N (for instance a σ-finite one such as μ_V). Then there is a Borel measurable g : ℝ^N → [0, ∞] such that g(x) = t for every x ∈ ℝ^N and t ∈ [0, ∞] with HasDensity n μ x t, i.e. with μ(B_ρ(x))/(ω_n ρ^n) → t as ρ ↓ 0 (closed balls B_ρ(x), ω_n = unitBallVolume n).",
+          "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) [SFinite μ], ∃ g : Euclidean N → ℝ≥0∞, Measurable g ∧ ∀ (x : Euclidean N) (t : ℝ≥0∞), HasDensity n μ x t → g x = t",
+          "lean_name": "frt_weq_density_borel_representative",
+          "depends_on": [],
+          "natural_proof": "Source: Step 1 (Borel representative of θ) of the parent proof.\n\nNotation: B_r(x) := closedBall x r, and densityRatio n μ x r = μ(B_r(x)) / (ω_n · ofReal(r)^n), where ω_n := unitBallVolume n does not depend on x.\n\n1. Ball masses are Borel functions of the centre. Fix r ∈ ℝ. The set S_r := {(x, y) ∈ ℝ^N × ℝ^N : dist(y, x) ≤ r} is closed, as the preimage of (−∞, r] under the continuous map (x, y) ↦ dist(y, x). Since ℝ^N is second countable, the product σ-algebra of ℝ^N × ℝ^N is its Borel σ-algebra, so S_r is measurable. Its section at x is {y : dist(y, x) ≤ r} = B_r(x). Because μ is s-finite, Mathlib's measurable_measure_prodMk_left (MeasureTheory/Measure/Prod.lean:97) shows that x ↦ μ({y : (x, y) ∈ S_r}) = μ(B_r(x)) is measurable.\n2. Consequently, for every r ∈ ℝ, x ↦ densityRatio n μ x r = μ(B_r(x)) / (ω_n · ofReal(r)^n) is measurable: it is a measurable [0, ∞]-valued function divided by a constant (Measurable.div_const).\n3. Define g(x) := liminf_{k → ∞} densityRatio n μ x (1/(k + 1)), with k ∈ ℕ and the liminf taken along atTop. As a liminf along ℕ of measurable [0, ∞]-valued functions, g is measurable (Measurable.liminf, MeasureTheory/Constructions/BorelSpace/Order.lean:1058).\n4. Let x ∈ ℝ^N and t ∈ [0, ∞] with HasDensity n μ x t, i.e. densityRatio n μ x ρ → t as ρ → 0 within (0, ∞) (the filter 𝓝[>] 0). The numbers ρ_k := 1/(k + 1) are positive and tend to 0 (tendsto_one_div_add_atTop_nhds_zero_nat), hence ρ_k → 0 within (0, ∞) (tendsto_nhdsWithin_iff). Composing the two limits, densityRatio n μ x (1/(k + 1)) → t as k → ∞. Since atTop on ℕ is a nontrivial filter, the liminf equals t (Filter.Tendsto.liminf_eq). Thus g(x) = t.\n5. Hence g is Borel measurable and g(x) = t whenever HasDensity n μ x t. ∎",
+          "proof_key_steps": [
+            "x ↦ μ(B_r(x)) is Borel: measurable_measure_prodMk_left for the s-finite μ and the closed set {(x, y) : dist(y, x) ≤ r}.",
+            "Hence x ↦ densityRatio n μ x r is Borel for each r.",
+            "g(x) := liminf_k densityRatio n μ x (1/(k+1)) is Borel (Measurable.liminf).",
+            "If HasDensity n μ x t, the ratios along ρ_k = 1/(k+1) → 0⁺ tend to t, so g(x) = t."
+          ]
+        },
+        "audit": {
+          "key": "density_borel_representative",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "S-finiteness correctly supplies measurable ball masses. The measurable sequential liminf agrees with every existing density, including an infinite density. All hypotheses and quantifiers match the independently elaborated type; no additional measurability assumption is needed."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-density-bor-0d8fbe7f96/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-density-bor-0d8fbe7f96/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-density-bor-0d8fbe7f96/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.lebesgue_density_subset-a1",
+      "key": "lebesgue_density_subset",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-lebesgue-de-11e35949fb-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-lebesgue-de-11e35949fb",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); sha256sum GMT/Ch08/{Contract,Submission}.lean (2e5cd5b3…, identical)",
+              "rg -n 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "grep -rn 'theorem restrict_iUnion_apply_eq_iSup|setLIntegral_iUnion_of_directed|lintegral_restrict_iUnion_of_directed' mathlib/Mathlib/MeasureTheory",
+              "grep -rn 'CompactExhaustion|exists_open_between_and_isCompact_closure|exists_compact_between|IsSigmaCompact' mathlib/Mathlib/Topology (no open-subset exhaustion lemma)",
+              "rg -n 'measurable_measure_prodMk_left|Measurable.liminf|withDensity_rnDeriv_eq|withDensity_congr_ae|withDensity_apply|volume_euclideanSpace_eq_dirac|notMem_iff_infDist_pos|exists_nat_one_div_lt|ae_restrict_mem₀|measure_eq_zero_iff_ae_notMem|le_toOuterMeasure_caratheodory|Tendsto.liminf_eq|Tendsto.limsup_eq|Directed.measure_iUnion|measure_le_inter_add_sdiff|interior_closedBall|continuous_infDist_pt|infDist_zero_of_mem|tendsto_one_div_add_atTop_nhds_zero_nat|isFiniteMeasure_restrict|measure_ball_lt_top|measure_ball_pos' mathlib/Mathlib",
+              "grep -rn 'protected theorem Tendsto.mul|protected theorem Tendsto.div|theorem inv_mul_cancel|theorem mul_inv|top_div_of_ne_top' mathlib ENNReal files",
+              "grep -rn 'theorem mul_simonHausdorff_le_of_le_dimensionalUpperDensity|theorem volume_euclidean_ball_eq|realUnitBallVolume_zero|theorem simonHausdorffMeasureReal_toOuterMeasure|theorem simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|def dimensionalUpperDensity|def dimensionalDensityQuotient|def realUnitBallVolume' simongmt/Poincare/SimonGMT (rev 2b3663083f3fe399b6296fb8eaee52169170e197)",
+              "grep -n 'weight_finite_on_compact|weight.instSigmaFinite|isOpen_domain' simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "grep -rln 'exhaust' simongmt/Poincare/SimonGMT (no reusable open-set exhaustion lemma)",
+              "python3 dag.json: frozen lean_statement of the four sibling nodes; lean_name collision check for frt_weq_* in dag.json, run directory, .swarm-worktrees and .recursive-lean-dispatch-worktrees (0 hits)",
+              "gmt-compare.py contract_scope/child_modules replay + lean_contract.validate_lean_statement on the 5 child statements",
+              "lake env lean Scratch/Children.lean, Scratch/NC_<key>.lean (5 NodeChallenge files), Scratch/FullNames.lean (pp.fullNames)",
+              "lake env lean Scratch/Combined.lean (5 child proofs + sorry-free parent assembly; #print axioms)",
+              "sed book/chapter-08.txt lines 1-240 (printed proof of 1.2) and book/chapter-03.txt lines 280-420 (Ch. 3, 1.7-1.9)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OuterMeasure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 with Mathlib 25730c7c. Contract.lean and Submission.lean are byte-identical.\n\nMathlib supplies all of the following, so none of them needs a separate node:\n- Besicovitch.ae_tendsto_rnDeriv and ae_tendsto_measure_inter_div (Besicovitch.lean:1078 and :1105).\n- withDensity_rnDeriv_eq (RadonNikodym.lean:60) and withDensity_congr_ae / withDensity_apply (WithDensity.lean:88 and :44).\n- measurable_measure_prodMk_left (Prod.lean:97) and Measurable.liminf (BorelSpace/Order.lean:1058).\n- setLIntegral_iUnion_of_directed (Lebesgue/Basic.lean:668), which needs no measurability, and Directed.measure_iUnion (Continuity.lean:36).\n- volume_euclideanSpace_eq_dirac (Haar/InnerProductSpace.lean:142) and IsClosed.notMem_iff_infDist_pos (HausdorffDistance.lean:584).\n- ENNReal.Tendsto.mul and ENNReal.Tendsto.div (ENNReal/Lemmas.lean:337 and :471).\n\nMathlib has CompactExhaustion only for whole spaces. Neither Mathlib nor SimonGMT has a ready exhaustion of an open subset with K_p ⊆ interior K_{p+1}, so child 1 is a genuine obligation.\n\nSimonGMT supplies:\n- Chapter01.mul_simonHausdorff_le_of_le_dimensionalUpperDensity (DensityComparison.lean:251), valid for every real dimension n ≥ 0.\n- simonHausdorffMeasureReal_toOuterMeasure (Hausdorff.lean:445) and realUnitBallVolume_zero (Hausdorff.lean:510).\n- volume_euclidean_ball_eq (EuclideanHausdorffUpper.lean:71, n > 0).\n- Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure (AreaLiteral.lean:42, every n ∈ ℕ).\n- Varifold.weight_finite_on_compact and weight.instSigmaFinite (Varifold.lean:576 and :615).\nWith these, the upper-density child holds uniformly for every n ≥ 0.\n\nAll five child lean_statements elaborate in the comparator's NodeChallenge scope and pass validate_lean_statement. Complete scratch proofs of all five use only propext, Classical.choice and Quot.sound. The parent proof checks against its exact frozen type, with sorryAx coming only from the four sibling stubs, whose types are byte-identical to dag.json. The frt_weq_* names collide with nothing."
+          }
+        ],
+        "parent_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1",
+        "child_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.lebesgue_density_subset-a1",
+        "subproblem": {
+          "key": "lebesgue_density_subset",
+          "title": "Lebesgue density for an arbitrary subset of an open set of finite measure",
+          "statement": "Let N ∈ ℕ, μ a Borel measure on ℝ^N, W ⊆ ℝ^N open with μ(W) < ∞, and A ⊆ W an arbitrary (not necessarily measurable) set. Let E be the set of x ∈ A such that μ(A ∩ B_r(x))/μ(B_r(x)) does not tend to 1 as r ↓ 0 (closed balls, limit along 𝓝[>] 0 in [0, ∞]). Then μ(E) = 0.",
+          "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (W A : Set (Euclidean N)), IsOpen W → μ W ≠ ∞ → A ⊆ W → μ {x | x ∈ A ∧ ¬ Tendsto (fun r : ℝ => μ (A ∩ closedBall x r) / μ (closedBall x r)) (𝓝[>] 0) (𝓝 1)} = 0",
+          "lean_name": "frt_weq_nondensity_points_null",
+          "depends_on": [],
+          "natural_proof": "Source: the Lebesgue-density statement (β) in Step 8 of the parent proof, here for a general open W of finite μ-measure and an arbitrary A ⊆ W.\n\nNotation: B_r(x) := closedBall x r. All ratio limits are along 𝓝[>] 0 in [0, ∞].\n\n1. ν := μ.restrict W is a finite measure, since ν(ℝ^N) = μ(W) < ∞ (isFiniteMeasure_restrict); in particular it is locally finite. ℝ^N is a finite-dimensional real normed space, hence a second-countable proper metric space with the Besicovitch covering property, carrying its Borel σ-algebra.\n2. Apply Mathlib Besicovitch.ae_tendsto_measure_inter_div (Covering/Besicovitch.lean:1105) to ν and the set A: for (ν.restrict A)-a.e. x, ν(A ∩ B_r(x))/ν(B_r(x)) → 1. Let S be the set of x at which this convergence fails; then (ν.restrict A)(S) = 0 (ae_iff). Let T := toMeasurable (ν.restrict A) S. Then T is measurable, S ⊆ T, and (ν.restrict A)(T) = (ν.restrict A)(S) = 0 (measure_toMeasurable).\n3. Since T is measurable, (ν.restrict A)(T) = ν(T ∩ A) (Measure.restrict_apply). Since W is open, hence measurable, ν(T ∩ A) = μ((T ∩ A) ∩ W) (Measure.restrict_apply'). Therefore μ(T ∩ A ∩ W) = 0. No measurability of A is used.\n4. Claim: E ⊆ T ∩ A ∩ W. Let x ∈ E; then x ∈ A ⊆ W. Suppose x ∉ T. Then x ∉ S, i.e. ν(A ∩ B_r(x))/ν(B_r(x)) → 1. As W is open, there is δ > 0 with B_δ(x) ⊆ W. For 0 < r < δ we have B_r(x) ⊆ W, hence (Measure.restrict_apply' again):\n- ν(B_r(x)) = μ(B_r(x) ∩ W) = μ(B_r(x));\n- ν(A ∩ B_r(x)) = μ(A ∩ B_r(x) ∩ W) = μ(A ∩ B_r(x)).\nSo μ(A ∩ B_r(x))/μ(B_r(x)) coincides with the ν-ratio for all r ∈ (0, δ), a set belonging to 𝓝[>] 0, and therefore also tends to 1 (Tendsto.congr'). This contradicts x ∈ E. Hence x ∈ T, and so x ∈ T ∩ A ∩ W.\n5. By monotonicity, μ(E) ≤ μ(T ∩ A ∩ W) = 0. ∎",
+          "proof_key_steps": [
+            "ν := μ⌞W is finite; Besicovitch.ae_tendsto_measure_inter_div gives ν(A ∩ B_r(x))/ν(B_r(x)) → 1 for (ν⌞A)-a.e. x.",
+            "A measurable hull T of the failure set satisfies μ(T ∩ A ∩ W) = (ν⌞A)(T) = 0.",
+            "For x ∈ A ∖ T small balls lie in W, so the μ- and ν-ratios agree near 0⁺; hence E ⊆ T ∩ A ∩ W.",
+            "μ(E) = 0 by monotonicity."
+          ]
+        },
+        "audit": {
+          "key": "lebesgue_density_subset",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The pinned Besicovitch theorem explicitly permits arbitrary A. The measurable hull correctly converts the restricted almost-everywhere statement into a μ-null exceptional set, and localization inside W identifies the ratios. No measurability of A is silently assumed."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-lebesgue-de-11e35949fb/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-lebesgue-de-11e35949fb/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-lebesgue-de-11e35949fb/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.open_compact_exhaustion-a1",
+      "key": "open_compact_exhaustion",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-open-compac-72fc5ce955-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-open-compac-72fc5ce955",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); sha256sum GMT/Ch08/{Contract,Submission}.lean (2e5cd5b3…, identical)",
+              "rg -n 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "grep -rn 'theorem restrict_iUnion_apply_eq_iSup|setLIntegral_iUnion_of_directed|lintegral_restrict_iUnion_of_directed' mathlib/Mathlib/MeasureTheory",
+              "grep -rn 'CompactExhaustion|exists_open_between_and_isCompact_closure|exists_compact_between|IsSigmaCompact' mathlib/Mathlib/Topology (no open-subset exhaustion lemma)",
+              "rg -n 'measurable_measure_prodMk_left|Measurable.liminf|withDensity_rnDeriv_eq|withDensity_congr_ae|withDensity_apply|volume_euclideanSpace_eq_dirac|notMem_iff_infDist_pos|exists_nat_one_div_lt|ae_restrict_mem₀|measure_eq_zero_iff_ae_notMem|le_toOuterMeasure_caratheodory|Tendsto.liminf_eq|Tendsto.limsup_eq|Directed.measure_iUnion|measure_le_inter_add_sdiff|interior_closedBall|continuous_infDist_pt|infDist_zero_of_mem|tendsto_one_div_add_atTop_nhds_zero_nat|isFiniteMeasure_restrict|measure_ball_lt_top|measure_ball_pos' mathlib/Mathlib",
+              "grep -rn 'protected theorem Tendsto.mul|protected theorem Tendsto.div|theorem inv_mul_cancel|theorem mul_inv|top_div_of_ne_top' mathlib ENNReal files",
+              "grep -rn 'theorem mul_simonHausdorff_le_of_le_dimensionalUpperDensity|theorem volume_euclidean_ball_eq|realUnitBallVolume_zero|theorem simonHausdorffMeasureReal_toOuterMeasure|theorem simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|def dimensionalUpperDensity|def dimensionalDensityQuotient|def realUnitBallVolume' simongmt/Poincare/SimonGMT (rev 2b3663083f3fe399b6296fb8eaee52169170e197)",
+              "grep -n 'weight_finite_on_compact|weight.instSigmaFinite|isOpen_domain' simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "grep -rln 'exhaust' simongmt/Poincare/SimonGMT (no reusable open-set exhaustion lemma)",
+              "python3 dag.json: frozen lean_statement of the four sibling nodes; lean_name collision check for frt_weq_* in dag.json, run directory, .swarm-worktrees and .recursive-lean-dispatch-worktrees (0 hits)",
+              "gmt-compare.py contract_scope/child_modules replay + lean_contract.validate_lean_statement on the 5 child statements",
+              "lake env lean Scratch/Children.lean, Scratch/NC_<key>.lean (5 NodeChallenge files), Scratch/FullNames.lean (pp.fullNames)",
+              "lake env lean Scratch/Combined.lean (5 child proofs + sorry-free parent assembly; #print axioms)",
+              "sed book/chapter-08.txt lines 1-240 (printed proof of 1.2) and book/chapter-03.txt lines 280-420 (Ch. 3, 1.7-1.9)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OuterMeasure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 with Mathlib 25730c7c. Contract.lean and Submission.lean are byte-identical.\n\nMathlib supplies all of the following, so none of them needs a separate node:\n- Besicovitch.ae_tendsto_rnDeriv and ae_tendsto_measure_inter_div (Besicovitch.lean:1078 and :1105).\n- withDensity_rnDeriv_eq (RadonNikodym.lean:60) and withDensity_congr_ae / withDensity_apply (WithDensity.lean:88 and :44).\n- measurable_measure_prodMk_left (Prod.lean:97) and Measurable.liminf (BorelSpace/Order.lean:1058).\n- setLIntegral_iUnion_of_directed (Lebesgue/Basic.lean:668), which needs no measurability, and Directed.measure_iUnion (Continuity.lean:36).\n- volume_euclideanSpace_eq_dirac (Haar/InnerProductSpace.lean:142) and IsClosed.notMem_iff_infDist_pos (HausdorffDistance.lean:584).\n- ENNReal.Tendsto.mul and ENNReal.Tendsto.div (ENNReal/Lemmas.lean:337 and :471).\n\nMathlib has CompactExhaustion only for whole spaces. Neither Mathlib nor SimonGMT has a ready exhaustion of an open subset with K_p ⊆ interior K_{p+1}, so child 1 is a genuine obligation.\n\nSimonGMT supplies:\n- Chapter01.mul_simonHausdorff_le_of_le_dimensionalUpperDensity (DensityComparison.lean:251), valid for every real dimension n ≥ 0.\n- simonHausdorffMeasureReal_toOuterMeasure (Hausdorff.lean:445) and realUnitBallVolume_zero (Hausdorff.lean:510).\n- volume_euclidean_ball_eq (EuclideanHausdorffUpper.lean:71, n > 0).\n- Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure (AreaLiteral.lean:42, every n ∈ ℕ).\n- Varifold.weight_finite_on_compact and weight.instSigmaFinite (Varifold.lean:576 and :615).\nWith these, the upper-density child holds uniformly for every n ≥ 0.\n\nAll five child lean_statements elaborate in the comparator's NodeChallenge scope and pass validate_lean_statement. Complete scratch proofs of all five use only propext, Classical.choice and Quot.sound. The parent proof checks against its exact frozen type, with sorryAx coming only from the four sibling stubs, whose types are byte-identical to dag.json. The frt_weq_* names collide with nothing."
+          }
+        ],
+        "parent_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1",
+        "child_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.open_compact_exhaustion-a1",
+        "subproblem": {
+          "key": "open_compact_exhaustion",
+          "title": "Compact exhaustion K_p ⊆ interior K_{p+1} of an open set U ⊆ ℝ^N",
+          "statement": "Let N ∈ ℕ and let U ⊆ ℝ^N (= Euclidean N) be open. Then there are sets K_p ⊆ ℝ^N, p ∈ ℕ, such that every K_p is compact, K_p ⊆ U, K_p ⊆ interior K_{p+1}, the sequence is increasing (K_p ⊆ K_q whenever p ≤ q), and ⋃_p K_p = U.",
+          "lean_statement": "∀ (N : ℕ) (U : Set (Euclidean N)), IsOpen U → ∃ K : ℕ → Set (Euclidean N), (∀ p, IsCompact (K p)) ∧ (∀ p, K p ⊆ U) ∧ (∀ p, K p ⊆ interior (K (p + 1))) ∧ Monotone K ∧ ⋃ p, K p = U",
+          "lean_name": "frt_weq_open_compact_exhaustion",
+          "depends_on": [],
+          "natural_proof": "Source: the preamble of the parent proof, i.e. the compact exhaustion K_p of U used with W := interior K_{p+1}. It is re-indexed to start at p = 0, with radius p + 1 and margin 1/(p + 1).\n\nNotation: |x| is the Euclidean norm. For a nonempty F ⊆ ℝ^N, d(x, F) := infDist x F = inf_{y ∈ F} |x − y|.\n\nFacts used:\n- x ↦ d(x, F) is continuous (Mathlib continuous_infDist_pt).\n- d(x, F) = 0 for x ∈ F (infDist_zero_of_mem).\n- If F is closed and nonempty, then x ∉ F iff d(x, F) > 0 (IsClosed.notMem_iff_infDist_pos).\n- Closed balls of ℝ^N are compact (proper space, isCompact_closedBall), and a closed subset of a compact set is compact (IsCompact.of_isClosed_subset).\n- For r > 0, interior (closedBall 0 r) = ball 0 r (interior_closedBall).\n\n1. Case U = ℝ^N. Put K_p := closedBall(0, p + 1). Each K_p is compact and K_p ⊆ U. If |x| ≤ p + 1 then |x| < p + 2, so K_p ⊆ ball(0, p + 2) = interior closedBall(0, p + 2) = interior K_{p+1}. For p ≤ q the radii satisfy p + 1 ≤ q + 1, so K_p ⊆ K_q. Every x ∈ ℝ^N lies in K_q for any q ∈ ℕ with q ≥ |x| (Archimedean property), so ⋃_p K_p = ℝ^N = U.\n\n2. Case U ≠ ℝ^N. Then F := ℝ^N ∖ U is nonempty, and it is closed because U is open. Put K_p := {x : |x| ≤ p + 1 and d(x, F) ≥ 1/(p + 1)}.\n (a) K_p is closed: it is the intersection of the preimages of the closed sets (−∞, p + 1] and [1/(p + 1), ∞) under the continuous maps x ↦ |x| and x ↦ d(x, F). Since K_p ⊆ closedBall(0, p + 1), which is compact, K_p is compact.\n (b) K_p ⊆ U: if x ∉ U then x ∈ F, so d(x, F) = 0 < 1/(p + 1) and x ∉ K_p.\n (c) K_p ⊆ interior K_{p+1}: the set O_p := {x : |x| < p + 2 and d(x, F) > 1/(p + 2)} is open, as a preimage of open sets under continuous maps. Also O_p ⊆ K_{p+1}, since strict inequalities imply the non-strict ones. Hence O_p ⊆ interior K_{p+1} (interior_maximal). If x ∈ K_p, then |x| ≤ p + 1 < p + 2 and d(x, F) ≥ 1/(p + 1) > 1/(p + 2), so x ∈ O_p.\n (d) Monotonicity: by (c), K_p ⊆ interior K_{p+1} ⊆ K_{p+1} for every p. By induction on q, K_p ⊆ K_q whenever p ≤ q (monotone_nat_of_le_succ).\n (e) ⋃_p K_p = U. The inclusion ⊆ is (b). Conversely, let x ∈ U. Then x ∉ F, and F is closed and nonempty, so δ := d(x, F) > 0. Choose p ∈ ℕ with 1/(p + 1) < δ (exists_nat_one_div_lt) and q ∈ ℕ with |x| ≤ q (exists_nat_ge), and put m := max(p, q). Then |x| ≤ q ≤ m ≤ m + 1 and 1/(m + 1) ≤ 1/(p + 1) < δ = d(x, F), so x ∈ K_m.\n\n3. In both cases every K_p is compact and contained in U, K_p ⊆ interior K_{p+1}, the sequence is increasing, and its union is U. ∎",
+          "proof_key_steps": [
+            "If U = ℝ^N, take K_p = closedBall(0, p+1); then K_p ⊆ ball(0, p+2) = interior K_{p+1}.",
+            "Otherwise F = ℝ^N ∖ U is closed and nonempty; K_p = {|x| ≤ p+1, d(x, F) ≥ 1/(p+1)} is closed and bounded, hence compact, and misses F.",
+            "The open set {|x| < p+2, d(x, F) > 1/(p+2)} lies between K_p and K_{p+1}, so K_p ⊆ interior K_{p+1}; monotonicity follows by induction.",
+            "Each x ∈ U has d(x, F) > 0, so x ∈ K_m for all large m; hence ⋃_p K_p = U."
+          ]
+        },
+        "audit": {
+          "key": "open_compact_exhaustion",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and exact Lean proposition agree. The explicit constructions establish compactness, containment, interior nesting, monotonicity and exhaustion, including the whole-space and zero-dimensional cases. The proof is complete and independent of the parent."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-open-compac-72fc5ce955/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-open-compac-72fc5ce955/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-open-compac-72fc5ce955/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.upper_density_hausdorff_bound-a1",
+      "key": "upper_density_hausdorff_bound",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-upper-densi-b60678a49f-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-upper-densi-b60678a49f",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); sha256sum GMT/Ch08/{Contract,Submission}.lean (2e5cd5b3…, identical)",
+              "rg -n 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "grep -rn 'theorem restrict_iUnion_apply_eq_iSup|setLIntegral_iUnion_of_directed|lintegral_restrict_iUnion_of_directed' mathlib/Mathlib/MeasureTheory",
+              "grep -rn 'CompactExhaustion|exists_open_between_and_isCompact_closure|exists_compact_between|IsSigmaCompact' mathlib/Mathlib/Topology (no open-subset exhaustion lemma)",
+              "rg -n 'measurable_measure_prodMk_left|Measurable.liminf|withDensity_rnDeriv_eq|withDensity_congr_ae|withDensity_apply|volume_euclideanSpace_eq_dirac|notMem_iff_infDist_pos|exists_nat_one_div_lt|ae_restrict_mem₀|measure_eq_zero_iff_ae_notMem|le_toOuterMeasure_caratheodory|Tendsto.liminf_eq|Tendsto.limsup_eq|Directed.measure_iUnion|measure_le_inter_add_sdiff|interior_closedBall|continuous_infDist_pt|infDist_zero_of_mem|tendsto_one_div_add_atTop_nhds_zero_nat|isFiniteMeasure_restrict|measure_ball_lt_top|measure_ball_pos' mathlib/Mathlib",
+              "grep -rn 'protected theorem Tendsto.mul|protected theorem Tendsto.div|theorem inv_mul_cancel|theorem mul_inv|top_div_of_ne_top' mathlib ENNReal files",
+              "grep -rn 'theorem mul_simonHausdorff_le_of_le_dimensionalUpperDensity|theorem volume_euclidean_ball_eq|realUnitBallVolume_zero|theorem simonHausdorffMeasureReal_toOuterMeasure|theorem simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|def dimensionalUpperDensity|def dimensionalDensityQuotient|def realUnitBallVolume' simongmt/Poincare/SimonGMT (rev 2b3663083f3fe399b6296fb8eaee52169170e197)",
+              "grep -n 'weight_finite_on_compact|weight.instSigmaFinite|isOpen_domain' simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "grep -rln 'exhaust' simongmt/Poincare/SimonGMT (no reusable open-set exhaustion lemma)",
+              "python3 dag.json: frozen lean_statement of the four sibling nodes; lean_name collision check for frt_weq_* in dag.json, run directory, .swarm-worktrees and .recursive-lean-dispatch-worktrees (0 hits)",
+              "gmt-compare.py contract_scope/child_modules replay + lean_contract.validate_lean_statement on the 5 child statements",
+              "lake env lean Scratch/Children.lean, Scratch/NC_<key>.lean (5 NodeChallenge files), Scratch/FullNames.lean (pp.fullNames)",
+              "lake env lean Scratch/Combined.lean (5 child proofs + sorry-free parent assembly; #print axioms)",
+              "sed book/chapter-08.txt lines 1-240 (printed proof of 1.2) and book/chapter-03.txt lines 280-420 (Ch. 3, 1.7-1.9)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OuterMeasure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 with Mathlib 25730c7c. Contract.lean and Submission.lean are byte-identical.\n\nMathlib supplies all of the following, so none of them needs a separate node:\n- Besicovitch.ae_tendsto_rnDeriv and ae_tendsto_measure_inter_div (Besicovitch.lean:1078 and :1105).\n- withDensity_rnDeriv_eq (RadonNikodym.lean:60) and withDensity_congr_ae / withDensity_apply (WithDensity.lean:88 and :44).\n- measurable_measure_prodMk_left (Prod.lean:97) and Measurable.liminf (BorelSpace/Order.lean:1058).\n- setLIntegral_iUnion_of_directed (Lebesgue/Basic.lean:668), which needs no measurability, and Directed.measure_iUnion (Continuity.lean:36).\n- volume_euclideanSpace_eq_dirac (Haar/InnerProductSpace.lean:142) and IsClosed.notMem_iff_infDist_pos (HausdorffDistance.lean:584).\n- ENNReal.Tendsto.mul and ENNReal.Tendsto.div (ENNReal/Lemmas.lean:337 and :471).\n\nMathlib has CompactExhaustion only for whole spaces. Neither Mathlib nor SimonGMT has a ready exhaustion of an open subset with K_p ⊆ interior K_{p+1}, so child 1 is a genuine obligation.\n\nSimonGMT supplies:\n- Chapter01.mul_simonHausdorff_le_of_le_dimensionalUpperDensity (DensityComparison.lean:251), valid for every real dimension n ≥ 0.\n- simonHausdorffMeasureReal_toOuterMeasure (Hausdorff.lean:445) and realUnitBallVolume_zero (Hausdorff.lean:510).\n- volume_euclidean_ball_eq (EuclideanHausdorffUpper.lean:71, n > 0).\n- Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure (AreaLiteral.lean:42, every n ∈ ℕ).\n- Varifold.weight_finite_on_compact and weight.instSigmaFinite (Varifold.lean:576 and :615).\nWith these, the upper-density child holds uniformly for every n ≥ 0.\n\nAll five child lean_statements elaborate in the comparator's NodeChallenge scope and pass validate_lean_statement. Complete scratch proofs of all five use only propext, Classical.choice and Quot.sound. The parent proof checks against its exact frozen type, with sorryAx coming only from the four sibling stubs, whose types are byte-identical to dag.json. The frt_weq_* names collide with nothing."
+          }
+        ],
+        "parent_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1",
+        "child_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.upper_density_hausdorff_bound-a1",
+        "subproblem": {
+          "key": "upper_density_hausdorff_bound",
+          "title": "Upper-density estimate t·H^n(A) ≤ μ(W) (Simon Ch. 1, 3.3), every n ≥ 0",
+          "statement": "Let N, n ∈ ℕ, let μ be a Borel measure on ℝ^N, W ⊆ ℝ^N open, A ⊆ W an arbitrary set and t ∈ [0, ∞]. Suppose that for every x ∈ A, t ≤ limsup_{ρ↓0} μ(B_ρ(x))/(ω_n ρ^n), the limsup of densityRatio n μ x along 𝓝[>] 0. Then t · H^n(A) ≤ μ(W), where H^n = μHE[n].",
+          "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (W A : Set (Euclidean N)) (t : ℝ≥0∞), IsOpen W → A ⊆ W → (∀ x ∈ A, t ≤ limsup (densityRatio n μ x) (𝓝[>] 0)) → t * μHE[n] A ≤ μ W",
+          "lean_name": "frt_weq_mul_hausdorff_le_of_upper_density",
+          "depends_on": [],
+          "natural_proof": "Source: Step 4 of the parent proof, i.e. its n ≥ 1 argument through SimonGMT's version of Simon Ch. 1, Theorem 3.3. That argument also works for n = 0 once the two normalizations are compared (step 1 below), so the parent's separate atom argument for n = 0 is not needed.\n\nNotation: ω_n := unitBallVolume n = volume(ball(0, 1) ⊆ ℝ^n) and B_r(x) := closedBall x r. Following SimonGMT Chapter01 (Densities.lean:39–46), for an outer measure η on ℝ^N, a real s ≥ 0 and S ⊆ ℝ^N:\n- dimensionalDensityQuotient η s S x r := η(S ∩ B_r(x)) / (realUnitBallVolume s · ofReal(r)^s);\n- dimensionalUpperDensity η s S x := limsup_{r → 0⁺} dimensionalDensityQuotient η s S x r;\n- realUnitBallVolume s := ofReal(π^{s/2} / Γ(s/2 + 1)).\n\n1. Normalizations: realUnitBallVolume (n : ℝ) = ω_n.\n- If n ≥ 1, SimonGMT Chapter01.volume_euclidean_ball_eq (EuclideanHausdorffUpper.lean:71) with centre 0 and radius 1 gives volume(ball(0, 1)) = realUnitBallVolume n · ofReal(1)^n = realUnitBallVolume n.\n- If n = 0, volume on EuclideanSpace ℝ (Fin 0) is the Dirac mass at 0 (Mathlib volume_euclideanSpace_eq_dirac, Haar/InnerProductSpace.lean:142). So ω_0 = 1, because 0 ∈ ball(0, 1). Also realUnitBallVolume 0 = 1 (SimonGMT Chapter01.realUnitBallVolume_zero, Hausdorff.lean:510).\n- Moreover ofReal(r)^(n : ℝ) = ofReal(r)^n (ENNReal.rpow_natCast).\n2. Localisation. Fix x ∈ A. Since W is open and x ∈ W, there is δ > 0 with B_δ(x) ⊆ W. For 0 < r < δ we have B_r(x) ⊆ W, so W ∩ B_r(x) = B_r(x). By step 1, dimensionalDensityQuotient μ.toOuterMeasure n W x r = μ(B_r(x)) / (ω_n · ofReal(r)^n) = densityRatio n μ x r. These two functions of r agree on (0, δ), a member of 𝓝[>] 0, so they have the same limsup along 𝓝[>] 0 (Filter.limsup_congr). Hence dimensionalUpperDensity μ.toOuterMeasure n W x = limsup_{ρ↓0} densityRatio n μ x ρ ≥ t for every x ∈ A.\n3. Simon's density theorem. Apply SimonGMT Chapter01.mul_simonHausdorff_le_of_le_dimensionalUpperDensity (DensityComparison.lean:251) to the outer measure μ.toOuterMeasure, the real dimension n ≥ 0, A₁ := A, A₂ := W and the threshold t.\n- Its hypothesis borel ℝ^N ≤ μ.toOuterMeasure.caratheodory holds: the σ-algebra of ℝ^N is its Borel σ-algebra (BorelSpace.measurable_eq), and every measurable set is Carathéodory measurable for the outer measure of a measure (Mathlib le_toOuterMeasure_caratheodory, Measure/OuterMeasure.lean:37).\n- Its density hypothesis is step 2.\nThe lemma gives t · simonHausdorffOuterMeasureReal n (A) ≤ μ.toOuterMeasure(W) = μ(W).\n4. Identification with H^n.\n- simonHausdorffOuterMeasureReal n = (simonHausdorffMeasureReal n).toOuterMeasure (SimonGMT Chapter01.simonHausdorffMeasureReal_toOuterMeasure, Hausdorff.lean:445, for n ≥ 0).\n- simonHausdorffMeasureReal (n : ℝ) = μHE[n] on ℝ^N for every n ∈ ℕ, including n = 0 (SimonGMT Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure, AreaLiteral.lean:42).\nHence simonHausdorffOuterMeasureReal n (A) = H^n(A), and therefore t · H^n(A) ≤ μ(W). ∎\n\nImplementation note: Submission.lean must additionally import Poincare.SimonGMT.Chapter01.DensityComparison, Poincare.SimonGMT.Chapter01.EuclideanHausdorffUpper and Poincare.SimonGMT.Chapter02.AreaLiteral.",
+          "proof_key_steps": [
+            "realUnitBallVolume n = ω_n for every n ∈ ℕ (volume_euclidean_ball_eq for n ≥ 1; Dirac volume for n = 0).",
+            "For x ∈ A ⊆ W with W open, Simon's upper density of μ relative to W at x equals limsup densityRatio n μ x ≥ t.",
+            "SimonGMT mul_simonHausdorff_le_of_le_dimensionalUpperDensity gives t · simonHausdorffOuterMeasureReal n (A) ≤ μ(W).",
+            "simonHausdorffOuterMeasureReal n agrees with μHE[n] (simonHausdorffMeasureReal_toOuterMeasure and simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure)."
+          ]
+        },
+        "audit": {
+          "key": "upper_density_hausdorff_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Open-set localization identifies the two upper densities. The pinned comparison theorem allows arbitrary sets and infinite thresholds, and the supplied normalization argument covers n = 0. The Hausdorff-measure identification proves precisely the stated inequality without hidden finiteness assumptions."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-upper-densi-b60678a49f/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-upper-densi-b60678a49f/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-upper-densi-b60678a49f/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.piece_identity-a1",
+      "key": "piece_identity",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-piece-identity-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-piece-identity-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/5a882a57db723346/manifest.json (project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); sha256sum GMT/Ch08/{Contract,Submission}.lean (2e5cd5b3…, identical)",
+              "rg -n 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "grep -rn 'theorem restrict_iUnion_apply_eq_iSup|setLIntegral_iUnion_of_directed|lintegral_restrict_iUnion_of_directed' mathlib/Mathlib/MeasureTheory",
+              "grep -rn 'CompactExhaustion|exists_open_between_and_isCompact_closure|exists_compact_between|IsSigmaCompact' mathlib/Mathlib/Topology (no open-subset exhaustion lemma)",
+              "rg -n 'measurable_measure_prodMk_left|Measurable.liminf|withDensity_rnDeriv_eq|withDensity_congr_ae|withDensity_apply|volume_euclideanSpace_eq_dirac|notMem_iff_infDist_pos|exists_nat_one_div_lt|ae_restrict_mem₀|measure_eq_zero_iff_ae_notMem|le_toOuterMeasure_caratheodory|Tendsto.liminf_eq|Tendsto.limsup_eq|Directed.measure_iUnion|measure_le_inter_add_sdiff|interior_closedBall|continuous_infDist_pt|infDist_zero_of_mem|tendsto_one_div_add_atTop_nhds_zero_nat|isFiniteMeasure_restrict|measure_ball_lt_top|measure_ball_pos' mathlib/Mathlib",
+              "grep -rn 'protected theorem Tendsto.mul|protected theorem Tendsto.div|theorem inv_mul_cancel|theorem mul_inv|top_div_of_ne_top' mathlib ENNReal files",
+              "grep -rn 'theorem mul_simonHausdorff_le_of_le_dimensionalUpperDensity|theorem volume_euclidean_ball_eq|realUnitBallVolume_zero|theorem simonHausdorffMeasureReal_toOuterMeasure|theorem simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|def dimensionalUpperDensity|def dimensionalDensityQuotient|def realUnitBallVolume' simongmt/Poincare/SimonGMT (rev 2b3663083f3fe399b6296fb8eaee52169170e197)",
+              "grep -n 'weight_finite_on_compact|weight.instSigmaFinite|isOpen_domain' simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "grep -rln 'exhaust' simongmt/Poincare/SimonGMT (no reusable open-set exhaustion lemma)",
+              "python3 dag.json: frozen lean_statement of the four sibling nodes; lean_name collision check for frt_weq_* in dag.json, run directory, .swarm-worktrees and .recursive-lean-dispatch-worktrees (0 hits)",
+              "gmt-compare.py contract_scope/child_modules replay + lean_contract.validate_lean_statement on the 5 child statements",
+              "lake env lean Scratch/Children.lean, Scratch/NC_<key>.lean (5 NodeChallenge files), Scratch/FullNames.lean (pp.fullNames)",
+              "lake env lean Scratch/Combined.lean (5 child proofs + sorry-free parent assembly; #print axioms)",
+              "sed book/chapter-08.txt lines 1-240 (printed proof of 1.2) and book/chapter-03.txt lines 280-420 (Ch. 3, 1.7-1.9)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/OuterMeasure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Separation/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt"
+            ],
+            "conclusion": "The snapshot is project 63436ae6 with Mathlib 25730c7c. Contract.lean and Submission.lean are byte-identical.\n\nMathlib supplies all of the following, so none of them needs a separate node:\n- Besicovitch.ae_tendsto_rnDeriv and ae_tendsto_measure_inter_div (Besicovitch.lean:1078 and :1105).\n- withDensity_rnDeriv_eq (RadonNikodym.lean:60) and withDensity_congr_ae / withDensity_apply (WithDensity.lean:88 and :44).\n- measurable_measure_prodMk_left (Prod.lean:97) and Measurable.liminf (BorelSpace/Order.lean:1058).\n- setLIntegral_iUnion_of_directed (Lebesgue/Basic.lean:668), which needs no measurability, and Directed.measure_iUnion (Continuity.lean:36).\n- volume_euclideanSpace_eq_dirac (Haar/InnerProductSpace.lean:142) and IsClosed.notMem_iff_infDist_pos (HausdorffDistance.lean:584).\n- ENNReal.Tendsto.mul and ENNReal.Tendsto.div (ENNReal/Lemmas.lean:337 and :471).\n\nMathlib has CompactExhaustion only for whole spaces. Neither Mathlib nor SimonGMT has a ready exhaustion of an open subset with K_p ⊆ interior K_{p+1}, so child 1 is a genuine obligation.\n\nSimonGMT supplies:\n- Chapter01.mul_simonHausdorff_le_of_le_dimensionalUpperDensity (DensityComparison.lean:251), valid for every real dimension n ≥ 0.\n- simonHausdorffMeasureReal_toOuterMeasure (Hausdorff.lean:445) and realUnitBallVolume_zero (Hausdorff.lean:510).\n- volume_euclidean_ball_eq (EuclideanHausdorffUpper.lean:71, n > 0).\n- Chapter02.simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure (AreaLiteral.lean:42, every n ∈ ℕ).\n- Varifold.weight_finite_on_compact and weight.instSigmaFinite (Varifold.lean:576 and :615).\nWith these, the upper-density child holds uniformly for every n ≥ 0.\n\nAll five child lean_statements elaborate in the comparator's NodeChallenge scope and pass validate_lean_statement. Complete scratch proofs of all five use only propext, Classical.choice and Quot.sound. The parent proof checks against its exact frozen type, with sorryAx coming only from the four sibling stubs, whose types are byte-identical to dag.json. The frt_weq_* names collide with nothing."
+          }
+        ],
+        "parent_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1",
+        "child_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.piece_identity-a1",
+        "subproblem": {
+          "key": "piece_identity",
+          "title": "μ⌞A = θ·H^n⌞A on a piece of finite H^n-measure (Besicovitch differentiation and Radon–Nikodym)",
+          "statement": "Let N, n ∈ ℕ, μ a Borel measure on ℝ^N, W ⊆ ℝ^N open with μ(W) < ∞, A ⊆ W with H^n(A) < ∞ and A H^n-null-measurable (H^n = μHE[n]), and θ : ℝ^N → ℝ. Assume: (i) for every x ∈ A, θ(x) > 0 and HasDensity n μ x (ofReal θ(x)), i.e. μ(B_r(x))/(ω_n r^n) → θ(x) as r ↓ 0; (ii) every Z ⊆ A with H^n(Z) = 0 has μ(Z) = 0; (iii) every Z ⊆ A with μ(Z) = 0 has H^n(Z) = 0; (iv) for (H^n⌞A)-a.e. x, HasDensity n (H^n⌞A) x 1. Then μ(B ∩ A) = ∫_{B ∩ A} θ dH^n (the lintegral of ofReal ∘ θ) for every Borel set B ⊆ ℝ^N.",
+          "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (W A : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsOpen W → μ W ≠ ∞ → A ⊆ W → μHE[n] A ≠ ∞ → NullMeasurableSet A μHE[n] → (∀ x ∈ A, 0 < θ x ∧ HasDensity n μ x (ENNReal.ofReal (θ x))) → (∀ Z ⊆ A, μHE[n] Z = 0 → μ Z = 0) → (∀ Z ⊆ A, μ Z = 0 → μHE[n] Z = 0) → (∀ᵐ x ∂(μHE[n] : Measure (Euclidean N)).restrict A, HasDensity n ((μHE[n] : Measure (Euclidean N)).restrict A) x 1) → ∀ B : Set (Euclidean N), MeasurableSet B → μ (B ∩ A) = ∫⁻ x in B ∩ A, ENNReal.ofReal (θ x) ∂μHE[n]",
+          "lean_name": "frt_weq_piece_restrict_eq_density",
+          "depends_on": [
+            "lebesgue_density_subset"
+          ],
+          "natural_proof": "Source: Steps 6–8 of the parent proof, including its Step 7, for a single piece. In the parent, A = M_p and W = interior K_{p+1}.\n\nNotation: H := μHE[n]; B_r(x) := closedBall x r; ρ := μ⌞A = μ.restrict A; λ := H⌞A = H.restrict A; ω := unitBallVolume n; c(r) := ω · ofReal(r)^n. Then densityRatio n m x r = m(B_r(x))/c(r) for every measure m. All limits in r are along 𝓝[>] 0 in [0, ∞]. Step 4 uses the sibling lemma frt_weq_nondensity_points_null (Lebesgue density of arbitrary subsets of an open set of finite measure).\n\n1. ω ∈ (0, ∞). ω is the volume of the nonempty bounded open ball ball(0, 1) ⊆ ℝ^n. Volume on ℝ^n is an additive Haar measure, so it is positive on nonempty open sets (measure_ball_pos) and finite on balls (measure_ball_lt_top); for n = 0, ω = 1. Hence c(r) ≠ 0 and c(r) ≠ ∞ for every r > 0, in particular for all r in a member of 𝓝[>] 0.\n2. ρ and λ are finite measures: ρ(ℝ^N) = μ(A) ≤ μ(W) < ∞ and λ(ℝ^N) = H(A) < ∞ (isFiniteMeasure_restrict). In particular both are locally finite and σ-finite.\n3. ρ ≪ λ. By Measure.AbsolutelyContinuous.mk it suffices to treat measurable s with λ(s) = 0. Then H(s ∩ A) = λ(s) = 0 (Measure.restrict_apply), and s ∩ A ⊆ A, so μ(s ∩ A) = 0 by (ii), i.e. ρ(s) = 0.\n4. Lebesgue density points (β). Let E := {x ∈ A : μ(A ∩ B_r(x))/μ(B_r(x)) does not tend to 1}. By frt_weq_nondensity_points_null applied to μ, W and A (W open, μ(W) < ∞, A ⊆ W), μ(E) = 0. As E ⊆ A, (iii) gives H(E) = 0. Restriction does not increase measures, so λ(E) ≤ H(E) = 0. Hence x ∉ E for λ-a.e. x (measure_eq_zero_iff_ae_notMem).\n5. Since A is H-null-measurable, λ-a.e. x lies in A (ae_restrict_mem₀).\n6. The ratio limit. By 4, 5 and (iv), for λ-a.e. x all of the following hold:\n- x ∈ A ∖ E;\n- (α) λ(B_r(x))/c(r) → 1;\n- (β) μ(A ∩ B_r(x))/μ(B_r(x)) → 1, because x ∈ A ∖ E;\n- (γ) μ(B_r(x))/c(r) → L := ofReal θ(x), by (i), where L ≠ 0 (as θ(x) > 0) and L ≠ ∞.\nFix such an x and write a(r) := μ(A ∩ B_r(x)), b(r) := μ(B_r(x)), d(r) := λ(B_r(x)).\n (a) Eventually c(r) ∉ {0, ∞} (step 1). Since b/c → L ∉ {0, ∞} and d/c → 1 ∉ {0, ∞}, eventually b(r)/c(r) ∉ {0, ∞} and d(r)/c(r) ∉ {0, ∞} (Tendsto.eventually_ne). If b(r) = 0 then b(r)/c(r) = 0, and if b(r) = ∞ then b(r)/c(r) = ∞ because c(r) ≠ ∞. So eventually b(r) ∉ {0, ∞}, and in the same way d(r) ∉ {0, ∞}.\n (b) For every such r, in [0, ∞]: (a/b)·(b/c)/(d/c) = a·b⁻¹·(b·c⁻¹)·(d·c⁻¹)⁻¹ = a·b⁻¹·b·c⁻¹·d⁻¹·c = a·d⁻¹ = a/d. This uses (d·c⁻¹)⁻¹ = d⁻¹·c (ENNReal.mul_inv, valid as d ∉ {0, ∞}, and inv_inv), and b⁻¹·b = 1, c⁻¹·c = 1 (ENNReal.inv_mul_cancel, valid as b, c ∉ {0, ∞}).\n (c) Multiplication and division in [0, ∞] are continuous at these limits: ENNReal.Tendsto.mul for the limits 1 and L (with L ≠ ∞), and ENNReal.Tendsto.div with denominator limit 1 ∉ {0, ∞}. So (a/b)·(b/c)/(d/c) → 1·L/1 = L. By (b) and Tendsto.congr', a(r)/d(r) → L.\n (d) Since B_r(x) is closed, hence Borel, ρ(B_r(x)) = μ(B_r(x) ∩ A) = a(r) (Measure.restrict_apply). Therefore, for λ-a.e. x, ρ(B_r(x))/λ(B_r(x)) → ofReal θ(x) as r → 0⁺.\n7. Besicovitch differentiation. By Mathlib Besicovitch.ae_tendsto_rnDeriv (Covering/Besicovitch.lean:1078) for the locally finite measures ρ and λ, for λ-a.e. x, ρ(B_r(x))/λ(B_r(x)) → (ρ.rnDeriv λ)(x) as r → 0⁺. Since 𝓝[>] (0 : ℝ) is a nontrivial filter and [0, ∞] is Hausdorff, limits are unique (tendsto_nhds_unique). With step 6 this gives ρ.rnDeriv λ = ofReal ∘ θ λ-a.e.\n8. Radon–Nikodym. As ρ ≪ λ (step 3) and both measures are σ-finite, ρ = λ.withDensity (ρ.rnDeriv λ) (Measure.withDensity_rnDeriv_eq, Decomposition/RadonNikodym.lean:60). withDensity depends only on the λ-a.e. class of the density (withDensity_congr_ae), so ρ = λ.withDensity (ofReal ∘ θ). No measurability of θ is needed.\n9. Evaluation on a Borel set B. ρ(B) = μ(B ∩ A) (Measure.restrict_apply). On the other side, λ.withDensity(ofReal ∘ θ)(B) = ∫_B ofReal θ dλ (withDensity_apply, B measurable) = ∫_{B ∩ A} ofReal θ dH (Measure.restrict_restrict, B measurable). Hence μ(B ∩ A) = ∫_{B ∩ A} ofReal(θ(x)) dH^n(x). ∎",
+          "proof_key_steps": [
+            "ρ = μ⌞A and λ = H^n⌞A are finite measures, and ρ ≪ λ by (ii).",
+            "frt_weq_nondensity_points_null and (iii): λ-a.e. x ∈ A is a μ-density point of A (β).",
+            "At λ-a.e. x, (α), (β), (γ) and ENNReal ratio arithmetic give ρ(B_r(x))/λ(B_r(x)) → θ(x).",
+            "Besicovitch.ae_tendsto_rnDeriv and uniqueness of limits: dρ/dλ = θ λ-a.e.",
+            "Radon–Nikodym: ρ = λ.withDensity θ; evaluating on Borel B gives μ(B ∩ A) = ∫_{B∩A} θ dH^n."
+          ]
+        },
+        "audit": {
+          "key": "piece_identity",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Every stated hypothesis is used correctly: finiteness enables differentiation, the two null-set comparisons supply absolute continuity and exceptional-set transfer, and null-measurability supplies almost-everywhere membership in A. The ENNReal cancellation conditions are justified. Radon–Nikodym identification and Borel evaluation yield the exact lintegral identity. Its only child dependency is the declared lebesgue_density_subset."
+        },
+        "resolved_dependencies": [
+          "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.lebesgue_density_subset-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-piece-identity-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-piece-identity-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-piece-identity-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/task.md": "26a69821fcbb4c8156d8dbf819ba687b1796fca88b5c4969fc177e4e2d316f7f",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/problem.md": "f3ff6fdb84533e44ef581c7db9fc65e6f4432d3e00703417ae6a5521b34622cf",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/problem.json": "ab856ea735af6858e6e745d0a7c2f7609ef9100e057929e5e454a9981df30814",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/reference-manifest.json": "b9f15a98b4902e870b1591aa2a8d0fbc8638813c80ba6751d53265f3313f8524",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/decomposition.json": "cd0ede1ac92085f0f3ca483cc0994b46a42e3da24be88abcb973993545884cb4",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/decomposition-audit.json": "8504666c23cb67029258c06b42714cb017c9af95c41fc60c6de5bcb4ee62049e",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/controller-contract.json": "d6d64638c7d2185f309c986882cec6bc2e74e968c0a584815c0cff93d386fef9",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-density-bor-0d8fbe7f96/parent-child-handoff.json": "8294416822ba954bf78617c83650d36afc0419ab0c579fae024b117dc60f1b0a",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-density-bor-0d8fbe7f96/parent-supplied-plan.md": "911a1adf4f101b61683cb00bfde4325fd721b3743f8da2c2da6eacc69a91e94c",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-density-bor-0d8fbe7f96/parent-supplied-natural-proof.md": "7f56c8cc74089467a7f0f3d43ffe944993aca863a4a8447dc2d04538c91cd5f4",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-density-bor-0d8fbe7f96/parent-supplied-natural-proof.json": "85ebbf79f11db1202174fd669f28e5695d6bc7cb8395e4929c65b1276367c0c0",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-density-bor-0d8fbe7f96/node.json": "e8979345c25b309a92c079d706b22be8cdd000838827df112b5e6dee465979c0",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-lebesgue-de-11e35949fb/parent-child-handoff.json": "622deff6620b0aa51ebc88b0455baec6cc22b594f7e0172a7843430fbced139e",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-lebesgue-de-11e35949fb/parent-supplied-plan.md": "18ecf39f4de844f9056d0864eff6a0581795569104bac7ca129b247e9b8f6db1",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-lebesgue-de-11e35949fb/parent-supplied-natural-proof.md": "102021f69c01a21d5119d03009c87f40095667d5c4de6016733f9d14d493dc6e",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-lebesgue-de-11e35949fb/parent-supplied-natural-proof.json": "67ec54c58ecddeac48df3543122d0d8250e567bfd5b29b0978b24b85bd524ac3",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-lebesgue-de-11e35949fb/node.json": "5548adb5a4d17e3cf855562d18e0ccd5eed12b9994711171e578e757f47a1c2b",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-open-compac-72fc5ce955/parent-child-handoff.json": "e781a3082fe1a86806cb7b5e84c7d323d40c2dd4d1b39aef3c3a8e66bbd352c1",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-open-compac-72fc5ce955/parent-supplied-plan.md": "7a7be32b09f3bc19be573a6d949eeaa9a81d32ff197ad510ccc58bc0b638a1a3",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-open-compac-72fc5ce955/parent-supplied-natural-proof.md": "2382850673c16a71d2100b39bf7c76a2d8fcacff5acaec299a816385dea20e8e",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-open-compac-72fc5ce955/parent-supplied-natural-proof.json": "9c4df63037c37b0c3159e29c77bfb4205a6a6001a7711d06130c0767172fb083",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-open-compac-72fc5ce955/node.json": "a01bfa029a3bf3e122f0f7771a80dd4999b2b7bcdf7ea406543fdd7c5452c657",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-upper-densi-b60678a49f/parent-child-handoff.json": "59351396a8b06a0b15e4ba49705027c1bf5728ccf0b567d1d1362cee8e1cbb40",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-upper-densi-b60678a49f/parent-supplied-plan.md": "efb3e572cb5131ecc97e9b6e0b9b6782ef29fa9081f1166c77b8f1b84f9ead02",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-upper-densi-b60678a49f/parent-supplied-natural-proof.md": "666813f1a2cc89f173c2b309d39cb60a8d8b8755423a6057075f05b1ab088dfb",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-upper-densi-b60678a49f/parent-supplied-natural-proof.json": "f923cefadab0ad8610e87d9f23dfb8978ba6ba644de104f5ce2e64dbb179dae2",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-upper-densi-b60678a49f/node.json": "e66b3872035af5cfc9c640a9c69c4df61d657fa9b4671b68acae47f78051aa51",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-piece-identity-a1/parent-child-handoff.json": "8ebc87b7082539216097b439be9df4261f52bb6cd5ab373c13f2f2277c059570",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-piece-identity-a1/parent-supplied-plan.md": "02770f96f5dad52f23a33eaaf5f1b08ae632e3e6146af9b28d67607013ec0969",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-piece-identity-a1/parent-supplied-natural-proof.md": "dbaeccbe8b391a178bc161af5624b937185074a2eb398cea126860a9f65f1cbd",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-piece-identity-a1/parent-supplied-natural-proof.json": "c1cf6333418b78c343ef4114d970a48aa7553386a898bbea5db2a6903350deaa",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1/children/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-piece-identity-a1/node.json": "07432c5135b554cbe5d8850a2135597bac0792c96529fde104aebae6734cee56"
+  }
+}
