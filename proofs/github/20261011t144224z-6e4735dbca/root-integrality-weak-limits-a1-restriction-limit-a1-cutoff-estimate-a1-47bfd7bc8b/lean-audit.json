@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ebb30b43ea547ddf78a7372ad21d5e31a6ef878a97a23826d4862c566dbf3b86",
+  "git_delta": {
+    "base_commit": "83b0b3ae286d573bd9dbcfa53963a998756de030",
+    "candidate_commit": "9ca4ad88cb32f430dfdc37c99358ad08a6359f25",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_rl_restriction_cutoff_estimate",
+    "diff_sha256": "133cd3fc9d2dc288cfa9bb455c061028b594be044ba04c617d7c83fe357ac5a5",
+    "source_sha256": "68b4219ba44b20f36a517c5c645069fa89c43bb2353ef42c8ef07da50b414740",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_rl_restriction_cutoff_estimate",
+      "statement": "∀ (P k : ℕ) (U W : Set (Eucl P)) (φ : Eucl P → ℝ) (a s c : ℝ) (Y S : GeometricCurrentOn U k) (μ : Measure (Eucl P)) (ω ω' : TestFormOn U k), IsOpen W → W ⊆ U → ContinuousOn φ U → a < s → IsRestriction Y {x | x ∈ U ∧ φ x < s} S → (∀ (A : Set (Eucl P)) (S' : GeometricCurrentOn U k), IsRestriction Y A S' → ∀ W' : Set (Eucl P), IsOpen W' → W' ⊆ U → S'.massOn W' = μ (W' ∩ A)) → Y.massOn W < ∞ → (∀ x ∈ U, s ≤ φ x → (ω' : DifferentialForm (Eucl P) k) x = 0) → tsupport ((ω : DifferentialForm (Eucl P) k) - (ω' : DifferentialForm (Eucl P) k)) ⊆ {x | x ∈ W ∧ a < φ x} → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) k) x - (ω' : DifferentialForm (Eucl P) k) x) ≤ c) → |S ω - Y ω'| ≤ c * ((Y.massOn {x | x ∈ W ∧ φ x < s}).toReal - (Y.massOn {x | x ∈ W ∧ φ x < a}).toReal)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
