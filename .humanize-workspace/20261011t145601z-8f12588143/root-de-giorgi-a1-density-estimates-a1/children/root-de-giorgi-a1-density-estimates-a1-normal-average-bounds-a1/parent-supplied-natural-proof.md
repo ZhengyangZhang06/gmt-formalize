@@ -1,0 +1,137 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.de_giorgi-a1.density_estimates-a1`
+- Child DAG node: `root.de_giorgi-a1.density_estimates-a1.normal_average_bounds-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+(Implementation note: integral_inner lives in Mathlib.MeasureTheory.Function.L2Space and AEStronglyMeasurable.inner in Mathlib.MeasureTheory.Function.StronglyMeasurable.Inner; both modules must be imported.)
+Source: parent proof Steps 0, 1, 2, 5 (choice of the radius) and 6, i.e. Simon Ch. 3, proof of Theorem 4.3, displays (1) and (2) (chapter-03.txt lines 607-628). Notation: B_ρ := B_ρ(x) (open ball), B̄_ρ := closed ball, m(ρ) := μ(B_ρ) ∈ [0, ∞], m_ℝ(ρ) := m(ρ).toReal, A(ρ) := normalAverage μ ν x ρ = m_ℝ(ρ)⁻¹ • ∫_{B_ρ} ν dμ (Lean convention 0⁻¹ = 0), e := reducedNormal μ ν x.
+
+1. (e is a unit vector.) Since x ∈ reducedBoundary U μ ν, x ∈ U and there is v ∈ ℝ^N with |v| = 1 and A(ρ) → v along 𝓝[>]0. The filter 𝓝[>]0 on ℝ is non-trivial and ℝ^N is Hausdorff, so the limit is unique and limUnder (𝓝[>]0) A = v (Mathlib Filter.Tendsto.limUnder_eq). Hence e = v, so |e| = 1, which is (i), and A(ρ) → e.
+
+2. (A good closed ball.) U is open and x ∈ U, so there is r > 0 with B̄_r ⊆ U. B̄_r is compact (ℝ^N is proper), hence μ(B̄_r) < ∞ by hypothesis, and m(ρ) ≤ μ(B̄_r) < ∞ for 0 < ρ ≤ r; for such ρ, m(ρ) = ENNReal.ofReal(m_ℝ(ρ)).
+
+3. (Integrability.) For 0 < ρ ≤ r the functions ν, y ↦ ⟨ν(y), e⟩, y ↦ |ν(y) − e| and y ↦ |ν(y) − e|² are μ-integrable on B_ρ: they are μ-a.e. strongly measurable (because ν is), bounded μ-a.e. by 1, 1, 2 and 4 respectively (|ν| = 1 μ-a.e. and |e| = 1), and μ(B_ρ) < ∞.
+
+4. (Positive mass at every scale.) Suppose m(ρ̄) = 0 for some ρ̄ > 0. For ρ ∈ (0, ρ̄], B_ρ ⊆ B_ρ̄ gives m(ρ) = 0; then μ restricted to B_ρ is the zero measure, ∫_{B_ρ} ν dμ = 0 and A(ρ) = 0⁻¹ • 0 = 0. So A vanishes on (0, ρ̄], a set belonging to 𝓝[>]0, hence A(ρ) → 0, and by uniqueness of limits (step 1) e = 0, contradicting |e| = 1. Therefore m(ρ) > 0 for every ρ > 0, and by step 2, 0 < m_ℝ(ρ) < ∞ for 0 < ρ ≤ r.
+
+5. (The averages a(ρ) → 1; Simon (1).) For 0 < ρ ≤ r put a(ρ) := ⟨A(ρ), e⟩. The map v ↦ ⟨v, e⟩ is continuous and linear, so it commutes with the Bochner integral of the integrable function ν on B_ρ (Mathlib integral_inner): a(ρ) = m_ℝ(ρ)⁻¹ ⟨∫_{B_ρ} ν dμ, e⟩ = m_ℝ(ρ)⁻¹ ∫_{B_ρ} ⟨ν, e⟩ dμ. Since A(ρ) → e and the inner product is continuous, a(ρ) → ⟨e, e⟩ = |e|² = 1 along 𝓝[>]0. Moreover ⟨ν, e⟩ ≤ |ν||e| = 1 μ-a.e., so ∫_{B_ρ} ⟨ν, e⟩ dμ ≤ m_ℝ(ρ), i.e. a(ρ) ≤ 1.
+
+6. (Choice of ρ₀; this proves (ii).) By step 5 there is δ > 0 with a(ρ) > 1/2 for all ρ ∈ (0, δ). Put ρ₀ := min(δ, r) > 0. Then B_{ρ₀} ⊆ B̄_r ⊆ U. For ρ ∈ (0, ρ₀): m(ρ) > 0 by step 4, and multiplying a(ρ) > 1/2 by m_ℝ(ρ) > 0 gives ∫_{B_ρ} ⟨ν, e⟩ dμ > m_ℝ(ρ)/2, so m_ℝ(ρ) ≤ 2∫_{B_ρ} ⟨ν(y), e⟩ dμ(y).
+
+7. (Cauchy-Schwarz; Simon (2).) Let 0 < ρ ≤ r. μ-a.e., |ν − e|² = |ν|² − 2⟨ν, e⟩ + |e|² = 2(1 − ⟨ν, e⟩). By the Cauchy-Schwarz inequality (Hölder with exponents 2 and 2, Mathlib integral_mul_le_Lp_mul_Lq_of_nonneg, applied to the functions 1 and |ν − e| on the finite measure space (B_ρ, μ)):
+ ∫_{B_ρ} |ν − e| dμ ≤ m_ℝ(ρ)^{1/2} (∫_{B_ρ} |ν − e|² dμ)^{1/2} = m_ℝ(ρ)^{1/2} (2(m_ℝ(ρ) − ∫_{B_ρ} ⟨ν, e⟩ dμ))^{1/2} = m_ℝ(ρ) (2(1 − a(ρ)))^{1/2},
+ using ∫_{B_ρ} ⟨ν, e⟩ dμ = a(ρ) m_ℝ(ρ) (step 5) and 1 − a(ρ) ≥ 0.
+ (Equivalent route avoiding Hölder's side conditions: for every ε > 0 and t ≥ 0, t ≤ ε/2 + t²/(2ε); integrating with t = |ν − e| gives ∫_{B_ρ}|ν − e| dμ ≤ m_ℝ(ρ)(ε/2 + (1 − a(ρ))/ε), which equals m_ℝ(ρ)(2(1 − a(ρ)))^{1/2} for ε = (2(1 − a(ρ)))^{1/2} when a(ρ) < 1; if a(ρ) = 1 then ∫_{B_ρ}|ν − e|² dμ = 0, so |ν − e| = 0 μ-a.e. on B_ρ and both sides vanish.)
+
+8. (Excess decay; this proves (iii).) Let n ∈ ℕ, C ∈ ℝ and ρ₂ > 0 with m(ρ) ≤ ENNReal.ofReal(Cρⁿ) for ρ ∈ (0, ρ₂), and put C⁺ := max(C, 0). For ρ ∈ (0, min(ρ₂, r)): m_ℝ(ρ) = m(ρ).toReal ≤ (ENNReal.ofReal(Cρⁿ)).toReal = max(Cρⁿ, 0) = C⁺ρⁿ (as ρⁿ > 0). Hence, by step 7,
+ 0 ≤ (ρⁿ)⁻¹ ∫_{B_ρ} |ν − e| dμ ≤ (ρⁿ)⁻¹ m_ℝ(ρ) (2(1 − a(ρ)))^{1/2} ≤ C⁺ (2(1 − a(ρ)))^{1/2},
+ where the first inequality holds because ρⁿ > 0 and the integrand is non-negative. As ρ → 0 along 𝓝[>]0, a(ρ) → 1 (step 5), and t ↦ C⁺ √(2(1 − t)) is continuous with value 0 at t = 1, so the upper bound tends to 0. Since (0, min(ρ₂, r)) ∈ 𝓝[>]0, the squeeze theorem gives (ρⁿ)⁻¹ ∫_{B_ρ(x)} |ν(y) − e| dμ(y) → 0. ∎
+
+## Key steps
+
+1. e = reducedNormal μ ν x equals the unique unit limit v of normalAverage along the non-trivial filter 𝓝[>]0 (Filter.Tendsto.limUnder_eq), so |e| = 1.
+2. Choose r with B̄_r(x) ⊆ U, so μ(B_ρ) < ∞ for ρ ≤ r; μ(B_ρ) > 0 for every ρ > 0, since otherwise normalAverage vanishes near 0 and e = 0.
+3. a(ρ) := ⟨normalAverage, e⟩ = μ(B_ρ)⁻¹∫_{B_ρ}⟨ν, e⟩dμ tends to 1 and is ≤ 1; take ρ₀ = min(δ, r) with a > 1/2 on (0, δ), which gives μ(B_ρ) ≤ 2∫_{B_ρ}⟨ν, e⟩dμ.
+4. Cauchy-Schwarz with |ν − e|² = 2(1 − ⟨ν, e⟩) μ-a.e.: ∫_{B_ρ}|ν − e|dμ ≤ μ(B_ρ)(2(1 − a(ρ)))^{1/2}.
+5. Under μ(B_ρ) ≤ ofReal(Cρⁿ): 0 ≤ (ρⁿ)⁻¹∫_{B_ρ}|ν − e|dμ ≤ max(C, 0)(2(1 − a(ρ)))^{1/2} → 0 (squeeze).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean`
+- `cmp <snapshot>/project/GMT/Ch03/Submission.lean GMT/Ch03/Submission.lean`
+- `rg -n -i "gauss.?green|lipschitz.*divergence|divergence.*lipschitz" <snapshot>/project`
+- `rg -n -i "gauss.?green|reducedBoundary|reduced_boundary|perimeter" .lake/packages/simongmt/Poincare`
+- `rg -n -i "isoperimetric|density_estimate|densityEstimate|relative isoperimetric" <snapshot>/mathlib/Mathlib .lake/packages/simongmt/Poincare`
+- `rg -n -i "cutoff|cut-off|radial" .lake/packages/simongmt/Poincare`
+- `rg -n -i "sobolev|eLpNorm_le_eLpNorm_fderiv" .lake/packages/simongmt/Poincare`
+- `rg -n -i "integral_divergence|divergence_theorem" <snapshot>/mathlib/Mathlib`
+- `grep -n euclideanDivergence .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `grep 'theorem eLpNorm_le_eLpNorm_fderiv_of_eq|theorem eLpNorm_le_eLpNorm_fderiv_one|def SNormLESNormFDerivOfEqConst' <snapshot>/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `grep 'theorem Monotone.ae_differentiableAt|MonotoneOn.intervalIntegral_deriv_mem_uIcc|MonotoneOn.intervalIntegrable_deriv|hasDerivAt_iff_tendsto_slope|HasDerivAt.tendsto_slope_zero_left|LipschitzWith.ae_differentiableAt|tendsto_integral_filter_of_dominated_convergence|addHaar_ball|addHaar_sphere' <snapshot>/mathlib/Mathlib`
+- `grep "eLpNorm_indicator_const'|eLpNormEssSup_indicator_const_eq|eLpNorm_mono|integral_indicator_one|integrableOn_const|integrable_indicator_iff" <snapshot>/mathlib/Mathlib/MeasureTheory`
+- `grep 'measurable_fderiv|norm_fderiv_le_of_lipschitz|fderiv_of_notMem_tsupport|AEStronglyMeasurable.inner|integral_inner|Filter.Tendsto.limUnder_eq|HasDerivAt.rpow_const|integral_mul_le_Lp_mul_Lq_of_nonneg' <snapshot>/mathlib/Mathlib`
+- `rg -n 'ae_convolution_tendsto_right_of_locallyIntegrable|HasCompactSupport.contDiff_convolution_left|hasFDerivAt_convolution_left|eLpNorm_lim_le_liminf_eLpNorm|IsCompact.exists_cthickening_subset_open|cthickening_empty|PiLp.volume_preserving_toLp|volume_preserving_funUnique' <snapshot>/mathlib/Mathlib`
+- `python3 -I scope.py (importlib of verifier/gmt-compare.py; contract_scope(Contract.lean, 'GMT.Ch03.main_theorem')) -> NodeChallenge prefix`
+- `lake env lean on GMT/Scratch/DensityEstimatesSplit{AllStatements,Statements,StatementsJL,Instances,Assembly,GlueB,GlueD,GlueF,GlueH,GlueI,LeafA,LeafC,LeafG}.lean`
+- `python3 -I dag.json lean_name collision check and stub/frozen statement byte-identity check (extract.py)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/RadialCutoffDifferentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Sobolev.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Indicator.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Complete.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Separation/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Deriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/LinearAlgebra/AffineSpace/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitAllStatements.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitInstances.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitAssembly.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitGlueB.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitGlueD.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitGlueF.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitGlueH.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitGlueI.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitLeafA.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitLeafC.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitLeafG.lean`
+
+The snapshot Contract.lean and Submission.lean are byte-identical to the workspace (project d09bc8a, Mathlib 25730c7c).
+
+Not in the library (so these become children): Mathlib and the pinned SimonGMT contain no Gauss–Green identity for Lipschitz test functions, no BV/indicator Sobolev inequality for Gauss–Green pairs, no radial cut-off coarea identity, no density estimate, and no isoperimetric differential inequality. Within SimonGMT, Chapter03/FinitePerimeter.lean has only the §4 definitions; Chapter04/Sobolev.lean is the varifold (Michael–Simon) inequality; the Chapter08 radial cut-offs are smooth varifold cut-offs, not applicable here. No DAG node overlaps; the accepted gauss_green-a1 children concern existence and uniqueness of the pair, not these lemmas.
+
+Library facts located for the child proofs:
+- GNS: eLpNorm_le_eLpNorm_fderiv_one / _of_eq; applicability at exponent (n+1)/n was confirmed in Lean.
+- Rademacher: LipschitzWith.ae_differentiableAt; Lebesgue: Monotone.ae_differentiableAt.
+- MonotoneOn.intervalIntegral_deriv_mem_uIcc and MonotoneOn.intervalIntegrable_deriv.
+- ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable (values in any complete normed space) and HasCompactSupport.contDiff_convolution_left.
+- eLpNorm_indicator_const' (every p ≠ 0, including ⊤) and eLpNorm_lim_le_liminf_eLpNorm (every p).
+- Measure.addHaar_ball / addHaar_sphere; measurable_fderiv; norm_fderiv_le_of_lipschitz; fderiv_of_notMem_tsupport.
+- IsCompact.exists_cthickening_subset_open and cthickening_empty.
+- PiLp.volume_preserving_toLp with volume_preserving_funUnique; integral_inner; HasDerivAt.rpow_const; Filter.Tendsto.limUnder_eq.
+
+Several of these lie outside the contract's import closure; the child proofs carry implementation notes naming the modules to import.
+
+Lean evidence: listed in the rationale; all checks use only standard axioms apart from the stubs' sorryAx.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.radial_cutoff-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1",
+  "depth": 3,
+  "title": "Radial piecewise-linear cut-off between B_s(x) and B_ρ(x) and the integral of its gradient (Simon (4); parent Step 4)",
+  "statement": "Let N ∈ ℕ, x ∈ ℝ^N and 0 < s < ρ. There is ζ : ℝ^N → ℝ that is Lipschitz, has compact support with tsupport ζ ⊆ B̄_ρ(x), satisfies 0 ≤ ζ ≤ 1, ζ = 1 on B_s(x) and ζ = 0 outside B_ρ(x), and such that for every Lebesgue null-measurable G ⊆ ℝ^N: ∫_G |Dζ| dL^N = (L^N(G ∩ B_ρ(x)).toReal − L^N(G ∩ B_s(x)).toReal)/(ρ − s), where |Dζ(y)| = ‖fderiv ℝ ζ y‖ (operator norm).",
+  "lean_statement": "∀ (N : ℕ) (x : Rn N) (s ρ : ℝ), 0 < s → s < ρ → ∃ ζ : Rn N → ℝ, (∃ K : ℝ≥0, LipschitzWith K ζ) ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ Metric.closedBall x ρ ∧ (∀ y, 0 ≤ ζ y ∧ ζ y ≤ 1) ∧ (∀ y ∈ Metric.ball x s, ζ y = 1) ∧ (∀ y ∉ Metric.ball x ρ, ζ y = 0) ∧ ∀ G : Set (Rn N), NullMeasurableSet G volume → ∫ y in G, ‖fderiv ℝ ζ y‖ = ((volume (G ∩ Metric.ball x ρ)).toReal - (volume (G ∩ Metric.ball x s)).toReal) / (ρ - s)",
+  "lean_name": "deGiorgiDens_radial_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-radial-cutoff-a1-a1"
+}
