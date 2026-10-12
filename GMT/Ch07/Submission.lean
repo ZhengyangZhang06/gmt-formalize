@@ -6,6 +6,8 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter02.WeightedArea
+import Poincare.SimonGMT.Chapter08.DistributionalConstancy
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -606,6 +608,130 @@ theorem Submission.dgcr_unitOrientation_eq_or_neg : ∀ (P n : ℕ) (Q : Submodu
   · left; ext α; rw [h₂, h₁, hτ'τ, hd, neg_one_mul, neg_neg]
   · left; ext α; rw [h₂, h₁, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, h₂, h₁, hτ'τ, hd, neg_one_mul, neg_neg]
+
+/-- **An integer multiplicity cycle carried by a `C¹` graph is regular** (Simon 7.4.3, p. 194,
+"Hence by Allard's Theorem 5.2 of Ch. 5 we have `y ∈ reg T`", with the Constancy Theorem 6.2.34).
+Let `T = τ(M, θ, ξ) ∈ 𝒟ₙ(U)` with `∂T = 0`, `ι`, `ι'` linear isometries with orthogonal ranges,
+`Φ(v) = z + ιv + ι'u(v)` for a `C¹` map `u` on `B_s(0)` with `u(0) = 0`, and
+`C = {z + ιv + ι'w : |v| < s, |w| < h} ⊆ U`.  If `spt μ_T ∩ C = Σ := Φ(B_s(0))` and `z ∈ spt T`,
+then `z ∈ reg T`.  `Σ` is an embedded `C¹` submanifold through `z = Φ(0)` with a continuous unit
+orientation `ξ_Σ`, and `T(ω) = ∫_Σ g ⟨ω, ξ_Σ⟩ dHⁿ` for `spt ω ⊆ C`, with `G = g ∘ Φ` locally
+integrable and integer-valued on `B_s(0)`.  By the area formula and
+`α(DΦe₁, …, DΦeₙ) = JΦ ⟨α, ξ_Σ⟩`, `T(ω) = ∫_{B_s(0)} G ω(Φ)(DΦe₁, …, DΦeₙ) dv`; `∂T = 0` kills
+the weak derivatives of `G`, so `G = m ∈ ℤ` a.e. on the connected ball and `T = m[[Σ]]` in `C`.
+`m ≠ 0` as `z ∈ spt T`, and `ρ = min(s, h)/2` gives `B̄_ρ(z) ⊆ C`. -/
+theorem Submission.dor_graph_supported_cycle_regular : ∀ (n k : ℕ) (U : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (R : IMRep U n) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (s h : ℝ), 0 < n → IsOpen U → R.Represents T → BoundaryVanishes T → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → 0 < s → 0 < h → ContDiffOn ℝ 1 u (ball 0 s) → u 0 = 0 → {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} ⊆ U → R.measure.support ∩ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} = (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s → z ∈ T.support → z ∈ regularSet T := by
+  intro n k U T R ι ι' u z s h hn _hU hRT hbd horth hs hh hu hu0 hCU hspt hzT
+  -- step 1: orthogonal coordinates `x − z = ιv + ι'w` with `‖x − z‖² = ‖v‖² + ‖w‖²`
+  obtain ⟨hdec, hpyth⟩ := Submission.dgcr_orthogonal_coordinates n k ι ι' horth
+  have hle : ∀ (v : Euclid n) (w : Euclid k), ‖v‖ ≤ ‖ι v + ι' w‖ ∧ ‖w‖ ≤ ‖ι v + ι' w‖ := by
+    intro v w
+    have h2 := hpyth v w
+    constructor <;> nlinarith [norm_nonneg v, norm_nonneg w, norm_nonneg (ι v + ι' w)]
+  have huniq : ∀ (v v' : Euclid n) (w w' : Euclid k), ι v + ι' w = ι v' + ι' w' → w = w' := by
+    intro v v' w w' heq
+    have h0 : ι (v - v') + ι' (w - w') = 0 := by
+      rw [map_sub, map_sub, sub_add_sub_comm, heq, sub_self]
+    have h1 := (hle (v - v') (w - w')).2
+    rw [h0, norm_zero] at h1
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 h1)
+  -- `ρ := min(s, h)/2`, so `B̄_ρ(z) ⊆ C ⊆ U`
+  obtain ⟨ρ, hρdef⟩ : ∃ ρ : ℝ, ρ = min s h / 2 := ⟨_, rfl⟩
+  have hρ : 0 < ρ := by rw [hρdef]; exact half_pos (lt_min hs hh)
+  have hρs : ρ < s := by rw [hρdef]; linarith [min_le_left s h, lt_min hs hh]
+  have hρh : ρ < h := by rw [hρdef]; linarith [min_le_right s h, lt_min hs hh]
+  have hclosed : closedBall z ρ ⊆ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} := by
+    intro x hx
+    obtain ⟨v, w, hvw⟩ := hdec (x - z)
+    have hxz : ‖ι v + ι' w‖ ≤ ρ := by rw [← hvw, ← dist_eq_norm]; exact hx
+    refine ⟨v, ?_, w, ?_, ?_⟩
+    · rw [mem_ball_zero_iff]; exact ((hle v w).1.trans hxz).trans_lt hρs
+    · rw [mem_ball_zero_iff]; exact ((hle v w).2.trans hxz).trans_lt hρh
+    · rw [add_assoc, ← hvw, add_sub_cancel]
+  have hballC : ball z ρ ⊆ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} :=
+    ball_subset_closedBall.trans hclosed
+  -- `‖v‖ ≤ ‖Φ(v) − z‖`, `z = Φ(0) ∈ Σ`, and `u(B_s(0)) ⊆ B_h(0)` because `Σ ⊆ C`
+  have hnorm : ∀ v : Euclid n, ‖v‖ ≤ ‖z + ι v + ι' (u v) - z‖ := fun v => by
+    rw [add_assoc, add_sub_cancel_left]; exact (hle v (u v)).1
+  have hzS : z ∈ (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s :=
+    ⟨0, mem_ball_self hs, by simp [hu0]⟩
+  have huh : ∀ v ∈ ball (0 : Euclid n) s, u v ∈ ball (0 : Euclid k) h := by
+    intro v hv
+    have hmem : z + ι v + ι' (u v) ∈ R.measure.support ∩ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} := by
+      rw [hspt]; exact ⟨v, hv, rfl⟩
+    obtain ⟨v', -, w', hw', heq⟩ := hmem.2
+    rw [add_assoc, add_assoc] at heq
+    rwa [huniq v v' (u v) w' (add_left_cancel heq)]
+  -- step 2: `Σ` is an embedded `C¹` submanifold with `T_{Φ(v)}Σ = range DΦ(v)`, oriented by `ξ`
+  obtain ⟨hinj, hdiff, hemb, htan⟩ := Submission.dgcr_graph_chart_embedded n k ι ι' u z s horth hs hu
+  obtain ⟨ξ, β, hξc, hβc, hξβ, hξo, hjac⟩ :=
+    Submission.dgcr_graph_orientation_jacobian n k ι ι' u z s hn horth hs hu
+  have hor : IsOrientation n ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) ξ := by
+    refine ⟨hξc, ?_⟩
+    rintro _ ⟨v, hv, rfl⟩
+    exact ⟨_, (htan v hv).symm, hξo v hv⟩
+  -- step 3: an integer density `g` on `Σ` with `T(ω) = ∫_Σ g ⟨ω, ξ⟩ dHⁿ` for `spt ω ⊆ C`
+  obtain ⟨g, hgloc, hgint, hgrep⟩ := Submission.dgcr_graph_integer_density_on_graph n k U T R ι ι' u z
+    s h ξ β hn hRT horth hs hh hu hCU hspt hβc hξβ hξo
+  -- step 4: area formula `∫_Σ F dHⁿ = ∫_{B_s(0)} JΦ · F ∘ Φ dLⁿ`, `JΦ = √det(DΦ* DΦ)`
+  have harea : ∀ F : Euclid (n + k) → ℝ, ∫ x in (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s, F x ∂μHE[n] = ∫ v in ball (0 : Euclid n) s, Real.sqrt (((fderiv ℝ (fun v => z + ι v + ι' (u v)) v).adjoint ∘L fderiv ℝ (fun v => z + ι v + ι' (u v)) v).det) * F (z + ι v + ι' (u v)) := by
+    intro F
+    have h4 := Poincare.SimonGMT.Chapter02.integral_area_formula_of_injective_derivative
+      measurableSet_ball (fun v hv => (hdiff v hv).1) (fun v hv => (hdiff v hv).2) hinj F
+    rw [finrank_euclideanSpace_fin, EuclideanSpace.euclideanHausdorffMeasure_eq_volume n] at h4
+    rw [h4]
+    refine setIntegral_congr_fun measurableSet_ball fun v _ => ?_
+    simp only [smul_eq_mul, Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_sqrt_det_adjoint_comp]
+  -- with `α(DΦe₁, …, DΦeₙ) = JΦ ⟨α, ξ⟩`: `T(ω) = ∫_{B_s(0)} G ω(Φ)(DΦe₁, …, DΦeₙ) dv`, `G = g ∘ Φ`
+  have hrepD : ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid (n + k)) n) ⊆ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} → T ω = ∫ v in ball (0 : Euclid n) s, g (z + ι v + ι' (u v)) * (ω : DifferentialForm (Euclid (n + k)) n) (z + ι v + ι' (u v)) (fun i => fderiv ℝ (fun v => z + ι v + ι' (u v)) v (EuclideanSpace.single i (1 : ℝ))) := by
+    intro ω hω
+    rw [hgrep ω hω, harea]
+    refine setIntegral_congr_fun measurableSet_ball fun v hv => ?_
+    simp only [hjac v hv]
+    ring
+  -- step 5: `∂T = 0` gives `∫ G ∂ⱼa = 0` for all tests `a`; distributional constancy on `B_s(0)`
+  have hBT := Submission.dgcr_graph_boundary_weak_derivatives n k U T ι ι' u z s h
+    (fun v => g (z + ι v + ι' (u v))) hn hbd horth hs hh hu huh hCU hrepD
+  have hSC := Submission.dgcr_smooth_tests_to_C1_tests n (ball (0 : Euclid n) s)
+    (fun v => g (z + ι v + ι' (u v))) isOpen_ball hgloc hBT
+  obtain ⟨c, hc⟩ := Poincare.SimonGMT.Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero
+    hgloc isOpen_ball (convex_ball (0 : Euclid n) s).isPreconnected hSC
+  -- the constant is an integer `m`: `G` is integer-valued a.e. and `Lⁿ(B_s(0)) > 0`
+  obtain ⟨v₀, -, hv₀c, m, hv₀m⟩ := Measure.exists_mem_of_measure_ne_zero_of_ae
+    (measure_ball_pos volume (0 : Euclid n) hs).ne' (hc.and hgint)
+  have hGm : ∀ᵐ v ∂(volume.restrict (ball (0 : Euclid n) s)), g (z + ι v + ι' (u v)) = m := by
+    filter_upwards [hc] with v hv
+    exact hv.trans (hv₀c.symm.trans hv₀m)
+  -- step 6: `T = m[[Σ]]` in `C`
+  have hrepm : ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid (n + k)) n) ⊆ {x | ∃ v ∈ ball (0 : Euclid n) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} → T ω = (m : ℝ) * ∫ x in (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s, ξ x ((ω : DifferentialForm (Euclid (n + k)) n) x) ∂μHE[n] := by
+    intro ω hω
+    rw [hrepD ω hω, harea, ← integral_const_mul]
+    refine integral_congr_ae ?_
+    filter_upwards [hGm, ae_restrict_mem measurableSet_ball] with v hv hvD
+    rw [hv, hjac v hvD]
+  -- step 7: `m ≠ 0`, since otherwise `T` vanishes in `B_ρ(z)` and `z ∉ spt T`
+  have hm0 : m ≠ 0 := by
+    intro hm
+    subst hm
+    have hvan : T.VanishesOn (ball z ρ) := by
+      intro ω hω
+      rw [hrepm ω (hω.trans hballC), Int.cast_zero, zero_mul]
+    exact hzT.2 (Set.mem_sUnion.2 ⟨ball z ρ, ⟨isOpen_ball,
+      (isCompact_closedBall z ρ).of_isClosed_subset isClosed_closure closure_ball_subset_closedBall,
+      closure_ball_subset_closedBall.trans (hclosed.trans hCU), hvan⟩, mem_ball_self hρ⟩)
+  -- step 8: `Hⁿ(Σ ∩ K) ≤ Hⁿ(Φ(B̄_ρ(0))) < ∞` for `K ⊆ B_ρ(z)`
+  have hfin : ∀ K : Set (Euclid (n + k)), IsCompact K → K ⊆ ball z ρ → μHE[n] (((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s) ∩ K) ≠ ∞ := by
+    intro K _ hK
+    refine ne_top_of_le_ne_top
+      ((Submission.dgcr_graph_measure_bounds n k ι ι' u z s horth hs hu).2 ρ hρs) (measure_mono ?_)
+    rintro _ ⟨⟨v, -, rfl⟩, hvK⟩
+    refine ⟨v, ?_, rfl⟩
+    have hv := hK hvK
+    rw [mem_ball, dist_eq_norm] at hv
+    rw [mem_closedBall_zero_iff]
+    exact (hnorm v).trans hv.le
+  exact ⟨hzT, ρ, hρ, hballC.trans hCU, m, (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s, ξ,
+    hm0, hzS, hemb, hor, hfin, fun ω hω => hrepm ω (hω.trans hballC)⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
