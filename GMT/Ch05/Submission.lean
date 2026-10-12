@@ -531,6 +531,39 @@ theorem rsod_tv_weight_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ))
   rw [withDensity_apply _ hA, withDensity_apply _ (hσ hA), Measure.restrict_restrict hA,
     Measure.restrict_restrict (hσ hA), ← key]
   simp only [hm]
+/-- **Support of a translated varifold** (Simon Ch. 5, proof of Theorem 7.1, p. 127: "after
+applying the appropriate translation"; used for Corollary 7.3).  Let `τ(y) = y + x₀`.  If `W` is a
+rectifiable varifold in `τ⁻¹U` whose weight is the push-forward `μ_W = (· - x₀)_# μ_V`, then
+`spt W = τ⁻¹(spt V)`: the translations are continuous and mutually inverse, so the neighbourhoods of
+`y` are exactly the `τ`-preimages of the neighbourhoods of `y + x₀`. -/
+theorem rsod_tv_support_eq : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U)
+    (x₀ : Amb n ℓ) (W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U)),
+    W.weight = V.weight.map (fun y => y - x₀) → W.support = (fun y => y + x₀) ⁻¹' V.support := by
+  intro n ℓ U V x₀ W hw
+  -- `σ = MeasurableEquiv.subRight x₀` is definitionally `y ↦ y - x₀`, so `(σ_# μ)(G) = μ(σ⁻¹G)`
+  -- for every set `G`, measurable or not.
+  have hσ : (fun y : Amb n ℓ => y - x₀) = ⇑(MeasurableEquiv.subRight x₀) := rfl
+  have hσa : ∀ z : Amb n ℓ, MeasurableEquiv.subRight x₀ z = z - x₀ := fun _ => rfl
+  -- `spt (σ_# μ_V) = τ⁻¹(spt μ_V)`, using `y ∈ spt μ ↔ ∀ G ∈ 𝓝 y, 0 < μ G`.
+  have hsupp : (V.weight.map (fun y => y - x₀)).support =
+      (fun y => y + x₀) ⁻¹' V.weight.support := by
+    ext y
+    rw [hσ, Set.mem_preimage, Measure.mem_support_iff_forall, Measure.mem_support_iff_forall]
+    constructor
+    · -- For `G ∈ 𝓝 (y + x₀)`: `τ⁻¹G ∈ 𝓝 y` and `σ⁻¹(τ⁻¹G) = G`.
+      intro h G hG
+      have hτG := h _ ((continuous_add_const x₀).continuousAt.preimage_mem_nhds hG)
+      have hG' : MeasurableEquiv.subRight x₀ ⁻¹' ((fun z : Amb n ℓ => z + x₀) ⁻¹' G) = G := by
+        ext z
+        simp only [Set.mem_preimage, hσa, sub_add_cancel]
+      rwa [MeasurableEquiv.map_apply, hG'] at hτG
+    · -- For `G ∈ 𝓝 y`: `σ⁻¹G ∈ 𝓝 (y + x₀)` since `σ (y + x₀) = y`.
+      intro h G hG
+      rw [MeasurableEquiv.map_apply]
+      refine h _ ((continuous_sub_right x₀).continuousAt.preimage_mem_nhds ?_)
+      rwa [add_sub_cancel_right]
+  -- `spt W = τ⁻¹U ∩ spt μ_W = τ⁻¹U ∩ τ⁻¹(spt μ_V) = τ⁻¹(U ∩ spt μ_V) = τ⁻¹(spt V)`.
+  simp only [RectifiableVarifold.support, hw, hsupp, Set.preimage_inter]
 
 end Submission
 
