@@ -691,6 +691,114 @@ theorem Submission.regcomp_smooth_cutoff_product : ∀ (P : ℕ), ∃ c₀ : ℝ
       rw [Real.norm_of_nonneg (Finset.prod_nonneg fun i _ => (hf01 i x).1)]
       exact Finset.prod_le_one₀ (fun i _ => (hf01 i x).1) fun i _ => (hf01 i x).2
     exact (mul_le_of_le_one_left (norm_nonneg _) h1).trans (hφd j x)
+/-- **Simon 7.5.11, identity (2)** (chapter-07.txt lines 996–999), localised by a partition of
+unity.  Let `∂T = 0`, `T₁(θ) = ∫_{M₁} ⟨θ, ξ⟩ dH^{m+1}`, and let every `z ∈ M₁` have an open
+`G ∋ z` on which `T₁ = c T`.  If `closure M₁ ∩ spt η ⊆ M₁`, then `∂T₁(η) = 0`: finitely many such
+`G` cover the compact set `closure M₁ ∩ spt η`; for a smooth partition of unity `(ψᵢ)` on a
+neighbourhood of it subordinate to them, `(1 - Σ ψᵢ) η` vanishes near `M₁`, so
+`T₁(d((1 - Σ ψᵢ) η)) = 0`, while `T₁(d(ψᵢ η)) = cᵢ ∂T(ψᵢ η) = 0`. -/
+theorem Submission.regcomp_localized_boundary_zero : ∀ (P m : ℕ) (U M₁ : Set (Euclid P)) (T T₁ : GeometricCurrentOn U (m + 1)) (ξ : Euclid P → MultiVector P (m + 1)), T.boundary = 0 → (∀ ω : TestFormOn U (m + 1), T₁ ω = ∫ x in M₁, ξ x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]) → (∀ z ∈ M₁, ∃ G : Set (Euclid P), IsOpen G ∧ z ∈ G ∧ ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ G → T₁ ω = c * T ω) → ∀ η : TestFormOn U m, closure M₁ ∩ tsupport (η : DifferentialForm (Euclid P) m) ⊆ M₁ → T₁.boundary η = 0 := by
+  intro P m U M₁ T T₁ ξ h1 h2 h4 η hη
+  classical
+  -- Step 1: `K₁ = closure M₁ ∩ tsupport η` is closed in the compact `tsupport η`.
+  have hηc : IsCompact (tsupport (η : DifferentialForm (Euclid P) m)) := η.property.1.2
+  have hK₁ : IsCompact (closure M₁ ∩ tsupport (η : DifferentialForm (Euclid P) m)) :=
+    IsCompact.inter_left hηc isClosed_closure
+  -- Step 2: finitely many of the (h4) neighbourhoods `G z`, `z ∈ K₁ ⊆ M₁`, cover `K₁`.
+  choose! G hGo hzG c hc using h4
+  obtain ⟨t, ht⟩ := hK₁.elim_finite_subcover
+    (fun z : (closure M₁ ∩ tsupport (η : DifferentialForm (Euclid P) m) : Set (Euclid P)) =>
+      G (z : Euclid P))
+    (fun z => hGo z (hη z.2))
+    (fun x hx => mem_iUnion.2 ⟨⟨x, hx⟩, hzG x (hη hx)⟩)
+  have hWo : IsOpen (⋃ i ∈ t, G
+      ((i : (closure M₁ ∩ tsupport (η : DifferentialForm (Euclid P) m) : Set (Euclid P))) :
+        Euclid P)) :=
+    isOpen_biUnion fun z _ => hGo z (hη z.2)
+  -- Step 3: an open `O₁ ⊇ K₁` with `closure O₁ ⊆ ⋃ G`, and a smooth partition of unity
+  -- `(ψ_i)` on `closure O₁` subordinate to the `G`; `χ = Σ ψ_i` is `1` on `O₁`.
+  obtain ⟨O₁, hO₁o, hKO, hOW, -⟩ := exists_open_between_and_isCompact_closure hK₁ hWo ht
+  obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (I := modelWithCornersSelf ℝ (Euclid P)) (M := Euclid P) (isClosed_closure (s := O₁))
+    (fun i : t => G ((i : _) : Euclid P)) (fun i => hGo _ (hη i.1.2)) (by
+      intro x hx
+      obtain ⟨z, hz, hxz⟩ := mem_iUnion₂.1 (hOW hx)
+      exact mem_iUnion.2 ⟨⟨z, hz⟩, hxz⟩)
+  have hψs : ∀ i : t, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ψ i) := fun i =>
+    contMDiff_iff_contDiff.1 (ψ i).contMDiff
+  obtain ⟨χ, hχ⟩ : ∃ χ : Euclid P → ℝ, χ = fun x => ∑ i : t, ψ i x := ⟨_, rfl⟩
+  have hχs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ := by
+    rw [hχ]; exact ContDiff.sum fun i _ => hψs i
+  have hχ1 : ∀ x ∈ O₁, χ x = 1 := fun x hx => by
+    rw [hχ]
+    show ∑ i : t, ψ i x = 1
+    rw [← finsum_eq_sum_of_fintype]
+    exact ψ.sum_eq_one (subset_closure hx)
+  -- Step 4: `η = (1 - χ) η + Σ ψ_i η`, each summand a test form in `U`.
+  have hmk : ∀ f : Euclid P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f →
+      ∃ θ : TestFormOn U m, (θ : DifferentialForm (Euclid P) m) =
+        fun x => f x • (η : DifferentialForm (Euclid P) m) x := by
+    intro f hf
+    obtain ⟨⟨hs, hcpt⟩, hU⟩ := η.property
+    have hs' : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (η : DifferentialForm (Euclid P) m) := hs
+    have hcpt' : IsCompact (tsupport (η : DifferentialForm (Euclid P) m)) := hcpt
+    have hsub : tsupport (fun x => f x • (η : DifferentialForm (Euclid P) m) x) ⊆
+        tsupport (η : DifferentialForm (Euclid P) m) := tsupport_smul_subset_right _ _
+    have hsm : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
+        (fun x => f x • (η : DifferentialForm (Euclid P) m) x) := hf.smul hs'
+    have hcc : IsCompact (tsupport (fun x => f x • (η : DifferentialForm (Euclid P) m) x)) :=
+      IsCompact.of_isClosed_subset hcpt' (isClosed_tsupport _) hsub
+    exact ⟨⟨fun x => f x • (η : DifferentialForm (Euclid P) m) x,
+      ⟨⟨hsm, hcc⟩, hsub.trans hU⟩⟩, rfl⟩
+  have h1χ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun x => 1 - χ x) := contDiff_const.sub hχs
+  obtain ⟨η₀, hη₀⟩ := hmk (fun x => 1 - χ x) h1χ
+  choose ηi hηi using fun i : t => hmk (ψ i) (hψs i)
+  have hη₀x : ∀ x, (η₀ : DifferentialForm (Euclid P) m) x =
+      (1 - χ x) • (η : DifferentialForm (Euclid P) m) x := fun x => congrFun hη₀ x
+  have hηix : ∀ i x, (ηi i : DifferentialForm (Euclid P) m) x =
+      ψ i x • (η : DifferentialForm (Euclid P) m) x := fun i x => congrFun (hηi i) x
+  have hdecomp : η = η₀ + ∑ i : t, ηi i := by
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_add, Submodule.coe_sum, Pi.add_apply, Finset.sum_apply, hη₀x]
+    simp only [hηix]
+    rw [← Finset.sum_smul, ← add_smul]
+    have hsum : 1 - χ x + ∑ i : t, ψ i x = 1 := by rw [hχ]; ring
+    rw [hsum, one_smul]
+  -- Step 5: `(1 - χ) η` vanishes near every point of `M₁`, so `∂T₁ ((1 - χ) η) = 0` by (h2).
+  have h0 : T₁.boundary η₀ = 0 := by
+    rw [GeometricCurrentOn.boundary_apply, h2]
+    apply setIntegral_eq_zero_of_forall_eq_zero
+    intro x hx
+    have hx0 : x ∉ tsupport (η₀ : DifferentialForm (Euclid P) m) := by
+      rw [notMem_tsupport_iff_eventuallyEq]
+      by_cases hxη : x ∈ tsupport (η : DifferentialForm (Euclid P) m)
+      · have hxO : x ∈ O₁ := hKO ⟨subset_closure hx, hxη⟩
+        filter_upwards [hO₁o.mem_nhds hxO] with y hy
+        rw [hη₀x, hχ1 y hy, sub_self, zero_smul, Pi.zero_apply]
+      · filter_upwards [(notMem_tsupport_iff_eventuallyEq).1 hxη] with y hy
+        rw [hη₀x, hy, Pi.zero_apply, smul_zero]
+    have hdx : x ∉ tsupport (exteriorDerivative (η₀ : DifferentialForm (Euclid P) m)) :=
+      fun h => hx0 (tsupport_exteriorDerivative_subset _ h)
+    change ξ x (exteriorDerivative (η₀ : DifferentialForm (Euclid P) m) x) = 0
+    rw [image_eq_zero_of_notMem_tsupport hdx, map_zero]
+  -- Step 6: `tsupport d(ψ_i η) ⊆ G z_i`, so `∂T₁ (ψ_i η) = c z_i * ∂T (ψ_i η) = 0` by (h4), (h1).
+  have hi : ∀ i : t, T₁.boundary (ηi i) = 0 := by
+    intro i
+    have hs1 : tsupport (ηi i : DifferentialForm (Euclid P) m) ⊆ tsupport (ψ i) := by
+      rw [hηi i]
+      exact tsupport_smul_subset_left _ _
+    have hsupp : tsupport ((exteriorDerivativeTestOn U m (ηi i) : TestFormOn U (m + 1)) :
+        DifferentialForm (Euclid P) (m + 1)) ⊆ G ((i : _) : Euclid P) := by
+      change tsupport (exteriorDerivative (ηi i : DifferentialForm (Euclid P) m)) ⊆ _
+      exact (tsupport_exteriorDerivative_subset _).trans (hs1.trans (hψ i))
+    rw [GeometricCurrentOn.boundary_apply, hc _ (hη i.1.2) _ hsupp,
+      ← GeometricCurrentOn.boundary_apply, h1, GeometricCurrentOn.zero_apply, mul_zero]
+  -- Step 7: linearity of `∂T₁`.
+  have hlin : T₁.boundary η = T₁.boundary η₀ + ∑ i : t, T₁.boundary (ηi i) := by
+    conv_lhs => rw [hdecomp]
+    rw [map_add, map_sum]
+  rw [hlin, h0, Finset.sum_eq_zero fun i _ => hi i, add_zero]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
