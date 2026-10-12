@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3b6a36bca1853d153dde7674b2935bbf1aab056e887beb072301cecf2ac5c44d",
+  "git_delta": {
+    "base_commit": "6db8191ed158a4db4a9ff4ad4c267a57f4e81c93",
+    "candidate_commit": "d474682a0395f46feada75e776e35d49f7327e55",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "approx_tangent_space_smul_preimage",
+    "diff_sha256": "2702d84b7b683c199cdb43106d03961e4bb163452cf1a0702a9d7aa36e7fbf05",
+    "source_sha256": "b15a531dcd463be47b5a0ea60363d160c996495f91f61d5713d1aec71b38d08b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.approx_tangent_space_smul_preimage",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (c : ℝ) (z : Euclid P) (Q : Submodule ℝ (Euclid P)), 0 < c → HasApproximateTangentSpaceAt n M (c • z) Q → HasApproximateTangentSpaceAt n ((fun x => c • x) ⁻¹' M) z Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
