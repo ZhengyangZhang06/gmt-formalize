@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.sobolev_inequality-a1.good_radius_calculus-a1",
+  "parent_id": "root.sobolev_inequality-a1",
+  "depth": 2,
+  "title": "Corrected Simon Lemma 5.8 (good-radius calculus lemma, n ≥ 2)",
+  "statement": "Let n ≥ 2, F ∈ ℝ and f, k: ℝ → ℝ be nondecreasing on (0, ∞) with 0 ≤ f(τ) ≤ F and 0 ≤ k(τ) for τ > 0. Assume (a) s^{−n}f(s) ≤ r^{−n}f(r) + ∫_{(s,r]} τ^{−n}k(τ) dτ for all 0 < s ≤ r, and (b) for every η < 1 there are arbitrarily small s > 0 with s^{−n}f(s) > η (i.e. limsup_{s↓0} s^{−n}f(s) ≥ 1). Then F > 0 and there is r with 0 < r < 2F^{1/n} and f(5r) ≤ 5ⁿF^{1/n}k(r) (= ½·5ⁿr_0k(r) with r_0 = 2F^{1/n}).",
+  "lean_statement": "∀ (n : ℕ) (f k : ℝ → ℝ) (F : ℝ), 2 ≤ n → MonotoneOn f (Ioi 0) → MonotoneOn k (Ioi 0) → (∀ τ : ℝ, 0 < τ → 0 ≤ f τ ∧ f τ ≤ F) → (∀ τ : ℝ, 0 < τ → 0 ≤ k τ) → (∀ s r : ℝ, 0 < s → s ≤ r → f s / s ^ n ≤ f r / r ^ n + ∫ τ in Ioc s r, k τ / τ ^ n) → (∀ η : ℝ, η < 1 → ∃ᶠ s in 𝓝[>] (0 : ℝ), η < f s / s ^ n) → 0 < F ∧ ∃ r : ℝ, 0 < r ∧ r < 2 * F ^ (n : ℝ)⁻¹ ∧ f (5 * r) ≤ 5 ^ n * F ^ (n : ℝ)⁻¹ * k r",
+  "lean_name": "sobolev_good_radius_calculus",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-sobolev-inequality-a1-good-radius-calculus-a1-a1"
+}
