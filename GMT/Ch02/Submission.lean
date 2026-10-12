@@ -506,6 +506,45 @@ theorem Submission.whitney_gluing_hasFDerivAt : (∀ (n : ℕ) (A : Set (Rn n)) 
   have hrτ : r ≤ τ := (min_le_right _ _).trans (min_le_right _ _)
   set ρ := r / (C + 2) with hρ_def
   have hC2 : 0 < C + 2 := by linarith
+/-- **Simon Ch. 2, Theorem 1.6 (pp. 42–43), Whitney extension: continuity of `Dg` on `A`.** Let
+`A ⊂ ℝⁿ` be closed, `ν` continuous on `A`, `(h, ν)` satisfy the uniform first-order condition of
+1.6 on compact subsets of `A`, `C, M ≥ 0`, and the anchors `pᵢ` lie in `A`. Suppose
+`Dg(x) = ⟨ν(x), ·⟩` for `x ∈ A`, and for `x ∉ A`, with `d = dist(·, A)`, there is a finite `S` with
+`Dg(x) = ∑_{i ∈ S} (φᵢ(x) ⟨ν(pᵢ), ·⟩ + Pᵢ(x) Dφᵢ(x))`, `Pᵢ(x) = h(pᵢ) + ⟨ν(pᵢ), x - pᵢ⟩`,
+where `φᵢ(x) ≥ 0`, `|x - pᵢ| ≤ C d(x)`, `∑ φᵢ(x) = 1`, `∑ Dφᵢ(x) = 0`, and
+`∑ ‖Dφᵢ(x)‖ ≤ M / d(x)` if `d(x) ≤ 1`. Then `Dg` is continuous at every `a ∈ A`. For `x ∉ A`
+near `a`, `Dg(x) - ⟨ν(a), ·⟩ = ∑ φᵢ(x) ⟨ν(pᵢ) - ν(a), ·⟩ + ∑ (Pᵢ(x) - c) Dφᵢ(x)`, where `c` is
+the jet of a nearest point `a* ∈ A` evaluated at `x`; `|Pᵢ(x) - c| ≤ ε(3C + 1) d(x)` then gives
+`‖Dg(x) - Dg(a)‖ ≤ ε(1 + (3C + 1)M)`. -/
+theorem Submission.whitney_gluing_continuousAt_fderiv : ∀ (n : ℕ) (A : Set (Rn n)) (h : Rn n → ℝ) (ν : Rn n → Rn n) (ι : Type) (φ : ι → Rn n → ℝ) (p : ι → Rn n) (C M : ℝ) (g : Rn n → ℝ), IsClosed A → ContinuousOn ν A → (∀ K ⊆ A, IsCompact K → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ K, ∀ y ∈ A, 0 < ‖y - x‖ → ‖y - x‖ < δ → |h y - h x - inner ℝ (ν x) (y - x)| ≤ ε * ‖y - x‖) → 0 ≤ C → 0 ≤ M → (∀ i, p i ∈ A) → (∀ x ∈ A, fderiv ℝ g x = innerSL ℝ (ν x)) → (∀ x ∉ A, ∃ S : Finset ι, (∀ i ∈ S, 0 ≤ φ i x ∧ ‖x - p i‖ ≤ C * Metric.infDist x A) ∧ ∑ i ∈ S, φ i x = 1 ∧ ∑ i ∈ S, fderiv ℝ (φ i) x = 0 ∧ (Metric.infDist x A ≤ 1 → ∑ i ∈ S, ‖fderiv ℝ (φ i) x‖ ≤ M / Metric.infDist x A) ∧ fderiv ℝ g x = ∑ i ∈ S, (φ i x • innerSL ℝ (ν (p i)) + (h (p i) + inner ℝ (ν (p i)) (x - p i)) • fderiv ℝ (φ i) x)) → ∀ a ∈ A, ContinuousAt (fderiv ℝ g) a := by
+  intro n A h ν ι φ p C M g hA hν hW hC hM hp hFD hrep a ha
+  rw [Metric.continuousAt_iff]
+  intro η hη
+  -- Step 1: `ε = η / (2B)` with `B = 1 + (3C + 1)M ≥ 1`, so `εB < η` and `ε < η`.
+  have hB : 0 < 1 + (3 * C + 1) * M := by nlinarith
+  set ε := η / (2 * (1 + (3 * C + 1) * M)) with hε_def
+  have hε : 0 < ε := div_pos hη (by linarith)
+  have hεB : ε * (1 + (3 * C + 1) * M) < η := by
+    rw [hε_def, div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+    nlinarith
+  have hεη : ε < η := by
+    have h0 : 0 ≤ (3 * C + 1) * M := mul_nonneg (by linarith) hM
+    have : ε ≤ ε * (1 + (3 * C + 1) * M) := by nlinarith [mul_nonneg hε.le h0]
+    linarith
+  -- Step 2: the uniform condition on the compact `K = A ∩ B̄(a, 1)` gives `δ₁`.
+  set K : Set (Rn n) := A ∩ closedBall a 1 with hK_def
+  have hK : IsCompact K := (isCompact_closedBall a 1).inter_left hA
+  obtain ⟨δ₁, hδ₁, hWK⟩ := hW K inter_subset_left hK ε hε
+  -- Step 3: continuity of `ν` on `A` at `a` gives `τ`.
+  obtain ⟨τ, hτ, hντ⟩ := Metric.continuousWithinAt_iff.mp (hν a ha) ε hε
+  -- Step 4: `r = min {1, δ₁, τ}` and `ρ = r / (C + 2)`.
+  set r := min 1 (min δ₁ τ) with hr_def
+  have hr : 0 < r := lt_min one_pos (lt_min hδ₁ hτ)
+  have hr1 : r ≤ 1 := min_le_left _ _
+  have hrδ : r ≤ δ₁ := (min_le_right _ _).trans (min_le_left _ _)
+  have hrτ : r ≤ τ := (min_le_right _ _).trans (min_le_right _ _)
+  have hC2 : 0 < C + 2 := by linarith
+  set ρ := r / (C + 2) with hρ_def
   have hρ : 0 < ρ := div_pos hr hC2
   have hρr : (C + 1) * ρ < r := by
     rw [hρ_def, mul_div_assoc', div_lt_iff₀ hC2]
@@ -540,6 +579,54 @@ theorem Submission.whitney_gluing_hasFDerivAt : (∀ (n : ℕ) (A : Set (Rn n)) 
     have hdx : infDist x A ≤ ‖x - a‖ := by rw [← dist_eq_norm]; exact infDist_le_dist_of_mem ha
     have hterm : ∀ i ∈ S, |(h (p i) + inner ℝ (ν (p i)) (x - p i)) - (h a + inner ℝ (ν a) (x - a))|
         ≤ (2 * C + 1) * ε * ‖x - a‖ := by
+  have hρr2 : 2 * ρ ≤ r := by
+    rw [hρ_def, mul_div_assoc', div_le_iff₀ hC2]
+    nlinarith
+  have hρr' : ρ < r := by
+    have : ρ ≤ (C + 1) * ρ := by nlinarith
+    linarith
+  -- (2a): the uniform estimate with base point in `K`, including the trivial case `y = b`.
+  have hWK' : ∀ b ∈ K, ∀ y ∈ A, ‖y - b‖ < δ₁ →
+      |h y - h b - inner ℝ (ν b) (y - b)| ≤ ε * ‖y - b‖ := by
+    intro b hb y hy hyb
+    rcases eq_or_ne y b with rfl | hne
+    · simp
+    · exact hWK b hb y hy (norm_pos_iff.mpr (sub_ne_zero.mpr hne)) hyb
+  -- (3a): `‖ν(b) - ν(a)‖ < ε` for `b ∈ A` with `‖b - a‖ < r`.
+  have hνa : ∀ b ∈ A, ‖b - a‖ < r → ‖ν b - ν a‖ < ε := by
+    intro b hb hba
+    have := hντ hb (by rw [dist_eq_norm]; linarith)
+    rwa [dist_eq_norm] at this
+  -- Step 5: let `‖x - a‖ < ρ`.
+  refine ⟨ρ, hρ, fun x hx => ?_⟩
+  have hxa : ‖x - a‖ < ρ := by rwa [dist_eq_norm] at hx
+  rw [dist_eq_norm, hFD a ha]
+  by_cases hxA : x ∈ A
+  · -- Case `x ∈ A`: `‖Dg(x) - Dg(a)‖ = ‖ν(x) - ν(a)‖ < ε < η`.
+    rw [hFD x hxA, ← map_sub, innerSL_apply_norm]
+    exact (hνa x hxA (by linarith)).trans hεη
+  · -- Case `x ∉ A`.
+    obtain ⟨S, hS, hS1, hD0, hDbound, hfd⟩ := hrep x hxA
+    -- (a): `0 < d(x) ≤ ‖x - a‖ < 1`.
+    have hne : A.Nonempty := ⟨a, ha⟩
+    have hdpos : 0 < infDist x A := (hA.notMem_iff_infDist_pos hne).mp hxA
+    have hdx : infDist x A ≤ ‖x - a‖ := by rw [← dist_eq_norm]; exact infDist_le_dist_of_mem ha
+    have hd1 : infDist x A ≤ 1 := by linarith
+    -- (b): a nearest point `a' ∈ A` of `x` lies in `K` and `‖ν(a') - ν(a)‖ < ε`.
+    obtain ⟨a', ha', hda'⟩ := hA.exists_infDist_eq_dist hne x
+    have hxa' : ‖x - a'‖ = infDist x A := by rw [hda', dist_eq_norm]
+    have ha'a : ‖a' - a‖ < r := by
+      have : ‖a' - a‖ ≤ ‖x - a'‖ + ‖x - a‖ := by
+        calc ‖a' - a‖ = ‖(x - a) - (x - a')‖ := by congr 1; abel
+          _ ≤ ‖x - a‖ + ‖x - a'‖ := norm_sub_le _ _
+          _ = ‖x - a'‖ + ‖x - a‖ := add_comm _ _
+      linarith
+    have ha'K : a' ∈ K := ⟨ha', by rw [mem_closedBall, dist_eq_norm]; linarith⟩
+    have hνa' : ‖ν a' - ν a‖ < ε := hνa a' ha' ha'a
+    set d := infDist x A with hd_def
+    set c := h a' + inner ℝ (ν a') (x - a') with hc_def
+    -- (c): `‖ν(pᵢ) - ν(a)‖ ≤ ε` for `i ∈ S`.
+    have hνi : ∀ i ∈ S, ‖ν (p i) - ν a‖ ≤ ε := by
       intro i hi
       have hxp : ‖x - p i‖ ≤ C * ‖x - a‖ := (hS i hi).2.trans (mul_le_mul_of_nonneg_left hdx hC)
       have hpa : ‖p i - a‖ ≤ (C + 1) * ‖x - a‖ := by
@@ -583,6 +670,92 @@ theorem Submission.whitney_gluing_hasFDerivAt : (∀ (n : ℕ) (A : Set (Rn n)) 
           intro i hi
           exact mul_le_mul_of_nonneg_left (hterm i hi) (hS i hi).1
       _ = (2 * C + 1) * ε * ‖x - a‖ := by rw [← Finset.sum_mul, hS1, one_mul]
+      have : (C + 1) * ‖x - a‖ ≤ (C + 1) * ρ := mul_le_mul_of_nonneg_left hxa.le (by linarith)
+      exact (hνa (p i) (hp i) (by linarith)).le
+    -- (d), (e): `|Pᵢ(x) - c| ≤ ε(3C + 1)d` for `i ∈ S`, via (E1).
+    have hPi : ∀ i ∈ S, |(h (p i) + inner ℝ (ν (p i)) (x - p i)) - c| ≤ ε * (3 * C + 1) * d := by
+      intro i hi
+      have hxp : ‖x - p i‖ ≤ C * d := (hS i hi).2
+      have hpa' : ‖p i - a'‖ ≤ (C + 1) * d := by
+        calc ‖p i - a'‖ = ‖(x - a') - (x - p i)‖ := by congr 1; abel
+          _ ≤ ‖x - a'‖ + ‖x - p i‖ := norm_sub_le _ _
+          _ ≤ d + C * d := by rw [hxa']; linarith
+          _ = (C + 1) * d := by ring
+      have hpa'δ : ‖p i - a'‖ < δ₁ := by
+        have : (C + 1) * d ≤ (C + 1) * ρ := mul_le_mul_of_nonneg_left (by linarith) (by linarith)
+        linarith
+      have hWi := hWK' a' ha'K (p i) (hp i) hpa'δ
+      have hνpa' : ‖ν (p i) - ν a'‖ ≤ 2 * ε := by
+        calc ‖ν (p i) - ν a'‖ = ‖(ν (p i) - ν a) - (ν a' - ν a)‖ := by congr 1; abel
+          _ ≤ ‖ν (p i) - ν a‖ + ‖ν a' - ν a‖ := norm_sub_le _ _
+          _ ≤ ε + ε := add_le_add (hνi i hi) hνa'.le
+          _ = 2 * ε := by ring
+      have hE1 : (h (p i) + inner ℝ (ν (p i)) (x - p i)) - c =
+          (h (p i) - h a' - inner ℝ (ν a') (p i - a')) + inner ℝ (ν (p i) - ν a') (x - p i) := by
+        have hsplit : x - a' = (x - p i) + (p i - a') := by abel
+        rw [hc_def, inner_sub_left, hsplit, inner_add_right]
+        ring
+      rw [hE1]
+      calc |(h (p i) - h a' - inner ℝ (ν a') (p i - a')) + inner ℝ (ν (p i) - ν a') (x - p i)|
+          ≤ |h (p i) - h a' - inner ℝ (ν a') (p i - a')| + |inner ℝ (ν (p i) - ν a') (x - p i)| :=
+            abs_add_le _ _
+        _ ≤ ε * ‖p i - a'‖ + ‖ν (p i) - ν a'‖ * ‖x - p i‖ :=
+            add_le_add hWi (abs_real_inner_le_norm _ _)
+        _ ≤ ε * ((C + 1) * d) + (2 * ε) * (C * d) := by
+            apply add_le_add
+            · exact mul_le_mul_of_nonneg_left hpa' hε.le
+            · exact mul_le_mul hνpa' hxp (norm_nonneg _) (by linarith)
+        _ = ε * (3 * C + 1) * d := by ring
+    -- (f): `Dg(x) - ⟨ν(a), ·⟩ = ∑ φᵢ(x) (L_{ν(pᵢ)} - L_{ν(a)}) + ∑ (Pᵢ(x) - c) Dφᵢ(x)`.
+    have hrepr : fderiv ℝ g x - innerSL ℝ (ν a) =
+        ∑ i ∈ S, φ i x • (innerSL ℝ (ν (p i)) - innerSL ℝ (ν a)) +
+          ∑ i ∈ S, ((h (p i) + inner ℝ (ν (p i)) (x - p i)) - c) • fderiv ℝ (φ i) x := by
+      rw [hfd]
+      simp_rw [smul_sub, sub_smul]
+      rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.sum_sub_distrib,
+        ← Finset.sum_smul, ← Finset.smul_sum, hS1, hD0, one_smul, smul_zero, sub_zero]
+      abel
+    rw [hrepr]
+    -- (g): the first sum has norm `≤ ε`, the second `≤ ε(3C + 1)M`.
+    have hfirst : ‖∑ i ∈ S, φ i x • (innerSL ℝ (ν (p i)) - innerSL ℝ (ν a))‖ ≤ ε := by
+      calc ‖∑ i ∈ S, φ i x • (innerSL ℝ (ν (p i)) - innerSL ℝ (ν a))‖
+          ≤ ∑ i ∈ S, ‖φ i x • (innerSL ℝ (ν (p i)) - innerSL ℝ (ν a))‖ := norm_sum_le _ _
+        _ = ∑ i ∈ S, φ i x * ‖ν (p i) - ν a‖ := by
+            apply Finset.sum_congr rfl
+            intro i hi
+            rw [norm_smul, Real.norm_of_nonneg (hS i hi).1, ← map_sub, innerSL_apply_norm]
+        _ ≤ ∑ i ∈ S, φ i x * ε := by
+            apply Finset.sum_le_sum
+            intro i hi
+            exact mul_le_mul_of_nonneg_left (hνi i hi) (hS i hi).1
+        _ = ε := by rw [← Finset.sum_mul, hS1, one_mul]
+    have hsecond : ‖∑ i ∈ S, ((h (p i) + inner ℝ (ν (p i)) (x - p i)) - c) • fderiv ℝ (φ i) x‖ ≤
+        ε * (3 * C + 1) * M := by
+      calc ‖∑ i ∈ S, ((h (p i) + inner ℝ (ν (p i)) (x - p i)) - c) • fderiv ℝ (φ i) x‖
+          ≤ ∑ i ∈ S, ‖((h (p i) + inner ℝ (ν (p i)) (x - p i)) - c) • fderiv ℝ (φ i) x‖ :=
+            norm_sum_le _ _
+        _ = ∑ i ∈ S, |(h (p i) + inner ℝ (ν (p i)) (x - p i)) - c| * ‖fderiv ℝ (φ i) x‖ := by
+            apply Finset.sum_congr rfl
+            intro i _
+            rw [norm_smul, Real.norm_eq_abs]
+        _ ≤ ∑ i ∈ S, (ε * (3 * C + 1) * d) * ‖fderiv ℝ (φ i) x‖ := by
+            apply Finset.sum_le_sum
+            intro i hi
+            exact mul_le_mul_of_nonneg_right (hPi i hi) (norm_nonneg _)
+        _ = (ε * (3 * C + 1) * d) * ∑ i ∈ S, ‖fderiv ℝ (φ i) x‖ := by rw [Finset.mul_sum]
+        _ ≤ (ε * (3 * C + 1) * d) * (M / d) := by
+            apply mul_le_mul_of_nonneg_left (hDbound hd1)
+            have : 0 ≤ 3 * C + 1 := by linarith
+            positivity
+        _ = ε * (3 * C + 1) * M := by field_simp
+    calc ‖∑ i ∈ S, φ i x • (innerSL ℝ (ν (p i)) - innerSL ℝ (ν a)) +
+          ∑ i ∈ S, ((h (p i) + inner ℝ (ν (p i)) (x - p i)) - c) • fderiv ℝ (φ i) x‖
+        ≤ ‖∑ i ∈ S, φ i x • (innerSL ℝ (ν (p i)) - innerSL ℝ (ν a))‖ +
+          ‖∑ i ∈ S, ((h (p i) + inner ℝ (ν (p i)) (x - p i)) - c) • fderiv ℝ (φ i) x‖ :=
+          norm_add_le _ _
+      _ ≤ ε + ε * (3 * C + 1) * M := add_le_add hfirst hsecond
+      _ = ε * (1 + (3 * C + 1) * M) := by ring
+      _ < η := hεB
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
