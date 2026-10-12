@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2ffdd66946cd95022a102abd3da16d6c5b4579eebfed82192cdbc1f880c69b13",
+  "git_delta": {
+    "base_commit": "fc11fefb766cda48f2586cfcc742e521ff49a0f3",
+    "candidate_commit": "46f00f744065a75b1c436c8d016d42de094357f8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_cmr_zero_extension",
+    "diff_sha256": "17f2bd6e68b46d457f8923aa89a5d18ff3d838ba9535aeaff661567ad96734b4",
+    "source_sha256": "e696d1fd3cbc50bc34102ec9ddc583a435877cb3070fb15be274f61d416ecb30",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_cmr_zero_extension",
+      "statement": "∀ (P n : ℕ) (U B K : Set (Euclid P)) (hBU : B ⊆ U) (X : GeometricCurrentOn B n) (R : IMRep B n), IsOpen B → IsCompact K → K ⊆ B → R.Represents X → (∀ y ∈ B, y ∉ K → ∃ ρ : ℝ, 0 < ρ ∧ R.measure (ball y ρ) = 0) → ∃ E : GeometricCurrentOn U n, IsIntegerMultiplicity E ∧ (∀ ω : TestFormOn B n, E (testFormOnInclusion hBU n ω) = X ω) ∧ ∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) K → E ω = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
