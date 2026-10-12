@@ -359,6 +359,30 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- A `k`-covector on `ℝ^P` whose coordinates `α(e_{I(0)}, …, e_{I(k-1)})` vanish for every
+increasing multi-index `I` is zero. -/
+theorem Submission.smr_ci_covector_eq_zero_of_coord :
+    ∀ (P k : ℕ) (α : Covector (Eucl P) k),
+      (∀ I : SimonMultiIndex k P, euclideanCovectorCoordinate α I = 0) → α = 0 := by
+  intro P k α hα
+  classical
+  -- By extensionality on the standard basis it suffices to treat injective index tuples `v`.
+  apply ContinuousAlternatingMap.toAlternatingMap_injective
+  refine Module.Basis.ext_alternating (EuclideanSpace.basisFun (Fin P) ℝ).toBasis fun v hv => ?_
+  simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
+    ContinuousAlternatingMap.coe_toAlternatingMap, ContinuousAlternatingMap.toAlternatingMap_zero,
+    AlternatingMap.zero_apply]
+  -- Sorting `v` gives an increasing multi-index `I` with `e_I = e_v ∘ σ`, `σ := Tuple.sort v`.
+  have hsm : StrictMono (v ∘ Tuple.sort v) :=
+    (Tuple.monotone_sort v).strictMono_of_injective (hv.comp (Tuple.sort v).injective)
+  have h := hα (OrderEmbedding.ofStrictMono _ hsm)
+  have heq : (fun j => EuclideanSpace.single (OrderEmbedding.ofStrictMono _ hsm j) (1 : ℝ)) =
+      (fun i => EuclideanSpace.single (v i) (1 : ℝ)) ∘ Tuple.sort v := rfl
+  -- `α(e_I) = sign σ • α(e_v)`, and the sign is a unit.
+  rw [euclideanCovectorCoordinate, heq, ← ContinuousAlternatingMap.coe_toAlternatingMap α,
+    AlternatingMap.map_perm] at h
+  exact (smul_eq_zero_iff_eq _).mp h
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
