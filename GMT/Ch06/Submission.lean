@@ -788,6 +788,99 @@ theorem Submission.slicing_representation_unique :
   obtain ⟨C, hC⟩ := hab β
   exact ⟨C, fun x => (Real.norm_eq_abs (a β x)).symm.le.trans (hC x)⟩
 
+/-- **Simon Ch. 6, 4.8 (p. 157).**  Every slice `S = ⟨T, f, t₋⟩` of (4.6) satisfies
+`spt S ⊆ spt T ∩ {f = t}`.  With `A_t = {x ∈ U | f x < t}` and representations `(μ, v)` of `T`
+and `(μ', v')` of `∂T`, `S(ω) = ∫_{A_t} ⟨dω, v⟩ dμ − ∫_{A_t} ⟨ω, v'⟩ dμ'`.  Both integrals
+vanish for `ω` supported where `T = 0` (`slicing_representation_unique` against the zero
+representation) or where `f > t`, and both equal `T(dω)` for `ω` supported where `f < t`. -/
+theorem Submission.slicing_support_subset :
+    ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1),
+      ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U →
+      ∀ (t : ℝ) (S : GeometricCurrentOn U m), IsSlice T f t S →
+        S.support ⊆ T.support ∩ {x | f x = t} := by
+  intro P m U hU T f L hf t S hS
+  -- Step 0: unpack the slice into the formula for `S(ω)` above.
+  obtain ⟨A, B, ⟨hAt, μ, v, hrep, hA⟩, ⟨-, μ', v', hrep', hB⟩, hSAB⟩ := hS
+  set At : Set (Eucl P) := {x | x ∈ U ∧ f x < t}
+  have hS_eq : ∀ ω : TestFormOn U m, S ω =
+      (∫ x in At, v x (((exteriorDerivativeTestOn U m ω : TestFormOn U (m + 1)) :
+        DifferentialForm (Eucl P) (m + 1)) x) ∂μ) -
+      ∫ x in At, v' x ((ω : DifferentialForm (Eucl P) m) x) ∂μ' := fun ω => by
+    rw [hSAB ω, GeometricCurrentOn.boundary_apply, hA, hB]
+  -- Locality: if a represented current vanishes on an open `W`, so does its restriction to
+  -- `A_t` (`slicing_representation_unique` against the zero representation).
+  have hloc : ∀ {k : ℕ} (X : GeometricCurrentOn U k) (ν : Measure (Eucl P))
+      (w : Eucl P → NVector (Eucl P) k), IsMeasureRepresentation X ν w →
+      ∀ W : Set (Eucl P), IsOpen W → X.VanishesOn W →
+      ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W →
+        ∫ x in At, w x ((ω : DifferentialForm (Eucl P) k) x) ∂ν = 0 := by
+    intro k X ν w hX W hW hvan ω hω
+    simpa using Submission.slicing_representation_unique P k U hU ν 0 w 0 (fun η => (hX η).1)
+      (fun _ => integrable_zero_measure) W hW
+      (fun η hη => by rw [← (hX η).2, hvan η hη]; simp) At hAt ω hω
+  -- Forms vanish off their topological support, and `tsupport dω ⊆ tsupport ω`.
+  have hzero : ∀ {k : ℕ} (w : Eucl P → NVector (Eucl P) k) (η : DifferentialForm (Eucl P) k)
+      (y : Eucl P), y ∉ tsupport η → w y (η y) = 0 := fun w η y hy => by
+    rw [image_eq_zero_of_notMem_tsupport hy, map_zero]
+  have hd : ∀ (ω : TestFormOn U m) (W' : Set (Eucl P)),
+      tsupport (ω : DifferentialForm (Eucl P) m) ⊆ W' →
+      tsupport (((exteriorDerivativeTestOn U m ω : TestFormOn U (m + 1)) :
+        DifferentialForm (Eucl P) (m + 1))) ⊆ W' := fun _ _ hω =>
+    (tsupport_exteriorDerivative_subset _).trans hω
+  -- Step 1: `x ∈ U`, and `S` vanishes on no open `W' ∋ x` with `closure W'` compact in `U`.
+  rintro x ⟨hxU, hxS⟩
+  have hS_ne : ∀ W' : Set (Eucl P), IsOpen W' → IsCompact (closure W') → closure W' ⊆ U →
+      x ∈ W' → S.VanishesOn W' → False := fun W' h1 h2 h3 hxW hvan =>
+    hxS ⟨W', ⟨h1, h2, h3, hvan⟩, hxW⟩
+  refine ⟨⟨hxU, ?_⟩, ?_⟩
+  · -- Step 2: if `T` vanishes on such a `W' ∋ x`, then so do `∂T` and hence `S`.
+    rintro ⟨W', ⟨h1, h2, h3, hTvan⟩, hxW⟩
+    apply hS_ne W' h1 h2 h3 hxW
+    intro ω hω
+    have hbvan : T.boundary.VanishesOn W' := fun η hη => by
+      rw [GeometricCurrentOn.boundary_apply]
+      exact hTvan _ (hd η W' hη)
+    rw [hS_eq ω, hloc T μ v hrep W' h1 hTvan _ (hd ω W' hω),
+      hloc T.boundary μ' v' hrep' W' h1 hbvan ω hω, sub_self]
+  · -- Step 3: `f x = t`, since otherwise `S` vanishes on a small ball around `x`.
+    have hcont : ContinuousAt f x := hf.continuousOn.continuousAt (hU.mem_nhds hxU)
+    have hball : ∀ p : Eucl P → Prop, (∀ᶠ y in 𝓝 x, p y) → ∃ W' : Set (Eucl P), IsOpen W' ∧
+        IsCompact (closure W') ∧ closure W' ⊆ U ∧ x ∈ W' ∧ ∀ y ∈ W', p y := by
+      intro p hp
+      obtain ⟨r, hr, hr'⟩ := Metric.eventually_nhds_iff_ball.1
+        ((show ∀ᶠ y in 𝓝 x, y ∈ U from hU.mem_nhds hxU).and hp)
+      refine ⟨ball x (r / 2), isOpen_ball, ?_, ?_, mem_ball_self (by linarith), ?_⟩
+      · rw [closure_ball x (by positivity)]
+        exact isCompact_closedBall x _
+      · rw [closure_ball x (by positivity)]
+        exact fun y hy => (hr' y (closedBall_subset_ball (by linarith) hy)).1
+      · exact fun y hy => (hr' y (ball_subset_ball (by linarith) hy)).2
+    rcases lt_trichotomy (f x) t with hlt | heq | hgt
+    · -- (a) `f < t` near `x`: both integrals equal `T(dω)`.
+      exfalso
+      obtain ⟨W', h1, h2, h3, hxW, hW'⟩ :=
+        hball (fun y => f y < t) (hcont.eventually (eventually_lt_nhds hlt))
+      apply hS_ne W' h1 h2 h3 hxW
+      intro ω hω
+      have hWA : W' ⊆ At := fun y hy => ⟨h3 (subset_closure hy), hW' y hy⟩
+      rw [hS_eq ω, setIntegral_eq_integral_of_forall_compl_eq_zero
+          (fun y hy => hzero v _ y fun h => hy (hWA (hd ω W' hω h))),
+        setIntegral_eq_integral_of_forall_compl_eq_zero
+          (fun y hy => hzero v' _ y fun h => hy (hWA (hω h))),
+        ← (hrep _).2, ← (hrep' ω).2, GeometricCurrentOn.boundary_apply, sub_self]
+    · exact heq
+    · -- (b) `f > t` near `x`: both integrals vanish.
+      exfalso
+      obtain ⟨W', h1, h2, h3, hxW, hW'⟩ :=
+        hball (fun y => t < f y) (hcont.eventually (eventually_gt_nhds hgt))
+      apply hS_ne W' h1 h2 h3 hxW
+      intro ω hω
+      have hWA : ∀ y ∈ At, y ∉ W' := fun y hy hyW => lt_asymm hy.2 (hW' y hyW)
+      rw [hS_eq ω, setIntegral_eq_zero_of_forall_eq_zero
+          (fun y hy => hzero v _ y fun h => hWA y hy (hd ω W' hω h)),
+        setIntegral_eq_zero_of_forall_eq_zero
+          (fun y hy => hzero v' _ y fun h => hWA y hy (hω h)), sub_self]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
