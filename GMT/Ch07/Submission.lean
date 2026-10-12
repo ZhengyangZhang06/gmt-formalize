@@ -562,6 +562,30 @@ theorem Submission.imsupp_unit_orientation_ne_zero_norm_le_one : ∀ (P n : ℕ)
     calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := ContinuousAlternatingMap.le_opNorm α τ
       _ = ‖α‖ := by rw [Finset.prod_eq_one fun i _ => hτ.norm_eq_one i, mul_one]
 
+/-- **Simon 6.3.2(3)** (`M_W(T) = ∫_{M ∩ W} θ dHⁿ`, so `μ_T(W) = 0` where `T` vanishes): if
+`T = τ(M, θ, ξ)` vanishes on the open set `W ⊆ U`, then the weight `μ_T = θHⁿ⌞M` has
+`μ_T(W) = 0`.  Fix a basis `α₁, …, α_N` of the finite-dimensional space `Λⁿ` of `n`-covectors.
+By the fundamental lemma, `μ_T`-a.e. `x ∈ W` has `⟨αₖ, ξ(x)⟩ = 0` for all `k`, so `ξ(x) = 0`;
+but `ξ ≠ 0` holds `μ_T`-a.e., since `μ_T ≪ Hⁿ⌞M` and `ξ` is `Hⁿ⌞M`-a.e. a unit orientation. -/
+theorem Submission.imsupp_measure_eq_zero_of_vanishesOn : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → W ⊆ U → T.VanishesOn W → R.measure W = 0 := by
+  intro P n U W T R hRT hW hWU hT
+  -- `μ_T = θHⁿ⌞M ≪ Hⁿ⌞M`, and `Hⁿ⌞M`-a.e. `ξ(x)` is a unit orientation, hence nonzero
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  have hξ : ∀ᵐ x ∂R.measure, R.orient x ≠ 0 :=
+    hac.ae_le <| R.orients.mono fun x ⟨Q, _, hQ⟩ =>
+      (Submission.imsupp_unit_orientation_ne_zero_norm_le_one P n _ Q hQ).1
+  -- a basis `α₁, …, α_N` of the finite-dimensional space `Λⁿ` of `n`-covectors
+  have := Submission.imsupp_covector_finiteDimensional P n
+  let α := Module.finBasis ℝ (Covector (Euclid P) n)
+  -- `μ_T`-a.e. `x ∈ W` has `⟨αₖ, ξ(x)⟩ = 0` for every `k` (fundamental lemma, finitely many `k`)
+  have hα : ∀ᵐ x ∂R.measure, ∀ k, x ∈ W → R.orient x (α k) = 0 :=
+    ae_all_iff.2 fun k =>
+      Submission.imsupp_orient_apply_ae_eq_zero_of_vanishesOn P n U W T R hRT hW hWU hT (α k)
+  -- such an `x` has `ξ(x) = 0`, as `ξ(x)` vanishes on a basis; so `μ_T`-a.e. `x` lies outside `W`
+  refine measure_eq_zero_iff_ae_notMem.2 ?_
+  filter_upwards [hξ, hα] with x hx0 hxα hxW
+  exact hx0 (ContinuousLinearMap.coe_injective (α.ext fun k => by simpa using hxα k hxW))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
