@@ -998,6 +998,27 @@ theorem Submission.monotonicity_formula_8_3_3 : MonotonicityFormula := by
       (densityRatio n V.weight x) ρ₀ Λ hρ₀ hmono hfin
     exact ⟨θ, hθ, hθtop, fun σ ρ hσ hσρ hρ ↦ ⟨hθle σ hσ (hσρ.trans_lt hρ), hnorm σ ρ hσ hσρ hρ⟩⟩
 
+/-- **Simon Ch. 8, 3.6 (Lemma).** If `V` has locally bounded first variation in `U`, then
+`Θ^n(μ_V, x)` exists and is finite for `μ_V`-a.e. `x`, and a Borel `Θ` equals it there: the
+monotonicity formula 3.3 applies at `μ_V`-a.e. `x`, and the Borel representative of the density
+takes the value of every existing density limit. -/
+theorem Submission.density_exists_ae_8_3_6 : DensityExistsAE := by
+  intro N n U V hV
+  -- Step 1: a Borel `Θ` with `Θ x = Θ^n(μ_V, x)` wherever the density exists (`μ_V` is
+  -- σ-finite, hence s-finite).
+  obtain ⟨Θ, hΘ, hΘ_eq⟩ := Submission.frt_weq_density_borel_representative N n V.weight
+  refine ⟨Θ, hΘ, ?_⟩
+  -- Step 2: for `μ_V`-a.e. `x` there are `R > 0`, `Λ ≥ 0` with `B_R(x) ⊆ U` and
+  -- `‖δV‖(B_r(x)) ≤ Λ μ_V(B_r(x))` for `0 < r < R` (hypothesis 3.1 of 3.3).
+  filter_upwards [Submission.dea_ae_variationMeasure_ball_bound N n U V hV]
+    with x ⟨R, Λ, hR, hΛ, hRU, hbound⟩
+  -- Step 3: at such `x`, the monotonicity formula 3.3 with `ρ₀ = R` gives a finite density `θ`.
+  obtain ⟨θ, hθ, hθ_ne_top, -⟩ := (Submission.monotonicity_formula_8_3_3 N n U V x R Λ hV hR
+    (ball_subset_closedBall.trans hRU) hΛ hbound).2
+  -- Step 4: `Θ` takes the value of the density limit, so `Θ x = θ`.
+  rw [hΘ_eq x θ hθ]
+  exact ⟨hθ_ne_top, hθ⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
