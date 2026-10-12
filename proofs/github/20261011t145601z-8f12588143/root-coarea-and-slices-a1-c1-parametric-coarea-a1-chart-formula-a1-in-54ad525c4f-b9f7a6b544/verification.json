@@ -1,0 +1,15 @@
+{
+  "node_id": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.chart_formula-a1.integrand_tonelli-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1828",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "7304d2742f2bb67fdf498d0da3f8c769aa2fd995",
+  "integrated_commit": "",
+  "proof_base_commit": "6bcb2d2f6fa340a5ace3fec3587a0c5db9206ca4",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d09bc8a18ce60face651f042976e8465f21f0f68 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.coarea_and_slices-a1.c1_parametric_coarea-a1.chart_formula-a1",
+  "requires": []
+}
