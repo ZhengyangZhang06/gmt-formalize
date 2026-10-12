@@ -458,6 +458,113 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Upper semicontinuity of the density at `y`, in the form used in steps 5 and 7 of the proof of
+Simon Ch. 5, Theorem 7.1 (cf. Ch. 4, 3.11 and 4.9).  Put `ω = ω_n > 0`, `b = Θy + (c − Θy)/3` and
+pick `ε ∈ (0, 1/2]` with `a := (1 + 2ε)ⁿ b < c`.  The density at `y` gives `σ₁ > 0` with
+`μ_V(B_s(y)) ≤ b ω sⁿ` for `s ∈ (0, σ₁)`.  As `Λ(t) → 0`, some `t ∈ (0, t₁]` with `t < σ₁` has
+`e^{Λ(t)} a + Λ(t)/ω < c`; take `d = εt`.  For `z ∈ B_d(y)`, the monotonicity bound at `z` with
+`r = t/2` and `B_{t/2}(z) ⊆ B_{t/2 + εt}(y)` give
+`ω Θ ≤ e^{Λ(t)} (t/2)⁻ⁿ μ_V(B_{t/2}(z)) + Λ(t) ≤ e^{Λ(t)} ω a + Λ(t)`, so `Θ < c`. -/
+theorem dohr_lmo_density_usc : ∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (y : Amb n ℓ) (t₁ : ℝ) (Λ : ℝ → ℝ), 0 < t₁ → Tendsto Λ (𝓝[>] 0) (𝓝 0) → (∀ t ∈ Ioc 0 t₁, ∀ z ∈ closedBall y t, ∃ Θ : ℝ, 0 ≤ Θ ∧ V.HasDensity z Θ ∧ ∀ r ∈ Ioo 0 t, unitBallVolume n * Θ ≤ Real.exp (Λ t) * (r ^ n)⁻¹ * (V.weight (closedBall z r)).toReal + Λ t) → ∀ Θy : ℝ, 0 ≤ Θy → V.HasDensity y Θy → ∀ c : ℝ, Θy < c → ∃ d > 0, ∀ z ∈ closedBall y d, ∃ Θ : ℝ, Θ < c ∧ V.HasDensity z Θ := by
+  intro n ℓ U V y t₁ Λ ht₁ hΛ hmon Θy hΘy hy c hc
+  -- `ω_n > 0`.
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    apply div_pos (Real.rpow_pos_of_pos Real.pi_pos _)
+    apply Real.Gamma_pos_of_pos
+    positivity
+  -- The levels `Θy < b < a' < c` and `ε ∈ (0, 1/2]` with `a := (1 + 2ε)ⁿ b < a'`.
+  obtain ⟨b, hb_def⟩ : ∃ b : ℝ, b = Θy + (c - Θy) / 3 := ⟨_, rfl⟩
+  obtain ⟨a', ha'_def⟩ : ∃ a' : ℝ, a' = Θy + 2 * (c - Θy) / 3 := ⟨_, rfl⟩
+  have hb_pos : 0 < b := by rw [hb_def]; linarith
+  have hΘb : Θy < b := by rw [hb_def]; linarith
+  have hba' : b < a' := by rw [hb_def, ha'_def]; linarith
+  have ha'c : a' < c := by rw [ha'_def]; linarith
+  have hcont : Tendsto (fun ε : ℝ => (1 + 2 * ε) ^ n * b) (𝓝[>] 0) (𝓝 b) := by
+    have h : Continuous (fun ε : ℝ => (1 + 2 * ε) ^ n * b) := by fun_prop
+    have h0 := h.tendsto 0
+    simp only [mul_zero, add_zero, one_pow, one_mul] at h0
+    exact h0.mono_left nhdsWithin_le_nhds
+  have hεev : ∀ᶠ ε in 𝓝[>] (0 : ℝ), (1 + 2 * ε) ^ n * b < a' ∧ ε ∈ Ioc 0 (1 / 2) :=
+    (hcont.eventually (eventually_lt_nhds hba')).and (Ioc_mem_nhdsGT (by norm_num))
+  obtain ⟨ε, hεa, hε⟩ := hεev.exists
+  obtain ⟨a, ha_def⟩ : ∃ a : ℝ, a = (1 + 2 * ε) ^ n * b := ⟨_, rfl⟩
+  have hac : a < c := by rw [ha_def]; linarith
+  -- Mass bound at `y`: `μ_V(B_s(y)) ≤ b ω_n sⁿ` for `s ∈ (0, σ₁)`, from the density at `y`.
+  have hlt : ENNReal.ofReal Θy < ENNReal.ofReal b :=
+    (ENNReal.ofReal_lt_ofReal_iff hb_pos).2 hΘb
+  obtain ⟨σ₁, hσ₁pos, hσ₁⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 (hy (Iio_mem_nhds hlt))
+  have hσ₁pos' : (0 : ℝ) < σ₁ := hσ₁pos
+  have hmass : ∀ s ∈ Ioo 0 σ₁,
+      V.weight (closedBall y s) ≤ ENNReal.ofReal (b * (unitBallVolume n * s ^ n)) := by
+    intro s hs
+    have h := hσ₁ hs
+    simp only [mem_preimage, mem_Iio] at h
+    have hne0 : ENNReal.ofReal (unitBallVolume n * s ^ n) ≠ 0 := by
+      rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+      exact mul_pos hω (pow_pos hs.1 n)
+    rw [ENNReal.div_lt_iff (Or.inl hne0) (Or.inl ENNReal.ofReal_ne_top),
+      ← ENNReal.ofReal_mul hb_pos.le] at h
+    exact h.le
+  -- Choice of `t ∈ (0, t₁]` with `t < σ₁` and `e^{Λ(t)} a + Λ(t)/ω_n < c`; then `d := ε t`.
+  have hlim : Tendsto (fun t => Real.exp (Λ t) * a + Λ t / unitBallVolume n) (𝓝[>] 0)
+      (𝓝 (Real.exp 0 * a + 0 / unitBallVolume n)) :=
+    (((Real.continuous_exp.tendsto 0).comp hΛ).mul_const a).add (hΛ.div_const _)
+  rw [Real.exp_zero, one_mul, zero_div, add_zero] at hlim
+  obtain ⟨t, ⟨htc, ht⟩, htσ⟩ :=
+    (((hlim.eventually (eventually_lt_nhds hac)).and (Ioc_mem_nhdsGT ht₁)).and
+      (Ioo_mem_nhdsGT hσ₁pos')).exists
+  have ht0 : 0 < t := ht.1
+  refine ⟨ε * t, mul_pos hε.1 ht0, ?_⟩
+  -- For `z ∈ B_{εt}(y) ⊆ B_t(y)`: the monotonicity bound at `z` with `r := t/2`.
+  intro z hz
+  have hzy : dist z y ≤ ε * t := mem_closedBall.1 hz
+  have hεt : ε * t ≤ t / 2 := by
+    have := mul_le_mul_of_nonneg_right hε.2 ht0.le
+    linarith
+  have hzt : z ∈ closedBall y t := mem_closedBall.2 (by linarith)
+  obtain ⟨Θ, -, hΘz, hΘbound⟩ := hmon t ht z hzt
+  refine ⟨Θ, ?_, hΘz⟩
+  have key := hΘbound (t / 2) ⟨by linarith, by linarith⟩
+  -- `B_{t/2}(z) ⊆ B_s(y)` with `s := t/2 + εt = (1 + 2ε) t/2 ≤ t < σ₁`, so
+  -- `(t/2)⁻ⁿ μ_V(B_{t/2}(z)) ≤ (t/2)⁻ⁿ b ω_n sⁿ = ω_n a`.
+  have hs : t / 2 + ε * t ∈ Ioo 0 σ₁ := by
+    have := mul_pos hε.1 ht0
+    exact ⟨by linarith, by linarith [htσ.2]⟩
+  have hsub : closedBall z (t / 2) ⊆ closedBall y (t / 2 + ε * t) :=
+    closedBall_subset_closedBall' (by linarith)
+  have hle := (measure_mono hsub).trans (hmass _ hs)
+  have hreal : (V.weight (closedBall z (t / 2))).toReal ≤
+      b * (unitBallVolume n * (t / 2 + ε * t) ^ n) :=
+    ENNReal.toReal_le_of_le_ofReal
+      (mul_nonneg hb_pos.le (mul_nonneg hω.le (pow_nonneg hs.1.le n))) hle
+  have hs_eq : (t / 2 + ε * t) ^ n = (t / 2) ^ n * (1 + 2 * ε) ^ n := by
+    rw [← mul_pow]; congr 1; ring
+  have hpow : 0 < (t / 2) ^ n := pow_pos (by linarith) n
+  have h6 : ((t / 2) ^ n)⁻¹ * (V.weight (closedBall z (t / 2))).toReal ≤ unitBallVolume n * a := by
+    rw [inv_mul_le_iff₀ hpow]
+    calc (V.weight (closedBall z (t / 2))).toReal
+        ≤ b * (unitBallVolume n * (t / 2 + ε * t) ^ n) := hreal
+      _ = (t / 2) ^ n * (unitBallVolume n * a) := by rw [hs_eq, ha_def]; ring
+  -- Hence `ω_n Θ ≤ e^{Λ(t)} ω_n a + Λ(t)`, i.e. `Θ ≤ e^{Λ(t)} a + Λ(t)/ω_n < c`.
+  have h7 : unitBallVolume n * Θ ≤ Real.exp (Λ t) * (unitBallVolume n * a) + Λ t :=
+    calc unitBallVolume n * Θ
+        ≤ Real.exp (Λ t) * ((t / 2) ^ n)⁻¹ * (V.weight (closedBall z (t / 2))).toReal + Λ t := key
+      _ = Real.exp (Λ t) * (((t / 2) ^ n)⁻¹ * (V.weight (closedBall z (t / 2))).toReal) + Λ t := by
+          ring
+      _ ≤ Real.exp (Λ t) * (unitBallVolume n * a) + Λ t := by
+          gcongr
+  have h8 : Θ ≤ Real.exp (Λ t) * a + Λ t / unitBallVolume n :=
+    calc Θ ≤ (Real.exp (Λ t) * (unitBallVolume n * a) + Λ t) / unitBallVolume n :=
+          (le_div_iff₀' hω).2 h7
+      _ = Real.exp (Λ t) * a + Λ t / unitBallVolume n := by
+          rw [add_div, mul_div_assoc, mul_div_cancel_left₀ a hω.ne']
+  linarith
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
