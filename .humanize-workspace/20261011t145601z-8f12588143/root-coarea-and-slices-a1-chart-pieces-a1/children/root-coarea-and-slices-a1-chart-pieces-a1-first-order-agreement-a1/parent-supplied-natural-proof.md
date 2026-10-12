@@ -1,0 +1,64 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.coarea_and_slices-a1.chart_pieces-a1`
+- Child DAG node: `root.coarea_and_slices-a1.chart_pieces-a1.first_order_agreement-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, steps 5-7. These follow Simon Ch. 3, the procedure of the area formula (chapter-03.txt lines 376-381), invoked for the co-area formula at lines 426-428. They use from Simon Ch. 2: the Lipschitz extension Theorem 1.2 (chapter-02.txt lines 33-52), applied coordinatewise; Rademacher's Theorem 1.4 (lines 62-70); and the C¹ Approximation Theorem 1.5 (lines 165-169), supplied here as the hypothesis (C1_{n,m}). Specialisations, stated explicitly: the parent applies this to h = f∘ψ_α on D_α, whereas here h and D are arbitrary; and ε_i = (i+1)⁻¹, i ∈ ℕ, replaces the parent's 1/i, i ≥ 1. Notation: Lⁿ = volume and DF(u) = fderiv ℝ F u. Fix K ∈ ℝ≥0 with h K-Lipschitz on D.
+1. (Global Lipschitz extension.) ℝᵐ is a finite-dimensional real normed space. So there is h̃ : ℝⁿ → ℝᵐ with h̃ = h on D that is K̃-Lipschitz on all of ℝⁿ, where K̃ := lipschitzExtensionConstant(ℝᵐ)·K ∈ ℝ≥0 (Mathlib LipschitzOnWith.extend_finite_dimension; this is Simon Ch. 2, Thm 1.2 applied to the coordinates).
+2. (C¹ approximants.) For i ∈ ℕ let ε_i := (i+1)⁻¹ ∈ ℝ≥0∞; ε_i > 0 because i+1 ≠ ∞. Apply (C1_{n,m}) to F := h̃ (which is K̃-Lipschitz) and ε_i. This gives G_i : ℝⁿ → ℝᵐ of class C¹ with Lⁿ(Bad_i) < ε_i, where Bad_i := {u : h̃(u) ≠ G_i(u) or Dh̃(u) ≠ DG_i(u)}. This proves the first conjunct.
+3. (Definition of E_i.) Let Diff := {u ∈ ℝⁿ : h̃ is differentiable at u} and E_i := D ∩ Diff ∩ {u : h̃(u) = G_i(u)} ∩ {u : Dh̃(u) = DG_i(u)}. Then E_i ⊆ D, which is the third conjunct.
+4. (E_i is Borel; second conjunct.) The four sets in the intersection are Borel:
+- D is open, hence Borel.
+- Diff is Borel (measurableSet_of_differentiableAt; ℝᵐ is complete).
+- h̃ (Lipschitz) and G_i (C¹) are continuous, so {h̃ = G_i} is closed (isClosed_eq), hence Borel.
+- u ↦ Dh̃(u) and u ↦ DG_i(u) are Borel measurable maps into ℝⁿ →L[ℝ] ℝᵐ with its Borel σ-algebra (measurable_fderiv). This space is finite-dimensional, hence second countable and metrizable, so its diagonal is measurable and {Dh̃ = DG_i} is Borel (measurableSet_eq_fun).
+So E_i is Borel.
+5. (Agreement to first order; fourth conjunct.) Let u ∈ E_i. Since u ∈ D, h(u) = h̃(u), and h̃(u) = G_i(u); so h(u) = G_i(u). Since u ∈ Diff, h̃ has Fréchet derivative Dh̃(u) at u, and Dh̃(u) = DG_i(u). So h̃ has Fréchet derivative DG_i(u) at u. D is open and contains u, so it is a neighbourhood of u on which h = h̃. Hence h has the same Fréchet derivative DG_i(u) at u (HasFDerivAt.congr_of_eventuallyEq), i.e. HasFDerivAt h (fderiv ℝ G_i u) u.
+6. (The exceptional set.) We claim D \ ⋃_i E_i ⊆ (ℝⁿ \ Diff) ∪ ⋂_i Bad_i. Let u ∈ D with u ∉ E_i for all i. If u ∉ Diff, u lies in the first set. If u ∈ Diff, then for every i, since u ∈ D ∩ Diff and u ∉ E_i, either h̃(u) ≠ G_i(u) or Dh̃(u) ≠ DG_i(u), i.e. u ∈ Bad_i. Hence u ∈ ⋂_i Bad_i.
+7. (Measure zero; fifth conjunct.) h̃ is Lipschitz on ℝⁿ and Lⁿ is an additive Haar measure on ℝⁿ, so Rademacher's theorem (Mathlib LipschitzWith.ae_differentiableAt) gives Lⁿ(ℝⁿ \ Diff) = 0. For every i, Lⁿ(⋂_k Bad_k) ≤ Lⁿ(Bad_i) < (i+1)⁻¹. Since (i+1)⁻¹ → 0 in ℝ≥0∞ (ENNReal.tendsto_inv_nat_nhds_zero), Lⁿ(⋂_k Bad_k) = 0. By step 6, monotonicity and subadditivity of Lⁿ, Lⁿ(D \ ⋃_i E_i) ≤ Lⁿ(ℝⁿ \ Diff) + Lⁿ(⋂_k Bad_k) = 0. ∎
+
+## Key steps
+
+1. Extend h|_D to a globally Lipschitz h̃ : ℝⁿ → ℝᵐ with h̃ = h on D (LipschitzOnWith.extend_finite_dimension).
+2. Apply (C1_{n,m}) to h̃ with ε_i = (i+1)⁻¹. This gives C¹ maps G_i with Lⁿ(Bad_i) < (i+1)⁻¹, where Bad_i = {h̃ ≠ G_i} ∪ {Dh̃ ≠ DG_i}.
+3. E_i := D ∩ Diff(h̃) ∩ {h̃ = G_i} ∩ {Dh̃ = DG_i} ⊆ D is Borel (measurableSet_of_differentiableAt, isClosed_eq, measurable_fderiv with measurableSet_eq_fun).
+4. On E_i, h = h̃ near u because D is open, so h(u) = G_i(u) and HasFDerivAt h (DG_i(u)) u.
+5. D \ ⋃E_i ⊆ (ℝⁿ \ Diff(h̃)) ∪ ⋂_i Bad_i. This set is Lⁿ-null: the first part by Rademacher, and Lⁿ(⋂ Bad_i) ≤ (i+1)⁻¹ → 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n "^def IsC1Submanifold|^def SubmanifoldCoverCharacterization" project/GMT/Ch03/Contract.lean`
+- `rg -n "theorem ContDiffOn.exists_lipschitzOnWith|theorem LipschitzOnWith.extend_finite_dimension|theorem LipschitzOnWith.extend_pi|theorem measurableSet_of_differentiableAt|theorem measurable_fderiv|theorem LipschitzWith.ae_differentiableAt|theorem measurableSet_eq_fun|theorem LipschitzOnWith.hausdorffMeasure_image_le|euclideanHausdorffMeasure_eq_volume|theorem isOpen_iUnion_countable|theorem isOpen_biUnion_countable|theorem Convex.lipschitzOnWith_of_nnnorm_fderiv_le|theorem HasFDerivAt.congr_of_eventuallyEq|theorem ContDiffOn.continuousOn_fderiv_of_isOpen" mathlib/Mathlib`
+- `rg -n "theorem IsLindelof.indexed_countable_subcover|theorem HereditarilyLindelofSpace.isLindelof|theorem Set.Countable.exists_eq_range" -A 4 mathlib/Mathlib`
+- `rg -l "exists_contDiff.*fderiv.*ne|lipschitz.*contDiff.*approx|C\^1 approximation|Whitney extension" mathlib/Mathlib`
+- `rg -n "euclideanHausdorffMeasure_image_le_of_lipschitzOn|exists_lipschitz_extension_finiteDimensional" Poincare (simongmt package)`
+- `rg -n "^(theorem|lemma|def|noncomputable def|structure|abbrev)" Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `rg -n "theorem .*c1_approx|theorem .*C1Approx|theorem .*contDiff_approximation|theorem .*whitney" Poincare/SimonGMT/Chapter02/*.lean`
+- `grep -c / rg -l for submanifold_cover_lipschitz_open_charts and lipschitzOn_open_c1_first_order_agreement in dag.json, DAG.md, issue-workers.json, simongmt Poincare and mathlib/Mathlib (name-collision check)`
+- `lake env lean GMT/Scratch/ChartPiecesSplitCheck.lean, ChartPiecesSplitApi.lean, ChartPiecesSplitChildA.lean, ChartPiecesSplitChildB.lean, ChartPiecesSplitFull.lean (replayed Contract scope of gmt-compare.py contract_scope); lean_contract.validate_lean_statement on both child types`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/Compactness/Lindelof.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+
+Snapshot: project d09bc8a (frozen Contract only), Mathlib 25730c7c and the pinned simongmt package. No match for either child. Mathlib has no C¹-approximation or first-order-agreement lemma for Lipschitz maps: the rg query for C¹-approximation/Whitney names found no file. SimonGMT Chapter02 has only Whitney-extension internals. SimonGMT SubmanifoldCover.lean proves only the converse 'if' direction, for its own IsSimonSubmanifold, and has no chart-piece cover for the contract's IsC1Submanifold. Hence both obligations are supplied as children. Every tool cited in the child proofs exists in the stated form: TopologicalSpace.isOpen_biUnion_countable, TopologicalSpace.exists_countable_basis, Set.Countable.exists_eq_range, ContDiffOn.exists_lipschitzOnWith (n ≠ 0, convex, compact), LipschitzOnWith.comp, IsOpen.nhdsWithin_eq, LipschitzOnWith.extend_finite_dimension, measurableSet_of_differentiableAt, measurable_fderiv, measurableSet_eq_fun (its MeasurableEq instance resolves for ℝⁿ →L[ℝ] ℝᵐ), LipschitzWith.ae_differentiableAt, HasFDerivAt.congr_of_eventuallyEq and ENNReal.tendsto_inv_nat_nhds_zero. For the parent assembly they include SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn and EuclideanSpace.euclideanHausdorffMeasure_eq_volume. SimonGMT exists_lipschitz_extension_finiteDimensional is not imported by the Ch03 contract, so the Mathlib extension lemma is cited instead. Lean checks in the replayed Contract scope: both child types validate and elaborate; the assembly from the two child types to the exact frozen parent type compiles; complete proofs of both children compile; everything depends only on propext, Classical.choice and Quot.sound. The proposed names collide with nothing.
