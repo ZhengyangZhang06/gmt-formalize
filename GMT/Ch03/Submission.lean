@@ -509,6 +509,61 @@ theorem Submission.deGiorgiRH_measure_density_of_tangentPlane : ∀ (n N : ℕ) 
   refine (Submission.deGiorgiRH_closedBall_tendsto_of_vague_plane n N ν P hP.1 hfin hlim).congr' ?_
   filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
   rw [hν r hr, mul_one]
+/-- **An approximate tangent space forces `Hⁿ`-density one** (Simon Ch. 3, Remark 1.5(3); Step 7
+of the supplied proof that `μ_E = Hⁿ ⌞ ∂*E` in De Giorgi's Theorem 4.3). Let `M ⊆ ℝᴺ` be
+arbitrary with `Hⁿ(M ∩ B̄_δ(x)) < ∞` for some `δ > 0`, and let `M` have approximate tangent space
+`P` at `x` (Def. 1.4). Then `Hⁿ(M ∩ B̄_ρ(x))/ρⁿ → ω_n = Lⁿ(B_1(0))` as `ρ ↓ 0`. The blow-up
+measures `ν_r = Hⁿ ⌞ η_{x,r}(M)` satisfy `ν_r(B̄_R(0)) = Hⁿ(M ∩ B̄_{rR}(x))/rⁿ` (translation
+invariance and `n`-homogeneity of `Hⁿ`) and converge vaguely to `Hⁿ ⌞ P` by Def. 1.4, so the
+vague-limit lemma `deGiorgiRH_closedBall_tendsto_of_vague_plane` applies; take `R = 1`. -/
+theorem Submission.deGiorgiRH_hausdorff_density_of_approxTangent : ∀ (n N : ℕ) (M : Set (Rn N)) (x : Rn N) (P : Submodule ℝ (Rn N)), (∃ δ : ℝ, 0 < δ ∧ μHE[n] (M ∩ Metric.closedBall x δ) < ∞) → HasApproximateTangentSpaceAt n M x P → Tendsto (fun ρ : ℝ ↦ μHE[n] (M ∩ Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1))) := by
+  intro n N M x P ⟨δ, hδ, hMδ⟩ hP
+  -- Step 1: `Hⁿ(η_{x,r}(B)) = Hⁿ(B)/rⁿ` for `r > 0` and every `B ⊆ ℝᴺ`: `η_{x,r}(B)` is
+  -- `r⁻¹ • (B - x)`, translations are isometries and `Hⁿ(c • B) = |c|ⁿ Hⁿ(B)`.
+  have hscale : ∀ r : ℝ, 0 < r → ∀ B : Set (Rn N),
+      μHE[n] (blowUpMap x r '' B) = μHE[n] B / ENNReal.ofReal (r ^ n) := by
+    intro r hr B
+    have himage :
+        blowUpMap x r '' B = (fun z ↦ r⁻¹ • z) '' (IsometryEquiv.subRight x '' B) := by
+      rw [Set.image_image]
+      rfl
+    rw [himage, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hr.ne'),
+      (IsometryEquiv.subRight x).isometry.euclideanHausdorffMeasure_image, ENNReal.smul_def,
+      smul_eq_mul, div_eq_mul_inv, mul_comm, ← ENNReal.ofReal_inv_of_pos (pow_pos hr n), ← inv_pow,
+      ENNReal.ofReal_pow (inv_nonneg.2 hr.le), ENNReal.coe_pow, ← enorm_eq_nnnorm,
+      Real.enorm_eq_ofReal (inv_nonneg.2 hr.le)]
+  -- Step 2: `η_{x,r}⁻¹(B̄_R(0)) = B̄_{rR}(x)` for `r > 0`, so that
+  -- `B̄_R(0) ∩ η_{x,r}(M) = η_{x,r}(M ∩ B̄_{rR}(x))`.
+  have hpre : ∀ r : ℝ, 0 < r → ∀ R : ℝ,
+      blowUpMap x r ⁻¹' Metric.closedBall 0 R = Metric.closedBall x (r * R) := by
+    intro r hr R
+    ext y
+    rw [Set.mem_preimage, Metric.mem_closedBall, Metric.mem_closedBall, dist_zero_right,
+      dist_eq_norm, blowUpMap, norm_smul, norm_inv, Real.norm_of_nonneg hr.le, inv_mul_le_iff₀ hr]
+  -- Step 3: the blow-up measures `ν_r = Hⁿ ⌞ η_{x,r}(M)` satisfy
+  -- `ν_r(B̄_R(0)) = Hⁿ(M ∩ B̄_{rR}(x))/rⁿ` (`B̄_R(0)` is closed, hence Borel).
+  have hball : ∀ r : ℝ, 0 < r → ∀ R : ℝ,
+      (μHE[n] : Measure (Rn N)).restrict (blowUpMap x r '' M) (Metric.closedBall 0 R) =
+        μHE[n] (M ∩ Metric.closedBall x (r * R)) / ENNReal.ofReal (r ^ n) := by
+    intro r hr R
+    rw [Measure.restrict_apply Metric.isClosed_closedBall.measurableSet, Set.inter_comm,
+      ← Set.image_inter_preimage, hpre r hr R, hscale r hr]
+  -- Step 4: hypothesis (i) of the vague-limit lemma: for `0 < r < δ/2`,
+  -- `ν_r(B̄_2(0)) = Hⁿ(M ∩ B̄_{2r}(x))/rⁿ ≤ Hⁿ(M ∩ B̄_δ(x))/rⁿ < ∞`.
+  have hfin : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      (μHE[n] : Measure (Rn N)).restrict (blowUpMap x r '' M) (Metric.closedBall 0 2) < ∞ := by
+    filter_upwards [Ioo_mem_nhdsGT (half_pos hδ)] with r hr
+    rw [hball r hr.1 2]
+    refine ENNReal.div_lt_top (ne_top_of_le_ne_top hMδ.ne (measure_mono ?_))
+      (ENNReal.ofReal_pos.2 (pow_pos hr.1 n)).ne'
+    exact Set.inter_subset_inter_right _
+      (Metric.closedBall_subset_closedBall (by linarith [hr.2]))
+  -- Steps 5–6: hypothesis (ii) is Def. 1.4 itself (`∫ f dν_r = ∫_{η_{x,r}(M)} f dHⁿ`), so the
+  -- lemma gives `ν_r(B̄_1(0)) → ω_n`; by Step 3 with `R = 1`, `ν_r(B̄_1(0)) = Hⁿ(M ∩ B̄_r(x))/rⁿ`.
+  refine (Submission.deGiorgiRH_closedBall_tendsto_of_vague_plane n N
+    (fun r ↦ (μHE[n] : Measure (Rn N)).restrict (blowUpMap x r '' M)) P hP.1 hfin hP.2).congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  rw [hball r hr 1, mul_one]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
