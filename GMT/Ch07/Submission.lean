@@ -451,6 +451,26 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Step 3 of the Jacobian identity for the orientation of a `C¹` graph (Simon 7.4.3, via
+Allard's theorem): if `F : ℝⁿ → ℝᴾ` is injective, its range `L` has an orthonormal basis
+`τ = (τ₁, …, τₙ)`, regarded as an orthonormal `n`-frame in `ℝᴾ` spanning `L`.  Since
+`dim L = n`, reindex `stdOrthonormalBasis ℝ L` along `Fin (dim L) ≃ Fin n` and include it into
+`ℝᴾ` by the linear isometry `L → ℝᴾ`. -/
+theorem Submission.dgoj_exists_orthonormal_frame_range : ∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P), Injective F → ∃ τ : Fin n → Euclid P, Orthonormal ℝ τ ∧ Submodule.span ℝ (Set.range τ) = LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P) := by
+  intro P n F hF
+  set L := LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P) with hLdef
+  -- `dim L = dim ℝⁿ = n`, since `F` is injective
+  have hL : Module.finrank ℝ L = n := by
+    rw [hLdef, LinearMap.finrank_range_of_inj hF, finrank_euclideanSpace_fin]
+  let T : OrthonormalBasis (Fin n) ℝ L := (stdOrthonormalBasis ℝ L).reindex (finCongr hL)
+  refine ⟨fun i => (T i : Euclid P), ?_, ?_⟩
+  · -- the inclusion `L → ℝᴾ` is a linear isometry
+    exact T.orthonormal.comp_linearIsometry L.subtypeₗᵢ
+  · -- `span (ι '' range T) = ι '' span (range T) = ι '' L = L`
+    have h1 : (fun i => (T i : Euclid P)) = L.subtype ∘ T := rfl
+    rw [h1, Set.range_comp, Submodule.span_image, ← T.coe_toBasis, T.toBasis.span_eq,
+      Submodule.map_top, Submodule.range_subtype]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

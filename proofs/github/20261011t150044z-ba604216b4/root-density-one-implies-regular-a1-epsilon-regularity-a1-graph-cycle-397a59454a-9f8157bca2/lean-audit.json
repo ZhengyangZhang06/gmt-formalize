@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d73a9ef4ecf1724e59ffa523552e07375ae42f330c0d330c2be434a80d6cd718",
+  "git_delta": {
+    "base_commit": "ecc53ec24a4257fbec663adb97bf513c2ccbefcb",
+    "candidate_commit": "78ad31ac5fbd7ef3398627e385476ad7b49e24f7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgoj_exists_orthonormal_frame_range",
+    "diff_sha256": "4e2436bf2a8c751bcbf98b0a10a47fb7e051e2378479f2628e9d0aedce6f181c",
+    "source_sha256": "b7c15ffd99f3d89068ff8c7317ef52632357d1dd60ad4f13aa31d6df8c929aa6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgoj_exists_orthonormal_frame_range",
+      "statement": "∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P), Injective F → ∃ τ : Fin n → Euclid P, Orthonormal ℝ τ ∧ Submodule.span ℝ (Set.range τ) = LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
