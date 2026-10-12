@@ -2,6 +2,7 @@ import Poincare.SimonGMT.Chapter08.VarifoldConvergence
 import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter02.Submanifold
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Poincare.SimonGMT.Chapter08.StationaryMonotonicity
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 8 (printed pp. 205–224)
@@ -503,6 +504,64 @@ theorem Submission.annular_identity_limit_at_zero :
       (hPD σ ρ hσ.1 hσ.2 hρρ₀).symm
   -- Step 5: limits along the proper filter `𝓝[>] 0` in the Hausdorff space `[0, ∞]` are unique.
   exact tendsto_nhds_unique h₁ h₂
+
+/-- **Simon Ch. 8, 3.4 (monotonicity identity, `Λ = 0`), p. 211.**
+If `V` is stationary in the open ball `B°_{ρ₀}(x) ⊆ U`, then `Θ^n(μ_V, x)` exists and
+`Θ^n(μ_V, x) + ω_n^{-1} ∫_{Gₙ(B_ρ(x))} r^{-n-2} |p_{S^⊥}(y - x)|² dV = ω_n^{-1} ρ^{-n} μ_V(B_ρ(x))`
+for `0 < ρ < ρ₀`.  The annular identity for `0 < σ ≤ ρ` is SimonGMT's
+`StationaryOn.stationaryMonotonicity` on a ball `B_R(x)` with `ρ < R < ρ₀`; the two preceding
+lemmas pass it to the limit `σ ↓ 0`. -/
+theorem Submission.stationary_monotonicity_identity_8_3_4 : StationaryMonotonicityIdentity := by
+  intro N n U V x ρ₀ hρ₀ hball hstat
+  -- Step 0: `0 < ω_n < ∞`.
+  have hω₀ : unitBallVolume n ≠ 0 := by
+    unfold unitBallVolume
+    exact (measure_ball_pos _ _ one_pos).ne'
+  have hω : unitBallVolume n ≠ ∞ := by
+    unfold unitBallVolume
+    exact measure_ball_lt_top.ne
+  -- For `t > 0`, `densityRatio` is `ω_n⁻¹` times SimonGMT's `normalizedBallMass = μ_V(B_t) / t^n`.
+  have hratio : ∀ t : ℝ, 0 < t →
+      densityRatio n V.weight x t = (unitBallVolume n)⁻¹ * V.normalizedBallMass x t := by
+    intro t ht
+    rw [densityRatio, Varifold.normalizedBallMass, ENNReal.ofReal_pow ht.le,
+      ENNReal.div_eq_inv_mul, ENNReal.div_eq_inv_mul, ENNReal.mul_inv (Or.inl hω₀) (Or.inl hω),
+      mul_assoc]
+  -- `|p_{S^⊥}(y - x)|² / r^{n+2} = radialNormalSq / r^n` (both `0` at `y = x`), so on annuli
+  -- `normalDefect` is SimonGMT's `annularMonotonicityDefect`.
+  have hdefect : ∀ σ ρ : ℝ, normalDefect V x (closedBall x ρ \ closedBall x σ) =
+      V.annularMonotonicityDefect x σ ρ := by
+    intro σ ρ
+    unfold normalDefect Varifold.annularMonotonicityDefect
+    refine lintegral_congr fun z ↦ congrArg ENNReal.ofReal ?_
+    rw [← Grassmannian.normalProject_eq_sub z.2 (z.1 - x),
+      Grassmannian.norm_normalProject_radial_sq]
+    rcases eq_or_ne ‖z.1 - x‖ 0 with h | h
+    · have hg : z.2.radialNormalSq x z.1 = 0 := by
+        simp [Grassmannian.radialNormalSq, Grassmannian.normalProject, norm_eq_zero.1 h]
+      simp [hg]
+    · field_simp
+      ring
+  -- Step 1: the annular identity, from stationarity in `B_R(x)` with `R = (ρ + ρ₀) / 2`.
+  have hann : ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ < ρ₀ →
+      densityRatio n V.weight x σ +
+          (unitBallVolume n)⁻¹ * normalDefect V x (closedBall x ρ \ closedBall x σ) =
+        densityRatio n V.weight x ρ := by
+    intro σ ρ hσ hσρ hρ
+    have hR : ρ < (ρ + ρ₀) / 2 := by linarith
+    have hRU : closedBall x ((ρ + ρ₀) / 2) ⊆ U :=
+      (closedBall_subset_ball (by linarith)).trans hball
+    have hstatR : V.StationaryOn (ball x ((ρ + ρ₀) / 2)) := fun X hX ↦
+      hstat X (hX.trans (ball_subset_ball (by linarith)))
+    rw [hratio σ hσ, hratio ρ (hσ.trans_le hσρ), hdefect, ← mul_add,
+      hstatR.stationaryMonotonicity hRU hσ hσρ hR]
+  -- Steps 2–4: `σ ↓ 0` in the annular identity (density limit and centre continuity of the defect).
+  exact Submission.annular_identity_limit_at_zero (densityRatio n V.weight x)
+    (fun σ ρ ↦ (unitBallVolume n)⁻¹ * normalDefect V x (closedBall x ρ \ closedBall x σ))
+    (fun ρ ↦ (unitBallVolume n)⁻¹ * normalDefect V x (closedBall x ρ)) ρ₀ hρ₀ hann
+    fun ρ _ _ ↦ ENNReal.Tendsto.const_mul
+      (Submission.normalDefect_annulus_tendsto_closedBall N n U V x ρ)
+      (Or.inr (ENNReal.inv_ne_top.2 hω₀))
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
