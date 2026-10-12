@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^def (IsMeasureRepresentation|IsRestriction|IsMassMeasure|CompactlyContainedOpen)|^(import|namespace|open|theorem)",
+        "def covectorEuclideanNorm|def IsSmoothForm|abbrev Covector|def TestFormOn|abbrev TestFormOn|def NVector|abbrev NVector|euclideanCovectorCoordinate|wedgeCovectors_apply_det|le_massOn|def massAdmissibleOn|structure GeometricCurrentOn",
+        "exists_inv_nat_lt|continuous_infEDist|mem_closure_iff_infEDist_zero|exists_cthickening_subset_open|exists_open_between_and_isCompact_closure|exists_contDiff_support_eq_eq_one_iff|exists_measurable_subset_ae_eq|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|theorem MeasurableSet.exists_isCompact_sdiff_lt|ext_of_generate_finite|ofReal_le_ofReal_iff",
+        "range_inj_of_wellFoundedLT|ext_alternating|theorem monotone_sort|def sort ",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean CandidatesAndAssembly.lean > CandidatesAndAssembly.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-theory-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-theory-a1/decomposition-scope-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-theory-a1/decomposition-v3.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/swarm-project.json",
+        "/tmp/iwl-restriction-independent-audit/CandidatesAndAssembly.lean",
+        "/tmp/iwl-restriction-independent-audit/CandidatesAndAssembly.log"
+      ],
+      "conclusion": "Verified the selected iwl_restriction_theory contract and digest against its immutable scope and handoff. Snapshot revisions and compiler dependencies match. All eight names are bare identifiers, each uniquely held by an accepted checkpoint with a byte-identical frozen type. Their supplied proofs match the accepted handoffs and were independently checked; all dependency lists are empty, with no path back to the selected parent.\n\nIn an isolated snapshot project, every proposed type elaborated as Prop before its child declaration existed. I then recompiled the actual eight candidate proofs, checked them against the proposed types, and replayed the supplied conditional parent assembly. Compilation succeeded; every printed transitive axiom list contained only propext, Classical.choice and Quot.sound. The C∞ exponent matches IsSmoothForm; no child contains a Matrix/IsUnit construction.\n\nThe split is mathematically appropriate for this selected node. The children support R0, R1, continuous extension and restriction mass equality. The assembly proves R0, R1 and CORE implies the exact parent conclusion. CORE remains the parent's representation construction from steps 7–9; the conditional assembly does not itself discharge it or relax any proof gate. Together with the retained parent proof, the children establish the selected statement without circularity.\n\nThe current max_nodes is 1000, so the rationale's historical capacity argument is stale. Acceptance rests on the valid mathematical decomposition and verified reuse, independently of that argument."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. Extended distance gives open sets with compact closure inside U; boundedness and a positive minimum clearance place every compact subset inside one member. Empty sets and U = univ are covered. The proof is independent and supplies the required localization."
+    },
+    {
+      "key": "testform_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes every hypothesis; openness of U is unnecessary. Norm comparison, mollification and the cutoff prove the stated uniform error and support containment. Completeness and finite dimensionality hold for the specified spaces. The proof is complete and non-circular."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the type for arbitrary U and W. C ≥ 0 follows by evaluating the pointwise norm bound at zero. Admissible positive and negative rescalings, the justified ENNReal conversion using B ≥ 0, and the limiting argument prove the exact inequality, including zero cases."
+    },
+    {
+      "key": "covector_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The wedge and coordinate definitions match the prose. The determinant argument proves the Kronecker property; sorting injective tuples and alternating-map extensionality then prove the expansion. Degree zero and degrees exceeding the ambient dimension are covered without additional hypotheses or circular reliance."
+    },
+    {
+      "key": "coord_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coefficient norm is exactly the stated finite sum of nonnegative terms followed by square root. Strict monotonicity identifies the selected squared coordinate as one summand. Single-term domination and square-root monotonicity prove the exact proposition."
+    },
+    {
+      "key": "smooth_to_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the C∞ order match. The mollifiers have compact support inside O, a uniform bound and pointwise convergence. Integrability of each density supplies the dominated-convergence bound, so smooth agreement passes to continuous tests without assuming either measure is locally finite."
+    },
+    {
+      "key": "continuous_to_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type faithfully states bounded Borel agreement with vanishing outside O. Borel representatives, finite positive/negative density measures, the integration identity, explicit continuous cutoffs and finite-measure π–λ uniqueness prove the conclusion. All integrability and measurability requirements are accounted for."
+    },
+    {
+      "key": "inner_compact_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The null-measurability and restricted σ-finiteness hypotheses exactly match the prose. A Borel kernel and finite spanning pieces permit regularity of each finite restricted measure; compact approximations have null total remainder and reindex by ℕ. No global regularity or σ-finiteness of μ is assumed. Finite unions provide the compact mass approximation needed by the parent."
+    }
+  ],
+  "required_changes": []
+}
