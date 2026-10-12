@@ -335,6 +335,78 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Fine covers with small weighted image volume give `Hᵏ`-null slices** (the Fatou covering
+criterion behind Simon Ch. 2, p. 66, the consequence of (6.3) stated before 6.4,
+`chapter-02.txt` lines 1476–1478). Let `k > 0` and let `S ⊆ ℝⁿ` and `G : ℝⁿ → ℝᵐ` be arbitrary.
+If for every `ε > 0` some countable cover `(Tᵢ)` of `S` has `diam Tᵢ ≤ ε` and
+`∑ᵢ (diam Tᵢ)ᵏ Lᵐ(G(Tᵢ ∩ S)) ≤ ε`, then `Hᵏ(S ∩ G⁻¹{y}) = 0` for `Lᵐ`-a.e. `y ∈ ℝᵐ`.
+With measurable hulls `Aⱼᵢ ⊇ G(Tⱼᵢ ∩ S)` of equal measure, the majorants
+`gⱼ = ∑ᵢ (diam Tⱼᵢ)ᵏ 1_{Aⱼᵢ}` have `∫ gⱼ ≤ εⱼ → 0`, so `liminf gⱼ = 0` a.e. by Fatou; for such
+`y` the covers `Tⱼᵢ ∩ S ∩ G⁻¹{y}` give `Hᵏ(S ∩ G⁻¹{y}) ≤ liminf gⱼ(y) = 0`. -/
+theorem Submission.critSlices_ae_slice_null_of_covers : ∀ (n m k : ℕ) (S : Set (Rn n)) (G : Rn n → Rn m), 0 < k → (∀ ε : ℝ≥0∞, 0 < ε → ∃ (ι : Type) (_ : Countable ι) (T : ι → Set (Rn n)), S ⊆ ⋃ i, T i ∧ (∀ i, Metric.ediam (T i) ≤ ε) ∧ ∑' i, Metric.ediam (T i) ^ k * volume (G '' (T i ∩ S)) ≤ ε) → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (S ∩ G ⁻¹' {y}) = 0 := by
+  intro n m k S G hk hcov
+  -- Covers at the scales `εⱼ = (j + 1)⁻¹ → 0`.
+  have hεpos : ∀ j : ℕ, (0 : ℝ≥0∞) < ((j : ℝ≥0∞) + 1)⁻¹ := fun j =>
+    ENNReal.inv_pos.2 (ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top j, ENNReal.one_ne_top⟩)
+  have hr : Tendsto (fun j : ℕ => ((j : ℝ≥0∞) + 1)⁻¹) atTop (𝓝 0) :=
+    (ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1)).congr fun j => by
+      simp [Nat.cast_add, Nat.cast_one]
+  choose ι hι T hTcov hTdiam hTsum using fun j : ℕ => hcov _ (hεpos j)
+  -- Measurable hulls `Aⱼᵢ ⊇ G(Tⱼᵢ ∩ S)` of equal measure and the majorants `gⱼ`.
+  set A : ∀ j, ι j → Set (Rn m) := fun j i => toMeasurable volume (G '' (T j i ∩ S))
+  set g : ℕ → Rn m → ℝ≥0∞ := fun j y => ∑' i, Metric.ediam (T j i) ^ k * (A j i).indicator 1 y
+  have hterm : ∀ j i, Measurable fun y => Metric.ediam (T j i) ^ k * (A j i).indicator 1 y :=
+    fun j i => measurable_const.mul (measurable_one.indicator (measurableSet_toMeasurable _ _))
+  have hgm : ∀ j, Measurable (g j) := fun j => Measurable.tsum fun i => hterm j i
+  have hgint : ∀ j, ∫⁻ y, g j y ≤ ((j : ℝ≥0∞) + 1)⁻¹ := by
+    intro j
+    calc ∫⁻ y, g j y
+        = ∑' i, ∫⁻ y, Metric.ediam (T j i) ^ k * (A j i).indicator 1 y :=
+          lintegral_tsum fun i => (hterm j i).aemeasurable
+      _ = ∑' i, Metric.ediam (T j i) ^ k * volume (G '' (T j i ∩ S)) := by
+          congr 1
+          ext i
+          rw [lintegral_const_mul _ (measurable_one.indicator (measurableSet_toMeasurable _ _)),
+            lintegral_indicator_one (measurableSet_toMeasurable _ _), measure_toMeasurable]
+      _ ≤ ((j : ℝ≥0∞) + 1)⁻¹ := hTsum j
+  -- Fatou: `∫ liminf gⱼ ≤ liminf ∫ gⱼ ≤ liminf εⱼ = 0`, so `liminf gⱼ = 0` a.e.
+  have hfatou : ∫⁻ y, liminf (fun j => g j y) atTop = 0 := by
+    refine le_antisymm ?_ zero_le
+    calc ∫⁻ y, liminf (fun j => g j y) atTop ≤ liminf (fun j => ∫⁻ y, g j y) atTop :=
+          lintegral_liminf_le hgm
+      _ ≤ liminf (fun j : ℕ => ((j : ℝ≥0∞) + 1)⁻¹) atTop :=
+          liminf_le_liminf (Eventually.of_forall hgint)
+      _ = 0 := hr.liminf_eq
+  have hae : ∀ᵐ y ∂(volume : Measure (Rn m)), liminf (fun j => g j y) atTop = 0 := by
+    filter_upwards [(lintegral_eq_zero_iff (Measurable.liminf hgm)).1 hfatou] with y hy
+    simpa using hy
+  filter_upwards [hae] with y hy
+  -- The covers `Tⱼᵢ ∩ (S ∩ G⁻¹{y})` of the slice: an empty piece contributes `0ᵏ = 0`, and a
+  -- nonempty one forces `y ∈ G(Tⱼᵢ ∩ S) ⊆ Aⱼᵢ`.
+  have hH : μH[(k : ℝ)] (S ∩ G ⁻¹' {y}) ≤ liminf (fun j => g j y) atTop := by
+    calc μH[(k : ℝ)] (S ∩ G ⁻¹' {y})
+        ≤ liminf (fun j => ∑' i, Metric.ediam (T j i ∩ (S ∩ G ⁻¹' {y})) ^ (k : ℝ)) atTop :=
+          Measure.hausdorffMeasure_le_liminf_tsum (k : ℝ) (S ∩ G ⁻¹' {y}) _ hr
+            (fun j i => T j i ∩ (S ∩ G ⁻¹' {y}))
+            (Eventually.of_forall fun j i =>
+              (Metric.ediam_mono inter_subset_left).trans (hTdiam j i))
+            (Eventually.of_forall fun j u hu => by
+              obtain ⟨i, hi⟩ := mem_iUnion.1 (hTcov j hu.1)
+              exact mem_iUnion.2 ⟨i, hi, hu⟩)
+      _ ≤ liminf (fun j => g j y) atTop := by
+          refine liminf_le_liminf (Eventually.of_forall fun j => ENNReal.tsum_le_tsum fun i => ?_)
+          by_cases hne : (T j i ∩ (S ∩ G ⁻¹' {y})).Nonempty
+          · obtain ⟨u, huT, huS, huy⟩ := hne
+            have hyA : y ∈ A j i := subset_toMeasurable _ _ ⟨u, ⟨huT, huS⟩, huy⟩
+            rw [indicator_of_mem hyA, Pi.one_apply, mul_one, ENNReal.rpow_natCast]
+            exact pow_le_pow_left' (Metric.ediam_mono inter_subset_left) k
+          · rw [not_nonempty_iff_eq_empty.1 hne, Metric.ediam_empty,
+              ENNReal.zero_rpow_of_pos (by exact_mod_cast hk)]
+            exact zero_le
+  have hμH : μH[(k : ℝ)] (S ∩ G ⁻¹' {y}) = 0 := le_antisymm (hH.trans hy.le) zero_le
+  -- `μHE[k] = c_k • μH[k]`.
+  rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hμH, smul_zero]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_and_slices-a1.critical_slices-a1.near_degenerate_image-a1",
+  "parent_id": "root.coarea_and_slices-a1.critical_slices-a1",
+  "depth": 3,
+  "title": "Image of a convex set under a map whose derivative is close to a non-surjective linear map has small volume",
+  "statement": "Let n, m ∈ ℕ, G : ℝⁿ → ℝᵐ, S ⊆ ℝⁿ convex, u₀ ∈ S, P : ℝⁿ → ℝᵐ a continuous linear map that is not surjective, and d, ε, Λ ∈ ℝ. Suppose that G is differentiable at every point of S, that ‖DG(v) − P‖ ≤ ε for every v ∈ S (operator norm), that |v − u₀| ≤ d for every v ∈ S, and that ‖P‖ ≤ Λ. Then Lᵐ(G(S)) ≤ ofReal(2(εd)·(2(Λ + ε)d)^{m−1}). Notation: ℝ^d = Rn d = EuclideanSpace ℝ (Fin d) with Euclidean norm |·| and inner product ⟨·,·⟩; Lᵈ = volume on ℝ^d (applied to an arbitrary set it is the Lebesgue outer measure); Hˢ = μHE[s] (Euclidean-normalized Hausdorff outer measure) and μH[s] the unnormalized Hausdorff measure; diam = Metric.ediam (extended diameter in [0,∞]); DF(u) = fderiv ℝ F u with the operator norm ‖·‖; ofReal = ENNReal.ofReal; natural-number subtraction m − 1.",
+  "lean_statement": "∀ (n m : ℕ) (G : Rn n → Rn m) (S : Set (Rn n)) (P : Rn n →L[ℝ] Rn m) (u₀ : Rn n) (d ε Λ : ℝ), Convex ℝ S → u₀ ∈ S → (∀ v ∈ S, DifferentiableAt ℝ G v) → (∀ v ∈ S, ‖fderiv ℝ G v - P‖ ≤ ε) → (∀ v ∈ S, ‖v - u₀‖ ≤ d) → ¬ Function.Surjective P → ‖P‖ ≤ Λ → volume (G '' S) ≤ ENNReal.ofReal (2 * (ε * d) * (2 * ((Λ + ε) * d)) ^ (m - 1))",
+  "lean_name": "critSlices_image_volume_le_of_fderiv_near",
+  "depends_on": [
+    "root.coarea_and_slices-a1.critical_slices-a1.slab_volume-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.coarea_and_slices-a1.critical_slices-a1.slab_volume-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-coarea-and-slices-a1-critical-slices-a1-near-degenerate-image-a1-a1"
+}
