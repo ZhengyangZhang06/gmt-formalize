@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3d610a58f293ec4da1a6a0d6a7c0c8806c2ba8fe26f1434da11ad9cbeeb281b6",
+  "git_delta": {
+    "base_commit": "72ac91d782e0a901a70be4a2f8509d060561b388",
+    "candidate_commit": "52afef6d786b1ffa281f82ace0e9fbbd02cd72ca",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_pic_current_of_dominated_density",
+    "diff_sha256": "a04ddbf477050f5d9ecfafff98a88449e854c31bc34a0289de45c4afafb0d571",
+    "source_sha256": "456973cdafd332ffcfe525f49151f8aaf9bb94fc691cd49f7db82d2b8c29f234",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_pic_current_of_dominated_density",
+      "statement": "∀ (P Q n : ℕ) (V : Set (Eucl Q)) (μ : Measure (Eucl P)) (g : Eucl P → Eucl Q) (w : Eucl P → NVector (Eucl Q) n), AEMeasurable g μ → AEStronglyMeasurable w μ → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → ∃ h : Eucl P → ℝ, Integrable h μ ∧ ∀ᵐ x ∂μ, g x ∈ K → ‖w x‖ ≤ h x) → ∃ S : GeometricCurrentOn V n, ∀ ω : TestFormOn V n, S ω = ∫ x, w x ((ω : DifferentialForm (Eucl Q) n) (g x)) ∂μ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
