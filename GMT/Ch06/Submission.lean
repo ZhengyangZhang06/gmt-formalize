@@ -634,6 +634,47 @@ theorem Submission.slicing_mb_dm_density_le_lowerLeftDini : ∀ (ν : Measure �
     have : (0 : ℝ) < 1 / ((n : ℝ) + 1) := by positivity
     linarith
 
+/-- The measurable majorant in Simon Ch. 6, 4.10 (`M_W(T ⌞ {f < t})` is increasing in `t`, so
+it is differentiable a.e. and its derivative integrates to at most `M_W(T ⌞ {a < f < b})`), for
+a Borel measure `ν` on `ℝ`: the lower left density `liminf_{h → 0+} ν([t - h, t]) / h` has a
+Borel majorant on `(a, b)` whose integral over `(a, b)` is at most `ν((a, b))`.
+If `ν((a, b)) = ∞` the constant `∞` works.  Otherwise the distribution function
+`G(r) = ν((a, b) ∩ (-∞, r])` is nondecreasing and right-continuous, and the majorant is `D` on
+`(a, b)` and `0` elsewhere, where `D(t) = liminf_{k → 0+} (G(t) - G(t - k)) / k` is the lower
+left Dini derivative of `G`: `D` is Borel, it dominates the closed-band density, and by
+Lebesgue's theorem for monotone functions `∫_{(a,b)} D ≤ G(b) - G(a) = ν((a, b))`. -/
+theorem Submission.slicing_mb_density_majorant :
+    ∀ (ν : Measure ℝ) (a b : ℝ), a < b → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧
+      (∀ t ∈ Ioo a b,
+        liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) ≤ g t) ∧
+      ∫⁻ t in Ioo a b, g t ≤ ν (Ioo a b) := by
+  intro ν a b hab
+  -- If `ν((a, b)) = ∞`, take `g ≡ ∞`.
+  by_cases hQ : ν (Ioo a b) = ∞
+  · exact ⟨fun _ => ∞, measurable_const, fun _ _ => le_top, by rw [hQ]; exact le_top⟩
+  obtain ⟨hG_mono, hG_right⟩ := Submission.slicing_mb_dm_distribution_mono_rightcont ν a b hQ
+  set G : ℝ → ℝ := fun r => (ν (Ioo a b ∩ Iic r)).toReal
+  set D : ℝ → ℝ≥0∞ := fun t =>
+    liminf (fun k : ℝ => ENNReal.ofReal ((G t - G (t - k)) / k)) (𝓝[>] 0)
+  refine ⟨(Ioo a b).indicator D,
+    (Submission.slicing_mb_dm_lowerLeftDini_measurable G hG_mono hG_right).indicator
+      measurableSet_Ioo, fun t ht => ?_, ?_⟩
+  · -- On `(a, b)` the closed-band density is at most `D = g`.
+    rw [Set.indicator_of_mem ht]
+    exact Submission.slicing_mb_dm_density_le_lowerLeftDini ν a b hQ t ht
+  · -- `∫⁻_{(a,b)} g = ∫⁻_{(a,b)} D ≤ G(b) - G(a)`, with `G(a) = 0` and `G(b) = ν((a, b))`.
+    have hGa : G a = 0 := by
+      have h : Ioo a b ∩ Iic a = ∅ :=
+        eq_empty_of_forall_notMem fun x (hx : x ∈ Ioo a b ∩ Iic a) => not_le.2 hx.1.1 hx.2
+      simp only [G, h, measure_empty, ENNReal.toReal_zero]
+    have hGb : G b = (ν (Ioo a b)).toReal := by
+      have h : Ioo a b ∩ Iic b = Ioo a b := inter_eq_left.2 fun x (hx : x ∈ Ioo a b) => hx.2.le
+      simp only [G, h]
+    rw [setLIntegral_congr_fun measurableSet_Ioo fun t ht => Set.indicator_of_mem ht D]
+    calc ∫⁻ t in Ioo a b, D t ≤ ENNReal.ofReal (G b - G a) :=
+          Submission.slicing_mb_dm_lintegral_lowerLeftDini_le G hG_mono a b hab.le
+      _ = ν (Ioo a b) := by rw [hGa, hGb, sub_zero, ENNReal.ofReal_toReal hQ]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
