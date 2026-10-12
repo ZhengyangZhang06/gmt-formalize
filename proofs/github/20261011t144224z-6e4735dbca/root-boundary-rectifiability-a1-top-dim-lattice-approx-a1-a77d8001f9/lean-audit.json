@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "56a81728b97e0d918075f3148fa8e41d6a1ea884ee8c9ea6d24012f909d7201d",
+  "git_delta": {
+    "base_commit": "2304a5972618b2df4518601cab9259e49eff17e2",
+    "candidate_commit": "15d1b4cf7f390c09c6194449ae6e5d9f23bf0f75",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "br_top_dim_lattice_approximation",
+    "diff_sha256": "95b53a080a0cb06bfa160e7255c21915eb4d22cc6aa2f70d77071267dbce631c",
+    "source_sha256": "be0a98053f26275b18107e5ce9388f41931595525c0d207733ed7a5d579b6eef",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.br_top_dim_lattice_approximation",
+      "statement": "∀ (m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)), IsIntegerMultiplicity X → X.mass < ∞ → X.boundary.mass < ∞ → ∃ (ρ : ℕ → ℝ) (β : ℕ → LatticeFaceIndex (m + 1) (m + 1) → ℤ) (Pk : ℕ → GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)), (∀ k, 0 < ρ k) ∧ (∀ k, IsLatticeChain (ρ k) (fun F => (β k F : ℝ)) (Pk k)) ∧ WeaklyConvergesOn Pk X ∧ (⨆ k, (Pk k).boundary.mass) < ∞",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
