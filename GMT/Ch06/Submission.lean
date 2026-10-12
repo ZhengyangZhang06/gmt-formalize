@@ -359,6 +359,20 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, 2.4–2.5 and 2.16: restricting `Y ∈ 𝒟ₖ(U)` to a smaller domain `W ⊆ U` does
+not increase mass, `M(Y|_W) ≤ M(Y)`.  Every `ω` admissible for `M_W(Y|_W)`, regarded as the
+test form `ιω` on `U` with the same underlying form, is admissible for `M_U(Y)`, and
+`Y|_W(ω) = Y(ιω)`.  `W` need not be open. -/
+theorem Submission.fiw_tb_ri_restrictDomain_mass_le :
+    ∀ (P k : ℕ) (U W : Set (Eucl P)) (hWU : W ⊆ U) (Y : GeometricCurrentOn U k),
+      (Y.restrictDomain hWU).mass ≤ Y.mass := by
+  intro P k U W hWU Y
+  -- `(Y|_W).mass` is the supremum of `ofReal (Y|_W ω)` over `ω ∈ massAdmissibleOn W k W`.
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  -- `ιω` has the same underlying form as `ω`, so `tsupport ιω ⊆ W ⊆ U` and `|ιω(x)| ≤ 1`.
+  exact Y.le_massOn (omega := testFormOnInclusion hWU k ω) ⟨hω.1.trans hWU, hω.2⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
