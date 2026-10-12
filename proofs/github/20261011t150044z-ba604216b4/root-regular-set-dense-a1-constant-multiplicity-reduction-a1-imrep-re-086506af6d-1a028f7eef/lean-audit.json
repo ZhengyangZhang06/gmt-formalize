@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6199948de71330415bd0ee1c4a742cb9b86de61dd34219fc20522123537d6c02",
+  "git_delta": {
+    "base_commit": "07e1367168c6bcf8c31980fbc4358777962b1e16",
+    "candidate_commit": "1df4c3d0790e293594e6e5311cb7cdb800d14f7d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_cmr_ir_approxTangent_of_local_null",
+    "diff_sha256": "334c88e5734a214525846bca56ef9bbd4687b4af1313a7d7920c28fedc9e8ce7",
+    "source_sha256": "e6c1108fa50b48dec214f441e1cf72929eb845b89689d3bf20d916c58667e129",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_cmr_ir_approxTangent_of_local_null",
+      "statement": "∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P) (δ : ℝ) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → M' ⊆ M → 0 < δ → μHE[n] ((M \\ M') ∩ ball x δ) = 0 → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n M' x Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
