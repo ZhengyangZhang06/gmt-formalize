@@ -553,6 +553,55 @@ theorem Submission.continuousLinearMap_det_contDiff_fderiv_eq_mul_trace : ∀ n 
     (show T = T + (0 : ℝ) • H by rw [zero_smul ℝ H, add_zero])
   exact hchain.unique hline
 
+/-- **Simon Ch. 2, §5, derivative of the area Jacobian of a `C²` immersion.** Let `V ⊆ ℝⁿ` be open
+and `ψ : ℝⁿ → ℝᴺ` be `C²` on `V` with injective `A(x) = Dψ(x)`, and let `G(x) = A(x)* A(x)`. Then
+`J = areaJacobianAt ψ = √(det ∘ G)` is `C¹` on `V` and `DJ(x)[v] = J(x) tr(G(x)⁻¹ A(x)* S_v)`, where
+`S_v = D²ψ(x)[v]`. Indeed `G` is `C¹` with `DG(x)[v] = A* S_v + S_v* A`, Jacobi's formula gives
+`D(det ∘ G)(x)[v] = det G · tr(G⁻¹ DG(x)[v])`, the symmetry of `G⁻¹` turns `tr(G⁻¹ S_v* A)` into
+`tr(G⁻¹ A* S_v)`, and `det G = J² > 0` because `A(x)` is injective. -/
+theorem Submission.areaJacobianAt_contDiffOn_fderiv_eq_gram_trace : ∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ x ∈ V, Function.Injective (fderiv ℝ ψ x)) → ContDiffOn ℝ 1 (Chapter02.areaJacobianAt ψ) V ∧ ∀ x ∈ V, ∀ v : Rn n, fderiv ℝ (Chapter02.areaJacobianAt ψ) x v = Chapter02.areaJacobianAt ψ x * LinearMap.trace ℝ (Rn n) (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) ∘L ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ (fderiv ℝ ψ) x v).toLinearMap := by
+  intro n N V ψ hV hψ hinj
+  -- `G = A* A` is `C¹` on `V` with `DG(x)[v] = A* S_v + S_v* A`, and `det` is `C¹` with
+  -- `D det(T)[H] = det T · tr(T⁻¹ H)` at every unit `T` (Jacobi's formula).
+  obtain ⟨hGC, hGD⟩ := Submission.adjoint_comp_fderiv_contDiffOn_fderiv_eq_add n N V ψ hV hψ
+  obtain ⟨hdetC, hdetD⟩ := Submission.continuousLinearMap_det_contDiff_fderiv_eq_mul_trace n
+  -- Step 1: `J = √(det ∘ G)`.
+  have hJ : Chapter02.areaJacobianAt ψ = fun x ↦
+      Real.sqrt (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x).det :=
+    funext fun x ↦ Chapter02.areaJacobianAt_eq_sqrt_det_adjoint_comp ψ x
+  -- Step 2: on `V`, `A(x)` is injective, so `J x = normDet A(x) ≠ 0` and `det G(x) = (J x)² ≠ 0`.
+  have hJ0 : ∀ x ∈ V, Chapter02.areaJacobianAt ψ x ≠ 0 := fun x hx ↦ by
+    rw [Chapter02.areaJacobianAt_eq_normDet]
+    exact ((fderiv ℝ ψ x).toLinearMap.normDet_ne_zero_tfae.out 1 5).2 (hinj x hx)
+  have hd0 : ∀ x ∈ V, (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x).det ≠ 0 :=
+    fun x hx ↦ Chapter02.areaJacobianAt_sq_eq_det_adjoint_comp ψ x ▸ pow_ne_zero 2 (hJ0 x hx)
+  refine ⟨?_, fun x hx v ↦ ?_⟩
+  · -- Step 6: `√(det ∘ G)` is `C¹` on `V`, as `det ∘ G` is `C¹` and nonvanishing there.
+    rw [hJ]
+    exact (hdetC.comp_contDiffOn hGC).sqrt hd0
+  · -- Steps 4 and 7: the chain rule for `√(det ∘ G)` at `x`.
+    have hGx := ((hGC.differentiableOn one_ne_zero x hx).differentiableAt
+      (hV.mem_nhds hx)).hasFDerivAt
+    have hdetx := ((hdetC.differentiable one_ne_zero)
+      (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x)).hasFDerivAt
+    have hc := hdetx.comp x hGx
+    have hJx : HasFDerivAt (fun y ↦
+        Real.sqrt (ContinuousLinearMap.adjoint (fderiv ℝ ψ y) ∘L fderiv ℝ ψ y).det) _ x :=
+      hc.sqrt (hd0 x hx)
+    rw [← hJ] at hJx
+    -- Step 5: `G(x)` is a unit with symmetric inverse (`gram_projection`), so the two traces in
+    -- `tr(G⁻¹ (A* S_v + S_v* A))` agree (`trace_swap`).
+    obtain ⟨hunit, hsymm, -⟩ := Submission.gram_inverse_range_starProjection n N
+      (LinearMap.range (fderiv ℝ ψ x).toLinearMap) (fderiv ℝ ψ x) (hinj x hx) rfl
+    rw [hJx.fderiv, smul_apply, ContinuousLinearMap.comp_apply, hGD x hx v, hdetD _ _ hunit,
+      ContinuousLinearMap.comp_add, ContinuousLinearMap.toLinearMap_add, map_add,
+      Submission.trace_comp_adjoint_comp_swap_of_symm n N (fderiv ℝ ψ x)
+        (fderiv ℝ (fderiv ℝ ψ) x v) _ hsymm, Function.comp_apply,
+      ← Chapter02.areaJacobianAt_eq_sqrt_det_adjoint_comp ψ x,
+      ← Chapter02.areaJacobianAt_sq_eq_det_adjoint_comp ψ x, smul_eq_mul]
+    field_simp [hJ0 x hx]
+    ring
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
