@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "526a3b6c4cd3f163d48e16300713a69c09a7ccf61861de647e463217e59f2d98",
+  "git_delta": {
+    "base_commit": "b1d3f73cf0a852feff1c96e2394aa9c15e8d5b1e",
+    "candidate_commit": "cbae0a9e72494447fa76aa5702ed8e11789a4047",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "doraggt_graph_map_gram_identity",
+    "diff_sha256": "2539dae9963ffa777baed0ae6dd92132e359b20de0b943c25ab95e5970b70282",
+    "source_sha256": "8462db23df1e2d65a6fba0d5fb14134c46a20109e9a96b57ee7d9bc204354b7c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.doraggt_graph_map_gram_identity",
+      "statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (T : Euclid n →ₗ[ℝ] Euclid k), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → LinearMap.adjoint (ι.toLinearMap + ι'.toLinearMap ∘ₗ T) ∘ₗ (ι.toLinearMap + ι'.toLinearMap ∘ₗ T) = LinearMap.id + LinearMap.adjoint T ∘ₗ T",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
