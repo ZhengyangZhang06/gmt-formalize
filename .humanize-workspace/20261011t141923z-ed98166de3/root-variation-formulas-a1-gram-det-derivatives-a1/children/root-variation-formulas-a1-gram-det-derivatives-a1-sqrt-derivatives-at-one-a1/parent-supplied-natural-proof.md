@@ -1,0 +1,90 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.variation_formulas-a1.gram_det_derivatives-a1`
+- Child DAG node: `root.variation_formulas-a1.gram_det_derivatives-a1.sqrt_derivatives_at_one-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the last bullet of Step 5 and Step 7 of the parent proof of variation_gram_det_derivatives (Simon Ch. 2, p. 63). Simon quotes √(1 + x) = 1 + x/2 − x²/8 + O(x³) without proof. Statements (1) and (2) are its derivative form along a function h with h(0) = 1, and the proof below is the parent's chain-rule and quotient-rule argument with all details written out.
+
+1. Proof of (1). The square root is differentiable at every y > 0 with derivative 1/(2√y). Since h(0) = 1 ≠ 0 and h has derivative h₁ at 0, the chain rule (HasDerivAt.sqrt) shows that t ↦ √h(t) has derivative h₁/(2√h(0)) = h₁/(2√1) = h₁/2 at 0.
+
+2. Local positivity. Assume the hypotheses of (2). The function h has a derivative at 0, so it is continuous at 0. As h(0) = 1 > 0, there is a neighbourhood U₁ of 0 with h(t) > 0 for all t ∈ U₁. Let U₂ be a neighbourhood of 0 on which h is differentiable, and put U := U₁ ∩ U₂, again a neighbourhood of 0.
+
+3. deriv(√ ∘ h) near 0. Let t ∈ U. Then h has derivative deriv h(t) at t, and h(t) > 0, so h(t) ≠ 0. By the chain rule of step 1 at the point t, the function s ↦ √h(s) has derivative deriv h(t)/(2√h(t)) at t. Hence deriv(s ↦ √h(s))(t) = q(t) for all t ∈ U, where q(t) := deriv h(t)/(2√h(t)) for every real t.
+
+4. Derivative of q at 0.
+- The numerator c(t) := deriv h(t) has derivative h₂ at 0 by hypothesis. Its value at 0 is c(0) = deriv h(0) = h₁, because h has derivative h₁ at 0 and derivatives are unique.
+- The denominator d(t) := 2√h(t) has derivative 2 · (h₁/2) = h₁ at 0, by step 1 and the constant-multiple rule. Its value at 0 is d(0) = 2√1 = 2 ≠ 0.
+- By the quotient rule (HasDerivAt.div), q = c/d has derivative (c′(0) d(0) − c(0) d′(0))/d(0)² = (2h₂ − h₁²)/4 = h₂/2 − h₁²/4 at 0.
+
+5. Conclusion of (2). By step 3, deriv(t ↦ √h(t)) agrees with q on the neighbourhood U of 0. By step 4, q has derivative h₂/2 − h₁²/4 at 0. Therefore deriv(t ↦ √h(t)) has derivative h₂/2 − h₁²/4 at 0 (HasDerivAt.congr_of_eventuallyEq).
+
+6. Remark. If h is twice continuously differentiable near 0 with h(0) = 1, h′(0) = h₁ and h″(0) = h₂, then (1) and (2) say (√h)′(0) = h₁/2 and (√h)″(0) = h₂/2 − h₁²/4. This is the derivative form of √(1 + x) = 1 + x/2 − x²/8 + O(x³) with x = h(t) − 1. The remark is not used above.
+
+## Key steps
+
+1. HasDerivAt.sqrt at h(0) = 1 gives (√∘h)′(0) = h₁/(2√1) = h₁/2. This is (1).
+2. h is continuous at 0 with h(0) = 1, so h > 0 near 0. With differentiability near 0, deriv(√∘h) = deriv h/(2√h) on a neighbourhood of 0.
+3. Quotient rule at 0: the numerator deriv h has value h₁ and derivative h₂, and the denominator 2√h has value 2 and derivative h₁. So the quotient has derivative (2h₂ − h₁²)/4 = h₂/2 − h₁²/4.
+4. HasDerivAt.congr_of_eventuallyEq transfers this derivative to deriv(√∘h). This is (2).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n '^theorem|^lemma' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean; sed -n 260,325p NormDet.lean (ContinuousLinearMap.normDet_sq, LinearMap.normDet_sq_eq_det_gram)`
+- `rg -n 'def gram' mathlib/Mathlib (Matrix.gram in Analysis/InnerProductSpace/GramMatrix.lean)`
+- `rg -n 'theorem.*(det|Det).*(Deriv|deriv|Diff|diff)|theorem.*(Deriv|deriv|Diff).*det' mathlib/Mathlib`
+- `rg -n 'finset_prod|finsetProd' mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean; sed -n 380,410p and 620,640p Deriv/Mul.lean`
+- `rg -n 'theorem HasDerivAt.sqrt|theorem deriv_sqrt|theorem HasDerivAt.inner|theorem HasDerivAt.clm_apply|theorem HasDerivAt.det|theorem hasDerivAt_det' mathlib/Mathlib`
+- `rg -n 'starProjection.*sum|orthogonalProjection_eq_sum|starProjection_eq_sum|sum_inner_mul_inner|norm_sq_eq_sum|sum_sq_inner|Parseval' mathlib/Mathlib/Analysis/InnerProductSpace; sed -n 500,600p PiL2.lean`
+- `rg -n 'starProjection_apply|coe_orthogonalProjectionOnto|inner_orthogonalProjectionOnto_eq_of_mem_left|starProjection_inner_eq_zero|norm_sq_eq_add_norm_sq_starProjection' mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `rg -n 'theorem det_apply' mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean; rg -n 'theorem HasDerivAt.fun_sum|theorem HasDerivAt.sum' mathlib/Mathlib/Analysis/Calculus/Deriv/Add.lean`
+- `rg -n 'HasDerivAt.*det|det.*HasDerivAt|deriv.*\.det|trace' lake-packages-25730c7c/simongmt/Poincare; sed -n 1,130p Chapter08/FirstVariation.lean; sed -n 140,265p Chapter08/DeformationFamily.lean`
+- `sed -n 1180,1275p book/sources/chapter-02-source.txt (Simon 5.2–5.4, pp. 62–63)`
+- `python3 -I gen_checks.py / gen_solutions.py (gmt-compare.py child_modules contract mode + lean_contract.validate_lean_statement), then lean NodeChallenge_*/NodeSolution_* against scratch oleans of GMT.Ch02.Submission (LEAN_PATH = lake-packages-25730c7c/*/.lake/build/lib/lean)`
+- `lean asm/Probe.lean; lean asm/ChildC.lean; lean asm/ChildE.lean; lean asm/Assembly.lean; lean asm/ChildA1.lean; lean asm/ChildA2.lean; lean asm/ChildB.lean; lean -o cand/olean/GMT/Ch02/Submission.olean cand/src/Submission.lean (#print axioms)`
+- `python3 -I numcheck.py (exact rational power-series checks of both child formulas)`
+- `python3 -I scan of dag.json lean_name fields and nodes/*/decomposition-v*.json subproblem lean_names; grep -rn of the proposed names in simongmt and GMT sources`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/GMT/Ch02/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Subspace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DeformationFamily.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-gram-det-derivatives-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-gram-det-identity-a1/parent-supplied-natural-proof.md`
+- `/tmp/gramdet-decomp-ylURCP/checks/NodeChallenge_00_variation_matrix_det_derivatives_at_one.lean`
+- `/tmp/gramdet-decomp-ylURCP/checks/NodeChallenge_01_variation_sqrt_derivatives_at_one.lean`
+- `/tmp/gramdet-decomp-ylURCP/asm/Assembly.lean`
+- `/tmp/gramdet-decomp-ylURCP/asm/ChildA1.lean`
+- `/tmp/gramdet-decomp-ylURCP/asm/ChildA2.lean`
+- `/tmp/gramdet-decomp-ylURCP/asm/ChildB.lean`
+- `/tmp/gramdet-decomp-ylURCP/cand/src/Submission.lean`
+- `/tmp/gramdet-decomp-ylURCP/solchk/NodeSolution_00_variation_matrix_det_derivatives_at_one.lean`
+- `/tmp/gramdet-decomp-ylURCP/solchk/NodeSolution_01_variation_sqrt_derivatives_at_one.lean`
+- `/tmp/gramdet-decomp-ylURCP/solchk/NodeSolution_03_variation_gram_det_derivatives.lean`
+- `/tmp/gramdet-scripts/numcheck.py`
+
+Neither the pinned Mathlib (25730c7c) nor SimonGMT (2b36630) has a derivative of Matrix.det or LinearMap.det, so there is no Jacobi formula to reuse. The rg over Mathlib for det together with Deriv/deriv/Diff matched only the measure-theoretic Jacobian lemmas in MeasureTheory/Function/Jacobian.lean. SimonGMT has only the first-order polynomial statement derivative_eval_zero_det_one_add_X_smul_add_sq_smul in Chapter08/FirstVariation.lean, and nothing second-order. The determinant child must therefore be proved from Matrix.det_apply and HasDerivAt.fun_finsetProd, which is what its proof does. Every ingredient the children and the parent assembly need exists in the snapshot and was used in the scratch proofs: Matrix.det_apply; HasDerivAt.fun_finsetProd, fun_sum, const_mul, mul, sqrt, div, congr_of_eventuallyEq, clm_apply and inner; ContinuousLinearMap.normDet_sq and LinearMap.normDet_sq_eq_det_gram; OrthonormalBasis.sum_sq_inner_right; Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left and Submodule.starProjection_inner_eq_zero; norm_add_sq_real. #print axioms of both complete child proofs shows only propext, Classical.choice and Quot.sound. Simon pp. 62–63 quote both expansions without proof, so the child proofs are taken from the supplied derivative-form Steps 4–7.
