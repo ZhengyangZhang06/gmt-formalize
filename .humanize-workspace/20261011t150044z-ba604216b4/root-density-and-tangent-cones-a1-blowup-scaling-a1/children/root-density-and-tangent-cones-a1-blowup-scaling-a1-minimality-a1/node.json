@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.minimality-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+  "depth": 3,
+  "title": "Dilations preserve minimality: η_{x,λ#}T is minimizing in η(A)",
+  "statement": "Let P, n ∈ ℕ, U, A ⊆ ℝ^P, T ∈ 𝒟_n(U), x ∈ ℝ^P and λ > 0. If T is minimizing in A (Simon 7.1.1 as formalized by IsMinimizingIn), then η_{x,λ#}T is minimizing in η_{x,λ}(A).",
+  "lean_statement": "∀ (P n : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), IsMinimizingIn T A → IsMinimizingIn (blowUp T x lam hlam.ne') (dilation x lam '' A)",
+  "lean_name": "dtc_blowUp_isMinimizingIn",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.mass_scaling-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.rep_pushforward-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_structure-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_preimage-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.mass_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.rep_pushforward-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_structure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_preimage-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-minimality-a1-a1"
+}

@@ -1,0 +1,768 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-density-and-tangent-cones-a1-blowup-scaling-a1",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.hausdorff_scaling-a1",
+      "key": "hausdorff_scaling",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-hausdorff-scaling-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-hausdorff-scaling-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (both identical; manifest project b4d606d, mathlib 25730c7c)",
+              "rg -n 'theorem MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀|theorem Isometry.euclideanHausdorffMeasure_image' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n 'theorem restrict_map \\(μ|theorem ae_map_iff \\{p' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "rg -n 'MeasurableEmbedding.lintegral_map|MeasurableEmbedding.integral_map |MeasurableEmbedding.aestronglyMeasurable_map_iff' mathlib/Mathlib",
+              "rg -n 'theorem map_smul_univ' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean; rg -n 'comp_homeomorph' mathlib/Mathlib/Topology/Algebra/Support.lean; rg -n 'theorem preimage_closure|theorem image_closure' mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "grep -n '^def\\|^theorem' simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Mass,CurrentLocalEquality,Currents,Forms}.lean simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (affinePullbackForm, affinePushforward_apply, boundary_affinePushforward, exteriorDerivative_affinePullbackForm, massOn, massAdmissibleOn, restrictDomain_apply, zeroRegion, support, CountablyRectifiable, HasApproximateTangentSpaceAt, blowUpMap)",
+              "grep -rl -F <each proposed lean_name> runs/20261011T150044Z-ba604216b4 (no match) and lean_name inventory of dag.json and all node JSON files (no collision)",
+              "contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on all eight child types",
+              "lake build GMT.Ch07.Submission; lake env lean Check/FinalExact.lean, Check/FinalAssembly.lean, Check/FinalLeaves.lean with #print axioms (scratch /tmp/bscale-decomp-6cU90O/proj)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalExact.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalAssembly.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalLeaves.lean"
+            ],
+            "conclusion": "The snapshot contract and submission (project b4d606d, mathlib 25730c7c) are byte-identical to the workspace files. SimonGMT supplies the objects the children reason about: blowUp is an affinePushforward of a restrictDomain; affinePullbackForm comes with affinePushforward_apply, boundary_affinePushforward and exteriorDerivative_affinePullbackForm (used for blowup_structure (iv)); massOn/massAdmissibleOn (mass_scaling); zeroRegion/support/VanishesOn (blowup_structure (iii)); CountablyRectifiable and HasApproximateTangentSpaceAt via blowUpMap (rep_pushforward, tangent_invariance). It contains no dilation or blow-up lemmas, so the children supply them. The pinned Mathlib supplies the measure-theoretic and multilinear ingredients: euclideanHausdorffMeasure_smul₀ and Isometry.euclideanHausdorffMeasure_image (hausdorff_scaling); MeasurableEmbedding.restrict_map, lintegral_map, integral_map, ae_map_iff and aestronglyMeasurable_map_iff (rep_pushforward); ContinuousAlternatingMap.map_smul_univ and HasCompactSupport.comp_homeomorph (testform_correspondence); Homeomorph.preimage_closure and image_closure (blowup_structure, minimality). All eight child types elaborate in the comparator scope. Scratch Lean proofs of every child, and of the parent from the children, compile using only propext, Classical.choice and Quot.sound. No proposed name occurs elsewhere in the run."
+          }
+        ],
+        "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+        "child_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.hausdorff_scaling-a1",
+        "subproblem": {
+          "key": "hausdorff_scaling",
+          "title": "Hausdorff measure under the dilation η_{x,λ}",
+          "statement": "Let P, n ∈ ℕ, x ∈ ℝ^P, λ > 0 and η = η_{x,λ}. Then (i) Hⁿ(η(s)) = ofReal(λ^{−n})·Hⁿ(s) for every s ⊆ ℝ^P, and (ii) the push-forward measure satisfies η_#Hⁿ = ofReal(λⁿ)·Hⁿ (i.e. Hⁿ(η⁻¹(B)) = λⁿHⁿ(B) for every Borel B), where Hⁿ = μHE[n].",
+          "lean_statement": "∀ (P n : ℕ) (x : Euclid P) (lam : ℝ), 0 < lam → (∀ s : Set (Euclid P), μHE[n] (dilation x lam '' s) = ENNReal.ofReal (lam⁻¹ ^ n) * μHE[n] s) ∧ Measure.map (dilation x lam) (μHE[n] : Measure (Euclid P)) = ENNReal.ofReal (lam ^ n) • (μHE[n] : Measure (Euclid P))",
+          "lean_name": "dtc_hausdorff_dilation",
+          "depends_on": [],
+          "natural_proof": "Source: parent proof step 0(i); Hⁿ is Mathlib's normalized Euclidean Hausdorff measure μHE[n]. Here η = η_{x,λ} = dilation x λ, η(y) = −λ⁻¹x + λ⁻¹y = λ⁻¹(y − x), and ι(z) := x + λz.\n1. For every s ⊆ ℝ^P, η(s) = τ(λ⁻¹·s), where λ⁻¹·s = {λ⁻¹y : y ∈ s} and τ(z) := −λ⁻¹x + z, because η(y) = −λ⁻¹x + λ⁻¹y.\n2. τ is an isometry of ℝ^P (a translation), and Hausdorff measures are invariant under isometries (Mathlib Isometry.euclideanHausdorffMeasure_image): Hⁿ(τ(E)) = Hⁿ(E) for every E ⊆ ℝ^P. Hence Hⁿ(η(s)) = Hⁿ(λ⁻¹·s).\n3. Homogeneity: for r ≠ 0 and every E ⊆ ℝ^P, Hⁿ(r·E) = |r|ⁿ·Hⁿ(E) (Mathlib Measure.euclideanHausdorffMeasure_smul₀: μHE[d](r • E) = ‖r‖₊^d • μHE[d](E); the map y ↦ ry multiplies the diameter of every covering set by |r|, so every δ-approximating sum for Hⁿ is multiplied by |r|ⁿ). With r = λ⁻¹ > 0 the factor is (λ⁻¹)ⁿ = λ^{−n}, which as an element of [0,∞] is ofReal(λ^{−n}). With step 2 this proves (i): Hⁿ(η(s)) = ofReal(λ^{−n})·Hⁿ(s) for every s ⊆ ℝ^P.\n4. Proof of (ii). η is continuous, hence Borel measurable, so (η_#Hⁿ)(B) = Hⁿ(η⁻¹(B)) for every Borel B. Since η is a bijection with inverse ι(z) = x + λz, η⁻¹(B) = ι(B). Moreover ι = η_{x',λ'} with x' := −λ⁻¹x and λ' := λ⁻¹ > 0, because η_{x',λ'}(z) = −λ'⁻¹x' + λ'⁻¹z = −λ·(−λ⁻¹x) + λz = x + λz. By (i) applied to (x', λ'), Hⁿ(ι(B)) = ofReal(λ'^{−n})·Hⁿ(B) = ofReal(λⁿ)·Hⁿ(B). Thus η_#Hⁿ and ofReal(λⁿ)·Hⁿ agree on all Borel sets and are therefore equal measures (Measure.ext). This holds for every n, including n = 0. ∎\nFormalization notes (this exact statement was proved in a scratch build): with `open scoped Pointwise`, η '' s = (fun z => −(λ⁻¹ • x) + z) '' (λ⁻¹ • s) by image_smul and image_image; isometry_add_left; ENNReal.smul_def, ENNReal.ofReal_coe_nnreal, abs_of_pos; for (ii) Measure.ext, Measure.map_apply, Measure.smul_apply and the set identity dilation x λ ⁻¹' s = dilation (−(λ⁻¹ • x)) λ⁻¹ '' s, then (i) for (−(λ⁻¹ • x), λ⁻¹) and inv_inv.",
+          "proof_key_steps": [
+            "η(s) is a translate of λ⁻¹·s; Hⁿ is invariant under translations (isometries).",
+            "Hⁿ(r·E) = |r|ⁿHⁿ(E) (euclideanHausdorffMeasure_smul₀) with r = λ⁻¹ gives (i).",
+            "η⁻¹(B) = η_{−λ⁻¹x,λ⁻¹}(B), so (i) for the inverse dilation gives (η_#Hⁿ)(B) = λⁿHⁿ(B) on Borel sets, hence (ii)."
+          ]
+        },
+        "audit": {
+          "key": "hausdorff_scaling",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Both factors are correct: image measure scales by λ⁻ⁿ, while the mapped measure scales by λⁿ. Translation invariance and homogeneity prove the first clause for arbitrary sets; applying that established clause to the inverse dilation proves the second without circularity."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-hausdorff-scaling-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-hausdorff-scaling-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-hausdorff-scaling-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.tangent_invariance-a1",
+      "key": "tangent_invariance",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (both identical; manifest project b4d606d, mathlib 25730c7c)",
+              "rg -n 'theorem MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀|theorem Isometry.euclideanHausdorffMeasure_image' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n 'theorem restrict_map \\(μ|theorem ae_map_iff \\{p' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "rg -n 'MeasurableEmbedding.lintegral_map|MeasurableEmbedding.integral_map |MeasurableEmbedding.aestronglyMeasurable_map_iff' mathlib/Mathlib",
+              "rg -n 'theorem map_smul_univ' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean; rg -n 'comp_homeomorph' mathlib/Mathlib/Topology/Algebra/Support.lean; rg -n 'theorem preimage_closure|theorem image_closure' mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "grep -n '^def\\|^theorem' simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Mass,CurrentLocalEquality,Currents,Forms}.lean simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (affinePullbackForm, affinePushforward_apply, boundary_affinePushforward, exteriorDerivative_affinePullbackForm, massOn, massAdmissibleOn, restrictDomain_apply, zeroRegion, support, CountablyRectifiable, HasApproximateTangentSpaceAt, blowUpMap)",
+              "grep -rl -F <each proposed lean_name> runs/20261011T150044Z-ba604216b4 (no match) and lean_name inventory of dag.json and all node JSON files (no collision)",
+              "contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on all eight child types",
+              "lake build GMT.Ch07.Submission; lake env lean Check/FinalExact.lean, Check/FinalAssembly.lean, Check/FinalLeaves.lean with #print axioms (scratch /tmp/bscale-decomp-6cU90O/proj)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalExact.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalAssembly.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalLeaves.lean"
+            ],
+            "conclusion": "The snapshot contract and submission (project b4d606d, mathlib 25730c7c) are byte-identical to the workspace files. SimonGMT supplies the objects the children reason about: blowUp is an affinePushforward of a restrictDomain; affinePullbackForm comes with affinePushforward_apply, boundary_affinePushforward and exteriorDerivative_affinePullbackForm (used for blowup_structure (iv)); massOn/massAdmissibleOn (mass_scaling); zeroRegion/support/VanishesOn (blowup_structure (iii)); CountablyRectifiable and HasApproximateTangentSpaceAt via blowUpMap (rep_pushforward, tangent_invariance). It contains no dilation or blow-up lemmas, so the children supply them. The pinned Mathlib supplies the measure-theoretic and multilinear ingredients: euclideanHausdorffMeasure_smul₀ and Isometry.euclideanHausdorffMeasure_image (hausdorff_scaling); MeasurableEmbedding.restrict_map, lintegral_map, integral_map, ae_map_iff and aestronglyMeasurable_map_iff (rep_pushforward); ContinuousAlternatingMap.map_smul_univ and HasCompactSupport.comp_homeomorph (testform_correspondence); Homeomorph.preimage_closure and image_closure (blowup_structure, minimality). All eight child types elaborate in the comparator scope. Scratch Lean proofs of every child, and of the parent from the children, compile using only propext, Classical.choice and Quot.sound. No proposed name occurs elsewhere in the run."
+          }
+        ],
+        "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+        "child_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.tangent_invariance-a1",
+        "subproblem": {
+          "key": "tangent_invariance",
+          "title": "Approximate tangent spaces are invariant under dilations",
+          "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P, x, y ∈ ℝ^P, λ > 0, Q a linear subspace of ℝ^P and η = η_{x,λ}. If Q is the approximate tangent space of M at y in the sense of Simon 3.1.4 (SimonGMT HasApproximateTangentSpaceAt n M y Q: dim Q = n and ∫_{η_{y,r}(M)} f dHⁿ → ∫_Q f dHⁿ as r ↓ 0 for every f ∈ C_c(ℝ^P)), then HasApproximateTangentSpaceAt n (η(M)) (η(y)) Q.",
+          "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x y : Euclid P) (lam : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < lam → HasApproximateTangentSpaceAt n M y Q → HasApproximateTangentSpaceAt n (dilation x lam '' M) (dilation x lam y) Q",
+          "lean_name": "dtc_approxTangent_dilation",
+          "depends_on": [],
+          "natural_proof": "Source: Simon Ch. 3, Definition 1.4 (chapter-03.txt lines 77–86), formalized by SimonGMT HasApproximateTangentSpaceAt n M y Q := finrank Q = n ∧ ∀ f ∈ C_c(ℝ^P;ℝ), lim_{r→0+} ∫_{blowUpMap y r '' M} f dHⁿ = ∫_Q f dHⁿ, with blowUpMap y r w = r⁻¹•(w − y); parent proof step 2, orientation bullet (η_{z,r}(η(M)) = η_{y,λr}(M)). Here η = η_{x,λ} = dilation x λ, Hⁿ = μHE[n].\n1. The condition finrank Q = n involves neither M nor the base point, so it holds for η(M) at η(y).\n2. Set identity. For w ∈ ℝ^P, η(w) − η(y) = (−λ⁻¹x + λ⁻¹w) − (−λ⁻¹x + λ⁻¹y) = λ⁻¹(w − y). Hence for every r ∈ ℝ, blowUpMap(η(y), r)(η(w)) = r⁻¹λ⁻¹(w − y) = (λr)⁻¹(w − y) = blowUpMap(y, λr)(w), using (λr)⁻¹ = λ⁻¹r⁻¹ (valid in ℝ with the convention 0⁻¹ = 0). Taking images of M: blowUpMap(η(y), r)(η(M)) = blowUpMap(y, λr)(M) for all r.\n3. Fix f ∈ C_c(ℝ^P;ℝ) and put g(s) := ∫_{blowUpMap(y,s)(M)} f dHⁿ. By step 2, for every r the integral ∫_{blowUpMap(η(y),r)(η(M))} f dHⁿ is literally g(λr) (same domain of integration, same integrand and same measure, so no integrability is needed for this identity).\n4. The map r ↦ λr sends the filter r → 0+ into the filter s → 0+: it is continuous with value 0 at 0, and λr > 0 whenever r > 0 because λ > 0. By hypothesis g(s) → ∫_Q f dHⁿ as s → 0+. Composing the two limits, ∫_{blowUpMap(η(y),r)(η(M))} f dHⁿ = g(λr) → ∫_Q f dHⁿ as r → 0+.\n5. Steps 1 and 4 are exactly HasApproximateTangentSpaceAt n (η(M)) (η(y)) Q. ∎\nFormalization notes (this exact statement was proved in a scratch build): obtain ⟨hdim, hconv⟩; prove the set identity with image_image, congr, funext and the rewrite chain ← smul_sub, smul_smul, mul_inv, mul_comm, sub_sub_sub_cancel_right (after writing dilation x λ y = λ⁻¹ • (y − x)); simp_rw it; the filter limit by tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within with mul_pos; conclude with (hconv f).comp.",
+          "proof_key_steps": [
+            "η(w) − η(y) = λ⁻¹(w − y), hence η_{η(y),r}(η(M)) = η_{y,λr}(M) for every r.",
+            "The rescaled integrals for η(M) at η(y) at scale r equal those for M at y at scale λr.",
+            "r ↦ λr maps r → 0+ to s → 0+, so the limit transfers; dim Q = n is unchanged."
+          ]
+        },
+        "audit": {
+          "key": "tangent_invariance",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose accurately expands the frozen approximate-tangent predicate. The exact rescaled-set identity and the positive-scale filter limit transfer its convergence clause; the dimension clause is unchanged. No measurability or integrability assumption on M is missing."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+      "key": "testform_correspondence",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (both identical; manifest project b4d606d, mathlib 25730c7c)",
+              "rg -n 'theorem MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀|theorem Isometry.euclideanHausdorffMeasure_image' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n 'theorem restrict_map \\(μ|theorem ae_map_iff \\{p' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "rg -n 'MeasurableEmbedding.lintegral_map|MeasurableEmbedding.integral_map |MeasurableEmbedding.aestronglyMeasurable_map_iff' mathlib/Mathlib",
+              "rg -n 'theorem map_smul_univ' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean; rg -n 'comp_homeomorph' mathlib/Mathlib/Topology/Algebra/Support.lean; rg -n 'theorem preimage_closure|theorem image_closure' mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "grep -n '^def\\|^theorem' simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Mass,CurrentLocalEquality,Currents,Forms}.lean simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (affinePullbackForm, affinePushforward_apply, boundary_affinePushforward, exteriorDerivative_affinePullbackForm, massOn, massAdmissibleOn, restrictDomain_apply, zeroRegion, support, CountablyRectifiable, HasApproximateTangentSpaceAt, blowUpMap)",
+              "grep -rl -F <each proposed lean_name> runs/20261011T150044Z-ba604216b4 (no match) and lean_name inventory of dag.json and all node JSON files (no collision)",
+              "contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on all eight child types",
+              "lake build GMT.Ch07.Submission; lake env lean Check/FinalExact.lean, Check/FinalAssembly.lean, Check/FinalLeaves.lean with #print axioms (scratch /tmp/bscale-decomp-6cU90O/proj)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalExact.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalAssembly.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalLeaves.lean"
+            ],
+            "conclusion": "The snapshot contract and submission (project b4d606d, mathlib 25730c7c) are byte-identical to the workspace files. SimonGMT supplies the objects the children reason about: blowUp is an affinePushforward of a restrictDomain; affinePullbackForm comes with affinePushforward_apply, boundary_affinePushforward and exteriorDerivative_affinePullbackForm (used for blowup_structure (iv)); massOn/massAdmissibleOn (mass_scaling); zeroRegion/support/VanishesOn (blowup_structure (iii)); CountablyRectifiable and HasApproximateTangentSpaceAt via blowUpMap (rep_pushforward, tangent_invariance). It contains no dilation or blow-up lemmas, so the children supply them. The pinned Mathlib supplies the measure-theoretic and multilinear ingredients: euclideanHausdorffMeasure_smul₀ and Isometry.euclideanHausdorffMeasure_image (hausdorff_scaling); MeasurableEmbedding.restrict_map, lintegral_map, integral_map, ae_map_iff and aestronglyMeasurable_map_iff (rep_pushforward); ContinuousAlternatingMap.map_smul_univ and HasCompactSupport.comp_homeomorph (testform_correspondence); Homeomorph.preimage_closure and image_closure (blowup_structure, minimality). All eight child types elaborate in the comparator scope. Scratch Lean proofs of every child, and of the parent from the children, compile using only propext, Classical.choice and Quot.sound. No proposed name occurs elsewhere in the run."
+          }
+        ],
+        "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+        "child_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+        "subproblem": {
+          "key": "testform_correspondence",
+          "title": "Test forms correspond under η_{x,λ}, and η_{x,λ#}T(ω) = λ^{−n}T(ω∘η)",
+          "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P an arbitrary subset, x ∈ ℝ^P, λ > 0 and η = η_{x,λ} (η(y) = λ⁻¹(y − x), Contract `dilation x λ`). Then (a) for every ω ∈ 𝒟ⁿ(η(U)) there is ω' ∈ 𝒟ⁿ(U) with ω'(y) = ω(η(y)) for all y ∈ ℝ^P; (b) for every ω' ∈ 𝒟ⁿ(U) there is ω ∈ 𝒟ⁿ(η(U)) with ω'(y) = ω(η(y)) for all y; (c) for every T ∈ 𝒟_n(U) and all ω ∈ 𝒟ⁿ(η(U)), ω' ∈ 𝒟ⁿ(U) with ω'(y) = ω(η(y)) for all y, the blow-up satisfies η_{x,λ#}T(ω) = λ^{−n}·T(ω'). Here 𝒟ⁿ(V) = TestFormOn V n and η_{x,λ#}T = blowUp T x λ.",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ ω : TestFormOn (dilation x lam '' U) n, ∃ ω' : TestFormOn U n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ (∀ ω' : TestFormOn U n, ∃ ω : TestFormOn (dilation x lam '' U) n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ ∀ (T : GeometricCurrentOn U n) (ω : TestFormOn (dilation x lam '' U) n) (ω' : TestFormOn U n), (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) → blowUp T x lam hlam.ne' ω = lam⁻¹ ^ n * T ω'",
+          "lean_name": "dtc_blowUp_testForm_corr",
+          "depends_on": [],
+          "natural_proof": "Source: parent proof step 0(ii) (pullback by η_{x,λ}); Simon Ch. 6, 2.23 (push-forward f_#T(ω) = T(f^#ω), chapter-06.txt lines 405–418).\nConventions. ℝ^P = Euclid P. For x ∈ ℝ^P and λ > 0, η := η_{x,λ} = dilation x λ, η(y) = −λ⁻¹x + λ⁻¹y = λ⁻¹(y − x), and ι(z) := x + λz. For V ⊆ ℝ^P (any subset), 𝒟ⁿ(V) = TestFormOn V n is the set of C^∞ maps ω : ℝ^P → Λⁿ(ℝ^P) (n-covectors) with compact topological support tsupport ω ⊆ V; elements of 𝒟ⁿ(V) are determined by their underlying forms. η_#Y := η_{x,λ#}Y = blowUp Y x λ for Y ∈ 𝒟_n(U). By the Contract definition of blowUp, for T ∈ 𝒟_n(U) and ω ∈ 𝒟ⁿ(η(U)) we have η_#T(ω) = T(ν), where ν ∈ 𝒟ⁿ(U) has underlying form ν(y) = ω(−λ⁻¹x + L y) ∘ L with L := λ⁻¹·id (= dilationCLM P λ), i.e. ν(y)(v₁,…,vₙ) = ω(η(y))(λ⁻¹v₁,…,λ⁻¹vₙ) (SimonGMT affinePullbackForm L (−λ⁻¹x) ω; it is a test form in η⁻¹(η(U)) and is regarded as a test form in U through the inclusion η⁻¹(η(U)) ⊆ U, which does not change the underlying form).\n1. η is an affine homeomorphism of ℝ^P with inverse ι. Indeed η is the composition of y ↦ λ⁻¹y (a homeomorphism since λ⁻¹ ≠ 0) with the translation z ↦ z − λ⁻¹x, and η(ι(z)) = λ⁻¹(x + λz − x) = z, ι(η(y)) = x + λ·λ⁻¹(y − x) = y. Both η and ι are affine, hence C^∞. In particular η is injective, so η⁻¹(η(V)) = V for every V ⊆ ℝ^P.\n2. Two facts about supports. Let h : ℝ^P → ℝ^P be continuous and f : ℝ^P → Λⁿ(ℝ^P). (i) tsupport(f∘h) ⊆ h⁻¹(tsupport f): the set h⁻¹(tsupport f) is closed and contains {f∘h ≠ 0} = h⁻¹{f ≠ 0}. (ii) If h is a homeomorphism and f has compact support, then f∘h has compact support: h⁻¹(tsupport f) is compact (it is the image of the compact set tsupport f under the continuous inverse of h), and tsupport(f∘h) is a closed subset of it by (i).\n3. Proof of (a). Let ω ∈ 𝒟ⁿ(η(U)) and put ω' := ω∘η. Then ω' is C^∞ (composition of C^∞ maps), has compact support by 2(ii), and tsupport ω' ⊆ η⁻¹(tsupport ω) ⊆ η⁻¹(η(U)) = U by 2(i) and step 1. Hence ω' ∈ 𝒟ⁿ(U), and ω'(y) = ω(η(y)) for every y by definition.\n4. Proof of (b). Let ω' ∈ 𝒟ⁿ(U) and put ω := ω'∘ι. Then ω is C^∞, has compact support by 2(ii) (ι is a homeomorphism), and tsupport ω ⊆ ι⁻¹(tsupport ω') ⊆ ι⁻¹(U). If ι(z) ∈ U then z = η(ι(z)) ∈ η(U); hence tsupport ω ⊆ η(U) and ω ∈ 𝒟ⁿ(η(U)). Finally ω(η(y)) = ω'(ι(η(y))) = ω'(y) for every y.\n5. Proof of (c). Let T ∈ 𝒟_n(U), ω ∈ 𝒟ⁿ(η(U)) and ω' ∈ 𝒟ⁿ(U) with ω'(y) = ω(η(y)) for all y, and let ν be the test form in the definition of η_#T(ω). Note −λ⁻¹x + L y = η(y). Fix y and v₁,…,vₙ ∈ ℝ^P and put α := ω(η(y)) ∈ Λⁿ(ℝ^P). Since α is multilinear, α(λ⁻¹v₁,…,λ⁻¹vₙ) = (∏_{i=1}^{n} λ⁻¹)·α(v₁,…,vₙ) = λ^{−n}·α(v₁,…,vₙ) (for n = 0 the empty product is 1 = λ⁰). Hence ν(y) = λ^{−n}ω(η(y)) = λ^{−n}ω'(y) for all y, so ν = λ^{−n}ω' as elements of 𝒟ⁿ(U). By linearity of T, η_#T(ω) = T(ν) = T(λ^{−n}ω') = λ^{−n}·T(ω'). This proves (a), (b), (c) for arbitrary U and n. ∎\nFormalization notes (this exact statement was proved in a scratch build): unfold blowUp, then rewrite with GeometricCurrentOn.affinePushforward_apply and GeometricCurrentOn.restrictDomain_apply; reduce to an equality of underlying forms (Subtype.ext, funext, ext v) and use testFormOnInclusion_coe, affinePullbackTestOn_coe, affinePullbackForm, ContinuousAlternatingMap.compContinuousLinearMap_apply, ContinuousAlternatingMap.map_smul_univ, Finset.prod_const, Finset.card_univ, Fintype.card_fin, then map_smul and smul_eq_mul. For (a), (b) build ⟨f, h⟩ after `change IsTestForm f ∧ tsupport f ⊆ V`, using HasCompactSupport.comp_homeomorph for the homeomorphisms (Homeomorph.smulOfNeZero λ⁻¹ _).trans (Homeomorph.addLeft (−(λ⁻¹ • x))) (coercion = dilation x λ) and (Homeomorph.smulOfNeZero λ _).trans (Homeomorph.addLeft x), together with tsupport_comp_subset_preimage and Set.preimage_image_eq. Under `open scoped ENNReal` the symbol ∞ is ENNReal's top, so write the smoothness order as ((⊤ : ℕ∞) : WithTop ℕ∞).",
+          "proof_key_steps": [
+            "η is an affine homeomorphism with inverse ι(z) = x + λz; composition with a homeomorphism preserves smoothness and compact support, and tsupport(f∘h) ⊆ h⁻¹(tsupport f).",
+            "(a) ω' := ω∘η is a test form with tsupport ⊆ η⁻¹(η(U)) = U.",
+            "(b) ω := ω'∘ι is a test form with tsupport ⊆ ι⁻¹(U) ⊆ η(U), and ω∘η = ω'.",
+            "(c) The pulled-back form is ω(η(y))∘(λ⁻¹·id) = λ^{−n}ω(η(y)) = λ^{−n}ω'(y) by multilinearity; linearity of T gives η_#T(ω) = λ^{−n}T(ω')."
+          ]
+        },
+        "audit": {
+          "key": "testform_correspondence",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proposition exactly matches all three prose clauses. Composition with the affine homeomorphism and its inverse supplies smooth, compactly supported forms in the correct domains. Multilinearity and current linearity prove the evaluation formula, including degree zero, without circular reliance."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_structure-a1",
+      "key": "blowup_structure",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (both identical; manifest project b4d606d, mathlib 25730c7c)",
+              "rg -n 'theorem MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀|theorem Isometry.euclideanHausdorffMeasure_image' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n 'theorem restrict_map \\(μ|theorem ae_map_iff \\{p' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "rg -n 'MeasurableEmbedding.lintegral_map|MeasurableEmbedding.integral_map |MeasurableEmbedding.aestronglyMeasurable_map_iff' mathlib/Mathlib",
+              "rg -n 'theorem map_smul_univ' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean; rg -n 'comp_homeomorph' mathlib/Mathlib/Topology/Algebra/Support.lean; rg -n 'theorem preimage_closure|theorem image_closure' mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "grep -n '^def\\|^theorem' simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Mass,CurrentLocalEquality,Currents,Forms}.lean simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (affinePullbackForm, affinePushforward_apply, boundary_affinePushforward, exteriorDerivative_affinePullbackForm, massOn, massAdmissibleOn, restrictDomain_apply, zeroRegion, support, CountablyRectifiable, HasApproximateTangentSpaceAt, blowUpMap)",
+              "grep -rl -F <each proposed lean_name> runs/20261011T150044Z-ba604216b4 (no match) and lean_name inventory of dag.json and all node JSON files (no collision)",
+              "contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on all eight child types",
+              "lake build GMT.Ch07.Submission; lake env lean Check/FinalExact.lean, Check/FinalAssembly.lean, Check/FinalLeaves.lean with #print axioms (scratch /tmp/bscale-decomp-6cU90O/proj)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalExact.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalAssembly.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalLeaves.lean"
+            ],
+            "conclusion": "The snapshot contract and submission (project b4d606d, mathlib 25730c7c) are byte-identical to the workspace files. SimonGMT supplies the objects the children reason about: blowUp is an affinePushforward of a restrictDomain; affinePullbackForm comes with affinePushforward_apply, boundary_affinePushforward and exteriorDerivative_affinePullbackForm (used for blowup_structure (iv)); massOn/massAdmissibleOn (mass_scaling); zeroRegion/support/VanishesOn (blowup_structure (iii)); CountablyRectifiable and HasApproximateTangentSpaceAt via blowUpMap (rep_pushforward, tangent_invariance). It contains no dilation or blow-up lemmas, so the children supply them. The pinned Mathlib supplies the measure-theoretic and multilinear ingredients: euclideanHausdorffMeasure_smul₀ and Isometry.euclideanHausdorffMeasure_image (hausdorff_scaling); MeasurableEmbedding.restrict_map, lintegral_map, integral_map, ae_map_iff and aestronglyMeasurable_map_iff (rep_pushforward); ContinuousAlternatingMap.map_smul_univ and HasCompactSupport.comp_homeomorph (testform_correspondence); Homeomorph.preimage_closure and image_closure (blowup_structure, minimality). All eight child types elaborate in the comparator scope. Scratch Lean proofs of every child, and of the parent from the children, compile using only propext, Classical.choice and Quot.sound. No proposed name occurs elsewhere in the run."
+          }
+        ],
+        "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+        "child_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_structure-a1",
+        "subproblem": {
+          "key": "blowup_structure",
+          "title": "η_{x,λ#} commutes with differences and boundaries, is injective, and maps supports by η",
+          "statement": "Let P ∈ ℕ, U ⊆ ℝ^P, x ∈ ℝ^P, λ > 0, η = η_{x,λ} and η_# = η_{x,λ#} (blowUp · x λ). Then (i) η_#(S − T) = η_#S − η_#T for all n and S, T ∈ 𝒟_n(U); (ii) η_#S = η_#T implies S = T for all n and S, T ∈ 𝒟_n(U); (iii) spt(η_#T) = η(spt T) for all n and T ∈ 𝒟_n(U), where for a current Y with domain V, spt Y = V ∖ ⋃{W : W open, closure W compact, closure W ⊆ V, Y(ω) = 0 for all ω ∈ 𝒟ⁿ(V) with tsupport ω ⊆ W} (SimonGMT support); (iv) ∂(η_#T) = η_#(∂T) for all m and T ∈ 𝒟_{m+1}(U).",
+          "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp (S - T) x lam hlam.ne' = blowUp S x lam hlam.ne' - blowUp T x lam hlam.ne') ∧ (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp S x lam hlam.ne' = blowUp T x lam hlam.ne' → S = T) ∧ (∀ (n : ℕ) (T : GeometricCurrentOn U n), (blowUp T x lam hlam.ne').support = dilation x lam '' T.support) ∧ ∀ (m : ℕ) (T : GeometricCurrentOn U (m + 1)), (blowUp T x lam hlam.ne').boundary = blowUp T.boundary x lam hlam.ne'",
+          "lean_name": "dtc_blowUp_algebra",
+          "depends_on": [
+            "testform_correspondence"
+          ],
+          "natural_proof": "Source: parent proof steps 3(c), 3(d); Simon Ch. 6, 2.23–2.24(1) (∂f_#T = f_#∂T, chapter-06.txt lines 405–418); support of a current (Simon 6.2.11; SimonGMT support, zeroRegion, VanishesOn).\nConventions. ℝ^P = Euclid P. For x ∈ ℝ^P and λ > 0, η := η_{x,λ} = dilation x λ, η(y) = −λ⁻¹x + λ⁻¹y = λ⁻¹(y − x), and ι(z) := x + λz. For V ⊆ ℝ^P (any subset), 𝒟ⁿ(V) = TestFormOn V n is the set of C^∞ maps ω : ℝ^P → Λⁿ(ℝ^P) (n-covectors) with compact topological support tsupport ω ⊆ V; elements of 𝒟ⁿ(V) are determined by their underlying forms. η_#Y := η_{x,λ#}Y = blowUp Y x λ for Y ∈ 𝒟_n(U). For Y ∈ 𝒟_n(V): Y vanishes on W iff Y(ω) = 0 for every ω ∈ 𝒟ⁿ(V) with tsupport ω ⊆ W; Z(Y) := ⋃{W : W open, closure W compact, closure W ⊆ V, Y vanishes on W}; spt Y := V ∖ Z(Y). For Y ∈ 𝒟_n(U) and ω ∈ 𝒟ⁿ(η(U)), η_#Y(ω) = Y(ν_ω), where ν_ω ∈ 𝒟ⁿ(U) is the affine pullback of ω by η (affinePullbackForm (dilationCLM P λ) (−λ⁻¹x) ω, regarded in U), which depends only on ω and not on Y. η is an affine homeomorphism of ℝ^P with inverse ι: η is y ↦ λ⁻¹y (a homeomorphism, λ⁻¹ ≠ 0) followed by the translation z ↦ z − λ⁻¹x, η(ι(z)) = λ⁻¹(x + λz − x) = z and ι(η(y)) = x + λ·λ⁻¹(y − x) = y; in particular η is injective, η⁻¹(η(E)) = E, and for continuous h and any f, tsupport(f∘h) ⊆ h⁻¹(tsupport f) (the closed set h⁻¹(tsupport f) contains {f∘h ≠ 0}).\n1. (i) For ω ∈ 𝒟ⁿ(η(U)): η_#(S − T)(ω) = (S − T)(ν_ω) = S(ν_ω) − T(ν_ω) = η_#S(ω) − η_#T(ω), because S − T is the pointwise difference of the underlying linear functionals. Currents that agree on every test form are equal (GeometricCurrentOn.ext).\n2. (ii) Suppose η_#S = η_#T and let ω' ∈ 𝒟ⁿ(U). By testform_correspondence (b) choose ω ∈ 𝒟ⁿ(η(U)) with ω'(y) = ω(η(y)) for all y. By testform_correspondence (c), λ^{−n}S(ω') = η_#S(ω) = η_#T(ω) = λ^{−n}T(ω'). Since λ^{−n} ≠ 0, S(ω') = T(ω'). Hence S = T.\n3. (iii) Claim: Z(η_#T) = η(Z(T)).\n (⊆) Let z ∈ W₀, where W₀ is open, closure W₀ is compact and ⊆ η(U), and η_#T vanishes on W₀. Put W := η⁻¹(W₀). W is open (η continuous). As η is a homeomorphism, closure W = η⁻¹(closure W₀), which is compact and contained in η⁻¹(η(U)) = U. T vanishes on W: let ω' ∈ 𝒟ⁿ(U) with tsupport ω' ⊆ W; by testform_correspondence (b) choose ω with ω'(y) = ω(η(y)) for all y; then ω = ω'∘ι (ω(z) = ω(η(ι(z))) = ω'(ι(z))), so tsupport ω ⊆ ι⁻¹(tsupport ω') ⊆ ι⁻¹(η⁻¹(W₀)) = W₀ (η∘ι = id); hence 0 = η_#T(ω) = λ^{−n}T(ω') by testform_correspondence (c), and T(ω') = 0. Thus W ⊆ Z(T); since η(ι(z)) = z ∈ W₀ we get ι(z) ∈ W ⊆ Z(T), and z = η(ι(z)) ∈ η(Z(T)).\n (⊇) Let z = η(w) with w ∈ W, where W is open, closure W is compact and ⊆ U, and T vanishes on W. Put W₀ := η(W). W₀ is open (a homeomorphism is an open map); closure W₀ = η(closure W) is compact (continuous image of a compact set) and contained in η(U). η_#T vanishes on W₀: let ω ∈ 𝒟ⁿ(η(U)) with tsupport ω ⊆ W₀; by testform_correspondence (a) choose ω' ∈ 𝒟ⁿ(U) with ω'(y) = ω(η(y)); then tsupport ω' ⊆ η⁻¹(tsupport ω) ⊆ η⁻¹(η(W)) = W, so T(ω') = 0 and η_#T(ω) = λ^{−n}T(ω') = 0 by testform_correspondence (c). Hence z ∈ W₀ ⊆ Z(η_#T).\n Consequently spt(η_#T) = η(U) ∖ η(Z(T)) = η(U ∖ Z(T)) = η(spt T), the middle equality because η is injective.\n4. (iv) Let T ∈ 𝒟_{m+1}(U) and ω ∈ 𝒟^m(η(U)). By definition ∂Y(φ) = Y(dφ). Then ∂(η_#T)(ω) = η_#T(dω) = T(ν_{dω}) and η_#(∂T)(ω) = ∂T(ν_ω) = T(dν_ω), where the inclusion into 𝒟(U) does not change underlying forms. Exterior differentiation commutes with pullback by the affine map η: d(η^#ω) = η^#(dω) (SimonGMT exteriorDerivative_affinePullbackForm; this is the chain rule, η having constant derivative λ⁻¹·id). Hence dν_ω = ν_{dω}, the two values agree, and ∂(η_#T) = η_#(∂T) (equivalently, SimonGMT GeometricCurrentOn.boundary_affinePushforward applied to the restricted current, together with the fact that restricting the domain commutes with ∂). ∎\nFormalization notes (this exact statement was proved in a scratch build from the sibling's exact type): (i) is `GeometricCurrentOn.ext fun ω => rfl`; (iv) is `unfold blowUp; rw [GeometricCurrentOn.boundary_affinePushforward]; rfl`; (ii) by GeometricCurrentOn.ext and mul_left_cancel₀; (iii) unfold GeometricCurrentOn.support, prove the zero-region identity by ext with Homeomorph.preimage_closure, Homeomorph.image_closure, Homeomorph.isCompact_preimage, Homeomorph.isOpenMap, IsCompact.image, tsupport_comp_subset_preimage, then rewrite with Set.image_sdiff (injectivity).",
+          "proof_key_steps": [
+            "(i) Both sides evaluate S − T on the same pulled-back form.",
+            "(ii) Every test form in U is ω∘η for some ω (testform_correspondence (b)), and η_#Y(ω) = λ^{−n}Y(ω∘η) with λ^{−n} ≠ 0.",
+            "(iii) The zero regions correspond: η_#T vanishes on W₀ ⊂⊂ η(U) iff T vanishes on η⁻¹(W₀) ⊂⊂ U; hence Z(η_#T) = η(Z(T)) and spt(η_#T) = η(spt T) by injectivity.",
+            "(iv) d commutes with the affine pullback (exteriorDerivative_affinePullbackForm / boundary_affinePushforward)."
+          ]
+        },
+        "audit": {
+          "key": "blowup_structure",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "All four clauses match the Lean type. The proof establishes subtraction, injectivity and the precise frozen zero-region correspondence for arbitrary domains. Affine pullback commuting with exterior differentiation proves the successor-degree boundary clause."
+        },
+        "resolved_dependencies": [
+          "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.mass_scaling-a1",
+      "key": "mass_scaling",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (both identical; manifest project b4d606d, mathlib 25730c7c)",
+              "rg -n 'theorem MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀|theorem Isometry.euclideanHausdorffMeasure_image' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n 'theorem restrict_map \\(μ|theorem ae_map_iff \\{p' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "rg -n 'MeasurableEmbedding.lintegral_map|MeasurableEmbedding.integral_map |MeasurableEmbedding.aestronglyMeasurable_map_iff' mathlib/Mathlib",
+              "rg -n 'theorem map_smul_univ' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean; rg -n 'comp_homeomorph' mathlib/Mathlib/Topology/Algebra/Support.lean; rg -n 'theorem preimage_closure|theorem image_closure' mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "grep -n '^def\\|^theorem' simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Mass,CurrentLocalEquality,Currents,Forms}.lean simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (affinePullbackForm, affinePushforward_apply, boundary_affinePushforward, exteriorDerivative_affinePullbackForm, massOn, massAdmissibleOn, restrictDomain_apply, zeroRegion, support, CountablyRectifiable, HasApproximateTangentSpaceAt, blowUpMap)",
+              "grep -rl -F <each proposed lean_name> runs/20261011T150044Z-ba604216b4 (no match) and lean_name inventory of dag.json and all node JSON files (no collision)",
+              "contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on all eight child types",
+              "lake build GMT.Ch07.Submission; lake env lean Check/FinalExact.lean, Check/FinalAssembly.lean, Check/FinalLeaves.lean with #print axioms (scratch /tmp/bscale-decomp-6cU90O/proj)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalExact.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalAssembly.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalLeaves.lean"
+            ],
+            "conclusion": "The snapshot contract and submission (project b4d606d, mathlib 25730c7c) are byte-identical to the workspace files. SimonGMT supplies the objects the children reason about: blowUp is an affinePushforward of a restrictDomain; affinePullbackForm comes with affinePushforward_apply, boundary_affinePushforward and exteriorDerivative_affinePullbackForm (used for blowup_structure (iv)); massOn/massAdmissibleOn (mass_scaling); zeroRegion/support/VanishesOn (blowup_structure (iii)); CountablyRectifiable and HasApproximateTangentSpaceAt via blowUpMap (rep_pushforward, tangent_invariance). It contains no dilation or blow-up lemmas, so the children supply them. The pinned Mathlib supplies the measure-theoretic and multilinear ingredients: euclideanHausdorffMeasure_smul₀ and Isometry.euclideanHausdorffMeasure_image (hausdorff_scaling); MeasurableEmbedding.restrict_map, lintegral_map, integral_map, ae_map_iff and aestronglyMeasurable_map_iff (rep_pushforward); ContinuousAlternatingMap.map_smul_univ and HasCompactSupport.comp_homeomorph (testform_correspondence); Homeomorph.preimage_closure and image_closure (blowup_structure, minimality). All eight child types elaborate in the comparator scope. Scratch Lean proofs of every child, and of the parent from the children, compile using only propext, Classical.choice and Quot.sound. No proposed name occurs elsewhere in the run."
+          }
+        ],
+        "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+        "child_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.mass_scaling-a1",
+        "subproblem": {
+          "key": "mass_scaling",
+          "title": "Mass scaling of blow-ups: M_{η(W)}(η_{x,λ#}T) = λ^{−n}M_W(T)",
+          "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U), x ∈ ℝ^P, λ > 0, η = η_{x,λ}, and let W ⊆ ℝ^P be arbitrary. Then M_{η(W)}(η_{x,λ#}T) = ofReal(λ^{−n})·M_W(T) in [0,∞], where M_W(Y) is the supremum of ofReal(Y(ω)) over test forms ω in the domain of Y with tsupport ω ⊆ W and Euclidean coefficient norm ≤ 1 everywhere (SimonGMT massOn).",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (W : Set (Euclid P)), (blowUp T x lam hlam.ne').massOn (dilation x lam '' W) = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn W",
+          "lean_name": "dtc_blowUp_massOn_image",
+          "depends_on": [
+            "testform_correspondence"
+          ],
+          "natural_proof": "Source: parent proof step 1; scaling identity (1) in the proof of Simon 7.3.1 (chapter-07.txt lines 329–331); mass M_W of Simon 6.2.5 (SimonGMT massOn with the Euclidean coefficient norm).\nConventions. ℝ^P = Euclid P. For x ∈ ℝ^P and λ > 0, η := η_{x,λ} = dilation x λ, η(y) = −λ⁻¹x + λ⁻¹y = λ⁻¹(y − x), and ι(z) := x + λz. For V ⊆ ℝ^P (any subset), 𝒟ⁿ(V) = TestFormOn V n is the set of C^∞ maps ω : ℝ^P → Λⁿ(ℝ^P) (n-covectors) with compact topological support tsupport ω ⊆ V; elements of 𝒟ⁿ(V) are determined by their underlying forms. η_#Y := η_{x,λ#}Y = blowUp Y x λ for Y ∈ 𝒟_n(U). For a current Y with domain V and W ⊆ ℝ^P put Adm(V,W) := {ω ∈ 𝒟ⁿ(V) : tsupport ω ⊆ W and |ω(y)| ≤ 1 for all y} (|·| the Euclidean coefficient norm; massAdmissibleOn V n W), so M_W(Y) = sup{ofReal(Y(ω)) : ω ∈ Adm(V,W)} ∈ [0,∞]. Put S := η_#T and c := λ^{−n} ≥ 0.\n1. Facts on η: η is an affine homeomorphism of ℝ^P with inverse ι: η is y ↦ λ⁻¹y (a homeomorphism, λ⁻¹ ≠ 0) followed by the translation z ↦ z − λ⁻¹x, η(ι(z)) = λ⁻¹(x + λz − x) = z and ι(η(y)) = x + λ·λ⁻¹(y − x) = y. In particular η is injective and η⁻¹(η(W)) = W. For continuous h and any f, tsupport(f∘h) ⊆ h⁻¹(tsupport f), since h⁻¹(tsupport f) is closed and contains {f∘h ≠ 0} = h⁻¹{f ≠ 0}.\n2. Upper bound. Let ω ∈ Adm(η(U), η(W)). By testform_correspondence (a) choose ω' ∈ 𝒟ⁿ(U) with ω'(y) = ω(η(y)) for all y. Then ω' ∈ Adm(U,W): since ω' = ω∘η, tsupport ω' ⊆ η⁻¹(tsupport ω) ⊆ η⁻¹(η(W)) = W, and |ω'(y)| = |ω(η(y))| ≤ 1. By testform_correspondence (c), S(ω) = c·T(ω'). As c ≥ 0, ofReal(S(ω)) = ofReal(c·T(ω')) = ofReal(c)·ofReal(T(ω')) ≤ ofReal(c)·M_W(T). Taking the supremum over ω gives M_{η(W)}(S) ≤ ofReal(c)·M_W(T).\n3. Lower bound. Multiplication by a fixed element of [0,∞] commutes with suprema (ENNReal.mul_sSup), so ofReal(c)·M_W(T) = sup{ofReal(c)·ofReal(T(ω')) : ω' ∈ Adm(U,W)}. Let ω' ∈ Adm(U,W). By testform_correspondence (b) choose ω ∈ 𝒟ⁿ(η(U)) with ω'(y) = ω(η(y)) for all y. For every z, ω(z) = ω(η(ι(z))) = ω'(ι(z)), i.e. ω = ω'∘ι; hence tsupport ω ⊆ ι⁻¹(tsupport ω') ⊆ ι⁻¹(W) ⊆ η(W) (if ι(z) ∈ W then z = η(ι(z)) ∈ η(W)), and |ω(z)| = |ω'(ι(z))| ≤ 1. Thus ω ∈ Adm(η(U), η(W)), and by testform_correspondence (c), ofReal(c)·ofReal(T(ω')) = ofReal(c·T(ω')) = ofReal(S(ω)) ≤ M_{η(W)}(S). Taking the supremum over ω' gives ofReal(c)·M_W(T) ≤ M_{η(W)}(S).\n4. By steps 2 and 3, M_{η(W)}(η_{x,λ#}T) = ofReal(λ^{−n})·M_W(T). No hypothesis on U, W or n was used. ∎\nFormalization notes (proved in a scratch build from the sibling's exact type): unfold GeometricCurrentOn.massOn and use le_antisymm; for ≤ use sSup_le with `rintro _ ⟨ω, ⟨hωs, hωn⟩, rfl⟩`, `dsimp only`, rewrite with the sibling's evaluation formula and ENNReal.ofReal_mul (positivity), then gcongr and le_sSup; for ≥ rewrite with ENNReal.mul_sSup and use iSup₂_le; supports via tsupport_comp_subset_preimage and Set.preimage_image_eq.",
+          "proof_key_steps": [
+            "Each admissible ω for η_#T on η(W) gives the admissible ω' = ω∘η for T on W with η_#T(ω) = λ^{−n}T(ω'), so M_{η(W)}(η_#T) ≤ ofReal(λ^{−n})M_W(T).",
+            "Each admissible ω' for T on W gives the admissible ω = ω'∘ι for η_#T on η(W); multiplication by ofReal(λ^{−n}) commutes with suprema, giving the reverse inequality."
+          ]
+        },
+        "audit": {
+          "key": "mass_scaling",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The statement includes arbitrary U, n and W. Both admissibility transfers preserve the actual Euclidean coefficient norm and required supports. The evaluation formula, ofReal multiplication and ENNReal supremum identity prove both inequalities, including infinite mass."
+        },
+        "resolved_dependencies": [
+          "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.rep_pushforward-a1",
+      "key": "rep_pushforward",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (both identical; manifest project b4d606d, mathlib 25730c7c)",
+              "rg -n 'theorem MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀|theorem Isometry.euclideanHausdorffMeasure_image' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n 'theorem restrict_map \\(μ|theorem ae_map_iff \\{p' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "rg -n 'MeasurableEmbedding.lintegral_map|MeasurableEmbedding.integral_map |MeasurableEmbedding.aestronglyMeasurable_map_iff' mathlib/Mathlib",
+              "rg -n 'theorem map_smul_univ' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean; rg -n 'comp_homeomorph' mathlib/Mathlib/Topology/Algebra/Support.lean; rg -n 'theorem preimage_closure|theorem image_closure' mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "grep -n '^def\\|^theorem' simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Mass,CurrentLocalEquality,Currents,Forms}.lean simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (affinePullbackForm, affinePushforward_apply, boundary_affinePushforward, exteriorDerivative_affinePullbackForm, massOn, massAdmissibleOn, restrictDomain_apply, zeroRegion, support, CountablyRectifiable, HasApproximateTangentSpaceAt, blowUpMap)",
+              "grep -rl -F <each proposed lean_name> runs/20261011T150044Z-ba604216b4 (no match) and lean_name inventory of dag.json and all node JSON files (no collision)",
+              "contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on all eight child types",
+              "lake build GMT.Ch07.Submission; lake env lean Check/FinalExact.lean, Check/FinalAssembly.lean, Check/FinalLeaves.lean with #print axioms (scratch /tmp/bscale-decomp-6cU90O/proj)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalExact.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalAssembly.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalLeaves.lean"
+            ],
+            "conclusion": "The snapshot contract and submission (project b4d606d, mathlib 25730c7c) are byte-identical to the workspace files. SimonGMT supplies the objects the children reason about: blowUp is an affinePushforward of a restrictDomain; affinePullbackForm comes with affinePushforward_apply, boundary_affinePushforward and exteriorDerivative_affinePullbackForm (used for blowup_structure (iv)); massOn/massAdmissibleOn (mass_scaling); zeroRegion/support/VanishesOn (blowup_structure (iii)); CountablyRectifiable and HasApproximateTangentSpaceAt via blowUpMap (rep_pushforward, tangent_invariance). It contains no dilation or blow-up lemmas, so the children supply them. The pinned Mathlib supplies the measure-theoretic and multilinear ingredients: euclideanHausdorffMeasure_smul₀ and Isometry.euclideanHausdorffMeasure_image (hausdorff_scaling); MeasurableEmbedding.restrict_map, lintegral_map, integral_map, ae_map_iff and aestronglyMeasurable_map_iff (rep_pushforward); ContinuousAlternatingMap.map_smul_univ and HasCompactSupport.comp_homeomorph (testform_correspondence); Homeomorph.preimage_closure and image_closure (blowup_structure, minimality). All eight child types elaborate in the comparator scope. Scratch Lean proofs of every child, and of the parent from the children, compile using only propext, Classical.choice and Quot.sound. No proposed name occurs elsewhere in the run."
+          }
+        ],
+        "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+        "child_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.rep_pushforward-a1",
+        "subproblem": {
+          "key": "rep_pushforward",
+          "title": "Push-forward of an integer multiplicity representation by η_{x,λ}",
+          "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U), x ∈ ℝ^P, λ > 0, η = η_{x,λ}, and let R = (M, θ, ξ) be an integer multiplicity representation (IMRep) of T in U. Then there is an IMRep R' of η_{x,λ#}T in η(U) such that μ_{R'}(B) = ofReal(λ^{−n})·μ_R(η⁻¹(B)) for every Borel B ⊆ ℝ^P, where μ_R = θHⁿ⌞M (IMRep.measure).",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (R : IMRep U n), R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s)",
+          "lean_name": "dtc_blowUp_imrep",
+          "depends_on": [
+            "testform_correspondence",
+            "hausdorff_scaling",
+            "tangent_invariance"
+          ],
+          "natural_proof": "Source: parent proof step 2; Simon Ch. 6, 3.3–3.9 (push-forward of an integer multiplicity current by a Lipschitz map, Lemma 3.9; chapter-06.txt lines 770–862), specialized to the similarity η, whose Jacobian is the constant λ^{−n}, so that the area formula reduces to the scaling of Hⁿ; Simon Ch. 3, Definitions 1.1 and 1.4 (chapter-03.txt lines 12–16, 77–86).\nConventions. ℝ^P = Euclid P. For x ∈ ℝ^P and λ > 0, η := η_{x,λ} = dilation x λ, η(y) = −λ⁻¹x + λ⁻¹y = λ⁻¹(y − x), and ι(z) := x + λz. For V ⊆ ℝ^P (any subset), 𝒟ⁿ(V) = TestFormOn V n is the set of C^∞ maps ω : ℝ^P → Λⁿ(ℝ^P) (n-covectors) with compact topological support tsupport ω ⊆ V; elements of 𝒟ⁿ(V) are determined by their underlying forms. η_#Y := η_{x,λ#}Y = blowUp Y x λ for Y ∈ 𝒟_n(U). Hⁿ = μHE[n] and c := ofReal(λ^{−n}) ∈ (0,∞). An IMRep R = (M, θ, ξ) in U consists of a Borel set M ⊆ U that is countably n-rectifiable, a measurable θ : ℝ^P → ℕ with θ > 0 on M and ∫_{M∩K} θ dHⁿ < ∞ for every compact K ⊆ U, and ξ : ℝ^P → Λₙ(ℝ^P), a.e. strongly measurable for Hⁿ⌞M, such that for Hⁿ⌞M-a.e. y there is a subspace Q with HasApproximateTangentSpaceAt n M y Q and IsUnitOrientationOf (ξ(y)) Q. R.action(ω) = ∫_M θ(y)·ξ(y)(ω(y)) dHⁿ(y); R represents T iff T(ω) = R.action(ω) for all ω ∈ 𝒟ⁿ(U); μ_R = (Hⁿ⌞M) with density θ (IMRep.measure).\n1. η is an affine homeomorphism of ℝ^P with inverse ι: η is y ↦ λ⁻¹y (a homeomorphism, λ⁻¹ ≠ 0) followed by the translation z ↦ z − λ⁻¹x, η(ι(z)) = λ⁻¹(x + λz − x) = z and ι(η(y)) = x + λ·λ⁻¹(y − x) = y. Hence η is a measurable embedding (a Borel isomorphism of ℝ^P): η maps Borel sets onto Borel sets, η⁻¹(η(s)) = s and η(η⁻¹(t)) = t for all sets s, t.\n2. Key identity: for every Borel s, Hⁿ⌞η(s) = c·η_#(Hⁿ⌞s). Proof: for a measurable embedding η, every measure ν and every set t, (η_#ν)⌞t = η_#(ν⌞η⁻¹(t)) (Mathlib MeasurableEmbedding.restrict_map). With ν = Hⁿ and t = η(s): η_#(Hⁿ⌞s) = (η_#Hⁿ)⌞η(s) = (ofReal(λⁿ)·Hⁿ)⌞η(s) = ofReal(λⁿ)·(Hⁿ⌞η(s)) by hausdorff_scaling (ii). Since c·ofReal(λⁿ) = ofReal(λ^{−n}λⁿ) = 1, multiplying by c gives the claim. Consequences, for Borel s:\n (A) for g : ℝ^P → [0,∞], ∫_{η(s)} g dHⁿ = c·∫_s g∘η dHⁿ (lintegral against a scalar multiple of a measure, and MeasurableEmbedding.lintegral_map, which needs no measurability of g);\n (B) for g : ℝ^P → ℝ, ∫_{η(s)} g dHⁿ = λ^{−n}·∫_s g∘η dHⁿ for the Bochner integral (integral_smul_measure with c.toReal = λ^{−n}, and MeasurableEmbedding.integral_map, which holds for every g, integrable or not);\n (C) if a property q satisfies q(η(y)) for Hⁿ⌞s-a.e. y, then q holds Hⁿ⌞η(s)-a.e. (MeasurableEmbedding.ae_map_iff; a ν-null set is (c·ν)-null);\n (D) if h∘η is a.e. strongly measurable for Hⁿ⌞s, then h is a.e. strongly measurable for Hⁿ⌞η(s) (MeasurableEmbedding.aestronglyMeasurable_map_iff and AEStronglyMeasurable.smul_measure).\n3. Definition of R' and verification of the IMRep conditions in η(U). Let R = (M, θ, ξ) represent T and put M' := η(M), θ' := θ∘ι, ξ' := ξ∘ι; then θ'(η(y)) = θ(y) and ξ'(η(y)) = ξ(y).\n (a) M' is Borel by step 1, and M' ⊆ η(U) since M ⊆ U.\n (b) M' is countably n-rectifiable: choose M₀ with Hⁿ(M₀) = 0 and Lipschitz F_j : ℝⁿ → ℝ^P (j ∈ ℕ) with M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ) (Simon 3.1.1, SimonGMT CountablyRectifiable). Then Hⁿ(η(M₀)) = ofReal(λ^{−n})·0 = 0 by hausdorff_scaling (i); each η∘F_j is Lipschitz, since η is the linear map λ⁻¹·id (Lipschitz with constant ‖λ⁻¹·id‖) followed by a translation (an isometry); and M' ⊆ η(M₀) ∪ ⋃_j (η∘F_j)(ℝⁿ), because y ∈ M₀ gives η(y) ∈ η(M₀) and y = F_j(v) gives η(y) = (η∘F_j)(v).\n (c) θ' is measurable (θ is measurable and ι is continuous) and ℕ-valued; for z = η(y) ∈ M' with y ∈ M, θ'(z) = θ(y) > 0.\n (d) Local integrability: let K ⊆ η(U) be compact. Then M' ∩ K = η(M ∩ η⁻¹(K)) (f(s ∩ f⁻¹(t)) = f(s) ∩ t for every map f; Set.image_inter_preimage), and M ∩ η⁻¹(K) is Borel (K is closed). By 2(A), ∫_{M'∩K} θ' dHⁿ = c·∫_{M∩η⁻¹(K)} θ'∘η dHⁿ = c·∫_{M∩η⁻¹(K)} θ dHⁿ. The set η⁻¹(K) is compact (η is a homeomorphism) and η⁻¹(K) ⊆ η⁻¹(η(U)) = U, so the last integral is finite by the local integrability of R; as c < ∞ the product is finite.\n (e) ξ' is a.e. strongly measurable for Hⁿ⌞M' by 2(D), because ξ'∘η = ξ is a.e. strongly measurable for Hⁿ⌞M.\n (f) Orientation: let p(z) be the statement “∃Q, HasApproximateTangentSpaceAt n M' z Q ∧ IsUnitOrientationOf (ξ'(z)) Q”. For Hⁿ⌞M-a.e. y there is Q with HasApproximateTangentSpaceAt n M y Q and IsUnitOrientationOf (ξ(y)) Q; for such y the sibling tangent_invariance gives HasApproximateTangentSpaceAt n (η(M)) (η(y)) Q, and ξ'(η(y)) = ξ(y), so p(η(y)) holds. Hence p∘η holds Hⁿ⌞M-a.e., and by 2(C) p holds Hⁿ⌞M'-a.e.\n Therefore R' := (M', θ', ξ') is an IMRep in η(U).\n4. R' represents η_#T. Let ω ∈ 𝒟ⁿ(η(U)). By testform_correspondence (a) choose ω' ∈ 𝒟ⁿ(U) with ω'(y) = ω(η(y)) for all y; by testform_correspondence (c) and since R represents T, η_#T(ω) = λ^{−n}T(ω') = λ^{−n}R.action(ω') = λ^{−n}∫_M θ(y)ξ(y)(ω(η(y))) dHⁿ(y). On the other hand, by 2(B) with s = M and g(z) := θ'(z)·ξ'(z)(ω(z)), R'.action(ω) = ∫_{η(M)} g dHⁿ = λ^{−n}∫_M g(η(y)) dHⁿ(y) = λ^{−n}∫_M θ(y)ξ(y)(ω(η(y))) dHⁿ(y). The two expressions agree, so R'.Represents(η_#T).\n5. Measure identity. Let B be Borel; then η⁻¹(B) is Borel and\n μ_{R'}(B) = ∫_B θ' d(Hⁿ⌞M') (density formula on the measurable set B)\n = c·∫_B θ' d(η_#(Hⁿ⌞M)) (step 2)\n = c·∫_{η⁻¹(B)} θ'∘η d(Hⁿ⌞M) (MeasurableEmbedding.restrict_map and MeasurableEmbedding.lintegral_map)\n = c·∫_{η⁻¹(B)} θ d(Hⁿ⌞M) = c·μ_R(η⁻¹(B)),\n i.e. μ_{R'}(B) = ofReal(λ^{−n})·μ_R(η⁻¹(B)). No hypothesis on U or n was used. ∎\nFormalization notes (this exact statement was proved in a scratch build from the three siblings' exact types): define R' by the structure literal {carrier := dilation x λ '' R.carrier, mult := fun z => R.mult (x + λ • z), orient := fun z => R.orient (x + λ • z), …}; the measurable embedding is Homeomorph.measurableEmbedding of (Homeomorph.smulOfNeZero λ⁻¹ _).trans (Homeomorph.addLeft (−(λ⁻¹ • x))), whose coercion is dilation x λ; prove the restriction identity hkey once (Measure.restrict_smul, the sibling's map identity, MeasurableEmbedding.restrict_map, preimage_image_eq, smul_smul); Lipschitz constant via ((isometry_add_left (−(λ⁻¹ • x))).lipschitzWith.comp (dilationCLM P λ).lipschitzWith).comp hK; local integrability via image_inter_preimage, lintegral_smul_measure, MeasurableEmbedding.lintegral_map, ENNReal.mul_ne_top; representation via integral_smul_measure, MeasurableEmbedding.integral_map, ENNReal.toReal_ofReal; measure via withDensity_apply, Measure.restrict_smul, lintegral_smul_measure, MeasurableEmbedding.restrict_map, MeasurableEmbedding.lintegral_map; orientation via Measure.ae_smul_measure and MeasurableEmbedding.ae_map_iff.",
+          "proof_key_steps": [
+            "Hⁿ⌞η(s) = ofReal(λ^{−n})·η_#(Hⁿ⌞s) for Borel s (restrict_map for the measurable embedding η and hausdorff_scaling (ii)); hence change of variables for lintegrals, Bochner integrals, a.e. statements and a.e. strong measurability.",
+            "R' := (η(M), θ∘ι, ξ∘ι): Borel, contained in η(U), countably n-rectifiable (η(M₀) null, η∘F_j Lipschitz), positive integer multiplicity, locally integrable (η⁻¹(K) compact in U), measurable orientation, and orienting approximate tangent planes a.e. by tangent_invariance.",
+            "Represents: η_#T(ω) = λ^{−n}T(ω∘η) = λ^{−n}∫_M θ ξ(ω∘η) dHⁿ = ∫_{η(M)} θ' ξ'(ω) dHⁿ.",
+            "Measure: μ_{R'}(B) = ofReal(λ^{−n})∫_{η⁻¹(B)} θ d(Hⁿ⌞M) = ofReal(λ^{−n})μ_R(η⁻¹(B))."
+          ]
+        },
+        "audit": {
+          "key": "rep_pushforward",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proof verifies every IMRep field for the explicitly constructed representation. The restricted-measure identity justifies integral, null-set and strong-measurability transport; tangent_invariance supplies orientation. Representation and the Borel measure formula follow with the exact coefficient and no unstated integrability hypothesis."
+        },
+        "resolved_dependencies": [
+          "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+          "root.density_and_tangent_cones-a1.blowup_scaling-a1.hausdorff_scaling-a1",
+          "root.density_and_tangent_cones-a1.blowup_scaling-a1.tangent_invariance-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_preimage-a1",
+      "key": "blowup_preimage",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-preimage-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-preimage-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (both identical; manifest project b4d606d, mathlib 25730c7c)",
+              "rg -n 'theorem MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀|theorem Isometry.euclideanHausdorffMeasure_image' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n 'theorem restrict_map \\(μ|theorem ae_map_iff \\{p' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "rg -n 'MeasurableEmbedding.lintegral_map|MeasurableEmbedding.integral_map |MeasurableEmbedding.aestronglyMeasurable_map_iff' mathlib/Mathlib",
+              "rg -n 'theorem map_smul_univ' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean; rg -n 'comp_homeomorph' mathlib/Mathlib/Topology/Algebra/Support.lean; rg -n 'theorem preimage_closure|theorem image_closure' mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "grep -n '^def\\|^theorem' simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Mass,CurrentLocalEquality,Currents,Forms}.lean simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (affinePullbackForm, affinePushforward_apply, boundary_affinePushforward, exteriorDerivative_affinePullbackForm, massOn, massAdmissibleOn, restrictDomain_apply, zeroRegion, support, CountablyRectifiable, HasApproximateTangentSpaceAt, blowUpMap)",
+              "grep -rl -F <each proposed lean_name> runs/20261011T150044Z-ba604216b4 (no match) and lean_name inventory of dag.json and all node JSON files (no collision)",
+              "contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on all eight child types",
+              "lake build GMT.Ch07.Submission; lake env lean Check/FinalExact.lean, Check/FinalAssembly.lean, Check/FinalLeaves.lean with #print axioms (scratch /tmp/bscale-decomp-6cU90O/proj)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalExact.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalAssembly.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalLeaves.lean"
+            ],
+            "conclusion": "The snapshot contract and submission (project b4d606d, mathlib 25730c7c) are byte-identical to the workspace files. SimonGMT supplies the objects the children reason about: blowUp is an affinePushforward of a restrictDomain; affinePullbackForm comes with affinePushforward_apply, boundary_affinePushforward and exteriorDerivative_affinePullbackForm (used for blowup_structure (iv)); massOn/massAdmissibleOn (mass_scaling); zeroRegion/support/VanishesOn (blowup_structure (iii)); CountablyRectifiable and HasApproximateTangentSpaceAt via blowUpMap (rep_pushforward, tangent_invariance). It contains no dilation or blow-up lemmas, so the children supply them. The pinned Mathlib supplies the measure-theoretic and multilinear ingredients: euclideanHausdorffMeasure_smul₀ and Isometry.euclideanHausdorffMeasure_image (hausdorff_scaling); MeasurableEmbedding.restrict_map, lintegral_map, integral_map, ae_map_iff and aestronglyMeasurable_map_iff (rep_pushforward); ContinuousAlternatingMap.map_smul_univ and HasCompactSupport.comp_homeomorph (testform_correspondence); Homeomorph.preimage_closure and image_closure (blowup_structure, minimality). All eight child types elaborate in the comparator scope. Scratch Lean proofs of every child, and of the parent from the children, compile using only propext, Classical.choice and Quot.sound. No proposed name occurs elsewhere in the run."
+          }
+        ],
+        "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+        "child_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_preimage-a1",
+        "subproblem": {
+          "key": "blowup_preimage",
+          "title": "Every current in η(U) is a blow-up of a current in U, preserving integer multiplicity",
+          "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, x ∈ ℝ^P, λ > 0 and η = η_{x,λ}. For every S' ∈ 𝒟_n(η(U)) there is S'' ∈ 𝒟_n(U) with η_{x,λ#}S'' = S', and S'' is integer multiplicity whenever S' is.",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (S' : GeometricCurrentOn (dilation x lam '' U) n), ∃ S'' : GeometricCurrentOn U n, blowUp S'' x lam hlam.ne' = S' ∧ (IsIntegerMultiplicity S' → IsIntegerMultiplicity S'')",
+          "lean_name": "dtc_blowUp_preimage",
+          "depends_on": [
+            "testform_correspondence",
+            "rep_pushforward"
+          ],
+          "natural_proof": "Source: parent proof steps 3(a), 3(b); Simon Ch. 6, 2.23 and Lemma 3.9 (push-forward of integer multiplicity currents; chapter-06.txt lines 405–418 and 770–862), applied to the inverse similarity η⁻¹.\nConventions. ℝ^P = Euclid P. For x ∈ ℝ^P and λ > 0, η := η_{x,λ} = dilation x λ, η(y) = −λ⁻¹x + λ⁻¹y = λ⁻¹(y − x), and ι(z) := x + λz. For V ⊆ ℝ^P (any subset), 𝒟ⁿ(V) = TestFormOn V n is the set of C^∞ maps ω : ℝ^P → Λⁿ(ℝ^P) (n-covectors) with compact topological support tsupport ω ⊆ V; elements of 𝒟ⁿ(V) are determined by their underlying forms. η_#Y := η_{x,λ#}Y = blowUp Y x λ for Y ∈ 𝒟_n(U).\n1. Let x' := −λ⁻¹x, λ' := λ⁻¹ > 0 and κ := η_{x',λ'}. Then κ(z) = −λ'⁻¹x' + λ'⁻¹z = −λ·(−λ⁻¹x) + λz = x + λz = ι(z). Since η(ι(z)) = λ⁻¹(x + λz − x) = z and ι(η(y)) = x + λ·λ⁻¹(y − x) = y, we get η∘κ = id and κ∘η = id, and V := κ(η(U)) = U (every u ∈ U equals κ(η(u)), and κ(η(u)) = u for u ∈ U).\n2. Definition of S''. Let S' ∈ 𝒟_n(η(U)). The blow-up κ_#S' := η_{x',λ'#}S' is a current in κ(η(U)) = V. Since U ⊆ V (step 1), define S'' ∈ 𝒟_n(U) by S''(ω') := κ_#S'(ω') for ω' ∈ 𝒟ⁿ(U), where ω' is regarded as an element of 𝒟ⁿ(V) with the same underlying form (restriction of the domain, SimonGMT restrictDomain, which preserves linearity and sequential continuity).\n3. η_#S'' = S'. Let ω ∈ 𝒟ⁿ(η(U)). By testform_correspondence (a) (for U, x, λ) choose ω' ∈ 𝒟ⁿ(U) with ω'(y) = ω(η(y)) for all y; by testform_correspondence (c), η_#S''(ω) = λ^{−n}S''(ω') = λ^{−n}κ_#S'(ω'). Now apply testform_correspondence (c) to the domain η(U), the current S', the point x' and λ' > 0, the test form ω' regarded in 𝒟ⁿ(κ(η(U))) and the test form ω ∈ 𝒟ⁿ(η(U)): its hypothesis ω(z) = ω'(κ(z)) for all z holds because ω'(κ(z)) = ω(η(κ(z))) = ω(z). Hence κ_#S'(ω') = λ'^{−n}S'(ω) = λⁿS'(ω), and η_#S''(ω) = λ^{−n}λⁿS'(ω) = S'(ω). As ω was arbitrary, η_{x,λ#}S'' = S'.\n4. Integer multiplicity. Suppose S' is integer multiplicity, represented by an IMRep R₁ in η(U). By rep_pushforward (applied to the set η(U), the current S', the point x', λ' > 0 and R₁) there is an IMRep R₂ = (M₂, θ₂, ξ₂) in κ(η(U)) = V representing κ_#S'. Since V = U, the same data form an IMRep in U: M₂ ⊆ V = U, every compact K ⊆ U satisfies K ⊆ V so the local integrability condition transfers, and the remaining conditions do not involve the domain. This IMRep represents S'': for ω' ∈ 𝒟ⁿ(U), S''(ω') = κ_#S'(ω') = R₂.action(ω'), the action depending only on the underlying form. Hence S'' is integer multiplicity. ∎\nFormalization notes (this exact statement was proved in a scratch build from the two siblings' exact types): take S'' := (blowUp S' (−(λ⁻¹ • x)) λ⁻¹ (inv_pos.mpr hlam).ne').restrictDomain hUV with hUV : U ⊆ dilation (−(λ⁻¹ • x)) λ⁻¹ '' (dilation x λ '' U) obtained from hdom : dilation (−(λ⁻¹ • x)) λ⁻¹ '' (dilation x λ '' U) = U (image_image); prove η_#S'' = S' by GeometricCurrentOn.ext, the sibling's evaluation formula twice, GeometricCurrentOn.restrictDomain_apply, testFormOnInclusion_coe, inv_inv, mul_pow, inv_mul_cancel₀; the IMRep in U is ⟨R₂.carrier, R₂.mult, R₂.orient, R₂.measurableSet_carrier, R₂.carrier_subset.trans hdom.subset, R₂.rectifiable, R₂.measurable_mult, R₂.mult_pos, fun K hK hKU => R₂.locallyIntegrable_mult K hK (hKU.trans hUV), R₂.aestronglyMeasurable_orient, R₂.orients⟩, representing S'' by fun ω => hR₂ (testFormOnInclusion hUV n ω).",
+          "proof_key_steps": [
+            "The inverse of η is the dilation κ = η_{−λ⁻¹x, λ⁻¹}, so κ(η(U)) = U.",
+            "S'' := κ_#S' restricted to U; two applications of testform_correspondence (c) give η_#S''(ω) = λ^{−n}λⁿS'(ω) = S'(ω).",
+            "If S' is integer multiplicity, rep_pushforward for κ gives an IMRep of κ_#S' in κ(η(U)) = U, which represents S''."
+          ]
+        },
+        "audit": {
+          "key": "blowup_preimage",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The inverse dilation has the correct center and parameter. Its image domain equals U, and two evaluation formulas cancel the scaling factors. Applying rep_pushforward to this inverse and explicitly transporting the representation establishes the conditional integer-multiplicity conclusion."
+        },
+        "resolved_dependencies": [
+          "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+          "root.density_and_tangent_cones-a1.blowup_scaling-a1.rep_pushforward-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-preimage-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-preimage-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-preimage-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.minimality-a1",
+      "key": "minimality",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-minimality-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-minimality-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (both identical; manifest project b4d606d, mathlib 25730c7c)",
+              "rg -n 'theorem MeasureTheory.Measure.euclideanHausdorffMeasure_smul₀|theorem Isometry.euclideanHausdorffMeasure_image' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "rg -n 'theorem restrict_map \\(μ|theorem ae_map_iff \\{p' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "rg -n 'MeasurableEmbedding.lintegral_map|MeasurableEmbedding.integral_map |MeasurableEmbedding.aestronglyMeasurable_map_iff' mathlib/Mathlib",
+              "rg -n 'theorem map_smul_univ' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean; rg -n 'comp_homeomorph' mathlib/Mathlib/Topology/Algebra/Support.lean; rg -n 'theorem preimage_closure|theorem image_closure' mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "grep -n '^def\\|^theorem' simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Mass,CurrentLocalEquality,Currents,Forms}.lean simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (affinePullbackForm, affinePushforward_apply, boundary_affinePushforward, exteriorDerivative_affinePullbackForm, massOn, massAdmissibleOn, restrictDomain_apply, zeroRegion, support, CountablyRectifiable, HasApproximateTangentSpaceAt, blowUpMap)",
+              "grep -rl -F <each proposed lean_name> runs/20261011T150044Z-ba604216b4 (no match) and lean_name inventory of dag.json and all node JSON files (no collision)",
+              "contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on all eight child types",
+              "lake build GMT.Ch07.Submission; lake env lean Check/FinalExact.lean, Check/FinalAssembly.lean, Check/FinalLeaves.lean with #print axioms (scratch /tmp/bscale-decomp-6cU90O/proj)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalExact.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalAssembly.lean",
+              "/tmp/bscale-decomp-6cU90O/proj/Check/FinalLeaves.lean"
+            ],
+            "conclusion": "The snapshot contract and submission (project b4d606d, mathlib 25730c7c) are byte-identical to the workspace files. SimonGMT supplies the objects the children reason about: blowUp is an affinePushforward of a restrictDomain; affinePullbackForm comes with affinePushforward_apply, boundary_affinePushforward and exteriorDerivative_affinePullbackForm (used for blowup_structure (iv)); massOn/massAdmissibleOn (mass_scaling); zeroRegion/support/VanishesOn (blowup_structure (iii)); CountablyRectifiable and HasApproximateTangentSpaceAt via blowUpMap (rep_pushforward, tangent_invariance). It contains no dilation or blow-up lemmas, so the children supply them. The pinned Mathlib supplies the measure-theoretic and multilinear ingredients: euclideanHausdorffMeasure_smul₀ and Isometry.euclideanHausdorffMeasure_image (hausdorff_scaling); MeasurableEmbedding.restrict_map, lintegral_map, integral_map, ae_map_iff and aestronglyMeasurable_map_iff (rep_pushforward); ContinuousAlternatingMap.map_smul_univ and HasCompactSupport.comp_homeomorph (testform_correspondence); Homeomorph.preimage_closure and image_closure (blowup_structure, minimality). All eight child types elaborate in the comparator scope. Scratch Lean proofs of every child, and of the parent from the children, compile using only propext, Classical.choice and Quot.sound. No proposed name occurs elsewhere in the run."
+          }
+        ],
+        "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+        "child_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.minimality-a1",
+        "subproblem": {
+          "key": "minimality",
+          "title": "Dilations preserve minimality: η_{x,λ#}T is minimizing in η(A)",
+          "statement": "Let P, n ∈ ℕ, U, A ⊆ ℝ^P, T ∈ 𝒟_n(U), x ∈ ℝ^P and λ > 0. If T is minimizing in A (Simon 7.1.1 as formalized by IsMinimizingIn), then η_{x,λ#}T is minimizing in η_{x,λ}(A).",
+          "lean_statement": "∀ (P n : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), IsMinimizingIn T A → IsMinimizingIn (blowUp T x lam hlam.ne') (dilation x lam '' A)",
+          "lean_name": "dtc_blowUp_isMinimizingIn",
+          "depends_on": [
+            "mass_scaling",
+            "rep_pushforward",
+            "blowup_structure",
+            "blowup_preimage"
+          ],
+          "natural_proof": "Source: parent proof step 3; Simon 7.1.1 (chapter-07.txt lines 12–17); invariance of minimality under dilations as used in the proof of Simon 7.3.1 (chapter-07.txt lines 325–333).\nConventions. ℝ^P = Euclid P. For x ∈ ℝ^P and λ > 0, η := η_{x,λ} = dilation x λ, η(y) = −λ⁻¹x + λ⁻¹y = λ⁻¹(y − x), and ι(z) := x + λz. For V ⊆ ℝ^P (any subset), 𝒟ⁿ(V) = TestFormOn V n is the set of C^∞ maps ω : ℝ^P → Λⁿ(ℝ^P) (n-covectors) with compact topological support tsupport ω ⊆ V; elements of 𝒟ⁿ(V) are determined by their underlying forms. η_#Y := η_{x,λ#}Y = blowUp Y x λ for Y ∈ 𝒟_n(U). IsMinimizingIn T A means: T is integer multiplicity, and M_W(T) ≤ M_W(S) whenever W is open with W ⊂⊂ U (closure W compact and ⊆ U), S ∈ 𝒟_n(U) is integer multiplicity, SameBoundary S T holds (∂S = ∂T if n ≥ 1, no condition if n = 0), spt(S − T) is compact and spt(S − T) ⊆ A ∩ W.\n1. η is an affine homeomorphism of ℝ^P with inverse ι: η is y ↦ λ⁻¹y (a homeomorphism, λ⁻¹ ≠ 0) followed by the translation z ↦ z − λ⁻¹x, η(ι(z)) = λ⁻¹(x + λz − x) = z and ι(η(y)) = x + λ·λ⁻¹(y − x) = y. In particular η is injective and surjective, η⁻¹(η(E)) = E and η(η⁻¹(E)) = E for all E, preimages of open sets are open, η⁻¹(closure E) = closure(η⁻¹(E)), and preimages of compact sets are compact.\n2. η_#T is integer multiplicity: T is integer multiplicity, represented by some IMRep R; by rep_pushforward, η_#T is represented by some IMRep R'.\n3. Let W' be open with W' ⊂⊂ η(U), and let S' ∈ 𝒟_n(η(U)) be integer multiplicity with SameBoundary S' (η_#T), spt(S' − η_#T) compact and spt(S' − η_#T) ⊆ η(A) ∩ W'. By blowup_preimage choose S'' ∈ 𝒟_n(U) with η_#S'' = S' and S'' integer multiplicity.\n4. Let W := η⁻¹(W'). Then W is open, and closure W = η⁻¹(closure W') is compact and contained in η⁻¹(η(U)) = U; so W ⊂⊂ U.\n5. SameBoundary S'' T. If n = 0 this holds by definition. If n = m + 1, then by blowup_structure (iv), η_#(∂S'') = ∂(η_#S'') = ∂S' = ∂(η_#T) = η_#(∂T), and by blowup_structure (ii) (injectivity in degree m), ∂S'' = ∂T.\n6. Support. By blowup_structure (i), S' − η_#T = η_#S'' − η_#T = η_#(S'' − T), and by blowup_structure (iii), spt(S' − η_#T) = η(spt(S'' − T)). Hence spt(S'' − T) = η⁻¹(spt(S' − η_#T)) (η injective), which is compact (step 1) and contained in η⁻¹(η(A) ∩ W') = η⁻¹(η(A)) ∩ η⁻¹(W') = A ∩ W.\n7. By the minimality of T applied to W and S'' (steps 3–6), M_W(T) ≤ M_W(S'').\n8. Since η is surjective, η(W) = W'. By mass_scaling applied to T and to S'', M_{W'}(η_#T) = M_{η(W)}(η_#T) = ofReal(λ^{−n})·M_W(T) ≤ ofReal(λ^{−n})·M_W(S'') = M_{η(W)}(η_#S'') = M_{W'}(S'), using monotonicity of multiplication in [0,∞].\n9. By steps 2–8, η_{x,λ#}T is minimizing in η(A). No hypothesis on U or n was used. ∎\nFormalization notes (this exact statement was proved in a scratch build from the four siblings' exact types): after `obtain ⟨S'', rfl, hS''im⟩` from blowup_preimage use W := dilation x λ ⁻¹' W'; for SameBoundary do `cases n` and in the successor case `show S''.boundary = T.boundary; apply hinj; rw [← hbdry, ← hbdry]; exact hS'bd`; do not rewrite dilation x λ inside types (the domain of blowUp depends on it) — prove compactness of preimages with a separate lemma about an arbitrary compact K and the homeomorphism (Homeomorph.smulOfNeZero λ⁻¹ _).trans (Homeomorph.addLeft (−(λ⁻¹ • x))); rewrite the masses with explicitly instantiated mass_scaling (… P n U T x λ hlam and … P n U S'' x λ hlam) to avoid an unassigned `0 < λ` side goal from rw; close with gcongr.",
+          "proof_key_steps": [
+            "η_#T is integer multiplicity by rep_pushforward.",
+            "Given a competitor S' for η_#T on W' ⊂⊂ η(U), take S'' with η_#S'' = S' integer multiplicity (blowup_preimage) and W := η⁻¹(W') ⊂⊂ U.",
+            "SameBoundary S'' T and spt(S'' − T) = η⁻¹(spt(S' − η_#T)) compact ⊆ A ∩ W by blowup_structure (i)–(iv).",
+            "Minimality of T and mass_scaling give M_{W'}(η_#T) = λ^{−n}M_W(T) ≤ λ^{−n}M_W(S'') = M_{W'}(S')."
+          ]
+        },
+        "audit": {
+          "key": "minimality",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proof transports every competitor condition: integer multiplicity, boundary, compact support, support containment and compact containment of the comparison domain. It handles degree zero through SameBoundary's definition. Minimality of T and mass scaling then give the required inequality using exactly the declared dependencies."
+        },
+        "resolved_dependencies": [
+          "root.density_and_tangent_cones-a1.blowup_scaling-a1.mass_scaling-a1",
+          "root.density_and_tangent_cones-a1.blowup_scaling-a1.rep_pushforward-a1",
+          "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_structure-a1",
+          "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_preimage-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-minimality-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-minimality-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-minimality-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/decomposition.json": "92af613d2c00f7086e2c4b5d5473a9dfb2e930303b422fadce55592b79e78161",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/decomposition-audit.json": "a4438109a5b39d6458170648d1537d40e1284559de5b50fcb0a00e42ca522a6e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-hausdorff-scaling-a1/parent-child-handoff.json": "a235d08ed45a3e1bf736a71304a58fd6183b9157e17192035097175c4bd083a1",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-hausdorff-scaling-a1/parent-supplied-plan.md": "971e19e2ca7fbd2e91fe92033fcea28be937422df8223156748096e8bcc94deb",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-hausdorff-scaling-a1/parent-supplied-natural-proof.md": "21fe0c82c26be03e3d7175d4487fbc01b64817da33c977a7720c5064b661efc2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-hausdorff-scaling-a1/parent-supplied-natural-proof.json": "55a1b88ff1609cfc9599dd61aba0b78ab17381554bfe842fe25ba12ebd018c1a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-hausdorff-scaling-a1/node.json": "4381f1c8ac7399138f5f370b6c561e51435f6c9a7727ef157b4114e0493a8ebe",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1/parent-child-handoff.json": "b6a713190857e39f54ae9ee1bc58d5bdbfd9cd9253b51517fa0cfd8b92fa5a4e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1/parent-supplied-plan.md": "410e00906c4adb3a026f26a8dd07134e97823961fd8fad2a7600532aa336eed1",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1/parent-supplied-natural-proof.md": "c067a2bcfa95cb8d7ad5a58519cdd4f67ec490d225b09284418c6f2b0edfb910",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1/parent-supplied-natural-proof.json": "71931f15c0b8cd42965cea5b97d99fa2ff0f6428e39b70114cc0110254d81063",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1/node.json": "09e48a97c5101233f999cfb1c6dc920fffb71f9ee7d516a253d30f9594230e04",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/parent-child-handoff.json": "5f2c748e90a4504f71fd928c4fcded4141db12a681565f4e605c515228df43ee",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/parent-supplied-plan.md": "86b78d12fde354e921c292aaad5e0b4b253a072e2ddb65f369d15d092fd473ac",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/parent-supplied-natural-proof.md": "9b927cd1badfc37fd9f59cd3638ca1513e943b6d66d9aaf781dd75cd0b54ceae",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/parent-supplied-natural-proof.json": "00b9e438040df6b1c6bda388de9546aa278ea73e736be25dd52008d35b051a84",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/node.json": "6452fbb40276ecee6c5eae516a7c9819c2a58a3e37de67fd12627e23cfcc40da",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1/parent-child-handoff.json": "ef35798346930f5f5e3bb488f9d852a0b301c9713f5347f640643c1bc58e76ff",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1/parent-supplied-plan.md": "ae954a0511c5998e8ffdef620ace717394c48841f712d430903ee4046ec329a8",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1/parent-supplied-natural-proof.md": "bf7c57ffd651230d39c11085e73be3cd14dd4a111fc76731a71c086929f4c2cd",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1/parent-supplied-natural-proof.json": "534c81265f58fb6be98f742601013998474e89aad1d036ced8d623f301ed8baa",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1/node.json": "0e06871e3560776ab9b025007ae2632d873949a76479eb2af498da5b3da47364",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/parent-child-handoff.json": "9e3d2c8c71afc52412a698dd4db2c4bd9ba30291cc47bd609651963b0393aa27",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/parent-supplied-plan.md": "c02077eef4a51d89f279a9f92dbe814690465e1ef36c3e8ffbeb846640cd9a44",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/parent-supplied-natural-proof.md": "b6b2be929c4e938d59b4618e53b64983a286b4d6eda424aa58c08835eddbd311",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/parent-supplied-natural-proof.json": "c5ff006fff5d88f85240524111d67e56b4198815b05b842599f293f7bd212059",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/node.json": "9daf9a5fd3793bd7254b76f73c0595f7b7cc5d74abc914e11cd618d10a218a18",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/parent-child-handoff.json": "df29a9ec6f86ec923d5b985231dfd0726ac3a5fa5d960877bdd615047d677080",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/parent-supplied-plan.md": "55f27254d8864653052bcfb2c70aec8f95ad71e9c0271cc26da825e7611d9ad8",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/parent-supplied-natural-proof.md": "4e0987bcae7377283d873191254ae0f81d4a4bc044eb9431abdea570e187a66f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/parent-supplied-natural-proof.json": "02a5746bd20bd669db113035e6d7cd662dd19c5f1263771c5be3f62223c73a47",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/node.json": "2d80401629e33c42cbf3079080ff062b8743da7f142d3af58068de1ef71df78d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-preimage-a1/parent-child-handoff.json": "f85e663bb946b4ebcc92830d26d33d16728edd93f0524cce5f54271a70ca6eae",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-preimage-a1/parent-supplied-plan.md": "3b9de99969ebd2b9c16dba996912e987d598b66f31353d8968aff0497793b320",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-preimage-a1/parent-supplied-natural-proof.md": "16a19687e9a83a5256962765be6553b3e6d03a2b98c1c48a35ce653f993ad69e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-preimage-a1/parent-supplied-natural-proof.json": "e31ee8b3bb2f0d0e303d1a2684e94601b48f2a9d8e3e16887a4678db9b75909d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-preimage-a1/node.json": "b5c8ad62c359d333ea9d3f2354477421fd88091a2ebe87882b4ba432cb1be733",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-minimality-a1/parent-child-handoff.json": "461a77541cc55d06be286767cbd7ba9401216bc8920f9ce4e875eadf1dc2aaea",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-minimality-a1/parent-supplied-plan.md": "bfda3b533b9ef11ff39f082ba6979af1d07a9c7c4422b07c732f314c5658d3e2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-minimality-a1/parent-supplied-natural-proof.md": "2a108aafba183f8d378ba7b2b93606dd57fbea7841295c4ae8d670ee23d6e7ae",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-minimality-a1/parent-supplied-natural-proof.json": "dcf53dfb32fe3deaa69e220b2a848aad0e8f5b37f3cb341f7854688bebefbd28",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1/children/root-density-and-tangent-cones-a1-blowup-scaling-a1-minimality-a1/node.json": "043fef5a0136499f1ad1b6fc94c2fb88964e54693f8b5143c1eed27216cf171a"
+  }
+}

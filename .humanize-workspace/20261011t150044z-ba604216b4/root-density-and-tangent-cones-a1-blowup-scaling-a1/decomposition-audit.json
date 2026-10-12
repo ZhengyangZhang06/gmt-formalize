@@ -1,0 +1,94 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IMRep\\.(action|Represents|measure)|def IsIntegerMultiplicity|instance : Sub|def SameBoundary|def IsMinimizingIn|def CompactlyContained|def dilation|def blowUp|namespace |^open",
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_homothety_image",
+        "theorem (restrict_map|ae_map_iff)|MeasurableEmbedding.(lintegral_map|integral_map|aestronglyMeasurable_map_iff)|theorem integral_smul_measure",
+        "map_smul_univ|tsupport_comp_subset_preimage|comp_homeomorph|theorem preimage_closure|theorem image_closure",
+        "dtc_blowUp_testForm_corr|dtc_blowUp_massOn_image|dtc_hausdorff_dilation|dtc_approxTangent_dilation|dtc_blowUp_imrep|dtc_blowUp_algebra|dtc_blowUp_preimage|dtc_blowUp_isMinimizingIn",
+        "python3 /tmp/bscale-independent-audit-107yejyi/run_audit.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/bscale-decomp-6cU90O/proj/Check/FinalLeaves.lean",
+        "/tmp/bscale-decomp-6cU90O/proj/Check/FinalAssembly.lean",
+        "/tmp/bscale-independent-audit-107yejyi/Audit.lean",
+        "/tmp/bscale-independent-audit-107yejyi/compile.log"
+      ],
+      "conclusion": "The split appropriately separates the selected theorem's three conclusions and their shared prerequisites. Dependencies are acyclic, correctly directed and sufficient; mass_scaling, rep_pushforward and minimality assemble the exact frozen parent. Snapshot definitions and inspected library sources support every cited step. Package revisions match the pins, and inspected Mathlib files match the snapshot. All eight names are bare identifiers with no reservation elsewhere in the DAG. Every type passes lexical validation and independently elaborates in comparator scope before the proposed declarations exist. A fresh Lean check compiled the supplied proof bodies with their declared dependencies, all eight exact Submission declarations, and the selected parent; their axiom reports contain only propext, Classical.choice and Quot.sound. Scalar and measure constructions have the intended instances; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "testform_correspondence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches all three prose clauses. Composition with the affine homeomorphism and its inverse supplies smooth, compactly supported forms in the correct domains. Multilinearity and current linearity prove the evaluation formula, including degree zero, without circular reliance."
+    },
+    {
+      "key": "mass_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement includes arbitrary U, n and W. Both admissibility transfers preserve the actual Euclidean coefficient norm and required supports. The evaluation formula, ofReal multiplication and ENNReal supremum identity prove both inequalities, including infinite mass."
+    },
+    {
+      "key": "hausdorff_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both factors are correct: image measure scales by λ⁻ⁿ, while the mapped measure scales by λⁿ. Translation invariance and homogeneity prove the first clause for arbitrary sets; applying that established clause to the inverse dilation proves the second without circularity."
+    },
+    {
+      "key": "tangent_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose accurately expands the frozen approximate-tangent predicate. The exact rescaled-set identity and the positive-scale filter limit transfer its convergence clause; the dimension clause is unchanged. No measurability or integrability assumption on M is missing."
+    },
+    {
+      "key": "rep_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies every IMRep field for the explicitly constructed representation. The restricted-measure identity justifies integral, null-set and strong-measurability transport; tangent_invariance supplies orientation. Representation and the Borel measure formula follow with the exact coefficient and no unstated integrability hypothesis."
+    },
+    {
+      "key": "blowup_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four clauses match the Lean type. The proof establishes subtraction, injectivity and the precise frozen zero-region correspondence for arbitrary domains. Affine pullback commuting with exterior differentiation proves the successor-degree boundary clause."
+    },
+    {
+      "key": "blowup_preimage",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inverse dilation has the correct center and parameter. Its image domain equals U, and two evaluation formulas cancel the scaling factors. Applying rep_pushforward to this inverse and explicitly transporting the representation establishes the conditional integer-multiplicity conclusion."
+    },
+    {
+      "key": "minimality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof transports every competitor condition: integer multiplicity, boundary, compact support, support containment and compact containment of the comparison domain. It handles degree zero through SameBoundary's definition. Minimality of T and mass scaling then give the required inequality using exactly the declared dependencies."
+    }
+  ],
+  "required_changes": []
+}

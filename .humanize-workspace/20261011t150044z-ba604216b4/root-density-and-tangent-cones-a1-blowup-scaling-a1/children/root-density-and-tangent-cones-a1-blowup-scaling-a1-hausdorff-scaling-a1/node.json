@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.hausdorff_scaling-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+  "depth": 3,
+  "title": "Hausdorff measure under the dilation η_{x,λ}",
+  "statement": "Let P, n ∈ ℕ, x ∈ ℝ^P, λ > 0 and η = η_{x,λ}. Then (i) Hⁿ(η(s)) = ofReal(λ^{−n})·Hⁿ(s) for every s ⊆ ℝ^P, and (ii) the push-forward measure satisfies η_#Hⁿ = ofReal(λⁿ)·Hⁿ (i.e. Hⁿ(η⁻¹(B)) = λⁿHⁿ(B) for every Borel B), where Hⁿ = μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (x : Euclid P) (lam : ℝ), 0 < lam → (∀ s : Set (Euclid P), μHE[n] (dilation x lam '' s) = ENNReal.ofReal (lam⁻¹ ^ n) * μHE[n] s) ∧ Measure.map (dilation x lam) (μHE[n] : Measure (Euclid P)) = ENNReal.ofReal (lam ^ n) • (μHE[n] : Measure (Euclid P))",
+  "lean_name": "dtc_hausdorff_dilation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-hausdorff-scaling-a1-a1"
+}
