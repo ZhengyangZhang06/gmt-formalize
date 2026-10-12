@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5841966e5b5088ebcf2af07f4cb20d852ad8ce56f41acb4733703ccb58642568",
+  "git_delta": {
+    "base_commit": "7cd836832451e0b6bb49a2232d6c79b82fed7432",
+    "candidate_commit": "7a830063792397c1e0762d343148ff03c9dd8609",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "54a6ca1292bdd1044a632dda4feefef9be62d270a9c9bfbcce76a91b1eed0296",
+    "source_sha256": "1e16f11e946ec34cc4156a3917be68040e02db8bf97fae1c87204f95587343ba",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imrep_represents_support_eq_inter_measure_support",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → T.support = U ∩ R.measure.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
