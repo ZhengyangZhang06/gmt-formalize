@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "CountablyRectifiable|HasApproximateTangentSpaceAt|HasWeightedApproximateTangentSpaceAt|def blowUpMap|theorem.*unique",
+        "starProjection_norm_le|integrableOn_of_bounded|isOpen_injective|inverse_continuousAt|tendstoUniformlyOn_of_ae_tendsto",
+        "lipts_rectifiable_tangent_chart_cover|lip_approx_tangent_structure|aetp_starProjection_range_continuousOn|upperDensity_ne_zero_outside_hausdorff_null",
+        "git diff 03dd4115b31310266168e649fb7d46b16807d8a9 cfc18a0cf91fdfb9fd76e7bf19262ed872cbe8bb -- GMT/Ch05/Submission.lean",
+        "git diff de4bba25657942ce0984f6776ad7195b5576a9c3 9f89be4c6f3781e8d518dff64e552c3d1263533e -- GMT/Ch05/Submission.lean",
+        "#print axioms Submission.upperDensity_ne_zero_outside_hausdorff_null",
+        "#print axioms Submission.aetp_starProjection_range_continuousOn",
+        "#print axioms Poincare.SimonGMT.Chapter02.exists_contDiff_one_extension_of_whitney"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-tangent-structure-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-tangent-structure-a1/decomposition-v3.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLinearWeighted.lean",
+        "/tmp/gmt-ts-audit-7w4nh8r6/Types.lean",
+        "/tmp/gmt-ts-audit-7w4nh8r6/Reused.lean",
+        "/tmp/gmt-ts-audit-7w4nh8r6/Axioms.lean",
+        "/tmp/gmt-ts-audit-7w4nh8r6/Assembly.lean"
+      ],
+      "conclusion": "Audited the selected lip_approx_tangent_structure contract against its immutable handoff. Project, Mathlib and SimonGMT revisions match the pins. All three exact propositions independently elaborate against a fresh frozen-contract build without child implementations. Both accepted candidates recompile at their proposed types; their proofs and the checked analytic tools use only propext, Classical.choice and Quot.sound. A verbatim Whitney-source rebuild also passes. No proposed declaration already exists in the searched pinned sources. The split is appropriate: one new geometric obligation plus two accepted reuses fits the current 199/200 node budget. Dependencies are acyclic. The chart interface supplies Parts A–C; upper density supports the retained D–F arguments, and G–H establish the selected parent's remaining conclusions. The assembly check confirms G–H conditional on the stated D–F outputs. Mathematical provenance was also checked against [Simon's text, Ch. 2 §1 and Ch. 3 §1](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "upper_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary measures, null-measurability, finite mass, closed balls and n=0. The proof correctly establishes Caratheodory measurability, transports the density normalization, applies the upper-density theorem and transfers null sets. No local-finiteness assumption or circular reliance is introduced. The bare name reuses comparator-accepted candidate cfc18a0cf91fdfb9fd76e7bf19262ed872cbe8bb with an identical frozen type and no dependencies."
+    },
+    {
+      "key": "projection_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly expresses operator-norm continuity on injective continuous linear maps, including n=0. The Gram operator is invertible; the displayed formula is identified with the orthogonal projection by range membership and orthogonality. Continuity follows from adjoint, composition and inversion at units. Multiplication is composition in the continuous-linear endomorphism ring, so there is no pointwise-matrix instance error. The bare name validly reuses accepted candidate 9f89be4c6f3781e8d518dff64e552c3d1263533e at its identical frozen type."
+    },
+    {
+      "key": "tangent_chart_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The independently elaborated proposition matches all five conclusions and assumes no measurability of M. Parts A1–A6 establish C1 approximation with controlled exceptional measure and all Whitney hypotheses. Parts B1–B4 construct the countable cover, remove null critical images, and establish Borel measurability, finite measure and continuous inverses. C0–C1 prove dimension and the exact compact-test blow-up limit, with integrability and domination justified. C2 uses precisely the declared projection_continuity dependency. The bare name is unreserved. The supplied proof is complete and non-circular, and its interface suffices for the selected parent's retained arguments."
+    }
+  ],
+  "required_changes": []
+}
