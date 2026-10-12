@@ -500,6 +500,37 @@ theorem rsod_tv_exists_structure : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : 
       ((fun y => y + x₀) '' K) (hK.image (continuous_add_const x₀))
       (by rintro _ ⟨k, hk, rfl⟩; exact hKU hk))
     rwa [preimage_inter, hτe.injective.preimage_image] at h
+/-- **Weight of a translated varifold** (Simon Ch. 4, 1.1; Ch. 5, proof of Theorem 7.1, p. 127:
+"after applying the appropriate translation"; used for Corollary 7.3).  Let `τ(y) = y + x₀` and
+`σ(y) = y - x₀`.  If `W = v(τ⁻¹ M, θ ∘ τ)`, then `μ_W = σ_# μ_V`: `τ` preserves `Hⁿ` and is a
+measurable embedding, and `τ⁻¹(σ⁻¹A ∩ M) = A ∩ τ⁻¹M`, so for measurable `A`
+`μ_W(A) = ∫_{τ⁻¹(σ⁻¹A ∩ M)} θ ∘ τ dHⁿ = ∫_{σ⁻¹A ∩ M} θ dHⁿ = μ_V(σ⁻¹A)`. -/
+theorem rsod_tv_weight_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U) (W : RectifiableVarifold n ℓ U') (x₀ : Amb n ℓ),
+    W.carrier = (fun y => y + x₀) ⁻¹' V.carrier → (∀ y, W.mult y = V.mult (y + x₀)) →
+    W.weight = V.weight.map (fun y => y - x₀) := by
+  intro n ℓ U U' V W x₀ hc hm
+  -- `τ` is an `Hⁿ`-preserving measurable embedding (an isometry) and `σ` is measurable.
+  have hτ : MeasurePreserving (fun y : Amb n ℓ => y + x₀) μHE[n] μHE[n] :=
+    (IsometryEquiv.addRight x₀).measurePreserving_euclideanHausdorffMeasure n
+  have hτe : MeasurableEmbedding (fun y : Amb n ℓ => y + x₀) := measurableEmbedding_addRight x₀
+  have hσ : Measurable (fun y : Amb n ℓ => y - x₀) := measurable_sub_const x₀
+  -- It suffices to compare `μ_W(A)` and `(σ_# μ_V)(A) = μ_V(σ⁻¹A)` on measurable sets `A`.
+  ext A hA
+  -- `τ⁻¹(σ⁻¹A ∩ M) = A ∩ τ⁻¹M = A ∩ W.carrier`.
+  have hset : (fun y => y + x₀) ⁻¹' ((fun y => y - x₀) ⁻¹' A ∩ V.carrier) = A ∩ W.carrier := by
+    ext y
+    simp [hc]
+  -- Change of variables along `τ`: `∫_{A ∩ τ⁻¹M} θ ∘ τ dHⁿ = ∫_{σ⁻¹A ∩ M} θ dHⁿ`.
+  have key := hτ.setLIntegral_comp_preimage_emb hτe (fun x => ENNReal.ofReal (V.mult x))
+    ((fun y => y - x₀) ⁻¹' A ∩ V.carrier)
+  rw [hset] at key
+  -- Unfold both weights into set integrals; then `W.mult = θ ∘ τ` closes the goal.
+  rw [Measure.map_apply hσ hA]
+  simp only [RectifiableVarifold.weight]
+  rw [withDensity_apply _ hA, withDensity_apply _ (hσ hA), Measure.restrict_restrict hA,
+    Measure.restrict_restrict (hσ hA), ← key]
+  simp only [hm]
 
 end Submission
 
