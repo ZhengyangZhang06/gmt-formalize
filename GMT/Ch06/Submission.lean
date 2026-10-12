@@ -428,6 +428,65 @@ theorem Submission.fiw_tl_tr_weighted_diff_bound :
     _ = ENNReal.ofReal K *
           ∫⁻ z in closedBall x s, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ∂μ :=
         lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+/-- Little-o scaling limit (step 7 of the proof of `fiw_tl_transfer`): if `R > 0`, `E = o(G)`
+and `G(s) ≤ C sⁿ` as `s → 0⁺`, and `‖D(r)‖ₑ ≤ (rⁿ)⁻¹ · K · E(R r)` for small `r > 0`, then
+`D(r) → 0` as `r → 0⁺`.  With `K₁ = max(K, 0)`, `C₁ = max(C, 0)`, `A = K₁ C₁ Rⁿ` and
+`ε' = ε / (2(A + 1))`, for small `r > 0`:
+`|D(r)| ≤ (rⁿ)⁻¹ · K₁ · ε' · C₁ (R r)ⁿ = A ε' < ε`. -/
+theorem Submission.fiw_tl_tr_scaling_limit :
+    ∀ (n : ℕ) (D : ℝ → ℝ) (E G : ℝ → ℝ≥0∞) (R K C : ℝ), 0 < R →
+      (∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), E s ≤ ENNReal.ofReal ε * G s) →
+      (∀ᶠ s in 𝓝[>] (0 : ℝ), G s ≤ ENNReal.ofReal (C * s ^ n)) →
+      (∀ᶠ r in 𝓝[>] (0 : ℝ),
+        ‖D r‖ₑ ≤ ENNReal.ofReal ((r ^ n)⁻¹) * ENNReal.ofReal K * E (R * r)) →
+      Tendsto D (𝓝[>] 0) (𝓝 0) := by
+  intro n D E G R K C hR hE hG hD
+  -- `r ↦ R r` maps `𝓝[>] 0` to `𝓝[>] 0`, so (a) and (b) hold at `s = R r` for small `r > 0`.
+  have hscale : Tendsto (fun r : ℝ => R * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_iff.2 ⟨?_, ?_⟩
+    · have h0 : Tendsto (fun r : ℝ => R * r) (𝓝 0) (𝓝 (R * 0)) := tendsto_id.const_mul R
+      rw [mul_zero] at h0
+      exact h0.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+      exact mul_pos hR hr
+  -- Nonnegative constants `K₁ ≥ K`, `C₁ ≥ C`, and `ε'` with `A ε' < ε` for `A = K₁ C₁ Rⁿ`.
+  obtain ⟨K₁, hKK₁, hK₁⟩ : ∃ K₁ : ℝ, K ≤ K₁ ∧ 0 ≤ K₁ :=
+    ⟨max K 0, le_max_left _ _, le_max_right _ _⟩
+  obtain ⟨C₁, hCC₁, hC₁⟩ : ∃ C₁ : ℝ, C ≤ C₁ ∧ 0 ≤ C₁ :=
+    ⟨max C 0, le_max_left _ _, le_max_right _ _⟩
+  have hA : 0 ≤ K₁ * C₁ * R ^ n := by positivity
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  obtain ⟨ε', hε'0, hε'⟩ : ∃ ε' : ℝ, 0 < ε' ∧ K₁ * C₁ * R ^ n * ε' < ε := by
+    refine ⟨ε / (2 * (K₁ * C₁ * R ^ n + 1)), by positivity, ?_⟩
+    rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
+    nlinarith
+  filter_upwards [self_mem_nhdsWithin, hD, hscale.eventually (hE ε' hε'0), hscale.eventually hG]
+    with r (hr : 0 < r) hDr hEr hGr
+  have hrn : r ^ n ≠ 0 := (pow_pos hr n).ne'
+  -- `‖D(r)‖ₑ ≤ ((rⁿ)⁻¹)⁺ K₁⁺ (ε'⁺ (C₁ (R r)ⁿ)⁺) = (A ε')⁺`, using `(R r)ⁿ = Rⁿ rⁿ`.
+  have h1 : ‖D r‖ₑ ≤ ENNReal.ofReal (K₁ * C₁ * R ^ n * ε') := by
+    calc ‖D r‖ₑ ≤ ENNReal.ofReal ((r ^ n)⁻¹) * ENNReal.ofReal K * E (R * r) := hDr
+      _ ≤ ENNReal.ofReal ((r ^ n)⁻¹) * ENNReal.ofReal K₁ *
+          (ENNReal.ofReal ε' * ENNReal.ofReal (C₁ * (R * r) ^ n)) := by
+        gcongr
+        calc E (R * r) ≤ ENNReal.ofReal ε' * G (R * r) := hEr
+          _ ≤ ENNReal.ofReal ε' * ENNReal.ofReal (C₁ * (R * r) ^ n) := by
+            gcongr
+            exact hGr.trans (ENNReal.ofReal_le_ofReal (by gcongr))
+      _ = ENNReal.ofReal ((r ^ n)⁻¹ * K₁ * (ε' * (C₁ * (R * r) ^ n))) := by
+        rw [ENNReal.ofReal_mul (p := (r ^ n)⁻¹ * K₁) (by positivity),
+          ENNReal.ofReal_mul (p := (r ^ n)⁻¹) (by positivity),
+          ENNReal.ofReal_mul (p := ε') hε'0.le]
+      _ = ENNReal.ofReal (K₁ * C₁ * R ^ n * ε') := by
+        congr 1
+        calc (r ^ n)⁻¹ * K₁ * (ε' * (C₁ * (R * r) ^ n))
+            = K₁ * C₁ * R ^ n * ε' * ((r ^ n)⁻¹ * r ^ n) := by ring
+          _ = K₁ * C₁ * R ^ n * ε' := by rw [inv_mul_cancel₀ hrn, mul_one]
+  -- Back to `ℝ`: `|D(r)| ≤ A ε' < ε`.
+  rw [← ofReal_norm, ENNReal.ofReal_le_ofReal_iff (by positivity)] at h1
+  rw [dist_zero_right]
+  exact h1.trans_lt hε'
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
