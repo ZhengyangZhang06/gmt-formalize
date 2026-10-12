@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f46c1f88a3c8170305784ca0370bc6bd1e9addf95aef91d664817ea2b6996a07",
+  "git_delta": {
+    "base_commit": "d7755ba953a239de2ff323d9ea1742d091814766",
+    "candidate_commit": "a183f7b13a90b90a5c894253e25db78cb8e5961b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "adr_invariant_eq_indicator",
+    "diff_sha256": "2e4cd2d7343419f90895f61e7d98bcf151740cefa88947b57dd6f7056b5c92a6",
+    "source_sha256": "60cd90b76c3199632f89ba75e4dd6ae129cfa07bcef84e685db308fe0e6ec703",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.adr_invariant_eq_indicator",
+      "statement": "∀ (P n Q : ℕ) (ψ : Euclid P → Euclid Q) (L : Submodule ℝ (Euclid P)), LocallyIntegrable ψ μH[(n : ℝ)] → n ≤ Module.finrank ℝ L → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, ψ (y + lam • x) = ψ x) → ∃ L' : Submodule ℝ (Euclid P), Module.finrank ℝ L' = n ∧ ψ = Set.indicator (L' : Set (Euclid P)) (fun _ => ψ 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
