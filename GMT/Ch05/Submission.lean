@@ -458,6 +458,64 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 4, 3.9–3.10 and 4.5–4.9, at one point `x` of an arbitrary measure `μ`: put
+`c(s) = A (s/R)^β` with `β > 0` and `Φ(s) = F(s) s⁻ⁿ μ(B_s(x)) + (F(s) − 1)`.  If `|F − 1| ≤ c` on
+`(0, R]`, `Φ` is nondecreasing on `(0, R]` and `μ(B_r(x)) / (ω rⁿ) → θ₀` as `r ↓ 0`, then
+`F(s) → 1` and `Φ(s) → ω θ₀` as `s ↓ 0`, hence `ω θ₀ ≤ Φ(t) ≤ (1 + c(t)) t⁻ⁿ μ(B_t(x)) + c(t)`
+for every `t ∈ (0, R]`. -/
+theorem ted_dge1_density_le_monotone_bound : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (x : Amb n ℓ) (ω R A β θ₀ : ℝ) (F : ℝ → ℝ), 0 < ω → 0 < R → 0 < β → 0 ≤ θ₀ → (∀ t : ℝ, 0 < t → t ≤ R → |F t - 1| ≤ A * (t / R) ^ β) → (∀ s t : ℝ, 0 < s → s ≤ t → t ≤ R → F s * ((μ (closedBall x s)).toReal / s ^ n) + (F s - 1) ≤ F t * ((μ (closedBall x t)).toReal / t ^ n) + (F t - 1)) → Tendsto (fun r : ℝ => μ (closedBall x r) / ENNReal.ofReal (ω * r ^ n)) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ₀)) → ∀ t : ℝ, 0 < t → t ≤ R → ω * θ₀ ≤ (1 + A * (t / R) ^ β) * ((μ (closedBall x t)).toReal / t ^ n) + A * (t / R) ^ β := by
+  intro n ℓ μ x ω R A β θ₀ F hω hR hβ hθ₀ hF hmono hdens t ht htR
+  -- Step 1: `c(s) = A (s/R)^β → A · 0^β = 0` as `s ↓ 0`, because `β > 0`.
+  have hc : Tendsto (fun s : ℝ => A * (s / R) ^ β) (𝓝[>] 0) (𝓝 0) := by
+    have h0 : Tendsto (fun s : ℝ => A * (s / R) ^ β) (𝓝 0) (𝓝 (A * ((0 : ℝ) / R) ^ β)) :=
+      (((continuous_id.div_const R).tendsto 0).rpow_const (Or.inr hβ.le)).const_mul A
+    rw [zero_div, Real.zero_rpow hβ.ne', mul_zero] at h0
+    exact h0.mono_left nhdsWithin_le_nhds
+  -- The interval `(0, t) ⊆ (0, R]` is a right neighbourhood of `0`.
+  have hev : ∀ᶠ s in 𝓝[>] (0 : ℝ), s ∈ Ioo 0 t := Ioo_mem_nhdsGT ht
+  -- Step 2: `F(s) → 1` as `s ↓ 0`, squeezing `0 ≤ |F(s) − 1| ≤ c(s)` on `(0, t)`.
+  have hF1 : Tendsto F (𝓝[>] 0) (𝓝 1) := by
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    refine squeeze_zero' (Eventually.of_forall fun s => norm_nonneg _) ?_ hc
+    filter_upwards [hev] with s hs
+    rw [Real.norm_eq_abs]
+    exact hF s hs.1 (hs.2.le.trans htR)
+  -- Step 3: `s⁻ⁿ μ(B_s(x)) = ω · toReal (μ(B_s(x)) / ofReal (ω sⁿ)) → ω θ₀` as `s ↓ 0`, since
+  -- `toReal` is continuous at the finite limit `ofReal θ₀`.
+  have hm : Tendsto (fun s : ℝ => (μ (closedBall x s)).toReal / s ^ n) (𝓝[>] 0) (𝓝 (ω * θ₀)) := by
+    have hreal : Tendsto (fun s => (μ (closedBall x s) / ENNReal.ofReal (ω * s ^ n)).toReal)
+        (𝓝[>] 0) (𝓝 θ₀) := by
+      have h := (ENNReal.tendsto_toReal ENNReal.ofReal_ne_top).comp hdens
+      rwa [ENNReal.toReal_ofReal hθ₀] at h
+    have heq : ∀ᶠ s in 𝓝[>] (0 : ℝ),
+        ω * (μ (closedBall x s) / ENNReal.ofReal (ω * s ^ n)).toReal =
+          (μ (closedBall x s)).toReal / s ^ n := by
+      filter_upwards [hev] with s hs
+      have hsn : 0 < s ^ n := pow_pos hs.1 n
+      rw [ENNReal.toReal_div, ENNReal.toReal_ofReal (by positivity)]
+      field_simp
+    exact (hreal.const_mul ω).congr' heq
+  -- Step 4: `Φ(s) → 1 · (ω θ₀) + (1 − 1) = ω θ₀` as `s ↓ 0`.
+  have hΦ : Tendsto (fun s => F s * ((μ (closedBall x s)).toReal / s ^ n) + (F s - 1)) (𝓝[>] 0)
+      (𝓝 (ω * θ₀)) := by
+    simpa using (hF1.mul hm).add (hF1.sub_const 1)
+  -- Step 5: `ω θ₀ ≤ Φ(t)`, letting `s ↓ 0` in `Φ(s) ≤ Φ(t)`, `s ∈ (0, t)`.
+  have hle : ω * θ₀ ≤ F t * ((μ (closedBall x t)).toReal / t ^ n) + (F t - 1) := by
+    refine le_of_tendsto hΦ ?_
+    filter_upwards [hev] with s hs
+    exact hmono s t hs.1 hs.2.le htR
+  -- Step 6: `F(t) − 1 ≤ c(t)` and `t⁻ⁿ μ(B_t(x)) ≥ 0` give
+  -- `Φ(t) ≤ (1 + c(t)) t⁻ⁿ μ(B_t(x)) + c(t)`.
+  have hFt : F t - 1 ≤ A * (t / R) ^ β := (le_abs_self _).trans (hF t ht htR)
+  have hmt : 0 ≤ (μ (closedBall x t)).toReal / t ^ n :=
+    div_nonneg ENNReal.toReal_nonneg (pow_pos ht n).le
+  have hmul := mul_le_mul_of_nonneg_right (show F t ≤ 1 + A * (t / R) ^ β by linarith) hmt
+  linarith
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
