@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1.segment_null-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1",
+  "depth": 4,
+  "title": "Almost every parallel line meets a Lebesgue-null set in a null set",
+  "statement": "Let n >= 0, let N be a subset of R^n with Lebesgue (outer) measure L^n(N) = 0 (N need not be measurable), and let x, h ∈ R^n. Then for L^n-almost every w ∈ R^n, the set {t ∈ R : x + w + t h ∈ N} has one-dimensional Lebesgue (outer) measure 0.",
+  "lean_statement": "∀ (n : ℕ) (N : Set (Rn n)), volume N = 0 → ∀ (x h : Rn n), ∀ᵐ w ∂(volume : Measure (Rn n)), volume {t : ℝ | x + w + t • h ∈ N} = 0",
+  "lean_name": "allard52_lad_segment_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-lipschitz-ae-derivative-946341d9ee-a1"
+}
