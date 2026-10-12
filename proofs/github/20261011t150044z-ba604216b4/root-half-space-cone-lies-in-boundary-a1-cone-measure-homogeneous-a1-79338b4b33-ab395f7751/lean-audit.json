@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0278893890d57b6b642567ccaf820036eab761758d9e17968293280ea87789c1",
+  "git_delta": {
+    "base_commit": "072e6be3521c6a985d390e77dbba210b41add12f",
+    "candidate_commit": "de07806ee05c71f7f37e9aee2a2d828d6e3adb9d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "imrep_smul_rescale_action_measure",
+    "diff_sha256": "c5143173a28faee4a2c24bf4dec8503a5c4add55c0bba95061849b99f36b5327",
+    "source_sha256": "bec5da831376ecc39523d8a85a1b2a01214d687ba1e5eabfb5641f2b12b66f7c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imrep_smul_rescale_action_measure",
+      "statement": "∀ (P n : ℕ) (R R' : IMRep (univ : Set (Euclid P)) n) (c : ℝ), 0 < c → R'.carrier = (fun x => c • x) ⁻¹' R.carrier → (∀ x, R'.mult x = R.mult (c • x)) → (∀ x, R'.orient x = R.orient (c • x)) → (∀ ω : DifferentialForm (Euclid P) n, R'.action ω = R.action (fun y => (c⁻¹ ^ n) • ω (c⁻¹ • y))) ∧ ∀ A : Set (Euclid P), MeasurableSet A → R'.measure A = ENNReal.ofReal (c⁻¹ ^ n) * R.measure ((fun x => c • x) '' A)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
