@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9dd7d11d76df39d01378843be6cdd15a12dbfd7f1c1aa1b1f35fdd6d0874d0bf",
+  "git_delta": {
+    "base_commit": "da0a42e7aedc725ac5ffbc928f22fa400f8e7a89",
+    "candidate_commit": "8a11bebfb2e9a0c233aa2527e58aaf8b7372e181",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_allard_radial_field_divergence",
+    "diff_sha256": "21f5ed1f409847eea6281ed0ae83d40d522f155fccc8733f2e69a4df4173720e",
+    "source_sha256": "9fcdb9e19b363ddaa85a3b7e25b039bbb26cbaa61db76384bada7a43f0a0197f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_allard_radial_field_divergence",
+      "statement": "∀ (N n : ℕ) (a : Euclidean N → ℝ) (y z : Euclidean N) (S : Grassmannian N n), DifferentiableAt ℝ a z → Varifold.tangentialDivergence (fun w ↦ a w • (w - y)) z S = n * a z + fderiv ℝ a z (Grassmannian.project S (z - y))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
