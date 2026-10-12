@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "de3fc67782ab414bad3567b02adfdec9bc89c6932c1839333567f6bbe84043e6",
+  "git_delta": {
+    "base_commit": "660aa3453e52f2440a9ec2a283da4a9f77fc4201",
+    "candidate_commit": "2bc1cf75fc85cfe9696f9804ff1eedbdaebf38fb",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "c1_regular_level_slice_image_countablyRectifiable",
+    "diff_sha256": "636097b932718de120855eec795652041248b958caa90abfde9c348ce2c10d60",
+    "source_sha256": "2b7ce3c5fb6e5711eb7aa192874a5a0c06a9c4a9ad9397bab5c20c00a7419553",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.c1_regular_level_slice_image_countablyRectifiable",
+      "statement": "∀ (m k N : ℕ) (D : Set (Rn (m + k))) (ψ : Rn (m + k) → Rn N) (G : Rn (m + k) → Rn m) (y : Rn m), IsOpen D → ContDiffOn ℝ 1 ψ D → ContDiff ℝ 1 G → CountablyRectifiable k (ψ '' (D ∩ {u | Function.Surjective (fderiv ℝ G u)} ∩ G ⁻¹' {y}))",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
