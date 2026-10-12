@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(import|namespace|open|end)|def Rn|abbrev Rn|def IsW12WithGradient|w12_ball|poincare_",
+        "theorem (map_addHaar_smul|lintegral_map|lintegral_liminf_le|lintegral_iSup|setLIntegral_iUnion_of_directed|eLpNorm_add_le|tendstoInMeasure_of_tendsto_eLpNorm|TendstoInMeasure.exists_seq_tendsto_ae|setAverage_eq|enorm_integral_le_lintegral_enorm|MemLp.integrable)|def gradient|noncomputable def gradient|def toDual",
+        "poincar[eé].*inequal|inequal.*poincar[eé]",
+        "poincare_c1_segment_sq_bound|poincare_ball_convex_combination_bound|poincare_c1_ball_double_integral_bound|poincare_approx_ball_double_integral_bound|poincare_ball_double_integral_exhaustion|poincare_set_mean_deviation_sq_bound",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/poincare-independent-audit-4e61/TypesOnly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/poincare-independent-audit-4e61/All.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch02/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/CompareExp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/TriangleInequality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/ConvergenceInMeasure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Average.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-poincare-inequality-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-poincare-inequality-a1/decomposition-v1.json",
+        "/tmp/poincare-independent-audit-4e61/TypesOnly.lean",
+        "/tmp/poincare-independent-audit-4e61/All.lean",
+        "/tmp/poincare-independent-audit-4e61/segment_bound.lean",
+        "/tmp/poincare-independent-audit-4e61/convex_combination_bound.lean",
+        "/tmp/poincare-independent-audit-4e61/smooth_estimate.lean",
+        "/tmp/poincare-independent-audit-4e61/approximation_limit.lean",
+        "/tmp/poincare-independent-audit-4e61/exhaustion.lean",
+        "/tmp/poincare-independent-audit-4e61/mean_deviation.lean"
+      ],
+      "conclusion": "The six-way split is appropriate for the selected Poincare theorem. The snapshot records project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the compiler uses that Mathlib revision, and the inspected sources and frozen contract match. Searches found no matching Sobolev Poincare theorem; the project's BV contract is different. The cited calculus, Haar scaling, Lp, Fatou, Tonelli, exhaustion and average APIs support the supplied arguments. All six one-line propositions independently elaborate before any child declaration. Their unmodified supplied proofs compile together and individually with only declared dependencies available. Combined axiom checks report only propext, Classical.choice and Quot.sound. The supplied parent assembly also compiles for the exact selected conclusion with C = 2^(n+2), taking the existing frozen smooth-approximation contract as an explicit hypothesis. Dependencies, including that prerequisite's reachable graph, are acyclic. All proposed names are bare identifiers, with no reservations in other DAG branches or occurrences in project/worktree Lean sources. Euclidean norm, gradient and Lebesgue-measure instances match the prose; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "segment_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches all prose hypotheses. The chain rule and FTC, the isometric gradient identification, and L1–L2 comparison on a unit-measure interval prove the stated bound. Enlarging Ioc to Icc is justified. The supplied proof is complete and independent."
+    },
+    {
+      "key": "convex_combination_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly includes measurability, positive radius and both endpoint inequalities for t. Indicator localization and affine Haar scaling justify the substitution bound; convexity and Tonelli complete both cases, including t = 0 and t = 1. Infinite integrals cause no invalid cancellation."
+    },
+    {
+      "key": "smooth_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The C1 and radius hypotheses match exactly. The proof uses precisely the two declared children, establishes the measurability needed for both Tonelli swaps, and obtains the stated constant from the diameter bound and ball-volume monotonicity."
+    },
+    {
+      "key": "approximation_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both restricted measurability assumptions and both L2 convergence hypotheses are explicit. Representative replacement, subsequence extraction, two justified Fatou applications, Minkowski and continuity of multiplication by the finite coefficient prove the exact conclusion, including infinite energy. Only smooth_estimate is used."
+    },
+    {
+      "key": "exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The proof preserves double integrals under a.e. replacement, establishes the increasing-ball union, justifies monotone convergence of measurable inner integrals, and bounds mixed radii using max(k,m). This is a complete independent obligation."
+    },
+    {
+      "key": "mean_deviation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite-measure and L2 hypotheses match exactly. The proof handles zero measure separately, preserves the average under a.e. replacement, establishes integrability and the mean identity, and applies Cauchy–Schwarz before justified reciprocal cancellation. No positivity hypothesis is missing."
+    }
+  ],
+  "required_changes": []
+}

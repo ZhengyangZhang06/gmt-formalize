@@ -460,6 +460,81 @@ def RegularSetOpenDense : Prop :=
 
 namespace Submission
 
+/-- Simon Ch. 5, proof of Lemma 3.1 (p. 114), Poincaré inequality, segment step: for a `C¹`
+function `φ` on `ℝⁿ` and `x, y ∈ ℝⁿ`,
+`|φ(x) - φ(y)|² ≤ |x - y|² ∫_{[0,1]} |∇φ((1 - t) y + t x)|² dt` in `[0, ∞]`.  Along the segment
+`γ(t) = (1 - t) y + t x` the chain rule and the fundamental theorem of calculus give
+`φ(x) - φ(y) = ∫₀¹ Dφ(γ(t))(x - y) dt`; then `|Dφ(z) v| ≤ |v| |∇φ(z)|` (the gradient is the
+Riesz representative of `Dφ(z)`), and Cauchy–Schwarz on the unit interval (`L¹ ≤ L²` for a
+probability measure) bounds the square of `∫₀¹ |∇φ(γ(t))| dt`. -/
+theorem poincare_c1_segment_sq_bound : ∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ x y : Rn n, ‖φ x - φ y‖ₑ ^ 2 ≤ ‖x - y‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+  intro n φ hφ x y
+  set γ : ℝ → Rn n := fun t => (1 - t) • y + t • x with hγ
+  -- 1. the segment and the chain rule
+  have hγd : ∀ t, HasDerivAt γ (x - y) t := by
+    intro t
+    have h1 : HasDerivAt (fun t : ℝ => (1 - t) • y) (-y) t := by
+      simpa using ((hasDerivAt_id t).const_sub 1).smul_const y
+    have h2 : HasDerivAt (fun t : ℝ => t • x) x t := by
+      simpa using (hasDerivAt_id t).smul_const x
+    convert h1.add h2 using 1
+    abel
+  have hud : ∀ t, HasDerivAt (fun t => φ (γ t)) (fderiv ℝ φ (γ t) (x - y)) t := fun t =>
+    ((hφ.differentiable one_ne_zero (γ t)).hasFDerivAt).comp_hasDerivAt t (hγd t)
+  have hγc : Continuous γ := by fun_prop
+  have hderc : Continuous (fun t => fderiv ℝ φ (γ t) (x - y)) :=
+    ((hφ.continuous_fderiv one_ne_zero).comp hγc).clm_apply continuous_const
+  -- 2. fundamental theorem of calculus
+  have hFTC : ∫ t in (0:ℝ)..1, fderiv ℝ φ (γ t) (x - y) = φ x - φ y := by
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hud t)
+      (hderc.intervalIntegrable 0 1)]
+    simp [γ]
+  have hgc : Continuous (gradient φ) :=
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp (hφ.continuous_fderiv one_ne_zero)
+  -- 3. pointwise Cauchy–Schwarz: |Dφ(z) v| ≤ |v| |∇φ(z)|
+  have hpt : ∀ t, ‖fderiv ℝ φ (γ t) (x - y)‖ₑ ≤ ‖x - y‖ₑ * ‖gradient φ (γ t)‖ₑ := by
+    intro t
+    have : ‖fderiv ℝ φ (γ t) (x - y)‖ ≤ ‖x - y‖ * ‖gradient φ (γ t)‖ := by
+      calc ‖fderiv ℝ φ (γ t) (x - y)‖ ≤ ‖fderiv ℝ φ (γ t)‖ * ‖x - y‖ := (fderiv ℝ φ (γ t)).le_opNorm _
+        _ = ‖x - y‖ * ‖gradient φ (γ t)‖ := by
+          rw [gradient, LinearIsometryEquiv.norm_map, mul_comm]
+    rw [← ofReal_norm, ← ofReal_norm, ← ofReal_norm, ← ENNReal.ofReal_mul (norm_nonneg _)]
+    exact ENNReal.ofReal_le_ofReal this
+  have hle : ‖φ x - φ y‖ₑ ≤ ‖x - y‖ₑ * ∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ := by
+    rw [← hFTC, intervalIntegral.integral_of_le zero_le_one]
+    calc ‖∫ t in Ioc (0:ℝ) 1, fderiv ℝ φ (γ t) (x - y)‖ₑ
+        ≤ ∫⁻ t in Ioc (0:ℝ) 1, ‖fderiv ℝ φ (γ t) (x - y)‖ₑ := enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ t in Ioc (0:ℝ) 1, ‖x - y‖ₑ * ‖gradient φ (γ t)‖ₑ := lintegral_mono fun t => hpt t
+      _ = ‖x - y‖ₑ * ∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ :=
+          lintegral_const_mul' _ _ enorm_ne_top
+  -- 4. Cauchy–Schwarz on (0,1] (a probability space): (∫ a)^2 ≤ ∫ a^2
+  have hCS : (∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ) ^ 2 ≤
+      ∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ ^ 2 := by
+    set μ : Measure ℝ := volume.restrict (Ioc (0:ℝ) 1) with hμ
+    have hμ1 : μ univ = 1 := by
+      rw [hμ, Measure.restrict_apply_univ, Real.volume_Ioc, sub_zero, ENNReal.ofReal_one]
+    have : IsFiniteMeasure μ := ⟨by rw [hμ1]; exact ENNReal.one_lt_top⟩
+    have hh : AEStronglyMeasurable (fun t => gradient φ (γ t)) μ := (hgc.comp hγc).aestronglyMeasurable
+    have key := eLpNorm_le_eLpNorm_mul_rpow_measure_univ (p := 1) (q := 2) (μ := μ) one_le_two hh
+    rw [eLpNorm_one_eq_lintegral_enorm hh,
+      eLpNorm_eq_lintegral_rpow_enorm_toReal two_ne_zero ENNReal.ofNat_ne_top hh] at key
+    have e1 : (1 / (1 : ℝ≥0∞).toReal - 1 / (2 : ℝ≥0∞).toReal) = 1 / 2 := by norm_num
+    rw [e1, hμ1, ENNReal.one_rpow, mul_one] at key
+    have e2 : ∀ t, ‖gradient φ (γ t)‖ₑ ^ (2 : ℝ≥0∞).toReal = ‖gradient φ (γ t)‖ₑ ^ 2 := fun t => by
+      simp
+    simp_rw [e2] at key
+    calc (∫⁻ t, ‖gradient φ (γ t)‖ₑ ∂μ) ^ 2
+        ≤ ((∫⁻ t, ‖gradient φ (γ t)‖ₑ ^ 2 ∂μ) ^ (1 / (2 : ℝ≥0∞).toReal)) ^ 2 := by gcongr
+      _ = ∫⁻ t, ‖gradient φ (γ t)‖ₑ ^ 2 ∂μ := by
+        rw [← ENNReal.rpow_mul_natCast]
+        norm_num
+  -- 5. combine
+  calc ‖φ x - φ y‖ₑ ^ 2 ≤ (‖x - y‖ₑ * ∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ) ^ 2 := by gcongr
+    _ = ‖x - y‖ₑ ^ 2 * (∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ) ^ 2 := mul_pow _ _ _
+    _ ≤ ‖x - y‖ₑ ^ 2 * ∫⁻ t in Ioc (0:ℝ) 1, ‖gradient φ (γ t)‖ₑ ^ 2 := by gcongr
+    _ ≤ ‖x - y‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ ((1 - t) • y + t • x)‖ₑ ^ 2 := by
+        gcongr
+        exact Ioc_subset_Icc_self
 /-- **Translating a ball into a larger ball does not increase a lintegral** (translation
 invariance of Lebesgue measure; Evans, *PDE*, §5.8.2 Theorem 3(i), Gilbarg–Trudinger §7.11).
 If `r + ‖w‖ ≤ s`, then `x - w ∈ B̆_s(0)` for every `x ∈ B̆_r(0)`, so for an arbitrary
@@ -488,6 +563,57 @@ theorem lintegral_ball_comp_sub_le : ∀ (n : ℕ) (F : Rn n → ℝ≥0∞) (r 
     _ = ∫⁻ x, (ball (0 : Rn n) s).indicator F x :=
         lintegral_sub_right_eq_self ((ball (0 : Rn n) s).indicator F) w
     _ = ∫⁻ x in ball (0 : Rn n) s, F x := lintegral_indicator measurableSet_ball F
+
+/-- **Translation estimate for `C¹` functions** (Evans, *PDE*, §5.8.2 Theorem 3(i);
+Gilbarg–Trudinger §7.11): for `φ ∈ C¹(ℝⁿ)`, `r ∈ ℝ` and `z ∈ ℝⁿ`,
+`∫⁻_{B̆_r(0)} |φ(x - z) - φ(x)|² dx ≤ |z|² ∫⁻_{B̆_{r+|z|}(0)} |∇φ|²` in `[0, ∞]`.
+
+The segment bound `poincare_c1_segment_sq_bound` at the pair `(x - z, x)` gives
+`|φ(x - z) - φ(x)|² ≤ |z|² ∫⁻_{[0,1]} |∇φ(x - t z)|² dt` for every `x`.  Integrate over `B̆_r(0)`
+and swap the integrals (Tonelli; the integrand is continuous in `(x, t)`).  For `t ∈ [0, 1]`,
+`|t z| ≤ |z|`, so `lintegral_ball_comp_sub_le` bounds each inner integral by
+`∫⁻_{B̆_{r+|z|}(0)} |∇φ|²`, and `[0, 1]` has measure one. -/
+theorem contDiff_one_ball_translation_estimate : ∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ (r : ℝ) (z : Rn n), ∫⁻ x in ball (0 : Rn n) r, ‖φ (x - z) - φ x‖ₑ ^ 2 ≤ ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖gradient φ x‖ₑ ^ 2 := by
+  intro n φ hφ r z
+  -- Step 0: `∇φ = toDual⁻¹ ∘ Dφ` is continuous, so the Tonelli integrand is Borel measurable.
+  have hgc : Continuous (gradient φ) :=
+    (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.comp (hφ.continuous_fderiv one_ne_zero)
+  have hmeas : Measurable (fun p : Rn n × ℝ => ‖gradient φ (p.1 - p.2 • z)‖ₑ ^ 2) :=
+    ((hgc.comp (continuous_fst.sub (continuous_snd.smul continuous_const))).measurable.enorm).pow_const 2
+  -- Steps 1–4: the segment bound at the pair `(x - z, x)`, whose segment is `t ↦ x - t z`.
+  have hpt : ∀ x : Rn n, ‖φ (x - z) - φ x‖ₑ ^ 2 ≤
+      ‖z‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ (x - t • z)‖ₑ ^ 2 := by
+    intro x
+    have e1 : x - z - x = -z := by abel
+    have e2 : ∀ t : ℝ, (1 - t) • x + t • (x - z) = x - t • z := fun t => by module
+    calc ‖φ (x - z) - φ x‖ₑ ^ 2
+        ≤ ‖x - z - x‖ₑ ^ 2 *
+            ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ ((1 - t) • x + t • (x - z))‖ₑ ^ 2 :=
+          poincare_c1_segment_sq_bound n φ hφ (x - z) x
+      _ = ‖z‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ (x - t • z)‖ₑ ^ 2 := by
+          simp only [e1, e2, enorm_neg]
+  -- Steps 5–8: integrate over `B̆_r(0)`, swap the integrals, translate by `t z`, and use
+  -- `|[0, 1]| = 1` and `‖z‖ₑ² = ofReal ‖z‖²`.
+  calc ∫⁻ x in ball (0 : Rn n) r, ‖φ (x - z) - φ x‖ₑ ^ 2
+      ≤ ∫⁻ x in ball (0 : Rn n) r,
+          ‖z‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ (x - t • z)‖ₑ ^ 2 :=
+        lintegral_mono hpt
+    _ = ‖z‖ₑ ^ 2 * ∫⁻ x in ball (0 : Rn n) r,
+          ∫⁻ t in Icc (0 : ℝ) 1, ‖gradient φ (x - t • z)‖ₑ ^ 2 :=
+        lintegral_const_mul' _ _ (ENNReal.pow_ne_top enorm_ne_top)
+    _ = ‖z‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1,
+          ∫⁻ x in ball (0 : Rn n) r, ‖gradient φ (x - t • z)‖ₑ ^ 2 := by
+        rw [lintegral_lintegral_swap hmeas.aemeasurable]
+    _ ≤ ‖z‖ₑ ^ 2 * ∫⁻ t in Icc (0 : ℝ) 1,
+          ∫⁻ y in ball (0 : Rn n) (r + ‖z‖), ‖gradient φ y‖ₑ ^ 2 := by
+        refine mul_le_mul_right (setLIntegral_mono measurable_const fun t ht => ?_) _
+        refine lintegral_ball_comp_sub_le n (fun y => ‖gradient φ y‖ₑ ^ 2) r (r + ‖z‖) (t • z) ?_
+        rw [norm_smul, Real.norm_of_nonneg ht.1]
+        have : t * ‖z‖ ≤ ‖z‖ := mul_le_of_le_one_left (norm_nonneg _) ht.2
+        linarith
+    _ = ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖gradient φ x‖ₑ ^ 2 := by
+        rw [setLIntegral_const, Real.volume_Icc, sub_zero, ENNReal.ofReal_one, mul_one,
+          ENNReal.ofReal_pow (norm_nonneg _), ofReal_norm]
 
 end Submission
 
