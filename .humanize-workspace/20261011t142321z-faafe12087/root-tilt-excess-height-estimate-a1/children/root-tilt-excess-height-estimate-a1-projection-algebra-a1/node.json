@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.projection_algebra-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1",
+  "depth": 2,
+  "title": "Operator vs Hilbert–Schmidt norm, distance to a subspace, and the projection trace identity",
+  "statement": "(i) For all m, k and every linear map A : R^m → R^k, ‖A‖ <= |A|, where ‖A‖ is the operator norm and |A| = (Σ_i |A e_i|^2)^{1/2} = hsNorm A is the Hilbert–Schmidt norm (e_i the standard basis).\n(ii) For every linear subspace T ⊆ R^m and v ∈ R^m, |p_{T⊥} v| = dist(v, T), where p_{T⊥} is the orthogonal projection onto T⊥.\n(iii) For linear subspaces P, T ⊆ R^m with dim P = dim T, trace(p_{T⊥} ∘ p_P) = (1/2)|p_P − p_T|^2, where |·|^2 = hsNormSq.",
+  "lean_statement": "(∀ (m k : ℕ) (A : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A) ∧ (∀ (m : ℕ) (T : Submodule ℝ (Rn m)) (v : Rn m), ‖Tᗮ.starProjection v‖ = Metric.infDist v (T : Set (Rn m))) ∧ ∀ (m : ℕ) (P T : Submodule ℝ (Rn m)), Module.finrank ℝ P = Module.finrank ℝ T → LinearMap.trace ℝ (Rn m) (Tᗮ.starProjection.toLinearMap ∘ₗ P.starProjection.toLinearMap) = hsNormSq (P.starProjection - T.starProjection) / 2",
+  "lean_name": "hsNorm_starProjection_trace_identities",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-projection-algebra-a1-a1"
+}
