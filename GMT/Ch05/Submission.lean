@@ -639,6 +639,87 @@ theorem rsod_wfu_approxTangent_ballMass_bound : ∀ (n ℓ : ℕ) (C : Set (Amb 
         mul_le_mul_of_nonneg_left hmass (inv_nonneg.mpr (pow_nonneg hr0.le n))
     _ = ∫ y in η '' C, g y ∂μ := hcov.symm
     _ ≤ (∫ y in (P : Set (Amb n ℓ)), g y ∂μ) + 1 := hr.le
+/-- **Vanishing of the blow-up tail** (Simon Ch. 3, Remark 1.8(1), with Ch. 1, Thm 3.6).  If the
+weighted measure `μ' = |ϑ| Hⁿ ⌞ A` satisfies `ρ⁻ⁿ μ'(S ∩ B_ρ(x)) → 0` as `ρ ↓ 0`, with `S ⊆ A` Borel
+and `ϑ ∈ L¹(Hⁿ ⌞ A)`, then `r⁻ⁿ ∫_S f(η_{x,r} z) ϑ(z) dHⁿ(z) → 0` for every `f ∈ C_c`.  Indeed
+`|f| ≤ M` and `f = 0` off `B_R(0)`, so the integral is bounded by `M μ'(S ∩ B_{rR}(x))`, and
+`r⁻ⁿ M μ'(S ∩ B_{rR}(x)) = M Rⁿ (rR)⁻ⁿ μ'(S ∩ B_{rR}(x)) → 0`. -/
+theorem rsod_wfu_blowUp_tail_tendsto_zero : ∀ (n ℓ : ℕ) (A S : Set (Amb n ℓ)) (ϑ : Amb n ℓ → ℝ) (x : Amb n ℓ), MeasurableSet S → S ⊆ A → IntegrableOn ϑ A (μHE[n] : Measure (Amb n ℓ)) → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (((μHE[n] : Measure (Amb n ℓ)).restrict A).withDensity (fun z => ‖ϑ z‖ₑ)).real (S ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → ∀ f : CompactlySupportedContinuousMap (Amb n ℓ) ℝ, Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z in S, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * ϑ z ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ A S ϑ x hS hSA hϑ hdens f
+  set μ : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
+  set μ' : Measure (Amb n ℓ) := (μ.restrict A).withDensity (fun z => ‖ϑ z‖ₑ) with hμ'
+  -- `|f| ≤ M` everywhere, and `f = 0` off `B_R(0)` with `R > 0`.
+  obtain ⟨M, hM⟩ : ∃ M, ∀ y, ‖f y‖ ≤ M :=
+    (map_continuous f).bounded_above_of_compact_support f.hasCompactSupport
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall (0 : Amb n ℓ)
+  set R : ℝ := max R₀ 1
+  have hRpos : 0 < R := lt_of_lt_of_le one_pos (le_max_right _ _)
+  -- `μ'(T) = ∫_T |ϑ| dHⁿ` for Borel `T ⊆ A`.
+  have hreal : ∀ T : Set (Amb n ℓ), MeasurableSet T → T ⊆ A →
+      ∫ z in T, ‖ϑ z‖ ∂μ = μ'.real T := by
+    intro T hT hTA
+    rw [measureReal_def, hμ', withDensity_apply _ hT, Measure.restrict_restrict hT,
+      inter_eq_left.mpr hTA,
+      integral_norm_eq_lintegral_enorm (hϑ.mono_set hTA).aestronglyMeasurable]
+  -- Pointwise: `|f(η_r z) ϑ(z)| ≤ M 1_{B_{rR}(x)}(z) |ϑ(z)|`.
+  have hpt : ∀ r : ℝ, 0 < r → ∀ z : Amb n ℓ,
+      ‖f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * ϑ z‖ ≤
+        (closedBall x (r * R)).indicator (fun z => M * ‖ϑ z‖) z := by
+    intro r hr z
+    by_cases hz : z ∈ closedBall x (r * R)
+    · rw [indicator_of_mem hz, norm_mul]
+      exact mul_le_mul_of_nonneg_right (hM _) (norm_nonneg _)
+    · rw [indicator_of_notMem hz]
+      have hf0 : f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) = 0 := by
+        apply image_eq_zero_of_notMem_tsupport
+        intro hmem
+        apply hz
+        have h1 := hR₀ hmem
+        rw [mem_closedBall_zero_iff] at h1
+        rw [mem_closedBall, dist_eq_norm]
+        have hzx : z - x = r • Poincare.SimonGMT.Chapter03.blowUpMap x r z := by
+          simp [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hr.ne']
+        rw [hzx, norm_smul, Real.norm_of_nonneg hr.le]
+        calc r * ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z‖ ≤ r * R₀ :=
+              mul_le_mul_of_nonneg_left h1 hr.le
+          _ ≤ r * R := mul_le_mul_of_nonneg_left (le_max_left _ _) hr.le
+      rw [hf0, zero_mul, norm_zero]
+  -- Integral bound: `|∫_S f(η_r z) ϑ(z) dHⁿ| ≤ M μ'(S ∩ B_{rR}(x))`.
+  have hbound : ∀ r : ℝ, 0 < r →
+      ‖∫ z in S, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * ϑ z ∂μ‖ ≤
+        M * μ'.real (S ∩ closedBall x (r * R)) := by
+    intro r hr
+    have hint : Integrable ((closedBall x (r * R)).indicator (fun z => M * ‖ϑ z‖))
+        (μ.restrict S) :=
+      ((hϑ.mono_set hSA).norm.const_mul M).indicator measurableSet_closedBall
+    calc ‖∫ z in S, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * ϑ z ∂μ‖
+        ≤ ∫ z in S, (closedBall x (r * R)).indicator (fun z => M * ‖ϑ z‖) z ∂μ :=
+          norm_integral_le_of_norm_le hint (Eventually.of_forall (hpt r hr))
+      _ = ∫ z in S ∩ closedBall x (r * R), M * ‖ϑ z‖ ∂μ :=
+          setIntegral_indicator measurableSet_closedBall
+      _ = M * ∫ z in S ∩ closedBall x (r * R), ‖ϑ z‖ ∂μ := integral_const_mul _ _
+      _ = M * μ'.real (S ∩ closedBall x (r * R)) := by
+          rw [hreal _ (hS.inter measurableSet_closedBall) (inter_subset_left.trans hSA)]
+  -- Rescaling `ρ = rR` turns the density hypothesis into the decay of the bound.
+  have hscale : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have h := (tendsto_id (x := 𝓝 (0 : ℝ))).mul_const R
+      rw [zero_mul] at h
+      exact h.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hr hRpos
+  have hlim := (hdens.comp hscale).const_mul (M * R ^ n)
+  rw [mul_zero] at hlim
+  refine squeeze_zero_norm' ?_ hlim
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  have hRn : R ^ n ≠ 0 := pow_ne_zero _ hRpos.ne'
+  rw [norm_mul, norm_inv, norm_pow, Real.norm_of_nonneg hr.le]
+  calc (r ^ n)⁻¹ * ‖∫ z in S, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * ϑ z ∂μ‖
+      ≤ (r ^ n)⁻¹ * (M * μ'.real (S ∩ closedBall x (r * R))) :=
+        mul_le_mul_of_nonneg_left (hbound r hr) (by positivity)
+    _ = M * R ^ n * (((r * R) ^ n)⁻¹ * μ'.real (S ∩ closedBall x (r * R))) := by
+        rw [mul_pow, mul_inv]
+        field_simp
 
 end Submission
 
