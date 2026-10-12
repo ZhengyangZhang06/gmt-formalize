@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "b04cac8e22729e5eab6abcb65a62791fc680df01efad475468351830916349bf",
+  "git_delta": {
+    "base_commit": "ba64bae223dc3874c9f114203e8fceca021334d4",
+    "candidate_commit": "1c558e99170ecd9cb941b1ec9bd66049faa13d09",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "f429e9405704035ee6a710f7af1d6e1bc03d1f2db5c7060945f5cb593afca0d2",
+    "source_sha256": "f657abbf3ac78325f498de77044444dcf488433acb1e643ecec2e82f7c8e0f15",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.frt_hausdorff_null_of_weight_null",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (U Z : Set (Euclidean N)), IsOpen U → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → Z ⊆ U → μ Z = 0 → (∀ x ∈ Z, 0 < limsup (densityRatio n μ x) (𝓝[>] 0)) → μHE[n] Z = 0",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
