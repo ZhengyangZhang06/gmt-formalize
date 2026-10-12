@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.support_density_ge_one-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1",
+  "depth": 3,
+  "title": "Density at least 1 at support points inside the open ball B°_rho(0) under 2.3 (Simon Ch. 4, 4.9-4.10(1))",
+  "statement": "Let n >= 1 and l >= 0 be natural numbers, p > n a real number, kappa := (p - n)/(4p), U an open subset of R^(n+l), V a rectifiable n-varifold in U (RectifiableVarifold n l U) with weight mu := V.weight, H : R^(n+l) -> R^(n+l), and delta, rho real numbers with 0 < delta <= kappa such that the hypotheses 2.3 hold (V.AllardHypotheses H p delta rho). Assume moreover (T0) x -> V.tangentProj x is mu-a.e. strongly measurable; (T1) for mu-a.e. x, V.tangentProj x = P.starProjection for some n-dimensional subspace P; (T3) for mu-a.e. x, V.HasDensity x (V.mult x). Then for every y in spt V cap B°_rho(0) (spt V = V.support = U cap spt mu; B°_rho(0) the open ball) and every real t with V.HasDensity y t (i.e. mu(B_r(y))/ofReal(omega_n r^n) -> ofReal t as r -> 0+, closed balls, omega_n = unitBallVolume n), we have 1 <= t. In words: Theta^n(mu, y) >= 1 at every point y of spt V inside the open ball B°_rho(0).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ (p - n) / (4 * p) → V.AllardHypotheses H p δ ρ → AEStronglyMeasurable V.tangentProj V.weight → (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → (∀ᵐ x ∂V.weight, V.HasDensity x (V.mult x)) → ∀ y ∈ V.support ∩ ball (0 : Amb n ℓ) ρ, ∀ t : ℝ, V.HasDensity y t → 1 ≤ t",
+  "lean_name": "allard52_support_density_ge_one",
+  "depends_on": [
+    "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1",
+    "root.affine_approximation-a1.pinched_density_bounds-a1.allard_subball_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.affine_approximation-a1.pinched_density_bounds-a1.allard_subball_bounds-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-pinched-density-bounds-a1-allard-subball-bounds-a1-a1",
+      "result_commit": "595bf34cad5e797b1ca2c89a3d419f3daecdab75",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-support-density-ge-one-a1-a1"
+}

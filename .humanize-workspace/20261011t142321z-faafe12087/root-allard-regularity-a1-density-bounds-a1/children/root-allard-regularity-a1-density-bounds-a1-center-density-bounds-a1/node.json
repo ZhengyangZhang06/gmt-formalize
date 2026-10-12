@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.center_density_bounds-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1",
+  "depth": 3,
+  "title": "Pinched mass and conical-excess bounds at one centre from the monotonicity data (Simon Ch. 5, 2.4, abstract form)",
+  "statement": "Let n, l be natural numbers, mu a measure on R^(n+l) (Borel sigma-algebra), g : R^(n+l) -> R, F : R -> R, y in R^(n+l), and omega, R, Lambda, M real numbers with R > 0, Lambda > 0, M >= 0 and g(y) = 0. Write B_r := closed ball B_r(y) and Phi(r) := F(r) * (r^n)^(-1) * mu(B_r).toReal + F(r) - 1. Assume (H1) mu(B_r) <= ofReal M for every r in (0, R); (H2) e^(-Lambda) <= F(r) <= e^Lambda and |F(r) - 1| <= Lambda for every r in (0, R); (H3) for all s, r with 0 < s <= r < R: Phi(s) <= Phi(r), and the lower integral over B_r minus B_s of ofReal(g) with respect to mu is at most ofReal(e^Lambda (Phi(r) - Phi(s))). Then for every s with 0 < s < R: (i) mu(B_s) <= ofReal((e^(2 Lambda) (M/R^n) + 2 e^Lambda Lambda) s^n); and if moreover (H4) omega <= Phi(t) for every t in (0, R), then (ii) ofReal(e^(-Lambda) (omega - Lambda) s^n) <= mu(B_s) and (iii) the lower integral over B_s of ofReal(g) with respect to mu is at most ofReal(e^Lambda (e^Lambda (M/R^n) + Lambda - omega)).",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (g : Amb n ℓ → ℝ) (F : ℝ → ℝ) (y : Amb n ℓ) (ω R Λ M : ℝ), 0 < R → 0 < Λ → 0 ≤ M → g y = 0 → (∀ r ∈ Ioo 0 R, μ (closedBall y r) ≤ ENNReal.ofReal M) → (∀ r ∈ Ioo 0 R, Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Λ) → (∀ s r : ℝ, 0 < s → s ≤ r → r < R → F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal + F s - 1 ≤ F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1 ∧ ∫⁻ x in closedBall y r \\ closedBall y s, ENNReal.ofReal (g x) ∂μ ≤ ENNReal.ofReal (Real.exp Λ * ((F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1) - (F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal + F s - 1)))) → ∀ s : ℝ, 0 < s → s < R → μ (closedBall y s) ≤ ENNReal.ofReal ((Real.exp (2 * Λ) * (M / R ^ n) + 2 * Real.exp Λ * Λ) * s ^ n) ∧ ((∀ t ∈ Ioo 0 R, ω ≤ F t * (t ^ n)⁻¹ * (μ (closedBall y t)).toReal + F t - 1) → ENNReal.ofReal (Real.exp (-Λ) * (ω - Λ) * s ^ n) ≤ μ (closedBall y s) ∧ ∫⁻ x in closedBall y s, ENNReal.ofReal (g x) ∂μ ≤ ENNReal.ofReal (Real.exp Λ * (Real.exp Λ * (M / R ^ n) + Λ - ω)))",
+  "lean_name": "allard52_center_density_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-center-density-bounds-a1-a1"
+}

@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "allard52_density_constants|allard52_annular_monotonicity|allard52_support_density_ge_one|allard52_center_density_bounds|aal_allard_subball_bounds",
+        "theorem setLIntegral_iUnion_of_directed|theorem lintegral_union_le|theorem lintegral_liminf_le|theorem tendsto_measure_biInter_gt|mem_support_iff_forall|theorem LocallyIntegrableOn.integrableOn_compact_subset|theorem lintegral_lintegral_swap|theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le|theorem norm_image_sub_le_of_norm_deriv_le|theorem integral_hasDerivAt_right",
+        "git show 595bf34cad5e797b1ca2c89a3d419f3daecdab75:GMT/Ch05/Submission.lean",
+        "git show 9f4dca65df4fbd188bea65e81c59d598279e6643:GMT/Ch05/Submission.lean",
+        "sed -n '330,390p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/density-independent-audit-dp5jv2wo/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/density-independent-audit-dp5jv2wo/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-density-bounds-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-density-bounds-a1/decomposition-v3.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-pinched-density-bounds-a1-allard-subball-bounds-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-tangent-ae-a1/accepted-candidate.json",
+        "/tmp/density-independent-audit-dp5jv2wo/Types.lean",
+        "/tmp/density-independent-audit-dp5jv2wo/Assembly.lean",
+        "/tmp/density-independent-audit-dp5jv2wo/density_constants.lean",
+        "/tmp/density-independent-audit-dp5jv2wo/center_density_bounds.lean",
+        "/tmp/density-independent-audit-dp5jv2wo/support_density_ge_one.lean",
+        "/tmp/density-independent-audit-dp5jv2wo/AcceptedSubball.lean",
+        "/tmp/density-independent-audit-dp5jv2wo/AcceptedTangent.lean"
+      ],
+      "conclusion": "Independently confirmed project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; workspace Contract and Submission match the snapshot. The proposed names have no snapshot matches. In the current 214-node DAG, the four new names are unreserved; aal_allard_subball_bounds is comparator-accepted with an identical frozen type. Adding the proposed children, including accepted-node reuse, preserves acyclicity. All five one-line propositions elaborate independently and match their prose hypotheses and conclusions. Names are bare identifiers, types contain no self-reference or implementation-dependent aliases, and no Matrix/IsUnit construction occurs. Fresh compilation verified the three supplied appendices, accepted subball and tangent proofs, and exact parent assembly. Axiom reports contain only standard axioms and, where applicable, precisely the declared child assumptions. The assembly establishes the selected parent contract with constants quantified before codimension, so splitting is appropriate. The annular natural proof was independently checked analytically. Its method agrees with [Simon, Chapter 4 §4](https://web.stanford.edu/class/math285/ts-gmt.pdf#page=51); the corrected κ was verified algebraically and in the pinned SimonGMT source."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_constants",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose, including n = 0 and all constant restrictions. Smoothness away from the denominator's zeros, compact derivative bounds, and the mean value theorem prove all three inequalities. Constants depend only on n, κ, ω. The supplied appendix independently compiles using standard axioms only."
+    },
+    {
+      "key": "subball_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Ball inclusion and measure/integral monotonicity give the stated bounds. Positivity of p, 1/p and ρ^(p−n) justifies extracting curvature-integral finiteness. No additional openness or δ-positivity assumption is needed. Reuse matches the comparator-accepted frozen type exactly; the accepted proof recompiles using standard axioms only."
+    },
+    {
+      "key": "annular_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact contract from its local tangent and measurability hypotheses. The radial first-variation sign, Hölder estimate, identity 2κ/(1−n/p)=1/2, integrating factor, and dominated-convergence passage are correct. Tonelli and Fatou yield the required closed-annulus inequality, including the outer boundary. Monotonicity and F→1 give the finite nonnegative density. This is a complete derivation, with no reliance on the child or parent theorem."
+    },
+    {
+      "key": "support_density_ge_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses exactly its two declared predecessors. A common-radius estimate and continuity from above establish upper semicontinuity; almost-everywhere density ≥1 then excludes a null open neighborhood of a support point. Density uniqueness correctly handles arbitrary real t despite ofReal truncation by first obtaining a positive density. The appendix recompiles with only standard axioms and those two predecessors."
+    },
+    {
+      "key": "center_density_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The r→R⁻ estimate and subsequent algebra prove the mass bounds without extra sign assumptions on ω. The annular exhaustion gives the full conical bound: the pinned directed-union lemma permits arbitrary g, and g(y)=0 eliminates the singleton contribution. Thus no measurability or atomlessness hypothesis is missing. The appendix recompiles using standard axioms only."
+    }
+  ],
+  "required_changes": []
+}
