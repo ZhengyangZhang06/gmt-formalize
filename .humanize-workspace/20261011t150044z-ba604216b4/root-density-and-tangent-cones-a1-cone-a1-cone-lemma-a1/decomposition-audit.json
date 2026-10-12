@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le",
+        "ae_withDensity_iff|is_const_of_deriv_eq_zero",
+        "exteriorDerivative_isTestForm|exteriorDerivativeTestOn|boundary_apply|def GeometricCurrentOn.boundary",
+        "alternatizeUncurryFin_curryLeft|HasCompactSupport.comp_smul|theorem integral_const_mul",
+        "dtc_cwv_(isConeCurrent_of_pullback_invariant|scaled_action_hasDerivAt|action_dilation_invariant|euler_contraction_isTestForm|euler_lie_annihilated)",
+        "git show 77ba6718296797531c46092c9edeed99a93d1890 -- GMT/Ch07/Submission.lean",
+        "git show 0325970d8b47298803106a41abbcdb3c8c9ac103 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cone-split-audit-9c_qzjin/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cone-split-audit-9c_qzjin/Proofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1-euler-cartan-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5/isolated-comparator-result.json",
+        "/tmp/cone-split-audit-9c_qzjin/Contracts.lean",
+        "/tmp/cone-split-audit-9c_qzjin/Proofs.lean"
+      ],
+      "conclusion": "The pinned definitions and revisions match the checked environment. All seven one-line propositions independently elaborate before any child implementation; names are bare identifiers. The five new names have no conflicting DAG reservations or matches in the searched project and SimonGMT sources. Both reuses have identical frozen types and passed comparator receipts. Dependencies are correctly directed and acyclic. The five supplied implementations, two accepted reuse implementations, and assembly of the exact selected parent compile with only propext, Classical.choice and Quot.sound. The split appropriately separates analytic, algebraic and current-evaluation obligations; all seven contribute to the selected cone lemma. No problematic matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cone_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Surjectivity justifies currentEval's test-form branch, and the constructed affine pullback has the required scalar factor by multilinearity. Applying the stated invariance hypothesis proves exactly IsConeCurrent, without circular reliance."
+    },
+    {
+      "key": "orientation_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical frozen type. The orthonormal product bound handles both orientation signs and the empty product when n = 0, yielding precisely the dual operator-norm bound."
+    },
+    {
+      "key": "scaled_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The derivative proposition matches the prose, including natural-number subtraction when n = 0. The proof supplies pointwise derivatives, measurability, uniform support localization, an integrable derivative bound and base-point integrability. Its sole child dependency is orientation_norm."
+    },
+    {
+      "key": "dilation_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the scaled form and its Euler–Lie derivative as test forms, identifies the derivative action with t⁻¹ times the assumed vanishing action, and applies constancy on (0, ∞). Both endpoint identities and n = 0 are covered; scaled_derivative suffices."
+    },
+    {
+      "key": "euler_cartan",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical frozen type. Differentiability at y suffices for the bilinear product rule. The explicit alternating-sum cancellation gives the correct coefficient m+1 under the pinned exterior-derivative convention, without assuming additional smoothness."
+    },
+    {
+      "key": "contraction_test_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree in every degree. Continuous linear currying followed by evaluation proves smoothness; vanishing wherever β vanishes proves compact support. The proof is complete and requires no other child."
+    },
+    {
+      "key": "lie_annihilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match and are correctly used. Positive degree permits n=m+1; the stated children give γ=dψ+χ. Vanishing boundary kills C(dψ), while representation, ae_withDensity_iff and positive multiplicity kill C(χ). This proves the exact conclusion without assuming conicality."
+    }
+  ],
+  "required_changes": []
+}

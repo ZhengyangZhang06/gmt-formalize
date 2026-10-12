@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1.dilation_invariance-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1",
+  "depth": 4,
+  "title": "Annihilation of Euler–Lie derivatives makes τ(M,θ,ξ) invariant under the dilation pull-backs (homotopy constancy)",
+  "statement": "Let P, n ∈ ℕ and R = (M, θ, ξ) ∈ IMRep(ℝ^P, n). Assume that R.action(γ) = 0 for all test forms β, γ ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n) satisfying γ(y) = n·β(y) + Dβ(y)[y] for every y (γ is the Lie derivative of β along the Euler field X(y) = y; Dβ(y) = fderiv ℝ β y). Then for every λ > 0 and all ω, ω' ∈ 𝒟ⁿ(ℝ^P) with ω'(y) = λ^{−n}·ω(λ^{−1}y) for every y, R.action(ω') = R.action(ω).",
+  "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ β γ : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (γ : DifferentialForm (Euclid P) n) y = (n : ℝ) • (β : DifferentialForm (Euclid P) n) y + fderiv ℝ (β : DifferentialForm (Euclid P) n) y y) → R.action (γ : DifferentialForm (Euclid P) n) = 0) → ∀ lam : ℝ, 0 < lam → ∀ ω ω' : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (ω' : DifferentialForm (Euclid P) n) y = (lam⁻¹ ^ n) • (ω : DifferentialForm (Euclid P) n) (lam⁻¹ • y)) → R.action (ω' : DifferentialForm (Euclid P) n) = R.action (ω : DifferentialForm (Euclid P) n)",
+  "lean_name": "dtc_cwv_action_dilation_invariant",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1.scaled_derivative-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1.scaled_derivative-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1-dilation-invariance-a1-a1"
+}

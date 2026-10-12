@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1.contraction_test_form-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1",
+  "depth": 4,
+  "title": "Contraction with the Euler field preserves test forms",
+  "statement": "Let P, m ∈ ℕ and let β : ℝ^P → Λ^{m+1}(ℝ^P) (DifferentialForm (Euclid P) (m + 1)) be a test form (IsTestForm β: C^∞ with compact support). Then the contraction of β with the Euler field X(z) = z, ι_Xβ : z ↦ β(z).curryLeft z (so (ι_Xβ)(z)(v_1, …, v_m) = β(z)(z, v_1, …, v_m)), is a test m-form: IsTestForm (fun z => ContinuousAlternatingMap.curryLeft (β z) z).",
+  "lean_statement": "∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)), IsTestForm β → IsTestForm (fun z => ContinuousAlternatingMap.curryLeft (β z) z)",
+  "lean_name": "dtc_cwv_euler_contraction_isTestForm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-cone-lemma-a1-contraction-test-form-a1-a1"
+}
