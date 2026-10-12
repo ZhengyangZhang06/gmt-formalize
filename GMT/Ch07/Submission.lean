@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -450,6 +451,78 @@ def RegularComponentsAreMinimizing : Prop :=
       BoundaryVanishes T₁ ∧ IsMinimizingIn T₁ (U ∩ N)
 
 end
+
+/-- **Simon Ch. 5, between (14) and (15)** (`1 ≤ J_F ≤ 1 + C|∇f|²`), with the area formula
+**Ch. 2, 3.5**: for a `1`-Lipschitz `f : ℝⁿ → ℝᵏ` and the graph map `Φ(v) = ξ + ιv + ι'f(v)`
+over the orthogonal isometric embeddings `ι`, `ι'`,
+`∫_A h ∘ Φ ≤ ∫_{Φ(A)} h dHⁿ ≤ ∫_A (1 + 2ⁿ Σᵢ |Df(v)eᵢ|²) h ∘ Φ`.  `Φ` is injective and
+`2`-Lipschitz, so the injective Lipschitz area formula applies.  Where `f` is differentiable
+(Rademacher), `DΦ = ι + ι' ∘ Df` with `‖Df‖ ≤ 1`, `DΦ*DΦ = I + Df*Df`, and
+`1 ≤ J_Φ² = det(I + Df*Df) ≤ 1 + 2ⁿ Σᵢ |Df eᵢ|²`; since `J_Φ ≥ 0`, `1 ≤ J_Φ ≤ J_Φ²`. -/
+theorem Submission.dorag_tes_lipschitz_graph_area_bounds : ∀ (n k : ℕ), 0 < n → ∀ (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (ξ : Euclid (n + k)) (f : Euclid n → Euclid k) (A : Set (Euclid n)) (h : Euclid (n + k) → ℝ≥0∞), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v w, ‖f v - f w‖ ≤ ‖v - w‖) → MeasurableSet A → Measurable h → (∫⁻ v in A, h (ξ + ι v + ι' (f v)) ≤ ∫⁻ x in (fun v => ξ + ι v + ι' (f v)) '' A, h x ∂μHE[n]) ∧ ∫⁻ x in (fun v => ξ + ι v + ι' (f v)) '' A, h x ∂μHE[n] ≤ ∫⁻ v in A, ENNReal.ofReal (1 + 2 ^ n * ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * h (ξ + ι v + ι' (f v)) := by
+  intro n k _hn ι ι' ξ f A h horth hf hA _hh
+  set Φ : Euclid n → Euclid (n + k) := fun v => ξ + ι v + ι' (f v) with hΦ
+  have hfL : LipschitzWith 1 f :=
+    LipschitzWith.of_dist_le_mul fun v w => by simpa [dist_eq_norm] using hf v w
+  -- Step 2: `Φ` is `2`-Lipschitz
+  have hΦL : LipschitzWith 2 Φ := by
+    refine LipschitzWith.of_dist_le_mul fun v w => ?_
+    rw [dist_eq_norm, dist_eq_norm]
+    have hvw : Φ v - Φ w = ι (v - w) + ι' (f v - f w) := by
+      simp only [hΦ, map_sub]; abel
+    rw [hvw]
+    calc ‖ι (v - w) + ι' (f v - f w)‖ ≤ ‖ι (v - w)‖ + ‖ι' (f v - f w)‖ := norm_add_le _ _
+      _ = ‖v - w‖ + ‖f v - f w‖ := by rw [ι.norm_map, ι'.norm_map]
+      _ ≤ ‖v - w‖ + ‖v - w‖ := by gcongr; exact hf v w
+      _ = ((2 : NNReal) : ℝ) * ‖v - w‖ := by push_cast; ring
+  -- Step 1: `Φ` is injective, since `ι(v - w) = ι'(f w - f v)` is orthogonal to itself
+  have hΦi : Injective Φ := by
+    intro v w hvw
+    have h1 : ι (v - w) = ι' (f w - f v) := by
+      have h2 : ι v + ι' (f v) = ι w + ι' (f w) := by
+        simpa only [hΦ, add_assoc, add_right_inj] using hvw
+      rw [map_sub, map_sub, sub_eq_sub_iff_add_eq_add, h2, add_comm (ι w)]
+    have h3 : ι (v - w) = 0 := by
+      rw [← inner_self_eq_zero (𝕜 := ℝ)]
+      nth_rewrite 2 [h1]
+      exact horth _ _
+    exact sub_eq_zero.mp (ι.injective (h3.trans (map_zero ι).symm))
+  -- Step 3: the area formula `∫_{Φ(A)} h dHⁿ = ∫_A J_Φ · h ∘ Φ`
+  have harea := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn hΦL hA
+    hΦi.injOn h
+  rw [finrank_euclideanSpace_fin] at harea
+  -- Steps 4–8: `1 ≤ J_Φ ≤ 1 + 2ⁿ Σᵢ |Df eᵢ|²` wherever `f` is differentiable
+  have hJ : ∀ᵐ v ∂(volume : Measure (Euclid n)),
+      1 ≤ Poincare.SimonGMT.Chapter02.areaJacobianAt Φ v ∧
+        Poincare.SimonGMT.Chapter02.areaJacobianAt Φ v ≤
+          1 + 2 ^ n * ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := by
+    filter_upwards [hfL.ae_differentiableAt (μ := volume)] with v hv
+    have hB : ‖fderiv ℝ f v‖ ≤ 1 := by
+      simpa using norm_fderiv_le_of_lipschitz ℝ (x₀ := v) hfL
+    have hD : HasFDerivAt Φ
+        (ι.toContinuousLinearMap + ι'.toContinuousLinearMap ∘L fderiv ℝ f v) v := by
+      have := ((ι.toContinuousLinearMap.hasFDerivAt (x := v)).add
+        (ι'.toContinuousLinearMap.hasFDerivAt.comp v hv.hasFDerivAt)).const_add ξ
+      convert this using 1
+      funext x
+      simp [hΦ, add_assoc]
+    have hsq := Poincare.SimonGMT.Chapter02.areaJacobianAt_sq_eq_det_adjoint_comp Φ v
+    rw [hD.fderiv,
+      Submission.dorag_tes_ga_graph_linear_gram_identity n k ι ι' (fderiv ℝ f v) horth] at hsq
+    obtain ⟨hlo, hhi⟩ :=
+      Submission.dorag_tes_ga_det_id_add_adjoint_comp_bounds n k (fderiv ℝ f v) hB
+    have hJ0 := Poincare.SimonGMT.Chapter02.areaJacobianAt_nonneg Φ v
+    have hJ1 : 1 ≤ Poincare.SimonGMT.Chapter02.areaJacobianAt Φ v := by nlinarith
+    exact ⟨hJ1, by nlinarith⟩
+  -- Step 9: integrate the a.e. bounds against `h ∘ Φ`
+  rw [harea]
+  constructor
+  · refine lintegral_mono_ae ?_
+    filter_upwards [ae_restrict_of_ae hJ] with v hv
+    exact le_mul_of_one_le_left' (ENNReal.one_le_ofReal.mpr hv.1)
+  · refine lintegral_mono_ae ?_
+    filter_upwards [ae_restrict_of_ae hJ] with v hv
+    exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal hv.2) zero_le
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
