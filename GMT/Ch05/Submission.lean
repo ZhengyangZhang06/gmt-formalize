@@ -458,6 +458,74 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Rescaling a rectifiable varifold (used for the rescaled varifold in Simon Ch. 5, Remark 5.3):
+for `ψ(x) = c + R x` with `R > 0`, `v(ψ⁻¹M, θ ∘ ψ)` is a rectifiable `n`-varifold in `ψ⁻¹U`.  `ψ` is
+a homeomorphism (a dilation followed by a translation), hence a measurable embedding, and
+`ψ_# Hⁿ = R⁻ⁿ Hⁿ` (`any_radius_rv_map_hausdorff`), so `ψ` is quasi-measure-preserving and pulls
+`Hⁿ`-null sets back to `Hⁿ`-null sets.  Null-measurability, countable rectifiability (via `ψ⁻¹M₀`
+and the Lipschitz maps `R⁻¹(F_j − c)`), a.e.-measurability of `θ ∘ ψ` on `ψ⁻¹M` and its
+integrability on `ψ⁻¹M ∩ K` (through the compact set `ψ(K) ⊆ U`) all transfer. -/
+theorem any_radius_rv_exists_structure : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∃ W : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), W.carrier = (fun x => c + R • x) ⁻¹' V.carrier ∧ ∀ x, W.mult x = V.mult (c + R • x) := by
+  intro n ℓ U V c R hR
+  -- `ψ(x) = c + R • x` is the homeomorphism `x ↦ R • x` followed by `z ↦ c + z`, hence a
+  -- continuous measurable embedding.
+  have hψ : Continuous (fun x : Amb n ℓ => c + R • x) :=
+    ((Homeomorph.smulOfNeZero R hR.ne').trans (Homeomorph.addLeft c)).continuous
+  have hψe : MeasurableEmbedding (fun x : Amb n ℓ => c + R • x) :=
+    ((Homeomorph.smulOfNeZero R hR.ne').trans (Homeomorph.addLeft c)).measurableEmbedding
+  -- `ψ_# Hⁿ = κ • Hⁿ` with `κ = R⁻ⁿ ≠ ∞`.
+  have hmap : (μHE[n] : Measure (Amb n ℓ)).map (fun x => c + R • x) =
+      (ENNReal.ofReal (R ^ n))⁻¹ • (μHE[n] : Measure (Amb n ℓ)) :=
+    Submission.any_radius_rv_map_hausdorff n ℓ c R hR
+  have hκ : (ENNReal.ofReal (R ^ n))⁻¹ ≠ ∞ :=
+    ENNReal.inv_ne_top.2 (ENNReal.ofReal_pos.2 (pow_pos hR n)).ne'
+  -- Hence `ψ` is quasi-measure-preserving and `ψ⁻¹` maps `Hⁿ`-null sets to `Hⁿ`-null sets.
+  have hqmp : Measure.QuasiMeasurePreserving (fun x : Amb n ℓ => c + R • x) μHE[n] μHE[n] :=
+    ⟨hψe.measurable, by rw [hmap]; exact Measure.smul_absolutelyContinuous⟩
+  have hnull : ∀ B : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) B = 0 →
+      (μHE[n] : Measure (Amb n ℓ)) ((fun x => c + R • x) ⁻¹' B) = 0 := fun B hB => by
+    rw [← hψe.map_apply, hmap, Measure.smul_apply, hB, smul_zero]
+  refine ⟨{
+    carrier := (fun x => c + R • x) ⁻¹' V.carrier
+    mult := fun x => V.mult (c + R • x)
+    carrier_subset := preimage_mono V.carrier_subset
+    nullMeasurableSet_carrier := V.nullMeasurableSet_carrier.preimage hqmp
+    countablyRectifiable := ?_
+    mult_pos := fun x hx => V.mult_pos (c + R • x) hx
+    aemeasurable_mult := ?_
+    integrableOn_mult := ?_ }, rfl, fun x => rfl⟩
+  · -- Pull back the null set `M₀` and compose the Lipschitz pieces `F j` with `ψ⁻¹`.
+    obtain ⟨M₀, hM₀, F, hF, hcover⟩ := V.countablyRectifiable
+    refine ⟨(fun x => c + R • x) ⁻¹' M₀, hnull M₀ hM₀, fun j z => R⁻¹ • (F j z - c),
+      fun j => ?_, fun x hx => ?_⟩
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨‖R⁻¹‖₊ * (K + 0), (lipschitzWith_smul R⁻¹).comp (hK.sub (LipschitzWith.const c))⟩
+    · rcases hcover hx with h | h
+      · exact Or.inl h
+      · obtain ⟨j, z, hz⟩ := mem_iUnion.1 h
+        refine Or.inr (mem_iUnion.2 ⟨j, z, ?_⟩)
+        simp only [hz, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hR.ne', one_smul]
+  · -- `ψ` maps `Hⁿ⌞ψ⁻¹M` to `κ • Hⁿ⌞M`, for which `θ` is a.e.-measurable.
+    have h : AEMeasurable V.mult
+        (((μHE[n] : Measure (Amb n ℓ)).restrict ((fun x => c + R • x) ⁻¹' V.carrier)).map
+          (fun x => c + R • x)) := by
+      rw [← hψe.restrict_map, hmap, Measure.restrict_smul]
+      exact V.aemeasurable_mult.smul_measure _
+    exact h.comp_measurable hψe.measurable
+  · -- `ψ(K)` is a compact subset of `U`, and `ψ⁻¹(M ∩ ψ(K)) = ψ⁻¹M ∩ K`.
+    intro K hK hKU
+    have h : IntegrableOn V.mult (V.carrier ∩ (fun x => c + R • x) '' K)
+        ((μHE[n] : Measure (Amb n ℓ)).map (fun x => c + R • x)) := by
+      rw [hmap, IntegrableOn, Measure.restrict_smul]
+      exact (V.integrableOn_mult _ (hK.image hψ)
+        (by rintro _ ⟨k, hk, rfl⟩; exact hKU hk)).smul_measure hκ
+    have h' := hψe.integrableOn_map_iff.1 h
+    rwa [preimage_inter, hψe.injective.preimage_image] at h'
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
