@@ -482,6 +482,7 @@ theorem Submission.whitney_gluing_local_structure : ∀ (n : ℕ) (A : Set (Rn n
       by_contra his
       exact hφne (hout i his)
     exact Finset.mem_filter.mpr ⟨his, hφne⟩
+
 /-- Whitney gluing on `A` (the step `∇g = ν` on `A` in the proof of Simon Ch. 2, Theorem 1.6).
 Let `A` be closed, `ν` continuous on `A`, and `h`, `ν` satisfy 1.6 (∗) uniformly on compact
 subsets of `A`. If `g = h` on `A` and, at each `x ∉ A`, `g(x)` is a convex combination
@@ -506,6 +507,84 @@ theorem Submission.whitney_gluing_hasFDerivAt : (∀ (n : ℕ) (A : Set (Rn n)) 
   have hrτ : r ≤ τ := (min_le_right _ _).trans (min_le_right _ _)
   set ρ := r / (C + 2) with hρ_def
   have hC2 : 0 < C + 2 := by linarith
+  have hρ : 0 < ρ := div_pos hr hC2
+  have hρr : (C + 1) * ρ < r := by
+    rw [hρ_def, mul_div_assoc', div_lt_iff₀ hC2]
+    nlinarith
+  have hρr' : ρ < r := by
+    have : ρ ≤ (C + 1) * ρ := by nlinarith
+    linarith
+  have haK : a ∈ K := ⟨ha, mem_closedBall_self zero_le_one⟩
+  have hWa : ∀ b ∈ A, ‖b - a‖ < δ₁ → |h b - h a - inner ℝ (ν a) (b - a)| ≤ ε * ‖b - a‖ := by
+    intro b hb hba
+    rcases eq_or_ne b a with rfl | hne
+    · simp
+    · exact hWK a haK b hb (norm_pos_iff.mpr (sub_ne_zero.mpr hne)) hba
+  filter_upwards [Metric.ball_mem_nhds a hρ] with x hx
+  have hxa : ‖x - a‖ < ρ := by simpa [dist_eq_norm] using hx
+  rw [innerSL_apply_apply, hgA a ha, Real.norm_eq_abs, ← hεc]
+  by_cases hxA : x ∈ A
+  · rw [hgA x hxA]
+    have h1 := hWa x hxA (by linarith)
+    have h2 : ε * ‖x - a‖ ≤ (2 * C + 1) * ε * ‖x - a‖ := by
+      have : ε ≤ (2 * C + 1) * ε := by nlinarith
+      exact mul_le_mul_of_nonneg_right this (norm_nonneg _)
+    exact h1.trans h2
+  · obtain ⟨S, hS, hS1, hval⟩ := hrep x hxA
+    have hid : g x - h a - inner ℝ (ν a) (x - a) = ∑ i ∈ S, φ i x *
+        ((h (p i) + inner ℝ (ν (p i)) (x - p i)) - (h a + inner ℝ (ν a) (x - a))) := by
+      rw [hval]
+      simp_rw [mul_sub]
+      rw [Finset.sum_sub_distrib, ← Finset.sum_mul, hS1, one_mul]
+      ring
+    rw [hid]
+    have hdx : infDist x A ≤ ‖x - a‖ := by rw [← dist_eq_norm]; exact infDist_le_dist_of_mem ha
+    have hterm : ∀ i ∈ S, |(h (p i) + inner ℝ (ν (p i)) (x - p i)) - (h a + inner ℝ (ν a) (x - a))|
+        ≤ (2 * C + 1) * ε * ‖x - a‖ := by
+      intro i hi
+      have hxp : ‖x - p i‖ ≤ C * ‖x - a‖ := (hS i hi).2.trans (mul_le_mul_of_nonneg_left hdx hC)
+      have hpa : ‖p i - a‖ ≤ (C + 1) * ‖x - a‖ := by
+        calc ‖p i - a‖ = ‖(x - a) - (x - p i)‖ := by congr 1; abel
+          _ ≤ ‖x - a‖ + ‖x - p i‖ := norm_sub_le _ _
+          _ ≤ ‖x - a‖ + C * ‖x - a‖ := by linarith
+          _ = (C + 1) * ‖x - a‖ := by ring
+      have hpa_lt : ‖p i - a‖ < r := by
+        have : (C + 1) * ‖x - a‖ ≤ (C + 1) * ρ := mul_le_mul_of_nonneg_left hxa.le (by linarith)
+        linarith
+      have hνi : ‖ν (p i) - ν a‖ ≤ ε := by
+        have := hντ (hp i) (by rw [dist_eq_norm]; linarith)
+        rw [dist_eq_norm] at this
+        exact this.le
+      have hWi := hWa (p i) (hp i) (by linarith)
+      have hE1 : (h (p i) + inner ℝ (ν (p i)) (x - p i)) - (h a + inner ℝ (ν a) (x - a)) =
+          (h (p i) - h a - inner ℝ (ν a) (p i - a)) + inner ℝ (ν (p i) - ν a) (x - p i) := by
+        have hsplit : x - a = (x - p i) + (p i - a) := by abel
+        rw [inner_sub_left, hsplit, inner_add_right]
+        ring
+      rw [hE1]
+      calc |(h (p i) - h a - inner ℝ (ν a) (p i - a)) + inner ℝ (ν (p i) - ν a) (x - p i)|
+          ≤ |h (p i) - h a - inner ℝ (ν a) (p i - a)| + |inner ℝ (ν (p i) - ν a) (x - p i)| :=
+            abs_add_le _ _
+        _ ≤ ε * ‖p i - a‖ + ‖ν (p i) - ν a‖ * ‖x - p i‖ :=
+            add_le_add hWi (abs_real_inner_le_norm _ _)
+        _ ≤ ε * ((C + 1) * ‖x - a‖) + ε * (C * ‖x - a‖) := by
+            apply add_le_add
+            · exact mul_le_mul_of_nonneg_left hpa hε.le
+            · exact mul_le_mul hνi hxp (norm_nonneg _) hε.le
+        _ = (2 * C + 1) * ε * ‖x - a‖ := by ring
+    calc |∑ i ∈ S, φ i x * ((h (p i) + inner ℝ (ν (p i)) (x - p i)) - (h a + inner ℝ (ν a) (x - a)))|
+        ≤ ∑ i ∈ S, |φ i x * ((h (p i) + inner ℝ (ν (p i)) (x - p i)) - (h a + inner ℝ (ν a) (x - a)))| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ = ∑ i ∈ S, φ i x * |(h (p i) + inner ℝ (ν (p i)) (x - p i)) - (h a + inner ℝ (ν a) (x - a))| := by
+          apply Finset.sum_congr rfl
+          intro i hi
+          rw [abs_mul, abs_of_nonneg (hS i hi).1]
+      _ ≤ ∑ i ∈ S, φ i x * ((2 * C + 1) * ε * ‖x - a‖) := by
+          apply Finset.sum_le_sum
+          intro i hi
+          exact mul_le_mul_of_nonneg_left (hterm i hi) (hS i hi).1
+      _ = (2 * C + 1) * ε * ‖x - a‖ := by rw [← Finset.sum_mul, hS1, one_mul]
+
 /-- **Simon Ch. 2, Theorem 1.6 (pp. 42–43), Whitney extension: continuity of `Dg` on `A`.** Let
 `A ⊂ ℝⁿ` be closed, `ν` continuous on `A`, `(h, ν)` satisfy the uniform first-order condition of
 1.6 on compact subsets of `A`, `C, M ≥ 0`, and the anchors `pᵢ` lie in `A`. Suppose
@@ -549,36 +628,6 @@ theorem Submission.whitney_gluing_continuousAt_fderiv : ∀ (n : ℕ) (A : Set (
   have hρr : (C + 1) * ρ < r := by
     rw [hρ_def, mul_div_assoc', div_lt_iff₀ hC2]
     nlinarith
-  have hρr' : ρ < r := by
-    have : ρ ≤ (C + 1) * ρ := by nlinarith
-    linarith
-  have haK : a ∈ K := ⟨ha, mem_closedBall_self zero_le_one⟩
-  have hWa : ∀ b ∈ A, ‖b - a‖ < δ₁ → |h b - h a - inner ℝ (ν a) (b - a)| ≤ ε * ‖b - a‖ := by
-    intro b hb hba
-    rcases eq_or_ne b a with rfl | hne
-    · simp
-    · exact hWK a haK b hb (norm_pos_iff.mpr (sub_ne_zero.mpr hne)) hba
-  filter_upwards [Metric.ball_mem_nhds a hρ] with x hx
-  have hxa : ‖x - a‖ < ρ := by simpa [dist_eq_norm] using hx
-  rw [innerSL_apply_apply, hgA a ha, Real.norm_eq_abs, ← hεc]
-  by_cases hxA : x ∈ A
-  · rw [hgA x hxA]
-    have h1 := hWa x hxA (by linarith)
-    have h2 : ε * ‖x - a‖ ≤ (2 * C + 1) * ε * ‖x - a‖ := by
-      have : ε ≤ (2 * C + 1) * ε := by nlinarith
-      exact mul_le_mul_of_nonneg_right this (norm_nonneg _)
-    exact h1.trans h2
-  · obtain ⟨S, hS, hS1, hval⟩ := hrep x hxA
-    have hid : g x - h a - inner ℝ (ν a) (x - a) = ∑ i ∈ S, φ i x *
-        ((h (p i) + inner ℝ (ν (p i)) (x - p i)) - (h a + inner ℝ (ν a) (x - a))) := by
-      rw [hval]
-      simp_rw [mul_sub]
-      rw [Finset.sum_sub_distrib, ← Finset.sum_mul, hS1, one_mul]
-      ring
-    rw [hid]
-    have hdx : infDist x A ≤ ‖x - a‖ := by rw [← dist_eq_norm]; exact infDist_le_dist_of_mem ha
-    have hterm : ∀ i ∈ S, |(h (p i) + inner ℝ (ν (p i)) (x - p i)) - (h a + inner ℝ (ν a) (x - a))|
-        ≤ (2 * C + 1) * ε * ‖x - a‖ := by
   have hρr2 : 2 * ρ ≤ r := by
     rw [hρ_def, mul_div_assoc', div_le_iff₀ hC2]
     nlinarith
@@ -634,42 +683,6 @@ theorem Submission.whitney_gluing_continuousAt_fderiv : ∀ (n : ℕ) (A : Set (
           _ ≤ ‖x - a‖ + ‖x - p i‖ := norm_sub_le _ _
           _ ≤ ‖x - a‖ + C * ‖x - a‖ := by linarith
           _ = (C + 1) * ‖x - a‖ := by ring
-      have hpa_lt : ‖p i - a‖ < r := by
-        have : (C + 1) * ‖x - a‖ ≤ (C + 1) * ρ := mul_le_mul_of_nonneg_left hxa.le (by linarith)
-        linarith
-      have hνi : ‖ν (p i) - ν a‖ ≤ ε := by
-        have := hντ (hp i) (by rw [dist_eq_norm]; linarith)
-        rw [dist_eq_norm] at this
-        exact this.le
-      have hWi := hWa (p i) (hp i) (by linarith)
-      have hE1 : (h (p i) + inner ℝ (ν (p i)) (x - p i)) - (h a + inner ℝ (ν a) (x - a)) =
-          (h (p i) - h a - inner ℝ (ν a) (p i - a)) + inner ℝ (ν (p i) - ν a) (x - p i) := by
-        have hsplit : x - a = (x - p i) + (p i - a) := by abel
-        rw [inner_sub_left, hsplit, inner_add_right]
-        ring
-      rw [hE1]
-      calc |(h (p i) - h a - inner ℝ (ν a) (p i - a)) + inner ℝ (ν (p i) - ν a) (x - p i)|
-          ≤ |h (p i) - h a - inner ℝ (ν a) (p i - a)| + |inner ℝ (ν (p i) - ν a) (x - p i)| :=
-            abs_add_le _ _
-        _ ≤ ε * ‖p i - a‖ + ‖ν (p i) - ν a‖ * ‖x - p i‖ :=
-            add_le_add hWi (abs_real_inner_le_norm _ _)
-        _ ≤ ε * ((C + 1) * ‖x - a‖) + ε * (C * ‖x - a‖) := by
-            apply add_le_add
-            · exact mul_le_mul_of_nonneg_left hpa hε.le
-            · exact mul_le_mul hνi hxp (norm_nonneg _) hε.le
-        _ = (2 * C + 1) * ε * ‖x - a‖ := by ring
-    calc |∑ i ∈ S, φ i x * ((h (p i) + inner ℝ (ν (p i)) (x - p i)) - (h a + inner ℝ (ν a) (x - a)))|
-        ≤ ∑ i ∈ S, |φ i x * ((h (p i) + inner ℝ (ν (p i)) (x - p i)) - (h a + inner ℝ (ν a) (x - a)))| :=
-          Finset.abs_sum_le_sum_abs _ _
-      _ = ∑ i ∈ S, φ i x * |(h (p i) + inner ℝ (ν (p i)) (x - p i)) - (h a + inner ℝ (ν a) (x - a))| := by
-          apply Finset.sum_congr rfl
-          intro i hi
-          rw [abs_mul, abs_of_nonneg (hS i hi).1]
-      _ ≤ ∑ i ∈ S, φ i x * ((2 * C + 1) * ε * ‖x - a‖) := by
-          apply Finset.sum_le_sum
-          intro i hi
-          exact mul_le_mul_of_nonneg_left (hterm i hi) (hS i hi).1
-      _ = (2 * C + 1) * ε * ‖x - a‖ := by rw [← Finset.sum_mul, hS1, one_mul]
       have : (C + 1) * ‖x - a‖ ≤ (C + 1) * ρ := mul_le_mul_of_nonneg_left hxa.le (by linarith)
       exact (hνa (p i) (hp i) (by linarith)).le
     -- (d), (e): `|Pᵢ(x) - c| ≤ ε(3C + 1)d` for `i ∈ S`, via (E1).
