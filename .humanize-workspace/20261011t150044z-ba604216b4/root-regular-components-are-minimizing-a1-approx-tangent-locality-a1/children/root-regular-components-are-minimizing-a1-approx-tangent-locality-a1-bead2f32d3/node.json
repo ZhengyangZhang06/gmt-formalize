@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.pointwise_comparison-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1",
+  "depth": 3,
+  "title": "Zero density of B ∖ A at x forces equal approximate tangent spaces (Simon Ch. 3, Remark 1.5(2))",
+  "statement": "Let P, n ∈ ℕ, let A ⊆ B ⊆ ℝ^P be Borel sets, x ∈ ℝ^P and r₀ > 0 with H^n(B ∩ closedBall(x, r₀)) < ∞, where H^n = μHE[n], and suppose H^n((B ∖ A) ∩ closedBall(x, ρ)) / ρ^n → 0 as ρ ↓ 0 (in [0, ∞], ρ^n = ENNReal.ofReal(ρ)^n). Then for every linear subspace Q of ℝ^P: B has approximate tangent space Q at x (Simon Ch. 3, Definition 1.4; HasApproximateTangentSpaceAt n B x Q) if and only if A has approximate tangent space Q at x.",
+  "lean_statement": "∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ : ℝ), MeasurableSet A → MeasurableSet B → A ⊆ B → 0 < r₀ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → Tendsto (fun ρ : ℝ => μHE[n] ((B \\ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q",
+  "lean_name": "regcomp_atl_tangent_iff_of_density_zero",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.blowup_measure_scaling-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.blowup_measure_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-bead2f32d3-a1"
+}
