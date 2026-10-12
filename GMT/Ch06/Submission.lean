@@ -359,6 +359,150 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Unit simple `n`-vectors orienting the same `n`-plane agree up to sign (the orientations
+`ξ = ±τ₁ ∧ ⋯ ∧ τₙ` of Simon Ch. 6, 3.1), given the simple `n`-vector algebra
+`‖v₁ ∧ ⋯ ∧ vₙ‖² = det(⟨vᵢ, vⱼ⟩)` and `(∑ⱼ B₁ⱼ τⱼ) ∧ ⋯ ∧ (∑ⱼ Bₙⱼ τⱼ) = det B · τ₁ ∧ ⋯ ∧ τₙ`.
+An orthonormal `σ` has Gram matrix `1`, so `‖σ₁ ∧ ⋯ ∧ σₙ‖ = 1`.  If `σ, σ'` span the same
+plane, then `σ'ᵢ = ∑ⱼ Bᵢⱼ σⱼ`, so `σ'₁ ∧ ⋯ ∧ σ'ₙ = det B · σ₁ ∧ ⋯ ∧ σₙ`, and taking norms
+gives `|det B| = 1`. -/
+theorem Submission.lpf_pi_simple_unit_facts :
+    ((∀ (P n : ℕ) (v : Fin n → Eucl P),
+        ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧
+      ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P),
+        simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) →
+    (∀ (Q n : ℕ) (σ : Fin n → Eucl Q), Orthonormal ℝ σ → ‖simpleNVector σ‖ = 1) ∧
+      ∀ (Q n : ℕ) (σ σ' : Fin n → Eucl Q), Orthonormal ℝ σ → Orthonormal ℝ σ' →
+        Submodule.span ℝ (range σ) = Submodule.span ℝ (range σ') →
+          simpleNVector σ' = simpleNVector σ ∨ simpleNVector σ' = -simpleNVector σ := by
+  rintro ⟨hgram, hdet⟩
+  -- An orthonormal family has Gram matrix `1`, so `‖σ₁ ∧ ⋯ ∧ σₙ‖² = det 1 = 1`.
+  have hunit : ∀ (Q n : ℕ) (σ : Fin n → Eucl Q), Orthonormal ℝ σ → ‖simpleNVector σ‖ = 1 := by
+    intro Q n σ hσ
+    have hG : (Matrix.of fun i j => inner ℝ (σ i) (σ j)) = (1 : Matrix (Fin n) (Fin n) ℝ) := by
+      ext i j
+      simp [Matrix.one_apply, orthonormal_iff_ite.mp hσ i j]
+    have h := hgram Q n σ
+    rw [hG, Matrix.det_one] at h
+    exact (pow_eq_one_iff_of_nonneg (ContinuousLinearMap.opNorm_nonneg _) two_ne_zero).mp h
+  refine ⟨hunit, fun Q n σ σ' hσ hσ' hspan => ?_⟩
+  -- `‖c • w‖ = |c| ‖w‖` for `n`-vectors, from `opNorm_smul_le` for `c` and `c⁻¹`
+  -- (instance search does not find `NormSMulClass ℝ (NVector _ n)`, so no `norm_smul`).
+  have hnorm_smul : ∀ (c : ℝ) (w : NVector (Eucl Q) n), ‖c • w‖ = |c| * ‖w‖ := by
+    intro c w
+    apply le_antisymm
+    · simpa [Real.norm_eq_abs] using ContinuousLinearMap.opNorm_smul_le c w
+    · rcases eq_or_ne c 0 with rfl | hc
+      · rw [abs_zero, zero_mul]
+        exact ContinuousLinearMap.opNorm_nonneg _
+      · have h := ContinuousLinearMap.opNorm_smul_le c⁻¹ (c • w)
+        rw [smul_smul, inv_mul_cancel₀ hc, one_smul, norm_inv, Real.norm_eq_abs] at h
+        exact (le_inv_mul_iff₀ (abs_pos.mpr hc)).mp h
+  -- Expand `σ'ᵢ = ∑ⱼ Bᵢⱼ σⱼ` in the common span: `σ'₁ ∧ ⋯ ∧ σ'ₙ = det B · σ₁ ∧ ⋯ ∧ σₙ`.
+  have hmem : ∀ i, σ' i ∈ Submodule.span ℝ (range σ) := fun i => by
+    rw [hspan]
+    exact Submodule.subset_span ⟨i, rfl⟩
+  choose B hB using fun i => (Submodule.mem_span_range_iff_exists_fun ℝ).mp (hmem i)
+  have hexp : (fun i => ∑ j, B i j • σ j) = σ' := funext hB
+  have key : simpleNVector σ' = Matrix.det B • simpleNVector σ := by
+    rw [← hexp]
+    exact hdet Q n B σ
+  -- Taking norms, `|det B| = 1`, so `det B = ±1`.
+  have habs : |Matrix.det B| = 1 :=
+    calc |Matrix.det B| = |Matrix.det B| * ‖simpleNVector σ‖ := by rw [hunit Q n σ hσ, mul_one]
+      _ = ‖simpleNVector σ'‖ := by rw [key, hnorm_smul]
+      _ = 1 := hunit Q n σ' hσ'
+  rcases (abs_eq zero_le_one).mp habs with h | h
+  · left
+    rw [key, h, one_smul]
+  · right
+    rw [key, h]
+    exact neg_one_smul ℝ (simpleNVector σ)
+
+/-- The orientation induced by a linear map (Simon Ch. 6, 3.4–3.5, p. 147, at a single point):
+if `τ` is orthonormal, `w = ±τ₁ ∧ ⋯ ∧ τₙ` and `A_# w ≠ 0`, then `Aτ₁, …, Aτₙ` are linearly
+independent, and for their Gram–Schmidt orthonormalization `σ` (same span)
+`A_# w = ±|A_# w| σ₁ ∧ ⋯ ∧ σₙ`.  Writing `Aτᵢ = ∑ⱼ Bᵢⱼ σⱼ`, the determinant identity of the
+hypothesis gives `A_# w = ±det B σ₁ ∧ ⋯ ∧ σₙ`, and `|σ₁ ∧ ⋯ ∧ σₙ| = 1`
+(`Submission.lpf_pi_simple_unit_facts`), so `|A_# w| = |det B|`. -/
+theorem Submission.lpf_pi_induced_orientation :
+    ((∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 =
+        (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧
+      ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P),
+        simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) →
+    ∀ (P Q n : ℕ) (τ : Fin n → Eucl P) (A : Eucl P →L[ℝ] Eucl Q) (w : NVector (Eucl P) n),
+      Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) →
+      nVectorPushforward n A w ≠ 0 →
+      LinearIndependent ℝ (fun i => A (τ i)) ∧ ∃ σ : Fin n → Eucl Q, Orthonormal ℝ σ ∧
+        Submodule.span ℝ (range σ) = Submodule.span ℝ (range (fun i => A (τ i))) ∧
+        (nVectorPushforward n A w = ‖nVectorPushforward n A w‖ • simpleNVector σ ∨
+          nVectorPushforward n A w = -(‖nVectorPushforward n A w‖ • simpleNVector σ)) := by
+  intro hsna P Q n τ A w _hτ hw hne
+  -- `‖c • s‖ = |c| ‖s‖` for the operator norm on `n`-vectors (`NormSMulClass` is not inferred).
+  have hnorm_smul : ∀ (c : ℝ) (s : NVector (Eucl Q) n), ‖c • s‖ = |c| * ‖s‖ := by
+    intro c s
+    apply le_antisymm
+    · simpa [Real.norm_eq_abs] using ContinuousLinearMap.opNorm_smul_le c s
+    · rcases eq_or_ne c 0 with rfl | hc
+      · simp only [abs_zero, zero_mul]
+        exact ContinuousLinearMap.opNorm_nonneg _
+      · have h := ContinuousLinearMap.opNorm_smul_le c⁻¹ (c • s)
+        rw [smul_smul, inv_mul_cancel₀ hc, one_smul, norm_inv, Real.norm_eq_abs] at h
+        have hc' : 0 < |c| := abs_pos.mpr hc
+        calc |c| * ‖s‖ ≤ |c| * (|c|⁻¹ * ‖c • s‖) := by gcongr
+          _ = ‖c • s‖ := by rw [← mul_assoc, mul_inv_cancel₀ hc'.ne', one_mul]
+  set v : Fin n → Eucl Q := fun i => A (τ i)
+  -- `A_# w = ε • (Aτ₁ ∧ ⋯ ∧ Aτₙ)` with `ε = ±1`.
+  have hsimple : nVectorPushforward n A (simpleNVector τ) = simpleNVector v :=
+    nVectorPushforward_simple A τ
+  obtain ⟨ε, hpush⟩ : ∃ ε : ℝ, nVectorPushforward n A w = ε • simpleNVector v := by
+    rcases hw with rfl | rfl
+    · exact ⟨1, by rw [hsimple, one_smul]⟩
+    · refine ⟨-1, ?_⟩
+      ext α
+      show -(α (fun i => A (τ i))) = (-1 : ℝ) * α (fun i => A (τ i))
+      ring
+  -- (i): covectors vanish on linearly dependent families, so `Aτ₁ ∧ ⋯ ∧ Aτₙ` would be `0`.
+  have hli : LinearIndependent ℝ v := by
+    by_contra h
+    apply hne
+    have h0 : simpleNVector v = 0 := by
+      ext α
+      simp only [simpleNVector_apply]
+      exact α.toAlternatingMap.map_linearDependent v h
+    rw [hpush, h0, smul_zero]
+  refine ⟨hli, ?_⟩
+  -- (ii): the Gram–Schmidt orthonormalization `σ` of `Aτ` spans the same space.
+  set σ := InnerProductSpace.gramSchmidtNormed ℝ v
+  have hσ : Orthonormal ℝ σ := InnerProductSpace.gramSchmidtNormed_orthonormal hli
+  have hspan : Submodule.span ℝ (range σ) = Submodule.span ℝ (range v) :=
+    (InnerProductSpace.span_gramSchmidtNormed_range v).trans
+      (InnerProductSpace.span_gramSchmidt ℝ v)
+  refine ⟨σ, hσ, hspan, ?_⟩
+  -- `Aτᵢ = ∑ⱼ Bᵢⱼ σⱼ`, so `Aτ₁ ∧ ⋯ ∧ Aτₙ = det B • σ₁ ∧ ⋯ ∧ σₙ`.
+  have hmem : ∀ i, v i ∈ Submodule.span ℝ (range σ) := by
+    intro i
+    rw [hspan]
+    exact Submodule.subset_span ⟨i, rfl⟩
+  obtain ⟨B, hB⟩ : ∃ B : Matrix (Fin n) (Fin n) ℝ, ∀ i, ∑ j, B i j • σ j = v i := by
+    choose B hB using fun i => (Submodule.mem_span_range_iff_exists_fun ℝ).mp (hmem i)
+    exact ⟨B, hB⟩
+  have hdet := hsna.2 Q n B σ
+  rw [show (fun i => ∑ j, B i j • σ j) = v from funext hB] at hdet
+  have hpush' : nVectorPushforward n A w = (ε * B.det) • simpleNVector σ := by
+    rw [hpush, hdet, smul_smul]
+  -- `‖σ₁ ∧ ⋯ ∧ σₙ‖ = 1`, so `‖A_# w‖ = |ε det B|`; the sign of `ε det B` decides the case.
+  have hnorm : ‖nVectorPushforward n A w‖ = |ε * B.det| := by
+    rw [hpush', hnorm_smul, (Submission.lpf_pi_simple_unit_facts hsna).1 Q n σ hσ, mul_one]
+  rcases le_or_gt 0 (ε * B.det) with h | h
+  · left
+    rw [hnorm, abs_of_nonneg h]
+    exact hpush'
+  · right
+    rw [hnorm, abs_of_neg h, hpush']
+    ext α
+    show (ε * B.det) * simpleNVector σ α = -(-(ε * B.det) * simpleNVector σ α)
+    ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
