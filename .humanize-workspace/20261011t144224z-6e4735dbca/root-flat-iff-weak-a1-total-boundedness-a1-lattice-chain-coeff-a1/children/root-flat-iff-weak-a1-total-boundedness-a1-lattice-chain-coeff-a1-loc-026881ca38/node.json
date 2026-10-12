@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.lattice_chain_coeff-a1.local_isolating_form-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.lattice_chain_coeff-a1",
+  "depth": 4,
+  "title": "Localized isolating test form at a point of a lattice face",
+  "statement": "Let n, N ∈ ℕ, ρ > 0, F₀ = (z, α) ∈ LatticeFaceIndex n N, x ∈ latticeFace ρ F₀, and W ⊆ ℝ^N open with x ∈ W. Then there is a test form ω ∈ TestFormOn univ n (a C^∞ compactly supported n-form on ℝ^N) with three properties. (1) tsupport ω ⊆ W. (2) latticeFaceAction ρ F ω = 0 for every face index F ≠ F₀. (3) latticeFaceAction ρ F₀ ω > 0. Here latticeFaceAction ρ F ω = ∫_{latticeFace ρ F} ω(y)(e_{F.2(0)}, …, e_{F.2(n−1)}) dH^n(y), with e_a = EuclideanSpace.single a 1 and H^n = μHE[n].",
+  "lean_statement": "∀ (n N : ℕ) (ρ : ℝ) (F₀ : LatticeFaceIndex n N) (x : Eucl N) (W : Set (Eucl N)), 0 < ρ → x ∈ latticeFace ρ F₀ → IsOpen W → x ∈ W → ∃ ω : TestFormOn (univ : Set (Eucl N)) n, tsupport (ω : DifferentialForm (Eucl N) n) ⊆ W ∧ (∀ F : LatticeFaceIndex n N, F ≠ F₀ → latticeFaceAction ρ F (ω : DifferentialForm (Eucl N) n) = 0) ∧ 0 < latticeFaceAction ρ F₀ (ω : DifferentialForm (Eucl N) n)",
+  "lean_name": "fiw_tb_lcc_local_isolating_form",
+  "depends_on": [
+    "root.isoperimetric-a1.lattice_mass_lower_bound-a1.coord_covector-a1",
+    "root.isoperimetric-a1.lattice_mass_lower_bound-a1.face_cutoff-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1.lattice_chain_coeff-a1.face_integral_pos-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1.coord_covector-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-lattice-mass-lower-bound-a1-coord-covector-a1-a1",
+      "result_commit": "3d98b1871057eeff6b4d78f84c5665e21780c082",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1.face_cutoff-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-lattice-mass-lower-bound-a1-face-cutoff-a1-a1",
+      "result_commit": "b27494a624bd7cb016c2462cf743040f38ce4183",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.lattice_chain_coeff-a1.face_integral_pos-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-lattice-chain-coeff-a1-loc-026881ca38-a1"
+}
