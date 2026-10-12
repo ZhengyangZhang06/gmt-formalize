@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.c1_approximation-a1.scalar_c1_approximation-a1",
+  "parent_id": "root.c1_approximation-a1",
+  "depth": 2,
+  "title": "C¹ approximation of real-valued Lipschitz functions (Simon Ch. 2, Theorem 1.5)",
+  "statement": "For all n ∈ ℕ, K ≥ 0, every K-Lipschitz function f : ℝⁿ → ℝ (ℝⁿ = EuclideanSpace ℝ (Fin n)) and every ε ∈ (0, ∞], there is a function g : ℝⁿ → ℝ of class C¹ such that Lⁿ({x : f(x) ≠ g(x) or Df(x) ≠ Dg(x)}) < ε, where D is Mathlib's Fréchet derivative fderiv (0 at points of non-differentiability).",
+  "lean_statement": "∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → ℝ, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε",
+  "lean_name": "lipschitz_real_c1_approximation",
+  "depends_on": [
+    "root.c1_approximation-a1.lusin_sigma_finite-a1",
+    "root.c1_approximation-a1.uniform_remainder-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.c1_approximation-a1.lusin_sigma_finite-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.c1_approximation-a1.uniform_remainder-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-c1-approximation-a1-scalar-c1-approximation-a1-a1"
+}
