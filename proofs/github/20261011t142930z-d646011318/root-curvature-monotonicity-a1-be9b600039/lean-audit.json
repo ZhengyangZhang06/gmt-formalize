@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "a87a713c6bd5df4d8f7c23ed78708aeb6da58df8791ad85cdab4ec3af2c23035",
+  "git_delta": {
+    "base_commit": "d2ac002f115e572a2287527326bec874e03cc5aa",
+    "candidate_commit": "355108a3e5c2b760b43ad6c1bcc08d9fa86aafb2",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "261510b7134ca8511fa04fe20eab7ac308152a29bf46ff2b7ed9f179252bdff6",
+    "source_sha256": "5a58b1c286239c95d508bba7d2710eea96a094b7d3f49d2d1110915a3f9ba92b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mean_curvature_monotonicity",
+      "statement": "(∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
