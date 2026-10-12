@@ -1194,6 +1194,25 @@ theorem Submission.whitney_jet_gluing_c1 : (∀ (n : ℕ) (A : Set (Rn n)) (h : 
     · exact hcontA x hx
     · exact (hloc x hx).1.continuousAt_fderiv (by norm_num)
 
+/-- **Simon Ch. 2, Theorem 1.6 (pp. 42–43), Whitney extension** (DAG node
+`root.whitney_extension-a1`). If `A = ∅` take `g = 0`. Otherwise take a Whitney partition of
+unity `φᵢ` of `ℝⁿ \ A` with anchors `pᵢ ∈ A` (`Submission.whitney_smooth_partition_of_unity`),
+put `g = h` on `A` and `g = ∑ᶠ i, φᵢ · (h(pᵢ) + ⟨ν(pᵢ), · - pᵢ⟩)` off `A`, and conclude by the
+`C¹` gluing lemma `Submission.whitney_jet_gluing_c1`. -/
+theorem Submission.whitney_extension_theorem : WhitneyExtension := by
+  intro n A h ν hA _ hν hW
+  rcases A.eq_empty_or_nonempty with rfl | hne
+  · exact ⟨fun _ ↦ 0, contDiff_const, fun x hx ↦ absurd hx (notMem_empty x)⟩
+  obtain ⟨ι, φ, p, C, M, hC, hM, hp, hφ, hφ0, hloc, hsum, hanchor, hdφ⟩ :=
+    Submission.whitney_smooth_partition_of_unity n A hA hne
+  classical
+  let g : Rn n → ℝ := fun x ↦
+    if x ∈ A then h x else ∑ᶠ i, φ i x * (h (p i) + inner ℝ (ν (p i)) (x - p i))
+  have hgA : ∀ x ∈ A, g x = h x := fun x hx ↦ ite_eq_left hx
+  obtain ⟨hg, hDg⟩ := Submission.whitney_jet_gluing_c1 n A h ν ι φ p C M g hA hν hW hC hM hp hφ
+    hφ0 hloc hsum hanchor hdφ hgA fun x hx ↦ ite_eq_right hx
+  exact ⟨g, hg, fun x hx ↦ ⟨hgA x hx, hDg x hx⟩⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
