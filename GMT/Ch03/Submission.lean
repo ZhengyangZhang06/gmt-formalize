@@ -335,6 +335,41 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Dominated convergence for pairings with a function integrable on a ball**: the limit step of
+the `L¹`-duality argument in the compactness theorem (Simon Ch. 2, Thm. 2.6) as used in the proof
+of Ch. 3, Thm. 4.3. If `w` is integrable on `B = B_R(0)` and the a.e.-strongly measurable `ψ_j`
+satisfy `|ψ_j| ≤ 1`, vanish off `B` and converge a.e. to `s`, then `∫ w ψ_j → ∫ w s`. Dominated
+convergence with the integrable bound `1_B |w|`; `w ψ_j = 1_B (w ψ_j)` is a.e.-strongly measurable
+because `w` is on `B`. No measurability of `s` is needed, and `R ≤ 0` (`B = ∅`) is not special. -/
+theorem Submission.indCompact_l1Dual_tendsto_integral_mul : ∀ (N : ℕ) (w s : Rn N → ℝ) (R : ℝ)
+    (ψ : ℕ → Rn N → ℝ), IntegrableOn w (Metric.ball (0 : Rn N) R) volume →
+    (∀ j, AEStronglyMeasurable (ψ j) volume) → (∀ j y, |ψ j y| ≤ 1) →
+    (∀ j y, y ∉ Metric.ball (0 : Rn N) R → ψ j y = 0) →
+    (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ ψ j y) atTop (𝓝 (s y))) →
+    Tendsto (fun j ↦ ∫ y, w y * ψ j y) atTop (𝓝 (∫ y, w y * s y)) := by
+  intro N w s R ψ hw hψm hψ1 hψ0 hlim
+  have hB : MeasurableSet (Metric.ball (0 : Rn N) R) := Metric.isOpen_ball.measurableSet
+  -- Off the ball every `w ψ_j` vanishes, so `w ψ_j = 1_B (w ψ_j)`.
+  have hind : ∀ j, (fun y ↦ w y * ψ j y) = (Metric.ball (0 : Rn N) R).indicator
+      fun y ↦ w y * ψ j y := fun j ↦ funext fun y ↦ by
+    by_cases hy : y ∈ Metric.ball (0 : Rn N) R
+    · rw [indicator_of_mem hy]
+    · rw [indicator_of_notMem hy, hψ0 j y hy, mul_zero]
+  refine tendsto_integral_of_dominated_convergence ((Metric.ball (0 : Rn N) R).indicator
+      fun y ↦ ‖w y‖) (fun j ↦ ?_) ((integrable_indicator_iff hB).2 hw.norm)
+      (fun j ↦ ae_of_all _ fun y ↦ ?_) ?_
+  · -- Measurability: `w` is a.e.-strongly measurable on the ball.
+    rw [hind j, aestronglyMeasurable_indicator_iff hB]
+    exact hw.aestronglyMeasurable.mul (hψm j).restrict
+  · -- Domination by `1_B |w|`.
+    by_cases hy : y ∈ Metric.ball (0 : Rn N) R
+    · rw [indicator_of_mem hy, norm_mul]
+      exact mul_le_of_le_one_right (norm_nonneg _) ((Real.norm_eq_abs _).trans_le (hψ1 j y))
+    · rw [indicator_of_notMem hy, hψ0 j y hy, mul_zero, norm_zero]
+  · -- Pointwise a.e. convergence.
+    filter_upwards [hlim] with y hy
+    exact hy.const_mul (w y)
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
