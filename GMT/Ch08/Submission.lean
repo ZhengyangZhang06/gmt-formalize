@@ -764,6 +764,41 @@ theorem Submission.intcpt_allard_first_variation_le_sup_mul :
           have hz : X x = 0 := image_eq_zero_of_notMem_tsupport fun h ↦ hxK (hXK h)
           simp only [hz, inner_zero_right, enorm_zero, indicator_of_notMem hxK, le_refl]
     _ = ENNReal.ofReal B * μ K := lintegral_indicator_const hK.measurableSet _
+/-- The tangential divergence of the radial-type field `Y(w) = a(w) (w - y)` (the pointwise
+computation behind Simon Ch. 8, 3.2–3.5): if `a` is differentiable at `z`, then
+`div_S Y(z) = n a(z) + Da(z)[p_S(z - y)]`, via `DY(z) = a(z) id + Da(z) ⊗ (z - y)`,
+`div_S Y(z) = trace (p_S ∘ DY(z))`, `trace p_S = n` and `trace (ℓ ⊗ u) = ℓ(u)`. -/
+theorem Submission.intcpt_allard_radial_field_divergence :
+    ∀ (N n : ℕ) (a : Euclidean N → ℝ) (y z : Euclidean N) (S : Grassmannian N n), DifferentiableAt ℝ a z → Varifold.tangentialDivergence (fun w ↦ a w • (w - y)) z S = n * a z + fderiv ℝ a z (Grassmannian.project S (z - y)) := by
+  intro N n a y z S ha
+  -- Step 1: the product rule, `DY(z) = a(z) • id + Da(z).smulRight (z - y)`.
+  have hD : fderiv ℝ (fun w ↦ a w • (w - y)) z =
+      a z • ContinuousLinearMap.id ℝ (Euclidean N) + (fderiv ℝ a z).smulRight (z - y) := by
+    have hsub : DifferentiableAt ℝ (fun w : Euclidean N ↦ w - y) z :=
+      differentiableAt_fun_id.sub_const y
+    rw [fderiv_fun_smul ha hsub, fderiv_sub_const, fderiv_fun_id]
+  -- Step 2: `div_S Y(z) = trace (S.1 * jacobian Y z) = trace (p_S ∘ DY(z))`, since `S.1` and
+  -- `jacobian Y z` are the matrices of `p_S` and `DY(z)` in the standard basis.
+  have htr : Varifold.tangentialDivergence (fun w ↦ a w • (w - y)) z S =
+      LinearMap.trace ℝ (Euclidean N)
+        (S.projectionLinearMap ∘ₗ (fderiv ℝ (fun w ↦ a w • (w - y)) z).toLinearMap) := by
+    rw [Varifold.tangentialDivergence, LinearMap.trace_eq_matrix_trace ℝ
+      Grassmannian.coordinateBasis.toBasis, LinearMap.toMatrix_comp
+      Grassmannian.coordinateBasis.toBasis Grassmannian.coordinateBasis.toBasis
+      Grassmannian.coordinateBasis.toBasis, Grassmannian.toMatrix_projectionLinearMap,
+      Varifold.jacobian_eq_toMatrix]
+  -- Step 3: `p_S ∘ DY(z) = a(z) • p_S + Da(z).smulRight (p_S (z - y))`.
+  have hcomp : S.projectionLinearMap ∘ₗ (fderiv ℝ (fun w ↦ a w • (w - y)) z).toLinearMap =
+      a z • S.projectionLinearMap +
+        (fderiv ℝ a z).toLinearMap.smulRight (Grassmannian.project S (z - y)) := by
+    ext v
+    simp [hD, Grassmannian.project]
+  -- Step 4: `trace p_S = trace S.1 = n` and `trace (ℓ.smulRight u) = ℓ u`.
+  have hP : LinearMap.trace ℝ (Euclidean N) S.projectionLinearMap = n := by
+    rw [LinearMap.trace_eq_matrix_trace ℝ Grassmannian.coordinateBasis.toBasis,
+      Grassmannian.toMatrix_projectionLinearMap, Grassmannian.trace_eq]
+  rw [htr, hcomp, map_add, map_smul, hP, LinearMap.trace_smulRight, smul_eq_mul, mul_comm,
+    ContinuousLinearMap.coe_coe]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
