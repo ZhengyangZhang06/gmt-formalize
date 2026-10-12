@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "506c7eb0738042e99256944c94763f8a0bacbd40e1a66d9958cf827b583682f9",
+  "git_delta": {
+    "base_commit": "3f83dcac738295d1d6c8de6d92e9126fcc2d5755",
+    "candidate_commit": "ff7dd36575cd16d340434149684ac70392d09e49",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_mw_tfa_continuous_approx",
+    "diff_sha256": "a8f62596e3178da6e7641d56248882378dd882e6654970a2b2e82a3fea5a459b",
+    "source_sha256": "7536fc539c88fcf07a63cbf50d80a7eb3b9f4ef9b593f3ec5e7464931588511b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_mw_tfa_continuous_approx",
+      "statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (β : Euclid P → Covector (Euclid P) n), IsFiniteMeasure ν → Integrable β ν → (∀ᵐ x ∂ν, covectorEuclideanNorm (β x) ≤ 1) → ∀ δ : ℝ, 0 < δ → ∃ g : Euclid P → Covector (Euclid P) n, Continuous g ∧ HasCompactSupport g ∧ (∀ x, covectorEuclideanNorm (g x) ≤ 1) ∧ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (g x - β x)) ∂ν < ENNReal.ofReal δ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
