@@ -400,6 +400,93 @@ theorem Submission.gram_operator_isUnit_of_injective : ∀ (n N : ℕ) (A : Rn n
   -- Step 4: the unit `e.toUnit` of `ℝⁿ →L[ℝ] ℝⁿ` has underlying map `G`.
   exact ⟨e.toUnit, ContinuousLinearMap.ext fun v ↦ rfl⟩
 
+/-- **Mean curvature through the Gram operator of a chart** (Simon Ch. 2, 4.27, at one point). Let
+`A : ℝⁿ → ℝᴺ` be injective with `T_y M = range A` and `S` bilinear with `B_y(A a, A b) = S(a, b)^⊥`.
+With `G = A* ∘ A`, a unit by `Submission.gram_operator_isUnit_of_injective`, and `(eₖ)` the
+standard basis of `ℝⁿ`, `H(y) = (∑ₖ,ₗ ⟨eₖ, G⁻¹ eₗ⟩ S(eₖ, eₗ))^⊥`. Choose `aᵢ` with `A aᵢ = τᵢ`;
+then `H(y) = (∑ᵢ S(aᵢ, aᵢ))^⊥`, since `v ↦ v^⊥ = (I - P) v` is linear. The adjoint identity gives
+`⟨eₖ, aᵢ⟩ = ⟨A G⁻¹ eₖ, τᵢ⟩`, so Parseval in `T_y M` gives
+`∑ᵢ ⟨eₖ, aᵢ⟩⟨eₗ, aᵢ⟩ = ⟨A G⁻¹ eₖ, A G⁻¹ eₗ⟩ = ⟨eₖ, G⁻¹ eₗ⟩`; expanding each `aᵢ` in the standard
+basis and using the bilinearity of `S` finishes the proof. -/
+theorem Submission.mean_curvature_eq_normalPart_gram_trace : ∀ (n N : ℕ) (M : Set (Rn N)) (y : Rn N) (A : Rn n →L[ℝ] Rn N) (S : Rn n →L[ℝ] Rn n →L[ℝ] Rn N), Function.Injective A → tangentSpace M y = LinearMap.range A.toLinearMap → (∀ a b : Rn n, secondFundamentalForm M y (A a) (A b) = normalPart M y (S a b)) → meanCurvature M y = normalPart M y (∑ k : Fin n, ∑ l : Fin n, inner ℝ (EuclideanSpace.single k (1 : ℝ)) (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) (EuclideanSpace.single l (1 : ℝ))) • S (EuclideanSpace.single k (1 : ℝ)) (EuclideanSpace.single l (1 : ℝ))) := by
+  intro n N M y A S hA hT hB
+  set G : Rn n →L[ℝ] Rn n := ContinuousLinearMap.adjoint A ∘L A
+  -- Step 1: `G` is a unit of `ℝⁿ →L[ℝ] ℝⁿ`, whose multiplication is composition, so
+  -- `G (G⁻¹ v) = v`; by the adjoint identity, `⟨G u, w⟩ = ⟨A u, A w⟩`.
+  have hGGi : ∀ v : Rn n, G (Ring.inverse G v) = v := fun v ↦ by
+    rw [← mul_apply_eq_comp,
+      Ring.mul_inverse_cancel _ (Submission.gram_operator_isUnit_of_injective n N A hA),
+      one_apply_eq_self]
+  have hGinner : ∀ u w : Rn n, inner ℝ (G u) w = inner ℝ (A u) (A w) := fun u w ↦
+    ContinuousLinearMap.adjoint_inner_left A w (A u)
+  -- Step 2: preimages `aᵢ` of the frame vectors `τᵢ ∈ T_y M = range A`.
+  have hτ : ∀ i, ∃ a : Rn n, A a = tangentFrame M y i := fun i ↦ by
+    have hi : tangentFrame M y i ∈ tangentSpace M y :=
+      ((stdOrthonormalBasis ℝ (tangentSpace M y)) i).2
+    rw [hT] at hi
+    exact LinearMap.mem_range.mp hi
+  choose a ha using hτ
+  -- Step 3: `H(y) = ∑ᵢ B(A aᵢ, A aᵢ) = (∑ᵢ S(aᵢ, aᵢ))^⊥`, as `w ↦ w^⊥` is the linear map `I - P`.
+  have hnp : ∀ v, normalPart M y v =
+      (ContinuousLinearMap.id ℝ (Rn N) - tangentProjection M y) v := fun v ↦ rfl
+  have hH : meanCurvature M y = normalPart M y (∑ i, S (a i) (a i)) := by
+    rw [hnp, map_sum]
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
+    rw [← ha i, hB, hnp]
+  rw [hH]
+  congr 1
+  -- Step 4: `⟨eₖ, aᵢ⟩ = ⟨G (G⁻¹ eₖ), aᵢ⟩ = ⟨A G⁻¹ eₖ, τᵢ⟩`.
+  have hcoord : ∀ k i, inner ℝ (EuclideanSpace.single k (1 : ℝ)) (a i) =
+      inner ℝ (A (Ring.inverse G (EuclideanSpace.single k (1 : ℝ)))) (tangentFrame M y i) := by
+    intro k i
+    rw [← ha i, ← hGinner, hGGi]
+  -- Step 5: Parseval in `T_y M` for `uₖ = A G⁻¹ eₖ ∈ T_y M`:
+  -- `∑ᵢ ⟨eₖ, aᵢ⟩⟨eₗ, aᵢ⟩ = ⟨uₖ, uₗ⟩ = ⟨G G⁻¹ eₖ, G⁻¹ eₗ⟩ = ⟨eₖ, G⁻¹ eₗ⟩`.
+  have hmem : ∀ v, A v ∈ tangentSpace M y := fun v ↦ by
+    rw [hT]
+    exact LinearMap.mem_range_self _ v
+  have hgram : ∀ k l, ∑ i, inner ℝ (EuclideanSpace.single k (1 : ℝ)) (a i) *
+      inner ℝ (EuclideanSpace.single l (1 : ℝ)) (a i) =
+      inner ℝ (EuclideanSpace.single k (1 : ℝ))
+        (Ring.inverse G (EuclideanSpace.single l (1 : ℝ))) := by
+    intro k l
+    have hP := (stdOrthonormalBasis ℝ (tangentSpace M y)).sum_inner_mul_inner
+      ⟨_, hmem (Ring.inverse G (EuclideanSpace.single k (1 : ℝ)))⟩
+      ⟨_, hmem (Ring.inverse G (EuclideanSpace.single l (1 : ℝ)))⟩
+    simp only [Submodule.coe_inner] at hP
+    rw [← hGGi (EuclideanSpace.single k (1 : ℝ)), hGinner, ← hP]
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
+    rw [hGGi, hcoord k i, hcoord l i,
+      real_inner_comm (tangentFrame M y i) (A (Ring.inverse G (EuclideanSpace.single l (1 : ℝ))))]
+    rfl
+  -- Step 6: `v = ∑ₖ ⟨eₖ, v⟩ eₖ`, so by bilinearity `S(v, v) = ∑ₖ,ₗ ⟨eₖ, v⟩⟨eₗ, v⟩ S(eₖ, eₗ)`.
+  have hexp : ∀ v : Rn n, S v v = ∑ k : Fin n, ∑ l : Fin n,
+      (inner ℝ (EuclideanSpace.single k (1 : ℝ)) v *
+        inner ℝ (EuclideanSpace.single l (1 : ℝ)) v) •
+        S (EuclideanSpace.single k (1 : ℝ)) (EuclideanSpace.single l (1 : ℝ)) := by
+    intro v
+    have hv : ∑ k : Fin n, inner ℝ (EuclideanSpace.single k (1 : ℝ)) v •
+        EuclideanSpace.single k (1 : ℝ) = v := by
+      simpa only [EuclideanSpace.basisFun_apply] using
+        (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr' v
+    conv_lhs => rw [← hv]
+    simp only [map_sum, map_smul, sum_apply, smul_apply, Finset.smul_sum, smul_smul]
+    rw [Finset.sum_comm]
+    exact Finset.sum_congr rfl fun k _ ↦ Finset.sum_congr rfl fun l _ ↦ by rw [mul_comm]
+  -- Summing over `i` and exchanging the finite sums, the coefficients are those of step 5.
+  calc ∑ i, S (a i) (a i)
+      = ∑ i, ∑ k : Fin n, ∑ l : Fin n, (inner ℝ (EuclideanSpace.single k (1 : ℝ)) (a i) *
+          inner ℝ (EuclideanSpace.single l (1 : ℝ)) (a i)) •
+            S (EuclideanSpace.single k (1 : ℝ)) (EuclideanSpace.single l (1 : ℝ)) :=
+        Finset.sum_congr rfl fun i _ ↦ hexp (a i)
+    _ = ∑ k : Fin n, ∑ l : Fin n, (∑ i, inner ℝ (EuclideanSpace.single k (1 : ℝ)) (a i) *
+          inner ℝ (EuclideanSpace.single l (1 : ℝ)) (a i)) •
+            S (EuclideanSpace.single k (1 : ℝ)) (EuclideanSpace.single l (1 : ℝ)) := by
+        simp only [Finset.sum_smul]
+        rw [Finset.sum_comm]
+        exact Finset.sum_congr rfl fun k _ ↦ Finset.sum_comm
+    _ = _ := by simp only [hgram]
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
