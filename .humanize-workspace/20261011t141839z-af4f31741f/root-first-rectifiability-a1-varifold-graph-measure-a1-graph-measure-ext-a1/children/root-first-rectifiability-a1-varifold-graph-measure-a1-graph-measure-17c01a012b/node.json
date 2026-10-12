@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.graph_measure_ext-a1.prod_measure_ext_rectangles-a1",
+  "parent_id": "root.first_rectifiability-a1.varifold_graph_measure-a1.graph_measure_ext-a1",
+  "depth": 4,
+  "title": "Measures on X × Y that agree on rectangles with μ-finite base are equal (μ σ-finite, ρ₁ finite on μ-finite cylinders)",
+  "statement": "Let X, Y be measurable spaces, μ a σ-finite measure on X, and ρ₁, ρ₂ measures on X × Y with the product σ-algebra. Suppose (F) ρ₁(A × Y) ≠ ∞ for every measurable A ⊆ X with μ(A) ≠ ∞, and (R) ρ₁(A × B) = ρ₂(A × B) for every measurable A ⊆ X with μ(A) ≠ ∞ and every measurable B ⊆ Y. Then ρ₁ = ρ₂.",
+  "lean_statement": "∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] (μ : Measure X) (ρ₁ ρ₂ : Measure (X × Y)), SigmaFinite μ → (∀ A : Set X, MeasurableSet A → μ A ≠ ∞ → ρ₁ (A ×ˢ (univ : Set Y)) ≠ ∞) → (∀ (A : Set X) (B : Set Y), MeasurableSet A → MeasurableSet B → μ A ≠ ∞ → ρ₁ (A ×ˢ B) = ρ₂ (A ×ˢ B)) → ρ₁ = ρ₂",
+  "lean_name": "frt_vgm_ext_prod_of_finite_rectangles",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-varifold-graph-measure-a1-graph-measure-17c01a012b-a1"
+}

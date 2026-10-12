@@ -908,6 +908,149 @@ theorem Submission.frt_vgm_measurable_plane_selection :
       tendsto_one_div_add_atTop_nhds_zero_nat
       (Eventually.of_forall fun k ↦ by simp only [Set.mem_Ioi, ρ]; positivity)
   exact (hT (e i j)).comp hρ
+/-- A finite Borel measure on a pseudo-metrizable space is determined by the lower integrals of
+nonnegative continuous functions (the uniqueness step behind "from the arbitrariness of `A` and `β`
+it then easily follows" in the proof of Simon Ch. 8, 1.2, p. 208): each closed `F` is approximated
+by `max 0 (1 - (j + 1) d(·, F))`, and closed sets form a π-system generating the Borel σ-algebra. -/
+theorem Submission.frt_vgm_ext_finite_of_lintegral_continuous :
+    ∀ (X : Type) [TopologicalSpace X] [TopologicalSpace.PseudoMetrizableSpace X] [MeasurableSpace X] [BorelSpace X] (m₁ m₂ : Measure X), IsFiniteMeasure m₁ → (∀ β : C(X, ℝ), (∀ x, 0 ≤ β x) → ∫⁻ x, ENNReal.ofReal (β x) ∂m₁ = ∫⁻ x, ENNReal.ofReal (β x) ∂m₂) → m₁ = m₂ := by
+  intro X _ _ _ _ m₁ m₂ h₁ hβ
+  -- Step 1: a pseudometric `d` inducing the topology of `X`.
+  let : PseudoMetricSpace X := TopologicalSpace.pseudoMetrizableSpacePseudoMetric X
+  -- Step 2: testing with `β ≡ 1`, `m₁ X = m₂ X`, so `m₂` is finite as well.
+  have huniv : m₁ univ = m₂ univ := by
+    simpa using hβ (ContinuousMap.const X 1) fun _ ↦ zero_le_one
+  have h₂ : IsFiniteMeasure m₂ := ⟨huniv ▸ measure_lt_top m₁ univ⟩
+  -- Step 3: `m₁ F = m₂ F` for every closed `F`.
+  have hclosed : ∀ F : Set X, IsClosed F → m₁ F = m₂ F := by
+    intro F hF
+    -- (a) `F = ∅`.
+    rcases F.eq_empty_or_nonempty with rfl | hFne
+    · simp
+    -- (b)–(c) with `d_F = infDist · F` continuous, the cutoffs `β_j = max 0 (1 - (j + 1) d_F)`
+    -- are continuous and `0 ≤ β_j ≤ 1`.
+    let β : ℕ → C(X, ℝ) := fun j ↦
+      ⟨fun x ↦ max 0 (1 - ((j : ℝ) + 1) * infDist x F),
+        continuous_const.max (continuous_const.sub (continuous_const.mul (continuous_infDist_pt F)))⟩
+    have hβ0 : ∀ j x, 0 ≤ β j x := fun j x ↦ le_max_left _ _
+    have hβ1 : ∀ j x, ENNReal.ofReal (β j x) ≤ 1 := by
+      intro j x
+      refine ENNReal.ofReal_le_one.2 (max_le zero_le_one ?_)
+      have : 0 ≤ ((j : ℝ) + 1) * infDist x F := mul_nonneg (by positivity) infDist_nonneg
+      linarith
+    have hmeas : ∀ j, Measurable fun x ↦ ENNReal.ofReal (β j x) :=
+      fun j ↦ ENNReal.measurable_ofReal.comp (β j).continuous.measurable
+    -- (d) `ofReal ∘ β_j → 1_F` pointwise.
+    have hlim : ∀ x, Tendsto (fun j ↦ ENNReal.ofReal (β j x)) atTop (𝓝 (F.indicator 1 x)) := by
+      intro x
+      by_cases hx : x ∈ F
+      · have h1 : ∀ j, ENNReal.ofReal (β j x) = 1 := by
+          intro j
+          show ENNReal.ofReal (max 0 (1 - ((j : ℝ) + 1) * infDist x F)) = 1
+          simp [infDist_zero_of_mem hx]
+        simp only [h1, indicator_of_mem hx, Pi.one_apply]
+        exact tendsto_const_nhds
+      · have hpos : 0 < infDist x F := (hF.notMem_iff_infDist_pos hFne).1 hx
+        obtain ⟨j₀, hj₀⟩ := exists_nat_gt (infDist x F)⁻¹
+        rw [indicator_of_notMem hx]
+        refine tendsto_atTop_of_eventually_const (i₀ := j₀) fun j hj ↦ ?_
+        have hj' : (j₀ : ℝ) ≤ j := by exact_mod_cast hj
+        have h1 : 1 < ((j : ℝ) + 1) * infDist x F := by
+          calc (1 : ℝ) = (infDist x F)⁻¹ * infDist x F := (inv_mul_cancel₀ hpos.ne').symm
+            _ < ((j : ℝ) + 1) * infDist x F := mul_lt_mul_of_pos_right (by linarith) hpos
+        show ENNReal.ofReal (max 0 (1 - ((j : ℝ) + 1) * infDist x F)) = 0
+        rw [max_eq_left (by linarith), ENNReal.ofReal_zero]
+    -- (e) dominated convergence with the bound `1` for a finite measure.
+    have key : ∀ m : Measure X, IsFiniteMeasure m →
+        Tendsto (fun j ↦ ∫⁻ x, ENNReal.ofReal (β j x) ∂m) atTop (𝓝 (m F)) := by
+      intro m hm
+      have := tendsto_lintegral_of_dominated_convergence (μ := m) (fun _ ↦ 1) hmeas
+        (fun j ↦ ae_of_all _ (hβ1 j)) (by simp) (ae_of_all _ hlim)
+      rwa [lintegral_indicator_one hF.measurableSet] at this
+    -- (f) uniqueness of limits.
+    exact tendsto_nhds_unique (key m₁ h₁)
+      ((key m₂ h₂).congr fun j ↦ (hβ (β j) (hβ0 j)).symm)
+  -- Step 4: closed sets form a π-system generating the Borel σ-algebra.
+  refine ext_of_generate_finite {s | IsClosed s} ?_ isPiSystem_isClosed hclosed huniv
+  rw [BorelSpace.measurable_eq (α := X), borel_eq_generateFrom_isClosed]
+/-- Uniqueness of measures on `X × Y` from rectangles with `μ`-finite base (Step 5 of the proof
+that a varifold is determined by its graph measure): if `μ` is σ-finite, `ρ₁` is finite on the
+cylinders `A × Y` with `μ(A) < ∞`, and `ρ₁`, `ρ₂` agree on the rectangles `A × B` with
+`μ(A) < ∞`, then `ρ₁ = ρ₂` (Dynkin's π-λ theorem, `Measure.ext_of_generateFrom_of_iUnion`). -/
+theorem Submission.frt_vgm_ext_prod_of_finite_rectangles :
+    ∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] (μ : Measure X) (ρ₁ ρ₂ : Measure (X × Y)), SigmaFinite μ → (∀ A : Set X, MeasurableSet A → μ A ≠ ∞ → ρ₁ (A ×ˢ (univ : Set Y)) ≠ ∞) → (∀ (A : Set X) (B : Set Y), MeasurableSet A → MeasurableSet B → μ A ≠ ∞ → ρ₁ (A ×ˢ B) = ρ₂ (A ×ˢ B)) → ρ₁ = ρ₂ := by
+  intro X Y _ _ μ ρ₁ ρ₂ hμ hfin hrect
+  -- Step 1: the spanning sets `E m` of `μ` are measurable, of finite measure, and cover `X`.
+  have hE : ∀ m, MeasurableSet (spanningSets μ m) ∧ μ (spanningSets μ m) ≠ ∞ :=
+    fun m ↦ ⟨measurableSet_spanningSets μ m, (measure_spanningSets_lt_top μ m).ne⟩
+  -- Step 2: `C` is the class of rectangles `A ×ˢ B` with `A, B` measurable and `μ A ≠ ∞`.
+  refine Measure.ext_of_generateFrom_of_iUnion
+    (image2 (· ×ˢ ·) {A : Set X | MeasurableSet A ∧ μ A ≠ ∞} {B : Set Y | MeasurableSet B})
+    (fun m ↦ spanningSets μ m ×ˢ univ) ?_ ?_ ?_ ?_ ?_ ?_
+  · -- Step 4: `C` generates the product σ-algebra.
+    refine le_antisymm (generateFrom_prod.symm.le.trans (MeasurableSpace.generateFrom_le ?_))
+      (MeasurableSpace.generateFrom_le ?_)
+    · rintro _ ⟨A, hA, B, hB, rfl⟩
+      have hAB : A ×ˢ B = ⋃ m, (A ∩ spanningSets μ m) ×ˢ B := by
+        rw [← iUnion_prod_const, ← inter_iUnion, iUnion_spanningSets, inter_univ]
+      dsimp only
+      rw [hAB]
+      exact MeasurableSet.iUnion fun m ↦ MeasurableSpace.measurableSet_generateFrom
+        ⟨A ∩ spanningSets μ m, ⟨hA.inter (hE m).1,
+          ne_top_of_le_ne_top (hE m).2 (measure_mono inter_subset_right)⟩, B, hB, rfl⟩
+    · rintro _ ⟨A, ⟨hA, -⟩, B, hB, rfl⟩
+      exact hA.prod hB
+  · -- Step 3: `C` is a π-system.
+    rintro _ ⟨A, ⟨hA, hμA⟩, B, hB, rfl⟩ _ ⟨A', ⟨hA', -⟩, B', hB', rfl⟩ -
+    rw [prod_inter_prod]
+    exact ⟨A ∩ A', ⟨hA.inter hA', ne_top_of_le_ne_top hμA (measure_mono inter_subset_left)⟩,
+      B ∩ B', hB.inter hB', rfl⟩
+  · -- Step 5: the cylinders `E m ×ˢ univ` cover `X × Y` ...
+    rw [← iUnion_prod_const, iUnion_spanningSets, univ_prod_univ]
+  · -- ... lie in `C` ...
+    exact fun m ↦ ⟨spanningSets μ m, hE m, univ, MeasurableSet.univ, rfl⟩
+  · -- ... and have finite `ρ₁`-measure.
+    exact fun m ↦ hfin _ (hE m).1 (hE m).2
+  · -- Step 6: `ρ₁` and `ρ₂` agree on `C`.
+    rintro _ ⟨A, ⟨hA, hμA⟩, B, hB, rfl⟩
+    exact hrect A B hA hB hμA
+
+/-- Graph-measure extensionality (Simon Ch. 8, proof of 1.2, p. 208: "from the arbitrariness of
+`A` and `β`"): if `∫_{Gₙ(A)} β(S) dV(y,S) = ∫_A β(τ(x)) dμ_V(x)` for every Borel `A ⊆ ℝ^N` and
+every continuous `β ≥ 0` on `G(N,n)`, then `V = (μ_V)_#(x ↦ (x, τ(x)))`. -/
+theorem Submission.frt_vgm_eq_map_graph_of_lintegral :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (τ : Euclidean N → Grassmannian N n), Measurable τ → (∀ (A : Set (Euclidean N)) (β : C(Grassmannian N n, ℝ)), MeasurableSet A → (∀ S, 0 ≤ β S) → ∫⁻ z in A ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal (β z.2) ∂V.measure = ∫⁻ x in A, ENNReal.ofReal (β (τ x)) ∂V.weight) → V.measure = V.weight.map (fun x ↦ (x, τ x)) := by
+  intro N n U V τ hτ hH
+  -- Step 1: the graph map `x ↦ (x, τ x)` is measurable.
+  have hg : Measurable fun x : Euclidean N ↦ (x, τ x) := measurable_id.prodMk hτ
+  -- Step 5: `μ_V` is σ-finite and `V(A ×ˢ G) = μ_V(A)`, so it suffices to compare `V` with
+  -- `(μ_V)_#(x ↦ (x, τ x))` on rectangles `A ×ˢ B` with `μ_V(A) < ∞`.
+  refine Submission.frt_vgm_ext_prod_of_finite_rectangles (Euclidean N) (Grassmannian N n)
+    V.weight V.measure (V.weight.map fun x ↦ (x, τ x)) inferInstance
+    (fun A hA hAfin ↦ by rwa [← V.weight_apply hA]) fun A B hA hB hAfin ↦ ?_
+  -- Step 2: the slice measures `m₁(B) = V(A ×ˢ B)` and `m₂(B) = μ_V(A ∩ τ⁻¹ B)` on `G(N,n)`.
+  have hm₁B : (V.measure.restrict (A ×ˢ univ)).map Prod.snd B = V.measure (A ×ˢ B) := by
+    rw [Measure.map_apply measurable_snd hB, Measure.restrict_apply (measurable_snd hB)]
+    congr 1
+    ext z
+    simp [and_comm]
+  have hm₂B : (V.weight.restrict A).map τ B = V.weight (A ∩ τ ⁻¹' B) := by
+    rw [Measure.map_apply hτ hB, Measure.restrict_apply (hτ hB), inter_comm]
+  -- `m₁` is finite: `m₁(G) = V(A ×ˢ G) = μ_V(A) < ∞`.
+  have hfin : IsFiniteMeasure ((V.measure.restrict (A ×ˢ univ)).map Prod.snd) := by
+    have : IsFiniteMeasure (V.measure.restrict (A ×ˢ univ)) :=
+      isFiniteMeasure_restrict.2 (by rwa [← V.weight_apply hA])
+    infer_instance
+  -- Steps 3–4: equal integrals of every continuous `β ≥ 0` force `m₁ = m₂`.
+  have hm : (V.measure.restrict (A ×ˢ univ)).map Prod.snd = (V.weight.restrict A).map τ := by
+    refine Submission.frt_vgm_ext_finite_of_lintegral_continuous (Grassmannian N n) _ _ hfin
+      fun β hβ ↦ ?_
+    have hβm : Measurable fun S ↦ ENNReal.ofReal (β S) :=
+      ENNReal.measurable_ofReal.comp β.continuous.measurable
+    rw [lintegral_map hβm measurable_snd, lintegral_map hβm hτ]
+    exact hH A β hA hβ
+  rw [← hm₁B, hm, hm₂B, Measure.map_apply hg (hA.prod hB)]
+  rfl
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
