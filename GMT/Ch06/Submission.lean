@@ -414,6 +414,48 @@ theorem Submission.slicing_mb_sa_mollify_lipschitz_close : ∀ (P : ℕ) (F : Eu
   calc ‖∫ y, ρ y * (F (x - y) - F x)‖ ≤ ∫ y, ρ y * ((L : ℝ) * σ) :=
         norm_integral_le_of_norm_le (hρi.mul_const _) (Eventually.of_forall hpt)
     _ = (L : ℝ) * σ := by rw [integral_mul_const, hρ1, one_mul]
+/-- Differentiation under the integral sign for the mollification of a globally Lipschitz `F`
+by a continuous compactly supported `ρ`: `D(∫ ρ(y) F(· - y) dy)(x) = ∫ ρ(y) DF(x - y) dy`.
+By Rademacher's theorem and the invariance of Lebesgue measure under `y ↦ x - y`, `F` is
+differentiable at `x - y` for a.e. `y`; `x' ↦ ρ(y) F(x' - y)` is `L |ρ(y)|`-Lipschitz on `ℝ^P`
+with integrable majorant `L |ρ|`, so `hasFDerivAt_integral_of_dominated_loc_of_lip` applies
+with `s = ℝ^P`. -/
+theorem Submission.slicing_mb_sa_mollify_lipschitz_hasFDerivAt :
+    ∀ (P : ℕ) (F : Eucl P → ℝ) (L : ℝ≥0), LipschitzWith L F → ∀ ρ : Eucl P → ℝ, Continuous ρ →
+      HasCompactSupport ρ → ∀ x : Eucl P,
+        HasFDerivAt (fun x' : Eucl P => ∫ y, ρ y * F (x' - y))
+          (∫ y, ρ y • fderiv ℝ F (x - y)) x := by
+  intro P F L hF ρ hρc hρs x
+  -- Rademacher, pulled back along the measure-preserving map `y ↦ x - y`.
+  have hae : ∀ᵐ y : Eucl P, DifferentiableAt ℝ F (x - y) :=
+    (Measure.measurePreserving_sub_left volume x).quasiMeasurePreserving.ae
+      hF.ae_differentiableAt
+  -- `y ↦ ρ(y) F(x' - y)` is continuous for every `x'`.
+  have hcont : ∀ x' : Eucl P, Continuous fun y : Eucl P => ρ y * F (x' - y) := fun x' =>
+    hρc.mul (hF.continuous.comp (continuous_const.sub continuous_id))
+  -- `x' ↦ ρ(y) F(x' - y)` is `L |ρ(y)|`-Lipschitz for every `y`.
+  have hlip : ∀ y : Eucl P,
+      LipschitzOnWith (Real.nnabs (L * |ρ y|)) (fun x' : Eucl P => ρ y * F (x' - y)) univ := by
+    refine fun y => (LipschitzWith.of_dist_le_mul fun a b => ?_).lipschitzOnWith
+    calc dist (ρ y * F (a - y)) (ρ y * F (b - y)) = |ρ y| * dist (F (a - y)) (F (b - y)) := by
+          rw [Real.dist_eq, Real.dist_eq, ← mul_sub, abs_mul]
+      _ ≤ |ρ y| * (L * dist (a - y) (b - y)) := by gcongr; exact hF.dist_le_mul _ _
+      _ = Real.nnabs (L * |ρ y|) * dist a b := by
+          rw [dist_sub_right, Real.coe_nnabs, abs_mul, abs_abs, NNReal.abs_eq]; ring
+  -- For a.e. `y`, the chain rule gives the derivative `ρ(y) DF(x - y)` at `x`.
+  have hderiv : ∀ᵐ y : Eucl P,
+      HasFDerivAt (fun x' : Eucl P => ρ y * F (x' - y)) (ρ y • fderiv ℝ F (x - y)) x := by
+    filter_upwards [hae] with y hy
+    have h := hy.hasFDerivAt.comp x (hasFDerivAt_sub_const (𝕜 := ℝ) (x := x) y)
+    rw [ContinuousLinearMap.comp_id] at h
+    exact h.const_mul (ρ y)
+  exact (hasFDerivAt_integral_of_dominated_loc_of_lip univ_mem
+    (Eventually.of_forall fun x' => (hcont x').aestronglyMeasurable)
+    ((hcont x).integrable_of_hasCompactSupport hρs.mul_right)
+    (hρc.measurable.smul ((measurable_fderiv ℝ F).comp
+      (measurable_const.sub measurable_id))).aestronglyMeasurable
+    (Eventually.of_forall hlip)
+    ((hρc.abs.integrable_of_hasCompactSupport hρs.abs).const_mul _) hderiv).2
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
