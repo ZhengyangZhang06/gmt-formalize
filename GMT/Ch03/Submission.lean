@@ -421,6 +421,75 @@ theorem Submission.pcoarea_flat_normDet_section : ∀ (n k N : ℕ) (A : Rn n �
   -- Step 6: `normDet(A ∘ E) normDet(S ∘ ι_K) = normDet(A ∘ ι_K) (normDet(S ∘ ι_K) normDet(E'))`.
   rw [hAE, h4, mul_right_comm, mul_assoc, ← h5, mul_one]
 
+/-- **Flat Jacobian identity**: the linear algebra behind the co-area formula 2.7–2.8 of Simon
+Ch. 3 (`chapter-03.txt` lines 411–425), which "follows from the `C¹` case". Let `n = m + k`,
+`T : ℝⁿ → WithLp 2 (ℝᵐ × ℝᵏ)` be bijective with first component `Γ` and `T (E z) = (0, z)`, and
+`K = ker Γ`. Then `normDet (A ∘ E) · normDet T = normDet (A ∘ ι_K) · normDet Γ*`.
+`Γ` is onto (as `T` is), so `dim K = k`. With `S` the second component of `T`, `E` maps into `K`
+and `S ∘ E = id`, whence `normDet (A ∘ E) · normDet (S ∘ ι_K) = normDet (A ∘ ι_K)`
+(`pcoarea_flat_normDet_section`). In the orthogonal splitting `ℝⁿ = K^⊥ ⊕ K`, `T` is block lower
+triangular, so `normDet T = normDet (Γ|_{K^⊥}) · normDet (S ∘ ι_K)`
+(`pcoarea_flat_normDet_block`). Finally `Γ*`, corestricted to `K^⊥ = range Γ*`, is the adjoint
+of the square map `Γ|_{K^⊥}` and so has the same `normDet`. No property of `A` is used. -/
+theorem Submission.pcoarea_flat_jacobian_identity : ∀ (m k N : ℕ) (A : Rn (m + k) →ₗ[ℝ] Rn N)
+    (Γ : Rn (m + k) →ₗ[ℝ] Rn m) (T : Rn (m + k) →ₗ[ℝ] WithLp 2 (Rn m × Rn k))
+    (E : Rn k →ₗ[ℝ] Rn (m + k)), Function.Bijective T → (∀ v, (T v).fst = Γ v) →
+    (∀ z, T (E z) = WithLp.toLp 2 (0, z)) →
+    (A ∘ₗ E).normDet * T.normDet =
+      (A ∘ₗ (LinearMap.ker Γ).subtype).normDet * (LinearMap.adjoint Γ).normDet := by
+  intro m k N A Γ T E hT hfst hE
+  -- Step 1: `Γ = fst ∘ T` is surjective because `T` is, so `K = ker Γ` has dimension `k`.
+  have hΓ : Function.Surjective Γ := by
+    intro y
+    obtain ⟨v, hv⟩ := hT.2 (WithLp.toLp 2 (y, 0))
+    exact ⟨v, by rw [← hfst, hv, WithLp.toLp_fst]⟩
+  have hK : finrank ℝ (LinearMap.ker Γ) = k := by
+    have h := LinearMap.finrank_range_add_finrank_ker Γ
+    rw [LinearMap.range_eq_top.mpr hΓ, finrank_top, finrank_euclideanSpace_fin,
+      finrank_euclideanSpace_fin] at h
+    omega
+  -- Step 2: `T v = (Γ v, S v)` with `S = snd ∘ T`; `E` maps into `K` and `S ∘ E = id`.
+  obtain ⟨S, hsnd⟩ : ∃ S : Rn (m + k) →ₗ[ℝ] Rn k, ∀ v, (T v).snd = S v :=
+    ⟨WithLp.sndₗ 2 ℝ (Rn m) (Rn k) ∘ₗ T, fun v ↦ rfl⟩
+  have hEK : ∀ z, E z ∈ LinearMap.ker Γ := by
+    intro z
+    rw [LinearMap.mem_ker, ← hfst, hE, WithLp.toLp_fst]
+  have hSE : ∀ z, S (E z) = z := by
+    intro z
+    rw [← hsnd, hE, WithLp.toLp_snd]
+  -- Steps 3–4: `normDet (A ∘ E) · normDet (S ∘ ι_K) = normDet (A ∘ ι_K)`.
+  have hsec := Submission.pcoarea_flat_normDet_section (m + k) k N A (LinearMap.ker Γ) S E hK
+    hEK hSE
+  -- Step 6: `normDet T = normDet (Γ|_{K^⊥}) · normDet (S ∘ ι_K)`.
+  have hblock := Submission.pcoarea_flat_normDet_block m k Γ S T hΓ hfst hsnd
+  -- Step 5: `normDet (Γ|_{K^⊥}) = normDet Γ*`.
+  have hadj : (Γ.domRestrict (LinearMap.ker Γ)ᗮ).normDet = (LinearMap.adjoint Γ).normDet := by
+    have hm : ∀ y, LinearMap.adjoint Γ y ∈ (LinearMap.ker Γ)ᗮ := by
+      intro y
+      rw [LinearMap.orthogonal_ker]
+      exact ⟨y, rfl⟩
+    have ha : (LinearMap.adjoint Γ).codRestrict (LinearMap.ker Γ)ᗮ hm =
+        LinearMap.adjoint (Γ.domRestrict (LinearMap.ker Γ)ᗮ) := by
+      apply (LinearMap.eq_adjoint_iff _ _).mpr
+      intro y x
+      exact LinearMap.adjoint_inner_left Γ x y
+    have hd : finrank ℝ (LinearMap.ker Γ)ᗮ = finrank ℝ (Rn m) := by
+      have h := Submodule.finrank_add_finrank_orthogonal (LinearMap.ker Γ)
+      rw [hK, finrank_euclideanSpace_fin] at h
+      rw [finrank_euclideanSpace_fin]
+      omega
+    classical
+    let b₁ := stdOrthonormalBasis ℝ (LinearMap.ker Γ)ᗮ
+    let b₂ := (stdOrthonormalBasis ℝ (Rn m)).reindex (finCongr hd.symm)
+    rw [← LinearMap.normDet_codRestrict hm, ha,
+      (LinearMap.adjoint _).normDet_eq_norm_det_toMatrix b₂ b₁,
+      (Γ.domRestrict _).normDet_eq_norm_det_toMatrix b₁ b₂, LinearMap.toMatrix_adjoint,
+      Matrix.det_conjTranspose]
+    simp
+  -- Step 7: combine.
+  rw [hblock, ← hsec, hadj]
+  ring
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
