@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1.rescaled_tangent_limit-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1",
+  "depth": 4,
+  "title": "Rescaled integral limit at a weighted approximate tangent space (Steps 4, 9b–9c)",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P, θ : ℝ^P → ℝ, x ∈ ℝ^P, let Q be a linear subspace of ℝ^P, and let f : ℝ^P → ℝ be continuous with compact support; write Hⁿ = μHE[n]. If HasWeightedApproximateTangentSpaceAt n M θ x Q, then (rⁿ)⁻¹ ∫_M θ(y) f(r⁻¹(y − x)) dHⁿ(y) → θ(x) ∫_Q f dHⁿ as r → 0⁺. All integrals are Bochner set integrals; no integrability or measurability of θ or M is assumed.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (Q : Submodule ℝ (Eucl P)) (f : Eucl P → ℝ), HasWeightedApproximateTangentSpaceAt n M θ x Q → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ y in M, θ y * f (r⁻¹ • (y - x)) ∂(μHE[n] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 (θ x * ∫ z in (Q : Set (Eucl P)), f z ∂(μHE[n] : Measure (Eucl P))))",
+  "lean_name": "ind_ab_rescaled_tangent_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-ae-blowup-a1-resca-f7e12f53ef-a1"
+}

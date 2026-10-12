@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ind_ab_",
+        "def blowUpMap|def HasWeightedApproximateTangentSpaceAt",
+        "abbrev NVector|def simpleNVector|simpleNVector_apply|abbrev Covector|abbrev DifferentialForm",
+        "ae_tendsto_lintegral_enorm_sub_div|protected def vitaliFamily|theorem tendsto_filterAt|instHasBesicovitchCovering",
+        "withDensity_absolutelyContinuous|setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀|theorem withDensity_apply",
+        "git show 8389acdfdd73d9fc3fa8f08ede1aff9d04d17e88:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ae-blowup-independent-audit-q7y5qbmj/Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ae-blowup-independent-audit-q7y5qbmj/Replay.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ae-blowup-independent-audit-q7y5qbmj/Instances.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-ae-blowup-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-ae-blowup-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/ae-blowup-independent-audit-q7y5qbmj/Challenge.lean",
+        "/tmp/ae-blowup-independent-audit-q7y5qbmj/Replay.lean",
+        "/tmp/ae-blowup-independent-audit-q7y5qbmj/Instances.lean"
+      ],
+      "conclusion": "Verified compatibility with project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The split is appropriate: four distinct analytic obligations and the supplied integrability/linearity assembly prove exactly ind_ae_blowup_limit. All four frozen statements are standalone one-line propositions, pass lexical validation, and elaborate before child implementations exist. Independently replayed the supplied proofs and exact-type checks for every child and the selected parent; all passed with only propext, Classical.choice and Quot.sound. Verified ENNReal division, NNReal coercion, and agreement of NVector operator norm with its extended norm. The reused change-of-variables declaration is comparator-accepted with an identical frozen type and permitted axioms. All proposed names are bare identifiers; no conflicts were found among 366 DAG nodes, other saved decompositions, the searched libraries, or 544 local branch heads. Dependencies are acyclic and correctly directed; the error lemma receives the growth and differentiation conclusions as explicit hypotheses."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "rescaled_tangent_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match, including the absence of measurability and integrability assumptions. The accepted image-integral identity applies to arbitrary sets and integrands. Packaging f, simplifying the inverse dilation, and transferring the tangent limit by eventual equality proves the exact statement without circular reliance."
+    },
+    {
+      "key": "weighted_ball_growth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are explicit and match the Lean type. The bump construction, compact-support integrability, nonnegativity, and Bochner-to-lintegral comparison establish the claimed bound with C = toNNReal(L + 1). Its sole sibling dependency, rescaled_tangent_limit, is correctly declared."
+    },
+    {
+      "key": "weighted_lebesgue_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the orientation bound, global AE measurability of θ, local finiteness and mutual absolute continuity of the weighted measure, and local integrability of ξ. Besicovitch differentiation and the weighted-integral identities give exactly the stated ENNReal quotient limit. The full-measure set is independent of Q and ω."
+    },
+    {
+      "key": "orientation_error_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit growth and quotient hypotheses match the prose and preceding conclusions. The proof correctly handles zero denominators, derives the normalized-error limit, and bounds the integral using scaled compact support and the operator norm. The unconditional Bochner integral inequality justifies omitting integrability assumptions. No undeclared sibling theorem or parent conclusion is used."
+    }
+  ],
+  "required_changes": []
+}

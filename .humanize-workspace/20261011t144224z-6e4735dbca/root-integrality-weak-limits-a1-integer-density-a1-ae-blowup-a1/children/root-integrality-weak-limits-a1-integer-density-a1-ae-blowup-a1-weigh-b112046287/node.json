@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1.weighted_lebesgue_point-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1",
+  "depth": 4,
+  "title": "Weighted Lebesgue points of the orientation of a rectifiable triple (Steps 1–3)",
+  "statement": "Let P, n ∈ ℕ, let (M, θ, ξ) satisfy IsRectifiableTriple ℝ^P n M θ ξ (with U = ℝ^P), and write Hⁿ = μHE[n]. Then for Hⁿ⌞M-a.e. x, the quotient (∫⁻_{M∩B̄_s(x)} ofReal(θ(y))‖ξ(y) − ξ(x)‖ₑ dHⁿ(y)) / (∫⁻_{M∩B̄_s(x)} ofReal(θ(y)) dHⁿ(y)) tends to 0 in [0, ∞] as s → 0⁺. The division is ENNReal division: a/0 = ∞ for a ≠ 0 and 0/0 = 0.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple (univ : Set (Eucl P)) n M θ ξ → ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), Tendsto (fun s : ℝ => (∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ ∂(μHE[n] : Measure (Eucl P))) / (∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P)))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "ind_ab_weighted_lebesgue_point",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-ae-blowup-a1-weigh-b112046287-a1"
+}
