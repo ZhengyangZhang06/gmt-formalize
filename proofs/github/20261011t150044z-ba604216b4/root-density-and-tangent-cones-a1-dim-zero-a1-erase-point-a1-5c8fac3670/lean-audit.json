@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3e891c1f91beb62a5dc273e6a2e145bf794533c2ee03984602b69c268f90e717",
+  "git_delta": {
+    "base_commit": "4b59860eb929bb72b07d8dae2e43e2c6f22aab1e",
+    "candidate_commit": "8c9d0203c42b3c83735f4d4b11da5dacd39433b9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_dim_zero_erase_point",
+    "diff_sha256": "cd862bcdabadb73d5e0d2b95e62779d20f85d01638b195b79923b12dc36e220a",
+    "source_sha256": "4d8884055955da43faadb195e165da72caf2785d9f8a15feb0ea651a02fe5cf2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_dim_zero_erase_point",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (R : IMRep U 0) (p : Euclid P), p ∈ R.carrier → ∃ R' : IMRep U 0, R'.carrier = R.carrier \\ {p} ∧ R'.mult = R.mult ∧ R'.orient = R.orient ∧ R.measure = R'.measure + (R.mult p : ℝ≥0∞) • Measure.dirac p ∧ ∀ ω : TestFormOn U 0, R.action (ω : DifferentialForm (Euclid P) 0) = R'.action (ω : DifferentialForm (Euclid P) 0) + (R.mult p : ℝ) * R.orient p ((ω : DifferentialForm (Euclid P) 0) p)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
