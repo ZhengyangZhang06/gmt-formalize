@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a5ca99377ad5fb3e0ccde0ebe46d4073d080e63630c37325a1d84b2c59312f99",
+  "git_delta": {
+    "base_commit": "d089f5f0f7229520d36125bf740aa3b79868303b",
+    "candidate_commit": "8709d14e2332778a40b68d10d7c8f5b6a946987f",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiSobIndMFL_setIntegral_fderiv_kernel_eq",
+    "diff_sha256": "6248fca623f7db79cc930bc2d3de9fe8c94b00182fedec0812c554fcdf678799",
+    "source_sha256": "2c3026453befd28d1818ed1c387a86aa391f9203ba2b82108cd3bbe7597ccceb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiSobIndMFL_setIntegral_fderiv_kernel_eq",
+      "statement": "∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → IsGaussGreenPair U G μ ν → ∀ (ρ : Rn N → ℝ) (r : ℝ) (y w : Rn N), ContDiff ℝ 1 ρ → HasCompactSupport ρ → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → Metric.closedBall y r ⊆ U → ∫ z in G, fderiv ℝ ρ (y - z) w = ∫ z, ρ (y - z) * inner ℝ w (ν z) ∂μ",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
