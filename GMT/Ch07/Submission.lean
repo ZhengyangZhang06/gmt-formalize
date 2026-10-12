@@ -451,6 +451,71 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Integration by parts for a Lipschitz function against a `C²` test function on a ball**
+(Step 0 of the harmonic approximation lemma: the integration by parts in Simon Ch. 5, Lemma 3.1,
+made explicit for Lipschitz `u` via Rademacher's theorem).  Both integrands vanish off
+`tsupport ζ ⊆ B_R`, so the ball integrals are integrals over `ℝⁿ`.  In each direction `v`,
+`g = Dζ(·)v` is `C¹` with compact support, hence Lipschitz, and Mathlib's
+`LipschitzWith.integral_lineDeriv_mul_eq` gives `∫ ∂ᵥu · g = ∫ ∂₋ᵥg · u`; by Rademacher's theorem
+`∂ᵥu = Du(·)v` a.e., and `∂₋ᵥg = −D²ζ(·)(v, v)`.  Summing over `v = eᵢ` (every term is integrable)
+gives the identity. -/
+theorem Submission.dorag_haa_lipschitz_ibp : ∀ (n : ℕ) (R : ℝ) (u ζ : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ContDiff ℝ 2 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∫ y in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ u y (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ y (EuclideanSpace.single i (1 : ℝ)) = -∫ y in ball (0 : Euclid n) R, u y * ∑ i : Fin n, iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] := by
+  intro n R u ζ L hu hζ hcs hsub
+  -- both integrands vanish off `tsupport ζ ⊆ B_R`, since `Dζ` and `D²ζ` do
+  have hD1 : ∀ y, y ∉ tsupport ζ → fderiv ℝ ζ y = 0 := fun y hy =>
+    Function.notMem_support.mp fun h => hy (support_fderiv_subset ℝ h)
+  have hD2 : ∀ y, y ∉ tsupport ζ → iteratedFDeriv ℝ 2 ζ y = 0 := fun y hy =>
+    Function.notMem_support.mp fun h => hy (support_iteratedFDeriv_subset 2 h)
+  have hout : ∀ y, y ∉ ball (0 : Euclid n) R → y ∉ tsupport ζ := fun y hy h => hy (hsub h)
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => by simp [hD1 y (hout y hy)],
+    setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => by simp [hD2 y (hout y hy)]]
+  -- `Dζ` is `C¹`
+  have hζ1 : ContDiff ℝ 1 (fderiv ℝ ζ) := hζ.fderiv_right one_add_one_eq_two.le
+  -- integrability of the terms
+  have hint1 : ∀ v : Euclid n, Integrable (fun y => fderiv ℝ u y v * fderiv ℝ ζ y v) := by
+    intro v
+    have hg : Integrable (fun y => fderiv ℝ ζ y v) :=
+      (hζ1.continuous.clm_apply continuous_const).integrable_of_hasCompactSupport
+        (hcs.fderiv_apply ℝ v)
+    refine hg.bdd_mul (c := L * ‖v‖) (measurable_fderiv_apply_const ℝ u v).aestronglyMeasurable
+      (Eventually.of_forall fun y => ?_)
+    calc ‖fderiv ℝ u y v‖ ≤ ‖fderiv ℝ u y‖ * ‖v‖ := (fderiv ℝ u y).le_opNorm v
+      _ ≤ L * ‖v‖ := by gcongr; exact norm_fderiv_le_of_lipschitz ℝ hu
+  have hint2 : ∀ v : Euclid n, Integrable (fun y => u y * iteratedFDeriv ℝ 2 ζ y ![v, v]) := by
+    intro v
+    refine Continuous.integrable_of_hasCompactSupport ?_ ?_
+    · exact hu.continuous.mul ((hζ.continuous_iteratedFDeriv le_rfl).eval_const _)
+    · refine hcs.mono' (Function.support_subset_iff'.mpr fun y hy => ?_)
+      simp [hD2 y hy]
+  -- the identity in each direction `v`
+  have key : ∀ v : Euclid n,
+      ∫ y, fderiv ℝ u y v * fderiv ℝ ζ y v = -∫ y, u y * iteratedFDeriv ℝ 2 ζ y ![v, v] := by
+    intro v
+    have hg1 : ContDiff ℝ 1 (fun y => fderiv ℝ ζ y v) := hζ1.clm_apply contDiff_const
+    have hgcs : HasCompactSupport (fun y => fderiv ℝ ζ y v) := hcs.fderiv_apply ℝ v
+    obtain ⟨C, hgC⟩ := hg1.lipschitzWith_of_hasCompactSupport hgcs one_ne_zero
+    have ibp := hu.integral_lineDeriv_mul_eq hgC hgcs v (μ := volume)
+    have lhs : ∫ y, fderiv ℝ u y v * fderiv ℝ ζ y v = ∫ y, lineDeriv ℝ u y v * fderiv ℝ ζ y v := by
+      refine integral_congr_ae ?_
+      filter_upwards [hu.ae_differentiableAt (μ := volume)] with y hy
+      rw [hy.lineDeriv_eq_fderiv]
+    have rhs : ∀ y, lineDeriv ℝ (fun y => fderiv ℝ ζ y v) y (-v) * u y =
+        -(u y * iteratedFDeriv ℝ 2 ζ y ![v, v]) := by
+      intro y
+      have hd2 : DifferentiableAt ℝ (fderiv ℝ ζ) y := hζ1.differentiable one_ne_zero y
+      rw [(hg1.differentiable one_ne_zero y).lineDeriv_eq_fderiv,
+        fderiv_clm_apply hd2 (differentiableAt_const v), iteratedFDeriv_two_apply]
+      simp
+      ring
+    rw [lhs, ibp, ← integral_neg]
+    congr 1
+    funext y
+    exact rhs y
+  simp_rw [Finset.mul_sum]
+  rw [integral_finsetSum _ fun i _ => hint1 _, integral_finsetSum _ fun i _ => hint2 _,
+    ← Finset.sum_neg_distrib]
+  exact Finset.sum_congr rfl fun i _ => key _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
