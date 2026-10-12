@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1.uniform_taylor_remainder-a1.closed_egoroff-a1",
+  "parent_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1.uniform_taylor_remainder-a1",
+  "depth": 5,
+  "title": "Egoroff's theorem with a closed good set in ℝⁿ",
+  "statement": "Let n ∈ ℕ and ℝⁿ = EuclideanSpace ℝ (Fin n), with Lebesgue measure Lⁿ (= volume) on its Borel σ-algebra. Let g_k : ℝⁿ → ℝ (k ∈ ℕ) be Borel measurable. Let C ⊆ ℝⁿ be a measurable set with Lⁿ(C) < ∞ such that g_k(x) → 0 as k → ∞ for every x ∈ C. Let δ ∈ (0, ∞]. Then there is a closed set A ⊆ C with Lⁿ(C \\ A) < δ such that g_k → 0 uniformly on A.",
+  "lean_statement": "∀ (n : ℕ) (g : ℕ → Rn n → ℝ), (∀ k, Measurable (g k)) → ∀ C : Set (Rn n), MeasurableSet C → volume C ≠ ∞ → (∀ x ∈ C, Tendsto (fun k => g k x) atTop (𝓝 0)) → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ A : Set (Rn n), A ⊆ C ∧ IsClosed A ∧ volume (C \\ A) < δ ∧ TendstoUniformlyOn g (fun _ => 0) atTop A",
+  "lean_name": "rsod_c1ab_utr_closed_egoroff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-rectifiable-c1-cover-a1-c1-approx-ball-8cd1a6c070-a1"
+}
