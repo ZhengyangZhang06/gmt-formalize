@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.classical_tangent-a1.off_plane_mass_decay-a1",
+  "parent_id": "root.classical_tangent-a1",
+  "depth": 2,
+  "title": "An approximate tangent plane makes the off-plane mass in B_ρ(x) o(ρⁿ) (blow-up step of Simon 6.3)",
+  "statement": "Let n, ℓ be natural numbers, V a rectifiable n-varifold in E = ℝ^{n+ℓ} whose weight μ = μ_V is finite on compact sets, and x ∈ E. Let P be a linear subspace of E that is an approximate tangent space of V at x (V.IsApproxTangentAt x P), and let ε > 0. Then ρ^{−n}·μ.real(B_ρ(x) ∖ {y : dist(y − x, P) < ερ}) → 0 as ρ ↓ 0. Here B_ρ(x) is the closed ball, dist(·, P) = infDist(·, P), ρ^{−n} = (ρⁿ)⁻¹ and μ.real(A) = (μ(A)).toReal.",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)) (ε : ℝ), IsFiniteMeasureOnCompacts V.weight → V.IsApproxTangentAt x P → 0 < ε → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * V.weight.real (closedBall x ρ \\ {y | infDist (y - x) (P : Set (Ambient n ℓ)) < ε * ρ})) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "classical_tangent_off_plane_mass_decay",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-classical-tangent-a1-off-plane-mass-decay-a1-a1"
+}
