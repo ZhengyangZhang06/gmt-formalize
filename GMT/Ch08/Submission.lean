@@ -705,6 +705,55 @@ theorem Submission.intcpt_allard_fdsb_separated_sum_bound :
           unitBallVolume n := ENNReal.div_le_div_right hfin _
     _ = ENNReal.ofReal (1 + δ) * μ (closedBall x 1) / unitBallVolume n + ENNReal.ofReal δ := by
         rw [ENNReal.add_div, ENNReal.mul_div_cancel_right hω0 hωtop]
+/-- **Simon Ch. 8, proof of 5.10, printed (3), p. 221** (child `good_point_monotonicity` of
+`allard_lemma`): if `B°_1(y) ⊆ U`, `μ_W(B°_1(y)) ≤ Λ` and `‖δW‖(B_ρ(y)) ≤ ε μ_W(B_ρ(y))` for
+`0 < ρ < 1` (printed (1)), the monotonicity formula 3.3 with `ρ₀ = 1` shows that
+`e^{ερ} ρ^{-n} μ_W(B_ρ(y))` is increasing on `(0, 1)` and that `Θ^n(μ_W, y)` exists, is finite and
+is at most `e^{εσ} ω_n^{-1} σ^{-n} μ_W(B_σ(y))`.  Hence `μ_W(B_σ(y)) ≤ e^ε Λ ρ^{-n} σ^n` for
+`0 < σ < ρ < 1`, and letting `ρ ↑ 1` gives `μ_W(B_σ(y)) ≤ e^ε Λ σ^n`. -/
+theorem Submission.intcpt_allard_good_point_monotonicity :
+    MonotonicityFormula → ∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (y : Euclidean N) (ε Λ : ℝ), W.HasLocallyBoundedFirstVariation → ball y 1 ⊆ U → 0 ≤ ε → W.weight (ball y 1) ≤ ENNReal.ofReal Λ → (∀ ρ : ℝ, 0 < ρ → ρ < 1 → variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)) → MonotoneOn (fun ρ : ℝ ↦ ENNReal.ofReal (Real.exp (ε * ρ)) * W.weight (closedBall y ρ) / ENNReal.ofReal ρ ^ n) (Ioo 0 1) ∧ (∃ θ : ℝ≥0∞, HasDensity n W.weight y θ ∧ θ ≠ ∞ ∧ ∀ σ : ℝ, 0 < σ → σ < 1 → θ ≤ ENNReal.ofReal (Real.exp (ε * σ)) * densityRatio n W.weight y σ) ∧ ∀ σ : ℝ, 0 < σ → σ < 1 → W.weight (closedBall y σ) ≤ ENNReal.ofReal (Real.exp ε * Λ * σ ^ n) := by
+  intro hMF N n U W y ε Λ hW hball hε hΛ hratio
+  -- The monotonicity and density statements are 3.3 with `ρ₀ = 1`, `Λ = ε` (and `ρ = σ`).
+  obtain ⟨hmono, θ, hθ, hθfin, hθle⟩ := hMF N n U W y 1 ε hW one_pos hball hε hratio
+  refine ⟨hmono, ⟨θ, hθ, hθfin, fun σ hσ0 hσ1 ↦ (hθle σ σ hσ0 le_rfl hσ1).1⟩, ?_⟩
+  intro σ hσ0 hσ1
+  -- For `σ < ρ < 1`: `μ_W(B_σ(y)) ≤ e^{εσ} μ_W(B_σ(y)) ≤ e^{ερ} μ_W(B_ρ(y)) σ^n / ρ^n`
+  -- `≤ e^ε Λ σ^n / ρ^n`, using `B_ρ(y) ⊆ B°_1(y)`.
+  have key : ∀ ρ ∈ Ioo σ 1,
+      W.weight (closedBall y σ) ≤ ENNReal.ofReal (Real.exp ε * Λ / ρ ^ n * σ ^ n) := by
+    rintro ρ ⟨hσρ, hρ1⟩
+    have hρ0 : 0 < ρ := hσ0.trans hσρ
+    have hs0 : ENNReal.ofReal σ ^ n ≠ 0 := pow_ne_zero n (ENNReal.ofReal_pos.mpr hσ0).ne'
+    have hsT : ENNReal.ofReal σ ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+    have hexp : ENNReal.ofReal (Real.exp (ε * ρ)) ≤ ENNReal.ofReal (Real.exp ε) :=
+      ENNReal.ofReal_le_ofReal (Real.exp_le_exp.mpr (mul_le_of_le_one_right hε hρ1.le))
+    have hμ : W.weight (closedBall y ρ) ≤ ENNReal.ofReal Λ :=
+      (measure_mono (closedBall_subset_ball hρ1)).trans hΛ
+    calc W.weight (closedBall y σ)
+        ≤ ENNReal.ofReal (Real.exp (ε * σ)) * W.weight (closedBall y σ) :=
+          le_mul_of_one_le_left zero_le
+            (ENNReal.one_le_ofReal.mpr (Real.one_le_exp (mul_nonneg hε hσ0.le)))
+      _ = ENNReal.ofReal (Real.exp (ε * σ)) * W.weight (closedBall y σ) / ENNReal.ofReal σ ^ n *
+            ENNReal.ofReal σ ^ n := (ENNReal.div_mul_cancel hs0 hsT).symm
+      _ ≤ ENNReal.ofReal (Real.exp (ε * ρ)) * W.weight (closedBall y ρ) / ENNReal.ofReal ρ ^ n *
+            ENNReal.ofReal σ ^ n := mul_le_mul_left (hmono ⟨hσ0, hσ1⟩ ⟨hρ0, hρ1⟩ hσρ.le) _
+      _ ≤ ENNReal.ofReal (Real.exp ε) * ENNReal.ofReal Λ / ENNReal.ofReal ρ ^ n *
+            ENNReal.ofReal σ ^ n :=
+          mul_le_mul_left (ENNReal.div_le_div_right (mul_le_mul' hexp hμ) _) _
+      _ = ENNReal.ofReal (Real.exp ε * Λ / ρ ^ n * σ ^ n) := by
+          rw [ENNReal.ofReal_mul' (pow_nonneg hσ0.le n), ENNReal.ofReal_div_of_pos (pow_pos hρ0 n),
+            ENNReal.ofReal_mul (Real.exp_pos ε).le, ENNReal.ofReal_pow hρ0.le,
+            ENNReal.ofReal_pow hσ0.le]
+  -- Let `ρ ↑ 1`.
+  have hlim : Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal (Real.exp ε * Λ / ρ ^ n * σ ^ n)) (𝓝[<] 1)
+      (𝓝 (ENNReal.ofReal (Real.exp ε * Λ * σ ^ n))) := by
+    have h : Tendsto (fun ρ : ℝ ↦ Real.exp ε * Λ / ρ ^ n * σ ^ n) (𝓝 1)
+        (𝓝 (Real.exp ε * Λ / 1 ^ n * σ ^ n)) :=
+      (tendsto_const_nhds.div ((continuous_pow n).tendsto 1) (by simp)).mul tendsto_const_nhds
+    rw [one_pow, div_one] at h
+    exact ENNReal.tendsto_ofReal (h.mono_left nhdsWithin_le_nhds)
+  exact ge_of_tendsto hlim (Filter.mem_of_superset (Ioo_mem_nhdsLT hσ1) key)
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
