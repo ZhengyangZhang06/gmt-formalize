@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fa54667dce7397b176afdc33bbba32a60122ec13709dcb3ba50e14c60f39f92c",
+  "git_delta": {
+    "base_commit": "84f837882ed23b27a9e4d4e124d203f68c4fcd3b",
+    "candidate_commit": "24452ed1fdb9ee66a728e2a0e6ec57af19feff6c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_amcl_cutoff_sequence",
+    "diff_sha256": "4b93d6c2d5d973299cc84aeed6df7ec8c3cae4fa2b6df0343cefc64009c6eefc",
+    "source_sha256": "8cb39d11c825212d8101dc8aa7836bc2afcab4e28fe193554ff15510c0161ecf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_amcl_cutoff_sequence",
+      "statement": "∃ (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), (∀ k, 0 < ε k ∧ ε k ≤ 1) ∧ Tendsto ε atTop (𝓝 0) ∧ (∀ k, ContDiff ℝ 1 (φ k)) ∧ (∀ k, Antitone (φ k)) ∧ (∀ k u, 0 ≤ φ k u ∧ φ k u ≤ 1) ∧ (∀ k u, u ≤ 1 → φ k u = 1) ∧ (∀ k u, 1 + ε k ≤ u → φ k u = 0)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
