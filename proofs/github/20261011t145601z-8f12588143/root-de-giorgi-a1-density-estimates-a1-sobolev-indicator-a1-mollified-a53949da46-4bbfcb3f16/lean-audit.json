@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "27bc26ea35bee50993d37e80a208fef7a98a2507e5de08063895789dac7a9519",
+  "git_delta": {
+    "base_commit": "c0e4dc1b1d9a9e60fcba1892c6c96b4644ff28f3",
+    "candidate_commit": "c974bbbeb53e46b4d871e673aa09768788af18a4",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiSobIndMFL_norm_fderiv_le",
+    "diff_sha256": "b53d705d61be9486a5190b49b4d706268dec475e58f79017729a088b654995f7",
+    "source_sha256": "7eb637abcaba8a02d287984e6d14531d1e63addcd2c59b6a15297b9f682457ee",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiSobIndMFL_norm_fderiv_le",
+      "statement": "∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (ρ : Rn N → ℝ) (r : ℝ) (y : Rn N), ContDiff ℝ 1 ρ → HasCompactSupport ρ → (∀ x, 0 ≤ ρ x) → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → Metric.closedBall y r ⊆ U → ‖fderiv ℝ (fun x ↦ ∫ z in G, ρ (x - z)) y‖ ≤ ∫ z, ρ (y - z) ∂μ",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
