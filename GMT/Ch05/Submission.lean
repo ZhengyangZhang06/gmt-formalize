@@ -458,6 +458,93 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+theorem dohr_vel_holder_rigid_transport : ∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (h : Amb n ℓ → Amb n ℓ) (q : ℕ) (α : ℝ) (ξ : Amb n ℓ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), IsLocallyHolderCkα q α h U → IsOpen ((fun y => Q (y - ξ)) '' U) ∧ IsLocallyHolderCkα q α (fun z => Q (h (ξ + Q.symm z))) ((fun y => Q (y - ξ)) '' U) := by
+  intro n ℓ U hU h q α ξ Q hh
+  obtain ⟨hhC, hhH⟩ := hh
+  -- T and its inverse A
+  have hTA : ∀ z, Q (ξ + Q.symm z - ξ) = z := fun z => by
+    rw [add_sub_cancel_left, LinearIsometryEquiv.apply_symm_apply]
+  have hAT : ∀ y, ξ + Q.symm (Q (y - ξ)) = y := fun y => by
+    rw [LinearIsometryEquiv.symm_apply_apply]
+    abel
+  have hO : (fun y => Q (y - ξ)) '' U = (fun z => ξ + Q.symm z) ⁻¹' U :=
+    congrFun (Set.image_eq_preimage_of_inverse (f := fun y => Q (y - ξ)) (g := fun z => ξ + Q.symm z)
+      (fun y => hAT y) (fun z => hTA z)) U
+  have hAcont : Continuous (fun z : Amb n ℓ => ξ + Q.symm z) := continuous_const.add Q.symm.continuous
+  refine ⟨?_, ?_, ?_⟩
+  · rw [hO]
+    exact hU.preimage hAcont
+  · -- C^q on O
+    rw [hO]
+    have hA : ContDiff ℝ q (fun z : Amb n ℓ => ξ + Q.symm z) := contDiff_const.add Q.symm.contDiff
+    have h1 : ContDiffOn ℝ q (h ∘ fun z : Amb n ℓ => ξ + Q.symm z) ((fun z => ξ + Q.symm z) ⁻¹' U) :=
+      hhC.comp hA.contDiffOn (fun z hz => hz)
+    exact Q.contDiff.comp_contDiffOn h1
+  · -- Hölder bound on compact subsets
+    intro K hK hKO
+    -- formula for the iterated derivative at every point
+    have hformula : ∀ z, iteratedFDeriv ℝ q (fun z => Q (h (ξ + Q.symm z))) z =
+        (Q.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ).compContinuousMultilinearMap
+          ((iteratedFDeriv ℝ q h (ξ + Q.symm z)).compContinuousLinearMap
+            (fun _ => (Q.symm.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ))) := by
+      intro z
+      have e1 : (fun z => Q (h (ξ + Q.symm z))) =
+          (Q.toContinuousLinearEquiv : Amb n ℓ ≃L[ℝ] Amb n ℓ) ∘ (fun z => h (ξ + Q.symm z)) := rfl
+      rw [e1, ContinuousLinearEquiv.iteratedFDeriv_comp_left]
+      congr 1
+      have e2 : (fun z => h (ξ + Q.symm z)) =
+          (fun w => h (ξ + w)) ∘ (Q.symm.toContinuousLinearEquiv : Amb n ℓ ≃L[ℝ] Amb n ℓ) := rfl
+      have h3 := ContinuousLinearEquiv.iteratedFDerivWithin_comp_right
+        (Q.symm.toContinuousLinearEquiv : Amb n ℓ ≃L[ℝ] Amb n ℓ) (fun w => h (ξ + w))
+        (s := Set.univ) uniqueDiffOn_univ (x := z) (Set.mem_univ _) q
+      rw [Set.preimage_univ, iteratedFDerivWithin_univ, iteratedFDerivWithin_univ] at h3
+      rw [e2, h3, iteratedFDeriv_comp_add_left]
+      rfl
+    have hnorm : ∀ z w, ‖iteratedFDeriv ℝ q (fun z => Q (h (ξ + Q.symm z))) z -
+        iteratedFDeriv ℝ q (fun z => Q (h (ξ + Q.symm z))) w‖ =
+        ‖iteratedFDeriv ℝ q h (ξ + Q.symm z) - iteratedFDeriv ℝ q h (ξ + Q.symm w)‖ := by
+      intro z w
+      have hsub : (Q.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ).compContinuousMultilinearMap
+            ((iteratedFDeriv ℝ q h (ξ + Q.symm z)).compContinuousLinearMap
+              (fun _ => (Q.symm.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ))) -
+          (Q.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ).compContinuousMultilinearMap
+            ((iteratedFDeriv ℝ q h (ξ + Q.symm w)).compContinuousLinearMap
+              (fun _ => (Q.symm.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ))) =
+          (Q.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ).compContinuousMultilinearMap
+            ((iteratedFDeriv ℝ q h (ξ + Q.symm z) - iteratedFDeriv ℝ q h (ξ + Q.symm w)).compContinuousLinearMap
+              (fun _ => (Q.symm.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ))) := by
+        ext v
+        simp only [LinearIsometryEquiv.toContinuousLinearEquiv_symm, sub_apply,
+          ContinuousLinearMap.compContinuousMultilinearMap_coe, ContinuousLinearEquiv.coe_coe,
+          LinearIsometryEquiv.coe_toContinuousLinearEquiv, Function.comp_apply,
+          ContinuousMultilinearMap.compContinuousLinearMap_apply,
+          LinearIsometryEquiv.coe_symm_toContinuousLinearEquiv, PiLp.sub_apply, map_sub]
+      rw [hformula, hformula, hsub]
+      have hQ := LinearIsometry.norm_compContinuousMultilinearMap Q.toLinearIsometry
+        ((iteratedFDeriv ℝ q h (ξ + Q.symm z) - iteratedFDeriv ℝ q h (ξ + Q.symm w)).compContinuousLinearMap
+          (fun _ => (Q.symm.toContinuousLinearEquiv : Amb n ℓ →L[ℝ] Amb n ℓ)))
+      have hQs := ContinuousMultilinearMap.norm_compContinuous_linearIsometryEquiv
+        (iteratedFDeriv ℝ q h (ξ + Q.symm z) - iteratedFDeriv ℝ q h (ξ + Q.symm w)) (fun _ : Fin q => Q.symm)
+      exact hQ.trans hQs
+    -- the compact image A(K) ⊆ U
+    have hAK : IsCompact ((fun z => ξ + Q.symm z) '' K) := hK.image hAcont
+    have hAKU : (fun z => ξ + Q.symm z) '' K ⊆ U := by
+      rintro _ ⟨z, hz, rfl⟩
+      have := hKO hz
+      rw [hO] at this
+      exact this
+    obtain ⟨C, hC⟩ := hhH _ hAK hAKU
+    refine ⟨C, fun z hz w hw => ?_⟩
+    rw [hnorm]
+    have := hC _ ⟨z, hz, rfl⟩ _ ⟨w, hw, rfl⟩
+    have hdist : ‖ξ + Q.symm z - (ξ + Q.symm w)‖ = ‖z - w‖ := by
+      rw [add_sub_add_left_eq_sub, ← map_sub, LinearIsometryEquiv.norm_map]
+    rwa [hdist] at this
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
