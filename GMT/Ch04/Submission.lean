@@ -434,6 +434,102 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Sobolev inequality, letting the level shift `ε ↓ 0` (Simon Ch. 4, end of the proof of
+5.7).** Let `n ≥ 2`, let `μ` be finite on compact sets, let `h ≥ 0` be continuous with compact
+support, `C, J ≥ 0` and `p = n/(n-1)`. If for every `ε ∈ (0, 1]`
+`((n-1)/n) ∫_{h > ε} (h^p - ε^p) dμ ≤ C (∫_{h > 0} (h + ε)^p dμ)^{1/n} J`, then
+`(∫ h^p dμ)^{(n-1)/n} ≤ (n/(n-1)) C J`. -/
+theorem Submission.sobolev_of_level_integral_bounds : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h : Ambient n ℓ → ℝ) (C J : ℝ), 2 ≤ n → IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → 0 ≤ C → 0 ≤ J → (∀ ε : ℝ, 0 < ε → ε ≤ 1 → ((n : ℝ) - 1) / n * ∫ x in {x | ε < h x}, (h x ^ ((n : ℝ) / ((n : ℝ) - 1)) - ε ^ ((n : ℝ) / ((n : ℝ) - 1))) ∂μ ≤ C * (∫ x in {x | 0 < h x}, (h x + ε) ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (n : ℝ)⁻¹ * J) → (∫ x, h x ^ ((n : ℝ) / ((n : ℝ) - 1)) ∂μ) ^ (((n : ℝ) - 1) / n) ≤ (n : ℝ) / ((n : ℝ) - 1) * C * J := by
+  intro n ℓ μ h C J hn hμ hc hcs hnn hC hJ hbound
+  have hn1 : (1 : ℝ) < n := by
+    have : (2 : ℝ) ≤ n := by exact_mod_cast hn
+    linarith
+  have hn0 : (0 : ℝ) < (n : ℝ) - 1 := by linarith
+  set p : ℝ := (n : ℝ) / ((n : ℝ) - 1) with hp
+  have hp0 : 0 < p := div_pos (by linarith) hn0
+  -- Step 1: `h ^ p` is continuous with compact support, hence `μ`-integrable.
+  have hpc : Continuous fun x ↦ h x ^ p := hc.rpow_const fun _ ↦ Or.inr hp0.le
+  have hpi : Integrable (fun x ↦ h x ^ p) μ :=
+    hpc.integrable_of_hasCompactSupport
+      (hcs.comp_left (g := fun y : ℝ ↦ y ^ p) (Real.zero_rpow hp0.ne'))
+  -- The level sets `{s < h}` are open, hence measurable.
+  have hmeas : ∀ s : ℝ, MeasurableSet {x | s < h x} := fun s ↦
+    (isOpen_lt continuous_const hc).measurableSet
+  -- The shifts `e k = 1/(k+1) ∈ (0, 1]` tend to `0`.
+  set e : ℕ → ℝ := fun k ↦ 1 / ((k : ℝ) + 1) with he
+  have he0 : ∀ k, 0 < e k := fun k ↦ by positivity
+  have he1 : ∀ k, e k ≤ 1 := fun k ↦ by
+    rw [he, div_le_one (by positivity)]
+    linarith [(k.cast_nonneg : (0 : ℝ) ≤ k)]
+  have helim : Tendsto e atTop (𝓝 0) := tendsto_one_div_add_atTop_nhds_zero_nat
+  -- Step 2: `∫_{e k < h} (h ^ p - e k ^ p) dμ → ∫ h ^ p dμ` (dominated by `h ^ p`).
+  have hlimA : Tendsto (fun k ↦ ∫ x in {x | e k < h x}, (h x ^ p - e k ^ p) ∂μ) atTop
+      (𝓝 (∫ x, h x ^ p ∂μ)) := by
+    have hind : (fun k ↦ ∫ x in {x | e k < h x}, (h x ^ p - e k ^ p) ∂μ) =
+        fun k ↦ ∫ x, {x | e k < h x}.indicator (fun x ↦ h x ^ p - e k ^ p) x ∂μ :=
+      funext fun k ↦ (integral_indicator (hmeas (e k))).symm
+    rw [hind]
+    refine tendsto_integral_of_dominated_convergence (fun x ↦ h x ^ p)
+      (fun k ↦ ((hpc.sub continuous_const).aestronglyMeasurable).indicator (hmeas (e k))) hpi
+      (fun k ↦ Eventually.of_forall fun x ↦ ?_) (Eventually.of_forall fun x ↦ ?_)
+    · by_cases hx : e k < h x
+      · rw [indicator_of_mem (show x ∈ {x | e k < h x} from hx), Real.norm_eq_abs,
+          abs_of_nonneg (sub_nonneg.2 (Real.rpow_le_rpow (he0 k).le hx.le hp0.le))]
+        linarith [Real.rpow_nonneg (he0 k).le p]
+      · rw [indicator_of_notMem (show x ∉ {x | e k < h x} from hx), norm_zero]
+        exact Real.rpow_nonneg (hnn x) p
+    · rcases (hnn x).lt_or_eq with hx | hx
+      · have hlim : Tendsto (fun k ↦ h x ^ p - e k ^ p) atTop (𝓝 (h x ^ p - 0)) :=
+          tendsto_const_nhds.sub (helim.rpow_const_nhds_zero hp0)
+        rw [sub_zero] at hlim
+        refine hlim.congr' ?_
+        filter_upwards [helim.eventually (eventually_lt_nhds hx)] with k hk
+        exact (indicator_of_mem (show x ∈ {x | e k < h x} from hk)
+          (fun x ↦ h x ^ p - e k ^ p)).symm
+      · have hzero : ∀ k, {x | e k < h x}.indicator (fun x ↦ h x ^ p - e k ^ p) x = 0 :=
+          fun k ↦ indicator_of_notMem (s := {x | e k < h x}) (a := x)
+            (not_lt.2 (by rw [← hx]; exact (he0 k).le : h x ≤ e k)) _
+        simp only [hzero, ← hx, Real.zero_rpow hp0.ne']
+        exact tendsto_const_nhds
+  -- Step 3: `∫_{0 < h} (h + e k) ^ p dμ → ∫ h ^ p dμ` (dominated by `(h + 1) ^ p` on `{0 < h}`).
+  have hlimB : Tendsto (fun k ↦ ∫ x in {x | 0 < h x}, (h x + e k) ^ p ∂μ) atTop
+      (𝓝 (∫ x, h x ^ p ∂μ)) := by
+    have hsub : {x | 0 < h x} ⊆ tsupport h := fun x hx ↦ subset_tsupport h (ne_of_gt hx)
+    have hbi : IntegrableOn (fun x ↦ (h x + 1) ^ p) {x | 0 < h x} μ :=
+      (((hc.add continuous_const).rpow_const fun _ ↦ Or.inr hp0.le).continuousOn
+        |>.integrableOn_compact hcs.isCompact).mono_set hsub
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := {x | 0 < h x}) fun x hx ↦ by
+      rw [show h x = 0 from le_antisymm (not_lt.1 hx) (hnn x), Real.zero_rpow hp0.ne']]
+    refine tendsto_integral_of_dominated_convergence (fun x ↦ (h x + 1) ^ p)
+      (fun k ↦ ((hc.add continuous_const).rpow_const fun _ ↦ Or.inr hp0.le).aestronglyMeasurable)
+      hbi (fun k ↦ (ae_restrict_iff' (hmeas 0)).2 (Eventually.of_forall fun x hx ↦ ?_))
+      (Eventually.of_forall fun x ↦ ?_)
+    · have hx0 : 0 ≤ h x + e k := by linarith [he0 k, hnn x]
+      rw [Real.norm_eq_abs, abs_of_nonneg (Real.rpow_nonneg hx0 p)]
+      exact Real.rpow_le_rpow hx0 (by linarith [he1 k]) hp0.le
+    · have hlim := (tendsto_const_nhds (x := h x)).add helim |>.rpow_const (p := p) (Or.inr hp0.le)
+      simpa only [add_zero] using hlim
+  -- Step 4: pass to the limit in the hypothesis along `e k`.
+  set Q := ∫ x, h x ^ p ∂μ
+  have hkey : ((n : ℝ) - 1) / n * Q ≤ C * Q ^ (n : ℝ)⁻¹ * J :=
+    le_of_tendsto_of_tendsto' (tendsto_const_nhds.mul hlimA)
+      ((tendsto_const_nhds.mul (hlimB.rpow_const (Or.inr (by positivity)))).mul tendsto_const_nhds)
+      fun k ↦ hbound (e k) (he0 k) (he1 k)
+  -- Step 5: absorb `Q ^ (1/n)`.
+  have hQ0 : 0 ≤ Q := integral_nonneg fun x ↦ Real.rpow_nonneg (hnn x) p
+  have hA0 : 0 ≤ p * C * J := mul_nonneg (mul_nonneg hp0.le hC) hJ
+  have hnne : (n : ℝ) ≠ 0 := by positivity
+  rcases hQ0.eq_or_lt with hQe | hQpos
+  · rw [← hQe, Real.zero_rpow (div_pos hn0 (by linarith)).ne']
+    exact hA0
+  · have hexp : ((n : ℝ) - 1) / n = 1 - (n : ℝ)⁻¹ := by field_simp
+    have hpinv : p * (((n : ℝ) - 1) / n) = 1 := by rw [hp]; field_simp
+    have hQn : 0 < Q ^ (n : ℝ)⁻¹ := Real.rpow_pos_of_pos hQpos _
+    rw [hexp, Real.rpow_sub hQpos, Real.rpow_one, div_le_iff₀ hQn]
+    calc Q = p * (((n : ℝ) - 1) / n * Q) := by rw [← mul_assoc, hpinv, one_mul]
+      _ ≤ p * (C * Q ^ (n : ℝ)⁻¹ * J) := mul_le_mul_of_nonneg_left hkey hp0.le
+      _ = p * C * J * Q ^ (n : ℝ)⁻¹ := by ring
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
