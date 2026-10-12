@@ -663,4 +663,104 @@ theorem Submission.bounded_set_closedBall_cover_card_mul_pow_le : ∀ (n : ℕ) 
   -- Step 4: take `s := F`; the packing bound gives `card(F)·rⁿ ≤ C`.
   exact ⟨F, hFK, hcov, hC r hr hr1 F hFK hFr⟩
 
+/-- **Simon Ch. 2, §6 (pp. 66–67), toward `Hᵏ(C ∩ f⁻¹(y)) = 0` for `Lᵐ`-a.e. `y` (6.3, 6.4):
+small ball covers of the critical set on a compact set.** Let `n = m + k`, `G : ℝⁿ → ℝᵐ` be `C¹`
+on the open `V`, `Q ⊆ V` compact and `K = {x ∈ Q : DG(x) not surjective}`. For `ε, δ > 0` there
+are closed balls `B̄(x, r)`, `x ∈ s`, `2r ≤ δ`, covering `K` with `∑ₓ (2r)ᵏ Lᵐ(G(B̄(x, r))) ≤ ε`.
+If `m = 0` then `K = ∅`. Otherwise `DG` is bounded by `L ≥ 0` and uniformly continuous on a compact
+thickening `K₁ ⊆ V` of `Q`. Cover `K` by balls of a small radius `r` centred in `K`, with
+`card s · rⁿ ≤ C'` (`bounded_set_closedBall_cover_card_mul_pow_le`). On each ball `DG` stays
+within `η` of the non-surjective `DG(x)`, so `Lᵐ(G(B̄(x, r))) ≤ 2ηr (2(L + η)r)^{m-1}`
+(`volume_image_closedBall_le_of_fderiv_not_surjective`). As `n = m + k`, the sum is at most
+`2^{k+m} η (L + 1)^{m-1} C'`, which is `≤ ε` for small `η`. -/
+theorem Submission.critical_set_small_ball_covers_of_isCompact : ∀ (m k : ℕ) (V Q : Set (Rn (m + k))) (G : Rn (m + k) → Rn m), IsOpen V → ContDiffOn ℝ 1 G V → IsCompact Q → Q ⊆ V → ∀ ε : ℝ, 0 < ε → ∀ δ : ℝ, 0 < δ → ∃ (s : Finset (Rn (m + k))) (r : ℝ), 0 < r ∧ 2 * r ≤ δ ∧ {x | x ∈ Q ∧ ¬ Function.Surjective (fderiv ℝ G x)} ⊆ ⋃ x ∈ s, closedBall x r ∧ ∑ x ∈ s, ENNReal.ofReal ((2 * r) ^ k) * volume (G '' closedBall x r) ≤ ENNReal.ofReal ε := by
+  intro m k V Q G hV hG hQ hQV ε hε δ hδ
+  -- Step 1: if `m = 0`, every linear map into `ℝ⁰ = {0}` is surjective, so `K = ∅`.
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · refine ⟨∅, δ / 4, by positivity, by linarith, ?_, by simp⟩
+    rintro x ⟨-, hx⟩
+    exact (hx fun y ↦ ⟨0, Subsingleton.elim _ y⟩).elim
+  obtain ⟨m', rfl⟩ : ∃ m', m = m' + 1 := ⟨m - 1, by omega⟩
+  -- Step 2: a compact thickening `K₁ = cthickening ρ₀ Q ⊆ V` of `Q`.
+  obtain ⟨ρ₀, hρ₀, hK₁V⟩ := hQ.exists_cthickening_subset_open hV hQV
+  have hK₁ : IsCompact (cthickening ρ₀ Q) := hQ.cthickening
+  -- Step 3: `G` is differentiable on `V`; `DG` is continuous on `V`, hence bounded by some `L ≥ 0`
+  -- and uniformly continuous on `K₁`.
+  have hdiff : ∀ z ∈ V, DifferentiableAt ℝ G z := fun z hz ↦
+    (hG.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hz)
+  have hcont : ContinuousOn (fderiv ℝ G) (cthickening ρ₀ Q) :=
+    (hG.continuousOn_fderiv_of_isOpen hV le_rfl).mono hK₁V
+  obtain ⟨L, hL0, hL⟩ : ∃ L : ℝ, 0 ≤ L ∧ ∀ z ∈ cthickening ρ₀ Q, ‖fderiv ℝ G z‖ ≤ L := by
+    obtain ⟨L, hL⟩ := hK₁.exists_bound_of_continuousOn hcont
+    exact ⟨max L 0, le_max_right _ _, fun z hz ↦ (hL z hz).trans (le_max_left _ _)⟩
+  have hUC := Metric.uniformContinuousOn_iff.1 (hK₁.uniformContinuousOn_of_continuous hcont)
+  -- Step 4: the covering constant of the bounded set `K ⊆ Q`, made nonnegative.
+  have hKb : Bornology.IsBounded {x | x ∈ Q ∧ ¬ Function.Surjective (fderiv ℝ G x)} :=
+    hQ.isBounded.subset fun x hx ↦ hx.1
+  obtain ⟨C, hC⟩ := Submission.bounded_set_closedBall_cover_card_mul_pow_le (m' + 1 + k) _ hKb
+  obtain ⟨C', hC'0, hCC'⟩ : ∃ C' : ℝ, 0 ≤ C' ∧ C ≤ C' :=
+    ⟨max C 0, le_max_right _ _, le_max_left _ _⟩
+  -- Step 5: `η = min 1 (ε / (D + 1))` with `D = 2^{k+m} (L + 1)^{m'} C'`, then `ρ` from uniform
+  -- continuity for `η`, and `r = min (min ρ₀ (δ / 2)) (min (ρ / 2) 1)`.
+  obtain ⟨η, hη, hη1, hDη⟩ : ∃ η : ℝ, 0 < η ∧ η ≤ 1 ∧
+      2 ^ (k + (m' + 1)) * (L + 1) ^ m' * C' * η ≤ ε := by
+    have hD : 0 ≤ 2 ^ (k + (m' + 1)) * (L + 1) ^ m' * C' := by positivity
+    generalize 2 ^ (k + (m' + 1)) * (L + 1) ^ m' * C' = D at hD ⊢
+    refine ⟨min 1 (ε / (D + 1)), lt_min one_pos (div_pos hε (by linarith)), min_le_left _ _, ?_⟩
+    calc D * min 1 (ε / (D + 1)) ≤ D * (ε / (D + 1)) :=
+          mul_le_mul_of_nonneg_left (min_le_right _ _) hD
+      _ ≤ ε := by
+          rw [mul_div_assoc', div_le_iff₀ (by linarith)]
+          nlinarith
+  obtain ⟨ρ, hρ, hρUC⟩ := hUC η hη
+  obtain ⟨r, hr, hrρ₀, hrδ, hrρ, hr1⟩ :
+      ∃ r : ℝ, 0 < r ∧ r ≤ ρ₀ ∧ 2 * r ≤ δ ∧ r < ρ ∧ r ≤ 1 :=
+    ⟨min (min ρ₀ (δ / 2)) (min (ρ / 2) 1),
+      lt_min (lt_min hρ₀ (by linarith)) (lt_min (by linarith) one_pos),
+      (min_le_left _ _).trans (min_le_left _ _),
+      by linarith [min_le_left (min ρ₀ (δ / 2)) (min (ρ / 2) 1), min_le_right ρ₀ (δ / 2)],
+      ((min_le_right _ _).trans (min_le_left _ _)).trans_lt (half_lt_self hρ),
+      (min_le_right _ _).trans (min_le_right _ _)⟩
+  -- Step 6: the cover of `K` by the balls `B̄(x, r)`, `x ∈ s ⊆ K`, with `card s · rⁿ ≤ C ≤ C'`.
+  obtain ⟨s, hsK, hKs, hcard⟩ := hC r hr hr1
+  refine ⟨s, r, hr, hrδ, hKs, ?_⟩
+  -- Step 7: one ball. `B̄(x, r) ⊆ K₁ ⊆ V`, `‖DG(z) - DG(x)‖ ≤ η` on it and `‖DG(x)‖ ≤ L`.
+  have hball : ∀ x ∈ s, volume (G '' closedBall x r) ≤
+      ENNReal.ofReal (2 * (η * r) * (2 * ((L + η) * r)) ^ m') := by
+    intro x hx
+    obtain ⟨hxQ, hxs⟩ := hsK (Finset.mem_coe.2 hx)
+    have hxK₁ : x ∈ cthickening ρ₀ Q := self_subset_cthickening Q hxQ
+    have hsub : closedBall x r ⊆ cthickening ρ₀ Q := fun z hz ↦
+      mem_cthickening_of_dist_le z x ρ₀ Q hxQ ((mem_closedBall.1 hz).trans hrρ₀)
+    have h := Submission.volume_image_closedBall_le_of_fderiv_not_surjective (m' + 1 + k) (m' + 1)
+      G x r η L hr.le (fun z hz ↦ hdiff z (hK₁V (hsub hz)))
+      (fun z hz ↦ by
+        rw [← dist_eq_norm]
+        exact (hρUC z (hsub hz) x hxK₁ ((mem_closedBall.1 hz).trans_lt hrρ)).le)
+      (hL x hxK₁) hxs
+    rwa [Nat.add_sub_cancel] at h
+  -- Step 8: summation, using `n = m' + 1 + k`.
+  have hk : 0 ≤ (2 * r) ^ k := by positivity
+  calc ∑ x ∈ s, ENNReal.ofReal ((2 * r) ^ k) * volume (G '' closedBall x r)
+      ≤ ∑ x ∈ s, ENNReal.ofReal ((2 * r) ^ k) *
+          ENNReal.ofReal (2 * (η * r) * (2 * ((L + η) * r)) ^ m') :=
+        Finset.sum_le_sum fun x hx ↦ by gcongr; exact hball x hx
+    _ = ENNReal.ofReal ((s.card : ℝ) *
+          ((2 * r) ^ k * (2 * (η * r) * (2 * ((L + η) * r)) ^ m'))) := by
+        rw [Finset.sum_const, nsmul_eq_mul, ← ENNReal.ofReal_mul hk, ← ENNReal.ofReal_natCast,
+          ← ENNReal.ofReal_mul (Nat.cast_nonneg _)]
+    _ = ENNReal.ofReal (2 ^ (k + (m' + 1)) * η * (L + η) ^ m' *
+          ((s.card : ℝ) * r ^ (m' + 1 + k))) := by
+        congr 1
+        simp only [mul_pow]
+        ring
+    _ ≤ ENNReal.ofReal (2 ^ (k + (m' + 1)) * η * (L + 1) ^ m' * C') := by
+        gcongr
+        exact hcard.trans hCC'
+    _ ≤ ENNReal.ofReal ε := by
+        apply ENNReal.ofReal_le_ofReal
+        calc 2 ^ (k + (m' + 1)) * η * (L + 1) ^ m' * C'
+            = 2 ^ (k + (m' + 1)) * (L + 1) ^ m' * C' * η := by ring
+          _ ≤ ε := hDη
+
 end GMT.Ch02
