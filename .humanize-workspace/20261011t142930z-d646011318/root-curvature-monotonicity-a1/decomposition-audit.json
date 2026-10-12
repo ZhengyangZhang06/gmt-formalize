@@ -1,0 +1,93 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "integral_deriv_eq_sub|absolutelyContinuousOnInterval_intervalIntegral|comp_absolutelyContinuousOnInterval|ae_hasDerivAt_integral",
+        "tendsto_nhdsWithin_Ioo_right|aestronglyMeasurable_iUnion_iff|theorem Monotone.measurable|mcm_",
+        "theorem integral_integral_swap|theorem integral_mul_le_Lp_mul_Lq_of_nonneg|theorem MemLp.integrable_norm_rpow|theorem tendsto_measure_biInter_gt|theorem MonotoneOn.tendsto_nhdsWithin_Ioo_right|theorem.*limUnder_eq|theorem integral_inv_of_pos|theorem integral_rpow|theorem intervalIntegrable_rpow|theorem aestronglyMeasurable_iUnion_iff|theorem.*integrableOn_isCompact",
+        "python3 /tmp/ch04-curvmono-independent-audit-20261011/verify.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-curvature-monotonicity-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-curvature-monotonicity-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/SpecialFunctions/Integrals/Basic.lean",
+        "/tmp/ch04-curvmono-independent-audit-20261011/AllChallenges.lean",
+        "/tmp/ch04-curvmono-independent-audit-20261011/Checks.lean",
+        "/tmp/ch04-curvmono-independent-audit-20261011/AllChallenges.log",
+        "/tmp/ch04-curvmono-independent-audit-20261011/Checks.log"
+      ],
+      "conclusion": "The snapshot pins project ff75f52a4c9deb3b3abbd91eb31d7b02e29a4cef and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical; thirteen supporting Mathlib files also match the installed sources. The required FTC, Fubini, Hölder, monotone-limit and measure-continuity lemmas exist; axiom checks report only propext, Classical.choice and Quot.sound. All nine exact propositions pass lexical validation and elaborate without child implementations in the comparator scope. Independent checks confirm real versus natural powers, real-valued measures, Lebesgue integration, right-neighbourhood filters and positivity of omega for every n. No Matrix/IsUnit construction occurs. All names are bare, distinct and unreserved; no matching mcm_ declarations were found in the snapshot project. The augmented DAG is acyclic. Splitting is appropriate: five analytic obligations support the four selected conclusions. The assembly from explicit child hypotheses and the declared weighted-identity dependency typechecks against exactly the selected frozen parent type."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The WMI antecedent matches the frozen external dependency verbatim. GF supplies its geometric hypotheses. Substitution of h = 1, vanishing tangential gradient and the constant-integral formula prove both integrability assertions and the exact identity. No circular reliance occurs."
+    },
+    {
+      "key": "annulus_ibp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type contain all required assumptions. The proof derives bounded measurability of a and continuity of F, establishes product integrability, and justifies both Fubini exchanges. Removing a singleton only in the Lebesgue variable correctly preserves the closed-ball annular boundary."
+    },
+    {
+      "key": "exp_integral_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly requires only integrability of g. The proof handles nonpositive R, bounds the exponential factor, establishes absolute continuity and its almost-everywhere derivative, and applies FTC on every required subinterval. The negative sign and endpoints match the exact type."
+    },
+    {
+      "key": "density_usc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies a lower bound for the monotone corrected ratios, obtains a finite real limit, and identifies density through limUnder. Uniform nearby-centre bounds and continuity from above establish upper semicontinuity. Neither openness of U nor positive n is needed for this general statement."
+    },
+    {
+      "key": "bounded_curvature",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes integrability of e/a, handles zero mass, constructs one factor F and proves cancellation using the declared FTC and IBP siblings. The ratio definition of G handles zero defect. Uniform nearby-centre data satisfy density_usc, proving every contract conjunct."
+    },
+    {
+      "key": "log_error",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local integrability from HasMeanCurvatureIn justifies the inner-product estimate on compact balls. UI reduces the conclusion to the integral of e; the bound |e(τ)| ≤ δ/τ and the logarithmic integral prove the exact conclusion. No additional GF or sign assumption on δ is needed."
+    },
+    {
+      "key": "lp_holder_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact finiteness and p > n ≥ 1 justify restriction, L¹ integrability and Hölder with conjugate exponents. The scaling identities use positive radii and nonnegative real-power bases, including zero mass. The final power bound yields precisely the stated inequality."
+    },
+    {
+      "key": "lp_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared siblings and explicit GF/UI hypotheses suffice. The corrected κ gives the Λ/4 integral bound and hence both requested factor estimates. FTC and IBP produce the F−1 correction with the correct sign; the G construction and monotonicity remain valid at ρ = R."
+    },
+    {
+      "key": "lp_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact larger ball supplies a uniform Lᵖ bound for nearby centres. The proposed c dominates both required errors and tends to zero, so density_usc applies exactly. LpMonotonicity is an explicit antecedent discharged by the parent assembly, not an undeclared or circular dependency."
+    }
+  ],
+  "required_changes": []
+}

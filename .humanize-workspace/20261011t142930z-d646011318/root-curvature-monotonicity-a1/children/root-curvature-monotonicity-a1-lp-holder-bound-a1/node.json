@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.curvature_monotonicity-a1.lp_holder_bound-a1",
+  "parent_id": "root.curvature_monotonicity-a1",
+  "depth": 2,
+  "title": "Hölder bound for the mean-curvature error term (Simon 4.2–4.3 at ε = 0; parent (5.1))",
+  "statement": "Let n ≥ 1, ℓ ∈ ℕ, μ a measure on E = ℝ^{n+ℓ} finite on compact sets, H: E → E, p ∈ ℝ with p > n, ξ ∈ E, and 0 < τ ≤ R, with H ∈ L^p(μ⌞B_R(ξ)). Let A := (R^{p−n}∫_{B_R(ξ)}|H|^p dμ)^{1/p}. Then |τ^{-(n+1)}∫_{B_τ(ξ)}⟨x−ξ, H(x)⟩dμ| ≤ (A/R)(τ/R)^{−n/p}(1 + τ^{-n}μ(B_τ(ξ))), with real powers and μ(B) the real-valued measure.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (H : Ambient n ℓ → Ambient n ℓ) (p : ℝ) (ξ : Ambient n ℓ) (R τ : ℝ), 0 < n → IsFiniteMeasureOnCompacts μ → (n : ℝ) < p → MemLp H (ENNReal.ofReal p) (μ.restrict (closedBall ξ R)) → 0 < τ → τ ≤ R → |(∫ x in closedBall ξ τ, inner ℝ (x - ξ) (H x) ∂μ) / τ ^ (n + 1)| ≤ (R ^ (p - n) * ∫ x in closedBall ξ R, ‖H x‖ ^ p ∂μ) ^ (1 / p) / R * (τ / R) ^ (-(n : ℝ) / p) * (1 + μ.real (closedBall ξ τ) / τ ^ n)",
+  "lean_name": "mcm_lp_holder_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-curvature-monotonicity-a1-lp-holder-bound-a1-a1"
+}
