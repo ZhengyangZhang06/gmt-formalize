@@ -601,6 +601,82 @@ theorem Submission.classical_tangent_uniform_lower_density : LpMonotonicity → 
   calc omega n / 2 * s ^ n ≤ V.weight.real (closedBall ζ s) / s ^ n * s ^ n :=
         mul_le_mul_of_nonneg_right ha2 hsn.le
     _ = V.weight.real (closedBall ζ s) := div_mul_cancel₀ _ hsn.ne'
+/-- **Blow-up step of Ch. 4, 6.3 (p. 101).** If `μ_V` is finite on compact sets and `P` is an
+approximate tangent space of `V` at `x`, then for every `ε > 0` the `μ_V`-mass of `B_ρ(x)` at
+distance `≥ ερ` from `x + P` is `o(ρⁿ)` as `ρ ↓ 0`: test the blow-up limit against a cutoff
+`f ∈ C_c` with `f = 0` on `P` and `f = 1` on `{z : |z| ≤ 1, dist(z, P) ≥ ε}`. -/
+theorem Submission.classical_tangent_off_plane_mass_decay : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)) (ε : ℝ), IsFiniteMeasureOnCompacts V.weight → V.IsApproxTangentAt x P → 0 < ε → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * V.weight.real (closedBall x ρ \ {y | infDist (y - x) (P : Set (Ambient n ℓ)) < ε * ρ})) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ V x P ε hfin hP hε
+  obtain ⟨-, c, -, hc⟩ := hP
+  -- The cutoff `f = g₁ g₂`, `g₁ = min 1 (max 0 (2 - |z|))`, `g₂ = min 1 (max 0 (2 dist(z, P)/ε - 1))`.
+  obtain ⟨f, hf0, hfn, hfP, hf1⟩ : ∃ f : C_c(Ambient n ℓ, ℝ), (∀ z, 2 < ‖z‖ → f z = 0) ∧
+      (∀ z, 0 ≤ f z) ∧ (∀ z ∈ (P : Set (Ambient n ℓ)), f z = 0) ∧
+      ∀ z, ‖z‖ ≤ 1 → ε ≤ infDist z (P : Set (Ambient n ℓ)) → f z = 1 := by
+    let f₀ : Ambient n ℓ → ℝ := fun z ↦ min 1 (max 0 (2 - ‖z‖)) *
+      min 1 (max 0 (2 * infDist z (P : Set (Ambient n ℓ)) / ε - 1))
+    have hf₀0 : ∀ z, 2 < ‖z‖ → f₀ z = 0 := fun z hz ↦ by
+      simp only [f₀, max_eq_left (by linarith : 2 - ‖z‖ ≤ 0), min_eq_right zero_le_one, zero_mul]
+    refine ⟨⟨⟨f₀, ?_⟩, ?_⟩, hf₀0, fun z ↦ ?_, fun z hz ↦ ?_, fun z hz1 hzP ↦ ?_⟩
+    · exact (continuous_const.min (continuous_const.max (continuous_const.sub continuous_norm))).mul
+        (continuous_const.min (continuous_const.max
+          (((continuous_const.mul (continuous_infDist_pt _)).div_const ε).sub continuous_const)))
+    · refine HasCompactSupport.intro (isCompact_closedBall 0 2) fun z hz ↦ hf₀0 z ?_
+      rwa [mem_closedBall, dist_zero_right, not_le] at hz
+    · exact mul_nonneg (le_min zero_le_one (le_max_left _ _)) (le_min zero_le_one (le_max_left _ _))
+    · show f₀ z = 0
+      simp only [f₀, infDist_zero_of_mem hz, mul_zero, zero_div, zero_sub,
+        max_eq_left (by norm_num : (-1 : ℝ) ≤ 0), min_eq_right zero_le_one]
+    · show f₀ z = 1
+      have h2 : 1 ≤ 2 * infDist z (P : Set (Ambient n ℓ)) / ε - 1 := by
+        rw [le_sub_iff_add_le, le_div_iff₀ hε]
+        linarith
+      simp only [f₀]
+      rw [min_eq_left (le_max_of_le_right (by linarith)), min_eq_left (le_max_of_le_right h2),
+        one_mul]
+  -- `f = 0` on `P`, so the blow-up limit `c ∫_P f dHⁿ` is `0`.
+  have hlim := hc f
+  rw [setIntegral_eq_zero_of_forall_eq_zero hfP, mul_zero] at hlim
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim ?_ ?_
+  · filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+    exact mul_nonneg (inv_nonneg.2 (pow_nonneg hρ.le n)) measureReal_nonneg
+  · filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+    refine mul_le_mul_of_nonneg_left ?_ (inv_nonneg.2 (pow_nonneg hρ.le n))
+    have hmeas : MeasurableSet
+        (closedBall x ρ \ {y | infDist (y - x) (P : Set (Ambient n ℓ)) < ε * ρ}) :=
+      measurableSet_closedBall.diff (isOpen_lt
+        ((continuous_infDist_pt _).comp (continuous_id.sub continuous_const))
+        continuous_const).measurableSet
+    -- `y ↦ f(ρ⁻¹(y - x))` is continuous and vanishes off `B_{2ρ}(x)`, so it is integrable.
+    have hsupp : HasCompactSupport fun y ↦ f (ρ⁻¹ • (y - x)) := by
+      refine HasCompactSupport.intro (isCompact_closedBall x (2 * ρ)) fun y hy ↦ hf0 _ ?_
+      rw [mem_closedBall, dist_eq_norm, not_le] at hy
+      rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρ, lt_inv_mul_iff₀ hρ]
+      linarith
+    have hint : Integrable (fun y ↦ f (ρ⁻¹ • (y - x))) V.weight :=
+      (f.continuous.comp (by fun_prop)).integrable_of_hasCompactSupport hsupp
+    -- `1_{A_ρ} ≤ f(ρ⁻¹(· - x))`, where `A_ρ = B_ρ(x) \ {dist(· - x, P) < ερ}`.
+    rw [← integral_indicator_one hmeas]
+    refine integral_mono_of_nonneg (Eventually.of_forall fun y ↦ ?_) hint
+      (Eventually.of_forall fun y ↦ ?_)
+    · exact indicator_nonneg (fun _ _ ↦ zero_le_one) y
+    · by_cases hy : y ∈ closedBall x ρ \ {y | infDist (y - x) (P : Set (Ambient n ℓ)) < ε * ρ}
+      · rw [indicator_of_mem hy, Pi.one_apply]
+        obtain ⟨hyB, hyP⟩ := hy
+        rw [mem_closedBall, dist_eq_norm] at hyB
+        replace hyP : ε * ρ ≤ infDist (y - x) (P : Set (Ambient n ℓ)) := not_lt.1 hyP
+        refine (hf1 _ ?_ ?_).ge
+        · rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρ, inv_mul_le_iff₀ hρ]
+          linarith
+        -- `dist(ρ⁻¹(y - x), P) ≥ ε`, since `ρw ∈ P` for `w ∈ P`.
+        · refine (le_infDist ⟨0, P.zero_mem⟩).2 fun w hw ↦ ?_
+          have h1 := infDist_le_dist_of_mem (x := y - x) (P.smul_mem ρ hw)
+          have h2 : y - x - ρ • w = ρ • (ρ⁻¹ • (y - x) - w) := by
+            rw [smul_sub, smul_inv_smul₀ hρ.ne']
+          rw [dist_eq_norm, h2, norm_smul, Real.norm_eq_abs, abs_of_pos hρ] at h1
+          rw [dist_eq_norm]
+          exact le_of_mul_le_mul_left (by linarith) hρ
+      · rw [indicator_of_notMem hy]
+        exact hfn _
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
