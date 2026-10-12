@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "aa72718f38f12468bd5ecd97bb8084e724ff6ff3bcee64a6674ade82ef3af208",
+  "git_delta": {
+    "base_commit": "de4bba25657942ce0984f6776ad7195b5576a9c3",
+    "candidate_commit": "9f89be4c6f3781e8d518dff64e552c3d1263533e",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aetp_starProjection_range_continuousOn",
+    "diff_sha256": "fa0841976d8a92c923b5c049e68144d496b05be7642163fb4a53dfc6c280c7a2",
+    "source_sha256": "2a932785fefd50445cc75080b4192c6e946eb326d2bc53bd1fa750169a6810b6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aetp_starProjection_range_continuousOn",
+      "statement": "∀ (n ℓ : ℕ), ContinuousOn (fun L : Rn n →L[ℝ] Amb n ℓ => (LinearMap.range L.toLinearMap).starProjection) {L : Rn n →L[ℝ] Amb n ℓ | Function.Injective L}",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
