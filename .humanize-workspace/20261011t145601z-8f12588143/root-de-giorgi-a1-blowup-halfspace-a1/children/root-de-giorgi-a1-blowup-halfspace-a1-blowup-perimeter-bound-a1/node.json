@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.blowup_halfspace-a1.blowup_perimeter_bound-a1",
+  "parent_id": "root.de_giorgi-a1.blowup_halfspace-a1",
+  "depth": 3,
+  "title": "Uniform perimeter bound for the blow-ups from the mass bound and the blow-up Gauss-Green identity (Simon 3a)",
+  "statement": "Let N, n ∈ ℕ, E ⊆ ℝ^N, μ a measure on ℝ^N, ν : ℝ^N → ℝ^N with |ν| = 1 μ-a.e., x ∈ ℝ^N and ρ₁, C ∈ ℝ. Assume (M) μ(B_ρ(x)) ≤ ENNReal.ofReal(Cρⁿ) for every ρ ∈ (0, ρ₁), and (I) for all r, R > 0 with rR < ρ₁ and every C¹ compactly supported g : ℝ^N → ℝ^N with tsupport g ⊆ B_R(0): ∫_{η_{x,r}(E)} div g dL^N = −(rⁿ)⁻¹∫⟨g(η_{x,r}(y)), ν(y)⟩dμ(y), where η_{x,r} = blowUpMap x r and div = euclideanDivergence. Then for all r, R > 0 with rR < ρ₁ and every such g with |g(y)| ≤ 1 for all y: ∫_{η_{x,r}(E)} div g dL^N ≤ max(C, 0)·Rⁿ.",
+  "lean_statement": "∀ (N n : ℕ) (E : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N) (x : Rn N) (ρ₁ C : ℝ), (∀ᵐ y ∂μ, ‖ν y‖ = 1) → (∀ ρ ∈ Ioo 0 ρ₁, μ (Metric.ball x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → (∀ r R : ℝ, 0 < r → 0 < R → r * R < ρ₁ → ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball 0 R → ∫ z in blowUpMap x r '' E, Poincare.SimonGMT.Chapter02.euclideanDivergence g z = -((r ^ n)⁻¹ * ∫ y, inner ℝ (g (blowUpMap x r y)) (ν y) ∂μ)) → ∀ r R : ℝ, 0 < r → 0 < R → r * R < ρ₁ → ∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball 0 R → (∀ y, ‖g y‖ ≤ 1) → ∫ z in blowUpMap x r '' E, Poincare.SimonGMT.Chapter02.euclideanDivergence g z ≤ max C 0 * R ^ n",
+  "lean_name": "deGiorgiHS_blowUp_divergence_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-blowup-halfspace-a1-blowup-perimeter-bound-a1-a1"
+}
