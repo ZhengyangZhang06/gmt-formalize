@@ -1,0 +1,24 @@
+{
+  "node_id": "root.stationary_results-a1.divergence_identity-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/243",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "719b3f7e95dad605546e82a60143c3e54c3f450a",
+  "integrated_commit": "",
+  "proof_base_commit": "e89868399fd62a837adde4056aeab4e3a0e97bac",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.stationary_results-a1",
+  "requires": [
+    "root.stationary_results-a1.measure_bounds-a1",
+    "root.stationary_results-a1.sff_properties-a1",
+    "root.stationary_results-a1.chart_divergence-a1",
+    "root.stationary_results-a1.divergence_identity-a1.euclidean_divergence-a1",
+    "root.stationary_results-a1.divergence_identity-a1.chart_localization-a1",
+    "root.stationary_results-a1.divergence_identity-a1.partition_of_unity-a1",
+    "root.stationary_results-a1.divergence_identity-a1.integrability-a1",
+    "root.stationary_results-a1.divergence_identity-a1.partition_identity-a1"
+  ]
+}
