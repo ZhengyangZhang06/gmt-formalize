@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7a1c7ebc6b00328a80bc5a0cff25bbac551153803551135fe22d8285062ef03a",
+  "git_delta": {
+    "base_commit": "8936aa104d64831e43d5760351269664111efdd3",
+    "candidate_commit": "80be40e2ca2f24287f4c1206798dc5302171c5cf",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ble_sac_lintegral_comp_smul",
+    "diff_sha256": "dcc9be64815cb038396337152777277883fbb1665b429082b546aaa809ff63bf",
+    "source_sha256": "a13a5439f0d8f32fc45586acedf982c9e7c97b3b845f8bd41b3ec9a4af551626",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ble_sac_lintegral_comp_smul",
+      "statement": "∀ (n : ℕ) (F : Rn n → ℝ≥0∞) (E : Set (Rn n)) (t : ℝ), 0 < t → ∫⁻ x in E, F (t • x) = ENNReal.ofReal ((t ^ n)⁻¹) * ∫⁻ y in (fun y => t⁻¹ • y) ⁻¹' E, F y",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
