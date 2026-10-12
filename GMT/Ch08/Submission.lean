@@ -410,6 +410,51 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Radial Euler identity for a stationary varifold `C` on `ℝ^N` with `y ∈ S` for `C`-a.e.
+`(y, S)` (Simon Ch. 8, 3.5 at `x = 0` with vanishing normal defect): testing `δC = 0` against the
+radial field `X(y) = g(y) y` gives `∫ (n g(y) + Dg(y)(y)) dμ_C(y) = 0` for every compactly
+supported `C¹` function `g`. -/
+theorem Submission.varifold_tangents_rh_radial_euler_identity :
+    ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))), C.Stationary → (∀ᵐ z ∂C.measure, Grassmannian.project z.2 z.1 = z.1) → ∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∫ y, ((n : ℝ) * g y + fderiv ℝ g y y) ∂C.weight = 0 := by
+  intro N n C hC hrad g hg hgc
+  -- Step 1: the radial test field `X(y) = g(y) • y` lies in `K(ℝ^N; ℝ^N)`, so `δC(X) = 0`.
+  have hX : C.firstVariation (fun y ↦ g y • y) = 0 :=
+    hC ⟨fun y ↦ g y • y, hg.smul contDiff_id, hgc.smul_right, subset_univ _⟩
+  -- Steps 2–3: `div_S X(y) = n g(y) + Dg(y)(p_S y)` for every `(y, S)`, since
+  -- `P_S ∘ DX(y) = g(y) P_S + Dg(y)(·) p_S y` and `trace P_S = n`.
+  have hdiv : ∀ (y : Euclidean N) (S : Grassmannian N n),
+      Varifold.tangentialDivergence (fun y ↦ g y • y) y S =
+        n * g y + fderiv ℝ g y (S.project y) := by
+    intro y S
+    let b := (Grassmannian.coordinateBasis (N := N)).toBasis
+    have hcomp : S.projectionLinearMap ∘ₗ
+        (fderiv ℝ (fun y ↦ g y • y) y : Euclidean N →ₗ[ℝ] Euclidean N) =
+        g y • S.projectionLinearMap +
+          (fderiv ℝ g y : Euclidean N →ₗ[ℝ] ℝ).smulRight (S.project y) := by
+      rw [fderiv_fun_smul (f := fun y : Euclidean N ↦ y) (hg.differentiable_one y)
+        differentiableAt_id, fderiv_fun_id]
+      refine LinearMap.ext fun v ↦ ?_
+      simp [Grassmannian.project]
+    rw [Varifold.tangentialDivergence, Varifold.jacobian_eq_toMatrix,
+      ← Grassmannian.toMatrix_projectionLinearMap S, ← LinearMap.toMatrix_comp,
+      ← LinearMap.trace_eq_matrix_trace ℝ b, hcomp, map_add, map_smul,
+      LinearMap.trace_smulRight, LinearMap.trace_eq_matrix_trace ℝ b,
+      Grassmannian.toMatrix_projectionLinearMap, Grassmannian.trace_eq, smul_eq_mul, mul_comm]
+    rfl
+  -- Step 4: by the radial hypothesis, `div_S X(y) = n g(y) + Dg(y)(y)` for `C`-a.e. `(y, S)`.
+  have hae : (fun z : Euclidean N × Grassmannian N n ↦
+      Varifold.tangentialDivergence (fun y ↦ g y • y) z.1 z.2) =ᵐ[C.measure]
+      fun z ↦ (n : ℝ) * g z.1 + fderiv ℝ g z.1 z.1 := by
+    filter_upwards [hrad] with z hz
+    rw [hdiv, hz]
+  -- Step 5: the integrand is continuous, so it transfers to `μ_C = π_# C` (`integral_map`).
+  have hcont : Continuous (fun y ↦ (n : ℝ) * g y + fderiv ℝ g y y) :=
+    (continuous_const.mul hg.continuous).add
+      ((hg.continuous_fderiv one_ne_zero).clm_apply continuous_id)
+  rw [Varifold.weight, integral_map measurable_fst.aemeasurable hcont.aestronglyMeasurable,
+    ← integral_congr_ae hae]
+  exact hX
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
