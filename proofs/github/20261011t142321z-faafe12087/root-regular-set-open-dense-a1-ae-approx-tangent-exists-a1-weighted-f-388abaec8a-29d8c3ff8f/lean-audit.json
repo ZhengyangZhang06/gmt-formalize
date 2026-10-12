@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d120d8c7eddb1f2e999d3b63dc94d804def0b42b56fcc04edb847711b80a6180",
+  "git_delta": {
+    "base_commit": "827b79d613564b1f7882cc5cfb4d108fb0710175",
+    "candidate_commit": "77149330b20ac8c3c55799041eea67bd2ab42d32",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_wfu_blowUp_tail_tendsto_zero",
+    "diff_sha256": "9f4805f13f7d85ec37d05ceab2963c53b8b070a5e141c5cf590125b7cb34ca49",
+    "source_sha256": "c1b588f05e0fb971cc7ab73477b421664db174f2b7504d5e892a336a041cad45",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_wfu_blowUp_tail_tendsto_zero",
+      "statement": "∀ (n ℓ : ℕ) (A S : Set (Amb n ℓ)) (ϑ : Amb n ℓ → ℝ) (x : Amb n ℓ), MeasurableSet S → S ⊆ A → IntegrableOn ϑ A (μHE[n] : Measure (Amb n ℓ)) → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (((μHE[n] : Measure (Amb n ℓ)).restrict A).withDensity (fun z => ‖ϑ z‖ₑ)).real (S ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → ∀ f : CompactlySupportedContinuousMap (Amb n ℓ) ℝ, Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z in S, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * ϑ z ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
