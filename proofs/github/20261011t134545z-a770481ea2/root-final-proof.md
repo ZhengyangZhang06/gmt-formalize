@@ -144,10 +144,10 @@ theorems are cited by their full Lean name and a `file:line` location:
 
 All of these are **existing pinned upstream declarations, reused, not new helpers**. The root
 comparator builds the candidate and exports `GMT.Ch01.main_theorem` together with its dependency
-closure. It re-checks that closure with two independent kernels, Nanoda and Lean's default kernel,
-and restricts the axioms to `propext`, `Quot.sound` and `Classical.choice` (§7.1). The closure
-includes every Mathlib and `Poincare.SimonGMT` declaration the proof depends on, so their reuse is
-verified in this run, not trusted.
+closure. It re-checks that closure with Lean's default kernel, and restricts the axioms to
+`propext`, `Quot.sound` and `Classical.choice`. The first run in §7.1 also used the independent
+Nanoda kernel. The closure includes every Mathlib and `Poincare.SimonGMT` declaration the proof
+depends on, so their reuse is verified in this run, not trusted.
 
 Each library entry gives the statement used, followed by a short summary of the library's own
 proof. The summary is for orientation only; the guarantee is the kernel-checked statement. Each
@@ -690,9 +690,21 @@ All checks used the pinned toolchain and the shared package tree.
 
 The exact configured command (`verifier/gmt-compare.py --lean-target GMT/Ch01/Submission.lean …
 --frozen-commit ec1c322fab7585cea8deb6a95d4dae2d97d09d8e root`, with the configured `HUMANIZE_*`
-environment) **passed** on the candidate commit `81b1eaaf81a646723f1456b6cb24c1032d3b50a1`
-(tree `3f5932502005e76a3082f740939d73df9bfeeae2`). The Lean source of that commit is unchanged by
-this prose. Results:
+environment) **passed twice**. Both runs saw the same `GMT/Ch01/Submission.lean` (sha256
+`518ee03c00e7332a9fc79d2d640a80bb59c528ff903e137a76e81e2ae3db48bf`). Commits after `81b1eaa` change
+only this prose file, which is not a comparator input.
+
+**Run 2** was on commit `073cb0d14c1378786ef6826cf0e95fbe2aa3008b`, which adds this prose. It used
+the wrapper as the operator updated it during this session (sha256 `bac63e47…`). That wrapper turns
+Nanoda off by default; `GMT_COMPARE_NANODA=1` re-enables it, and the Lean-kernel check stays
+mandatory. Results:
+- `status: passed`; checks `exit_zero`, `lean_kernel_accepted` and `final_marker` all `true`.
+- Evidence: `cluster-state/verification/results/hoa34/20261012T022307Z-ch01-root-4eipav7g/`, verdict
+  key `39c7b281a8ab799bcbe07bca44ae60beda5a325ad2b6eeb5f4705ab1a1841d78`.
+
+**Run 1** was on the candidate commit `81b1eaaf81a646723f1456b6cb24c1032d3b50a1` (tree
+`3f5932502005e76a3082f740939d73df9bfeeae2`). It started before the wrapper update, with Nanoda
+enabled. Results:
 - `status: passed`; checks `exit_zero`, `nanoda_accepted`, `lean_kernel_accepted` and
   `final_marker` all `true`; `post_check_failures: []`.
 - Comparator config: challenge `GMT.Ch01.Contract`, solution `GMT.Ch01.Submission`, theorem
