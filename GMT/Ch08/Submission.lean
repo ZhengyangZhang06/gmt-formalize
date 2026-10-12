@@ -410,6 +410,36 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Tangent cones are rectifiable cones** (child `tangent_cones_rectifiable` of
+`allard_tangent_cones`; Simon Ch. 8, Corollary 5.7 and its proof, p. 216): from 5.1–5.4, the
+blow-up density lower bound, Allard's 5.5/5.6 and the First Rectifiability Theorem 1.2.  The lower
+bound with `τ = 1` gives `Θ^n(μ_C, ·) ≥ 1` `μ_C`-a.e.; `C` is stationary (5.2), so 5.5 makes it
+rectifiable with tangent planes `μ_C`-a.e.; the siblings `tangent_point_representation` and
+`cone_rescaling_invariance` with the homogeneity 5.3 then give `η_{0,s #} C = C` for `s > 0`. -/
+theorem Submission.allard_tc_tangent_cones_rectifiable :
+    VarifoldTangentCones → (∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (τ : ℝ), V.HasLocallyBoundedFirstVariation → x ∈ U → 0 < τ → Tendsto (fun ρ : ℝ ↦ ENNReal.ofReal ρ * variationMeasure V (closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧ ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal τ ≤ θ} / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → ∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C → ∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal τ ≤ θ) → AllardRectifiabilityTheorem → FirstRectifiabilityTheorem → TangentConesAreRectifiableCones := by
+  intro hVTC hLB hAllard hFRT N n U V x θ₀ hV hx hθ₀ hdens h51 hdecay C hC
+  -- Step B1: the blow-up density lower bound with `τ = 1` (`ENNReal.ofReal 1 = 1`).
+  have hdecay1 : Tendsto (fun ρ : ℝ ↦ V.weight {y | y ∈ closedBall x ρ ∧
+      ¬ ∃ θ : ℝ≥0∞, HasDensity n V.weight y θ ∧ ENNReal.ofReal 1 ≤ θ} / ENNReal.ofReal ρ ^ n)
+      (𝓝[>] 0) (𝓝 0) := by
+    rw [ENNReal.ofReal_one]
+    exact hdecay
+  have hge : ∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ENNReal.ofReal 1 ≤ θ :=
+    hLB N n U V x 1 hV hx one_pos h51 hdecay1 C hC
+  -- Step B2: by 5.1–5.4 `C` is stationary with `μ_C(sA) = s^n μ_C(A)`; Allard 5.5/5.6 on `C`.
+  obtain ⟨hstat, -, hhom⟩ := (hVTC N n U V x θ₀ hV hx hθ₀ hdens h51).2 C hC
+  have hpos : ∀ᵐ y ∂C.weight, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ 0 < θ := by
+    filter_upwards [hge] with y ⟨θ, hθ, h1θ⟩
+    exact ⟨θ, hθ, (ENNReal.ofReal_pos.2 one_pos).trans_le h1θ⟩
+  obtain ⟨hrect, htan⟩ := hAllard N n univ C hstat.hasLocallyBoundedFirstVariation hpos
+  refine ⟨hrect, ?_⟩
+  -- Step B3: the canonical representation `C = v(M, θ)` with tangent planes on `M`.
+  obtain ⟨M, θ, hMθ, hTM, hrep⟩ :=
+    Submission.allard_tc_tangent_point_representation hFRT N n C htan
+  -- Steps B4–B6: dilation invariance `η_{0,s #} C = C` from the homogeneity 5.3.
+  exact Submission.allard_tc_cone_rescaling_invariance N n C M θ hMθ hTM hrep hhom
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
