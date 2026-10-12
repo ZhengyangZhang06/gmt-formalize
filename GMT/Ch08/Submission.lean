@@ -449,6 +449,92 @@ theorem Submission.frt_vgm_tba_product_blowup_tendsto :
   -- Step 5: the two sides agree on `(0, ∞) ∈ 𝓝[>] 0`, so the limit transfers.
   rw [hplane] at h
   exact h.congr' (eventually_nhdsWithin_of_forall hresc)
+/-- The cut-off sandwich for a ball (steps 2 and 7 of the tangent-ball average used for Simon
+Ch. 8, 1.2): with `χ⁻ = max(0, min(1, (1 - |w|)/κ))`, `χ⁺ = max(0, min(1, (1 + κ - |w|)/κ))` and
+`w = t⁻¹(y - x)`, `∫ χ⁻ β dV ≤ ∫_{B_t(x) × G} β dV ≤ ∫ χ⁺ β dV` for `β ≥ 0`, since
+`χ⁻(w) β ≤ 1_{B_t(x) × G} β ≤ χ⁺(w) β` pointwise and all three integrands are bounded, measurable
+and vanish off `B_{2t}(x) × G`, which has finite `V`-measure. -/
+theorem Submission.frt_vgm_tba_ball_cutoff_sandwich :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (β : C(Grassmannian N n, ℝ)) (κ t : ℝ), 0 < κ → κ < 1 → 0 < t → closedBall x (2 * t) ⊆ U → (∀ S, 0 ≤ β S) → (∫ z, max 0 (min 1 ((1 - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2 ∂V.measure) ≤ ∫ z in closedBall x t ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure ∧ ∫ z in closedBall x t ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure ≤ ∫ z, max 0 (min 1 ((1 + κ - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2 ∂V.measure := by
+  intro N n U V x β κ t hκ hκ1 ht hU hβ
+  -- Step 1: `V(B_{2t}(x) × G) < ∞` (`B_{2t}(x)` is a compact subset of `U`), and
+  -- `B = B_t(x) × G` is Borel.
+  have hK : V.measure (closedBall x (2 * t) ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ :=
+    V.finite_on_compact _ (isCompact_closedBall x (2 * t)) hU
+  have hB : MeasurableSet (closedBall x t ×ˢ (univ : Set (Grassmannian N n))) :=
+    measurableSet_closedBall.prod MeasurableSet.univ
+  -- Step 2: `|β| ≤ ‖β‖` on the compact Grassmannian.
+  have hβb : ∀ S, ‖β S‖ ≤ ‖β‖ := β.norm_coe_le_norm
+  -- Step 3: `|t⁻¹(y - x)| = dist(y, x)/t`; hence `z ∈ B ↔ |w(z)| ≤ 1`, and `|w(z)| > 2` off
+  -- `B_{2t}(x) × G`.
+  have hw : ∀ y : Euclidean N, ‖t⁻¹ • (y - x)‖ = dist y x / t := fun y ↦ by
+    rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 ht.le), dist_eq_norm, inv_mul_eq_div]
+  have hin : ∀ z : Euclidean N × Grassmannian N n,
+      z ∈ closedBall x t ×ˢ (univ : Set (Grassmannian N n)) ↔ ‖t⁻¹ • (z.1 - x)‖ ≤ 1 := fun z ↦ by
+    rw [mem_prod, mem_closedBall, hw, div_le_one ht, and_iff_left (mem_univ _)]
+  have hfar : ∀ z : Euclidean N × Grassmannian N n,
+      z ∉ closedBall x (2 * t) ×ˢ (univ : Set (Grassmannian N n)) → 2 < ‖t⁻¹ • (z.1 - x)‖ := by
+    intro z hz
+    rw [mem_prod, mem_closedBall, and_iff_left (mem_univ _), not_le] at hz
+    rw [hw, lt_div_iff₀ ht]
+    exact hz
+  -- Step 4: cut-off facts for `χ_a(w) = max(0, min(1, (a - |w|)/κ))`.
+  have hχ0 : ∀ a r : ℝ, 0 ≤ max 0 (min 1 ((a - r) / κ)) := fun a r ↦ le_max_left _ _
+  have hχ1 : ∀ a r : ℝ, max 0 (min 1 ((a - r) / κ)) ≤ 1 := fun a r ↦
+    max_le zero_le_one (min_le_left _ _)
+  have hχz : ∀ a r : ℝ, a ≤ r → max 0 (min 1 ((a - r) / κ)) = 0 := fun a r h ↦
+    max_eq_left (min_le_of_right_le (div_nonpos_of_nonpos_of_nonneg (sub_nonpos.2 h) hκ.le))
+  have hχo : ∀ a r : ℝ, r ≤ a - κ → max 0 (min 1 ((a - r) / κ)) = 1 := fun a r h ↦ by
+    rw [min_eq_left ((one_le_div hκ).2 (by linarith)), max_eq_right zero_le_one]
+  -- Step 5: a measurable function bounded by `‖β‖` and vanishing off `B_{2t}(x) × G` is
+  -- `V`-integrable.
+  have hint : ∀ k : Euclidean N × Grassmannian N n → ℝ, AEStronglyMeasurable k V.measure →
+      (∀ z, ‖k z‖ ≤ ‖β‖) →
+      (∀ z, z ∉ closedBall x (2 * t) ×ˢ (univ : Set (Grassmannian N n)) → k z = 0) →
+      Integrable k V.measure := fun k hk hb h0 ↦
+    (Measure.integrableOn_of_bounded hK hk (ae_of_all _ hb)).integrable_of_forall_notMem_eq_zero h0
+  have hβc : Continuous fun z : Euclidean N × Grassmannian N n ↦ β z.2 :=
+    β.continuous.comp continuous_snd
+  have hbd : ∀ (a : ℝ) (z : Euclidean N × Grassmannian N n),
+      ‖max 0 (min 1 ((a - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2‖ ≤ ‖β‖ := fun a z ↦ by
+    rw [norm_mul, Real.norm_of_nonneg (hχ0 _ _)]
+    exact (mul_le_mul (hχ1 _ _) (hβb _) (norm_nonneg _) zero_le_one).trans (one_mul _).le
+  have hm : Integrable (fun z : Euclidean N × Grassmannian N n ↦
+      max 0 (min 1 ((1 - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2) V.measure := by
+    refine hint _ (Continuous.aestronglyMeasurable (by fun_prop)) (hbd 1) fun z hz ↦ ?_
+    rw [hχz 1 _ (by linarith [hfar z hz]), zero_mul]
+  have hp : Integrable (fun z : Euclidean N × Grassmannian N n ↦
+      max 0 (min 1 ((1 + κ - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2) V.measure := by
+    refine hint _ (Continuous.aestronglyMeasurable (by fun_prop)) (hbd (1 + κ)) fun z hz ↦ ?_
+    rw [hχz (1 + κ) _ (by linarith [hfar z hz]), zero_mul]
+  have hi : Integrable ((closedBall x t ×ˢ (univ : Set (Grassmannian N n))).indicator
+      fun z : Euclidean N × Grassmannian N n ↦ β z.2) V.measure := by
+    refine hint _ (hβc.aestronglyMeasurable.indicator hB)
+      (fun z ↦ (norm_indicator_le_norm_self _ z).trans (hβb _)) fun z hz ↦ ?_
+    refine indicator_of_notMem (fun hzB ↦ hz ?_) _
+    exact ⟨mem_closedBall.2 ((mem_closedBall.1 hzB.1).trans (by linarith)), mem_univ _⟩
+  -- Step 6: the pointwise sandwich `χ⁻(w) β ≤ 1_B β ≤ χ⁺(w) β`.
+  have hle₁ : (fun z : Euclidean N × Grassmannian N n ↦
+      max 0 (min 1 ((1 - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2) ≤
+      (closedBall x t ×ˢ (univ : Set (Grassmannian N n))).indicator fun z ↦ β z.2 := by
+    intro z
+    dsimp only
+    by_cases hz : z ∈ closedBall x t ×ˢ (univ : Set (Grassmannian N n))
+    · rw [indicator_of_mem hz]
+      exact mul_le_of_le_one_left (hβ _) (hχ1 _ _)
+    · rw [indicator_of_notMem hz, hχz 1 _ (not_le.1 (mt (hin z).2 hz)).le, zero_mul]
+  have hle₂ : (closedBall x t ×ˢ (univ : Set (Grassmannian N n))).indicator
+      (fun z : Euclidean N × Grassmannian N n ↦ β z.2) ≤
+      fun z ↦ max 0 (min 1 ((1 + κ - ‖t⁻¹ • (z.1 - x)‖) / κ)) * β z.2 := by
+    intro z
+    dsimp only
+    by_cases hz : z ∈ closedBall x t ×ˢ (univ : Set (Grassmannian N n))
+    · rw [indicator_of_mem hz, hχo (1 + κ) _ (by linarith [(hin z).1 hz]), one_mul]
+    · rw [indicator_of_notMem hz]
+      exact mul_nonneg (hχ0 _ _) (hβ _)
+  -- Step 7: integrate, using `∫ 1_B β dV = ∫_B β dV`.
+  rw [← integral_indicator hB]
+  exact ⟨integral_mono hm hi hle₁, integral_mono hi hp hle₂⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
