@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5f71a4faf4daecf6ab5cfe84ed3eb179dea07820240730fcee322187524edd81",
+  "git_delta": {
+    "base_commit": "88173e3323a3d067f88bbc57bacc27313c031662",
+    "candidate_commit": "23209fc0069ba50204329a9c0872f4ad4de867bb",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiRH_unitBall_mul_hausdorffMeasure_eq_two_pow_mul",
+    "diff_sha256": "c3cf84b1402c96ef94f2671b1f6d7fc6f45fff4abf37deba2dd3a162c7c31f04",
+    "source_sha256": "0c30313509d5c1b413b014ae5491b567972d1558c462296e12b8b7e70b51f3b8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiRH_unitBall_mul_hausdorffMeasure_eq_two_pow_mul",
+      "statement": "∀ (n N : ℕ) (s : Set (Rn N)), volume (Metric.ball (0 : Rn n) 1) * μH[(n : ℝ)] s = 2 ^ n * μHE[n] s",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
