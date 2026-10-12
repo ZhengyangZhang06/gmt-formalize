@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integral_compactness-a1.allard_lemma-a1.weighted_radial_monotonicity-a1.gradient_term_bound-a1",
+  "parent_id": "root.integral_compactness-a1.allard_lemma-a1.weighted_radial_monotonicity-a1",
+  "depth": 4,
+  "title": "Tilt-excess bound for the gradient term G(t) (step 7(b))",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, W an n-varifold on U, P ∈ G(N,n) and y ∈ ℝ^N. Let ε ≥ 0, M ≥ 0, A > 0 and t > 0. Let h : ℝ^N → ℝ be any function, and φ : ℝ → [0,1] with φ(s) = 0 for every s ≥ A². Write t_P(S) for the operator norm of p_S − p_P, i.e. ‖LinearMap.toContinuousLinearMap(projectionLinearMap S − projectionLinearMap P)‖, and Dh := fderiv ℝ h. Assume (2'): ∫⁻_{B_{tA}(y)×G(N,n)} ofReal(t_P(S)) dW(z,S) ≤ ofReal(ε(tA)^n) in [0,∞] (an extended-real Lebesgue integral), where B_{tA}(y) = closedBall y (tA). Assume (grad): |Dh(z)[p_S(z − y)]| ≤ M·t_P(S)·|z − y| for all z ∈ ℝ^N and S ∈ G(N,n). Then |G(t)| ≤ M·A^{n+1}·ε·t^{n+1}, where G(t) := ∫ φ(|z − y|²/t²)·Dh(z)[p_S(z − y)] dW(z,S) is a Bochner integral.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n) (y : Euclidean N) (ε M A t : ℝ) (h : Euclidean N → ℝ) (φ : ℝ → ℝ), 0 ≤ ε → 0 ≤ M → 0 < A → 0 < t → (∫⁻ z in closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * (t * A) ^ n) → (∀ (z : Euclidean N) (S : Grassmannian N n), |fderiv ℝ h z (Grassmannian.project S (z - y))| ≤ M * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖ * ‖z - y‖) → (∀ s, 0 ≤ φ s ∧ φ s ≤ 1) → (∀ s, A ^ 2 ≤ s → φ s = 0) → |∫ p, φ (‖p.1 - y‖ ^ 2 / t ^ 2) * fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) ∂W.measure| ≤ M * A ^ (n + 1) * ε * t ^ (n + 1)",
+  "lean_name": "intcpt_allard_wrm_gradient_term_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-integral-compactness-a1-allard-lemma-a1-weighted-radial-monotoni-1ff4bad91c-a1"
+}

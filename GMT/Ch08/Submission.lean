@@ -605,6 +605,324 @@ theorem Submission.intcpt_allard_bad_set_bound :
           congr 1
           field_simp
           ring
+/-- Differentiation of the radial cutoff mass under the integral sign (step 5 of the weighted
+radial monotonicity argument, Simon Ch. 8, §3): if `φ` is `C¹` with `φ = 0` on `[A², ∞)`, `h` is
+continuous and `μ(B_R(y)) < ∞`, then for `t₀ > 0` with `t₀ A < R` the map
+`t ↦ ∫ φ(|z - y|²/t²) h(z) dμ(z)` has derivative `∫ φ'(|z - y|²/t₀²)(-2|z - y|²/t₀³) h(z) dμ(z)`
+at `t₀`. -/
+theorem Submission.intcpt_allard_wrm_cutoff_mass_hasDerivAt :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (y : Euclidean N) (h : Euclidean N → ℝ) (φ : ℝ → ℝ) (A R t₀ : ℝ), Continuous h → ContDiff ℝ 1 φ → 0 < A → (∀ s, A ^ 2 ≤ s → φ s = 0) → μ (closedBall y R) ≠ ∞ → 0 < t₀ → t₀ * A < R → HasDerivAt (fun t : ℝ ↦ ∫ z, φ (‖z - y‖ ^ 2 / t ^ 2) * h z ∂μ) (∫ z, deriv φ (‖z - y‖ ^ 2 / t₀ ^ 2) * (-2 * ‖z - y‖ ^ 2 / t₀ ^ 3) * h z ∂μ) t₀ := by
+  intro N μ y h φ A R t₀ hh hφ hA hφA hμ ht₀ htR
+  -- Step 1: `a := t₀ / 2 < t₀ < b := (t₀ + R / A) / 2` with `b * A < R`; `K := B_R(y)`.
+  have hRA : t₀ < R / A := (lt_div_iff₀ hA).2 htR
+  obtain ⟨a, b, ha, hat, htb, hbA⟩ : ∃ a b : ℝ, 0 < a ∧ a < t₀ ∧ t₀ < b ∧ b * A < R :=
+    ⟨t₀ / 2, (t₀ + R / A) / 2, half_pos ht₀, half_lt_self ht₀, by linarith,
+      (lt_div_iff₀ hA).1 (by linarith)⟩
+  have hKc : IsCompact (closedBall y R) := isCompact_closedBall y R
+  have hKm : MeasurableSet (closedBall y R) := measurableSet_closedBall
+  -- Step 2 (i): `φ' = 0` on `(A², ∞)`.
+  have hφ'0 : ∀ s, A ^ 2 < s → deriv φ s = 0 := by
+    intro s hs
+    have hev : φ =ᶠ[𝓝 s] fun _ ↦ (0 : ℝ) :=
+      Filter.eventually_of_mem (Ioi_mem_nhds hs) fun u hu ↦ hφA u (le_of_lt hu)
+    rw [hev.deriv_eq, deriv_const]
+  -- Step 2 (ii): for `t ∈ [a, b]` and `z ∉ K`, `‖z - y‖² / t² > A²`.
+  have hout : ∀ t, a ≤ t → t ≤ b → ∀ z, z ∉ closedBall y R → A ^ 2 < ‖z - y‖ ^ 2 / t ^ 2 := by
+    intro t hat htb z hz
+    have ht : 0 < t := lt_of_lt_of_le ha hat
+    have hzR : R < ‖z - y‖ := by
+      rw [mem_closedBall, dist_eq_norm, not_le] at hz
+      exact hz
+    have htA : t * A < ‖z - y‖ := by nlinarith
+    have hsq : (t * A) ^ 2 < ‖z - y‖ ^ 2 := pow_lt_pow_left₀ htA (by positivity) two_ne_zero
+    rw [lt_div_iff₀ (by positivity)]
+    linarith [hsq, show (t * A) ^ 2 = A ^ 2 * t ^ 2 by ring]
+  -- Step 3: continuity.
+  have hFc : ∀ t : ℝ, Continuous fun z : Euclidean N ↦ φ (‖z - y‖ ^ 2 / t ^ 2) * h z := fun t ↦
+    (hφ.continuous.comp (((continuous_id.sub continuous_const).norm.pow 2).div_const _)).mul hh
+  have hφ'c : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+  have hF'c : ContinuousOn (fun p : ℝ × Euclidean N ↦
+      deriv φ (‖p.2 - y‖ ^ 2 / p.1 ^ 2) * (-2 * ‖p.2 - y‖ ^ 2 / p.1 ^ 3) * h p.2)
+      (Icc a b ×ˢ closedBall y R) := by
+    have hne : ∀ p ∈ Icc a b ×ˢ closedBall y R, p.1 ≠ 0 := fun p hp ↦
+      (lt_of_lt_of_le ha hp.1.1).ne'
+    refine ContinuousOn.mul (ContinuousOn.mul ?_ ?_) (hh.comp continuous_snd).continuousOn
+    · exact hφ'c.comp_continuousOn
+        (ContinuousOn.div (by fun_prop) (by fun_prop) fun p hp ↦ pow_ne_zero _ (hne p hp))
+    · exact ContinuousOn.div (by fun_prop) (by fun_prop) fun p hp ↦ pow_ne_zero _ (hne p hp)
+  -- Step 4: domination by `C · 1_K`.
+  obtain ⟨C, hC⟩ := (isCompact_Icc.prod hKc).exists_bound_of_continuousOn hF'c
+  have h_bound : ∀ᵐ z ∂μ, ∀ t ∈ Ioo a b,
+      ‖deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z‖ ≤
+        (closedBall y R).indicator (fun _ ↦ C) z := by
+    refine Eventually.of_forall fun z t ht ↦ ?_
+    by_cases hz : z ∈ closedBall y R
+    · rw [indicator_of_mem hz]
+      exact hC (t, z) ⟨Ioo_subset_Icc_self ht, hz⟩
+    · rw [indicator_of_notMem hz, hφ'0 _ (hout t ht.1.le ht.2.le z hz)]
+      simp
+  have hbound_int : Integrable ((closedBall y R).indicator fun _ ↦ C) μ :=
+    (integrable_indicator_iff hKm).2 (integrableOn_const hμ)
+  -- Step 5: integrability of `F(t₀, ·)`.
+  have hF_int : Integrable (fun z ↦ φ (‖z - y‖ ^ 2 / t₀ ^ 2) * h z) μ := by
+    obtain ⟨C₀, hC₀⟩ := hKc.exists_bound_of_continuousOn (hFc t₀).continuousOn
+    refine IntegrableOn.integrable_of_forall_notMem_eq_zero
+      (Measure.integrableOn_of_bounded hμ (hFc t₀).aestronglyMeasurable
+        (ae_restrict_of_forall_mem hKm hC₀)) fun z hz ↦ ?_
+    rw [hφA _ (hout t₀ hat.le htb.le z hz).le, zero_mul]
+  have hF'meas : AEStronglyMeasurable
+      (fun z ↦ deriv φ (‖z - y‖ ^ 2 / t₀ ^ 2) * (-2 * ‖z - y‖ ^ 2 / t₀ ^ 3) * h z) μ :=
+    ((hφ'c.comp (((continuous_id.sub continuous_const).norm.pow 2).div_const _)).mul
+      ((((continuous_id.sub continuous_const).norm.pow 2).const_mul (-2)).div_const _)).mul
+      hh |>.aestronglyMeasurable
+  -- Step 6: pointwise derivative in `t`.
+  have h_diff : ∀ᵐ z ∂μ, ∀ t ∈ Ioo a b,
+      HasDerivAt (fun t ↦ φ (‖z - y‖ ^ 2 / t ^ 2) * h z)
+        (deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z) t := by
+    refine Eventually.of_forall fun z t ht ↦ ?_
+    have ht0 : t ≠ 0 := (lt_trans ha ht.1).ne'
+    have hs : HasDerivAt (fun t ↦ ‖z - y‖ ^ 2 / t ^ 2) (-2 * ‖z - y‖ ^ 2 / t ^ 3) t :=
+      ((hasDerivAt_const t (‖z - y‖ ^ 2)).div (hasDerivAt_pow 2 t)
+        (pow_ne_zero 2 ht0)).congr_deriv (by field_simp; ring)
+    exact ((hφ.differentiable one_ne_zero _).hasDerivAt.comp t hs).mul_const (h z)
+  -- Step 7: differentiation under the integral sign on `(a, b) ∋ t₀`.
+  exact (hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (F := fun t z ↦ φ (‖z - y‖ ^ 2 / t ^ 2) * h z)
+    (F' := fun t z ↦ deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z)
+    (Ioo_mem_nhds hat htb) (Eventually.of_forall fun t ↦ (hFc t).aestronglyMeasurable) hF_int
+    hF'meas h_bound hbound_int h_diff).2
+/-- Weighted radial first-variation inequality at a fixed radius (Simon Ch. 8, 3.5, with the sign
+of `δV(X)` corrected): for `X_t(z) = h(z) φ(|z - y|²/t²) (z - y)`,
+`n Ĩ(t) - t J(t) + G(t) ≤ δW(X_t)`, because the dropped normal term is nonnegative (`h ≥ 0`,
+`φ' ≤ 0` and `⟨w, p_S w⟩ ≤ |w|²`).  The divergence of `X_t` is supplied by hypothesis (Div). -/
+theorem Submission.intcpt_allard_wrm_first_variation_lower_bound :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (y : Euclidean N) (h : Euclidean N → ℝ) (φ : ℝ → ℝ) (A t : ℝ), (∀ (a : Euclidean N → ℝ) (c z : Euclidean N) (S : Grassmannian N n), DifferentiableAt ℝ a z → Varifold.tangentialDivergence (fun w ↦ a w • (w - c)) z S = n * a z + fderiv ℝ a z (Grassmannian.project S (z - c))) → ContDiff ℝ 1 h → (∀ z, 0 ≤ h z) → ContDiff ℝ 1 φ → Antitone φ → 0 < A → (∀ s, A ^ 2 ≤ s → φ s = 0) → 0 < t → closedBall y (t * A) ⊆ U → (n : ℝ) * (∫ z, φ (‖z - y‖ ^ 2 / t ^ 2) * h z ∂W.weight) - t * (∫ z, deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z ∂W.weight) + (∫ p, φ (‖p.1 - y‖ ^ 2 / t ^ 2) * fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) ∂W.measure) ≤ W.firstVariation (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y)) := by
+  intro N n U W y h φ A t hDiv hh hh0 hφ hφa hA hcut ht hU
+  -- Step 1: with `s(z) = ‖z - y‖²/t²`, `φ(s(z)) = φ'(s(z)) = 0` off `K = B_{tA}(y)`.
+  have hKc : IsCompact (closedBall y (t * A)) := isCompact_closedBall y (t * A)
+  have hout : ∀ z : Euclidean N, z ∉ closedBall y (t * A) → A ^ 2 < ‖z - y‖ ^ 2 / t ^ 2 := by
+    intro z hz
+    rw [mem_closedBall, dist_eq_norm, not_le] at hz
+    rw [lt_div_iff₀ (by positivity)]
+    nlinarith [mul_pos ht hA]
+  have hφ0 : ∀ z : Euclidean N, z ∉ closedBall y (t * A) → φ (‖z - y‖ ^ 2 / t ^ 2) = 0 :=
+    fun z hz ↦ hcut _ (hout z hz).le
+  have hdφ0 : ∀ z : Euclidean N, z ∉ closedBall y (t * A) →
+      deriv φ (‖z - y‖ ^ 2 / t ^ 2) = 0 := by
+    intro z hz
+    have hev : φ =ᶠ[𝓝 (‖z - y‖ ^ 2 / t ^ 2)] fun _ ↦ 0 :=
+      (eventually_gt_nhds (hout z hz)).mono fun s hs ↦ hcut s hs.le
+    rw [hev.deriv_eq, deriv_const]
+  -- Step 2: `s`, `a = h · (φ ∘ s)` and `X_t = a · (· - y)` are `C¹`.
+  have hs : ContDiff ℝ 1 (fun z : Euclidean N ↦ ‖z - y‖ ^ 2 / t ^ 2) :=
+    ((contDiff_id.sub contDiff_const).norm_sq ℝ).div_const _
+  have ha : ContDiff ℝ 1 (fun z ↦ h z * φ (‖z - y‖ ^ 2 / t ^ 2)) := hh.mul (hφ.comp hs)
+  have hX : ContDiff ℝ 1 (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y)) :=
+    ha.smul (contDiff_id.sub contDiff_const)
+  -- Step 3: `tsupport X_t ⊆ K ⊆ U`, so `div_S X_t` is `W`-integrable (step 7a).
+  have hXK : tsupport (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y)) ⊆
+      closedBall y (t * A) := by
+    refine closure_minimal (fun z hz ↦ ?_) isClosed_closedBall
+    by_contra hzK
+    exact hz (by simp only [hφ0 z hzK, mul_zero, zero_smul])
+  have hdiv := W.integrable_tangentialDivergence _ hX
+    (hKc.of_isClosed_subset (isClosed_tsupport _) hXK) (hXK.trans hU)
+  -- Step 7: a continuous integrand vanishing off `K × G` is `W`-integrable, as `W(K × G) < ∞`.
+  have hint : ∀ F : Euclidean N × Grassmannian N n → ℝ, Continuous F →
+      (∀ p : Euclidean N × Grassmannian N n, p.1 ∉ closedBall y (t * A) → F p = 0) →
+      Integrable F W.measure := by
+    intro F hF hF0
+    have hKG : IsCompact (closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n))) :=
+      hKc.prod isCompact_univ
+    obtain ⟨C, hC⟩ := hKG.exists_bound_of_continuousOn hF.continuousOn
+    have hOn : IntegrableOn F (closedBall y (t * A) ×ˢ univ) W.measure :=
+      Measure.integrableOn_of_bounded (W.finite_on_compact _ hKc hU) hF.aestronglyMeasurable
+        ((ae_restrict_iff' (isClosed_closedBall.measurableSet.prod MeasurableSet.univ)).mpr
+          (Eventually.of_forall hC))
+    exact hOn.integrable_of_forall_notMem_eq_zero fun p hp ↦ hF0 p fun h1 ↦ hp ⟨h1, mem_univ _⟩
+  have hhc : Continuous h := hh.continuous
+  have hφs : Continuous (fun z : Euclidean N ↦ φ (‖z - y‖ ^ 2 / t ^ 2)) :=
+    hφ.continuous.comp hs.continuous
+  have hdφ : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+  have hf1 : Integrable (fun p : Euclidean N × Grassmannian N n ↦
+      φ (‖p.1 - y‖ ^ 2 / t ^ 2) * h p.1) W.measure :=
+    hint _ ((hφs.mul hhc).comp continuous_fst) fun p hp ↦ by rw [hφ0 p.1 hp, zero_mul]
+  have hf2 : Integrable (fun p : Euclidean N × Grassmannian N n ↦
+      deriv φ (‖p.1 - y‖ ^ 2 / t ^ 2) * (-2 * ‖p.1 - y‖ ^ 2 / t ^ 3) * h p.1) W.measure :=
+    hint _ (by fun_prop) fun p hp ↦ by rw [hdφ0 p.1 hp, zero_mul, zero_mul]
+  -- (Div) with `a = h` writes the gradient term through the continuous `div_S (h · (· - y))`.
+  have hG : ∀ p : Euclidean N × Grassmannian N n,
+      fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) =
+        Varifold.tangentialDivergence (fun w ↦ h w • (w - y)) p.1 p.2 - n * h p.1 := fun p ↦ by
+    rw [hDiv h y p.1 p.2 (hh.differentiable_one p.1)]
+    ring
+  have hf3 : Integrable (fun p : Euclidean N × Grassmannian N n ↦
+      φ (‖p.1 - y‖ ^ 2 / t ^ 2) * fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)))
+      W.measure := by
+    refine hint _ ?_ fun p hp ↦ by rw [hφ0 p.1 hp, zero_mul]
+    simp_rw [hG]
+    exact (hφs.comp continuous_fst).mul
+      ((Varifold.continuous_tangentialDivergence (hh.smul (contDiff_id.sub contDiff_const))).sub
+        (continuous_const.mul (hhc.comp continuous_fst)))
+  -- Steps 4–6: the pointwise inequality `E ≤ div_S X_t`.
+  have hpt : ∀ p : Euclidean N × Grassmannian N n,
+      (n : ℝ) * (φ (‖p.1 - y‖ ^ 2 / t ^ 2) * h p.1) -
+          t * (deriv φ (‖p.1 - y‖ ^ 2 / t ^ 2) * (-2 * ‖p.1 - y‖ ^ 2 / t ^ 3) * h p.1) +
+          φ (‖p.1 - y‖ ^ 2 / t ^ 2) * fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) ≤
+        Varifold.tangentialDivergence (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y))
+          p.1 p.2 := by
+    rintro ⟨z, S⟩
+    dsimp only
+    -- Step 2: `Da(z) = h(z) φ'(s) (2/t²) ⟨z - y, ·⟩ + φ(s) Dh(z)`; then (Div) with `c = y`.
+    have hg : HasFDerivAt (fun x : Euclidean N ↦ ‖x - y‖ ^ 2)
+        (2 • (innerSL ℝ (z - y)).comp (ContinuousLinearMap.id ℝ (Euclidean N))) z :=
+      ((hasFDerivAt_id z).sub_const y).norm_sq
+    have hη : HasDerivAt (fun r : ℝ ↦ φ (r / t ^ 2))
+        (deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (1 / t ^ 2)) (‖z - y‖ ^ 2) :=
+      HasDerivAt.comp (h₂ := φ) (h := fun r : ℝ ↦ r / t ^ 2) (‖z - y‖ ^ 2)
+        (hφ.differentiable_one _).hasDerivAt ((hasDerivAt_id' _).div_const _)
+    have hcomp : HasFDerivAt ((fun r : ℝ ↦ φ (r / t ^ 2)) ∘ fun x : Euclidean N ↦ ‖x - y‖ ^ 2)
+        ((deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (1 / t ^ 2)) •
+          (2 • (innerSL ℝ (z - y)).comp (ContinuousLinearMap.id ℝ (Euclidean N)))) z :=
+      hη.comp_hasFDerivAt z hg
+    have hfd : HasFDerivAt (fun x ↦ h x * φ (‖x - y‖ ^ 2 / t ^ 2))
+        (h z • ((deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (1 / t ^ 2)) •
+          (2 • (innerSL ℝ (z - y)).comp (ContinuousLinearMap.id ℝ (Euclidean N)))) +
+          φ (‖z - y‖ ^ 2 / t ^ 2) • fderiv ℝ h z) z :=
+      (hh.differentiable_one z).hasFDerivAt.fun_mul hcomp
+    rw [hDiv _ y z S (ha.differentiable_one z), hfd.fderiv]
+    -- Step 5: `⟨w, p_S w⟩ = ‖p_S w‖² ≤ ‖w‖²` (`p_S` is symmetric and idempotent).
+    have hP : inner ℝ (S.project (z - y)) (S.project (z - y)) =
+        inner ℝ (z - y) (S.project (z - y)) := by
+      rw [show inner ℝ (S.project (z - y)) (S.project (z - y)) =
+          inner ℝ (z - y) (S.project (S.project (z - y))) from
+        Grassmannian.projectionLinearMap_isSymmetric S (z - y) (S.projectionLinearMap (z - y)),
+        Grassmannian.project_project]
+    have hip : inner ℝ (z - y) (S.project (z - y)) ≤ ‖z - y‖ ^ 2 := by
+      linarith [norm_sub_sq_real (z - y) (S.project (z - y)),
+        real_inner_self_eq_norm_sq (S.project (z - y)), sq_nonneg ‖z - y - S.project (z - y)‖]
+    -- Step 6: `div_S X_t - E = (2/t²) h(z) (-φ'(s)) (‖w‖² - ⟨w, p_S w⟩) ≥ 0`.
+    have hnn : 0 ≤ h z * -deriv φ (‖z - y‖ ^ 2 / t ^ 2) *
+        (‖z - y‖ ^ 2 - inner ℝ (z - y) (S.project (z - y))) / t ^ 2 :=
+      div_nonneg (mul_nonneg (mul_nonneg (hh0 z) (neg_nonneg.mpr hφa.deriv_nonpos))
+        (sub_nonneg.mpr hip)) (by positivity)
+    have ht3 : t * (deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z) =
+        deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 2) * h z := by
+      field_simp
+    simp only [add_apply, smul_apply, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.id_apply, innerSL_apply_apply, smul_eq_mul, nsmul_eq_mul, Nat.cast_ofNat]
+    rw [ht3, ← sub_nonneg]
+    convert mul_nonneg zero_le_two hnn using 1
+    ring
+  -- Steps 8–9: integrate (`μ_W = π_# W` for the first two integrals) and use `integral_mono`.
+  have hw1 : ∫ z, φ (‖z - y‖ ^ 2 / t ^ 2) * h z ∂W.weight =
+      ∫ p, φ (‖p.1 - y‖ ^ 2 / t ^ 2) * h p.1 ∂W.measure :=
+    integral_map measurable_fst.aemeasurable (hφs.mul hhc).aestronglyMeasurable
+  have hw2 : ∫ z, deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z ∂W.weight =
+      ∫ p, deriv φ (‖p.1 - y‖ ^ 2 / t ^ 2) * (-2 * ‖p.1 - y‖ ^ 2 / t ^ 3) * h p.1 ∂W.measure :=
+    integral_map measurable_fst.aemeasurable (by fun_prop : Continuous fun z : Euclidean N ↦
+      deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z).aestronglyMeasurable
+  have hf12 : Integrable (fun p : Euclidean N × Grassmannian N n ↦
+      (n : ℝ) * (φ (‖p.1 - y‖ ^ 2 / t ^ 2) * h p.1) -
+        t * (deriv φ (‖p.1 - y‖ ^ 2 / t ^ 2) * (-2 * ‖p.1 - y‖ ^ 2 / t ^ 3) * h p.1)) W.measure :=
+    (hf1.const_mul _).sub (hf2.const_mul _)
+  calc _ = ∫ p, ((n : ℝ) * (φ (‖p.1 - y‖ ^ 2 / t ^ 2) * h p.1) -
+          t * (deriv φ (‖p.1 - y‖ ^ 2 / t ^ 2) * (-2 * ‖p.1 - y‖ ^ 2 / t ^ 3) * h p.1) +
+          φ (‖p.1 - y‖ ^ 2 / t ^ 2) * fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)))
+          ∂W.measure := by
+        rw [integral_add hf12 hf3, integral_sub (hf1.const_mul _) (hf2.const_mul _),
+          integral_const_mul, integral_const_mul, hw1, hw2]
+    _ ≤ _ := integral_mono (hf12.add hf3) hdiv hpt
+/-- The gradient term `G(t) = ∫ φ(|z - y|²/t²) Dh(z)[p_S(z - y)] dW(z,S)` of the weighted radial
+monotonicity argument (Simon Ch. 8, 3.3–3.5; tilt-excess estimate) satisfies
+`|G(t)| ≤ M A^{n+1} ε t^{n+1}`: off `B_{tA}(y) × G(N,n)` the cutoff vanishes, on it the integrand is
+at most `M (tA) ‖p_S - p_P‖`, and the tilt-excess hypothesis bounds the integral of `‖p_S - p_P‖`. -/
+theorem Submission.intcpt_allard_wrm_gradient_term_bound :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n) (y : Euclidean N) (ε M A t : ℝ) (h : Euclidean N → ℝ) (φ : ℝ → ℝ), 0 ≤ ε → 0 ≤ M → 0 < A → 0 < t → (∫⁻ z in closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * (t * A) ^ n) → (∀ (z : Euclidean N) (S : Grassmannian N n), |fderiv ℝ h z (Grassmannian.project S (z - y))| ≤ M * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖ * ‖z - y‖) → (∀ s, 0 ≤ φ s ∧ φ s ≤ 1) → (∀ s, A ^ 2 ≤ s → φ s = 0) → |∫ p, φ (‖p.1 - y‖ ^ 2 / t ^ 2) * fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) ∂W.measure| ≤ M * A ^ (n + 1) * ε * t ^ (n + 1) := by
+  intro N n U W P y ε M A t h φ hε hM hA ht htilt hgrad hφ hφA
+  have htA : 0 < t * A := mul_pos ht hA
+  have hMtA : 0 ≤ M * (t * A) := mul_nonneg hM htA.le
+  -- Step 1: pointwise, `|g| ≤ 1_K · M (tA) ‖p_S - p_P‖` with `K = B_{tA}(y) × G(N,n)`.
+  have hpt : ∀ p : Euclidean N × Grassmannian N n,
+      ENNReal.ofReal ‖φ (‖p.1 - y‖ ^ 2 / t ^ 2) *
+          fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))‖ ≤
+        (closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n))).indicator
+          (fun z ↦ ENNReal.ofReal (M * (t * A)) * ENNReal.ofReal
+            ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖) p := by
+    intro p
+    by_cases hp : p ∈ closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n))
+    · -- On `K`: `|φ| ≤ 1` and (grad) with `|z - y| ≤ tA`.
+      rw [Set.indicator_of_mem hp, ← ENNReal.ofReal_mul hMtA]
+      apply ENNReal.ofReal_le_ofReal
+      have hdist : ‖p.1 - y‖ ≤ t * A := by
+        have h1 := hp.1
+        rwa [mem_closedBall, dist_eq_norm] at h1
+      have hφ1 : |φ (‖p.1 - y‖ ^ 2 / t ^ 2)| ≤ 1 := by
+        rw [abs_le]
+        constructor <;> linarith [hφ (‖p.1 - y‖ ^ 2 / t ^ 2)]
+      rw [Real.norm_eq_abs, abs_mul]
+      calc |φ (‖p.1 - y‖ ^ 2 / t ^ 2)| * |fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))|
+          ≤ 1 * |fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))| :=
+            mul_le_mul_of_nonneg_right hφ1 (abs_nonneg _)
+        _ = |fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))| := one_mul _
+        _ ≤ M * ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap p.2 - Grassmannian.projectionLinearMap P)‖ *
+              ‖p.1 - y‖ := hgrad p.1 p.2
+        _ ≤ M * ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap p.2 - Grassmannian.projectionLinearMap P)‖ *
+              (t * A) := mul_le_mul_of_nonneg_left hdist (mul_nonneg hM (norm_nonneg _))
+        _ = M * (t * A) * ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap p.2 - Grassmannian.projectionLinearMap P)‖ := by
+            ring
+    · -- Off `K`: `|z - y| > tA`, so `|z - y|²/t² > A²` and the cutoff vanishes.
+      rw [Set.indicator_of_notMem hp]
+      have hdist : t * A < ‖p.1 - y‖ := by
+        have h1 : p.1 ∉ closedBall y (t * A) := fun h1 ↦ hp ⟨h1, mem_univ _⟩
+        rwa [mem_closedBall, dist_eq_norm, not_le] at h1
+      have hs : A ^ 2 ≤ ‖p.1 - y‖ ^ 2 / t ^ 2 := by
+        rw [le_div_iff₀ (pow_pos ht 2)]
+        calc A ^ 2 * t ^ 2 = (t * A) ^ 2 := by ring
+          _ ≤ ‖p.1 - y‖ ^ 2 := pow_le_pow_left₀ htA.le hdist.le 2
+      rw [hφA _ hs, zero_mul, norm_zero, ENNReal.ofReal_zero]
+  -- Step 2: `∫⁻ |g| ≤ ofReal (M tA) · ∫⁻_K ‖p_S - p_P‖ ≤ ofReal (M tA · ε (tA)^n)`.
+  have hlint : ∫⁻ p, ENNReal.ofReal ‖φ (‖p.1 - y‖ ^ 2 / t ^ 2) *
+        fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))‖ ∂W.measure ≤
+      ENNReal.ofReal (M * (t * A) * (ε * (t * A) ^ n)) := by
+    calc ∫⁻ p, ENNReal.ofReal ‖φ (‖p.1 - y‖ ^ 2 / t ^ 2) *
+          fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))‖ ∂W.measure
+        ≤ ∫⁻ p, (closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n))).indicator
+          (fun z ↦ ENNReal.ofReal (M * (t * A)) * ENNReal.ofReal
+            ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖) p
+            ∂W.measure := lintegral_mono hpt
+      _ ≤ ∫⁻ z in closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n)),
+          ENNReal.ofReal (M * (t * A)) * ENNReal.ofReal
+            ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖
+            ∂W.measure := lintegral_indicator_le _ _
+      _ = ENNReal.ofReal (M * (t * A)) *
+          ∫⁻ z in closedBall y (t * A) ×ˢ (univ : Set (Grassmannian N n)),
+            ENNReal.ofReal ‖LinearMap.toContinuousLinearMap
+              (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖
+            ∂W.measure := lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ ≤ ENNReal.ofReal (M * (t * A)) * ENNReal.ofReal (ε * (t * A) ^ n) := by gcongr
+      _ = ENNReal.ofReal (M * (t * A) * (ε * (t * A) ^ n)) :=
+          (ENNReal.ofReal_mul hMtA).symm
+  -- Step 3: `|∫ g| ≤ (∫⁻ |g|).toReal ≤ M tA · ε (tA)^n = M A^{n+1} ε t^{n+1}`.
+  calc |∫ p, φ (‖p.1 - y‖ ^ 2 / t ^ 2) *
+        fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) ∂W.measure|
+      = ‖∫ p, φ (‖p.1 - y‖ ^ 2 / t ^ 2) *
+        fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y)) ∂W.measure‖ :=
+        (Real.norm_eq_abs _).symm
+    _ ≤ (∫⁻ p, ENNReal.ofReal ‖φ (‖p.1 - y‖ ^ 2 / t ^ 2) *
+        fderiv ℝ h p.1 (Grassmannian.project p.2 (p.1 - y))‖ ∂W.measure).toReal :=
+        norm_integral_le_lintegral_norm _
+    _ ≤ (ENNReal.ofReal (M * (t * A) * (ε * (t * A) ^ n))).toReal :=
+        ENNReal.toReal_mono ENNReal.ofReal_ne_top hlint
+    _ = M * (t * A) * (ε * (t * A) ^ n) :=
+        ENNReal.toReal_ofReal (mul_nonneg hMtA (mul_nonneg hε (pow_nonneg htA.le n)))
+    _ = M * A ^ (n + 1) * ε * t ^ (n + 1) := by ring
 /-- **Simon Ch. 8, 2.5–2.6, as used in the proof of 5.10 (printed (7))** (child
 `first_variation_bound` of `allard_lemma`): if `W` has locally bounded first variation, `K ⊆ U` is
 compact and `X` is a `C¹` field with `spt X ⊆ K` and `|X| ≤ B`, then `|δW(X)| ≤ B ‖δW‖(K)`.
@@ -676,6 +994,163 @@ theorem Submission.intcpt_allard_radial_field_divergence :
       Grassmannian.toMatrix_projectionLinearMap, Grassmannian.trace_eq]
   rw [htr, hcomp, map_add, map_smul, hP, LinearMap.trace_smulRight, smul_eq_mul, mul_comm,
     ContinuousLinearMap.coe_coe]
+
+/-- Integrated weighted monotonicity (Simon Ch. 8, 3.5 integrated from `σ` to `ρ`, as for (6)–(7)
+in the proof of 5.10): if (1r)–(3r) hold on `B_r(y)` for `0 < r < 1`, then for `0 < σ ≤ ρ` with
+`ρA < 1` and `Ĩ(t) = ∫ φ(|z - y|²/t²) h(z) dμ_W(z)`, `Ĩ(σ)/σ^n ≤ Ĩ(ρ)/ρ^n + 2^{n+1}(M + K)ερ`.
+For `t ∈ [σ, ρ]`, `tĨ'(t) - nĨ(t) ≥ G(t) - δW(X_t)`, where `X_t(z) = h(z)φ(|z - y|²/t²)(z - y)` and
+`G(t) = ∫ φ(|z - y|²/t²) Dh(z)[p_S(z - y)] dW(z,S)`, and
+`|G(t)| + |δW(X_t)| ≤ A^{n+1}(M + K)εt^{n+1}`; so `t ↦ Ĩ(t)/t^n + 2^{n+1}(M + K)εt` is
+nondecreasing on `[σ, ρ]`. -/
+theorem Submission.intcpt_allard_weighted_radial_monotonicity :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n) (y : Euclidean N) (ε K M A : ℝ) (h : Euclidean N → ℝ) (φ : ℝ → ℝ), W.HasLocallyBoundedFirstVariation → ball y 1 ⊆ U → 0 < ε → 0 ≤ K → 0 ≤ M → (∀ r : ℝ, 0 < r → r < 1 → variationMeasure W (closedBall y r) ≤ ENNReal.ofReal ε * W.weight (closedBall y r)) → (∀ r : ℝ, 0 < r → r < 1 → (∫⁻ z in closedBall y r ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * r ^ n)) → (∀ r : ℝ, 0 < r → r < 1 → W.weight (closedBall y r) ≤ ENNReal.ofReal (K * r ^ n)) → ContDiff ℝ 1 h → (∀ z, 0 ≤ h z ∧ h z ≤ 1) → (∀ (z : Euclidean N) (S : Grassmannian N n), |fderiv ℝ h z (Grassmannian.project S (z - y))| ≤ M * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖ * ‖z - y‖) → ContDiff ℝ 1 φ → Antitone φ → (∀ s, 0 ≤ φ s ∧ φ s ≤ 1) → 0 < A → A ≤ 2 → (∀ s, A ^ 2 ≤ s → φ s = 0) → ∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ * A < 1 → (∫ z, φ (‖z - y‖ ^ 2 / σ ^ 2) * h z ∂W.weight) / σ ^ n ≤ (∫ z, φ (‖z - y‖ ^ 2 / ρ ^ 2) * h z ∂W.weight) / ρ ^ n + 2 ^ (n + 1) * (M + K) * ε * ρ := by
+  intro N n U W P y ε K M A h φ hW hU hε hK hM hvar htilt hmass hh hh01 hDh hφ hφanti hφ01 hA
+    hA2 hφA σ ρ hσ hσρ hρA
+  obtain ⟨C, hC⟩ : ∃ C : ℝ, C = 2 ^ (n + 1) * (M + K) * ε := ⟨_, rfl⟩
+  have hC0 : 0 ≤ C := by
+    rw [hC]; exact mul_nonneg (mul_nonneg (pow_nonneg zero_le_two _) (add_nonneg hM hK)) hε.le
+  -- Step 2: a radius `R` with `ρA < R < 1`, so `B_R(y) ⊆ B°_1(y) ⊆ U` has finite `μ_W`-mass.
+  obtain ⟨R, hR⟩ : ∃ R : ℝ, R = (ρ * A + 1) / 2 := ⟨_, rfl⟩
+  have hρAR : ρ * A < R := by rw [hR]; linarith
+  have hRfin : W.weight (closedBall y R) ≠ ∞ :=
+    W.weight_finite_on_compact _ (isCompact_closedBall y R)
+      ((closedBall_subset_ball (by rw [hR]; linarith)).trans hU)
+  -- Steps 3–7: for `t ∈ [σ, ρ]`, `tĨ'(t) - nĨ(t) ≥ G(t) - δW(X_t) ≥ -2^{n+1}(M + K)εt^{n+1}`.
+  have key : ∀ t, σ ≤ t → t ≤ ρ →
+      -(C * t ^ (n + 1)) ≤
+        t * (∫ z, deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z ∂W.weight) -
+          n * (∫ z, φ (‖z - y‖ ^ 2 / t ^ 2) * h z ∂W.weight) := by
+    intro t hσt htρ
+    have ht0 : 0 < t := hσ.trans_le hσt
+    have htA0 : 0 < t * A := mul_pos ht0 hA
+    have htA1 : t * A < 1 := lt_of_le_of_lt (mul_le_mul_of_nonneg_right htρ hA.le) hρA
+    have hball : closedBall y (t * A) ⊆ U := (closedBall_subset_ball htA1).trans hU
+    -- The weighted radial inequality (Simon 8.3.5 with the normal term dropped).
+    have hlow := Submission.intcpt_allard_wrm_first_variation_lower_bound N n U W y h φ A t
+      (Submission.intcpt_allard_radial_field_divergence N n) hh (fun z ↦ (hh01 z).1) hφ hφanti
+      hA hφA ht0 hball
+    -- (b): `|G(t)| ≤ M A^{n+1} ε t^{n+1}`, from (2r) at radius `tA`.
+    have hgrad := Submission.intcpt_allard_wrm_gradient_term_bound N n U W P y ε M A t h φ hε.le
+      hM hA ht0 (htilt (t * A) htA0 htA1) hDh hφ01 hφA
+    -- (a): `|δW(X_t)| ≤ K A^{n+1} ε t^{n+1}`, from (1r) and (3r) at radius `tA`.
+    have hvanish : ∀ z : Euclidean N, t * A ≤ ‖z - y‖ → φ (‖z - y‖ ^ 2 / t ^ 2) = 0 := by
+      intro z hz
+      apply hφA
+      rw [le_div_iff₀ (pow_pos ht0 2)]
+      calc A ^ 2 * t ^ 2 = (t * A) ^ 2 := by ring
+        _ ≤ ‖z - y‖ ^ 2 := pow_le_pow_left₀ htA0.le hz 2
+    have hX1 : ContDiff ℝ 1 (fun z : Euclidean N ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y)) := by
+      have hsq : ContDiff ℝ 1 (fun z : Euclidean N ↦ ‖z - y‖ ^ 2 / t ^ 2) :=
+        ((contDiff_id.sub contDiff_const).norm_sq ℝ).div_const _
+      exact (hh.mul (hφ.comp hsq)).smul (contDiff_id.sub contDiff_const)
+    have hsupp : tsupport (fun z : Euclidean N ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y)) ⊆
+        closedBall y (t * A) := by
+      refine closure_minimal ?_ isClosed_closedBall
+      intro z hz
+      rw [mem_closedBall, dist_eq_norm]
+      by_contra hlt
+      exact hz (by simp [hvanish z (not_le.mp hlt).le])
+    have hbound : ∀ z, ‖(fun z : Euclidean N ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y)) z‖ ≤
+        t * A := by
+      intro z
+      by_cases hz : t * A ≤ ‖z - y‖
+      · simp [hvanish z hz, htA0.le]
+      · have h1 : |h z * φ (‖z - y‖ ^ 2 / t ^ 2)| ≤ 1 := by
+          rw [abs_of_nonneg (mul_nonneg (hh01 z).1 (hφ01 _).1)]
+          calc h z * φ (‖z - y‖ ^ 2 / t ^ 2) ≤ 1 * 1 :=
+                mul_le_mul (hh01 z).2 (hφ01 _).2 (hφ01 _).1 zero_le_one
+            _ = 1 := one_mul 1
+        show ‖(h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y)‖ ≤ t * A
+        rw [norm_smul, Real.norm_eq_abs]
+        calc |h z * φ (‖z - y‖ ^ 2 / t ^ 2)| * ‖z - y‖ ≤ 1 * (t * A) :=
+              mul_le_mul h1 (not_le.mp hz).le (norm_nonneg _) zero_le_one
+          _ = t * A := one_mul _
+    have hδ : |W.firstVariation (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y))| ≤
+        K * A ^ (n + 1) * ε * t ^ (n + 1) := by
+      have hfv := Submission.intcpt_allard_first_variation_le_sup_mul N n U W
+        (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y)) (closedBall y (t * A)) (t * A) hW hX1
+        (isCompact_closedBall y (t * A)) hball hsupp hbound
+      have hchain : ENNReal.ofReal |W.firstVariation
+          (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y))| ≤
+          ENNReal.ofReal (t * A * (ε * (K * (t * A) ^ n))) := by
+        calc ENNReal.ofReal |W.firstVariation
+              (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y))|
+            ≤ ENNReal.ofReal (t * A) * variationMeasure W (closedBall y (t * A)) := hfv
+          _ ≤ ENNReal.ofReal (t * A) * (ENNReal.ofReal ε * W.weight (closedBall y (t * A))) :=
+            mul_le_mul_of_nonneg_left (hvar (t * A) htA0 htA1) zero_le
+          _ ≤ ENNReal.ofReal (t * A) * (ENNReal.ofReal ε * ENNReal.ofReal (K * (t * A) ^ n)) :=
+            mul_le_mul_of_nonneg_left
+              (mul_le_mul_of_nonneg_left (hmass (t * A) htA0 htA1) zero_le) zero_le
+          _ = ENNReal.ofReal (t * A * (ε * (K * (t * A) ^ n))) := by
+            rw [ENNReal.ofReal_mul htA0.le, ENNReal.ofReal_mul hε.le]
+      calc |W.firstVariation (fun z ↦ (h z * φ (‖z - y‖ ^ 2 / t ^ 2)) • (z - y))|
+          ≤ t * A * (ε * (K * (t * A) ^ n)) :=
+            (ENNReal.ofReal_le_ofReal_iff (mul_nonneg htA0.le (mul_nonneg hε.le
+              (mul_nonneg hK (pow_nonneg htA0.le n))))).mp hchain
+        _ = K * A ^ (n + 1) * ε * t ^ (n + 1) := by ring
+    -- (c): combine, using `A^{n+1} ≤ 2^{n+1}`.
+    have hA' : (M + K) * ε * t ^ (n + 1) * A ^ (n + 1) ≤
+        (M + K) * ε * t ^ (n + 1) * 2 ^ (n + 1) :=
+      mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hA.le hA2 (n + 1))
+        (mul_nonneg (mul_nonneg (add_nonneg hM hK) hε.le) (pow_nonneg ht0.le _))
+    have hG := (abs_le.mp hgrad).1
+    have hδ' := (abs_le.mp hδ).2
+    rw [hC]
+    linarith
+  -- The derivative of `F(t) = Ĩ(t)/t^n + Ct` is `(tĨ'(t) - nĨ(t))/t^{n+1} + C ≥ 0`.
+  have alg : ∀ t I J : ℝ, 0 < t → -(C * t ^ (n + 1)) ≤ t * J - n * I →
+      0 ≤ (J * t ^ n - I * (n * t ^ (n - 1))) / (t ^ n) ^ 2 + C * 1 := by
+    intro t I J ht0 hk
+    have hpow : ∀ m : ℕ, (m : ℝ) * t ^ (m - 1) * t = m * t ^ m := by
+      intro m
+      rcases m with _ | m
+      · simp
+      · simp only [Nat.add_sub_cancel]
+        ring
+    have htn : 0 < t ^ n := pow_pos ht0 n
+    have h1 : t ^ n * (-(C * t ^ (n + 1))) ≤ t ^ n * (t * J - n * I) :=
+      mul_le_mul_of_nonneg_left hk htn.le
+    have h2 : -C * (t ^ n) ^ 2 * t ≤ (J * t ^ n - I * (n * t ^ (n - 1))) * t := by
+      have e1 : -C * (t ^ n) ^ 2 * t = t ^ n * (-(C * t ^ (n + 1))) := by ring
+      have e2 : (J * t ^ n - I * (n * t ^ (n - 1))) * t = t ^ n * (t * J - n * I) := by
+        calc (J * t ^ n - I * (n * t ^ (n - 1))) * t =
+            J * t ^ n * t - I * ((n : ℝ) * t ^ (n - 1) * t) := by ring
+          _ = t ^ n * (t * J - n * I) := by rw [hpow n]; ring
+      rw [e1, e2]
+      exact h1
+    have h3 : -C ≤ (J * t ^ n - I * (n * t ^ (n - 1))) / (t ^ n) ^ 2 := by
+      rw [le_div_iff₀ (pow_pos htn 2)]
+      exact le_of_mul_le_mul_right h2 ht0
+    linarith
+  -- Step 5: `Ĩ` is differentiable on `[σ, ρ]`, hence so is `F`.
+  have hderiv : ∀ t, σ ≤ t → t ≤ ρ →
+      HasDerivAt (fun s ↦ (∫ z, φ (‖z - y‖ ^ 2 / s ^ 2) * h z ∂W.weight) / s ^ n + C * s)
+        (((∫ z, deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z ∂W.weight) *
+            t ^ n - (∫ z, φ (‖z - y‖ ^ 2 / t ^ 2) * h z ∂W.weight) * (n * t ^ (n - 1))) /
+          (t ^ n) ^ 2 + C * 1) t := by
+    intro t hσt htρ
+    have ht0 : 0 < t := hσ.trans_le hσt
+    have hI := Submission.intcpt_allard_wrm_cutoff_mass_hasDerivAt N W.weight y h φ A R t
+      hh.continuous hφ hA hφA hRfin ht0
+      (lt_of_le_of_lt (mul_le_mul_of_nonneg_right htρ hA.le) hρAR)
+    exact (hI.div (hasDerivAt_pow n t) (pow_ne_zero n ht0.ne')).add
+      ((hasDerivAt_id' t).const_mul C)
+  -- Step 8: `F` is monotone on `[σ, ρ]`, so `F(σ) ≤ F(ρ)`.
+  have hmono : MonotoneOn
+      (fun s ↦ (∫ z, φ (‖z - y‖ ^ 2 / s ^ 2) * h z ∂W.weight) / s ^ n + C * s) (Icc σ ρ) := by
+    refine monotoneOn_of_deriv_nonneg (convex_Icc σ ρ)
+      (fun t ht ↦ (hderiv t ht.1 ht.2).continuousAt.continuousWithinAt) (fun t ht ↦ ?_)
+      (fun t ht ↦ ?_)
+    · rw [interior_Icc] at ht
+      exact (hderiv t ht.1.le ht.2.le).differentiableAt.differentiableWithinAt
+    · rw [interior_Icc] at ht
+      rw [(hderiv t ht.1.le ht.2.le).deriv]
+      exact alg t _ _ (hσ.trans ht.1) (key t ht.1.le ht.2.le)
+  have hF := hmono ⟨le_rfl, hσρ⟩ ⟨hσρ, le_rfl⟩ hσρ
+  have hCσ : 0 ≤ C * σ := mul_nonneg hC0 hσ.le
+  simp only at hF
+  rw [← hC]
+  linarith
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
