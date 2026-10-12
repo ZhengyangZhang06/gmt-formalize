@@ -504,6 +504,37 @@ theorem Submission.frt_vgm_mps_limit_selection :
     exact T.2
   exact Subtype.ext ((Set.piecewise_eq_of_mem Y M (fun _ ↦ S₀.1) hxY).trans hMx)
 
+/-- A Borel selection of the plane determined by ball averages (the Borel version `T̃` of
+`x ↦ T_x` needed in the proof of Simon Ch. 8, 1.2, p. 208): there is a measurable
+`τ : ℝ^N → G(N,n)` with `τ x = T` whenever the averages of every continuous `β` over `Gₙ(B_ρ(x))`
+tend to `β T` as `ρ ↓ 0`.  The averages of the matrix entries `S ↦ S_{ij}` along `ρ_k = 1/(k+1)`
+are measurable in `x`, and `τ` selects their entrywise limit. -/
+theorem Submission.frt_vgm_measurable_plane_selection :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U), Nonempty (Grassmannian N n) → ∃ τ : Euclidean N → Grassmannian N n, Measurable τ ∧ ∀ (x : Euclidean N) (T : Grassmannian N n), (∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦ (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (β T))) → τ x = T := by
+  intro N n U V hG
+  -- Step 1: the matrix-entry functions `e_{ij}(S) = S_{ij}` are continuous on `G(N,n)`, and the
+  -- radii are `ρ_k = 1/(k+1)`.
+  let e : Fin N → Fin N → C(Grassmannian N n, ℝ) := fun i j ↦
+    ⟨fun S ↦ S.1 i j, (continuous_id.matrix_elem i j).comp continuous_subtype_val⟩
+  let ρ : ℕ → ℝ := fun k ↦ 1 / ((k : ℝ) + 1)
+  -- Steps 2–4: the averages `a_k(x)_{ij} = (∫_{B_{ρ_k}(x) × G} e_{ij} dV) / μ_V(B_{ρ_k}(x))` are
+  -- measurable in `x` (`V.measure` and `V.weight` are σ-finite, hence s-finite).
+  -- Steps 5–6: a measurable selection `τ` of their entrywise limits.
+  obtain ⟨τ, hτm, hτ⟩ := Submission.frt_vgm_mps_limit_selection (Euclidean N) N n hG
+    (fun k x i j ↦ (∫ z in closedBall x (ρ k) ×ˢ (univ : Set (Grassmannian N n)),
+      e i j z.2 ∂V.measure) / (V.weight (closedBall x (ρ k))).toReal)
+    (fun k i j ↦ (Submission.frt_vgm_mps_ball_integral_measurable N n V.measure inferInstance
+      (ρ k) (e i j)).div
+        (Submission.frt_vgm_mps_weight_closedBall_measurable N V.weight inferInstance
+          (ρ k)).ennreal_toReal)
+  refine ⟨τ, hτm, fun x T hT ↦ hτ x T fun i j ↦ ?_⟩
+  -- Step 7: `ρ_k → 0⁺`, so the hypothesis for `β = e_{ij}` gives `a_k(x)_{ij} → T_{ij}`.
+  have hρ : Tendsto ρ atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
+      tendsto_one_div_add_atTop_nhds_zero_nat
+      (Eventually.of_forall fun k ↦ by simp only [Set.mem_Ioi, ρ]; positivity)
+  exact (hT (e i j)).comp hρ
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
