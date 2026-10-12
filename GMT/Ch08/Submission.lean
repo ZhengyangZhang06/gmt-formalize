@@ -410,6 +410,43 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Restricting vague convergence to an open set (step B2 of the proof of Simon Ch. 8, 5.4): if
+`μ_i → μ` as Radon measures on `Gₙ(ℝ^{n+ℓ})` and `W_i = c μ_i ⌞ Gₙ(Ω)`, `W = c μ ⌞ Gₙ(Ω)` are
+varifolds on `Ω`, then `W_i → W` as Radon measures on `Gₙ(Ω)`. -/
+theorem Submission.varifold_tangents_restricted_radon_converges :
+    ∀ (N n : ℕ) (Ω : Set (Euclidean N)) (μs : ℕ → Measure (Euclidean N × Grassmannian N n)) (μ : Measure (Euclidean N × Grassmannian N n)) (Ws : ℕ → Varifold N n Ω) (W : Varifold N n Ω) (c : ℝ≥0∞), VagueConverges μs μ → c ≠ ∞ → (∀ i, (Ws i).measure = c • (μs i).restrict (Ω ×ˢ (univ : Set (Grassmannian N n)))) → W.measure = c • μ.restrict (Ω ×ˢ (univ : Set (Grassmannian N n))) → Varifold.RadonConverges Ws W := by
+  intro N n Ω μs μ Ws W c hμ _ hWs hW f
+  -- Step 1: `P = Ω × G(N,n)` is open (`Ω` is the open domain of `W`), hence measurable.
+  have hPopen : IsOpen (Ω ×ˢ (univ : Set (Grassmannian N n))) := W.isOpen_domain.prod isOpen_univ
+  have hPmeas : MeasurableSet (Ω ×ˢ (univ : Set (Grassmannian N n))) := hPopen.measurableSet
+  -- Step 2: the zero extension `F` of `f` is continuous with compact support on `ℝ^N × G(N,n)`;
+  -- it agrees with `f` on `P` and vanishes off `P`.
+  let F : C_c(Euclidean N × Grassmannian N n, ℝ) :=
+    { toFun := Subtype.val.extend f 0
+      continuous_toFun :=
+        HasCompactSupport.continuous_extend_zero hPopen f.continuous f.hasCompactSupport
+      hasCompactSupport' := f.hasCompactSupport.extend_zero continuous_subtype_val }
+  have hF : ∀ z : Ω ×ˢ (univ : Set (Grassmannian N n)), F z = f z :=
+    Subtype.val_injective.extend_apply f 0
+  have hF0 : ∀ x ∉ Ω ×ˢ (univ : Set (Grassmannian N n)), F x = 0 := fun x hx ↦
+    Function.extend_apply' _ _ _ fun ⟨z, hz⟩ ↦ hx (hz ▸ z.2)
+  -- Steps 3–4: `∫ f dZ_dom = c ∫ F dν` for every varifold `Z = c ν ⌞ P` on `Ω`.
+  have key : ∀ (Z : Varifold N n Ω) (ν : Measure (Euclidean N × Grassmannian N n)),
+      Z.measure = c • ν.restrict (Ω ×ˢ (univ : Set (Grassmannian N n))) →
+        ∫ z, f z ∂Z.domainMeasure = c.toReal * ∫ x, F x ∂ν := by
+    intro Z ν hZ
+    calc ∫ z, f z ∂Z.domainMeasure = ∫ z, F z ∂Z.domainMeasure := by simp only [hF]
+      _ = ∫ x, F x ∂Z.domainMeasure.map Subtype.val :=
+        ((MeasurableEmbedding.subtype_coe hPmeas).integral_map _).symm
+      _ = c.toReal * ∫ x in Ω ×ˢ (univ : Set (Grassmannian N n)), F x ∂ν := by
+        rw [Z.map_domainMeasure, hZ, integral_smul_measure, smul_eq_mul]
+      _ = c.toReal * ∫ x, F x ∂ν := by
+        rw [setIntegral_eq_integral_of_forall_compl_eq_zero hF0]
+  -- Step 5: vague convergence tested on `F`, multiplied by the constant `c`.
+  have hlim := (hμ F).const_mul c.toReal
+  rw [← key W μ hW] at hlim
+  exact hlim.congr fun i ↦ (key (Ws i) (μs i) (hWs i)).symm
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
