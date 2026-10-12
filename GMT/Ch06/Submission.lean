@@ -1335,6 +1335,52 @@ theorem Submission.lpf_c1r_whitney_extension :
     · exact g_cont x hx
     · exact (g_cd x hx).continuousAt_fderiv one_ne_zero
 
+/-- Simon Ch. 2, Theorem 1.5 (C¹ Approximation Theorem, p. 42), in the form established by its
+printed proof (p. 44): a Lipschitz `g : ℝⁿ → ℝ` agrees with a `C¹` function `h` on a closed set `A`
+with `Lⁿ(ℝⁿ ∖ A) < ε`, and `g` is differentiable on `A` with `Dg = Dh` there.  Rademacher gives a
+Borel set `D` of full measure where `g` is differentiable; Lusin gives a closed `C ⊆ D` with `Dg|C`
+continuous; the `η_k` step gives a closed `A ⊆ C` satisfying Whitney's condition (‡) (Thm 1.6);
+Whitney's extension theorem then gives `h`. -/
+theorem Submission.lpf_c1_approximation_real :
+    ∀ (n : ℕ) (g : Eucl n → ℝ) (K : ℝ≥0), LipschitzWith K g → ∀ ε : ℝ≥0∞, 0 < ε →
+      ∃ (A : Set (Eucl n)) (h : Eucl n → ℝ), IsClosed A ∧ (volume : Measure (Eucl n)) Aᶜ < ε ∧
+        ContDiff ℝ 1 h ∧ ∀ x ∈ A, g x = h x ∧ HasFDerivAt g (fderiv ℝ h x) x := by
+  intro n g K hg ε hε
+  have hε2 : 0 < ε / 2 := ENNReal.half_pos hε.ne'
+  -- Rademacher: `g` is differentiable on the Borel set `D`, and `Lⁿ(ℝⁿ ∖ D) = 0`.
+  set D : Set (Eucl n) := {x | DifferentiableAt ℝ g x}
+  have hDm : MeasurableSet D := measurableSet_of_differentiableAt ℝ g
+  have hDc : (volume : Measure (Eucl n)) Dᶜ = 0 := ae_iff.1 hg.ae_differentiableAt
+  -- Lusin: a closed `C ⊆ D` with `Lⁿ(D ∖ C) < ε / 2` on which `Dg` is continuous.
+  obtain ⟨C, hCc, hCD, hDC, hgC⟩ := Submission.lpf_c1r_lusin_closed n D (fderiv ℝ g) hDm
+    (measurable_fderiv ℝ g) (ε / 2) hε2
+  -- The `η_k` step: a closed `A ⊆ C` with `Lⁿ(C ∖ A) < ε / 2` satisfying Whitney's (‡) for
+  -- `(g, Dg)`.
+  obtain ⟨A, hAc, hAC, hCA, hrem⟩ := Submission.lpf_c1r_uniform_remainder n g K hg C hCc
+    (fun x hx => hCD hx) hgC (ε / 2) hε2
+  -- Whitney: a `C¹` function `h` with `h = g` and `Dh = Dg` on `A`.
+  obtain ⟨h, hh, hhA⟩ := Submission.lpf_c1r_whitney_extension n A g (fderiv ℝ g) hAc
+    hg.continuous.continuousOn (hgC.mono hAC) hrem
+  refine ⟨A, h, hAc, ?_, hh, fun x hx => ?_⟩
+  · -- `ℝⁿ ∖ A ⊆ (ℝⁿ ∖ D) ∪ (D ∖ C) ∪ (C ∖ A)`, so `Lⁿ(ℝⁿ ∖ A) < 0 + ε / 2 + ε / 2 = ε`.
+    have hsub : Aᶜ ⊆ Dᶜ ∪ (D \ C) ∪ (C \ A) := by
+      intro x hxA
+      by_cases hxD : x ∈ D
+      · by_cases hxC : x ∈ C
+        · exact Or.inr ⟨hxC, hxA⟩
+        · exact Or.inl (Or.inr ⟨hxD, hxC⟩)
+      · exact Or.inl (Or.inl hxD)
+    calc (volume : Measure (Eucl n)) Aᶜ ≤ volume (Dᶜ ∪ (D \ C) ∪ (C \ A)) := measure_mono hsub
+      _ ≤ volume Dᶜ + volume (D \ C) + volume (C \ A) :=
+        (measure_union_le _ _).trans (add_le_add (measure_union_le _ _) le_rfl)
+      _ = volume (D \ C) + volume (C \ A) := by rw [hDc, zero_add]
+      _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hDC hCA
+      _ = ε := ENNReal.add_halves ε
+  · -- `Dh(x) = Dg(x)` by uniqueness of the derivative, and `g` is differentiable at `x ∈ A ⊆ D`.
+    obtain ⟨hhx, hDhx⟩ := hhA x hx
+    rw [hDhx.fderiv]
+    exact ⟨hhx.symm, DifferentiableAt.hasFDerivAt (hCD (hAC hx))⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
