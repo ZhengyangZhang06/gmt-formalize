@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "rg -n 'aetp_lipschitz_c1_approximation|aetp_rectifiable_c1_piece_cover|tae_c1_chart_image_approxTangent|lipts_rectifiable_tangent_chart_cover' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project .lake/packages/simongmt/Poincare/SimonGMT",
+        "CountablyRectifiable|def blowUpMap|def HasApproximateTangentSpaceAt|def HasWeightedApproximateTangentSpaceAt",
+        "theorem exists_isClosed_continuousOn_of_measurable|structure HasWhitneyC1Compatibility|theorem exists_contDiff_one_extension_of_whitney",
+        "theorem (area_image_criticalSet_eq_zero|weighted_area_formula_volume_of_injective_derivative|integral_area_formula_of_injective_derivative|euclideanHausdorffMeasure_image_le_of_lipschitzOn|weighted_linear_area_formula|measurePreserving_linearMap_normDet_smul|continuous_normDet)",
+        "LipschitzWith.ae_differentiableAt|measurableSet_of_differentiableAt|theorem measurable_fderiv|norm_fderiv_le_of_lipschitz|tendstoUniformlyOn_of_ae_tendsto|exists_isClosed_sdiff_lt|inverse_continuousAt|theorem continuousOn_clm_apply|theorem ContDiff.continuous_fderiv|tendsto_integral_filter_of_dominated_convergence",
+        "git show 3685d4cd99510bd2f250bc37353b6dae7da54072:GMT/Ch05/Submission.lean",
+        "git show 54cac7deea7fec819237344af01d85c25ab643ca:GMT/Ch05/Submission.lean",
+        "git show 4d18f1d64ced18737b95cceccbeb3b1995ce254c:GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ltcc-codex-audit-stqmcc1c/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ltcc-codex-audit-stqmcc1c/AcceptedAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLinearWeighted.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-tangent-structure-a1-tangent-chart-cover-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-tangent-structure-a1-tangent-chart-cover-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-c1-approximation-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-c1-piece-cover-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-regularity-a1-tangent-ae-a1-chart-tangent-a1/accepted-candidate.json",
+        "/tmp/ltcc-codex-audit-stqmcc1c/Contracts.lean",
+        "/tmp/ltcc-codex-audit-stqmcc1c/Contracts.log",
+        "/tmp/ltcc-codex-audit-stqmcc1c/AcceptedAssembly.lean",
+        "/tmp/ltcc-codex-audit-stqmcc1c/AcceptedAssembly.log"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and the compatible SimonGMT revision. The four audited declaration names have no matches in the snapshot project or pinned SimonGMT sources. Each proposed child name instead has exactly one comparator-accepted DAG reservation with a byte-identical frozen type. Dependencies are acyclic: piece_cover uses c1_approximation; chart_tangent is independent. The split appropriately establishes the selected lipts_rectifiable_tangent_chart_cover: apply chart_tangent to each covering chart, choose its field, and use the null exceptional set for the uncovered part. Fresh Contracts.lean successfully elaborated all three types without their implementations and proved the exact parent from those contracts. Fresh AcceptedAssembly.lean reconstructed the accepted proofs from git, preserved the frozen definitions, and compiled the same assembly. All three children and the selected parent use only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated one-line proposition agree, including infinite epsilon. Steps 0–A5 correctly reduce the tolerance, construct measurable bounded remainder suprema, apply Egorov and Lusin on finite-measure shells, glue locally finitely, verify compact-uniform Whitney compatibility, and obtain the required strict exceptional-measure bound. The supplied proof is complete and non-circular. Its bare identifier validly reuses an accepted declaration with the identical frozen type."
+    },
+    {
+      "key": "piece_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the independently elaborated type without assuming M measurable. Coordinatewise approximation correctly uses the declared c1_approximation dependency. Null exceptional images, critical-image nullity, the mean-value lower bound, Lindelof selection, positive-radius isometric padding, and the Borel null hull establish every requested chart and covering property. The dependency is correctly directed and non-circular; identical-type accepted reuse makes the bare name admissible."
+    },
+    {
+      "key": "chart_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated type agree, including arbitrary real rho and positive kappa. The proof handles empty balls, constructs the Lipschitz inverse, proves Borelness and finite measure, and obtains dimension n. Integrability, scaling, area formulas, compact domination, and pointwise convergence justify the exact signed-test-function tangent limit. The inline Gram-operator argument proves projection continuity without an undeclared dependency. Its inverse uses the continuous-linear-map composition ring, independently checked in Lean; no pointwise matrix-unit construction occurs. Identical-type accepted reuse is valid."
+    }
+  ],
+  "required_changes": []
+}
