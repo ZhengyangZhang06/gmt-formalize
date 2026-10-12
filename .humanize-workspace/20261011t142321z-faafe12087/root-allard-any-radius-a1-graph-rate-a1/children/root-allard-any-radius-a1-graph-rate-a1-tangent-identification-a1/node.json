@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.tangent_identification-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1",
+  "depth": 3,
+  "title": "Identification of the tangent projection at a Lebesgue point with a plane of vanishing tilt-excess",
+  "statement": "Let n, l >= 0, U any set, and V a contract rectifiable n-varifold in U with weight mu such that y -> p_y := V.tangentProj y is mu-a.e. strongly measurable. Let zeta in R^(n+l), S a linear subspace with orthogonal projection P_S, and c > 0, s_0 > 0 with ofReal(c s^n) <= mu(B_s(zeta)) < infinity for all s in (0, s_0] (closed balls). Assume:\n(L) mu(B_s(zeta))^(-1) * (lower integral over B_s(zeta) of ofReal(hsNormSq(p_y - p_zeta)) d mu(y)) -> 0 as s -> 0+;\n(T) V.tiltExcess zeta s S -> 0 as s -> 0+.\nThen V.tangentProj zeta = P_S.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (ζ : Amb n ℓ) (S : Submodule ℝ (Amb n ℓ)) (c s₀ : ℝ), 0 < c → 0 < s₀ → (∀ s : ℝ, 0 < s → s ≤ s₀ → ENNReal.ofReal (c * s ^ n) ≤ V.weight (closedBall ζ s) ∧ V.weight (closedBall ζ s) < ⊤) → Tendsto (fun s : ℝ => (V.weight (closedBall ζ s))⁻¹ * ∫⁻ y in closedBall ζ s, ENNReal.ofReal (hsNormSq (V.tangentProj y - V.tangentProj ζ)) ∂V.weight) (𝓝[>] 0) (𝓝 0) → Tendsto (fun s : ℝ => V.tiltExcess ζ s S) (𝓝[>] 0) (𝓝 0) → V.tangentProj ζ = S.starProjection",
+  "lean_name": "any_radius_gr_tangent_identification",
+  "depends_on": [
+    "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1",
+    "root.allard_any_radius-a1.graph_rate-a1.tilt_integrals-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.tilt_integrals-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-tangent-identification-a1-a1"
+}

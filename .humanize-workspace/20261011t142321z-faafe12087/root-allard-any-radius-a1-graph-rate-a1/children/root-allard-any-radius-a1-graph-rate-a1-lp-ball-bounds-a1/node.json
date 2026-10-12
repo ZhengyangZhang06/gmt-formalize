@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.lp_ball_bounds-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1",
+  "depth": 3,
+  "title": "Scaled L^p norm of H on sub-balls: monotonicity and the Hoelder bound for the L^1 norm",
+  "statement": "Let n >= 1, l >= 0, p > n, U any set, V a contract rectifiable n-varifold in U with weight mu, H : R^(n+l) -> R^(n+l) any function, z in R^(n+l), and r, rho real with 0 < r <= rho and B_r(z) contained in B_rho(0) (closed balls). Write K(xi, sigma) := V.scaledLpNorm H p xi sigma = (ofReal(sigma^(p-n)) * lower integral over B_sigma(xi) of |H|^p d mu)^(1/p), a value in [0, infinity]. Then:\n(K1) K(z, r) <= K(0, rho);\n(K2) for every delta >= 0 with K(0, rho) <= ofReal(delta) and mu(B_r(z)) < infinity, the Bochner integral over B_r(z) of |H| d mu is at most delta * rho^(n/p - 1) * mu(B_r(z))^(1 - 1/p), with mu(B_r(z)) taken as a real number.",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (z : Amb n ℓ) (r ρ : ℝ), 0 < r → r ≤ ρ → closedBall z r ⊆ closedBall 0 ρ → V.scaledLpNorm H p z r ≤ V.scaledLpNorm H p 0 ρ ∧ ∀ δ : ℝ, 0 ≤ δ → V.scaledLpNorm H p 0 ρ ≤ ENNReal.ofReal δ → V.weight (closedBall z r) < ⊤ → ∫ x in closedBall z r, ‖H x‖ ∂V.weight ≤ δ * ρ ^ ((n : ℝ) / p - 1) * (V.weight (closedBall z r)).toReal ^ (1 - 1 / p)",
+  "lean_name": "any_radius_gr_scaled_lp_ball_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-lp-ball-bounds-a1-a1"
+}

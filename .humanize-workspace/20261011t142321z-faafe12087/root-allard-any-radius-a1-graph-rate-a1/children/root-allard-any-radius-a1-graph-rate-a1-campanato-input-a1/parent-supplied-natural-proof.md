@@ -1,0 +1,112 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.allard_any_radius-a1.graph_rate-a1`
+- Child DAG node: `root.allard_any_radius-a1.graph_rate-a1.campanato_input-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Notation. mu := V.weight, p_y := V.tangentProj y, P_S := S.starProjection, B := closedBall z r, zeta := F(z). (L.), (P.) and (T.) refer to la_basics, plane_projections and tilt_integrals. Integrals of [0, infinity]-valued functions are lower integrals. They are monotone under a.e. inequalities and in the domain for arbitrary functions.
+
+1. If r < 0, then B is empty and the left side is 0, which is at most the right side. Assume r >= 0. Then z lies in B, so hsNorm(Du(z)) <= 1/4. B is closed, hence Borel, and B is contained in Omega.
+
+2. Borel representative. Since p is mu-a.e. strongly measurable, there is a strongly measurable, hence Borel, map p~ with p~ = p mu-a.e. Its disagreement set {y : p_y != p~_y} is mu-null, hence contained in a Borel set N' with mu(N') = 0.
+
+3. Along the graph.
+- u is continuous on Omega, which contains B, and graphPoint (linear in both arguments, (L1), (L3), finite-dimensional) and q are continuous. So F is continuous on B, hence a.e.-measurable for Lebesgue measure restricted to B.
+- Apply (E1) with A = B and the Borel function g = indicator of N': integral_B 1_{N'}(F(x)) dx <= (mu restricted to F(B))(N') <= mu(N') = 0.
+- The integrand is nonnegative and a.e.-measurable on B with zero integral, so F(x) is not in N', i.e. p_{F(x)} = p~_{F(x)}, for a.e. x in B.
+- Since B is contained in Omega, (E2) also holds for a.e. x in B.
+
+4. Pointwise bound. For a.e. x in B (step 3), p~_{F(x)} = p_{F(x)} = P_{Du(x)}. Also hsNorm(Du(x)) <= 1/4 (hypothesis, x in B), hsNorm(Du(z)) <= 1/4 (step 1) and P_{Du(z)} = P_S (hypothesis).
+- By (P4): hsNorm(Du(x) - Du(z)) <= hsNorm(P_{Du(x)} - P_{Du(z)}) = hsNorm(p~_{F(x)} - P_S).
+- Both sides are >= 0, so squaring and (L8b) give hsNormSq(Du(x) - Du(z)) <= hsNormSq(p~_{F(x)} - P_S).
+- Put G(y) := ofReal(hsNormSq(p~_y - P_S)). G is Borel, since p~ is Borel and M -> hsNormSq(M - P_S) is continuous.
+Thus ofReal(hsNormSq(Du(x) - Du(z))) <= G(F(x)) for a.e. x in B.
+
+5. Transfer.
+(a) By step 4 and monotonicity: integral_B ofReal(hsNormSq(Du(x) - Du(z))) dx <= integral_B G(F(x)) dx.
+(b) By (E1) with A = B and g = G: integral_B G(F(x)) dx <= integral_{F(B)} G d mu.
+(c) By hypothesis |F(x) - zeta| <= s for x in B, so F(B) is contained in closedBall zeta s. As G >= 0: integral_{F(B)} G d mu <= integral_{closedBall zeta s} G d mu.
+(d) Since p~ = p mu-a.e., G(y) = ofReal(hsNormSq(p_y - P_S)) for mu-a.e. y. So the last integral equals integral_{closedBall zeta s} ofReal(hsNormSq(p_y - P_S)) d mu(y).
+(e) By (T1) with T = S (s > 0, mu(closedBall zeta s) < infinity, p a.e. strongly measurable), this equals ofReal(s^n V.tiltExcess zeta s S).
+Chaining (a)-(e) proves the claim.
+
+## Key steps
+
+1. Trivial if r < 0; otherwise z lies in B_r(z), so hsNorm(Du(z)) <= 1/4
+2. Borel representative p~ and (E1) with the indicator of N': p(F x) = p~(F x) a.e. on B_r(z); (E2) holds a.e. on B_r(z)
+3. (Gp): |Du(x) - Du(z)| <= |P_{Du x} - P_{Du z}| = |p~(F x) - P_S|
+4. (E1) with G = ofReal(hsNormSq(p~ - P_S)), F(B_r(z)) contained in B_s(F z), and p~ = p mu-a.e.
+5. (T1) turns the mu-integral into ofReal(s^n E(F z, s, S))
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; cmp <snapshot>/project/GMT/Ch05/Submission.lean GMT/Ch05/Submission.lean; diff GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `python3 -I scan of every lean_name field in dag.json and nodes/*/*.json for the 8 any_radius_gr_* names; grep -rl any_radius_gr_ --include=*.json <run>; git grep -c any_radius_gr_ <ref> -- '*.lean' over all refs; rg -l any_radius_gr_ <snapshot>/project`
+- `python3 -I dump of nodes/root-allard-any-radius-a1/decomposition-v2.json (sibling statements tangent_ae, rescaled_varifold, monotonicity_bounds, tilt_height_l1, tilt_iteration, graph_comparison, radial_height, campanato, pinching) and of this node's parent-child-handoff.json, decomposition-v1.json, decomposition-audit-v1.json, decomposition-review-receipt-v1.json`
+- `sed -n 200,210p and sed -n 515,530p <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean (integral_undef, integral_eq_lintegral_of_nonneg_ae)`
+- `rg -n 'theorem lintegral_mul_le_Lp_mul_Lq' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean; sed -n 195,215p of the same file`
+- `rg -n 'eLpNorm_le_eLpNorm_mul_rpow_measure_univ' <snapshot>/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/CompareExp.lean`
+- `grep -n 'theorem toReal_rpow|theorem ofReal_rpow_of_nonneg|theorem mul_rpow_of_nonneg' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean; grep -n 'ofReal_norm' <snapshot>/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean`
+- `grep -n 'theorem integral_map_equiv' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Bochner/*.lean; grep -n 'theorem lintegral_map_equiv' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/*.lean; grep -n 'theorem lintegral_mono_set' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/*.lean`
+- `lake build GMT.Ch05.Submission in /tmp/gr-v2-scratch/proj (fresh copy of the pinned snapshot project, packages symlinked to lake-packages-25730c7c)`
+- `lake env lean Checks/Types.lean and Checks/TypesV2.lean (the 8 child lean_statements from v1 and from the final v2 draft, plus the selected parent type)`
+- `lake env lean Checks/Iface.lean (14 sibling/child interface examples)`
+- `lake env lean Checks/LpBall.lean (complete proof of the frozen lp_ball_bounds type; #print axioms)`
+- `lake env lean Checks/Names.lean (#check of every Mathlib name cited in the corrected lp_ball_bounds proof)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/decomposition-review-receipt-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/CompareExp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project`
+- `/tmp/gr-v2-scratch/proj/Checks/Types.lean`
+- `/tmp/gr-v2-scratch/proj/Checks/TypesV2.lean`
+- `/tmp/gr-v2-scratch/proj/Checks/Iface.lean`
+- `/tmp/gr-v2-scratch/proj/Checks/LpBall.lean`
+- `/tmp/gr-v2-scratch/proj/Checks/Names.lean`
+
+Snapshot
+- Pinned at project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d.
+- Snapshot Contract.lean and Submission.lean are byte-identical to the workspace copies, and Submission equals Contract.
+
+Definitions that shape the split
+- scaledLpNorm = (ofReal(sigma^(p-n)) * lintegral over closedBall xi sigma of ‖H x‖ₑ^p)^(1/p).
+- tiltExcess = (sigma^n)^-1 times a Bochner integral.
+- lp_ball_bounds is stated for an arbitrary H (no measurability hypothesis), so its (K2) proof must split on the integrability of f = ‖H‖ itself.
+
+Mathlib facts behind the correction
+- integral_undef (Bochner/Basic.lean:204) applies to the actual integrand f.
+- integral_eq_lintegral_of_nonneg_ae (:515) needs only 0 <=ᵐ f and AEStronglyMeasurable f.
+- ENNReal.lintegral_mul_le_Lp_mul_Lq (MeanInequalities.lean:202) needs AEMeasurable of both factors.
+- ENNReal.toReal_rpow (Pow/NNReal.lean:962) is unconditional.
+- ofReal_norm replaces the deprecated ofReal_norm_eq_enorm (Normed/Group/Basic.lean:389).
+- IntegrableOn.aestronglyMeasurable does not exist; Integrable.aestronglyMeasurable is cited instead.
+- Change of variables along a MeasurableEquiv needs no measurability, which supports translate_identities: integral_map_equiv (Bochner/Basic.lean:1105) and lintegral_map_equiv (Lebesgue/Map.lean:94). Neither does lintegral_mono_set (Lebesgue/Basic.lean:98).
+
+No-match results
+- 'any_radius_gr_' occurs in 0 snapshot project files and in 0 .lean files on any git branch.
+- In dag.json and nodes/*/*.json it occurs only in this node's own v1 proposal, audit and receipt, so the 8 names are free.
+
+Lean
+- All 8 frozen child types and the parent type elaborate.
+- The full lp_ball_bounds proof compiles with only propext, Classical.choice and Quot.sound.
+- The 14 interface examples compile without sorry.

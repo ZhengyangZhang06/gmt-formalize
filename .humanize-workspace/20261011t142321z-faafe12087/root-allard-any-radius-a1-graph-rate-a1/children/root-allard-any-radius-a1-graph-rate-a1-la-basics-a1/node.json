@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1",
+  "depth": 3,
+  "title": "Graph coordinates, the rotated plane T_0 = q(R^n x {0}), and Hilbert-Schmidt norm basics",
+  "statement": "For all n, l >= 0 and every linear isometry q of R^(n+l) = Amb n l: write graphPoint(a, b) for the point of R^(n+l) whose first n coordinates are those of a in R^n and whose last l coordinates are those of b in R^l, T_0 := rotatedPlane q = q(horizontalPlane) with horizontalPlane = span{e_{castAdd l i} : i < n}, and P_{T_0} its orthogonal projection. Then (L1) graphPoint(a + a', b + b') = graphPoint(a, b) + graphPoint(a', b'); (L2) graphPoint(a - a', b - b') = graphPoint(a, b) - graphPoint(a', b'); (L3) graphPoint(t a, t b) = t graphPoint(a, b) for real t; (L4) |graphPoint(a, b)|^2 = |a|^2 + |b|^2; (L5) P_{T_0}(q(graphPoint(a, b))) = q(graphPoint(a, 0)); (L6) infDist(q(graphPoint(a, b)), T_0) = |b|; (L7) finrank T_0 = n; (L8) for all m, k and continuous linear M, N : R^m -> R^k, with hsNormSq M = sum_{i<m} |M e_i|^2 (standard basis) and hsNorm M = sqrt(hsNormSq M): (a) 0 <= hsNormSq M, (b) hsNorm(M)^2 = hsNormSq M, (c) hsNormSq(M + N) <= 2 hsNormSq M + 2 hsNormSq N, (d) hsNormSq(-M) = hsNormSq M, (e) hsNormSq M = 0 implies M = 0, (f) ||M|| <= hsNorm M, (g) hsNorm M <= sqrt(m) ||M|| (||.|| the operator norm); (L9) for every m and every linear subspace K of R^m, hsNormSq(K.starProjection) <= m.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint (a + a') (b + b') = graphPoint a b + graphPoint a' b') ∧ (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint (a - a') (b - b') = graphPoint a b - graphPoint a' b') ∧ (∀ (t : ℝ) (a : Rn n) (b : Rn ℓ), graphPoint (t • a) (t • b) = t • graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a (0 : Rn ℓ))) ∧ (∀ (a : Rn n) (b : Rn ℓ), infDist (q (graphPoint a b)) (rotatedPlane q : Set (Amb n ℓ)) = ‖b‖) ∧ Module.finrank ℝ (rotatedPlane q) = n ∧ (∀ (m k : ℕ) (M N : Rn m →L[ℝ] Rn k), 0 ≤ hsNormSq M ∧ hsNorm M ^ 2 = hsNormSq M ∧ hsNormSq (M + N) ≤ 2 * hsNormSq M + 2 * hsNormSq N ∧ hsNormSq (-M) = hsNormSq M ∧ (hsNormSq M = 0 → M = 0) ∧ ‖M‖ ≤ hsNorm M ∧ hsNorm M ≤ Real.sqrt m * ‖M‖) ∧ ∀ (m : ℕ) (K : Submodule ℝ (Rn m)), hsNormSq K.starProjection ≤ m",
+  "lean_name": "any_radius_gr_linear_algebra_basics",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-la-basics-a1-a1"
+}
