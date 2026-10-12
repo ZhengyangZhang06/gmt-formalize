@@ -794,6 +794,39 @@ theorem Submission.gaussGreenRep_riesz_pushforward_subtype : ∀ (N : ℕ) (U : 
     rw [hι.integral_map]
     simp only [Subtype.val_injective.extend_apply]
 
+/-- **Riesz representation on an open set `U ⊆ ℝᴺ`** (Simon Ch. 1, Theorem 4.14,
+`chapter-01.txt` lines 1654–1663, applied with `X = U`, `H = ℝᴺ` as in Ch. 2, (2.1)–(2.2),
+`chapter-02.txt` lines 485–496). Zero extension identifies `C_c(U; ℝᴺ)` with the admissible
+fields, so `L f := Λ f̃` is linear and bounded on the unit fields supported in each compact
+`K ⊆ U`. As an open subset of `ℝᴺ`, `U` is Hausdorff, locally compact and second countable,
+hence `σ`-compact, and the Riesz representation with a Borel unit field gives `(μ₀, ν₀)` on `U`
+with `L f = ∫_U ⟨f, ν₀⟩ dμ₀`. Pushing forward along the inclusion `ι : U → ℝᴺ` gives `(μ, ν)`,
+and for admissible `g` with restriction `f = g ∘ ι`:
+`Λ g = L f = ∫_U ⟨g ∘ ι, ν₀⟩ dμ₀ = ∫ ⟨g, ν⟩ dμ`. -/
+theorem Submission.gaussGreenRep_riesz_on_open : ∀ (N : ℕ) (U : Set (Rn N)) (Λ : (Rn N → Rn N) → ℝ), IsOpen U → (∀ g h : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Continuous h → HasCompactSupport h → tsupport h ⊆ U → Λ (g + h) = Λ g + Λ h) → (∀ (c : ℝ) (g : Rn N → Rn N), Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ (c • g) = c * Λ g) → (∀ K : Set (Rn N), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ g : Rn N → Rn N, Continuous g → tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → Λ g ≤ C) → ∃ (μ : Measure (Rn N)) (ν : Rn N → Rn N), μ Uᶜ = 0 ∧ (∀ K : Set (Rn N), IsCompact K → K ⊆ U → μ K < ∞) ∧ AEStronglyMeasurable ν μ ∧ (∀ᵐ x ∂μ, ‖ν x‖ = 1) ∧ ∀ g : Rn N → Rn N, Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ g = ∫ x, inner ℝ (g x) (ν x) ∂μ := by
+  intro N U Λ hU hadd hsmul hbd
+  -- Steps 2–4: the functional `L f := Λ f̃` on `C_c(U; ℝᴺ)`, bounded on unit fields supported in
+  -- each compact `K ⊆ U`; each admissible `g` is the zero extension of some `f = g ∘ ι`.
+  obtain ⟨L, hLbd, hLres⟩ :=
+    Submission.gaussGreenRep_riesz_zero_extension_functional N U Λ hU hadd hsmul hbd
+  -- Step 1: `U` is locally compact (open in `ℝᴺ`), hence `σ`-compact (second countable).
+  have : LocallyCompactSpace U := hU.locallyCompactSpace
+  have : SigmaCompactSpace U := sigmaCompactSpace_of_locallyCompact_secondCountable
+  -- Steps 5–6: Riesz representation of `L` on `U` with a Borel unit field `ν₀`.
+  obtain ⟨μ₀, ν₀, hμ₀, hν₀, hν₀1, hL⟩ :=
+    Submission.gaussGreenRep_riesz_sigmaCompact_borel U N L hLbd
+  -- Step 7: push `(μ₀, ν₀)` forward along the inclusion `ι : U → ℝᴺ` of the Borel set `U`.
+  obtain ⟨μ, ν, hμU, hμK, hν, hν1, hint⟩ :=
+    Submission.gaussGreenRep_riesz_pushforward_subtype N U μ₀ ν₀ hU.measurableSet hμ₀
+      hν₀.aestronglyMeasurable hν₀1
+  refine ⟨μ, ν, hμU, hμK, hν, hν1, fun g hg hgc hgU ↦ ?_⟩
+  -- Step 7(e): with `f = g ∘ ι`, `Λ g = L f = ∫_U ⟨g ∘ ι, ν₀⟩ dμ₀ = ∫ ⟨g, ν⟩ dμ`.
+  obtain ⟨f, hf, hLf⟩ := hLres g hg hgc hgU
+  calc Λ g = L f := hLf.symm
+    _ = ∫ y, inner ℝ (f y) (ν₀ y) ∂μ₀ := hL f
+    _ = ∫ y, inner ℝ (g ↑y) (ν₀ y) ∂μ₀ := by simp only [hf]
+    _ = ∫ x, inner ℝ (g x) (ν x) ∂μ := (hint g).symm
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
