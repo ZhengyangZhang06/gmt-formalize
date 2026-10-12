@@ -1,0 +1,104 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.affine_approximation-a1.lp_monotonicity-a1.cutoff_squeeze-a1`
+- Child DAG node: `root.affine_approximation-a1.lp_monotonicity-a1.cutoff_squeeze-a1.pairing_continuity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: last sentence of step 3 of the parent proof (continuity of L by dominated convergence with the bound S |H| 1_{B_S(y)}).
+
+Notation:
+- K := B_S(y), the closed ball.
+- nu := mu restricted to K. By hypothesis H is nu-integrable.
+- R* := S/(1 + epsilon). Then t < R*, because 1 + epsilon > 0 and (1 + epsilon) t < S.
+
+1. Facts about phi. 0 <= phi <= 1, because phi(s) >= phi(max(s, 1 + epsilon)) = 0 and phi(s) <= phi(min(s, 1)) = 1 (phi nonincreasing). phi is continuous, being C^1.
+
+2. Support. Let s be in (0, R*) and x not in K. Then r = |x - y| > S > (1 + epsilon) s, so r/s >= 1 + epsilon and phi(r/s) = 0. Hence for every s in (0, R*) the integrand of L(s) vanishes outside K, and L(s) = integral phi(r/s)(x - y).H dnu.
+
+3. Dominated continuity for the nu-integral at t. We check the hypotheses of the continuity theorem for parametric integrals (dominated convergence; Mathlib: continuousAt_of_dominated).
+ - Measurability. For every s, x -> phi(r/s) is continuous. The map x -> (x - y).H(x) is the inner product of the continuous map x -> x - y and the nu-a.e. strongly measurable H, so it is nu-a.e. strongly measurable. Hence their product is nu-a.e. strongly measurable.
+ - Domination. Let s be arbitrary and x in K (nu-almost every x is in K), so |x - y| <= S. By step 1 and Cauchy-Schwarz, |phi(r/s)(x - y).H(x)| <= 1 * |x - y| |H(x)| <= S |H(x)|.
+ - The dominating function S |H| is nu-integrable.
+ - Pointwise continuity. For every x, s -> phi(r/s)(x - y).H(x) is continuous at t, because t != 0 and phi is continuous.
+ Hence s -> integral phi(r/s)(x - y).H dnu is continuous at t.
+
+4. By step 2, this function coincides with L on the neighbourhood (0, R*) of t. So L is continuous at t. QED
+
+## Key steps
+
+1. 0 <= phi <= 1 and phi is continuous.
+2. For 0 < s < S/(1+epsilon) the integrand vanishes outside B_S(y), so L(s) equals the integral against nu = mu restricted to B_S(y).
+3. The integrands are measurable, dominated by S|H| (Cauchy-Schwarz with |x-y| <= S on the ball) and continuous in s, so dominated convergence gives continuity at t.
+4. The nu-integral agrees with L near t, so L is continuous at t.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `timeout 300 rg -n "aal_cfs_|aal_cutoff_integrating_factor_squeeze|hasDerivAt_cutoff_integral|integrating_factor_deriv|squeeze_of_deriv" <snapshot>/project  (exit 1: no match)`
+- `diff <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; diff <snapshot>/project/GMT/Ch05/Submission.lean GMT/Ch05/Contract.lean  (both identical)`
+- `timeout 600 rg -n "^theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le|^theorem continuousAt_of_dominated|^theorem integral_hasDerivAt_right|^theorem intervalIntegrable_rpow'|^theorem monotoneOn_of_deriv_nonneg|^theorem setIntegral_eq_integral_of_forall_compl_eq_zero|^theorem integrableOn_iff_integrable_of_support_subset|^theorem div₀|^lemma Antitone.deriv_nonpos|^theorem abs_integral_le_integral_abs|^theorem integral_mono_interval|^theorem mono_fun'|^theorem ContDiff.continuous_deriv_one|^lemma Integrable.of_bound" <snapshot>/mathlib/Mathlib`
+- `timeout 300 rg -n "integral_mono_ae\b|integral_nonneg_of_ae\b" <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Bochner/`
+- `git -C .lake/packages/mathlib rev-parse HEAD`
+- `grep -n "^theorem|^def|^private theorem" .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/{FirstVariation,LpCancellation}.lean`
+- `sed -n 215,560p book/chapter-04.txt (Simon Ch. 4, 3.1-3.17 and 4.1-4.8)`
+- `python3 -I: dag.json lean_name collision check; git for-each-ref (607 refs) + git grep -l -e aal_cfs_ -- '*.lean' (no hits)`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement on the four child types`
+- `lake env lean /tmp/claude-cfs/src/{Stmts,Assembly,All,AllHB}.lean against the contract olean (statements; sorry-free parent assembly; full proofs with #print axioms; #count_heartbeats)`
+- `lake env lean --root=/tmp/claude-cfs/root -o .../GMT/Ch05/Submission.olean (contract + all five declarations) and gmt-compare.py child_modules NodeChallenge/NodeSolution compilation for all five types`
+- `python3 -I leafcheck.py (harness check_source_delta replay for each single-theorem insertion)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrability/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpCancellation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_lmono/dohr_lmono_fixed_cutoff_monotone.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/aal_cfs/aal_cfs_split_all.lean.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/aal_cfs/README.md`
+
+Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The installed Mathlib has the same revision. The snapshot Contract and Submission are byte-identical to the workspace Contract.
+
+The snapshot project has no declaration for this node or its proposed children (rg exit 1), so no project declaration is reused.
+
+Every Mathlib result the child proofs use exists at the pinned revision (paths under mathlib/Mathlib):
+- hasDerivAt_integral_of_dominated_loc_of_deriv_le (Analysis/Calculus/ParametricIntegral.lean:286);
+- continuousAt_of_dominated (MeasureTheory/Integral/Bochner/Basic.lean:458);
+- integral_mono_ae and integral_nonneg_of_ae (Bochner/Basic.lean:664, 644);
+- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486);
+- integrableOn_iff_integrable_of_support_subset (Integral/IntegrableOn.lean:462) and Integrable.of_bound (:171);
+- intervalIntegral.integral_hasDerivAt_right (IntervalIntegral/FundThmCalculus.lean:725);
+- IntervalIntegrable.mono_fun', abs_integral_le_integral_abs and integral_mono_interval (IntervalIntegral/Basic.lean:291, 1393, 1405);
+- intervalIntegrable_rpow' (SpecialFunctions/Integrability/Basic.lean:47);
+- monotoneOn_of_deriv_nonneg (Calculus/Deriv/MeanValue.lean:411);
+- Antitone.deriv_nonpos (Deriv/Slope.lean:214);
+- ContDiff.continuous_deriv_one (ContDiff/Deriv.lean:113);
+- AEStronglyMeasurable.div₀ (StronglyMeasurable/AEStronglyMeasurable.lean:332).
+
+Patterns adapted, not reused as declarations:
+- SimonGMT Chapter04 hasDerivAt_integral_scaledRadialCutoff_mul (FirstVariation.lean:680) and HasGeneralizedMeanCurvatureIn.cancelledCutoffMass_squeeze (LpCancellation.lean:400). The latter integrates a derivative comparison with a truncated weight, the route child 4 follows. Both are stated for SimonGMT's own varifold structure, so they do not apply here.
+- The kernel-checked scratch proof GMT/Scratch/dohr_lmono/dohr_lmono_fixed_cutoff_monotone.lean.txt, an inequality version of children 1-3.
+
+The printed Simon Ch. 4, 3.4-3.5 and 4.3-4.4 (book/chapter-04.txt) matches the argument. Its prefactors in 3.5 are reversed and are used here in corrected form.
+
+I wrote complete sorry-free Lean proofs of all four children and of the frozen parent type assembled from them (GMT/Scratch/aal_cfs). They use only propext, Classical.choice and Quot.sound. Every piece is a single theorem accepted by check_source_delta. gmt-compare.py challenge and solution modules compile for all five types. The proposed names are unreserved in dag.json and absent from all 607 git refs.
