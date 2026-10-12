@@ -582,6 +582,139 @@ theorem ble_sac_ray_sq_bound : ∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1
     _ = _ := by
         rw [ENNReal.ofReal_pow (by linarith)]
         ring
+/-- **Averaged dilation over an annulus** (function term and kernel bound of the boundary-layer
+estimate in the proof of Simon Ch. 5, Lemma 3.1, p. 114).  For measurable `F : ℝⁿ → [0, ∞]`,
+`1/2 ≤ r < 1`, `s > 0`, `τ ≥ 1/2` and the annulus `A = B̆_s(0) \ B̆_{rs}(0)`,
+`∫_{[τ,1]} ∫_A F(t x) dx dt ≤ 2^{n+1} (1 - r) ∫_{B̆_s(0)} F(y) dy`.
+Proof: the dilation formula turns the inner integral into `∫ F(y) K(y, t) dy` with
+`K(y, t) = t^{-n} 1_S(y, t)`, `S = {(y, t) : r s t ≤ |y| < s t}`; by Tonelli the left side is
+`∫ F(y) k(y) dy` with `k(y) = ∫_{[τ,1]} K(y, t) dt`, and `k ≤ 2^{n+1} (1 - r) 1_{B̆_s(0)}`, since
+`k` vanishes off `B̆_s(0)`, `t^{-n} ≤ 2^n`, and `K(y, ·)` is supported in
+`(|y|/s, |y|/(r s)]`, an interval of length at most `2 (1 - r)`. -/
+theorem ble_sac_annulus_dilation_avg_le : ∀ (n : ℕ) (F : Rn n → ℝ≥0∞), Measurable F → ∀ r s τ : ℝ, 1 / 2 ≤ r → r < 1 → 0 < s → 1 / 2 ≤ τ → ∫⁻ t in Icc τ 1, ∫⁻ x in ball (0 : Rn n) s \ ball 0 (r * s), F (t • x) ≤ ENNReal.ofReal (2 ^ (n + 1) * (1 - r)) * ∫⁻ y in ball (0 : Rn n) s, F y := by
+  intro n F hF r s τ hr1 hr2 hs hτ
+  have hr0 : 0 < r := by linarith
+  -- Step 1: the kernel set `S` and the measurable weight `K(y, t) = t^{-n} 1_S(y, t)`.
+  set S : Set (Rn n × ℝ) := {p | r * s * p.2 ≤ ‖p.1‖ ∧ ‖p.1‖ < s * p.2} with hS_def
+  have hSm : MeasurableSet S := by
+    have h1 : Measurable fun p : Rn n × ℝ => r * s * p.2 := measurable_const.mul measurable_snd
+    have h2 : Measurable fun p : Rn n × ℝ => ‖p.1‖ := measurable_fst.norm
+    have h3 : Measurable fun p : Rn n × ℝ => s * p.2 := measurable_const.mul measurable_snd
+    exact (measurableSet_le h1 h2).inter (measurableSet_lt h2 h3)
+  set K : Rn n × ℝ → ℝ≥0∞ := fun p => ENNReal.ofReal ((p.2 ^ n)⁻¹) * S.indicator 1 p with hK_def
+  have hKm : Measurable K :=
+    (ENNReal.measurable_ofReal.comp ((measurable_snd.pow_const n).inv)).mul
+      (measurable_one.indicator hSm)
+  -- Step 2: for fixed `t ∈ [τ, 1]`, the dilation formula gives `∫_A F(t x) dx = ∫ F(y) K(y, t) dy`,
+  -- because `t⁻¹ y ∈ A ↔ (y, t) ∈ S`.
+  have step1 : ∀ t ∈ Icc τ 1, ∫⁻ x in ball (0 : Rn n) s \ ball 0 (r * s), F (t • x) =
+      ∫⁻ y, F y * K (y, t) := by
+    intro t ht
+    have ht0 : 0 < t := by linarith [ht.1]
+    rw [Submission.ble_sac_lintegral_comp_smul n F _ t ht0]
+    have hpre : (fun y => t⁻¹ • y) ⁻¹' (ball (0 : Rn n) s \ ball 0 (r * s)) =
+        {y | (y, t) ∈ S} := by
+      ext y
+      simp only [mem_preimage, Set.mem_sdiff, mem_ball_zero_iff, norm_smul, Real.norm_eq_abs,
+        abs_inv, abs_of_pos ht0, not_lt, Set.mem_ofPred_eq, hS_def]
+      constructor
+      · rintro ⟨h1, h2⟩
+        constructor
+        · rw [le_inv_mul_iff₀ ht0] at h2; linarith
+        · rw [inv_mul_lt_iff₀ ht0] at h1; linarith
+      · rintro ⟨h1, h2⟩
+        constructor
+        · rw [inv_mul_lt_iff₀ ht0]; linarith
+        · rw [le_inv_mul_iff₀ ht0]; linarith
+    have hSt : MeasurableSet {y : Rn n | (y, t) ∈ S} := measurable_prodMk_right hSm
+    rw [hpre, ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, ← lintegral_indicator hSt]
+    congr 1
+    funext y
+    by_cases hy : (y, t) ∈ S
+    · rw [indicator_of_mem (show y ∈ {y : Rn n | (y, t) ∈ S} from hy)]
+      simp only [hK_def, indicator_of_mem hy, Pi.one_apply, mul_one]
+      ring
+    · rw [indicator_of_notMem (show y ∉ {y : Rn n | (y, t) ∈ S} from hy)]
+      simp only [hK_def, indicator_of_notMem hy, mul_zero]
+  -- Step 4: the kernel bound `k(y) = ∫_{[τ,1]} K(y, t) dt ≤ 2^{n+1} (1 - r) 1_{B̆_s(0)}(y)`.
+  have kernel : ∀ y : Rn n, ∫⁻ t in Icc τ 1, K (y, t) ≤
+      (ball (0 : Rn n) s).indicator (fun _ => ENNReal.ofReal (2 ^ (n + 1) * (1 - r))) y := by
+    intro y
+    by_cases hy : y ∈ ball (0 : Rn n) s
+    · rw [indicator_of_mem hy]
+      rw [mem_ball_zero_iff] at hy
+      -- For `|y| < s`: `K(y, t) ≤ 2^n 1_{(|y|/s, |y|/(r s)]}(t)` for `t ∈ [τ, 1]`.
+      have hbound : ∀ t ∈ Icc τ 1, K (y, t) ≤
+          (Ioc (‖y‖ / s) (‖y‖ / (r * s))).indicator (fun _ => ENNReal.ofReal (2 ^ n)) t := by
+        intro t ht
+        have ht0 : 0 < t := by linarith [ht.1]
+        by_cases hS : (y, t) ∈ S
+        · have hmem : t ∈ Ioc (‖y‖ / s) (‖y‖ / (r * s)) := by
+            constructor
+            · rw [div_lt_iff₀ hs]; linarith [hS.2]
+            · rw [le_div_iff₀ (by positivity)]; linarith [hS.1]
+          rw [indicator_of_mem hmem]
+          simp only [hK_def, indicator_of_mem hS, Pi.one_apply, mul_one]
+          apply ENNReal.ofReal_le_ofReal
+          rw [← inv_pow]
+          apply pow_le_pow_left₀ (by positivity)
+          rw [inv_le_comm₀ ht0 (by norm_num)]
+          linarith [ht.1]
+        · simp [hK_def, indicator_of_notMem hS]
+      -- The support interval has length `|y| (1 - r) / (r s) ≤ 2 (1 - r)`.
+      have hlen : ‖y‖ / (r * s) - ‖y‖ / s ≤ 2 * (1 - r) := by
+        rw [show ‖y‖ / (r * s) - ‖y‖ / s = ‖y‖ * (1 - r) / (r * s) by field_simp]
+        rw [div_le_iff₀ (by positivity)]
+        have h1 : ‖y‖ * (1 - r) ≤ s * (1 - r) := mul_le_mul_of_nonneg_right hy.le (by linarith)
+        have h2 : s * (1 - r) ≤ 2 * (1 - r) * (r * s) := by
+          nlinarith [mul_nonneg (mul_nonneg hs.le (by linarith : (0:ℝ) ≤ 1 - r))
+            (by linarith : (0:ℝ) ≤ 2 * r - 1)]
+        linarith
+      calc ∫⁻ t in Icc τ 1, K (y, t)
+            ≤ ∫⁻ t in Icc τ 1, (Ioc (‖y‖ / s) (‖y‖ / (r * s))).indicator
+                (fun _ => ENNReal.ofReal (2 ^ n)) t := setLIntegral_mono' measurableSet_Icc hbound
+        _ ≤ ∫⁻ t, (Ioc (‖y‖ / s) (‖y‖ / (r * s))).indicator (fun _ => ENNReal.ofReal (2 ^ n)) t :=
+            setLIntegral_le_lintegral _ _
+        _ = ENNReal.ofReal (2 ^ n) * ENNReal.ofReal (‖y‖ / (r * s) - ‖y‖ / s) := by
+            rw [lintegral_indicator_const measurableSet_Ioc, Real.volume_Ioc]
+        _ ≤ ENNReal.ofReal (2 ^ n) * ENNReal.ofReal (2 * (1 - r)) := by
+            gcongr
+        _ = ENNReal.ofReal (2 ^ (n + 1) * (1 - r)) := by
+            rw [← ENNReal.ofReal_mul (by positivity)]
+            congr 1
+            ring
+    · -- For `|y| ≥ s`: `s t ≤ s ≤ |y|`, so `(y, t) ∉ S` and `k(y) = 0`.
+      rw [indicator_of_notMem hy]
+      have hz : ∀ t ∈ Icc τ 1, K (y, t) = 0 := by
+        intro t ht
+        have hS : (y, t) ∉ S := by
+          rintro ⟨_, h2⟩
+          rw [mem_ball_zero_iff, not_lt] at hy
+          nlinarith [ht.2]
+        simp only [hK_def, indicator_of_notMem hS, mul_zero]
+      rw [setLIntegral_congr_fun measurableSet_Icc hz, lintegral_zero]
+  -- Steps 3 and 5: Tonelli, then integrate the kernel bound against `F`.
+  have hmeas : AEMeasurable (Function.uncurry fun (t : ℝ) (y : Rn n) => F y * K (y, t))
+      ((volume.restrict (Icc τ 1)).prod volume) :=
+    ((hF.comp measurable_snd).mul (hKm.comp (measurable_snd.prodMk measurable_fst))).aemeasurable
+  calc ∫⁻ t in Icc τ 1, ∫⁻ x in ball (0 : Rn n) s \ ball 0 (r * s), F (t • x)
+        = ∫⁻ t in Icc τ 1, ∫⁻ y, F y * K (y, t) := setLIntegral_congr_fun measurableSet_Icc step1
+    _ = ∫⁻ y, ∫⁻ t in Icc τ 1, F y * K (y, t) := lintegral_lintegral_swap hmeas
+    _ = ∫⁻ y, F y * ∫⁻ t in Icc τ 1, K (y, t) := by
+        congr 1
+        funext y
+        exact lintegral_const_mul _ (hKm.comp measurable_prodMk_left)
+    _ ≤ ∫⁻ y, F y * (ball (0 : Rn n) s).indicator
+          (fun _ => ENNReal.ofReal (2 ^ (n + 1) * (1 - r))) y :=
+        lintegral_mono (fun y => by gcongr; exact kernel y)
+    _ = ∫⁻ y in ball (0 : Rn n) s, F y * ENNReal.ofReal (2 ^ (n + 1) * (1 - r)) := by
+        rw [← lintegral_indicator measurableSet_ball]
+        congr 1
+        funext y
+        by_cases hy : y ∈ ball (0 : Rn n) s
+        · simp [indicator_of_mem hy]
+        · simp [indicator_of_notMem hy]
+    _ = _ := by rw [lintegral_mul_const _ hF, mul_comm]
 
 end Submission
 
