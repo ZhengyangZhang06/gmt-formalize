@@ -698,6 +698,31 @@ theorem Submission.ts_pwb_lusin_compact_cover : ∀ (n ℓ : ℕ) (μ : Measure 
   by_cases h : y ∈ A''
   · exact Or.inr ⟨h, hyK⟩
   · exact Or.inl ⟨hyA, h⟩
+/-- **Density points over a Lipschitz image (Lebesgue density theorem and Simon Ch. 2, 1.8(i)).**
+If `C ⊆ ℝⁿ` is Borel and `F : ℝⁿ → ℝ^{n+ℓ}` is Lipschitz, then for `Hⁿ`-a.e. `x`, every `w ∈ C`
+with `F(w) = x` is a Lebesgue density point of `C` (closed balls, quotient in `[0, ∞]`). -/
+theorem Submission.ts_pwb_density_points_of_image_ae : ∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ), MeasurableSet C → (∃ K : NNReal, LipschitzWith K F) → ∀ᵐ x ∂(μHE[n] : Measure (Ambient n ℓ)), ∀ w ∈ C, F w = x → Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1) := by
+  intro n ℓ C F hC ⟨κ, hF⟩
+  -- `Z`: the points of `C` that are not Lebesgue density points of `C`.
+  set Z : Set (EuclideanSpace ℝ (Fin n)) := {w | ¬ Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1)} ∩ C with hZ
+  -- Lebesgue density theorem (Besicovitch): `Lⁿ ⌞ C`-a.e. point is a density point, so `Lⁿ(Z) = 0`.
+  have hZ0 : volume Z = 0 := by
+    have h := Besicovitch.ae_tendsto_measure_inter_div (volume : Measure (EuclideanSpace ℝ (Fin n))) C
+    rw [ae_iff, Measure.restrict_apply' hC] at h
+    exact h
+  -- Lipschitz image bound with `μHE[n] = Lⁿ` on `ℝⁿ`: `Hⁿ(F(Z)) ≤ κⁿ Lⁿ(Z) = 0`.
+  have hFZ : (μHE[n] : Measure (Ambient n ℓ)) (F '' Z) = 0 := by
+    have h1 := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+      (A := Z) n (hF.lipschitzOnWith (s := Z))
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hZ0, mul_zero] at h1
+    exact le_antisymm h1 bot_le
+  -- Every `x` violating the conclusion is `F(w)` for some `w ∈ Z`.
+  rw [ae_iff]
+  refine measure_mono_null ?_ hFZ
+  intro x hx
+  simp only [not_forall, mem_ofPred_eq] at hx
+  obtain ⟨w, hwC, hFw, hnt⟩ := hx
+  exact ⟨w, ⟨hnt, hwC⟩, hFw⟩
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
