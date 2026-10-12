@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2e95d32aaf25f6e4b547a8e7710dbc13bed525742311fdfcc2f1e61cdc753535",
+  "git_delta": {
+    "base_commit": "3ad576f3b5dfa6c1fe6733f976622388a50d1c73",
+    "candidate_commit": "154e533415986d3c854c9e81b1c1ad912be09824",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_gpd_graph_plane_finrank",
+    "diff_sha256": "1241df4ec7f793b14236ec993e4d3d9330d35ddc5a06eb755f083dcab5dafbda",
+    "source_sha256": "082f77b8d7b4e5752de814e74ebeee0246124f62ecf013f19a1ceca93f22045e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_gpd_graph_plane_finrank",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ), Module.finrank ℝ (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v)))) = n",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
