@@ -770,6 +770,300 @@ theorem exists_smooth_cutoff_half_ball_grad_le : ∀ (m : ℕ) (ξ : Rn m) (ρ :
   · -- The profile is `3`-Lipschitz, so `|Dζ(x)| ≤ 3/ρ`.
     have h := Submission.norm_fderiv_radial_profile_le_of_lipschitzWith m ξ ρ 3 φ hρ hφ_lip x
     rwa [NNReal.coe_ofNat] at h
+/-- Simon Ch. 5, proof of Theorem 4.5 (p. 118), graph coordinates: writing `q⁻¹ x = (a(x), b(x))`
+with `a(x) ∈ ℝⁿ` the first block of coordinates (`EuclideanSpace.finAddEquivProd`), the graph point
+`q(x', y)` has `a = x'`; in particular `a(F(x')) = x'` for the graph map `F(x') = q(x', f(x'))`. -/
+theorem ted_gwe_fst_symm_graphPoint : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (x : Rn n) (y : Rn ℓ), (EuclideanSpace.finAddEquivProd (q.symm (q (graphPoint x y)))).1 = x := by
+  intro n ℓ q x y
+  rw [LinearIsometryEquiv.symm_apply_apply]
+  ext i
+  simp [graphPoint]
+/-- Simon Ch. 5, proof of Theorem 4.5 (pp. 118–119): the integrand `∇g(a(x)) · ∇ζ(a(x))` of (12),
+read on `ℝ^{n+ℓ}` through `q⁻¹ x = (a(x), b(x))`, is Borel. Gradients are measurable
+(`measurable_fderiv`, followed by the Riesz isometry `(toDual ℝ ℝⁿ)⁻¹`) and `a` is continuous. -/
+theorem ted_gwe_measurable_inner_gradient : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (g ζ : Rn n → ℝ), Measurable fun x : Amb n ℓ => inner ℝ (gradient g (EuclideanSpace.finAddEquivProd (q.symm x)).1) (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) := by
+  intro n ℓ q g ζ
+  have hgrad : ∀ u : Rn n → ℝ, Measurable (gradient u) := fun u => by
+    have e : gradient u = fun x => (InnerProductSpace.toDual ℝ (Rn n)).symm (fderiv ℝ u x) := rfl
+    rw [e]
+    exact (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.measurable.comp
+      (measurable_fderiv ℝ u)
+  have ha : Measurable fun x : Amb n ℓ => (EuclideanSpace.finAddEquivProd (q.symm x)).1 :=
+    (continuous_fst.comp
+      (EuclideanSpace.finAddEquivProd.continuous.comp q.symm.continuous)).measurable
+  exact continuous_inner.measurable2 ((hgrad g).comp ha) ((hgrad ζ).comp ha)
+/-- Simon Ch. 5, 4.1 (p. 115): the tilt-excess integrand `|p_{T_x M} − p_T|²` is `μ_V`-integrable on
+each compact `K ⊆ U` once `x ↦ p_{T_x M}` is `μ_V`-a.e. strongly measurable. It is bounded by
+`4(n + ℓ)`, because `p_{T_x M}` is an orthogonal projection or `0` and `|A|² ≤ (n + ℓ)‖A‖²`;
+and `μ_V(K) = ∫_{K ∩ M} θ dHⁿ < ∞` by the local integrability of `θ`. -/
+theorem ted_gwe_integrableOn_tilt : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (T : Submodule ℝ (Amb n ℓ)) (K : Set (Amb n ℓ)), IsCompact K → K ⊆ U → IntegrableOn (fun x => hsNormSq (V.tangentProj x - T.starProjection)) K V.weight := by
+  intro n ℓ U V hmeas T K hK hKU
+  -- `μ_V(K) = ∫_{K ∩ M} θ dHⁿ < ∞`
+  have hKfin : V.weight K ≠ ∞ := by
+    rw [RectifiableVarifold.weight, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact (V.integrableOn_mult K hK hKU).setLIntegral_lt_top.ne
+  -- `|A|² = Σᵢ |A eᵢ|² ≤ (n + ℓ) ‖A‖²`
+  have hhs : ∀ A : Amb n ℓ →L[ℝ] Amb n ℓ, hsNormSq A ≤ (n + ℓ : ℕ) * ‖A‖ ^ 2 := by
+    intro A
+    calc hsNormSq A ≤ ∑ _i : Fin (n + ℓ), ‖A‖ ^ 2 := by
+          refine Finset.sum_le_sum fun i _ => pow_le_pow_left₀ (norm_nonneg _) ?_ 2
+          simpa using A.le_opNorm (EuclideanSpace.single i (1 : ℝ))
+      _ = (n + ℓ : ℕ) * ‖A‖ ^ 2 := by simp
+  -- `‖p_{T_x M}‖ ≤ 1`: it is an orthogonal projection where the tangent space exists, else `0`
+  have hp : ∀ x, ‖V.tangentProj x‖ ≤ 1 := by
+    intro x
+    unfold RectifiableVarifold.tangentProj
+    split_ifs
+    · exact Submodule.starProjection_norm_le _
+    · simp
+  have hcont : Continuous fun A : Amb n ℓ →L[ℝ] Amb n ℓ => hsNormSq (A - T.starProjection) := by
+    unfold hsNormSq
+    fun_prop
+  refine Measure.integrableOn_of_bounded (M := (n + ℓ : ℕ) * 2 ^ 2) hKfin
+    (hcont.comp_aestronglyMeasurable hmeas) (ae_of_all _ fun x => ?_)
+  rw [Real.norm_of_nonneg (show 0 ≤ hsNormSq (V.tangentProj x - T.starProjection) from
+    Finset.sum_nonneg fun _ _ => sq_nonneg _)]
+  refine (hhs _).trans ?_
+  gcongr
+  calc ‖V.tangentProj x - T.starProjection‖ ≤ ‖V.tangentProj x‖ + ‖T.starProjection‖ :=
+        norm_sub_le _ _
+    _ ≤ 1 + 1 := add_le_add (hp x) (Submodule.starProjection_norm_le _)
+    _ = 2 := by norm_num
+/-- Simon Ch. 5, proof of Theorem 4.5 (pp. 117–119), displays (6)–(16), for a `1`-Lipschitz graph
+approximation `f` of `V` over `Bⁿ_{σ/2}`: the energy bound `∫_{B̆ⁿ_{3σ/8}} |Df|² ≤ C E σⁿ` and the
+approximate weak equation `|∫_{B̆ⁿ_{σ/4}} ∇f^j · ∇ζ| ≤ C (E + h + κ √E) M σⁿ`, `C = C(n, ℓ, K_b)`.
+For the graph map `F(x') = q(x', f(x'))` and `A ⊆ Bⁿ_{σ/2}`, `μ_V ⌞ F(A)` is the image under `F` of
+`W Lⁿ ⌞ A`, where `W = J_F θ(F)` a.e. (`gwe_varifold_graph_transfer`). Where `W ≠ 0`,
+`1 ≤ W ≤ (1 + κ)(1 + c_n |Df|²)` with `c_n = e^{n/2}/2` (`gwe_graph_jacobian_bounds`). Up to a
+null set, `F` maps `{W = 0} ∩ B̆ⁿ_{3σ/8}` into `(Γ \ spt V) ∪ (spt V \ M)`, `Γ = F(Bⁿ_{σ/2})`; since
+`J_F ≥ 1`, the area formula (`gwe_lipschitz_graph_area_formula`) gives
+`Lⁿ({W = 0} ∩ B̆ⁿ_{3σ/8}) ≤ K_b E σⁿ`. On the graph, `p_{T_x M}` projects onto the tangent plane
+of `F`, so (13) (`gwe_graph_tilt_algebra`) gives `∫_{B̆ⁿ_{3σ/8}} |Df|² W ≤ (ℓ + ½) E σⁿ`. The
+weighted weak equation (12) is `gwe_graph_tangential_estimate`, with error at most
+`(K_b E + E + h/4) M σⁿ`. Finally `gwe_weighted_energy_weak_equation` with `K₀ = K_b + ℓ + 1`
+removes the weight `W` ((14)–(16)). -/
+theorem ted_graph_weak_equation : ∀ n ℓ : ℕ, 1 ≤ n → ∀ Kb : ℝ, 0 ≤ Kb → ∃ C : ℝ, 0 < C ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → AEStronglyMeasurable V.tangentProj V.weight → ∀ σ : ℝ, 0 < σ → closedBall 0 σ ⊆ U → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), LipschitzOnWith 1 f (closedBall 0 (σ / 2)) → (∀ x ∈ closedBall (0 : Rn n) (σ / 2), ‖f x‖ ≤ σ / 16) → (∀ x ∈ V.support ∩ closedBall 0 σ, infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ σ / 16) → (∀ᵐ x ∂V.weight, ∀ x' ∈ ball (0 : Rn n) (σ / 2), x = q (graphPoint x' (f x')) → DifferentiableAt ℝ f x' → V.tangentProj x = (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (fderiv ℝ f x' v)))).starProjection) → ∀ κ E h : ℝ, 0 ≤ κ → κ ≤ 1 → 0 ≤ E → 0 ≤ h → (∀ᵐ x ∂V.weight, x ∈ closedBall 0 σ → 1 ≤ V.mult x ∧ V.mult x ≤ 1 + κ) → (μHE[n] : Measure (Amb n ℓ)) ((V.support ∩ closedBall 0 σ) \ V.carrier) = 0 → ∫ x in closedBall 0 σ, hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight ≤ E * σ ^ n → V.weight (closedBall 0 (σ / 2) ∩ (V.support \ q '' graphOver f (closedBall 0 (σ / 2)))) + (μHE[n] : Measure (Amb n ℓ)) (closedBall 0 (σ / 2) ∩ (q '' graphOver f (closedBall 0 (σ / 2)) \ V.support)) ≤ ENNReal.ofReal (Kb * E * σ ^ n) → ∫ x in closedBall 0 (σ / 2), ‖H x‖ ∂V.weight ≤ h * σ ^ (n - 1) → (∫ x in ball (0 : Rn n) (3 * σ / 8), hsNormSq (fderiv ℝ f x) ≤ C * E * σ ^ n) ∧ ∀ ζ : Rn n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 (σ / 4) → ∀ M : ℝ, (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ j : Fin ℓ, |∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x)| ≤ C * (E + h + κ * Real.sqrt E) * M * σ ^ n := by
+  intro n ℓ hn Kb hKb
+  obtain ⟨C, hC, hmain⟩ := Submission.gwe_weighted_energy_weak_equation n ℓ hn (Kb + ℓ + 1)
+    (Real.exp ((n : ℝ) / 2) / 2) (by positivity) (by positivity)
+  refine ⟨C, hC, ?_⟩
+  intro U hU V H hH hmeas σ hσ hσU q f hf hfb hheight htan κ E h hκ0 hκ1 hE hh hmult hcar htilt
+    hbad hHint
+  -- `W`: the density of the pull-back of `μ_V ⌞ F(Bⁿ_{σ/2})` under `F`, `W = J_F θ(F)` a.e.
+  obtain ⟨W, hWm, -, hWl, hWi, hWae, hWnull⟩ :=
+    Submission.gwe_varifold_graph_transfer n ℓ hn U V q f (σ / 2) hf
+  have hEσ : 0 ≤ E * σ ^ n := mul_nonneg hE (pow_nonneg hσ.le n)
+  have hhs : ∀ D : Rn n →L[ℝ] Rn ℓ, 0 ≤ hsNormSq D := fun D =>
+    Finset.sum_nonneg fun _ _ => sq_nonneg _
+  have hball : ∀ x ∈ ball (0 : Rn n) (3 * σ / 8), x ∈ ball (0 : Rn n) (σ / 2) := fun x hx =>
+    ball_subset_ball (by linarith) hx
+  -- `‖Df‖ ≤ 1` on `B̆ⁿ_{σ/2}`, a neighbourhood of each of its points on which `f` is `1`-Lipschitz
+  have hDf : ∀ x ∈ ball (0 : Rn n) (σ / 2), ‖fderiv ℝ f x‖ ≤ 1 := fun x hx => by
+    simpa using norm_fderiv_le_of_lipschitzOn ℝ
+      (mem_of_superset (isOpen_ball.mem_nhds hx) ball_subset_closedBall) hf
+  -- `|F(x')|² = |x'|² + |f(x')|² ≤ (3σ/8)² + (σ/16)² < (σ/2)²` for `x' ∈ B̆ⁿ_{3σ/8}`
+  have hF : ∀ x ∈ ball (0 : Rn n) (3 * σ / 8),
+      q (graphPoint x (f x)) ∈ closedBall (0 : Amb n ℓ) (σ / 2) := by
+    intro x hx
+    have hx' : ‖x‖ < 3 * σ / 8 := mem_ball_zero_iff.mp hx
+    have hfx : ‖f x‖ ≤ σ / 16 := hfb x (mem_closedBall_zero_iff.mpr (by linarith))
+    have h1 : ‖x‖ ^ 2 ≤ (3 * σ / 8) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hx'.le 2
+    have h2 : ‖f x‖ ^ 2 ≤ (σ / 16) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hfx 2
+    have h3 : ‖graphPoint x (f x)‖ ^ 2 ≤ (σ / 2) ^ 2 := by
+      rw [(Submission.lip_approx_graph_coordinates n ℓ q).2.1 x (f x)]
+      nlinarith
+    rw [mem_closedBall_zero_iff, LinearIsometryEquiv.norm_map]
+    nlinarith [norm_nonneg (graphPoint x (f x))]
+  have hFσ : ∀ x ∈ ball (0 : Rn n) (3 * σ / 8),
+      q (graphPoint x (f x)) ∈ closedBall (0 : Amb n ℓ) σ :=
+    fun x hx => closedBall_subset_closedBall (by linarith) (hF x hx)
+  -- (i) Where `W ≠ 0`: `F(x') ∈ M`, `1 ≤ θ(F(x')) ≤ 1 + κ` (off the preimage of a `μ_V`-null set),
+  -- and `1 ≤ J_F ≤ 1 + c_n |Df|²`, so `1 ≤ W = J_F θ(F) ≤ (1 + κ)(1 + c_n |Df|²)`.
+  have hZ : V.weight
+      {y | ¬(y ∈ closedBall (0 : Amb n ℓ) σ → 1 ≤ V.mult y ∧ V.mult y ≤ 1 + κ)} = 0 :=
+    ae_iff.mp hmult
+  have hW1 : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball 0 (3 * σ / 8) → W x = 0 ∨
+      (1 ≤ W x ∧ W x ≤ (1 + κ) * (1 + Real.exp ((n : ℝ) / 2) / 2 * hsNormSq (fderiv ℝ f x))) := by
+    filter_upwards [hWae, hWnull _ hZ] with x hxW hxZ hx
+    by_cases hW : W x = 0
+    · exact Or.inl hW
+    refine Or.inr ?_
+    have hθ : 1 ≤ V.mult (q (graphPoint x (f x))) ∧ V.mult (q (graphPoint x (f x))) ≤ 1 + κ := by
+      by_contra hcon
+      exact hW (hxZ (ball_subset_closedBall (hball x hx)) fun h' => hcon (h' (hFσ x hx)))
+    have hJ := Submission.gwe_graph_jacobian_bounds n ℓ (fderiv ℝ f x)
+    have hJ2 := hJ.2 (hDf x (hball x hx))
+    rw [hxW (hball x hx)] at hW ⊢
+    by_cases hM : q (graphPoint x (f x)) ∈ V.carrier
+    · rw [indicator_of_mem hM]
+      refine ⟨by nlinarith [hJ.1, hθ.1], ?_⟩
+      rw [mul_comm (1 + κ)]
+      exact mul_le_mul hJ2 hθ.2 (by linarith [hθ.1]) (by linarith [hJ.1])
+    · rw [indicator_of_notMem hM, mul_zero] at hW
+      exact absurd rfl hW
+  -- (ii) (4): up to a null set, `F` maps `{W = 0} ∩ B̆ⁿ_{3σ/8}` into
+  -- `(B_{σ/2} ∩ (Γ \ spt V)) ∪ ((spt V ∩ B_σ) \ M)`; as `J_F ≥ 1`, the area formula gives
+  -- `Lⁿ({W = 0} ∩ B̆ⁿ_{3σ/8}) ≤ Hⁿ(F({W = 0} ∩ B̆ⁿ_{3σ/8})) ≤ K_b E σⁿ + 0`.
+  have hW2 : volume (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) ≤
+      ENNReal.ofReal ((Kb + ℓ + 1) * E * σ ^ n) := by
+    obtain ⟨G, hGsub, hGm, hG0⟩ := exists_measurable_superset_of_null (ae_iff.mp hWae)
+    have hSm : MeasurableSet ((ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) \ G) :=
+      (measurableSet_ball.inter (hWm (measurableSet_singleton 0))).diff hGm
+    have hSsub : (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) \ G ⊆ closedBall 0 (σ / 2) :=
+      fun x hx => ball_subset_closedBall (hball x hx.1.1)
+    have himage : q '' graphOver f ((ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) \ G) ⊆
+        closedBall 0 (σ / 2) ∩ (q '' graphOver f (closedBall 0 (σ / 2)) \ V.support) ∪
+          (V.support ∩ closedBall 0 σ) \ V.carrier := by
+      rintro _ ⟨_, ⟨x, ⟨⟨hx, hWx⟩, hxG⟩, rfl⟩, rfl⟩
+      have hWx' : W x = 0 := hWx
+      have hP := fun hc => hxG (hGsub hc)
+      simp only [mem_ofPred_eq, imp_false, not_not] at hP
+      have hJ1 := (Submission.gwe_graph_jacobian_bounds n ℓ (fderiv ℝ f x)).1
+      have hnot : q (graphPoint x (f x)) ∉ V.carrier := by
+        intro hM
+        have hpos := V.mult_pos _ hM
+        have h0 := hP (hball x hx)
+        rw [hWx', indicator_of_mem hM] at h0
+        nlinarith
+      by_cases hs : q (graphPoint x (f x)) ∈ V.support
+      · exact Or.inr ⟨⟨hs, hFσ x hx⟩, hnot⟩
+      · exact Or.inl ⟨hF x hx, ⟨_, ⟨x, ball_subset_closedBall (hball x hx), rfl⟩, rfl⟩, hs⟩
+    calc volume (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0})
+        = volume ((ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) \ G) :=
+          (measure_sdiff_null hG0).symm
+      _ = ∫⁻ _ in (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) \ G, (1 : ℝ≥0∞) :=
+          (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) \ G,
+            ENNReal.ofReal (Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+              Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ f x (EuclideanSpace.single a (1 : ℝ)))
+                (fderiv ℝ f x (EuclideanSpace.single b (1 : ℝ)))))) * 1 := by
+          refine lintegral_mono fun x => ?_
+          rw [mul_one]
+          exact ENNReal.one_le_ofReal.mpr
+            (Submission.gwe_graph_jacobian_bounds n ℓ (fderiv ℝ f x)).1
+      _ = ∫⁻ _ in q '' graphOver f ((ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) \ G), (1 : ℝ≥0∞)
+            ∂(μHE[n] : Measure (Amb n ℓ)) :=
+          (Submission.gwe_lipschitz_graph_area_formula n ℓ hn q f 1 (σ / 2) hf _ hSm hSsub
+            fun _ => 1).symm
+      _ = (μHE[n] : Measure (Amb n ℓ))
+            (q '' graphOver f ((ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) \ G)) :=
+          setLIntegral_one _
+      _ ≤ (μHE[n] : Measure (Amb n ℓ))
+            (closedBall 0 (σ / 2) ∩ (q '' graphOver f (closedBall 0 (σ / 2)) \ V.support) ∪
+              (V.support ∩ closedBall 0 σ) \ V.carrier) := measure_mono himage
+      _ ≤ (μHE[n] : Measure (Amb n ℓ))
+            (closedBall 0 (σ / 2) ∩ (q '' graphOver f (closedBall 0 (σ / 2)) \ V.support)) +
+          (μHE[n] : Measure (Amb n ℓ)) ((V.support ∩ closedBall 0 σ) \ V.carrier) :=
+          measure_union_le _ _
+      _ ≤ V.weight (closedBall 0 (σ / 2) ∩ (V.support \ q '' graphOver f (closedBall 0 (σ / 2)))) +
+          (μHE[n] : Measure (Amb n ℓ))
+            (closedBall 0 (σ / 2) ∩ (q '' graphOver f (closedBall 0 (σ / 2)) \ V.support)) := by
+          rw [hcar, add_zero]
+          exact le_add_self
+      _ ≤ ENNReal.ofReal (Kb * E * σ ^ n) := hbad
+      _ ≤ ENNReal.ofReal ((Kb + ℓ + 1) * E * σ ^ n) := by
+          refine ENNReal.ofReal_le_ofReal ?_
+          nlinarith [mul_nonneg (Nat.cast_nonneg ℓ : (0 : ℝ) ≤ ℓ) hEσ]
+  -- (iii) (13), (14): on the graph, `|Df(a(x))|² ≤ (ℓ + ½) |p_{T_x M} − p_T|²` `μ_V`-a.e.
+  -- (`p_{T_x M}` is the projection onto the tangent plane of `F`), so after transferring by `F`,
+  -- `∫_{B̆ⁿ_{3σ/8}} |Df|² W ≤ (ℓ + ½) ∫_{B_σ} |p_{T_x M} − p_T|² dμ_V ≤ (ℓ + ½) E σⁿ`.
+  have hW3 : ∫⁻ x in ball (0 : Rn n) (3 * σ / 8), ENNReal.ofReal (hsNormSq (fderiv ℝ f x) * W x) ≤
+      ENNReal.ofReal ((Kb + ℓ + 1) * E * σ ^ n) := by
+    have hint := ted_gwe_integrableOn_tilt n ℓ U V hmeas (rotatedPlane q) (closedBall 0 σ)
+      (isCompact_closedBall 0 σ) hσU
+    -- `φ = |Df(a(·))|²` on the graph `F(B̆ⁿ_{σ/2})` and `0` elsewhere, so `φ ∘ F = |Df|²` there
+    obtain ⟨φ, hφ⟩ : ∃ φ : Amb n ℓ → ℝ≥0∞, φ = (q '' graphOver f (ball 0 (σ / 2))).indicator
+        fun y => ENNReal.ofReal
+          (hsNormSq (fderiv ℝ f (EuclideanSpace.finAddEquivProd (q.symm y)).1)) :=
+      ⟨_, rfl⟩
+    have hφF : ∀ x ∈ ball (0 : Rn n) (σ / 2),
+        φ (q (graphPoint x (f x))) = ENNReal.ofReal (hsNormSq (fderiv ℝ f x)) := by
+      intro x hx
+      have hmem : q (graphPoint x (f x)) ∈ q '' graphOver f (ball 0 (σ / 2)) :=
+        ⟨_, ⟨x, hx, rfl⟩, rfl⟩
+      rw [hφ, indicator_of_mem hmem, ted_gwe_fst_symm_graphPoint]
+    have hφle : ∀ᵐ y ∂V.weight, φ y ≤ ENNReal.ofReal (((ℓ : ℝ) + 1 / 2) *
+        hsNormSq (V.tangentProj y - (rotatedPlane q).starProjection)) := by
+      filter_upwards [htan] with y hy
+      by_cases hyG : y ∈ q '' graphOver f (ball 0 (σ / 2))
+      · obtain ⟨_, ⟨x', hx', rfl⟩, rfl⟩ := hyG
+        rw [hφF x' hx']
+        refine ENNReal.ofReal_le_ofReal ?_
+        by_cases hd : DifferentiableAt ℝ f x'
+        · rw [hy x' hx' rfl hd]
+          exact (Submission.gwe_graph_tilt_algebra n ℓ q (fderiv ℝ f x') (hDf x' hx')).1
+        · rw [fderiv_zero_of_not_differentiableAt hd]
+          have h0 : hsNormSq (0 : Rn n →L[ℝ] Rn ℓ) = 0 := by simp [hsNormSq]
+          rw [h0]
+          exact mul_nonneg (by positivity) (Finset.sum_nonneg fun _ _ => sq_nonneg _)
+      · rw [hφ, indicator_of_notMem hyG]
+        exact zero_le
+    have hsub : q '' graphOver f (ball 0 (3 * σ / 8)) ⊆ closedBall (0 : Amb n ℓ) σ := by
+      rintro _ ⟨_, ⟨x, hx, rfl⟩, rfl⟩
+      exact hFσ x hx
+    calc ∫⁻ x in ball (0 : Rn n) (3 * σ / 8), ENNReal.ofReal (hsNormSq (fderiv ℝ f x) * W x)
+        = ∫⁻ x in ball (0 : Rn n) (3 * σ / 8),
+            ENNReal.ofReal (W x) * φ (q (graphPoint x (f x))) := by
+          refine setLIntegral_congr_fun measurableSet_ball fun x hx => ?_
+          rw [hφF x (hball x hx), ENNReal.ofReal_mul (hhs _), mul_comm]
+      _ = ∫⁻ y in q '' graphOver f (ball 0 (3 * σ / 8)), φ y ∂V.weight :=
+          (hWl _ measurableSet_ball
+            (ball_subset_closedBall.trans (closedBall_subset_closedBall (by linarith))) φ).symm
+      _ ≤ ∫⁻ y in q '' graphOver f (ball 0 (3 * σ / 8)), ENNReal.ofReal (((ℓ : ℝ) + 1 / 2) *
+            hsNormSq (V.tangentProj y - (rotatedPlane q).starProjection)) ∂V.weight :=
+          lintegral_mono_ae (ae_restrict_of_ae hφle)
+      _ ≤ ∫⁻ y in closedBall 0 σ, ENNReal.ofReal (((ℓ : ℝ) + 1 / 2) *
+            hsNormSq (V.tangentProj y - (rotatedPlane q).starProjection)) ∂V.weight :=
+          lintegral_mono_set hsub
+      _ = ENNReal.ofReal (∫ y in closedBall 0 σ, ((ℓ : ℝ) + 1 / 2) *
+            hsNormSq (V.tangentProj y - (rotatedPlane q).starProjection) ∂V.weight) :=
+          (ofReal_integral_eq_lintegral_ofReal (hint.const_mul _) (ae_of_all _ fun y =>
+            mul_nonneg (by positivity) (Finset.sum_nonneg fun _ _ => sq_nonneg _))).symm
+      _ ≤ ENNReal.ofReal ((Kb + ℓ + 1) * E * σ ^ n) := by
+          refine ENNReal.ofReal_le_ofReal ?_
+          rw [integral_const_mul]
+          have := mul_le_mul_of_nonneg_left htilt (by positivity : (0 : ℝ) ≤ (ℓ : ℝ) + 1 / 2)
+          nlinarith [mul_nonneg hKb hEσ]
+  -- (iv) (12): the weighted weak equation, by transferring the graph part of (6) through `F`.
+  have hW4 : ∀ ζ : Rn n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 (σ / 4) →
+      ∀ M : ℝ, (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ j : Fin ℓ,
+      |∫ x in ball (0 : Rn n) (σ / 4), inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * W x| ≤
+        (Kb + ℓ + 1) * (E + h) * M * σ ^ n := by
+    intro ζ hζ hζc hζt M hM j
+    have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+    have hest := Submission.gwe_graph_tangential_estimate n ℓ hn U hU V H hH hmeas σ hσ hσU q f hf
+      hfb hheight htan ζ hζ hζc hζt M hM j
+    have htr : ∫ x in q '' graphOver f (ball 0 (σ / 4)), inner ℝ
+          (gradient (fun y => f y j) (EuclideanSpace.finAddEquivProd (q.symm x)).1)
+          (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) ∂V.weight =
+        ∫ x in ball (0 : Rn n) (σ / 4),
+          inner ℝ (gradient (fun y => f y j) x) (gradient ζ x) * W x :=
+      (hWi _ measurableSet_ball
+        (ball_subset_closedBall.trans (closedBall_subset_closedBall (by linarith))) _
+        (ted_gwe_measurable_inner_gradient n ℓ q (fun y => f y j) ζ)).trans
+        (by simp only [ted_gwe_fst_symm_graphPoint, mul_comm (W _)])
+    have hbad' : (V.weight (closedBall 0 (σ / 2) ∩
+        (V.support \ q '' graphOver f (closedBall 0 (σ / 2))))).toReal ≤ Kb * E * σ ^ n :=
+      ENNReal.toReal_le_of_le_ofReal (by positivity) (le_self_add.trans hbad)
+    have hσn : σ * σ ^ (n - 1) = σ ^ n := by
+      rw [← pow_succ']
+      congr 1
+      omega
+    rw [htr] at hest
+    calc _ ≤ _ := hest
+      _ ≤ M * (Kb * E * σ ^ n) + M * (E * σ ^ n) + M * (σ / 4) * (h * σ ^ (n - 1)) := by
+          gcongr
+      _ = M * σ ^ n * (Kb * E + E + h / 4) := by
+          rw [show M * (σ / 4) * (h * σ ^ (n - 1)) = M * h / 4 * (σ * σ ^ (n - 1)) by ring, hσn]
+          ring
+      _ ≤ M * σ ^ n * ((Kb + ℓ + 1) * (E + h)) := by
+          refine mul_le_mul_of_nonneg_left ?_ (mul_nonneg hM0 (pow_nonneg hσ.le n))
+          nlinarith [mul_nonneg hKb hh, mul_nonneg (Nat.cast_nonneg ℓ : (0 : ℝ) ≤ ℓ) hE,
+            mul_nonneg (Nat.cast_nonneg ℓ : (0 : ℝ) ≤ ℓ) hh]
+      _ = (Kb + ℓ + 1) * (E + h) * M * σ ^ n := by ring
+  obtain ⟨hE16, hweak⟩ := hmain σ κ E h f W hσ hκ0 hκ1 hE hh hf hWm hW1 hW2 hW3
+  exact ⟨hE16, fun ζ hζ hζc hζt M hM j => hweak ζ hζ hζc hζt M hM j (hW4 ζ hζ hζc hζt M hM j)⟩
 
 end Submission
 
