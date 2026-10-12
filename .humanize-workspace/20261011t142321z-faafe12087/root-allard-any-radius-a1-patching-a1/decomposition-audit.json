@@ -1,0 +1,76 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "finAddEquivProd|def sumEquivProd|theorem norm_sq_eq|theorem norm_eq",
+        "surjOn_closedBall_of_nonlinearRightInverse|theorem of_local_left_inverse|theorem HasFDerivAt.of_local_left_inverse|theorem inverse_continuousAt",
+        "contDiffAt_zero|continuousOn_fderiv_of_isOpen",
+        "EuclideanSpace.basisFun|theorem sum_repr|def ofInjectiveEndo|closedBall_mem_nhds_of_mem",
+        "arp_(opNorm_le_hsNorm|rotatedPlane_graphPoint_coords|tilt_le_of_slab|regraph_over_rotatedPlane|global_graph_of_local_graphs)|any_radius_patching",
+        "sed -n '188,207p' Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "sed -n '491,519p' Mathlib/Analysis/Real/Sqrt.lean",
+        "sed -n '470,499p' Mathlib/Analysis/Calculus/MeanValue.lean",
+        "sed -n '424,450p' Mathlib/Topology/Connected/Basic.lean",
+        "python3 -I /tmp/patching-independent-audit-54qatr8e/check.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/OfCompLeft.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Connected/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1/decomposition-v5.json",
+        "/tmp/patching-independent-audit-54qatr8e/Assembly.lean",
+        "/tmp/patching-independent-audit-54qatr8e/InstancesAxioms.lean",
+        "/tmp/patching-independent-audit-54qatr8e/results.json"
+      ],
+      "conclusion": "Independently checked the pinned definitions and cited analytic results; inspected library files match Mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d. All five child types and the frozen parent type pass lexical validation and elaborate independently in the comparator scope against a fresh compilation of the pinned Submission source. A proof of the exact parent from the five exact child assumptions compiles with only propext, Classical.choice and Quot.sound. The cited library results have the same permitted axiom set. Norm instances are ContinuousLinearMap.hasOpNorm and PiLp.instNorm; endomorphism multiplication was verified to be composition. No Matrix/IsUnit construction occurs. The proposed names have no matches in the snapshot project; scanning 224 DAG nodes and 2252 JSON files found them only in this selected node's own proposals. All names are bare identifiers, and no accepted declaration is reused. The split is appropriate: its five genuine obligations establish this selected patching theorem. Dependencies are correctly directed and acyclic; only rotated_coords is needed by the three geometric children."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "op_norm_le_hs_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. Standard-basis expansion, the triangle inequality and finite Cauchy–Schwarz establish the required pointwise bound, then opNorm_le_bound gives the conclusion. Empty dimensions are covered. The proof is complete and independent."
+    },
+    {
+      "key": "rotated_coords",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three clauses match the prose. Coordinate splitting proves the graphPoint identity; the Euclidean coordinate sum proves Pythagoras separately. The horizontal-plane characterization and matching upper/lower distance bounds prove the infDist formula, including nonemptiness. No circular reliance or incorrect product-norm assumption occurs."
+    },
+    {
+      "key": "tilt_of_slab",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and conclusion match exactly. Antipodal samples lie in the closed ball, translation cancels, and the Lipschitz remainder gives 2εs. Dividing by the positive 2s/‖e‖ yields the stated constant. The zero-vector case is handled, and no unstated sign assumptions on ε or h are needed. Only rotated_coords is used."
+    },
+    {
+      "key": "regraph",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract preserves closed-ball existence/uniqueness and open-ball regularity exactly. The proof constructs the inverse inside B_{3r/5}, establishes injectivity, verifies the local inverse derivative hypotheses, and obtains slope (1/8)(8/7)=1/7. Continuity of the derivative on a neighbourhood establishes C¹. All hypotheses are used correctly; only rotated_coords is required."
+    },
+    {
+      "key": "global_graph",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. Derived parameter positivity, projection injectivity, compactness and the open-and-closed argument establish coverage of the entire target ball. Local uniqueness gives regularity, slope and both graph conclusions. The supplied parent glue instantiates these parameters correctly and recovers agreement with u₀ and the zero derivative near zero. No additional planning or circular theorem use is needed."
+    }
+  ],
+  "required_changes": []
+}
