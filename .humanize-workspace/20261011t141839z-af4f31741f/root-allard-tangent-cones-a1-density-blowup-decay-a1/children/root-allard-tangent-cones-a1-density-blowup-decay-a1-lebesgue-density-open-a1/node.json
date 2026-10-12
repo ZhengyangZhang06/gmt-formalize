@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.density_blowup_decay-a1.lebesgue_density_open-a1",
+  "parent_id": "root.allard_tangent_cones-a1.density_blowup_decay-a1",
+  "depth": 3,
+  "title": "Lebesgue density theorem for Radon measures on an open set (localized Besicovitch differentiation)",
+  "statement": "Let N ∈ ℕ, let U ⊆ ℝ^N be open, and let μ be a Borel measure on ℝ^N with μ(ℝ^N ∖ U) = 0 and μ(K) < ∞ for every compact K ⊆ U (the zero extension of a Radon measure on U, e.g. μ = μ_V for an n-varifold V on U). Then for every Borel set A ⊆ ℝ^N and μ-a.e. x ∈ ℝ^N, μ(A ∩ B_ρ(x))/μ(B_ρ(x)) → 1_A(x) as ρ ↓ 0, where B_ρ(x) is the closed ball, 1_A is the indicator function of A with values in [0,∞], and the quotient is taken in [0,∞] with ℝ≥0∞ division (a/0 = ∞ for a ≠ 0, 0/0 = 0, ∞/∞ = 0).",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Euclidean N)) (μ : Measure (Euclidean N)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → ∀ A : Set (Euclidean N), MeasurableSet A → ∀ᵐ x ∂μ, Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 (A.indicator 1 x))",
+  "lean_name": "allard_tc_dbd_lebesgue_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1-lebesgue-density-open-a1-a1"
+}

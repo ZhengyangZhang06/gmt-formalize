@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T141839Z-af4f31741f",
+  "parent_id": "root.allard_tangent_cones-a1.density_blowup_decay-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch08/20261011t141839z-af4f31741f/dispatch/root-allard-tangent-cones-a1-density-blowup-decay-a1",
+  "source_commit": "63436ae63eb6a2fd7525bef73c73cf88e2cd7e93",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch08/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.allard_tangent_cones-a1.density_blowup_decay-a1.lebesgue_density_open-a1",
+      "key": "lebesgue_density_open",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1-lebesgue-density-open-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/children/root-allard-tangent-cones-a1-density-blowup-decay-a1-lebesgue-density-open-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+              "grep -n 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div_of_measurableSet|theorem ae_tendsto_measure_inter_div|theorem tendsto_filterAt' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "grep -n 'instHasBesicovitchCovering' mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+              "grep -n \"theorem restrict_apply'|theorem restrict_eq_self_of_ae_mem|theorem map_comap_subtype_coe\" mathlib/Mathlib/MeasureTheory/Measure/",
+              "grep -rn 'indicator_of_notMem|mulIndicator_of_notMem' Mathlib/Algebra/Notation/Indicator.lean",
+              "grep -rn 'ae_tendsto_measure_inter_div|ae_tendsto_rnDeriv|Besicovitch\\.|vitaliFamily' .lake/packages/simongmt/Poincare --include=*.lean",
+              "grep -n 'structure Varifold|def weight|theorem weight_apply|theorem weight_finite_on_compact|domainWeight|map_domainWeight|instSigmaFinite' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "import chain check: grep '^public import' Chapter08/VarifoldConvergence.lean, FirstVariationRiesz.lean, FirstVariationDecomposition.lean (reaches FirstVariationDensity)",
+              "sed -n 540,640p book/chapter-08.txt (Simon 5.5–5.7, proof of 5.5 (3)–(4)); sed -n 1040,1140p book/sources/chapter-01-source.txt (Simon Ch. 1, 3.23–3.24)",
+              "python3 -I: gmt-compare.contract_scope(Contract.lean, 'GMT.Ch08.main_theorem'), gmt-compare.child_modules(...,'contract'), lean_contract.validate_lean_statement on both child statements",
+              "lake env lean /tmp/dbd-decomp/scratch/{Stmts,ChildA,ChildB,Final,Stub2,Final2}.lean and /tmp/dbd-decomp/challenge/{allard_tc_dbd_lebesgue_density,allard_tc_dbd_relative_decay}_Challenge.lean",
+              "python3 -I scan of dag.json lean_name (90 nodes, 90 distinct, proposed names absent); grep -rIl 'allard_tc_dbd_' over dag.json, nodes/ and GMT/ (no match)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/Notation/Indicator.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-01-source.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-density-blowup-decay-a1/parent-child-handoff.json",
+              "/tmp/dbd-decomp/scratch/Stub2.lean",
+              "/tmp/dbd-decomp/scratch/Final2.lean",
+              "/tmp/dbd-decomp/scratch/ChildA.lean",
+              "/tmp/dbd-decomp/scratch/ChildB.lean",
+              "/tmp/dbd-decomp/challenge/allard_tc_dbd_lebesgue_density_Challenge.lean",
+              "/tmp/dbd-decomp/challenge/allard_tc_dbd_relative_decay_Challenge.lean"
+            ],
+            "conclusion": "Snapshot: project 63436ae6 with Mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace Contract and Submission (sha256 2e5cd5b3…).\n\nMathlib:\n- Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet (Covering/Besicovitch.lean:1089) needs IsLocallyFiniteMeasure on the whole space. μ_V can fail this at ∂U, which is why child A localizes.\n- instHasBesicovitchCovering (BesicovitchVectorSpace.lean:499) covers Euclidean N.\n- Measure.restrict_apply' (Restrict.lean:111), restrict_eq_self_of_ae_mem (:347) and map_comap_subtype_coe (:934) give the restriction and transfer steps.\n- Set.indicator_of_notMem is the additive form of mulIndicator_of_notMem (Algebra/Notation/Indicator.lean).\n\nSimonGMT (pinned 2b366308) is imported transitively by GMT.Ch08.Submission via VarifoldConvergence → FirstVariationRiesz → FirstVariationDecomposition → FirstVariationDensity.\n- It supplies hasBesicovitchCovering_subtype and the varifold facts isOpen_domain, supported, weight_apply and weight_finite_on_compact.\n- Its ae_tendsto_firstVariationDensity_of_domainMeasure is only the RN-derivative analogue for V.weight, not child A's density-point statement, so child A is new.\n- No local declaration proves child B.\n\nBoth child statements validate and elaborate in the comparator scope, and the parent compiles from them. With full child proofs, every declaration uses only propext, Classical.choice and Quot.sound. The proposed names occur nowhere in the DAG, run nodes or GMT/."
+          }
+        ],
+        "parent_id": "root.allard_tangent_cones-a1.density_blowup_decay-a1",
+        "child_id": "root.allard_tangent_cones-a1.density_blowup_decay-a1.lebesgue_density_open-a1",
+        "subproblem": {
+          "key": "lebesgue_density_open",
+          "title": "Lebesgue density theorem for Radon measures on an open set (localized Besicovitch differentiation)",
+          "statement": "Let N ∈ ℕ, let U ⊆ ℝ^N be open, and let μ be a Borel measure on ℝ^N with μ(ℝ^N ∖ U) = 0 and μ(K) < ∞ for every compact K ⊆ U (the zero extension of a Radon measure on U, e.g. μ = μ_V for an n-varifold V on U). Then for every Borel set A ⊆ ℝ^N and μ-a.e. x ∈ ℝ^N, μ(A ∩ B_ρ(x))/μ(B_ρ(x)) → 1_A(x) as ρ ↓ 0, where B_ρ(x) is the closed ball, 1_A is the indicator function of A with values in [0,∞], and the quotient is taken in [0,∞] with ℝ≥0∞ division (a/0 = ∞ for a ≠ 0, 0/0 = 0, ∞/∞ = 0).",
+          "lean_statement": "∀ (N : ℕ) (U : Set (Euclidean N)) (μ : Measure (Euclidean N)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → ∀ A : Set (Euclidean N), MeasurableSet A → ∀ᵐ x ∂μ, Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 (A.indicator 1 x))",
+          "lean_name": "allard_tc_dbd_lebesgue_density",
+          "depends_on": [],
+          "natural_proof": "Source: steps 2–4 and 7 of the parent proof (Simon Ch. 8, Remark 5.6(iii): approximate continuity of Θ^n(μ_V,·) used through Lebesgue density points; the localization is that of Simon Ch. 1, 3.23, \"apply the above with μ⌞V_j\"). The varifold facts μ_V(Uᶜ) = 0 and μ_V(K) < ∞ of the parent are here the hypotheses μ(Uᶜ) = 0 and μ(K) ≠ ∞. Notation: B_ρ(y) := closedBall y ρ (closed ball), B°_r(q) := ball q r (open ball), 1_A := A.indicator 1 with values in [0,∞]; quotients are taken in [0,∞] with Lean's conventions (a/0 = ∞ for a ≠ 0, 0/0 = 0); for a measure ν and a set K, ν⌞K := ν.restrict K.\n\n1. Countable family of compact balls. ℝ^N is separable, so it has a countable dense subset D (TopologicalSpace.exists_countable_dense). Let I := {(q, r) ∈ D × ℚ : 0 < r and B_r(q) ⊆ U}. I is countable, being a subset of the countable set D × ℚ. For i = (q, r) ∈ I put K_i := B_r(q). K_i is closed and bounded in the finite-dimensional space ℝ^N, hence compact (isCompact_closedBall), and K_i ⊆ U, so μ(K_i) ≠ ∞ by hypothesis. Hence μ_i := μ⌞K_i has total mass μ_i(ℝ^N) = μ(K_i) < ∞: it is a finite measure, hence a locally finite measure.\n\n2. Every point of U is interior to some K_i. Let x ∈ U. Since U is open there is ε > 0 with B°_ε(x) ⊆ U. Choose a rational r with 0 < r < ε/2, and, since D is dense, a point q ∈ D with dist(x, q) < r. Then (q, r) ∈ I: if dist(y, q) ≤ r then dist(y, x) ≤ dist(y, q) + dist(q, x) < 2r < ε, so B_r(q) ⊆ B°_ε(x) ⊆ U. Moreover dist(x, q) < r.\n\n3. Lebesgue–Besicovitch differentiation for each μ_i. ℝ^N = EuclideanSpace ℝ (Fin N) is a finite-dimensional real normed space, so it has the Besicovitch covering property (Mathlib's HasBesicovitchCovering instance), it is a second-countable metric space, and its σ-algebra is the Borel σ-algebra. Apply Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet to the locally finite measure μ_i and the measurable set A. It gives a set Z_i with μ_i(Z_i) = 0 such that for every y ∉ Z_i,\n   μ_i(A ∩ B_ρ(y)) / μ_i(B_ρ(y)) → 1_A(y) as ρ ↓ 0.\n   Since K_i is closed, hence measurable, Measure.restrict_apply' gives μ(Z_i ∩ K_i) = μ_i(Z_i) = 0.\n\n4. The exceptional set. Let Z' := Uᶜ ∪ ⋃_{i ∈ I} (Z_i ∩ K_i). By countable subadditivity, μ(Z') ≤ μ(Uᶜ) + Σ_{i ∈ I} μ(Z_i ∩ K_i) = 0 + 0 = 0.\n\n5. Good points. Let x ∉ Z'. Then x ∈ U, so by step 2 there is i = (q, r) ∈ I with dist(x, q) < r; in particular x ∈ K_i. Since x ∉ Z_i ∩ K_i and x ∈ K_i, we get x ∉ Z_i, so by step 3\n   μ_i(A ∩ B_ρ(x)) / μ_i(B_ρ(x)) → 1_A(x) as ρ ↓ 0.\n\n6. Removing the restriction. Let δ := r − dist(x, q) > 0 and 0 < ρ < δ. If dist(y, x) ≤ ρ then dist(y, q) ≤ ρ + dist(x, q) < r, so B_ρ(x) ⊆ B°_r(q) ⊆ K_i. By Measure.restrict_apply' (K_i measurable):\n   μ_i(A ∩ B_ρ(x)) = μ(A ∩ B_ρ(x) ∩ K_i) = μ(A ∩ B_ρ(x)) and μ_i(B_ρ(x)) = μ(B_ρ(x) ∩ K_i) = μ(B_ρ(x)).\n   So the functions ρ ↦ μ_i(A ∩ B_ρ(x))/μ_i(B_ρ(x)) and ρ ↦ μ(A ∩ B_ρ(x))/μ(B_ρ(x)) agree on the interval (0, δ). That interval belongs to the filter 𝓝[>] 0, so (Tendsto.congr') the second function also tends to 1_A(x) as ρ ↓ 0.\n\n7. Conclusion. Step 6 holds for every x outside the μ-null set Z' (step 4). This is exactly the claim: for μ-a.e. x, μ(A ∩ B_ρ(x))/μ(B_ρ(x)) → 1_A(x) as ρ ↓ 0. ∎\n\nFormalization remark. This is an alternative, equally complete proof of the same statement, compiled sorry-free against the pinned snapshot in about 40 Lean lines. It runs steps 1–6 on the open subspace U itself instead of on countably many balls.\n(a) U with the induced metric has the Besicovitch covering property, because a satellite configuration in U is also one in ℝ^N. This is SimonGMT's Poincare.SimonGMT.Chapter08.hasBesicovitchCovering_subtype, available after import GMT.Ch08.Submission. U is second countable, its subtype σ-algebra is Borel, and it is locally compact (IsOpen.locallyCompactSpace).\n(b) μ_U := μ.comap Subtype.val is locally finite on U. Each z ∈ U has a compact neighbourhood C in U (exists_compact_mem_nhds), and μ_U(C) = μ(val '' C) < ∞ by MeasurableEmbedding.comap_apply, because val '' C is compact and contained in U.\n(c) μ_U.map val = μ⌞U = μ, by map_comap_subtype_coe, μ(Uᶜ) = 0 and Measure.restrict_eq_self_of_ae_mem.\n(d) For z ∈ U and measurable B, μ(B ∩ B_r(z)) = μ_U(val⁻¹B ∩ B^U_r(z)). This follows from (c) and Measure.map_apply, since the closed ball of U is, by definition, the preimage of the ambient closed ball. Also 1_{val⁻¹A}(z) = 1_A(z).\n(e) Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet for μ_U and val⁻¹A, rewritten by (d), gives the convergence for μ_U-a.e. z ∈ U. MeasurableEmbedding.ae_map_iff (state the predicate explicitly, since higher-order unification fails otherwise) and (c) transfer it to μ-a.e. x.",
+          "proof_key_steps": [
+            "Countable family K_i = B_r(q), with q in a countable dense set D, r ∈ ℚ_{>0} and B_r(q) ⊆ U: each μ⌞K_i is finite, hence locally finite, and every x ∈ U lies in the open ball B°_r(q) of some K_i.",
+            "Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet for μ⌞K_i and A gives a μ⌞K_i-null set Z_i off which the ratio tends to 1_A; μ(Z_i ∩ K_i) = μ⌞K_i(Z_i) = 0.",
+            "Z' := Uᶜ ∪ ⋃_i (Z_i ∩ K_i) is μ-null by countable subadditivity.",
+            "For x ∉ Z' pick K_i with dist(x,q) < r. For 0 < ρ < r − dist(x,q), B_ρ(x) ⊆ K_i, so the μ⌞K_i-ratio and the μ-ratio coincide and the limit 1_A(x) transfers (Tendsto.congr')."
+          ]
+        },
+        "audit": {
+          "key": "lebesgue_density_open",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and exact Lean proposition agree on openness, support, compact-set finiteness, measurable A, closed balls, and the ENNReal indicator limit. Every proof step is justified: countably many compact balls cover U by their interiors; their restricted measures are finite; Besicovitch differentiation applies; restrict_apply' transfers null sets without requiring their measurability; and sufficiently small balls remove the restriction. The alternate subspace proof also checks. Neither route uses the parent or another proposed child. The bare name is unreserved and empty dependencies are correct."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-density-blowup-decay-a1-lebesgue-density-open-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-density-blowup-decay-a1-lebesgue-density-open-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-density-blowup-decay-a1-lebesgue-density-open-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.allard_tangent_cones-a1.density_blowup_decay-a1.relative_density_decay-a1",
+      "key": "relative_density_decay",
+      "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1-relative-density-decay-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/children/root-allard-tangent-cones-a1-density-blowup-decay-a1-relative-density-decay-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json (mode local-project, project_commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean GMT/Ch08/Contract.lean GMT/Ch08/Submission.lean (all 2e5cd5b3566b37c487f8a2f4ea90b5039601a3212077ada1cab6cd715556c487)",
+              "grep -n 'theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div_of_measurableSet|theorem ae_tendsto_measure_inter_div|theorem tendsto_filterAt' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "grep -n 'instHasBesicovitchCovering' mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+              "grep -n \"theorem restrict_apply'|theorem restrict_eq_self_of_ae_mem|theorem map_comap_subtype_coe\" mathlib/Mathlib/MeasureTheory/Measure/",
+              "grep -rn 'indicator_of_notMem|mulIndicator_of_notMem' Mathlib/Algebra/Notation/Indicator.lean",
+              "grep -rn 'ae_tendsto_measure_inter_div|ae_tendsto_rnDeriv|Besicovitch\\.|vitaliFamily' .lake/packages/simongmt/Poincare --include=*.lean",
+              "grep -n 'structure Varifold|def weight|theorem weight_apply|theorem weight_finite_on_compact|domainWeight|map_domainWeight|instSigmaFinite' .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "import chain check: grep '^public import' Chapter08/VarifoldConvergence.lean, FirstVariationRiesz.lean, FirstVariationDecomposition.lean (reaches FirstVariationDensity)",
+              "sed -n 540,640p book/chapter-08.txt (Simon 5.5–5.7, proof of 5.5 (3)–(4)); sed -n 1040,1140p book/sources/chapter-01-source.txt (Simon Ch. 1, 3.23–3.24)",
+              "python3 -I: gmt-compare.contract_scope(Contract.lean, 'GMT.Ch08.main_theorem'), gmt-compare.child_modules(...,'contract'), lean_contract.validate_lean_statement on both child statements",
+              "lake env lean /tmp/dbd-decomp/scratch/{Stmts,ChildA,ChildB,Final,Stub2,Final2}.lean and /tmp/dbd-decomp/challenge/{allard_tc_dbd_lebesgue_density,allard_tc_dbd_relative_decay}_Challenge.lean",
+              "python3 -I scan of dag.json lean_name (90 nodes, 90 distinct, proposed names absent); grep -rIl 'allard_tc_dbd_' over dag.json, nodes/ and GMT/ (no match)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/GMT/Ch08/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Algebra/Notation/Indicator.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationDensity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-08.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-01-source.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-density-blowup-decay-a1/parent-child-handoff.json",
+              "/tmp/dbd-decomp/scratch/Stub2.lean",
+              "/tmp/dbd-decomp/scratch/Final2.lean",
+              "/tmp/dbd-decomp/scratch/ChildA.lean",
+              "/tmp/dbd-decomp/scratch/ChildB.lean",
+              "/tmp/dbd-decomp/challenge/allard_tc_dbd_lebesgue_density_Challenge.lean",
+              "/tmp/dbd-decomp/challenge/allard_tc_dbd_relative_decay_Challenge.lean"
+            ],
+            "conclusion": "Snapshot: project 63436ae6 with Mathlib 25730c7c. Its Contract.lean is byte-identical to the workspace Contract and Submission (sha256 2e5cd5b3…).\n\nMathlib:\n- Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet (Covering/Besicovitch.lean:1089) needs IsLocallyFiniteMeasure on the whole space. μ_V can fail this at ∂U, which is why child A localizes.\n- instHasBesicovitchCovering (BesicovitchVectorSpace.lean:499) covers Euclidean N.\n- Measure.restrict_apply' (Restrict.lean:111), restrict_eq_self_of_ae_mem (:347) and map_comap_subtype_coe (:934) give the restriction and transfer steps.\n- Set.indicator_of_notMem is the additive form of mulIndicator_of_notMem (Algebra/Notation/Indicator.lean).\n\nSimonGMT (pinned 2b366308) is imported transitively by GMT.Ch08.Submission via VarifoldConvergence → FirstVariationRiesz → FirstVariationDecomposition → FirstVariationDensity.\n- It supplies hasBesicovitchCovering_subtype and the varifold facts isOpen_domain, supported, weight_apply and weight_finite_on_compact.\n- Its ae_tendsto_firstVariationDensity_of_domainMeasure is only the RN-derivative analogue for V.weight, not child A's density-point statement, so child A is new.\n- No local declaration proves child B.\n\nBoth child statements validate and elaborate in the comparator scope, and the parent compiles from them. With full child proofs, every declaration uses only propext, Classical.choice and Quot.sound. The proposed names occur nowhere in the DAG, run nodes or GMT/."
+          }
+        ],
+        "parent_id": "root.allard_tangent_cones-a1.density_blowup_decay-a1",
+        "child_id": "root.allard_tangent_cones-a1.density_blowup_decay-a1.relative_density_decay-a1",
+        "subproblem": {
+          "key": "relative_density_decay",
+          "title": "Relative density zero at a point of finite density gives o(ρ^n) mass",
+          "statement": "Let N, n ∈ ℕ, let μ be a measure on ℝ^N, x ∈ ℝ^N, and θ ∈ [0,∞) with Θ^n(μ,x) = θ, i.e. μ(B_ρ(x))/(ω_n ρ^n) → θ as ρ ↓ 0 (HasDensity n μ x θ with θ ≠ ∞). Let A, E ⊆ ℝ^N be arbitrary sets such that μ(A ∩ B_ρ(x))/μ(B_ρ(x)) → 0 as ρ ↓ 0 and μ-a.e. point of E lies in A. Then μ(B_ρ(x) ∩ E)/ρ^n → 0 as ρ ↓ 0. Here B_ρ(x) is the closed ball, and all quotients are taken in [0,∞] with a/0 = ∞ for a ≠ 0 and 0/0 = 0.",
+          "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (θ : ℝ≥0∞) (A E : Set (Euclidean N)), HasDensity n μ x θ → θ ≠ ∞ → Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → (∀ᵐ y ∂μ, y ∈ E → y ∈ A) → Tendsto (fun ρ : ℝ ↦ μ (closedBall x ρ ∩ E) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0)",
+          "lean_name": "allard_tc_dbd_relative_decay",
+          "depends_on": [],
+          "natural_proof": "Source: steps 8–9 of the parent proof, with three changes. The density value θ = Θ^n(μ_V, x) = ofReal θ0 is generalized to any finite θ. The sets A = {Θ̃ < p} and E = E_τ are abstracted. The parent's inclusion E_τ ⊆ Z ∪ A_p, with μ(Z) = 0, becomes the hypothesis \"μ-a.e. point of E lies in A\". Notation: ω := unitBallVolume n = volume(ball (0 : ℝ^n) 1), B_ρ := closedBall x ρ, P_ρ := ofReal(ρ)^n, κ(ρ) := μ(A ∩ B_ρ)/μ(B_ρ), f(ρ) := μ(B_ρ)/P_ρ, g(ρ) := μ(B_ρ ∩ E)/P_ρ. All values and quotients lie in [0,∞] with Lean's conventions: a/0 = ∞ for a ≠ 0, 0/0 = 0, ∞/b = ∞ for b ≠ ∞. \"As ρ ↓ 0\" means along the filter 𝓝[>] 0.\n\n1. 0 < ω < ∞. ω is the Lebesgue measure of the open unit ball of ℝ^n. It is positive because the ball is open and nonempty (measure_ball_pos), and finite because the ball is bounded (measure_ball_lt_top). For n = 0 the space is a point and ω = 1.\n\n2. Normalized ball mass converges. For every real ρ, by definition densityRatio n μ x ρ = μ(B_ρ)/(ω·P_ρ). So ω·densityRatio n μ x ρ = (ω·μ(B_ρ))/(ω·P_ρ) = μ(B_ρ)/P_ρ = f(ρ), using mul_div_assoc and ENNReal.mul_div_mul_left with ω ≠ 0 and ω ≠ ∞. The hypothesis HasDensity n μ x θ says densityRatio n μ x ρ → θ as ρ ↓ 0. Since ω ≠ ∞, ENNReal.Tendsto.const_mul gives f(ρ) → ω·θ, and ω·θ ≠ ∞ because ω ≠ ∞ and θ ≠ ∞.\n\n3. The product tends to 0. By hypothesis κ(ρ) → 0. ENNReal.Tendsto.mul applies, since ω·θ ≠ ∞ and 0 ≠ ∞. It gives κ(ρ)·f(ρ) → 0·(ω·θ) = 0 as ρ ↓ 0.\n\n4. Eventual finiteness. Since f(ρ) → ω·θ < ∞, the set {ρ : f(ρ) < ∞} belongs to 𝓝[>] 0. Fix ρ in it. P_ρ ≠ ∞, as a power of the finite number ofReal ρ. Hence μ(B_ρ) ≠ ∞: otherwise f(ρ) = ∞/P_ρ = ∞ (ENNReal.top_div_of_ne_top). The parent's step 8 obtained this from B_ρ(x) ⊆ U; here it follows from the finite density, so no domain hypothesis is needed.\n\n5. Pointwise bound. For every ρ as in step 4:\n   (a) μ(B_ρ ∩ E) ≤ μ(A ∩ B_ρ). By hypothesis, for μ-a.e. y, y ∈ B_ρ ∩ E implies y ∈ A ∩ B_ρ. So B_ρ ∩ E ≤ᵐ A ∩ B_ρ, and measure_mono_ae applies. This is the parent's μ(E_τ ∩ B_ρ) ≤ μ(Z) + μ(A_p ∩ B_ρ) = μ(A_p ∩ B_ρ).\n   (b) μ(A ∩ B_ρ) ≤ κ(ρ)·μ(B_ρ). If μ(B_ρ) = 0, then μ(A ∩ B_ρ) ≤ μ(B_ρ) = 0, while κ(ρ)·0 = 0. Otherwise 0 < μ(B_ρ) < ∞ (step 4), and κ(ρ)·μ(B_ρ) = μ(A ∩ B_ρ) by ENNReal.div_mul_cancel.\n   (c) Division by P_ρ is monotone in the numerator, so g(ρ) ≤ κ(ρ)·μ(B_ρ)/P_ρ = κ(ρ)·f(ρ) (mul_div_assoc).\n\n6. Squeeze. We have 0 ≤ g(ρ) for all ρ, g(ρ) ≤ κ(ρ)·f(ρ) for ρ eventually in 𝓝[>] 0 (steps 4–5), and κ(ρ)·f(ρ) → 0 (step 3). By tendsto_of_tendsto_of_tendsto_of_le_of_le', g(ρ) = μ(closedBall x ρ ∩ E)/ofReal(ρ)^n → 0 as ρ ↓ 0. ∎",
+          "proof_key_steps": [
+            "0 < ω_n < ∞, and μ(B_ρ)/ρ^n = ω_n·densityRatio(ρ) → ω_nθ < ∞ (ENNReal.mul_div_mul_left, ENNReal.Tendsto.const_mul).",
+            "κ(ρ)·μ(B_ρ)/ρ^n → 0·ω_nθ = 0 (ENNReal.Tendsto.mul).",
+            "Eventually μ(B_ρ)/ρ^n < ∞, hence μ(B_ρ) < ∞. Then μ(B_ρ ∩ E) ≤ μ(A ∩ B_ρ) ≤ κ(ρ)·μ(B_ρ), by measure_mono_ae and the cases μ(B_ρ) = 0 or ENNReal.div_mul_cancel.",
+            "Squeeze: 0 ≤ μ(B_ρ ∩ E)/ρ^n ≤ κ(ρ)·μ(B_ρ)/ρ^n → 0."
+          ]
+        },
+        "audit": {
+          "key": "relative_density_decay",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exact type matches finite density, arbitrary A and E, relative-density convergence, and almost-everywhere inclusion. The supplied proof correctly establishes positive finite normalization, convergence of normalized ball mass, and the product limit. Eventual finite ball mass is proved before cancellation; zero ball mass is handled separately. measure_mono_ae requires no omitted measurability hypothesis, and the final squeeze proves the precise conclusion. The argument covers zero density and n = 0 without circular reliance. Its relative-limit hypothesis makes independence from child A legitimate. The bare name is unreserved."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-density-blowup-decay-a1-relative-density-decay-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-density-blowup-decay-a1-relative-density-decay-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-density-blowup-decay-a1-relative-density-decay-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/task.md": "26a69821fcbb4c8156d8dbf819ba687b1796fca88b5c4969fc177e4e2d316f7f",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/problem.md": "f3ff6fdb84533e44ef581c7db9fc65e6f4432d3e00703417ae6a5521b34622cf",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/problem.json": "ab856ea735af6858e6e745d0a7c2f7609ef9100e057929e5e454a9981df30814",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/reference-manifest.json": "b9f15a98b4902e870b1591aa2a8d0fbc8638813c80ba6751d53265f3313f8524",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/decomposition.json": "69ad04f884ca5b07baabaf7023c189bdf01dc60b9b5542f321cbb3b3920aedba",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/decomposition-audit.json": "3b329876e1cc1d6c714b8d5bb6ba1aa50ad318787d3e3235aa96695ca3577522",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/controller-contract.json": "d6d64638c7d2185f309c986882cec6bc2e74e968c0a584815c0cff93d386fef9",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/children/root-allard-tangent-cones-a1-density-blowup-decay-a1-lebesgue-density-open-a1/parent-child-handoff.json": "44ca287757aa8c129d50b9d2ae7a1d6b7ab8b4f9333e7a7f31bc21e171199480",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/children/root-allard-tangent-cones-a1-density-blowup-decay-a1-lebesgue-density-open-a1/parent-supplied-plan.md": "1a007bd43d41642d45c164fab8bd0764d6fb86852854bab23e506cb2e0443f8f",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/children/root-allard-tangent-cones-a1-density-blowup-decay-a1-lebesgue-density-open-a1/parent-supplied-natural-proof.md": "3dc20c49b1fc563e2c8bfcd2c0bdd198649492a02f41a31d10ee9b556a942a2d",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/children/root-allard-tangent-cones-a1-density-blowup-decay-a1-lebesgue-density-open-a1/parent-supplied-natural-proof.json": "a9187f5e5efff5d459998afa6eaaeb513165c65aa4194989595e058ff680d988",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/children/root-allard-tangent-cones-a1-density-blowup-decay-a1-lebesgue-density-open-a1/node.json": "69bfd927c28cb3bf1dc18745f6fc638e1453bd44995bf67b0f9abf81bc44b940",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/children/root-allard-tangent-cones-a1-density-blowup-decay-a1-relative-density-decay-a1/parent-child-handoff.json": "b2e794847f881e9013e2992e146f78a377be06bfb703ec9726229b2f677e5a1e",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/children/root-allard-tangent-cones-a1-density-blowup-decay-a1-relative-density-decay-a1/parent-supplied-plan.md": "8fcef7c1b272cc46a440c2c7e746514aa36ec03710bdc7ece2959bf1555c4d8b",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/children/root-allard-tangent-cones-a1-density-blowup-decay-a1-relative-density-decay-a1/parent-supplied-natural-proof.md": "0081ceb66fb9d3be959ade2d697b87752a465526642f3f43a99495d78b9177f4",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/children/root-allard-tangent-cones-a1-density-blowup-decay-a1-relative-density-decay-a1/parent-supplied-natural-proof.json": "51df4dedc9ebd27df6cbc1c6b81df7ea435a6b6d5d412161877b538b2454f836",
+    ".humanize-workspace/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-density-blowup-decay-a1/children/root-allard-tangent-cones-a1-density-blowup-decay-a1-relative-density-decay-a1/node.json": "bc1489e0d60289b1ee17d869b808ee362fe23b690a935f41bc51a0d5d02b695c"
+  }
+}

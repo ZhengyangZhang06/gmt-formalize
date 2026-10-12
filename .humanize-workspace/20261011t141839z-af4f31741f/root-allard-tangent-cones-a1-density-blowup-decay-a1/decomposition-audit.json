@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "ae_tendsto_measure_inter_div_of_measurableSet",
+        "HasDensity|densityRatio|unitBallVolume|hasBesicovitchCovering_subtype|structure Varifold|weight_apply|weight_finite_on_compact|def weight",
+        "top_div_of_ne_top|mul_div_mul_left|div_mul_cancel",
+        "allard_tc_dbd_lebesgue_density|allard_tc_dbd_relative_decay",
+        "lean /tmp/dbd-independent-audit/Types.lean",
+        "lean /tmp/dbd-independent-audit/lebesgue_density_open_NodeChallenge.lean",
+        "lean /tmp/dbd-independent-audit/relative_density_decay_NodeChallenge.lean",
+        "lean /tmp/dbd-independent-audit/FullReplay.lean",
+        "lean /tmp/dbd-independent-audit/SubspaceReplay.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/project/GMT/Ch08/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/local-references/5a882a57db723346/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/FirstVariationDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch08/.humanize/github-theorem-prover/runs/20261011T141839Z-af4f31741f/nodes/root-allard-tangent-cones-a1-density-blowup-decay-a1/parent-child-handoff.json",
+        "/tmp/dbd-independent-audit/Types.lean",
+        "/tmp/dbd-independent-audit/FullReplay.lean",
+        "/tmp/dbd-independent-audit/SubspaceReplay.lean",
+        "/tmp/dbd-independent-audit/lebesgue_density_open_NodeChallenge.lean",
+        "/tmp/dbd-independent-audit/relative_density_decay_NodeChallenge.lean"
+      ],
+      "conclusion": "Verified project 63436ae6, Mathlib 25730c7c, and SimonGMT 2b366308 compatibility. The frozen Contract matches the workspace Contract and Submission byte-for-byte; inspected dependency sources match their pins. Besicovitch differentiation requires local finiteness, justifying child A's localization. Restriction identities and ENNReal cancellation/continuity lemmas support both supplied proofs. Both exact one-line types independently elaborate in the comparator scope with autoImplicit false; the indicator and arithmetic infer the intended ENNReal types. Replays of child A's primary and alternate proofs, child B, and the exact selected parent assembly compile; their axiom checks contain only propext, Classical.choice, and Quot.sound. Neither proposed name is reserved in the current DAG or another branch's inspected artifacts. The split is appropriate: two independent analytic obligations feed the parent's countable rational-threshold argument, establishing the selected frozen contract without circular dependencies."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lebesgue_density_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree on openness, support, compact-set finiteness, measurable A, closed balls, and the ENNReal indicator limit. Every proof step is justified: countably many compact balls cover U by their interiors; their restricted measures are finite; Besicovitch differentiation applies; restrict_apply' transfers null sets without requiring their measurability; and sufficiently small balls remove the restriction. The alternate subspace proof also checks. Neither route uses the parent or another proposed child. The bare name is unreserved and empty dependencies are correct."
+    },
+    {
+      "key": "relative_density_decay",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches finite density, arbitrary A and E, relative-density convergence, and almost-everywhere inclusion. The supplied proof correctly establishes positive finite normalization, convergence of normalized ball mass, and the product limit. Eventual finite ball mass is proved before cancellation; zero ball mass is handled separately. measure_mono_ae requires no omitted measurability hypothesis, and the final squeeze proves the precise conclusion. The argument covers zero density and n = 0 without circular reliance. Its relative-limit hypothesis makes independence from child A legitimate. The bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}
