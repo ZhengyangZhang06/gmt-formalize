@@ -989,6 +989,244 @@ theorem Submission.intcpt_diag_dense_family_tendsto :
   have a3 := abs_lt.mp hgk
   rw [abs_lt]
   constructor <;> linarith [a1.1, a1.2, a2.1, a2.2, a3.1, a3.2]
+/-- `H^n ⌞ σ(A) = t^n σ_# (H^n ⌞ A)` for the similarity `σ(y) = ξ + t y`, `t > 0`, and every
+set `A` (measurable or not): `σ = (ξ + ·) ∘ (t • ·)` scales `H^n` of every set by `t^n`, and on a
+Borel set `B` both sides evaluate to `H^n(B ∩ σ(A)) = H^n(σ(σ⁻¹(B) ∩ A))`. -/
+theorem Submission.intcpt_ri_restrict_similarity_image :
+    ∀ (N n : ℕ) (ξ : Euclidean N) (t : ℝ) (A : Set (Euclidean N)), 0 < t → (μHE[n] : Measure (Euclidean N)).restrict ((fun y : Euclidean N ↦ ξ + t • y) '' A) = ENNReal.ofReal (t ^ n) • ((μHE[n] : Measure (Euclidean N)).restrict A).map (fun y : Euclidean N ↦ ξ + t • y) := by
+  intro N n ξ t A ht
+  -- Step 1: `σ = fun y ↦ ξ + t • y` is continuous, hence Borel measurable.
+  have hσ : Measurable (fun y : Euclidean N ↦ ξ + t • y) :=
+    (show Continuous (fun y : Euclidean N ↦ ξ + t • y) by fun_prop).measurable
+  -- Step 2: `H^n(σ(S)) = t^n H^n(S)` for every set `S`, since `σ(S) = ξ + t • S`.
+  have hscale : ∀ S : Set (Euclidean N),
+      (μHE[n] : Measure (Euclidean N)) ((fun y : Euclidean N ↦ ξ + t • y) '' S) =
+        ENNReal.ofReal (t ^ n) * μHE[n] S := by
+    intro S
+    rw [← Set.image_image (fun z : Euclidean N ↦ ξ + z) (fun y : Euclidean N ↦ t • y) S,
+      Set.image_smul, (isometry_add_left ξ).euclideanHausdorffMeasure_image,
+      Measure.euclideanHausdorffMeasure_smul₀ n ht.ne' S, ENNReal.smul_def, smul_eq_mul,
+      ← ENNReal.ofReal_coe_nnreal, NNReal.coe_pow, coe_nnnorm, Real.norm_of_nonneg ht.le]
+  -- Steps 3–6: both sides agree on every Borel set `B`.
+  ext B hB
+  rw [Measure.restrict_apply hB, Measure.smul_apply, Measure.map_apply hσ hB,
+    Measure.restrict_apply (hσ hB), smul_eq_mul, ← hscale, Set.image_preimage_inter]
+/-- Countable `n`-rectifiability is preserved by the inverse similarity (used for the rescaled
+integral varifolds in Simon Ch. 8, 5.9): if `M` is countably `n`-rectifiable and `t > 0`, then so is
+`σ⁻¹(M)` for `σ(y) = ξ + t y`, with exceptional set `σ⁻¹(M₀)` and parametrizations
+`v ↦ t⁻¹ (F_j(v) - ξ)`. -/
+theorem Submission.intcpt_ri_countablyRectifiable_similarity_preimage :
+    ∀ (N n : ℕ) (ξ : Euclidean N) (t : ℝ) (M : Set (Euclidean N)), 0 < t → Chapter03.CountablyRectifiable n M → Chapter03.CountablyRectifiable n ((fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M) := by
+  intro N n ξ t M ht hM
+  have ht0 : t ≠ 0 := ht.ne'
+  -- Step 1: `M ⊆ M₀ ∪ ⋃ j, range (F j)` with `H^n(M₀) = 0` and `F j` `K j`-Lipschitz.
+  obtain ⟨M₀, hM₀, F, hF, hcover⟩ := hM
+  choose K hK using hF
+  -- Step 2: `η x = t⁻¹ • (x - ξ)` is `‖t⁻¹‖₊`-Lipschitz, hence so is `η ∘ F j` up to `K j`.
+  have hη : LipschitzWith ‖t⁻¹‖₊ (fun x : Euclidean N ↦ t⁻¹ • (x - ξ)) := by
+    refine LipschitzWith.of_dist_le_mul fun x x' ↦ ?_
+    rw [dist_eq_norm, dist_eq_norm, ← smul_sub, sub_sub_sub_cancel_right, norm_smul, coe_nnnorm]
+  -- Step 3: `σ⁻¹(M₀) = t⁻¹ • (-ξ + M₀)` is `H^n`-null.
+  have hset : (fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M₀ =
+      t⁻¹ • ((fun x : Euclidean N ↦ -ξ + x) '' M₀) := by
+    ext y
+    constructor
+    · intro hy
+      refine ⟨-ξ + (ξ + t • y), mem_image_of_mem _ hy, ?_⟩
+      show t⁻¹ • (-ξ + (ξ + t • y)) = y
+      rw [neg_add_cancel_left, smul_smul, inv_mul_cancel₀ ht0, one_smul]
+    · rintro ⟨_, ⟨x, hx, rfl⟩, rfl⟩
+      show ξ + t • t⁻¹ • (-ξ + x) ∈ M₀
+      rwa [smul_smul, mul_inv_cancel₀ ht0, one_smul, add_neg_cancel_left]
+  have hnull : μHE[n] ((fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M₀) = 0 := by
+    rw [hset, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero ht0),
+      (isometry_add_left (-ξ)).euclideanHausdorffMeasure_image, hM₀, smul_zero]
+  -- Steps 4–5: cover `σ⁻¹(M)` by `σ⁻¹(M₀)` and the ranges of `η ∘ F j`.
+  refine ⟨_, hnull, fun j v ↦ t⁻¹ • (F j v - ξ), fun j ↦ ⟨‖t⁻¹‖₊ * K j, hη.comp (hK j)⟩, ?_⟩
+  intro y hy
+  rcases hcover hy with h0 | hrange
+  · exact Or.inl h0
+  · obtain ⟨j, v, hv⟩ := mem_iUnion.1 hrange
+    refine Or.inr (mem_iUnion.2 ⟨j, v, ?_⟩)
+    show t⁻¹ • (F j v - ξ) = y
+    rw [hv, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ ht0, one_smul]
+/-- Weighted approximate tangent planes (Simon Ch. 3, 1.7) are local: if `O` is open and `y ∈ O`,
+then `O ∩ M` has weighted approximate tangent space `P` at `y` with respect to `θ` if and only if
+`M` has. -/
+theorem Submission.intcpt_ri_weightedApproxTangent_inter_open_iff :
+    ∀ (N n : ℕ) (O M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (y : Euclidean N)
+      (P : Submodule ℝ (Euclidean N)), IsOpen O → y ∈ O →
+      (Chapter03.HasWeightedApproximateTangentSpaceAt n (O ∩ M) θ y P ↔
+        Chapter03.HasWeightedApproximateTangentSpaceAt n M θ y P) := by
+  intro N n O M θ y P hO hy
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hO y hy
+  -- The dimension conditions and the prescribed limits `θ(y) ∫_P f` coincide.
+  unfold Chapter03.HasWeightedApproximateTangentSpaceAt
+  refine and_congr Iff.rfl (forall_congr' fun f ↦ ?_)
+  -- `f` vanishes off `B = closedBall 0 R` for some `R > 0`.
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall 0
+  have hRpos : (0 : ℝ) < max R₀ 1 := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hsupp : tsupport f ⊆ closedBall (0 : Euclidean N) (max R₀ 1) :=
+    hR₀.trans (closedBall_subset_closedBall (le_max_left _ _))
+  -- The blow-up integrals for `O ∩ M` and `M` agree for `0 < r < ε / R`.
+  refine tendsto_congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hε hRpos)] with r hr
+  -- Cut-off: integrals over any `A` only see `B ∩ A`; no integrability is needed.
+  have hcut : ∀ A : Set (Euclidean N),
+      ∫ v in A, f v * θ (y + r • v) ∂μHE[n] =
+        ∫ v in closedBall (0 : Euclidean N) (max R₀ 1) ∩ A, f v * θ (y + r • v) ∂μHE[n] := by
+    intro A
+    rw [← Measure.restrict_restrict measurableSet_closedBall]
+    refine (setIntegral_eq_integral_of_forall_compl_eq_zero fun v hv ↦ ?_).symm
+    rw [image_eq_zero_of_notMem_tsupport (fun h ↦ hv (hsupp h)), zero_mul]
+  -- Within `B`, every blow-up point of `M` comes from `ball y ε ∩ M ⊆ O ∩ M`.
+  have hset : closedBall (0 : Euclidean N) (max R₀ 1) ∩ Chapter03.blowUpMap y r '' (O ∩ M) =
+      closedBall (0 : Euclidean N) (max R₀ 1) ∩ Chapter03.blowUpMap y r '' M := by
+    refine Subset.antisymm (inter_subset_inter_right _ (image_mono inter_subset_right)) ?_
+    rintro v ⟨hvB, z, hzM, rfl⟩
+    refine ⟨hvB, z, ⟨hball ?_, hzM⟩, rfl⟩
+    rw [mem_closedBall_zero_iff, Chapter03.blowUpMap, norm_smul, norm_inv,
+      Real.norm_of_nonneg hr.1.le, inv_mul_le_iff₀ hr.1] at hvB
+    have hrR : r * max R₀ 1 < ε := (lt_div_iff₀ hRpos).1 hr.2
+    rw [mem_ball, dist_eq_norm]
+    exact lt_of_le_of_lt hvB hrR
+  rw [hcut (Chapter03.blowUpMap y r '' (O ∩ M)), hcut (Chapter03.blowUpMap y r '' M), hset]
+/-- Weighted approximate tangent planes (Simon Ch. 3, 1.7) are invariant under the similarity
+`σ(w) = ξ + t w`, `t > 0`: `σ⁻¹(M)` has weighted approximate tangent space `P` at `y` with respect
+to `θ ∘ σ` if and only if `M` has weighted approximate tangent space `P` at `σ(y)` with respect
+to `θ`. -/
+theorem Submission.intcpt_ri_weightedApproxTangent_similarity_iff :
+    ∀ (N n : ℕ) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (ξ y : Euclidean N) (t : ℝ)
+      (P : Submodule ℝ (Euclidean N)), 0 < t →
+      (Chapter03.HasWeightedApproximateTangentSpaceAt n ((fun w : Euclidean N ↦ ξ + t • w) ⁻¹' M)
+          (fun w : Euclidean N ↦ θ (ξ + t • w)) y P ↔
+        Chapter03.HasWeightedApproximateTangentSpaceAt n M θ (ξ + t • y) P) := by
+  intro N n M θ ξ y t P ht
+  have ht0 : t ≠ 0 := ht.ne'
+  -- Blow-up sets: `η_{y,r}(σ⁻¹ M) = η_{σ(y),tr}(M)` for every `r` (also `r = 0`, as `0⁻¹ = 0`).
+  have hset : ∀ r : ℝ, Chapter03.blowUpMap y r '' ((fun w : Euclidean N ↦ ξ + t • w) ⁻¹' M) =
+      Chapter03.blowUpMap (ξ + t • y) (t * r) '' M := by
+    intro r
+    ext v
+    simp only [mem_image, mem_preimage, Chapter03.blowUpMap]
+    constructor
+    · rintro ⟨w, hw, rfl⟩
+      refine ⟨ξ + t • w, hw, ?_⟩
+      rw [add_sub_add_left_eq_sub, ← smul_sub, smul_smul, mul_inv, mul_comm t⁻¹ r⁻¹, mul_assoc,
+        inv_mul_cancel₀ ht0, mul_one]
+    · rintro ⟨z, hz, rfl⟩
+      refine ⟨t⁻¹ • (z - ξ), ?_, ?_⟩
+      · rwa [smul_smul, mul_inv_cancel₀ ht0, one_smul, add_sub_cancel]
+      · have hw : t⁻¹ • (z - ξ) - y = t⁻¹ • (z - (ξ + t • y)) := by
+          rw [sub_add_eq_sub_sub, smul_sub t⁻¹ (z - ξ) (t • y), smul_smul, inv_mul_cancel₀ ht0,
+            one_smul]
+        rw [hw, smul_smul, mul_inv, mul_comm t⁻¹ r⁻¹]
+  -- `r ↦ t r` maps `𝓝[>] 0` onto itself, so it does not change limits along `𝓝[>] 0`.
+  have hmap : map (fun r : ℝ ↦ t * r) (𝓝[>] (0 : ℝ)) = 𝓝[>] 0 := by
+    have hsurj : Function.Surjective (fun r : ℝ ↦ t * r) := fun s ↦
+      ⟨t⁻¹ * s, by simp only [← mul_assoc, mul_inv_cancel₀ ht0, one_mul]⟩
+    conv_lhs => rw [← comap_mulLeft_nhdsGT_zero ht]
+    exact map_comap_of_surjective hsurj _
+  have key : ∀ (G : ℝ → ℝ) (L : Filter ℝ),
+      Tendsto (G ∘ fun r : ℝ ↦ t * r) (𝓝[>] 0) L ↔ Tendsto G (𝓝[>] 0) L := by
+    intro G L
+    rw [← tendsto_map'_iff, hmap]
+  -- With `σ(y + r v) = σ(y) + (t r) v`, the blow-up integral for `σ⁻¹(M)` at scale `r` is the one
+  -- for `M` at scale `t r`; the limits `θ(σ(y)) ∫_P f` agree.
+  unfold Chapter03.HasWeightedApproximateTangentSpaceAt
+  refine and_congr Iff.rfl (forall_congr' fun f ↦ ?_)
+  refine Iff.trans ?_ (key (fun s : ℝ ↦ ∫ v in Chapter03.blowUpMap (ξ + t • y) s '' M,
+    f v * θ (ξ + t • y + s • v) ∂μHE[n]) _)
+  refine Filter.tendsto_congr fun r ↦ ?_
+  simp only [Function.comp_apply]
+  rw [hset r]
+  simp only [smul_add, smul_smul, add_assoc]
+/-- Rescaled restrictions of integral varifolds are integral (Simon Ch. 8, 5.9): if `V = v(M, θ)` is
+an integral `n`-varifold on `U`, `t > 0`, the similarity `σ(y) = ξ + t y` maps `O` into `U`, and `W`
+is `η_{ξ,t #} V` restricted to `Gₙ(O)`, then `W = v(O ∩ σ⁻¹(M), θ ∘ σ)` is integral. -/
+theorem Submission.intcpt_rescaled_restriction_integral :
+    ∀ (N n : ℕ) (U O : Set (Euclidean N)) (V : Varifold N n U) (W : Varifold N n O) (ξ : Euclidean N) (t : ℝ), 0 < t → (∀ y ∈ O, ξ + t • y ∈ U) → IsIntegral V → W.measure = (rescaledMeasure V ξ t).restrict (O ×ˢ (univ : Set (Grassmannian N n))) → IsIntegral W := by
+  intro N n U O V W ξ t ht hσU hV hW
+  have ht0 : t ≠ 0 := ht.ne'
+  obtain ⟨M, θ, ⟨-, hMmeas, hMrect, hθpos, hθint, hVrep⟩, hθnat⟩ := hV
+  -- Step 1: `σ(y) = ξ + t y` is a homeomorphism with inverse `x ↦ t⁻¹ (x - ξ)`, hence a measurable
+  -- embedding, and `H^n ⌞ σ(A) = t^n σ_# (H^n ⌞ A)` for every set `A`.
+  have hη : ∀ y : Euclidean N, t⁻¹ • (ξ + t • y - ξ) = y := fun y ↦ by
+    rw [add_sub_cancel_left, smul_smul, inv_mul_cancel₀ ht0, one_smul]
+  have hσsurj : Function.Surjective (fun y : Euclidean N ↦ ξ + t • y) := fun x ↦
+    ⟨t⁻¹ • (x - ξ), by simp only [smul_smul, mul_inv_cancel₀ ht0, one_smul, add_sub_cancel]⟩
+  have hσemb : MeasurableEmbedding (fun y : Euclidean N ↦ ξ + t • y) :=
+    ((Homeomorph.smulOfNeZero t ht0).trans (Homeomorph.addLeft ξ)).measurableEmbedding
+  have hc0 : ENNReal.ofReal (t ^ n) ≠ 0 := (ENNReal.ofReal_pos.2 (pow_pos ht n)).ne'
+  have hrestr := Submission.intcpt_ri_restrict_similarity_image N n ξ t
+  -- Step 2: `σ` is quasi-measure-preserving for `H^n`, as `H^n = t^n σ_# H^n`.
+  have hqmp : Measure.QuasiMeasurePreserving (fun y : Euclidean N ↦ ξ + t • y)
+      (μHE[n] : Measure (Euclidean N)) μHE[n] := by
+    have h := hrestr univ ht
+    rw [image_univ_of_surjective hσsurj, Measure.restrict_univ] at h
+    have hac := Measure.absolutelyContinuous_smul (μ := (μHE[n] : Measure (Euclidean N)).map
+      (fun y : Euclidean N ↦ ξ + t • y)) hc0
+    rw [← h] at hac
+    exact ⟨hσemb.measurable, hac⟩
+  -- Step 3: approximate tangent planes of `O ∩ σ⁻¹(M)` at `y ∈ O` are those of `M` at `σ(y)`.
+  have htan : ∀ y ∈ O, ∀ P : Submodule ℝ (Euclidean N),
+      Chapter03.HasWeightedApproximateTangentSpaceAt n (O ∩ (fun w : Euclidean N ↦ ξ + t • w) ⁻¹' M)
+          (fun w : Euclidean N ↦ θ (ξ + t • w)) y P ↔
+        Chapter03.HasWeightedApproximateTangentSpaceAt n M θ (ξ + t • y) P := fun y hy P ↦
+    (Submission.intcpt_ri_weightedApproxTangent_inter_open_iff N n O _ _ y P W.isOpen_domain
+      hy).trans (Submission.intcpt_ri_weightedApproxTangent_similarity_iff N n M θ ξ y t P ht)
+  -- Step 4: change of variables `∫_E θ ∘ σ dH^n = t^{-n} ∫_{σ(E)} θ dH^n`.
+  have hchange : ∀ E : Set (Euclidean N),
+      ∫⁻ y in E, ENNReal.ofReal (θ (ξ + t • y)) ∂μHE[n] =
+        ENNReal.ofReal (t⁻¹ ^ n) *
+          ∫⁻ x in (fun y : Euclidean N ↦ ξ + t • y) '' E, ENNReal.ofReal (θ x) ∂μHE[n] := by
+    intro E
+    rw [hrestr E ht, lintegral_smul_measure, hσemb.lintegral_map, smul_eq_mul, ← mul_assoc,
+      ← ENNReal.ofReal_mul (pow_nonneg (inv_nonneg.2 ht.le) n), ← mul_pow, inv_mul_cancel₀ ht0,
+      one_pow, ENNReal.ofReal_one, one_mul]
+  refine ⟨O ∩ (fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M, fun y ↦ θ (ξ + t • y),
+    ⟨inter_subset_left, W.isOpen_domain.measurableSet.nullMeasurableSet.inter
+      (hMmeas.preimage hqmp),
+      (Submission.intcpt_ri_countablyRectifiable_similarity_preimage N n ξ t M ht hMrect).mono
+        inter_subset_right,
+      fun y hy ↦ hθpos _ hy.2, ?_, ?_⟩, ?_⟩
+  · -- Step 5: local integrability, from `θ ∈ L¹(H^n ⌞ M ∩ σ(K))` with `σ(K) ⊆ U` compact.
+    intro K hK hKO
+    have hσK : (fun y : Euclidean N ↦ ξ + t • y) '' K ⊆ U := by
+      rintro _ ⟨y, hy, rfl⟩
+      exact hσU y (hKO hy)
+    have hθK := hθint _ (hK.image (show Continuous (fun y : Euclidean N ↦ ξ + t • y) by fun_prop))
+      hσK
+    rw [← image_preimage_inter, IntegrableOn, hrestr _ ht,
+      integrable_smul_measure hc0 ENNReal.ofReal_ne_top, hσemb.integrable_map_iff] at hθK
+    have hset : (O ∩ (fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M) ∩ K =
+        (fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M ∩ K :=
+      Subset.antisymm (fun y hy ↦ ⟨hy.1.2, hy.2⟩) (fun y hy ↦ ⟨⟨hKO hy.2, hy.1⟩, hy.2⟩)
+    rw [hset]
+    exact hθK
+  · -- Step 6: `W(A) = t^{-n} V(Φ⁻¹(A ∩ Gₙ(O)))`, `Φ(x, S) = (t⁻¹ (x - ξ), S)`, and the carrier of
+    -- `V` there is the `σ`-image of the carrier of `W` in `A`.
+    intro A hA
+    have hOA : MeasurableSet (A ∩ O ×ˢ (univ : Set (Grassmannian N n))) :=
+      hA.inter (W.isOpen_domain.measurableSet.prod MeasurableSet.univ)
+    have hΦ : Measurable (fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - ξ), z.2)) := by
+      fun_prop
+    rw [hW, Measure.restrict_apply hA, rescaledMeasure, Measure.smul_apply,
+      Measure.map_apply hΦ hOA, smul_eq_mul, hVrep _ (hΦ hOA), hchange]
+    refine congrArg (fun s ↦ ENNReal.ofReal (t⁻¹ ^ n) * ∫⁻ x in s, ENNReal.ofReal (θ x) ∂μHE[n])
+      ((image_preimage_eq _ hσsurj).symm.trans (congrArg _ ?_))
+    ext y
+    simp only [mem_preimage, mem_ofPred_eq, mem_inter_iff, mem_prod, mem_univ, and_true, hη]
+    constructor
+    · rintro ⟨hyM, S, hS, hyA, hyO⟩
+      exact ⟨⟨hyO, hyM⟩, S, (htan y hyO _).2 hS, hyA⟩
+    · rintro ⟨⟨hyO, hyM⟩, S, hS, hyA⟩
+      exact ⟨hyM, S, (htan y hyO _).1 hS, hyA, hyO⟩
+  · -- Step 7: `θ ∘ σ ∈ ℕ` a.e. on `σ⁻¹(M) ⊇ O ∩ σ⁻¹(M)`, since `H^n ⌞ M = t^n σ_# (H^n ⌞ σ⁻¹(M))`.
+    have h := hrestr ((fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M) ht
+    rw [image_preimage_eq M hσsurj] at h
+    rw [h, Measure.ae_ennreal_smul_measure_iff hc0, hσemb.ae_map_iff] at hθnat
+    exact ae_restrict_of_ae_restrict_of_subset inter_subset_right hθnat
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
