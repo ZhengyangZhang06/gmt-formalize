@@ -335,6 +335,97 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Excess defect of the blow-ups** (Step 3(ii) of the supplied proof of (‡) in De Giorgi's
+theorem, Simon Ch. 3, Theorem 4.3). Let `|ν| = 1` `μ`-a.e., `|e| = 1`, `μ(B_{ρ₁}(x)) < ∞`, and let the
+excess `Q(ρ) = ρ⁻ⁿ ∫_{B_ρ(x)} |ν - e| dμ` tend to `0` as `ρ ↓ 0`. Then for continuous compactly
+supported `φ`, `r⁻ⁿ ∫ φ(η_{x,r}(y)) dμ(y) - r⁻ⁿ ∫ φ(η_{x,r}(y)) ⟨e, ν(y)⟩ dμ(y) → 0` as `r ↓ 0`:
+if `|φ| ≤ M` and `tsupport φ ⊆ B_R(0)`, then `φ ∘ η_{x,r}` vanishes off `B_{rR}(x)` and
+`|1 - ⟨e, ν⟩| = |⟨e, e - ν⟩| ≤ |ν - e|`, so the difference is at most `M Rⁿ Q(rR)`. -/
+theorem Submission.deGiorgiTM_blowUp_defect_tendsto_zero : ∀ (N n : ℕ) (μ : Measure (Rn N)) (ν : Rn N → Rn N) (x e : Rn N) (ρ₁ : ℝ) (φ : Rn N → ℝ), 0 < ρ₁ → μ (Metric.ball x ρ₁) < ∞ → AEStronglyMeasurable ν μ → (∀ᵐ y ∂μ, ‖ν y‖ = 1) → ‖e‖ = 1 → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ y in Metric.ball x ρ, ‖ν y - e‖ ∂μ) (𝓝[>] 0) (𝓝 0) → Continuous φ → HasCompactSupport φ → Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) ∂μ - (r ^ n)⁻¹ * ∫ y, φ (blowUpMap x r y) * inner ℝ e (ν y) ∂μ) (𝓝[>] 0) (𝓝 0) := by
+  intro N n μ ν x e ρ₁ φ hρ₁ hμ hν hν1 he hQ hφ hφs
+  -- Step 1: `|φ| ≤ M` everywhere and `tsupport φ ⊆ B_R(0)` with `R > 0`.
+  obtain ⟨M, hM⟩ := hφ.bounded_above_of_compact_support hφs
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  obtain ⟨R, hR, hsupp⟩ : ∃ R : ℝ, 0 < R ∧ tsupport φ ⊆ Metric.ball 0 R := by
+    obtain ⟨R₀, hR₀⟩ := hφs.isCompact.isBounded.subset_ball (0 : Rn N)
+    exact ⟨max R₀ 1, lt_of_lt_of_le one_pos (le_max_right _ _),
+      hR₀.trans (Metric.ball_subset_ball (le_max_left _ _))⟩
+  -- Step 2: for `r > 0`, `φ (η_{x,r} y) ≠ 0` forces `y ∈ B_{rR}(x)`.
+  have hloc : ∀ r : ℝ, 0 < r → ∀ y, φ (blowUpMap x r y) ≠ 0 → y ∈ Metric.ball x (r * R) := by
+    intro r hr y hy
+    have h1 : blowUpMap x r y ∈ Metric.ball (0 : Rn N) R := hsupp (subset_tsupport φ hy)
+    rw [mem_ball_zero_iff, blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr,
+      inv_mul_lt_iff₀ hr] at h1
+    rwa [Metric.mem_ball, dist_eq_norm]
+  -- Step 7: `M Rⁿ Q(rR) → 0` as `r ↓ 0`, since `r ↦ rR` maps `𝓝[>] 0` into `𝓝[>] 0`.
+  have hmap : Tendsto (fun r : ℝ ↦ r * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · exact ((continuous_mul_const R).tendsto' 0 0 (zero_mul R)).mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr using mul_pos hr hR
+  have hlim := (hQ.comp hmap).const_mul (M * R ^ n)
+  rw [mul_zero] at hlim
+  refine squeeze_zero_norm' ?_ hlim
+  -- Steps 3–6: for `0 < r < ρ₁ / R`, `|D(r)| ≤ M Rⁿ Q(rR)`.
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hρ₁ hR)] with r hr
+  obtain ⟨hr0, hrR⟩ := hr
+  have hBmeas : MeasurableSet (Metric.ball x (r * R)) := Metric.isOpen_ball.measurableSet
+  have hBfin : μ (Metric.ball x (r * R)) ≠ ∞ :=
+    ((measure_mono (Metric.ball_subset_ball ((lt_div_iff₀ hR).1 hrR).le)).trans_lt hμ).ne
+  -- Step 4: both integrands are bounded and vanish off `B_{rR}(x)`, hence integrable.
+  have hFc : Continuous fun y ↦ φ (blowUpMap x r y) := by
+    unfold blowUpMap
+    fun_prop
+  have hFi : Integrable (fun y ↦ φ (blowUpMap x r y)) μ := by
+    refine (integrableOn_iff_integrable_of_support_subset (fun y hy ↦ hloc r hr0 y hy)).1
+      (Measure.integrableOn_of_bounded hBfin hFc.aestronglyMeasurable (M := M)
+        (Eventually.of_forall fun y ↦ hM _))
+  have hIm : AEStronglyMeasurable (fun y ↦ inner ℝ e (ν y)) μ :=
+    (continuous_const.inner continuous_id).comp_aestronglyMeasurable hν
+  have hGi : Integrable (fun y ↦ φ (blowUpMap x r y) * inner ℝ e (ν y)) μ := by
+    refine (integrableOn_iff_integrable_of_support_subset
+      (fun y hy ↦ hloc r hr0 y (left_ne_zero_of_mul hy))).1
+      (Measure.integrableOn_of_bounded hBfin (hFc.aestronglyMeasurable.mul hIm) (M := M)
+        (ae_restrict_of_ae (hν1.mono fun y hy ↦ ?_)))
+    rw [norm_mul]
+    calc ‖φ (blowUpMap x r y)‖ * ‖inner ℝ e (ν y)‖ ≤ M * (‖e‖ * ‖ν y‖) :=
+          mul_le_mul (hM _) (norm_inner_le_norm _ _) (norm_nonneg _) hM0
+      _ = M := by rw [he, hy, one_mul, mul_one]
+  -- Step 3: `|ν - e|` is integrable on `B_{rR}(x)`.
+  have hEi : IntegrableOn (fun y ↦ ‖ν y - e‖) (Metric.ball x (r * R)) μ := by
+    refine Measure.integrableOn_of_bounded hBfin (hν.sub aestronglyMeasurable_const).norm (M := 2)
+      (ae_restrict_of_ae (hν1.mono fun y hy ↦ ?_))
+    rw [norm_norm]
+    calc ‖ν y - e‖ ≤ ‖ν y‖ + ‖e‖ := norm_sub_le _ _
+      _ = 2 := by rw [hy, he]; norm_num
+  -- Step 5: the pointwise bound `|F - G| ≤ 1_{B_{rR}(x)} M |ν - e|`.
+  have hpt : ∀ y, ‖φ (blowUpMap x r y) - φ (blowUpMap x r y) * inner ℝ e (ν y)‖ ≤
+      (Metric.ball x (r * R)).indicator (fun y ↦ M * ‖ν y - e‖) y := by
+    intro y
+    by_cases hy : φ (blowUpMap x r y) = 0
+    · rw [hy, zero_mul, sub_zero, norm_zero]
+      exact Set.indicator_nonneg (fun y _ ↦ mul_nonneg hM0 (norm_nonneg _)) y
+    · rw [Set.indicator_of_mem (hloc r hr0 y hy)]
+      have hdiff : φ (blowUpMap x r y) - φ (blowUpMap x r y) * inner ℝ e (ν y) =
+          φ (blowUpMap x r y) * inner ℝ e (e - ν y) := by
+        rw [inner_sub_right, real_inner_self_eq_norm_sq, he]
+        ring
+      rw [hdiff, norm_mul]
+      refine mul_le_mul (hM _) ?_ (norm_nonneg _) hM0
+      calc ‖inner ℝ e (e - ν y)‖ ≤ ‖e‖ * ‖e - ν y‖ := norm_inner_le_norm _ _
+        _ = ‖ν y - e‖ := by rw [he, one_mul, norm_sub_rev]
+  -- Step 6: the estimate `|D(r)| ≤ r⁻ⁿ M ∫_{B_{rR}(x)} |ν - e| dμ = M Rⁿ Q(rR)`.
+  have hgi : Integrable ((Metric.ball x (r * R)).indicator fun y ↦ M * ‖ν y - e‖) μ :=
+    (integrable_indicator_iff hBmeas).2 (hEi.const_mul M)
+  have hrn : 0 < r ^ n := pow_pos hr0 n
+  rw [← mul_sub, ← integral_sub hFi hGi, norm_mul, Real.norm_eq_abs, abs_of_pos (inv_pos.2 hrn)]
+  calc (r ^ n)⁻¹ * ‖∫ y, φ (blowUpMap x r y) - φ (blowUpMap x r y) * inner ℝ e (ν y) ∂μ‖
+      ≤ (r ^ n)⁻¹ * ∫ y, (Metric.ball x (r * R)).indicator (fun y ↦ M * ‖ν y - e‖) y ∂μ :=
+        mul_le_mul_of_nonneg_left (norm_integral_le_of_norm_le hgi (Eventually.of_forall hpt))
+          (inv_pos.2 hrn).le
+    _ = M * R ^ n * (((r * R) ^ n)⁻¹ * ∫ y in Metric.ball x (r * R), ‖ν y - e‖ ∂μ) := by
+        rw [integral_indicator hBmeas, integral_const_mul, mul_pow, mul_inv]
+        field_simp
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
