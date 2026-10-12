@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat nodes/root-stationary-results-a1-sff-chart-a1/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}; cat problem.md; cat local-references/ff09f3909baeeae7/manifest.json",
+        "python3 -I dag.json listing (id/status/lean_name; lean_statement of root.submanifold_tangent-a1 and its 5 children, root.stationary_results-a1.sff_chart-a1, sff_properties-a1)",
+        "cat simongmt/Poincare/SimonGMT/Chapter02/{Submanifold,SubmanifoldTopology}.lean; diff snapshot project/GMT/Ch02/{Contract,Submission}.lean against workspace GMT/Ch02 (identical)",
+        "sed -n 1,600p verifier/gmt-compare.py (contract_scope, child_modules, candidate_inputs, frozen_inputs); cat verifier/lean_contract.py",
+        "grep -rn \"theorem HasStrictFDerivAt.to_localInverse\\|def HasStrictFDerivAt.localInverse\\|theorem HasStrictFDerivAt.eventually_left_inverse\\|theorem ContDiffAt.hasStrictFDerivAt\\|exists_leftInverse_of_injective\\|theorem eq_starProjection_of_mem_of_inner_eq_zero\\|starProjection_eq_self_iff\\|theorem differentiableAt_inverse\\|theorem hasFDerivAt_ringInverse\\|theorem HasFDerivAt.clm_apply\\|theorem DifferentiableAt.clm_comp\\|mapsTo_tangent\\|theorem tangentConeAt_mono\\|theorem tangentConeAt_of_mem_nhds\\|theorem HasFDerivWithinAt.unique_on\\|theorem Filter.EventuallyEq.eq_of_nhdsWithin\\|theorem HasFDerivWithinAt.congr_of_eventuallyEq\\|theorem ContDiffAt.fderiv_right\" Mathlib --include=*.lean",
+        "sed -n 100,215p Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean; sed -n 40,75p Mathlib/Analysis/Calculus/ContDiff/RCLike.lean; sed -n 395,430p Mathlib/Analysis/Calculus/FDeriv/Equiv.lean; sed -n 150,175p Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "grep -n \"^theorem\\|^def\\|^lemma\" Mathlib/Analysis/InnerProductSpace/Adjoint.lean; grep -rn adjoint Mathlib --include=*.lean | grep -i \"differentiab\\|hasFDeriv\\|contDiff\\|isBoundedLinearMap\" (no match)",
+        "grep -rn \"isUnit_iff_bijective\\|mul_inverse_cancel\\|unitsEquiv\\|class HasOrthogonalProjection\\|Units.isOpen\" Mathlib --include=*.lean",
+        "lake build GMT.Ch02.Submission (scratch /tmp/sff-chart-decomp, .lake/packages -> lake-packages-25730c7c); python3 -I /tmp/sff-scripts/gen_checks.py (gmt-compare.child_modules + lean_contract.validate_lean_statement + dag.json collision check); lake env lean NodeChallenge_00..04.lean",
+        "lake env lean AssemblyCheck.lean; lake env lean ProofCheck1.lean ProofCheck2.lean ProofCheck3.lean ProofCheck45.lean EndToEnd.lean (#print axioms)",
+        "grep -rn <each proposed lean_name> project mathlib/Mathlib simongmt/Poincare --include=*.lean; grep -c '\"<lean_name>\"' dag.json",
+        "sed -n 1060,1125p book/chapter-02.txt (printed Simon 4.23-4.27)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/TangentCone/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/LinearAlgebra/Basis/VectorSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Algebra/GroupWithZero/Units/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/NhdsWithin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-sff-chart-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-sff-chart-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/sff-chart-decomp/AssemblyCheck.lean",
+        "/tmp/sff-chart-decomp/EndToEnd.lean"
+      ],
+      "conclusion": "The snapshot contract is byte-identical to the workspace's GMT/Ch02/Contract.lean and Submission.lean. It defines B := fderivWithin ℝ (tangentProjection M) M y and tangentProjection := (tangentSpace M y).starProjection. Submission may add imports and new files under GMT/Ch02/; only Contract and the lake inputs are byte-frozen (gmt-compare.candidate_inputs). So the SimonGMT lemma IsSimonLocalRepresentation.exists_open_image_eq_inter (SubmanifoldTopology.lean, Simon 4.2) is usable.\n\nMathlib 25730c7c supplies everything the children need:\n- HasStrictFDerivAt.localInverse / eventually_left_inverse / to_localInverse.\n- ContDiffAt.hasStrictFDerivAt (side condition n ≠ 0) and ContDiffAt.fderiv_right.\n- LinearMap.exists_leftInverse_of_injective.\n- Submodule.eq_starProjection_of_mem_of_inner_eq_zero and starProjection_eq_self_iff.\n- ContinuousLinearMap.adjoint_comp_self_injective_iff.\n- differentiableAt_inverse, Ring.mul_inverse_cancel and Units.isOpen.\n- HasFDerivAt.clm_apply and DifferentiableAt.clm_comp.\n- HasFDerivWithinAt.unique_on, congr_of_eventuallyEq and mapsTo_tangent_cone.\n- tangentConeAt_of_mem_nhds, tangentConeAt_mono and Filter.EventuallyEq.eq_of_nhdsWithin.\nThere is no ℝ-linear CLM form of ContinuousLinearMap.adjoint and no differentiability lemma for it (no-match), so the child builds one by hand. HasOrthogonalProjection is Prop-valued.\n\nThe five lean_statements validate and elaborate in the replayed comparator scope. AssemblyCheck derives the verbatim frozen parent type from them. EndToEnd.lean contains real proofs of all five children plus the glue, with axioms [propext, Classical.choice, Quot.sound].\n\nNone of the five lean_names occurs in dag.json, the project, SimonGMT or Mathlib. Simon's printed 4.26 says only \"by a similar argument\", so there is no printed proof to copy."
+    }
+  ],
+  "parent_id": "root.stationary_results-a1.sff_chart-a1",
+  "child_id": "root.stationary_results-a1.sff_chart-a1.immersion_left_inverse-a1",
+  "subproblem": {
+    "key": "immersion_left_inverse",
+    "title": "Local left inverse of an immersion, differentiable at the image point (inverse function theorem)",
+    "statement": "Let n, N ∈ ℕ, ψ : ℝⁿ → ℝᴺ and x₀ ∈ ℝⁿ, where ℝ^d := EuclideanSpace ℝ (Fin d). Assume ψ is C¹ at x₀ (ContDiffAt ℝ 1 ψ x₀, i.e. ψ is C¹ on some neighbourhood of x₀). Assume also that its derivative Dψ(x₀) = fderiv ℝ ψ x₀ : ℝⁿ → ℝᴺ is injective. Then there is a map g : ℝᴺ → ℝⁿ that is Fréchet differentiable at ψ(x₀) and satisfies g(ψ(x)) = x for every x in some neighbourhood of x₀.",
+    "lean_statement": "∀ (n N : ℕ) (ψ : Rn n → Rn N) (x₀ : Rn n), ContDiffAt ℝ 1 ψ x₀ → Function.Injective (fderiv ℝ ψ x₀) → ∃ g : Rn N → Rn n, DifferentiableAt ℝ g (ψ x₀) ∧ ∀ᶠ x in 𝓝 x₀, g (ψ x) = x",
+    "lean_name": "sff_immersion_local_left_inverse",
+    "depends_on": [],
+    "natural_proof": "Source: steps 2–3 (parent G1) of the supplied proof of second_fundamental_form_chart_formula. Those steps produce a map π, differentiable at y₀ = ψ(x₀), with π(ψ(x)) = x on a neighbourhood V₀ of x₀; this is exactly the present conclusion. The parent obtains π from the inverse function theorem applied to Ξ(x, q) = ψ(x) + q on ℝⁿ × (range Dψ(x₀))^⊥. Here the same theorem is applied to the n-dimensional map L ∘ ψ, where L is a linear left inverse of Dψ(x₀). This gives the same conclusion without the product space or the dimension count.\nNotation: A₀ := Dψ(x₀) = fderiv ℝ ψ x₀ ∈ L(ℝⁿ, ℝᴺ), y₀ := ψ(x₀).\n1. (A continuous linear left inverse of A₀.) A₀ is injective, so its kernel is {0}. Hence there is a linear map L : ℝᴺ → ℝⁿ with L ∘ A₀ = id_{ℝⁿ}: the images under A₀ of a basis of ℝⁿ are linearly independent; extend them to a basis of ℝᴺ, and define L by L(A₀eᵢ) := eᵢ for a basis (eᵢ) of ℝⁿ and L := 0 on the added vectors (Mathlib LinearMap.exists_leftInverse_of_injective, applied to A₀ viewed as a linear map with LinearMap.ker_eq_bot.mpr). Since ℝᴺ is finite-dimensional, L is continuous (LinearMap.toContinuousLinearMap), so L ∈ L(ℝᴺ, ℝⁿ) and L ∘L A₀ = id.\n2. (Strict derivative of h := L ∘ ψ.) ψ is C¹ at x₀ and the order 1 is nonzero, so ψ is strictly differentiable at x₀ with strict derivative A₀ (ContDiffAt.hasStrictFDerivAt; in this Mathlib the side condition is 1 ≠ 0). L is continuous linear, so it is strictly differentiable everywhere with derivative L. By the chain rule (HasStrictFDerivAt.comp), h : ℝⁿ → ℝⁿ, h(x) := L(ψ(x)), is strictly differentiable at x₀ with derivative L ∘ A₀ = id. This is the identity continuous linear equivalence of ℝⁿ (ContinuousLinearEquiv.refl ℝ (Rn n)).\n3. (Inverse function theorem.) ℝⁿ is complete and h has the invertible strict derivative id at x₀. So the local inverse k := HasStrictFDerivAt.localInverse h id x₀ : ℝⁿ → ℝⁿ satisfies two properties. (a) k(h(x)) = x for all x in a neighbourhood U of x₀ (HasStrictFDerivAt.eventually_left_inverse). (b) k is strictly differentiable, in particular differentiable, at h(x₀) with derivative id⁻¹ = id (HasStrictFDerivAt.to_localInverse).\n4. (Differentiability of g.) Put g := k ∘ L : ℝᴺ → ℝⁿ. L is differentiable at y₀ and L(y₀) = h(x₀), where k is differentiable by 3(b). By the chain rule, g is differentiable at y₀ = ψ(x₀).\n5. (Left inverse.) For x ∈ U, g(ψ(x)) = k(L(ψ(x))) = k(h(x)) = x by 3(a). So g(ψ(x)) = x for every x in the neighbourhood U of x₀. Together with step 4 this proves the claim. ∎",
+    "proof_key_steps": [
+      "Choose a continuous linear left inverse L of the injective Dψ(x₀) (finite dimension).",
+      "L ∘ ψ is strictly differentiable at x₀ with derivative L ∘ Dψ(x₀) = id.",
+      "Inverse function theorem: a local inverse k with k(L(ψ x)) = x near x₀, and k differentiable at L(ψ x₀).",
+      "g := k ∘ L is differentiable at ψ(x₀) and satisfies g(ψ x) = x near x₀."
+    ]
+  },
+  "audit": {
+    "key": "immersion_left_inverse",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and type agree. A continuous linear left inverse makes L ∘ ψ strictly differentiable with identity derivative; the inverse function theorem supplies k, and g = k ∘ L has both required properties. All regularity and finite-dimensionality requirements are justified, including zero-dimensional cases."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-sff-chart-a1-immersion-left-inverse-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-sff-chart-a1-immersion-left-inverse-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-sff-chart-a1-immersion-left-inverse-a1/parent-supplied-natural-proof.json"
+}

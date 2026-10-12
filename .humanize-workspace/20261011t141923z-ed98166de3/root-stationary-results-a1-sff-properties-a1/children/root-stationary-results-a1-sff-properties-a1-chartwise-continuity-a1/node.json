@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.sff_properties-a1.chartwise_continuity-a1",
+  "parent_id": "root.stationary_results-a1.sff_properties-a1",
+  "depth": 3,
+  "title": "Continuity on a Simon submanifold can be checked in charts",
+  "statement": "Let n, N ∈ ℕ, r ∈ ℕ∞, let M ⊆ ℝᴺ be an n-dimensional C^r Simon submanifold (Chapter02.IsSimonSubmanifold (E := ℝⁿ) r M), let X be a topological space and F : ℝᴺ → X. Suppose that for every chart (V, W, ψ) of M of class r (Chapter02.IsSimonLocalRepresentation r M V W ψ, ψ : ℝⁿ → ℝᴺ) the map x ↦ F(ψ(x)) is continuous on V. Then F is continuous on M.",
+  "lean_statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (X : Type) [TopologicalSpace X] (F : Rn N → X), Chapter02.IsSimonSubmanifold (E := Rn n) r M → (∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation r M V W ψ → ContinuousOn (fun x ↦ F (ψ x)) V) → ContinuousOn F M",
+  "lean_name": "simon_submanifold_continuousOn_of_chart_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-sff-properties-a1-chartwise-continuity-a1-a1"
+}
