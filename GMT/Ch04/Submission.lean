@@ -1230,6 +1230,17 @@ theorem Submission.density_point_mean_value_estimate : (∀ (n ℓ : ℕ) (V : R
   calc omega n * g ζ ≤ g ζ * (omega n * θ₀) + 0 := by
         nlinarith [mul_nonneg (mul_nonneg hω.le hgζ) (sub_nonneg.2 hθ)]
     _ ≤ _ := hle
+/-- **Chain rule for the tangential gradient** (Simon Ch. 4, 5.6, proof). If `h` is
+differentiable at `x` and `ψ : ℝ → ℝ` at `h(x)`, then `∇^M(ψ ∘ h)(x) = ψ'(h(x)) ∇^M h(x)`:
+`D(ψ ∘ h)(x) = ψ'(h(x)) Dh(x)` by the chain rule, and both the inverse Riesz map defining
+`∇f(x)` from `Df(x)` and the projection `p_{T_x V}` are linear. -/
+theorem Submission.tangentialGradient_comp_of_differentiableAt : ∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (h : Ambient n ℓ → ℝ) (ψ : ℝ → ℝ) (x : Ambient n ℓ), DifferentiableAt ℝ h x → DifferentiableAt ℝ ψ (h x) → V.tangentialGradient (fun y ↦ ψ (h y)) x = deriv ψ (h x) • V.tangentialGradient h x := by
+  intro n ℓ V h ψ x hh hψ
+  -- chain rule: `D(ψ ∘ h)(x) = ψ'(h(x)) • Dh(x)`
+  have hcomp : fderiv ℝ (fun y ↦ ψ (h y)) x = deriv ψ (h x) • fderiv ℝ h x :=
+    (hψ.hasDerivAt.comp_hasFDerivAt x hh.hasFDerivAt).fderiv
+  -- `∇f(x) = (toDual ℝ _).symm (Df(x))` and `p_{T_x V}` are both linear
+  simp only [tangentialGradient, gradient, hcomp, map_smul]
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
