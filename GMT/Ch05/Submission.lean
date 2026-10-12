@@ -1040,6 +1040,44 @@ theorem rsod_ae_tendsto_density_zero_outside : ∀ (n ℓ : ℕ) (ν : Measure (
           mul_le_mul_of_nonneg_left h1 (inv_nonneg.2 hρn.le)
       _ = 1 / ((j : ℝ) + 1) := by rw [mul_left_comm, inv_mul_cancel₀ hρn.ne', mul_one]
       _ < a := hj
+/-- **Weighted approximate tangent spaces from unweighted ones** (Simon, *Introduction to GMT*,
+Ch. 3, Remark 1.8(1)).  Let `A` be a Borel set with `Hⁿ(A) < ∞` and `ϑ` Borel and `Hⁿ`-integrable
+on `A`.  If for every closed `K ⊆ A`, `Hⁿ`-a.e. `x ∈ K` has an approximate tangent space of `K`
+(Def. 1.4), then `Hⁿ`-a.e. `x ∈ A` has an approximate tangent space of `A` with respect to `ϑ`
+(Def. 1.7).
+(1) (Lusin, Ch. 1, 1.17) There are closed `C_i ⊆ A` with `ϑ` continuous on `C_i` and
+`Hⁿ(A \ ⋃ C_i) = 0`.
+(2) `μ' = |ϑ| Hⁿ ⌞ A` is finite, so by the Upper Density Theorem (Ch. 1, 3.6)
+`ρ⁻ⁿ μ'((A \ C_i) ∩ B_ρ(x)) → 0` for `Hⁿ`-a.e. `x ∉ A \ C_i`; by hypothesis, `Hⁿ`-a.e. `x ∈ C_i`
+has an approximate tangent space `T_x C_i = P`.
+(3) Off the countable union of these null sets and of `A \ ⋃ C_i`, each `x ∈ A` lies in some
+`C_i`, and there `T_x C_i` is the approximate tangent space of `A` at `x` with respect to `ϑ`. -/
+theorem rsod_ae_weightedApproxTangent_of_unweighted : ∀ (n ℓ : ℕ) (A : Set (Amb n ℓ)) (ϑ : Amb n ℓ → ℝ), MeasurableSet A → (μHE[n] : Measure (Amb n ℓ)) A < ∞ → Measurable ϑ → IntegrableOn ϑ A (μHE[n] : Measure (Amb n ℓ)) → (∀ K : Set (Amb n ℓ), IsClosed K → K ⊆ A → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∈ K → ∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n K x P) → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∈ A → ∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n A ϑ x P := by
+  intro n ℓ A ϑ hA hAfin hϑ hint hK
+  -- Step 1 (Lusin): closed `C i ⊆ A` with `ϑ` continuous on `C i` and `Hⁿ(A \ ⋃ C i) = 0`.
+  obtain ⟨C, hC, hnull⟩ := Submission.rsod_wfu_lusin_closed_exhaustion n ℓ A ϑ hA hAfin hϑ
+  -- Step 2: `μ' = |ϑ| Hⁿ ⌞ A` is a finite measure, since `ϑ` is integrable on `A`.
+  have hμ' : ∀ S : Set (Amb n ℓ),
+      ((μHE[n] : Measure (Amb n ℓ)).restrict A).withDensity (fun z => ‖ϑ z‖ₑ) S < ∞ := by
+    intro S
+    refine (measure_mono (subset_univ S)).trans_lt ?_
+    rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+    exact hasFiniteIntegral_iff_enorm.1 hint.integrable.hasFiniteIntegral
+  -- Step 3: for `Hⁿ`-a.e. `x` and every `i`, the set `A \ C i` has zero `μ'`-density at `x` if
+  -- `x ∉ A \ C i`, and `C i` has an approximate tangent space at `x` if `x ∈ C i`.
+  have hdens := ae_all_iff.2 fun i => rsod_ae_tendsto_density_zero_outside n ℓ _ (A \ C i)
+    (hA.diff (hC i).1.measurableSet) (hμ' _)
+  have htan := ae_all_iff.2 fun i => hK (C i) (hC i).1 (hC i).2.1
+  -- Step 4: off these null sets and `A \ ⋃ C i`, each `x ∈ A` lies in some `C i`, and the
+  -- approximate tangent space of `C i` at `x` is the weighted one of `A`.
+  filter_upwards [hdens, htan, measure_eq_zero_iff_ae_notMem.1 hnull] with x hxd hxt hxn hxA
+  have hxU : x ∈ ⋃ i, C i := by
+    by_contra h
+    exact hxn ⟨hxA, h⟩
+  obtain ⟨i, hxi⟩ := mem_iUnion.1 hxU
+  obtain ⟨P, hP⟩ := hxt i hxi
+  exact ⟨P, Submission.rsod_wfu_weightedApproxTangent_of_closed_piece n ℓ A (C i) ϑ x P hA hAfin
+    hint (hC i).1.measurableSet (hC i).2.1 ((hC i).2.2 x hxi) hP (hxd i fun h => h.2 hxi)⟩
 
 end Submission
 
