@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bd86035f4e5a59088ae398f945cbb883833c1e8aac2d464cb6bda5aded464d21",
+  "git_delta": {
+    "base_commit": "d7755ba953a239de2ff323d9ea1742d091814766",
+    "candidate_commit": "850b797a5834ef1db75f518ea5eb1e8c4549d8c9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "adr_content_density",
+    "diff_sha256": "848cbaef4bfe81e5a9483b273ad04af9425bf0bed11c31ecb113a4731623e14e",
+    "source_sha256": "edef708bbe28000bdf8b01132ac6e181fe0e6fc5047a8a2de3a564fb897b46c8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.adr_content_density",
+      "statement": "∀ (P : ℕ) (ℓ : ℝ) (A : Set (Euclid P)), 0 < ℓ → MeasurableSet A → Bornology.IsBounded A → μH[ℓ] {x | x ∈ A ∧ ¬ ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ ∀ C : ℕ → Set (Euclid P), A ∩ ball x ρ ⊆ ⋃ j, C j → ENNReal.ofReal ρ ^ ℓ ≤ 2 * ∑' j, Metric.ediam (C j) ^ ℓ} = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
