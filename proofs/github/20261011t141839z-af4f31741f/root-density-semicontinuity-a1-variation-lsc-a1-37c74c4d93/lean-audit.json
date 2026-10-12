@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1bbd36367348d7bc5395358b5a9fad72d1747b884967e59c9373a8b2a0905c7a",
+  "git_delta": {
+    "base_commit": "54295e6c79ed665caddb17eb13d33a48b75e033b",
+    "candidate_commit": "69882035167314575719d17715a762f8471069ac",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "variationMeasure_le_liminf_of_radonConverges",
+    "diff_sha256": "acce0745e0f324f3cfd204b925888a99d7bba0a1410af51e51a3c81ab40c2ad7",
+    "source_sha256": "04713c56b6732953fc9fbc260126a0940ab52a442ac2c8af37dcad01283a947f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.variationMeasure_le_liminf_of_radonConverges",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U), Varifold.RadonConverges Vi V → (∀ i, (Vi i).HasLocallyBoundedFirstVariation) → (∀ W, IsRelCompactOpenIn W U → liminf (fun i ↦ variationMeasure (Vi i) W) atTop ≠ ∞) → V.HasLocallyBoundedFirstVariation ∧ ∀ W, IsRelCompactOpenIn W U → variationMeasure V W ≤ liminf (fun i ↦ variationMeasure (Vi i) W) atTop",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
