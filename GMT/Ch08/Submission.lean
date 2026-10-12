@@ -1228,6 +1228,245 @@ theorem Submission.intcpt_rescaled_restriction_integral :
     rw [h, Measure.ae_ennreal_smul_measure_iff hc0, hσemb.ae_map_iff] at hθnat
     exact ae_restrict_of_ae_restrict_of_subset inter_subset_right hθnat
 
+/-- The diagonal blow-up in the proof of **Simon Ch. 8, 5.9** (printed steps (3)–(4); node
+`diagonal_blowup` of `integral_compactness`), restricted to the fixed ball `B°_5(0)`.  Let
+`V_i → V` with each `V_i` integral of locally bounded first variation, let `V` have tangent plane
+`P` with multiplicity `θ₀` at `ξ`, and let `liminf_i ‖δV_i‖(B_ρ(ξ)) ≤ c ρ^n` for `0 < ρ < r`.
+For scales `λ_k ↓ 0` and well-chosen indices `i_k`, the blow-ups
+`W_k = (V_{i_k})_{ξ,λ_k} ⌞ (B°_5(0) × G)` are integral varifolds on `B°_5(0)` with locally bounded
+first variation, `‖δW_k‖(B°_5(0)) ≤ 2 max(c,1) 5^n λ_k → 0`, and `W_k → θ₀ v(P)` on
+`B°_5(0) × G`. -/
+theorem Submission.intcpt_diagonal_integral_blowup :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U)
+      (ξ : Euclidean N) (P : Grassmannian N n) (θ₀ c r : ℝ), Varifold.RadonConverges Vi V →
+      (∀ i, IsIntegral (Vi i)) → (∀ i, (Vi i).HasLocallyBoundedFirstVariation) →
+      HasTangentPlane V ξ P θ₀ → 0 < r →
+      (∀ ρ : ℝ, 0 < ρ → ρ < r →
+        liminf (fun i ↦ variationMeasure (Vi i) (closedBall ξ ρ)) atTop ≤
+          ENNReal.ofReal (c * ρ ^ n)) →
+      ∃ W : ℕ → Varifold N n (ball (0 : Euclidean N) 5), (∀ k, IsIntegral (W k)) ∧
+        (∀ k, (W k).HasLocallyBoundedFirstVariation) ∧
+        Tendsto (fun k ↦ variationMeasure (W k) (ball (0 : Euclidean N) 5)) atTop (𝓝 0) ∧
+        ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ),
+          tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) →
+          Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop
+            (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P))) := by
+  intro N n U Vi V ξ P θ₀ c r hconv hint hlbfv htan hr hlim
+  obtain ⟨hξU, -, htanf⟩ := htan
+  set O : Set (Euclidean N) := ball (0 : Euclidean N) 5 with hO
+  -- A ball `B°_ε(ξ) ⊆ U`.
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp V.isOpen_domain ξ hξU
+  -- The scales `λ_k = δ₀ / (k + 1)`: `5 λ_k < r`, `6 λ_k < ε` and `λ_k → 0⁺`.
+  set δ₀ : ℝ := min r ε / 7 with hδ₀
+  have hδ₀pos : 0 < δ₀ := by positivity
+  set lam : ℕ → ℝ := fun k ↦ δ₀ * (1 / ((k : ℝ) + 1)) with hlam
+  have hlampos : ∀ k, 0 < lam k := fun k ↦ by positivity
+  have hlamle : ∀ k, lam k ≤ δ₀ := by
+    intro k
+    have h1 : 1 / ((k : ℝ) + 1) ≤ 1 := by
+      rw [div_le_one (by positivity)]; linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+    calc lam k = δ₀ * (1 / ((k : ℝ) + 1)) := rfl
+      _ ≤ δ₀ * 1 := mul_le_mul_of_nonneg_left h1 hδ₀pos.le
+      _ = δ₀ := mul_one _
+  have hlamr : ∀ k, lam k * 5 < r := by
+    intro k
+    have : δ₀ * 5 < r := by
+      have := min_le_left r ε
+      rw [hδ₀]; nlinarith
+    nlinarith [hlamle k]
+  have hlamε : ∀ k, lam k * 6 < ε := by
+    intro k
+    have : δ₀ * 6 < ε := by
+      have := min_le_right r ε
+      rw [hδ₀]; nlinarith
+    nlinarith [hlamle k]
+  have hlamlim : Tendsto lam atTop (𝓝 0) := by
+    have := (tendsto_one_div_add_atTop_nhds_zero_nat).const_mul δ₀
+    simpa [hlam] using this
+  have hlamwithin : Tendsto lam atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.mpr ⟨hlamlim, Eventually.of_forall hlampos⟩
+  -- Points of `B_6(0)` blow down into `U`.
+  have hinU : ∀ k (y : Euclidean N), ‖y‖ ≤ 6 → ξ + lam k • y ∈ U := by
+    intro k y hy
+    apply hεU
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+      abs_of_pos (hlampos k)]
+    calc lam k * ‖y‖ ≤ lam k * 6 := mul_le_mul_of_nonneg_left hy (hlampos k).le
+      _ < ε := hlamε k
+  have hballU : ∀ k, ∀ y ∈ O, ξ + lam k • y ∈ U := by
+    intro k y hy
+    apply hinU
+    rw [hO, mem_ball, dist_zero_right] at hy
+    linarith
+  -- A cut-off `χ ∈ C_c` with `0 ≤ χ ≤ 1`, `χ = 1` on `B_5(0) × G` and `χ = 0` off `B°_6(0) × G`.
+  obtain ⟨χ0, hχ1, hχ0, hχc, hχI⟩ := exists_continuous_one_zero_of_isCompact
+    (X := Euclidean N × Grassmannian N n)
+    (s := closedBall (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)))
+    (t := (ball (0 : Euclidean N) 6)ᶜ ×ˢ (univ : Set (Grassmannian N n)))
+    ((isCompact_closedBall _ _).prod isCompact_univ)
+    (isOpen_ball.isClosed_compl.prod isClosed_univ)
+    (by
+      rw [Set.disjoint_left]
+      rintro z ⟨hz, -⟩ ⟨hz', -⟩
+      exact hz' (closedBall_subset_ball (by norm_num) hz))
+  let χ : C_c(Euclidean N × Grassmannian N n, ℝ) := ⟨χ0, hχc⟩
+  have hχnn : ∀ z, 0 ≤ χ z := fun z ↦ (hχI z).1
+  have hχone : ∀ z ∈ O ×ˢ (univ : Set (Grassmannian N n)), χ z = 1 := by
+    intro z hz
+    exact hχ1 ⟨ball_subset_closedBall hz.1, trivial⟩
+  have hχsupp : ∀ z ∈ tsupport χ, ‖z.1‖ ≤ 6 := by
+    have hsub : tsupport χ ⊆
+        closedBall (0 : Euclidean N) 6 ×ˢ (univ : Set (Grassmannian N n)) := by
+      apply closure_minimal _ (isClosed_closedBall.prod isClosed_univ)
+      intro z hz
+      refine ⟨?_, trivial⟩
+      by_contra h
+      apply hz
+      exact hχ0 ⟨fun h' ↦ h (ball_subset_closedBall h'), trivial⟩
+    intro z hz
+    simpa using (hsub hz).1
+  have hχU : ∀ k, ∀ z ∈ tsupport χ, ξ + lam k • z.1 ∈ U :=
+    fun k z hz ↦ hinU k z.1 (hχsupp z hz)
+  -- The countable dense family `g` of tests supported in `B°_5(0) × G` (step 1).
+  obtain ⟨g, hgsupp, hgdense⟩ := Submission.intcpt_diag_ball_cc_dense_seq N n 5 (by norm_num)
+  have hgU : ∀ k m, ∀ z ∈ tsupport (g m), ξ + lam k • z.1 ∈ U := by
+    intro k m z hz
+    apply hinU
+    have := (hgsupp m hz).1
+    rw [mem_ball, dist_zero_right] at this
+    linarith
+  set c' : ℝ := max c 1 with hc'
+  have hc'pos : 0 < c' := lt_of_lt_of_le one_pos (le_max_right c 1)
+  -- Choice of the indices `i_k` (step 3): (v) the variation bound holds frequently in `i`, while
+  -- (vi) and the mass bound (vii) hold eventually in `i`, because blow-ups preserve the
+  -- convergence `V_i → V`.
+  have hsel : ∀ k, ∃ i, variationMeasure (Vi i) (closedBall ξ (lam k * 5)) <
+        ENNReal.ofReal (2 * c' * (lam k * 5) ^ n) ∧
+      (∀ m ∈ Finset.range (k + 1), |∫ z, g m z ∂(rescaledMeasure (Vi i) ξ (lam k)) -
+          ∫ z, g m z ∂(rescaledMeasure V ξ (lam k))| < 1 / ((k : ℝ) + 1)) ∧
+      ∫ z, χ z ∂(rescaledMeasure (Vi i) ξ (lam k)) <
+        ∫ z, χ z ∂(rescaledMeasure V ξ (lam k)) + 1 := by
+    intro k
+    have hρ : 0 < lam k * 5 := by have := hlampos k; positivity
+    have hv : ∃ᶠ i in atTop, variationMeasure (Vi i) (closedBall ξ (lam k * 5)) <
+        ENNReal.ofReal (2 * c' * (lam k * 5) ^ n) := by
+      have hp : 0 < c' * (lam k * 5) ^ n := by positivity
+      have hlt : liminf (fun i ↦ variationMeasure (Vi i) (closedBall ξ (lam k * 5))) atTop <
+          ENNReal.ofReal (2 * c' * (lam k * 5) ^ n) := by
+        refine lt_of_le_of_lt (hlim _ hρ (hlamr k)) ?_
+        calc ENNReal.ofReal (c * (lam k * 5) ^ n) ≤ ENNReal.ofReal (c' * (lam k * 5) ^ n) :=
+              ENNReal.ofReal_le_ofReal
+                (mul_le_mul_of_nonneg_right (le_max_left c 1) (by positivity))
+          _ < ENNReal.ofReal (2 * c' * (lam k * 5) ^ n) := by
+              rw [ENNReal.ofReal_lt_ofReal_iff (by positivity)]
+              nlinarith
+      exact frequently_lt_of_liminf_lt (by isBoundedDefault) hlt
+    have hvi : ∀ᶠ i in atTop, ∀ m ∈ Finset.range (k + 1),
+        |∫ z, g m z ∂(rescaledMeasure (Vi i) ξ (lam k)) -
+          ∫ z, g m z ∂(rescaledMeasure V ξ (lam k))| < 1 / ((k : ℝ) + 1) := by
+      rw [Filter.eventually_all_finset]
+      intro m _
+      have ht := Submission.intcpt_diag_rescaled_radon_tendsto N n U Vi V ξ (lam k) (g m) hconv
+        (hlampos k) (hgU k m)
+      have := Metric.tendsto_nhds.mp ht (1 / ((k : ℝ) + 1)) (by positivity)
+      filter_upwards [this] with i hi
+      simpa [Real.dist_eq] using hi
+    have hvii : ∀ᶠ i in atTop, ∫ z, χ z ∂(rescaledMeasure (Vi i) ξ (lam k)) <
+        ∫ z, χ z ∂(rescaledMeasure V ξ (lam k)) + 1 := by
+      have ht := Submission.intcpt_diag_rescaled_radon_tendsto N n U Vi V ξ (lam k) χ hconv
+        (hlampos k) (hχU k)
+      exact ht.eventually_lt_const (lt_add_one _)
+    exact (hv.and_eventually (hvi.and hvii)).exists
+  choose i hi using hsel
+  -- The varifolds `W_k = (V_{i_k})_{ξ,λ_k} ⌞ (B°_5(0) × G)` (steps 4 and 6).
+  have hD : ∀ k, ∃ W : Varifold N n O,
+      W.measure = (rescaledMeasure (Vi (i k)) ξ (lam k)).restrict
+        (O ×ˢ (univ : Set (Grassmannian N n))) ∧ W.HasLocallyBoundedFirstVariation ∧
+      variationMeasure W O ≤ ENNReal.ofReal ((lam k)⁻¹ ^ n * lam k) *
+        variationMeasure (Vi (i k)) (closedBall ξ (lam k * 5)) :=
+    fun k ↦ Submission.intcpt_diag_blowup_variation_bound N n U (Vi (i k)) ξ (lam k) 5
+      (hlbfv _) (hlampos k) (by norm_num) (hballU k)
+  choose W hWmeas hWlbfv hWvar using hD
+  refine ⟨W, fun k ↦ ?_, hWlbfv, ?_, ?_⟩
+  · -- Integrality (step 5).
+    exact Submission.intcpt_rescaled_restriction_integral N n U O (Vi (i k)) (W k) ξ (lam k)
+      (hlampos k) (hballU k) (hint _) (hWmeas k)
+  · -- `‖δW_k‖(B°_5(0)) ≤ 2 c' 5^n λ_k → 0` (step 6(b)).
+    have hbound : ∀ k, variationMeasure (W k) O ≤ ENNReal.ofReal (2 * c' * 5 ^ n * lam k) := by
+      intro k
+      refine (hWvar k).trans ?_
+      calc ENNReal.ofReal ((lam k)⁻¹ ^ n * lam k) *
+            variationMeasure (Vi (i k)) (closedBall ξ (lam k * 5))
+          ≤ ENNReal.ofReal ((lam k)⁻¹ ^ n * lam k) *
+            ENNReal.ofReal (2 * c' * (lam k * 5) ^ n) := by gcongr; exact (hi k).1.le
+        _ = ENNReal.ofReal ((lam k)⁻¹ ^ n * lam k * (2 * c' * (lam k * 5) ^ n)) :=
+            (ENNReal.ofReal_mul (p := (lam k)⁻¹ ^ n * lam k)
+              (q := 2 * c' * (lam k * 5) ^ n) (by have := hlampos k; positivity)).symm
+        _ = ENNReal.ofReal (2 * c' * 5 ^ n * lam k) := by
+            congr 1
+            have hl := (hlampos k).ne'
+            rw [mul_pow, inv_pow]
+            field_simp
+    have hupper : Tendsto (fun k ↦ ENNReal.ofReal (2 * c' * 5 ^ n * lam k)) atTop (𝓝 0) := by
+      have := ENNReal.tendsto_ofReal (hlamlim.const_mul (2 * c' * 5 ^ n))
+      simpa using this
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hupper
+      (fun _ ↦ zero_le) hbound
+  · -- Convergence to `θ₀ v(P)` (step 7): compare `W_k` with `V_{ξ,λ_k}` on the dense family,
+    -- extend to all admissible tests by the uniform mass bound, and use the tangent plane.
+    intro f hf
+    set A : ℝ := θ₀ * ∫ z, χ z ∂(planeVarifoldMeasure P) with hA
+    have hχtan : ∀ᶠ k in atTop, ∫ z, χ z ∂(rescaledMeasure V ξ (lam k)) < A + 1 :=
+      ((htanf χ).comp hlamwithin).eventually_lt_const (lt_add_one _)
+    -- The mass of `B°_5(0) × G` under a blow-up is at most the `χ`-integral.
+    have hmass : ∀ (V' : Varifold N n U) (k : ℕ),
+        rescaledMeasure V' ξ (lam k) (O ×ˢ (univ : Set (Grassmannian N n))) ≤
+          ENNReal.ofReal (∫ z, χ z ∂(rescaledMeasure V' ξ (lam k))) := by
+      intro V' k
+      have hint' :=
+        Submission.intcpt_diag_rescaled_integrable N n U V' ξ (lam k) χ (hlampos k) (hχU k)
+      rw [ofReal_integral_eq_lintegral_ofReal hint' (Eventually.of_forall hχnn),
+        ← lintegral_indicator_one (measurableSet_ball.prod MeasurableSet.univ)]
+      apply lintegral_mono
+      intro z
+      by_cases hz : z ∈ O ×ˢ (univ : Set (Grassmannian N n))
+      · show (O ×ˢ (univ : Set (Grassmannian N n))).indicator 1 z ≤ ENNReal.ofReal (χ z)
+        rw [indicator_of_mem hz, hχone z hz]; simp
+      · show (O ×ˢ (univ : Set (Grassmannian N n))).indicator 1 z ≤ ENNReal.ofReal (χ z)
+        rw [indicator_of_notMem hz]; exact zero_le
+    have hmassμ : ∀ᶠ k in atTop,
+        (W k).measure (O ×ˢ (univ : Set (Grassmannian N n))) ≤ ENNReal.ofReal (A + 2) := by
+      filter_upwards [hχtan] with k hk
+      rw [hWmeas k, Measure.restrict_apply_self]
+      refine (hmass (Vi (i k)) k).trans (ENNReal.ofReal_le_ofReal ?_)
+      linarith [(hi k).2.2]
+    have hmassν : ∀ᶠ k in atTop,
+        rescaledMeasure V ξ (lam k) (O ×ˢ (univ : Set (Grassmannian N n))) ≤
+          ENNReal.ofReal (A + 2) := by
+      filter_upwards [hχtan] with k hk
+      refine (hmass V k).trans (ENNReal.ofReal_le_ofReal ?_)
+      linarith
+    have hrestrict : ∀ (h : C_c(Euclidean N × Grassmannian N n, ℝ)),
+        tsupport h ⊆ O ×ˢ (univ : Set (Grassmannian N n)) → ∀ k,
+        ∫ z, h z ∂(W k).measure = ∫ z, h z ∂(rescaledMeasure (Vi (i k)) ξ (lam k)) := by
+      intro h hh k
+      rw [hWmeas k]
+      exact setIntegral_eq_integral_of_forall_compl_eq_zero
+        (fun z hz ↦ image_eq_zero_of_notMem_tsupport (fun h' ↦ hz (hh h')))
+    have hconvg : ∀ m, Tendsto (fun k ↦ ∫ z, g m z ∂(W k).measure -
+        ∫ z, g m z ∂(rescaledMeasure V ξ (lam k))) atTop (𝓝 0) := by
+      intro m
+      apply squeeze_zero_norm' _ tendsto_one_div_add_atTop_nhds_zero_nat
+      filter_upwards [eventually_ge_atTop m] with k hk
+      rw [hrestrict (g m) (hgsupp m) k, Real.norm_eq_abs]
+      exact ((hi k).2.1 m (Finset.mem_range.mpr (by omega))).le
+    have hdiff := Submission.intcpt_diag_dense_family_tendsto N n O g (fun k ↦ (W k).measure)
+      (fun k ↦ rescaledMeasure V ξ (lam k)) (ENNReal.ofReal (A + 2)) measurableSet_ball
+      ENNReal.ofReal_ne_top hgsupp hgdense hmassμ hmassν hconvg f hf
+    have hb := (htanf f).comp hlamwithin
+    have := hdiff.add hb
+    simpa using this
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
