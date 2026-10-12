@@ -484,6 +484,79 @@ theorem Submission.rectifiability_mickle_rado_vitali_bound : ∀ (m : ℕ) (ψ :
         rw [ENNReal.tsum_mul_left, ENNReal.tsum_mul_right, mul_assoc]
     _ ≤ C * 6 ^ (m + 1) * μ (ball c₀ (2 * t) \ K) := by gcongr
 
+/-- Mickle–Radó density step (Mattila, Thm 18.5, step 3 with `ε ↓ 0`): if `ψ(B(z,τ)) ≤ C τᵏ`
+for `z ∈ K`, `0 < τ < r`, where `K` is closed and `ψ(K) = 0`, then the upper `k`-density of `ψ`
+vanishes at `Lᵏ`-a.e. point of `K`.  At a Lebesgue density point `c ∈ K` of `K`, the Vitali
+estimate `ψ(B(c,t))·ω ≤ C·6ᵏ·Lᵏ(B(c,2t) ∖ K)` together with
+`Lᵏ(B̄(c,2t) ∖ K) = (2t)ᵏ·ω·(1 − R_c(2t))`, `R_c(ρ) = Lᵏ(K ∩ B̄(c,ρ))/Lᵏ(B̄(c,ρ)) → 1`, gives
+`ψ(B(c,t))/tᵏ ≤ C·12ᵏ·(1 − R_c(2t)) → 0`. -/
+theorem Submission.rectifiability_mickle_rado_density_zero : ∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))) (K : Set (Eucl (m + 1))) (C : ℝ≥0∞) (r : ℝ), IsClosed K → ψ K = 0 → C ≠ ⊤ → 0 < r → (∀ z ∈ K, ∀ τ ∈ Ioo (0 : ℝ) r, ψ (ball z τ) ≤ C * ENNReal.ofReal (τ ^ (m + 1))) → ∀ᵐ c ∂((volume : Measure (Eucl (m + 1))).restrict K), limsup (fun t : ℝ => ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) (𝓝[>] 0) = 0 := by
+  intro m ψ K C r hK hψK hC hr hbound
+  set μ : Measure (Eucl (m + 1)) := volume with hμ
+  filter_upwards [Besicovitch.ae_tendsto_measure_inter_div μ K, ae_restrict_mem hK.measurableSet]
+    with c hc hcK
+  apply Tendsto.limsup_eq
+  set ω := μ (ball 0 1) with hω
+  have hω0 : ω ≠ 0 := (measure_ball_pos μ 0 one_pos).ne'
+  have hωtop : ω ≠ ⊤ := measure_ball_lt_top.ne
+  have hfin : Module.finrank ℝ (Eucl (m + 1)) = m + 1 := finrank_euclideanSpace_fin
+  -- the density ratio at radius 2t
+  have hR2 : Tendsto (fun t : ℝ => μ (K ∩ closedBall c (2 * t)) / μ (closedBall c (2 * t)))
+      (𝓝[>] 0) (𝓝 1) := by
+    refine hc.comp ?_
+    have h2 : Tendsto (fun t : ℝ => 2 * t) (𝓝[>] 0) (𝓝[>] (2 * 0)) :=
+      tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
+        ((continuous_const.mul continuous_id).tendsto' _ _ rfl |>.mono_left nhdsWithin_le_nhds)
+        (by filter_upwards [self_mem_nhdsWithin] with t ht; exact mem_Ioi.2 (by simpa using ht))
+    simpa using h2
+  have hlim : Tendsto (fun t : ℝ => C * 12 ^ (m + 1) *
+      (1 - μ (K ∩ closedBall c (2 * t)) / μ (closedBall c (2 * t)))) (𝓝[>] 0) (𝓝 0) := by
+    have h1 := ENNReal.Tendsto.sub tendsto_const_nhds hR2 (Or.inl ENNReal.one_ne_top)
+    have h12 : C * 12 ^ (m + 1) ≠ ⊤ := ENNReal.mul_ne_top hC (ENNReal.pow_ne_top (by norm_num))
+    have h2 := ENNReal.Tendsto.const_mul (a := C * 12 ^ (m + 1)) h1 (Or.inr h12)
+    simpa using h2
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
+    (Eventually.of_forall fun _ => bot_le) ?_
+  filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < r / 6 by positivity)] with t ht
+  have ht0 : 0 < t := ht.1
+  have h0 := Submission.rectifiability_mickle_rado_vitali_bound m ψ K C r hK hψK hbound c hcK t ht0
+    (by linarith [ht.2])
+  -- measure of the complement in the closed ball
+  set V := μ (closedBall c (2 * t)) with hV
+  set A := μ (K ∩ closedBall c (2 * t)) with hA
+  have hVball : V = ENNReal.ofReal ((2 * t) ^ (m + 1)) * ω := by
+    rw [hV, Measure.addHaar_closedBall μ c (by positivity), hfin]
+  have hV0 : V ≠ 0 := by
+    rw [hVball]; exact mul_ne_zero (ENNReal.ofReal_pos.2 (by positivity)).ne' hω0
+  have hVtop : V ≠ ⊤ := measure_closedBall_lt_top.ne
+  have hAle : A ≤ V := measure_mono inter_subset_right
+  have hdiff : μ (ball c (2 * t) \ K) ≤ V * (1 - A / V) := by
+    have hsplit : μ (closedBall c (2 * t) \ K) + A = V := by
+      rw [hA, inter_comm]; exact measure_sdiff_add_inter _ hK.measurableSet
+    have h1 : μ (ball c (2 * t) \ K) ≤ μ (closedBall c (2 * t) \ K) :=
+      measure_mono (sdiff_subset_sdiff_left ball_subset_closedBall)
+    have h2 : μ (closedBall c (2 * t) \ K) = V - A :=
+      ENNReal.eq_sub_of_add_eq (ne_top_of_le_ne_top hVtop hAle) hsplit
+    have h3 : V * (1 - A / V) = V - A := by
+      rw [ENNReal.mul_sub (fun _ _ => hVtop), mul_one, ENNReal.mul_div_cancel hV0 hVtop]
+    rw [h3, ← h2]; exact h1
+  -- conclude
+  have hpowt : ENNReal.ofReal (t ^ (m + 1)) ≠ 0 := (ENNReal.ofReal_pos.2 (pow_pos ht0 _)).ne'
+  rw [ENNReal.div_le_iff_le_mul (Or.inl hpowt) (Or.inl ENNReal.ofReal_ne_top)]
+  have h2t : ENNReal.ofReal ((2 * t) ^ (m + 1)) = 2 ^ (m + 1) * ENNReal.ofReal (t ^ (m + 1)) := by
+    rw [mul_pow, ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_pow (by norm_num)]
+    simp
+  have key : ψ (ball c t) * ω ≤
+      (C * 12 ^ (m + 1) * (1 - A / V) * ENNReal.ofReal (t ^ (m + 1))) * ω := by
+    calc ψ (ball c t) * ω ≤ C * 6 ^ (m + 1) * μ (ball c (2 * t) \ K) := h0
+      _ ≤ C * 6 ^ (m + 1) * (V * (1 - A / V)) := by gcongr
+      _ = (C * 12 ^ (m + 1) * (1 - A / V) * ENNReal.ofReal (t ^ (m + 1))) * ω := by
+        rw [hVball, h2t]
+        have : (12 : ℝ≥0∞) ^ (m + 1) = 6 ^ (m + 1) * 2 ^ (m + 1) := by
+          rw [← mul_pow]; norm_num
+        rw [this]; ring
+  exact (ENNReal.mul_le_mul_iff_left hω0 hωtop).1 key
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
