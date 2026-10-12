@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1",
+  "depth": 4,
+  "title": "Weighted approximate tangent planes of the product (0,1) × M",
+  "statement": "Let P, m ∈ ℕ, Hᵏ := μHE[k], and use Φ, π, Φ′(s, x) := Φ(s, x), y₀ := (EuclideanSpace.equiv (Fin (P+1)) ℝ y) 0, e₀ := EuclideanSpace.single 0 1 = Φ(1, 0) and ι(v) := Φ(0, v) as in the parent (Φ(s, x) = (s, x_1, …, x_P), π(y) = (y_1, …, y_P)). Assume (MP): for every A ⊆ ℝ^P that is Hᵐ-null-measurable, countably m-rectifiable and has Hᵐ(A ∩ K) < ∞ for every compact K, H^{m+1}⌞{y : π(y) ∈ A} = Φ′_*(L¹ ⊗ Hᵐ⌞A). Let M ⊆ ℝ^P be Hᵐ-null-measurable and countably m-rectifiable with Hᵐ(M ∩ K) < ∞ for every compact K; let θ : ℝ^P → ℝ with θ ≥ 0 on M and θ Hᵐ-integrable on M ∩ K for every compact K; let x ∈ ℝ^P and let τ = (τ_1, …, τ_m) be orthonormal in ℝ^P such that span τ is a weighted approximate tangent space of (M, θ) at x in the sense of Simon Ch. 3, 1.7 (HasWeightedApproximateTangentSpaceAt m M θ x (span ℝ (range τ))); let s₀ ∈ (0, 1). Put M̃ := {y ∈ ℝ^{P+1} : π(y) ∈ M ∧ y₀ ∈ (0, 1)} and θ̃ := θ ∘ π. Then the (m+1)-plane spanned by (e₀, ιτ_1, …, ιτ_m) (Lean: Fin.cons e₀ (fun i => Φ(0, τ_i))) is a weighted approximate tangent space of (M̃, θ̃) at Φ(s₀, x): HasWeightedApproximateTangentSpaceAt (m+1) M̃ θ̃ (Φ s₀ x) (span ℝ (range (Fin.cons e₀ (fun i => Φ 0 (τ i))))).",
+  "lean_statement": "∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (τ : Fin m → Eucl P) (s₀ : ℝ), NullMeasurableSet M (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m M → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (M ∩ K) < ∞) → (∀ z ∈ M, 0 ≤ θ z) → (∀ K : Set (Eucl P), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[m] : Measure (Eucl P))) → Orthonormal ℝ τ → HasWeightedApproximateTangentSpaceAt m M θ x (Submodule.span ℝ (range τ)) → s₀ ∈ Ioo (0 : ℝ) 1 → HasWeightedApproximateTangentSpaceAt (m + 1) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} (fun y : Eucl (P + 1) => θ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s₀ (EuclideanSpace.equiv (Fin P) ℝ x))) (Submodule.span ℝ (range (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1))))",
+  "lean_name": "iwl_cr_ip_product_weighted_tangent",
+  "depends_on": [
+    "root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-blowup-change-of-variables-a1-a1",
+      "result_commit": "91a22d1bfc9063820dd1583526d3d097beffd0ec",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-b1e58acdf8-a1"
+}
