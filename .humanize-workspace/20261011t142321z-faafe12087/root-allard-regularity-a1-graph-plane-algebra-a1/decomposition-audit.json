@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "allard52_gpa",
+        "^theorem ContDiffOn.exists_lipschitzOnWith|^theorem ContDiff.fderiv_right|^theorem contDiffAt_ringInverse|^theorem hasFDerivAt_ringInverse|^theorem Convex.norm_image_sub_le_of_norm_fderiv_le|^theorem HasFDerivAt.clm_comp",
+        "exists_orthonormalBasis_extension_of_card_eq|sum_sq_inner_right|repr_symm_single|def finAddEquivProd|starProjection_map_apply|eq_starProjection_of_mem_of_inner_eq_zero|finrank_add_finrank_orthogonal",
+        "def finAddEquivProd|isUnit_iff_isUnit_toLinearMap|isUnit_iff_ker_eq_bot|mul_def|def mul",
+        "python3 /tmp/gpa-independent-audit-d9u24dt1/run.py Types.lean",
+        "python3 /tmp/gpa-independent-audit-d9u24dt1/run.py Probe.lean",
+        "python3 /tmp/gpa-independent-audit-d9u24dt1/run.py Assembly.lean",
+        "python3 /tmp/gpa-independent-audit-d9u24dt1/run.py Bilip.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Banach.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-plane-algebra-a1/decomposition-v1.json",
+        "/tmp/gpa-independent-audit-d9u24dt1/Types.lean",
+        "/tmp/gpa-independent-audit-d9u24dt1/Probe.lean",
+        "/tmp/gpa-independent-audit-d9u24dt1/Assembly.lean",
+        "/tmp/gpa-independent-audit-d9u24dt1/Bilip.lean"
+      ],
+      "conclusion": "The seven-child split appropriately separates the selected parent's analytic core and supporting linear algebra. The handoff and DAG parent types agree. Snapshot revisions are project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; project files and 13 inspected Mathlib files match the compilation sources. No allard52_gpa name occurs in the snapshot project or current DAG. Every proposed name is bare and unreserved; no accepted declaration is reused. All seven exact one-line contracts independently elaborate as Prop with autoImplicit disabled and without child implementations. The dependency graph is acyclic and correctly directed. Conditional Lean checks establish the exact frozen parent from the seven contracts and the bilipschitz child from its two declared dependencies, without sorry; their axioms are only propext, Classical.choice and Quot.sound. Instance checks confirm projection availability, compactness, smooth-inversion prerequisites, and ordinary composition multiplication for continuous linear endomorphisms. No raw Matrix-lambda IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hs_norm_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches all three prose conclusions. Basis expansion and Cauchy–Schwarz prove the lower comparison, column bounds prove the upper comparison, and the supplied sum-of-squares argument proves the triangle inequality. Nonnegativity and zero-dimensional cases are covered without circular reliance."
+    },
+    {
+      "key": "rotation_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finrank hypothesis and conclusion match exactly. Extending an orthonormal basis of T and taking b.repr.symm gives the required isometry equivalence; mapping the coordinate generators proves rotatedPlane q = T. The construction also covers zero dimensions."
+    },
+    {
+      "key": "graph_normal_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every stated hypothesis. The range identification supplies a graph representative of the projected point. Isometry, the squared graphPoint norm identity, and the assumption ‖A‖ ≤ 1 yield the claimed factor 2 through the explicitly justified scalar inequality."
+    },
+    {
+      "key": "isometry_conj",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both quantified clauses match the prose. Membership and orthogonality establish projection conjugation; the explicit transpose and Parseval calculation establish basis independence and hsNormSq invariance. Finite dimensionality supplies all projection instances, and composition has the intended meaning."
+    },
+    {
+      "key": "graph_zero_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The literal span equality matches the prose and local definitions. The coordinate expansion proves one inclusion, and evaluating at standard basis vectors proves the reverse inclusion. The proof is complete and independent."
+    },
+    {
+      "key": "graph_proj_smooth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type states global C² regularity and the required derivative norm identity. The proof constructs the transpose, proves Gram invertibility in the composition ring, identifies the projection, applies smooth inversion, and computes the derivative and both block contributions explicitly. It assumes neither this child nor the parent theorem."
+    },
+    {
+      "key": "graph_proj_bilipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the uniform small-radius estimate. Only the two declared siblings are used. Compactness, the derivative Lipschitz bound, the mean-value estimate, and the √(n+ℓ) norm conversion justify the chosen positive radius; the final triangle and squaring arguments give constants 1 and 3. The conditional Lean derivation also passes."
+    }
+  ],
+  "required_changes": []
+}
