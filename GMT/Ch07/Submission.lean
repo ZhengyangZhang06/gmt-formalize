@@ -550,6 +550,51 @@ theorem Submission.lcn_mult_mul_orient_apply_integrableOn : ∀ (P n : ℕ) (U K
     _ ≤ (R.mult x : ℝ) * (1 * ‖α‖) := by gcongr
     _ = ‖α‖ * R.mult x := by ring
 
+/-- **Simon 6.2.11, 6.3.2(3)**: if `T = τ(M, θ, ξ)` vanishes on an open `W ⊂⊂ U`, then for every
+`n`-covector `α`, `⟨α, ξ⟩ = 0` `Hⁿ`-a.e. on `M ∩ W`.  Let `ν = Hⁿ⌞(M ∩ closure W)`; then
+`f = θ ⟨α, ξ⟩` is `ν`-integrable (`lcn_mult_mul_orient_apply_integrableOn`, `closure W` being a
+compact subset of `U`).  For smooth `g` with compact support in `W`, `ω = g α` is a test form in
+`U` supported in `W`, so `0 = T(ω) = ∫_M θ ⟨g α, ξ⟩ dHⁿ = ∫ g f dν` (`g = 0` off `W`).  The
+fundamental lemma of the calculus of variations on `W` gives `f = 0` `ν`-a.e. on `W`; as
+`Hⁿ⌞(M ∩ W) ≤ ν` and `θ > 0` on `M`, `⟨α, ξ⟩ = 0` `Hⁿ⌞(M ∩ W)`-a.e. -/
+theorem Submission.lcn_orient_apply_ae_eq_zero_of_vanishesOn : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → ∀ α : Covector (Euclid P) n, ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ W)), R.orient x α = 0 := by
+  intro P n U W T R hRT hW hWc hWU hTW α
+  -- `f = θ ⟨α, ξ⟩` is integrable for `ν = Hⁿ⌞(M ∩ closure W)`
+  have hf : Integrable (fun x => (R.mult x : ℝ) * R.orient x α)
+      (μHE[n].restrict (R.carrier ∩ closure W)) :=
+    Submission.lcn_mult_mul_orient_apply_integrableOn P n U (closure W) R hWc hWU α
+  -- fundamental lemma on the open set `W`: `f = 0` `ν`-a.e. on `W`
+  have hae : ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ closure W)), x ∈ W →
+      (R.mult x : ℝ) * R.orient x α = 0 := by
+    refine hW.ae_eq_zero_of_integral_contDiff_smul_eq_zero
+      (hf.locallyIntegrable.locallyIntegrableOn W) fun g hg hgc hgW => ?_
+    -- `ω = g α` is a test form in `U` supported in `W`, so `T(ω) = 0`
+    have hωW : tsupport (fun x => g x • α) ⊆ W := (tsupport_smul_subset_left g _).trans hgW
+    have hω : (fun x => g x • α) ∈ TestFormOn U n :=
+      ⟨⟨hg.smul contDiff_const, hgc.smul_right⟩, hωW.trans (subset_closure.trans hWU)⟩
+    calc ∫ x, g x • ((R.mult x : ℝ) * R.orient x α) ∂(μHE[n].restrict (R.carrier ∩ closure W))
+        = ∫ x in R.carrier ∩ closure W, (R.mult x : ℝ) * R.orient x (g x • α) ∂μHE[n] := by
+          congr 1
+          funext x
+          rw [map_smul, smul_eq_mul, smul_eq_mul]
+          ring
+      -- `g = 0` off `closure W`, so the integral over `M` is the integral over `M ∩ closure W`
+      _ = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (g x • α) ∂μHE[n] := by
+          refine (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero R.measurableSet_carrier
+            inter_subset_left fun x hx => ?_).symm
+          have hgx : g x = 0 :=
+            image_eq_zero_of_notMem_tsupport fun h => hx.2 ⟨hx.1, subset_closure (hgW h)⟩
+          rw [hgx, zero_smul, map_zero, mul_zero]
+      _ = T ⟨_, hω⟩ := (hRT ⟨_, hω⟩).symm
+      _ = 0 := hTW ⟨_, hω⟩ hωW
+  -- pass to `Hⁿ⌞(M ∩ W) ≤ ν` and cancel `θ > 0` on `M`
+  have hle : μHE[n].restrict (R.carrier ∩ W) ≤ μHE[n].restrict (R.carrier ∩ closure W) :=
+    Measure.restrict_mono (inter_subset_inter_right _ subset_closure) le_rfl
+  filter_upwards [ae_mono hle hae,
+    ae_restrict_mem (R.measurableSet_carrier.inter hW.measurableSet)] with x hx hxMW
+  have hθ : (R.mult x : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (R.mult_pos x hxMW.1).ne'
+  exact (mul_eq_zero.mp (hx hxMW.2)).resolve_left hθ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
