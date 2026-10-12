@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "effa6b322639a82641c3b7ff17780a548bcc409cb04ee9c05914f1524b253a3c",
+  "git_delta": {
+    "base_commit": "c2f66901465c98aa57258104c4777348923e5afb",
+    "candidate_commit": "8f857d56e5830d881926acb3493d7f19960b267a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_tes_ga_det_id_add_adjoint_comp_bounds",
+    "diff_sha256": "03c7aa8d8fd4b1eaf89cf99bf1b7ecb87ba2c760af962879bf1e75d8489711f6",
+    "source_sha256": "995650afc8a8c29c6ae78b4d5806e2857175abd717ef77be5b7a7e9e27f75de3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_tes_ga_det_id_add_adjoint_comp_bounds",
+      "statement": "∀ (n k : ℕ) (B : Euclid n →L[ℝ] Euclid k), ‖B‖ ≤ 1 → 1 ≤ (ContinuousLinearMap.id ℝ (Euclid n) + B.adjoint ∘L B).det ∧ (ContinuousLinearMap.id ℝ (Euclid n) + B.adjoint ∘L B).det ≤ 1 + 2 ^ n * ∑ i : Fin n, ‖B (EuclideanSpace.single i (1 : ℝ))‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
