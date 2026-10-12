@@ -778,6 +778,29 @@ theorem Submission.ts_fv_cv_slice_fderiv_time_deriv : ∀ (n ℓ : ℕ) (φ : �
       simp only [hD0, zero_apply, ContinuousLinearMap.zero_comp, norm_zero]
       exact le_max_right _ _
 
+/-- Simon 2.1 (p. 87): for a family `{φ_t}` as in 2.1 with initial velocity
+`X = ∂φ_t/∂t|_{t=0}`, `X` is `C¹` with `DX = 0` off `K`, each `φ_t` is Lipschitz and `C¹`, and
+for `|t| < δ = ε/2` the derivatives `Dφ_t(x)`, their time derivatives
+`Λ'(t, x) = ∂_s Dφ_s(x)|_{s=t}` (with `Λ'(0, x) = DX(x)`) and the inverses of `Dφ_t(x)` are
+bounded uniformly by `B`. -/
+theorem Submission.ts_fv_compact_variation_bounds : ∀ (n ℓ : ℕ) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → ContDiff ℝ 1 (fun y ↦ deriv (fun t ↦ φ t y) 0) ∧ (∀ y ∉ K, fderiv ℝ (fun y ↦ deriv (fun t ↦ φ t y) 0) y = 0) ∧ (∀ t ∈ Ioo (-ε) ε, (∃ L : NNReal, LipschitzWith L (φ t)) ∧ ContDiff ℝ 1 (φ t)) ∧ ∃ δ B : ℝ, 0 < δ ∧ δ < ε ∧ ∃ Λ' : ℝ → Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), ∀ x, Λ' 0 x = fderiv ℝ (fun y ↦ deriv (fun t ↦ φ t y) 0) x ∧ ∀ t ∈ Ioo (-δ) δ, HasDerivAt (fun s ↦ fderiv ℝ (φ s) x) (Λ' t x) t ∧ ‖fderiv ℝ (φ t) x‖ ≤ B ∧ ‖Λ' t x‖ ≤ B ∧ ∀ v, ‖v‖ ≤ B * ‖fderiv ℝ (φ t) x v‖ := by
+  intro n ℓ φ ε K hφ
+  -- Parts (a)–(c): `X` is `C¹` with `DX = 0` off `K`; each `φ_t` is Lipschitz and `C¹`.
+  obtain ⟨hX, hDX, hslice⟩ := Submission.ts_fv_cv_first_order_regularity n ℓ φ ε K hφ
+  -- `Λ'(t, x) = ∂_s Dφ_s(x)|_{s=t}` on `(-ε, ε)`, `Λ'(0, x) = DX(x)`, bounded on each `|t| < δ`.
+  obtain ⟨Λ', hΛ', hΛ'B⟩ := Submission.ts_fv_cv_slice_fderiv_time_deriv n ℓ φ ε K hφ
+  -- Part (d) with `δ = ε/2` and `B = max B₁ B₂`, where `B₁` bounds `Dφ_t` and its inverse and
+  -- `B₂` bounds `Λ'` on `|t| < ε/2`.
+  have hδ : 0 < ε / 2 := half_pos hφ.pos
+  have hδε : ε / 2 < ε := half_lt_self hφ.pos
+  obtain ⟨B₁, hB₁⟩ := Submission.ts_fv_cv_slice_fderiv_bounds n ℓ φ ε K hφ (ε / 2) hδ hδε
+  obtain ⟨B₂, hB₂⟩ := hΛ'B (ε / 2) hδ hδε
+  refine ⟨hX, hDX, hslice, ε / 2, max B₁ B₂, hδ, hδε, Λ', fun x ↦ ⟨(hΛ' x).1, fun t ht ↦ ?_⟩⟩
+  have htε : t ∈ Ioo (-ε) ε := ⟨by linarith [ht.1], by linarith [ht.2]⟩
+  obtain ⟨hb, hv⟩ := hB₁ x t ht
+  exact ⟨(hΛ' x).2 t htε, hb.trans (le_max_left _ _), (hB₂ x t ht).trans (le_max_right _ _),
+    fun v ↦ (hv v).trans (mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg _))⟩
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
