@@ -335,6 +335,55 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Blow-up images of sets under `η_{x,r}`**: the change of variables `y ↦ r⁻¹ (y - x)` of
+Simon Ch. 3, proof of Theorem 4.3, display (8) (`chapter-03.txt` lines 662–667), for a general
+centre `x`. Write `η_{x,r}` as the translation `y ↦ y - x`, which preserves `Lᴺ`, followed by the
+dilation `z ↦ r⁻¹ z`, which multiplies `Lᴺ` by `|r⁻ᴺ|` (`addHaar_smul`). Then `η_{x,r}` maps
+null-measurable sets to null-measurable sets for every `r` (including `r = 0`, where `r⁻¹ = 0`),
+and multiplies `Lᴺ` by `r⁻ᴺ` when `r > 0`. For `r > 0` it is injective with
+`η_{x,r}(B_{rR}(x)) = B_R(0)`, so it commutes with `∩` and `\`, giving the two ball identities. -/
+theorem Submission.deGiorgiHS_blowUpMap_image_volume : ∀ (N : ℕ) (x : Rn N) (r : ℝ) (A : Set (Rn N)), (NullMeasurableSet A volume → NullMeasurableSet (blowUpMap x r '' A) volume) ∧ (0 < r → volume (blowUpMap x r '' A) = ENNReal.ofReal ((r ^ N)⁻¹) * volume A ∧ ∀ R : ℝ, blowUpMap x r '' A ∩ Metric.ball 0 R = blowUpMap x r '' (A ∩ Metric.ball x (r * R)) ∧ Metric.ball 0 R \ blowUpMap x r '' A = blowUpMap x r '' (Metric.ball x (r * R) \ A)) := by
+  intro N x r A
+  -- Step 1: `η(A) = r⁻¹ • τ⁻¹(A)` for the translation `τ z = z + x`.
+  have himage : blowUpMap x r '' A = (fun z ↦ r⁻¹ • z) '' ((fun z ↦ z + x) ⁻¹' A) := by
+    have htrans : (fun y ↦ y - x) '' A = (fun z ↦ z + x) ⁻¹' A := by
+      ext z
+      simp only [Set.mem_image, Set.mem_preimage]
+      constructor
+      · rintro ⟨y, hy, rfl⟩
+        simpa using hy
+      · intro hz
+        exact ⟨z + x, hz, by simp⟩
+    rw [← htrans, Set.image_image]
+    rfl
+  refine ⟨fun hA ↦ ?_, fun hr ↦ ⟨?_, fun R ↦ ?_⟩⟩
+  · -- Step 3: `τ` is measure preserving, and dilations preserve null-measurability.
+    rw [himage, Set.image_smul]
+    exact Measure.NullMeasurableSet.const_smul
+      (hA.preimage (measurePreserving_add_right volume x).quasiMeasurePreserving) _
+  · -- Step 4: `Lᴺ(r⁻¹ • S) = |r⁻ᴺ| Lᴺ(S)` and `Lᴺ(τ⁻¹(A)) = Lᴺ(A)`.
+    rw [himage, Set.image_smul, Measure.addHaar_smul, measure_preimage_add_right,
+      finrank_euclideanSpace_fin, inv_pow, abs_of_pos (by positivity)]
+  · -- Steps 5–7: `η` is injective and `η(B_{rR}(x)) = B_R(0)`.
+    have hinj : Function.Injective (blowUpMap x r) := by
+      intro y₁ y₂ h
+      simp only [blowUpMap] at h
+      exact sub_left_injective (smul_right_injective (Rn N) (inv_ne_zero hr.ne') h)
+    have hball : blowUpMap x r '' Metric.ball x (r * R) = Metric.ball 0 R := by
+      ext z
+      simp only [Set.mem_image, Metric.mem_ball, dist_eq_norm, sub_zero, blowUpMap]
+      constructor
+      · rintro ⟨y, hy, rfl⟩
+        rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr, inv_mul_lt_iff₀ hr]
+        exact hy
+      · intro hz
+        refine ⟨x + r • z, ?_, ?_⟩
+        · rw [add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_pos hr]
+          exact mul_lt_mul_of_pos_left hz hr
+        · rw [add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hr.ne', one_smul]
+    rw [← hball, Set.image_inter hinj, Set.image_sdiff hinj]
+    exact ⟨rfl, rfl⟩
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
