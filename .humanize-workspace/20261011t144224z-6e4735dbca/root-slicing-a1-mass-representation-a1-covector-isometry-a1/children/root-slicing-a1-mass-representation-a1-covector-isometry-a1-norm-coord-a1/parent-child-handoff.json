@@ -1,0 +1,78 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp snapshot project/GMT/Ch06/Contract.lean and project/GMT/Ch06/Submission.lean against workspace GMT/Ch06/Contract.lean and Submission.lean (identical; sha256 ea3ee0dd…)",
+        "rg -n 'covectorEuclideanNorm|euclideanCovectorCoordinate|wedgeCovectors|SimonMultiIndex' project (snapshot; only LatticeFaceIndex mentions SimonMultiIndex)",
+        "rg -n 'smr_ci_|smr_covector_coord_isometry' project (no match, rc=1)",
+        "rg -n '^structure WithLp' mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean; rg -n 'theorem EuclideanSpace.norm_eq|basisFun_apply' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean; rg -n range_inj_of_wellFoundedLT mathlib/Mathlib/Order; rg -n 'theorem monotone_sort' mathlib/Mathlib/Data/Fin/Tuple/Sort.lean; rg -n ext_alternating mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean; rg -n 'theorem det_eq_zero_of_row_eq_zero' mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "grep -n covectorEuclideanNorm, wedgeCovectors_apply_det, euclideanCovectorCoordinate, SimonMultiIndex in the pinned simongmt Chapter06 (Mass.lean, FormsDuality.lean, Forms.lean)",
+        "#synth Fintype (SimonMultiIndex 2 3) (RelEmbedding.instFintype); #synth DecidableEq (SimonMultiIndex 2 3) (fails); #check Module.Basis.ext_alternating, Tuple.sort, Tuple.monotone_sort, OrderEmbedding.range_inj_of_wellFoundedLT, LinearEquiv.ofBijective(_apply), EuclideanSpace.basisFun_apply, ContinuousAlternatingMap.sum_apply, AlternatingMap.map_perm, injective_iff_map_eq_zero, Equiv.sum_comp, Finset.sum_bij', PiLp.single_apply",
+        "git show 6c6b4b2753e8214a3e45619bb0b65d8d553557a5 (kernel-checked template cmb_covector_eq_sum_coord_smul_wedge)",
+        "python3 listing of dag.json lean_name/lean_statement: covector-related nodes; exact and alpha-normalized type comparison and name lookup for the three proposed names (no matches); status/candidate_commit of polyhedral_approx_pairing_covector_ext and _wedge_kronecker (accepted, not proved)",
+        "grep -rl smr_ci_ dag.json nodes/ simongmt; git log --all -S<name> for each proposed name (no matches)",
+        "read nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1/decomposition-v1.json and parent-child-handoff.json",
+        "grep -n '_existing_lean_name_problem|_accepted_checkpoint' runtime.py and 'unproved child belongs to another parent' parallel.py in /runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean",
+        "python3 contract_scope/child_modules from verifier/gmt-compare.py (contract mode) to generate NodeChallenge/NodeSolution modules",
+        "lake env lean /tmp/smr-ci-split/Scratch/{Probe,Split,Split2,SolutionSim2,Inst}.lean and /tmp/smr-ci-split/Challenge/*_NodeChallenge.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Hom/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/parallel.py",
+        "/tmp/smr-ci-split/Scratch/Split2.lean",
+        "/tmp/smr-ci-split/Scratch/SolutionSim2.lean",
+        "/tmp/smr-ci-split/Challenge/smr_ci_coord_sum_smul_wedge_NodeChallenge.lean",
+        "/tmp/smr-ci-split/Challenge/smr_ci_covector_eq_zero_of_coord_NodeChallenge.lean",
+        "/tmp/smr-ci-split/Challenge/smr_ci_norm_eq_sqrt_sum_coord_sq_NodeChallenge.lean",
+        "/tmp/smr-ci-split/Challenge/smr_covector_coord_isometry_NodeChallenge.lean"
+      ],
+      "conclusion": "Snapshot manifest: mode local-project, project d8d46c95, Mathlib 25730c7c. The snapshot's project/GMT/Ch06/Contract.lean and Submission.lean are byte-identical to the workspace files (sha256 ea3ee0dd…). The frozen Submission contains no covector lemmas: rg finds SimonMultiIndex only in LatticeFaceIndex, and rg for smr_ci_/smr_covector_coord_isometry has no match. So every child must be proved from SimonGMT and Mathlib.\n\nAvailable in SimonGMT (pinned package):\n- covectorEuclideanNorm (Mass.lean), whose sum runs over StrictMono I : Fin k → Fin P with basisFun vectors;\n- SimonMultiIndex = Fin k ↪o Fin P, euclideanCovectorCoordinate (values on EuclideanSpace.single tuples), wedgeCovectors and wedgeCovectors_apply_det (FormsDuality.lean).\n\nAvailable in the snapshot Mathlib:\n- WithLp is a structure with toLp/ofLp (WithLp.lean:49);\n- EuclideanSpace.norm_eq (PiL2.lean:145) and basisFun_apply (PiL2.lean:806);\n- OrderEmbedding.range_inj_of_wellFoundedLT (Order/Hom/Set.lean:193);\n- Tuple.monotone_sort (Data/Fin/Tuple/Sort.lean:95);\n- Module.Basis.ext_alternating (LinearAlgebra/Alternating/Basic.lean:907);\n- Matrix.det_eq_zero_of_row_eq_zero (Determinant/Basic.lean:362).\n\nFintype (SimonMultiIndex k P) is RelEmbedding.instFintype. DecidableEq (SimonMultiIndex k P) is not synthesized, hence the summed/vanishing child forms.\n\nA kernel-checked template (commit 6c6b4b27, cmb_covector_eq_sum_coord_smul_wedge) covers the Kronecker and extensionality arguments. Its name, and the accepted polyhedral_approx_pairing_* names, cannot be reused: the runtime name check rejected v1, and parallel.py rejects unproved children of another parent. So fresh smr_ci_ names are used; none occurs in the DAG, nodes/, the snapshot, SimonGMT or git history.\n\nAll three child types and the parent type elaborate in the comparator child scope, and the children imply the frozen parent type in Lean with axioms [propext, Classical.choice, Quot.sound]."
+    }
+  ],
+  "parent_id": "root.slicing-a1.mass_representation-a1.covector_isometry-a1",
+  "child_id": "root.slicing-a1.mass_representation-a1.covector_isometry-a1.norm_coord-a1",
+  "subproblem": {
+    "key": "norm_coord",
+    "title": "covectorEuclideanNorm is the ℓ²-norm of the increasing coordinates (sum over SimonMultiIndex k P)",
+    "statement": "Let P, k ∈ ℕ and let α ∈ Covector (Eucl P) k be a k-covector on ℝ^P = Eucl P = EuclideanSpace ℝ (Fin P). By definition covectorEuclideanNorm α = √(Σ_{f : Fin k → Fin P} [f strictly increasing] · α(basisFun(f(0)), …, basisFun(f(k−1)))²), where basisFun = EuclideanSpace.basisFun (Fin P) ℝ. Then covectorEuclideanNorm α = Real.sqrt (Σ_{I ∈ SimonMultiIndex k P} (euclideanCovectorCoordinate α I)²). Here the sum runs over all order embeddings I : Fin k ↪o Fin P, and euclideanCovectorCoordinate α I = α(EuclideanSpace.single (I 0) 1, …, EuclideanSpace.single (I (k−1)) 1).",
+    "lean_statement": "∀ (P k : ℕ) (α : Covector (Eucl P) k), covectorEuclideanNorm α = Real.sqrt (∑ I : SimonMultiIndex k P, euclideanCovectorCoordinate α I ^ 2)",
+    "lean_name": "smr_ci_norm_eq_sqrt_sum_coord_sq",
+    "depends_on": [],
+    "natural_proof": "Conventions.\n- ℝ^P = Eucl P = EuclideanSpace ℝ (Fin P).\n- b_i := EuclideanSpace.single i 1 for i ∈ Fin P, and e_f := (b_{f(0)}, …, b_{f(k−1)}) for f : Fin k → Fin P.\n- SimonMultiIndex k P = Fin k ↪o Fin P (order embeddings), and euclideanCovectorCoordinate α I = α(e_I).\n- By definition (SimonGMT Mass.lean), covectorEuclideanNorm α = Real.sqrt (Σ_{f : Fin k → Fin P} g(f)), where g(f) := (α (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (f i)))² if StrictMono f, and g(f) := 0 otherwise.\nSource: the reindexing part of step 2 of the supplied proof of smr_covector_coord_isometry.\n\nFix P, k ∈ ℕ and α ∈ Covector (Eucl P) k.\n\n1. (Basis vectors.) EuclideanSpace.basisFun (Fin P) ℝ i = EuclideanSpace.single i 1 = b_i (EuclideanSpace.basisFun_apply). Hence g(f) = α(e_f)² if f is strictly monotone, and g(f) = 0 otherwise. Both sides of the claim are Real.sqrt of a sum, so it suffices to prove Σ_{f : Fin k → Fin P} g(f) = Σ_{I ∈ SimonMultiIndex k P} (euclideanCovectorCoordinate α I)².\n2. (Dropping the zero terms.) Let S := {f : Fin k → Fin P | f strictly monotone}, a finite set (a filter of the finite type Fin k → Fin P). Then Σ_f g(f) = Σ_{f ∈ S} α(e_f)² (Finset.sum_filter).\n3. (Bijection.)\n   - Define Φ : SimonMultiIndex k P → S by Φ(I) := ⇑I, the underlying function. It lands in S because an order embedding between linear orders is strictly monotone (I.strictMono).\n   - Define Ψ : S → SimonMultiIndex k P by Ψ(f) := OrderEmbedding.ofStrictMono f h_f, where h_f : StrictMono f.\n   - Φ(Ψ(f)) = f by construction. Ψ(Φ(I)) = I because an order embedding is determined by its underlying function (extensionality).\n   So Φ is a bijection with inverse Ψ.\n4. (Matching summands.) For I ∈ SimonMultiIndex k P, the summand of the left sum at Φ(I) = ⇑I is α(e_I)² = α(EuclideanSpace.single (I 0) 1, …, EuclideanSpace.single (I (k−1)) 1)² = (euclideanCovectorCoordinate α I)², by the definition of euclideanCovectorCoordinate.\n5. (Conclusion.) Reindex the finite sum of step 2 along the bijection of step 3 and use step 4 (Finset.sum_bij'): Σ_{f ∈ S} α(e_f)² = Σ_{I ∈ SimonMultiIndex k P} (euclideanCovectorCoordinate α I)². By steps 1–2, taking Real.sqrt of both sides gives covectorEuclideanNorm α = Real.sqrt (Σ_I (euclideanCovectorCoordinate α I)²).\n6. (Edge cases.) No case distinction is needed.\n   - If k > P, there are no strictly monotone maps Fin k → Fin P and SimonMultiIndex k P is empty, so both sides equal √0 = 0.\n   - If k = 0, both index sets consist of the single empty map/embedding (vacuously strictly monotone), and both summands equal α(())², where () is the empty tuple. ∎",
+    "proof_key_steps": [
+      "Unfold covectorEuclideanNorm and rewrite EuclideanSpace.basisFun (Fin P) ℝ i = EuclideanSpace.single i 1.",
+      "Restrict the sum over all f : Fin k → Fin P to the strictly monotone f (Finset.sum_filter).",
+      "f ↦ OrderEmbedding.ofStrictMono f and I ↦ ⇑I are inverse bijections between strictly monotone maps and SimonMultiIndex k P.",
+      "Matching summands are (euclideanCovectorCoordinate α I)²; reindex (Finset.sum_bij') and take Real.sqrt."
+    ]
+  },
+  "audit": {
+    "key": "norm_coord",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proposition exactly matches the coefficient-norm formula in the prose. The proof rewrites basisFun as single, removes precisely the zero summands, and supplies mutually inverse maps between strictly increasing functions and order embeddings. Matching summands and applying Real.sqrt establish the claimed equality without additional hypotheses. Empty and singleton index cases are valid. The proof is complete and independent; the name is bare and unreserved."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-norm-coord-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-norm-coord-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-norm-coord-a1/parent-supplied-natural-proof.json"
+}
