@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.weighted_monotonicity-a1.smoothed_identity-a1.kernel_fubini-a1",
+  "parent_id": "root.weighted_monotonicity-a1.smoothed_identity-a1",
+  "depth": 3,
+  "title": "Fubini interchange for the smoothed monotonicity kernel against a bounded weight",
+  "statement": "Let n, ℓ, k ∈ ℕ and E = Ambient n ℓ = ℝ^{n+ℓ}. Let μ be a Borel measure on E that is finite on compact sets, w: E → ℝ, χ: ℝ → ℝ, ξ ∈ E, and c, σ, ρ, R, A ∈ ℝ with σ > 0, c > 0 and cρ < R. Assume w is a.e. strongly measurable for μ restricted to the closed ball B_R(ξ), |w(x)| ≤ A for x ∈ B_R(ξ), χ is continuous, and χ(t) = 0 for every t > c. Write r = |x − ξ| and let ∫_{(σ,ρ]} denote the Lebesgue integral over Ioc σ ρ. Then ∫_{(σ,ρ]} (∫_E w(x)·(−(r/τ²)·χ(r/τ)) dμ(x)) / τ^k dτ = ∫_E w(x)·(∫_{(σ,ρ]} −(r/τ²)·χ(r/τ)/τ^k dτ) dμ(x).",
+  "lean_statement": "∀ (n ℓ k : ℕ) (μ : Measure (Ambient n ℓ)) (w : Ambient n ℓ → ℝ) (χ : ℝ → ℝ) (ξ : Ambient n ℓ) (c σ ρ R A : ℝ), IsFiniteMeasureOnCompacts μ → 0 < σ → 0 < c → c * ρ < R → AEStronglyMeasurable w (μ.restrict (closedBall ξ R)) → (∀ x ∈ closedBall ξ R, |w x| ≤ A) → Continuous χ → (∀ t, c < t → χ t = 0) → ∫ τ in Ioc σ ρ, (∫ x, w x * (-(‖x - ξ‖ / τ ^ 2) * χ (‖x - ξ‖ / τ)) ∂μ) / τ ^ k = ∫ x, w x * (∫ τ in Ioc σ ρ, -(‖x - ξ‖ / τ ^ 2) * χ (‖x - ξ‖ / τ) / τ ^ k) ∂μ",
+  "lean_name": "wm_smoothed_kernel_fubini",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-weighted-monotonicity-a1-smoothed-identity-a1-kernel-fubini-a1-a1"
+}
