@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1.mollify_harmonic-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1",
+  "depth": 6,
+  "title": "Mollifications of a weakly harmonic L¹ function are smooth and classically harmonic on the shrunken ball",
+  "statement": "Let n ∈ ℕ, R, ε ∈ ℝ with ε > 0, ℝⁿ = Euclid n, e_i = EuclideanSpace.single i 1, Δψ(z) := Σ_i iteratedFDeriv ℝ 2 ψ z ![e_i, e_i], and B := B̆_R(0). Assume:\n- W : ℝⁿ → ℝ is integrable on B;\n- W is weakly harmonic in B: ∫_B W·Δζ = 0 for every C² function ζ : ℝⁿ → ℝ with compact support and tsupport ζ ⊆ B;\n- φ : ℝⁿ → ℝ is C^m for every m ∈ ℕ, and φ(y) = 0 whenever |y| ≥ ε.\nPut W̃ := 1_B·W (indicator extension) and F(x) := ∫ W̃(y)·φ(x − y) dy. Then F is C^m on ℝⁿ for every m ∈ ℕ, and ΔF(x) = 0 for every x with |x| < R − ε.",
+  "lean_statement": "∀ (n : ℕ) (R ε : ℝ) (W φ : Euclid n → ℝ), 0 < ε → IntegrableOn W (ball (0 : Euclid n) R) → (∀ ζ : Euclid n → ℝ, ContDiff ℝ 2 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R → ∫ y in ball (0 : Euclid n) R, W y * ∑ i : Fin n, iteratedFDeriv ℝ 2 ζ y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → (∀ m : ℕ, ContDiff ℝ m φ) → (∀ y : Euclid n, ε ≤ ‖y‖ → φ y = 0) → (∀ m : ℕ, ContDiff ℝ m (fun x => ∫ y, (ball (0 : Euclid n) R).indicator W y * φ (x - y))) ∧ ∀ x ∈ ball (0 : Euclid n) (R - ε), ∑ i : Fin n, iteratedFDeriv ℝ 2 (fun x => ∫ y, (ball (0 : Euclid n) R).indicator W y * φ (x - y)) x ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0",
+  "lean_name": "dorag_ha_weyl_mollify_harmonic",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1.conv_laplacian-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1.conv_laplacian-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-91837e6cd7-a1"
+}

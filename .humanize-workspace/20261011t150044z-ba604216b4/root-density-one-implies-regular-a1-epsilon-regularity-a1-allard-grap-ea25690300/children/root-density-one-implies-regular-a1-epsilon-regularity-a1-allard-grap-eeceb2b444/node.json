@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1.radial_mollifier-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1",
+  "depth": 6,
+  "title": "Normalized smooth radial mollifier family on ℝⁿ with sup bound C·ε^{-n}",
+  "statement": "Let n ≥ 1 and ℝⁿ = Euclid n with Lebesgue measure Lⁿ. There exist a constant C ∈ ℝ and a function g : ℝ → ℝ → ℝ, (ε, t) ↦ g ε t, such that for every ε > 0:\n(a) t ↦ g ε t is continuous on ℝ;\n(b) g ε t = 0 for every t ≥ ε²;\n(c) |g ε t| ≤ C/εⁿ for every t ∈ ℝ;\n(d) the radial function y ↦ g ε (|y|²) on ℝⁿ is C^m for every m ∈ ℕ;\n(e) ∫_{ℝⁿ} g ε (|y|²) dLⁿ(y) = 1.",
+  "lean_statement": "∀ n : ℕ, 0 < n → ∃ C : ℝ, ∃ g : ℝ → ℝ → ℝ, ∀ ε : ℝ, 0 < ε → Continuous (g ε) ∧ (∀ t : ℝ, ε ^ 2 ≤ t → g ε t = 0) ∧ (∀ t : ℝ, |g ε t| ≤ C / ε ^ n) ∧ (∀ m : ℕ, ContDiff ℝ m (fun y : Euclid n => g ε (‖y‖ ^ 2))) ∧ ∫ y : Euclid n, g ε (‖y‖ ^ 2) = 1",
+  "lean_name": "dorag_ha_weyl_radial_mollifier",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-eeceb2b444-a1"
+}
