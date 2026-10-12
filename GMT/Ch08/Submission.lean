@@ -880,6 +880,94 @@ theorem Submission.intcpt_allard_cluster_selection :
   have hpos : (0 : ℝ) ≤ 5 ^ s.card := by positivity
   nlinarith
 
+/-- **Simon Ch. 8, proof of 5.10, printed (8), pp. 222–223** (child `cylinder_cluster_bound` of
+`allard_lemma`): at points `y` of one fibre `p_P(y) = x` with `|y - p_P(y)| < ε`, the monotonicity
+(M_y) and the cylinder comparison (C_y) give
+`Σ_{y ∈ s} μ(U^τ_σ(y)) / σ^n ≤ (1 + c δ²) μ(B_1(x)) + c δ²` whenever `#s ≤ m`, `σ ≤ δ²`,
+`2δ²σ ≤ τ` and `4τ ≤ |y - y'|` for distinct points.  The proof is the book's induction on the
+number of points, with the constants defined by recursion on `m`: `c_0 = 0`, `δ_0 = 1/2` and, for
+`a = 4(10(m+1))^{m+1}`, `b = (2^n - 1)a`,
+`c_{m+1} = max{2^{n+2}, b + c_m + b c_m, (1 + b)c_m + (m+1)K}`, `δ_{m+1} = min{δ_m, 1/a}`.
+At most one point is the monotonicity bound (`intcpt_allard_ccb_one_point_ball_bound`, as
+`U^τ_σ(y) ⊆ B_σ(y)`).  For at least two points, `intcpt_allard_ccb_reduction_step` (the
+grouping estimate `intcpt_allard_ccb_cylinder_grouping` applied to the clusters of
+`intcpt_allard_cluster_selection`) passes to `Z ⊆ s` with `#Z ≤ m` and admissible scales
+`(σ', τ')` at the cost `Σ_s ≤ (1 + bδ²) Σ_Z + (m+1)Kδ²`; the induction hypothesis bounds `Σ_Z`,
+and `intcpt_allard_ccb_affine_combine` composes the two affine bounds in `[0, ∞]`. -/
+theorem Submission.intcpt_allard_cylinder_cluster_bound :
+    ∀ (N n : ℕ) (K : ℝ) (m : ℕ), 0 ≤ K → ∃ c δm : ℝ, 0 ≤ c ∧ 0 < δm ∧ ∀ δ ε : ℝ, 0 < δ → δ ≤ δm → 0 < ε → ε ≤ δ ^ 4 → ∀ (μ : Measure (Euclidean N)) (P : Grassmannian N n) (x : Euclidean N) (s : Finset (Euclidean N)), s.card ≤ m → (∀ y ∈ s, Grassmannian.project P y = x ∧ ‖y - Grassmannian.project P y‖ < ε ∧ MonotoneOn (fun r : ℝ ↦ ENNReal.ofReal (Real.exp (ε * r)) * μ (closedBall y r) / ENNReal.ofReal r ^ n) (Ioo 0 1) ∧ ∀ τ σ ρ : ℝ, 0 < τ → τ ≤ 1 → 0 < σ → σ ≤ ρ → ρ < 1 → μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal (K * ε * ρ / τ)) → ∀ σ τ : ℝ, 0 < σ → σ ≤ δ ^ 2 → 2 * δ ^ 2 * σ ≤ τ → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → 4 * τ ≤ ‖y - y'‖) → ∑ y ∈ s, μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ ENNReal.ofReal (1 + c * δ ^ 2) * μ (closedBall x 1) + ENNReal.ofReal (c * δ ^ 2) := by
+  intro N n K m hK
+  induction m with
+  | zero =>
+    -- `#s ≤ 0` forces `s = ∅`, so the sum vanishes.
+    refine ⟨0, 1 / 2, le_rfl, by norm_num, ?_⟩
+    intro δ ε _ _ _ _ μ P x s hs _ σ τ _ _ _ _
+    rw [Finset.card_eq_zero.mp (Nat.le_zero.mp hs)]
+    simp
+  | succ m ih =>
+    obtain ⟨c, δm, hc, hδm, H⟩ := ih
+    -- The constants: `a = 4(10(m+1))^{m+1} ≥ 40`, `b = (2^n - 1)a ≥ 0`,
+    -- `c' = max{2^{n+2}, b + c + bc, (1 + b)c + (m+1)K}` and `δ' = min{δm, 1/a}`.
+    obtain ⟨a, ha⟩ : ∃ a : ℝ, 4 * (10 * ((m : ℝ) + 1)) ^ (m + 1) = a := ⟨_, rfl⟩
+    obtain ⟨b, hb⟩ : ∃ b : ℝ, (2 ^ n - 1) * a = b := ⟨_, rfl⟩
+    obtain ⟨c', hc'⟩ : ∃ c' : ℝ,
+        max (2 ^ (n + 2)) (max (b + c + b * c) ((1 + b) * c + ((m : ℝ) + 1) * K)) = c' :=
+      ⟨_, rfl⟩
+    have ha40 : 40 ≤ a := by
+      have hm : (0 : ℝ) ≤ m := Nat.cast_nonneg m
+      have h10 : (10 : ℝ) ≤ 10 * ((m : ℝ) + 1) := by linarith
+      have hpow : 10 * ((m : ℝ) + 1) ≤ (10 * ((m : ℝ) + 1)) ^ (m + 1) :=
+        le_self_pow₀ (by linarith) (Nat.succ_ne_zero m)
+      rw [← ha]
+      linarith
+    have hb0 : 0 ≤ b := by
+      rw [← hb]
+      exact mul_nonneg (sub_nonneg.mpr (one_le_pow₀ (by norm_num))) (by linarith)
+    have hk0 : 0 ≤ ((m : ℝ) + 1) * K := mul_nonneg (by positivity) hK
+    have h2n : (2 : ℝ) ^ (n + 2) ≤ c' := by
+      rw [← hc']
+      exact le_max_left _ _
+    have hc'1 : b + c + b * c ≤ c' := by
+      rw [← hc']
+      exact (le_max_left _ _).trans (le_max_right _ _)
+    have hc'2 : (1 + b) * c + ((m : ℝ) + 1) * K ≤ c' := by
+      rw [← hc']
+      exact (le_max_right _ _).trans (le_max_right _ _)
+    refine ⟨c', min δm (1 / a), (by positivity : (0 : ℝ) ≤ 2 ^ (n + 2)).trans h2n,
+      lt_min hδm (one_div_pos.mpr (by linarith)), ?_⟩
+    intro δ ε hδ hδle hε hεle μ P x s hs hpt σ τ hσ hσle hτ hsep
+    have hδa : δ ≤ 1 / a := hδle.trans (min_le_right _ _)
+    have hδhalf : δ ≤ 1 / 2 := hδa.trans (one_div_le_one_div_of_le (by norm_num) (by linarith))
+    have hδ2 : δ ^ 2 ≤ 1 := pow_le_one₀ hδ.le (by linarith)
+    rcases Nat.lt_or_ge s.card 2 with hs2 | hs2
+    · -- At most one point: `U^τ_σ(y) ⊆ B_σ(y)` and the one-point monotonicity bound.
+      rcases s.eq_empty_or_nonempty with rfl | ⟨y, hy⟩
+      · simp
+      have hsy : s = {y} := Finset.eq_singleton_iff_unique_mem.mpr
+        ⟨hy, fun y' hy' ↦ Finset.card_le_one.mp (by omega) y' hy' y hy⟩
+      obtain ⟨hpy, hyε, hmono, -⟩ := hpt y hy
+      rw [hsy, Finset.sum_singleton]
+      calc μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) /
+            ENNReal.ofReal σ ^ n
+          ≤ μ (closedBall y σ) / ENNReal.ofReal σ ^ n :=
+            ENNReal.div_le_div_right (measure_mono inter_subset_left) _
+        _ ≤ ENNReal.ofReal (1 + 2 ^ (n + 2) * δ ^ 2) * μ (closedBall x 1) :=
+            Submission.intcpt_allard_ccb_one_point_ball_bound N n μ x y δ ε σ hδ hδhalf hε hεle
+              (by rw [← hpy]; exact hyε) hmono hσ hσle
+        _ ≤ ENNReal.ofReal (1 + c' * δ ^ 2) * μ (closedBall x 1) := by gcongr
+        _ ≤ _ := le_self_add
+    · -- At least two points: one reduction step to `Z ⊆ s` with `#Z ≤ m`, the induction
+      -- hypothesis on `Z` at the scales `(σ', τ')`, and the composition of the two bounds.
+      obtain ⟨Z, σ', τ', hZs, hZm, hσ'0, hσ'le, hτ', hsepZ, hred⟩ :=
+        Submission.intcpt_allard_ccb_reduction_step N n K m
+          (Submission.intcpt_allard_cluster_selection N) hK δ ε hδ (by rw [ha]; exact hδa) hε
+          hεle μ P x s hs2 hs (fun y hy ↦ ⟨(hpt y hy).1, (hpt y hy).2.1, (hpt y hy).2.2.2⟩)
+          σ τ hσ hσle hτ hsep
+      rw [ha, hb] at hred
+      exact Submission.intcpt_allard_ccb_affine_combine b c c' (((m : ℝ) + 1) * K) δ _ _ _ hb0 hc
+        hk0 hδ2 hc'1 hc'2 hred (H δ ε hδ (hδle.trans (min_le_left _ _)) hε hεle μ P x Z hZm
+          (fun y hy ↦ hpt y (hZs hy)) σ' τ' hσ'0 hσ'le hτ' hsepZ)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
