@@ -5726,6 +5726,989 @@ theorem any_radius_tangent_ae : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb
   subst hTP
   exact ⟨T, hP, hT, hTx⟩
 
+/-- **Monotonicity consequences of 2.3** (Simon Ch. 4, 4.1–4.10, with the coefficient
+`κ = (p-n)/(4p)` in 4.2).  With `Λ = 4pδ/(p-n) ≤ 1`, `A = ‖H‖_{Lᵖ(B_ρ(0))}` (so `A ρ^α ≤ δ`,
+`α = 1 - n/p`) and smooth cutoffs `χ_b` (`1` on `(-∞, 1]`, `0` on `[b, ∞)`), the first variation
+of `V` applied to `X_σ(x) = χ_b(|x - y|²/σ²)(x - y)` gives, for `I(σ) = ∫ χ_b dμ_V` and any
+weight `0 ≤ w ≤ |p_x^⊥(x - y)|²/|x - y|^(n+2)` with `L(σ) = ∫ χ_b w dμ_V`, the differential
+inequality `L' ≤ (σ⁻ⁿI)' + b A σ^(α-1)(1 + σ⁻ⁿI)` (Hölder for the mean curvature term).  With
+`w = 0` the integrating factor `exp(b A σ^α/α) ≤ e^(bΛ/4)` makes `(1 + σ⁻ⁿI) exp(b A σ^α/α)`
+nondecreasing; letting `b ↓ 1` gives `1 + s⁻ⁿμ(B_s(y)) ≤ (1 + r⁻ⁿμ(B_r(y))) e^(Λ/4)`, hence (M1).
+At points where `Θⁿ(μ_V, ·) = θ ≥ 1` (a.e., `any_radius_tangent_ae`) this gives the lower bound
+`s⁻ⁿμ(B_s) ≥ (1 + ω_n)e^(-Λ/4) - 1`, which passes to every support point by approximation, hence
+(M2).  With `w = 1_{|x| > t}|x - p_x x|²/|x|^(n+2)` and `y = 0` the same inequality bounds the
+annular integrals, and monotone convergence over annuli exhausting `B̆_ρ(0) \ {0}` gives (M3). -/
+theorem any_radius_monotonicity_bounds : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ (p - n) / (4 * p) → V.AllardHypotheses H p δ ρ → (∀ (y : Amb n ℓ) (R s r : ℝ), 0 < s → s ≤ r → r < R → closedBall y R ⊆ closedBall 0 ρ → (V.weight (closedBall y s)).toReal / s ^ n ≤ Real.exp (2 * (4 * p * δ / (p - n))) * ((V.weight (closedBall y r)).toReal / r ^ n) + 2 * Real.exp (4 * p * δ / (p - n)) * (4 * p * δ / (p - n))) ∧ (∀ y ∈ V.support, ∀ R s : ℝ, 0 < s → s < R → closedBall y R ⊆ closedBall 0 ρ → Real.exp (-(4 * p * δ / (p - n))) * (unitBallVolume n - 4 * p * δ / (p - n)) * s ^ n ≤ (V.weight (closedBall y s)).toReal) ∧ ∫⁻ x in ball (0 : Amb n ℓ) ρ, ENNReal.ofReal (‖x - V.tangentProj x x‖ ^ 2 / ‖x‖ ^ (n + 2)) ∂V.weight ≤ ENNReal.ofReal (Real.exp (4 * p * δ / (p - n)) * (Real.exp (4 * p * δ / (p - n)) * (1 + δ) * unitBallVolume n + 4 * p * δ / (p - n) - unitBallVolume n)) := by
+  have key : ∀ (n : ℕ), 1 ≤ n → ∀ (p : ℝ), (n : ℝ) < p → ∀ (δ ρ : ℝ), 0 < δ →
+      δ ≤ (p - n) / (4 * p) → 0 < ρ →
+      ∀ {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+        [MeasurableSpace E] [BorelSpace E]
+        (μ : Measure E) (P : E → E →L[ℝ] E) (H : E → E) (θ : E → ℝ) (ω : ℝ), 0 < ω →
+      μ (closedBall 0 ρ) ≤ ENNReal.ofReal ((1 + δ) * (ω * ρ ^ n)) →
+      (∀ X : E → E, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ closedBall 0 ρ →
+        ∫ x, LinearMap.trace ℝ E ((fderiv ℝ X x).toLinearMap ∘ₗ (P x).toLinearMap) ∂μ =
+          -∫ x, inner ℝ (X x) (H x) ∂μ) →
+      (∀ᵐ x ∂μ, ∃ T : Submodule ℝ E, Module.finrank ℝ T = n ∧ P x = T.starProjection) →
+      AEStronglyMeasurable P μ → AEStronglyMeasurable H (μ.restrict (closedBall 0 ρ)) →
+      (ENNReal.ofReal (ρ ^ (p - n)) * ∫⁻ x in closedBall 0 ρ, ‖H x‖ₑ ^ p ∂μ) ^ (1 / p) ≤
+        ENNReal.ofReal δ →
+      (∀ᵐ x ∂μ, Tendsto (fun r => μ (closedBall x r) / ENNReal.ofReal (ω * r ^ n))
+        (𝓝[>] 0) (𝓝 (ENNReal.ofReal (θ x)))) →
+      (∀ᵐ x ∂μ, 1 ≤ θ x) → (0 : E) ∈ μ.support → (∃ v : E, ‖v‖ = 1) →
+      (∀ (y : E) (R s r : ℝ), 0 < s → s ≤ r → r < R → closedBall y R ⊆ closedBall 0 ρ →
+        (μ (closedBall y s)).toReal / s ^ n ≤ Real.exp (2 * (4 * p * δ / (p - n))) *
+          ((μ (closedBall y r)).toReal / r ^ n) + 2 * Real.exp (4 * p * δ / (p - n)) *
+            (4 * p * δ / (p - n))) ∧
+      (∀ y ∈ μ.support, ∀ R s : ℝ, 0 < s → s < R → closedBall y R ⊆ closedBall 0 ρ →
+        Real.exp (-(4 * p * δ / (p - n))) * (ω - 4 * p * δ / (p - n)) * s ^ n ≤
+          (μ (closedBall y s)).toReal) ∧
+      ∫⁻ x in ball (0 : E) ρ, ENNReal.ofReal (‖x - P x x‖ ^ 2 / ‖x‖ ^ (n + 2)) ∂μ ≤
+        ENNReal.ofReal (Real.exp (4 * p * δ / (p - n)) * (Real.exp (4 * p * δ / (p - n)) *
+          (1 + δ) * ω + 4 * p * δ / (p - n) - ω)) := by
+    intro n hn p hp δ ρ hδ hδκ hρ E _ _ _ _ _ μ P H θ ω hω hmass hFV htan hPm hHm hLp hdens hθ1
+      h0supp hunit
+    -- constants
+    have hn0 : (0 : ℝ) < n := Nat.cast_pos.mpr hn
+    have hp0 : 0 < p := hn0.trans hp
+    have hpn : 0 < p - n := sub_pos.mpr hp
+    have hp1 : 1 < p := (Nat.one_le_cast.mpr hn).trans_lt hp
+    obtain ⟨Λ, hΛ⟩ : ∃ Λ : ℝ, Λ = 4 * p * δ / (p - n) := ⟨_, rfl⟩
+    rw [← hΛ]
+    have hΛ0 : 0 < Λ := hΛ ▸ div_pos (mul_pos (mul_pos four_pos hp0) hδ) hpn
+    have hΛ1 : Λ ≤ 1 := by
+      rw [hΛ, div_le_one hpn]
+      have h := (le_div_iff₀ (mul_pos four_pos hp0)).mp hδκ
+      calc 4 * p * δ = δ * (4 * p) := by ring
+        _ ≤ p - n := h
+    obtain ⟨α, hα⟩ : ∃ α : ℝ, α = (p - n) / p := ⟨_, rfl⟩
+    have hα0 : 0 < α := hα ▸ div_pos hpn hp0
+    have hδα : δ / α = Λ / 4 := by
+      rw [hα, hΛ]
+      field_simp
+    -- the weight restricted to `B_ρ(0)`
+    have hμρ : μ (closedBall (0 : E) ρ) < ∞ := hmass.trans_lt ENNReal.ofReal_lt_top
+    obtain ⟨ν, hν⟩ : ∃ ν : Measure E, ν = μ.restrict (closedBall 0 ρ) := ⟨_, rfl⟩
+    have : IsFiniteMeasure ν := by rw [hν]; exact isFiniteMeasure_restrict.mpr hμρ.ne
+    have hHmν : AEStronglyMeasurable H ν := by rw [hν]; exact hHm
+    have hPmν : AEStronglyMeasurable P ν := by rw [hν]; exact hPm.restrict
+    -- the `Lᵖ` constant `A = ‖H‖_{Lᵖ(B_ρ(0))}`, with `A ρ^α ≤ δ`
+    obtain ⟨JH, hJH⟩ : ∃ JH : ℝ≥0∞, JH = ∫⁻ x, ‖H x‖ₑ ^ p ∂ν := ⟨_, rfl⟩
+    have hLp' : ENNReal.ofReal (ρ ^ α) * JH ^ (1 / p) ≤ ENNReal.ofReal δ := by
+      rw [ENNReal.mul_rpow_of_nonneg _ _ (one_div_nonneg.mpr hp0.le),
+        ENNReal.ofReal_rpow_of_nonneg (Real.rpow_nonneg hρ.le _) (one_div_nonneg.mpr hp0.le),
+        ← Real.rpow_mul hρ.le, ← div_eq_mul_one_div] at hLp
+      rw [hα, hJH, hν]
+      exact hLp
+    have hJHfin : JH ^ (1 / p) ≠ ∞ := by
+      intro htop
+      rw [htop, ENNReal.mul_top (ENNReal.ofReal_pos.mpr (Real.rpow_pos_of_pos hρ α)).ne'] at hLp'
+      exact ENNReal.ofReal_ne_top (top_le_iff.mp hLp')
+    obtain ⟨A, hA⟩ : ∃ A : ℝ, A = (JH ^ (1 / p)).toReal := ⟨_, rfl⟩
+    have hA0 : 0 ≤ A := hA ▸ ENNReal.toReal_nonneg
+    have hAδ : A * ρ ^ α ≤ δ := by
+      rw [← ENNReal.ofReal_toReal hJHfin, ← hA, ← ENNReal.ofReal_mul (Real.rpow_nonneg hρ.le _),
+        ENNReal.ofReal_le_ofReal_iff hδ.le, mul_comm] at hLp'
+      exact hLp'
+    have hAΛ : ∀ r : ℝ, 0 ≤ r → r ≤ ρ → A * (r ^ α / α) ≤ Λ / 4 := by
+      intro r hr hrρ
+      rw [← hδα, ← mul_div_assoc]
+      exact div_le_div_of_nonneg_right ((mul_le_mul_of_nonneg_left
+        (Real.rpow_le_rpow hr hrρ hα0.le) hA0).trans hAδ) hα0.le
+    -- the cutoff `χ_b`: `1` on `(-∞, 1]`, `0` on `[b, ∞)`, nonincreasing
+    obtain ⟨χ, hχC, hχ1, hχ0, hχ01, hχd0, hχsupp, hχB⟩ : ∃ χ : ℝ → ℝ → ℝ,
+        (∀ b, ContDiff ℝ 1 (χ b)) ∧
+        (∀ b, 1 < b → ∀ s, s ≤ 1 → χ b s = 1) ∧ (∀ b, 1 < b → ∀ s, b ≤ s → χ b s = 0) ∧
+        (∀ b s, 0 ≤ χ b s ∧ χ b s ≤ 1) ∧ (∀ b, 1 < b → ∀ s, deriv (χ b) s ≤ 0) ∧
+        (∀ b, 1 < b → ∀ s, deriv (χ b) s ≠ 0 → 1 ≤ s ∧ s ≤ b) ∧
+        (∀ b, 1 < b → ∃ C, 0 ≤ C ∧ ∀ s, |deriv (χ b) s| ≤ C) := by
+      have hC : ∀ b : ℝ, ContDiff ℝ 1 (fun s => Real.smoothTransition ((b - s) / (b - 1))) :=
+        fun b => Real.smoothTransition.contDiff.comp ((contDiff_const.sub contDiff_id).div_const _)
+      have hsupp : ∀ b : ℝ, 1 < b → ∀ s,
+          deriv (fun s => Real.smoothTransition ((b - s) / (b - 1))) s ≠ 0 → 1 ≤ s ∧ s ≤ b := by
+        intro b hb s hs
+        by_contra hcon
+        rw [not_and_or, not_le, not_le] at hcon
+        apply hs
+        rcases hcon with h | h
+        · have : (fun s => Real.smoothTransition ((b - s) / (b - 1))) =ᶠ[𝓝 s] fun _ => 1 := by
+            filter_upwards [Iio_mem_nhds h] with t ht
+            exact Real.smoothTransition.one_of_one_le ((le_div_iff₀ (sub_pos.mpr hb)).mpr
+              (by linarith only [show t < 1 from ht]))
+          rw [this.deriv_eq, deriv_const]
+        · have : (fun s => Real.smoothTransition ((b - s) / (b - 1))) =ᶠ[𝓝 s] fun _ => 0 := by
+            filter_upwards [Ioi_mem_nhds h] with t ht
+            exact Real.smoothTransition.zero_of_nonpos (div_nonpos_of_nonpos_of_nonneg
+              (by linarith only [show b < t from ht]) (by linarith only [hb]))
+          rw [this.deriv_eq, deriv_const]
+      refine ⟨fun b s => Real.smoothTransition ((b - s) / (b - 1)), hC, fun b hb s hs => ?_,
+        fun b hb s hs => ?_, fun b s => ⟨Real.smoothTransition.nonneg _,
+          Real.smoothTransition.le_one _⟩, fun b hb s => ?_, hsupp, fun b hb => ?_⟩
+      · exact Real.smoothTransition.one_of_one_le ((le_div_iff₀ (sub_pos.mpr hb)).mpr
+          (by linarith only [hs]))
+      · exact Real.smoothTransition.zero_of_nonpos
+          (div_nonpos_of_nonpos_of_nonneg (by linarith only [hs]) (by linarith only [hb]))
+      · exact Antitone.deriv_nonpos fun x y hxy => Real.smoothTransition.monotone
+          (div_le_div_of_nonneg_right (by linarith only [hxy]) (by linarith only [hb]))
+      · obtain ⟨C, hCb⟩ := (isCompact_Icc (a := (1 : ℝ)) (b := b)).exists_bound_of_continuousOn
+          ((hC b).continuous_deriv le_rfl).continuousOn
+        refine ⟨max C 0, le_max_right _ _, fun s => ?_⟩
+        by_cases hs : deriv (fun s => Real.smoothTransition ((b - s) / (b - 1))) s = 0
+        · rw [hs, abs_zero]; exact le_max_right _ _
+        · rw [← Real.norm_eq_abs]; exact (hCb s (hsupp b hb s hs)).trans (le_max_left _ _)
+    -- `K b y σ x = χ_b(|x - y|²/σ²)` and `D b y σ x = χ_b'(|x - y|²/σ²)`
+    obtain ⟨K, hK⟩ : ∃ K : ℝ → E → ℝ → E → ℝ, ∀ b y σ x, K b y σ x = χ b (‖x - y‖ ^ 2 / σ ^ 2) :=
+      ⟨_, fun _ _ _ _ => rfl⟩
+    obtain ⟨D, hD⟩ : ∃ D : ℝ → E → ℝ → E → ℝ,
+        ∀ b y σ x, D b y σ x = deriv (χ b) (‖x - y‖ ^ 2 / σ ^ 2) := ⟨_, fun _ _ _ _ => rfl⟩
+    have hgc : ∀ (y : E) (σ : ℝ), Continuous fun x : E => ‖x - y‖ ^ 2 / σ ^ 2 := fun y σ =>
+      ((continuous_id.sub continuous_const).norm.pow 2).div_const _
+    have hKc : ∀ b y σ, Continuous (K b y σ) := fun b y σ => by
+      rw [show K b y σ = _ from funext (hK b y σ)]; exact (hχC b).continuous.comp (hgc y σ)
+    have hDc : ∀ b y σ, Continuous (D b y σ) := fun b y σ => by
+      rw [show D b y σ = _ from funext (hD b y σ)]
+      exact ((hχC b).continuous_deriv le_rfl).comp (hgc y σ)
+    have hK01 : ∀ b y σ x, 0 ≤ K b y σ x ∧ K b y σ x ≤ 1 := fun b y σ x => by
+      rw [hK]; exact hχ01 b _
+    have hDneg : ∀ b, 1 < b → ∀ y σ x, D b y σ x ≤ 0 := fun b hb y σ x => by
+      rw [hD]; exact hχd0 b hb _
+    have hDsupp : ∀ b, 1 < b → ∀ (y : E) (σ : ℝ) (x : E), 0 < σ → D b y σ x ≠ 0 →
+        σ ^ 2 ≤ ‖x - y‖ ^ 2 ∧ ‖x - y‖ ^ 2 ≤ b * σ ^ 2 := by
+      intro b hb y σ x hσ hd
+      rw [hD] at hd
+      obtain ⟨h1, h2⟩ := hχsupp b hb _ hd
+      exact ⟨(one_le_div (pow_pos hσ 2)).mp h1, (div_le_iff₀ (pow_pos hσ 2)).mp h2⟩
+    have hDB : ∀ b, 1 < b → ∃ C, 0 ≤ C ∧ ∀ y σ x, |D b y σ x| ≤ C := by
+      intro b hb
+      obtain ⟨C, hC0, hC⟩ := hχB b hb
+      exact ⟨C, hC0, fun y σ x => by rw [hD]; exact hC _⟩
+    have hK0 : ∀ b, 1 < b → ∀ (y : E) (σ : ℝ) (x : E), 0 < σ → b * σ < ‖x - y‖ → K b y σ x = 0 := by
+      intro b hb y σ x hσ hx
+      rw [hK]
+      apply hχ0 b hb
+      rw [le_div_iff₀ (pow_pos hσ 2)]
+      calc b * σ ^ 2 ≤ (b * σ) ^ 2 := by
+            rw [mul_pow]; exact mul_le_mul_of_nonneg_right (le_self_pow₀ hb.le two_ne_zero)
+              (sq_nonneg σ)
+        _ ≤ ‖x - y‖ ^ 2 := (pow_lt_pow_left₀ hx (mul_pos (one_pos.trans hb) hσ).le two_ne_zero).le
+    have hK1 : ∀ b, 1 < b → ∀ (y : E) (σ : ℝ) (x : E), 0 < σ → ‖x - y‖ ≤ σ → K b y σ x = 1 := by
+      intro b hb y σ x hσ hx
+      rw [hK]
+      exact hχ1 b hb _ ((div_le_one (pow_pos hσ 2)).mpr (pow_le_pow_left₀ (norm_nonneg _) hx 2))
+    have hKd : ∀ b (y x : E) (σ : ℝ), 0 < σ →
+        HasDerivAt (fun τ => K b y τ x) (D b y σ x * (-2 * ‖x - y‖ ^ 2 / σ ^ 3)) σ := by
+      intro b y x σ hσ
+      have hq : HasDerivAt (fun τ => ‖x - y‖ ^ 2 / τ ^ 2) (-2 * ‖x - y‖ ^ 2 / σ ^ 3) σ := by
+        refine ((hasDerivAt_const σ (‖x - y‖ ^ 2)).div (hasDerivAt_pow 2 σ)
+          (pow_ne_zero 2 hσ.ne')).congr_deriv ?_
+        rw [div_eq_div_iff (pow_ne_zero 2 (pow_ne_zero 2 hσ.ne')) (pow_ne_zero 3 hσ.ne')]
+        ring
+      rw [show (fun τ => K b y τ x) = fun τ => χ b (‖x - y‖ ^ 2 / τ ^ 2) from
+        funext fun τ => hK b y τ x, hD]
+      exact ((hχC b).differentiable one_ne_zero _).hasDerivAt.comp σ hq
+    -- pointwise facts about the tangent projections
+    have hPae : ∀ᵐ x ∂ν, ∀ v : E, ‖P x v‖ ≤ ‖v‖ ∧ ‖v - P x v‖ ≤ ‖v‖ ∧
+        ‖P x v‖ ^ 2 = ‖v‖ ^ 2 - ‖v - P x v‖ ^ 2 := by
+      filter_upwards [hν ▸ ae_restrict_of_ae htan] with x hx v
+      obtain ⟨T, -, hT⟩ := hx
+      rw [hT]
+      have hpy := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero _ _
+        (T.starProjection_inner_eq_zero v _ (T.starProjection_apply_mem v))
+      rw [sub_add_cancel] at hpy
+      refine ⟨T.norm_starProjection_apply_le v, ?_, ?_⟩
+      · refine (mul_self_le_mul_self_iff (norm_nonneg _) (norm_nonneg _)).mpr ?_
+        rw [hpy]
+        exact le_add_of_nonneg_right (mul_self_nonneg _)
+      · rw [sq, sq, sq, hpy]; ring
+    -- radial first variation: `X_σ(x) = χ_b(|x-y|²/σ²)(x - y)` (Simon Ch. 4, 4.1 before `d/dσ`)
+    have FV : ∀ b, 1 < b → ∀ (y : E) (σ : ℝ), 0 < σ → closedBall y (b * σ) ⊆ closedBall 0 ρ →
+        ∫ x, ((n : ℝ) * K b y σ x + 2 / σ ^ 2 * D b y σ x * ‖P x (x - y)‖ ^ 2) ∂ν =
+          -∫ x, inner ℝ (K b y σ x • (x - y)) (H x) ∂ν := by
+      intro b hb y σ hσ hsub
+      have hXz : ∀ x, x ∉ closedBall y (b * σ) → K b y σ x • (x - y) = 0 := fun x hx => by
+        rw [mem_closedBall, dist_eq_norm, not_le] at hx
+        rw [hK0 b hb y σ x hσ hx, zero_smul]
+      have hXc : ContDiff ℝ 1 (fun x => K b y σ x • (x - y)) := by
+        rw [show K b y σ = _ from funext (hK b y σ)]
+        exact ((hχC b).comp ((((contDiff_id.sub contDiff_const).norm_sq ℝ)).div_const _)).smul
+          (contDiff_id.sub contDiff_const)
+      have hXts : tsupport (fun x => K b y σ x • (x - y)) ⊆ closedBall y (b * σ) :=
+        closure_minimal (Function.support_subset_iff'.mpr hXz) isClosed_closedBall
+      have hdiv0 : ∀ x, x ∉ closedBall (0 : E) ρ → LinearMap.trace ℝ E
+          ((fderiv ℝ (fun x => K b y σ x • (x - y)) x).toLinearMap ∘ₗ (P x).toLinearMap) = 0 := by
+        intro x hx
+        have hfd : fderiv ℝ (fun x => K b y σ x • (x - y)) x = 0 := by
+          by_contra hne
+          exact hx (hsub (hXts (support_fderiv_subset ℝ hne)))
+        rw [hfd, ContinuousLinearMap.toLinearMap_zero, LinearMap.zero_comp, map_zero]
+      have hinn0 : ∀ x, x ∉ closedBall (0 : E) ρ → inner ℝ (K b y σ x • (x - y)) (H x) = 0 :=
+        fun x hx => by rw [hXz x (fun h => hx (hsub h)), inner_zero_left]
+      have hFV' := ((setIntegral_eq_integral_of_forall_compl_eq_zero hdiv0).trans
+        (hFV _ hXc (HasCompactSupport.intro (isCompact_closedBall y (b * σ)) hXz)
+          (hXts.trans hsub))).trans
+        (congrArg Neg.neg (setIntegral_eq_integral_of_forall_compl_eq_zero hinn0).symm)
+      rw [← hν] at hFV'
+      refine Eq.trans (integral_congr_ae ?_) hFV'
+      filter_upwards [hν ▸ ae_restrict_of_ae htan] with x hx
+      obtain ⟨T, hTn, hTx⟩ := hx
+      have hKf : HasFDerivAt (K b y σ) (D b y σ x • ((σ ^ 2)⁻¹ • (2 • (innerSL ℝ (x - y)).comp
+          (ContinuousLinearMap.id ℝ E)))) x := by
+        rw [show K b y σ = _ from funext (hK b y σ), hD]
+        exact ((hχC b).differentiable one_ne_zero _).hasDerivAt.comp_hasFDerivAt x
+          (((hasFDerivAt_sub_const y).norm_sq).mul_const ((σ ^ 2)⁻¹))
+      have hX : HasFDerivAt (fun x => K b y σ x • (x - y)) (K b y σ x • ContinuousLinearMap.id ℝ E +
+          (D b y σ x • ((σ ^ 2)⁻¹ • (2 • (innerSL ℝ (x - y)).comp
+            (ContinuousLinearMap.id ℝ E)))).smulRight (x - y)) x :=
+        hKf.smul (hasFDerivAt_sub_const y)
+      rw [hX.fderiv, hTx]
+      have hproj : LinearMap.IsProj T (T.starProjection : E →ₗ[ℝ] E) :=
+        ⟨fun v => T.starProjection_apply_mem v, fun v hv => T.starProjection_eq_self_iff.mpr hv⟩
+      have hcomp : ((K b y σ x • ContinuousLinearMap.id ℝ E +
+          (D b y σ x • ((σ ^ 2)⁻¹ • (2 • (innerSL ℝ (x - y)).comp
+            (ContinuousLinearMap.id ℝ E)))).smulRight (x - y) : E →L[ℝ] E) : E →ₗ[ℝ] E) ∘ₗ
+          (T.starProjection : E →ₗ[ℝ] E) =
+          K b y σ x • (T.starProjection : E →ₗ[ℝ] E) +
+            (((D b y σ x • ((σ ^ 2)⁻¹ • (2 • (innerSL ℝ (x - y)).comp
+            (ContinuousLinearMap.id ℝ E))) : E →L[ℝ] ℝ) : E →ₗ[ℝ] ℝ) ∘ₗ
+              (T.starProjection : E →ₗ[ℝ] E)).smulRight (x - y) :=
+        LinearMap.ext fun w => rfl
+      rw [hcomp, map_add, map_smul, LinearMap.trace_smulRight, hproj.trace, hTn]
+      have hinner : inner ℝ (x - y) (T.starProjection (x - y)) = ‖T.starProjection (x - y)‖ ^ 2 := by
+        have h0 := T.starProjection_inner_eq_zero (x - y) (T.starProjection (x - y))
+          (T.starProjection_apply_mem _)
+        rw [inner_sub_left, sub_eq_zero] at h0
+        rw [h0, real_inner_self_eq_norm_sq]
+      have hLv : (((D b y σ x • ((σ ^ 2)⁻¹ • (2 • (innerSL ℝ (x - y)).comp
+            (ContinuousLinearMap.id ℝ E))) : E →L[ℝ] ℝ) : E →ₗ[ℝ] ℝ) ∘ₗ
+              (T.starProjection : E →ₗ[ℝ] E)) (x - y) =
+          D b y σ x * ((σ ^ 2)⁻¹ * (2 • inner ℝ (x - y) (T.starProjection (x - y)))) := rfl
+      rw [hLv, hinner, smul_eq_mul, nsmul_eq_mul, div_eq_mul_inv, Nat.cast_ofNat]
+      ring
+    -- Hölder (Simon Ch. 4, 4.3): `|∫ X_σ · H| ≤ b σ A (∫ χ)^(1 - 1/p)`
+    have HOL : ∀ b, 1 < b → ∀ (y : E) (σ : ℝ), 0 < σ →
+        |∫ x, inner ℝ (K b y σ x • (x - y)) (H x) ∂ν| ≤
+          b * σ * A * (∫ x, K b y σ x * 1 ∂ν) ^ (1 - 1 / p) := by
+      intro b hb y σ hσ
+      have hint : Integrable (fun x : E => K b y σ x * 1) ν :=
+        Integrable.of_bound ((hKc b y σ).aestronglyMeasurable.mul_const 1) 1
+          (Eventually.of_forall fun x => by
+            rw [mul_one, Real.norm_of_nonneg (hK01 b y σ x).1]; exact (hK01 b y σ x).2)
+      have hpq := Real.HolderConjugate.conjExponent hp1
+      have hbσ : 0 ≤ b * σ := mul_nonneg (zero_le_one.trans hb.le) hσ.le
+      have hpt : ∀ x, ENNReal.ofReal ‖inner ℝ (K b y σ x • (x - y)) (H x)‖ ≤
+          ENNReal.ofReal (b * σ) * (‖H x‖ₑ * ENNReal.ofReal (K b y σ x * 1)) := by
+        intro x
+        have h1 : ‖x - y‖ * K b y σ x ≤ b * σ * K b y σ x := by
+          rcases le_or_gt ‖x - y‖ (b * σ) with hx | hx
+          · exact mul_le_mul_of_nonneg_right hx (hK01 b y σ x).1
+          · rw [hK0 b hb y σ x hσ hx, mul_zero, mul_zero]
+        rw [mul_one, ← ofReal_norm, ← ENNReal.ofReal_mul (norm_nonneg _),
+          ← ENNReal.ofReal_mul hbσ]
+        refine ENNReal.ofReal_le_ofReal ((norm_inner_le_norm _ _).trans ?_)
+        rw [norm_smul, Real.norm_of_nonneg (hK01 b y σ x).1, mul_comm (K b y σ x)]
+        calc ‖x - y‖ * K b y σ x * ‖H x‖ ≤ b * σ * K b y σ x * ‖H x‖ :=
+              mul_le_mul_of_nonneg_right h1 (norm_nonneg _)
+          _ = b * σ * (‖H x‖ * K b y σ x) := by ring
+      have hHol := ENNReal.lintegral_mul_le_Lp_mul_Lq ν hpq (f := fun x => ‖H x‖ₑ)
+        (g := fun x => ENNReal.ofReal (K b y σ x * 1)) hHmν.enorm
+        ((hKc b y σ).measurable.mul_const 1).ennreal_ofReal.aemeasurable
+      have hq : ∫⁻ x, ENNReal.ofReal (K b y σ x * 1) ^ p.conjExponent ∂ν ≤
+          ENNReal.ofReal (∫ x, K b y σ x * 1 ∂ν) := by
+        rw [ofReal_integral_eq_lintegral_ofReal hint
+          (Eventually.of_forall fun x => mul_nonneg (hK01 b y σ x).1 zero_le_one)]
+        exact lintegral_mono fun x => ENNReal.rpow_le_self_of_le_one
+          (ENNReal.ofReal_le_one.mpr ((mul_one _).trans_le (hK01 b y σ x).2)) hpq.symm.lt.le
+      have hq' : 1 / p.conjExponent = 1 - 1 / p := by
+        rw [one_div, one_div, ← hpq.one_sub_inv]
+      have hθ0 : 0 ≤ 1 - 1 / p := sub_nonneg.mpr (div_le_one_of_le₀ hp1.le hp0.le)
+      have hbound : ∫⁻ x, ENNReal.ofReal ‖inner ℝ (K b y σ x • (x - y)) (H x)‖ ∂ν ≤
+          ENNReal.ofReal (b * σ) * (JH ^ (1 / p) *
+            ENNReal.ofReal (∫ x, K b y σ x * 1 ∂ν) ^ (1 - 1 / p)) := by
+        refine (lintegral_mono hpt).trans ?_
+        rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, ← hq', hJH]
+        exact mul_le_mul_right ((hHol.trans (mul_le_mul_right (ENNReal.rpow_le_rpow hq
+          (by rw [hq']; exact hθ0)) _))) _
+      rw [← Real.norm_eq_abs]
+      refine (norm_integral_le_lintegral_norm _).trans ((ENNReal.toReal_mono (ENNReal.mul_ne_top
+        ENNReal.ofReal_ne_top (ENNReal.mul_ne_top hJHfin (ENNReal.rpow_ne_top_of_nonneg
+          hθ0 ENNReal.ofReal_ne_top))) hbound).trans (le_of_eq ?_))
+      rw [ENNReal.toReal_mul, ENNReal.toReal_mul, ← hA, ENNReal.toReal_ofReal hbσ,
+        ← ENNReal.toReal_rpow, ENNReal.toReal_ofReal
+          (integral_nonneg fun x => mul_nonneg (hK01 b y σ x).1 zero_le_one)]
+      exact (mul_assoc _ _ _).symm
+    -- differentiation in `σ` under the integral sign
+    have DIFF : ∀ b, 1 < b → ∀ (y : E) (w : E → ℝ) (W : ℝ), AEStronglyMeasurable w ν →
+        (∀ᵐ x ∂ν, |w x| ≤ W) → ∀ σ : ℝ, 0 < σ →
+        Integrable (fun x => D b y σ x * (-2 * ‖x - y‖ ^ 2 / σ ^ 3) * w x) ν ∧
+        HasDerivAt (fun τ => ∫ x, K b y τ x * w x ∂ν)
+          (∫ x, D b y σ x * (-2 * ‖x - y‖ ^ 2 / σ ^ 3) * w x ∂ν) σ := by
+      intro b hb y w W hw hW σ hσ
+      obtain ⟨C, hC0, hC⟩ := hDB b hb
+      have hb0 : 0 ≤ 4 * b / σ := div_nonneg (mul_nonneg zero_le_four (zero_le_one.trans hb.le)) hσ.le
+      refine hasDerivAt_integral_of_dominated_loc_of_deriv_le
+        (F := fun τ x => K b y τ x * w x)
+        (F' := fun τ x => D b y τ x * (-2 * ‖x - y‖ ^ 2 / τ ^ 3) * w x)
+        (bound := fun _ => C * (4 * b / σ) * W)
+        (Ioo_mem_nhds (half_lt_self hσ) (lt_two_mul_self hσ))
+        (Eventually.of_forall fun τ => (hKc b y τ).aestronglyMeasurable.mul hw)
+        (Integrable.of_bound ((hKc b y σ).aestronglyMeasurable.mul hw) W (hW.mono fun x hx => ?_))
+        (((hDc b y σ).mul ((((continuous_id.sub continuous_const).norm.pow 2).const_mul
+          (-2)).div_const _)).aestronglyMeasurable.mul hw)
+        (hW.mono fun x hx τ hτ => ?_) (integrable_const _)
+        (Eventually.of_forall fun x τ hτ => (hKd b y x τ ((half_pos hσ).trans hτ.1)).mul_const (w x))
+      · rw [norm_mul, Real.norm_of_nonneg (hK01 b y σ x).1, Real.norm_eq_abs]
+        exact (mul_le_of_le_one_left (abs_nonneg _) (hK01 b y σ x).2).trans hx
+      · have hτ0 : 0 < τ := (half_pos hσ).trans hτ.1
+        rw [norm_mul, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, Real.norm_eq_abs]
+        by_cases hd : D b y τ x = 0
+        · rw [hd, abs_zero, zero_mul, zero_mul]
+          exact mul_nonneg (mul_nonneg hC0 hb0) ((abs_nonneg _).trans hx)
+        · have hle := (hDsupp b hb y τ x hτ0 hd).2
+          have h2 : |-2 * ‖x - y‖ ^ 2 / τ ^ 3| ≤ 4 * b / σ := by
+            rw [abs_div, abs_mul, abs_neg, abs_two, abs_of_nonneg (sq_nonneg ‖x - y‖),
+              abs_of_pos (pow_pos hτ0 3), div_le_div_iff₀ (pow_pos hτ0 3) hσ]
+            calc 2 * ‖x - y‖ ^ 2 * σ ≤ 2 * (b * τ ^ 2) * (2 * τ) :=
+                  mul_le_mul (mul_le_mul_of_nonneg_left hle zero_le_two)
+                    (by linarith only [hτ.1]) hσ.le
+                    (mul_nonneg zero_le_two (mul_nonneg (zero_le_one.trans hb.le) (sq_nonneg τ)))
+              _ = 4 * b * τ ^ 3 := by ring
+          exact mul_le_mul (mul_le_mul (hC _ _ _) h2 (abs_nonneg _) hC0) hx (abs_nonneg _)
+            (mul_nonneg hC0 hb0)
+    -- the elementary inequality `S⁻¹ I^(1-1/p) ≤ σ^(α-1) (1 + S⁻¹ I)` for `S = σⁿ`
+    have hq0 : 0 ≤ 1 - 1 / p := sub_nonneg.mpr (div_le_one_of_le₀ hp1.le hp0.le)
+    have hq1 : 1 - 1 / p ≤ 1 := sub_le_self _ (one_div_nonneg.mpr hp0.le)
+    have RI : ∀ σ : ℝ, 0 < σ → ∀ I : ℝ, 0 ≤ I →
+        (σ ^ n)⁻¹ * I ^ (1 - 1 / p) ≤ σ ^ (α - 1) * (1 + (σ ^ n)⁻¹ * I) := by
+      intro σ hσ I hI
+      have hS : 0 < (σ ^ n)⁻¹ := inv_pos.mpr (pow_pos hσ n)
+      have hexp : ((σ ^ n)⁻¹) ^ (1 - (1 - 1 / p)) = σ ^ (α - 1) := by
+        rw [Real.inv_rpow (pow_nonneg hσ.le n), ← Real.rpow_natCast, ← Real.rpow_mul hσ.le,
+          ← Real.rpow_neg hσ.le, hα]
+        congr 1
+        field_simp
+        ring
+      have ht : ((σ ^ n)⁻¹ * I) ^ (1 - 1 / p) ≤ 1 + (σ ^ n)⁻¹ * I := by
+        rcases le_or_gt ((σ ^ n)⁻¹ * I) 1 with h | h
+        · exact (Real.rpow_le_one (mul_nonneg hS.le hI) h hq0).trans
+            (le_add_of_nonneg_right (mul_nonneg hS.le hI))
+        · exact ((Real.rpow_le_rpow_of_exponent_le h.le hq1).trans_eq (Real.rpow_one _)).trans
+            (le_add_of_nonneg_left zero_le_one)
+      calc (σ ^ n)⁻¹ * I ^ (1 - 1 / p)
+          = ((σ ^ n)⁻¹) ^ (1 - (1 - 1 / p)) * ((σ ^ n)⁻¹ * I) ^ (1 - 1 / p) := by
+            rw [Real.mul_rpow hS.le hI, ← mul_assoc, ← Real.rpow_add hS, sub_add_cancel,
+              Real.rpow_one]
+        _ ≤ σ ^ (α - 1) * (1 + (σ ^ n)⁻¹ * I) := by
+            rw [hexp]; exact mul_le_mul_of_nonneg_left ht (Real.rpow_nonneg hσ.le _)
+    -- `d/dσ σ⁻ⁿ = -n σ⁻ⁿ/σ`
+    have hpowd : ∀ σ : ℝ, 0 < σ →
+        HasDerivAt (fun σ : ℝ => (σ ^ n)⁻¹) (-(n : ℝ) * (σ ^ n)⁻¹ / σ) σ := by
+      intro σ hσ
+      refine ((hasDerivAt_pow n σ).inv (pow_ne_zero n hσ.ne')).congr_deriv ?_
+      have h1 : σ ^ (n - 1) * σ = σ ^ n := pow_sub_one_mul (Nat.one_le_iff_ne_zero.mp hn) σ
+      have hσ' : σ ≠ 0 := hσ.ne'
+      rw [← h1]
+      field_simp
+    -- the differential inequality (Simon Ch. 4, 4.1-4.3): with `I(σ) = ∫ χ_b(|x-y|²/σ²) dν` and
+    -- `L(σ) = ∫ χ_b(|x-y|²/σ²) w dν`, `0 ≤ w ≤ |p^⊥(x-y)|²/|x-y|^(n+2)`:
+    -- `L' ≤ (σ⁻ⁿ I)' + b A σ^(α-1) (1 + σ⁻ⁿ I)`
+    have DI : ∀ b, 1 < b → ∀ (y : E) (σ : ℝ), 0 < σ → closedBall y (b * σ) ⊆ closedBall 0 ρ →
+        ∀ (w : E → ℝ) (W : ℝ), AEStronglyMeasurable w ν → (∀ᵐ x ∂ν, |w x| ≤ W) →
+        (∀ᵐ x ∂ν, 0 ≤ w x ∧ ‖x - y‖ ^ (n + 2) * w x ≤ ‖(x - y) - P x (x - y)‖ ^ 2) →
+        ∫ x, D b y σ x * (-2 * ‖x - y‖ ^ 2 / σ ^ 3) * w x ∂ν ≤
+          (-(n : ℝ) * (σ ^ n)⁻¹ / σ * ∫ x, K b y σ x * 1 ∂ν +
+            (σ ^ n)⁻¹ * ∫ x, D b y σ x * (-2 * ‖x - y‖ ^ 2 / σ ^ 3) * 1 ∂ν) +
+          b * A * σ ^ (α - 1) * (1 + (σ ^ n)⁻¹ * ∫ x, K b y σ x * 1 ∂ν) := by
+      intro b hb y σ hσ hsub w W hw hW hwk
+      obtain ⟨C, hC0, hC⟩ := hDB b hb
+      have hσ2 : 0 < σ ^ 2 := pow_pos hσ 2
+      have hS : 0 < σ ^ n := pow_pos hσ n
+      have h2σ : 0 < 2 / σ ^ 2 := div_pos two_pos hσ2
+      have hmP : AEStronglyMeasurable (fun x : E => ‖P x (x - y)‖ ^ 2) ν :=
+        ((ContinuousLinearMap.id ℝ (E →L[ℝ] E)).aestronglyMeasurable_comp₂ hPmν
+          (continuous_id.sub continuous_const).aestronglyMeasurable).norm.pow 2
+      have hint1 : Integrable (fun x : E => K b y σ x * 1) ν :=
+        Integrable.of_bound ((hKc b y σ).aestronglyMeasurable.mul_const 1) 1
+          (Eventually.of_forall fun x => by
+            rw [mul_one, Real.norm_of_nonneg (hK01 b y σ x).1]; exact (hK01 b y σ x).2)
+      have hint2 := (DIFF b hb y (fun _ => 1) 1 aestronglyMeasurable_const
+        (Eventually.of_forall fun _ => (abs_one).le) σ hσ).1
+      have hint4 := (DIFF b hb y w W hw hW σ hσ).1
+      have hint3 : Integrable (fun x => (n : ℝ) * K b y σ x +
+          2 / σ ^ 2 * D b y σ x * ‖P x (x - y)‖ ^ 2) ν := by
+        refine Integrable.of_bound (((hKc b y σ).aestronglyMeasurable.const_mul _).add
+          (((hDc b y σ).aestronglyMeasurable.const_mul _).mul hmP))
+          (n + 2 / σ ^ 2 * C * (b * σ ^ 2)) (hPae.mono fun x hx => ?_)
+        rw [Real.norm_eq_abs]
+        refine (abs_add_le _ _).trans (add_le_add ?_ ?_)
+        · rw [abs_mul, Nat.abs_cast, abs_of_nonneg (hK01 b y σ x).1]
+          exact mul_le_of_le_one_right (Nat.cast_nonneg n) (hK01 b y σ x).2
+        · rw [abs_mul, abs_mul, abs_of_pos h2σ, abs_of_nonneg (sq_nonneg ‖P x (x - y)‖)]
+          by_cases hd : D b y σ x = 0
+          · rw [hd, abs_zero, mul_zero, zero_mul]
+            exact mul_nonneg (mul_nonneg h2σ.le hC0) (mul_nonneg (zero_le_one.trans hb.le) hσ2.le)
+          · exact mul_le_mul (mul_le_mul_of_nonneg_left (hC _ _ _) h2σ.le)
+              ((pow_le_pow_left₀ (norm_nonneg _) (hx (x - y)).1 2).trans
+                (hDsupp b hb y σ x hσ hd).2) (sq_nonneg _) (mul_nonneg h2σ.le hC0)
+      have algP : ∀ (d k w' q P2 : ℝ), σ * σ ^ n * (d * (-2 * q / σ ^ 3) * w') + n * (k * 1) -
+          σ * (d * (-2 * q / σ ^ 3) * 1) =
+          n * k + 2 / σ ^ 2 * d * P2 + 2 / σ ^ 2 * (-d) * (σ ^ n * q * w' - (q - P2)) := by
+        intro d k w' q P2
+        field_simp
+        ring
+      have hkey : σ * σ ^ n * (∫ x, D b y σ x * (-2 * ‖x - y‖ ^ 2 / σ ^ 3) * w x ∂ν) +
+          (n : ℝ) * (∫ x, K b y σ x * 1 ∂ν) -
+          σ * (∫ x, D b y σ x * (-2 * ‖x - y‖ ^ 2 / σ ^ 3) * 1 ∂ν) ≤
+          |∫ x, inner ℝ (K b y σ x • (x - y)) (H x) ∂ν| := by
+        have hlin : σ * σ ^ n * (∫ x, D b y σ x * (-2 * ‖x - y‖ ^ 2 / σ ^ 3) * w x ∂ν) +
+            (n : ℝ) * (∫ x, K b y σ x * 1 ∂ν) -
+            σ * (∫ x, D b y σ x * (-2 * ‖x - y‖ ^ 2 / σ ^ 3) * 1 ∂ν) =
+            ∫ x, (σ * σ ^ n * (D b y σ x * (-2 * ‖x - y‖ ^ 2 / σ ^ 3) * w x) +
+              n * (K b y σ x * 1) - σ * (D b y σ x * (-2 * ‖x - y‖ ^ 2 / σ ^ 3) * 1)) ∂ν := by
+          rw [integral_sub, integral_add, integral_const_mul, integral_const_mul, integral_const_mul]
+          · exact hint4.const_mul _
+          · exact hint1.const_mul _
+          · exact (hint4.const_mul _).add (hint1.const_mul _)
+          · exact hint2.const_mul _
+        rw [hlin]
+        refine (integral_mono_ae (((hint4.const_mul _).add (hint1.const_mul _)).sub
+          (hint2.const_mul _)) hint3 ?_).trans ((FV b hb y σ hσ hsub).trans_le (neg_le_abs _))
+        filter_upwards [hPae, hwk] with x hx hwx
+        dsimp only [Pi.add_apply, Pi.sub_apply]
+        rw [algP]
+        have h3 : 2 / σ ^ 2 * (-D b y σ x) * (σ ^ n * ‖x - y‖ ^ 2 * w x -
+            (‖x - y‖ ^ 2 - ‖P x (x - y)‖ ^ 2)) ≤ 0 := by
+          rw [(hx (x - y)).2.2, sub_sub_cancel]
+          by_cases hd : D b y σ x = 0
+          · rw [hd, neg_zero, mul_zero, zero_mul]
+          · refine mul_nonpos_of_nonneg_of_nonpos (mul_nonneg h2σ.le
+              (neg_nonneg.mpr (hDneg b hb y σ x))) (sub_nonpos.mpr (le_trans ?_ hwx.2))
+            have h2 : σ ≤ ‖x - y‖ := (pow_le_pow_iff_left₀ hσ.le (norm_nonneg _) two_ne_zero).mp
+              (hDsupp b hb y σ x hσ hd).1
+            rw [pow_add, mul_assoc, mul_assoc]
+            exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hσ.le h2 n)
+              (mul_nonneg (sq_nonneg ‖x - y‖) hwx.1)
+        linarith only [h3]
+      have hri := RI σ hσ (∫ x, K b y σ x * 1 ∂ν)
+        (integral_nonneg fun x => mul_nonneg (hK01 b y σ x).1 zero_le_one)
+      have alg : ∀ Iw I I' Ea : ℝ, σ * σ ^ n * Iw + n * I - σ * I' ≤ Ea →
+          Ea ≤ b * σ * A * I ^ (1 - 1 / p) →
+          (σ ^ n)⁻¹ * I ^ (1 - 1 / p) ≤ σ ^ (α - 1) * (1 + (σ ^ n)⁻¹ * I) →
+          Iw ≤ (-(n : ℝ) * (σ ^ n)⁻¹ / σ * I + (σ ^ n)⁻¹ * I') +
+            b * A * σ ^ (α - 1) * (1 + (σ ^ n)⁻¹ * I) := by
+        intro Iw I I' Ea h1 h2 h3
+        have hσS : 0 < σ * σ ^ n := mul_pos hσ hS
+        have h4 := mul_le_mul_of_nonneg_left h3
+          (mul_nonneg hσS.le (mul_nonneg (zero_le_one.trans hb.le) hA0))
+        rw [← mul_le_mul_iff_of_pos_left hσS]
+        have e : σ * σ ^ n * ((-(n : ℝ) * (σ ^ n)⁻¹ / σ * I + (σ ^ n)⁻¹ * I') +
+            b * A * σ ^ (α - 1) * (1 + (σ ^ n)⁻¹ * I)) =
+            σ * I' - n * I + σ * σ ^ n * (b * A) * (σ ^ (α - 1) * (1 + (σ ^ n)⁻¹ * I)) := by
+          field_simp
+          ring
+        have e2 : σ * σ ^ n * (b * A) * ((σ ^ n)⁻¹ * I ^ (1 - 1 / p)) =
+            b * σ * A * I ^ (1 - 1 / p) := by
+          field_simp
+        rw [e]
+        linarith only [h1, h2, h4, e2]
+      exact alg _ _ _ _ hkey (HOL b hb y σ hσ) hri
+    -- monotonicity (Simon Ch. 4, 4.4-4.5): `(1 + σ⁻ⁿ I(σ)) exp(b A σ^α/α)` is nondecreasing
+    have P1b : ∀ b, 1 < b → ∀ (y : E) (R : ℝ), closedBall y R ⊆ closedBall 0 ρ →
+        ∀ s r : ℝ, 0 < s → s ≤ r → b * r < R →
+        1 + (s ^ n)⁻¹ * ∫ x, K b y s x * 1 ∂ν ≤
+          (1 + (r ^ n)⁻¹ * ∫ x, K b y r x * 1 ∂ν) * Real.exp (b * A * (r ^ α / α)) := by
+      intro b hb y R hR s r hs hsr hr
+      have hb0 : 0 < b := one_pos.trans hb
+      have hGd : ∀ σ ∈ Ioo 0 (R / b), ∃ g, HasDerivAt (fun σ => (1 + (σ ^ n)⁻¹ *
+          ∫ x, K b y σ x * 1 ∂ν) * Real.exp (b * A * (σ ^ α / α))) g σ ∧ 0 ≤ g := by
+        intro σ hσ
+        have hσ0 : 0 < σ := hσ.1
+        have hbσ : b * σ < R := by
+          have h := hσ.2
+          rwa [lt_div_iff₀ hb0, mul_comm] at h
+        obtain ⟨-, hI⟩ := DIFF b hb y (fun _ => 1) 1 aestronglyMeasurable_const
+          (Eventually.of_forall fun _ => (abs_one).le) σ hσ0
+        have hF : HasDerivAt (fun σ => Real.exp (b * A * (σ ^ α / α)))
+            (Real.exp (b * A * (σ ^ α / α)) * (b * A * σ ^ (α - 1))) σ := by
+          refine ((((Real.hasDerivAt_rpow_const (p := α) (Or.inl hσ0.ne')).div_const α).const_mul
+            (b * A)).exp).congr_deriv ?_
+          rw [mul_div_cancel_left₀ _ hα0.ne']
+        have hu : HasDerivAt (fun σ => 1 + (σ ^ n)⁻¹ * ∫ x, K b y σ x * 1 ∂ν)
+            (-(n : ℝ) * (σ ^ n)⁻¹ / σ * ∫ x, K b y σ x * 1 ∂ν +
+              (σ ^ n)⁻¹ * ∫ x, D b y σ x * (-2 * ‖x - y‖ ^ 2 / σ ^ 3) * 1 ∂ν) σ :=
+          ((hpowd σ hσ0).mul hI).const_add 1
+        refine ⟨_, hu.mul hF, ?_⟩
+        have hdi := DI b hb y σ hσ0 ((closedBall_subset_closedBall hbσ.le).trans hR) (fun _ => 0) 0
+          aestronglyMeasurable_const (Eventually.of_forall fun _ => (abs_zero).le)
+          (Eventually.of_forall fun x => ⟨le_rfl, by rw [mul_zero]; exact sq_nonneg _⟩)
+        simp only [mul_zero, integral_zero] at hdi
+        have hE := Real.exp_pos (b * A * (σ ^ α / α))
+        calc (0 : ℝ) ≤ Real.exp (b * A * (σ ^ α / α)) * ((-(n : ℝ) * (σ ^ n)⁻¹ / σ *
+              ∫ x, K b y σ x * 1 ∂ν + (σ ^ n)⁻¹ * ∫ x, D b y σ x * (-2 * ‖x - y‖ ^ 2 / σ ^ 3) * 1 ∂ν) +
+              b * A * σ ^ (α - 1) * (1 + (σ ^ n)⁻¹ * ∫ x, K b y σ x * 1 ∂ν)) :=
+            mul_nonneg hE.le (by linarith only [hdi])
+          _ = _ := by ring
+      have hmono : MonotoneOn (fun σ => (1 + (σ ^ n)⁻¹ * ∫ x, K b y σ x * 1 ∂ν) *
+          Real.exp (b * A * (σ ^ α / α))) (Ioo 0 (R / b)) := by
+        refine monotoneOn_of_deriv_nonneg (convex_Ioo 0 (R / b))
+          (fun σ hσ => (hGd σ hσ).choose_spec.1.continuousAt.continuousWithinAt) ?_ ?_
+        · rw [interior_Ioo]
+          exact fun σ hσ => (hGd σ hσ).choose_spec.1.differentiableAt.differentiableWithinAt
+        · rw [interior_Ioo]
+          intro σ hσ
+          rw [(hGd σ hσ).choose_spec.1.deriv]
+          exact (hGd σ hσ).choose_spec.2
+      have hrR : r < R / b := by rw [lt_div_iff₀ hb0, mul_comm]; exact hr
+      refine le_trans ?_ (hmono ⟨hs, hsr.trans_lt hrR⟩ ⟨hs.trans_le hsr, hrR⟩ hsr)
+      exact le_mul_of_one_le_right (add_nonneg zero_le_one (mul_nonneg
+        (inv_nonneg.mpr (pow_nonneg hs.le n))
+        (integral_nonneg fun x => mul_nonneg (hK01 b y s x).1 zero_le_one)))
+        (Real.one_le_exp (mul_nonneg (mul_nonneg hb0.le hA0)
+          (div_nonneg (Real.rpow_nonneg hs.le _) hα0.le)))
+    -- `b_m = 1 + 1/(m+1) ↓ 1`, and `χ_{b_m}(|x-y|²/σ²) → 1_{B_σ(y)}`
+    have hbm1 : ∀ m : ℕ, 1 < 1 + 1 / ((m : ℝ) + 1) := fun m =>
+      lt_add_of_pos_right 1 Nat.one_div_pos_of_nat
+    have hbm : Tendsto (fun m : ℕ => 1 + 1 / ((m : ℝ) + 1)) atTop (𝓝 1) := by
+      have h := (tendsto_const_nhds (x := (1 : ℝ))).add tendsto_one_div_add_atTop_nhds_zero_nat
+      rwa [add_zero] at h
+    have LIM : ∀ (y : E) (w : E → ℝ) (W : ℝ), AEStronglyMeasurable w ν → (∀ᵐ x ∂ν, |w x| ≤ W) →
+        ∀ σ : ℝ, 0 < σ → Tendsto (fun m : ℕ => ∫ x, K (1 + 1 / ((m : ℝ) + 1)) y σ x * w x ∂ν)
+          atTop (𝓝 (∫ x, (closedBall y σ).indicator w x ∂ν)) := by
+      intro y w W hw hW σ hσ
+      refine tendsto_integral_of_dominated_convergence (fun _ => W)
+        (fun m => (hKc _ y σ).aestronglyMeasurable.mul hw) (integrable_const W)
+        (fun m => hW.mono fun x hx => ?_) (Eventually.of_forall fun x => ?_)
+      · rw [norm_mul, Real.norm_of_nonneg (hK01 _ y σ x).1, Real.norm_eq_abs]
+        exact (mul_le_of_le_one_left (abs_nonneg _) (hK01 _ y σ x).2).trans hx
+      · by_cases hx : x ∈ closedBall y σ
+        · rw [indicator_of_mem hx]
+          refine tendsto_const_nhds.congr fun m => ?_
+          rw [mem_closedBall, dist_eq_norm] at hx
+          rw [hK1 _ (hbm1 m) y σ x hσ hx, one_mul]
+        · rw [indicator_of_notMem hx]
+          rw [mem_closedBall, dist_eq_norm, not_le] at hx
+          have hev : ∀ᶠ m : ℕ in atTop, (1 + 1 / ((m : ℝ) + 1)) * σ < ‖x - y‖ :=
+            (hbm.mul_const σ).eventually (gt_mem_nhds (by rwa [one_mul]))
+          refine tendsto_const_nhds.congr' (hev.mono fun m hm => ?_)
+          beta_reduce
+          rw [hK0 _ (hbm1 m) y σ x hσ hm, zero_mul]
+    -- a closed ball inside `B_ρ(0)` has radius `≤ ρ`
+    obtain ⟨v, hv⟩ := hunit
+    have hRρ : ∀ (y : E) (R : ℝ), 0 ≤ R → closedBall y R ⊆ closedBall 0 ρ → R ≤ ρ := by
+      intro y R hR hsub
+      have h1 := hsub (show y + R • v ∈ closedBall y R by
+        rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul, hv, mul_one,
+          Real.norm_of_nonneg hR])
+      have h2 := hsub (show y - R • v ∈ closedBall y R by
+        rw [mem_closedBall, dist_eq_norm, sub_sub_cancel_left, norm_neg, norm_smul, hv, mul_one,
+          Real.norm_of_nonneg hR])
+      rw [mem_closedBall_zero_iff] at h1 h2
+      have h3 : ‖(y + R • v) - (y - R • v)‖ = 2 * R := by
+        rw [add_sub_sub_cancel, ← two_smul ℝ (R • v), norm_smul, norm_smul, hv, mul_one,
+          Real.norm_of_nonneg hR, Real.norm_two]
+      linarith only [h1, h2, h3, norm_sub_le (y + R • v) (y - R • v)]
+    have hνball : ∀ (y : E) (R σ : ℝ), closedBall y R ⊆ closedBall 0 ρ → σ ≤ R →
+        ∫ x, (closedBall y σ).indicator (fun _ => (1 : ℝ)) x ∂ν = (μ (closedBall y σ)).toReal := by
+      intro y R σ hR hσR
+      refine (integral_indicator_one measurableSet_closedBall).trans ?_
+      rw [measureReal_def, hν,
+        Measure.restrict_apply measurableSet_closedBall,
+        inter_eq_left.mpr ((closedBall_subset_closedBall hσR).trans hR)]
+    -- the monotonicity inequality for the true masses (Simon Ch. 4, 4.6 with `|F - 1| ≤ Λ`)
+    have P1 : ∀ (y : E) (R : ℝ), closedBall y R ⊆ closedBall 0 ρ → ∀ s r : ℝ, 0 < s → s ≤ r →
+        r < R → 1 + (s ^ n)⁻¹ * (μ (closedBall y s)).toReal ≤
+          (1 + (r ^ n)⁻¹ * (μ (closedBall y r)).toReal) * Real.exp (Λ / 4) := by
+      intro y R hR s r hs hsr hrR
+      have hr0 : 0 < r := hs.trans_le hsr
+      have hrρ : r ≤ ρ := hrR.le.trans (hRρ y R (hr0.trans hrR).le hR)
+      have hls := LIM y (fun _ => 1) 1 aestronglyMeasurable_const
+        (Eventually.of_forall fun _ => (abs_one).le) s hs
+      have hlr := LIM y (fun _ => 1) 1 aestronglyMeasurable_const
+        (Eventually.of_forall fun _ => (abs_one).le) r hr0
+      rw [hνball y R s hR (hsr.trans hrR.le)] at hls
+      rw [hνball y R r hR hrR.le] at hlr
+      have hexp : Tendsto (fun m : ℕ => Real.exp ((1 + 1 / ((m : ℝ) + 1)) * (Λ / 4))) atTop
+          (𝓝 (Real.exp (Λ / 4))) := by
+        have h := (hbm.mul_const (Λ / 4)).rexp
+        rwa [one_mul] at h
+      refine le_of_tendsto_of_tendsto ((hls.const_mul _).const_add 1)
+        (((hlr.const_mul _).const_add 1).mul hexp) ?_
+      filter_upwards [(hbm.mul_const r).eventually (gt_mem_nhds (by rwa [one_mul] : 1 * r < R))]
+        with m hm
+      refine (P1b _ (hbm1 m) y R hR s r hs hsr hm).trans
+        (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) ?_)
+      · rw [mul_assoc]
+        exact mul_le_mul_of_nonneg_left (hAΛ r hr0.le hrρ) (zero_le_one.trans (hbm1 m).le)
+      · exact add_nonneg zero_le_one (mul_nonneg (inv_nonneg.mpr (pow_nonneg hr0.le n))
+          (integral_nonneg fun x => mul_nonneg (hK01 _ y r x).1 zero_le_one))
+    -- exponential bounds
+    have hE0 := Real.exp_pos Λ
+    have hE4 : Real.exp (Λ / 4) ≤ Real.exp Λ := Real.exp_le_exp.mpr (by linarith only [hΛ0])
+    have hEΛ : Real.exp Λ - 1 ≤ Λ * Real.exp Λ := by
+      have h := mul_le_mul_of_nonneg_left (Real.add_one_le_exp (-Λ)) hE0.le
+      rw [Real.exp_neg, mul_inv_cancel₀ hE0.ne'] at h
+      linarith only [h]
+    -- (M1)
+    have M1 : ∀ (y : E) (R s r : ℝ), 0 < s → s ≤ r → r < R → closedBall y R ⊆ closedBall 0 ρ →
+        (μ (closedBall y s)).toReal / s ^ n ≤ Real.exp (2 * Λ) *
+          ((μ (closedBall y r)).toReal / r ^ n) + 2 * Real.exp Λ * Λ := by
+      intro y R s r hs hsr hrR hR
+      have h := P1 y R hR s r hs hsr hrR
+      have hu0 : 0 ≤ (r ^ n)⁻¹ * (μ (closedBall y r)).toReal :=
+        mul_nonneg (inv_nonneg.mpr (pow_nonneg (hs.le.trans hsr) n)) ENNReal.toReal_nonneg
+      have h3 := mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr (by linarith only [hΛ0] :
+        Λ / 4 ≤ 2 * Λ)) hu0
+      rw [div_eq_inv_mul, div_eq_inv_mul]
+      linarith only [h, h3, hE4, hEΛ, mul_pos hΛ0 hE0]
+    -- lower density bound at points where `Θⁿ(μ, z) = θ(z) ≥ 1` (Simon Ch. 4, 4.7-4.8)
+    have DENS : ∀ᵐ z ∂μ, ∀ R' s' : ℝ, 0 < s' → s' < R' → closedBall z R' ⊆ closedBall 0 ρ →
+        (1 + ω) * Real.exp (-(Λ / 4)) - 1 ≤ (s' ^ n)⁻¹ * (μ (closedBall z s')).toReal := by
+      filter_upwards [hdens, hθ1] with z hz hz1
+      intro R' s' hs' hsR' hR'
+      have hθ0 : 0 ≤ θ z := zero_le_one.trans hz1
+      have hlim : Tendsto (fun t => (t ^ n)⁻¹ * (μ (closedBall z t)).toReal) (𝓝[>] 0)
+          (𝓝 (ω * θ z)) := by
+        have h1 := (ENNReal.tendsto_toReal ENNReal.ofReal_ne_top).comp hz
+        rw [ENNReal.toReal_ofReal hθ0] at h1
+        refine (h1.const_mul ω).congr' ?_
+        filter_upwards [self_mem_nhdsWithin] with t ht
+        have ht0 : 0 < t ^ n := pow_pos ht n
+        rw [Function.comp_apply, ENNReal.toReal_div,
+          ENNReal.toReal_ofReal (mul_nonneg hω.le ht0.le)]
+        field_simp
+      have hle : ∀ᶠ t in 𝓝[>] (0 : ℝ), 1 + (t ^ n)⁻¹ * (μ (closedBall z t)).toReal ≤
+          (1 + (s' ^ n)⁻¹ * (μ (closedBall z s')).toReal) * Real.exp (Λ / 4) := by
+        filter_upwards [Ioc_mem_nhdsGT hs', self_mem_nhdsWithin] with t ht ht0
+        exact P1 z R' hR' t s' ht0 ht.2 hsR'
+      have h1 := le_of_tendsto (hlim.const_add 1) hle
+      have h2 := le_mul_of_one_le_right hω.le hz1
+      have h3 := Real.exp_pos (Λ / 4)
+      rw [Real.exp_neg, ← div_eq_mul_inv, sub_le_iff_le_add, div_le_iff₀ h3]
+      linarith only [h1, h2]
+    -- every support point: `c₁ sⁿ ≤ μ(B_s(y))`, `c₁ = (1 + ω) e^(-Λ/4) - 1`
+    have M2c : ∀ y ∈ μ.support, ∀ R s : ℝ, 0 < s → s < R → closedBall y R ⊆ closedBall 0 ρ →
+        ((1 + ω) * Real.exp (-(Λ / 4)) - 1) * s ^ n ≤ (μ (closedBall y s)).toReal := by
+      intro y hy R s hs hsR hR
+      have hfin : μ (closedBall y s) ≠ ∞ :=
+        (measure_mono ((closedBall_subset_closedBall hsR.le).trans hR)).trans_lt hμρ |>.ne
+      have hc : ∀ η : ℝ, 0 < η → η < s → ((1 + ω) * Real.exp (-(Λ / 4)) - 1) * (s - η) ^ n ≤
+          (μ (closedBall y s)).toReal := by
+        intro η hη hηs
+        have hpos : 0 < μ (ball y η) := (Measure.mem_support_iff_forall y).mp hy _ (ball_mem_nhds y hη)
+        obtain ⟨z, hz, hzd⟩ := Measure.exists_mem_of_measure_ne_zero_of_ae hpos.ne'
+          (ae_restrict_of_ae DENS)
+        have hzy : dist z y ≤ η := (mem_ball.mp hz).le
+        have hsη : 0 < s - η := sub_pos.mpr hηs
+        have h := hzd (R - η) (s - η) hsη (by linarith only [hsR])
+          ((closedBall_subset_closedBall' (by linarith only [hzy])).trans hR)
+        have hsub : closedBall z (s - η) ⊆ closedBall y s :=
+          closedBall_subset_closedBall' (by linarith only [hzy])
+        calc ((1 + ω) * Real.exp (-(Λ / 4)) - 1) * (s - η) ^ n
+            ≤ ((s - η) ^ n)⁻¹ * (μ (closedBall z (s - η))).toReal * (s - η) ^ n :=
+              mul_le_mul_of_nonneg_right h (pow_nonneg hsη.le n)
+          _ = (μ (closedBall z (s - η))).toReal := by
+              rw [mul_comm, ← mul_assoc, mul_inv_cancel₀ (pow_ne_zero n hsη.ne'), one_mul]
+          _ ≤ (μ (closedBall y s)).toReal := ENNReal.toReal_mono hfin (measure_mono hsub)
+      have hlim : Tendsto (fun η => ((1 + ω) * Real.exp (-(Λ / 4)) - 1) * (s - η) ^ n) (𝓝[>] 0)
+          (𝓝 (((1 + ω) * Real.exp (-(Λ / 4)) - 1) * s ^ n)) := by
+        have h : Tendsto (fun η : ℝ => ((1 + ω) * Real.exp (-(Λ / 4)) - 1) * (s - η) ^ n) (𝓝 0)
+            (𝓝 (((1 + ω) * Real.exp (-(Λ / 4)) - 1) * (s - 0) ^ n)) :=
+          ((tendsto_const_nhds.sub tendsto_id).pow n).const_mul _
+        rw [sub_zero] at h
+        exact h.mono_left nhdsWithin_le_nhds
+      exact le_of_tendsto hlim (by
+        filter_upwards [Ioo_mem_nhdsGT hs] with η hη
+        exact hc η hη.1 hη.2)
+    -- `e^(-Λ)(ω - Λ) ≤ c₁`
+    have hc1 : Real.exp (-Λ) * (ω - Λ) ≤ (1 + ω) * Real.exp (-(Λ / 4)) - 1 := by
+      have e1 : Real.exp (-Λ) ≤ Real.exp (-(Λ / 4)) := Real.exp_le_exp.mpr (by linarith only [hΛ0])
+      have e2 : 1 - Λ / 4 ≤ Real.exp (-(Λ / 4)) := by linarith only [Real.add_one_le_exp (-(Λ / 4))]
+      have e3 : 1 / 2 ≤ Real.exp (-(Λ / 2)) := by
+        linarith only [Real.add_one_le_exp (-(Λ / 2)), hΛ1]
+      have e4 : 1 / 4 ≤ Real.exp (-Λ) := by
+        have h := mul_le_mul e3 e3 (by norm_num) (Real.exp_pos _).le
+        rw [← Real.exp_add, show -(Λ / 2) + -(Λ / 2) = -Λ by ring] at h
+        linarith only [h]
+      linarith only [mul_le_mul_of_nonneg_left e1 hω.le, mul_le_mul_of_nonneg_left e4 hΛ0.le, e2]
+    have M2 : ∀ y ∈ μ.support, ∀ R s : ℝ, 0 < s → s < R → closedBall y R ⊆ closedBall 0 ρ →
+        Real.exp (-Λ) * (ω - Λ) * s ^ n ≤ (μ (closedBall y s)).toReal := fun y hy R s hs hsR hR =>
+      (mul_le_mul_of_nonneg_right hc1 (pow_nonneg hs.le n)).trans (M2c y hy R s hs hsR hR)
+    -- (M3): the weights `w_t = 1_{|x| > t} |x - p_x x|²/|x|^(n+2)` (Simon Ch. 4, 4.9)
+    obtain ⟨k, hk⟩ : ∃ k : E → ℝ, ∀ x, k x = ‖x - P x x‖ ^ 2 / ‖x‖ ^ (n + 2) := ⟨_, fun _ => rfl⟩
+    have hk0 : ∀ x, 0 ≤ k x := fun x => by
+      rw [hk]; exact div_nonneg (sq_nonneg _) (pow_nonneg (norm_nonneg _) _)
+    have hSm : ∀ t : ℝ, MeasurableSet {x : E | t < ‖x‖} := fun t =>
+      measurableSet_lt measurable_const continuous_norm.measurable
+    have hwm : ∀ t : ℝ, AEStronglyMeasurable ({x : E | t < ‖x‖}.indicator k) ν := by
+      intro t
+      refine AEStronglyMeasurable.indicator ?_ (hSm t)
+      rw [show k = fun x => ‖x - P x x‖ ^ 2 / ‖x‖ ^ (n + 2) from funext hk]
+      exact ((aestronglyMeasurable_id.sub ((ContinuousLinearMap.id ℝ (E →L[ℝ] E)).aestronglyMeasurable_comp₂
+        hPmν aestronglyMeasurable_id)).norm.pow 2).div₀
+        ((continuous_norm.pow (n + 2)).aestronglyMeasurable)
+    have hwb : ∀ t : ℝ, 0 < t → ∀ᵐ x ∂ν, |{x : E | t < ‖x‖}.indicator k x| ≤ (t ^ n)⁻¹ := by
+      intro t ht
+      filter_upwards [hPae] with x hx
+      by_cases hxt : x ∈ {x : E | t < ‖x‖}
+      · rw [indicator_of_mem hxt, abs_of_nonneg (hk0 x), hk]
+        have hx0 : 0 < ‖x‖ := ht.trans hxt
+        calc ‖x - P x x‖ ^ 2 / ‖x‖ ^ (n + 2) ≤ ‖x‖ ^ 2 / ‖x‖ ^ (n + 2) :=
+              div_le_div_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) (hx x).2.1 2)
+                (pow_nonneg hx0.le _)
+          _ = (‖x‖ ^ n)⁻¹ := by
+              rw [pow_add, mul_comm, ← div_div, div_self (pow_ne_zero 2 hx0.ne'), one_div]
+          _ ≤ (t ^ n)⁻¹ := inv_anti₀ (pow_pos ht n) (pow_le_pow_left₀ ht.le (le_of_lt hxt) n)
+      · rw [indicator_of_notMem hxt, abs_zero]; exact inv_nonneg.mpr (pow_nonneg ht.le n)
+    have hwk : ∀ t : ℝ, 0 < t → ∀ᵐ x ∂ν, 0 ≤ {x : E | t < ‖x‖}.indicator k x ∧
+        ‖x - 0‖ ^ (n + 2) * {x : E | t < ‖x‖}.indicator k x ≤ ‖(x - 0) - P x (x - 0)‖ ^ 2 := by
+      intro t ht
+      refine Eventually.of_forall fun x => ?_
+      rw [sub_zero]
+      by_cases hxt : x ∈ {x : E | t < ‖x‖}
+      · rw [indicator_of_mem hxt, hk, mul_comm, div_mul_cancel₀ _
+          (pow_ne_zero _ (ht.trans hxt).ne')]
+        exact ⟨div_nonneg (sq_nonneg _) (pow_nonneg (norm_nonneg _) _), le_rfl⟩
+      · rw [indicator_of_notMem hxt, mul_zero]; exact ⟨le_rfl, sq_nonneg _⟩
+    -- the annular inequality for the cutoff `χ_b` (Simon Ch. 4, 4.7)
+    have P2b : ∀ b, 1 < b → ∀ t r : ℝ, 0 < t → t ≤ r → b * r < ρ →
+        ∫ x, K b 0 r x * {x : E | t < ‖x‖}.indicator k x ∂ν -
+            ∫ x, K b 0 t x * {x : E | t < ‖x‖}.indicator k x ∂ν ≤
+          ((r ^ n)⁻¹ * ∫ x, K b 0 r x * 1 ∂ν - (t ^ n)⁻¹ * ∫ x, K b 0 t x * 1 ∂ν) +
+          (1 + (r ^ n)⁻¹ * ∫ x, K b 0 r x * 1 ∂ν) * Real.exp (b * A * (r ^ α / α)) *
+            (b * A * (r ^ α / α)) := by
+      intro b hb t r ht htr hr
+      have hb0 : 0 < b := one_pos.trans hb
+      obtain ⟨C, hC⟩ : ∃ C : ℝ, C = (1 + (r ^ n)⁻¹ * ∫ x, K b 0 r x * 1 ∂ν) *
+          Real.exp (b * A * (r ^ α / α)) := ⟨_, rfl⟩
+      have hGd : ∀ σ ∈ Icc t r, ∃ g, HasDerivAt (fun σ =>
+          ∫ x, K b 0 σ x * {x : E | t < ‖x‖}.indicator k x ∂ν -
+          (σ ^ n)⁻¹ * ∫ x, K b 0 σ x * 1 ∂ν - C * (b * A * (σ ^ α / α))) g σ ∧ g ≤ 0 := by
+        intro σ hσ
+        have hσ0 : 0 < σ := ht.trans_le hσ.1
+        have hbσ : b * σ < ρ := (mul_le_mul_of_nonneg_left hσ.2 hb0.le).trans_lt hr
+        obtain ⟨-, hL⟩ := DIFF b hb 0 _ _ (hwm t) (hwb t ht) σ hσ0
+        obtain ⟨-, hI⟩ := DIFF b hb 0 (fun _ => 1) 1 aestronglyMeasurable_const
+          (Eventually.of_forall fun _ => (abs_one).le) σ hσ0
+        have hu : HasDerivAt (fun σ => (σ ^ n)⁻¹ * ∫ x, K b 0 σ x * 1 ∂ν)
+            (-(n : ℝ) * (σ ^ n)⁻¹ / σ * ∫ x, K b 0 σ x * 1 ∂ν +
+              (σ ^ n)⁻¹ * ∫ x, D b 0 σ x * (-2 * ‖x - 0‖ ^ 2 / σ ^ 3) * 1 ∂ν) σ :=
+          (hpowd σ hσ0).mul hI
+        have hF : HasDerivAt (fun σ => C * (b * A * (σ ^ α / α))) (C * (b * A * σ ^ (α - 1))) σ := by
+          refine ((((Real.hasDerivAt_rpow_const (p := α) (Or.inl hσ0.ne')).div_const α).const_mul
+            (b * A)).const_mul C).congr_deriv ?_
+          rw [mul_div_cancel_left₀ _ hα0.ne']
+        refine ⟨_, (hL.sub hu).sub hF, ?_⟩
+        have hdi := DI b hb 0 σ hσ0 (closedBall_subset_closedBall hbσ.le) _ _ (hwm t) (hwb t ht)
+          (hwk t ht)
+        have hP := P1b b hb 0 ρ subset_rfl σ r hσ0 hσ.2 hr
+        rw [← hC] at hP
+        have h1 := mul_le_mul_of_nonneg_left hP
+          (mul_nonneg (mul_nonneg hb0.le hA0) (Real.rpow_nonneg hσ0.le (α - 1)))
+        linarith only [hdi, h1]
+      have hanti : AntitoneOn (fun σ => ∫ x, K b 0 σ x * {x : E | t < ‖x‖}.indicator k x ∂ν -
+          (σ ^ n)⁻¹ * ∫ x, K b 0 σ x * 1 ∂ν - C * (b * A * (σ ^ α / α))) (Icc t r) := by
+        refine antitoneOn_of_deriv_nonpos (convex_Icc t r)
+          (fun σ hσ => (hGd σ hσ).choose_spec.1.continuousAt.continuousWithinAt) ?_ ?_
+        · rw [interior_Icc]
+          exact fun σ hσ =>
+            (hGd σ (Ioo_subset_Icc_self hσ)).choose_spec.1.differentiableAt.differentiableWithinAt
+        · rw [interior_Icc]
+          intro σ hσ
+          rw [(hGd σ (Ioo_subset_Icc_self hσ)).choose_spec.1.deriv]
+          exact (hGd σ (Ioo_subset_Icc_self hσ)).choose_spec.2
+      have h := hanti ⟨le_rfl, htr⟩ ⟨htr, le_rfl⟩ htr
+      have hC0 : 0 ≤ C := hC ▸ mul_nonneg (add_nonneg zero_le_one (mul_nonneg
+        (inv_nonneg.mpr (pow_nonneg (ht.le.trans htr) n))
+        (integral_nonneg fun x => mul_nonneg (hK01 b 0 r x).1 zero_le_one))) (Real.exp_pos _).le
+      have ht0 : 0 ≤ C * (b * A * (t ^ α / α)) := mul_nonneg hC0 (mul_nonneg
+        (mul_nonneg hb0.le hA0) (div_nonneg (Real.rpow_nonneg ht.le _) hα0.le))
+      rw [← hC]
+      beta_reduce at h
+      linarith only [h, ht0]
+    -- letting `b ↓ 1`
+    have P2 : ∀ t r : ℝ, 0 < t → t ≤ r → r < ρ →
+        ∫ x, (closedBall (0 : E) r).indicator ({x : E | t < ‖x‖}.indicator k) x ∂ν ≤
+          ((r ^ n)⁻¹ * (μ (closedBall 0 r)).toReal - (t ^ n)⁻¹ * (μ (closedBall 0 t)).toReal) +
+          (1 + (r ^ n)⁻¹ * (μ (closedBall 0 r)).toReal) * Real.exp (Λ / 4) * (Λ / 4) := by
+      intro t r ht htr hrρ
+      have hr0 : 0 < r := ht.trans_le htr
+      have hL := (LIM 0 _ _ (hwm t) (hwb t ht) r hr0).sub (LIM 0 _ _ (hwm t) (hwb t ht) t ht)
+      have hzero : ∫ x, (closedBall (0 : E) t).indicator ({x : E | t < ‖x‖}.indicator k) x ∂ν = 0 := by
+        rw [indicator_indicator, show closedBall (0 : E) t ∩ {x : E | t < ‖x‖} = ∅ from
+          eq_empty_of_forall_notMem fun x hx => (not_lt.mpr (mem_closedBall_zero_iff.mp hx.1)) hx.2,
+          indicator_empty, integral_zero]
+      rw [hzero, sub_zero] at hL
+      have hur := LIM 0 (fun _ => 1) 1 aestronglyMeasurable_const
+        (Eventually.of_forall fun _ => (abs_one).le) r hr0
+      have hut := LIM 0 (fun _ => 1) 1 aestronglyMeasurable_const
+        (Eventually.of_forall fun _ => (abs_one).le) t ht
+      rw [hνball 0 ρ r subset_rfl hrρ.le] at hur
+      rw [hνball 0 ρ t subset_rfl (htr.trans hrρ.le)] at hut
+      have hexp : Tendsto (fun m : ℕ => Real.exp ((1 + 1 / ((m : ℝ) + 1)) * (Λ / 4))) atTop
+          (𝓝 (Real.exp (Λ / 4))) := by
+        have h := (hbm.mul_const (Λ / 4)).rexp
+        rwa [one_mul] at h
+      have hbΛ : Tendsto (fun m : ℕ => (1 + 1 / ((m : ℝ) + 1)) * (Λ / 4)) atTop (𝓝 (Λ / 4)) := by
+        have h := hbm.mul_const (Λ / 4)
+        rwa [one_mul] at h
+      refine le_of_tendsto_of_tendsto hL (((hur.const_mul _).sub (hut.const_mul _)).add
+        ((((hur.const_mul _).const_add 1).mul hexp).mul hbΛ)) ?_
+      filter_upwards [(hbm.mul_const r).eventually (gt_mem_nhds (by rwa [one_mul] : 1 * r < ρ))]
+        with m hm
+      refine (P2b _ (hbm1 m) t r ht htr hm).trans ?_
+      have hb := hbm1 m
+      have hA' : (1 + 1 / ((m : ℝ) + 1)) * A * (r ^ α / α) ≤ (1 + 1 / ((m : ℝ) + 1)) * (Λ / 4) := by
+        rw [mul_assoc]
+        exact mul_le_mul_of_nonneg_left (hAΛ r hr0.le hrρ.le) (zero_le_one.trans hb.le)
+      have hu0 : 0 ≤ 1 + (r ^ n)⁻¹ * ∫ x, K (1 + 1 / ((m : ℝ) + 1)) 0 r x * 1 ∂ν :=
+        add_nonneg zero_le_one (mul_nonneg (inv_nonneg.mpr (pow_nonneg hr0.le n))
+          (integral_nonneg fun x => mul_nonneg (hK01 _ 0 r x).1 zero_le_one))
+      have hx0 : 0 ≤ (1 + 1 / ((m : ℝ) + 1)) * A * (r ^ α / α) :=
+        mul_nonneg (mul_nonneg (zero_le_one.trans hb.le) hA0)
+          (div_nonneg (Real.rpow_nonneg hr0.le _) hα0.le)
+      exact add_le_add le_rfl (mul_le_mul (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hA') hu0)
+        hA' hx0 (mul_nonneg hu0 (Real.exp_pos _).le))
+    -- the bound for each annulus
+    have hB : ∀ t r : ℝ, 0 < t → t ≤ r → r < ρ →
+        ∫⁻ x in closedBall (0 : E) r ∩ {x : E | t < ‖x‖}, ENNReal.ofReal (k x) ∂ν ≤
+          ENNReal.ofReal ((1 + δ) * ω * (ρ / r) ^ n - ((1 + ω) * Real.exp (-(Λ / 4)) - 1) +
+            (1 + (1 + δ) * ω * (ρ / r) ^ n) * Real.exp (Λ / 4) * (Λ / 4)) := by
+      intro t r ht htr hrρ
+      have hr0 : 0 < r := ht.trans_le htr
+      have hS : MeasurableSet (closedBall (0 : E) r ∩ {x : E | t < ‖x‖}) :=
+        measurableSet_closedBall.inter (hSm t)
+      have hint : IntegrableOn k (closedBall (0 : E) r ∩ {x : E | t < ‖x‖}) ν := by
+        rw [← integrable_indicator_iff hS, ← indicator_indicator]
+        exact Integrable.of_bound ((hwm t).indicator measurableSet_closedBall) (t ^ n)⁻¹
+          ((hwb t ht).mono fun x hx => by
+            rw [Real.norm_eq_abs]
+            by_cases hxr : x ∈ closedBall (0 : E) r
+            · rw [indicator_of_mem hxr]; exact hx
+            · rw [indicator_of_notMem hxr, abs_zero]
+              exact inv_nonneg.mpr (pow_nonneg ht.le n))
+      rw [← ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall fun x => hk0 x),
+        ← integral_indicator hS, ← indicator_indicator]
+      refine ENNReal.ofReal_le_ofReal ((P2 t r ht htr hrρ).trans ?_)
+      have hμr : (μ (closedBall (0 : E) r)).toReal ≤ (1 + δ) * (ω * ρ ^ n) :=
+        ENNReal.toReal_le_of_le_ofReal (mul_nonneg (by linarith only [hδ])
+          (mul_nonneg hω.le (pow_nonneg hρ.le n)))
+          ((measure_mono (closedBall_subset_closedBall hrρ.le)).trans hmass)
+      have hur : (r ^ n)⁻¹ * (μ (closedBall (0 : E) r)).toReal ≤ (1 + δ) * ω * (ρ / r) ^ n := by
+        calc (r ^ n)⁻¹ * (μ (closedBall (0 : E) r)).toReal ≤ (r ^ n)⁻¹ * ((1 + δ) * (ω * ρ ^ n)) :=
+              mul_le_mul_of_nonneg_left hμr (inv_nonneg.mpr (pow_nonneg hr0.le n))
+          _ = (1 + δ) * ω * (ρ / r) ^ n := by rw [div_pow]; ring
+      have hut : (1 + ω) * Real.exp (-(Λ / 4)) - 1 ≤ (t ^ n)⁻¹ * (μ (closedBall (0 : E) t)).toReal := by
+        rw [le_inv_mul_iff₀ (pow_pos ht n), mul_comm]
+        exact M2c 0 h0supp ρ t ht (htr.trans_lt hrρ) subset_rfl
+      have h1 := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hur
+        (Real.exp_pos (Λ / 4)).le) (by linarith only [hΛ0] : (0 : ℝ) ≤ Λ / 4)
+      linarith only [hur, hut, h1]
+    -- exhaust `B̆_ρ(0) \ {0}` by the annuli `A_m = {t_m < |x| ≤ ρ - t_m}`, `t_m = ρ/(2(m+1))`
+    obtain ⟨tm, htm⟩ : ∃ tm : ℕ → ℝ, tm = fun m : ℕ => ρ / 2 * (1 / ((m : ℝ) + 1)) := ⟨_, rfl⟩
+    have htm0 : ∀ m, 0 < tm m := fun m => by
+      rw [htm]; exact mul_pos (half_pos hρ) Nat.one_div_pos_of_nat
+    have htm2 : ∀ m, tm m ≤ ρ / 2 := fun m => by
+      rw [htm]
+      exact mul_le_of_le_one_right (half_pos hρ).le
+        (div_le_one_of_le₀ (le_add_of_nonneg_left (Nat.cast_nonneg m)) (by positivity))
+    have htmlim : Tendsto tm atTop (𝓝 0) := by
+      have h := tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (ρ / 2)
+      rwa [mul_zero, ← htm] at h
+    have htmanti : Antitone tm := fun m m' h => by
+      rw [htm]; exact mul_le_mul_of_nonneg_left (Nat.one_div_le_one_div h) (half_pos hρ).le
+    have htmr : ∀ m, tm m ≤ ρ - tm m := fun m => by linarith only [htm2 m]
+    have htmρ : ∀ m, ρ - tm m < ρ := fun m => sub_lt_self ρ (htm0 m)
+    obtain ⟨Am, hAm⟩ : ∃ Am : ℕ → Set E,
+        Am = fun m => closedBall (0 : E) (ρ - tm m) ∩ {x : E | tm m < ‖x‖} := ⟨_, rfl⟩
+    have hAmeas : ∀ m, MeasurableSet (Am m) := fun m => by
+      rw [hAm]; exact measurableSet_closedBall.inter (hSm _)
+    have hAmono : Monotone Am := fun m m' h x hx => by
+      rw [hAm] at hx ⊢
+      exact ⟨mem_closedBall_zero_iff.mpr ((mem_closedBall_zero_iff.mp hx.1).trans
+        (sub_le_sub_left (htmanti h) ρ)), (htmanti h).trans_lt hx.2⟩
+    have hcover : ball (0 : E) ρ ⊆ (⋃ m, Am m) ∪ {0} := by
+      intro x hx
+      rcases eq_or_ne x 0 with h0 | h0
+      · exact Or.inr h0
+      · left
+        have hx0 : 0 < ‖x‖ := norm_pos_iff.mpr h0
+        have hxρ : ‖x‖ < ρ := mem_ball_zero_iff.mp hx
+        obtain ⟨m, hm⟩ := (htmlim.eventually (gt_mem_nhds (lt_min hx0 (sub_pos.mpr hxρ)))).exists
+        refine mem_iUnion.mpr ⟨m, ?_⟩
+        rw [hAm]
+        exact ⟨mem_closedBall_zero_iff.mpr (by linarith only [hm.trans_le (min_le_right _ _)]),
+          hm.trans_le (min_le_left _ _)⟩
+    -- the limit of the annular bounds
+    have hBlim : Tendsto (fun m => (1 + δ) * ω * (ρ / (ρ - tm m)) ^ n -
+        ((1 + ω) * Real.exp (-(Λ / 4)) - 1) +
+        (1 + (1 + δ) * ω * (ρ / (ρ - tm m)) ^ n) * Real.exp (Λ / 4) * (Λ / 4)) atTop
+        (𝓝 ((1 + δ) * ω * 1 - ((1 + ω) * Real.exp (-(Λ / 4)) - 1) +
+          (1 + (1 + δ) * ω * 1) * Real.exp (Λ / 4) * (Λ / 4))) := by
+      have h1 : Tendsto (fun m => (ρ / (ρ - tm m)) ^ n) atTop (𝓝 1) := by
+        have h : Tendsto (fun m => (ρ / (ρ - tm m)) ^ n) atTop (𝓝 ((ρ / (ρ - 0)) ^ n)) :=
+          (tendsto_const_nhds.div (tendsto_const_nhds.sub htmlim)
+            (by rw [sub_zero]; exact hρ.ne')).pow n
+        rwa [sub_zero, div_self hρ.ne', one_pow] at h
+      exact ((h1.const_mul _).sub_const _).add ((((h1.const_mul _).const_add 1).mul_const _).mul_const _)
+    -- `e^(-Λ/4) ≥ 1 - Λ/4` and the final numerical inequality
+    have hBT : (1 + δ) * ω * 1 - ((1 + ω) * Real.exp (-(Λ / 4)) - 1) +
+        (1 + (1 + δ) * ω * 1) * Real.exp (Λ / 4) * (Λ / 4) ≤
+        Real.exp Λ * (Real.exp Λ * (1 + δ) * ω + Λ - ω) := by
+      have e1 : 1 - Λ / 4 ≤ Real.exp (-(Λ / 4)) := by
+        linarith only [Real.add_one_le_exp (-(Λ / 4))]
+      have e2 : 1 + Λ ≤ Real.exp Λ := by linarith only [Real.add_one_le_exp Λ]
+      have e3 : 1 ≤ Real.exp (Λ / 4) := Real.one_le_exp (by linarith only [hΛ0])
+      have h2 : Real.exp Λ * Λ ≤ Real.exp Λ * (Real.exp Λ - 1) :=
+        mul_le_mul_of_nonneg_left (by linarith only [e2]) hE0.le
+      have h3 : Real.exp (Λ / 4) * Λ ≤ Real.exp Λ * Λ := mul_le_mul_of_nonneg_right hE4 hΛ0.le
+      have hEΛ0 := mul_pos hE0 hΛ0
+      have h9 : Λ ≤ Real.exp Λ * Λ := le_mul_of_one_le_left hΛ0.le (by linarith only [e2, hΛ0])
+      have h4 : 0 ≤ Real.exp Λ * Real.exp Λ - 1 - Real.exp (Λ / 4) * (Λ / 4) := by
+        linarith only [h2, h3, e2, hΛ0, hEΛ0]
+      have h5 := mul_le_mul_of_nonneg_left (mul_nonneg hδ.le hω.le) h4
+      have h6 : 0 ≤ ω * (Real.exp Λ * Real.exp Λ - Real.exp Λ - Real.exp (Λ / 4) * (Λ / 4) - Λ / 4) :=
+        mul_nonneg hω.le (by linarith only [h2, h3, h9, hEΛ0])
+      have h7 := mul_le_mul_of_nonneg_left e1 hω.le
+      have h8 : 0 ≤ Λ * (Real.exp Λ - Real.exp (Λ / 4) / 4 - 1 / 4) :=
+        mul_nonneg hΛ0.le (by linarith only [hE4, e2, hΛ0])
+      linarith only [h5, h6, h7, h8, e1]
+    -- assemble
+    have hzero0 : (ν.withDensity fun x => ENNReal.ofReal (k x)) {0} = 0 := by
+      rw [withDensity_apply _ (measurableSet_singleton 0), lintegral_singleton]
+      have hk00 : k 0 = 0 := by rw [hk, map_zero, sub_zero, norm_zero, zero_pow two_ne_zero, zero_div]
+      rw [hk00, ENNReal.ofReal_zero, zero_mul]
+    have hball : ∫⁻ x in ball (0 : E) ρ, ENNReal.ofReal (‖x - P x x‖ ^ 2 / ‖x‖ ^ (n + 2)) ∂μ =
+        (ν.withDensity fun x => ENNReal.ofReal (k x)) (ball 0 ρ) := by
+      rw [withDensity_apply _ measurableSet_ball, hν, Measure.restrict_restrict measurableSet_ball,
+        inter_eq_left.mpr ball_subset_closedBall]
+      exact lintegral_congr fun x => by rw [hk]
+    refine ⟨M1, M2, ?_⟩
+    rw [hball]
+    calc (ν.withDensity fun x => ENNReal.ofReal (k x)) (ball 0 ρ)
+        ≤ (ν.withDensity fun x => ENNReal.ofReal (k x)) ((⋃ m, Am m) ∪ {0}) := measure_mono hcover
+      _ ≤ (ν.withDensity fun x => ENNReal.ofReal (k x)) (⋃ m, Am m) +
+          (ν.withDensity fun x => ENNReal.ofReal (k x)) {0} := measure_union_le _ _
+      _ = ⨆ m, (ν.withDensity fun x => ENNReal.ofReal (k x)) (Am m) := by
+          rw [hzero0, add_zero, hAmono.measure_iUnion]
+      _ ≤ ENNReal.ofReal ((1 + δ) * ω * 1 - ((1 + ω) * Real.exp (-(Λ / 4)) - 1) +
+          (1 + (1 + δ) * ω * 1) * Real.exp (Λ / 4) * (Λ / 4)) := by
+          refine iSup_le fun m => ge_of_tendsto (ENNReal.tendsto_ofReal hBlim)
+            (eventually_atTop.mpr ⟨m, fun m' hm' => (measure_mono (hAmono hm')).trans ?_⟩)
+          rw [withDensity_apply _ (hAmeas m'), hAm]
+          exact hB (tm m') (ρ - tm m') (htm0 m') (htmr m') (htmρ m')
+      _ ≤ ENNReal.ofReal (Real.exp Λ * (Real.exp Λ * (1 + δ) * ω + Λ - ω)) :=
+          ENNReal.ofReal_le_ofReal hBT
+  intro n ℓ hn p hp U hU V H δ ρ hδ hδκ hAllard
+  obtain ⟨htan, htanm, hdens⟩ := any_radius_tangent_ae n ℓ hn U hU V
+  obtain ⟨hρ, hH, hθ1, h0supp, hballU, hmass, hLp⟩ := hAllard
+  obtain ⟨k1, k2, k3⟩ := key n hn p hp δ ρ hδ hδκ hρ V.weight V.tangentProj H V.mult
+    (unitBallVolume n) (div_pos (Real.rpow_pos_of_pos Real.pi_pos _)
+      (Real.Gamma_pos_of_pos (by positivity))) hmass
+    (fun X hX1 hX2 hX3 => hH.2 X hX1 hX2 (hX3.trans hballU))
+    (htan.mono fun x hx => hx.imp fun T hT => ⟨hT.1, hT.2.2⟩) htanm
+    (hH.1.integrableOn_compact_subset hballU (isCompact_closedBall 0 ρ)).aestronglyMeasurable
+    hLp hdens hθ1 h0supp.2
+    ⟨EuclideanSpace.single ⟨0, by omega⟩ 1, by rw [PiLp.norm_single, norm_one]⟩
+  exact ⟨k1, fun y hy => k2 y hy.2, k3⟩
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
