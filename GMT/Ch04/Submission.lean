@@ -1278,6 +1278,235 @@ theorem Submission.ts_pdb_density_complement_vanish : ∀ (n : ℕ) (C : Set (Eu
   rw [← ENNReal.ofReal_mul (abs_nonneg _), abs_of_pos (by positivity), mul_pow,
     ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero n ht.ne'), one_mul]
 
+/-- **Blow-up of a weighted Lebesgue integral at a density point** (a step in the proof of
+`ApproxTangentAE`, Simon Ch. 3, 1.9 and Ch. 4, 1.3). Let `C ⊆ ℝⁿ` be compact, `F` continuous with
+injective derivative `A` at `w ∈ C`, `J` continuous on `C`, `c|v - w| ≤ |F(v) - F(w)|` on `C` and
+`Lⁿ(C ∩ B_r(w)) / Lⁿ(B_r(w)) → 1` as `r ↓ 0`. Then for `f ∈ C_c`,
+`t⁻ⁿ ∫_C J(v) f(t⁻¹(F(v) - F(w))) dv → J(w) ∫ f(Au) du` as `t ↓ 0`: after `v = w + tu` both
+integrands vanish off `B_{R'}(0)`, they are uniformly close where `w + tu ∈ C`, and the rest of
+`B_{R'}(0)` has measure `→ 0` by `Submission.ts_pdb_density_complement_vanish`. -/
+theorem Submission.ts_pdb_density_point_rescaled_limit : ∀ (n ℓ : ℕ) (C : Set (EuclideanSpace ℝ (Fin n))) (F : EuclideanSpace ℝ (Fin n) → Ambient n ℓ) (J : EuclideanSpace ℝ (Fin n) → ℝ) (A : EuclideanSpace ℝ (Fin n) →L[ℝ] Ambient n ℓ) (w : EuclideanSpace ℝ (Fin n)) (c : ℝ), IsCompact C → Continuous F → ContinuousOn J C → w ∈ C → HasFDerivAt F A w → Function.Injective A → 0 < c → (∀ v ∈ C, c * ‖v - w‖ ≤ ‖F v - F w‖) → Tendsto (fun r : ℝ ↦ volume (C ∩ closedBall w r) / volume (closedBall w r)) (𝓝[>] 0) (𝓝 1) → ∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ v in C, J v * f (t⁻¹ • (F v - F w))) (𝓝[>] 0) (𝓝 (J w * ∫ u, f (A u))) := by
+  intro n ℓ C F J A w c hC hF hJ hw hA hAinj hc hlow hdens f
+  -- Step 1: constants. `C` is closed, hence Borel; `f = 0` off `B_R(0)` and `|f| ≤ Mf`;
+  -- `‖u‖ ≤ K ‖A u‖`; `R' = R (c⁻¹ + K)`.
+  have hCm : MeasurableSet C := hC.isClosed.measurableSet
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall 0
+  set R : ℝ := max R₀ 1 with hRdef
+  have hR : 0 < R := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hfR : ∀ z, R < ‖z‖ → f z = 0 := by
+    intro z hz
+    refine image_eq_zero_of_notMem_tsupport fun hz' ↦ ?_
+    have h := hR₀ hz'
+    rw [mem_closedBall, dist_zero_right] at h
+    linarith [le_max_left R₀ 1]
+  obtain ⟨Mf, hMf⟩ := (map_continuous f).bounded_above_of_compact_support f.hasCompactSupport
+  have hMf0 : 0 ≤ Mf := (norm_nonneg _).trans (hMf 0)
+  obtain ⟨K, -, hK⟩ := (A : EuclideanSpace ℝ (Fin n) →ₗ[ℝ] Ambient n ℓ).exists_antilipschitzWith
+    (LinearMap.ker_eq_bot.2 hAinj)
+  have hKu : ∀ u, ‖u‖ ≤ K * ‖A u‖ := fun u ↦ by simpa using hK.le_mul_dist u 0
+  set R' : ℝ := R * (c⁻¹ + K) with hR'eq
+  have hR' : 0 < R' := by positivity
+  have hcR' : R ≤ c * R' := by
+    have h : c * R' = R + c * R * K := by rw [hR'eq]; field_simp
+    nlinarith [mul_nonneg (mul_nonneg hc.le hR.le) (NNReal.coe_nonneg K)]
+  have hKR' : K * R ≤ R' := by
+    have h : R' = R * c⁻¹ + K * R := by rw [hR'eq]; ring
+    nlinarith [mul_nonneg hR.le (inv_pos.2 hc).le]
+  -- Step 2: notation. `G t u = 1_C(w + tu) J(w + tu) f(t⁻¹(F(w + tu) - F(w)))`,
+  -- `H u = J(w) f(Au)`.
+  set φ : ℝ → EuclideanSpace ℝ (Fin n) → ℝ := fun t v ↦ J v * f (t⁻¹ • (F v - F w)) with hφ
+  set G : ℝ → EuclideanSpace ℝ (Fin n) → ℝ := fun t u ↦ C.indicator (φ t) (w + t • u) with hG
+  set H : EuclideanSpace ℝ (Fin n) → ℝ := fun u ↦ J w * f (A u) with hH
+  -- Step 3: rescaling `v = w + tu`.
+  have hresc : ∀ t : ℝ, 0 < t →
+      (t ^ n)⁻¹ * ∫ v in C, J v * f (t⁻¹ • (F v - F w)) = ∫ u, G t u := by
+    intro t ht
+    have h := Measure.integral_comp_smul (volume : Measure (EuclideanSpace ℝ (Fin n)))
+      (fun x ↦ C.indicator (φ t) (w + x)) t
+    rw [integral_add_left_eq_self (C.indicator (φ t)) w, integral_indicator hCm,
+      finrank_euclideanSpace_fin, abs_of_pos (by positivity), smul_eq_mul] at h
+    exact h.symm
+  -- Step 4: integrability of `G t` (`t ≠ 0`).
+  have hφint : ∀ t, IntegrableOn (φ t) C := fun t ↦ ContinuousOn.integrableOn_compact hC
+    (hJ.mul ((map_continuous f).comp ((hF.sub continuous_const).const_smul t⁻¹)).continuousOn)
+  have hGint : ∀ t, t ≠ 0 → Integrable (G t) := fun t ht ↦
+    (((integrable_indicator_iff hCm).2 (hφint t)).comp_add_left w).comp_smul ht
+  -- Step 5(b): `H` vanishes off `B_{R'}(0)`, hence is integrable.
+  have hH0 : ∀ u, R' < ‖u‖ → H u = 0 := by
+    intro u hu
+    have hAu : R < ‖A u‖ := by
+      by_contra h
+      push Not at h
+      have h1 : (K : ℝ) * ‖A u‖ ≤ K * R := mul_le_mul_of_nonneg_left h K.2
+      linarith [hKu u]
+    simp only [hH, hfR _ hAu, mul_zero]
+  have hHint : Integrable H := by
+    have hHc : Continuous H := continuous_const.mul ((map_continuous f).comp A.continuous)
+    refine hHc.integrable_of_hasCompactSupport
+      (HasCompactSupport.intro (isCompact_closedBall (0 : EuclideanSpace ℝ (Fin n)) R') ?_)
+    intro u hu
+    exact hH0 u (by simpa [mem_closedBall, dist_zero_right, not_le] using hu)
+  -- Step 5(a): `G t` vanishes off `B_{R'}(0)` (`t > 0`).
+  have hG0 : ∀ t, 0 < t → ∀ u, R' < ‖u‖ → G t u = 0 := by
+    intro t ht u hu
+    by_cases hmem : w + t • u ∈ C
+    · have h1 := hlow _ hmem
+      rw [add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_pos ht] at h1
+      have hQ : R < ‖t⁻¹ • (F (w + t • u) - F w)‖ := by
+        rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos ht]
+        have h2 : c * ‖u‖ ≤ t⁻¹ * ‖F (w + t • u) - F w‖ := by
+          rw [le_inv_mul_iff₀ ht]
+          linarith
+        have h3 : c * R' < c * ‖u‖ := mul_lt_mul_of_pos_left hu hc
+        linarith
+      simp only [hG, indicator_of_mem hmem, hφ, hfR _ hQ, mul_zero]
+    · simp only [hG, indicator_of_notMem hmem]
+  -- Step 6: uniform estimate on the good set `{u ∈ B_{R'}(0) : w + tu ∈ C}`.
+  have hunif : ∀ ε > 0, ∃ t₀ > 0, ∀ t, 0 < t → t < t₀ → ∀ u, ‖u‖ ≤ R' → w + t • u ∈ C →
+      |G t u - H u| ≤ ε := by
+    intro ε hε
+    set ε₁ := ε / (2 * (|J w| + 1)) with hε₁def
+    set ε₂ := ε / (2 * (Mf + 1)) with hε₂def
+    have hε₁ : 0 < ε₁ := by positivity
+    have hε₂ : 0 < ε₂ := by positivity
+    obtain ⟨δf, hδf, hfδ⟩ := Metric.uniformContinuous_iff.1
+      (CompactlySupportedContinuousMapClass.uniformContinuous f) ε₁ hε₁
+    obtain ⟨δJ, hδJ, hJδ⟩ := Metric.continuousOn_iff.1 hJ w hw ε₂ hε₂
+    set η := δf / (2 * (R' + 1)) with hηdef
+    have hη : 0 < η := by positivity
+    obtain ⟨δd, hδd, hdδ⟩ := Metric.eventually_nhds_iff.1
+      (Asymptotics.isLittleO_iff.1 (hasFDerivAt_iff_isLittleO_nhds_zero.1 hA) hη)
+    refine ⟨min δJ δd / (R' + 1), by positivity, ?_⟩
+    intro t ht ht₀ u hu hmem
+    have htu : ‖t • u‖ < min δJ δd := by
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos ht]
+      calc t * ‖u‖ ≤ t * R' := mul_le_mul_of_nonneg_left hu ht.le
+        _ < t * (R' + 1) := by nlinarith
+        _ < min δJ δd / (R' + 1) * (R' + 1) := mul_lt_mul_of_pos_right ht₀ (by positivity)
+        _ = min δJ δd := by field_simp
+    have hJe : |J (w + t • u) - J w| < ε₂ := by
+      have h := hJδ (w + t • u) hmem
+        (by rw [dist_eq_norm, add_sub_cancel_left]; exact htu.trans_le (min_le_left _ _))
+      rwa [Real.dist_eq] at h
+    have hde : ‖F (w + t • u) - F w - A (t • u)‖ ≤ η * ‖t • u‖ :=
+      hdδ (by rw [dist_zero_right]; exact htu.trans_le (min_le_right _ _))
+    have hQ : dist (t⁻¹ • (F (w + t • u) - F w)) (A u) < δf := by
+      have h : t⁻¹ • (F (w + t • u) - F w) - A u =
+          t⁻¹ • (F (w + t • u) - F w - A (t • u)) := by
+        rw [map_smul, smul_sub t⁻¹ (F (w + t • u) - F w) (t • A u), inv_smul_smul₀ ht.ne']
+      rw [dist_eq_norm, h, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos ht]
+      calc t⁻¹ * ‖F (w + t • u) - F w - A (t • u)‖ ≤ t⁻¹ * (η * ‖t • u‖) :=
+            mul_le_mul_of_nonneg_left hde (by positivity)
+        _ = η * ‖u‖ := by rw [norm_smul, Real.norm_eq_abs, abs_of_pos ht]; field_simp
+        _ ≤ η * R' := mul_le_mul_of_nonneg_left hu hη.le
+        _ < δf := by
+          rw [hηdef, div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+          nlinarith
+    have hfe : |f (t⁻¹ • (F (w + t • u) - F w)) - f (A u)| < ε₁ := by
+      have h := hfδ hQ
+      rwa [Real.dist_eq] at h
+    have hfQ : |f (t⁻¹ • (F (w + t • u) - F w))| ≤ Mf := by
+      simpa [Real.norm_eq_abs] using hMf (t⁻¹ • (F (w + t • u) - F w))
+    simp only [hG, hH, indicator_of_mem hmem, hφ]
+    calc |J (w + t • u) * f (t⁻¹ • (F (w + t • u) - F w)) - J w * f (A u)|
+        = |(J (w + t • u) - J w) * f (t⁻¹ • (F (w + t • u) - F w)) +
+            J w * (f (t⁻¹ • (F (w + t • u) - F w)) - f (A u))| := by ring_nf
+      _ ≤ |J (w + t • u) - J w| * |f (t⁻¹ • (F (w + t • u) - F w))| +
+            |J w| * |f (t⁻¹ • (F (w + t • u) - F w)) - f (A u)| := by
+          rw [← abs_mul, ← abs_mul]; exact abs_add_le _ _
+      _ ≤ ε₂ * Mf + |J w| * ε₁ := by gcongr
+      _ ≤ ε / 2 + ε / 2 := by
+          gcongr
+          · rw [hε₂def, div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) two_pos]
+            nlinarith
+          · rw [hε₁def, mul_div_assoc', div_le_div_iff₀ (by positivity) two_pos]
+            nlinarith [abs_nonneg (J w)]
+      _ = ε := by ring
+  -- Step 7: pointwise bound `|G t - H| ≤ ε 1_B + M 1_{S t}` with `B = B_{R'}(0)`,
+  -- `S t = {u ∈ B : w + tu ∉ C}` and `M = |J(w)| Mf`.
+  set B : Set (EuclideanSpace ℝ (Fin n)) := closedBall 0 R' with hBdef
+  set S : ℝ → Set (EuclideanSpace ℝ (Fin n)) :=
+    fun t ↦ {u | u ∈ closedBall 0 R' ∧ w + t • u ∉ C}
+  set M : ℝ := |J w| * Mf with hMdef
+  have hM : 0 ≤ M := by positivity
+  have hpt : ∀ ε > 0, ∃ t₀ > 0, ∀ t, 0 < t → t < t₀ → ∀ u,
+      ‖G t u - H u‖ ≤ B.indicator (fun _ ↦ ε) u + (S t).indicator (fun _ ↦ M) u := by
+    intro ε hε
+    obtain ⟨t₀, ht₀, h⟩ := hunif ε hε
+    refine ⟨t₀, ht₀, fun t ht htt₀ u ↦ ?_⟩
+    rw [Real.norm_eq_abs]
+    by_cases hu : ‖u‖ ≤ R'
+    · have huB : u ∈ B := by rwa [hBdef, mem_closedBall, dist_zero_right]
+      rw [indicator_of_mem huB]
+      by_cases hmem : w + t • u ∈ C
+      · have hS : u ∉ S t := fun h ↦ h.2 hmem
+        rw [indicator_of_notMem hS, add_zero]
+        exact h t ht htt₀ u hu hmem
+      · have hS : u ∈ S t := ⟨huB, hmem⟩
+        have hG' : G t u = 0 := by simp only [hG, indicator_of_notMem hmem]
+        have hH' : |H u| ≤ M := by
+          simp only [hH, hMdef, abs_mul]
+          exact mul_le_mul_of_nonneg_left (by simpa [Real.norm_eq_abs] using hMf (A u))
+            (abs_nonneg _)
+        rw [indicator_of_mem hS, hG', zero_sub, abs_neg]
+        linarith
+    · push Not at hu
+      rw [hG0 t ht u hu, hH0 u hu, sub_zero, abs_zero]
+      exact add_nonneg (indicator_nonneg (fun _ _ ↦ hε.le) _) (indicator_nonneg (fun _ _ ↦ hM) _)
+  -- Step 8: integral bound `|∫ G t - ∫ H| ≤ ε Lⁿ(B) + M Lⁿ(S t)`.
+  have hint : ∀ ε > 0, ∃ t₀ > 0, ∀ t, 0 < t → t < t₀ →
+      ‖(∫ u, G t u) - ∫ u, H u‖ ≤ ε * volume.real B + M * volume.real (S t) := by
+    intro ε hε
+    obtain ⟨t₀, ht₀, h⟩ := hpt ε hε
+    refine ⟨t₀, ht₀, fun t ht htt₀ ↦ ?_⟩
+    have hBm : MeasurableSet B := measurableSet_closedBall
+    have hBfin : volume B ≠ ⊤ := measure_closedBall_lt_top.ne
+    have hSm : MeasurableSet (S t) := measurableSet_closedBall.inter
+      (hCm.compl.preimage (measurable_const.add (measurable_const_smul t)))
+    have hSfin : volume (S t) ≠ ⊤ := ne_top_of_le_ne_top hBfin (measure_mono fun u hu ↦ hu.1)
+    have hb1 : Integrable (B.indicator fun _ ↦ ε) :=
+      (integrable_indicator_iff hBm).2 (integrableOn_const hBfin)
+    have hb2 : Integrable ((S t).indicator fun _ ↦ M) :=
+      (integrable_indicator_iff hSm).2 (integrableOn_const hSfin)
+    rw [← integral_sub (hGint t ht.ne') hHint]
+    calc ‖∫ u, G t u - H u‖
+        ≤ ∫ u, (B.indicator (fun _ ↦ ε) u + (S t).indicator (fun _ ↦ M) u) :=
+          norm_integral_le_of_norm_le (hb1.add hb2) (Eventually.of_forall (h t ht htt₀))
+      _ = ε * volume.real B + M * volume.real (S t) := by
+          rw [integral_add hb1 hb2, integral_indicator_const _ hBm, integral_indicator_const _ hSm,
+            smul_eq_mul, smul_eq_mul, mul_comm (volume.real B), mul_comm (volume.real (S t))]
+  -- Step 9: `Lⁿ(S t) → 0` by `Submission.ts_pdb_density_complement_vanish`, so
+  -- `∫ G t → ∫ H = J(w) ∫ f(Au) du`, and `∫ G t` is the rescaled integral for `t > 0`.
+  have hS0 : Tendsto (fun t ↦ volume.real (S t)) (𝓝[>] 0) (𝓝 0) := by
+    have h := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp
+      (Submission.ts_pdb_density_complement_vanish n C w R' hCm hR' hdens)
+    rw [ENNReal.toReal_zero] at h
+    exact h
+  have hlim : Tendsto (fun t ↦ ∫ u, G t u) (𝓝[>] 0) (𝓝 (∫ u, H u)) := by
+    rw [Metric.tendsto_nhds]
+    intro δ hδ
+    set VB := volume.real B
+    have hVB : 0 ≤ VB := measureReal_nonneg
+    set ε := δ / (2 * (VB + 1)) with hεdef
+    have hε : 0 < ε := by positivity
+    obtain ⟨t₀, ht₀, h⟩ := hint ε hε
+    have hεVB : ε * VB < δ / 2 := by
+      rw [hεdef, div_mul_eq_mul_div, div_lt_div_iff₀ (by positivity) two_pos]
+      nlinarith
+    have hMS : Tendsto (fun t ↦ M * volume.real (S t)) (𝓝[>] 0) (𝓝 0) := by
+      simpa using hS0.const_mul M
+    filter_upwards [hMS.eventually (gt_mem_nhds (half_pos hδ)), Ioo_mem_nhdsGT ht₀]
+      with t h1t h2t
+    rw [dist_eq_norm]
+    calc ‖(∫ u, G t u) - ∫ u, H u‖ ≤ ε * VB + M * volume.real (S t) := h t h2t.1 h2t.2
+      _ < δ / 2 + δ / 2 := by linarith
+      _ = δ := by ring
+  have hHval : ∫ u, H u = J w * ∫ u, f (A u) := integral_const_mul _ _
+  rw [← hHval]
+  refine hlim.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with t (ht : 0 < t)
+  exact (hresc t ht).symm
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
