@@ -458,6 +458,104 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, 4.1** (cf. 3.14–3.16; the radial split of the first-variation integrand for one
+cutoff, as used in 4.1–4.5).
+Let `μ(B_R(y)) < ∞`, let `w` be a.e. strongly measurable on `B̆_R(y)` with `0 ≤ w ≤ 1` `μ`-a.e.
+there, and let `φ` be a nonincreasing `C¹` function with `φ = 1` on `(-∞, 1]` and `φ = 0` on
+`[1 + ε, ∞)`.  For `t > 0` with `(1 + ε) t < R`, writing `r = |x − y|`:
+`∫ (n φ(r/t) + (r/t) φ'(r/t) (1 − w)) dμ`
+`= n ∫ φ(r/t) dμ + ∫ (r/t) φ'(r/t) dμ − ∫ (r/t) φ'(r/t) w dμ`,
+`∫ φ(r/t) dμ ≥ 0` and `∫ (r/t) φ'(r/t) w dμ ≤ 0`.
+Proof: by `allard52_am_fc_cutoff_facts`, `0 ≤ φ ≤ 1`, `φ' ≤ 0`, `φ' = 0` on `(1 + ε, ∞)`, and `φ'`
+is continuous and bounded.  The three integrands vanish off `B = B_{(1+ε)t}(y) ⊆ B̆_R(y)`, which has
+finite measure, and are bounded and a.e. strongly measurable on `B`, hence integrable; linearity
+gives the split, `φ ≥ 0` the second claim, and `(r/t) φ'(r/t) w ≤ 0` `μ`-a.e. the third. -/
+theorem allard52_am_fc_radial_split : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (R ε : ℝ) (φ : ℝ → ℝ), 0 < ε → μ (closedBall y R) < ⊤ → AEStronglyMeasurable w (μ.restrict (ball y R)) → (∀ᵐ x ∂μ, x ∈ ball y R → 0 ≤ w x ∧ w x ≤ 1) → ContDiff ℝ 1 φ → Antitone φ → (∀ u : ℝ, u ≤ 1 → φ u = 1) → (∀ u : ℝ, 1 + ε ≤ u → φ u = 0) → ∀ t : ℝ, 0 < t → (1 + ε) * t < R → ∫ x, ((n : ℝ) * φ (‖x - y‖ / t) + ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * (1 - w x)) ∂μ = (n : ℝ) * ∫ x, φ (‖x - y‖ / t) ∂μ + ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ - ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ ∧ 0 ≤ ∫ x, φ (‖x - y‖ / t) ∂μ ∧ ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ ≤ 0 := by
+  intro n ℓ μ w y R ε φ hε hμR hw hw01 hφC hφA hφ1 hφ0 t ht htR
+  -- Step 1: `0 ≤ φ ≤ 1`, `φ' ≤ 0`, `φ' = 0` on `(1 + ε, ∞)`, `φ'` continuous and `|φ'| ≤ C`.
+  obtain ⟨hφ01, hdφ, hdφ0, hdφc, C, hC⟩ :=
+    Submission.allard52_am_fc_cutoff_facts φ ε hε hφC hφA hφ1 hφ0
+  -- Step 2: `B = B_{(1+ε)t}(y)` lies in `B̆_R(y)`, so `μ(B) < ∞`; `r/t ≤ 1 + ε` on `B` and
+  -- `r/t > 1 + ε` off `B`.
+  have hBm : MeasurableSet (closedBall y ((1 + ε) * t)) := measurableSet_closedBall
+  have hBR : closedBall y ((1 + ε) * t) ⊆ ball y R := closedBall_subset_ball htR
+  have hμB : μ (closedBall y ((1 + ε) * t)) < ⊤ :=
+    (measure_mono (hBR.trans ball_subset_closedBall)).trans_lt hμR
+  have hr0 : ∀ x : Amb n ℓ, 0 ≤ ‖x - y‖ / t := fun x => div_nonneg (norm_nonneg _) ht.le
+  have hin : ∀ x ∈ closedBall y ((1 + ε) * t), ‖x - y‖ / t ≤ 1 + ε := by
+    intro x hx
+    rw [mem_closedBall, dist_eq_norm] at hx
+    exact (div_le_iff₀ ht).2 hx
+  have hout : ∀ x, x ∉ closedBall y ((1 + ε) * t) → 1 + ε < ‖x - y‖ / t := by
+    intro x hx
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    exact (lt_div_iff₀ ht).2 hx
+  -- Step 3: `φ(r/t)` and `(r/t) φ'(r/t)` are continuous; all three integrands vanish off `B`.
+  have hrc : Continuous fun x : Amb n ℓ => ‖x - y‖ / t :=
+    (continuous_id.sub continuous_const).norm.div_const t
+  have hf1c : Continuous fun x : Amb n ℓ => φ (‖x - y‖ / t) := hφC.continuous.comp hrc
+  have hf2c : Continuous fun x : Amb n ℓ => ‖x - y‖ / t * deriv φ (‖x - y‖ / t) :=
+    hrc.mul (hdφc.comp hrc)
+  have hf1B : ∀ x, x ∉ closedBall y ((1 + ε) * t) → φ (‖x - y‖ / t) = 0 :=
+    fun x hx => hφ0 _ (hout x hx).le
+  have hf2B : ∀ x, x ∉ closedBall y ((1 + ε) * t) →
+      ‖x - y‖ / t * deriv φ (‖x - y‖ / t) = 0 :=
+    fun x hx => by rw [hdφ0 _ (hout x hx), mul_zero]
+  have hf3B : ∀ x, x ∉ closedBall y ((1 + ε) * t) →
+      ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x = 0 :=
+    fun x hx => by rw [hf2B x hx, zero_mul]
+  -- Step 4 (i): `|φ(r/t)| ≤ 1`, so `φ(r/t)` is integrable on `B`, hence on the whole space.
+  have hi1 : Integrable (fun x => φ (‖x - y‖ / t)) μ := by
+    refine (Measure.integrableOn_of_bounded (M := 1) hμB.ne hf1c.aestronglyMeasurable
+      (ae_of_all _ fun x => ?_)).integrable_of_forall_notMem_eq_zero hf1B
+    rw [Real.norm_eq_abs, abs_of_nonneg (hφ01 _).1]
+    exact (hφ01 _).2
+  -- Step 4 (ii): `|(r/t) φ'(r/t)| ≤ (1 + ε) C` on `B`.
+  have hi2 : Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t)) μ := by
+    refine (Measure.integrableOn_of_bounded (M := (1 + ε) * C) hμB.ne
+      hf2c.aestronglyMeasurable ?_).integrable_of_forall_notMem_eq_zero hf2B
+    filter_upwards [ae_restrict_mem hBm] with x hx
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hr0 x)]
+    exact mul_le_mul (hin x hx) (hC _) (abs_nonneg _) (by linarith)
+  -- Step 4 (iii): `w` is a.e. strongly measurable on `B ⊆ B̆_R(y)`, and `0 ≤ w ≤ 1` `μ`-a.e. on `B`
+  -- gives `|(r/t) φ'(r/t) w| ≤ |(r/t) φ'(r/t)|` there.
+  have hi3 : Integrable (fun x => ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x) μ := by
+    have hwB : AEStronglyMeasurable w (μ.restrict (closedBall y ((1 + ε) * t))) :=
+      hw.mono_set hBR
+    refine IntegrableOn.integrable_of_forall_notMem_eq_zero ?_ hf3B
+    refine Integrable.mono' hi2.integrableOn.norm (hf2c.aestronglyMeasurable.fun_mul hwB) ?_
+    filter_upwards [ae_restrict_mem hBm, ae_restrict_of_ae hw01] with x hxB hx
+    obtain ⟨h0, h1⟩ := hx (hBR hxB)
+    rw [norm_mul]
+    refine mul_le_of_le_one_right (norm_nonneg _) ?_
+    rw [Real.norm_eq_abs, abs_of_nonneg h0]
+    exact h1
+  -- Step 6 (`∫ φ(r/t) dμ ≥ 0` since `φ ≥ 0`) is the middle component.
+  refine ⟨?_, integral_nonneg fun x => (hφ01 _).1, integral_nonpos_of_ae ?_⟩
+  -- Step 5: the splitting identity, by linearity of the integral.
+  · have hi12 : Integrable (fun x => (n : ℝ) * φ (‖x - y‖ / t) +
+        ‖x - y‖ / t * deriv φ (‖x - y‖ / t)) μ := (hi1.const_mul _).add hi2
+    calc ∫ x, ((n : ℝ) * φ (‖x - y‖ / t) + ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * (1 - w x)) ∂μ
+        = ∫ x, ((n : ℝ) * φ (‖x - y‖ / t) + ‖x - y‖ / t * deriv φ (‖x - y‖ / t) -
+            ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x) ∂μ := by
+          congr 1
+          funext x
+          ring
+      _ = (n : ℝ) * ∫ x, φ (‖x - y‖ / t) ∂μ + ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) ∂μ -
+            ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * w x ∂μ := by
+          rw [integral_sub hi12 hi3, integral_add (hi1.const_mul _) hi2, integral_const_mul]
+  -- Step 7: `(r/t) φ'(r/t) w ≤ 0` `μ`-a.e.: on `B̆_R(y)` since `r/t ≥ 0`, `φ' ≤ 0` and `w ≥ 0`;
+  -- off `B̆_R(y)` the point is off `B`, where the integrand vanishes.
+  · filter_upwards [hw01] with x hx
+    by_cases hxR : x ∈ ball y R
+    · exact mul_nonpos_of_nonpos_of_nonneg
+        (mul_nonpos_of_nonneg_of_nonpos (hr0 x) (hdφ _)) (hx hxR).1
+    · exact (hf3B x fun hxB => hxR (hBR hxB)).le
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
