@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.rescaled_varifold-a1.exists_structure-a1",
+  "parent_id": "root.allard_any_radius-a1.rescaled_varifold-a1",
+  "depth": 3,
+  "title": "Rescaled carrier and multiplicity form a rectifiable varifold",
+  "statement": "Let n, ℓ ∈ ℕ, let U ⊆ ℝ^{n+ℓ} be any set, and let V = v(M, θ) be a rectifiable n-varifold in U in the sense of the frozen contract (structure RectifiableVarifold n ℓ U): M ⊆ U is H^n-null-measurable and countably n-rectifiable (M ⊆ M₀ ∪ ⋃_j range F_j with H^n(M₀) = 0 and each F_j : ℝ^n → ℝ^{n+ℓ} Lipschitz), and θ : ℝ^{n+ℓ} → ℝ is positive on M, almost-everywhere measurable for H^n⌞M, and H^n-integrable on M ∩ K for every compact K ⊆ U, where H^n = μHE[n]. Let c ∈ ℝ^{n+ℓ}, R > 0 and ψ(x) := c + R x. Then there is a rectifiable n-varifold W in ψ⁻¹(U) whose carrier is ψ⁻¹(M) and whose multiplicity satisfies W.mult(x) = θ(c + R x) for every x ∈ ℝ^{n+ℓ}.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (c : Amb n ℓ) (R : ℝ), 0 < R → ∃ W : RectifiableVarifold n ℓ ((fun x => c + R • x) ⁻¹' U), W.carrier = (fun x => c + R • x) ⁻¹' V.carrier ∧ ∀ x, W.mult x = V.mult (c + R • x)",
+  "lean_name": "any_radius_rv_exists_structure",
+  "depends_on": [
+    "root.allard_any_radius-a1.rescaled_varifold-a1.map_hausdorff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.rescaled_varifold-a1.map_hausdorff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-rescaled-varifold-a1-exists-structure-a1-a1"
+}

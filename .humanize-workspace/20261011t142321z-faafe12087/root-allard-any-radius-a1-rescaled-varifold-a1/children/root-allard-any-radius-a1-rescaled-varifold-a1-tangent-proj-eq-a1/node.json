@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.rescaled_varifold-a1.tangent_proj_eq-a1",
+  "parent_id": "root.allard_any_radius-a1.rescaled_varifold-a1",
+  "depth": 3,
+  "title": "Tangent projections of the rescaled varifold",
+  "statement": "Let n, ℓ ∈ ℕ, let U, U' ⊆ ℝ^{n+ℓ} be arbitrary sets, let V be a rectifiable n-varifold in U with carrier M and multiplicity θ, let W be a rectifiable n-varifold in U', and let c ∈ ℝ^{n+ℓ}, R > 0, ψ(x) := c + R x. Suppose W.carrier = ψ⁻¹(M) and W.mult(x) = θ(c + R x) for all x. Then W.tangentProj(x) = V.tangentProj(c + R x) for every x ∈ ℝ^{n+ℓ}. Here, for a varifold Z with carrier M_Z and multiplicity θ_Z, Z.tangentProj(x) is the orthogonal projection (starProjection) onto Classical.choose h if h : ∃ P, HasWeightedApproximateTangentSpaceAt n M_Z θ_Z x P, and 0 otherwise; HasWeightedApproximateTangentSpaceAt n M θ x P (SimonGMT Chapter03) means finrank P = n and, for every f ∈ C_c(ℝ^{n+ℓ}, ℝ), ∫_{η_{x,r}(M)} f(y) θ(x + r y) dH^n(y) → θ(x) ∫_P f dH^n as r → 0⁺ (filter 𝓝[>] 0), with η_{x,r}(y) := r⁻¹(y − x) (blowUpMap) and H^n = μHE[n].",
+  "lean_statement": "∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (W : RectifiableVarifold n ℓ U') (c : Amb n ℓ) (R : ℝ), 0 < R → W.carrier = (fun x => c + R • x) ⁻¹' V.carrier → (∀ x, W.mult x = V.mult (c + R • x)) → ∀ x, W.tangentProj x = V.tangentProj (c + R • x)",
+  "lean_name": "any_radius_rv_tangentProj_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-rescaled-varifold-a1-tangent-proj-eq-a1-a1"
+}
