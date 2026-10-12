@@ -494,6 +494,80 @@ theorem Submission.plane_disint_slice_density :
     refine setLIntegral_congr_fun_ae hA ?_
     filter_upwards [Measure.rnDeriv_lt_top γ V.weight] with x hx _
     exact (ENNReal.ofReal_toReal hx.ne).symm
+/-- **Simon Ch. 8, proof of Lemma 1.3, printed (3)–(4) and the Riesz step** (child `riesz_limit` of
+`plane_disintegration`): if `m ρ` is eventually a probability measure on `G(N,n)` and `∫ f dm_ρ`
+converges along the nontrivial filter `l` for every `f` in a dense `D ⊆ C(G(N,n), ℝ)`, then
+`∫ f dm_ρ → ∫ f dη` for every `f ∈ C(G(N,n), ℝ)` and some probability measure `η`.  The estimate
+`|∫ f dm - ∫ g dm| ≤ ‖f - g‖` makes `ρ ↦ ∫ f dm_ρ` Cauchy along `l`; the limit `L f` is a positive
+linear functional with `L 1 = 1`, and Riesz–Markov–Kakutani on the compact space `G(N,n)`
+represents it by `η`. -/
+theorem Submission.plane_disint_riesz_limit :
+    ∀ (N n : ℕ) (l : Filter ℝ) (m : ℝ → Measure (Grassmannian N n))
+      (D : Set C(Grassmannian N n, ℝ)), l.NeBot → (∀ᶠ ρ in l, IsProbabilityMeasure (m ρ)) →
+      Dense D → (∀ f ∈ D, ∃ c : ℝ, Tendsto (fun ρ ↦ ∫ S, f S ∂(m ρ)) l (𝓝 c)) →
+      ∃ η : Measure (Grassmannian N n), IsProbabilityMeasure η ∧
+        ∀ f : C(Grassmannian N n, ℝ), Tendsto (fun ρ ↦ ∫ S, f S ∂(m ρ)) l (𝓝 (∫ S, f S ∂η)) := by
+  intro N n l m D hl hprob hD hlim
+  have hint : ∀ μ : Measure (Grassmannian N n), IsProbabilityMeasure μ →
+      ∀ f : C(Grassmannian N n, ℝ), Integrable (fun S ↦ f S) μ := fun μ _ f ↦
+    f.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  -- Printed (3): `|∫ f dμ - ∫ g dμ| ≤ ‖f - g‖` for a probability measure `μ`.
+  have hest : ∀ μ : Measure (Grassmannian N n), IsProbabilityMeasure μ →
+      ∀ f g : C(Grassmannian N n, ℝ), dist (∫ S, f S ∂μ) (∫ S, g S ∂μ) ≤ dist f g := by
+    intro μ hμ f g
+    rw [dist_eq_norm, ← integral_sub (hint μ hμ f) (hint μ hμ g), dist_eq_norm]
+    calc ‖∫ S, f S - g S ∂μ‖ ≤ ‖f - g‖ * μ.real univ :=
+          norm_integral_le_of_norm_le_const
+            (Eventually.of_forall fun S ↦ (f - g).norm_coe_le_norm S)
+      _ = ‖f - g‖ := by simp
+  -- Printed (4): approximating `f` by `g ∈ D` makes `ρ ↦ ∫ f dm_ρ` Cauchy along `l`.
+  have hconv : ∀ f : C(Grassmannian N n, ℝ), ∃ c : ℝ,
+      Tendsto (fun ρ ↦ ∫ S, f S ∂(m ρ)) l (𝓝 c) := by
+    intro f
+    refine cauchy_map_iff_exists_tendsto.mp (Metric.cauchy_iff.mpr ⟨inferInstance, fun ε hε ↦ ?_⟩)
+    obtain ⟨g, hgD, hfg⟩ := hD.exists_dist_lt f (by positivity : (0 : ℝ) < ε / 4)
+    obtain ⟨c, hc⟩ := hlim g hgD
+    refine ⟨ball c (ε / 2), ?_, fun x hx y hy ↦ ?_⟩
+    · rw [mem_map]
+      filter_upwards [hprob, hc (ball_mem_nhds c (by positivity : (0 : ℝ) < ε / 4))] with ρ hρ hgρ
+      calc dist (∫ S, f S ∂(m ρ)) c
+          ≤ dist (∫ S, f S ∂(m ρ)) (∫ S, g S ∂(m ρ)) + dist (∫ S, g S ∂(m ρ)) c :=
+            dist_triangle _ _ _
+        _ < ε / 4 + ε / 4 := add_lt_add ((hest (m ρ) hρ f g).trans_lt hfg) hgρ
+        _ = ε / 2 := by ring
+    · calc dist x y ≤ dist x c + dist y c := dist_triangle_right _ _ _
+        _ < ε / 2 + ε / 2 := add_lt_add hx hy
+        _ = ε := by ring
+  choose L hL using hconv
+  -- `L` is additive, homogeneous, monotone and `L 1 = 1`: limits of eventual identities.
+  have hadd : ∀ f g : C(Grassmannian N n, ℝ), L (f + g) = L f + L g := fun f g ↦
+    tendsto_nhds_unique (hL (f + g)) (((hL f).add (hL g)).congr' (by
+      filter_upwards [hprob] with ρ hρ
+      exact (integral_add (hint _ hρ f) (hint _ hρ g)).symm))
+  have hsmul : ∀ (a : ℝ) (f : C(Grassmannian N n, ℝ)), L (a • f) = a * L f := fun a f ↦
+    tendsto_nhds_unique (hL (a • f)) (((hL f).const_mul a).congr'
+      (Eventually.of_forall fun ρ ↦ (integral_const_mul a _).symm))
+  have hmono : ∀ f g : C(Grassmannian N n, ℝ), (∀ S, f S ≤ g S) → L f ≤ L g := fun f g hfg ↦
+    le_of_tendsto_of_tendsto (hL f) (hL g) (by
+      filter_upwards [hprob] with ρ hρ
+      exact integral_mono (hint _ hρ f) (hint _ hρ g) hfg)
+  have hone : L 1 = 1 :=
+    tendsto_nhds_unique (hL 1) (tendsto_const_nhds.congr' (by
+      filter_upwards [hprob] with ρ hρ
+      simp))
+  -- Riesz (Ch. 1, 4.12): `C(G(N,n), ℝ) = C_c(G(N,n), ℝ)` as `G(N,n)` is compact.
+  let Λ : C_c(Grassmannian N n, ℝ) →ₚ[ℝ] ℝ :=
+    { toFun := fun f ↦ L f.toContinuousMap
+      map_add' := fun f g ↦ hadd f.toContinuousMap g.toContinuousMap
+      map_smul' := fun a f ↦ hsmul a f.toContinuousMap
+      monotone' := fun f g hfg ↦ hmono f.toContinuousMap g.toContinuousMap hfg }
+  have hη : ∀ f : C(Grassmannian N n, ℝ), ∫ S, f S ∂(RealRMK.rieszMeasure Λ) = L f := fun f ↦
+    RealRMK.integral_rieszMeasure Λ ⟨f, HasCompactSupport.of_compactSpace _⟩
+  refine ⟨RealRMK.rieszMeasure Λ, ⟨?_⟩, fun f ↦ by rw [hη f]; exact hL f⟩
+  have h1 := hη 1
+  rw [hone] at h1
+  simp only [ContinuousMap.one_apply, integral_const, smul_eq_mul, mul_one] at h1
+  rwa [measureReal_def, ENNReal.toReal_eq_one_iff] at h1
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
