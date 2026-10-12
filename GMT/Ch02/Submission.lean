@@ -2925,6 +2925,59 @@ theorem Submission.stationary_imp_mean_curvature_zero : ((∀ (n N : ℕ) (r : �
       hint.const_mul c⁻¹
     simpa only [inv_mul_cancel_left₀ hc.ne'] using h
   · exact (mul_eq_zero.1 (neg_eq_zero.1 hdiv.symm)).resolve_left hc.ne'
+/-- **Simon Ch. 2, Lemma 5.5(2) (p. 63), `H ≡ 0` implies stationary.** Assume (TH), the frozen
+statement of `Submission.simon_submanifold_tangent_basics`, and the first variation formula 5.3.
+Let `M ⊆ ℝ^{n+ℓ}` be an `n`-dimensional `C²` submanifold and `U` open with `closure U ∩ M`
+compact. If `H ≡ 0` on `M ∩ U`, then `M` is stationary in `U`. For compact `K ⊆ U` the set
+`M ∩ K = (closure U ∩ M) ∩ K` is compact, so `Hⁿ(M ∩ K) < ∞`. By 5.3 the first variation equals
+`∫_M div_M X dHⁿ`. The initial velocity `X` is `C¹` and vanishes off `K`, so by 4.30 this
+integral is `-∫_M X · H dHⁿ`. That integral is `0` because `H = 0` on `M ∩ U` and `X = 0` off
+`K ⊆ U`. -/
+theorem Submission.mean_curvature_zero_imp_stationary : ((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → FirstVariation → ∀ (n ℓ : ℕ) (M U : Set (Rn (n + ℓ))), Chapter02.IsSimonSubmanifold (E := Rn n) 2 M → IsOpen U → IsCompact (closure U ∩ M) → (∀ y ∈ M ∩ U, meanCurvature M y = 0) → IsStationaryIn n M U := by
+  intro hTH hFV n ℓ M U hM hU hcpt hH
+  -- Step 1: for compact `K ⊆ U`, `M ∩ K = (closure U ∩ M) ∩ K` is compact, so `Hⁿ(M ∩ K) < ∞`.
+  have hMK : ∀ K, IsCompact K → K ⊆ U → IsCompact (M ∩ K) := by
+    intro K hK hKU
+    have hEq : M ∩ K = (closure U ∩ M) ∩ K :=
+      Subset.antisymm (fun y hy ↦ ⟨⟨subset_closure (hKU hy.2), hy.1⟩, hy.2⟩)
+        fun y hy ↦ ⟨hy.1.2, hy.2⟩
+    rw [hEq]
+    exact hcpt.inter_right hK.isClosed
+  have hfin : ∀ K, IsCompact K → K ⊆ U → μHE[n] (M ∩ K) < ⊤ := fun K hK hKU ↦
+    (Submission.simon_submanifold_hausdorff_finite_pos n (n + ℓ) 2 M hM).1 _ inter_subset_left
+      (hMK K hK hKU)
+  -- Step 2: zero first variation for every admissible `C²` deformation `φ` (so `K ⊆ U` compact).
+  refine ⟨hfin, fun K φ hφ ↦ ?_⟩
+  have hK : IsCompact K := hφ.2.1
+  have hKU : K ⊆ U := hφ.2.2.1
+  rcases (U ∩ M).eq_empty_or_nonempty with hUM₀ | hUMne
+  · -- Step 3: if `U ∩ M = ∅`, then `M ∩ K = ∅` and the deformed area is identically `0`.
+    have hMK₀ : M ∩ K = ∅ := eq_empty_iff_forall_notMem.2 fun y hy ↦
+      eq_empty_iff_forall_notMem.1 hUM₀ y ⟨hKU hy.2, hy.1⟩
+    have hconst : deformedArea n M K φ = fun _ ↦ 0 := funext fun t ↦ by
+      simp [deformedArea, hMK₀]
+    rw [hconst]
+    exact hasDerivAt_const _ _
+  · -- Step 4: each `C²` chart is a `C¹` chart, so `M` is a `C¹` submanifold and 5.3 applies.
+    have hM₁ : Chapter02.IsSimonSubmanifold (E := Rn n) 1 M := by
+      refine ⟨le_rfl, fun y hy ↦ ?_⟩
+      obtain ⟨V, W, ψ, hyW, hV, hW, hψ, hrest⟩ := hM.2 y hy
+      exact ⟨V, W, ψ, hyW, hV, hW, hψ.of_le (by norm_num), hrest⟩
+    have hderiv := hFV n ℓ M U K φ hM₁ hU hUMne
+      (fun K' hK' hK'U ↦ by rw [inter_comm]; exact hfin K' hK' hK'U) hφ
+    -- Step 5: `X` is `C¹` and vanishes off the closed set `K`, and `M ∩ K` is compact, so
+    -- `∫_M div_M X dHⁿ = -∫_M X · H dHⁿ` (4.30).
+    obtain ⟨hX, hX₀⟩ :=
+      Submission.deformation_velocity_acceleration_regularity.1 (n + ℓ) U K φ hφ
+    obtain ⟨-, -, hdiv⟩ := Submission.submanifold_divergence_identity_compact hTH n (n + ℓ) M K
+      (initialVelocity φ) hM hX hK.isClosed hX₀ (hMK K hK hKU)
+    -- Step 6: `X · H = 0` on `M`, since `H = 0` on `M ∩ U` and `X = 0` off `K ⊆ U`.
+    have hXH : ∫ y in M, inner ℝ (initialVelocity φ y) (meanCurvature M y) ∂μHE[n] = 0 := by
+      refine setIntegral_eq_zero_of_forall_eq_zero fun y hy ↦ ?_
+      by_cases hyU : y ∈ U
+      · rw [hH y ⟨hy, hyU⟩, inner_zero_right]
+      · rw [hX₀ y fun hyK ↦ hyU (hKU hyK), inner_zero_left]
+    rwa [hdiv, hXH, neg_zero] at hderiv
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
