@@ -943,6 +943,56 @@ theorem Submission.exists_finite_contDiff_partition_near_compact : ∀ (N : ℕ)
       _ = closedBall (c q) (ε (c q) / 2) := (β q).tsupport_eq
       _ ⊆ ball (c q) (ε (c q)) := closedBall_subset_ball (by linarith [hεc q])
       _ ⊆ U (c q) := hεU _ (hcC q)
+/-- **Simon Ch. 2, 4.20, 4.27 and 4.30 (pp. 59–61), integrability for the divergence identity.**
+Let `M ⊆ ℝᴺ` be measurable, with `y ↦ P_y` and `H` continuous on `M` and `Hⁿ` finite on compact
+subsets of `M`, and let `Y` be `C¹` and vanish off a closed set `F` with `M ∩ F` compact. Then
+`div_M Y` and `Y · H` are `Hⁿ`-integrable on `M`. As `P_y = ι ∘ π` (`ι` the inclusion of `T_y M`,
+`π` the orthogonal projection onto it), cyclicity of the trace gives
+`div_M Y(y) = trace(DY(y) ∘ P_y)`, so both functions are continuous on `M`. They vanish off `F`
+(`DY = 0` on the open set `Fᶜ`), are bounded on the compact set `M ∩ F`, and `Hⁿ(M ∩ F) < ∞`. -/
+theorem Submission.tangentialDivergence_meanCurvature_integrableOn : ∀ (n N : ℕ) (M F : Set (Rn N)) (Y : Rn N → Rn N), MeasurableSet M → ContinuousOn (tangentProjection M) M → ContinuousOn (meanCurvature M) M → (∀ C ⊆ M, IsCompact C → μHE[n] C < ⊤) → ContDiff ℝ 1 Y → IsClosed F → (∀ x ∉ F, Y x = 0) → IsCompact (M ∩ F) → IntegrableOn (tangentialDivergence M Y) M μHE[n] ∧ IntegrableOn (fun y ↦ inner ℝ (Y y) (meanCurvature M y)) M μHE[n] := by
+  intro n N M F Y hM hP hH hfin hY hF hYF hMF
+  -- Step 5: a function continuous on `M` and vanishing on `M \ F` is integrable on `M`: it is
+  -- bounded on the compact set `M ∩ F`, which has finite measure.
+  have key : ∀ f : Rn N → ℝ, ContinuousOn f M → (∀ y ∈ M, y ∉ F → f y = 0) →
+      IntegrableOn f M μHE[n] := by
+    intro f hf hf0
+    have hfMF : ContinuousOn f (M ∩ F) := hf.mono inter_subset_left
+    have hmeas : MeasurableSet (M ∩ F) := hM.inter hF.measurableSet
+    obtain ⟨C, hC⟩ := hMF.exists_bound_of_continuousOn hfMF
+    have hint : IntegrableOn f (M ∩ F) μHE[n] :=
+      IntegrableOn.of_bound (hfin _ inter_subset_left hMF) (hfMF.aestronglyMeasurable hmeas) C
+        ((ae_restrict_iff' hmeas).2 (Eventually.of_forall hC))
+    exact hint.of_forall_sdiff_eq_zero hM fun y hy ↦ hf0 y hy.1 fun hyF ↦ hy.2 ⟨hy.1, hyF⟩
+  -- Step 4: `DY(y) = 0` off `F`, since `Y` vanishes on the open set `Fᶜ`.
+  have hD0 : ∀ y ∉ F, fderiv ℝ Y y = 0 := by
+    intro y hy
+    have hY0 : Y =ᶠ[𝓝 y] fun _ ↦ 0 :=
+      eventually_of_mem (hF.isOpen_compl.mem_nhds hy) fun x hx ↦ hYF x hx
+    rw [hY0.fderiv_eq]
+    simp
+  -- Step 1: `div_M Y(y) = trace(DY(y) ∘ P_y)`, as `P_y = ι ∘ π` and the trace is cyclic.
+  have htr : ∀ y, tangentialDivergence M Y y = LinearMap.trace ℝ (Rn N)
+      ((fderiv ℝ Y y ∘L tangentProjection M y : Rn N →L[ℝ] Rn N) : Rn N →ₗ[ℝ] Rn N) := by
+    intro y
+    set T := tangentSpace M y
+    have hPT : ((fderiv ℝ Y y ∘L tangentProjection M y : Rn N →L[ℝ] Rn N) : Rn N →ₗ[ℝ] Rn N) =
+        ((fderiv ℝ Y y : Rn N →ₗ[ℝ] Rn N) ∘ₗ T.subtype) ∘ₗ
+          (T.orthogonalProjectionOnto : Rn N →ₗ[ℝ] T) := rfl
+    rw [hPT, LinearMap.trace_comp_comm', LinearMap.trace_eq_sum_inner _ (stdOrthonormalBasis ℝ T)]
+    simp [tangentialDivergence, tangentFrame, T]
+  -- Step 2: `div_M Y` is continuous on `M`, the trace being continuous on `ℝᴺ →L[ℝ] ℝᴺ`.
+  have hdiv : ContinuousOn (tangentialDivergence M Y) M := by
+    have htrc : Continuous fun A : Rn N →L[ℝ] Rn N ↦
+        LinearMap.trace ℝ (Rn N) (A : Rn N →ₗ[ℝ] Rn N) :=
+      ((LinearMap.trace ℝ (Rn N)).comp
+        (ContinuousLinearMap.coeLM ℝ)).continuous_of_finiteDimensional
+    exact (htrc.comp_continuousOn
+      ((hY.continuous_fderiv one_ne_zero).continuousOn.clm_comp hP)).congr fun y _ ↦ htr y
+  -- Steps 3 and 6: `Y · H` is continuous on `M`, and both functions vanish off `F`.
+  refine ⟨key _ hdiv fun y _ hy ↦ ?_, key _ (hY.continuous.continuousOn.inner hH) fun y _ hy ↦ ?_⟩
+  · simp [tangentialDivergence, hD0 y hy]
+  · simp [hYF y hy]
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
