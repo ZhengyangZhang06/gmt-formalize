@@ -458,6 +458,32 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- A.e. derivative comparison for the one-dimensional sup bound in the tilt-excess decay
+(Simon Ch. 5, Theorem 4.5): if `W : ℝ → ℝ^ℓ` is `K`-Lipschitz on `[-a, a]` and `‖u‖ ≤ 1`, then
+`|(d/dr)⟨u, W(r)⟩| ≤ ‖W'(r)‖` for a.e. `r ∈ (-a, a)`.  By Rademacher's theorem `W` is
+differentiable within `[-a, a]` at a.e. point of `[-a, a]`, hence differentiable at a.e.
+`r ∈ (-a, a)`, where `[-a, a]` is a neighbourhood of `r`; there `x ↦ ⟨u, W x⟩` has derivative
+`⟨u, W'(r)⟩`, and Cauchy–Schwarz with `‖u‖ ≤ 1` gives the bound. -/
+theorem tdo_ods_ae_abs_deriv_inner_le : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0) (u : Rn ℓ), LipschitzOnWith K W (Icc (-a) a) → ‖u‖ ≤ 1 → ∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioo (-a) a → |deriv (fun x => inner ℝ u (W x)) r| ≤ ‖deriv W r‖ := by
+  intro ℓ W a K u hW hu
+  -- Step 1 (Rademacher): for a.e. `r ∈ [-a, a]`, `W` is differentiable within `[-a, a]` at `r`.
+  filter_upwards [hW.ae_differentiableWithinAt_of_mem (μ := volume)] with r hr hrI
+  -- Step 2: for `r ∈ (-a, a)`, `[-a, a]` is a neighbourhood of `r`, so `W` is differentiable at `r`.
+  have hWr : DifferentiableAt ℝ W r :=
+    (hr (Ioo_subset_Icc_self hrI)).differentiableAt (Icc_mem_nhds hrI.1 hrI.2)
+  -- Step 3: `x ↦ ⟨u, W x⟩` has derivative `⟨u, W'(r)⟩ + ⟨0, W r⟩ = ⟨u, W'(r)⟩` at `r`.
+  have hd : HasDerivAt (fun x => inner ℝ u (W x)) (inner ℝ u (deriv W r)) r := by
+    simpa using (hasDerivAt_const r u).inner ℝ hWr.hasDerivAt
+  rw [hd.deriv]
+  -- Step 4: Cauchy–Schwarz and `‖u‖ ≤ 1`.
+  calc |inner ℝ u (deriv W r)| ≤ ‖u‖ * ‖deriv W r‖ := abs_real_inner_le_norm u (deriv W r)
+    _ ≤ 1 * ‖deriv W r‖ := mul_le_mul_of_nonneg_right hu (norm_nonneg _)
+    _ = ‖deriv W r‖ := one_mul _
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
