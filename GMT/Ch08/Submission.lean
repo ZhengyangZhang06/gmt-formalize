@@ -422,15 +422,6 @@ theorem Submission.intcpt_diag_rescaled_radon_tendsto :
         (𝓝 (∫ z, F z ∂(rescaledMeasure V ξ t))) := by
   intro N n U Vi V ξ t F hconv ht hF
   -- The dilation `Φ (y, S) = (t⁻¹ (y - ξ), S)` is a homeomorphism with inverse `(ξ + t y, S)`.
-/-- Test functions are integrable for the blow-up `V_{ξ,t} = η_{ξ,t #} V` (Simon Ch. 8, 1.1 and
-5.1) when the blow-up of their support stays in `U`: if `t > 0` and `ξ + t y ∈ U` for every
-`(y, S) ∈ spt F`, then `F ∈ C_c(ℝ^N × G(N,n))` is `rescaledMeasure V ξ t`-integrable. -/
-theorem Submission.intcpt_diag_rescaled_integrable :
-    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (ξ : Euclidean N) (t : ℝ)
-      (F : C_c(Euclidean N × Grassmannian N n, ℝ)), 0 < t →
-      (∀ z ∈ tsupport F, ξ + t • z.1 ∈ U) → Integrable (fun z ↦ F z) (rescaledMeasure V ξ t) := by
-  intro N n U V ξ t F ht hF
-  -- The blow-up `Φ(y, S) = (t⁻¹ (y - ξ), S)` is a homeomorphism of `ℝ^N × G(N,n)`.
   let Φ : Euclidean N × Grassmannian N n ≃ₜ Euclidean N × Grassmannian N n :=
     { toFun := fun z ↦ (t⁻¹ • (z.1 - ξ), z.2)
       invFun := fun z ↦ (ξ + t • z.1, z.2)
@@ -447,7 +438,6 @@ theorem Submission.intcpt_diag_rescaled_integrable :
       continuous_toFun := by fun_prop
       continuous_invFun := by fun_prop }
   -- The pulled-back test function `H = F ∘ Φ` is supported in `U × G(N,n)`.
-  -- The pull-back `H = F ∘ Φ` is compactly supported in `U × G(N,n)`.
   let H : C_c(Euclidean N × Grassmannian N n, ℝ) := F.comp Φ.toCocompactMap
   have hHsupp : tsupport H ⊆ U ×ˢ (univ : Set (Grassmannian N n)) := by
     intro z hz
@@ -485,6 +475,36 @@ theorem Submission.intcpt_diag_rescaled_integrable :
   have := (hconv h).const_mul (t⁻¹ ^ n)
   simp only [hdom] at this
   simpa only [hresc] using this
+/-- Test functions are integrable for the blow-up `V_{ξ,t} = η_{ξ,t #} V` (Simon Ch. 8, 1.1 and
+5.1) when the blow-up of their support stays in `U`: if `t > 0` and `ξ + t y ∈ U` for every
+`(y, S) ∈ spt F`, then `F ∈ C_c(ℝ^N × G(N,n))` is `rescaledMeasure V ξ t`-integrable. -/
+theorem Submission.intcpt_diag_rescaled_integrable :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (ξ : Euclidean N) (t : ℝ)
+      (F : C_c(Euclidean N × Grassmannian N n, ℝ)), 0 < t →
+      (∀ z ∈ tsupport F, ξ + t • z.1 ∈ U) → Integrable (fun z ↦ F z) (rescaledMeasure V ξ t) := by
+  intro N n U V ξ t F ht hF
+  -- The blow-up `Φ(y, S) = (t⁻¹ (y - ξ), S)` is a homeomorphism of `ℝ^N × G(N,n)`.
+  let Φ : Euclidean N × Grassmannian N n ≃ₜ Euclidean N × Grassmannian N n :=
+    { toFun := fun z ↦ (t⁻¹ • (z.1 - ξ), z.2)
+      invFun := fun z ↦ (ξ + t • z.1, z.2)
+      left_inv := by
+        intro z
+        ext1
+        · simp [smul_smul, ht.ne']
+        · rfl
+      right_inv := by
+        intro z
+        ext1
+        · simp [smul_smul, ht.ne']
+        · rfl
+      continuous_toFun := by fun_prop
+      continuous_invFun := by fun_prop }
+  -- The pull-back `H = F ∘ Φ` is compactly supported in `U × G(N,n)`.
+  let H : C_c(Euclidean N × Grassmannian N n, ℝ) := F.comp Φ.toCocompactMap
+  have hHsupp : tsupport H ⊆ U ×ˢ (univ : Set (Grassmannian N n)) := by
+    intro z hz
+    have hz' : Φ z ∈ tsupport F := tsupport_comp_subset_preimage F Φ.continuous hz
+    refine ⟨?_, trivial⟩
     simpa [Φ, smul_smul, ht.ne'] using hF _ hz'
   -- `K = π(spt H)` is a compact subset of `U`, so `V(K × G(N,n)) < ∞`.
   let K : Set (Euclidean N) := Prod.fst '' tsupport H
