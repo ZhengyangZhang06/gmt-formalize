@@ -588,6 +588,38 @@ theorem Submission.ts_stronglyMeasurable_paste_continuousOn : ∀ (n ℓ : ℕ) 
 
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
+/-- **Tangent projection field of a sequence of Lipschitz pieces** (measurability of
+`x ↦ p_{T_x V}`, Ch. 4, 1.3). Let `C_i ⊆ ℝⁿ` be compact and `F_i : ℝⁿ → ℝ^{n+ℓ}` Lipschitz,
+differentiable on `C_i` with injective `DF_i` continuous on `C_i`, and
+`c_i|v - w| ≤ |F_i(v) - F_i(w)|` on `C_i` with `c_i > 0`. Then some strongly measurable
+`g : ℝ^{n+ℓ} → L(ℝ^{n+ℓ}, ℝ^{n+ℓ})` is the orthogonal projection onto `DF_i(w)(ℝⁿ)` at `F_i(w)`
+whenever `F_i(w) ∉ F_j(C_j)` for all `j < i`: the projection field of each piece is continuous
+on the compact image `F_i(C_i)` (`ts_piece_projection_continuousOn_image`), and these fields are
+pasted along `F_i(C_i) \ ⋃_{j<i} F_j(C_j)` (`ts_stronglyMeasurable_paste_continuousOn`). -/
+theorem Submission.ts_piece_tangent_projection_field : ∀ (n ℓ : ℕ) (C : ℕ → Set (EuclideanSpace ℝ (Fin n))) (F : ℕ → EuclideanSpace ℝ (Fin n) → Ambient n ℓ), (∀ i, IsCompact (C i) ∧ (∃ K : NNReal, LipschitzWith K (F i)) ∧ (∀ w ∈ C i, DifferentiableAt ℝ (F i) w ∧ Function.Injective (fderiv ℝ (F i) w)) ∧ ContinuousOn (fderiv ℝ (F i)) (C i) ∧ ∃ c : ℝ, 0 < c ∧ ∀ v ∈ C i, ∀ w ∈ C i, c * ‖v - w‖ ≤ ‖F i v - F i w‖) → ∃ g : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), StronglyMeasurable g ∧ ∀ i, ∀ w ∈ C i, (∀ j < i, F i w ∉ F j '' C j) → g (F i w) = (LinearMap.range (fderiv ℝ (F i) w).toLinearMap).starProjection := by
+  intro n ℓ C F hpiece
+  -- Step 3: on each piece `N_i = F_i(C_i)` the projection field `G_i` is continuous, with
+  -- `G_i(F_i(w)) = p_{DF_i(w)(ℝⁿ)}` for `w ∈ C_i`.
+  have hG : ∀ i, ∃ G : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ),
+      ContinuousOn G (F i '' C i) ∧
+        ∀ w ∈ C i, G (F i w) = (LinearMap.range (fderiv ℝ (F i) w).toLinearMap).starProjection := by
+    intro i
+    obtain ⟨-, -, hdiff, hcont, c, hc, hlow⟩ := hpiece i
+    exact Submission.ts_piece_projection_continuousOn_image n ℓ (C i) (F i) c hc hlow
+      (fun w hw ↦ (hdiff w hw).2) hcont
+  choose G hGcont hGval using hG
+  -- Step 4: `N_i` is compact, as the image of the compact `C_i` under the Lipschitz `F_i`, hence
+  -- Borel.
+  have hN : ∀ i, MeasurableSet (F i '' C i) := fun i ↦ by
+    obtain ⟨hC, ⟨K, hK⟩, -⟩ := hpiece i
+    exact (hC.image hK.continuous).measurableSet
+  -- Step 5: paste the `G_i` along the disjointified pieces `N_i \ ⋃_{j<i} N_j`.
+  obtain ⟨g, hgmeas, hg⟩ :=
+    Submission.ts_stronglyMeasurable_paste_continuousOn n ℓ (fun i ↦ F i '' C i) G hN hGcont
+  -- Step 6: at `F_i(w)` outside the earlier pieces, `g = G_i = p_{DF_i(w)(ℝⁿ)}`.
+  refine ⟨g, hgmeas, fun i w hw hfirst ↦ ?_⟩
+  rw [hg i (F i w) (mem_image_of_mem (F i) hw) hfirst, hGval i w hw]
+
 end
 
 end GMT.Ch04
