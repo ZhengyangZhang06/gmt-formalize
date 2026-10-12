@@ -359,6 +359,28 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Boundary commutes with smooth push-forward** (Simon Ch. 6, 2.24(1), p. 141:
+`∂ f_# T = f_# ∂T`).  Let `f` be `C^∞`.  If `S(ω′) = X(η′)` whenever `η′ = f^# ω′` on an open set
+containing `spt X` (degree `k + 1`), then `∂S(ω) = ∂X(η)` whenever `η = f^# ω` on an open set `N`
+containing `spt X` (degree `k`), where `(f^# ω)(x) = Df(x)^# ω(f(x))`.  On `N`,
+`dη = d(f^# ω) = f^# dω` by locality of `d` and its naturality under pull-back
+(`extDeriv_pullback`), so the hypothesis applies to `(dω, dη)`: `∂S(ω) = S(dω) = X(dη) = ∂X(η)`. -/
+theorem Submission.iwl_sp_boundary_apply_eq_of_compatible : ∀ (P Q k : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (X : GeometricCurrentOn U (k + 1)) (S : GeometricCurrentOn V (k + 1)) (f : Eucl P → Eucl Q), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ (ω : TestFormOn V (k + 1)) (η : TestFormOn U (k + 1)), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) (k + 1)) x = ((ω : DifferentialForm (Eucl Q) (k + 1)) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S ω = X η) → ∀ (ω : TestFormOn V k) (η : TestFormOn U k), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) k) x = ((ω : DifferentialForm (Eucl Q) k) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S.boundary ω = X.boundary η := by
+  intro P Q k U V X S f hf hS ω η ⟨N, hN, hXN, hηN⟩
+  -- `∂S(ω) = S(dω)` and `∂X(η) = X(dη)`; apply the degree-`(k + 1)` hypothesis to `(dω, dη, N)`.
+  rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply]
+  refine hS _ _ ⟨N, hN, hXN, fun x hx => ?_⟩
+  change extDeriv (η : DifferentialForm (Eucl P) k) x =
+    (extDeriv (ω : DifferentialForm (Eucl Q) k) (f x)).compContinuousLinearMap (fderiv ℝ f x)
+  -- Locality: `η = f^# ω` near `x`, as `N` is open, so `(dη)(x) = d(f^# ω)(x)`.
+  have hloc : (η : DifferentialForm (Eucl P) k) =ᶠ[𝓝 x] fun y =>
+      ((ω : DifferentialForm (Eucl Q) k) (f y)).compContinuousLinearMap (fderiv ℝ f y) :=
+    Filter.eventually_of_mem (hN.mem_nhds hx) hηN
+  rw [hloc.extDeriv_eq]
+  -- Naturality: `d(f^# ω)(x) = Df(x)^# (dω)(f(x))`, as `ω` and `f` are `C^∞` and `2 ≤ ∞`.
+  exact extDeriv_pullback (ω.property.1.1.differentiable (by simp)).differentiableAt
+    hf.contDiffAt (by simp)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
