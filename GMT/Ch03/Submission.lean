@@ -1114,6 +1114,98 @@ theorem Submission.pcoarea_critical_part : ∀ (m k N : ℕ) (D : Set (Rn (m + k
       (measure_mono_null (inter_subset_inter_left _ hBcrit) hy))
   -- Step 4: the inner function is a.e. `0`, so it is a.e.-measurable and both sides are `0`.
   exact ⟨aemeasurable_const.congr hae.symm, by rw [hlhs, lintegral_congr_ae hae, lintegral_zero]⟩
+/-- **Implicit-function chart at a regular point** (step 2, L2, of the parametric co-area
+formula): if `G : ℝ^{m+k} → ℝᵐ` is `C¹` and `DG(u₀)` is onto, then `Φ = (G, π)`, restricted to a
+neighbourhood of `u₀` inside the open set `D`, is a `C¹` chart onto an open subset of
+`WithLp 2 (ℝᵐ × ℝᵏ)` with `C¹` inverse and first component `G`. Here `π = ι ∘ p`, where `p` is
+the orthogonal projection onto `K₀ = ker DG(u₀)` (of dimension `k` by rank–nullity) and
+`ι : K₀ ≃ₗᵢ ℝᵏ`; then `DΦ(u₀) = (DG(u₀), π)` is invertible. The inverse function theorem gives
+`Φ` near `u₀`, and restricting it to `D ∩ {u : DΦ(u) invertible}` (open) makes `Φ⁻¹` `C¹` at
+every point of the target. -/
+theorem Submission.pcoarea_implicit_chart : ∀ (m k : ℕ) (G : Rn (m + k) → Rn m) (D : Set (Rn (m + k))) (u₀ : Rn (m + k)), IsOpen D → u₀ ∈ D → ContDiff ℝ 1 G → Function.Surjective (fderiv ℝ G u₀) → ∃ Φ : OpenPartialHomeomorph (Rn (m + k)) (WithLp 2 (Rn m × Rn k)), u₀ ∈ Φ.source ∧ Φ.source ⊆ D ∧ ContDiffOn ℝ 1 Φ Φ.source ∧ ContDiffOn ℝ 1 Φ.symm Φ.target ∧ ∀ u ∈ Φ.source, (Φ u).fst = G u := by
+  intro m k G D u₀ hD hu₀ hG hsurj
+  -- Step 1: `K₀ = ker DG(u₀)` has dimension `k` (rank–nullity).
+  set K₀ : Submodule ℝ (Rn (m + k)) := (fderiv ℝ G u₀).ker
+  have hdim : finrank ℝ K₀ = k := by
+    have h := LinearMap.finrank_range_add_finrank_ker (fderiv ℝ G u₀).toLinearMap
+    rw [LinearMap.range_eq_top.mpr hsurj, finrank_top, finrank_euclideanSpace_fin,
+      finrank_euclideanSpace_fin] at h
+    change m + finrank ℝ K₀ = m + k at h
+    omega
+  -- Step 2: `π = ι ∘ p` with `p` the orthogonal projection onto `K₀` and `ι : K₀ ≃ₗᵢ ℝᵏ`.
+  let ι : K₀ ≃ₗᵢ[ℝ] Rn k := ((stdOrthonormalBasis ℝ K₀).reindex (finCongr hdim)).repr
+  let π : Rn (m + k) →L[ℝ] Rn k :=
+    (ι.toContinuousLinearEquiv : K₀ →L[ℝ] Rn k).comp K₀.orthogonalProjectionOnto
+  have hπ : ∀ v : K₀, π v = ι v := fun v ↦ by
+    simp [π, Submodule.orthogonalProjectionOnto_mem_subspace_eq_self]
+  -- Step 3: `F = σ ∘ (G, π)` is `C¹`, with `DF(u) = σ ∘ (DG(u), π)`.
+  let σ := (WithLp.prodContinuousLinearEquiv 2 ℝ (Rn m) (Rn k)).symm
+  let F : Rn (m + k) → WithLp 2 (Rn m × Rn k) := fun u ↦ σ (G u, π u)
+  have hF : ContDiff ℝ 1 F := σ.contDiff.comp (hG.prodMk π.contDiff)
+  let L : Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k) :=
+    (σ : Rn m × Rn k →L[ℝ] WithLp 2 (Rn m × Rn k)).comp ((fderiv ℝ G u₀).prod π)
+  have hFL : HasFDerivAt F L u₀ :=
+    σ.hasFDerivAt.comp u₀ (((hG.differentiable one_ne_zero) u₀).hasFDerivAt.prodMk π.hasFDerivAt)
+  -- Step 4: `DF(u₀)` is bijective.
+  have hinj : Function.Injective L := by
+    rw [injective_iff_map_eq_zero]
+    intro v hv
+    have h0 : (fderiv ℝ G u₀ v, π v) = 0 := by
+      simpa [L] using hv
+    have hvK : v ∈ K₀ := LinearMap.mem_ker.mpr (congrArg Prod.fst h0)
+    have hιv : ι ⟨v, hvK⟩ = 0 := by
+      rw [← hπ]
+      exact congrArg Prod.snd h0
+    exact congrArg Subtype.val (ι.map_eq_zero_iff.mp hιv)
+  have hsurjL : Function.Surjective L := by
+    intro z
+    obtain ⟨v₁, hv₁⟩ := hsurj z.fst
+    let c : K₀ := ι.symm (z.snd - π v₁)
+    refine ⟨v₁ + c, ?_⟩
+    have h1 : fderiv ℝ G u₀ (c : Rn (m + k)) = 0 := LinearMap.mem_ker.mp c.2
+    have h2 : π c = z.snd - π v₁ := by
+      rw [hπ]
+      exact ι.apply_symm_apply _
+    have e1 : fderiv ℝ G u₀ (v₁ + c) = z.fst := by rw [map_add, h1, add_zero, hv₁]
+    have e2 : π (v₁ + c) = z.snd := by rw [map_add, h2, add_sub_cancel]
+    change σ (fderiv ℝ G u₀ (v₁ + c), π (v₁ + c)) = z
+    rw [e1, e2]
+    rfl
+  let f' : Rn (m + k) ≃L[ℝ] WithLp 2 (Rn m × Rn k) :=
+    ContinuousLinearEquiv.ofBijective L (LinearMap.ker_eq_bot.mpr hinj)
+      (LinearMap.range_eq_top.mpr hsurjL)
+  have hf' : (f' : Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)) = L :=
+    ContinuousLinearEquiv.coe_ofBijective _ _ _
+  -- Step 5: the inverse function theorem.
+  have hstrict : HasStrictFDerivAt F (f' : Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)) u₀ :=
+    hF.contDiffAt.hasStrictFDerivAt' (hf' ▸ hFL) one_ne_zero
+  -- Step 6: restrict to `U = D ∩ W`, `W = {u : DF(u) is invertible}` (open).
+  let W : Set (Rn (m + k)) := fderiv ℝ F ⁻¹' Set.range ContinuousLinearEquiv.toContinuousLinearMap
+  have hW : IsOpen W := ContinuousLinearEquiv.isOpen.preimage (hF.continuous_fderiv one_ne_zero)
+  have hu₀W : u₀ ∈ W := ⟨f', by rw [hFL.fderiv, ← hf']⟩
+  have hU : IsOpen (D ∩ W) := hD.inter hW
+  let Φ := (hstrict.toOpenPartialHomeomorph F).restrOpen (D ∩ W) hU
+  have hΦ : (Φ : Rn (m + k) → WithLp 2 (Rn m × Rn k)) = F := by
+    simp only [Φ, OpenPartialHomeomorph.coe_restrOpen,
+      HasStrictFDerivAt.toOpenPartialHomeomorph_coe]
+  -- Step 7: verification.
+  refine ⟨Φ, ⟨hstrict.mem_toOpenPartialHomeomorph_source, hu₀, hu₀W⟩, fun u hu ↦ hu.2.1, ?_, ?_,
+    ?_⟩
+  · rw [hΦ]
+    exact hF.contDiffOn
+  · intro w hw
+    have hsrc : Φ.symm w ∈ Φ.source := Φ.map_target hw
+    obtain ⟨e, he⟩ := hsrc.2.2
+    refine (Φ.contDiffAt_symm (f₀' := e) hw ?_ ?_).contDiffWithinAt
+    · rw [hΦ]
+      change HasFDerivAt F (e.toContinuousLinearMap) (Φ.symm w)
+      rw [he]
+      exact ((hF.differentiable one_ne_zero) _).hasFDerivAt
+    · rw [hΦ]
+      exact hF.contDiffAt
+  · intro u hu
+    rw [hΦ]
+    rfl
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
