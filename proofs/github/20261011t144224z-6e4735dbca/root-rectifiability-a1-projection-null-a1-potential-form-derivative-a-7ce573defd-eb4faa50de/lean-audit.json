@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d7b13979d454e4a08685ac9875ac15f979e83f16be470d4562a0503406d51264",
+  "git_delta": {
+    "base_commit": "64c1fb77e7b2e01f8079af4cf39a4b93b90f757f",
+    "candidate_commit": "abdbf10e529f40b36aa21cb78eda780f4b63df1c",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_pfd_extDeriv_sum_smul_wedge",
+    "diff_sha256": "966e72a024994c87a343b3030dd669ead308fa3f4b9bd1bb430e06c810310818",
+    "source_sha256": "ee93ecee13160ce61fcb3cf17c586fbddf439615af4d5d27e62184c769aa6361",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_pfd_extDeriv_sum_smul_wedge",
+      "statement": "∀ (P m : ℕ) (ι : Type) [Fintype ι] (g : ι → Eucl P → ℝ) (β : ι → Fin m → (Eucl P →L[ℝ] ℝ)) (x : Eucl P), (∀ j, DifferentiableAt ℝ (g j) x) → extDeriv (fun z => ∑ j : ι, g j z • wedgeCovectors m (β j)) x = ∑ j : ι, wedgeCovectors (m + 1) (Fin.cons (fderiv ℝ (g j) x) (β j) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
