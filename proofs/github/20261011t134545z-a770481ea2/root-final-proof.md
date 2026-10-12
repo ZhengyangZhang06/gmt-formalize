@@ -804,9 +804,19 @@ Items 1–4 were nevertheless repeated on 2026-10-12.
 
 The exact configured command (`verifier/gmt-compare.py --lean-target GMT/Ch01/Submission.lean …
 --frozen-commit ec1c322fab7585cea8deb6a95d4dae2d97d09d8e root`, with the configured `HUMANIZE_*`
-environment) **passed twice**. Both runs saw the same `GMT/Ch01/Submission.lean` (sha256
-`518ee03c00e7332a9fc79d2d640a80bb59c528ff903e137a76e81e2ae3db48bf`). Commits after `81b1eaa` change
-only this prose file, which is not a comparator input.
+environment) **passed in all three runs below**. Every run saw the same `GMT/Ch01/Submission.lean`
+(sha256 `518ee03c00e7332a9fc79d2d640a80bb59c528ff903e137a76e81e2ae3db48bf`). Commits after `81b1eaa`
+change only this prose file, which is not a comparator input.
+
+**Run 3** was on commit `562d721505316a4b0fda9f762e845ba9ea86ddd2`, the §6.2 prose revision. Results:
+- Exit status 0, ending in `Your solution is okay!`.
+- The wrapper reported: "identical inputs already passed every check in
+  `…/20261012T022307Z-ch01-root-4eipav7g`; GMT.Ch01.main_theorem accepted without re-running the
+  kernels". The inputs are byte-identical to those of Run 2, so the wrapper reused Run 2's
+  Lean-kernel verdict.
+- Evidence: `cluster-state/verification/results/hoa34/20261012T030914Z-ch01-root-bxmxu43w/`, with
+  `status: passed`, `cached_from` the Run 2 directory, and verdict key
+  `39c7b281a8ab799bcbe07bca44ae60beda5a325ad2b6eeb5f4705ab1a1841d78`.
 
 **Run 2** was on commit `073cb0d14c1378786ef6826cf0e95fbe2aa3008b`, which adds this prose. It used
 the wrapper as the operator updated it during this session (sha256 `bac63e47…`). That wrapper turns
