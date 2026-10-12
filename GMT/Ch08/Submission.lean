@@ -473,6 +473,24 @@ theorem Submission.varifold_tangents_dlb_rescaledMeasure_prod_univ :
     rw [mem_ofPred_eq, mem_closedBall, mem_closedBall, dist_eq_norm, dist_eq_norm, hw, norm_smul,
       Real.norm_of_nonneg (inv_nonneg.2 ht.le), inv_mul_le_iff₀ ht]
   rw [hcyl _ measurableSet_closedBall, hball]
+/-- **Simon Ch. 8, proofs of 5.5 and 5.7, restricted varifolds** (child `restricted_varifold` of the
+density lower bound for varifold tangents): the construction of `W_j = τ⁻¹ V_{x,λ_j} ⌞ Gₙ(Ω)` and
+`C_Ω = τ⁻¹ C ⌞ Gₙ(Ω)`, for a general measure `μ`.  If `Ω` is open, `c < ∞` and `μ(K × G(N,n)) < ∞`
+for every compact `K ⊆ Ω`, then `c • μ ⌞ (Ω × G(N,n))` vanishes on `Ωᶜ × G(N,n)` (disjoint from
+`Ω × G(N,n)`) and is finite on `K × G(N,n)` for compact `K ⊆ Ω`, so it is a varifold on `Ω`. -/
+theorem Submission.varifold_tangents_dlb_exists_restricted_varifold :
+    ∀ (N n : ℕ) (Ω : Set (Euclidean N)) (μ : Measure (Euclidean N × Grassmannian N n)) (c : ℝ≥0∞), IsOpen Ω → c ≠ ∞ → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ Ω → μ (K ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞) → ∃ W : Varifold N n Ω, W.measure = c • μ.restrict (Ω ×ˢ (univ : Set (Grassmannian N n))) := by
+  intro N n Ω μ c hΩ hc hμ
+  -- Step 1: `W` has the four fields of `Varifold N n Ω`, with measure `c • μ ⌞ (Ω × G(N,n))`.
+  refine ⟨⟨hΩ, c • μ.restrict (Ω ×ˢ (univ : Set (Grassmannian N n))), ?_, ?_⟩, rfl⟩
+  · -- Step 2: `(Ωᶜ × G) ∩ (Ω × G) = ∅`, and `Ωᶜ × G` is measurable since `Ω` is open.
+    rw [Measure.smul_apply, Measure.restrict_apply (hΩ.measurableSet.compl.prod MeasurableSet.univ),
+      prod_inter_prod, compl_inter_self, empty_prod, measure_empty, smul_zero]
+  · -- Step 3: `c • μ ⌞ (Ω × G)(K × G) ≤ c · μ(K × G) < ∞` for compact `K ⊆ Ω`.
+    intro K hK hKΩ
+    rw [Measure.smul_apply, smul_eq_mul]
+    exact ENNReal.mul_ne_top hc
+      (ne_top_of_le_ne_top (hμ K hK hKΩ) (Measure.restrict_apply_le _ _))
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
