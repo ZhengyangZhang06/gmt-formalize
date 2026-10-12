@@ -451,6 +451,62 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Step 3 of the tilt-excess/height estimate (Simon Ch. 5, Lemma 2.1, display (2)): for
+subspaces `T`, `S` of `ℝᴾ` with `dim T = dim S`,
+`trace(p_T ∘ (I − p_S)) = ½ Σᵢ |p_T eᵢ − p_S eᵢ|²`, i.e. `½ |p_T − p_S|²` in the Hilbert–Schmidt
+norm.  `p_T`, `p_S` are symmetric idempotents with `trace p_T = dim T`, `trace p_S = dim S`
+(`p = ι ∘ π`, cyclicity), so `Σᵢ |(p_T − p_S) eᵢ|² = trace((p_T − p_S)²) =
+dim T + dim S − 2 trace(p_T p_S)`, while `trace(p_T (I − p_S)) = dim T − trace(p_T p_S)`. -/
+theorem Submission.dorag_th_trace_proj_comp_compl : ∀ (P : ℕ) (T S : Submodule ℝ (Euclid P)), Module.finrank ℝ T = Module.finrank ℝ S → LinearMap.trace ℝ (Euclid P) (T.starProjection.toLinearMap ∘ₗ (ContinuousLinearMap.id ℝ (Euclid P) - S.starProjection).toLinearMap) = 1 / 2 * ∑ i : Fin P, ‖T.starProjection (EuclideanSpace.single i (1 : ℝ)) - S.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := by
+  intro P T S hTS
+  -- step 2: `trace p_K = dim K`, as `p_K = ι ∘ π`, `π ∘ ι = id_K` and the trace is cyclic
+  have htr : ∀ K : Submodule ℝ (Euclid P),
+      LinearMap.trace ℝ (Euclid P) K.starProjection.toLinearMap =
+        (Module.finrank ℝ K : ℝ) := by
+    intro K
+    rw [Submodule.starProjection, ContinuousLinearMap.toLinearMap_comp, LinearMap.trace_comp_comm']
+    have hcomp :
+        K.orthogonalProjectionOnto.toLinearMap ∘ₗ K.subtypeL.toLinearMap = LinearMap.id := by
+      ext x
+      simp
+    rw [hcomp, LinearMap.trace_id]
+  set p : Euclid P →L[ℝ] Euclid P := T.starProjection
+  set s : Euclid P →L[ℝ] Euclid P := S.starProjection
+  have hp : LinearMap.trace ℝ (Euclid P) p.toLinearMap = (Module.finrank ℝ T : ℝ) := htr T
+  have hs : LinearMap.trace ℝ (Euclid P) s.toLinearMap = (Module.finrank ℝ S : ℝ) := htr S
+  -- step 1: `p` and `s` are symmetric idempotents
+  have hp_symm : ∀ u w : Euclid P, inner ℝ (p u) w = inner ℝ u (p w) :=
+    T.inner_starProjection_left_eq_right
+  have hs_symm : ∀ u w : Euclid P, inner ℝ (s u) w = inner ℝ u (s w) :=
+    S.inner_starProjection_left_eq_right
+  have hpp : p.toLinearMap ∘ₗ p.toLinearMap = p.toLinearMap := by
+    rw [← ContinuousLinearMap.toLinearMap_comp]
+    exact congrArg ContinuousLinearMap.toLinearMap T.isIdempotentElem_starProjection.eq
+  have hss : s.toLinearMap ∘ₗ s.toLinearMap = s.toLinearMap := by
+    rw [← ContinuousLinearMap.toLinearMap_comp]
+    exact congrArg ContinuousLinearMap.toLinearMap S.isIdempotentElem_starProjection.eq
+  -- steps 3–4: `D = p - s` is symmetric, so `Σᵢ ‖D eᵢ‖² = Σᵢ ⟪eᵢ, D (D eᵢ)⟫ = trace (D ∘ D)`
+  have hD : ∀ u w : Euclid P, inner ℝ ((p - s) u) w = inner ℝ u ((p - s) w) := by
+    intro u w
+    simp only [sub_apply, inner_sub_left, inner_sub_right, hp_symm, hs_symm]
+  have hsum : ∑ i : Fin P,
+      ‖p (EuclideanSpace.single i (1 : ℝ)) - s (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 =
+        LinearMap.trace ℝ (Euclid P) ((p - s).toLinearMap ∘ₗ (p - s).toLinearMap) := by
+    rw [LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin P) ℝ)]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [EuclideanSpace.basisFun_apply, LinearMap.comp_apply, ContinuousLinearMap.coe_coe, ← hD,
+      real_inner_self_eq_norm_sq, sub_apply]
+  -- step 6: `p ∘ (I - s) = p - p ∘ s`
+  have hlhs : p.toLinearMap ∘ₗ (ContinuousLinearMap.id ℝ (Euclid P) - s).toLinearMap =
+      p.toLinearMap - p.toLinearMap ∘ₗ s.toLinearMap := by
+    rw [ContinuousLinearMap.toLinearMap_sub, LinearMap.comp_sub, ContinuousLinearMap.coe_id,
+      LinearMap.comp_id]
+  -- step 5: `D ∘ D = p + s - p ∘ s - s ∘ p` and `trace (s ∘ p) = trace (p ∘ s)`; step 7
+  rw [hlhs, hsum, ContinuousLinearMap.toLinearMap_sub, LinearMap.comp_sub, LinearMap.sub_comp,
+    LinearMap.sub_comp, hpp, hss, map_sub, map_sub, map_sub, map_sub,
+    LinearMap.trace_comp_comm' p.toLinearMap s.toLinearMap, hp, hs, hTS]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
