@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a4da4285c57888bd5d9cc66a245664d0aeae72ac732e6132e0a700d3a7ed7e96",
+  "git_delta": {
+    "base_commit": "08bcb58fb79d60658a25708530e486782088eac6",
+    "candidate_commit": "4d9564e5a45244b42a764dfaafa3be8f94d527cc",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "critSlices_ae_slice_null_of_covers",
+    "diff_sha256": "33bd84645a7b65bb50608404939babe67662c18e1fd61154e72b69a88b9dd0df",
+    "source_sha256": "8125a467f6afcc0930f97d0f38c91f96f3ce6bce7c269acd6b6f964402953939",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.critSlices_ae_slice_null_of_covers",
+      "statement": "∀ (n m k : ℕ) (S : Set (Rn n)) (G : Rn n → Rn m), 0 < k → (∀ ε : ℝ≥0∞, 0 < ε → ∃ (ι : Type) (_ : Countable ι) (T : ι → Set (Rn n)), S ⊆ ⋃ i, T i ∧ (∀ i, Metric.ediam (T i) ≤ ε) ∧ ∑' i, Metric.ediam (T i) ^ k * volume (G '' (T i ∩ S)) ≤ ε) → ∀ᵐ y ∂(volume : Measure (Rn m)), μHE[k] (S ∩ G ⁻¹' {y}) = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
