@@ -458,6 +458,166 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- `K(z, s) ≤ K(y, r)` (`K` = `scaledLpNorm`) when `B_s(z) ⊆ B_r(y)` and `0 ≤ s ≤ r`: the integral
+is over a smaller set and `s^{p−n} ≤ r^{p−n}` because `p > n`. -/
+theorem tilt_excess_decay_scaledLpNorm_mono {n ℓ : ℕ} {U : Set (Amb n ℓ)}
+    (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) {p : ℝ} (hp : (n : ℝ) < p)
+    {y z : Amb n ℓ} {r s : ℝ} (hs : 0 ≤ s) (hsr : s ≤ r)
+    (hball : closedBall z s ⊆ closedBall y r) :
+    V.scaledLpNorm H p z s ≤ V.scaledLpNorm H p y r := by
+  have hp0 : 0 < p := (Nat.cast_nonneg n).trans_lt hp
+  unfold RectifiableVarifold.scaledLpNorm
+  exact ENNReal.rpow_le_rpow (mul_le_mul'
+    (ENNReal.ofReal_le_ofReal (Real.rpow_le_rpow hs hsr (sub_nonneg.2 hp.le)))
+    (lintegral_mono_set hball)) (one_div_nonneg.2 hp0.le)
+
+/-- Scaling of the curvature term: `K(z, ηs) ≤ η^{1−n/p} K(z, s)` for `0 ≤ η ≤ 1`, since
+`(ηs)^{p−n} = η^{p−n} s^{p−n}` and `B_{ηs}(z) ⊆ B_s(z)`. -/
+theorem tilt_excess_decay_scaledLpNorm_scale {n ℓ : ℕ} {U : Set (Amb n ℓ)}
+    (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) {p : ℝ} (hp : (n : ℝ) < p)
+    (z : Amb n ℓ) {η s : ℝ} (hη : 0 ≤ η) (hη1 : η ≤ 1) (hs : 0 ≤ s) :
+    V.scaledLpNorm H p z (η * s) ≤
+      ENNReal.ofReal (η ^ (1 - (n : ℝ) / p)) * V.scaledLpNorm H p z s := by
+  have hp0 : 0 < p := (Nat.cast_nonneg n).trans_lt hp
+  have hp1 : (0 : ℝ) ≤ 1 / p := one_div_nonneg.2 hp0.le
+  have hexp : η ^ (1 - (n : ℝ) / p) = (η ^ (p - n)) ^ (1 / p) := by
+    rw [← Real.rpow_mul hη]
+    congr 1
+    field_simp
+  unfold RectifiableVarifold.scaledLpNorm
+  rw [hexp, ← ENNReal.ofReal_rpow_of_nonneg (Real.rpow_nonneg hη (p - n)) hp1,
+    ← ENNReal.mul_rpow_of_nonneg _ _ hp1, ← mul_assoc,
+    ← ENNReal.ofReal_mul (Real.rpow_nonneg hη (p - n)), ← Real.mul_rpow hη hs]
+  exact ENNReal.rpow_le_rpow (mul_le_mul' le_rfl
+    (lintegral_mono_set (closedBall_subset_closedBall (mul_le_of_le_one_left hs hη1)))) hp1
+
+/-- **Simon Ch. 5, Theorem 4.5 (Tilt-excess Decay Theorem, p. 116).**
+
+Step 1 of the accepted proof: re-centre at `ξ` (`ted_translate_varifold`) with the enlarged
+parameter `δ'' = C_P δ` and the radius `ρ'' = σ / δ''`, so that `δ''ρ'' = σ`; the hypotheses 2.3
+for `V − ξ` with `(δ'', ρ'')` follow from the mass bound (P.i) of `ted_allard_density_bounds` at
+`y = ξ` and the monotonicity of `K`.  Steps 2–8 are `ted_decay_at_origin` with contraction `η`,
+which bounds `E(ξ, ησ, S)` by `C η² E_*^{δ''}(ξ, σ, T) ≤ C η² E_*(ξ, σ, T)`.  Step 9: `η` is chosen
+with `C η² ≤ η^{2(1−n/p)}`, and `δ⁻¹ K(ξ, ησ)² ≤ η^{2(1−n/p)} δ⁻¹ K(ξ, σ)²`. -/
+theorem tilt_excess_decay_theorem : TiltExcessDecayTheorem := by
+  intro n ℓ hn p hp
+  have hp0 : 0 < p := (Nat.cast_nonneg n).trans_lt hp
+  obtain ⟨C, hC, hdecay⟩ := Submission.ted_decay_at_origin Submission.tilt_excess_height_estimate
+    Submission.affine_approximation_lemma Submission.lipschitz_approximation_lemma
+    Submission.harmonic_approximation_lemma n ℓ hn p hp
+  obtain ⟨CP, δP, hCP, hδP, hδP8, -, hbounds⟩ := Submission.ted_allard_density_bounds n ℓ hn p hp
+  have hCP0 : 0 < CP := one_pos.trans_le hCP
+  -- Choice of `η` (step 9): with `e = 2n/p = 2 − 2(1 − n/p) > 0`, `η^e ≤ C⁻¹` gives
+  -- `C η² ≤ η^{2(1−n/p)}`.
+  set e : ℝ := 2 * ((n : ℝ) / p) with he_def
+  have he : 0 < e := mul_pos two_pos (div_pos (Nat.cast_pos.2 hn) hp0)
+  set η : ℝ := min (1 / 128) (C⁻¹ ^ e⁻¹) with hη_def
+  have hη0 : 0 < η := lt_min (by norm_num) (Real.rpow_pos_of_pos (inv_pos.2 hC) _)
+  have hη128 : η ≤ 1 / 128 := min_le_left _ _
+  have hη1 : η ≤ 1 := hη128.trans (by norm_num)
+  have hCη : C * η ^ 2 ≤ η ^ (2 * (1 - (n : ℝ) / p)) := by
+    have hηe : η ^ e ≤ C⁻¹ :=
+      (Real.rpow_le_rpow hη0.le (min_le_right _ _) he.le).trans_eq
+        (Real.rpow_inv_rpow (inv_nonneg.2 hC.le) he.ne')
+    have hsplit : η ^ (2 * (1 - (n : ℝ) / p)) = η ^ 2 / η ^ e := by
+      rw [show 2 * (1 - (n : ℝ) / p) = 2 - e by rw [he_def]; ring, Real.rpow_sub hη0,
+        Real.rpow_two]
+    rw [hsplit, le_div_iff₀ (Real.rpow_pos_of_pos hη0 e)]
+    calc C * η ^ 2 * η ^ e = η ^ 2 * (C * η ^ e) := by ring
+      _ ≤ η ^ 2 * (C * C⁻¹) := by gcongr
+      _ = η ^ 2 := by rw [mul_inv_cancel₀ hC.ne', mul_one]
+  obtain ⟨δ₁, hδ₁, hdec₁⟩ := hdecay η hη0 hη128
+  refine ⟨η, min δP (δ₁ / CP), hη0, hη128.trans (by norm_num), lt_min hδP (div_pos hδ₁ hCP0),
+    (min_le_left _ _).trans (hδP8.trans (by norm_num)), ?_⟩
+  intro U hU V H δ ρ hδ hδδ₀ hA σ hσ hσδρ ξ hξ T hT
+  obtain ⟨hρ, hHV, hmultV, -, hballU, -, hLpV⟩ := id hA
+  have hδP' : δ ≤ δP := hδδ₀.trans (min_le_left _ _)
+  have hδ'' : CP * δ ≤ δ₁ := (le_div_iff₀' hCP0).1 (hδδ₀.trans (min_le_right _ _))
+  have hδle : δ ≤ CP * δ := le_mul_of_one_le_left hδ.le hCP
+  have hδρ : 0 ≤ δ * ρ := mul_nonneg hδ.le hρ.le
+  have hδρ8 : δ * ρ ≤ ρ / 8 := by
+    have := mul_le_mul_of_nonneg_right (hδP'.trans hδP8) hρ.le
+    linarith
+  have hξn : ‖ξ‖ ≤ δ * ρ := mem_closedBall_zero_iff.1 hξ.2
+  -- Step 1: the re-centred scale `ρ'' = σ / (C_P δ)`, with `δ''ρ'' = σ` and `ρ'' ≤ ρ/2`.
+  obtain ⟨ρ'', hρ''0, hρ''2, hσ''⟩ : ∃ r : ℝ, 0 < r ∧ r ≤ ρ / 2 ∧ CP * δ * r = σ := by
+    have hCPδ : 0 < CP * δ := mul_pos hCP0 hδ
+    refine ⟨σ / (CP * δ), div_pos hσ hCPδ, ?_, mul_div_cancel₀ σ hCPδ.ne'⟩
+    rw [div_le_iff₀ hCPδ]
+    nlinarith [mul_nonneg (sub_nonneg.2 hCP) hδρ]
+  obtain ⟨V', -, hweight, hmult', -, hsupp', hGMC', htilt', hLp'⟩ :=
+    Submission.ted_translate_varifold n ℓ U V ξ
+  have hU' : IsOpen ((fun x => x + ξ) ⁻¹' U) := hU.preimage (by fun_prop)
+  have hpre : (fun x => x - ξ) ⁻¹' closedBall (0 : Amb n ℓ) ρ'' = closedBall ξ ρ'' := by
+    ext x
+    simp [dist_eq_norm]
+  -- The hypotheses 2.3 for `V' = V − ξ` with parameters `(C_P δ, ρ'')`.
+  have hA' : V'.AllardHypotheses (fun x => H (x + ξ)) p (CP * δ) ρ'' := by
+    refine ⟨hρ''0, hGMC' H hHV, ?_, ?_, ?_, ?_, ?_⟩
+    · rw [hweight]
+      refine (measurableEmbedding_subRight ξ).ae_map_iff.2 ?_
+      filter_upwards [hmultV] with x hx
+      show 1 ≤ V'.mult (x - ξ)
+      rwa [hmult', sub_add_cancel]
+    · exact (hsupp' 0).2 (by rw [zero_add]; exact hξ.1)
+    · intro x hx
+      show x + ξ ∈ U
+      refine hballU (mem_closedBall_zero_iff.2 ?_)
+      calc ‖x + ξ‖ ≤ ‖x‖ + ‖ξ‖ := norm_add_le _ _
+        _ ≤ ρ'' + δ * ρ := add_le_add (mem_closedBall_zero_iff.1 hx) hξn
+        _ ≤ ρ := by linarith
+    · rw [hweight, (measurableEmbedding_subRight ξ).map_apply, hpre]
+      exact (hbounds U hU V H δ ρ hδ hδP' hA).1 ξ (by linarith) ρ'' hρ''0 hρ''2
+    · rw [hLp' H p 0 ρ'', zero_add]
+      calc V.scaledLpNorm H p ξ ρ'' ≤ V.scaledLpNorm H p 0 ρ :=
+            tilt_excess_decay_scaledLpNorm_mono V H hp hρ''0.le (by linarith)
+              (closedBall_subset_closedBall' (by rw [dist_zero_right]; linarith))
+        _ ≤ ENNReal.ofReal δ := hLpV
+        _ ≤ ENNReal.ofReal (CP * δ) := ENNReal.ofReal_le_ofReal hδle
+  -- Steps 2–8: decay at the origin for `V'` at the scale `δ''ρ'' = σ`.
+  obtain ⟨S, hS, hdec⟩ :=
+    hdec₁ _ hU' V' (fun x => H (x + ξ)) (CP * δ) ρ'' (mul_pos hCP0 hδ) hδ'' hA' T hT
+  rw [hσ'', htilt', zero_add] at hdec
+  have hstar : V'.tiltExcessStar (fun x => H (x + ξ)) p (CP * δ) 0 σ T ≤
+      V.tiltExcessStar H p δ ξ σ T := by
+    unfold RectifiableVarifold.tiltExcessStar
+    rw [htilt', hLp' H p 0 σ, zero_add]
+    exact max_le_max le_rfl (mul_le_mul_of_nonneg_right (inv_anti₀ hδ hδle) (sq_nonneg _))
+  have hEstar : 0 ≤ V.tiltExcessStar H p δ ξ σ T :=
+    (mul_nonneg (inv_nonneg.2 hδ.le) (sq_nonneg (V.scaledLpNorm H p ξ σ).toReal)).trans
+      (le_max_right _ _)
+  -- Step 9, curvature term: `K(ξ, σ) ≤ K(0, ρ) ≤ δ` is finite and `K(ξ, ησ) ≤ η^{1−n/p} K(ξ, σ)`.
+  have hKfin : V.scaledLpNorm H p ξ σ ≠ ⊤ :=
+    ne_top_of_le_ne_top ENNReal.ofReal_ne_top
+      ((tilt_excess_decay_scaledLpNorm_mono V H hp hσ.le (by linarith)
+        (closedBall_subset_closedBall' (by rw [dist_zero_right]; linarith))).trans hLpV)
+  have hK : (V.scaledLpNorm H p ξ (η * σ)).toReal ≤
+      η ^ (1 - (n : ℝ) / p) * (V.scaledLpNorm H p ξ σ).toReal := by
+    have h := ENNReal.toReal_mono (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hKfin)
+      (tilt_excess_decay_scaledLpNorm_scale V H hp ξ hη0.le hη1 hσ.le)
+    rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.rpow_nonneg hη0.le _)] at h
+  refine ⟨S, hS, max_le ?_ ?_⟩
+  · calc V.tiltExcess ξ (η * σ) S
+        ≤ C * η ^ 2 * V'.tiltExcessStar (fun x => H (x + ξ)) p (CP * δ) 0 σ T := hdec
+      _ ≤ C * η ^ 2 * V.tiltExcessStar H p δ ξ σ T :=
+          mul_le_mul_of_nonneg_left hstar (mul_nonneg hC.le (sq_nonneg η))
+      _ ≤ η ^ (2 * (1 - (n : ℝ) / p)) * V.tiltExcessStar H p δ ξ σ T :=
+          mul_le_mul_of_nonneg_right hCη hEstar
+  · calc δ⁻¹ * (V.scaledLpNorm H p ξ (η * σ)).toReal ^ 2
+        ≤ δ⁻¹ * (η ^ (1 - (n : ℝ) / p) * (V.scaledLpNorm H p ξ σ).toReal) ^ 2 :=
+          mul_le_mul_of_nonneg_left (pow_le_pow_left₀ ENNReal.toReal_nonneg hK 2)
+            (inv_nonneg.2 hδ.le)
+      _ = η ^ (2 * (1 - (n : ℝ) / p)) * (δ⁻¹ * (V.scaledLpNorm H p ξ σ).toReal ^ 2) := by
+          rw [mul_pow, ← Real.rpow_two (η ^ (1 - (n : ℝ) / p)), ← Real.rpow_mul hη0.le,
+            mul_comm (1 - (n : ℝ) / p) 2]
+          ring
+      _ ≤ η ^ (2 * (1 - (n : ℝ) / p)) * V.tiltExcessStar H p δ ξ σ T :=
+          mul_le_mul_of_nonneg_left (le_max_right _ _) (Real.rpow_nonneg hη0.le _)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
