@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1.ftc_fubini_identity-a1",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1",
+  "depth": 4,
+  "title": "Translation difference of a C¹_c function as a parametric integral of directional derivatives",
+  "statement": "Let N ∈ ℕ, let F ⊆ ℝ^N be an arbitrary set, let ψ : ℝ^N → ℝ be C¹ with compact support, and let h ∈ ℝ^N. Then ∫_F (ψ(z − h) − ψ(z)) dz = −∫_0^1 (∫_F Dψ(z − th)[h] dz) dt. Here ∫_F is integration with respect to the restricted measure L^N⌞F, which is defined for every set F. Dψ(x)[v] is the Fréchet derivative of ψ at x applied to v, and ∫_0^1 is the interval integral.",
+  "lean_statement": "∀ (N : ℕ) (F : Set (Rn N)) (ψ : Rn N → ℝ) (h : Rn N), ContDiff ℝ 1 ψ → HasCompactSupport ψ → ∫ z in F, (ψ (z - h) - ψ z) = -∫ t in (0 : ℝ)..1, ∫ z in F, fderiv ℝ ψ (z - t • h) h",
+  "lean_name": "indCompact_transEst_setIntegral_shift_sub_ftc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-ft-10af890867-a1"
+}
