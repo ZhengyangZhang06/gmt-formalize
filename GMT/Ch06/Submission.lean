@@ -359,6 +359,161 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 1, Theorem 3.3 with `t = ∞`, followed by unpacking the finite upper density: if
+`ν(ℝ^P) < ∞`, then for `Hⁿ`-a.e. `x` there are `C` and `r₀ > 0` with `ν(B̄ᵣ(x)) < C rⁿ` for
+`0 < r < r₀`.  The infinite-density set `A = {Θ*ⁿ(ν, ·) = ∞}` is `μH[n]`-null: at each scale the
+five-times covering lemma selects disjoint balls `B̄ᵣ(x)`, `x ∈ A`, with `M ωₙ rⁿ ≤ ν(B̄ᵣ(x))`
+whose enlargements cover `A`, so `M ωₙ μH[n](A) ≤ 10ⁿ ν(ℝ^P)` for every `M ∈ ℕ`. -/
+theorem Submission.ind_md_ae_closedBall_growth : ∀ (P n : ℕ) (ν : Measure (Eucl P)), ν univ < ∞ → ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), ∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ r ∈ Ioo (0 : ℝ) r₀, ν (closedBall x r) < ENNReal.ofReal (C * r ^ n) := by
+  intro P n ν hν
+  obtain ⟨ω, hω⟩ : ∃ ω, Poincare.SimonGMT.Chapter01.realUnitBallVolume (n : ℝ) = ω := ⟨_, rfl⟩
+  have hω0 : ω ≠ 0 :=
+    hω ▸ (Poincare.SimonGMT.Chapter01.realUnitBallVolume_pos (Nat.cast_nonneg n)).ne'
+  have hωtop : ω ≠ ∞ := hω ▸ Poincare.SimonGMT.Chapter01.realUnitBallVolume_ne_top _
+  -- Step 1: the infinite-density set `A` is `μH[n]`-null (Simon Ch. 1, 3.3 with `t = ∞`).
+  obtain ⟨A, hA⟩ : ∃ A : Set (Eucl P),
+      A = {x | ¬dimensionalUpperDensity ν.toOuterMeasure (n : ℝ) univ x < ∞} := ⟨_, rfl⟩
+  have hH : (μH[(n : ℝ)] : Measure (Eucl P)) A = 0 := by
+    by_contra hne
+    obtain ⟨M, hM⟩ := ENNReal.exists_nat_mul_gt (mul_ne_zero hω0 hne)
+      (ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.ofNat_ne_top) hν.ne :
+        (10 : ℝ≥0∞) ^ n * ν univ ≠ ∞)
+    -- It suffices to show `M ωₙ μH[n](A) ≤ 10ⁿ ν(ℝ^P)`, scale by scale.
+    refine (not_le.mpr hM) ?_
+    rcases Nat.eq_zero_or_pos M with rfl | hM0
+    · simp
+    have hHA : (μH[(n : ℝ)] : Measure (Eucl P)) A = ⨆ (δ : ℝ≥0∞) (_ : 0 < δ),
+        OuterMeasure.mkMetric'.pre (fun s : Set (Eucl P) => ediam s ^ (n : ℝ)) δ A := by
+      rw [← Measure.toOuterMeasure_apply, Measure.hausdorffMeasure,
+        Measure.mkMetric_toOuterMeasure, OuterMeasure.mkMetric, OuterMeasure.mkMetric',
+        OuterMeasure.iSup_apply]
+      simp only [OuterMeasure.iSup_apply]
+    rw [hHA, ENNReal.mul_iSup, ENNReal.mul_iSup]
+    refine iSup_le fun δ => ?_
+    rw [ENNReal.mul_iSup, ENNReal.mul_iSup]
+    refine iSup_le fun hδ => ?_
+    obtain ⟨R, -, hR0, hRδ⟩ := ENNReal.lt_iff_exists_real_btwn.mp hδ
+    have hR : 0 < R := ENNReal.ofReal_pos.mp hR0
+    -- The fine family of closed balls `B̄ᵣ(x)`, `x ∈ A`, `r < R/10`, `M ωₙ rⁿ ≤ ν(B̄ᵣ(x))`.
+    let B : Set (Eucl P × ℝ) := {b | b.1 ∈ A ∧ 0 < b.2 ∧ b.2 < R / 10 ∧
+      (M : ℝ≥0∞) * (ω * ENNReal.ofReal b.2 ^ (n : ℝ)) ≤ ν (closedBall b.1 b.2)}
+    have hfine : ∀ x ∈ A, ∃ r, (x, r) ∈ B := by
+      intro x hx
+      have hMx : (M : ℝ≥0∞) < dimensionalUpperDensity ν.toOuterMeasure (n : ℝ) univ x := by
+        rw [hA, mem_ofPred_eq, not_lt_top_iff] at hx
+        rw [hx]
+        exact ENNReal.natCast_lt_top M
+      obtain ⟨r, hqr, hr⟩ := ((frequently_lt_of_lt_limsup (by isBoundedDefault) hMx).and_eventually
+        (Ioo_mem_nhdsGT (show (0 : ℝ) < R / 10 by positivity))).exists
+      have hnorm0 : ω * ENNReal.ofReal r ^ (n : ℝ) ≠ 0 :=
+        mul_ne_zero hω0 (ENNReal.rpow_pos (ENNReal.ofReal_pos.mpr hr.1) ENNReal.ofReal_ne_top).ne'
+      have hnormtop : ω * ENNReal.ofReal r ^ (n : ℝ) ≠ ∞ :=
+        ENNReal.mul_ne_top hωtop
+          (ENNReal.rpow_ne_top_of_nonneg (by positivity) ENNReal.ofReal_ne_top)
+      rw [Poincare.SimonGMT.Chapter01.dimensionalDensityQuotient, hω, univ_inter,
+        Measure.toOuterMeasure_apply] at hqr
+      exact ⟨r, hx, hr.1, hr.2,
+        ((ENNReal.lt_div_iff_mul_lt (Or.inl hnorm0) (Or.inl hnormtop)).mp hqr).le⟩
+    -- The five-times covering lemma (Simon Ch. 1, 3.4) gives a disjoint subfamily `D`.
+    obtain ⟨D, hDB, hdisj, hcover⟩ :=
+      Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall B Prod.fst Prod.snd
+        (R / 10) (fun b hb => hb.2.2.1.le) 5 (by norm_num)
+    have hdisj' : Pairwise (fun i j : D =>
+        Disjoint (closedBall i.val.1 i.val.2) (closedBall j.val.1 j.val.2)) :=
+      fun i j hij => hdisj i.property j.property (Subtype.coe_ne_coe.mpr hij)
+    have hpos : ∀ b : D, 0 < ν (closedBall b.val.1 b.val.2) := by
+      intro b
+      have hb := hDB b.property
+      exact (pos_iff_ne_zero.mpr (mul_ne_zero (by exact_mod_cast hM0.ne') (mul_ne_zero hω0
+        (ENNReal.rpow_pos (ENNReal.ofReal_pos.mpr hb.2.1) ENNReal.ofReal_ne_top).ne'))).trans_le
+        hb.2.2.2
+    have hcount := ν.countable_meas_pos_of_disjoint_of_meas_iUnion_ne_top
+      (fun b : D => measurableSet_closedBall) hdisj'
+      (ne_top_of_le_ne_top hν.ne (measure_mono (subset_univ _)))
+    have hDc : Countable D := countable_univ_iff.mp (by simpa only [hpos, ofPred_true] using hcount)
+    -- Total weight of the disjoint family: `M ∑ ωₙ rⁿ ≤ ∑ ν(B̄ᵣ) ≤ ν(ℝ^P)`.
+    have hsum : (M : ℝ≥0∞) * ∑' b : D, ω * ENNReal.ofReal b.val.2 ^ (n : ℝ) ≤ ν univ := by
+      rw [← ENNReal.tsum_mul_left]
+      calc
+        ∑' b : D, (M : ℝ≥0∞) * (ω * ENNReal.ofReal b.val.2 ^ (n : ℝ)) ≤
+            ∑' b : D, ν (closedBall b.val.1 b.val.2) :=
+          ENNReal.tsum_le_tsum fun b => (hDB b.property).2.2.2
+        _ = ν (⋃ b : D, closedBall b.val.1 b.val.2) :=
+          (measure_iUnion hdisj' (fun _ => measurableSet_closedBall)).symm
+        _ ≤ ν univ := measure_mono (subset_univ _)
+    -- The five-times enlargements cover `A`.
+    have hAcov : A ⊆ ⋃ b : D, closedBall b.val.1 (5 * b.val.2) := by
+      intro x hx
+      obtain ⟨r, hr⟩ := hfine x hx
+      obtain ⟨b, hbD, hsub⟩ := hcover (x, r) hr
+      exact mem_iUnion.mpr ⟨⟨b, hbD⟩, hsub (mem_closedBall_self hr.2.1.le)⟩
+    set η := OuterMeasure.mkMetric'.pre (fun s : Set (Eucl P) => ediam s ^ (n : ℝ)) δ
+    -- Cost of an enlarged ball at scale `δ`: its diameter is at most `10 r < δ`.
+    have hlarge : ∀ b : D, η (closedBall b.val.1 (5 * b.val.2)) ≤
+        10 ^ n * ENNReal.ofReal b.val.2 ^ (n : ℝ) := by
+      intro b
+      have hb := hDB b.property
+      have hdiam : ediam (closedBall b.val.1 (5 * b.val.2)) ≤ ENNReal.ofReal (10 * b.val.2) :=
+        ediam_le_of_forall_dist_le fun y hy z hz => by
+          have hy' := mem_closedBall.mp hy
+          have hz' := mem_closedBall.mp hz
+          linarith [dist_triangle_right y z b.val.1]
+      calc
+        η (closedBall b.val.1 (5 * b.val.2)) ≤
+            ediam (closedBall b.val.1 (5 * b.val.2)) ^ (n : ℝ) :=
+          OuterMeasure.mkMetric'.pre_le (hdiam.trans
+            ((ENNReal.ofReal_le_ofReal (by linarith [hb.2.2.1])).trans hRδ.le))
+        _ ≤ ENNReal.ofReal (10 * b.val.2) ^ (n : ℝ) := by gcongr
+        _ = 10 ^ n * ENNReal.ofReal b.val.2 ^ (n : ℝ) := by
+          rw [ENNReal.ofReal_mul (by norm_num), ENNReal.mul_rpow_of_nonneg _ _ (by positivity),
+            ENNReal.rpow_natCast, ENNReal.ofReal_ofNat]
+    calc
+      (M : ℝ≥0∞) * (ω * η A) ≤
+          (M : ℝ≥0∞) * (ω * ∑' b : D, 10 ^ n * ENNReal.ofReal b.val.2 ^ (n : ℝ)) := by
+        gcongr
+        calc
+          η A ≤ η (⋃ b : D, closedBall b.val.1 (5 * b.val.2)) := measure_mono hAcov
+          _ ≤ ∑' b : D, η (closedBall b.val.1 (5 * b.val.2)) := measure_iUnion_le _
+          _ ≤ _ := ENNReal.tsum_le_tsum hlarge
+      _ = 10 ^ n * ((M : ℝ≥0∞) * ∑' b : D, ω * ENNReal.ofReal b.val.2 ^ (n : ℝ)) := by
+        rw [ENNReal.tsum_mul_left, ENNReal.tsum_mul_left]
+        ring
+      _ ≤ 10 ^ n * ν univ := by gcongr
+  -- Hence `μHE[n](A) = 0`, as `μHE[n]` is a finite multiple of `μH[n]`.
+  have hHE : (μHE[n] : Measure (Eucl P)) A = 0 := by
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hH, smul_zero]
+  -- Step 2: `Θ*ⁿ(ν, x) < ∞` for `μHE[n]`-a.e. `x`.
+  have hae : ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)),
+      dimensionalUpperDensity ν.toOuterMeasure (n : ℝ) univ x < ∞ := by
+    rw [ae_iff, ← hA]
+    exact hHE
+  filter_upwards [hae] with x hx
+  -- Step 3: small radii, `q_x(r) < Θ*ⁿ(ν, x) + 1` on `(0, r₀)`.
+  set b : ℝ≥0∞ := dimensionalUpperDensity ν.toOuterMeasure (n : ℝ) univ x + 1 with hb
+  have hb_top : b ≠ ∞ := ENNReal.add_ne_top.2 ⟨hx.ne, ENNReal.one_ne_top⟩
+  have hΘb : dimensionalUpperDensity ν.toOuterMeasure (n : ℝ) univ x < b :=
+    ENNReal.lt_add_right hx.ne one_ne_zero
+  have hev : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      Poincare.SimonGMT.Chapter01.dimensionalDensityQuotient ν.toOuterMeasure (n : ℝ) univ x r
+        < b :=
+    eventually_lt_of_limsup_lt hΘb
+  obtain ⟨r₀, hr₀, hsub⟩ := (mem_nhdsGT_iff_exists_Ioo_subset).1 hev
+  -- Steps 4–6: unpack the quotient bound, with the real constant `C = b ωₙ`.
+  refine ⟨b.toReal * ω.toReal, r₀, hr₀, ?_⟩
+  intro r hr
+  have hq := hsub hr
+  simp only [mem_ofPred_eq, Poincare.SimonGMT.Chapter01.dimensionalDensityQuotient, univ_inter,
+    Measure.coe_toOuterMeasure, hω] at hq
+  rw [ENNReal.rpow_natCast, ← ENNReal.ofReal_pow hr.1.le] at hq
+  have hd0 : ω * ENNReal.ofReal (r ^ n) ≠ 0 :=
+    mul_ne_zero hω0 (ENNReal.ofReal_pos.2 (pow_pos hr.1 n)).ne'
+  have hdtop : ω * ENNReal.ofReal (r ^ n) ≠ ∞ := ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top
+  rw [ENNReal.div_lt_iff (Or.inl hd0) (Or.inl hdtop)] at hq
+  rw [ENNReal.ofReal_mul (mul_nonneg ENNReal.toReal_nonneg ENNReal.toReal_nonneg),
+    ENNReal.ofReal_mul ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hb_top,
+    ENNReal.ofReal_toReal hωtop, mul_assoc]
+  exact hq
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
