@@ -483,6 +483,24 @@ theorem arp_ball_subset_of_closed_rel_open : ∀ {m : ℕ} (D : Set (Rn m)) (c :
   exact hsub.trans inter_subset_left
 
 end Submission
+/-- **`C¹` regularity with a derivative bound is local** (the final part of patching local graphs
+into a single graph for Simon's Remark 5.3).  If near each `x₀ ∈ Ω` the map `u` agrees on
+`B̆_ε(x₀) ∩ Ω` with some `f` that is `C¹` on `B̆_ε(x₀)` with operator norm `‖Df(x₀)‖ ≤ L`, then
+`u = f` on a neighbourhood of `x₀`, so `u` is `C¹` at `x₀` and `Du(x₀) = Df(x₀)`; hence `u` is
+`C¹` on `Ω` and `‖Du‖ ≤ L` there. -/
+theorem Submission.arp_contDiffOn_of_local_C1_reps : ∀ {m k : ℕ} (u : Rn m → Rn k) (Ω : Set (Rn m)) (L : ℝ), IsOpen Ω → (∀ x₀ ∈ Ω, ∃ (ε : ℝ) (f : Rn m → Rn k), 0 < ε ∧ ContDiffOn ℝ 1 f (ball x₀ ε) ∧ ‖fderiv ℝ f x₀‖ ≤ L ∧ ∀ w ∈ ball x₀ ε ∩ Ω, u w = f w) → ContDiffOn ℝ 1 u Ω ∧ ∀ x ∈ Ω, ‖fderiv ℝ u x‖ ≤ L := by
+  intro m k u Ω L hΩ hloc
+  -- at `x₀ ∈ Ω`, `u` agrees with the representative `f` on the neighbourhood `B̆_ε(x₀) ∩ Ω`
+  have key : ∀ x₀ ∈ Ω, ContDiffAt ℝ 1 u x₀ ∧ ‖fderiv ℝ u x₀‖ ≤ L := by
+    intro x₀ hx₀
+    obtain ⟨ε, f, hε, hf, hfL, hfu⟩ := hloc x₀ hx₀
+    have hball : ball x₀ ε ∈ 𝓝 x₀ := Metric.ball_mem_nhds x₀ hε
+    have heq : u =ᶠ[𝓝 x₀] f :=
+      Filter.eventually_of_mem (Filter.inter_mem hball (hΩ.mem_nhds hx₀)) hfu
+    refine ⟨(hf.contDiffAt hball).congr_of_eventuallyEq heq, ?_⟩
+    rw [heq.fderiv_eq]
+    exact hfL
+  exact ⟨fun x hx => (key x hx).1.contDiffWithinAt, fun x hx => (key x hx).2⟩
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
