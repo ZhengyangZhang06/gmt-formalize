@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.im_closure-a1.lebesgue_points-a1",
+  "parent_id": "root.integrality_weak_limits-a1.im_closure-a1",
+  "depth": 3,
+  "title": "Normalized Lebesgue points of a locally integrable function on a set of locally finite Hᵏ-measure",
+  "statement": "Let P, k ∈ ℕ, Hᵏ := μHE[k] on ℝ^P = Eucl P, U ⊆ ℝ^P open, M ⊆ U Hᵏ-null-measurable with Hᵏ(M ∩ K) < ∞ for every compact K ⊆ U, and f : ℝ^P → ℝ Hᵏ-integrable on M ∩ K for every compact K ⊆ U. Then for Hᵏ⌞M-almost every x and every R > 0, r^{−k}·∫⁻_{M ∩ B̄_{Rr}(x)} |f(y) − f(x)| dHᵏ(y) → 0 as r ↓ 0 (r^{−k} is written ENNReal.ofReal((r^k)⁻¹), |·| is the extended norm ‖·‖ₑ, B̄_ρ(x) = closedBall x ρ).",
+  "lean_statement": "∀ (P k : ℕ) (U M : Set (Eucl P)) (f : Eucl P → ℝ), IsOpen U → M ⊆ U → NullMeasurableSet M (μHE[k] : Measure (Eucl P)) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → (μHE[k] : Measure (Eucl P)) (M ∩ K) < ∞) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn f (M ∩ K) (μHE[k] : Measure (Eucl P))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ y in M ∩ closedBall x (R * r), ‖f y - f x‖ₑ ∂(μHE[k] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "iwl_imc_normalized_lebesgue_points",
+  "depends_on": [
+    "root.rectifiability-a1.density_comparison-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.density_comparison-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-density-comparison-a1-a1",
+      "result_commit": "c5336e1a14131119b486a9306a19dac19728d9fb",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-im-closure-a1-lebesgue-points-a1-a1"
+}
