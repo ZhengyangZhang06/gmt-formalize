@@ -605,6 +605,61 @@ theorem aetp_upper_density_zero_ae : ∀ (n ℓ : ℕ) (ν : Measure (Amb n ℓ)
   obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
   exact mem_iUnion.2 ⟨k, hxA, hfreq.mono fun r hr => hk.trans hr⟩
 
+/-- `Hⁿ ⌞ Γ ≤ μ_V` when `Γ ⊆ O`, `O` is open with `μ_V(O) < ∞`, `θ ≥ 1` `μ_V`-a.e., and each `y ∈ Γ`
+has positive lower density: `c sⁿ ≤ μ_V(B_s(y))` for `0 < s < s₀`.
+
+Let `M₁ ⊆ M` be a Borel core of the carrier (`M₁ = M` `Hⁿ`-a.e.), so `μ_V(M₁ᶜ) = 0`.  The Upper
+Density Theorem (`aetp_upper_density_zero_ae`) for `μ_V` and `A = O ∩ M₁` gives
+`μ_V(A ∩ B_r(x)) / rⁿ → 0` for `Hⁿ`-a.e. `x ∉ A`.  At `x ∈ Γ \ M` and small `r`, `B_r(x) ⊆ O`, so
+`c rⁿ ≤ μ_V(B_r(x)) ≤ μ_V(A ∩ B_r(x)) + μ_V(M₁ᶜ) = μ_V(A ∩ B_r(x))`; hence `Hⁿ(Γ \ M) = 0`.  As
+`θ > 0` on `M`, `θ ≥ 1` holds `Hⁿ ⌞ M`-a.e., so `Hⁿ ⌞ Γ ≤ Hⁿ ⌞ M ≤ (Hⁿ ⌞ M) ⌞ θ = μ_V`. -/
+theorem anyrad_gc_hausdorff_restrict_le_weight : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (O Γ : Set (Amb n ℓ)), IsOpen O → V.weight O < ⊤ → Γ ⊆ O → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → (∀ y ∈ Γ, ∃ c s₀ : ℝ, 0 < c ∧ 0 < s₀ ∧ ∀ s : ℝ, 0 < s → s < s₀ → ENNReal.ofReal (c * s ^ n) ≤ V.weight (closedBall y s)) → (μHE[n] : Measure (Amb n ℓ)).restrict Γ ≤ V.weight := by
+  intro n ℓ U V O Γ hO hOfin hΓO hmult hlow
+  -- A Borel core `M₁ ⊆ M` of the carrier, with `μ_V(M₁ᶜ) = 0`.
+  obtain ⟨M₁, hM₁M, hM₁, hM₁ae⟩ := V.nullMeasurableSet_carrier.exists_measurable_subset_ae_eq
+  have hM₁c : V.weight M₁ᶜ = 0 := by
+    refine withDensity_absolutelyContinuous _ _ ?_
+    rw [Measure.restrict_apply hM₁.compl]
+    refine measure_mono_null (fun x hx => ?_) (ae_eq_set.1 hM₁ae).2
+    exact ⟨hx.2, hx.1⟩
+  -- Upper density theorem for `μ_V` and the Borel set `A = O ∩ M₁` of finite `μ_V`-measure.
+  have hdens := aetp_upper_density_zero_ae n ℓ V.weight (O ∩ M₁) (hO.measurableSet.inter hM₁)
+    ((measure_mono inter_subset_left).trans_lt hOfin)
+  -- `Γ ⊆ M` up to an `Hⁿ`-null set: at `x ∈ Γ \ M` the density of `μ_V ⌞ A` is positive.
+  have hΓM : ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∈ Γ → x ∈ V.carrier := by
+    filter_upwards [hdens] with x hx hxΓ
+    by_contra hxM
+    obtain ⟨c, s₀, hc, hs₀, hcs⟩ := hlow x hxΓ
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hO x (hΓO hxΓ)
+    obtain ⟨r, hr, hr0, hrlt⟩ := (((hx fun h => hxM (hM₁M h.2)).eventually_lt_const
+      (ENNReal.ofReal_pos.2 hc)).and (Ioo_mem_nhdsGT (lt_min hs₀ hε))).exists
+    have hpos : ENNReal.ofReal (r ^ n) ≠ 0 := by
+      rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+      exact pow_pos hr0 n
+    refine (lt_irrefl _ (hr.trans_le' ?_)).elim
+    rw [ENNReal.le_div_iff_mul_le (Or.inl hpos) (Or.inl ENNReal.ofReal_ne_top),
+      ← ENNReal.ofReal_mul hc.le]
+    calc ENNReal.ofReal (c * r ^ n) ≤ V.weight (closedBall x r) :=
+          hcs r hr0 (hrlt.trans_le (min_le_left _ _))
+      _ ≤ V.weight ((O ∩ M₁ ∩ closedBall x r) ∪ M₁ᶜ) := by
+          refine measure_mono fun y hy => ?_
+          by_cases hyM₁ : y ∈ M₁
+          · exact Or.inl ⟨⟨hball (closedBall_subset_ball (hrlt.trans_le (min_le_right _ _)) hy),
+              hyM₁⟩, hy⟩
+          · exact Or.inr hyM₁
+      _ ≤ V.weight (O ∩ M₁ ∩ closedBall x r) + V.weight M₁ᶜ := measure_union_le _ _
+      _ = V.weight (O ∩ M₁ ∩ closedBall x r) := by rw [hM₁c, add_zero]
+  -- `θ ≥ 1` holds `Hⁿ ⌞ M`-a.e., since `θ > 0` on `M`.
+  have hθ : (1 : Amb n ℓ → ℝ≥0∞) ≤ᵐ[(μHE[n] : Measure (Amb n ℓ)).restrict V.carrier]
+      fun x => ENNReal.ofReal (V.mult x) := by
+    filter_upwards [(ae_withDensity_iff' V.aemeasurable_mult.ennreal_ofReal).1 hmult,
+      ae_restrict_mem₀ V.nullMeasurableSet_carrier] with x hx hxM
+    exact ENNReal.one_le_ofReal.2 (hx (ENNReal.ofReal_pos.2 (V.mult_pos x hxM)).ne')
+  calc (μHE[n] : Measure (Amb n ℓ)).restrict Γ
+      ≤ (μHE[n] : Measure (Amb n ℓ)).restrict V.carrier := Measure.restrict_mono_ae hΓM
+    _ = ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier).withDensity 1 := withDensity_one.symm
+    _ ≤ V.weight := withDensity_mono hθ
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
