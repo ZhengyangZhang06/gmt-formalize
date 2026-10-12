@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "poincare_c1_segment_sq_bound|lintegral_ball_comp_sub_le|contDiff_one_ball_translation_estimate",
+        "theorem lintegral_div_right_eq_self",
+        "theorem lintegral_indicator ",
+        "eLpNorm_le_eLpNorm_mul_rpow_measure_univ|eLpNorm_one_eq_lintegral_enorm|eLpNorm_eq_lintegral_rpow_enorm_toReal",
+        "theorem lintegral_lintegral_swap",
+        "theorem integral_eq_sub_of_hasDerivAt ",
+        "theorem ContDiff.continuous_fderiv ",
+        "git diff ea5607598f3133b40a13241f2e51517a8c6423cd c4dfab89f499aea16caeadb852f764485088d316 -- GMT/Ch05/Submission.lean",
+        "git diff ea5607598f3133b40a13241f2e51517a8c6423cd da24ae4652b4da8c3e8ae05dd21aa5c9f50dad1b -- GMT/Ch05/Submission.lean",
+        "python3 /tmp/smooth-translation-audit-jtrw89h2/Compile.py Assembly.lean",
+        "python3 /tmp/smooth-translation-audit-jtrw89h2/Compile.py EndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/CompareExp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/LIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-translation-estimate-a1-smooth-transla-8e4183bc7d/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-translation-estimate-a1-smooth-transla-8e4183bc7d/decomposition-v4.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-poincare-inequality-a1-segment-bound-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-translation-estimate-a1-ball-translate-fb82697a57/isolated-comparator-result.json",
+        "/tmp/smooth-translation-audit-jtrw89h2/Assembly.lean",
+        "/tmp/smooth-translation-audit-jtrw89h2/Assembly.lean.log",
+        "/tmp/smooth-translation-audit-jtrw89h2/EndToEnd.lean",
+        "/tmp/smooth-translation-audit-jtrw89h2/EndToEnd.lean.log"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions, identical frozen/workspace contract files, and byte-identical copies of 13 inspected Mathlib files. Searching the snapshot found none of the three proposed/parent declaration names. Relevant library results support FTC, gradient continuity and norm identification, L1–L2 comparison, indicator integrals for arbitrary functions, translation invariance without measurability, and Tonelli. Both reused declarations have unique accepted owners, passing comparator records, and byte-identical frozen types. Adding their proposed edges leaves the DAG acyclic; neither child has dependencies. The reuse-only split is appropriate: applying the segment bound to (x-z,x), integrating, swapping integrals, applying translation for t•z, and using volume([0,1])=1 proves the selected parent. Independently generated assumption-only and end-to-end Lean checks both passed against a fresh frozen-contract build. All exact types elaborate before child implementation; comparator-style exact checks pass. Both children, the implication, and the assembled parent use only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "segment_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition agree on every hypothesis, endpoint, measure, gradient, and extended-norm factor. The proof correctly establishes the segment derivative, continuous chain-rule derivative, FTC, Riesz/operator-norm bound, integral norm inequality, and Cauchy–Schwarz on the mass-one interval (0,1], then squares and enlarges to [0,1]. It requires no additional hypothesis or parent theorem. The supplied Lean appendix matches the accepted candidate verbatim and independently compiles. The bare name has one accepted owner with an identical frozen type. This child supplies the parent's pointwise estimate."
+    },
+    {
+      "key": "ball_translate_lintegral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition agree, including arbitrary F without measurability and unrestricted real radii. The norm inequality proves the required ball inclusion; measurable-ball indicator identities, pointwise monotonicity, and translation by a measurable equivalence then prove the exact conclusion for arbitrary F. The pinned translation theorem imposes no measurability requirement on F. The bare name uniquely identifies an accepted declaration with an identical frozen type. Reusing this existing dependency as a child introduces no cycle; its application with w=t•z supplies the parent's integral comparison."
+    }
+  ],
+  "required_changes": []
+}
