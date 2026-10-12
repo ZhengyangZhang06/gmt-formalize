@@ -640,6 +640,1007 @@ theorem Submission.br_lattice_face_stokes :
   simp only [latticeFaceAction, Submission.br_latticeFace_setIntegral_eq_cube]
   exact Submission.br_cube_stokes_lattice P m ρ hρ F ω hω
 
+/-- Boundaries of integer lattice chains are integer multiplicity (Simon Ch. 6, §5 and the
+proof of 6.3).  If `Pc = ∑_F β_F [[F]]` with `β_F ∈ ℤ`, Stokes on each face
+(`Submission.br_lattice_face_stokes`) and regrouping by `m`-faces give
+`∂Pc = ∑_G γ_G [[G]]` with `γ_G ∈ ℤ`; only finitely many faces meet the support of a test
+form, so all sums are finite.  An integer lattice chain `∑_G γ_G [[G]]` is `τ(M, θ, ξ)` with
+`M` the union of the relative interiors `G°` with `γ_G ≠ 0`, `θ = |γ_G|` and
+`ξ = sign(γ_G) e_{γ'(0)} ∧ ⋯ ∧ e_{γ'(m-1)}` on `G°`: relative interiors of distinct faces are
+disjoint, relative boundaries are `Hᵐ`-null, and near a point of `G°` the set `M` is the
+affine plane of `G` with constant multiplicity, which is therefore the weighted approximate
+tangent space there. -/
+theorem Submission.br_lattice_chain_boundary_isIntegerMultiplicity :
+    ∀ (P m : ℕ) (ρ : ℝ), 0 < ρ → ∀ (β : LatticeFaceIndex (m + 1) P → ℤ)
+      (Pc : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)),
+      IsLatticeChain ρ (fun F => (β F : ℝ)) Pc → IsIntegerMultiplicity Pc.boundary := by
+  -- (L3) Local finiteness: a bounded set meets only finitely many faces of each dimension.
+  have faces_meeting_finite : ∀ (P d : ℕ) (ρ : ℝ), 0 < ρ → ∀ K : Set (Eucl P),
+      Bornology.IsBounded K →
+        {G : LatticeFaceIndex d P | (latticeFace ρ G ∩ K).Nonempty}.Finite := by
+    intro P d ρ hρ K hK
+    obtain ⟨R, hR⟩ := hK.subset_closedBall 0
+    set N : ℤ := ⌈R / ρ⌉ + 1 with hN
+    have hfin : (Set.pi univ (fun _ : Fin P => Set.Icc (-N) N) ×ˢ
+        (univ : Set (SimonMultiIndex d P))).Finite :=
+      (Set.Finite.pi (fun _ => Set.finite_Icc _ _)).prod Set.finite_univ
+    refine hfin.subset ?_
+    rintro ⟨z, α⟩ ⟨x, hxF, hxK⟩
+    refine ⟨?_, mem_univ _⟩
+    intro i _
+    have hxi : |x i| ≤ R := by
+      have h1 := hR hxK
+      rw [mem_closedBall, dist_zero_right] at h1
+      have h2 := PiLp.norm_apply_le x i
+      rw [Real.norm_eq_abs] at h2
+      linarith
+    have hxi' : |x i / ρ| ≤ R / ρ := by
+      rw [abs_div, abs_of_pos hρ]
+      exact div_le_div_of_nonneg_right hxi hρ.le
+    have hceil : R / ρ ≤ (⌈R / ρ⌉ : ℝ) := Int.le_ceil _
+    have key : (z i : ℝ) ≤ x i / ρ ∧ x i / ρ ≤ (z i : ℝ) + 1 := by
+      obtain ⟨h1, h2⟩ := hxF i
+      by_cases hi : i ∈ range α
+      · obtain ⟨a, b⟩ := h1 hi
+        constructor
+        · rw [le_div_iff₀ hρ]; linarith
+        · rw [div_le_iff₀ hρ]; linarith
+      · have := h2 hi
+        simp only at this
+        rw [this, mul_div_cancel_left₀ _ hρ.ne']
+        constructor <;> linarith
+    obtain ⟨k1, k2⟩ := key
+    have habs := abs_le.mp hxi'
+    constructor
+    · have : (-(N : ℝ)) ≤ (z i : ℝ) := by
+        rw [hN]; push_cast; linarith
+      exact_mod_cast this
+    · have : (z i : ℝ) ≤ (N : ℝ) := by
+        rw [hN]; push_cast; linarith
+      exact_mod_cast this
+  -- (L1) A point of the relative interior `G°` lies in no other face of the same dimension.
+  have face_eq_of_mem_relint : ∀ (P d : ℕ) (ρ : ℝ), 0 < ρ →
+      ∀ (G G' : LatticeFaceIndex d P) (x : Eucl P),
+      (∀ i : Fin P, (i ∈ range G.2 → ρ * (G.1 i : ℝ) < x i ∧ x i < ρ * ((G.1 i : ℝ) + 1)) ∧
+        (i ∉ range G.2 → x i = ρ * (G.1 i : ℝ))) →
+      x ∈ latticeFace ρ G' → G' = G := by
+    intro P d ρ hρ G G' x hx hx'
+    obtain ⟨w, α⟩ := G
+    obtain ⟨w', α'⟩ := G'
+    simp only at hx
+    have hx'' : ∀ i : Fin P, (i ∈ range α' → ρ * (w' i : ℝ) ≤ x i ∧ x i ≤ ρ * ((w' i : ℝ) + 1)) ∧
+        (i ∉ range α' → x i = ρ * (w' i : ℝ)) := hx'
+    have noint : ∀ (a b : ℤ), ρ * (a : ℝ) < ρ * (b : ℝ) → ρ * (b : ℝ) < ρ * ((a : ℝ) + 1) →
+        False := by
+      intro a b h1 h2
+      have h1' : (a : ℝ) < b := lt_of_mul_lt_mul_left h1 hρ.le
+      have h2' : (b : ℝ) < a + 1 := lt_of_mul_lt_mul_left h2 hρ.le
+      have : a < b := by exact_mod_cast h1'
+      have : b < a + 1 := by exact_mod_cast h2'
+      omega
+    have hsub : range α ⊆ range α' := by
+      intro i hi
+      by_contra hi'
+      obtain ⟨a, b⟩ := (hx i).1 hi
+      have h2 := (hx'' i).2 hi'
+      rw [h2] at a b
+      exact noint _ _ a b
+    have hrange : range α = range α' := by
+      refine Set.eq_of_subset_of_ncard_le hsub ?_ (Set.toFinite _)
+      rw [Set.ncard_range_of_injective α.injective, Set.ncard_range_of_injective α'.injective]
+    have hαα' : α' = α := (OrderEmbedding.range_inj_of_wellFoundedLT).1 hrange.symm
+    subst hαα'
+    have hww : w' = w := by
+      funext i
+      by_cases hi : i ∈ range α'
+      · obtain ⟨a, b⟩ := (hx i).1 hi
+        obtain ⟨c, e⟩ := (hx'' i).1 hi
+        have h1 : (w i : ℝ) < w' i + 1 := by
+          have : ρ * (w i : ℝ) < ρ * ((w' i : ℝ) + 1) := lt_of_lt_of_le a e
+          exact lt_of_mul_lt_mul_left this hρ.le
+        have h2 : (w' i : ℝ) < w i + 1 := by
+          have : ρ * (w' i : ℝ) < ρ * ((w i : ℝ) + 1) := lt_of_le_of_lt c b
+          exact lt_of_mul_lt_mul_left this hρ.le
+        have : w i < w' i + 1 := by exact_mod_cast h1
+        have : w' i < w i + 1 := by exact_mod_cast h2
+        omega
+      · have h1 := (hx i).2 hi
+        have h2 := (hx'' i).2 hi
+        rw [h1] at h2
+        have := mul_left_cancel₀ hρ.ne' h2
+        exact_mod_cast this.symm
+    rw [hww]
+  -- (L2) `Hᵈ(|G|) = ρᵈ` and the relative boundary `|G| \ G°` is `Hᵈ`-null.
+  have face_measure : ∀ (P d : ℕ) (ρ : ℝ), 0 < ρ → ∀ G : LatticeFaceIndex d P,
+      (μHE[d] : Measure (Eucl P)) (latticeFace ρ G) = ENNReal.ofReal (ρ ^ d) ∧
+      (μHE[d] : Measure (Eucl P)) (latticeFace ρ G \ {x | ∀ i : Fin P,
+        (i ∈ range G.2 → ρ * (G.1 i : ℝ) < x i ∧ x i < ρ * ((G.1 i : ℝ) + 1)) ∧
+        (i ∉ range G.2 → x i = ρ * (G.1 i : ℝ))}) = 0 := by
+    intro P d ρ hρ G
+    classical
+    set e : Fin d → Eucl P := fun j => EuclideanSpace.single (G.2 j) (1:ℝ) with he_def
+    have he : Orthonormal ℝ e := (EuclideanSpace.orthonormal_single).comp _ G.2.injective
+    set c : Eucl P := ∑ l, (ρ * (G.1 l : ℝ)) • EuclideanSpace.single l (1:ℝ) with hc_def
+    set A : EuclideanSpace ℝ (Fin d) → Eucl P := fun s => c + ∑ j, s j • e j with hA_def
+    have hAiso : Isometry A := by
+      refine Isometry.of_dist_eq fun s t => ?_
+      rw [dist_eq_norm, dist_eq_norm]
+      have h : A s - A t = ∑ j, (s - t) j • e j := by
+        simp only [hA_def, add_sub_add_left_eq_sub, ← Finset.sum_sub_distrib, ← sub_smul,
+          PiLp.sub_apply]
+      rw [h]
+      have h1 : ‖∑ j, (s - t) j • e j‖ ^ 2 = ‖s - t‖ ^ 2 := by
+        rw [← real_inner_self_eq_norm_sq, he.inner_sum, EuclideanSpace.real_norm_sq_eq]
+        simp [sq]
+      exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 h1
+    have hcoord : ∀ (s : EuclideanSpace ℝ (Fin d)) (i : Fin P),
+        A s i = ρ * (G.1 i : ℝ) + ∑ j, s j * (if i = G.2 j then 1 else 0) := by
+      intro s i
+      simp [hA_def, hc_def, he_def, Pi.single_apply]
+    have hcoord1 : ∀ (s : EuclideanSpace ℝ (Fin d)) (j : Fin d),
+        A s (G.2 j) = ρ * (G.1 (G.2 j) : ℝ) + s j := by
+      intro s j
+      rw [hcoord]
+      congr 1
+      rw [Finset.sum_eq_single j]
+      · simp
+      · intro b _ hb
+        rw [ite_eq_right]; · simp
+        intro h; exact hb (G.2.injective h.symm)
+      · simp
+    have hcoord2 : ∀ (s : EuclideanSpace ℝ (Fin d)) (i : Fin P), i ∉ range G.2 →
+        A s i = ρ * (G.1 i : ℝ) := by
+      intro s i hi
+      rw [hcoord]
+      have : ∀ j, (if i = G.2 j then (1:ℝ) else 0) = 0 :=
+        fun j => ite_eq_right (fun h => hi ⟨j, h.symm⟩)
+      simp [this]
+    -- preimage point
+    have hpre : ∀ x : Eucl P, (∀ i, i ∉ range G.2 → x i = ρ * (G.1 i : ℝ)) →
+        A (WithLp.toLp 2 (fun j => x (G.2 j) - ρ * (G.1 (G.2 j) : ℝ))) = x := by
+      intro x hx
+      ext i
+      by_cases hi : i ∈ range G.2
+      · obtain ⟨j, rfl⟩ := hi
+        rw [hcoord1]
+        simp
+      · rw [hcoord2 _ _ hi, hx i hi]
+    set box : Set (EuclideanSpace ℝ (Fin d)) := {s | ∀ j, 0 ≤ s j ∧ s j ≤ ρ} with hbox
+    set obox : Set (EuclideanSpace ℝ (Fin d)) := {s | ∀ j, 0 < s j ∧ s j < ρ} with hobox
+    have hface : latticeFace ρ G = A '' box := by
+      ext x
+      constructor
+      · intro hx
+        have hx' := hx
+        refine ⟨WithLp.toLp 2 (fun j => x (G.2 j) - ρ * (G.1 (G.2 j) : ℝ)), ?_,
+            hpre x fun i hi => (hx i).2 hi⟩
+        intro j
+        obtain ⟨h1, h2⟩ := (hx' (G.2 j)).1 ⟨j, rfl⟩
+        simp only
+        constructor <;> nlinarith
+      · rintro ⟨s, hs, rfl⟩ i
+        refine ⟨?_, fun hi => hcoord2 s i hi⟩
+        rintro ⟨j, rfl⟩
+        rw [hcoord1]
+        obtain ⟨h1, h2⟩ := hs j
+        constructor <;> nlinarith
+    have hrel : {x : Eucl P | ∀ i : Fin P,
+        (i ∈ range G.2 → ρ * (G.1 i : ℝ) < x i ∧ x i < ρ * ((G.1 i : ℝ) + 1)) ∧
+        (i ∉ range G.2 → x i = ρ * (G.1 i : ℝ))} = A '' obox := by
+      ext x
+      constructor
+      · intro hx
+        refine ⟨WithLp.toLp 2 (fun j => x (G.2 j) - ρ * (G.1 (G.2 j) : ℝ)), ?_,
+            hpre x fun i hi => (hx i).2 hi⟩
+        intro j
+        obtain ⟨h1, h2⟩ := (hx (G.2 j)).1 ⟨j, rfl⟩
+        simp only
+        constructor <;> nlinarith
+      · rintro ⟨s, hs, rfl⟩ i
+        refine ⟨?_, fun hi => hcoord2 s i hi⟩
+        rintro ⟨j, rfl⟩
+        rw [hcoord1]
+        obtain ⟨h1, h2⟩ := hs j
+        constructor <;> nlinarith
+    -- volumes of boxes in Euclidean space
+    have hbox' : box = (WithLp.ofLp) ⁻¹' (Icc (0 : Fin d → ℝ) (fun _ => ρ)) := by
+      ext s; simp [hbox, Pi.le_def, forall_and]
+    have hobox' : obox = (WithLp.ofLp) ⁻¹' (pi univ fun _ : Fin d => Ioo (0:ℝ) ρ) := by
+      ext s; simp [hobox]
+    have hvbox : (volume : Measure (EuclideanSpace ℝ (Fin d))) box = ENNReal.ofReal (ρ ^ d) := by
+      rw [hbox', (PiLp.volume_preserving_ofLp (Fin d)).measure_preimage
+        measurableSet_Icc.nullMeasurableSet, Real.volume_Icc_pi]
+      simp [ENNReal.ofReal_pow hρ.le]
+    have hvobox : (volume : Measure (EuclideanSpace ℝ (Fin d))) obox = ENNReal.ofReal (ρ ^ d) := by
+      rw [hobox', (PiLp.volume_preserving_ofLp (Fin d)).measure_preimage
+        (MeasurableSet.univ_pi fun _ => measurableSet_Ioo).nullMeasurableSet, Real.volume_pi_Ioo]
+      simp [ENNReal.ofReal_pow hρ.le]
+    have hsub : obox ⊆ box := fun s hs j => ⟨(hs j).1.le, (hs j).2.le⟩
+    have hoboxm : MeasurableSet obox := by
+      rw [hobox']
+      exact (MeasurableSet.univ_pi fun _ => measurableSet_Ioo).preimage (by fun_prop)
+    constructor
+    · rw [hface, hAiso.euclideanHausdorffMeasure_image,
+        EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hvbox]
+    · rw [hface, hrel, ← image_sdiff hAiso.injective, hAiso.euclideanHausdorffMeasure_image,
+        EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+        measure_sdiff hsub hoboxm.nullMeasurableSet (by rw [hvobox]; exact ENNReal.ofReal_ne_top),
+        hvbox, hvobox, tsub_self]
+  -- Blow-up computation (step 6(g)): if `M` is the affine plane `x + L` near `x` and `θ` is
+  -- constant there, then `L` is the weighted approximate tangent space of `M` at `x`.
+  have tangent_of_locally_affine : ∀ (P d : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P)
+      (L : Submodule ℝ (Eucl P)) (δ : ℝ), 0 < δ → Module.finrank ℝ L = d →
+      M ∩ ball x δ = {y | y - x ∈ L} ∩ ball x δ → (∀ y ∈ M ∩ ball x δ, θ y = θ x) →
+      HasWeightedApproximateTangentSpaceAt d M θ x L := by
+    intro P d M θ x L δ hδ hL hM hθ
+    refine ⟨hL, fun f => ?_⟩
+    obtain ⟨R0, hR0⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall 0
+    set R : ℝ := max R0 0 + 1 with hRdef
+    have hRpos : 0 < R := by positivity
+    have hfR : ∀ y : Eucl P, R ≤ ‖y‖ → f y = 0 := by
+      intro y hy
+      apply image_eq_zero_of_notMem_tsupport
+      intro hy'
+      have := hR0 hy'
+      rw [mem_closedBall, dist_zero_right] at this
+      have : R0 < R := by rw [hRdef]; have := le_max_left R0 0; linarith
+      linarith
+    -- key set identity and value of θ
+    have hset : ∀ r : ℝ, 0 < r → r * R ≤ δ →
+        Poincare.SimonGMT.Chapter03.blowUpMap x r '' M ∩ ball 0 R =
+            (L : Set (Eucl P)) ∩ ball 0 R := by
+      intro r hr hrR
+      ext y
+      simp only [mem_inter_iff, mem_image, mem_ball, dist_zero_right, SetLike.mem_coe,
+        Poincare.SimonGMT.Chapter03.blowUpMap]
+      constructor
+      · rintro ⟨⟨z, hz, rfl⟩, hy⟩
+        refine ⟨?_, hy⟩
+        have hzx : ‖z - x‖ < δ := by
+          rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr] at hy
+          have : ‖z - x‖ < r * R := by
+            rw [inv_mul_lt_iff₀ hr] at hy; exact hy
+          linarith
+        have hz' : z ∈ M ∩ ball x δ := ⟨hz, by rw [mem_ball, dist_eq_norm]; exact hzx⟩
+        rw [hM] at hz'
+        exact L.smul_mem _ hz'.1
+      · rintro ⟨hyL, hy⟩
+        refine ⟨⟨x + r • y, ?_, ?_⟩, hy⟩
+        · have hmem : x + r • y ∈ {z | z - x ∈ L} ∩ ball x δ := by
+            refine ⟨?_, ?_⟩
+            · simp only [Set.mem_ofPred_eq, add_sub_cancel_left]; exact L.smul_mem _ hyL
+            · rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+                abs_of_pos hr]
+              calc r * ‖y‖ < r * R := by exact mul_lt_mul_of_pos_left hy hr
+                _ ≤ δ := hrR
+          rw [← hM] at hmem
+          exact hmem.1
+        · simp only [add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hr.ne', one_smul]
+    have hval : ∀ r : ℝ, 0 < r → r * R ≤ δ → ∀ y ∈ (L : Set (Eucl P)) ∩ ball 0 R,
+        θ (x + r • y) = θ x := by
+      intro r hr hrR y hy
+      apply hθ
+      have hmem : x + r • y ∈ {z | z - x ∈ L} ∩ ball x δ := by
+        refine ⟨?_, ?_⟩
+        · simp only [Set.mem_ofPred_eq, add_sub_cancel_left]; exact L.smul_mem _ hy.1
+        · have hy2 := hy.2
+          rw [mem_ball, dist_zero_right] at hy2
+          rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+            abs_of_pos hr]
+          calc r * ‖y‖ < r * R := by exact mul_lt_mul_of_pos_left hy2 hr
+            _ ≤ δ := hrR
+      rw [← hM] at hmem
+      exact hmem
+    have hLmeas : MeasurableSet ((L : Set (Eucl P)) ∩ ball 0 R) :=
+      (L.closed_of_finiteDimensional.measurableSet).inter measurableSet_ball
+    have key : ∀ r : ℝ, 0 < r → r * R ≤ δ →
+        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
+            f y * θ (x + r • y) ∂(μHE[d] : Measure (Eucl P)) =
+          θ x * ∫ y in (L : Set (Eucl P)), f y ∂(μHE[d] : Measure (Eucl P)) := by
+      intro r hr hrR
+      have hind1 : (fun y => f y * θ (x + r • y)) =
+          (ball (0 : Eucl P) R).indicator (fun y => f y * θ (x + r • y)) := by
+        funext y
+        by_cases hy : y ∈ ball (0 : Eucl P) R
+        · rw [indicator_of_mem hy]
+        · rw [indicator_of_notMem hy]
+          rw [mem_ball, dist_zero_right, not_lt] at hy
+          rw [hfR y hy, zero_mul]
+      have hind2 : (fun y => f y) = (ball (0 : Eucl P) R).indicator (fun y => f y) := by
+        funext y
+        by_cases hy : y ∈ ball (0 : Eucl P) R
+        · rw [indicator_of_mem hy]
+        · rw [indicator_of_notMem hy]
+          rw [mem_ball, dist_zero_right, not_lt] at hy
+          rw [hfR y hy]
+      calc ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
+            f y * θ (x + r • y) ∂(μHE[d] : Measure (Eucl P))
+          = ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
+              (ball (0 : Eucl P) R).indicator (fun y => f y * θ (x + r • y)) y
+                ∂(μHE[d] : Measure (Eucl P)) := by
+            rw [← hind1]
+        _ = ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M ∩ ball 0 R,
+              f y * θ (x + r • y) ∂(μHE[d] : Measure (Eucl P)) :=
+            setIntegral_indicator measurableSet_ball
+        _ = ∫ y in (L : Set (Eucl P)) ∩ ball 0 R,
+              f y * θ (x + r • y) ∂(μHE[d] : Measure (Eucl P)) := by
+            rw [hset r hr hrR]
+        _ = ∫ y in (L : Set (Eucl P)) ∩ ball 0 R, f y * θ x ∂(μHE[d] : Measure (Eucl P)) := by
+            refine setIntegral_congr_fun hLmeas ?_
+            intro y hy
+            simp only [hval r hr hrR y hy]
+        _ = (∫ y in (L : Set (Eucl P)) ∩ ball 0 R, f y ∂(μHE[d] : Measure (Eucl P))) * θ x :=
+            integral_mul_const _ _
+        _ = (∫ y in (L : Set (Eucl P)),
+              (ball (0 : Eucl P) R).indicator (fun y => f y) y ∂(μHE[d] : Measure (Eucl P))) *
+              θ x := by
+            rw [setIntegral_indicator measurableSet_ball]
+        _ = θ x * ∫ y in (L : Set (Eucl P)), f y ∂(μHE[d] : Measure (Eucl P)) := by
+            rw [← hind2, mul_comm]
+    refine tendsto_const_nhds.congr' ?_
+    have hpos : 0 < δ / R := div_pos hδ hRpos
+    filter_upwards [Ioo_mem_nhdsGT hpos] with r hr
+    have hrR : r * R ≤ δ := by
+      have := hr.2
+      rw [lt_div_iff₀ hRpos] at this
+      exact this.le
+    exact (key r hr.1 hrR).symm
+  have face_isClosed : ∀ {P d : ℕ} (ρ : ℝ) (G : LatticeFaceIndex d P),
+      IsClosed (latticeFace ρ G) := by
+    intro P d ρ G
+    have : latticeFace ρ G = ⋂ i : Fin P,
+        {x : Eucl P | (i ∈ range G.2 → ρ * (G.1 i : ℝ) ≤ x i ∧ x i ≤ ρ * ((G.1 i : ℝ) + 1)) ∧
+          (i ∉ range G.2 → x i = ρ * (G.1 i : ℝ))} := by
+      ext x; simp [latticeFace]
+    rw [this]
+    refine isClosed_iInter fun i => ?_
+    have hc : Continuous fun x : Eucl P => x i := (EuclideanSpace.proj i).continuous
+    by_cases hi : i ∈ range G.2
+    · simp only [hi, not_true_eq_false, IsEmpty.forall_iff, and_true, forall_const]
+      exact (isClosed_le continuous_const hc).inter (isClosed_le hc continuous_const)
+    · simp only [hi, IsEmpty.forall_iff, true_and, not_false_eq_true, forall_const]
+      exact isClosed_eq hc continuous_const
+  -- (L4) Near a point of `G°` no other face appears, and the face plane stays inside `G°`.
+  have relint_local_structure : ∀ (P d : ℕ) (ρ : ℝ), 0 < ρ →
+      ∀ (G : LatticeFaceIndex d P) (x : Eucl P),
+      (∀ i : Fin P, (i ∈ range G.2 → ρ * (G.1 i : ℝ) < x i ∧ x i < ρ * ((G.1 i : ℝ) + 1)) ∧
+        (i ∉ range G.2 → x i = ρ * (G.1 i : ℝ))) →
+      ∃ δ : ℝ, 0 < δ ∧
+        (∀ G' : LatticeFaceIndex d P, (latticeFace ρ G' ∩ ball x δ).Nonempty → G' = G) ∧
+        ∀ y : Eucl P,
+          y - x ∈ Submodule.span ℝ (range fun j => EuclideanSpace.single (G.2 j) (1 : ℝ)) →
+          y ∈ ball x δ → ∀ i : Fin P,
+            (i ∈ range G.2 → ρ * (G.1 i : ℝ) < y i ∧ y i < ρ * ((G.1 i : ℝ) + 1)) ∧
+            (i ∉ range G.2 → y i = ρ * (G.1 i : ℝ)) := by
+    intro P d ρ hρ G x hx
+    -- finitely many faces near x
+    have hfin := faces_meeting_finite P d ρ hρ (ball x 1) isBounded_ball
+    set S := {G' : LatticeFaceIndex d P | (latticeFace ρ G' ∩ ball x 1).Nonempty} \ {G} with hS
+    have hSfin : S.Finite := hfin.sdiff
+    set U := ⋃ G' ∈ S, latticeFace ρ G' with hU
+    have hUclosed : IsClosed U := hSfin.isClosed_biUnion fun G' _ => face_isClosed ρ G'
+    have hxU : x ∉ U := by
+      intro hxU
+      simp only [hU, mem_iUnion] at hxU
+      obtain ⟨G', hG'S, hxG'⟩ := hxU
+      exact hG'S.2 (face_eq_of_mem_relint P d ρ hρ G G' x hx hxG')
+    obtain ⟨δ₁, hδ₁, hball₁⟩ := Metric.isOpen_iff.1 hUclosed.isOpen_compl x hxU
+    -- open box condition
+    set O :=
+      {y : Eucl P | ∀ i ∈ range G.2, ρ * (G.1 i : ℝ) < y i ∧ y i < ρ * ((G.1 i : ℝ) + 1)} with hO
+    have hOopen : IsOpen O := by
+      have : O = ⋂ i ∈ range G.2,
+          {y : Eucl P | ρ * (G.1 i : ℝ) < y i ∧ y i < ρ * ((G.1 i : ℝ) + 1)} := by
+        ext y; simp [hO]
+      rw [this]
+      refine (Set.toFinite _).isOpen_biInter fun i _ => ?_
+      have hc : Continuous fun y : Eucl P => y i := (EuclideanSpace.proj i).continuous
+      exact (isOpen_lt continuous_const hc).inter (isOpen_lt hc continuous_const)
+    have hxO : x ∈ O := fun i hi => (hx i).1 hi
+    obtain ⟨δ₂, hδ₂, hball₂⟩ := Metric.isOpen_iff.1 hOopen x hxO
+    refine ⟨min (min δ₁ δ₂) 1, by positivity, ?_, ?_⟩
+    · rintro G' ⟨y, hyF, hyB⟩
+      by_contra hne
+      have hy1 : y ∈ ball x 1 := ball_subset_ball (min_le_right _ _) hyB
+      have hyδ₁ : y ∈ ball x δ₁ := ball_subset_ball ((min_le_left _ _).trans (min_le_left _ _)) hyB
+      have hG'S : G' ∈ S := ⟨⟨y, hyF, hy1⟩, hne⟩
+      have : y ∈ U := by
+        simp only [hU, mem_iUnion]
+        exact ⟨G', hG'S, hyF⟩
+      exact hball₁ hyδ₁ this
+    · intro y hyspan hyB i
+      have hyδ₂ : y ∈ ball x δ₂ := ball_subset_ball ((min_le_left _ _).trans (min_le_right _ _)) hyB
+      refine ⟨fun hi => hball₂ hyδ₂ i hi, fun hi => ?_⟩
+      -- coordinates off range vanish on the span
+      have hzero : ∀ v ∈ Submodule.span ℝ (range fun j => EuclideanSpace.single (G.2 j) (1 : ℝ)),
+          (v : Eucl P) i = 0 := by
+        intro v hv
+        have hle : Submodule.span ℝ (range fun j => EuclideanSpace.single (G.2 j) (1 : ℝ)) ≤
+            LinearMap.ker ((EuclideanSpace.proj i : Eucl P →L[ℝ] ℝ) : Eucl P →ₗ[ℝ] ℝ) := by
+          rw [Submodule.span_le]
+          rintro _ ⟨j, rfl⟩
+          have hne : i ≠ G.2 j := fun h => hi ⟨j, h.symm⟩
+          simp [hne]
+        have := hle hv
+        simpa using this
+      have h0 := hzero _ hyspan
+      have hxi := (hx i).2 hi
+      have : y i = x i := by
+        have : (y - x) i = y i - x i := rfl
+        linarith [this ▸ h0]
+      rw [this, hxi]
+  -- Steps 1–3: the boundary of an integer lattice `(m+1)`-chain is an integer lattice
+  -- `m`-chain, with `γ_G = ∑ ± β_F` over the faces `F` having `G` as a facet.
+  have action_eq_zero : ∀ {P k : ℕ} (ρ : ℝ) (G : LatticeFaceIndex k P)
+      (η : DifferentialForm (Eucl P) k) (h : latticeFace ρ G ∩ tsupport η = ∅),
+      latticeFaceAction ρ G η = 0 := by
+    intro P k ρ G η h
+    unfold latticeFaceAction
+    refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+    have hx' : x ∉ tsupport η :=
+      fun hx' => (h ▸ (⟨hx, hx'⟩ : x ∈ latticeFace ρ G ∩ tsupport η) : x ∈ (∅ : Set (Eucl P)))
+    rw [image_eq_zero_of_notMem_tsupport hx']
+    rfl
+  have face_minus_sub : ∀ {P m : ℕ} {ρ : ℝ} (hρ : 0 ≤ ρ) (F : LatticeFaceIndex (m + 1) P)
+      (i : Fin (m + 1)),
+      latticeFace ρ ((F.1, (Fin.succAboveOrderEmb i).trans F.2) : LatticeFaceIndex m P) ⊆
+        latticeFace ρ F := by
+    intro P m ρ hρ F i x hx l
+    have hx' := hx l
+    simp only at hx'
+    constructor
+    · rintro ⟨j, rfl⟩
+      by_cases hj : j = i
+      · subst hj
+        have hnot : F.2 j ∉ range ((Fin.succAboveOrderEmb j).trans F.2) := by
+          rintro ⟨k, hk⟩
+          simp only [RelEmbedding.trans_apply, Fin.coe_succAboveOrderEmb] at hk
+          exact Fin.succAbove_ne j k (F.2.injective hk)
+        rw [hx'.2 hnot]
+        constructor <;> nlinarith
+      · obtain ⟨k, rfl⟩ := Fin.exists_succAbove_eq hj
+        exact hx'.1 ⟨k, rfl⟩
+    · intro hl
+      apply hx'.2
+      rintro ⟨k, rfl⟩
+      exact hl ⟨_, rfl⟩
+  have face_plus_sub : ∀ {P m : ℕ} {ρ : ℝ} (hρ : 0 ≤ ρ) (F : LatticeFaceIndex (m + 1) P)
+      (i : Fin (m + 1)),
+      latticeFace ρ ((F.1 + Pi.single (F.2 i) 1, (Fin.succAboveOrderEmb i).trans F.2) :
+        LatticeFaceIndex m P) ⊆ latticeFace ρ F := by
+    intro P m ρ hρ F i x hx l
+    have hx' := hx l
+    simp only at hx'
+    constructor
+    · rintro ⟨j, rfl⟩
+      by_cases hj : j = i
+      · subst hj
+        have hnot : F.2 j ∉ range ((Fin.succAboveOrderEmb j).trans F.2) := by
+          rintro ⟨k, hk⟩
+          simp only [RelEmbedding.trans_apply, Fin.coe_succAboveOrderEmb] at hk
+          exact Fin.succAbove_ne j k (F.2.injective hk)
+        rw [hx'.2 hnot]
+        simp only [Pi.add_apply, Pi.single_eq_same, Int.cast_add, Int.cast_one]
+        constructor <;> nlinarith
+      · obtain ⟨k, rfl⟩ := Fin.exists_succAbove_eq hj
+        have h := hx'.1 ⟨k, rfl⟩
+        have hne : F.2 (i.succAbove k) ≠ F.2 i := fun h' => Fin.succAbove_ne i k (F.2.injective h')
+        simp only [Pi.add_apply, Pi.single_eq_of_ne hne, add_zero] at h
+        exact h
+    · intro hl
+      have hne : l ≠ F.2 i := fun h => hl ⟨i, h.symm⟩
+      have h := hx'.2 (by rintro ⟨k, rfl⟩; exact hl ⟨_, rfl⟩)
+      simp only [Pi.add_apply, Pi.single_eq_of_ne hne, add_zero] at h
+      exact h
+  -- Regrouping the finite double sum given by Stokes on each face.
+  have boundary_lattice_chain : ∀ (P m : ℕ) (ρ : ℝ), 0 < ρ →
+      (∀ (F : LatticeFaceIndex (m + 1) P) (ω : DifferentialForm (Eucl P) m), IsSmoothForm ω →
+        latticeFaceAction ρ F (exteriorDerivative ω) =
+          ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) *
+            (latticeFaceAction ρ (F.1 + Pi.single (F.2 i) 1, (Fin.succAboveOrderEmb i).trans F.2)
+              ω - latticeFaceAction ρ (F.1, (Fin.succAboveOrderEmb i).trans F.2) ω)) →
+      ∀ (β : LatticeFaceIndex (m + 1) P → ℤ)
+        (Pc : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)),
+        IsLatticeChain ρ (fun F => (β F : ℝ)) Pc →
+        ∃ γ : LatticeFaceIndex m P → ℤ, IsLatticeChain ρ (fun G => (γ G : ℝ)) Pc.boundary := by
+    intro P m ρ hρ hS β Pc hPc
+    classical
+    refine ⟨fun G => ∑ p : SimonMultiIndex (m + 1) P × Fin (m + 1),
+      if (Fin.succAboveOrderEmb p.2).trans p.1 = G.2 then
+        (-1) ^ (p.2 : ℕ) * (β (G.1 - Pi.single (p.1 p.2) 1, p.1) - β (G.1, p.1)) else 0, ?_⟩
+    intro ω
+    set η : DifferentialForm (Eucl P) m := (ω : DifferentialForm (Eucl P) m) with hη
+    have hsmooth : IsSmoothForm η := ω.property.1.1
+    have hcpt : HasCompactSupport η := ω.property.1.2
+    set K := tsupport η with hKdef
+    have hKb : Bornology.IsBounded K := hcpt.isCompact.isBounded
+    have hFfin := faces_meeting_finite P (m + 1) ρ hρ K hKb
+    have hGfin := faces_meeting_finite P m ρ hρ K hKb
+    set SF := hFfin.toFinset with hSF
+    set SG := hGfin.toFinset with hSG
+    -- notation for the two boundary faces
+    set Dp : LatticeFaceIndex (m + 1) P → Fin (m + 1) → LatticeFaceIndex m P :=
+      fun F i => (F.1 + Pi.single (F.2 i) 1, (Fin.succAboveOrderEmb i).trans F.2) with hDp
+    set Dm : LatticeFaceIndex (m + 1) P → Fin (m + 1) → LatticeFaceIndex m P :=
+      fun F i => (F.1, (Fin.succAboveOrderEmb i).trans F.2) with hDm
+    -- vanishing of m-face actions off SG
+    have hvG : ∀ G : LatticeFaceIndex m P, G ∉ SG → latticeFaceAction ρ G η = 0 := by
+      intro G hG
+      apply action_eq_zero
+      rw [hSG, Set.Finite.mem_toFinset] at hG
+      exact Set.not_nonempty_iff_eq_empty.1 hG
+    -- faces of F in SG force F ∈ SF
+    have hFp : ∀ F i, Dp F i ∈ SG → F ∈ SF := by
+      intro F i h
+      rw [hSG, Set.Finite.mem_toFinset] at h
+      rw [hSF, Set.Finite.mem_toFinset]
+      obtain ⟨x, hx1, hx2⟩ := h
+      exact ⟨x, face_plus_sub hρ.le F i hx1, hx2⟩
+    have hFm : ∀ F i, Dm F i ∈ SG → F ∈ SF := by
+      intro F i h
+      rw [hSG, Set.Finite.mem_toFinset] at h
+      rw [hSF, Set.Finite.mem_toFinset]
+      obtain ⟨x, hx1, hx2⟩ := h
+      exact ⟨x, face_minus_sub hρ.le F i hx1, hx2⟩
+    -- LHS
+    have hL : Pc.boundary ω =
+        ∑ F ∈ SF, (β F : ℝ) * latticeFaceAction ρ F (exteriorDerivative η) := by
+      rw [GeometricCurrentOn.boundary_apply, hPc]
+      apply tsum_eq_sum
+      intro F hF
+      have : latticeFaceAction ρ F (exteriorDerivative η) = 0 := by
+        apply action_eq_zero
+        rw [hSF, Set.Finite.mem_toFinset] at hF
+        rw [← Set.not_nonempty_iff_eq_empty]
+        rintro ⟨x, hx1, hx2⟩
+        exact hF ⟨x, hx1, tsupport_exteriorDerivative_subset η hx2⟩
+      simp only [exteriorDerivativeTestOn, LinearMap.coe_mk, AddHom.coe_mk] at this ⊢
+      rw [this, mul_zero]
+    have hR : (∑' G, ((fun G => ∑ p : SimonMultiIndex (m + 1) P × Fin (m + 1),
+        if (Fin.succAboveOrderEmb p.2).trans p.1 = G.2 then
+          (-1) ^ (p.2 : ℕ) * (β (G.1 - Pi.single (p.1 p.2) 1, p.1) - β (G.1, p.1))
+        else 0) G : ℝ) * latticeFaceAction ρ G η) =
+        ∑ G ∈ SG, (((∑ p : SimonMultiIndex (m + 1) P × Fin (m + 1),
+          if (Fin.succAboveOrderEmb p.2).trans p.1 = G.2 then
+            (-1) ^ (p.2 : ℕ) * (β (G.1 - Pi.single (p.1 p.2) 1, p.1) - β (G.1, p.1))
+          else 0 : ℤ) : ℝ) * latticeFaceAction ρ G η) := by
+      apply tsum_eq_sum
+      intro G hG
+      rw [hvG G hG, mul_zero]
+    show Pc.boundary ω = _
+    rw [hL, hR]
+    -- expand Stokes
+    have hStokes : ∀ F ∈ SF, (β F : ℝ) * latticeFaceAction ρ F (exteriorDerivative η) =
+        ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (β F : ℝ) * latticeFaceAction ρ (Dp F i) η -
+        ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (β F : ℝ) * latticeFaceAction ρ (Dm F i) η := by
+      intro F _
+      rw [hS F η hsmooth, Finset.mul_sum, ← Finset.sum_sub_distrib]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      simp only [hDp, hDm]
+      ring
+    rw [Finset.sum_congr rfl hStokes, Finset.sum_sub_distrib]
+    -- RHS split
+    have hsplit : ∀ G ∈ SG, (((∑ p : SimonMultiIndex (m + 1) P × Fin (m + 1),
+        if (Fin.succAboveOrderEmb p.2).trans p.1 = G.2 then
+          (-1) ^ (p.2 : ℕ) * (β (G.1 - Pi.single (p.1 p.2) 1, p.1) - β (G.1, p.1))
+        else 0 : ℤ) : ℝ) * latticeFaceAction ρ G η) =
+        (∑ p : SimonMultiIndex (m + 1) P × Fin (m + 1),
+          if (Fin.succAboveOrderEmb p.2).trans p.1 = G.2 then
+            (-1 : ℝ) ^ (p.2 : ℕ) * (β (G.1 - Pi.single (p.1 p.2) 1, p.1) : ℝ) *
+              latticeFaceAction ρ G η
+          else 0) -
+        (∑ p : SimonMultiIndex (m + 1) P × Fin (m + 1),
+          if (Fin.succAboveOrderEmb p.2).trans p.1 = G.2 then
+            (-1 : ℝ) ^ (p.2 : ℕ) * (β (G.1, p.1) : ℝ) * latticeFaceAction ρ G η
+          else 0) := by
+      intro G _
+      push_cast
+      rw [Finset.sum_mul, ← Finset.sum_sub_distrib]
+      refine Finset.sum_congr rfl fun p _ => ?_
+      split_ifs <;> ring
+    rw [Finset.sum_congr rfl hsplit, Finset.sum_sub_distrib]
+    congr 1
+    · -- plus part
+      rw [← Finset.sum_product', ← Finset.sum_product']
+      refine Finset.sum_bij_ne_zero (fun a _ _ => (Dp a.1 a.2, (a.1.2, a.2))) ?_ ?_ ?_ ?_
+      · intro a ha hne
+        refine Finset.mem_product.2 ⟨?_, Finset.mem_univ _⟩
+        by_contra hnot
+        exact hne (by rw [hvG _ hnot, mul_zero])
+      · intro a ha1 ha2 b hb1 hb2 hab
+        simp only [hDp, Prod.mk.injEq] at hab
+        obtain ⟨⟨h1, h2⟩, h3, h4⟩ := hab
+        have hα : a.1.2 = b.1.2 := h3
+        have hi : a.2 = b.2 := h4
+        have h1' : a.1.1 = b.1.1 := by
+          rw [hα, hi] at h1
+          exact add_right_cancel h1
+        exact Prod.ext (Prod.ext h1' hα) hi
+      · intro b hb hne
+        obtain ⟨hbG, -⟩ := Finset.mem_product.1 hb
+        have hcond : (Fin.succAboveOrderEmb b.2.2).trans b.2.1 = b.1.2 := by
+          by_contra hc
+          exact hne (by simp [hc])
+        refine ⟨((b.1.1 - Pi.single (b.2.1 b.2.2) 1, b.2.1), b.2.2), ?_, ?_, ?_⟩
+        · refine Finset.mem_product.2 ⟨hFp _ b.2.2 ?_, Finset.mem_univ _⟩
+          have : Dp (b.1.1 - Pi.single (b.2.1 b.2.2) 1, b.2.1) b.2.2 = b.1 := by
+            simp only [hDp, sub_add_cancel, hcond]
+          rw [this]; exact hbG
+        · have : Dp (b.1.1 - Pi.single (b.2.1 b.2.2) 1, b.2.1) b.2.2 = b.1 := by
+            simp only [hDp, sub_add_cancel, hcond]
+          simp only [this]
+          simpa [hcond] using hne
+        · simp only [hDp, sub_add_cancel, hcond]
+      · intro a _ _
+        have hc : (Fin.succAboveOrderEmb a.2).trans a.1.2 = (Dp a.1 a.2).2 := rfl
+        simp only [hc, ite_true]
+        simp only [hDp, add_sub_cancel_right]
+    · -- minus part
+      rw [← Finset.sum_product', ← Finset.sum_product']
+      refine Finset.sum_bij_ne_zero (fun a _ _ => (Dm a.1 a.2, (a.1.2, a.2))) ?_ ?_ ?_ ?_
+      · intro a ha hne
+        refine Finset.mem_product.2 ⟨?_, Finset.mem_univ _⟩
+        by_contra hnot
+        exact hne (by rw [hvG _ hnot, mul_zero])
+      · intro a ha1 ha2 b hb1 hb2 hab
+        simp only [hDm, Prod.mk.injEq] at hab
+        obtain ⟨⟨h1, h2⟩, h3, h4⟩ := hab
+        exact Prod.ext (Prod.ext h1 h3) h4
+      · intro b hb hne
+        obtain ⟨hbG, -⟩ := Finset.mem_product.1 hb
+        have hcond : (Fin.succAboveOrderEmb b.2.2).trans b.2.1 = b.1.2 := by
+          by_contra hc
+          exact hne (by simp [hc])
+        refine ⟨((b.1.1, b.2.1), b.2.2), ?_, ?_, ?_⟩
+        · refine Finset.mem_product.2 ⟨hFm _ b.2.2 ?_, Finset.mem_univ _⟩
+          have : Dm (b.1.1, b.2.1) b.2.2 = b.1 := by
+            simp only [hDm, hcond]
+          rw [this]; exact hbG
+        · have : Dm (b.1.1, b.2.1) b.2.2 = b.1 := by
+            simp only [hDm, hcond]
+          simp only [this]
+          simpa [hcond] using hne
+        · simp only [hDm, hcond]
+      · intro a _ _
+        have hc : (Fin.succAboveOrderEmb a.2).trans a.1.2 = (Dm a.1 a.2).2 := rfl
+        simp only [hc, ite_true]
+        simp only [hDm]
+  -- Steps 4–7: an integer lattice chain is `τ(M, θ, ξ)` with `M = ⋃ {G° : γ_G ≠ 0}`,
+  -- `θ = |γ_G|` and `ξ = sign(γ_G) e_{γ'}` on `G°`.
+  have relint_sub : ∀ {P d : ℕ} (ρ : ℝ) (G : LatticeFaceIndex d P),
+      {x : Eucl P | ∀ i : Fin P,
+        (i ∈ range G.2 → ρ * (G.1 i : ℝ) < x i ∧ x i < ρ * ((G.1 i : ℝ) + 1)) ∧
+        (i ∉ range G.2 → x i = ρ * (G.1 i : ℝ))} ⊆ latticeFace ρ G := by
+    intro P d ρ G x hx i
+    exact ⟨fun hi => ⟨((hx i).1 hi).1.le, ((hx i).1 hi).2.le⟩, (hx i).2⟩
+  have relint_meas : ∀ {P d : ℕ} (ρ : ℝ) (G : LatticeFaceIndex d P),
+      MeasurableSet {x : Eucl P | ∀ i : Fin P,
+        (i ∈ range G.2 → ρ * (G.1 i : ℝ) < x i ∧ x i < ρ * ((G.1 i : ℝ) + 1)) ∧
+        (i ∉ range G.2 → x i = ρ * (G.1 i : ℝ))} := by
+    intro P d ρ G
+    have : {x : Eucl P | ∀ i : Fin P,
+          (i ∈ range G.2 → ρ * (G.1 i : ℝ) < x i ∧ x i < ρ * ((G.1 i : ℝ) + 1)) ∧
+          (i ∉ range G.2 → x i = ρ * (G.1 i : ℝ))} = ⋂ i : Fin P,
+        {x : Eucl P | (i ∈ range G.2 → ρ * (G.1 i : ℝ) < x i ∧ x i < ρ * ((G.1 i : ℝ) + 1)) ∧
+          (i ∉ range G.2 → x i = ρ * (G.1 i : ℝ))} := by
+      ext x; simp
+    rw [this]
+    refine MeasurableSet.iInter fun i => ?_
+    have hc : Measurable fun x : Eucl P => x i := (EuclideanSpace.proj i).continuous.measurable
+    by_cases hi : i ∈ range G.2
+    · simp only [hi, not_true_eq_false, IsEmpty.forall_iff, and_true, forall_const]
+      exact (measurableSet_lt measurable_const hc).inter (measurableSet_lt hc measurable_const)
+    · simp only [hi, IsEmpty.forall_iff, true_and, not_false_eq_true, forall_const]
+      exact measurableSet_eq_fun hc measurable_const
+  have mem_span_of_coord : ∀ {P d : ℕ} (G : LatticeFaceIndex d P) (v : Eucl P)
+      (hv : ∀ i, i ∉ range G.2 → v i = 0),
+      v ∈ Submodule.span ℝ (range fun j => EuclideanSpace.single (G.2 j) (1 : ℝ)) := by
+    intro P d G v hv
+    classical
+    have hrepr : v = ∑ j, v (G.2 j) • EuclideanSpace.single (G.2 j) (1 : ℝ) := by
+      ext i
+      simp only [WithLp.ofLp_sum, WithLp.ofLp_smul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
+        PiLp.ofLp_single, Pi.single_apply, mul_ite, mul_one, mul_zero]
+      by_cases hi : i ∈ range G.2
+      · obtain ⟨j, rfl⟩ := hi
+        rw [Finset.sum_eq_single j]
+        · simp
+        · intro b _ hb
+          have : G.2 j ≠ G.2 b := fun h => hb (G.2.injective h).symm
+          simp [this]
+        · simp
+      · rw [hv i hi]
+        symm
+        refine Finset.sum_eq_zero fun j _ => ?_
+        have : i ≠ G.2 j := fun h => hi ⟨j, h.symm⟩
+        simp [this]
+    rw [hrepr]
+    exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
+  have lattice_chain_im : ∀ (P d : ℕ) (ρ : ℝ), 0 < ρ → ∀ (β : LatticeFaceIndex d P → ℤ)
+      (X : GeometricCurrentOn (univ : Set (Eucl P)) d),
+      IsLatticeChain ρ (fun G => (β G : ℝ)) X → IsIntegerMultiplicity X := by
+    intro P d ρ hρ β X hX
+    classical
+    set R : LatticeFaceIndex d P → Set (Eucl P) := fun G => {x : Eucl P | ∀ i : Fin P,
+      (i ∈ range G.2 → ρ * (G.1 i : ℝ) < x i ∧ x i < ρ * ((G.1 i : ℝ) + 1)) ∧
+      (i ∉ range G.2 → x i = ρ * (G.1 i : ℝ))} with hRdef
+    have huniq : ∀ G G' x, x ∈ R G → x ∈ R G' → G' = G := fun G G' x h h' =>
+      face_eq_of_mem_relint P d ρ hρ G G' x h (relint_sub ρ G' h')
+    have hdisj : ∀ G G', G ≠ G' → Disjoint (R G) (R G') := by
+      intro G G' hne
+      rw [Set.disjoint_left]
+      intro x h h'
+      exact hne (huniq G G' x h h').symm
+    set e : LatticeFaceIndex d P → Fin d → Eucl P :=
+      fun G j => EuclideanSpace.single (G.2 j) (1:ℝ) with he_def
+    set v : LatticeFaceIndex d P → NVector (Eucl P) d :=
+      fun G => ((β G).sign : ℝ) • simpleNVector (e G) with hv_def
+    set M : Set (Eucl P) := ⋃ G, ⋃ (_ : β G ≠ 0), R G with hMdef
+    set idx : Eucl P → Option (LatticeFaceIndex d P) :=
+      fun x => if h : ∃ G, x ∈ R G then some h.choose else none with hidxdef
+    have hidx : ∀ G, ∀ x ∈ R G, idx x = some G := by
+      intro G x hx
+      have h : ∃ G, x ∈ R G := ⟨G, hx⟩
+      simp only [hidxdef, dite_eq_left h]
+      rw [huniq G h.choose x hx h.choose_spec]
+    have hidxnone : ∀ x, (∀ G, x ∉ R G) → idx x = none := by
+      intro x hx
+      have h : ¬ ∃ G, x ∈ R G := fun ⟨G, hG⟩ => hx G hG
+      simp only [hidxdef, dite_eq_right h]
+    set gθ : Option (LatticeFaceIndex d P) → ℝ :=
+      fun o => match o with | some G => |(β G : ℝ)| | none => 0 with hgθ
+    set gξ : Option (LatticeFaceIndex d P) → NVector (Eucl P) d :=
+      fun o => match o with | some G => v G | none => 0 with hgξ
+    set θ : Eucl P → ℝ := gθ ∘ idx with hθdef
+    set ξ : Eucl P → NVector (Eucl P) d := gξ ∘ idx with hξdef
+    have hθ : ∀ G, ∀ x ∈ R G, θ x = |(β G : ℝ)| := by
+      intro G x hx
+      simp only [hθdef, Function.comp_apply, hidx G x hx, hgθ]
+    have hξ : ∀ G, ∀ x ∈ R G, ξ x = v G := by
+      intro G x hx
+      simp only [hξdef, Function.comp_apply, hidx G x hx, hgξ]
+    have hMmeas : MeasurableSet M :=
+      MeasurableSet.iUnion fun G => MeasurableSet.iUnion fun _ => relint_meas ρ G
+    have hmemM : ∀ x, x ∈ M ↔ ∃ G, β G ≠ 0 ∧ x ∈ R G := by
+      intro x; simp [hMdef]
+    have hRfin : ∀ G, (μHE[d] : Measure (Eucl P)) (R G) ≠ ∞ := by
+      intro G
+      refine ne_top_of_le_ne_top ?_ (measure_mono (relint_sub ρ G))
+      rw [(face_measure P d ρ hρ G).1]; exact ENNReal.ofReal_ne_top
+    -- affine parametrizations
+    set c : LatticeFaceIndex d P → Eucl P :=
+      fun G => ∑ l, (ρ * (G.1 l : ℝ)) • EuclideanSpace.single l (1:ℝ) with hc_def
+    set A : LatticeFaceIndex d P → EuclideanSpace ℝ (Fin d) → Eucl P :=
+      fun G s => c G + ∑ j, s j • e G j with hA_def
+    have hAiso : ∀ G, Isometry (A G) := by
+      intro G
+      have he : Orthonormal ℝ (e G) := (EuclideanSpace.orthonormal_single).comp _ G.2.injective
+      refine Isometry.of_dist_eq fun s t => ?_
+      rw [dist_eq_norm, dist_eq_norm]
+      have h : A G s - A G t = ∑ j, (s - t) j • e G j := by
+        simp only [hA_def, add_sub_add_left_eq_sub, ← Finset.sum_sub_distrib, ← sub_smul,
+          PiLp.sub_apply]
+      rw [h]
+      have h1 : ‖∑ j, (s - t) j • e G j‖ ^ 2 = ‖s - t‖ ^ 2 := by
+        rw [← real_inner_self_eq_norm_sq, he.inner_sum, EuclideanSpace.real_norm_sq_eq]
+        simp [sq]
+      exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 h1
+    have hRrange : ∀ G, R G ⊆ range (A G) := by
+      intro G x hx
+      refine ⟨WithLp.toLp 2 (fun j => x (G.2 j) - ρ * (G.1 (G.2 j) : ℝ)), ?_⟩
+      ext i
+      simp [hA_def, hc_def, he_def, Pi.single_apply]
+      by_cases hi : i ∈ range G.2
+      · obtain ⟨j, rfl⟩ := hi
+        rw [Finset.sum_eq_single j]
+        · simp
+        · intro b _ hb
+          have : G.2 j ≠ G.2 b := fun h => hb (G.2.injective h).symm
+          simp [this]
+        · simp
+      · rw [(hx i).2 hi]
+        have : ∀ j, (if i = G.2 j then x (G.2 j) - ρ * (G.1 (G.2 j) : ℝ) else 0) = 0 :=
+          fun j => ite_eq_right (fun h => hi ⟨j, h.symm⟩)
+        simp [this]
+    refine ⟨M, θ, ξ, ⟨subset_univ _, hMmeas.nullMeasurableSet, ?rect, ?pos, ?intOn, ?aesm,
+      ?orients⟩, ?integer, ?repr⟩
+    case rect =>
+      apply CountablyRectifiable.mono (N := M) (M := ⋃₀ (range fun G => range (A G)))
+      · apply Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion (countable_range _)
+        rintro _ ⟨G, rfl⟩
+        exact Poincare.SimonGMT.Chapter03.countablyRectifiable_range (hAiso G).lipschitzWith
+      · intro x hx
+        obtain ⟨G, -, hxG⟩ := (hmemM x).1 hx
+        exact ⟨range (A G), ⟨G, rfl⟩, hRrange G hxG⟩
+    case pos =>
+      intro x hx
+      obtain ⟨G, hG, hxG⟩ := (hmemM x).1 hx
+      rw [hθ G x hxG]
+      exact abs_pos.2 (by exact_mod_cast hG)
+    case intOn =>
+      intro K hK _
+      have hfin := faces_meeting_finite P d ρ hρ K hK.isBounded
+      refine IntegrableOn.mono_set (t := ⋃ G ∈ hfin.toFinset, R G) ?_ ?_
+      · rw [integrableOn_finset_iUnion]
+        intro G _
+        have : IntegrableOn (fun _ => |(β G : ℝ)|) (R G) (μHE[d] : Measure (Eucl P)) :=
+          integrableOn_const (hRfin G)
+        exact this.congr_fun (fun x hx => (hθ G x hx).symm) (relint_meas ρ G)
+      · rintro x ⟨hxM, hxK⟩
+        obtain ⟨G, -, hxG⟩ := (hmemM x).1 hxM
+        simp only [mem_iUnion]
+        exact ⟨G, by rw [Set.Finite.mem_toFinset]; exact ⟨x, relint_sub ρ G hxG, hxK⟩, hxG⟩
+    case aesm =>
+      let : MeasurableSpace (Option (LatticeFaceIndex d P)) := ⊤
+      have : MeasurableSingletonClass (Option (LatticeFaceIndex d P)) := ⟨fun _ => trivial⟩
+      have hidxm : Measurable idx := by
+        refine measurable_to_countable' fun o => ?_
+        cases o with
+        | some G =>
+          have : idx ⁻¹' {some G} = R G := by
+            ext x
+            constructor
+            · intro hx
+              by_cases h : ∃ G', x ∈ R G'
+              · obtain ⟨G', hG'⟩ := h
+                have := hidx G' x hG'
+                rw [Set.mem_preimage, Set.mem_singleton_iff, this] at hx
+                cases hx
+                exact hG'
+              · push Not at h
+                have := hidxnone x h
+                rw [Set.mem_preimage, Set.mem_singleton_iff, this] at hx
+                cases hx
+            · intro hx
+              rw [Set.mem_preimage, Set.mem_singleton_iff, hidx G x hx]
+          rw [this]; exact relint_meas ρ G
+        | none =>
+          have : idx ⁻¹' {none} = (⋃ G, R G)ᶜ := by
+            ext x
+            simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_compl_iff, Set.mem_iUnion,
+              not_exists]
+            constructor
+            · intro hx G hG
+              rw [hidx G x hG] at hx
+              cases hx
+            · intro hx
+              exact hidxnone x hx
+          rw [this]
+          exact (MeasurableSet.iUnion fun G => relint_meas ρ G).compl
+      exact (StronglyMeasurable.of_discrete.comp_measurable hidxm).aestronglyMeasurable
+    case orients =>
+      refine ae_restrict_of_forall_mem hMmeas fun x hx => ?_
+      obtain ⟨G, hG, hxG⟩ := (hmemM x).1 hx
+      have he : Orthonormal ℝ (e G) := (EuclideanSpace.orthonormal_single).comp _ G.2.injective
+      refine ⟨e G, he, ?_, ?_⟩
+      · obtain ⟨δ, hδ, h1, h2⟩ := relint_local_structure P d ρ hρ G x hxG
+        have hfr : Module.finrank ℝ (Submodule.span ℝ (range (e G))) = d := by
+          rw [finrank_span_eq_card he.linearIndependent, Fintype.card_fin]
+        -- M near x lies in R G
+        have hnear : ∀ y ∈ M ∩ ball x δ, y ∈ R G := by
+          rintro y ⟨hyM, hyB⟩
+          obtain ⟨G', -, hyG'⟩ := (hmemM y).1 hyM
+          have : G' = G := h1 G' ⟨y, relint_sub ρ G' hyG', hyB⟩
+          rw [← this]; exact hyG'
+        refine tangent_of_locally_affine P d M θ x _ δ hδ hfr ?_ ?_
+        · ext y
+          constructor
+          · intro hy
+            refine ⟨?_, hy.2⟩
+            have hyG := hnear y hy
+            apply mem_span_of_coord G
+            intro i hi
+            have h1' := (hyG i).2 hi
+            have h2' := (hxG i).2 hi
+            show y i - x i = 0
+            rw [h1', h2', sub_self]
+          · rintro ⟨hyL, hyB⟩
+            refine ⟨(hmemM y).2 ⟨G, hG, h2 y hyL hyB⟩, hyB⟩
+        · intro y hy
+          rw [hθ G y (hnear y hy), hθ G x hxG]
+      · rw [hξ G x hxG]
+        simp only [hv_def]
+        rcases lt_or_gt_of_ne hG with hneg | hpos
+        · right
+          rw [Int.sign_eq_neg_one_of_neg hneg]; push_cast
+          exact neg_one_smul ℝ (simpleNVector (e G))
+        · left; rw [Int.sign_eq_one_of_pos hpos]; simp
+    case integer =>
+      intro x hx
+      obtain ⟨G, -, hxG⟩ := (hmemM x).1 hx
+      refine ⟨(β G).natAbs, ?_⟩
+      rw [hθ G x hxG]
+      simp
+    case repr =>
+      intro ω
+      set η : DifferentialForm (Eucl P) d := (ω : DifferentialForm (Eucl P) d) with hη
+      have hcpt : HasCompactSupport η := ω.property.1.2
+      have hcont : Continuous η := ω.property.1.1.continuous
+      set K := tsupport η with hKdef
+      have hfin := faces_meeting_finite P d ρ hρ K hcpt.isCompact.isBounded
+      set SG := hfin.toFinset with hSG
+      have hvG : ∀ G : LatticeFaceIndex d P, G ∉ SG → latticeFaceAction ρ G η = 0 := by
+        intro G hG
+        apply action_eq_zero
+        rw [hSG, Set.Finite.mem_toFinset] at hG
+        exact Set.not_nonempty_iff_eq_empty.1 hG
+      rw [hX ω, tsum_eq_sum (s := SG) (fun G hG => by rw [hvG G hG, mul_zero])]
+      set SG' := SG.filter (fun G => β G ≠ 0) with hSG'
+      have hsum0 : ∑ G ∈ SG, (β G : ℝ) * latticeFaceAction ρ G η =
+          ∑ G ∈ SG', (β G : ℝ) * latticeFaceAction ρ G η := by
+        rw [hSG', Finset.sum_filter_of_ne]
+        intro G _ h hβ
+        apply h
+        rw [hβ]; simp
+      rw [hsum0]
+      unfold tauAction
+      -- bound on the form
+      obtain ⟨C, hC⟩ := hcont.bounded_above_of_compact_support hcpt
+      have hpiece : ∀ G, β G ≠ 0 → ∀ x ∈ R G, θ x * ξ x (η x) = (β G : ℝ) * η x (e G) := by
+        intro G hG x hx
+        rw [hθ G x hx, hξ G x hx]
+        simp only [hv_def, smul_apply, simpleNVector_apply, smul_eq_mul]
+        rw [← mul_assoc]
+        congr 1
+        have : |(β G : ℝ)| * ((β G).sign : ℝ) = ((|β G| * (β G).sign : ℤ) : ℝ) := by push_cast; ring
+        rw [this, mul_comm, Int.sign_mul_abs]
+      have hint : ∀ G, β G ≠ 0 →
+          IntegrableOn (fun x => θ x * ξ x (η x)) (R G) (μHE[d] : Measure (Eucl P)) := by
+        intro G hG
+        have hc2 : Continuous fun x => (β G : ℝ) * η x (e G) := by
+          have : Continuous fun x => η x (e G) :=
+            (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ (e G)).continuous.comp hcont
+          exact continuous_const.mul this
+        have hI :
+            IntegrableOn (fun x => (β G : ℝ) * η x (e G)) (R G) (μHE[d] : Measure (Eucl P)) := by
+          refine Measure.integrableOn_of_bounded (M := |(β G : ℝ)| * C) (hRfin G)
+            hc2.aestronglyMeasurable ?_
+          refine Eventually.of_forall fun x => ?_
+          rw [norm_mul, Real.norm_eq_abs]
+          refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+          calc ‖η x (e G)‖ ≤ ‖η x‖ * ∏ j, ‖e G j‖ := (η x).le_opNorm _
+            _ = ‖η x‖ := by simp [he_def]
+            _ ≤ C := hC x
+        exact hI.congr_fun (fun x hx => (hpiece G hG x hx).symm) (relint_meas ρ G)
+      have hsubM : (⋃ G ∈ SG', R G) ⊆ M := by
+        intro x hx
+        simp only [mem_iUnion] at hx
+        obtain ⟨G, hG, hxG⟩ := hx
+        rw [hSG', Finset.mem_filter] at hG
+        exact (hmemM x).2 ⟨G, hG.2, hxG⟩
+      rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hMmeas hsubM]
+      · rw [integral_biUnion_finset SG' (fun G _ => relint_meas ρ G)
+          (fun G _ G' _ hne => hdisj G G' hne) (fun G hG => hint G (Finset.mem_filter.1 hG).2)]
+        refine Finset.sum_congr rfl fun G hG => ?_
+        have hβ := (Finset.mem_filter.1 hG).2
+        rw [setIntegral_congr_fun (relint_meas ρ G) (fun x hx => hpiece G hβ x hx),
+          integral_const_mul]
+        congr 1
+        unfold latticeFaceAction
+        symm
+        apply setIntegral_congr_set
+        rw [ae_eq_set]
+        constructor
+        · rw [sdiff_eq_empty.2 (relint_sub ρ G)]; exact measure_empty
+        · exact (face_measure P d ρ hρ G).2
+      · rintro x ⟨hxM, hxn⟩
+        obtain ⟨G, hG, hxG⟩ := (hmemM x).1 hxM
+        have hGn : G ∉ SG := by
+          intro hGS
+          apply hxn
+          simp only [mem_iUnion]
+          exact ⟨G, Finset.mem_filter.2 ⟨hGS, hG⟩, hxG⟩
+        have hxK : x ∉ K := by
+          intro hxK
+          apply hGn
+          rw [hSG, Set.Finite.mem_toFinset]
+          exact ⟨x, relint_sub ρ G hxG, hxK⟩
+        rw [image_eq_zero_of_notMem_tsupport hxK, map_zero, mul_zero]
+  intro P m ρ hρ β Pc h
+  obtain ⟨γ, hγ⟩ := boundary_lattice_chain P m ρ hρ
+      (Submission.br_lattice_face_stokes P m ρ hρ) β Pc h
+  exact lattice_chain_im P m ρ hρ γ Pc.boundary hγ
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
