@@ -458,6 +458,84 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Near-isometries change `Hⁿ` by at most the factor `(1 - δ)⁻ⁿ`: if `0 ≤ δ < 1`, `A` is
+measurable and `‖Φ p - Φ q - (p - q)‖ ≤ δ‖p - q‖` on `A`, then
+`Hⁿ ⌞ Φ(A) ≤ (1 - δ)⁻ⁿ Φ_#(Hⁿ ⌞ A)` and `Φ_#(Hⁿ ⌞ A) ≤ (1 - δ)⁻ⁿ Hⁿ ⌞ Φ(A)`.
+`Φ` is `(1 + δ)`-Lipschitz on `A` and `invFunOn Φ A` is `(1 - δ)⁻¹`-Lipschitz on `Φ(A)`, while
+`1 + δ ≤ (1 - δ)⁻¹`; so Simon Ch. 2, 1.8(i) (`Hⁿ(f(T)) ≤ (Lip f)ⁿ Hⁿ(T)`, any `T`), applied to
+`Φ⁻¹(S) ∩ A` and to `Φ(Φ⁻¹(S) ∩ A) = S ∩ Φ(A)`, gives both inequalities on measurable `S`. -/
+theorem dohr_tp_gat_bilip_measure_comparison : ∀ (n ℓ : ℕ) (A : Set (Amb n ℓ)) (Φ : Amb n ℓ → Amb n ℓ) (δ : ℝ), MeasurableSet A → 0 ≤ δ → δ < 1 → (∀ p ∈ A, ∀ q ∈ A, ‖Φ p - Φ q - (p - q)‖ ≤ δ * ‖p - q‖) → (μHE[n] : Measure (Amb n ℓ)).restrict (Φ '' A) ≤ ENNReal.ofReal (((1 - δ)⁻¹) ^ n) • Measure.map Φ ((μHE[n] : Measure (Amb n ℓ)).restrict A) ∧ Measure.map Φ ((μHE[n] : Measure (Amb n ℓ)).restrict A) ≤ ENNReal.ofReal (((1 - δ)⁻¹) ^ n) • (μHE[n] : Measure (Amb n ℓ)).restrict (Φ '' A) := by
+  intro n ℓ A Φ δ hA hδ0 hδ1 hΦ
+  have h1δ : 0 < 1 - δ := sub_pos.2 hδ1
+  -- `(1 - δ)‖p - q‖ ≤ ‖Φ p - Φ q‖ ≤ (1 + δ)‖p - q‖` on `A`.
+  have hup : ∀ p ∈ A, ∀ q ∈ A, ‖Φ p - Φ q‖ ≤ (1 + δ) * ‖p - q‖ := by
+    intro p hp q hq
+    calc ‖Φ p - Φ q‖ = ‖(Φ p - Φ q - (p - q)) + (p - q)‖ := by rw [sub_add_cancel]
+      _ ≤ ‖Φ p - Φ q - (p - q)‖ + ‖p - q‖ := norm_add_le _ _
+      _ ≤ δ * ‖p - q‖ + ‖p - q‖ := add_le_add (hΦ p hp q hq) le_rfl
+      _ = (1 + δ) * ‖p - q‖ := by ring
+  have hlow : ∀ p ∈ A, ∀ q ∈ A, (1 - δ) * ‖p - q‖ ≤ ‖Φ p - Φ q‖ := by
+    intro p hp q hq
+    have h : ‖p - q‖ ≤ ‖Φ p - Φ q‖ + ‖Φ p - Φ q - (p - q)‖ := by
+      calc ‖p - q‖ = ‖(Φ p - Φ q) - (Φ p - Φ q - (p - q))‖ := by rw [sub_sub_cancel]
+        _ ≤ ‖Φ p - Φ q‖ + ‖Φ p - Φ q - (p - q)‖ := norm_sub_le _ _
+    linarith [hΦ p hp q hq]
+  -- `Φ` is `(1 + δ)`-Lipschitz on `A`, hence a.e.-measurable for `Hⁿ ⌞ A`.
+  have hLipΦ : LipschitzOnWith (Real.toNNReal (1 + δ)) Φ A := by
+    refine LipschitzOnWith.of_dist_le_mul fun p hp q hq => ?_
+    rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ (by linarith)]
+    exact hup p hp q hq
+  have hΦm : AEMeasurable Φ ((μHE[n] : Measure (Amb n ℓ)).restrict A) :=
+    hLipΦ.continuousOn.aemeasurable hA
+  -- `Φ` is injective on `A`; `Ψ = invFunOn Φ A` is a `(1 - δ)⁻¹`-Lipschitz left inverse on `Φ(A)`.
+  have hinj : InjOn Φ A := by
+    intro p hp q hq hpq
+    have h := hlow p hp q hq
+    rw [hpq, sub_self, norm_zero] at h
+    have h' : ‖p - q‖ ≤ 0 := nonpos_of_mul_nonpos_right h h1δ
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 h')
+  have hleft : LeftInvOn (Function.invFunOn Φ A) Φ A := hinj.leftInvOn_invFunOn
+  have hLipΨ : LipschitzOnWith (Real.toNNReal ((1 - δ)⁻¹)) (Function.invFunOn Φ A) (Φ '' A) := by
+    refine LipschitzOnWith.of_dist_le_mul ?_
+    rintro _ ⟨p, hp, rfl⟩ _ ⟨q, hq, rfl⟩
+    rw [hleft hp, hleft hq, dist_eq_norm, dist_eq_norm,
+      Real.coe_toNNReal _ (inv_nonneg.2 h1δ.le), inv_mul_eq_div, le_div_iff₀ h1δ, mul_comm]
+    exact hlow p hp q hq
+  -- The constants: `κ̂ = ((1 - δ)⁻¹)ⁿ` in `[0, ∞]`, and `(1 + δ)ⁿ ≤ κ̂` since `(1 + δ)(1 - δ) ≤ 1`.
+  have hκ : ENNReal.ofReal (((1 - δ)⁻¹) ^ n) = ((Real.toNNReal ((1 - δ)⁻¹) : ℝ≥0∞)) ^ n :=
+    ENNReal.ofReal_pow (inv_nonneg.2 h1δ.le) n
+  have hκ' : ((Real.toNNReal (1 + δ) : ℝ≥0∞)) ^ n ≤ ENNReal.ofReal (((1 - δ)⁻¹) ^ n) := by
+    rw [hκ]
+    gcongr
+    rw [← one_div, le_div_iff₀ h1δ]
+    nlinarith
+  -- For measurable `S`: `Φ_#(Hⁿ ⌞ A)(S) = Hⁿ(Φ⁻¹(S) ∩ A)`, `(Hⁿ ⌞ Φ(A))(S) = Hⁿ(Φ(Φ⁻¹(S) ∩ A))`;
+  -- the Lipschitz image bound (Simon Ch. 2, 1.8(i)) for `Φ` and for `Ψ` gives the two inequalities.
+  refine ⟨Measure.le_iff.2 fun S hS => ?_, Measure.le_iff.2 fun S hS => ?_⟩
+  · rw [Measure.smul_apply, Measure.map_apply_of_aemeasurable hΦm hS, Measure.restrict_apply' hA,
+      Measure.restrict_apply hS, ← image_preimage_inter, smul_eq_mul]
+    calc (μHE[n] : Measure (Amb n ℓ)) (Φ '' (Φ ⁻¹' S ∩ A))
+        ≤ ((Real.toNNReal (1 + δ) : ℝ≥0∞)) ^ n * (μHE[n] : Measure (Amb n ℓ)) (Φ ⁻¹' S ∩ A) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            (hLipΦ.mono inter_subset_right)
+      _ ≤ ENNReal.ofReal (((1 - δ)⁻¹) ^ n) * (μHE[n] : Measure (Amb n ℓ)) (Φ ⁻¹' S ∩ A) := by
+          gcongr
+  · rw [Measure.smul_apply, Measure.map_apply_of_aemeasurable hΦm hS, Measure.restrict_apply' hA,
+      Measure.restrict_apply hS, ← image_preimage_inter, smul_eq_mul]
+    calc (μHE[n] : Measure (Amb n ℓ)) (Φ ⁻¹' S ∩ A)
+        = (μHE[n] : Measure (Amb n ℓ)) (Function.invFunOn Φ A '' (Φ '' (Φ ⁻¹' S ∩ A))) := by
+          rw [hleft.image_image' inter_subset_right]
+      _ ≤ ((Real.toNNReal ((1 - δ)⁻¹) : ℝ≥0∞)) ^ n *
+            (μHE[n] : Measure (Amb n ℓ)) (Φ '' (Φ ⁻¹' S ∩ A)) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            (hLipΨ.mono (image_mono inter_subset_right))
+      _ = ENNReal.ofReal (((1 - δ)⁻¹) ^ n) * (μHE[n] : Measure (Amb n ℓ)) (Φ '' (Φ ⁻¹' S ∩ A)) := by
+          rw [hκ]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
