@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.varifold_tangents-a1.radial_homogeneity-a1.euler_dilation_c1-a1.dilation_integral_deriv-a1",
+  "parent_id": "root.varifold_tangents-a1.radial_homogeneity-a1.euler_dilation_c1-a1",
+  "depth": 4,
+  "title": "Differentiation under the integral sign: d/dt ∫ g(t⁻¹y) dμ(y) = −t⁻¹·∫ Dg(t⁻¹y)(t⁻¹y) dμ(y)",
+  "statement": "Let μ be a Borel measure on ℝ^N that is finite on compact sets and let g : ℝ^N → ℝ be a C¹ function with compact support, Dg = fderiv ℝ g. Then for every t > 0 the function r ↦ ∫ g(r⁻¹y) dμ(y) on ℝ (with the convention 0⁻¹ = 0, as in Lean; only its values near t matter) is differentiable at t with derivative −(t⁻¹·∫ Dg(t⁻¹y)(t⁻¹y) dμ(y)).",
+  "lean_statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)), IsFiniteMeasureOnCompacts μ → ∀ g : Euclidean N → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → ∀ t : ℝ, 0 < t → HasDerivAt (fun r : ℝ => ∫ y, g (r⁻¹ • y) ∂μ) (-(t⁻¹ * ∫ y, fderiv ℝ g (t⁻¹ • y) (t⁻¹ • y) ∂μ)) t",
+  "lean_name": "varifold_tangents_rh_edc_hasDerivAt_dilate_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-varifold-tangents-a1-radial-homogeneity-a1-euler-dilation-c1-a1-669b0db0b7-a1"
+}
