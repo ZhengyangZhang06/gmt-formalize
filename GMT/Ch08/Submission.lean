@@ -2212,6 +2212,95 @@ theorem Submission.intcpt_allard_cylinder_cluster_bound :
         hk0 hδ2 hc'1 hc'2 hred (H δ ε hδ (hδle.trans (min_le_left _ _)) hε hεle μ P x Z hZm
           (fun y hy ↦ hpt y (hZs hy)) σ' τ' hσ'0 hσ'le hτ' hsepZ)
 
+/-- **Simon Ch. 8, proof of 5.10, printed (6) and (8) (p. 222), and Remark 5.11(∗) (p. 220)**
+(child `fibre_density_sum_bound` of `allard_lemma`): uniformly over fibres with at most `M`
+points, if each `y ∈ s` lies over `x`, in `B_2(0)`, within `ε` of `P` and satisfies printed (1)
+and (2), then `Σ_{y ∈ s} Θ^n(μ_W, y) ≤ (1 + δ) ω_n^{-1} μ_W(B_1(x)) + δ`.  Erratum (E2): the book
+states (6)–(7) for `y ∈ B^n_1(0) ∖ p(A_1 ∪ A_2)`, but they are used, and proved, for points
+satisfying (1) and (2); the rescaling by `3/2` is replaced by working with `B_1(x)` directly. -/
+theorem Submission.intcpt_allard_fibre_density_sum_bound :
+    MonotonicityFormula → ∀ (N n : ℕ) (Λ : ℝ), 1 ≤ Λ → ∀ M : ℕ, ∃ δ' : ℝ, 0 < δ' ∧ ∀ δ ε : ℝ, 0 < δ → δ ≤ δ' → 0 < ε → ε ≤ δ ^ 4 → ∀ (U : Set (Euclidean N)) (W : Varifold N n U) (P : Grassmannian N n), ball (0 : Euclidean N) 3 ⊆ U → W.HasLocallyBoundedFirstVariation → W.weight (ball (0 : Euclidean N) 3) ≤ ENNReal.ofReal Λ → ∀ (x : Euclidean N) (s : Finset (Euclidean N)) (Θ : Euclidean N → ℝ≥0∞), s.card ≤ M → (∀ y ∈ s, Grassmannian.project P y = x ∧ y ∈ closedBall (0 : Euclidean N) 2 ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → variationMeasure W (closedBall y ρ) ≤ ENNReal.ofReal ε * W.weight (closedBall y ρ)) ∧ (∀ ρ : ℝ, 0 < ρ → ρ < 1 → (∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * ρ ^ n)) ∧ ‖y - Grassmannian.project P y‖ < ε ∧ HasDensity n W.weight y (Θ y)) → ∑ y ∈ s, Θ y ≤ ENNReal.ofReal (1 + δ) * W.weight (closedBall x 1) / unitBallVolume n + ENNReal.ofReal δ := by
+  intro hMF N n Λ hΛ M
+  have hΛ0 : 0 ≤ Λ := zero_le_one.trans hΛ
+  -- Step 0: `C` from `cylinder_monotonicity`, `K_C = C(1 + eΛ)`, `(c, δ_M)` from
+  -- `cylinder_cluster_bound` with `m = M`, `A = 2 + 2c + 2c/ω_n + 2M K_C/ω_n` and
+  -- `δ' = min{δ_M, 1/2, 2^{-(n+2)}, 1/A}`.
+  obtain ⟨C, hC0, hcyl⟩ := Submission.intcpt_allard_cylinder_monotonicity N n
+  set KC : ℝ := C * (1 + Real.exp 1 * Λ)
+  have hKC0 : 0 ≤ KC :=
+    mul_nonneg hC0 (add_nonneg zero_le_one (mul_nonneg (Real.exp_pos 1).le hΛ0))
+  obtain ⟨c, δM, hc0, hδM0, hclu⟩ := Submission.intcpt_allard_cylinder_cluster_bound N n KC M hKC0
+  set A : ℝ := 2 + 2 * c + 2 * c / (unitBallVolume n).toReal +
+    2 * (M : ℝ) * KC / (unitBallVolume n).toReal
+  have hA0 : 0 < A := by
+    have h1 : 0 ≤ 2 * c / (unitBallVolume n).toReal :=
+      div_nonneg (mul_nonneg zero_le_two hc0) ENNReal.toReal_nonneg
+    have h2 : 0 ≤ 2 * (M : ℝ) * KC / (unitBallVolume n).toReal :=
+      div_nonneg (mul_nonneg (mul_nonneg zero_le_two (Nat.cast_nonneg M)) hKC0)
+        ENNReal.toReal_nonneg
+    linarith
+  refine ⟨min (min δM (1 / 2)) (min (1 / 2 ^ (n + 2)) (1 / A)),
+    lt_min (lt_min hδM0 (by norm_num)) (lt_min (by positivity) (one_div_pos.2 hA0)), ?_⟩
+  intro δ ε hδ0 hδ' hε0 hεδ U W P hU hW hWΛ x s Θ hcard hs
+  have hδM : δ ≤ δM := hδ'.trans ((min_le_left _ _).trans (min_le_left _ _))
+  have hδ2 : δ ≤ 1 / 2 := hδ'.trans ((min_le_left _ _).trans (min_le_right _ _))
+  have hδn : 2 ^ (n + 2) * δ ≤ 1 :=
+    (le_div_iff₀' (by positivity)).1 (hδ'.trans ((min_le_right _ _).trans (min_le_left _ _)))
+  have hδA : A * δ ≤ 1 :=
+    (le_div_iff₀' hA0).1 (hδ'.trans ((min_le_right _ _).trans (min_le_right _ _)))
+  -- `ε ≤ δ⁴ ≤ 1/16`, so `ε ≤ 1` and `e^ε ≤ 1 + 2ε ≤ 2`.
+  have hε16 : ε ≤ 1 / 16 := hεδ.trans ((pow_le_pow_left₀ hδ0.le hδ2 4).trans (by norm_num))
+  have hε1 : ε ≤ 1 := hε16.trans (by norm_num)
+  have hexp : Real.exp ε ≤ 2 := by
+    have h := Real.abs_exp_sub_one_le (x := ε) (by rw [abs_of_pos hε0]; exact hε1)
+    rw [abs_of_pos hε0] at h
+    linarith [le_abs_self (Real.exp ε - 1)]
+  -- Step 1: the facts at each `y ∈ s`: `|y - x| < ε`, the monotonicity (M_y), the density bound
+  -- for `Θ(y)` and the cylinder monotonicity (C_y) with constant `K_C`.
+  have hpt : ∀ y ∈ s, ‖y - x‖ < ε ∧
+      MonotoneOn (fun r : ℝ ↦ ENNReal.ofReal (Real.exp (ε * r)) * W.weight (closedBall y r) /
+        ENNReal.ofReal r ^ n) (Ioo 0 1) ∧
+      (∀ σ : ℝ, 0 < σ → σ < 1 →
+        Θ y ≤ ENNReal.ofReal (Real.exp (ε * σ)) * densityRatio n W.weight y σ) ∧
+      ∀ τ σ ρ : ℝ, 0 < τ → τ ≤ 1 → 0 < σ → σ ≤ ρ → ρ < 1 →
+        W.weight (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) /
+            ENNReal.ofReal σ ^ n ≤
+          W.weight (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) /
+            ENNReal.ofReal ρ ^ n + ENNReal.ofReal (KC * ε * ρ / τ) := by
+    intro y hy
+    obtain ⟨hpy, hy2, hvar, htilt, hyP, hΘ⟩ := hs y hy
+    -- `B°_1(y) ⊆ B°_3(0) ⊆ U`, since `|y| ≤ 2`.
+    have hsub : ball y 1 ⊆ ball (0 : Euclidean N) 3 :=
+      ball_subset_ball' (by rw [mem_closedBall] at hy2; linarith)
+    obtain ⟨hmono, ⟨θ, hθ, -, hθle⟩, hgrow⟩ :=
+      Submission.intcpt_allard_good_point_monotonicity hMF N n U W y ε Λ hW (hsub.trans hU)
+        hε0.le ((measure_mono hsub).trans hWΛ) hvar
+    -- `Θ(y) = θ_y`, by uniqueness of limits along `𝓝[>] 0`.
+    have hΘθ : Θ y = θ := tendsto_nhds_unique hΘ hθ
+    refine ⟨by rw [← hpy]; exact hyP, hmono, by rw [hΘθ]; exact hθle, ?_⟩
+    -- `μ_W(B_r(y)) ≤ e^ε Λ r^n ≤ eΛ r^n`, so `cylinder_monotonicity` applies with `K = eΛ`.
+    exact hcyl U W P y ε (Real.exp 1 * Λ) hW (hsub.trans hU) hε0
+      (mul_nonneg (Real.exp_pos 1).le hΛ0) hvar htilt fun r hr0 hr1 ↦ (hgrow r hr0 hr1).trans
+        (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_right (Real.exp_le_exp.2 hε1) hΛ0) (pow_nonneg hr0.le n)))
+  -- Steps 3–5: the cases `#s = 0`, `#s = 1` and `#s ≥ 2`.
+  obtain hs0 | hs1 | hs2 : s.card = 0 ∨ s.card = 1 ∨ 2 ≤ s.card := by omega
+  · rw [Finset.card_eq_zero.1 hs0, Finset.sum_empty]
+    exact zero_le
+  · obtain ⟨y, rfl⟩ := Finset.card_eq_one.1 hs1
+    obtain ⟨hyx, -, hD, -⟩ := hpt y (Finset.mem_singleton_self y)
+    rw [Finset.sum_singleton]
+    exact (Submission.intcpt_allard_fdsb_one_point_bound N n W.weight x y (Θ y) δ ε hδ0 hδ2 hδn
+      hε0 hεδ hyx hD).trans le_self_add
+  · -- The per-point bound is `density_cylinder_bound` (printed (6)); the cluster bound (8) is
+    -- `cylinder_cluster_bound` at `(δ, ε, μ_W, P, x, s)`.
+    exact Submission.intcpt_allard_fdsb_separated_sum_bound N n W.weight P x s Θ KC c δ ε M hKC0
+      hc0 hδ0 hδ2 hε0 hεδ hδA hs2 hcard
+      (fun y hy ↦ ⟨(hpt y hy).1, Submission.intcpt_allard_fdsb_density_cylinder_bound N n W.weight
+        P y (Θ y) ε KC hε0.le hexp hKC0 (hpt y hy).2.2.1 (hpt y hy).2.2.2⟩)
+      (hclu δ ε hδ0 hδM hε0 hεδ W.weight P x s hcard fun y hy ↦
+        ⟨(hs y hy).1, (hs y hy).2.2.2.2.1, (hpt y hy).2.1, (hpt y hy).2.2.2⟩)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
