@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b321f74f359cd1ee7b8a879d2d7f046848975680e178312fd1753af38eeb758b",
+  "git_delta": {
+    "base_commit": "d06d6b639341340c2d46b3cec5812e78fdbb4896",
+    "candidate_commit": "b405c044b9ac9c1e78ecf320eef9376f72f064a5",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_rsn_local_null",
+    "diff_sha256": "ae6e3093256df2a9df9726eda39d02a7f092ac8fd751e5af459eaf6dfac708fe",
+    "source_sha256": "a387111f3f375d6de7f65a8b54d03877f8df18718b42d953cd7099a5a97faf21",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_rsn_local_null",
+      "statement": "∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsOpen W → W ⊆ U → T.VanishesOn W → NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) (μHE[n] : Measure (Eucl P)) → AEStronglyMeasurable ξ ((μHE[n] : Measure (Eucl P)).restrict M) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ‖ξ x‖ = 1) → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (μHE[n] : Measure (Eucl P)) (M ∩ W) = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
