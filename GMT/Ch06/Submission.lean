@@ -540,6 +540,172 @@ theorem Submission.fiw_ims_overlap_finite :
       simpa using ENNReal.ofReal_le_ofReal (hθ1 r x hxM)
     simpa [hg] using mul_le_mul' h1 h2
   · exact finite_empty.subset fun r hr => hxU (hMU r hr.2)
+/-- **Unit bound for the orientation `±τ₁ ∧ ⋯ ∧ τₙ` (Simon Ch. 6, 3.1).**  If `τ` is an
+orthonormal family in `ℝ^P` and `w = ±simpleNVector τ`, then `|w(α)| ≤ ‖α‖` for every
+`n`-covector `α`: `simpleNVector τ α = α(τ₁, …, τₙ)` and `‖α(τ)‖ ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+(`ContinuousAlternatingMap.le_opNorm`, each `τᵢ` a unit vector). -/
+theorem Submission.fiw_ims_tt_unit_bound : ∀ (P n : ℕ) (τ : Fin n → Eucl P) (w : NVector (Eucl P) n), Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) → ∀ α : Covector (Eucl P) n, |w α| ≤ ‖α‖ := by
+  intro P n τ w hτ hw α
+  -- `|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`.
+  have h1 : |simpleNVector τ α| ≤ ‖α‖ := by
+    rw [simpleNVector_apply, ← Real.norm_eq_abs]
+    calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := α.le_opNorm τ
+      _ = ‖α‖ := by simp [hτ.1]
+  -- `w = ±simpleNVector τ`, and `|-a| = |a|`.
+  rcases hw with rfl | rfl
+  · exact h1
+  · simpa [abs_neg] using h1
+
+/-- One term of Simon Ch. 6, 3.1 (‡): for a rectifiable triple `(M, θ, ξ)` in `U`, an open
+`W ⊂⊂ U` and a continuous `n`-form `ω` with `tsupport ω ⊆ W` and `‖ω(x)‖ ≤ B`, the integrand
+`1_M θ ⟨ω, ξ⟩` is `Hⁿ`-a.e. strongly measurable and `∫ |1_M θ ⟨ω, ξ⟩| dHⁿ ≤ B ∫_{M ∩ W} θ dHⁿ`,
+since `|⟨ω(x), ξ(x)⟩| ≤ ‖ω(x)‖` for `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` (`Submission.fiw_ims_tt_unit_bound`). -/
+theorem Submission.fiw_ims_tt_term_bound :
+    ∀ (P n : ℕ) (U W M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n)
+      (ω : Eucl P → Covector (Eucl P) n) (B : ℝ), IsRectifiableTriple U n M θ ξ →
+      CompactlyContainedOpen W U → Continuous ω → tsupport ω ⊆ W → (∀ x, ‖ω x‖ ≤ B) →
+      AEStronglyMeasurable (M.indicator fun x => θ x * ξ x (ω x)) (μHE[n] : Measure (Eucl P)) ∧
+      ∫⁻ x, ‖M.indicator (fun y => θ y * ξ y (ω y)) x‖ₑ ∂(μHE[n] : Measure (Eucl P)) ≤
+        ENNReal.ofReal B * ∫⁻ x in M ∩ W, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl P)) := by
+  intro P n U W M θ ξ ω B htri hW hω hωW hB
+  obtain ⟨hWo, hLc, hLU⟩ := hW
+  set g : Eucl P → ℝ := fun x => θ x * ξ x (ω x)
+  -- `g` vanishes off `tsupport ω ⊆ W`.
+  have hg0 : ∀ x, x ∉ W → g x = 0 := by
+    intro x hx
+    have hωx : ω x = 0 := image_eq_zero_of_notMem_tsupport fun h => hx (hωW h)
+    show θ x * ξ x (ω x) = 0
+    rw [hωx, map_zero, mul_zero]
+  have hML : NullMeasurableSet (M ∩ closure W) (μHE[n] : Measure (Eucl P)) :=
+    htri.nullMeasurableSet.inter isClosed_closure.measurableSet.nullMeasurableSet
+  have hMW : NullMeasurableSet (M ∩ W) (μHE[n] : Measure (Eucl P)) :=
+    htri.nullMeasurableSet.inter hWo.measurableSet.nullMeasurableSet
+  -- Hence `1_M g = 1_{M ∩ closure W} g`.
+  have hG : M.indicator g = (M ∩ closure W).indicator g := by
+    funext x
+    by_cases hxL : x ∈ closure W
+    · by_cases hxM : x ∈ M <;> simp [Set.indicator, hxL, hxM]
+    · simp [Set.indicator, hxL, hg0 x fun hxW => hxL (subset_closure hxW)]
+  refine ⟨?_, ?_⟩
+  · -- On `M ∩ closure W`: `θ` is integrable (`closure W` is a compact subset of `U`), `ξ` is
+    -- measurable (restricted from `M`), `ω` is continuous, and `(v, α) ↦ v α` is continuous.
+    have hθ : AEStronglyMeasurable θ ((μHE[n] : Measure (Eucl P)).restrict (M ∩ closure W)) :=
+      (htri.integrableOn (closure W) hLc hLU).aestronglyMeasurable
+    have hξ : AEStronglyMeasurable ξ ((μHE[n] : Measure (Eucl P)).restrict (M ∩ closure W)) :=
+      htri.aestronglyMeasurable.mono_measure (Measure.restrict_mono inter_subset_left le_rfl)
+    have hev : Continuous fun p : NVector (Eucl P) n × Covector (Eucl P) n => p.1 p.2 :=
+      isBoundedBilinearMap_apply.continuous
+    rw [hG, aestronglyMeasurable_indicator_iff₀ hML]
+    exact hθ.mul (hev.comp_aestronglyMeasurable (hξ.prodMk hω.aestronglyMeasurable))
+  · -- `Hⁿ`-a.e. `|1_M g| ≤ 1_{M ∩ W} B θ`: on `M ∩ W`, `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ`
+    -- orthonormal, so `|ξ(x)(ω(x))| ≤ ‖ω(x)‖ ≤ B`; elsewhere `1_M g` vanishes.
+    have hae : ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), ‖M.indicator g x‖ₑ ≤
+        (M ∩ W).indicator (fun y => ENNReal.ofReal B * ENNReal.ofReal (θ y)) x := by
+      filter_upwards [(ae_restrict_iff'₀ htri.nullMeasurableSet).1 htri.orients] with x hx
+      by_cases hxM : x ∈ M
+      · by_cases hxW : x ∈ W
+        · obtain ⟨τ, hτ, -, hξx⟩ := hx hxM
+          have hθx : 0 < θ x := htri.pos x hxM
+          have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB x)
+          have hub : |ξ x (ω x)| ≤ B :=
+            (Submission.fiw_ims_tt_unit_bound P n τ (ξ x) hτ hξx (ω x)).trans (hB x)
+          rw [Set.indicator_of_mem hxM, Set.indicator_of_mem (show x ∈ M ∩ W from ⟨hxM, hxW⟩)]
+          show ‖θ x * ξ x (ω x)‖ₑ ≤ ENNReal.ofReal B * ENNReal.ofReal (θ x)
+          rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_mul hB0, abs_mul, abs_of_pos hθx,
+            mul_comm B]
+          exact ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left hub hθx.le)
+        · simp [Set.indicator_of_mem hxM, hg0 x hxW]
+      · simp [Set.indicator_of_notMem hxM]
+    calc ∫⁻ x, ‖M.indicator g x‖ₑ ∂(μHE[n] : Measure (Eucl P))
+        ≤ ∫⁻ x, (M ∩ W).indicator (fun y => ENNReal.ofReal B * ENNReal.ofReal (θ y)) x
+            ∂(μHE[n] : Measure (Eucl P)) := lintegral_mono_ae hae
+      _ = ∫⁻ x in M ∩ W, ENNReal.ofReal B * ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl P)) :=
+          lintegral_indicator₀ hMW _
+      _ = ENNReal.ofReal B * ∫⁻ x in M ∩ W, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl P)) :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+
+/-- **Termwise integration of an integer series of rectifiable triples** (Simon Ch. 6, 3.1 (‡)
+for the `M`-absolutely convergent series of 3.13 and the proof of 7.2).
+Let `(M_r, θ_r, ξ_r)` be rectifiable triples in `U` and `c_r ∈ ℤ` with
+`∑_r |c_r| ∫_{M_r ∩ W} θ_r dHⁿ < ∞` for every `W ⊂⊂ U`.  Then for every `ω ∈ 𝒟ⁿ(U)`, with
+`F_r := 1_{M_r} c_r θ_r ⟨ω, ξ_r⟩`, the series `∑_r c_r τ(M_r, θ_r, ξ_r)(ω)` has sum
+`∫ ∑_r F_r dHⁿ`.  Choose an open `W ⊂⊂ U` with `tsupport ω ⊆ W` and a bound `‖ω(x)‖ ≤ B`;
+`Submission.fiw_ims_tt_term_bound` makes each `F_r` a.e. strongly measurable with
+`∫ |F_r| dHⁿ ≤ |c_r| B ∫_{M_r ∩ W} θ_r dHⁿ`, so `∑_r ∫ |F_r| dHⁿ < ∞` and the series can be
+integrated termwise (`hasSum_integral_of_summable_integral_norm`); finally
+`∫ F_r dHⁿ = c_r ∫_{M_r} θ_r ⟨ω, ξ_r⟩ dHⁿ = c_r τ(M_r, θ_r, ξ_r)(ω)`. -/
+theorem Submission.fiw_ims_tsum_tau :
+    ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (M : ℕ → Set (Eucl P)) (θ : ℕ → Eucl P → ℝ)
+      (ξ : ℕ → Eucl P → NVector (Eucl P) n) (c : ℕ → ℤ),
+      (∀ r, IsRectifiableTriple U n (M r) (θ r) (ξ r)) →
+      (∀ W, CompactlyContainedOpen W U → (∑' r, ((c r).natAbs : ℝ≥0∞) *
+        ∫⁻ x in M r ∩ W, ENNReal.ofReal (θ r x) ∂(μHE[n] : Measure (Eucl P))) < ∞) →
+      ∀ ω : TestFormOn U n, HasSum (fun r => (c r : ℝ) * tauAction n (M r) (θ r) (ξ r) ω)
+        (∫ x, ∑' r, (M r).indicator (fun y => (c r : ℝ) * (θ r y * ξ r y
+          ((ω : DifferentialForm (Eucl P) n) y))) x ∂(μHE[n] : Measure (Eucl P))) := by
+  intro P n U hU M θ ξ c htri hsum ω
+  -- `ω` is smooth (hence continuous) with compact support `tsupport ω ⊆ U`.
+  have hωc : Continuous (ω : DifferentialForm (Eucl P) n) := ω.2.1.1.continuous
+  have hωK : HasCompactSupport (ω : DifferentialForm (Eucl P) n) := ω.2.1.2
+  -- Localization: an open `W ⊂⊂ U` with `tsupport ω ⊆ W`, and `‖ω(x)‖ ≤ B` for all `x`.
+  obtain ⟨W, hWo, hKW, hLU, hLc⟩ :=
+    exists_open_between_and_isCompact_closure hωK.isCompact hU ω.2.2
+  have hW : CompactlyContainedOpen W U := ⟨hWo, hLc, hLU⟩
+  obtain ⟨B, hB⟩ := hωc.bounded_above_of_compact_support hωK
+  -- `F r = c_r G r`, where `G r := 1_{M_r} θ_r ⟨ω, ξ_r⟩` is controlled by the child lemma.
+  let G : ℕ → Eucl P → ℝ := fun r =>
+    (M r).indicator fun y => θ r y * ξ r y ((ω : DifferentialForm (Eucl P) n) y)
+  let F : ℕ → Eucl P → ℝ := fun r =>
+    (M r).indicator fun y => (c r : ℝ) * (θ r y * ξ r y ((ω : DifferentialForm (Eucl P) n) y))
+  have hFG : ∀ r x, F r x = (c r : ℝ) * G r x := by
+    intro r x
+    by_cases hx : x ∈ M r <;> simp [F, G, hx]
+  have hG : ∀ r, AEStronglyMeasurable (G r) (μHE[n] : Measure (Eucl P)) ∧
+      ∫⁻ x, ‖G r x‖ₑ ∂(μHE[n] : Measure (Eucl P)) ≤ ENNReal.ofReal B *
+        ∫⁻ x in M r ∩ W, ENNReal.ofReal (θ r x) ∂(μHE[n] : Measure (Eucl P)) := fun r =>
+    Submission.fiw_ims_tt_term_bound P n U W (M r) (θ r) (ξ r) (ω : DifferentialForm (Eucl P) n)
+      B (htri r) hW hωc hKW hB
+  -- `‖(c_r : ℝ)‖ₑ = |c_r|`.
+  have hc : ∀ r, ‖(c r : ℝ)‖ₑ = ((c r).natAbs : ℝ≥0∞) := fun r => by
+    rw [Real.enorm_eq_ofReal_abs, ← Int.cast_abs, ← Nat.cast_natAbs, ENNReal.ofReal_natCast]
+  have hFm : ∀ r, AEStronglyMeasurable (F r) (μHE[n] : Measure (Eucl P)) := fun r => by
+    have : F r = fun x => (c r : ℝ) * G r x := funext (hFG r)
+    rw [this]
+    exact (hG r).1.const_mul _
+  -- `∫ |F_r| dHⁿ ≤ |c_r| B ∫_{M_r ∩ W} θ_r dHⁿ`.
+  have hFle : ∀ r, ∫⁻ x, ‖F r x‖ₑ ∂(μHE[n] : Measure (Eucl P)) ≤ ENNReal.ofReal B *
+      (((c r).natAbs : ℝ≥0∞) *
+        ∫⁻ x in M r ∩ W, ENNReal.ofReal (θ r x) ∂(μHE[n] : Measure (Eucl P))) := fun r =>
+    calc ∫⁻ x, ‖F r x‖ₑ ∂(μHE[n] : Measure (Eucl P))
+        = ∫⁻ x, ((c r).natAbs : ℝ≥0∞) * ‖G r x‖ₑ ∂(μHE[n] : Measure (Eucl P)) := by
+          simp_rw [hFG r, enorm_mul, hc]
+      _ = ((c r).natAbs : ℝ≥0∞) * ∫⁻ x, ‖G r x‖ₑ ∂(μHE[n] : Measure (Eucl P)) :=
+          lintegral_const_mul' _ _ (ENNReal.natCast_ne_top _)
+      _ ≤ ((c r).natAbs : ℝ≥0∞) * (ENNReal.ofReal B *
+            ∫⁻ x in M r ∩ W, ENNReal.ofReal (θ r x) ∂(μHE[n] : Measure (Eucl P))) := by
+          gcongr
+          exact (hG r).2
+      _ = _ := mul_left_comm _ _ _
+  -- Hence `∑_r ∫ |F_r| dHⁿ ≤ B ∑_r |c_r| ∫_{M_r ∩ W} θ_r dHⁿ < ∞`.
+  have hFsum : ∑' r, ∫⁻ x, ‖F r x‖ₑ ∂(μHE[n] : Measure (Eucl P)) ≠ ∞ := by
+    refine ne_top_of_le_ne_top (ENNReal.mul_ne_top (ENNReal.ofReal_ne_top (r := B))
+      (hsum W hW).ne) ?_
+    rw [← ENNReal.tsum_mul_left]
+    exact ENNReal.tsum_le_tsum hFle
+  have hFi : ∀ r, Integrable (F r) (μHE[n] : Measure (Eucl P)) := fun r =>
+    ⟨hFm r, (ENNReal.le_tsum (f := fun r => ∫⁻ x, ‖F r x‖ₑ ∂(μHE[n] : Measure (Eucl P))) r).trans_lt
+      (lt_top_iff_ne_top.2 hFsum)⟩
+  have hFs : Summable fun r => ∫ x, ‖F r x‖ ∂(μHE[n] : Measure (Eucl P)) :=
+    (ENNReal.summable_toReal hFsum).congr fun r => (integral_norm_eq_lintegral_enorm (hFm r)).symm
+  -- Termwise integration, and `∫ F_r dHⁿ = c_r τ(M_r, θ_r, ξ_r)(ω)`.
+  have hint : ∀ r, ∫ x, F r x ∂(μHE[n] : Measure (Eucl P)) =
+      (c r : ℝ) * tauAction n (M r) (θ r) (ξ r) ω := fun r => by
+    simp only [F]
+    rw [integral_indicator₀ (htri r).nullMeasurableSet, integral_const_mul]
+    rfl
+  have hS := hasSum_integral_of_summable_integral_norm hFi hFs
+  simp only [hint] at hS
+  exact hS
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
