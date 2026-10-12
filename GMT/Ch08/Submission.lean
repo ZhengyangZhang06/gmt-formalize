@@ -410,6 +410,74 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Simon Ch. 8, proof of 5.9, estimate (1)** (child `liminf_bound_ae_of_cover` of
+`liminf_ratio_bound_ae`): suppose `μ(A) ≤ C t ν_i({dist(·, A) < r})` whenever every `x ∈ A` is the
+centre of a closed ball `B_σ(x)`, `0 < σ < r`, with `μ(B_σ(x)) ≤ t ν_i(B_σ(x))` (the Besicovitch
+estimate), and `S = sup_i ν_i({dist(·, W) < r}) < ∞`.  Then for `μ`-a.e. `x ∈ W` there is `c` with
+`liminf_i ν_i(B_ρ(x)) ≤ c μ(B_ρ(x))` for all `0 < ρ < r`.  For each `j`, the exceptional set lies
+in the increasing union of the sets `A_i` of points with one radius `ρ` such that
+`(j + 1) μ(B_ρ(x)) < ν_k(B_ρ(x))` for all `k ≥ i`; each `A_i` has measure at most
+`C S / (j + 1)`, hence so does the exceptional set, which is therefore `μ`-null. -/
+theorem Submission.intcpt_vdb_liminf_bound_ae_of_cover :
+    ∀ (N C : ℕ) (μ : Measure (Euclidean N)) (ν : ℕ → Measure (Euclidean N))
+      (W : Set (Euclidean N)) (r : ℝ),
+      (∀ (A : Set (Euclidean N)) (i : ℕ) (t : ℝ≥0∞),
+        (∀ x ∈ A, ∃ σ : ℝ, 0 < σ ∧ σ < r ∧ μ (closedBall x σ) ≤ t * ν i (closedBall x σ)) →
+        μ A ≤ (C : ℝ≥0∞) * t * ν i (thickening r A)) →
+      ⨆ i, ν i (thickening r W) ≠ ∞ →
+      ∀ᵐ x ∂μ, x ∈ W → ∃ c : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ < r →
+        liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ (c : ℝ≥0∞) * μ (closedBall x ρ) := by
+  intro N C μ ν W r hH hS
+  rw [ae_iff]
+  set E := {x | ¬(x ∈ W → ∃ c : ℕ, ∀ ρ : ℝ, 0 < ρ → ρ < r →
+    liminf (fun i ↦ ν i (closedBall x ρ)) atTop ≤ (c : ℝ≥0∞) * μ (closedBall x ρ))}
+  set S := ⨆ i, ν i (thickening r W)
+  have key : ∀ j : ℕ, μ E ≤ (C : ℝ≥0∞) * ((j : ℝ≥0∞) + 1)⁻¹ * S := by
+    intro j
+    have ha0 : (j : ℝ≥0∞) + 1 ≠ 0 := by simp
+    have hatop : (j : ℝ≥0∞) + 1 ≠ ∞ := by simp
+    set a : ℝ≥0∞ := (j : ℝ≥0∞) + 1
+    -- `E` lies in the increasing union of the sets `A i` of points `x ∈ W` having a radius
+    -- `ρ ∈ (0, r)` with `a μ(B_ρ(x)) < ν_k(B_ρ(x))` for every `k ≥ i`.
+    set A : ℕ → Set (Euclidean N) := fun i ↦ {x | x ∈ W ∧ ∃ ρ : ℝ, 0 < ρ ∧ ρ < r ∧
+      ∀ k, i ≤ k → a * μ (closedBall x ρ) < ν k (closedBall x ρ)}
+    have hA : Monotone A := fun i i' hi x ⟨hxW, ρ, hρ, hρr, hk⟩ ↦
+      ⟨hxW, ρ, hρ, hρr, fun k hk' ↦ hk k (hi.trans hk')⟩
+    have hEA : E ⊆ ⋃ i, A i := by
+      intro x hx
+      simp only [E, mem_ofPred_eq, not_imp, not_exists, not_forall, not_le] at hx
+      obtain ⟨ρ, hρ, hρr, hlt⟩ := hx.2 (j + 1)
+      rw [Nat.cast_add_one] at hlt
+      obtain ⟨i, hi⟩ := eventually_atTop.1 (eventually_lt_of_lt_liminf hlt)
+      exact mem_iUnion.2 ⟨i, hx.1, ρ, hρ, hρr, hi⟩
+    -- On `A i` the ball ratios are at most `a⁻¹`, so the covering estimate `hH` applies.
+    have hAS : ∀ i, μ (A i) ≤ (C : ℝ≥0∞) * a⁻¹ * S := by
+      intro i
+      have hcov : ∀ x ∈ A i, ∃ σ : ℝ, 0 < σ ∧ σ < r ∧
+          μ (closedBall x σ) ≤ a⁻¹ * ν i (closedBall x σ) := by
+        rintro x ⟨-, ρ, hρ, hρr, hk⟩
+        refine ⟨ρ, hρ, hρr, ?_⟩
+        calc μ (closedBall x ρ) = a⁻¹ * (a * μ (closedBall x ρ)) :=
+              (ENNReal.inv_mul_cancel_left ha0 hatop).symm
+          _ ≤ a⁻¹ * ν i (closedBall x ρ) := by
+              gcongr
+              exact (hk i le_rfl).le
+      refine (hH _ i _ hcov).trans ?_
+      gcongr
+      exact (measure_mono (thickening_subset_of_subset r fun x hx ↦ hx.1)).trans
+        (le_iSup (fun k ↦ ν k (thickening r W)) i)
+    calc μ E ≤ μ (⋃ i, A i) := measure_mono hEA
+      _ = ⨆ i, μ (A i) := hA.measure_iUnion
+      _ ≤ (C : ℝ≥0∞) * a⁻¹ * S := iSup_le hAS
+  -- `C (j + 1)⁻¹ S → 0` as `j → ∞`, because `C` and `S` are finite.
+  have hlim : Tendsto (fun j : ℕ ↦ (C : ℝ≥0∞) * ((j : ℝ≥0∞) + 1)⁻¹ * S) atTop (𝓝 0) := by
+    have h := ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1)
+    simp only [Function.comp_def, Nat.cast_add_one] at h
+    have h' := ENNReal.Tendsto.mul_const
+      (ENNReal.Tendsto.const_mul h (Or.inr (ENNReal.natCast_ne_top C))) (Or.inr hS)
+    rwa [mul_zero, zero_mul] at h'
+  exact nonpos_iff_eq_zero.1 (ge_of_tendsto' hlim key)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
