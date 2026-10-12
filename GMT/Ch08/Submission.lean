@@ -442,6 +442,162 @@ theorem Submission.intcpt_fli_weight_integral_tendsto :
   -- Step 7: substitute steps 5 and 6 into step 4.
   simpa only [hleft, hright] using hlim
 
+/-- **Dimension `0`: flat limits of integral `0`-varifolds have integer multiplicity** (child
+`dim_zero` of `flat_limit_integer`, step 1 of its proof; Simon Ch. 8, proof of 5.9).  For `n = 0`
+the plane `P` is `{0}` and `H^0` is counting measure, so `∫_P g dH^0 = g(0)`.  Each `W_k = v(M, θ)`
+is carried by a countable set `M` with `θ ∈ ℕ` on `M`, so `μ_{W_k}(B_{1/2}(0)) ∈ ℕ ∪ {∞}`.
+Cut-offs `g₁ ≤ 1_{B_{1/2}(0)} ≤ g₂` with `g₁(0) = g₂(0) = 1` and `weight_tendsto` give
+`μ_{W_k}(B_{1/2}(0)) → θ₀`; as `ℕ` is closed in `ℝ`, `θ₀ ∈ ℕ`. -/
+theorem Submission.intcpt_fli_dim_zero_integer :
+    ∀ (N : ℕ) (P : Grassmannian N 0) (θ₀ : ℝ) (W : ℕ → Varifold N 0 (ball (0 : Euclidean N) 5)), 0 < θ₀ → (∀ k, IsIntegral (W k)) → (∀ f : C_c(Euclidean N × Grassmannian N 0, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N 0)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))) → ∃ m : ℕ, θ₀ = m := by
+  intro N P θ₀ W hθ₀ hint hconv
+  -- Step 1: `dim P.plane = 0`, so `P.plane = ⊥`, i.e. `{0}` as a set.
+  have hplane : (P.plane : Set (Euclidean N)) = {0} := by
+    rw [Submodule.finrank_eq_zero.1 (Grassmannian.finrank_plane P), Submodule.bot_coe]
+  -- Step 2: `H^0 = μH[0]` gives every point mass `1`, hence `∫_P g dH^0 = g(0)`.
+  have hH0 : ∀ x : Euclidean N, (μHE[0] : Measure (Euclidean N)) {x} = 1 := fun x ↦ by
+    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
+  have hplane_int : ∀ g : Euclidean N → ℝ,
+      ∫ x in (P.plane : Set (Euclidean N)), g x ∂(μHE[0] : Measure (Euclidean N)) = g 0 := by
+    intro g
+    rw [hplane, integral_singleton, measureReal_def, hH0, ENNReal.toReal_one, one_smul]
+  -- Step 3: the real parts of the masses `μ_{W_k}(B_{1/2}(0))` are natural numbers.
+  have hnat : ∀ k, ∃ m : ℕ, ((W k).weight (closedBall (0 : Euclidean N) (1 / 2))).toReal = m := by
+    intro k
+    -- Step 3a: `W_k = v(M, θ)` with `θ ∈ ℕ` at `(H^0 ⌞ M)`-a.e. point.
+    obtain ⟨M, θ, hVM, hθ⟩ := hint k
+    -- Step 3b: `M` is countable: the `H^0`-null part `M₀` of its Lipschitz cover is empty (points
+    -- have `H^0`-measure `1`), and each image of the one-point space `ℝ^0` is a single point.
+    have hMc : M.Countable := by
+      obtain ⟨M₀, hM₀, F, -, hcover⟩ := hVM.2.2.1
+      have hM₀e : M₀ = ∅ := eq_empty_iff_forall_notMem.2 fun x hx ↦ by
+        have h := measure_mono (μ := (μHE[0] : Measure (Euclidean N))) (singleton_subset_iff.2 hx)
+        rw [hH0, hM₀] at h
+        exact absurd h (by norm_num)
+      rw [hM₀e, empty_union] at hcover
+      exact (countable_iUnion fun j ↦ countable_range (F j)).mono hcover
+    -- Step 3c: `θ(x) ∈ ℕ` for every `x ∈ M`: a point of `M` where this fails would be a set of
+    -- `H^0`-measure `1` inside the `(H^0 ⌞ M)`-null exceptional set.
+    have hθM : ∀ x ∈ M, ∃ j : ℕ, θ x = j := fun x hx ↦ by
+      by_contra hcon
+      have h : (μHE[0] : Measure (Euclidean N)) {x} ≤ 0 :=
+        (measure_mono (singleton_subset_iff.2
+          (show x ∈ {y | ¬∃ j : ℕ, θ y = j} ∩ M from ⟨hcon, hx⟩))).trans
+          ((Measure.le_restrict_apply M _).trans_eq (ae_iff.1 hθ))
+      rw [hH0] at h
+      exact absurd h (by norm_num)
+    -- Step 3d: `μ_{W_k}(B_{1/2}(0)) = ∫⁻_S θ dH^0` for a set `S ⊆ M`, hence countable, so it is the
+    -- sum `Σ_{x ∈ S} θ(x)` of natural numbers.
+    set S := {x | x ∈ M ∧ ∃ T : Grassmannian N 0,
+      Chapter03.HasWeightedApproximateTangentSpaceAt 0 M θ x T.plane ∧
+        (x, T) ∈ closedBall (0 : Euclidean N) (1 / 2) ×ˢ (univ : Set (Grassmannian N 0))} with hS
+    have hSc : S.Countable := hMc.mono fun x hx ↦ hx.1
+    have hw : (W k).weight (closedBall (0 : Euclidean N) (1 / 2)) =
+        ∑' x : S, ((⌊θ x⌋₊ : ℕ) : ℝ≥0∞) := by
+      rw [Varifold.weight_apply _ measurableSet_closedBall,
+        hVM.2.2.2.2.2 _ (measurableSet_closedBall.prod MeasurableSet.univ),
+        lintegral_countable _ hSc]
+      refine tsum_congr fun x ↦ ?_
+      obtain ⟨j, hj⟩ := hθM x x.2.1
+      rw [hH0, mul_one, hj, Nat.floor_natCast, ENNReal.ofReal_natCast]
+    -- Step 3e: an infinite sum has real part `0`; a finite one has only finitely many terms
+    -- `≥ 1`, the others vanish, so it is the cast of a finite sum of natural numbers.
+    rw [hw]
+    by_cases htop : ∑' x : S, ((⌊θ x⌋₊ : ℕ) : ℝ≥0∞) = ∞
+    · exact ⟨0, by rw [htop, ENNReal.toReal_top, Nat.cast_zero]⟩
+    have hfin : {x : S | (1 : ℝ≥0∞) ≤ ((⌊θ x⌋₊ : ℕ) : ℝ≥0∞)}.Finite :=
+      ENNReal.finite_const_le_of_tsum_ne_top htop one_ne_zero
+    have hzero : ∀ x ∉ hfin.toFinset, ((⌊θ x⌋₊ : ℕ) : ℝ≥0∞) = 0 := fun x hx ↦ by
+      have h : ((⌊θ x⌋₊ : ℕ) : ℝ≥0∞) < 1 := not_le.1 fun h ↦ hx (hfin.mem_toFinset.2 h)
+      rw [Nat.cast_lt_one.1 h, Nat.cast_zero]
+    refine ⟨∑ x ∈ hfin.toFinset, ⌊θ x⌋₊, ?_⟩
+    rw [tsum_eq_sum hzero, ← Nat.cast_sum, ENNReal.toReal_natCast]
+  -- Step 4: cut-offs `g₁ ≤ 1_{B_{1/2}(0)} ≤ g₂`: continuous, `[0,1]`-valued, vanishing off
+  -- `B_{3/4}(0)` (a compact subset of `B°_5(0)`), with `g₁(0) = g₂(0) = 1`.
+  set g₁ : Euclidean N → ℝ := fun x ↦ max 0 (min 1 (2 - 4 * ‖x‖)) with hg₁
+  set g₂ : Euclidean N → ℝ := fun x ↦ max 0 (min 1 (3 - 4 * ‖x‖)) with hg₂
+  have hg₁c : Continuous g₁ := by simp only [hg₁]; fun_prop
+  have hg₂c : Continuous g₂ := by simp only [hg₂]; fun_prop
+  have hg₁0 : ∀ x, 0 ≤ g₁ x := fun x ↦ le_max_left _ _
+  have hg₂0 : ∀ x, 0 ≤ g₂ x := fun x ↦ le_max_left _ _
+  have hg₁1 : ∀ x, g₁ x ≤ 1 := fun x ↦ max_le zero_le_one (min_le_left _ _)
+  have hg₂1 : ∀ x, g₂ x ≤ 1 := fun x ↦ max_le zero_le_one (min_le_left _ _)
+  have hg₁z : ∀ x, 1 / 2 ≤ ‖x‖ → g₁ x = 0 := fun x hx ↦
+    max_eq_left ((min_le_right _ _).trans (by linarith))
+  have hg₂z : ∀ x, 3 / 4 ≤ ‖x‖ → g₂ x = 0 := fun x hx ↦
+    max_eq_left ((min_le_right _ _).trans (by linarith))
+  have hg₂one : ∀ x, ‖x‖ ≤ 1 / 2 → g₂ x = 1 := fun x hx ↦ by
+    simp only [hg₂]
+    rw [min_eq_left (by linarith), max_eq_right zero_le_one]
+  have hg₁at0 : g₁ 0 = 1 := by norm_num [hg₁]
+  have hg₂at0 : g₂ 0 = 1 := hg₂one 0 (by norm_num)
+  have hsupp : ∀ g : Euclidean N → ℝ, (∀ x, 3 / 4 ≤ ‖x‖ → g x = 0) →
+      tsupport g ⊆ closedBall (0 : Euclidean N) (3 / 4) := fun g hg ↦
+    closure_minimal (fun x hx ↦ mem_closedBall_zero_iff.2
+      (not_lt.1 fun h ↦ hx (hg x h.le))) isClosed_closedBall
+  have hs₁ := hsupp g₁ fun x hx ↦ hg₁z x (by linarith)
+  have hs₂ := hsupp g₂ hg₂z
+  have hcs₁ : HasCompactSupport g₁ :=
+    (isCompact_closedBall (0 : Euclidean N) (3 / 4)).of_isClosed_subset (isClosed_tsupport _) hs₁
+  have hcs₂ : HasCompactSupport g₂ :=
+    (isCompact_closedBall (0 : Euclidean N) (3 / 4)).of_isClosed_subset (isClosed_tsupport _) hs₂
+  have h5 : closedBall (0 : Euclidean N) (3 / 4) ⊆ ball 0 5 := closedBall_subset_ball (by norm_num)
+  -- Step 5: by `weight_tendsto` and step 2, `∫ g_i dμ_{W_k} → θ₀ g_i(0) = θ₀`.
+  have hl₁ := Submission.intcpt_fli_weight_integral_tendsto N 0 P θ₀ W hconv g₁ hg₁c hcs₁
+    (hs₁.trans h5)
+  have hl₂ := Submission.intcpt_fli_weight_integral_tendsto N 0 P θ₀ W hconv g₂ hg₂c hcs₂
+    (hs₂.trans h5)
+  rw [hplane_int, hg₁at0, mul_one] at hl₁
+  rw [hplane_int, hg₂at0, mul_one] at hl₂
+  -- Step 6: `μ_{W_k}(B_{3/4}(0)) < ∞`, so the `g_i` are `μ_{W_k}`-integrable, and
+  -- `∫ g₁ dμ_{W_k} ≤ μ_{W_k}(B_{1/2}(0)) ≤ ∫ g₂ dμ_{W_k}` in `[0, ∞]`.
+  have hint_g : ∀ k, ∀ g : Euclidean N → ℝ, Continuous g → (∀ x, 0 ≤ g x) → (∀ x, g x ≤ 1) →
+      tsupport g ⊆ closedBall (0 : Euclidean N) (3 / 4) → Integrable g (W k).weight := by
+    intro k g hg hg0 hg1 hgs
+    have hon : IntegrableOn g (closedBall (0 : Euclidean N) (3 / 4)) (W k).weight :=
+      Measure.integrableOn_of_bounded (M := 1)
+        (Varifold.weight_finite_on_compact (W k) _ (isCompact_closedBall _ _) h5)
+        hg.aestronglyMeasurable (Eventually.of_forall fun x ↦ by
+          rw [Real.norm_eq_abs, abs_of_nonneg (hg0 x)]
+          exact hg1 x)
+    exact (integrableOn_iff_integrable_of_support_subset ((subset_tsupport g).trans hgs)).1 hon
+  have hlow : ∀ k, ENNReal.ofReal (∫ x, g₁ x ∂(W k).weight) ≤
+      (W k).weight (closedBall (0 : Euclidean N) (1 / 2)) := by
+    intro k
+    rw [ofReal_integral_eq_lintegral_ofReal (hint_g k g₁ hg₁c hg₁0 hg₁1 hs₁)
+      (Eventually.of_forall hg₁0), ← lintegral_indicator_one measurableSet_closedBall]
+    refine lintegral_mono fun x ↦ ?_
+    by_cases hx : x ∈ closedBall (0 : Euclidean N) (1 / 2)
+    · rw [indicator_of_mem hx, Pi.one_apply]
+      exact ENNReal.ofReal_le_one.2 (hg₁1 x)
+    · rw [indicator_of_notMem hx, hg₁z x (not_le.1 (mt mem_closedBall_zero_iff.2 hx)).le,
+        ENNReal.ofReal_zero]
+  have hup : ∀ k, (W k).weight (closedBall (0 : Euclidean N) (1 / 2)) ≤
+      ENNReal.ofReal (∫ x, g₂ x ∂(W k).weight) := by
+    intro k
+    rw [ofReal_integral_eq_lintegral_ofReal (hint_g k g₂ hg₂c hg₂0 hg₂1 hs₂)
+      (Eventually.of_forall hg₂0), ← lintegral_indicator_one measurableSet_closedBall]
+    refine lintegral_mono fun x ↦ ?_
+    by_cases hx : x ∈ closedBall (0 : Euclidean N) (1 / 2)
+    · rw [indicator_of_mem hx, Pi.one_apply, hg₂one x (mem_closedBall_zero_iff.1 hx),
+        ENNReal.ofReal_one]
+    · rw [indicator_of_notMem hx]
+      exact zero_le
+  -- Step 7: squeeze: `μ_{W_k}(B_{1/2}(0)) → θ₀` in `[0, ∞]`, hence its real part tends to `θ₀`.
+  have hlim : Tendsto (fun k ↦ (W k).weight (closedBall (0 : Euclidean N) (1 / 2))) atTop
+      (𝓝 (ENNReal.ofReal θ₀)) :=
+    tendsto_of_tendsto_of_tendsto_of_le_of_le ((ENNReal.continuous_ofReal.tendsto θ₀).comp hl₁)
+      ((ENNReal.continuous_ofReal.tendsto θ₀).comp hl₂) hlow hup
+  have hlimR : Tendsto (fun k ↦ ((W k).weight (closedBall (0 : Euclidean N) (1 / 2))).toReal)
+      atTop (𝓝 θ₀) := by
+    have h := (ENNReal.tendsto_toReal ENNReal.ofReal_ne_top).comp hlim
+    rwa [ENNReal.toReal_ofReal hθ₀.le] at h
+  -- Step 8: the terms lie in the closed set `ℕ ⊆ ℝ` (step 3), hence so does the limit `θ₀`.
+  obtain ⟨m, hm⟩ : θ₀ ∈ range ((↑) : ℕ → ℝ) :=
+    Nat.isClosedEmbedding_coe_real.isClosed_range.mem_of_tendsto hlimR
+      (Eventually.of_forall fun k ↦ (hnat k).imp fun m hm ↦ hm.symm)
+  exact ⟨m, hm.symm⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
