@@ -451,6 +451,27 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- If `T = τ(M, θ, ξ)` and `spt ω ⊆ V`, then `T(ω) = ∫ ⟨ω, ξ⟩ d(μ⌞V)` with `μ = θ Hⁿ⌞M`
+(step 7 of the proof that the weight of `T = τ(M, θ, ξ)` is at most its mass).  The integrand
+vanishes off `spt ω ⊆ V`, so restricting `μ` to `V` changes nothing; writing the density `θ` as
+a measurable `ℝ≥0`-valued function turns `∫ ⟨ω, ξ⟩ dμ` into `∫_M θ ⟨ω, ξ⟩ dHⁿ = T(ω)`. -/
+theorem Submission.rsd_mw_wlm_eval_eq_integral_restrict : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ (V : Set (Euclid P)) (ω : TestFormOn U n), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ V → T ω = ∫ x, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂(R.measure.restrict V) := by
+  intro P n U T R hR V ω hωV
+  rw [hR ω, setIntegral_eq_integral_of_forall_compl_eq_zero]
+  · -- `μ = (Hⁿ⌞M).withDensity θ` with `θ` read as a measurable `ℝ≥0`-valued density
+    have hμ : R.measure = (μHE[n].restrict R.carrier).withDensity
+        (fun x => ((R.mult x : NNReal) : ℝ≥0∞)) := by
+      simp [IMRep.measure]
+    have hmeas : Measurable fun x => (R.mult x : NNReal) :=
+      measurable_from_nat.comp R.measurable_mult
+    rw [hμ, integral_withDensity_eq_integral_smul hmeas]
+    simp [IMRep.action, NNReal.smul_def]
+  · -- off `V`, hence off `spt ω`, the form vanishes and so does `⟨ω, ξ⟩`
+    intro x hx
+    have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 :=
+      image_eq_zero_of_notMem_tsupport fun h => hx (hωV h)
+    simp [h0]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
