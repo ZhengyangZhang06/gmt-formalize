@@ -410,6 +410,44 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Lebesgue density theorem for a measure `μ` on `ℝ^N` that vanishes off an open set `U` and is
+finite on compact subsets of `U` (Simon Ch. 8, Remark 5.6(iii), localized as in Simon Ch. 1, 3.23):
+for measurable `A` and `μ`-a.e. `x`, `μ(A ∩ B_ρ(x)) / μ(B_ρ(x)) → 1_A(x)` as `ρ ↓ 0`. -/
+theorem Submission.allard_tc_dbd_lebesgue_density :
+    ∀ (N : ℕ) (U : Set (Euclidean N)) (μ : Measure (Euclidean N)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → ∀ A : Set (Euclidean N), MeasurableSet A → ∀ᵐ x ∂μ, Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 (A.indicator 1 x)) := by
+  intro N U μ hU hUc hK A hA
+  -- Step 1: the countable family of compact balls `K_i = B_r(q) ⊆ U`, `i = (q, r) ∈ I`, with `q`
+  -- in a countable dense set `D` and `r ∈ ℚ_{>0}`.
+  obtain ⟨D, hDc, hDd⟩ := TopologicalSpace.exists_countable_dense (Euclidean N)
+  let I : Set (Euclidean N × ℚ) := {i | i.1 ∈ D ∧ 0 < i.2 ∧ closedBall i.1 (i.2 : ℝ) ⊆ U}
+  have hIc : I.Countable :=
+    (hDc.prod (countable_univ (α := ℚ))).mono fun i hi ↦ mem_prod.2 ⟨hi.1, mem_univ _⟩
+  -- Steps 3–4: Besicovitch differentiation for each finite measure `μ ⌞ K_i`, off one `μ`-null set.
+  have hball : ∀ᵐ x ∂μ, ∀ i ∈ I, x ∈ closedBall i.1 (i.2 : ℝ) →
+      Tendsto (fun ρ : ℝ ↦ μ.restrict (closedBall i.1 (i.2 : ℝ)) (A ∩ closedBall x ρ) /
+          μ.restrict (closedBall i.1 (i.2 : ℝ)) (closedBall x ρ))
+        (𝓝[>] 0) (𝓝 (A.indicator 1 x)) := by
+    refine (ae_ball_iff hIc).2 fun i hi ↦ ?_
+    have : IsFiniteMeasure (μ.restrict (closedBall i.1 (i.2 : ℝ))) :=
+      isFiniteMeasure_restrict.2 (hK _ (isCompact_closedBall _ _) hi.2.2)
+    exact (ae_restrict_iff' measurableSet_closedBall).1
+      (Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet _ hA)
+  filter_upwards [hball, mem_ae_iff.2 hUc] with x hx hxU
+  -- Steps 2 and 5: some `i = (q, r) ∈ I` with `dist x q < r`.
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x hxU
+  obtain ⟨r, hr0, hr⟩ := exists_rat_btwn (half_pos hε)
+  obtain ⟨q, hqD, hqx⟩ := hDd.exists_mem_open isOpen_ball ⟨x, mem_ball_self hr0⟩
+  have hxq : dist x q < r := by rw [dist_comm]; exact mem_ball.1 hqx
+  have hi : (q, r) ∈ I := by
+    have h1 : (r : ℝ) + dist q x < ε := by linarith [mem_ball.1 hqx]
+    exact ⟨hqD, Rat.cast_pos.1 hr0, (closedBall_subset_ball' h1).trans hεU⟩
+  -- Step 6: for `0 < ρ < r - dist x q`, `B_ρ(x) ⊆ K_i`, so the two ratios agree near `0`.
+  refine (hx (q, r) hi (mem_closedBall.2 hxq.le)).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 hxq)] with ρ hρ
+  have hsub : closedBall x ρ ⊆ closedBall q r := closedBall_subset_closedBall' (by linarith [hρ.2])
+  rw [Measure.restrict_apply' measurableSet_closedBall,
+    Measure.restrict_apply' measurableSet_closedBall, inter_assoc, inter_eq_left.2 hsub]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
