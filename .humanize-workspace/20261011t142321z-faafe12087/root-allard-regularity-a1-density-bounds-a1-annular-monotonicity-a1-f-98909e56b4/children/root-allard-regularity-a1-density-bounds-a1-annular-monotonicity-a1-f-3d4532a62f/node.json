@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.fixed_cutoff-a1.lp_scale-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.fixed_cutoff-a1",
+  "depth": 5,
+  "title": "Scaled L^p hypothesis: finiteness and real form on sub-balls",
+  "statement": "Let n and l be natural numbers and p real with n < p. Let mu be a measure on R^(n+l), H : R^(n+l) -> R^(n+l), y in R^(n+l), and R, Lambda, t real with R > 0, Lambda > 0 and t <= R. Write kappa := (p - n)/(4p) and, for real s, Q_s := the lower (extended) integral over the closed ball closedBall y s of |H|^p dmu, a value in [0, infinity]. Assume (ofReal(R^(p-n)) * Q_R)^(1/p) <= ofReal(kappa Lambda) in [0, infinity]. Then Q_t < infinity and (Q_t.toReal)^(1/p) <= kappa Lambda R^(n/p - 1), with real powers.",
+  "lean_statement": "∀ (n ℓ : ℕ) (p : ℝ), (n : ℝ) < p → ∀ (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (R Λ t : ℝ), 0 < R → 0 < Λ → t ≤ R → (ENNReal.ofReal (R ^ (p - n)) * ∫⁻ x in closedBall y R, ‖H x‖ₑ ^ p ∂μ) ^ (1 / p) ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → ∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ < ⊤ ∧ (∫⁻ x in closedBall y t, ‖H x‖ₑ ^ p ∂μ).toReal ^ (1 / p) ≤ (p - n) / (4 * p) * Λ * R ^ ((n : ℝ) / p - 1)",
+  "lean_name": "allard52_am_fc_lp_scale",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-f-3d4532a62f-a1"
+}

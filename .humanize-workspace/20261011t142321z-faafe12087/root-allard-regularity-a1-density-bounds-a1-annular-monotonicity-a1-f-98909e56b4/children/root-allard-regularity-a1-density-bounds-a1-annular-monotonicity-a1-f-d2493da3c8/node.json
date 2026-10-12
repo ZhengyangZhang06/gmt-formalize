@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.fixed_cutoff-a1.cutoff_facts-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.fixed_cutoff-a1",
+  "depth": 5,
+  "title": "Elementary properties of the monotone C^1 cutoff",
+  "statement": "Let phi : R -> R and let eps be real with eps > 0. Assume phi is C^1, nonincreasing, phi(u) = 1 for all u <= 1 and phi(u) = 0 for all u >= 1 + eps. Write phi' := deriv phi. Then: (i) 0 <= phi(u) <= 1 for every real u; (ii) phi'(u) <= 0 for every u; (iii) phi'(u) = 0 for every u > 1 + eps; (iv) phi' is continuous; (v) there is a real C with |phi'(u)| <= C for every u.",
+  "lean_statement": "∀ (φ : ℝ → ℝ) (ε : ℝ), 0 < ε → ContDiff ℝ 1 φ → Antitone φ → (∀ u : ℝ, u ≤ 1 → φ u = 1) → (∀ u : ℝ, 1 + ε ≤ u → φ u = 0) → (∀ u : ℝ, 0 ≤ φ u ∧ φ u ≤ 1) ∧ (∀ u : ℝ, deriv φ u ≤ 0) ∧ (∀ u : ℝ, 1 + ε < u → deriv φ u = 0) ∧ Continuous (deriv φ) ∧ ∃ C : ℝ, ∀ u : ℝ, |deriv φ u| ≤ C",
+  "lean_name": "allard52_am_fc_cutoff_facts",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-f-d2493da3c8-a1"
+}

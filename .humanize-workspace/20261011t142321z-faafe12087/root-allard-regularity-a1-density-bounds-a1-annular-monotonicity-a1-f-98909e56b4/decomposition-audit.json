@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "allard52_am_fc_",
+        "deriv_nonpos|continuous_deriv|EventuallyEq.deriv_eq",
+        "top_rpow_of_pos|ofReal_rpow_of_nonneg|theorem mul_rpow|theorem div_rpow|theorem rpow_le_one|theorem lintegral_mono_set",
+        "integrable_of_forall_notMem_eq_zero|integrableOn_of_bounded|comp_aestronglyMeasurable₂|integral_nonneg|integral_nonpos_of_ae",
+        "python3 -I /tmp/fc-independent-audit-98909e/compile.py Challenges.lean",
+        "python3 -I /tmp/fc-independent-audit-98909e/compile.py FCStubsAx.lean FCStubsAx.olean",
+        "python3 -I /tmp/fc-independent-audit-98909e/compile.py EndToEndAx.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrability/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-f-98909e56b4/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-f-98909e56b4/decomposition-v1.json",
+        "/tmp/fc-independent-audit-98909e/src/Challenges.lean",
+        "/tmp/fc-independent-audit-98909e/src/FCStubsAx.lean",
+        "/tmp/fc-independent-audit-98909e/src/EndToEndAx.lean",
+        "/tmp/fc-independent-audit-98909e/EndToEndAx.log"
+      ],
+      "conclusion": "The six-way split is appropriate: each obligation supplies a distinct step of the selected fixed-cutoff theorem. The selected dependency closure is acyclic; the sole new inter-child dependency is radial_split → cutoff_facts. All six names are bare identifiers intended for Submission, absent from the snapshot project, Mathlib and current DAG reservations. Snapshot pins are project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Relevant declarations include Antitone.deriv_nonpos, ENNReal power conversion, intervalIntegrable_rpow', integral_hasDerivAt_right, and supported-function integrability. All six exact one-line propositions passed lexical validation and independently elaborated without child implementations in scope. Their supplied proofs recompiled using only propext, Classical.choice and Quot.sound. The reused Hölder type and proof match its accepted declaration. The assembly's parent type matches the handoff and DAG byte for byte and recompiles using only standard axioms plus the three explicitly assumed frozen dependencies: cutoff calculus, integrating factor and annular Tonelli. No sorryAx occurs in these proof dependencies. Thus the children establish the selected parent conditional on its existing obligations, without bypassing their acceptance gates. Real/ENNReal powers, integrals and inline functions have the intended types; no Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff_facts",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All five conclusions and hypotheses match the Lean proposition. Monotonicity gives the bounds and derivative sign; local constancy gives vanishing outside the transition interval; C¹ regularity and compactness give derivative continuity and boundedness. The proof is complete and non-circular."
+    },
+    {
+      "key": "lp_scale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes finiteness before using toReal, correctly factors and divides the positive R power, and transfers the estimate through sub-ball and real-power monotonicity. It proves the exact contract, including n = 0 and nonpositive t, without unstated measurability assumptions."
+    },
+    {
+      "key": "a_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive denominators justify normalization by A = I/t^n. The two-case absorption inequality, ε ≤ 1, the bound on N and positive-base power identities give exactly the stated constant and exponent. All hypotheses are represented; redundant positivity assumptions cause no defect."
+    },
+    {
+      "key": "primitive",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies restricted measurability and integrable domination near zero using n/p < 1, then verifies the FTC hypotheses for continuity of G. Power integration and 2κ/(1−n/p) = 1/2 give the exact bound. No continuity or prescribed value of a at zero is needed, and n = 0 is covered."
+    },
+    {
+      "key": "ball_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inclusions transfer finiteness, measurability and the almost-everywhere weight bounds correctly. Constants, Cauchy–Schwarz domination by R‖H‖, and domination of w by 1 prove all three integrability claims. The proof remains valid for negative radii because the relevant closed ball is empty."
+    },
+    {
+      "key": "radial_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared cutoff_facts dependency supplies precisely the cutoff properties used. The proof establishes global integrability of all three supported integrands before applying linearity. Both signs follow with the weight assumptions used only inside ball y R and exact vanishing outside the smaller support ball. All three conclusions match the Lean type."
+    }
+  ],
+  "required_changes": []
+}
