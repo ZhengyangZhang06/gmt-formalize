@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7d147ab6975b1820000a977c5da81356cf705fcd039e2a3e07caa4f4bfb815cc",
+  "git_delta": {
+    "base_commit": "cc1529a1eb837406bbdb971ed3389820d3499332",
+    "candidate_commit": "aa145d37bb34c5a22aaa7c3f2bab2da92f80317d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_mw_tfa_retraction",
+    "diff_sha256": "bfc10baf549cbc7cc190d523d9642200484ffd1429c1fb4fe74b3c3e9d15a7d5",
+    "source_sha256": "c841dd6fb77ef4c37baf2e0857fce944f90050057b8e5a2dceef8eadbafbbbeb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_mw_tfa_retraction",
+      "statement": "∀ (P n : ℕ), ∃ ρ : Covector (Euclid P) n → Covector (Euclid P) n, Continuous ρ ∧ ρ 0 = 0 ∧ (∀ a, covectorEuclideanNorm (ρ a) ≤ 1) ∧ ∀ a b, covectorEuclideanNorm b ≤ 1 → covectorEuclideanNorm (ρ a - b) ≤ 2 * covectorEuclideanNorm (a - b)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

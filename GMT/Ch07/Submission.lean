@@ -451,6 +451,132 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The Euclidean coefficient norm is a continuous seminorm dominated by the operator norm**
+(Simon Ch. 6, 1.15 and 2.4; used by the smooth approximation of test forms behind the mass of
+`τ(M, θ, ξ)`).  With `e` the standard basis of `ℝᴾ`, let `c_I α = α(e_{I(0)}, …, e_{I(n-1)})`
+for strictly increasing `I : Fin n → Fin P` and `c_I α = 0` otherwise.  Then
+`covectorEuclideanNorm α = ‖v α‖` for the coefficient vector
+`v α = (c_I α)_I ∈ EuclideanSpace ℝ (Fin n → Fin P)`, which is linear in `α`; this gives the
+triangle inequality and homogeneity.  `|c_I α| ≤ ‖α‖ ∏ₖ ‖e_{I(k)}‖ = ‖α‖` gives the bound with
+`C = √(card (Fin n → Fin P))`, and then the norm is `C`-Lipschitz, hence continuous. -/
+theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covector (Euclid P) n, covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α') ∧ (∀ (t : ℝ) (α : Covector (Euclid P) n), covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α) ∧ (∃ C : ℝ, 0 ≤ C ∧ ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ C * ‖α‖) ∧ Continuous (fun α : Covector (Euclid P) n => covectorEuclideanNorm α) := by
+  intro P n
+  classical
+  -- Step 1: the coefficients `c_I α` and the coefficient vector `v α`, with `N α = ‖v α‖`
+  let e := EuclideanSpace.basisFun (Fin P) ℝ
+  let c : (Fin n → Fin P) → Covector (Euclid P) n → ℝ := fun I α =>
+    if StrictMono I then α (fun i => e (I i)) else 0
+  let v : Covector (Euclid P) n → EuclideanSpace ℝ (Fin n → Fin P) := fun α =>
+    WithLp.toLp 2 (fun I => c I α)
+  have hN : ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖v α‖ := by
+    intro α
+    rw [EuclideanSpace.norm_eq]
+    unfold covectorEuclideanNorm
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    by_cases hI : StrictMono I <;> simp [v, c, e, hI]
+  -- Step 2: `v` is additive and `ℝ`-homogeneous
+  have hadd : ∀ α α' : Covector (Euclid P) n, v (α + α') = v α + v α' := by
+    intro α α'
+    simp only [v, ← WithLp.toLp_add]
+    congr 1
+    funext I
+    by_cases hI : StrictMono I <;> simp [c, hI]
+  have hsmul : ∀ (t : ℝ) (α : Covector (Euclid P) n), v (t • α) = t • v α := by
+    intro t α
+    simp only [v, ← WithLp.toLp_smul]
+    congr 1
+    funext I
+    by_cases hI : StrictMono I <;> simp [c, hI]
+  -- Step 3: (i), the triangle inequality in `EuclideanSpace ℝ (Fin n → Fin P)`
+  have h1 : ∀ α α' : Covector (Euclid P) n,
+      covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α' := by
+    intro α α'
+    rw [hN, hN, hN, hadd]
+    exact norm_add_le _ _
+  -- Step 4: (ii), homogeneity of the Euclidean norm
+  have h2 : ∀ (t : ℝ) (α : Covector (Euclid P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    rw [hN, hN, hsmul, norm_smul, Real.norm_eq_abs]
+  -- Step 5: `|c_I α| ≤ ‖α‖ ∏ₖ ‖e_{I(k)}‖ = ‖α‖`
+  have hc : ∀ (I : Fin n → Fin P) (α : Covector (Euclid P) n), |c I α| ≤ ‖α‖ := by
+    intro I α
+    by_cases hI : StrictMono I
+    · simpa [c, e, hI, Real.norm_eq_abs] using α.le_opNorm (fun i => e (I i))
+    · simp [c, hI]
+  -- Step 6: (iii) with `C = √(card (Fin n → Fin P))`
+  have h3 : ∀ α : Covector (Euclid P) n,
+      covectorEuclideanNorm α ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
+    intro α
+    have hsum : ∑ I, ‖(v α).ofLp I‖ ^ 2 ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 :=
+      Finset.sum_le_sum fun I _ => by
+        simpa [v, Real.norm_eq_abs] using pow_le_pow_left₀ (abs_nonneg _) (hc I α) 2
+    rw [hN, EuclideanSpace.norm_eq]
+    calc Real.sqrt (∑ I, ‖(v α).ofLp I‖ ^ 2) ≤ Real.sqrt (∑ _I : Fin n → Fin P, ‖α‖ ^ 2) :=
+          Real.sqrt_le_sqrt hsum
+      _ = Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
+          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
+            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
+  -- Step 7: (iv), `|N α - N α'| ≤ N (α - α') ≤ C ‖α - α'‖`, so `N` is Lipschitz
+  have hlip : ∀ α α' : Covector (Euclid P) n, dist (covectorEuclideanNorm α)
+      (covectorEuclideanNorm α') ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * dist α α' := by
+    intro α α'
+    have ha : covectorEuclideanNorm α ≤
+        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α' := by
+      simpa only [sub_add_cancel] using h1 (α - α') α'
+    have hb : covectorEuclideanNorm α' ≤
+        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α := by
+      have h := h1 (α' - α) α
+      rwa [sub_add_cancel, ← neg_sub, covectorEuclideanNorm_neg] at h
+    have hC := h3 (α - α')
+    rw [Real.dist_eq, dist_eq_norm, abs_le]
+    constructor <;> linarith
+  exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
+    (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
+
+/-- **Radial retraction onto the unit ball of `N = covectorEuclideanNorm`** (step 4 of the
+approximation of a unit covector field by admissible test forms, used for Simon Ch. 6,
+Remark 3.2(3)).  `ρ(a) = max(1, N(a))⁻¹ a` is continuous, `ρ(0) = 0`, `N(ρ(a)) ≤ 1`, and
+`N(ρ(a) − b) ≤ 2 N(a − b)` whenever `N(b) ≤ 1`: if `N(a) > 1` then
+`N(a − ρ(a)) = N(a) − 1 ≤ N(a − b)`, and the triangle inequality gives the factor `2`. -/
+theorem Submission.rsd_mw_tfa_retraction : ∀ (P n : ℕ), ∃ ρ : Covector (Euclid P) n → Covector (Euclid P) n, Continuous ρ ∧ ρ 0 = 0 ∧ (∀ a, covectorEuclideanNorm (ρ a) ≤ 1) ∧ ∀ a b, covectorEuclideanNorm b ≤ 1 → covectorEuclideanNorm (ρ a - b) ≤ 2 * covectorEuclideanNorm (a - b) := by
+  intro P n
+  obtain ⟨htri, hsmul, -, hcont⟩ := Submission.rsd_mw_tfa_norm_props P n
+  -- the rescaling factor `max 1 (N a) ≥ 1` never vanishes
+  have hpos : ∀ a : Covector (Euclid P) n, 0 < max 1 (covectorEuclideanNorm a) :=
+    fun a => one_pos.trans_le (le_max_left _ _)
+  refine ⟨fun a => (max 1 (covectorEuclideanNorm a))⁻¹ • a,
+    ((continuous_const.max hcont).inv₀ fun a => (hpos a).ne').smul continuous_id, by simp,
+    fun a => ?_, fun a b hb => ?_⟩
+  · -- `N (ρ a) = N a / max 1 (N a) ≤ 1`
+    dsimp only
+    rw [hsmul, abs_of_pos (inv_pos.mpr (hpos a)), inv_mul_le_iff₀ (hpos a), mul_one]
+    exact le_max_right _ _
+  dsimp only
+  rcases le_or_gt (covectorEuclideanNorm a) 1 with ha | ha
+  · -- `N a ≤ 1`: `ρ a = a`
+    rw [max_eq_left ha, inv_one, one_smul]
+    linarith [covectorEuclideanNorm_nonneg (a - b)]
+  -- `r := N a > 1`: `ρ a = r⁻¹ a`
+  set r := covectorEuclideanNorm a with hr
+  rw [max_eq_right ha.le]
+  -- `N (a - ρ a) = (1 - r⁻¹) r = r - 1`
+  have h₁ : covectorEuclideanNorm (a - r⁻¹ • a) = r - 1 := by
+    rw [show a - r⁻¹ • a = (1 - r⁻¹) • a by module, hsmul,
+      abs_of_nonneg (sub_nonneg.mpr (inv_le_one_of_one_le₀ ha.le)), sub_mul, one_mul, ← hr,
+      inv_mul_cancel₀ (one_pos.trans ha).ne']
+  -- `r ≤ N (a - b) + N b ≤ N (a - b) + 1`
+  have h₂ : r ≤ covectorEuclideanNorm (a - b) + 1 :=
+    calc r = covectorEuclideanNorm (a - b + b) := by rw [sub_add_cancel]
+      _ ≤ covectorEuclideanNorm (a - b) + covectorEuclideanNorm b := htri _ _
+      _ ≤ covectorEuclideanNorm (a - b) + 1 := by linarith
+  calc covectorEuclideanNorm (r⁻¹ • a - b)
+      = covectorEuclideanNorm (-(a - r⁻¹ • a) + (a - b)) := by congr 1; abel
+    _ ≤ covectorEuclideanNorm (-(a - r⁻¹ • a)) + covectorEuclideanNorm (a - b) := htri _ _
+    _ = r - 1 + covectorEuclideanNorm (a - b) := by rw [covectorEuclideanNorm_neg, h₁]
+    _ ≤ 2 * covectorEuclideanNorm (a - b) := by linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
