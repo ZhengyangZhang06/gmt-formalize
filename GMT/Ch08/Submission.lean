@@ -634,6 +634,164 @@ theorem Submission.intcpt_allard_ccb_one_point_ball_bound :
     _ ≤ ENNReal.ofReal (1 + 2 ^ (n + 2) * δ ^ 2) * μ (closedBall x 1) :=
       mul_le_mul' (ENNReal.ofReal_le_ofReal hreal) le_rfl
 
+/-- Reduction step (Simon Ch. 8, proof of 5.10 (8), inductive step for `#s ≥ 2`): let `s` be a
+`4τ`-separated set of `2 ≤ #s ≤ m + 1` points in one fibre of `p = Grassmannian.project P`, each
+within `ε` of that plane and satisfying the comparison (C_y).  Cluster selection (CS) at the minimal
+distance `d` of `s` gives `Z ⊆ s` with `#Z ≤ m` and admissible scales `σ' = ρ + S`, `τ' = d/2 + S`
+(`ρ = d/(4δ²)`) such that the `σ^{-n}`-normalized cylinder sum over `s` is at most
+`1 + (2^n - 1) a δ²` times the `σ'^{-n}`-normalized sum over `Z`, plus `(m + 1) K δ²`, where
+`a = 4 (10 (m + 1))^{m + 1}`. -/
+theorem Submission.intcpt_allard_ccb_reduction_step :
+    ∀ (N n : ℕ) (K : ℝ) (m : ℕ), (∀ (t : Finset (Euclidean N)) (d : ℝ), 2 ≤ t.card → 0 < d → (∀ y ∈ t, ∀ y' ∈ t, y ≠ y' → d ≤ ‖y - y'‖) → (∃ y ∈ t, ∃ y' ∈ t, y ≠ y' ∧ ‖y - y'‖ ≤ d) → ∃ (Z : Finset (Euclidean N)) (S : ℝ), Z ⊆ t ∧ Z.card < t.card ∧ 0 ≤ S ∧ S ≤ (10 * (t.card : ℝ)) ^ t.card * d ∧ (∀ y ∈ t, ∃ z ∈ Z, ‖y - z‖ ≤ S) ∧ ∀ z ∈ Z, ∀ z' ∈ Z, z ≠ z' → 2 * d + 4 * S ≤ ‖z - z'‖) → 0 ≤ K → ∀ δ ε : ℝ, 0 < δ → δ ≤ 1 / (4 * (10 * ((m : ℝ) + 1)) ^ (m + 1)) → 0 < ε → ε ≤ δ ^ 4 → ∀ (μ : Measure (Euclidean N)) (P : Grassmannian N n) (x : Euclidean N) (s : Finset (Euclidean N)), 2 ≤ s.card → s.card ≤ m + 1 → (∀ y ∈ s, Grassmannian.project P y = x ∧ ‖y - Grassmannian.project P y‖ < ε ∧ ∀ τ σ ρ : ℝ, 0 < τ → τ ≤ 1 → 0 < σ → σ ≤ ρ → ρ < 1 → μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < 2 * τ}) / ENNReal.ofReal ρ ^ n + ENNReal.ofReal (K * ε * ρ / τ)) → ∀ σ τ : ℝ, 0 < σ → σ ≤ δ ^ 2 → 2 * δ ^ 2 * σ ≤ τ → (∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → 4 * τ ≤ ‖y - y'‖) → ∃ (Z : Finset (Euclidean N)) (σ' τ' : ℝ), Z ⊆ s ∧ Z.card ≤ m ∧ 0 < σ' ∧ σ' ≤ δ ^ 2 ∧ 2 * δ ^ 2 * σ' ≤ τ' ∧ (∀ z ∈ Z, ∀ z' ∈ Z, z ≠ z' → 4 * τ' ≤ ‖z - z'‖) ∧ ∑ y ∈ s, μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) / ENNReal.ofReal σ ^ n ≤ ENNReal.ofReal (1 + (2 ^ n - 1) * (4 * (10 * ((m : ℝ) + 1)) ^ (m + 1)) * δ ^ 2) * ∑ y ∈ Z, μ (closedBall y σ' ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ'}) / ENNReal.ofReal σ' ^ n + ENNReal.ofReal (((m : ℝ) + 1) * K * δ ^ 2) := by
+  intro N n K m hCS hK δ ε hδ hδa hε hεδ μ P x s hs2 hsm hy σ τ hσ hσδ hστ hsep
+  classical
+  -- Step 0: elementary bounds, with `a = 4 (10 (m + 1))^{m + 1} ≥ 40` and `u = a δ² ≤ 1`.
+  set a : ℝ := 4 * (10 * ((m : ℝ) + 1)) ^ (m + 1) with ha_def
+  have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
+  have hm1 : (1 : ℝ) ≤ 10 * ((m : ℝ) + 1) := by linarith
+  have hpow : 10 * ((m : ℝ) + 1) ≤ (10 * ((m : ℝ) + 1)) ^ (m + 1) := by
+    calc 10 * ((m : ℝ) + 1) = (10 * ((m : ℝ) + 1)) ^ 1 := (pow_one _).symm
+      _ ≤ _ := pow_le_pow_right₀ hm1 (by omega)
+  have ha40 : 40 ≤ a := by rw [ha_def]; linarith
+  have ha0 : 0 < a := by linarith
+  have haδ : a * δ ≤ 1 := by
+    rw [le_div_iff₀ ha0] at hδa
+    linarith [mul_comm a δ]
+  have h40δ : 40 * δ ≤ 1 := by
+    have := mul_le_mul_of_nonneg_right ha40 hδ.le
+    linarith
+  have hδ1 : δ ≤ 1 := by linarith
+  have hδ2pos : 0 < δ ^ 2 := by positivity
+  have hδ2le : δ ^ 2 ≤ δ := by rw [sq]; exact mul_le_of_le_one_left hδ.le hδ1
+  have h2δ2 : 2 * δ ^ 2 ≤ 1 := by linarith
+  have hδ4 : δ ^ 4 ≤ δ ^ 2 := by
+    have : δ ^ 4 = δ ^ 2 * δ ^ 2 := by ring
+    rw [this]; exact mul_le_of_le_one_left hδ2pos.le (hδ2le.trans hδ1)
+  have hu1 : a * δ ^ 2 ≤ 1 := by
+    have : a * δ ^ 2 = (a * δ) * δ := by ring
+    rw [this]
+    calc (a * δ) * δ ≤ 1 * δ := mul_le_mul_of_nonneg_right haδ hδ.le
+      _ ≤ 1 := by linarith
+  have hτpos : 0 < τ := lt_of_lt_of_le (by positivity) hστ
+  have hyx : ∀ y ∈ s, ‖y - x‖ < ε := fun y hys ↦ by
+    have h := hy y hys
+    rw [← h.1]; exact h.2.1
+  -- Step 1: the minimal distance `d` of `s`, attained at a pair `q`; `4τ ≤ d < 2ε`.
+  have hne : s.offDiag.Nonempty := by
+    obtain ⟨y, hys, y', hy's, hyy'⟩ := Finset.one_lt_card.1 (by omega : 1 < s.card)
+    exact ⟨(y, y'), Finset.mem_offDiag.2 ⟨hys, hy's, hyy'⟩⟩
+  obtain ⟨q, hq, hqmin⟩ := Finset.exists_min_image s.offDiag (fun q ↦ ‖q.1 - q.2‖) hne
+  obtain ⟨hq1, hq2, hq12⟩ := Finset.mem_offDiag.1 hq
+  set d : ℝ := ‖q.1 - q.2‖ with hd_def
+  have hd0 : 0 < d := norm_pos_iff.2 (sub_ne_zero.2 hq12)
+  have hdmin : ∀ y ∈ s, ∀ y' ∈ s, y ≠ y' → d ≤ ‖y - y'‖ := fun y hys y' hy's hyy' ↦
+    hqmin (y, y') (Finset.mem_offDiag.2 ⟨hys, hy's, hyy'⟩)
+  have hd2ε : d < 2 * ε := by
+    have h1 := hyx q.1 hq1
+    have h2 := hyx q.2 hq2
+    calc d = ‖(q.1 - x) - (q.2 - x)‖ := by rw [hd_def]; congr 1; abel
+      _ ≤ ‖q.1 - x‖ + ‖q.2 - x‖ := norm_sub_le _ _
+      _ < 2 * ε := by linarith
+  have h4τd : 4 * τ ≤ d := hsep q.1 hq1 q.2 hq2 hq12
+  -- Step 2: the scale `ρ = d / (4δ²)`, with `σ ≤ ρ < δ²/2 < 1` and `0 < d/4 ≤ 1`.
+  set ρ : ℝ := d / (4 * δ ^ 2) with hρ_def
+  have hρ0 : 0 < ρ := by positivity
+  have hdρ : d = 4 * δ ^ 2 * ρ := by
+    rw [hρ_def]; field_simp
+  have hσρ : σ ≤ ρ := by
+    have h1 : δ ^ 2 * (2 * σ) ≤ δ ^ 2 * ρ := by linarith
+    have h2 : 2 * σ ≤ ρ := le_of_mul_le_mul_left h1 hδ2pos
+    linarith
+  have hρδ : ρ < δ ^ 2 / 2 := by
+    have : 4 * δ ^ 2 * ρ < 4 * δ ^ 2 * (δ ^ 2 / 2) := by
+      calc 4 * δ ^ 2 * ρ = d := hdρ.symm
+        _ < 2 * ε := hd2ε
+        _ ≤ 2 * δ ^ 4 := by linarith
+        _ = 4 * δ ^ 2 * (δ ^ 2 / 2) := by ring
+    exact lt_of_mul_lt_mul_left this (by positivity)
+  have hρ1 : ρ < 1 := by linarith
+  have hd4pos : 0 < d / 4 := by positivity
+  have hd4le : d / 4 ≤ 1 := by linarith
+  -- Step 3: (C_y) at `(d/4, σ, ρ)`, after enlarging `τ` to `d/4`; its error is at most `K δ²`.
+  have hstep3 : ∀ y ∈ s,
+      μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) /
+          ENNReal.ofReal σ ^ n ≤
+        μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) /
+          ENNReal.ofReal ρ ^ n + ENNReal.ofReal (K * δ ^ 2) := by
+    intro y hys
+    have hC := (hy y hys).2.2 (d / 4) σ ρ hd4pos hd4le hσ hσρ hρ1
+    have h2 : 2 * (d / 4) = d / 2 := by ring
+    rw [h2] at hC
+    have hsub : closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ} ⊆
+        closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 4} := by
+      refine inter_subset_inter_right _ fun z hz ↦ ?_
+      have hz' : ‖(z - y) - Grassmannian.project P (z - y)‖ < τ := hz
+      show ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 4
+      linarith
+    have herr : K * ε * ρ / (d / 4) ≤ K * δ ^ 2 := by
+      rw [div_le_iff₀ hd4pos]
+      have hKε : K * ε ≤ K * δ ^ 4 := mul_le_mul_of_nonneg_left hεδ hK
+      have : K * δ ^ 2 * (d / 4) = K * δ ^ 4 * ρ := by rw [hdρ]; ring
+      rw [this]
+      exact mul_le_mul_of_nonneg_right hKε hρ0.le
+    calc _ ≤ μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 4}) /
+          ENNReal.ofReal σ ^ n := ENNReal.div_le_div_right (measure_mono hsub) _
+      _ ≤ _ := hC
+      _ ≤ _ := add_le_add le_rfl (ENNReal.ofReal_le_ofReal herr)
+  -- Step 4: summation over `s`, with `#s · K δ² ≤ (m + 1) K δ²`.
+  have hstep4 : ∑ y ∈ s,
+      μ (closedBall y σ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < τ}) /
+          ENNReal.ofReal σ ^ n ≤
+        ∑ y ∈ s, μ (closedBall y ρ ∩ {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) /
+          ENNReal.ofReal ρ ^ n + ENNReal.ofReal (((m : ℝ) + 1) * K * δ ^ 2) := by
+    calc _ ≤ ∑ y ∈ s, (μ (closedBall y ρ ∩
+            {z | ‖(z - y) - Grassmannian.project P (z - y)‖ < d / 2}) /
+          ENNReal.ofReal ρ ^ n + ENNReal.ofReal (K * δ ^ 2)) := Finset.sum_le_sum hstep3
+      _ = _ + s.card • ENNReal.ofReal (K * δ ^ 2) := by
+          rw [Finset.sum_add_distrib, Finset.sum_const]
+      _ ≤ _ := by
+          refine add_le_add le_rfl ?_
+          rw [nsmul_eq_mul, ← ENNReal.ofReal_natCast, ← ENNReal.ofReal_mul (Nat.cast_nonneg _)]
+          refine ENNReal.ofReal_le_ofReal ?_
+          have hcard : (s.card : ℝ) ≤ (m : ℝ) + 1 := by exact_mod_cast hsm
+          have hKδ : 0 ≤ K * δ ^ 2 := by positivity
+          calc (s.card : ℝ) * (K * δ ^ 2) ≤ ((m : ℝ) + 1) * (K * δ ^ 2) :=
+                mul_le_mul_of_nonneg_right hcard hKδ
+            _ = ((m : ℝ) + 1) * K * δ ^ 2 := by ring
+  -- Step 5: clusters from (CS) at scale `d`, with `S ≤ (10 (m + 1))^{m + 1} d = a δ² ρ`.
+  obtain ⟨Z, S, hZs, hZcard, hS0, hSd, hcov, hZsep⟩ :=
+    hCS s d hs2 hd0 hdmin ⟨q.1, hq1, q.2, hq2, hq12, le_refl _⟩
+  have hcardpow : (10 * (s.card : ℝ)) ^ s.card ≤ (10 * ((m : ℝ) + 1)) ^ (m + 1) := by
+    have hcard : (s.card : ℝ) ≤ (m : ℝ) + 1 := by exact_mod_cast hsm
+    calc (10 * (s.card : ℝ)) ^ s.card ≤ (10 * ((m : ℝ) + 1)) ^ s.card :=
+          pow_le_pow_left₀ (mul_nonneg (by norm_num) (Nat.cast_nonneg _)) (by linarith) _
+      _ ≤ _ := pow_le_pow_right₀ hm1 hsm
+  have hSu : S ≤ a * δ ^ 2 * ρ := by
+    calc S ≤ (10 * (s.card : ℝ)) ^ s.card * d := hSd
+      _ ≤ (10 * ((m : ℝ) + 1)) ^ (m + 1) * d := mul_le_mul_of_nonneg_right hcardpow hd0.le
+      _ = a * δ ^ 2 * ρ := by rw [hdρ, ha_def]; ring
+  -- Step 6: grouping (the accepted sibling `cylinder_grouping`) with `u = a δ²`.
+  have hpx : ∀ y ∈ s, Grassmannian.project P y = x := fun y hys ↦ (hy y hys).1
+  have hgroup := Submission.intcpt_allard_ccb_cylinder_grouping N n μ P x s Z d ρ S (a * δ ^ 2)
+    hpx hZs hd0 hdmin hρ0 hS0 hSu hu1 hcov
+  -- Step 7: the witnesses `Z`, `σ' = ρ + S ≤ 2ρ < δ²` and `τ' = d/2 + S`.
+  refine ⟨Z, ρ + S, d / 2 + S, hZs, by omega, by linarith, ?_, ?_, ?_, ?_⟩
+  · have hSρ : a * δ ^ 2 * ρ ≤ ρ := mul_le_of_le_one_left hρ0.le hu1
+    linarith
+  · have h1 : 2 * δ ^ 2 * S ≤ S := mul_le_of_le_one_left hS0 h2δ2
+    have h2 : 2 * δ ^ 2 * (ρ + S) = d / 2 + 2 * δ ^ 2 * S := by rw [hdρ]; ring
+    rw [h2]
+    linarith
+  · intro z hz z' hz' hzz'
+    have := hZsep z hz z' hz' hzz'
+    linarith
+  -- Step 8: chain steps 4 and 6.
+  have hcoef : (1 + (2 ^ n - 1) * (4 * (10 * ((m : ℝ) + 1)) ^ (m + 1)) * δ ^ 2) =
+      1 + (2 ^ n - 1) * (a * δ ^ 2) := by rw [ha_def]; ring
+  rw [hcoef]
+  calc _ ≤ _ := hstep4
+    _ ≤ _ := add_le_add hgroup le_rfl
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
