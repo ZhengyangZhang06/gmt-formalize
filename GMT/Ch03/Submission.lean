@@ -335,6 +335,258 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Bi-invariant Haar probability on the orthogonal stabilizer of a subspace** (Step 1 of the
+frame-averaging argument in the proof of Simon Ch. 3, Theorem 3.6; Mattila, *Geometry of Sets and
+Measures in Euclidean Spaces*, Ch. 3). Let `U ⊆ ℝᴺ` be a subspace, `𝓛 = ℝᴺ →L[ℝ] ℝᴺ` and
+`K_U = {g ∈ 𝓛 : g* g = 1, g x = x for x ∈ U}`. There is a Borel probability `θ` on `𝓛` with
+`θ`-a.e. `g ∈ K_U`, invariant under `g ↦ k g` and `g ↦ g k` for every `k ∈ K_U`. `K_U` is a closed
+bounded subgroup of the unitary group of the finite-dimensional `𝓛`, hence a compact group; `θ` is
+the image under the inclusion of its Haar probability `μ`, and `μ` is also right invariant by
+uniqueness of Haar measure on compact groups. -/
+theorem Submission.bf_orthStabilizer_haar_exists : ∀ (N : ℕ) (U : Submodule ℝ (Rn N)), ∃ θ : Measure (Rn N →L[ℝ] Rn N), IsProbabilityMeasure θ ∧ (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1 ∧ ∀ x ∈ U, g x = x) ∧ ∀ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 → (∀ x ∈ U, k x = x) → Measure.map (fun g ↦ k * g) θ = θ ∧ Measure.map (fun g ↦ g * k) θ = θ := by
+  intro N U
+  -- Step 3 (topology): the adjoint `g ↦ g*` is continuous, so `star` is continuous on `𝓛` and
+  -- `unitary 𝓛` (inversion = `star`) is a topological group.
+  have hadj : Continuous (fun g : Rn N →L[ℝ] Rn N ↦ ContinuousLinearMap.adjoint g) :=
+    (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Rn N) (F := Rn N)).continuous
+  have : ContinuousStar (Rn N →L[ℝ] Rn N) := ⟨by
+    have h : (star : (Rn N →L[ℝ] Rn N) → (Rn N →L[ℝ] Rn N)) =
+        fun g ↦ ContinuousLinearMap.adjoint g := funext ContinuousLinearMap.star_eq_adjoint
+    rw [h]
+    exact hadj⟩
+  have : ContinuousInv (unitary (Rn N →L[ℝ] Rn N)) :=
+    ⟨continuous_induced_rng.mpr continuous_subtype_val.star⟩
+  have : IsTopologicalGroup (unitary (Rn N →L[ℝ] Rn N)) := {}
+  -- Step 1: `g* g = 1` forces `g g* = 1` (`g` is injective, hence surjective), so `g ∈ unitary 𝓛`.
+  have hunit : ∀ g : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint g * g = 1 →
+      g ∈ unitary (Rn N →L[ℝ] Rn N) := by
+    intro g hg
+    have hgg : ∀ x, ContinuousLinearMap.adjoint g (g x) = x := fun x ↦ by
+      rw [← mul_apply_eq_comp, hg, one_apply_eq_self]
+    have hsurj : Function.Surjective g :=
+      LinearMap.surjective_of_injective (f := (g : Rn N →ₗ[ℝ] Rn N))
+        (Function.LeftInverse.injective hgg)
+    rw [Unitary.mem_iff, ContinuousLinearMap.star_eq_adjoint]
+    refine ⟨hg, ?_⟩
+    ext1 y
+    obtain ⟨x, rfl⟩ := hsurj y
+    rw [mul_apply_eq_comp, hgg, one_apply_eq_self]
+  -- Step 2: `K = K_U` as a subgroup of `unitary 𝓛`, with inclusion `ι : K → 𝓛`.
+  let K : Subgroup (unitary (Rn N →L[ℝ] Rn N)) :=
+    { carrier := {u | ∀ x ∈ U, (u : Rn N →L[ℝ] Rn N) x = x}
+      mul_mem' := by
+        intro a b ha hb x hx
+        change ((a : Rn N →L[ℝ] Rn N) * (b : Rn N →L[ℝ] Rn N)) x = x
+        rw [mul_apply_eq_comp, hb x hx, ha x hx]
+      one_mem' := fun _ _ ↦ rfl
+      inv_mem' := by
+        intro a ha x hx
+        change (star (a : Rn N →L[ℝ] Rn N)) x = x
+        conv_lhs => rw [← ha x hx]
+        rw [← mul_apply_eq_comp, Unitary.star_mul_self_of_mem a.2, one_apply_eq_self] }
+  let ι : K → Rn N →L[ℝ] Rn N := fun k ↦ ((k : unitary (Rn N →L[ℝ] Rn N)) : Rn N →L[ℝ] Rn N)
+  have hι : Continuous ι := continuous_subtype_val.comp continuous_subtype_val
+  have hιind : Topology.IsInducing ι :=
+    Topology.IsInducing.subtypeVal.comp Topology.IsInducing.subtypeVal
+  -- Step 3: `S = ι(K)` is closed and bounded (`‖g‖ ≤ 1`) in the finite-dimensional `𝓛`, so `K`
+  -- is compact.
+  set S : Set (Rn N →L[ℝ] Rn N) :=
+    {g | ContinuousLinearMap.adjoint g * g = 1 ∧ ∀ x ∈ U, g x = x}
+  have hSclosed : IsClosed S := by
+    have h1 : IsClosed {g : Rn N →L[ℝ] Rn N | ContinuousLinearMap.adjoint g * g = 1} :=
+      isClosed_eq (hadj.mul continuous_id) continuous_const
+    have h2 : IsClosed {g : Rn N →L[ℝ] Rn N | ∀ x ∈ U, g x = x} := by
+      have : {g : Rn N →L[ℝ] Rn N | ∀ x ∈ U, g x = x} = ⋂ x ∈ U, {g | g x = x} := by
+        ext g
+        simp
+      rw [this]
+      exact isClosed_biInter fun x _ ↦
+        isClosed_eq (continuous_id.clm_apply continuous_const) continuous_const
+    exact h1.inter h2
+  have hrange : Set.range ι = S := by
+    ext g
+    constructor
+    · rintro ⟨k, rfl⟩
+      refine ⟨?_, k.2⟩
+      have := Unitary.star_mul_self_of_mem (k : unitary (Rn N →L[ℝ] Rn N)).2
+      rwa [ContinuousLinearMap.star_eq_adjoint] at this
+    · rintro ⟨hg, hfix⟩
+      exact ⟨⟨⟨g, hunit g hg⟩, hfix⟩, rfl⟩
+  have hSbdd : Bornology.IsBounded S := by
+    refine (Metric.isBounded_iff_subset_closedBall 0).mpr ⟨1, fun g hg ↦ ?_⟩
+    rw [Metric.mem_closedBall, dist_zero_right]
+    refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun x ↦ ?_
+    have h2 : inner ℝ (g x) (g x) = inner ℝ x x := by
+      rw [← ContinuousLinearMap.adjoint_inner_right, ← mul_apply_eq_comp, hg.1, one_apply_eq_self]
+    rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq] at h2
+    rw [one_mul, (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h2]
+  have : CompactSpace K := by
+    rw [← isCompact_univ_iff, hιind.isCompact_iff, Set.image_univ, hrange]
+    exact Metric.isCompact_of_isClosed_isBounded hSclosed hSbdd
+  -- Step 4: the Haar measure `μ` on `K` normalized by `μ(K) = 1`.
+  let μ : Measure K := Measure.haarMeasure ⊤
+  have : IsProbabilityMeasure μ := ⟨by
+    have := Measure.haarMeasure_self (G := K) (K₀ := ⊤)
+    rw [TopologicalSpace.PositiveCompacts.coe_top] at this
+    exact this⟩
+  -- Step 5: right invariance of `μ`, by uniqueness of Haar measure on the compact group `K`.
+  have hright : ∀ k : K, Measure.map (fun h ↦ h * k) μ = μ := by
+    intro k
+    set ρ := Measure.map (fun h ↦ h * k) μ with hρ
+    have hc := Measure.isMulInvariant_eq_smul_of_compactSpace ρ μ
+    have huniv : ρ univ = 1 := by
+      rw [hρ, Measure.map_apply (measurable_mul_const k) MeasurableSet.univ, Set.preimage_univ,
+        measure_univ]
+    have hc1 : ρ.haarScalarFactor μ = 1 := by
+      have h := congrArg (fun m : Measure K ↦ m univ) hc
+      simp only [Measure.smul_apply, measure_univ, huniv] at h
+      have h' : ((ρ.haarScalarFactor μ : ℝ≥0) : ℝ≥0∞) = 1 := by
+        simpa [ENNReal.smul_def] using h.symm
+      exact_mod_cast h'
+    rw [hc1, one_smul] at hc
+    exact hc
+  -- Steps 6–7: `θ = ι_* μ` is concentrated on `S`, and translations by `k ∈ K_U` commute with `ι`.
+  refine ⟨Measure.map ι μ, inferInstance, ?_, ?_⟩
+  · rw [ae_map_iff hι.aemeasurable hSclosed.measurableSet]
+    exact Eventually.of_forall fun k ↦ (hrange ▸ ⟨k, rfl⟩ : ι k ∈ S)
+  · intro k hk hfix
+    let k' : K := ⟨⟨k, hunit k hk⟩, hfix⟩
+    have hl : Measurable (fun g : Rn N →L[ℝ] Rn N ↦ k * g) := measurable_const_mul k
+    have hr : Measurable (fun g : Rn N →L[ℝ] Rn N ↦ g * k) := measurable_mul_const k
+    constructor
+    · rw [Measure.map_map hl hι.measurable]
+      have : (fun g : Rn N →L[ℝ] Rn N ↦ k * g) ∘ ι = ι ∘ (fun h : K ↦ k' * h) := rfl
+      rw [this, ← Measure.map_map hι.measurable (measurable_const_mul k'),
+        map_mul_left_eq_self μ k']
+    · rw [Measure.map_map hr hι.measurable]
+      have : (fun g : Rn N →L[ℝ] Rn N ↦ g * k) ∘ ι = ι ∘ (fun h : K ↦ h * k') := rfl
+      rw [this, ← Measure.map_map hι.measurable (measurable_mul_const k'), hright k']
+/-- Orbit law under the stabilizer `K = {g : g*g = 1, g = id on V^⊥}`, used when averaging over
+`O(N)` for Simon Ch. 3, Thm. 3.6 (cf. Mattila, *Geometry of Sets and Measures in Euclidean
+Spaces*, Ch. 3 "Invariant measures"). Let `θ` be a probability on `ℝᴺ →L[ℝ] ℝᴺ`
+concentrated on `K` and invariant under `K`, and let `0 < Hⁿ(S(V)) < ∞`, `S(V) = V ∩ ∂B₁(0)`.
+Then `θ{g : gζ ∈ Y} = 0` for `ζ ∈ S(V)` and every Borel `Y` with `Hⁿ(Y ∩ S(V)) = 0`.
+Slice `T = {(g, x) : gx ∈ Y}` under `θ ⊗ Hⁿ⌞S(V)` both ways. Each `g ∈ K` is an isometry
+mapping `S(V)` into itself, so every `g`-slice is `Hⁿ⌞S(V)`-null. The reflection in
+`(ζ - x)^⊥` lies in `K` and maps `ζ` to `x ∈ S(V)`, so by right invariance every such `x`-slice
+has `θ`-measure `θ{g : gζ ∈ Y}`. Hence `θ{g : gζ ∈ Y} · Hⁿ(S(V)) = 0`. -/
+theorem Submission.bf_stabilizerOrbit_null : ∀ (N n : ℕ) (V : Submodule ℝ (Rn N)) (θ : Measure (Rn N →L[ℝ] Rn N)), IsProbabilityMeasure θ → (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1 ∧ ∀ x ∈ Vᗮ, g x = x) → (∀ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 → (∀ x ∈ Vᗮ, k x = x) → Measure.map (fun g ↦ k * g) θ = θ ∧ Measure.map (fun g ↦ g * k) θ = θ) → 0 < μHE[n] {x : Rn N | x ∈ V ∧ ‖x‖ = 1} → μHE[n] {x : Rn N | x ∈ V ∧ ‖x‖ = 1} < ∞ → ∀ ζ ∈ V, ‖ζ‖ = 1 → ∀ Y : Set (Rn N), MeasurableSet Y → μHE[n] (Y ∩ {x : Rn N | x ∈ V ∧ ‖x‖ = 1}) = 0 → θ {g | g ζ ∈ Y} = 0 := by
+  intro N n V θ hθP hθK hθinv hpos hfin ζ hζV hζ1 Y hY hYnull
+  set S : Set (Rn N) := {x : Rn N | x ∈ V ∧ ‖x‖ = 1}
+  have hSm : MeasurableSet S :=
+    (V.closed_of_finiteDimensional.inter
+      (isClosed_eq continuous_norm continuous_const)).measurableSet
+  -- `g*g = 1` makes `g` preserve inner products, hence norms.
+  have hinner : ∀ g : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint g * g = 1 →
+      ∀ x y : Rn N, inner ℝ (g x) (g y) = inner ℝ x y := by
+    intro g hg x y
+    rw [← ContinuousLinearMap.adjoint_inner_right, ← mul_apply_eq_comp, hg, one_apply_eq_self]
+  have hnorm : ∀ g : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint g * g = 1 →
+      ∀ x : Rn N, ‖g x‖ = ‖x‖ := by
+    intro g hg x
+    have h := hinner g hg x x
+    rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq] at h
+    exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h
+  -- Every `g ∈ K` maps `V = V^⊥⊥` into itself, hence `S` into `S`.
+  have hmaps : ∀ g : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint g * g = 1 →
+      (∀ x ∈ Vᗮ, g x = x) → ∀ x ∈ S, g x ∈ S := by
+    rintro g hg hfix x ⟨hxV, hx1⟩
+    refine ⟨?_, (hnorm g hg x).trans hx1⟩
+    rw [← Submodule.orthogonal_orthogonal V]
+    intro y hy
+    calc inner ℝ y (g x) = inner ℝ (g y) (g x) := by rw [hfix y hy]
+      _ = inner ℝ y x := hinner g hg y x
+      _ = 0 := Submodule.inner_left_of_mem_orthogonal hxV hy
+  -- `K` is transitive on `S`: the reflection in `(ζ - x)^⊥` lies in `K` and maps `ζ` to `x`.
+  have htrans : ∀ x ∈ S, ∃ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 ∧
+      (∀ z ∈ Vᗮ, k z = z) ∧ k ζ = x := by
+    rintro x ⟨hxV, hx1⟩
+    let r := (ℝ ∙ (ζ - x))ᗮ.reflection
+    let k : Rn N →L[ℝ] Rn N := r.toContinuousLinearEquiv.toContinuousLinearMap
+    have hkr : ∀ z, k z = r z := fun z ↦ rfl
+    refine ⟨k, ?_, fun z hz ↦ ?_, ?_⟩
+    · ext1 z
+      refine ext_inner_right ℝ fun w ↦ ?_
+      rw [mul_apply_eq_comp, ContinuousLinearMap.adjoint_inner_left, one_apply_eq_self, hkr,
+        hkr]
+      exact r.inner_map_map z w
+    · rw [hkr]
+      refine Submodule.reflection_mem_subspace_eq_self ?_
+      rw [Submodule.mem_orthogonal_singleton_iff_inner_right]
+      exact Submodule.inner_right_of_mem_orthogonal (V.sub_mem hζV hxV) hz
+    · rw [hkr]
+      exact Submodule.reflection_sub (hζ1.trans hx1.symm)
+  -- Right invariance: `θ{g : gx ∈ Y} = θ{g : gζ ∈ Y}` for `x ∈ S`.
+  have hev : MeasurableSet {g : Rn N →L[ℝ] Rn N | g ζ ∈ Y} :=
+    (continuous_id.clm_apply continuous_const).measurable hY
+  have horbit : ∀ x ∈ S, θ {g | g x ∈ Y} = θ {g | g ζ ∈ Y} := by
+    intro x hx
+    obtain ⟨k, hk, hkfix, rfl⟩ := htrans x hx
+    calc θ {g | g (k ζ) ∈ Y} = Measure.map (fun g ↦ g * k) θ {g | g ζ ∈ Y} := by
+          rw [Measure.map_apply (measurable_mul_const k) hev]
+          rfl
+      _ = θ {g | g ζ ∈ Y} := by rw [(hθinv k hk hkfix).2]
+  -- Slice `T = {(g, x) : gx ∈ Y}` under `θ ⊗ Hⁿ⌞S` in both orders.
+  have : IsFiniteMeasure ((μHE[n] : Measure (Rn N)).restrict S) :=
+    isFiniteMeasure_restrict.mpr hfin.ne
+  have hT : MeasurableSet {p : (Rn N →L[ℝ] Rn N) × Rn N | p.1 p.2 ∈ Y} :=
+    (continuous_fst.clm_apply continuous_snd).measurable hY
+  have h1 : θ.prod ((μHE[n] : Measure (Rn N)).restrict S)
+      {p : (Rn N →L[ℝ] Rn N) × Rn N | p.1 p.2 ∈ Y} = 0 := by
+    rw [Measure.prod_apply hT]
+    refine (lintegral_congr_ae ?_).trans lintegral_zero
+    filter_upwards [hθK] with g hg
+    rw [Measure.restrict_apply (measurable_prodMk_left hT)]
+    refine measure_mono_null (t := ⇑g ⁻¹' (Y ∩ S))
+      (fun x hx ↦ ⟨hx.1, hmaps g hg.1 hg.2 x hx.2⟩) ?_
+    rw [(AddMonoidHomClass.isometry_of_norm g (hnorm g hg.1)).euclideanHausdorffMeasure_preimage]
+    exact measure_mono_null Set.inter_subset_left hYnull
+  have h2 : θ.prod ((μHE[n] : Measure (Rn N)).restrict S)
+      {p : (Rn N →L[ℝ] Rn N) × Rn N | p.1 p.2 ∈ Y} = θ {g | g ζ ∈ Y} * μHE[n] S := by
+    rw [Measure.prod_apply_symm hT]
+    have hae : (fun x : Rn N ↦ θ ((fun g ↦ (g, x)) ⁻¹'
+        {p : (Rn N →L[ℝ] Rn N) × Rn N | p.1 p.2 ∈ Y})) =ᵐ[(μHE[n] : Measure (Rn N)).restrict S]
+        fun _ ↦ θ {g | g ζ ∈ Y} := by
+      filter_upwards [ae_restrict_mem hSm] with x hx
+      exact horbit x hx
+    rw [lintegral_congr_ae hae, lintegral_const, Measure.restrict_apply_univ]
+  exact (mul_eq_zero.mp (h2.symm.trans h1)).resolve_right hpos.ne'
+/-- **Simon Ch. 3, Theorem 3.6 (p. 80)** (`chapter-03.txt` lines 530–536; the book defers the
+proof to [Fed69]/[Ros84]), Step 6 of the frame-averaging argument: Fubini over left cosets.
+Let `θ` be a finite and `θ'` a probability measure on `𝓛 = ℝᴺ →L[ℝ] ℝᴺ`, with `(r_k)_# θ = θ`
+for `θ'`-a.e. `k`, where `r_k(g) = g k`. If `θ'{g : h g ∈ B} = 0` for `θ`-a.e. `h`, then
+`θ(B) = 0`. The set `D = {(h, g) : h g ∈ B}` is measurable (multiplication on the
+second-countable normed ring `𝓛` is continuous), and Tonelli in both orders gives
+`0 = ∫ θ'{g : h g ∈ B} dθ(h) = (θ ⊗ θ')(D) = ∫ θ(r_g⁻¹ B) dθ'(g) = θ(B) θ'(𝓛) = θ(B)`. -/
+theorem Submission.bf_haar_null_of_cosetFibres_null :
+    ∀ (N : ℕ) (θ θ' : Measure (Rn N →L[ℝ] Rn N)), IsFiniteMeasure θ → IsProbabilityMeasure θ' →
+      (∀ᵐ k ∂θ', Measure.map (fun g ↦ g * k) θ = θ) → ∀ B : Set (Rn N →L[ℝ] Rn N),
+        MeasurableSet B → (∀ᵐ h ∂θ, θ' {g | h * g ∈ B} = 0) → θ B = 0 := by
+  intro N θ θ' _ _ hinv B hB hfib
+  -- Step 1: `D = {(h, g) | h * g ∈ B}` is measurable, as multiplication is continuous.
+  set D : Set ((Rn N →L[ℝ] Rn N) × (Rn N →L[ℝ] Rn N)) := {p | p.1 * p.2 ∈ B}
+  have hD : MeasurableSet D := measurable_mul hB
+  -- Step 2: slicing in `g` first, `(θ ⊗ θ')(D) = ∫ θ'{g | h * g ∈ B} dθ(h) = 0`.
+  have h0 : θ.prod θ' D = 0 := by
+    rw [Measure.prod_apply hD]
+    calc ∫⁻ h, θ' (Prod.mk h ⁻¹' D) ∂θ = ∫⁻ _, 0 ∂θ := by
+          refine lintegral_congr_ae ?_
+          filter_upwards [hfib] with h hh
+          exact hh
+      _ = 0 := lintegral_zero
+  -- Step 3: slicing in `h` first, `θ{h | h * k ∈ B} = (r_k)_# θ (B) = θ(B)` for `θ'`-a.e. `k`.
+  have h1 : θ.prod θ' D = θ B := by
+    rw [Measure.prod_apply_symm hD]
+    calc ∫⁻ k, θ ((fun h ↦ (h, k)) ⁻¹' D) ∂θ' = ∫⁻ _, θ B ∂θ' := by
+          refine lintegral_congr_ae ?_
+          filter_upwards [hinv] with k hk
+          calc θ ((fun h ↦ (h, k)) ⁻¹' D) = θ ((fun g ↦ g * k) ⁻¹' B) := rfl
+            _ = Measure.map (fun g ↦ g * k) θ B :=
+              (Measure.map_apply (measurable_mul_const k) hB).symm
+            _ = θ B := by rw [hk]
+      _ = θ B := by rw [lintegral_const, measure_univ, mul_one]
+  -- Step 4: compare the two evaluations of `(θ ⊗ θ')(D)`.
+  rw [← h1, h0]
 /-- **Projection onto a rotated subspace** (fact (F1) of the frame-averaging step for Simon Ch. 3,
 Theorem 3.6). Let `g : ℝᴺ → ℝᴺ` be linear with `g* g = 1` and `V ⊆ ℝᴺ` a subspace. Then the
 orthogonal projection onto `gV` is `P_{gV} = g P_V g*`, and `dim gV = dim V`. Since `g* g = 1`,
@@ -360,6 +612,100 @@ theorem Submission.bf_starProjection_map_orthogonal : ∀ (N : ℕ) (g : Rn N �
       exact Submodule.starProjection_inner_eq_zero _ _ hy
   -- Step 2: `g` restricts to a linear isomorphism `V ≃ gV`, so `dim gV = dim V`.
   · exact (LinearEquiv.finrank_eq (Submodule.equivMapOfInjective _ hinj V)).symm
+
+/-- **Null sets of rotated plane–direction pairs** (Steps 5–6 of the frame-averaging step for
+Simon Ch. 3, Theorem 3.6). Let `Bad ⊆ ℝᴺ × 𝓛 × ℝᴺ` be measurable and `a ∈ ℝᴺ` with
+`Hⁿ({x ∈ H : |x| = 1, (a, P_H, x) ∈ Bad}) = 0` for every `(n+1)`-plane `H`. Let `θ` be a
+probability on `𝓛` carried by `{g : g* g = 1}` and invariant under `g ↦ g k` whenever `k* k = 1`,
+`V` an `(n+1)`-plane with `0 < Hⁿ(S(V)) < ∞`, `S(V) = {x ∈ V : |x| = 1}`, and `ζ ∈ S(V)`. Then
+`θ(B) = 0` for `B = {g : (a, g P_V g*, g ζ) ∈ Bad}`. Let `θ'` be a bi-invariant probability on the
+stabilizer `K` of `Vᗮ`. By Fubini over the cosets `h K` it suffices that `θ'{g' : h g' ∈ B} = 0`
+for every `h` with `h* h = 1`. For such `h`, `H = hV` is an `(n+1)`-plane with `P_H = h P_V h*`, and
+`h` is an isometry, so `Y = {y : (a, P_H, h y) ∈ Bad}` has `Hⁿ(Y ∩ S(V)) = 0`; the orbit law of
+`θ'` gives `θ'{g' : g' ζ ∈ Y} = 0`. Every `g' ∈ K` maps `V` onto `V`, so `(h g') P_V (h g')* = P_H`
+and `h g' ∈ B` iff `g' ζ ∈ Y`. -/
+theorem Submission.bf_haar_planeDirection_null : ∀ (n N : ℕ) (Bad : Set (Rn N × (Rn N →L[ℝ] Rn N) × Rn N)), MeasurableSet Bad → ∀ a : Rn N, (∀ H : Submodule ℝ (Rn N), finrank ℝ H = n + 1 → μHE[n] {x | x ∈ H ∧ ‖x‖ = 1 ∧ (a, H.starProjection, x) ∈ Bad} = 0) → ∀ θ : Measure (Rn N →L[ℝ] Rn N), IsProbabilityMeasure θ → (∀ᵐ g ∂θ, ContinuousLinearMap.adjoint g * g = 1) → (∀ k : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint k * k = 1 → Measure.map (fun g ↦ g * k) θ = θ) → ∀ V : Submodule ℝ (Rn N), finrank ℝ V = n + 1 → 0 < μHE[n] {x : Rn N | x ∈ V ∧ ‖x‖ = 1} → μHE[n] {x : Rn N | x ∈ V ∧ ‖x‖ = 1} < ∞ → ∀ ζ ∈ V, ‖ζ‖ = 1 → θ {g | (a, g * V.starProjection * ContinuousLinearMap.adjoint g, g ζ) ∈ Bad} = 0 := by
+  intro n N Bad hBad a hnull θ _ hθO hθR V hV hS0 hSfin ζ hζV hζ1
+  -- Step 1: a probability `θ'` carried by the stabilizer `K = {g' : g'* g' = 1, g' = 1 on Vᗮ}`,
+  -- invariant under left and right translation by elements of `K`.
+  obtain ⟨θ', hθ'P, hθ'K, hθ'inv⟩ := Submission.bf_orthStabilizer_haar_exists N Vᗮ
+  -- Maps with `g* g = 1` preserve inner products.
+  have hinner : ∀ g : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint g * g = 1 →
+      ∀ x y : Rn N, inner ℝ (g x) (g y) = inner ℝ x y :=
+    fun g hg ↦ g.inner_map_map_iff_adjoint_comp_self.mpr hg
+  -- Step 2: `B` is Borel, as `g ↦ (a, g P_V g*, g ζ)` is continuous (the adjoint is an isometry).
+  set B : Set (Rn N →L[ℝ] Rn N) :=
+    {g | (a, g * V.starProjection * ContinuousLinearMap.adjoint g, g ζ) ∈ Bad}
+  have hBm : MeasurableSet B := by
+    have hadj : Continuous fun g : Rn N →L[ℝ] Rn N ↦ ContinuousLinearMap.adjoint g :=
+      (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Rn N) (F := Rn N)).continuous
+    have hm : Measurable fun g : Rn N →L[ℝ] Rn N ↦
+        (a, g * V.starProjection * ContinuousLinearMap.adjoint g, g ζ) :=
+      measurable_const.prodMk ((((continuous_id.mul continuous_const).mul hadj).measurable).prodMk
+        (ContinuousLinearMap.measurable_apply ζ))
+    exact hm hBad
+  -- Step 3: Fubini over the cosets `h K`. As `θ'`-a.e. `k` has `k* k = 1`, `θ` is invariant under
+  -- `g ↦ g k` for `θ'`-a.e. `k`; it remains to show `θ'{g' | h g' ∈ B} = 0` whenever `h* h = 1`.
+  refine Submission.bf_haar_null_of_cosetFibres_null N θ θ' inferInstance hθ'P ?_ B hBm ?_
+  · filter_upwards [hθ'K] with k hk
+    exact hθR k hk.1
+  filter_upwards [hθO] with h hh
+  -- Step 4: `H = hV` is an `(n+1)`-plane with `P_H = h P_V h*`, and `h` is an isometry.
+  obtain ⟨hPH, hHdim⟩ := Submission.bf_starProjection_map_orthogonal N h hh V
+  have hiso : Isometry h := h.isometry_iff_adjoint_comp_self.mpr hh
+  -- Step 5: `Y = {y | (a, P_H, h y) ∈ Bad}` is Borel, and `h` maps `Y ∩ S(V)` into the `Hⁿ`-null
+  -- set `{x ∈ H | ‖x‖ = 1, (a, P_H, x) ∈ Bad}`; as `h` is an isometry, `Hⁿ(Y ∩ S(V)) = 0`.
+  set Y : Set (Rn N) :=
+    {y | (a, (V.map (h : Rn N →ₗ[ℝ] Rn N)).starProjection, h y) ∈ Bad}
+  have hYm : MeasurableSet Y := by
+    have hm : Measurable fun y : Rn N ↦
+        (a, (V.map (h : Rn N →ₗ[ℝ] Rn N)).starProjection, h y) :=
+      measurable_const.prodMk (measurable_const.prodMk h.continuous.measurable)
+    exact hm hBad
+  have hYnull : μHE[n] (Y ∩ {x : Rn N | x ∈ V ∧ ‖x‖ = 1}) = 0 := by
+    rw [← hiso.euclideanHausdorffMeasure_image]
+    refine measure_mono_null ?_ (hnull (V.map (h : Rn N →ₗ[ℝ] Rn N)) (hHdim.trans hV))
+    rintro _ ⟨y, ⟨hyY, hyV, hy1⟩, rfl⟩
+    exact ⟨Submodule.mem_map_of_mem hyV, (hiso.norm_map_of_map_zero (map_zero h) y).trans hy1,
+      hyY⟩
+  -- Step 6: the orbit law of `θ'` gives `θ'{g' | g' ζ ∈ Y} = 0`.
+  have hYθ' : θ' {g' | g' ζ ∈ Y} = 0 :=
+    Submission.bf_stabilizerOrbit_null N n V θ' hθ'P hθ'K hθ'inv hS0 hSfin ζ hζV hζ1 Y hYm hYnull
+  -- Step 7: for `θ'`-a.e. `g'`, `g' ∈ K` and `g' ζ ∉ Y`; and `g' ∈ K`, `h g' ∈ B` give `g' ζ ∈ Y`.
+  rw [measure_eq_zero_iff_ae_notMem]
+  filter_upwards [hθ'K, measure_eq_zero_iff_ae_notMem.mp hYθ'] with g' hK hg'Y hg'B
+  -- (a) `g'V ⊆ V`: for `x ∈ V` and `y ∈ Vᗮ`, `y · g'x = g'y · g'x = y · x = 0`. Since
+  -- `dim g'V = dim V`, `g'V = V`, so `g' P_V g'* = P_{g'V} = P_V`.
+  obtain ⟨hPg', hdg'⟩ := Submission.bf_starProjection_map_orthogonal N g' hK.1 V
+  have hle : V.map (g' : Rn N →ₗ[ℝ] Rn N) ≤ V := by
+    rintro _ ⟨x, hxV, rfl⟩
+    rw [← Submodule.orthogonal_orthogonal V, Submodule.mem_orthogonal]
+    intro y hy
+    change inner ℝ y (g' x) = 0
+    rw [← hK.2 y hy, hinner g' hK.1]
+    exact Submodule.inner_left_of_mem_orthogonal hxV hy
+  have hstar : ∀ W₁ W₂ : Submodule ℝ (Rn N), W₁ = W₂ →
+      W₁.starProjection = W₂.starProjection := by
+    rintro W₁ W₂ rfl
+    rfl
+  have hPV : g' * V.starProjection * ContinuousLinearMap.adjoint g' = V.starProjection :=
+    hPg'.symm.trans (hstar _ _ (Submodule.eq_of_le_of_finrank_eq hle hdg'))
+  -- (b) `(h g')* = g'* h*`, so `(h g') P_V (h g')* = h (g' P_V g'*) h* = h P_V h* = P_H`.
+  have hcoset : h * g' * V.starProjection * ContinuousLinearMap.adjoint (h * g') =
+      (V.map (h : Rn N →ₗ[ℝ] Rn N)).starProjection := by
+    calc h * g' * V.starProjection * ContinuousLinearMap.adjoint (h * g')
+        = h * (g' * V.starProjection * ContinuousLinearMap.adjoint g') *
+            ContinuousLinearMap.adjoint h := by
+          rw [show ContinuousLinearMap.adjoint (h * g') =
+            ContinuousLinearMap.adjoint g' * ContinuousLinearMap.adjoint h from
+              ContinuousLinearMap.adjoint_comp h g']
+          simp only [mul_assoc]
+      _ = (V.map (h : Rn N →ₗ[ℝ] Rn N)).starProjection := by rw [hPV, hPH]
+  -- (c) Hence `h g' ∈ B` says `(a, P_H, h (g' ζ)) ∈ Bad`, i.e. `g' ζ ∈ Y`.
+  have hg'B' : (a, h * g' * V.starProjection * ContinuousLinearMap.adjoint (h * g'),
+      (h * g') ζ) ∈ Bad := hg'B
+  rw [hcoset] at hg'B'
+  exact hg'Y hg'B'
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
