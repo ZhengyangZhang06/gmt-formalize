@@ -410,6 +410,78 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- σ-finiteness of `μ ⌞ M` for a positive, locally integrable multiplicity (Simon Ch. 8, p. 206;
+used for 5.9 with `μ = H^n`): if `U` is open, `M ⊆ U`, `θ > 0` on `M` and `θ` is `μ`-integrable on
+`M ∩ K` for every compact `K ⊆ U`, then `μ ⌞ M` is σ-finite.  `M` need not be measurable. -/
+theorem Submission.intcpt_id_restrict_sigmaFinite :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (U M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsOpen U → M ⊆ U → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) μ) → SigmaFinite (μ.restrict M) := by
+  intro N μ U M θ hU hMU hpos hint
+  -- Step 2: compact sets `K i ⊆ U` with `⋃ i, K i = U`.  Instead of the explicit cover by
+  -- rational closed balls, use that an open subset of the locally compact, second countable
+  -- space `ℝ^N` is σ-compact.
+  obtain ⟨K, hKc, hKU⟩ : IsSigmaCompact U :=
+    haveI := hU.locallyCompactSpace
+    isSigmaCompact_iff_sigmaCompactSpace.mpr inferInstance
+  have hKsub : ∀ i, K i ⊆ U := fun i ↦ hKU ▸ subset_iUnion K i
+  have hKm : ∀ i, MeasurableSet (K i) := fun i ↦ (hKc i).isClosed.measurableSet
+  -- Step 3: Borel `g i` with `θ = g i` `μ ⌞ (M ∩ K i)`-a.e. and
+  -- `∫⁻ ofReal (g i) d(μ ⌞ (M ∩ K i)) = ∫⁻ ofReal θ d(μ ⌞ (M ∩ K i)) < ∞`.
+  have hI : ∀ i, Integrable θ (μ.restrict (M ∩ K i)) := fun i ↦ hint (K i) (hKc i) (hKsub i)
+  choose g hgm hgeq using fun i ↦ (hI i).aemeasurable
+  have hlint : ∀ i, ∫⁻ y, ENNReal.ofReal (g i y) ∂(μ.restrict (M ∩ K i)) < ∞ := fun i ↦
+    (lintegral_congr_ae ((hgeq i).mono fun y hy ↦ congrArg ENNReal.ofReal hy.symm)).trans_lt
+      (hI i).lintegral_lt_top
+  -- Step 4: the countable family `{Uᶜ} ∪ {Z i} ∪ {S (i, k)}`, with
+  -- `Z i = K i ∩ {g i ≤ 0}` and `S (i, k) = K i ∩ {g i ≥ 1 / (k + 1)}`.
+  let Z : ℕ → Set (Euclidean N) := fun i ↦ K i ∩ {y | g i y ≤ 0}
+  let S : ℕ × ℕ → Set (Euclidean N) := fun p ↦ K p.1 ∩ {y | 1 / ((p.2 : ℝ) + 1) ≤ g p.1 y}
+  refine Measure.sigmaFinite_of_countable (S := insert Uᶜ (range Z ∪ range S))
+    (((countable_range Z).union (countable_range S)).insert _) ?_ ?_
+  · -- Step 5: every member of the family has finite `μ ⌞ M`-measure.
+    rintro s (rfl | ⟨i, rfl⟩ | ⟨⟨i, k⟩, rfl⟩)
+    · -- (a) `(μ ⌞ M)(Uᶜ) = μ(Uᶜ ∩ M) = 0`, since `M ⊆ U`.
+      rw [Measure.restrict_apply hU.isClosed_compl.measurableSet]
+      exact (measure_mono_null (fun y hy ↦ hy.1 (hMU hy.2)) measure_empty).trans_lt
+        ENNReal.zero_lt_top
+    · -- (b) `(μ ⌞ M)(Z i) = 0`: on `Z i ∩ M`, `g i ≤ 0 < θ`, so `Z i ∩ M ⊆ {θ ≠ g i} ∩ (M ∩ K i)`,
+      -- which is `μ`-null because `{θ ≠ g i}` is `μ ⌞ (M ∩ K i)`-null.
+      rw [Measure.restrict_apply ((hKm i).inter (measurableSet_le (hgm i) measurable_const))]
+      have hnull : μ ({y | θ y ≠ g i y} ∩ (M ∩ K i)) = 0 :=
+        nonpos_iff_eq_zero.mp ((Measure.le_restrict_apply _ _).trans_eq (hgeq i))
+      refine (measure_mono_null ?_ hnull).trans_lt ENNReal.zero_lt_top
+      rintro y ⟨⟨hyK, hyg⟩, hyM⟩
+      refine ⟨?_, hyM, hyK⟩
+      have hθ : 0 < θ y := hpos y hyM
+      have hg : g i y ≤ 0 := hyg
+      exact (hg.trans_lt hθ).ne'
+    · -- (c) Markov: `(μ ⌞ M)(S (i, k)) = (μ ⌞ (M ∩ K i)){1 / (k + 1) ≤ g i}`
+      -- `≤ (k + 1) ∫⁻ ofReal (g i) d(μ ⌞ (M ∩ K i)) < ∞`.
+      have hc : (0 : ℝ) < 1 / ((k : ℝ) + 1) := by positivity
+      have hL : MeasurableSet {y | 1 / ((k : ℝ) + 1) ≤ g i y} :=
+        measurableSet_le measurable_const (hgm i)
+      rw [Measure.restrict_apply ((hKm i).inter hL)]
+      have hEq : K i ∩ {y | 1 / ((k : ℝ) + 1) ≤ g i y} ∩ M
+          = {y | ENNReal.ofReal (1 / ((k : ℝ) + 1)) ≤ ENNReal.ofReal (g i y)} ∩ (M ∩ K i) := by
+        ext y
+        simp only [mem_inter_iff, mem_ofPred_eq, ENNReal.ofReal_le_ofReal_iff', not_le.mpr hc,
+          or_false]
+        tauto
+      rw [hEq, ← Measure.restrict_apply
+        (measurableSet_le measurable_const (hgm i).ennreal_ofReal)]
+      have hmarkov := mul_meas_ge_le_lintegral₀ (μ := μ.restrict (M ∩ K i))
+        (hgm i).ennreal_ofReal.aemeasurable (ENNReal.ofReal (1 / ((k : ℝ) + 1)))
+      exact ENNReal.lt_top_of_mul_ne_top_right (ne_top_of_le_ne_top (hlint i).ne hmarkov)
+        (ENNReal.ofReal_pos.mpr hc).ne'
+  · -- Step 4: the family covers `ℝ^N`.
+    refine eq_univ_of_forall fun y ↦ ?_
+    by_cases hy : y ∈ U
+    · obtain ⟨i, hi⟩ := mem_iUnion.mp (hKU.symm ▸ hy : y ∈ ⋃ i, K i)
+      rcases le_or_gt (g i y) 0 with h | h
+      · exact ⟨Z i, Or.inr (Or.inl ⟨i, rfl⟩), hi, h⟩
+      · obtain ⟨k, hk⟩ := exists_nat_one_div_lt h
+        exact ⟨S (i, k), Or.inr (Or.inr ⟨(i, k), rfl⟩), hi, hk.le⟩
+    · exact ⟨Uᶜ, Or.inl rfl, hy⟩
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
