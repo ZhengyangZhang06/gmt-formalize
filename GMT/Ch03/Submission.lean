@@ -1753,6 +1753,607 @@ theorem Submission.lipschitz_real_c1_approximation : ∀ (n : ℕ) (f : Rn n →
     _ = volume (B \ C) + volume (C \ A) := by rw [hBc, zero_add]
     _ < ε / 2 + ε / 2 := ENNReal.add_lt_add hBC hCA
     _ = ε := ENNReal.add_halves ε
+/-- **Positive lower `n`-density at a point with an approximate tangent plane of positive
+multiplicity** (Simon Ch. 3, Remark 1.5(3), lower half, with multiplicity `θ`; cf. 4.3): if `μ`
+is finite on compact sets, `θ > 0` and `λ⁻ⁿ η_{x,λ#} μ → θ Hⁿ ⌞ P` (`finrank P = n`), then
+`μ(B_ρ(x)) ≥ c ρⁿ` for some `c > 0` and all small `ρ > 0`. Test with
+`g(w) = max(0, 1 - |w|) ∈ C_c(ℝᴺ)`: `Hⁿ ⌞ P` is regular with support `P ∋ 0`, so
+`L = θ ∫_P g dHⁿ > 0`; `λ⁻ⁿ ∫ g ∘ η_{x,λ} dμ → L`, and `0 ≤ g ∘ η_{x,ρ} ≤ 1_{B_ρ(x)}` gives
+`(L/2) ρⁿ < ∫ g ∘ η_{x,ρ} dμ ≤ μ(B_ρ(x))` for small `ρ`. -/
+theorem Submission.tangentMeasure_eventually_lower_density : ∀ (N n : ℕ) (μ : Measure (Rn N))
+    (x : Rn N) (P : Submodule ℝ (Rn N)) (θ : ℝ), (∀ K : Set (Rn N), IsCompact K → μ K < ∞) →
+    0 < θ → HasApproxTangentPlaneWithMultiplicity n μ x P θ → ∃ c : ℝ, 0 < c ∧
+      ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal (c * ρ ^ n) ≤ μ (Metric.ball x ρ) := by
+  intro N n μ x P θ hfin hθ hP
+  have : IsFiniteMeasureOnCompacts μ := ⟨hfin⟩
+  obtain ⟨hdim, hlim⟩ := hP
+  -- The test function `g(w) = max(0, 1 - |w|)`.
+  let g0 : Rn N → ℝ := fun w => max 0 (1 - ‖w‖)
+  have g0_cont : Continuous g0 := continuous_const.max (continuous_const.sub continuous_norm)
+  have g0_supp : HasCompactSupport g0 := by
+    apply HasCompactSupport.intro (isCompact_closedBall (0 : Rn N) 1)
+    intro w hw
+    simp only [Metric.mem_closedBall, dist_zero_right, not_le] at hw
+    exact max_eq_left (by linarith)
+  let g : C_c(Rn N, ℝ) := ⟨⟨g0, g0_cont⟩, g0_supp⟩
+  have hg : ∀ w, g w = g0 w := fun w => rfl
+  have g0_nonneg : ∀ w, 0 ≤ g0 w := fun w => le_max_left _ _
+  have g0_le_one : ∀ w, g0 w ≤ 1 := fun w => max_le zero_le_one (by linarith [norm_nonneg w])
+  -- `∫_P g dHⁿ > 0`, since `Hⁿ ⌞ P` is finite on compacts with support `P ∋ 0`.
+  have hreg := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule
+    (E := Rn N) hdim
+  have hint_pos : 0 < ∫ y in (P : Set (Rn N)), g y ∂μHE[n] := by
+    have hgi : Integrable (fun y => g y) ((μHE[n] : Measure (Rn N)).restrict (P : Set (Rn N))) :=
+      g.continuous.integrable_of_hasCompactSupport g.hasCompactSupport
+    rw [integral_pos_iff_support_of_nonneg (f := fun y => g y) (fun y => g0_nonneg y) hgi]
+    have hsub : Metric.ball (0 : Rn N) 1 ⊆ Function.support (fun y => g y) := by
+      intro w hw
+      rw [Metric.mem_ball, dist_zero_right] at hw
+      simp only [Function.mem_support, hg, g0]
+      apply ne_of_gt
+      exact lt_max_of_lt_right (by linarith)
+    refine lt_of_lt_of_le ?_ (measure_mono hsub)
+    have h0 : (0 : Rn N) ∈ ((μHE[n] : Measure (Rn N)).restrict (P : Set (Rn N))).support := by
+      rw [Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hdim]
+      exact P.zero_mem
+    exact (Measure.mem_support_iff_forall _).mp h0 _ (Metric.ball_mem_nhds 0 one_pos)
+  -- `c = L / 2` with `L = θ ∫_P g dHⁿ`.
+  set L := θ * ∫ y in (P : Set (Rn N)), g y ∂μHE[n] with hLdef
+  have hL : 0 < L := mul_pos hθ hint_pos
+  refine ⟨L / 2, half_pos hL, ?_⟩
+  have hev : ∀ᶠ r in 𝓝[>] (0 : ℝ), L / 2 < (r ^ n)⁻¹ * ∫ y, g (blowUpMap x r y) ∂μ :=
+    (hlim g).eventually (lt_mem_nhds (half_lt_self hL))
+  filter_upwards [hev, self_mem_nhdsWithin] with ρ hρ hρpos
+  have hρpos' : (0 : ℝ) < ρ := hρpos
+  have hρn : 0 < ρ ^ n := pow_pos hρpos' n
+  have h1 : L / 2 * ρ ^ n < ∫ y, g (blowUpMap x ρ y) ∂μ := by
+    have := mul_lt_mul_of_pos_left hρ hρn
+    rwa [← mul_assoc, mul_inv_cancel₀ hρn.ne', one_mul, mul_comm] at this
+  -- `0 ≤ g ∘ η_{x,ρ} ≤ 1_{B_ρ(x)}` and `μ(B_ρ(x)) < ∞`.
+  have hball : μ (Metric.ball x ρ) < ∞ :=
+    (measure_mono Metric.ball_subset_closedBall).trans_lt (isCompact_closedBall x ρ).measure_lt_top
+  have hpt : ∀ y, g (blowUpMap x ρ y) ≤ (Metric.ball x ρ).indicator 1 y := by
+    intro y
+    by_cases hy : y ∈ Metric.ball x ρ
+    · rw [Set.indicator_of_mem hy]; exact g0_le_one _
+    · rw [Set.indicator_of_notMem hy]
+      rw [Metric.mem_ball, dist_eq_norm, not_lt] at hy
+      have h1' : 1 ≤ ‖blowUpMap x ρ y‖ := by
+        simp only [blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρpos']
+        rw [le_inv_mul_iff₀ hρpos']; linarith
+      show g0 _ ≤ 0
+      exact le_of_eq (max_eq_left (by linarith))
+  have h2 : ∫ y, g (blowUpMap x ρ y) ∂μ ≤ μ.real (Metric.ball x ρ) := by
+    rw [← integral_indicator_one measurableSet_ball]
+    apply integral_mono_of_nonneg
+    · exact Eventually.of_forall fun y => g0_nonneg _
+    · exact (integrable_indicator_iff measurableSet_ball).mpr (integrableOn_const hball.ne)
+    · exact Eventually.of_forall hpt
+  calc ENNReal.ofReal (L / 2 * ρ ^ n) ≤ ENNReal.ofReal (μ.real (Metric.ball x ρ)) :=
+        ENNReal.ofReal_le_ofReal (by linarith)
+    _ = μ (Metric.ball x ρ) := ENNReal.ofReal_toReal hball.ne
+/-- Vanishing `n`-density of `μ` in the cone around the normal space at a tangent point: the cone
+part of Simon Ch. 3, Remark 1.5(3) (p. 71, `chapter-03.txt` lines 91–105), with multiplicity `θ`.
+If `μ` is finite on compact sets, `n ≥ 1` and `μ` has approximate tangent plane `P` with
+multiplicity `θ` at `x`, then `μ(C_x ∩ B_ρ(x)) ≤ ε ρⁿ` for all small `ρ > 0`, where
+`C_x = {z : |q_P(z - x)| ≤ |z - x|/2}`. As in the book, the indicator of
+`S = {w : |q_P w| ≤ |w|/2} ∩ B̄₁(0)` is dominated by a test function, here
+`f = max(0, 1 - dist(·, S)/r) ∈ C_c`. On `P`, `f(w) ≠ 0` forces `|w| < 3r`, so
+`θ ∫_P f dHⁿ ≤ |θ| Hⁿ(P ∩ B̄_{3r}(0)) < ε` once `r` is small, since `Hⁿ ⌞ P` has no atom at `0`
+(`n ≥ 1`); this explicit bound replaces the book's limit over approximating test functions. The
+tangent limit then gives `∫ f ∘ η_{x,ρ} dμ < ε ρⁿ` for small `ρ`, and
+`1_{C_x ∩ B_ρ(x)} ≤ f ∘ η_{x,ρ}`. -/
+theorem Submission.tangentMeasure_eventually_cone_small : ∀ (N n : ℕ) (μ : Measure (Rn N))
+    (x : Rn N) (P : Submodule ℝ (Rn N)) (θ : ℝ), (∀ K : Set (Rn N), IsCompact K → μ K < ∞) →
+    0 < n → HasApproxTangentPlaneWithMultiplicity n μ x P θ → ∀ ε : ℝ, 0 < ε →
+      ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μ ({z | ‖P.starProjection (z - x)‖ ≤ ‖z - x‖ / 2} ∩ Metric.ball x ρ) ≤
+        ENNReal.ofReal (ε * ρ ^ n) := by
+  intro N n μ x P θ hfin hn hP ε hε
+  have : IsFiniteMeasureOnCompacts μ := ⟨hfin⟩
+  obtain ⟨hdim, hlim⟩ := hP
+  have hreg := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule
+    (E := Rn N) hdim
+  -- `ν = Hⁿ ⌞ P` has no atom at `0`, so `ν(B̄_{1/(k+1)}(0)) → 0`
+  set ν : Measure (Rn N) := (μHE[n] : Measure (Rn N)).restrict (P : Set (Rn N)) with hν
+  have hν0 : ν {0} = 0 := by
+    rw [hν, Measure.restrict_apply (measurableSet_singleton 0)]
+    apply measure_mono_null Set.inter_subset_left
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply]
+    have := Measure.nullSingletonClass_hausdorff (X := Rn N) (d := (n : ℝ))
+      (by exact_mod_cast hn)
+    simp [measure_singleton]
+  have hinter : (⋂ k : ℕ, Metric.closedBall (0 : Rn N) (1 / ((k : ℝ) + 1))) = {0} := by
+    ext y
+    simp only [Set.mem_iInter, Metric.mem_closedBall, Set.mem_singleton_iff]
+    constructor
+    · intro h
+      by_contra hne
+      have hpos : 0 < dist y 0 := dist_pos.mpr hne
+      obtain ⟨k, hk⟩ := exists_nat_one_div_lt hpos
+      exact absurd (h k) (not_le.mpr hk)
+    · rintro rfl k
+      simp only [dist_self]
+      positivity
+  have htend : Tendsto (fun k : ℕ => ν (Metric.closedBall 0 (1 / ((k : ℝ) + 1)))) atTop
+      (𝓝 (ν {0})) := by
+    rw [← hinter]
+    apply tendsto_measure_iInter_atTop
+    · exact fun k => measurableSet_closedBall.nullMeasurableSet
+    · intro k l hkl
+      apply Metric.closedBall_subset_closedBall
+      gcongr
+    · exact ⟨0, (isCompact_closedBall _ _).measure_lt_top.ne⟩
+  rw [hν0] at htend
+  have htend' : Tendsto (fun k : ℕ => |θ| * (ν (Metric.closedBall 0 (1 / ((k : ℝ) + 1)))).toReal)
+      atTop (𝓝 0) := by
+    have := ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp htend).const_mul |θ|
+    simpa using this
+  obtain ⟨k, hk⟩ := (htend'.eventually (gt_mem_nhds (half_pos hε))).exists
+  set r : ℝ := 1 / (3 * ((k : ℝ) + 1)) with hr
+  have hr0 : 0 < r := by positivity
+  have hr3 : 3 * r = 1 / ((k : ℝ) + 1) := by rw [hr]; field_simp
+  -- the test function `f = max(0, 1 - dist(·, S)/r)`, equal to `1` on the truncated cone `S`
+  set q := P.starProjection
+  set S : Set (Rn N) := {w | ‖q w‖ ≤ ‖w‖ / 2} ∩ Metric.closedBall 0 1
+  have hS0 : (0 : Rn N) ∈ S := ⟨by simp, by simp⟩
+  have hSne : S.Nonempty := ⟨0, hS0⟩
+  let f0 : Rn N → ℝ := fun w => max 0 (1 - Metric.infDist w S / r)
+  have f0_cont : Continuous f0 :=
+    continuous_const.max (continuous_const.sub ((Metric.continuous_infDist_pt S).div_const r))
+  have f0_nonneg : ∀ w, 0 ≤ f0 w := fun w => le_max_left _ _
+  have f0_zero : ∀ w, r ≤ Metric.infDist w S → f0 w = 0 := by
+    intro w hw
+    apply max_eq_left
+    have : 1 ≤ Metric.infDist w S / r := by rw [le_div_iff₀ hr0]; linarith
+    linarith
+  have f0_out : ∀ w, 1 + r < ‖w‖ → f0 w = 0 := by
+    intro w hw
+    refine f0_zero w (not_lt.mp fun hlt => ?_)
+    obtain ⟨s, hs, hws⟩ := (Metric.infDist_lt_iff hSne).mp hlt
+    have hs1 : ‖s‖ ≤ 1 := by simpa using hs.2
+    rw [dist_eq_norm] at hws
+    have : ‖w‖ ≤ ‖w - s‖ + ‖s‖ := by
+      calc ‖w‖ = ‖(w - s) + s‖ := by congr 1; abel
+        _ ≤ _ := norm_add_le _ _
+    linarith
+  have f0_supp : HasCompactSupport f0 := by
+    apply HasCompactSupport.intro (isCompact_closedBall (0 : Rn N) (1 + r))
+    intro w hw
+    simp only [Metric.mem_closedBall, dist_zero_right, not_le] at hw
+    exact f0_out w hw
+  let f : C_c(Rn N, ℝ) := ⟨⟨f0, f0_cont⟩, f0_supp⟩
+  have hf : ∀ w, f w = f0 w := fun w => rfl
+  -- on `P`, `f w ≠ 0` forces `‖w‖ < 3 r`, so the limit `θ ∫_P f dHⁿ` is `< ε`
+  have hloc : ∀ w ∈ (P : Set (Rn N)), f0 w ≠ 0 → ‖w‖ < 3 * r := by
+    intro w hwP hw
+    have hlt : Metric.infDist w S < r := not_le.mp fun h => hw (f0_zero w h)
+    obtain ⟨s, hs, hws⟩ := (Metric.infDist_lt_iff hSne).mp hlt
+    rw [dist_eq_norm] at hws
+    have hqw : q w = w := P.starProjection_eq_self_iff.mpr hwP
+    have h1 : ‖w‖ ≤ ‖q s‖ + ‖w - s‖ := by
+      calc ‖w‖ = ‖q w‖ := by rw [hqw]
+        _ = ‖q s + q (w - s)‖ := by rw [← map_add]; congr 2; abel
+        _ ≤ ‖q s‖ + ‖q (w - s)‖ := norm_add_le _ _
+        _ ≤ ‖q s‖ + ‖w - s‖ := by gcongr; exact P.norm_starProjection_apply_le _
+    have h2 : ‖q s‖ ≤ ‖s‖ / 2 := hs.1
+    have h3 : ‖s‖ ≤ ‖w‖ + ‖w - s‖ := by
+      calc ‖s‖ = ‖w - (w - s)‖ := by congr 1; abel
+        _ ≤ ‖w‖ + ‖w - s‖ := norm_sub_le _ _
+    linarith
+  have hplane : ∫ y in (P : Set (Rn N)), f y ∂μHE[n] ≤
+      (ν (Metric.closedBall 0 (3 * r))).toReal := by
+    change ∫ y, f y ∂ν ≤ _
+    rw [← measureReal_def, ← integral_indicator_one measurableSet_closedBall]
+    apply integral_mono_of_nonneg
+    · exact Eventually.of_forall fun y => f0_nonneg _
+    · exact (integrable_indicator_iff measurableSet_closedBall).mpr
+        (integrableOn_const (isCompact_closedBall _ _).measure_lt_top.ne)
+    · rw [hν]
+      filter_upwards [ae_restrict_mem P.closed_of_finiteDimensional.measurableSet] with y hyP
+      by_cases hy0 : f0 y = 0
+      · rw [hf, hy0]
+        exact Set.indicator_nonneg (fun _ _ => zero_le_one) _
+      · have hyb : y ∈ Metric.closedBall (0 : Rn N) (3 * r) := by
+          rw [Metric.mem_closedBall, dist_zero_right]
+          exact (hloc y hyP hy0).le
+        rw [Set.indicator_of_mem hyb, hf]
+        exact max_le zero_le_one (by
+          have := Metric.infDist_nonneg (x := y) (s := S)
+          have : 0 ≤ Metric.infDist y S / r := div_nonneg this hr0.le
+          simp only [Pi.one_apply]; linarith)
+  have hlimlt : θ * ∫ y in (P : Set (Rn N)), f y ∂μHE[n] < ε := by
+    have hint_nonneg : 0 ≤ ∫ y in (P : Set (Rn N)), f y ∂μHE[n] :=
+      integral_nonneg fun y => f0_nonneg y
+    calc θ * ∫ y in (P : Set (Rn N)), f y ∂μHE[n]
+        ≤ |θ| * ∫ y in (P : Set (Rn N)), f y ∂μHE[n] :=
+          mul_le_mul_of_nonneg_right (le_abs_self θ) hint_nonneg
+      _ ≤ |θ| * (ν (Metric.closedBall 0 (3 * r))).toReal :=
+          mul_le_mul_of_nonneg_left hplane (abs_nonneg θ)
+      _ < ε / 2 := by rw [hr3]; exact hk
+      _ < ε := half_lt_self hε
+  -- the tangent limit gives `∫ f ∘ η_{x,ρ} dμ < ε ρⁿ` for small `ρ`
+  have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), (ρ ^ n)⁻¹ * ∫ y, f (blowUpMap x ρ y) ∂μ < ε :=
+    (hlim f).eventually (gt_mem_nhds hlimlt)
+  filter_upwards [hev, self_mem_nhdsWithin] with ρ hρ hρpos
+  have hρpos' : (0 : ℝ) < ρ := hρpos
+  have hρn : 0 < ρ ^ n := pow_pos hρpos' n
+  have hJ : ∫ y, f (blowUpMap x ρ y) ∂μ < ε * ρ ^ n := by
+    have := mul_lt_mul_of_pos_left hρ hρn
+    rwa [← mul_assoc, mul_inv_cancel₀ hρn.ne', one_mul, mul_comm] at this
+  -- `1_{C_x ∩ B_ρ(x)} ≤ f ∘ η_{x,ρ}`, and the latter is continuous with compact support
+  set T := {z | ‖q (z - x)‖ ≤ ‖z - x‖ / 2} ∩ Metric.ball x ρ
+  have hTm : MeasurableSet T := by
+    refine (isClosed_le ?_ ?_).measurableSet.inter measurableSet_ball
+    · exact (q.continuous.comp (continuous_id.sub continuous_const)).norm
+    · exact (continuous_id.sub continuous_const).norm.div_const 2
+  have hTfin : μ T < ∞ :=
+    (measure_mono (Set.inter_subset_right.trans Metric.ball_subset_closedBall)).trans_lt
+      (isCompact_closedBall x ρ).measure_lt_top
+  have hblow : ∀ y, blowUpMap x ρ y = ρ⁻¹ • (y - x) := fun y => rfl
+  have hpt : ∀ y, T.indicator 1 y ≤ f (blowUpMap x ρ y) := by
+    intro y
+    by_cases hy : y ∈ T
+    · rw [Set.indicator_of_mem hy]
+      have hw : blowUpMap x ρ y ∈ S := by
+        obtain ⟨hy1, hy2⟩ := hy
+        rw [Metric.mem_ball, dist_eq_norm] at hy2
+        simp only [Set.mem_ofPred_eq] at hy1
+        refine ⟨?_, ?_⟩
+        · show ‖q (blowUpMap x ρ y)‖ ≤ ‖blowUpMap x ρ y‖ / 2
+          rw [hblow, map_smul, norm_smul, norm_smul, Real.norm_eq_abs, abs_inv,
+            abs_of_pos hρpos']
+          rw [mul_div_assoc]
+          exact mul_le_mul_of_nonneg_left hy1 (inv_nonneg.mpr hρpos'.le)
+        · rw [Metric.mem_closedBall, dist_zero_right, hblow, norm_smul, Real.norm_eq_abs,
+            abs_inv, abs_of_pos hρpos', inv_mul_le_iff₀ hρpos']
+          linarith
+      rw [hf]
+      show (1 : ℝ) ≤ max 0 (1 - Metric.infDist (blowUpMap x ρ y) S / r)
+      rw [Metric.infDist_zero_of_mem hw]
+      simp
+    · rw [Set.indicator_of_notMem hy]
+      exact f0_nonneg _
+  have hηc : Continuous (blowUpMap x ρ) := by
+    change Continuous fun y : Rn N => ρ⁻¹ • (y - x)
+    fun_prop
+  have hcont : Continuous (fun y => f (blowUpMap x ρ y)) := f.continuous.comp hηc
+  have hcs : HasCompactSupport (fun y => f (blowUpMap x ρ y)) := by
+    apply HasCompactSupport.intro (isCompact_closedBall x (ρ * (1 + r)))
+    intro y hy
+    rw [Metric.mem_closedBall, dist_eq_norm, not_le] at hy
+    rw [hf]
+    apply f0_out
+    rw [hblow, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρpos', lt_inv_mul_iff₀ hρpos']
+    linarith
+  have hfi : Integrable (fun y => f (blowUpMap x ρ y)) μ :=
+    hcont.integrable_of_hasCompactSupport hcs
+  have hmono : μ.real T ≤ ∫ y, f (blowUpMap x ρ y) ∂μ := by
+    rw [← integral_indicator_one hTm]
+    exact integral_mono_of_nonneg
+      (Eventually.of_forall fun y => Set.indicator_nonneg (fun _ _ => zero_le_one) _) hfi
+      (Eventually.of_forall hpt)
+  calc μ T = ENNReal.ofReal (μ.real T) := (ENNReal.ofReal_toReal hTfin.ne).symm
+    _ ≤ ENNReal.ofReal (ε * ρ ^ n) := ENNReal.ofReal_le_ofReal (by linarith)
+/-- **A countable `ε`-net of `n`-planes** for the distance `d(π, π') = ‖q_π - q_{π'}‖` of
+Simon Ch. 3, (3) (p. 72). Step 4 of the proof of Theorem 1.6 (p. 73) chooses finitely many
+planes `π₁, …, π_N` such that every plane is within `1/16` of one of them; countably many
+suffice. The projections `q_P` onto `n`-planes form a subset of the finite-dimensional, hence
+separable, space `ℝᴺ →L[ℝ] ℝᴺ`, so they contain a countable dense subset. It is nonempty because
+`n ≤ N` gives an `n`-plane, so it is the range of a sequence `q_{Q_j}`. -/
+theorem Submission.tangentMeasure_countable_projection_net : ∀ (N n : ℕ) (ε : ℝ), n ≤ N → 0 < ε → ∃ Q : ℕ → Submodule ℝ (Rn N), (∀ j, finrank ℝ (Q j) = n) ∧ ∀ P : Submodule ℝ (Rn N), finrank ℝ P = n → ∃ j, ‖P.starProjection - (Q j).starProjection‖ < ε := by
+  intro N n ε hnN hε
+  -- Step 1: the projections onto `n`-planes have a countable dense subset `D`.
+  let S : Set (Rn N →L[ℝ] Rn N) :=
+    (fun P : Submodule ℝ (Rn N) ↦ P.starProjection) '' {P | finrank ℝ P = n}
+  obtain ⟨D, hDS, hDc, hSD⟩ :=
+    (TopologicalSpace.IsSeparable.of_separableSpace S).exists_countable_dense_subset
+  -- Step 2: `n ≤ N` gives an `n`-plane `span (range f)`, so `S` is nonempty.
+  obtain ⟨f, hf⟩ := exists_linearIndependent_of_le_finrank (R := ℝ) (M := Rn N) (n := n)
+    (by rwa [finrank_euclideanSpace_fin])
+  obtain ⟨T, hT⟩ : S.Nonempty :=
+    ⟨_, Submodule.span ℝ (Set.range f), (finrank_span_eq_card hf).trans (Fintype.card_fin n), rfl⟩
+  -- Step 3: hence `D` is nonempty, and it is the range of a sequence `e`.
+  obtain ⟨e, rfl⟩ := hDc.exists_eq_range (closure_nonempty_iff.mp ⟨T, hSD hT⟩)
+  -- Step 4: each `e j` is the projection onto some `n`-plane `Q j`.
+  have he : ∀ j, ∃ Q : Submodule ℝ (Rn N), finrank ℝ Q = n ∧ Q.starProjection = e j :=
+    fun j ↦ hDS (Set.mem_range_self j)
+  choose Q hQ hQe using he
+  refine ⟨Q, hQ, fun P hP ↦ ?_⟩
+  -- Step 5: density of `range e` in `S` gives `j` with `‖q_P - q_{Q j}‖ < ε`.
+  obtain ⟨_, ⟨j, rfl⟩, hj⟩ := Metric.mem_closure_iff.mp (hSD ⟨P, hP, rfl⟩) ε hε
+  refine ⟨j, ?_⟩
+  rw [hQe j, ← dist_eq_norm]
+  exact hj
+/-- **Key cone estimate** (Simon Ch. 3, (9)–(10) in the proof of Theorem 1.6 "⇐",
+`chapter-03.txt` lines 212–249, with the corrected constant `32ⁿ b < a` in place of
+`ε = 1/16ⁿ` and cones of aperture `1/3` around a fixed plane `Q`): if `μ(B_ρ(x)) ≥ a ρⁿ` and
+`μ({z : |q(z - x)| ≤ |z - x|/3} ∩ B_ρ(x)) ≤ b ρⁿ` for all `x ∈ E` and `0 < ρ < δ`
+(`q = Q.starProjection`), then `|y - x| ≤ 4 |q(y - x)|` for `x, y ∈ E` with `|y - x| < δ/2`.
+Otherwise `ρ = |y - x|` has `|q(y - x)| < ρ/4`, so
+`B_{ρ/16}(y) ⊆ {z : |q(z - x)| ≤ |z - x|/3} ∩ B_{2ρ}(x)` and
+`a (ρ/16)ⁿ ≤ μ(B_{ρ/16}(y)) ≤ b (2ρ)ⁿ = 32ⁿ b (ρ/16)ⁿ`, i.e. `a ≤ 32ⁿ b`. -/
+theorem Submission.tangentMeasure_projection_lower_bound : (∀ (N n : ℕ) (μ : Measure (Rn N)) (Q : Submodule ℝ (Rn N)) (E : Set (Rn N)) (a b δ : ℝ), 0 < a → 32 ^ n * b < a → (∀ x ∈ E, ∀ ρ ∈ Set.Ioo 0 δ, ENNReal.ofReal (a * ρ ^ n) ≤ μ (Metric.ball x ρ) ∧ μ ({z | ‖Q.starProjection (z - x)‖ ≤ ‖z - x‖ / 3} ∩ Metric.ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)) → ∀ x ∈ E, ∀ y ∈ E, ‖y - x‖ < δ / 2 → ‖y - x‖ ≤ 4 * ‖Q.starProjection (y - x)‖) := by
+  intro N n μ Q E a b δ ha hab hE x hx y hy hxy
+  -- Step 1: otherwise `ρ = |y - x|` satisfies `ρ > 4 |q(y - x)| ≥ 0`, so `0 < ρ < δ/2`.
+  by_contra hcon
+  replace hcon : 4 * ‖Q.starProjection (y - x)‖ < ‖y - x‖ := not_le.mp hcon
+  set ρ := ‖y - x‖ with hρdef
+  have hρ : 0 < ρ := by
+    have := norm_nonneg (Q.starProjection (y - x))
+    linarith
+  -- Step 2: `B_{ρ/16}(y) ⊆ {z : |q(z - x)| ≤ |z - x|/3} ∩ B_{2ρ}(x)`, using `|q v| ≤ |v|`.
+  have hsub : Metric.ball y (ρ / 16) ⊆
+      {z | ‖Q.starProjection (z - x)‖ ≤ ‖z - x‖ / 3} ∩ Metric.ball x (2 * ρ) := by
+    intro z hz
+    rw [Metric.mem_ball, dist_eq_norm] at hz
+    have h1 : ‖z - x‖ ≤ ‖z - y‖ + ‖y - x‖ := by
+      calc ‖z - x‖ = ‖(z - y) + (y - x)‖ := by congr 1; abel
+        _ ≤ _ := norm_add_le _ _
+    have h2 : ‖y - x‖ ≤ ‖z - x‖ + ‖z - y‖ := by
+      calc ‖y - x‖ = ‖(z - x) - (z - y)‖ := by congr 1; abel
+        _ ≤ ‖z - x‖ + ‖z - y‖ := norm_sub_le _ _
+    have h3 : ‖Q.starProjection (z - x)‖ ≤ ‖Q.starProjection (y - x)‖ + ‖z - y‖ := by
+      calc ‖Q.starProjection (z - x)‖
+          = ‖Q.starProjection (y - x) + Q.starProjection (z - y)‖ := by
+            rw [← map_add]; congr 2; abel
+        _ ≤ ‖Q.starProjection (y - x)‖ + ‖Q.starProjection (z - y)‖ := norm_add_le _ _
+        _ ≤ _ := by gcongr; exact Q.norm_starProjection_apply_le _
+    refine ⟨?_, ?_⟩
+    · show ‖Q.starProjection (z - x)‖ ≤ ‖z - x‖ / 3
+      linarith
+    · rw [Metric.mem_ball, dist_eq_norm]; linarith
+  -- Step 3: (9a) at `y` with radius `ρ/16`, monotonicity of `μ`, (9b) at `x` with radius `2ρ`.
+  have hy1 := (hE y hy (ρ / 16) ⟨by positivity, by linarith⟩).1
+  have hx2 := (hE x hx (2 * ρ) ⟨by positivity, by linarith⟩).2
+  have hchain : ENNReal.ofReal (a * (ρ / 16) ^ n) ≤ ENNReal.ofReal (b * (2 * ρ) ^ n) :=
+    hy1.trans ((measure_mono hsub).trans hx2)
+  -- Step 4: `a (ρ/16)ⁿ > 0`, so `a (ρ/16)ⁿ ≤ b (2ρ)ⁿ = 32ⁿ b (ρ/16)ⁿ`, i.e. `a ≤ 32ⁿ b`.
+  have hpos : 0 < a * (ρ / 16) ^ n := by positivity
+  rcases (ENNReal.ofReal_le_ofReal_iff').mp hchain with h | h
+  · have h32 : (2 * ρ) ^ n = 32 ^ n * (ρ / 16) ^ n := by rw [← mul_pow]; ring_nf
+    rw [h32] at h
+    have hp : 0 < (ρ / 16) ^ n := by positivity
+    nlinarith
+  · linarith
+/-- **Lipschitz cover from a projection bound** (Simon Ch. 3, proof of Theorem 1.6 "⇐",
+`chapter-03.txt` lines 249–262: (10) together with the extension theorem 1.2 of Ch. 2 puts each
+`E_j ∩ B_{δ/4}(x₀)` in a Lipschitz graph over the plane; here countably many balls cover an
+arbitrary `E`). If `Q` is an `n`-dimensional subspace with orthogonal projection
+`q = Q.starProjection` and `|y - x| ≤ C |q(y - x)|` for all `x, y ∈ E` with `|y - x| < δ`, then
+`E ⊆ ⋃ᵢ Fᵢ(ℝⁿ)` for Lipschitz maps `Fᵢ : ℝⁿ → ℝᴺ`. With `p = ι⁻¹ ∘ π_Q : ℝᴺ → ℝⁿ` (`π_Q` the
+orthogonal projection onto `Q`, `ι : ℝⁿ ≃ Q` a linear isometry), on each piece
+`S_d = E ∩ B_{δ/2}(d)` (`d` in a countable dense set) the inverse of `p` is `max C 0`-Lipschitz
+on `p(S_d)`, and its Lipschitz extension to `ℝⁿ` has range containing `S_d`. -/
+theorem Submission.tangentMeasure_lipschitz_cover_of_projection_bound : (∀ (N n : ℕ) (Q : Submodule ℝ (Rn N)) (E : Set (Rn N)) (C δ : ℝ), finrank ℝ Q = n → 0 < δ → (∀ x ∈ E, ∀ y ∈ E, ‖y - x‖ < δ → ‖y - x‖ ≤ C * ‖Q.starProjection (y - x)‖) → ∃ F : ℕ → Rn n → Rn N, (∀ i, ∃ K : ℝ≥0, LipschitzWith K (F i)) ∧ E ⊆ ⋃ i, Set.range (F i)) := by
+  intro N n Q E C δ hQ hδ hE
+  classical
+  -- Step 1: isometric coordinates `p = ι⁻¹ ∘ π_Q : ℝᴺ → ℝⁿ` with `|p y - p y'| = |q(y - y')|`,
+  -- and the bound with the nonnegative constant `C' = max C 0`.
+  let ι : Rn n ≃ₗᵢ[ℝ] Q := ((stdOrthonormalBasis ℝ Q).reindex (finCongr hQ)).repr.symm
+  let p : Rn N → Rn n := fun y => ι.symm (Q.orthogonalProjectionOnto y)
+  have hp : ∀ y y', ‖p y - p y'‖ = ‖Q.starProjection (y - y')‖ := by
+    intro y y'
+    simp only [p, ← map_sub, LinearIsometryEquiv.norm_map]
+    rw [Q.starProjection_apply]
+    rfl
+  set C' : ℝ := max C 0
+  have hE' : ∀ x ∈ E, ∀ y ∈ E, ‖y - x‖ < δ → ‖y - x‖ ≤ C' * ‖p y - p x‖ := by
+    intro x hx y hy hxy
+    rw [hp]
+    exact (hE x hx y hy hxy).trans (mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg _))
+  -- A countable dense set `D = range e` of centres.
+  obtain ⟨D, hDc, hDd⟩ := TopologicalSpace.exists_countable_dense (Rn N)
+  have hDne : D.Nonempty := hDd.nonempty
+  obtain ⟨e, he⟩ := hDc.exists_eq_range hDne
+  have hpiece : ∀ d : Rn N, ∃ F : Rn n → Rn N, (∃ K : ℝ≥0, LipschitzWith K F) ∧
+      E ∩ Metric.ball d (δ / 2) ⊆ Set.range F := by
+    intro d
+    -- Step 2: the piece `S = E ∩ B_{δ/2}(d)` has diameter `< δ`, so `|y - y'| ≤ C' |p y - p y'|`.
+    set S := E ∩ Metric.ball d (δ / 2)
+    have hS : ∀ y ∈ S, ∀ y' ∈ S, ‖y - y'‖ ≤ C' * ‖p y - p y'‖ := by
+      intro y hy y' hy'
+      apply hE' y' hy'.1 y hy.1
+      have h1 := hy.2
+      have h2 := hy'.2
+      rw [Metric.mem_ball] at h1 h2
+      calc ‖y - y'‖ = dist y y' := (dist_eq_norm _ _).symm
+        _ ≤ dist y d + dist d y' := dist_triangle _ _ _
+        _ < δ / 2 + δ / 2 := by rw [dist_comm d y']; linarith
+        _ = δ := by ring
+    -- Step 3: a right inverse `h` of `p` on `S` is `C'`-Lipschitz on `p(S)`.
+    let h : Rn n → Rn N := Function.invFunOn p S
+    have hlip : LipschitzOnWith (Real.toNNReal C') h (p '' S) := by
+      apply LipschitzOnWith.of_dist_le_mul
+      rintro _ ⟨y, hy, rfl⟩ _ ⟨y', hy', rfl⟩
+      have hm : h (p y) ∈ S := Function.invFunOn_mem ⟨y, hy, rfl⟩
+      have hm' : h (p y') ∈ S := Function.invFunOn_mem ⟨y', hy', rfl⟩
+      have he1 : p (h (p y)) = p y := Function.invFunOn_eq ⟨y, hy, rfl⟩
+      have he2 : p (h (p y')) = p y' := Function.invFunOn_eq ⟨y', hy', rfl⟩
+      rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ (le_max_right _ _)]
+      have := hS _ hm _ hm'
+      rwa [he1, he2] at this
+    -- Step 4: extend `h` to a Lipschitz `F : ℝⁿ → ℝᴺ`; `y = F (p y)` for `y ∈ S`.
+    obtain ⟨F, hF, hFeq⟩ := hlip.extend_finite_dimension
+    refine ⟨F, ⟨_, hF⟩, ?_⟩
+    intro y hy
+    refine ⟨p y, ?_⟩
+    rw [← hFeq ⟨y, hy, rfl⟩]
+    have hm : h (p y) ∈ S := Function.invFunOn_mem ⟨y, hy, rfl⟩
+    have he1 : p (h (p y)) = p y := Function.invFunOn_eq ⟨y, hy, rfl⟩
+    have := hS _ hm _ hy
+    rw [he1, sub_self, norm_zero, mul_zero] at this
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp this)
+  -- Step 5: the pieces centred at `e i` cover `E`.
+  choose F hFlip hFcov using hpiece
+  refine ⟨fun i => F (e i), fun i => hFlip (e i), ?_⟩
+  intro x hx
+  obtain ⟨d, hdD, hxd⟩ := hDd.exists_dist_lt x (half_pos hδ)
+  rw [he] at hdD
+  obtain ⟨i, rfl⟩ := hdD
+  exact Set.mem_iUnion.mpr ⟨i, hFcov (e i) ⟨hx, by rw [Metric.mem_ball]; exact hxd⟩⟩
+/-- Zero-dimensional case `n = 0` of the measure form of Simon Ch. 3, Theorem 1.6 “⇐” (proof on
+pp. 72–74, `chapter-03.txt` lines 145–274; the book does not treat `n = 0` separately). Let `μ`
+be finite on compact subsets of `ℝᴺ` and, for `μ`-a.e. `x`, let `c > 0` bound `μ(B_ρ(x))` from
+below for all small `ρ > 0`. The balls `B_{1/(k+1)}(x)` decrease to `{x}`, so by continuity from
+above `μ({x}) ≥ c > 0` for `μ`-a.e. `x`. Since `μ` is `σ`-finite, its set `R` of atoms is
+countable, hence Borel, and `μ(ℝᴺ ∖ R) = 0`. If `R ⊆ range e` with `e : ℕ → ℝᴺ`, the constant
+(Lipschitz) maps `ℝ⁰ → ℝᴺ` with values `e j` cover `R`, so `R` is countably `0`-rectifiable
+(Def. 1.1 with `M₀ = ∅`). -/
+theorem Submission.tangentMeasure_zero_dim_carrier : ∀ (N : ℕ) (μ : Measure (Rn N)),
+    (∀ K : Set (Rn N), IsCompact K → μ K < ∞) →
+      (∀ᵐ x ∂μ, ∃ c : ℝ, 0 < c ∧ ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal c ≤ μ (Metric.ball x ρ)) →
+        ∃ R : Set (Rn N), MeasurableSet R ∧ CountablyRectifiable 0 R ∧ μ Rᶜ = 0 := by
+  intro N μ hfin hae
+  have : IsFiniteMeasureOnCompacts μ := ⟨hfin⟩
+  -- Step 1: `μ({x}) ≥ c > 0` by continuity from above along `B_{1/(k+1)}(x) ↓ {x}`
+  have hatom : ∀ᵐ x ∂μ, 0 < μ {x} := by
+    filter_upwards [hae] with x ⟨c, hc, hev⟩
+    obtain ⟨ρ₀, hρ₀, hρ₀'⟩ := (nhdsGT_basis (0 : ℝ)).eventually_iff.mp hev
+    have hall : ∀ r : ℝ, 0 < r → ENNReal.ofReal c ≤ μ (Metric.ball x r) := by
+      intro r hr
+      have hmin : min (r / 2) (ρ₀ / 2) ∈ Ioo 0 ρ₀ :=
+        ⟨by positivity, (min_le_right _ _).trans_lt (half_lt_self hρ₀)⟩
+      exact (hρ₀' hmin).trans
+        (measure_mono (Metric.ball_subset_ball ((min_le_left _ _).trans (half_le_self hr.le))))
+    have hanti : Antitone fun k : ℕ ↦ Metric.ball x (1 / ((k : ℝ) + 1)) := by
+      intro k l hkl
+      apply Metric.ball_subset_ball
+      gcongr
+    have hinter : ⋂ k : ℕ, Metric.ball x (1 / ((k : ℝ) + 1)) = {x} := by
+      ext y
+      simp only [mem_iInter, Metric.mem_ball, mem_singleton_iff]
+      refine ⟨fun h ↦ ?_, fun h k ↦ by rw [h, dist_self]; positivity⟩
+      by_contra hne
+      obtain ⟨k, hk⟩ := exists_nat_one_div_lt (dist_pos.mpr hne)
+      exact (h k).not_gt hk
+    have hlim : μ {x} = ⨅ k : ℕ, μ (Metric.ball x (1 / ((k : ℝ) + 1))) := by
+      rw [← hinter]
+      exact hanti.measure_iInter (fun k ↦ Metric.isOpen_ball.measurableSet.nullMeasurableSet)
+        ⟨0, ((measure_mono Metric.ball_subset_closedBall).trans_lt
+          (isCompact_closedBall x _).measure_lt_top).ne⟩
+    rw [hlim]
+    exact (ENNReal.ofReal_pos.mpr hc).trans_le (le_iInf fun k ↦ hall _ (by positivity))
+  -- Step 2: `μ` is `σ`-finite, so only countably many singletons have positive measure
+  set R := {x : Rn N | 0 < μ {x}}
+  have hRc : R.Countable := by
+    simpa using Measure.countable_meas_pos_of_disjoint_iUnion (μ := μ)
+      (As := fun x : Rn N ↦ ({x} : Set (Rn N))) measurableSet_singleton
+      fun x y hxy ↦ disjoint_singleton.mpr hxy
+  -- Steps 3–4: `R` is Borel, carries `μ`, and is covered by constant maps `ℝ⁰ → ℝᴺ`
+  obtain ⟨e, he⟩ := countable_iff_exists_subset_range.mp hRc
+  refine ⟨R, hRc.measurableSet, ⟨∅, measure_empty, fun j _ ↦ e j,
+    fun j ↦ ⟨0, LipschitzWith.const (e j)⟩, fun x hx ↦ ?_⟩, ae_iff.mp hatom⟩
+  obtain ⟨j, rfl⟩ := he hx
+  exact Or.inr (mem_iUnion.mpr ⟨j, 0, rfl⟩)
+
+/-! ### Measures with approximate tangent planes (Simon 1.6 "⇐", measure form) -/
+
+/-- **Simon Ch. 3, Theorem 1.6 "⇐" (pp. 72–74) with Remark 1.5(3) (p. 71), measure form.** If
+the locally finite Borel measure `μ` on `ℝ^{n+ℓ}` has an approximate tangent plane of positive
+multiplicity at `μ`-a.e. point, then `μ` is carried by a countably `n`-rectifiable Borel set.
+
+For `n = 0` the lower density bound `μ(B_ρ(x)) ≥ c > 0` makes `μ` atomic. For `n ≥ 1`, fix a
+countable `1/16`-net `(Q j)` of `n`-planes and let `E j m i` be the set where the density and cone
+bounds of Simon (9) hold for all radii `ρ < δ i`, with constants `a m` and `b m = a m / (2 · 32ⁿ)`
+and the `1/3`-cone around `(Q j)ᗮ` (which lies in the `1/2`-cone around `Pᗮ` once
+`‖q_P - q_{Q j}‖ < 1/16`). By Simon (5), (6) every good point lies in some `E j m i`; on `E j m i`
+the projection onto `Q j` is bi-Lipschitz at scale `δ i / 2` (Simon (10)), so `E j m i` is covered
+by countably many Lipschitz images of `ℝⁿ`. -/
+theorem Submission.rectifiable_of_approx_tangent_measure : (∀ (n ℓ : ℕ) (μ : Measure (Rn (n + ℓ))), (∀ K : Set (Rn (n + ℓ)), IsCompact K → μ K < ∞) → (∀ᵐ x ∂μ, ∃ (P : Submodule ℝ (Rn (n + ℓ))) (θ : ℝ), 0 < θ ∧ HasApproxTangentPlaneWithMultiplicity n μ x P θ) → ∃ R : Set (Rn (n + ℓ)), MeasurableSet R ∧ CountablyRectifiable n R ∧ μ Rᶜ = 0) := by
+  intro n ℓ μ hfin hae
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · -- zero-dimensional case: `μ(B_ρ(x)) ≥ c` near a.e. point
+    apply Submission.tangentMeasure_zero_dim_carrier (0 + ℓ) μ hfin
+    filter_upwards [hae] with x hx
+    obtain ⟨P, θ, hθ, hxP⟩ := hx
+    obtain ⟨c, hc, hev⟩ :=
+      Submission.tangentMeasure_eventually_lower_density (0 + ℓ) 0 μ x P θ hfin hθ hxP
+    exact ⟨c, hc, by simpa using hev⟩
+  · -- positive dimension
+    obtain ⟨Q, hQdim, hQnet⟩ :=
+      Submission.tangentMeasure_countable_projection_net (n + ℓ) n (1 / 16) (by omega) (by norm_num)
+    let a : ℕ → ℝ := fun m => 1 / ((m : ℝ) + 1)
+    let b : ℕ → ℝ := fun m => a m / (2 * 32 ^ n)
+    let δ : ℕ → ℝ := fun i => 1 / ((i : ℝ) + 1)
+    let E : ℕ → ℕ → ℕ → Set (Rn (n + ℓ)) := fun j m i =>
+      {x | ∀ ρ ∈ Set.Ioo 0 (δ i), ENNReal.ofReal (a m * ρ ^ n) ≤ μ (Metric.ball x ρ) ∧
+        μ ({z | ‖(Q j).starProjection (z - x)‖ ≤ ‖z - x‖ / 3} ∩ Metric.ball x ρ) ≤
+          ENNReal.ofReal (b m * ρ ^ n)}
+    have ha : ∀ m, 0 < a m := fun m => by positivity
+    have hb : ∀ m, 0 < b m := fun m => by have := ha m; positivity
+    have hab : ∀ m, 32 ^ n * b m < a m := by
+      intro m
+      have h32 : (0 : ℝ) < 32 ^ n := by positivity
+      have hb' : 32 ^ n * b m = a m / 2 := by
+        simp only [b]
+        field_simp
+      rw [hb']
+      linarith [ha m]
+    -- Simon (10) and the Lipschitz graphs: each `E j m i` is covered by Lipschitz images of `ℝⁿ`
+    have hcover : ∀ j m i, ∃ F : ℕ → Rn n → Rn (n + ℓ),
+        (∀ t, ∃ K : ℝ≥0, LipschitzWith K (F t)) ∧ E j m i ⊆ ⋃ t, Set.range (F t) := by
+      intro j m i
+      have hD := Submission.tangentMeasure_projection_lower_bound (n + ℓ) n μ (Q j) (E j m i)
+        (a m) (b m) (δ i) (ha m) (hab m) (fun x hx => hx)
+      exact Submission.tangentMeasure_lipschitz_cover_of_projection_bound (n + ℓ) n (Q j)
+        (E j m i) 4 (δ i / 2) (hQdim j) (by positivity) (fun x hx y hy hxy => hD x hx y hy hxy)
+    choose F hFlip hFcov using hcover
+    -- Simon (5), (6): a.e. point lies in some `E j m i`
+    have hmem : ∀ᵐ x ∂μ, ∃ j m i, x ∈ E j m i := by
+      filter_upwards [hae] with x hx
+      obtain ⟨P, θ, hθ, hxP⟩ := hx
+      obtain ⟨c, hc, hlow⟩ :=
+        Submission.tangentMeasure_eventually_lower_density (n + ℓ) n μ x P θ hfin hθ hxP
+      obtain ⟨m, hm⟩ := exists_nat_one_div_lt hc
+      obtain ⟨j, hj⟩ := hQnet P hxP.1
+      have hcone := Submission.tangentMeasure_eventually_cone_small (n + ℓ) n μ x P θ hfin hn hxP
+        (b m) (hb m)
+      have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal (a m * ρ ^ n) ≤ μ (Metric.ball x ρ) ∧
+          μ ({z | ‖(Q j).starProjection (z - x)‖ ≤ ‖z - x‖ / 3} ∩ Metric.ball x ρ) ≤
+            ENNReal.ofReal (b m * ρ ^ n) := by
+        filter_upwards [hlow, hcone, self_mem_nhdsWithin] with ρ h1 h2 hρ
+        refine ⟨le_trans (ENNReal.ofReal_le_ofReal ?_) h1, le_trans (measure_mono ?_) h2⟩
+        · exact mul_le_mul_of_nonneg_right hm.le (pow_nonneg (le_of_lt hρ) n)
+        · -- the `1/3`-cone around `(Q j)ᗮ` lies in the `1/2`-cone around `Pᗮ`
+          rintro z ⟨hz1, hz2⟩
+          refine ⟨?_, hz2⟩
+          simp only [Set.mem_ofPred_eq] at hz1 ⊢
+          have h1 : ‖P.starProjection (z - x)‖ ≤ ‖(Q j).starProjection (z - x)‖ +
+              ‖(P.starProjection - (Q j).starProjection) (z - x)‖ := by
+            calc ‖P.starProjection (z - x)‖
+                = ‖(Q j).starProjection (z - x) +
+                    (P.starProjection - (Q j).starProjection) (z - x)‖ := by
+                  simp
+              _ ≤ _ := norm_add_le _ _
+          have h2 : ‖(P.starProjection - (Q j).starProjection) (z - x)‖ ≤ 1 / 16 * ‖z - x‖ :=
+            le_trans (ContinuousLinearMap.le_opNorm _ _)
+              (mul_le_mul_of_nonneg_right hj.le (norm_nonneg _))
+          nlinarith [norm_nonneg (z - x)]
+      obtain ⟨δ₀, hδ₀, hδ₀'⟩ := (nhdsGT_basis (0 : ℝ)).eventually_iff.mp hev
+      obtain ⟨i, hi⟩ := exists_nat_one_div_lt hδ₀
+      exact ⟨j, m, i, fun ρ hρ => hδ₀' ⟨hρ.1, lt_trans hρ.2 hi⟩⟩
+    refine ⟨⋃ j, ⋃ m, ⋃ i, ⋃ t, Set.range (F j m i t), ?_, ?_, ?_⟩
+    · -- Lipschitz images of the σ-compact `ℝⁿ` are σ-compact, hence Borel
+      refine MeasurableSet.iUnion fun j => MeasurableSet.iUnion fun m =>
+        MeasurableSet.iUnion fun i => MeasurableSet.iUnion fun t => ?_
+      obtain ⟨K, hK⟩ := hFlip j m i t
+      obtain ⟨S, hSc, hSU⟩ := isSigmaCompact_range hK.continuous
+      rw [← hSU]
+      exact MeasurableSet.iUnion fun k => (hSc k).measurableSet
+    · refine Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun j =>
+        Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun m =>
+        Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun i =>
+        Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun t => ?_
+      obtain ⟨K, hK⟩ := hFlip j m i t
+      exact Poincare.SimonGMT.Chapter03.countablyRectifiable_range hK
+    · rw [ae_iff] at hmem
+      refine measure_mono_null ?_ hmem
+      intro x hx
+      simp only [Set.mem_compl_iff, Set.mem_iUnion, not_exists] at hx
+      simp only [Set.mem_ofPred_eq, not_exists]
+      intro j m i hxE
+      obtain ⟨t, ht⟩ := Set.mem_iUnion.mp (hFcov j m i hxE)
+      exact hx j m i t ht
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
