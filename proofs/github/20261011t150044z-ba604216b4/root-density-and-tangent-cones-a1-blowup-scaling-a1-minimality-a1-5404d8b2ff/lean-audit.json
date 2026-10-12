@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8084212864fe2359b69ffee5a9103469b6c3dcdfa8abcec00b3d122050264600",
+  "git_delta": {
+    "base_commit": "cebc8b904f786d889e36a065793fe5409515cf4b",
+    "candidate_commit": "a8aa1841775ca6a76d46afa5d0acb0ccc7ae73a8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_blowUp_isMinimizingIn",
+    "diff_sha256": "924623e21a603c7fe03d1a1741ae8057e1d058d985e921b74a6464179ec65539",
+    "source_sha256": "67023ac1cdf42537f11072fa05a5e9ed7eb08dbf112973cd2093b9a4b36d6734",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_blowUp_isMinimizingIn",
+      "statement": "∀ (P n : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), IsMinimizingIn T A → IsMinimizingIn (blowUp T x lam hlam.ne') (dilation x lam '' A)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
