@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n \"theorem lintegral_mul_norm_pow_le|theorem lintegral_mul_le_Lp_mul_Lq|theorem exists_measurable_le_lintegral_eq|theorem lintegral_mono_set|theorem lintegral_mono\\b|theorem lintegral_mono \\{|theorem lintegral_rpow_le|lintegral_Lp_mul_le_Lq_mul_Lr\" <snapshot>/mathlib/Mathlib",
+        "sed -n 60,160p <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean; sed -n 195,260p <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean",
+        "grep -n \"^namespace\\|^end\\|^section\\|^variable\" <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean",
+        "rg -n \"theorem setLIntegral_one|theorem exists_measurable_le_lintegral_eq|theorem lintegral_mono_set |theorem lintegral_mono ⦃\" <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean; rg -n \"theorem div_rpow|theorem rpow_add \\(|theorem rpow_mul \\{\" <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        "rg -n 'setLIntegral_rpow_le|lintegral_rpow_le_lintegral_rpow|lintegral_rpow_le_' <snapshot>/mathlib/Mathlib (no match)",
+        "rg -l -e 'tdo_slb_setLIntegral_rpow_le_holder|tdo_slb_scaledLpNorm_le_of_subset|tdo_slb_lintegral_rpow_le_scaledLpNorm|tdo_slb_' <run>/dag.json <run>/nodes <snapshot>/project <snapshot>/mathlib/Mathlib GMT .lake/packages/simongmt (no match)",
+        "python3 -I scans of <run>/dag.json: lean_name uniqueness (386/386), nodes with lintegral-rpow/Hoelder statements, nodes mentioning ‖H x‖ₑ ^ q or tdo_scaledLpNorm_bounds",
+        "sha256sum GMT/Ch05/Submission.lean GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean",
+        "lake env lean -o /tmp/slb-decomp/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean; LEAN_PATH=/tmp/slb-decomp/olean:$(lake env printenv LEAN_PATH) lake env lean /tmp/slb-decomp/checks/{Avail,Children,NoOpen}.lean",
+        "grep -n -i \"lder\" book/chapter-05.txt; sed -n 190,225p book/chapter-05.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/CompareExp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-scaled-lp-bounds-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-scaled-lp-bounds-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-scaled-lp-bounds-a1/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-rotation-onto-plane-a1/comparison-identity-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/tmp/slb-decomp/checks/Avail.lean",
+        "/tmp/slb-decomp/checks/Children.lean",
+        "/tmp/slb-decomp/checks/NoOpen.lean"
+      ],
+      "conclusion": "Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace Submission.lean and Contract.lean and the snapshot Contract.lean all have sha256 c966f51e... .\n\nRelevant Mathlib declarations (snapshot paths). All are available after import GMT.Ch05.Submission alone, as Avail.lean confirmed with #check:\n- MeasureTheory/Integral/Lebesgue/Basic.lean:\n  - lintegral_mono:84, which holds without measurability.\n  - lintegral_mono_set:98.\n  - setLIntegral_one:124.\n  - exists_measurable_le_lintegral_eq:139.\n- MeasureTheory/Integral/MeanInequalities.lean (namespace ENNReal):\n  - lintegral_mul_le_Lp_mul_Lq:202.\n  - lintegral_mul_norm_pow_le:222, the two-exponent Hoelder with AEMeasurable f and g, 0 <= p, q and p + q = 1.\n- Analysis/SpecialFunctions/Pow/Real.lean: Real.rpow_add:207, Real.rpow_mul:414, Real.div_rpow:487.\n- ENNReal power lemmas: rpow_mul, mul_rpow_of_nonneg, rpow_le_rpow, ofReal_rpow_of_nonneg, one_rpow, rpow_one, ofReal_mul.\n\nNo-match results:\n- No Mathlib Hoelder lemma for non-measurable integrands exists (setLIntegral_rpow_le and lintegral_rpow_le_ do not occur).\n- No accepted DAG node provides one. The accepted aal_curvature_pairing_holder_bound is a Bochner-integral pairing bound with a different type.\n- The proposed names tdo_slb_* occur nowhere searched.\n\nSimon Ch. 5, Remark 2.2 (book/chapter-05.txt:200-215) uses exactly this Hoelder step for q = 2.\n\nLean check:\n- All three child types were fully proved in /tmp/slb-decomp/checks/Children.lean against the compiled Submission olean.\n- The frozen parent type was proved there as ⟨tdo_slb_scaledLpNorm_le_of_subset, tdo_slb_lintegral_rpow_le_scaledLpNorm⟩, with axioms propext, Classical.choice and Quot.sound only.\n- The parent string equals '(' + C2 + ') ∧ (' + C3 + ')' byte-for-byte.\n- NoOpen.lean elaborates all types without open RectifiableVarifold."
+    }
+  ],
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1",
+  "child_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1.holder_scaled_bound-a1",
+  "subproblem": {
+    "key": "holder_scaled_bound",
+    "title": "Hoelder bound of the q-th power integral by the scaled L^p norm on a larger ball",
+    "statement": "Let n, ℓ be natural numbers, U ⊆ ℝ^{n+ℓ} any subset, V a rectifiable n-varifold in U (contract structure RectifiableVarifold n ℓ U) with weight μ := V.weight, H : ℝ^{n+ℓ} → ℝ^{n+ℓ} any function, and K(y, r) := V.scaledLpNorm H p y r = (ofReal(r^{p-n}) · ∫⁻_{B̄_r(y)} ‖H‖ₑ^p dμ)^{1/p} ∈ [0, ∞] (closed balls, lower integrals). If 0 < q ≤ p, t > 0, m ≥ 0, B̄_s(z) ⊆ B̄_t(w) and μ(B̄_s(z)) ≤ ofReal(m), then ∫⁻_{B̄_s(z)} ‖H‖ₑ^q dμ ≤ ofReal(m^{1-q/p} · t^{q(n-p)/p}) · K(w, t)^q, where K(w, t)^q is the real power in [0, ∞].",
+    "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p q : ℝ) (z w : Amb n ℓ) (s t m : ℝ), 0 < q → q ≤ p → 0 < t → 0 ≤ m → closedBall z s ⊆ closedBall w t → V.weight (closedBall z s) ≤ ENNReal.ofReal m → ∫⁻ x in closedBall z s, ‖H x‖ₑ ^ q ∂V.weight ≤ ENNReal.ofReal (m ^ (1 - q / p) * t ^ (q * (n - p) / p)) * V.scaledLpNorm H p w t ^ q",
+    "lean_name": "tdo_slb_lintegral_rpow_le_scaledLpNorm",
+    "depends_on": [
+      "lintegral_holder"
+    ],
+    "natural_proof": "Notation.\n- μ := V.weight.\n- I := ∫⁻_{B̄_t(w)} ‖H‖ₑ^p dμ ∈ [0, ∞].\n- Unfolding RectifiableVarifold.scaledLpNorm gives K(w, t) = (ofReal(t^{p-n}) · I)^{1/p}.\n- a := q/p and b := 1 - q/p. n stands for (n : ℝ).\n- Real powers of nonnegative reals are Real.rpow; powers in [0, ∞] are ENNReal.rpow.\n\n1. Exponents. From p ≥ q > 0: p > 0, a > 0 (div_pos) and a ≤ 1 (div_le_one), so b ≥ 0.\n\n2. Hoelder. Apply the sibling theorem tdo_slb_setLIntegral_rpow_le_holder with X := Amb n ℓ (its Borel measurable-space instance), μ := V.weight, B := B̄_s(z), g := (x ↦ ‖H x‖ₑ), and the given p, q (0 < q and q ≤ p). It gives\n   ∫⁻_{B̄_s(z)} ‖H‖ₑ^q dμ ≤ (∫⁻_{B̄_s(z)} ‖H‖ₑ^p dμ)^a · μ(B̄_s(z))^b.\n\n3. Domain and mass.\n   - lintegral_mono_set with B̄_s(z) ⊆ B̄_t(w) gives ∫⁻_{B̄_s(z)} ‖H‖ₑ^p dμ ≤ I.\n   - By hypothesis μ(B̄_s(z)) ≤ ofReal(m).\n   - Since a, b ≥ 0, ENNReal.rpow_le_rpow on both factors and mul_le_mul' give\n     ∫⁻_{B̄_s(z)} ‖H‖ₑ^q dμ ≤ I^a · ofReal(m)^b.\n\n4. ofReal(m)^b = ofReal(m^b) (ENNReal.ofReal_rpow_of_nonneg, with m ≥ 0 and b ≥ 0).\n\n5. Key identity: I^a = ofReal(t^{q(n-p)/p}) · K(w, t)^q.\n   - First, K(w, t)^q = ((ofReal(t^{p-n}) · I)^{1/p})^q = (ofReal(t^{p-n}) · I)^{(1/p)·q} (ENNReal.rpow_mul).\n   - (1/p)·q = a (one_div_mul_eq_div), and ENNReal.mul_rpow_of_nonneg (a ≥ 0) gives (ofReal(t^{p-n}) · I)^a = ofReal(t^{p-n})^a · I^a.\n   - Next, ofReal(t^{p-n})^a = ofReal((t^{p-n})^a) (ENNReal.ofReal_rpow_of_nonneg, t^{p-n} ≥ 0) = ofReal(t^{(p-n)·a}) (Real.rpow_mul, t ≥ 0).\n   - Hence ofReal(t^{q(n-p)/p}) · K(w, t)^q = (ofReal(t^{q(n-p)/p}) · ofReal(t^{(p-n)·a})) · I^a.\n   - The bracket equals ofReal(t^{q(n-p)/p} · t^{(p-n)·a}) (ENNReal.ofReal_mul, t^{q(n-p)/p} ≥ 0), which is ofReal(t^{q(n-p)/p + (p-n)(q/p)}) (Real.rpow_add, t > 0).\n   - Since p ≠ 0, q(n-p)/p + (p-n)(q/p) = 0 (field_simp; ring), so the bracket is ofReal(t^0) = ofReal(1) = 1.\n   - Therefore ofReal(t^{q(n-p)/p}) · K(w, t)^q = I^a. These are identities in [0, ∞], valid also when I = ∞.\n\n6. Right-hand side. m^b ≥ 0 (Real.rpow_nonneg), so ENNReal.ofReal_mul and associativity give\n   ofReal(m^b · t^{q(n-p)/p}) · K(w, t)^q = ofReal(m^b) · (ofReal(t^{q(n-p)/p}) · K(w, t)^q)\n   = ofReal(m^b) · I^a (step 5)\n   = ofReal(m)^b · I^a (step 4)\n   = I^a · ofReal(m)^b (commutativity).\n\n7. Conclusion. Steps 3 and 6 give\n   ∫⁻_{B̄_s(z)} ‖H‖ₑ^q dμ ≤ I^a · ofReal(m)^b = ofReal(m^{1-q/p} · t^{q(n-p)/p}) · K(w, t)^q.\n   No hypothesis on s is used: if s < 0 the ball B̄_s(z) is empty and the argument still applies. ∎",
+    "proof_key_steps": [
+      "p > 0, a = q/p > 0, b = 1 - q/p ≥ 0",
+      "Sibling Hoelder lemma with μ = V.weight, B = B̄_s(z), g = ‖H‖ₑ",
+      "lintegral_mono_set and μ(B̄_s(z)) ≤ ofReal m give LHS ≤ I^a · ofReal(m)^b with I = ∫⁻_{B̄_t(w)} ‖H‖ₑ^p",
+      "ofReal(m)^b = ofReal(m^b)",
+      "I^a = ofReal(t^{q(n-p)/p}) · K(w,t)^q via ENNReal.rpow_mul, mul_rpow_of_nonneg, ofReal_rpow_of_nonneg, Real.rpow_mul, Real.rpow_add and q(n-p)/p + (p-n)q/p = 0",
+      "Recombine with ENNReal.ofReal_mul and commutativity"
+    ]
+  },
+  "audit": {
+    "key": "holder_scaled_bound",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The standalone one-line type is exactly the parent's second conjunct and preserves all hypotheses. Its only sibling use is the declared lintegral_holder dependency. Domain and mass monotonicity, followed by the explicitly proved scale-cancellation identity, give the exact coefficient without additional measurability, finiteness or positivity assumptions on s. The proof covers q = p, m = 0 and infinite integrals and contains no circular reliance."
+  },
+  "resolved_dependencies": [
+    "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1.lintegral_holder-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-scaled-lp-bounds-a1-hold-3f373fc36c/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-scaled-lp-bounds-a1-hold-3f373fc36c/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-scaled-lp-bounds-a1-hold-3f373fc36c/parent-supplied-natural-proof.json"
+}

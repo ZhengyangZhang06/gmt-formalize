@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1.scaling_bound-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1",
+  "depth": 4,
+  "title": "Scaling inequality for the scaled L^p norm on nested closed balls",
+  "statement": "Let n, ℓ be natural numbers, U ⊆ ℝ^{n+ℓ} any subset, V a rectifiable n-varifold in U (contract structure RectifiableVarifold n ℓ U) with weight μ := V.weight, and H : ℝ^{n+ℓ} → ℝ^{n+ℓ} any function. For p, r real and y a point let K(y, r) := V.scaledLpNorm H p y r = (ofReal(r^{p-n}) · ∫⁻_{B̄_r(y)} ‖H‖ₑ^p dμ)^{1/p} ∈ [0, ∞] (closed balls, lower integral, n read as a real number). If p > 0, 0 < s ≤ t and B̄_s(z) ⊆ B̄_t(w), then K(z, s) ≤ ofReal((s/t)^{(p-n)/p}) · K(w, t).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ) (z w : Amb n ℓ) (s t : ℝ), 0 < p → 0 < s → s ≤ t → closedBall z s ⊆ closedBall w t → V.scaledLpNorm H p z s ≤ ENNReal.ofReal ((s / t) ^ ((p - n) / p)) * V.scaledLpNorm H p w t",
+  "lean_name": "tdo_slb_scaledLpNorm_le_of_subset",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-scaled-lp-bounds-a1-scal-a33efe07e1-a1"
+}
