@@ -373,6 +373,49 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Initial velocity, acceleration and their spatial derivatives vanish off a closed set fixed by
+the family** (Simon 5.1–5.2). If `K ⊆ ℝᴺ` is closed and `φ t x = x` for `t ∈ (-1,1)` and `x ∉ K`,
+then `X = initialVelocity φ` and `Z = initialAcceleration φ` vanish at every `x ∉ K`, and so do
+`DX(x)` and `DZ(x)`. For `y ∉ K`, `s ↦ φ s y` is constant on the open interval `(-1,1)`, so its
+derivative vanishes there (`Filter.EventuallyEq.deriv_eq`, `deriv_const`); at `t = 0` this is
+`X(y) = 0`, and since `t ↦ ∂ₜφ(t,y)` vanishes near `0`, also `Z(y) = 0`. As `Kᶜ` is open, `X` and
+`Z` vanish near each `x ∉ K`, so `DX(x) = DZ(x) = 0` (`Filter.EventuallyEq.fderiv_eq`,
+`fderiv_const_apply`). -/
+theorem Submission.variation_deformation_vanish_off_closed : ∀ (N : ℕ) (K : Set (Rn N)) (φ : ℝ → Rn N → Rn N), IsClosed K → (∀ t ∈ Ioo (-1 : ℝ) 1, ∀ x, x ∉ K → φ t x = x) → ∀ x, x ∉ K → initialVelocity φ x = 0 ∧ initialAcceleration φ x = 0 ∧ fderiv ℝ (initialVelocity φ) x = 0 ∧ fderiv ℝ (initialAcceleration φ) x = 0 := by
+  intro N K φ hK hfix
+  -- Steps 1–2: for `y ∉ K`, `s ↦ φ s y` equals `y` near each `t ∈ (-1,1)`, so its derivative
+  -- vanishes there.
+  have hderiv : ∀ y, y ∉ K → ∀ t ∈ Ioo (-1 : ℝ) 1, deriv (fun s ↦ φ s y) t = 0 := by
+    intro y hy t ht
+    have hconst : (fun s ↦ φ s y) =ᶠ[𝓝 t] fun _ ↦ y := by
+      filter_upwards [isOpen_Ioo.mem_nhds ht] with s hs
+      exact hfix s hs y hy
+    rw [hconst.deriv_eq, deriv_const]
+  have h0 : (0 : ℝ) ∈ Ioo (-1 : ℝ) 1 := ⟨by norm_num, by norm_num⟩
+  -- Step 3: `X(y) = 0` for `y ∉ K` (step 2 at `t = 0`).
+  have hX : ∀ y, y ∉ K → initialVelocity φ y = 0 := fun y hy ↦ hderiv y hy 0 h0
+  -- Step 4: `Z(y) = 0` for `y ∉ K`, as `t ↦ deriv (s ↦ φ s y) t` vanishes near `0`.
+  have hZ : ∀ y, y ∉ K → initialAcceleration φ y = 0 := by
+    intro y hy
+    have hzero : (fun t ↦ deriv (fun s ↦ φ s y) t) =ᶠ[𝓝 0] fun _ ↦ (0 : Rn N) := by
+      filter_upwards [isOpen_Ioo.mem_nhds h0] with t ht
+      exact hderiv y hy t ht
+    change deriv (fun t ↦ deriv (fun s ↦ φ s y) t) 0 = 0
+    rw [hzero.deriv_eq, deriv_const]
+  -- Step 5: `Kᶜ` is an open neighbourhood of `x` on which `X` and `Z` vanish.
+  intro x hx
+  have hnhds : Kᶜ ∈ 𝓝 x := hK.isOpen_compl.mem_nhds hx
+  have hXloc : initialVelocity φ =ᶠ[𝓝 x] fun _ ↦ (0 : Rn N) := by
+    filter_upwards [hnhds] with y hy
+    exact hX y hy
+  have hZloc : initialAcceleration φ =ᶠ[𝓝 x] fun _ ↦ (0 : Rn N) := by
+    filter_upwards [hnhds] with y hy
+    exact hZ y hy
+  -- Step 6: combine.
+  refine ⟨hX x hx, hZ x hx, ?_, ?_⟩
+  · rw [hXloc.fderiv_eq, fderiv_const_apply]
+  · rw [hZloc.fderiv_eq, fderiv_const_apply]
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
