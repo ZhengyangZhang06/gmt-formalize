@@ -13,6 +13,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 import Mathlib.LinearAlgebra.Trace
 import Poincare.SimonGMT.Chapter03.Rectifiable
+import Poincare.SimonGMT.Chapter02.WeightedArea
 
 /-!
 # Simon, *Introduction to GMT*, Chapter 5: The Allard Regularity Theorem (pp. 103–130)
@@ -457,6 +458,89 @@ def RegularSetOpenDense : Prop :=
     (∀ᵐ x ∂V.weight, x ∈ V.support → ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k) →
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
+
+namespace Submission
+
+/-- **`C¹` submanifolds have approximate tangent spaces** (Simon Ch. 3, proof of Theorem 1.6 "⇒":
+"`N_j` is a `C¹` submanifold, so `lim ∫_{η_{x,r}(N_j)} f dHⁿ = ∫_{T_x N_j} f dHⁿ`").  If `S` is an
+`m`-dimensional `C¹` submanifold and `φ` is a chart of `S` with `φ(v₀) = x`, then `Dφ(v₀)(ℝᵐ)` is
+the approximate tangent space of `S` at `x`.  Proof: the area formula for the rescaled chart
+`ψ_r(u) = r⁻¹(φ(v₀ + ru) − x)` on `U_r = {u | v₀ + ru ∈ V}`, dominated convergence, the area
+formula for `Dφ(v₀)`, and locality of Definition 1.4 (`S ∩ B̆_ε(x) = φ(V) ∩ B̆_ε(x)`). -/
+theorem rsod_isC1Submanifold_approxTangent : ∀ (m N : ℕ), 1 ≤ m → ∀ (S : Set (EuclideanSpace ℝ (Fin N))), IsC1Submanifold m S → ∀ x ∈ S, ∃ P : Submodule ℝ (EuclideanSpace ℝ (Fin N)), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m S x P := by
+  intro m N _ S hS x hx
+  obtain ⟨V, W, φ, hV, hW, hxW, hφ, hinj, himg, hprop, hder⟩ := hS x hx
+  have hxV : x ∈ φ '' V := by
+    rw [himg]
+    exact ⟨hxW, hx⟩
+  obtain ⟨v₀, hv₀, rfl⟩ := hxV
+  have hdiff : DifferentiableOn ℝ φ V := hφ.differentiableOn one_ne_zero
+  have hL : HasFDerivAt φ (fderiv ℝ φ v₀) v₀ :=
+    (hdiff.differentiableAt (hV.mem_nhds hv₀)).hasFDerivAt
+  -- `J_φ(v) = (Dφ(v)).normDet` (Simon (3.3)) is continuous on `V`.
+  have hJ : ContinuousOn (Poincare.SimonGMT.Chapter02.areaJacobianAt φ) V :=
+    (Poincare.SimonGMT.Chapter02.continuous_normDet.comp_continuousOn
+      (hφ.continuousOn_fderiv_of_isOpen hV le_rfl)).congr fun v _ =>
+        Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet φ v
+  -- (a) `c‖w‖ ≤ ‖φ(v₀ + w) − x‖` for `‖w‖ ≤ δ`, and (b) `ε ≤ ‖φ(v) − x‖` for `v ∈ V` with
+  -- `‖v − v₀‖ ≥ δ`.
+  obtain ⟨c, hc, δ, hδ, hball, hlow⟩ :=
+    Submission.rsod_c1tan_chart_lower_bound m N V φ v₀ hV hφ hv₀ (hder v₀ hv₀)
+  obtain ⟨ε, hε, hsep⟩ := Submission.rsod_c1tan_chart_separation m N V W φ v₀ hW
+    hφ.continuousOn hinj hv₀ hxW hprop δ hδ
+  have hT : Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m (φ '' V) (φ v₀)
+      (LinearMap.range (fderiv ℝ φ v₀ : Rn m →ₗ[ℝ] EuclideanSpace ℝ (Fin N))) := by
+    refine ⟨?_, fun f => ?_⟩
+    · rw [LinearMap.finrank_range_of_inj
+        (f := (fderiv ℝ φ v₀ : Rn m →ₗ[ℝ] EuclideanSpace ℝ (Fin N))) (hder v₀ hv₀),
+        finrank_euclideanSpace_fin]
+    -- For `r > 0`, the area formula for `ψ_r(u) = r⁻¹(φ(v₀ + ru) − x)` on
+    -- `U_r = {u | v₀ + ru ∈ V}` gives `∫_{η_{x,r}(φ(V))} f = ∫_{U_r} J_φ(v₀ + ru) f(ψ_r(u))`.
+    have hblow : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+        (∫ u in {u : Rn m | v₀ + r • u ∈ V},
+          Poincare.SimonGMT.Chapter02.areaJacobianAt φ (v₀ + r • u) *
+            f (r⁻¹ • (φ (v₀ + r • u) - φ v₀)) ∂(μHE[m] : Measure (Rn m))) =
+          ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap (φ v₀) r '' (φ '' V), f y ∂μHE[m] := by
+      filter_upwards [self_mem_nhdsWithin] with r hr
+      obtain ⟨hU, hψinj, hψimg, hψ⟩ :=
+        Submission.rsod_c1tan_blowUp_chart_reparam m N V φ v₀ r hV hdiff hinj (ne_of_gt hr)
+      have harea := Poincare.SimonGMT.Chapter02.integral_area_formula_of_injective_derivative
+        hU.measurableSet (fun u hu => (hψ u hu).differentiableAt)
+        (fun u hu => by rw [(hψ u hu).fderiv]; exact hder (v₀ + r • u) hu) hψinj ⇑f
+      rw [finrank_euclideanSpace_fin] at harea
+      rw [← hψimg, harea]
+      refine setIntegral_congr_fun hU.measurableSet fun u hu => ?_
+      simp only [smul_eq_mul, Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet,
+        (hψ u hu).fderiv]
+    -- The area formula for `L = Dφ(v₀)` on `ℝᵐ`: `∫ J_L f(Lu) du = ∫_{L(ℝᵐ)} f`.
+    have hlin : ∫ u, Poincare.SimonGMT.Chapter02.areaJacobianAt φ v₀ * f (fderiv ℝ φ v₀ u)
+          ∂(μHE[m] : Measure (Rn m)) =
+        ∫ y in (LinearMap.range (fderiv ℝ φ v₀ : Rn m →ₗ[ℝ] EuclideanSpace ℝ (Fin N)) :
+          Set (EuclideanSpace ℝ (Fin N))), f y ∂μHE[m] := by
+      have harea := Poincare.SimonGMT.Chapter02.integral_area_formula_of_injective_derivative
+        (s := univ) (f := ⇑(fderiv ℝ φ v₀)) MeasurableSet.univ
+        (fun u _ => (fderiv ℝ φ v₀).differentiableAt)
+        (fun u _ => by rw [ContinuousLinearMap.fderiv]; exact hder v₀ hv₀)
+        (hder v₀ hv₀).injOn ⇑f
+      rw [finrank_euclideanSpace_fin, image_univ, setIntegral_univ] at harea
+      rw [LinearMap.coe_range, ContinuousLinearMap.coe_coe, harea]
+      refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+      simp only [smul_eq_mul, Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet,
+        ContinuousLinearMap.fderiv]
+    rw [← hlin]
+    exact (Submission.rsod_c1tan_chart_blowUp_tendsto m N V φ
+      (Poincare.SimonGMT.Chapter02.areaJacobianAt φ) (fderiv ℝ φ v₀) v₀ c δ ε f hV
+      hφ.continuousOn hJ hL hc hδ hε hball hlow hsep f.continuous
+      f.hasCompactSupport).congr' hblow
+  -- `S` and `φ(V) = W ∩ S` agree on a ball `B̆_{ε₀}(x) ⊆ W`.
+  obtain ⟨ε₀, hε₀, hε₀W⟩ := Metric.isOpen_iff.1 hW (φ v₀) hxW
+  refine ⟨_, Submission.rsod_c1tan_approxTangent_of_local_eq m N S (φ '' V) (φ v₀) ε₀ _ hε₀
+    ?_ hT⟩
+  rw [himg]
+  ext y
+  exact ⟨fun h => ⟨⟨hε₀W h.2, h.1⟩, h.2⟩, fun h => ⟨h.1.2, h.2⟩⟩
+
+end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
