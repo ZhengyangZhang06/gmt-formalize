@@ -482,6 +482,75 @@ theorem Submission.tgc_eventual_density_bounds_uniform :
   · rw [ENNReal.ofReal_mul ha.le, ENNReal.ofReal_pow ht.le]
     exact (mul_le_mul_left hac _).trans hFt
   · rwa [ENNReal.ofReal_mul (mul_pos ha hβ).le, ENNReal.ofReal_pow ht.le]
+/-- Linear algebra of tilted cones (step 3, (3.1)–(3.2), of the tangent-graph cover, with `c = L/4`
+and `γ = L/8`): if `‖p_T u - p_P u‖ ≤ (L/4)‖u‖` for all `u` and `v` violates the `L`-graph inequality
+over `P`, i.e. `L‖p_P v‖ < ‖v - p_P v‖`, then every `w` with `‖w - v‖ ≤ (L/8)‖v‖` lies in the cone
+`(L/16)‖w‖ ≤ ‖w - p_T w‖` around `T^⊥`, and `‖w‖ ≤ 2‖v‖`. -/
+theorem Submission.tgc_tilted_cone_inclusion :
+    ∀ (N n : ℕ) (L : ℝ) (P T : Grassmannian N n) (v w : Euclidean N), 0 < L → L ≤ 1 → (∀ u : Euclidean N, ‖Grassmannian.project T u - Grassmannian.project P u‖ ≤ L / 4 * ‖u‖) → L * ‖Grassmannian.project P v‖ < ‖v - Grassmannian.project P v‖ → ‖w - v‖ ≤ L / 8 * ‖v‖ → L / 16 * ‖w‖ ≤ ‖w - Grassmannian.project T w‖ ∧ ‖w‖ ≤ 2 * ‖v‖ := by
+  intro N n L P T v w hL0 hL1 htilt hv hw
+  -- Step 0: `p_S` is symmetric and idempotent, so `p_S u ⊥ u - p_S u` and Pythagoras gives
+  -- `‖u‖² = ‖p_S u‖² + ‖u - p_S u‖²`; in particular `‖u - p_S u‖ ≤ ‖u‖`.
+  have pythagoras : ∀ (S : Grassmannian N n) (u : Euclidean N),
+      ‖u‖ ^ 2 = ‖Grassmannian.project S u‖ ^ 2 + ‖u - Grassmannian.project S u‖ ^ 2 := by
+    intro S u
+    have hsymm : inner ℝ (Grassmannian.project S u) (Grassmannian.project S u) =
+        inner ℝ u (Grassmannian.project S (Grassmannian.project S u)) :=
+      S.projectionLinearMap_isSymmetric u (Grassmannian.project S u)
+    rw [Grassmannian.project_project] at hsymm
+    have horth : inner ℝ (Grassmannian.project S u) (u - Grassmannian.project S u) = 0 := by
+      rw [inner_sub_right, hsymm, real_inner_comm, sub_self]
+    have h := norm_add_sq_eq_norm_sq_add_norm_sq_real horth
+    rw [add_sub_cancel] at h
+    linarith
+  have contraction : ∀ (S : Grassmannian N n) (u : Euclidean N),
+      ‖u - Grassmannian.project S u‖ ≤ ‖u‖ := by
+    intro S u
+    refine (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).1 ?_
+    linarith [pythagoras S u, sq_nonneg ‖Grassmannian.project S u‖]
+  -- Step 1: `L‖p_P v‖ < ‖v - p_P v‖` and `L ≤ 1` give `(L/2)‖v‖ < ‖v - p_P v‖`.
+  have step1 : L / 2 * ‖v‖ < ‖v - Grassmannian.project P v‖ := by
+    have hpyth := pythagoras P v
+    have h1 : (L * ‖Grassmannian.project P v‖) ^ 2 < ‖v - Grassmannian.project P v‖ ^ 2 :=
+      pow_lt_pow_left₀ hv (mul_nonneg hL0.le (norm_nonneg _)) two_ne_zero
+    have h2 : L ^ 2 * ‖v - Grassmannian.project P v‖ ^ 2 ≤ ‖v - Grassmannian.project P v‖ ^ 2 :=
+      mul_le_of_le_one_left (sq_nonneg _) (pow_le_one₀ hL0.le hL1)
+    have h3 : L ^ 2 * ‖v‖ ^ 2 =
+        L ^ 2 * ‖Grassmannian.project P v‖ ^ 2 + L ^ 2 * ‖v - Grassmannian.project P v‖ ^ 2 := by
+      rw [hpyth]
+      ring
+    have h4 : (L * ‖v‖) ^ 2 < (2 * ‖v - Grassmannian.project P v‖) ^ 2 := by
+      nlinarith [sq_nonneg ‖v - Grassmannian.project P v‖]
+    have h5 := (sq_lt_sq₀ (mul_nonneg hL0.le (norm_nonneg v)) (by positivity)).1 h4
+    linarith
+  -- Step 2: `p_P v - p_T v = (v - p_T v) - (v - p_P v)` and the tilt bound give
+  -- `(L/4)‖v‖ < ‖v - p_T v‖`.
+  have step2 : L / 4 * ‖v‖ < ‖v - Grassmannian.project T v‖ := by
+    have h := norm_sub_le_norm_sub_add_norm_sub v (Grassmannian.project T v)
+      (Grassmannian.project P v)
+    linarith [htilt v]
+  -- Step 3: `‖w‖ ≤ ‖v‖ + ‖w - v‖ ≤ (1 + L/8)‖v‖ ≤ 2‖v‖`.
+  have step3 : ‖w‖ ≤ 2 * ‖v‖ := by
+    have h1 := norm_le_norm_add_norm_sub' w v
+    have h2 : L / 8 * ‖v‖ ≤ ‖v‖ := mul_le_of_le_one_left (norm_nonneg v) (by linarith)
+    linarith
+  -- Step 4: by linearity `v - p_T v = (w - p_T w) - ((w - v) - p_T (w - v))`, and
+  -- `‖(w - v) - p_T (w - v)‖ ≤ ‖w - v‖`, so `‖w - p_T w‖ > (L/4 - L/8)‖v‖ ≥ (L/16)‖w‖`.
+  refine ⟨?_, step3⟩
+  have hlin : v - Grassmannian.project T v =
+      (w - Grassmannian.project T w) - ((w - v) - Grassmannian.project T (w - v)) := by
+    have hmap : Grassmannian.project T (w - v) =
+        Grassmannian.project T w - Grassmannian.project T v :=
+      map_sub T.projectionLinearMap w v
+    rw [hmap]
+    abel
+  have h1 : ‖v - Grassmannian.project T v‖ ≤
+      ‖w - Grassmannian.project T w‖ + ‖(w - v) - Grassmannian.project T (w - v)‖ := by
+    rw [hlin]
+    exact norm_sub_le _ _
+  have h2 := contraction T (w - v)
+  have h3 : L / 16 * ‖w‖ ≤ L / 16 * (2 * ‖v‖) := mul_le_mul_of_nonneg_left step3 (by positivity)
+  linarith
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
