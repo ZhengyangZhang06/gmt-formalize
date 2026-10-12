@@ -394,6 +394,35 @@ theorem Submission.contDiff_rn_continuousLinearMap_det : ∀ (n : ℕ) (k : With
   refine ContDiff.sum fun σ _ ↦ contDiff_const.mul (contDiff_prod fun i _ ↦ ?_)
   exact ((EuclideanSpace.proj (σ i)).comp
     (ContinuousLinearMap.apply ℝ (Rn n) (EuclideanSpace.single i (1 : ℝ)))).contDiff
+/-- **Jacobi's formula at the identity.** For `K ∈ L(ℝⁿ)`, `t ↦ det(1 + t • K)` has derivative
+`trace K` at `t = 0`. With `b` the standard basis of `ℝⁿ` and `A = [K]_b`, the matrix of `1 + t • K` is
+`1 + t • A`, so `det(1 + t • K) = det(1 + t • A) = 1 + trace A · t + p(t) t²` for every `t`, with the
+fixed polynomial `p = (det(1 + X • A)).divX.divX` (`LinearMap.det_toMatrix`,
+`Matrix.det_one_add_smul`). The right side has derivative `trace A` at `0`, and `trace A = trace K`
+(`LinearMap.trace_eq_matrix_trace`). -/
+theorem Submission.hasDerivAt_rn_det_one_add_smul_trace : ∀ (n : ℕ) (K : Rn n →L[ℝ] Rn n), HasDerivAt (fun t : ℝ ↦ (1 + t • K).det) (LinearMap.trace ℝ (Rn n) K.toLinearMap) 0 := by
+  intro n K
+  -- Step 1: the standard basis `b` of `ℝⁿ`, the matrix `A` of `K` and the fixed polynomial `p`.
+  let b := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+  obtain ⟨A, hA⟩ : ∃ A : Matrix (Fin n) (Fin n) ℝ, LinearMap.toMatrix b b K.toLinearMap = A :=
+    ⟨_, rfl⟩
+  obtain ⟨p, hp⟩ : ∃ p : Polynomial ℝ,
+      (1 + (Polynomial.X : Polynomial ℝ) • A.map Polynomial.C).det.divX.divX = p := ⟨_, rfl⟩
+  -- Steps 2–3: `[1 + t • K]_b = 1 + t • A`, so `det(1 + t • K) = 1 + trace A * t + p(t) * t ^ 2`.
+  have hexp : ∀ t : ℝ, (1 + t • K).det = 1 + A.trace * t + p.eval t * t ^ 2 := fun t ↦ by
+    rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix b, ContinuousLinearMap.toLinearMap_add,
+      ContinuousLinearMap.toLinearMap_smul, ContinuousLinearMap.toLinearMap_one, map_add, map_smul,
+      LinearMap.toMatrix_one, hA, Matrix.det_one_add_smul, hp]
+  -- Step 5: `t ↦ 1 + trace A * t + p(t) * t ^ 2` has derivative `trace A + 0` at `0`.
+  have hlin : HasDerivAt (fun t : ℝ ↦ A.trace * t) A.trace 0 := by
+    simpa using (hasDerivAt_id (0 : ℝ)).const_mul A.trace
+  have hquad : HasDerivAt (fun t : ℝ ↦ p.eval t * t ^ 2) 0 0 := by
+    simpa using (Polynomial.hasDerivAt p 0).fun_mul (hasDerivAt_pow 2 (0 : ℝ))
+  have hg := (hlin.const_add 1).fun_add hquad
+  rw [add_zero] at hg
+  -- Steps 4 and 6: `trace K = trace A`, and `det(1 + t • K)` agrees with the polynomial everywhere.
+  rw [LinearMap.trace_eq_matrix_trace ℝ b, hA]
+  exact hg.congr_of_eventuallyEq (Filter.Eventually.of_forall hexp)
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
