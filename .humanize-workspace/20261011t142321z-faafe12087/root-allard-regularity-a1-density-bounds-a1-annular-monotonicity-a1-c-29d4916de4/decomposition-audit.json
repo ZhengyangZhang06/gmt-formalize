@@ -1,0 +1,48 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "allard52_am_cc_|allard52_am_cutoff_integral_calculus",
+        "^theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le",
+        "^theorem continuousAt_of_dominated|^theorem integral_neg|^theorem integral_div|^theorem setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "\"lean_name\": \"allard52_am_cc_(profile_integral_continuousAt|cutoff_integral_hasDerivAt)\"",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cc-independent-audit-8u5cpmtw/checks/SplitAll.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cc-independent-audit-8u5cpmtw/checks/AssemblyAx.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-c-29d4916de4/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-c-29d4916de4/decomposition-v1.json",
+        "/tmp/cc-independent-audit-8u5cpmtw/config.json",
+        "/tmp/cc-independent-audit-8u5cpmtw/checks/SplitAll.lean",
+        "/tmp/cc-independent-audit-8u5cpmtw/checks/AssemblyAx.lean"
+      ],
+      "conclusion": "Independently checked against project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace contract and submission match their snapshot copies. Snapshot searches found no proposed declarations; neither child name is reserved in the current 379-node DAG or another decomposition. Related accepted aal_cfs declarations have different frozen types and are not reused. Mathlib's dominated-continuity theorem (Bochner/Basic:458), differentiation theorem (ParametricIntegral:286), and support-restriction equality (Bochner/Set:486) cover the supplied arguments without additional measure assumptions. Both child types pass validate_lean_statement and independently elaborate as comparator challenges against a freshly compiled bare contract. Both child proofs compile separately; the combined children and parent compile with only propext, Classical.choice, and Quot.sound. The exact parent also compiles from precisely the two child axioms. The split is appropriate: the profile lemma supplies (a) and (b), and the derivative lemma supplies (c). Dependencies are acyclic. All inline arithmetic is real scalar arithmetic; no Matrix/IsUnit instance issue occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "profile_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and exactly matches the standalone one-line Lean proposition. The bare declaration name is unreserved. Steps 1–7 correctly establish a positive scale neighbourhood, vanishing outside the ball, a compact-profile bound, restricted-measure measurability, pointwise continuity, dominated convergence, and transfer to the original measure. No global measurability or finite-measure assumption is needed. The proof is complete and non-circular. Applying it to φ and u ↦ u·deriv φ u establishes the parent's two continuity conclusions."
+    },
+    {
+      "key": "cutoff_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition exactly express parent conclusion (c), with all hypotheses retained; the bare name is unreserved. Steps 1–7 correctly prove derivative vanishing above T, restricted-measure integral equalities, the integrable uniform derivative bound (2C₁/t)|f|, required measurability and base integrability, and the pointwise chain rule. These satisfy differentiation under the integral sign, and linearity gives the correct negative sign and division by t. Local equality transfers the derivative to μ. The proof is complete, independent of the other child, and does not invoke the parent."
+    }
+  ],
+  "required_changes": []
+}
