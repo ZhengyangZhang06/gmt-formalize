@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0a57d35b6e43825531ec813b7029db358e6c9c08459aee5fcc9021a32833f288",
+  "git_delta": {
+    "base_commit": "7c88ffe2f0baa760da66cbc8ac319652a7bfe021",
+    "candidate_commit": "79d6d9c7432ff243c8ed7498c5878df435fd482d",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "sobolev_level_energy_tonelli",
+    "diff_sha256": "89b4711289fe59d32c874abf47c46700acc90d61306cdcf93aff4544cf363183",
+    "source_sha256": "7581ca06456c0cd3cabad5905a5e08cfcb355af8dfd5a36479b58e87c0cbfff0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.sobolev_level_energy_tonelli",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (h D K : Ambient n ℓ → ℝ) (γ : ℝ → ℝ), IsFiniteMeasureOnCompacts μ → Continuous h → HasCompactSupport h → (∀ x, 0 ≤ h x) → (∀ x, 0 ≤ D x) → Integrable D μ → (∀ x, 0 ≤ K x) → IntegrableOn K (tsupport h) μ → ContDiff ℝ 1 γ → Monotone γ → (∀ s, 0 ≤ γ s ∧ γ s ≤ 1) → (∀ s, s ≤ 0 → γ s = 0) → ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((∫ x, deriv γ (h x - t) * D x ∂μ) + ∫ x in {x | t < h x}, K x ∂μ) ≤ ENNReal.ofReal (∫ x, (D x + h x * K x) ∂μ)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
