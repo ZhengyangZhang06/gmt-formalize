@@ -465,6 +465,76 @@ theorem Submission.allard_tc_cri_rescaled_representation :
   congr 2
   ext w
   simp only [mem_ofPred_eq, mem_preimage, sub_zero, inv_smul_smul₀ hs.ne']
+/-- The carrier of a dilation-homogeneous measure `θ H^n ⌞ M` is dilation-invariant up to
+`H^n`-null sets (used for the rescaling invariance of tangent cones, Simon Ch. 8, 5.3 and 5.7):
+if `M` is `H^n`-measurable, `θ > 0` on `M` is locally `H^n`-integrable,
+`μ(B) = ∫_{M ∩ B} θ dH^n` for Borel `B` and `μ(s A) = s^n μ(A)` for `s > 0`, then for every
+`s > 0` the sets `{w ∈ M : s w ∉ M}` and `{w ∉ M : s w ∈ M}` are `H^n`-null. -/
+theorem Submission.allard_tc_cri_carrier_dilation_null :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), NullMeasurableSet M (μHE[n] : Measure (Euclidean N)) → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Euclidean N), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Euclidean N))) → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Euclidean N))) → (∀ (s : ℝ) (A : Set (Euclidean N)), 0 < s → μ (s • A) = ENNReal.ofReal s ^ n * μ A) → ∀ s : ℝ, 0 < s → (μHE[n] : Measure (Euclidean N)) {w : Euclidean N | w ∈ M ∧ s • w ∉ M} = 0 ∧ (μHE[n] : Measure (Euclidean N)) {w : Euclidean N | s • w ∈ M ∧ w ∉ M} = 0 := by
+  intro N n μ M θ hM hθ hint hμ hhom s hs
+  -- Step 1: a measurable kernel `M₀ ⊆ M` with `H^n (M \ M₀) = 0`.
+  obtain ⟨M₀, hM₀M, hM₀, hM₀ae⟩ := hM.exists_measurable_subset_ae_eq
+  have hdiff : (μHE[n] : Measure (Euclidean N)) (M \ M₀) = 0 := (ae_eq_set.1 hM₀ae).2
+  -- Step 2: `μ (M₀ᶜ) = ∫⁻_{M \ M₀} ofReal θ dH^n = 0`.
+  have hμc : μ M₀ᶜ = 0 := by
+    rw [hμ _ hM₀.compl, ← Set.sdiff_eq]
+    exact setLIntegral_measure_zero _ _ hdiff
+  -- Step 3: a measurable `μ`-null subset `E` of `M₀` is `H^n`-null.
+  have hnull : ∀ E : Set (Euclidean N), MeasurableSet E → E ⊆ M₀ → μ E = 0 →
+      (μHE[n] : Measure (Euclidean N)) E = 0 := by
+    intro E hE hEM₀ hμE
+    have hEM : E ⊆ M := hEM₀.trans hM₀M
+    have hk : ∀ k : ℕ, (μHE[n] : Measure (Euclidean N)) (E ∩ closedBall 0 k) = 0 := by
+      intro k
+      have hEk : MeasurableSet (E ∩ closedBall (0 : Euclidean N) k) :=
+        hE.inter measurableSet_closedBall
+      -- (a) `∫⁻_{E ∩ B_k} ofReal θ dH^n = μ (E ∩ B_k) = 0`, as `E ∩ B_k ⊆ M`.
+      have h0 : ∫⁻ x in E ∩ closedBall (0 : Euclidean N) k, ENNReal.ofReal (θ x)
+          ∂(μHE[n] : Measure (Euclidean N)) = 0 := by
+        rw [← Set.inter_eq_right.2 (inter_subset_left.trans hEM), ← hμ _ hEk]
+        exact measure_mono_null inter_subset_left hμE
+      -- (b) `ofReal ∘ θ` is a.e.-measurable on `E ∩ B_k ⊆ M ∩ B_k` (local integrability).
+      have hθk : AEMeasurable (fun x ↦ ENNReal.ofReal (θ x))
+          ((μHE[n] : Measure (Euclidean N)).restrict (E ∩ closedBall 0 k)) :=
+        ((hint _ (isCompact_closedBall (0 : Euclidean N) k)).mono_set
+          (inter_subset_inter_left _ hEM)).aemeasurable.ennreal_ofReal
+      -- (c) `ofReal θ = 0` a.e. on `E ∩ B_k ⊆ M`, where `θ > 0`; so `H^n (E ∩ B_k) = 0`.
+      rw [lintegral_eq_zero_iff' hθk] at h0
+      have hfalse : ∀ᵐ x ∂(μHE[n] : Measure (Euclidean N)).restrict (E ∩ closedBall 0 k),
+          False := by
+        filter_upwards [h0, ae_restrict_mem hEk] with x hx hxE
+        exact absurd (ENNReal.ofReal_eq_zero.1 hx) (not_le.2 (hθ x (hEM hxE.1)))
+      rwa [eventually_false_iff_eq_bot, ae_eq_bot, Measure.restrict_eq_zero] at hfalse
+    -- (d) `E ⊆ ⋃ k, E ∩ B_k`.
+    refine measure_mono_null (fun x hx ↦ ?_) (measure_iUnion_null hk)
+    obtain ⟨k, hxk⟩ := exists_nat_ge ‖x‖
+    exact mem_iUnion.2 ⟨k, hx, mem_closedBall_zero_iff.2 hxk⟩
+  -- Step 4: for `t > 0`, `{w ∈ M : t • w ∉ M} ⊆ (M \ M₀) ∪ (M₀ ∩ t⁻¹ • M₀ᶜ)` is `H^n`-null.
+  have hkey : ∀ t : ℝ, 0 < t →
+      (μHE[n] : Measure (Euclidean N)) {w : Euclidean N | w ∈ M ∧ t • w ∉ M} = 0 := by
+    intro t ht
+    have hEm : MeasurableSet (M₀ ∩ (fun w : Euclidean N ↦ t • w) ⁻¹' M₀ᶜ) :=
+      hM₀.inter (hM₀.compl.preimage (measurable_const_smul t))
+    have hμE : μ (M₀ ∩ (fun w : Euclidean N ↦ t • w) ⁻¹' M₀ᶜ) = 0 := by
+      refine measure_mono_null inter_subset_right ?_
+      rw [Set.preimage_smul₀ ht.ne', hhom _ _ (inv_pos.2 ht), hμc, mul_zero]
+    refine measure_mono_null ?_ (measure_union_null hdiff (hnull _ hEm inter_subset_left hμE))
+    rintro w ⟨hwM, hwt⟩
+    by_cases hw : w ∈ M₀
+    · exact Or.inr ⟨hw, fun h ↦ hwt (hM₀M h)⟩
+    · exact Or.inl ⟨hwM, hw⟩
+  -- Step 5: the first conjunct is step 4 with `t = s`.
+  refine ⟨hkey s hs, ?_⟩
+  -- Step 6: `{w : s • w ∈ M ∧ w ∉ M} = s⁻¹ • {y ∈ M : s⁻¹ • y ∉ M}`; apply step 4 with `t = s⁻¹`.
+  have hset : {w : Euclidean N | s • w ∈ M ∧ w ∉ M} =
+      s⁻¹ • {y : Euclidean N | y ∈ M ∧ s⁻¹ • y ∉ M} := by
+    ext w
+    rw [Set.mem_inv_smul_set_iff₀ hs.ne']
+    show s • w ∈ M ∧ w ∉ M ↔ s • w ∈ M ∧ s⁻¹ • s • w ∉ M
+    rw [inv_smul_smul₀ hs.ne']
+  rw [hset, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hs.ne'),
+    hkey _ (inv_pos.2 hs), smul_zero]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
