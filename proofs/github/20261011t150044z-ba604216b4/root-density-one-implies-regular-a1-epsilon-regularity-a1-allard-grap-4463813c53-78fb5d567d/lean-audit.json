@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c57a719c29eed489eb8fa8d854b02df8f01afbc214793d62b245715df1981bc2",
+  "git_delta": {
+    "base_commit": "047ad423f3b8dd30c98d39fc4971580114c26533",
+    "candidate_commit": "235c0f22ab1452a92ebcd67663ab504fb8f7c612",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_ie_shifted_ball_integral_sub_le",
+    "diff_sha256": "2516678c066cf45b7685cb8f1c91e044d3e8b59d24c383083d20e9b4382eb420",
+    "source_sha256": "ddd19c4fe281f62ccb13190468509fd7a63e3206cbec05606109f8537d2dfaad",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_ie_shifted_ball_integral_sub_le",
+      "statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (x w : Euclid n) (ρ K : ℝ), 0 < n → ‖w‖ ≤ ρ → 0 ≤ K → IntegrableOn u (ball x (ρ + ‖w‖)) → (∀ z ∈ ball x (ρ + ‖w‖), |u z| ≤ K) → |(∫ y in ball (x + w) ρ, u y) - ∫ y in ball x ρ, u y| ≤ K * (volume (ball (0 : Euclid n) 1)).toReal * ((ρ + ‖w‖) ^ n - (ρ - ‖w‖) ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
