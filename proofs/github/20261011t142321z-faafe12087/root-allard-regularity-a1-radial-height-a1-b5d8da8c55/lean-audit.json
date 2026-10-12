@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5a86e844e649e3600f7f68f3061647f72c38ca8d82869db42dabca1520bab3dc",
+  "git_delta": {
+    "base_commit": "680645b6a7380bd05e4b339df00021f6f7ff10e0",
+    "candidate_commit": "764be1bbc7d10c4e8ed324fec106ec591344bb58",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_radial_height",
+    "diff_sha256": "e71a6357636df1b5cf4f3726c26eefe3a88a9da264a79e2c0c7926bb5c131a21",
+    "source_sha256": "75a7c68a9750df9639213a1c9edfd5e76b089a9a612bb848c7f172a35a877c9a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_radial_height",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (α M A : ℝ), 0 < α → α ≤ 1 → 0 ≤ M → 0 ≤ A → ∃ C : ℝ, 0 ≤ C ∧ ∀ (f : Rn n → Rn ℓ) (R δ : ℝ), 0 < R → 0 < δ → δ ≤ 1 → f 0 = 0 → ContDiffOn ℝ 1 f (ball 0 R) → LipschitzOnWith 1 f (ball 0 R) → (∀ x ∈ ball (0 : Rn n) R, hsNorm (fderiv ℝ f x) ≤ M * (‖x‖ / R) ^ α) → ∫⁻ x in ball (0 : Rn n) R, ENNReal.ofReal (‖f x - fderiv ℝ f x x‖ ^ 2 / ‖x‖ ^ (n + 2)) ≤ ENNReal.ofReal (A * δ) → ∀ x ∈ ball (0 : Rn n) R, ‖f x‖ ≤ C * δ ^ (1 / (2 * (n : ℝ) + 2)) * ‖x‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
