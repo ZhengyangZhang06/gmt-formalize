@@ -1074,6 +1074,43 @@ theorem Submission.frt_weq_mul_hausdorff_le_of_upper_density :
   have hnetop : unitBallVolume n * ENNReal.ofReal r ^ n ≠ ∞ :=
     ENNReal.mul_ne_top measure_ball_lt_top.ne (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
   exact ((ENNReal.lt_div_iff_mul_lt (Or.inl hne0) (Or.inl hnetop)).mp hqr).le
+/-- Lebesgue density for an arbitrary subset `A` of an open set `W` with `μ(W) < ∞` (statement (β)
+of Step 8 in the proof of Simon Ch. 8, 1.2): the set of `x ∈ A` at which
+`μ(A ∩ B_r(x))/μ(B_r(x))` does not tend to `1` as `r ↓ 0` is `μ`-null.  Apply
+`Besicovitch.ae_tendsto_measure_inter_div` to the finite measure `ν = μ ⌞ W`; a measurable hull
+`T` of its failure set has `μ(T ∩ A ∩ W) = (ν ⌞ A)(T) = 0`, and at `x ∈ A ∖ T` small balls lie in
+`W`, so the `μ`- and `ν`-ratios agree near `0⁺`.  No measurability of `A` is used. -/
+theorem Submission.frt_weq_nondensity_points_null :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (W A : Set (Euclidean N)), IsOpen W → μ W ≠ ∞ → A ⊆ W → μ {x | x ∈ A ∧ ¬ Tendsto (fun r : ℝ => μ (A ∩ closedBall x r) / μ (closedBall x r)) (𝓝[>] 0) (𝓝 1)} = 0 := by
+  intro N μ W A hW hμW hAW
+  -- Step 1: `ν = μ ⌞ W` is a finite measure.
+  let ν : Measure (Euclidean N) := μ.restrict W
+  have : IsFiniteMeasure ν := isFiniteMeasure_restrict.2 hμW
+  -- Step 2: the failure set `S` of the Besicovitch density theorem for `ν` and `A` is
+  -- `(ν ⌞ A)`-null, and so is its measurable hull `T`.
+  let S : Set (Euclidean N) :=
+    {x | ¬ Tendsto (fun r : ℝ => ν (A ∩ closedBall x r) / ν (closedBall x r)) (𝓝[>] 0) (𝓝 1)}
+  have hS : ν.restrict A S = 0 := ae_iff.1 (Besicovitch.ae_tendsto_measure_inter_div ν A)
+  let T : Set (Euclidean N) := toMeasurable (ν.restrict A) S
+  have hT : ν.restrict A T = 0 := (measure_toMeasurable S).trans hS
+  -- Step 3: `μ(T ∩ A ∩ W) = (ν ⌞ A)(T) = 0`.
+  have hTAW : μ (T ∩ A ∩ W) = 0 := by
+    rw [← Measure.restrict_apply' hW.measurableSet, ← Measure.restrict_apply
+      (measurableSet_toMeasurable _ _)]
+    exact hT
+  -- Steps 4–5: every non-density point of `A` lies in `T ∩ A ∩ W`.
+  refine measure_mono_null ?_ hTAW
+  rintro x ⟨hxA, hxE⟩
+  refine ⟨⟨?_, hxA⟩, hAW hxA⟩
+  by_contra hxT
+  have hx : Tendsto (fun r : ℝ => ν (A ∩ closedBall x r) / ν (closedBall x r)) (𝓝[>] 0) (𝓝 1) :=
+    not_not.1 fun hxS ↦ hxT (subset_toMeasurable (ν.restrict A) S hxS)
+  obtain ⟨δ, hδ, hδW⟩ := Metric.isOpen_iff.1 hW x (hAW hxA)
+  refine hxE (hx.congr' ?_)
+  filter_upwards [Ioo_mem_nhdsGT hδ] with r hr
+  have hrW : closedBall x r ⊆ W := (closedBall_subset_ball hr.2).trans hδW
+  simp only [ν, Measure.restrict_apply' hW.measurableSet, inter_eq_left.2 hrW,
+    inter_eq_left.2 (inter_subset_right.trans hrW)]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
