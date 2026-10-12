@@ -555,6 +555,55 @@ theorem Submission.intcpt_allard_cm_radial_cutoff :
   · -- `A² ≤ s` gives `(A² - s)/d ≤ 0`.
     exact Real.smoothTransition.zero_of_nonpos
       (div_nonpos_of_nonpos_of_nonneg (by linarith) hd.le)
+/-- Dominated convergence for shrinking radial cutoffs (step 4 of the cylinder monotonicity used
+for Simon Ch. 8, 5.9): if `φ_j = 1` on `(-∞, 1]`, `φ_j = 0` on `[A_j², ∞)`, `0 ≤ φ_j ≤ 1`,
+`A_j → 1` and `μ(B_R(y)) < ∞` with `t A_j ≤ R`, then
+`∫ φ_j(|z - y|²/t²) h(z) dμ(z) → ∫_{B_t(y)} h dμ` for measurable `0 ≤ h ≤ 1`. -/
+theorem Submission.intcpt_allard_cm_cutoff_integral_tendsto :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (y : Euclidean N) (h : Euclidean N → ℝ) (φ : ℕ → ℝ → ℝ) (A : ℕ → ℝ) (t R : ℝ), Measurable h → (∀ z, 0 ≤ h z ∧ h z ≤ 1) → (∀ j, Measurable (φ j)) → (∀ j s, 0 ≤ φ j s ∧ φ j s ≤ 1) → (∀ j s, s ≤ 1 → φ j s = 1) → (∀ j s, A j ^ 2 ≤ s → φ j s = 0) → (∀ j, 0 < A j) → Tendsto A atTop (𝓝 1) → 0 < t → (∀ j, t * A j ≤ R) → μ (closedBall y R) ≠ ∞ → Tendsto (fun j ↦ ∫ z, φ j (‖z - y‖ ^ 2 / t ^ 2) * h z ∂μ) atTop (𝓝 (∫ z in closedBall y t, h z ∂μ)) := by
+  intro N μ y h φ A t R hh h01 hφm hφ01 hφ1 hφ0 hA hAlim ht htR hμR
+  -- Step 1: `∫_{B_t(y)} h dμ = ∫ 1_{B_t(y)} h dμ`; dominated convergence with bound `1_{B_R(y)}`.
+  rw [← integral_indicator measurableSet_closedBall]
+  refine tendsto_integral_filter_of_dominated_convergence
+    ((closedBall y R).indicator fun _ ↦ (1 : ℝ)) ?_ ?_ ?_ ?_
+  -- Step 2: every `F_j` is measurable.
+  · have hmeas : Measurable fun z : Euclidean N ↦ ‖z - y‖ ^ 2 / t ^ 2 := by fun_prop
+    exact Eventually.of_forall fun j ↦ (((hφm j).comp hmeas).mul hh).aestronglyMeasurable
+  -- Step 3: domination `‖F_j z‖ ≤ 1_{B_R(y)} z`.
+  · refine Eventually.of_forall fun j ↦ ae_of_all _ fun z ↦ ?_
+    by_cases hz : z ∈ closedBall y R
+    · rw [indicator_of_mem hz, Real.norm_eq_abs,
+        abs_of_nonneg (mul_nonneg (hφ01 j _).1 (h01 z).1)]
+      exact (mul_le_of_le_one_left (h01 z).1 (hφ01 j _).2).trans (h01 z).2
+    · have hRz : R < ‖z - y‖ := by rwa [mem_closedBall, dist_eq_norm, not_le] at hz
+      have hAz : A j ≤ ‖z - y‖ / t := by
+        rw [le_div_iff₀ ht]
+        linarith [htR j, mul_comm (A j) t]
+      have hs : A j ^ 2 ≤ ‖z - y‖ ^ 2 / t ^ 2 := by
+        rw [← div_pow]
+        exact pow_le_pow_left₀ (hA j).le hAz 2
+      rw [indicator_of_notMem hz, hφ0 j _ hs, zero_mul, norm_zero]
+  -- Step 4: `1_{B_R(y)}` is integrable since `μ(B_R(y)) < ∞`.
+  · exact (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const hμR)
+  -- Step 5: pointwise convergence `F_j z → 1_{B_t(y)} h z`.
+  · refine ae_of_all _ fun z ↦ ?_
+    by_cases hz : z ∈ closedBall y t
+    · have hzt : ‖z - y‖ ≤ t := by rwa [mem_closedBall, dist_eq_norm] at hz
+      have hs : ‖z - y‖ ^ 2 / t ^ 2 ≤ 1 := by
+        rw [div_le_one₀ (pow_pos ht 2)]
+        exact pow_le_pow_left₀ (norm_nonneg _) hzt 2
+      rw [indicator_of_mem hz]
+      refine tendsto_const_nhds.congr fun j ↦ ?_
+      rw [hφ1 j _ hs, one_mul]
+    · have hzt : t < ‖z - y‖ := by rwa [mem_closedBall, dist_eq_norm, not_le] at hz
+      have hs : 1 < ‖z - y‖ ^ 2 / t ^ 2 := by
+        rw [one_lt_div₀ (pow_pos ht 2)]
+        exact pow_lt_pow_left₀ hzt ht.le two_ne_zero
+      have hA2 : Tendsto (fun j ↦ A j ^ 2) atTop (𝓝 1) := by simpa using hAlim.pow 2
+      rw [indicator_of_notMem hz]
+      refine tendsto_const_nhds.congr' ((hA2.eventually_le_const hs).mono fun j hj ↦ ?_)
+      dsimp only
+      rw [hφ0 j _ hj, zero_mul]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
