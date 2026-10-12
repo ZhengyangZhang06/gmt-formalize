@@ -671,6 +671,54 @@ theorem Submission.slicing_mb_wedge_norm_le :
     Submission.slicing_mb_wn_norm_sq_eq_onb_sum P m u]
   exact Submission.slicing_mb_wn_adapted_sum_le P m α γ u ‖α‖ hu
 
+/-- **Boundary defect of a smooth multiplier** (Simon Ch. 6, 4.11, with the representation
+estimate (2.7) and the wedge bound): if `(μ, v)` represents `T ∈ 𝒟ₘ₊₁(U)` with
+`|⟨α, v⟩| ≤ |α|`, `ω ∈ 𝒟ᵐ(U)` and `ψ` is `C^∞`, then `η₁ = ψω` and `η₂ = ψ dω` are test forms
+with `|∂T(η₁) − T(η₂)| ≤ ∫ |Dψ| |ω| dμ`.  The Leibniz rule `d(ψω) = ψ dω + Dψ ∧ ω` gives
+`∂T(η₁) − T(η₂) = T(Dψ ∧ ω)`, bounded by the representation and `|Dψ ∧ ω| ≤ ‖Dψ‖ |ω|`. -/
+theorem Submission.slicing_mb_leibniz_bound :
+    ∀ (P m : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Eucl P))
+      (v : Eucl P → NVector (Eucl P) (m + 1)), IsMeasureRepresentation T μ v →
+      (∀ (x : Eucl P) (α : Covector (Eucl P) (m + 1)), |v x α| ≤ covectorEuclideanNorm α) →
+      ∀ (ω : TestFormOn U m) (ψ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ →
+      ∃ (η₁ : TestFormOn U m) (η₂ : TestFormOn U (m + 1)),
+        (∀ x, (η₁ : DifferentialForm (Eucl P) m) x = ψ x • (ω : DifferentialForm (Eucl P) m) x) ∧
+        (∀ x, (η₂ : DifferentialForm (Eucl P) (m + 1)) x =
+          ψ x • exteriorDerivative (ω : DifferentialForm (Eucl P) m) x) ∧
+        ENNReal.ofReal |T.boundary η₁ - T η₂| ≤
+          ∫⁻ x, (‖fderiv ℝ ψ x‖₊ : ℝ≥0∞) *
+            ENNReal.ofReal (covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) m) x)) ∂μ := by
+  intro P m U T μ v hrep hnorm ω ψ hψ
+  -- The test forms `η₁ = ψ ω`, `η₂ = ψ dω` and `η₃ = Dψ ∧ ω` in `U`.
+  obtain ⟨η₁, hη₁⟩ := Submission.slicing_mb_lb_smul_testForm P m U ω ψ hψ
+  obtain ⟨η₂, hη₂⟩ :=
+    Submission.slicing_mb_lb_smul_testForm P (m + 1) U (exteriorDerivativeTestOn U m ω) ψ hψ
+  obtain ⟨η₃, hη₃⟩ :=
+    Submission.slicing_mb_lb_wedge_testForm P m U ω (fderiv ℝ ψ) (hψ.fderiv_right (by simp))
+  have hη₂' : ∀ x, (η₂ : DifferentialForm (Eucl P) (m + 1)) x =
+      ψ x • exteriorDerivative (ω : DifferentialForm (Eucl P) m) x := hη₂
+  refine ⟨η₁, η₂, hη₁, hη₂', ?_⟩
+  -- Leibniz rule: `dη₁ = ψ dω + Dψ ∧ ω = η₂ + η₃`.
+  have hd : exteriorDerivativeTestOn U m η₁ = η₂ + η₃ := by
+    apply Subtype.ext
+    funext x
+    have h₁ : (η₁ : DifferentialForm (Eucl P) m) =
+        fun y => ψ y • (ω : DifferentialForm (Eucl P) m) y := funext hη₁
+    change exteriorDerivative (η₁ : DifferentialForm (Eucl P) m) x =
+      (η₂ : DifferentialForm (Eucl P) (m + 1)) x + (η₃ : DifferentialForm (Eucl P) (m + 1)) x
+    rw [h₁, hη₂', hη₃, Submission.slicing_mb_lb_extDeriv_smul P m ψ
+      (ω : DifferentialForm (Eucl P) m) x (hψ.differentiable (by simp) x)
+      (ω.2.1.1.differentiable (by simp) x)]
+  -- Hence `∂T(η₁) − T(η₂) = T(η₃)`.
+  have hb : T.boundary η₁ - T η₂ = T η₃ := by
+    rw [GeometricCurrentOn.boundary_apply, hd, map_add, add_sub_cancel_left]
+  -- The representation bound for `T(η₃)`, then `|Dψ ∧ ω| ≤ ‖Dψ‖ |ω|` pointwise.
+  rw [hb]
+  refine (Submission.slicing_mb_lb_repr_bound P (m + 1) U T μ v hrep hnorm η₃).trans
+    (lintegral_mono fun x => ?_)
+  rw [hη₃, ← enorm_eq_nnnorm, ← ofReal_norm, ← ENNReal.ofReal_mul (norm_nonneg _)]
+  exact ENNReal.ofReal_le_ofReal (Submission.slicing_mb_wedge_norm_le P m _ _)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
