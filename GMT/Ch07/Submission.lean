@@ -451,6 +451,35 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The radial test field `X(x) = φ(|x − y|/τ)(x − y)` (Simon Ch. 4, 3.2–3.3, cutoff
+`γ(r) = φ(r/τ)`) is `C¹` with compact support in `B̄_{Aτ}(y)`: it equals `x − y` on `B_τ(y)`, and
+away from `y` the norm `|x − y|` is smooth. -/
+theorem Submission.doragm_rfv_radial_field_c1 : ∀ (P : ℕ) (y : Euclid P) (φ : ℝ → ℝ) (A τ : ℝ), ContDiff ℝ 1 φ → (∀ u, u ≤ 1 → φ u = 1) → (∀ u, A ≤ u → φ u = 0) → 0 < τ → ContDiff ℝ 1 (fun x : Euclid P => φ (‖x - y‖ / τ) • (x - y)) ∧ HasCompactSupport (fun x : Euclid P => φ (‖x - y‖ / τ) • (x - y)) ∧ tsupport (fun x : Euclid P => φ (‖x - y‖ / τ) • (x - y)) ⊆ closedBall y (A * τ) := by
+  intro P y φ A τ hφ hφ1 hφA hτ
+  -- (iii) off `B̄_{Aτ}(y)` we have `A ≤ ‖x - y‖ / τ`, so `φ (‖x - y‖ / τ) = 0`
+  have hsupp : tsupport (fun x : Euclid P => φ (‖x - y‖ / τ) • (x - y)) ⊆ closedBall y (A * τ) := by
+    refine closure_minimal (support_subset_iff'.2 fun x hx => ?_) isClosed_closedBall
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    have hA : A ≤ ‖x - y‖ / τ := (le_div_iff₀ hτ).2 hx.le
+    simp [hφA _ hA]
+  -- (ii) a closed subset of the compact ball `B̄_{Aτ}(y)` is compact
+  refine ⟨?_, (isCompact_closedBall y (A * τ)).of_isClosed_subset (isClosed_tsupport _) hsupp, hsupp⟩
+  -- (i) `C¹` at every point
+  rw [contDiff_iff_contDiffAt]
+  intro x
+  have hsub : ContDiffAt ℝ 1 (fun z : Euclid P => z - y) x := contDiffAt_id.sub contDiffAt_const
+  by_cases hxy : x = y
+  · -- near `y` we have `‖z - y‖ / τ < 1`, so the field is `z ↦ z - y`
+    subst hxy
+    refine hsub.congr_of_eventuallyEq ?_
+    filter_upwards [ball_mem_nhds x hτ] with z hz
+    rw [mem_ball, dist_eq_norm] at hz
+    have h1 : ‖z - x‖ / τ ≤ 1 := (div_le_one hτ).2 hz.le
+    simp [hφ1 _ h1]
+  · -- away from `y` the norm `z ↦ ‖z - y‖` is smooth, since `x - y ≠ 0`
+    have hnorm : ContDiffAt ℝ 1 (fun z : Euclid P => ‖z - y‖) x := hsub.norm ℝ (sub_ne_zero.2 hxy)
+    exact (hφ.comp_contDiffAt x (hnorm.div_const τ)).smul hsub
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
