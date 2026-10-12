@@ -534,4 +534,42 @@ theorem Submission.section3_chart_coordinateProjection_pos :
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
+/-- **Simon Ch. 3, Lemma 3.3 (pp. 78–79), given Lemma 1.2** (`chapter-03.txt` lines 476–496).
+Let `R ⊆ S` be countably `n`-rectifiable. Lemma 1.2 ("⇒") gives `R ⊆ N₀ ∪ ⋃ⱼ Nⱼ` with
+`Hⁿ(N₀) = 0` and `Nⱼ` embedded `C¹` submanifolds, so it suffices that each `R ∩ Nⱼ` is
+`Hⁿ`-null, and by Lindelöf (`measure_null_of_locally_null`) that `R ∩ Nⱼ ∩ W` is `Hⁿ`-null for
+the chart `ψ : V → W` of `Nⱼ` at each of its points. There `R ∩ Nⱼ ∩ W = ψ(T)` with
+`T = V ∩ ψ⁻¹(R)`. If `Lⁿ(T) = 0`, then `Hⁿ(ψ(T)) = 0` (`C¹` images of null sets). Otherwise
+some `p_J` with `#J = n` has `Hⁿ(p_J(ψ(T))) > 0` (`p_J ∘ ψ` is anti-Lipschitz near a density
+point of `T`), contradicting `Hⁿ(p_J(S)) = 0` as `ψ(T) ⊆ R ⊆ S`. -/
+theorem Submission.section3_coordinateProjectionCriterion_of_submanifoldCover :
+    SubmanifoldCoverCharacterization → CoordinateProjectionCriterion := by
+  intro hcover n ℓ S hS R hRS hR
+  obtain ⟨N₀, N, hN₀, hN, hRN⟩ := (hcover n ℓ R).1 hR
+  have hRN_null : ∀ j, μHE[n] (R ∩ N j) = 0 := by
+    intro j
+    refine measure_null_of_locally_null _ fun x hx ↦ ?_
+    -- The chart of `N j` at `x`; injectivity and properness of `ψ` are not needed.
+    obtain ⟨V, W, ψ, hV, hW, hxW, hψ, -, himage, -, hD⟩ := hN j x hx.2
+    refine ⟨R ∩ N j ∩ W, inter_mem_nhdsWithin _ (hW.mem_nhds hxW), ?_⟩
+    have hTV : V ∩ ψ ⁻¹' R ⊆ V := inter_subset_left
+    have hsub : R ∩ N j ∩ W ⊆ ψ '' (V ∩ ψ ⁻¹' R) := by
+      rw [image_inter_preimage, himage]
+      exact fun z hz ↦ ⟨⟨hz.2, hz.1.2⟩, hz.1.1⟩
+    refine measure_mono_null hsub ?_
+    by_cases hT : volume (V ∩ ψ ⁻¹' R) = 0
+    · exact Submission.section3_contDiffOn_image_null_of_volume_null n (n + ℓ) V
+        (V ∩ ψ ⁻¹' R) ψ hV hψ hTV hT
+    · obtain ⟨J, hJ, hpos⟩ := Submission.section3_chart_coordinateProjection_pos n ℓ V
+        (V ∩ ψ ⁻¹' R) ψ hV hψ hD hTV (pos_iff_ne_zero.2 hT)
+      have hψS : ψ '' (V ∩ ψ ⁻¹' R) ⊆ S := (image_subset_iff.2 inter_subset_right).trans hRS
+      exact absurd (measure_mono_null (image_mono hψS) (hS J hJ)) hpos.ne'
+  have hnull : μHE[n] (N₀ ∪ ⋃ j, R ∩ N j) = 0 :=
+    measure_union_null hN₀ (measure_iUnion_null hRN_null)
+  refine measure_mono_null (fun x hx ↦ ?_) hnull
+  rcases hRN hx with h | h
+  · exact Or.inl h
+  · obtain ⟨j, hj⟩ := mem_iUnion.1 h
+    exact Or.inr (mem_iUnion.2 ⟨j, hx, hj⟩)
+
 end GMT.Ch03
