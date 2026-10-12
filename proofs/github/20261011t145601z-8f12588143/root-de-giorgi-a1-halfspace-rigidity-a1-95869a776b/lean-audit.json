@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e3c88dbe129731845db45423182cbd00bb45f444696a2df731d0d73c05a5f8fb",
+  "git_delta": {
+    "base_commit": "e155cfc4aa2b59309b4ef86f5dc385d54ba2cbd5",
+    "candidate_commit": "64b12c3da4918dfa6336815745f25d177eb24171",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgi_halfSpace_rigidity",
+    "diff_sha256": "d271a0d0073eff08a08c62113df20d423edc8d46e16a78d506ad6d8a325a2e4c",
+    "source_sha256": "ad20be7522a4611f5a14b07e4b805da3b7f3975b0166ffc19ffd33fe7f6466b8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgi_halfSpace_rigidity",
+      "statement": "∀ (N : ℕ) (G : Set (Rn N)) (e : Rn N), NullMeasurableSet G volume → ‖e‖ = 1 → (∀ (ζ : Rn N → ℝ) (v : Rn N), ContDiff ℝ 1 ζ → HasCompactSupport ζ → inner ℝ v e = 0 → ∫ y in G, fderiv ℝ ζ y v = 0) → (∀ ζ : Rn N → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ y, 0 ≤ ζ y) → ∫ y in G, fderiv ℝ ζ y e ≤ 0) → (∀ R : ℝ, 0 < R → 0 < volume (G ∩ Metric.ball 0 R) ∧ 0 < volume (Metric.ball 0 R \\ G)) → volume (symmDiff G {y | 0 < inner ℝ y e}) = 0",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
