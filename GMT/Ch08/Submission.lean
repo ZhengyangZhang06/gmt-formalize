@@ -527,6 +527,52 @@ theorem Submission.allard_tc_tpr_hausdorff_null_of_weight_null :
     rwa [mul_zero] at h
   exact nonpos_iff_eq_zero.1 (ge_of_tendsto' htend hle)
 
+/-- **The weight is `θ H^n ⌞ M` once it is `θ H^n ⌞ E` for some `E ⊆ M`** (child
+`weight_eq_restrict` of `tangent_point_representation`; gives `μ_C = θ H^n ⌞ M` when writing
+`C = v(M, θ)` in the proof of Simon Ch. 8, 5.7).  Let `B* = toMeasurable (H^n ⌞ M) E`.  The
+hypothesis on `B*ᶜ` is an integral over `E ∩ B*ᶜ = ∅`, so `μ(M ∖ B*) = 0`, and child
+`hausdorff_null_of_weight_null` gives `H^n(M ∖ B*) = 0` because `θ > 0` is the density of `μ` on
+`M`.  As `H^n ⌞ M` is s-finite, `(H^n ⌞ M)(B* ∩ D) = (H^n ⌞ M)(E ∩ D)` for measurable `D`; hence
+`H^n ⌞ (E ∩ B) = H^n ⌞ (M ∩ B)` for Borel `B`, and the two set integrals agree. -/
+theorem Submission.allard_tc_tpr_weight_eq_restrict :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M E : Set (Euclidean N)) (θ : Euclidean N → ℝ), (∀ K : Set (Euclidean N), IsCompact K → μ K ≠ ∞) → SFinite ((μHE[n] : Measure (Euclidean N)).restrict M) → E ⊆ M → (∀ x ∈ M, 0 < θ x ∧ HasDensity n μ x (ENNReal.ofReal (θ x))) → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ x in E ∩ B, ENNReal.ofReal (θ x) ∂μHE[n]) → ∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂μHE[n] := by
+  intro N n μ M E θ hμK hSF hEM hθ hrep B hB
+  set H : Measure (Euclidean N) := μHE[n]
+  -- Step 1: the measurable hull `B*` of `E` for the s-finite measure `ν = H^n ⌞ M`.
+  set ν : Measure (Euclidean N) := H.restrict M with hν
+  set Bs : Set (Euclidean N) := toMeasurable ν E
+  have hBs : MeasurableSet Bs := measurableSet_toMeasurable ν E
+  have hEBs : E ⊆ Bs := subset_toMeasurable ν E
+  -- Step 2: `μ(M ∖ B*) = 0`, since `μ(B*ᶜ)` is the integral over `E ∩ B*ᶜ = ∅`.
+  have hμc : μ Bsᶜ = 0 := by
+    have hempty : E ∩ Bsᶜ = ∅ := subset_empty_iff.1 fun x hx ↦ hx.2 (hEBs hx.1)
+    rw [hrep Bsᶜ hBs.compl, hempty, Measure.restrict_empty, lintegral_zero_measure]
+  have hμZ : μ (M \ Bs) = 0 := measure_mono_null (fun x hx ↦ hx.2) hμc
+  -- Step 3: `H^n(M ∖ B*) = 0` by child `hausdorff_null_of_weight_null`, as `M ∖ B* ⊆ M`.
+  have hHZ : H (M \ Bs) = 0 :=
+    Submission.allard_tc_tpr_hausdorff_null_of_weight_null N n μ (M \ Bs) θ hμK hμZ
+      fun x hx ↦ hθ x hx.1
+  -- Step 4: `H^n ⌞ (E ∩ B) = H^n ⌞ (M ∩ B)`, tested on measurable `D`.
+  have hres : H.restrict (E ∩ B) = H.restrict (M ∩ B) := by
+    refine Measure.ext fun D hD ↦ ?_
+    rw [Measure.restrict_apply hD, Measure.restrict_apply hD]
+    refine le_antisymm (measure_mono (inter_subset_inter_right D
+      (inter_subset_inter_left B hEM))) ?_
+    have hDB : MeasurableSet (D ∩ B) := hD.inter hB
+    calc H (D ∩ (M ∩ B)) ≤ H (Bs ∩ (D ∩ B) ∩ M ∪ M \ Bs) := by
+          refine measure_mono fun x hx ↦ ?_
+          by_cases hx' : x ∈ Bs
+          · exact Or.inl ⟨⟨hx', hx.1, hx.2.2⟩, hx.2.1⟩
+          · exact Or.inr ⟨hx.2.1, hx'⟩
+      _ ≤ H (Bs ∩ (D ∩ B) ∩ M) + H (M \ Bs) := measure_union_le _ _
+      _ = ν (Bs ∩ (D ∩ B)) := by
+          rw [hHZ, add_zero, hν, Measure.restrict_apply (hBs.inter hDB)]
+      _ = ν (E ∩ (D ∩ B)) := Measure.measure_toMeasurable_inter_of_sFinite hDB E
+      _ = H (E ∩ (D ∩ B)) := Measure.restrict_eq_self H fun x hx ↦ hEM hx.1
+      _ = H (D ∩ (E ∩ B)) := by rw [inter_left_comm]
+  -- Step 5: the two set integrals are integrals against equal measures.
+  rw [hrep B hB, hres]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
