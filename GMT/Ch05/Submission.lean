@@ -458,6 +458,92 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Fact (Gr) in the proof of Simon Ch. 5, Corollary 7.3, for the Ch. 2 §4 notion of a `C¹`
+submanifold: if `u` is `C¹` on the closed ball `Bⁿ_s(0)` and `{y : y + x₀ ∈ S}` agrees with
+`q(graph u)` in `B_s(0)`, then `B̆_s(x₀) ∩ S` is an `n`-dimensional `C¹` submanifold.  A single
+chart `φ(x) = q(x, u(x)) + x₀` on `Ω = B̆ⁿ_s(0) ∩ φ⁻¹(B̆_s(x₀))` serves every point, because
+`|x| ≤ |(x, u(x))| = |φ(x) - x₀|`; for compact `K ⊆ B̆_s(x₀)`, `Ω ∩ φ⁻¹(K) = Bⁿ_s(0) ∩ φ⁻¹(K)` is a
+closed subset of the compact ball. -/
+theorem rsod_isC1Submanifold_ball_inter_graph : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ)
+    (u : Rn n → Rn ℓ) (x₀ : Amb n ℓ) (s : ℝ) (S : Set (Amb n ℓ)), 0 < s →
+    ContDiffOn ℝ 1 u (closedBall 0 s) →
+    (fun y => y + x₀) ⁻¹' S ∩ closedBall 0 s = q '' graphOver u (closedBall 0 s) ∩ closedBall 0 s →
+    IsC1Submanifold n (ball x₀ s ∩ S) := by
+  intro n ℓ q u x₀ s S _hs hu hS
+  set φ : Rn n → Amb n ℓ := fun x => q (graphPoint x (u x)) + x₀
+  -- Step 1: `|x| ≤ |(x, u(x))| = |φ(x) - x₀|`, so `φ(x) ∈ B̆_s(x₀)` forces `x ∈ B̆ⁿ_s(0)`.
+  have hnorm : ∀ x : Rn n, ‖x‖ ≤ ‖graphPoint x (u x)‖ := fun x => by
+    nlinarith [Submission.rsod_norm_graphPoint_sq x (u x), norm_nonneg x,
+      norm_nonneg (graphPoint x (u x)), sq_nonneg ‖u x‖]
+  have hdist : ∀ x : Rn n, dist (φ x) x₀ = ‖graphPoint x (u x)‖ := fun x => by
+    rw [dist_eq_norm]
+    show ‖q (graphPoint x (u x)) + x₀ - x₀‖ = _
+    rw [add_sub_cancel_right, q.norm_map]
+  have hball : ∀ x : Rn n, φ x ∈ ball x₀ s → x ∈ ball (0 : Rn n) s := fun x hx =>
+    mem_ball_zero_iff.2 ((hnorm x).trans_lt ((hdist x).symm.trans_lt (mem_ball.1 hx)))
+  -- Step 2: for `|z| ≤ s`, `z + x₀ ∈ S` iff `z = q(x, u(x))` for some `x ∈ Bⁿ_s(0)`.
+  have hH : ∀ z : Amb n ℓ, ‖z‖ ≤ s →
+      (z + x₀ ∈ S ↔ ∃ x ∈ closedBall (0 : Rn n) s, q (graphPoint x (u x)) = z) := by
+    intro z hz
+    have hz' : z ∈ closedBall (0 : Amb n ℓ) s := mem_closedBall_zero_iff.2 hz
+    constructor
+    · intro hzS
+      have hzq : z ∈ q '' graphOver u (closedBall 0 s) ∩ closedBall 0 s := by
+        rw [← hS]
+        exact ⟨hzS, hz'⟩
+      obtain ⟨⟨w, ⟨x, hx, rfl⟩, rfl⟩, -⟩ := hzq
+      exact ⟨x, hx, rfl⟩
+    · rintro ⟨x, hx, rfl⟩
+      have hzS : q (graphPoint x (u x)) ∈ (fun y => y + x₀) ⁻¹' S ∩ closedBall 0 s := by
+        rw [hS]
+        exact ⟨⟨graphPoint x (u x), ⟨x, hx, rfl⟩, rfl⟩, hz'⟩
+      exact hzS.1
+  -- Steps 3–6: `φ` is injective, and `C¹` with injective derivative on `B̆ⁿ_s(0)`; it is
+  -- continuous on `Bⁿ_s(0)` because `(x, y) ↦ graphPoint x y` is a continuous linear map.
+  obtain ⟨hinj, hC1, hder⟩ := Submission.rsod_graphChart_injective_contDiffOn_fderiv_injective
+    q u x₀ (ball 0 s) isOpen_ball (hu.mono ball_subset_closedBall)
+  have hcont : ContinuousOn φ (closedBall 0 s) := by
+    have hG : ContinuousOn (fun x : Rn n => graphPoint x (u x)) (closedBall 0 s) := by
+      simp_rw [Submission.rsod_graphPoint_eq_finAddEquivProd_symm]
+      exact (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm.continuous
+        |>.comp_continuousOn (continuousOn_id.prodMk hu.continuousOn)
+    exact (q.continuous.comp_continuousOn hG).add continuousOn_const
+  intro y hy
+  refine ⟨ball 0 s ∩ φ ⁻¹' ball x₀ s, ball x₀ s, φ,
+    (hcont.mono ball_subset_closedBall).isOpen_inter_preimage isOpen_ball isOpen_ball,
+    isOpen_ball, hy.1, hC1.mono inter_subset_left, hinj.injOn, ?_, ?_,
+    fun x hx => hder x hx.1⟩
+  · -- Step 7: `φ(Ω) = B̆_s(x₀) ∩ S`.
+    ext y'
+    constructor
+    · rintro ⟨x, ⟨hx, hφx⟩, rfl⟩
+      refine ⟨hφx, hφx, (hH (q (graphPoint x (u x))) ?_).2 ⟨x, ball_subset_closedBall hx, rfl⟩⟩
+      rw [q.norm_map, ← hdist]
+      exact (mem_ball.1 hφx).le
+    · rintro ⟨-, hy', hy'S⟩
+      obtain ⟨x, -, hx⟩ := (hH (y' - x₀) (mem_ball_iff_norm.1 hy').le).1
+        (by rwa [sub_add_cancel])
+      have hφx : φ x = y' := by
+        show q (graphPoint x (u x)) + x₀ = y'
+        rw [hx, sub_add_cancel]
+      have hφx' : φ x ∈ ball x₀ s := by
+        rw [hφx]
+        exact hy'
+      exact ⟨x, ⟨hball x hφx', hφx'⟩, hφx⟩
+  · -- Step 8: for compact `K ⊆ B̆_s(x₀)`, `Ω ∩ φ⁻¹(K) = Bⁿ_s(0) ∩ φ⁻¹(K)` is compact.
+    intro K hK hKW
+    have hset : ball 0 s ∩ φ ⁻¹' ball x₀ s ∩ φ ⁻¹' K = closedBall 0 s ∩ φ ⁻¹' K := by
+      ext x
+      exact ⟨fun hx => ⟨ball_subset_closedBall hx.1.1, hx.2⟩,
+        fun hx => ⟨⟨hball x (hKW hx.2), hKW hx.2⟩, hx.2⟩⟩
+    rw [hset]
+    exact (isCompact_closedBall 0 s).of_isClosed_subset
+      (hcont.preimage_isClosed_of_isClosed isClosed_closedBall hK.isClosed) inter_subset_left
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
