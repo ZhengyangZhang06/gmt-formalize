@@ -410,6 +410,46 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Countable `n`-rectifiability is preserved by the inverse similarity (used for the rescaled
+integral varifolds in Simon Ch. 8, 5.9): if `M` is countably `n`-rectifiable and `t > 0`, then so is
+`σ⁻¹(M)` for `σ(y) = ξ + t y`, with exceptional set `σ⁻¹(M₀)` and parametrizations
+`v ↦ t⁻¹ (F_j(v) - ξ)`. -/
+theorem Submission.intcpt_ri_countablyRectifiable_similarity_preimage :
+    ∀ (N n : ℕ) (ξ : Euclidean N) (t : ℝ) (M : Set (Euclidean N)), 0 < t → Chapter03.CountablyRectifiable n M → Chapter03.CountablyRectifiable n ((fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M) := by
+  intro N n ξ t M ht hM
+  have ht0 : t ≠ 0 := ht.ne'
+  -- Step 1: `M ⊆ M₀ ∪ ⋃ j, range (F j)` with `H^n(M₀) = 0` and `F j` `K j`-Lipschitz.
+  obtain ⟨M₀, hM₀, F, hF, hcover⟩ := hM
+  choose K hK using hF
+  -- Step 2: `η x = t⁻¹ • (x - ξ)` is `‖t⁻¹‖₊`-Lipschitz, hence so is `η ∘ F j` up to `K j`.
+  have hη : LipschitzWith ‖t⁻¹‖₊ (fun x : Euclidean N ↦ t⁻¹ • (x - ξ)) := by
+    refine LipschitzWith.of_dist_le_mul fun x x' ↦ ?_
+    rw [dist_eq_norm, dist_eq_norm, ← smul_sub, sub_sub_sub_cancel_right, norm_smul, coe_nnnorm]
+  -- Step 3: `σ⁻¹(M₀) = t⁻¹ • (-ξ + M₀)` is `H^n`-null.
+  have hset : (fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M₀ =
+      t⁻¹ • ((fun x : Euclidean N ↦ -ξ + x) '' M₀) := by
+    ext y
+    constructor
+    · intro hy
+      refine ⟨-ξ + (ξ + t • y), mem_image_of_mem _ hy, ?_⟩
+      show t⁻¹ • (-ξ + (ξ + t • y)) = y
+      rw [neg_add_cancel_left, smul_smul, inv_mul_cancel₀ ht0, one_smul]
+    · rintro ⟨_, ⟨x, hx, rfl⟩, rfl⟩
+      show ξ + t • t⁻¹ • (-ξ + x) ∈ M₀
+      rwa [smul_smul, mul_inv_cancel₀ ht0, one_smul, add_neg_cancel_left]
+  have hnull : μHE[n] ((fun y : Euclidean N ↦ ξ + t • y) ⁻¹' M₀) = 0 := by
+    rw [hset, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero ht0),
+      (isometry_add_left (-ξ)).euclideanHausdorffMeasure_image, hM₀, smul_zero]
+  -- Steps 4–5: cover `σ⁻¹(M)` by `σ⁻¹(M₀)` and the ranges of `η ∘ F j`.
+  refine ⟨_, hnull, fun j v ↦ t⁻¹ • (F j v - ξ), fun j ↦ ⟨‖t⁻¹‖₊ * K j, hη.comp (hK j)⟩, ?_⟩
+  intro y hy
+  rcases hcover hy with h0 | hrange
+  · exact Or.inl h0
+  · obtain ⟨j, v, hv⟩ := mem_iUnion.1 hrange
+    refine Or.inr (mem_iUnion.2 ⟨j, v, ?_⟩)
+    show t⁻¹ • (F j v - ξ) = y
+    rw [hv, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ ht0, one_smul]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
