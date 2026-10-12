@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "834b9624b5df3aa5e57e500d2cf1d6855a7445d6667e739c72bf91b363bfaea4",
+  "git_delta": {
+    "base_commit": "6bcb2d2f6fa340a5ace3fec3587a0c5db9206ca4",
+    "candidate_commit": "afb8607560ee9a6c31fb28c13f7bcbf9ace954fb",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "pcoarea_chart_change_of_variables",
+    "diff_sha256": "75ca6223c4da6074097c362f7ffda078d67d29f41d99adf03a831e468d56e23c",
+    "source_sha256": "9d1b6487ba7ce252715b75b9690fb07d08e4f45a7fe4c456a82e5065a89fe106",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.pcoarea_chart_change_of_variables",
+      "statement": "∀ (m k : ℕ) (f : Rn (m + k) → WithLp 2 (Rn m × Rn k)) (f' : Rn (m + k) → Rn (m + k) →L[ℝ] WithLp 2 (Rn m × Rn k)) (B : Set (Rn (m + k))), MeasurableSet B → (∀ u ∈ B, HasFDerivWithinAt f (f' u) B u) → InjOn f B → ∀ g : WithLp 2 (Rn m × Rn k) → ℝ≥0∞, ∫⁻ w in f '' B, g w = ∫⁻ u in B, ENNReal.ofReal ((f' u).toLinearMap.normDet) * g (f u)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
