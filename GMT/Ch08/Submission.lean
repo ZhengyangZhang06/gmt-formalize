@@ -1150,6 +1150,104 @@ theorem Submission.intcpt_id_restrict_density_zero_ae : ∀ (N n : ℕ) (μ : Me
   rw [Measure.restrict_apply measurableSet_closedBall, Measure.restrict_apply measurableSet_closedBall,
     Measure.restrict_apply (measurableSet_closedBall.inter hA),
     inter_eq_left.mpr (inter_subset_left.trans hsub)]
+/-- Borel measurability of the upper and lower `n`-densities of an s-finite measure and of each
+level set `{x | Θ^n(μ, x) = c}` (Simon Ch. 1, 3.2; used in Ch. 8 for `μ = μ_V`, which need not be
+locally finite near `∂U`). -/
+theorem Submission.intcpt_id_measurable_densities :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) [SFinite μ], Measurable (fun x ↦ limsup (densityRatio n μ x) (𝓝[>] 0)) ∧ Measurable (fun x ↦ liminf (densityRatio n μ x) (𝓝[>] 0)) ∧ ∀ c : ℝ≥0∞, MeasurableSet {x | HasDensity n μ x c} := by
+  intro N n μ _
+  -- `ω_n < ∞`, so `ψ(ρ) = ω_n ρ^n` is finite and continuous in `ρ`.
+  have hω : unitBallVolume n ≠ ∞ := by
+    unfold unitBallVolume
+    exact measure_ball_lt_top.ne
+  have hψ : Continuous fun ρ : ℝ ↦ unitBallVolume n * ENNReal.ofReal ρ ^ n :=
+    (ENNReal.continuous_const_mul hω).comp
+      ((ENNReal.continuous_pow n).comp ENNReal.continuous_ofReal)
+  -- Step 1: for a fixed radius, `x ↦ μ(B̄_ρ(x)) / (ω_n ρ^n)` is Borel (sections of the closed set
+  -- `{(x, y) | dist y x ≤ ρ}` under the s-finite measure `μ`).
+  have hfix : ∀ ρ : ℝ, Measurable fun x ↦ densityRatio n μ x ρ := by
+    intro ρ
+    have hs : MeasurableSet {p : Euclidean N × Euclidean N | dist p.2 p.1 ≤ ρ} :=
+      (isClosed_le (continuous_snd.dist continuous_fst) continuous_const).measurableSet
+    exact (measurable_measure_prodMk_left (ν := μ) hs).div_const _
+  -- Step 2: `μ(B̄_ρ(x)) / ψ(q) → μ(B̄_ρ(x)) / ψ(ρ)` as `q → ρ` (`ψ(ρ) < ∞`, so this holds even
+  -- when `μ(B̄_ρ(x)) = ∞`).
+  have htend : ∀ (x : Euclidean N) (ρ : ℝ), Tendsto
+      (fun q : ℝ ↦ μ (closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal q ^ n)) (𝓝 ρ)
+      (𝓝 (densityRatio n μ x ρ)) := fun x ρ ↦
+    ENNReal.Tendsto.const_div (hψ.tendsto ρ)
+      (Or.inl (ENNReal.mul_ne_top hω (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)))
+  -- Step 2(a): the supremum over radii in `(0, δ)` equals the supremum over rational radii.
+  have hsup : ∀ (x : Euclidean N) (δ : ℝ), ⨆ ρ ∈ Ioo 0 δ, densityRatio n μ x ρ =
+      ⨆ (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 δ), densityRatio n μ x q := by
+    intro x δ
+    refine le_antisymm (iSup₂_le fun ρ hρ ↦ not_lt.1 fun hlt ↦ ?_)
+      (iSup₂_le fun q hq ↦
+        le_iSup₂ (f := fun ρ (_ : ρ ∈ Ioo 0 δ) ↦ densityRatio n μ x ρ) (q : ℝ) hq)
+    obtain ⟨ε, hε, hball⟩ := Metric.eventually_nhds_iff.1 ((htend x ρ).eventually_const_lt hlt)
+    obtain ⟨q, hρq, hqδ⟩ := exists_rat_btwn (lt_min (lt_add_of_pos_right ρ hε) hρ.2)
+    have hq : (q : ℝ) ∈ Ioo 0 δ := ⟨hρ.1.trans hρq, (lt_min_iff.1 hqδ).2⟩
+    have hdist : dist (q : ℝ) ρ < ε := by
+      rw [Real.dist_eq, abs_sub_lt_iff]
+      constructor <;> linarith [(lt_min_iff.1 hqδ).1]
+    have hmono : μ (closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal q ^ n) ≤
+        densityRatio n μ x q :=
+      ENNReal.div_le_div_right (measure_mono (closedBall_subset_closedBall hρq.le)) _
+    have hle : densityRatio n μ x q ≤ ⨆ (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 δ), densityRatio n μ x q :=
+      le_iSup₂ (f := fun (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 δ) ↦ densityRatio n μ x q) q hq
+    exact lt_irrefl _ ((hball hdist).trans_le (hmono.trans hle))
+  -- Step 2(b): the infimum over radii in `(0, δ)` equals the infimum over rational radii.
+  have hinf : ∀ (x : Euclidean N) (δ : ℝ), ⨅ ρ ∈ Ioo 0 δ, densityRatio n μ x ρ =
+      ⨅ (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 δ), densityRatio n μ x q := by
+    intro x δ
+    refine le_antisymm
+      (le_iInf₂ fun q hq ↦
+        iInf₂_le (f := fun ρ (_ : ρ ∈ Ioo 0 δ) ↦ densityRatio n μ x ρ) (q : ℝ) hq)
+      (le_iInf₂ fun ρ hρ ↦ not_lt.1 fun hlt ↦ ?_)
+    obtain ⟨ε, hε, hball⟩ := Metric.eventually_nhds_iff.1 ((htend x ρ).eventually_lt_const hlt)
+    obtain ⟨q, hq0, hqρ⟩ := exists_rat_btwn (max_lt (sub_lt_self ρ hε) hρ.1)
+    have hq : (q : ℝ) ∈ Ioo 0 δ := ⟨(max_lt_iff.1 hq0).2, hqρ.trans hρ.2⟩
+    have hdist : dist (q : ℝ) ρ < ε := by
+      rw [Real.dist_eq, abs_sub_lt_iff]
+      constructor <;> linarith [(max_lt_iff.1 hq0).1]
+    have hmono : densityRatio n μ x q ≤
+        μ (closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal q ^ n) :=
+      ENNReal.div_le_div_right (measure_mono (closedBall_subset_closedBall hqρ.le)) _
+    have hle : ⨅ (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 δ), densityRatio n μ x q ≤ densityRatio n μ x q :=
+      iInf₂_le (f := fun (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 δ) ↦ densityRatio n μ x q) q hq
+    exact lt_irrefl _ ((hball hdist).trans_le (hle.trans hmono))
+  -- Step 3: `limsup` and `liminf` along `𝓝[>] 0` through the basis `(0, 1/(m+1))`, `m ∈ ℕ`, are
+  -- countable infima/suprema of the fixed-radius ratios at rational radii.
+  have hbasis : (𝓝[>] (0 : ℝ)).HasBasis (fun _ : ℕ ↦ True) (fun m ↦ Ioo 0 (1 / ((m : ℝ) + 1))) :=
+    (nhdsGT_basis (0 : ℝ)).to_hasBasis
+      (fun u hu ↦ (exists_nat_one_div_lt hu).imp fun m hm ↦ ⟨trivial, Ioo_subset_Ioo_right hm.le⟩)
+      (fun m _ ↦ ⟨1 / ((m : ℝ) + 1), Nat.one_div_pos_of_nat, subset_rfl⟩)
+  have hlimsup : Measurable fun x ↦ limsup (densityRatio n μ x) (𝓝[>] 0) := by
+    have heq : (fun x ↦ limsup (densityRatio n μ x) (𝓝[>] 0)) = fun x ↦
+        ⨅ m : ℕ, ⨆ (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 (1 / ((m : ℝ) + 1))), densityRatio n μ x q := by
+      funext x
+      rw [hbasis.limsup_eq_iInf_iSup]
+      simp only [iInf_true, hsup]
+    rw [heq]
+    exact Measurable.iInf fun m ↦ Measurable.iSup fun q ↦ Measurable.iSup fun _ ↦ hfix q
+  have hliminf : Measurable fun x ↦ liminf (densityRatio n μ x) (𝓝[>] 0) := by
+    have heq : (fun x ↦ liminf (densityRatio n μ x) (𝓝[>] 0)) = fun x ↦
+        ⨆ m : ℕ, ⨅ (q : ℚ) (_ : (q : ℝ) ∈ Ioo 0 (1 / ((m : ℝ) + 1))), densityRatio n μ x q := by
+      funext x
+      rw [hbasis.liminf_eq_iSup_iInf]
+      simp only [iSup_true, hinf]
+    rw [heq]
+    exact Measurable.iSup fun m ↦ Measurable.iInf fun q ↦ Measurable.iInf fun _ ↦ hfix q
+  -- Step 4: `Θ^n(μ, x) = c` iff the upper and lower densities both equal `c`.
+  refine ⟨hlimsup, hliminf, fun c ↦ ?_⟩
+  have heq : {x | HasDensity n μ x c} =
+      (fun x ↦ limsup (densityRatio n μ x) (𝓝[>] 0)) ⁻¹' {c} ∩
+        (fun x ↦ liminf (densityRatio n μ x) (𝓝[>] 0)) ⁻¹' {c} := by
+    ext x
+    simp only [mem_ofPred_eq, mem_inter_iff, mem_preimage, mem_singleton_iff, HasDensity]
+    exact ⟨fun h ↦ ⟨h.limsup_eq, h.liminf_eq⟩, fun h ↦ tendsto_of_liminf_eq_limsup h.2 h.1⟩
+  rw [heq]
+  exact (hlimsup (measurableSet_singleton c)).inter (hliminf (measurableSet_singleton c))
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
