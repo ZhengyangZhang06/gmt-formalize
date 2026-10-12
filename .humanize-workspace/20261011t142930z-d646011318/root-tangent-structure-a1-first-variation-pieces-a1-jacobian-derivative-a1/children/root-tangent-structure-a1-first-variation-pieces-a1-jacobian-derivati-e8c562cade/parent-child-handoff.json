@@ -1,0 +1,92 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean",
+        "python3 -I /tmp/jd-scripts/scope.py (verifier gmt-compare.contract_scope at GMT.Ch04.main_theorem)",
+        "lake env lean GMT/Ch04/Submission.lean -o /tmp/jd-decomp/olean/GMT/Ch04/Submission.olean",
+        "#check in frozen scope: Matrix.IsSymm Matrix.IsHermitian Matrix.PosDef Matrix.PosSemidef dotProduct Matrix.mulVec Matrix.trace Matrix.det_one Nat.factorial Matrix.det_le LinearMap.trace_eq_sum_inner Matrix.IsHermitian.eigenvalues EuclideanSpace.basisFun HasDerivAt.finsetProd HasDerivAt.sqrt HasDerivAt.inner Matrix.det_apply",
+        "grep -rn 'theorem det_le|det_eq_prod_eigenvalues|theorem trace_eq_sum_inner' <snapshot>/mathlib/Mathlib",
+        "grep -rn 'HasFDerivAt.*det|hasFDerivAt_det|hasDerivAt_det|fderiv_det|deriv_det|differentiable_det|contDiff_det' <snapshot>/mathlib/Mathlib",
+        "grep -rln 'HasDerivAt.*Matrix.det|hasDerivAt_det|HasFDerivAt.det' <snapshot>/mathlib/Mathlib",
+        "grep -n \"theorem det_apply'|HasDerivAt.fun_finsetProd|HasDerivAt.fun_sum|lemma prod_le_prod₀|theorem trace_comp_comm'|starProjection_apply_mem|starProjection_inner_eq_zero|isIdempotentElem_starProjection|norm_starProjection_apply_le|inner_starProjection_left_eq_right|theorem eigenvalues_eq|theorem det_eq_prod_eigenvalues|EuclideanSpace.norm_eq\" <snapshot>/mathlib/Mathlib/...",
+        "grep -rn 'det' --include=*.lean Poincare | grep -i 'hasDerivAt|deriv|jacobi' (simongmt); grep -n '^theorem|^lemma' Chapter08/JacobianBounds.lean Chapter08/DeformationFamily.lean",
+        "python3 dag.json scan of lean_name/status; grep -c of ts_fv_det_ge_pow_of_quadForm_ge, ts_fv_hasDerivAt_det_of_entries, ts_fv_sum_inner_starProjection_eq_trace, ts_fv_tangential_matrix_estimates in dag.json, DAG.md, simongmt/Poincare, GMT",
+        "git show <projection-trace branch>:GMT/Ch04/Submission.lean | grep 'Submission\\.'; survey of imports across proof branches",
+        "python3 -I /tmp/jd-scripts/gen.py (lean_contract.validate_lean_statement + gmt-compare.child_modules); lean /tmp/jd-decomp/gen/Challenge_*.lean",
+        "lean /tmp/jd-decomp/T2.lean (pp.numericTypes/pp.coercions #check of the child types)",
+        "lean /tmp/jd-decomp/Assembly.lean (frozen parent type from the four sorry'd children)",
+        "lean /tmp/jd-decomp/C1.lean C2.lean C3.lean C4.lean; lean /tmp/jd-decomp/Full.lean with #print axioms",
+        "grep -n 'Jacobi|det|trace' book/chapter-02.txt (5.2–5.3) and book/chapter-04.txt (2.2)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-jacobian-derivative-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-jacobian-derivative-a1/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/DAG.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Matrix/AbsoluteValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Matrix/Spectrum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/Deriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Algebra/Order/BigOperators/GroupWithZero/Finset.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DeformationFamily.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/JacobianBounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/tmp/jd-decomp/gen/Challenge_ts_fv_det_ge_pow_of_quadForm_ge.lean",
+        "/tmp/jd-decomp/gen/Challenge_ts_fv_hasDerivAt_det_of_entries.lean",
+        "/tmp/jd-decomp/gen/Challenge_ts_fv_sum_inner_starProjection_eq_trace.lean",
+        "/tmp/jd-decomp/gen/Challenge_ts_fv_tangential_matrix_estimates.lean",
+        "/tmp/jd-decomp/T2.lean",
+        "/tmp/jd-decomp/Assembly.lean",
+        "/tmp/jd-decomp/C1.lean",
+        "/tmp/jd-decomp/C2.lean",
+        "/tmp/jd-decomp/C3.lean",
+        "/tmp/jd-decomp/C4.lean",
+        "/tmp/jd-decomp/Full.lean"
+      ],
+      "conclusion": "Contract and pinned state:\n- The snapshot (local-project; project ff75f52a, mathlib 25730c7c) has a Contract.lean byte-identical (sha256 6e58e5dd…0f4770b) to the workspace Contract.lean and Submission.lean.\n- The comparator child scope (contract_scope in verifier/gmt-compare.py) is: import GMT.Ch04.Submission; open MeasureTheory Metric Set Filter Topology; open scoped ENNReal ContDiff CompactlySupported; namespace GMT.Ch04; noncomputable section; namespace/end RectifiableVarifold; open RectifiableVarifold.\n\nConstants in that scope:\n- Available: Matrix.det, Matrix.of, Matrix.trace, Matrix.IsSymm, dotProduct, Matrix.mulVec, Nat.factorial, EuclideanSpace.single, Submodule.starProjection, LinearMap.trace, HasDerivAt.finsetProd, HasDerivAt.inner, HasDerivAt.sqrt.\n- Unknown: Matrix.IsHermitian, Matrix.PosDef, Matrix.PosSemidef, Matrix.det_le, LinearMap.trace_eq_sum_inner.\n- So the child types state symmetry entrywise and the quadratic forms as explicit double sums.\n\nLibrary lemmas found in the snapshot mathlib (file:line):\n- Matrix.det_le (LinearAlgebra/Matrix/AbsoluteValue.lean:43)\n- Matrix.IsHermitian.eigenvalues_eq / det_eq_prod_eigenvalues (Analysis/Matrix/Spectrum.lean:147/192)\n- LinearMap.trace_eq_sum_inner (Analysis/InnerProductSpace/Trace.lean:25)\n- LinearMap.trace_comp_comm' (LinearAlgebra/Trace.lean:265)\n- Matrix.det_apply' (LinearAlgebra/Matrix/Determinant/Basic.lean:70)\n- HasDerivAt.fun_finsetProd (Analysis/Calculus/Deriv/Mul.lean:398)\n- HasDerivAt.fun_sum (Analysis/Calculus/Deriv/Add.lean:218)\n- Finset.prod_le_prod₀ (Algebra/Order/BigOperators/GroupWithZero/Finset.lean:38)\n- Submodule.starProjection_apply_mem / starProjection_inner_eq_zero / isIdempotentElem_starProjection / norm_starProjection_apply_le / inner_starProjection_left_eq_right (Analysis/InnerProductSpace/Projection/Basic.lean:156/164/298/411/652)\n- EuclideanSpace.norm_eq (PiL2.lean:145)\n\nNo-match results:\n- Mathlib has no derivative-of-determinant lemma (no HasDerivAt/HasFDerivAt for Matrix.det); the grep returned no file. So Jacobi's formula is a genuine new obligation.\n- SimonGMT Chapter08 has hasDerivAt_linearTangentialJacobian_family and contDiff_quadraticMatrixDeterminant. They are phrased with Grassmannian/clmToMatrix and C² families, so they do not match this frozen type and are not reused.\n- The accepted DAG node trace_scalar_add_rankOne_comp_starProjection has a different type and is not reused.\n\nSimon references: Ch. 2, 5.2–5.3 (det(I+A) = 1 + trace A + …, giving ∂_tJ = div_M X) and Ch. 4, 2.2 back the jacobi_formula child.\n\nLean checks:\n- All four child types validate and elaborate as comparator NodeChallenge files.\n- Each child has a complete proof (C1–C4).\n- Assembly.lean proves the frozen parent type from the sorry'd children.\n- Full.lean (no sorry) uses only propext, Classical.choice and Quot.sound.\n\nName collisions: none for the proposed lean_names."
+    }
+  ],
+  "parent_id": "root.tangent_structure-a1.first_variation_pieces-a1.jacobian_derivative-a1",
+  "child_id": "root.tangent_structure-a1.first_variation_pieces-a1.jacobian_derivative-a1.jacobi_formula-a1",
+  "subproblem": {
+    "key": "jacobi_formula",
+    "title": "Jacobi's formula for an entrywise-differentiable matrix family, with a uniform bound and the value at the identity",
+    "statement": "Let N ∈ ℕ, let A : ℝ → (real N×N matrices indexed by Fin N), let A' be a real N×N matrix and let t, M, M' ∈ ℝ. Assume that for all i, j ∈ Fin N the entry function s ↦ A(s)_ij has derivative A'_ij at t, |A(t)_ij| ≤ M, and |A'_ij| ≤ M'. Then there is D ∈ ℝ such that s ↦ det A(s) has derivative D at t, |D| ≤ N!·N·M'·M^{N−1} (with N − 1 computed in ℕ), and, if A(t) is the identity matrix, D = trace A' = Σ_k A'_kk.",
+    "lean_statement": "∀ (N : ℕ) (A : ℝ → Matrix (Fin N) (Fin N) ℝ) (A' : Matrix (Fin N) (Fin N) ℝ) (t M M' : ℝ), (∀ i j, HasDerivAt (fun s ↦ A s i j) (A' i j) t) → (∀ i j, |A t i j| ≤ M) → (∀ i j, |A' i j| ≤ M') → ∃ D : ℝ, HasDerivAt (fun s ↦ (A s).det) D t ∧ |D| ≤ (N.factorial : ℝ) * N * M' * M ^ (N - 1) ∧ (A t = 1 → D = A'.trace)",
+    "lean_name": "ts_fv_hasDerivAt_det_of_entries",
+    "depends_on": [],
+    "natural_proof": "Source: the parent proof, steps 5 and 7: the differentiated Leibniz formula, its bound, and its value at S(0) = I. Here it is stated for an arbitrary real matrix family that is differentiable entrywise at one point. Background: Jacobi's formula, d det A = trace(adj(A) dA); Simon Ch. 2, 5.2–5.3, where the expansion det(I + A) = 1 + trace A + O(|A|²) yields the first variation. No errata apply.\n\nNotation:\n- Perm(Fin N) is the group of permutations of Fin N; it has N! elements.\n- For σ ∈ Perm(Fin N), ε(σ) ∈ {1, −1} ⊂ ℝ is the real image of sign(σ).\n- For k ∈ Fin N, U_k := Fin N \\ {k} (Finset.univ.erase k). It has N − 1 elements, with N − 1 computed in ℕ.\n\n1. Definition of D. Put D := Σ_{σ ∈ Perm(Fin N)} ε(σ)·Σ_{k ∈ Fin N} (Π_{i ∈ U_k} A(t)_{σ(i) i})·A'_{σ(k) k}.\n\n2. Leibniz formula. For every s ∈ ℝ, det A(s) = Σ_σ ε(σ)·Π_{i ∈ Fin N} A(s)_{σ(i) i} (Matrix.det_apply'). So s ↦ det A(s) is the function s ↦ Σ_σ ε(σ)·Π_i A(s)_{σ(i) i}.\n\n3. The derivative is D. Fix σ. For each i, the function s ↦ A(s)_{σ(i) i} has derivative A'_{σ(i) i} at t; this is the hypothesis for the entry (σ(i), i). By the product rule for finite products (HasDerivAt.fun_finsetProd), s ↦ Π_i A(s)_{σ(i) i} has derivative Σ_k (Π_{i ∈ U_k} A(t)_{σ(i) i})·A'_{σ(k) k} at t. Multiply by the constant ε(σ) (HasDerivAt.const_mul) and sum over the finitely many σ (HasDerivAt.fun_sum). By step 2, s ↦ det A(s) has derivative D at t.\n\n4. Bound on one term. Fix σ and k.\n- Each factor satisfies 0 ≤ |A(t)_{σ(i) i}| ≤ M. Hence |Π_{i ∈ U_k} A(t)_{σ(i) i}| = Π_{i ∈ U_k} |A(t)_{σ(i) i}| ≤ Π_{i ∈ U_k} M = M^{N−1} (Finset.abs_prod, Finset.prod_le_prod₀, Finset.prod_const, and |U_k| = N − 1).\n- Also 0 ≤ |A'_{σ(k) k}| ≤ M', so M' ≥ 0.\n- Multiply the inequalities |A'_{σ(k) k}| ≤ M' and |Π_{i ∈ U_k} A(t)_{σ(i) i}| ≤ M^{N−1}; both left sides are nonnegative and M' ≥ 0. This gives |(Π_{i ∈ U_k} A(t)_{σ(i) i})·A'_{σ(k) k}| ≤ M'·M^{N−1}.\n\n5. Bound on D. Since |ε(σ)| = 1, the triangle inequality and step 4 give, for each σ, |ε(σ)·Σ_k (Π_{i ∈ U_k} A(t)_{σ(i) i})·A'_{σ(k) k}| ≤ Σ_{k ∈ Fin N} M'·M^{N−1} = N·M'·M^{N−1}. By the triangle inequality again, |D| ≤ Σ_σ N·M'·M^{N−1}. Since Perm(Fin N) has N! elements (Fintype.card_perm, Fintype.card_fin), this sum is N!·N·M'·M^{N−1}. If N = 0, the inner sums are empty, so D = 0 and the bound is 0.\n\n6. The identity case. Assume A(t) = I, i.e. A(t)_{ab} = 1 if a = b and 0 otherwise.\n(a) Let σ ≠ id. Choose j with σ(j) ≠ j; by injectivity of σ, also σ(σ(j)) ≠ σ(j). Fix k.\n- If k ≠ j, then j ∈ U_k, and the factor with i = j is A(t)_{σ(j) j} = 0.\n- If k = j, then σ(j) ≠ k, so σ(j) ∈ U_k, and the factor with i = σ(j) is A(t)_{σ(σ(j)) σ(j)} = 0.\nEither way Π_{i ∈ U_k} A(t)_{σ(i) i} = 0 (Finset.prod_eq_zero). So the σ-summand of D is ε(σ)·Σ_k 0·A'_{σ(k) k} = 0.\n(b) For σ = id, ε(id) = 1 and Π_{i ∈ U_k} A(t)_{i i} = 1 for every k. So the id-summand is Σ_k A'_{kk}.\n(c) By (a) and (b) (Finset.sum_eq_single at σ = id), D = Σ_k A'_{kk} = trace A'.\n\nSteps 3, 5 and 6 prove the three claimed properties of D. ∎",
+    "proof_key_steps": [
+      "Define D := Σ_σ ε(σ)Σ_k(Π_{i≠k}A(t)_{σ(i)i})·A'_{σ(k)k}; Leibniz formula det A(s) = Σ_σ ε(σ)Π_i A(s)_{σ(i)i}",
+      "The finite product rule, constant multiples and finite sums show s ↦ det A(s) has derivative D at t",
+      "Each Π_{i≠k} has N−1 factors of absolute value ≤ M and |A'| ≤ M'; the triangle inequality over N indices and N! permutations gives |D| ≤ N!·N·M'·M^{N−1}",
+      "If A(t) = I, every σ ≠ id has non-fixed points j and σ(j), killing every Π_{i≠k}; the id-term is Σ_k A'_kk, so D = trace A'"
+    ]
+  },
+  "audit": {
+    "key": "jacobi_formula",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The explicit differentiated Leibniz sum proves the derivative, bound and identity clause. Nonidentity permutations have two distinct moved indices, so every omitted-factor product vanishes at the identity. Required nonnegativity follows from the entry bounds whenever an index exists; N = 0 gives D = 0 without additional assumptions. The exact type matches the prose, including natural subtraction and the verified matrix identity instance."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-jacobian-derivati-e8c562cade/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-jacobian-derivati-e8c562cade/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-first-variation-pieces-a1-jacobian-derivati-e8c562cade/parent-supplied-natural-proof.json"
+}

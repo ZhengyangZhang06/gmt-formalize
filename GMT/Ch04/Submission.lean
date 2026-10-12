@@ -434,6 +434,139 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- **Determinant lower bound for a coercive symmetric matrix** (used for Simon Ch. 4, 2.2). If
+`S` is a real symmetric `N × N` matrix and `c ∑ᵢ ξᵢ² ≤ ∑ᵢ ∑ⱼ ξᵢ Sᵢⱼ ξⱼ` for every `ξ`, with
+`c ≥ 0`, then `cᴺ ≤ det S`. Induction on `N`: testing `ξ = e₀` gives `c ≤ S₀₀`; if `S₀₀ > 0`,
+row operations give `det S = S₀₀ · det S'` for the Schur complement
+`S'ᵢⱼ = S_{i+1,j+1} - S_{i+1,0} S_{0,j+1} / S₀₀`, which is again symmetric and `c`-coercive; if
+`S₀₀ = 0`, then `c = 0` and the first row of `S` vanishes. -/
+theorem Submission.ts_fv_det_ge_pow_of_quadForm_ge : (∀ (N : ℕ) (S : Matrix (Fin N) (Fin N) ℝ) (c : ℝ), 0 ≤ c → (∀ i j, S i j = S j i) → (∀ ξ : Fin N → ℝ, c * ∑ i, ξ i ^ 2 ≤ ∑ i, ∑ j, ξ i * S i j * ξ j) → c ^ N ≤ S.det) := by
+  intro N
+  induction N with
+  | zero =>
+    intro S c _ _ _
+    simp [Matrix.det_isEmpty]
+  | succ n ih =>
+    intro S c hc hsym hq
+    -- Split `ξ = (t, η)` along the first coordinate.
+    have hnorm : ∀ (t : ℝ) (η : Fin n → ℝ),
+        ∑ i, (Fin.cons t η : Fin (n + 1) → ℝ) i ^ 2 = t ^ 2 + ∑ i, η i ^ 2 := by
+      intro t η
+      simp [Fin.sum_univ_succ]
+    have hexp : ∀ (t : ℝ) (η : Fin n → ℝ),
+        ∑ i, ∑ j, (Fin.cons t η : Fin (n + 1) → ℝ) i * S i j * (Fin.cons t η : Fin (n + 1) → ℝ) j =
+          S 0 0 * t ^ 2 + 2 * t * ∑ j, S 0 j.succ * η j +
+            ∑ i, ∑ j, η i * S i.succ j.succ * η j := by
+      intro t η
+      simp only [Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ]
+      have h1 : ∑ i : Fin n, η i * S i.succ 0 * t = t * ∑ j, S 0 j.succ * η j := by
+        rw [Finset.mul_sum]
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [hsym]
+        ring
+      have h2 : ∑ j : Fin n, t * S 0 j.succ * η j = t * ∑ j, S 0 j.succ * η j := by
+        rw [Finset.mul_sum]
+        refine Finset.sum_congr rfl fun j _ => ?_
+        ring
+      rw [Finset.sum_add_distrib, h1, h2]
+      ring
+    -- `ξ = e₀` gives `c ≤ S 0 0`.
+    have hca : c ≤ S 0 0 := by
+      have h := hq (Fin.cons 1 0)
+      rw [hnorm, hexp] at h
+      simpa using h
+    rcases (hc.trans hca).lt_or_eq with hapos | ha0
+    · -- `S 0 0 > 0`: pass to the Schur complement `S'` of the pivot `S 0 0`.
+      have ha : S 0 0 ≠ 0 := hapos.ne'
+      obtain ⟨S', hS'⟩ : ∃ S' : Matrix (Fin n) (Fin n) ℝ,
+          S' = Matrix.of fun i j => S i.succ j.succ - S i.succ 0 * S 0 j.succ / S 0 0 := ⟨_, rfl⟩
+      have hS'ij : ∀ i j, S' i j = S i.succ j.succ - S i.succ 0 * S 0 j.succ / S 0 0 := by
+        intro i j
+        rw [hS']
+        rfl
+      -- Row operations clear the first column below the pivot: `det S = S 0 0 * det S'`.
+      have hdet : S.det = S 0 0 * S'.det := by
+        let T : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ := Matrix.of fun i j =>
+          S i j + (Fin.cons 0 fun i' => -(S i'.succ 0 / S 0 0) : Fin (n + 1) → ℝ) i * S 0 j
+        have hT : T.det = S.det :=
+          Matrix.det_eq_of_forall_row_eq_smul_add_const _ 0 (Fin.cons_zero _ _) fun _ _ => rfl
+        have hcol : ∀ i : Fin n, T i.succ 0 = 0 := by
+          intro i
+          simp only [T, Matrix.of_apply, Fin.cons_succ]
+          field_simp
+          ring
+        have hsub : T.submatrix (Fin.succAbove 0) Fin.succ = S' := by
+          ext i j
+          simp only [T, Matrix.submatrix_apply, Fin.succAbove_zero, Matrix.of_apply, Fin.cons_succ,
+            hS'ij]
+          ring
+        rw [← hT, Matrix.det_succ_column_zero, Fin.sum_univ_succ]
+        simp only [hcol, mul_zero, zero_mul, Finset.sum_const_zero, add_zero, hsub]
+        simp [T]
+      -- `S'` is symmetric.
+      have hS'sym : ∀ i j, S' i j = S' j i := by
+        intro i j
+        rw [hS'ij, hS'ij, hsym i.succ j.succ, hsym i.succ 0, hsym 0 j.succ]
+        ring
+      -- The quadratic form of `S'`.
+      have hS'form : ∀ η : Fin n → ℝ, ∑ i, ∑ j, η i * S' i j * η j =
+          ∑ i, ∑ j, η i * S i.succ j.succ * η j - (∑ j, S 0 j.succ * η j) ^ 2 / S 0 0 := by
+        intro η
+        have hb : ∑ i, η i * S i.succ 0 = ∑ j, S 0 j.succ * η j :=
+          Finset.sum_congr rfl fun i _ => by rw [hsym]; ring
+        calc ∑ i, ∑ j, η i * S' i j * η j
+            = ∑ i, ∑ j, (η i * S i.succ j.succ * η j -
+                η i * S i.succ 0 * (S 0 j.succ * η j) / S 0 0) := by
+              refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+              rw [hS'ij]
+              ring
+          _ = ∑ i, ∑ j, η i * S i.succ j.succ * η j -
+                (∑ i, η i * S i.succ 0) * (∑ j, S 0 j.succ * η j) / S 0 0 := by
+              rw [Finset.sum_mul_sum, Finset.sum_div, ← Finset.sum_sub_distrib]
+              refine Finset.sum_congr rfl fun i _ => ?_
+              rw [Finset.sum_div, ← Finset.sum_sub_distrib]
+          _ = _ := by rw [hb, sq]
+      -- `S'` is again `c`-coercive: test the hypothesis on `ξ = (-b / S 0 0, η)`.
+      have hS'q : ∀ η : Fin n → ℝ, c * ∑ i, η i ^ 2 ≤ ∑ i, ∑ j, η i * S' i j * η j := by
+        intro η
+        rw [hS'form]
+        have h := hq (Fin.cons (-(∑ j, S 0 j.succ * η j) / S 0 0) η)
+        rw [hnorm, hexp] at h
+        have ht : S 0 0 * (-(∑ j, S 0 j.succ * η j) / S 0 0) ^ 2 +
+            2 * (-(∑ j, S 0 j.succ * η j) / S 0 0) * ∑ j, S 0 j.succ * η j =
+            -((∑ j, S 0 j.succ * η j) ^ 2 / S 0 0) := by
+          field_simp
+          ring
+        have hct : 0 ≤ c * (-(∑ j, S 0 j.succ * η j) / S 0 0) ^ 2 :=
+          mul_nonneg hc (sq_nonneg _)
+        linarith
+      have hih := ih S' c hc hS'sym hS'q
+      rw [hdet, pow_succ]
+      calc c ^ n * c ≤ S'.det * S 0 0 :=
+            mul_le_mul hih hca hc ((pow_nonneg hc n).trans hih)
+        _ = S 0 0 * S'.det := mul_comm _ _
+    · -- `S 0 0 = 0`: then `c = 0` and the first row of `S` vanishes.
+      have hc0 : c = 0 := le_antisymm (ha0 ▸ hca) hc
+      have hrow : ∀ j, S 0 j = 0 := by
+        intro j
+        refine Fin.cases ha0.symm (fun j' => ?_) j
+        by_contra hb
+        have h := hq (Fin.cons
+          (-(∑ i, ∑ j, (Pi.single j' 1 : Fin n → ℝ) i * S i.succ j.succ *
+              (Pi.single j' 1 : Fin n → ℝ) j + 1) / (2 * S 0 j'.succ))
+          (Pi.single j' 1))
+        rw [hnorm, hexp, ← ha0, hc0] at h
+        have hb' : ∑ j, S 0 j.succ * (Pi.single j' 1 : Fin n → ℝ) j = S 0 j'.succ := by
+          simp [Pi.single_apply]
+        rw [hb'] at h
+        have key : 2 * (-(∑ i, ∑ j, (Pi.single j' 1 : Fin n → ℝ) i * S i.succ j.succ *
+              (Pi.single j' 1 : Fin n → ℝ) j + 1) / (2 * S 0 j'.succ)) * S 0 j'.succ =
+            -(∑ i, ∑ j, (Pi.single j' 1 : Fin n → ℝ) i * S i.succ j.succ *
+              (Pi.single j' 1 : Fin n → ℝ) j + 1) := by
+          field_simp
+        linarith
+      rw [Matrix.det_eq_zero_of_row_eq_zero 0 hrow, hc0, zero_pow (Nat.succ_ne_zero n)]
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
