@@ -458,6 +458,183 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, 2.4 at one centre `y` (abstract form): pinched mass and conical-excess bounds from
+the monotonicity data.  Write `B_r = B_r(y)` (closed) and `Φ(r) = F(r) r⁻ⁿ μ(B_r) + F(r) − 1`, and
+assume, for `r ∈ (0, R)`, `μ(B_r) ≤ M`, `e^{−Λ} ≤ F(r) ≤ e^Λ` and `|F(r) − 1| ≤ Λ`, and, for
+`0 < s ≤ r < R`, `Φ(s) ≤ Φ(r)` and `∫_{B_r \ B_s} g dμ ≤ e^Λ (Φ(r) − Φ(s))`.  Letting `r ↑ R` in
+`Φ(s) ≤ Φ(r) ≤ e^Λ r⁻ⁿ M + Λ` gives `Φ(s) ≤ e^Λ M/Rⁿ + Λ`, hence for `s ∈ (0, R)`:
+`μ(B_s) ≤ (e^{2Λ} M/Rⁿ + 2e^Λ Λ) sⁿ`; and if `ω ≤ Φ` on `(0, R)`, also
+`e^{−Λ} (ω − Λ) sⁿ ≤ μ(B_s)` and `∫_{B_s} g dμ ≤ e^Λ (e^Λ M/Rⁿ + Λ − ω)`, the latter by exhausting
+`B_s \ {y}` with the annuli `B_s \ B_{s/(k+2)}` (the centre contributes nothing as `g(y) = 0`). -/
+theorem allard52_center_density_bounds : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (g : Amb n ℓ → ℝ) (F : ℝ → ℝ) (y : Amb n ℓ) (ω R Λ M : ℝ), 0 < R → 0 < Λ → 0 ≤ M → g y = 0 → (∀ r ∈ Ioo 0 R, μ (closedBall y r) ≤ ENNReal.ofReal M) → (∀ r ∈ Ioo 0 R, Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Λ) → (∀ s r : ℝ, 0 < s → s ≤ r → r < R → F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal + F s - 1 ≤ F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1 ∧ ∫⁻ x in closedBall y r \ closedBall y s, ENNReal.ofReal (g x) ∂μ ≤ ENNReal.ofReal (Real.exp Λ * ((F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1) - (F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal + F s - 1)))) → ∀ s : ℝ, 0 < s → s < R → μ (closedBall y s) ≤ ENNReal.ofReal ((Real.exp (2 * Λ) * (M / R ^ n) + 2 * Real.exp Λ * Λ) * s ^ n) ∧ ((∀ t ∈ Ioo 0 R, ω ≤ F t * (t ^ n)⁻¹ * (μ (closedBall y t)).toReal + F t - 1) → ENNReal.ofReal (Real.exp (-Λ) * (ω - Λ) * s ^ n) ≤ μ (closedBall y s) ∧ ∫⁻ x in closedBall y s, ENNReal.ofReal (g x) ∂μ ≤ ENNReal.ofReal (Real.exp Λ * (Real.exp Λ * (M / R ^ n) + Λ - ω))) := by
+  intro n ℓ μ g F y ω R Λ M hR _hΛ hM hgy hμ hF hΦ s hs hsR
+  have hsI : s ∈ Ioo 0 R := ⟨hs, hsR⟩
+  have hexp_pos : 0 < Real.exp Λ := Real.exp_pos Λ
+  have hexpn_pos : 0 < Real.exp (-Λ) := Real.exp_pos (-Λ)
+  -- Step 1: on `(0, R)`, `μ(B_r) ≤ M < ∞`, so `μ(B_r) = ofReal m(r)` with `0 ≤ m(r) ≤ M`.
+  have hfin : ∀ r ∈ Ioo 0 R, μ (closedBall y r) ≠ ∞ := fun r hr =>
+    ne_top_of_le_ne_top ENNReal.ofReal_ne_top (hμ r hr)
+  have hmM : ∀ r ∈ Ioo 0 R, (μ (closedBall y r)).toReal ≤ M := fun r hr =>
+    ENNReal.toReal_le_of_le_ofReal hM (hμ r hr)
+  have hm0 : ∀ r, 0 ≤ (μ (closedBall y r)).toReal := fun r => ENNReal.toReal_nonneg
+  -- Step 2: `Φ(r) ≤ e^Λ r⁻ⁿ M + Λ` on `(0, R)`, as `0 ≤ F(r) ≤ e^Λ` and `F(r) − 1 ≤ Λ`.
+  have hΦup : ∀ r ∈ Ioo 0 R, F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal + F r - 1
+      ≤ Real.exp Λ * (r ^ n)⁻¹ * M + Λ := by
+    intro r hr
+    obtain ⟨-, hF2, hF3⟩ := hF r hr
+    have hrn : 0 < (r ^ n)⁻¹ := inv_pos.mpr (pow_pos hr.1 n)
+    have h1 : F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal ≤ Real.exp Λ * (r ^ n)⁻¹ * M :=
+      calc F r * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal
+          ≤ Real.exp Λ * (r ^ n)⁻¹ * (μ (closedBall y r)).toReal :=
+            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hF2 hrn.le) (hm0 r)
+        _ ≤ Real.exp Λ * (r ^ n)⁻¹ * M :=
+            mul_le_mul_of_nonneg_left (hmM r hr) (mul_pos hexp_pos hrn).le
+    have h2 : F r - 1 ≤ Λ := le_trans (le_abs_self _) hF3
+    linarith
+  -- Step 2 (†): letting `r ↑ R` in `Φ(s) ≤ Φ(r) ≤ e^Λ r⁻ⁿ M + Λ` gives `Φ(s) ≤ e^Λ M/Rⁿ + Λ`.
+  have hd : F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal + F s - 1
+      ≤ Real.exp Λ * (M / R ^ n) + Λ := by
+    have hlim0 : Tendsto (fun r : ℝ => Real.exp Λ * (r ^ n)⁻¹ * M + Λ) (𝓝 R)
+        (𝓝 (Real.exp Λ * (R ^ n)⁻¹ * M + Λ)) :=
+      ((tendsto_const_nhds.mul (((continuous_pow n).tendsto R).inv₀
+        (pow_ne_zero _ hR.ne'))).mul tendsto_const_nhds).add tendsto_const_nhds
+    have hlim : Tendsto (fun r : ℝ => Real.exp Λ * (r ^ n)⁻¹ * M + Λ) (𝓝[<] R)
+        (𝓝 (Real.exp Λ * (M / R ^ n) + Λ)) := by
+      rw [show Real.exp Λ * (M / R ^ n) + Λ = Real.exp Λ * (R ^ n)⁻¹ * M + Λ by
+        rw [div_eq_mul_inv]; ring]
+      exact tendsto_nhdsWithin_of_tendsto_nhds hlim0
+    refine ge_of_tendsto hlim ?_
+    filter_upwards [Ioo_mem_nhdsLT hsR] with r hr
+    exact le_trans (hΦ s r hs hr.1.le hr.2).1 (hΦup r ⟨lt_trans hs hr.1, hr.2⟩)
+  obtain ⟨hF1, hF2, hF3⟩ := hF s hsI
+  have hsn : 0 < s ^ n := pow_pos hs n
+  have hx0 : 0 ≤ (s ^ n)⁻¹ * (μ (closedBall y s)).toReal :=
+    mul_nonneg (inv_pos.mpr hsn).le (hm0 s)
+  have hcancel : ((s ^ n)⁻¹ * (μ (closedBall y s)).toReal) * s ^ n
+      = (μ (closedBall y s)).toReal := by
+    field_simp
+  refine ⟨?_, ?_⟩
+  · -- Step 3 (i): `F(s) s⁻ⁿ m(s) ≤ e^Λ M/Rⁿ + 2Λ` by (†) and `1 − F(s) ≤ Λ`; divide by
+    -- `F(s) ≥ e^{−Λ}` and multiply by `sⁿ`.
+    have h1 : 1 - F s ≤ Λ := by
+      have := neg_abs_le (F s - 1)
+      linarith
+    have hA : F s * ((s ^ n)⁻¹ * (μ (closedBall y s)).toReal)
+        ≤ Real.exp Λ * (M / R ^ n) + 2 * Λ := by
+      have : F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal
+          = F s * ((s ^ n)⁻¹ * (μ (closedBall y s)).toReal) := by ring
+      linarith
+    have hB : (s ^ n)⁻¹ * (μ (closedBall y s)).toReal
+        ≤ Real.exp Λ * (Real.exp Λ * (M / R ^ n) + 2 * Λ) := by
+      have hC : Real.exp (-Λ) * ((s ^ n)⁻¹ * (μ (closedBall y s)).toReal)
+          ≤ Real.exp Λ * (M / R ^ n) + 2 * Λ :=
+        le_trans (mul_le_mul_of_nonneg_right hF1 hx0) hA
+      have hexpinv : Real.exp Λ * Real.exp (-Λ) = 1 := by
+        rw [← Real.exp_add]; simp
+      calc (s ^ n)⁻¹ * (μ (closedBall y s)).toReal
+          = Real.exp Λ * (Real.exp (-Λ) * ((s ^ n)⁻¹ * (μ (closedBall y s)).toReal)) := by
+            rw [← mul_assoc, hexpinv, one_mul]
+        _ ≤ Real.exp Λ * (Real.exp Λ * (M / R ^ n) + 2 * Λ) :=
+            mul_le_mul_of_nonneg_left hC hexp_pos.le
+    have h2Λ : Real.exp (2 * Λ) = Real.exp Λ * Real.exp Λ := by
+      rw [two_mul, Real.exp_add]
+    have hmain : (μ (closedBall y s)).toReal
+        ≤ (Real.exp (2 * Λ) * (M / R ^ n) + 2 * Real.exp Λ * Λ) * s ^ n := by
+      calc (μ (closedBall y s)).toReal
+          = ((s ^ n)⁻¹ * (μ (closedBall y s)).toReal) * s ^ n := hcancel.symm
+        _ ≤ (Real.exp Λ * (Real.exp Λ * (M / R ^ n) + 2 * Λ)) * s ^ n :=
+            mul_le_mul_of_nonneg_right hB hsn.le
+        _ = (Real.exp (2 * Λ) * (M / R ^ n) + 2 * Real.exp Λ * Λ) * s ^ n := by
+            rw [h2Λ]; ring
+    exact (ENNReal.ofReal_toReal (hfin s hsI)).symm.trans_le (ENNReal.ofReal_le_ofReal hmain)
+  · intro hω
+    have hωs := hω s hsI
+    refine ⟨?_, ?_⟩
+    · -- Step 4 (ii): `ω − Λ ≤ Φ(s) − (F(s) − 1) ≤ F(s) s⁻ⁿ m(s) ≤ e^Λ s⁻ⁿ m(s)`.
+      have h2 : F s - 1 ≤ Λ := le_trans (le_abs_self _) hF3
+      have hA : ω - Λ ≤ F s * ((s ^ n)⁻¹ * (μ (closedBall y s)).toReal) := by
+        have : F s * (s ^ n)⁻¹ * (μ (closedBall y s)).toReal
+            = F s * ((s ^ n)⁻¹ * (μ (closedBall y s)).toReal) := by ring
+        linarith
+      have hC : ω - Λ ≤ Real.exp Λ * ((s ^ n)⁻¹ * (μ (closedBall y s)).toReal) :=
+        le_trans hA (mul_le_mul_of_nonneg_right hF2 hx0)
+      have hexpinv : Real.exp (-Λ) * Real.exp Λ = 1 := by
+        rw [← Real.exp_add]; simp
+      have hB : Real.exp (-Λ) * (ω - Λ) ≤ (s ^ n)⁻¹ * (μ (closedBall y s)).toReal := by
+        calc Real.exp (-Λ) * (ω - Λ)
+            ≤ Real.exp (-Λ) * (Real.exp Λ * ((s ^ n)⁻¹ * (μ (closedBall y s)).toReal)) :=
+              mul_le_mul_of_nonneg_left hC hexpn_pos.le
+          _ = (s ^ n)⁻¹ * (μ (closedBall y s)).toReal := by
+              rw [← mul_assoc, hexpinv, one_mul]
+      have hmain : Real.exp (-Λ) * (ω - Λ) * s ^ n ≤ (μ (closedBall y s)).toReal := by
+        calc Real.exp (-Λ) * (ω - Λ) * s ^ n
+            ≤ ((s ^ n)⁻¹ * (μ (closedBall y s)).toReal) * s ^ n :=
+              mul_le_mul_of_nonneg_right hB hsn.le
+          _ = (μ (closedBall y s)).toReal := hcancel
+      exact (ENNReal.ofReal_le_ofReal hmain).trans_eq (ENNReal.ofReal_toReal (hfin s hsI))
+    · -- Step 5 (iii): each annulus `B_s \ B_t`, `t ∈ (0, s)`, carries at most
+      -- `e^Λ (Φ(s) − Φ(t)) ≤ e^Λ (e^Λ M/Rⁿ + Λ − ω)`.
+      have hpiece : ∀ t : ℝ, 0 < t → t < s →
+          ∫⁻ x in closedBall y s \ closedBall y t, ENNReal.ofReal (g x) ∂μ
+            ≤ ENNReal.ofReal (Real.exp Λ * (Real.exp Λ * (M / R ^ n) + Λ - ω)) := by
+        intro t ht hts
+        refine le_trans (hΦ t s ht hts.le hsR).2 (ENNReal.ofReal_le_ofReal ?_)
+        have hωt := hω t ⟨ht, lt_trans hts hsR⟩
+        apply mul_le_mul_of_nonneg_left _ hexp_pos.le
+        linarith
+      -- The annuli `B_s \ B_{s/(k+2)}` increase to `B_s \ {y}`.
+      have hmono : Monotone (fun k : ℕ => closedBall y s \ closedBall y (s / ((k : ℝ) + 2))) := by
+        intro i j hij
+        apply sdiff_subset_sdiff_right
+        apply closedBall_subset_closedBall
+        have hij' : (i : ℝ) ≤ j := Nat.cast_le.mpr hij
+        apply div_le_div_of_nonneg_left hs.le (by positivity)
+        linarith
+      have hUnion : (⋃ k : ℕ, closedBall y s \ closedBall y (s / ((k : ℝ) + 2)))
+          = closedBall y s \ {y} := by
+        ext x
+        simp only [mem_iUnion, Set.mem_sdiff, mem_closedBall, mem_singleton_iff, not_le]
+        constructor
+        · rintro ⟨k, hx1, hx2⟩
+          refine ⟨hx1, fun h => ?_⟩
+          have : 0 < s / ((k : ℝ) + 2) := by positivity
+          rw [h, dist_self] at hx2
+          linarith
+        · rintro ⟨hx1, hx2⟩
+          have hpos : 0 < dist x y := dist_pos.mpr hx2
+          obtain ⟨k, hk⟩ := exists_nat_gt (s / dist x y)
+          refine ⟨k, hx1, ?_⟩
+          rw [div_lt_iff₀ (by positivity)]
+          rw [div_lt_iff₀ hpos] at hk
+          nlinarith
+      -- Directed exhaustion: the lower integral over `B_s \ {y}` is the supremum over the annuli.
+      have hmain : ∫⁻ x in closedBall y s \ {y}, ENNReal.ofReal (g x) ∂μ
+          ≤ ENNReal.ofReal (Real.exp Λ * (Real.exp Λ * (M / R ^ n) + Λ - ω)) := by
+        rw [← hUnion, setLIntegral_iUnion_of_directed (fun x => ENNReal.ofReal (g x))
+          hmono.directed_le]
+        refine iSup_le fun k => hpiece _ (by positivity) (div_lt_self hs ?_)
+        have : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+        linarith
+      -- The centre contributes `ofReal (g y) μ {y} = 0`.
+      have hsingle : ∫⁻ x in ({y} : Set (Amb n ℓ)), ENNReal.ofReal (g x) ∂μ = 0 := by
+        simp [hgy]
+      calc ∫⁻ x in closedBall y s, ENNReal.ofReal (g x) ∂μ
+          ≤ ∫⁻ x in (closedBall y s \ {y}) ∪ {y}, ENNReal.ofReal (g x) ∂μ := by
+            apply lintegral_mono_set
+            intro x hx
+            by_cases h : x = y
+            · exact Or.inr h
+            · exact Or.inl ⟨hx, h⟩
+        _ ≤ ∫⁻ x in closedBall y s \ {y}, ENNReal.ofReal (g x) ∂μ
+            + ∫⁻ x in ({y} : Set (Amb n ℓ)), ENNReal.ofReal (g x) ∂μ :=
+            lintegral_union_le _ _ _
+        _ ≤ ENNReal.ofReal (Real.exp Λ * (Real.exp Λ * (M / R ^ n) + Λ - ω)) := by
+            rw [hsingle, add_zero]; exact hmain
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
