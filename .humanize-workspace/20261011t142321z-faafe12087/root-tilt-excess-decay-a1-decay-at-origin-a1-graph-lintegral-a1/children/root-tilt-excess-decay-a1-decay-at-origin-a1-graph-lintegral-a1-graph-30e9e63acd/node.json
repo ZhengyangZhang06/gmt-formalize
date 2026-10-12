@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_lintegral-a1.graph_map_lipschitz-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_lintegral-a1",
+  "depth": 4,
+  "title": "Rotated graph map of an L-Lipschitz function is sqrt(1+L^2)-Lipschitz on D",
+  "statement": "Setting:\n- n, l are natural numbers, and R^m denotes EuclideanSpace R (Fin m).\n- q : R^{n+l} -> R^{n+l} is a linear isometry equivalence.\n- f : R^n -> R^l is any function, D is a subset of R^n (arbitrary, not necessarily measurable), and L >= 0 is a nonnegative real (L in R>=0).\n- Assume f is L-Lipschitz on D: |f x - f y| <= L |x - y| for all x, y in D.\n\nDefine F : R^n -> R^{n+l} by F(x) = q(graphPoint x (f x)). Here graphPoint x y = toLp 2 (Fin.append (ofLp x) (ofLp y)) is the point (x, y) of R^n x R^l = R^{n+l}.\n\nConclusion: F is Lipschitz on D with constant sqrt(1 + L^2), i.e. |F x - F y| <= sqrt(1 + L^2) |x - y| for all x, y in D. In Lean the constant is NNReal.sqrt (1 + L ^ 2).",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)) (L : ℝ≥0), LipschitzOnWith L f D → LipschitzOnWith (NNReal.sqrt (1 + L ^ 2)) (fun x => q (graphPoint x (f x))) D",
+  "lean_name": "tdo_gl_graph_map_lipschitzOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-lintegral-a1-graph-30e9e63acd-a1"
+}

@@ -458,6 +458,45 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 4.5 (pp. 116–120), integrals over the Lipschitz graph: for a
+linear isometry `q` of `ℝ^{n+ℓ}` and `f : ℝⁿ → ℝ^ℓ` that is `L`-Lipschitz on `D`, the map
+`F(x) = q(x, f(x))` is `√(1 + L²)`-Lipschitz on `D`.  Since `q` preserves distances and
+`|(x, f x) − (y, f y)|² = |x − y|² + |f(x) − f(y)|²` (split the sum `Σ_k w_k²` over the indices
+`castAdd ℓ i` and `natAdd n j` of `Fin (n + ℓ)` with `Fin.sum_univ_add`), the hypothesis gives
+`|F(x) − F(y)|² ≤ (1 + L²)|x − y|² = (√(1 + L²) |x − y|)²` for `x, y ∈ D`; take square roots. -/
+theorem tdo_gl_graph_map_lipschitzOn : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)) (L : ℝ≥0), LipschitzOnWith L f D → LipschitzOnWith (NNReal.sqrt (1 + L ^ 2)) (fun x => q (graphPoint x (f x))) D := by
+  intro n ℓ q f D L hf
+  -- the coordinates of `graphPoint a b`
+  have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp [graphPoint]
+  have hr : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp [graphPoint]
+  -- `|(a, b) − (a', b')|² = |a − a'|² + |b − b'|²`, splitting `Σ_k w_k²` over the two blocks
+  have hsq : ∀ (a a' : Rn n) (b b' : Rn ℓ),
+      ‖graphPoint a b - graphPoint a' b'‖ ^ 2 = ‖a - a'‖ ^ 2 + ‖b - b'‖ ^ 2 := by
+    intro a a' b b'
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+      Fin.sum_univ_add]
+    simp only [PiLp.sub_apply, hl, hr]
+  -- `q` preserves distances, so it suffices to bound `|(x, f x) − (y, f y)|` by
+  -- `√(1 + L²) |x − y|` for `x, y ∈ D`
+  refine LipschitzOnWith.of_dist_le_mul fun x hx y hy => ?_
+  rw [LinearIsometryEquiv.dist_map, dist_eq_norm, dist_eq_norm, Real.coe_sqrt, NNReal.coe_add,
+    NNReal.coe_one, NNReal.coe_pow]
+  -- `|f x − f y|² ≤ L² |x − y|²` on `D`
+  have hfxy : ‖f x - f y‖ ^ 2 ≤ (L * ‖x - y‖) ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg _) (hf.norm_sub_le hx hy) 2
+  refine (sq_le_sq₀ (norm_nonneg _) (by positivity)).mp ?_
+  rw [hsq, mul_pow, Real.sq_sqrt (by positivity)]
+  rw [mul_pow] at hfxy
+  linarith
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
