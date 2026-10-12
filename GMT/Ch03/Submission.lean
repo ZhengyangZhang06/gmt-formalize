@@ -555,6 +555,109 @@ theorem Submission.critSlices_image_volume_le_of_fderiv_near : ∀ (n m : ℕ) (
         measure_mono hsub
     _ ≤ ENNReal.ofReal (2 * (ε * d) * (2 * ((Λ + ε) * d)) ^ (m - 1)) :=
         Submission.critSlices_slab_volume_le m ν (G u₀) (ε * d) ((Λ + ε) * d) hν
+/-- **Subdivision of `[-R, R]ⁿ` into `Mⁿ` subcubes**: for `M > 0` and `R ≥ 0`, with side
+`s = 2R/M`, the closed cubes `Q_α = {u : -R + s αᵢ ≤ uᵢ ≤ -R + s (αᵢ + 1) for all i}`,
+`α : Fin n → Fin M`, are convex, lie in `closedBall 0 (√n R)`, have diameter at most `√n s` and
+cover `closedBall 0 R`. This is the cube subdivision in the covering proof that critical slices
+are null (Simon Ch. 2, p. 66, the consequence of (6.3) stated before 6.4). The defining
+inequalities are preserved by convex combinations. Every coordinate of a point of `Q_α` lies in
+`[-R, R]`, and two points of `Q_α` differ by at most `s` in every coordinate, which gives the two
+norm bounds. A point `u` of `closedBall 0 R` has `|uᵢ| ≤ R`; it lies in `Q_α` for `α ≡ 0` if
+`R = 0`, and for `αᵢ = min ⌊(uᵢ + R)/s⌋₊ (M - 1)` if `R > 0`. -/
+theorem Submission.critSlices_cube_cover : ∀ (n M : ℕ) (R : ℝ), 0 < M → 0 ≤ R → ∃ Q : (Fin n → Fin M) → Set (Rn n), (∀ α, Convex ℝ (Q α)) ∧ (∀ α, Q α ⊆ Metric.closedBall 0 (Real.sqrt n * R)) ∧ (∀ α, ∀ u ∈ Q α, ∀ v ∈ Q α, dist u v ≤ Real.sqrt n * (2 * R / M)) ∧ Metric.closedBall (0 : Rn n) R ⊆ ⋃ α, Q α := by
+  intro n M R hM hR
+  have hM' : (0 : ℝ) < M := Nat.cast_pos.2 hM
+  -- The side length `s = 2R/M`, so `s ≥ 0` and `s M = 2R`.
+  set s : ℝ := 2 * R / M with hs
+  have hs0 : 0 ≤ s := div_nonneg (by linarith) hM'.le
+  have hsM : s * M = 2 * R := div_mul_cancel₀ _ hM'.ne'
+  refine ⟨fun α ↦ {u : Rn n | ∀ i, -R + s * (α i : ℕ) ≤ u i ∧ u i ≤ -R + s * ((α i : ℕ) + 1)},
+    ?_, ?_, ?_, ?_⟩
+  -- Step 1: the defining inequalities are preserved by convex combinations.
+  · intro α u hu v hv a b ha hb hab i
+    obtain ⟨hu1, hu2⟩ := hu i
+    obtain ⟨hv1, hv2⟩ := hv i
+    obtain rfl : b = 1 - a := by linarith
+    have hcomb : (a • u + (1 - a) • v) i = a * u i + (1 - a) * v i := rfl
+    rw [hcomb]
+    constructor
+    · linarith [mul_le_mul_of_nonneg_left hu1 ha, mul_le_mul_of_nonneg_left hv1 hb]
+    · linarith [mul_le_mul_of_nonneg_left hu2 ha, mul_le_mul_of_nonneg_left hv2 hb]
+  -- Step 2: the coordinates of a point of `Q α` lie in `[-R, R]`, so its norm is at most `√n R`.
+  · intro α u hu
+    have hcoord : ∀ i, ‖u i‖ ≤ R := by
+      intro i
+      obtain ⟨h1, h2⟩ := hu i
+      have hα0 : (0 : ℝ) ≤ (α i : ℕ) := Nat.cast_nonneg _
+      have hαM : ((α i : ℕ) : ℝ) + 1 ≤ M := by exact_mod_cast (α i).isLt
+      rw [Real.norm_eq_abs, abs_le]
+      constructor
+      · linarith [mul_nonneg hs0 hα0]
+      · linarith [mul_le_mul_of_nonneg_left hαM hs0]
+    rw [mem_closedBall_zero_iff, EuclideanSpace.norm_eq]
+    calc √(∑ i, ‖u i‖ ^ 2) ≤ √(∑ _i : Fin n, R ^ 2) := by
+          gcongr with i
+          exact hcoord i
+      _ = √n * R := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq hR]
+  -- Step 3: two points of `Q α` differ by at most `s` in every coordinate.
+  · intro α u hu v hv
+    have hcoord : ∀ i, dist (u i) (v i) ≤ s := by
+      intro i
+      obtain ⟨hu1, hu2⟩ := hu i
+      obtain ⟨hv1, hv2⟩ := hv i
+      rw [Real.dist_eq, abs_le]
+      constructor <;> linarith
+    rw [EuclideanSpace.dist_eq]
+    calc √(∑ i, dist (u i) (v i) ^ 2) ≤ √(∑ _i : Fin n, s ^ 2) := by
+          gcongr with i
+          exact hcoord i
+      _ = √n * s := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq hs0]
+  -- Step 4: every point of `closedBall 0 R` lies in some `Q α`.
+  · intro u hu
+    rw [mem_closedBall_zero_iff] at hu
+    have hcoord : ∀ i, |u i| ≤ R := fun i ↦ by
+      have h := PiLp.norm_apply_le u i
+      rw [Real.norm_eq_abs] at h
+      exact h.trans hu
+    rcases hR.eq_or_lt with rfl | hRpos
+    · -- `R = 0`: all coordinates vanish and `s = 0`; take `α ≡ 0`.
+      refine mem_iUnion.2 ⟨fun _ ↦ ⟨0, hM⟩, fun i ↦ ?_⟩
+      have hui : u i = 0 := abs_nonpos_iff.1 (hcoord i)
+      have hs00 : s = 0 := by rw [hs]; simp
+      simp [hui, hs00]
+    · -- `R > 0`: `αᵢ = min ⌊tᵢ⌋₊ (M - 1)` with `tᵢ = (uᵢ + R)/s ∈ [0, M]`.
+      have hspos : 0 < s := div_pos (by linarith) hM'
+      obtain ⟨t, ht⟩ : ∃ t : Fin n → ℝ, ∀ i, t i = (u i + R) / s := ⟨_, fun _ ↦ rfl⟩
+      have ht0 : ∀ i, 0 ≤ t i := fun i ↦ by
+        rw [ht i]
+        exact div_nonneg (by linarith [(abs_le.1 (hcoord i)).1]) hs0
+      have htM : ∀ i, t i ≤ M := fun i ↦ by
+        rw [ht i, div_le_iff₀ hspos]
+        linarith [(abs_le.1 (hcoord i)).2]
+      have hk : ∀ i, ((min ⌊t i⌋₊ (M - 1) : ℕ) : ℝ) ≤ t i ∧
+          t i ≤ ((min ⌊t i⌋₊ (M - 1) : ℕ) : ℝ) + 1 := by
+        intro i
+        refine ⟨(Nat.cast_le.2 (min_le_left _ _)).trans (Nat.floor_le (ht0 i)), ?_⟩
+        rcases le_total ⌊t i⌋₊ (M - 1) with hle | hle
+        · rw [min_eq_left hle]
+          exact (Nat.lt_floor_add_one (t i)).le
+        · rw [min_eq_right hle, Nat.cast_sub (Nat.one_le_iff_ne_zero.2 hM.ne'), Nat.cast_one,
+            sub_add_cancel]
+          exact htM i
+      refine mem_iUnion.2 ⟨fun i ↦ ⟨min ⌊t i⌋₊ (M - 1), by omega⟩, fun i ↦ ?_⟩
+      obtain ⟨hk1, hk2⟩ := hk i
+      have hut : u i = -R + s * t i := by
+        rw [ht i, mul_div_cancel₀ _ hspos.ne']
+        ring
+      show -R + s * ((min ⌊t i⌋₊ (M - 1) : ℕ) : ℝ) ≤ u i ∧
+        u i ≤ -R + s * (((min ⌊t i⌋₊ (M - 1) : ℕ) : ℝ) + 1)
+      rw [hut]
+      exact ⟨by linarith [mul_le_mul_of_nonneg_left hk1 hs0],
+        by linarith [mul_le_mul_of_nonneg_left hk2 hs0]⟩
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
