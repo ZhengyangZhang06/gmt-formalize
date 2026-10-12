@@ -1,0 +1,20 @@
+{
+  "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/915",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "048ff2b9b9037a03e4daa8d5ce0db106c1f592a3",
+  "integrated_commit": "",
+  "proof_base_commit": "7d8e61061713f8a4e1b5335a1b89c27562592ae3",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.regular_components_are_minimizing-a1",
+  "requires": [
+    "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.upper_density_zero-a1",
+    "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.local_density_zero-a1",
+    "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.blowup_measure_scaling-a1",
+    "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.pointwise_comparison-a1"
+  ]
+}
