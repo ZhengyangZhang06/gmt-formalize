@@ -458,6 +458,37 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 4.5, between (19) and (20): for `r > 0` and `φ` continuous and
+nonnegative on the closed ball `B_r(0) ⊆ ℝⁿ`,
+`∫⁻_{B_r(0)} ofReal(φ) dLⁿ = ofReal(∫_{B̆_r(0)} φ dLⁿ)`, with a Bochner integral over the open
+ball on the right.  The sphere `∂B_r(0)` is `Lⁿ`-null since `r ≠ 0`, so the two balls agree up to
+a null set; `φ` is integrable on the compact `B_r(0)`, hence on `B̆_r(0)`, and nonnegative there. -/
+theorem tdo_ghe_lintegral_closedBall_ofReal_eq : ∀ (n : ℕ) (φ : Rn n → ℝ) (r : ℝ), 0 < r → ContinuousOn φ (closedBall 0 r) → (∀ x ∈ closedBall (0 : Rn n) r, 0 ≤ φ x) → ∫⁻ x in closedBall (0 : Rn n) r, ENNReal.ofReal (φ x) = ENNReal.ofReal (∫ x in ball (0 : Rn n) r, φ x) := by
+  intro n φ r hr hφ hφ0
+  -- Steps 1–2: `Lⁿ(∂B_r(0)) = 0`, so `Lⁿ(B_r(0)) ≤ Lⁿ(B̆_r(0)) + Lⁿ(∂B_r(0)) = Lⁿ(B̆_r(0))` and
+  -- the open and closed balls agree a.e.
+  have hae : ball (0 : Rn n) r =ᵐ[volume] closedBall (0 : Rn n) r := by
+    refine ae_eq_of_subset_of_measure_ge ball_subset_closedBall ?_
+      measurableSet_ball.nullMeasurableSet measure_closedBall_lt_top.ne
+    calc volume (closedBall (0 : Rn n) r)
+        = volume (ball (0 : Rn n) r ∪ sphere 0 r) := by rw [ball_union_sphere]
+      _ ≤ volume (ball (0 : Rn n) r) + volume (sphere (0 : Rn n) r) := measure_union_le _ _
+      _ = volume (ball (0 : Rn n) r) := by
+        rw [Measure.addHaar_sphere_of_ne_zero volume 0 hr.ne', add_zero]
+  rw [← setLIntegral_congr hae]
+  -- Step 3: `φ` is integrable on the compact closed ball, hence on the open ball.
+  have hint : IntegrableOn φ (ball (0 : Rn n) r) :=
+    (hφ.integrableOn_compact (isCompact_closedBall 0 r)).mono_set ball_subset_closedBall
+  -- Step 4: `φ ≥ 0` on the open ball.
+  have hnn : 0 ≤ᵐ[volume.restrict (ball (0 : Rn n) r)] φ :=
+    ae_restrict_of_forall_mem measurableSet_ball fun x hx => hφ0 x (ball_subset_closedBall hx)
+  -- Steps 5–6: convert the Bochner integral of the integrable nonnegative `φ`.
+  exact (ofReal_integral_eq_lintegral_ofReal hint hnn).symm
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
