@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_gradient-a1.compact_exhaustion-a1",
+  "parent_id": "root.bv_results-a1.mollifier_gradient-a1",
+  "depth": 3,
+  "title": "Inner compact exhaustion of an open set for lower integrals",
+  "statement": "Let n ∈ ℕ, O ⊆ ℝⁿ open, f : ℝⁿ → [0,∞] measurable, and M ∈ [0,∞]. If ∫⁻_L f dx ≤ M for every compact L ⊆ O, then ∫⁻_O f dx ≤ M (Lebesgue measure).",
+  "lean_statement": "∀ (n : ℕ) (O : Set (Rn n)) (f : Rn n → ℝ≥0∞) (M : ℝ≥0∞), IsOpen O → Measurable f → (∀ L, IsCompact L → L ⊆ O → ∫⁻ x in L, f x ≤ M) → ∫⁻ x in O, f x ≤ M",
+  "lean_name": "bv_lintegral_open_le_of_compact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-gradient-a1-compact-exhaustion-a1-a1"
+}

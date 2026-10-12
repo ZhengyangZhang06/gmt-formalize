@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.bv_results-a1.mollifier_gradient-a1.smooth_duality_compact-a1",
+  "parent_id": "root.bv_results-a1.mollifier_gradient-a1",
+  "depth": 3,
+  "title": "Smooth duality: the gradient integral of a C² function over a compact set is bounded by its dual bound",
+  "statement": "Let n ∈ ℕ, let w : ℝⁿ → ℝ be of class C², O ⊆ ℝⁿ open, L ⊆ O compact and M ∈ [0,∞]. Write Dw = fderiv ℝ w. Suppose ofReal(−∫ Dw(x)[g(x)] dx) ≤ M for every C¹ vector field g : ℝⁿ → ℝⁿ with compact support, tsupport g ⊆ O and ‖g(x)‖ ≤ 1 for all x. Then ∫⁻_L ‖Dw(x)‖ dx ≤ M, where ‖·‖ is the operator norm and the integral is the [0,∞]-valued lower integral of the extended norm.",
+  "lean_statement": "∀ (n : ℕ) (w : Rn n → ℝ) (O L : Set (Rn n)) (M : ℝ≥0∞), ContDiff ℝ 2 w → IsOpen O → IsCompact L → L ⊆ O → (∀ g : Rn n → Rn n, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ O → (∀ x, ‖g x‖ ≤ 1) → ENNReal.ofReal (-∫ x, fderiv ℝ w x (g x)) ≤ M) → ∫⁻ x in L, ‖fderiv ℝ w x‖ₑ ≤ M",
+  "lean_name": "bv_lintegral_norm_fderiv_le_of_dual_compact",
+  "depends_on": [
+    "root.bv_results-a1.mollifier_gradient-a1.smooth_cutoff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.bv_results-a1.mollifier_gradient-a1.smooth_cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-bv-results-a1-mollifier-gradient-a1-smooth-duality-compact-a1-a1"
+}
