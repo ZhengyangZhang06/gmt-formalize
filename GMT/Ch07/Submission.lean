@@ -451,6 +451,54 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Height bounds from a net near an affine plane** (Simon Ch. 5, proof of Lemma 2.5, (6) and the
+`L²` height bound; chapter-05.txt lines 356–374).  Write `q(v) = v − p_S(v)`.  If every
+`x ∈ spt μ ∩ B̄_r(ξ)` lies within `s` of some `y ∈ F`, `|q(y − x₀)| ≤ L` for `y ∈ F` and
+`|x₀ − ξ| ≤ s`, then (a) `|q(x − ξ)| ≤ 2s + L` on `spt μ ∩ B̄_r(ξ)`, because `q = p_{S⊥}` is additive
+and `1`-Lipschitz and `x − ξ = (x − y) + (y − x₀) + (x₀ − ξ)`; (b)
+`∫_{B̄_r(ξ)} |q(x − ξ)|² dμ ≤ (2s + L)² μ(B̄_r(ξ))`, since `spt μ` is `μ`-conull, so (a) holds
+`μ⌞B̄_r(ξ)`-a.e. -/
+theorem Submission.dorag_aa_height_bounds_of_net : ∀ (P : ℕ) (μ : Measure (Euclid P)) (S : Submodule ℝ (Euclid P)) (F : Finset (Euclid P)) (ξ x₀ : Euclid P) (r s L : ℝ), (∀ x ∈ μ.support ∩ closedBall ξ r, ∃ y ∈ F, dist x y ≤ s) → (∀ y ∈ F, ‖(y - x₀) - S.starProjection (y - x₀)‖ ≤ L) → dist x₀ ξ ≤ s → (∀ x ∈ μ.support ∩ closedBall ξ r, ‖(x - ξ) - S.starProjection (x - ξ)‖ ≤ 2 * s + L) ∧ ∫⁻ x in closedBall ξ r, ENNReal.ofReal (‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2) ∂μ ≤ ENNReal.ofReal ((2 * s + L) ^ 2) * μ (closedBall ξ r) := by
+  intro P μ S F ξ x₀ r s L hnet hL hx₀
+  -- Step 1: `q(v) = v − p_S(v) = p_{S⊥}(v)` is additive and `|q(v)| ≤ |v|`.
+  have hq_le : ∀ v : Euclid P, ‖v - S.starProjection v‖ ≤ ‖v‖ := fun v => by
+    rw [← Submodule.starProjection_orthogonal_val]
+    exact Sᗮ.norm_starProjection_apply_le v
+  have hq_add : ∀ u v : Euclid P, (u + v) - S.starProjection (u + v) =
+      (u - S.starProjection u) + (v - S.starProjection v) := fun u v => by
+    rw [map_add]
+    abel
+  -- Step 2 (a): pick `y ∈ F` with `|x − y| ≤ s` and split `x − ξ = (x − y) + (y − x₀) + (x₀ − ξ)`.
+  have ha : ∀ x ∈ μ.support ∩ closedBall ξ r,
+      ‖(x - ξ) - S.starProjection (x - ξ)‖ ≤ 2 * s + L := by
+    intro x hx
+    obtain ⟨y, hyF, hxy⟩ := hnet x hx
+    have hsplit : x - ξ = (x - y) + ((y - x₀) + (x₀ - ξ)) := by abel
+    rw [hsplit, hq_add, hq_add]
+    calc ‖(x - y - S.starProjection (x - y)) + ((y - x₀ - S.starProjection (y - x₀)) +
+          (x₀ - ξ - S.starProjection (x₀ - ξ)))‖
+        ≤ ‖x - y - S.starProjection (x - y)‖ + (‖y - x₀ - S.starProjection (y - x₀)‖ +
+          ‖x₀ - ξ - S.starProjection (x₀ - ξ)‖) :=
+          (norm_add_le _ _).trans (add_le_add_right (norm_add_le _ _) _)
+      _ ≤ ‖x - y‖ + (L + ‖x₀ - ξ‖) := add_le_add (hq_le _) (add_le_add (hL y hyF) (hq_le _))
+      _ ≤ s + (L + s) := by
+          rw [← dist_eq_norm, ← dist_eq_norm]
+          exact add_le_add hxy (add_le_add le_rfl hx₀)
+      _ = 2 * s + L := by ring
+  refine ⟨ha, ?_⟩
+  -- Step 3: `spt μ` is `μ`-conull, so `μ⌞B̄_r(ξ)`-a.e. `x` lies in `spt μ ∩ B̄_r(ξ)`.
+  have hsupp : ∀ᵐ x ∂μ, x ∈ μ.support := Measure.support_mem_ae
+  have hae : ∀ᵐ x ∂(μ.restrict (closedBall ξ r)), x ∈ μ.support ∩ closedBall ξ r := by
+    filter_upwards [ae_restrict_of_ae hsupp, ae_restrict_mem measurableSet_closedBall]
+      with x h₁ h₂
+    exact ⟨h₁, h₂⟩
+  -- Step 4 (b): square the a.e. bound (a) and integrate the constant.
+  calc ∫⁻ x in closedBall ξ r, ENNReal.ofReal (‖(x - ξ) - S.starProjection (x - ξ)‖ ^ 2) ∂μ
+      ≤ ∫⁻ _ in closedBall ξ r, ENNReal.ofReal ((2 * s + L) ^ 2) ∂μ := by
+        refine lintegral_mono_ae (hae.mono fun x hx => ?_)
+        exact ENNReal.ofReal_le_ofReal (pow_le_pow_left₀ (norm_nonneg _) (ha x hx) 2)
+    _ = ENNReal.ofReal ((2 * s + L) ^ 2) * μ (closedBall ξ r) := setLIntegral_const _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
