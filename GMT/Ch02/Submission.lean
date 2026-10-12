@@ -891,6 +891,56 @@ theorem Submission.variation_chart_image_area : ∀ (n N N' : ℕ) (M : Set (Rn 
   -- Step 8: combine steps 5–7.
   exact h5.trans (h6.trans h7.symm)
 
+/-- **Area formula for an injective image of a Borel subset of a `C¹` submanifold** (Simon Ch. 2,
+p. 58, after 4.12; used on p. 62 for `Hⁿ(φ_t(M ∩ K))`): `Hⁿ(f(S)) = ∫_S J dHⁿ` with
+`J(y) = √det(L_y* L_y)` and `L_y = Df(y)|_{T_y M}`. The charts of `M` have a countable subcover
+`W (e k)` (Lindelöf), and the disjoint Borel pieces `B k = disjointed (S ∩ W (e k))` exhaust `S`.
+`variation_chart_image_area` gives the formula on each `B k`. Lusin–Souslin makes the images
+`f(B k)` Borel and injectivity of `f` on `S` makes them disjoint, so countable additivity of `Hⁿ`
+and of the set integral gives the formula on `S`. -/
+theorem Submission.variation_submanifold_image_area : ∀ (n N N' : ℕ) (M S : Set (Rn N)) (f : Rn N → Rn N'), Chapter02.IsSimonSubmanifold (E := Rn n) 1 M → (∀ (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → MeasurableSet S → S ⊆ M → (∀ y ∈ S, DifferentiableAt ℝ f y) → (∀ y ∈ S, Function.Injective (fderiv ℝ f y)) → InjOn f S → μHE[n] (f '' S) = ∫⁻ y in S, ENNReal.ofReal (areaJacobian ((fderiv ℝ f y).comp (tangentSpace M y).subtypeL)) ∂μHE[n] := by
+  intro n N N' M S f hM hT hS hSM hfd hfi hinj
+  -- Step 2: for `S = ∅` both sides vanish.
+  rcases S.eq_empty_or_nonempty with rfl | ⟨y₀, hy₀⟩
+  · simp
+  -- Step 3: a chart `(V z, W z, ψ z)` around every `z ∈ M`; countably many `W (e k)` cover `S`.
+  choose V W ψ hzW hrep using fun z : M ↦ hM.exists_localRepresentation z.2
+  obtain ⟨T, hTc, hTW⟩ :=
+    TopologicalSpace.isOpen_iUnion_countable W fun z ↦ (hrep z).isOpen_target
+  have hcov : ∀ y ∈ S, ∃ z ∈ T, y ∈ W z := by
+    intro y hy
+    have hy' : y ∈ ⋃ z ∈ T, W z := hTW ▸ mem_iUnion.2 ⟨⟨y, hSM hy⟩, hzW _⟩
+    simpa only [mem_iUnion, exists_prop] using hy'
+  obtain ⟨z₀, hz₀, -⟩ := hcov y₀ hy₀
+  obtain ⟨e, rfl⟩ := hTc.exists_eq_range ⟨z₀, hz₀⟩
+  -- Step 4: disjoint Borel pieces `B k ⊆ S ∩ W (e k)` with union `S`.
+  set B : ℕ → Set (Rn N) := disjointed fun k ↦ S ∩ W (e k) with hB
+  have hBm : ∀ k, MeasurableSet (B k) :=
+    MeasurableSet.disjointed fun k ↦ hS.inter (hrep (e k)).isOpen_target.measurableSet
+  have hBsub : ∀ k, B k ⊆ S ∩ W (e k) := disjointed_subset _
+  have hBS : ∀ k, B k ⊆ S := fun k y hy ↦ (hBsub k hy).1
+  have hBd : Pairwise (Function.onFun Disjoint B) := disjoint_disjointed _
+  have hBU : ⋃ k, B k = S := by
+    rw [hB, iUnion_disjointed, ← inter_iUnion, inter_eq_left]
+    intro y hy
+    obtain ⟨_, ⟨k, rfl⟩, hk⟩ := hcov y hy
+    exact mem_iUnion.2 ⟨k, hk⟩
+  -- Steps 5–8: the area formula on each piece, inside the single chart `e k`.
+  have hpiece : ∀ k, μHE[n] (f '' B k) = ∫⁻ y in B k,
+      ENNReal.ofReal (areaJacobian ((fderiv ℝ f y).comp (tangentSpace M y).subtypeL)) ∂μHE[n] :=
+    fun k ↦ Submission.variation_chart_image_area n N N' M (V (e k)) (W (e k)) (ψ (e k)) f (B k)
+      (hrep (e k)) (hT _ _ _ (hrep (e k))) (hBm k)
+      (fun y hy ↦ ⟨(hBsub k hy).2, hSM (hBsub k hy).1⟩) (fun y hy ↦ hfd y (hBS k hy))
+      (fun y hy ↦ hfi y (hBS k hy)) (hinj.mono (hBS k))
+  -- Step 9: the images `f(B k)` are Borel (Lusin–Souslin) and pairwise disjoint; sum over `k`.
+  have hfBm : ∀ k, MeasurableSet (f '' B k) := fun k ↦
+    (hBm k).image_of_continuousOn_injOn
+      (fun y hy ↦ (hfd y (hBS k hy)).continuousAt.continuousWithinAt) (hinj.mono (hBS k))
+  have hfBd : Pairwise (Function.onFun Disjoint fun k ↦ f '' B k) := fun i j hij ↦
+    (hBd hij).image hinj (hBS i) (hBS j)
+  rw [← hBU, image_iUnion, measure_iUnion hfBd hfBm, lintegral_iUnion hBm hBd]
+  exact tsum_congr hpiece
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
