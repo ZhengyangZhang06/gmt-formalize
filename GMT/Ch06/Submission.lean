@@ -1287,6 +1287,134 @@ theorem Submission.polyhedral_approx_open_truncation : ∀ (P n : ℕ) (U V M : 
   exact ⟨X, ⟨M ∩ V, θ, ξ, hT', fun x hx => hnat x hx.1, hX⟩,
     hmass.trans_lt ENNReal.ofReal_lt_top, hX⟩
 
+/-- The truncation sequence of Simon Ch. 6, 6.2 (p. 169, second paragraph of the proof): an
+integer multiplicity `T ∈ 𝒟_{m+1}(U)` with `M_W(T), M_W(∂T) < ∞` for all `W ⊂⊂ U` agrees
+eventually, on each test form of `U`, with integer multiplicity `X_k ∈ 𝒟_{m+1}(ℝ^P)` such that
+`M(X_k) + M(∂X_k) < ∞`.  For the exhaustion function `φ`, `X_k = τ(M ∩ {φ > λ_k}, θ, ξ)` is the
+book's `T ⌞ {φ > λ_k}`; the slicing mass bound (4.10) for `f = -φ` picks
+`λ_k ∈ (1/(k+2), 1/(k+1))` with `M_{W_k}(⟨T, -φ, -λ_k⟩) < ∞`, `W_k = {φ > 1/(2(k+2))}`.  By (4.6)
+and a cut-off, `M(∂X_k) ≤ M_{W_k}(⟨T, -φ, -λ_k⟩) + M_{W_k}((∂T) ⌞ {φ > λ_k})`. -/
+theorem Submission.polyhedral_approx_truncation_seq : SlicingTheorem → ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity T → (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞ ∧ T.boundary.massOn W < ∞) → ∃ X : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), (∀ k, IsIntegerMultiplicity (X k)) ∧ (∀ k, (X k).mass + (X k).boundary.mass < ∞) ∧ ∀ ω : TestFormOn U (m + 1), ∀ᶠ k in atTop, X k (testFormOnInclusion (subset_univ U) (m + 1) ω) = T ω := by
+  intro hSlice P m U hU T hTint hTmass
+  -- Step 0: `T = τ(M, θ, ξ)` with positive integer multiplicity `θ`.
+  obtain ⟨M, θ, ξ, hMθξ, hθ, hT⟩ := hTint
+  -- Step 1: the exhaustion function `φ`; `V_t = {φ > t} ⊂⊂ U` for `t > 0`.
+  obtain ⟨φ, hφL, hφK, hφδ⟩ := Submission.polyhedral_approx_exhaustion_function P U hU
+  have hVo : ∀ t : ℝ, IsOpen {x | t < φ x} := fun t =>
+    isOpen_lt continuous_const hφL.continuous
+  have hVcl : ∀ t : ℝ, closure {x | t < φ x} ⊆ {x | t ≤ φ x} := fun t =>
+    closure_lt_subset_le continuous_const hφL.continuous
+  have hVcc : ∀ t : ℝ, 0 < t → CompactlyContainedOpen {x | t < φ x} U := fun t ht =>
+    ⟨hVo t, (hφK t ht).1.of_isClosed_subset isClosed_closure (hVcl t),
+      (hVcl t).trans (hφK t ht).2⟩
+  -- Step 2: the slices `⟨T, -φ, s⟩` (4.6) and the mass bound (4.10) for the 1-Lipschitz `-φ`.
+  obtain ⟨S, hSsl, -, -, hSmass⟩ := hSlice P m U hU T hTmass (-φ) 1 hφL.neg.lipschitzOnWith
+  -- The restriction in the slice at level `0` provides a representation `(μ, v)` of `T` (2.7).
+  obtain ⟨_, _, ⟨_, μ, v, hμv, _⟩, _, _⟩ := hSsl 0
+  -- `|D(-φ)| ≤ 1` everywhere.
+  have hDf : ∀ W : Set (Eucl P), ∀ᵐ x ∂(volume : Measure (Eucl P)), x ∈ W →
+      ‖fderiv ℝ (-φ) x‖₊ ≤ 1 := fun W => Eventually.of_forall fun x _ => by
+    rw [← NNReal.coe_le_coe, coe_nnnorm, NNReal.coe_one]
+    simpa using norm_fderiv_le_of_lipschitz ℝ (x₀ := x) hφL.neg
+  -- Step 3: a level `s_k ∈ (-1/(k+1), -1/(k+2))` whose slice has finite mass in
+  -- `W_k = V_{1/(2(k+2))}`.
+  have hlev : ∀ k : ℕ, ∃ s ∈ Ioo (-(1 / ((k : ℝ) + 1))) (-(1 / ((k : ℝ) + 2))),
+      (S s).massOn {x | 1 / (2 * ((k : ℝ) + 2)) < φ x} < ∞ := by
+    intro k
+    have hab : -(1 / ((k : ℝ) + 1)) < -(1 / ((k : ℝ) + 2)) :=
+      neg_lt_neg (one_div_lt_one_div_of_lt (by positivity) (by linarith))
+    have hWcc := hVcc (1 / (2 * ((k : ℝ) + 2))) (by positivity)
+    -- `R_k = T ⌞ {a < -φ < b}` has finite mass in `W_k`.
+    have hE : MeasurableSet
+        {x | x ∈ U ∧ -(1 / ((k : ℝ) + 1)) < (-φ) x ∧ (-φ) x < -(1 / ((k : ℝ) + 2))} :=
+      (hU.inter ((isOpen_lt continuous_const hφL.continuous.neg).inter
+        (isOpen_lt hφL.continuous.neg continuous_const))).measurableSet
+    obtain ⟨R, hR⟩ :=
+      (Submission.polyhedral_approx_restriction_exists P (m + 1) U hU T).1 μ v hμv _ hE
+    have hRfin := (Submission.polyhedral_approx_restriction_exists P (m + 1) U hU T).2 _ R hR _ hWcc
+    obtain ⟨g, hgm, hgS, hgint⟩ :=
+      hSmass _ hWcc.1 (subset_closure.trans hWcc.2.2) 1 (hDf _) _ _ hab R hR
+    rw [ENNReal.coe_one, one_mul] at hgint
+    -- `g < ∞` a.e. on the interval, which has positive length.
+    have hne : (volume : Measure ℝ).restrict
+        (Ioo (-(1 / ((k : ℝ) + 1))) (-(1 / ((k : ℝ) + 2)))) ≠ 0 := by
+      rw [Ne, Measure.restrict_eq_zero, Real.volume_Ioo, ENNReal.ofReal_eq_zero, not_le, sub_pos]
+      exact hab
+    have := ae_neBot.2 hne
+    obtain ⟨s, hs, hgs⟩ := ((ae_restrict_mem measurableSet_Ioo).and
+      (ae_lt_top hgm (hgint.trans_lt hRfin).ne)).exists
+    exact ⟨s, hs, (hgS s hs).trans_lt hgs⟩
+  choose s hs hSs using hlev
+  have hsb : ∀ k : ℕ, 1 / ((k : ℝ) + 2) < -s k ∧ -s k < 1 / ((k : ℝ) + 1) := fun k =>
+    ⟨by linarith [(hs k).2], by linarith [(hs k).1]⟩
+  have hpos : ∀ k : ℕ, 0 < -s k := fun k => lt_trans (by positivity) (hsb k).1
+  -- Step 4: `X_k = τ(M ∩ V_{λ_k}, θ, ξ) ∈ 𝒟_{m+1}(ℝ^P)`, `λ_k = -s_k`.
+  choose X hXint hXmass hXact using fun k => Submission.polyhedral_approx_open_truncation P (m + 1)
+    U {x | -s k < φ x} M θ ξ hMθξ hθ (hVcc _ (hpos k))
+  refine ⟨X, hXint, fun k => ?_, fun ω => ?_⟩
+  · -- Step 5: `M(∂X_k) ≤ M_{W_k}(∂A) ≤ M_{W_k}(S_{s_k}) + M_{W_k}(B) < ∞`, where
+    -- `A = T ⌞ {-φ < s_k}`, `B = (∂T) ⌞ {-φ < s_k}` and `S_{s_k} = ∂A - B` (4.6).
+    obtain ⟨A, B, hA, hB, hSAB⟩ := hSsl (s k)
+    have hWcc := hVcc (1 / (2 * ((k : ℝ) + 2))) (by positivity)
+    -- (a) `A = τ(M ∩ V_{λ_k}, θ, ξ)`, as `M ⊆ U`.
+    have hMV : M ∩ {x | x ∈ U ∧ (-φ) x < s k} = M ∩ {x | -s k < φ x} := by
+      ext x
+      simp only [mem_inter_iff, mem_ofPred_eq, Pi.neg_apply]
+      constructor
+      · rintro ⟨hxM, -, hx⟩
+        exact ⟨hxM, by linarith⟩
+      · rintro ⟨hxM, hx⟩
+        exact ⟨hxM, hMθξ.subset hxM, by linarith⟩
+    have hAτ : ∀ η : TestFormOn U (m + 1),
+        A η = tauAction (m + 1) (M ∩ {x | -s k < φ x}) θ ξ η := fun η => by
+      rw [Submission.polyhedral_approx_restriction_tau P (m + 1) U hU T M θ ξ hMθξ hT _ A hA η,
+        hMV]
+    -- (b) `M_{W_k}(B) < ∞`; `M_{W_k}(S_{s_k}) < ∞` by Step 3.
+    have hBfin :=
+      (Submission.polyhedral_approx_restriction_exists P m U hU T.boundary).2 _ B hB _ hWcc
+    -- (c)–(e) `X_k` and `A` agree on test forms agreeing on `V_{λ_k}`; cut off inside `W_k`.
+    have hMVm : NullMeasurableSet (M ∩ {x | -s k < φ x}) (μHE[m + 1] : Measure (Eucl P)) :=
+      hMθξ.nullMeasurableSet.inter (hVo _).measurableSet.nullMeasurableSet
+    have hVW : closure {x | -s k < φ x} ⊆ {x | 1 / (2 * ((k : ℝ) + 2)) < φ x} := by
+      refine (hVcl _).trans fun x (hx : -s k ≤ φ x) => ?_
+      have h2 : 1 / (2 * ((k : ℝ) + 2)) < 1 / ((k : ℝ) + 2) :=
+        one_div_lt_one_div_of_lt (by positivity) (by linarith)
+      exact h2.trans ((hsb k).1.trans_le hx)
+    have hbd := Submission.polyhedral_approx_boundary_mass_cutoff P m univ U _ _ (X k) A hWcc.1
+      (subset_closure.trans hWcc.2.2) (hVcc _ (hpos k)).2.1 hVW fun η η' hηη' => by
+        rw [hXact, hAτ]
+        exact setIntegral_congr_fun₀ hMVm fun x hx => by rw [hηη' x hx.2]
+    -- (f) `∂A = S_{s_k} + B`, so `M_{W_k}(∂A) ≤ M_{W_k}(S_{s_k}) + M_{W_k}(B)`.
+    have hAB : A.boundary.massOn {x | 1 / (2 * ((k : ℝ) + 2)) < φ x} ≤
+        (S (s k)).massOn {x | 1 / (2 * ((k : ℝ) + 2)) < φ x} +
+          B.massOn {x | 1 / (2 * ((k : ℝ) + 2)) < φ x} := by
+      refine sSup_le ?_
+      rintro _ ⟨ψ, hψ, rfl⟩
+      calc ENNReal.ofReal (A.boundary ψ) = ENNReal.ofReal (S (s k) ψ + B ψ) := by
+            rw [hSAB ψ, sub_add_cancel]
+        _ ≤ ENNReal.ofReal (S (s k) ψ) + ENNReal.ofReal (B ψ) := ENNReal.ofReal_add_le
+        _ ≤ _ := add_le_add ((S (s k)).le_massOn hψ) (B.le_massOn hψ)
+    exact ENNReal.add_lt_top.2 ⟨hXmass k,
+      hbd.trans_lt (hAB.trans_lt (ENNReal.add_lt_top.2 ⟨hSs k, hBfin⟩))⟩
+  · -- Step 6: `tsupport ω ⊆ V_{λ_k}` for large `k`, so `X_k(ω) = T(ω)`.
+    obtain ⟨δ, hδ, hδK⟩ :=
+      hφδ (tsupport (ω : DifferentialForm (Eucl P) (m + 1))) ω.property.1.2 ω.property.2
+    obtain ⟨k₀, hk₀⟩ := exists_nat_one_div_lt hδ
+    filter_upwards [eventually_ge_atTop k₀] with k hk
+    have hKV : tsupport (ω : DifferentialForm (Eucl P) (m + 1)) ⊆ {x | -s k < φ x} :=
+      fun x hx => calc
+        -s k < 1 / ((k : ℝ) + 1) := (hsb k).2
+        _ ≤ 1 / ((k₀ : ℝ) + 1) :=
+          one_div_le_one_div_of_le (by positivity) (by exact_mod_cast Nat.add_le_add_right hk 1)
+        _ < δ := hk₀
+        _ ≤ φ x := hδK x hx
+    rw [hXact, hT]
+    simp only [tauAction, testFormOnInclusion_coe]
+    rw [← setIntegral_indicator (hVo (-s k)).measurableSet, indicator_eq_self.2]
+    intro x hx
+    refine hKV (subset_tsupport _ fun h0 => hx ?_)
+    simp [h0]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
