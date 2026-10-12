@@ -766,6 +766,53 @@ theorem Submission.allard_tc_fbl_nonneg_limit :
     refine ((hcp.mul_const (β T)).const_mul θ).congr fun k ↦ ?_
     rw [hplane (fun y ↦ max 0 (1 - ((k : ℝ) + 1) * max 0 (‖y‖ - 1))) (by fun_prop)]
 
+/-- Ball limits at a flat blow-up (the portmanteau step in the proof of Simon Ch. 8, 5.5: the limit
+stated right after display (9), p. 218): if `V_{x,t_i} → θ v(T)` as Radon measures along `l`, with
+`t_i → 0⁺`, then `t_i^{-n} ∫_{B_{t_i}(x) × G(N,n)} β(S) dV(y,S) → θ ω_n β(T)` for every continuous
+`β` on `G(N,n)`, and `t_i^{-n} μ_V(B_{t_i}(x)) → θ ω_n`. -/
+theorem Submission.allard_tc_flat_blowup_ball_limits :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (T : Grassmannian N n) (θ : ℝ) {ι : Type} (l : Filter ι) (t : ι → ℝ), x ∈ U → Tendsto t l (𝓝[>] 0) → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), Tendsto (fun i ↦ ∫ z, f z ∂(rescaledMeasure V x (t i))) l (𝓝 (θ * ∫ z, f z ∂(planeVarifoldMeasure T)))) → (∀ β : C(Grassmannian N n, ℝ), Tendsto (fun i ↦ (∫ z in closedBall x (t i) ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / t i ^ n) l (𝓝 (θ * (unitBallVolume n).toReal * β T))) ∧ Tendsto (fun i ↦ (V.weight (closedBall x (t i))).toReal / t i ^ n) l (𝓝 (θ * (unitBallVolume n).toReal)) := by
+  intro N n U V x T θ ι l t hx ht hconv
+  -- Step 1: `U` is open, so eventually along `l` the closed ball `B_{t_i}(x)` is a compact subset
+  -- of `U`, hence `V(B_{t_i}(x) × G(N,n)) < ∞`.
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hx
+  have hfin : ∀ᶠ i in l,
+      V.measure (closedBall x (t i) ×ˢ (univ : Set (Grassmannian N n))) ≠ ∞ := by
+    filter_upwards [ht (Ioo_mem_nhdsGT (half_pos hε))] with i hi
+    exact V.finite_on_compact _ (isCompact_closedBall x (t i))
+      ((closedBall_subset_ball (by linarith [hi.2])).trans hεU)
+  -- Step 2: the case `β ≥ 0` is the sibling `nonneg_limit`.
+  have hnn := Submission.allard_tc_fbl_nonneg_limit N n U V x T θ l t hx ht hconv
+  -- Step 3: a general `β` is `(β + ‖β‖) - ‖β‖`, a difference of nonnegative continuous functions
+  -- (`G(N,n)` is compact, so `‖β‖ = sup_S |β(S)| < ∞`), and both are integrable on
+  -- `B_{t_i}(x) × G(N,n)` once that set has finite `V`-measure.
+  have hβ : ∀ β : C(Grassmannian N n, ℝ), Tendsto (fun i ↦ (∫ z in closedBall x (t i) ×ˢ
+      (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) / t i ^ n) l
+      (𝓝 (θ * (unitBallVolume n).toReal * β T)) := by
+    intro β
+    have hpos : ∀ S, 0 ≤ (β + ContinuousMap.const _ ‖β‖ : C(Grassmannian N n, ℝ)) S := fun S ↦ by
+      have hS := β.norm_coe_le_norm S
+      rw [Real.norm_eq_abs] at hS
+      rw [ContinuousMap.add_apply, ContinuousMap.const_apply]
+      linarith [neg_abs_le (β S)]
+    have hlim := (hnn _ hpos).sub (hnn (ContinuousMap.const _ ‖β‖) fun _ ↦ norm_nonneg β)
+    simp only [ContinuousMap.add_apply, ContinuousMap.const_apply, mul_add,
+      add_sub_cancel_right] at hlim
+    refine hlim.congr' ?_
+    filter_upwards [hfin] with i hi
+    have hint : IntegrableOn (fun z : Euclidean N × Grassmannian N n ↦ β z.2)
+        (closedBall x (t i) ×ˢ (univ : Set (Grassmannian N n))) V.measure :=
+      Measure.integrableOn_of_bounded hi (β.continuous.comp continuous_snd).aestronglyMeasurable
+        (ae_of_all _ fun z ↦ β.norm_coe_le_norm z.2)
+    rw [integral_add hint (integrableOn_const hi), add_div, add_sub_cancel_right]
+  refine ⟨hβ, ?_⟩
+  -- Step 4: `β ≡ 1` gives the weight, since `∫_{B × G(N,n)} 1 dV = V(B × G(N,n)) = μ_V(B)`.
+  have h1 := hβ (ContinuousMap.const _ 1)
+  simp only [ContinuousMap.const_apply, mul_one] at h1
+  refine h1.congr fun i ↦ ?_
+  rw [setIntegral_const, smul_eq_mul, mul_one, measureReal_def,
+    V.weight_apply measurableSet_closedBall]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
