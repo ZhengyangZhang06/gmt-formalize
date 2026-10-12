@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8b031dfcca632e98dea3b43a07c02648fbff27f1f0b4d2f132e46d9f1e85999f",
+  "git_delta": {
+    "base_commit": "aae6d1a168aa0506c7f6f0596450eb65ab048a3e",
+    "candidate_commit": "24e9c815de42974791a722c45f5330c4ba4d68a3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsdic_tl_excess_density_zero",
+    "diff_sha256": "08e45eac5553940c21d74ff1207c2a3b3a15fafa38cd39e2fe082b1a41c2e8f2",
+    "source_sha256": "79ae4837a1c4927cd7bf8243863aa42239bdea9a4ecf061552f534004a93f80b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsdic_tl_excess_density_zero",
+      "statement": "∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ C r₁ : ℝ), 0 < r₀ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → 0 < r₁ → (∀ ρ : ℝ, 0 < ρ → ρ < r₁ → μHE[n] (A ∩ closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → (∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] ((B \\ A) ∩ closedBall x ρ) ≤ ε * μHE[n] (B ∩ closedBall x ρ)) → Tendsto (fun ρ : ℝ => μHE[n] ((B \\ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
