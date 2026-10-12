@@ -513,6 +513,72 @@ theorem Submission.dorag_ha_lsc_ibp_lipschitz : ∀ (n : ℕ) (R : ℝ) (u : Euc
     ← Finset.sum_neg_distrib]
   exact Finset.sum_congr rfl fun i _ => key i
 
+namespace Submission
+
+/-- Integration by parts on `B = B_R(0)` for `h` that is only `C¹` on `B`, against `C¹` fields
+`Φᵢ` with compact support in `B`: `∫_B Σᵢ Dᵢh Φᵢ = -∫_B h Σᵢ DᵢΦᵢ`.  The supports of the `Φᵢ` lie
+in some `B_{r₁}(0)`, `r₁ < R`.  A bump `χ` with `χ = 1` on `B̄_{r₁}(0)` and `spt χ ⊆ B` makes
+`h̃ = χh` a compactly supported `C¹`, hence Lipschitz, function, so `dorag_ha_lsc_ibp_lipschitz`
+applies to `h̃`; both integrands only see `B_{r₁}(0)`, where `h̃ = h`. -/
+theorem dorag_ha_lsc_ibp_c1_ball : ∀ (n : ℕ) (R : ℝ) (h : Euclid n → ℝ) (Φ : Fin n → Euclid n → ℝ), ContDiffOn ℝ 1 h (ball (0 : Euclid n) R) → (∀ i, ContDiff ℝ 1 (Φ i)) → (∀ i, HasCompactSupport (Φ i)) → (∀ i, tsupport (Φ i) ⊆ ball (0 : Euclid n) R) → ∫ x in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ h x (EuclideanSpace.single i (1 : ℝ)) * Φ i x = -∫ x in ball (0 : Euclid n) R, h x * ∑ i : Fin n, fderiv ℝ (Φ i) x (EuclideanSpace.single i (1 : ℝ)) := by
+  intro n R h Φ hh hΦ hΦc hΦs
+  -- `R ≤ 0`: the ball is empty.
+  rcases le_or_gt R 0 with hR | hR
+  · rw [ball_eq_empty.2 hR]; simp
+  -- The supports of the `Φᵢ` lie in a smaller ball `B_{r₁}(0)`, `0 < r₁ < R`.
+  set K := ⋃ i, tsupport (Φ i)
+  have hKc : IsClosed K := isClosed_iUnion_of_finite fun i => isClosed_tsupport _
+  have hKB : K ⊆ ball 0 R := iUnion_subset hΦs
+  obtain ⟨r₁, ⟨hr₁0, hr₁R⟩, hK₁⟩ := exists_pos_lt_subset_ball hR hKc hKB
+  -- `h̃ = χh` with `χ = 1` on `B̄_{r₁}(0)` and `spt χ = B̄_{(r₁+R)/2}(0) ⊆ B` is `C¹_c`.
+  let χ : ContDiffBump (0 : Euclid n) := ⟨r₁, (r₁ + R) / 2, hr₁0, by linarith⟩
+  set ht : Euclid n → ℝ := fun x => χ x * h x
+  have hχsupp : tsupport χ ⊆ ball 0 R := by
+    rw [χ.tsupport_eq]; exact closedBall_subset_ball (show (r₁ + R) / 2 < R by linarith)
+  have htC : ContDiff ℝ 1 ht := by
+    rw [contDiff_iff_contDiffAt]; intro x
+    by_cases hx : x ∈ ball (0 : Euclid n) R
+    · exact ((χ.contDiff.contDiffOn).mul hh).contDiffAt (isOpen_ball.mem_nhds hx)
+    · have hxχ : x ∉ tsupport χ := fun h' => hx (hχsupp h')
+      have hev : ht =ᶠ[𝓝 x] fun _ => (0 : ℝ) := by
+        filter_upwards [notMem_tsupport_iff_eventuallyEq.1 hxχ] with y hy
+        simp [ht, hy]
+      exact contDiffAt_const.congr_of_eventuallyEq hev
+  have htc : HasCompactSupport ht := χ.hasCompactSupport.mul_right
+  obtain ⟨C, hC⟩ := ContDiff.lipschitzWith_of_hasCompactSupport htc htC one_ne_zero
+  have key := Submission.dorag_ha_lsc_ibp_lipschitz n R ht Φ ⟨C, hC⟩ hΦ hΦc hΦs
+  -- On `B_{r₁}(0)`, `h̃ = h` near each point; off it, every `Φᵢ` and `DΦᵢ` vanishes.
+  have hone : ∀ y ∈ ball (0 : Euclid n) r₁, ht y = h y := by
+    intro y hy
+    simp [ht, χ.one_of_mem_closedBall (ball_subset_closedBall hy)]
+  have hEq : ∀ x ∈ ball (0 : Euclid n) r₁, ht =ᶠ[𝓝 x] h := by
+    intro x hx
+    filter_upwards [isOpen_ball.mem_nhds hx] with y hy using hone y hy
+  have hout : ∀ x, x ∉ ball (0 : Euclid n) r₁ → ∀ i, x ∉ tsupport (Φ i) :=
+    fun x hx i h' => hx (hK₁ (mem_iUnion.2 ⟨i, h'⟩))
+  have h1 : ∫ x in ball (0 : Euclid n) R,
+        ∑ i : Fin n, fderiv ℝ h x (EuclideanSpace.single i (1 : ℝ)) * Φ i x =
+      ∫ x in ball (0 : Euclid n) R,
+        ∑ i : Fin n, fderiv ℝ ht x (EuclideanSpace.single i (1 : ℝ)) * Φ i x := by
+    refine setIntegral_congr_fun measurableSet_ball fun x _ => ?_
+    by_cases hx : x ∈ ball (0 : Euclid n) r₁
+    · simp only [(hEq x hx).fderiv_eq]
+    · refine Finset.sum_congr rfl fun i _ => ?_
+      simp [image_eq_zero_of_notMem_tsupport (hout x hx i)]
+  have h2 : ∫ x in ball (0 : Euclid n) R,
+        h x * ∑ i : Fin n, fderiv ℝ (Φ i) x (EuclideanSpace.single i (1 : ℝ)) =
+      ∫ x in ball (0 : Euclid n) R,
+        ht x * ∑ i : Fin n, fderiv ℝ (Φ i) x (EuclideanSpace.single i (1 : ℝ)) := by
+    refine setIntegral_congr_fun measurableSet_ball fun x _ => ?_
+    by_cases hx : x ∈ ball (0 : Euclid n) r₁
+    · simp only [hone x hx]
+    · have : ∑ i : Fin n, fderiv ℝ (Φ i) x (EuclideanSpace.single i (1 : ℝ)) = 0 :=
+        Finset.sum_eq_zero fun i _ => by rw [fderiv_of_notMem_tsupport ℝ (hout x hx i)]; rfl
+      simp only [this, mul_zero]
+  rw [h1, h2, key]
+
+end Submission
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
