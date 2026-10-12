@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ec192789124e72ec107cac7b04c83c0eb7461f996f09cac26ecf0e754af50d63",
+  "git_delta": {
+    "base_commit": "11fb785075448cc367296f79d133bb2e3ddc2dec",
+    "candidate_commit": "d3bec87e971b515bfe630ed7ff2c8731a5279722",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_lmo_dema_weight_restrict_withDensity",
+    "diff_sha256": "47acd51b45792fe7b5b43cc251609db8c31232c5a8fb2f962db715f6d33529e0",
+    "source_sha256": "fe46f10e6e25c16a317e800ebf122c2616de7491c62fa2c7b699f9bae0df78bd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_lmo_dema_weight_restrict_withDensity",
+      "statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (O : Set (Amb n ℓ)), MeasurableSet O → O ⊆ U → V.weight.restrict O = ((μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ O)).withDensity (fun x => ENNReal.ofReal (V.carrier.indicator V.mult x))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
