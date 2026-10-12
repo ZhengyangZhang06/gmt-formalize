@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7773f9b57355027af5ef074d3b593a6d0bb27287de1d35a6fe4d65732d65af1c",
+  "git_delta": {
+    "base_commit": "026079c7132f598c0b885a1456ff3594e0ff3114",
+    "candidate_commit": "81ebbcb49d9108f78c97bdcc3e40a3e8f46d39a8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_gc_contDiffOn_of_ae_hasFDerivAt",
+    "diff_sha256": "ecb9bf3faca5be99cbc07cd352b03dc141d22b1989a3b97d992218d7ff88888d",
+    "source_sha256": "aa8725219de395f44ceafd0d8cea804b903a05f08c906b774b9fdd5734e13c7a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_gc_contDiffOn_of_ae_hasFDerivAt",
+      "statement": "∀ (n k : ℕ) (f : Euclid n → Euclid k) (L : NNReal) (Ω : Set (Euclid n)) (g : Euclid n → (Euclid n →L[ℝ] Euclid k)), 0 < n → LipschitzWith L f → IsOpen Ω → ContinuousOn g Ω → (∀ᵐ v ∂volume, v ∈ Ω → HasFDerivAt f (g v) v) → ContDiffOn ℝ 1 f Ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
