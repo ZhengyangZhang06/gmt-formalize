@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e8c86e663c098528bf4031f81d50003f6fa79997c5f455fa2ce3fb0b3e23fd70",
+  "git_delta": {
+    "base_commit": "1deaa96350f3945139f0fa7b71ee16c1b6f777fe",
+    "candidate_commit": "eefd7c3e7c63582af93eb109b12573ec03d5581a",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "isoperimetric_coord_box_measure",
+    "diff_sha256": "254e0706217925057ea564ac644c49bba88ec5949fbc8d17123a9134ec1abea8",
+    "source_sha256": "3546f0398530fdb8a7fdf689dec6f169e0239b41f8a3a85644b7e6c220b97941",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.isoperimetric_coord_box_measure",
+      "statement": "∀ (n N : ℕ) (α : SimonMultiIndex n N) (c : Fin N → ℝ) (a b : ℝ), a ≤ b → (μHE[n] : Measure (Eucl N)) {x : Eucl N | ∀ i : Fin N, (i ∈ range α → c i + a ≤ x i ∧ x i ≤ c i + b) ∧ (i ∉ range α → x i = c i)} = ENNReal.ofReal ((b - a) ^ n)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
