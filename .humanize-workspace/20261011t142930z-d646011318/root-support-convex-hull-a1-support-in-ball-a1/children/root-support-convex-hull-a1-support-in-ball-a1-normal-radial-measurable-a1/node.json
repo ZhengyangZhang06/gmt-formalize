@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.support_convex_hull-a1.support_in_ball-a1.normal_radial_measurable-a1",
+  "parent_id": "root.support_convex_hull-a1.support_in_ball-a1",
+  "depth": 3,
+  "title": "Measurability and unit bounds of |D^⊥r|² = normalRadialSq (Simon 6.1, step 7(b))",
+  "statement": "Let n, ℓ ∈ ℕ, E = Ambient n ℓ = ℝ^{n+ℓ}, V a rectifiable n-varifold in E (RectifiableVarifold n ℓ) with weight μ = V.weight, and ξ ∈ E. Assume that x ↦ p_x := (V.tangentSpace x).starProjection, a map E → (E →L[ℝ] E), is μ-a.e. strongly measurable. Then q(x) := V.normalRadialSq ξ x = |p_x^⊥(x − ξ)|²/|x − ξ|² (p_x^⊥ the orthogonal projection onto (T_xV)^⊥, division by 0 giving 0) is μ-a.e. strongly measurable, and 0 ≤ q(x) ≤ 1 for every x ∈ E.",
+  "lean_statement": "∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ) (ξ : Ambient n ℓ), AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight → AEStronglyMeasurable (fun x ↦ V.normalRadialSq ξ x) V.weight ∧ ∀ x, 0 ≤ V.normalRadialSq ξ x ∧ V.normalRadialSq ξ x ≤ 1",
+  "lean_name": "aestronglyMeasurable_normalRadialSq_and_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-support-convex-hull-a1-support-in-ball-a1-normal-radial-measurable-a1-a1"
+}
