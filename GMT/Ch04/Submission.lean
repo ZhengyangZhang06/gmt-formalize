@@ -434,6 +434,99 @@ def ClassicalTangent : Prop :=
     Tendsto (fun ρ : ℝ ↦ sSup ((fun y ↦ ρ⁻¹ * infDist (y - x) (P : Set (Ambient n ℓ))) ''
       (V.support ∩ closedBall x ρ))) (𝓝[>] 0) (𝓝 0)
 
+/-- Simon 2.1 (p. 87): for a family as in 2.1 and `0 < δ < ε`, the spatial derivatives
+`Dφ_t(x)` (`|t| < δ`, `x ∈ ℝ^{n+ℓ}`) and their inverses are bounded uniformly:
+`‖Dφ_t(x)‖ ≤ B` and `|v| ≤ B |Dφ_t(x) v|`. -/
+theorem Submission.ts_fv_cv_slice_fderiv_bounds : ∀ (n ℓ : ℕ) (φ : ℝ → Ambient n ℓ → Ambient n ℓ) (ε : ℝ) (K : Set (Ambient n ℓ)), IsCompactVariation φ ε K → ∀ δ : ℝ, 0 < δ → δ < ε → ∃ B : ℝ, ∀ x, ∀ t ∈ Ioo (-δ) δ, ‖fderiv ℝ (φ t) x‖ ≤ B ∧ ∀ v, ‖v‖ ≤ B * ‖fderiv ℝ (φ t) x v‖ := by
+  intro n ℓ φ ε K hφ δ hδ hδε
+  have hU : IsOpen (Ioo (-ε) ε ×ˢ (univ : Set (Ambient n ℓ))) := isOpen_Ioo.prod isOpen_univ
+  -- Chain rule along `y ↦ (t, y)`: `Dφ_t(y) = DΦ(t, y) ∘ ι₂` for `t ∈ (-ε, ε)`.
+  have hslice : ∀ t ∈ Ioo (-ε) ε, ∀ y : Ambient n ℓ, HasFDerivAt (φ t)
+      ((fderiv ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) (t, y)).comp
+        (ContinuousLinearMap.inr ℝ ℝ (Ambient n ℓ))) y := by
+    intro t ht y
+    have hdiff : DifferentiableAt ℝ (fun q : ℝ × Ambient n ℓ ↦ φ q.1 q.2) (t, y) :=
+      (hφ.smooth.contDiffAt (hU.mem_nhds ⟨ht, mem_univ _⟩)).differentiableAt (by simp)
+    exact hdiff.hasFDerivAt.comp y ((hasFDerivAt_const t y).prodMk (hasFDerivAt_id y))
+  -- `G(q) = Dφ_{q.1}(q.2)` is continuous on `U = (-ε, ε) × ℝ^{n+ℓ}`.
+  have hG : ContinuousOn (fun q : ℝ × Ambient n ℓ ↦ fderiv ℝ (φ q.1) q.2)
+      (Ioo (-ε) ε ×ˢ univ) := by
+    have h1 := (hφ.smooth.continuousOn_fderiv_of_isOpen hU (by simp)).clm_comp
+      (continuousOn_const (c := ContinuousLinearMap.inr ℝ ℝ (Ambient n ℓ)))
+    refine h1.congr ?_
+    rintro ⟨t, y⟩ ⟨ht, -⟩
+    exact (hslice t ht y).fderiv
+  -- `Dφ_t(x)` is a unit of `L(ℝ^{n+ℓ}, ℝ^{n+ℓ})`, with inverse `Dψ(φ_t x)`, `ψ = φ_t⁻¹`.
+  have hunit : ∀ t ∈ Ioo (-ε) ε, ∀ x : Ambient n ℓ, IsUnit (fderiv ℝ (φ t) x) := by
+    intro t ht x
+    obtain ⟨hbij, hψ⟩ := hφ.diffeo t ht
+    have hleft : ∀ y, Function.invFun (φ t) (φ t y) = y :=
+      Function.leftInverse_invFun hbij.injective
+    have hright : ∀ y, φ t (Function.invFun (φ t) y) = y :=
+      Function.rightInverse_invFun hbij.surjective
+    have hdφ : HasFDerivAt (φ t) (fderiv ℝ (φ t) x) x :=
+      (hslice t ht x).differentiableAt.hasFDerivAt
+    have hdψ : HasFDerivAt (Function.invFun (φ t))
+        (fderiv ℝ (Function.invFun (φ t)) (φ t x)) (φ t x) :=
+      (hψ.differentiable (by simp) (φ t x)).hasFDerivAt
+    have h1 : (fderiv ℝ (Function.invFun (φ t)) (φ t x)).comp (fderiv ℝ (φ t) x) =
+        ContinuousLinearMap.id ℝ (Ambient n ℓ) := by
+      have hcomp := hdψ.comp x hdφ
+      rw [show Function.invFun (φ t) ∘ φ t = id from funext hleft] at hcomp
+      exact hcomp.unique (hasFDerivAt_id x)
+    have h2 : (fderiv ℝ (φ t) x).comp (fderiv ℝ (Function.invFun (φ t)) (φ t x)) =
+        ContinuousLinearMap.id ℝ (Ambient n ℓ) := by
+      have hdφ' : HasFDerivAt (φ t) (fderiv ℝ (φ t) x) (Function.invFun (φ t) (φ t x)) := by
+        rw [hleft]; exact hdφ
+      have hcomp := hdφ'.comp (φ t x) hdψ
+      rw [show φ t ∘ Function.invFun (φ t) = id from funext hright] at hcomp
+      exact hcomp.unique (hasFDerivAt_id (φ t x))
+    exact ⟨⟨fderiv ℝ (φ t) x, fderiv ℝ (Function.invFun (φ t)) (φ t x), h2, h1⟩, rfl⟩
+  -- Off `K`, `φ_t = id` near the point, so `Dφ_t = I`.
+  have hidK : ∀ t ∈ Ioo (-ε) ε, ∀ y ∉ K,
+      fderiv ℝ (φ t) y = ContinuousLinearMap.id ℝ (Ambient n ℓ) := by
+    intro t ht y hy
+    have h : φ t =ᶠ[𝓝 y] id := by
+      filter_upwards [hφ.compact.isClosed.isOpen_compl.mem_nhds hy] with z hz
+      exact hφ.fixed t ht z hz
+    rw [h.fderiv_eq, fderiv_id]
+  -- The compact set `Q = [-δ, δ] × K ⊆ U`.
+  have hQ : IsCompact (Icc (-δ) δ ×ˢ K) := isCompact_Icc.prod hφ.compact
+  have hQU : Icc (-δ) δ ×ˢ K ⊆ Ioo (-ε) ε ×ˢ (univ : Set (Ambient n ℓ)) := by
+    rintro ⟨t, y⟩ ⟨⟨h1, h2⟩, -⟩
+    exact ⟨⟨by linarith, by linarith⟩, mem_univ _⟩
+  -- `Ring.inverse ∘ G` is continuous on `Q`, since `Ring.inverse` is continuous at units.
+  have hInv : ContinuousOn (fun q : ℝ × Ambient n ℓ ↦ Ring.inverse (fderiv ℝ (φ q.1) q.2))
+      (Icc (-δ) δ ×ˢ K) := by
+    intro q hq
+    have hu : IsUnit (fderiv ℝ (φ q.1) q.2) := hunit q.1 (hQU hq).1 q.2
+    have hcont : ContinuousAt Ring.inverse (fderiv ℝ (φ q.1) q.2) := by
+      simpa only [hu.unit_spec] using NormedRing.inverse_continuousAt hu.unit
+    exact hcont.comp_continuousWithinAt (f := fun q : ℝ × Ambient n ℓ ↦ fderiv ℝ (φ q.1) q.2)
+      ((hG q (hQU hq)).mono hQU)
+  obtain ⟨B₁, hB₁⟩ := hQ.exists_bound_of_continuousOn (hG.mono hQU)
+  obtain ⟨B₃, hB₃⟩ := hQ.exists_bound_of_continuousOn hInv
+  refine ⟨max 1 (max B₁ B₃), fun x t ht ↦ ?_⟩
+  have htε : t ∈ Ioo (-ε) ε := ⟨by linarith [ht.1], by linarith [ht.2]⟩
+  by_cases hx : x ∈ K
+  · have hq : (t, x) ∈ Icc (-δ) δ ×ˢ K := ⟨⟨ht.1.le, ht.2.le⟩, hx⟩
+    have hb1 : ‖fderiv ℝ (φ t) x‖ ≤ B₁ := hB₁ (t, x) hq
+    have hb3 : ‖Ring.inverse (fderiv ℝ (φ t) x)‖ ≤ B₃ := hB₃ (t, x) hq
+    refine ⟨hb1.trans ((le_max_left _ _).trans (le_max_right _ _)), fun v ↦ ?_⟩
+    have hv : Ring.inverse (fderiv ℝ (φ t) x) (fderiv ℝ (φ t) x v) = v := by
+      change (Ring.inverse (fderiv ℝ (φ t) x) * fderiv ℝ (φ t) x) v = v
+      rw [Ring.inverse_mul_cancel _ (hunit t htε x)]
+      rfl
+    calc ‖v‖ = ‖Ring.inverse (fderiv ℝ (φ t) x) (fderiv ℝ (φ t) x v)‖ := by rw [hv]
+      _ ≤ ‖Ring.inverse (fderiv ℝ (φ t) x)‖ * ‖fderiv ℝ (φ t) x v‖ :=
+        ContinuousLinearMap.le_opNorm _ _
+      _ ≤ max 1 (max B₁ B₃) * ‖fderiv ℝ (φ t) x v‖ :=
+        mul_le_mul_of_nonneg_right (hb3.trans ((le_max_right _ _).trans (le_max_right _ _)))
+          (norm_nonneg _)
+  · rw [hidK t htε x hx]
+    exact ⟨ContinuousLinearMap.norm_id_le.trans (le_max_left _ _),
+      fun v ↦ le_mul_of_one_le_left (norm_nonneg _) (le_max_left _ _)⟩
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
