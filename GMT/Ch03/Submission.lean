@@ -335,6 +335,35 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **Operator-norm bound for the area factor** (Simon Ch. 2, linear area formula (3.1),
+`chapter-02.txt` lines 742–758, and the Lipschitz image estimate Thm. 1.8(i), lines 268–275):
+for every linear map `A : ℝⁿ → ℝᴺ`, `normDet A = √det(A* A) ≤ ‖A‖ⁿ`. On the closed unit ball
+`S ⊆ ℝⁿ` the linear area formula gives `Hⁿ(A(S)) = normDet A · Lⁿ(S)`, while `A` is
+`‖A‖`-Lipschitz, so `Hⁿ(A(S)) ≤ ‖A‖ⁿ Hⁿ(S) = ‖A‖ⁿ Lⁿ(S)`; cancel `0 < Lⁿ(S) < ∞`. -/
+theorem Submission.chartTD_normDet_le_opNorm_pow : ∀ (n N : ℕ) (A : Rn n →L[ℝ] Rn N), A.toLinearMap.normDet ≤ ‖A‖ ^ n := by
+  intro n N A
+  have hfin : finrank ℝ (Rn n) = n := finrank_euclideanSpace_fin
+  set S : Set (Rn n) := Metric.closedBall 0 1
+  -- Simon Ch. 2 (3.1): `Hⁿ(A(S)) = normDet A · Lⁿ(S)`.
+  have h1 := LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume A.toLinearMap S
+  -- `A` is `‖A‖₊`-Lipschitz, so `Hⁿ(A(S)) ≤ ‖A‖₊ⁿ Hⁿ(S) = ‖A‖₊ⁿ Lⁿ(S)`.
+  have h2 := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+    (finrank ℝ (Rn n)) (A.lipschitzWith.lipschitzOnWith (s := S))
+  rw [InnerProductSpace.euclideanHausdorffMeasure_eq_volume] at h2
+  have hcoe : (A.toLinearMap : Rn n → Rn N) '' S = A '' S := rfl
+  rw [← hcoe, h1] at h2
+  -- Cancel `0 < Lⁿ(S) < ∞`.
+  have hpos : 0 < volume S := Metric.measure_closedBall_pos _ _ one_pos
+  have hfinite : volume S < ∞ := measure_closedBall_lt_top
+  have h3 : ENNReal.ofReal A.toLinearMap.normDet ≤ (‖A‖₊ : ℝ≥0∞) ^ finrank ℝ (Rn n) :=
+    (ENNReal.mul_le_mul_iff_left hpos.ne' hfinite.ne).mp h2
+  rw [hfin] at h3
+  -- Back to `ℝ`: `(‖A‖₊ : ℝ≥0∞)ⁿ = ofReal (‖A‖ⁿ)`.
+  have h4 : ENNReal.ofReal A.toLinearMap.normDet ≤ ENNReal.ofReal (‖A‖ ^ n) := by
+    rw [ENNReal.ofReal_pow (norm_nonneg _)]
+    simpa [ofReal_norm, enorm_eq_nnnorm] using h3
+  exact (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp h4
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
