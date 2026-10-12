@@ -373,6 +373,152 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Symmetry of the second derivative (Schwarz)**, used for the symmetry `B_y(τ, η) = B_y(η, τ)`
+of Simon Ch. 2, 4.26. If `f : ℝⁿ → ℝᴺ` is `C²` at `x`, then `L = D²f(x)` is symmetric. The Mathlib
+statement (`ContDiffAt.isSymmSndFDerivAt`) is not imported, so this is the classical mean value
+proof: `f` is differentiable near `x` and `Df` has derivative `L` at `x`, so
+`‖Df(x + h) - Df(x) - L h‖ ≤ ε‖h‖` for `‖h‖ < δ`. The mean value inequality for
+`g(s) = f(x + (t • u + (s * t) • v)) - f(x + (s * t) • v) - s • L (t • u) (t • v)` on `[0, 1]`
+bounds the second difference `Δ = f(x + (t • u + t • v)) - f(x + t • v) - (f(x + t • u) - f(x))` by
+`‖Δ - t² L u v‖ ≤ 2εt²(‖u‖ + ‖v‖)‖v‖`. Since `Δ` is symmetric in `u, v`, exchanging `a` and `b`
+gives `‖L a b - L b a‖ ≤ 2ε(‖a‖ + ‖b‖)²` for every `ε > 0`. -/
+theorem Submission.fderiv_fderiv_symm_of_contDiffAt : ∀ (n N : ℕ) (f : Rn n → Rn N) (x : Rn n), ContDiffAt ℝ 2 f x → ∀ a b : Rn n, fderiv ℝ (fderiv ℝ f) x a b = fderiv ℝ (fderiv ℝ f) x b a := by
+  intro n N f x hf a b
+  set L := fderiv ℝ (fderiv ℝ f) x
+  -- Step 1: `f` is differentiable near `x`, and `Df` has derivative `L` at `x`.
+  have hdiff : ∀ᶠ y in 𝓝 x, DifferentiableAt ℝ f y := by
+    filter_upwards [hf.eventually (by simp)] with y hy
+    exact hy.differentiableAt two_ne_zero
+  have hDf : HasFDerivAt (fderiv ℝ f) L x :=
+    ((hf.fderiv_right (m := 1) (by norm_num)).differentiableAt one_ne_zero).hasFDerivAt
+  -- Step 2: uniform first-order expansion of `Df` at `x`.
+  have hexp : ∀ ε > 0, ∃ δ > 0, ∀ h : Rn n, ‖h‖ < δ → DifferentiableAt ℝ f (x + h) ∧
+      ‖fderiv ℝ f (x + h) - fderiv ℝ f x - L h‖ ≤ ε * ‖h‖ := by
+    intro ε hε
+    have h1 := Asymptotics.isLittleO_iff.1 (hasFDerivAt_iff_isLittleO_nhds_zero.1 hDf) hε
+    have h2 : ∀ᶠ h in 𝓝 (0 : Rn n), DifferentiableAt ℝ f (x + h) :=
+      ((continuous_const.add continuous_id).tendsto' (0 : Rn n) x (by simp)).eventually hdiff
+    obtain ⟨δ, hδ, hball⟩ := Metric.eventually_nhds_iff.1 (h2.and h1)
+    exact ⟨δ, hδ, fun h hh ↦ hball (by simpa [dist_eq_norm] using hh)⟩
+  -- Steps 3–5: the mean value inequality bounds the second difference.
+  have hsec : ∀ ε > 0, ∀ δ > 0, (∀ h : Rn n, ‖h‖ < δ → DifferentiableAt ℝ f (x + h) ∧
+      ‖fderiv ℝ f (x + h) - fderiv ℝ f x - L h‖ ≤ ε * ‖h‖) →
+      ∀ u v : Rn n, ∀ t : ℝ, 0 < t → t * (‖u‖ + ‖v‖) < δ →
+      ‖f (x + (t • u + t • v)) - f (x + t • v) - (f (x + t • u) - f x) - t ^ 2 • L u v‖ ≤
+        2 * ε * t ^ 2 * (‖u‖ + ‖v‖) * ‖v‖ := by
+    intro ε hε δ hδ hball u v t ht htδ
+    have hnorm1 : ∀ s ∈ Icc (0 : ℝ) 1, ‖t • u + (s * t) • v‖ ≤ t * (‖u‖ + ‖v‖) := by
+      intro s hs
+      calc ‖t • u + (s * t) • v‖ ≤ ‖t • u‖ + ‖(s * t) • v‖ := norm_add_le _ _
+        _ = t * ‖u‖ + s * t * ‖v‖ := by
+          rw [norm_smul, norm_smul, Real.norm_of_nonneg ht.le,
+            Real.norm_of_nonneg (mul_nonneg hs.1 ht.le)]
+        _ ≤ t * (‖u‖ + ‖v‖) := by
+          nlinarith [mul_nonneg (sub_nonneg.2 hs.2) (mul_nonneg ht.le (norm_nonneg v))]
+    have hnorm2 : ∀ s ∈ Icc (0 : ℝ) 1, ‖(s * t) • v‖ ≤ t * (‖u‖ + ‖v‖) := by
+      intro s hs
+      rw [norm_smul, Real.norm_of_nonneg (mul_nonneg hs.1 ht.le)]
+      nlinarith [mul_nonneg (sub_nonneg.2 hs.2) (mul_nonneg ht.le (norm_nonneg v)), norm_nonneg u]
+    have hderiv : ∀ s ∈ Icc (0 : ℝ) 1, HasDerivWithinAt
+        (fun s : ℝ ↦ f (x + (t • u + (s * t) • v)) - f (x + (s * t) • v) - s • L (t • u) (t • v))
+        (fderiv ℝ f (x + (t • u + (s * t) • v)) (t • v) - fderiv ℝ f (x + (s * t) • v) (t • v) -
+          L (t • u) (t • v)) (Icc 0 1) s := by
+      intro s hs
+      have hd1 : DifferentiableAt ℝ f (x + (t • u + (s * t) • v)) :=
+        (hball _ ((hnorm1 s hs).trans_lt htδ)).1
+      have hd2 : DifferentiableAt ℝ f (x + (s * t) • v) := (hball _ ((hnorm2 s hs).trans_lt htδ)).1
+      have hc2 : HasDerivAt (fun s : ℝ ↦ x + (s * t) • v) (t • v) s := by
+        simpa using ((hasDerivAt_mul_const t).smul_const v).const_add x
+      have hc1 : HasDerivAt (fun s : ℝ ↦ x + (t • u + (s * t) • v)) (t • v) s := by
+        simpa [add_assoc] using hc2.const_add (t • u)
+      have hlin : HasDerivAt (fun s : ℝ ↦ s • L (t • u) (t • v)) (L (t • u) (t • v)) s := by
+        simpa using (hasDerivAt_id s).smul_const (L (t • u) (t • v))
+      exact (((hd1.hasFDerivAt.comp_hasDerivAt s hc1).sub
+        (hd2.hasFDerivAt.comp_hasDerivAt s hc2)).sub hlin).hasDerivWithinAt
+    have hbound : ∀ s ∈ Ico (0 : ℝ) 1,
+        ‖fderiv ℝ f (x + (t • u + (s * t) • v)) (t • v) - fderiv ℝ f (x + (s * t) • v) (t • v) -
+          L (t • u) (t • v)‖ ≤ 2 * ε * t ^ 2 * (‖u‖ + ‖v‖) * ‖v‖ := by
+      intro s hs
+      have hs' : s ∈ Icc (0 : ℝ) 1 := Ico_subset_Icc_self hs
+      have hR₁ := (hball _ ((hnorm1 s hs').trans_lt htδ)).2
+      have hR₂ := (hball _ ((hnorm2 s hs').trans_lt htδ)).2
+      have hgR : fderiv ℝ f (x + (t • u + (s * t) • v)) (t • v) -
+          fderiv ℝ f (x + (s * t) • v) (t • v) - L (t • u) (t • v) =
+          (fderiv ℝ f (x + (t • u + (s * t) • v)) - fderiv ℝ f x - L (t • u + (s * t) • v))
+            (t • v) -
+          (fderiv ℝ f (x + (s * t) • v) - fderiv ℝ f x - L ((s * t) • v)) (t • v) := by
+        simp only [sub_apply, map_add, add_apply]
+        abel
+      have htv : ‖t • v‖ = t * ‖v‖ := by rw [norm_smul, Real.norm_of_nonneg ht.le]
+      rw [hgR]
+      calc _ ≤ ‖(fderiv ℝ f (x + (t • u + (s * t) • v)) - fderiv ℝ f x - L (t • u + (s * t) • v))
+              (t • v)‖ +
+            ‖(fderiv ℝ f (x + (s * t) • v) - fderiv ℝ f x - L ((s * t) • v)) (t • v)‖ :=
+            norm_sub_le _ _
+        _ ≤ ‖fderiv ℝ f (x + (t • u + (s * t) • v)) - fderiv ℝ f x - L (t • u + (s * t) • v)‖ *
+              ‖t • v‖ + ‖fderiv ℝ f (x + (s * t) • v) - fderiv ℝ f x - L ((s * t) • v)‖ * ‖t • v‖ :=
+            add_le_add (ContinuousLinearMap.le_opNorm _ _) (ContinuousLinearMap.le_opNorm _ _)
+        _ ≤ ε * (t * (‖u‖ + ‖v‖)) * (t * ‖v‖) + ε * (t * (‖u‖ + ‖v‖)) * (t * ‖v‖) := by
+            rw [htv]
+            gcongr
+            · exact hR₁.trans (mul_le_mul_of_nonneg_left (hnorm1 s hs') hε.le)
+            · exact hR₂.trans (mul_le_mul_of_nonneg_left (hnorm2 s hs') hε.le)
+        _ = 2 * ε * t ^ 2 * (‖u‖ + ‖v‖) * ‖v‖ := by ring
+    have hmvt := norm_image_sub_le_of_norm_deriv_le_segment_01' hderiv hbound
+    have hg : f (x + (t • u + (1 * t) • v)) - f (x + (1 * t) • v) - (1 : ℝ) • L (t • u) (t • v) -
+        (f (x + (t • u + (0 * t) • v)) - f (x + (0 * t) • v) - (0 : ℝ) • L (t • u) (t • v)) =
+        f (x + (t • u + t • v)) - f (x + t • v) - (f (x + t • u) - f x) - t ^ 2 • L u v := by
+      simp only [one_mul, zero_mul, zero_smul, add_zero, sub_zero, map_smul, smul_apply, smul_smul,
+        sq]
+      abel
+    rw [← hg]
+    exact hmvt
+  -- Steps 6–7: exchange `a` and `b`, divide by `t²` and let `ε → 0`.
+  have hsymm : ∀ ε > 0, ‖L a b - L b a‖ ≤ 2 * ε * (‖a‖ + ‖b‖) ^ 2 := by
+    intro ε hε
+    obtain ⟨δ, hδ, hball⟩ := hexp ε hε
+    have hpos : 0 < 2 * (‖a‖ + ‖b‖ + 1) := by positivity
+    set t : ℝ := δ / (2 * (‖a‖ + ‖b‖ + 1)) with ht_def
+    have ht : 0 < t := div_pos hδ hpos
+    have htδ : t * (‖a‖ + ‖b‖) < δ := by
+      rw [ht_def, div_mul_eq_mul_div, div_lt_iff₀ hpos]
+      nlinarith [norm_nonneg a, norm_nonneg b]
+    have htδ' : t * (‖b‖ + ‖a‖) < δ := by rwa [add_comm ‖b‖]
+    have h1 := hsec ε hε δ hδ hball a b t ht htδ
+    have h2 := hsec ε hε δ hδ hball b a t ht htδ'
+    have hΔ : f (x + (t • b + t • a)) - f (x + t • a) - (f (x + t • b) - f x) =
+        f (x + (t • a + t • b)) - f (x + t • b) - (f (x + t • a) - f x) := by
+      rw [add_comm (t • b) (t • a)]
+      abel
+    rw [hΔ] at h2
+    have hkey : t ^ 2 • (L a b - L b a) =
+        (f (x + (t • a + t • b)) - f (x + t • b) - (f (x + t • a) - f x) - t ^ 2 • L b a) -
+        (f (x + (t • a + t • b)) - f (x + t • b) - (f (x + t • a) - f x) - t ^ 2 • L a b) := by
+      rw [smul_sub]
+      abel
+    have ht2 : 0 < t ^ 2 := by positivity
+    have hmul : t ^ 2 * ‖L a b - L b a‖ ≤ t ^ 2 * (2 * ε * (‖a‖ + ‖b‖) ^ 2) := by
+      calc t ^ 2 * ‖L a b - L b a‖ = ‖t ^ 2 • (L a b - L b a)‖ := by
+            rw [norm_smul, Real.norm_of_nonneg ht2.le]
+        _ ≤ 2 * ε * t ^ 2 * (‖b‖ + ‖a‖) * ‖a‖ + 2 * ε * t ^ 2 * (‖a‖ + ‖b‖) * ‖b‖ := by
+            rw [hkey]
+            exact (norm_sub_le _ _).trans (add_le_add h2 h1)
+        _ = t ^ 2 * (2 * ε * (‖a‖ + ‖b‖) ^ 2) := by ring
+    exact le_of_mul_le_mul_left hmul ht2
+  -- Conclusion: the bound holds for every `ε > 0`.
+  apply eq_of_forall_dist_le
+  intro ε hε
+  have hD : 0 < 2 * (‖a‖ + ‖b‖) ^ 2 + 1 := by positivity
+  rw [dist_eq_norm]
+  calc ‖L a b - L b a‖ ≤ 2 * (ε / (2 * (‖a‖ + ‖b‖) ^ 2 + 1)) * (‖a‖ + ‖b‖) ^ 2 :=
+        hsymm _ (div_pos hε hD)
+    _ = ε * (2 * (‖a‖ + ‖b‖) ^ 2 / (2 * (‖a‖ + ‖b‖) ^ 2 + 1)) := by ring
+    _ ≤ ε * 1 := by
+        gcongr
+        rw [div_le_one hD]
+        linarith
+    _ = ε := mul_one ε
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
