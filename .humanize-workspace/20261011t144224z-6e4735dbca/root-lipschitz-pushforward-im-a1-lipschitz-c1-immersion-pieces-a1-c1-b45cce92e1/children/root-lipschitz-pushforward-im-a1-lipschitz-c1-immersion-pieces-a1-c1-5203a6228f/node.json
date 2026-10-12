@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1.lusin_closed-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1",
+  "depth": 4,
+  "title": "Lusin's theorem on ℝⁿ with closed sets for (ℝⁿ)*-valued Borel maps (infinite-measure form of Simon Ch. 1, Thm 1.17)",
+  "statement": "Let n ∈ ℕ, let S ⊆ ℝⁿ (ℝⁿ = EuclideanSpace ℝ (Fin n)) be a Borel set, let f : ℝⁿ → (ℝⁿ)* = L(ℝⁿ, ℝ) (operator-norm topology, Borel σ-algebra) be Borel measurable, and let ε ∈ (0, ∞]. Then there is a closed set C ⊆ ℝⁿ with C ⊆ S, Lⁿ(S ∖ C) < ε (Lⁿ = volume) and f|C continuous.",
+  "lean_statement": "∀ (n : ℕ) (S : Set (Eucl n)) (f : Eucl n → (Eucl n →L[ℝ] ℝ)), MeasurableSet S → Measurable f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ C : Set (Eucl n), IsClosed C ∧ C ⊆ S ∧ (volume : Measure (Eucl n)) (S \\ C) < ε ∧ ContinuousOn f C",
+  "lean_name": "lpf_c1r_lusin_closed",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-5203a6228f-a1"
+}

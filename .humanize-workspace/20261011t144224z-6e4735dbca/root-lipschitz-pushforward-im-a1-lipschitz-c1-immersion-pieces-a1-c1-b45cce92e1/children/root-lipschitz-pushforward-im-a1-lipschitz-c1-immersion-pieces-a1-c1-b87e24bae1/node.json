@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1.uniform_remainder-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1",
+  "depth": 4,
+  "title": "Compact-uniform Whitney remainder on a closed subset of almost full measure (η_k step of Simon Ch. 2, Thm 1.5)",
+  "statement": "Let n ∈ ℕ and let g : ℝⁿ → ℝ (ℝⁿ = EuclideanSpace ℝ (Fin n)) be Lipschitz with constant K ≥ 0. Let C ⊆ ℝⁿ be closed such that g is Fréchet differentiable at every x ∈ C and Dg = fderiv ℝ g : ℝⁿ → (ℝⁿ)* is continuous on C. Let ε ∈ (0, ∞]. Then there is a closed set A ⊆ C with Lⁿ(C ∖ A) < ε (Lⁿ = volume) with the following property. For every compact L ⊆ A and every δ > 0 there is ρ > 0 such that |g(y) − g(x) − Dg(x)(y − x)| ≤ δ|y − x| for all x ∈ L and y ∈ A with |x − y| < ρ.",
+  "lean_statement": "∀ (n : ℕ) (g : Eucl n → ℝ) (K : ℝ≥0), LipschitzWith K g → ∀ C : Set (Eucl n), IsClosed C → (∀ x ∈ C, DifferentiableAt ℝ g x) → ContinuousOn (fderiv ℝ g) C → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A : Set (Eucl n), IsClosed A ∧ A ⊆ C ∧ (volume : Measure (Eucl n)) (C \\ A) < ε ∧ ∀ L : Set (Eucl n), IsCompact L → L ⊆ A → ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ∀ x ∈ L, ∀ y ∈ A, dist x y < ρ → ‖g y - g x - fderiv ℝ g x (y - x)‖ ≤ δ * ‖y - x‖",
+  "lean_name": "lpf_c1r_uniform_remainder",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1.egoroff_closed-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1.egoroff_closed-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-b87e24bae1-a1"
+}

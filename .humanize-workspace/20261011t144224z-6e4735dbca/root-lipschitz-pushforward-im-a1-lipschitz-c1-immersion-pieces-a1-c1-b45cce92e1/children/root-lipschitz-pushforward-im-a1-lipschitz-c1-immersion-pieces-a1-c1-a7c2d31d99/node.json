@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1.whitney_extension-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1",
+  "depth": 4,
+  "title": "Whitney's C¹ extension theorem on ℝⁿ (Simon Ch. 2, Theorem 1.6)",
+  "statement": "Let n ∈ ℕ, let A ⊆ ℝⁿ (ℝⁿ = EuclideanSpace ℝ (Fin n)) be closed, and let f : ℝⁿ → ℝ and τ : ℝⁿ → (ℝⁿ)* = L(ℝⁿ, ℝ) be continuous on A. Assume that for every compact L ⊆ A and every δ > 0 there is ρ > 0 with |f(y) − f(x) − τ(x)(y − x)| ≤ δ|y − x| for all x ∈ L and y ∈ A with |x − y| < ρ. Then there is a C¹ function h : ℝⁿ → ℝ such that for every a ∈ A, h(a) = f(a) and h is Fréchet differentiable at a with derivative τ(a).",
+  "lean_statement": "∀ (n : ℕ) (A : Set (Eucl n)) (f : Eucl n → ℝ) (τ : Eucl n → (Eucl n →L[ℝ] ℝ)), IsClosed A → ContinuousOn f A → ContinuousOn τ A → (∀ L : Set (Eucl n), IsCompact L → L ⊆ A → ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ∀ x ∈ L, ∀ y ∈ A, dist x y < ρ → ‖f y - f x - τ x (y - x)‖ ≤ δ * ‖y - x‖) → ∃ h : Eucl n → ℝ, ContDiff ℝ 1 h ∧ ∀ a ∈ A, h a = f a ∧ HasFDerivAt h (τ a) a",
+  "lean_name": "lpf_c1r_whitney_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-a7c2d31d99-a1"
+}
