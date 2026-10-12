@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pieces-a1.lusin_exhaustion-a1",
+  "parent_id": "root.lipschitz_pieces-a1",
+  "depth": 2,
+  "title": "Lusin exhaustion: a Borel map into a finite-dimensional normed space is continuous on countably many compact sets exhausting a finite-measure Borel set up to a null set (parent Step 3, Lusin part)",
+  "statement": "Let Y be a finite-dimensional real normed space (a type in universe Type) equipped with its Borel σ-algebra, let n ∈ ℕ, let ℝⁿ := EuclideanSpace ℝ (Fin n) carry Lebesgue measure Lⁿ = volume, let g: ℝⁿ → Y be Borel measurable, and let S ⊆ ℝⁿ be a Borel set with Lⁿ(S) < ∞. Then there are compact sets C_j ⊆ S (j ∈ ℕ) such that g is continuous on each C_j and Lⁿ(S ∖ ⋃_j C_j) = 0.",
+  "lean_statement": "∀ {Y : Type} [NormedAddCommGroup Y] [NormedSpace ℝ Y] [FiniteDimensional ℝ Y] [MeasurableSpace Y] [BorelSpace Y] (n : ℕ) (g : EuclideanSpace ℝ (Fin n) → Y) (S : Set (EuclideanSpace ℝ (Fin n))), Measurable g → MeasurableSet S → volume S ≠ ⊤ → ∃ C : ℕ → Set (EuclideanSpace ℝ (Fin n)), (∀ j, IsCompact (C j) ∧ C j ⊆ S ∧ ContinuousOn g (C j)) ∧ volume (S \\ ⋃ j, C j) = 0",
+  "lean_name": "lusin_compact_exhaustion_of_measurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-lipschitz-pieces-a1-lusin-exhaustion-a1-a1"
+}

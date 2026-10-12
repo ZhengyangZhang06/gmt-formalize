@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        "exists_antilipschitzWith|theorem measurable_fderiv|theorem measurableSet_of_differentiableAt|euclideanHausdorffMeasure_eq_volume|exists_isClosed_sdiff_lt|exists_isCompact_sdiff_lt|exists_measurable_superset_of_null|IsBounded.measure_lt_top|exists_dense_seq",
+        "lusin|exists.*(isCompact|isClosed).*continuousOn",
+        "regular_set_lower_lipschitz_cover|lusin_compact_exhaustion_of_measurable|lipschitz_range_piece_cover",
+        "Basis.equivFunL|def equivFunL|hasFDerivAt_iff_isLittleO_nhds_zero|theorem bound_of_antilipschitz",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/lp-independent-audit-bwvcnawa/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/lp-independent-audit-bwvcnawa/Axioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/lp-independent-audit-bwvcnawa/Full.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-lipschitz-pieces-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-lipschitz-pieces-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/tmp/lp-independent-audit-bwvcnawa/Types.lean",
+        "/tmp/lp-independent-audit-bwvcnawa/Axioms.lean",
+        "/tmp/lp-independent-audit-bwvcnawa/Full.lean"
+      ],
+      "conclusion": "Verified the frozen handoff and pinned revisions; inspected Mathlib files match the active pinned package. The cited regularity, derivative-measurability, area-null-image and Lipschitz-image lemmas have the required hypotheses. No applicable vector-valued Lusin declaration was found in the searched Mathlib source; the supplied coordinate reduction uses the verified real-valued SimonGMT theorem. Independently compiled all exact child types and the selected parent type against a freshly compiled frozen Submission, before introducing child implementations. Recompiled the supplied complete Lean proofs: all three children and rectifiable_lipschitz_piece_cover depend only on propext, Classical.choice and Quot.sound. Operator-space instances also passed compilation. All names are bare, distinct and unreserved in the current DAG; no type depends on its proposed declaration, and no Matrix/IsUnit construction occurs. The split is appropriate and its dependency directions are acyclic. Public cross-checks support the mathematical ingredients: [Lang, Lemma 1.10](https://people.math.ethz.ch/~lang/diab05_notes_rev.pdf) and [Simon, Lusin theorem, numbered 1.24 in this edition](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "regular_set_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including continuity and unrestricted natural dimensions. Every proof step is justified: the regular set is Borel, the uniform-increment sets are closed, injectivity gives a positive linear lower bound even when n = 0, differentiability supplies a sufficiently small radius, and dense-sequence balls give the bounded countable cover and pairwise lower bound. This is an independent, non-circular analytic obligation."
+    },
+    {
+      "key": "lusin_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition includes every stated space, measurability and finite-measure hypothesis; volume S ≠ ⊤ expresses the stated finiteness. Basis coordinates permit the cited real-valued Lusin theorem, compact inner approximation supplies compactness, and the finite error estimate is valid, including d = 0 because its denominator uses d + 1. Continuity reconstructs through the inverse coordinate equivalence, and the reciprocal error bounds force a null remainder. No missing construction or circular reliance remains."
+    },
+    {
+      "key": "single_map_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose. Both declared dependencies are used correctly: bounded Borel regular pieces have finite volume, and Lusin applies to the measurable derivative in its finite-dimensional Borel operator space. The compact pieces inherit all required properties. The area lemma handles the nonregular image; the Lipschitz image estimate handles the remaining null set. Reindexing proves the range cover. Applying this child to every original parametrization and taking a Borel null hull proves precisely the selected parent contract, without using the parent or an ancestor theorem."
+    }
+  ],
+  "required_changes": []
+}
