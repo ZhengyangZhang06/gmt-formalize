@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "97b5ecabded745091561ef09ddb967ff2607cca218ec6cc0ab71926a0440892a",
+  "git_delta": {
+    "base_commit": "96ce8c80bf8fdd66d66bdbbb31bcda32e078e174",
+    "candidate_commit": "98cce1437eed9017e30ef73316d1f2a9190a30b3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_rescaled_ball_measure_tendsto",
+    "diff_sha256": "1e793e215bb00e3a51b326d697b1b6dcf9428ab536baf239b916a4e5e10f92d3",
+    "source_sha256": "e87dc60ce5a43de72872fbe170d8d62ebe2bcb3c886471c15b01c2d2e4117416",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_rescaled_ball_measure_tendsto",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (x : Euclid P) (θ : ℝ) (lams : ℕ → ℝ), (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → Tendsto (fun r : ℝ => μ (ball x r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) → (∀ (j : ℕ) (s : Set (Euclid P)), MeasurableSet s → μs j s = ENNReal.ofReal ((lams j)⁻¹ ^ n) * μ (dilation x (lams j) ⁻¹' s)) → ∀ ρ : ℝ, 0 < ρ → Tendsto (fun j => μs j (ball 0 ρ)) atTop (𝓝 (unitBallVolume n * ENNReal.ofReal (ρ ^ n) * ENNReal.ofReal θ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
