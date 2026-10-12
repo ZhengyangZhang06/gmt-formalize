@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7888f10b05bb1184cbf332f4965b370aeddb17baf69b5c0633731449f0e4105b",
+  "git_delta": {
+    "base_commit": "5d7e593a3ccc05622c9a3b8f9d3fd65deb66741c",
+    "candidate_commit": "34503163c994047c3eb061eb1d18edf2fc50440c",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "db6518763bce6fd2eb9bb0479afc1ef8dc63e0aed32f83d69b20c55e0d4b02b2",
+    "source_sha256": "65e129f4aaccde1acad542f79736603fd2b937a6b04d1d117dbf8977184c9038",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_mb_wedge_norm_le",
+      "statement": "∀ (P m : ℕ) (α : Eucl P →L[ℝ] ℝ) (γ : Covector (Eucl P) m), covectorEuclideanNorm (ContinuousAlternatingMap.alternatizeUncurryFin (α.smulRight γ)) ≤ ‖α‖ * covectorEuclideanNorm γ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
