@@ -609,6 +609,41 @@ theorem Submission.ts_unit_ball_plane_cutoff_approx : ∀ (n ℓ : ℕ) (P : Sub
         _ = omega n * (1 + δ) ^ n := (hball _ hδ1).2
         _ < b := hδb
 
+/-- Simon Ch. 3, Remark 1.8(2) (p. 75), with closed balls: if `dim P = n`, `c > 0` and
+`t⁻ⁿ ∫ f(t⁻¹(y - x)) dμ(y) → c ∫_P f dHⁿ` as `t ↓ 0` for every `f ∈ C_c`, then
+`μ(B_ρ(x)) / (ωₙ ρⁿ) → c` as `ρ ↓ 0`. -/
+theorem Submission.ts_blowup_closedBall_density : ∀ (n ℓ : ℕ) (μ : Measure (Ambient n ℓ)) (x : Ambient n ℓ) (P : Submodule ℝ (Ambient n ℓ)) (c : ℝ), 0 < n → IsFiniteMeasureOnCompacts μ → Module.finrank ℝ P = n → 0 < c → (∀ f : C_c(Ambient n ℓ, ℝ), Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * ∫ y, f (t⁻¹ • (y - x)) ∂μ) (𝓝[>] 0) (𝓝 (c * ∫ y in (P : Set (Ambient n ℓ)), f y ∂μHE[n]))) → Tendsto (fun ρ : ℝ ↦ μ.real (closedBall x ρ) / (omega n * ρ ^ n)) (𝓝[>] 0) (𝓝 c) := by
+  intro n ℓ μ x P c _ hμ hP hc hlim
+  -- `ωₙ > 0`: the unit ball of `ℝⁿ` is nonempty, open and bounded.
+  have hω : 0 < omega n :=
+    ENNReal.toReal_pos (measure_ball_pos volume _ one_pos).ne' measure_ball_lt_top.ne
+  -- `t⁻ⁿ μ(B_t(x)) → c ωₙ`: it is squeezed between blow-up integrals of cut-offs.
+  have hL : Tendsto (fun t : ℝ ↦ (t ^ n)⁻¹ * μ.real (closedBall x t)) (𝓝[>] 0)
+      (𝓝 (c * omega n)) := by
+    refine tendsto_order.2 ⟨fun a ha ↦ ?_, fun b hb ↦ ?_⟩
+    · -- A cut-off `g ≤ 1_{B_1(0)}` with `a < c ∫_P g dHⁿ`.
+      obtain ⟨g, hg1, hg0, hgP⟩ := (Submission.ts_unit_ball_plane_cutoff_approx n ℓ P hP).1
+        (a / c) ((div_lt_iff₀ hc).2 (by rwa [mul_comm]))
+      rw [div_lt_iff₀ hc, mul_comm] at hgP
+      filter_upwards [(hlim g).eventually (lt_mem_nhds hgP), self_mem_nhdsWithin]
+        with t ht (ht0 : 0 < t)
+      exact ht.trans_le (mul_le_mul_of_nonneg_left
+        ((Submission.ts_blowup_cutoff_closedBall_bounds n ℓ μ x g t hμ ht0).1 hg1 hg0)
+        (inv_nonneg.2 (pow_nonneg ht0.le n)))
+    · -- A cut-off `h ≥ 1_{B_1(0)}` with `c ∫_P h dHⁿ < b`.
+      obtain ⟨h, hh0, hh1, hhP⟩ := (Submission.ts_unit_ball_plane_cutoff_approx n ℓ P hP).2
+        (b / c) ((lt_div_iff₀ hc).2 (by rwa [mul_comm]))
+      rw [lt_div_iff₀ hc, mul_comm] at hhP
+      filter_upwards [(hlim h).eventually (gt_mem_nhds hhP), self_mem_nhdsWithin]
+        with t ht (ht0 : 0 < t)
+      exact (mul_le_mul_of_nonneg_left
+        ((Submission.ts_blowup_cutoff_closedBall_bounds n ℓ μ x h t hμ ht0).2 hh0 hh1)
+        (inv_nonneg.2 (pow_nonneg ht0.le n))).trans_lt ht
+  -- Divide by `ωₙ ≠ 0`.
+  have hdiv := hL.div_const (omega n)
+  rw [mul_div_cancel_right₀ c hω.ne'] at hdiv
+  exact hdiv.congr fun ρ ↦ by ring
+
 theorem main_theorem : ApproxTangentAE ∧ FirstVariationFormula ∧ StationaryIffVariational ∧ StationaryMonotonicity ∧ StationaryDensity ∧ CanonicalRepresentative ∧ BoundedCurvatureMonotonicity ∧ LogarithmicMonotonicityError ∧ LpMonotonicity ∧ LpDensity ∧ LpSupportRepresentation ∧ PoincareInequality ∧ SobolevInequality ∧ SupportInBall ∧ ConvexHullProperty ∧ ClassicalTangent := by sorry
 
 end
