@@ -620,6 +620,50 @@ theorem dohr_tv_tangentProj_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V :
     rintro A B rfl
     rfl
   exact key _ _ hP
+/-- **Generalized mean curvature under the translation `τ(x) = x − ξ`** (Simon Ch. 4, 3.14).  Let
+`V'` be a rectifiable varifold in `τ(U)` with `μ_{V'} = τ_# μ_V` and `p_{T_y V'} = p_{T_{y+ξ} V}`
+for every `y`.  If `V` has generalized mean curvature `H` in `U`, then `V'` has generalized mean
+curvature `y ↦ H(y + ξ)` in `τ(U)`.
+Proof: `τ` is a homeomorphism and a measurable embedding.  Local integrability moves along `τ`,
+because `τ` maps `𝓝[U] x` onto `𝓝[τ(U)] τ(x)` and `H(· + ξ) ∘ τ = H`.  For `X ∈ C¹_c(τ(U))` the
+field `Y = X ∘ τ` lies in `C¹_c(U)`, and `div_{M'} X(τ(x)) = div_M Y(x)` because
+`DY(x) = DX(τ(x))`.  Changing variables in both first-variation integrals then gives the identity
+for `V'`. -/
+theorem dohr_tv_gmc_transfer : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ) (V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U)), V'.weight = V.weight.map (fun x => x - ξ) → (∀ y, V'.tangentProj y = V.tangentProj (y + ξ)) → ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun y => H (y + ξ)) := by
+  intro n ℓ U V ξ V' hw htp H hH
+  obtain ⟨hloc, hvar⟩ := hH
+  -- `τ(x) = x − ξ` is a measurable embedding and a topological embedding.
+  have hτm : MeasurableEmbedding (fun x : Amb n ℓ => x - ξ) := measurableEmbedding_subRight ξ
+  have hτe : Topology.IsEmbedding (fun x : Amb n ℓ => x - ξ) := (Homeomorph.subRight ξ).isEmbedding
+  refine ⟨?_, fun X hX hXc hXs => ?_⟩
+  · -- Step 1: `H(· + ξ)` is locally integrable on `τ(U)`.  At `τ(x)`, `x ∈ U`, the filter
+    -- `𝓝[τ(U)] τ(x)` is the image of `𝓝[U] x` under `τ`, and `H(· + ξ) ∘ τ = H`.
+    rintro _ ⟨x, hxU, rfl⟩
+    rw [hw, ← hτe.map_nhdsWithin_eq, hτm.integrableAtFilter_map_iff]
+    simpa only [Function.comp_def, sub_add_cancel] using hloc x hxU
+  · -- Step 2: the first variation of `V'`, tested against `X`, via the field `Y = X ∘ τ` on `U`.
+    have hY : ContDiff ℝ 1 (fun x => X (x - ξ)) := hX.comp (contDiff_id.sub contDiff_const)
+    have hYc : HasCompactSupport (fun x => X (x - ξ)) :=
+      hXc.comp_homeomorph (Homeomorph.subRight ξ)
+    have hYs : tsupport (fun x => X (x - ξ)) ⊆ U := by
+      intro x hx
+      have hx' : x - ξ ∈ tsupport X := by
+        have h : x ∈ tsupport (X ∘ Homeomorph.subRight ξ) := hx
+        rwa [tsupport_comp_eq_preimage] at h
+      obtain ⟨u, hu, hux⟩ := hXs hx'
+      rwa [← sub_left_injective hux]
+    -- `div_{M'} X (x − ξ) = div_M Y x`: the tangent planes match and `DY(x) = DX(x − ξ)`.
+    have hdiv : ∀ x, V'.divM X (x - ξ) = V.divM (fun x => X (x - ξ)) x := by
+      intro x
+      simp only [RectifiableVarifold.divM]
+      rw [htp, sub_add_cancel, fderiv_comp_sub]
+    calc ∫ y, V'.divM X y ∂V'.weight = ∫ x, V'.divM X (x - ξ) ∂V.weight := by
+          rw [hw, hτm.integral_map]
+      _ = ∫ x, V.divM (fun x => X (x - ξ)) x ∂V.weight := by simp only [hdiv]
+      _ = -∫ x, inner ℝ (X (x - ξ)) (H x) ∂V.weight := hvar _ hY hYc hYs
+      _ = -∫ y, inner ℝ (X y) (H (y + ξ)) ∂V'.weight := by
+          rw [hw, hτm.integral_map]
+          simp only [sub_add_cancel]
 
 end Submission
 
