@@ -409,6 +409,73 @@ theorem Submission.isoperimetric_coord_covector_eval : ∀ (n N : ℕ) (α : Sim
         rw [ite_eq_right hI, ite_eq_right hIα]
     rw [covectorEuclideanNorm, Finset.sum_congr rfl fun I _ => hs I, Finset.sum_ite_eq',
       ite_eq_left (Finset.mem_univ _), Real.sqrt_sq_eq_abs]
+/-- The `n`-dimensional coordinate box `{x : c_i + a ≤ x_i ≤ c_i + b (i ∈ range α), x_i = c_i
+(i ∉ range α)}` in `ℝ^N` has `μHE[n]`-measure `(b - a)^n`.  The map
+`ι(y)_i = c_i + ∑_j [α j = i] y_j` is an isometry `ℝⁿ → ℝ^N` carrying the cube `[a, b]ⁿ` onto the
+box; `μHE[n]` is invariant under isometries and equals Lebesgue measure on `ℝⁿ`. -/
+theorem Submission.isoperimetric_coord_box_measure :
+    ∀ (n N : ℕ) (α : SimonMultiIndex n N) (c : Fin N → ℝ) (a b : ℝ), a ≤ b →
+      (μHE[n] : Measure (Eucl N)) {x : Eucl N | ∀ i : Fin N,
+        (i ∈ range α → c i + a ≤ x i ∧ x i ≤ c i + b) ∧ (i ∉ range α → x i = c i)} =
+        ENNReal.ofReal ((b - a) ^ n) := by
+  intro n N α c a b hab
+  classical
+  -- The parametrization `ι(y)_i = c_i + ∑_j [α j = i] y_j` of the box.
+  set ι : EuclideanSpace ℝ (Fin n) → Eucl N :=
+    fun y => WithLp.toLp 2 (fun i => c i + ∑ j, if α j = i then y j else 0) with hι
+  have hι_on : ∀ y j, ι y (α j) = c (α j) + y j := by
+    intro y j
+    simp only [hι, PiLp.toLp_apply, α.inj, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  have hι_off : ∀ y i, i ∉ range α → ι y i = c i := by
+    intro y i hi
+    have hne : ∀ j, α j ≠ i := fun j hj => hi ⟨j, hj⟩
+    simp [hι, hne]
+  -- `ι` is an isometry: coordinates off `range α` agree, the others reindex along `α`.
+  have hiso : Isometry ι := by
+    refine Isometry.of_dist_eq fun y y' => ?_
+    rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq]
+    congr 1
+    rw [← Finset.sum_subset (Finset.subset_univ (Finset.univ.image α)) ?_,
+      Finset.sum_image (fun j _ j' _ h => α.injective h)]
+    · refine Finset.sum_congr rfl fun j _ => ?_
+      rw [hι_on, hι_on, dist_add_left]
+    · intro i _ hi
+      have hi' : i ∉ range α := by
+        rintro ⟨j, rfl⟩
+        exact hi (Finset.mem_image_of_mem α (Finset.mem_univ j))
+      rw [hι_off y i hi', hι_off y' i hi', dist_self]
+      ring
+  -- `ι` maps the cube `[a, b]ⁿ` onto the box, with preimage `y_j = x_{α j} - c_{α j}`.
+  have himage : ι '' {y : EuclideanSpace ℝ (Fin n) | ∀ j, a ≤ y j ∧ y j ≤ b} =
+      {x : Eucl N | ∀ i : Fin N, (i ∈ range α → c i + a ≤ x i ∧ x i ≤ c i + b) ∧
+        (i ∉ range α → x i = c i)} := by
+    ext x
+    constructor
+    · rintro ⟨y, hy, rfl⟩ i
+      refine ⟨?_, hι_off y i⟩
+      rintro ⟨j, rfl⟩
+      rw [hι_on]
+      exact ⟨by linarith [(hy j).1], by linarith [(hy j).2]⟩
+    · intro hx
+      refine ⟨WithLp.toLp 2 (fun j => x (α j) - c (α j)), fun j => ?_, ?_⟩
+      · have h := (hx (α j)).1 ⟨j, rfl⟩
+        constructor <;> dsimp only <;> linarith [h.1, h.2]
+      · ext i
+        by_cases hi : i ∈ range α
+        · obtain ⟨j, rfl⟩ := hi
+          rw [hι_on]
+          simp
+        · rw [hι_off _ i hi, (hx i).2 hi]
+  rw [← himage, hiso.euclideanHausdorffMeasure_image,
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- The cube is the preimage of `Icc` under the volume-preserving `WithLp.ofLp`.
+  have hQ : {y : EuclideanSpace ℝ (Fin n) | ∀ j, a ≤ y j ∧ y j ≤ b} =
+      WithLp.ofLp ⁻¹' Icc (fun _ : Fin n => a) (fun _ => b) := by
+    ext y
+    simp [Pi.le_def, forall_and]
+  rw [hQ, (PiLp.volume_preserving_ofLp (Fin n)).measure_preimage
+    measurableSet_Icc.nullMeasurableSet, Real.volume_Icc_pi, Finset.prod_const,
+    Finset.card_univ, Fintype.card_fin, ENNReal.ofReal_pow (sub_nonneg.2 hab)]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
