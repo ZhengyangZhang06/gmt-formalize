@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "be4eb15d390707aff3223da81e4122bfba83333685e257e918ae6abeba70fc22",
+  "git_delta": {
+    "base_commit": "79460e53659aab800e19ecbe53070245239be9e2",
+    "candidate_commit": "f00b8475a14991149dc00c9970fa38fe7e6dc44a",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "trace_comp_adjoint_comp_swap_of_symm",
+    "diff_sha256": "94a18fa0575338d5c6959bc9e0c9278a0a7824b709d7266e5815884e6affb6e8",
+    "source_sha256": "d6418a771028cb0dd2ec8c8ca138237e677a53cc5924a4460357b33b98030d46",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.trace_comp_adjoint_comp_swap_of_symm",
+      "statement": "∀ (n N : ℕ) (A S : Rn n →L[ℝ] Rn N) (P : Rn n →L[ℝ] Rn n), (∀ v w : Rn n, inner ℝ (P v) w = inner ℝ v (P w)) → LinearMap.trace ℝ (Rn n) (P ∘L ContinuousLinearMap.adjoint S ∘L A).toLinearMap = LinearMap.trace ℝ (Rn n) (P ∘L ContinuousLinearMap.adjoint A ∘L S).toLinearMap",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
