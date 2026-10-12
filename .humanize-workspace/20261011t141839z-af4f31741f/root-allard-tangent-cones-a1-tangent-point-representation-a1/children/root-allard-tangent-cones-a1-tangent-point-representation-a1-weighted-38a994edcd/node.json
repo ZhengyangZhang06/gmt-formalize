@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1.weighted_approx_tangent-a1",
+  "parent_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1",
+  "depth": 3,
+  "title": "If μ_V = θ H^n⌞M, the varifold tangent plane at x is the unique approximate tangent plane of (M, θ) at x",
+  "statement": "Let N, n ∈ ℕ, U ⊆ ℝ^N, V an n-varifold on U, and H := μHE[n]. Let M ⊆ ℝ^N be H-null-measurable, and let θ : ℝ^N → ℝ with θ > 0 on M and θ H-integrable on M ∩ K for every compact K ⊆ ℝ^N. Suppose μ_V(B) = ∫⁻_{M∩B} ofReal(θ) dH for every Borel B. Let x ∈ ℝ^N and T ∈ G(N,n) with HasTangentPlane V x T (θ(x)) (Simon 8, Def. 1.1). Then for every S ∈ G(N,n): M has approximate tangent space S.plane at x with respect to θ (Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane, Simon Ch. 3, 1.7) if and only if S = T.",
+  "lean_statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (T : Grassmannian N n), NullMeasurableSet M μHE[n] → (∀ y ∈ M, 0 < θ y) → (∀ K : Set (Euclidean N), IsCompact K → IntegrableOn θ (M ∩ K) μHE[n]) → (∀ B : Set (Euclidean N), MeasurableSet B → V.weight B = ∫⁻ y in M ∩ B, ENNReal.ofReal (θ y) ∂μHE[n]) → HasTangentPlane V x T (θ x) → ∀ S : Grassmannian N n, Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ↔ S = T",
+  "lean_name": "allard_tc_tpr_weighted_approx_tangent_iff",
+  "depends_on": [
+    "root.allard_tangent_cones-a1.tangent_point_representation-a1.integral_eq_weighted-a1",
+    "root.allard_tangent_cones-a1.tangent_point_representation-a1.blowup_set_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1.integral_eq_weighted-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1.blowup_set_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-tangent-point-representation-a1-weighted-38a994edcd-a1"
+}

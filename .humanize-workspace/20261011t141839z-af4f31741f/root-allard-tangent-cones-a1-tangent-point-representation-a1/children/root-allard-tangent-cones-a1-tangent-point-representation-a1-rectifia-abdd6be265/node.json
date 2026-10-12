@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1.rectifiable_sigma_finite-a1",
+  "parent_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1",
+  "depth": 3,
+  "title": "H^n restricted to a countably n-rectifiable set is σ-finite",
+  "statement": "Let N, n ∈ ℕ and let M ⊆ ℝ^N be countably n-rectifiable in the sense of Simon Ch. 3, 1.1 (Chapter03.CountablyRectifiable n M). That is, M ⊆ M₀ ∪ ⋃_{j∈ℕ} F_j(ℝ^n) with H^n(M₀) = 0 and each F_j : ℝ^n → ℝ^N Lipschitz. Then the measure H^n⌞M = μHE[n].restrict M on ℝ^N is σ-finite.",
+  "lean_statement": "∀ (N n : ℕ) (M : Set (Euclidean N)), Chapter03.CountablyRectifiable n M → SigmaFinite ((μHE[n] : Measure (Euclidean N)).restrict M)",
+  "lean_name": "allard_tc_tpr_rectifiable_sigmaFinite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-tangent-point-representation-a1-rectifia-abdd6be265-a1"
+}

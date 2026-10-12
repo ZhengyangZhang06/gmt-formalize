@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1.integral_eq_weighted-a1",
+  "parent_id": "root.allard_tangent_cones-a1.tangent_point_representation-a1",
+  "depth": 3,
+  "title": "Integration against μ = θ H^n⌞M",
+  "statement": "Let N, n ∈ ℕ, H := μHE[n] on ℝ^N, and let μ be a Borel measure on ℝ^N. Let M ⊆ ℝ^N be H-null-measurable, and let θ : ℝ^N → ℝ with θ > 0 on M and θ H-integrable on M ∩ K for every compact K ⊆ ℝ^N. Suppose μ(B) = ∫⁻_{M∩B} ofReal(θ) dH for every Borel B. Then for every function g : ℝ^N → ℝ, ∫ g dμ = ∫_M g·θ dH (Bochner integrals, with Lean's convention for non-integrable functions).",
+  "lean_statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), NullMeasurableSet M μHE[n] → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Euclidean N), IsCompact K → IntegrableOn θ (M ∩ K) μHE[n]) → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂μHE[n]) → ∀ g : Euclidean N → ℝ, ∫ z, g z ∂μ = ∫ z in M, g z * θ z ∂μHE[n]",
+  "lean_name": "allard_tc_tpr_integral_eq_weighted",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-allard-tangent-cones-a1-tangent-point-representation-a1-integral-d5c3d55b23-a1"
+}
