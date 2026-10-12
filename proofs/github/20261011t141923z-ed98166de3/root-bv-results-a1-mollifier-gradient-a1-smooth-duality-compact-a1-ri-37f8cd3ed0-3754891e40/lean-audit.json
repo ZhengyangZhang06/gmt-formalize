@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "598ae7ff0bee2efa454d1c7180134028ae0ef3374e02bb31c8fab196664f565b",
+  "git_delta": {
+    "base_commit": "fd57875d9fa8cbb464c570f923ef481aa8103784",
+    "candidate_commit": "6c677a9ee570882d08b81ec786aa9cd8636e5cf5",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_exists_contDiff_gradient_of_contDiff_two",
+    "diff_sha256": "600d9717019616f30c1599ee0fbbb8ac413d51a6e9e4fdee803d9efd245bccf9",
+    "source_sha256": "5c47bce7634c7cdb708a20a0dbc534dcee87901490d15bcc91d32b84ce13a2ab",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_exists_contDiff_gradient_of_contDiff_two",
+      "statement": "∀ (n : ℕ) (w : Rn n → ℝ), ContDiff ℝ 2 w → ∃ G : Rn n → Rn n, ContDiff ℝ 1 G ∧ (∀ x v, inner ℝ (G x) v = fderiv ℝ w x v) ∧ ∀ x, ‖G x‖ = ‖fderiv ℝ w x‖",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
