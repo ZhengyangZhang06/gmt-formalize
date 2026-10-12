@@ -457,6 +457,52 @@ theorem Submission.br_latticeFace_setIntegral_eq_cube :
         rw [hpre]
         simp only [hL]
 
+/-- A continuous `g ≥ 0` that is positive at a relative-interior point `p` of the face
+`latticeFace ρ F` (`ρ > 0`) has positive integral over the face: by
+`br_latticeFace_setIntegral_eq_cube` the integral is `∫_{[0,ρ]^n} g(ι(s)) ds`, the point
+`s₀ = (p_{α(j)} − ρ z_{α(j)})_j` lies in the open cube `(0,ρ)^n` with `ι(s₀) = p`, and
+`support (g ∘ ι) ∩ (0,ρ)^n` is open and nonempty, hence of positive Lebesgue measure. -/
+theorem Submission.fiw_tb_lcc_face_integral_pos : ∀ (n N : ℕ) (ρ : ℝ) (F : LatticeFaceIndex n N) (g : Eucl N → ℝ) (p : Eucl N), 0 < ρ → Continuous g → (∀ x, 0 ≤ g x) → 0 < g p → (∀ i : Fin N, (i ∈ range F.2 → ρ * (F.1 i : ℝ) < p i ∧ p i < ρ * ((F.1 i : ℝ) + 1)) ∧ (i ∉ range F.2 → p i = ρ * (F.1 i : ℝ))) → 0 < ∫ x in latticeFace ρ F, g x ∂(μHE[n] : Measure (Eucl N)) := by
+  intro n N ρ F g p hρ hg hg0 hgp hp
+  rw [Submission.br_latticeFace_setIntegral_eq_cube N n ρ F g]
+  -- the affine parametrization of the face
+  set ι : (Fin n → ℝ) → Eucl N := fun s =>
+    ∑ l, (ρ * (F.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) +
+      ∑ j, s j • EuclideanSpace.single (F.2 j) (1 : ℝ) with hι
+  have hιc : Continuous ι := by
+    rw [hι]
+    fun_prop
+  have hcoord : ∀ (s : Fin n → ℝ) (l : Fin N),
+      ι s l = ρ * (F.1 l : ℝ) + ∑ j, if l = F.2 j then s j else 0 := by
+    intro s l
+    simp [hι, Pi.single_apply]
+  set s₀ : Fin n → ℝ := fun j => p (F.2 j) - ρ * (F.1 (F.2 j) : ℝ) with hs₀
+  have hιs₀ : ι s₀ = p := by
+    ext l
+    rw [hcoord]
+    by_cases hl : l ∈ range F.2
+    · obtain ⟨j, rfl⟩ := hl
+      simp [hs₀, F.2.injective.eq_iff]
+    · have hne : ∀ j, l ≠ F.2 j := fun j h => hl ⟨j, h.symm⟩
+      simp [hne, (hp l).2 hl]
+  have hs₀mem : s₀ ∈ Set.pi univ (fun _ => Ioo (0 : ℝ) ρ) := by
+    intro j _
+    obtain ⟨h1, h2⟩ := (hp (F.2 j)).1 ⟨j, rfl⟩
+    constructor <;> simp only [hs₀] <;> linarith
+  have hh : Continuous fun s => g (ι s) := hg.comp hιc
+  rw [setIntegral_pos_iff_support_of_nonneg_ae (ae_of_all _ fun s => hg0 _)
+    (hh.continuousOn.integrableOn_compact isCompact_Icc)]
+  have hopen : IsOpen (Function.support (fun s => g (ι s)) ∩ Set.pi univ (fun _ => Ioo (0 : ℝ) ρ)) :=
+    hh.isOpen_support.inter (isOpen_set_pi finite_univ fun _ _ => isOpen_Ioo)
+  have hne : (Function.support (fun s => g (ι s)) ∩ Set.pi univ (fun _ => Ioo (0 : ℝ) ρ)).Nonempty :=
+    ⟨s₀, by simp only [Function.mem_support, hιs₀]; exact hgp.ne', hs₀mem⟩
+  calc (0 : ℝ≥0∞) < volume (Function.support (fun s => g (ι s)) ∩ Set.pi univ (fun _ => Ioo (0 : ℝ) ρ)) :=
+        hopen.measure_pos volume hne
+    _ ≤ volume (Function.support (fun s => g (ι s)) ∩ Icc (0 : Fin n → ℝ) (fun _ => ρ)) := by
+        refine measure_mono (inter_subset_inter_right _ fun s hs => ⟨fun j => ?_, fun j => ?_⟩)
+        · exact (hs j (mem_univ j)).1.le
+        · exact (hs j (mem_univ j)).2.le
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
