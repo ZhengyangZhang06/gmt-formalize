@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "df74237c7620949619a94940de2063807b33b9a35390f983e3ffa36c48a0d33a",
+  "git_delta": {
+    "base_commit": "3e733c5a8d10d3e9842751221f617331e0e07292",
+    "candidate_commit": "40dc34b77c97a77dd55c8bebd26e1765dccd13c0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_covectorEuclideanNorm_seminorm_retract",
+    "diff_sha256": "9b229a34938f98d2414c53fa8fddf3a19d36bb45c1e61767024fd313f5e6192d",
+    "source_sha256": "88891cbf7a20210bb501cb58c0a013da6944d209c8c94caac45229bae01420cc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_covectorEuclideanNorm_seminorm_retract",
+      "statement": "∀ (P n : ℕ), ∃ c : ℝ, 0 < c ∧ Continuous (fun α : Covector (Euclid P) n => covectorEuclideanNorm α) ∧ (∀ α β : Covector (Euclid P) n, covectorEuclideanNorm (α + β) ≤ covectorEuclideanNorm α + covectorEuclideanNorm β) ∧ (∀ (t : ℝ) (α : Covector (Euclid P) n), covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α) ∧ (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ c * ‖α‖) ∧ ∀ v b : Covector (Euclid P) n, covectorEuclideanNorm b ≤ 1 → covectorEuclideanNorm ((max 1 (covectorEuclideanNorm v))⁻¹ • v - b) ≤ covectorEuclideanNorm (v - b)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
