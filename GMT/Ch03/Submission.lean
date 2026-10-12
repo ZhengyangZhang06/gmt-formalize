@@ -466,6 +466,131 @@ theorem Submission.indCompact_mollCauchy_setIntegral_continuous : ∀ (N : ℕ) 
   -- integrable; convolving with the continuous, compactly supported `ρ` gives a continuous map.
   exact hρc.continuous_convolution_right _ (locallyIntegrable_const 1) hρ
 
+/-- **Translation estimates and uniformly Cauchy mollifications give local Cauchy in measure**
+(Steps 3 and 6 of the supplied proof of the compactness of indicators used for De Giorgi's theorem,
+Simon Ch. 3, Theorem 4.3; cf. the mollification argument in the proof of Simon Ch. 2,
+Theorem 2.6). Let `ρ_m ≥ 0` be continuous kernels with `∫ ρ_m = 1` and support in
+`B̄_{1/(m+1)}(0)`, and `v_{m,k}(y) = ∫_{F_k} ρ_m(y - z) dz`. If the `F_k` satisfy a uniform local
+translation estimate `Lᴺ(B_R ∩ ((F_k)_h Δ F_k)) ≤ C_R |h|` and, for each `m`, the `v_{m,k}` are
+uniformly Cauchy on `B̄_m(0)`, then `Lᴺ(B_R ∩ (F_k Δ F_l)) → 0`: on `B_R ⊆ B̄_m(0)`,
+`1_{F_k Δ F_l} ≤ |v_{m,k} - 1_{F_k}| + |v_{m,k} - v_{m,l}| + |v_{m,l} - 1_{F_l}|`, and the outer
+terms have `L¹(B_R)`-norm at most `C_R / (m + 1)`. -/
+theorem Submission.indCompact_local_cauchy_of_mollified_cauchy : ∀ (N : ℕ) (F : ℕ → Set (Rn N)) (ρ : ℕ → Rn N → ℝ), (∀ k, NullMeasurableSet (F k) volume) → (∀ m, Continuous (ρ m)) → (∀ m, HasCompactSupport (ρ m)) → (∀ m y, 0 ≤ ρ m y) → (∀ m, ∫ y, ρ m y = 1) → (∀ m, Function.support (ρ m) ⊆ Metric.closedBall (0 : Rn N) (1 / ((m : ℝ) + 1))) → (∀ R : ℕ, ∃ C : ℝ, ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ h : Rn N, ‖h‖ ≤ 1 → volume (Metric.ball (0 : Rn N) R ∩ symmDiff ((fun y ↦ y + h) ⁻¹' F k) (F k)) ≤ ENNReal.ofReal (C * ‖h‖)) → (∀ (m : ℕ) (ε : ℝ), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀, ∀ y ∈ Metric.closedBall (0 : Rn N) m, |(∫ z in F k, ρ m (y - z)) - ∫ z in F l, ρ m (y - z)| ≤ ε) → ∀ (R : ℕ) (ε : ℝ≥0∞), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀, volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F k) (F l)) ≤ ε := by
+  intro N F ρ hF hρc hρs hρ0 hρ1 hρsupp htrans hcauchy R ε hε
+  -- For `ε = ∞` any `k₀` works; otherwise put `e := ε.toReal > 0`, so that `ε = ofReal e`.
+  rcases eq_or_ne ε ∞ with rfl | hε_top
+  · exact ⟨0, fun _ _ _ _ ↦ le_top⟩
+  set e := ε.toReal
+  have he : 0 < e := ENNReal.toReal_pos hε.ne' hε_top
+  have hεe : ε = ENNReal.ofReal e := (ENNReal.ofReal_toReal hε_top).symm
+  -- (a) The translation estimate on `B_R`, with the nonnegative constant `C' := max C 0`.
+  obtain ⟨C, k₁, hC⟩ := htrans R
+  set C' := max C 0
+  have hC' : 0 ≤ C' := le_max_right _ _
+  -- (b) A kernel index `m ≥ R` with `σ_m C' ≤ e / 4`, where `σ_m := 1 / (m + 1) ≤ 1`.
+  obtain ⟨m₀, hm₀⟩ := exists_nat_gt (4 * C' / e)
+  set m := max m₀ R
+  have hm_pos : (0 : ℝ) < (m : ℝ) + 1 := by positivity
+  have hσ_le : 1 / ((m : ℝ) + 1) ≤ 1 := by
+    rw [div_le_one hm_pos]
+    linarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m)]
+  have hσC : 1 / ((m : ℝ) + 1) * C' ≤ e / 4 := by
+    have hm₀m : (m₀ : ℝ) ≤ m := by exact_mod_cast le_max_left m₀ R
+    have h4 : 4 * C' / e < (m : ℝ) + 1 := by linarith
+    rw [div_lt_iff₀ he] at h4
+    rw [one_div_mul_eq_div, div_le_iff₀ hm_pos]
+    linarith
+  have hRm : Metric.ball (0 : Rn N) R ⊆ Metric.closedBall (0 : Rn N) m :=
+    Metric.ball_subset_closedBall.trans
+      (Metric.closedBall_subset_closedBall (by exact_mod_cast le_max_right m₀ R))
+  -- (c) The uniform Cauchy property of `v_{m,·}` on `B̄_m(0)` with `η := e / (2 (Lᴺ(B_R) + 1))`.
+  set V := (volume (Metric.ball (0 : Rn N) R)).toReal with hV_def
+  have hV : 0 ≤ V := ENNReal.toReal_nonneg
+  set η := e / (2 * (V + 1)) with hη_def
+  have hη : 0 < η := by positivity
+  have hηV : η * V ≤ e / 2 := by
+    rw [hη_def, div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith
+  obtain ⟨k₂, hk₂⟩ := hcauchy m η hη
+  refine ⟨max k₁ k₂, fun k hk l hl ↦ ?_⟩
+  -- Step 2 (mollification error): `∫⁻_{B_R} |v_{m,j} - 1_{F_j}| ≤ σ_m C' ≤ e / 4` for `j ≥ k₁`.
+  have herr : ∀ j ≥ k₁, ∫⁻ y in Metric.ball (0 : Rn N) R,
+      ENNReal.ofReal |(∫ z in F j, ρ m (y - z)) - (F j).indicator (fun _ ↦ (1 : ℝ)) y| ≤
+        ENNReal.ofReal (e / 4) := by
+    intro j hj
+    refine (Submission.indCompact_mollCauchy_l1_error N (F j) (ρ m) (1 / ((m : ℝ) + 1)) R C'
+      (hF j) (hρc m) (hρs m) (hρ0 m) (hρ1 m) (hρsupp m) hC' fun h hh ↦ ?_).trans
+        (ENNReal.ofReal_le_ofReal hσC)
+    exact (hC j hj h (hh.trans hσ_le)).trans (ENNReal.ofReal_le_ofReal
+      (mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg h)))
+  -- Step 1: each `v_{m,j}` is continuous and `F_j` is null-measurable, so the error terms are
+  -- a.e.-measurable and `∫⁻` is additive on them.
+  have hmeas : ∀ j, AEMeasurable (fun y ↦
+      ENNReal.ofReal |(∫ z in F j, ρ m (y - z)) - (F j).indicator (fun _ ↦ (1 : ℝ)) y|)
+      (volume.restrict (Metric.ball (0 : Rn N) R)) := by
+    intro j
+    have hv : AEMeasurable (fun y : Rn N ↦ ∫ z in F j, ρ m (y - z)) volume :=
+      (Submission.indCompact_mollCauchy_setIntegral_continuous N (F j) (ρ m) (hρc m)
+        (hρs m)).measurable.aemeasurable
+    have hχ : AEMeasurable ((F j).indicator (fun _ ↦ (1 : ℝ))) volume :=
+      aemeasurable_const.indicator₀ (hF j)
+    exact (continuous_abs.measurable.comp_aemeasurable (hv.sub hχ)).ennreal_ofReal.restrict
+  -- (d) For `y ∈ B_R ⊆ B̄_m(0)`:
+  -- `1_{F_k Δ F_l}(y) ≤ |v_{m,k}(y) - 1_{F_k}(y)| + η + |v_{m,l}(y) - 1_{F_l}(y)|`.
+  have hpt : ∀ y ∈ Metric.ball (0 : Rn N) R, (symmDiff (F k) (F l)).indicator 1 y ≤
+      ENNReal.ofReal |(∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y| +
+        ENNReal.ofReal η +
+          ENNReal.ofReal |(∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y| := by
+    intro y hy
+    have hvkl := hk₂ k (le_of_max_le_right hk) l (le_of_max_le_right hl) y (hRm hy)
+    refine Set.indicator_apply_le' (fun hyD ↦ ?_) (fun _ ↦ zero_le)
+    have h1 : |(F k).indicator (fun _ ↦ (1 : ℝ)) y - (F l).indicator (fun _ ↦ (1 : ℝ)) y| = 1 := by
+      rcases Set.mem_symmDiff.mp hyD with ⟨hk', hl'⟩ | ⟨hl', hk'⟩ <;> simp [hk', hl']
+    have h2 : |(F k).indicator (fun _ ↦ (1 : ℝ)) y - (F l).indicator (fun _ ↦ (1 : ℝ)) y| ≤
+        |(∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y| + η +
+          |(∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y| := by
+      rw [abs_le] at hvkl ⊢
+      constructor <;>
+        linarith [le_abs_self ((∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y),
+          neg_abs_le ((∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y),
+          le_abs_self ((∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y),
+          neg_abs_le ((∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y)]
+    rw [h1] at h2
+    calc (1 : Rn N → ℝ≥0∞) y = ENNReal.ofReal 1 := by simp
+      _ ≤ ENNReal.ofReal (|(∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y| + η +
+            |(∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y|) :=
+          ENNReal.ofReal_le_ofReal h2
+      _ ≤ _ := ENNReal.ofReal_add_le.trans (add_le_add ENNReal.ofReal_add_le le_rfl)
+  -- (e) Integrate over `B_R`: `Lᴺ(B_R ∩ (F_k Δ F_l)) ≤ e / 4 + η Lᴺ(B_R) + e / 4 ≤ e`.
+  have hconst : ∫⁻ _ in Metric.ball (0 : Rn N) R, ENNReal.ofReal η ≤ ENNReal.ofReal (e / 2) := by
+    rw [setLIntegral_const, ← ENNReal.ofReal_toReal (measure_ball_lt_top (μ := volume)).ne,
+      ← hV_def, ← ENNReal.ofReal_mul hη.le]
+    exact ENNReal.ofReal_le_ofReal hηV
+  calc volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F k) (F l))
+      = ∫⁻ y in Metric.ball (0 : Rn N) R, (symmDiff (F k) (F l)).indicator 1 y := by
+        rw [lintegral_indicator_one₀
+            (((hF k).symmDiff (hF l)).mono_ac Measure.absolutelyContinuous_restrict),
+          Measure.restrict_apply' measurableSet_ball, Set.inter_comm]
+    _ ≤ ∫⁻ y in Metric.ball (0 : Rn N) R,
+          (ENNReal.ofReal |(∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y| +
+            ENNReal.ofReal η +
+              ENNReal.ofReal |(∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y|) :=
+        setLIntegral_mono' measurableSet_ball hpt
+    _ = (∫⁻ y in Metric.ball (0 : Rn N) R,
+          ENNReal.ofReal |(∫ z in F k, ρ m (y - z)) - (F k).indicator (fun _ ↦ (1 : ℝ)) y|) +
+        (∫⁻ _ in Metric.ball (0 : Rn N) R, ENNReal.ofReal η) +
+          ∫⁻ y in Metric.ball (0 : Rn N) R,
+            ENNReal.ofReal |(∫ z in F l, ρ m (y - z)) - (F l).indicator (fun _ ↦ (1 : ℝ)) y| := by
+        rw [lintegral_add_right' _ (hmeas l), lintegral_add_right' _ aemeasurable_const]
+    _ ≤ ENNReal.ofReal (e / 4) + ENNReal.ofReal (e / 2) + ENNReal.ofReal (e / 4) :=
+        add_le_add (add_le_add (herr k (le_of_max_le_left hk)) hconst)
+          (herr l (le_of_max_le_left hl))
+    _ = ε := by
+        rw [← ENNReal.ofReal_add (by positivity) (by positivity),
+          ← ENNReal.ofReal_add (by positivity) (by positivity), hεe]
+        congr 1
+        ring
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
