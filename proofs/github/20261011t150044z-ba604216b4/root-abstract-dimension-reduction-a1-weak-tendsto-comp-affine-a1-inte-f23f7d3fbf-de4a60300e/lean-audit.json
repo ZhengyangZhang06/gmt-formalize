@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cc2696ed0f597aacfcb6b094b5e20c06bc620c5328e03c03d17e315b5e8a905f",
+  "git_delta": {
+    "base_commit": "3b2f799ecbbdad11bd74b1c714fb410224ca40c8",
+    "candidate_commit": "da2c2e49537320eaaad47c9805f85b142d42aab8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "adr_hausdorff_integral_comp_affine",
+    "diff_sha256": "4ad80f78acbb9985864c930e691f2f818cd3e7228cf356e1b0721409e9ff3f13",
+    "source_sha256": "7f39f5ae4191509e3ea9e1c4776a74e7fff98339eaf8da627e482be6b875c90a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.adr_hausdorff_integral_comp_affine",
+      "statement": "∀ (P n Q : ℕ) (h : Euclid P → Euclid Q) (y : Euclid P) (c : ℝ), 0 < c → ∫ x, h (y + c • x) ∂μH[(n : ℝ)] = (c ^ n)⁻¹ • ∫ x, h x ∂μH[(n : ℝ)]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
