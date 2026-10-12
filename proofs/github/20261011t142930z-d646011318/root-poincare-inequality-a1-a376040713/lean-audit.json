@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "89eccd3e8bc6b365085aeb2807a012b88f2f2a928334c23247d38c3d5d66f2c7",
+  "git_delta": {
+    "base_commit": "78f1c979fb8469a9299a9ca03975e57f62e00f13",
+    "candidate_commit": "70d2384fb7b225550d0c2888c7ea51c220bc7831",
+    "target": "GMT/Ch04/Submission.lean",
+    "changed_files": [
+      "GMT/Ch04/Submission.lean"
+    ],
+    "diff_sha256": "f9cf27cdd596bf1782e771263f26ffca129a40d798577dce2233099c2d35a639",
+    "source_sha256": "fe6503bea84ab96f1cbcb5733a852a8d4be0e46f825c7a8eefd6a17fb885b6ed",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.poincare_inequality",
+      "statement": "ApproxTangentAE → (∀ (n ℓ : ℕ) (V : RectifiableVarifold n ℓ), 0 < n → IsFiniteMeasureOnCompacts V.weight ∧ (∀ᵐ x ∂V.weight, Module.finrank ℝ (V.tangentSpace x) = n) ∧ AEStronglyMeasurable (fun x ↦ (V.tangentSpace x).starProjection) V.weight) → PoincareInequality",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
