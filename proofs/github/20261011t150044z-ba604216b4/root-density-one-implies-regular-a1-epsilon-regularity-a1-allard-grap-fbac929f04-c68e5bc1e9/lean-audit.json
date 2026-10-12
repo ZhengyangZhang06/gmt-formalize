@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "25365785049ed6ec8a99174e524c548ef245d0a5b8beec14c9fc5ce42c3384da",
+  "git_delta": {
+    "base_commit": "70ee8e82b7a3349e956edabd2d65d803332362ef",
+    "candidate_commit": "2e3fdeceed891d126becb8d96884a4569ca9fea7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "doragm_rfv_radial_field_c1",
+    "diff_sha256": "95f5ee80fa37567c16e96777fa502c35380652624965aa97c0716eeabcc7e2ca",
+    "source_sha256": "3ad317d6e3dc828c345465d947b1c2b2b23f30408c1e8f46a49c4d7c23ebd564",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.doragm_rfv_radial_field_c1",
+      "statement": "∀ (P : ℕ) (y : Euclid P) (φ : ℝ → ℝ) (A τ : ℝ), ContDiff ℝ 1 φ → (∀ u, u ≤ 1 → φ u = 1) → (∀ u, A ≤ u → φ u = 0) → 0 < τ → ContDiff ℝ 1 (fun x : Euclid P => φ (‖x - y‖ / τ) • (x - y)) ∧ HasCompactSupport (fun x : Euclid P => φ (‖x - y‖ / τ) • (x - y)) ∧ tsupport (fun x : Euclid P => φ (‖x - y‖ / τ) • (x - y)) ⊆ closedBall y (A * τ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
