@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4fd70294a9b95f224e2c1e6e51480ba74680926a12233821c124a4d4423e8bee",
+  "git_delta": {
+    "base_commit": "ac364daeae0b891db3e963fa6e089e624c3aea8c",
+    "candidate_commit": "9ddeea4ca6f1369cbdd413dabb7460051c416f12",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "w12_ball_weak_laplacian_eq_zero",
+    "diff_sha256": "a345cffe578e49bfbb56b76ef90704569c2041f9b0deeb87cc28c50e85be1944",
+    "source_sha256": "8ae9ab6f88aeb93e3fcb3e10b0461d38627a17c48ea94a17d373963ef6381fc6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.w12_ball_weak_laplacian_eq_zero",
+      "statement": "∀ n : ℕ, 1 ≤ n → ∀ (w : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient w g (ball 0 1) → (∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, inner ℝ (g x) (gradient ζ x) = 0) → ∀ ζ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 1 → ∫ x in ball (0 : Rn n) 1, w x * Laplacian.laplacian ζ x = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
