@@ -2327,6 +2327,185 @@ theorem ted_tangent_plane_facts : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb
       rw [ContinuousLinearMap.coe_coe, hDGv]
     rw [hfun, ← LinearMap.coe_range, Submodule.span_eq]
 
+/-- **Simon Ch. 5, 2.4** (mass, multiplicity and carrier bounds under the hypotheses 2.3), with the
+explicit constants `C, δP` of `ted_adb_constants` for `κ = (p − n)/(4p)` and `ω = ω_n`.  For
+`|y| ≤ 3δρ` the monotonicity `ted_lp_monotonicity` applies with `Λ = δ/κ ≤ 1` on `(0, R]`,
+`R = (1 − 4δ)ρ ≥ ρ/2`, inside `B_{(1−3δ)ρ}(y) ⊆ B_ρ(0)` (`aal_allard_subball_bounds`):
+`Φ(t) = F(t) t⁻ⁿ μ(B_t(y)) + F(t) − 1` is nondecreasing, `e^{−Λ} ≤ F ≤ e^Λ` and `|F − 1| ≤ Λ`.
+(i) `Φ(s) ≤ Φ(R)` and `R⁻ⁿ μ(B_R(y)) ≤ (1 + δ)(1 − 4δ)⁻ⁿ ω_n` give
+`s⁻ⁿ μ(B_s(y)) ≤ e^{2Λ}(1 + δ)(1 − 4δ)⁻ⁿ ω_n + 2e^Λ Λ ≤ (1 + Cδ) ω_n`.
+(ii) For `y ∈ spt V`, `Φ ≥ ω_n` on `(0, R]` (`aal_monotone_quantity_ge_density` with
+`ted_density_ge_one`), so `s⁻ⁿ μ(B_s(y)) ≥ e^{−Λ}(ω_n − Λ) ≥ (1 − Cδ) ω_n`.
+(iii) `Θⁿ(μ_V, x) = θ(x)` `μ_V`-a.e. (`ted_tangent_plane_facts`) and (i) give `θ ≤ 1 + Cδ`.
+(iv) The upper density theorem (`ted_adb_support_diff_carrier_null` on `B̆_ρ(0)`), with the lower
+density bound `ted_density_ge_one` at `ε = 1/2`. -/
+theorem ted_allard_density_bounds : ∀ n ℓ : ℕ, 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C δP : ℝ, 1 ≤ C ∧ 0 < δP ∧ δP ≤ 1 / 8 ∧ C * δP ≤ 1 / 2 ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δP → V.AllardHypotheses H p δ ρ → (∀ y : Amb n ℓ, ‖y‖ ≤ 3 * δ * ρ → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → V.weight (closedBall y s) ≤ ENNReal.ofReal ((1 + C * δ) * (unitBallVolume n * s ^ n))) ∧ (∀ y ∈ V.support, ‖y‖ ≤ 3 * δ * ρ → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → ENNReal.ofReal ((1 - C * δ) * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s)) ∧ (∀ᵐ x ∂V.weight, ‖x‖ ≤ 3 * δ * ρ → V.mult x ≤ 1 + C * δ) ∧ (μHE[n] : Measure (Amb n ℓ)) ((V.support ∩ ball 0 ρ) \ V.carrier) = 0 := by
+  intro n ℓ hn p hp
+  have hp0 : 0 < p := (Nat.cast_nonneg n).trans_lt hp
+  -- `κ = (p − n)/(4p) > 0`, the Hölder exponent `1 − n/p > 0` and `ω_n > 0`.
+  obtain ⟨κ, hκdef⟩ : ∃ κ : ℝ, (p - n) / (4 * p) = κ := ⟨_, rfl⟩
+  have hκ : 0 < κ := by
+    rw [← hκdef]
+    exact div_pos (sub_pos.2 hp) (by linarith)
+  have hα : 0 < 1 - (n : ℝ) / p := sub_pos.2 ((div_lt_one hp0).2 hp)
+  have hω : 0 < unitBallVolume n :=
+    div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  obtain ⟨C, δP, hC1, hδP0, hδP8, hδPκ, hCδP, hCbd⟩ :=
+    Submission.ted_adb_constants n κ (unitBallVolume n) hκ hω
+  refine ⟨C, δP, hC1, hδP0, hδP8, hCδP, ?_⟩
+  intro U hU V H δ ρ hδ hδP hA
+  obtain ⟨hρ, hHMC, -, -, -, hmass, -⟩ := id hA
+  have hδ8 : δ ≤ 1 / 8 := hδP.trans hδP8
+  have hCδ : 0 ≤ C * δ := mul_nonneg (zero_le_one.trans hC1) hδ.le
+  -- `Λ = δ/κ ∈ (0, 1]` with `κ Λ = δ`; the two elementary bounds of `ted_adb_constants` at `t = δ`.
+  obtain ⟨Λ, hΛdef⟩ : ∃ Λ : ℝ, δ / κ = Λ := ⟨_, rfl⟩
+  have hΛ : 0 < Λ := by
+    rw [← hΛdef]
+    exact div_pos hδ hκ
+  have hΛ1 : Λ ≤ 1 := by
+    rw [← hΛdef]
+    exact (div_le_one hκ).2 (hδP.trans hδPκ)
+  have hκΛ : (p - n) / (4 * p) * Λ = δ := by
+    rw [hκdef, ← hΛdef]
+    field_simp
+  obtain ⟨hP, hM⟩ := hCbd δ hδ hδP
+  rw [hΛdef] at hP hM
+  -- Radii `R = (1 − 4δ)ρ ∈ [ρ/2, S)` and `S = (1 − 3δ)ρ`; for `|y| ≤ 3δρ` and `r ≤ S`,
+  -- `B_r(y) ⊆ B_ρ(0)`, so `μ_V(B_r(y)) ≤ μ_V(B_ρ(0)) < ∞`.
+  obtain ⟨R, hRdef⟩ : ∃ R : ℝ, (1 - 4 * δ) * ρ = R := ⟨_, rfl⟩
+  obtain ⟨S, hSdef⟩ : ∃ S : ℝ, (1 - 3 * δ) * ρ = S := ⟨_, rfl⟩
+  have hδρ : 0 < δ * ρ := mul_pos hδ hρ
+  have hδρ8 : δ * ρ ≤ 1 / 8 * ρ := mul_le_mul_of_nonneg_right hδ8 hρ.le
+  have h3δρ : 3 * δ * ρ = 3 * (δ * ρ) := by ring
+  have hR' : R = ρ - 4 * (δ * ρ) := by rw [← hRdef]; ring
+  have hS' : S = ρ - 3 * (δ * ρ) := by rw [← hSdef]; ring
+  have hR : 0 < R := by linarith
+  have hRS : R < S := by linarith
+  have hρR : ρ / 2 ≤ R := by linarith
+  have hS : 0 < S := by linarith
+  have hSρ : S ≤ ρ := by linarith
+  have hRρ : R ≤ ρ := by linarith
+  have hball : ∀ y : Amb n ℓ, ‖y‖ ≤ 3 * δ * ρ → ∀ r : ℝ, r ≤ S →
+      closedBall y r ⊆ closedBall 0 ρ :=
+    fun y hy r hr => closedBall_subset_closedBall' (by rw [dist_zero_right]; linarith)
+  have hfin : ∀ y : Amb n ℓ, ‖y‖ ≤ 3 * δ * ρ → ∀ r : ℝ, r ≤ S → V.weight (closedBall y r) ≠ ⊤ :=
+    fun y hy r hr => ne_top_of_le_ne_top ENNReal.ofReal_ne_top
+      ((measure_mono (hball y hy r hr)).trans hmass)
+  have hQ : ∀ (y : Amb n ℓ) (t : ℝ), 0 < t → 0 ≤ (V.weight (closedBall y t)).toReal / t ^ n :=
+    fun y t ht => div_nonneg ENNReal.toReal_nonneg (pow_pos ht n).le
+  have hpow : ∀ r : ℝ, 0 < r → r ≤ R → Λ * (r / R) ^ (1 - (n : ℝ) / p) ≤ Λ :=
+    fun r hr hrR => mul_le_of_le_one_right hΛ.le
+      (Real.rpow_le_one (div_nonneg hr.le hR.le) ((div_le_one hR).2 hrR) hα.le)
+  -- The monotonicity at `|y| ≤ 3δρ`: `ted_lp_monotonicity` at `(y, R, S, Λ)`, since `B_S(y) ⊆ U`,
+  -- `∫_{B_S(y)} |H|ᵖ dμ_V < ∞` and `K(y, R) ≤ δ = κ Λ` by `aal_allard_subball_bounds`.
+  have key : ∀ y : Amb n ℓ, ‖y‖ ≤ 3 * δ * ρ → ∃ F : ℝ → ℝ,
+      (∀ r : ℝ, 0 < r → r ≤ R → Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧
+        |F r - 1| ≤ Λ * (r / R) ^ (1 - (n : ℝ) / p)) ∧
+      ∀ s r : ℝ, 0 < s → s ≤ r → r ≤ R →
+        F s * ((V.weight (closedBall y s)).toReal / s ^ n) + (F s - 1) ≤
+          F r * ((V.weight (closedBall y r)).toReal / r ^ n) + (F r - 1) := by
+    intro y hy
+    obtain ⟨hSU, hSint, -, -⟩ :=
+      aal_allard_subball_bounds n ℓ p hp U V H δ ρ hA y S hS hSρ (hball y hy S le_rfl)
+    obtain ⟨-, -, hKR, -⟩ :=
+      aal_allard_subball_bounds n ℓ p hp U V H δ ρ hA y R hR hRρ (hball y hy R hRS.le)
+    obtain ⟨F, hF, hFmono⟩ := Submission.ted_lp_monotonicity n ℓ hn p hp U hU V H hHMC y R S Λ
+      hR hRS hΛ hSU hSint (by rwa [hκΛ])
+    exact ⟨F, fun r hr hrR => ⟨(hF r hr hrR).1, (hF r hr hrR).2.1, (hF r hr hrR).2.2.2 hΛ1⟩,
+      hFmono⟩
+  -- (i) Upper mass bound: `F(s) s⁻ⁿ μ(B_s(y)) = Φ(s) − (F(s) − 1) ≤ Φ(R) + Λ`.
+  have upper : ∀ y : Amb n ℓ, ‖y‖ ≤ 3 * δ * ρ → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 →
+      V.weight (closedBall y s) ≤ ENNReal.ofReal ((1 + C * δ) * (unitBallVolume n * s ^ n)) := by
+    intro y hy s hs hsρ
+    have hsR : s ≤ R := hsρ.trans hρR
+    obtain ⟨F, hF, hFmono⟩ := key y hy
+    obtain ⟨hFs, -, hFs1⟩ := hF s hs hsR
+    obtain ⟨-, hFR, hFR1⟩ := hF R hR le_rfl
+    -- `R⁻ⁿ μ(B_R(y)) ≤ (1 + δ)(1 − 4δ)⁻ⁿ ω_n`, as `μ(B_R(y)) ≤ μ(B_ρ(0)) ≤ (1 + δ) ω_n ρⁿ`.
+    have hmR : (V.weight (closedBall y R)).toReal / R ^ n ≤
+        (1 + δ) / (1 - 4 * δ) ^ n * unitBallVolume n := by
+      have hq : 0 < (1 - 4 * δ) ^ n := pow_pos (by linarith) n
+      have hRn : R ^ n = (1 - 4 * δ) ^ n * ρ ^ n := by rw [← hRdef, mul_pow]
+      rw [div_le_iff₀ (pow_pos hR n), hRn]
+      calc (V.weight (closedBall y R)).toReal ≤ (1 + δ) * (unitBallVolume n * ρ ^ n) :=
+            ENNReal.toReal_le_of_le_ofReal (mul_pos (by linarith) (mul_pos hω (pow_pos hρ n))).le
+              ((measure_mono (hball y hy R hRS.le)).trans hmass)
+        _ = (1 + δ) / (1 - 4 * δ) ^ n * unitBallVolume n * ((1 - 4 * δ) ^ n * ρ ^ n) := by
+            rw [div_mul_eq_mul_div, div_mul_eq_mul_div, eq_div_iff hq.ne']
+            ring
+    have h1 : F s * ((V.weight (closedBall y s)).toReal / s ^ n) ≤
+        Real.exp Λ * ((1 + δ) / (1 - 4 * δ) ^ n * unitBallVolume n) + 2 * Λ := by
+      have hΦ := hFmono s R hs hsR le_rfl
+      have hFRm := mul_le_mul hFR hmR (hQ y R hR) (Real.exp_pos Λ).le
+      linarith [abs_le.1 (hFs1.trans (hpow s hs hsR)), abs_le.1 (hFR1.trans (hpow R hR le_rfl))]
+    -- Divide by `F(s) ≥ e^{−Λ}` and use the bound `(P)` of `ted_adb_constants`.
+    have h2 : (V.weight (closedBall y s)).toReal / s ^ n ≤ (1 + C * δ) * unitBallVolume n :=
+      calc (V.weight (closedBall y s)).toReal / s ^ n
+          = Real.exp Λ * (Real.exp (-Λ) * ((V.weight (closedBall y s)).toReal / s ^ n)) := by
+            rw [← mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, one_mul]
+        _ ≤ Real.exp Λ * (F s * ((V.weight (closedBall y s)).toReal / s ^ n)) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hFs (hQ y s hs))
+              (Real.exp_pos Λ).le
+        _ ≤ Real.exp Λ * (Real.exp Λ * ((1 + δ) / (1 - 4 * δ) ^ n * unitBallVolume n) + 2 * Λ) :=
+            mul_le_mul_of_nonneg_left h1 (Real.exp_pos Λ).le
+        _ = Real.exp (2 * Λ) * ((1 + δ) / (1 - 4 * δ) ^ n * unitBallVolume n) +
+              2 * Real.exp Λ * Λ := by
+            rw [two_mul Λ, Real.exp_add]
+            ring
+        _ ≤ (1 + C * δ) * unitBallVolume n := hP
+    rw [div_le_iff₀ (pow_pos hs n)] at h2
+    rw [ENNReal.le_ofReal_iff_toReal_le (hfin y hy s (hsR.trans hRS.le))
+      (mul_nonneg (by linarith) (mul_pos hω (pow_pos hs n)).le)]
+    exact h2.trans_eq (by ring)
+  -- (ii) Lower mass bound: `Φ ≥ ω_n` on `(0, R]`, so `F(s) s⁻ⁿ μ(B_s(y)) ≥ ω_n − Λ`.
+  have lower : ∀ y ∈ V.support, ‖y‖ ≤ 3 * δ * ρ → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 →
+      ENNReal.ofReal ((1 - C * δ) * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s) := by
+    intro y hyV hy s hs hsρ
+    have hsR : s ≤ R := hsρ.trans hρR
+    obtain ⟨F, hF, hFmono⟩ := key y hy
+    obtain ⟨-, hFs, hFs1⟩ := hF s hs hsR
+    have hyB : y ∈ V.support ∩ ball (0 : Amb n ℓ) ρ :=
+      ⟨hyV, mem_ball_zero_iff.2 (by linarith)⟩
+    have hΦ : unitBallVolume n ≤
+        F s * ((V.weight (closedBall y s)).toReal / s ^ n) + (F s - 1) :=
+      aal_monotone_quantity_ge_density n (1 - (n : ℝ) / p) (unitBallVolume n) R Λ
+        (fun u => (V.weight (closedBall y u)).toReal) F hα hω hR
+        (fun u hu huR => (hF u hu huR).2.2) hFmono
+        (fun ε hε => by
+          filter_upwards [Submission.ted_density_ge_one n ℓ hn p hp U hU V H δ ρ hA y hyB ε hε,
+            Ioo_mem_nhdsGT hR] with u hu huR
+          exact (ENNReal.ofReal_le_iff_le_toReal (hfin y hy u (huR.2.le.trans hRS.le))).1 hu)
+        s hs hsR
+    -- Divide by `F(s) ≤ e^Λ` and use the bound `(M)` of `ted_adb_constants`.
+    have h2 : (1 - C * δ) * unitBallVolume n ≤ (V.weight (closedBall y s)).toReal / s ^ n :=
+      calc (1 - C * δ) * unitBallVolume n ≤ Real.exp (-Λ) * (unitBallVolume n - Λ) := hM
+        _ ≤ Real.exp (-Λ) * (F s * ((V.weight (closedBall y s)).toReal / s ^ n)) :=
+            mul_le_mul_of_nonneg_left
+              (by linarith [abs_le.1 (hFs1.trans (hpow s hs hsR))]) (Real.exp_pos _).le
+        _ ≤ Real.exp (-Λ) * (Real.exp Λ * ((V.weight (closedBall y s)).toReal / s ^ n)) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hFs (hQ y s hs))
+              (Real.exp_pos _).le
+        _ = (V.weight (closedBall y s)).toReal / s ^ n := by
+            rw [← mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, one_mul]
+    rw [le_div_iff₀ (pow_pos hs n)] at h2
+    rw [ENNReal.ofReal_le_iff_le_toReal (hfin y hy s (hsR.trans hRS.le))]
+    exact (le_of_eq (by ring)).trans h2
+  refine ⟨upper, lower, ?_, ?_⟩
+  · -- (iii) `μ_V(B_r(x)) / (ω_n rⁿ) ≤ 1 + Cδ` on `(0, ρ/2]` by (i); it tends to `θ(x)` a.e.
+    filter_upwards [(ted_tangent_plane_facts n ℓ hn U hU V).2.2.2.1] with x hx hxρ
+    have hle : ∀ᶠ r in 𝓝[>] (0 : ℝ), V.weight (closedBall x r) /
+        ENNReal.ofReal (unitBallVolume n * r ^ n) ≤ ENNReal.ofReal (1 + C * δ) := by
+      filter_upwards [Ioc_mem_nhdsGT (half_pos hρ)] with r hr
+      refine ENNReal.div_le_of_le_mul ?_
+      rw [← ENNReal.ofReal_mul (by linarith)]
+      exact upper x hxρ r hr.1 hr.2
+    exact (ENNReal.ofReal_le_ofReal_iff (by linarith)).1 (le_of_tendsto hx hle)
+  · -- (iv) The upper density theorem on `W = B̆_ρ(0)`, where `μ_V(W) ≤ μ_V(B_ρ(0)) < ∞`.
+    exact Submission.ted_adb_support_diff_carrier_null n ℓ U V (ball 0 ρ) isOpen_ball
+      ((measure_mono ball_subset_closedBall).trans_lt (hmass.trans_lt ENNReal.ofReal_lt_top))
+      fun y hy => ⟨1 - 1 / 2, by norm_num,
+        Submission.ted_density_ge_one n ℓ hn p hp U hU V H δ ρ hA y hy (1 / 2) (by norm_num)⟩
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
