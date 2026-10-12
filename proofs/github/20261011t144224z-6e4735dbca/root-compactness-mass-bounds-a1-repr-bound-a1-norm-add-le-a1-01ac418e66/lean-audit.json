@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5bf3e65e0674061531c48fbcefa49fa4b40c6a1e81aca71122286be3470a0d38",
+  "git_delta": {
+    "base_commit": "cf556face01e9ac477ed0393778bbdc527e9722f",
+    "candidate_commit": "21d072dc936c4280480c9209d45dfa0ced958a72",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "cmb_rb_covectorEuclideanNorm_add_le",
+    "diff_sha256": "fdefabcc951d411ca3b1f4f28344a825704074a29f608955cd90e2101313b783",
+    "source_sha256": "e72e4db74e333311c35af8c68e793b57a6f877387d746b0c32b8b6c424dfa66f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmb_rb_covectorEuclideanNorm_add_le",
+      "statement": "∀ (P n : ℕ) (α γ : Covector (Eucl P) n), covectorEuclideanNorm (α + γ) ≤ covectorEuclideanNorm α + covectorEuclideanNorm γ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
