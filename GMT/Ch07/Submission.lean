@@ -451,6 +451,141 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, 1.2 (p. 132)**: `Λⁿ(ℝᴾ)` is finite-dimensional.  An `n`-covector `α` is
+determined by its values `α(e_{I(1)}, …, e_{I(n)})` on tuples of standard basis vectors (alternating
+maps agreeing on distinct basis vectors are equal), so `α ↦ (α(e ∘ I))_{I : Fin n → Fin P}` is an
+injective linear map into the finite-dimensional space `ℝ^(Fin n → Fin P)`. -/
+theorem Submission.imsupp_covector_finiteDimensional : ∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n) := by
+  intro P n
+  -- the standard basis `e` of `ℝᴾ`
+  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
+  -- `L α = (α(e ∘ I))_I`, linear since addition and scaling of covectors are pointwise
+  let L : Covector (Euclid P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
+    { toFun := fun α I => α fun i => e (I i)
+      map_add' := fun α β => rfl
+      map_smul' := fun c α => rfl }
+  -- `L α = L β` identifies `α` and `β` on distinct basis vectors, hence everywhere
+  refine FiniteDimensional.of_injective L fun α β h => ?_
+  exact ContinuousAlternatingMap.toAlternatingMap_injective
+    (e.ext_alternating fun v _ => congr_fun h v)
+/-- **Simon Ch. 6, 3.2(3)**, one covector at a time: if `T = τ(M, θ, ξ)` vanishes on the open set
+`W ⊆ U`, then `ξ(x)(α) = 0` for `μ_T`-a.e. `x ∈ W`.  Here `f = ξ(·)(α)` is a.e. bounded by `‖α‖`
+(`ξ = ±τ₁ ∧ ⋯ ∧ τₙ`, `τ` orthonormal) and `μ_T = θ Hⁿ⌞M` is finite on compact subsets of `U`, so
+`f` is locally `μ_T`-integrable on `W`.  For smooth compactly supported `g` with `spt g ⊆ W`,
+`∫ g f dμ_T = τ(M, θ, ξ)(g α) = T(g α) = 0`, and the fundamental lemma of the calculus of
+variations gives `f = 0` a.e. on `W`. -/
+theorem Submission.imsupp_orient_apply_ae_eq_zero_of_vanishesOn : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → W ⊆ U → T.VanishesOn W → ∀ α : Covector (Euclid P) n, ∀ᵐ x ∂R.measure, x ∈ W → R.orient x α = 0 := by
+  intro P n U W T R hRT hW hWU hT α
+  -- `μ_T = θ Hⁿ⌞M ≪ Hⁿ⌞M`
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  -- `|ξ(x)(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖` wherever `ξ(x)` is a unit orientation
+  have hbound : ∀ᵐ x ∂R.measure, ‖R.orient x α‖ ≤ ‖α‖ := by
+    refine hac.ae_le ?_
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
+    have h1 : ‖R.orient x α‖ = ‖α τ‖ := by
+      rcases hξ with h | h
+      · rw [h α]
+      · rw [h α, norm_neg]
+    rw [h1]
+    calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := ContinuousAlternatingMap.le_opNorm α τ
+      _ = ‖α‖ := by rw [Finset.prod_eq_one fun i _ => hτ.norm_eq_one i, mul_one]
+  -- `f = ξ(·)(α)` is the continuous evaluation at `α` composed with `ξ`
+  have hmeas : AEStronglyMeasurable (fun x => R.orient x α) R.measure :=
+    ((ContinuousLinearMap.apply ℝ ℝ α).continuous.comp_aestronglyMeasurable
+      R.aestronglyMeasurable_orient).mono_ac hac
+  -- `μ_T(K) = ∫_{M ∩ K} θ dHⁿ < ∞` for compact `K ⊆ U`
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → R.measure K < ∞ := by
+    intro K hK hKU
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact (R.locallyIntegrable_mult K hK hKU).lt_top
+  -- `f` is bounded and `μ_T` is finite on compact subsets of `W`
+  have hli : LocallyIntegrableOn (fun x => R.orient x α) W R.measure := by
+    refine (locallyIntegrableOn_iff hW.isLocallyClosed).2 fun K hKW hK => ?_
+    exact IntegrableOn.of_bound (hfin K hK (hKW.trans hWU)) hmeas.restrict ‖α‖
+      (ae_restrict_of_ae hbound)
+  -- `∫ g f dμ_T = τ(M, θ, ξ)(g α) = T(g α) = 0`, as `g α` is a test form supported in `W`
+  refine hW.ae_eq_zero_of_integral_contDiff_smul_eq_zero hli fun g hg hgc hgW => ?_
+  let ω : TestFormOn U n := ⟨fun y => g y • α, ⟨hg.smul contDiff_const, hgc.smul_right⟩,
+    (tsupport_smul_subset_left _ _).trans (hgW.trans hWU)⟩
+  have h0 : T ω = 0 := hT ω ((tsupport_smul_subset_left _ _).trans hgW)
+  rw [hRT ω] at h0
+  have hθ : (fun x => (R.mult x : ℝ≥0∞)) = fun x => ((R.mult x : NNReal) : ℝ≥0∞) := by
+    funext x; simp
+  have hmθ : Measurable fun x => (R.mult x : NNReal) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : NNReal))).comp R.measurable_mult
+  rw [IMRep.measure, hθ, integral_withDensity_eq_integral_smul hmθ, ← h0, IMRep.action]
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  simp only [ω, NNReal.smul_def, NNReal.coe_natCast, smul_eq_mul, map_smul]
+/-- **Simon Ch. 6, 1.1 and 1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` of a plane (`τ`
+orthonormal) is a nonzero `n`-vector of norm at most one.  `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+gives `‖ξ‖ ≤ 1`.  The covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩ = det(⟨τᵢ, wⱼ⟩)`, the
+alternatization of `w ↦ ∏ᵢ ⟨τᵢ, wᵢ⟩`, has `δ(τ) = 1` by orthonormality, so `ξ(δ) = ±1 ≠ 0`. -/
+theorem Submission.imsupp_unit_orientation_ne_zero_norm_le_one : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ξ ≠ 0 ∧ ‖ξ‖ ≤ 1 := by
+  rintro P n ξ Q ⟨τ, hτ, -, hξ⟩
+  -- `|ξ(α)| = |α(τ)|` for either sign
+  have hnorm : ∀ α : Covector (Euclid P) n, ‖ξ α‖ = ‖α τ‖ := fun α => by
+    rcases hξ with h | h
+    · rw [h α]
+    · rw [h α, norm_neg]
+  refine ⟨fun h0 => ?_, ContinuousLinearMap.opNorm_le_bound ξ zero_le_one fun α => ?_⟩
+  · -- the covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩` has `δ(τ) = 1`: the term `σ = 1` is
+    -- `∏ᵢ ‖τᵢ‖² = 1`, and for `σ ≠ 1` some factor `⟨τᵢ, τ_{σ(i)}⟩`, `σ(i) ≠ i`, vanishes
+    obtain ⟨δ, hδ⟩ : ∃ δ : Covector (Euclid P) n, δ τ = 1 := by
+      refine ⟨ContinuousMultilinearMap.alternatization
+        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin n) ℝ).compContinuousLinearMap
+          fun i => innerSL ℝ (τ i)), ?_⟩
+      rw [ContinuousMultilinearMap.alternatization_apply_apply,
+        Finset.sum_eq_single (1 : Equiv.Perm (Fin n))]
+      · rw [Equiv.Perm.sign_one, one_smul, Equiv.Perm.coe_one, Function.comp_id,
+          ContinuousMultilinearMap.compContinuousLinearMap_apply,
+          ContinuousMultilinearMap.mkPiAlgebra_apply]
+        refine Finset.prod_eq_one fun i _ => ?_
+        rw [innerSL_apply_apply, real_inner_self_eq_norm_sq, hτ.norm_eq_one, one_pow]
+      · intro σ _ hσ
+        obtain ⟨i, hi⟩ : ∃ i, σ i ≠ i := by
+          by_contra! h
+          exact hσ (Equiv.ext h)
+        rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
+          ContinuousMultilinearMap.mkPiAlgebra_apply,
+          Finset.prod_eq_zero (Finset.mem_univ i) ?_, smul_zero]
+        rw [innerSL_apply_apply, Function.comp_apply]
+        exact hτ.inner_eq_zero hi.symm
+      · exact fun h => absurd (Finset.mem_univ _) h
+    -- `ξ = 0` would give `0 = ‖ξ(δ)‖ = ‖δ(τ)‖ = 1`
+    have h := hnorm δ
+    rw [h0, hδ, zero_apply, norm_zero, norm_one] at h
+    exact zero_ne_one h
+  · -- `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+    rw [hnorm, one_mul]
+    calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := ContinuousAlternatingMap.le_opNorm α τ
+      _ = ‖α‖ := by rw [Finset.prod_eq_one fun i _ => hτ.norm_eq_one i, mul_one]
+
+/-- **Simon 6.3.2(3)** (`M_W(T) = ∫_{M ∩ W} θ dHⁿ`, so `μ_T(W) = 0` where `T` vanishes): if
+`T = τ(M, θ, ξ)` vanishes on the open set `W ⊆ U`, then the weight `μ_T = θHⁿ⌞M` has
+`μ_T(W) = 0`.  Fix a basis `α₁, …, α_N` of the finite-dimensional space `Λⁿ` of `n`-covectors.
+By the fundamental lemma, `μ_T`-a.e. `x ∈ W` has `⟨αₖ, ξ(x)⟩ = 0` for all `k`, so `ξ(x) = 0`;
+but `ξ ≠ 0` holds `μ_T`-a.e., since `μ_T ≪ Hⁿ⌞M` and `ξ` is `Hⁿ⌞M`-a.e. a unit orientation. -/
+theorem Submission.imsupp_measure_eq_zero_of_vanishesOn : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → W ⊆ U → T.VanishesOn W → R.measure W = 0 := by
+  intro P n U W T R hRT hW hWU hT
+  -- `μ_T = θHⁿ⌞M ≪ Hⁿ⌞M`, and `Hⁿ⌞M`-a.e. `ξ(x)` is a unit orientation, hence nonzero
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  have hξ : ∀ᵐ x ∂R.measure, R.orient x ≠ 0 :=
+    hac.ae_le <| R.orients.mono fun x ⟨Q, _, hQ⟩ =>
+      (Submission.imsupp_unit_orientation_ne_zero_norm_le_one P n _ Q hQ).1
+  -- a basis `α₁, …, α_N` of the finite-dimensional space `Λⁿ` of `n`-covectors
+  have := Submission.imsupp_covector_finiteDimensional P n
+  let α := Module.finBasis ℝ (Covector (Euclid P) n)
+  -- `μ_T`-a.e. `x ∈ W` has `⟨αₖ, ξ(x)⟩ = 0` for every `k` (fundamental lemma, finitely many `k`)
+  have hα : ∀ᵐ x ∂R.measure, ∀ k, x ∈ W → R.orient x (α k) = 0 :=
+    ae_all_iff.2 fun k =>
+      Submission.imsupp_orient_apply_ae_eq_zero_of_vanishesOn P n U W T R hRT hW hWU hT (α k)
+  -- such an `x` has `ξ(x) = 0`, as `ξ(x)` vanishes on a basis; so `μ_T`-a.e. `x` lies outside `W`
+  refine measure_eq_zero_iff_ae_notMem.2 ?_
+  filter_upwards [hξ, hα] with x hx0 hxα hxW
+  exact hx0 (ContinuousLinearMap.coe_injective (α.ext fun k => by simpa using hxα k hxW))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
