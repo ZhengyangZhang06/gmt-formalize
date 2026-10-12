@@ -1,0 +1,24 @@
+# Parent-supplied child implementation contract
+
+This scaffold was created deterministically by the controller. DAG child
+`root.submanifold_tangent-a1.tangent_space_eq_range-a1.range_le_tangent-a1` must not run plan generation or natural-language proof generation.
+Use the independently reviewed proof at `.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-submanifold-tangent-a1-tangent-space-eq-range-a1-range-le-tangent-a1/parent-supplied-natural-proof.md` directly.
+
+## Frozen theorem
+
+- Parent node: `root.submanifold_tangent-a1.tangent_space_eq_range-a1`
+- Child key: `range_le_tangent`
+- Declaration: `Submission.simon_chart_range_fderiv_le_tangentSpace`
+- Exact Lean type: `∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V → MapsTo ψ V M → ∀ x ∈ V, LinearMap.range (fderiv ℝ ψ x).toLinearMap ≤ tangentSpace M (ψ x)`
+
+## Sibling prerequisites
+
+- None.
+
+## Implementation steps
+
+1. Read the complete parent-supplied natural-language proof.
+2. Formalize exactly the frozen theorem without weakening or replacing it.
+3. Use only the listed accepted sibling prerequisites and ordinary frozen proof-base helpers.
+4. Run the configured author-side child comparator and return a committed candidate. The outer
+   controller, not this nested implementation loop, owns the independent reviewer comparator.

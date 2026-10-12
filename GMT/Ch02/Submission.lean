@@ -373,6 +373,52 @@ def C1Sard : Prop :=
 
 end
 
+/-- **Simon Ch. 2, 4.3 (p. 55): chart velocities are tangent vectors.** If `V ⊆ ℝⁿ` is open,
+`ψ : ℝⁿ → ℝᴺ` is `C¹` on `V` and maps `V` into `M`, then `range Dψ(x) ⊆ T_{ψ(x)} M` for `x ∈ V`.
+For `w ≠ 0` choose `B(x, ρ) ⊆ V` and `κ = ρ/(2|w|)`; the curve `γ(t) = ψ(x + κ t w)` is `C¹` on
+`(-1,1)`, maps `(-1,1)` into `M`, has `γ(0) = ψ(x)` and, by the chain rule, `γ'(0) = κ Dψ(x) w`.
+So `κ Dψ(x) w` is a generator of `T_{ψ(x)} M` and `Dψ(x) w = κ⁻¹ (κ Dψ(x) w)` lies in the span. -/
+theorem Submission.simon_chart_range_fderiv_le_tangentSpace : ∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 1 ψ V → MapsTo ψ V M → ∀ x ∈ V, LinearMap.range (fderiv ℝ ψ x).toLinearMap ≤ tangentSpace M (ψ x) := by
+  intro n N M V ψ hV hψ hMaps x₀ hx₀
+  -- Step 1: `ψ` is differentiable at `x₀`, with derivative `A = fderiv ℝ ψ x₀`.
+  have hA : HasFDerivAt ψ (fderiv ℝ ψ x₀) x₀ :=
+    (hψ.contDiffAt (hV.mem_nhds hx₀)).differentiableAt_one.hasFDerivAt
+  rintro _ ⟨w, rfl⟩
+  -- Step 2: `A 0 = 0` lies in the subspace; for `w ≠ 0` fix `B(x₀, ρ) ⊆ V` and `κ = ρ/(2|w|)`.
+  rcases eq_or_ne w 0 with rfl | hw
+  · simp
+  obtain ⟨ρ, hρ, hball⟩ := Metric.isOpen_iff.mp hV x₀ hx₀
+  have hw' : 0 < ‖w‖ := norm_pos_iff.mpr hw
+  set κ : ℝ := ρ / (2 * ‖w‖) with hκ
+  have hκ0 : 0 < κ := div_pos hρ (by positivity)
+  set ℓ : ℝ → Rn n := fun t ↦ x₀ + (κ * t) • w with hℓ
+  -- Step 3: `ℓ` maps `(-1,1)` into `B(x₀, ρ) ⊆ V`, so `γ = ψ ∘ ℓ` is a `C¹` curve in `M`.
+  have hℓV : MapsTo ℓ (Ioo (-1) 1) V := by
+    intro t ht
+    apply hball
+    have ht' : |t| < 1 := abs_lt.mpr ht
+    have hκw : κ * ‖w‖ = ρ / 2 := by rw [hκ]; field_simp
+    rw [Metric.mem_ball, dist_eq_norm, hℓ, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+      abs_mul, abs_of_pos hκ0, mul_right_comm, hκw]
+    nlinarith
+  have hℓC : ContDiff ℝ 1 ℓ :=
+    contDiff_const.add ((contDiff_const.mul contDiff_id).smul contDiff_const)
+  have hγC : ContDiffOn ℝ 1 (ψ ∘ ℓ) (Ioo (-1) 1) := hψ.comp hℓC.contDiffOn hℓV
+  have hγM : MapsTo (ψ ∘ ℓ) (Ioo (-1) 1) M := hMaps.comp hℓV
+  have hℓ0 : ℓ 0 = x₀ := by simp [hℓ]
+  have hγ0 : (ψ ∘ ℓ) 0 = ψ x₀ := by simp [Function.comp, hℓ0]
+  -- Step 4: chain rule, `γ'(0) = A (κ • w)`, so `κ • A w` is a generator of the span.
+  have hℓd : HasDerivAt ℓ (κ • w) 0 := by
+    have h := (((hasDerivAt_id (0 : ℝ)).const_mul κ).smul_const w).const_add x₀
+    rwa [mul_one] at h
+  have hγd : HasDerivAt (ψ ∘ ℓ) (fderiv ℝ ψ x₀ (κ • w)) 0 :=
+    hA.comp_hasDerivAt_of_eq (0 : ℝ) hℓd hℓ0.symm
+  have hmem : fderiv ℝ ψ x₀ (κ • w) ∈ tangentSpace M (ψ x₀) :=
+    Submodule.subset_span ⟨ψ ∘ ℓ, hγC, hγM, hγ0, hγd⟩
+  rw [map_smul] at hmem
+  have h := (tangentSpace M (ψ x₀)).smul_mem κ⁻¹ hmem
+  rwa [smul_smul, inv_mul_cancel₀ hκ0.ne', one_smul] at h
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
