@@ -564,6 +564,41 @@ theorem Submission.adr_uniform_bound_of_weak_bounded : ∀ (P Q : ℕ) (μ : Mea
     _ ≤ M' * ‖(⟨hb, hbX⟩ : X)‖ := (Λ k).le_of_opNorm_le (hM' k) _
     _ ≤ max M' 0 * C := mul_le_mul (le_max_left _ _) hnorm (norm_nonneg _) (le_max_right _ _)
 
+/-- **Weak convergence against moving test functions** (Simon, Appendix A: "all limits in the
+weak sense", the limits `ψ_{y,1} = lim φ_{y+x,λⱼ}` in the proof of A.4, p. 228).  If
+`∫ f • gₖ dμ → ∫ f • g dμ` for every continuous compactly supported `f`, and continuous `hₖ → h`
+uniformly, with `h` and eventually every `hₖ` vanishing off a fixed compact `K`, then
+`∫ hₖ • gₖ dμ → ∫ h • g dμ`: by `Submission.adr_uniform_bound_of_weak_bounded`,
+`‖∫ (hₖ - h) • gₖ dμ‖ ≤ M ‖hₖ - h‖_∞ → 0`, and `∫ h • gₖ dμ → ∫ h • g dμ` by hypothesis. -/
+theorem Submission.adr_weak_tendsto_of_tendstoUniformly : ∀ (P Q : ℕ) (μ : Measure (Euclid P)) (gs : ℕ → Euclid P → Euclid Q) (g : Euclid P → Euclid Q) (hs : ℕ → Euclid P → ℝ) (h : Euclid P → ℝ) (K : Set (Euclid P)), (∀ k, LocallyIntegrable (gs k) μ) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • gs k x ∂μ) atTop (𝓝 (∫ x, f x • g x ∂μ))) → IsCompact K → (∀ k, Continuous (hs k)) → Continuous h → (∀ᶠ k in atTop, ∀ x ∉ K, hs k x = 0) → (∀ x ∉ K, h x = 0) → TendstoUniformly hs h atTop → Tendsto (fun k => ∫ x, hs k x • gs k x ∂μ) atTop (𝓝 (∫ x, h x • g x ∂μ)) := by
+  intro P Q μ gs g hs h K hloc hweak hK hcont hc hsK hK0 hunif
+  -- convergent sequences are bounded, so the uniform bound applies on `K`
+  obtain ⟨M, hM⟩ := Submission.adr_uniform_bound_of_weak_bounded P Q μ gs K hloc
+    (fun f hf hfc => by
+      obtain ⟨C, hC⟩ :=
+        isBounded_iff_forall_norm_le.1 (Metric.isBounded_range_of_tendsto _ (hweak f hf hfc))
+      exact ⟨C, fun k => hC _ ⟨k, rfl⟩⟩) hK
+  -- `h` vanishes off the compact `K`, so it is an admissible test function
+  have hhc : HasCompactSupport h := HasCompactSupport.intro hK hK0
+  -- `∫ hₖ • gₖ dμ - ∫ h • gₖ dμ = ∫ (hₖ - h) • gₖ dμ → 0`
+  have hdiff : Tendsto (fun k => ∫ x, hs k x • gs k x ∂μ - ∫ x, h x • gs k x ∂μ) atTop (𝓝 0) := by
+    refine Metric.tendsto_nhds.2 fun ε hε => ?_
+    have hδ : 0 < ε / (2 * (|M| + 1)) := by positivity
+    filter_upwards [hsK, Metric.tendstoUniformly_iff.1 hunif _ hδ] with k hk0 hk1
+    rw [dist_zero_right, ← integral_sub
+      ((hloc k).integrable_smul_left_of_hasCompactSupport (hcont k) (HasCompactSupport.intro hK hk0))
+      ((hloc k).integrable_smul_left_of_hasCompactSupport hc hhc)]
+    simp_rw [← sub_smul]
+    calc ‖∫ x, (hs k x - h x) • gs k x ∂μ‖ ≤ M * (ε / (2 * (|M| + 1))) :=
+          hM k (fun x => hs k x - h x) _ ((hcont k).sub hc)
+            (fun x hx => by simp [hk0 x hx, hK0 x hx])
+            (fun x => by simpa [Real.dist_eq, abs_sub_comm] using (hk1 x).le)
+      _ ≤ |M| * (ε / (2 * (|M| + 1))) := mul_le_mul_of_nonneg_right (le_abs_self M) hδ.le
+      _ < ε := by
+          rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
+          nlinarith [mul_nonneg (abs_nonneg M) hε.le]
+  simpa using hdiff.add (hweak h hc hhc)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
