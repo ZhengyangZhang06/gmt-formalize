@@ -410,6 +410,30 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Integration of Euler's ODE (used for the radial homogeneity of tangent cones, Simon Ch. 8,
+5.3): if `F'(t) = n F(t) / t` for every `t > 0`, then `F(s) = sⁿ F(1)` for every `s > 0`. -/
+theorem Submission.varifold_tangents_rh_edc_pow_of_hasDerivAt :
+    ∀ (n : ℕ) (F : ℝ → ℝ), (∀ t : ℝ, 0 < t → HasDerivAt F ((n : ℝ) * F t / t) t) → ∀ s : ℝ, 0 < s → F s = s ^ n * F 1 := by
+  intro n F hF s hs
+  -- Steps 1–3: `G(r) = F(r) / rⁿ` has derivative `0` at every `t > 0` (quotient rule, `tⁿ ≠ 0`).
+  have hG : ∀ t : ℝ, 0 < t → HasDerivAt (fun r : ℝ ↦ F r / r ^ n) 0 t := by
+    intro t ht
+    have ht0 : t ≠ 0 := ht.ne'
+    refine ((hF t ht).fun_div (hasDerivAt_pow n t) (pow_ne_zero n ht0)).congr_deriv ?_
+    rcases n with _ | m
+    · simp
+    · rw [Nat.add_sub_cancel]
+      field_simp
+      ring
+  -- Step 4: `G` is constant on the open preconnected set `(0, ∞)`, so `G(s) = G(1)`.
+  have hconst : F s / s ^ n = F 1 / 1 ^ n :=
+    (isOpen_Ioi (a := (0 : ℝ))).is_const_of_deriv_eq_zero (f := fun r : ℝ ↦ F r / r ^ n)
+      isPreconnected_Ioi (fun t ht ↦ (hG t ht).differentiableAt.differentiableWithinAt)
+      (fun t ht ↦ (hG t ht).deriv) hs (Set.mem_Ioi.mpr one_pos)
+  -- Step 5: `G(1) = F(1)`; clear the denominator `sⁿ ≠ 0`.
+  rw [one_pow, div_one, div_eq_iff (pow_ne_zero n hs.ne')] at hconst
+  exact hconst.trans (mul_comm _ _)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
