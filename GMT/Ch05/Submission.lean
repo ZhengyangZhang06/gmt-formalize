@@ -638,6 +638,82 @@ theorem any_radius_rv_support_eq : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : 
   -- `spt W = ψ⁻¹U ∩ spt μ_W = ψ⁻¹U ∩ ψ⁻¹(spt μ_V) = ψ⁻¹(spt V)`.
   ext x
   simp only [RectifiableVarifold.support, mem_inter_iff, mem_preimage, key]
+/-- Scaling invariance of tangent planes (Simon Ch. 3, 1.7; Ch. 4, 1.3): if
+`W = v(ψ⁻¹ M, θ ∘ ψ)` with `ψ(x) = c + R x`, `R > 0`, then `η_{x,r}(ψ⁻¹ M) = η_{ψ x,R r}(M)` and
+the blown-up multiplicities agree, and `r ↦ R r` preserves `𝓝[>] 0` (with inverse `s ↦ R⁻¹ s`), so
+the weighted approximate tangent planes of `W` at `x` are those of `V` at `ψ x`, and `W`, `V` choose
+the same tangent projection there. -/
+theorem any_radius_rv_tangentProj_eq : ∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U) (W : RectifiableVarifold n ℓ U') (c : Amb n ℓ) (R : ℝ),
+    0 < R → W.carrier = (fun x => c + R • x) ⁻¹' V.carrier →
+    (∀ x, W.mult x = V.mult (c + R • x)) → ∀ x, W.tangentProj x = V.tangentProj (c + R • x) := by
+  intro n ℓ U U' V W c R hR hc hm x
+  have hR0 : R ≠ 0 := hR.ne'
+  -- `η_{x,r}(ψ⁻¹ M) = η_{ψ x,R r}(M)`, since `ψ z - ψ x = R (z - x)` and `(R r)⁻¹ R = r⁻¹`.
+  have himg : ∀ r : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap x r '' W.carrier =
+      Poincare.SimonGMT.Chapter03.blowUpMap (c + R • x) (R * r) '' V.carrier := by
+    intro r
+    rw [hc]
+    ext w
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      refine ⟨c + R • z, hz, ?_⟩
+      simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+      rw [show c + R • z - (c + R • x) = R • (z - x) by rw [smul_sub]; abel, smul_smul,
+        mul_inv_rev, mul_assoc, inv_mul_cancel₀ hR0, mul_one]
+    · rintro ⟨m, hm', rfl⟩
+      refine ⟨R⁻¹ • (m - c), ?_, ?_⟩
+      · show c + R • R⁻¹ • (m - c) ∈ V.carrier
+        rwa [smul_smul, mul_inv_cancel₀ hR0, one_smul, add_sub_cancel]
+      · simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+        rw [show R⁻¹ • (m - c) - x = R⁻¹ • (m - (c + R • x)) by
+            rw [smul_sub, smul_sub, smul_add, smul_smul, inv_mul_cancel₀ hR0, one_smul]; abel,
+          smul_smul, mul_inv_rev]
+  -- `θ_W(x + r y) = θ(ψ x + (R r) y)`.
+  have hmult : ∀ (r : ℝ) (y : Amb n ℓ), W.mult (x + r • y) = V.mult (c + R • x + (R * r) • y) := by
+    intro r y
+    rw [hm, smul_add, mul_smul, add_assoc]
+  -- `r ↦ a r` maps `𝓝[>] 0` to `𝓝[>] 0` for `a > 0`.
+  have hfil : ∀ a : ℝ, 0 < a → Tendsto (fun r : ℝ => a * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    intro a ha
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have h0 : Tendsto (fun r : ℝ => a * r) (𝓝 0) (𝓝 (a * 0)) :=
+        (continuous_const.mul continuous_id).tendsto 0
+      rw [mul_zero] at h0
+      exact h0.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos ha hr
+  -- Hence the limits along `r` and along `R r` agree, and the two predicates coincide.
+  have key : ∀ P : Submodule ℝ (Amb n ℓ),
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n W.carrier W.mult x P ↔
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult
+        (c + R • x) P := by
+    intro P
+    simp only [Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt]
+    refine and_congr_right fun _ => forall_congr' fun f => ?_
+    simp only [himg, hmult]
+    rw [hm x]
+    constructor
+    · intro h
+      refine (h.comp (hfil R⁻¹ (inv_pos.2 hR))).congr fun s => ?_
+      simp only [Function.comp_apply, mul_inv_cancel_left₀ hR0]
+    · intro h
+      exact h.comp (hfil R hR)
+  -- So `W` at `x` and `V` at `ψ x` choose the same tangent plane.
+  have hchoose : ∀ (p q : Submodule ℝ (Amb n ℓ) → Prop) (h₁ : ∃ P, p P) (h₂ : ∃ P, q P),
+      p = q → Classical.choose h₁ = Classical.choose h₂ := by
+    rintro p q h₁ h₂ rfl
+    rfl
+  unfold RectifiableVarifold.tangentProj
+  by_cases h₁ : ∃ P,
+      Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n W.carrier W.mult x P
+  · have h₂ := (exists_congr key).1 h₁
+    rw [dite_eq_left h₁, dite_eq_left h₂]
+    congr 1
+    exact hchoose _ _ h₁ h₂ (funext fun P => propext (key P))
+  · have h₂ : ¬∃ P, Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier
+        V.mult (c + R • x) P := fun h => h₁ ((exists_congr key).2 h)
+    rw [dite_eq_right h₁, dite_eq_right h₂]
 
 end Submission
 
