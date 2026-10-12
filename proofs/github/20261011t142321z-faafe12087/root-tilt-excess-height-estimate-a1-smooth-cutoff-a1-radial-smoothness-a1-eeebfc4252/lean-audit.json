@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "23f1b2b7890b4b56853137ac82b46d690192cdc0959fa1de44b269b45614a7c4",
+  "git_delta": {
+    "base_commit": "a0b1c14fc81b767c03133bd3bedfca0f53b1009f",
+    "candidate_commit": "2b6327736221aa2d70f831e19f7b9db1c848c2e0",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "contDiff_radial_profile_of_eq_one_le_half",
+    "diff_sha256": "ee59a30fc9d43e59fdd2dd67215a74fad1dff6924e06e1c5ad950d2eaf5929db",
+    "source_sha256": "85715cd56edf7137df40583c0ee1e619f481ef55146fc6770f64d59ba5ac175b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.contDiff_radial_profile_of_eq_one_le_half",
+      "statement": "∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ) (φ : ℝ → ℝ), 0 < ρ → ContDiff ℝ (⊤ : ℕ∞) φ → (∀ t, t ≤ 1 / 2 → φ t = 1) → ContDiff ℝ (⊤ : ℕ∞) (fun x : Rn m => φ (‖x - ξ‖ / ρ))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
