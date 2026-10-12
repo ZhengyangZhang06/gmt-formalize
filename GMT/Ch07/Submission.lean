@@ -481,6 +481,122 @@ theorem Submission.dorag_ha_lsc_grad_norm_sq : ∀ (n : ℕ) (L : Euclid n →L[
     linarith
   · exact Real.sum_mul_le_sqrt_mul_sqrt _ _ _
 
+/-- **Simon 5.3.1, proof (weak lower semicontinuity of the energy), on interior balls.**
+Let `χ` be a bump with `χ = 1` on `B̄_r(0)` and `tsupport χ = B̄_s(0)`, `s = (r + R)/2`.  The
+field `Φᵢ = χ ∂ᵢh` is `C¹` and compactly supported in `B_R(0)`.  By
+`‖Dh‖² = ∑ᵢ (∂ᵢh)²` (`Submission.dorag_ha_lsc_grad_norm_sq`), `∑ᵢ ∂ᵢh Φᵢ = χ‖Dh‖² =: g` and
+`∑ᵢ Φᵢ² = χ²‖Dh‖² ≤ g`.  The duality bound then gives `X ≤ √E √X` for `X = ∫_{B_R} g`, so
+`X ≤ E`, and `∫_{B_r} ‖Dh‖² = ∫_{B_r} g ≤ X`. -/
+theorem Submission.dorag_ha_lsc_interior_energy : ∀ (n : ℕ) (R E r : ℝ) (h : Euclid n → ℝ), 0 < r → r < R → 0 ≤ E → ContDiffOn ℝ 2 h (ball (0 : Euclid n) R) → (∀ Φ : Fin n → Euclid n → ℝ, (∀ i, ContDiff ℝ 1 (Φ i)) → (∀ i, HasCompactSupport (Φ i)) → (∀ i, tsupport (Φ i) ⊆ ball (0 : Euclid n) R) → ∫ x in ball (0 : Euclid n) R, ∑ i : Fin n, fderiv ℝ h x (EuclideanSpace.single i (1 : ℝ)) * Φ i x ≤ Real.sqrt E * Real.sqrt (∫ x in ball (0 : Euclid n) R, ∑ i : Fin n, Φ i x ^ 2)) → ∫ x in ball (0 : Euclid n) r, ‖fderiv ℝ h x‖ ^ 2 ≤ E := by
+  intro n R E r h hr hrR hE hh hdual
+  -- the cutoff `χ`: `χ = 1` on `B̄_r(0)`, `tsupport χ = B̄_s(0) ⊆ B_R(0)`
+  set s := (r + R) / 2 with hs
+  have hrs : r < s := by linarith
+  have hsR : s < R := by linarith
+  let χ : ContDiffBump (0 : Euclid n) := ⟨r, s, hr, hrs⟩
+  have hχsupp : tsupport χ ⊆ ball (0 : Euclid n) R := by
+    rw [χ.tsupport_eq]; exact closedBall_subset_ball hsR
+  -- the test field `Φᵢ = χ ∂ᵢh` is admissible
+  set Φ : Fin n → Euclid n → ℝ :=
+    fun i x => χ x * fderiv ℝ h x (EuclideanSpace.single i (1 : ℝ)) with hΦdef
+  have hDh : ContDiffOn ℝ 1 (fderiv ℝ h) (ball (0 : Euclid n) R) :=
+    hh.fderiv_of_isOpen isOpen_ball (by norm_num)
+  have hΦC : ∀ i, ContDiff ℝ 1 (Φ i) := by
+    intro i
+    rw [contDiff_iff_contDiffAt]; intro x
+    by_cases hx : x ∈ ball (0 : Euclid n) R
+    · exact (χ.contDiff.contDiffOn.mul (hDh.clm_apply contDiffOn_const)).contDiffAt
+        (isOpen_ball.mem_nhds hx)
+    · have hxχ : x ∉ tsupport χ := fun h' => hx (hχsupp h')
+      have hev : Φ i =ᶠ[𝓝 x] fun _ => (0 : ℝ) := by
+        filter_upwards [notMem_tsupport_iff_eventuallyEq.1 hxχ] with y hy
+        simp [Φ, hy]
+      exact contDiffAt_const.congr_of_eventuallyEq hev
+  have hΦsupp : ∀ i, support (Φ i) ⊆ closedBall 0 s := by
+    intro i x hx
+    have hχx : χ x ≠ 0 := left_ne_zero_of_mul hx
+    have hmem := subset_tsupport χ hχx
+    rwa [χ.tsupport_eq] at hmem
+  have hΦc : ∀ i, HasCompactSupport (Φ i) := fun i =>
+    HasCompactSupport.intro (isCompact_closedBall 0 s) fun x hx =>
+      notMem_support.1 fun h' => hx (hΦsupp i h')
+  have hΦs : ∀ i, tsupport (Φ i) ⊆ ball (0 : Euclid n) R := fun i =>
+    (closure_minimal (hΦsupp i) isClosed_closedBall).trans (closedBall_subset_ball hsR)
+  -- pointwise: `∑ᵢ ∂ᵢh Φᵢ = g` and `∑ᵢ Φᵢ² ≤ g`, where `g = χ ‖Dh‖²`
+  have hgrad : ∀ x, ∑ i : Fin n, fderiv ℝ h x (EuclideanSpace.single i (1 : ℝ)) ^ 2 =
+      ‖fderiv ℝ h x‖ ^ 2 :=
+    fun x => ((Submission.dorag_ha_lsc_grad_norm_sq n (fderiv ℝ h x)).1).symm
+  set g : Euclid n → ℝ := fun x => χ x * ‖fderiv ℝ h x‖ ^ 2 with hgdef
+  have hpt1 : ∀ x, ∑ i : Fin n, fderiv ℝ h x (EuclideanSpace.single i (1 : ℝ)) * Φ i x = g x := by
+    intro x
+    simp only [Φ, g]
+    rw [← hgrad x, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun i _ => by ring
+  have hpt2 : ∀ x, ∑ i : Fin n, Φ i x ^ 2 ≤ g x := by
+    intro x
+    have h0 : 0 ≤ χ x := χ.nonneg' x
+    have h1 : χ x ≤ 1 := χ.le_one
+    calc ∑ i : Fin n, Φ i x ^ 2 = χ x ^ 2 * ‖fderiv ℝ h x‖ ^ 2 := by
+            simp only [Φ]; rw [← hgrad x, Finset.mul_sum]
+            exact Finset.sum_congr rfl fun i _ => by ring
+      _ ≤ χ x * ‖fderiv ℝ h x‖ ^ 2 := by
+            apply mul_le_mul_of_nonneg_right _ (sq_nonneg _)
+            nlinarith
+      _ = g x := rfl
+  -- integrability: `g` is continuous with compact support, and `0 ≤ ∑ᵢ Φᵢ² ≤ g`
+  have hgC : Continuous g := by
+    rw [continuous_iff_continuousAt]; intro x
+    by_cases hx : x ∈ ball (0 : Euclid n) R
+    · have hcont : ContinuousOn g (ball (0 : Euclid n) R) :=
+        χ.continuous.continuousOn.mul
+          ((hh.continuousOn_fderiv_of_isOpen isOpen_ball (by norm_num)).norm.pow 2)
+      exact hcont.continuousAt (isOpen_ball.mem_nhds hx)
+    · have hxχ : x ∉ tsupport χ := fun h' => hx (hχsupp h')
+      have hev : g =ᶠ[𝓝 x] fun _ => (0 : ℝ) := by
+        filter_upwards [notMem_tsupport_iff_eventuallyEq.1 hxχ] with y hy
+        simp [g, hy]
+      exact continuousAt_const.congr hev.symm
+  have hgc : HasCompactSupport g := χ.hasCompactSupport.mul_right
+  have hgI : Integrable g := hgC.integrable_of_hasCompactSupport hgc
+  have hΦ2I : Integrable fun x => ∑ i : Fin n, Φ i x ^ 2 := by
+    refine hgI.mono' ?_ (Eventually.of_forall fun x => ?_)
+    · exact (continuous_finsetSum _ fun i _ => ((hΦC i).continuous.pow 2)).aestronglyMeasurable
+    · rw [Real.norm_of_nonneg (Finset.sum_nonneg fun i _ => sq_nonneg _)]
+      exact hpt2 x
+  -- duality: `X ≤ √E √X` for `X = ∫_{B_R} g`, hence `X ≤ E`
+  set X := ∫ x in ball (0 : Euclid n) R, g x with hXdef
+  have hX0 : 0 ≤ X := setIntegral_nonneg measurableSet_ball fun x _ =>
+    mul_nonneg (χ.nonneg' x) (sq_nonneg _)
+  have hLHS : ∫ x in ball (0 : Euclid n) R,
+      ∑ i : Fin n, fderiv ℝ h x (EuclideanSpace.single i (1 : ℝ)) * Φ i x = X := by
+    simp_rw [hpt1]; rfl
+  have hRHS : ∫ x in ball (0 : Euclid n) R, ∑ i : Fin n, Φ i x ^ 2 ≤ X :=
+    setIntegral_mono hΦ2I.integrableOn hgI.integrableOn hpt2
+  have hd := hdual Φ hΦC hΦc hΦs
+  rw [hLHS] at hd
+  have h1 : X ≤ Real.sqrt E * Real.sqrt X :=
+    hd.trans (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt hRHS) (Real.sqrt_nonneg E))
+  have hXE : X ≤ E := by
+    rcases hX0.eq_or_lt with h0 | hpos
+    · rw [← h0]; exact hE
+    · have hsX : 0 < Real.sqrt X := Real.sqrt_pos.2 hpos
+      have h2 : Real.sqrt X * Real.sqrt X ≤ Real.sqrt E * Real.sqrt X := by
+        rw [Real.mul_self_sqrt hX0]; exact h1
+      have h3 : Real.sqrt X ≤ Real.sqrt E := le_of_mul_le_mul_right h2 hsX
+      calc X = Real.sqrt X ^ 2 := (Real.sq_sqrt hX0).symm
+        _ ≤ Real.sqrt E ^ 2 := by gcongr
+        _ = E := Real.sq_sqrt hE
+  -- the interior ball: `‖Dh‖² = g` on `B_r(0)` and `B_r(0) ⊆ B_R(0)`
+  have hball : ∫ x in ball (0 : Euclid n) r, ‖fderiv ℝ h x‖ ^ 2 =
+      ∫ x in ball (0 : Euclid n) r, g x := by
+    refine setIntegral_congr_fun measurableSet_ball fun x hx => ?_
+    simp [g, χ.one_of_mem_closedBall (ball_subset_closedBall hx)]
+  have hmono : ∫ x in ball (0 : Euclid n) r, g x ≤ X :=
+    setIntegral_mono_set hgI.integrableOn
+      (ae_of_all _ fun x => mul_nonneg (χ.nonneg' x) (sq_nonneg _))
+      (Filter.EventuallySubset.of_subset (ball_subset_ball hrR.le))
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
