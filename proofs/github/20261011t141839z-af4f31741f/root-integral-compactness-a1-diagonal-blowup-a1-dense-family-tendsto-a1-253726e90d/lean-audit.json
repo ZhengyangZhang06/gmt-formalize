@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3fe38786966ba9f36156091f6d0ecdd4d282658c2aa4a18dde2342f0ff030401",
+  "git_delta": {
+    "base_commit": "edf6403e8f3705cbe1236f62087253a7ffede563",
+    "candidate_commit": "f4c8b22df40a56e4865e95a15adeac3ed711b2c8",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_diag_dense_family_tendsto",
+    "diff_sha256": "3a1404b8bd08864dc30f73a3ea5126ce18e4d7fefa24801bda1cd5d4a2af3ce9",
+    "source_sha256": "358ac5c341aaea3424a57003d139ba5b499b923ed96c722c339f703afcc6ae31",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_diag_dense_family_tendsto",
+      "statement": "∀ (N n : ℕ) (O : Set (Euclidean N)) (g : ℕ → C_c(Euclidean N × Grassmannian N n, ℝ)) (μ ν : ℕ → Measure (Euclidean N × Grassmannian N n)) (C : ℝ≥0∞), MeasurableSet O → C ≠ ∞ → (∀ m, tsupport (g m) ⊆ O ×ˢ (univ : Set (Grassmannian N n))) → (∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ O ×ˢ (univ : Set (Grassmannian N n)) → ∀ η : ℝ, 0 < η → ∃ m, ∀ z, |f z - g m z| ≤ η) → (∀ᶠ k in atTop, μ k (O ×ˢ (univ : Set (Grassmannian N n))) ≤ C) → (∀ᶠ k in atTop, ν k (O ×ˢ (univ : Set (Grassmannian N n))) ≤ C) → (∀ m, Tendsto (fun k ↦ ∫ z, g m z ∂(μ k) - ∫ z, g m z ∂(ν k)) atTop (𝓝 0)) → ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ O ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(μ k) - ∫ z, f z ∂(ν k)) atTop (𝓝 0)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
