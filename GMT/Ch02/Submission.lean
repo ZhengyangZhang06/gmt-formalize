@@ -409,6 +409,79 @@ theorem Submission.simon_submanifold_exists_closedBall_isCompact_inter : ∀ (n 
   exact (hψ.isCompact_source_inter_preimage _ (isCompact_closedBall y (ε / 2))
     (hsub.trans inter_subset_right)).image_of_continuousOn
     (hψ.contDiffOn.continuousOn.mono inter_subset_left)
+/-- **Fundamental lemma for test vector fields.** Let `M ⊆ ℝᴺ` be measurable, `U` open and `F`
+continuous on `M`. Assume (P) `μ(M ∩ O) > 0` for every open `O` meeting `M`, (L) each `y ∈ M` has
+arbitrarily small closed balls `B̄(y, ρ)` with `M ∩ B̄(y, ρ)` compact, and (T) `∫_M ⟨Y, F⟩ dμ = 0`
+(with `⟨Y, F⟩` integrable on `M`) for every `C²` field `Y` with compact support in `U` and
+`M ∩ spt Y` compact. Then `F = 0` on `M ∩ U`. If `e = F(y₀) ≠ 0`, continuity and (L) give `ρ > 0`
+with `B̄(y₀, ρ) ⊆ U`, `M ∩ B̄(y₀, ρ)` compact and `⟨e, F⟩ > ‖e‖²/2` on `M ∩ B̄(y₀, ρ)`. For the
+smooth bump `ζ` (`ζ = 1` on `B̄(y₀, ρ/2)`, `spt ζ = B̄(y₀, ρ)`), the field `Y = ζ e` is admissible
+in (T), and `⟨Y, F⟩ = ζ ⟨e, F⟩ ≥ 0` on `M` is positive on `M ∩ B(y₀, ρ/2)`, which has positive
+measure by (P). So `∫_M ⟨Y, F⟩ dμ > 0`, a contradiction. -/
+theorem Submission.vector_field_eq_zero_of_integral_inner_test_fields : ∀ (N : ℕ) (μ : Measure (Rn N)) (M U : Set (Rn N)) (F : Rn N → Rn N), MeasurableSet M → IsOpen U → ContinuousOn F M → (∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → 0 < μ (M ∩ O)) → (∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → ∃ ρ : ℝ, 0 < ρ ∧ closedBall y ρ ⊆ O ∧ IsCompact (M ∩ closedBall y ρ)) → (∀ Y : Rn N → Rn N, ContDiff ℝ 2 Y → HasCompactSupport Y → tsupport Y ⊆ U → IsCompact (M ∩ tsupport Y) → IntegrableOn (fun y ↦ inner ℝ (Y y) (F y)) M μ ∧ ∫ y in M, inner ℝ (Y y) (F y) ∂μ = 0) → ∀ y ∈ M ∩ U, F y = 0 := by
+  intro N μ M U F hM hU hF hP hL hT y₀ hy₀
+  -- Step 1: suppose `e = F y₀ ≠ 0`.
+  by_contra hne
+  have he : 0 < ‖F y₀‖ := norm_pos_iff.2 hne
+  -- Step 2 (continuity): `‖F y - F y₀‖ < ‖F y₀‖ / 2` on `M ∩ B(y₀, δ)`.
+  obtain ⟨δ, hδ, hδF⟩ := Metric.continuousOn_iff.1 hF y₀ hy₀.1 (‖F y₀‖ / 2) (half_pos he)
+  -- Step 3 (localization): `B̄(y₀, ρ) ⊆ U ∩ B(y₀, δ)` with `M ∩ B̄(y₀, ρ)` compact.
+  obtain ⟨ρ, hρ, hρU, hρK⟩ :=
+    hL y₀ hy₀.1 (U ∩ ball y₀ δ) (hU.inter isOpen_ball) ⟨hy₀.2, mem_ball_self hδ⟩
+  -- Step 4 (key estimate): `⟨e, F y⟩ > ‖e‖² / 2` on `M ∩ B̄(y₀, ρ)`, by Cauchy–Schwarz.
+  have hkey : ∀ y ∈ M, dist y y₀ ≤ ρ → ‖F y₀‖ ^ 2 / 2 < inner ℝ (F y₀) (F y) := by
+    intro y hyM hyρ
+    have h1 : ‖F y - F y₀‖ < ‖F y₀‖ / 2 := by
+      rw [← dist_eq_norm]
+      exact hδF y hyM (mem_ball.1 (hρU (mem_closedBall.2 hyρ)).2)
+    have h2 : inner ℝ (F y₀) (F y) = ‖F y₀‖ ^ 2 + inner ℝ (F y₀) (F y - F y₀) := by
+      rw [inner_sub_right, real_inner_self_eq_norm_sq]
+      ring
+    have h3 : -(‖F y₀‖ * ‖F y - F y₀‖) ≤ inner ℝ (F y₀) (F y - F y₀) :=
+      (abs_le.1 (abs_real_inner_le_norm (F y₀) (F y - F y₀))).1
+    have h4 : ‖F y₀‖ * ‖F y - F y₀‖ < ‖F y₀‖ * (‖F y₀‖ / 2) := mul_lt_mul_of_pos_left h1 he
+    nlinarith
+  -- Step 5 (bump function): `ζ = 1` on `B̄(y₀, ρ/2)`, `ζ = 0` off `B(y₀, ρ)`, `0 ≤ ζ`.
+  let ζ : ContDiffBump y₀ := ⟨ρ / 2, ρ, half_pos hρ, half_lt_self hρ⟩
+  -- Step 6 (test field): `Y = ζ • e` is admissible in (T).
+  let Y : Rn N → Rn N := fun x ↦ ζ x • F y₀
+  have hYc : ContDiff ℝ 2 Y := ζ.contDiff.smul contDiff_const
+  have hYs : HasCompactSupport Y := ζ.hasCompactSupport.smul_right
+  have hYt : tsupport Y ⊆ closedBall y₀ ρ :=
+    (tsupport_smul_subset_left (fun x ↦ ζ x) fun _ ↦ F y₀).trans ζ.tsupport_eq.subset
+  have hYU : tsupport Y ⊆ U := fun x hx ↦ (hρU (hYt hx)).1
+  have hYK : IsCompact (M ∩ tsupport Y) := by
+    have h : M ∩ tsupport Y = M ∩ closedBall y₀ ρ ∩ tsupport Y := by
+      ext x
+      exact ⟨fun hx ↦ ⟨⟨hx.1, hYt hx.2⟩, hx.2⟩, fun hx ↦ ⟨hx.1.1, hx.2⟩⟩
+    rw [h]
+    exact hρK.inter_right (isClosed_tsupport Y)
+  -- Step 7 (apply (T)): `f = ⟨Y, F⟩ = ζ ⟨e, F⟩` is integrable on `M` with `∫_M f dμ = 0`.
+  obtain ⟨hint, hzero⟩ := hT Y hYc hYs hYU hYK
+  have hf : ∀ y, inner ℝ (Y y) (F y) = ζ y * inner ℝ (F y₀) (F y) := fun y ↦
+    real_inner_smul_left _ _ _
+  -- Step 8: `f ≥ 0` on `M`.
+  have hnn : 0 ≤ᵐ[μ.restrict M] fun y ↦ inner ℝ (Y y) (F y) := by
+    refine ae_restrict_of_forall_mem hM fun y hyM ↦ ?_
+    show 0 ≤ inner ℝ (Y y) (F y)
+    rw [hf]
+    by_cases hyρ : dist y y₀ ≤ ρ
+    · exact mul_nonneg ζ.nonneg ((half_pos (pow_pos he 2)).le.trans (hkey y hyM hyρ).le)
+    · rw [ζ.zero_of_le_dist (not_le.1 hyρ).le, zero_mul]
+  -- Step 9: `f > 0` on `M ∩ B(y₀, ρ/2)`, which has positive measure by (P).
+  have hpos : 0 < μ (Function.support (fun y ↦ inner ℝ (Y y) (F y)) ∩ M) := by
+    have hsub : M ∩ ball y₀ (ρ / 2) ⊆ Function.support (fun y ↦ inner ℝ (Y y) (F y)) ∩ M := by
+      rintro y ⟨hyM, hyB⟩
+      refine ⟨?_, hyM⟩
+      rw [Function.mem_support, hf, ζ.one_of_mem_closedBall (ball_subset_closedBall hyB), one_mul]
+      have hyρ : dist y y₀ ≤ ρ := (mem_ball.1 hyB).le.trans (half_le_self hρ.le)
+      exact ((half_pos (pow_pos he 2)).trans (hkey y hyM hyρ)).ne'
+    exact (hP y₀ hy₀.1 (ball y₀ (ρ / 2)) isOpen_ball (mem_ball_self (half_pos hρ))).trans_le
+      (measure_mono hsub)
+  -- Step 10: then `∫_M f dμ > 0`, contradicting `∫_M f dμ = 0`.
+  have hint_pos := (setIntegral_pos_iff_support_of_nonneg_ae hnn hint).2 hpos
+  rw [hzero] at hint_pos
+  exact lt_irrefl 0 hint_pos
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
