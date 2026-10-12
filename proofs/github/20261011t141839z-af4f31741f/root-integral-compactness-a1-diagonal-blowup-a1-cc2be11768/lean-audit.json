@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "80de1330f26f847b866c57c5a179c6007a77f95381fb22ca1ab14a068f871594",
+  "git_delta": {
+    "base_commit": "ce58a42523da8c43ee4c0a524373580f1176582a",
+    "candidate_commit": "6b00aec5ff1c6d73d559eeb2afdf40eb14c4d624",
+    "target": "GMT/Ch08/Submission.lean",
+    "changed_files": [
+      "GMT/Ch08/Submission.lean"
+    ],
+    "diff_sha256": "4c876e37c3b8b5b961a310e313aca4c84594bac5e6a93de38d302b367d30a0aa",
+    "source_sha256": "d8c76a58d17e1bee40612611d8358b9e789a74232261caeb9d0d7d114325af98",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_diagonal_integral_blowup",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (Vi : ℕ → Varifold N n U) (V : Varifold N n U) (ξ : Euclidean N) (P : Grassmannian N n) (θ₀ c r : ℝ), Varifold.RadonConverges Vi V → (∀ i, IsIntegral (Vi i)) → (∀ i, (Vi i).HasLocallyBoundedFirstVariation) → HasTangentPlane V ξ P θ₀ → 0 < r → (∀ ρ : ℝ, 0 < ρ → ρ < r → liminf (fun i ↦ variationMeasure (Vi i) (closedBall ξ ρ)) atTop ≤ ENNReal.ofReal (c * ρ ^ n)) → ∃ W : ℕ → Varifold N n (ball (0 : Euclidean N) 5), (∀ k, IsIntegral (W k)) ∧ (∀ k, (W k).HasLocallyBoundedFirstVariation) ∧ Tendsto (fun k ↦ variationMeasure (W k) (ball (0 : Euclidean N) 5)) atTop (𝓝 0) ∧ ∀ f : C_c(Euclidean N × Grassmannian N n, ℝ), tsupport f ⊆ ball (0 : Euclidean N) 5 ×ˢ (univ : Set (Grassmannian N n)) → Tendsto (fun k ↦ ∫ z, f z ∂(W k).measure) atTop (𝓝 (θ₀ * ∫ z, f z ∂(planeVarifoldMeasure P)))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
