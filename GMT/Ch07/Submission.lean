@@ -451,6 +451,27 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, 1.7 and 1.15**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
+has dual Euclidean coefficient norm exactly one: `|ξ(α)| = |α(τ)| ≤ |α|_E` for every
+`n`-covector `α`, and `ξ(±β₀) = 1` for a covector `β₀` with `|β₀|_E = 1` and `β₀(τ) = 1`
+(`+β₀` for the sign `+`, `−β₀` for the sign `−`, using `|−β₀|_E = |β₀|_E`). -/
+theorem Submission.regcomp_unit_orientation_pairing : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ξ β = 1 := by
+  rintro P n ξ Q ⟨τ, hτ, -, hξ⟩
+  obtain ⟨β₀, hβ₀, hβ₀τ⟩ := Submission.regcomp_exists_covector_eval_orthonormal_eq_one P n τ hτ
+  rcases hξ with h | h
+  · -- `ξ(α) = α(τ)`: take `β = β₀`
+    refine ⟨fun α => ?_, β₀, hβ₀.le, ?_⟩
+    · rw [h α]
+      exact Submission.regcomp_covector_eval_orthonormal_le P n α τ hτ
+    · rw [h β₀, hβ₀τ]
+  · -- `ξ(α) = −α(τ)`: `|ξ(α)| = |α(τ)|`, and take `β = −β₀`
+    refine ⟨fun α => ?_, -β₀, ?_, ?_⟩
+    · rw [h α, abs_neg]
+      exact Submission.regcomp_covector_eval_orthonormal_le P n α τ hτ
+    · rw [covectorEuclideanNorm_neg]
+      exact hβ₀.le
+    · rw [h (-β₀), ContinuousAlternatingMap.neg_apply, hβ₀τ, neg_neg]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
