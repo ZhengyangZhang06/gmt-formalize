@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "515876ceb6dd322cf92be266d91cfdb006cffac58c0942296e55cb2a6e577369",
+  "git_delta": {
+    "base_commit": "db9f39016b650770856906e1d80f94e749036188",
+    "candidate_commit": "45a2147cd7cfe8e9004dcaa6583498e4c2f53d4e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "adr_null_open_cover",
+    "diff_sha256": "ef55dcb59b764ea2f4ed9aca22b4c17354386648cc43f762b0a2203e946a5461",
+    "source_sha256": "1fb819819109655cf8678862860ff09a82fc5d6733bb45f72d9c0e84f2e06397",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.adr_null_open_cover",
+      "statement": "∀ (P : ℕ) (ℓ : ℝ) (E : Set (Euclid P)) (ε : ℝ≥0∞), 0 < ℓ → μH[ℓ] E = 0 → 0 < ε → ∃ U : ℕ → Set (Euclid P), (∀ j, IsOpen (U j)) ∧ E ⊆ ⋃ j, U j ∧ ∑' j, Metric.ediam (U j) ^ ℓ < ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
