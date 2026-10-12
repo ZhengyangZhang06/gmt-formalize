@@ -458,6 +458,94 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Linear graph area formula.  For a linear map `P : ℝⁿ → ℝ^ℓ` put
+`g(P) = I + (⟨P eₐ, P e_b⟩)_{a,b}`.  Then `det g(P) > 0` and the graph map `v ↦ (v, P v)` scales
+`Hⁿ` by `√(det g(P))`: `Hⁿ({(v, P v) : v ∈ S}) = √(det g(P)) Lⁿ(S)` for every `S ⊆ ℝⁿ`.
+Write `v ↦ (v, P v)` as `ι ∘ M`, with `ι` a linear isometry of `ℝⁿ` onto its range (orthonormal
+coordinates) and `M` linear on `ℝⁿ`.  Then `g(P) = Mᵀ M`, so `det g(P) = (det M)² > 0`, and
+`Hⁿ(ι(M S)) = Lⁿ(M S) = |det M| Lⁿ(S)` (`Isometry.euclideanHausdorffMeasure_image`,
+`Measure.addHaar_image_linearMap`). -/
+theorem dohr_vel_linear_graph_area : ∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn ℓ, 0 < Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))) ∧ ∀ S : Set (Rn n), (μHE[n] : Measure (Amb n ℓ)) ((fun v => graphPoint v (P v)) '' S) = ENNReal.ofReal (Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) * (volume : Measure (Rn n)) S := by
+  intro n ℓ P
+  have hinner : ∀ (v v' : Rn n) (w w' : Rn ℓ),
+      inner ℝ (graphPoint v w) (graphPoint v' w') = inner ℝ v v' + inner ℝ w w' := by
+    intro v v' w w'
+    simp [graphPoint, PiLp.inner_apply, Fin.sum_univ_add]
+  let Λ : Rn n →ₗ[ℝ] Amb n ℓ :=
+    { toFun := fun v => graphPoint v (P v)
+      map_add' := by
+        intro v w
+        ext i
+        refine Fin.addCases (fun j => ?_) (fun k => ?_) i <;> simp [graphPoint]
+      map_smul' := by
+        intro c v
+        ext i
+        refine Fin.addCases (fun j => ?_) (fun k => ?_) i <;> simp [graphPoint] }
+  have hΛ : ∀ v, Λ v = graphPoint v (P v) := fun v => rfl
+  have hΛinj : Function.Injective Λ := by
+    intro v w h
+    have h' := congrArg (fun z : Amb n ℓ => (WithLp.toLp 2 (fun j : Fin n => WithLp.ofLp z (Fin.castAdd ℓ j)) : Rn n)) h
+    simpa [hΛ, graphPoint] using h'
+  have hW : Module.finrank ℝ (LinearMap.range Λ) = n := by
+    rw [LinearMap.finrank_range_of_inj hΛinj, finrank_euclideanSpace_fin]
+  let e : (LinearMap.range Λ) ≃ₗᵢ[ℝ] Rn n :=
+    ((stdOrthonormalBasis ℝ (LinearMap.range Λ)).reindex (finCongr hW)).repr
+  let M : Rn n →ₗ[ℝ] Rn n := e.toLinearEquiv.toLinearMap ∘ₗ Λ.rangeRestrict
+  let ι : Rn n → Amb n ℓ := fun z => ((e.symm z : LinearMap.range Λ) : Amb n ℓ)
+  have hι : Isometry ι := ((LinearMap.range Λ).subtypeₗᵢ.comp e.symm.toLinearIsometry).isometry
+  have hΛM : ∀ v, ι (M v) = Λ v := by
+    intro v
+    simp [ι, M]
+  have himage : ∀ S : Set (Rn n), (fun v => graphPoint v (P v)) '' S = ι '' (M '' S) := by
+    intro S
+    rw [Set.image_image]
+    refine Set.image_congr (fun v _ => ?_)
+    rw [hΛM, hΛ]
+  have hinnerM : ∀ v w, inner ℝ (M v) (M w) = inner ℝ (Λ v) (Λ w) := by
+    intro v w
+    rw [← hΛM, ← hΛM]
+    show inner ℝ (M v) (M w) = inner ℝ ((e.symm (M v) : LinearMap.range Λ) : Amb n ℓ) ((e.symm (M w) : LinearMap.range Λ) : Amb n ℓ)
+    rw [← Submodule.coe_inner, LinearIsometryEquiv.inner_map_map]
+  let bs := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+  let Mm : Matrix (Fin n) (Fin n) ℝ := LinearMap.toMatrix bs bs M
+  have hMm : ∀ k a, Mm k a = (M (EuclideanSpace.single a (1 : ℝ))) k := by
+    intro k a
+    simp [Mm, bs, LinearMap.toMatrix_apply]
+  have hgm : ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n =>
+      inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))) = Mm.transpose * Mm := by
+    ext a b
+    rw [Matrix.mul_apply]
+    simp only [Matrix.transpose_apply, hMm]
+    have h1 : ∑ k, (M (EuclideanSpace.single a (1 : ℝ))) k * (M (EuclideanSpace.single b (1 : ℝ))) k =
+        inner ℝ (M (EuclideanSpace.single a (1 : ℝ))) (M (EuclideanSpace.single b (1 : ℝ))) := by
+      rw [PiLp.inner_apply]
+      refine Finset.sum_congr rfl (fun k _ => ?_)
+      simp only [RCLike.inner_apply, conj_trivial]
+      ring
+    rw [h1, hinnerM, hΛ, hΛ, hinner, EuclideanSpace.inner_single_left, PiLp.single_apply]
+    simp [Matrix.one_apply]
+  have hdet : Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n =>
+      inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))) = (LinearMap.det M) ^ 2 := by
+    rw [hgm, Matrix.det_mul, Matrix.det_transpose, LinearMap.det_toMatrix]
+    ring
+  have hMinj : Function.Injective M := by
+    intro v w h
+    apply hΛinj
+    rw [← hΛM, ← hΛM, h]
+  have hdetM : LinearMap.det M ≠ 0 := by
+    have hsurj : Function.Surjective M := LinearMap.injective_iff_surjective.mp hMinj
+    let Me : Rn n ≃ₗ[ℝ] Rn n := LinearEquiv.ofBijective M ⟨hMinj, hsurj⟩
+    have : LinearMap.det M = LinearMap.det (Me : Rn n →ₗ[ℝ] Rn n) := rfl
+    rw [this]
+    exact (LinearEquiv.isUnit_det' Me).ne_zero
+  refine ⟨by rw [hdet]; positivity, fun S => ?_⟩
+  rw [himage, hι.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+    Measure.addHaar_image_linearMap, hdet, Real.sqrt_sq_eq_abs]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
