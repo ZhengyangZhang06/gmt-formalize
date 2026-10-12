@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_current-a1.action_integrable-a1",
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_current-a1",
+  "depth": 4,
+  "title": "The action integrand of an integer multiplicity triple is integrable",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, and let R = (M, θ, ξ) be an IMRep in U (IMRep U n). In particular: M = R.carrier is a Borel set with M ⊆ U; θ = R.mult : ℝ^P → ℕ is measurable; ∫_{M∩K} θ dHⁿ < ∞ for every compact K ⊆ U (field locallyIntegrable_mult); ξ = R.orient : ℝ^P → Λ_n(ℝ^P) = MultiVector P n (continuous linear functionals on n-covectors, operator norm) is a.e. strongly measurable for Hⁿ⌞M; and for Hⁿ⌞M-a.e. x there is a subspace Q with IsUnitOrientationOf (ξ x) Q (field orients). Here Hⁿ = μHE[n]. Let ω ∈ 𝒟ⁿ(U) (TestFormOn U n: a C^∞ n-form on ℝ^P with compact support and tsupport ω ⊆ U). Then the function x ↦ θ(x)·⟨ω(x), ξ(x)⟩ = (R.mult x : ℝ) · R.orient x (ω x) is integrable with respect to Hⁿ⌞M = μHE[n].restrict R.carrier.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (ω : TestFormOn U n), Integrable (fun x => (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)) (μHE[n].restrict R.carrier)",
+  "lean_name": "rsd_cmr_ic_action_integrable",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-2d6f974584-a1",
+      "result_commit": "2e5d20d49a4a41f79e81db1a65e850fb919b38ba",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-cu-db12d15d12-a1"
+}

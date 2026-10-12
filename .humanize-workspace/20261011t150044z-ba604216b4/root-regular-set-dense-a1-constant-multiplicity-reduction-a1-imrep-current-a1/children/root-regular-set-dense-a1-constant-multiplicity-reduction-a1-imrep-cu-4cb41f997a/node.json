@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_current-a1.action_bound-a1",
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_current-a1",
+  "depth": 4,
+  "title": "Sup-norm estimate for the action of an integer multiplicity triple",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, and let R = (M, θ, ξ) be an IMRep in U (IMRep U n; in particular M = R.carrier is Borel with M ⊆ U, θ = R.mult is measurable and ℕ-valued with ∫_{M∩K'} θ dHⁿ < ∞ for every compact K' ⊆ U, and for Hⁿ⌞M-a.e. x there is a subspace Q with IsUnitOrientationOf (ξ x) Q, where ξ = R.orient and Hⁿ = μHE[n]). Let K ⊆ ℝ^P be compact with K ⊆ U, let ω ∈ 𝒟ⁿ(U) (TestFormOn U n) with tsupport ω ⊆ K, and let ε ∈ ℝ satisfy ‖ω(x)‖ ≤ ε for every x ∈ ℝ^P (operator norm on n-covectors). Then |R.action ω| = |∫_M θ(x)·ξ(x)(ω(x)) dHⁿ(x)| ≤ ε·(∫⁻_{M∩K} θ dHⁿ).toReal.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (K : Set (Euclid P)) (ω : TestFormOn U n) (ε : ℝ), IsCompact K → K ⊆ U → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ ε) → |R.action (ω : DifferentialForm (Euclid P) n)| ≤ ε * (∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal",
+  "lean_name": "rsd_cmr_ic_action_abs_le",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-2d6f974584-a1",
+      "result_commit": "2e5d20d49a4a41f79e81db1a65e850fb919b38ba",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-cu-4cb41f997a-a1"
+}
