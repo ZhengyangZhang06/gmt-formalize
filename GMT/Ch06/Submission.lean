@@ -525,6 +525,149 @@ theorem Submission.br_loc_tauAction_current : ∀ (P n : ℕ) (V M : Set (Eucl P
     _ < ε := by
       rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
       nlinarith [abs_nonneg C]
+/-- Locality of weighted approximate tangent spaces (Simon Ch. 3, 1.7), the locality step in the
+proof of Ch. 6, 6.3: the tangent spaces of `(M, θ)` at `x` only depend on `M ∩ V` up to
+`Hᵏ`-null sets and on `θ` up to `Hᵏ ⌞ (M ∩ V)`-null sets, `V ∋ x` open.  If `B_δ(x) ⊆ V` and
+`f = 0` off `B_R(0)`, then for `0 < r < δ / R` the blow-up integrands vanish off
+`W = η_{x,r}(V)`, and `Hᵏ(η_{x,r} Z) = r⁻ᵏ Hᵏ(Z)`; so the blow-up integrals of `(M, θ)` and
+`(M', θ')` agree for all small `r`. -/
+theorem Submission.br_weightedTangent_congr :
+    ∀ (P k : ℕ) (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (x : Eucl P) (V : Set (Eucl P)),
+      IsOpen V → x ∈ V → (μHE[k] : Measure (Eucl P)) (symmDiff M M' ∩ V) = 0 →
+      (∀ᵐ y ∂((μHE[k] : Measure (Eucl P)).restrict (M ∩ V)), θ y = θ' y) → θ x = θ' x →
+      ∀ L : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x L →
+        HasWeightedApproximateTangentSpaceAt k M' θ' x L := by
+  open Poincare.SimonGMT.Chapter03 (blowUpMap) in
+  intro P k M M' θ θ' x V hV hxV hMM' hθθ' hθx L hL
+  -- `η_r(y) = r⁻¹ (y - x)` maps `Hᵏ`-null sets to `Hᵏ`-null sets: `Hᵏ(η_r Z) = r⁻ᵏ Hᵏ(Z)`.
+  have hnull : ∀ r : ℝ, r ≠ 0 → ∀ Z : Set (Eucl P), (μHE[k] : Measure (Eucl P)) Z = 0 →
+      (μHE[k] : Measure (Eucl P)) (blowUpMap x r '' Z) = 0 := by
+    open scoped Pointwise in
+    intro r hr Z hZ
+    have himage : blowUpMap x r '' Z = r⁻¹ • (IsometryEquiv.subRight x '' Z) := by
+      rw [← Set.image_smul, Set.image_image]
+      rfl
+    rw [himage, Measure.euclideanHausdorffMeasure_smul₀ k (inv_ne_zero hr),
+      (IsometryEquiv.subRight x).isometry.euclideanHausdorffMeasure_image, hZ, smul_zero]
+  -- `y ↦ x + r • y` inverts `η_r`.
+  have hinv : ∀ r : ℝ, r ≠ 0 → ∀ z : Eucl P, x + r • blowUpMap x r z = z := by
+    intro r hr z
+    simp only [blowUpMap, smul_smul, mul_inv_cancel₀ hr, one_smul, add_sub_cancel]
+  -- A measurable `N ⊇ {θ ≠ θ'}` with `Hᵏ(N ∩ M ∩ V) = 0`.
+  obtain ⟨N, hNsub, hNmeas, hN0⟩ := exists_measurable_superset_of_null (ae_iff.mp hθθ')
+  rw [Measure.restrict_apply hNmeas] at hN0
+  refine ⟨hL.1, fun f => ?_⟩
+  rw [← hθx]
+  refine (hL.2 f).congr' ?_
+  -- `f = 0` off `B_R(0)` and `B_δ(x) ⊆ V`; the blow-up integrals agree for `0 < r < δ / R`.
+  obtain ⟨R, hR, hfR⟩ := f.hasCompactSupport.exists_pos_le_norm
+  obtain ⟨δ, hδ, hδV⟩ := Metric.isOpen_iff.mp hV x hxV
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hR)] with r hr
+  obtain ⟨hr0, hrR⟩ := hr
+  have hcont : Continuous fun y : Eucl P => x + r • y :=
+    continuous_const.add (continuous_const_smul r)
+  -- `W = η_r(V)` is open and the integrands `f(y) g(x + r y)` vanish off `W`.
+  set W : Set (Eucl P) := (fun y => x + r • y) ⁻¹' V with hW
+  have hWmeas : MeasurableSet W := (hV.preimage hcont).measurableSet
+  have hvan : ∀ g : Eucl P → ℝ, ∀ y, y ∉ W → f y * g (x + r • y) = 0 := by
+    intro g y hy
+    have hfy : f y = 0 := by
+      apply hfR
+      have h1 : x + r • y ∉ ball x δ := fun h => hy (hδV h)
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+        abs_of_pos hr0, not_lt] at h1
+      rw [lt_div_iff₀ hR] at hrR
+      exact le_of_lt (lt_of_mul_lt_mul_left (hrR.trans_le h1) hr0.le)
+    rw [hfy, zero_mul]
+  -- Cutting by `W`: `∫_{η_r(S)} = ∫_{W ∩ η_r(S)}`.
+  have hcut : ∀ (S : Set (Eucl P)) (g : Eucl P → ℝ),
+      ∫ y in blowUpMap x r '' S, f y * g (x + r • y) ∂(μHE[k] : Measure (Eucl P)) =
+        ∫ y in W ∩ blowUpMap x r '' S, f y * g (x + r • y) ∂(μHE[k] : Measure (Eucl P)) := by
+    intro S g
+    rw [← Measure.restrict_restrict hWmeas,
+      setIntegral_eq_integral_of_forall_compl_eq_zero (hvan g)]
+  -- `W ∩ η_r(M) = W ∩ η_r(M')` up to the null set `η_r((M ∆ M') ∩ V)`.
+  have hset : W ∩ blowUpMap x r '' M =ᵐ[(μHE[k] : Measure (Eucl P))] W ∩ blowUpMap x r '' M' := by
+    rw [ae_eq_set]
+    constructor
+    · refine measure_mono_null ?_ (hnull r hr0.ne' _ hMM')
+      rintro y ⟨⟨hyW, z, hzM, rfl⟩, hy⟩
+      refine ⟨z, ⟨Or.inl ⟨hzM, fun hzM' => hy ⟨hyW, z, hzM', rfl⟩⟩, ?_⟩, rfl⟩
+      simpa [hW, hinv r hr0.ne' z] using hyW
+    · refine measure_mono_null ?_ (hnull r hr0.ne' _ hMM')
+      rintro y ⟨⟨hyW, z, hzM, rfl⟩, hy⟩
+      refine ⟨z, ⟨Or.inr ⟨hzM, fun hzM' => hy ⟨hyW, z, hzM', rfl⟩⟩, ?_⟩, rfl⟩
+      simpa [hW, hinv r hr0.ne' z] using hyW
+  -- `θ(x + r y) = θ'(x + r y)` a.e. on `W ∩ η_r(M)`, off the null set `η_r(N ∩ M ∩ V)`.
+  have hae : ∀ᵐ y ∂((μHE[k] : Measure (Eucl P)).restrict (W ∩ blowUpMap x r '' M)),
+      f y * θ (x + r • y) = f y * θ' (x + r • y) := by
+    have hN'meas : MeasurableSet ((fun y => x + r • y) ⁻¹' N) :=
+      hNmeas.preimage hcont.measurable
+    rw [ae_iff]
+    refine measure_mono_null (t := (fun y => x + r • y) ⁻¹' N) ?_ ?_
+    · intro y hy
+      by_contra hyN
+      apply hy
+      have hθy : θ (x + r • y) = θ' (x + r • y) := by
+        by_contra hne
+        exact hyN (hNsub hne)
+      rw [hθy]
+    · rw [Measure.restrict_apply hN'meas]
+      refine measure_mono_null ?_ (hnull r hr0.ne' _ hN0)
+      rintro y ⟨hyN, hyW, z, hzM, rfl⟩
+      refine ⟨z, ⟨?_, hzM, ?_⟩, rfl⟩
+      · simpa [hinv r hr0.ne' z] using hyN
+      · simpa [hW, hinv r hr0.ne' z] using hyW
+  calc ∫ y in blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[k] : Measure (Eucl P))
+      = ∫ y in W ∩ blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[k] : Measure (Eucl P)) :=
+        hcut M θ
+    _ = ∫ y in W ∩ blowUpMap x r '' M, f y * θ' (x + r • y) ∂(μHE[k] : Measure (Eucl P)) :=
+        integral_congr_ae hae
+    _ = ∫ y in W ∩ blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[k] : Measure (Eucl P)) := by
+        rw [Measure.restrict_congr_set hset]
+    _ = ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[k] : Measure (Eucl P)) :=
+        (hcut M' θ').symm
+
+/-- Restriction of a triple `(M, θ, ξ)` (Simon Ch. 6, 3.1) to an open set `V`, the localization
+step in the proof of Ch. 6, 6.3: if `M ∩ V ⊆ U'` and `θ` is locally `Hⁿ`-integrable on `M ∩ V`
+in `U'`, then `(M ∩ V, θ, ξ)` satisfies the triple conditions in `U'`.  As
+`(M ∆ (M ∩ V)) ∩ V = ∅`, at `x ∈ V` the weighted tangent spaces of `(M, θ)` are those of
+`(M ∩ V, θ)` (`Submission.br_weightedTangent_congr`). -/
+theorem Submission.br_loc_triple_inter_open :
+    ∀ (P n : ℕ) (U U' V M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n),
+      IsRectifiableTriple U n M θ ξ → IsOpen V → M ∩ V ⊆ U' →
+      (∀ K : Set (Eucl P), IsCompact K → K ⊆ U' →
+        IntegrableOn θ (M ∩ V ∩ K) (μHE[n] : Measure (Eucl P))) →
+      IsRectifiableTriple U' n (M ∩ V) θ ξ := by
+  intro P n U U' V M θ ξ hTr hV hsub hint
+  have hnull : NullMeasurableSet (M ∩ V) (μHE[n] : Measure (Eucl P)) :=
+    hTr.nullMeasurableSet.inter hV.measurableSet.nullMeasurableSet
+  refine
+    { subset := hsub
+      nullMeasurableSet := hnull
+      countablyRectifiable := hTr.countablyRectifiable.mono inter_subset_left
+      pos := fun x hx => hTr.pos x hx.1
+      integrableOn := hint
+      aestronglyMeasurable :=
+        hTr.aestronglyMeasurable.mono_measure (Measure.restrict_mono inter_subset_left le_rfl)
+      orients := ?_ }
+  -- The orientation of `(M, θ, ξ)` holds `Hⁿ ⌞ (M ∩ V)`-a.e.
+  have h1 : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ V)), ∃ τ : Fin n → Eucl P,
+      Orthonormal ℝ τ ∧
+      HasWeightedApproximateTangentSpaceAt n M θ x (Submodule.span ℝ (range τ)) ∧
+      (ξ x = simpleNVector τ ∨ ξ x = -simpleNVector τ) :=
+    ae_restrict_of_ae_restrict_of_subset inter_subset_left hTr.orients
+  -- `(M ∆ (M ∩ V)) ∩ V = ∅`.
+  have hsd : (μHE[n] : Measure (Eucl P)) (symmDiff M (M ∩ V) ∩ V) = 0 := by
+    have : symmDiff M (M ∩ V) ∩ V = ∅ := by
+      ext x
+      simp only [Set.mem_symmDiff, mem_inter_iff, mem_empty_iff_false, iff_false]
+      tauto
+    rw [this, measure_empty]
+  filter_upwards [h1, ae_restrict_mem₀ hnull] with x hx hxMV
+  obtain ⟨τ, hτ, htan, hξ⟩ := hx
+  exact ⟨τ, hτ, Submission.br_weightedTangent_congr P n M (M ∩ V) θ θ x V hV hxMV.2 hsd
+    (Filter.Eventually.of_forall (fun _ => rfl)) rfl _ htan, hξ⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
