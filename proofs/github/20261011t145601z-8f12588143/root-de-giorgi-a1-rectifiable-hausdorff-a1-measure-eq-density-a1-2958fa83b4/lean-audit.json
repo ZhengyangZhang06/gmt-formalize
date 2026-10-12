@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3864553e1aa489a466df6cca6c3127d60d0b18da1e65c2b21fa9ebbe5dfb5070",
+  "git_delta": {
+    "base_commit": "cf7d91c470e1323b63febe6bcdbfeecf459d2dd2",
+    "candidate_commit": "2f73e12697d7a00d69d006d294a06dce79e3ac2a",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "deGiorgiRH_measure_eq_of_density",
+    "diff_sha256": "eeb193902c039efe73639456883cc64d455ca69c89887c688f1333d91983009d",
+    "source_sha256": "a56efdc2d7d133ddb29762bdcef8065bf1909ce11e28811544a64d5a9fe79c7e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deGiorgiRH_measure_eq_of_density",
+      "statement": "∀ (n N : ℕ) (μ σ : Measure (Rn N)), (∀ K : Set (Rn N), IsCompact K → μ K < ∞) → (∀ K : Set (Rn N), IsCompact K → σ K < ∞) → μ ≪ σ → (∀ᵐ x ∂σ, Tendsto (fun ρ : ℝ ↦ μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1))) ∧ Tendsto (fun ρ : ℝ ↦ σ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1)))) → μ = σ",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
