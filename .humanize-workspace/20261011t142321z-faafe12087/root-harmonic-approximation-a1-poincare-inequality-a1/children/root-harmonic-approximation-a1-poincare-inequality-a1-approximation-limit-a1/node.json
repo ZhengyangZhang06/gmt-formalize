@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.poincare_inequality-a1.approximation_limit-a1",
+  "parent_id": "root.harmonic_approximation-a1.poincare_inequality-a1",
+  "depth": 3,
+  "title": "Double-integral estimate for L²-limits of C^1 approximations on B_r",
+  "statement": "Let n ∈ ℕ, 0 < r ≤ 1, f : ℝ^n → ℝ and g : ℝ^n → ℝ^n be a.e.-strongly measurable for Lebesgue measure restricted to B_r = ball(0, r), and let φ_j : ℝ^n → ℝ (j ∈ ℕ) be C^1 functions such that ∫⁻_{B_r} ‖φ_j − f‖ₑ² → 0 and ∫⁻_{B_r} ‖∇φ_j − g‖ₑ² → 0 as j → ∞. Then ∫⁻_{x ∈ B_r} ∫⁻_{y ∈ B_r} ‖f(x) − f(y)‖ₑ² dy dx ≤ 2^{n+2} · |B_1| · ∫⁻_{B_r} ‖g‖ₑ², where |B_1| is the Lebesgue measure of the open unit ball (lintegrals in [0, ∞]).",
+  "lean_statement": "∀ (n : ℕ) (f : Rn n → ℝ) (g : Rn n → Rn n) (φ : ℕ → Rn n → ℝ) (r : ℝ), 0 < r → r ≤ 1 → AEStronglyMeasurable f (volume.restrict (ball (0 : Rn n) r)) → AEStronglyMeasurable g (volume.restrict (ball (0 : Rn n) r)) → (∀ j, ContDiff ℝ 1 (φ j)) → Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖φ j x - f x‖ₑ ^ 2) atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖gradient (φ j) x - g x‖ₑ ^ 2) atTop (𝓝 0) → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖f x - f y‖ₑ ^ 2 ≤ (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) * ∫⁻ x in ball (0 : Rn n) r, ‖g x‖ₑ ^ 2",
+  "lean_name": "poincare_approx_ball_double_integral_bound",
+  "depends_on": [
+    "root.harmonic_approximation-a1.poincare_inequality-a1.smooth_estimate-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.harmonic_approximation-a1.poincare_inequality-a1.smooth_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-poincare-inequality-a1-approximation-limit-a1-a1"
+}
