@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0cef2a3e83784bfab23cde652904cd8c47460e1387ff7bf2420e48ae98983d74",
+  "git_delta": {
+    "base_commit": "d11eb3def4ee3265ab79726eeb3da9b5b78a9435",
+    "candidate_commit": "8b631fd6fe8f34759cece3f41b673c2437a2ad16",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "lpf_c1r_whitney_extension",
+    "diff_sha256": "832320a12f0e03908ecd77fa1bdc30e7440e809db0b2cf48ed634cb6953f583a",
+    "source_sha256": "95e99a14d2e93838e32978390b5c428ba622810c71eaef6aaf09bae514c2a653",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lpf_c1r_whitney_extension",
+      "statement": "∀ (n : ℕ) (A : Set (Eucl n)) (f : Eucl n → ℝ) (τ : Eucl n → (Eucl n →L[ℝ] ℝ)), IsClosed A → ContinuousOn f A → ContinuousOn τ A → (∀ L : Set (Eucl n), IsCompact L → L ⊆ A → ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ∀ x ∈ L, ∀ y ∈ A, dist x y < ρ → ‖f y - f x - τ x (y - x)‖ ≤ δ * ‖y - x‖) → ∃ h : Eucl n → ℝ, ContDiff ℝ 1 h ∧ ∀ a ∈ A, h a = f a ∧ HasFDerivAt h (τ a) a",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
