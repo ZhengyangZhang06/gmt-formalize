@@ -359,6 +359,57 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Polar coordinates for an integrable `g` on `ℝ^{m+1}`, with `σ = (Lᵐ⁺¹).toSphere`:
+`∫ g = ∫_{S^m} ∫_0^∞ r^m g(rθ) dr dσ(θ)`.  As in Mathlib's `integral_fun_norm_addHaar`,
+`homeomorphUnitSphereProd` carries Lebesgue measure on `ℝ^{m+1} ∖ {0}` to `σ ⊗ volumeIoiPow m`,
+Fubini splits the product, and `volumeIoiPow m` is `r^m dr` on `(0, ∞)`. -/
+theorem Submission.rpn_pe_integral_eq_polar :
+    ∀ (m : ℕ) (g : Eucl (m + 1) → ℝ), Integrable g → ∫ x, g x =
+      ∫ θ : sphere (0 : Eucl (m + 1)) 1, (∫ r in Ioi (0 : ℝ), r ^ m * g (r • (θ : Eucl (m + 1))))
+        ∂(volume : Measure (Eucl (m + 1))).toSphere := by
+  intro m g hg
+  -- `Φ = homeomorphUnitSphereProd` is measure preserving onto `σ ⊗ volumeIoiPow m`.
+  have hdim : Module.finrank ℝ (Eucl (m + 1)) - 1 = m := by simp
+  have hmp : MeasurePreserving (homeomorphUnitSphereProd (Eucl (m + 1)))
+      ((volume : Measure (Eucl (m + 1))).comap (↑))
+      ((volume : Measure (Eucl (m + 1))).toSphere.prod (Measure.volumeIoiPow m)) := by
+    have := (volume : Measure (Eucl (m + 1))).measurePreserving_homeomorphUnitSphereProd
+    rwa [hdim] at this
+  -- `G(θ, r) = g(rθ)` satisfies `G ∘ Φ = g` on `ℝ^{m+1} ∖ {0}`.
+  set G : sphere (0 : Eucl (m + 1)) 1 × Ioi (0 : ℝ) → ℝ :=
+    fun p => g ((p.2 : ℝ) • (p.1 : Eucl (m + 1))) with hG
+  have hGΦ : ∀ x : ({0}ᶜ : Set (Eucl (m + 1))), G (homeomorphUnitSphereProd _ x) = g x := by
+    intro x
+    have hx : ‖(x : Eucl (m + 1))‖ ≠ 0 := norm_ne_zero_iff.2 x.2
+    simp only [hG, homeomorphUnitSphereProd_apply_snd_coe, homeomorphUnitSphereProd_apply_fst_coe]
+    rw [smul_smul, mul_inv_cancel₀ hx, one_smul]
+  -- Remove the null point `0`, then change variables along `Φ`.
+  have h3 : ∫ x, g x = ∫ x : ({0}ᶜ : Set (Eucl (m + 1))), g x
+      ∂((volume : Measure (Eucl (m + 1))).comap (↑)) := by
+    rw [integral_subtype_comap (measurableSet_singleton _).compl g, restrict_compl_singleton]
+  have h4 : ∫ x : ({0}ᶜ : Set (Eucl (m + 1))), g x
+      ∂((volume : Measure (Eucl (m + 1))).comap (↑)) =
+      ∫ p, G p ∂((volume : Measure (Eucl (m + 1))).toSphere.prod (Measure.volumeIoiPow m)) := by
+    rw [← hmp.integral_comp (Homeomorph.measurableEmbedding _) G]
+    simp only [hGΦ]
+  have h5 : Integrable G
+      ((volume : Measure (Eucl (m + 1))).toSphere.prod (Measure.volumeIoiPow m)) := by
+    rw [← hmp.integrable_comp_emb (Homeomorph.measurableEmbedding _)]
+    have : G ∘ homeomorphUnitSphereProd (Eucl (m + 1)) = g ∘ Subtype.val := funext hGΦ
+    rw [this, ← integrableOn_iff_comap_subtypeVal (measurableSet_singleton _).compl]
+    exact hg.integrableOn
+  -- Fubini, then unfold `volumeIoiPow m = r^m dr` on `(0, ∞)` for each `θ`.
+  rw [h3, h4, integral_prod G h5]
+  congr 1
+  funext θ
+  simp only [hG, Measure.volumeIoiPow, ENNReal.ofReal]
+  rw [integral_withDensity_eq_integral_smul,
+    integral_subtype_comap measurableSet_Ioi
+      (fun a => Real.toNNReal (a ^ m) • g (a • (θ : Eucl (m + 1)))),
+    setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_]
+  · rw [NNReal.smul_def, Real.coe_toNNReal _ (pow_nonneg hx.out.le _), smul_eq_mul]
+  · exact (measurable_subtype_coe.pow_const _).real_toNNReal
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
