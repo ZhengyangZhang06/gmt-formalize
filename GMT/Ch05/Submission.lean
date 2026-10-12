@@ -458,6 +458,77 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Basic facts about the Hilbert–Schmidt norm `|M| = (Σᵢ |M eᵢ|²)^{1/2}` of `M : ℝᵐ →L ℝᵏ`
+(Simon, Notation p. ix): `0 ≤ |M|²`, `|M| ^ 2 = |M|²`, `|M + N|² ≤ 2 |M|² + 2 |N|²`,
+`|-M|² = |M|²`, `|M|² = 0 ⇒ M = 0` and `‖M‖ ≤ |M| ≤ √m ‖M‖`; moreover the orthogonal projection
+`P_K` onto any subspace `K ⊆ ℝᵐ` has `|P_K|² ≤ m`.  Proof: termwise estimates on the standard
+basis `eᵢ`, the expansion `v = Σᵢ vᵢ eᵢ` with Cauchy–Schwarz for `‖M‖ ≤ |M|`, and
+`|P_K eᵢ| ≤ |eᵢ| = 1`. -/
+theorem any_radius_gr_la_hsNorm_facts : (∀ (m k : ℕ) (M N : Rn m →L[ℝ] Rn k), 0 ≤ hsNormSq M ∧ hsNorm M ^ 2 = hsNormSq M ∧ hsNormSq (M + N) ≤ 2 * hsNormSq M + 2 * hsNormSq N ∧ hsNormSq (-M) = hsNormSq M ∧ (hsNormSq M = 0 → M = 0) ∧ ‖M‖ ≤ hsNorm M ∧ hsNorm M ≤ Real.sqrt m * ‖M‖) ∧ ∀ (m : ℕ) (K : Submodule ℝ (Rn m)), hsNormSq K.starProjection ≤ m := by
+  refine ⟨fun m k M N => ?_, fun m K => ?_⟩
+  · -- (a) `hsNormSq M` is a finite sum of squares, hence nonnegative.
+    have ha : 0 ≤ hsNormSq M := Finset.sum_nonneg fun i _ => sq_nonneg _
+    -- Expansion `v = Σᵢ vᵢ eᵢ` in the standard basis `eᵢ = EuclideanSpace.single i 1`.
+    have hexp : ∀ v : Rn m, ∑ i, v i • EuclideanSpace.single i (1 : ℝ) = v := fun v => by
+      simpa only [EuclideanSpace.basisFun_apply, EuclideanSpace.basisFun_repr] using
+        (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr v
+    -- (b) `hsNorm M ^ 2 = √(hsNormSq M) ^ 2 = hsNormSq M`, by (a).
+    refine ⟨ha, Real.sq_sqrt ha, ?_, ?_, ?_, ?_, ?_⟩
+    · -- (c) termwise `‖(M + N) eᵢ‖² ≤ (‖M eᵢ‖ + ‖N eᵢ‖)² ≤ 2 ‖M eᵢ‖² + 2 ‖N eᵢ‖²`.
+      unfold hsNormSq
+      rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+      refine Finset.sum_le_sum fun i _ => ?_
+      have h1 : ‖(M + N) (EuclideanSpace.single i 1)‖ ≤
+          ‖M (EuclideanSpace.single i 1)‖ + ‖N (EuclideanSpace.single i 1)‖ := by
+        rw [add_apply]
+        exact norm_add_le _ _
+      have h2 := pow_le_pow_left₀ (norm_nonneg _) h1 2
+      nlinarith [sq_nonneg (‖M (EuclideanSpace.single i 1)‖ - ‖N (EuclideanSpace.single i 1)‖)]
+    · -- (d) `‖(-M) eᵢ‖ = ‖-(M eᵢ)‖ = ‖M eᵢ‖` termwise.
+      unfold hsNormSq
+      simp only [neg_apply, norm_neg]
+    · -- (e) every `M eᵢ` vanishes, so `M v = Σᵢ vᵢ M eᵢ = 0` for every `v`.
+      intro h0
+      have hi : ∀ i, M (EuclideanSpace.single i 1) = 0 := fun i => by
+        have := (Finset.sum_eq_zero_iff_of_nonneg fun j _ =>
+          sq_nonneg ‖M (EuclideanSpace.single j (1 : ℝ))‖).1 h0 i (Finset.mem_univ i)
+        simpa using this
+      refine ContinuousLinearMap.ext fun v => ?_
+      rw [zero_apply, ← hexp v, map_sum]
+      simp [hi]
+    · -- (f) `‖M v‖ ≤ Σᵢ |vᵢ| ‖M eᵢ‖ ≤ hsNorm M ‖v‖` (triangle and Cauchy–Schwarz inequalities).
+      refine M.opNorm_le_bound (Real.sqrt_nonneg _) fun v => ?_
+      calc ‖M v‖ = ‖∑ i, v i • M (EuclideanSpace.single i 1)‖ := by
+            conv_lhs => rw [← hexp v]
+            simp only [map_sum, map_smul]
+        _ ≤ ∑ i, ‖v i‖ * ‖M (EuclideanSpace.single i 1)‖ :=
+            (norm_sum_le _ _).trans_eq (Finset.sum_congr rfl fun i _ => norm_smul _ _)
+        _ ≤ √(∑ i, ‖v i‖ ^ 2) * √(∑ i, ‖M (EuclideanSpace.single i 1)‖ ^ 2) :=
+            Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+        _ = hsNorm M * ‖v‖ := by rw [EuclideanSpace.norm_eq v, mul_comm (hsNorm M)]; rfl
+    · -- (g) `‖M eᵢ‖ ≤ ‖M‖ ‖eᵢ‖ = ‖M‖`, so `hsNormSq M ≤ m ‖M‖²`; take square roots.
+      have h1 : hsNormSq M ≤ m * ‖M‖ ^ 2 := by
+        calc hsNormSq M = ∑ i : Fin m, ‖M (EuclideanSpace.single i 1)‖ ^ 2 := rfl
+          _ ≤ ∑ _i : Fin m, ‖M‖ ^ 2 := by
+              refine Finset.sum_le_sum fun i _ => pow_le_pow_left₀ (norm_nonneg _) ?_ 2
+              simpa using M.le_opNorm (EuclideanSpace.single i (1 : ℝ))
+          _ = m * ‖M‖ ^ 2 := by simp
+      calc hsNorm M = √(hsNormSq M) := rfl
+        _ ≤ √(m * ‖M‖ ^ 2) := Real.sqrt_le_sqrt h1
+        _ = Real.sqrt m * ‖M‖ := by
+            rw [Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
+  · -- (L9) `‖P_K eᵢ‖ ≤ ‖eᵢ‖ = 1` (Pythagoras) for each of the `m` basis vectors `eᵢ`.
+    calc hsNormSq K.starProjection
+        = ∑ i : Fin m, ‖K.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2 := rfl
+      _ ≤ ∑ _i : Fin m, (1 : ℝ) ^ 2 := by
+          refine Finset.sum_le_sum fun i _ => pow_le_pow_left₀ (norm_nonneg _) ?_ 2
+          simpa using K.norm_starProjection_apply_le (EuclideanSpace.single i (1 : ℝ))
+      _ = m := by simp
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
