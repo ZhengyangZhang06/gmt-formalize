@@ -543,6 +543,206 @@ theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗ�
     obtain ⟨h, hh, rfl⟩ := Submodule.mem_map.mp hw
     rw [← map_sub, hsub, sub_self, sub_zero]
     exact (q.inner_map_map _ _).trans (horth h hh)
+/-- The graph point `(x, y) ∈ ℝ^{n+ℓ}` is the inverse image of `(x, y)` under Mathlib's canonical
+equivalence `EuclideanSpace.finAddEquivProd : ℝ^{n+ℓ} ≃L[ℝ] ℝⁿ × ℝ^ℓ` (reindexing by
+`finSumFinEquiv.symm`, then splitting into the `Sum.inl`/`Sum.inr` parts).  Compare coordinates:
+every index of `Fin (n + ℓ)` is `Fin.castAdd ℓ j` or `Fin.natAdd n k` (`Fin.addCases`); there both
+sides equal `x j`, resp. `y k` (`Fin.append_left`/`Fin.append_right` on the left,
+`finSumFinEquiv_symm_apply_castAdd`/`finSumFinEquiv_symm_apply_natAdd` on the right). -/
+theorem rsod_graphPoint_eq_finAddEquivProd_symm : ∀ {n ℓ : ℕ} (x : Rn n) (y : Rn ℓ),
+    graphPoint x y = (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm (x, y) := by
+  intro n ℓ x y
+  ext i
+  refine Fin.addCases (fun j => ?_) (fun k => ?_) i
+  · simp [graphPoint]
+  · simp [graphPoint]
+/-- **Hilbert–Schmidt versus operator norm** (Simon, Notation p. ix), as used in the hole estimate
+of the proof of Ch. 5, Corollary 2.7 (`‖A‖ ≤ |A|`).  For `A : ℝᵐ →L ℝᵏ` the squared Hilbert–Schmidt
+norm `|A|² = Σᵢ |A eᵢ|²` is continuous in `A` (a finite sum of squared norms of the evaluations
+`A ↦ A eᵢ`) and satisfies `0 ≤ |A|² ≤ m ‖A‖²` (`|A eᵢ| ≤ ‖A‖ |eᵢ| = ‖A‖`).  Moreover
+`|A v|² ≤ |A|² |v|²`: expanding `v = Σᵢ vᵢ eᵢ` gives `|A v| ≤ Σᵢ |vᵢ| |A eᵢ|`, and Cauchy–Schwarz
+bounds the square of the right side by `(Σᵢ |vᵢ|²)(Σᵢ |A eᵢ|²) = |v|² |A|²`. -/
+theorem lgc_hsNormSq_bounds : ∀ (m k : ℕ), Continuous (fun A : Rn m →L[ℝ] Rn k => hsNormSq A) ∧ ∀ A : Rn m →L[ℝ] Rn k, 0 ≤ hsNormSq A ∧ hsNormSq A ≤ m * ‖A‖ ^ 2 ∧ ∀ v : Rn m, ‖A v‖ ^ 2 ≤ hsNormSq A * ‖v‖ ^ 2 := by
+  intro m k
+  refine ⟨?_, fun A => ⟨?_, ?_, fun v => ?_⟩⟩
+  · -- Continuity: a finite sum of `‖A eᵢ‖ ^ 2`, each continuous in `A`.
+    unfold hsNormSq
+    fun_prop
+  · unfold hsNormSq
+    positivity
+  · -- `‖A eᵢ‖ ≤ ‖A‖ ‖eᵢ‖ = ‖A‖` for each of the `m` summands.
+    unfold hsNormSq
+    calc ∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2 ≤ ∑ _i : Fin m, ‖A‖ ^ 2 := by
+          gcongr with i
+          calc ‖A (EuclideanSpace.single i 1)‖ ≤ ‖A‖ * ‖EuclideanSpace.single i (1:ℝ)‖ :=
+                A.le_opNorm _
+            _ = ‖A‖ := by simp
+      _ = m * ‖A‖ ^ 2 := by simp
+  · unfold hsNormSq
+    set e : Fin m → Rn m := fun i => EuclideanSpace.single i 1 with he
+    -- Expand `v` in the standard basis and apply the triangle inequality.
+    have hv : v = ∑ i, v i • e i := by
+      ext j
+      simp [he, Pi.single_apply]
+    have hAv : A v = ∑ i, v i • A (e i) := by
+      conv_lhs => rw [hv]
+      simp [map_sum, map_smul]
+    have h1 : ‖A v‖ ≤ ∑ i, |v i| * ‖A (e i)‖ := by
+      rw [hAv]
+      calc _ ≤ ∑ i, ‖v i • A (e i)‖ := norm_sum_le _ _
+        _ = _ := by simp [norm_smul]
+    -- Cauchy–Schwarz for the finite sums, and `‖v‖² = Σᵢ |vᵢ|²`.
+    have h2 : (∑ i, |v i| * ‖A (e i)‖) ^ 2 ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) :=
+      Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+    have h3 : ‖v‖ ^ 2 = ∑ i, |v i| ^ 2 := by
+      rw [EuclideanSpace.norm_sq_eq]
+      simp [sq_abs]
+    have h0 : 0 ≤ ‖A v‖ := norm_nonneg _
+    calc ‖A v‖ ^ 2 ≤ (∑ i, |v i| * ‖A (e i)‖) ^ 2 := by gcongr
+      _ ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) := h2
+      _ = (∑ i, ‖A (e i)‖ ^ 2) * ‖v‖ ^ 2 := by rw [h3, mul_comm]
+
+/-- The rotated graph plane `q{(v, Av) : v ∈ ℝⁿ}` of a linear map `A : ℝⁿ → ℝ^ℓ` is
+`n`-dimensional.  With `E = EuclideanSpace.finAddEquivProd`, `graphPoint v (A v) = E.symm (v, A v)`
+(`rsod_graphPoint_eq_finAddEquivProd_symm`), so the generators are the values of the linear map
+`Φ = q ∘ E.symm ∘ (id, A)` and their span is `range Φ` (`Submodule.span_eq`).  `Φ` is injective,
+since `q` and `E.symm` are and `(v, A v)` determines `v`; hence
+`finrank (range Φ) = finrank ℝⁿ = n` (`LinearMap.finrank_range_of_inj`). -/
+theorem tdo_gpd_graph_plane_finrank : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ),
+    Module.finrank ℝ (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v)))) = n := by
+  intro n ℓ q A
+  let E : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ := EuclideanSpace.finAddEquivProd
+  let Φ : Rn n →ₗ[ℝ] Amb n ℓ := q.toLinearEquiv.toLinearMap ∘ₗ
+    E.symm.toLinearEquiv.toLinearMap ∘ₗ LinearMap.id.prod A.toLinearMap
+  have hΦ : ∀ v, Φ v = q (graphPoint v (A v)) := fun v => by
+    rw [rsod_graphPoint_eq_finAddEquivProd_symm]
+    rfl
+  have hinj : Function.Injective Φ := fun v w hvw => by
+    rw [hΦ, hΦ, rsod_graphPoint_eq_finAddEquivProd_symm,
+      rsod_graphPoint_eq_finAddEquivProd_symm] at hvw
+    exact (Prod.mk.inj (E.symm.injective (q.injective hvw))).1
+  have hrange : (Set.range fun v : Rn n => q (graphPoint v (A v))) =
+      (LinearMap.range Φ : Set (Amb n ℓ)) := by
+    rw [LinearMap.coe_range]
+    exact congrArg Set.range (funext fun v => (hΦ v).symm)
+  rw [hrange, Submodule.span_eq, LinearMap.finrank_range_of_inj hinj, finrank_euclideanSpace_fin]
+
+/-- Simon Ch. 5, Lemma 2.6 and its proof (pp. 110–111): the distance from `q(a, b)` to the plane
+`T₀ = q(ℝⁿ × {0})` is `|b|`. By `lip_approx_graph_coordinates`, the points of `T₀` are exactly the
+`q(c, 0)` (each `q(c, 0) = p_{T₀}(q(c, 0))` lies in `T₀`, and `p ∈ T₀` with `q⁻¹(p) = (c, d)` gives
+`p = p_{T₀}(p) = q(c, 0)`), and `|q(a, b) − q(c, 0)| = |(a − c, b)| ≥ |b|`, with equality at
+`c = a`. -/
+theorem tdo_gpd_infDist_rotatedPlane_graphPoint : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (a : Rn n) (b : Rn ℓ), infDist (q (graphPoint a b)) (rotatedPlane q : Set (Amb n ℓ)) = ‖b‖ := by
+  intro n ℓ q a b
+  obtain ⟨hsub, hnorm, hsurj, hproj⟩ := lip_approx_graph_coordinates n ℓ q
+  -- `|b| ≤ |(c, b)|` and `|(0, b)| = |b|`
+  have hge : ∀ (c : Rn n) (d : Rn ℓ), ‖d‖ ≤ ‖graphPoint c d‖ := by
+    intro c d
+    have h := hnorm c d
+    have h0 : 0 ≤ ‖graphPoint c d‖ := norm_nonneg _
+    nlinarith [sq_nonneg ‖c‖, norm_nonneg d]
+  have hzero : ∀ d : Rn ℓ, ‖graphPoint (0 : Rn n) d‖ = ‖d‖ := by
+    intro d
+    have h := hnorm 0 d
+    rw [norm_zero, zero_pow two_ne_zero, zero_add] at h
+    exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp h
+  -- every `q(c, 0)` lies in `T₀`
+  have hmem : ∀ c : Rn n, q (graphPoint c 0) ∈ rotatedPlane q := by
+    intro c
+    rw [← hproj c 0]
+    exact Submodule.starProjection_apply_mem _ _
+  -- every point of `T₀` is some `q(c, 0)`
+  have hform : ∀ p ∈ rotatedPlane q, ∃ c : Rn n, p = q (graphPoint c 0) := by
+    intro p hp
+    obtain ⟨c, d, hcd⟩ := hsurj (q.symm p)
+    have hp' : p = q (graphPoint c d) := by
+      rw [← hcd]
+      simp
+    refine ⟨c, ?_⟩
+    have h := hproj c d
+    rw [← hp', Submodule.starProjection_eq_self_iff.mpr hp] at h
+    exact h
+  apply le_antisymm
+  -- upper bound: compare with `q(a, 0) ∈ T₀`
+  · calc infDist (q (graphPoint a b)) (rotatedPlane q : Set (Amb n ℓ))
+        ≤ dist (q (graphPoint a b)) (q (graphPoint a 0)) := infDist_le_dist_of_mem (hmem a)
+      _ = ‖b‖ := by
+        rw [dist_eq_norm, ← map_sub, LinearIsometryEquiv.norm_map, hsub, sub_self, sub_zero,
+          hzero]
+  -- lower bound: `|q(a, b) − q(c, 0)| = |(a − c, b)| ≥ |b|` for every `q(c, 0) ∈ T₀`
+  · rw [le_infDist ⟨0, (rotatedPlane q).zero_mem⟩]
+    intro p hp
+    obtain ⟨c, rfl⟩ := hform p hp
+    rw [dist_eq_norm, ← map_sub, LinearIsometryEquiv.norm_map, hsub, sub_zero]
+    exact hge _ _
+/-- Simon Ch. 5, proof of Theorem 4.5 (p. 120): the `n`-dimensional subspace `S`, the graph of the
+linear part of the affine `λ`, in rotated coordinates.  For a linear isometry `q` of `ℝ^{n+ℓ}` and a
+linear `A : ℝⁿ → ℝ^ℓ` let `S = span{q(v, A v) : v ∈ ℝⁿ}` and `T₀ = q(ℝⁿ × {0})`.  Then
+(i) `dim S = n`; (ii) `dist(x, S) ≤ dist(x, T₀) + |A| |x|`;
+(iii) `dist(q(x', y) − q(0, c), S) ≤ |y − (c + A x')|`
+(the book's `dist(x, ξ + S) ≤ |f(x') − λ(x')|` for `x = (x', f(x'))`, `ξ = (0, λ(0))`);
+(iv) `|x'| ≤ |q(x', y) − q(0, c)|`; (v) `|q(0, c)| = |c|`.
+(i) is `tdo_gpd_graph_plane_finrank`.  The points `Φ(v) = q(v, A v)` lie in `S`, `q` is a linear
+isometry, and `(a, b) − (a', b') = (a − a', b − b')`, `|(a, b)|² = |a|² + |b|²`
+(`lip_approx_graph_coordinates`).  Hence `q(x', y) − q(0, c) = q(x', y − c)`, which gives (iv) and
+(v), and its difference with `Φ(x')` is `q(0, y − (c + A x'))`, which gives (iii).  For (ii) write
+`x = q(a, b)`: then `dist(x, T₀) = |b|` (`tdo_gpd_infDist_rotatedPlane_graphPoint`) and
+`dist(x, S) ≤ |x − Φ(a)| = |b − A a| ≤ |b| + |A| |a| ≤ |b| + |A| |x|`, by `|A a| ≤ |A| |a|`
+(Cauchy–Schwarz, `lgc_hsNormSq_bounds`) and `|a| ≤ |(a, b)| = |x|`. -/
+theorem tdo_graph_plane_dist : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ), Module.finrank ℝ (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v)))) = n ∧ (∀ x : Amb n ℓ, infDist x (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v))) : Set (Amb n ℓ)) ≤ infDist x (rotatedPlane q : Set (Amb n ℓ)) + hsNorm A * ‖x‖) ∧ (∀ (x' : Rn n) (y c : Rn ℓ), infDist (q (graphPoint x' y) - q (graphPoint (0 : Rn n) c)) (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v))) : Set (Amb n ℓ)) ≤ ‖y - (c + A x')‖) ∧ (∀ (x' : Rn n) (y c : Rn ℓ), ‖x'‖ ≤ ‖q (graphPoint x' y) - q (graphPoint (0 : Rn n) c)‖) ∧ ∀ c : Rn ℓ, ‖q (graphPoint (0 : Rn n) c)‖ = ‖c‖ := by
+  intro n ℓ q A
+  obtain ⟨hsub, hnorm, hsurj, -⟩ := lip_approx_graph_coordinates n ℓ q
+  set S := Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v)))
+  -- `‖a‖ ≤ ‖(a, b)‖` and `‖(0, b)‖ = ‖b‖`
+  have hle : ∀ (a : Rn n) (b : Rn ℓ), ‖a‖ ≤ ‖graphPoint a b‖ := by
+    intro a b
+    refine (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp ?_
+    rw [hnorm]
+    exact le_add_of_nonneg_right (sq_nonneg _)
+  have hzero : ∀ b : Rn ℓ, ‖graphPoint (0 : Rn n) b‖ = ‖b‖ := by
+    intro b
+    refine (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp ?_
+    rw [hnorm, norm_zero, zero_pow two_ne_zero, zero_add]
+  -- `‖A a‖ ≤ |A| ‖a‖`, the square root of `‖A a‖² ≤ |A|² ‖a‖²`
+  have hA : ∀ a : Rn n, ‖A a‖ ≤ hsNorm A * ‖a‖ := by
+    intro a
+    obtain ⟨h0, -, hAa⟩ := (lgc_hsNormSq_bounds n ℓ).2 A
+    calc ‖A a‖ = Real.sqrt (‖A a‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
+      _ ≤ Real.sqrt (hsNormSq A * ‖a‖ ^ 2) := Real.sqrt_le_sqrt (hAa a)
+      _ = hsNorm A * ‖a‖ := by rw [Real.sqrt_mul h0, Real.sqrt_sq (norm_nonneg _), hsNorm]
+  -- the points `Φ(v) = q(v, A v)` of `S`, and `q(x', y) - q(0, c) = q(x', y - c)`
+  have hmem : ∀ v : Rn n, q (graphPoint v (A v)) ∈ S := fun v => Submodule.subset_span ⟨v, rfl⟩
+  have hdiff : ∀ (x' : Rn n) (y c : Rn ℓ),
+      q (graphPoint x' y) - q (graphPoint (0 : Rn n) c) = q (graphPoint x' (y - c)) := by
+    intro x' y c
+    rw [← map_sub, hsub, sub_zero]
+  refine ⟨Submission.tdo_gpd_graph_plane_finrank n ℓ q A, fun x => ?_, fun x' y c => ?_,
+    fun x' y c => ?_, fun c => ?_⟩
+  -- (ii): write `x = q(a, b)`; then `dist(x, T₀) = ‖b‖` and `dist(x, S) ≤ ‖x - Φ(a)‖`
+  · obtain ⟨a, b, hab⟩ := hsurj (q.symm x)
+    obtain rfl : x = q (graphPoint a b) := by rw [← hab, LinearIsometryEquiv.apply_symm_apply]
+    rw [Submission.tdo_gpd_infDist_rotatedPlane_graphPoint n ℓ q a b,
+      LinearIsometryEquiv.norm_map]
+    calc infDist (q (graphPoint a b)) (S : Set (Amb n ℓ))
+        ≤ dist (q (graphPoint a b)) (q (graphPoint a (A a))) := infDist_le_dist_of_mem (hmem a)
+      _ = ‖b - A a‖ := by
+        rw [dist_eq_norm, ← map_sub, LinearIsometryEquiv.norm_map, hsub, sub_self, hzero]
+      _ ≤ ‖b‖ + ‖A a‖ := norm_sub_le _ _
+      _ ≤ ‖b‖ + hsNorm A * ‖graphPoint a b‖ := by
+        gcongr
+        exact (hA a).trans (mul_le_mul_of_nonneg_left (hle a b) (Real.sqrt_nonneg _))
+  -- (iii): compare with `Φ(x') ∈ S`
+  · calc infDist (q (graphPoint x' y) - q (graphPoint (0 : Rn n) c)) (S : Set (Amb n ℓ))
+        ≤ dist (q (graphPoint x' y) - q (graphPoint (0 : Rn n) c)) (q (graphPoint x' (A x'))) :=
+          infDist_le_dist_of_mem (hmem x')
+      _ = ‖y - (c + A x')‖ := by
+        rw [hdiff, dist_eq_norm, ← map_sub, LinearIsometryEquiv.norm_map, hsub, sub_self, hzero,
+          sub_sub]
+  -- (iv)
+  · rw [hdiff, LinearIsometryEquiv.norm_map]
+    exact hle x' (y - c)
+  -- (v)
+  · rw [LinearIsometryEquiv.norm_map, hzero]
 
 /-- Simon Ch. 5, proof of Theorem 5.2, (10)–(11): for `f` `1`-Lipschitz on `D ⊆ ℝⁿ` and a linear
 isometry `q` of `ℝ^{n+ℓ}`, the graph map `F(x) = q(x, f(x))` is `√2`-Lipschitz on `D`, and
