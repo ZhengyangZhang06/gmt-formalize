@@ -458,6 +458,256 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Simon Ch. 4, 3.1–3.3 with 3.14 and 4.1** (first variation of the radial cutoff field).  Let
+`V` have generalized mean curvature `H` in `U`, with `x ↦ p_{T_x M}` `μ_V`-a.e. strongly measurable
+and `p_{T_x M}` the projection onto an `n`-plane for `μ_V`-a.e. `x`.  Let `σ > 0`, `φ ∈ C¹(ℝ)` with
+`φ = 1` on `[0, 1]` and `φ = 0` on `[b, ∞)`, and `B_{bσ}(ξ) ⊆ U`.  Testing 3.14 with
+`X(x) = φ(r/σ)(x − ξ)`, `r = |x − ξ|`, gives
+`∫ (n φ(r/σ) + (r/σ) φ'(r/σ)) dμ_V − ∫ (r/σ) φ'(r/σ) |(x − ξ) − p_{T_x M}(x − ξ)|²/r² dμ_V
+  = −∫ φ(r/σ) (x − ξ) · H dμ_V` (the quotient is `0` at `x = ξ`). -/
+theorem radial_cutoff_first_variation_eq : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → AEStronglyMeasurable V.tangentProj V.weight → (∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → ∀ (ξ : Amb n ℓ) (σ b : ℝ) (φ : ℝ → ℝ), 0 < σ → ContDiff ℝ 1 φ → (∀ t ∈ Icc (0 : ℝ) 1, φ t = 1) → (∀ t, b ≤ t → φ t = 0) → closedBall ξ (b * σ) ⊆ U → ∫ x, ((n : ℝ) * φ (‖x - ξ‖ / σ) + ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ)) ∂V.weight - ∫ x, ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ) * (‖(x - ξ) - V.tangentProj x (x - ξ)‖ ^ 2 / ‖x - ξ‖ ^ 2) ∂V.weight = -∫ x, φ (‖x - ξ‖ / σ) * inner ℝ (x - ξ) (H x) ∂V.weight := by
+  intro n ℓ U V H hH hG2 hG1 ξ σ b φ hσ hφ hφ1 hφ0 hball
+  -- Step 1: `b > 1`
+  have hb : 1 < b := by
+    by_contra hb
+    have hb' : b ≤ 1 := le_of_not_gt hb
+    have h1 := hφ1 (max b 0) ⟨le_max_right _ _, max_le hb' zero_le_one⟩
+    have h0 := hφ0 (max b 0) (le_max_left _ _)
+    rw [h1] at h0
+    exact one_ne_zero h0
+  have hbσ : 0 < b * σ := mul_pos (by linarith) hσ
+  -- Step 2: finiteness of the weight on `K = B_{bσ}(ξ)`
+  have hKfin : V.weight (closedBall ξ (b * σ)) < ∞ := by
+    have hint := V.integrableOn_mult _ (isCompact_closedBall ξ (b * σ)) hball
+    rw [RectifiableVarifold.weight, withDensity_apply _ isClosed_closedBall.measurableSet,
+      Measure.restrict_restrict isClosed_closedBall.measurableSet, Set.inter_comm]
+    exact hint.lintegral_lt_top
+  -- the squared-radius profile `η(t) = φ(√t / σ)`
+  set η : ℝ → ℝ := fun t => φ (Real.sqrt t / σ) with hη_def
+  have hη_one : ∀ t, t < σ ^ 2 → η t = 1 := by
+    intro t ht
+    apply hφ1
+    constructor
+    · exact div_nonneg (Real.sqrt_nonneg _) hσ.le
+    · rw [div_le_one₀ hσ]
+      calc Real.sqrt t ≤ Real.sqrt (σ ^ 2) := Real.sqrt_le_sqrt ht.le
+        _ = σ := Real.sqrt_sq hσ.le
+  have hη_zero : ∀ t, (b * σ) ^ 2 ≤ t → η t = 0 := by
+    intro t ht
+    apply hφ0
+    rw [le_div_iff₀ hσ]
+    calc b * σ = Real.sqrt ((b * σ) ^ 2) := (Real.sqrt_sq hbσ.le).symm
+      _ ≤ Real.sqrt t := Real.sqrt_le_sqrt ht
+  have hη_C1 : ContDiff ℝ 1 η := by
+    rw [contDiff_iff_contDiffAt]
+    intro t
+    rcases lt_or_ge t (σ ^ 2) with ht | ht
+    · have hev : η =ᶠ[𝓝 t] fun _ => (1 : ℝ) := by
+        filter_upwards [Iio_mem_nhds ht] with s hs
+        exact hη_one s hs
+      exact contDiffAt_const.congr_of_eventuallyEq hev
+    · have ht0 : t ≠ 0 := (lt_of_lt_of_le (pow_pos hσ 2) ht).ne'
+      exact hφ.contDiffAt.comp t ((Real.contDiffAt_sqrt ht0).div_const σ)
+  have hη_diff : Differentiable ℝ η := hη_C1.differentiable (by simp)
+  have hη_sq : ∀ x : Amb n ℓ, η (‖x - ξ‖ ^ 2) = φ (‖x - ξ‖ / σ) := by
+    intro x
+    simp only [hη_def, Real.sqrt_sq (norm_nonneg _)]
+  have hη_deriv : ∀ x : Amb n ℓ,
+      2 * deriv η (‖x - ξ‖ ^ 2) * ‖x - ξ‖ ^ 2 = ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ) := by
+    intro x
+    rcases (norm_nonneg (x - ξ)).eq_or_lt with hr | hr
+    · rw [← hr]; simp
+    · have hr2 : ‖x - ξ‖ ^ 2 ≠ 0 := pow_ne_zero 2 hr.ne'
+      have hd : HasDerivAt η (deriv φ (Real.sqrt (‖x - ξ‖ ^ 2) / σ) *
+          (1 / (2 * Real.sqrt (‖x - ξ‖ ^ 2)) / σ)) (‖x - ξ‖ ^ 2) :=
+        (hφ.differentiable (by simp) _).hasDerivAt.comp _ ((Real.hasDerivAt_sqrt hr2).div_const σ)
+      rw [hd.deriv, Real.sqrt_sq (norm_nonneg _)]
+      field_simp
+  -- Step 3: the test field `X(x) = φ(|x - ξ|/σ) (x - ξ)`
+  set X : Amb n ℓ → Amb n ℓ := fun x => η (‖x - ξ‖ ^ 2) • (x - ξ) with hX_def
+  have hX_C1 : ContDiff ℝ 1 X := by
+    have hsub : ContDiff ℝ 1 (fun x : Amb n ℓ ↦ x - ξ) := contDiff_id.sub contDiff_const
+    exact (hη_C1.comp (hsub.norm_sq ℝ)).smul hsub
+  have hX_ball : tsupport X ⊆ closedBall ξ (b * σ) := by
+    apply closure_minimal _ isClosed_closedBall
+    intro x hx
+    by_contra hxb
+    have hnorm : b * σ < ‖x - ξ‖ := by
+      simpa only [mem_closedBall, dist_eq_norm, not_le] using hxb
+    have hzero : η (‖x - ξ‖ ^ 2) = 0 :=
+      hη_zero _ (by nlinarith [norm_nonneg (x - ξ)])
+    exact hx (by simp [hX_def, hzero])
+  have hX_cpt : HasCompactSupport X :=
+    (isCompact_closedBall ξ (b * σ)).of_isClosed_subset (isClosed_tsupport _) hX_ball
+  have hX_supp : tsupport X ⊆ U := hX_ball.trans hball
+  have hFV := hH.2 X hX_C1 hX_cpt hX_supp
+  have hrhs : ∀ x, inner ℝ (X x) (H x) = φ (‖x - ξ‖ / σ) * inner ℝ (x - ξ) (H x) := by
+    intro x
+    rw [← hη_sq x]
+    exact real_inner_smul_left (x - ξ) (H x) (η (‖x - ξ‖ ^ 2))
+  -- Step 4: derivative of `X`
+  have hfd : ∀ x, fderiv ℝ X x = η (‖x - ξ‖ ^ 2) • ContinuousLinearMap.id ℝ (Amb n ℓ) +
+      (2 * deriv η (‖x - ξ‖ ^ 2)) • (innerSL ℝ (x - ξ)).smulRight (x - ξ) := by
+    intro x
+    have hsub : HasFDerivAt (fun y : Amb n ℓ ↦ y - ξ) (ContinuousLinearMap.id ℝ (Amb n ℓ)) x :=
+      hasFDerivAt_sub_const ξ
+    have hsq := hsub.norm_sq
+    have hηComp := (hη_diff (‖x - ξ‖ ^ 2)).hasDerivAt.comp_hasFDerivAt x hsq
+    have hX' : HasFDerivAt X (η (‖x - ξ‖ ^ 2) • ContinuousLinearMap.id ℝ (Amb n ℓ) +
+        (2 * deriv η (‖x - ξ‖ ^ 2)) • (innerSL ℝ (x - ξ)).smulRight (x - ξ)) x := by
+      refine (hηComp.smul hsub).congr_fderiv ?_
+      ext1 w
+      simp [mul_smul]
+      module
+    exact hX'.fderiv
+  -- trace of `(a • id + b • f.smulRight v) ∘ P` for an orthogonal projection `P`
+  have htrace : ∀ (P : Submodule ℝ (Amb n ℓ)) (a c : ℝ) (f : Amb n ℓ →L[ℝ] ℝ) (v : Amb n ℓ),
+      LinearMap.trace ℝ (Amb n ℓ)
+        (((a • ContinuousLinearMap.id ℝ (Amb n ℓ)) + c • f.smulRight v).toLinearMap ∘ₗ
+          P.starProjection.toLinearMap) =
+        a * (Module.finrank ℝ P : ℝ) + c * f (P.starProjection v) := by
+    intro P a c f v
+    have htr : LinearMap.trace ℝ (Amb n ℓ) P.starProjection.toLinearMap =
+        (Module.finrank ℝ P : ℝ) := by
+      rw [Submodule.starProjection, ContinuousLinearMap.toLinearMap_comp,
+        LinearMap.trace_comp_comm']
+      have hcomp : P.orthogonalProjectionOnto.toLinearMap.comp P.subtypeL.toLinearMap =
+          LinearMap.id := by
+        ext x
+        simp
+      rw [hcomp, LinearMap.trace_id]
+    change LinearMap.trace ℝ (Amb n ℓ)
+        (((a • LinearMap.id) + c • f.toLinearMap.smulRight v).comp
+          P.starProjection.toLinearMap) = _
+    have hcomp :
+        (((a • LinearMap.id) + c • f.toLinearMap.smulRight v).comp
+            P.starProjection.toLinearMap) =
+          a • P.starProjection.toLinearMap +
+            c • (f.toLinearMap.comp P.starProjection.toLinearMap).smulRight v := by
+      ext w
+      simp
+    rw [hcomp, map_add, map_smul, map_smul, LinearMap.trace_smulRight, htr]
+    simp
+  have hinner : ∀ (P : Submodule ℝ (Amb n ℓ)) (v : Amb n ℓ),
+      inner ℝ v (P.starProjection v) = ‖P.starProjection v‖ ^ 2 := by
+    intro P v
+    rw [← P.inner_starProjection_left_eq_right v v]
+    simpa using P.re_inner_starProjection_eq_normSq v
+  -- Pythagoras
+  have hpyth : ∀ (Q : Submodule ℝ (Amb n ℓ)) (w : Amb n ℓ),
+      ‖w‖ ^ 2 = ‖Q.starProjection w‖ ^ 2 + ‖w - Q.starProjection w‖ ^ 2 := by
+    intro Q w
+    rw [← Submodule.starProjection_orthogonal_val]
+    exact Submodule.norm_sq_eq_add_norm_sq_starProjection w Q
+  -- Steps 5-6: pointwise divergence
+  have hdiv : ∀ᵐ x ∂V.weight, V.divM X x =
+      ((n : ℝ) * φ (‖x - ξ‖ / σ) + ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ)) -
+        ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ) *
+          (‖(x - ξ) - V.tangentProj x (x - ξ)‖ ^ 2 / ‖x - ξ‖ ^ 2) := by
+    filter_upwards [hG1] with x hx
+    obtain ⟨Q, hQn, hQ⟩ := hx
+    rw [RectifiableVarifold.divM, hfd x, hQ, htrace,
+      hQn, innerSL_apply_apply, hinner,
+      hη_sq x, ← hη_deriv x]
+    have hp := hpyth Q (x - ξ)
+    have hkey : ‖x - ξ‖ ^ 2 * (‖(x - ξ) - Q.starProjection (x - ξ)‖ ^ 2 / ‖x - ξ‖ ^ 2) =
+        ‖(x - ξ) - Q.starProjection (x - ξ)‖ ^ 2 := by
+      rcases eq_or_ne (x - ξ) 0 with h0 | h0
+      · simp [h0]
+      · exact mul_div_cancel₀ _ (pow_ne_zero 2 (norm_ne_zero_iff.mpr h0))
+    linear_combination (-2 * deriv η (‖x - ξ‖ ^ 2)) * hp + (2 * deriv η (‖x - ξ‖ ^ 2)) * hkey
+  -- Step 7: integrability
+  have hout : ∀ x, x ∉ closedBall ξ (b * σ) → b < ‖x - ξ‖ / σ := by
+    intro x hx
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    rw [lt_div_iff₀ hσ]
+    exact hx
+  have hφ_out : ∀ x, x ∉ closedBall ξ (b * σ) → φ (‖x - ξ‖ / σ) = 0 := fun x hx =>
+    hφ0 _ (hout x hx).le
+  have hφ'_out : ∀ x, x ∉ closedBall ξ (b * σ) → deriv φ (‖x - ξ‖ / σ) = 0 := by
+    intro x hx
+    have hzero : φ =ᶠ[𝓝 (‖x - ξ‖ / σ)] fun _ ↦ 0 := by
+      filter_upwards [lt_mem_nhds (hout x hx)] with s hs
+      exact hφ0 s hs.le
+    exact hzero.deriv_eq.trans (deriv_const _ 0)
+  have hint : ∀ f : Amb n ℓ → ℝ, AEStronglyMeasurable f V.weight →
+      (∃ C, ∀ᵐ x ∂V.weight, ‖f x‖ ≤ C) → (∀ x, x ∉ closedBall ξ (b * σ) → f x = 0) →
+      Integrable f V.weight := by
+    intro f hf hC hzero
+    obtain ⟨C, hC⟩ := hC
+    have hon : IntegrableOn f (closedBall ξ (b * σ)) V.weight :=
+      Measure.integrableOn_of_bounded hKfin.ne hf (ae_restrict_of_ae hC)
+    refine (integrableOn_iff_integrable_of_support_subset ?_).mp hon
+    intro x hx
+    by_contra hxK
+    exact hx (hzero x hxK)
+  have hbound : ∀ f : Amb n ℓ → ℝ, Continuous f → (∀ x, x ∉ closedBall ξ (b * σ) → f x = 0) →
+      ∃ C, ∀ x, ‖f x‖ ≤ C := by
+    intro f hf hzero
+    obtain ⟨C, hC⟩ := (isCompact_closedBall ξ (b * σ)).exists_bound_of_continuousOn hf.continuousOn
+    refine ⟨max C 0, fun x => ?_⟩
+    by_cases hx : x ∈ closedBall ξ (b * σ)
+    · exact (hC x hx).trans (le_max_left _ _)
+    · rw [hzero x hx, norm_zero]
+      exact le_max_right _ _
+  have hs_cont : Continuous (fun x : Amb n ℓ => ‖x - ξ‖ / σ) :=
+    (continuous_id.sub continuous_const).norm.div_const σ
+  have hφc : Continuous φ := hφ.continuous
+  have hφ'c : Continuous (deriv φ) := hφ.continuous_deriv_one
+  have hg_int : Integrable (fun x : Amb n ℓ =>
+      (n : ℝ) * φ (‖x - ξ‖ / σ) + ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ)) V.weight := by
+    have hc : Continuous (fun x : Amb n ℓ =>
+        (n : ℝ) * φ (‖x - ξ‖ / σ) + ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ)) :=
+      (continuous_const.mul (hφc.comp hs_cont)).add (hs_cont.mul (hφ'c.comp hs_cont))
+    have hz : ∀ x, x ∉ closedBall ξ (b * σ) →
+        (n : ℝ) * φ (‖x - ξ‖ / σ) + ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ) = 0 := by
+      intro x hx
+      rw [hφ_out x hx, hφ'_out x hx]
+      ring
+    obtain ⟨C, hC⟩ := hbound _ hc hz
+    exact hint _ hc.aestronglyMeasurable ⟨C, Eventually.of_forall hC⟩ hz
+  have hP_meas : AEStronglyMeasurable (fun x => V.tangentProj x (x - ξ)) V.weight :=
+    isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable
+      (hG2.prodMk (continuous_id.sub continuous_const).aestronglyMeasurable)
+  have hq_meas : AEStronglyMeasurable
+      (fun x => ‖(x - ξ) - V.tangentProj x (x - ξ)‖ ^ 2 / ‖x - ξ‖ ^ 2) V.weight := by
+    have h1 : AEMeasurable (fun x => (x - ξ) - V.tangentProj x (x - ξ)) V.weight :=
+      (measurable_id.sub_const ξ).aemeasurable.sub hP_meas.aemeasurable
+    exact ((h1.norm.pow_const 2).div
+      ((measurable_id.sub_const ξ).norm.pow_const 2).aemeasurable).aestronglyMeasurable
+  have hq_bound : ∀ᵐ x ∂V.weight,
+      ‖‖(x - ξ) - V.tangentProj x (x - ξ)‖ ^ 2 / ‖x - ξ‖ ^ 2‖ ≤ 1 := by
+    filter_upwards [hG1] with x hx
+    obtain ⟨Q, -, hQ⟩ := hx
+    rw [hQ, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+    apply div_le_one_of_le₀ _ (by positivity)
+    have hp := hpyth Q (x - ξ)
+    nlinarith [sq_nonneg ‖Q.starProjection (x - ξ)‖]
+  have hh_int : Integrable (fun x : Amb n ℓ => ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ) *
+      (‖(x - ξ) - V.tangentProj x (x - ξ)‖ ^ 2 / ‖x - ξ‖ ^ 2)) V.weight := by
+    have hc : Continuous (fun x : Amb n ℓ => ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ)) :=
+      hs_cont.mul (hφ'c.comp hs_cont)
+    have hz : ∀ x, x ∉ closedBall ξ (b * σ) → ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ) = 0 := by
+      intro x hx
+      rw [hφ'_out x hx, mul_zero]
+    obtain ⟨C, hC⟩ := hbound _ hc hz
+    have hi : Integrable (fun x : Amb n ℓ => ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ)) V.weight :=
+      hint _ hc.aestronglyMeasurable ⟨C, Eventually.of_forall hC⟩ hz
+    exact hi.mul_bdd hq_meas hq_bound
+  -- Step 8: conclusion
+  rw [← integral_sub hg_int hh_int]
+  calc ∫ x, ((n : ℝ) * φ (‖x - ξ‖ / σ) + ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ)) -
+        ‖x - ξ‖ / σ * deriv φ (‖x - ξ‖ / σ) *
+          (‖(x - ξ) - V.tangentProj x (x - ξ)‖ ^ 2 / ‖x - ξ‖ ^ 2) ∂V.weight
+      = ∫ x, V.divM X x ∂V.weight := (integral_congr_ae hdiv).symm
+    _ = -∫ x, inner ℝ (X x) (H x) ∂V.weight := hFV
+    _ = -∫ x, φ (‖x - ξ‖ / σ) * inner ℝ (x - ξ) (H x) ∂V.weight := by
+      rw [integral_congr_ae (Eventually.of_forall hrhs)]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
