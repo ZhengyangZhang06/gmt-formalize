@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a2f35399b4ccc9cdca7188614c5132400607ff863077ae7352298e153f258ce2",
+  "git_delta": {
+    "base_commit": "a0b1c14fc81b767c03133bd3bedfca0f53b1009f",
+    "candidate_commit": "af644036de53e2e01ae2d2ad242f5035b5a9ca0f",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "norm_fderiv_radial_profile_le_of_lipschitzWith",
+    "diff_sha256": "4ef195592b82f38c0bd27d8eabbfbe558183076ebbbd7390f855170e38883f82",
+    "source_sha256": "a194fac650cda7d4a5807e15c4bdfb92e3442872848924bf7d385d40ec4549a8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.norm_fderiv_radial_profile_le_of_lipschitzWith",
+      "statement": "∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ) (K : ℝ≥0) (φ : ℝ → ℝ), 0 < ρ → LipschitzWith K φ → ∀ x : Rn m, ‖fderiv ℝ (fun y : Rn m => φ (‖y - ξ‖ / ρ)) x‖ ≤ (K : ℝ) / ρ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
