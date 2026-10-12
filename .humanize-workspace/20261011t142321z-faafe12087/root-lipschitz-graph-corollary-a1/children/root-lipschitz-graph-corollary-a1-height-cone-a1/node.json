@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_graph_corollary-a1.height_cone-a1",
+  "parent_id": "root.lipschitz_graph_corollary-a1",
+  "depth": 2,
+  "title": "Uniform small tilt gives small height and a Lipschitz cone condition (steps 1-2 of Simon 2.6/2.7)",
+  "statement": "Assume the Affine Approximation Lemma (the contract Prop AffineApproximationLemma, Simon 5.2.5 corrected). For n >= 1, l >= 0 and p > n there are delta_1 > 0 and C_1 > 0, depending only on n, l, p, such that: if U is open, V = v(M, theta) is a RectifiableVarifold n l U with generalized mean curvature H in U, 0 < delta <= delta_1, AllardHypotheses H p delta rho holds, q is a linear isometry of R^(n+l) with T_0 := rotatedPlane q = q(R^n x {0}), tau is a real number with delta^(1/(2n+2)) <= tau, and V.tiltExcess xi sigma T_0 <= tau^2 for all xi in spt V ∩ B_{delta rho/2}(0) and all sigma in (0, delta rho/2], then (1) dist(x, T_0) <= C_1 tau delta rho for every x in spt V ∩ B_{delta rho}(0), and (2) dist(y - z, T_0) <= C_1 tau |y - z| for all y, z in spt V ∩ B_{delta rho/2}(0) (closed balls; dist(., T_0) is infDist to the subspace).",
+  "lean_statement": "AffineApproximationLemma → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₁ C₁ : ℝ, 0 < δ₁ ∧ 0 < C₁ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₁ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (τ : ℝ), δ ^ (1 / (2 * (n : ℝ) + 2)) ≤ τ → (∀ ξ ∈ V.support ∩ closedBall 0 (δ * ρ / 2), ∀ σ : ℝ, 0 < σ → σ ≤ δ * ρ / 2 → V.tiltExcess ξ σ (rotatedPlane q) ≤ τ ^ 2) → (∀ x ∈ V.support ∩ closedBall 0 (δ * ρ), infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ C₁ * τ * (δ * ρ)) ∧ (∀ y ∈ V.support ∩ closedBall 0 (δ * ρ / 2), ∀ z ∈ V.support ∩ closedBall 0 (δ * ρ / 2), infDist (y - z) (rotatedPlane q : Set (Amb n ℓ)) ≤ C₁ * τ * ‖y - z‖)",
+  "lean_name": "lgc_height_cone",
+  "depends_on": [
+    "root.lipschitz_graph_corollary-a1.tangent_plane_ae-a1",
+    "root.lipschitz_graph_corollary-a1.density_monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_graph_corollary-a1.tangent_plane_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_graph_corollary-a1.density_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-graph-corollary-a1-height-cone-a1-a1"
+}
