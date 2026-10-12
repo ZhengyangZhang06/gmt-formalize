@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "07caa99eae21e02dc9a8dcf8c0ff728852556af6d23f81839bc21ae628123ed7",
+  "git_delta": {
+    "base_commit": "01c5ebd85aaaf0df0e8cafae7fd002e960d34ac8",
+    "candidate_commit": "06e3ced73016787b3369eafd6b69e09b1b12322d",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_sp_boundary_apply_eq_of_compatible",
+    "diff_sha256": "901f91ad2c06ddb7cb52ead395fbeda6f6fb49ca0e1373446641106b0d257e3d",
+    "source_sha256": "21940a46b72472d5bbddd09a6226b2309fa861a18655926b5bf0228a5ece2507",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_sp_boundary_apply_eq_of_compatible",
+      "statement": "∀ (P Q k : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (X : GeometricCurrentOn U (k + 1)) (S : GeometricCurrentOn V (k + 1)) (f : Eucl P → Eucl Q), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ (ω : TestFormOn V (k + 1)) (η : TestFormOn U (k + 1)), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) (k + 1)) x = ((ω : DifferentialForm (Eucl Q) (k + 1)) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S ω = X η) → ∀ (ω : TestFormOn V k) (η : TestFormOn U k), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) k) x = ((ω : DifferentialForm (Eucl Q) k) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S.boundary ω = X.boundary η",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
