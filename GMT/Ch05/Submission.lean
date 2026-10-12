@@ -460,4 +460,69 @@ def RegularSetOpenDense : Prop :=
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
+namespace Submission
+
+theorem allard52_amcl_radial_cutoff_tendsto : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (f : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ) (R t : ℝ), 0 < t → t < R → IntegrableOn f (closedBall y R) μ → (∀ k, Continuous (φ k)) → (∀ k u, 0 ≤ φ k u ∧ φ k u ≤ 1) → (∀ k u, u ≤ 1 → φ k u = 1) → (∀ k u, 1 + ε k ≤ u → φ k u = 0) → Tendsto ε atTop (𝓝 0) → Tendsto (fun k => ∫ x, φ k (‖x - y‖ / t) * f x ∂μ) atTop (𝓝 (∫ x in closedBall y t, f x ∂μ)) := by
+  intro n ℓ μ f y φ ε R t ht htR hf hφc hφb hφ1 hφ0 hε
+  -- Step 1: eventually `ε k < R / t - 1`, i.e. `(1 + ε k) t < R`.
+  have hδ : 0 < R / t - 1 := by
+    rw [sub_pos, one_lt_div ht]
+    exact htR
+  have hev : ∀ᶠ k in atTop, ε k < R / t - 1 := hε.eventually (gt_mem_nhds hδ)
+  -- Step 2: for such `k` the integrand vanishes off `B_R(y)`, so the whole-space integral is the
+  -- integral against `ν = μ ⌞ B_R(y)` (no integrability needed).
+  have heq : ∀ᶠ k in atTop, ∫ x in closedBall y R, φ k (‖x - y‖ / t) * f x ∂μ =
+      ∫ x, φ k (‖x - y‖ / t) * f x ∂μ := by
+    filter_upwards [hev] with k hk
+    apply setIntegral_eq_integral_of_forall_compl_eq_zero
+    intro x hx
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    have hkt : (1 + ε k) * t < R := (lt_div_iff₀ ht).1 (by linarith)
+    have hk1 : 1 + ε k ≤ ‖x - y‖ / t := by
+      rw [le_div_iff₀ ht]
+      linarith
+    rw [hφ0 k _ hk1, zero_mul]
+  -- Step 3: the target is the `ν`-integral of `1_{B_t(y)} f`, since `B_t(y) ⊆ B_R(y)`.
+  have htarget : ∫ x in closedBall y R, (closedBall y t).indicator f x ∂μ =
+      ∫ x in closedBall y t, f x ∂μ := by
+    rw [integral_indicator measurableSet_closedBall,
+      Measure.restrict_restrict_of_subset (closedBall_subset_closedBall htR.le)]
+  -- Steps 4-5: dominated convergence for `ν` with dominating function `‖f‖`.
+  have hdct : Tendsto (fun k => ∫ x in closedBall y R, φ k (‖x - y‖ / t) * f x ∂μ) atTop
+      (𝓝 (∫ x in closedBall y R, (closedBall y t).indicator f x ∂μ)) := by
+    refine tendsto_integral_of_dominated_convergence (fun x => ‖f x‖) (fun k => ?_) hf.norm
+      (fun k => ?_) ?_
+    · -- (b) measurability: `x ↦ φ k (‖x - y‖ / t)` is continuous and `f` is `ν`-integrable.
+      exact (((hφc k).comp ((continuous_norm.comp
+        (continuous_id.sub continuous_const)).div_const t)).aestronglyMeasurable).mul
+        hf.aestronglyMeasurable
+    · -- (c) domination: `0 ≤ φ k ≤ 1`.
+      refine Eventually.of_forall (fun x => ?_)
+      have hb := hφb k (‖x - y‖ / t)
+      rw [norm_mul, Real.norm_eq_abs, abs_of_nonneg hb.1]
+      exact mul_le_of_le_one_left (norm_nonneg _) hb.2
+    · -- (d) pointwise limit `1_{B_t(y)} f`.
+      refine Eventually.of_forall (fun x => ?_)
+      by_cases hx : x ∈ closedBall y t
+      · rw [indicator_of_mem hx]
+        rw [mem_closedBall, dist_eq_norm] at hx
+        have hle : ‖x - y‖ / t ≤ 1 := (div_le_one ht).2 hx
+        have h1 : ∀ k, φ k (‖x - y‖ / t) * f x = f x := fun k => by
+          rw [hφ1 k _ hle, one_mul]
+        simp only [h1]
+        exact tendsto_const_nhds
+      · rw [indicator_of_notMem hx]
+        rw [mem_closedBall, dist_eq_norm, not_le] at hx
+        have hu : 1 < ‖x - y‖ / t := (one_lt_div ht).2 hx
+        have hev2 : ∀ᶠ k in atTop, ε k < ‖x - y‖ / t - 1 :=
+          hε.eventually (gt_mem_nhds (by linarith))
+        apply tendsto_const_nhds.congr'
+        filter_upwards [hev2] with k hk
+        rw [hφ0 k _ (by linarith), zero_mul]
+  -- Step 6: conclusion.
+  rw [← htarget]
+  exact hdct.congr' heq
+
+end Submission
+
 end GMT.Ch05
