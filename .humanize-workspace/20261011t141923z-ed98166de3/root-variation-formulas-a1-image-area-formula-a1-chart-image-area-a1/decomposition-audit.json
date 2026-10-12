@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "normDet_nonneg|normDet_ne_zero_tfae|normDet_sq|euclideanHausdorffMeasure_image",
+        "theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt",
+        "measurable_fderiv|setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀|lintegral_subtype_comap|MeasurableEmbedding.lintegral_map|ContinuousOn.measurableEmbedding",
+        "injective_area_formula|weighted_area_formula|areaJacobian",
+        "theorem ae_tendsto_measure_inter_div|theorem eventually_nonempty_inter_smul_of_density_one",
+        "git show fb5cd8c:GMT/Ch02/Submission.lean",
+        "git for-each-ref --format=%(refname)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDerivative.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-variation-formulas-a1-image-area-formula-a1-chart-image-area-a1/parent-child-handoff.json",
+        "/runtime/flows/gmt-claude-8e94f3625cb4/_recursive_lean/leaf_verification.py",
+        "/tmp/chartarea-independent-audit-jvlpb93h/full/src/GMT/Ch02/Submission.lean",
+        "/tmp/chartarea-independent-audit-jvlpb93h/checks/CombinedNodeChallenge.lean",
+        "/tmp/chartarea-independent-audit-jvlpb93h/checks/CombinedNodeSolution.lean",
+        "/tmp/chartarea-independent-audit-jvlpb93h/challenge-build.log",
+        "/tmp/chartarea-independent-audit-jvlpb93h/solution-build.log",
+        "/tmp/chartarea-independent-audit-jvlpb93h/unavailable-imports.log"
+      ],
+      "conclusion": "The split is appropriate. Pinned Mathlib supplies the linear formula, approximation partition, density and measure-transport tools; the nonlinear-area-formula search returned no matches. Both cited SimonGMT formulas are unavailable under the frozen imports, and the real leaf gate rejects adding their import. Both proposed insertions pass that gate. Independently compiled the standalone challenge types against the frozen base, both complete child proofs, and the exact selected parent assembled from the children and its accepted chain-rule sibling. Canonical Euclidean and submodule instances were confirmed. All implemented proofs use only propext, Classical.choice and Quot.sound. The sibling's frozen type is identical. Neither proposed bare name is reserved in the DAG, other decomposition records, or 594 Git refs. The selected contract digest was independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "injective_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the independently elaborated one-line proposition. The supplied proof completely establishes the normDet reduction, two-sided approximation estimates, uniform radii, density-point derivative bound, measurable disjoint decomposition, and q→1 limit, including infinite integrals and dimension zero. It uses no child or parent conclusion circularly and requires no new proof-planning pass. The bare name is unreserved. Applied to f∘ψ on V∩ψ⁻¹(B), this child supplies step 5 of the selected parent proof."
+    },
+    {
+      "key": "weighted_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated standalone proposition agree, including the absence of any measurability assumption on g. The proof establishes a finite measurable Jacobian density, the required measurable embeddings, and the push-forward identity by applying injective_area_formula to Borel subsets. The cited embedding and finite-density integration lemmas then justify transport of an arbitrary weight. Its sole child dependency is correctly directed and acyclic. The bare name is unreserved. Applied to ψ with the parent's tangential-Jacobian weight, it supplies step 7; together with step 5 and the existing chain-rule sibling, it proves the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}
