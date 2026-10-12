@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "433ed4971f546064137ccb6d3877312fe6d58a87dfcc1091016b3fa5101d084a",
+  "git_delta": {
+    "base_commit": "fec99bb488f591455bff587a5aab8159d71c40da",
+    "candidate_commit": "ee8ffc67234c46adae2cb3f868ad33c8f01406d0",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "bv_ext_lintegral_enorm_mul_fderiv_le",
+    "diff_sha256": "2196e1975aa906045c62bbac0ac329b5cfc94ee532ade0f69703a0205e744088",
+    "source_sha256": "7082366ad22cce4702462de295397df1d69571a039120513d0e8c240f1d4df8e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.bv_ext_lintegral_enorm_mul_fderiv_le",
+      "statement": "∀ (n : ℕ) (U : Set (Rn n)) (ξ : Rn n) (R r : ℝ) (u φ : Rn n → ℝ), IsOpen U → 0 < R → U ⊆ closedBall ξ R → Integrable u volume → (∃ K, LipschitzWith K φ) → (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) → HasCompactSupport φ → tsupport φ ⊆ U → (∀ᵐ x ∂volume, r * ‖fderiv ℝ φ x‖ ≤ -fderiv ℝ φ x (x - ξ)) → ENNReal.ofReal r * ∫⁻ x, ‖u x‖ₑ * ‖fderiv ℝ φ x‖ₑ ≤ ENNReal.ofReal R * Chapter02.bvVariationOn (fun x ↦ |u x|) U + (n : ℝ≥0∞) * ∫⁻ x in U, ‖u x‖ₑ",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
