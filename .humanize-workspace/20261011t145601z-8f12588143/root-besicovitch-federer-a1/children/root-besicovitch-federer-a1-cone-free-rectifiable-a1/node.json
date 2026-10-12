@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.besicovitch_federer-a1.cone_free_rectifiable-a1",
+  "parent_id": "root.besicovitch_federer-a1",
+  "depth": 2,
+  "title": "Cone-free sets are countably n-rectifiable (Mattila 15.13; Dall'Alba Lemma 4.5)",
+  "statement": "Let n, ℓ ∈ ℕ, N := n + ℓ, W ⊆ ℝ^N (= EuclideanSpace ℝ (Fin N)) a linear subspace of dimension n and P := W.starProjection its orthogonal projection. Let s > 0, r > 0 and E ⊆ ℝ^N be such that s|b − a| ≤ |P(b − a)| for all a, b ∈ E with |b − a| < r (equivalently, E meets no cone X(a, r, s) = {x : |P(x − a)| < s|x − a|} ∩ B(a, r) with vertex a ∈ E). Then E is countably n-rectifiable: there are M₀ with Hⁿ(M₀) = 0 and Lipschitz maps F_j : ℝⁿ → ℝ^N (j ∈ ℕ) with E ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ).",
+  "lean_statement": "∀ (n ℓ : ℕ) (W : Submodule ℝ (Rn (n + ℓ))), finrank ℝ W = n → ∀ (s r : ℝ), 0 < s → 0 < r → ∀ E : Set (Rn (n + ℓ)), (∀ a ∈ E, ∀ b ∈ E, dist b a < r → s * ‖b - a‖ ≤ ‖W.starProjection (b - a)‖) → CountablyRectifiable n E",
+  "lean_name": "bf_coneFree_countablyRectifiable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-besicovitch-federer-a1-cone-free-rectifiable-a1-a1"
+}
