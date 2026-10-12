@@ -458,6 +458,37 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Besicovitch differentiation of a density measure against a gauge** (a step in the proof of
+Simon Ch. 5, Theorem 7.1, second assertion: density equals multiplicity a.e.).  If `ν` is a locally
+finite measure on `ℝ^{n+ℓ}`, `f` is `ν`-a.e. measurable and `ν ⌞ f` (`ν.withDensity f`) is locally
+finite, then for `ν`-a.e. `y` and every gauge `c` with `ν(B_r(y)) / c(r) → 1` as `r ↓ 0`, also
+`(ν ⌞ f)(B_r(y)) / c(r) → f(y)`.
+Proof: Besicovitch differentiation gives `(ν ⌞ f)(B_r(y)) / ν(B_r(y)) → D_ν(ν ⌞ f)(y) = f(y)` for
+`ν`-a.e. `y`.  For such `y`, eventually `ν(B_r(y)) / c(r) > 0`, so `ν(B_r(y)) ≠ 0`, while
+`ν(B_r(y)) < ∞` (closed balls are compact); hence
+`(ν ⌞ f)(B_r(y)) / c(r) = [(ν ⌞ f)(B_r(y)) / ν(B_r(y))] · [ν(B_r(y)) / c(r)] → f(y) · 1`. -/
+theorem dohr_lmo_dema_withDensity_density_ae : ∀ n ℓ : ℕ, ∀ (ν : Measure (Amb n ℓ)) (f : Amb n ℓ → ℝ≥0∞), IsLocallyFiniteMeasure ν → IsLocallyFiniteMeasure (ν.withDensity f) → AEMeasurable f ν → ∀ᵐ y ∂ν, ∀ c : ℝ → ℝ≥0∞, Tendsto (fun r : ℝ => ν (closedBall y r) / c r) (𝓝[>] 0) (𝓝 1) → Tendsto (fun r : ℝ => (ν.withDensity f) (closedBall y r) / c r) (𝓝[>] 0) (𝓝 (f y)) := by
+  intro n ℓ ν f hν hρ hf
+  -- Besicovitch differentiation of `ν ⌞ f` with respect to `ν` (σ-finite, being locally finite),
+  -- and `D_ν(ν ⌞ f) = f` `ν`-a.e.
+  filter_upwards [Besicovitch.ae_tendsto_rnDeriv (ν.withDensity f) ν,
+    Measure.rnDeriv_withDensity₀ ν hf] with y hy hfy c hc
+  rw [hfy] at hy
+  -- Eventually `ν(B_r(y)) / c(r) > 0`, so `0 < ν(B_r(y)) < ∞` and the ratio factors.
+  have heq : (fun r : ℝ => (ν.withDensity f) (closedBall y r) / ν (closedBall y r) *
+      (ν (closedBall y r) / c r)) =ᶠ[𝓝[>] (0 : ℝ)]
+      fun r : ℝ => (ν.withDensity f) (closedBall y r) / c r := by
+    filter_upwards [hc.eventually (lt_mem_nhds zero_lt_one)] with r hr
+    exact ENNReal.div_mul_div_cancel (ENNReal.div_pos_iff.1 hr).1 measure_closedBall_lt_top.ne
+  -- The two factors tend to `f(y)` and `1`.
+  have hlim := ENNReal.Tendsto.mul hy (Or.inr ENNReal.one_ne_top) hc (Or.inl one_ne_zero)
+  rw [mul_one] at hlim
+  exact hlim.congr' heq
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
