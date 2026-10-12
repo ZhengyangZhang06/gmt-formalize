@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "84555cb6ff9f481f0d1bb49bec54dfd796f507583130104c0035aecd92eb49ce",
+  "git_delta": {
+    "base_commit": "ccc7e6c8a9cf7b1223fa73da9b483d7fc4dc3ce8",
+    "candidate_commit": "c4c0086a7ea3389e9e961d3c9df987255f8c064a",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "687d2b52204b70cc995d63cfef98388e40438805b0f52aec490f697ce6bf801c",
+    "source_sha256": "bc60ff44382babfed6545915bfd7a08ab3c0e1ce3e3b64eea0d0aeda9bd97c9a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.polyhedral_approx_pairing_expansion",
+      "statement": "∀ (P n : ℕ) (w : NVector (Eucl P) n) (c : Covector (Eucl P) n), w c = ∑ I : SimonMultiIndex n P, euclideanCovectorCoordinate c I * w (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) ∧ ∀ I : SimonMultiIndex n P, |euclideanCovectorCoordinate c I| ≤ covectorEuclideanNorm c",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
