@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1125fa160901504147ad081c375e924a07e48d83549ad22e8fe2fe5cb820597b",
+  "git_delta": {
+    "base_commit": "bfa5a6cb3a43626168beb2e21a7d4c929748eb47",
+    "candidate_commit": "c25a422643ef363326f029c585b888faca1b5332",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_tb_tda_locally_constant_im",
+    "diff_sha256": "e56ef6900cc051169230258ac2526a8cc0152334bfd27ca750032b188c4826d8",
+    "source_sha256": "609fdf55c1a3345a32d6404cef33a65048541a6a7a184a713c8a61b578ee8f8d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_tb_tda_locally_constant_im",
+      "statement": "∀ (m : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (m + 1)) (v : Eucl (m + 1) → ℝ), Measurable v → Integrable v → (∀ x, ∃ k : ℤ, v x = k) → (∀ x, v x ≠ 0 → ∀ᶠ y in 𝓝 x, v y = v x) → (∀ ω : TestFormOn (univ : Set (Eucl (m + 1))) (m + 1), T ω = ∫ x, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))) → IsIntegerMultiplicity T",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
