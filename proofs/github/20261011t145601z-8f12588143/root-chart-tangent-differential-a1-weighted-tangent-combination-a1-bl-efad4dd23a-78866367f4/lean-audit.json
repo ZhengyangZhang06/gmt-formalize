@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "15299136b7ece3be5371558c70e0ab9e4f13a1d28d2ec486f5e8e361121927f7",
+  "git_delta": {
+    "base_commit": "1da0c72f5673a6ba42ad86393d7aaaf083459cc1",
+    "candidate_commit": "f1b992e3605a224cdc400353f1294040b5fa831f",
+    "target": "GMT/Ch03/Submission.lean",
+    "declaration": "chartTD_blowup_integral_tendsto_zero",
+    "diff_sha256": "0ca33fc801093cde936c73ebc74204b0a3e0ee27d3686dead39be870da4afce1",
+    "source_sha256": "20d820d281bcee4361285008d6e2ebb4bf502d77926033b61d16ec5c4b08a95c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.chartTD_blowup_integral_tendsto_zero",
+      "statement": "∀ (n N : ℕ) (S : Set (Rn N)) (w : Rn N → ℝ) (x : Rn N), (∀ ρ : ℝ, 0 < ρ → IntegrableOn w (S ∩ Metric.ball x ρ) μHE[n]) → Tendsto (fun ρ : ℝ ↦ (ρ ^ n)⁻¹ * ∫ z in S ∩ Metric.ball x ρ, |w z| ∂μHE[n]) (𝓝[>] 0) (𝓝 0) → ∀ f : C_c(Rn N, ℝ), Tendsto (fun r : ℝ ↦ (r ^ n)⁻¹ * ∫ z in S, f (blowUpMap x r z) * w z ∂μHE[n]) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
