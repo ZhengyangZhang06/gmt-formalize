@@ -525,6 +525,82 @@ theorem dohr_lmo_dema_weight_restrict_withDensity : ∀ n ℓ : ℕ, ∀ (U : Se
       ((μHE[n] : Measure (Amb n ℓ)).restrict (S ∩ (V.support ∩ O))) :=
     V.nullMeasurableSet_carrier.mono Measure.restrict_le_self
   rw [hf, lintegral_indicator₀ hM, Measure.restrict_restrict₀ hM, inter_comm]
+/-- Simon Ch. 5, 7.1, second assertion (local multiplicity step): **density equals multiplicity
+almost everywhere**.  Let `O = B̆_{r₀}(y₀)` with `B_{r₀}(y₀) ⊆ U`, write `Σ = spt V`, and suppose
+`Hⁿ(Σ ∩ O) < ∞` and `Hⁿ(Σ ∩ B_r(y)) / (ω_n rⁿ) → 1` as `r ↓ 0` for every `y ∈ Σ ∩ O`.  Then
+(a) `Θⁿ(μ_V, y) = θ(y)` for `μ_V`-a.e. `y ∈ O`, and (b) `Θⁿ(μ_V, y) = 0` for `Hⁿ`-a.e.
+`y ∈ (Σ ∩ O) \ M`.  With `ν = Hⁿ ⌞ (Σ ∩ O)` and `f = 1_M θ` we have `μ_V ⌞ O = ν ⌞ f`, so
+Besicovitch differentiation together with the unit density of `ν` gives `Θⁿ(μ_V, y) = f(y)` for
+`ν`-a.e. `y`; this is (b), and (a) follows because `μ_V ⌞ O ≪ ν` and `μ_V` is carried by `M`. -/
+theorem dohr_lmo_density_eq_mult_ae : ∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (y₀ : Amb n ℓ) (r₀ : ℝ), closedBall y₀ r₀ ⊆ U → (μHE[n] : Measure (Amb n ℓ)) (V.support ∩ ball y₀ r₀) < ⊤ → (∀ y ∈ V.support ∩ ball y₀ r₀, Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) (V.support ∩ closedBall y r) / ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) (𝓝 1)) → (∀ᵐ y ∂V.weight, y ∈ ball y₀ r₀ → V.HasDensity y (V.mult y)) ∧ ∀ᵐ y ∂((μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ ball y₀ r₀)), y ∉ V.carrier → V.HasDensity y 0 := by
+  intro n ℓ U V y₀ r₀ hBU hfin hdens
+  -- Notation: `O = B̆_{r₀}(y₀)`, `ν = Hⁿ ⌞ (Σ ∩ O)` and `f = ofReal ∘ 1_M θ`.
+  set O : Set (Amb n ℓ) := ball y₀ r₀
+  set ν : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ O) with hν_def
+  set f : Amb n ℓ → ℝ≥0∞ := fun x => ENNReal.ofReal (V.carrier.indicator V.mult x)
+  have hOm : MeasurableSet O := measurableSet_ball
+  have hOU : O ⊆ U := ball_subset_closedBall.trans hBU
+  -- Step 1: `μ_V ⌞ O = ν ⌞ f`.
+  have hrestr : V.weight.restrict O = ν.withDensity f :=
+    Submission.dohr_lmo_dema_weight_restrict_withDensity n ℓ U V O hOm hOU
+  -- Step 2: `ν` is finite by hypothesis, and `μ_V ⌞ O` is finite because `θ` is integrable on
+  -- `M ∩ B_{r₀}(y₀)` (`B_{r₀}(y₀) ⊆ U` is compact); `f` is `ν`-a.e. measurable.
+  have : IsFiniteMeasure ν := isFiniteMeasure_restrict.mpr hfin.ne
+  have hBfin : V.weight (closedBall y₀ r₀) < ⊤ := by
+    unfold RectifiableVarifold.weight
+    rw [withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, Set.inter_comm]
+    exact (V.integrableOn_mult _ (isCompact_closedBall _ _) hBU).lintegral_lt_top
+  have : IsFiniteMeasure (ν.withDensity f) := by
+    rw [← hrestr]
+    exact isFiniteMeasure_restrict.mpr
+      (lt_of_le_of_lt (measure_mono ball_subset_closedBall) hBfin).ne
+  have hfm : AEMeasurable f ν :=
+    (((aemeasurable_indicator_iff₀ V.nullMeasurableSet_carrier).mpr
+      V.aemeasurable_mult).mono_measure Measure.restrict_le_self).ennreal_ofReal
+  -- `Σ ∩ O = spt μ_V ∩ O` (as `O ⊆ U`) is a Borel set.
+  have hAm : MeasurableSet (V.support ∩ O) := by
+    have hA : V.support ∩ O = V.weight.support ∩ O := by
+      ext x
+      simp only [RectifiableVarifold.support, mem_inter_iff]
+      exact ⟨fun h => ⟨h.1.2, h.2⟩, fun h => ⟨⟨hOU h.2, h.1⟩, h.2⟩⟩
+    rw [hA]
+    exact Measure.isClosed_support.measurableSet.inter hOm
+  -- Step 3: `Θⁿ(μ_V, y) = f(y)` for `ν`-a.e. `y`, using the gauge `c(r) = ω_n rⁿ`: for
+  -- `0 < r < r₀ - |y - y₀|` we have `B_r(y) ⊆ O`, so `ν(B_r(y)) = Hⁿ(Σ ∩ B_r(y))` and
+  -- `(ν ⌞ f)(B_r(y)) = μ_V(B_r(y))`.
+  have hmain : ∀ᵐ y ∂ν, V.HasDensity y (V.carrier.indicator V.mult y) := by
+    filter_upwards [Submission.dohr_lmo_dema_withDensity_density_ae n ℓ ν f inferInstance
+      inferInstance hfm, (ae_restrict_mem hAm : ∀ᵐ y ∂ν, y ∈ V.support ∩ O)] with y hy hyA
+    have hδ : 0 < r₀ - dist y y₀ := sub_pos.mpr (mem_ball.mp hyA.2)
+    have hsub : ∀ᶠ r in 𝓝[>] (0 : ℝ), closedBall y r ⊆ O := by
+      filter_upwards [Ioo_mem_nhdsGT hδ] with r hr
+      exact closedBall_subset_ball' (by linarith [hr.2])
+    have hν1 : Tendsto (fun r : ℝ => ν (closedBall y r) / ENNReal.ofReal (unitBallVolume n * r ^ n))
+        (𝓝[>] 0) (𝓝 1) := by
+      refine (hdens y hyA).congr' ?_
+      filter_upwards [hsub] with r hr
+      have hBr : closedBall y r ∩ (V.support ∩ O) = V.support ∩ closedBall y r := by
+        ext x
+        simp only [mem_inter_iff]
+        exact ⟨fun h => ⟨h.2.1, h.1⟩, fun h => ⟨h.2, h.1, hr h.2⟩⟩
+      rw [hν_def, Measure.restrict_apply measurableSet_closedBall, hBr]
+    refine (hy (fun r : ℝ => ENNReal.ofReal (unitBallVolume n * r ^ n)) hν1).congr' ?_
+    filter_upwards [hsub] with r hr
+    rw [← hrestr, Measure.restrict_apply measurableSet_closedBall, Set.inter_eq_left.mpr hr]
+  refine ⟨?_, ?_⟩
+  · -- (a): `μ_V ⌞ O ≪ ν` transfers Step 3 to `μ_V`-a.e. `y ∈ O`, and `μ_V`-a.e. `y` lies in `M`.
+    have hM : ∀ᵐ y ∂V.weight, y ∈ V.carrier :=
+      (withDensity_absolutelyContinuous _ _).ae_le (ae_restrict_mem₀ V.nullMeasurableSet_carrier)
+    have hO : ∀ᵐ y ∂V.weight.restrict O, V.HasDensity y (V.carrier.indicator V.mult y) := by
+      rw [hrestr]
+      exact (withDensity_absolutelyContinuous ν f).ae_le hmain
+    filter_upwards [(ae_restrict_iff' hOm).mp hO, hM] with y hy hyM hyO
+    have h := hy hyO
+    rwa [Set.indicator_of_mem hyM] at h
+  · -- (b): off `M` the density `1_M θ` vanishes.
+    filter_upwards [hmain] with y hy hyM
+    rwa [Set.indicator_of_notMem hyM] at hy
 
 end Submission
 
