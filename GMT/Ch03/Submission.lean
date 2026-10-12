@@ -612,6 +612,36 @@ theorem Submission.bf_starProjection_map_orthogonal : ∀ (N : ℕ) (g : Rn N �
       exact Submodule.starProjection_inner_eq_zero _ _ hy
   -- Step 2: `g` restricts to a linear isomorphism `V ≃ gV`, so `dim gV = dim V`.
   · exact (LinearEquiv.finrank_eq (Submodule.equivMapOfInjective _ hinj V)).symm
+/-- Used for Simon Ch. 3, Theorem 3.6 (Besicovitch–Federer), Step 9(b) of the frame averaging
+`bf_frameAveraging_null`: `O(N)` acts transitively on the linear subspaces of `ℝᴺ` of each
+dimension. If `dim W₀ = dim W`, matching orthonormal bases give a linear isometric equivalence
+`e : W₀ ≃ W`; the isometry `x ↦ e x` of `W₀` into `ℝᴺ` extends to a linear isometry `h` of `ℝᴺ`
+(`LinearIsometry.extend`), so `h* h = 1`, and `h = e` on `W₀`, so `h(W₀) = e(W₀) = W`. -/
+theorem Submission.bf_orthogonal_exists_map_eq : ∀ (N : ℕ) (W₀ W : Submodule ℝ (Rn N)), finrank ℝ W₀ = finrank ℝ W → ∃ h : Rn N →L[ℝ] Rn N, ContinuousLinearMap.adjoint h * h = 1 ∧ W₀.map (h : Rn N →ₗ[ℝ] Rn N) = W := by
+  intro N W₀ W hdim
+  -- Step 1: matching orthonormal bases of `W₀` and `W` give a linear isometric equivalence.
+  let e : W₀ ≃ₗᵢ[ℝ] W := (stdOrthonormalBasis ℝ W₀).repr.trans
+    ((stdOrthonormalBasis ℝ W).reindex (finCongr hdim.symm)).repr.symm
+  -- Step 2: the isometry `x ↦ e x` of `W₀` into `ℝᴺ` extends to a linear isometry `h` of `ℝᴺ`.
+  let L : W₀ →ₗᵢ[ℝ] Rn N := W.subtypeₗᵢ.comp e.toLinearIsometry
+  let h : Rn N →L[ℝ] Rn N := L.extend.toContinuousLinearMap
+  have hL : ∀ x : W₀, h x = (e x : Rn N) := fun x ↦ L.extend_apply x
+  refine ⟨h, ?_, ?_⟩
+  -- Step 3: `h` preserves inner products, hence `h* h = 1`.
+  · ext1 x
+    refine ext_inner_right ℝ fun y ↦ ?_
+    rw [mul_apply_eq_comp, ContinuousLinearMap.adjoint_inner_left, one_apply_eq_self]
+    exact L.extend.inner_map_map x y
+  -- Step 4: `h` agrees with `e` on `W₀`, hence `h(W₀) = e(W₀) = W`.
+  · apply le_antisymm
+    · rintro _ ⟨x, hx, rfl⟩
+      change h x ∈ W
+      rw [hL ⟨x, hx⟩]
+      exact (e ⟨x, hx⟩).2
+    · intro w hw
+      refine ⟨(e.symm ⟨w, hw⟩ : Rn N), (e.symm ⟨w, hw⟩).2, ?_⟩
+      change h (e.symm ⟨w, hw⟩ : Rn N) = w
+      rw [hL (e.symm ⟨w, hw⟩), LinearIsometryEquiv.apply_symm_apply]
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
