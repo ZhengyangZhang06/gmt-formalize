@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure RectifiableVarifold|abbrev Amb|def (weight|support|divM|HasGeneralizedMeanCurvature|LocallyLp)|def tangentProj|open Classical|^import|^namespace|^open",
+        "translat|addRight|subRight|vadd|rsod_tv_",
+        "IsometryEquiv.measurePreserving_euclideanHausdorffMeasure",
+        "theorem (lintegral_map_equiv|setLIntegral_comp_preimage_emb)",
+        "theorem (integrableOn_map_equiv|MeasurePreserving.integrableOn_comp_preimage)",
+        "theorem integral_map_equiv",
+        "mem_support_iff_forall|support_map",
+        "def LocallyIntegrableOn|class HasOrthogonalProjection|theorem ContinuousWithinAt.tendsto_nhdsWithin \\{",
+        "theorem fderiv_comp_sub\\b",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean --root=/tmp/rsod-tv-independent-audit-1dbqe2ch/src /tmp/rsod-tv-independent-audit-1dbqe2ch/src/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean --root=/tmp/rsod-tv-independent-audit-1dbqe2ch/src /tmp/rsod-tv-independent-audit-1dbqe2ch/src/All2.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-translated-varifold-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-translated-varifold-a1/decomposition-v1.json",
+        "/tmp/rsod-tv-check/src/All2.lean",
+        "/tmp/rsod-tv-independent-audit-1dbqe2ch/src/ChallengeTypes.lean",
+        "/tmp/rsod-tv-independent-audit-1dbqe2ch/src/All2.lean"
+      ],
+      "conclusion": "The six-part split is appropriate and establishes exactly the selected translation theorem. Empty dependency lists are correct: each child proves its conditional contract independently, and the parent supplies the weight and tangent identities when assembling the conclusions. All six names are bare identifiers, with no reservations found in the DAG or other branches' JSON contracts; no previously accepted DAG declaration is reused. Every frozen type is a standalone one-line proposition matching its prose. Independently rebuilt the snapshot definitions, elaborated all types before introducing child declarations, and recompiled all six supplied proofs, comparator-shaped targets, and the exact parent assembly. All checks passed; each proof uses only propext, Classical.choice and Quot.sound. Project definitions and build inputs match snapshot project ea5607598f3133b40a13241f2e51517a8c6423cd; the installed Mathlib revision is 25730c7c759d108ef87ab70af2342a196760f79d, with inspected key files matching the snapshot. The rectifiability definitions match pinned simongmt revision 2b3663083f3fe399b6296fb8eaee52169170e197. No translation declarations were found in snapshot project/GMT/Ch05, and no support_map lemma was found in the searched Support.lean. The cited measure-equivalence lemmas support arbitrary sets/integrands as used, and HasOrthogonalProjection is a Prop class."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "exists_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including arbitrary U and multiplicity equality everywhere. The proof verifies every structure field: translated Lipschitz covers, null-measurability, positivity, restricted-measure a.e. measurability, and integrability on compact intersections. It constructs the single W required by the parent without circular reliance."
+    },
+    {
+      "key": "weight_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both carrier and multiplicity hypotheses are explicit and correctly used. Measure extensionality, withDensity evaluation, the stated preimage identity, and Hausdorff-preserving change of variables establish exactly the pushforward under subtraction. No openness or additional carrier-measurability assumption is needed."
+    },
+    {
+      "key": "support_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract correctly uses relative varifold support. The proof establishes both directions of the measure-support identity through neighborhood preimages and map_apply for arbitrary sets, then intersects with the translated domain. The explicit weight hypothesis suffices."
+    },
+    {
+      "key": "tangent_proj_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof equates the full tangent predicates by matching blow-up sets, integrands, and limits. Its existence case split and choice congruence justify equality of the chosen projections everywhere, without assuming uniqueness or nonzero multiplicity. The projection instance is proposition-valued, so proof irrelevance handles it. Prose and type match."
+    },
+    {
+      "key": "mean_curvature",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes both required clauses: local integrability through relative-neighborhood transport, and first variation through translated C¹ compactly supported test fields. It checks support containment and the derivative identity, then correctly applies the explicit weight and tangent hypotheses. No parent theorem or unstated openness assumption is used."
+    },
+    {
+      "key": "locally_lp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restriction and lintegral transport under the measurable equivalence reduce the required bound to the compact set K + x₀ contained in U. The proof works for every real p and requires no additional measurability of H, exactly matching the supplied prose and Lean type."
+    }
+  ],
+  "required_changes": []
+}
