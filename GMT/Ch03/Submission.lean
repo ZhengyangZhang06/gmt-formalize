@@ -498,6 +498,61 @@ theorem Submission.deGiorgiSobIndMFL_norm_fderiv_le : ∀ (N : ℕ) (U G : Set (
   calc ‖inner ℝ w (ν z)‖ ≤ ‖w‖ * ‖ν z‖ := by
         rw [Real.norm_eq_abs]; exact abs_real_inner_le_norm _ _
     _ = ‖w‖ := by rw [hz, mul_one]
+/-- Fubini swap for the mollified weight: the last step of the bound on the derivative of a
+mollified indicator used with Simon Ch. 2, Lemma 2.5 (p. 49, `chapter-02.txt` lines 543–596) in
+the proof of Ch. 3, Theorem 4.3. Let `ζ, ρ` be continuous with compact support,
+`tsupport ρ ⊆ B̄_r(0)`, and `μ(K') < ∞` for `K' = cthickening r (tsupport ζ)`. Then
+`y ↦ ζ(y) ∫ ρ(y - z) dμ(z)` is `Lᴺ`-integrable and
+`∫ ζ(y) (∫ ρ(y - z) dμ(z)) dy = ∫ (∫ ζ(y) ρ(y - z) dy) dμ(z)`. The integrand
+`F(y, z) = ζ(y) ρ(y - z)` vanishes unless `y ∈ tsupport ζ` and `z ∈ K'`. It is bounded and
+continuous with support in `tsupport ζ × ℝᴺ`, hence integrable for `Lᴺ ⊗ μ⌞K'`; `μ⌞K'` is
+finite, so `μ` need not be s-finite. Fubini's theorem for `Lᴺ` and `μ⌞K'` gives the identity once
+`μ⌞K'` is replaced by `μ` in the inner and outer integrals, whose integrands vanish off `K'`. -/
+theorem Submission.deGiorgiSobIndMFL_integral_mul_swap : ∀ (N : ℕ) (μ : Measure (Rn N)) (ζ ρ : Rn N → ℝ) (r : ℝ), Continuous ζ → HasCompactSupport ζ → Continuous ρ → HasCompactSupport ρ → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → μ (Metric.cthickening r (tsupport ζ)) < ∞ → Integrable (fun y ↦ ζ y * (∫ z, ρ (y - z) ∂μ)) ∧ ∫ y, ζ y * (∫ z, ρ (y - z) ∂μ) = ∫ z, (∫ y, ζ y * ρ (y - z)) ∂μ := by
+  intro N μ ζ ρ r hζ hζc hρ hρc hρr hfin
+  set K' := Metric.cthickening r (tsupport ζ)
+  -- Step 1: `F(y, z) = ζ y * ρ (y - z)` vanishes unless `y ∈ tsupport ζ` and `z ∈ K'`.
+  have hvan : ∀ y z, z ∉ K' → ζ y * ρ (y - z) = 0 := by
+    intro y z hz
+    by_contra hne
+    have hy : y ∈ tsupport ζ := subset_tsupport _ (left_ne_zero_of_mul hne)
+    have hyz := hρr (subset_tsupport _ (right_ne_zero_of_mul hne))
+    rw [Metric.mem_closedBall, dist_zero_right] at hyz
+    exact hz (Metric.mem_cthickening_of_dist_le z y r _ hy
+      (by rw [dist_eq_norm, norm_sub_rev]; exact hyz))
+  -- Step 2: `μ' = μ⌞K'` is a finite measure.
+  have : IsFiniteMeasure (μ.restrict K') := isFiniteMeasure_restrict.2 hfin.ne
+  -- Step 3: `F` is continuous, bounded by `Mζ * Mρ` and supported in `tsupport ζ × ℝᴺ`, a set of
+  -- finite `Lᴺ ⊗ μ'` measure, so it is `Lᴺ ⊗ μ'`-integrable.
+  have hFc : Continuous (Function.uncurry fun y z : Rn N ↦ ζ y * ρ (y - z)) :=
+    (hζ.comp continuous_fst).mul (hρ.comp (continuous_fst.sub continuous_snd))
+  obtain ⟨Mζ, hMζ⟩ := hζ.bounded_above_of_compact_support hζc
+  obtain ⟨Mρ, hMρ⟩ := hρ.bounded_above_of_compact_support hρc
+  have hFint : Integrable (Function.uncurry fun y z : Rn N ↦ ζ y * ρ (y - z))
+      ((volume : Measure (Rn N)).prod (μ.restrict K')) := by
+    have hsupp : Function.support (Function.uncurry fun y z : Rn N ↦ ζ y * ρ (y - z)) ⊆
+        tsupport ζ ×ˢ univ := fun p hp ↦ ⟨subset_tsupport _ (left_ne_zero_of_mul hp), trivial⟩
+    refine (integrableOn_iff_integrable_of_support_subset hsupp).1 ?_
+    refine Measure.integrableOn_of_bounded ?_ hFc.aestronglyMeasurable (M := Mζ * Mρ)
+      (Eventually.of_forall fun p ↦ ?_)
+    · rw [Measure.prod_prod]
+      exact ENNReal.mul_ne_top hζc.isCompact.measure_lt_top.ne (measure_ne_top _ _)
+    · simp only [Function.uncurry, norm_mul]
+      exact mul_le_mul (hMζ _) (hMρ _) (norm_nonneg _) ((norm_nonneg _).trans (hMζ p.1))
+  -- Step 5: `∫ F(y, z) dμ'(z) = ∫ F(y, z) dμ(z) = ζ y * ∫ ρ (y - z) dμ(z)`.
+  have hin : ∀ y, ∫ z in K', ζ y * ρ (y - z) ∂μ = ζ y * ∫ z, ρ (y - z) ∂μ := by
+    intro y
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz ↦ hvan y z hz,
+      integral_const_mul]
+  -- Step 6: `H z = ∫ F(y, z) dy` vanishes off `K'`, so `∫ H dμ' = ∫ H dμ`.
+  have hout : ∫ z in K', (∫ y, ζ y * ρ (y - z)) ∂μ = ∫ z, (∫ y, ζ y * ρ (y - z)) ∂μ := by
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz ↦ ?_
+    simp [hvan _ z hz]
+  -- Steps 4 and 7: Fubini for `Lᴺ` and `μ'` (with integrability of the inner integral), then
+  -- Steps 5 and 6.
+  refine ⟨hFint.integral_prod_left.congr (Eventually.of_forall fun y ↦ hin y), ?_⟩
+  rw [← hout, ← integral_integral_swap hFint]
+  exact integral_congr_ae (Eventually.of_forall fun y ↦ (hin y).symm)
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
