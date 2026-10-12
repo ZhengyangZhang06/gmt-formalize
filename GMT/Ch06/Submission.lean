@@ -591,6 +591,27 @@ theorem Submission.slicing_mb_wn_adapted_sum_le :
   obtain ⟨I, ⟨hI, _⟩, rfl⟩ := hJ
   exact hI.comp Fin.strictMono_succ
 
+/-- The wedge estimate behind the bound on the right side of Simon Ch. 6, 4.11 (proof of 4.8–4.9):
+for a covector `α` and an `m`-covector `γ` on `ℝ^P`, the Euclidean coefficient norm of
+`α ∧ γ = alternatizeUncurryFin (α.smulRight γ)` is at most `‖α‖ |γ|`.  The coefficient norm can
+be computed in any orthonormal basis.  In a basis `u` with `α(u₀) = ‖α‖` and `α(uⱼ) = 0` for
+`j ≠ 0`, the coefficients of `α ∧ γ` are `‖α‖` times coefficients of `γ` on pairwise distinct
+multi-indices, so `|α ∧ γ|² ≤ ‖α‖² |γ|²`. -/
+theorem Submission.slicing_mb_wedge_norm_le :
+    ∀ (P m : ℕ) (α : Eucl P →L[ℝ] ℝ) (γ : Covector (Eucl P) m),
+      covectorEuclideanNorm (ContinuousAlternatingMap.alternatizeUncurryFin (α.smulRight γ)) ≤
+        ‖α‖ * covectorEuclideanNorm γ := by
+  intro P m α γ
+  -- An orthonormal basis adapted to `α`: `α(u₀) = ‖α‖` and `α(uⱼ) = 0` for `j ≠ 0`.
+  obtain ⟨u, hu⟩ := Submission.slicing_mb_wn_adapted_onb P α
+  refine (sq_le_sq₀ (covectorEuclideanNorm_nonneg _)
+    (mul_nonneg (norm_nonneg α) (covectorEuclideanNorm_nonneg γ))).1 ?_
+  -- Both squared norms are sums over increasing multi-indices in `u`, and there
+  -- `Σ_{I incr} (α ∧ γ)(u_I)² ≤ ‖α‖² Σ_{J incr} γ(u_J)²`.
+  rw [mul_pow, Submission.slicing_mb_wn_norm_sq_eq_onb_sum P (m + 1) u,
+    Submission.slicing_mb_wn_norm_sq_eq_onb_sum P m u]
+  exact Submission.slicing_mb_wn_adapted_sum_le P m α γ u ‖α‖ hu
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
