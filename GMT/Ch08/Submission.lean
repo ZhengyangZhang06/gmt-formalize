@@ -1945,6 +1945,122 @@ theorem Submission.frt_carrier_nullMeasurable :
   exact NullMeasurableSet.iUnion fun m ↦ NullMeasurableSet.iUnion fun k ↦
     NullMeasurableSet.iUnion fun j ↦ hpiece m k j
 
+/-- Simon Ch. 8, 1.2, Step 6 (`μ_V = H^n ⌞ θ`): if `μ_V(ℝ^N ∖ M) = 0`, `M ⊆ U`, `μ_V` has density
+`θ(x) ∈ (0, ∞)` at every `x ∈ M`, and for every `L ∈ (0, 1]` `M` is covered by countably many closed
+`L`-graphs over `n`-planes, then `θ` is `H^n`-integrable on `M ∩ K` for every compact `K ⊆ U` and
+`μ_V(B) = ∫_{B ∩ M} θ dH^n` for every `μ_V`-null-measurable `B`. -/
+theorem Submission.frt_weight_eq_multiplicity_hausdorff :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), M ⊆ U → V.weight Mᶜ = 0 → (∀ x ∈ M, 0 < θ x ∧ HasDensity n V.weight x (ENNReal.ofReal (θ x))) → (∀ L : ℝ, 0 < L → L ≤ 1 → ∃ C : Set (Grassmannian N n × Set (Euclidean N)), C.Countable ∧ (∀ c ∈ C, IsClosed c.2 ∧ ∀ y ∈ c.2, ∀ z ∈ c.2, ‖(y - z) - Grassmannian.project c.1 (y - z)‖ ≤ L * ‖Grassmannian.project c.1 (y - z)‖) ∧ M ⊆ ⋃ c ∈ C, c.2) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) μHE[n]) ∧ ∀ B : Set (Euclidean N), NullMeasurableSet B V.weight → V.weight B = ∫⁻ x in B ∩ M, ENNReal.ofReal (θ x) ∂μHE[n] := by
+  intro N n U V M θ hMU hMc hθ hcov
+  -- Step 0: `U` is open, `μ_V` is finite on compact subsets of `U`, `M` is `H^n`-null-measurable.
+  have hU : IsOpen U := V.isOpen_domain
+  have hfin : ∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → V.weight K ≠ ∞ :=
+    V.weight_finite_on_compact
+  have hMnm : NullMeasurableSet M μHE[n] :=
+    Submission.frt_carrier_nullMeasurable N n U V M θ hMU hMc hθ
+  -- Step 1: a Borel `g` with `g = ofReal ∘ θ` on `M`.
+  obtain ⟨g, hgm, hg⟩ := Submission.frt_weq_density_borel_representative N n V.weight
+  have hgθ : ∀ x ∈ M, g x = ENNReal.ofReal (θ x) := fun x hx ↦ hg x _ (hθ x hx).2
+  -- Step 2: `μ_V` and `H^n` have the same null subsets of `M`.
+  have hnullH : ∀ Z ⊆ M, V.weight Z = 0 → μHE[n] Z = 0 := fun Z hZ hZ0 ↦
+    Submission.frt_hausdorff_null_of_weight_null N n V.weight U Z hU hfin (hZ.trans hMU) hZ0
+      fun x hx ↦ by
+        rw [Filter.Tendsto.limsup_eq (hθ x (hZ hx)).2]
+        exact ENNReal.ofReal_pos.2 (hθ x (hZ hx)).1
+  have hnullV : ∀ Z ⊆ M, μHE[n] Z = 0 → V.weight Z = 0 := fun Z hZ hZ0 ↦
+    Submission.frt_weight_null_of_hausdorff_null N n V.weight Z hZ0 fun x hx ↦
+      ⟨ENNReal.ofReal (θ x), ENNReal.ofReal_ne_top, (hθ x (hZ hx)).2⟩
+  -- Step 3: the pieces `A p = {x ∈ M : θ x ≥ 1/(p+1)} ∩ K p` increase to `M`.
+  obtain ⟨K, hKc, hKU, hKint, hKmono, hKunion⟩ :=
+    Submission.frt_weq_open_compact_exhaustion N U hU
+  let t : ℕ → ℝ≥0∞ := fun p ↦ ((p + 1 : ℕ) : ℝ≥0∞)⁻¹
+  have ht0 : ∀ p, t p ≠ 0 := fun p ↦ ENNReal.inv_ne_zero.2 (ENNReal.natCast_ne_top _)
+  let A : ℕ → Set (Euclidean N) := fun p ↦ M ∩ ({x | t p ≤ g x} ∩ K p)
+  have hAM : ∀ p, A p ⊆ M := fun p ↦ inter_subset_left
+  have hAmono : Monotone A := fun p q hpq x hx ↦
+    ⟨hx.1, le_trans (ENNReal.inv_le_inv.2 (Nat.cast_le.2 (Nat.add_le_add_right hpq 1))) hx.2.1,
+      hKmono hpq hx.2.2⟩
+  have hAunion : ⋃ p, A p = M := by
+    refine Subset.antisymm (iUnion_subset hAM) fun x hx ↦ ?_
+    have hxK : x ∈ ⋃ p, K p := by rw [hKunion]; exact hMU hx
+    obtain ⟨q, hq⟩ := mem_iUnion.1 hxK
+    have hgx : g x ≠ 0 := by
+      rw [hgθ x hx]
+      exact (ENNReal.ofReal_pos.2 (hθ x hx).1).ne'
+    obtain ⟨m, hm⟩ := ENNReal.exists_inv_nat_lt hgx
+    refine mem_iUnion.2 ⟨max m q, hx, ?_, hKmono (le_max_right m q) hq⟩
+    exact le_trans (ENNReal.inv_le_inv.2 (Nat.cast_le.2 ((le_max_left m q).trans
+      (Nat.le_succ _)))) hm.le
+  have hAnm : ∀ p, NullMeasurableSet (A p) μHE[n] := fun p ↦
+    hMnm.inter ((measurableSet_le measurable_const hgm).inter
+      (hKc p).isClosed.measurableSet).nullMeasurableSet
+  -- Step 4: `H^n (A p) < ∞`, by the upper-density bound on `W = interior (K (p + 1))`.
+  have hWfin : ∀ p, V.weight (interior (K (p + 1))) ≠ ∞ := fun p ↦
+    ne_top_of_le_ne_top (hfin _ (hKc _) (hKU _)) (measure_mono interior_subset)
+  have hAW : ∀ p, A p ⊆ interior (K (p + 1)) := fun p ↦
+    (inter_subset_right.trans inter_subset_right).trans (hKint p)
+  have hAfin : ∀ p, μHE[n] (A p) ≠ ∞ := by
+    intro p hp
+    have hle := Submission.frt_weq_mul_hausdorff_le_of_upper_density N n V.weight
+      (interior (K (p + 1))) (A p) (t p) isOpen_interior (hAW p) fun x hx ↦ by
+        rw [Filter.Tendsto.limsup_eq (hθ x (hAM p hx)).2, ← hgθ x (hAM p hx)]
+        exact hx.2.1
+    rw [hp, ENNReal.mul_top (ht0 p)] at hle
+    exact hWfin p (top_le_iff.1 hle)
+  -- Step 5: `H^n ⌞ A p` has density one almost everywhere.
+  have hdens : ∀ p, ∀ᵐ x ∂(μHE[n] : Measure (Euclidean N)).restrict (A p),
+      HasDensity n ((μHE[n] : Measure (Euclidean N)).restrict (A p)) x 1 := fun p ↦
+    Submission.frt_hausdorff_density_one_of_flat_covers N n (A p) (hAfin p) (hAnm p)
+      fun L hL0 hL1 ↦ by
+        obtain ⟨C, hCc, hCg, hMC⟩ := hcov L hL0 hL1
+        exact ⟨C, hCc, hCg, (hAM p).trans hMC⟩
+  -- Steps 6–8: `μ_V (B ∩ A p) = ∫_{B ∩ A p} θ dH^n` for Borel `B`.
+  have hpiece : ∀ p, ∀ B : Set (Euclidean N), MeasurableSet B →
+      V.weight (B ∩ A p) = ∫⁻ x in B ∩ A p, ENNReal.ofReal (θ x) ∂μHE[n] := fun p ↦
+    Submission.frt_weq_piece_restrict_eq_density N n V.weight (interior (K (p + 1))) (A p) θ
+      isOpen_interior (hWfin p) (hAW p) (hAfin p) (hAnm p) (fun x hx ↦ hθ x (hAM p hx))
+      (fun Z hZ hZ0 ↦ hnullV Z (hZ.trans (hAM p)) hZ0)
+      (fun Z hZ hZ0 ↦ hnullH Z (hZ.trans (hAM p)) hZ0) (hdens p)
+  -- Step 9: Borel `B`, letting `p → ∞` (no measurability of the pieces is needed).
+  have hBorel : ∀ B : Set (Euclidean N), MeasurableSet B →
+      V.weight B = ∫⁻ x in B ∩ M, ENNReal.ofReal (θ x) ∂μHE[n] := by
+    intro B hB
+    have hmonoB : Monotone fun p ↦ B ∩ A p := fun p q hpq ↦
+      inter_subset_inter_right B (hAmono hpq)
+    have hdir : Directed (· ⊆ ·) fun p ↦ B ∩ A p := hmonoB.directed_le
+    have hBM : B ∩ M = ⋃ p, B ∩ A p := by rw [← inter_iUnion, hAunion]
+    calc V.weight B = V.weight (B ∩ M) := (measure_inter_conull hMc).symm
+      _ = ⨆ p, V.weight (B ∩ A p) := by rw [hBM, hdir.measure_iUnion]
+      _ = ⨆ p, ∫⁻ x in B ∩ A p, ENNReal.ofReal (θ x) ∂μHE[n] :=
+        iSup_congr fun p ↦ hpiece p B hB
+      _ = ∫⁻ x in B ∩ M, ENNReal.ofReal (θ x) ∂μHE[n] := by
+        rw [hBM, setLIntegral_iUnion_of_directed (fun x ↦ ENNReal.ofReal (θ x)) hdir]
+  refine ⟨fun K' hK' hK'U ↦ ?_, fun B hB ↦ ?_⟩
+  · -- Step 11: `θ` is integrable on `M ∩ K'`, since `∫_{K' ∩ M} θ dH^n = μ_V(K') < ∞`.
+    have hnm : NullMeasurableSet (M ∩ K') μHE[n] :=
+      hMnm.inter hK'.isClosed.measurableSet.nullMeasurableSet
+    have hae : g =ᵐ[(μHE[n] : Measure (Euclidean N)).restrict (M ∩ K')]
+        fun x ↦ ENNReal.ofReal (θ x) := by
+      filter_upwards [ae_restrict_mem₀ hnm] with x hx using hgθ x hx.1
+    have hlin : ∫⁻ x in M ∩ K', ENNReal.ofReal (θ x) ∂μHE[n] ≠ ∞ := by
+      rw [inter_comm, ← hBorel K' hK'.isClosed.measurableSet]
+      exact hfin K' hK' hK'U
+    refine (integrable_toReal_of_lintegral_ne_top (hgm.aemeasurable.congr hae) hlin).congr ?_
+    filter_upwards [ae_restrict_mem₀ hnm] with x hx using ENNReal.toReal_ofReal (hθ x hx.1).1.le
+  · -- Step 10: `μ_V`-null-measurable `B`, through a measurable hull.
+    have hBB : B ⊆ toMeasurable V.weight B := subset_toMeasurable _ _
+    have hdiff : V.weight (toMeasurable V.weight B \ B) = 0 :=
+      (ae_eq_set.1 hB.toMeasurable_ae_eq).1
+    have hae : B ∩ M =ᵐ[(μHE[n] : Measure (Euclidean N))] toMeasurable V.weight B ∩ M := by
+      refine ae_eq_set.2 ⟨?_, ?_⟩
+      · rw [Set.sdiff_eq_empty.2 (inter_subset_inter_left M hBB), measure_empty]
+      · refine hnullH _ (fun x hx ↦ hx.1.2) (measure_mono_null ?_ hdiff)
+        exact fun x hx ↦ ⟨hx.1.1, fun h ↦ hx.2 ⟨h, hx.1.2⟩⟩
+    calc V.weight B = V.weight (toMeasurable V.weight B) := (measure_toMeasurable B).symm
+      _ = ∫⁻ x in toMeasurable V.weight B ∩ M, ENNReal.ofReal (θ x) ∂μHE[n] :=
+        hBorel _ (measurableSet_toMeasurable _ _)
+      _ = ∫⁻ x in B ∩ M, ENNReal.ofReal (θ x) ∂μHE[n] := (setLIntegral_congr hae).symm
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
