@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.hausdorff_density-a1",
+  "parent_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1",
+  "depth": 3,
+  "title": "Approximate tangent space implies Hⁿ(M ∩ B̄_ρ(x))/ρⁿ → ω_n (Simon Ch. 3 Remark 1.5(3); parent Step 7)",
+  "statement": "Let n, N ∈ ℕ, let M ⊆ ℝ^N be an arbitrary set, x ∈ ℝ^N and P ⊆ ℝ^N a linear subspace. Assume Hⁿ(M ∩ B̄_δ(x)) < ∞ for some δ > 0, and that M has approximate tangent space P at x in the sense of Simon Ch. 3 Def. 1.4 (HasApproximateTangentSpaceAt n M x P: dim P = n and ∫_{η_{x,r}(M)} f dHⁿ → ∫_P f dHⁿ as r ↓ 0 for every f ∈ C_c(ℝ^N, ℝ)). Here Hⁿ = μHE[n] and η_{x,r}(y) = r⁻¹(y − x). Then Hⁿ(M ∩ B̄_ρ(x))/ρⁿ → ω_n := Lⁿ(B_1(0)) in [0, ∞] as ρ ↓ 0.",
+  "lean_statement": "∀ (n N : ℕ) (M : Set (Rn N)) (x : Rn N) (P : Submodule ℝ (Rn N)), (∃ δ : ℝ, 0 < δ ∧ μHE[n] (M ∩ Metric.closedBall x δ) < ∞) → HasApproximateTangentSpaceAt n M x P → Tendsto (fun ρ : ℝ ↦ μHE[n] (M ∩ Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1)))",
+  "lean_name": "deGiorgiRH_hausdorff_density_of_approxTangent",
+  "depends_on": [
+    "root.de_giorgi-a1.rectifiable_hausdorff-a1.vague_unit_ball-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.vague_unit_ball-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-rectifiable-hausdorff-a1-hausdorff-density-a1-a1"
+}

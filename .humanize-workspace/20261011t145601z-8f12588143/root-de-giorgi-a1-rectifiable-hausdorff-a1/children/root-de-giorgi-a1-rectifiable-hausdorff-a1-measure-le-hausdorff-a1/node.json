@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.measure_le_hausdorff-a1",
+  "parent_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1",
+  "depth": 3,
+  "title": "Covering bound: unit density on A implies μ(A) ≤ 2ⁿHⁿ(A) (parent Step 6)",
+  "statement": "Let n, N ∈ ℕ, let μ be a Borel measure on ℝ^N, and let A ⊆ ℝ^N be an arbitrary set such that, for every x ∈ A, μ(B̄_ρ(x))/ρⁿ → ω_n := Lⁿ(B_1(0)) in [0, ∞] as ρ ↓ 0. Then μ(A) ≤ 2ⁿHⁿ(A), where Hⁿ = μHE[n] and both sides are outer-measure values.",
+  "lean_statement": "∀ (n N : ℕ) (μ : Measure (Rn N)) (A : Set (Rn N)), (∀ x ∈ A, Tendsto (fun ρ : ℝ ↦ μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1)))) → μ A ≤ 2 ^ n * μHE[n] A",
+  "lean_name": "deGiorgiRH_measure_le_two_pow_mul_hausdorff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-rectifiable-hausdorff-a1-measure-le-hausdorff-a1-a1"
+}

@@ -1,0 +1,104 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.de_giorgi-a1.rectifiable_hausdorff-a1`
+- Child DAG node: `root.de_giorgi-a1.rectifiable_hausdorff-a1.locally_finite_case-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, Steps 3–8 with U = ℝ^{n+ℓ}. In this case every localization W_i of the parent may be taken as B_i(0), and every finiteness requirement holds globally. This includes the parent's erratum E4: Simon Ch. 3, chapter-03.txt line 604 is only a sketch, so the measure form of Theorem 1.6 '⇐' (hypothesis (RT)) and density comparison are used instead. The analytic steps are supplied by the siblings measure_density, hausdorff_le_measure, measure_le_hausdorff, hausdorff_density and measure_eq_density.
+
+Notation. N := n + ℓ; Hⁿ := μHE[n]; ω_n := Lⁿ(B_1(0)). For a measure λ and a point x, D_λ(x) denotes the statement 'λ(B̄_ρ(x))/ρⁿ → ω_n in [0, ∞] as ρ ↓ 0'.
+
+1. (Step 3, density of μ) Let x ∈ S and choose P_x with HasApproxTangentPlaneWithMultiplicity n μ x P_x 1. Since B̄_1(x) is compact, μ(B̄_1(x)) < ∞. By measure_density, D_μ(x) holds. So D_μ(x) holds for every x ∈ S.
+
+2. (Step 4, Hⁿ ≤ μ) Let A ⊆ S. μ is finite on compact sets, and D_μ(x) holds for every x ∈ A by step 1. So hausdorff_le_measure gives Hⁿ(A) ≤ μ(A).
+
+3. (Step 6, μ ≤ 2ⁿHⁿ) Let A ⊆ S. By step 1 and measure_le_hausdorff, μ(A) ≤ 2ⁿHⁿ(A).
+
+4. (Step 5, rectifiability)
+   - Since μ(ℝ^N ∖ S) = 0, μ-a.e. y lies in S. For y ∈ S, the plane P_y and θ := 1 > 0 satisfy HasApproxTangentPlaneWithMultiplicity n μ y P_y θ.
+   - μ is finite on compact sets, so (RT) yields a measurable, countably n-rectifiable R ⊆ ℝ^N with μ(ℝ^N ∖ R) = 0.
+   - S ∖ R ⊆ S and μ(S ∖ R) ≤ μ(ℝ^N ∖ R) = 0, so Hⁿ(S ∖ R) ≤ μ(S ∖ R) = 0 by step 2.
+   - A set of Hⁿ-measure zero is countably n-rectifiable: take M₀ to be the set itself in Definition 1.1 (SimonGMT countablyRectifiable_of_measure_zero).
+   - A countable union of countably n-rectifiable sets is countably n-rectifiable (SimonGMT countablyRectifiable_iUnion), and subsets inherit the property (CountablyRectifiable.mono).
+   - Since S ⊆ R ∪ (S ∖ R), S is countably n-rectifiable.
+
+5. (Step 8, preliminaries) Let σ := Hⁿ⌞S, that is, σ(B) = Hⁿ(B ∩ S) for Borel B.
+   - For compact K, σ(K) = Hⁿ(K ∩ S) ≤ μ(K ∩ S) ≤ μ(K) < ∞ by step 2. So σ is finite on compact sets.
+   - μ ≪ σ: let B be Borel with σ(B) = Hⁿ(B ∩ S) = 0. Then μ(B ∩ S) ≤ 2ⁿHⁿ(B ∩ S) = 0 by step 3, and μ(B ∖ S) ≤ μ(ℝ^N ∖ S) = 0. So μ(B) ≤ μ(B ∩ S) + μ(B ∖ S) = 0.
+
+6. (Step 7, density of σ)
+   - S is measurable, hence Hⁿ-null-measurable. For every compact K, Hⁿ(S ∩ K) ≤ μ(S ∩ K) ≤ μ(K) < ∞ by step 2. So (AT) applies to M := S.
+   - The direction '⇒' of (AT), together with step 4, shows that for Hⁿ-a.e. x ∈ S there is P with HasApproximateTangentSpaceAt n S x P.
+   - For such x, Hⁿ(S ∩ B̄_1(x)) < ∞, so hausdorff_density gives Hⁿ(S ∩ B̄_ρ(x))/ρⁿ → ω_n.
+   - Closed balls are Borel, so σ(B̄_ρ(x)) = Hⁿ(B̄_ρ(x) ∩ S) = Hⁿ(S ∩ B̄_ρ(x)). Hence D_σ(x) holds.
+
+7. (Step 8, equality)
+   - S is measurable and σ = Hⁿ⌞S, so a property holding for Hⁿ-a.e. x ∈ S holds for σ-a.e. x, and σ-a.e. x lies in S.
+   - Hence for σ-a.e. x both D_μ(x) (step 1, since x ∈ S) and D_σ(x) (step 6) hold.
+   - μ and σ are finite on compact sets and μ ≪ σ (step 5), so measure_eq_density gives μ = σ = Hⁿ⌞S.
+
+8. Steps 4 and 7 give: S is countably n-rectifiable and μ = μHE[n].restrict S. ∎
+
+## Key steps
+
+1. measure_density gives unit density of μ at every x ∈ S
+2. hausdorff_le_measure gives Hⁿ ≤ μ on subsets of S; measure_le_hausdorff gives μ ≤ 2ⁿHⁿ on subsets of S
+3. (RT) gives a carrying rectifiable R; S ∖ R is μ-null hence Hⁿ-null, so S is countably n-rectifiable
+4. σ := Hⁿ⌞S is finite on compacts (Hⁿ ≤ μ) and μ ≪ σ (μ ≤ 2ⁿHⁿ, μ(Sᶜ) = 0)
+5. (AT) '⇒' gives approximate tangent spaces Hⁿ-a.e. on S, and hausdorff_density gives unit density of σ σ-a.e.
+6. measure_eq_density gives μ = σ = Hⁿ⌞S
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean`
+- `grep -n 'def HasApproxTangentPlaneWithMultiplicity|def ApproximateTangentCharacterization' <snapshot>/project/GMT/Ch03/Contract.lean`
+- `grep -rn 'simon_theorem_3_3|def dimensionalUpperDensity|def dimensionalDensityQuotient|def realUnitBallVolume|simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure' .lake/packages/simongmt/Poincare/SimonGMT`
+- `grep -n 'def IsBorelRegularOuterMeasure|theorem measure_toOuterMeasure_isBorelRegular' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `grep -n 'def simonHausdorffOuterMeasureReal|def simonHausdorffMeasureReal|theorem simonHausdorffMeasureReal_toOuterMeasure' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `grep -n 'theorem realUnitBallVolume_nat_eq|theorem volume_euclidean_ball_eq' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean`
+- `grep -rn 'dimensionalUpperDensity.*≤ |2 ^ n' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01 (no 2^n upper-density bound present)`
+- `grep -n 'def CountablyRectifiable|theorem countablyRectifiable_of_measure_zero|theorem countablyRectifiable_iUnion|def blowUpMap|def HasApproximateTangentSpaceAt' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'theorem ae_tendsto_rnDeriv|theorem tendsto_filterAt|protected def vitaliFamily' <snapshot>/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `grep -rn 'theorem withDensity_rnDeriv_eq' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Decomposition`
+- `grep -rn 'theorem restrict_iUnion_congr|exists_iUnion_isCompact|IsOpen.exists_iUnion_' <snapshot>/mathlib/Mathlib (restrict_iUnion_congr found; no ready-made exhaustion lemma for open subsets)`
+- `grep -n 'theorem addHaar_closedBall|theorem addHaar_ball_of_pos|theorem addHaar_closedBall_eq_addHaar_ball' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `sed -n 1,200p <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_def, Isometry.euclideanHausdorffMeasure_image, euclideanHausdorffMeasure_smul₀, euclideanHausdorffMeasure_homothety_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume)`
+- `grep -n 'theorem _root_.Set.measure_eq_iInf_isOpen' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `grep -rn 'theorem.*infEDist_zero|theorem.*infEDist_pos' <snapshot>/mathlib/Mathlib/Topology`
+- `sed -n 560,640p book/chapter-01.txt (Simon Thm 3.3) and book/chapter-03.txt (Thm 4.3 proof, line 604)`
+- `python3 -I dag.json lean_name collision check (143 nodes): none`
+- `python3 -I verifier/gmt-compare.py child_modules(contract mode) and verifier/lean_contract.py validate_lean_statement on the 10 statements; lake env lean on the 10 generated NodeChallenge files: all OK`
+- `lake env lean GMT/Scratch/RectifiableHausdorffSplitDecision.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/RadonNikodym.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/EuclideanHausdorffUpper.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/RectifiableHausdorffSplitDecision.lean`
+
+The snapshot contract is byte-identical to the workspace contract (project d09bc8a, Mathlib 25730c7c). Neither Mathlib nor the pinned SimonGMT contains this statement, the 2^n upper-density covering bound (only the reverse comparison, simon_theorem_3_3, is present), a vague-limit-to-plane squeeze, or a ready-made exhaustion of open subsets. Those become children. The children's proofs can draw on the following library facts: Besicovitch.ae_tendsto_rnDeriv; Measure.withDensity_rnDeriv_eq (needs import Mathlib.MeasureTheory.Measure.Decomposition.RadonNikodym); Measure.restrict_iUnion_congr; Set.measure_eq_iInf_isOpen with OuterRegular inferred from IsFiniteMeasureOnCompacts; Measure.addHaar_closedBall; Isometry.euclideanHausdorffMeasure_image; euclideanHausdorffMeasure_smul₀; EuclideanSpace.euclideanHausdorffMeasure_eq_volume; Metric.infEDist lemmas; SimonGMT simon_theorem_3_3, measure_toOuterMeasure_isBorelRegular, simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure, simonHausdorffMeasureReal_toOuterMeasure, volume_euclidean_ball_eq, countablyRectifiable_iUnion and countablyRectifiable_of_measure_zero. All ten child types elaborate in the exact NodeChallenge scope. The scratch assembly compiles the parent and the core child against stubs. Five children are already proved there with standard axioms only.

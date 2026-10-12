@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.plane_ball_measure-a1",
+  "parent_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1",
+  "depth": 3,
+  "title": "Hausdorff measure of an n-disc in an n-dimensional subspace: Hⁿ(P ∩ B̄_s(0)) = sⁿω_n (parent Step 1)",
+  "statement": "Let n, N ∈ ℕ, let P ⊆ ℝ^N be a linear subspace with dim P = n, and let s > 0. Then Hⁿ(P ∩ B̄_s(0)) = sⁿ·ω_n in [0, ∞]. Here Hⁿ = μHE[n], B̄_s(0) is the closed ball of ℝ^N, and ω_n := Lⁿ(B_1(0)) is the Lebesgue measure of the open unit ball of ℝⁿ (ω₀ = 1).",
+  "lean_statement": "∀ (n N : ℕ) (P : Submodule ℝ (Rn N)), finrank ℝ P = n → ∀ s : ℝ, 0 < s → μHE[n] ((P : Set (Rn N)) ∩ Metric.closedBall 0 s) = ENNReal.ofReal (s ^ n) * volume (Metric.ball (0 : Rn n) 1)",
+  "lean_name": "deGiorgiRH_plane_closedBall_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-rectifiable-hausdorff-a1-plane-ball-measure-a1-a1"
+}

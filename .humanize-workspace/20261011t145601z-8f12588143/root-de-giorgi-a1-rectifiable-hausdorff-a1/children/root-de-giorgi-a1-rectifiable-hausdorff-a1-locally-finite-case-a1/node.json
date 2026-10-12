@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.locally_finite_case-a1",
+  "parent_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1",
+  "depth": 3,
+  "title": "Global case: a measure finite on compacts with unit-multiplicity tangent planes on a carrying measurable S equals Hⁿ⌞S, and S is rectifiable (parent Steps 3–8 with U = ℝ^{n+ℓ})",
+  "statement": "Assume (RT) [the frozen type of root.rectifiable_of_tangent_measure-a1]: for all n, ℓ ∈ ℕ and every Borel measure λ on ℝ^{n+ℓ} with λ(K) < ∞ for every compact K such that, for λ-a.e. y, there are a subspace P and θ > 0 with HasApproxTangentPlaneWithMultiplicity n λ y P θ, there is a measurable, countably n-rectifiable R ⊆ ℝ^{n+ℓ} with λ(ℝ^{n+ℓ} ∖ R) = 0. Assume also (AT) ApproximateTangentCharacterization (Simon Ch. 3, Theorem 1.6). Then for all n, ℓ ∈ ℕ, every measurable S ⊆ ℝ^{n+ℓ}, and every Borel measure μ on ℝ^{n+ℓ} with μ(K) < ∞ for every compact K and μ(ℝ^{n+ℓ} ∖ S) = 0 such that every x ∈ S has a subspace P with HasApproxTangentPlaneWithMultiplicity n μ x P 1: S is countably n-rectifiable and μ = Hⁿ⌞S (μ = μHE[n].restrict S).",
+  "lean_statement": "(∀ (n ℓ : ℕ) (μ : Measure (Rn (n + ℓ))), (∀ K : Set (Rn (n + ℓ)), IsCompact K → μ K < ∞) → (∀ᵐ x ∂μ, ∃ (P : Submodule ℝ (Rn (n + ℓ))) (θ : ℝ), 0 < θ ∧ HasApproxTangentPlaneWithMultiplicity n μ x P θ) → ∃ R : Set (Rn (n + ℓ)), MeasurableSet R ∧ CountablyRectifiable n R ∧ μ Rᶜ = 0) → ApproximateTangentCharacterization → ∀ (n ℓ : ℕ) (S : Set (Rn (n + ℓ))) (μ : Measure (Rn (n + ℓ))), (∀ K : Set (Rn (n + ℓ)), IsCompact K → μ K < ∞) → MeasurableSet S → μ Sᶜ = 0 → (∀ x ∈ S, ∃ P : Submodule ℝ (Rn (n + ℓ)), HasApproxTangentPlaneWithMultiplicity n μ x P 1) → CountablyRectifiable n S ∧ μ = (μHE[n] : Measure (Rn (n + ℓ))).restrict S",
+  "lean_name": "deGiorgiRH_locallyFinite_case",
+  "depends_on": [
+    "root.de_giorgi-a1.rectifiable_hausdorff-a1.measure_density-a1",
+    "root.de_giorgi-a1.rectifiable_hausdorff-a1.hausdorff_density-a1",
+    "root.de_giorgi-a1.rectifiable_hausdorff-a1.hausdorff_le_measure-a1",
+    "root.de_giorgi-a1.rectifiable_hausdorff-a1.measure_le_hausdorff-a1",
+    "root.de_giorgi-a1.rectifiable_hausdorff-a1.measure_eq_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.measure_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.hausdorff_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.hausdorff_le_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.measure_le_hausdorff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.measure_eq_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-rectifiable-hausdorff-a1-locally-finite-case-a1-a1"
+}

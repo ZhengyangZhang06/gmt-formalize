@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1.measure_eq_density-a1",
+  "parent_id": "root.de_giorgi-a1.rectifiable_hausdorff-a1",
+  "depth": 3,
+  "title": "Two measures, finite on compacts, with μ ≪ σ and equal n-dimensional density σ-a.e. coincide (Besicovitch–Radon–Nikodym; parent Step 8)",
+  "statement": "Let n, N ∈ ℕ and let μ, σ be Borel measures on ℝ^N with μ(K) < ∞ and σ(K) < ∞ for every compact K, and μ ≪ σ. Suppose that for σ-a.e. x ∈ ℝ^N both μ(B̄_ρ(x))/ρⁿ → ω_n and σ(B̄_ρ(x))/ρⁿ → ω_n in [0, ∞] as ρ ↓ 0, where ω_n := Lⁿ(B_1(0)). Then μ = σ.",
+  "lean_statement": "∀ (n N : ℕ) (μ σ : Measure (Rn N)), (∀ K : Set (Rn N), IsCompact K → μ K < ∞) → (∀ K : Set (Rn N), IsCompact K → σ K < ∞) → μ ≪ σ → (∀ᵐ x ∂σ, Tendsto (fun ρ : ℝ ↦ μ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1))) ∧ Tendsto (fun ρ : ℝ ↦ σ (Metric.closedBall x ρ) / ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 (volume (Metric.ball (0 : Rn n) 1)))) → μ = σ",
+  "lean_name": "deGiorgiRH_measure_eq_of_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-rectifiable-hausdorff-a1-measure-eq-density-a1-a1"
+}
