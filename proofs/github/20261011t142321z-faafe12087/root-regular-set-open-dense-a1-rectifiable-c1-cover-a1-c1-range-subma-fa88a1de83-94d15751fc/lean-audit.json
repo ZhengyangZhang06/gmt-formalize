@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8d56598349b4418ff9c79c1a7990afb6935f4501e40f2a40d6c59f5f548a4e96",
+  "git_delta": {
+    "base_commit": "05803f8b531a8bad7debdfe4fe5bed0ee0b489c2",
+    "candidate_commit": "1370d8066d091339288d1a8091b8521ed4b4554e",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_c1_range_subset_submanifold_cover",
+    "diff_sha256": "6ecbcf90a254dbaab14c5ff0d7e78c667d07b5f64a1305603d10116b850850d9",
+    "source_sha256": "4964660ae3e23fd5af6115b97eba73b6c215b2994729b462467f0a966ea8234a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_c1_range_subset_submanifold_cover",
+      "statement": "∀ (n ℓ : ℕ) (G : Rn n → Amb n ℓ), ContDiff ℝ 1 G → ∃ (N₀ : Set (Amb n ℓ)) (N : ℕ → Set (Amb n ℓ)), (μHE[n] : Measure (Amb n ℓ)) N₀ = 0 ∧ (∀ q, IsC1Submanifold n (N q) ∧ (μHE[n] : Measure (Amb n ℓ)) (N q) < ∞) ∧ range G ⊆ N₀ ∪ ⋃ q, N q",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
