@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'aal_cfs_|aal_cutoff_integrating_factor_squeeze|hasDerivAt_cutoff_integral|integrating_factor_deriv|squeeze_of_deriv' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le",
+        "continuousAt_of_dominated",
+        "integral_hasDerivAt_right",
+        "intervalIntegrable_rpow'",
+        "monotoneOn_of_deriv_nonneg",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "python3 -u /tmp/cfs-independent-audit-g4ev4fiz/run_checks.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Integrability/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-lp-monotonicity-a1-cutoff-squeeze-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/aal_cfs/aal_cfs_split_all.lean.txt",
+        "/tmp/cfs-independent-audit-g4ev4fiz/Types.lean",
+        "/tmp/cfs-independent-audit-g4ev4fiz/All.log"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions; inspected Mathlib files match the installed sources. The required differentiation, dominated-continuity, FTC, power-integrability and derivative-monotonicity lemmas have the needed hypotheses. The snapshot project search returned no matches. All four names are bare identifiers, unreserved in the 220-node DAG and absent from Lean declarations across 685 git refs. Independently compiled all five exact types against a freshly built contract without child implementations, then compiled the supplied four proofs and assembly of aal_cutoff_integrating_factor_squeeze. Each depends only on propext, Classical.choice and Quot.sound. The four-part analytic split is appropriate; its sole sibling dependency is derivative_squeeze on cutoff_derivative, and the assembly establishes exactly the selected frozen parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly includes the prose hypotheses and all three conclusions. The proof establishes cutoff bounds, support, integrability on the finite restricted measure, the uniform derivative bound 2CB/t, and transfer back to μ near t. Signed weights and the zero-measure case require no additional positivity assumption on B. The proof is complete and independent of other children and the parent."
+    },
+    {
+      "key": "pairing_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the complete prose statement. Restricted measurability, domination by the integrable function S‖H‖, and pointwise continuity justify dominated continuity; local support equality transfers it to the stated integral. No finiteness assumption on μ(closedBall y S) is needed or silently introduced. The proof is complete and non-circular."
+    },
+    {
+      "key": "integrating_factor",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches both conclusions and all six hypotheses, with natural powers in denominators and real power in the growth bound. The proof correctly establishes denominator positivity, continuity of a, integrability near zero using β<1, the FTC derivative, product-rule cancellation, and exponential bounds. The endpoint zero is Lebesgue-null, and n=0 is explicitly handled. No sibling or parent result is assumed."
+    },
+    {
+      "key": "derivative_squeeze",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the hypotheses and squeeze. The proof verifies the bounded comparison weight, validly applies cutoff_derivative at every admissible radius, integrates the pointwise derivative comparison, and uses the mean value theorem with justified endpoint continuity. Identification of the comparison-mass increment with A handles r=0 and σ=ρ. Its only dependency is correctly declared and acyclic; neither Fubini nor unassumed continuity of F is required."
+    }
+  ],
+  "required_changes": []
+}
