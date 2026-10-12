@@ -486,7 +486,7 @@ theorem poincare_set_mean_deviation_sq_bound : ∀ (n : ℕ) (s : Set (Rn n)) (f
   have havg : ⨍ y in s, f y = ⨍ y in s, hfa.mk f y := by
     rw [setAverage_eq, setAverage_eq, integral_congr_ae hff']
   rw [havg]
-  set f' := hfa.mk f with hf'def
+  set f' := hfa.mk f
   set c := ⨍ y in s, f' y with hc
   rw [lintegral_congr_ae (g := fun x => ‖f' x - c‖ₑ ^ 2) (hff'.mono fun x hx => by simp only [hx])]
   have : IsFiniteMeasure (volume.restrict s) :=
