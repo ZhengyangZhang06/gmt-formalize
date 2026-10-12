@@ -1,0 +1,117 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "cmb_covector_eq_sum_coord_smul_wedge|cmb_abs_apply_le_of_massOn_le|isoperimetric_coord_box_measure|lpf_lli_inner_compact_approx|cmb_exists_compactly_contained_exhaustion|constancy_mollifier_iteratedFDeriv_norm_le_integral|fiw_fcl_nested_subseq|slicing_ru_smooth_to_continuous|slicing_ru_continuous_to_bounded|br_weightedTangent_congr|lpf_simple_nvector_algebra|lpf_raf_chart_preimage_null",
+        "Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure|exists_isCompact_sdiff_lt|exists_measurable_subset_ae_eq|continuous_infEDist|exists_inv_nat_lt",
+        "norm_iteratedFDeriv_fderiv|hasFDerivAt_convolution_left|exists_contDiff_approx",
+        "poincar|rellich|kolmogorov.riesz|frechet.kolmogorov|BoundedVariationOn",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -R /tmp/skelpoly-independent-audit-7ik_35fe /tmp/skelpoly-independent-audit-7ik_35fe/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -R /tmp/skelpoly-independent-audit-7ik_35fe /tmp/skelpoly-independent-audit-7ik_35fe/Candidates.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -R /tmp/skelpoly-independent-audit-7ik_35fe /tmp/skelpoly-independent-audit-7ik_35fe/Glue.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-skeleton-polyhedral-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-skeleton-polyhedral-a1/decomposition-v2.json",
+        "/tmp/skelpoly-independent-audit-7ik_35fe/reuse-checks.json",
+        "/tmp/skelpoly-independent-audit-7ik_35fe/Challenges.lean",
+        "/tmp/skelpoly-independent-audit-7ik_35fe/Candidates.lean",
+        "/tmp/skelpoly-independent-audit-7ik_35fe/candidates.log",
+        "/tmp/skelpoly-independent-audit-7ik_35fe/Glue.lean",
+        "/tmp/skelpoly-independent-audit-7ik_35fe/glue.log"
+      ],
+      "conclusion": "The split is appropriate as exact reuse of twelve accepted leaves, adding no new DAG nodes. Every name is bare, uniquely reserved by its accepted declaration, and reused with a byte-identical frozen type. The selected parent retains deformation_mass_restriction; the resulting dependency graph is acyclic. All twelve propositions independently elaborate over the frozen base without child implementations. Recompiled candidate proofs and exact-type witnesses use only propext, Classical.choice and Quot.sound; seven application checks also pass. No IsUnit construction occurs, and the Gram matrix uses Matrix.of. Snapshot searches found none of the twelve declarations and no relevant multidimensional BV Poincaré or compactness theorem. Those analytic obligations remain in the supplied parent proof. Each child supports an identified step, and the remaining proof establishes the selected mass, support and integrality conclusions with C = max{2, 1+c}; it does not substitute an ancestor theorem. The mathematical placement agrees with [Simon, Ch. 6, displays (26)–(37)](https://web.stanford.edu/class/math285/ts-gmt.pdf#page=87)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant Kronecker identity, sorting and basis extensionality prove the exact expansion, including n=0 and n>P. This supplies the coordinate decomposition and n-vector extensionality used by the parent."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof derives C≥0, uses B≥0 correctly when converting the ENNReal bound, rescales by both signs, and passes c↓C. It proves the stated estimate for arbitrary U and W."
+    },
+    {
+      "key": "box_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit isometric parametrization and product-volume calculation prove the normalized Hausdorff-measure formula, including n=0. Specializing a=0 and b=1 gives the unit-face measure required by the parent."
+    },
+    {
+      "key": "inner_compact_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable kernel, finite pieces from restricted σ-finiteness, compact approximation and countable reindexing prove the exact null-remainder conclusion. No unassumed regularity of the original measure is needed."
+    },
+    {
+      "key": "exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The infEDist construction proves compact containment and coverage of every compact subset, including U=univ and empty K. The supplied finite-union adjustment provides the increasing exhaustion needed by the parent."
+    },
+    {
+      "key": "mollifier_derivative_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Induction through vector-valued kernels and precompL proves the derivative estimate for every q, including zero, with a constant independent of g and x. The differentiation and boundedness hypotheses are all supplied."
+    },
+    {
+      "key": "nested_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The nested infinite sets and increasing choices place φ(r) and φ(r+1) in the same required set. This proves precisely the arbitrary-relation contract and supports the parent's summable consecutive L¹ estimates."
+    },
+    {
+      "key": "smooth_to_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Mollification preserves compact support inside O after choosing a positive margin. Uniform bounds and dominated convergence against the integrable densities prove the exact continuous-test conclusion without extra measure assumptions."
+    },
+    {
+      "key": "continuous_to_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive and negative densities produce finite measures; the explicit cutoffs establish equality on open subsets, and π–λ gives equality of restrictions. The final integration identity proves the bounded Borel conclusion."
+    },
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "For small scales the integrands localize inside the blown-up open neighborhood. Null-image control and restricted-measure identities transfer both carrier and weight equalities; θ(x)=θ′(x) transfers the limit. No additional measurability hypotheses are needed."
+    },
+    {
+      "key": "simple_nvector_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Leibniz expansion proves change of frame; calibration, Hadamard and Gram–Schmidt prove the Gram identity, with dependent and zero-degree cases covered. The stated operator norm and Matrix.of construction are correct; unit orientations suffice for Step 8."
+    },
+    {
+      "key": "chart_preimage_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positivity of c gives injectivity and a c⁻¹-Lipschitz inverse on the image. The Hausdorff null-image estimate and Hⁿ=volume prove the exact conclusion for arbitrary sets; c=1 applies to the face charts."
+    }
+  ],
+  "required_changes": []
+}
