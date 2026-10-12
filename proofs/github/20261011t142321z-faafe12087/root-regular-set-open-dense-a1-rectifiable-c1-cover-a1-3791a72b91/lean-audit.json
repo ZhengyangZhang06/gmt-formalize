@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8b00cdc48a2933b364f6129126b6e631163ebeaf9658befc4807f343346d6da3",
+  "git_delta": {
+    "base_commit": "b2f1f8a9b71864438d73a39b89a7d4dad6a46f15",
+    "candidate_commit": "024784bd6e8cc87f627c0b1df5851e7abd38c1e4",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "e393430518316f0161d7c9db514c2b87b1482b9c5f2502267eed5c34cc4991b3",
+    "source_sha256": "1c63b537e7360ff6a2aa7226ab9915f1fe2c37afce86732ac4c3e890303de171",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_rectifiable_subset_c1_cover",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (M : Set (Amb n ℓ)), Poincare.SimonGMT.Chapter03.CountablyRectifiable n M → ∃ (N₀ : Set (Amb n ℓ)) (N : ℕ → Set (Amb n ℓ)), (μHE[n] : Measure (Amb n ℓ)) N₀ = 0 ∧ (∀ j, IsC1Submanifold n (N j) ∧ (μHE[n] : Measure (Amb n ℓ)) (N j) < ∞) ∧ M ⊆ N₀ ∪ ⋃ j, N j",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
