@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "30a8197829d86f18c76725f4aa734c7352a332ac42154faceb055b1d31acff42",
+  "git_delta": {
+    "base_commit": "3193cd9eb7c6d3f466d04fa3e5e033b517260b4f",
+    "candidate_commit": "0625c19fe802df3906b708000edb534872ec1e7e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_mw_wlm_exists_open_measure_between",
+    "diff_sha256": "04bb9d48df776117b51eea8f8c9351f8f60ade8b229f84fdf3cde43587ba7897",
+    "source_sha256": "fa9e0a4d69c3632c1828004b3a48e4e13f3c6d655d2a49fb40094aafbd115468",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_mw_wlm_exists_open_measure_between",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (W : Set (Euclid P)), IsOpen W → W ⊆ U → ∀ c : ℝ≥0∞, c < R.measure W → ∃ V : Set (Euclid P), IsOpen V ∧ V ⊆ W ∧ c < R.measure V ∧ R.measure V < ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
