@@ -458,6 +458,52 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Bilinear products preserve `C^{m,α}_loc`** (node `holder_bilinear` of the elliptic bootstrap
+for Simon Ch. 5, Theorem 7.1).  Let `B : E₂ →L E₃ →L E₄` be continuous bilinear and let
+`f : E₁ → E₂`, `g : E₁ → E₃` be `C^m` on the open set `U` with `D^m f`, `D^m g` `α`-Hölder on every
+compact `K ⊆ U`.  Then `x ↦ B (f x) (g x)` is `C^m` on `U` and its `m`-th derivative is `α`-Hölder
+on every compact `K ⊆ U`.  The evaluation `β (y, z) = B y z` is a bounded bilinear map, hence
+smooth, so `D^m β` is `α`-Hölder on compacts (`dohr_eb_holder_of_contDiffOn_succ`).  The pair
+`p = (f, g)` is `C^m` on `U` with `D^m p = (D^m f).prod (D^m g)`, whose norm is the max of the two
+norms, so `D^m p` is `α`-Hölder on compacts.  The composition lemma `dohr_eb_holder_comp`, with
+`V = univ` and the `C¹` outer map `β` (valid also for `m = 0`), applies to
+`β ∘ p = fun x => B (f x) (g x)`. -/
+theorem dohr_eb_holder_bilinear : ∀ (E₁ E₂ E₃ E₄ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] [NormedAddCommGroup E₃] [NormedSpace ℝ E₃] [NormedAddCommGroup E₄] [NormedSpace ℝ E₄] (m : ℕ) (α : ℝ) (B : E₂ →L[ℝ] E₃ →L[ℝ] E₄) (f : E₁ → E₂) (g : E₁ → E₃) (U : Set E₁), 0 < α → α ≤ 1 → IsOpen U → ContDiffOn ℝ m f U → (∀ K : Set E₁, IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m f x - iteratedFDeriv ℝ m f y‖ ≤ C * ‖x - y‖ ^ α) → ContDiffOn ℝ m g U → (∀ K : Set E₁, IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖ ≤ C * ‖x - y‖ ^ α) → ContDiffOn ℝ m (fun x => B (f x) (g x)) U ∧ ∀ K : Set E₁, IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fun x => B (f x) (g x)) x - iteratedFDeriv ℝ m (fun x => B (f x) (g x)) y‖ ≤ C * ‖x - y‖ ^ α := by
+  intro E₁ E₂ E₃ E₄ _ _ _ _ _ _ _ _ m α B f g U hα hα1 hU hf hfH hg hgH
+  -- Step 1: `β (y, z) = B y z` is a bounded bilinear map, hence `C^k` on `E₂ × E₃` for every `k`;
+  -- as it is `C^{m+1}`, its `m`-th derivative is `α`-Hölder on compact sets.
+  have hβ : ∀ k : WithTop ℕ∞, ContDiffOn ℝ k (fun q : E₂ × E₃ => B q.1 q.2) univ := fun _ =>
+    B.isBoundedBilinearMap.contDiff.contDiffOn
+  have hβH := Submission.dohr_eb_holder_of_contDiffOn_succ (E₂ × E₃) E₄ m α
+    (fun q : E₂ × E₃ => B q.1 q.2) univ hα hα1 isOpen_univ (hβ _)
+  -- Step 2: the pair `p = (f, g)` is `C^m` on `U`, and `D^m p = (D^m f).prod (D^m g)` has norm
+  -- `max ‖D^m f‖ ‖D^m g‖`, so `D^m p` is `α`-Hölder on compact subsets of `U`.
+  have hpH : ∀ K : Set E₁, IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ m (fun x => (f x, g x)) x - iteratedFDeriv ℝ m (fun x => (f x, g x)) y‖ ≤
+        C * ‖x - y‖ ^ α := by
+    intro K hK hKU
+    obtain ⟨Cf, hCf⟩ := hfH K hK hKU
+    obtain ⟨Cg, hCg⟩ := hgH K hK hKU
+    have hD : ∀ x ∈ K, iteratedFDeriv ℝ m (fun x => (f x, g x)) x =
+        (iteratedFDeriv ℝ m f x).prod (iteratedFDeriv ℝ m g x) := fun x hx =>
+      iteratedFDeriv_prodMk (hf.contDiffAt (hU.mem_nhds (hKU hx)))
+        (hg.contDiffAt (hU.mem_nhds (hKU hx))) le_rfl
+    refine ⟨max Cf Cg, fun x hx y hy => ?_⟩
+    have hxy : 0 ≤ ‖x - y‖ ^ α := Real.rpow_nonneg (norm_nonneg _) α
+    rw [hD x hx, hD y hy, ← ContinuousMultilinearMap.sub_prod_sub,
+      ContinuousMultilinearMap.opNorm_prod]
+    exact max_le ((hCf x hx y hy).trans (mul_le_mul_of_nonneg_right (le_max_left _ _) hxy))
+      ((hCg x hx y hy).trans (mul_le_mul_of_nonneg_right (le_max_right _ _) hxy))
+  -- Step 3: the composition lemma with inner map `p`, open sets `U` and `univ`, and the `C¹` outer
+  -- map `β`; here `β ∘ p = fun x => B (f x) (g x)`.
+  exact Submission.dohr_eb_holder_comp E₁ (E₂ × E₃) E₄ m α (fun x => (f x, g x))
+    (fun q : E₂ × E₃ => B q.1 q.2) U univ hα hα1 hU isOpen_univ (mapsTo_univ _ _)
+    (Or.inr (Or.inr (hβ _))) (hf.prodMk hg) hpH (hβ _) hβH
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
