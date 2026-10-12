@@ -570,6 +570,7 @@ theorem lip_approx_gm_ball_measure : ∀ (n : ℕ), 1 ≤ n → ∀ (c : Rn n) (
   -- Scaling: `|B_r(c)| = rⁿ |B̆_1(0)| = ω_n rⁿ`.
   rw [Measure.addHaar_closedBall volume c hr, hfin, hball,
     ← ENNReal.ofReal_mul (pow_nonneg hr n), mul_comm]
+
 /-- Simon Ch. 5, proof of Lemma 2.6 (pp. 110–111): for a linear isometry `q` of `ℝ^{n+ℓ}` and
 `f : ℝⁿ → ℝ^ℓ` with `|f(x) − f(z)| ≤ |x − z|`, the map `Γ(x) = q(x, f(x))` is `√2`-Lipschitz.
 Since `q` preserves distances and `|(x, f x) − (z, f z)|² = |x − z|² + |f(x) − f(z)|²` (split the sum
@@ -577,19 +578,6 @@ Since `q` preserves distances and `|(x, f x) − (z, f z)|² = |x − z|² + |f(
 the hypothesis gives `|Γ(x) − Γ(z)|² ≤ 2|x − z|² = (√2 |x − z|)²`; take square roots. -/
 theorem lip_approx_gm_graph_map_lipschitz : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), (∀ x z, ‖f x - f z‖ ≤ ‖x - z‖) → LipschitzWith (NNReal.sqrt 2) (fun x => q (graphPoint x (f x))) := by
   intro n ℓ q f hf
-/-- Simon Ch. 5, Lemma 2.6 and its proof (pp. 110–111): graph coordinates on
-`ℝ^{n+ℓ} = ℝⁿ × ℝ^ℓ` and the projection onto `T₀ = q(ℝⁿ × {0})`, the plane the book takes to be
-`ℝⁿ × {0}` without loss of generality. For a linear isometry `q` of `ℝ^{n+ℓ}`:
-(i) `(a, b) − (a', b') = (a − a', b − b')`; (ii) `|(a, b)|² = |a|² + |b|²`; (iii) every
-`z ∈ ℝ^{n+ℓ}` is some `(a, b)`; (iv) `p_{T₀}(q(a, b)) = q(a, 0)`.
-The coordinate of `(a, b)` at `castAdd ℓ i` is `a_i` and at `natAdd n j` is `b_j`, and every index
-of `Fin (n + ℓ)` has one of these forms (`Fin.addCases`); this gives (i) and (iii), and (ii) by
-splitting `Σ_k z_k²` with `Fin.sum_univ_add`. For (iv), `(a, 0) = Σ_i a_i e_{castAdd ℓ i}` lies in
-`ℝⁿ × {0}`, `(0, b)` is orthogonal to every `e_{castAdd ℓ i}` and hence to `ℝⁿ × {0}`, and `q`
-preserves inner products; so `q(a, 0) ∈ T₀` and `q(a, b) − q(a, 0) = q(0, b) ⊥ T₀`, which
-characterizes `q(a, 0)` as the orthogonal projection of `q(a, b)` onto `T₀`. -/
-theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b')) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ z : Amb n ℓ, ∃ (a : Rn n) (b : Rn ℓ), z = graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a 0)) := by
-  intro n ℓ q
   -- the coordinates of `graphPoint a b`
   have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
     intro a b i
@@ -612,6 +600,27 @@ theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗ�
   refine (sq_le_sq₀ (norm_nonneg _) (by positivity)).mp ?_
   rw [hsq, mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
   linarith
+
+/-- Simon Ch. 5, Lemma 2.6 and its proof (pp. 110–111): graph coordinates on
+`ℝ^{n+ℓ} = ℝⁿ × ℝ^ℓ` and the projection onto `T₀ = q(ℝⁿ × {0})`, the plane the book takes to be
+`ℝⁿ × {0}` without loss of generality. For a linear isometry `q` of `ℝ^{n+ℓ}`:
+(i) `(a, b) − (a', b') = (a − a', b − b')`; (ii) `|(a, b)|² = |a|² + |b|²`; (iii) every
+`z ∈ ℝ^{n+ℓ}` is some `(a, b)`; (iv) `p_{T₀}(q(a, b)) = q(a, 0)`.
+The coordinate of `(a, b)` at `castAdd ℓ i` is `a_i` and at `natAdd n j` is `b_j`, and every index
+of `Fin (n + ℓ)` has one of these forms (`Fin.addCases`); this gives (i) and (iii), and (ii) by
+splitting `Σ_k z_k²` with `Fin.sum_univ_add`. For (iv), `(a, 0) = Σ_i a_i e_{castAdd ℓ i}` lies in
+`ℝⁿ × {0}`, `(0, b)` is orthogonal to every `e_{castAdd ℓ i}` and hence to `ℝⁿ × {0}`, and `q`
+preserves inner products; so `q(a, 0) ∈ T₀` and `q(a, b) − q(a, 0) = q(0, b) ⊥ T₀`, which
+characterizes `q(a, 0)` as the orthogonal projection of `q(a, b)` onto `T₀`. -/
+theorem lip_approx_graph_coordinates : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), (∀ (a a' : Rn n) (b b' : Rn ℓ), graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b')) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ (∀ z : Amb n ℓ, ∃ (a : Rn n) (b : Rn ℓ), z = graphPoint a b) ∧ (∀ (a : Rn n) (b : Rn ℓ), (rotatedPlane q).starProjection (q (graphPoint a b)) = q (graphPoint a 0)) := by
+  intro n ℓ q
+  -- the coordinates of `graphPoint a b`
+  have hl : ∀ (a : Rn n) (b : Rn ℓ) (i : Fin n), graphPoint a b (Fin.castAdd ℓ i) = a i := by
+    intro a b i
+    simp [graphPoint]
+  have hr : ∀ (a : Rn n) (b : Rn ℓ) (j : Fin ℓ), graphPoint a b (Fin.natAdd n j) = b j := by
+    intro a b j
+    simp [graphPoint]
   -- (i): subtraction is coordinatewise
   have hsub : ∀ (a a' : Rn n) (b b' : Rn ℓ),
       graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b') := by
