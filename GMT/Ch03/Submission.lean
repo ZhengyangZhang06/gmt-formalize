@@ -847,6 +847,90 @@ theorem Submission.deGiorgiSobInd_mollified_fderiv_le : ∀ (N : ℕ) (U G : Set
       (Submission.deGiorgiSobIndMFL_norm_fderiv_le N U G μ ν hU hG hGG ρ r y hρ hρc hρ0 hρr
         ((Metric.closedBall_subset_cthickening hy r).trans hK)) (hζ0 y)
   · simp [image_eq_zero_of_notMem_tsupport hy]
+/-- **Mollified test functions converge against `μ`** (Simon Ch. 3, proof of Theorem 4.3, p. 83:
+the passage `σ ↓ 0` in the Sobolev inequality for `ζ χ_E`, via Ch. 2, 2.5). Let `ζ ∈ C_c(ℝᴺ)`
+with `μ(cthickening δ (spt ζ)) < ∞`, and let `ρ_j ≥ 0` be continuous with `∫ ρ_j dLᴺ = 1` and
+`spt ρ_j ⊆ B̄_{r_j}(0)`, where `r_j ≤ δ` and `r_j → 0`. Then
+`∫ (∫ ζ(y) ρ_j(y - z) dy) dμ(z) → ∫ ζ dμ`: `ζ̃_j(z) = ∫ ζ(y) ρ_j(y - z) dy` is measurable,
+vanishes off `cthickening δ (spt ζ)`, is bounded by `sup |ζ|`, and tends to `ζ` pointwise by
+uniform continuity of `ζ`, so dominated convergence applies. -/
+theorem Submission.deGiorgiSobInd_mollified_integral_tendsto : ∀ (N : ℕ) (μ : Measure (Rn N)) (ζ : Rn N → ℝ) (ρ : ℕ → Rn N → ℝ) (r : ℕ → ℝ) (δ : ℝ), Continuous ζ → HasCompactSupport ζ → μ (Metric.cthickening δ (tsupport ζ)) < ∞ → (∀ j, Continuous (ρ j)) → (∀ j y, 0 ≤ ρ j y) → (∀ j, ∫ y, ρ j y = 1) → (∀ j, tsupport (ρ j) ⊆ Metric.closedBall (0 : Rn N) (r j)) → (∀ j, r j ≤ δ) → Tendsto r atTop (𝓝 0) → Tendsto (fun j ↦ ∫ z, (∫ y, ζ y * ρ j (y - z)) ∂μ) atTop (𝓝 (∫ z, ζ z ∂μ)) := by
+  intro N μ ζ ρ r δ hζc hζs hμK hρc hρnn hρint hρsupp hrδ hr
+  -- Notation: `K' = cthickening δ (tsupport ζ)` and `C ≥ sup |ζ|`.
+  set K' := Metric.cthickening δ (tsupport ζ)
+  obtain ⟨C, hC⟩ := hζc.bounded_above_of_compact_support hζs
+  -- Step 1: `ρ j` is integrable, `∫ ρ j (y - z) dy = 1`, and `ρ j (y - z) ≠ 0` forces
+  -- `|y - z| ≤ r j`.
+  have hρi : ∀ j, Integrable (ρ j) := fun j ↦
+    Integrable.of_integral_ne_zero (by rw [hρint j]; exact one_ne_zero)
+  have hmass : ∀ j z, ∫ y, ρ j (y - z) = 1 := fun j z ↦ by
+    rw [integral_sub_right_eq_self (ρ j) z, hρint j]
+  have hsupp : ∀ j y z, ρ j (y - z) ≠ 0 → dist y z ≤ r j := fun j y z h ↦ by
+    have := hρsupp j (subset_tsupport _ h)
+    rwa [Metric.mem_closedBall, dist_zero_right, ← dist_eq_norm] at this
+  have hint : ∀ j z, Integrable (fun y ↦ ζ y * ρ j (y - z)) := fun j z ↦
+    ((hρi j).comp_sub_right z).bdd_mul hζc.aestronglyMeasurable (Eventually.of_forall hC)
+  -- Step 2: `|ζ̃_j| ≤ C · 1_{K'}`.
+  have hbound : ∀ j z, ‖∫ y, ζ y * ρ j (y - z)‖ ≤ K'.indicator (fun _ ↦ C) z := by
+    intro j z
+    by_cases hz : z ∈ K'
+    · rw [indicator_of_mem hz]
+      calc ‖∫ y, ζ y * ρ j (y - z)‖ ≤ ∫ y, C * ρ j (y - z) := by
+            refine norm_integral_le_of_norm_le (((hρi j).comp_sub_right z).const_mul C)
+              (Eventually.of_forall fun y ↦ ?_)
+            rw [norm_mul, Real.norm_of_nonneg (hρnn j _)]
+            exact mul_le_mul_of_nonneg_right (hC y) (hρnn j _)
+        _ = C := by rw [integral_const_mul, hmass, mul_one]
+    · rw [indicator_of_notMem hz]
+      have h0 : ∀ y, ζ y * ρ j (y - z) = 0 := by
+        intro y
+        by_contra h
+        obtain ⟨h1, h2⟩ := mul_ne_zero_iff.1 h
+        exact hz (Metric.mem_cthickening_of_dist_le z y δ _ (subset_tsupport _ h1)
+          ((dist_comm z y).le.trans ((hsupp j y z h2).trans (hrδ j))))
+      simp [h0]
+  -- Step 3: each `ζ̃_j` is strongly measurable.
+  have hmeas : ∀ j, AEStronglyMeasurable (fun z ↦ ∫ y, ζ y * ρ j (y - z)) μ := fun j ↦ by
+    have h : StronglyMeasurable (fun p : Rn N × Rn N ↦ ζ p.2 * ρ j (p.2 - p.1)) :=
+      ((hζc.comp continuous_snd).mul
+        ((hρc j).comp (continuous_snd.sub continuous_fst))).stronglyMeasurable
+    exact h.integral_prod_right'.aestronglyMeasurable
+  -- Step 4: `ζ̃_j → ζ` pointwise, by uniform continuity of `ζ`.
+  have hlim : ∀ z, Tendsto (fun j ↦ ∫ y, ζ y * ρ j (y - z)) atTop (𝓝 (ζ z)) := by
+    intro z
+    have huc := hζs.uniformContinuous_of_continuous hζc
+    rw [Metric.uniformContinuous_iff] at huc
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨η, hη, hηε⟩ := huc (ε / 2) (half_pos hε)
+    obtain ⟨j₀, hj₀⟩ := (Metric.tendsto_atTop.1 hr) η hη
+    refine ⟨j₀, fun j hj ↦ ?_⟩
+    have hrj : r j < η := by
+      have := hj₀ j hj
+      rw [Real.dist_eq, sub_zero] at this
+      exact (le_abs_self _).trans_lt this
+    have hdiff : (∫ y, ζ y * ρ j (y - z)) - ζ z = ∫ y, (ζ y - ζ z) * ρ j (y - z) := by
+      simp_rw [sub_mul]
+      rw [integral_sub (hint j z) (((hρi j).comp_sub_right z).const_mul _), integral_const_mul,
+        hmass, mul_one]
+    rw [Real.dist_eq, hdiff]
+    calc |∫ y, (ζ y - ζ z) * ρ j (y - z)| ≤ ∫ y, ε / 2 * ρ j (y - z) := by
+          rw [← Real.norm_eq_abs]
+          refine norm_integral_le_of_norm_le (((hρi j).comp_sub_right z).const_mul _)
+            (Eventually.of_forall fun y ↦ ?_)
+          rw [norm_mul, Real.norm_of_nonneg (hρnn j _)]
+          by_cases hy : ρ j (y - z) = 0
+          · rw [hy]; simp
+          · refine mul_le_mul_of_nonneg_right ?_ (hρnn j _)
+            rw [← dist_eq_norm]
+            exact (hηε ((hsupp j y z hy).trans_lt hrj)).le
+      _ = ε / 2 := by rw [integral_const_mul, hmass, mul_one]
+      _ < ε := half_lt_self hε
+  -- Step 5: dominated convergence with the bound `C · 1_{K'} ∈ L¹(μ)`.
+  have hK'meas : MeasurableSet K' := Metric.isClosed_cthickening.measurableSet
+  refine tendsto_integral_of_dominated_convergence (K'.indicator fun _ ↦ C) hmeas ?_
+    (fun j ↦ Eventually.of_forall (hbound j)) (Eventually.of_forall hlim)
+  exact (integrable_indicator_iff hK'meas).2 (integrableOn_const hμK.ne)
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
