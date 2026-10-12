@@ -4107,6 +4107,73 @@ theorem Submission.chart_approx_tangent_and_differential : ∀ (n ℓ p : ℕ) (
   filter_upwards [hA, hBC] with u hAu hBCu huV huM
   exact ⟨hAu huV huM, hBCu huV (hMU huM)⟩
 
+/-- **Simon Ch. 3, Theorems 1.6 and 1.9 (pp. 71, 75; chapter-03.txt ll. 109–274, 316–323).**
+An `Hⁿ`-measurable `M ⊆ ℝ^{n+ℓ}` is countably `n`-rectifiable iff it has an approximate tangent
+space at `Hⁿ`-a.e. point: with respect to every positive locally `Hⁿ`-integrable weight `θ`
+(Def. 1.7), and without weight (Def. 1.4) when `Hⁿ(M ∩ K) < ∞` for compact `K`.
+
+Theorem 1.9 is proved first, directly rather than from 1.6 via Remark 1.8(1) (Lusin).
+"⇒" (ll. 113–143): by Lemma 1.2, `M ⊆ N₀ ∪ ⋃ⱼ Nⱼ` with `Hⁿ(N₀) = 0` and `C¹` submanifolds `Nⱼ`;
+in every `C¹` chart `ψ` the weighted tangent plane at `ψ(u)` is `range Dψ(u)` for a.e. `u` (chart
+lemma with `f = 0`), and the chartwise transfer makes this `Hⁿ`-a.e. on `M`.
+"⇐" (ll. 145–274): `μ = θ Hⁿ ⌞ M` is finite on compacts, has the null sets `{S : Hⁿ(M ∩ S) = 0}`,
+and has approximate tangent plane `P` with multiplicity `θ(x)` wherever `M` has weighted tangent
+plane `P`, where `θ(x) > 0` for `x ∈ M`; so some Borel countably rectifiable `R` has `μ(Rᶜ) = 0`,
+i.e. `Hⁿ(M ∖ R) = 0`, and `M ⊆ ((M ∖ R) ∪ R₀) ∪ ⋃ⱼ Fⱼ(ℝⁿ)` for a Def. 1.1 cover
+`R ⊆ R₀ ∪ ⋃ⱼ Fⱼ(ℝⁿ)`.
+Theorem 1.6 is the case `θ ≡ 1`, admissible as `Hⁿ(M ∩ K) < ∞`, for which Def. 1.7 is Def. 1.4. -/
+theorem Submission.approximateTangentCharacterizations_hold :
+    ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization := by
+  have hweighted : WeightedApproximateTangentCharacterization := by
+    intro n ℓ M θ hM hθ
+    constructor
+    · -- "⇒": cover `M` by `C¹` submanifolds and read off the tangent plane in every chart.
+      intro hrect
+      obtain ⟨N₀, S, hN₀, hS, hcover⟩ :=
+        (Submission.submanifoldCoverCharacterization_holds n ℓ M).1 hrect
+      refine Submission.ae_of_ae_on_submanifold_charts n (n + ℓ) M N₀ S
+        (fun x ↦ ∃ P : Submodule ℝ (Rn (n + ℓ)), HasWeightedApproximateTangentSpaceAt n M θ x P)
+        hN₀ hS hcover fun V ψ hV hψ hDψ ↦ ?_
+      filter_upwards [Submission.chart_approx_tangent_and_differential n ℓ 0 M univ θ
+        (fun _ ↦ 0) V ψ hM hθ isOpen_univ (subset_univ M)
+        (LocallyLipschitz.const _).locallyLipschitzOn hV hψ hDψ] with u hu huV huM
+      exact ⟨_, (hu huV huM).1⟩
+    · -- "⇐": the measure `μ = θ Hⁿ ⌞ M` is carried by a countably rectifiable set.
+      intro hae
+      obtain ⟨μ, hμ⟩ : ∃ μ : Measure (Rn (n + ℓ)),
+          μ = ((μHE[n] : Measure (Rn (n + ℓ))).restrict M).withDensity
+            fun z ↦ ENNReal.ofReal (θ z) := ⟨_, rfl⟩
+      obtain ⟨hfin, hnull, htan⟩ :=
+        Submission.weightedMeasure_finite_null_tangent n (n + ℓ) M θ μ hM hθ hμ
+      -- `μ`-a.e. `x` has an approximate tangent plane with multiplicity `θ(x) > 0`.
+      have hμae : ∀ᵐ x ∂μ, ∃ (P : Submodule ℝ (Rn (n + ℓ))) (c : ℝ), 0 < c ∧
+          HasApproxTangentPlaneWithMultiplicity n μ x P c := by
+        rw [ae_iff, hnull]
+        refine measure_mono_null ?_ (ae_iff.1 hae)
+        rintro x ⟨hxM, hx⟩ hxP
+        obtain ⟨P, hP⟩ := hxP hxM
+        exact hx ⟨P, θ x, hθ.1 x hxM, htan x P hP⟩
+      obtain ⟨R, -, ⟨R₀, hR₀, F, hF, hRcover⟩, hRc⟩ :=
+        Submission.rectifiable_of_approx_tangent_measure n ℓ μ hfin hμae
+      -- `Hⁿ(M ∖ R) = 0`, so `M ∖ R` joins the exceptional set of the cover of `R`.
+      refine ⟨(M ∩ Rᶜ) ∪ R₀, measure_union_null ((hnull Rᶜ).1 hRc) hR₀, F, hF, fun x hxM ↦ ?_⟩
+      by_cases hxR : x ∈ R
+      · rcases hRcover hxR with hx | hx
+        · exact Or.inl (Or.inr hx)
+        · exact Or.inr hx
+      · exact Or.inl (Or.inl ⟨hxM, hxR⟩)
+  -- Theorem 1.6: the weight `θ ≡ 1`.
+  refine ⟨fun n ℓ M hM hfin ↦ ?_, hweighted⟩
+  have hone : IsPositiveLocallyIntegrableWeight n M fun _ : Rn (n + ℓ) ↦ (1 : ℝ) :=
+    ⟨fun _ _ ↦ one_pos, aemeasurable_const, fun K hK ↦ integrableOn_const (hfin K hK).ne⟩
+  have hiff : ∀ (x : Rn (n + ℓ)) (P : Submodule ℝ (Rn (n + ℓ))),
+      HasWeightedApproximateTangentSpaceAt n M (fun _ ↦ (1 : ℝ)) x P ↔
+        HasApproximateTangentSpaceAt n M x P := by
+    intro x P
+    simp only [HasWeightedApproximateTangentSpaceAt, HasApproximateTangentSpaceAt, mul_one,
+      one_mul]
+  simpa only [hiff] using hweighted n ℓ M (fun _ ↦ 1) hM hone
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
