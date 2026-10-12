@@ -359,6 +359,29 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Measurability part of Step 1 of the integrality of the Lipschitz push-forward (Simon Ch. 6,
+(3.6) and Lemma 3.9, pp. 147–148): for a rectifiable triple `(M, θ, ξ)` in an open `U` and an
+`Hⁿ⌞M`-a.e. strongly measurable `L`, the multiplicity `θ` is `Hⁿ⌞M`-a.e. measurable and
+`x ↦ L(x)_# ξ(x)` is `Hⁿ⌞M`-a.e. strongly measurable. -/
+theorem Submission.lpf_pi_measurability : ∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U → IsRectifiableTriple U n M θ ξ → AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) → AEMeasurable θ ((μHE[n] : Measure (Eucl P)).restrict M) ∧ AEStronglyMeasurable (fun x => nVectorPushforward n (L x) (ξ x)) ((μHE[n] : Measure (Eucl P)).restrict M) := by
+  intro P Q n U M θ ξ L hU hT hL
+  constructor
+  · -- `θ` is locally `Hⁿ`-integrable on `M` (compact neighbourhoods inside the open `U`), hence
+    -- `Hⁿ⌞M`-a.e. strongly measurable since `ℝ^P` is second countable.
+    have hloc : LocallyIntegrableOn θ M (μHE[n] : Measure (Eucl P)) := by
+      intro x hx
+      obtain ⟨K, hK, hxK, hKU⟩ := exists_compact_subset hU (hT.subset hx)
+      exact ⟨M ∩ K, inter_mem_nhdsWithin M (mem_interior_iff_mem_nhds.mp hxK),
+        hT.integrableOn K hK hKU⟩
+    exact hloc.aestronglyMeasurable.aemeasurable
+  · -- `(A, v) ↦ A_# v = v ∘ A^#` is continuous, as `A ↦ A^#` and composition are.
+    have hΦ : Continuous fun p : (Eucl P →L[ℝ] Eucl Q) × NVector (Eucl P) n =>
+        nVectorPushforward n p.1 p.2 :=
+      continuous_snd.clm_comp
+        (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp continuous_fst)
+    -- Compose with the `Hⁿ⌞M`-a.e. strongly measurable pair `x ↦ (L x, ξ x)`.
+    exact hΦ.comp_aestronglyMeasurable (hL.prodMk hT.aestronglyMeasurable)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
