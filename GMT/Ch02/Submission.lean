@@ -904,6 +904,85 @@ theorem Submission.fderiv_fderiv_symm_of_contDiffOn_two : ∀ (n N : ℕ) (V : S
       _ = 0 + ε := by ring
   exact sub_eq_zero.mp (norm_le_zero_iff.mp hzero)
 
+/-- **Trace identity for the tangential coefficient field** (product-rule core of the chart
+divergence formula). Put `A(y) = Dψ(y)`, `G(y) = A(y)* A(y)` and `a = G⁻¹ A* u`; fix `x ∈ V` and
+write `A = A(x)`, `S = D²ψ(x)` and `p = u(x) - A a(x)`. By `gram_inverse_range_starProjection`
+each `G(y)`, `y ∈ V`, is a unit, so `A(y)* (u(y) - A(y) a(y)) = 0` on `V`. Hence for every `c` the
+function `y ↦ ⟪A(y) c, u(y) - A(y) a(y)⟫ = ⟪c, A(y)* (u(y) - A(y) a(y))⟫` vanishes near `x`, and
+the product rule at `x` (`a` is `C¹` by `chart_tangential_coefficient_contDiffOn`) gives
+`⟪A c, Du(x) v - A Da(x) v - S v a(x)⟫ + ⟪S v c, p⟫ = 0` for all `c, v`. For any `e` take
+`c = G⁻¹ e`, so `A* A c = e`; with the symmetry of `G⁻¹` (`gram_inverse_range_starProjection`)
+and `S v a(x) = S a(x) v` (`fderiv_fderiv_symm_of_contDiffOn_two`) this becomes
+`⟪e, Da(x) e⟫ + ⟪e, G⁻¹ A* S(a(x)) e⟫ = ⟪e, G⁻¹ A* Du(x) e⟫ + ⟪p, S e (G⁻¹ e)⟫`. Summing over the
+standard orthonormal basis `e_l` (`LinearMap.trace_eq_sum_inner`) gives the identity. -/
+theorem Submission.chart_tangential_coefficient_trace_identity : ∀ (n N : ℕ) (V : Set (Rn n)) (ψ : Rn n → Rn N) (u : Rn n → Rn N), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ x ∈ V, Function.Injective (fderiv ℝ ψ x)) → ContDiffOn ℝ 1 u V → let a : Rn n → Rn n := fun x ↦ Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) (u x)); ∀ x ∈ V, LinearMap.trace ℝ (Rn n) (fderiv ℝ a x).toLinearMap + LinearMap.trace ℝ (Rn n) (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) ∘L ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ (fderiv ℝ ψ) x (a x)).toLinearMap = LinearMap.trace ℝ (Rn n) (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) ∘L ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ u x).toLinearMap + inner ℝ (u x - fderiv ℝ ψ x (a x)) (∑ l : Fin n, fderiv ℝ (fderiv ℝ ψ) x (EuclideanSpace.single l 1) (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) (EuclideanSpace.single l 1))) := by
+  intro n N V ψ u hV hψ hinj hu a x hx
+  -- Step 1: `Dψ`, `u` and `a` are differentiable at `x`, and `S = D²ψ(x)` is symmetric.
+  have hxV : V ∈ 𝓝 x := hV.mem_nhds hx
+  have hA : HasFDerivAt (fderiv ℝ ψ) (fderiv ℝ (fderiv ℝ ψ) x) x :=
+    (((hψ.fderiv_of_isOpen hV (m := 1) (by norm_num)).contDiffAt hxV).differentiableAt
+      one_ne_zero).hasFDerivAt
+  have hu' : HasFDerivAt u (fderiv ℝ u x) x :=
+    ((hu.contDiffAt hxV).differentiableAt one_ne_zero).hasFDerivAt
+  have ha' : HasFDerivAt a (fderiv ℝ a x) x :=
+    (((Submission.chart_tangential_coefficient_contDiffOn n N V ψ u hV hψ hinj hu).contDiffAt
+      hxV).differentiableAt one_ne_zero).hasFDerivAt
+  have hS := Submission.fderiv_fderiv_symm_of_contDiffOn_two n N V ψ hV hψ x hx
+  -- Step 2: `G(y) G(y)⁻¹ = 1` for `y ∈ V`, so `A(y)* (A(y) a(y)) = A(y)* u(y)` there.
+  have hGG : ∀ y ∈ V, ∀ w : Rn n, ContinuousLinearMap.adjoint (fderiv ℝ ψ y) (fderiv ℝ ψ y
+      (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ y) ∘L fderiv ℝ ψ y) w)) = w :=
+    fun y hy w ↦ congrArg (fun T : Rn n →L[ℝ] Rn n ↦ T w) (Ring.mul_inverse_cancel _
+      (Submission.gram_inverse_range_starProjection n N _ (fderiv ℝ ψ y) (hinj y hy) rfl).1)
+  have hGa : ∀ y ∈ V, ContinuousLinearMap.adjoint (fderiv ℝ ψ y) (fderiv ℝ ψ y (a y)) =
+      ContinuousLinearMap.adjoint (fderiv ℝ ψ y) (u y) := fun y hy ↦ hGG y hy _
+  -- Step 3: `y ↦ ⟪A(y) c, u y - A(y) (a y)⟫` vanishes on `V`; its derivative at `x` in direction
+  -- `v` is `⟪A c, Du v - (A Da v + S v a)⟫ + ⟪S v c, u - A a⟫`, which is therefore `0`.
+  have hkey : ∀ c v : Rn n, inner ℝ (fderiv ℝ ψ x c) (fderiv ℝ u x v -
+      (fderiv ℝ ψ x (fderiv ℝ a x v) + fderiv ℝ (fderiv ℝ ψ) x v (a x))) +
+      inner ℝ (fderiv ℝ (fderiv ℝ ψ) x v c) (u x - fderiv ℝ ψ x (a x)) = 0 := by
+    intro c v
+    have hF := (hA.clm_apply (hasFDerivAt_const c x)).inner ℝ (hu'.sub (hA.clm_apply ha'))
+    have hF0 : HasFDerivAt (fun y ↦ inner ℝ (fderiv ℝ ψ y c) (u y - fderiv ℝ ψ y (a y)))
+        (0 : Rn n →L[ℝ] ℝ) x := by
+      refine (hasFDerivAt_const (0 : ℝ) x).congr_of_eventuallyEq ?_
+      filter_upwards [hxV] with y hy
+      rw [← ContinuousLinearMap.adjoint_inner_right, map_sub, hGa y hy, sub_self,
+        inner_zero_right]
+    have h := congrArg (fun L : Rn n →L[ℝ] ℝ ↦ L v) (hF.unique hF0)
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.prod_apply,
+      fderivInnerCLM_apply, add_apply, sub_apply, Pi.sub_apply, ContinuousLinearMap.flip_apply,
+      zero_apply, map_zero, zero_add] using h
+  -- Step 4: for every `e`, with `c = G⁻¹ e` (so `A* A c = e`) and `G⁻¹` symmetric,
+  -- `⟪e, Da e⟫ + ⟪e, G⁻¹ A* S(a) e⟫ = ⟪e, G⁻¹ A* Du e⟫ + ⟪u - A a, S e c⟫`.
+  obtain ⟨-, hsym, -⟩ :=
+    Submission.gram_inverse_range_starProjection n N _ (fderiv ℝ ψ x) (hinj x hx) rfl
+  have hterm : ∀ e : Rn n, inner ℝ e (fderiv ℝ a x e) + inner ℝ e ((Ring.inverse
+      (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) ∘L
+      ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ (fderiv ℝ ψ) x (a x)) e) =
+      inner ℝ e ((Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) ∘L
+        ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ u x) e) +
+      inner ℝ (u x - fderiv ℝ ψ x (a x)) (fderiv ℝ (fderiv ℝ ψ) x e (Ring.inverse
+        (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) e)) := by
+    intro e
+    have hk :=
+      hkey (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ x) ∘L fderiv ℝ ψ x) e) e
+    rw [inner_sub_right (fderiv ℝ ψ x _), inner_add_right (fderiv ℝ ψ x _), hS e (a x),
+      ← ContinuousLinearMap.adjoint_inner_left (fderiv ℝ ψ x) (fderiv ℝ a x e), hGG x hx,
+      real_inner_comm (u x - fderiv ℝ ψ x (a x))] at hk
+    simp only [ContinuousLinearMap.comp_apply]
+    rw [← hsym e, ← hsym e, ContinuousLinearMap.adjoint_inner_right,
+      ContinuousLinearMap.adjoint_inner_right]
+    linarith
+  -- Step 5: compute the three traces in the standard orthonormal basis `e_l` and sum.
+  have htr : ∀ T : Rn n →L[ℝ] Rn n, LinearMap.trace ℝ (Rn n) T.toLinearMap =
+      ∑ l : Fin n, inner ℝ (EuclideanSpace.single l (1 : ℝ) : Rn n)
+        (T (EuclideanSpace.single l 1)) := by
+    intro T
+    rw [LinearMap.trace_eq_sum_inner T.toLinearMap (EuclideanSpace.basisFun (Fin n) ℝ)]
+    simp only [EuclideanSpace.basisFun_apply, ContinuousLinearMap.coe_coe]
+  rw [htr, htr, htr, inner_sum, ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
+  exact Finset.sum_congr rfl fun l _ ↦ hterm _
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
