@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b9b2f259756603e63ce126b634ae3eeb01c69226b67ef19cb8338d5d91d89d92",
+  "git_delta": {
+    "base_commit": "ddbd3c14f206c1b5949a12993e7b5c0b67a62aba",
+    "candidate_commit": "33a8dd0847be43af1a3e8a708e7a2ed400b28489",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "intcpt_id_restrict_sigmaFinite",
+    "diff_sha256": "058e655e839c23cfc508be588000901660bc4c30228fb9ca7fb48d6c5a9af3ef",
+    "source_sha256": "9fa3f4646159c2cd70dcac627927f5243dfb43e2539b77ceb6cc7888a2f9df3f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.intcpt_id_restrict_sigmaFinite",
+      "statement": "∀ (N : ℕ) (μ : Measure (Euclidean N)) (U M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsOpen U → M ⊆ U → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → IntegrableOn θ (M ∩ K) μ) → SigmaFinite (μ.restrict M)",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

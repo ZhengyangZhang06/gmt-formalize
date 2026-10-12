@@ -1,0 +1,15 @@
+{
+  "node_id": "root.integral_compactness-a1.integral_density-a1.restrict_sigma_finite-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1456",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "33a8dd0847be43af1a3e8a708e7a2ed400b28489",
+  "integrated_commit": "",
+  "proof_base_commit": "ddbd3c14f206c1b5949a12993e7b5c0b67a62aba",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.integral_compactness-a1.integral_density-a1",
+  "requires": []
+}
