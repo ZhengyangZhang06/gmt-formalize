@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9bfbd9df022b6e82d83d62a133e8ce65865e3379a5283f5bdee886dfaa1f9064",
+  "git_delta": {
+    "base_commit": "36ff32720f8df36f8604961fe07f238aeab0e094",
+    "candidate_commit": "635defac48d6b26f0954efb6a120943df3176248",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_rh_measure_homogeneous",
+    "diff_sha256": "42b87ca928f3e69252331dbc69d5df5b7b680ce394e2eedf34ee6cf5f2d2e507",
+    "source_sha256": "ea50b87c4894793ab59139daf7f02613531515a90782511c59a9d5e69263b405",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_rh_measure_homogeneous",
+      "statement": "∀ (N n : ℕ) (μ : Measure (Euclidean N)) (s : ℝ), IsFiniteMeasureOnCompacts μ → 0 < s → (∀ g : Euclidean N → ℝ, Continuous g → HasCompactSupport g → ∫ y, g (s⁻¹ • y) ∂μ = s ^ n * ∫ y, g y ∂μ) → ∀ A : Set (Euclidean N), μ (s • A) = ENNReal.ofReal s ^ n * μ A",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
