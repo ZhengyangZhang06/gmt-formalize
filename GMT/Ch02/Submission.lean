@@ -500,6 +500,56 @@ theorem Submission.simon_submanifold_chart_inverse_continuousOn : ∀ (n N : ℕ
   have hψx'y : ψ x' = y :=
     eq_of_nhds_neBot (mapClusterPt_id_iff.1 hcl' |>.mono nhdsWithin_le_nhds).neBot
   exact hinj hx'.1 hgyV (hψx'y.trans hψgy.symm)
+/-- **Simon Ch. 2, §4 (p. 55), projection onto the range of an injective map.** The orthogonal
+projection `P_{range A}` depends continuously on `A` on the set of injective `A ∈ L(ℝⁿ, ℝᴺ)`.
+For injective `A`, the endomorphism `A* A` of `ℝⁿ` is injective, hence invertible. Moreover
+`A (A* A)⁻¹ A*` is the orthogonal projection onto `range A`, since its values lie in `range A` and
+`v - A (A* A)⁻¹ A* v ⊥ range A`. The map `A ↦ A ∘ Ring.inverse (A* A) ∘ A*` is continuous at every
+injective `A`: the adjoint is a linear isometry, composition is jointly continuous, and
+`Ring.inverse` is continuous at units. -/
+theorem Submission.simon_submanifold_range_starProjection_continuousOn : ∀ (n N : ℕ), ContinuousOn (fun A : Rn n →L[ℝ] Rn N ↦ (LinearMap.range A.toLinearMap).starProjection) {A : Rn n →L[ℝ] Rn N | Function.Injective A} := by
+  intro n N
+  -- Step 1: `A* A` is a unit of `L(ℝⁿ, ℝⁿ)` for injective `A`.
+  have hunit : ∀ A : Rn n →L[ℝ] Rn N, Function.Injective A →
+      IsUnit (ContinuousLinearMap.adjoint A ∘L A) := by
+    intro A hA
+    have hinj : Function.Injective (ContinuousLinearMap.adjoint A ∘L A) := by
+      rw [ContinuousLinearMap.coe_comp]
+      exact (ContinuousLinearMap.adjoint_comp_self_injective_iff A).2 hA
+    exact ContinuousLinearMap.isUnit_iff_bijective.2
+      ⟨hinj, LinearMap.surjective_of_injective
+        (f := (ContinuousLinearMap.adjoint A ∘L A : Rn n →ₗ[ℝ] Rn n)) hinj⟩
+  -- Steps 2–3: for injective `A`, `A (A* A)⁻¹ A*` is the orthogonal projection onto `range A`.
+  have hF : ∀ A : Rn n →L[ℝ] Rn N, Function.Injective A →
+      A ∘L (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) ∘L ContinuousLinearMap.adjoint A) =
+        (LinearMap.range A.toLinearMap).starProjection := by
+    intro A hA
+    ext1 v
+    symm
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero (LinearMap.mem_range_self _ _) ?_
+    rintro _ ⟨w, rfl⟩
+    -- `A* (A (A* A)⁻¹ A* v) = A* v`, because `(A* A) (A* A)⁻¹ = 1`.
+    have hfix : ContinuousLinearMap.adjoint A
+        ((A ∘L (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) ∘L
+          ContinuousLinearMap.adjoint A)) v) = ContinuousLinearMap.adjoint A v := by
+      simpa using congrArg (fun T : Rn n →L[ℝ] Rn n ↦ T (ContinuousLinearMap.adjoint A v))
+        (Ring.mul_inverse_cancel _ (hunit A hA))
+    rw [ContinuousLinearMap.coe_coe, ← ContinuousLinearMap.adjoint_inner_left, map_sub, hfix,
+      sub_self, inner_zero_left]
+  -- Steps 4–5: `A ↦ A (A* A)⁻¹ A*` is continuous at each injective `A₀`, and it agrees with
+  -- `A ↦ P_{range A}` on the injective maps.
+  intro A₀ hA₀
+  have hadj : Continuous fun A : Rn n →L[ℝ] Rn N ↦ ContinuousLinearMap.adjoint A :=
+    ContinuousLinearMap.adjoint.continuous
+  have hinv : ContinuousAt (fun A : Rn n →L[ℝ] Rn N ↦
+      Ring.inverse (ContinuousLinearMap.adjoint A ∘L A)) A₀ :=
+    (NormedRing.inverse_continuousAt (hunit A₀ hA₀).unit).comp_of_eq
+      (hadj.clm_comp continuous_id).continuousAt (hunit A₀ hA₀).unit_spec.symm
+  have hcont : ContinuousAt (fun A : Rn n →L[ℝ] Rn N ↦
+      A ∘L (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) ∘L
+        ContinuousLinearMap.adjoint A)) A₀ :=
+    continuousAt_id.clm_comp (hinv.clm_comp hadj.continuousAt)
+  exact hcont.continuousWithinAt.congr (fun A hA ↦ (hF A hA).symm) (hF A₀ hA₀).symm
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
