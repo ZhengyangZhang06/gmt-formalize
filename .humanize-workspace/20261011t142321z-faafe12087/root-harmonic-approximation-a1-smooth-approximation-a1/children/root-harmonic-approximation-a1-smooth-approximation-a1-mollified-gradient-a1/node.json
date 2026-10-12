@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.smooth_approximation-a1.mollified_gradient-a1",
+  "parent_id": "root.harmonic_approximation-a1.smooth_approximation-a1",
+  "depth": 3,
+  "title": "Mollified W^{1,2}(B) function is smooth with mollified weak gradient inside",
+  "statement": "Let n be a natural number, B := ball(0,1) the open unit ball of R^n, and let f : R^n -> R, g : R^n -> R^n satisfy IsW12WithGradient f g B. Let rho : R^n -> R be C^infinity and eps in R with rho(z) = 0 whenever ||z|| >= eps. Put F := 1_B f and G := 1_B g (zero extensions) and Phi(x) := int rho(z) F(x - z) dz. Then Phi is C^infinity on R^n, and for every x with ||x|| < 1 - eps, grad Phi(x) = int rho(z) G(x - z) dz (Bochner integral in R^n).",
+  "lean_statement": "∀ (n : ℕ) (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∀ (ρ : Rn n → ℝ) (ε : ℝ), ContDiff ℝ (⊤ : ℕ∞) ρ → (∀ z, ε ≤ ‖z‖ → ρ z = 0) → ContDiff ℝ (⊤ : ℕ∞) (fun x => ∫ z, ρ z • (ball (0 : Rn n) 1).indicator f (x - z)) ∧ ∀ x : Rn n, ‖x‖ < 1 - ε → gradient (fun x => ∫ z, ρ z • (ball (0 : Rn n) 1).indicator f (x - z)) x = ∫ z, ρ z • (ball (0 : Rn n) 1).indicator g (x - z)",
+  "lean_name": "w12_ball_mollification_gradient",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-smooth-approximation-a1-mollified-gradient-a1-a1"
+}
