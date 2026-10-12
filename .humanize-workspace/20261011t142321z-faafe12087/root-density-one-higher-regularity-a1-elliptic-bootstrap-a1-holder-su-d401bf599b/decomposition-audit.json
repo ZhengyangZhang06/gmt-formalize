@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem contDiffOn_succ_iff_fderiv_of_isOpen|theorem iteratedFDeriv_succ_eq_comp_right|theorem ContinuousLinearMap.iteratedFDeriv_comp_left|theorem iteratedFDeriv_fun_sum_apply|theorem ContDiffOn.sum|theorem ContDiffOn.clm_apply",
+        "def continuousMultilinearCurryRightEquiv.|theorem norm_apply_le",
+        "abbrev proj|def basisFun|theorem basisFun_apply|theorem basisFun_repr|norm_single",
+        "dohr_eb_hsif_(succ_iff_curry|contDiffOn_clm_iff_columns|iteratedFDeriv_column_bounds)",
+        "python3 /tmp/hsif-independent-audit-375gmoay/run_checks.py curry_succ_iff_Challenge.lean clm_columns_contdiff_Challenge.lean column_iterated_bounds_Challenge.lean holder_succ_iff_fderiv_Challenge.lean",
+        "python3 /tmp/hsif-independent-audit-375gmoay/run_checks.py curry_succ_iff_Independent.lean clm_columns_contdiff_Independent.lean column_iterated_bounds_Independent.lean",
+        "python3 /tmp/hsif-independent-audit-375gmoay/run_checks.py Assembly.lean Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/Multilinear/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/Multilinear/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-holder-su-d401bf599b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-holder-su-d401bf599b/decomposition-v1.json",
+        "/tmp/hsif-independent-audit-375gmoay/Full.lean",
+        "/tmp/hsif-independent-audit-375gmoay/Assembly.lean",
+        "/tmp/hsif-independent-audit-375gmoay/run_checks.py"
+      ],
+      "conclusion": "Verified the pinned project ea560759 and mathlib 25730c7c; cited compiler sources match the snapshot byte-for-byte. The library declarations support the stated currying, regularity, composition, reconstruction and norm arguments without additional hypotheses. All child and parent comparator-generated challenges elaborate independently of child implementations. Each child proof also compiles in isolation. The exact selected parent follows from the three child contracts; with their proofs supplied, its axiom closure contains only propext, Classical.choice and Quot.sound. No conflicting names or identical child contracts were found in the DAG, and the snapshot contains none of the proposed names. All names are bare identifiers and all statements are standalone one-line propositions. The split appropriately isolates three genuine obligations; their empty dependency lists are correct and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "curry_succ_iff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the prose A↔B contract. The unconditional currying isometry equates derivative-difference norms, while successor regularity on open U proves both smoothness implications. The supplied proof is complete and non-circular, including m=0, arbitrary α and unrestricted real constants."
+    },
+    {
+      "key": "clm_columns_contdiff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches every hypothesis, correctly allowing arbitrary U. Evaluation proves the forward direction; the explicitly proved finite-basis reconstruction, continuous-linear composition and finite sums prove the converse. The argument includes n=0 and requires neither another child nor the parent theorem."
+    },
+    {
+      "key": "column_iterated_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states both bounds for x,y∈U. The proof establishes the evaluation and reconstruction operator-norm bounds, uses openness correctly to obtain ContDiffAt, and justifies differentiation of compositions and finite sums before applying norm inequalities. It is complete and independent, including m=0 and n=0, with no missing completeness assumption."
+    }
+  ],
+  "required_changes": []
+}
