@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "26fd180387567fcb0f6c1d126919cc1d168c6b27ba53f76777044ae69f38c12b",
+  "git_delta": {
+    "base_commit": "bd425a21458739a29d577d23266ecebe6d4d6801",
+    "candidate_commit": "500843c19164e4f1eefe0cf4e6e62ad314e291f6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "regcomp_atl_pc_blowUp_setIntegral_sub_le",
+    "diff_sha256": "aa93e99f6b86adfa542bc43e34c17c6e80e37f459ab2f7aca95c0b27f2d2c53f",
+    "source_sha256": "cfcb891c3555ba50f361602d2466bff7dc05abdb58f78e6e993550f41ac6fda0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.regcomp_atl_pc_blowUp_setIntegral_sub_le",
+      "statement": "∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r R C : ℝ) (f : Euclid P → ℝ), Continuous f → MeasurableSet A → MeasurableSet B → A ⊆ B → 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B ∩ closedBall 0 R) ≠ ∞ → (∀ y : Euclid P, ‖f y‖ ≤ C) → (∀ y : Euclid P, y ∉ closedBall (0 : Euclid P) R → f y = 0) → ‖(∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n]‖ ≤ C * (μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \\ A) ∩ closedBall 0 R)).toReal",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
