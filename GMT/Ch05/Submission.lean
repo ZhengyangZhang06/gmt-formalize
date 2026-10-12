@@ -474,6 +474,31 @@ theorem rsod_graphPoint_eq_finAddEquivProd_symm : ∀ {n ℓ : ℕ} (x : Rn n) (
   · simp [graphPoint]
   · simp [graphPoint]
 
+/-- The rotated graph plane `q{(v, Av) : v ∈ ℝⁿ}` of a linear map `A : ℝⁿ → ℝ^ℓ` is
+`n`-dimensional.  With `E = EuclideanSpace.finAddEquivProd`, `graphPoint v (A v) = E.symm (v, A v)`
+(`rsod_graphPoint_eq_finAddEquivProd_symm`), so the generators are the values of the linear map
+`Φ = q ∘ E.symm ∘ (id, A)` and their span is `range Φ` (`Submodule.span_eq`).  `Φ` is injective,
+since `q` and `E.symm` are and `(v, A v)` determines `v`; hence
+`finrank (range Φ) = finrank ℝⁿ = n` (`LinearMap.finrank_range_of_inj`). -/
+theorem tdo_gpd_graph_plane_finrank : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A : Rn n →L[ℝ] Rn ℓ),
+    Module.finrank ℝ (Submodule.span ℝ (Set.range fun v : Rn n => q (graphPoint v (A v)))) = n := by
+  intro n ℓ q A
+  let E : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ := EuclideanSpace.finAddEquivProd
+  let Φ : Rn n →ₗ[ℝ] Amb n ℓ := q.toLinearEquiv.toLinearMap ∘ₗ
+    E.symm.toLinearEquiv.toLinearMap ∘ₗ LinearMap.id.prod A.toLinearMap
+  have hΦ : ∀ v, Φ v = q (graphPoint v (A v)) := fun v => by
+    rw [rsod_graphPoint_eq_finAddEquivProd_symm]
+    rfl
+  have hinj : Function.Injective Φ := fun v w hvw => by
+    rw [hΦ, hΦ, rsod_graphPoint_eq_finAddEquivProd_symm,
+      rsod_graphPoint_eq_finAddEquivProd_symm] at hvw
+    exact (Prod.mk.inj (E.symm.injective (q.injective hvw))).1
+  have hrange : (Set.range fun v : Rn n => q (graphPoint v (A v))) =
+      (LinearMap.range Φ : Set (Amb n ℓ)) := by
+    rw [LinearMap.coe_range]
+    exact congrArg Set.range (funext fun v => (hΦ v).symm)
+  rw [hrange, Submodule.span_eq, LinearMap.finrank_range_of_inj hinj, finrank_euclideanSpace_fin]
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
