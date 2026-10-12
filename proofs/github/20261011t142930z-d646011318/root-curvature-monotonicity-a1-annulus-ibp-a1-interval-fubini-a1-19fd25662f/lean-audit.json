@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5132babbf66292e0a7b2a2b6f48d819c83b90b1b5683d4a102bad01fcb0f655e",
+  "git_delta": {
+    "base_commit": "3af36dea9ea7c0e4293b14a812b7f54dbf8b64ba",
+    "candidate_commit": "f04b1178b20e3b5d40fc07432661ddd1cfb44e52",
+    "target": "GMT/Ch04/Submission.lean",
+    "declaration": "mcm_interval_primitive_fubini",
+    "diff_sha256": "af2f1a42d0aa44a986301ea4f6629aa7ba0cab132cd91d1633b2f7b4e6f25398",
+    "source_sha256": "b7d08c806de7c88c37b80576cb5b11da69a310458f9cb89702b7efbe8af58c2f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mcm_interval_primitive_fubini",
+      "statement": "∀ (e F F' : ℝ → ℝ) (σ ρ : ℝ), IntegrableOn e (Ioc σ ρ) → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun s ↦ e s * (F s - F σ)) (Ioc σ ρ) ∧ IntegrableOn (fun t ↦ F' t * ∫ τ in Ioc t ρ, e τ) (Ioc σ ρ) ∧ ∫ t in Ioc σ ρ, F' t * ∫ τ in Ioc t ρ, e τ = ∫ s in Ioc σ ρ, e s * (F s - F σ)",
+      "lean_file": "GMT/Ch04/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
