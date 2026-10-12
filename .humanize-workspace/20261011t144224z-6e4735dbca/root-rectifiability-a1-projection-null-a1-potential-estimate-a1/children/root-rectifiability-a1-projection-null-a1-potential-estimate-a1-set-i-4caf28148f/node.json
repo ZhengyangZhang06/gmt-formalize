@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.set_integral_bound-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+  "depth": 4,
+  "title": "Potential estimate over a set of finite measure: ∫_S |w|^{1−n} ≤ (n+1)·ω^{1−1/n}·Lⁿ(S)^{1/n} (radius split of Step 5)",
+  "statement": "Let m ∈ ℕ and n := m + 1, and let ω := Lⁿ(B_1(0)) ∈ (0,∞), as a real number. Let S ⊆ ℝⁿ = Eucl n be a Borel-measurable set (MeasurableSet S) with Lⁿ(S) < ∞, and write L := Lⁿ(S) ∈ [0,∞), as a real number. Then w ↦ (|w|^m)⁻¹ is integrable on S, and ∫_S (|w|^m)⁻¹ dw ≤ (m + 2)·ω^{m/(m+1)}·L^{1/(m+1)} (real powers).",
+  "lean_statement": "∀ (m : ℕ) (S : Set (Eucl (m + 1))), MeasurableSet S → volume S ≠ ⊤ → IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) S ∧ ∫ t in S, (‖t‖ ^ m)⁻¹ ≤ ((m : ℝ) + 2) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal ^ ((m : ℝ) / ((m : ℝ) + 1)) * (volume S).toReal ^ ((1 : ℝ) / ((m : ℝ) + 1))",
+  "lean_name": "rpn_pe_inv_norm_pow_set_bound",
+  "depends_on": [
+    "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.radial_ball_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.radial_ball_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-set-i-4caf28148f-a1"
+}
