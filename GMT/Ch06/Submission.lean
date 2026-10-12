@@ -359,6 +359,37 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The Euclidean coefficient norm of an `n`-covector on `ℝ^P` is at most `√(P^n)` times its
+operator norm: each of the `P^n` coefficients `α(b_{I(0)}, …, b_{I(n-1)})` (`b` the standard
+orthonormal basis) is bounded by `‖α‖ · ∏ ‖b_{I(i)}‖ = ‖α‖`. -/
+theorem Submission.fiw_ims_sc_covectorNorm_le_opNorm :
+    ∀ (P n : ℕ) (α : Covector (Eucl P) n),
+      covectorEuclideanNorm α ≤ Real.sqrt ((P : ℝ) ^ n) * ‖α‖ := by
+  intro P n α
+  -- Every coefficient is at most `‖α‖`, since the standard basis vectors are unit vectors.
+  have hcoef : ∀ I : Fin n → Fin P,
+      |α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))| ≤ ‖α‖ := by
+    intro I
+    have h := ContinuousAlternatingMap.le_opNorm α
+      (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))
+    simp only [OrthonormalBasis.norm_eq_one, Finset.prod_const_one, mul_one,
+      Real.norm_eq_abs] at h
+    exact h
+  rw [covectorEuclideanNorm]
+  calc Real.sqrt _ ≤ Real.sqrt ((P : ℝ) ^ n * ‖α‖ ^ 2) := by
+        apply Real.sqrt_le_sqrt
+        -- The sum has `P ^ n` terms, each at most `‖α‖ ^ 2`.
+        calc _ ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 := by
+              apply Finset.sum_le_sum
+              intro I _
+              split_ifs
+              · rw [← sq_abs]
+                exact pow_le_pow_left₀ (abs_nonneg _) (hcoef I) 2
+              · positivity
+          _ = (P : ℝ) ^ n * ‖α‖ ^ 2 := by simp [Finset.card_univ]
+    _ = Real.sqrt ((P : ℝ) ^ n) * ‖α‖ := by
+        rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _)]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
