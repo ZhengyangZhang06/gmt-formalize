@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "13e21d389961c6d51bb2bd3244f7f9d31fa57ecf8fccc71c847f992f3a106cef",
+  "git_delta": {
+    "base_commit": "dfd88241360975c108ba15cfd4aea32b6edcbd54",
+    "candidate_commit": "29906e26815f386dad6485410598dda42ddc68db",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "rpn_compact_null_of_le_mul_diff",
+    "diff_sha256": "d68ac4012b0adfa9d59a0135de8c4dde35bc1ea159fcf8941fb1cd5215cf7f7b",
+    "source_sha256": "fb2ef272b9f1b98cd13ce06f0e95e3d2757d73ce9c7d1db4d61fe1926d6229b0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rpn_compact_null_of_le_mul_diff",
+      "statement": "∀ (P : ℕ) (U K : Set (Eucl P)) (μ : Measure (Eucl P)) (C : ℝ≥0), IsOpen U → IsCompact K → K ⊆ U → (∀ W, CompactlyContainedOpen W U → μ W < ∞) → (∀ W, CompactlyContainedOpen W U → μ W ≤ (C : ℝ≥0∞) * μ (W \\ K)) → μ K = 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
