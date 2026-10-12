@@ -1,0 +1,19 @@
+{
+  "node_id": "root.varifold_tangents-a1.radial_homogeneity-a1.euler_dilation_c1-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1294",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "b7e2b99daeeb8575ce63258dc4213ac863f3d819",
+  "integrated_commit": "",
+  "proof_base_commit": "36ff32720f8df36f8604961fe07f238aeab0e094",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 63436ae63eb6a2fd7525bef73c73cf88e2cd7e93 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.varifold_tangents-a1.radial_homogeneity-a1",
+  "requires": [
+    "root.varifold_tangents-a1.radial_homogeneity-a1.euler_dilation_c1-a1.euler_ode_power-a1",
+    "root.varifold_tangents-a1.radial_homogeneity-a1.euler_dilation_c1-a1.euler_identity_dilates-a1",
+    "root.varifold_tangents-a1.radial_homogeneity-a1.euler_dilation_c1-a1.dilation_integral_deriv-a1"
+  ]
+}
