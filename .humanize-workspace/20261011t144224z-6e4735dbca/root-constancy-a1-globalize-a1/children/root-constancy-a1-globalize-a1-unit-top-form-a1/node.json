@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1.globalize-a1.unit_top_form-a1",
+  "parent_id": "root.constancy-a1.globalize-a1",
+  "depth": 3,
+  "title": "Unit-integral top-degree test form supported in a nonempty open set",
+  "statement": "Let m ∈ ℕ and n := m + 1. Let U and W be arbitrary subsets of ℝⁿ such that W is open, W ≠ ∅ and W ⊆ U (U need not be open). Then there is a test form ω ∈ Dⁿ(U) such that spt ω ⊆ W and ∫_{ℝⁿ} ω(x)(e_1,…,e_n) dLⁿ(x) = 1. Here ω ∈ Dⁿ(U) means ω is a C^∞ map from ℝⁿ to the n-covectors (continuous alternating n-linear forms) of ℝⁿ with compact support and spt ω ⊆ U; e_1,…,e_n is the standard basis of ℝⁿ and Lⁿ is Lebesgue measure.",
+  "lean_statement": "∀ (m : ℕ) (U W : Set (Eucl (m + 1))), IsOpen W → W.Nonempty → W ⊆ U → ∃ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) ⊆ W ∧ ∫ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume = 1",
+  "lean_name": "constancy_exists_topTestForm_integral_eq_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-globalize-a1-unit-top-form-a1-a1"
+}

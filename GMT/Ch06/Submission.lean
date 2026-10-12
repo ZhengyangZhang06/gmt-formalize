@@ -359,6 +359,51 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- A top-degree test form with unit integral supported in a prescribed nonempty open set (Simon
+Ch. 6, proof of 2.34, p. 143): `ω = (f / ∫ f dLⁿ) dx¹ ∧ ⋯ ∧ dxⁿ` for a smooth bump `f` with
+`spt f = B̄_{δ/2}(z) ⊆ B_δ(z) ⊆ W`, so `spt ω ⊆ W ⊆ U` and `∫ ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ = 1`. -/
+theorem Submission.constancy_exists_topTestForm_integral_eq_one : ∀ (m : ℕ) (U W : Set (Eucl (m + 1))), IsOpen W → W.Nonempty → W ⊆ U → ∃ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) ⊆ W ∧ ∫ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume = 1 := by
+  intro m U W hW hne hWU
+  obtain ⟨z, hz⟩ := hne
+  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hW z hz
+  -- A smooth bump `f` with `support f = B_{δ/2}(z)` and positive integral.
+  let f : ContDiffBump z := ⟨δ / 4, δ / 2, by positivity, by linarith⟩
+  have hfi : Integrable (fun x => f x) volume :=
+    f.continuous.integrable_of_hasCompactSupport f.hasCompactSupport
+  have hI : 0 < ∫ x, f x ∂volume := by
+    refine (integral_pos_iff_support_of_nonneg f.nonneg' hfi).mpr ?_
+    rw [f.support_eq]
+    exact measure_ball_pos volume z f.rOut_pos
+  -- The constant covector `dx = dx¹ ∧ ⋯ ∧ dxⁿ`, with `dx(e₁, …, eₙ) = det I = 1`.
+  let dx : Covector (Eucl (m + 1)) (m + 1) :=
+    wedgeCovectors (m + 1) (fun i => EuclideanSpace.proj i)
+  have hdx : dx (fun i => EuclideanSpace.single i (1 : ℝ)) = 1 := by
+    simp only [dx, wedgeCovectors_apply_det]
+    have : (Matrix.of fun i j : Fin (m + 1) =>
+        (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ) (EuclideanSpace.single j (1 : ℝ))) = 1 := by
+      ext i j
+      simp [Matrix.one_apply]
+    rw [this, Matrix.det_one]
+  -- `ω = f · ((∫ f dLⁿ)⁻¹ dx)`.
+  let ωf : DifferentialForm (Eucl (m + 1)) (m + 1) :=
+    fun x => f x • ((∫ y, f y ∂volume)⁻¹ • dx)
+  have hsmooth : IsSmoothForm ωf := by
+    change ContDiff ℝ _ (fun x => f x • ((∫ y, f y ∂volume)⁻¹ • dx))
+    exact f.contDiff.smul contDiff_const
+  have hsub_f : tsupport ωf ⊆ tsupport f := tsupport_smul_subset_left _ _
+  have hf_ball : tsupport f ⊆ ball z δ := by
+    rw [f.tsupport_eq]
+    exact closedBall_subset_ball (show δ / 2 < δ by linarith)
+  have hsubW : tsupport ωf ⊆ W := hsub_f.trans (hf_ball.trans hball)
+  have hcpt : HasCompactSupport ωf :=
+    f.hasCompactSupport.mono' ((subset_tsupport _).trans hsub_f)
+  refine ⟨⟨ωf, ⟨hsmooth, hcpt⟩, hsubW.trans hWU⟩, hsubW, ?_⟩
+  change ∫ x, (f x • ((∫ y, f y ∂volume)⁻¹ • dx)) (fun i => EuclideanSpace.single i (1 : ℝ))
+    ∂volume = 1
+  simp only [ContinuousAlternatingMap.smul_apply, hdx, smul_eq_mul, mul_one]
+  rw [integral_mul_const]
+  exact mul_inv_cancel₀ hI.ne'
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
