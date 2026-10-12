@@ -416,6 +416,77 @@ theorem Submission.ltg_tau_integrable : ∀ (P k : ℕ) (U M : Set (Eucl P)) (θ
   have hx' : x ∉ tsupport ω := fun h => hx.2 ⟨hx.1, h⟩
   rw [image_eq_zero_of_notMem_tsupport hx', map_zero, mul_zero]
 
+/-- **Local-to-global for `τ(M, θ, ξ)` via a smooth partition of unity** (Simon Ch. 6, 3.1 (‡);
+used in the local-to-global step of the proof of 6.3).  If every `x ∈ U` has an open
+`V_x ∋ x` such that `X ∈ 𝒟ₖ(U)` agrees with `τ(M, θ, ξ)` on the test forms supported in `V_x`,
+then `X = τ(M, θ, ξ)` on `𝒟ᵏ(U)`.
+Cover the compact `K = spt ω ⊆ U` by finitely many `V_y` (`y ∈ K`), take a smooth partition of
+unity `χ_y` on `K` subordinate to them and split `ω = ∑_y χ_y ω`: each `χ_y ω ∈ 𝒟ᵏ(U)` has support
+in `V_y`, so `X(χ_y ω) = τ(χ_y ω)`; conclude by linearity of `X` and of the integral, each
+`θ ⟨χ_y ω, ξ⟩` being `Hᵏ`-integrable on `M` by `Submission.ltg_tau_integrable`. -/
+theorem Submission.ltg_tau_local_to_global :
+    ∀ (P k : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U k) (M : Set (Eucl P))
+      (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M θ ξ →
+      (∀ x ∈ U, ∃ V : Set (Eucl P), IsOpen V ∧ x ∈ V ∧ ∀ ω : TestFormOn U k,
+        tsupport (ω : DifferentialForm (Eucl P) k) ⊆ V → X ω = tauAction k M θ ξ ω) →
+      ∀ ω : TestFormOn U k, X ω = tauAction k M θ ξ ω := by
+  intro P k U X M θ ξ hT hloc ω
+  classical
+  -- 1. `f := ω` is smooth with compact support `K := tsupport f ⊆ U`.
+  obtain ⟨f, hf⟩ := ω
+  have ⟨⟨hfs, hfc⟩, hfU⟩ : IsTestForm f ∧ tsupport f ⊆ U := hf
+  -- 2. Finitely many of the neighbourhoods `V y` (`y ∈ K`) cover `K`.
+  choose! V hVo hyV hXV using hloc
+  obtain ⟨t, htK⟩ := hfc.isCompact.elim_finite_subcover (fun y : tsupport f => V y)
+    (fun y => hVo y (hfU y.2)) (fun y hy => mem_iUnion.2 ⟨⟨y, hy⟩, hyV y (hfU hy)⟩)
+  -- 3. A smooth partition of unity `χ` on `K` subordinate to `(V y)_{y ∈ t}`.
+  obtain ⟨χ, hχ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (modelWithCornersSelf ℝ (Eucl P)) (isClosed_tsupport f)
+    (fun i : t => V (i : tsupport f)) (fun i => hVo _ (hfU (i : tsupport f).2)) fun y hy => by
+      obtain ⟨i, hi, hyi⟩ := mem_iUnion₂.1 (htK hy)
+      exact mem_iUnion.2 ⟨⟨i, hi⟩, hyi⟩
+  -- 4. The pieces `g i := χ i • f` are test forms in `U`, supported in `V i`.
+  let g : t → DifferentialForm (Eucl P) k := fun i x => χ i x • f x
+  have hg : ∀ i, IsTestForm (g i) ∧ tsupport (g i) ⊆ U := fun i =>
+    ⟨⟨(contMDiff_iff_contDiff.mp (χ i).contMDiff).smul hfs,
+      hfc.mono (Function.support_smul_subset_right (fun x => χ i x) f)⟩,
+      (tsupport_smul_subset_right _ _).trans hfU⟩
+  have hgV : ∀ i, tsupport (g i) ⊆ V (i : tsupport f) := fun i =>
+    (tsupport_smul_subset_left _ _).trans (hχ i)
+  -- 5. `f = ∑ i, g i`: on `K` because `∑ i, χ i = 1` there, off `K` because `f = 0` there.
+  have hsum : ∀ x, ∑ i : t, g i x = f x := by
+    intro x
+    by_cases hx : x ∈ tsupport f
+    · have h1 : ∑ i : t, χ i x = 1 := by
+        rw [← finsum_eq_sum_of_fintype]
+        exact χ.sum_eq_one hx
+      simp only [g]
+      rw [← Finset.sum_smul, h1, one_smul]
+    · have h0 : f x = 0 := image_eq_zero_of_notMem_tsupport hx
+      simp [g, h0]
+  have hω : (⟨f, hf⟩ : TestFormOn U k) = ∑ i : t, (⟨g i, hg i⟩ : TestFormOn U k) := by
+    apply Subtype.ext
+    rw [Submodule.coe_sum]
+    funext x
+    rw [Finset.sum_apply]
+    exact (hsum x).symm
+  -- 6. Linearity of `X`, and local agreement `X (g i) = τ (g i)` on each piece.
+  have hX : X ⟨f, hf⟩ = ∑ i : t, tauAction k M θ ξ (g i) := by
+    rw [hω]
+    refine (map_sum X.toCurrent _ _).trans (Finset.sum_congr rfl fun i _ => ?_)
+    exact hXV (i : tsupport f) (hfU (i : tsupport f).2) ⟨g i, hg i⟩ (hgV i)
+  -- 7. Linearity of the integral (each piece is integrable by `tau_integrable`) and of `ξ x`.
+  have hint : ∀ i ∈ (Finset.univ : Finset t),
+      Integrable (fun x => θ x * ξ x (g i x)) ((μHE[k] : Measure (Eucl P)).restrict M) :=
+    fun i _ => (Submission.ltg_tau_integrable P k U M θ ξ hT).2 (g i) (hg i).1.1.continuous
+      (hg i).1.2 (hg i).2
+  rw [hX]
+  unfold tauAction
+  rw [← integral_finsetSum _ hint]
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  simp only
+  rw [← Finset.mul_sum, ← map_sum (ξ x) (fun i => g i x) Finset.univ, hsum x]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
