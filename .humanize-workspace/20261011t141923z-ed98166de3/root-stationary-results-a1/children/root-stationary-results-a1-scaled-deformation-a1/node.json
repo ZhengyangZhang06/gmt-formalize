@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.scaled_deformation-a1",
+  "parent_id": "root.stationary_results-a1",
+  "depth": 2,
+  "title": "Scaled vector fields generate admissible deformations",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝᴺ open and Y : ℝᴺ → ℝᴺ of class C² with compact support and tsupport Y ⊆ U. Then there is a real c > 0 such that φ t x := x + (c t) • Y(x) satisfies IsAdmissibleDeformation 2 U (tsupport Y) φ and initialVelocity φ x = c • Y(x) for every x.",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Rn N)) (Y : Rn N → Rn N), IsOpen U → ContDiff ℝ 2 Y → HasCompactSupport Y → tsupport Y ⊆ U → ∃ c : ℝ, 0 < c ∧ IsAdmissibleDeformation 2 U (tsupport Y) (fun t x ↦ x + (c * t) • Y x) ∧ ∀ x, initialVelocity (fun t x ↦ x + (c * t) • Y x) x = c • Y x",
+  "lean_name": "scaled_field_deformation_is_admissible",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-scaled-deformation-a1-a1"
+}

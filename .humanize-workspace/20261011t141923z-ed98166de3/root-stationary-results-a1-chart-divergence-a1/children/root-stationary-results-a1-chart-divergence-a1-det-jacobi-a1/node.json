@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.chart_divergence-a1.det_jacobi-a1",
+  "parent_id": "root.stationary_results-a1.chart_divergence-a1",
+  "depth": 3,
+  "title": "Jacobi's formula: det on L(ℝⁿ) is C¹ with D det(T)[H] = det T · trace(T⁻¹H) at units",
+  "statement": "For every n ∈ ℕ, the determinant det : L(ℝⁿ) → ℝ, T ↦ T.det (ContinuousLinearMap.det), is C¹, and for every unit T of the ring L(ℝⁿ) (multiplication = composition) and every H ∈ L(ℝⁿ), D det(T)[H] = det T · trace(T⁻¹ ∘ H), where T⁻¹ := Ring.inverse T and trace is the trace of endomorphisms of ℝⁿ.",
+  "lean_statement": "∀ n : ℕ, ContDiff ℝ 1 (fun T : Rn n →L[ℝ] Rn n ↦ T.det) ∧ ∀ T H : Rn n →L[ℝ] Rn n, IsUnit T → fderiv ℝ (fun T : Rn n →L[ℝ] Rn n ↦ T.det) T H = T.det * LinearMap.trace ℝ (Rn n) (Ring.inverse T ∘L H).toLinearMap",
+  "lean_name": "continuousLinearMap_det_contDiff_fderiv_eq_mul_trace",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-chart-divergence-a1-det-jacobi-a1-a1"
+}

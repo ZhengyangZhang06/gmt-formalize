@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.sff_chart-a1.immersion_left_inverse-a1",
+  "parent_id": "root.stationary_results-a1.sff_chart-a1",
+  "depth": 3,
+  "title": "Local left inverse of an immersion, differentiable at the image point (inverse function theorem)",
+  "statement": "Let n, N ∈ ℕ, ψ : ℝⁿ → ℝᴺ and x₀ ∈ ℝⁿ, where ℝ^d := EuclideanSpace ℝ (Fin d). Assume ψ is C¹ at x₀ (ContDiffAt ℝ 1 ψ x₀, i.e. ψ is C¹ on some neighbourhood of x₀). Assume also that its derivative Dψ(x₀) = fderiv ℝ ψ x₀ : ℝⁿ → ℝᴺ is injective. Then there is a map g : ℝᴺ → ℝⁿ that is Fréchet differentiable at ψ(x₀) and satisfies g(ψ(x)) = x for every x in some neighbourhood of x₀.",
+  "lean_statement": "∀ (n N : ℕ) (ψ : Rn n → Rn N) (x₀ : Rn n), ContDiffAt ℝ 1 ψ x₀ → Function.Injective (fderiv ℝ ψ x₀) → ∃ g : Rn N → Rn n, DifferentiableAt ℝ g (ψ x₀) ∧ ∀ᶠ x in 𝓝 x₀, g (ψ x) = x",
+  "lean_name": "sff_immersion_local_left_inverse",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-sff-chart-a1-immersion-left-inverse-a1-a1"
+}

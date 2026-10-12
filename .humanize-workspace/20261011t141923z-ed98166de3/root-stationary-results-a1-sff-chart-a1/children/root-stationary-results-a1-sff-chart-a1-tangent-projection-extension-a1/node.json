@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.sff_chart-a1.tangent_projection_extension-a1",
+  "parent_id": "root.stationary_results-a1.sff_chart-a1",
+  "depth": 3,
+  "title": "Local differentiable extension of the tangent projection near a C² chart point",
+  "statement": "Let n, N ∈ ℕ (ℝ^d := EuclideanSpace ℝ (Fin d)), M ⊆ ℝᴺ, V ⊆ ℝⁿ, W ⊆ ℝᴺ and ψ : ℝⁿ → ℝᴺ satisfy Chapter02.IsSimonLocalRepresentation 2 M V W ψ. That is: V and W are open, ψ is C² on V, ψ is injective on V, and ψ(V) = W ∩ M. Moreover V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W, and Dψ(x) = fderiv ℝ ψ x is injective for every x ∈ V. Assume (T): tangentSpace M (ψ x) = range Dψ(x) (= LinearMap.range (fderiv ℝ ψ x).toLinearMap) for every x ∈ V. Then for every x₀ ∈ V there is Q : ℝᴺ → L(ℝᴺ, ℝᴺ) with three properties. (i) Q is Fréchet differentiable at ψ(x₀). (ii) tangentProjection M z = Q(z) for every z ∈ M in some neighbourhood of ψ(x₀), i.e. tangentProjection M =ᶠ[𝓝[M] ψ x₀] Q. (iii) Q(ψ(x)) = (range Dψ(x)).starProjection, the orthogonal projection of ℝᴺ onto range Dψ(x), for every x in some neighbourhood of x₀. Here tangentProjection M z := (tangentSpace M z).starProjection is the orthogonal projection onto the tangent space of the frozen contract.",
+  "lean_statement": "∀ (n N : ℕ) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), Chapter02.IsSimonLocalRepresentation 2 M V W ψ → (∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → ∀ x₀ ∈ V, ∃ Q : Rn N → (Rn N →L[ℝ] Rn N), DifferentiableAt ℝ Q (ψ x₀) ∧ tangentProjection M =ᶠ[𝓝[M] ψ x₀] Q ∧ ∀ᶠ x in 𝓝 x₀, Q (ψ x) = (LinearMap.range (fderiv ℝ ψ x).toLinearMap).starProjection",
+  "lean_name": "sff_tangentProjection_local_extension",
+  "depends_on": [
+    "root.stationary_results-a1.sff_chart-a1.range_projection_diff-a1",
+    "root.stationary_results-a1.sff_chart-a1.immersion_left_inverse-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.stationary_results-a1.sff_chart-a1.range_projection_diff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.stationary_results-a1.sff_chart-a1.immersion_left_inverse-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-sff-chart-a1-tangent-projection-extension-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.chart_divergence-a1.gram_projection-a1",
+  "parent_id": "root.stationary_results-a1.chart_divergence-a1",
+  "depth": 3,
+  "title": "Gram operator of an injective linear map and the range projection A(A*A)⁻¹A*",
+  "statement": "For all n, N ∈ ℕ, every submodule K of ℝᴺ and every injective continuous linear map A : ℝⁿ → ℝᴺ with K = range A (ℝᵈ = EuclideanSpace ℝ (Fin d)): the Gram operator G := A* ∘ A (A* = ContinuousLinearMap.adjoint A) is a unit of the ring ℝⁿ →L[ℝ] ℝⁿ (multiplication = composition); G⁻¹ := Ring.inverse G is symmetric, ⟨G⁻¹v, w⟩ = ⟨v, G⁻¹w⟩ for all v, w ∈ ℝⁿ; and the orthogonal projection of ℝᴺ onto K is K.starProjection = A ∘ G⁻¹ ∘ A*.",
+  "lean_statement": "∀ (n N : ℕ) (K : Submodule ℝ (Rn N)) (A : Rn n →L[ℝ] Rn N), Function.Injective A → K = LinearMap.range A.toLinearMap → IsUnit (ContinuousLinearMap.adjoint A ∘L A) ∧ (∀ v w : Rn n, inner ℝ (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) v) w = inner ℝ v (Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) w)) ∧ K.starProjection = A ∘L Ring.inverse (ContinuousLinearMap.adjoint A ∘L A) ∘L ContinuousLinearMap.adjoint A",
+  "lean_name": "gram_inverse_range_starProjection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-chart-divergence-a1-gram-projection-a1-a1"
+}

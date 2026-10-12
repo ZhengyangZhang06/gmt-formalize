@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.measure_bounds-a1",
+  "parent_id": "root.stationary_results-a1",
+  "depth": 2,
+  "title": "Hausdorff measure of compact and relatively open pieces of a Simon submanifold",
+  "statement": "Let n, N ∈ ℕ, r ∈ ℕ∞ and M ⊆ ℝᴺ an n-dimensional C^r Simon submanifold (Chapter02.IsSimonSubmanifold (E := ℝⁿ) r M, which includes r ≥ 1). Then (a) μHE[n](C) < ∞ for every compact C ⊆ M, and (b) μHE[n](M ∩ O) > 0 for every y ∈ M and every open O ⊆ ℝᴺ with y ∈ O.",
+  "lean_statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → (∀ C ⊆ M, IsCompact C → μHE[n] C < ⊤) ∧ ∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → 0 < μHE[n] (M ∩ O)",
+  "lean_name": "simon_submanifold_hausdorff_finite_pos",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-measure-bounds-a1-a1"
+}

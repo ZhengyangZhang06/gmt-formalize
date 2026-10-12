@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.stationary_results-a1.mean_zero_stationary-a1",
+  "parent_id": "root.stationary_results-a1",
+  "depth": 2,
+  "title": "Zero mean curvature implies stationarity (Simon 5.5(2), ⇐)",
+  "statement": "Assume (TH) and FirstVariation. (TH) is the frozen statement of the sibling root.submanifold_tangent-a1, taken as an explicit hypothesis: (TH1) for every Simon local representation (V, W, ψ) of class r ≥ 1 of any M ⊆ ℝᴺ, tangentSpace M (ψ x) = range Dψ(x) for x ∈ V; (TH2) every n-dimensional C^r Simon submanifold of ℝᴺ is a measurable set on which y ↦ tangentProjection M y is continuous. Let n, ℓ ∈ ℕ, M ⊆ ℝ^{n+ℓ} an n-dimensional C² Simon submanifold and U ⊆ ℝ^{n+ℓ} open with closure U ∩ M compact, and suppose meanCurvature M y = 0 for all y ∈ M ∩ U. Then IsStationaryIn n M U.",
+  "lean_statement": "((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → FirstVariation → ∀ (n ℓ : ℕ) (M U : Set (Rn (n + ℓ))), Chapter02.IsSimonSubmanifold (E := Rn n) 2 M → IsOpen U → IsCompact (closure U ∩ M) → (∀ y ∈ M ∩ U, meanCurvature M y = 0) → IsStationaryIn n M U",
+  "lean_name": "mean_curvature_zero_imp_stationary",
+  "depends_on": [
+    "root.stationary_results-a1.deformation_regularity-a1",
+    "root.stationary_results-a1.measure_bounds-a1",
+    "root.stationary_results-a1.divergence_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.stationary_results-a1.deformation_regularity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.stationary_results-a1.measure_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.stationary_results-a1.divergence_identity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-mean-zero-stationary-a1-a1"
+}
