@@ -548,6 +548,297 @@ theorem dohr_tp_gat_blowup_two_point : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (G : R
 
 end Submission
 
+/-- Near-isometries change `Hⁿ` by at most the factor `(1 - δ)⁻ⁿ`: if `0 ≤ δ < 1`, `A` is
+measurable and `‖Φ p - Φ q - (p - q)‖ ≤ δ‖p - q‖` on `A`, then
+`Hⁿ ⌞ Φ(A) ≤ (1 - δ)⁻ⁿ Φ_#(Hⁿ ⌞ A)` and `Φ_#(Hⁿ ⌞ A) ≤ (1 - δ)⁻ⁿ Hⁿ ⌞ Φ(A)`.
+`Φ` is `(1 + δ)`-Lipschitz on `A` and `invFunOn Φ A` is `(1 - δ)⁻¹`-Lipschitz on `Φ(A)`, while
+`1 + δ ≤ (1 - δ)⁻¹`; so Simon Ch. 2, 1.8(i) (`Hⁿ(f(T)) ≤ (Lip f)ⁿ Hⁿ(T)`, any `T`), applied to
+`Φ⁻¹(S) ∩ A` and to `Φ(Φ⁻¹(S) ∩ A) = S ∩ Φ(A)`, gives both inequalities on measurable `S`. -/
+theorem dohr_tp_gat_bilip_measure_comparison : ∀ (n ℓ : ℕ) (A : Set (Amb n ℓ)) (Φ : Amb n ℓ → Amb n ℓ) (δ : ℝ), MeasurableSet A → 0 ≤ δ → δ < 1 → (∀ p ∈ A, ∀ q ∈ A, ‖Φ p - Φ q - (p - q)‖ ≤ δ * ‖p - q‖) → (μHE[n] : Measure (Amb n ℓ)).restrict (Φ '' A) ≤ ENNReal.ofReal (((1 - δ)⁻¹) ^ n) • Measure.map Φ ((μHE[n] : Measure (Amb n ℓ)).restrict A) ∧ Measure.map Φ ((μHE[n] : Measure (Amb n ℓ)).restrict A) ≤ ENNReal.ofReal (((1 - δ)⁻¹) ^ n) • (μHE[n] : Measure (Amb n ℓ)).restrict (Φ '' A) := by
+  intro n ℓ A Φ δ hA hδ0 hδ1 hΦ
+  have h1δ : 0 < 1 - δ := sub_pos.2 hδ1
+  -- `(1 - δ)‖p - q‖ ≤ ‖Φ p - Φ q‖ ≤ (1 + δ)‖p - q‖` on `A`.
+  have hup : ∀ p ∈ A, ∀ q ∈ A, ‖Φ p - Φ q‖ ≤ (1 + δ) * ‖p - q‖ := by
+    intro p hp q hq
+    calc ‖Φ p - Φ q‖ = ‖(Φ p - Φ q - (p - q)) + (p - q)‖ := by rw [sub_add_cancel]
+      _ ≤ ‖Φ p - Φ q - (p - q)‖ + ‖p - q‖ := norm_add_le _ _
+      _ ≤ δ * ‖p - q‖ + ‖p - q‖ := add_le_add (hΦ p hp q hq) le_rfl
+      _ = (1 + δ) * ‖p - q‖ := by ring
+  have hlow : ∀ p ∈ A, ∀ q ∈ A, (1 - δ) * ‖p - q‖ ≤ ‖Φ p - Φ q‖ := by
+    intro p hp q hq
+    have h : ‖p - q‖ ≤ ‖Φ p - Φ q‖ + ‖Φ p - Φ q - (p - q)‖ := by
+      calc ‖p - q‖ = ‖(Φ p - Φ q) - (Φ p - Φ q - (p - q))‖ := by rw [sub_sub_cancel]
+        _ ≤ ‖Φ p - Φ q‖ + ‖Φ p - Φ q - (p - q)‖ := norm_sub_le _ _
+    linarith [hΦ p hp q hq]
+  -- `Φ` is `(1 + δ)`-Lipschitz on `A`, hence a.e.-measurable for `Hⁿ ⌞ A`.
+  have hLipΦ : LipschitzOnWith (Real.toNNReal (1 + δ)) Φ A := by
+    refine LipschitzOnWith.of_dist_le_mul fun p hp q hq => ?_
+    rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ (by linarith)]
+    exact hup p hp q hq
+  have hΦm : AEMeasurable Φ ((μHE[n] : Measure (Amb n ℓ)).restrict A) :=
+    hLipΦ.continuousOn.aemeasurable hA
+  -- `Φ` is injective on `A`; `Ψ = invFunOn Φ A` is a `(1 - δ)⁻¹`-Lipschitz left inverse on `Φ(A)`.
+  have hinj : InjOn Φ A := by
+    intro p hp q hq hpq
+    have h := hlow p hp q hq
+    rw [hpq, sub_self, norm_zero] at h
+    have h' : ‖p - q‖ ≤ 0 := nonpos_of_mul_nonpos_right h h1δ
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 h')
+  have hleft : LeftInvOn (Function.invFunOn Φ A) Φ A := hinj.leftInvOn_invFunOn
+  have hLipΨ : LipschitzOnWith (Real.toNNReal ((1 - δ)⁻¹)) (Function.invFunOn Φ A) (Φ '' A) := by
+    refine LipschitzOnWith.of_dist_le_mul ?_
+    rintro _ ⟨p, hp, rfl⟩ _ ⟨q, hq, rfl⟩
+    rw [hleft hp, hleft hq, dist_eq_norm, dist_eq_norm,
+      Real.coe_toNNReal _ (inv_nonneg.2 h1δ.le), inv_mul_eq_div, le_div_iff₀ h1δ, mul_comm]
+    exact hlow p hp q hq
+  -- The constants: `κ̂ = ((1 - δ)⁻¹)ⁿ` in `[0, ∞]`, and `(1 + δ)ⁿ ≤ κ̂` since `(1 + δ)(1 - δ) ≤ 1`.
+  have hκ : ENNReal.ofReal (((1 - δ)⁻¹) ^ n) = ((Real.toNNReal ((1 - δ)⁻¹) : ℝ≥0∞)) ^ n :=
+    ENNReal.ofReal_pow (inv_nonneg.2 h1δ.le) n
+  have hκ' : ((Real.toNNReal (1 + δ) : ℝ≥0∞)) ^ n ≤ ENNReal.ofReal (((1 - δ)⁻¹) ^ n) := by
+    rw [hκ]
+    gcongr
+    rw [← one_div, le_div_iff₀ h1δ]
+    nlinarith
+  -- For measurable `S`: `Φ_#(Hⁿ ⌞ A)(S) = Hⁿ(Φ⁻¹(S) ∩ A)`, `(Hⁿ ⌞ Φ(A))(S) = Hⁿ(Φ(Φ⁻¹(S) ∩ A))`;
+  -- the Lipschitz image bound (Simon Ch. 2, 1.8(i)) for `Φ` and for `Ψ` gives the two inequalities.
+  refine ⟨Measure.le_iff.2 fun S hS => ?_, Measure.le_iff.2 fun S hS => ?_⟩
+  · rw [Measure.smul_apply, Measure.map_apply_of_aemeasurable hΦm hS, Measure.restrict_apply' hA,
+      Measure.restrict_apply hS, ← image_preimage_inter, smul_eq_mul]
+    calc (μHE[n] : Measure (Amb n ℓ)) (Φ '' (Φ ⁻¹' S ∩ A))
+        ≤ ((Real.toNNReal (1 + δ) : ℝ≥0∞)) ^ n * (μHE[n] : Measure (Amb n ℓ)) (Φ ⁻¹' S ∩ A) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            (hLipΦ.mono inter_subset_right)
+      _ ≤ ENNReal.ofReal (((1 - δ)⁻¹) ^ n) * (μHE[n] : Measure (Amb n ℓ)) (Φ ⁻¹' S ∩ A) := by
+          gcongr
+  · rw [Measure.smul_apply, Measure.map_apply_of_aemeasurable hΦm hS, Measure.restrict_apply' hA,
+      Measure.restrict_apply hS, ← image_preimage_inter, smul_eq_mul]
+    calc (μHE[n] : Measure (Amb n ℓ)) (Φ ⁻¹' S ∩ A)
+        = (μHE[n] : Measure (Amb n ℓ)) (Function.invFunOn Φ A '' (Φ '' (Φ ⁻¹' S ∩ A))) := by
+          rw [hleft.image_image' inter_subset_right]
+      _ ≤ ((Real.toNNReal ((1 - δ)⁻¹) : ℝ≥0∞)) ^ n *
+            (μHE[n] : Measure (Amb n ℓ)) (Φ '' (Φ ⁻¹' S ∩ A)) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            (hLipΨ.mono (image_mono inter_subset_right))
+      _ = ENNReal.ofReal (((1 - δ)⁻¹) ^ n) * (μHE[n] : Measure (Amb n ℓ)) (Φ '' (Φ ⁻¹' S ∩ A)) := by
+          rw [hκ]
+/-- Integral comparison for mutually bounded measures (the bi-Lipschitz sandwich step for
+Simon Ch. 5, Theorem 7.1): if `μ₁ ≤ κ μ₂` and `μ₂ ≤ κ μ₁` with `κ ≥ 1`, `μ₂` is finite and `φ` is
+continuous with `|φ| ≤ M`, then `|∫ φ dμ₁ - ∫ φ dμ₂| ≤ 2 (κ - 1) κ M μ₂(ℝ^{n+ℓ})`.
+For continuous `g` with values in `[0, M]`, `a = ∫ g dμ₂ ∈ [0, M μ₂(ℝ^{n+ℓ})]` and `b = ∫ g dμ₁`
+satisfy `b ≤ κ a` and `a ≤ κ b`, so `|b - a| ≤ (κ - 1) κ a`; apply this to `max φ 0` and
+`max (-φ) 0`, whose difference is `φ`. -/
+theorem dohr_tp_gat_bilip_integral_sandwich : ∀ (n ℓ : ℕ) (μ₁ μ₂ : Measure (Amb n ℓ)) (φ : Amb n ℓ → ℝ) (κ M : ℝ), IsFiniteMeasure μ₂ → Continuous φ → (∀ w, |φ w| ≤ M) → 1 ≤ κ → μ₁ ≤ ENNReal.ofReal κ • μ₂ → μ₂ ≤ ENNReal.ofReal κ • μ₁ → |∫ w, φ w ∂μ₁ - ∫ w, φ w ∂μ₂| ≤ 2 * ((κ - 1) * κ * (M * (μ₂ univ).toReal)) := by
+  intro n ℓ μ₁ μ₂ φ κ M hμ₂ hφ hM hκ h12 h21
+  have hκ0 : 0 ≤ κ := by linarith
+  have hκ1 : 0 ≤ κ - 1 := by linarith
+  have hκtop : ENNReal.ofReal κ ≠ ⊤ := ENNReal.ofReal_ne_top
+  have hκreal : (ENNReal.ofReal κ).toReal = κ := ENNReal.toReal_ofReal hκ0
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+  -- `μ₁ ≤ κ μ₂` makes `μ₁` finite.
+  have hμ₁ : IsFiniteMeasure μ₁ := by
+    refine ⟨lt_of_le_of_lt (Measure.le_iff'.1 h12 univ) ?_⟩
+    rw [Measure.smul_apply, smul_eq_mul]
+    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (measure_lt_top μ₂ univ)
+  -- The comparison for a continuous `g` with values in `[0, M]`.
+  have key : ∀ g : Amb n ℓ → ℝ, Continuous g → (∀ w, 0 ≤ g w) → (∀ w, g w ≤ M) →
+      |∫ w, g w ∂μ₁ - ∫ w, g w ∂μ₂| ≤ (κ - 1) * κ * (M * (μ₂ univ).toReal) := by
+    intro g hg hg0 hgM
+    have hgb : ∀ w, ‖g w‖ ≤ M := fun w => by
+      rw [Real.norm_eq_abs, abs_of_nonneg (hg0 w)]
+      exact hgM w
+    have hi₁ : Integrable g μ₁ := Integrable.of_bound hg.aestronglyMeasurable M (ae_of_all _ hgb)
+    have hi₂ : Integrable g μ₂ := Integrable.of_bound hg.aestronglyMeasurable M (ae_of_all _ hgb)
+    have ha0 : 0 ≤ ∫ w, g w ∂μ₂ := integral_nonneg hg0
+    have haM : ∫ w, g w ∂μ₂ ≤ M * (μ₂ univ).toReal := by
+      have h := norm_integral_le_of_norm_le_const (μ := μ₂) (ae_of_all _ hgb)
+      rw [Real.norm_eq_abs, measureReal_def] at h
+      exact (le_abs_self _).trans h
+    have hba : ∫ w, g w ∂μ₁ ≤ κ * ∫ w, g w ∂μ₂ :=
+      calc ∫ w, g w ∂μ₁ ≤ ∫ w, g w ∂(ENNReal.ofReal κ • μ₂) :=
+            integral_mono_measure h12 (ae_of_all _ hg0) (hi₂.smul_measure hκtop)
+        _ = κ * ∫ w, g w ∂μ₂ := by rw [integral_smul_measure, hκreal, smul_eq_mul]
+    have hab : ∫ w, g w ∂μ₂ ≤ κ * ∫ w, g w ∂μ₁ :=
+      calc ∫ w, g w ∂μ₂ ≤ ∫ w, g w ∂(ENNReal.ofReal κ • μ₁) :=
+            integral_mono_measure h21 (ae_of_all _ hg0) (hi₁.smul_measure hκtop)
+        _ = κ * ∫ w, g w ∂μ₁ := by rw [integral_smul_measure, hκreal, smul_eq_mul]
+    -- With `a = ∫ g dμ₂`, `b = ∫ g dμ₁`, `V = μ₂(ℝ^{n+ℓ})`:
+    -- `b - a ≤ (κ - 1) a ≤ (κ - 1) κ a ≤ (κ - 1) κ M V` and
+    -- `a - b ≤ (κ - 1) b ≤ (κ - 1) κ a ≤ (κ - 1) κ M V`.
+    have h1 : 0 ≤ (κ - 1) * ((κ - 1) * ∫ w, g w ∂μ₂) := mul_nonneg hκ1 (mul_nonneg hκ1 ha0)
+    have h2 : (κ - 1) * κ * ∫ w, g w ∂μ₂ ≤ (κ - 1) * κ * (M * (μ₂ univ).toReal) :=
+      mul_le_mul_of_nonneg_left haM (mul_nonneg hκ1 hκ0)
+    have h3 : (κ - 1) * ∫ w, g w ∂μ₁ ≤ (κ - 1) * (κ * ∫ w, g w ∂μ₂) :=
+      mul_le_mul_of_nonneg_left hba hκ1
+    rw [abs_sub_le_iff]
+    constructor <;> linarith
+  -- Split `φ = max φ 0 - max (-φ) 0`; both parts are continuous with values in `[0, M]`.
+  have hp : Continuous fun w => max (φ w) 0 := hφ.max continuous_const
+  have hn : Continuous fun w => max (-φ w) 0 := hφ.neg.max continuous_const
+  have hp0 : ∀ w, 0 ≤ max (φ w) 0 := fun w => le_max_right _ _
+  have hn0 : ∀ w, 0 ≤ max (-φ w) 0 := fun w => le_max_right _ _
+  have hpM : ∀ w, max (φ w) 0 ≤ M := fun w => max_le ((le_abs_self _).trans (hM w)) hM0
+  have hnM : ∀ w, max (-φ w) 0 ≤ M := fun w => max_le ((neg_le_abs _).trans (hM w)) hM0
+  have hsplit : ∀ μ : Measure (Amb n ℓ), IsFiniteMeasure μ →
+      ∫ w, φ w ∂μ = ∫ w, max (φ w) 0 ∂μ - ∫ w, max (-φ w) 0 ∂μ := by
+    intro μ hμ
+    have hpb : ∀ w, ‖max (φ w) 0‖ ≤ M := fun w => by
+      rw [Real.norm_eq_abs, abs_of_nonneg (hp0 w)]
+      exact hpM w
+    have hnb : ∀ w, ‖max (-φ w) 0‖ ≤ M := fun w => by
+      rw [Real.norm_eq_abs, abs_of_nonneg (hn0 w)]
+      exact hnM w
+    rw [← integral_sub (Integrable.of_bound hp.aestronglyMeasurable M (ae_of_all _ hpb))
+      (Integrable.of_bound hn.aestronglyMeasurable M (ae_of_all _ hnb))]
+    simp only [max_zero_sub_max_neg_zero_eq_self]
+  have hP : |∫ w, max (φ w) 0 ∂μ₁ - ∫ w, max (φ w) 0 ∂μ₂| ≤
+      (κ - 1) * κ * (M * (μ₂ univ).toReal) := key _ hp hp0 hpM
+  have hN : |∫ w, max (-φ w) 0 ∂μ₁ - ∫ w, max (-φ w) 0 ∂μ₂| ≤
+      (κ - 1) * κ * (M * (μ₂ univ).toReal) := key _ hn hn0 hnM
+  have e₁ := hsplit μ₁ hμ₁
+  have e₂ := hsplit μ₂ hμ₂
+  rw [abs_le] at hP hN ⊢
+  constructor <;> linarith [hP.1, hP.2, hN.1, hN.2]
+
+end Submission
+
+/-- **Integrals over `C¹`-close bi-Lipschitz images of a compact parameter set converge**
+(the blow-up step for approximate tangent planes of `C¹` graphs).  Let `K ⊆ ℝⁿ` be compact,
+`pr ∘ L = id`, and suppose that, as `t → 0+`, eventually `pr ∘ F t = id` on `K`,
+`‖F t v - F t v' - L (v - v')‖ ≤ ε ‖v - v'‖` on `K` (every `ε > 0`) and `F t → L` uniformly on `K`.
+Then `∫_{F t(K)} φ dHⁿ → ∫_{L(K)} φ dHⁿ` for continuous compactly supported `φ`.  With
+`Φ = F t ∘ pr`, `Φ` is a `δ`-near-isometry of `A = L(K)` onto `F t(K)`, so `Hⁿ ⌞ F t(K)` and
+`Φ_#(Hⁿ ⌞ A)` agree up to the factor `κ = (1 - δ)⁻ⁿ`; the integrals of `φ` against them differ
+by at most `2 (κ - 1) κ M Hⁿ(A)`, and `∫_A (φ ∘ Φ - φ) dHⁿ` is small by uniform continuity. -/
+theorem Submission.dohr_tp_gat_bilip_setIntegral_tendsto : ∀ (n ℓ : ℕ) (K : Set (Rn n)) (pr : Amb n ℓ →L[ℝ] Rn n) (L : Rn n →L[ℝ] Amb n ℓ) (F : ℝ → Rn n → Amb n ℓ) (φ : Amb n ℓ → ℝ), IsCompact K → Continuous φ → HasCompactSupport φ → (∀ v, pr (L v) = v) → (∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ v ∈ K, pr (F t v) = v) → (∀ ε : ℝ, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ v ∈ K, ∀ v' ∈ K, ‖F t v - F t v' - L (v - v')‖ ≤ ε * ‖v - v'‖) → (∀ ε : ℝ, 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ v ∈ K, ‖F t v - L v‖ ≤ ε) → Tendsto (fun t : ℝ => ∫ w in F t '' K, φ w ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 (∫ w in L '' K, φ w ∂(μHE[n] : Measure (Amb n ℓ)))) := by
+  intro n ℓ K pr L F φ hK hφc hφs hprL hH1 hH2 hH3
+  -- Step 1: `‖v‖ ≤ C ‖L v‖` with `C = ‖pr‖ + 1`, since `pr (L v) = v`.
+  obtain ⟨C, hC⟩ : ∃ C : ℝ, C = ‖pr‖ + 1 := ⟨_, rfl⟩
+  have hC0 : 0 < C := by rw [hC]; positivity
+  have hLlow : ∀ v, ‖v‖ ≤ C * ‖L v‖ := by
+    intro v
+    calc ‖v‖ = ‖pr (L v)‖ := by rw [hprL]
+      _ ≤ ‖pr‖ * ‖L v‖ := pr.le_opNorm _
+      _ ≤ C * ‖L v‖ := by rw [hC]; gcongr; linarith
+  -- Step 2: the plane piece `A = L(K)` is compact, hence measurable, and
+  -- `Hⁿ(A) ≤ ‖L‖ⁿ Lⁿ(K) < ∞` by the Lipschitz image bound.
+  have hA_meas : MeasurableSet (L '' K) := (hK.image L.continuous).isClosed.measurableSet
+  have hA_fin : (μHE[n] : Measure (Amb n ℓ)) (L '' K) < ⊤ := by
+    calc (μHE[n] : Measure (Amb n ℓ)) (L '' K)
+        ≤ (‖L‖₊ : ℝ≥0∞) ^ n * (μHE[n] : Measure (Rn n)) K :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            L.lipschitzWith.lipschitzOnWith
+      _ < ⊤ := by
+          rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+          exact ENNReal.mul_lt_top (ENNReal.pow_lt_top ENNReal.coe_lt_top) hK.measure_lt_top
+  have : IsFiniteMeasure ((μHE[n] : Measure (Amb n ℓ)).restrict (L '' K)) :=
+    isFiniteMeasure_restrict.mpr hA_fin.ne
+  obtain ⟨V, hV⟩ : ∃ V : ℝ, V = ((μHE[n] : Measure (Amb n ℓ)) (L '' K)).toReal := ⟨_, rfl⟩
+  have hV0 : 0 ≤ V := by rw [hV]; exact ENNReal.toReal_nonneg
+  -- Step 3: `|φ| ≤ M` and `φ` is uniformly continuous.
+  obtain ⟨M, hM⟩ := hφc.bounded_above_of_compact_support hφs
+  have hMabs : ∀ w, |φ w| ≤ M := fun w => by simpa [Real.norm_eq_abs] using hM w
+  have hUC : UniformContinuous φ := hφs.uniformContinuous_of_continuous hφc
+  rw [Metric.tendsto_nhds]
+  intro θ hθ
+  -- Step 4: `τ` from uniform continuity, and `δ ∈ (0, 1)` with
+  -- `2 (κ - 1) κ M V < θ / 2` for `κ = (1 - δ)⁻ⁿ`.
+  obtain ⟨τ, hτ, hτφ⟩ := Metric.uniformContinuous_iff.mp hUC (θ / (2 * (V + 1))) (by positivity)
+  have hg : ContinuousAt (fun d : ℝ => ((1 - d)⁻¹) ^ n) 0 :=
+    ((continuousAt_const.sub continuousAt_id).inv₀ (by norm_num)).pow n
+  have hcont : ContinuousAt
+      (fun d : ℝ => 2 * ((((1 - d)⁻¹) ^ n - 1) * ((1 - d)⁻¹) ^ n * (M * V))) 0 :=
+    continuousAt_const.mul (((hg.sub continuousAt_const).mul hg).mul continuousAt_const)
+  have hlim : Tendsto (fun d : ℝ => 2 * ((((1 - d)⁻¹) ^ n - 1) * ((1 - d)⁻¹) ^ n * (M * V)))
+      (𝓝 0) (𝓝 0) := by
+    simpa using hcont.tendsto
+  obtain ⟨δ, hδθ, hδ0, hδ1⟩ : ∃ δ : ℝ,
+      2 * ((((1 - δ)⁻¹) ^ n - 1) * ((1 - δ)⁻¹) ^ n * (M * V)) < θ / 2 ∧ 0 < δ ∧ δ < 1 :=
+    (((hlim.eventually (gt_mem_nhds (half_pos hθ))).filter_mono nhdsWithin_le_nhds).and
+      (eventually_mem_set.mpr (Ioo_mem_nhdsGT one_pos))).exists
+  have hκ1 : 1 ≤ ((1 - δ)⁻¹) ^ n :=
+    one_le_pow₀ ((one_le_inv₀ (by linarith)).mpr (by linarith))
+  have hδC : 0 < δ / C := div_pos hδ0 hC0
+  -- Step 5: the scale `t`, with (H1), (H2) for `ε = δ / C` and (H3) for `ε = τ / 2`.
+  filter_upwards [hH1, hH2 (δ / C) hδC, hH3 (τ / 2) (half_pos hτ)] with t h1 h2 h3
+  -- Step 6: the comparison map `Φ = F t ∘ pr`, with `Φ (L z) = F t z` and `Φ(A) = F t '' K`.
+  obtain ⟨Φ, hΦ⟩ : ∃ Φ : Amb n ℓ → Amb n ℓ, Φ = fun y => F t (pr y) := ⟨_, rfl⟩
+  have hΦL : ∀ z, Φ (L z) = F t z := fun z => by simp only [hΦ, hprL]
+  have hΦA : Φ '' (L '' K) = F t '' K := by
+    rw [Set.image_image]
+    simp only [hΦL]
+  -- Step 7: by (H2), `F t` is Lipschitz on `K`, so `Φ` is continuous on `A`.
+  have hFlip : LipschitzOnWith (Real.toNNReal (δ / C + ‖L‖)) (F t) K := by
+    refine LipschitzOnWith.of_dist_le' fun v hv v' hv' => ?_
+    rw [dist_eq_norm, dist_eq_norm]
+    calc ‖F t v - F t v'‖ = ‖(F t v - F t v' - L (v - v')) + L (v - v')‖ := by
+          rw [sub_add_cancel]
+      _ ≤ ‖F t v - F t v' - L (v - v')‖ + ‖L (v - v')‖ := norm_add_le _ _
+      _ ≤ δ / C * ‖v - v'‖ + ‖L‖ * ‖v - v'‖ := add_le_add (h2 v hv v' hv') (L.le_opNorm _)
+      _ = (δ / C + ‖L‖) * ‖v - v'‖ := by ring
+  have hΦcont : ContinuousOn Φ (L '' K) := by
+    rw [hΦ]
+    refine hFlip.continuousOn.comp pr.continuous.continuousOn ?_
+    rintro _ ⟨z, hz, rfl⟩
+    rw [hprL]
+    exact hz
+  have hΦae : AEMeasurable Φ ((μHE[n] : Measure (Amb n ℓ)).restrict (L '' K)) :=
+    hΦcont.aemeasurable hA_meas
+  -- Step 8: `Φ` is a `δ`-near-isometry on `A`, by (H2) and step 1.
+  have hnear : ∀ p ∈ L '' K, ∀ q ∈ L '' K, ‖Φ p - Φ q - (p - q)‖ ≤ δ * ‖p - q‖ := by
+    rintro _ ⟨z, hz, rfl⟩ _ ⟨w, hw, rfl⟩
+    rw [hΦL, hΦL, ← map_sub L z w]
+    calc ‖F t z - F t w - L (z - w)‖ ≤ δ / C * ‖z - w‖ := h2 z hz w hw
+      _ ≤ δ / C * (C * ‖L (z - w)‖) := by gcongr; exact hLlow _
+      _ = δ * ‖L (z - w)‖ := by field_simp
+  -- Step 9: `Hⁿ ⌞ Φ(A) ≤ κ Φ_#(Hⁿ ⌞ A)` and `Φ_#(Hⁿ ⌞ A) ≤ κ Hⁿ ⌞ Φ(A)`; the push-forward
+  -- is finite with total mass `V`.
+  obtain ⟨hle1, hle2⟩ :=
+    Submission.dohr_tp_gat_bilip_measure_comparison n ℓ (L '' K) Φ δ hA_meas hδ0.le hδ1 hnear
+  have hfin2 : IsFiniteMeasure
+      (Measure.map Φ ((μHE[n] : Measure (Amb n ℓ)).restrict (L '' K))) := inferInstance
+  have hμ₂univ :
+      (Measure.map Φ ((μHE[n] : Measure (Amb n ℓ)).restrict (L '' K)) univ).toReal = V := by
+    rw [Measure.map_apply_of_aemeasurable hΦae MeasurableSet.univ, Set.preimage_univ,
+      Measure.restrict_apply_univ, hV]
+  -- Steps 10-11: `|∫ φ d(Hⁿ ⌞ Φ(A)) - ∫ φ dΦ_#(Hⁿ ⌞ A)| ≤ 2 (κ - 1) κ M V < θ / 2`.
+  have hsw := Submission.dohr_tp_gat_bilip_integral_sandwich n ℓ _ _ φ (((1 - δ)⁻¹) ^ n) M
+    hfin2 hφc hMabs hκ1 hle1 hle2
+  rw [hμ₂univ] at hsw
+  -- Step 12: `∫ φ dΦ_#(Hⁿ ⌞ A) = ∫_A φ ∘ Φ dHⁿ`.
+  have hmap : ∫ w, φ w ∂(Measure.map Φ ((μHE[n] : Measure (Amb n ℓ)).restrict (L '' K))) =
+      ∫ y, φ (Φ y) ∂((μHE[n] : Measure (Amb n ℓ)).restrict (L '' K)) :=
+    integral_map hΦae hφc.aestronglyMeasurable
+  -- Step 13: by (H3), `|φ ∘ Φ - φ| ≤ θ / (2 (V + 1))` on `A`, so the integrals over `A`
+  -- differ by less than `θ / 2`.
+  have hint1 : Integrable (fun y => φ (Φ y)) ((μHE[n] : Measure (Amb n ℓ)).restrict (L '' K)) :=
+    Integrable.of_bound ((hφc.comp_continuousOn hΦcont).aestronglyMeasurable hA_meas) M
+      (ae_of_all _ fun y => hM (Φ y))
+  have hint2 : Integrable φ ((μHE[n] : Measure (Amb n ℓ)).restrict (L '' K)) :=
+    Integrable.of_bound hφc.aestronglyMeasurable M (ae_of_all _ hM)
+  have hclose : ∀ᵐ y ∂((μHE[n] : Measure (Amb n ℓ)).restrict (L '' K)),
+      ‖φ (Φ y) - φ y‖ ≤ θ / (2 * (V + 1)) := by
+    rw [ae_restrict_iff' hA_meas]
+    refine Filter.Eventually.of_forall ?_
+    rintro _ ⟨z, hz, rfl⟩
+    rw [← dist_eq_norm]
+    refine (hτφ ?_).le
+    rw [dist_eq_norm, hΦL]
+    linarith [h3 z hz]
+  have hdiff : |∫ y, φ (Φ y) ∂((μHE[n] : Measure (Amb n ℓ)).restrict (L '' K)) -
+      ∫ y, φ y ∂((μHE[n] : Measure (Amb n ℓ)).restrict (L '' K))| ≤ θ / (2 * (V + 1)) * V := by
+    have h := norm_integral_le_of_norm_le_const hclose
+    rwa [integral_sub hint1 hint2, measureReal_restrict_apply_univ, measureReal_def, ← hV,
+      Real.norm_eq_abs] at h
+  have hθV : θ / (2 * (V + 1)) * V < θ / 2 := by
+    rw [div_mul_eq_mul_div, div_lt_div_iff₀ (by positivity) (by positivity)]
+    nlinarith
+  -- Step 14: `F t '' K = Φ(A)` and the triangle inequality.
+  have hA1 := abs_sub_lt_iff.mp (lt_of_le_of_lt hsw hδθ)
+  have hA2 := abs_sub_lt_iff.mp (lt_of_le_of_lt hdiff hθV)
+  rw [hmap] at hA1
+  rw [Real.dist_eq, ← hΦA, abs_sub_lt_iff]
+  constructor <;> linarith [hA1.1, hA1.2, hA2.1, hA2.2]
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
