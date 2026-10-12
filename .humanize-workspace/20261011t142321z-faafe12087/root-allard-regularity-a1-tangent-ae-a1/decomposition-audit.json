@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'rsod_blowUp_setIntegral_eq|aetp_lusin_compact_exhaustion|upperDensity_ne_zero_outside_hausdorff_null|allard52_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7",
+        "integral_smul_measure|MeasurableEmbedding.integral_map|euclideanHausdorffMeasure_homothety_image|Isometry.euclideanHausdorffMeasure_image|theorem restrict_apply|exists_measurable_subset_ae_eq|measure_inter_add_sdiff₀",
+        "exists_isClosed_continuousOn_of_measurable|measure_toOuterMeasure_isBorelRegular|simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure|realUnitBallVolume_pos",
+        "git diff ea5607598f3133b40a13241f2e51517a8c6423cd 98fd790d5bc2f705d0efa953dadfb274b5462997 -- GMT/Ch05/Submission.lean",
+        "git diff ea5607598f3133b40a13241f2e51517a8c6423cd 2bf50ebc12633baabe9d93a1a3e2f70659e34b29 -- GMT/Ch05/Submission.lean",
+        "git diff ea5607598f3133b40a13241f2e51517a8c6423cd cfc18a0cf91fdfb9fd76e7bf19262ed872cbe8bb -- GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tangent-ae-independent-audit-8ga_qufv/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tangent-ae-independent-audit-8ga_qufv/Combined.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tangent-ae-independent-audit-8ga_qufv/Adapters.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-tangent-ae-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-tangent-ae-a1/decomposition-v2.json",
+        "/tmp/tangent-ae-independent-audit-8ga_qufv/Types.lean",
+        "/tmp/tangent-ae-independent-audit-8ga_qufv/Combined.lean",
+        "/tmp/tangent-ae-independent-audit-8ga_qufv/Adapters.lean"
+      ],
+      "conclusion": "Verified the selected handoff and binding digest. Snapshot revisions match the specified project and Mathlib pins; workspace Contract.lean and Submission.lean match their snapshot copies. The three child names have no snapshot matches, but each has exactly one accepted DAG owner, a matching acceptance receipt, and a byte-identical frozen type. All owners are dependency-free leaves, so reuse introduces no cycle or active-name collision. Independently elaborated every child type and the selected parent type without implementing any child. Combined all three accepted declaration additions against the frozen definitions, without the ancestor main_theorem: compilation succeeded, exact-type applications succeeded, and each declaration uses only propext, Classical.choice and Quot.sound. The supplied application adapters also compiled with standard axioms. This reuse-only split is appropriate: it supplies change of variables, compact Lusin pieces and upper-density nullity at the stated proof steps; the retained analytic arguments establish the selected tangent-measurability/projection/density conjunction. It requires no new DAG nodes."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary sets and functions and n = 0. The homeomorphism, Hausdorff scaling and restricted pushforward identity justify the formula without measurability of M. Both cited Bochner integral identities are unconditional. The final inverse-map simplification is valid for r > 0. This proves identity (*) and its unweighted specialization without circular reliance. The bare name and identical accepted type are valid for reuse."
+    },
+    {
+      "key": "lusin_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the prose and carries the required hypotheses through RectifiableVarifold and IsOpen U. Compact exhaustion of U, a Borel representative on a full-measure carrier subset, and Lusin applied to finite restricted weight measures give the claimed compact continuity pieces. Positivity on each compact piece yields finite Hausdorff measure; positivity also converts the zero-weight remainder into a Hausdorff-null remainder. Enumeration completes every conclusion. Increasingness is unnecessary for the parent argument. No tangent-existence result is assumed, and the accepted name/type reuse is exact."
+    },
+    {
+      "key": "upper_density_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly expresses the stated ENNReal limsup exceptional set with closed balls, null-measurability and finite mass. The proof correctly obtains Borel regularity and Caratheodory measurability, identifies denominators for positive radii, applies the cited upper-density theorem including n = 0, and transfers Hausdorff nullity through the normalization. No local-finiteness hypothesis is missing. Compact thickening supplies finite mass in the parent's weighted application, and zero limsup gives the required limit. The accepted implementation needs no added import; its bare name and frozen type are identical."
+    }
+  ],
+  "required_changes": []
+}
