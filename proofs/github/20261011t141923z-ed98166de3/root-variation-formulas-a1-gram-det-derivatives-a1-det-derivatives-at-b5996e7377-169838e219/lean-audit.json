@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "51f2b23e3dfe7fe972e84c14a6807815532d2e69aeac12e2b54f4547ead01503",
+  "git_delta": {
+    "base_commit": "2ff846d5a56300f0e768f46983fdabd89c3f0029",
+    "candidate_commit": "49102e98910109b28817cdad17b59e835045cd58",
+    "target": "GMT/Ch02/Submission.lean",
+    "declaration": "variation_matrix_det_hasDerivAt_leibniz",
+    "diff_sha256": "b82941b2611e1dca44c23f171bd82d5612c68952d690a293b296d2fc739c0349",
+    "source_sha256": "f0c9d768dadf943b9ced8d986411f5438b64fcb8f50ccd8086cce206332a7dfa",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.variation_matrix_det_hasDerivAt_leibniz",
+      "statement": "∀ (ι : Type) [Fintype ι] [DecidableEq ι] (G : ℝ → Matrix ι ι ℝ) (H : Matrix ι ι ℝ) (x : ℝ), (∀ i k, HasDerivAt (fun s ↦ G s i k) (H i k) x) → HasDerivAt (fun t ↦ (G t).det) (∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ m : ι, (∏ j ∈ Finset.univ.erase m, G x (σ j) j) * H (σ m) m) x",
+      "lean_file": "GMT/Ch02/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
