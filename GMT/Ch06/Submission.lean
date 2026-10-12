@@ -443,6 +443,282 @@ theorem Submission.smr_rb_transfer_functional :
     · rw [hEval g x hx]; rfl
     · rw [hEout g x hx]
       exact image_eq_zero_of_notMem_tsupport fun h => hx (hfU h)
+/-- Riesz representation (Simon Ch. 1, 4.14) with Borel data on a σ-compact locally compact
+Hausdorff space: a locally bounded functional on `C_c(Y, ℝ^N)` is `g ↦ ∫ ⟨g, ν⟩ dm` for a
+measure `m` finite on compacts and a Borel field `ν` with `‖ν‖ ≤ 1`, `‖ν‖ = 1` `m`-a.e. -/
+theorem Submission.smr_rb_borel_riesz_sigma_compact : ∀ (Y : Type) [TopologicalSpace Y] [T2Space Y] [LocallyCompactSpace Y] [SigmaCompactSpace Y] [MeasurableSpace Y] [BorelSpace Y] (N : ℕ) (L : CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)) →ₗ[ℝ] ℝ), (∀ K : Set Y, IsCompact K → ∃ B : ℝ, ∀ g : CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)), (∀ y, ‖g y‖ ≤ 1) → tsupport g ⊆ K → L g ≤ B) → ∃ (m : Measure Y) (ν : Y → EuclideanSpace ℝ (Fin N)), (∀ K : Set Y, IsCompact K → m K < ∞) ∧ Measurable ν ∧ (∀ y, ‖ν y‖ ≤ 1) ∧ (∀ᵐ y ∂m, ‖ν y‖ = 1) ∧ ∀ g : CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)), L g = ∫ y, inner ℝ (g y) (ν y) ∂m := by
+  intro Y _ _ _ _ _ _ N L hL
+  -- Step 1: a functional on `C_c(Y, ℝ)` bounded above on each order interval `[0, f]` is
+  -- dominated on nonnegative functions by a positive functional (its positive part).
+  have key : ∀ ℓ : CompactlySupportedContinuousMap Y ℝ →ₗ[ℝ] ℝ,
+      (∀ f : CompactlySupportedContinuousMap Y ℝ≥0, ∃ B : ℝ,
+        ∀ φ : CompactlySupportedContinuousMap Y ℝ≥0, φ ≤ f → ℓ φ.toReal ≤ B) →
+      ∃ Λ : CompactlySupportedContinuousMap Y ℝ →ₚ[ℝ] ℝ,
+        ∀ f : CompactlySupportedContinuousMap Y ℝ, 0 ≤ f → ℓ f ≤ Λ f := by
+    intro ℓ hB
+    -- `S f = sup {ℓ φ : φ ≤ f}`, the positive part of `ℓ` on nonnegative functions
+    let S : CompactlySupportedContinuousMap Y ℝ≥0 → ℝ := fun f =>
+      sSup ((fun φ : CompactlySupportedContinuousMap Y ℝ≥0 => ℓ φ.toReal) '' Set.Iic f)
+    have hzero : (0 : CompactlySupportedContinuousMap Y ℝ≥0).toReal = 0 := by ext; simp
+    have hle : ∀ f φ, φ ≤ f → ℓ φ.toReal ≤ S f := by
+      intro f φ hφ
+      obtain ⟨B, hB⟩ := hB f
+      exact le_csSup ⟨B, by rintro _ ⟨ψ, hψ, rfl⟩; exact hB ψ hψ⟩ ⟨φ, hφ, rfl⟩
+    have hsup : ∀ f c, (∀ φ, φ ≤ f → ℓ φ.toReal ≤ c) → S f ≤ c := by
+      intro f c h
+      exact csSup_le ⟨_, 0, fun y => zero_le, rfl⟩ (by rintro _ ⟨φ, hφ, rfl⟩; exact h φ hφ)
+    have hS0 : ∀ f, 0 ≤ S f := fun f => by
+      simpa [hzero] using hle f 0 (fun y => zero_le)
+    have hadd : ∀ f g, S (f + g) = S f + S g := by
+      intro f g
+      refine le_antisymm (hsup _ _ fun φ hφ => ?_) ?_
+      · obtain ⟨φ₂, hφ₂⟩ := CompactlySupportedContinuousMap.exists_add_of_le
+          (inf_le_left : φ ⊓ f ≤ φ)
+        have h2 : φ₂ ≤ g := by
+          intro y
+          have e := DFunLike.congr_fun hφ₂ y
+          have hy := hφ y
+          simp only [CompactlySupportedContinuousMap.add_apply,
+            CompactlySupportedContinuousMap.inf_apply] at e hy
+          rcases le_total (φ y) (f y) with h | h
+          · rw [inf_eq_left.2 h] at e
+            have : φ₂ y = 0 := by simpa using e
+            rw [this]; exact zero_le
+          · rw [inf_eq_right.2 h] at e
+            rw [← e] at hy
+            exact le_of_add_le_add_left hy
+        calc ℓ φ.toReal = ℓ (φ ⊓ f).toReal + ℓ φ₂.toReal := by
+              rw [← map_add, ← CompactlySupportedContinuousMap.toReal_add, hφ₂]
+          _ ≤ S f + S g := add_le_add (hle _ _ inf_le_right) (hle _ _ h2)
+      · have h1 : ∀ φ, φ ≤ f → ℓ φ.toReal + S g ≤ S (f + g) := by
+          intro φ hφ
+          have := hsup g (S (f + g) - ℓ φ.toReal) fun ψ hψ => by
+            have := hle (f + g) (φ + ψ) fun y => add_le_add (hφ y) (hψ y)
+            rw [CompactlySupportedContinuousMap.toReal_add, map_add] at this
+            linarith
+          linarith
+        have := hsup f (S (f + g) - S g) fun φ hφ => by linarith [h1 φ hφ]
+        linarith
+    have hsmul_le : ∀ (c : ℝ≥0) f, S (c • f) ≤ c * S f := by
+      intro c f
+      rcases eq_or_ne c 0 with rfl | hc
+      · refine hsup _ _ fun φ hφ => ?_
+        have : φ = 0 := by
+          ext y
+          have := hφ y
+          simp only [zero_smul, CompactlySupportedContinuousMap.zero_apply] at this
+          simpa using le_antisymm this zero_le
+        simp [this, hzero]
+      · refine hsup _ _ fun φ hφ => ?_
+        have h1 : c⁻¹ • φ ≤ f := by
+          intro y
+          have := hφ y
+          simp only [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul] at this ⊢
+          rwa [inv_mul_le_iff₀ (pos_iff_ne_zero.2 hc)]
+        have h2 : c • (c⁻¹ • φ) = φ := by rw [smul_smul, mul_inv_cancel₀ hc, one_smul]
+        calc ℓ φ.toReal = c * ℓ (c⁻¹ • φ).toReal := by
+              conv_lhs => rw [← h2]
+              rw [CompactlySupportedContinuousMap.toReal_smul, NNReal.smul_def, map_smul,
+                smul_eq_mul]
+          _ ≤ c * S f := mul_le_mul_of_nonneg_left (hle _ _ h1) c.2
+    have hsmul : ∀ (c : ℝ≥0) f, S (c • f) = c * S f := by
+      intro c f
+      refine le_antisymm (hsmul_le c f) ?_
+      rcases eq_or_ne c 0 with rfl | hc
+      · rw [NNReal.coe_zero, zero_mul]; exact hS0 _
+      · have := hsmul_le c⁻¹ (c • f)
+        rw [smul_smul, inv_mul_cancel₀ hc, one_smul] at this
+        calc (c : ℝ) * S f ≤ c * (c⁻¹ * S (c • f)) := mul_le_mul_of_nonneg_left this c.2
+          _ = S (c • f) := by
+            rw [← mul_assoc, ← NNReal.coe_mul, mul_inv_cancel₀ hc, NNReal.coe_one, one_mul]
+    let Λ₀ : CompactlySupportedContinuousMap Y ℝ≥0 →ₗ[ℝ≥0] ℝ≥0 :=
+      { toFun := fun f => Real.toNNReal (S f)
+        map_add' := fun f g => by rw [hadd, Real.toNNReal_add (hS0 f) (hS0 g)]
+        map_smul' := fun c f => by
+          rw [hsmul, Real.toNNReal_mul c.coe_nonneg, Real.toNNReal_coe, RingHom.id_apply, smul_eq_mul] }
+    refine ⟨CompactlySupportedContinuousMap.toRealPositiveLinear Λ₀, fun f hf => ?_⟩
+    have hf' : f.nnrealPart.toReal = f := by
+      ext y
+      have hfy : 0 ≤ f y := by simpa using hf y
+      simp [hfy]
+    rw [← hf', CompactlySupportedContinuousMap.eq_toRealPositiveLinear_toReal]
+    exact (hle _ _ le_rfl).trans (Real.le_coe_toNNReal _)
+  -- Step 2: the coordinate functionals `ψ ↦ L(ψ bᵢ)` for the standard orthonormal basis `b`.
+  let b := EuclideanSpace.basisFun (Fin N) ℝ
+  have hb : ∀ i, ‖b i‖ = 1 := fun i => b.orthonormal.1 i
+  let mk : CompactlySupportedContinuousMap Y ℝ → EuclideanSpace ℝ (Fin N) →
+      CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)) := fun ψ v =>
+    ψ.compLeft ⟨fun t => t • v, continuous_id.smul continuous_const⟩
+  have mk_apply : ∀ ψ v y, mk ψ v y = ψ y • v := fun ψ v y =>
+    CompactlySupportedContinuousMap.compLeft_apply (by simp) ψ y
+  let ℓ : EuclideanSpace ℝ (Fin N) → CompactlySupportedContinuousMap Y ℝ →ₗ[ℝ] ℝ := fun v =>
+    { toFun := fun ψ => L (mk ψ v)
+      map_add' := fun ψ φ => by
+        rw [← map_add]
+        congr 1
+        exact CompactlySupportedContinuousMap.ext fun y => by simp [mk_apply, add_smul]
+      map_smul' := fun c ψ => by
+        rw [RingHom.id_apply, ← map_smul]
+        congr 1
+        exact CompactlySupportedContinuousMap.ext fun y => by simp [mk_apply, smul_smul] }
+  have hbound : ∀ i, ∀ f : CompactlySupportedContinuousMap Y ℝ≥0, ∃ B : ℝ,
+      ∀ φ : CompactlySupportedContinuousMap Y ℝ≥0, φ ≤ f → ℓ (b i) φ.toReal ≤ B := by
+    intro i f
+    obtain ⟨B, hB⟩ := hL (tsupport f) f.hasCompactSupport
+    obtain ⟨C, hC⟩ : ∃ C, ∀ y, ‖f.toReal y‖ ≤ C :=
+      (map_continuous f.toReal).bounded_above_of_compact_support f.toReal.hasCompactSupport
+    have hc : 0 < |C| + 1 := by positivity
+    refine ⟨(|C| + 1) * B, fun φ hφ => ?_⟩
+    have hφf : ∀ y, (φ y : ℝ) ≤ |C| + 1 := fun y => by
+      have h1 : (φ y : ℝ) ≤ f y := NNReal.coe_le_coe.2 (hφ y)
+      have h2 := hC y
+      rw [CompactlySupportedContinuousMap.toReal_apply, Real.norm_eq_abs] at h2
+      linarith [le_abs_self C, le_abs_self (f y : ℝ)]
+    have hnorm : ∀ y, ‖mk ((|C| + 1)⁻¹ • φ.toReal) (b i) y‖ ≤ 1 := fun y => by
+      rw [mk_apply, norm_smul, hb, mul_one, CompactlySupportedContinuousMap.smul_apply,
+        CompactlySupportedContinuousMap.toReal_apply, smul_eq_mul, Real.norm_eq_abs,
+        abs_of_nonneg (by positivity)]
+      rw [inv_mul_le_iff₀ hc, mul_one]
+      exact hφf y
+    have hsupp : tsupport (mk ((|C| + 1)⁻¹ • φ.toReal) (b i)) ⊆ tsupport f := by
+      refine closure_mono fun y hy => ?_
+      rw [Function.mem_support] at hy ⊢
+      contrapose! hy
+      have : φ y = 0 := le_antisymm ((hφ y).trans hy.le) zero_le
+      simp [mk_apply, this]
+    have h := hB _ hnorm hsupp
+    change ℓ (b i) ((|C| + 1)⁻¹ • φ.toReal) ≤ B at h
+    rw [map_smul, smul_eq_mul, inv_mul_le_iff₀ hc] at h
+    exact h
+  -- Step 3: Jordan decomposition `ℓᵢ = Λᵢ - Qᵢ` and the Riesz–Markov–Kakutani measures.
+  choose Λ hΛ using fun i => key (ℓ (b i)) (hbound i)
+  let Q : Fin N → CompactlySupportedContinuousMap Y ℝ →ₚ[ℝ] ℝ := fun i =>
+    PositiveLinearMap.mk₀ ((Λ i).toLinearMap - ℓ (b i)) fun f hf => by
+      simpa using hΛ i f hf
+  have hℓ : ∀ i ψ, ℓ (b i) ψ =
+      ∫ y, ψ y ∂(RealRMK.rieszMeasure (Λ i)) - ∫ y, ψ y ∂(RealRMK.rieszMeasure (Q i)) := by
+    intro i ψ
+    rw [RealRMK.integral_rieszMeasure, RealRMK.integral_rieszMeasure]
+    change _ = _ - ((Λ i) ψ - ℓ (b i) ψ)
+    ring
+  -- Step 4: the reference measure `μ₀ = ∑ᵢ (μ_{Λᵢ} + μ_{Qᵢ})` and Radon–Nikodym transfer.
+  let μ₀ : Measure Y := ∑ i, (RealRMK.rieszMeasure (Λ i) + RealRMK.rieszMeasure (Q i))
+  have hμ₀ : ∀ s, μ₀ s = ∑ i, (RealRMK.rieszMeasure (Λ i) s + RealRMK.rieszMeasure (Q i) s) := by
+    intro s
+    simp only [μ₀, Measure.coe_finsetSum, Finset.sum_apply, Measure.coe_add, Pi.add_apply]
+  have : IsFiniteMeasureOnCompacts μ₀ := ⟨fun K hK => by
+    rw [hμ₀]
+    exact ENNReal.sum_lt_top.2 fun i _ =>
+      ENNReal.add_lt_top.2 ⟨hK.measure_lt_top, hK.measure_lt_top⟩⟩
+  have hPle : ∀ i, RealRMK.rieszMeasure (Λ i) ≤ μ₀ := fun i => Measure.le_iff'.2 fun s => by
+    rw [hμ₀]
+    exact le_self_add.trans (Finset.single_le_sum
+      (f := fun j => RealRMK.rieszMeasure (Λ j) s + RealRMK.rieszMeasure (Q j) s)
+      (fun j _ => zero_le) (Finset.mem_univ i))
+  have hQle : ∀ i, RealRMK.rieszMeasure (Q i) ≤ μ₀ := fun i => Measure.le_iff'.2 fun s => by
+    rw [hμ₀]
+    exact le_add_self.trans (Finset.single_le_sum
+      (f := fun j => RealRMK.rieszMeasure (Λ j) s + RealRMK.rieszMeasure (Q j) s)
+      (fun j _ => zero_le) (Finset.mem_univ i))
+  have transfer : ∀ (μ' : Measure Y) [IsFiniteMeasureOnCompacts μ'], μ' ≤ μ₀ →
+      ∀ ψ : CompactlySupportedContinuousMap Y ℝ,
+        Integrable (fun y => (μ'.rnDeriv μ₀ y).toReal • ψ y) μ₀ ∧
+        ∫ y, ψ y ∂μ' = ∫ y, (μ'.rnDeriv μ₀ y).toReal • ψ y ∂μ₀ := by
+    intro μ' _ hle ψ
+    have hwd : μ₀.withDensity (μ'.rnDeriv μ₀) = μ' := by
+      have h := Measure.rnDeriv_add_singularPart μ' μ₀
+      rwa [Measure.singularPart_eq_zero_of_ac (Measure.absolutelyContinuous_of_le hle),
+        add_zero] at h
+    have hint : Integrable ψ (μ₀.withDensity (μ'.rnDeriv μ₀)) := by
+      rw [hwd]
+      exact (map_continuous ψ).integrable_of_hasCompactSupport ψ.hasCompactSupport
+    refine ⟨(integrable_withDensity_iff_integrable_smul' (Measure.measurable_rnDeriv _ _)
+      (Measure.rnDeriv_lt_top _ _)).1 hint, ?_⟩
+    calc ∫ y, ψ y ∂μ' = ∫ y, ψ y ∂(μ₀.withDensity (μ'.rnDeriv μ₀)) := by rw [hwd]
+      _ = _ := integral_withDensity_eq_integral_toReal_smul (Measure.measurable_rnDeriv _ _)
+          (Measure.rnDeriv_lt_top _ _) _
+  -- the vector density `w = ∑ᵢ (dμ_{Λᵢ}/dμ₀ - dμ_{Qᵢ}/dμ₀) bᵢ`
+  let a : Fin N → Y → ℝ := fun i y => ((RealRMK.rieszMeasure (Λ i)).rnDeriv μ₀ y).toReal -
+    ((RealRMK.rieszMeasure (Q i)).rnDeriv μ₀ y).toReal
+  let w : Y → EuclideanSpace ℝ (Fin N) := fun y => ∑ i, a i y • b i
+  have hw : Measurable w := Finset.measurable_sum _ fun i _ =>
+    ((Measure.measurable_rnDeriv _ _).ennreal_toReal.sub
+      (Measure.measurable_rnDeriv _ _).ennreal_toReal).smul_const _
+  -- Step 5: `L g = ∫ ⟨g, w⟩ dμ₀`.
+  have hrep : ∀ g : CompactlySupportedContinuousMap Y (EuclideanSpace ℝ (Fin N)),
+      L g = ∫ y, inner ℝ (g y) (w y) ∂μ₀ := by
+    intro g
+    let gc : Fin N → CompactlySupportedContinuousMap Y ℝ := fun i =>
+      g.compLeft ⟨fun v => inner ℝ (b i) v, continuous_const.inner continuous_id⟩
+    have gc_apply : ∀ i y, gc i y = inner ℝ (b i) (g y) := fun i y =>
+      CompactlySupportedContinuousMap.compLeft_apply (by simp) g y
+    have hg : g = ∑ i, mk (gc i) (b i) := by
+      refine CompactlySupportedContinuousMap.ext fun y => ?_
+      rw [CompactlySupportedContinuousMap.sum_apply]
+      simp only [mk_apply, gc_apply]
+      exact (b.sum_repr' (g y)).symm
+    have hP := fun i => transfer _ (hPle i) (gc i)
+    have hQ := fun i => transfer _ (hQle i) (gc i)
+    calc L g = ∑ i, ℓ (b i) (gc i) := by
+          conv_lhs => rw [hg]
+          rw [map_sum]
+          rfl
+      _ = ∑ i, ∫ y, (((RealRMK.rieszMeasure (Λ i)).rnDeriv μ₀ y).toReal • gc i y -
+            ((RealRMK.rieszMeasure (Q i)).rnDeriv μ₀ y).toReal • gc i y) ∂μ₀ := by
+          refine Finset.sum_congr rfl fun i _ => ?_
+          rw [hℓ, (hP i).2, (hQ i).2, integral_sub (hP i).1 (hQ i).1]
+      _ = ∫ y, ∑ i, (((RealRMK.rieszMeasure (Λ i)).rnDeriv μ₀ y).toReal • gc i y -
+            ((RealRMK.rieszMeasure (Q i)).rnDeriv μ₀ y).toReal • gc i y) ∂μ₀ :=
+          (integral_finsetSum _ fun i _ => (hP i).1.sub (hQ i).1).symm
+      _ = ∫ y, inner ℝ (g y) (w y) ∂μ₀ := by
+          refine integral_congr_ae (ae_of_all _ fun y => ?_)
+          simp only [w, a, inner_sum, real_inner_smul_right, gc_apply, smul_eq_mul]
+          refine Finset.sum_congr rfl fun i _ => ?_
+          rw [real_inner_comm]
+          ring
+  -- Step 6: polar normalization `m = ‖w‖ μ₀`, `ν = ‖w‖⁻¹ w`.
+  have hbe : ∀ i, ‖b i‖ₑ = 1 := fun i => by
+    rw [← ofReal_norm, hb i, ENNReal.ofReal_one]
+  refine ⟨μ₀.withDensity fun y => ‖w y‖ₑ, fun y => ‖w y‖⁻¹ • w y, fun K hK => ?_,
+    hw.norm.inv.smul hw, fun y => ?_, ?_, fun g => ?_⟩
+  · calc (μ₀.withDensity fun y => ‖w y‖ₑ) K = ∫⁻ y in K, ‖w y‖ₑ ∂μ₀ :=
+          withDensity_apply _ hK.isClosed.measurableSet
+      _ ≤ ∫⁻ y in K, ∑ i, ((RealRMK.rieszMeasure (Λ i)).rnDeriv μ₀ y +
+            (RealRMK.rieszMeasure (Q i)).rnDeriv μ₀ y) ∂μ₀ := by
+          refine lintegral_mono fun y =>
+            (enorm_sum_le _ _).trans (Finset.sum_le_sum fun i _ => ?_)
+          rw [enorm_smul, hbe i, mul_one]
+          refine enorm_sub_le.trans (add_le_add ?_ ?_) <;>
+            rw [Real.enorm_eq_ofReal ENNReal.toReal_nonneg] <;> exact ENNReal.ofReal_toReal_le
+      _ = ∑ i, (∫⁻ y in K, (RealRMK.rieszMeasure (Λ i)).rnDeriv μ₀ y ∂μ₀ +
+            ∫⁻ y in K, (RealRMK.rieszMeasure (Q i)).rnDeriv μ₀ y ∂μ₀) := by
+          rw [lintegral_finsetSum']
+          · exact Finset.sum_congr rfl fun i _ =>
+              lintegral_add_left (Measure.measurable_rnDeriv _ _) _
+          · exact fun i _ => ((Measure.measurable_rnDeriv _ _).add
+              (Measure.measurable_rnDeriv _ _)).aemeasurable
+      _ < ∞ := ENNReal.sum_lt_top.2 fun i _ => ENNReal.add_lt_top.2
+          ⟨((withDensity_apply_le _ _).trans (Measure.le_iff'.1
+              (Measure.withDensity_rnDeriv_le _ _) K)).trans_lt hK.measure_lt_top,
+            ((withDensity_apply_le _ _).trans (Measure.le_iff'.1
+              (Measure.withDensity_rnDeriv_le _ _) K)).trans_lt hK.measure_lt_top⟩
+  · show ‖‖w y‖⁻¹ • w y‖ ≤ 1
+    rw [norm_smul, norm_inv, norm_norm]
+    rcases eq_or_ne ‖w y‖ 0 with h | h
+    · rw [h, inv_zero, zero_mul]
+      exact zero_le_one
+    · rw [inv_mul_cancel₀ h]
+  · refine (ae_withDensity_iff hw.enorm).2 (ae_of_all _ fun y hy => ?_)
+    show ‖‖w y‖⁻¹ • w y‖ = 1
+    rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 (enorm_ne_zero.1 hy))]
+  · rw [hrep g, integral_withDensity_eq_integral_toReal_smul hw.enorm
+      (ae_of_all _ fun y => enorm_lt_top)]
+    refine integral_congr_ae (ae_of_all _ fun y => ?_)
+    show inner ℝ (g y) (w y) = (‖w y‖ₑ).toReal • inner ℝ (g y) (‖w y‖⁻¹ • w y)
+    rw [toReal_enorm, smul_eq_mul, real_inner_smul_right]
+    rcases eq_or_ne ‖w y‖ 0 with h | h
+    · rw [norm_eq_zero.1 h, inner_zero_right, mul_zero, mul_zero]
+    · rw [← mul_assoc, mul_inv_cancel₀ h, one_mul]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
