@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.submanifold_tangent-a1.tangent_space_eq_range-a1.tangent_le_range-a1",
+  "parent_id": "root.submanifold_tangent-a1.tangent_space_eq_range-a1",
+  "depth": 3,
+  "title": "Tangent space lies in the range of the chart derivative, given a continuous chart inverse (Simon 2.4.3, Part B)",
+  "statement": "Let n, N ∈ ℕ, write ℝᵏ := EuclideanSpace ℝ (Fin k), and let r ∈ ℕ∞ with 1 ≤ r. Let M ⊆ ℝᴺ, V ⊆ ℝⁿ, W ⊆ ℝᴺ and ψ : ℝⁿ → ℝᴺ satisfy IsSimonLocalRepresentation r M V W ψ: V and W are open, ψ is C^r on V, ψ is injective on V, ψ(V) = W ∩ M, V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W, and Dψ(x) is injective for x ∈ V. Let g := Function.invFunOn ψ V : ℝᴺ → ℝⁿ; g(y) is a point of V mapped to y by ψ when such a point exists, and a fixed arbitrary point otherwise. Assume moreover that g is continuous on W ∩ M in the relative topology (ContinuousOn g (W ∩ M)). Then for every x ∈ V, tangentSpace M (ψ x) ⊆ range Dψ(x), where Dψ(x) = fderiv ℝ ψ x. Here tangentSpace M y is the linear span of all vectors γ′(0) such that γ : ℝ → ℝᴺ is C¹ on (−1,1), maps (−1,1) into M, satisfies γ(0) = y and has derivative γ′(0) at 0.",
+  "lean_statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ContinuousOn (Function.invFunOn ψ V) (W ∩ M) → ∀ x ∈ V, tangentSpace M (ψ x) ≤ LinearMap.range (fderiv ℝ ψ x).toLinearMap",
+  "lean_name": "simon_chart_tangentSpace_le_range_fderiv",
+  "depends_on": [
+    "root.submanifold_tangent-a1.tangent_space_eq_range-a1.lift_velocity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.submanifold_tangent-a1.tangent_space_eq_range-a1.lift_velocity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-submanifold-tangent-a1-tangent-space-eq-range-a1-tangent-le-range-a1-a1"
+}
