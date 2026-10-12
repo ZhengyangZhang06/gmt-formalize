@@ -640,6 +640,39 @@ theorem Submission.deGiorgiDensSob_one_dim_contDiff : ∀ v : Rn 1 → ℝ, Cont
   -- Step 9: the everywhere bound bounds the essential supremum `eLpNorm v ∞`.
   rw [eLpNorm_exponent_top hv.continuous.aestronglyMeasurable]
   exact eLpNormEssSup_le_of_ae_bound (ae_of_all _ hall)
+/-- **Passing to the limit in a Sobolev bound along `C¹` approximations** (used in the proof of
+Simon Ch. 3, Theorem 4.3, for the Sobolev inequality of Lipschitz functions). Let `S ⊆ ℝᴺ` be
+compact and `v_j ∈ C¹(ℝᴺ)` with `tsupport v_j ⊆ S` and `‖Dv_j‖ ≤ K`, such that `v_j → u` and
+`Dv_j → Du` `Lᴺ`-a.e. If `‖v_j‖_{L^p} ≤ c ∫ ‖Dv_j‖ dLᴺ` for every `j`, then
+`‖u‖_{L^p} ≤ c ∫ ‖Du‖ dLᴺ`. Dominated convergence (with the bound `K 1_S`) gives
+`∫ ‖Dv_j‖ → ∫ ‖Du‖`, and Fatou's lemma for `eLpNorm` gives `‖u‖_{L^p} ≤ liminf_j ‖v_j‖_{L^p}`. -/
+theorem Submission.deGiorgiDensSob_eLpNorm_le_of_approx : ∀ (N : ℕ) (p : ℝ≥0∞) (c : ℝ) (K : ℝ≥0) (S : Set (Rn N)) (u : Rn N → ℝ) (v : ℕ → Rn N → ℝ), IsCompact S → (∀ j, ContDiff ℝ 1 (v j)) → (∀ j, tsupport (v j) ⊆ S) → (∀ j y, ‖fderiv ℝ (v j) y‖ ≤ K) → (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ v j y) atTop (𝓝 (u y))) → (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ fderiv ℝ (v j) y) atTop (𝓝 (fderiv ℝ u y))) → (∀ j, eLpNorm (v j) p volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ (v j) y‖)) → eLpNorm u p volume ≤ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ u y‖) := by
+  intro N p c K S u v hS hv hsupp hbd hlim hdlim hineq
+  -- Step 1: each `v j` is continuous, so their a.e. limit `u` is a.e. strongly measurable.
+  have hvm : ∀ j, AEStronglyMeasurable (v j) volume :=
+    fun j ↦ (hv j).continuous.aestronglyMeasurable
+  have hum : AEStronglyMeasurable u volume := aestronglyMeasurable_of_tendsto_ae atTop hvm hlim
+  -- Steps 2–4: dominated convergence of `∫ ‖Dv_j‖`; `Dv_j` vanishes off `tsupport v_j ⊆ S`, so
+  -- `‖Dv_j‖ ≤ K 1_S`, which is integrable because `S` is compact.
+  have hconv : Tendsto (fun j ↦ ∫ y, ‖fderiv ℝ (v j) y‖) atTop (𝓝 (∫ y, ‖fderiv ℝ u y‖)) := by
+    refine tendsto_integral_of_dominated_convergence (S.indicator fun _ ↦ (K : ℝ))
+      (F := fun j y ↦ ‖fderiv ℝ (v j) y‖) (f := fun y ↦ ‖fderiv ℝ u y‖)
+      (fun j ↦ ((hv j).continuous_fderiv one_ne_zero).norm.aestronglyMeasurable)
+      ((integrableOn_const hS.measure_lt_top.ne).integrable_indicator hS.measurableSet)
+      (fun j ↦ ae_of_all _ fun y ↦ ?_) (hdlim.mono fun y hy ↦ hy.norm)
+    show ‖‖fderiv ℝ (v j) y‖‖ ≤ S.indicator (fun _ ↦ (K : ℝ)) y
+    by_cases hy : y ∈ S
+    · rw [norm_norm, indicator_of_mem hy]
+      exact hbd j y
+    · rw [indicator_of_notMem hy, fderiv_of_notMem_tsupport ℝ fun h ↦ hy (hsupp j h), norm_zero,
+        norm_zero]
+  -- Steps 5–7: Fatou's lemma for `eLpNorm`, the bounds for `v j`, and the limit of those bounds.
+  calc eLpNorm u p volume ≤ atTop.liminf fun j ↦ eLpNorm (v j) p volume :=
+        Lp.eLpNorm_lim_le_liminf_eLpNorm hvm u hum hlim
+    _ ≤ atTop.liminf fun j ↦ ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ (v j) y‖) :=
+        liminf_le_liminf (.of_forall hineq)
+    _ = ENNReal.ofReal (c * ∫ y, ‖fderiv ℝ u y‖) :=
+        (ENNReal.tendsto_ofReal (hconv.const_mul c)).liminf_eq
 
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
