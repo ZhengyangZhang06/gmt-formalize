@@ -410,6 +410,41 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- **Masses of the rescaled varifold on cylinders and closed balls** (child `rescaled_mass_formula`
+of `varifold_tangents.density_lower_bound`, Simon Ch. 8, 5.5): for every real `t` and Borel
+`A ⊆ ℝ^N`, `V_{x,t}(A × G(N,n)) = t^{-n} μ_V({z : t⁻¹(z - x) ∈ A})`, because the preimage of
+`A × G(N,n)` under `(z, S) ↦ (t⁻¹(z - x), S)` is `{z : t⁻¹(z - x) ∈ A} × G(N,n)`; and for `t > 0`,
+`V_{x,t}(B_ρ(y) × G(N,n)) = t^{-n} μ_V(B_{tρ}(x + ty))`, because
+`t⁻¹(w - x) - y = t⁻¹(w - (x + ty))` gives `{w : t⁻¹(w - x) ∈ B_ρ(y)} = B_{tρ}(x + ty)`. -/
+theorem Submission.varifold_tangents_dlb_rescaledMeasure_prod_univ :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (t : ℝ), (∀ A : Set (Euclidean N), MeasurableSet A → rescaledMeasure V x t (A ×ˢ (univ : Set (Grassmannian N n))) = ENNReal.ofReal (t⁻¹ ^ n) * V.weight {z | t⁻¹ • (z - x) ∈ A}) ∧ (0 < t → ∀ (y : Euclidean N) (ρ : ℝ), rescaledMeasure V x t (closedBall y ρ ×ˢ (univ : Set (Grassmannian N n))) = ENNReal.ofReal (t⁻¹ ^ n) * V.weight (closedBall (x + t • y) (t * ρ))) := by
+  intro N n U V x t
+  -- Step 1: the dilation `z ↦ t⁻¹ • (z - x)` and `φ (z, S) = (t⁻¹ • (z - x), S)` are measurable.
+  have hη : Measurable fun z : Euclidean N ↦ t⁻¹ • (z - x) := by fun_prop
+  have hφ : Measurable fun z : Euclidean N × Grassmannian N n ↦ (t⁻¹ • (z.1 - x), z.2) := by
+    fun_prop
+  -- Step 2 (part (i)): `φ⁻¹(A × G) = {z | t⁻¹ • (z - x) ∈ A} × G`, a measurable cylinder.
+  have hcyl : ∀ A : Set (Euclidean N), MeasurableSet A →
+      rescaledMeasure V x t (A ×ˢ (univ : Set (Grassmannian N n))) =
+        ENNReal.ofReal (t⁻¹ ^ n) * V.weight {z | t⁻¹ • (z - x) ∈ A} := by
+    intro A hA
+    have hA' : MeasurableSet {z : Euclidean N | t⁻¹ • (z - x) ∈ A} := hη hA
+    rw [rescaledMeasure, Measure.smul_apply, smul_eq_mul,
+      Measure.map_apply hφ (hA.prod MeasurableSet.univ), V.weight_apply hA']
+    rfl
+  refine ⟨hcyl, fun ht y ρ ↦ ?_⟩
+  -- Step 3 (part (ii)): for `t > 0`, `{w | t⁻¹ • (w - x) ∈ B_ρ(y)} = B_{tρ}(x + t • y)`, since
+  -- `t⁻¹ • (w - x) - y = t⁻¹ • (w - (x + t • y))` and `t⁻¹ * d ≤ ρ ↔ d ≤ t * ρ`.
+  have hball : {z : Euclidean N | t⁻¹ • (z - x) ∈ closedBall y ρ} =
+      closedBall (x + t • y) (t * ρ) := by
+    ext w
+    have hw : t⁻¹ • (w - x) - y = t⁻¹ • (w - (x + t • y)) := by
+      rw [smul_sub, smul_sub, smul_add, smul_smul, inv_mul_cancel₀ ht.ne', one_smul]
+      abel
+    rw [mem_ofPred_eq, mem_closedBall, mem_closedBall, dist_eq_norm, dist_eq_norm, hw, norm_smul,
+      Real.norm_of_nonneg (inv_nonneg.2 ht.le), inv_mul_le_iff₀ ht]
+  rw [hcyl _ measurableSet_closedBall, hball]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
