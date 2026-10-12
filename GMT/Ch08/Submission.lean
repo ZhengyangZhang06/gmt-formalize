@@ -410,6 +410,38 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- The monotonicity identity 3.4 at every centre of a stationary varifold `C` on `ℝ^N` (Simon
+Ch. 8, as used in the proof of 5.5): applying 3.4 with `U = ℝ^N` and `ρ₀ = k + 1` gives `θ_k` with
+`θ_k + ω_n^{-1} ∫_{Gₙ(B_ρ(y))} r^{-n-2}|p_{S^⊥}(x-y)|² dC = μ_C(B_ρ(y))/(ω_n ρ^n)` for
+`0 < ρ < k + 1`.  Limits along `ρ ↓ 0` are unique, so `θ_k = θ_0` and the identity holds for every
+`ρ > 0`; the defect integral is monotone in the ball, so the density ratio is non-decreasing. -/
+theorem Submission.allard_tc_scf_monotonicity_identity :
+    StationaryMonotonicityIdentity → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))), C.Stationary → ∀ y : Euclidean N, (∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧ ∀ ρ : ℝ, 0 < ρ → θ + (unitBallVolume n)⁻¹ * normalDefect C y (closedBall y ρ) = densityRatio n C.weight y ρ) ∧ MonotoneOn (densityRatio n C.weight y) (Ioi 0) := by
+  intro hSMI N n C hC y
+  -- Step 1: 3.4 with `U = ℝ^N` and `ρ₀ = k + 1`; global stationarity gives the local premise.
+  have hlocal : ∀ k : ℕ, ∃ θ : ℝ≥0∞, HasDensity n C.weight y θ ∧
+      ∀ ρ : ℝ, 0 < ρ → ρ < (k : ℝ) + 1 →
+        θ + (unitBallVolume n)⁻¹ * normalDefect C y (closedBall y ρ) =
+          densityRatio n C.weight y ρ := fun k ↦
+    hSMI N n univ C y ((k : ℝ) + 1) (by positivity) (subset_univ _) (fun X _ ↦ hC X)
+  choose θ hθ hid using hlocal
+  -- Step 2: limits along `𝓝[>] 0` are unique, so `θ_k = θ_0`.
+  have hθk : ∀ k, θ k = θ 0 := fun k ↦ tendsto_nhds_unique (hθ k) (hθ 0)
+  -- Step 3: every `ρ > 0` lies below some `k + 1`.
+  have hall : ∀ ρ : ℝ, 0 < ρ →
+      θ 0 + (unitBallVolume n)⁻¹ * normalDefect C y (closedBall y ρ) =
+        densityRatio n C.weight y ρ := by
+    intro ρ hρ
+    obtain ⟨k, hk⟩ := exists_nat_gt ρ
+    rw [← hθk k]
+    exact hid k ρ hρ (by linarith)
+  refine ⟨⟨θ 0, hθ 0, hall⟩, ?_⟩
+  -- Step 4: `B_ρ(y) ⊆ B_ρ'(y)`, and a set lintegral is monotone in the set.
+  intro ρ hρ ρ' hρ' hle
+  rw [← hall ρ hρ, ← hall ρ' hρ']
+  gcongr
+  exact lintegral_mono_set (prod_mono (closedBall_subset_closedBall hle) subset_rfl)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
