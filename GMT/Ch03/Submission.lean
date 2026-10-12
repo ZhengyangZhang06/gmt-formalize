@@ -455,6 +455,50 @@ theorem Submission.deGiorgiSobIndMFL_setIntegral_fderiv_kernel_eq : ∀ (N : ℕ
   rw [hrestr]
   exact neg_inj.mp hGGh
 
+/-- **Pointwise bound for the derivative of a mollified indicator** (the pointwise form of the
+estimate `|φ_σ ⋆ g| ≤ φ_σ ⋆ f` in the proof of Simon Ch. 2, Lemma 2.5, `chapter-02.txt`
+lines 543–596). Let `(μ, ν)` be a Gauss–Green pair for `(U, G)`, `ρ ≥ 0` a `C¹_c` function with
+`tsupport ρ ⊆ B̄_r(0)`, and `B̄_r(y) ⊆ U`. Then `u(x) = ∫_G ρ(x - z) dz` satisfies
+`‖Du(y)‖ ≤ ∫ ρ(y - z) dμ(z)`. By the two preceding lemmas,
+`Du(y) w = ∫_G Dρ(y - z) w dz = ∫ ρ(y - z) ⟨w, ν(z)⟩ dμ(z)`; the kernel `ρ(y - ·)` is continuous,
+bounded and vanishes off the compact `B̄_r(y) ⊆ U`, so it is `μ`-integrable, and since `|ν| = 1`
+`μ`-a.e., Cauchy–Schwarz gives `|Du(y) w| ≤ |w| ∫ ρ(y - z) dμ(z)`. -/
+theorem Submission.deGiorgiSobIndMFL_norm_fderiv_le : ∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (ρ : Rn N → ℝ) (r : ℝ) (y : Rn N), ContDiff ℝ 1 ρ → HasCompactSupport ρ → (∀ x, 0 ≤ ρ x) → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → Metric.closedBall y r ⊆ U → ‖fderiv ℝ (fun x ↦ ∫ z in G, ρ (x - z)) y‖ ≤ ∫ z, ρ (y - z) ∂μ := by
+  intro N U G μ ν hU hG hGG ρ r y hρ hρc hρ0 hρr hyU
+  -- Step 1: `μ(B̄_r(y)) < ∞`, since `B̄_r(y)` is a compact subset of `U`.
+  have hfin : μ (Metric.closedBall y r) < ∞ := hGG.2.1 _ (isCompact_closedBall y r) hyU
+  -- Step 2: `ρ(y - ·)` is continuous, bounded by `M` and supported in `B̄_r(y)`, hence
+  -- `μ`-integrable.
+  have hφc : Continuous (fun z ↦ ρ (y - z)) :=
+    hρ.continuous.comp (continuous_const.sub continuous_id)
+  obtain ⟨M, hM⟩ := hρ.continuous.bounded_above_of_compact_support hρc
+  have hsupp : Function.support (fun z ↦ ρ (y - z)) ⊆ Metric.closedBall y r := by
+    intro z hz
+    have h2 := hρr (subset_tsupport _ hz)
+    rw [Metric.mem_closedBall, dist_zero_right] at h2
+    rw [Metric.mem_closedBall, dist_eq_norm, norm_sub_rev]
+    exact h2
+  have hint : Integrable (fun z ↦ ρ (y - z)) μ := by
+    refine (integrableOn_iff_integrable_of_support_subset hsupp).1 ?_
+    exact Measure.integrableOn_of_bounded hfin.ne hφc.aestronglyMeasurable (M := M)
+      (Eventually.of_forall fun z ↦ hM _)
+  -- Step 3: by the operator-norm criterion it suffices that `|Du(y) w| ≤ A |w|`,
+  -- `A = ∫ ρ(y - z) dμ(z) ≥ 0`.
+  refine ContinuousLinearMap.opNorm_le_bound _ (integral_nonneg fun z ↦ hρ0 _) fun w ↦ ?_
+  -- Step 4: `Du(y) w = ∫_G Dρ(y - z) w dz = ∫ ρ(y - z) ⟨w, ν(z)⟩ dμ(z)`.
+  rw [deGiorgiSobIndMFL_fderiv_setIntegral_apply N G ρ hG hρ hρc y w,
+    deGiorgiSobIndMFL_setIntegral_fderiv_kernel_eq N U G μ ν hU hGG ρ r y w hρ hρc hρr hyU,
+    ← integral_mul_const]
+  -- Step 5: `ρ ≥ 0`, `|ν| = 1` `μ`-a.e. and Cauchy–Schwarz give the integrable majorant
+  -- `ρ(y - ·) |w|`.
+  refine norm_integral_le_of_norm_le (hint.mul_const _) ?_
+  filter_upwards [hGG.2.2.2.1] with z hz
+  rw [norm_mul, Real.norm_eq_abs, abs_of_nonneg (hρ0 _)]
+  refine mul_le_mul_of_nonneg_left ?_ (hρ0 _)
+  calc ‖inner ℝ w (ν z)‖ ≤ ‖w‖ * ‖ν z‖ := by
+        rw [Real.norm_eq_abs]; exact abs_real_inner_le_norm _ _
+    _ = ‖w‖ := by rw [hz, mul_one]
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
