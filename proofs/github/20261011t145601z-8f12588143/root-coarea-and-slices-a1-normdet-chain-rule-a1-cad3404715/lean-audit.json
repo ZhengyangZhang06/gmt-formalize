@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f4d22d42f5bd2f295e4d44b6a0420469d4e260a6fbae70409242c854aca3f4c1",
+  "git_delta": {
+    "base_commit": "13cd4fc63fb881ce26324d7c26642ae8c9725bc5",
+    "candidate_commit": "bbf9991fb0c0bdf231d2da833e508a8946fc99a1",
+    "target": "GMT/Ch03/Submission.lean",
+    "changed_files": [
+      "GMT/Ch03/Submission.lean"
+    ],
+    "diff_sha256": "28478932ac10db4aa893cc60bde5e8954464c96fd6f741d7e14d715cdbf81494",
+    "source_sha256": "0a580d17dba8f0ea871ba371dfecccb9c83fd044f588e0accb5f0bd18a5d2122",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.coarea_normDet_chain_rule",
+      "statement": "∀ (n N m : ℕ) (T : Submodule ℝ (Rn N)) (A : Rn n →ₗ[ℝ] Rn N) (L : T →ₗ[ℝ] Rn m) (Γ : Rn n →ₗ[ℝ] Rn m), Function.Injective A → LinearMap.range A = T → (∀ (v : Rn n) (hv : A v ∈ T), Γ v = L ⟨A v, hv⟩) → (LinearMap.adjoint L).normDet * A.normDet = (A ∘ₗ (LinearMap.ker Γ).subtype).normDet * (LinearMap.adjoint Γ).normDet",
+      "lean_file": "GMT/Ch03/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
