@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c95874dcfef7218d6505542c60af36ed01bf63ae10d34b72b265a06d44648070",
+  "git_delta": {
+    "base_commit": "7776ce44491e4ba3c6a7edacae2c35ff6b2da49f",
+    "candidate_commit": "7466cf3ea40302a810d07b6ca75e92f3df2b31fe",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_blowUp_integral_tendsto_zero",
+    "diff_sha256": "560ce177a1c56755323ff36d466a6d3379be83d8f25b9465b48642959154a60a",
+    "source_sha256": "1b5199f18dc4147a72a4b6ee009b6ee63f107a2d85c57db7113835ba7ffadff6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_blowUp_integral_tendsto_zero",
+      "statement": "∀ (n ℓ : ℕ) (x : Amb n ℓ) (A : Set (Amb n ℓ)), (μHE[n] : Measure (Amb n ℓ)) A < ∞ → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real (A ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → ∀ f : CompactlySupportedContinuousMap (Amb n ℓ) ℝ, Tendsto (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
