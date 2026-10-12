@@ -410,6 +410,93 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- Differentiation of the radial cutoff mass under the integral sign (step 5 of the weighted
+radial monotonicity argument, Simon Ch. 8, §3): if `φ` is `C¹` with `φ = 0` on `[A², ∞)`, `h` is
+continuous and `μ(B_R(y)) < ∞`, then for `t₀ > 0` with `t₀ A < R` the map
+`t ↦ ∫ φ(|z - y|²/t²) h(z) dμ(z)` has derivative `∫ φ'(|z - y|²/t₀²)(-2|z - y|²/t₀³) h(z) dμ(z)`
+at `t₀`. -/
+theorem Submission.intcpt_allard_wrm_cutoff_mass_hasDerivAt :
+    ∀ (N : ℕ) (μ : Measure (Euclidean N)) (y : Euclidean N) (h : Euclidean N → ℝ) (φ : ℝ → ℝ) (A R t₀ : ℝ), Continuous h → ContDiff ℝ 1 φ → 0 < A → (∀ s, A ^ 2 ≤ s → φ s = 0) → μ (closedBall y R) ≠ ∞ → 0 < t₀ → t₀ * A < R → HasDerivAt (fun t : ℝ ↦ ∫ z, φ (‖z - y‖ ^ 2 / t ^ 2) * h z ∂μ) (∫ z, deriv φ (‖z - y‖ ^ 2 / t₀ ^ 2) * (-2 * ‖z - y‖ ^ 2 / t₀ ^ 3) * h z ∂μ) t₀ := by
+  intro N μ y h φ A R t₀ hh hφ hA hφA hμ ht₀ htR
+  -- Step 1: `a := t₀ / 2 < t₀ < b := (t₀ + R / A) / 2` with `b * A < R`; `K := B_R(y)`.
+  have hRA : t₀ < R / A := (lt_div_iff₀ hA).2 htR
+  obtain ⟨a, b, ha, hat, htb, hbA⟩ : ∃ a b : ℝ, 0 < a ∧ a < t₀ ∧ t₀ < b ∧ b * A < R :=
+    ⟨t₀ / 2, (t₀ + R / A) / 2, half_pos ht₀, half_lt_self ht₀, by linarith,
+      (lt_div_iff₀ hA).1 (by linarith)⟩
+  have hKc : IsCompact (closedBall y R) := isCompact_closedBall y R
+  have hKm : MeasurableSet (closedBall y R) := measurableSet_closedBall
+  -- Step 2 (i): `φ' = 0` on `(A², ∞)`.
+  have hφ'0 : ∀ s, A ^ 2 < s → deriv φ s = 0 := by
+    intro s hs
+    have hev : φ =ᶠ[𝓝 s] fun _ ↦ (0 : ℝ) :=
+      Filter.eventually_of_mem (Ioi_mem_nhds hs) fun u hu ↦ hφA u (le_of_lt hu)
+    rw [hev.deriv_eq, deriv_const]
+  -- Step 2 (ii): for `t ∈ [a, b]` and `z ∉ K`, `‖z - y‖² / t² > A²`.
+  have hout : ∀ t, a ≤ t → t ≤ b → ∀ z, z ∉ closedBall y R → A ^ 2 < ‖z - y‖ ^ 2 / t ^ 2 := by
+    intro t hat htb z hz
+    have ht : 0 < t := lt_of_lt_of_le ha hat
+    have hzR : R < ‖z - y‖ := by
+      rw [mem_closedBall, dist_eq_norm, not_le] at hz
+      exact hz
+    have htA : t * A < ‖z - y‖ := by nlinarith
+    have hsq : (t * A) ^ 2 < ‖z - y‖ ^ 2 := pow_lt_pow_left₀ htA (by positivity) two_ne_zero
+    rw [lt_div_iff₀ (by positivity)]
+    linarith [hsq, show (t * A) ^ 2 = A ^ 2 * t ^ 2 by ring]
+  -- Step 3: continuity.
+  have hFc : ∀ t : ℝ, Continuous fun z : Euclidean N ↦ φ (‖z - y‖ ^ 2 / t ^ 2) * h z := fun t ↦
+    (hφ.continuous.comp (((continuous_id.sub continuous_const).norm.pow 2).div_const _)).mul hh
+  have hφ'c : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+  have hF'c : ContinuousOn (fun p : ℝ × Euclidean N ↦
+      deriv φ (‖p.2 - y‖ ^ 2 / p.1 ^ 2) * (-2 * ‖p.2 - y‖ ^ 2 / p.1 ^ 3) * h p.2)
+      (Icc a b ×ˢ closedBall y R) := by
+    have hne : ∀ p ∈ Icc a b ×ˢ closedBall y R, p.1 ≠ 0 := fun p hp ↦
+      (lt_of_lt_of_le ha hp.1.1).ne'
+    refine ContinuousOn.mul (ContinuousOn.mul ?_ ?_) (hh.comp continuous_snd).continuousOn
+    · exact hφ'c.comp_continuousOn
+        (ContinuousOn.div (by fun_prop) (by fun_prop) fun p hp ↦ pow_ne_zero _ (hne p hp))
+    · exact ContinuousOn.div (by fun_prop) (by fun_prop) fun p hp ↦ pow_ne_zero _ (hne p hp)
+  -- Step 4: domination by `C · 1_K`.
+  obtain ⟨C, hC⟩ := (isCompact_Icc.prod hKc).exists_bound_of_continuousOn hF'c
+  have h_bound : ∀ᵐ z ∂μ, ∀ t ∈ Ioo a b,
+      ‖deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z‖ ≤
+        (closedBall y R).indicator (fun _ ↦ C) z := by
+    refine Eventually.of_forall fun z t ht ↦ ?_
+    by_cases hz : z ∈ closedBall y R
+    · rw [indicator_of_mem hz]
+      exact hC (t, z) ⟨Ioo_subset_Icc_self ht, hz⟩
+    · rw [indicator_of_notMem hz, hφ'0 _ (hout t ht.1.le ht.2.le z hz)]
+      simp
+  have hbound_int : Integrable ((closedBall y R).indicator fun _ ↦ C) μ :=
+    (integrable_indicator_iff hKm).2 (integrableOn_const hμ)
+  -- Step 5: integrability of `F(t₀, ·)`.
+  have hF_int : Integrable (fun z ↦ φ (‖z - y‖ ^ 2 / t₀ ^ 2) * h z) μ := by
+    obtain ⟨C₀, hC₀⟩ := hKc.exists_bound_of_continuousOn (hFc t₀).continuousOn
+    refine IntegrableOn.integrable_of_forall_notMem_eq_zero
+      (Measure.integrableOn_of_bounded hμ (hFc t₀).aestronglyMeasurable
+        (ae_restrict_of_forall_mem hKm hC₀)) fun z hz ↦ ?_
+    rw [hφA _ (hout t₀ hat.le htb.le z hz).le, zero_mul]
+  have hF'meas : AEStronglyMeasurable
+      (fun z ↦ deriv φ (‖z - y‖ ^ 2 / t₀ ^ 2) * (-2 * ‖z - y‖ ^ 2 / t₀ ^ 3) * h z) μ :=
+    ((hφ'c.comp (((continuous_id.sub continuous_const).norm.pow 2).div_const _)).mul
+      ((((continuous_id.sub continuous_const).norm.pow 2).const_mul (-2)).div_const _)).mul
+      hh |>.aestronglyMeasurable
+  -- Step 6: pointwise derivative in `t`.
+  have h_diff : ∀ᵐ z ∂μ, ∀ t ∈ Ioo a b,
+      HasDerivAt (fun t ↦ φ (‖z - y‖ ^ 2 / t ^ 2) * h z)
+        (deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z) t := by
+    refine Eventually.of_forall fun z t ht ↦ ?_
+    have ht0 : t ≠ 0 := (lt_trans ha ht.1).ne'
+    have hs : HasDerivAt (fun t ↦ ‖z - y‖ ^ 2 / t ^ 2) (-2 * ‖z - y‖ ^ 2 / t ^ 3) t :=
+      ((hasDerivAt_const t (‖z - y‖ ^ 2)).div (hasDerivAt_pow 2 t)
+        (pow_ne_zero 2 ht0)).congr_deriv (by field_simp; ring)
+    exact ((hφ.differentiable one_ne_zero _).hasDerivAt.comp t hs).mul_const (h z)
+  -- Step 7: differentiation under the integral sign on `(a, b) ∋ t₀`.
+  exact (hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (F := fun t z ↦ φ (‖z - y‖ ^ 2 / t ^ 2) * h z)
+    (F' := fun t z ↦ deriv φ (‖z - y‖ ^ 2 / t ^ 2) * (-2 * ‖z - y‖ ^ 2 / t ^ 3) * h z)
+    (Ioo_mem_nhds hat htb) (Eventually.of_forall fun t ↦ (hFc t).aestronglyMeasurable) hF_int
+    hF'meas h_bound hbound_int h_diff).2
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
