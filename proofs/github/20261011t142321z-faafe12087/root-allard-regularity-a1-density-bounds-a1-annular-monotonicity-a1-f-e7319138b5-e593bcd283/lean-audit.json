@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "406b05bb12ea84336e493c6081678f3945285bd605dd9b9350473360a143fbba",
+  "git_delta": {
+    "base_commit": "9c720cdcfa008fbae122d86f0d890d2999414373",
+    "candidate_commit": "c460f539cd5b2477075122f648d5fa7da55f90da",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_am_fc_ball_integrable",
+    "diff_sha256": "39c1848964da3efee577a6c2aa58ab686cd20d63de7ecc4146297ffc939b0263",
+    "source_sha256": "76006e568de05974d8490dac03539b5b8f5884ea0111c27493bad6a99d692b16",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_am_fc_ball_integrable",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (w : Amb n ℓ → ℝ) (y : Amb n ℓ) (R S : ℝ), S < R → μ (closedBall y R) < ⊤ → IntegrableOn H (closedBall y R) μ → AEStronglyMeasurable w (μ.restrict (ball y R)) → (∀ᵐ x ∂μ, x ∈ ball y R → 0 ≤ w x ∧ w x ≤ 1) → IntegrableOn (fun _ => (1 : ℝ)) (closedBall y S) μ ∧ IntegrableOn (fun x => inner ℝ (x - y) (H x)) (closedBall y S) μ ∧ IntegrableOn w (closedBall y S) μ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
