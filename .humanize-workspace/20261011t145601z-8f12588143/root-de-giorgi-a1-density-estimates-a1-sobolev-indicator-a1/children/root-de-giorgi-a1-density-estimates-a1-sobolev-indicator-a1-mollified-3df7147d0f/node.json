@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_fderiv_le-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1",
+  "depth": 4,
+  "title": "Key estimate for a Gauss–Green pair: ∫ζ|D(ρ ∗ χ_G)| ≤ ∫(∫ζ(y)ρ(y − z)dy)dμ(z) (Simon Ch. 2, Lemma 2.5 argument; parent Step 2)",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open, G ⊆ ℝ^N Lebesgue null-measurable, and (μ, ν) a Gauss-Green pair for (U, G), i.e. IsGaussGreenPair U G μ ν: μ(ℝ^N ∖ U) = 0, μ(C) < ∞ for every compact C ⊆ U, ν is μ-a.e. strongly measurable with |ν| = 1 μ-a.e., and ∫_{G∩U} div g dL^N = −∫⟨g, ν⟩ dμ for every C¹ vector field g : ℝ^N → ℝ^N with compact support and tsupport g ⊆ U (div g = trace Dg). Let ζ : ℝ^N → ℝ be continuous with compact support and ζ ≥ 0, let ρ : ℝ^N → ℝ be C¹ with compact support and ρ ≥ 0, and let r ∈ ℝ satisfy tsupport ρ ⊆ B̄_r(0) and cthickening(r, tsupport ζ) ⊆ U. Put u(x) := ∫_G ρ(x − z) dL^N(z). Then ∫ ζ(y)|Du(y)| dL^N(y) ≤ ∫ (∫ ζ(y)ρ(y − z) dL^N(y)) dμ(z), where |Du(y)| = ‖fderiv ℝ u y‖ is the operator norm.",
+  "lean_statement": "∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → NullMeasurableSet G volume → IsGaussGreenPair U G μ ν → ∀ (ζ ρ : Rn N → ℝ) (r : ℝ), Continuous ζ → HasCompactSupport ζ → (∀ y, 0 ≤ ζ y) → ContDiff ℝ 1 ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → Metric.cthickening r (tsupport ζ) ⊆ U → ∫ y, ζ y * ‖fderiv ℝ (fun x ↦ ∫ z in G, ρ (x - z)) y‖ ≤ ∫ z, (∫ y, ζ y * ρ (y - z)) ∂μ",
+  "lean_name": "deGiorgiSobInd_mollified_fderiv_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-mollified-3df7147d0f-a1"
+}

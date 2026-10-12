@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mul_fderiv_bound-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1",
+  "depth": 4,
+  "title": "Product rule bound: for ζ ≥ 0 Lipschitz with compact support and u Lipschitz with 0 ≤ u ≤ 1, ζu is Lipschitz with compact support and ∫|D(ζu)| ≤ ∫ζ|Du| + ∫u|Dζ| (parent Step 1)",
+  "statement": "Let N ∈ ℕ, K, L ∈ ℝ≥0, let ζ : ℝ^N → ℝ be K-Lipschitz with compact support and ζ ≥ 0, and let u : ℝ^N → ℝ be L-Lipschitz with 0 ≤ u ≤ 1. Then the product y ↦ ζ(y)u(y) is K'-Lipschitz for some K' ∈ ℝ≥0, has compact support, and ∫ |D(ζu)| dL^N ≤ (∫ ζ|Du| dL^N) + ∫ u|Dζ| dL^N, where |Dv(y)| := ‖fderiv ℝ v y‖ is the operator norm of Mathlib's Fréchet derivative (which is 0 at points where v is not differentiable).",
+  "lean_statement": "∀ (N : ℕ) (ζ u : Rn N → ℝ) (K L : ℝ≥0), LipschitzWith K ζ → HasCompactSupport ζ → (∀ y, 0 ≤ ζ y) → LipschitzWith L u → (∀ y, 0 ≤ u y ∧ u y ≤ 1) → (∃ K' : ℝ≥0, LipschitzWith K' (fun y ↦ ζ y * u y)) ∧ HasCompactSupport (fun y ↦ ζ y * u y) ∧ ∫ y, ‖fderiv ℝ (fun y ↦ ζ y * u y) y‖ ≤ (∫ y, ζ y * ‖fderiv ℝ u y‖) + ∫ y, u y * ‖fderiv ℝ ζ y‖",
+  "lean_name": "deGiorgiSobInd_mul_lipschitz_fderiv_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-mul-fderiv-bound-a1-a1"
+}

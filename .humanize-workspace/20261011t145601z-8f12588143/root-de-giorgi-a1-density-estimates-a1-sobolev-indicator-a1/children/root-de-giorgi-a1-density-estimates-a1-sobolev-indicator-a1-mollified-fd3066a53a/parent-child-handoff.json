@@ -1,0 +1,92 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "diff GMT/Ch03/Contract.lean GMT/Ch03/Submission.lean; cmp <snapshot>/project/GMT/Ch03/Contract.lean GMT/Ch03/Contract.lean; cmp <snapshot>/project/GMT/Ch03/Submission.lean GMT/Ch03/Submission.lean",
+        "sed -n 600,760p book/chapter-03.txt; sed -n 500,600p book/chapter-02.txt (Lemma 2.5 and its proof)",
+        "python3 -I over dag.json: lean_name list, byte-check of parent/sibling frozen strings, collision check of deGiorgiSobInd_* names",
+        "grep -rl 'deGiorgiSobInd\\|sobInd_\\|SobInd' GMT/Scratch/ dag.json",
+        "sed -n 1,200p <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "grep -n 'theorem\\|lemma\\|def \\|structure' <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "grep -n -A6 'theorem eLpNorm_lim_le_liminf_eLpNorm' <snapshot>/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Complete.lean; grep -n '^namespace' same file",
+        "rg -n 'IsCompact.cthickening|isCompact_cthickening' <snapshot>/mathlib/Mathlib/Topology/MetricSpace/",
+        "rg -n 'integrableOn_of_bounded' <snapshot>/mathlib/Mathlib/MeasureTheory",
+        "rg -n 'protected theorem indicator₀' <snapshot>/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/",
+        "rg -n 'tendsto_one_div_add_atTop_nhds_zero_nat' <snapshot>/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        "grep -n 'notation3 \"∫ \"' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "grep -rn 'theorem integral_indicator₀' <snapshot>/mathlib/Mathlib/MeasureTheory",
+        "rg -n -i 'mollif|convolution|ContDiffBump' .lake/packages/simongmt/Poincare",
+        "lake env lean GMT/Scratch/SobIndAvail.lean (#check after import GMT.Ch03.Submission: ContDiffBump.normed, convolution, eLpNorm_lim_le_liminf_eLpNorm, ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable, HasCompactSupport.hasFDerivAt_convolution_left/contDiff_convolution_left, IsCompact.exists_cthickening_subset_open, LipschitzWith.ae_differentiableAt, measurable_fderiv, norm_fderiv_le_of_lipschitz, fderiv_of_notMem_tsupport, integral_integral_swap, gradient)",
+        "lake env lean GMT/Scratch/SobIndSplitStatements.lean",
+        "lake env lean GMT/Scratch/SobIndSplitAssembly.lean (#print axioms deGiorgiDens_sobolev_indicator)",
+        "lake env lean GMT/Scratch/SobIndReuseCheck.lean (#print axioms Poincare.SimonGMT.Chapter08.ae_constancyMollifier_convolution_tendsto and WeakDerivativesZero.fderiv_convolution_eq_zero; application on Rn N)",
+        "lake env lean GMT/Scratch/SobIndNameCheck.lean (#check of every Mathlib lemma name cited in the child proofs)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/project/GMT/Ch03/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Ch03/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1-lipschitz-sobolev-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1/decomposition-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Complete.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/local-references/d498d77b74ea2063/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyPartition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SobIndAvail.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SobIndSplitStatements.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SobIndSplitAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SobIndReuseCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/SobIndNameCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/LipschitzSobolevSplitAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch03/GMT/Scratch/DensityEstimatesSplitAllStatements.lean"
+      ],
+      "conclusion": "The snapshot's Contract.lean and Submission.lean are byte-identical to the workspace copies (project d09bc8a, Mathlib 25730c7c), and Submission is still identical to Contract.\n\nNothing in the library proves the Sobolev inequality for ζχ_G or the mollified-gradient bound for a Gauss–Green pair. Mathlib has no Gauss–Green/BV theory. SimonGMT Chapter02/BV.lean only defines euclideanDivergence (the trace of fderiv) and IsLocallyBV, and states that mollification is left open. The related DAG nodes (lipschitz_smooth_approx, lipschitz_gauss_green, the indicator_compactness mollifier lemmas) have different statements and none of them is a dependency.\n\nAvailable inside the contract's import closure, so usable in frozen statements and proofs:\n- MeasureTheory.convolution\n- HasCompactSupport.contDiff_convolution_left and HasCompactSupport.hasFDerivAt_convolution_left\n- IsCompact.exists_cthickening_subset_open, IsCompact.cthickening, Metric.cthickening_mono, Metric.mem_cthickening_of_dist_le\n- LipschitzWith.ae_differentiableAt, measurable_fderiv, norm_fderiv_le_of_lipschitz, fderiv_of_notMem_tsupport\n- integral_integral_swap, Measure.integrableOn_of_bounded, AEStronglyMeasurable.indicator₀, integral_indicator₀\n- Lp.eLpNorm_lim_le_liminf_eLpNorm (namespace MeasureTheory.Lp), so the parent assembly needs no extra import\n\nOutside the closure, so usable only in proofs after adding imports:\n- ContDiffBump.normed and ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable (Mathlib.Analysis.Calculus.BumpFunction.{Normed,Convolution})\n- gradient\nFor this reason the frozen child statements use a generic C¹ kernel ρ.\n\nSimonGMT Chapter08/DistributionalConstancy.lean provides constancyMollifier (rIn = r/(k+1)/2, rOut = r/(k+1)) and ae_constancyMollifier_convolution_tendsto. Both apply on Euclidean N = Rn N and use only propext, Classical.choice and Quot.sound, so they can be reused for mollifier_seq. The same file's WeakDerivativesZero.fderiv_convolution_eq_zero is a Lean pattern for the key estimate.\n\nMathlib's ∫-notation parses its body at precedence 60, so `∫ y, A + ∫ y, B` reads as a single integral; mul_fderiv_bound needed explicit parentheses for this reason.\n\nLean evidence: all four frozen strings elaborate in the comparator scope and pass the rfl parse and instance checks. The exact parent type compiles from the exact stubs, with axioms propext, sorryAx (from the stubs only), Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1",
+  "child_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_integral_tendsto-a1",
+  "subproblem": {
+    "key": "mollified_integral_tendsto",
+    "title": "Convergence of the mollified test functions against μ: ∫(∫ζ(y)ρ_j(y − z)dy)dμ(z) → ∫ζ dμ (parent Step 3)",
+    "statement": "Let N ∈ ℕ, μ a measure on ℝ^N, ζ : ℝ^N → ℝ continuous with compact support, and δ ∈ ℝ with μ(cthickening(δ, tsupport ζ)) < ∞. For j ∈ ℕ let ρ_j : ℝ^N → ℝ be continuous with ρ_j ≥ 0, ∫ ρ_j dL^N = 1 and tsupport ρ_j ⊆ B̄_{r_j}(0), where r_j ∈ ℝ satisfy r_j ≤ δ for all j and r_j → 0. Then ∫ (∫ ζ(y)ρ_j(y − z) dL^N(y)) dμ(z) → ∫ ζ dμ as j → ∞.",
+    "lean_statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (ζ : Rn N → ℝ) (ρ : ℕ → Rn N → ℝ) (r : ℕ → ℝ) (δ : ℝ), Continuous ζ → HasCompactSupport ζ → μ (Metric.cthickening δ (tsupport ζ)) < ∞ → (∀ j, Continuous (ρ j)) → (∀ j y, 0 ≤ ρ j y) → (∀ j, ∫ y, ρ j y = 1) → (∀ j, tsupport (ρ j) ⊆ Metric.closedBall (0 : Rn N) (r j)) → (∀ j, r j ≤ δ) → Tendsto r atTop (𝓝 0) → Tendsto (fun j ↦ ∫ z, (∫ y, ζ y * ρ j (y - z)) ∂μ) atTop (𝓝 (∫ z, ζ z ∂μ))",
+    "lean_name": "deGiorgiSobInd_mollified_integral_tendsto",
+    "depends_on": [],
+    "natural_proof": "Source: parent proof Step 3 (\"ζ̃_σ(z) − ζ(z) = ∫(ζ(y) − ζ(z))φ_σ(y − z)dy, so |ζ̃_σ − ζ| ≤ Kσ; also 0 ≤ ζ̃_σ ≤ M and ζ̃_σ vanishes off K'. As μ(K') < ∞, dominated convergence gives ∫ζ̃_σ dμ → ∫ζ dμ\"), for general kernels ρ_j and with the Lipschitz modulus Kσ replaced by the modulus of uniform continuity of ζ. Notation: T := tsupport ζ (compact); K' := cthickening(δ, T), which is closed, hence Borel; M := sup|ζ| < ∞; ζ̃_j(z) := ∫ ζ(y)ρ_j(y − z) dy. No step uses N ≥ 1.\n\n1. (Mass one; r_j ≥ 0.) By invariance of L^N under y ↦ y − z (integral_sub_right_eq_self), ∫ ρ_j(y − z) dy = ∫ ρ_j = 1 for every z. In particular ρ_j ≢ 0, so the set B̄_{r_j}(0) ⊇ tsupport ρ_j is non-empty, i.e. r_j ≥ 0; hence δ ≥ r_j ≥ 0 and T ⊆ K'.\n\n2. (Support and bound.) If ζ̃_j(z) ≠ 0 there is y with ζ(y) ≠ 0 and ρ_j(y − z) ≠ 0; then y ∈ T and |y − z| ≤ r_j ≤ δ, so z ∈ K' (Metric.mem_cthickening_of_dist_le). Moreover |ζ̃_j(z)| ≤ M ∫ ρ_j(y − z) dy = M by step 1. Hence |ζ̃_j| ≤ M·1_{K'} for every j, and also |ζ| ≤ M·1_{K'} (as T ⊆ K').\n\n3. (Measurability.) Each ζ̃_j is continuous: ρ_j is continuous with compact support (tsupport ρ_j ⊆ B̄_{r_j}(0)), hence bounded; for z_k → z the integrands y ↦ ζ(y)ρ_j(y − z_k) converge pointwise to ζ(y)ρ_j(y − z) and are dominated by (sup ρ_j)|ζ(y)|, which is integrable (ζ continuous with compact support); dominated convergence applies. Hence ζ̃_j is Borel measurable.\n\n4. (Uniform convergence.) ζ is uniformly continuous (continuous with compact support; HasCompactSupport.uniformContinuous_of_continuous). Let ε > 0; choose η > 0 such that |ζ(y) − ζ(y')| ≤ ε whenever |y − y'| ≤ η, and j₀ such that r_j ≤ η for j ≥ j₀ (possible since r_j → 0). By step 1, ζ̃_j(z) − ζ(z) = ∫ (ζ(y) − ζ(z))ρ_j(y − z) dy, and the integrand vanishes unless |y − z| ≤ r_j. Hence for j ≥ j₀ and every z, |ζ̃_j(z) − ζ(z)| ≤ ε ∫ ρ_j(y − z) dy = ε. Thus ζ̃_j → ζ uniformly, in particular pointwise.\n\n5. (Conclusion.) The function M·1_{K'} is μ-integrable because μ(K') < ∞; it dominates |ζ̃_j| for every j (step 2); the ζ̃_j are measurable (step 3) and converge pointwise to ζ (step 4). By the dominated convergence theorem, ∫ ζ̃_j dμ → ∫ ζ dμ. ∎",
+    "proof_key_steps": [
+      "∫ρ_j(y − z)dy = 1 for every z; hence r_j ≥ 0 and tsupport ζ ⊆ K' := cthickening(δ, tsupport ζ).",
+      "ζ̃_j(z) := ∫ζ(y)ρ_j(y − z)dy vanishes off K' and |ζ̃_j| ≤ sup|ζ|.",
+      "ζ̃_j is continuous (dominated convergence), hence measurable.",
+      "|ζ̃_j(z) − ζ(z)| ≤ the modulus of uniform continuity of ζ at r_j → 0.",
+      "Dominated convergence against μ with the bound sup|ζ|·1_{K'} ∈ L¹(μ)."
+    ]
+  },
+  "audit": {
+    "key": "mollified_integral_tendsto",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The type matches the prose without adding positivity assumptions on ζ or the radii. Mass one forces nonnegative radii; continuity and bounded support ensure kernel integrability. Uniform continuity gives convergence, while the finite-measure thickening supplies a common integrable bound. Dominated convergence applies to the arbitrary measure μ. The proof is complete and independent."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-mollified-fd3066a53a/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-mollified-fd3066a53a/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T145601Z-8f12588143/nodes/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-mollified-fd3066a53a/parent-supplied-natural-proof.json"
+}
