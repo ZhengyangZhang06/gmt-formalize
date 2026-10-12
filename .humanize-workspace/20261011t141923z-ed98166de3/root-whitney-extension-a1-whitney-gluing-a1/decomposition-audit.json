@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "Whitney|whitney|abbrev Rn|main_theorem",
+        "whitney_gluing_local_structure|whitney_gluing_hasFDerivAt|whitney_gluing_continuousAt_fderiv",
+        "theorem IsLocalMin.fderiv_eq_zero|theorem contDiff_one_iff_fderiv|theorem ContDiffAt.continuousAt_fderiv|theorem innerSL_apply_apply|theorem innerSL_apply_norm|finsum_eq_sum_of_support_subset|exists_infDist_eq_dist|notMem_iff_infDist_pos|theorem IsLittleO.of_bound|HasFDerivAt.of_isLittleO",
+        "python3 /tmp/whitney-gluing-independent-audit-u4mvpry1/run_checks.py"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/LocalExtr/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/LinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Algebra/BigOperators/Finprod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Asymptotics/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-whitney-extension-a1-whitney-gluing-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-whitney-extension-a1-whitney-gluing-a1/decomposition-v1.json",
+        "/tmp/whitney-gluing-independent-audit-u4mvpry1/Assembly.lean",
+        "/tmp/whitney-gluing-independent-audit-u4mvpry1/TypeInstances.lean",
+        "/tmp/whitney-gluing-independent-audit-u4mvpry1/results.json"
+      ],
+      "conclusion": "The split appropriately isolates three analytic obligations of the selected whitney_jet_gluing_c1 contract. The empty sibling-dependency lists are valid: each child proves its own conditional statement, and the parent explicitly supplies the representation hypotheses from earlier child conclusions and P6–P7. Independent assembly establishes the exact frozen parent type. All names are bare, distinct identifiers; none is reserved in the DAG or another scanned decomposition, and none occurs in the snapshot project. All three one-line types validate and elaborate in comparator-generated challenges without child implementations. Each verbatim proof appendix compiles independently against a fresh snapshot Submission build; all child proofs and the assembly use only propext, Classical.choice and Quot.sound. The pinned sources confirm the finite-support, local-minimum, little-o, nearest-point and C¹ APIs. Separate Lean checks confirm ProperSpace (Rn n), the intended continuous-linear-map scalar action, and operator norms. No declaration reuse or circular reliance is required."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree on every hypothesis and conclusion. The proof establishes neighborhood finite-sum identities before differentiation. Nonnegativity makes every zero weight a local minimum, so its derivative vanishes; filtering to positive weights therefore preserves all required sums and captures the support of the derivative norms. Every conclusion follows without parent or sibling reliance."
+    },
+    {
+      "key": "first_order_on_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The convex representation R and all analytic hypotheses are explicit in both statements. The compact-set argument, positive radius and anchor bounds correctly yield the remainder estimate (2C+1)ε‖x−a‖ on a full neighborhood, including points in A and coincident anchors. Choosing ε=c/(2C+1) proves the exact HasFDerivAt conclusion by little-o. The supplied proof is complete and independent."
+    },
+    {
+      "key": "derivative_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the Lean type, including the on-set fderiv identity and every clause of R'. Fixing a∈A supplies nonemptiness; closedness and properness justify a nearest point and positive exterior distance. The radius controls all compatibility estimates, and d>0 justifies cancellation against M/d. The resulting bound ε(1+(3C+1)M), together with the on-set estimate, proves continuity on a full neighborhood. No unstated differentiability or circular theorem use is needed."
+    }
+  ],
+  "required_changes": []
+}
