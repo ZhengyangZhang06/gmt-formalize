@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter04.FirstVariation
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -671,6 +672,109 @@ theorem Submission.dtc_cone_tangentProjection_aemeasurable : ∀ (P n : ℕ) (U 
   intro P n U R
   exact Submission.dtc_cone_opEuclid_aemeasurable_of_aesm P _ _
     (Submission.imrep_approxTangent_starProjection_aesm P n U R)
+/-- **Simon 4.3.6, the stationary monotonicity identity** (Ch. 4, 3.1–3.6, chapter-04.txt
+lines 215–307, applied with `U = ℝᴾ`; used in the proof of 7.3.1, chapter-07.txt line 356).
+Let `R = (M, θ, ξ)` be an integer multiplicity triple in `ℝᴾ` with `V = v(M, θ)` stationary:
+`δV(X) = 0` for every `X ∈ C¹_c(ℝᴾ; ℝᴾ)`.  Then for `z ∈ ℝᴾ` and `0 < σ ≤ ρ`, with closed balls,
+`μ_V = θHⁿ⌞M` and `p_x` the orthogonal projection onto `TₓM`,
+`σ⁻ⁿμ_V(B_σ(z)) + ∫_{B_ρ(z) \ B_σ(z)} |(x − z) − p_x(x − z)|² / |x − z|ⁿ⁺² dμ_V = ρ⁻ⁿμ_V(B_ρ(z))`.
+The radial-cutoff argument of 3.1–3.6 is SimonGMT's
+`RectifiableVarifold.IsStationaryIn.satisfiesStationaryMonotonicity`.  It applies to the varifold
+with carrier `M`, multiplicity `θ` and tangent field `x ↦ TₓM`: its weight is `μ_V` (locally
+finite, `θ` being locally `Hⁿ⌞M`-integrable), its first variation is `R.firstVariation` (as
+`trace(DX ∘ p_x) = trace(p_x ∘ DX)`), and its tangent projection is measurable
+(`dtc_cone_tangentProjection_aemeasurable`, `μ_V ≪ Hⁿ⌞M`).
+The defect `|D^⊥r|²/rⁿ`, with `D^⊥r` the normal part of `(x − z)/|x − z|`, is the stated
+integrand. -/
+theorem Submission.dtc_cone_monotonicity_identity : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → ∀ (z : Euclid P) (σ ρ : ℝ), 0 < σ → σ ≤ ρ → R.measure (closedBall z σ) / ENNReal.ofReal (σ ^ n) + ∫⁻ x in closedBall z ρ \ closedBall z σ, ENNReal.ofReal (‖(x - z) - (approxTangentPlane n R.carrier x).starProjection (x - z)‖ ^ 2 / ‖x - z‖ ^ (n + 2)) ∂R.measure = R.measure (closedBall z ρ) / ENNReal.ofReal (ρ ^ n) := by
+  intro P n R hstat z σ ρ hσ hσρ
+  -- `θ` is measurable and locally `Hⁿ⌞M`-integrable
+  have hθ : Measurable fun x => (R.mult x : ℝ) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : ℝ))).comp R.measurable_mult
+  have hint : ∀ K : Set (Euclid P), IsCompact K →
+      IntegrableOn (fun x => (R.mult x : ℝ)) (R.carrier ∩ K) μHE[n] := by
+    intro K hK
+    refine ⟨hθ.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm]
+    refine lt_of_le_of_lt (le_of_eq ?_) (R.locallyIntegrable_mult K hK (subset_univ K)).lt_top
+    exact lintegral_congr fun x => by simp
+  -- `Hⁿ`-a.e. on `M`, `TₓM` is an approximate tangent plane of `M` at `x`
+  have happrox : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      HasApproximateTangentSpaceAt n R.carrier x (approxTangentPlane n R.carrier x) := by
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, hQ, -⟩ := hx
+    have h : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := ⟨Q, hQ⟩
+    rw [approxTangentPlane, dite_eq_left h]
+    exact h.choose_spec
+  -- `μ_V = θHⁿ⌞M` is `R.measure`; it is finite on compact sets
+  have hweight : (μHE[n] : Measure (Euclid P)).withDensity
+      (R.carrier.indicator fun x => ENNReal.ofReal (R.mult x : ℝ)) = R.measure := by
+    ext A hA
+    rw [withDensity_apply _ hA, IMRep.measure, withDensity_apply _ hA,
+      lintegral_indicator R.measurableSet_carrier, Measure.restrict_comm R.measurableSet_carrier]
+    exact lintegral_congr fun x => by simp
+  have : IsFiniteMeasureOnCompacts R.measure := ⟨fun K hK => by
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact (R.locallyIntegrable_mult K hK (subset_univ K)).lt_top⟩
+  have hlf : IsLocallyFiniteMeasure ((μHE[n] : Measure (Euclid P)).withDensity
+      (R.carrier.indicator fun x => ENNReal.ofReal (R.mult x : ℝ))) := by
+    rw [hweight]
+    infer_instance
+  -- `x ↦ p_x` is `μ_V`-measurable, since `μ_V ≪ Hⁿ⌞M`
+  have hmeas : AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection)
+      ((μHE[n] : Measure (Euclid P)).withDensity
+        (R.carrier.indicator fun x => ENNReal.ofReal (R.mult x : ℝ))) := by
+    rw [hweight]
+    exact (Submission.dtc_cone_tangentProjection_aemeasurable P n univ R).mono_ac
+      (withDensity_absolutelyContinuous _ _)
+  -- the rectifiable varifold `V = v(M, θ)` with tangent field `x ↦ TₓM`
+  let V : Poincare.SimonGMT.Chapter04.RectifiableVarifold (E := Euclid P) n :=
+    { carrier := R.carrier
+      measurable_carrier := R.measurableSet_carrier
+      rectifiable_carrier := R.rectifiable
+      multiplicity := fun x => (R.mult x : ℝ)
+      multiplicity_hypotheses := ⟨R.measurableSet_carrier,
+        fun x hx => Nat.cast_pos.mpr (R.mult_pos x hx), hθ.aemeasurable, hint⟩
+      tangent := approxTangentPlane n R.carrier
+      approximate_tangent := happrox
+      tangentProjection_aemeasurable := hmeas
+      locallyFiniteWeight := hlf }
+  have hVw : V.weight = R.measure := hweight
+  -- `V` is stationary in `ℝᴾ`: its first variation is `R.firstVariation`
+  have hVstat : V.IsStationaryIn univ := by
+    intro X hX
+    have hdiv : ∀ x, V.tangentialDivergence X x = tangentialDivergence n R.carrier X x :=
+      fun x => LinearMap.trace_comp_comm' _ _
+    have hfv : ∫ x, tangentialDivergence n R.carrier X x ∂R.measure = R.firstVariation X := by
+      have hd : (fun x => (R.mult x : ℝ≥0∞)) = fun x => ((R.mult x : NNReal) : ℝ≥0∞) := by
+        funext x
+        simp
+      have hm : Measurable fun x => (R.mult x : NNReal) :=
+        (measurable_from_nat (f := fun k : ℕ => (k : NNReal))).comp R.measurable_mult
+      rw [IMRep.measure, IMRep.firstVariation, hd, integral_withDensity_eq_integral_smul hm]
+      exact integral_congr_ae (Eventually.of_forall fun x => by simp [NNReal.smul_def])
+    rw [Poincare.SimonGMT.Chapter04.RectifiableVarifold.firstVariation, hVw]
+    simp_rw [hdiv]
+    rw [hfv]
+    exact hstat X hX.1 hX.2.1
+  -- Simon 4.3.6 for `V`, on closed balls, with outer radius `ρ + 1`
+  have hmono :=
+    Poincare.SimonGMT.Chapter04.RectifiableVarifold.IsStationaryIn.satisfiesStationaryMonotonicity
+      (V := V) hVstat z (R := ρ + 1) (subset_univ _) hσ hσρ (by linarith)
+  simp only [Poincare.SimonGMT.Chapter04.RectifiableVarifold.normalizedBallMass,
+    Poincare.SimonGMT.Chapter04.RectifiableVarifold.monotonicityDefect, hVw] at hmono
+  rw [← hmono]
+  congr 1
+  -- `|D^⊥r|²/rⁿ = |(x − z) − p_x(x − z)|²/|x − z|ⁿ⁺²` (both sides vanish at `x = z`)
+  refine lintegral_congr fun x => ?_
+  have hrad : V.radialNormalSq z x =
+      ‖(x - z) - (approxTangentPlane n R.carrier x).starProjection (x - z)‖ ^ 2 / ‖x - z‖ ^ 2 := by
+    rw [V.radialNormalSq_eq]
+    change ‖‖x - z‖⁻¹ • (x - z) -
+        (approxTangentPlane n R.carrier x).starProjection (‖x - z‖⁻¹ • (x - z))‖ ^ 2 = _
+    rw [map_smul, ← smul_sub, norm_smul, mul_pow, norm_inv, norm_norm, inv_pow, inv_mul_eq_div]
+  rw [hrad, div_div, ← pow_add, add_comm 2 n]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
