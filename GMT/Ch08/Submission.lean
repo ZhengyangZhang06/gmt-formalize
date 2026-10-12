@@ -541,4 +541,99 @@ theorem Submission.radon_compactlySupported_countable_approx :
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
+/-- Subsequence extraction in Simon Ch. 1, 4.16 (erratum: the Alaoglu theorem only yields a
+subnet, so `X` is taken second countable).  If `X` is locally compact, Hausdorff and second
+countable and the masses `μ j K` of each compact `K` are eventually bounded, then for one strictly
+increasing `φ` every `∫ f dμ (φ j)` with `f ∈ C_c(X, ℝ)` converges.  A Tychonoff (diagonal)
+extraction in `ℕ → ℝ` makes `∫ g k dμ (φ j)` converge for the countable family `g` of
+`radon_compactlySupported_countable_approx`; uniform approximation of `f` by `g k` supported in a
+fixed compact `K ⊇ tsupport f` and the mass bound on `K` then make `∫ f dμ (φ j)` Cauchy. -/
+theorem Submission.radon_exists_subseq_tendsto_integral :
+    ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X]
+      [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (μ : ℕ → Measure X),
+      (∀ K : Set X, IsCompact K → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ᶠ j in atTop, μ j K ≤ C) →
+      ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ f : C_c(X, ℝ), ∃ L : ℝ,
+        Tendsto (fun j ↦ ∫ x, f x ∂(μ (φ j))) atTop (𝓝 L) := by
+  intro X _ _ _ _ _ _ μ hμ
+  -- Step 0(a): `h ∈ C_c(X, ℝ)` is `ν`-integrable if `ν K < ∞` for some `K ⊇ tsupport h`.
+  have hint : ∀ (ν : Measure X) (h : C_c(X, ℝ)) (K : Set X), tsupport h ⊆ K → ν K ≠ ∞ →
+      Integrable (fun x ↦ h x) ν := by
+    intro ν h K hK hν
+    obtain ⟨M, hM⟩ := (map_continuous h).bounded_above_of_compact_support h.hasCompactSupport
+    exact (integrableOn_iff_integrable_of_support_subset ((subset_tsupport _).trans hK)).1
+      (Measure.integrableOn_of_bounded hν (map_continuous h).aestronglyMeasurable
+        (Eventually.of_forall hM))
+  -- Step 0(b): `|∫ h dν| ≤ η ν(K)` if `h = 0` off `K`, `|h| ≤ η` and `ν K < ∞`.
+  have hest : ∀ (ν : Measure X) (h : X → ℝ) (K : Set X) (η : ℝ), ν K ≠ ∞ →
+      (∀ x, x ∉ K → h x = 0) → (∀ x, |h x| ≤ η) → |∫ x, h x ∂ν| ≤ η * ν.real K := by
+    intro ν h K η hν hK hη
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hK, ← Real.norm_eq_abs]
+    exact norm_setIntegral_le_of_norm_le_const hν.lt_top fun x _ ↦
+      (Real.norm_eq_abs _).le.trans (hη x)
+  -- Step 1: the countable approximating family `g`.
+  obtain ⟨g, hg⟩ := Submission.radon_compactlySupported_countable_approx X
+  -- Step 2: each sequence `j ↦ ∫ g k dμ j` is bounded, by `|M| C` for `j ≥ J` and by the
+  -- finitely many earlier terms otherwise.
+  have hbdd : ∀ k, ∃ B : ℝ, ∀ j, |∫ x, g k x ∂(μ j)| ≤ B := by
+    intro k
+    obtain ⟨C, hC, hev⟩ := hμ _ (g k).hasCompactSupport.isCompact
+    obtain ⟨J, hJ⟩ := eventually_atTop.1 hev
+    obtain ⟨M, hM⟩ :=
+      (map_continuous (g k)).bounded_above_of_compact_support (g k).hasCompactSupport
+    refine ⟨|M| * C.toReal + ∑ i ∈ Finset.range J, |∫ x, g k x ∂(μ i)|, fun j ↦ ?_⟩
+    have hsum : 0 ≤ ∑ i ∈ Finset.range J, |∫ x, g k x ∂(μ i)| :=
+      Finset.sum_nonneg fun _ _ ↦ abs_nonneg _
+    have hMC : 0 ≤ |M| * C.toReal := mul_nonneg (abs_nonneg _) ENNReal.toReal_nonneg
+    rcases lt_or_ge j J with hj | hj
+    · have h1 : |∫ x, g k x ∂(μ j)| ≤ ∑ i ∈ Finset.range J, |∫ x, g k x ∂(μ i)| :=
+        Finset.single_le_sum (f := fun i ↦ |∫ x, g k x ∂(μ i)|) (fun _ _ ↦ abs_nonneg _)
+          (Finset.mem_range.2 hj)
+      linarith
+    · have hjC : μ j (tsupport (g k)) ≤ C := hJ j hj
+      have h1 : |∫ x, g k x ∂(μ j)| ≤ |M| * (μ j).real (tsupport (g k)) :=
+        hest (μ j) (g k) _ |M| (hjC.trans_lt hC.lt_top).ne
+          (fun x hx ↦ image_eq_zero_of_notMem_tsupport hx)
+          (fun x ↦ (Real.norm_eq_abs _).ge.trans ((hM x).trans (le_abs_self M)))
+      have h2 : |M| * (μ j).real (tsupport (g k)) ≤ |M| * C.toReal :=
+        mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hC hjC) (abs_nonneg M)
+      linarith
+  choose B hB using hbdd
+  -- Step 3: the points `(∫ g k dμ j)_k` lie in the compact set `∏_k [-B k, B k]` of the first
+  -- countable space `ℕ → ℝ`, so a subsequence converges, i.e. converges in every coordinate `k`.
+  obtain ⟨l, -, φ, hφ, hlim⟩ :=
+    (isCompact_univ_pi fun k ↦ isCompact_Icc (a := -B k) (b := B k)).tendsto_subseq
+      (x := fun j k ↦ ∫ x, g k x ∂(μ j)) fun j ↦ mem_univ_pi.2 fun k ↦ abs_le.1 (hB k j)
+  have hconv : ∀ k, Tendsto (fun j ↦ ∫ x, g k x ∂(μ (φ j))) atTop (𝓝 (l k)) :=
+    fun k ↦ tendsto_pi_nhds.1 hlim k
+  refine ⟨φ, hφ, fun f ↦ ?_⟩
+  -- Step 4: `∫ f dμ (φ j)` is Cauchy, hence convergent.
+  obtain ⟨K, hK, hfK, happrox⟩ := hg f
+  obtain ⟨C, hC, hev⟩ := hμ K hK
+  obtain ⟨J, hJ⟩ := eventually_atTop.1 hev
+  have hc : 0 ≤ C.toReal := ENNReal.toReal_nonneg
+  refine cauchySeq_tendsto_of_complete (Metric.cauchySeq_iff.2 fun ε hε ↦ ?_)
+  obtain ⟨η, hη, hηε⟩ : ∃ η : ℝ, 0 < η ∧ η * (2 * C.toReal + 2) = ε :=
+    ⟨ε / (2 * C.toReal + 2), div_pos hε (by linarith), div_mul_cancel₀ ε (by linarith)⟩
+  obtain ⟨k, hgK, hfg⟩ := happrox η hη
+  obtain ⟨N₁, hN₁⟩ := Metric.cauchySeq_iff.1 (hconv k).cauchySeq η hη
+  -- (i): for `p ≥ J`, `φ p ≥ p ≥ J`, so `μ (φ p) K ≤ C` and `|∫ f - ∫ g k| ≤ η C`.
+  have hclose : ∀ p, J ≤ p →
+      |∫ x, f x ∂(μ (φ p)) - ∫ x, g k x ∂(μ (φ p))| ≤ η * C.toReal := by
+    intro p hp
+    have hpC : μ (φ p) K ≤ C := hJ _ (hp.trans (hφ.id_le p))
+    have hfin : μ (φ p) K ≠ ∞ := (hpC.trans_lt hC.lt_top).ne
+    rw [← integral_sub (hint _ f K hfK hfin) (hint _ (g k) K hgK hfin)]
+    refine (hest _ (fun x ↦ f x - g k x) K η hfin (fun x hx ↦ ?_) hfg).trans
+      (mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hC hpC) hη.le)
+    rw [image_eq_zero_of_notMem_tsupport (fun h ↦ hx (hfK h)),
+      image_eq_zero_of_notMem_tsupport (fun h ↦ hx (hgK h)), sub_zero]
+  -- (ii): the triangle inequality, with `η C + η + η C < η (2 C + 2) = ε`.
+  refine ⟨max N₁ J, fun p hp q hq ↦ ?_⟩
+  have h1 := abs_le.1 (hclose p (le_of_max_le_right hp))
+  have h2 := abs_le.1 (hclose q (le_of_max_le_right hq))
+  have h3 := abs_lt.1 (show |∫ x, g k x ∂(μ (φ p)) - ∫ x, g k x ∂(μ (φ q))| < η from
+    Real.dist_eq _ _ ▸ hN₁ p (le_of_max_le_left hp) q (le_of_max_le_left hq))
+  rw [Real.dist_eq, abs_lt]
+  constructor <;> linarith
+
 end GMT.Ch08
