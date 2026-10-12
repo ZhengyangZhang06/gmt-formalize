@@ -2559,6 +2559,129 @@ theorem aetp_upper_density_zero_ae : ∀ (n ℓ : ℕ) (ν : Measure (Amb n ℓ)
   obtain ⟨ε, hε, hfreq⟩ := hnt
   obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
   exact mem_iUnion.2 ⟨k, hxA, hfreq.mono fun r hr => hk.trans hr⟩
+/-- **`Hⁿ ⌞ P` on balls about `0`** (the normalization `Hⁿ = Lⁿ` on `n`-planes, Simon's Notation
+p. ix, with scaling).  If `P ⊆ ℝ^{n+ℓ}` is an `n`-dimensional subspace and `s ≥ 0`, then
+`Hⁿ(P ∩ B_s(0)) = ω_n sⁿ`.  The inclusion `P → ℝ^{n+ℓ}` is an isometry, so `Hⁿ ⌞ P` is the image
+of `Hⁿ` on `P`, which is Lebesgue measure of the `n`-dimensional inner product space `P`; there
+`|B_s(0)| = sⁿ |B_1(0)|`.  Mathlib's value of `|B_1(0)|` lies outside the frozen import closure, so
+it is computed here by evaluating `I = ∫_P e^{-|x|²} dx` twice: in orthonormal coordinates
+`I = (∫_ℝ e^{-t²} dt)ⁿ = π^{n/2}` (Fubini), while the layer-cake formula with
+`{e^{-|x|²} > t} = B_{√(-log t)}(0)` and the substitution `t = e^{-u}` give
+`I = |B_1(0)| ∫_0^∞ u^{n/2} e^{-u} du = |B_1(0)| Γ(n/2 + 1)`. -/
+theorem rsod_planeMeasure_closedBall : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (P : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ P = n → ∀ s : ℝ, 0 ≤ s → ((μHE[n] : Measure (Amb n ℓ)).restrict (P : Set (Amb n ℓ))) (closedBall 0 s) = ENNReal.ofReal (unitBallVolume n * s ^ n) := by
+  intro n ℓ hn P hP s hs
+  have : Nontrivial P := Module.nontrivial_of_finrank_pos (R := ℝ) (by omega)
+  -- `Hⁿ ⌞ P` is the image of `Hⁿ` on `P` under the isometric inclusion `ι : P → ℝ^{n+ℓ}`, and
+  -- `ι⁻¹(B_s(0))` is the closed ball `B_s(0)` of `P`.
+  have hrange : range (P.subtypeₗᵢ : P → Amb n ℓ) = (P : Set (Amb n ℓ)) := by ext x; simp
+  rw [← hrange, ← P.subtypeₗᵢ.isometry.map_euclideanHausdorffMeasure,
+    Measure.map_apply P.subtypeₗᵢ.continuous.measurable measurableSet_closedBall]
+  have hpre : (P.subtypeₗᵢ : P → Amb n ℓ) ⁻¹' closedBall (0 : Amb n ℓ) s =
+      closedBall (0 : P) s := by
+    ext x; simp [mem_closedBall, dist_eq_norm]
+  -- On the `n`-dimensional inner product space `P`, `Hⁿ` is Lebesgue measure.
+  have hvol : (μHE[n] : Measure P) = volume := by
+    have h := InnerProductSpace.euclideanHausdorffMeasure_eq_volume (V := P); rwa [hP] at h
+  -- `∫_ℝ e^{-t²} dt = √π`.
+  have hA : ∫⁻ x : ℝ, ENNReal.ofReal (Real.exp (-x ^ 2)) = ENNReal.ofReal (√Real.pi) := by
+    have h := integral_gaussian 1
+    simp only [neg_mul, one_mul, div_one] at h
+    rw [← h, ofReal_integral_eq_lintegral_ofReal]
+    · simpa using integrable_exp_neg_mul_sq (b := 1) one_pos
+    · exact ae_of_all _ (fun x => (Real.exp_pos _).le)
+  -- Fubini, splitting off the first coordinate: `∫_{ℝᵐ} e^{-|y|²} dy = (√π)ᵐ`.
+  have hB : ∀ m : ℕ, ∫⁻ x : Fin m → ℝ, ENNReal.ofReal (Real.exp (-∑ i, x i ^ 2)) =
+      ENNReal.ofReal (√Real.pi) ^ m := by
+    intro m
+    induction m with
+    | zero => simp [volume_pi]
+    | succ m ih =>
+      have e := volume_preserving_piFinSuccAbove (fun _ : Fin (m + 1) => ℝ) 0
+      have hf : Measurable fun p : ℝ × (Fin m → ℝ) =>
+          ENNReal.ofReal (Real.exp (-p.1 ^ 2)) * ENNReal.ofReal (Real.exp (-∑ i, p.2 i ^ 2)) := by
+        fun_prop
+      calc ∫⁻ x : Fin (m + 1) → ℝ, ENNReal.ofReal (Real.exp (-∑ i, x i ^ 2))
+          = ∫⁻ x : Fin (m + 1) → ℝ, (fun p : ℝ × (Fin m → ℝ) =>
+              ENNReal.ofReal (Real.exp (-p.1 ^ 2)) * ENNReal.ofReal (Real.exp (-∑ i, p.2 i ^ 2)))
+                (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (m + 1) => ℝ) 0 x) := by
+            refine lintegral_congr fun x => ?_
+            simp only [MeasurableEquiv.piFinSuccAbove_apply, Fin.sum_univ_succ]
+            rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add, neg_add]
+            rfl
+        _ = ∫⁻ p : ℝ × (Fin m → ℝ), ENNReal.ofReal (Real.exp (-p.1 ^ 2)) *
+              ENNReal.ofReal (Real.exp (-∑ i, p.2 i ^ 2)) := e.lintegral_comp hf
+        _ = (∫⁻ a : ℝ, ENNReal.ofReal (Real.exp (-a ^ 2))) *
+              ∫⁻ y : Fin m → ℝ, ENNReal.ofReal (Real.exp (-∑ i, y i ^ 2)) :=
+            lintegral_prod_mul (f := fun a : ℝ => ENNReal.ofReal (Real.exp (-a ^ 2)))
+              (g := fun y : Fin m → ℝ => ENNReal.ofReal (Real.exp (-∑ i, y i ^ 2)))
+              (by fun_prop) (Measurable.aemeasurable (by fun_prop))
+        _ = ENNReal.ofReal (√Real.pi) ^ (m + 1) := by rw [hA, ih, pow_succ']
+  -- In orthonormal coordinates on `P`: `∫_P e^{-|x|²} dx = (√π)^{dim P}`.
+  have hC : ∫⁻ x : P, ENNReal.ofReal (Real.exp (-‖x‖ ^ 2)) =
+      ENNReal.ofReal (√Real.pi) ^ Module.finrank ℝ P := by
+    have e := (PiLp.volume_preserving_ofLp (Fin (Module.finrank ℝ P))).comp
+      (stdOrthonormalBasis ℝ P).measurePreserving_repr
+    rw [← hB, ← e.lintegral_comp (by fun_prop)]
+    refine lintegral_congr fun x => ?_
+    rw [← (stdOrthonormalBasis ℝ P).repr.norm_map x, EuclideanSpace.norm_sq_eq]
+    simp [Real.norm_eq_abs, sq_abs]
+  -- `t = e^{-u}`: `∫_0^∞ (√(-log t))^{dim P} dt = ∫_0^∞ u^{dim P/2} e^{-u} du = Γ(dim P/2 + 1)`.
+  have hE : ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal (√(-Real.log t) ^ Module.finrank ℝ P) =
+      ENNReal.ofReal (Real.Gamma ((Module.finrank ℝ P : ℝ) / 2 + 1)) := by
+    have himg : (fun u : ℝ => Real.exp (-u)) '' univ = Ioi 0 := by
+      rw [image_univ]; ext t; simp only [mem_range, mem_Ioi]
+      constructor
+      · rintro ⟨u, rfl⟩; exact Real.exp_pos _
+      · intro ht; exact ⟨-Real.log t, by rw [neg_neg, Real.exp_log ht]⟩
+    rw [← himg, lintegral_image_eq_lintegral_abs_deriv_mul MeasurableSet.univ
+        (fun u _ => (hasDerivAt_neg u).exp.hasDerivWithinAt)
+        (fun u _ v _ h => by simpa using h), Measure.restrict_univ]
+    simp only [mul_neg, mul_one, abs_neg, abs_of_pos (Real.exp_pos _), Real.log_exp, neg_neg]
+    rw [Real.Gamma_eq_integral (by positivity), ofReal_integral_eq_lintegral_ofReal
+      (Real.GammaIntegral_convergent (by positivity))
+      (ae_restrict_of_forall_mem measurableSet_Ioi fun u hu => by
+        have : 0 < u := hu
+        positivity)]
+    rw [← setLIntegral_eq_of_support_subset (s := Ioi 0)]
+    · refine setLIntegral_congr_fun measurableSet_Ioi fun u hu => ?_
+      have hu : 0 < u := hu
+      rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, Real.sqrt_eq_rpow, ← Real.rpow_natCast,
+        ← Real.rpow_mul hu.le]
+      congr 3
+      ring
+    · intro u hu
+      by_contra h
+      simp only [mem_Ioi, not_lt] at h
+      apply hu
+      simp [Real.sqrt_eq_zero'.2 h, zero_pow (by omega : Module.finrank ℝ P ≠ 0)]
+  -- Layer cake: `{x ∈ P : e^{-|x|²} > t}` is the ball `B_{√(-log t)}(0)` of `P`.
+  have hD : ∫⁻ x : P, ENNReal.ofReal (Real.exp (-‖x‖ ^ 2)) =
+      ENNReal.ofReal (Real.Gamma ((Module.finrank ℝ P : ℝ) / 2 + 1)) * volume (ball (0 : P) 1) := by
+    rw [lintegral_eq_lintegral_meas_lt volume (ae_of_all _ fun x => (Real.exp_pos _).le)
+      (by fun_prop), ← hE, ← lintegral_mul_const _ (by fun_prop)]
+    refine setLIntegral_congr_fun measurableSet_Ioi fun t ht => ?_
+    have ht : 0 < t := ht
+    have hset : {a : P | t < Real.exp (-‖a‖ ^ 2)} = ball (0 : P) √(-Real.log t) := by
+      ext a
+      rw [mem_ofPred_eq, mem_ball_zero_iff, ← Real.log_lt_iff_lt_exp ht,
+        Real.lt_sqrt (norm_nonneg _)]
+      constructor <;> intro h <;> linarith
+    rw [hset, Measure.addHaar_ball volume 0 (Real.sqrt_nonneg _)]
+  -- Hence `|B_1(0)| = (√π)ⁿ / Γ(n/2 + 1) = π^{n/2} / Γ(n/2 + 1) = ω_n`.
+  have hΓ : 0 < Real.Gamma ((Module.finrank ℝ P : ℝ) / 2 + 1) :=
+    Real.Gamma_pos_of_pos (by positivity)
+  have hω : unitBallVolume n = √Real.pi ^ n / Real.Gamma ((n : ℝ) / 2 + 1) := by
+    unfold unitBallVolume
+    rw [Real.sqrt_eq_rpow, ← Real.rpow_natCast, ← Real.rpow_mul Real.pi_pos.le]
+    congr 2
+    ring
+  have hball : volume (ball (0 : P) 1) = ENNReal.ofReal (unitBallVolume n) := by
+    rw [hP] at hC hD hΓ
+    rw [hω, ENNReal.ofReal_div_of_pos hΓ,
+      ENNReal.eq_div_iff (ENNReal.ofReal_pos.2 hΓ).ne' ENNReal.ofReal_ne_top, ← hD, hC,
+      ENNReal.ofReal_pow (Real.sqrt_nonneg _)]
+  rw [hpre, hvol, Measure.addHaar_closedBall volume (0 : P) hs, hball, hP,
+    ← ENNReal.ofReal_mul (pow_nonneg hs n), mul_comm]
 /-- **Blow-up change of variables** (Simon Ch. 3, Remark 1.8(2)).  For `η = η_{x,r}`,
 `η(z) = r⁻¹(z − x)`, with `r > 0`, any set `M` and any `f, θ`:
 `∫_{η(M)} f(y) θ(x + r y) dHⁿ(y) = r⁻ⁿ ∫_M f(η z) θ(z) dHⁿ(z)`.  As `η` is a homeomorphism and
@@ -2600,6 +2723,289 @@ theorem rsod_blowUp_setIntegral_eq : ∀ (n ℓ : ℕ) (M : Set (Amb n ℓ)) (f 
   refine integral_congr_ae (Filter.Eventually.of_forall fun z => ?_)
   simp only [hη, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne',
     one_smul, add_sub_cancel]
+/-- **Blow-up test integrals versus normalized ball mass** (Simon Ch. 3, Remark 1.8(2)).  For
+`η = η_{x,r}`, a Borel cut-off `0 ≤ φ ≤ 1` vanishing off `B_R(0)` with `B_{rR}(x) ⊆ U`, the blow-up
+integral `I = ∫_{η(M)} φ(y) θ(x + r y) dHⁿ(y)` is nonnegative, and it bounds
+`J = r⁻ⁿ ∫_{M ∩ B_r(x)} θ dHⁿ` from above if `φ = 1` on `B_1(0)` and from below if `φ = 0` off
+`B_1(0)`. -/
+theorem rsod_blowUp_integral_ballMass_bounds : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ))
+    (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (r R : ℝ) (φ : Amb n ℓ → ℝ), 0 < r → 1 ≤ R →
+    closedBall x (r * R) ⊆ U → Measurable φ → (∀ y, 0 ≤ φ y ∧ φ y ≤ 1) →
+    (∀ y, y ∉ closedBall (0 : Amb n ℓ) R → φ y = 0) →
+    0 ≤ ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier,
+        φ y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) ∧
+    ((∀ y ∈ closedBall (0 : Amb n ℓ) 1, φ y = 1) →
+      (r ^ n)⁻¹ * ∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ)) ≤
+        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier,
+          φ y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ))) ∧
+    ((∀ y, y ∉ closedBall (0 : Amb n ℓ) 1 → φ y = 0) →
+      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' V.carrier,
+          φ y * V.mult (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) ≤
+        (r ^ n)⁻¹ * ∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ))) := by
+  intro n ℓ U V x r R φ hr hR hball hφm hφ01 hφsupp
+  -- Step 1: change of variables, `I = r⁻ⁿ ∫_M φ(η z) θ(z) dHⁿ(z)`.
+  rw [Submission.rsod_blowUp_setIntegral_eq n ℓ V.carrier φ V.mult x r hr]
+  set μ : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
+  set η := Poincare.SimonGMT.Chapter03.blowUpMap x r with hη
+  have hrpos : 0 ≤ (r ^ n)⁻¹ := inv_nonneg.mpr (pow_nonneg hr.le n)
+  -- Step 2: `η z ∈ B_s(0) ↔ z ∈ B_{rs}(x)`.
+  have hmem : ∀ z : Amb n ℓ, ∀ s : ℝ,
+      η z ∈ closedBall (0 : Amb n ℓ) s ↔ z ∈ closedBall x (r * s) := by
+    intro z s
+    simp only [hη, Poincare.SimonGMT.Chapter03.blowUpMap, mem_closedBall, dist_eq_norm,
+      sub_zero, norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hr)]
+    rw [← div_eq_inv_mul, div_le_iff₀ hr, mul_comm s r]
+  -- Step 3: `θ` is integrable on `M ∩ B_{rR}(x)` and on `M ∩ B_r(x)`, compact subsets of `U`.
+  have hballr : closedBall x r ⊆ U :=
+    (closedBall_subset_closedBall (le_mul_of_one_le_right hr.le hR)).trans hball
+  have hintR : IntegrableOn V.mult (V.carrier ∩ closedBall x (r * R)) μ :=
+    V.integrableOn_mult _ (isCompact_closedBall _ _) hball
+  have hintr : IntegrableOn V.mult (V.carrier ∩ closedBall x r) μ :=
+    V.integrableOn_mult _ (isCompact_closedBall _ _) hballr
+  have hind : IntegrableOn ((closedBall x r).indicator V.mult) V.carrier μ := by
+    rw [IntegrableOn, integrable_indicator_iff measurableSet_closedBall, IntegrableOn,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact hintr
+  -- Step 4: `h = (φ ∘ η) θ` is integrable on `M`, being dominated by `1_{B_{rR}(x)} θ`.
+  have hηm : Measurable η := by
+    rw [hη]
+    unfold Poincare.SimonGMT.Chapter03.blowUpMap
+    fun_prop
+  have hh : IntegrableOn (fun z => φ (η z) * V.mult z) V.carrier μ := by
+    have hg : Integrable ((closedBall x (r * R)).indicator V.mult) (μ.restrict V.carrier) := by
+      rw [integrable_indicator_iff measurableSet_closedBall, IntegrableOn,
+        Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+      exact hintR
+    refine hg.mono ((hφm.comp hηm).aestronglyMeasurable.mul
+      V.aemeasurable_mult.aestronglyMeasurable) (Eventually.of_forall fun z => ?_)
+    by_cases hz : z ∈ closedBall x (r * R)
+    · rw [indicator_of_mem hz, norm_mul]
+      have h1 : ‖φ (η z)‖ ≤ 1 := by
+        rw [Real.norm_of_nonneg (hφ01 _).1]
+        exact (hφ01 _).2
+      calc ‖φ (η z)‖ * ‖V.mult z‖ ≤ 1 * ‖V.mult z‖ :=
+            mul_le_mul_of_nonneg_right h1 (norm_nonneg _)
+        _ = ‖V.mult z‖ := one_mul _
+    · rw [indicator_of_notMem hz, hφsupp _ fun h => hz ((hmem z R).1 h), zero_mul, norm_zero]
+  -- Step 5: `ν = Hⁿ ⌞ M`-a.e. point lies in `M`, where `θ > 0`.
+  have hae : ∀ᵐ z ∂(μ.restrict V.carrier), z ∈ V.carrier :=
+    ae_restrict_mem₀ V.nullMeasurableSet_carrier
+  -- Step 7: `J = r⁻ⁿ ∫_M 1_{B_r(x)} θ dHⁿ`.
+  have hJ : ∫ z in V.carrier ∩ closedBall x r, V.mult z ∂μ =
+      ∫ z in V.carrier, (closedBall x r).indicator V.mult z ∂μ :=
+    (setIntegral_indicator measurableSet_closedBall).symm
+  refine ⟨?_, ?_, ?_⟩
+  · -- Step 6, (a): `h ≥ 0` a.e. on `M`.
+    refine mul_nonneg hrpos (setIntegral_nonneg_of_ae_restrict ?_)
+    filter_upwards [hae] with z hz
+    exact mul_nonneg (hφ01 _).1 (V.mult_pos z hz).le
+  · -- Step 8, (b): `1_{B_r(x)} θ ≤ h` a.e. on `M` when `φ = 1` on `B_1(0)`.
+    intro hφ1
+    rw [hJ]
+    refine mul_le_mul_of_nonneg_left (setIntegral_mono_ae_restrict hind hh ?_) hrpos
+    filter_upwards [hae] with z hz
+    by_cases hzB : z ∈ closedBall x r
+    · rw [indicator_of_mem hzB, hφ1 _ ((hmem z 1).2 (by rwa [mul_one])), one_mul]
+    · rw [indicator_of_notMem hzB]
+      exact mul_nonneg (hφ01 _).1 (V.mult_pos z hz).le
+  · -- Step 9, (c): `h ≤ 1_{B_r(x)} θ` a.e. on `M` when `φ = 0` off `B_1(0)`.
+    intro hφ0
+    rw [hJ]
+    refine mul_le_mul_of_nonneg_left (setIntegral_mono_ae_restrict hh hind ?_) hrpos
+    filter_upwards [hae] with z hz
+    by_cases hzB : z ∈ closedBall x r
+    · rw [indicator_of_mem hzB]
+      exact mul_le_of_le_one_left (V.mult_pos z hz).le (hφ01 _).2
+    · rw [indicator_of_notMem hzB,
+        hφ0 _ fun h => hzB (by simpa only [mul_one] using (hmem z 1).1 h), zero_mul]
+/-- **Simon Ch. 3, Remark 1.8(2)** (weighted form) for `V = v(M, θ)`.  If `P` is the approximate
+tangent space of `M` at `x ∈ U` with respect to `θ` (Ch. 3, Definition 1.7), then
+`r⁻ⁿ ∫_{M ∩ B_r(x)} θ dHⁿ → ω_n θ(x)` as `r ↓ 0`.  For `ε ∈ (0, 1)` take continuous cut-offs
+`g_ε ≤ 1_{B_1(0)} ≤ f_ε` with `g_ε = 1` on `B_{1−ε}(0)` and `f_ε = 0` off `B_{1+ε}(0)`; for small
+`r`, `∫_{η_{x,r}(M)} g_ε θ(x + r·) dHⁿ ≤ r⁻ⁿ ∫_{M ∩ B_r(x)} θ dHⁿ ≤ ∫_{η_{x,r}(M)} f_ε θ(x + r·) dHⁿ`,
+and the outer terms tend to `θ(x) ∫_P g_ε ≥ θ(x) ω_n (1 − ε)ⁿ` and `θ(x) ∫_P f_ε ≤ θ(x) ω_n (1 + ε)ⁿ`
+(`θ(x) ≥ 0` follows from the lower comparison). -/
+theorem rsod_tendsto_scaled_mult_integral : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), x ∈ U → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 (unitBallVolume n * V.mult x)) := by
+  intro n ℓ hn U hU V x P hx hP
+  -- `ω_n = π^{n/2} / Γ(n/2 + 1) > 0`, and `B_{rR}(x) ⊆ B̆_e(x) ⊆ U` for `r < e / 2`, `R ≤ 2`.
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    exact div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  obtain ⟨e, he, heU⟩ := Metric.isOpen_iff.1 hU x hx
+  have hballU : ∀ r R : ℝ, 0 < r → r < e / 2 → R ≤ 2 → closedBall x (r * R) ⊆ U := by
+    intro r R hr hre hR
+    refine (closedBall_subset_ball ?_).trans heU
+    calc r * R ≤ r * 2 := mul_le_mul_of_nonneg_left hR hr.le
+      _ < e := by linarith
+  -- Continuous compactly supported cut-offs: `0 ≤ φ ≤ 1`, `φ = 1` on `B_a(0)`, `φ = 0` off
+  -- `B_b(0)`, namely `φ(y) = min 1 (max 0 ((b - ‖y‖) / (b - a)))`.
+  have cutoff : ∀ a b : ℝ, a < b → ∃ φ : CompactlySupportedContinuousMap (Amb n ℓ) ℝ,
+      (∀ y, 0 ≤ φ y ∧ φ y ≤ 1) ∧ (∀ y ∈ closedBall (0 : Amb n ℓ) a, φ y = 1) ∧
+        ∀ y, y ∉ closedBall (0 : Amb n ℓ) b → φ y = 0 := by
+    intro a b hab
+    have hba : 0 < b - a := sub_pos.2 hab
+    let φ : Amb n ℓ → ℝ := fun y => min 1 (max 0 ((b - ‖y‖) / (b - a)))
+    have hφc : Continuous φ :=
+      continuous_const.min (continuous_const.max ((continuous_const.sub continuous_norm).div_const _))
+    have hφ0 : ∀ y, y ∉ closedBall (0 : Amb n ℓ) b → φ y = 0 := by
+      intro y hy
+      rw [mem_closedBall, dist_zero_right, not_le] at hy
+      have hneg : (b - ‖y‖) / (b - a) ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) hba.le
+      show min 1 (max 0 ((b - ‖y‖) / (b - a))) = 0
+      rw [max_eq_left hneg, min_eq_right zero_le_one]
+    refine ⟨⟨⟨φ, hφc⟩, HasCompactSupport.intro (isCompact_closedBall 0 b) hφ0⟩,
+      fun y => ⟨le_min zero_le_one (le_max_left _ _), min_le_left _ _⟩, fun y hy => ?_, hφ0⟩
+    rw [mem_closedBall, dist_zero_right] at hy
+    have hone : 1 ≤ (b - ‖y‖) / (b - a) := by
+      rw [le_div_iff₀ hba]
+      linarith
+    show min 1 (max 0 ((b - ‖y‖) / (b - a))) = 1
+    rw [max_eq_right (zero_le_one.trans hone), min_eq_left hone]
+  -- Plane integrals: `Hⁿ ⌞ P (B_s(0)) = ω_n sⁿ` (sibling `plane_ball_measure`).
+  have hPdim : Module.finrank ℝ P = n := hP.1
+  have hplane_ind : ∀ s : ℝ, 0 ≤ s →
+      Integrable ((closedBall (0 : Amb n ℓ) s).indicator fun _ => (1 : ℝ))
+        ((μHE[n] : Measure (Amb n ℓ)).restrict (P : Set (Amb n ℓ))) ∧
+      ∫ y, (closedBall (0 : Amb n ℓ) s).indicator (fun _ => (1 : ℝ)) y
+          ∂((μHE[n] : Measure (Amb n ℓ)).restrict (P : Set (Amb n ℓ))) =
+        unitBallVolume n * s ^ n := by
+    intro s hs
+    have hmeas := Submission.rsod_planeMeasure_closedBall n ℓ hn P hPdim s hs
+    refine ⟨(integrable_indicator_iff measurableSet_closedBall).2
+      (integrableOn_const (hmeas ▸ ENNReal.ofReal_ne_top)), ?_⟩
+    rw [integral_indicator_const _ measurableSet_closedBall, smul_eq_mul, mul_one, measureReal_def,
+      hmeas, ENNReal.toReal_ofReal (mul_nonneg hω.le (pow_nonneg hs n))]
+  -- `0 ≤ φ ≤ 1_{B_b(0)}` gives `φ ∈ L¹(Hⁿ ⌞ P)` and `∫_P φ ≤ ω_n bⁿ`.
+  have hplane_le : ∀ (φ : CompactlySupportedContinuousMap (Amb n ℓ) ℝ) (b : ℝ), 0 ≤ b →
+      (∀ y, 0 ≤ φ y ∧ φ y ≤ 1) → (∀ y, y ∉ closedBall (0 : Amb n ℓ) b → φ y = 0) →
+      Integrable φ ((μHE[n] : Measure (Amb n ℓ)).restrict (P : Set (Amb n ℓ))) ∧
+        ∫ y in (P : Set (Amb n ℓ)), φ y ∂(μHE[n] : Measure (Amb n ℓ)) ≤
+          unitBallVolume n * b ^ n := by
+    intro φ b hb hφ01 hφ0
+    obtain ⟨hint, hval⟩ := hplane_ind b hb
+    have hle : ∀ y, φ y ≤ (closedBall (0 : Amb n ℓ) b).indicator (fun _ => (1 : ℝ)) y := by
+      intro y
+      by_cases hy : y ∈ closedBall (0 : Amb n ℓ) b
+      · rw [Set.indicator_of_mem hy]
+        exact (hφ01 y).2
+      · rw [Set.indicator_of_notMem hy, hφ0 y hy]
+    have hφint : Integrable φ ((μHE[n] : Measure (Amb n ℓ)).restrict (P : Set (Amb n ℓ))) :=
+      hint.mono' (map_continuous φ).aestronglyMeasurable
+        (Eventually.of_forall fun y => by rw [Real.norm_of_nonneg (hφ01 y).1]; exact hle y)
+    exact ⟨hφint, (integral_mono hφint hint hle).trans_eq hval⟩
+  -- `1_{B_a(0)} ≤ φ` (with `φ` as above) gives `ω_n aⁿ ≤ ∫_P φ`.
+  have hplane_ge : ∀ (φ : CompactlySupportedContinuousMap (Amb n ℓ) ℝ) (a b : ℝ), 0 ≤ a →
+      0 ≤ b → (∀ y, 0 ≤ φ y ∧ φ y ≤ 1) → (∀ y ∈ closedBall (0 : Amb n ℓ) a, φ y = 1) →
+      (∀ y, y ∉ closedBall (0 : Amb n ℓ) b → φ y = 0) →
+      unitBallVolume n * a ^ n ≤ ∫ y in (P : Set (Amb n ℓ)), φ y ∂(μHE[n] : Measure (Amb n ℓ)) := by
+    intro φ a b ha hb hφ01 hφ1 hφ0
+    obtain ⟨hint, hval⟩ := hplane_ind a ha
+    have hle : ∀ y, (closedBall (0 : Amb n ℓ) a).indicator (fun _ => (1 : ℝ)) y ≤ φ y := by
+      intro y
+      by_cases hy : y ∈ closedBall (0 : Amb n ℓ) a
+      · rw [Set.indicator_of_mem hy, hφ1 y hy]
+      · rw [Set.indicator_of_notMem hy]
+        exact (hφ01 y).1
+    exact hval.symm.trans_le (integral_mono hint (hplane_le φ b hb hφ01 hφ0).1 hle)
+  -- `θ(x) ≥ 0`: the blow-up integrals of `g = g_{1/2} ≥ 0` are `≥ 0` (sibling
+  -- `blowup_ball_mass_bounds`) and tend to `θ(x) ∫_P g` with `∫_P g ≥ ω_n 2⁻ⁿ > 0`.
+  have ht : 0 ≤ V.mult x := by
+    obtain ⟨g, hg01, hg1, hg0⟩ := cutoff (1 / 2) 1 (by norm_num)
+    have hpos : 0 < ∫ y in (P : Set (Amb n ℓ)), g y ∂(μHE[n] : Measure (Amb n ℓ)) :=
+      (mul_pos hω (pow_pos (by norm_num) n)).trans_le
+        (hplane_ge g (1 / 2) 1 (by norm_num) zero_le_one hg01 hg1 hg0)
+    have hnonneg :
+        0 ≤ V.mult x * ∫ y in (P : Set (Amb n ℓ)), g y ∂(μHE[n] : Measure (Amb n ℓ)) := by
+      refine ge_of_tendsto (hP.2 g) ?_
+      filter_upwards [Ioo_mem_nhdsGT (half_pos he)] with r hr
+      exact (Submission.rsod_blowUp_integral_ballMass_bounds n ℓ U V x r 1 g hr.1 le_rfl
+        (hballU r 1 hr.1 hr.2 one_le_two) (map_continuous g).measurable hg01 hg0).1
+    exact nonneg_of_mul_nonneg_left hnonneg hpos
+  refine tendsto_order.2 ⟨fun a ha => ?_, fun b hb => ?_⟩
+  · -- Lower bound: pick `ε ∈ (0, 1)` with `a < θ(x) ω_n (1 - ε)ⁿ ≤ θ(x) ∫_P g_ε`.
+    have hcont : Continuous fun ε : ℝ => V.mult x * (unitBallVolume n * (1 - ε) ^ n) := by
+      fun_prop
+    have hev : ∀ᶠ ε in 𝓝[>] (0 : ℝ), a < V.mult x * (unitBallVolume n * (1 - ε) ^ n) :=
+      ((hcont.tendsto 0).mono_left nhdsWithin_le_nhds).eventually_const_lt
+        (by simpa [mul_comm] using ha)
+    obtain ⟨ε, hεa, hε⟩ :=
+      (hev.and (Ioo_mem_nhdsGT one_pos : ∀ᶠ ε in 𝓝[>] (0 : ℝ), ε ∈ Ioo 0 1)).exists
+    obtain ⟨g, hg01, hg1, hg0⟩ := cutoff (1 - ε) 1 (by linarith [hε.1])
+    have hlt : a < V.mult x * ∫ y in (P : Set (Amb n ℓ)), g y ∂(μHE[n] : Measure (Amb n ℓ)) :=
+      hεa.trans_le (mul_le_mul_of_nonneg_left
+        (hplane_ge g (1 - ε) 1 (by linarith [hε.2]) zero_le_one hg01 hg1 hg0) ht)
+    filter_upwards [(hP.2 g).eventually_const_lt hlt, Ioo_mem_nhdsGT (half_pos he)] with r hr hr'
+    exact hr.trans_le ((Submission.rsod_blowUp_integral_ballMass_bounds n ℓ U V x r 1 g hr'.1
+      le_rfl (hballU r 1 hr'.1 hr'.2 one_le_two) (map_continuous g).measurable hg01 hg0).2.2 hg0)
+  · -- Upper bound: pick `ε ∈ (0, 1)` with `θ(x) ∫_P f_ε ≤ θ(x) ω_n (1 + ε)ⁿ < b`.
+    have hcont : Continuous fun ε : ℝ => V.mult x * (unitBallVolume n * (1 + ε) ^ n) := by
+      fun_prop
+    have hev : ∀ᶠ ε in 𝓝[>] (0 : ℝ), V.mult x * (unitBallVolume n * (1 + ε) ^ n) < b :=
+      ((hcont.tendsto 0).mono_left nhdsWithin_le_nhds).eventually_lt_const
+        (by simpa [mul_comm] using hb)
+    obtain ⟨ε, hεb, hε⟩ :=
+      (hev.and (Ioo_mem_nhdsGT one_pos : ∀ᶠ ε in 𝓝[>] (0 : ℝ), ε ∈ Ioo 0 1)).exists
+    obtain ⟨f, hf01, hf1, hf0⟩ := cutoff 1 (1 + ε) (by linarith [hε.1])
+    have hlt : V.mult x * ∫ y in (P : Set (Amb n ℓ)), f y ∂(μHE[n] : Measure (Amb n ℓ)) < b :=
+      (mul_le_mul_of_nonneg_left (hplane_le f (1 + ε) (by linarith [hε.1]) hf01 hf0).2
+        ht).trans_lt hεb
+    filter_upwards [(hP.2 f).eventually_lt_const hlt, Ioo_mem_nhdsGT (half_pos he)] with r hr hr'
+    exact ((Submission.rsod_blowUp_integral_ballMass_bounds n ℓ U V x r (1 + ε) f hr'.1
+      (by linarith [hε.1]) (hballU r (1 + ε) hr'.1 hr'.2 (by linarith [hε.2]))
+      (map_continuous f).measurable hf01 hf0).2.1 hf1).trans_lt hr
+/-- **Weight of a ball as an integral of the multiplicity** (Simon Ch. 4, 1.1).  If
+`B_r(x) ⊆ U`, then `μ_V(B_r(x)) = ∫_{M ∩ B_r(x)} θ dHⁿ`.  By definition
+`μ_V(B_r(x)) = ∫⁻_{M ∩ B_r(x)} θ dHⁿ`; as `B_r(x)` is compact, `θ` is `Hⁿ`-integrable on
+`M ∩ B_r(x)`, and `θ > 0` on `M`, so this lower integral is the (real) integral. -/
+theorem rsod_weight_closedBall_eq_ofReal_integral : ∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (r : ℝ), closedBall x r ⊆ U → V.weight (closedBall x r) = ENNReal.ofReal (∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ))) := by
+  intro n ℓ U V x r hU
+  -- `θ` is integrable on `M ∩ B_r(x)` (the closed ball is compact and lies in `U`) ...
+  have hint : IntegrableOn V.mult (V.carrier ∩ closedBall x r) (μHE[n] : Measure (Amb n ℓ)) :=
+    V.integrableOn_mult _ (isCompact_closedBall x r) hU
+  -- ... and nonnegative a.e. there, since a.e. point of `M ∩ B_r(x)` lies in `M`.
+  have hnn : 0 ≤ᵐ[(μHE[n] : Measure (Amb n ℓ)).restrict (V.carrier ∩ closedBall x r)] V.mult := by
+    filter_upwards [ae_restrict_mem₀
+      (V.nullMeasurableSet_carrier.inter measurableSet_closedBall.nullMeasurableSet)] with z hz
+    exact (V.mult_pos z hz.1).le
+  rw [RectifiableVarifold.weight, withDensity_apply _ measurableSet_closedBall,
+    Measure.restrict_restrict measurableSet_closedBall, inter_comm (closedBall x r) V.carrier,
+    ofReal_integral_eq_lintegral_ofReal hint.integrable hnn]
+/-- **Simon Ch. 3, Remark 1.8(2)** for `V = v(M, θ)` at a point of `M`.  If `x ∈ M` and `P` is the
+approximate tangent space of `M` at `x` with respect to `θ` (Ch. 3, Definition 1.7), then
+`Θⁿ(μ_V, x) = θ(x)`.  As `x ∈ M ⊆ U`, `r⁻ⁿ ∫_{M ∩ B_r(x)} θ dHⁿ → ω_n θ(x)` as `r ↓ 0`, and
+`μ_V(B_r(x)) = ∫_{M ∩ B_r(x)} θ dHⁿ` as soon as `B_r(x) ⊆ U`, so `μ_V(B_r(x)) / (ω_n rⁿ) → θ(x)`. -/
+theorem tae_hasDensity_of_weightedApproxTangent : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), 1 ≤ n → IsOpen U → x ∈ V.carrier → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P → V.HasDensity x (V.mult x) := by
+  intro n ℓ U V x P hn hU hxM hP
+  -- `x ∈ M ⊆ U`.
+  have hx : x ∈ U := V.carrier_subset hxM
+  -- `ω_n = π^{n/2} / Γ(n/2 + 1) > 0`.
+  have hω : 0 < unitBallVolume n := by
+    unfold unitBallVolume
+    exact div_pos (Real.rpow_pos_of_pos Real.pi_pos _) (Real.Gamma_pos_of_pos (by positivity))
+  -- `B̆_d(x) ⊆ U` for some `d > 0`.
+  obtain ⟨d, hd, hdU⟩ := Metric.isOpen_iff.1 hU x hx
+  -- `J(r) := r⁻ⁿ ∫_{M ∩ B_r(x)} θ dHⁿ → ω_n θ(x)`, hence `ofReal (J(r) / ω_n) → ofReal θ(x)`.
+  have hlim : Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹ *
+      (∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ))) /
+        unitBallVolume n)) (𝓝[>] 0) (𝓝 (ENNReal.ofReal (V.mult x))) := by
+    have hJ := (Submission.rsod_tendsto_scaled_mult_integral n ℓ hn U hU V x P hx hP).div_const
+      (unitBallVolume n)
+    rw [mul_div_cancel_left₀ _ hω.ne'] at hJ
+    exact ENNReal.tendsto_ofReal hJ
+  -- For `0 < r < d`, `B_r(x) ⊆ U`, so `μ_V(B_r(x)) / (ω_n rⁿ) = ofReal (J(r) / ω_n)`.
+  have heq : ∀ r ∈ Ioo (0 : ℝ) d,
+      ENNReal.ofReal ((r ^ n)⁻¹ *
+          (∫ z in V.carrier ∩ closedBall x r, V.mult z ∂(μHE[n] : Measure (Amb n ℓ))) /
+            unitBallVolume n) =
+        V.weight (closedBall x r) / ENNReal.ofReal (unitBallVolume n * r ^ n) := by
+    intro r hr
+    rw [Submission.rsod_weight_closedBall_eq_ofReal_integral n ℓ U V x r
+        ((closedBall_subset_ball hr.2).trans hdU),
+      ← ENNReal.ofReal_div_of_pos (mul_pos hω (pow_pos hr.1 n))]
+    congr 1
+    ring
+  unfold RectifiableVarifold.HasDensity
+  exact hlim.congr' (eventuallyEq_of_mem (Ioo_mem_nhdsGT hd) heq)
 
 /-- **Weighted tangent planes at good points of a piece** (Simon Ch. 3, proof of 1.6 "only if"
 with Remark 1.8(1)).  Let `C ⊆ M` be compact with `θ|_C` continuous, and let `N` be Borel with
