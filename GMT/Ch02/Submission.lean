@@ -637,6 +637,16 @@ theorem Submission.c1approx_egorov_closed_compact_uniform : ∀ (n : ℕ) (C : S
     have h2 : ‖x‖ ≤ R := mem_closedBall_zero_iff.1 (hR hx)
     have hjJ : (j : ℝ) ≤ J := by linarith
     exact hk j (Finset.mem_range_succ_iff.2 (by exact_mod_cast hjJ)) x (hFc j hj)
+/-- **Simon Ch. 2, Theorems 1.2 and 1.4.** McShane's optimal Lipschitz extension and
+Rademacher's theorem. -/
+theorem Submission.lipschitz_extension_and_rademacher : LipschitzExtension ∧ Rademacher := by
+  refine ⟨?_, ?_⟩
+  · intro X _ A f hA hf
+    obtain ⟨F, hFLip, hEq, hconst⟩ :=
+      Poincare.SimonGMT.Chapter02.lipschitz_extension_real_optimal hA f hf
+    exact ⟨F, hFLip, hconst, hEq⟩
+  · rintro n f ⟨K, hK⟩
+    exact hK.ae_differentiableAt
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
