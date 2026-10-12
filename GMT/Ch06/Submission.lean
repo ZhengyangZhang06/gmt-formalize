@@ -704,6 +704,32 @@ theorem Submission.constancy_mollifier_iteratedFDeriv_norm_le_integral :
     hφc S (fun t => hS q le_rfl t) g hg x⟩
   intro u t
   simp [Real.norm_eq_abs]
+/-- Diagonal extraction from nested infinite index sets (Simon Ch. 6, proof of 7.2): with
+`J 0 = ℕ` and infinite `J (r + 1) ⊆ J r` on which `Q r` holds for all pairs, an increasing
+choice `φ r ∈ J (r + 1)` puts both `φ r` and `φ (r + 1)` in `J (r + 1)`. -/
+theorem Submission.fiw_fcl_nested_subseq :
+    ∀ (Q : ℕ → ℕ → ℕ → Prop),
+      (∀ r : ℕ, ∀ J : Set ℕ, J.Infinite → ∃ J' ⊆ J, J'.Infinite ∧ ∀ i ∈ J', ∀ j ∈ J', Q r i j) →
+        ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ r : ℕ, Q r (φ r) (φ (r + 1)) := by
+  intro Q h
+  choose F hFsub hFinf hFQ using h
+  -- The nested infinite sets: `J 0 = ℕ` and `J (r + 1) = F r (J r)`.
+  let J : ℕ → {A : Set ℕ // A.Infinite} := fun r =>
+    Nat.rec (motive := fun _ => {A : Set ℕ // A.Infinite}) ⟨Set.univ, Set.infinite_univ⟩
+      (fun r A => ⟨F r A.1 A.2, hFinf r A.1 A.2⟩) r
+  -- `g r m ∈ J (r + 1)` with `m < g r m`.
+  choose g hgJ hgm using fun r => (J (r + 1)).2.exists_gt
+  -- `φ 0 = g 0 0` and `φ (r + 1) = g (r + 1) (φ r)`, so `φ r ∈ J (r + 1)` and `φ r < φ (r + 1)`.
+  let φ : ℕ → ℕ := fun r => Nat.rec (motive := fun _ => ℕ) (g 0 0) (fun r m => g (r + 1) m) r
+  have hφJ : ∀ r, φ r ∈ (J (r + 1)).1 := by
+    intro r
+    cases r with
+    | zero => exact hgJ 0 0
+    | succ s => exact hgJ (s + 1) (φ s)
+  refine ⟨φ, strictMono_nat_of_lt_succ fun r => hgm (r + 1) (φ r), fun r => ?_⟩
+  -- `φ r ∈ J (r + 1)` and `φ (r + 1) ∈ J (r + 2) ⊆ J (r + 1)`, where `J (r + 1) = F r (J r)`.
+  exact hFQ r (J r).1 (J r).2 (φ r) (hφJ r) (φ (r + 1))
+    (hFsub (r + 1) (J (r + 1)).1 (J (r + 1)).2 (hφJ (r + 1)))
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

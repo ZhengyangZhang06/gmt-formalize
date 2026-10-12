@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.flat_cauchy_limit-a1.telescope_limit-a1",
+  "parent_id": "root.flat_iff_weak-a1.flat_cauchy_limit-a1",
+  "depth": 3,
+  "title": "Telescoping identification of the weak limit (Simon 7.2 proof: T − T_{j_ℓ} = ∂R^(ℓ) + S^(ℓ) from (5))",
+  "statement": "Let P, n, ℓ ∈ ℕ and let U ⊆ ℝ^P be any set. Let T_r ∈ D_n(U) (r ∈ ℕ), T ∈ D_n(U), R_r ∈ D_{n+1}(U) (r ∈ ℕ), S_r ∈ D_n(U) (r ∈ ℕ), X ∈ D_{n+1}(U) and Y ∈ D_n(U). Assume:\n(a) T_r(ω) − T_{r+1}(ω) = ∂R_r(ω) + S_r(ω) for all r ∈ ℕ and all ω ∈ D^n(U);\n(b) T_r ⇀ T, i.e. T_r(ω) → T(ω) as r → ∞ for every ω ∈ D^n(U);\n(c) for every η ∈ D^{n+1}(U) the real series Σ_{k∈ℕ} R_{ℓ+k}(η) has sum X(η) (HasSum);\n(d) for every ω ∈ D^n(U) the real series Σ_{k∈ℕ} S_{ℓ+k}(ω) has sum Y(ω) (HasSum).\nThen T_ℓ(ω) − T(ω) = ∂X(ω) + Y(ω) for every ω ∈ D^n(U).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (Tr : ℕ → GeometricCurrentOn U n) (T : GeometricCurrentOn U n) (R : ℕ → GeometricCurrentOn U (n + 1)) (S : ℕ → GeometricCurrentOn U n) (X : GeometricCurrentOn U (n + 1)) (Y : GeometricCurrentOn U n) (ℓ : ℕ), (∀ r ω, Tr r ω - Tr (r + 1) ω = (R r).boundary ω + S r ω) → WeaklyConvergesOn Tr T → (∀ η, HasSum (fun k => R (ℓ + k) η) (X η)) → (∀ ω, HasSum (fun k => S (ℓ + k) ω) (Y ω)) → ∀ ω, Tr ℓ ω - T ω = X.boundary ω + Y ω",
+  "lean_name": "fiw_fcl_telescope_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-flat-cauchy-limit-a1-telescope-limit-a1-a1"
+}
