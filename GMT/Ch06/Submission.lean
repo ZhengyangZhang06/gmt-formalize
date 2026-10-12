@@ -451,6 +451,35 @@ theorem Submission.cmb_abs_apply_le_of_massOn_le :
     _ = B * C + B * (ε / (B + 1)) := by ring
     _ ≤ B * C + ε := by linarith
 
+/-- Mass estimate with the operator norm: if `M_W(T) ≤ B` and `ω` is supported in `W` with
+`‖ω(x)‖ ≤ C` everywhere (operator norm), then `|T(ω)| ≤ P^n · B · C`, because the Euclidean
+coefficient norm is at most `√(P^n) · ‖·‖ ≤ P^n · ‖·‖`. -/
+theorem Submission.rpn_abs_apply_le_opNorm_mul_massOn :
+    ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B C : ℝ),
+      0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W →
+      (∀ x, ‖(ω : DifferentialForm (Eucl P) n) x‖ ≤ C) →
+      |T ω| ≤ (P : ℝ) ^ n * B * C := by
+  intro P n U W T ω B C hB hM hW hC
+  -- `C ≥ 0`, by evaluating the pointwise bound at `0`.
+  have hC0 : 0 ≤ C := (norm_nonneg _).trans (hC 0)
+  -- `√(P^n) ≤ P^n`, since `P^n` is a natural number.
+  have hsqrt : Real.sqrt ((P : ℝ) ^ n) ≤ (P : ℝ) ^ n := by
+    rw [Real.sqrt_le_self_iff]
+    rcases (P ^ n).eq_zero_or_pos with h | h
+    · exact Or.inl (by exact_mod_cast h)
+    · exact Or.inr (by exact_mod_cast h)
+  -- Hence the Euclidean coefficient norm of `ω(x)` is at most `P^n · C`.
+  have hE : ∀ x,
+      covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ (P : ℝ) ^ n * C := by
+    intro x
+    calc covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x)
+        ≤ Real.sqrt ((P : ℝ) ^ n) * ‖(ω : DifferentialForm (Eucl P) n) x‖ :=
+          Submission.fiw_ims_sc_covectorNorm_le_opNorm P n _
+      _ ≤ (P : ℝ) ^ n * C := mul_le_mul hsqrt (hC x) (norm_nonneg _) (by positivity)
+  calc |T ω| ≤ B * ((P : ℝ) ^ n * C) :=
+        Submission.cmb_abs_apply_le_of_massOn_le P n U W T ω B _ hB hM hW hE
+    _ = (P : ℝ) ^ n * B * C := by ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
