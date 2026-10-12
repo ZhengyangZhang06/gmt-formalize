@@ -1,0 +1,17 @@
+{
+  "node_id": "root.density_and_tangent_cones-a1.localize-a1.restrict_im-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1308",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "8f3bacb2e7f68423e88b488e5939a0d419c646fb",
+  "integrated_commit": "",
+  "proof_base_commit": "9fc696be8f4f5b697f59ac71581b8603f19a1fb6",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_and_tangent_cones-a1.localize-a1",
+  "requires": [
+    "root.density_and_tangent_cones-a1.localize-a1.approx_tangent_local-a1"
+  ]
+}

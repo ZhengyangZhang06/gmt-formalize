@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1510543d980b34aa2b97b3b76804738f536bb103954c28b45789ff5b52957289",
+  "git_delta": {
+    "base_commit": "88cac5e57d294cd4788e0102bfc53baef2fe1b40",
+    "candidate_commit": "8f3bacb2e7f68423e88b488e5939a0d419c646fb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_restrictDomain_isIntegerMultiplicity",
+    "diff_sha256": "08a9192f5224baeab4bad6b640d8d602bf96665ec9667ff036e796b6051d91e4",
+    "source_sha256": "c0b37957525eee5d7d8783427368c38df9598fc5a11bf9d0d6fe15ae1bf1bbc2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_restrictDomain_isIntegerMultiplicity",
+      "statement": "∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n), IsOpen V → IsIntegerMultiplicity T → IsIntegerMultiplicity (T.restrictDomain hVU)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
