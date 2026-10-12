@@ -696,6 +696,37 @@ theorem Submission.frt_td_ball_mass_upper_of_blowup :
     _ = c * ENNReal.ofReal t ^ n := by
         rw [ENNReal.ofReal_mul ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hctop,
           ENNReal.ofReal_pow ht0.le]
+/-- Density squeeze (Simon Ch. 3, Remark 1.8(2), last step): if, as `t ↓ 0`, eventually
+`c t^n ≤ μ(B_t(x))` for every `c < a ω_n` and eventually `μ(B_t(x)) ≤ c t^n` for every
+`c > a ω_n`, then `Θ^n(μ, x) = a`. -/
+theorem Submission.frt_td_hasDensity_of_ball_mass_bounds :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (a : ℝ≥0∞), (∀ c : ℝ≥0∞, c < a * unitBallVolume n → ∀ᶠ t in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal t ^ n ≤ μ (closedBall x t)) → (∀ c : ℝ≥0∞, a * unitBallVolume n < c → ∀ᶠ t in 𝓝[>] (0 : ℝ), μ (closedBall x t) ≤ c * ENNReal.ofReal t ^ n) → HasDensity n μ x a := by
+  intro N n μ x a hlow hup
+  -- Step 1: `0 < ω_n < ∞`.
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos (volume : Measure (EuclideanSpace ℝ (Fin n))) 0 one_pos).ne'
+  have hωt : unitBallVolume n ≠ ∞ :=
+    (measure_ball_lt_top (μ := (volume : Measure (EuclideanSpace ℝ (Fin n)))) (x := 0)
+      (r := 1)).ne
+  -- Step 3: by `tendsto_order`, squeeze the density ratio from below and from above.
+  rw [HasDensity, tendsto_order]
+  refine ⟨fun b hb ↦ ?_, fun b hb ↦ ?_⟩
+  · -- Step 4: for `b < b' < a`, eventually `b' ω_n t^n ≤ μ(B_t(x))`, so `b' ≤ densityRatio`.
+    obtain ⟨b', hbb', hb'a⟩ := exists_between hb
+    filter_upwards [hlow _ (ENNReal.mul_lt_mul_left hω0 hωt hb'a), self_mem_nhdsWithin]
+      with t ht (htpos : (0 : ℝ) < t)
+    -- Step 2: for `t > 0` the normalizer `ω_n t^n` is nonzero and finite.
+    have hD0 : unitBallVolume n * ENNReal.ofReal t ^ n ≠ 0 :=
+      mul_ne_zero hω0 (pow_ne_zero _ (ENNReal.ofReal_pos.2 htpos).ne')
+    have hDt : unitBallVolume n * ENNReal.ofReal t ^ n ≠ ∞ :=
+      ENNReal.mul_ne_top hωt (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+    refine hbb'.trans_le ?_
+    rw [densityRatio, ENNReal.le_div_iff_mul_le (Or.inl hD0) (Or.inl hDt), ← mul_assoc]
+    exact ht
+  · -- Step 5: for `a < b' < b`, eventually `μ(B_t(x)) ≤ b' ω_n t^n`, so `densityRatio ≤ b'`.
+    obtain ⟨b', hab', hb'b⟩ := exists_between hb
+    filter_upwards [hup _ (ENNReal.mul_lt_mul_left hω0 hωt hab')] with t ht
+    exact (ENNReal.div_le_of_le_mul (by rwa [← mul_assoc])).trans_lt hb'b
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
