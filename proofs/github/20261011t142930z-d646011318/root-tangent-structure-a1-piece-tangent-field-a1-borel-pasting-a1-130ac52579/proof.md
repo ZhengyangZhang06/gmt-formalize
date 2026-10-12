@@ -1,0 +1,167 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tangent_structure-a1.piece_tangent_field-a1`
+- Child DAG node: `root.tangent_structure-a1.piece_tangent_field-a1.borel_pasting-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the parent proof (node root.tangent_structure-a1.piece_tangent_field-a1), steps 4–5: the field on the disjointified pieces N_i ∖ ⋃_{j<i} N_j and its Borel measurability. Here they are stated for arbitrary measurable pieces N_i and arbitrary fields G_i continuous on them. No errata apply.
+
+Conventions. E := Ambient n ℓ with its σ-algebra, the Borel σ-algebra of the Euclidean space (Mathlib instance on EuclideanSpace), so open sets are measurable. L(E, E) := E →L[ℝ] E with the operator-norm topology. When measurability of g is discussed, L(E, E) carries its Borel σ-algebra: the Mathlib instances ContinuousLinearMap.instMeasurableSpace and ContinuousLinearMap.instBorelSpace, already available under the frozen imports. Hypotheses: (M) every N_i is measurable; (C) every G_i is continuous on N_i. Put N := ⋃_i N_i.
+
+Proof.
+1. The disjointified pieces. Put D_i := N_i ∖ ⋃_{j<i} N_j. Each D_i is measurable (a finite union and a difference of measurable sets), and D_i ⊆ N_i. The D_i are pairwise disjoint: for i < k, D_k is disjoint from N_i ⊇ D_i. For y ∈ N let i(y) be the least index i with y ∈ N_i (Nat.find); then y ∈ D_{i(y)}. Conversely, if y ∈ D_i then y ∈ N_i and y ∉ N_j for j < i, so i(y) = i. Hence N = ⋃_i D_i, and E is the disjoint union of the sets D_i (i ∈ ℕ) and E ∖ N.
+2. Definition of g. Put g(y) := G_{i(y)}(y) if y ∈ N, and g(y) := 0 if y ∉ N. By step 1, g = G_i on D_i for every i, and g = 0 on E ∖ N.
+3. Values. Let i ∈ ℕ and y ∈ N_i with y ∉ N_j for all j < i. Then y ∈ D_i, so i(y) = i and g(y) = G_i(y), which is the required identity.
+4. Borel measurability. Let O ⊆ L(E, E) be open.
+   - For each i, (C) and _root_.continuousOn_iff' give an open U_i ⊆ E with G_i⁻¹(O) ∩ N_i = U_i ∩ N_i. (Under the contract's `open Metric` the bare name continuousOn_iff' is ambiguous with Metric.continuousOn_iff', so use the root name.) Since D_i ⊆ N_i and g = G_i on D_i, g⁻¹(O) ∩ D_i = G_i⁻¹(O) ∩ D_i = U_i ∩ D_i. This set is measurable, because U_i is open and hence measurable.
+   - g⁻¹(O) ∩ (E ∖ N) is E ∖ N if 0 ∈ O and ∅ otherwise; both are measurable by (M).
+   By the decomposition of step 1, g⁻¹(O) = ⋃_i (U_i ∩ D_i) ∪ (g⁻¹(O) ∩ (E ∖ N)), a countable union of measurable sets. Since the preimage of every open set is measurable and L(E, E) carries its Borel σ-algebra, g is measurable (measurable_of_isOpen).
+5. Strong measurability. L(E, E) is a finite-dimensional real normed space. Hence it is metrizable and second countable (finite-dimensional real normed spaces are proper, and proper metric spaces are second countable), and its σ-algebra is the Borel one. A measurable map into such a space is strongly measurable (Measurable.stronglyMeasurable), so g is strongly measurable. Together with step 3 this proves the claim. ∎
+
+Equivalent Lean route for steps 2 and 4. This gives the same function g; it is the route of the appendix.
+- Let G'_i := N_i.piecewise G_i 0. It is measurable by ContinuousOn.measurable_piecewise: G_i is continuous on N_i, the constant 0 is continuous on N_iᶜ, and N_i is measurable.
+- Let p_i(y) :⟺ y ∈ N_i ∨ y ∉ N. Every y satisfies some p_i: take an index with y ∈ N_i if y ∈ N, and i = 0 otherwise. Each set {y | p_i(y)} = N_i ∪ (E ∖ N) is measurable.
+- Hence y ↦ G'_{Nat.find}(y), using the least i with p_i(y), is measurable by Measurable.find.
+- For y ∈ N the least such i is i(y), and the value is G_{i(y)}(y). For y ∉ N it is G'_0(y) = 0. So this map is exactly g, and Measurable.stronglyMeasurable concludes as in step 5.
+
+Appendix (implementation aid, not part of the argument). The following Lean proof of exactly the frozen type was checked to compile, with axioms propext, Classical.choice and Quot.sound only, when inserted as a single theorem before `main_theorem` in an otherwise unchanged copy of the frozen GMT/Ch04/Submission.lean (no import added; the controller's leaf delta check accepts it):
+
+theorem Submission.ts_stronglyMeasurable_paste_continuousOn : (∀ (n ℓ : ℕ) (N : ℕ → Set (Ambient n ℓ)) (G : ℕ → Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ)), (∀ i, MeasurableSet (N i)) → (∀ i, ContinuousOn (G i) (N i)) → ∃ g : Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ), StronglyMeasurable g ∧ ∀ i, ∀ y ∈ N i, (∀ j < i, y ∉ N j) → g y = G i y) := by
+  intro n ℓ N G hN hG
+  classical
+  -- extend each G i by 0 off N i; this is Borel since G i is continuous on the Borel set N i
+  set G' : ℕ → Ambient n ℓ → (Ambient n ℓ →L[ℝ] Ambient n ℓ) :=
+    fun i ↦ (N i).piecewise (G i) 0 with hG'
+  have hG'meas : ∀ i, Measurable (G' i) := fun i ↦
+    (hG i).measurable_piecewise continuousOn_const (hN i)
+  -- selector: index i is admissible at y if y ∈ N i or y lies in no piece
+  set p : ℕ → Ambient n ℓ → Prop := fun i y ↦ y ∈ N i ∨ y ∉ ⋃ j, N j with hp
+  have hpex : ∀ y, ∃ i, p i y := by
+    intro y
+    by_cases hy : y ∈ ⋃ j, N j
+    · obtain ⟨j, hj⟩ := mem_iUnion.mp hy
+      exact ⟨j, Or.inl hj⟩
+    · exact ⟨0, Or.inr hy⟩
+  have hpmeas : ∀ i, MeasurableSet {y | p i y} := fun i ↦
+    (hN i).union (MeasurableSet.iUnion hN).compl
+  refine ⟨fun y ↦ G' (Nat.find (hpex y)) y, ?_, ?_⟩
+  · exact (Measurable.find hG'meas hpmeas hpex).stronglyMeasurable
+  · intro i y hy hfirst
+    have hfind : Nat.find (hpex y) = i := by
+      rw [Nat.find_eq_iff]
+      refine ⟨Or.inl hy, fun j hj ↦ ?_⟩
+      rintro (hjy | hnot)
+      · exact hfirst j hj hjy
+      · exact hnot (mem_iUnion.mpr ⟨i, hy⟩)
+    simp only [hfind, hG', Set.piecewise_eq_of_mem _ _ _ hy]
+
+## Key steps
+
+1. D_i := N_i ∖ ⋃_{j<i} N_j are measurable, pairwise disjoint and cover ⋃ N_i; the least index i(y) has y ∈ D_{i(y)}
+2. g := G_{i(y)} on ⋃ N_i and 0 elsewhere, so g = G_i on D_i, which gives the value identity
+3. For open O, g⁻¹(O) = ⋃_i (U_i ∩ D_i) ∪ (E ∖ ⋃ N_i or ∅) with U_i open from _root_.continuousOn_iff', so g is Borel measurable
+4. L(E, E) is finite-dimensional (metrizable, second countable), so Borel measurable implies strongly measurable
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-tangent-field-a1/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}`
+- `sha256sum GMT/Ch04/Contract.lean GMT/Ch04/Submission.lean <snapshot>/project/GMT/Ch04/Contract.lean`
+- `git diff ff75f52 2cce809724fc09db16dc21873e5f9cd1ee6e2dfa -- GMT/ lakefile.toml lake-manifest.json GMT.lean`
+- `rg -n "theorem inverse_continuousAt|theorem eq_starProjection_of_mem_of_inner_eq_zero|theorem continuousOn_iff'|theorem _root_.Measurable.stronglyMeasurable|theorem Measurable.find|theorem measurable_find |theorem ContinuousOn.measurable_piecewise|theorem adjoint_inner_left|def adjoint " <snapshot>/mathlib/Mathlib`
+- `rg -n "isOpen_setOf_injective|isOpen_injective|starProjection.*[Cc]ontinu|[Cc]ontinu.*starProjection" <snapshot>/mathlib/Mathlib`
+- `rg -n "theorem .*isUnit_iff|isUnit_toLinearMap|injective_iff_surjective|theorem mul_inverse_cancel|clm_comp|instMeasurableSpace|instBorelSpace|invFunOn_mem|invFunOn_eq|leftInvOn_invFunOn|of_dist_le_mul|FiniteDimensional.proper" <snapshot>/mathlib/Mathlib`
+- `rg -n "starProjection|orthogonalProjection" .lake/packages/simongmt/Poincare/SimonGMT | rg -i "contin|measurab"; rg -n "Measurable.find|measurable_piecewise|Nat.find" .lake/packages/simongmt/Poincare/SimonGMT`
+- `lake env lean GMT/Ch04/Submission.lean -o /tmp/ch04-ptf-decomp/olean/GMT/Ch04/Submission.olean`
+- `LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/ch04-ptf-decomp/olean lean /tmp/ch04-ptf-decomp/Avail.lean Avail2.lean Avail3.lean (#check under the frozen imports only)`
+- `python3 -I /tmp/ch04-ptf-decomp/scripts/gen.py children.json gen (verifier gmt-compare.child_modules + lean_contract.validate_lean_statement); lean gen/Challenge_*.lean`
+- `lean /tmp/ch04-ptf-decomp/Synth_frozen.lean /tmp/ch04-ptf-decomp/Synth_imports.lean (#synth instance comparison)`
+- `lean /tmp/ch04-ptf-decomp/Assembly.lean (parent frozen type from sorry'd children)`
+- `lean /tmp/ch04-ptf-decomp/Frozen1.lean; lean /tmp/ch04-ptf-decomp/Frozen23.lean (complete proofs, frozen imports only, #print axioms)`
+- `python3 -I /tmp/ch04-ptf-decomp/scripts/sim.py (controller leaf_verification.check_source_delta on each single-theorem insertion)`
+- `lean GMT/Ch04/Submission.lean -o /tmp/ch04-ptf-decomp/sim2-olean/GMT/Ch04/Submission.olean (cwd simroot2); lean /tmp/ch04-ptf-decomp/gen-sim/SolAx_*.lean (comparator-style NodeSolution + #print axioms)`
+- `grep -c <name> dag.json; grep -rl <name> nodes/; git grep -l <names> over every ref from git for-each-ref`
+- `git show <ref>:GMT/Ch04/Submission.lean | grep '^import' over every ref (import-change scan)`
+- `python3 survey of nodes/*/decomposition-v*.json should_split decisions; grep decomposition nodes/*/rlcr-plan-v1.md`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/project/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/GMT/Ch04/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-tangent-field-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-tangent-field-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-tangent-structure-a1-piece-tangent-field-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-lipschitz-pieces-a1-lusin-exhaustion-a1/rlcr-plan-v1.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/nodes/root-lipschitz-pieces-a1-lusin-exhaustion-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-6e6a457c9391/_recursive_lean/leaf_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Operator/Banach.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Algebra/GroupWithZero/Units/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/ContinuousOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Data/Set/Function.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch04/.humanize/github-theorem-prover/runs/20261011T142930Z-d646011318/local-references/12153e28d102be5e/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean`
+- `/tmp/ch04-ptf-decomp/Assembly.lean`
+- `/tmp/ch04-ptf-decomp/Frozen1.lean`
+- `/tmp/ch04-ptf-decomp/Frozen23.lean`
+- `/tmp/ch04-ptf-decomp/simroot2/GMT/Ch04/Submission.lean`
+- `/tmp/ch04-ptf-decomp/scripts/sim.py`
+- `/tmp/ch04-ptf-decomp/scripts/gen.py`
+
+Contract and proof base:
+- The snapshot Contract.lean and the workspace Contract.lean and Submission.lean all have sha256 6e58e5dd…0f4770b.
+- The node's proof base 2cce8097 changes no Lean or Lake input (empty diff from ff75f52).
+
+Pinned Mathlib 25730c7c — present and used (snapshot path:line):
+- NormedRing.inverse_continuousAt (Analysis/Normed/Ring/Units.lean:183)
+- Submodule.eq_starProjection_of_mem_of_inner_eq_zero (Analysis/InnerProductSpace/Projection/Basic.lean:180)
+- ContinuousLinearMap.isUnit_iff_bijective (Analysis/Normed/Operator/Banach.lean:459)
+- LinearMap.injective_iff_surjective (LinearAlgebra/FiniteDimensional/Basic.lean:308)
+- Ring.mul_inverse_cancel (Algebra/GroupWithZero/Units/Basic.lean:99)
+- Continuous/ContinuousAt.clm_comp (Analysis/Normed/Operator/BoundedLinearMaps.lean:448–459)
+- continuousOn_iff' (Topology/ContinuousOn.lean:124; cite as _root_.continuousOn_iff' under open Metric)
+- ContinuousOn.measurable_piecewise (MeasureTheory/Constructions/BorelSpace/Basic.lean:523)
+- Measurable.find (MeasureTheory/MeasurableSpace/Constructions.lean:515)
+- Measurable.stronglyMeasurable (MeasureTheory/Function/StronglyMeasurable/Basic.lean:691)
+- ContinuousLinearMap.instMeasurableSpace / instBorelSpace (MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean:47,50)
+- Function.invFunOn_mem / invFunOn_eq and Set.InjOn.leftInvOn_invFunOn (Data/Set/Function.lean:963,966,987)
+- LipschitzOnWith.of_dist_le_mul (Topology/MetricSpace/Lipschitz.lean:57)
+- InnerProductSpace.toDual with toDual_symm_apply, and ContinuousLinearMap.toSesqForm with toSesqForm_apply_coe, plus ContinuousLinearMap.compSL.
+All of these resolve under the frozen imports (#check under import GMT.Ch04.Submission alone).
+
+Unavailable under the frozen imports:
+- ContinuousLinearMap.adjoint and LinearMap.adjoint (Analysis/InnerProductSpace/Adjoint.lean:112) are unknown constants.
+- The controller's leaf_verification.check_source_delta rejects any added import, so a leaf cannot bring them in.
+- Hence child 1 rebuilds Mathlib's adjointAux from toDual and toSesqForm.
+
+No-match results:
+- No Mathlib or SimonGMT lemma gives continuity of A ↦ (range A).starProjection. ContinuousLinearMap.isOpen_injective (FiniteDimension.lean:263) exists but is not needed.
+- No ready-made countable pasting lemma for relatively continuous fields exists beyond the Measurable.find and measurable_piecewise ingredients.
+- SimonGMT offers only an a.e.-measurability transfer (Chapter03.aemeasurable_starProjection_of_approximateTangentField, Rectifiable.lean:260), which does not apply here.
+
+Elaboration and proof checks:
+- The three child types pass validate_lean_statement and elaborate as comparator NodeChallenge files in contract scope.
+- The parent's frozen type follows from them (Assembly.lean).
+- Complete frozen-import proofs of all three children and the parent assembly pass check_source_delta as single-theorem insertions and compile in a copy of Submission.lean. The comparator-style solutions use axioms propext, Classical.choice and Quot.sound only.
+- Instance resolution is unchanged by extra imports.
+- The proposed names are unused in dag.json, nodes/ and all git refs.
