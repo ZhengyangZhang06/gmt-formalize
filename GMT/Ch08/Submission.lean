@@ -550,6 +550,152 @@ theorem Submission.frt_td_ball_mass_lower_of_blowup :
           ENNReal.ofReal_toReal hc_top]
     _ ≤ ENNReal.ofReal (μ.real (closedBall x t)) := ENNReal.ofReal_le_ofReal hfin.le
     _ = μ (closedBall x t) := ofReal_measureReal hμt
+/-- Upper ball-mass bound from the blow-up limit (Simon Ch. 8, 1.2, Steps 2, 4 and 6; the upper
+cutoff of Simon Ch. 3, Remark 1.8(2)): if `t⁻ⁿ ∫ g(t⁻¹(z - x)) dμ(z) → θ ∫_T g dHⁿ` for every
+`g ∈ C_c(ℝ^N)` and `μ(B_{r₀}(x)) < ∞`, then `μ(B_t(x)) ≤ c tⁿ` for all small `t > 0` whenever
+`θ ωₙ < c`.  The test function is a cutoff equal to `1` on `B_1(0)` and to `0` off `B_κ(0)`,
+with `κ > 1` chosen so that `θ ωₙ κⁿ < c`. -/
+theorem Submission.frt_td_ball_mass_upper_of_blowup :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (x : Euclidean N) (T : Grassmannian N n) (θ r₀ : ℝ), 0 < θ → 0 < r₀ → μ (closedBall x r₀) ≠ ⊤ → (∀ g : C_c(Euclidean N, ℝ), Tendsto (fun t : ℝ ↦ t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z - x)) ∂μ) (𝓝[>] 0) (𝓝 (θ * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n]))) → ∀ c : ℝ≥0∞, ENNReal.ofReal θ * unitBallVolume n < c → ∀ᶠ t in 𝓝[>] (0 : ℝ), μ (closedBall x t) ≤ c * ENNReal.ofReal t ^ n := by
+  intro N n μ x T θ r₀ hθ hr₀ hμr₀ hblow c hc
+  -- Step 1: `ωₙ < ∞`.
+  have hωtop : unitBallVolume n ≠ ∞ :=
+    (measure_ball_lt_top (μ := volume) (x := (0 : EuclideanSpace ℝ (Fin n)))).ne
+  -- Step 2: the case `c = ∞` is trivial.
+  rcases eq_or_ne c ∞ with rfl | hctop
+  · filter_upwards [self_mem_nhdsWithin] with t ht
+    rw [ENNReal.top_mul (pow_ne_zero _ (ENNReal.ofReal_pos.2 ht).ne')]
+    exact le_top
+  -- Step 3: `θ ωₙ < c` in `ℝ`.
+  have hθω : θ * (unitBallVolume n).toReal < c.toReal := by
+    have h := (ENNReal.toReal_lt_toReal (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hωtop) hctop).2 hc
+    rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal hθ.le] at h
+  -- Step 4: choose `κ > 1` with `θ ωₙ κⁿ < c`, by continuity of `κ ↦ θ ωₙ κⁿ` at `κ = 1`.
+  obtain ⟨κ, hκc, hκ1⟩ : ∃ κ : ℝ, θ * (unitBallVolume n).toReal * κ ^ n < c.toReal ∧ 1 < κ := by
+    have hcont : Tendsto (fun κ : ℝ ↦ θ * (unitBallVolume n).toReal * κ ^ n) (𝓝[>] 1)
+        (𝓝 (θ * (unitBallVolume n).toReal * 1 ^ n)) :=
+      (Continuous.tendsto (by fun_prop) 1).mono_left nhdsWithin_le_nhds
+    rw [one_pow, mul_one] at hcont
+    exact ((hcont.eventually (gt_mem_nhds hθω)).and self_mem_nhdsWithin).exists
+  have hκ0 : 0 < κ := zero_lt_one.trans hκ1
+  -- Step 5: the cutoff `g(y) = max 0 (min 1 ((κ - ‖y‖)/(κ - 1)))`: `0 ≤ g ≤ 1`, `g = 1` on
+  -- `B_1(0)` and `g = 0` off `B°_κ(0)`, so `g ∈ C_c(ℝ^N)`.
+  obtain ⟨χ, hχ⟩ : ∃ χ : Euclidean N → ℝ, χ = fun y ↦ max 0 (min 1 ((κ - ‖y‖) / (κ - 1))) :=
+    ⟨_, rfl⟩
+  have hχcont : Continuous χ := by
+    rw [hχ]
+    fun_prop
+  have hχ0 : ∀ y, 0 ≤ χ y := fun y ↦ by
+    rw [hχ]
+    exact le_max_left _ _
+  have hχ1 : ∀ y, χ y ≤ 1 := fun y ↦ by
+    rw [hχ]
+    exact max_le zero_le_one (min_le_left _ _)
+  have hχ_one : ∀ y, ‖y‖ ≤ 1 → χ y = 1 := fun y hy ↦ by
+    have h : 1 ≤ (κ - ‖y‖) / (κ - 1) := by
+      rw [le_div_iff₀ (sub_pos.2 hκ1)]
+      linarith
+    simp only [hχ, min_eq_left h, max_eq_right zero_le_one]
+  have hχ_zero : ∀ y, κ ≤ ‖y‖ → χ y = 0 := fun y hy ↦ by
+    have h : (κ - ‖y‖) / (κ - 1) ≤ 0 :=
+      div_nonpos_of_nonpos_of_nonneg (by linarith) (by linarith)
+    rw [hχ]
+    exact max_eq_left ((min_le_right _ _).trans h)
+  have hχsupp : HasCompactSupport χ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclidean N) κ) fun y hy ↦ ?_
+    rw [mem_closedBall_zero_iff, not_le] at hy
+    exact hχ_zero y hy.le
+  let g : C_c(Euclidean N, ℝ) := ⟨⟨χ, hχcont⟩, hχsupp⟩
+  have hg0 : ∀ y, 0 ≤ g y := hχ0
+  have hg1 : ∀ y, g y ≤ 1 := hχ1
+  have hg_one : ∀ y, ‖y‖ ≤ 1 → g y = 1 := hχ_one
+  have hg_zero : ∀ y, κ ≤ ‖y‖ → g y = 0 := hχ_zero
+  -- Step 6: `∫_T g dHⁿ ≤ Hⁿ(T ∩ B_κ(0)) = ωₙ κⁿ`, by the sibling plane-ball formula.
+  have hνball : ((μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N)))
+      (closedBall 0 κ) = unitBallVolume n * ENNReal.ofReal κ ^ n := by
+    rw [Measure.restrict_apply measurableSet_closedBall, inter_comm]
+    exact Submission.frt_td_plane_closedBall_hausdorff N n T κ hκ0.le
+  have hplane : ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] ≤
+      (unitBallVolume n).toReal * κ ^ n := by
+    have hind : Integrable ((closedBall (0 : Euclidean N) κ).indicator (1 : Euclidean N → ℝ))
+        ((μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N))) := by
+      refine (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const ?_)
+      rw [hνball]
+      exact ENNReal.mul_ne_top hωtop (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+    calc ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n]
+        ≤ ∫ y in (T.plane : Set (Euclidean N)),
+            (closedBall (0 : Euclidean N) κ).indicator (1 : Euclidean N → ℝ) y ∂μHE[n] := by
+          refine integral_mono_of_nonneg (Eventually.of_forall fun y ↦ hg0 y) hind
+            (Eventually.of_forall fun y ↦ ?_)
+          by_cases hy : y ∈ closedBall (0 : Euclidean N) κ
+          · rw [indicator_of_mem hy, Pi.one_apply]
+            exact hg1 y
+          · have hκy : κ ≤ ‖y‖ := by
+              rw [mem_closedBall_zero_iff, not_le] at hy
+              exact hy.le
+            rw [indicator_of_notMem hy, hg_zero y hκy]
+      _ = ((μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N))).real
+            (closedBall 0 κ) := integral_indicator_one measurableSet_closedBall
+      _ = (unitBallVolume n).toReal * κ ^ n := by
+          rw [measureReal_def, hνball, ENNReal.toReal_mul, ENNReal.toReal_pow,
+            ENNReal.toReal_ofReal hκ0.le]
+  -- Step 7: eventually `t⁻ⁿ ∫ g(t⁻¹(z - x)) dμ < c` and `t ∈ (0, r₀/κ)`.
+  have hlim : θ * ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] < c.toReal :=
+    (mul_le_mul_of_nonneg_left hplane hθ.le).trans_lt (by rwa [← mul_assoc])
+  filter_upwards [(hblow g).eventually (gt_mem_nhds hlim), Ioo_mem_nhdsGT (div_pos hr₀ hκ0)]
+    with t hlt ⟨ht0, htr⟩
+  -- Step 8: `B_t(x) ⊆ B_{κt}(x) ⊆ B_{r₀}(x)` have finite mass.
+  have hκt : κ * t ≤ r₀ := by
+    rw [lt_div_iff₀ hκ0] at htr
+    linarith
+  have hfinκt : μ (closedBall x (κ * t)) ≠ ∞ :=
+    ne_top_of_le_ne_top hμr₀ (measure_mono (closedBall_subset_closedBall hκt))
+  have hfint : μ (closedBall x t) ≠ ∞ :=
+    ne_top_of_le_ne_top hfinκt
+      (measure_mono (closedBall_subset_closedBall (le_mul_of_one_le_left ht0.le hκ1.le)))
+  -- Step 9: `z ↦ g(t⁻¹(z - x))` is `μ`-integrable, being bounded by `1_{B_{κt}(x)}`.
+  have hnorm : ∀ z, ‖t⁻¹ • (z - x)‖ = ‖z - x‖ / t := fun z ↦ by
+    rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 ht0.le), inv_mul_eq_div]
+  have hint : Integrable (fun z ↦ g (t⁻¹ • (z - x))) μ := by
+    have hind : Integrable ((closedBall x (κ * t)).indicator (1 : Euclidean N → ℝ)) μ :=
+      (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const hfinκt)
+    refine hind.mono' ((map_continuous g).comp (by fun_prop)).aestronglyMeasurable
+      (Eventually.of_forall fun z ↦ ?_)
+    rw [Real.norm_of_nonneg (hg0 _)]
+    by_cases hz : z ∈ closedBall x (κ * t)
+    · rw [indicator_of_mem hz, Pi.one_apply]
+      exact hg1 _
+    · have hκz : κ ≤ ‖t⁻¹ • (z - x)‖ := by
+        rw [mem_closedBall, dist_eq_norm, not_le] at hz
+        rw [hnorm, le_div_iff₀ ht0]
+        exact hz.le
+      rw [indicator_of_notMem hz, hg_zero _ hκz]
+  -- Step 10: `μ(B_t(x)) ≤ ∫ g(t⁻¹(z - x)) dμ`, as `1_{B_t(x)} ≤ g(t⁻¹(· - x))`.
+  have hcmp : μ.real (closedBall x t) ≤ ∫ z, g (t⁻¹ • (z - x)) ∂μ := by
+    rw [← integral_indicator_one measurableSet_closedBall]
+    refine integral_mono_of_nonneg (Eventually.of_forall fun z ↦ ?_) hint
+      (Eventually.of_forall fun z ↦ ?_)
+    · exact indicator_nonneg (fun _ _ ↦ zero_le_one) z
+    · dsimp only
+      by_cases hz : z ∈ closedBall x t
+      · have hle : ‖t⁻¹ • (z - x)‖ ≤ 1 := by
+          rw [hnorm, div_le_one ht0, ← dist_eq_norm]
+          exact hz
+        rw [indicator_of_mem hz, Pi.one_apply, hg_one _ hle]
+      · rw [indicator_of_notMem hz]
+        exact hg0 _
+  -- Step 11: `μ(B_t(x)) ≤ c.toReal tⁿ`, and back to `ℝ≥0∞` using `μ(B_t(x)) < ∞`.
+  have hreal : μ.real (closedBall x t) ≤ c.toReal * t ^ n := by
+    have heq : (t⁻¹ ^ n * ∫ z, g (t⁻¹ • (z - x)) ∂μ) * t ^ n = ∫ z, g (t⁻¹ • (z - x)) ∂μ := by
+      rw [mul_right_comm, ← mul_pow, inv_mul_cancel₀ ht0.ne', one_pow, one_mul]
+    rw [← heq] at hcmp
+    exact hcmp.trans (mul_le_mul_of_nonneg_right hlt.le (pow_nonneg ht0.le n))
+  calc μ (closedBall x t) = ENNReal.ofReal (μ.real (closedBall x t)) :=
+        (ENNReal.ofReal_toReal hfint).symm
+    _ ≤ ENNReal.ofReal (c.toReal * t ^ n) := ENNReal.ofReal_le_ofReal hreal
+    _ = c * ENNReal.ofReal t ^ n := by
+        rw [ENNReal.ofReal_mul ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hctop,
+          ENNReal.ofReal_pow ht0.le]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
