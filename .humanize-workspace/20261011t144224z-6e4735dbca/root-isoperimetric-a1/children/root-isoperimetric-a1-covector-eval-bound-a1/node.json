@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.isoperimetric-a1.covector_eval_bound-a1",
+  "parent_id": "root.isoperimetric-a1",
+  "depth": 2,
+  "title": "Covector evaluation on vectors of norm at most one is bounded by P^n times the Euclidean coefficient norm",
+  "statement": "For all P, n ∈ ℕ, every n-covector α on ℝ^P (continuous alternating n-linear form) and every τ_1, …, τ_n ∈ ℝ^P with ‖τ_j‖ ≤ 1 for all j: |α(τ_1, …, τ_n)| ≤ P^n · covectorEuclideanNorm(α), where covectorEuclideanNorm(α) = (Σ_{I : Fin n → Fin P strictly increasing} α(e_{I(1)}, …, e_{I(n)})²)^{1/2} and e_1, …, e_P is the standard basis.",
+  "lean_statement": "∀ (P n : ℕ) (α : Covector (Eucl P) n) (τ : Fin n → Eucl P), (∀ j, ‖τ j‖ ≤ 1) → |α τ| ≤ (P : ℝ) ^ n * covectorEuclideanNorm α",
+  "lean_name": "isoperimetric_abs_covector_apply_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-covector-eval-bound-a1-a1"
+}
