@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b9c7bf569a01ee5c415450a0bd8e5abc5695f0434cd1479c5ad1b8c068ff3c59",
+  "git_delta": {
+    "base_commit": "f320a5fafa3b884008df181addd57201f98647ac",
+    "candidate_commit": "3b2abc0b5a5e209d6101ac7646d5cc10791af678",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_imc_tau_measure_representation",
+    "diff_sha256": "4ab2a919f12f51d0e8ad0137c5e76dede387f4b898fb08ecc45fdd2fb47edd2f",
+    "source_sha256": "e547571c449a205649d746db9ace0929246ff668b1e275c5cf1e604466602bab",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_imc_tau_measure_representation",
+      "statement": "∀ (P k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (X : GeometricCurrentOn U k), IsRectifiableTriple U k M θ ξ → (∀ ω : TestFormOn U k, X ω = tauAction k M θ ξ ω) → IsMeasureRepresentation X ((μHE[k] : Measure (Eucl P)).restrict M) (fun x => θ x • ξ x)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
