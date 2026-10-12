@@ -492,6 +492,129 @@ theorem Submission.mono833_radial_layer_cake_le :
     _ = ENNReal.ofReal Λ * ∫⁻ y, ENNReal.ofReal (φ (‖y - x‖ ^ 2 / t ^ 2)) ∂μ := by
       rw [← hlc μ]
 
+/-- **Simon Ch. 8, 3.3 (printed p. 210), the first-variation estimate** (child
+`radial_first_variation_bound` of `monotonicity_formula`): for the radial field
+`X(y) = φ(|y - x|²/t²)(y - x)`, where `φ` is `C¹`, non-increasing, `φ = 1` on `(-∞, 1]` and
+`φ = 0` on `[A², ∞)`, with `tA < ρ₀`, hypothesis 3.1 (`‖δV‖(B_r(x)) ≤ Λ μ_V(B_r(x))` for
+`0 < r < ρ₀`) gives `|δV(X)| ≤ A Λ t ∫ φ(|y - x|²/t²) dμ_V(y)`.
+Write `δV(X) = -∫ ν·X d‖δV‖` with `|ν| = 1` `‖δV‖`-a.e. (2.6); then `|ν·X| ≤ tA φ(|y - x|²/t²)`,
+and the layer-cake comparison `mono833_radial_layer_cake_le` turns 3.1 into
+`∫ φ(|y - x|²/t²) d‖δV‖ ≤ Λ ∫ φ(|y - x|²/t²) dμ_V`. -/
+theorem Submission.mono833_radial_first_variation_bound :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (ρ₀ Λ A t : ℝ) (φ : ℝ → ℝ), V.HasLocallyBoundedFirstVariation → ball x ρ₀ ⊆ U → 0 ≤ Λ → (∀ r : ℝ, 0 < r → r < ρ₀ → variationMeasure V (closedBall x r) ≤ ENNReal.ofReal Λ * V.weight (closedBall x r)) → ContDiff ℝ 1 φ → Antitone φ → (∀ s : ℝ, s ≤ 1 → φ s = 1) → (∀ s : ℝ, A ^ 2 ≤ s → φ s = 0) → 0 < A → 0 < t → t * A < ρ₀ → |V.firstVariation (fun y ↦ φ (‖y - x‖ ^ 2 / t ^ 2) • (y - x))| ≤ A * Λ * t * ∫ y, φ (‖y - x‖ ^ 2 / t ^ 2) ∂V.weight := by
+  intro N n U V x ρ₀ Λ A t φ hV hball hΛ hbound hφ hanti hone hzero hA ht htA
+  have htA0 : 0 < t * A := mul_pos ht hA
+  -- Step 1: `0 ≤ φ ≤ 1`, and the profile `c(y) = φ(|y - x|²/t²)` is continuous.
+  have hφ_nonneg : ∀ s, 0 ≤ φ s := fun s ↦
+    (hzero _ (le_max_right s (A ^ 2))).symm.le.trans (hanti (le_max_left s (A ^ 2)))
+  have hφ_le_one : ∀ s, φ s ≤ 1 := fun s ↦
+    (hanti (min_le_left s 1)).trans (hone _ (min_le_right s 1)).le
+  have hq : ContDiff ℝ 1 (fun y : Euclidean N ↦ ‖y - x‖ ^ 2 / t ^ 2) :=
+    ((contDiff_norm_sq ℝ).comp (contDiff_id.sub contDiff_const)).div_const _
+  have hc_cont : Continuous (fun y : Euclidean N ↦ φ (‖y - x‖ ^ 2 / t ^ 2)) :=
+    hφ.continuous.comp hq.continuous
+  -- Step 2: `c(y) ≠ 0` forces `|y - x| < tA`, since `|y - x| ≥ tA` gives `|y - x|²/t² ≥ A²`.
+  have hc_supp : ∀ y : Euclidean N, φ (‖y - x‖ ^ 2 / t ^ 2) ≠ 0 → ‖y - x‖ < t * A := by
+    intro y hy
+    by_contra hge
+    refine hy (hzero _ ?_)
+    rw [le_div_iff₀ (by positivity)]
+    calc A ^ 2 * t ^ 2 = (t * A) ^ 2 := by ring
+      _ ≤ ‖y - x‖ ^ 2 := pow_le_pow_left₀ htA0.le (not_lt.1 hge) 2
+  have hc_mem : ∀ y : Euclidean N, φ (‖y - x‖ ^ 2 / t ^ 2) ≠ 0 → y ∈ closedBall x (t * A) :=
+    fun y hy ↦ mem_closedBall_iff_norm.2 (hc_supp y hy).le
+  -- Step 3: `|X(y)| = c(y) |y - x| ≤ tA c(y)`.
+  have hX_norm : ∀ y : Euclidean N,
+      ‖φ (‖y - x‖ ^ 2 / t ^ 2) • (y - x)‖ ≤ t * A * φ (‖y - x‖ ^ 2 / t ^ 2) := by
+    intro y
+    rw [norm_smul, Real.norm_of_nonneg (hφ_nonneg _)]
+    by_cases hy : φ (‖y - x‖ ^ 2 / t ^ 2) = 0
+    · simp [hy]
+    · calc φ (‖y - x‖ ^ 2 / t ^ 2) * ‖y - x‖ ≤ φ (‖y - x‖ ^ 2 / t ^ 2) * (t * A) :=
+            mul_le_mul_of_nonneg_left (hc_supp y hy).le (hφ_nonneg _)
+        _ = t * A * φ (‖y - x‖ ^ 2 / t ^ 2) := mul_comm _ _
+  -- Step 4: `X` is a test field: `C¹`, `spt X ⊆ B_{tA}(x)` compact, and `B_{tA}(x) ⊆ U`.
+  have hX_cd : ContDiff ℝ 1 (fun y : Euclidean N ↦ φ (‖y - x‖ ^ 2 / t ^ 2) • (y - x)) :=
+    (hφ.comp hq).smul (contDiff_id.sub contDiff_const)
+  have hX_tsupp : tsupport (fun y : Euclidean N ↦ φ (‖y - x‖ ^ 2 / t ^ 2) • (y - x)) ⊆
+      closedBall x (t * A) := by
+    apply closure_minimal _ isClosed_closedBall
+    intro y hy
+    apply hc_mem y
+    intro h
+    apply hy
+    simp [h]
+  have hK : IsCompact (closedBall x (t * A)) := isCompact_closedBall x (t * A)
+  have hKU : closedBall x (t * A) ⊆ U := (closedBall_subset_ball htA).trans hball
+  let X : Varifold.TestVectorField (N := N) U :=
+    ⟨fun y ↦ φ (‖y - x‖ ^ 2 / t ^ 2) • (y - x), hX_cd,
+      hK.of_isClosed_subset (isClosed_tsupport _) hX_tsupp, hX_tsupp.trans hKU⟩
+  -- Step 5: `‖δV‖` is the Riesz measure `m`, with polar field `η`, `|η| = 1` `m`-a.e. (2.6).
+  have hvm : variationMeasure V = V.firstVariationRieszMeasure hV := by
+    simp only [variationMeasure, dite_eq_left hV]
+  set m := V.firstVariationRieszMeasure hV
+  set η := V.firstVariationPolarField hV
+  have hrep : V.IsFirstVariationPolarRepresentation m η :=
+    V.isFirstVariationPolarRepresentation_riesz hV
+  obtain ⟨hint, hfv⟩ := hrep.2.2 X
+  -- Step 6: `m` and `μ_V` are finite on `B_{tA}(x)`.
+  have hμK : V.weight (closedBall x (t * A)) < ∞ :=
+    (V.weight_finite_on_compact _ hK hKU).lt_top
+  have hmK : m (closedBall x (t * A)) < ∞ := by
+    have h1 := hbound (t * A) htA0 htA
+    rw [hvm] at h1
+    exact h1.trans_lt (ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμK)
+  -- Step 7: `c` is integrable for every measure finite on `B_{tA}(x)` (`0 ≤ c ≤ 1`, `c = 0` off it).
+  have hc_int : ∀ m' : Measure (Euclidean N), m' (closedBall x (t * A)) < ∞ →
+      Integrable (fun y : Euclidean N ↦ φ (‖y - x‖ ^ 2 / t ^ 2)) m' := by
+    intro m' hm'
+    have hon : IntegrableOn (fun y : Euclidean N ↦ φ (‖y - x‖ ^ 2 / t ^ 2))
+        (closedBall x (t * A)) m' :=
+      Measure.integrableOn_of_bounded (M := 1) hm'.ne hc_cont.aestronglyMeasurable
+        (Eventually.of_forall fun y ↦ by
+          rw [Real.norm_of_nonneg (hφ_nonneg _)]
+          exact hφ_le_one _)
+    refine hon.integrable_of_forall_notMem_eq_zero fun y hy ↦ ?_
+    by_contra hcy
+    exact hy (hc_mem y hcy)
+  have hcm := hc_int m hmK
+  have hcμ := hc_int V.weight hμK
+  -- Step 8: `|δV(X)| ≤ ∫ |η·X| dm ≤ tA ∫ c dm` (Cauchy–Schwarz and step 3).
+  have hstep8 : |V.firstVariation (fun y ↦ φ (‖y - x‖ ^ 2 / t ^ 2) • (y - x))| ≤
+      t * A * ∫ y, φ (‖y - x‖ ^ 2 / t ^ 2) ∂m := by
+    have hfv' : V.firstVariation (fun y ↦ φ (‖y - x‖ ^ 2 / t ^ 2) • (y - x)) =
+        -∫ y, inner ℝ (η y) (φ (‖y - x‖ ^ 2 / t ^ 2) • (y - x)) ∂m := hfv
+    rw [hfv', abs_neg, ← integral_const_mul]
+    refine abs_integral_le_integral_abs.trans (integral_mono_ae hint.abs (hcm.const_mul _) ?_)
+    filter_upwards [hrep.2.1] with y hy
+    calc |inner ℝ (η y) (φ (‖y - x‖ ^ 2 / t ^ 2) • (y - x))|
+        ≤ ‖η y‖ * ‖φ (‖y - x‖ ^ 2 / t ^ 2) • (y - x)‖ := abs_real_inner_le_norm _ _
+      _ = ‖φ (‖y - x‖ ^ 2 / t ^ 2) • (y - x)‖ := by rw [hy, one_mul]
+      _ ≤ t * A * φ (‖y - x‖ ^ 2 / t ^ 2) := hX_norm y
+  -- Step 9: the layer-cake comparison with `(ν, μ) = (m, μ_V)`.
+  have hlc := Submission.mono833_radial_layer_cake_le N m V.weight x ρ₀ Λ A t φ
+    (fun r hr hrρ ↦ by rw [← hvm]; exact hbound r hr hrρ) hφ.continuous hanti hone hzero hA ht
+    htA
+  -- Step 10: back to real integrals, `∫ c dm ≤ Λ ∫ c dμ_V` (the right side is finite, `Λ ≥ 0`).
+  have hstep10 : ∫ y, φ (‖y - x‖ ^ 2 / t ^ 2) ∂m ≤
+      Λ * ∫ y, φ (‖y - x‖ ^ 2 / t ^ 2) ∂V.weight := by
+    rw [integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall fun y ↦ hφ_nonneg _)
+        hc_cont.aestronglyMeasurable,
+      integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall fun y ↦ hφ_nonneg _)
+        hc_cont.aestronglyMeasurable]
+    calc (∫⁻ y, ENNReal.ofReal (φ (‖y - x‖ ^ 2 / t ^ 2)) ∂m).toReal
+        ≤ (ENNReal.ofReal Λ * ∫⁻ y, ENNReal.ofReal (φ (‖y - x‖ ^ 2 / t ^ 2)) ∂V.weight).toReal :=
+          ENNReal.toReal_mono (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hcμ.lintegral_lt_top.ne)
+            hlc
+      _ = Λ * (∫⁻ y, ENNReal.ofReal (φ (‖y - x‖ ^ 2 / t ^ 2)) ∂V.weight).toReal := by
+          rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal hΛ]
+  -- Step 11: `|δV(X)| ≤ tA ∫ c dm ≤ tA Λ ∫ c dμ_V = A Λ t ∫ c dμ_V`.
+  calc |V.firstVariation (fun y ↦ φ (‖y - x‖ ^ 2 / t ^ 2) • (y - x))|
+      ≤ t * A * ∫ y, φ (‖y - x‖ ^ 2 / t ^ 2) ∂m := hstep8
+    _ ≤ t * A * (Λ * ∫ y, φ (‖y - x‖ ^ 2 / t ^ 2) ∂V.weight) :=
+        mul_le_mul_of_nonneg_left hstep10 htA0.le
+    _ = A * Λ * t * ∫ y, φ (‖y - x‖ ^ 2 / t ^ 2) ∂V.weight := by ring
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
