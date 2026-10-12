@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.chart_differential-a1",
+  "parent_id": "root.chart_tangent_differential-a1",
+  "depth": 2,
+  "title": "Rademacher's theorem in C¹ charts and tangential directional derivatives (Simon Ch. 2, (4.8)-(4.10); parent (B), (C))",
+  "statement": "Let n, N, p ∈ ℕ, U ⊆ ℝ^N open, f : ℝ^N → ℝᵖ locally Lipschitz on U, V ⊆ ℝⁿ open and ψ : ℝⁿ → ℝ^N of class C¹ on V. Then for Lⁿ-a.e. u ∈ V with ψ(u) ∈ U: f∘ψ is differentiable at u, and for every w ∈ ℝⁿ the map t ↦ f(ψ(u) + t·Dψ(u)w) has derivative D(f∘ψ)(u)w at t = 0, i.e. HasLineDerivAt ℝ f (fderiv ℝ (f∘ψ) u w) (ψ u) (fderiv ℝ ψ u w).",
+  "lean_statement": "∀ (n N p : ℕ) (U : Set (Rn N)) (f : Rn N → Rn p) (V : Set (Rn n)) (ψ : Rn n → Rn N), IsOpen U → LocallyLipschitzOn U f → IsOpen V → ContDiffOn ℝ 1 ψ V → ∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ V → ψ u ∈ U → DifferentiableAt ℝ (f ∘ ψ) u ∧ ∀ w : Rn n, HasLineDerivAt ℝ f (fderiv ℝ (f ∘ ψ) u w) (ψ u) (fderiv ℝ ψ u w)",
+  "lean_name": "chartTD_comp_differentiable_lineDeriv_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-chart-differential-a1-a1"
+}

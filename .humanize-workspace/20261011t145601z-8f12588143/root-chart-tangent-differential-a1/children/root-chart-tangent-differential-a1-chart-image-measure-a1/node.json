@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.chart_tangent_differential-a1.chart_image_measure-a1",
+  "parent_id": "root.chart_tangent_differential-a1",
+  "depth": 2,
+  "title": "Measure-theoretic facts for images of bounded open sets under bi-Lipschitz maps (parent Step 2, (Σ1)-(Σ3))",
+  "statement": "Let n, N ∈ ℕ, B ⊆ ℝⁿ open and bounded, ψ : ℝⁿ → ℝ^N K-Lipschitz on B (K ∈ ℝ≥0) and c > 0 with c|u − u'| ≤ |ψ(u) − ψ(u')| for all u, u' ∈ B. Put Γ := ψ(B). Then (i) Γ is Hⁿ-null-measurable; (ii) Γ is bounded; (iii) Hⁿ(Γ) < ∞; (iv) there is a real constant C such that Hⁿ(Γ ∩ B̄_ρ(x)) ≤ ENNReal.ofReal(Cρⁿ) for all x ∈ Γ and ρ > 0; (v) for every Z ⊆ ℝ^N with Hⁿ(Z) = 0, Lⁿ(B ∩ ψ⁻¹(Z)) = 0 (Lⁿ = volume on ℝⁿ).",
+  "lean_statement": "∀ (n N : ℕ) (B : Set (Rn n)) (ψ : Rn n → Rn N) (K : ℝ≥0) (c : ℝ), IsOpen B → Bornology.IsBounded B → LipschitzOnWith K ψ B → 0 < c → (∀ u ∈ B, ∀ u' ∈ B, c * ‖u - u'‖ ≤ ‖ψ u - ψ u'‖) → NullMeasurableSet (ψ '' B) μHE[n] ∧ Bornology.IsBounded (ψ '' B) ∧ μHE[n] (ψ '' B) < ∞ ∧ (∃ C : ℝ, ∀ x ∈ ψ '' B, ∀ ρ : ℝ, 0 < ρ → μHE[n] (ψ '' B ∩ Metric.closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) ∧ ∀ Z : Set (Rn N), μHE[n] Z = 0 → volume (B ∩ ψ ⁻¹' Z) = 0",
+  "lean_name": "chartTD_biLipschitz_image_measure_facts",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-chart-tangent-differential-a1-chart-image-measure-a1-a1"
+}
