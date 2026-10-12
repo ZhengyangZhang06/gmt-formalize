@@ -458,6 +458,31 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Linear algebra for the `C¹` extension step in the proof of Simon Ch. 5, Theorem 5.2 (p. 121):
+the operator norm of a linear map `A : ℝᵐ → ℝᵏ` is at most its Hilbert–Schmidt norm `|A|`, and
+`A ↦ |A|` is continuous for the operator-norm topology. -/
+theorem allard52_c1h_opNorm_le_hsNorm_continuous : ∀ (m k : ℕ), (∀ A : Rn m →L[ℝ] Rn k, ‖A‖ ≤ hsNorm A) ∧ Continuous (fun A : Rn m →L[ℝ] Rn k => hsNorm A) := by
+  intro m k
+  refine ⟨fun A => ?_, ?_⟩
+  · -- `‖A v‖ ≤ Σᵢ |vᵢ| ‖A eᵢ‖ ≤ ‖v‖ |A|` by the triangle and Cauchy–Schwarz inequalities.
+    refine A.opNorm_le_bound (Real.sqrt_nonneg _) fun v => ?_
+    have hv : ∑ i, v i • EuclideanSpace.single i (1 : ℝ) = v := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr v
+    calc ‖A v‖ = ‖A (∑ i, v i • EuclideanSpace.single i (1 : ℝ))‖ := by rw [hv]
+      _ = ‖∑ i, v i • A (EuclideanSpace.single i 1)‖ := by simp only [map_sum, map_smul]
+      _ ≤ ∑ i, ‖v i‖ * ‖A (EuclideanSpace.single i 1)‖ :=
+          (norm_sum_le _ _).trans_eq (Finset.sum_congr rfl fun i _ => norm_smul _ _)
+      _ ≤ √(∑ i, ‖v i‖ ^ 2) * √(∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2) :=
+          Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+      _ = hsNorm A * ‖v‖ := by rw [EuclideanSpace.norm_eq v, mul_comm (hsNorm A)]; rfl
+  · -- `|A| = √(Σᵢ ‖A eᵢ‖²)`, and each evaluation `A ↦ A eᵢ` is continuous.
+    exact (continuous_finsetSum _ fun i _ =>
+      (continuous_id.clm_apply continuous_const).norm.pow 2).sqrt
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
