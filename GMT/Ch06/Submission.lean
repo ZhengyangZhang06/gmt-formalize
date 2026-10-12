@@ -359,6 +359,88 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Restriction of a measure representation is a current (Simon Ch. 6, (2.9), p. 136).**  If
+`⟨ω, v⟩` is `μ`-integrable for every test form `ω ∈ 𝒟ᵏ(U)`, `μ(K) < ∞` for every compact `K ⊆ U`
+and `|⟨α, v(x)⟩| ≤ |α|` for all `x` and all `k`-covectors `α`, then for every set `A`,
+`S(ω) = ∫_A ⟨ω, v⟩ dμ` is a current `S ∈ 𝒟ₖ(U)`.  `S` is linear because every integrand is
+integrable.  With `M = #(Fin k → Fin P)`, `|α| ≤ √M ‖α‖` for the operator norm; if `ω_j → 0` in
+`𝒟ᵏ(U)`, the supports lie in one compact `K ⊆ U` and `ω_j → 0` uniformly on `K`, so
+`|S(ω_j)| ≤ √M μ(K) sup_K ‖ω_j‖ → 0`. -/
+theorem Submission.smr_restriction_isCurrent : ∀ (P k : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), (∀ ω : TestFormOn U k, Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) k) x)) μ) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) → ∀ A : Set (Eucl P), ∃ S : GeometricCurrentOn U k, ∀ ω : TestFormOn U k, S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ := by
+  intro P k U μ v hint hfin hv A
+  -- Step 1: `|α| ≤ √M ‖α‖` for the operator norm, `M = #(Fin k → Fin P)`.
+  obtain ⟨C, hC0, hcmp⟩ : ∃ C : ℝ, 0 ≤ C ∧
+      ∀ α : Covector (Eucl P) k, covectorEuclideanNorm α ≤ C * ‖α‖ := by
+    refine ⟨Real.sqrt (Fintype.card (Fin k → Fin P)), Real.sqrt_nonneg _, fun α => ?_⟩
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq (norm_nonneg α), ← Real.sqrt_mul (Nat.cast_nonneg _)]
+    refine Real.sqrt_le_sqrt ?_
+    calc _ ≤ ∑ _I : Fin k → Fin P, ‖α‖ ^ 2 := by
+          refine Finset.sum_le_sum fun I _ => ?_
+          split_ifs
+          · -- `|α(b_{I(0)}, …, b_{I(k-1)})| ≤ ‖α‖` since `‖b_i‖ = 1`
+            have h := α.le_opNorm fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)
+            simp only [EuclideanSpace.basisFun_apply, PiLp.norm_single, norm_one,
+              Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h ⊢
+            exact sq_le_sq' (abs_le.mp h).1 (abs_le.mp h).2
+          · positivity
+      _ = (Fintype.card (Fin k → Fin P) : ℝ) * ‖α‖ ^ 2 := by simp
+  -- Step 2: `S₀(ω) = ∫_A ⟨ω, v⟩ dμ` is linear, every integrand being `μ⌞A`-integrable.
+  let S₀ : TestFormOn U k →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ
+      map_add' := fun ω η => by
+        simp only [Submodule.coe_add, Pi.add_apply, map_add]
+        exact integral_add (hint ω).restrict (hint η).restrict
+      map_smul' := fun c ω => by
+        simp only [Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul, RingHom.id_apply]
+        exact integral_const_mul c _ }
+  refine ⟨⟨S₀, fun ωs hconv => ?_⟩, fun ω => rfl⟩
+  -- Step 3: sequential continuity.  The supports of the `ω_j` lie in a compact `K ⊆ U` and
+  -- `ω_j → 0` uniformly on `K` (order `0`), while `μ(K) < ∞`.
+  obtain ⟨K, hKc, hKU, hsupp, -, hunif⟩ := hconv
+  have hKm : MeasurableSet K := hKc.measurableSet
+  have hμK : μ K < ∞ := hfin K hKc hKU
+  set c : ℝ := C * μ.real K + 1 with hc
+  have hc0 : 0 < c := add_pos_of_nonneg_of_pos (mul_nonneg hC0 measureReal_nonneg) one_pos
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  obtain ⟨j₀, hj₀⟩ :=
+    (Metric.tendstoUniformlyOn_iff.mp (hunif 0) (ε / c) (div_pos hε hc0)).exists_forall_of_atTop
+  refine ⟨j₀, fun j hj => ?_⟩
+  -- `|⟨ω_j(x), v(x)⟩| ≤ C ε / c` on `K`, and `ω_j(x) = 0` off `K`.
+  have hbound : ∀ x, ‖v x ((ωs j : DifferentialForm (Eucl P) k) x)‖ ≤
+      K.indicator (fun _ => C * (ε / c)) x := by
+    intro x
+    by_cases hx : x ∈ K
+    · have hd := hj₀ j hj x hx
+      have h00 : iteratedFDeriv ℝ 0
+          ((0 : TestFormOn U k) : DifferentialForm (Eucl P) k) x = 0 := by
+        simp
+      rw [h00, dist_zero_left, norm_iteratedFDeriv_zero] at hd
+      rw [indicator_of_mem hx, Real.norm_eq_abs]
+      calc |v x ((ωs j : DifferentialForm (Eucl P) k) x)|
+          ≤ covectorEuclideanNorm ((ωs j : DifferentialForm (Eucl P) k) x) := hv x _
+        _ ≤ C * ‖(ωs j : DifferentialForm (Eucl P) k) x‖ := hcmp _
+        _ ≤ C * (ε / c) := mul_le_mul_of_nonneg_left hd.le hC0
+    · have hz : (ωs j : DifferentialForm (Eucl P) k) x = 0 :=
+        image_eq_zero_of_notMem_tsupport fun h => hx (hsupp j h)
+      rw [indicator_of_notMem hx, hz, map_zero, norm_zero]
+  have hgi : Integrable (K.indicator fun _ => C * (ε / c)) (μ.restrict A) :=
+    (integrable_indicator_iff hKm).mpr
+      (integrableOn_const ((Measure.restrict_apply_le A K).trans_lt hμK).ne)
+  have hI := norm_integral_le_of_norm_le hgi (Eventually.of_forall hbound)
+  rw [integral_indicator_const _ hKm, smul_eq_mul] at hI
+  have hAK : (μ.restrict A).real K ≤ μ.real K :=
+    ENNReal.toReal_mono hμK.ne (Measure.restrict_apply_le A K)
+  rw [dist_zero_right]
+  calc ‖S₀ (ωs j)‖ ≤ (μ.restrict A).real K * (C * (ε / c)) := hI
+    _ ≤ μ.real K * (C * (ε / c)) :=
+        mul_le_mul_of_nonneg_right hAK (mul_nonneg hC0 (div_pos hε hc0).le)
+    _ = C * μ.real K * ε / c := by ring
+    _ < ε := by
+        rw [div_lt_iff₀ hc0, hc]
+        nlinarith
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
