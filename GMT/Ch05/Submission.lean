@@ -506,6 +506,120 @@ theorem lgc_hsNormSq_bounds : ∀ (m k : ℕ), Continuous (fun A : Rn m →L[ℝ
       _ ≤ (∑ i, |v i| ^ 2) * (∑ i, ‖A (e i)‖ ^ 2) := h2
       _ = (∑ i, ‖A (e i)‖ ^ 2) * ‖v‖ ^ 2 := by rw [h3, mul_comm]
 
+/-- **Splitting the normal part on `B_{3s}(ζ)`** (Simon Ch. 5, proof of Lemma 2.6, the estimate
+following (9), p. 112), as used in the hole estimate of the proof of Corollary 2.7.  Write
+`v = x − ζ`, `P = p_T` and `h(x) = |p(x) − P|²`.  Since `v − p(x) v = (v − P v) − (p(x) − P) v`,
+`|v − p(x) v|² ≤ 2 |v − P v|² + 2 h(x) |v|²` (`lgc_hsNormSq_bounds`).  On `F` the slope hypothesis
+gives `|v − P v| ≤ ε |v|`; off `F`, `|v − P v| = dist(v, T) ≤ |v|` as `0 ∈ T`.  With `|v| ≤ 3s` this
+gives `|v − p(x) v|² ≤ 18 s² (ε² + 1_{Fᶜ}(x) + h(x))` on `B_{3s}(ζ)`, which integrates to the
+stated bound since `h` is measurable and bounded (`‖p(x) − P‖ ≤ 2`) and `μ(B_{3s}(ζ)) < ∞`. -/
+theorem lgc_hole_split_upper : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (p : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ)) (T : Submodule ℝ (Amb n ℓ)) (F : Set (Amb n ℓ)) (ζ : Amb n ℓ) (s ε : ℝ), 0 < s → AEStronglyMeasurable p μ → (∀ x, ‖p x‖ ≤ 1) → MeasurableSet F → μ (closedBall ζ (3 * s)) ≠ ⊤ → (∀ x ∈ F, ‖(x - ζ) - T.starProjection (x - ζ)‖ ≤ ε * ‖x - ζ‖) → ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ ≤ 18 * s ^ 2 * (ε ^ 2 * (μ (closedBall ζ (3 * s))).toReal + (μ (closedBall ζ (3 * s) \ F)).toReal + ∫ x in closedBall ζ (3 * s), hsNormSq (p x - T.starProjection) ∂μ) := by
+  intro n ℓ μ p T F ζ s ε hs hp hpb hF hfin hslope
+  obtain ⟨hcont, hHS⟩ := lgc_hsNormSq_bounds (n + ℓ) (n + ℓ)
+  have hPn : ‖T.starProjection‖ ≤ 1 := Submodule.starProjection_norm_le T
+  -- `h(x) = |p(x) − P|²` is a.e. strongly measurable and bounded by `4 (n + ℓ)`.
+  have hhm : AEStronglyMeasurable (fun x => hsNormSq (p x - T.starProjection)) μ :=
+    hcont.comp_aestronglyMeasurable (hp.sub aestronglyMeasurable_const)
+  have hhb : ∀ x, ‖hsNormSq (p x - T.starProjection)‖ ≤ 4 * ((n + ℓ : ℕ) : ℝ) := by
+    intro x
+    obtain ⟨h0, h1, -⟩ := hHS (p x - T.starProjection)
+    rw [Real.norm_eq_abs, abs_of_nonneg h0]
+    have h2 : ‖p x - T.starProjection‖ ≤ 2 := by
+      calc ‖p x - T.starProjection‖ ≤ ‖p x‖ + ‖T.starProjection‖ := norm_sub_le _ _
+        _ ≤ 1 + 1 := add_le_add (hpb x) hPn
+        _ = 2 := by norm_num
+    calc hsNormSq (p x - T.starProjection) ≤ ((n + ℓ : ℕ) : ℝ) * ‖p x - T.starProjection‖ ^ 2 := h1
+      _ ≤ ((n + ℓ : ℕ) : ℝ) * 2 ^ 2 := by gcongr
+      _ = 4 * ((n + ℓ : ℕ) : ℝ) := by ring
+  have hhi : IntegrableOn (fun x => hsNormSq (p x - T.starProjection)) (closedBall ζ (3 * s)) μ :=
+    Measure.integrableOn_of_bounded hfin hhm (Eventually.of_forall hhb)
+  have hci : IntegrableOn (fun _ => (1:ℝ)) (closedBall ζ (3 * s)) μ :=
+    integrableOn_const hfin
+  have hii : IntegrableOn (Fᶜ.indicator (fun _ => (1:ℝ))) (closedBall ζ (3 * s)) μ :=
+    hci.indicator hF.compl
+  -- The pointwise bound `|v − p(x) v|² ≤ 18 s² (ε² + 1_{Fᶜ}(x) + h(x))` on `B_{3s}(ζ)`.
+  have hpt : ∀ x ∈ closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ≤
+      18 * s ^ 2 * (ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x + hsNormSq (p x - T.starProjection)) := by
+    intro x hx
+    have hxz : ‖x - ζ‖ ≤ 3 * s := by rw [← dist_eq_norm]; exact hx
+    have hsplit : (x - ζ) - p x (x - ζ) =
+        ((x - ζ) - T.starProjection (x - ζ)) + (-((p x - T.starProjection) (x - ζ))) := by
+      simp only [sub_apply]
+      abel
+    have h1 : ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ≤
+        2 * ‖(x - ζ) - T.starProjection (x - ζ)‖ ^ 2 + 2 * ‖(p x - T.starProjection) (x - ζ)‖ ^ 2 := by
+      rw [hsplit]
+      have h := norm_add_le ((x - ζ) - T.starProjection (x - ζ)) (-((p x - T.starProjection) (x - ζ)))
+      rw [norm_neg] at h
+      have hn := norm_nonneg ((x - ζ) - T.starProjection (x - ζ) + -((p x - T.starProjection) (x - ζ)))
+      have hsq := pow_le_pow_left₀ hn h 2
+      nlinarith [sq_nonneg (‖(x - ζ) - T.starProjection (x - ζ)‖ -
+        ‖(p x - T.starProjection) (x - ζ)‖)]
+    have h2 : ‖(p x - T.starProjection) (x - ζ)‖ ^ 2 ≤ hsNormSq (p x - T.starProjection) * (9 * s ^ 2) := by
+      obtain ⟨h0, -, h3⟩ := hHS (p x - T.starProjection)
+      calc ‖(p x - T.starProjection) (x - ζ)‖ ^ 2
+          ≤ hsNormSq (p x - T.starProjection) * ‖x - ζ‖ ^ 2 := h3 (x - ζ)
+        _ ≤ hsNormSq (p x - T.starProjection) * (3 * s) ^ 2 := by gcongr
+        _ = hsNormSq (p x - T.starProjection) * (9 * s ^ 2) := by ring
+    -- Off `F`: `|v − P v| = dist(v, T) ≤ dist(v, 0) = |v|`.
+    have hQ : ‖(x - ζ) - T.starProjection (x - ζ)‖ ≤ ‖x - ζ‖ := by
+      rw [← dist_eq_norm, Submodule.dist_starProjection_eq_infDist]
+      have := infDist_le_dist_of_mem (x := x - ζ) (Submodule.zero_mem T)
+      rwa [dist_zero_right] at this
+    by_cases hxF : x ∈ F
+    · have hind : Fᶜ.indicator (fun _ => (1:ℝ)) x = 0 :=
+        indicator_of_notMem (by simpa using hxF) _
+      have h3 : ‖(x - ζ) - T.starProjection (x - ζ)‖ ^ 2 ≤ ε ^ 2 * (9 * s ^ 2) := by
+        have h0 : 0 ≤ ‖(x - ζ) - T.starProjection (x - ζ)‖ := norm_nonneg _
+        calc ‖(x - ζ) - T.starProjection (x - ζ)‖ ^ 2 ≤ (ε * ‖x - ζ‖) ^ 2 :=
+              pow_le_pow_left₀ h0 (hslope x hxF) 2
+          _ = ε ^ 2 * ‖x - ζ‖ ^ 2 := by ring
+          _ ≤ ε ^ 2 * (3 * s) ^ 2 := by gcongr
+          _ = ε ^ 2 * (9 * s ^ 2) := by ring
+      rw [hind]
+      nlinarith
+    · have hind : Fᶜ.indicator (fun _ => (1:ℝ)) x = 1 := indicator_of_mem hxF _
+      have h3 : ‖(x - ζ) - T.starProjection (x - ζ)‖ ^ 2 ≤ 9 * s ^ 2 := by
+        calc ‖(x - ζ) - T.starProjection (x - ζ)‖ ^ 2 ≤ ‖x - ζ‖ ^ 2 :=
+              pow_le_pow_left₀ (norm_nonneg _) hQ 2
+          _ ≤ (3 * s) ^ 2 := by gcongr
+          _ = 9 * s ^ 2 := by ring
+      rw [hind]
+      nlinarith [sq_nonneg ε, sq_nonneg s]
+  -- Integrate the pointwise bound and evaluate the constant and indicator integrals.
+  have hsum : IntegrableOn (fun x => ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x +
+      hsNormSq (p x - T.starProjection)) (closedBall ζ (3 * s)) μ :=
+    ((integrableOn_const hfin).add hii).add hhi
+  calc ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ
+      ≤ ∫ x in closedBall ζ (3 * s), 18 * s ^ 2 * (ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x +
+          hsNormSq (p x - T.starProjection)) ∂μ := by
+        apply integral_mono_of_nonneg (Eventually.of_forall fun x => by positivity)
+          (hsum.const_mul (18 * s ^ 2))
+        filter_upwards [ae_restrict_mem measurableSet_closedBall] with x hx
+        exact hpt x hx
+    _ = 18 * s ^ 2 * (ε ^ 2 * (μ (closedBall ζ (3 * s))).toReal +
+          (μ (closedBall ζ (3 * s) \ F)).toReal +
+          ∫ x in closedBall ζ (3 * s), hsNormSq (p x - T.starProjection) ∂μ) := by
+        have h12 : IntegrableOn (fun x => ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x)
+            (closedBall ζ (3 * s)) μ := (integrableOn_const hfin).add hii
+        have hc2 : IntegrableOn (fun _ => ε ^ 2) (closedBall ζ (3 * s)) μ := integrableOn_const hfin
+        have e1 : ∫ x in closedBall ζ (3 * s), (ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x +
+              hsNormSq (p x - T.starProjection)) ∂μ =
+            ∫ x in closedBall ζ (3 * s), (ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x) ∂μ +
+              ∫ x in closedBall ζ (3 * s), hsNormSq (p x - T.starProjection) ∂μ :=
+          integral_add h12 hhi
+        have e2 : ∫ x in closedBall ζ (3 * s), (ε ^ 2 + Fᶜ.indicator (fun _ => (1:ℝ)) x) ∂μ =
+            ∫ x in closedBall ζ (3 * s), ε ^ 2 ∂μ +
+              ∫ x in closedBall ζ (3 * s), Fᶜ.indicator (fun _ => (1:ℝ)) x ∂μ :=
+          integral_add hc2 hii
+        have e3 : ∫ x in closedBall ζ (3 * s), ε ^ 2 ∂μ = ε ^ 2 * (μ (closedBall ζ (3 * s))).toReal := by
+          rw [setIntegral_const, smul_eq_mul, measureReal_def, mul_comm]
+        have e4 : ∫ x in closedBall ζ (3 * s), Fᶜ.indicator (fun _ => (1:ℝ)) x ∂μ =
+            (μ (closedBall ζ (3 * s) \ F)).toReal := by
+          rw [integral_indicator hF.compl, setIntegral_const, smul_eq_mul, mul_one, measureReal_def,
+            Measure.restrict_apply hF.compl, inter_comm, ← sdiff_eq]
+        rw [integral_const_mul, e1, e2, e3, e4]
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
