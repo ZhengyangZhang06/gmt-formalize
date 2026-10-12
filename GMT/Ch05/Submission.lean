@@ -458,6 +458,86 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Columns of an operator-valued map (step 3, "Components", of the proof that `f` is
+`C^{m+1,α}` iff `Df` is `C^{m,α}`, in the elliptic bootstrap for Simon 7.1): if
+`g : ℝⁿ → L(ℝⁿ, E)` is `C^m` on the open set `U` and `g_k = g(·) e_k`, then on `U` the differences
+of `D^m g_k` are bounded by those of `D^m g`, and those of `D^m g` by the sum over `k` of those of
+`D^m g_k`.  Indeed `D^m g_k = ev_k ∘ D^m g` and `D^m g = ∑_k ι_k ∘ D^m g_k`, where the evaluation
+`ev_k T = T e_k` and the reconstruction `ι_k w = (h ↦ h_k • w)` have norm at most one. -/
+theorem dohr_eb_hsif_iteratedFDeriv_column_bounds : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (g : Rn n → (Rn n →L[ℝ] E)) (U : Set (Rn n)), IsOpen U → ContDiffOn ℝ m g U → ∀ x ∈ U, ∀ y ∈ U, (∀ k : Fin n, ‖iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) y‖ ≤ ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖) ∧ ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖ ≤ ∑ k : Fin n, ‖iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) x - iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) y‖ := by
+  intro n E _ _ m g U hU hg x hx y hy
+  -- Step 1: the evaluation maps `ev k : T ↦ T e_k` have norm at most one.
+  let ev : Fin n → (Rn n →L[ℝ] E) →L[ℝ] E := fun k =>
+    ContinuousLinearMap.apply ℝ E (EuclideanSpace.single k (1 : ℝ))
+  have hev : ∀ k, ‖ev k‖ ≤ 1 := fun k =>
+    ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun T => by
+      simpa [ev] using T.le_opNorm (EuclideanSpace.single k (1 : ℝ))
+  -- Step 2: the reconstruction maps `ι k : w ↦ (h ↦ h_k • w)` have norm at most one.
+  let ι : Fin n → E →L[ℝ] (Rn n →L[ℝ] E) := fun k =>
+    ContinuousLinearMap.smulRightL ℝ (Rn n) E (EuclideanSpace.proj k)
+  have hι : ∀ k, ‖ι k‖ ≤ 1 := fun k =>
+    ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun w => by
+      have hproj : ‖(EuclideanSpace.proj k : StrongDual ℝ (Rn n))‖ ≤ 1 :=
+        ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun h => by
+          simpa using PiLp.norm_apply_le h k
+      show ‖(EuclideanSpace.proj k : StrongDual ℝ (Rn n)).smulRight w‖ ≤ 1 * ‖w‖
+      rw [ContinuousLinearMap.norm_smulRight_apply]
+      exact mul_le_mul_of_nonneg_right hproj (norm_nonneg w)
+  -- Step 3: `L ∘ A - L ∘ B = L ∘ (A - B)` and `‖L ∘ A‖ ≤ ‖A‖` when `‖L‖ ≤ 1`.
+  have hcomp : ∀ {F G : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [NormedAddCommGroup G]
+      [NormedSpace ℝ G] (L : F →L[ℝ] G), ‖L‖ ≤ 1 →
+      ∀ A B : ContinuousMultilinearMap ℝ (fun _ : Fin m => Rn n) F,
+        ‖L.compContinuousMultilinearMap A - L.compContinuousMultilinearMap B‖ ≤ ‖A - B‖ := by
+    intro F G _ _ _ _ L hL A B
+    have : L.compContinuousMultilinearMap A - L.compContinuousMultilinearMap B =
+        L.compContinuousMultilinearMap (A - B) := by
+      ext v
+      simp
+    rw [this]
+    exact (L.norm_compContinuousMultilinearMap_le _).trans
+      (mul_le_of_le_one_left (norm_nonneg _) hL)
+  -- Step 4: `g` and its columns are `C^m` at every point of the open set `U`.
+  have hgat : ∀ z ∈ U, ContDiffAt ℝ m g z := fun z hz => hg.contDiffAt (hU.mem_nhds hz)
+  have hcolat : ∀ k, ∀ z ∈ U,
+      ContDiffAt ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z := fun k z hz =>
+    (hgat z hz).continuousLinearMap_comp (ev k)
+  -- Step 5: the column formula `D^m g_k(z) = ev k ∘ D^m g(z)`.
+  have hcol : ∀ k, ∀ z ∈ U,
+      iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z =
+        (ev k).compContinuousMultilinearMap (iteratedFDeriv ℝ m g z) := fun k z hz =>
+    (ev k).iteratedFDeriv_comp_left (hgat z hz) le_rfl
+  -- Step 7: the reconstruction `g = ∑ k, ι k ∘ g_k`.
+  have hrec : g = fun z => ∑ k, ι k (g z (EuclideanSpace.single k (1 : ℝ))) := by
+    funext z
+    ext h
+    have hh : ∑ k, h k • EuclideanSpace.single k (1 : ℝ) = h := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr h
+    conv_lhs => rw [← hh]
+    simp [ι, map_sum, map_smul]
+  -- Step 8: the sum formula `D^m g(z) = ∑ k, ι k ∘ D^m g_k(z)`.
+  have hsum : ∀ z ∈ U, iteratedFDeriv ℝ m g z = ∑ k, (ι k).compContinuousMultilinearMap
+      (iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z) := by
+    intro z hz
+    calc iteratedFDeriv ℝ m g z
+        = iteratedFDeriv ℝ m (fun z => ∑ k, ι k (g z (EuclideanSpace.single k (1 : ℝ)))) z :=
+          congrArg (iteratedFDeriv ℝ m · z) hrec
+      _ = ∑ k, iteratedFDeriv ℝ m (fun z => ι k (g z (EuclideanSpace.single k (1 : ℝ)))) z :=
+          iteratedFDeriv_fun_sum_apply fun k _ => (hcolat k z hz).continuousLinearMap_comp (ι k)
+      _ = ∑ k, (ι k).compContinuousMultilinearMap
+            (iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z) :=
+          Finset.sum_congr rfl fun k _ => (ι k).iteratedFDeriv_comp_left (hcolat k z hz) le_rfl
+  refine ⟨fun k => ?_, ?_⟩
+  -- Step 6: bound (i).
+  · rw [hcol k x hx, hcol k y hy]
+    exact hcomp (ev k) (hev k) _ _
+  -- Step 9: bound (ii).
+  · rw [hsum x hx, hsum y hy, ← Finset.sum_sub_distrib]
+    exact (norm_sum_le _ _).trans (Finset.sum_le_sum fun k _ => hcomp (ι k) (hι k) _ _)
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
