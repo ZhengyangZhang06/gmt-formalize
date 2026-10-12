@@ -482,6 +482,48 @@ theorem Submission.intcpt_id_restrict_sigmaFinite :
         exact ⟨S (i, k), Or.inr (Or.inr ⟨(i, k), rfl⟩), hi, hk.le⟩
     · exact ⟨Uᶜ, Or.inl rfl, hy⟩
 
+/-- The weight of `V = v(M, θ)` (Simon Ch. 8, p. 206: `V(A) = μ(π(TM ∩ A))` with `μ = H^n ⌞ θ`) is
+`θ H^n ⌞ M` restricted to a Borel hull `T` of the tangent-point set
+`M_* = {x ∈ M : M has an approximate tangent space at x with respect to θ}` (Ch. 3, 1.7):
+`μ_V = ((H^n ⌞ M) ⌞ θ) ⌞ T` with `M_* ⊆ T`, and `μ_V(B) = ∫_{M_* ∩ B} θ dH^n` for Borel `B`. -/
+theorem Submission.intcpt_id_weight_hull :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsVarifoldOf V M θ → ∃ T : Set (Euclidean N), MeasurableSet T ∧ {x | x ∈ M ∧ ∃ S : Grassmannian N n, Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane} ⊆ T ∧ V.weight = (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity fun x ↦ ENNReal.ofReal (θ x)).restrict T ∧ ∀ B : Set (Euclidean N), MeasurableSet B → V.weight B = ∫⁻ x in {x | x ∈ M ∧ ∃ S : Grassmannian N n, Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane} ∩ B, ENNReal.ofReal (θ x) ∂μHE[n] := by
+  intro N n U V M θ hV
+  -- Step 1: unpack `V = v(M, θ)`; `M_* ⊆ M ⊆ U`.
+  obtain ⟨hMU, -, -, hθpos, hθint, hVA⟩ := hV
+  set Mstar : Set (Euclidean N) := {x | x ∈ M ∧ ∃ S : Grassmannian N n,
+    Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane}
+  have hMstarM : Mstar ⊆ M := fun x hx ↦ hx.1
+  -- Step 2: `μ_V(B) = V(B × G(N,n)) = ∫⁻_{M_* ∩ B} θ dH^n` for Borel `B`.
+  have hweight : ∀ B : Set (Euclidean N), MeasurableSet B →
+      V.weight B = ∫⁻ x in Mstar ∩ B, ENNReal.ofReal (θ x) ∂μHE[n] := by
+    intro B hB
+    have hset : {x | x ∈ M ∧ ∃ S : Grassmannian N n,
+        Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ∧
+          (x, S) ∈ B ×ˢ (univ : Set (Grassmannian N n))} = Mstar ∩ B := by
+      ext x
+      constructor
+      · rintro ⟨hxM, S, hS, hxB, -⟩
+        exact ⟨⟨hxM, S, hS⟩, hxB⟩
+      · rintro ⟨⟨hxM, S, hS⟩, hxB⟩
+        exact ⟨hxM, S, hS, hxB, mem_univ S⟩
+    rw [V.weight_apply hB, hVA _ (hB.prod MeasurableSet.univ), hset]
+  -- Step 3: `H^n ⌞ M` is σ-finite (sibling `intcpt_id_restrict_sigmaFinite`).
+  have : SigmaFinite ((μHE[n] : Measure (Euclidean N)).restrict M) :=
+    Submission.intcpt_id_restrict_sigmaFinite N μHE[n] U M θ V.isOpen_domain hMU hθpos hθint
+  -- Step 4: the measurable hull `T` of `M_*` for `H^n ⌞ M` has `(H^n ⌞ M) ⌞ T = H^n ⌞ M_*`.
+  set T : Set (Euclidean N) := toMeasurable ((μHE[n] : Measure (Euclidean N)).restrict M) Mstar
+    with hT
+  have hTm : MeasurableSet T := measurableSet_toMeasurable _ _
+  have hhull : ((μHE[n] : Measure (Euclidean N)).restrict M).restrict T =
+      (μHE[n] : Measure (Euclidean N)).restrict Mstar := by
+    rw [hT, Measure.restrict_toMeasurable_of_sFinite, Measure.restrict_restrict_of_subset hMstarM]
+  -- Step 5: `μ_V(B) = (ν ⌞ T)(B)` on Borel `B`, hence `μ_V = ν ⌞ T`.
+  refine ⟨T, hTm, subset_toMeasurable _ _, ?_, hweight⟩
+  ext1 B hB
+  rw [hweight B hB, Measure.restrict_apply hB, withDensity_apply _ (hB.inter hTm),
+    ← Measure.restrict_restrict hB, hhull, Measure.restrict_restrict hB, inter_comm B Mstar]
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
