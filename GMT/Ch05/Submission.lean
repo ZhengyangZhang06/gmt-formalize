@@ -599,6 +599,55 @@ theorem upperDensity_ne_zero_outside_hausdorff_null : ∀ {n ℓ : ℕ} (ν : Me
   -- `μHE[n]` is a scalar multiple of `μH[n]`.
   rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hE, smul_zero]
 
+/-- **Simon Ch. 4, Remark 4.10(1)** with the Upper Density Theorem (Ch. 1, 3.6): if every
+`x ∈ spt V` has a positive density `Θⁿ(μ_V, x) = t > 0`, then `Hⁿ(spt V \ M) = 0`.  Each
+`y ∈ spt V \ M` has a ball `B_r(y)` of finite `μ_V`-mass; for `x ∈ (spt V \ M) ∩ B̆_r(y)` the upper
+density of `μ_V ⌞ (M ∩ B_r(y))` at `x ∉ M ∩ B_r(y)` is `Θⁿ(μ_V, x) > 0`, so 3.6 makes these points
+`Hⁿ`-null, and countably many such balls cover `spt V \ M`. -/
+theorem hausdorff_support_diff_carrier_null : ∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), (∀ x ∈ V.support, ∃ t : ℝ, 0 < t ∧ V.HasDensity x t) → (μHE[n] : Measure (Amb n ℓ)) (V.support \ V.carrier) = 0 := by
+  intro n ℓ U V hdens
+  -- Step 1(a): `μ_V` vanishes off the carrier `M`.
+  have hμMc : V.weight V.carrierᶜ = 0 := by
+    refine withDensity_absolutelyContinuous _ _ ?_
+    rw [Measure.restrict_apply₀' V.nullMeasurableSet_carrier, compl_inter_self, measure_empty]
+  -- Step 1(b): `M` is `μ_V`-null-measurable.
+  have hMμ : NullMeasurableSet V.carrier V.weight := (NullMeasurableSet.of_null hμMc).of_compl
+  -- Step 3 (Lindelöf, by second countability): it suffices that each `y ∈ spt V \ M` has an
+  -- `Hⁿ`-null neighbourhood within `spt V \ M`.
+  refine measure_null_of_locally_null _ fun y hy => ?_
+  -- Step 2: a radius `r > 0` with `μ_V(B_r(y)) < ∞`, since the density quotient tends to `t₀ < ∞`.
+  obtain ⟨t₀, -, hy₀⟩ := hdens y hy.1
+  obtain ⟨r, hrfin, hr0⟩ :=
+    ((hy₀.eventually (gt_mem_nhds ENNReal.ofReal_lt_top)).and self_mem_nhdsWithin).exists
+  have hBfin : V.weight (closedBall y r) < ∞ := by
+    refine lt_top_iff_ne_top.2 fun h => ?_
+    rw [h, ENNReal.top_div_of_ne_top ENNReal.ofReal_ne_top] at hrfin
+    exact lt_irrefl _ hrfin
+  refine ⟨(V.support \ V.carrier) ∩ ball y r, inter_mem_nhdsWithin _ (ball_mem_nhds y hr0), ?_⟩
+  -- Step 4: the Upper Density Theorem for `ν = μ_V` and `A = M ∩ B_r(y)`.
+  have hE := upperDensity_ne_zero_outside_hausdorff_null V.weight (V.carrier ∩ closedBall y r)
+    (hMμ.inter measurableSet_closedBall.nullMeasurableSet)
+    ((measure_mono inter_subset_right).trans_lt hBfin)
+  -- Steps 5–6: every `x ∈ (spt V \ M) ∩ B̆_r(y)` lies in the exceptional set of 3.6.
+  refine measure_mono_null (fun x hx => ?_) hE
+  obtain ⟨⟨hxS, hxM⟩, hxB⟩ := hx
+  refine ⟨fun hxA => hxM hxA.1, ?_⟩
+  obtain ⟨t, ht, hxt⟩ := hdens x hxS
+  -- For small `ρ`, `B_ρ(x) ⊆ B̆_r(y)`, so `μ_V(A ∩ B_ρ(x)) = μ_V(B_ρ(x) ∩ M) = μ_V(B_ρ(x))`.
+  have hloc : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), closedBall x ρ ⊆ ball y r :=
+    nhdsWithin_le_nhds (eventually_closedBall_subset (isOpen_ball.mem_nhds hxB))
+  have hlim : Tendsto (fun ρ : ℝ => V.weight ((V.carrier ∩ closedBall y r) ∩ closedBall x ρ) /
+      ENNReal.ofReal (unitBallVolume n * ρ ^ n)) (𝓝[>] 0) (𝓝 (ENNReal.ofReal t)) := by
+    refine hxt.congr' (hloc.mono fun ρ hρ => ?_)
+    have hset : (V.carrier ∩ closedBall y r) ∩ closedBall x ρ = closedBall x ρ ∩ V.carrier := by
+      ext z
+      exact ⟨fun hz => ⟨hz.2, hz.1.1⟩,
+        fun hz => ⟨⟨hz.2, ball_subset_closedBall (hρ hz.1)⟩, hz.1⟩⟩
+    simp only [hset, measure_inter_conull hμMc]
+  -- The limsup of a convergent quotient is its limit `t > 0`.
+  rw [hlim.limsup_eq]
+  exact (ENNReal.ofReal_pos.2 ht).ne'
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
