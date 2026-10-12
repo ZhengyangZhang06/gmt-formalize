@@ -717,6 +717,78 @@ theorem Submission.c1_sard_local_representation_comp : ∀ (n k N : ℕ) (M S : 
     rw [fderiv_comp z hdψ hdl, ContinuousLinearMap.coe_comp]
     exact (hψder (l z) hlz).comp (hlder z hz)
 
+/-- **Simon Ch. 2, Theorem 6.4 (p. 67), regular fibres** (steps 6, 7 and 11 of the `C1Sard`
+proof). Fix `p ∈ Σ_y = (M ∩ f⁻¹{y}) \ {J*_f = 0}` and a Simon chart `(V, W, ψ)` of `M` with
+`p = ψ(x_p)`. On the open set `V' = {x ∈ V : J*_f(ψ x) ≠ 0}` (continuity of `J*_f` on `M`) the
+map `G = f ∘ ψ` is `C¹`, and `DG(x_p) = Df(p) ∘ Dψ(x_p)` is onto: `df_p` has rank `m`
+(`c1_sard_coarea_jacobian_eq_zero_iff`) and `T_p M = range Dψ(x_p)`. The level-set chart
+`(D, V₁, l)` of `G⁻¹{y}` at `x_p` (`c1_sard_submersion_level_set_chart`) is a chart of
+`ψ⁻¹(Σ_y)` because the two sets agree on `V₁ ⊆ V'`, and `c1_sard_local_representation_comp`
+turns it into the chart `(D, W₁, ψ ∘ l)` of `Σ_y` at `p`. -/
+theorem Submission.c1_sard_regular_fiber_submanifold : ∀ (N m k : ℕ) (M U : Set (Rn N)) (f : Rn N → Rn m), Chapter02.IsSimonSubmanifold (E := Rn (m + k)) 1 M → IsOpen U → M ⊆ U → ContDiffOn ℝ 1 f U → (∀ (V : Set (Rn (m + k))) (W : Set (Rn N)) (ψ : Rn (m + k) → Rn N), Chapter02.IsSimonLocalRepresentation 1 M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) → ContinuousOn (coareaJacobian M f) M → ∀ y : Rn m, Chapter02.IsSimonSubmanifold (E := Rn k) 1 ((M ∩ f ⁻¹' {y}) \ {x | coareaJacobian M f x = 0}) := by
+  intro N m k M U f hM hU hMU hf htan hJ y
+  refine ⟨le_rfl, ?_⟩
+  rintro p ⟨⟨hpM, hpy⟩, hpZ⟩
+  -- A Simon chart `(V, W, ψ)` of `M` with `p = ψ x_p`; then `y = f (ψ x_p)`.
+  obtain ⟨V, W, ψ, hpW, hψ⟩ := hM.2 p hpM
+  obtain ⟨xp, hxpV, rfl⟩ : p ∈ ψ '' V := by rw [hψ.image_eq]; exact ⟨hpW, hpM⟩
+  obtain rfl : f (ψ xp) = y := hpy
+  have hψM : MapsTo ψ V M := fun x hx ↦ (hψ.image_eq.subset (mem_image_of_mem ψ hx)).2
+  -- The regular part `V'` of the chart is open and contains `x_p`.
+  set V' : Set (Rn (m + k)) := V ∩ (coareaJacobian M f ∘ ψ) ⁻¹' {0}ᶜ
+  have hV'open : IsOpen V' := (hJ.comp hψ.contDiffOn.continuousOn hψM).isOpen_inter_preimage
+    hψ.isOpen_source isOpen_compl_singleton
+  have hV'V : V' ⊆ V := inter_subset_left
+  have hxpV' : xp ∈ V' := ⟨hxpV, hpZ⟩
+  -- `G = f ∘ ψ` is `C¹` on `V'`, and `DG(x_p) = Df(p) ∘ Dψ(x_p)` is onto.
+  have hG : ContDiffOn ℝ 1 (f ∘ ψ) V' :=
+    hf.comp (hψ.contDiffOn.mono hV'V) fun x hx ↦ hMU (hψM (hV'V hx))
+  have hdf : DifferentiableAt ℝ f (ψ xp) :=
+    (hf.differentiableOn one_ne_zero).differentiableAt (hU.mem_nhds (hMU hpM))
+  have hdψ : DifferentiableAt ℝ ψ xp :=
+    (hψ.contDiffOn.differentiableOn one_ne_zero).differentiableAt (hψ.isOpen_source.mem_nhds hxpV)
+  have hsurjL : LinearMap.range
+      ((fderiv ℝ f (ψ xp)).toLinearMap ∘ₗ (tangentSpace M (ψ xp)).subtype) = ⊤ := by
+    have h1 := (Submission.c1_sard_coarea_jacobian_eq_zero_iff N m M f (ψ xp)).not.mp hpZ
+    apply Submodule.eq_top_of_finrank_eq
+    have h2 := Submodule.finrank_le
+      (LinearMap.range ((fderiv ℝ f (ψ xp)).toLinearMap ∘ₗ (tangentSpace M (ψ xp)).subtype))
+    rw [finrank_euclideanSpace_fin] at h2 ⊢
+    omega
+  have hsurjG : Function.Surjective (fderiv ℝ (f ∘ ψ) xp) := by
+    intro w
+    have hw : w ∈ LinearMap.range
+        ((fderiv ℝ f (ψ xp)).toLinearMap ∘ₗ (tangentSpace M (ψ xp)).subtype) := by
+      rw [hsurjL]; trivial
+    obtain ⟨t, ht⟩ := hw
+    have htmem : (t : Rn N) ∈ LinearMap.range (fderiv ℝ ψ xp).toLinearMap := by
+      rw [← htan V W ψ hψ xp hxpV]; exact t.2
+    obtain ⟨v, hv⟩ := htmem
+    refine ⟨v, ?_⟩
+    rw [fderiv_comp xp hdf hdψ]
+    have hv' : fderiv ℝ ψ xp v = t := hv
+    simp only [ContinuousLinearMap.coe_comp, Function.comp_apply, hv']
+    simpa using ht
+  -- The level-set chart of `G⁻¹{y}` at `x_p` is a chart of `ψ⁻¹(Σ_y)`.
+  obtain ⟨D, V₁, l, hxpV₁, hV₁V', hl⟩ :=
+    Submission.c1_sard_submersion_level_set_chart m k V' (f ∘ ψ) xp hV'open hxpV' hG hsurjG
+  set S : Set (Rn N) := (M ∩ f ⁻¹' {f (ψ xp)}) \ {x | coareaJacobian M f x = 0}
+  have hset : V₁ ∩ (f ∘ ψ) ⁻¹' {(f ∘ ψ) xp} = V₁ ∩ ψ ⁻¹' S := by
+    ext x
+    constructor
+    · rintro ⟨hx1, hx2⟩
+      have hxV' := hV₁V' hx1
+      exact ⟨hx1, ⟨hψM hxV'.1, hx2⟩, hxV'.2⟩
+    · rintro ⟨hx1, ⟨_, hx2⟩, _⟩
+      exact ⟨hx1, hx2⟩
+  have hl' : Chapter02.IsSimonLocalRepresentation 1 (ψ ⁻¹' S) D V₁ l := by
+    obtain ⟨h1, h2, h3, h4, h5, h6, h7⟩ := hl
+    exact ⟨h1, h2, h3, h4, h5.trans hset, h6, h7⟩
+  -- Composing with `ψ` gives the chart `(D, W₁, ψ ∘ l)` of `Σ_y`, and `p = ψ x_p ∈ W₁`.
+  obtain ⟨W₁, -, hW₁img, hrep⟩ := Submission.c1_sard_local_representation_comp (m + k) k N M
+    S V W ψ D V₁ l hψ (fun x hx ↦ hx.1.1) (hV₁V'.trans hV'V) hl'
+  exact ⟨D, W₁, ψ ∘ l, (hW₁img.subset (mem_image_of_mem ψ hxpV₁)).1, hrep⟩
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
