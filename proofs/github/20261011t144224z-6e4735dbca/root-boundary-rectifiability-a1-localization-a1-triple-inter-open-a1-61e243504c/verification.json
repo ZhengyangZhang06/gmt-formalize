@@ -1,0 +1,17 @@
+{
+  "node_id": "root.boundary_rectifiability-a1.localization-a1.triple_inter_open-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/2484",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "980bf2f0ffdd14accb50c367f00b73e531581dc7",
+  "integrated_commit": "",
+  "proof_base_commit": "ea11f5239c2261b9ef15ae5a646b3a36fcd6a70a",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.boundary_rectifiability-a1.localization-a1",
+  "requires": [
+    "root.boundary_rectifiability-a1.tangent_locality-a1"
+  ]
+}
