@@ -588,6 +588,45 @@ theorem Submission.tgc_tangent_weight_lower_bound :
         rw [mul_right_comm, ← ENNReal.ofReal_pow ht0.le, ← ENNReal.ofReal_mul htn, ← mul_pow,
           inv_mul_cancel₀ ht0.ne', one_pow, ENNReal.ofReal_one, one_mul]
 
+/-- **Dimension `0`: tangent points are atoms of `μ_V`** (child `dim_zero_countable` of
+`tangent_graph_cover`, step 2 of its proof).  If the `0`-varifold `V` has a tangent plane with
+multiplicity `θ` at `x`, then for `0 < c < θ ω_0` the lower mass bound gives `c ≤ μ_V(B_t(x))` for
+all small `t > 0`; `μ_V` is finite on a small closed ball about `x ∈ U`, and `B_t(x) ↓ {x}` as
+`t ↓ 0`, so `μ_V({x}) ≥ c > 0`.  The σ-finite measure `μ_V` has only countably many atoms. -/
+theorem Submission.tgc_dim_zero_tangent_points_countable :
+    ∀ (N : ℕ) (U : Set (Euclidean N)) (V : Varifold N 0 U),
+      {x : Euclidean N | ∃ (T : Grassmannian N 0) (θ : ℝ), HasTangentPlane V x T θ}.Countable := by
+  intro N U V
+  -- Step 1: the atoms `{y | 0 < μ_V({y})}` of the σ-finite measure `μ_V` form a countable set.
+  refine (Measure.countable_meas_pos_of_disjoint_iUnion (μ := V.weight)
+    (As := fun y : Euclidean N ↦ ({y} : Set (Euclidean N))) (fun y ↦ measurableSet_singleton y)
+    fun y z hyz ↦ Set.disjoint_singleton.2 hyz).mono ?_
+  rintro x ⟨T, θ, hx⟩
+  show 0 < V.weight {x}
+  -- Step 2: for `0 < c < θ ω_0`, the lower mass bound with `n = 0` gives `c ≤ μ_V(B_t(x))` for all
+  -- small `t > 0`.
+  have hω : unitBallVolume 0 ≠ 0 :=
+    (Metric.measure_ball_pos (volume : Measure (EuclideanSpace ℝ (Fin 0))) 0 one_pos).ne'
+  obtain ⟨c, hc0, hc⟩ := exists_between (ENNReal.mul_pos (ENNReal.ofReal_pos.2 hx.2.1).ne' hω)
+  have hlow : ∀ᶠ t in 𝓝[>] (0 : ℝ), c ≤ V.weight (closedBall x t) := by
+    filter_upwards [Submission.tgc_tangent_weight_lower_bound N 0 U V x T θ hx c hc] with t ht
+    rwa [pow_zero, mul_one] at ht
+  -- Step 3: `x ∈ U` with `U` open, so a small closed ball about `x` is a compact subset of `U` and
+  -- has finite mass.
+  obtain ⟨R, hR, hRU⟩ := Metric.isOpen_iff.1 V.isOpen_domain x hx.1
+  have hfin : ∃ r > 0, V.weight (cthickening r {x}) ≠ ∞ := by
+    refine ⟨R / 2, half_pos hR, ?_⟩
+    rw [cthickening_singleton x (half_pos hR).le]
+    exact V.weight_finite_on_compact _ (isCompact_closedBall x _)
+      ((closedBall_subset_ball (half_lt_self hR)).trans hRU)
+  -- Step 4: continuity from above, `μ_V(B_t(x)) → μ_V({x})` as `t ↓ 0`, so `c ≤ μ_V({x})`.
+  have hlim : Tendsto (fun t : ℝ ↦ V.weight (closedBall x t)) (𝓝[>] 0) (𝓝 (V.weight {x})) := by
+    refine ((tendsto_measure_cthickening_of_isClosed hfin isClosed_singleton).mono_left
+      nhdsWithin_le_nhds).congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    rw [cthickening_singleton x (mem_Ioi.1 ht).le]
+  exact hc0.trans_le (ge_of_tendsto hlim hlow)
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
