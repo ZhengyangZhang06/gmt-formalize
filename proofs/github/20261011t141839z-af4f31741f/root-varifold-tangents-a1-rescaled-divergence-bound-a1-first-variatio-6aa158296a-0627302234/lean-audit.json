@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1f79c9f4f72637e84e938fbc806d29f021d0881c55467bc0a7da6a1d4e076f9c",
+  "git_delta": {
+    "base_commit": "fd0eb8331a1d495c828a6697c403fb0d304cb628",
+    "candidate_commit": "6d9eb2633ed5eefb52c271a3efe36ece2aa2426d",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "varifold_tangents_rdb_firstVariation_le_variationMeasure",
+    "diff_sha256": "31c21d28978655c683e89c65debce8e7292592048a0deadfd91a839fb8879cc6",
+    "source_sha256": "efbcda10934633101b54d1ae95d36e590b314ebc8348ea600f87c6b5dfc401bf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.varifold_tangents_rdb_firstVariation_le_variationMeasure",
+      "statement": "∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (W : Set (Euclidean N)) (Y : Euclidean N → Euclidean N) (K : ℝ), V.HasLocallyBoundedFirstVariation → IsOpen W → IsCompact (closure W) → closure W ⊆ U → ContDiff ℝ 1 Y → tsupport Y ⊆ W → (∀ z, ‖Y z‖ ≤ K) → ENNReal.ofReal |V.firstVariation Y| ≤ ENNReal.ofReal K * variationMeasure V W",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
