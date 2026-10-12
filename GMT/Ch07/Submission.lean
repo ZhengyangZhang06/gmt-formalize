@@ -585,6 +585,34 @@ theorem Submission.imsupp_measure_eq_zero_of_vanishesOn : ∀ (P n : ℕ) (U W :
   refine measure_eq_zero_iff_ae_notMem.2 ?_
   filter_upwards [hξ, hα] with x hx0 hxα hxW
   exact hx0 (ContinuousLinearMap.coe_injective (α.ext fun k => by simpa using hxα k hxW))
+/-- **Simon 6.2.11–6.2.12** (`spt T ⊆ spt μ_T`): if `T = τ(M, θ, ξ)` and `μ_T(W) = 0` for the
+weight `μ_T = θHⁿ⌞M`, then `T` vanishes on `W`.  For `ω ∈ 𝒟ⁿ(U)` with `K = spt ω ⊆ W`, the closed
+set `K` has `∫_K θ dHⁿ⌞M = μ_T(K) = 0`, so `θ ≥ 1` on `M` forces `Hⁿ⌞M(K) = 0`.  The integrand
+`θ⟨ω, ξ⟩` of `T(ω)` vanishes off `K`, hence `Hⁿ⌞M`-a.e., and `T(ω) = 0`. -/
+theorem Submission.imsupp_vanishesOn_of_measure_eq_zero : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → R.measure W = 0 → T.VanishesOn W := by
+  intro P n U W T R hRT hW ω hω
+  -- `ν = Hⁿ⌞M` and the closed, hence Borel, set `K = spt ω ⊆ W`
+  set ν : Measure (Euclid P) := μHE[n].restrict R.carrier
+  set K := tsupport (ω : DifferentialForm (Euclid P) n)
+  have hK : MeasurableSet K := (isClosed_tsupport _).measurableSet
+  -- `∫_K θ dν = μ_T(K) ≤ μ_T(W) = 0`, so `θ = 0` at `ν⌞K`-a.e. point
+  have hθK : ∫⁻ x in K, (R.mult x : ℝ≥0∞) ∂ν = 0 := by
+    rw [← withDensity_apply (fun x => (R.mult x : ℝ≥0∞)) hK]
+    exact measure_mono_null hω hW
+  have hθ : ∀ᵐ x ∂ν.restrict K, (R.mult x : ℝ≥0∞) = 0 :=
+    (lintegral_eq_zero_iff ((measurable_from_nat (f := fun k : ℕ => (k : ℝ≥0∞))).comp
+      R.measurable_mult)).1 hθK
+  -- `θ ≥ 1` on `M`, and `ν⌞K`-a.e. point lies in `M`, so `ν(K) = 0`
+  have hνK : ν K = 0 := by
+    rw [← Measure.restrict_apply_univ K, measure_eq_zero_iff_ae_notMem]
+    filter_upwards [hθ, ae_restrict_of_ae (ae_restrict_mem R.measurableSet_carrier)]
+      with x hx hxM
+    exact absurd (Nat.cast_eq_zero.1 hx) (R.mult_pos x hxM).ne'
+  -- `ω = 0` off `K`, so the integrand of `T(ω) = ∫ θ⟨ω, ξ⟩ dν` vanishes `ν`-a.e.
+  rw [hRT ω, IMRep.action]
+  apply integral_eq_zero_of_ae
+  filter_upwards [measure_eq_zero_iff_ae_notMem.1 hνK] with x hx
+  rw [image_eq_zero_of_notMem_tsupport hx, map_zero, mul_zero, Pi.zero_apply]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
