@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.zero_dim_weak_limit-a1.finite_dirac_im-a1",
+  "parent_id": "root.boundary_rectifiability-a1.zero_dim_weak_limit-a1",
+  "depth": 3,
+  "title": "Finite integer Dirac sums are integer multiplicity 0-currents",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P = Eucl P (any subset), D a finite set (a Finset) with D ⊆ U, and a : ℝ^P → ℤ. Then there is an integer multiplicity current Y ∈ D_0(U) (GeometricCurrentOn U 0 with IsIntegerMultiplicity Y) such that Y(ω) = Σ_{x∈D} a(x)·ω(x)(![]) for every test 0-form ω ∈ D⁰(U) (TestFormOn U 0).",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Eucl P)) (D : Finset (Eucl P)) (a : Eucl P → ℤ), (↑D : Set (Eucl P)) ⊆ U → ∃ Y : GeometricCurrentOn U 0, IsIntegerMultiplicity Y ∧ ∀ ω : TestFormOn U 0, Y ω = ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![]",
+  "lean_name": "br_zd_finite_dirac_im",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-zero-dim-weak-limit-a1-finite-dirac-im-a1-a1"
+}
