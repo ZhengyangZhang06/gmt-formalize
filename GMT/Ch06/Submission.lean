@@ -461,6 +461,74 @@ theorem Submission.constancy_testFormOn_eq_finset_sum_subordinate :
     · have h0 : (ω : DifferentialForm (Eucl P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
       rw [h0, smul_zero]
 
+/-- Globalization in **Simon Ch. 6, Theorem 2.34** (end of the proof, p. 143): if near every point
+of the open connected set `U` the current `T` is a constant multiple of `[[U]]`, then it is one
+global constant multiple of `[[U]]`.  Overlapping balls carry the same constant (test with a
+unit-integral form supported in the overlap), so the constant is locally constant, hence constant
+on the connected `U`; a partition of unity subordinate to the balls adds up the local identities. -/
+theorem Submission.constancy_of_local_constancy : ∀ (m : ℕ) (U : Set (Eucl (m + 1))), IsOpen U → IsConnected U → ∀ T : GeometricCurrentOn U (m + 1), (∀ x₀ ∈ U, ∃ r : ℝ, 0 < r ∧ ball x₀ r ⊆ U ∧ ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) ⊆ ball x₀ r → T ω = c * ∫ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume) → ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1), T ω = c * ∫ x in U, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume := by
+  intro m U _hU hconn T hloc
+  classical
+  -- A radius `r x` and a constant `c x` for every `x ∈ U`.
+  choose r hr hrU c hc using fun x : U => hloc x x.2
+  -- Overlapping balls have equal constants, so `c` is locally constant on `U`.
+  have hlc : IsLocallyConstant c := by
+    apply (IsLocallyConstant.iff_eventually_eq c).mpr
+    intro x
+    have hn : ∀ᶠ y : U in 𝓝 x, (y : Eucl (m + 1)) ∈ ball (x : Eucl (m + 1)) (r x) :=
+      continuous_subtype_val.continuousAt (isOpen_ball.mem_nhds (mem_ball_self (hr x)))
+    filter_upwards [hn] with y hy
+    obtain ⟨ω, hωW, hω1⟩ := Submission.constancy_exists_topTestForm_integral_eq_one m U
+      (ball (y : Eucl (m + 1)) (r y) ∩ ball (x : Eucl (m + 1)) (r x))
+      (isOpen_ball.inter isOpen_ball) ⟨y, mem_ball_self (hr y), hy⟩
+      (inter_subset_left.trans (hrU y))
+    have h1 := hc y ω (hωW.trans inter_subset_left)
+    have h2 := hc x ω (hωW.trans inter_subset_right)
+    rw [hω1, mul_one] at h1 h2
+    exact h1.symm.trans h2
+  -- `U` is connected, so `c` is a single constant `c₀`.
+  have : PreconnectedSpace U := isPreconnected_iff_preconnectedSpace.mp hconn.isPreconnected
+  obtain ⟨c₀, hc₀⟩ := hlc.exists_eq_const
+  refine ⟨c₀, fun ω => ?_⟩
+  -- Split `ω` into finitely many test forms, each supported in one of the balls.
+  obtain ⟨s, η, hηV, hωsum⟩ := Submission.constancy_testFormOn_eq_finset_sum_subordinate
+    (m + 1) (m + 1) U U (fun x => ball (x : Eucl (m + 1)) (r x)) (fun _ => isOpen_ball) ω
+    (fun z hz => mem_iUnion.mpr ⟨⟨z, ω.property.2 hz⟩, mem_ball_self (hr _)⟩)
+  have hint : ∀ η' : TestFormOn U (m + 1), Integrable (fun x =>
+      (η' : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ))) volume := by
+    intro η'
+    have hcont : Continuous (fun x => (η' : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ))) :=
+      (ContinuousAlternatingMap.apply ℝ (Eucl (m + 1)) ℝ
+        (fun i => EuclideanSpace.single i (1 : ℝ))).continuous.comp
+        η'.property.1.1.continuous
+    exact hcont.integrable_of_hasCompactSupport
+      (η'.property.1.2.comp_left (g := fun α : Covector (Eucl (m + 1)) (m + 1) =>
+        α (fun i => EuclideanSpace.single i (1 : ℝ))) rfl)
+  have hpt : ∀ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+      (fun i => EuclideanSpace.single i (1 : ℝ)) =
+      ∑ i ∈ s, (η i : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ)) := by
+    intro x
+    rw [hωsum, Submodule.coe_sum, Finset.sum_apply, ContinuousAlternatingMap.sum_apply]
+  have hT : T ω = ∑ i ∈ s, T (η i) := by
+    rw [hωsum]
+    exact map_sum T.toCurrent η s
+  -- `ω` vanishes off `U`, so its integral over `ℝⁿ` is its integral over `U`.
+  have hU0 : ∀ x, x ∉ U → (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+      (fun i => EuclideanSpace.single i (1 : ℝ)) = 0 := by
+    intro x hx
+    rw [image_eq_zero_of_notMem_tsupport (fun h => hx (ω.property.2 h))]
+    rfl
+  -- Add up the local identities `T (η i) = c₀ * ∫ η i (e)`.
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero hU0, hT]
+  simp_rw [hpt]
+  rw [integral_finsetSum s (fun i _ => hint (η i)), Finset.mul_sum]
+  refine Finset.sum_congr rfl fun i hi => ?_
+  have hci : c i = c₀ := congrFun hc₀ i
+  rw [hc i (η i) (hηV i hi), hci]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
