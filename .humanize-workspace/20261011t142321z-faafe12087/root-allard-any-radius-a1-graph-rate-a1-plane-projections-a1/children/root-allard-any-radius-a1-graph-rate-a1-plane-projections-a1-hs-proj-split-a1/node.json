@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.hs_proj_split-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1",
+  "depth": 4,
+  "title": "Hilbert-Schmidt splitting along an orthogonal projection and the two-projection identity |P - Q|^2 = |(P - Q)P|^2 + |(P - Q)Q|^2",
+  "statement": "For all natural numbers m, k, write R^m = EuclideanSpace ℝ (Fin m). For a continuous linear X : R^m -> R^k let hsNormSq X = sum_{i<m} |X e_i|^2, where e_i is the standard basis. For a linear subspace K of R^m, P_K = K.starProjection is the orthogonal projection onto K and K^perp is its orthogonal complement. Then: (S1) for every continuous linear X : R^m -> R^k and every subspace K of R^m, hsNormSq X = hsNormSq (X o P_K) + hsNormSq (X o P_{K^perp}); (S2) for all subspaces K, L of R^m, writing P := P_K and Q := P_L, hsNormSq (P - Q) = hsNormSq ((P - Q) o P) + hsNormSq ((P - Q) o Q).",
+  "lean_statement": "(∀ (m k : ℕ) (X : Rn m →L[ℝ] Rn k) (K : Submodule ℝ (Rn m)), hsNormSq X = hsNormSq (X ∘L K.starProjection) + hsNormSq (X ∘L Kᗮ.starProjection)) ∧ ∀ (m : ℕ) (K L : Submodule ℝ (Rn m)), hsNormSq (K.starProjection - L.starProjection) = hsNormSq ((K.starProjection - L.starProjection) ∘L K.starProjection) + hsNormSq ((K.starProjection - L.starProjection) ∘L L.starProjection)",
+  "lean_name": "any_radius_gr_pp_hs_proj_split",
+  "depends_on": [
+    "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.hs_ideal-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.hs_ideal-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-plane-projections-a1-hs-proj-split-a1-a1"
+}

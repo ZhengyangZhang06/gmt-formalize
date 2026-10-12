@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "any_radius_gr_pp_",
+        "starProjection_apply_mem|starProjection_eq_self_iff|starProjection_orthogonal\\x27|norm_sq_eq_add_norm_sq_starProjection|inner_starProjection_left_eq_right|ofCompleteSpace|map_linearIsometryEquiv",
+        "real_norm_sq_eq|inner_single_left|inner_single_right",
+        "sqrt_mul|theorem sqrt_sq |theorem sqrt_le_sqrt |theorem le_sqrt_of_sq_le",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Checks/StandaloneTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Checks/ReplayExact.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Module/Submodule/Range.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1-plane-projections-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1-plane-projections-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1-la-basics-a1/parent-child-handoff.json",
+        "/tmp/pp-independent-audit-ir89n9li/proj/Checks/StandaloneTypes.lean",
+        "/tmp/pp-independent-audit-ir89n9li/proj/Checks/ReplayExact.lean"
+      ],
+      "conclusion": "Verified the pinned definitions and supporting projection, adjoint, coordinate and square-root results; inspected Mathlib files match the compiler package at revision 25730c7c759d108ef87ab70af2342a196760f79d. All frozen types independently elaborate under Submission without implementing any child; composition, Euclidean inner products and projection instances also pass explicit checks. Replayed the inspected proof witnesses against the exact child types and composed them into the exact parent implication, assuming only its declared la_basics prerequisite. All resulting proofs use only propext, Classical.choice and Quot.sound. All four names are bare identifiers, with no conflicting DAG reservation or declaration found; no accepted-declaration reuse is proposed. The four-way split is appropriate: its dependencies are acyclic and correctly directed, each child contributes to this selected parent, and none relies on the parent. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hs_ideal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches H1–H3 and includes all hypotheses. The coordinate double sum proves H1; the squared operator bound proves H2; the explicit adjoint construction and norm bound reduce H3 to the already-proved H1/H2. All dimensions, including zero, are covered. The proof is complete and uses no undeclared dependency."
+    },
+    {
+      "key": "hs_proj_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches S1–S2, including rectangular X and arbitrary subspaces. Finite dimensionality supplies the projection instances. Adjoint invariance and summed Pythagoras prove S1. For S2, the supplied calculation correctly identifies (P−Q)Q as the adjoint of (P−Q)(I−P), without assuming commuting projections or equal ranks. Only the declared hs_ideal dependency is used."
+    },
+    {
+      "key": "graph_param",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses P1, P2, W and D with the stated isometric equivalence and continuous linear maps. Coordinate algebra establishes the graph range and norm decomposition; membership proves P1; the explicit square calculation proves P2 with justified nonnegativity; finite-dimensional continuity and the pointwise bound establish W; subtraction proves D. No smallness hypothesis, positive dimension, la_basics result or parent theorem is implicitly required."
+    },
+    {
+      "key": "key_ineq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches the unrestricted squared inequality. The proof correctly derives each one-sided estimate from graph_param and H3, handles swapped signs by hsNormSq invariance, and adds the estimates using S2. All dependencies are declared. Together with graph_param and the parent's la_basics prerequisite, this establishes the exact selected parent: P1/P2 directly, P3 by the supplied operator-norm argument, and P4 from (17/16)² ≤ 2 and square-root monotonicity."
+    }
+  ],
+  "required_changes": []
+}
