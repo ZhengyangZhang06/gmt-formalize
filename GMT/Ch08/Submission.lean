@@ -805,6 +805,61 @@ theorem Submission.intcpt_id_tpd_ball_mass_lower :
           ∫ y in Chapter03.blowUpMap x t '' M, f y * θ (x + t • y) ∂μHE[n]) :=
         ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left ht.le (pow_nonneg htr.1.le n))
     _ ≤ _ := hsand
+/-- Upper ball-mass bound at a weighted approximate tangent point (tangent point density, Simon
+Ch. 3, Remark 1.8(2)): let `M` have weighted approximate tangent space `P` at `x ∈ M` with respect
+to `θ ≥ 0` on `M`, with `θ` `H^n`-integrable on `M ∩ B_{r₀}(x)`, and let `ν = (H^n ⌞ M) ⌞ θ`.
+Then every `c > θ(x) ω_n` satisfies `ν(B_t(x)) ≤ c t^n` for all sufficiently small `t > 0`. -/
+theorem Submission.intcpt_id_tpd_ball_mass_upper :
+    ∀ (N n : ℕ) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (P : Submodule ℝ (Euclidean N)) (r₀ : ℝ), NullMeasurableSet M (μHE[n] : Measure (Euclidean N)) → (∀ y ∈ M, 0 ≤ θ y) → x ∈ M → 0 < r₀ → IntegrableOn θ (M ∩ closedBall x r₀) μHE[n] → Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P → ∀ c : ℝ≥0∞, ENNReal.ofReal (θ x) * unitBallVolume n < c → ∀ᶠ t in 𝓝[>] (0 : ℝ), (((μHE[n] : Measure (Euclidean N)).restrict M).withDensity fun y ↦ ENNReal.ofReal (θ y)) (closedBall x t) ≤ c * ENNReal.ofReal t ^ n := by
+  intro N n M θ x P r₀ hM hθ hx hr₀ hint hP c hc
+  -- Step 0: `ω_n` is the volume of a bounded ball, so `ω_n < ∞`; and `θ(x) ≥ 0` as `x ∈ M`.
+  have hω : unitBallVolume n ≠ ∞ := by
+    rw [unitBallVolume]
+    exact measure_ball_lt_top.ne
+  have hθx : 0 ≤ θ x := hθ x hx
+  -- Step 1: for `c = ∞` the bound holds at every `t > 0`.
+  by_cases hctop : c = ∞
+  · filter_upwards [self_mem_nhdsWithin] with t ht
+    rw [hctop, ENNReal.top_mul (pow_ne_zero n (ENNReal.ofReal_pos.2 (mem_Ioi.1 ht)).ne')]
+    exact le_top
+  -- Step 2: otherwise `c = ofReal c'` with `c' = c.toReal`, and `θ(x) ω_n < c'`.
+  have hc' : θ x * (unitBallVolume n).toReal < c.toReal := by
+    refine (ENNReal.ofReal_lt_ofReal_iff'.1 ?_).1
+    rwa [ENNReal.ofReal_mul hθx, ENNReal.ofReal_toReal hω, ENNReal.ofReal_toReal hctop]
+  -- Step 3: choose `κ ∈ (0, 1)` with `θ(x) ω_n (κ⁻¹)^n < c'`, by continuity of `κ⁻¹` at `1`.
+  have hlim : Tendsto (fun κ : ℝ ↦ θ x * (unitBallVolume n).toReal * κ⁻¹ ^ n) (𝓝[<] 1)
+      (𝓝 (θ x * (unitBallVolume n).toReal)) := by
+    have h : Tendsto (fun κ : ℝ ↦ θ x * (unitBallVolume n).toReal * κ⁻¹ ^ n) (𝓝 1)
+        (𝓝 (θ x * (unitBallVolume n).toReal * (1 : ℝ)⁻¹ ^ n)) :=
+      tendsto_const_nhds.mul ((tendsto_inv₀ one_ne_zero).pow n)
+    rw [inv_one, one_pow, mul_one] at h
+    exact h.mono_left nhdsWithin_le_nhds
+  obtain ⟨κ, hκc, hκ0, hκ1⟩ :=
+    ((hlim.eventually_lt_const hc').and (Ioo_mem_nhdsLT zero_lt_one)).exists
+  -- Step 4: the outer cutoff `f ∈ C_c` with `1_{B_1} ≤ f ≤ 1_{B_{1/κ}}` and
+  -- `∫_P f dH^n ≤ ω_n (κ⁻¹)^n`.
+  obtain ⟨f, hf0, hf1, hfa, hfR, -, hfP⟩ := Submission.intcpt_id_tpd_plane_cutoff N n P 1 κ⁻¹
+    hP.1 zero_lt_one ((one_lt_inv₀ hκ0).2 hκ1)
+  -- Step 5: `I_f(t) → θ(x) ∫_P f dH^n ≤ θ(x) ω_n (κ⁻¹)^n < c'`, so eventually `I_f(t) < c'`,
+  -- where `I_f(t) = ∫_{η_t(M)} f(y) θ(x + t y) dH^n(y)`.
+  have hfc : θ x * ∫ y in (P : Set (Euclidean N)), f y ∂μHE[n] < c.toReal := by
+    refine (mul_le_mul_of_nonneg_left hfP hθx).trans_lt ?_
+    rwa [← mul_assoc]
+  -- Step 6: for `0 < t ≤ κ r₀` we have `t κ⁻¹ ≤ r₀`, and the sandwich (with `a = 1`,
+  -- `R = κ⁻¹`) gives `ν(B_t(x)) ≤ ofReal (t^n I_f(t))`.
+  filter_upwards [(hP.2 f).eventually_lt_const hfc, Ioc_mem_nhdsGT (mul_pos hκ0 hr₀)]
+    with t hIt ht
+  have htR : t * κ⁻¹ ≤ r₀ := by
+    rw [← div_eq_mul_inv, div_le_iff₀ hκ0, mul_comm r₀ κ]
+    exact ht.2
+  have hsand := (Submission.intcpt_id_tpd_ball_sandwich N n M θ x f r₀ 1 κ⁻¹ t hM hθ hint hf0 hf1
+    hfa hfR ht.1 htR).1
+  rw [mul_one] at hsand
+  -- Step 7: `ofReal (t^n I_f(t)) ≤ ofReal (t^n c') = c ofReal(t)^n`.
+  refine hsand.trans ((ENNReal.ofReal_le_ofReal
+    (mul_le_mul_of_nonneg_left hIt.le (pow_nonneg ht.1.le n))).trans_eq ?_)
+  rw [mul_comm (t ^ n), ENNReal.ofReal_mul ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hctop,
+    ENNReal.ofReal_pow ht.1.le]
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
