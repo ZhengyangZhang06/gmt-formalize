@@ -1,0 +1,15 @@
+{
+  "node_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1.covector_norm-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/1892",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "c8cb71851ed3018dcc8a0a89a946b8610884f81a",
+  "integrated_commit": "",
+  "proof_base_commit": "1d7999716359f25d4ac8d109deb57cda9d063deb",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.flat_iff_weak-a1.im_series-a1.series_current-a1",
+  "requires": []
+}

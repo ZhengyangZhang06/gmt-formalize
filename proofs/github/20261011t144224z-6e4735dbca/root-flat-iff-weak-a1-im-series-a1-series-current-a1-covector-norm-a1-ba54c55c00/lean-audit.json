@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "22bab81186fa3ff646893a374542a1928bb2d3362e194fa3f3ed95fe4a248782",
+  "git_delta": {
+    "base_commit": "1d7999716359f25d4ac8d109deb57cda9d063deb",
+    "candidate_commit": "c8cb71851ed3018dcc8a0a89a946b8610884f81a",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "fiw_ims_sc_covectorNorm_le_opNorm",
+    "diff_sha256": "4a4107f0f039e47dc5b32587503c020a8baf078e37d25f78ffaa874b34299b20",
+    "source_sha256": "9f48f903b3ab4caf6c0efcb8ff46495ea02ba0a1444305cf5e045fc27d818d54",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fiw_ims_sc_covectorNorm_le_opNorm",
+      "statement": "∀ (P n : ℕ) (α : Covector (Eucl P) n), covectorEuclideanNorm α ≤ Real.sqrt ((P : ℝ) ^ n) * ‖α‖",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
