@@ -484,6 +484,115 @@ theorem Submission.deformation_velocity_acceleration_regularity : (∀ (N : ℕ)
     exact ⟨hX 1 (by norm_num), fun x hx ↦ (hvan x hx).1⟩
   · obtain ⟨hvan, hX, hZ⟩ := key N 3 U K φ hφ
     exact ⟨hX 2 (by norm_num), hZ 1 (by norm_num), hvan⟩
+/-- **Local compactness of a Simon submanifold, closed-ball form.** If `M ⊆ ℝᴺ` is an
+`n`-dimensional `C^r` Simon submanifold (Simon 4.1), `y ∈ M` and `O ∋ y` is open, then there is
+`ρ > 0` with `B̄(y, ρ) ⊆ O` and `M ∩ B̄(y, ρ)` compact. Take a chart `(V, W, ψ)` with `y ∈ W` and
+`ρ = ε/2` for an open ball `B(y, ε) ⊆ O ∩ W`. Since `B̄(y, ρ) ⊆ W` and `ψ(V) = W ∩ M`,
+`M ∩ B̄(y, ρ) = ψ(V ∩ ψ⁻¹(B̄(y, ρ)))`; relative properness makes `V ∩ ψ⁻¹(B̄(y, ρ))` compact, and
+`ψ` is continuous on `V`. -/
+theorem Submission.simon_submanifold_exists_closedBall_isCompact_inter : ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → ∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → ∃ ρ : ℝ, 0 < ρ ∧ closedBall y ρ ⊆ O ∧ IsCompact (M ∩ closedBall y ρ) := by
+  intro n N r M hM y hy O hO hyO
+  -- Step 1: a chart `(V, W, ψ)` of `M` with `y ∈ W` (second conjunct of `IsSimonSubmanifold`).
+  obtain ⟨V, W, ψ, hyW, hψ⟩ := hM.2 y hy
+  -- Step 2: `B̄(y, ε/2) ⊆ B(y, ε) ⊆ O ∩ W`.
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 (hO.inter hψ.isOpen_target) y ⟨hyO, hyW⟩
+  have hsub : closedBall y (ε / 2) ⊆ O ∩ W :=
+    (Metric.closedBall_subset_ball (half_lt_self hε)).trans hball
+  refine ⟨ε / 2, half_pos hε, hsub.trans inter_subset_left, ?_⟩
+  -- Step 3: `M ∩ B̄(y, ε/2) = ψ(V ∩ ψ⁻¹(B̄(y, ε/2)))`, as `B̄(y, ε/2) ⊆ W` and `ψ(V) = W ∩ M`.
+  have himage : M ∩ closedBall y (ε / 2) = ψ '' (V ∩ ψ ⁻¹' closedBall y (ε / 2)) := by
+    ext z
+    constructor
+    · rintro ⟨hzM, hzB⟩
+      have hz : z ∈ ψ '' V := by
+        rw [hψ.image_eq]
+        exact ⟨(hsub hzB).2, hzM⟩
+      obtain ⟨x, hxV, rfl⟩ := hz
+      exact ⟨x, ⟨hxV, hzB⟩, rfl⟩
+    · rintro ⟨x, ⟨hxV, hxB⟩, rfl⟩
+      have hx : ψ x ∈ W ∩ M := by
+        rw [← hψ.image_eq]
+        exact mem_image_of_mem ψ hxV
+      exact ⟨hx.2, hxB⟩
+  -- Steps 4–5: `B̄(y, ε/2)` is a compact subset of `W`, so relative properness makes
+  -- `V ∩ ψ⁻¹(B̄(y, ε/2))` compact; its image under `ψ`, continuous on `V`, is compact.
+  rw [himage]
+  exact (hψ.isCompact_source_inter_preimage _ (isCompact_closedBall y (ε / 2))
+    (hsub.trans inter_subset_right)).image_of_continuousOn
+    (hψ.contDiffOn.continuousOn.mono inter_subset_left)
+/-- **Fundamental lemma for test vector fields.** Let `M ⊆ ℝᴺ` be measurable, `U` open and `F`
+continuous on `M`. Assume (P) `μ(M ∩ O) > 0` for every open `O` meeting `M`, (L) each `y ∈ M` has
+arbitrarily small closed balls `B̄(y, ρ)` with `M ∩ B̄(y, ρ)` compact, and (T) `∫_M ⟨Y, F⟩ dμ = 0`
+(with `⟨Y, F⟩` integrable on `M`) for every `C²` field `Y` with compact support in `U` and
+`M ∩ spt Y` compact. Then `F = 0` on `M ∩ U`. If `e = F(y₀) ≠ 0`, continuity and (L) give `ρ > 0`
+with `B̄(y₀, ρ) ⊆ U`, `M ∩ B̄(y₀, ρ)` compact and `⟨e, F⟩ > ‖e‖²/2` on `M ∩ B̄(y₀, ρ)`. For the
+smooth bump `ζ` (`ζ = 1` on `B̄(y₀, ρ/2)`, `spt ζ = B̄(y₀, ρ)`), the field `Y = ζ e` is admissible
+in (T), and `⟨Y, F⟩ = ζ ⟨e, F⟩ ≥ 0` on `M` is positive on `M ∩ B(y₀, ρ/2)`, which has positive
+measure by (P). So `∫_M ⟨Y, F⟩ dμ > 0`, a contradiction. -/
+theorem Submission.vector_field_eq_zero_of_integral_inner_test_fields : ∀ (N : ℕ) (μ : Measure (Rn N)) (M U : Set (Rn N)) (F : Rn N → Rn N), MeasurableSet M → IsOpen U → ContinuousOn F M → (∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → 0 < μ (M ∩ O)) → (∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → ∃ ρ : ℝ, 0 < ρ ∧ closedBall y ρ ⊆ O ∧ IsCompact (M ∩ closedBall y ρ)) → (∀ Y : Rn N → Rn N, ContDiff ℝ 2 Y → HasCompactSupport Y → tsupport Y ⊆ U → IsCompact (M ∩ tsupport Y) → IntegrableOn (fun y ↦ inner ℝ (Y y) (F y)) M μ ∧ ∫ y in M, inner ℝ (Y y) (F y) ∂μ = 0) → ∀ y ∈ M ∩ U, F y = 0 := by
+  intro N μ M U F hM hU hF hP hL hT y₀ hy₀
+  -- Step 1: suppose `e = F y₀ ≠ 0`.
+  by_contra hne
+  have he : 0 < ‖F y₀‖ := norm_pos_iff.2 hne
+  -- Step 2 (continuity): `‖F y - F y₀‖ < ‖F y₀‖ / 2` on `M ∩ B(y₀, δ)`.
+  obtain ⟨δ, hδ, hδF⟩ := Metric.continuousOn_iff.1 hF y₀ hy₀.1 (‖F y₀‖ / 2) (half_pos he)
+  -- Step 3 (localization): `B̄(y₀, ρ) ⊆ U ∩ B(y₀, δ)` with `M ∩ B̄(y₀, ρ)` compact.
+  obtain ⟨ρ, hρ, hρU, hρK⟩ :=
+    hL y₀ hy₀.1 (U ∩ ball y₀ δ) (hU.inter isOpen_ball) ⟨hy₀.2, mem_ball_self hδ⟩
+  -- Step 4 (key estimate): `⟨e, F y⟩ > ‖e‖² / 2` on `M ∩ B̄(y₀, ρ)`, by Cauchy–Schwarz.
+  have hkey : ∀ y ∈ M, dist y y₀ ≤ ρ → ‖F y₀‖ ^ 2 / 2 < inner ℝ (F y₀) (F y) := by
+    intro y hyM hyρ
+    have h1 : ‖F y - F y₀‖ < ‖F y₀‖ / 2 := by
+      rw [← dist_eq_norm]
+      exact hδF y hyM (mem_ball.1 (hρU (mem_closedBall.2 hyρ)).2)
+    have h2 : inner ℝ (F y₀) (F y) = ‖F y₀‖ ^ 2 + inner ℝ (F y₀) (F y - F y₀) := by
+      rw [inner_sub_right, real_inner_self_eq_norm_sq]
+      ring
+    have h3 : -(‖F y₀‖ * ‖F y - F y₀‖) ≤ inner ℝ (F y₀) (F y - F y₀) :=
+      (abs_le.1 (abs_real_inner_le_norm (F y₀) (F y - F y₀))).1
+    have h4 : ‖F y₀‖ * ‖F y - F y₀‖ < ‖F y₀‖ * (‖F y₀‖ / 2) := mul_lt_mul_of_pos_left h1 he
+    nlinarith
+  -- Step 5 (bump function): `ζ = 1` on `B̄(y₀, ρ/2)`, `ζ = 0` off `B(y₀, ρ)`, `0 ≤ ζ`.
+  let ζ : ContDiffBump y₀ := ⟨ρ / 2, ρ, half_pos hρ, half_lt_self hρ⟩
+  -- Step 6 (test field): `Y = ζ • e` is admissible in (T).
+  let Y : Rn N → Rn N := fun x ↦ ζ x • F y₀
+  have hYc : ContDiff ℝ 2 Y := ζ.contDiff.smul contDiff_const
+  have hYs : HasCompactSupport Y := ζ.hasCompactSupport.smul_right
+  have hYt : tsupport Y ⊆ closedBall y₀ ρ :=
+    (tsupport_smul_subset_left (fun x ↦ ζ x) fun _ ↦ F y₀).trans ζ.tsupport_eq.subset
+  have hYU : tsupport Y ⊆ U := fun x hx ↦ (hρU (hYt hx)).1
+  have hYK : IsCompact (M ∩ tsupport Y) := by
+    have h : M ∩ tsupport Y = M ∩ closedBall y₀ ρ ∩ tsupport Y := by
+      ext x
+      exact ⟨fun hx ↦ ⟨⟨hx.1, hYt hx.2⟩, hx.2⟩, fun hx ↦ ⟨hx.1.1, hx.2⟩⟩
+    rw [h]
+    exact hρK.inter_right (isClosed_tsupport Y)
+  -- Step 7 (apply (T)): `f = ⟨Y, F⟩ = ζ ⟨e, F⟩` is integrable on `M` with `∫_M f dμ = 0`.
+  obtain ⟨hint, hzero⟩ := hT Y hYc hYs hYU hYK
+  have hf : ∀ y, inner ℝ (Y y) (F y) = ζ y * inner ℝ (F y₀) (F y) := fun y ↦
+    real_inner_smul_left _ _ _
+  -- Step 8: `f ≥ 0` on `M`.
+  have hnn : 0 ≤ᵐ[μ.restrict M] fun y ↦ inner ℝ (Y y) (F y) := by
+    refine ae_restrict_of_forall_mem hM fun y hyM ↦ ?_
+    show 0 ≤ inner ℝ (Y y) (F y)
+    rw [hf]
+    by_cases hyρ : dist y y₀ ≤ ρ
+    · exact mul_nonneg ζ.nonneg ((half_pos (pow_pos he 2)).le.trans (hkey y hyM hyρ).le)
+    · rw [ζ.zero_of_le_dist (not_le.1 hyρ).le, zero_mul]
+  -- Step 9: `f > 0` on `M ∩ B(y₀, ρ/2)`, which has positive measure by (P).
+  have hpos : 0 < μ (Function.support (fun y ↦ inner ℝ (Y y) (F y)) ∩ M) := by
+    have hsub : M ∩ ball y₀ (ρ / 2) ⊆ Function.support (fun y ↦ inner ℝ (Y y) (F y)) ∩ M := by
+      rintro y ⟨hyM, hyB⟩
+      refine ⟨?_, hyM⟩
+      rw [Function.mem_support, hf, ζ.one_of_mem_closedBall (ball_subset_closedBall hyB), one_mul]
+      have hyρ : dist y y₀ ≤ ρ := (mem_ball.1 hyB).le.trans (half_le_self hρ.le)
+      exact ((half_pos (pow_pos he 2)).trans (hkey y hyM hyρ)).ne'
+    exact (hP y₀ hy₀.1 (ball y₀ (ρ / 2)) isOpen_ball (mem_ball_self (half_pos hρ))).trans_le
+      (measure_mono hsub)
+  -- Step 10: then `∫_M f dμ > 0`, contradicting `∫_M f dμ = 0`.
+  have hint_pos := (setIntegral_pos_iff_support_of_nonneg_ae hnn hint).2 hpos
+  rw [hzero] at hint_pos
+  exact lt_irrefl 0 hint_pos
 /-- **Euclidean divergence theorem for a field vanishing off a compact set.** If `V ⊆ ℝⁿ` is open,
 `Q ⊆ V` is compact and `w : ℝⁿ → ℝⁿ` is `C¹` on `V` with `w = 0` on `V \ Q`, then
 `∫_V trace Dw(x) dLⁿ(x) = 0`. The extension `W` of `w` by `0` off `V` is `C¹` on `ℝⁿ` with support
@@ -2763,6 +2872,59 @@ theorem Submission.submanifold_divergence_identity_compact : ((∀ (n N : ℕ) (
   rw [eq_neg_iff_add_eq_zero, ← integral_add hdiv hinner, setIntegral_congr_fun hMmeas hsum,
     integral_finsetSum _ fun q _ ↦ (hloc q).1]
   exact Finset.sum_eq_zero fun q _ ↦ (hloc q).2
+
+/-- **Simon Ch. 2, Lemma 5.5(2) (p. 63), stationary `⇒ H ≡ 0`.** Assume (TH) and the first
+variation formula 5.3. If the `n`-dimensional `C²` submanifold `M ⊆ ℝ^{n+ℓ}` is stationary in the
+open set `U`, then `H = 0` on `M ∩ U`; no compactness of `Ū ∩ M` is needed. By the fundamental
+lemma for test fields (`μ = Hⁿ`, `F = H`: `M` is measurable by (TH2), `H` is continuous on `M`,
+`Hⁿ` is positive on relatively open pieces of `M`, and `M` is locally compact in closed-ball form)
+it suffices that `∫_M ⟨Y, H⟩ dHⁿ = 0` for every `C²` field `Y` with compact support in `U` and
+`M ∩ spt Y` compact. For such `Y`, `φ_t(x) = x + c t Y(x)` is admissible with initial velocity
+`c Y` (`c > 0`), so stationarity, 5.3 and uniqueness of derivatives give `∫_M div_M (c Y) dHⁿ = 0`,
+while the divergence identity gives `∫_M div_M (c Y) dHⁿ = -c ∫_M ⟨Y, H⟩ dHⁿ`. -/
+theorem Submission.stationary_imp_mean_curvature_zero : ((∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)) (V : Set (Rn n)) (W : Set (Rn N)) (ψ : Rn n → Rn N), 1 ≤ r → Chapter02.IsSimonLocalRepresentation r M V W ψ → ∀ x ∈ V, tangentSpace M (ψ x) = LinearMap.range (fderiv ℝ ψ x).toLinearMap) ∧ ∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → MeasurableSet M ∧ ContinuousOn (tangentProjection M) M) → FirstVariation → ∀ (n ℓ : ℕ) (M U : Set (Rn (n + ℓ))), Chapter02.IsSimonSubmanifold (E := Rn n) 2 M → IsOpen U → IsStationaryIn n M U → ∀ y ∈ M ∩ U, meanCurvature M y = 0 := by
+  intro hTH hFV n ℓ M U hM hU hS y hy
+  -- `M` is also a `C¹` Simon submanifold: each class-2 chart is a class-1 chart.
+  have hM1 : Chapter02.IsSimonSubmanifold (E := Rn n) 1 M := by
+    refine ⟨le_rfl, fun z hz ↦ ?_⟩
+    obtain ⟨V, W, ψ, hzW, hψ⟩ := hM.2 z hz
+    exact ⟨V, W, ψ, hzW, hψ.1, hψ.2.1, hψ.2.2.1.of_le (by norm_num), hψ.2.2.2⟩
+  -- Fundamental lemma with `μ = Hⁿ`, `F = H`: `M` is measurable (TH2), `H` is continuous on `M`
+  -- (sff_properties), `Hⁿ` is positive near points of `M` (measure_bounds (b)), and `M` is locally
+  -- compact (local_compact_ball).
+  refine Submission.vector_field_eq_zero_of_integral_inner_test_fields (n + ℓ) μHE[n] M U
+    (meanCurvature M) (hTH.2 n (n + ℓ) 2 M hM).1 hU
+    (Submission.second_fundamental_form_symm_normal_continuity hTH n (n + ℓ) M hM).2.1
+    (Submission.simon_submanifold_hausdorff_finite_pos n (n + ℓ) 2 M hM).2
+    (Submission.simon_submanifold_exists_closedBall_isCompact_inter n (n + ℓ) 2 M hM) ?_ y hy
+  -- It remains to show `∫_M ⟨Y, H⟩ dHⁿ = 0` for every admissible test field `Y`.
+  intro Y hY hYc hYU hYK
+  -- scaled_deformation: `φ_t(x) = x + (c t) Y(x)` is admissible, with initial velocity `c Y`.
+  obtain ⟨c, hc, hφ, hvel⟩ :=
+    Submission.scaled_field_deformation_is_admissible (n + ℓ) U Y hU hY hYc hYU
+  -- Stationarity, the first variation formula and uniqueness of derivatives:
+  -- `∫_M div_M (c Y) dHⁿ = 0`.
+  have hdiv0 : ∫ z in M, tangentialDivergence M (fun x ↦ c • Y x) z ∂μHE[n] = 0 := by
+    have hfv := hFV n ℓ M U (tsupport Y) (fun t x ↦ x + (c * t) • Y x) hM1 hU ⟨y, hy.2, hy.1⟩
+      (fun K' hK' hK'U ↦ by rw [inter_comm]; exact hS.1 K' hK' hK'U) hφ
+    rw [show initialVelocity (fun t x ↦ x + (c * t) • Y x) = fun x ↦ c • Y x from funext hvel]
+      at hfv
+    exact hfv.unique (hS.2 _ _ hφ)
+  -- divergence_identity for the `C¹` field `c Y`, which vanishes off the closed set `tsupport Y`:
+  -- `⟨c Y, H⟩` is integrable on `M` and `∫_M div_M (c Y) dHⁿ = -∫_M ⟨c Y, H⟩ dHⁿ`.
+  obtain ⟨-, hint, hdiv⟩ := Submission.submanifold_divergence_identity_compact hTH n (n + ℓ) M
+    (tsupport Y) (fun x ↦ c • Y x) hM ((hY.of_le (by norm_num)).const_smul c)
+    (isClosed_tsupport Y) (fun x hx ↦ by simp [image_eq_zero_of_notMem_tsupport hx]) hYK
+  -- `⟨c Y, H⟩ = c ⟨Y, H⟩` and `c ≠ 0`.
+  have hcY : ∀ z, inner ℝ (c • Y z) (meanCurvature M z) = c * inner ℝ (Y z) (meanCurvature M z) :=
+    fun z ↦ real_inner_smul_left _ _ _
+  simp only [hcY] at hint hdiv
+  rw [hdiv0, integral_const_mul] at hdiv
+  refine ⟨?_, ?_⟩
+  · have h : IntegrableOn (fun z ↦ c⁻¹ * (c * inner ℝ (Y z) (meanCurvature M z))) M μHE[n] :=
+      hint.const_mul c⁻¹
+    simpa only [inv_mul_cancel_left₀ hc.ne'] using h
+  · exact (mul_eq_zero.1 (neg_eq_zero.1 hdiv.symm)).resolve_left hc.ne'
 
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry

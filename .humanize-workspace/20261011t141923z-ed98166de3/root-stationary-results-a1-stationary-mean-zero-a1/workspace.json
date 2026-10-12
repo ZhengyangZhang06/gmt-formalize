@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T141923Z-ed98166de3",
+  "parent_id": "root.stationary_results-a1.stationary_mean_zero-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch02/20261011t141923z-ed98166de3/dispatch/root-stationary-results-a1-stationary-mean-zero-a1",
+  "source_commit": "1b1689a8deba89d58b36b1a04dba493693824437",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit 1b1689a8deba89d58b36b1a04dba493693824437 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch02/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.stationary_results-a1.stationary_mean_zero-a1.local_compact_ball-a1",
+      "key": "local_compact_ball",
+      "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1-local-compact-ball-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/children/root-stationary-results-a1-stationary-mean-zero-a1-local-compact-ball-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat -n GMT/Ch02/Contract.lean (definitions of tangentialDivergence, meanCurvature, IsAdmissibleDeformation, initialVelocity, deformedArea, IsStationaryIn, FirstVariation); diff -q snapshot project/GMT/Ch02/Contract.lean against the workspace contract",
+              "python3 -I dag.json dump of root.stationary_results-a1.* frozen lean_statements and depends_on; read nodes/root-stationary-results-a1/decomposition-v1.json, decomposition-audit-v1.json and this node's parent-child-handoff.json",
+              "cat -n simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean (IsSimonLocalRepresentation, IsProperOnInto, IsSimonSubmanifold); sed SubmanifoldTopology.lean; rg 'IsCompact \\(M ∩|LocallyCompact|locallyCompact' Chapter02/ (no match)",
+              "rg 'theorem setIntegral_pos_iff_support_of_nonneg_ae|one_of_mem_closedBall|zero_of_le_dist|tsupport_eq|hasCompactSupport|protected theorem contDiff|HasCompactSupport.smul_right|tsupport_smul_subset_left|image_eq_zero_of_notMem_tsupport|ae_restrict_of_forall_mem|HasDerivAt.unique|IsCompact.image_of_continuousOn|continuousOn_iff|real_inner_smul_left|integral_const_mul' snapshot mathlib/Mathlib",
+              "rg 'ae_eq_zero_of_integral_contDiff_smul_eq_zero' snapshot mathlib/Mathlib (only the a.e., scalar-test-function version on ambient open sets)",
+              "grep -rl simon_submanifold_exists_closedBall_isCompact_inter / vector_field_eq_zero_of_integral_inner_test_fields over the run dir, GMT/, SimonGMT and git grep over every branch (no match)",
+              "python3 -I gmt-compare.py contract_scope + child_modules and lean_contract.validate_lean_statement on both lean_statements; lake build GMT.Ch02.Submission; lake env lean NodeChallenge_{0,1}, NodeSolution_{0,1}, ChildA, ChildC, Assembly, ParentCheck with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-stationary-mean-zero-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1/decomposition-v1.json",
+              "/tmp/smz-decomp-1791753836/Scratch/ChildA.lean",
+              "/tmp/smz-decomp-1791753836/Scratch/ChildC.lean",
+              "/tmp/smz-decomp-1791753836/Scratch/ParentCheck.lean",
+              "/tmp/smz-decomp-1791753836/Scratch/NodeSolution_0.lean",
+              "/tmp/smz-decomp-1791753836/Scratch/NodeSolution_1.lean"
+            ],
+            "conclusion": "Contract and library basis:\n- The snapshot contract is byte-identical to the workspace contract.\n- SimonGMT's IsSimonLocalRepresentation provides open V and W, ContDiffOn, ψ(V) = W ∩ M and IsProperOnInto. That is exactly what child A needs, but SimonGMT has no closed-ball local-compactness lemma (no rg match).\n- Mathlib 25730c7c supplies ContDiffBump (one_of_mem_closedBall, zero_of_le_dist, tsupport_eq, hasCompactSupport, contDiff), HasCompactSupport.smul_right, tsupport_smul_subset_left, image_eq_zero_of_notMem_tsupport, ae_restrict_of_forall_mem, setIntegral_pos_iff_support_of_nonneg_ae, IsCompact.image_of_continuousOn, Metric.continuousOn_iff, HasDerivAt.unique, real_inner_smul_left and integral_const_mul.\n- Mathlib's fundamental lemma (IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero) is only an a.e., scalar-test-function, ambient-open-set statement, so child C is a genuine new obligation.\n\nName collisions: neither proposed name collides with any DAG node, decomposition file, branch, project or SimonGMT declaration.\n\nCompile checks:\n- Both lean_statements pass the workflow validator unchanged and elaborate in the comparator-replayed contract scope.\n- The comparator-generated NodeChallenge/NodeSolution modules compile; NodeSolution_0/1 use only propext, Classical.choice and Quot.sound, given the complete child proofs in Submission.\n- ParentCheck.lean proves the exact frozen parent type from the two children and the four sibling stubs generated verbatim from dag.json. Its only sorryAx comes from those sibling stubs."
+          }
+        ],
+        "parent_id": "root.stationary_results-a1.stationary_mean_zero-a1",
+        "child_id": "root.stationary_results-a1.stationary_mean_zero-a1.local_compact_ball-a1",
+        "subproblem": {
+          "key": "local_compact_ball",
+          "title": "Simon submanifolds are locally compact in closed-ball form",
+          "statement": "Let n, N ∈ ℕ, r ∈ ℕ∞ and M ⊆ ℝᴺ (ℝᵈ := EuclideanSpace ℝ (Fin d)) an n-dimensional C^r Simon submanifold, i.e. Chapter02.IsSimonSubmanifold (E := ℝⁿ) r M. Then for every y ∈ M and every open O ⊆ ℝᴺ with y ∈ O there is a real ρ > 0 such that the closed ball B̄(y, ρ) (Metric.closedBall y ρ) is contained in O and M ∩ B̄(y, ρ) is compact.",
+          "lean_statement": "∀ (n N : ℕ) (r : ℕ∞) (M : Set (Rn N)), Chapter02.IsSimonSubmanifold (E := Rn n) r M → ∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → ∃ ρ : ℝ, 0 < ρ ∧ closedBall y ρ ⊆ O ∧ IsCompact (M ∩ closedBall y ρ)",
+          "lean_name": "simon_submanifold_exists_closedBall_isCompact_inter",
+          "depends_on": [],
+          "natural_proof": "Notation: ℝᵈ := EuclideanSpace ℝ (Fin d). B(y, ε) is the open ball and B̄(y, ρ) = Metric.closedBall y ρ the closed ball.\nThis is step 3 of the parent proof (\"M ∩ S = ψ(V ∩ ψ⁻¹(S)) is compact: relative properness, continuity of ψ on V, W ∩ M = ψ(V)\"), stated for an arbitrary point and an arbitrary open neighbourhood.\n\n1. Let y ∈ M and let O ⊆ ℝᴺ be open with y ∈ O. By the second conjunct of IsSimonSubmanifold, there are V ⊆ ℝⁿ, W ⊆ ℝᴺ and ψ : ℝⁿ → ℝᴺ with y ∈ W and IsSimonLocalRepresentation r M V W ψ. That is, V and W are open, ψ is C^r on V, ψ is injective on V, ψ(V) = W ∩ M, ψ is proper relative to (V, W), and Dψ(x) is injective for x ∈ V. Relative properness (IsProperOnInto ψ V W) means V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W. Only openness of W, ContDiffOn of ψ on V, the image identity ψ(V) = W ∩ M and relative properness are used below.\n2. O ∩ W is open, as an intersection of two open sets, and contains y. By Metric.isOpen_iff there is ε > 0 with B(y, ε) ⊆ O ∩ W. Put ρ := ε/2 > 0. Since ρ < ε, B̄(y, ρ) ⊆ B(y, ε) ⊆ O ∩ W (closedBall_subset_ball). In particular B̄(y, ρ) ⊆ O and B̄(y, ρ) ⊆ W.\n3. Claim: M ∩ B̄(y, ρ) = ψ(V ∩ ψ⁻¹(B̄(y, ρ))).\n   (⊆) Let z ∈ M ∩ B̄(y, ρ). By step 2, z ∈ W, so z ∈ W ∩ M = ψ(V). Write z = ψ(x) with x ∈ V. Then ψ(x) = z ∈ B̄(y, ρ), so x ∈ V ∩ ψ⁻¹(B̄(y, ρ)) and z = ψ(x) lies in the right-hand side.\n   (⊇) Let x ∈ V with ψ(x) ∈ B̄(y, ρ). Then ψ(x) ∈ ψ(V) = W ∩ M ⊆ M, so ψ(x) ∈ M ∩ B̄(y, ρ).\n4. B̄(y, ρ) is compact, since closed balls of the finite-dimensional (proper) space ℝᴺ are compact (isCompact_closedBall). Also B̄(y, ρ) ⊆ W by step 2. So by relative properness, K₀ := V ∩ ψ⁻¹(B̄(y, ρ)) is compact.\n5. ψ is C^r on V, hence continuous on V (ContDiffOn.continuousOn), hence continuous on K₀ ⊆ V. The image of a compact set under a map continuous on that set is compact (IsCompact.image_of_continuousOn), so ψ(K₀) is compact. By step 3, M ∩ B̄(y, ρ) = ψ(K₀), so M ∩ B̄(y, ρ) is compact.\n6. Thus 0 < ρ, B̄(y, ρ) ⊆ O (step 2) and M ∩ B̄(y, ρ) is compact (step 5), which is the claim. ∎",
+          "proof_key_steps": [
+            "Take a chart (V, W, ψ) of M with y ∈ W, and choose ρ > 0 with B̄(y, ρ) ⊆ O ∩ W, e.g. half the radius of an open ball inside O ∩ W.",
+            "Since B̄(y, ρ) ⊆ W and ψ(V) = W ∩ M, M ∩ B̄(y, ρ) = ψ(V ∩ ψ⁻¹(B̄(y, ρ))).",
+            "B̄(y, ρ) is a compact subset of W, so relative properness makes V ∩ ψ⁻¹(B̄(y, ρ)) compact.",
+            "ψ is continuous on V, so the image M ∩ B̄(y, ρ) is compact."
+          ]
+        },
+        "audit": {
+          "key": "local_compact_ball",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The one-line proposition exactly matches all prose hypotheses and conclusions. The proof correctly chooses a closed ball inside the open chart target, establishes the image/preimage identity in both directions, applies relative properness, and takes a continuous image of the compact preimage. It needs no closedness assumption on M and no parent or sibling theorem. The bare name is unreserved, and the complete proof is sufficient for direct formalization."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-stationary-mean-zero-a1-local-compact-ball-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-stationary-mean-zero-a1-local-compact-ball-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-stationary-mean-zero-a1-local-compact-ball-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.stationary_results-a1.stationary_mean_zero-a1.test_field_vanishing-a1",
+      "key": "test_field_vanishing",
+      "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1-test-field-vanishing-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/children/root-stationary-results-a1-stationary-mean-zero-a1-test-field-vanishing-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat -n GMT/Ch02/Contract.lean (definitions of tangentialDivergence, meanCurvature, IsAdmissibleDeformation, initialVelocity, deformedArea, IsStationaryIn, FirstVariation); diff -q snapshot project/GMT/Ch02/Contract.lean against the workspace contract",
+              "python3 -I dag.json dump of root.stationary_results-a1.* frozen lean_statements and depends_on; read nodes/root-stationary-results-a1/decomposition-v1.json, decomposition-audit-v1.json and this node's parent-child-handoff.json",
+              "cat -n simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean (IsSimonLocalRepresentation, IsProperOnInto, IsSimonSubmanifold); sed SubmanifoldTopology.lean; rg 'IsCompact \\(M ∩|LocallyCompact|locallyCompact' Chapter02/ (no match)",
+              "rg 'theorem setIntegral_pos_iff_support_of_nonneg_ae|one_of_mem_closedBall|zero_of_le_dist|tsupport_eq|hasCompactSupport|protected theorem contDiff|HasCompactSupport.smul_right|tsupport_smul_subset_left|image_eq_zero_of_notMem_tsupport|ae_restrict_of_forall_mem|HasDerivAt.unique|IsCompact.image_of_continuousOn|continuousOn_iff|real_inner_smul_left|integral_const_mul' snapshot mathlib/Mathlib",
+              "rg 'ae_eq_zero_of_integral_contDiff_smul_eq_zero' snapshot mathlib/Mathlib (only the a.e., scalar-test-function version on ambient open sets)",
+              "grep -rl simon_submanifold_exists_closedBall_isCompact_inter / vector_field_eq_zero_of_integral_inner_test_fields over the run dir, GMT/, SimonGMT and git grep over every branch (no match)",
+              "python3 -I gmt-compare.py contract_scope + child_modules and lean_contract.validate_lean_statement on both lean_statements; lake build GMT.Ch02.Submission; lake env lean NodeChallenge_{0,1}, NodeSolution_{0,1}, ChildA, ChildC, Assembly, ParentCheck with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/project/GMT/Ch02/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Algebra/Support.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/local-references/ff09f3909baeeae7/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-stationary-mean-zero-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch02/.humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1/decomposition-v1.json",
+              "/tmp/smz-decomp-1791753836/Scratch/ChildA.lean",
+              "/tmp/smz-decomp-1791753836/Scratch/ChildC.lean",
+              "/tmp/smz-decomp-1791753836/Scratch/ParentCheck.lean",
+              "/tmp/smz-decomp-1791753836/Scratch/NodeSolution_0.lean",
+              "/tmp/smz-decomp-1791753836/Scratch/NodeSolution_1.lean"
+            ],
+            "conclusion": "Contract and library basis:\n- The snapshot contract is byte-identical to the workspace contract.\n- SimonGMT's IsSimonLocalRepresentation provides open V and W, ContDiffOn, ψ(V) = W ∩ M and IsProperOnInto. That is exactly what child A needs, but SimonGMT has no closed-ball local-compactness lemma (no rg match).\n- Mathlib 25730c7c supplies ContDiffBump (one_of_mem_closedBall, zero_of_le_dist, tsupport_eq, hasCompactSupport, contDiff), HasCompactSupport.smul_right, tsupport_smul_subset_left, image_eq_zero_of_notMem_tsupport, ae_restrict_of_forall_mem, setIntegral_pos_iff_support_of_nonneg_ae, IsCompact.image_of_continuousOn, Metric.continuousOn_iff, HasDerivAt.unique, real_inner_smul_left and integral_const_mul.\n- Mathlib's fundamental lemma (IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero) is only an a.e., scalar-test-function, ambient-open-set statement, so child C is a genuine new obligation.\n\nName collisions: neither proposed name collides with any DAG node, decomposition file, branch, project or SimonGMT declaration.\n\nCompile checks:\n- Both lean_statements pass the workflow validator unchanged and elaborate in the comparator-replayed contract scope.\n- The comparator-generated NodeChallenge/NodeSolution modules compile; NodeSolution_0/1 use only propext, Classical.choice and Quot.sound, given the complete child proofs in Submission.\n- ParentCheck.lean proves the exact frozen parent type from the two children and the four sibling stubs generated verbatim from dag.json. Its only sorryAx comes from those sibling stubs."
+          }
+        ],
+        "parent_id": "root.stationary_results-a1.stationary_mean_zero-a1",
+        "child_id": "root.stationary_results-a1.stationary_mean_zero-a1.test_field_vanishing-a1",
+        "subproblem": {
+          "key": "test_field_vanishing",
+          "title": "Fundamental lemma: a continuous field orthogonal to all localized test fields vanishes on M ∩ U",
+          "statement": "Let N ∈ ℕ, ℝᴺ := EuclideanSpace ℝ (Fin N) with its Borel σ-algebra, μ a measure on ℝᴺ, M ⊆ ℝᴺ a measurable set, U ⊆ ℝᴺ open and F : ℝᴺ → ℝᴺ continuous on M. Assume:\n(P) μ(M ∩ O) > 0 for every y ∈ M and every open O ⊆ ℝᴺ with y ∈ O;\n(L) for every y ∈ M and every open O ∋ y there is ρ > 0 with B̄(y, ρ) ⊆ O and M ∩ B̄(y, ρ) compact;\n(T) for every Y : ℝᴺ → ℝᴺ of class C² with compact support, tsupport Y ⊆ U and M ∩ tsupport Y compact, the function y ↦ ⟨Y(y), F(y)⟩ is μ-integrable on M and ∫_M ⟨Y(y), F(y)⟩ dμ(y) = 0.\nThen F(y) = 0 for every y ∈ M ∩ U.",
+          "lean_statement": "∀ (N : ℕ) (μ : Measure (Rn N)) (M U : Set (Rn N)) (F : Rn N → Rn N), MeasurableSet M → IsOpen U → ContinuousOn F M → (∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → 0 < μ (M ∩ O)) → (∀ y ∈ M, ∀ O : Set (Rn N), IsOpen O → y ∈ O → ∃ ρ : ℝ, 0 < ρ ∧ closedBall y ρ ⊆ O ∧ IsCompact (M ∩ closedBall y ρ)) → (∀ Y : Rn N → Rn N, ContDiff ℝ 2 Y → HasCompactSupport Y → tsupport Y ⊆ U → IsCompact (M ∩ tsupport Y) → IntegrableOn (fun y ↦ inner ℝ (Y y) (F y)) M μ ∧ ∫ y in M, inner ℝ (Y y) (F y) ∂μ = 0) → ∀ y ∈ M ∩ U, F y = 0",
+          "lean_name": "vector_field_eq_zero_of_integral_inner_test_fields",
+          "depends_on": [],
+          "natural_proof": "Notation: ⟨·,·⟩ is the Euclidean inner product on ℝᴺ = EuclideanSpace ℝ (Fin N). B(y, r) is the open ball and B̄(y, r) = Metric.closedBall y r the closed ball. Hypotheses (P), (L), (T) are as in the statement.\nThis is the localization/positivity argument of the parent proof (steps 1-2, 4, 8-9), with F in place of the mean curvature H and the orthogonality relation (T) in place of steps 5-7. The radii ρ, 2ρ there become ρ/2, ρ here. Positivity is concluded from the support criterion, so no finiteness of μ(M ∩ B) is needed.\n\n1. Fix y₀ ∈ M ∩ U. Suppose, for a contradiction, that e := F(y₀) ≠ 0, so ‖e‖ > 0.\n2. (Continuity.) F is continuous on M and y₀ ∈ M. By Metric.continuousOn_iff with tolerance ‖e‖/2 > 0, there is δ > 0 such that ‖F(y) − e‖ < ‖e‖/2 for every y ∈ M with dist(y, y₀) < δ.\n3. (Localization.) O := U ∩ B(y₀, δ) is open and contains y₀, since y₀ ∈ U and δ > 0. By (L) there is ρ > 0 with B̄(y₀, ρ) ⊆ U ∩ B(y₀, δ) and M ∩ B̄(y₀, ρ) compact.\n4. (Key estimate.) For every y ∈ M with dist(y, y₀) ≤ ρ we have ⟨e, F(y)⟩ > ‖e‖²/2 > 0.\n   Indeed y ∈ B̄(y₀, ρ) ⊆ B(y₀, δ), so ‖F(y) − e‖ < ‖e‖/2 by step 2. By inner_sub_right and real_inner_self_eq_norm_sq, ⟨e, F(y)⟩ = ‖e‖² + ⟨e, F(y) − e⟩. By Cauchy–Schwarz (abs_real_inner_le_norm), ⟨e, F(y) − e⟩ ≥ −‖e‖·‖F(y) − e‖ > −‖e‖·‖e‖/2, using ‖e‖ > 0. Hence ⟨e, F(y)⟩ > ‖e‖² − ‖e‖²/2 = ‖e‖²/2.\n5. (Bump function.) Let ζ be Mathlib's smooth bump function ContDiffBump y₀ with rIn = ρ/2 and rOut = ρ. Here 0 < ρ/2 < ρ, and ℝᴺ is an inner product space, so it has HasContDiffBump. Then:\n   - ζ is C^∞ (ContDiffBump.contDiff);\n   - 0 ≤ ζ ≤ 1;\n   - ζ(x) = 1 for x ∈ B̄(y₀, ρ/2) (one_of_mem_closedBall);\n   - ζ(x) = 0 whenever ρ ≤ dist(x, y₀) (zero_of_le_dist);\n   - tsupport ζ = B̄(y₀, ρ) (tsupport_eq);\n   - ζ has compact support (ContDiffBump.hasCompactSupport).\n6. (Test field.) Define Y(x) := ζ(x)·e.\n   - Y is C² (indeed C^∞), being a smooth scalar function times a constant vector (ContDiff.smul with contDiff_const).\n   - Y has compact support (HasCompactSupport.smul_right).\n   - tsupport Y ⊆ tsupport ζ = B̄(y₀, ρ) (tsupport_smul_subset_left), so tsupport Y ⊆ B̄(y₀, ρ) ⊆ U by step 3.\n   - Because tsupport Y ⊆ B̄(y₀, ρ), M ∩ tsupport Y = (M ∩ B̄(y₀, ρ)) ∩ tsupport Y. This is the intersection of the compact set M ∩ B̄(y₀, ρ) (step 3) with the closed set tsupport Y (isClosed_tsupport), hence compact (IsCompact.inter_right).\n7. (Apply (T).) By step 6, (T) applies to Y. So f(y) := ⟨Y(y), F(y)⟩ is μ-integrable on M and ∫_M f dμ = 0. By real_inner_smul_left, f(y) = ζ(y)·⟨e, F(y)⟩ for all y.\n8. (f ≥ 0 on M.) Let y ∈ M. If dist(y, y₀) ≤ ρ, then ζ(y) ≥ 0 and ⟨e, F(y)⟩ > 0 by step 4, so f(y) ≥ 0. If dist(y, y₀) > ρ, then ζ(y) = 0 by step 5, so f(y) = 0. Since M is measurable, f ≥ 0 holds μ⌊M-almost everywhere (ae_restrict_of_forall_mem).\n9. (f > 0 near y₀.) Let y ∈ M ∩ B(y₀, ρ/2). Then dist(y, y₀) < ρ/2, so ζ(y) = 1 (as y ∈ B̄(y₀, ρ/2)). Also dist(y, y₀) ≤ ρ, so f(y) = ⟨e, F(y)⟩ > 0 by step 4. Hence M ∩ B(y₀, ρ/2) ⊆ {f ≠ 0} ∩ M. The open ball B(y₀, ρ/2) contains y₀ ∈ M, so by (P), μ(M ∩ B(y₀, ρ/2)) > 0. By monotonicity of μ, μ({f ≠ 0} ∩ M) > 0.\n10. (Contradiction.) Let f be integrable on M and nonnegative μ⌊M-a.e. Then ∫_M f dμ > 0 if and only if μ(support f ∩ M) > 0 (setIntegral_pos_iff_support_of_nonneg_ae). By steps 7-9 the hypotheses hold and the right side is true, so ∫_M f dμ > 0. This contradicts ∫_M f dμ = 0 from step 7. Therefore F(y₀) = 0, and since y₀ ∈ M ∩ U was arbitrary, F(y) = 0 for every y ∈ M ∩ U. ∎",
+          "proof_key_steps": [
+            "Assume F(y₀) = e ≠ 0 at some y₀ ∈ M ∩ U. Continuity of F on M gives δ > 0 with ‖F(y) − e‖ < ‖e‖/2 on M ∩ B(y₀, δ).",
+            "By (L), pick ρ > 0 with B̄(y₀, ρ) ⊆ U ∩ B(y₀, δ) and M ∩ B̄(y₀, ρ) compact. Cauchy–Schwarz then gives ⟨e, F(y)⟩ > ‖e‖²/2 on M ∩ B̄(y₀, ρ).",
+            "With the ContDiffBump ζ (rIn = ρ/2, rOut = ρ), Y = ζ·e is a C² compactly supported field with tsupport Y ⊆ U and M ∩ tsupport Y compact. So (T) gives integrability of f = ζ⟨e, F⟩ on M and ∫_M f dμ = 0.",
+            "f ≥ 0 on M, and f > 0 on M ∩ B(y₀, ρ/2), which has positive μ-measure by (P). By setIntegral_pos_iff_support_of_nonneg_ae, ∫_M f dμ > 0, a contradiction."
+          ]
+        },
+        "audit": {
+          "key": "test_field_vanishing",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The one-line proposition exactly expresses measurability, openness, continuity, P, L, T and pointwise vanishing. Each proof step is valid: continuity gives the strict inner-product bound; L localizes the bump; intersecting the compact localized portion of M with closed tsupport establishes test admissibility; T supplies integrability; measurability supplies restricted almost-everywhere nonnegativity; P and support inclusion yield a strictly positive integral, contradicting T. The Euclidean bump and scalar-action instances are valid, including dimension zero. No measure-finiteness hypothesis is hidden. L is an explicit assumption, so the empty child dependency list is correct; the parent discharges L using local_compact_ball. The bare name is unreserved, and no circular reliance or deferred proof construction occurs."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-stationary-mean-zero-a1-test-field-vanishing-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-stationary-mean-zero-a1-test-field-vanishing-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T141923Z-ed98166de3/nodes/root-stationary-results-a1-stationary-mean-zero-a1-test-field-vanishing-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/task.md": "8a5a6a11aadad13f9e91aa130d70b837a7ddf3157cec06abff13327195c0381e",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/problem.md": "1b99cdc36466fc57b0dcbf0019fa60499fb90be78f31bfe497d2e065e9b89572",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/problem.json": "e7b85f493a3723601dc01294c55764dcb9e7a1ec5c9ca672725f7921e537b654",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/reference-manifest.json": "dc6695435fc19d50d441bf5da6fdca276115f069ebc1dbc45d91829cf7bd6a08",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/decomposition.json": "de141b16de12eeaa0ec00c8b2baa91e1764af2a1a5f35a7f60606f1de7b1f2ac",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/decomposition-audit.json": "5e688c4f96af5b4ebb04216b5a3c2fbe1c786b712ff75289c4974cb45a813c03",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/controller-contract.json": "7f4d5c1eed6f05da85c61d026c77ea5a7b664929803448d03f895bdcf6791b67",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/children/root-stationary-results-a1-stationary-mean-zero-a1-local-compact-ball-a1/parent-child-handoff.json": "e7913297b801ec9ffa957388fc36ec9dc758bd3336012deb71bf132b5e020092",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/children/root-stationary-results-a1-stationary-mean-zero-a1-local-compact-ball-a1/parent-supplied-plan.md": "bfa4d40833f78f57e9d4921877faf6af5779ee8c18af3dfb909cb41dd9e6a076",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/children/root-stationary-results-a1-stationary-mean-zero-a1-local-compact-ball-a1/parent-supplied-natural-proof.md": "51928e22f7ff0f3b6e4c6989ba779f73c00656c3064217926b192666c5ae8378",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/children/root-stationary-results-a1-stationary-mean-zero-a1-local-compact-ball-a1/parent-supplied-natural-proof.json": "95d6bc75e91cfcb39a4021c4551df8b390ca0bd878140aad6f3fbfe765ae67ab",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/children/root-stationary-results-a1-stationary-mean-zero-a1-local-compact-ball-a1/node.json": "a0c85b6c1fcabbce5f72cd94fee0c6626d0dbbeb2cf09a538e21065f71d087b5",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/children/root-stationary-results-a1-stationary-mean-zero-a1-test-field-vanishing-a1/parent-child-handoff.json": "16c5d96fff53c7d8a06ff74d5d6f17138441f7e5ee962248c045f20f24cae7f5",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/children/root-stationary-results-a1-stationary-mean-zero-a1-test-field-vanishing-a1/parent-supplied-plan.md": "52d97276853bc2015604975362b93f41a70a619cc666fe215c565550af944619",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/children/root-stationary-results-a1-stationary-mean-zero-a1-test-field-vanishing-a1/parent-supplied-natural-proof.md": "5075c88846a61d4e5c18f88b16ebc04d16e11405ecabc84f3116856bdf4155c2",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/children/root-stationary-results-a1-stationary-mean-zero-a1-test-field-vanishing-a1/parent-supplied-natural-proof.json": "81683c9b1270e35a64caad3fdb5597cd222467728f259924da0ad511dee5b69e",
+    ".humanize-workspace/20261011t141923z-ed98166de3/root-stationary-results-a1-stationary-mean-zero-a1/children/root-stationary-results-a1-stationary-mean-zero-a1-test-field-vanishing-a1/node.json": "8bec0a98ff43e10e855c5b6b9b896135afb6814a4142c32074d09ab2553201fd"
+  }
+}
