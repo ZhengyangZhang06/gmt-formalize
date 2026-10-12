@@ -813,6 +813,79 @@ theorem Submission.allard_tc_flat_blowup_ball_limits :
   rw [setIntegral_const, smul_eq_mul, mul_one, measureReal_def,
     V.weight_apply measurableSet_closedBall]
 
+/-- **Simon Ch. 8, proof of 5.5 from (9) to the end** (child `unique_tangent_plane` of
+`allard_tangent_cones`): suppose every blow-up sequence at `x` has a vaguely convergent subsequence,
+every `C ∈ VarTan(V, x)` is `θ₀ v(T)` for some plane `T`, and the `β`-averages of `V` over `B_ρ(x)`
+tend to `∫ β dν` (printed (9)).  Then `θ₀ v(T)` is the only varifold tangent and
+`V_{x,λ} → θ₀ v(T)` as `λ ↓ 0`.  With (9), `allard_tc_flat_blowup_ball_limits` gives
+`β(T) = ∫ β dν` for every such `T`, and the matrix-entry functions separate the points of
+`G(N,n)`. -/
+theorem Submission.allard_tc_unique_tangent_plane :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (x : Euclidean N) (θ₀ : ℝ)
+      (ν : Measure (Grassmannian N n)), x ∈ U → 0 < θ₀ →
+      (∀ t : ℕ → ℝ, (∀ j, 0 < t j) → Tendsto t atTop (𝓝 0) →
+        ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ C : Varifold N n (univ : Set (Euclidean N)),
+          VagueConverges (fun j ↦ rescaledMeasure V x (t (φ j))) C.measure) →
+      (∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C →
+        ∃ T : Grassmannian N n, C.measure = ENNReal.ofReal θ₀ • planeVarifoldMeasure T) →
+      (∀ β : C(Grassmannian N n, ℝ), Tendsto (fun ρ : ℝ ↦
+        (∫ z in closedBall x ρ ×ˢ (univ : Set (Grassmannian N n)), β z.2 ∂V.measure) /
+          (V.weight (closedBall x ρ)).toReal) (𝓝[>] 0) (𝓝 (∫ S, β S ∂ν))) →
+      ∃ T : Grassmannian N n, HasTangentPlane V x T θ₀ := by
+  intro N n U V x θ₀ ν hx hθ hsub htan hβ
+  have hsmul : ∀ (T : Grassmannian N n) (f : C_c(Euclidean N × Grassmannian N n, ℝ)),
+      ∫ z, f z ∂(ENNReal.ofReal θ₀ • planeVarifoldMeasure T) =
+        θ₀ * ∫ z, f z ∂(planeVarifoldMeasure T) := fun T f ↦ by
+    rw [integral_smul_measure, ENNReal.toReal_ofReal hθ.le, smul_eq_mul]
+  have hω : 0 < (unitBallVolume n).toReal := by
+    rw [unitBallVolume]
+    exact ENNReal.toReal_pos (measure_ball_pos _ _ one_pos).ne' measure_ball_lt_top.ne
+  -- With (9), a varifold tangent `θ₀ v(T)` forces `∫ β dν = β(T)`.
+  have hident : ∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C →
+      ∀ T : Grassmannian N n, C.measure = ENNReal.ofReal θ₀ • planeVarifoldMeasure T →
+      ∀ β : C(Grassmannian N n, ℝ), ∫ S, β S ∂ν = β T := by
+    rintro C ⟨s, hs0, hs, hconv⟩ T hC β
+    have hs' : Tendsto s atTop (𝓝[>] 0) :=
+      tendsto_nhdsWithin_iff.2 ⟨hs, Eventually.of_forall hs0⟩
+    obtain ⟨hball, hweight⟩ :=
+      Submission.allard_tc_flat_blowup_ball_limits N n U V x T θ₀ atTop s hx hs' fun f ↦ by
+        have h := hconv f
+        rwa [hC, hsmul] at h
+    have hθω : θ₀ * (unitBallVolume n).toReal ≠ 0 := (mul_pos hθ hω).ne'
+    have hlim := (hball β).div hweight hθω
+    rw [mul_div_cancel_left₀ (β T) hθω] at hlim
+    refine tendsto_nhds_unique ((hβ β).comp hs') (hlim.congr fun j ↦ ?_)
+    simp only [Pi.div_apply, Function.comp_apply]
+    exact div_div_div_cancel_right₀ (pow_ne_zero n (hs0 j).ne') _ _
+  -- Some varifold tangent exists (blow up along `1 / (j + 1)`); it is `θ₀ v(T₀)`.
+  obtain ⟨φ₀, hφ₀, C₀, hC₀⟩ := hsub (fun j ↦ 1 / ((j : ℝ) + 1))
+    (fun j ↦ Nat.one_div_pos_of_nat) tendsto_one_div_add_atTop_nhds_zero_nat
+  have hC₀tan : IsVarifoldTangent V x C₀ :=
+    ⟨fun j ↦ 1 / ((φ₀ j : ℝ) + 1), fun j ↦ Nat.one_div_pos_of_nat,
+      tendsto_one_div_add_atTop_nhds_zero_nat.comp hφ₀.tendsto_atTop, hC₀⟩
+  obtain ⟨T₀, hT₀⟩ := htan C₀ hC₀tan
+  -- Every varifold tangent is `θ₀ v(T₀)`: the matrix entries separate the points of `G(N,n)`.
+  have huniq : ∀ C : Varifold N n (univ : Set (Euclidean N)), IsVarifoldTangent V x C →
+      C.measure = ENNReal.ofReal θ₀ • planeVarifoldMeasure T₀ := by
+    intro C hC
+    obtain ⟨T, hT⟩ := htan C hC
+    suffices T = T₀ by rw [hT, this]
+    refine Subtype.ext (Matrix.ext fun i k ↦ ?_)
+    let β : C(Grassmannian N n, ℝ) := ⟨fun S ↦ S.1 i k, continuous_subtype_val.matrix_elem i k⟩
+    exact (hident C hC T hT β).symm.trans (hident C₀ hC₀tan T₀ hT₀ β)
+  -- Full limit: along every `u → 0⁺` some subsequence of `V_{x,u}` tends to `θ₀ v(T₀)`.
+  refine ⟨T₀, hx, hθ, fun f ↦ tendsto_of_subseq_tendsto fun u hu ↦ ?_⟩
+  obtain ⟨J, hJ⟩ := eventually_atTop.1 (hu.eventually eventually_mem_nhdsWithin)
+  have hu0 : Tendsto (fun j ↦ u (j + J)) atTop (𝓝 0) :=
+    (tendsto_nhds_of_tendsto_nhdsWithin hu).comp (tendsto_add_atTop_nat J)
+  obtain ⟨φ, hφ, C, hC⟩ := hsub (fun j ↦ u (j + J)) (fun j ↦ hJ (j + J) (Nat.le_add_left J j)) hu0
+  have hCtan : IsVarifoldTangent V x C :=
+    ⟨fun j ↦ u (φ j + J), fun j ↦ hJ (φ j + J) (Nat.le_add_left J (φ j)),
+      hu0.comp hφ.tendsto_atTop, hC⟩
+  refine ⟨fun j ↦ φ j + J, ?_⟩
+  have hf := hC f
+  rwa [huniq C hCtan, hsmul] at hf
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
