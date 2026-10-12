@@ -335,6 +335,201 @@ def DeGiorgiTheorem : Prop :=
           Tendsto (fun r : ℝ ↦ volume (K ∩ symmDiff (blowUpMap x r '' E)
               {y | 0 < inner ℝ y (reducedNormal μ ν x)})) (𝓝[>] 0) (𝓝 0)
 
+/-- **A mollifier sequence and the mollified indicators of a measurable set** (Steps 1 and 3 of
+the mollification argument for the Sobolev inequality for `ζ χ_G` in the proof of Simon Ch. 3,
+Theorem 4.3, `chapter-03.txt` lines 689–705; mollifiers as in Simon Ch. 2, §2, `chapter-02.txt`
+lines 531–545, at the radii `s_j = r/(j+1)`). `ρ_j = φ_j / ∫ φ_j`, where `φ_j` is a smooth bump
+with `φ_j = 1` on `B̄_{s_j/2}(0)` and `tsupport φ_j = B̄_{s_j}(0)`. For null-measurable
+`G`, `u_j(y) = ∫_G ρ_j(y - z) dz` satisfies `0 ≤ u_j ≤ ∫ ρ_j = 1`; `u_j` is Lipschitz because
+`|ρ_j(a) - ρ_j(b)| ≤ C |a - b| (χ_B(a) + χ_B(b))` with `B = B̄_{s_j}(0)`; `u_j → χ_G` a.e. by the
+Lebesgue differentiation theorem (Besicovitch Vitali family), since `∫ φ_j ≥ |B̄_{s_j/2}|` gives
+`ρ_j ≤ 2ᴺ / |B̄_{s_j}|`; and `∫ u_j h → ∫_G h` by dominated convergence with bound `|h|`. -/
+theorem Submission.deGiorgiSobInd_mollifier_seq : ∀ (N : ℕ) (r : ℝ), 0 < r → ∃ ρ : ℕ → Rn N → ℝ, (∀ j, ContDiff ℝ 1 (ρ j)) ∧ (∀ j, HasCompactSupport (ρ j)) ∧ (∀ j y, 0 ≤ ρ j y) ∧ (∀ j, ∫ y, ρ j y = 1) ∧ (∀ j, tsupport (ρ j) ⊆ Metric.closedBall (0 : Rn N) (r / ((j : ℝ) + 1))) ∧ ∀ G : Set (Rn N), NullMeasurableSet G volume → (∀ j, ∃ L : ℝ≥0, LipschitzWith L (fun y ↦ ∫ z in G, ρ j (y - z))) ∧ (∀ j y, 0 ≤ (∫ z in G, ρ j (y - z)) ∧ (∫ z in G, ρ j (y - z)) ≤ 1) ∧ (∀ᵐ y ∂(volume : Measure (Rn N)), Tendsto (fun j ↦ ∫ z in G, ρ j (y - z)) atTop (𝓝 (G.indicator (fun _ ↦ (1 : ℝ)) y))) ∧ ∀ h : Rn N → ℝ, Integrable h → Tendsto (fun j ↦ ∫ y, (∫ z in G, ρ j (y - z)) * h y) atTop (𝓝 (∫ y in G, h y)) := by
+  intro N r hr
+  -- Step 1: radii `s j = r/(j+1)`, bumps `φ j` with radii `s j / 2 < s j`, `ρ j = φ j / ∫ φ j`.
+  obtain ⟨s, hs_def⟩ : ∃ s : ℕ → ℝ, ∀ j, s j = r / ((j : ℝ) + 1) :=
+    ⟨fun j ↦ r / ((j : ℝ) + 1), fun _ ↦ rfl⟩
+  have hs : ∀ j, 0 < s j := fun j ↦ by rw [hs_def]; positivity
+  obtain ⟨φ, hφin, hφout⟩ : ∃ φ : ℕ → ContDiffBump (0 : Rn N),
+      (∀ j, (φ j).rIn = s j / 2) ∧ ∀ j, (φ j).rOut = s j :=
+    ⟨fun j ↦ ⟨s j / 2, s j, half_pos (hs j), half_lt_self (hs j)⟩, fun _ ↦ rfl, fun _ ↦ rfl⟩
+  have hφint : ∀ j, Integrable (φ j) (volume : Measure (Rn N)) := fun j ↦
+    (φ j).continuous.integrable_of_hasCompactSupport (φ j).hasCompactSupport
+  have hball : ∀ (x : Rn N) (t : ℝ), 0 < t → 0 < volume.real (Metric.closedBall x t) :=
+    fun x t ht ↦ ENNReal.toReal_pos (Metric.measure_closedBall_pos volume x ht).ne'
+      measure_closedBall_lt_top.ne
+  -- `∫ φ j ≥ |B̄_{s j / 2}(0)|`, as `φ j = 1` on `B̄_{rIn}(0)` and `φ j ≥ 0`.
+  have hφlow : ∀ j, volume.real (Metric.closedBall (0 : Rn N) (s j / 2)) ≤ ∫ x, φ j x := by
+    intro j
+    calc volume.real (Metric.closedBall (0 : Rn N) (s j / 2))
+        = ∫ x in Metric.closedBall (0 : Rn N) (s j / 2), (1 : ℝ) := by simp
+      _ = ∫ x in Metric.closedBall (0 : Rn N) (s j / 2), φ j x :=
+          setIntegral_congr_fun measurableSet_closedBall fun x hx ↦
+            ((φ j).one_of_mem_closedBall (by rwa [hφin])).symm
+      _ ≤ ∫ x, φ j x :=
+          setIntegral_le_integral (hφint j) (Eventually.of_forall fun x ↦ (φ j).nonneg)
+  have hc : ∀ j, 0 < ∫ x, φ j x := fun j ↦ (hball 0 _ (half_pos (hs j))).trans_le (hφlow j)
+  obtain ⟨ρ, hρ⟩ : ∃ ρ : ℕ → Rn N → ℝ, ∀ j x, ρ j x = (∫ y, φ j y)⁻¹ * φ j x :=
+    ⟨fun j x ↦ (∫ y, φ j y)⁻¹ * φ j x, fun _ _ ↦ rfl⟩
+  have hρfun : ∀ j, ρ j = fun x ↦ (∫ y, φ j y)⁻¹ * φ j x := fun j ↦ funext (hρ j)
+  have hρ_diff : ∀ j, ContDiff ℝ 1 (ρ j) := fun j ↦ by
+    rw [hρfun]
+    exact contDiff_const.mul ((φ j).contDiff (n := 1))
+  have hρ_nonneg : ∀ j x, 0 ≤ ρ j x := fun j x ↦ by
+    rw [hρ]
+    exact mul_nonneg (inv_nonneg.2 (hc j).le) (φ j).nonneg
+  have hρ_le : ∀ j x, ρ j x ≤ (∫ y, φ j y)⁻¹ := fun j x ↦ by
+    rw [hρ]
+    exact mul_le_of_le_one_right (inv_nonneg.2 (hc j).le) (φ j).le_one
+  have hρ_tsupp : ∀ j, tsupport (ρ j) ⊆ Metric.closedBall (0 : Rn N) (s j) := fun j ↦ by
+    rw [hρfun, ← hφout j, ← (φ j).tsupport_eq]
+    exact tsupport_mul_subset_right
+  have hρ_zero : ∀ j x, x ∉ Metric.closedBall (0 : Rn N) (s j) → ρ j x = 0 :=
+    fun j x hx ↦ image_eq_zero_of_notMem_tsupport fun h ↦ hx (hρ_tsupp j h)
+  have hρ_cs : ∀ j, HasCompactSupport (ρ j) := fun j ↦
+    (isCompact_closedBall _ _).of_isClosed_subset (isClosed_tsupport _) (hρ_tsupp j)
+  have hρ_integrable : ∀ j, Integrable (ρ j) (volume : Measure (Rn N)) := fun j ↦
+    (hρ_diff j).continuous.integrable_of_hasCompactSupport (hρ_cs j)
+  have hρ_int : ∀ j, ∫ x, ρ j x = 1 := fun j ↦ by
+    simp_rw [hρ]
+    rw [integral_const_mul, inv_mul_cancel₀ (hc j).ne']
+  refine ⟨ρ, hρ_diff, hρ_cs, hρ_nonneg, hρ_int, fun j ↦ by rw [← hs_def]; exact hρ_tsupp j,
+    fun G hG ↦ ?_⟩
+  -- Step 2: `u j y = ∫_G ρ j (y - z) dz`; the kernel `z ↦ ρ j (y - z)` is integrable with total
+  -- integral `1` (translation invariance) and support in `B̄_{s j}(y)`.
+  have hu_int : ∀ j (y : Rn N), Integrable (fun z ↦ ρ j (y - z)) (volume : Measure (Rn N)) :=
+    fun j y ↦ (hρ_integrable j).comp_sub_left y
+  have hu_total : ∀ j (y : Rn N), ∫ z, ρ j (y - z) = 1 := fun j y ↦ by
+    rw [integral_sub_left_eq_self (ρ j) volume y, hρ_int]
+  -- Step 3: `0 ≤ u j ≤ 1`.
+  have hu_bd : ∀ j y, 0 ≤ (∫ z in G, ρ j (y - z)) ∧ (∫ z in G, ρ j (y - z)) ≤ 1 := fun j y ↦
+    ⟨integral_nonneg fun z ↦ hρ_nonneg j _,
+      (setIntegral_le_integral (hu_int j y) (Eventually.of_forall fun z ↦ hρ_nonneg j _)).trans
+        (hu_total j y).le⟩
+  -- Step 4: `u j` is Lipschitz: `|ρ j a - ρ j b| ≤ C ‖a - b‖ (χ_B a + χ_B b)`, `B = B̄_{s j}(0)`.
+  have hLip : ∀ j, ∃ L : ℝ≥0, LipschitzWith L (fun y ↦ ∫ z in G, ρ j (y - z)) := by
+    intro j
+    obtain ⟨C, hC⟩ :=
+      ContDiff.lipschitzWith_of_hasCompactSupport (hρ_cs j) (hρ_diff j) one_ne_zero
+    obtain ⟨B, hB⟩ : ∃ B : Set (Rn N), B = Metric.closedBall 0 (s j) := ⟨_, rfl⟩
+    have hBm : MeasurableSet B := by rw [hB]; exact measurableSet_closedBall
+    have hBfin : volume B ≠ ⊤ := by rw [hB]; exact measure_closedBall_lt_top.ne
+    have hzero : ∀ x, x ∉ B → ρ j x = 0 := by rw [hB]; exact hρ_zero j
+    have hind : ∀ x, 0 ≤ B.indicator (1 : Rn N → ℝ) x :=
+      Set.indicator_nonneg fun _ _ ↦ zero_le_one
+    have hind_int : ∀ y : Rn N,
+        Integrable (fun z ↦ B.indicator (1 : Rn N → ℝ) (y - z)) volume := fun y ↦
+      ((integrable_indicator_iff hBm).2 (integrableOn_const (C := (1 : ℝ)) hBfin)).comp_sub_left y
+    have hpt : ∀ a b : Rn N, |ρ j a - ρ j b| ≤
+        C * ‖a - b‖ * (B.indicator (1 : Rn N → ℝ) a + B.indicator (1 : Rn N → ℝ) b) := by
+      intro a b
+      have hab : |ρ j a - ρ j b| ≤ C * ‖a - b‖ := by
+        rw [← Real.dist_eq, ← dist_eq_norm]
+        exact hC.dist_le_mul a b
+      have h0 : 0 ≤ (C : ℝ) * ‖a - b‖ := by positivity
+      by_cases hmem : a ∈ B ∨ b ∈ B
+      · have h1 : (1 : ℝ) ≤ B.indicator (1 : Rn N → ℝ) a + B.indicator (1 : Rn N → ℝ) b := by
+          rcases hmem with h | h <;> rw [Set.indicator_of_mem h, Pi.one_apply]
+          · linarith [hind b]
+          · linarith [hind a]
+        calc |ρ j a - ρ j b| ≤ C * ‖a - b‖ * 1 := by rw [mul_one]; exact hab
+          _ ≤ _ := mul_le_mul_of_nonneg_left h1 h0
+      obtain ⟨ha, hb⟩ := not_or.1 hmem
+      rw [hzero a ha, hzero b hb, sub_zero, abs_zero]
+      exact mul_nonneg h0 (add_nonneg (hind a) (hind b))
+    refine ⟨C * (2 * (volume B).toNNReal), LipschitzWith.of_dist_le_mul fun y y' ↦ ?_⟩
+    show dist (∫ z in G, ρ j (y - z)) (∫ z in G, ρ j (y' - z)) ≤ _
+    rw [Real.dist_eq, ← integral_sub (hu_int j y).integrableOn (hu_int j y').integrableOn]
+    calc |∫ z in G, (ρ j (y - z) - ρ j (y' - z))|
+        ≤ ∫ z in G, |ρ j (y - z) - ρ j (y' - z)| := abs_integral_le_integral_abs
+      _ ≤ ∫ z, |ρ j (y - z) - ρ j (y' - z)| :=
+          setIntegral_le_integral ((hu_int j y).sub (hu_int j y')).abs
+            (Eventually.of_forall fun z ↦ abs_nonneg _)
+      _ ≤ ∫ z, C * ‖y - y'‖ *
+            (B.indicator (1 : Rn N → ℝ) (y - z) + B.indicator (1 : Rn N → ℝ) (y' - z)) := by
+          refine integral_mono ((hu_int j y).sub (hu_int j y')).abs
+            (((hind_int y).add (hind_int y')).const_mul _) fun z ↦ ?_
+          simpa only [sub_sub_sub_cancel_right] using hpt (y - z) (y' - z)
+      _ = C * ‖y - y'‖ * (volume.real B + volume.real B) := by
+          rw [integral_const_mul, integral_add (hind_int y) (hind_int y'),
+            integral_sub_left_eq_self (B.indicator (1 : Rn N → ℝ)) volume y,
+            integral_sub_left_eq_self (B.indicator (1 : Rn N → ℝ)) volume y',
+            integral_indicator_one hBm]
+      _ = ↑(C * (2 * (volume B).toNNReal)) * dist y y' := by
+          simp only [NNReal.coe_mul, NNReal.coe_ofNat, ENNReal.coe_toNNReal_eq_toReal,
+            dist_eq_norm, measureReal_def]
+          ring
+  -- Step 5: `u j → χ_G` a.e., by the Lebesgue differentiation theorem.
+  have hχ : LocallyIntegrable (G.indicator fun _ ↦ (1 : ℝ)) (volume : Measure (Rn N)) :=
+    ((locallyIntegrable_const (1 : ℝ)).indicator (measurableSet_toMeasurable volume G)).congr
+      (indicator_ae_eq_of_ae_eq_set hG.toMeasurable_ae_eq)
+  have hs0 : Tendsto s atTop (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_iff.2 ⟨?_, Eventually.of_forall hs⟩
+    rw [show s = fun j : ℕ ↦ r / ((j : ℝ) + 1) from funext hs_def]
+    exact tendsto_const_nhds.div_atTop (tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds)
+  have hsupp : ∀ j (y : Rn N),
+      Function.support (fun z ↦ ρ j (y - z)) ⊆ Metric.closedBall y (s j) := by
+    intro j y z hz
+    by_contra hzB
+    refine (Function.mem_support.1 hz) (hρ_zero j _ fun hmem ↦ hzB ?_)
+    rw [Metric.mem_closedBall, dist_eq_norm']
+    rwa [mem_closedBall_zero_iff] at hmem
+  have hbound : ∀ j (y z : Rn N),
+      |ρ j (y - z)| ≤ 2 ^ Module.finrank ℝ (Rn N) / volume.real (Metric.closedBall y (s j)) := by
+    intro j y z
+    rw [abs_of_nonneg (hρ_nonneg j _), le_div_iff₀ (hball y _ (hs j))]
+    refine (mul_le_mul_of_nonneg_right (hρ_le j _) (hball y _ (hs j)).le).trans ?_
+    rw [inv_mul_le_iff₀ (hc j)]
+    calc volume.real (Metric.closedBall y (s j))
+        = 2 ^ Module.finrank ℝ (Rn N) * volume.real (Metric.closedBall (0 : Rn N) (s j / 2)) := by
+          rw [Measure.addHaar_real_closedBall' volume y (hs j).le,
+            Measure.addHaar_real_closedBall' volume 0 (half_pos (hs j)).le, ← mul_assoc,
+            ← mul_pow]
+          congr 2
+          ring
+      _ ≤ 2 ^ Module.finrank ℝ (Rn N) * ∫ x, φ j x :=
+          mul_le_mul_of_nonneg_left (hφlow j) (by positivity)
+      _ = (∫ x, φ j x) * 2 ^ Module.finrank ℝ (Rn N) := mul_comm _ _
+  have hae : ∀ᵐ y ∂(volume : Measure (Rn N)),
+      Tendsto (fun j ↦ ∫ z in G, ρ j (y - z)) atTop (𝓝 (G.indicator (fun _ ↦ (1 : ℝ)) y)) := by
+    filter_upwards [(Besicovitch.vitaliFamily (volume : Measure (Rn N))).ae_tendsto_average_norm_sub
+      hχ] with y hy
+    have h1 : Tendsto (fun j ↦ ⨍ z in Metric.closedBall y (s j),
+        ‖G.indicator (fun _ ↦ (1 : ℝ)) z - G.indicator (fun _ ↦ (1 : ℝ)) y‖) atTop (𝓝 0) :=
+      (hy.comp (Besicovitch.tendsto_filterAt volume y)).comp hs0
+    have h2 : Tendsto (fun j ↦ ∫ z, ρ j (y - z) • G.indicator (fun _ ↦ (1 : ℝ)) z) atTop
+        (𝓝 (G.indicator (fun _ ↦ (1 : ℝ)) y)) :=
+      tendsto_integral_smul_of_tendsto_average_norm_sub (2 ^ Module.finrank ℝ (Rn N)) h1
+        (Eventually.of_forall fun j ↦ hχ.integrableOn_isCompact (isCompact_closedBall _ _))
+        (tendsto_const_nhds.congr fun j ↦ (hu_total j y).symm)
+        (Eventually.of_forall fun j ↦ hsupp j y) (Eventually.of_forall fun j ↦ hbound j y)
+    refine h2.congr fun j ↦ ?_
+    rw [← integral_indicator₀ hG]
+    congr 1
+    funext z
+    by_cases hz : z ∈ G <;> simp [hz]
+  -- Step 6: `∫ u j h → ∫_G h` by dominated convergence with bound `|h|`.
+  refine ⟨hLip, hu_bd, hae, fun h hh ↦ ?_⟩
+  have hcont : ∀ j, Continuous (fun y ↦ ∫ z in G, ρ j (y - z)) := fun j ↦ by
+    obtain ⟨L, hL⟩ := hLip j
+    exact hL.continuous
+  have hdom : ∀ j y, ‖(∫ z in G, ρ j (y - z)) * h y‖ ≤ ‖h y‖ := fun j y ↦ by
+    rw [norm_mul]
+    refine mul_le_of_le_one_left (norm_nonneg _) ?_
+    rw [Real.norm_eq_abs, abs_of_nonneg (hu_bd j y).1]
+    exact (hu_bd j y).2
+  have key : Tendsto (fun j ↦ ∫ y, (∫ z in G, ρ j (y - z)) * h y) atTop
+      (𝓝 (∫ y, G.indicator (fun _ ↦ (1 : ℝ)) y * h y)) :=
+    tendsto_integral_of_dominated_convergence (fun y ↦ ‖h y‖)
+      (fun j ↦ (hcont j).aestronglyMeasurable.mul hh.aestronglyMeasurable) hh.norm
+      (fun j ↦ Eventually.of_forall (hdom j)) (hae.mono fun y hy ↦ hy.mul_const (h y))
+  have hlim : ∫ y, G.indicator (fun _ ↦ (1 : ℝ)) y * h y = ∫ y in G, h y := by
+    rw [← integral_indicator₀ hG]
+    congr 1
+    funext y
+    by_cases hy : y ∈ G <;> simp [hy]
+  rwa [hlim] at key
+
 /-- The frozen Chapter 3 contract. -/
 theorem main_theorem : SubmanifoldCoverCharacterization ∧ ApproximateTangentCharacterization ∧ WeightedApproximateTangentCharacterization ∧ AreaFormula ∧ CoareaFormula ∧ SlicesAreRectifiable ∧ RectifiableDecomposition ∧ CoordinateProjectionCriterion ∧ BesicovitchFedererProjectionTheorem ∧ RectifiabilityTheoremForSets ∧ GaussGreenRepresentation ∧ DeGiorgiTheorem := by sorry
 
