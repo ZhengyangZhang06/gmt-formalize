@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.curvature_monotonicity-a1.annulus_ibp-a1.interval_fubini-a1",
+  "parent_id": "root.curvature_monotonicity-a1.annulus_ibp-a1",
+  "depth": 3,
+  "title": "Fubini on the triangle: ∫_{(σ,ρ]} F′(t)(∫_{(t,ρ]} e)dt = ∫_{(σ,ρ]} e(F − F(σ)) (parent Step 9)",
+  "statement": "Let e, F, F′: ℝ → ℝ and σ, ρ ∈ ℝ. Assume e and F′ are Lebesgue integrable on (σ, ρ] and F(t) = F(σ) + ∫_{(σ,t]} F′(τ)dτ for every t ∈ [σ, ρ]. Then (a) s ↦ e(s)(F(s) − F(σ)) is Lebesgue integrable on (σ, ρ]; (b) t ↦ F′(t)·∫_{(t,ρ]} e(τ)dτ is Lebesgue integrable on (σ, ρ]; and (c) ∫_{(σ,ρ]} F′(t)(∫_{(t,ρ]} e(τ)dτ)dt = ∫_{(σ,ρ]} e(s)(F(s) − F(σ))ds.",
+  "lean_statement": "∀ (e F F' : ℝ → ℝ) (σ ρ : ℝ), IntegrableOn e (Ioc σ ρ) → IntegrableOn F' (Ioc σ ρ) → (∀ t ∈ Icc σ ρ, F t = F σ + ∫ τ in Ioc σ t, F' τ) → IntegrableOn (fun s ↦ e s * (F s - F σ)) (Ioc σ ρ) ∧ IntegrableOn (fun t ↦ F' t * ∫ τ in Ioc t ρ, e τ) (Ioc σ ρ) ∧ ∫ t in Ioc σ ρ, F' t * ∫ τ in Ioc t ρ, e τ = ∫ s in Ioc σ ρ, e s * (F s - F σ)",
+  "lean_name": "mcm_interval_primitive_fubini",
+  "depends_on": [
+    "root.curvature_monotonicity-a1.annulus_ibp-a1.primitive_fubini-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.curvature_monotonicity-a1.annulus_ibp-a1.primitive_fubini-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch04/20261011t142930z-d646011318/root-curvature-monotonicity-a1-annulus-ibp-a1-interval-fubini-a1-a1"
+}
