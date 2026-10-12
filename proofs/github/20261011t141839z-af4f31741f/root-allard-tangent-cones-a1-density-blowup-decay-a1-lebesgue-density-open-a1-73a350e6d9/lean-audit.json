@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bd2ef9fddb50dbceb536d441688c706582c3a4327e2f0ecfdbfdb0015422769b",
+  "git_delta": {
+    "base_commit": "f06c6edfb333c484b01e2402d70675af3bfe46b8",
+    "candidate_commit": "d43946da1bdd468d7dbc1948c5b37ea054a1f4fc",
+    "target": "GMT/Ch08/Submission.lean",
+    "declaration": "allard_tc_dbd_lebesgue_density",
+    "diff_sha256": "20efccdef3b9fe10c92f4dacdc684be8ebe15fb41447ca0c8cb6712feb3aecec",
+    "source_sha256": "cf5abcc556198f36e537db098770c1580d4adf3045805127505c75e3c4179b79",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard_tc_dbd_lebesgue_density",
+      "statement": "∀ (N : ℕ) (U : Set (Euclidean N)) (μ : Measure (Euclidean N)), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclidean N), IsCompact K → K ⊆ U → μ K ≠ ∞) → ∀ A : Set (Euclidean N), MeasurableSet A → ∀ᵐ x ∂μ, Tendsto (fun ρ : ℝ ↦ μ (A ∩ closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 (A.indicator 1 x))",
+      "lean_file": "GMT/Ch08/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
