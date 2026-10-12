@@ -550,6 +550,56 @@ theorem Submission.rsd_cmr_imrep_restrict : ∀ (P n : ℕ) (U U' A : Set (Eucli
     R.measurableSet_carrier inter_subset_left hδ ?_ hQ, hξ⟩
   rwa [Set.sdiff_self_inter]
 
+/-- **Constant multiplicity: the quotient current is integer multiplicity** (Simon Ch. 5, proof of
+Corollary 7.3, chapter-05.txt lines 1389–1394, `Ṽ = v(M, N⁻¹θ)⌞B_ρ(ξ)`; a step of the constant
+multiplicity reduction behind Simon 7.4.2).  Let `T = τ(M, θ, ξ)` in `U`, `V ⊆ U` open, `N₀ ≥ 1`
+with `θ = N₀` `μ_T`-a.e. on `V`, and `T(ω) = N₀ T₀(ω)` for `ω ∈ 𝒟ⁿ(V)`.  Then `(M ∩ V, 1, ξ)`
+represents `T₀`.  Since `μ_T = θHⁿ⌞M` with `θ ≥ 1` on `M`, `θ = N₀` `Hⁿ`-a.e. on `M ∩ V`.
+`Submission.rsd_cmr_imrep_restrict` makes `(M ∩ V, 1, ξ)` a triple in `V` (`1 ≤ θ` gives local
+integrability, and `V` is open).  As `ω = 0` off `V`,
+`N₀ T₀(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ = ∫_{M ∩ V} N₀⟨ω, ξ⟩ dHⁿ`; cancel `N₀ ≠ 0`. -/
+theorem Submission.rsd_cmr_isIntegerMultiplicity_of_const_mult : ∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n) (R : IMRep U n) (T₀ : GeometricCurrentOn V n) (N₀ : ℕ), IsOpen V → 0 < N₀ → R.Represents T → (∀ᵐ x ∂R.measure, x ∈ V → R.mult x = N₀) → (∀ ω : TestFormOn V n, T (testFormOnInclusion hVU n ω) = (N₀ : ℝ) * T₀ ω) → IsIntegerMultiplicity T₀ := by
+  intro P n U V hVU T R T₀ N₀ hV hN₀ hRT hconst hT₀
+  have hMV : MeasurableSet (R.carrier ∩ V) := R.measurableSet_carrier.inter hV.measurableSet
+  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : ℝ≥0∞))).comp R.measurable_mult
+  -- Step 1: `θ = N₀` `Hⁿ`-a.e. on `M ∩ V`, as `μ_T = θHⁿ⌞M` and `θ ≠ 0` on `M`.
+  have hae : ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ V)), R.mult x = N₀ := by
+    have h := (ae_withDensity_iff (μ := μHE[n].restrict R.carrier) hθ).1 hconst
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset
+      (inter_subset_left : R.carrier ∩ V ⊆ R.carrier) h, ae_restrict_mem hMV] with x hx hxMV
+    exact hx (Nat.cast_ne_zero.2 (R.mult_pos x hxMV.1).ne') hxMV.2
+  -- Step 2: `R₀ = (M ∩ V, 1, ξ)` is an integer multiplicity triple in `V`.
+  obtain ⟨R₀, hcar, hmult, horient⟩ := Submission.rsd_cmr_imrep_restrict P n U V V R (fun _ => 1)
+    hV.measurableSet inter_subset_right measurable_const (fun _ _ => Nat.one_pos)
+    -- `∫_{M ∩ V ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ < ∞`, as `1 ≤ θ` on `M`.
+    (fun K hK hKV => ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK (hKV.trans hVU))
+      (le_trans (setLIntegral_mono hθ fun x hx => Nat.cast_le.2 (R.mult_pos x hx.1.1))
+        (lintegral_mono_set (inter_subset_inter_left K inter_subset_left))))
+    (by
+      -- A ball `B_δ(x) ⊆ V` about `x ∈ M ∩ V` misses `M \ V`.
+      filter_upwards [ae_restrict_mem hMV] with x hx
+      obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hV x hx.2
+      exact ⟨δ, hδ, measure_mono_null (fun y hy => absurd (hball hy.2) hy.1.2) measure_empty⟩)
+  -- Step 3: `N₀ T₀(ω) = N₀ R₀(ω)`, and `N₀ ≠ 0`.
+  refine ⟨R₀, fun ω => mul_left_cancel₀ (Nat.cast_ne_zero.2 hN₀.ne' : (N₀ : ℝ) ≠ 0) ?_⟩
+  -- `ω = 0` on `M \ V`, as `spt ω ⊆ V`.
+  have hω : ∀ x ∈ R.carrier \ (R.carrier ∩ V), (ω : DifferentialForm (Euclid P) n) x = 0 :=
+    fun x hx => image_eq_zero_of_notMem_tsupport fun h => hx.2 ⟨hx.1, ω.2.2 h⟩
+  calc (N₀ : ℝ) * T₀ ω = T (testFormOnInclusion hVU n ω) := (hT₀ ω).symm
+    _ = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)
+          ∂μHE[n] := hRT _
+    _ = ∫ x in R.carrier ∩ V,
+          (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] :=
+        setIntegral_eq_of_subset_of_forall_sdiff_eq_zero R.measurableSet_carrier
+          inter_subset_left fun x hx => by simp only [hω x hx, map_zero, mul_zero]
+    _ = ∫ x in R.carrier ∩ V,
+          (N₀ : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] :=
+        integral_congr_ae (hae.mono fun x hx => by simp only [hx])
+    _ = (N₀ : ℝ) * R₀.action ω := by
+        rw [integral_const_mul]
+        simp only [IMRep.action, hcar, hmult, horient, Nat.cast_one, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
