@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.mickle_rado-a1.density_zero-a1",
+  "parent_id": "root.rectifiability-a1.mickle_rado-a1",
+  "depth": 3,
+  "title": "Upper density vanishes a.e. on a ψ-null closed set with uniform upper bound",
+  "statement": "Let m ∈ ℕ, k := m+1, ψ an outer measure on ℝᵏ = EuclideanSpace ℝ (Fin k), K ⊆ ℝᵏ closed with ψ(K) = 0, C ∈ [0,∞) and r > 0 such that ψ(B(z,τ)) ≤ C·τᵏ for all z ∈ K and all 0 < τ < r (B open balls, τᵏ = ENNReal.ofReal(τᵏ)). Then for Lᵏ-almost every c ∈ K, i.e. for (Lᵏ restricted to K)-a.e. c, limsup_{t↓0} ψ(B(c,t))/tᵏ = 0, the limsup being taken along 𝓝[>]0 in [0,∞].",
+  "lean_statement": "∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))) (K : Set (Eucl (m + 1))) (C : ℝ≥0∞) (r : ℝ), IsClosed K → ψ K = 0 → C ≠ ⊤ → 0 < r → (∀ z ∈ K, ∀ τ ∈ Ioo (0 : ℝ) r, ψ (ball z τ) ≤ C * ENNReal.ofReal (τ ^ (m + 1))) → ∀ᵐ c ∂((volume : Measure (Eucl (m + 1))).restrict K), limsup (fun t : ℝ => ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) (𝓝[>] 0) = 0",
+  "lean_name": "rectifiability_mickle_rado_density_zero",
+  "depends_on": [
+    "root.rectifiability-a1.mickle_rado-a1.vitali_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.mickle_rado-a1.vitali_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-mickle-rado-a1-density-zero-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.mickle_rado-a1.sup_lsc-a1",
+  "parent_id": "root.rectifiability-a1.mickle_rado-a1",
+  "depth": 3,
+  "title": "Lower semicontinuity of the truncated density supremum",
+  "statement": "Let m ∈ ℕ, k := m+1, and let ψ be an outer measure on ℝᵏ = EuclideanSpace ℝ (Fin k) such that ψ(B(c,τ)) = sup_{0<τ′<τ} ψ(B(c,τ′)) for all c ∈ ℝᵏ and τ ∈ ℝ, where B denotes open balls. Then for every r ∈ ℝ the function g_r : ℝᵏ → [0,∞], g_r(c) := sup_{0<t<r} ψ(B(c,t))/tᵏ, is lower semicontinuous. Here tᵏ is the positive finite extended real ENNReal.ofReal(tᵏ) and the quotient is taken in [0,∞].",
+  "lean_statement": "∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))), (∀ (c : Eucl (m + 1)) (τ : ℝ), ψ (ball c τ) = ⨆ τ' ∈ Ioo (0 : ℝ) τ, ψ (ball c τ')) → ∀ r : ℝ, LowerSemicontinuous (fun c : Eucl (m + 1) => ⨆ t ∈ Ioo (0 : ℝ) r, ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1)))",
+  "lean_name": "rectifiability_mickle_rado_sup_lsc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-mickle-rado-a1-sup-lsc-a1-a1"
+}

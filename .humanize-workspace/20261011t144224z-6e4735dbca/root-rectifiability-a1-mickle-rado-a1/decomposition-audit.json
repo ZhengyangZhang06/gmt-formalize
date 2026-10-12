@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "limsup_eq_iInf_iSup|theorem nhdsGT_basis|exists_disjoint_subfamily_covering_enlargement_ball|ae_tendsto_measure_inter_div|theorem addHaar_ball|theorem addHaar_closedBall|theorem LowerSemicontinuous.measurable|lowerSemicontinuous_biSup|exists_lt_isCompact|exists_mem_of_measure_ne_zero_of_ae",
+        "mickle|radó|\\brado\\b",
+        "lowerSemicontinuous_measure_ball|lowerSemicontinuous_outerMeasure_inter_ball|measurable_dimensionalUpperDensity|simon_theorem_3_[36]|IsBorelRegularOuterMeasure",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Ch06/Submission.lean -o .lake/build/lib/lean/GMT/Ch06/Submission.olean",
+        "python3 run_checks.py independent",
+        "python3 run_checks.py comparator"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Semicontinuity/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-mickle-rado-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-mickle-rado-a1/decomposition-v1.json",
+        "/tmp/mickle-rado-independent-audit-tgzv7q30/GMT/Ch06/Submission.lean",
+        "/tmp/mickle-rado-independent-audit-tgzv7q30/independent-results.json",
+        "/tmp/mickle-rado-independent-audit-tgzv7q30/comparator-results.json"
+      ],
+      "conclusion": "The pinned sources supply the stated ingredients; inspected Mathlib files match the compiler package at revision 25730c7c759d108ef87ab70af2342a196760f79d. No applicable Mickle–Radó declaration was found. Nearby SimonGMT results require additional Borel/Carathéodory compatibility. The outer-measure setting is also corroborated by [Mattila, Lemma 4.14](https://arxiv.org/pdf/2112.00540).\n\nThe split is appropriate. The only child dependency is density_zero on vitali_bound, so dependencies are correctly directed and acyclic. The supplied countable-level-set and compact-subset assembly proves exactly the selected parent contract. All four names are bare identifiers with no collisions in the checked DAG or other persisted proposals.\n\nIndependently compiled all four supplied proofs and the exact parent assembly: each uses only propext, Classical.choice and Quot.sound. All four frozen one-line propositions elaborate against Contract without child implementations; all five comparator-generated solution modules compile. Generic Euclidean, Haar, regularity and covering instances were verified. No implementation-dependent aliases or problematic inline matrix constructions occur."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "limsup_eq_iinf",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match exactly. The right-neighbourhood basis formula and cofinality of 1/(n+1) establish both inequalities for arbitrary ENNReal-valued f, without hidden boundedness assumptions. The proof is complete, independent and non-circular."
+    },
+    {
+      "key": "sup_lsc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Inner continuity supplies a smaller ball exceeding the threshold; the triangle inequality and monotonicity transfer that threshold to nearby centres. Division by a positive finite denominator and taking suprema preserve lower semicontinuity. The empty-index case r ≤ 0 is covered."
+    },
+    {
+      "key": "vitali_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract is proved. Closedness and c₀ ∈ K give positive distances and nearest points; separability makes the disjoint Vitali family countable. Recentring yields 6d < r, and subadditivity plus disjoint-ball volume scaling gives the claimed inequality, including C = ∞. No compactness or Borel regularity of ψ is silently assumed."
+    },
+    {
+      "key": "density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses precisely its declared dependency, vitali_bound. Lebesgue differentiation applies to volume, while closedness supplies measurability of K. Positive finite ball volumes justify cancellation; C ≠ ⊤ justifies the limiting product. Squeezing proves the exact restricted-almost-everywhere limsup conclusion, without circular reliance on the parent."
+    }
+  ],
+  "required_changes": []
+}

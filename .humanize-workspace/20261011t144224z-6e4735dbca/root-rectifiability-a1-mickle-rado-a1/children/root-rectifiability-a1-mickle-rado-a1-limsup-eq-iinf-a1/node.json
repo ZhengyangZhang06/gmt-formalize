@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.mickle_rado-a1.limsup_eq_iinf-a1",
+  "parent_id": "root.rectifiability-a1.mickle_rado-a1",
+  "depth": 3,
+  "title": "Countable-radius formula for the upper limit at 0⁺",
+  "statement": "For every function f : ℝ → [0,∞], the upper limit of f along the filter 𝓝[>]0 of right neighbourhoods of 0 equals inf over n ∈ ℕ of sup over t ∈ (0, 1/(n+1)) of f(t): limsup_{t→0⁺} f(t) = inf_{n∈ℕ} sup_{0<t<1/(n+1)} f(t).",
+  "lean_statement": "∀ f : ℝ → ℝ≥0∞, limsup f (𝓝[>] (0 : ℝ)) = ⨅ n : ℕ, ⨆ t ∈ Ioo (0 : ℝ) (1 / ((n : ℝ) + 1)), f t",
+  "lean_name": "rectifiability_mickle_rado_limsup_eq_iInf",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-mickle-rado-a1-limsup-eq-iinf-a1-a1"
+}
