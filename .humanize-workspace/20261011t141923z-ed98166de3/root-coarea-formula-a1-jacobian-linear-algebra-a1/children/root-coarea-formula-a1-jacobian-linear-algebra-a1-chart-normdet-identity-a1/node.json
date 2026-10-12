@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1.chart_normdet_identity-a1",
+  "parent_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1",
+  "depth": 3,
+  "title": "Lemma L: normDet(L*) · normDet(Φ) = normDet(Φ ∘ (0,·)) for a chart Φ straightening L",
+  "statement": "Let m, k ∈ ℕ and let T be a finite-dimensional real inner product space (in Type).\nLet P := WithLp 2 (ℝᵐ × ℝᵏ) be the Euclidean product, with first component p₁ = WithLp.fst p.\nLet L : T → ℝᵐ, Φ : P → T and Ψ : ℝᵏ → T be ℝ-linear maps such that:\n- Φ is bijective;\n- L(Φ p) = p₁ for all p ∈ P;\n- Ψ b = Φ(toLp(0, b)) for all b ∈ ℝᵏ.\nThen normDet(L*) · normDet(Φ) = normDet(Ψ), where L* = LinearMap.adjoint L : ℝᵐ → T and normDet is Mathlib's LinearMap.normDet.",
+  "lean_statement": "∀ (m k : ℕ) (T : Type) [NormedAddCommGroup T] [InnerProductSpace ℝ T] [FiniteDimensional ℝ T] (L : T →ₗ[ℝ] Rn m) (Φ : WithLp 2 (Rn m × Rn k) →ₗ[ℝ] T) (Ψ : Rn k →ₗ[ℝ] T), Function.Bijective Φ → (∀ p, L (Φ p) = WithLp.fst p) → (∀ b, Ψ b = Φ (WithLp.toLp 2 (0, b))) → (LinearMap.adjoint L).normDet * Φ.normDet = Ψ.normDet",
+  "lean_name": "coarea_normDet_adjoint_mul_normDet_chart",
+  "depends_on": [
+    "root.coarea_formula-a1.jacobian_linear_algebra-a1.block_triangular_normdet-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.coarea_formula-a1.jacobian_linear_algebra-a1.block_triangular_normdet-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch02/20261011t141923z-ed98166de3/root-coarea-formula-a1-jacobian-linear-algebra-a1-chart-normdet-identity-a1-a1"
+}
