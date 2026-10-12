@@ -751,6 +751,64 @@ theorem Submission.variation_injective_area_formula : ∀ (n N : ℕ) (s : Set (
   rw [key, EuclideanSpace.euclideanHausdorffMeasure_eq_volume n]
   simp only [hJ]
 
+/-- **Simon Ch. 2, 3.5 (p. 54), injective regular case: weighted area formula.** Let `s ⊆ ℝⁿ` be
+Borel and `Φ : ℝⁿ → ℝᴺ` differentiable with injective derivative at every point of `s` and injective
+on `s`. For an arbitrary (not necessarily measurable) `g : ℝᴺ → [0, ∞]`,
+`∫_{Φ(s)} g dHⁿ = ∫_s JΦ · g ∘ Φ dHⁿ`, `JΦ(x) = areaJacobian (DΦ(x))`. The Jacobian-weighted measure
+`JΦ · Hⁿ`, pulled back to the subtype `s`, is pushed forward by `Φ|_s` to `Hⁿ ⌊ Φ(s)`: on a Borel
+`t ⊆ ℝᴺ` this is `variation_injective_area_formula` (Simon 3.2) applied to the Borel set
+`s ∩ Φ⁻¹(t)`. As `Φ|_s` and the inclusion of `s` are measurable embeddings (Lusin–Souslin) and `JΦ`
+is a finite Borel density, the weight `g` transports with no measurability assumption. -/
+theorem Submission.variation_injective_weighted_area_formula : ∀ (n N : ℕ) (s : Set (Rn n)) (Φ : Rn n → Rn N) (g : Rn N → ℝ≥0∞), MeasurableSet s → (∀ x ∈ s, DifferentiableAt ℝ Φ x) → (∀ x ∈ s, Function.Injective (fderiv ℝ Φ x)) → InjOn Φ s → ∫⁻ y in Φ '' s, g y ∂μHE[n] = ∫⁻ x in s, ENNReal.ofReal (areaJacobian (fderiv ℝ Φ x)) * g (Φ x) ∂μHE[n] := by
+  intro n N s Φ g hs hΦ hreg hinj
+  -- Step 1: the density `J x = ofReal (areaJacobian (DΦ x))` is Borel (and finite everywhere):
+  -- `x ↦ DΦ x` is Borel and `L ↦ √det(L* ∘ L)` is continuous.
+  have hJmeas : Measurable (fun x : Rn n ↦ ENNReal.ofReal (areaJacobian (fderiv ℝ Φ x))) := by
+    have hc : Continuous (fun L : Rn n →L[ℝ] Rn N ↦ areaJacobian L) :=
+      Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
+        (Continuous.clm_comp ContinuousLinearMap.adjoint.continuous continuous_id))
+    exact (hc.measurable.comp (measurable_fderiv ℝ Φ)).ennreal_ofReal
+  -- Step 2: `Φ|_s` (continuous and injective on the Borel set `s`) and the inclusion of `s` are
+  -- measurable embeddings.
+  have hcont : ContinuousOn Φ s := fun x hx ↦ (hΦ x hx).continuousAt.continuousWithinAt
+  have hemb : MeasurableEmbedding (s.domRestrict Φ) := hcont.measurableEmbedding hs hinj
+  have hsub := MeasurableEmbedding.subtype_coe hs
+  -- Step 3: `(Φ|_s)_* ι^*(J · Hⁿ) = Hⁿ ⌊ Φ(s)`. On a Borel `t`, both sides are computed on the Borel
+  -- set `C = ι((Φ|_s)⁻¹ t) = s ∩ Φ⁻¹(t) ⊆ s`, where the area formula gives `∫_C J dHⁿ = Hⁿ(Φ(C))`,
+  -- and `Φ(C) = Φ(s) ∩ t`.
+  have hmap : Measure.map (s.domRestrict Φ)
+      (((μHE[n] : Measure (Rn n)).withDensity
+        (fun x ↦ ENNReal.ofReal (areaJacobian (fderiv ℝ Φ x)))).comap (Subtype.val : s → Rn n)) =
+        (μHE[n] : Measure (Rn N)).restrict (Φ '' s) := by
+    ext t ht
+    rw [Measure.map_apply hemb.measurable ht, hsub.comap_apply]
+    have hCm : MeasurableSet (Subtype.val '' ((s.domRestrict Φ) ⁻¹' t)) :=
+      hsub.measurableSet_image' (hemb.measurable ht)
+    have hCs : Subtype.val '' ((s.domRestrict Φ) ⁻¹' t) ⊆ s := by
+      rintro x ⟨v, _, rfl⟩
+      exact v.property
+    rw [withDensity_apply _ hCm,
+      ← Submission.variation_injective_area_formula n N _ Φ hCm (fun x hx ↦ hΦ x (hCs hx))
+        (fun x hx ↦ hreg x (hCs hx)) (hinj.mono hCs), Measure.restrict_apply ht]
+    congr 1
+    ext y
+    constructor
+    · rintro ⟨x, ⟨v, hv, rfl⟩, rfl⟩
+      exact ⟨hv, ⟨v, v.property, rfl⟩⟩
+    · rintro ⟨hy, x, hx, rfl⟩
+      exact ⟨x, ⟨⟨x, hx⟩, hy, rfl⟩, rfl⟩
+  -- Step 4: transport the arbitrary weight `g`: `lintegral_map` along the embedding `Φ|_s`, then
+  -- back from the subtype `s`, then through the finite Borel density `J`.
+  rw [← hmap, hemb.lintegral_map]
+  change (∫⁻ x : s, (fun x : Rn n ↦ g (Φ x)) x ∂
+    (((μHE[n] : Measure (Rn n)).withDensity
+      (fun x ↦ ENNReal.ofReal (areaJacobian (fderiv ℝ Φ x)))).comap (Subtype.val : s → Rn n))) = _
+  rw [lintegral_subtype_comap hs (fun x : Rn n ↦ g (Φ x)),
+    setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀ _ _ _ hs]
+  · rfl
+  · simp only [eventually_true, ENNReal.ofReal_lt_top]
+  · exact hJmeas.aemeasurable
+
 /-- The frozen Chapter 2 contract: the conjunction of all headline results. -/
 theorem main_theorem : LipschitzExtension ∧ Rademacher ∧ C1Approximation ∧ WhitneyExtension ∧ LipschitzImageHausdorff ∧ EilenbergInequality ∧ BVCompactness ∧ BVPoincare ∧ BVExtensionEstimate ∧ AreaFormula ∧ FirstVariation ∧ SecondVariation ∧ StationaryIffMeanCurvatureZero ∧ SecondVariationStationary ∧ CoareaFormula ∧ C1Sard := by sorry
 
