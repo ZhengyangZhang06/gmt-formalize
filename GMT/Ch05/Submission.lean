@@ -493,6 +493,109 @@ theorem rsod_c1ab_utr_closed_egoroff : ∀ (n : ℕ) (g : ℕ → Rn n → ℝ),
       (ne_top_of_le_ne_top (ENNReal.div_ne_top hδ'top two_ne_zero) ht) ht hA
     _ = δ' := ENNReal.add_halves δ'
     _ ≤ δ := min_le_left δ 1
+/-- Simon Ch. 2, proof of Theorem 1.5 (p. 44): **sup-control of the Taylor remainder**.  For a
+`K`-Lipschitz `f : ℝⁿ → ℝ` differentiable at every point of a closed `C`, with
+`R(x, y) = f y - f x - Df(x)(y - x)`, the functions
+`η_k(x) = 1_C(x) · sup {|R(x, q)|/|q - x| : q ∈ Q, 0 < |q - x| < 1/(k+1)}` (`Q ⊆ C` countable dense)
+are Borel, tend to `0` on `C`, and satisfy `|R(x, y)| ≤ η_k(x)|y - x|` for `x, y ∈ C` with
+`0 < |y - x| < 1/(k+1)`: by differentiability at `x` for the limit, and by continuity of
+`q ↦ |R(x, q)|/|q - x|` at `y` along `Q` for the bound. -/
+theorem rsod_c1ab_utr_remainder_sup_control : ∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ C : Set (Rn n), IsClosed C → (∀ x ∈ C, DifferentiableAt ℝ f x) → ∃ η : ℕ → Rn n → ℝ, (∀ k, Measurable (η k)) ∧ (∀ x ∈ C, Tendsto (fun k => η k x) atTop (𝓝 0)) ∧ ∀ k : ℕ, ∀ x ∈ C, ∀ y ∈ C, 0 < ‖y - x‖ → ‖y - x‖ < 1 / ((k : ℝ) + 1) → ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ η k x * ‖y - x‖ := by
+  intro n f K hf C hC hdiff
+  -- Step 1: `|f y - f x - Df(x)(y - x)| ≤ 2K|y - x|`, from the Lipschitz bound and `‖Df(x)‖ ≤ K`.
+  have hrem : ∀ x y : Rn n, ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ 2 * (K : ℝ) * ‖y - x‖ := by
+    intro x y
+    have h1 : ‖f y - f x‖ ≤ K * ‖y - x‖ := hf.norm_sub_le y x
+    have h2 : ‖fderiv ℝ f x (y - x)‖ ≤ K * ‖y - x‖ :=
+      ((fderiv ℝ f x).le_opNorm (y - x)).trans
+        (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hf) (norm_nonneg _))
+    calc ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ ‖f y - f x‖ + ‖fderiv ℝ f x (y - x)‖ :=
+          norm_sub_le _ _
+      _ ≤ K * ‖y - x‖ + K * ‖y - x‖ := add_le_add h1 h2
+      _ = 2 * (K : ℝ) * ‖y - x‖ := by ring
+  -- Step 2: a countable `Q ⊆ C` with `C ⊆ closure Q`.
+  obtain ⟨Q, hQC, hQc, hCQ⟩ :=
+    (TopologicalSpace.IsSeparable.of_separableSpace C).exists_countable_dense_subset
+  have : Countable Q := hQc.to_subtype
+  -- Step 3: `ψ_{k,q}(x) = |R(x, q)|/|q - x|` on the window `0 < |q - x| < 1/(k+1)`, else `0`.
+  obtain ⟨ψ, hψ⟩ : ∃ ψ : ℕ → Rn n → Rn n → ℝ, ∀ k q x, ψ k q x =
+      if 0 < ‖q - x‖ ∧ ‖q - x‖ < 1 / ((k : ℝ) + 1) then
+        ‖f q - f x - fderiv ℝ f x (q - x)‖ / ‖q - x‖ else 0 := ⟨_, fun _ _ _ => rfl⟩
+  -- Step 4: `0 ≤ ψ_{k,q} ≤ 2K`, so the family `(ψ_{k,q}(x))_{q ∈ Q}` is bounded above.
+  have hψ_nonneg : ∀ k q x, 0 ≤ ψ k q x := by
+    intro k q x
+    rw [hψ]
+    split_ifs
+    · positivity
+    · exact le_rfl
+  have hψ_le : ∀ k q x, ψ k q x ≤ 2 * (K : ℝ) := by
+    intro k q x
+    rw [hψ]
+    split_ifs with h
+    · rw [div_le_iff₀ h.1]
+      exact hrem x q
+    · positivity
+  have hbdd : ∀ k x, BddAbove (Set.range fun q : Q => ψ k q x) := fun k x =>
+    ⟨2 * (K : ℝ), by rintro _ ⟨q, rfl⟩; exact hψ_le k q x⟩
+  -- `η_k = 1_C · sup_{q ∈ Q} ψ_{k,q}`.
+  refine ⟨fun k => C.indicator (fun x => ⨆ q : Q, ψ k q x), ?_, ?_, ?_⟩
+  · -- Step 5: each `η_k` is Borel.
+    intro k
+    refine Measurable.indicator (Measurable.iSup fun q => ?_) hC.measurableSet
+    have hD : Measurable fun x => fderiv ℝ f x ((q : Rn n) - x) :=
+      ContinuousLinearMap.measurable_apply₂.comp
+        ((measurable_fderiv ℝ f).prodMk (measurable_const.sub measurable_id))
+    have hU : IsOpen {x : Rn n | 0 < ‖(q : Rn n) - x‖ ∧ ‖(q : Rn n) - x‖ < 1 / ((k : ℝ) + 1)} :=
+      (isOpen_lt continuous_const (continuous_const.sub continuous_id).norm).inter
+        (isOpen_lt (continuous_const.sub continuous_id).norm continuous_const)
+    show Measurable fun x => ψ k q x
+    simp only [hψ]
+    exact Measurable.ite hU.measurableSet
+      (((measurable_const.sub hf.continuous.measurable).sub hD).norm.div
+        (measurable_const.sub measurable_id).norm) measurable_const
+  · -- Step 6: `η_k(x) → 0` for `x ∈ C`.
+    intro x hx
+    dsimp only
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff.1
+      ((hdiff x hx).hasFDerivAt.isLittleO.bound (half_pos hε))
+    obtain ⟨k₀, hk₀⟩ := exists_nat_one_div_lt hr
+    refine ⟨k₀, fun k hk => ?_⟩
+    have hle : (⨆ q : Q, ψ k q x) ≤ ε / 2 := by
+      refine Real.iSup_le (fun q => ?_) (half_pos hε).le
+      rw [hψ]
+      split_ifs with h
+      · rw [div_le_iff₀ h.1]
+        have hlt : dist (q : Rn n) x < r := by
+          rw [dist_eq_norm]
+          calc ‖(q : Rn n) - x‖ < 1 / ((k : ℝ) + 1) := h.2
+            _ ≤ 1 / ((k₀ : ℝ) + 1) := by gcongr
+            _ < r := hk₀
+        exact hball hlt
+      · exact (half_pos hε).le
+    have hnn : 0 ≤ ⨆ q : Q, ψ k q x := Real.iSup_nonneg fun q => hψ_nonneg k q x
+    rw [Set.indicator_of_mem hx, Real.dist_eq, sub_zero, abs_of_nonneg hnn]
+    linarith
+  · -- Step 7: `|R(x, y)| ≤ η_k(x)|y - x|` for `x, y ∈ C` with `0 < |y - x| < 1/(k+1)`.
+    intro k x hx y hy hpos hlt
+    dsimp only
+    have hφ : ContinuousAt (fun q : Rn n => ‖f q - f x - fderiv ℝ f x (q - x)‖ / ‖q - x‖) y :=
+      (((hf.continuous.sub continuous_const).sub ((fderiv ℝ f x).continuous.comp
+        (continuous_id.sub continuous_const))).norm.continuousAt).div
+        (continuous_id.sub continuous_const).norm.continuousAt hpos.ne'
+    have hW : IsOpen {q : Rn n | 0 < ‖q - x‖ ∧ ‖q - x‖ < 1 / ((k : ℝ) + 1)} :=
+      (isOpen_lt continuous_const (continuous_id.sub continuous_const).norm).inter
+        (isOpen_lt (continuous_id.sub continuous_const).norm continuous_const)
+    have : (𝓝[Q] y).NeBot := mem_closure_iff_nhdsWithin_neBot.1 (hCQ hy)
+    have hle : ‖f y - f x - fderiv ℝ f x (y - x)‖ / ‖y - x‖ ≤ ⨆ q : Q, ψ k q x := by
+      refine le_of_tendsto (x := 𝓝[Q] y) (hφ.tendsto.mono_left nhdsWithin_le_nhds) ?_
+      filter_upwards [self_mem_nhdsWithin, nhdsWithin_le_nhds (hW.mem_nhds ⟨hpos, hlt⟩)]
+        with q hqQ hqW
+      calc ‖f q - f x - fderiv ℝ f x (q - x)‖ / ‖q - x‖ = ψ k q x := by rw [hψ, ite_eq_left hqW]
+        _ ≤ ⨆ q' : Q, ψ k q' x := le_ciSup (hbdd k x) ⟨q, hqQ⟩
+    rw [Set.indicator_of_mem hx]
+    rwa [div_le_iff₀ hpos] at hle
 
 end Submission
 
