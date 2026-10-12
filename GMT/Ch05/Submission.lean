@@ -458,6 +458,44 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Simon Ch. 5, proof of Theorem 5.2 (p. 124, "since `f` is Lipschitz it follows from this that
+`f ∈ C^{1,1−n/p}`"), Fubini on lines: if `Lⁿ(N) = 0`, then for all `x, h ∈ ℝⁿ` and `Lⁿ`-a.e. `w`
+the line `t ↦ x + w + t h` meets `N` in an `L¹`-null set.  Enclose `N` in a measurable null set
+`N'`.  The set `E = {(w, t) : x + w + t h ∈ N'}` is measurable (a preimage under a continuous map),
+and each `t`-section `{w : w + (x + t h) ∈ N'}` is a translate of `N'`, hence `Lⁿ`-null.  So
+`(Lⁿ × L¹)(E) = 0` by Tonelli, almost every `w`-section of `E` is `L¹`-null, and monotonicity
+passes this from `N'` to `N`. -/
+theorem allard52_lad_segment_null : ∀ (n : ℕ) (N : Set (Rn n)), volume N = 0 → ∀ (x h : Rn n), ∀ᵐ w ∂(volume : Measure (Rn n)), volume {t : ℝ | x + w + t • h ∈ N} = 0 := by
+  intro n N hN x h
+  -- A measurable null envelope `N'` of `N`.
+  obtain ⟨N', hNN', hN'm, hN'0⟩ := exists_measurable_superset_of_null hN
+  -- `E = {(w, t) : x + w + t h ∈ N'}` is measurable.
+  set E : Set (Rn n × ℝ) := {p | x + p.1 + p.2 • h ∈ N'} with hE
+  have hEm : MeasurableSet E :=
+    (show Continuous fun p : Rn n × ℝ => x + p.1 + p.2 • h by fun_prop).measurable hN'm
+  -- Each `t`-section of `E` is the translate `N' - (x + t h)`, hence null.
+  have hsec : ∀ t : ℝ, (volume : Measure (Rn n)) ((fun w => (w, t)) ⁻¹' E) = 0 := by
+    intro t
+    have hset : (fun w => (w, t)) ⁻¹' E = (fun w => w + (x + t • h)) ⁻¹' N' := by
+      ext w
+      simp only [mem_preimage, hE, mem_ofPred_eq]
+      rw [show x + w + t • h = w + (x + t • h) by abel]
+    rw [hset, measure_preimage_add_right]
+    exact hN'0
+  -- Tonelli: `(Lⁿ × L¹)(E) = ∫⁻ Lⁿ(t-section of E) dt = 0`.
+  have hprod : (volume : Measure (Rn n)).prod (volume : Measure ℝ) E = 0 := by
+    rw [Measure.prod_apply_symm hEm]
+    exact (lintegral_congr hsec).trans lintegral_zero
+  -- Hence almost every `w`-section `{t : x + w + t h ∈ N'}` is `L¹`-null, and so is the smaller
+  -- set `{t : x + w + t h ∈ N}`.
+  rw [Measure.measure_prod_null hEm] at hprod
+  filter_upwards [hprod] with w hw
+  exact measure_mono_null (fun t ht => hNN' ht) hw
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
