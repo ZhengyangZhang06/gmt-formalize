@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "568d962db3068c0868ace492e5bf6e56e594e90018b12ec9b6c97c2d3601fd87",
+  "git_delta": {
+    "base_commit": "a6db771a5ab68932dfbee661bfbd4501ab183bb0",
+    "candidate_commit": "ed867b35a45eb0f1c8e2d296f8a62755f87be0a9",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "16a9f309a5de974464e7f4692de07296ddc6773a1da8c0acea8ee001e55b3864",
+    "source_sha256": "e2ceacfcc76ae1dd80f29b02a20e0071720a20d9d9cf28b06ae466235d3c9adb",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tilt_excess_height_estimate",
+      "statement": "TiltExcessHeightEstimate",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
