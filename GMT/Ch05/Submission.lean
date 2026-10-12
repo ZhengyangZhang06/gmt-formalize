@@ -502,6 +502,62 @@ theorem rsod_blowUp_setIntegral_eq : ∀ (n ℓ : ℕ) (M : Set (Amb n ℓ)) (f 
   simp only [hη, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne',
     one_smul, add_sub_cancel]
 
+/-- **Blow-ups of a set of zero `n`-density vanish** (Simon Ch. 3, proof of Theorem 1.6 "⇒").
+If `Hⁿ(A) < ∞` and `ρ⁻ⁿ Hⁿ(A ∩ B_ρ(x)) → 0` as `ρ ↓ 0`, then `∫_{η_{x,r}(A)} f dHⁿ → 0` as
+`r ↓ 0` for every `f ∈ C_c(ℝ^{n+ℓ}, ℝ)`: if `|f| ≤ M` and `spt f ⊆ B_R(0)`, then
+`|∫_{η_{x,r}(A)} f dHⁿ| ≤ M r⁻ⁿ Hⁿ(A ∩ B_{rR}(x)) = M Rⁿ (rR)⁻ⁿ Hⁿ(A ∩ B_{rR}(x))`. -/
+theorem rsod_blowUp_integral_tendsto_zero : ∀ (n ℓ : ℕ) (x : Amb n ℓ) (A : Set (Amb n ℓ)), (μHE[n] : Measure (Amb n ℓ)) A < ∞ → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real (A ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → ∀ f : CompactlySupportedContinuousMap (Amb n ℓ) ℝ, Tendsto (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0) := by
+  intro n ℓ x A hA hD f
+  set μ : Measure (Amb n ℓ) := (μHE[n] : Measure (Amb n ℓ))
+  -- `|f| ≤ M` everywhere, and `f = 0` off `B_R(0)` for some `R > 0`.
+  obtain ⟨M, hM⟩ := (map_continuous f).bounded_above_of_compact_support f.hasCompactSupport
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall (0 : Amb n ℓ)
+  obtain ⟨R, hR, hR₀R⟩ : ∃ R : ℝ, 0 < R ∧ R₀ ≤ R :=
+    ⟨max R₀ 1, zero_lt_one.trans_le (le_max_right _ _), le_max_left _ _⟩
+  have hfR : ∀ y, R < ‖y‖ → f y = 0 := fun y hy => image_eq_zero_of_notMem_tsupport fun h => by
+    have := mem_closedBall_zero_iff.mp (hR₀ h)
+    linarith
+  -- For `r > 0`, by the change of variables `η = η_{x,r}` and since `f ∘ η = 0` off `B_{rR}(x)`:
+  -- `|∫_{η(A)} f| = r⁻ⁿ |∫_{A ∩ B_{rR}(x)} f ∘ η| ≤ M Rⁿ (rR)⁻ⁿ Hⁿ(A ∩ B_{rR}(x))`.
+  have hbound : ∀ r : ℝ, 0 < r →
+      ‖∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μ‖ ≤
+        M * R ^ n * (((r * R) ^ n)⁻¹ * μ.real (A ∩ closedBall x (r * R))) := by
+    intro r hr
+    set η := Poincare.SimonGMT.Chapter03.blowUpMap x r
+    have hcv : ∫ y in η '' A, f y ∂μ = (r ^ n)⁻¹ * ∫ z in A, f (η z) ∂μ := by
+      simpa only [mul_one] using rsod_blowUp_setIntegral_eq n ℓ A f (fun _ => 1) x r hr
+    have hloc : ∫ z in A, f (η z) ∂μ = ∫ z in A ∩ closedBall x (r * R), f (η z) ∂μ := by
+      rw [← setIntegral_indicator measurableSet_closedBall]
+      refine integral_congr_ae (Eventually.of_forall fun z => ?_)
+      show f (η z) = (closedBall x (r * R)).indicator (fun z => f (η z)) z
+      by_cases hz : z ∈ closedBall x (r * R)
+      · rw [indicator_of_mem hz]
+      · rw [indicator_of_notMem hz]
+        rw [mem_closedBall, not_le] at hz
+        refine hfR _ ?_
+        show R < ‖r⁻¹ • (z - x)‖
+        rwa [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr hr.le), lt_inv_mul_iff₀ hr,
+          ← dist_eq_norm]
+    have hfin : μ (A ∩ closedBall x (r * R)) < ∞ := (measure_mono inter_subset_left).trans_lt hA
+    rw [hcv, hloc, norm_mul, norm_inv, norm_pow, Real.norm_of_nonneg hr.le]
+    calc (r ^ n)⁻¹ * ‖∫ z in A ∩ closedBall x (r * R), f (η z) ∂μ‖
+        ≤ (r ^ n)⁻¹ * (M * μ.real (A ∩ closedBall x (r * R))) := by
+          gcongr
+          exact norm_setIntegral_le_of_norm_le_const hfin fun z _ => hM _
+      _ = M * R ^ n * (((r * R) ^ n)⁻¹ * μ.real (A ∩ closedBall x (r * R))) := by
+          have hRn : R ^ n ≠ 0 := pow_ne_zero n hR.ne'
+          rw [mul_pow, mul_inv]
+          field_simp
+  -- `r ↦ rR` maps `𝓝[>] 0` into itself, so the bound tends to `M Rⁿ · 0 = 0`.
+  have hmap : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · simpa using (tendsto_id (x := 𝓝 (0 : ℝ))).mul_const R |>.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr using mul_pos hr hR
+  have htend := (hD.comp hmap).const_mul (M * R ^ n)
+  rw [mul_zero] at htend
+  refine squeeze_zero_norm' ?_ htend
+  filter_upwards [self_mem_nhdsWithin] with r hr using hbound r hr
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
