@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2b4c24c867d104a81bd02e6d843b5834471e6e84f6e54112fdf26a11fb65d9d7",
+  "git_delta": {
+    "base_commit": "f2249e6f80f581e1b1604ca281a4decd5138eb92",
+    "candidate_commit": "237822f9912e38c239d52dd63c51cbea7b8ef10c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_mw_massOn_le_measure",
+    "diff_sha256": "4b822f0bcebbf909a6e602e80d186a06f391a4ba52c321d3e290cb2906d341ef",
+    "source_sha256": "f27c10566a24040f5918f1ac2726c6024def44b176a66593dc6d4fde99362dad",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_mw_massOn_le_measure",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ W : Set (Euclid P), T.massOn W ≤ R.measure W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
